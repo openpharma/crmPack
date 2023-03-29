@@ -294,10 +294,11 @@ DALogisticLogNormal(
 DualEndpoint(
   mean = c(-0.85, 1),
   cov = matrix(c(1, -0.5, -0.5, 1), nrow = 2),
-  ref_dose = 1, 
-  use_log_dose = FALSE, 
-  sigma2W=0.5, 
-  rho=-0.2) %>% tidy()
+  ref_dose = 1,
+  use_log_dose = FALSE,
+  sigma2W = 0.5,
+  rho = -0.2
+) %>% tidy()
 
 DualEndpointBeta(
   mean = c(0, 1),
@@ -327,12 +328,13 @@ DualEndpointEmax(
 DualEndpointRW(
   mean = c(-0.85, 1),
   cov = matrix(c(1, -0.5, -0.5, 1), nrow = 2),
-  ref_dose = 1, 
-  use_log_dose = FALSE, 
-  sigma2W=0.5, 
-  sigma2betaW = c(a=1, b=2),
+  ref_dose = 1,
+  use_log_dose = FALSE,
+  sigma2W = 0.5,
+  sigma2betaW = c(a = 1, b = 2),
   rw1 = TRUE,
-  rho=-0.2) %>%  tidy()
+  rho = -0.2
+) %>% tidy()
 
 FractionalCRM(
   skel_probs = c(0.1, 0.2, 0.3, 0.4),
@@ -359,9 +361,9 @@ LogisticLogNormal(
 ) %>% tidy()
 
 LogisticLogNormalSub(
-    mean = c(-0.85, 1),
-    cov = matrix(c(1, -0.5, -0.5, 1), nrow = 2),
-    ref_dose = 50
+  mean = c(-0.85, 1),
+  cov = matrix(c(1, -0.5, -0.5, 1), nrow = 2),
+  ref_dose = 50
 ) %>% tidy()
 
 LogisticNormalFixedMixture(
@@ -409,7 +411,8 @@ LogisticNormalMixture(
 ModelLogNormal(
   mean = c(-0.85, 1),
   cov = matrix(c(1, -0.5, -0.5, 1), nrow = 2),
-  ref_dose = 50) %>% tidy()
+  ref_dose = 50
+) %>% tidy()
 
 ProbitLogNormal(
   mean = c(-0.85, 1),
@@ -422,5 +425,4 @@ TITELogisticLogNormal(
   ref_dose = 1,
   weight_method = "linear"
 ) %>% tidy()
-
 ```
