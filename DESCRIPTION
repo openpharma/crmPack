@@ -33,6 +33,7 @@ Imports:
     checkmate,
     futile.logger,
     GenSA,
+    magrittr,
     grid,
     gridExtra,
     kableExtra,
@@ -93,6 +94,7 @@ Collate:
     'fromQuantiles.R'
     'Samples-methods.R'
     'Simulations-methods.R'
+    'broom-methods.R'
     'checkmate.R'
     'crmPack-package.R'
     'helpers_model.R'

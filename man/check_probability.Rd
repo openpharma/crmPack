@@ -36,7 +36,7 @@ the heuristic implemented in \code{\link[checkmate]{vname}}.}
 \item{add}{[\code{AssertCollection}]\cr
 Collection to store assertion messages. See \code{\link[checkmate]{AssertCollection}}.}
 
-\item{info}{[\code{character(1)}]\cr
+\item{info}{[character(1)]\cr
 Extra information to be included in the message for the testthat reporter.
 See \code{\link[testthat]{expect_that}}.}
 
