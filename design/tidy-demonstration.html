@@ -628,16 +628,16 @@ mySize %&gt;% tidy()</code></pre>
 ## Used best guess cohort indices!</code></pre>
 <pre class="r"><code>tidyDataDual</code></pre>
 <pre><code>## # A tibble: 8 × 10
-##      ID cohort     x     y nGrid      w xLevel  nObs placebo doseGrid         
-##   &lt;int&gt;  &lt;int&gt; &lt;dbl&gt; &lt;int&gt; &lt;int&gt;  &lt;dbl&gt;  &lt;int&gt; &lt;int&gt; &lt;lgl&gt;   &lt;list&gt;           
-## 1     1      1   0.1     0    41  0.363      1     8 FALSE   &lt;tibble [41 × 2]&gt;
-## 2     2      2   0.5     0    41 -0.544      2     8 FALSE   &lt;tibble [41 × 2]&gt;
-## 3     3      3   1.5     0    41 -0.186      3     8 FALSE   &lt;tibble [41 × 2]&gt;
-## 4     4      4   3       0    41 -0.736      4     8 FALSE   &lt;tibble [41 × 2]&gt;
-## 5     5      5   6       0    41 -0.987      5     8 FALSE   &lt;tibble [41 × 2]&gt;
-## 6     6      6  10       0    41 -0.532      6     8 FALSE   &lt;tibble [41 × 2]&gt;
-## 7     7      6  10       1    41 -0.563      6     8 FALSE   &lt;tibble [41 × 2]&gt;
-## 8     8      6  10       0    41  0.823      6     8 FALSE   &lt;tibble [41 × 2]&gt;</code></pre>
+##      ID cohort     x     y nGrid       w xLevel  nObs placebo doseGrid         
+##   &lt;int&gt;  &lt;int&gt; &lt;dbl&gt; &lt;int&gt; &lt;int&gt;   &lt;dbl&gt;  &lt;int&gt; &lt;int&gt; &lt;lgl&gt;   &lt;list&gt;           
+## 1     1      1   0.1     0    41 -0.561       1     8 FALSE   &lt;tibble [41 × 2]&gt;
+## 2     2      2   0.5     0    41 -0.0555      2     8 FALSE   &lt;tibble [41 × 2]&gt;
+## 3     3      3   1.5     0    41 -0.507       3     8 FALSE   &lt;tibble [41 × 2]&gt;
+## 4     4      4   3       0    41 -0.435       4     8 FALSE   &lt;tibble [41 × 2]&gt;
+## 5     5      5   6       0    41 -0.0978      5     8 FALSE   &lt;tibble [41 × 2]&gt;
+## 6     6      6  10       0    41 -0.0342      6     8 FALSE   &lt;tibble [41 × 2]&gt;
+## 7     7      6  10       1    41 -1.76        6     8 FALSE   &lt;tibble [41 × 2]&gt;
+## 8     8      6  10       0    41  0.477       6     8 FALSE   &lt;tibble [41 × 2]&gt;</code></pre>
 <pre class="r"><code>tidyDataDual$doseGrid[1]</code></pre>
 <pre><code>## [[1]]
 ## # A tibble: 41 × 2
@@ -1234,8 +1234,7 @@ IncrementsMin(increments_list = list(myIncrements1, myIncrements2)) %&gt;% tidy(
 ## [15] &quot;DualEndpointBeta&quot;           &quot;DualEndpointEmax&quot;          
 ## [17] &quot;LogisticLogNormalMixture&quot;   &quot;DALogisticLogNormal&quot;       
 ## [19] &quot;TITELogisticLogNormal&quot;      &quot;FractionalCRM&quot;</code></pre>
-<pre class="r"><code>## [17] &quot;DALogisticLogNormal&quot;        &quot;TITELogisticLogNormal&quot;
-## [19] &quot;FractionalCRM&quot;
+<pre class="r"><code>## [19] &quot;FractionalCRM&quot;
 
 npiece &lt;- 10
 Tmax &lt;- 60 # nolintr
@@ -1624,6 +1623,45 @@ DALogisticLogNormal(
 ## 
 ## attr(,&quot;class&quot;)
 ## [1] &quot;tbl_DualEndpointRW&quot; &quot;list&quot;</code></pre>
+<pre class="r"><code>FractionalCRM(
+  skel_probs = c(0.1, 0.2, 0.3, 0.4),
+  dose_grid = c(10, 30, 50, 100),
+  sigma2 = 2
+) %&gt;% tidy()</code></pre>
+<pre><code>## $skel_probs
+## # A tibble: 4 × 1
+##   skel_probs
+##        &lt;dbl&gt;
+## 1        0.1
+## 2        0.2
+## 3        0.3
+## 4        0.4
+## 
+## $sigma2
+## # A tibble: 1 × 1
+##   sigma2
+##    &lt;dbl&gt;
+## 1      2
+## 
+## $datanames
+## # A tibble: 2 × 1
+##   Parameter
+##   &lt;chr&gt;    
+## 1 nObs     
+## 2 xLevel   
+## 
+## $datanames_prior
+## # A tibble: 0 × 1
+## # … with 1 variable: Parameter &lt;chr&gt;
+## 
+## $sample
+## # A tibble: 1 × 1
+##   Parameter
+##   &lt;chr&gt;    
+## 1 alpha    
+## 
+## attr(,&quot;class&quot;)
+## [1] &quot;tbl_FractionalCRM&quot; &quot;list&quot;</code></pre>
 <pre class="r"><code>LogisticKadane(theta = 0.33, xmin = 1, xmax = 200) %&gt;% tidy()</code></pre>
 <pre><code>## # A tibble: 1 × 3
 ##   theta  xmin  xmax
@@ -2130,6 +2168,71 @@ ModelLogNormal(
 ## 
 ## attr(,&quot;class&quot;)
 ## [1] &quot;tbl_ProbitLogNormal&quot; &quot;list&quot;</code></pre>
+<pre class="r"><code>TITELogisticLogNormal(
+  mean = c(0, 1),
+  cov = diag(2),
+  ref_dose = 1,
+  weight_method = &quot;linear&quot;
+) %&gt;% tidy()</code></pre>
+<pre><code>## $params
+## $mean
+## # A tibble: 2 × 2
+##   Parameter  Mean
+##   &lt;chr&gt;     &lt;dbl&gt;
+## 1 alpha0        0
+## 2 alpha1        1
+## 
+## $cov
+## # A tibble: 2 × 3
+##   Parameter alpha0 alpha1
+##   &lt;chr&gt;      &lt;dbl&gt;  &lt;dbl&gt;
+## 1 alpha0         1      0
+## 2 alpha1         0      1
+## 
+## $prec
+## # A tibble: 2 × 3
+##   Parameter alpha0 alpha1
+##   &lt;chr&gt;      &lt;dbl&gt;  &lt;dbl&gt;
+## 1 alpha0         1      0
+## 2 alpha1         0      1
+## 
+## attr(,&quot;class&quot;)
+## [1] &quot;tbl_ModelParamsNormal&quot; &quot;list&quot;                 
+## 
+## $ref_dose
+## # A tibble: 1 × 1
+##   ref_dose  
+##   &lt;pstv_nmb&gt;
+## 1 1         
+## 
+## $datanames
+## # A tibble: 3 × 1
+##   Parameter
+##   &lt;chr&gt;    
+## 1 nObs     
+## 2 y        
+## 3 x        
+## 
+## $datanames_prior
+## # A tibble: 0 × 1
+## # … with 1 variable: Parameter &lt;chr&gt;
+## 
+## $sample
+## # A tibble: 2 × 1
+##   Parameter
+##   &lt;chr&gt;    
+## 1 alpha0   
+## 2 alpha1   
+## 
+## $weight_method
+## # A tibble: 1 × 1
+##   weight_method
+##   &lt;chr&gt;        
+## 1 linear       
+## 
+## attr(,&quot;class&quot;)
+## [1] &quot;tbl_TITELogisticLogNormal&quot; &quot;tbl_TITELogisticLogNormal&quot;
+## [3] &quot;list&quot;</code></pre>
 </div>
 
 

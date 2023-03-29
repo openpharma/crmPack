@@ -273,7 +273,6 @@ IncrementsRelative(intervals = c(0, 20), increments = c(1, 0.33)) %>% tidy()
 ```{r}
 names(getClass("GeneralModel")@subclasses)
 
-## [17] "DALogisticLogNormal"        "TITELogisticLogNormal"
 ## [19] "FractionalCRM"
 
 npiece <- 10
@@ -334,6 +333,12 @@ DualEndpointRW(
   sigma2betaW = c(a=1, b=2),
   rw1 = TRUE,
   rho=-0.2) %>%  tidy()
+
+FractionalCRM(
+  skel_probs = c(0.1, 0.2, 0.3, 0.4),
+  dose_grid = c(10, 30, 50, 100),
+  sigma2 = 2
+) %>% tidy()
 
 LogisticKadane(theta = 0.33, xmin = 1, xmax = 200) %>% tidy()
 
@@ -410,4 +415,12 @@ ProbitLogNormal(
   mean = c(-0.85, 1),
   cov = matrix(c(1, -0.5, -0.5, 1), nrow = 2)
 ) %>% tidy()
+
+TITELogisticLogNormal(
+  mean = c(0, 1),
+  cov = diag(2),
+  ref_dose = 1,
+  weight_method = "linear"
+) %>% tidy()
+
 ```
