@@ -317,6 +317,7 @@ reference:
       - maxDose
       - maxDose-IncrementsRelative
       - maxDose-IncrementsRelativeDLT
+      - maxDose-IncrementsRelativeParts
       - maxDose-IncrementsDoseLevels
       - maxDose-IncrementsHSRBeta
   - title: Functions

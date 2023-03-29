@@ -6,7 +6,7 @@ my_data <- Data(
   y = c(0, 0, 0, 0, 0, 0, 1, 0),
   ID = 1:8,
   cohort = c(0, 1, 2, 3, 4, 5, 5, 5),
-  doseGrid = c(0.1, 0.5, 1.5, 3, 6, 8, seq(from = 10, to = 80, by = 2))
+  doseGrid = c(0.1, 0.5, 1.5, 3, 6, 8, 10:40)
 )
 
 # Define a rule for dose increments which allows for:
@@ -19,4 +19,4 @@ my_increments <- IncrementsRelative(
 )
 
 # Based on the rule above, the maximum dose allowed is:
-my_next_max_dose <- maxDose(my_increments, data = my_data)
+max_dose <- maxDose(my_increments, data = my_data)
