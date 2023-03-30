@@ -139,19 +139,19 @@ GeneralSimulations <- function(data,
     )
 
     o$check(
-      identical(nrow(object@stop_report), nSims),
-      "stop_report must have same row count as data"
+      checkmate::testLogical(object@stop_report),
+      "stop_report must only contain logicals"
     )
 
     o$check(
-      !any(is.na(object@stop_report)),
-      "stop_report must not contain NA values"
+      checkmate::testMatrix(object@stop_report, nrows = nSims, min.cols = 1, any.missing = FALSE),
+      "stop_report must be a matrix where the number of rows equals the number of simulations
+      and which must not contain any missing values"
     )
 
-    o$check(
-      is.logical(object@stop_report),
-      "stop_report must be a matrix of class logical"
-    )
+
+
+
 
     o$result()
   }
