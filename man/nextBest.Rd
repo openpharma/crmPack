@@ -562,7 +562,6 @@ dose_recommendation <- nextBest(
 
 dose_recommendation$next_dose_drt
 dose_recommendation$plot
-
 # Example of usage for `NextBestTDsamples` NextBest class.
 my_data <- Data(
   x = c(25, 50, 50, 75, 150, 200, 225, 300),

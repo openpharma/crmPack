@@ -546,13 +546,12 @@ setMethod("summary",
           propAtTarget = propAtTarget,
           doseGrid = doseGrid,
           placebo = object@data[[1]]@placebo
-        )
 
+        )
 
       return(ret)
     }
 )
-
 
 ##' Summarize the model-based design simulations, relative to a given truth
 ##'
@@ -838,6 +837,17 @@ setMethod("show",
         r$dfSave(object@nsim, "nsim"),
         "simulations\n\n"
       )
+
+      # report stopping rules
+      # Report individual stopping rules with non-<NA> labels.
+      stop_pct <- colMeans(object@stop_report) * 100
+      stop_pct_to_print <- stop_pct[!is.na(names(stop_pct))]
+      if (length(stop_pct_to_print) > 0) {
+        cat(
+          "Stopping rules:\n \n",
+          paste(names(stop_pct_to_print), ": ", stop_pct_to_print, "%\n \n")
+        )
+      }
 
       cat(
         "Target toxicity interval was",

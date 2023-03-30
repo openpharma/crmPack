@@ -108,46 +108,54 @@ GeneralSimulations <- function(data,
 ##'
 ##' @slot fit list with the final fits
 ##' @slot stopReasons list of stopping reasons for each simulation run
-##'
+##' @slot stop_report matrix of stopping rule outcomes
 ##' @export
 ##' @keywords classes
-.Simulations <-
-  setClass(
-    Class = "Simulations",
-    representation(
-      fit = "list",
-      stopReasons = "list"
-    ),
-    ## note: this prototype is put together with the prototype
-    ## for GeneralSimulations
-    prototype(
-      fit =
-        list(
-          c(0.1, 0.2),
-          c(0.1, 0.2)
-        ),
-      stopReasons =
-        list("A", "A")
-    ),
-    contains = "GeneralSimulations",
-    validity =
-      function(object) {
-        o <- Validate()
+.Simulations <- setClass(
+  Class = "Simulations",
+  slots = c(
+    fit = "list",
+    stopReasons = "list",
+    stop_report = "matrix"
+  ),
+  prototype = prototype(
+    fit = list(c(0.1, 0.2), c(0.1, 0.2)),
+    stopReasons = list("A", "A"),
+    stop_report = matrix(TRUE, nrow = 2)
+  ),
+  contains = "GeneralSimulations",
+  validity = function(object) {
+    nSims <- length(object@data)
+    o <- Validate()
 
-        nSims <- length(object@data)
+    o$check(
+      identical(length(object@fit), nSims),
+      "fit must have same length as data"
+    )
 
-        o$check(
-          identical(length(object@fit), nSims),
-          "fit must have same length as data"
-        )
-        o$check(
-          identical(length(object@stopReasons), nSims),
-          "stopReasons must have same length as data"
-        )
+    o$check(
+      identical(length(object@stopReasons), nSims),
+      "stopReasons must have same length as data"
+    )
 
-        o$result()
-      }
-  )
+    o$check(
+      checkmate::testLogical(object@stop_report),
+      "stop_report must only contain logicals"
+    )
+
+    o$check(
+      checkmate::testMatrix(object@stop_report, nrows = nSims, min.cols = 1, any.missing = FALSE),
+      "stop_report must be a matrix where the number of rows equals the number of simulations
+      and which must not contain any missing values"
+    )
+
+
+
+
+
+    o$result()
+  }
+)
 validObject(.Simulations())
 
 
@@ -155,6 +163,7 @@ validObject(.Simulations())
 ##'
 ##' @param fit see \code{\linkS4class{Simulations}}
 ##' @param stopReasons see \code{\linkS4class{Simulations}}
+##' @param stop_report see \code{\linkS4class{Simulations}}
 ##' @param \dots additional parameters from \code{\link{GeneralSimulations}}
 ##' @return the \code{\linkS4class{Simulations}} object
 ##' @export
@@ -162,11 +171,13 @@ validObject(.Simulations())
 ##' @keywords methods
 Simulations <- function(fit,
                         stopReasons,
+                        stop_report,
                         ...) {
   start <- GeneralSimulations(...)
   .Simulations(start,
     fit = fit,
-    stopReasons = stopReasons
+    stopReasons = stopReasons,
+    stop_report = stop_report
   )
 }
 
@@ -256,6 +267,7 @@ DualSimulations <- function(rhoEst,
 ##' initialization function is provided for this class.
 ##'
 ##' @slot target target toxicity interval
+##' @slot stop_report matrix of stopping rule outcomes
 ##' @slot targetDoseInterval corresponding target dose interval
 ##' @slot nsim number of simulations
 ##' @slot propDLTs proportions of DLTs in the trials
@@ -278,6 +290,7 @@ DualSimulations <- function(rhoEst,
     Class = "GeneralSimulationsSummary",
     representation(
       target = "numeric",
+      stop_report = "matrix",
       targetDoseInterval = "numeric",
       nsim = "integer",
       propDLTs = "ANY",
