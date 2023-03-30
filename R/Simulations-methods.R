@@ -546,7 +546,6 @@ setMethod("summary",
           propAtTarget = propAtTarget,
           doseGrid = doseGrid,
           placebo = object@data[[1]]@placebo
-
         )
 
       return(ret)
