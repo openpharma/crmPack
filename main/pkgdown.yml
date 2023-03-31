@@ -3,12 +3,13 @@ pkgdown: 2.0.7
 pkgdown_sha: ~
 articles:
   migration_from_the_old_crmPack: migration_from_the_old_crmPack.html
+  parallel_computing_with_extensions: parallel_computing_with_extensions.html
   rolling-crm: rolling-crm.html
   simulations: simulations.html
   trial_analysis: trial_analysis.html
   trial_definition: trial_definition.html
   trial_simulation: trial_simulation.html
-last_built: 2023-03-27T07:45Z
+last_built: 2023-03-31T09:01Z
 urls:
   reference: https://roche.github.io/crmPack/main/reference
   article: https://roche.github.io/crmPack/main/articles
