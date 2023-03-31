@@ -317,6 +317,7 @@ reference:
       - maxDose
       - maxDose-IncrementsRelative
       - maxDose-IncrementsRelativeDLT
+      - maxDose-IncrementsRelativeParts
       - maxDose-IncrementsDoseLevels
       - maxDose-IncrementsHSRBeta
   - title: Functions
@@ -424,8 +425,8 @@ reference:
       - summary,GeneralSimulations-method
       - summary,PseudoDualFlexiSimulations-method
       - summary,PseudoDualSimulations-method
-      - summary,PseudoSimulations-method
       - summary,Simulations-method
+      - summary,PseudoSimulations-method
       - windowLength
       - "&,Stopping,Stopping-method"
       - "&,Stopping,StoppingAll-method"

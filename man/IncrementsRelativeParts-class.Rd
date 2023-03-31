@@ -29,25 +29,27 @@ relative differences in intervals, with special rules for part 1 and
 beginning of part 2.
 }
 \details{
-This class works only conjunction with \code{\link{DataParts}} objects. If
+This class works only in conjunction with \code{\link{DataParts}} objects. If
 part 2 will just be started in the next cohort, then the next maximum dose
-will be either \code{dlt_start} (e.g. \-1) shift of the last part 1 dose in case
-of a DLT in part 1, or \code{clean_start} shift (e.g. 0) in case of no DLTs in
-part 1. If part 1 will still be on in the next cohort, then the next dose
-level will be the next higher dose level in the \code{part1Ladder} slot of the
-data object. If part 2 has been started before, the usual relative increment
-rules apply, see \code{\link{IncrementsRelative}}.
+will be either \code{dlt_start} (e.g. -1) shift of the last part 1 dose in case
+of a DLT in part 1, or \code{clean_start} shift (e.g. -1) in case of no DLTs in
+part 1, given that \code{clean_start <= 0} (see description of \code{clean_start}
+slot for more details). If part 1 will still be on in the next cohort,
+then the next dose level will be the next higher dose level in the
+\code{part1Ladder} slot of the data object. If part 2 has been started before,
+the usual relative increment rules apply, see \code{\link{IncrementsRelative}}.
 }
 \section{Slots}{
 
 \describe{
-\item{\code{dlt_start}}{(\code{count})\cr the dose level increment for starting part 2 in
-case of a DLT in part 1.}
+\item{\code{dlt_start}}{(\code{integer})\cr a scalar, the dose level increment for starting
+part 2 in case of at least one DLT event in part 1.}
 
-\item{\code{clean_start}}{(\code{count})\cr the dose level increment for starting part 2
-in case of a DLT in part 1. If this is less or equal to 0, then the part 1
-ladder will be used to find the maximum next dose. Otherwise, the relative
-increment rules will be applied to find the next maximum dose level.}
+\item{\code{clean_start}}{(\code{integer})\cr a scalar, the dose level increment for
+starting part 2 in case of no DLTs in part 1. If \code{clean_start <= 0},
+then the part 1 ladder will be used to find the maximum next dose.
+Otherwise, the relative increment rules will be applied to find the next
+maximum dose level.}
 }}
 
 \examples{

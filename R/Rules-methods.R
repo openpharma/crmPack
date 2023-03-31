@@ -1138,70 +1138,51 @@ setMethod(
   }
 )
 
-# nolint start
+## IncrementsRelativeParts ----
 
-## --------------------------------------------------
-## The maximum allowable relative increments, with special rules for
-## part 1 and beginning of part 2, method method
-## --------------------------------------------------
-
-##' @describeIn maxDose Determine the maximum possible next dose based on
-##' relative increments and part 1 and 2
-##' @example examples/Rules-method-maxDose-IncrementsRelativeParts.R
-setMethod("maxDose",
-  signature =
-    signature(
-      increments = "IncrementsRelativeParts",
-      data = "DataParts"
-    ),
-  def =
-    function(increments, data, ...) {
-      ## determine if there are already cohorts
-      ## belonging to part 2:
-      alreadyInPart2 <- any(data@part == 2L)
-
-      ## if so, we just call the next higher method
-      if (alreadyInPart2) {
-        callNextMethod(increments, data, ...)
+#' @describeIn maxDose determine the maximum possible next dose based on
+#'   relative increments as well as part 1 and beginning of part 2.
+#'
+#' @aliases maxDose-IncrementsRelativeParts
+#'
+#' @export
+#' @example examples/Rules-method-maxDose-IncrementsRelativeParts.R
+#'
+setMethod(
+  f = "maxDose",
+  signature = signature(
+    increments = "IncrementsRelativeParts",
+    data = "DataParts"
+  ),
+  definition = function(increments, data, ...) {
+    all_in_part1 <- all(data@part == 1L)
+    incrmnt <- if (all_in_part1) {
+      part2_started <- data@nextPart == 2L
+      if (part2_started) {
+        any_dlt <- any(data@y == 1L)
+        if (any_dlt) {
+          increments@dlt_start
+        } else if (increments@clean_start <= 0L) {
+          increments@clean_start
+        }
       } else {
-        ## otherwise we have special rules.
-
-        ## what dose level (index) has the highest dose
-        ## so far?
-        lastDoseLevel <- matchTolerance(
-          max(data@x),
-          data@part1Ladder
-        )
-
-        ## determine the next maximum dose
-        ret <-
-          if (data@nextPart == 1L) {
-            ## here the next cohort will still be in part 1.
-            ## Therefore we just make one step on the part 1 ladder:
-            data@part1Ladder[lastDoseLevel + 1L]
-          } else {
-            ## the next cohort will start part 2.
-
-            ## if there was a DLT so far:
-            if (any(data@y == 1L)) {
-              data@part1Ladder[lastDoseLevel + increments@dlt_start]
-            } else {
-              ## otherwise
-              if (increments@clean_start > 0) {
-                ## if we want to start part 2 higher than
-                ## the last part 1 dose, use usual increments
-                callNextMethod(increments, data, ...)
-              } else {
-                ## otherwise
-                data@part1Ladder[lastDoseLevel + increments@clean_start]
-              }
-            }
-          }
-
-        return(ret)
+        1L
       }
     }
+
+    if (is.null(incrmnt)) {
+      callNextMethod(increments, data, ...)
+    } else {
+      max_dose_lev_part1 <- matchTolerance(max(data@x), data@part1Ladder)
+      new_max_dose_level <- max_dose_lev_part1 + incrmnt
+      assert_true(new_max_dose_level >= 0L)
+      assert_true(new_max_dose_level <= length(data@part1Ladder))
+      data@part1Ladder[new_max_dose_level]
+    }
+  }
 )
+
+# nolint start
 
 ## --------------------------------------------------
 ## The maximum allowable relative increments in terms of DLTs
