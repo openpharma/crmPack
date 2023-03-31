@@ -1100,11 +1100,11 @@ IncrementsMin <- function(increments_list) {
 #' [`Stopping`] is a class for stopping rules.
 #'
 #' @slot report_label (`string`)\cr a label for the stopping report. The meaning
-#'   of this parameters is twofold. If it equal to `character(0)` (default),
-#'   then `report_label` will not be used in the report at all.
-#'   Otherwise, if is an empty string, then a default label will be used, which
-#'   is a class-specific. Finally, for other cases, user can provide a custom
-#'   label.
+#'   of this parameter is twofold. If it is equal to `character(0)` (default),
+#'   then `report_label` will not be used in the report at all. Otherwise, if it
+#'   is an empty string, i.e. `""`, then a default label will be used, which
+#'   is a class-specific. Finally, for the remaining cases, a user can provide
+#'   a custom label.
 #'
 #' @seealso [`StoppingList`], [`StoppingCohortsNearDose`], [`StoppingPatientsNearDose`],
 #'   [`StoppingMinCohorts`], [`StoppingMinPatients`], [`StoppingTargetProb`],
