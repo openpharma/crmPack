@@ -28,7 +28,7 @@ NULL
 #' @example examples/helpers-jags_add_dummy.R
 #'
 h_jags_add_dummy <- function(object, where, dummy = 0) {
-  assert_class(object, "Data")
+  assert_class(object, "DataOrdinal")
   assert_character(where)
   assert_subset(where, slotNames(object))
   assert_number(dummy)
@@ -149,6 +149,10 @@ h_jags_get_data <- function(model, data, from_prior) {
   c(data_model, modelspecs)
 }
 
+# h_jags_write_model
+
+## generic
+
 #' Writing JAGS Model to a File
 #'
 #' @description `r lifecycle::badge("stable")`
@@ -174,49 +178,103 @@ h_jags_get_data <- function(model, data, from_prior) {
 #'   optional path) where the model will be saved. If `NULL`, the file will be
 #'   created in a `R_crmPack` folder placed under temporary directory indicated
 #'   by [tempdir()] function.
-#' @param digits (`count`)\cr a desired number of significant digits for
-#'   for numbers used in JAGS input, see [formatC()].
 #' @return The name of the file where the model was saved.
 #'
 #' @export
 #' @example examples/helpers-jags_write_model.R
 #'
-h_jags_write_model <- function(model, file = NULL, digits = 5) {
-  assert_function(model)
-  assert_count(digits)
+setGeneric(
+  name = "h_jags_write_model",
+  def = function(model, file=NULL, ...) {
+    standardGeneric("h_jags_write_model")
+  },
+  valueClass = "character"
+)
 
-  if (!is.null(file)) {
-    assert_path_for_output(file)
-  } else {
-    dir <- file.path(tempdir(), "R_crmPack")
-    # Don't warn, as the temp dir often exists (which is OK).
-    dir.create(dir, showWarnings = FALSE)
-    file <- tempfile(
-      pattern = "jags_model_fun",
-      tmpdir = dir,
-      fileext = ".txt"
+#' @describeIn h_jags_write_model
+#' @aliases h_jags_write_model-GeneralModel
+#' @inheritParams h_jags_write_model
+#' @param digits (`count`)\cr a desired number of significant digits for
+#'   for numbers used in JAGS input, see [formatC()].
+#' @export
+setMethod(
+  f = "h_jags_write_model",
+  signature = signature(model = "function"),
+  def = function(model, file, digits = 5) {
+    assert_function(model)
+    assert_count(digits)
+
+    if (!is.null(file)) {
+      assert_path_for_output(file)
+    } else {
+      dir <- file.path(tempdir(), "R_crmPack")
+      # Don't warn, as the temp dir often exists (which is OK).
+      dir.create(dir, showWarnings = FALSE)
+      file <- tempfile(
+        pattern = "jags_model_fun",
+        tmpdir = dir,
+        fileext = ".txt"
+      )
+    }
+
+    # Replace scientific notation.
+    model_sci_replaced <- h_rapply(
+      x = body(model),
+      fun = h_format_number,
+      classes = c("integer", "numeric"),
+      digits = digits,
+      prefix = "TEMP_NUM_PREF_",
+      suffix = "_TEMP_NUM_SUF"
     )
+    # Transform `model` body into character vector.
+    model_text <- deparse(model_sci_replaced, control = NULL)
+    model_text <- gsub("\"TEMP_NUM_PREF_|_TEMP_NUM_SUF\"", "", model_text)
+    model_text <- gsub("%_% ", "", model_text)
+    model_text <- c("model", model_text)
+
+    log_trace("Writing JAGS model function into: %s", file)
+    writeLines(model_text, con = file)
+    file
   }
+)
 
-  # Replace scientific notation.
-  model_sci_replaced <- h_rapply(
-    x = body(model),
-    fun = h_format_number,
-    classes = c("integer", "numeric"),
-    digits = digits,
-    prefix = "TEMP_NUM_PREF_",
-    suffix = "_TEMP_NUM_SUF"
-  )
-  # Transform `model` body into character vector.
-  model_text <- deparse(model_sci_replaced, control = NULL)
-  model_text <- gsub("\"TEMP_NUM_PREF_|_TEMP_NUM_SUF\"", "", model_text)
-  model_text <- gsub("%_% ", "", model_text)
-  model_text <- c("model", model_text)
+## LogisticLogNormOrd
 
-  log_trace("Writting JAGS model function into: %s", file)
-  writeLines(model_text, con = file)
-  file
-}
+#' @describeIn h_jags_write_model
+#' @aliases h_jags_write_model-LogisticLogNormOrdM
+#' @inheritParams h_jags_write_model
+#' @export
+setMethod(
+  f = "h_jags_write_model",
+  signature = signature(model = "LogisticLogNormalOrd"),
+  def = function(model, file = NULL, from_prior) {
+    assert_flag(from_prior)
+
+    print(from_prior)
+    if (from_prior) {
+      model_string <- c("model {", model@priormodel(), "}")
+    } else {
+      tmp <- model@datamodel()
+      model_string <- c("model {", tmp[1:(length(tmp)-1)], model@priormodel(), "}", "}")
+    }
+    if (!is.null(file)) {
+      assert_path_for_output(file)
+    } else {
+      dir <- file.path(tempdir(), "R_crmPack")
+      # Don't warn, as the temp dir often exists (which is OK).
+      dir.create(dir, showWarnings = FALSE)
+      file <- tempfile(
+        pattern = "jags_model_fun",
+        tmpdir = dir,
+        fileext = ".txt"
+      )
+    }
+
+    log_trace("Writing JAGS model function into: %s", file)
+    writeLines(model_string, con = file)
+    file
+  }
+)
 
 #' Extracting Samples from `JAGS` `mcarray` Object
 #'

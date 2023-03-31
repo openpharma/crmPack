@@ -1,0 +1,202 @@
+---
+title: "oCRM demonstration"
+editor: visual
+format:
+  html:
+    embed-resources: true
+---
+
+```{r}
+#| label: setup
+#| echo: FALSE
+
+library(tidyverse)
+library(knitr)
+library(kableExtra)
+library(truncnorm)
+library(crmPack)
+library(checkmate)
+```
+
+## Test data
+
+Based on a real (non-Roche) study, using a three category toxicity scale (0="No event", 1="sub-toxic AE", 2="DLT").
+
+The doses used were 1, 2, 4, 8, 16 and 30 units.  (Doses of 40 and 50 were also available, but were not used.)
+
+The prior distribution of model parameters was
+
+$$
+\begin{bmatrix}
+\alpha_1 \\ \alpha_2 \\ log(\beta)
+\end{bmatrix} 
+\sim 
+N 
+\left( 
+\begin{bmatrix}
+4 \\ 3 \\ 0
+\end{bmatrix},
+\begin{bmatrix}
+3 & 0 & 0\\ 0 & 4 & 0 \\ 0 & 0 & 1
+\end{bmatrix}
+\right)
+$$
+
+```{r}
+#| label: test-data
+#| echo: FALSE
+d <- tibble(
+  PatNo=1:15,
+  Cohort=c(rep(1:7, each=2), 8),
+  Dose=     c(1, 1, 2, 2, 4, 4, 8, 8, 16, 16, 30, 30, 30, 30, 30),
+  ToxStatus=c(0, 0, 0, 0, 0, 0, 0, 0,  1,  2, 2, 1, 1, 1, 1)
+)
+
+d %>% 
+  kable(
+    col.names=c("Subject", "Cohort", "Dose", "Tox status"),
+    caption="Observed data"
+  ) %>% 
+  kable_styling(bootstrap_options = c("striped", "hover", "condensed"))
+```
+
+## The Ordinal CRM model
+### Check consequential code modifications
+
+```{r}
+#| label: test-code-mods
+#| error: TRUE
+model_ln <- ModelParamsNormal(
+    mean = c(c(3, 4), 0), 
+    cov = diag(c(c(4, 3), 1))
+  )
+model_ln
+```
+
+Also:
+
+  * Changed the assertion in `h_jags_add_dummy` from `assert_class(object, "Data")` to `assert_class(object, "DataOrdinal")`.
+  * Changed the assertion in `h_jags_get_model_inits` to allow `init` to be a closure in `.LogisticLogNormOrd`.
+  * `alpha[j] ~ dnorm(meanAlpha[j], precAlpha[j]) T(, alpha[j-1])` is valid JAGS syntax, but not valid R syntax.  This means that the existing approach of using `h_jags_write_model` to write the *body* of `model@priormodel` or `model@datamodel` to a temporary file will not work.  The approach I have taken is to make `h_jags_write_model` a generic.  The existing code works for all models apart from the new `.LogisticLogNormOrd` class and new variant for `.LogisticLogNormOrd`.  
+  * Loops over `yCategories` should [I think] be from `2` to `length(yCategories)` and not any other variation.
+  * Modified the `ParamsLogNormal` class to allow for dimensions other than 2
+  * Temporarily removed validity checking for simplicity
+
+### Define the oCRM model objects (almost) as specified in the design document
+
+```{r}
+#| label: model-functions
+#| error: TRUE
+
+.DataOrdinal <- setClass(
+  Class = "DataOrdinal",
+  contains = "GeneralData",
+  slots = c(
+    params = "ModelParamsNormal",
+    x = "numeric",
+    y = "integer",
+    doseGrid = "numeric",
+    nGrid = "integer",
+    xLevel = "integer",
+    yCategories = "integer",
+    placebo = "logical"
+  ),
+  prototype = prototype(
+    x = numeric(),
+    y = integer(),
+    doseGrid = numeric(),
+    nGrid = 0L,
+    xLevel = integer(),
+    yCategories = c("No DLT" = 0L, "DLT" = 1L),
+    placebo = FALSE
+  )
+  # ,
+  # validity = v_data_cat_tox
+)
+
+.Data <- setClass(
+  Class = "Data",
+  contains = "DataOrdinal"
+  # ,
+  # validity = v_data 
+)
+
+.LogisticLogNormOrd <- setClass(
+  Class = "LogisticLogNormalOrd",
+  contains = "ModelLogNormal"
+)
+
+LogisticLogNormOrd <- function(meanAlpha, varAlpha, meanBeta, varBeta, ref_dose = 0) {
+  model_ln <- ModelParamsNormal(
+    mean = c(meanAlpha, meanBeta), 
+    cov = diag(c(varAlpha, varBeta))
+  )
+  .LogisticLogNormOrd(
+    params = model_ln,
+    ref_dose = crmPack:::positive_number(ref_dose),
+    datamodel = function() {
+      c(
+        "for (i in 1:15) {",
+        "  x_rel[i] <- log(x[i] / ref_dose)",
+        "  for (j in 1:2) {",
+        "    logit(p[i, j]) <- alpha[j] + beta * x_rel[i]",
+        "    y[i] ~ dbern(p[i, j])",
+        "  }",
+        "}"
+      )
+    },
+    priormodel = function() {
+      c(
+        "for (j in 1:length(meanAlpha)) {",
+        "  if (j == 1) {",
+        "    alpha[j] ~ dnorm(meanAlpha[j], precAlpha[j, j])",
+        "  } else {",
+        "    alpha[j] ~ dnorm(meanAlpha[j], precAlpha[j, j]) T(, alpha[j-1])",
+        "  }",
+        "}",
+        "beta ~ dnorm(meanBeta, precBeta)"
+      )
+    },
+    modelspecs = function(from_prior) {
+      ms <- list(
+        meanAlpha = meanAlpha,
+        precAlpha = solve(diag(varAlpha)),
+        meanBeta = meanBeta,
+        precBeta = 1/varBeta
+      )
+      if (!from_prior) {
+        ms$ref_dose <- ref_dose
+      }
+      ms
+    },
+    init = function(yCategories) {
+      list(alpha = seq(from=5, to=3, length.out=length(yCategories)-1), beta = 0)
+    },
+    datanames = c("nObs", "yCategories", "y", "x"),
+    sample = c("alpha", "beta")
+  )
+}
+```
+
+## Evaluate the prior
+```{r}
+#| label: evaluate-prior
+#| error: TRUE
+
+emptyData <- new(
+               "DataOrdinal",
+               doseGrid=c(1, 2, 4, 8, 16, 30, 40, 50),
+               yCategories = c("No event" = 0L, "sub-toxic AE" = 1L, "DLT" = 2L)
+             )
+
+model <- LogisticLogNormOrd( 
+           meanAlpha = c(3, 4),
+           meanBeta = 0,
+           varAlpha = c(4, 3),
+           varBeta = 1,
+           ref_dose = 25
+         )
+
+prior <- mcmc(emptyData, model, McmcOptions(samples = 5000))
+prior
+```

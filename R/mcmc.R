@@ -466,7 +466,6 @@ setMethod("mcmc",
   def =
     function(data, model, options,
              ...) {
-
       ## update the DLE model first
       thismodel <- update(object = model, data = data)
 
@@ -763,4 +762,74 @@ setMethod("mcmc",
       return(ret)
     }
 )
+
+setMethod(
+  f = "mcmc",
+  signature = signature(
+    data = "DataOrdinal",
+    model = "LogisticLogNormalOrd",
+    options = "McmcOptions"
+  ),
+  def = function(data,
+                 model,
+                 options,
+                 from_prior = data@nObs == 0L,
+                 ...) {
+    # callNextMethod(
+    #   data = data,
+    #   model = model,
+    #   options = options,
+    #   from_prior = from_prior,
+    #   ...
+    # )
+    model_file <- h_jags_write_model(model, NULL, from_prior)
+    model_inits <- h_jags_get_model_inits(model, data)
+    model_data <- h_jags_get_data(model, data, from_prior)
+
+    lapply(readLines(model_file), print)
+    lapply(model_inits, print)
+
+      jags_model <- rjags::jags.model(
+      file = model_file,
+      data = model_data,
+      inits = c(
+        model_inits,
+        .RNG.name = h_null_if_na(options@rng_kind),
+        .RNG.seed = h_null_if_na(options@rng_seed)
+      ),
+      quiet = !is_logging_enabled(),
+      n.adapt = 0 # No adaptation. Important for reproducibility.
+    )
+    update(jags_model, n.iter = options@burnin, progress.bar = "none")
+
+    # This is necessary as some outputs are written directly from the JAGS
+    # compiled code to the outstream.
+    log_trace("Running rjags::jags.samples")
+    if (is_logging_enabled()) {
+      jags_samples <- rjags::jags.samples(
+        model = jags_model,
+        variable.names = model@sample,
+        n.iter = (options@iterations - options@burnin),
+        thin = options@step
+      )
+    } else {
+      invisible(
+        capture.output(
+          jags_samples <- rjags::jags.samples(
+            model = jags_model,
+            variable.names = model@sample,
+            n.iter = (options@iterations - options@burnin),
+            thin = options@step,
+            progress.bar = "none"
+          )
+        )
+      )
+    }
+    log_trace("JAGS samples: ", jags_samples, capture = TRUE)
+    samples <- lapply(jags_samples, h_jags_extract_samples)
+
+    Samples(data = samples, options = options)
+  }
+)
+
 # nolint end
