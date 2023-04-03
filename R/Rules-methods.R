@@ -1132,9 +1132,40 @@ setMethod(
   definition = function(increments, data, ...) {
     dlt_count <- sum(data@y)
     # Determine in which interval the `dlt_count` is.
-    assert_true(dlt_count >= head(increments@dlt_intervals, 1))
+    assert_true(dlt_count >= increments@dlt_intervals[1])
     dlt_count_interval <- findInterval(x = dlt_count, vec = increments@dlt_intervals)
     (1 + increments@increments[dlt_count_interval]) * data@x[data@nObs]
+  }
+)
+
+## IncrementsRelativeDLTCurrent ----
+
+#' @describeIn maxDose determine the maximum possible next dose based on
+#'   relative increments determined by DLTs in the current cohort.
+#'
+#' @aliases maxDose-IncrementsRelativeDLTCurrent
+#'
+#' @export
+#' @example examples/Rules-method-maxDose-IncrementsRelativeDLTCurrent.R
+#'
+setMethod(
+  f = "maxDose",
+  signature = signature(
+    increments = "IncrementsRelativeDLTCurrent",
+    data = "Data"
+  ),
+  definition = function(increments, data, ...) {
+    last_dose <- data@x[data@nObs]
+
+    # Determine how many DLTs have occurred in the last cohort.
+    last_cohort <- data@cohort[data@nObs]
+    last_cohort_indices <- which(data@cohort == last_cohort)
+    dlt_count_lcohort <- sum(data@y[last_cohort_indices])
+
+    # Determine in which interval the `dlt_count_lcohort` is.
+    assert_true(dlt_count_lcohort >= increments@dlt_intervals[1])
+    dlt_count_lcohort_int <- findInterval(x = dlt_count_lcohort, vec = increments@dlt_intervals)
+    (1 + increments@increments[dlt_count_lcohort_int]) * last_dose
   }
 )
 
@@ -1182,43 +1213,6 @@ setMethod(
   }
 )
 
-# nolint start
-
-## --------------------------------------------------
-## The maximum allowable relative increments in terms of DLTs
-## --------------------------------------------------
-
-##' @describeIn maxDose Determine the maximum possible next dose based on
-##' relative increments determined by DLTs in the current cohort.
-##'
-##' @example examples/Rules-method-maxDose-IncrementsRelativeDLTCurrent.R
-setMethod("maxDose",
-  signature =
-    signature(
-      increments = "IncrementsRelativeDLTCurrent",
-      data = "Data"
-    ),
-  def =
-    function(increments, data, ...) {
-      # Determine what was the last dose.
-      lastDose <- tail(data@x, 1)
-
-      # Determine how many DLTs have occurred in last cohort.
-      lastCohort <- tail(data@cohort, 1)
-      index <- which(data@cohort == lastCohort)
-      dltHappened <- sum(data@y[index])
-
-      # Determine in which interval this is.
-      interval <-
-        findInterval(
-          x = dltHappened,
-          vec = increments@dlt_intervals
-        )
-
-      (1 + increments@increments[interval]) * lastDose
-    }
-)
-
 ## IncrementsDoseLevels ----
 
 #' @describeIn maxDose determine the maximum possible next dose based on
@@ -1249,6 +1243,8 @@ setMethod(
     data@doseGrid[max_dose_level]
   }
 )
+
+# nolint start
 
 ## IncrementsHSRBeta ----
 
