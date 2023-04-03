@@ -790,6 +790,238 @@ test_that("maxDose-IncrementsRelative throws error when Data is empty", {
   )
 })
 
+## IncrementsRelativeDLT ----
+
+test_that("maxDose-IncrementsRelativeDLT works correctly for no of DLTs in 1st interval", {
+  increments <- IncrementsRelativeDLT(dlt_intervals = c(0, 2), increments = c(1, 0.5))
+  data <- Data(
+    x = c(5, 100), y = c(0L, 0L), doseGrid = c(5, 100), ID = 1:2, cohort = 1:2
+  )
+  result <- maxDose(increments, data)
+  expect_equal(result, 200)
+
+  # 1 DLT in total.
+  data@y <- c(1L, 0L)
+  result <- maxDose(increments, data)
+  expect_equal(result, 200)
+})
+
+test_that("maxDose-IncrementsRelativeDLT works correctly for no of DLTs in 2nd interval", {
+  dgrid <- c(5, 100, 150, 200)
+  increments <- IncrementsRelativeDLT(dlt_intervals = c(0, 2), increments = c(1, 0.5))
+  data <- Data(x = c(5, 100), y = c(1L, 1L), doseGrid = dgrid, ID = 1:2, cohort = 1:2)
+  result <- maxDose(increments, data)
+  expect_equal(result, 150)
+
+  # 3 DLTs in total.
+  data <- Data(
+    x = c(5, 100, 150, 200), y = c(1L, 1L, 1L, 0L), doseGrid = dgrid, ID = 1:4, cohort = 1:4
+  )
+  result <- maxDose(increments, data)
+  expect_equal(result, 300)
+})
+
+test_that("maxDose-IncrementsRelativeDLT throws error when no of DLTs is below the first interval", {
+  increments <- IncrementsRelativeDLT(dlt_intervals = c(2, 5), increments = c(1, 0.5))
+  data <- Data(x = c(5, 100), y = c(0L, 1L), doseGrid = c(5, 100), ID = 1:2, cohort = 1:2)
+  expect_error(
+    maxDose(increments, data),
+    "Assertion on 'dlt_count.*increments@dlt_intervals.*failed: Must be TRUE."
+  )
+})
+
+test_that("maxDose-IncrementsRelativeDLT throws error when IncrementsRelativeDLT is empty", {
+  increments <- IncrementsRelativeDLT(dlt_intervals = numeric(0), increments = numeric(0))
+  data <- h_get_data()
+  expect_error(
+    maxDose(increments, data),
+    "Assertion on 'dlt_count.*increments@dlt_intervals.*failed: Must be TRUE."
+  )
+})
+
+test_that("maxDose-IncrementsRelativeDLT throws error when Data is empty", {
+  increments <- IncrementsRelativeDLT(dlt_intervals = c(1, 4), increments = c(1, 0.5))
+  expect_error(
+    maxDose(increments, Data()),
+    "Assertion on 'dlt_count.*increments@dlt_intervals.*failed: Must be TRUE."
+  )
+})
+
+## IncrementsRelativeParts ----
+
+test_that("maxDose-IncrementsRelativeParts works correctly when in part 1 and part 2 not started", {
+  increments <- IncrementsRelativeParts(
+    dlt_start = 5, clean_start = 9, intervals = c(0, 1), increments = c(4, 3)
+  )
+  data <- DataParts(
+    x = c(0.1, 1.5, 0.5),
+    y = c(0, 0, 0),
+    ID = 1:3,
+    cohort = 1:3,
+    doseGrid = c(0.1, 0.5, 1.5, 3, 6, 10),
+    part = c(1L, 1L, 1L),
+    nextPart = 1L,
+    part1Ladder = c(0.1, 0.5, 1.5, 3, 6)
+  )
+  result <- maxDose(increments, data)
+  expect_equal(result, 3)
+})
+
+test_that("maxDose-IncrementsRelativeParts works correctly when in part 1, part 2 started, DLT", {
+  increments <- IncrementsRelativeParts(
+    dlt_start = 3, clean_start = 9, intervals = c(0, 1), increments = c(4, 3)
+  )
+  data <- DataParts(
+    x = c(0.1, 1.5, 0.5),
+    y = c(0, 1, 0),
+    ID = 1:3,
+    cohort = 1:3,
+    doseGrid = c(0.1, 0.5, 1.5, 3, 6, 10, 15, 20, 30),
+    part = c(1L, 1L, 1L),
+    nextPart = 2L,
+    part1Ladder = c(0.1, 0.5, 1.5, 3, 6, 10, 20)
+  )
+  result <- maxDose(increments, data)
+  expect_equal(result, 10)
+})
+
+test_that("maxDose-IncrementsRelativeParts works correctly when in part 1, part 2 started, no DLT, clean_start > 0", {
+  increments <- IncrementsRelativeParts(
+    dlt_start = 3, clean_start = 9, intervals = c(0, 1), increments = c(4, 3)
+  )
+  data <- DataParts(
+    x = c(0.1, 1.5, 0.5),
+    y = c(0, 0, 0),
+    ID = 1:3,
+    cohort = 1:3,
+    doseGrid = c(0.1, 0.5, 1.5, 3, 6, 10, 15, 20, 30),
+    part = c(1L, 1L, 1L),
+    nextPart = 2L,
+    part1Ladder = c(0.1, 0.5, 1.5, 3, 6, 10, 20)
+  )
+  result <- maxDose(increments, data)
+  expected_increments <- IncrementsRelative(intervals = c(0, 1), increments = c(4, 3))
+  expected <- maxDose(expected_increments, data) # expected = 2.5 # nolintr
+  expect_equal(result, expected)
+})
+
+test_that("maxDose-IncrementsRelativeParts works correctly when in part 1, part 2 started, no DLT, clean_start <= 0", {
+  increments <- IncrementsRelativeParts(
+    dlt_start = -9, clean_start = -2, intervals = c(0, 1), increments = c(4, 3)
+  )
+  data <- DataParts(
+    x = c(0.1, 1.5, 0.5),
+    y = c(0, 0, 0),
+    ID = 1:3,
+    cohort = 1:3,
+    doseGrid = c(0.1, 0.4, 0.5, 1.5, 3, 6, 10, 15, 20, 30),
+    part = c(1L, 1L, 1L),
+    nextPart = 2L,
+    part1Ladder = c(0.1, 0.4, 0.5, 1.5, 3, 6, 10, 20)
+  )
+  result <- maxDose(increments, data)
+  expect_equal(result, 0.4)
+})
+
+test_that("maxDose-IncrementsRelativeParts works correctly when already in part 2", {
+  increments <- IncrementsRelativeParts(
+    dlt_start = 5, clean_start = 9, intervals = c(0, 1), increments = c(4, 3)
+  )
+  data <- DataParts(
+    x = c(0.1, 0.5, 1.5),
+    y = c(0, 0, 0),
+    ID = 1:3,
+    cohort = 1:3,
+    doseGrid = c(0.1, 0.5, 1.5, 3, 6, 10),
+    part = c(1L, 1L, 2L),
+    nextPart = 1L,
+    part1Ladder = c(0.1, 0.5, 1.5, 3, 6)
+  )
+  result <- maxDose(increments, data)
+  expected_increments <- IncrementsRelative(intervals = c(0, 1), increments = c(4, 3))
+  expected <- maxDose(expected_increments, data) # expected = 6 # nolintr
+  expect_equal(result, expected)
+})
+
+test_that("maxDose-IncrementsRelativeParts throws error when part1Ladder is exceeded (in p1, no p2)", {
+  increments <- IncrementsRelativeParts(
+    dlt_start = 5, clean_start = 9, intervals = c(0, 1), increments = c(4, 3)
+  )
+  data <- DataParts(
+    x = c(0.1, 6, 0.5),
+    y = c(0, 0, 0),
+    ID = 1:3,
+    cohort = 1:3,
+    doseGrid = c(0.1, 0.5, 1.5, 3, 6, 10),
+    part = c(1L, 1L, 1L),
+    nextPart = 1L,
+    part1Ladder = c(0.1, 0.5, 1.5, 3, 6)
+  )
+  expect_error(
+    maxDose(increments, data),
+    "Assertion on 'new_max_dose_level <= length\\(data@part1Ladder\\)' failed: Must be TRUE."
+  )
+})
+
+test_that("maxDose-IncrementsRelativeParts throws error when part1Ladder is exceeded (in p1, p2, DLT)", {
+  increments <- IncrementsRelativeParts(
+    dlt_start = 5, clean_start = 9, intervals = c(0, 1), increments = c(4, 3)
+  )
+  data <- DataParts(
+    x = c(0.1, 1.5, 0.5),
+    y = c(0, 1, 0),
+    ID = 1:3,
+    cohort = 1:3,
+    doseGrid = c(0.1, 0.5, 1.5, 3, 6, 10, 15, 20, 30),
+    part = c(1L, 1L, 1L),
+    nextPart = 2L,
+    part1Ladder = c(0.1, 0.5, 1.5, 3, 6, 10, 20)
+  )
+  expect_error(
+    maxDose(increments, data),
+    "Assertion on 'new_max_dose_level <= length\\(data@part1Ladder\\)' failed: Must be TRUE."
+  )
+  increments@dlt_start <- -4L
+  expect_error(
+    maxDose(increments, data),
+    "Assertion on 'new_max_dose_level >= 0L' failed: Must be TRUE."
+  )
+})
+
+test_that("maxDose-IncrementsRelativeParts throws error when part1Ladder is exceeded (in p1, p2, DLT, cstart <= 0)", {
+  increments <- IncrementsRelativeParts(
+    dlt_start = -9, clean_start = -5, intervals = c(0, 1), increments = c(4, 3)
+  )
+  data <- DataParts(
+    x = c(0.1, 1.5, 0.5),
+    y = c(0, 0, 0),
+    ID = 1:3,
+    cohort = 1:3,
+    doseGrid = c(0.1, 0.4, 0.5, 1.5, 3, 6, 10, 15, 20, 30),
+    part = c(1L, 1L, 1L),
+    nextPart = 2L,
+    part1Ladder = c(0.1, 0.4, 0.5, 1.5, 3, 6, 10, 20)
+  )
+  expect_error(
+    maxDose(increments, data),
+    "Assertion on 'new_max_dose_level >= 0L' failed: Must be TRUE."
+  )
+})
+
+## IncrementsRelativeDLTCurrent ----
+
+test_that("IncrementsRelativeDLTCurrent works correctly", {
+  increments <- IncrementsRelativeDLTCurrent(
+    dlt_intervals = c(0, 1, 3),
+    increments = c(1, 0.33, 0.2)
+  )
+  result <- maxDose(
+    increments,
+    data = h_get_data_1()
+  )
+  expect_equal(result, 13.3) # maxDose is 13.3 because last dose was 10 with 1 DLT.
+})
+
 ## IncrementsDoseLevels ----
 
 test_that("maxDose-IncrementsDoseLevels works correctly for 'last' basis_level and 1 level increase", {
@@ -846,19 +1078,7 @@ test_that("maxDose-IncrementsDoseLevels works correctly for 'max' basis_level an
   expect_equal(result, 400)
 })
 
-## IncrementsRelativeDLTCurrent ----
 
-test_that("IncrementsRelativeDLTCurrent works correctly", {
-  increments <- IncrementsRelativeDLTCurrent(
-    dlt_intervals = c(0, 1, 3),
-    increments = c(1, 0.33, 0.2)
-  )
-  result <- maxDose(
-    increments,
-    data = h_get_data_1()
-  )
-  expect_equal(result, 13.3) # maxDose is 13.3 because last dose was 10 with 1 DLT.
-})
 
 ## IncrementsHSRBeta ----
 
