@@ -1160,7 +1160,7 @@ setMethod(
     # Determine how many DLTs have occurred in the last cohort.
     last_cohort <- data@cohort[data@nObs]
     last_cohort_indices <- which(data@cohort == last_cohort)
-    dlt_count_lcohort<- sum(data@y[last_cohort_indices])
+    dlt_count_lcohort <- sum(data@y[last_cohort_indices])
 
     # Determine in which interval the `dlt_count_lcohort` is.
     assert_true(dlt_count_lcohort >= increments@dlt_intervals[1])
