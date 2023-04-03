@@ -52,6 +52,13 @@ Otherwise, the relative increment rules will be applied to find the next
 maximum dose level.}
 }}
 
+\note{
+We require that \code{clean_start >= dlt_start}. However, this precondition
+is not a prerequisite for any function (except of the class' validation
+function) that works with objects of this class. It is rather motivated by
+the semantics. That is, if we observe a DLT in part 1, we cannot be more
+aggressive than in case of a clean part 1 without DLT.
+}
 \examples{
 
 my_increments <- IncrementsRelativeParts(dlt_start = 0, clean_start = 1)
