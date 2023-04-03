@@ -1104,13 +1104,119 @@ setMethod(
     increments = "IncrementsRelative",
     data = "Data"
   ),
-  def = function(increments, data, ...) {
+  definition = function(increments, data, ...) {
     last_dose <- data@x[data@nObs]
     # Determine in which interval the `last_dose` is.
     assert_true(last_dose >= head(increments@intervals, 1))
     last_dose_interval <- findInterval(x = last_dose, vec = increments@intervals)
     (1 + increments@increments[last_dose_interval]) * last_dose
   }
+)
+
+## IncrementsRelativeDLT ----
+
+#' @describeIn maxDose determine the maximum possible next dose based on
+#'   relative increments determined by DLTs so far.
+#'
+#' @aliases maxDose-IncrementsRelativeDLT
+#'
+#' @export
+#' @example examples/Rules-method-maxDose-IncrementsRelativeDLT.R
+#'
+setMethod(
+  f = "maxDose",
+  signature = signature(
+    increments = "IncrementsRelativeDLT",
+    data = "Data"
+  ),
+  definition = function(increments, data, ...) {
+    dlt_count <- sum(data@y)
+    # Determine in which interval the `dlt_count` is.
+    assert_true(dlt_count >= head(increments@dlt_intervals, 1))
+    dlt_count_interval <- findInterval(x = dlt_count, vec = increments@dlt_intervals)
+    (1 + increments@increments[dlt_count_interval]) * data@x[data@nObs]
+  }
+)
+
+## IncrementsRelativeParts ----
+
+#' @describeIn maxDose determine the maximum possible next dose based on
+#'   relative increments as well as part 1 and beginning of part 2.
+#'
+#' @aliases maxDose-IncrementsRelativeParts
+#'
+#' @export
+#' @example examples/Rules-method-maxDose-IncrementsRelativeParts.R
+#'
+setMethod(
+  f = "maxDose",
+  signature = signature(
+    increments = "IncrementsRelativeParts",
+    data = "DataParts"
+  ),
+  definition = function(increments, data, ...) {
+    all_in_part1 <- all(data@part == 1L)
+    incrmnt <- if (all_in_part1) {
+      part2_started <- data@nextPart == 2L
+      if (part2_started) {
+        any_dlt <- any(data@y == 1L)
+        if (any_dlt) {
+          increments@dlt_start
+        } else if (increments@clean_start <= 0L) {
+          increments@clean_start
+        }
+      } else {
+        1L
+      }
+    }
+
+    if (is.null(incrmnt)) {
+      callNextMethod(increments, data, ...)
+    } else {
+      max_dose_lev_part1 <- matchTolerance(max(data@x), data@part1Ladder)
+      new_max_dose_level <- max_dose_lev_part1 + incrmnt
+      assert_true(new_max_dose_level >= 0L)
+      assert_true(new_max_dose_level <= length(data@part1Ladder))
+      data@part1Ladder[new_max_dose_level]
+    }
+  }
+)
+
+# nolint start
+
+## --------------------------------------------------
+## The maximum allowable relative increments in terms of DLTs
+## --------------------------------------------------
+
+##' @describeIn maxDose Determine the maximum possible next dose based on
+##' relative increments determined by DLTs in the current cohort.
+##'
+##' @example examples/Rules-method-maxDose-IncrementsRelativeDLTCurrent.R
+setMethod("maxDose",
+  signature =
+    signature(
+      increments = "IncrementsRelativeDLTCurrent",
+      data = "Data"
+    ),
+  def =
+    function(increments, data, ...) {
+      # Determine what was the last dose.
+      lastDose <- tail(data@x, 1)
+
+      # Determine how many DLTs have occurred in last cohort.
+      lastCohort <- tail(data@cohort, 1)
+      index <- which(data@cohort == lastCohort)
+      dltHappened <- sum(data@y[index])
+
+      # Determine in which interval this is.
+      interval <-
+        findInterval(
+          x = dltHappened,
+          vec = increments@dlt_intervals
+        )
+
+      (1 + increments@increments[interval]) * lastDose
+    }
 )
 
 ## IncrementsDoseLevels ----
@@ -1144,9 +1250,7 @@ setMethod(
   }
 )
 
-# nolint start
-
-# maxDose-IncrementsHSRBeta ----
+## IncrementsHSRBeta ----
 
 #' @rdname maxDose
 #'
@@ -1203,144 +1307,6 @@ setMethod(
 )
 
 ## --------------------------------------------------
-## The maximum allowable relative increments, with special rules for
-## part 1 and beginning of part 2, method method
-## --------------------------------------------------
-
-##' @describeIn maxDose Determine the maximum possible next dose based on
-##' relative increments and part 1 and 2
-##' @example examples/Rules-method-maxDose-IncrementsRelativeParts.R
-setMethod("maxDose",
-  signature =
-    signature(
-      increments = "IncrementsRelativeParts",
-      data = "DataParts"
-    ),
-  def =
-    function(increments, data, ...) {
-      ## determine if there are already cohorts
-      ## belonging to part 2:
-      alreadyInPart2 <- any(data@part == 2L)
-
-      ## if so, we just call the next higher method
-      if (alreadyInPart2) {
-        callNextMethod(increments, data, ...)
-      } else {
-        ## otherwise we have special rules.
-
-        ## what dose level (index) has the highest dose
-        ## so far?
-        lastDoseLevel <- matchTolerance(
-          max(data@x),
-          data@part1Ladder
-        )
-
-        ## determine the next maximum dose
-        ret <-
-          if (data@nextPart == 1L) {
-            ## here the next cohort will still be in part 1.
-            ## Therefore we just make one step on the part 1 ladder:
-            data@part1Ladder[lastDoseLevel + 1L]
-          } else {
-            ## the next cohort will start part 2.
-
-            ## if there was a DLT so far:
-            if (any(data@y == 1L)) {
-              data@part1Ladder[lastDoseLevel + increments@dlt_start]
-            } else {
-              ## otherwise
-              if (increments@clean_start > 0) {
-                ## if we want to start part 2 higher than
-                ## the last part 1 dose, use usual increments
-                callNextMethod(increments, data, ...)
-              } else {
-                ## otherwise
-                data@part1Ladder[lastDoseLevel + increments@clean_start]
-              }
-            }
-          }
-
-        return(ret)
-      }
-    }
-)
-
-
-## --------------------------------------------------
-## The maximum allowable relative increments in terms of DLTs
-## --------------------------------------------------
-
-##' @describeIn maxDose Determine the maximum possible next dose based on
-##' relative increments determined by DLTs so far
-##'
-##' @example examples/Rules-method-maxDose-IncrementsRelativeDLT.R
-setMethod("maxDose",
-  signature =
-    signature(
-      increments = "IncrementsRelativeDLT",
-      data = "Data"
-    ),
-  def =
-    function(increments, data, ...) {
-      ## determine what was the last dose
-      lastDose <- tail(data@x, 1)
-
-      ## determine how many DLTs have occurred so far
-      dltHappened <- sum(data@y)
-
-      ## determine in which interval this is
-      interval <-
-        findInterval(
-          x = dltHappened,
-          vec = increments@dlt_intervals
-        )
-
-      ## so the maximum next dose is
-      ret <-
-        (1 + increments@increments[interval]) *
-          lastDose
-
-      return(ret)
-    }
-)
-
-## --------------------------------------------------
-## The maximum allowable relative increments in terms of DLTs
-## --------------------------------------------------
-
-##' @describeIn maxDose Determine the maximum possible next dose based on
-##' relative increments determined by DLTs in the current cohort.
-##'
-##' @example examples/Rules-method-maxDose-IncrementsRelativeDLTCurrent.R
-setMethod("maxDose",
-  signature =
-    signature(
-      increments = "IncrementsRelativeDLTCurrent",
-      data = "Data"
-    ),
-  def =
-    function(increments, data, ...) {
-      # Determine what was the last dose.
-      lastDose <- tail(data@x, 1)
-
-      # Determine how many DLTs have occurred in last cohort.
-      lastCohort <- tail(data@cohort, 1)
-      index <- which(data@cohort == lastCohort)
-      dltHappened <- sum(data@y[index])
-
-      # Determine in which interval this is.
-      interval <-
-        findInterval(
-          x = dltHappened,
-          vec = increments@dlt_intervals
-        )
-
-      (1 + increments@increments[interval]) * lastDose
-    }
-)
-
-
-## --------------------------------------------------
 ## The maximum allowable relative increments in terms of DLTs
 ## --------------------------------------------------
 
@@ -1370,7 +1336,6 @@ setMethod("maxDose",
       return(ret)
     }
 )
-
 
 ## ============================================================
 
