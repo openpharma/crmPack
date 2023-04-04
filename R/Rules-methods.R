@@ -1426,110 +1426,85 @@ setMethod(
   definition = function(increments, data, ...) {
     dlt_count <- sum(data@y)
     # Determine in which interval the `dlt_count` is.
-    assert_true(dlt_count >= head(increments@dlt_intervals, 1))
+    assert_true(dlt_count >= increments@dlt_intervals[1])
     dlt_count_interval <- findInterval(x = dlt_count, vec = increments@dlt_intervals)
     (1 + increments@increments[dlt_count_interval]) * data@x[data@nObs]
   }
 )
 
-# nolint start
+## IncrementsRelativeDLTCurrent ----
 
-## --------------------------------------------------
-## The maximum allowable relative increments, with special rules for
-## part 1 and beginning of part 2, method method
-## --------------------------------------------------
+#' @describeIn maxDose determine the maximum possible next dose based on
+#'   relative increments determined by DLTs in the current cohort.
+#'
+#' @aliases maxDose-IncrementsRelativeDLTCurrent
+#'
+#' @export
+#' @example examples/Rules-method-maxDose-IncrementsRelativeDLTCurrent.R
+#'
+setMethod(
+  f = "maxDose",
+  signature = signature(
+    increments = "IncrementsRelativeDLTCurrent",
+    data = "Data"
+  ),
+  definition = function(increments, data, ...) {
+    last_dose <- data@x[data@nObs]
 
-##' @describeIn maxDose Determine the maximum possible next dose based on
-##' relative increments and part 1 and 2
-##' @example examples/Rules-method-maxDose-IncrementsRelativeParts.R
-setMethod("maxDose",
-  signature =
-    signature(
-      increments = "IncrementsRelativeParts",
-      data = "DataParts"
-    ),
-  def =
-    function(increments, data, ...) {
-      ## determine if there are already cohorts
-      ## belonging to part 2:
-      alreadyInPart2 <- any(data@part == 2L)
+    # Determine how many DLTs have occurred in the last cohort.
+    last_cohort <- data@cohort[data@nObs]
+    last_cohort_indices <- which(data@cohort == last_cohort)
+    dlt_count_lcohort <- sum(data@y[last_cohort_indices])
 
-      ## if so, we just call the next higher method
-      if (alreadyInPart2) {
-        callNextMethod(increments, data, ...)
-      } else {
-        ## otherwise we have special rules.
-
-        ## what dose level (index) has the highest dose
-        ## so far?
-        lastDoseLevel <- matchTolerance(
-          max(data@x),
-          data@part1Ladder
-        )
-
-        ## determine the next maximum dose
-        ret <-
-          if (data@nextPart == 1L) {
-            ## here the next cohort will still be in part 1.
-            ## Therefore we just make one step on the part 1 ladder:
-            data@part1Ladder[lastDoseLevel + 1L]
-          } else {
-            ## the next cohort will start part 2.
-
-            ## if there was a DLT so far:
-            if (any(data@y == 1L)) {
-              data@part1Ladder[lastDoseLevel + increments@dlt_start]
-            } else {
-              ## otherwise
-              if (increments@clean_start > 0) {
-                ## if we want to start part 2 higher than
-                ## the last part 1 dose, use usual increments
-                callNextMethod(increments, data, ...)
-              } else {
-                ## otherwise
-                data@part1Ladder[lastDoseLevel + increments@clean_start]
-              }
-            }
-          }
-
-        return(ret)
-      }
-    }
+    # Determine in which interval the `dlt_count_lcohort` is.
+    assert_true(dlt_count_lcohort >= increments@dlt_intervals[1])
+    dlt_count_lcohort_int <- findInterval(x = dlt_count_lcohort, vec = increments@dlt_intervals)
+    (1 + increments@increments[dlt_count_lcohort_int]) * last_dose
+  }
 )
 
-## --------------------------------------------------
-## The maximum allowable relative increments in terms of DLTs
-## --------------------------------------------------
+## IncrementsRelativeParts ----
 
-##' @describeIn maxDose Determine the maximum possible next dose based on
-##' relative increments determined by DLTs in the current cohort.
-##'
-##' @example examples/Rules-method-maxDose-IncrementsRelativeDLTCurrent.R
-setMethod("maxDose",
-  signature =
-    signature(
-      increments = "IncrementsRelativeDLTCurrent",
-      data = "Data"
-    ),
-  def =
-    function(increments, data, ...) {
-      # Determine what was the last dose.
-      lastDose <- tail(data@x, 1)
-
-      # Determine how many DLTs have occurred in last cohort.
-      lastCohort <- tail(data@cohort, 1)
-      index <- which(data@cohort == lastCohort)
-      dltHappened <- sum(data@y[index])
-
-      # Determine in which interval this is.
-      interval <-
-        findInterval(
-          x = dltHappened,
-          vec = increments@dlt_intervals
-        )
-
-      (1 + increments@increments[interval]) * lastDose
+#' @describeIn maxDose determine the maximum possible next dose based on
+#'   relative increments as well as part 1 and beginning of part 2.
+#'
+#' @aliases maxDose-IncrementsRelativeParts
+#'
+#' @export
+#' @example examples/Rules-method-maxDose-IncrementsRelativeParts.R
+#'
+setMethod(
+  f = "maxDose",
+  signature = signature(
+    increments = "IncrementsRelativeParts",
+    data = "DataParts"
+  ),
+  definition = function(increments, data, ...) {
+    all_in_part1 <- all(data@part == 1L)
+    incrmnt <- if (all_in_part1) {
+      part2_started <- data@nextPart == 2L
+      if (part2_started) {
+        any_dlt <- any(data@y == 1L)
+        if (any_dlt) {
+          increments@dlt_start
+        } else if (increments@clean_start <= 0L) {
+          increments@clean_start
+        }
+      } else {
+        1L
+      }
     }
+
+    if (is.null(incrmnt)) {
+      callNextMethod(increments, data, ...)
+    } else {
+      max_dose_lev_part1 <- matchTolerance(max(data@x), data@part1Ladder)
+      new_max_dose_level <- max_dose_lev_part1 + incrmnt
+      assert_true(new_max_dose_level >= 0L)
+      assert_true(new_max_dose_level <= length(data@part1Ladder))
+      data@part1Ladder[new_max_dose_level]
+    }
+  }
 )
 
 ## IncrementsDoseLevels ----
@@ -1565,15 +1540,15 @@ setMethod(
 
 ## IncrementsHSRBeta ----
 
-#' @rdname maxDose
-#'
-#' @description Determine the maximum possible dose for escalation.
+#' @describeIn maxDose determine the maximum possible next dose for escalation.
 #'
 #' @aliases maxDose-IncrementsHSRBeta
-#' @example examples/Rules-method-maxDose-IncrementsHSRBeta.R
+#'
 #' @export
+#' @example examples/Rules-method-maxDose-IncrementsHSRBeta.R
+#'
 setMethod(
-  "maxDose",
+  f = "maxDose",
   signature = signature(
     increments = "IncrementsHSRBeta",
     data = "Data"
@@ -1619,36 +1594,29 @@ setMethod(
   }
 )
 
-## --------------------------------------------------
-## The maximum allowable relative increments in terms of DLTs
-## --------------------------------------------------
+## IncrementsMin ----
 
-##' @describeIn maxDose Determine the maximum possible next dose based on
-##' multiple increment rules (taking the minimum across individual increments).
-##'
-##' @example examples/Rules-method-maxDose-IncrementsMin.R
-setMethod("maxDose",
-  signature =
-    signature(
-      increments = "IncrementsMin",
-      data = "Data"
-    ),
-  def =
-    function(increments, data, ...) {
-      ## apply the multiple increment rules
-      individualResults <-
-        sapply(increments@increments_list,
-          maxDose,
-          data = data,
-          ...
-        )
-
-      ## so the maximum increment is the minimum across the individual increments
-      ret <- min(individualResults)
-
-      return(ret)
-    }
+#' @describeIn maxDose determine the maximum possible next dose based on
+#'   multiple increment rules, taking the minimum across individual increments.
+#'
+#' @aliases maxDose-IncrementsMin
+#'
+#' @export
+#' @example examples/Rules-method-maxDose-IncrementsMin.R
+#'
+setMethod(
+  f = "maxDose",
+  signature = signature(
+    increments = "IncrementsMin",
+    data = "Data"
+  ),
+  definition = function(increments, data, ...) {
+    individual_results <- sapply(increments@increments_list, maxDose, data = data, ...)
+    min(individual_results)
+  }
 )
+
+# nolint start
 
 ## ============================================================
 

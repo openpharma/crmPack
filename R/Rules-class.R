@@ -950,21 +950,29 @@ IncrementsRelativeDLTCurrent <- function(dlt_intervals = c(0, 1),
 #' relative differences in intervals, with special rules for part 1 and
 #' beginning of part 2.
 #'
-#' @details This class works only conjunction with [`DataParts`] objects. If
+#' @details This class works only in conjunction with [`DataParts`] objects. If
 #' part 2 will just be started in the next cohort, then the next maximum dose
-#' will be either `dlt_start` (e.g. \-1) shift of the last part 1 dose in case
-#' of a DLT in part 1, or `clean_start` shift (e.g. 0) in case of no DLTs in
-#' part 1. If part 1 will still be on in the next cohort, then the next dose
-#' level will be the next higher dose level in the `part1Ladder` slot of the
-#' data object. If part 2 has been started before, the usual relative increment
-#' rules apply, see [`IncrementsRelative`].
+#' will be either `dlt_start` (e.g. -1) shift of the last part 1 dose in case
+#' of a DLT in part 1, or `clean_start` shift (e.g. -1) in case of no DLTs in
+#' part 1, given that `clean_start <= 0` (see description of `clean_start`
+#' slot for more details). If part 1 will still be on in the next cohort,
+#' then the next dose level will be the next higher dose level in the
+#' `part1Ladder` slot of the data object. If part 2 has been started before,
+#' the usual relative increment rules apply, see [`IncrementsRelative`].
 #'
-#' @slot dlt_start (`count`)\cr the dose level increment for starting part 2 in
-#'   case of a DLT in part 1.
-#' @slot clean_start (`count`)\cr the dose level increment for starting part 2
-#'   in case of a DLT in part 1. If this is less or equal to 0, then the part 1
-#'   ladder will be used to find the maximum next dose. Otherwise, the relative
-#'   increment rules will be applied to find the next maximum dose level.
+#' @slot dlt_start (`integer`)\cr a scalar, the dose level increment for starting
+#'   part 2 in case of at least one DLT event in part 1.
+#' @slot clean_start (`integer`)\cr a scalar, the dose level increment for
+#'   starting part 2 in case of no DLTs in part 1. If `clean_start <= 0`,
+#'   then the part 1 ladder will be used to find the maximum next dose.
+#'   Otherwise, the relative increment rules will be applied to find the next
+#'   maximum dose level.
+#'
+#' @note We require that `clean_start >= dlt_start`. However, this precondition
+#'   is not a prerequisite for any function (except of the class' validation
+#'   function) that works with objects of this class. It is rather motivated by
+#'   the semantics. That is, if we observe a DLT in part 1, we cannot be more
+#'   aggressive than in case of a clean part 1 without DLT.
 #'
 #' @aliases IncrementsRelativeParts
 #' @export
