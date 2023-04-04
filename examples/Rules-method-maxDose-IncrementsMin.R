@@ -33,4 +33,4 @@ my_increments_2 <- IncrementsRelative(
 my_increments <- IncrementsMin(
   increments_list = list(my_increments_1, my_increments_2)
 )
-max_dose <- maxDose(my_increments, data)
+max_dose <- maxDose(my_increments, my_data)
