@@ -321,6 +321,7 @@ reference:
       - maxDose-IncrementsRelativeParts
       - maxDose-IncrementsDoseLevels
       - maxDose-IncrementsHSRBeta
+      - maxDose-IncrementsMin
   - title: Functions
     contents:
       - enable_logging
