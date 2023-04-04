@@ -1175,24 +1175,18 @@ test_that("maxDose-IncrementsDoseLevels works correctly for 'max' basis_level an
 ## IncrementsHSRBeta ----
 
 test_that("IncrementsHSRBeta works correctly if toxcicity probability is below threshold probability", {
-  my_data <- h_get_data()
-  my_data@y[my_data@cohort == 3L] <- c(0L, 0L, 1L, 1L)
   increments <- IncrementsHSRBeta(target = 0.3, prob = 0.95)
-  result <- maxDose(
-    increments,
-    data = my_data
-  )
+  data <- h_get_data()
+  data@y[data@cohort == 3L] <- c(0L, 0L, 1L, 1L)
+  result <- maxDose(increments, data)
   expect_equal(result, 300) # maxDose is 300 as toxicity probability of no dose is above 0.95.
 })
 
 test_that("IncrementsHSRBeta works correctly if toxcicity probability is above threshold probability", {
-  my_data <- h_get_data()
-  my_data@y[my_data@cohort == 3L] <- c(0L, 0L, 1L, 1L)
   increments <- IncrementsHSRBeta(target = 0.3, prob = 0.9)
-  result <- maxDose(
-    increments,
-    data = my_data
-  )
+  data <- h_get_data()
+  data@y[data@cohort == 3L] <- c(0L, 0L, 1L, 1L)
+  result <- maxDose(increments, data)
   expect_equal(result, 75) # maxDose is 75 as toxicity probability of dose 100 is above 0.90.
 })
 
@@ -1200,24 +1194,18 @@ test_that(paste(
   "IncrementsHSRBeta works correctly if toxcicity probability of first",
   "active dose is above threshold probability"
 ), {
-  my_data <- h_get_data()
-  my_data@y[my_data@cohort == 1L] <- c(0L, 1L, 1L, 1L)
   increments <- IncrementsHSRBeta(target = 0.3, prob = 0.95)
-  result <- maxDose(
-    increments,
-    data = my_data
-  )
+  data <- h_get_data()
+  data@y[data@cohort == 1L] <- c(0L, 1L, 1L, 1L)
+  result <- maxDose(increments, data)
   expect_equal(result, 25) # maxDose is 25 as toxicity probability of dose 25 is above 0.95 and placebo used.
 })
 
 test_that("IncrementsHSRBeta works correctly if toxcicity probability of placebo is above threshold probability", {
-  my_data <- h_get_data()
-  my_data@y[my_data@x == 0.001] <- c(1L, 1L, 1L)
   increments <- IncrementsHSRBeta(target = 0.3, prob = 0.95)
-  result <- maxDose(
-    increments,
-    data = my_data
-  )
+  data <- h_get_data()
+  data@y[data@x == 0.001] <- c(1L, 1L, 1L)
+  result <- maxDose(increments, data)
   expect_equal(result, 300) # maxDose is 300 as placebo is ignored.
 })
 
@@ -1225,14 +1213,11 @@ test_that(paste(
   "IncrementsHSRBeta works correctly if toxcicity probability of first",
   "active dose is above threshold probability and placebo == T, but not appplied"
 ), {
-  my_data <- h_get_data()
-  my_data@x <- c(rep(25, 4), rep(50, 4), rep(100, 4))
-  my_data@y[my_data@cohort == 1] <- c(0L, 1L, 1L, 1L)
   increments <- IncrementsHSRBeta(target = 0.3, prob = 0.95)
-  result <- maxDose(
-    increments,
-    data = my_data
-  )
+  data <- h_get_data()
+  data@x <- c(rep(25, 4), rep(50, 4), rep(100, 4))
+  data@y[data@cohort == 1] <- c(0L, 1L, 1L, 1L)
+  result <- maxDose(increments, data)
   expect_equal(result, 25) # maxDose is 25 as toxicity probability of dose 25 is above 0.95 and placebo used.
 })
 
@@ -1240,25 +1225,43 @@ test_that(paste(
   "IncrementsHSRBeta works correctly if toxcicity probability of first",
   "active dose is above threshold probability (no placebo)"
 ), {
-  my_data <- h_get_data(placebo = FALSE)
-  my_data@y[my_data@cohort == 1] <- c(0L, 1L, 1L, 1L)
   increments <- IncrementsHSRBeta(target = 0.3, prob = 0.90)
-  result <- maxDose(
-    increments,
-    data = my_data
-  )
+  data <- h_get_data(placebo = FALSE)
+  data@y[data@cohort == 1] <- c(0L, 1L, 1L, 1L)
+  result <- maxDose(increments, data)
   expect_equal(result, 25) # maxDose is 25 as toxicity probability of dose 25 is above 0.90.
 })
 
 test_that("IncrementsHSRBeta works correctly if toxcicity probability is above threshold probability (no placebo)", {
-  my_data <- h_get_data(placebo = FALSE)
-  my_data@y[my_data@cohort == 3] <- c(0L, 1L, 1L, 1L)
   increments <- IncrementsHSRBeta(target = 0.3, prob = 0.90)
-  result <- maxDose(
-    increments,
-    data = my_data
-  )
+  data <- h_get_data(placebo = FALSE)
+  data@y[data@cohort == 3] <- c(0L, 1L, 1L, 1L)
+  result <- maxDose(increments, data)
   expect_equal(result, 75) # maxDose is 75 as toxicity probability of dose 100 is above 0.90.
+})
+
+## IncrementsMin ----
+
+test_that("maxDose-IncrementsMin works correctly when incr1 is minimum", {
+  incr1 <- IncrementsRelative(intervals = c(0, 20), increments = c(4, 0.1))
+  incr2 <- IncrementsRelativeDLT(dlt_intervals = c(0, 1, 3), increments = c(2, 0.5, 0.4))
+  increments <- IncrementsMin(increments_list = list(incr1, incr2))
+  data <- Data(
+    x = c(5, 100), y = c(1L, 0L), doseGrid = c(5, 100), ID = 1:2, cohort = 1:2
+  )
+  result <- maxDose(increments, data)
+  expect_equal(result, 110)
+})
+
+test_that("maxDose-IncrementsMin works correctly when incr2 is minimum", {
+  incr1 <- IncrementsRelative(intervals = c(0, 20), increments = c(4, 0.7))
+  incr2 <- IncrementsRelativeDLT(dlt_intervals = c(0, 1, 3), increments = c(2, 0.5, 0.4))
+  increments <- IncrementsMin(increments_list = list(incr1, incr2))
+  data <- Data(
+    x = c(5, 100), y = c(1L, 0L), doseGrid = c(5, 100), ID = 1:2, cohort = 1:2
+  )
+  result <- maxDose(increments, data)
+  expect_equal(result, 150)
 })
 
 # stopTrial ----
