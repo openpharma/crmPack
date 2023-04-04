@@ -183,24 +183,10 @@ h_jags_get_data <- function(model, data, from_prior) {
 #' @export
 #' @example examples/helpers-jags_write_model.R
 #'
-setGeneric(
-  name = "h_jags_write_model",
-  def = function(model, file=NULL, ...) {
-    standardGeneric("h_jags_write_model")
-  },
-  valueClass = "character"
-)
-
-#' @describeIn h_jags_write_model
-#' @aliases h_jags_write_model-GeneralModel
-#' @inheritParams h_jags_write_model
 #' @param digits (`count`)\cr a desired number of significant digits for
 #'   for numbers used in JAGS input, see [formatC()].
 #' @export
-setMethod(
-  f = "h_jags_write_model",
-  signature = signature(model = "function"),
-  def = function(model, file, digits = 5) {
+h_jags_write_model <- function(model, file = NULL, digits = 5) {
     assert_function(model)
     assert_count(digits)
 
@@ -236,45 +222,6 @@ setMethod(
     writeLines(model_text, con = file)
     file
   }
-)
-
-## LogisticLogNormOrd
-
-#' @describeIn h_jags_write_model
-#' @aliases h_jags_write_model-LogisticLogNormOrdM
-#' @inheritParams h_jags_write_model
-#' @export
-setMethod(
-  f = "h_jags_write_model",
-  signature = signature(model = "LogisticLogNormalOrd"),
-  def = function(model, file = NULL, from_prior) {
-    assert_flag(from_prior)
-
-    print(from_prior)
-    if (from_prior) {
-      model_string <- c("model {", model@priormodel(), "}")
-    } else {
-      tmp <- model@datamodel()
-      model_string <- c("model {", tmp[1:(length(tmp)-1)], model@priormodel(), "}", "}")
-    }
-    if (!is.null(file)) {
-      assert_path_for_output(file)
-    } else {
-      dir <- file.path(tempdir(), "R_crmPack")
-      # Don't warn, as the temp dir often exists (which is OK).
-      dir.create(dir, showWarnings = FALSE)
-      file <- tempfile(
-        pattern = "jags_model_fun",
-        tmpdir = dir,
-        fileext = ".txt"
-      )
-    }
-
-    log_trace("Writing JAGS model function into: %s", file)
-    writeLines(model_string, con = file)
-    file
-  }
-)
 
 #' Extracting Samples from `JAGS` `mcarray` Object
 #'
