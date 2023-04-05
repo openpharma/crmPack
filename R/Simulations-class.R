@@ -290,7 +290,6 @@ DualSimulations <- function(rhoEst,
     Class = "GeneralSimulationsSummary",
     representation(
       target = "numeric",
-      stop_report = "matrix",
       targetDoseInterval = "numeric",
       nsim = "integer",
       propDLTs = "ANY",
@@ -327,6 +326,7 @@ DualSimulations <- function(rhoEst,
   setClass(
     Class = "SimulationsSummary",
     representation(
+      stop_report = "matrix",
       fitAtDoseMostSelected = "numeric",
       meanFit = "list"
     ),
