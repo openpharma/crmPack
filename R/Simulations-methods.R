@@ -545,7 +545,8 @@ setMethod("summary",
           toxAtDosesSelected = toxAtDoses,
           propAtTarget = propAtTarget,
           doseGrid = doseGrid,
-          placebo = object@data[[1]]@placebo
+          placebo = object@data[[1]]@placebo,
+          stop_report = object@stop_report
         )
 
       return(ret)

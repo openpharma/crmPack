@@ -1732,7 +1732,7 @@ setMethod("stopTrial",
 
       report_label <- if (isTRUE(stopping@report_label == "")) {
         paste(
-          "\u2265", x@nCohorts, "cohorts in", x@percentage,
+          "\u2265", stopping@nCohorts, "cohorts in", stopping@percentage,
           "% dose range around NBD"
         )
       } else {
@@ -1793,8 +1793,8 @@ setMethod("stopTrial",
 
       report_label <- if (isTRUE(stopping@report_label == "")) {
         paste(
-          "\u2265", x@nPatients, "patients in",
-          x@percentage, "% dose range around NBD"
+          "\u2265", stopping@nPatients, "patients in",
+          stopping@percentage, "% dose range around NBD"
         )
       } else {
         stopping@report_label
@@ -2025,8 +2025,8 @@ setMethod("stopTrial",
 
       report_label <- if (isTRUE(stopping@report_label == "")) {
         paste(
-          "P(MTD >", x@thresh, "* NBD | P(DLE) = ", x@target, ") \u2265 ",
-          x@prob
+          "P(MTD >", stopping@thresh, "* NBD | P(DLE) = ", stopping@target, ") \u2265 ",
+          stopping@prob
         )
       } else {
         stopping@report_label
@@ -2091,7 +2091,7 @@ setMethod(
     do_stop <- (mtd_cv <= stopping@thresh_cv) && (mtd_cv >= 0)
 
     report_label <- if (isTRUE(stopping@report_label == "")) {
-      paste("P(MTD >", x@thresh, "* NBD | P(DLE) = ", x@target, ") \u2265 ", x@prob)
+      paste("P(MTD >", stopping@thresh, "* NBD | P(DLE) = ", stopping@target, ") \u2265 ", stopping@prob)
     } else {
       stopping@report_label
     }
@@ -2263,8 +2263,8 @@ setMethod("stopTrial",
 
       report_label <- if (isTRUE(stopping@report_label == "")) {
         paste(
-          "P(", x@target[1], "\u2264", "Biomarker \u2264", x@target[2],
-          ") \u2265 ", x@prob,
+          "P(", stopping@target[1], "\u2264", "Biomarker \u2264", stopping@target[2],
+          ") \u2265 ", stopping@prob,
           ifelse(x@scale == "relative", paste("(relative)"), "(absolute)")
         )
       } else {
