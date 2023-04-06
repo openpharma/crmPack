@@ -1825,11 +1825,11 @@ setMethod("stopTrial",
       ## so can we stop?
       doStop <- nCohorts >= stopping@nCohorts
 
-      #report_label <- if (isTRUE(stopping@report_label == "")) {
+      # report_label <- if (isTRUE(stopping@report_label == "")) {
       #  paste("Minimum number of", stopping@nCohorts, "cohorts reached")
-      #} else {
+      # } else {
       #  stopping@report_label
-      #}
+      # }
 
       report_label <- h_default_if_empty(
         stopping@report_label,
@@ -2236,8 +2236,10 @@ setMethod("stopTrial",
 
       report_label <- h_default_if_empty(
         stopping@report_label,
-        default = paste("P(", stopping@target[1], "\u2264", "Biomarker \u2264", stopping@target[2],") \u2265 ", stopping@prob,
-              ifelse(stopping@scale == "relative", paste("(relative)"), "(absolute)"))
+        default = paste(
+          "P(", stopping@target[1], "\u2264", "Biomarker \u2264", stopping@target[2], ") \u2265 ", stopping@prob,
+          ifelse(stopping@scale == "relative", paste("(relative)"), "(absolute)")
+        )
       )
 
       ## generate message
