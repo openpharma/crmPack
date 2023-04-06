@@ -7,12 +7,14 @@
 \alias{StoppingTargetProb}
 \title{\code{StoppingTargetProb}}
 \usage{
-StoppingTargetProb(target, prob)
+StoppingTargetProb(target, prob, report_label = character(0))
 }
 \arguments{
 \item{target}{(\code{number})\cr see slot definition.}
 
 \item{prob}{(\code{proportion})\cr see slot definition.}
+
+\item{report_label}{(\code{string})\cr see slot definition.}
 }
 \description{
 \ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#stable}{\figure{lifecycle-stable.svg}{options: alt='[Stable]'}}}{\strong{[Stable]}}
@@ -27,6 +29,8 @@ the DLT rate being in the target toxicity interval.
 
 \item{\code{prob}}{(\code{proportion})\cr required target toxicity probability (except 0 or 1)
 for reaching sufficient precision.}
+
+\item{\code{report_label}}{(\code{string}) \cr label for stopping rule reporting}
 }}
 
 \examples{

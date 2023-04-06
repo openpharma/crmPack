@@ -7,7 +7,12 @@
 \alias{StoppingTargetBiomarker}
 \title{\code{StoppingTargetBiomarker}}
 \usage{
-StoppingTargetBiomarker(target, prob, is_relative = TRUE)
+StoppingTargetBiomarker(
+  target,
+  prob,
+  is_relative = TRUE,
+  report_label = character(0)
+)
 }
 \arguments{
 \item{target}{(\code{numeric})\cr see slot definition.}
@@ -15,6 +20,8 @@ StoppingTargetBiomarker(target, prob, is_relative = TRUE)
 \item{prob}{(\code{proportion})\cr see slot definition.}
 
 \item{is_relative}{(\code{flag})\cr see slot definition.}
+
+\item{report_label}{(\code{string})\cr see slot definition.}
 }
 \description{
 \ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#stable}{\figure{lifecycle-stable.svg}{options: alt='[Stable]'}}}{\strong{[Stable]}}
