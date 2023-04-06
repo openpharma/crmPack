@@ -4,38 +4,46 @@
 \name{RuleDesign-class}
 \alias{RuleDesign-class}
 \alias{.RuleDesign}
-\title{Class for rule-based designs}
+\alias{RuleDesign}
+\title{\code{RuleDesign}}
+\usage{
+RuleDesign(nextBest, cohortSize, data, startingDose)
+}
+\arguments{
+\item{nextBest}{(\code{NextBest})\cr see slot definition.}
+
+\item{cohortSize}{(\code{CohortSize})\cr see slot definition.}
+
+\item{data}{(\code{Data})\cr see slot definition.}
+
+\item{startingDose}{(\code{number})\cr see slot definition.}
+}
 \description{
-The difference to \code{\linkS4class{Design}} class is that
-model, stopping and increments slots are missing.
+\ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#stable}{\figure{lifecycle-stable.svg}{options: alt='[Stable]'}}}{\strong{[Stable]}}
+
+\code{\link{RuleDesign}} is the class for rule-based designs. The difference between
+this class and the \code{\link{Design}} class is that \code{\link{RuleDesign}} does not contain
+model, stopping and increments slots.
 }
 \section{Slots}{
 
 \describe{
-\item{\code{nextBest}}{how to find the next best dose, an object of class
-\code{\linkS4class{NextBest}}}
+\item{\code{nextBest}}{(\code{NextBest})\cr how to find the next best dose.}
 
-\item{\code{cohortSize}}{rules for the cohort sizes,
-an object of class \code{\linkS4class{CohortSize}}}
+\item{\code{cohortSize}}{(\code{CohortSize})\cr rules for the cohort sizes.}
 
-\item{\code{data}}{what is the dose grid, any previous data, etc., contained
-in an object of class \code{\linkS4class{Data}}}
+\item{\code{data}}{(\code{Data})\cr specifies dose grid, any previous data, etc.}
 
-\item{\code{startingDose}}{what is the starting dose? Must lie on the grid in
-\code{data}}
+\item{\code{startingDose}}{(\code{number})\cr the starting dose, it must lie on the dose
+grid in \code{data}.}
 }}
 
 \examples{
-
-emptydata <- Data(doseGrid = c(5, 10, 15, 25, 35, 50, 80))
-
-# inizialing a 3+3 design with constant cohort size of 3 and
-# starting dose equal 5
-myDesign <- RuleDesign(nextBest = NextBestThreePlusThree(),
-                       cohortSize = CohortSizeConst(size=3L),
-                       data = emptydata,
-                       startingDose = 5)
-  
-  
+# Initialing a 3+3 design with constant cohort size of 3 and starting dose equal 5.
+my_design <- RuleDesign(
+  nextBest = NextBestThreePlusThree(),
+  cohortSize = CohortSizeConst(size = 3L),
+  data = Data(doseGrid = c(5, 10, 15, 25, 35, 50, 80)),
+  startingDose = 5
+)
 }
-\keyword{classes}
