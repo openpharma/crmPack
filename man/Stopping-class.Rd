@@ -10,6 +10,17 @@
 
 \code{\link{Stopping}} is a class for stopping rules.
 }
+\section{Slots}{
+
+\describe{
+\item{\code{report_label}}{(\code{string})\cr a label for the stopping report. The meaning
+of this parameter is twofold. If it is equal to \code{character(0)} (default),
+then \code{report_label} will not be used in the report at all. Otherwise, if it
+is an empty string, i.e. \code{""}, then a default label will be used, which
+is a class-specific. Finally, for the remaining cases, a user can provide
+a custom label.}
+}}
+
 \seealso{
 \code{\link{StoppingList}}, \code{\link{StoppingCohortsNearDose}}, \code{\link{StoppingPatientsNearDose}},
 \code{\link{StoppingMinCohorts}}, \code{\link{StoppingMinPatients}}, \code{\link{StoppingTargetProb}},

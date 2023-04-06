@@ -849,6 +849,33 @@ h_null_if_na <- function(x) {
   }
 }
 
+
+
+#' Getting the default label for empty labels
+#'
+#' @description `r lifecycle::badge("stable")`
+#'
+#' A simple helper function that replaces empty labels by the default label.
+#'
+#' @param label contains the current label value and checks if the label is currently and empty string ("").
+#' If so, replace it with the default label. If not the label is returned as it is (containing the user-specific input)
+#'
+#' @param default contains the default label the replaces the empty string in label
+#'
+#' @return label containing the updated (or remaining) label string
+#'
+#' @export
+#' @examples
+#' h_default_if_empty(label = "", default = "default label")
+#' h_default_if_empty(label = "custom label", default = "default label")
+h_default_if_empty <- function(label, default) {
+  if (isTRUE(label == "")) {
+    default
+  } else {
+    label
+  }
+}
+
 #' Testing Matrix for Positive Definiteness
 #'
 #' @description `r lifecycle::badge("experimental")`
