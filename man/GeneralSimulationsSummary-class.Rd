@@ -14,8 +14,6 @@ initialization function is provided for this class.
 \describe{
 \item{\code{target}}{target toxicity interval}
 
-\item{\code{stop_report}}{matrix of stopping rule outcomes}
-
 \item{\code{targetDoseInterval}}{corresponding target dose interval}
 
 \item{\code{nsim}}{number of simulations}

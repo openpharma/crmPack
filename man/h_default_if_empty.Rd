@@ -7,13 +7,14 @@
 h_default_if_empty(label, default)
 }
 \arguments{
-\item{label}{contains the current label value and checks if the label is currently and empty string ("").
-If so, replace it with the default label. If not the label is returned as it is (containing the user-specific input)}
+\item{label}{contains the current label value and checks if the label is
+an empty string, i.e. \code{""}. If so, this function replaces it with the default
+label as specified by \code{default}. If not the label is returned as it is.}
 
 \item{default}{contains the default label the replaces the empty string in label}
 }
 \value{
-label containing the updated (or remaining) label string
+a label containing the updated (or remaining) label string.
 }
 \description{
 \ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#stable}{\figure{lifecycle-stable.svg}{options: alt='[Stable]'}}}{\strong{[Stable]}}

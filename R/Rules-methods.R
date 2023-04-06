@@ -1,6 +1,7 @@
 #' @include Model-methods.R
 #' @include Samples-class.R
 #' @include Rules-class.R
+#' @include helpers.R
 #' @include helpers_rules.R
 NULL
 
@@ -1719,7 +1720,9 @@ setMethod("stopTrial",
 
       report_label <- h_default_if_empty(
         stopping@report_label,
-        default = paste("\u2265", stopping@nCohorts, "cohorts in", stopping@percentage, "% dose range around NBD")
+        default = paste(
+          "\u2265", stopping@nCohorts, "cohorts in", stopping@percentage, "% dose range around NBD"
+        )
       )
 
       ## generate message
@@ -1776,7 +1779,9 @@ setMethod("stopTrial",
 
       report_label <- h_default_if_empty(
         stopping@report_label,
-        default = paste("\u2265", stopping@nPatients, "patients in", stopping@percentage, "% dose range around NBD")
+        default = paste(
+          "\u2265", stopping@nPatients, "patients in", stopping@percentage, "% dose range around NBD"
+        )
       )
 
       ## generate message
@@ -1937,7 +1942,9 @@ setMethod("stopTrial",
 
       report_label <- h_default_if_empty(
         stopping@report_label,
-        default = paste("P(", stopping@target[1], "\u2264 prob(DLE | NBD) \u2264", stopping@target[2], ") \u2265", stopping@prob)
+        default = paste(
+          "P(", stopping@target[1], "\u2264 prob(DLE | NBD) \u2264", stopping@target[2], ") \u2265", stopping@prob
+        )
       )
 
 
@@ -2004,7 +2011,9 @@ setMethod("stopTrial",
 
       report_label <- h_default_if_empty(
         stopping@report_label,
-        default = paste("P(MTD >", stopping@thresh, "* NBD | P(DLE) = ", stopping@target, ") \u2265 ", stopping@prob)
+        default = paste(
+          "P(MTD >", stopping@thresh, "* NBD | P(DLE) = ", stopping@target, ") \u2265 ", stopping@prob
+        )
       )
 
       ## generate message
@@ -2067,7 +2076,9 @@ setMethod(
 
     report_label <- h_default_if_empty(
       stopping@report_label,
-      default = paste("P(MTD >", stopping@thresh, "* NBD | P(DLE) = ", stopping@target, ") \u2265 ", stopping@prob)
+      default = paste(
+        "P(MTD >", stopping@thresh, "* NBD | P(DLE) = ", stopping@target, ") \u2265 ", stopping@prob
+      )
     )
 
     msg <- paste(

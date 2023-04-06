@@ -849,20 +849,18 @@ h_null_if_na <- function(x) {
   }
 }
 
-
-
 #' Getting the default label for empty labels
 #'
 #' @description `r lifecycle::badge("stable")`
 #'
 #' A simple helper function that replaces empty labels by the default label.
 #'
-#' @param label contains the current label value and checks if the label is currently and empty string ("").
-#' If so, replace it with the default label. If not the label is returned as it is (containing the user-specific input)
-#'
+#' @param label contains the current label value and checks if the label is
+#'   an empty string, i.e. `""`. If so, this function replaces it with the default
+#'   label as specified by `default`. If not the label is returned as it is.
 #' @param default contains the default label the replaces the empty string in label
 #'
-#' @return label containing the updated (or remaining) label string
+#' @return a label containing the updated (or remaining) label string.
 #'
 #' @export
 #' @examples
