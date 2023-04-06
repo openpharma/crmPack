@@ -316,9 +316,6 @@
     <loc>https://roche.github.io/crmPack/main/reference/RuleDesign-class.html</loc>
   </url>
   <url>
-    <loc>https://roche.github.io/crmPack/main/reference/RuleDesign.html</loc>
-  </url>
-  <url>
     <loc>https://roche.github.io/crmPack/main/reference/SafetyWindow-class.html</loc>
   </url>
   <url>
@@ -854,6 +851,9 @@
   </url>
   <url>
     <loc>https://roche.github.io/crmPack/main/reference/v_data_objects.html</loc>
+  </url>
+  <url>
+    <loc>https://roche.github.io/crmPack/main/reference/v_design.html</loc>
   </url>
   <url>
     <loc>https://roche.github.io/crmPack/main/reference/v_increments.html</loc>

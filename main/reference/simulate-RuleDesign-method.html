@@ -36,12 +36,6 @@
 <li class="nav-item">
   <a class="nav-link" href="../news/index.html">Changelog</a>
 </li>
-<!-- start dropdown for versions --> <li class="nav-item dropdown">
-        <a href="#" class="nav-link dropdown-toggle"
-          data-bs-toggle="dropdown" role="button"
-          aria-expanded="false" aria-haspopup="true"
-          id="dropdown-versions">Versions</a> <div class="dropdown-menu" aria-labelledby="dropdown-versions"> <a class="dropdown-item" data-toggle="tooltip" title="" href="https://Roche.github.io/crmPack/main">main</a> </div></li>
-<!-- end dropdown for versions -->
       </ul><form class="form-inline my-2 my-lg-0" role="search">
         <input type="search" class="form-control me-sm-2" aria-label="Toggle navigation" name="search-input" data-search-index="../search.json" id="search-input" placeholder="Search for" autocomplete="off"></form>
 
@@ -142,7 +136,7 @@ Defaults to the number of cores on the machine, maximum 5.</p></dd>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co"># inizialing a 3+3 design with constant cohort size of 3 and</span></span></span>
 <span class="r-in"><span><span class="co"># starting dose equal 5</span></span></span>
-<span class="r-in"><span><span class="va">myDesign</span> <span class="op">&lt;-</span> <span class="fu"><a href="RuleDesign.html">RuleDesign</a></span><span class="op">(</span>nextBest <span class="op">=</span> <span class="fu"><a href="NextBestThreePlusThree-class.html">NextBestThreePlusThree</a></span><span class="op">(</span><span class="op">)</span>,</span></span>
+<span class="r-in"><span><span class="va">myDesign</span> <span class="op">&lt;-</span> <span class="fu"><a href="RuleDesign-class.html">RuleDesign</a></span><span class="op">(</span>nextBest <span class="op">=</span> <span class="fu"><a href="NextBestThreePlusThree-class.html">NextBestThreePlusThree</a></span><span class="op">(</span><span class="op">)</span>,</span></span>
 <span class="r-in"><span>                       cohortSize <span class="op">=</span> <span class="fu"><a href="CohortSizeConst-class.html">CohortSizeConst</a></span><span class="op">(</span>size<span class="op">=</span><span class="fl">3L</span><span class="op">)</span>,</span></span>
 <span class="r-in"><span>                       data <span class="op">=</span> <span class="va">emptydata</span>,</span></span>
 <span class="r-in"><span>                       startingDose <span class="op">=</span> <span class="fl">5</span><span class="op">)</span></span></span>
