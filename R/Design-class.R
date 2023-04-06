@@ -1,97 +1,66 @@
-# nolint start
+#' @include Design-validity.R
+#' @include Model-class.R
+#' @include Rules-class.R
+#' @include Data-class.R
+#' @include helpers.R
+NULL
 
-#####################################################################################
-## Author: Daniel Sabanes Bove [sabanesd *a*t* roche *.* com]
-##         Wai Yin Yeung [ w*.* yeung1 *a*t* lancaster *.* ac *.* uk]
-## Project: Object-oriented implementation of CRM designs
-##
-## Time-stamp: <[Design-class.R] by DSB Son 18/01/2015 21:35>
-##
-## Description:
-## This class encapsulates a whole CRM design.
-##
-## History:
-## 12/02/2014   file creation
-## 10/07/2015  adding designs for Pseudo models
-#####################################################################################
+# RuleDesign ----
 
-##' @include Model-class.R
-##' @include Rules-class.R
-##' @include Data-class.R
-##' @include helpers.R
-{}
+## class ----
 
+#' `RuleDesign`
+#'
+#' @description `r lifecycle::badge("stable")`
+#'
+#' [`RuleDesign`] is the class for rule-based designs. The difference between
+#' this class and the [`Design`] class is that [`RuleDesign`] does not contain
+#' model, stopping and increments slots.
+#'
+#' @slot nextBest (`NextBest`)\cr how to find the next best dose.
+#' @slot cohortSize (`CohortSize`)\cr rules for the cohort sizes.
+#' @slot data (`Data`)\cr specifies dose grid, any previous data, etc.
+#' @slot startingDose (`number`)\cr the starting dose, it must lie on the dose
+#'   grid in `data`.
+#'
+#' @aliases RuleDesign
+#' @export
+#'
+.RuleDesign <- setClass(
+  Class = "RuleDesign",
+  slots = c(
+    nextBest = "NextBest",
+    cohortSize = "CohortSize",
+    data = "Data",
+    startingDose = "numeric"
+  ),
+  prototype = prototype(
+    nextBest = .NextBestThreePlusThree(),
+    cohortSize = CohortSizeConst(3),
+    data = Data(doseGrid = 1:3),
+    startingDose = 1
+  ),
+  validity = v_rule_design
+)
 
-## --------------------------------------------------
-## Classes for rule-based designs
-## --------------------------------------------------
+## constructor ----
 
-
-##' Class for rule-based designs
-##'
-##' The difference to \code{\linkS4class{Design}} class is that
-##' model, stopping and increments slots are missing.
-##'
-##' @slot nextBest how to find the next best dose, an object of class
-##' \code{\linkS4class{NextBest}}
-##' @slot cohortSize rules for the cohort sizes,
-##' an object of class \code{\linkS4class{CohortSize}}
-##' @slot data what is the dose grid, any previous data, etc., contained
-##' in an object of class \code{\linkS4class{Data}}
-##' @slot startingDose what is the starting dose? Must lie on the grid in
-##' \code{data}
-##'
-##' @example examples/design-class-RuleDesign.R
-##' @export
-##' @keywords classes
-.RuleDesign <-
-  setClass(
-    Class = "RuleDesign",
-    representation(
-      nextBest = "NextBest",
-      cohortSize = "CohortSize",
-      data = "Data",
-      startingDose = "numeric"
-    ),
-    prototype(
-      nextBest = .NextBestThreePlusThree(),
-      cohortSize = CohortSizeConst(3),
-      data = Data(doseGrid = 1:3),
-      startingDose = 1
-    ),
-    validity =
-      function(object) {
-        o <- Validate()
-
-        o$check(
-          is.scalar(object@startingDose),
-          "startingDose must be scalar"
-        )
-        o$check(
-          object@startingDose %~% object@data@doseGrid,
-          "startingDose must be included in data@doseGrid (tolerance 1e-10)"
-        )
-
-        o$result()
-      }
-  )
-validObject(.RuleDesign())
-
-##' Initialization function for "RuleDesign"
-##'
-##' @param nextBest see \code{\linkS4class{RuleDesign}}
-##' @param cohortSize see \code{\linkS4class{RuleDesign}}
-##' @param data see \code{\linkS4class{RuleDesign}}
-##' @param startingDose see \code{\linkS4class{RuleDesign}}
-##' @return the \code{\linkS4class{RuleDesign}} object
-##'
-##' @export
-##' @keywords methods
+#' @rdname RuleDesign-class
+#'
+#' @param nextBest (`NextBest`)\cr see slot definition.
+#' @param cohortSize (`CohortSize`)\cr see slot definition.
+#' @param data (`Data`)\cr see slot definition.
+#' @param startingDose (`number`)\cr see slot definition.
+#'
+#' @export
+#' @example examples/Design-class-RuleDesign.R
+#'
 RuleDesign <- function(nextBest,
                        cohortSize,
                        data,
                        startingDose) {
-  .RuleDesign(
+  new(
+    "RuleDesign",
     nextBest = nextBest,
     cohortSize = cohortSize,
     data = data,
@@ -99,6 +68,7 @@ RuleDesign <- function(nextBest,
   )
 }
 
+# nolint start
 
 ## --------------------------------------------------
 ## Classes for model-based designs
