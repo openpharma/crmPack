@@ -267,7 +267,6 @@ DualSimulations <- function(rhoEst,
 ##' initialization function is provided for this class.
 ##'
 ##' @slot target target toxicity interval
-##' @slot stop_report matrix of stopping rule outcomes
 ##' @slot targetDoseInterval corresponding target dose interval
 ##' @slot nsim number of simulations
 ##' @slot propDLTs proportions of DLTs in the trials
@@ -316,6 +315,7 @@ DualSimulations <- function(rhoEst,
 ##' Note that objects should not be created by users, therefore no
 ##' initialization function is provided for this class.
 ##'
+##' @slot stop_report matrix of stopping rule outcomes
 ##' @slot fitAtDoseMostSelected fitted toxicity rate at dose most often selected
 ##' @slot meanFit list with the average, lower (2.5%) and upper (97.5%)
 ##' quantiles of the mean fitted toxicity at each dose level
