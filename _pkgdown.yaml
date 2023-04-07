@@ -102,6 +102,7 @@ reference:
       - SafetyWindowSize
       - SafetyWindowConst
       - RuleDesign
+      - Design
   - title: Internal Helper Functions
     contents:
       - h_doses_unique_per_cohort
@@ -337,8 +338,6 @@ reference:
       - DADesign
       - DASimulations-class
       - DASimulations
-      - Design-class
-      - Design
       - DualDesign-class
       - DualDesign
       - DualResponsesDesign-class
