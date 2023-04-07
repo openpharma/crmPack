@@ -139,19 +139,10 @@ GeneralSimulations <- function(data,
     )
 
     o$check(
-      checkmate::testLogical(object@stop_report),
-      "stop_report must only contain logicals"
-    )
-
-    o$check(
-      checkmate::testMatrix(object@stop_report, nrows = nSims, min.cols = 1, any.missing = FALSE),
-      "stop_report must be a matrix where the number of rows equals the number of simulations
+      checkmate::test_matrix(object@stop_report, mode = "logical", nrows = nSims, min.cols = 1, any.missing = FALSE),
+      "stop_report must be a matrix of mode logical in which the number of rows equals the number of simulations
       and which must not contain any missing values"
     )
-
-
-
-
 
     o$result()
   }
