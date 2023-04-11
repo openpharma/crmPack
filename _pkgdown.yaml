@@ -103,6 +103,7 @@ reference:
       - SafetyWindow
       - SafetyWindowSize
       - SafetyWindowConst
+      - RuleDesign
   - title: Internal Helper Functions
     contents:
       - h_doses_unique_per_cohort
@@ -200,6 +201,7 @@ reference:
       - v_cohort_size_max
       - v_safety_window_size
       - v_safety_window_const
+      - v_rule_design
   - title: Custom Checkmate Assertions
     contents:
       - assert_probabilities
@@ -366,8 +368,6 @@ reference:
       - PseudoSimulationsSummary-class
       - Quantiles2LogisticNormal
       - Report
-      - RuleDesign
-      - RuleDesign-class
       - Simulations-class
       - Simulations
       - SimulationsSummary-class

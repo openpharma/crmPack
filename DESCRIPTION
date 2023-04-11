@@ -78,6 +78,7 @@ Collate:
     'Model-validity.R'
     'helpers_jags.R'
     'Model-class.R'
+    'Design-validity.R'
     'Design-class.R'
     'McmcOptions-validity.R'
     'McmcOptions-class.R'
