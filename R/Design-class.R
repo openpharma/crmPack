@@ -137,68 +137,67 @@ Design <- function(model,
   )
 }
 
-# nolint start
+# DualDesign ----
 
-##' Class for the dual-endpoint CRM design
-##'
-##' This class has special requirements for the \code{model} and \code{data}
-##' slots in comparison to the parent class \code{\linkS4class{Design}}:
-##'
-##' @slot model the model to be used, an object of class
-##' \code{\linkS4class{DualEndpoint}}
-##' @slot data what is the dose grid, any previous data, etc., contained
-##' in an object of class \code{\linkS4class{DataDual}}
-##'
-##' Note that the \code{NextBest} slot can be of any class, this allows for easy
-##' comparison with recommendation methods that don't use the
-##' biomarker information.
-##'
-##' @example examples/design-class-DualDesign.R
-##' @export
-##' @keywords classes
-.DualDesign <-
-  setClass(
-    Class = "DualDesign",
-    representation(
-      model = "DualEndpoint",
-      data = "DataDual"
-    ),
-    prototype(
-      model = .DualEndpoint(),
-      nextBest = .NextBestDualEndpoint(),
-      data = DataDual(doseGrid = 1:2),
-      startingDose = 1
-    ),
-    contains = list("Design")
-  )
-validObject(.DualDesign())
+## class ----
 
+#' `DualDesign`
+#'
+#' @description `r lifecycle::badge("stable")`
+#'
+#' [`DualDesign`] is the class for the dual-endpoint CRM design. This class has
+#' special requirements for the `model` and `data` slots in comparison to the
+#' parent class [`Design`].
+#'
+#' @note the `nextBest` slot can be of any class, this allows for easy comparison
+#'   with recommendation methods that don't use the biomarker information.
+#'
+#' @slot model (`DualEndpoint`)\cr the model to be used.
+#' @slot data (`DataDual`)\cr specifies dose grid, any previous data, etc.
+#'
+#' @aliases DualDesign
+#' @export
+#'
+.DualDesign <- setClass(
+  Class = "DualDesign",
+  slots = c(
+    model = "DualEndpoint",
+    data = "DataDual"
+  ),
+  prototype = prototype(
+    model = .DualEndpoint(),
+    nextBest = .NextBestDualEndpoint(),
+    data = DataDual(doseGrid = 1:2),
+    startingDose = 1
+  ),
+  contains = "Design"
+)
 
-##' Initialization function for "DualDesign"
-##'
-##' @param model see \code{\linkS4class{DualDesign}}
-##' @param data see \code{\linkS4class{DualDesign}}
-##' @param \dots additional arguments for \code{\link{Design}}
-##' @return the \code{\linkS4class{DualDesign}} object
-##'
-##' @export
-##' @keywords methods
+## constructor ----
+
+#' @rdname Design-class
+#'
+#' @param model (`DualEndpoint`)\cr see slot definition.
+#' @param data (`DataDual`)\cr see slot definition.
+#' @inheritDotParams Design
+#'
+#' @export
+#' @example examples/Design-class-DualDesign.R
+#'
+#'
 DualDesign <- function(model,
                        data,
                        ...) {
-  start <- Design(
-    data = data,
-    model = model,
-    ...
-  )
-  .DualDesign(start,
+  start <- Design(model = model, data = data, ...)
+  new(
+    "DualDesign",
+    start,
     model = model,
     data = data
   )
 }
 
-
-
+# nolint start
 
 ##' Creates a new 3+3 design object from a dose grid
 ##'
