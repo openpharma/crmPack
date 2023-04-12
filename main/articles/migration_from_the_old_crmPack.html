@@ -60,12 +60,6 @@
 <li class="nav-item">
   <a class="nav-link" href="../news/index.html">Changelog</a>
 </li>
-<!-- start dropdown for versions --> <li class="nav-item dropdown">
-        <a href="#" class="nav-link dropdown-toggle"
-          data-bs-toggle="dropdown" role="button"
-          aria-expanded="false" aria-haspopup="true"
-          id="dropdown-versions">Versions</a> <div class="dropdown-menu" aria-labelledby="dropdown-versions"> <a class="dropdown-item" data-toggle="tooltip" title="" href="https://Roche.github.io/crmPack/main">main</a> </div></li>
-<!-- end dropdown for versions -->
       </ul>
 <form class="form-inline my-2 my-lg-0" role="search">
         <input type="search" class="form-control me-sm-2" aria-label="Toggle navigation" name="search-input" data-search-index="../search.json" id="search-input" placeholder="Search for" autocomplete="off">
@@ -2001,10 +1995,10 @@ of a fixed model’s parameters values.</p>
 <span><span class="co"># given a particular models and samples.</span></span>
 <span><span class="co"># Every single dose corresponds to one particular sample in `my_samples`.</span></span>
 <span><span class="fu"><a href="../reference/dose.html">dose</a></span><span class="op">(</span><span class="fl">0.3</span>, <span class="va">my_model</span>, <span class="va">my_samples</span><span class="op">)</span></span></code></pre></div>
-<pre><code><span><span class="co">##  [1] 0.6462970904 2.0308343647 0.1378789766 1.7183573898 1.0703859756</span></span>
-<span><span class="co">##  [6] 0.0627643366 1.3653309911 0.0451033323 1.4005222772 1.1790409191</span></span>
-<span><span class="co">## [11] 0.0007983398 1.2348114558 3.3358639094 1.3968276758 1.3009984730</span></span>
-<span><span class="co">## [16] 1.1639958116 1.4948762028 1.8486840095 1.3729748255 2.6966127864</span></span></code></pre>
+<pre><code><span><span class="co">##  [1] 1.877015e+00 4.290138e+01 1.074064e+00 2.033960e+00 1.525520e+00</span></span>
+<span><span class="co">##  [6] 5.777154e-01 5.010738e-01 8.603569e-01 3.384959e+00 9.296635e-01</span></span>
+<span><span class="co">## [11] 3.043728e+00 1.110512e-09 1.508917e+00 2.415346e+04 1.748877e+00</span></span>
+<span><span class="co">## [16] 1.933154e-01 1.248404e+01 1.117950e+00 7.779203e-01 2.057391e+00</span></span></code></pre>
 <div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># True dose-DLT relationship.</span></span>
 <span><span class="co"># Say that -0.8 and 1 are the true values for models parameters alpha0 and alpha1 respectively.</span></span>
@@ -2022,9 +2016,9 @@ of a fixed model’s parameters values.</p>
 <code class="sourceCode R"><span><span class="co"># Toxicity probabilities for a given dose (equal to 10), model and samples.</span></span>
 <span><span class="co"># Every single probability value corresponds to one particular sample in `my_samples`.</span></span>
 <span><span class="fu"><a href="../reference/prob.html">prob</a></span><span class="op">(</span><span class="fl">10</span>, <span class="va">my_model</span>, <span class="va">my_samples</span><span class="op">)</span></span></code></pre></div>
-<pre><code><span><span class="co">##  [1] 0.8744485 0.8662314 0.9584405 0.9970313 0.9361312 0.8448715 0.8659491</span></span>
-<span><span class="co">##  [8] 0.7803900 0.9785103 0.8732619 0.6383938 0.9855721 0.2754959 0.7252974</span></span>
-<span><span class="co">## [15] 0.9914001 0.9665531 0.9177567 0.9554113 0.9106999 0.5635768</span></span></code></pre>
+<pre><code><span><span class="co">##  [1] 0.9925775 0.3492664 0.9279095 0.5346776 0.6418841 0.9937704 0.9234309</span></span>
+<span><span class="co">##  [8] 0.9308552 0.4991701 0.9959814 0.8133853 0.1051652 0.7155151 0.2508919</span></span>
+<span><span class="co">## [15] 0.8716108 0.9403978 0.3138602 0.9803287 0.9102740 0.9691790</span></span></code></pre>
 <div class="sourceCode" id="cb12"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># True DLT-dose relationship.</span></span>
 <span><span class="co"># Say that -0.8 and 1 are the true values for models parameters alpha0 and alpha1 respectively.</span></span>
