@@ -175,7 +175,7 @@ Design <- function(model,
 
 ## constructor ----
 
-#' @rdname Design-class
+#' @rdname DualDesign-class
 #'
 #' @param model (`DualEndpoint`)\cr see slot definition.
 #' @param data (`DataDual`)\cr see slot definition.
