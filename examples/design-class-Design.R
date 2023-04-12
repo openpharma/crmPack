@@ -1,6 +1,6 @@
 empty_data <- Data(doseGrid = c(1, 3, 5, 10, 15, 20, 25, 40, 50, 80, 100))
 
-# Initialize the CRM model
+# Initialize the CRM model.
 my_model <- LogisticLogNormal(
   mean = c(-0.85, 1),
   cov = matrix(c(1, -0.5, -0.5, 1), nrow = 2),
