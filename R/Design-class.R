@@ -15,7 +15,7 @@ NULL
 #'
 #' [`RuleDesign`] is the class for rule-based designs. The difference between
 #' this class and the [`Design`] class is that [`RuleDesign`] does not contain
-#' model, stopping and increments slots.
+#' `model`, `stopping` and `increments` slots.
 #'
 #' @slot nextBest (`NextBest`)\cr how to find the next best dose.
 #' @slot cohortSize (`CohortSize`)\cr rules for the cohort sizes.
@@ -68,69 +68,68 @@ RuleDesign <- function(nextBest,
   )
 }
 
-# nolint start
+# Design ----
 
-## --------------------------------------------------
-## Classes for model-based designs
-## --------------------------------------------------
+## class ----
 
-##' Class for the CRM design
-##'
-##' In addition to the slots in the more simple \code{\linkS4class{RuleDesign}},
-##' objects of this class contain:
-##'
-##' @slot model the model to be used, an object of class
-##' \code{\linkS4class{GeneralModel}}
-##' @slot stopping stopping rule(s) for the trial, an object of class
-##' \code{\linkS4class{Stopping}}
-##' @slot increments how to control increments between dose levels,
-##' an object of class \code{\linkS4class{Increments}}
-##' @slot PLcohortSize rules for the cohort sizes for placebo, if any planned
-##' an object of class \code{\linkS4class{CohortSize}} (defaults to constant
-##' 0 placebo patients)
-##'
-##' @example examples/design-class-Design.R
-##' @export
-##' @keywords classes
-.Design <-
-  setClass(
-    Class = "Design",
-    representation(
-      model = "GeneralModel",
-      stopping = "Stopping",
-      increments = "Increments",
-      PLcohortSize = "CohortSize"
-    ),
-    prototype(
-      model = .LogisticNormal(),
-      nextBest = .NextBestNCRM(),
-      stopping = .StoppingMinPatients(),
-      increments = .IncrementsRelative(),
-      PLcohortSize = CohortSizeConst(0L)
-    ),
-    contains = list("RuleDesign")
-  )
-validObject(.Design())
+#' `Design`
+#'
+#' @description `r lifecycle::badge("stable")`
+#'
+#' [`Design`] is the class for rule-based designs. The difference between
+#' this class and its parent [`RuleDesign`] class is that [`Design`] class
+#' contains additional `model`, `stopping` and `increments` slots.
+#'
+#' @slot model (`GeneralModel`)\cr the model to be used.
+#' @slot stopping (`Stopping`)\cr stopping rule(s) for the trial.
+#' @slot increments (`Increments`)\cr how to control increments between dose levels.
+#' @slot PLcohortSize (`CohortSize`)\cr rules for the cohort sizes for placebo,
+#'   if any planned (defaults to constant 0 placebo patients).
+#'
+#' @aliases Design
+#' @export
+#'
+.Design <- setClass(
+  Class = "Design",
+  slots = c(
+    model = "GeneralModel",
+    stopping = "Stopping",
+    increments = "Increments",
+    PLcohortSize = "CohortSize"
+  ),
+  prototype = prototype(
+    model = .LogisticNormal(),
+    nextBest = .NextBestNCRM(),
+    stopping = .StoppingMinPatients(),
+    increments = .IncrementsRelative(),
+    PLcohortSize = CohortSizeConst(0L)
+  ),
+  contains = "RuleDesign"
+)
 
+## constructor ----
 
-##' Initialization function for "Design"
-##'
-##' @param model see \code{\linkS4class{Design}}
-##' @param stopping see \code{\linkS4class{Design}}
-##' @param increments see \code{\linkS4class{Design}}
-##' @param PLcohortSize see \code{\linkS4class{Design}}
-##' @param \dots additional arguments for \code{\link{RuleDesign}}
-##' @return the \code{\linkS4class{Design}} object
-##'
-##' @export
-##' @keywords methods
+#' @rdname Design-class
+#'
+#' @param model (`GeneralModel`)\cr see slot definition.
+#' @param stopping (`Stopping`)\cr see slot definition.
+#' @param increments (`Increments`)\cr see slot definition.
+#' @param PLcohortSize (`CohortSize`)\cr see slot definition.
+#' @inheritDotParams RuleDesign
+#'
+#' @export
+#' @example examples/Design-class-Design.R
+#'
+#'
 Design <- function(model,
                    stopping,
                    increments,
                    PLcohortSize = CohortSizeConst(0L),
                    ...) {
   start <- RuleDesign(...)
-  .Design(start,
+  new(
+    "Design",
+    start,
     model = model,
     stopping = stopping,
     increments = increments,
@@ -138,7 +137,7 @@ Design <- function(model,
   )
 }
 
-
+# nolint start
 
 ##' Class for the dual-endpoint CRM design
 ##'
