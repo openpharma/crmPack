@@ -23,7 +23,7 @@ RuleDesign(nextBest, cohortSize, data, startingDose)
 
 \code{\link{RuleDesign}} is the class for rule-based designs. The difference between
 this class and the \code{\link{Design}} class is that \code{\link{RuleDesign}} does not contain
-model, stopping and increments slots.
+\code{model}, \code{stopping} and \code{increments} slots.
 }
 \section{Slots}{
 
