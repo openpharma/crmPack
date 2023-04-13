@@ -68,6 +68,27 @@ RuleDesign <- function(nextBest,
   )
 }
 
+## ThreePlusThreeDesign ----
+
+#' @describeIn RuleDesign-class creates a new 3+3 design object from a dose grid.
+#'
+#' @param doseGrid (`numeric`)\cr the dose grid to be used (sorted).
+#'
+#' @export
+#' @example examples/Design-class-ThreePlusThreeDesign.R
+#'
+ThreePlusThreeDesign <- function(doseGrid) {
+  empty_data <- Data(doseGrid = doseGrid)
+
+  # Using a constant cohort size of 3 we obtain exactly the 3+3 design.
+  RuleDesign(
+    nextBest = NextBestThreePlusThree(),
+    data = empty_data,
+    cohortSize = CohortSizeConst(size = 3L),
+    startingDose = doseGrid[1]
+  )
+}
+
 # Design ----
 
 ## class ----
@@ -199,31 +220,6 @@ DualDesign <- function(model,
 
 # nolint start
 
-##' Creates a new 3+3 design object from a dose grid
-##'
-##' @param doseGrid the dose grid to be used
-##' @return the object of class \code{\linkS4class{RuleDesign}} with the
-##' 3+3 design
-##'
-##' @example examples/design-class-ThreePlusThreeDesign.R
-##' @export
-##' @keywords programming
-##' @author Daniel Sabanes Bove \email{sabanesd@@roche.com}
-ThreePlusThreeDesign <- function(doseGrid) {
-  emptydata <- Data(doseGrid = doseGrid)
-
-  design <- RuleDesign(
-    nextBest = NextBestThreePlusThree(),
-    data = emptydata,
-    cohortSize = CohortSizeConst(size = 3L),
-    ## using a constant cohort size of 3,
-    ## we obtain exactly the 3+3 design
-    startingDose = head(emptydata@doseGrid, 1)
-  )
-
-  return(design)
-}
-
 ## ===================================================================================
 ## -------------------------------------------------------------------------------
 ## Design class using DLE responses only based on the pseudo DLE model with samples
@@ -343,8 +339,6 @@ TDDesign <- function(model,
     PLcohortSize = PLcohortSize
   )
 }
-
-
 
 ## ---------------------------------------------------------------------------------------------------
 ## class for design based on DLE and efficacy response with samples using pseudo DLE and efficacy models
