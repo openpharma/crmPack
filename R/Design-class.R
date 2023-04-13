@@ -340,8 +340,6 @@ TDDesign <- function(model,
   )
 }
 
-
-
 ## ---------------------------------------------------------------------------------------------------
 ## class for design based on DLE and efficacy response with samples using pseudo DLE and efficacy models
 ## ----------------------------------------------------------------------------------------------------
