@@ -28,6 +28,26 @@ test_that("RuleDesign user constructor arguments names are as expected", {
   )
 })
 
+test_that("RuleDesign object can be created with ThreePlusThreeDesign constructor", {
+  dose_grid <- c(8, 10, 15, 25, 35, 50, 80)
+  result <- expect_silent(
+    ThreePlusThreeDesign(dose_grid)
+  )
+  expect_valid(result, "RuleDesign")
+  expect_identical(result@nextBest, NextBestThreePlusThree())
+  expect_identical(result@cohortSize, CohortSizeConst(size = 3L))
+  expect_identical(result@data, Data(doseGrid = dose_grid))
+  expect_identical(result@startingDose, 8)
+})
+
+test_that("ThreePlusThreeDesign constructor arguments names are as expected", {
+  expect_function(
+    ThreePlusThreeDesign,
+    args = "doseGrid",
+    ordered = TRUE
+  )
+})
+
 # Design ----
 
 test_that(".Design works as expected", {
