@@ -9,42 +9,42 @@ model <- LogisticLogNormal(
 )
 
 # Choose the rule for selecting the next dose.
-myNextBest <- NextBestNCRM(
+my_next_best <- NextBestNCRM(
   target = c(0.2, 0.35),
   overdose = c(0.35, 1),
   max_overdose_prob = 0.25
 )
 
 # Choose the rule for the cohort-size.
-mySize1 <- CohortSizeRange(
+my_size1 <- CohortSizeRange(
   intervals = c(0, 30),
   cohort_size = c(1, 3)
 )
-mySize2 <- CohortSizeDLT(
+my_size2 <- CohortSizeDLT(
   dlt_intervals = c(0, 1),
   cohort_size = c(1, 3)
 )
-mySize <- maxSize(mySize1, mySize2)
+my_size <- maxSize(mySize1, mySize2)
 
-myStopping1 <- StoppingMinCohorts(nCohorts = 3, report_label = "")
-myStopping2 <- StoppingTargetProb(target = c(0.2, 0.35), prob = 0.5, report_label = "Stopping2")
-myStopping3 <- StoppingMinPatients(nPatients = 20, report_label = "Stopping3")
+my_stopping1 <- StoppingMinCohorts(nCohorts = 3, report_label = "")
+my_stopping2 <- StoppingTargetProb(target = c(0.2, 0.35), prob = 0.5, report_label = "Stopping2")
+my_stopping3 <- StoppingMinPatients(nPatients = 20, report_label = "Stopping3")
 
-myStopping <- StoppingAll(
+my_stopping <- StoppingAll(
   stop_list =
     list(
       StoppingAny(
         stop_list =
-          list(myStopping1, myStopping3),
+          list(my_stopping1, my_stopping3),
         report_label = "StoppingAnyLabel"
       ),
-      myStopping2
+      my_stopping2
     ),
   report_label = "StoppingAllLabel"
 )
 
 # Choose the rule for dose increments.
-myIncrements <- IncrementsRelative(
+my_increments <- IncrementsRelative(
   intervals = c(0, 20),
   increments = c(1, 0.33)
 )
@@ -52,10 +52,10 @@ myIncrements <- IncrementsRelative(
 # Initialize the design.
 my_design <- Design(
   model = model,
-  nextBest = myNextBest,
-  stopping = myStopping,
-  increments = myIncrements,
-  cohortSize = mySize,
+  nextBest = my_next_best,
+  stopping = my_stopping,
+  increments = my_increments,
+  cohortSize = my_size,
   data = emptydata,
   startingDose = 3
 )
@@ -71,14 +71,14 @@ my_options <- McmcOptions(
   step = 2,
   samples = 1000
 )
-time <- system.time(mySims <- simulate(my_design,
+time <- system.time(my_sims <- simulate(my_design,
   args = NULL,
   truth = my_truth,
-  nsim = 1,
+  nsim = 3,
   seed = 819,
   mcmcOptions = my_options,
   parallel = FALSE
 ))[3]
 
 # Summarize the Results of the Simulations.
-summary(mySims, truth = myTruth)
+summary(my_sims, truth = my_truth)
