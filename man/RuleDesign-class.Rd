@@ -5,9 +5,12 @@
 \alias{RuleDesign-class}
 \alias{.RuleDesign}
 \alias{RuleDesign}
+\alias{ThreePlusThreeDesign}
 \title{\code{RuleDesign}}
 \usage{
 RuleDesign(nextBest, cohortSize, data, startingDose)
+
+ThreePlusThreeDesign(doseGrid)
 }
 \arguments{
 \item{nextBest}{(\code{NextBest})\cr see slot definition.}
@@ -17,6 +20,8 @@ RuleDesign(nextBest, cohortSize, data, startingDose)
 \item{data}{(\code{Data})\cr see slot definition.}
 
 \item{startingDose}{(\code{number})\cr see slot definition.}
+
+\item{doseGrid}{(\code{numeric})\cr the dose grid to be used (sorted).}
 }
 \description{
 \ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#stable}{\figure{lifecycle-stable.svg}{options: alt='[Stable]'}}}{\strong{[Stable]}}
@@ -25,6 +30,11 @@ RuleDesign(nextBest, cohortSize, data, startingDose)
 this class and the \code{\link{Design}} class is that \code{\link{RuleDesign}} does not contain
 \code{model}, \code{stopping} and \code{increments} slots.
 }
+\section{Functions}{
+\itemize{
+\item \code{ThreePlusThreeDesign()}: creates a new 3+3 design object from a dose grid.
+
+}}
 \section{Slots}{
 
 \describe{
@@ -46,4 +56,7 @@ my_design <- RuleDesign(
   data = Data(doseGrid = c(5, 10, 15, 25, 35, 50, 80)),
   startingDose = 5
 )
+
+# Initialing a 3+3 design with constant cohort size of 3 and starting dose equal 8.
+my_design <- ThreePlusThreeDesign(doseGrid = c(8, 10, 15, 25, 35, 50, 80))
 }

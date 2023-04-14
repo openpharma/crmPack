@@ -4,69 +4,95 @@
 \name{DualDesign-class}
 \alias{DualDesign-class}
 \alias{.DualDesign}
-\title{Class for the dual-endpoint CRM design}
+\alias{DualDesign}
+\title{\code{DualDesign}}
+\usage{
+DualDesign(model, data, ...)
+}
+\arguments{
+\item{model}{(\code{DualEndpoint})\cr see slot definition.}
+
+\item{data}{(\code{DataDual})\cr see slot definition.}
+
+\item{...}{
+  Arguments passed on to \code{\link[=Design]{Design}}
+  \describe{
+    \item{\code{stopping}}{(\code{Stopping})\cr see slot definition.}
+    \item{\code{increments}}{(\code{Increments})\cr see slot definition.}
+    \item{\code{PLcohortSize}}{(\code{CohortSize})\cr see slot definition.}
+  }}
+}
 \description{
-This class has special requirements for the \code{model} and \code{data}
-slots in comparison to the parent class \code{\linkS4class{Design}}:
+\ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#stable}{\figure{lifecycle-stable.svg}{options: alt='[Stable]'}}}{\strong{[Stable]}}
+
+\code{\link{DualDesign}} is the class for the dual-endpoint CRM design. This class has
+special requirements for the \code{model} and \code{data} slots in comparison to the
+parent class \code{\link{Design}}.
 }
 \section{Slots}{
 
 \describe{
-\item{\code{model}}{the model to be used, an object of class
-\code{\linkS4class{DualEndpoint}}}
+\item{\code{model}}{(\code{DualEndpoint})\cr the model to be used.}
 
-\item{\code{data}}{what is the dose grid, any previous data, etc., contained
-in an object of class \code{\linkS4class{DataDual}}
-
-Note that the \code{NextBest} slot can be of any class, this allows for easy
-comparison with recommendation methods that don't use the
-biomarker information.}
+\item{\code{data}}{(\code{DataDual})\cr specifies dose grid, any previous data, etc.}
 }}
 
-\examples{
-# nolint start
-
-# Define the dose-grid
-emptydata <- DataDual(doseGrid = c(1, 3, 5, 10, 15, 20, 25, 40, 50, 80, 100))
-
-# Initialize the CRM model
-model <- DualEndpointRW(mean = c(0, 1),
-                        cov = matrix(c(1, 0, 0, 1), nrow=2),
-                        sigma2betaW = 0.01,
-                        sigma2W = c(a=0.1, b=0.1),
-                        rho = c(a=1, b=1),
-                        rw1 = TRUE)
-
-# Choose the rule for selecting the next dose
-myNextBest <- NextBestDualEndpoint(target=c(0.9, 1),
-                                   overdose=c(0.35, 1),
-                                   max_overdose_prob=0.25)
-
-# Choose the rule for the cohort-size
-mySize1 <- CohortSizeRange(intervals=c(0, 30),
-                           cohort_size=c(1, 3))
-mySize2 <- CohortSizeDLT(dlt_intervals=c(0, 1),
-                         cohort_size=c(1, 3))
-mySize <- maxSize(mySize1, mySize2)
-
-# Choose the rule for stopping
-myStopping4 <- StoppingTargetBiomarker(target=c(0.9, 1),
-                                       prob=0.5)
-myStopping <- myStopping4 | StoppingMinPatients(40)
-
-# Choose the rule for dose increments
-myIncrements <- IncrementsRelative(intervals=c(0, 20),
-                                   increments=c(1, 0.33))
-
-# Initialize the design
-design <- DualDesign(model = model,
-                     data = emptydata,
-                     nextBest = myNextBest,
-                     stopping = myStopping,
-                     increments = myIncrements,
-                     cohortSize = mySize,
-                     startingDose = 3)
-
-# nolint end
+\note{
+the \code{nextBest} slot can be of any class, this allows for easy comparison
+with recommendation methods that don't use the biomarker information.
 }
-\keyword{classes}
+\examples{
+empty_data <- DataDual(doseGrid = c(1, 3, 5, 10, 15, 20, 25, 40, 50, 80, 100))
+
+# Initialize the CRM model.
+my_model <- DualEndpointRW(
+  mean = c(0, 1),
+  cov = matrix(c(1, 0, 0, 1), nrow = 2),
+  sigma2betaW = 0.01,
+  sigma2W = c(a = 0.1, b = 0.1),
+  rho = c(a = 1, b = 1),
+  rw1 = TRUE
+)
+
+# Choose the rule for selecting the next dose.
+my_next_best <- NextBestDualEndpoint(
+  target = c(0.9, 1),
+  overdose = c(0.35, 1),
+  max_overdose_prob = 0.25
+)
+
+# Choose the rule for the cohort-size.
+my_size1 <- CohortSizeRange(
+  intervals = c(0, 30),
+  cohort_size = c(1, 3)
+)
+my_size2 <- CohortSizeDLT(
+  dlt_intervals = c(0, 1),
+  cohort_size = c(1, 3)
+)
+my_size <- maxSize(my_size1, my_size2)
+
+# Choose the rule for stopping.
+my_stopping1 <- StoppingTargetBiomarker(
+  target = c(0.9, 1),
+  prob = 0.5
+)
+my_stopping <- my_stopping1 | StoppingMinPatients(40)
+
+# Choose the rule for dose increments.
+my_increments <- IncrementsRelative(
+  intervals = c(0, 20),
+  increments = c(1, 0.33)
+)
+
+# Initialize the design.
+design <- DualDesign(
+  model = my_model,
+  data = empty_data,
+  nextBest = my_next_best,
+  stopping = my_stopping,
+  increments = my_increments,
+  cohortSize = my_size,
+  startingDose = 3
+)
+}
