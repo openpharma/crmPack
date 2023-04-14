@@ -2651,18 +2651,11 @@ setMethod(
     dose_target_ci_ratio <- dose_target_ci[[2]] / dose_target_ci[[1]]
 
     do_stop <- dose_target_ci_ratio <= stopping@target_ratio
-    if (isTRUE(stopping@report_label == "default")) {
-      report_label <-
-        paste(
-          "TD",
-          x@targetRatio,
-          "for",
-          x@targetEndOfTrial,
-          "target prob"
-        )
-    } else {
-      report_label <- stopping@report_label
-    }
+
+    report_label <- h_default_if_empty(
+      stopping@report_label,
+      default = paste("TD", stopping@target_ratio, "for", stopping@prob_target, "target prob")
+    )
 
     text <- paste0(
       "95% CI is (",
@@ -2715,18 +2708,13 @@ setMethod("stopTrial",
       ## so can we stop?
       doStop <- ratio <= stopping@target_ratio
 
-      if (isTRUE(stopping@report_label == "default")) {
-        report_label <-
-          paste(
-            "TD",
-            x@targetRatio,
-            "for",
-            x@targetEndOfTrial,
-            "target prob"
-          )
-      } else {
-        report_label <- stopping@report_label
-      }
+
+
+      report_label <- h_default_if_empty(
+        stopping@report_label,
+        default = paste("TD", stopping@target_ratio, "for", stopping@prob_target, "target prob")
+      )
+
       ## generate messgae
       text <- paste(
         "95% CI is (", round(CI[1], 4), ",", round(CI[2], 4), "), Ratio =", round(ratio, 4), "is ", ifelse(doStop, "is less than or equal to", "greater than"),
@@ -2844,18 +2832,12 @@ setMethod("stopTrial",
       ## so can we stop?
       doStop <- ratio <= stopping@target_ratio
 
-      if (isTRUE(stopping@report_label == "default")) {
-        report_label <-
-          paste(
-            "GStar",
-            x@targetRatio,
-            "for",
-            x@targetEndOfTrial,
-            "target prob"
-          )
-      } else {
-        report_label <- stopping@report_label
-      }
+
+
+      report_label <- h_default_if_empty(
+        stopping@report_label,
+        default = paste("GStar", stopping@target_ratio, "for", stopping@pro_target, "target prob")
+      )
 
       ## generate messgae
       text1 <- paste(
@@ -3003,18 +2985,11 @@ setMethod("stopTrial",
       ## so can we stop?
       doStop <- ratio <= stopping@target_ratio
 
-      if (isTRUE(stopping@report_label == "default")) {
-        report_label <-
-          paste(
-            "GStar",
-            x@targetRatio,
-            "for",
-            x@targetEndOfTrial,
-            "target prob"
-          )
-      } else {
-        report_label <- stopping@report_label
-      }
+
+      report_label <- h_default_if_empty(
+        stopping@report_label,
+        default = paste("GStar", stopping@target_ratio, "for", stopping@pro_target, "target prob")
+      )
       ## generate message
 
       text1 <- paste(
