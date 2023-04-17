@@ -205,7 +205,6 @@ Design <- function(model,
 #' @export
 #' @example examples/Design-class-DualDesign.R
 #'
-#'
 DualDesign <- function(model,
                        data,
                        ...) {
@@ -218,63 +217,75 @@ DualDesign <- function(model,
   )
 }
 
-# nolint start
+# TDsamplesDesign ----
 
-## ===================================================================================
-## -------------------------------------------------------------------------------
-## Design class using DLE responses only based on the pseudo DLE model with samples
-## ---------------------------------------------------------------------------
-##' This is a class of design based only on DLE responses using the 'LogisticIndepBeta' class model
-##' and DLE samples are also used.
-##' In addition to the slots in the more simple \code{\linkS4class{RuleDesign}},
-##' objects of this class contain:
-##'
-##' @slot model the pseudo DLE model to be used, an object class of
-##' \code{\linkS4class{ModelTox}}
-##' @slot stopping stopping rule(s) for the trial, an object class of \code{\linkS4class{Stopping}}
-##' @slot increments how to control increments between dose levels, an object class of
-##' \code{\linkS4class{Increments}}
-##' @slot PLcohortSize rules for the cohort sizes for placebo, if any planned
-##' an object of class \code{\linkS4class{CohortSize}}
-##'
-##' @example examples/design-class-TDsamplesDesign.R
-##' @export
-##' @keywords class
-.TDsamplesDesign <-
-  setClass(
-    Class = "TDsamplesDesign",
-    representation(
-      model = "ModelTox",
-      stopping = "Stopping",
-      increments = "Increments",
-      PLcohortSize = "CohortSize"
-    ),
-    prototype(
-      model = .LogisticIndepBeta(),
-      nextBest = .NextBestTDsamples(),
-      stopping = .StoppingMinPatients(),
-      increments = .IncrementsRelative(),
-      PLcohortSize = CohortSizeConst(0L)
-    ),
-    contains = list("RuleDesign")
-  )
+## class ----
 
-validObject(.TDsamplesDesign())
-##' Initialization function for 'TDsamplesDesign' class
-##'
-##' @param model see \code{\linkS4class{TDsamplesDesign}}
-##' @param stopping see \code{\linkS4class{TDsamplesDesign}}
-##' @param increments see \code{\linkS4class{TDsamplesDesign}}
-##' @param PLcohortSize see \code{\linkS4class{TDsamplesDesign}}
-##' @param \dots additional arguments for \code{\linkS4class{RuleDesign}}
-##' @return the \code{\linkS4class{TDsamplesDesign}} class object
-##'
-##' @export
-##' @keywords methods
-TDsamplesDesign <- function(model, stopping, increments, PLcohortSize = CohortSizeConst(0L), ...) {
+#' `TDsamplesDesign`
+#'
+#' @description `r lifecycle::badge("stable")`
+#'
+#' [`TDsamplesDesign`] is the class of design based only on DLT responses using
+#' [`ModelTox`] class model (i.e. [`LogisticIndepBeta`]) as well as MCMC samples
+#' obtained for this model.
+#'
+#' @slot model (`ModelTox`)\cr the pseudo DLT model to be used.
+#' @slot stopping (`Stopping`)\cr stopping rule(s) for the trial.
+#' @slot increments (`Increments`)\cr how to control increments between dose levels.
+#' @slot PLcohortSize (`CohortSize`)\cr rules for the cohort sizes for placebo,
+#'   if any planned (defaults to constant 0 placebo patients).
+#'
+#' @aliases TDsamplesDesign
+#' @export
+#'
+.TDsamplesDesign <- setClass(
+  Class = "TDsamplesDesign",
+  slots = c(
+    model = "ModelTox",
+    stopping = "Stopping",
+    increments = "Increments",
+    PLcohortSize = "CohortSize"
+  ),
+  prototype = prototype(
+    model = .LogisticIndepBeta(),
+    nextBest = .NextBestTDsamples(),
+    stopping = .StoppingMinPatients(),
+    increments = .IncrementsRelative(),
+    PLcohortSize = CohortSizeConst(0L)
+  ),
+  contains = "RuleDesign"
+)
+
+## constructor ----
+
+#' @rdname TDsamplesDesign-class
+#'
+#' @param model (`ModelTox`)\cr see slot definition.
+#' @param stopping (`Stopping`)\cr see slot definition.
+#' @param increments (`Increments`)\cr see slot definition.
+#' @param PLcohortSize (`CohortSize`)\cr see slot definition.
+#' @inheritDotParams RuleDesign
+#'
+#' @export
+#' @example examples/Design-class-TDsamplesDesign.R
+#'
+TDsamplesDesign <- function(model,
+                            stopping,
+                            increments,
+                            PLcohortSize = CohortSizeConst(0L),
+                            ...) {
   start <- RuleDesign(...)
-  .TDsamplesDesign(start, model = model, stopping = stopping, increments = increments, PLcohortSize = PLcohortSize)
+  new(
+    "TDsamplesDesign",
+    start,
+    model = model,
+    stopping = stopping,
+    increments = increments,
+    PLcohortSize = PLcohortSize
+  )
 }
+
+# nolint start
 
 ## =============================================================================
 ## -------------------------------------------------------------------------------

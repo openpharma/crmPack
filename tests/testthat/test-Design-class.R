@@ -90,7 +90,7 @@ test_that("Design object can be created with user constructor", {
       model,
       stopping,
       increments,
-      PLcohortSize = CohortSizeConst(2L),
+      CohortSizeConst(2L),
       nextBest = next_best,
       cohortSize = cohort_size,
       data = empty_data,
@@ -148,6 +148,65 @@ test_that("DualDesign user constructor arguments names are as expected", {
   expect_function(
     DualDesign,
     args = c("model", "data", "..."),
+    ordered = TRUE
+  )
+})
+
+# TDsamplesDesign ----
+
+test_that(".TDsamplesDesign works as expected", {
+  result <- expect_silent(.TDsamplesDesign())
+  expect_valid(result, "TDsamplesDesign")
+})
+
+test_that("TDsamplesDesign object can be created with user constructor", {
+  empty_data <- DataDual(doseGrid = 2:50)
+  model <- h_get_logistic_indep_beta(emptydata = TRUE)
+  stopping <- StoppingMinPatients(nPatients = 30)
+  increments <- h_increments_relative()
+  next_best <- h_next_best_tdsamples()
+  cohort_size <- CohortSizeConst(size = 3)
+
+  result <- expect_silent(
+    TDsamplesDesign(
+      model,
+      stopping,
+      increments,
+      nextBest = next_best,
+      cohortSize = cohort_size,
+      data = empty_data,
+      startingDose = 3
+    )
+  )
+  expect_valid(result, "TDsamplesDesign")
+  expect_identical(result@model, model)
+  expect_identical(result@stopping, stopping)
+  expect_identical(result@increments, increments)
+  expect_identical(result@PLcohortSize, CohortSizeConst(0))
+  expect_identical(result@nextBest, next_best)
+  expect_identical(result@cohortSize, cohort_size)
+  expect_identical(result@data, empty_data)
+  expect_identical(result@startingDose, 3)
+
+  result <- expect_silent(
+    TDsamplesDesign(
+      model,
+      stopping,
+      increments,
+      CohortSizeConst(2L),
+      nextBest = next_best,
+      cohortSize = cohort_size,
+      data = empty_data,
+      startingDose = 3
+    )
+  )
+  expect_identical(result@PLcohortSize, CohortSizeConst(2L))
+})
+
+test_that("TDsamplesDesign user constructor arguments names are as expected", {
+  expect_function(
+    TDsamplesDesign,
+    args = c("model", "stopping", "increments", "PLcohortSize", "..."),
     ordered = TRUE
   )
 })
