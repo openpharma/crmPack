@@ -8,7 +8,7 @@ h_default_if_empty(x, default)
 }
 \arguments{
 \item{x}{(\code{any}) \cr an object to handle. It can be any object for which
-\code{\link[=length]{length()}} function os defined.}
+\code{\link[=length]{length()}} function is defined.}
 
 \item{default}{(\code{any}) \cr a default value for \code{x} object.}
 }

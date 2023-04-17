@@ -857,7 +857,7 @@ h_null_if_na <- function(x) {
 #' that is an object for which [length()] function returns `0L`.
 #'
 #' @param x (`any`) \cr an object to handle. It can be any object for which
-#'   [length()] function os defined.
+#'   [length()] function is defined.
 #' @param default (`any`) \cr a default value for `x` object.
 #'
 #' @export
