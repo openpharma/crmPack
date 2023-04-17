@@ -1268,7 +1268,7 @@ test_that("maxDose-IncrementsMin works correctly when incr2 is minimum", {
 
 ## StoppingMTDCV ----
 
-test_that("StoppingMTDCV works correctly if CV is below threshold (custom labels)", {
+test_that("StoppingMTDCV works correctly if CV is below threshold", {
   my_data <- h_get_data()
   my_model <- h_get_logistic_kadane()
   my_samples <- mcmc(my_data, my_model, h_get_mcmc_options(samples = 1000, burnin = 1000))
