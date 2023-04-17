@@ -849,28 +849,27 @@ h_null_if_na <- function(x) {
   }
 }
 
-#' Getting the default label for empty labels
+#' Getting the default value for an empty object
 #'
 #' @description `r lifecycle::badge("stable")`
 #'
-#' A simple helper function that replaces empty labels by the default label.
+#' A simple helper function that sets a default value for an empty object,
+#' that is an object for which [length()] function returns `0L`.
 #'
-#' @param label contains the current label value and checks if the label is
-#'   an empty string, i.e. `""`. If so, this function replaces it with the default
-#'   label as specified by `default`. If not the label is returned as it is.
-#' @param default contains the default label the replaces the empty string in label
-#'
-#' @return a label containing the updated (or remaining) label string.
+#' @param x (`any`) \cr an object to handle. It can be any object for which
+#'   [length()] function os defined.
+#' @param default (`any`) \cr a default value for `x` object.
 #'
 #' @export
 #' @examples
-#' h_default_if_empty(label = "", default = "default label")
-#' h_default_if_empty(label = "custom label", default = "default label")
-h_default_if_empty <- function(label, default) {
-  if (isTRUE(label == "")) {
+#' h_default_if_empty(character(0), default = "default label")
+#' h_default_if_empty("custom label", default = "default label")
+#' h_default_if_empty(NA, default = "default label")
+h_default_if_empty <- function(x, default) {
+  if (length(x) == 0L) {
     default
   } else {
-    label
+    x
   }
 }
 

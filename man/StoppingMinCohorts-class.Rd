@@ -7,12 +7,12 @@
 \alias{StoppingMinCohorts}
 \title{\code{StoppingMinCohorts}}
 \usage{
-StoppingMinCohorts(nCohorts, report_label = character(0))
+StoppingMinCohorts(nCohorts, report_label = NA_character_)
 }
 \arguments{
 \item{nCohorts}{(\code{number})\cr see slot definition.}
 
-\item{report_label}{(\code{string})\cr see slot definition.}
+\item{report_label}{(\code{string} or \code{NA})\cr see slot definition.}
 }
 \description{
 \ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#stable}{\figure{lifecycle-stable.svg}{options: alt='[Stable]'}}}{\strong{[Stable]}}

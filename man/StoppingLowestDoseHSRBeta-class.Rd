@@ -12,7 +12,7 @@ StoppingLowestDoseHSRBeta(
   prob = 0.95,
   a = 1,
   b = 1,
-  report_label = character(0)
+  report_label = NA_character_
 )
 }
 \arguments{
@@ -24,7 +24,7 @@ StoppingLowestDoseHSRBeta(
 
 \item{b}{(\code{number})\cr see slot definition.}
 
-\item{report_label}{(\code{string})\cr see slot definition.}
+\item{report_label}{(\code{string} or \code{NA})\cr see slot definition.}
 }
 \description{
 \ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#experimental}{\figure{lifecycle-experimental.svg}{options: alt='[Experimental]'}}}{\strong{[Experimental]}}

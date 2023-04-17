@@ -2,26 +2,24 @@
 % Please edit documentation in R/helpers.R
 \name{h_default_if_empty}
 \alias{h_default_if_empty}
-\title{Getting the default label for empty labels}
+\title{Getting the default value for an empty object}
 \usage{
-h_default_if_empty(label, default)
+h_default_if_empty(x, default)
 }
 \arguments{
-\item{label}{contains the current label value and checks if the label is
-an empty string, i.e. \code{""}. If so, this function replaces it with the default
-label as specified by \code{default}. If not the label is returned as it is.}
+\item{x}{(\code{any}) \cr an object to handle. It can be any object for which
+\code{\link[=length]{length()}} function os defined.}
 
-\item{default}{contains the default label the replaces the empty string in label}
-}
-\value{
-a label containing the updated (or remaining) label string.
+\item{default}{(\code{any}) \cr a default value for \code{x} object.}
 }
 \description{
 \ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#stable}{\figure{lifecycle-stable.svg}{options: alt='[Stable]'}}}{\strong{[Stable]}}
 
-A simple helper function that replaces empty labels by the default label.
+A simple helper function that sets a default value for an empty object,
+that is an object for which \code{\link[=length]{length()}} function returns \code{0L}.
 }
 \examples{
-h_default_if_empty(label = "", default = "default label")
-h_default_if_empty(label = "custom label", default = "default label")
+h_default_if_empty(character(0), default = "default label")
+h_default_if_empty("custom label", default = "default label")
+h_default_if_empty(NA, default = "default label")
 }

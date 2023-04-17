@@ -11,7 +11,7 @@ StoppingTargetBiomarker(
   target,
   prob,
   is_relative = TRUE,
-  report_label = character(0)
+  report_label = NA_character_
 )
 }
 \arguments{
@@ -21,7 +21,7 @@ StoppingTargetBiomarker(
 
 \item{is_relative}{(\code{flag})\cr see slot definition.}
 
-\item{report_label}{(\code{string})\cr see slot definition.}
+\item{report_label}{(\code{string} or \code{NA})\cr see slot definition.}
 }
 \description{
 \ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#stable}{\figure{lifecycle-stable.svg}{options: alt='[Stable]'}}}{\strong{[Stable]}}

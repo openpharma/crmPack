@@ -335,13 +335,20 @@ test_that("StoppingCohortsNearDose object can be created with user constructor (
   expect_valid(result, "StoppingCohortsNearDose")
   expect_identical(result@nCohorts, 2L)
   expect_identical(result@percentage, 50)
+  expect_identical(result@report_label, NA_character_)
 })
 
 test_that("StoppingCohortsNearDose object can be created with user constructor", {
-  result <- expect_silent(StoppingCohortsNearDose(5L, 40))
+  result <- expect_silent(StoppingCohortsNearDose(5L, 40, "custom label"))
   expect_valid(result, "StoppingCohortsNearDose")
   expect_identical(result@nCohorts, 5L)
   expect_identical(result@percentage, 40)
+  expect_identical(result@report_label, "custom label")
+})
+
+test_that("StoppingCohortsNearDose replaces empty label with correct default label", {
+  result <- expect_silent(StoppingCohortsNearDose(5L, 40, character(0)))
+  expect_identical(result@report_label, "≥ 5 cohorts in 40 % dose range around NBD")
 })
 
 ## StoppingPatientsNearDose ----

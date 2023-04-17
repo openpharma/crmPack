@@ -7,12 +7,12 @@
 \alias{StoppingMinPatients}
 \title{\code{StoppingMinPatients}}
 \usage{
-StoppingMinPatients(nPatients, report_label = character(0))
+StoppingMinPatients(nPatients, report_label = NA_character_)
 }
 \arguments{
 \item{nPatients}{(\code{number})\cr see slot definition.}
 
-\item{report_label}{(\code{string})\cr see slot definition.}
+\item{report_label}{(\code{string} or \code{NA})\cr see slot definition.}
 }
 \description{
 \ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#stable}{\figure{lifecycle-stable.svg}{options: alt='[Stable]'}}}{\strong{[Stable]}}
@@ -24,8 +24,6 @@ patients
 
 \describe{
 \item{\code{nPatients}}{(\code{number})\cr minimum allowed number of patients.}
-
-\item{\code{report_label}}{label for stopping rule reporting}
 }}
 
 \examples{
