@@ -68,8 +68,8 @@ setSeed <- function(seed = NULL) {
 
 ##' Helper function to obtain simulation results list
 ##'
-##' The function \code{fun} can use variables that are visible to itself. The
-##' names of these variables have to given in the vector \code{vars}.
+##' The function \code{fun} can use variables that are visible to itself.
+##' The names of these variables have to given in the vector \code{vars}.
 ##'
 ##' @param fun the simulation function for a single iteration, which takes as
 ##' single parameter the iteration index
