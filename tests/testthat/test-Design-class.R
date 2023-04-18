@@ -210,3 +210,62 @@ test_that("TDsamplesDesign user constructor arguments names are as expected", {
     ordered = TRUE
   )
 })
+
+# TDDesign ----
+
+test_that(".TDDesign works as expected", {
+  result <- expect_silent(.TDDesign())
+  expect_valid(result, "TDDesign")
+})
+
+test_that("TDDesign object can be created with user constructor", {
+  empty_data <- DataDual(doseGrid = 2:50)
+  model <- h_get_logistic_indep_beta(emptydata = TRUE)
+  stopping <- StoppingMinPatients(nPatients = 30)
+  increments <- h_increments_relative()
+  next_best <- NextBestTD(prob_target_drt = 0.35, prob_target_eot = 0.3)
+  cohort_size <- CohortSizeConst(size = 3)
+
+  result <- expect_silent(
+    TDDesign(
+      model,
+      stopping,
+      increments,
+      nextBest = next_best,
+      cohortSize = cohort_size,
+      data = empty_data,
+      startingDose = 3
+    )
+  )
+  expect_valid(result, "TDDesign")
+  expect_identical(result@model, model)
+  expect_identical(result@stopping, stopping)
+  expect_identical(result@increments, increments)
+  expect_identical(result@pl_cohort_size, CohortSizeConst(0))
+  expect_identical(result@nextBest, next_best)
+  expect_identical(result@cohortSize, cohort_size)
+  expect_identical(result@data, empty_data)
+  expect_identical(result@startingDose, 3)
+
+  result <- expect_silent(
+    TDDesign(
+      model,
+      stopping,
+      increments,
+      CohortSizeConst(2L),
+      nextBest = next_best,
+      cohortSize = cohort_size,
+      data = empty_data,
+      startingDose = 3
+    )
+  )
+  expect_identical(result@pl_cohort_size, CohortSizeConst(2L))
+})
+
+test_that("TDDesign user constructor arguments names are as expected", {
+  expect_function(
+    TDDesign,
+    args = c("model", "stopping", "increments", "pl_cohort_size", "..."),
+    ordered = TRUE
+  )
+})
