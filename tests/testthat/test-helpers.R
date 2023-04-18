@@ -462,21 +462,22 @@ test_that("h_find_interval works as expected for custom replacement", {
 
 test_that("h_create_instance works correctly", {
   # Helpers
-  perform_test_for_object <- function(className, examplePrefix, exampleFolder="../../examples") {
-    exampleFile = file.path(exampleFolder, paste0(examplePrefix, "-class-", className, ".R"))
+  perform_test_for_object <- function(className, examplePrefix, exampleFolder = "../../examples") {
+    exampleFile <- file.path(exampleFolder, paste0(examplePrefix, "-class-", className, ".R"))
     if (file.exists(exampleFile)) {
       statements <- readLines(exampleFile)
       statements <- statements[which(stringr::str_sub(statements, 1, 1) != "#")]
-      statements <- paste0(statements, collapse="")
-      tryCatch({
-        test_obj <- eval(parse(text=statements))
-        return(className)
-      },
-      error=function(e) {
-        print(geterrmessage())
-        print(statements)
-        if (!is.null(test_obj)) print(test_obj)
-      }
+      statements <- paste0(statements, collapse = "")
+      tryCatch(
+        {
+          test_obj <- eval(parse(text = statements))
+          return(className)
+        },
+        error = function(e) {
+          print(geterrmessage())
+          print(statements)
+          if (!is.null(test_obj)) print(test_obj)
+        }
       )
       expect_equal(h_create_instance(className), test_obj)
     } else {
@@ -488,7 +489,7 @@ test_that("h_create_instance works correctly", {
     names(getClassDef(superClassName)@subclasses)
   }
 
-  perform_test_for_class <- function(className, examplePrefix, exceptions=c()) {
+  perform_test_for_class <- function(className, examplePrefix, exceptions = c()) {
     classes_to_test <- get_subclass_names(className)
     classes_not_tested <- classes_to_test
 
@@ -530,8 +531,10 @@ test_that("h_create_instance works correctly", {
     perform_test_for_class(
       "GeneralModel",
       "Model",
-      c("LogisticNormal", "LogisticLogNormal","LogisticLogNormalMixture",
-        "DALogisticLogNormal", "TITELogisticLogNormal")
+      c(
+        "LogisticNormal", "LogisticLogNormal", "LogisticLogNormalMixture",
+        "DALogisticLogNormal", "TITELogisticLogNormal"
+      )
     )
   )
   classes_not_tested <- append(
@@ -539,8 +542,10 @@ test_that("h_create_instance works correctly", {
     perform_test_for_class(
       "Stopping",
       "Rules",
-      c("StoppingSpecificDose", "StoppingHighestDose", "StoppingList", "StoppingAll",
-        "StoppingAny", "StoppingLowestDoseHSRBeta")
+      c(
+        "StoppingSpecificDose", "StoppingHighestDose", "StoppingList", "StoppingAll",
+        "StoppingAny", "StoppingLowestDoseHSRBeta"
+      )
     )
   )
 

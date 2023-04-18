@@ -1221,72 +1221,54 @@ h_create_instance <- function(clsName) {
     )
   }
   # Increments
-  else if (clsName ==  "IncrementsRelative") {
+  else if (clsName == "IncrementsRelative") {
     return(IncrementsRelative(intervals = c(0, 20), increments = c(1, 0.33)))
-  }
-  else if (clsName ==  "IncrementsDoseLevels") {
+  } else if (clsName == "IncrementsDoseLevels") {
     return(IncrementsDoseLevels(levels = 2, basis_level = "last"))
-  }
-  else if (clsName ==  "IncrementsRelativeDLT") {
+  } else if (clsName == "IncrementsRelativeDLT") {
     return(IncrementsRelativeDLT(dlt_intervals = c(0, 1, 3), increments = c(1, 0.33, 0.2)))
-  }
-  else if (clsName ==  "IncrementsHSRBeta") {
+  } else if (clsName == "IncrementsHSRBeta") {
     return(IncrementsHSRBeta(target = 0.3, prob = 0.95))
-  }
-  else if (clsName ==  "IncrementsMin") {
+  } else if (clsName == "IncrementsMin") {
     return({
       inc1 <- IncrementsRelativeDLT(dlt_intervals = c(0, 1, 3), increments = c(1, 0.33, 0.2))
       inc2 <- IncrementsRelative(intervals = c(0, 20), increments = c(1, 0.33))
-      IncrementsMin(increments_list = list(inc1, inc2)
-      )
+      IncrementsMin(increments_list = list(inc1, inc2))
     })
-  }
-  else if (clsName ==  "IncrementsRelativeParts") {
+  } else if (clsName == "IncrementsRelativeParts") {
     return(IncrementsRelativeParts(dlt_start = 0, clean_start = 1))
-  }
-  else if (clsName ==  "IncrementsRelativeDLTCurrent") {
+  } else if (clsName == "IncrementsRelativeDLTCurrent") {
     return(IncrementsRelativeDLTCurrent(dlt_intervals = c(0, 1, 3), increments = c(1, 0.33, 0.2)))
   }
   # Stopping
-  else if (clsName ==  "StoppingCohortsNearDose") {
+  else if (clsName == "StoppingCohortsNearDose") {
     return(StoppingCohortsNearDose(nCohorts = 3, percentage = 0.2))
-  }
-  else if (clsName ==  "StoppingPatientsNearDose") {
+  } else if (clsName == "StoppingPatientsNearDose") {
     return(StoppingPatientsNearDose(nPatients = 9, percentage = 20))
-  }
-  else if (clsName ==  "StoppingMinCohorts") {
+  } else if (clsName == "StoppingMinCohorts") {
     return(StoppingMinCohorts(nCohorts = 6))
-  }
-  else if (clsName ==  "StoppingMinPatients") {
+  } else if (clsName == "StoppingMinPatients") {
     return(StoppingMinPatients(nPatients = 20))
-  }
-  else if (clsName ==  "StoppingTargetProb") {
+  } else if (clsName == "StoppingTargetProb") {
     return(StoppingTargetProb(target = c(0.2, 0.35), prob = 0.5))
-  }
-  else if (clsName ==  "StoppingMTDdistribution") {
+  } else if (clsName == "StoppingMTDdistribution") {
     return(StoppingMTDdistribution(target = 0.33, thresh = 0.5, prob = 0.9))
-  }
-  else if (clsName ==  "StoppingMTDCV") {
+  } else if (clsName == "StoppingMTDCV") {
     return(StoppingMTDCV(target = 0.3, thresh_cv = 40))
-  }
-  else if (clsName ==  "StoppingLowestDoseHSRBeta") {
+  } else if (clsName == "StoppingLowestDoseHSRBeta") {
     return(StoppingLowestDoseHSRBeta(target = 0.3, prob = 0.95, a = 1, b = 1))
-  }
-  else if (clsName ==  "StoppingTargetBiomarker") {
+  } else if (clsName == "StoppingTargetBiomarker") {
     return(StoppingTargetBiomarker(target = c(0.9, 1), prob = 0.5))
-  }
-  else if (clsName ==  "StoppingSpecificDose") {
+  } else if (clsName == "StoppingSpecificDose") {
     return(
       StoppingSpecificDose(
         rule = StoppingTargetProb(target = c(0, 0.3), prob = 0.8),
         dose = 80
       )
     )
-  }
-  else if (clsName ==  "StoppingHighestDose") {
+  } else if (clsName == "StoppingHighestDose") {
     return(StoppingHighestDose())
-  }
-  else if (clsName ==  "StoppingList") {
+  } else if (clsName == "StoppingList") {
     return({
       my_stopping1 <- StoppingMinCohorts(nCohorts = 3)
       my_stopping2 <- StoppingTargetProb(target = c(0.2, 0.35), prob = 0.5)
@@ -1296,8 +1278,7 @@ h_create_instance <- function(clsName) {
         summary = any
       )
     })
-  }
-  else if (clsName ==  "StoppingAll") {
+  } else if (clsName == "StoppingAll") {
     return(
       StoppingAll(
         stop_list = c(
@@ -1307,8 +1288,7 @@ h_create_instance <- function(clsName) {
         )
       )
     )
-  }
-  else if (clsName ==  "StoppingAny") {
+  } else if (clsName == "StoppingAny") {
     return({
       my_stopping1 <- StoppingMinCohorts(nCohorts = 3)
       my_stopping2 <- StoppingTargetProb(target = c(0.2, 0.35), prob = 0.5)
@@ -1316,43 +1296,35 @@ h_create_instance <- function(clsName) {
 
       StoppingAny(stop_list = c(my_stopping1, my_stopping2, my_stopping3))
     })
-  }
-  else if (clsName ==  "StoppingTDCIRatio") {
+  } else if (clsName == "StoppingTDCIRatio") {
     return(StoppingTDCIRatio(target_ratio = 5, prob_target = 0.3))
-  }
-  else if (clsName ==  "StoppingMaxGainCIRatio") {
+  } else if (clsName == "StoppingMaxGainCIRatio") {
     return(StoppingMaxGainCIRatio(target_ratio = 5, prob_target = 0.3))
   }
   # Cohorts
-  else if (clsName ==  "CohortSizeRange") {
+  else if (clsName == "CohortSizeRange") {
     return(CohortSizeRange(intervals = c(0, 30), cohort_size = c(1, 3)))
-  }
-  else if (clsName ==  "CohortSizeDLT") {
+  } else if (clsName == "CohortSizeDLT") {
     return(CohortSizeDLT(dlt_intervals = c(0, 1), cohort_size = c(1, 3)))
-  }
-  else if (clsName ==  "CohortSizeConst") {
+  } else if (clsName == "CohortSizeConst") {
     return(CohortSizeConst(size = 3))
-  }
-  else if (clsName ==  "CohortSizeParts") {
+  } else if (clsName == "CohortSizeParts") {
     return(CohortSizeParts(sizes = c(1, 3)))
-  }
-  else if (clsName ==  "CohortSizeMax") {
+  } else if (clsName == "CohortSizeMax") {
     return({
       size1 <- CohortSizeRange(intervals = c(0, 10), cohort_size = c(1, 3))
       size2 <- CohortSizeDLT(dlt_intervals = c(0, 1), cohort_size = c(1, 3))
 
       CohortSizeMax(cohort_size_list = list(size1, size2))
     })
-  }
-  else if (clsName ==  "CohortSizeMin") {
+  } else if (clsName == "CohortSizeMin") {
     return({
       size1 <- CohortSizeRange(intervals = c(0, 10), cohort_size = c(1, 3))
       size2 <- CohortSizeDLT(dlt_intervals = c(0, 1), cohort_size = c(1, 3))
 
       CohortSizeMin(cohort_size_list = list(size1, size2))
     })
-  }
-  else if (clsName ==  "CohortSizeMin") {
+  } else if (clsName == "CohortSizeMin") {
     return({
       size1 <- CohortSizeRange(intervals = c(0, 10), cohort_size = c(1, 3))
       size2 <- CohortSizeDLT(dlt_intervals = c(0, 1), cohort_size = c(1, 3))
@@ -1361,7 +1333,7 @@ h_create_instance <- function(clsName) {
     })
   }
   # NextBest
-  else if (clsName ==  "NextBestMTD") {
+  else if (clsName == "NextBestMTD") {
     return(
       NextBestMTD(
         target = 0.33,
@@ -1370,14 +1342,11 @@ h_create_instance <- function(clsName) {
         }
       )
     )
-  }
-  else if (clsName ==  "NextBestNCRM") {
+  } else if (clsName == "NextBestNCRM") {
     return(NextBestNCRM(target = c(0.2, 0.35), overdose = c(0.35, 1), max_overdose_prob = 0.25))
-  }
-  else if (clsName ==  "NextBestThreePlusThree") {
+  } else if (clsName == "NextBestThreePlusThree") {
     return(NextBestThreePlusThree())
-  }
-  else if (clsName ==  "NextBestDualEndpoint") {
+  } else if (clsName == "NextBestDualEndpoint") {
     return(
       NextBestDualEndpoint(
         target = c(200, 300),
@@ -1386,20 +1355,15 @@ h_create_instance <- function(clsName) {
         target_relative = FALSE
       )
     )
-  }
-  else if (clsName ==  "NextBestMinDist") {
+  } else if (clsName == "NextBestMinDist") {
     return(NextBestMinDist(target = 0.3))
-  }
-  else if (clsName ==  "NextBestInfTheory") {
+  } else if (clsName == "NextBestInfTheory") {
     return(NextBestInfTheory(0.33, 1.2))
-  }
-  else if (clsName ==  "NextBestTD") {
+  } else if (clsName == "NextBestTD") {
     return(NextBestTD(0.35, 0.3))
-  }
-  else if (clsName ==  "NextBestMaxGain") {
+  } else if (clsName == "NextBestMaxGain") {
     return(NextBestMaxGain(0.35, 0.3))
-  }
-  else if (clsName ==  "NextBestNCRMLoss") {
+  } else if (clsName == "NextBestNCRMLoss") {
     return(
       NextBestNCRMLoss(
         target = c(0.2, 0.35),
@@ -1409,8 +1373,7 @@ h_create_instance <- function(clsName) {
         losses = c(1, 0, 1, 2)
       )
     )
-  }
-  else if (clsName ==  "NextBestTDsamples") {
+  } else if (clsName == "NextBestTDsamples") {
     return(
       NextBestTDsamples(
         prob_target_drt = 0.35,
@@ -1420,8 +1383,7 @@ h_create_instance <- function(clsName) {
         }
       )
     )
-  }
-  else if (clsName ==  "NextBestMaxGainSamples") {
+  } else if (clsName == "NextBestMaxGainSamples") {
     return(
       NextBestMaxGainSamples(
         prob_target_drt = 0.35,
@@ -1434,8 +1396,7 @@ h_create_instance <- function(clsName) {
         }
       )
     )
-  }
-  else {
+  } else {
     stop(paste0("Unsupported class name: '", clsName, "'"))
   }
   return(x)
