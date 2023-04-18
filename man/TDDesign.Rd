@@ -4,7 +4,13 @@
 \alias{TDDesign}
 \title{Initialization function for 'TDDesign' class}
 \usage{
-TDDesign(model, stopping, increments, PLcohortSize = CohortSizeConst(0L), ...)
+TDDesign(
+  model,
+  stopping,
+  increments,
+  pl_cohort_size = CohortSizeConst(0L),
+  ...
+)
 }
 \arguments{
 \item{model}{please refer to \code{\linkS4class{TDDesign}} class object}
@@ -13,7 +19,7 @@ TDDesign(model, stopping, increments, PLcohortSize = CohortSizeConst(0L), ...)
 
 \item{increments}{please refer to \code{\linkS4class{TDDesign}} class object}
 
-\item{PLcohortSize}{see \code{\linkS4class{TDDesign}}}
+\item{pl_cohort_size}{see \code{\linkS4class{TDDesign}}}
 
 \item{\dots}{additional arguments for \code{\linkS4class{RuleDesign}}}
 }

@@ -104,7 +104,7 @@ reference:
       - RuleDesign
       - Design
       - DualDesign
-      - ThreePlusThreeDesign
+      - TDsamplesDesign
   - title: Internal Helper Functions
     contents:
       - h_doses_unique_per_cohort
@@ -367,8 +367,6 @@ reference:
       - Stopping-class
       - TDDesign-class
       - TDDesign
-      - TDsamplesDesign-class
-      - TDsamplesDesign
       - approximate
       - assertions
       - crmPackExample
