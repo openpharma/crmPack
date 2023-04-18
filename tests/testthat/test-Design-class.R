@@ -79,7 +79,7 @@ test_that("Design object can be created with user constructor", {
   expect_identical(result@model, model)
   expect_identical(result@stopping, stopping)
   expect_identical(result@increments, increments)
-  expect_identical(result@PLcohortSize, placebo_cohort_size)
+  expect_identical(result@pl_cohort_size, placebo_cohort_size)
   expect_identical(result@nextBest, next_best)
   expect_identical(result@cohortSize, cohort_size)
   expect_identical(result@data, empty_data)
@@ -97,13 +97,13 @@ test_that("Design object can be created with user constructor", {
       startingDose = 3
     )
   )
-  expect_identical(result@PLcohortSize, CohortSizeConst(2L))
+  expect_identical(result@pl_cohort_size, CohortSizeConst(2L))
 })
 
 test_that("Design user constructor arguments names are as expected", {
   expect_function(
     Design,
-    args = c("model", "stopping", "increments", "PLcohortSize", "..."),
+    args = c("model", "stopping", "increments", "pl_cohort_size", "..."),
     ordered = TRUE
   )
 })
@@ -182,7 +182,7 @@ test_that("TDsamplesDesign object can be created with user constructor", {
   expect_identical(result@model, model)
   expect_identical(result@stopping, stopping)
   expect_identical(result@increments, increments)
-  expect_identical(result@PLcohortSize, CohortSizeConst(0))
+  expect_identical(result@pl_cohort_size, CohortSizeConst(0))
   expect_identical(result@nextBest, next_best)
   expect_identical(result@cohortSize, cohort_size)
   expect_identical(result@data, empty_data)
@@ -200,13 +200,13 @@ test_that("TDsamplesDesign object can be created with user constructor", {
       startingDose = 3
     )
   )
-  expect_identical(result@PLcohortSize, CohortSizeConst(2L))
+  expect_identical(result@pl_cohort_size, CohortSizeConst(2L))
 })
 
 test_that("TDsamplesDesign user constructor arguments names are as expected", {
   expect_function(
     TDsamplesDesign,
-    args = c("model", "stopping", "increments", "PLcohortSize", "..."),
+    args = c("model", "stopping", "increments", "pl_cohort_size", "..."),
     ordered = TRUE
   )
 })

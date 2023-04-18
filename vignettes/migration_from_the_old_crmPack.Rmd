@@ -102,7 +102,10 @@ class_changes <- tribble(
   "SafetyWindowConst", "", "patientGap", "gap", FALSE, "",
   "SafetyWindowConst", "", "patientFollow", "follow", FALSE, "",
   "SafetyWindowConst", "", "patientFollowMin", "follow_min", FALSE, "",
-  "OneParExpNormalPrior", "OneParLogNormalPrior", "", "", FALSE, ""
+  "OneParExpNormalPrior", "OneParLogNormalPrior", "", "", FALSE, "",
+  "Design", "", "PLcohortSize", "pl_cohort_size", FALSE, "",
+  "TDsamplesDesign", "", "PLcohortSize", "pl_cohort_size", FALSE, "",
+  "TDDesign", "", "PLcohortSize", "pl_cohort_size", FALSE, ""
 )
 ```
 

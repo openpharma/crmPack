@@ -11,7 +11,7 @@ TDsamplesDesign(
   model,
   stopping,
   increments,
-  PLcohortSize = CohortSizeConst(0L),
+  pl_cohort_size = CohortSizeConst(0L),
   ...
 )
 }
@@ -22,7 +22,7 @@ TDsamplesDesign(
 
 \item{increments}{(\code{Increments})\cr see slot definition.}
 
-\item{PLcohortSize}{(\code{CohortSize})\cr see slot definition.}
+\item{pl_cohort_size}{(\code{CohortSize})\cr see slot definition.}
 
 \item{...}{
   Arguments passed on to \code{\link[=RuleDesign]{RuleDesign}}
@@ -49,7 +49,7 @@ obtained for this model.
 
 \item{\code{increments}}{(\code{Increments})\cr how to control increments between dose levels.}
 
-\item{\code{PLcohortSize}}{(\code{CohortSize})\cr rules for the cohort sizes for placebo,
+\item{\code{pl_cohort_size}}{(\code{CohortSize})\cr rules for the cohort sizes for placebo,
 if any planned (defaults to constant 0 placebo patients).}
 }}
 

@@ -508,7 +508,7 @@ mySizePL <- CohortSizeConst(1)
 
 design <- Design(model = model, nextBest = myNextBest,
                  stopping = myStopping, increments = myIncrements,
-                 cohortSize = mySize, PLcohortSize = mySizePL,
+                 cohortSize = mySize, pl_cohort_size = mySizePL,
                  data = emptydata, startingDose = 25)
 @
 We can then start by looking at the single trial operating characteristics of the dose escalation design with the function \code{examine}, which generates a data frame showing the beginning of several hypothetical trial courses under the design. Assuming no DLTs have been seen until a certain dose, then the consequences of different number of DLTs being observed at this dose are shown. For example, if we observe 3 DLTs at the starting dose of 25~mg, we would

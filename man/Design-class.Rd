@@ -7,7 +7,7 @@
 \alias{Design}
 \title{\code{Design}}
 \usage{
-Design(model, stopping, increments, PLcohortSize = CohortSizeConst(0L), ...)
+Design(model, stopping, increments, pl_cohort_size = CohortSizeConst(0L), ...)
 }
 \arguments{
 \item{model}{(\code{GeneralModel})\cr see slot definition.}
@@ -16,7 +16,7 @@ Design(model, stopping, increments, PLcohortSize = CohortSizeConst(0L), ...)
 
 \item{increments}{(\code{Increments})\cr see slot definition.}
 
-\item{PLcohortSize}{(\code{CohortSize})\cr see slot definition.}
+\item{pl_cohort_size}{(\code{CohortSize})\cr see slot definition.}
 
 \item{...}{
   Arguments passed on to \code{\link[=RuleDesign]{RuleDesign}}
@@ -43,7 +43,7 @@ contains additional \code{model}, \code{stopping} and \code{increments} slots.
 
 \item{\code{increments}}{(\code{Increments})\cr how to control increments between dose levels.}
 
-\item{\code{PLcohortSize}}{(\code{CohortSize})\cr rules for the cohort sizes for placebo,
+\item{\code{pl_cohort_size}}{(\code{CohortSize})\cr rules for the cohort sizes for placebo,
 if any planned (defaults to constant 0 placebo patients).}
 }}
 
