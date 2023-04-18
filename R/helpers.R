@@ -1021,3 +1021,422 @@ h_find_interval <- function(..., replacement = -Inf) {
   x <- findInterval(...)
   ifelse(x == 0, yes = replacement, no = x)
 }
+
+#' Return a Usable Instance of any crmPack class
+#'
+#' @description `r lifecycle::badge("experimental")`
+
+#' Given a class name, return an instance of that class, with slots initialised
+#' to potentially sensible values.
+#'
+#' By default, the object returned is one of the instances defined in the
+#' examples provided for the corresponding class constructor.
+#' @export
+#' @example h_create_class("LogisticLogNormal")
+h_create_instance <- function(clsName) {
+  # Models
+  if (clsName == "ModelLogNormal") {
+    return(
+      ModelLogNormal(
+        mean = c(-0.85, 1),
+        cov = matrix(c(1, -0.5, -0.5, 1), nrow = 2),
+        ref_dose = 50
+      )
+    )
+  } else if (clsName == "LogisticLogNormalSub") {
+    return(
+      LogisticLogNormalSub(
+        mean = c(-0.85, 1),
+        cov = matrix(c(1, -0.5, -0.5, 1), nrow = 2),
+        ref_dose = 50
+      )
+    )
+  } else if (clsName == "LogisticKadane") {
+    return(LogisticKadane(theta = 0.33, xmin = 1, xmax = 200))
+  } else if (clsName == "LogisticNormalMixture") {
+    return(
+      LogisticNormalMixture(
+        comp1 = ModelParamsNormal(
+          mean = c(-0.85, 1),
+          cov = matrix(c(1, -0.5, -0.5, 1), nrow = 2)
+        ),
+        comp2 = ModelParamsNormal(
+          mean = c(1, 1.5),
+          cov = matrix(c(1.2, -0.45, -0.45, 0.6), nrow = 2)
+        ),
+        weightpar = c(a = 1, b = 1),
+        ref_dose = 50
+      )
+    )
+  } else if (clsName == "LogisticNormalFixedMixture") {
+    return(
+      LogisticNormalFixedMixture(
+        components = list(
+          comp1 = ModelParamsNormal(
+            mean = c(-0.85, 1),
+            cov = matrix(c(1, -0.5, -0.5, 1), nrow = 2)
+          ),
+          comp2 = ModelParamsNormal(
+            mean = c(1, 1.5),
+            cov = matrix(c(1.2, -0.45, -0.45, 0.6), nrow = 2)
+          )
+        ),
+        weights = c(0.3, 0.7),
+        ref_dose = 50
+      )
+    )
+  } else if (clsName == "DualEndpoint") {
+    stop(paste0("Class DualEndpoint cannot be instantiated directly.  Please use one of its subclasses instead."))
+  } else if (clsName == "OneParLogNormalPrior") {
+    return(
+      OneParLogNormalPrior(
+        skel_probs = seq(from = 0.1, to = 0.9, length = 5),
+        dose_grid = 1:5,
+        sigma2 = 2
+      )
+    )
+  } else if (clsName == "OneParExpPrior") {
+    return(
+      OneParExpPrior(
+        skel_probs = c(0.1, 0.3, 0.5, 0.7, 0.9),
+        dose_grid = 1:5,
+        lambda = 2
+      )
+    )
+  } else if (clsName == "LogisticNormal") {
+    return(LogisticNormal(mean = c(-0.85, 1), cov = matrix(c(1, -0.5, -0.5, 1), nrow = 2)))
+  } else if (clsName == "LogisticLogNormal") {
+    return(
+      LogisticLogNormal(
+        mean = c(-0.85, 1),
+        cov = matrix(c(1, -0.5, -0.5, 1), nrow = 2),
+        ref_dose = 50
+      )
+    )
+  } else if (clsName == "ProbitLogNormal") {
+    return(
+      ProbitLogNormal(
+        mean = c(-0.85, 1),
+        cov = matrix(c(1, -0.5, -0.5, 1), nrow = 2),
+        ref_dose = 7.2
+      )
+    )
+  } else if (clsName == "ProbitLogNormalRel") {
+    return(ProbitLogNormalRel(mean = c(-0.85, 1), cov = matrix(c(1, -0.5, -0.5, 1), nrow = 2)))
+  } else if (clsName == "LogisticKadaneBetaGamma") {
+    return(
+      LogisticKadaneBetaGamma(
+        theta = 0.3,
+        xmin = 0,
+        xmax = 7,
+        alpha = 1,
+        beta = 19,
+        shape = 0.5625,
+        rate = 0.125
+      )
+    )
+  } else if (clsName == "DualEndpointRW") {
+    return(
+      DualEndpointRW(
+        mean = c(0, 1),
+        cov = matrix(c(1, 0, 0, 1), nrow = 2),
+        sigma2W = c(a = 0.1, b = 0.1),
+        rho = c(a = 1, b = 1),
+        sigma2betaW = 0.01,
+        rw1 = TRUE
+      )
+    )
+  } else if (clsName == "DualEndpointBeta") {
+    return(
+      DualEndpointBeta(
+        mean = c(0, 1),
+        cov = matrix(c(1, 0, 0, 1), nrow = 2),
+        ref_dose = 10,
+        use_log_dose = TRUE,
+        sigma2W = c(a = 0.1, b = 0.1),
+        rho = c(a = 1, b = 1),
+        E0 = c(0, 100),
+        Emax = c(0, 500),
+        delta1 = c(0, 5),
+        mode = c(1, 15),
+        ref_dose_beta = 1000
+      )
+    )
+  } else if (clsName == "DualEndpointEmax") {
+    return(
+      DualEndpointEmax(
+        mean = c(0, 1),
+        cov = matrix(c(1, 0, 0, 1), nrow = 2),
+        sigma2W = c(a = 0.1, b = 0.1),
+        rho = c(a = 1, b = 1),
+        E0 = c(0, 100),
+        Emax = c(0, 500),
+        ED50 = c(10, 200),
+        ref_dose_emax = 1000
+      )
+    )
+  } else if (clsName == "LogisticLogNormalMixture") {
+    return(
+      LogisticLogNormalMixture(
+        share_weight = 0.1,
+        mean = c(-0.85, 1),
+        cov = matrix(c(1, -0.5, -0.5, 1), nrow = 2),
+        ref_dose = 50
+      )
+    )
+  } else if (clsName == "DALogisticLogNormal") {
+    return({
+      npiece <- 10
+      Tmax <- 60 # nolintr
+
+      lambda_prior <- function(k) {
+        npiece / (Tmax * (npiece - k + 0.5))
+      }
+
+      DALogisticLogNormal(
+        mean = c(-0.85, 1),
+        cov = matrix(c(1, -0.5, -0.5, 1), nrow = 2),
+        ref_dose = 56,
+        npiece = npiece,
+        l = as.numeric(t(apply(as.matrix(c(1:npiece), 1, npiece), 2, lambda_prior))),
+        c_par = 2
+      )
+    })
+  } else if (clsName == "TITELogisticLogNormal") {
+    return(
+      TITELogisticLogNormal(
+        mean = c(0, 1),
+        cov = diag(2),
+        ref_dose = 1,
+        weight_method = "linear"
+      )
+    )
+  } else if (clsName == "FractionalCRM") {
+    return(
+      FractionalCRM(
+        skel_probs = c(0.1, 0.2, 0.3, 0.4),
+        dose_grid = c(10, 30, 50, 100),
+        sigma2 = 2
+      )
+    )
+  }
+  # Increments
+  else if (clsName ==  "IncrementsRelative") {
+    return(IncrementsRelative(intervals = c(0, 20), increments = c(1, 0.33)))
+  }
+  else if (clsName ==  "IncrementsDoseLevels") {
+    return(IncrementsDoseLevels(levels = 2, basis_level = "last"))
+  }
+  else if (clsName ==  "IncrementsRelativeDLT") {
+    return(IncrementsRelativeDLT(dlt_intervals = c(0, 1, 3), increments = c(1, 0.33, 0.2)))
+  }
+  else if (clsName ==  "IncrementsHSRBeta") {
+    return(IncrementsHSRBeta(target = 0.3, prob = 0.95))
+  }
+  else if (clsName ==  "IncrementsMin") {
+    return({
+      inc1 <- IncrementsRelativeDLT(dlt_intervals = c(0, 1, 3), increments = c(1, 0.33, 0.2))
+      inc2 <- IncrementsRelative(intervals = c(0, 20), increments = c(1, 0.33))
+      IncrementsMin(increments_list = list(inc1, inc2)
+      )
+    })
+  }
+  else if (clsName ==  "IncrementsRelativeParts") {
+    return(IncrementsRelativeParts(dlt_start = 0, clean_start = 1))
+  }
+  else if (clsName ==  "IncrementsRelativeDLTCurrent") {
+    return(IncrementsRelativeDLTCurrent(dlt_intervals = c(0, 1, 3), increments = c(1, 0.33, 0.2)))
+  }
+  # Stopping
+  else if (clsName ==  "StoppingCohortsNearDose") {
+    return(StoppingCohortsNearDose(nCohorts = 3, percentage = 0.2))
+  }
+  else if (clsName ==  "StoppingPatientsNearDose") {
+    return(StoppingPatientsNearDose(nPatients = 9, percentage = 20))
+  }
+  else if (clsName ==  "StoppingMinCohorts") {
+    return(StoppingMinCohorts(nCohorts = 6))
+  }
+  else if (clsName ==  "StoppingMinPatients") {
+    return(StoppingMinPatients(nPatients = 20))
+  }
+  else if (clsName ==  "StoppingTargetProb") {
+    return(StoppingTargetProb(target = c(0.2, 0.35), prob = 0.5))
+  }
+  else if (clsName ==  "StoppingMTDdistribution") {
+    return(StoppingMTDdistribution(target = 0.33, thresh = 0.5, prob = 0.9))
+  }
+  else if (clsName ==  "StoppingMTDCV") {
+    return(StoppingMTDCV(target = 0.3, thresh_cv = 40))
+  }
+  else if (clsName ==  "StoppingLowestDoseHSRBeta") {
+    return(StoppingLowestDoseHSRBeta(target = 0.3, prob = 0.95, a = 1, b = 1))
+  }
+  else if (clsName ==  "StoppingTargetBiomarker") {
+    return(StoppingTargetBiomarker(target = c(0.9, 1), prob = 0.5))
+  }
+  else if (clsName ==  "StoppingSpecificDose") {
+    return(
+      StoppingSpecificDose(
+        rule = StoppingTargetProb(target = c(0, 0.3), prob = 0.8),
+        dose = 80
+      )
+    )
+  }
+  else if (clsName ==  "StoppingHighestDose") {
+    return(StoppingHighestDose())
+  }
+  else if (clsName ==  "StoppingList") {
+    return({
+      my_stopping1 <- StoppingMinCohorts(nCohorts = 3)
+      my_stopping2 <- StoppingTargetProb(target = c(0.2, 0.35), prob = 0.5)
+      my_stopping3 <- StoppingMinPatients(nPatients = 20)
+      StoppingList(
+        stop_list = c(my_stopping1, my_stopping2, my_stopping3),
+        summary = any
+      )
+    })
+  }
+  else if (clsName ==  "StoppingAll") {
+    return(
+      StoppingAll(
+        stop_list = c(
+          StoppingMinCohorts(nCohorts = 3),
+          StoppingTargetProb(target = c(0.2, 0.35), prob = 0.5),
+          StoppingMinPatients(nPatients = 20)
+        )
+      )
+    )
+  }
+  else if (clsName ==  "StoppingAny") {
+    return({
+      my_stopping1 <- StoppingMinCohorts(nCohorts = 3)
+      my_stopping2 <- StoppingTargetProb(target = c(0.2, 0.35), prob = 0.5)
+      my_stopping3 <- StoppingMinPatients(nPatients = 20)
+
+      StoppingAny(stop_list = c(my_stopping1, my_stopping2, my_stopping3))
+    })
+  }
+  else if (clsName ==  "StoppingTDCIRatio") {
+    return(StoppingTDCIRatio(target_ratio = 5, prob_target = 0.3))
+  }
+  else if (clsName ==  "StoppingMaxGainCIRatio") {
+    return(StoppingMaxGainCIRatio(target_ratio = 5, prob_target = 0.3))
+  }
+  # Cohorts
+  else if (clsName ==  "CohortSizeRange") {
+    return(CohortSizeRange(intervals = c(0, 30), cohort_size = c(1, 3)))
+  }
+  else if (clsName ==  "CohortSizeDLT") {
+    return(CohortSizeDLT(dlt_intervals = c(0, 1), cohort_size = c(1, 3)))
+  }
+  else if (clsName ==  "CohortSizeConst") {
+    return(CohortSizeConst(size = 3))
+  }
+  else if (clsName ==  "CohortSizeParts") {
+    return(CohortSizeParts(sizes = c(1, 3)))
+  }
+  else if (clsName ==  "CohortSizeMax") {
+    return({
+      size1 <- CohortSizeRange(intervals = c(0, 10), cohort_size = c(1, 3))
+      size2 <- CohortSizeDLT(dlt_intervals = c(0, 1), cohort_size = c(1, 3))
+
+      CohortSizeMax(cohort_size_list = list(size1, size2))
+    })
+  }
+  else if (clsName ==  "CohortSizeMin") {
+    return({
+      size1 <- CohortSizeRange(intervals = c(0, 10), cohort_size = c(1, 3))
+      size2 <- CohortSizeDLT(dlt_intervals = c(0, 1), cohort_size = c(1, 3))
+
+      CohortSizeMin(cohort_size_list = list(size1, size2))
+    })
+  }
+  else if (clsName ==  "CohortSizeMin") {
+    return({
+      size1 <- CohortSizeRange(intervals = c(0, 10), cohort_size = c(1, 3))
+      size2 <- CohortSizeDLT(dlt_intervals = c(0, 1), cohort_size = c(1, 3))
+
+      CohortSizeMin(cohort_size_list = list(size1, size2))
+    })
+  }
+  # NextBest
+  else if (clsName ==  "NextBestMTD") {
+    return(
+      NextBestMTD(
+        target = 0.33,
+        derive = function(mtd_samples) {
+          quantile(mtd_samples, probs = 0.25)
+        }
+      )
+    )
+  }
+  else if (clsName ==  "NextBestNCRM") {
+    return(NextBestNCRM(target = c(0.2, 0.35), overdose = c(0.35, 1), max_overdose_prob = 0.25))
+  }
+  else if (clsName ==  "NextBestThreePlusThree") {
+    return(NextBestThreePlusThree())
+  }
+  else if (clsName ==  "NextBestDualEndpoint") {
+    return(
+      NextBestDualEndpoint(
+        target = c(200, 300),
+        overdose = c(0.35, 1),
+        max_overdose_prob = 0.25,
+        target_relative = FALSE
+      )
+    )
+  }
+  else if (clsName ==  "NextBestMinDist") {
+    return(NextBestMinDist(target = 0.3))
+  }
+  else if (clsName ==  "NextBestInfTheory") {
+    return(NextBestInfTheory(0.33, 1.2))
+  }
+  else if (clsName ==  "NextBestTD") {
+    return(NextBestTD(0.35, 0.3))
+  }
+  else if (clsName ==  "NextBestMaxGain") {
+    return(NextBestMaxGain(0.35, 0.3))
+  }
+  else if (clsName ==  "NextBestNCRMLoss") {
+    return(
+      NextBestNCRMLoss(
+        target = c(0.2, 0.35),
+        overdose = c(0.35, 0.6),
+        unacceptable = c(0.6, 1),
+        max_overdose_prob = 0.25,
+        losses = c(1, 0, 1, 2)
+      )
+    )
+  }
+  else if (clsName ==  "NextBestTDsamples") {
+    return(
+      NextBestTDsamples(
+        prob_target_drt = 0.35,
+        prob_target_eot = 0.3,
+        derive = function(samples) {
+          as.numeric(quantile(samples, probs = 0.3))
+        }
+      )
+    )
+  }
+  else if (clsName ==  "NextBestMaxGainSamples") {
+    return(
+      NextBestMaxGainSamples(
+        prob_target_drt = 0.35,
+        prob_target_eot = 0.3,
+        derive = function(samples) {
+          as.numeric(quantile(samples, prob = 0.3))
+        },
+        mg_derive = function(mg_samples) {
+          as.numeric(quantile(mg_samples, prob = 0.5))
+        }
+      )
+    )
+  }
+  else {
+    stop(paste0("Unsupported class name: '", clsName, "'"))
+  }
+  return(x)
+}
