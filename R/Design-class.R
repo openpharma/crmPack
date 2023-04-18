@@ -285,71 +285,74 @@ TDsamplesDesign <- function(model,
   )
 }
 
-# nolint start
+# TDDesign ----
 
-## =============================================================================
-## -------------------------------------------------------------------------------
-##' Design class using DLE responses only based on the pseudo DLE model without sample
-##'
-##' This is a class of design based only on DLE responses using the 'LogisticIndepBeta' class model
-##' are used without samples.
-##' In addition to the slots in the more simple \code{\linkS4class{RuleDesign}},
-##' objects of this class contain:
-##'
-##' @slot model the pseudo DLE model to be used, an object class of
-##' \code{\linkS4class{ModelTox}}
-##' @slot stopping stopping rule(s) for the trial, an object class of \code{\linkS4class{Stopping}}
-##' @slot increments how to control increments between dose levels, an object class of
-##' \code{\linkS4class{Increments}}
-##' @slot pl_cohort_size rules for the cohort sizes for placebo, if any planned
-##' an object of class \code{\linkS4class{CohortSize}}
-##'
-##' @example examples/design-class-TDDesign.R
-##' @export
-##' @keywords class
-.TDDesign <-
-  setClass(
-    Class = "TDDesign",
-    representation(
-      model = "ModelTox",
-      stopping = "Stopping",
-      increments = "Increments",
-      pl_cohort_size = "CohortSize"
-    ),
-    prototype(
-      model = .LogisticIndepBeta(),
-      nextBest = .NextBestTD(),
-      stopping = .StoppingMinPatients(),
-      increments = .IncrementsRelative(),
-      pl_cohort_size = CohortSizeConst(0L)
-    ),
-    contains = list("RuleDesign")
-  )
+## class ----
 
-validObject(.TDDesign())
+#' `TDDesign`
+#'
+#' @description `r lifecycle::badge("stable")`
+#'
+#' [`TDDesign`] is the class of design based only on DLT responses using
+#' [`ModelTox`] class model (i.e. [`LogisticIndepBeta`]) without MCMC samples.
+#'
+#' @slot model (`ModelTox`)\cr the pseudo DLT model to be used.
+#' @slot stopping (`Stopping`)\cr stopping rule(s) for the trial.
+#' @slot increments (`Increments`)\cr how to control increments between dose levels.
+#' @slot pl_cohort_size (`CohortSize`)\cr rules for the cohort sizes for placebo,
+#'   if any planned (defaults to constant 0 placebo patients).
+#'
+#' @aliases TDDesign
+#' @export
+#'
+.TDDesign <- setClass(
+  Class = "TDDesign",
+  slots = c(
+    model = "ModelTox",
+    stopping = "Stopping",
+    increments = "Increments",
+    pl_cohort_size = "CohortSize"
+  ),
+  prototype = prototype(
+    model = .LogisticIndepBeta(),
+    nextBest = .NextBestTD(),
+    stopping = .StoppingMinPatients(),
+    increments = .IncrementsRelative(),
+    pl_cohort_size = CohortSizeConst(0L)
+  ),
+  contains = "RuleDesign"
+)
 
-##' Initialization function for 'TDDesign' class
-##'
-##' @param model please refer to \code{\linkS4class{TDDesign}} class object
-##' @param stopping please refer to \code{\linkS4class{TDDesign}} class object
-##' @param increments please refer to \code{\linkS4class{TDDesign}} class object
-##' @param pl_cohort_size see \code{\linkS4class{TDDesign}}
-##' @param \dots additional arguments for \code{\linkS4class{RuleDesign}}
-##' @return the \code{\linkS4class{TDDesign}} class object
-##'
-##' @export
-##' @keywords methods
+## constructor ----
+
+#' @rdname TDDesign-class
+#'
+#' @param model (`ModelTox`)\cr see slot definition.
+#' @param stopping (`Stopping`)\cr see slot definition.
+#' @param increments (`Increments`)\cr see slot definition.
+#' @param pl_cohort_size (`CohortSize`)\cr see slot definition.
+#' @inheritDotParams RuleDesign
+#'
+#' @export
+#' @example examples/Design-class-TDDesign.R
+#'
 TDDesign <- function(model,
                      stopping,
                      increments,
                      pl_cohort_size = CohortSizeConst(0L),
                      ...) {
   start <- RuleDesign(...)
-  .TDDesign(start,
-    model = model, stopping = stopping, increments = increments,
+  new(
+    "TDDesign",
+    start,
+    model = model,
+    stopping = stopping,
+    increments = increments,
     pl_cohort_size = pl_cohort_size
   )
 }
+
+# nolint start
 
 ## ---------------------------------------------------------------------------------------------------
 ## class for design based on DLE and efficacy response with samples using pseudo DLE and efficacy models
