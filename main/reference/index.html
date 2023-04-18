@@ -36,12 +36,6 @@
 <li class="nav-item">
   <a class="nav-link" href="../news/index.html">Changelog</a>
 </li>
-<!-- start dropdown for versions --> <li class="nav-item dropdown">
-        <a href="#" class="nav-link dropdown-toggle"
-          data-bs-toggle="dropdown" role="button"
-          aria-expanded="false" aria-haspopup="true"
-          id="dropdown-versions">Versions</a> <div class="dropdown-menu" aria-labelledby="dropdown-versions"> <a class="dropdown-item" data-toggle="tooltip" title="" href="https://Roche.github.io/crmPack/main">main</a> </div></li>
-<!-- end dropdown for versions -->
       </ul><form class="form-inline my-2 my-lg-0" role="search">
         <input type="search" class="form-control me-sm-2" aria-label="Toggle navigation" name="search-input" data-search-index="../search.json" id="search-input" placeholder="Search for" autocomplete="off"></form>
 
@@ -380,6 +374,11 @@
         <dd><code>IncrementsMin</code></dd>
       </dl><dl><dt>
           
+          <code><a href="Stopping-class.html">Stopping-class</a></code> <code><a href="Stopping-class.html">Stopping</a></code> 
+        </dt>
+        <dd><code>Stopping</code></dd>
+      </dl><dl><dt>
+          
           <code><a href="StoppingCohortsNearDose-class.html">StoppingCohortsNearDose()</a></code> 
         </dt>
         <dd><code>StoppingCohortsNearDose</code></dd>
@@ -510,7 +509,7 @@
         <dd><code>SafetyWindowConst</code></dd>
       </dl><dl><dt>
           
-          <code><a href="RuleDesign-class.html">RuleDesign()</a></code> 
+          <code><a href="RuleDesign-class.html">RuleDesign()</a></code> <code><a href="RuleDesign-class.html">ThreePlusThreeDesign()</a></code> 
         </dt>
         <dd><code>RuleDesign</code></dd>
       </dl><dl><dt>
@@ -523,6 +522,16 @@
           <code><a href="DualDesign-class.html">DualDesign()</a></code> 
         </dt>
         <dd><code>DualDesign</code></dd>
+      </dl><dl><dt>
+          
+          <code><a href="TDsamplesDesign-class.html">TDsamplesDesign()</a></code> 
+        </dt>
+        <dd><code>TDsamplesDesign</code></dd>
+      </dl><dl><dt>
+          
+          <code><a href="TDDesign-class.html">TDDesign()</a></code> 
+        </dt>
+        <dd><code>TDDesign</code></dd>
       </dl></div><div class="section level2">
       <h2 id="internal-helper-functions">Internal Helper Functions<a class="anchor" aria-label="anchor" href="#internal-helper-functions"></a></h2>
       
@@ -1138,39 +1147,6 @@ normal model</dd>
           <code><a href="SimulationsSummary-class.html">SimulationsSummary-class</a></code> <code><a href="SimulationsSummary-class.html">.SimulationsSummary</a></code> 
         </dt>
         <dd>Class for the summary of model-based simulations output</dd>
-      </dl><dl><dt>
-          
-          <code><a href="Stopping-class.html">Stopping-class</a></code> <code><a href="Stopping-class.html">Stopping</a></code> 
-        </dt>
-        <dd><code>Stopping</code></dd>
-      </dl><dl><dt>
-          
-          <code><a href="TDDesign-class.html">TDDesign-class</a></code> <code><a href="TDDesign-class.html">.TDDesign</a></code> 
-        </dt>
-        <dd>Design class using DLE responses only based on the pseudo DLE model without sample</dd>
-      </dl><dl><dt>
-          
-          <code><a href="TDDesign.html">TDDesign()</a></code> 
-        </dt>
-        <dd>Initialization function for 'TDDesign' class</dd>
-      </dl><dl><dt>
-          
-          <code><a href="TDsamplesDesign-class.html">TDsamplesDesign-class</a></code> <code><a href="TDsamplesDesign-class.html">.TDsamplesDesign</a></code> 
-        </dt>
-        <dd>This is a class of design based only on DLE responses using the 'LogisticIndepBeta' class model
-and DLE samples are also used.
-In addition to the slots in the more simple <code>RuleDesign</code>,
-objects of this class contain:</dd>
-      </dl><dl><dt>
-          
-          <code><a href="TDsamplesDesign.html">TDsamplesDesign()</a></code> 
-        </dt>
-        <dd>Initialization function for 'TDsamplesDesign' class</dd>
-      </dl><dl><dt>
-          
-          <code><a href="ThreePlusThreeDesign.html">ThreePlusThreeDesign()</a></code> 
-        </dt>
-        <dd>Creates a new 3+3 design object from a dose grid</dd>
       </dl><dl><dt>
           
           <code><a href="approximate.html">approximate()</a></code> 
