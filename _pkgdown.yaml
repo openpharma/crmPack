@@ -75,6 +75,7 @@ reference:
       - IncrementsDoseLevels
       - IncrementsHSRBeta
       - IncrementsMin
+      - Stopping
       - StoppingCohortsNearDose
       - StoppingPatientsNearDose
       - StoppingMinCohorts
@@ -104,7 +105,8 @@ reference:
       - RuleDesign
       - Design
       - DualDesign
-      - ThreePlusThreeDesign
+      - TDsamplesDesign
+      - TDDesign
   - title: Internal Helper Functions
     contents:
       - h_doses_unique_per_cohort
@@ -364,11 +366,6 @@ reference:
       - Simulations-class
       - Simulations
       - SimulationsSummary-class
-      - Stopping-class
-      - TDDesign-class
-      - TDDesign
-      - TDsamplesDesign-class
-      - TDsamplesDesign
       - approximate
       - assertions
       - crmPackExample
