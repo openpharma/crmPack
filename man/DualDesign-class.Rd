@@ -19,7 +19,7 @@ DualDesign(model, data, ...)
   \describe{
     \item{\code{stopping}}{(\code{Stopping})\cr see slot definition.}
     \item{\code{increments}}{(\code{Increments})\cr see slot definition.}
-    \item{\code{PLcohortSize}}{(\code{CohortSize})\cr see slot definition.}
+    \item{\code{pl_cohort_size}}{(\code{CohortSize})\cr see slot definition.}
   }}
 }
 \description{
