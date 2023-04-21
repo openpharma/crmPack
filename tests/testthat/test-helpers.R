@@ -480,7 +480,7 @@ test_that("default constructors work correctly", {
           if (!is.null(test_obj)) print(test_obj)
         }
       )
-      expect_equal(test_obj, expected_obj, info=className)
+      expect_equal(test_obj, expected_obj, info = className)
       return(className)
     } else {
       print(paste0("Example file for ", className, " DOES NOT exist."))

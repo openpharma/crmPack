@@ -213,7 +213,7 @@ LogisticNormal <- function(mean, cov, ref_dose = 1) {
 #' @examples
 #' .DefaultLogisticNormal()
 #' @export
-.DefaultLogisticNormal  <- function() {
+.DefaultLogisticNormal <- function() {
   LogisticNormal(mean = c(-0.85, 1), cov = matrix(c(1, -0.5, -0.5, 1), nrow = 2))
 }
 
@@ -278,7 +278,7 @@ LogisticLogNormal <- function(mean, cov, ref_dose = 1) {
 #' @examples
 #' .DefaultLogisticLogNormal()
 #' @export
-.DefaultLogisticLogNormal  <- function() {
+.DefaultLogisticLogNormal <- function() {
   LogisticLogNormal(
     mean = c(-0.85, 1),
     cov = matrix(c(1, -0.5, -0.5, 1), nrow = 2),
@@ -445,7 +445,7 @@ ProbitLogNormal <- function(mean, cov, ref_dose = 1) {
 #' @examples
 #' .DefaultProbitLogNormal()
 #' @export
-.DefaultProbitLogNormal  <- function() {
+.DefaultProbitLogNormal <- function() {
   ProbitLogNormal(
     mean = c(-0.85, 1),
     cov = matrix(c(1, -0.5, -0.5, 1), nrow = 2),
@@ -517,7 +517,7 @@ ProbitLogNormalRel <- function(mean, cov, ref_dose = 1) {
 #' @examples
 #' .DefaultProbitLogNormalRel()
 #' @export
-.DefaultProbitLogNormalRel  <- function() {
+.DefaultProbitLogNormalRel <- function() {
   ProbitLogNormalRel(mean = c(-0.85, 1), cov = matrix(c(1, -0.5, -0.5, 1), nrow = 2))
 }
 
@@ -744,7 +744,7 @@ LogisticKadaneBetaGamma <- function(theta, xmin, xmax, alpha, beta, shape, rate)
 #' @examples
 #' .DefaultLogisticKadaneBetaGamma()
 #' @export
-.DefaultLogisticKadaneBetaGamma  <- function() {
+.DefaultLogisticKadaneBetaGamma <- function() {
   LogisticKadaneBetaGamma(
     theta = 0.3,
     xmin = 0,
@@ -886,7 +886,7 @@ LogisticNormalMixture <- function(comp1,
 #' @examples
 #' .DefaultLogisticNormalMixture()
 #' @export
-.DefaultLogisticNormalMixture <- function() {                            #nolint
+.DefaultLogisticNormalMixture <- function() { # nolint
   LogisticNormalMixture(
     comp1 = ModelParamsNormal(
       mean = c(-0.85, 1),
@@ -1056,7 +1056,7 @@ LogisticNormalFixedMixture <- function(components,
 #' @examples
 #' .DefaultLogisticNormalFixedMixture()
 #' @export
-.DefaultLogisticNormalFixedMixture <- function() {                       #nolint
+.DefaultLogisticNormalFixedMixture <- function() { # nolint
   LogisticNormalFixedMixture(
     components = list(
       comp1 = ModelParamsNormal(
@@ -1189,7 +1189,7 @@ LogisticLogNormalMixture <- function(mean,
 #' @examples
 #' .DefaultLogisticLogNormalMixture()
 #' @export
-.DefaultLogisticLogNormalMixture  <- function() {                        #nolint
+.DefaultLogisticLogNormalMixture <- function() { # nolint
   LogisticLogNormalMixture(
     share_weight = 0.1,
     mean = c(-0.85, 1),
@@ -1547,7 +1547,7 @@ DualEndpointRW <- function(sigma2betaW,
 #' @examples
 #' .DefaultDualEndpointRW()
 #' @export
-.DefaultDualEndpointRW  <- function() {
+.DefaultDualEndpointRW <- function() {
   DualEndpointRW(
     mean = c(0, 1),
     cov = matrix(c(1, 0, 0, 1), nrow = 2),
@@ -1741,7 +1741,7 @@ DualEndpointBeta <- function(E0,
 #' @examples
 #' .DefaultDualEndpointBeta()
 #' @export
-.DefaultDualEndpointBeta  <- function() {
+.DefaultDualEndpointBeta <- function() {
   DualEndpointBeta(
     mean = c(0, 1),
     cov = matrix(c(1, 0, 0, 1), nrow = 2),
@@ -1907,7 +1907,7 @@ DualEndpointEmax <- function(E0,
 #' @examples
 #' .DefaultDualEndpointEmax()
 #' @export
-.DefaultDualEndpointEmax  <- function() {
+.DefaultDualEndpointEmax <- function() {
   DualEndpointEmax(
     mean = c(0, 1),
     cov = matrix(c(1, 0, 0, 1), nrow = 2),
@@ -2721,7 +2721,7 @@ DALogisticLogNormal <- function(npiece = 3,
 #' @examples
 #' .DefaultDALogisticLogNormal()
 #' @export
-.DefaultDALogisticLogNormal  <- function() {
+.DefaultDALogisticLogNormal <- function() {
   npiece <- 10
   Tmax <- 60
 
@@ -2854,7 +2854,7 @@ TITELogisticLogNormal <- function(weight_method = "linear",
 #' @examples
 #' .DefaultTITELogisticLogNormal()
 #' @export
-.DefaultTITELogisticLogNormal  <- function() {
+.DefaultTITELogisticLogNormal <- function() {
   TITELogisticLogNormal(
     mean = c(0, 1),
     cov = diag(2),
@@ -2876,7 +2876,7 @@ TITELogisticLogNormal <- function(weight_method = "linear",
 #'
 #' Typically, end users will not use the `DefaultOneParLogNormalPrior()` function.
 #'
-#'#' @slot skel_fun (`function`)\cr function to calculate the prior DLT probabilities.
+#' #' @slot skel_fun (`function`)\cr function to calculate the prior DLT probabilities.
 #' @slot skel_fun_inv (`function`)\cr inverse function of `skel_fun`.
 #' @slot skel_probs (`numeric`)\cr skeleton prior probabilities. This is a vector
 #'   of unique and sorted probability values between 0 and 1.
@@ -3160,7 +3160,7 @@ FractionalCRM <- function(...) {
 #' @examples
 #' .DefaultFractionalCRM()
 #' @export
-.DefaultFractionalCRM  <- function() {
+.DefaultFractionalCRM <- function() {
   FractionalCRM(
     skel_probs = c(0.1, 0.2, 0.3, 0.4),
     dose_grid = c(10, 30, 50, 100),
