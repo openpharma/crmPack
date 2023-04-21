@@ -5,9 +5,12 @@
 \alias{NextBestThreePlusThree-class}
 \alias{.NextBestThreePlusThree}
 \alias{NextBestThreePlusThree}
+\alias{.DefaultNextBestThreePlusThree}
 \title{\code{NextBestThreePlusThree}}
 \usage{
 NextBestThreePlusThree()
+
+.DefaultNextBestThreePlusThree()
 }
 \description{
 \ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#stable}{\figure{lifecycle-stable.svg}{options: alt='[Stable]'}}}{\strong{[Stable]}}
@@ -15,8 +18,11 @@ NextBestThreePlusThree()
 \code{\link{NextBestThreePlusThree}} is the class for next best dose that
 implements the classical 3+3 dose recommendation. No input is required,
 hence this class has no slots.
+
+Typically, end users will not use the \code{.DefaultNextBestThreePlusThree()} function.
 }
 \examples{
 # Next best dose class object using the classical 3+3 design.
 my_next_best <- NextBestThreePlusThree()
+.DefaultNextBestThreePlusThree()
 }

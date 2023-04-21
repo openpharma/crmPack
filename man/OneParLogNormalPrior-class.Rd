@@ -5,9 +5,12 @@
 \alias{OneParLogNormalPrior-class}
 \alias{.OneParLogNormalPrior}
 \alias{OneParLogNormalPrior}
+\alias{.DefaultOneParLogNormalPrior}
 \title{\code{OneParLogNormalPrior}}
 \usage{
 OneParLogNormalPrior(skel_probs, dose_grid, sigma2)
+
+.DefaultOneParLogNormalPrior()
 }
 \arguments{
 \item{skel_probs}{(\code{numeric})\cr skeleton prior probabilities. This is a vector
@@ -18,17 +21,22 @@ of the same length as \code{skel_probs}.}
 
 \item{sigma2}{(\code{number})\cr prior variance of log power parameter alpha.}
 }
+\value{
+an instance of the \code{OneParLogNormalPrior} class
+}
 \description{
 \ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#stable}{\figure{lifecycle-stable.svg}{options: alt='[Stable]'}}}{\strong{[Stable]}}
 
 \code{\link{OneParLogNormalPrior}} is the class for a standard CRM with a normal prior on
 the log power parameter for the skeleton prior probabilities.
+
+Typically, end users will not use the \code{DefaultOneParLogNormalPrior()} function.
+
+#' @slot skel_fun (\code{function})\cr function to calculate the prior DLT probabilities.
 }
 \section{Slots}{
 
 \describe{
-\item{\code{skel_fun}}{(\code{function})\cr function to calculate the prior DLT probabilities.}
-
 \item{\code{skel_fun_inv}}{(\code{function})\cr inverse function of \code{skel_fun}.}
 
 \item{\code{skel_probs}}{(\code{numeric})\cr skeleton prior probabilities. This is a vector
@@ -43,6 +51,7 @@ my_model <- OneParLogNormalPrior(
   dose_grid = 1:5,
   sigma2 = 2
 )
+.DefaultOneParLogNormalPrior()
 }
 \seealso{
 \code{\link{ModelLogNormal}}.

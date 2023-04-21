@@ -5,9 +5,12 @@
 \alias{LogisticNormalMixture-class}
 \alias{.LogisticNormalMixture}
 \alias{LogisticNormalMixture}
+\alias{.DefaultLogisticNormalMixture}
 \title{\code{LogisticNormalMixture}}
 \usage{
 LogisticNormalMixture(comp1, comp2, weightpar, ref_dose)
+
+.DefaultLogisticNormalMixture()
 }
 \arguments{
 \item{comp1}{(\code{ModelParamsNormal})\cr bivariate normal prior specification of
@@ -28,6 +31,8 @@ first component. It must a be a named vector of length 2 with names \code{a} and
 
 \code{\link{LogisticNormalMixture}} is the class for standard logistic regression model
 with a mixture of two bivariate normal priors on the intercept and slope parameters.
+
+Typically, end-users will not use the \code{.DefaultLogisticNormalMixture()} function.
 }
 \details{
 The covariate is the natural logarithm of the dose \eqn{x} divided by
@@ -71,8 +76,9 @@ my_model <- LogisticNormalMixture(
     cov = matrix(c(1.2, -0.45, -0.45, 0.6), nrow = 2)
   ),
   weightpar = c(a = 1, b = 1),
-  ref_dose = 50
+  ref_dose = positive_number(50)
 )
+.DefaultLogisticNormalMixture()
 }
 \seealso{
 \code{\link{ModelParamsNormal}}, \code{\link{ModelLogNormal}},

@@ -5,6 +5,7 @@
 \alias{NextBestDualEndpoint-class}
 \alias{.NextBestDualEndpoint}
 \alias{NextBestDualEndpoint}
+\alias{.DefaultNextBestDualEndpoint}
 \title{\code{NextBestDualEndpoint}}
 \usage{
 NextBestDualEndpoint(
@@ -14,6 +15,8 @@ NextBestDualEndpoint(
   target_relative = TRUE,
   target_thresh = 0.01
 )
+
+.DefaultNextBestDualEndpoint()
 }
 \arguments{
 \item{target}{(\code{numeric})\cr see slot definition.}
@@ -31,6 +34,8 @@ NextBestDualEndpoint(
 
 \code{\link{NextBestDualEndpoint}} is the class for next best dose that is based on the
 dual endpoint model.
+
+Typically, end users will not use the \code{.DefaultNextBestDualEndpoint()} function.
 }
 \details{
 Under this rule, at first admissible doses are found, which are those
@@ -85,4 +90,5 @@ my_next_best_absolute <- NextBestDualEndpoint(
   max_overdose_prob = 0.25,
   target_relative = FALSE
 )
+.DefaultNextBestDualEndpoint()
 }

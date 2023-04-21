@@ -5,9 +5,12 @@
 \alias{LogisticNormal-class}
 \alias{.LogisticNormal}
 \alias{LogisticNormal}
+\alias{.DefaultLogisticNormal}
 \title{\code{LogisticNormal}}
 \usage{
 LogisticNormal(mean, cov, ref_dose = 1)
+
+.DefaultLogisticNormal()
 }
 \arguments{
 \item{mean}{(\code{numeric})\cr the prior mean vector.}
@@ -23,6 +26,8 @@ number).}
 
 \code{\link{LogisticNormal}} is the class for the usual logistic regression model with
 a bivariate normal prior on the intercept and slope.
+
+Typically, end users will not use the \code{.DefaultLogisticNormal()} function.
 }
 \details{
 The covariate is the natural logarithm of the dose \eqn{x} divided by
@@ -44,6 +49,7 @@ my_options <- McmcOptions(burnin = 10, step = 2, samples = 100)
 
 samples <- mcmc(empty_data, my_model, my_options)
 samples
+.DefaultLogisticNormal()
 }
 \seealso{
 \code{\link{ModelLogNormal}}, \code{\link{LogisticLogNormal}}, \code{\link{LogisticLogNormalSub}},

@@ -5,9 +5,12 @@
 \alias{IncrementsHSRBeta-class}
 \alias{.IncrementsHSRBeta}
 \alias{IncrementsHSRBeta}
+\alias{.DefaultIncrementsHSRBeta}
 \title{\code{IncrementsHSRBeta}}
 \usage{
 IncrementsHSRBeta(target = 0.3, prob = 0.95, a = 1, b = 1)
+
+.DefaultIncrementsHSRBeta()
 }
 \arguments{
 \item{target}{(\code{proportion})\cr see slot definition.}
@@ -30,6 +33,8 @@ the threshold for a given dose, that dose and all doses above are excluded
 from further escalation.
 This is a hard safety rule that limits further escalation based on the
 observed data per dose level, independent from the underlying model.
+
+Typically, end users will not use the \code{.DefaultIncrementsHSRBeta()} function.
 }
 \section{Slots}{
 
@@ -52,4 +57,5 @@ Beta (a,b).}
 # Limit the escalation with a hard safety criteria to the doses that are below
 # the first dose that is toxic with a probability of 0.95.
 my_increments <- IncrementsHSRBeta(target = 0.3, prob = 0.95)
+.DefaultIncrementsHSRBeta()
 }

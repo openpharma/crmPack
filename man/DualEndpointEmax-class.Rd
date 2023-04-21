@@ -5,9 +5,12 @@
 \alias{DualEndpointEmax-class}
 \alias{.DualEndpointEmax}
 \alias{DualEndpointEmax}
+\alias{.DefaultDualEndpointEmax}
 \title{\code{DualEndpointEmax}}
 \usage{
 DualEndpointEmax(E0, Emax, ED50, ref_dose_emax = 1, ...)
+
+.DefaultDualEndpointEmax()
 }
 \arguments{
 \item{E0}{(\code{numeric})\cr either a fixed number or the two uniform distribution
@@ -30,6 +33,8 @@ inherited \code{\link{DualEndpoint}} model).}
 
 \code{\link{DualEndpointEmax}} is the class for the dual endpoint model with \code{Emax}
 function for dose-biomarker relationship.
+
+Typically, end users will not use the \code{.DefaultDualEndpointEmax()} function.
 }
 \details{
 This class extends the \code{\link{DualEndpoint}} class so that the dose-biomarker
@@ -68,6 +73,7 @@ my_model <- DualEndpointEmax(
   ED50 = c(10, 200),
   ref_dose_emax = 1000
 )
+.DefaultDualEndpointEmax()
 }
 \seealso{
 \code{\link{DualEndpoint}}, \code{\link{DualEndpointRW}}, \code{\link{DualEndpointBeta}}.

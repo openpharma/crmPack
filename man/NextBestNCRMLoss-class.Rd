@@ -5,6 +5,7 @@
 \alias{NextBestNCRMLoss-class}
 \alias{.NextBestNCRMLoss}
 \alias{NextBestNCRMLoss}
+\alias{.DefaultNextBestNCRMLoss}
 \title{\code{NextBestNCRMLoss}}
 \usage{
 NextBestNCRMLoss(
@@ -14,6 +15,8 @@ NextBestNCRMLoss(
   max_overdose_prob,
   losses
 )
+
+.DefaultNextBestNCRMLoss()
 }
 \arguments{
 \item{target}{(\code{numeric})\cr see slot definition.}
@@ -37,6 +40,8 @@ which are those with probability to fall in overdose category being below
 \code{max_overdose_prob}. Next, within the admissible doses, the loss function is
 calculated, i.e. \code{losses} \%*\% \code{target}. Finally, the corresponding
 dose with lowest loss function (Bayes risk) is recommended for the next dose.
+
+Typically, end users will not use the \code{.DefaultNextBestnCRMLoss()} function.
 }
 \section{Slots}{
 
@@ -77,4 +82,5 @@ my_next_best <- NextBestNCRMLoss(
   max_overdose_prob = 0.25,
   losses = c(1, 0, 1, 2)
 )
+.DefaultNextBestNCRMLoss ()
 }

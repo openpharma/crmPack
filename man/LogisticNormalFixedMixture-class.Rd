@@ -5,9 +5,12 @@
 \alias{LogisticNormalFixedMixture-class}
 \alias{.LogisticNormalFixedMixture}
 \alias{LogisticNormalFixedMixture}
+\alias{.DefaultLogisticNormalFixedMixture}
 \title{\code{LogisticNormalFixedMixture}}
 \usage{
 LogisticNormalFixedMixture(components, weights, ref_dose, log_normal = FALSE)
+
+.DefaultLogisticNormalFixedMixture()
 }
 \arguments{
 \item{components}{(\code{list})\cr the specifications of the mixture components,
@@ -33,6 +36,9 @@ intercept and slope parameters. The weights of the normal priors are fixed,
 hence no additional model parameters are introduced. This type of prior is
 often used to better approximate a given posterior distribution, or when the
 information is given in terms of a mixture.
+
+Typically, end-users will not use the \code{.DefaultLogisticNormalFixedMixture()}
+function.
 }
 \details{
 The covariate is the natural logarithm of the dose \eqn{x} divided
@@ -82,8 +88,9 @@ my_model <- LogisticNormalFixedMixture(
     )
   ),
   weights = c(0.3, 0.7),
-  ref_dose = 50
+  ref_dose = positive_number(50)
 )
+.DefaultLogisticNormalFixedMixture()
 }
 \seealso{
 \code{\link{ModelParamsNormal}}, \code{\link{ModelLogNormal}},

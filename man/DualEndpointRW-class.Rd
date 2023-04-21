@@ -5,9 +5,12 @@
 \alias{DualEndpointRW-class}
 \alias{.DualEndpointRW}
 \alias{DualEndpointRW}
+\alias{.DefaultDualEndpointRW}
 \title{\code{DualEndpointRW}}
 \usage{
 DualEndpointRW(sigma2betaW, rw1 = TRUE, ...)
+
+.DefaultDualEndpointRW()
 }
 \arguments{
 \item{sigma2betaW}{(\code{numeric})\cr the prior variance factor of the random walk
@@ -25,6 +28,8 @@ random walk of second order is used.}
 
 \code{\link{DualEndpointRW}} is the class for the dual endpoint model with random walk
 prior for biomarker.
+
+Typically, end users will not use the \code{.DefaultDualEndpointRW()} function.
 }
 \details{
 This class extends the \code{\link{DualEndpoint}} class so that the dose-biomarker
@@ -72,6 +77,7 @@ my_model <- DualEndpointRW(
   sigma2betaW = 0.01,
   rw1 = TRUE
 )
+.DefaultDualEndpointRW()
 }
 \seealso{
 \code{\link{DualEndpoint}}, \code{\link{DualEndpointBeta}}, \code{\link{DualEndpointEmax}}.

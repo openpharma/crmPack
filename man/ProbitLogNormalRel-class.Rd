@@ -5,9 +5,12 @@
 \alias{ProbitLogNormalRel-class}
 \alias{.ProbitLogNormalRel}
 \alias{ProbitLogNormalRel}
+\alias{.DefaultProbitLogNormalRel}
 \title{\code{ProbitLogNormalRel}}
 \usage{
 ProbitLogNormalRel(mean, cov, ref_dose = 1)
+
+.DefaultProbitLogNormalRel()
 }
 \arguments{
 \item{mean}{(\code{numeric})\cr the prior mean vector.}
@@ -23,6 +26,8 @@ number).}
 
 \code{\link{ProbitLogNormalRel}} is the class for probit regression model with a bivariate
 normal prior on the intercept and log slope.
+
+Typically, end users will not use the \code{.DefaultProbitLogNormalRel()} function.
 }
 \details{
 The covariate is the dose \eqn{x} divided by a reference dose \eqn{x*},
@@ -42,6 +47,7 @@ my_model <- ProbitLogNormalRel(
   mean = c(-0.85, 1),
   cov = matrix(c(1, -0.5, -0.5, 1), nrow = 2)
 )
+.DefaultProbitLogNormalRel()
 }
 \seealso{
 \code{\link{ModelLogNormal}}, \code{\link{LogisticNormal}}, \code{\link{LogisticLogNormal}},

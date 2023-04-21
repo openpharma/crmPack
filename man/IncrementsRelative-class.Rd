@@ -5,9 +5,12 @@
 \alias{IncrementsRelative-class}
 \alias{.IncrementsRelative}
 \alias{IncrementsRelative}
+\alias{.DefaultIncrementsRelative}
 \title{\code{IncrementsRelative}}
 \usage{
 IncrementsRelative(intervals, increments)
+
+.DefaultIncrementsRelative()
 }
 \arguments{
 \item{intervals}{(\code{numeric})\cr see slot definition.}
@@ -19,6 +22,8 @@ IncrementsRelative(intervals, increments)
 
 \code{\link{IncrementsRelative}} is the class for increments control based on relative
 differences in intervals.
+
+Typically, end users will not use the \code{.DefaultIncrementsRelative()} function.
 }
 \section{Slots}{
 
@@ -42,4 +47,5 @@ my_increments <- IncrementsRelative(
   intervals = c(0, 20),
   increments = c(1, 0.33)
 )
+.DefaultIncrementsRelative()
 }

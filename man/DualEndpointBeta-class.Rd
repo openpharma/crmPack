@@ -5,9 +5,12 @@
 \alias{DualEndpointBeta-class}
 \alias{.DualEndpointBeta}
 \alias{DualEndpointBeta}
+\alias{.DefaultDualEndpointBeta}
 \title{\code{DualEndpointBeta}}
 \usage{
 DualEndpointBeta(E0, Emax, delta1, mode, ref_dose_beta = 1, ...)
+
+.DefaultDualEndpointBeta()
 }
 \arguments{
 \item{E0}{(\code{numeric})\cr either a fixed number or the two uniform distribution
@@ -33,6 +36,8 @@ inherited \code{\link{DualEndpoint}} model).}
 
 \code{\link{DualEndpointBeta}} is the class for the dual endpoint model with beta
 function for dose-biomarker relationship.
+
+Typically, end users will not use the \code{.DefaultDualEndpointBeta()} function.
 }
 \details{
 This class extends the \code{\link{DualEndpoint}} class so that the dose-biomarker
@@ -87,6 +92,7 @@ my_model <- DualEndpointBeta(
   mode = c(1, 15),
   ref_dose_beta = 1000
 )
+.DefaultDualEndpointBeta()
 }
 \seealso{
 \code{\link{DualEndpoint}}, \code{\link{DualEndpointRW}}, \code{\link{DualEndpointEmax}}.

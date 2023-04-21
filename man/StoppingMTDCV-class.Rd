@@ -5,9 +5,12 @@
 \alias{StoppingMTDCV-class}
 \alias{.StoppingMTDCV}
 \alias{StoppingMTDCV}
+\alias{.DefaultStoppingMTDCV}
 \title{\code{StoppingMTDCV}}
 \usage{
 StoppingMTDCV(target = 0.3, thresh_cv = 40)
+
+.DefaultStoppingMTDCV()
 }
 \arguments{
 \item{target}{(\code{proportion})\cr see slot definition.}
@@ -21,6 +24,8 @@ StoppingMTDCV(target = 0.3, thresh_cv = 40)
 which is calculated as the coefficient of variation (CV) of the MTD.
 Here, the MTD is defined as the dose that reaches a specific \code{target}
 probability of the occurrence of a DLT.
+
+Typically, end users will not use the \code{.DefaultStoppingMTDCV()} function.
 }
 \section{Slots}{
 
@@ -37,4 +42,5 @@ CV is less than or equal to \code{tresh_cv}.}
 # Stopping the study if the MTD estimation is precise enough, i.e. if robust
 # coefficient of variation of the MTD is below 40\%.
 my_stopping <- StoppingMTDCV(target = 0.3, thresh_cv = 40)
+.DefaultStoppingMTDCV()
 }

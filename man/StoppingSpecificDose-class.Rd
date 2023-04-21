@@ -5,9 +5,12 @@
 \alias{StoppingSpecificDose-class}
 \alias{.StoppingSpecificDose}
 \alias{StoppingSpecificDose}
+\alias{.DefaultStoppingSpecificDose}
 \title{\code{StoppingSpecificDose}}
 \usage{
 StoppingSpecificDose(rule, dose)
+
+.DefaultStoppingSpecificDose()
 }
 \arguments{
 \item{rule}{(\code{Stopping})\cr see slot definition.}
@@ -19,6 +22,8 @@ StoppingSpecificDose(rule, dose)
 
 \code{\link{StoppingSpecificDose}} is the class for testing a stopping rule at specific
 dose of the dose grid and not at the next best dose.
+
+Typically, end users will not use the \code{.DefaultStoppingSpecificDose()} function.
 }
 \section{Slots}{
 
@@ -42,4 +47,5 @@ lowest_dose_toxic <- StoppingSpecificDose(
   rule = StoppingTargetProb(target = c(0.3, 1), prob = 0.8),
   dose = 10
 )
+.DefaultStoppingSpecificDose()
 }

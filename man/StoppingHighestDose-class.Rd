@@ -5,15 +5,20 @@
 \alias{StoppingHighestDose-class}
 \alias{.StoppingHighestDose}
 \alias{StoppingHighestDose}
+\alias{.DefaultStoppingHighestDose}
 \title{\code{StoppingHighestDose}}
 \usage{
 StoppingHighestDose()
+
+.DefaultStoppingHighestDose()
 }
 \description{
 \ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#experimental}{\figure{lifecycle-experimental.svg}{options: alt='[Experimental]'}}}{\strong{[Experimental]}}
 
 \code{\link{StoppingHighestDose}} is the class for stopping based on the highest dose.
 That is, the stopping occurs when the highest dose is reached.
+
+Typically, end users will not use the \code{.DefaultStoppingHighestDose()} function.
 }
 \examples{
 
@@ -30,4 +35,5 @@ my_stopping <- StoppingHighestDose() &
 # stopping rules, when the MTD is found based on being near e.g. a 30\% DLT
 # probability or having reached maximal sample size, in the manner of:
 # stop_rule <- stop_high | stop_low | stop_sample_size # nolintr.
+.DefaultStoppingHighestDose()
 }

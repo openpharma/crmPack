@@ -5,9 +5,12 @@
 \alias{StoppingAll-class}
 \alias{.StoppingAll}
 \alias{StoppingAll}
+\alias{.DefaultStoppingAll}
 \title{\code{StoppingAll}}
 \usage{
 StoppingAll(stop_list)
+
+.DefaultStoppingAll()
 }
 \arguments{
 \item{stop_list}{(\code{list})\cr see slot definition.}
@@ -19,6 +22,8 @@ StoppingAll(stop_list)
 many single stopping rules that are in turn the objects of class \code{Stopping}.
 All single stopping rules must be satisfied in order the result of this rule
 to be \code{TRUE}.
+
+Typically, end users will not use the \code{.DefaultStoppingAll()} function.
 }
 \section{Slots}{
 
@@ -39,4 +44,5 @@ my_stopping3 <- StoppingMinPatients(nPatients = 20)
 my_stopping <- StoppingAll(
   stop_list = c(my_stopping1, my_stopping2, my_stopping3)
 )
+.DefaultStoppingAll()
 }

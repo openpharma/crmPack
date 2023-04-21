@@ -5,9 +5,12 @@
 \alias{LogisticLogNormalMixture-class}
 \alias{.LogisticLogNormalMixture}
 \alias{LogisticLogNormalMixture}
+\alias{.DefaultLogisticLogNormalMixture}
 \title{\code{LogisticLogNormalMixture}}
 \usage{
 LogisticLogNormalMixture(mean, cov, ref_dose, share_weight)
+
+.DefaultLogisticLogNormalMixture()
 }
 \arguments{
 \item{mean}{(\code{numeric})\cr the prior mean vector.}
@@ -25,6 +28,8 @@ number).}
 
 \code{\link{LogisticLogNormalMixture}} is the class for standard logistic model with
 online mixture of two bivariate log normal priors.
+
+Typically, end users will not use the \code{.DefaultLogNormalMixture()} function.
 }
 \details{
 This model can be used when data is arising online from the informative
@@ -81,6 +86,7 @@ empty_data_share <- DataMixture(
 # Compare with the resulting prior model.
 prior_samples_share <- mcmc(empty_data_share, model_share, my_options)
 plot(prior_samples_share, model_share, empty_data_share)
+.DefaultLogisticLogNormalMixture()
 }
 \seealso{
 \code{\link{ModelLogNormal}}, \code{\link{LogisticNormalMixture}},

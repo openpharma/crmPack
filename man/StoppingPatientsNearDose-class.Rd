@@ -5,9 +5,12 @@
 \alias{StoppingPatientsNearDose-class}
 \alias{.StoppingPatientsNearDose}
 \alias{StoppingPatientsNearDose}
+\alias{.DefaultStoppingPatientsNearDose}
 \title{\code{StoppingPatientsNearDose}}
 \usage{
 StoppingPatientsNearDose(nPatients, percentage = 50)
+
+.DefaultStoppingPatientsNearDose()
 }
 \arguments{
 \item{nPatients}{(\code{number})\cr see slot definition.}
@@ -19,6 +22,8 @@ StoppingPatientsNearDose(nPatients, percentage = 50)
 
 \code{\link{StoppingPatientsNearDose}} is the class for stopping based on number of
 patients near to next best dose.
+
+Typically, end users will not use the \code{.DefaultStoppingPatientsNearDose()} function.
 }
 \section{Slots}{
 
@@ -38,4 +43,5 @@ my_stopping <- StoppingPatientsNearDose(
   nPatients = 9,
   percentage = 20
 )
+.DefaultStoppingPatientsNearDose()
 }

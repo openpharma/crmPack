@@ -5,9 +5,12 @@
 \alias{IncrementsMin-class}
 \alias{.IncrementsMin}
 \alias{IncrementsMin}
+\alias{.DefaultIncrementsMin}
 \title{\code{IncrementsMin}}
 \usage{
 IncrementsMin(increments_list)
+
+.DefaultIncrementsMin()
 }
 \arguments{
 \item{increments_list}{(\code{list})\cr see slot definition.}
@@ -19,6 +22,8 @@ IncrementsMin(increments_list)
 the \code{minimum} operation. Slot \code{increments_list} contains all increment rules,
 which are itself the objects of class \code{\link{Increments}}. The minimum of these
 individual increments is taken to give the final maximum increment.
+
+Typically, end users will not use the \code{.DefaultIncrementsMin()} function.
 }
 \section{Slots}{
 
@@ -51,4 +56,5 @@ my_increments_2 <- IncrementsRelative(
 comb_increments <- IncrementsMin(
   increments_list = list(my_increments_1, my_increments_2)
 )
+.DefaultIncrementsMin()
 }

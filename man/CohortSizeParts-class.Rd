@@ -5,9 +5,12 @@
 \alias{CohortSizeParts-class}
 \alias{.CohortSizeParts}
 \alias{CohortSizeParts}
+\alias{.DefaultCohortSizeParts}
 \title{\code{CohortSizeParts}}
 \usage{
 CohortSizeParts(sizes)
+
+.DefaultCohortSizeParts()
 }
 \arguments{
 \item{sizes}{(\code{numeric})\cr see slot definition.}
@@ -18,6 +21,8 @@ CohortSizeParts(sizes)
 \code{\link{CohortSizeParts}} is the class for cohort size that changes for the second
 part of the dose escalation. It works only in conjunction with \code{\link{DataParts}}
 objects.
+
+Typically, end users will not use the \code{.DefaultCohortSizeParts()} function.
 }
 \section{Slots}{
 
@@ -30,4 +35,5 @@ part 1, and one for part 2 respectively.}
 
 # Part 1 cohort size = 1, Part 2 cohort size = 3.
 my_size <- CohortSizeParts(sizes = c(1, 3))
+.DefaulttCohortSizeParts()
 }

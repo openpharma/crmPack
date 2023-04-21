@@ -5,9 +5,12 @@
 \alias{StoppingLowestDoseHSRBeta-class}
 \alias{.StoppingLowestDoseHSRBeta}
 \alias{StoppingLowestDoseHSRBeta}
+\alias{.DefaultStoppingLowestDoseHSRBeta}
 \title{\code{StoppingLowestDoseHSRBeta}}
 \usage{
 StoppingLowestDoseHSRBeta(target = 0.3, prob = 0.95, a = 1, b = 1)
+
+.DefaultStoppingLowestDoseHSRBeta()
 }
 \arguments{
 \item{target}{(\code{proportion})\cr see slot definition.}
@@ -30,6 +33,8 @@ lowest dose level and a Beta(a,b) prior distribution.
 The default prior is Beta(1,1).
 In case that placebo is used, the rule is evaluated at the second dose of the
 dose grid, i.e. at the lowest non-placebo dose.
+
+Typically, end users will not use the \code{.DefaultStoppingLowestDoseHSRBeta()} function.
 }
 \section{Slots}{
 
@@ -66,4 +71,5 @@ my_stopping <- StoppingLowestDoseHSRBeta(
   a = 0.5,
   b = 0.5
 )
+.DefaultStoppingLowestDoseHSRBeta()
 }

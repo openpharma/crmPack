@@ -5,9 +5,12 @@
 \alias{LogisticLogNormal-class}
 \alias{.LogisticLogNormal}
 \alias{LogisticLogNormal}
+\alias{.DefaultLogisticLogNormal}
 \title{\code{LogisticLogNormal}}
 \usage{
 LogisticLogNormal(mean, cov, ref_dose = 1)
+
+.DefaultLogisticLogNormal()
 }
 \arguments{
 \item{mean}{(\code{numeric})\cr the prior mean vector.}
@@ -23,6 +26,8 @@ number).}
 
 \code{\link{LogisticLogNormal}} is the class for the usual logistic regression model
 with a bivariate normal prior on the intercept and log slope.
+
+Typically, end users will not use the \code{.DefaultLogisticLogNormal()} function.
 }
 \details{
 The covariate is the natural logarithm of the dose \eqn{x} divided by
@@ -38,6 +43,7 @@ my_model <- LogisticLogNormal(
   ref_dose = 50
 )
 my_model
+.DefaultLogisticLogNormal()
 }
 \seealso{
 \code{\link{ModelLogNormal}}, \code{\link{LogisticNormal}}, \code{\link{LogisticLogNormalSub}},

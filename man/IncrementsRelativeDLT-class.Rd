@@ -5,9 +5,12 @@
 \alias{IncrementsRelativeDLT-class}
 \alias{.IncrementsRelativeDLT}
 \alias{IncrementsRelativeDLT}
+\alias{.DefaultIncrementsRelativeDLT}
 \title{\code{IncrementsRelativeDLT}}
 \usage{
 IncrementsRelativeDLT(dlt_intervals, increments)
+
+.DefaultIncrementsRelativeDLT()
 }
 \arguments{
 \item{dlt_intervals}{(\code{numeric})\cr see slot definition.}
@@ -19,6 +22,8 @@ IncrementsRelativeDLT(dlt_intervals, increments)
 
 \code{\link{IncrementsRelativeDLT}} is the class for increments control based on
 relative differences in terms of DLTs.
+
+Typically, end users will not use the \code{.DefaultIncrementsRelativeDLT()} function.
 }
 \section{Slots}{
 
@@ -48,6 +53,7 @@ my_increments <- IncrementsRelativeDLT(
   dlt_intervals = c(0, 1, 3),
   increments = c(1, 0.33, 0.2)
 )
+.DefaultIncrementsRelativeDLT()
 }
 \seealso{
 \link{IncrementsRelativeDLTCurrent} which only considers the DLTs
