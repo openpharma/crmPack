@@ -5,9 +5,12 @@
 \alias{StoppingTDCIRatio-class}
 \alias{.StoppingTDCIRatio}
 \alias{StoppingTDCIRatio}
+\alias{.DefaultStoppingTDCIRatio}
 \title{\code{StoppingTDCIRatio}}
 \usage{
 StoppingTDCIRatio(target_ratio, prob_target)
+
+.DefaultStoppingTDCIRatio()
 }
 \arguments{
 \item{target_ratio}{(\code{numeric})\cr see slot definition.}
@@ -22,6 +25,8 @@ on a target ratio of the 95\% credibility interval. Specifically, this is the
 ratio of the upper to the lower bound of the 95\% credibility interval's
 estimate of the target dose (i.e. a dose that corresponds to a given target
 probability of the occurrence of a DLT \code{prob_target}).
+
+Typically, end users will not use the \code{.DefaultStoppingTDCIRatio()} function.
 }
 \section{Slots}{
 
@@ -41,4 +46,5 @@ my_stopping <- StoppingTDCIRatio(
   target_ratio = 5,
   prob_target = 0.3
 )
+.DefaultStoppingTDCIRatio(StoppingTDCIRatio)
 }

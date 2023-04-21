@@ -5,9 +5,12 @@
 \alias{CohortSizeRange-class}
 \alias{.CohortSizeRange}
 \alias{CohortSizeRange}
+\alias{.DefaultCohortSizeRange}
 \title{\code{CohortSizeRange}}
 \usage{
 CohortSizeRange(intervals, cohort_size)
+
+.DefaultCohortSizeRange()
 }
 \arguments{
 \item{intervals}{(\code{numeric})\cr see slot definition.}
@@ -18,6 +21,8 @@ CohortSizeRange(intervals, cohort_size)
 \ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#stable}{\figure{lifecycle-stable.svg}{options: alt='[Stable]'}}}{\strong{[Stable]}}
 
 \code{\link{CohortSizeRange}} is the class for cohort size based on dose range.
+
+Typically, end users will not use the \code{.DefaultCohortSizeRange()} function.
 }
 \section{Slots}{
 
@@ -35,4 +40,5 @@ corresponding to the elements of \code{intervals}.}
 # and having cohort of size 3 for doses >=30.
 
 my_size <- CohortSizeRange(intervals = c(0, 30), cohort_size = c(1, 3))
+.DefaultCohortSizeRange()
 }

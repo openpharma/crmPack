@@ -5,9 +5,12 @@
 \alias{FractionalCRM-class}
 \alias{.FractionalCRM}
 \alias{FractionalCRM}
+\alias{.DefaultFractionalCRM}
 \title{\code{FractionalCRM}}
 \usage{
 FractionalCRM(...)
+
+.DefaultFractionalCRM()
 }
 \arguments{
 \item{...}{
@@ -27,7 +30,10 @@ of the same length as \code{skel_probs}.}
 parameter CRM (with normal prior on the log-power parameter) as well as
 Kaplan-Meier based estimation of the conditional probability to experience a
 DLT for non-complete observations.
+
 This fractional CRM model follows the paper and code by Guosheng Yin et al.
+
+Typically, end users will not use the \code{.DefaultTITELogisticLogNormal()} function.
 }
 \examples{
 my_model <- FractionalCRM(
@@ -35,6 +41,7 @@ my_model <- FractionalCRM(
   dose_grid = c(10, 30, 50, 100),
   sigma2 = 2
 )
+.DefaultFractionalCRM()
 }
 \seealso{
 \code{\link{TITELogisticLogNormal}}.

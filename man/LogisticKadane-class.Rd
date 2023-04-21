@@ -5,9 +5,12 @@
 \alias{LogisticKadane-class}
 \alias{.LogisticKadane}
 \alias{LogisticKadane}
+\alias{.DefaultLogisticKadane}
 \title{\code{LogisticKadane}}
 \usage{
 LogisticKadane(theta, xmin, xmax)
+
+.DefaultLogisticKadane()
 }
 \arguments{
 \item{theta}{(\code{proportion})\cr the target toxicity probability.}
@@ -21,6 +24,8 @@ LogisticKadane(theta, xmin, xmax)
 
 \code{\link{LogisticKadane}} is the class for the logistic model in the parametrization
 of Kadane et al. (1980).
+
+Typically, end-users will not use the \code{.DefaultLogisticKadane()} function.
 }
 \details{
 Let \code{rho0 = p(xmin)} be the probability of a DLT at the minimum dose
@@ -52,6 +57,7 @@ data later on.
 }
 \examples{
 my_model <- LogisticKadane(theta = 0.33, xmin = 1, xmax = 200)
+.DefaultLogisticKadane()
 }
 \seealso{
 \code{\link{ModelLogNormal}}

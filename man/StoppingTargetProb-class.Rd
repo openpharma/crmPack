@@ -5,9 +5,12 @@
 \alias{StoppingTargetProb-class}
 \alias{.StoppingTargetProb}
 \alias{StoppingTargetProb}
+\alias{.DefaultStoppingTargetProb}
 \title{\code{StoppingTargetProb}}
 \usage{
 StoppingTargetProb(target, prob)
+
+.DefaultStoppingTargetProb()
 }
 \arguments{
 \item{target}{(\code{number})\cr see slot definition.}
@@ -19,6 +22,8 @@ StoppingTargetProb(target, prob)
 
 \code{\link{StoppingTargetProb}} is the class for stopping based on the probability of
 the DLT rate being in the target toxicity interval.
+
+Typically, end users will not use the \code{.DefaultStoppingTargetProb()} function.
 }
 \section{Slots}{
 
@@ -35,4 +40,5 @@ for reaching sufficient precision.}
 # probability that [0.2 =< Prob(DLT | dose) <= 0.35] for the next best dose
 # is above 0.5.
 my_stopping <- StoppingTargetProb(target = c(0.2, 0.35), prob = 0.5)
+.DefaultStoppingTargetProb()
 }

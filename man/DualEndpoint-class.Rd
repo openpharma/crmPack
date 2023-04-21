@@ -5,9 +5,12 @@
 \alias{DualEndpoint-class}
 \alias{.DualEndpoint}
 \alias{DualEndpoint}
+\alias{.DefaultDualEndpoint}
 \title{\code{DualEndpoint}}
 \usage{
 DualEndpoint(mean, cov, ref_dose = 1, use_log_dose = FALSE, sigma2W, rho)
+
+.DefaultDualEndpoint()
 }
 \arguments{
 \item{mean}{(\code{numeric})\cr for the probit toxicity model, the prior mean vector.}
@@ -68,6 +71,8 @@ a prior distribution from the scaled Beta family; see the details below
 under slot \code{rho}.
 
 Please see the example vignette by typing \code{crmPackExample()} for a full example.
+
+Typically, end users will not use the \code{DefaultDualEndpoint()} function.
 }
 \section{Slots}{
 
@@ -96,6 +101,11 @@ or \code{rho} (for each parameter separately) is used or not. This slot is
 needed for internal purposes and must not be touched by the user.}
 }}
 
+\examples{
+\dontrun{
+.DefaultDualEndpoint()
+}
+}
 \seealso{
 \code{\link{DualEndpointRW}}, \code{\link{DualEndpointBeta}}, \code{\link{DualEndpointEmax}}.
 }

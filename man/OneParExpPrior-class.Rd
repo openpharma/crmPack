@@ -5,9 +5,12 @@
 \alias{OneParExpPrior-class}
 \alias{.OneParExpPrior}
 \alias{OneParExpPrior}
+\alias{.DefaultOneParExpPrior}
 \title{\code{OneParExpPrior}}
 \usage{
 OneParExpPrior(skel_probs, dose_grid, lambda)
+
+.DefaultOneParExpPrior()
 }
 \arguments{
 \item{skel_probs}{see slot definition.}
@@ -23,6 +26,8 @@ of the same length as \code{skel_probs}.}
 \code{\link{OneParExpPrior}} is the class for a standard CRM with an exponential prior
 on the power parameter for the skeleton prior probabilities. It is an
 implementation of a version of the one-parameter CRM (O’Quigley et al. 1990).
+
+Typically, end users will not use the \code{.DefaultOneparExpPrior()} function.
 }
 \section{Slots}{
 
@@ -44,4 +49,5 @@ my_model <- OneParExpPrior(
   dose_grid = 1:5,
   lambda = 2
 )
+.DefaultOneParExpPrior()
 }

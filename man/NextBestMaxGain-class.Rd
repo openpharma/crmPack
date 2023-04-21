@@ -5,9 +5,12 @@
 \alias{NextBestMaxGain-class}
 \alias{.NextBestMaxGain}
 \alias{NextBestMaxGain}
+\alias{.DefaultNextBestMaxGain}
 \title{\code{NextBestMaxGain}}
 \usage{
 NextBestMaxGain(prob_target_drt, prob_target_eot)
+
+.DefaultNextBestMaxGain()
 }
 \arguments{
 \item{prob_target_drt}{(\code{proportion})\cr see slot definition.}
@@ -26,6 +29,8 @@ occurrence of a DLT that must be specified: target probability to be used
 during the trial and target probability to be used at the end of the trial.
 It is suitable to use it only with the \code{\link{ModelTox}} model and \code{\link{ModelEff}}
 classes (except \code{\link{EffFlexi}}).
+
+Typically, end users will not use the \code{.DefaultNextBestMaxGain()} function.
 }
 \section{Slots}{
 
@@ -39,4 +44,5 @@ occurrence of a DLT to be used at the end of the trial.}
 
 \examples{
 my_next_best <- NextBestMaxGain(0.35, 0.3)
+.DefaultNextBestMaxGain()
 }

@@ -5,9 +5,12 @@
 \alias{NextBestMTD-class}
 \alias{.NextBestMTD}
 \alias{NextBestMTD}
+\alias{.DefaultNextBestMTD}
 \title{\code{NextBestMTD}}
 \usage{
 NextBestMTD(target, derive)
+
+.DefaultNextBestMTD()
 }
 \arguments{
 \item{target}{(\code{proportion})\cr see slot definition.}
@@ -18,6 +21,8 @@ NextBestMTD(target, derive)
 \ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#stable}{\figure{lifecycle-stable.svg}{options: alt='[Stable]'}}}{\strong{[Stable]}}
 
 \code{\link{NextBestMTD}} is the class for next best dose based on MTD estimate.
+
+Typically, end users will not use the \code{.DefaultNextBestMTD()} function.
 }
 \section{Slots}{
 
@@ -38,4 +43,5 @@ next_best_mtd <- NextBestMTD(
     quantile(mtd_samples, probs = 0.25)
   }
 )
+.DefaultNextBestMTD()
 }

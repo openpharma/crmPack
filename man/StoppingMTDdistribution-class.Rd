@@ -5,9 +5,12 @@
 \alias{StoppingMTDdistribution-class}
 \alias{.StoppingMTDdistribution}
 \alias{StoppingMTDdistribution}
+\alias{.DefaultStoppingMTDdistribution}
 \title{\code{StoppingMTDdistribution}}
 \usage{
 StoppingMTDdistribution(target, thresh, prob)
+
+.DefaultStoppingMTDdistribution()
 }
 \arguments{
 \item{target}{(\code{proportion})\cr see slot definition.}
@@ -25,6 +28,8 @@ when the probability of \code{MTD > thresh * next_dose} is greater than or equal
 to \code{prob}, where the \code{next_dose} is the recommended next best dose.
 Here, the MTD is defined as the dose that reaches a specific \code{target}
 probability of the occurrence of a DLT.
+
+Typically, end users will not use the \code{.DefaultStoppingMTDDistribution()} function.
 }
 \section{Slots}{
 
@@ -48,4 +53,5 @@ my_stopping <- StoppingMTDdistribution(
   thresh = 0.5,
   prob = 0.9
 )
+.DefaultStoppingMTDdistribution()
 }

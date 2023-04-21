@@ -5,9 +5,12 @@
 \alias{LogisticKadaneBetaGamma-class}
 \alias{.LogisticKadaneBetaGamma}
 \alias{LogisticKadaneBetaGamma}
+\alias{.DefaultLogisticKadaneBetaGamma}
 \title{\code{LogisticKadaneBetaGamma}}
 \usage{
 LogisticKadaneBetaGamma(theta, xmin, xmax, alpha, beta, shape, rate)
+
+.DefaultLogisticKadaneBetaGamma()
 }
 \arguments{
 \item{theta}{(\code{proportion})\cr the target toxicity probability.}
@@ -33,6 +36,8 @@ LogisticKadaneBetaGamma(theta, xmin, xmax, alpha, beta, shape, rate)
 
 \code{\link{LogisticKadaneBetaGamma}} is the class for the logistic model in the parametrization
 of Kadane et al. (1980), using a beta and a gamma distribution as the model priors.
+
+Typically, end users will not use the \code{.Default()} function.
 }
 \details{
 Let \code{rho0 = p(xmin)} be the probability of a DLT at the minimum dose
@@ -84,6 +89,7 @@ my_model <- LogisticKadaneBetaGamma(
   shape = 0.5625,
   rate = 0.125
 )
+.DefaultLogisticKadaneBetaGamma()
 }
 \seealso{
 \code{\link{ModelLogNormal}}, \code{\link{LogisticKadane}}.

@@ -5,9 +5,12 @@
 \alias{StoppingTargetBiomarker-class}
 \alias{.StoppingTargetBiomarker}
 \alias{StoppingTargetBiomarker}
+\alias{.DefaultStoppingTargetBiomarker}
 \title{\code{StoppingTargetBiomarker}}
 \usage{
 StoppingTargetBiomarker(target, prob, is_relative = TRUE)
+
+.DefaultStoppingTargetBiomarker()
 }
 \arguments{
 \item{target}{(\code{numeric})\cr see slot definition.}
@@ -21,6 +24,8 @@ StoppingTargetBiomarker(target, prob, is_relative = TRUE)
 
 \code{\link{StoppingTargetBiomarker}} is a class for stopping based on probability of
 target biomarker.
+
+Typically, end users will not use the \code{.DefaultStoppingTargetBiomarker()} function.
 }
 \section{Slots}{
 
@@ -45,4 +50,5 @@ reaching sufficient precision.}
 # maximum for the biomarker).
 
 my_stopping <- StoppingTargetBiomarker(target = c(0.9, 1), prob = 0.5)
+.DefaultStoppingTargetBiomarker()
 }

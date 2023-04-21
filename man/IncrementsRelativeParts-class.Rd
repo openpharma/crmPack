@@ -5,9 +5,12 @@
 \alias{IncrementsRelativeParts-class}
 \alias{.IncrementsRelativeParts}
 \alias{IncrementsRelativeParts}
+\alias{.DefaultIncrementsRelativeParts}
 \title{\code{IncrementsRelativeParts}}
 \usage{
 IncrementsRelativeParts(dlt_start, clean_start, ...)
+
+.DefaultIncrementsRelativeParts()
 }
 \arguments{
 \item{dlt_start}{(\code{count})\cr see slot definition.}
@@ -27,6 +30,8 @@ IncrementsRelativeParts(dlt_start, clean_start, ...)
 \code{\link{IncrementsRelativeParts}} is the class for increments control based on
 relative differences in intervals, with special rules for part 1 and
 beginning of part 2.
+
+Typically, end users will not use the \code{.DefaultIncrementsRelativeParts()} function.
 }
 \details{
 This class works only in conjunction with \code{\link{DataParts}} objects. If
@@ -62,4 +67,5 @@ aggressive than in case of a clean part 1 without DLT.
 \examples{
 
 my_increments <- IncrementsRelativeParts(dlt_start = 0, clean_start = 1)
+.DefaultIncrementsRelativeParts()
 }

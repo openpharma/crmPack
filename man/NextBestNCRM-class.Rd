@@ -5,9 +5,12 @@
 \alias{NextBestNCRM-class}
 \alias{.NextBestNCRM}
 \alias{NextBestNCRM}
+\alias{.DefaultNextBestNCRM}
 \title{\code{NextBestNCRM}}
 \usage{
 NextBestNCRM(target, overdose, max_overdose_prob)
+
+.DefaultNextBestNCRM()
 }
 \arguments{
 \item{target}{(\code{numeric})\cr see slot definition.}
@@ -21,6 +24,8 @@ NextBestNCRM(target, overdose, max_overdose_prob)
 
 \code{\link{NextBestNCRM}} is the class for next best dose that finds the next dose
 with high posterior probability to be in the target toxicity interval.
+
+Typically, end users will not use the \code{.DefaultNextBestNCRM()} function.
 }
 \details{
 To avoid numerical problems, the dose selection algorithm has been
@@ -52,4 +57,5 @@ my_next_best <- NextBestNCRM(
   overdose = c(0.35, 1),
   max_overdose_prob = 0.25
 )
+.DefaultNextBestNCRM()
 }

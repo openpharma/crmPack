@@ -460,7 +460,7 @@ test_that("h_find_interval works as expected for custom replacement", {
   expect_equal(h_find_interval(2, c(2, 4, 6)), 1)
 })
 
-test_that("h_create_instance works correctly", {
+test_that("default constructors work correctly", {
   # Helpers
   perform_test_for_object <- function(className, examplePrefix, exampleFolder = "../../examples") {
     exampleFile <- file.path(exampleFolder, paste0(examplePrefix, "-class-", className, ".R"))
@@ -470,16 +470,18 @@ test_that("h_create_instance works correctly", {
       statements <- paste0(statements, collapse = "")
       tryCatch(
         {
-          test_obj <- eval(parse(text = statements))
-          return(className)
+          expected_obj <- eval(parse(text = statements))
+          test_obj <- eval(parse(text = paste0(".Default", className, "()")))
         },
         error = function(e) {
           print(geterrmessage())
           print(statements)
+          print(className)
           if (!is.null(test_obj)) print(test_obj)
         }
       )
-      expect_equal(h_create_instance(className), test_obj)
+      expect_equal(test_obj, expected_obj, info=className)
+      return(className)
     } else {
       print(paste0("Example file for ", className, " DOES NOT exist."))
     }
@@ -557,7 +559,7 @@ test_that("h_create_instance works correctly", {
       CohortSizeDLT(dlt_intervals = c(0, 1), cohort_size = c(1, 3))
     )
   )
-  expect_equal(h_create_instance("CohortSizeMax"), test_obj)
+  expect_equal(.DefaultCohortSizeMax(), test_obj)
   exceptions_handled <- append(exceptions_handled, "CohortSizeMax")
 
   test_obj <- CohortSizeMin(
@@ -566,7 +568,7 @@ test_that("h_create_instance works correctly", {
       CohortSizeDLT(dlt_intervals = c(0, 1), cohort_size = c(1, 3))
     )
   )
-  expect_equal(h_create_instance("CohortSizeMin"), test_obj)
+  expect_equal(.DefaultCohortSizeMin(), test_obj)
   exceptions_handled <- append(exceptions_handled, "CohortSizeMin")
 
   test_obj <- IncrementsMin(
@@ -581,11 +583,11 @@ test_that("h_create_instance works correctly", {
       )
     )
   )
-  expect_equal(h_create_instance("IncrementsMin"), test_obj)
+  expect_equal(.DefaultIncrementsMin(), test_obj)
   exceptions_handled <- append(exceptions_handled, "IncrementsMin")
 
   test_obj <- IncrementsRelativeParts(dlt_start = 0, clean_start = 1)
-  expect_equal(h_create_instance("IncrementsRelativeParts"), test_obj)
+  expect_equal(.DefaultIncrementsRelativeParts(), test_obj)
   exceptions_handled <- append(exceptions_handled, "IncrementsRelativeParts")
 
   test_obj <- StoppingAll(
@@ -595,7 +597,7 @@ test_that("h_create_instance works correctly", {
       StoppingMinPatients(nPatients = 20)
     )
   )
-  expect_equal(h_create_instance("StoppingAll"), test_obj)
+  expect_equal(.DefaultStoppingAll(), test_obj)
   exceptions_handled <- append(exceptions_handled, "StoppingAll")
 
   test_obj <- StoppingAny(
@@ -605,7 +607,7 @@ test_that("h_create_instance works correctly", {
       StoppingMinPatients(nPatients = 20)
     )
   )
-  expect_equal(h_create_instance("StoppingAny"), test_obj)
+  expect_equal(.DefaultStoppingAny(), test_obj)
   exceptions_handled <- append(exceptions_handled, "StoppingAny")
 
   test_obj <- StoppingList(
@@ -616,17 +618,17 @@ test_that("h_create_instance works correctly", {
     ),
     summary = any
   )
-  expect_equal(h_create_instance("StoppingList"), test_obj)
+  expect_equal(.DefaultStoppingList(), test_obj)
   exceptions_handled <- append(exceptions_handled, "StoppingList")
 
-  expect_equal(h_create_instance("StoppingHighestDose"), StoppingHighestDose())
+  expect_equal(.DefaultStoppingHighestDose(), StoppingHighestDose())
   exceptions_handled <- append(exceptions_handled, "StoppingHighestDose")
 
   test_obj <- StoppingSpecificDose(
     rule = StoppingTargetProb(target = c(0, 0.3), prob = 0.8),
     dose = 80
   )
-  expect_equal(h_create_instance("StoppingSpecificDose"), test_obj)
+  expect_equal(.DefaultStoppingSpecificDose(), test_obj)
   exceptions_handled <- append(exceptions_handled, "StoppingSpecificDose")
 
   test_obj <- StoppingLowestDoseHSRBeta(
@@ -635,7 +637,7 @@ test_that("h_create_instance works correctly", {
     a = 1,
     b = 1
   )
-  expect_equal(h_create_instance("StoppingLowestDoseHSRBeta"), test_obj)
+  expect_equal(.DefaultStoppingLowestDoseHSRBeta(), test_obj)
   exceptions_handled <- append(exceptions_handled, "StoppingLowestDoseHSRBeta")
 
 
@@ -643,7 +645,7 @@ test_that("h_create_instance works correctly", {
     mean = c(-0.85, 1),
     cov = matrix(c(1, -0.5, -0.5, 1), nrow = 2)
   )
-  expect_equal(h_create_instance("LogisticNormal"), test_obj)
+  expect_equal(.DefaultLogisticNormal(), test_obj)
   exceptions_handled <- append(exceptions_handled, "LogisticNormal")
 
   test_obj <- LogisticLogNormal(
@@ -651,7 +653,7 @@ test_that("h_create_instance works correctly", {
     cov = matrix(c(1, -0.5, -0.5, 1), nrow = 2),
     ref_dose = 50
   )
-  expect_equal(h_create_instance("LogisticLogNormal"), test_obj)
+  expect_equal(.DefaultLogisticLogNormal(), test_obj)
   exceptions_handled <- append(exceptions_handled, "LogisticLogNormal")
 
   test_obj <- LogisticLogNormalMixture(
@@ -660,7 +662,7 @@ test_that("h_create_instance works correctly", {
     cov = matrix(c(1, -0.5, -0.5, 1), nrow = 2),
     ref_dose = 50
   )
-  expect_equal(h_create_instance("LogisticLogNormalMixture"), test_obj)
+  expect_equal(.DefaultLogisticLogNormalMixture(), test_obj)
   exceptions_handled <- append(exceptions_handled, "LogisticLogNormalMixture")
 
   npiece <- 10
@@ -678,7 +680,7 @@ test_that("h_create_instance works correctly", {
     l = as.numeric(t(apply(as.matrix(c(1:npiece), 1, npiece), 2, lambda_prior))),
     c_par = 2
   )
-  expect_equal(h_create_instance("DALogisticLogNormal"), test_obj)
+  expect_equal(.DefaultDALogisticLogNormal(), test_obj)
   exceptions_handled <- append(exceptions_handled, "DALogisticLogNormal")
 
   test_obj <- TITELogisticLogNormal(
@@ -687,7 +689,7 @@ test_that("h_create_instance works correctly", {
     ref_dose = 1,
     weight_method = "linear"
   )
-  expect_equal(h_create_instance("TITELogisticLogNormal"), test_obj)
+  expect_equal(.DefaultTITELogisticLogNormal(), test_obj)
   exceptions_handled <- append(exceptions_handled, "TITELogisticLogNormal")
 
   # Virtual classes cannot be instantiated

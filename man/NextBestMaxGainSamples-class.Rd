@@ -5,9 +5,12 @@
 \alias{NextBestMaxGainSamples-class}
 \alias{.NextBestMaxGainSamples}
 \alias{NextBestMaxGainSamples}
+\alias{.DefaultNextBestMaxGainSamples}
 \title{\code{NextBestMaxGainSamples}}
 \usage{
 NextBestMaxGainSamples(prob_target_drt, prob_target_eot, derive, mg_derive)
+
+.DefaultNextBestMaxGainSamples()
 }
 \arguments{
 \item{prob_target_drt}{(\code{proportion})\cr see slot definition in \code{\link{NextBestMaxGain}}.}
@@ -28,6 +31,8 @@ must be specified: target probability to be used during the trial and target
 probability to be used at the end of the trial.
 It is suitable to use it only with the \code{\link{ModelTox}} model and \code{\link{ModelEff}}
 classes.
+
+Typically, end users will not use the \code{.DefaultNextBestMaxGainSamples()} function.
 }
 \section{Slots}{
 
@@ -62,4 +67,5 @@ my_next_best <- NextBestMaxGainSamples(
     as.numeric(quantile(mg_samples, prob = 0.5))
   }
 )
+.DefaultNextBestMaxGainSamples()
 }

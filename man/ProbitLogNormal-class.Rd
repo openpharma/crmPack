@@ -6,9 +6,12 @@
 \alias{.ProbitLogNormal}
 \alias{ProbitLogNormalLogDose}
 \alias{ProbitLogNormal}
+\alias{.DefaultProbitLogNormal}
 \title{\code{ProbitLogNormal}}
 \usage{
 ProbitLogNormal(mean, cov, ref_dose = 1)
+
+.DefaultProbitLogNormal()
 }
 \arguments{
 \item{mean}{(\code{numeric})\cr the prior mean vector.}
@@ -24,6 +27,8 @@ number).}
 
 \code{\link{ProbitLogNormal}} is the class for probit regression model with a
 bivariate normal prior on the intercept and log slope.
+
+Typically, end users will not use the \code{.DefaultProbitLogNormal()} function.
 }
 \details{
 The covariate is the natural logarithm of dose \eqn{x} divided by a
@@ -44,6 +49,7 @@ my_model <- ProbitLogNormal(
   cov = matrix(c(1, -0.5, -0.5, 1), nrow = 2),
   ref_dose = 7.2
 )
+.DefaultProbitLogNormal()
 }
 \seealso{
 \code{\link{ModelLogNormal}}, \code{\link{LogisticNormal}}, \code{\link{LogisticLogNormal}},

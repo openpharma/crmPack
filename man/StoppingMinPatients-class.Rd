@@ -5,9 +5,12 @@
 \alias{StoppingMinPatients-class}
 \alias{.StoppingMinPatients}
 \alias{StoppingMinPatients}
+\alias{.DefaultStoppingMinPatients}
 \title{\code{StoppingMinPatients}}
 \usage{
 StoppingMinPatients(nPatients)
+
+.DefaultStoppingMinPatients()
 }
 \arguments{
 \item{nPatients}{(\code{number})\cr see slot definition.}
@@ -17,6 +20,8 @@ StoppingMinPatients(nPatients)
 
 \code{\link{StoppingMinPatients}} is the class for stopping based on minimum number of
 patients
+
+Typically, end users will not use the \code{.DefaultStoppingMinPatients()} function.
 }
 \section{Slots}{
 
@@ -29,4 +34,5 @@ patients
 # As example, here is the rule for stopping the study if at least 20 patients
 # were already dosed
 my_stopping <- StoppingMinPatients(nPatients = 20)
+.DefaultStoppingMinPatients()
 }

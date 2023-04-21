@@ -5,9 +5,12 @@
 \alias{TITELogisticLogNormal-class}
 \alias{.TITELogisticLogNormal}
 \alias{TITELogisticLogNormal}
+\alias{.DefaultTITELogisticLogNormal}
 \title{\code{TITELogisticLogNormal}}
 \usage{
 TITELogisticLogNormal(weight_method = "linear", ...)
+
+.DefaultTITELogisticLogNormal()
 }
 \arguments{
 \item{weight_method}{(\code{string})\cr the weight function method: either linear
@@ -29,6 +32,9 @@ number).}
 \code{\link{TITELogisticLogNormal}} is the class for TITE-CRM based on a logistic
 regression model using a bivariate normal prior on the intercept and log
 slope parameters.
+
+Typically, end users will not use the \code{.DefaultTITELogisticLogNormal()} function.
+
 This class inherits from the \code{\link{LogisticLogNormal}}.
 }
 \section{Slots}{
@@ -52,6 +58,7 @@ my_model1 <- TITELogisticLogNormal(
   ref_dose = 1,
   weight_method = "adaptive"
 )
+.DefaultTITELogisticLogNormal()
 }
 \seealso{
 \code{\link{DALogisticLogNormal}}.

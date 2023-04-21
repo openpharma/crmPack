@@ -5,9 +5,12 @@
 \alias{DALogisticLogNormal-class}
 \alias{.DALogisticLogNormal}
 \alias{DALogisticLogNormal}
+\alias{.DefaultDALogisticLogNormal}
 \title{\code{DALogisticLogNormal}}
 \usage{
 DALogisticLogNormal(npiece = 3, l, c_par = 2, cond_pem = TRUE, ...)
+
+.DefaultDALogisticLogNormal()
 }
 \arguments{
 \item{npiece}{(\code{number})\cr the number of pieces in the \code{PEM}.}
@@ -36,6 +39,8 @@ number).}
 \code{\link{DALogisticLogNormal}} is the class for the logistic model with bivariate
 (log) normal prior and data augmentation. This class inherits from the
 \code{\link{LogisticLogNormal}} class.
+
+Typically, end users will not use the \code{.DefaultDALogisticLogNormal()} function.
 }
 \section{Slots}{
 
@@ -70,6 +75,7 @@ model <- DALogisticLogNormal(
   l = as.numeric(t(apply(as.matrix(c(1:npiece), 1, npiece), 2, lambda_prior))),
   c_par = 2
 )
+.DefaultDALogisticLogNormal()
 }
 \seealso{
 \code{\link{ModelLogNormal}}, \code{\link{LogisticNormal}}, \code{\link{LogisticLogNormal}}.

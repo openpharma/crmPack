@@ -5,9 +5,12 @@
 \alias{StoppingMaxGainCIRatio-class}
 \alias{.StoppingMaxGainCIRatio}
 \alias{StoppingMaxGainCIRatio}
+\alias{.DefaultStoppingMaxGainCIRatio}
 \title{\code{StoppingMaxGainCIRatio}}
 \usage{
 StoppingMaxGainCIRatio(target_ratio, prob_target)
+
+.DefaultStoppingMaxGainCIRatio()
 }
 \arguments{
 \item{target_ratio}{(\code{numeric})\cr see slot definition.}
@@ -41,4 +44,5 @@ of a DLT.}
 # Define the target stopping ratio (5) and the target probability of a DLT to
 # be used (0.3).
 my_stopping <- StoppingMaxGainCIRatio(target_ratio = 5, prob_target = 0.3)
+.DefaultStoppingMaxGainCIRatio()
 }

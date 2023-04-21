@@ -5,9 +5,12 @@
 \alias{NextBestTDsamples-class}
 \alias{.NextBestTDsamples}
 \alias{NextBestTDsamples}
+\alias{.DefaultNextBestTDsamples}
 \title{\code{NextBestTDsamples}}
 \usage{
 NextBestTDsamples(prob_target_drt, prob_target_eot, derive)
+
+.DefaultNextBestTDsamples()
 }
 \arguments{
 \item{prob_target_drt}{(\code{proportion})\cr see slot definition in \code{\link{NextBestTD}}.}
@@ -25,6 +28,8 @@ for allocation during the trial and the second for final recommendation at
 the end of a trial. Hence, there are two target probabilities of the
 occurrence of a DLT that must be specified: target probability to be used
 during the trial and target probability to be used at the end of the trial.
+
+Typically, end users will not use the \code{.DefaultNextBestTDsamples()} function.
 }
 \section{Slots}{
 
@@ -48,4 +53,5 @@ my_next_best <- NextBestTDsamples(
     as.numeric(quantile(samples, probs = 0.3))
   }
 )
+.DefaultNextBestTDsamples()
 }
