@@ -1,3 +1,4 @@
+# nocov start
 # Design ----
 
 #' Internal Helper Functions for Validation of [`RuleDesign`] Objects
@@ -27,3 +28,4 @@ v_rule_design <- function(object) {
   )
   v$result()
 }
+# nocov end

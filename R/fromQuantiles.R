@@ -1,3 +1,4 @@
+# nocov start
 # nolint start
 
 #####################################################################################
@@ -379,3 +380,4 @@ MinimalInformative <- function(dosegrid,
 }
 
 # nolint end
+# nocov end

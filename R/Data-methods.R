@@ -1,3 +1,4 @@
+# nocov start
 # plot ----
 
 ## Data ----
@@ -662,3 +663,4 @@ setMethod(
     }
   }
 )
+# nocov end

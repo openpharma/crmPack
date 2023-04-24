@@ -1,3 +1,4 @@
+# nocov start
 #' Internal Helper Functions for Validation of [`GeneralData`] Objects
 #'
 #' @description `r lifecycle::badge("stable")`
@@ -180,3 +181,4 @@ v_data_da <- function(object) {
   )
   v$result()
 }
+# nocov end

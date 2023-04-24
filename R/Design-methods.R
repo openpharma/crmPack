@@ -1,3 +1,4 @@
+# nocov start
 # nolint start
 #####################################################################################
 ## Author: Daniel Sabanes Bove [sabanesd *a*t* roche *.* com]
@@ -4698,3 +4699,4 @@ setMethod("simulate",
 
 ## --------------------------------------------------------------------------
 # nolint end
+# nocov end

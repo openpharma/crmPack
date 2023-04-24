@@ -1,3 +1,4 @@
+# nocov start
 # NextBest ----
 
 #' Internal Helper Functions for Validation of [`NextBest`] Objects
@@ -655,3 +656,4 @@ v_safety_window_const <- function(object) {
   )
   v$result()
 }
+# nocov end

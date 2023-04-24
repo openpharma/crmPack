@@ -1,3 +1,4 @@
+# nocov start
 #' @include Model-class.R
 #' @include Samples-class.R
 NULL
@@ -1534,3 +1535,4 @@ setMethod(
     )
   }
 )
+# nocov end

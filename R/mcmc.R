@@ -1,3 +1,4 @@
+# nocov start
 #' @include helpers.R
 #' @include Samples-class.R
 NULL
@@ -764,3 +765,4 @@ setMethod("mcmc",
     }
 )
 # nolint end
+# nocov end

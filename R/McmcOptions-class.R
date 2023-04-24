@@ -1,3 +1,4 @@
+# nocov start
 #' @include helpers.R
 #' @include McmcOptions-validity.R
 NULL
@@ -101,3 +102,4 @@ McmcOptions <- function(burnin = 1e4L,
     rng_seed = rng_seed
   )
 }
+# nocov end

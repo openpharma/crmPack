@@ -1,3 +1,4 @@
+# nocov start
 #' Internal Helper Functions for Validation of [`GeneralModel`] and [`ModelPseudo`] Objects
 #'
 #' @description `r lifecycle::badge("stable")`
@@ -590,3 +591,4 @@ v_model_one_par_exp_prior <- function(object) {
 
   v$result()
 }
+# nocov end

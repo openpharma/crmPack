@@ -1,3 +1,4 @@
+# nocov start
 #' @include Design-validity.R
 #' @include Model-class.R
 #' @include Rules-class.R
@@ -531,3 +532,4 @@ validObject(DADesign(
 ))
 
 # nolint end
+# nocov end

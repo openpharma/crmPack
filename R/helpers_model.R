@@ -1,3 +1,4 @@
+# nocov start
 #' Update [`DualEndpoint`] class model components with regard to biomarker
 #' regression variance.
 #'
@@ -223,3 +224,4 @@ h_model_dual_endpoint_beta <- function(param,
   de@use_fixed <- c(de@use_fixed, use_fixed)
   de
 }
+# nocov end

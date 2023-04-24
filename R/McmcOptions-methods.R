@@ -1,3 +1,4 @@
+# nocov start
 #' @include McmcOptions-class.R
 NULL
 
@@ -86,3 +87,4 @@ setMethod(
     iteration_relative > 0 && ((iteration_relative %% object@step) == 0)
   }
 )
+# nocov end

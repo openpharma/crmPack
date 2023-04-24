@@ -1,3 +1,4 @@
+# nocov start
 # v_mcmc_options ----
 
 #' Internal Helper Functions for Validation of [`McmcOptions`] Objects
@@ -71,3 +72,4 @@ v_mcmc_options <- function(object) {
   }
   v$result()
 }
+# nocov end

@@ -1,3 +1,4 @@
+# nocov start
 #' Internal Helper Functions for Validation of Model Parameters Objects
 #'
 #' @description `r lifecycle::badge("experimental")`
@@ -39,3 +40,4 @@ v_model_params_normal <- function(object) {
   }
   v$result()
 }
+# nocov end

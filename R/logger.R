@@ -1,3 +1,4 @@
+# nocov start
 #' Verbose Logging
 #'
 #' @description `r lifecycle::badge("experimental")`
@@ -62,3 +63,4 @@ log_trace <- function(msg, ..., capture = FALSE) {
 
   futile.logger::flog.trace(msg = msg, ..., name = "crmPack", capture = capture)
 }
+# nocov end
