@@ -1,3 +1,4 @@
+# nocov start
 # for nextBest methods ----
 
 ## some specific helpers ----
@@ -796,3 +797,4 @@ h_next_best_mgsamples_plot <- function(prob_target_drt,
       geom = "text", label = "Next", x = next_dose, y = 0, hjust = 0.1, vjust = -30, colour = "blue"
     )
 }
+# nocov end

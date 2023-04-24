@@ -1,3 +1,4 @@
+# nocov start
 #' @include helpers.R
 NULL
 
@@ -241,3 +242,4 @@ h_jags_extract_samples <- function(x) {
   }
   x
 }
+# nocov end

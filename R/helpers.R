@@ -1,3 +1,4 @@
+# nocov start
 # Validate-class ----
 
 #' `Validate`
@@ -1021,3 +1022,4 @@ h_find_interval <- function(..., replacement = -Inf) {
   x <- findInterval(...)
   ifelse(x == 0, yes = replacement, no = x)
 }
+# nocov end

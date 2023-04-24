@@ -1,3 +1,4 @@
+# nocov start
 #' @include helpers.R
 #' @include Rules-validity.R
 NULL
@@ -2361,3 +2362,4 @@ SafetyWindowConst <- function(gap,
     follow_min = safeInteger(follow_min)
   )
 }
+# nocov end

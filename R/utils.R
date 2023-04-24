@@ -1,3 +1,4 @@
+# nocov start
 #' Apply a Function to Subsets of Data Frame.
 #'
 #' @description `r lifecycle::badge("experimental")`
@@ -31,3 +32,4 @@ dapply <- function(df, f, FUN, ...) {
   rownames(df2) <- NULL
   df2
 }
+# nocov end

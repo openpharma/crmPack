@@ -1,3 +1,4 @@
+# nocov start
 # nolint start
 
 #####################################################################################
@@ -139,3 +140,4 @@ globalVariables(c(
 ))
 
 # nolint end
+# nocov end

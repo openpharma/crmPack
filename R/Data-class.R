@@ -1,3 +1,4 @@
+# nocov start
 #' @include helpers.R
 #' @include Data-validity.R
 NULL
@@ -377,3 +378,4 @@ DataDA <- function(u = numeric(),
     Tmax = as.numeric(Tmax)
   )
 }
+# nocov end

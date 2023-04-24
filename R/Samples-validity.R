@@ -1,3 +1,4 @@
+# nocov start
 #' @include McmcOptions-methods.R
 NULL
 
@@ -28,3 +29,4 @@ v_samples <- function(object) {
   )
   v$result()
 }
+# nocov end

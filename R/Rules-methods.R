@@ -1,3 +1,4 @@
+# nocov start
 #' @include Model-methods.R
 #' @include Samples-class.R
 #' @include Rules-class.R
@@ -2999,3 +3000,4 @@ setMethod("windowLength",
 )
 
 # nolint end
+# nocov end

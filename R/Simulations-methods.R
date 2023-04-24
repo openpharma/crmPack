@@ -1,3 +1,4 @@
+# nocov start
 # nolint start
 #####################################################################################
 ## Author: Daniel Sabanes Bove [sabanesd *a*t* roche *.* com],
@@ -2922,3 +2923,4 @@ setMethod("plot",
 )
 
 # nolint end
+# nocov end

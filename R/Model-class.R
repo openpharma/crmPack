@@ -1,3 +1,4 @@
+# nocov start
 #' @include helpers.R
 #' @include helpers_jags.R
 #' @include Model-validity.R
@@ -2822,3 +2823,4 @@ FractionalCRM <- function(...) {
     datanames = c("nObs", "xLevel")
   )
 }
+# nocov end

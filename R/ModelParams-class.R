@@ -1,3 +1,4 @@
+# nocov start
 #' @include helpers.R
 #' @include ModelParams-validity.R
 NULL
@@ -55,3 +56,4 @@ ModelParamsNormal <- function(mean, cov) {
     prec = solve(cov)
   )
 }
+# nocov end

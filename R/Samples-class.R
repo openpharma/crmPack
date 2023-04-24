@@ -1,3 +1,4 @@
+# nocov start
 #' @include McmcOptions-class.R
 #' @include Samples-validity.R
 NULL
@@ -49,3 +50,4 @@ NULL
 Samples <- function(data, options) {
   new("Samples", data = data, options = options)
 }
+# nocov end

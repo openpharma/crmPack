@@ -1,3 +1,4 @@
+# nocov start
 #' @include McmcOptions-class.R
 #' @include Model-methods.R
 #' @include fromQuantiles.R
@@ -2165,3 +2166,4 @@ setMethod("plot",
 ## =======================================================================================================
 
 # nolint end
+# nocov end

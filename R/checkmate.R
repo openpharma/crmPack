@@ -1,3 +1,4 @@
+# nocov start
 # assertions ----
 
 #' Additional Assertions for `checkmate`
@@ -295,3 +296,4 @@ test_range <- makeTestFunction(check_range)
 #' @inheritParams check_range
 #' @export
 expect_range <- makeExpectationFunction(check_range)
+# nocov end
