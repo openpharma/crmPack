@@ -56,23 +56,25 @@ h_jags_add_dummy <- function(object, where, dummy = 0) {
 #'   function bodies are not preserved in any way after joining.
 #'
 #' @param model1 (`function`)\cr the first model to join.
-#' @param model2 (`function`)\cr the second model to join.
+#' @param model2 (`function` or `call`)\cr the second model to join.
 #'
 #' @return joined models.
 #'
 #' @export
 #'
 h_jags_join_models <- function(model1, model2) {
-  assert_function(model1)
-  assert_function(model2)
-  assert_class(body(model1), "{")
-  assert_class(body(model2), "{")
+  if (is.function(model2)) model2 <- body(model2)
 
-  body2 <- as.list(body(model2))
-  if (length(body2) >= 2) {
-    body1 <- as.list(body(model1))
-    body(model1) <- as.call(c(body1, body2[-1]))
+  assert_function(model1)
+  assert_true(is.language(model2))
+
+  if (inherits(model2, "{")) {
+    model2_exprs <- as.list(model2)[-1]
+  } else {
+    model2_epxrs <- as.list(model2)
   }
+
+  body(model1) <- as.call(append(as.list(body(model1)), model2_exprs))
   model1
 }
 
