@@ -693,7 +693,10 @@ test_that("default constructors work correctly", {
   exceptions_handled <- append(exceptions_handled, "TITELogisticLogNormal")
 
   # Virtual classes cannot be instantiated
-  classes_not_tested <- classes_not_tested[!(classes_not_tested %in% c("DualEndpoint", "ModelLogNormal", exceptions_handled))]
+  classes_not_tested <-
+    classes_not_tested[
+      !(classes_not_tested %in% c("DualEndpoint", "ModelLogNormal", exceptions_handled))
+    ]
   expect_equal(length(classes_not_tested), 0)
 
   # Check an attempt to instantiate an unsupported class throws an exception

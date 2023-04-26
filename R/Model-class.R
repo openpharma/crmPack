@@ -2876,11 +2876,7 @@ TITELogisticLogNormal <- function(weight_method = "linear",
 #'
 #' Typically, end users will not use the `DefaultOneParLogNormalPrior()` function.
 #'
-<<<<<<< HEAD
 #' @slot skel_fun (`function`)\cr function to calculate the prior DLT probabilities.
-=======
-#' #' @slot skel_fun (`function`)\cr function to calculate the prior DLT probabilities.
->>>>>>> 0fe26e7e411f15f25324018fc857f55d79e077d2
 #' @slot skel_fun_inv (`function`)\cr inverse function of `skel_fun`.
 #' @slot skel_probs (`numeric`)\cr skeleton prior probabilities. This is a vector
 #'   of unique and sorted probability values between 0 and 1.

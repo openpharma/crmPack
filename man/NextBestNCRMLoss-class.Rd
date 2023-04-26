@@ -82,5 +82,5 @@ my_next_best <- NextBestNCRMLoss(
   max_overdose_prob = 0.25,
   losses = c(1, 0, 1, 2)
 )
-.DefaultNextBestNCRMLoss ()
+.DefaultNextBestNCRMLoss()
 }
