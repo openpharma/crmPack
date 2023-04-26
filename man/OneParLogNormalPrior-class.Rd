@@ -31,12 +31,12 @@ an instance of the \code{OneParLogNormalPrior} class
 the log power parameter for the skeleton prior probabilities.
 
 Typically, end users will not use the \code{DefaultOneParLogNormalPrior()} function.
-
-#' @slot skel_fun (\code{function})\cr function to calculate the prior DLT probabilities.
 }
 \section{Slots}{
 
 \describe{
+\item{\code{skel_fun}}{(\code{function})\cr function to calculate the prior DLT probabilities.}
+
 \item{\code{skel_fun_inv}}{(\code{function})\cr inverse function of \code{skel_fun}.}
 
 \item{\code{skel_probs}}{(\code{numeric})\cr skeleton prior probabilities. This is a vector
