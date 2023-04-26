@@ -467,7 +467,6 @@ setMethod("mcmc",
   def =
     function(data, model, options,
              ...) {
-
       ## update the DLE model first
       thismodel <- update(object = model, data = data)
 
