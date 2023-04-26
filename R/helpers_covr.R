@@ -32,12 +32,12 @@ h_covr_detrace <- function(expr) {
   is_covr_trace <- function(x) {
     # matches `if (TRUE) { covr:::count(<trace>); <expr> }` (see covr:::trace_calls)
     is.call(x) &&
-    x[[1]] == "if" &&
-    x[[2]] == quote(TRUE) &&
-    x[[3]][[1]] == "{" &&
-    length(x[[3]] >= 3) &&
-    is.call(x[[3]][[2]]) &&
-    x[[3]][[2]][[1]] == quote(covr:::count)
+      x[[1]] == "if" &&
+      x[[2]] == quote(TRUE) &&
+      x[[3]][[1]] == "{" &&
+      length(x[[3]] >= 3) &&
+      is.call(x[[3]][[2]]) &&
+      x[[3]][[2]][[1]] == quote(covr:::count)
   }
 
   detrace_call <- function(x) {
