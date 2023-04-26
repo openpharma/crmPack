@@ -2615,7 +2615,7 @@ CohortSizeParts <- function(sizes) {
 
 #' @rdname CohortSizeParts-class
 #' @examples
-#' .DefaulttCohortSizeParts()
+#' .DefaultCohortSizeParts()
 #' @export
 .DefaultCohortSizeParts <- function() {
   CohortSizeParts(sizes = c(1L, 3L))
