@@ -2564,7 +2564,7 @@ CohortSizeConst <- function(size) {
 
 #' @rdname CohortSizeConst-class
 #' @examples
-#' .DefaulttCohortSizeConst()
+#' .DefaultCohortSizeConst()
 #' @export
 .DefaultCohortSizeConst <- function() {
   CohortSizeConst(size = 3L)
