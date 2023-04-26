@@ -9,7 +9,7 @@ h_jags_join_models(model1, model2)
 \arguments{
 \item{model1}{(\code{function})\cr the first model to join.}
 
-\item{model2}{(\code{function} or \code{call})\cr the second model to join.}
+\item{model2}{(\code{function})\cr the second model to join.}
 }
 \value{
 joined models.

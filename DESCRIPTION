@@ -96,6 +96,7 @@ Collate:
     'Simulations-methods.R'
     'checkmate.R'
     'crmPack-package.R'
+    'helpers_covr.R'
     'helpers_model.R'
     'logger.R'
     'utils-pipe.R'

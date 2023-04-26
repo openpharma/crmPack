@@ -34,7 +34,9 @@ h_model_dual_endpoint_sigma2W <- function(use_fixed, # nolintr
     assert_true(h_test_named_numeric(sigma2W, permutation.of = c("a", "b")))
     comp$priormodel <- h_jags_join_models(
       comp$priormodel,
-      quote(precW ~ dgamma(precWa, PrecWb))
+      function() {
+        precW ~ dgamma(precWa, precWb)
+      }
     )
     comp$modelspecs$precWa <- sigma2W[["a"]]
     comp$modelspecs$precWb <- sigma2W[["b"]]
@@ -83,10 +85,10 @@ h_model_dual_endpoint_rho <- function(use_fixed,
     assert_true(h_test_named_numeric(rho, permutation.of = c("a", "b")))
     comp$priormodel <- h_jags_join_models(
       comp$priormodel,
-      quote({
+      function() {
         kappa ~ dbeta(rhoa, rhob)
         rho <- 2 * kappa - 1
-      })
+      }
     )
     comp$modelspecs$rhoa <- rho[["a"]]
     comp$modelspecs$rhob <- rho[["b"]]
@@ -133,7 +135,9 @@ h_model_dual_endpoint_sigma2betaW <- function(use_fixed, # nolintr
     # gamma prior for random walk precision.
     de@priormodel <- h_jags_join_models(
       de@priormodel,
-      quote(precBetaW ~ dgamma(precBetaWa, precBetaWb))
+      function() {
+        precBetaW ~ dgamma(precBetaWa, precBetaWb)
+      }
     )
     ms <- list(precBetaWa = sigma2betaW[["a"]], precBetaWb = sigma2betaW[["b"]])
     de@init <- function(y) {

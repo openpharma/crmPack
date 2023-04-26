@@ -1311,7 +1311,7 @@ DualEndpointRW <- function(sigma2betaW,
   start@use_fixed["sigma2betaW"] <- length(sigma2betaW) == 1L
 
   priormodel <- if (rw1) {
-    quote({  # nocov start
+    function() {
       # The 1st order differences.
       # Essentially dflat(), which is not available in JAGS.
       betaW[1] ~ dnorm(0, 0.000001)
@@ -1319,9 +1319,9 @@ DualEndpointRW <- function(sigma2betaW,
         delta[i - 1] ~ dnorm(0, precBetaW / (doseGrid[i] - doseGrid[i - 1]))
         betaW[i] <- betaW[i - 1] + delta[i - 1]
       }
-    })  # nocov end
+    }
   } else {
-    quote({  # nocov start
+    function() {
       # The 2nd order differences.
       delta[1] ~ dnorm(0, 0.000001)
       betaW[1] ~ dnorm(0, 0.000001)
@@ -1332,7 +1332,7 @@ DualEndpointRW <- function(sigma2betaW,
         delta[i - 1] <- delta[i - 2] + delta2[i - 2]
         betaW[i] <- betaW[i - 1] + delta[i - 1]
       }
-    })  # nocov end
+    }
   }
   start@priormodel <- h_jags_join_models(start@priormodel, priormodel)
   start@datanames_prior <- c("nGrid", "doseGrid")
@@ -1505,7 +1505,7 @@ DualEndpointBeta <- function(E0,
 
   start@priormodel <- h_jags_join_models(
     start@priormodel,
-    quote({  # nocov start
+    function() {
       # delta2 <- delta1 * (1 - (mode/ref_dose_beta)) / (mode/ref_dose_beta) # nolint
       delta2 <- delta1 * (ref_dose_beta / mode - 1)
       # betafun <- (delta1 + delta2)^(delta1 + delta2) * delta1^(- delta1) * delta2^(- delta2) # nolint
@@ -1514,7 +1514,7 @@ DualEndpointBeta <- function(E0,
         stand_dose_beta[i] <- doseGrid[i] / ref_dose_beta
         betaW[i] <- E0 + (Emax - E0) * betafun * stand_dose_beta[i]^delta1 * (1 - stand_dose_beta[i])^delta2
       }
-    })  # nocov end
+    }
   )
 
   .DualEndpointBeta(
@@ -1652,12 +1652,12 @@ DualEndpointEmax <- function(E0,
 
   start@priormodel <- h_jags_join_models(
     start@priormodel,
-    quote({  # nocov start
+    function() {
       for (i in 1:nGrid) {
         stand_dose_emax[i] <- doseGrid[i] / ref_dose_emax
         betaW[i] <- E0 + (Emax - E0) * stand_dose_emax[i] / (ED50 + stand_dose_emax[i])
       }
-    })  # nocov end
+    }
   )
 
   .DualEndpointEmax(
@@ -2418,7 +2418,7 @@ DALogisticLogNormal <- function(npiece = 3,
 
   priormodel <- h_jags_join_models(
     start@priormodel,
-    quote({  # nocov start
+    function() {
       g_beta <- 1 / c_par
       for  (j in 1:npiece) {
         g_alpha[j] <- l[j] / c_par
@@ -2429,7 +2429,7 @@ DALogisticLogNormal <- function(npiece = 3,
       # the probability to have DLT, i.e. t<T, otherwise
       # cond = 0 and A is just 1 (so no impact in likelihood).
       A <- cond * (1 - exp(-sum(mu_T))) + (1 - cond)
-    })  # nocov end
+    }
   )
 
   modelspecs <- function(nObs, Tmax, from_prior) {
