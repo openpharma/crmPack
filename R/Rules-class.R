@@ -2515,7 +2515,7 @@ CohortSizeDLT <- function(dlt_intervals, cohort_size) {
 
 #' @rdname CohortSizeDLT-class
 #' @examples
-#' .DefaultCohortSizeDLT(CohortSizeDLT)
+#' .DefaultCohortSizeDLT()
 #' @export
 .DefaultCohortSizeDLT <- function() {
   CohortSizeDLT(dlt_intervals = c(0L, 1L), cohort_size = c(1L, 3L))
