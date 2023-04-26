@@ -84,7 +84,7 @@ NextBestMTD <- function(target, derive) {
 #' @examples
 #' .DefaultNextBestMTD()
 #' @export
-.DefaultNextBestMTD  <- function() {
+.DefaultNextBestMTD <- function() {
   NextBestMTD(
     target = 0.33,
     derive = function(mtd_samples) {
@@ -165,7 +165,7 @@ NextBestNCRM <- function(target,
 #' @examples
 #' .DefaultNextBestNCRM()
 #' @export
-.DefaultNextBestNCRM  <- function() {
+.DefaultNextBestNCRM <- function() {
   NextBestNCRM(target = c(0.2, 0.35), overdose = c(0.35, 1), max_overdose_prob = 0.25)
 }
 
@@ -256,9 +256,9 @@ NextBestNCRMLoss <- function(target,
 
 #' @rdname NextBestNCRMLoss-class
 #' @examples
-#' .DefaultNextBestNCRMLoss ()
+#' .DefaultNextBestNCRMLoss()
 #' @export
-.DefaultNextBestNCRMLoss  <- function() {
+.DefaultNextBestNCRMLoss <- function() {
   NextBestNCRMLoss(
     target = c(0.2, 0.35),
     overdose = c(0.35, 0.6),
@@ -309,7 +309,7 @@ NextBestThreePlusThree <- function() {
 #' @examples
 #' .DefaultNextBestThreePlusThree()
 #' @export
-.DefaultNextBestThreePlusThree  <- function() {
+.DefaultNextBestThreePlusThree <- function() {
   NextBestThreePlusThree()
 }
 
@@ -410,7 +410,7 @@ NextBestDualEndpoint <- function(target,
 #' @examples
 #' .DefaultNextBestDualEndpoint()
 #' @export
-.DefaultNextBestDualEndpoint  <- function() {
+.DefaultNextBestDualEndpoint <- function() {
   NextBestDualEndpoint(
     target = c(200, 300),
     overdose = c(0.35, 1),
@@ -469,7 +469,7 @@ NextBestMinDist <- function(target) {
 #' @examples
 #' .DefaultNextBestMinDist()
 #' @export
-.DefaultNextBestMinDist  <- function() {
+.DefaultNextBestMinDist <- function() {
   NextBestMinDist(target = 0.3)
 }
 
@@ -527,7 +527,7 @@ NextBestInfTheory <- function(target, asymmetry) {
 #' @examples
 #' .DefaultNextBestInfTheory()
 #' @export
-.DefaultNextBestInfTheory  <- function() {
+.DefaultNextBestInfTheory <- function() {
   NextBestInfTheory(0.33, 1.2)
 }
 
@@ -580,7 +580,7 @@ NextBestInfTheory <- function(target, asymmetry) {
 #' @examples
 #' .DefaultNextBestTD()
 #' @export
-.DefaultNextBestTD  <- function() {
+.DefaultNextBestTD <- function() {
   NextBestTD(0.35, 0.3)
 }
 
@@ -666,7 +666,7 @@ NextBestTDsamples <- function(prob_target_drt, prob_target_eot, derive) {
 #' @examples
 #' .DefaultNextBestTDsamples()
 #' @export
-.DefaultNextBestTDsamples  <- function() {
+.DefaultNextBestTDsamples <- function() {
   NextBestTDsamples(
     prob_target_drt = 0.35,
     prob_target_eot = 0.3,
@@ -742,7 +742,7 @@ NextBestMaxGain <- function(prob_target_drt, prob_target_eot) {
 #' @examples
 #' .DefaultNextBestMaxGain()
 #' @export
-.DefaultNextBestMaxGain  <- function() {
+.DefaultNextBestMaxGain <- function() {
   NextBestMaxGain(0.35, 0.3)
 }
 
@@ -827,7 +827,7 @@ NextBestMaxGainSamples <- function(prob_target_drt,
 #' @examples
 #' .DefaultNextBestMaxGainSamples()
 #' @export
-.DefaultNextBestMaxGainSamples  <- function() {
+.DefaultNextBestMaxGainSamples <- function() {
   NextBestMaxGainSamples(
     prob_target_drt = 0.35,
     prob_target_eot = 0.3,
@@ -922,7 +922,7 @@ IncrementsRelative <- function(intervals, increments) {
 #' @examples
 #' .DefaultIncrementsRelative()
 #' @export
-.DefaultIncrementsRelative  <- function() {
+.DefaultIncrementsRelative <- function() {
   IncrementsRelative(intervals = c(0, 20), increments = c(1, 0.33))
 }
 
@@ -997,7 +997,7 @@ IncrementsRelativeDLT <- function(dlt_intervals, increments) {
 #' @examples
 #' .DefaultIncrementsRelativeDLT()
 #' @export
-.DefaultIncrementsRelativeDLT  <- function() {
+.DefaultIncrementsRelativeDLT <- function() {
   IncrementsRelativeDLT(dlt_intervals = c(0L, 1L, 3L), increments = c(1, 0.33, 0.2))
 }
 
@@ -1049,7 +1049,7 @@ IncrementsRelativeDLTCurrent <- function(dlt_intervals = c(0, 1),
 #' @examples
 #' .DefaultIncrementsRelativeDLTCurrent()
 #' @export
-.DefaultIncrementsRelativeDLTCurrent  <- function() {                   #nolint
+.DefaultIncrementsRelativeDLTCurrent <- function() { # nolint
   IncrementsRelativeDLTCurrent(dlt_intervals = c(0L, 1L, 3L), increments = c(1, 0.33, 0.2))
 }
 
@@ -1133,7 +1133,7 @@ IncrementsRelativeParts <- function(dlt_start, clean_start, ...) {
 #' @examples
 #' .DefaultIncrementsRelativeParts()
 #' @export
-.DefaultIncrementsRelativeParts  <- function() {
+.DefaultIncrementsRelativeParts <- function() {
   IncrementsRelativeParts(dlt_start = 0L, clean_start = 1L)
 }
 
@@ -1201,7 +1201,7 @@ IncrementsDoseLevels <- function(levels = 1L, basis_level = "last") {
 #' @examples
 #' .DefaultIncrementsDoseLevels()
 #' @export
-.DefaultIncrementsDoseLevels  <- function() {
+.DefaultIncrementsDoseLevels <- function() {
   IncrementsDoseLevels(levels = 2L, basis_level = "last")
 }
 
@@ -1285,7 +1285,7 @@ IncrementsHSRBeta <- function(target = 0.3,
 #' @examples
 #' .DefaultIncrementsHSRBeta()
 #' @export
-.DefaultIncrementsHSRBeta  <- function() {
+.DefaultIncrementsHSRBeta <- function() {
   IncrementsHSRBeta(target = 0.3, prob = 0.95)
 }
 
@@ -1340,7 +1340,7 @@ IncrementsMin <- function(increments_list) {
 #' @examples
 #' .DefaultIncrementsMin()
 #' @export
-.DefaultIncrementsMin  <- function() {
+.DefaultIncrementsMin <- function() {
   IncrementsMin(
     increments_list = list(
       IncrementsRelativeDLT(dlt_intervals = c(0, 1, 3), increments = c(1, 0.33, 0.2)),
@@ -1429,7 +1429,7 @@ StoppingCohortsNearDose <- function(nCohorts = 2L,
 #' @examples
 #' .DefaultStoppingCohortsNearDose()
 #' @export
-.DefaultStoppingCohortsNearDose  <- function() {                         #nolint
+.DefaultStoppingCohortsNearDose <- function() { # nolint
   StoppingCohortsNearDose(nCohorts = 3L, percentage = 0.2)
 }
 
@@ -1492,7 +1492,7 @@ StoppingPatientsNearDose <- function(nPatients,
 #' @examples
 #' .DefaultStoppingPatientsNearDose()
 #' @export
-.DefaultStoppingPatientsNearDose  <- function() {                        #nolint
+.DefaultStoppingPatientsNearDose <- function() { # nolint
   StoppingPatientsNearDose(nPatients = 9L, percentage = 20)
 }
 
@@ -1541,7 +1541,7 @@ StoppingMinCohorts <- function(nCohorts) {
 #' @examples
 #' .DefaultStoppingMinCohorts()
 #' @export
-.DefaultStoppingMinCohorts  <- function() {
+.DefaultStoppingMinCohorts <- function() {
   StoppingMinCohorts(nCohorts = 6L)
 }
 
@@ -1590,7 +1590,7 @@ StoppingMinPatients <- function(nPatients) {
 #' @examples
 #' .DefaultStoppingMinPatients()
 #' @export
-.DefaultStoppingMinPatients  <- function() {
+.DefaultStoppingMinPatients <- function() {
   StoppingMinPatients(nPatients = 20L)
 }
 
@@ -1652,7 +1652,7 @@ StoppingTargetProb <- function(target,
 #' @examples
 #' .DefaultStoppingTargetProb()
 #' @export
-.DefaultStoppingTargetProb  <- function() {
+.DefaultStoppingTargetProb <- function() {
   StoppingTargetProb(target = c(0.2, 0.35), prob = 0.5)
 }
 
@@ -1725,7 +1725,7 @@ StoppingMTDdistribution <- function(target,
 #' @examples
 #' .DefaultStoppingMTDdistribution()
 #' @export
-.DefaultStoppingMTDdistribution  <- function() {
+.DefaultStoppingMTDdistribution <- function() {
   StoppingMTDdistribution(target = 0.33, thresh = 0.5, prob = 0.9)
 }
 
@@ -1792,7 +1792,7 @@ StoppingMTDCV <- function(target = 0.3,
 #' @examples
 #' .DefaultStoppingMTDCV()
 #' @export
-.DefaultStoppingMTDCV  <- function() {
+.DefaultStoppingMTDCV <- function() {
   StoppingMTDCV(target = 0.3, thresh_cv = 40)
 }
 
@@ -1877,7 +1877,7 @@ StoppingLowestDoseHSRBeta <- function(target = 0.3,
 #' @examples
 #' .DefaultStoppingLowestDoseHSRBeta()
 #' @export
-.DefaultStoppingLowestDoseHSRBeta  <- function() {                       #nolint
+.DefaultStoppingLowestDoseHSRBeta <- function() { # nolint
   StoppingLowestDoseHSRBeta(target = 0.3, prob = 0.95, a = 1, b = 1)
 }
 
@@ -1950,7 +1950,7 @@ StoppingTargetBiomarker <- function(target,
 #' @examples
 #' .DefaultStoppingTargetBiomarker()
 #' @export
-.DefaultStoppingTargetBiomarker  <- function() {
+.DefaultStoppingTargetBiomarker <- function() {
   StoppingTargetBiomarker(target = c(0.9, 1), prob = 0.5)
 }
 
@@ -2006,7 +2006,7 @@ StoppingSpecificDose <- function(rule, dose) {
 #' @examples
 #' .DefaultStoppingSpecificDose()
 #' @export
-.DefaultStoppingSpecificDose  <- function() {
+.DefaultStoppingSpecificDose <- function() {
   StoppingSpecificDose(
     rule = StoppingTargetProb(target = c(0, 0.3), prob = 0.8),
     dose = positive_number(80)
@@ -2051,7 +2051,7 @@ StoppingHighestDose <- function() {
 #' @examples
 #' .DefaultStoppingHighestDose()
 #' @export
-.DefaultStoppingHighestDose  <- function() {
+.DefaultStoppingHighestDose <- function() {
   StoppingHighestDose()
 }
 
@@ -2117,7 +2117,7 @@ StoppingList <- function(stop_list, summary) {
 #' @examples
 #' .DefaultStoppingList()
 #' @export
-.DefaultStoppingList  <- function() {
+.DefaultStoppingList <- function() {
   StoppingList(
     stop_list = c(
       StoppingMinCohorts(nCohorts = 3L),
@@ -2180,7 +2180,7 @@ StoppingAll <- function(stop_list) {
 #' @examples
 #' .DefaultStoppingAll()
 #' @export
-.DefaultStoppingAll  <- function() {
+.DefaultStoppingAll <- function() {
   StoppingAll(
     stop_list = c(
       StoppingMinCohorts(nCohorts = 3L),
@@ -2239,7 +2239,7 @@ StoppingAny <- function(stop_list) {
 #' @examples
 #' .DefaultStoppingAny()
 #' @export
-.DefaultStoppingAny  <- function() {
+.DefaultStoppingAny <- function() {
   StoppingAny(
     stop_list = c(
       StoppingMinCohorts(nCohorts = 3L),
@@ -2310,7 +2310,7 @@ StoppingTDCIRatio <- function(target_ratio, prob_target) {
 #' @examples
 #' .DefaultStoppingTDCIRatio(StoppingTDCIRatio)
 #' @export
-.DefaultStoppingTDCIRatio  <- function() {
+.DefaultStoppingTDCIRatio <- function() {
   StoppingTDCIRatio(target_ratio = 5, prob_target = 0.3)
 }
 
@@ -2376,7 +2376,7 @@ StoppingMaxGainCIRatio <- function(target_ratio, prob_target) {
 #' @examples
 #' .DefaultStoppingMaxGainCIRatio()
 #' @export
-.DefaultStoppingMaxGainCIRatio  <- function() {
+.DefaultStoppingMaxGainCIRatio <- function() {
   StoppingMaxGainCIRatio(target_ratio = 5, prob_target = 0.3)
 }
 
@@ -2457,7 +2457,7 @@ CohortSizeRange <- function(intervals, cohort_size) {
 #' @examples
 #' .DefaultCohortSizeRange()
 #' @export
-.DefaultCohortSizeRange  <- function() {
+.DefaultCohortSizeRange <- function() {
   CohortSizeRange(intervals = c(0L, 30L), cohort_size = c(1L, 3L))
 }
 
@@ -2517,7 +2517,7 @@ CohortSizeDLT <- function(dlt_intervals, cohort_size) {
 #' @examples
 #' .DefaultCohortSizeDLT(CohortSizeDLT)
 #' @export
-.DefaultCohortSizeDLT  <- function() {
+.DefaultCohortSizeDLT <- function() {
   CohortSizeDLT(dlt_intervals = c(0L, 1L), cohort_size = c(1L, 3L))
 }
 
@@ -2566,7 +2566,7 @@ CohortSizeConst <- function(size) {
 #' @examples
 #' .DefaulttCohortSizeConst()
 #' @export
-.DefaultCohortSizeConst  <- function() {
+.DefaultCohortSizeConst <- function() {
   CohortSizeConst(size = 3L)
 }
 
@@ -2617,7 +2617,7 @@ CohortSizeParts <- function(sizes) {
 #' @examples
 #' .DefaulttCohortSizeParts()
 #' @export
-.DefaultCohortSizeParts  <- function() {
+.DefaultCohortSizeParts <- function() {
   CohortSizeParts(sizes = c(1L, 3L))
 }
 
@@ -2661,7 +2661,7 @@ CohortSizeParts <- function(sizes) {
 #' @examples
 #' .DefaultCohortSizeMax()
 #' @export
-.DefaultCohortSizeMax  <- function() {
+.DefaultCohortSizeMax <- function() {
   CohortSizeMax(
     cohort_size_list = list(
       CohortSizeRange(intervals = c(0, 10), cohort_size = c(1L, 3L)),
@@ -2737,7 +2737,7 @@ CohortSizeMin <- function(cohort_size_list) {
 #' @examples
 #' .DefaultCohortSizeMin()
 #' @export
-.DefaultCohortSizeMin  <- function() {
+.DefaultCohortSizeMin <- function() {
   CohortSizeMin(
     cohort_size_list = list(
       CohortSizeRange(intervals = c(0, 10), cohort_size = c(1L, 3L)),
