@@ -68,7 +68,7 @@ h_jags_join_models <- function(model1, model2) {
   assert_class(body(model1), "{")
   assert_class(body(model2), "{")
 
-  # workaround needed to avoid bugs related to covr-injected code
+  # This workaround is needed to avoid bugs related to covr-injected code.
   if (h_covr_active()) {
     body(model2) <- h_covr_detrace(body(model2))
   }
@@ -191,7 +191,7 @@ h_jags_write_model <- function(model, file = NULL, digits = 5) {
   assert_function(model)
   assert_count(digits)
 
-  # workaround needed to avoid bugs related to covr-injected code
+  # This workaround is needed to avoid bugs related to covr-injected code.
   if (h_covr_active()) {
     body(model) <- h_covr_detrace(body(model))
   }
