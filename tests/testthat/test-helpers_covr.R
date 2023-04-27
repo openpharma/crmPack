@@ -71,7 +71,9 @@ test_that("h_covr_detrace removes all covr traces", {
 
   expect_equal(
     withr::with_envvar(c(R_COVR = "true"), h_covr_detrace(expr)),
-    quote(function(x) { 1 + 2 + three() })
+    quote(function(x) {
+      1 + 2 + three()
+    })
   )
 
   expect_equal(
