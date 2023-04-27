@@ -37,7 +37,7 @@ h_covr_detrace <- function(expr) {
       x[[3]][[1]] == "{" &&
       length(x[[3]] >= 3) &&
       is.call(x[[3]][[2]]) &&
-      x[[3]][[2]][[1]] == quote(covr:::count)
+      x[[3]][[2]][[1]] == call(":::", as.symbol("covr"), as.symbol("count"))
   }
 
   detrace_call <- function(x) {
