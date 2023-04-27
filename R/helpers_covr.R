@@ -65,14 +65,14 @@ h_covr_detrace <- function(expr) {
 #' @describeIn h_covr_helpers
 #' Determine whether the current expression is a `covr`-modified expression
 h_is_covr_trace <- function(expr) {
-    # Matches `if (TRUE) { covr:::count(<trace>); <expr> }` (see covr:::trace_calls).
-    is.call(expr) &&
-      expr[[1]] == "if" &&
-      expr[[2]] == quote(TRUE) &&
-      expr[[3]][[1]] == "{" &&
-      length(expr[[3]] >= 3) &&
-      is.call(expr[[3]][[2]]) &&
-      expr[[3]][[2]][[1]] == call(":::", as.symbol("covr"), as.symbol("count"))
+  # Matches `if (TRUE) { covr:::count(<trace>); <expr> }` (see covr:::trace_calls).
+  is.call(expr) &&
+    expr[[1]] == "if" &&
+    expr[[2]] == quote(TRUE) &&
+    expr[[3]][[1]] == "{" &&
+    length(expr[[3]] >= 3) &&
+    is.call(expr[[3]][[2]]) &&
+    expr[[3]][[2]][[1]] == call(":::", as.symbol("covr"), as.symbol("count"))
 }
 
 #' @describeIn h_covr_helpers
