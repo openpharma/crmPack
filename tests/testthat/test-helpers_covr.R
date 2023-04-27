@@ -59,6 +59,26 @@ test_that("h_covr_detrace removes all covr traces", {
     expr
   )
 
+  expr <- quote(function(x) {
+    if (TRUE) {
+      covr:::count("file.R:1:2:3:4:5:6:7:8")
+      1 + 2 + if (TRUE) {
+        covr:::count("file.R:11:12:13:14:15:16:17:18")
+        three()
+      }
+    }
+  })
+
+  expect_equal(
+    withr::with_envvar(c(R_COVR = "true"), h_covr_detrace(expr)),
+    quote(function(x) { 1 + 2 + three() })
+  )
+
+  expect_equal(
+    withr::with_envvar(c(R_COVR = ""), h_covr_detrace(expr)),
+    expr
+  )
+
   expr <- quote(if (TRUE) {
     covr:::another_function("file.R:1:2:3:4:5:6:7:8")
     1 + 2
