@@ -484,6 +484,8 @@ test_that("default constructors work correctly", {
       return(className)
     } else {
       print(paste0("Example file for ", className, " DOES NOT exist."))
+      print(paste0("Current working directory is ", getwd()))
+      print(paste0("exampleFolder ", ifelse(dir.exists(exampleFolder), "does", "does not"), " exist."))
     }
   }
 
