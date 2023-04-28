@@ -28,8 +28,6 @@ when the probability of \code{MTD > thresh * next_dose} is greater than or equal
 to \code{prob}, where the \code{next_dose} is the recommended next best dose.
 Here, the MTD is defined as the dose that reaches a specific \code{target}
 probability of the occurrence of a DLT.
-
-Typically, end users will not use the \code{.DefaultStoppingMTDDistribution()} function.
 }
 \section{Slots}{
 
@@ -43,6 +41,9 @@ recommended next best dose.}
 \item{\code{prob}}{(\code{proportion})\cr required minimum probability, except 0 or 1.}
 }}
 
+\note{
+Typically, end users will not use the \code{.DefaultStoppingMTDDistribution()} function.
+}
 \examples{
 
 # As example, here is the rule for stopping the study if there is at least 0.9
@@ -53,5 +54,4 @@ my_stopping <- StoppingMTDdistribution(
   thresh = 0.5,
   prob = 0.9
 )
-.DefaultStoppingMTDdistribution()
 }

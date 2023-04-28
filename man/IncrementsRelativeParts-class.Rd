@@ -30,8 +30,6 @@ IncrementsRelativeParts(dlt_start, clean_start, ...)
 \code{\link{IncrementsRelativeParts}} is the class for increments control based on
 relative differences in intervals, with special rules for part 1 and
 beginning of part 2.
-
-Typically, end users will not use the \code{.DefaultIncrementsRelativeParts()} function.
 }
 \details{
 This class works only in conjunction with \code{\link{DataParts}} objects. If
@@ -63,9 +61,10 @@ is not a prerequisite for any function (except of the class' validation
 function) that works with objects of this class. It is rather motivated by
 the semantics. That is, if we observe a DLT in part 1, we cannot be more
 aggressive than in case of a clean part 1 without DLT.
+
+Typically, end users will not use the \code{.DefaultIncrementsRelativeParts()} function.
 }
 \examples{
 
 my_increments <- IncrementsRelativeParts(dlt_start = 0, clean_start = 1)
-.DefaultIncrementsRelativeParts()
 }

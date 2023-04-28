@@ -22,8 +22,6 @@ NextBestInfTheory(target, asymmetry)
 
 \code{\link{NextBestInfTheory}} is the class for next best dose that is based on
 information theory as proposed in https://doi.org/10.1002/sim.8450.
-
-Typically, end users will not use the \code{.DefaultNextBestInfTheory()} function.
 }
 \section{Slots}{
 
@@ -35,6 +33,6 @@ divergence function that describes the rate of penalization for overly
 toxic does. It must be a value from \eqn{(0, 2)} interval.}
 }}
 
-\examples{
-.DefaultNextBestInfTheory()
+\note{
+Typically, end users will not use the \code{.DefaultNextBestInfTheory()} function.
 }

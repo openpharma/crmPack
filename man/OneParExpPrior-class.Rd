@@ -26,8 +26,6 @@ of the same length as \code{skel_probs}.}
 \code{\link{OneParExpPrior}} is the class for a standard CRM with an exponential prior
 on the power parameter for the skeleton prior probabilities. It is an
 implementation of a version of the one-parameter CRM (O’Quigley et al. 1990).
-
-Typically, end users will not use the \code{.DefaultOneparExpPrior()} function.
 }
 \section{Slots}{
 
@@ -43,11 +41,15 @@ of unique and sorted probability values between 0 and 1.}
 for theta.}
 }}
 
+\note{
+Typically, end users will not use the \code{.DefaultOneparExpPrior()} function.
+
+Typically, end users will not use the \code{DefaultOneParLogNormalPrior()} function.
+}
 \examples{
 my_model <- OneParExpPrior(
   skel_probs = c(0.1, 0.3, 0.5, 0.7, 0.9),
   dose_grid = 1:5,
   lambda = 2
 )
-.DefaultOneParExpPrior()
 }

@@ -21,8 +21,6 @@ NextBestMTD(target, derive)
 \ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#stable}{\figure{lifecycle-stable.svg}{options: alt='[Stable]'}}}{\strong{[Stable]}}
 
 \code{\link{NextBestMTD}} is the class for next best dose based on MTD estimate.
-
-Typically, end users will not use the \code{.DefaultNextBestMTD()} function.
 }
 \section{Slots}{
 
@@ -34,6 +32,9 @@ estimate, based on vector of posterior MTD samples. It must therefore accept
 one and only one argument, which is a numeric vector, and return a number.}
 }}
 
+\note{
+Typically, end users will not use the \code{.DefaultNextBestMTD()} function.
+}
 \examples{
 # In the example below, the MTD is defined as the dose for which prob(DLE) = 0.33
 # and we will use the 25th quantile of the posterior of MTD as our next best dose.
@@ -43,5 +44,4 @@ next_best_mtd <- NextBestMTD(
     quantile(mtd_samples, probs = 0.25)
   }
 )
-.DefaultNextBestMTD()
 }

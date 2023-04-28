@@ -34,8 +34,6 @@ NextBestDualEndpoint(
 
 \code{\link{NextBestDualEndpoint}} is the class for next best dose that is based on the
 dual endpoint model.
-
-Typically, end users will not use the \code{.DefaultNextBestDualEndpoint()} function.
 }
 \details{
 Under this rule, at first admissible doses are found, which are those
@@ -74,6 +72,9 @@ needs to be fulfilled before the target probability will be used for
 deriving the next best dose (default to 0.01).}
 }}
 
+\note{
+Typically, end users will not use the \code{.DefaultNextBestDualEndpoint()} function.
+}
 \examples{
 # Target a dose achieving at least 0.9 of maximum biomarker level (efficacy)
 # and with a probability below 0.25 that prob(DLT) > 0.35 (safety).
@@ -90,5 +91,4 @@ my_next_best_absolute <- NextBestDualEndpoint(
   max_overdose_prob = 0.25,
   target_relative = FALSE
 )
-.DefaultNextBestDualEndpoint()
 }

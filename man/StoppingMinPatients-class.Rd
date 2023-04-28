@@ -20,8 +20,6 @@ StoppingMinPatients(nPatients)
 
 \code{\link{StoppingMinPatients}} is the class for stopping based on minimum number of
 patients
-
-Typically, end users will not use the \code{.DefaultStoppingMinPatients()} function.
 }
 \section{Slots}{
 
@@ -29,10 +27,12 @@ Typically, end users will not use the \code{.DefaultStoppingMinPatients()} funct
 \item{\code{nPatients}}{(\code{number})\cr minimum allowed number of patients.}
 }}
 
+\note{
+Typically, end users will not use the \code{.DefaultStoppingMinPatients()} function.
+}
 \examples{
 
 # As example, here is the rule for stopping the study if at least 20 patients
 # were already dosed
 my_stopping <- StoppingMinPatients(nPatients = 20)
-.DefaultStoppingMinPatients()
 }

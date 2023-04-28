@@ -35,8 +35,6 @@ setClass(
 #'
 #' [`NextBestMTD`] is the class for next best dose based on MTD estimate.
 #'
-#' Typically, end users will not use the `.DefaultNextBestMTD()` function.
-#'
 #' @slot target (`proportion`)\cr target toxicity probability, except 0 or 1.
 #' @slot derive (`function`)\cr a function which derives the final next best MTD
 #'   estimate, based on vector of posterior MTD samples. It must therefore accept
@@ -81,8 +79,7 @@ NextBestMTD <- function(target, derive) {
 ## default constructor ----
 
 #' @rdname NextBestMTD-class
-#' @examples
-#' .DefaultNextBestMTD()
+#' @note Typically, end users will not use the `.DefaultNextBestMTD()` function.
 #' @export
 .DefaultNextBestMTD <- function() {
   NextBestMTD(
@@ -103,8 +100,6 @@ NextBestMTD <- function(target, derive) {
 #'
 #' [`NextBestNCRM`] is the class for next best dose that finds the next dose
 #' with high posterior probability to be in the target toxicity interval.
-#'
-#' Typically, end users will not use the `.DefaultNextBestNCRM()` function.
 #'
 #' @details To avoid numerical problems, the dose selection algorithm has been
 #' implemented as follows: First admissible doses are found, which are those
@@ -162,8 +157,7 @@ NextBestNCRM <- function(target,
 ## default constructor ----
 
 #' @rdname NextBestNCRM-class
-#' @examples
-#' .DefaultNextBestNCRM()
+#' @note Typically, end users will not use the `.DefaultNextBestNCRM()` function.
 #' @export
 .DefaultNextBestNCRM <- function() {
   NextBestNCRM(target = c(0.2, 0.35), overdose = c(0.35, 1), max_overdose_prob = 0.25)
@@ -185,8 +179,6 @@ NextBestNCRM <- function(target,
 #' `max_overdose_prob`. Next, within the admissible doses, the loss function is
 #' calculated, i.e. `losses` %*% `target`. Finally, the corresponding
 #' dose with lowest loss function (Bayes risk) is recommended for the next dose.
-#'
-#' Typically, end users will not use the `.DefaultNextBestnCRMLoss()` function.
 #'
 #' @slot target (`numeric`)\cr the target toxicity interval (limits included).
 #'   It has to be a probability range excluding 0 and 1.
@@ -255,8 +247,7 @@ NextBestNCRMLoss <- function(target,
 ## default constructor ----
 
 #' @rdname NextBestNCRMLoss-class
-#' @examples
-#' .DefaultNextBestNCRMLoss()
+#' @note Typically, end users will not use the `.DefaultNextBestnCRMLoss()` function.
 #' @export
 .DefaultNextBestNCRMLoss <- function() {
   NextBestNCRMLoss(
@@ -281,8 +272,6 @@ NextBestNCRMLoss <- function(target,
 #' implements the classical 3+3 dose recommendation. No input is required,
 #' hence this class has no slots.
 #'
-#' Typically, end users will not use the `.DefaultNextBestThreePlusThree()` function.
-#'
 #' @aliases NextBestThreePlusThree
 #' @export
 #'
@@ -306,8 +295,7 @@ NextBestThreePlusThree <- function() {
 ## default constructor ----
 
 #' @rdname NextBestThreePlusThree-class
-#' @examples
-#' .DefaultNextBestThreePlusThree()
+#' @note Typically, end users will not use the `.DefaultNextBestThreePlusThree()` function.
 #' @export
 .DefaultNextBestThreePlusThree <- function() {
   NextBestThreePlusThree()
@@ -323,8 +311,6 @@ NextBestThreePlusThree <- function() {
 #'
 #' [`NextBestDualEndpoint`] is the class for next best dose that is based on the
 #' dual endpoint model.
-#'
-#' Typically, end users will not use the `.DefaultNextBestDualEndpoint()` function.
 #'
 #' @details Under this rule, at first admissible doses are found, which are those
 #' with toxicity probability to fall in `overdose` category and being below
@@ -407,8 +393,7 @@ NextBestDualEndpoint <- function(target,
 ## default constructor ----
 
 #' @rdname NextBestDualEndpoint-class
-#' @examples
-#' .DefaultNextBestDualEndpoint()
+#' @note Typically, end users will not use the `.DefaultNextBestDualEndpoint()` function.
 #' @export
 .DefaultNextBestDualEndpoint <- function() {
   NextBestDualEndpoint(
@@ -429,8 +414,6 @@ NextBestDualEndpoint <- function(target,
 #'
 #' [`NextBestMinDist`] is the class for next best dose that is based on minimum
 #' distance to target probability.
-#'
-#' Typically, end users will not use the `.DefaultNextBestMinDist()` function.
 #'
 #' @slot target (`proportion`)\cr single target toxicity probability, except
 #'   0 or 1.
@@ -466,8 +449,7 @@ NextBestMinDist <- function(target) {
 ## default constructor ----
 
 #' @rdname NextBestMinDist-class
-#' @examples
-#' .DefaultNextBestMinDist()
+#' @note Typically, end users will not use the `.DefaultNextBestMinDist()` function.
 #' @export
 .DefaultNextBestMinDist <- function() {
   NextBestMinDist(target = 0.3)
@@ -483,8 +465,6 @@ NextBestMinDist <- function(target) {
 #'
 #' [`NextBestInfTheory`] is the class for next best dose that is based on
 #' information theory as proposed in https://doi.org/10.1002/sim.8450.
-#'
-#' Typically, end users will not use the `.DefaultNextBestInfTheory()` function.
 #'
 #' @slot target (`proportion`)\cr target toxicity probability, except 0 or 1.
 #' @slot asymmetry (`number`)\cr value of the asymmetry exponent in the
@@ -524,8 +504,7 @@ NextBestInfTheory <- function(target, asymmetry) {
 ## default constructor ----
 
 #' @rdname NextBestInfTheory-class
-#' @examples
-#' .DefaultNextBestInfTheory()
+#' @note Typically, end users will not use the `.DefaultNextBestInfTheory()` function.
 #' @export
 .DefaultNextBestInfTheory <- function() {
   NextBestInfTheory(0.33, 1.2)
@@ -549,8 +528,6 @@ NextBestInfTheory <- function(target, asymmetry) {
 #' occurrence of a DLT that must be specified: target probability to be used
 #' during the trial and target probability to be used at the end of the trial.
 #' It is suitable to use it only with the [`ModelTox`] model class.
-#'
-#' Typically, end users will not use the `.DefaultNextBestTD()` function.
 #'
 #' @slot prob_target_drt (`proportion`)\cr the target probability (except 0 or 1)
 #'   of the occurrence of a DLT to be used during the trial.
@@ -577,8 +554,7 @@ NextBestInfTheory <- function(target, asymmetry) {
 ## default constructor ----
 
 #' @rdname NextBestTD-class
-#' @examples
-#' .DefaultNextBestTD()
+#' @note Typically, end users will not use the `.DefaultNextBestTD()` function.
 #' @export
 .DefaultNextBestTD <- function() {
   NextBestTD(0.35, 0.3)
@@ -615,8 +591,6 @@ NextBestTD <- function(prob_target_drt, prob_target_eot) {
 #' the end of a trial. Hence, there are two target probabilities of the
 #' occurrence of a DLT that must be specified: target probability to be used
 #' during the trial and target probability to be used at the end of the trial.
-#'
-#' Typically, end users will not use the `.DefaultNextBestTDsamples()` function.
 #'
 #' @slot derive (`function`)\cr derives, based on a vector of posterior dose
 #'   samples, the target dose that has the probability of the occurrence of
@@ -663,8 +637,7 @@ NextBestTDsamples <- function(prob_target_drt, prob_target_eot, derive) {
 ## default constructor ----
 
 #' @rdname NextBestTDsamples-class
-#' @examples
-#' .DefaultNextBestTDsamples()
+#' @note Typically, end users will not use the `.DefaultNextBestTDsamples()` function.
 #' @export
 .DefaultNextBestTDsamples <- function() {
   NextBestTDsamples(
@@ -694,8 +667,6 @@ NextBestTDsamples <- function(prob_target_drt, prob_target_eot, derive) {
 #' during the trial and target probability to be used at the end of the trial.
 #' It is suitable to use it only with the [`ModelTox`] model and [`ModelEff`]
 #' classes (except [`EffFlexi`]).
-#'
-#' Typically, end users will not use the `.DefaultNextBestMaxGain()` function.
 #'
 #' @slot prob_target_drt (`proportion`)\cr the target probability of the
 #'   occurrence of a DLT to be used during the trial.
@@ -739,8 +710,7 @@ NextBestMaxGain <- function(prob_target_drt, prob_target_eot) {
 ## default constructor ----
 
 #' @rdname NextBestMaxGain-class
-#' @examples
-#' .DefaultNextBestMaxGain()
+#' @note Typically, end users will not use the `.DefaultNextBestMaxGain()` function.
 #' @export
 .DefaultNextBestMaxGain <- function() {
   NextBestMaxGain(0.35, 0.3)
@@ -761,8 +731,6 @@ NextBestMaxGain <- function(prob_target_drt, prob_target_eot) {
 #' probability to be used at the end of the trial.
 #' It is suitable to use it only with the [`ModelTox`] model and [`ModelEff`]
 #' classes.
-#'
-#' Typically, end users will not use the `.DefaultNextBestMaxGainSamples()` function.
 #'
 #' @slot derive (`function`)\cr derives, based on a vector of posterior dose
 #'   samples, the target dose that has the probability of the occurrence of
@@ -824,8 +792,7 @@ NextBestMaxGainSamples <- function(prob_target_drt,
 ## default constructor ----
 
 #' @rdname NextBestMaxGainSamples-class
-#' @examples
-#' .DefaultNextBestMaxGainSamples()
+#' @note Typically, end users will not use the `.DefaultNextBestMaxGainSamples()` function.
 #' @export
 .DefaultNextBestMaxGainSamples <- function() {
   NextBestMaxGainSamples(
@@ -872,8 +839,6 @@ setClass(
 #' [`IncrementsRelative`] is the class for increments control based on relative
 #' differences in intervals.
 #'
-#' Typically, end users will not use the `.DefaultIncrementsRelative()` function.
-#'
 #' @slot intervals (`numeric`)\cr a vector with the left bounds of the relevant
 #'   intervals. For example, `intervals  = c(0, 50, 100)` specifies three intervals:
 #'   \eqn{(0, 50)}, \eqn{[50, 100)} and \eqn{[100, +Inf)}. That means, the right
@@ -919,8 +884,7 @@ IncrementsRelative <- function(intervals, increments) {
 ## default constructor ----
 
 #' @rdname IncrementsRelative-class
-#' @examples
-#' .DefaultIncrementsRelative()
+#' @note Typically, end users will not use the `.DefaultIncrementsRelative()` function.
 #' @export
 .DefaultIncrementsRelative <- function() {
   IncrementsRelative(intervals = c(0, 20), increments = c(1, 0.33))
@@ -937,8 +901,6 @@ IncrementsRelative <- function(intervals, increments) {
 #'
 #' [`IncrementsRelativeDLT`] is the class for increments control based on
 #' relative differences in terms of DLTs.
-#'
-#' Typically, end users will not use the `.DefaultIncrementsRelativeDLT()` function.
 #'
 #' @slot dlt_intervals (`integer`)\cr a vector with the left bounds of the
 #'   relevant DLT intervals. For example, `dlt_intervals  = c(0, 1, 3)` specifies
@@ -994,8 +956,7 @@ IncrementsRelativeDLT <- function(dlt_intervals, increments) {
 ## default constructor ----
 
 #' @rdname IncrementsRelativeDLT-class
-#' @examples
-#' .DefaultIncrementsRelativeDLT()
+#' @note Typically, end users will not use the `.DefaultIncrementsRelativeDLT()` function.
 #' @export
 .DefaultIncrementsRelativeDLT <- function() {
   IncrementsRelativeDLT(dlt_intervals = c(0L, 1L, 3L), increments = c(1, 0.33, 0.2))
@@ -1013,8 +974,6 @@ IncrementsRelativeDLT <- function(dlt_intervals, increments) {
 #' relative differences and current DLTs. The class is based on the number of
 #' DLTs observed in the current cohort, but not cumulatively over all cohorts
 #' so far.
-#'
-#' Typically, end users will not use the `.DefaultIncrementsRelativeDLTCurrent()` function.
 #'
 #' @seealso [IncrementsRelativeDLT].
 #'
@@ -1046,8 +1005,7 @@ IncrementsRelativeDLTCurrent <- function(dlt_intervals = c(0, 1),
 ## default constructor ----
 
 #' @rdname IncrementsRelativeDLTCurrent-class
-#' @examples
-#' .DefaultIncrementsRelativeDLTCurrent()
+#' @note Typically, end users will not use the `.DefaultIncrementsRelativeDLTCurrent()` function.
 #' @export
 .DefaultIncrementsRelativeDLTCurrent <- function() { # nolint
   IncrementsRelativeDLTCurrent(dlt_intervals = c(0L, 1L, 3L), increments = c(1, 0.33, 0.2))
@@ -1064,8 +1022,6 @@ IncrementsRelativeDLTCurrent <- function(dlt_intervals = c(0, 1),
 #' [`IncrementsRelativeParts`] is the class for increments control based on
 #' relative differences in intervals, with special rules for part 1 and
 #' beginning of part 2.
-#'
-#' Typically, end users will not use the `.DefaultIncrementsRelativeParts()` function.
 #'
 #' @details This class works only in conjunction with [`DataParts`] objects. If
 #' part 2 will just be started in the next cohort, then the next maximum dose
@@ -1130,8 +1086,7 @@ IncrementsRelativeParts <- function(dlt_start, clean_start, ...) {
 ## default constructor ----
 
 #' @rdname IncrementsRelativeParts-class
-#' @examples
-#' .DefaultIncrementsRelativeParts()
+#' @note Typically, end users will not use the `.DefaultIncrementsRelativeParts()` function.
 #' @export
 .DefaultIncrementsRelativeParts <- function() {
   IncrementsRelativeParts(dlt_start = 0L, clean_start = 1L)
@@ -1147,8 +1102,6 @@ IncrementsRelativeParts <- function(dlt_start, clean_start, ...) {
 #'
 #' [`IncrementsDoseLevels`] is the class for increments control based on the
 #' number of dose levels.
-#'
-#' Typically, end users will not use the `.DefaultIncrementsDoseLevels()` function.
 #'
 #' @slot levels (`count`)\cr maximum number of dose levels to increment for
 #'   the next dose. It defaults to 1, which means that no dose skipping is
@@ -1198,8 +1151,7 @@ IncrementsDoseLevels <- function(levels = 1L, basis_level = "last") {
 ## default constructor ----
 
 #' @rdname IncrementsDoseLevels-class
-#' @examples
-#' .DefaultIncrementsDoseLevels()
+#' @note Typically, end users will not use the `.DefaultIncrementsDoseLevels()` function.
 #' @export
 .DefaultIncrementsDoseLevels <- function() {
   IncrementsDoseLevels(levels = 2L, basis_level = "last")
@@ -1222,8 +1174,6 @@ IncrementsDoseLevels <- function(levels = 1L, basis_level = "last") {
 #' from further escalation.
 #' This is a hard safety rule that limits further escalation based on the
 #' observed data per dose level, independent from the underlying model.
-#'
-#' Typically, end users will not use the `.DefaultIncrementsHSRBeta()` function.
 #'
 #' @slot target (`proportion`)\cr the target toxicity, except
 #'   0 or 1.
@@ -1282,8 +1232,7 @@ IncrementsHSRBeta <- function(target = 0.3,
 ## default constructor ----
 
 #' @rdname IncrementsHSRBeta-class
-#' @examples
-#' .DefaultIncrementsHSRBeta()
+#' @note Typically, end users will not use the `.DefaultIncrementsHSRBeta()` function.
 #' @export
 .DefaultIncrementsHSRBeta <- function() {
   IncrementsHSRBeta(target = 0.3, prob = 0.95)
@@ -1301,8 +1250,6 @@ IncrementsHSRBeta <- function(target = 0.3,
 #' the `minimum` operation. Slot `increments_list` contains all increment rules,
 #' which are itself the objects of class [`Increments`]. The minimum of these
 #' individual increments is taken to give the final maximum increment.
-#'
-#' Typically, end users will not use the `.DefaultIncrementsMin()` function.
 #'
 #' @slot increments_list (`list`)\cr list with increment rules.
 #'
@@ -1337,8 +1284,7 @@ IncrementsMin <- function(increments_list) {
 ## default constructor ----
 
 #' @rdname IncrementsMin-class
-#' @examples
-#' .DefaultIncrementsMin()
+#' @note Typically, end users will not use the `.DefaultIncrementsMin()` function.
 #' @export
 .DefaultIncrementsMin <- function() {
   IncrementsMin(
@@ -1382,7 +1328,6 @@ setClass(
 #' [`StoppingCohortsNearDose`] is the class for stopping based on number of
 #' cohorts near to next best dose.
 #'
-#' Typically, end users will not use the `.DefaultStoppingCohortsNearDose()` function.
 #'
 #' @slot nCohorts (`number`)\cr number of required cohorts.
 #' @slot percentage (`number`)\cr percentage (between and including 0 and 100)
@@ -1426,8 +1371,7 @@ StoppingCohortsNearDose <- function(nCohorts = 2L,
 ## default constructor ----
 
 #' @rdname StoppingCohortsNearDose-class
-#' @examples
-#' .DefaultStoppingCohortsNearDose()
+#' @note Typically, end users will not use the `.DefaultStoppingCohortsNearDose()` function.
 #' @export
 .DefaultStoppingCohortsNearDose <- function() { # nolint
   StoppingCohortsNearDose(nCohorts = 3L, percentage = 0.2)
@@ -1444,8 +1388,6 @@ StoppingCohortsNearDose <- function(nCohorts = 2L,
 #'
 #' [`StoppingPatientsNearDose`] is the class for stopping based on number of
 #' patients near to next best dose.
-#'
-#' Typically, end users will not use the `.DefaultStoppingPatientsNearDose()` function.
 #'
 #' @slot nPatients (`number`)\cr number of required patients.
 #' @slot percentage (`number`)\cr percentage (between and including 0 and 100)
@@ -1489,8 +1431,7 @@ StoppingPatientsNearDose <- function(nPatients,
 ## default constructor ----
 
 #' @rdname StoppingPatientsNearDose-class
-#' @examples
-#' .DefaultStoppingPatientsNearDose()
+#' @note Typically, end users will not use the `.DefaultStoppingPatientsNearDose()` function.
 #' @export
 .DefaultStoppingPatientsNearDose <- function() { # nolint
   StoppingPatientsNearDose(nPatients = 9L, percentage = 20)
@@ -1506,8 +1447,6 @@ StoppingPatientsNearDose <- function(nPatients,
 #'
 #' [`StoppingMinCohorts`] is the class for stopping based on minimum number of
 #' cohorts.
-#'
-#' Typically, end users will not use the `.DefaultStoppingMinCohorts()` function.
 #'
 #' @slot nCohorts (`number`)\cr minimum required number of cohorts.
 #'
@@ -1538,8 +1477,7 @@ StoppingMinCohorts <- function(nCohorts) {
 ## default constructor ----
 
 #' @rdname StoppingMinCohorts-class
-#' @examples
-#' .DefaultStoppingMinCohorts()
+#' @note Typically, end users will not use the `.DefaultStoppingMinCohorts()` function.
 #' @export
 .DefaultStoppingMinCohorts <- function() {
   StoppingMinCohorts(nCohorts = 6L)
@@ -1555,8 +1493,6 @@ StoppingMinCohorts <- function(nCohorts) {
 #'
 #' [`StoppingMinPatients`] is the class for stopping based on minimum number of
 #' patients
-#'
-#' Typically, end users will not use the `.DefaultStoppingMinPatients()` function.
 #'
 #' @slot nPatients (`number`)\cr minimum allowed number of patients.
 #'
@@ -1587,8 +1523,7 @@ StoppingMinPatients <- function(nPatients) {
 ## default constructor ----
 
 #' @rdname StoppingMinPatients-class
-#' @examples
-#' .DefaultStoppingMinPatients()
+#' @note Typically, end users will not use the `.DefaultStoppingMinPatients()` function.
 #' @export
 .DefaultStoppingMinPatients <- function() {
   StoppingMinPatients(nPatients = 20L)
@@ -1604,8 +1539,6 @@ StoppingMinPatients <- function(nPatients) {
 #'
 #' [`StoppingTargetProb`] is the class for stopping based on the probability of
 #' the DLT rate being in the target toxicity interval.
-#'
-#' Typically, end users will not use the `.DefaultStoppingTargetProb()` function.
 #'
 #' @slot target (`number`)\cr the target toxicity interval, e.g. `c(0.2, 0.35)`.
 #' @slot prob (`proportion`)\cr required target toxicity probability (except 0 or 1)
@@ -1649,8 +1582,7 @@ StoppingTargetProb <- function(target,
 ## default constructor ----
 
 #' @rdname StoppingTargetProb-class
-#' @examples
-#' .DefaultStoppingTargetProb()
+#' @note Typically, end users will not use the `.DefaultStoppingTargetProb()` function.
 #' @export
 .DefaultStoppingTargetProb <- function() {
   StoppingTargetProb(target = c(0.2, 0.35), prob = 0.5)
@@ -1670,8 +1602,6 @@ StoppingTargetProb <- function(target,
 #' to `prob`, where the `next_dose` is the recommended next best dose.
 #' Here, the MTD is defined as the dose that reaches a specific `target`
 #' probability of the occurrence of a DLT.
-#'
-#' Typically, end users will not use the `.DefaultStoppingMTDDistribution()` function.
 #'
 #' @slot target (`proportion`)\cr the target toxicity probability (except 0 or 1)
 #'   defining the MTD.
@@ -1722,8 +1652,7 @@ StoppingMTDdistribution <- function(target,
 ## default constructor ----
 
 #' @rdname StoppingMTDdistribution-class
-#' @examples
-#' .DefaultStoppingMTDdistribution()
+#' @note Typically, end users will not use the `.DefaultStoppingMTDDistribution()` function.
 #' @export
 .DefaultStoppingMTDdistribution <- function() {
   StoppingMTDdistribution(target = 0.33, thresh = 0.5, prob = 0.9)
@@ -1741,8 +1670,6 @@ StoppingMTDdistribution <- function(target,
 #' which is calculated as the coefficient of variation (CV) of the MTD.
 #' Here, the MTD is defined as the dose that reaches a specific `target`
 #' probability of the occurrence of a DLT.
-#'
-#' Typically, end users will not use the `.DefaultStoppingMTDCV()` function.
 #'
 #' @slot target (`proportion`)\cr toxicity target of MTD (except 0 or 1).
 #' @slot thresh_cv (`number`)\cr threshold (percentage > 0) for CV to be
@@ -1789,8 +1716,8 @@ StoppingMTDCV <- function(target = 0.3,
 ## default constructor ----
 
 #' @rdname StoppingMTDCV-class
-#' @examples
-#' .DefaultStoppingMTDCV()
+#' @note Typically, end users will not use the `.DefaultStoppingMTDCV()` function.
+#'
 #' @export
 .DefaultStoppingMTDCV <- function() {
   StoppingMTDCV(target = 0.3, thresh_cv = 40)
@@ -1813,8 +1740,6 @@ StoppingMTDCV <- function(target = 0.3,
 #' The default prior is Beta(1,1).
 #' In case that placebo is used, the rule is evaluated at the second dose of the
 #' dose grid, i.e. at the lowest non-placebo dose.
-#'
-#' Typically, end users will not use the `.DefaultStoppingLowestDoseHSRBeta()` function.
 #'
 #' @note This stopping rule is independent from the underlying model.
 #'
@@ -1874,8 +1799,7 @@ StoppingLowestDoseHSRBeta <- function(target = 0.3,
 ## default constructor ----
 
 #' @rdname StoppingLowestDoseHSRBeta-class
-#' @examples
-#' .DefaultStoppingLowestDoseHSRBeta()
+#' @note Typically, end users will not use the `.DefaultStoppingLowestDoseHSRBeta()` function.
 #' @export
 .DefaultStoppingLowestDoseHSRBeta <- function() { # nolint
   StoppingLowestDoseHSRBeta(target = 0.3, prob = 0.95, a = 1, b = 1)
@@ -1891,8 +1815,6 @@ StoppingLowestDoseHSRBeta <- function(target = 0.3,
 #'
 #' [`StoppingTargetBiomarker`] is a class for stopping based on probability of
 #' target biomarker.
-#'
-#' Typically, end users will not use the `.DefaultStoppingTargetBiomarker()` function.
 #'
 #' @slot target (`numeric`)\cr the biomarker target range that needs to be
 #'   reached. For example, `target = c(0.8, 1.0)` with `is_relative = TRUE`
@@ -1947,8 +1869,7 @@ StoppingTargetBiomarker <- function(target,
 ## default constructor ----
 
 #' @rdname StoppingTargetBiomarker-class
-#' @examples
-#' .DefaultStoppingTargetBiomarker()
+#' @note Typically, end users will not use the `.DefaultStoppingTargetBiomarker()` function.
 #' @export
 .DefaultStoppingTargetBiomarker <- function() {
   StoppingTargetBiomarker(target = c(0.9, 1), prob = 0.5)
@@ -1964,8 +1885,6 @@ StoppingTargetBiomarker <- function(target,
 #'
 #' [`StoppingSpecificDose`] is the class for testing a stopping rule at specific
 #' dose of the dose grid and not at the next best dose.
-#'
-#' Typically, end users will not use the `.DefaultStoppingSpecificDose()` function.
 #'
 #' @slot rule (`Stopping`)\cr a stopping rule available in this package.
 #' @slot dose (`positive_number`)\cr a dose that is defined as part of the dose
@@ -2003,8 +1922,7 @@ StoppingSpecificDose <- function(rule, dose) {
 ## default constructor ----
 
 #' @rdname StoppingSpecificDose-class
-#' @examples
-#' .DefaultStoppingSpecificDose()
+#' @note Typically, end users will not use the `.DefaultStoppingSpecificDose()` function.
 #' @export
 .DefaultStoppingSpecificDose <- function() {
   StoppingSpecificDose(
@@ -2023,8 +1941,6 @@ StoppingSpecificDose <- function(rule, dose) {
 #'
 #' [`StoppingHighestDose`] is the class for stopping based on the highest dose.
 #' That is, the stopping occurs when the highest dose is reached.
-#'
-#' Typically, end users will not use the `.DefaultStoppingHighestDose()` function.
 #'
 #' @aliases StoppingHighestDose
 #' @export
@@ -2048,8 +1964,7 @@ StoppingHighestDose <- function() {
 ## default constructor ----
 
 #' @rdname StoppingHighestDose-class
-#' @examples
-#' .DefaultStoppingHighestDose()
+#' @note Typically, end users will not use the `.DefaultStoppingHighestDose()` function.
 #' @export
 .DefaultStoppingHighestDose <- function() {
   StoppingHighestDose()
@@ -2070,8 +1985,6 @@ StoppingHighestDose <- function() {
 #' `all` is specified as a `summary` function, then that all stopping rules
 #' defined in `stop_list` must be satisfied in order the result of this rule to
 #' be `TRUE`.
-#'
-#' Typically, end users will not use the `.DefaultStoppingList()` function.
 #'
 #' @slot stop_list (`list`)\cr list of stopping rules.
 #' @slot summary (`function`)\cr a summary function to combine the results of
@@ -2114,8 +2027,7 @@ StoppingList <- function(stop_list, summary) {
 ## default constructor ----
 
 #' @rdname StoppingList-class
-#' @examples
-#' .DefaultStoppingList()
+#' @note Typically, end users will not use the `.DefaultStoppingList()` function.
 #' @export
 .DefaultStoppingList <- function() {
   StoppingList(
@@ -2140,8 +2052,6 @@ StoppingList <- function(stop_list, summary) {
 #' many single stopping rules that are in turn the objects of class `Stopping`.
 #' All single stopping rules must be satisfied in order the result of this rule
 #' to be `TRUE`.
-#'
-#' Typically, end users will not use the `.DefaultStoppingAll()` function.
 #'
 #' @slot stop_list (`list`)\cr list of stopping rules.
 #'
@@ -2177,8 +2087,7 @@ StoppingAll <- function(stop_list) {
 ## default constructor ----
 
 #' @rdname StoppingAll-class
-#' @examples
-#' .DefaultStoppingAll()
+#' @note Typically, end users will not use the `.DefaultStoppingAll()` function.
 #' @export
 .DefaultStoppingAll <- function() {
   StoppingAll(
@@ -2202,8 +2111,6 @@ StoppingAll <- function(stop_list) {
 #' many single stopping rules that are in turn the objects of class `Stopping`.
 #' At least one single stopping rule must be satisfied in order the result of
 #' this rule to be `TRUE`.
-#'
-#' Typically, end users will not use the `.DefaultStoppingAny()` function.
 #'
 #' @slot stop_list (`list`)\cr list of stopping rules.
 #'
@@ -2236,8 +2143,7 @@ StoppingAny <- function(stop_list) {
 ## default constructor ----
 
 #' @rdname StoppingAny-class
-#' @examples
-#' .DefaultStoppingAny()
+#' @note Typically, end users will not use the `.DefaultStoppingAny()` function.
 #' @export
 .DefaultStoppingAny <- function() {
   StoppingAny(
@@ -2262,8 +2168,6 @@ StoppingAny <- function(stop_list) {
 #' ratio of the upper to the lower bound of the 95% credibility interval's
 #' estimate of the target dose (i.e. a dose that corresponds to a given target
 #' probability of the occurrence of a DLT `prob_target`).
-#'
-#' Typically, end users will not use the `.DefaultStoppingTDCIRatio()` function.
 #'
 #' @slot target_ratio (`numeric`)\cr target for the ratio of the 95% credibility
 #'   interval's estimate, that is required to stop a trial.
@@ -2307,8 +2211,7 @@ StoppingTDCIRatio <- function(target_ratio, prob_target) {
 ## default constructor ----
 
 #' @rdname StoppingTDCIRatio-class
-#' @examples
-#' .DefaultStoppingTDCIRatio(StoppingTDCIRatio)
+#' @note Typically, end users will not use the `.DefaultStoppingTDCIRatio()` function.
 #' @export
 .DefaultStoppingTDCIRatio <- function() {
   StoppingTDCIRatio(target_ratio = 5, prob_target = 0.3)
@@ -2410,8 +2313,6 @@ setClass(
 #'
 #' [`CohortSizeRange`] is the class for cohort size based on dose range.
 #'
-#' Typically, end users will not use the `.DefaultCohortSizeRange()` function.
-#'
 #' @slot intervals (`numeric`)\cr a vector with the left bounds of the relevant
 #'   dose intervals.
 #' @slot cohort_size (`integer`)\cr an integer vector with the cohort sizes
@@ -2454,8 +2355,7 @@ CohortSizeRange <- function(intervals, cohort_size) {
 ## default constructor ----
 
 #' @rdname CohortSizeRange-class
-#' @examples
-#' .DefaultCohortSizeRange()
+#' @note Typically, end users will not use the `.DefaultCohortSizeRange()` function.
 #' @export
 .DefaultCohortSizeRange <- function() {
   CohortSizeRange(intervals = c(0L, 30L), cohort_size = c(1L, 3L))
@@ -2470,8 +2370,6 @@ CohortSizeRange <- function(intervals, cohort_size) {
 #' @description `r lifecycle::badge("stable")`
 #'
 #' [`CohortSizeDLT`] is the class for cohort size based on number of DLTs.
-#' #Typically, end users will not use the `.DefaultCohortSizeDLT()` function.
-#'
 #' @slot dlt_intervals (`integer`)\cr a vector with the left bounds of the
 #'   relevant DLT intervals.
 #' @slot cohort_size (`integer`)\cr a vector with the cohort sizes corresponding
@@ -2514,8 +2412,7 @@ CohortSizeDLT <- function(dlt_intervals, cohort_size) {
 ## default constructor ----
 
 #' @rdname CohortSizeDLT-class
-#' @examples
-#' .DefaultCohortSizeDLT()
+#' @note Typically, end users will not use the `.DefaultCohortSizeDLT()` function.
 #' @export
 .DefaultCohortSizeDLT <- function() {
   CohortSizeDLT(dlt_intervals = c(0L, 1L), cohort_size = c(1L, 3L))
@@ -2531,8 +2428,6 @@ CohortSizeDLT <- function(dlt_intervals, cohort_size) {
 #' @description `r lifecycle::badge("stable")`
 #'
 #' [`CohortSizeConst`] is the class for fixed and constant size of cohort.
-#'
-#' Typically, end users will not use the `.DefaultCohortSizeConst()` function.
 #'
 #' @slot size (`integer`)\cr cohort size.
 #'
@@ -2563,8 +2458,7 @@ CohortSizeConst <- function(size) {
 ## default constructor ----
 
 #' @rdname CohortSizeConst-class
-#' @examples
-#' .DefaultCohortSizeConst()
+#' @note Typically, end users will not use the `.DefaultCohortSizeConst()` function.
 #' @export
 .DefaultCohortSizeConst <- function() {
   CohortSizeConst(size = 3L)
@@ -2581,8 +2475,6 @@ CohortSizeConst <- function(size) {
 #' [`CohortSizeParts`] is the class for cohort size that changes for the second
 #' part of the dose escalation. It works only in conjunction with [`DataParts`]
 #' objects.
-#'
-#' Typically, end users will not use the `.DefaultCohortSizeParts()` function.
 #'
 #' @slot sizes (`integer`)\cr a vector of length two with two sizes, one for
 #'   part 1, and one for part 2 respectively.
@@ -2614,8 +2506,7 @@ CohortSizeParts <- function(sizes) {
 ## default constructor ----
 
 #' @rdname CohortSizeParts-class
-#' @examples
-#' .DefaultCohortSizeParts()
+#' @note Typically, end users will not use the `.DefaultCohortSizeParts()` function.
 #' @export
 .DefaultCohortSizeParts <- function() {
   CohortSizeParts(sizes = c(1L, 3L))
@@ -2633,8 +2524,6 @@ CohortSizeParts <- function(sizes) {
 #' multiple cohort size rules. The `cohort_size_list` slot stores a set of cohort
 #' size rules, which are again the objects of class [`CohortSize`]. The maximum
 #' of these individual cohort sizes is taken to give the final cohort size.
-#'
-#' Typically, end users will not use the `.DefaultCohortSizeMax()` function.
 #'
 #' @slot cohort_size_list (`list`)\cr a list of cohort size rules, i.e. objects
 #' of class [`CohortSize`].
@@ -2658,8 +2547,8 @@ CohortSizeParts <- function(sizes) {
 ## default constructor ----
 
 #' @rdname CohortSizeMax-class
-#' @examples
-#' .DefaultCohortSizeMax()
+#' @note Typically, end users will not use the `.DefaultCohortSizeMax()` function.
+#'
 #' @export
 .DefaultCohortSizeMax <- function() {
   CohortSizeMax(
@@ -2695,8 +2584,6 @@ CohortSizeMax <- function(cohort_size_list) {
 #' multiple cohort size rules. The `cohort_size_list` slot stores a set of cohort
 #' size rules, which are again the objects of class [`CohortSize`]. The minimum
 #' of these individual cohort sizes is taken to give the final cohort size.
-#'
-#' Typically, end users will not use the `.DefaultCohortSizeMin()` function.
 #'
 #' @slot cohort_size_list (`list`)\cr a list of cohort size rules, i.e. objects
 #' of class [`CohortSize`].
@@ -2734,8 +2621,7 @@ CohortSizeMin <- function(cohort_size_list) {
 ## default constructor ----
 
 #' @rdname CohortSizeMin-class
-#' @examples
-#' .DefaultCohortSizeMin()
+#' @note Typically, end users will not use the `.DefaultCohortSizeMin()` function.
 #' @export
 .DefaultCohortSizeMin <- function() {
   CohortSizeMin(

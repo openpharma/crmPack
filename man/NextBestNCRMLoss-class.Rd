@@ -40,8 +40,6 @@ which are those with probability to fall in overdose category being below
 \code{max_overdose_prob}. Next, within the admissible doses, the loss function is
 calculated, i.e. \code{losses} \%*\% \code{target}. Finally, the corresponding
 dose with lowest loss function (Bayes risk) is recommended for the next dose.
-
-Typically, end users will not use the \code{.DefaultNextBestnCRMLoss()} function.
 }
 \section{Slots}{
 
@@ -70,6 +68,8 @@ This is because the loss function values must be specified for each
 interval, that is under-dosing, target toxicity, and overdosing toxicity or
 under-dosing, target toxicity, overdosing (excessive) toxicity, and
 unacceptable toxicity intervals.
+
+Typically, end users will not use the \code{.DefaultNextBestnCRMLoss()} function.
 }
 \examples{
 # In the example below, the target toxicity interval [0.2, 0.35] while the
@@ -82,5 +82,4 @@ my_next_best <- NextBestNCRMLoss(
   max_overdose_prob = 0.25,
   losses = c(1, 0, 1, 2)
 )
-.DefaultNextBestNCRMLoss()
 }

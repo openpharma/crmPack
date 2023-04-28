@@ -22,8 +22,6 @@ StoppingAll(stop_list)
 many single stopping rules that are in turn the objects of class \code{Stopping}.
 All single stopping rules must be satisfied in order the result of this rule
 to be \code{TRUE}.
-
-Typically, end users will not use the \code{.DefaultStoppingAll()} function.
 }
 \section{Slots}{
 
@@ -31,6 +29,9 @@ Typically, end users will not use the \code{.DefaultStoppingAll()} function.
 \item{\code{stop_list}}{(\code{list})\cr list of stopping rules.}
 }}
 
+\note{
+Typically, end users will not use the \code{.DefaultStoppingAll()} function.
+}
 \examples{
 
 # Define some stopping rules.
@@ -44,5 +45,4 @@ my_stopping3 <- StoppingMinPatients(nPatients = 20)
 my_stopping <- StoppingAll(
   stop_list = c(my_stopping1, my_stopping2, my_stopping3)
 )
-.DefaultStoppingAll()
 }

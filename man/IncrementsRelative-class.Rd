@@ -22,8 +22,6 @@ IncrementsRelative(intervals, increments)
 
 \code{\link{IncrementsRelative}} is the class for increments control based on relative
 differences in intervals.
-
-Typically, end users will not use the \code{.DefaultIncrementsRelative()} function.
 }
 \section{Slots}{
 
@@ -38,6 +36,9 @@ goes from the last value to infinity.}
 allowable relative increments in the \code{intervals}.}
 }}
 
+\note{
+Typically, end users will not use the \code{.DefaultIncrementsRelative()} function.
+}
 \examples{
 
 # This is the example of a rule for:
@@ -47,5 +48,4 @@ my_increments <- IncrementsRelative(
   intervals = c(0, 20),
   increments = c(1, 0.33)
 )
-.DefaultIncrementsRelative()
 }

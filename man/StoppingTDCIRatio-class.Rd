@@ -25,8 +25,6 @@ on a target ratio of the 95\% credibility interval. Specifically, this is the
 ratio of the upper to the lower bound of the 95\% credibility interval's
 estimate of the target dose (i.e. a dose that corresponds to a given target
 probability of the occurrence of a DLT \code{prob_target}).
-
-Typically, end users will not use the \code{.DefaultStoppingTDCIRatio()} function.
 }
 \section{Slots}{
 
@@ -38,6 +36,9 @@ interval's estimate, that is required to stop a trial.}
 of a DLT.}
 }}
 
+\note{
+Typically, end users will not use the \code{.DefaultStoppingTDCIRatio()} function.
+}
 \examples{
 
 # Define the target stopping ratio (5) and the target probability of a DLT to
@@ -46,5 +47,4 @@ my_stopping <- StoppingTDCIRatio(
   target_ratio = 5,
   prob_target = 0.3
 )
-.DefaultStoppingTDCIRatio(StoppingTDCIRatio)
 }

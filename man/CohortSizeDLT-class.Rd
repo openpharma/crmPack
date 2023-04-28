@@ -21,7 +21,6 @@ CohortSizeDLT(dlt_intervals, cohort_size)
 \ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#stable}{\figure{lifecycle-stable.svg}{options: alt='[Stable]'}}}{\strong{[Stable]}}
 
 \code{\link{CohortSizeDLT}} is the class for cohort size based on number of DLTs.
-#Typically, end users will not use the \code{.DefaultCohortSizeDLT()} function.
 }
 \section{Slots}{
 
@@ -33,10 +32,12 @@ relevant DLT intervals.}
 to the elements of \code{dlt_intervals}.}
 }}
 
+\note{
+Typically, end users will not use the \code{.DefaultCohortSizeDLT()} function.
+}
 \examples{
 
 # Rule for having cohort of size 1 until no DLT is observed and having cohort
 # of size 3 as soon as 1 DLT is observed.
 my_size <- CohortSizeDLT(dlt_intervals = c(0, 1), cohort_size = c(1, 3))
-.DefaultCohortSizeDLT()
 }

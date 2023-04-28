@@ -22,8 +22,6 @@ StoppingCohortsNearDose(nCohorts = 2L, percentage = 50)
 
 \code{\link{StoppingCohortsNearDose}} is the class for stopping based on number of
 cohorts near to next best dose.
-
-Typically, end users will not use the \code{.DefaultStoppingCohortsNearDose()} function.
 }
 \section{Slots}{
 
@@ -34,6 +32,9 @@ Typically, end users will not use the \code{.DefaultStoppingCohortsNearDose()} f
 within the next best dose the cohorts must lie.}
 }}
 
+\note{
+Typically, end users will not use the \code{.DefaultStoppingCohortsNearDose()} function.
+}
 \examples{
 
 # Here, is the rule for stopping the study if at least 3 cohorts were dosed
@@ -42,5 +43,4 @@ my_stopping <- StoppingCohortsNearDose(
   nCohorts = 3,
   percentage = 0.2
 )
-.DefaultStoppingCohortsNearDose()
 }

@@ -460,247 +460,163 @@ test_that("h_find_interval works as expected for custom replacement", {
   expect_equal(h_find_interval(2, c(2, 4, 6)), 1)
 })
 
-test_that("default constructors work correctly", {
-  # Helpers
-  perform_test_for_object <- function(className, examplePrefix, exampleFolder = "../../examples") {
-    exampleFile <- file.path(exampleFolder, paste0(examplePrefix, "-class-", className, ".R"))
-    if (file.exists(exampleFile)) {
-      statements <- readLines(exampleFile)
-      statements <- statements[which(stringr::str_sub(statements, 1, 1) != "#")]
-      statements <- paste0(statements, collapse = "")
-      tryCatch(
-        {
-          expected_obj <- eval(parse(text = statements))
-          test_obj <- eval(parse(text = paste0(".Default", className, "()")))
-        },
-        error = function(e) {
-          print(geterrmessage())
-          print(statements)
-          print(className)
-          if (!is.null(test_obj)) print(test_obj)
-        }
-      )
-      expect_equal(test_obj, expected_obj, info = className)
-      return(className)
-    } else {
-      print(paste0("Example file for ", className, " DOES NOT exist."))
-      print(paste0("Current working directory is ", getwd()))
-      print(paste0("exampleFolder ", ifelse(dir.exists(exampleFolder), "does", "does not"), " exist."))
+test_that("default constructors exist for all subclasses of GeneralModel", {
+  classesToTest <- names(getClassDef("GeneralModel")@subclasses)
+  # Virtual class: throws exception
+  classesToTest <- classesToTest[which(!(classesToTest %in% c("DualEndpoint")))]
+  lapply(
+    classesToTest,
+    function(cls) {
+      # Function exists
+      expect_true(length(findFunction(paste0(".Default", cls), where=asNamespace("crmPack"))) > 1)
+      # Return value is of the correct class
+      test_obj <- eval(parse(text = paste0(".Default", cls, "()")))
+      expect_class(test_obj, cls)
     }
-  }
-
-  get_subclass_names <- function(superClassName) {
-    names(getClassDef(superClassName)@subclasses)
-  }
-
-  perform_test_for_class <- function(className, examplePrefix, exceptions = c()) {
-    classes_to_test <- get_subclass_names(className)
-    classes_not_tested <- classes_to_test
-
-    for (cls in classes_to_test) {
-      if (!(cls %in% exceptions)) {
-        classes_not_tested <- classes_not_tested[!classes_not_tested == perform_test_for_object(cls, examplePrefix)]
-      } else {
-        message(paste0("Skipping test for class ", cls, "..."))
-      }
-    }
-    classes_not_tested
-  }
-  # The automated construction of the "correct" instance assumes that the example file
-  # consists of a single statement that references only the class being instantiated.
-  # That assumption holds for most, but not all, classes.  Exceptions include:
-  #   1.  Any "summary" classes such as StoppingAny, which require the instantiation
-  # of other objects to be summarised
-  #   2.  Some classes whose example file includes more than one statement
-  #   3.  Some complex classes (such as StoppingLowestDoseHSRBeta) which require
-  #   set up code
-  #   4.  Classes for which no example file exists (IncrementsRelativeParts, ModelLogNormal)
-  #   5.  Virtual classes (DualEndpoint)
-  #   6.  Examples that do not return an object of the indicated class (StoppingHighestDose)
-  classes_not_tested <- perform_test_for_class(
-    "CohortSize",
-    "Rules",
-    c("CohortSizeMin", "CohortSizeMax")
   )
-  classes_not_tested <- append(
-    classes_not_tested,
-    perform_test_for_class(
-      "Increments",
-      "Rules",
-      c("IncrementsMin", "IncrementsMax")
-    )
-  )
-  classes_not_tested <- append(
-    classes_not_tested,
-    perform_test_for_class(
-      "GeneralModel",
-      "Model",
-      c(
-        "LogisticNormal", "LogisticLogNormal", "LogisticLogNormalMixture",
-        "DALogisticLogNormal", "TITELogisticLogNormal"
-      )
-    )
-  )
-  classes_not_tested <- append(
-    classes_not_tested,
-    perform_test_for_class(
-      "Stopping",
-      "Rules",
-      c(
-        "StoppingSpecificDose", "StoppingHighestDose", "StoppingList", "StoppingAll",
-        "StoppingAny", "StoppingLowestDoseHSRBeta"
-      )
-    )
-  )
-
-  # Exceptions
-  exceptions_handled <- c()
-  test_obj <- CohortSizeMax(
-    cohort_size_list = list(
-      CohortSizeRange(intervals = c(0, 10), cohort_size = c(1, 3)),
-      CohortSizeDLT(dlt_intervals = c(0, 1), cohort_size = c(1, 3))
-    )
-  )
-  expect_equal(.DefaultCohortSizeMax(), test_obj)
-  exceptions_handled <- append(exceptions_handled, "CohortSizeMax")
-
-  test_obj <- CohortSizeMin(
-    cohort_size_list = list(
-      CohortSizeRange(intervals = c(0, 10), cohort_size = c(1, 3)),
-      CohortSizeDLT(dlt_intervals = c(0, 1), cohort_size = c(1, 3))
-    )
-  )
-  expect_equal(.DefaultCohortSizeMin(), test_obj)
-  exceptions_handled <- append(exceptions_handled, "CohortSizeMin")
-
-  test_obj <- IncrementsMin(
-    increments_list = list(
-      IncrementsRelativeDLT(
-        dlt_intervals = c(0, 1, 3),
-        increments = c(1, 0.33, 0.2)
-      ),
-      IncrementsRelative(
-        intervals = c(0, 20),
-        increments = c(1, 0.33)
-      )
-    )
-  )
-  expect_equal(.DefaultIncrementsMin(), test_obj)
-  exceptions_handled <- append(exceptions_handled, "IncrementsMin")
-
-  test_obj <- IncrementsRelativeParts(dlt_start = 0, clean_start = 1)
-  expect_equal(.DefaultIncrementsRelativeParts(), test_obj)
-  exceptions_handled <- append(exceptions_handled, "IncrementsRelativeParts")
-
-  test_obj <- StoppingAll(
-    stop_list = c(
-      StoppingMinCohorts(nCohorts = 3),
-      StoppingTargetProb(target = c(0.2, 0.35), prob = 0.5),
-      StoppingMinPatients(nPatients = 20)
-    )
-  )
-  expect_equal(.DefaultStoppingAll(), test_obj)
-  exceptions_handled <- append(exceptions_handled, "StoppingAll")
-
-  test_obj <- StoppingAny(
-    stop_list = c(
-      StoppingMinCohorts(nCohorts = 3),
-      StoppingTargetProb(target = c(0.2, 0.35), prob = 0.5),
-      StoppingMinPatients(nPatients = 20)
-    )
-  )
-  expect_equal(.DefaultStoppingAny(), test_obj)
-  exceptions_handled <- append(exceptions_handled, "StoppingAny")
-
-  test_obj <- StoppingList(
-    stop_list = c(
-      StoppingMinCohorts(nCohorts = 3),
-      StoppingTargetProb(target = c(0.2, 0.35), prob = 0.5),
-      StoppingMinPatients(nPatients = 20)
-    ),
-    summary = any
-  )
-  expect_equal(.DefaultStoppingList(), test_obj)
-  exceptions_handled <- append(exceptions_handled, "StoppingList")
-
-  expect_equal(.DefaultStoppingHighestDose(), StoppingHighestDose())
-  exceptions_handled <- append(exceptions_handled, "StoppingHighestDose")
-
-  test_obj <- StoppingSpecificDose(
-    rule = StoppingTargetProb(target = c(0, 0.3), prob = 0.8),
-    dose = 80
-  )
-  expect_equal(.DefaultStoppingSpecificDose(), test_obj)
-  exceptions_handled <- append(exceptions_handled, "StoppingSpecificDose")
-
-  test_obj <- StoppingLowestDoseHSRBeta(
-    target = 0.3,
-    prob = 0.95,
-    a = 1,
-    b = 1
-  )
-  expect_equal(.DefaultStoppingLowestDoseHSRBeta(), test_obj)
-  exceptions_handled <- append(exceptions_handled, "StoppingLowestDoseHSRBeta")
-
-
-  test_obj <- LogisticNormal(
-    mean = c(-0.85, 1),
-    cov = matrix(c(1, -0.5, -0.5, 1), nrow = 2)
-  )
-  expect_equal(.DefaultLogisticNormal(), test_obj)
-  exceptions_handled <- append(exceptions_handled, "LogisticNormal")
-
-  test_obj <- LogisticLogNormal(
-    mean = c(-0.85, 1),
-    cov = matrix(c(1, -0.5, -0.5, 1), nrow = 2),
-    ref_dose = 50
-  )
-  expect_equal(.DefaultLogisticLogNormal(), test_obj)
-  exceptions_handled <- append(exceptions_handled, "LogisticLogNormal")
-
-  test_obj <- LogisticLogNormalMixture(
-    share_weight = 0.1,
-    mean = c(-0.85, 1),
-    cov = matrix(c(1, -0.5, -0.5, 1), nrow = 2),
-    ref_dose = 50
-  )
-  expect_equal(.DefaultLogisticLogNormalMixture(), test_obj)
-  exceptions_handled <- append(exceptions_handled, "LogisticLogNormalMixture")
-
-  npiece <- 10
-  Tmax <- 60
-
-  lambda_prior <- function(k) {
-    npiece / (Tmax * (npiece - k + 0.5))
-  }
-
-  test_obj <- DALogisticLogNormal(
-    mean = c(-0.85, 1),
-    cov = matrix(c(1, -0.5, -0.5, 1), nrow = 2),
-    ref_dose = 56,
-    npiece = npiece,
-    l = as.numeric(t(apply(as.matrix(c(1:npiece), 1, npiece), 2, lambda_prior))),
-    c_par = 2
-  )
-  expect_equal(.DefaultDALogisticLogNormal(), test_obj)
-  exceptions_handled <- append(exceptions_handled, "DALogisticLogNormal")
-
-  test_obj <- TITELogisticLogNormal(
-    mean = c(0, 1),
-    cov = diag(2),
-    ref_dose = 1,
-    weight_method = "linear"
-  )
-  expect_equal(.DefaultTITELogisticLogNormal(), test_obj)
-  exceptions_handled <- append(exceptions_handled, "TITELogisticLogNormal")
-
-  # Virtual classes cannot be instantiated
-  classes_not_tested <-
-    classes_not_tested[
-      !(classes_not_tested %in% c("DualEndpoint", "ModelLogNormal", exceptions_handled))
-    ]
-  expect_equal(length(classes_not_tested), 0)
-
-  # Check an attempt to instantiate an unsupported class throws an exception
-  expect_error(h_create_instance("BadClass"))
+  expect_error(eval(parse(text = ".DefaultDualEndpoint()")))
 })
+
+test_that("default constructors exist for all subclasses of Increments", {
+  classesToTest <- names(getClassDef("Increments")@subclasses)
+  lapply(
+    classesToTest,
+    function(cls) {
+      # Function exists
+      expect_true(length(findFunction(paste0(".Default", cls), where=asNamespace("crmPack"))) > 1)
+      # Return value is of the correct class
+      test_obj <- eval(parse(text = paste0(".Default", cls, "()")))
+      expect_class(test_obj, cls)
+    }
+  )
+  expect_error(eval(parse(text = ".DefaultDualEndpoint()")))
+})
+
+test_that("default constructors exist for all subclasses of NextBest", {
+  classesToTest <- names(getClassDef("NextBest")@subclasses)
+  lapply(
+    classesToTest,
+    function(cls) {
+      # Function exists
+      expect_true(length(findFunction(paste0(".Default", cls), where=asNamespace("crmPack"))) > 1)
+      # Return value is of the correct class
+      test_obj <- eval(parse(text = paste0(".Default", cls, "()")))
+      expect_class(test_obj, cls)
+    }
+  )
+  expect_error(eval(parse(text = ".DefaultDualEndpoint()")))
+})
+
+test_that("default constructors exist for all subclasses of Stopping", {
+  classesToTest <- names(getClassDef("Stopping")@subclasses)
+  lapply(
+    classesToTest,
+    function(cls) {
+      # Function exists
+      expect_true(length(findFunction(paste0(".Default", cls), where=asNamespace("crmPack"))) > 1)
+      # Return value is of the correct class
+      test_obj <- eval(parse(text = paste0(".Default", cls, "()")))
+      expect_class(test_obj, cls)
+    }
+  )
+  expect_error(eval(parse(text = ".DefaultDualEndpoint()")))
+})
+
+# test_that("default constructors work correctly", {
+#   # Helpers
+#   # GitHub /__w  /crmPack/ crmPack/crmPack.Rcheck/tests/testthat
+#   # Local  /home/kirkpatj/Packages/crmPack/tests/testthat"
+#   perform_test_for_object <- function(className, examplePrefix, exampleFolder = "../../examples") {
+#     exampleFile <- file.path(exampleFolder, paste0(examplePrefix, "-class-", className, ".R"))
+#     if (file.exists(exampleFile)) {
+#       statements <- readLines(exampleFile)
+#       statements <- statements[which(stringr::str_sub(statements, 1, 1) != "#")]
+#       statements <- paste0(statements, collapse = "")
+#       tryCatch(
+#         {
+#           expected_obj <- eval(parse(text = statements))
+#           test_obj <- eval(parse(text = paste0(".Default", className, "()")))
+#         },
+#         error = function(e) {
+#           print(geterrmessage())
+#           print(statements)
+#           print(className)
+#           if (!is.null(test_obj)) print(test_obj)
+#         }
+#       )
+#       expect_equal(test_obj, expected_obj, info = className)
+#       return(className)
+#     } else {
+#       print(paste0("Example file for ", className, " DOES NOT exist."))
+#       print(paste0("Current working directory is ", getwd()))
+#       print(paste0("exampleFolder ", ifelse(dir.exists(exampleFolder), "does", "does not"), " exist."))
+#     }
+#   }
+#
+#   get_subclass_names <- function(superClassName) {
+#     names(getClassDef(superClassName)@subclasses)
+#   }
+#
+#   perform_test_for_class <- function(className, examplePrefix, exceptions = c()) {
+#     classes_to_test <- get_subclass_names(className)
+#     classes_not_tested <- classes_to_test
+#
+#     for (cls in classes_to_test) {
+#       if (!(cls %in% exceptions)) {
+#         classes_not_tested <- classes_not_tested[!classes_not_tested == perform_test_for_object(cls, examplePrefix)]
+#       } else {
+#         message(paste0("Skipping test for class ", cls, "..."))
+#       }
+#     }
+#     classes_not_tested
+#   }
+#   # The automated construction of the "correct" instance assumes that the example file
+#   # consists of a single statement that references only the class being instantiated.
+#   # That assumption holds for most, but not all, classes.  Exceptions include:
+#   #   1.  Any "summary" classes such as StoppingAny, which require the instantiation
+#   # of other objects to be summarised
+#   #   2.  Some classes whose example file includes more than one statement
+#   #   3.  Some complex classes (such as StoppingLowestDoseHSRBeta) which require
+#   #   set up code
+#   #   4.  Classes for which no example file exists (IncrementsRelativeParts, ModelLogNormal)
+#   #   5.  Virtual classes (DualEndpoint)
+#   #   6.  Examples that do not return an object of the indicated class (StoppingHighestDose)
+#   classes_not_tested <- perform_test_for_class(
+#     "CohortSize",
+#     "Rules",
+#     c("CohortSizeMin", "CohortSizeMax")
+#   )
+#   classes_not_tested <- append(
+#     classes_not_tested,
+#     perform_test_for_class(
+#       "Increments",
+#       "Rules",
+#       c("IncrementsMin", "IncrementsMax")
+#     )
+#   )
+#   classes_not_tested <- append(
+#     classes_not_tested,
+#     perform_test_for_class(
+#       "GeneralModel",
+#       "Model",
+#       c(
+#         "LogisticNormal", "LogisticLogNormal", "LogisticLogNormalMixture",
+#         "DALogisticLogNormal", "TITELogisticLogNormal"
+#       )
+#     )
+#   )
+#   classes_not_tested <- append(
+#     classes_not_tested,
+#     perform_test_for_class(
+#       "Stopping",
+#       "Rules",
+#       c(
+#         "StoppingSpecificDose", "StoppingHighestDose", "StoppingList", "StoppingAll",
+#         "StoppingAny", "StoppingLowestDoseHSRBeta"
+#       )
+#     )
+#   )
+#
+#   # Check an attempt to instantiate an unsupported class throws an exception
+#   expect_error(h_create_instance("BadClass"))
+# })

@@ -29,8 +29,6 @@ occurrence of a DLT that must be specified: target probability to be used
 during the trial and target probability to be used at the end of the trial.
 It is suitable to use it only with the \code{\link{ModelTox}} model and \code{\link{ModelEff}}
 classes (except \code{\link{EffFlexi}}).
-
-Typically, end users will not use the \code{.DefaultNextBestMaxGain()} function.
 }
 \section{Slots}{
 
@@ -42,7 +40,9 @@ occurrence of a DLT to be used during the trial.}
 occurrence of a DLT to be used at the end of the trial.}
 }}
 
+\note{
+Typically, end users will not use the \code{.DefaultNextBestMaxGain()} function.
+}
 \examples{
 my_next_best <- NextBestMaxGain(0.35, 0.3)
-.DefaultNextBestMaxGain()
 }

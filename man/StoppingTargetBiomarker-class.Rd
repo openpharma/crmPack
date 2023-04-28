@@ -24,8 +24,6 @@ StoppingTargetBiomarker(target, prob, is_relative = TRUE)
 
 \code{\link{StoppingTargetBiomarker}} is a class for stopping based on probability of
 target biomarker.
-
-Typically, end users will not use the \code{.DefaultStoppingTargetBiomarker()} function.
 }
 \section{Slots}{
 
@@ -43,6 +41,9 @@ biomarker range.}
 reaching sufficient precision.}
 }}
 
+\note{
+Typically, end users will not use the \code{.DefaultStoppingTargetBiomarker()} function.
+}
 \examples{
 
 # Stopping the study if there is at least 0.5 probability that the biomarker
@@ -50,5 +51,4 @@ reaching sufficient precision.}
 # maximum for the biomarker).
 
 my_stopping <- StoppingTargetBiomarker(target = c(0.9, 1), prob = 0.5)
-.DefaultStoppingTargetBiomarker()
 }

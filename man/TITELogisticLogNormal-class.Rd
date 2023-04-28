@@ -33,8 +33,6 @@ number).}
 regression model using a bivariate normal prior on the intercept and log
 slope parameters.
 
-Typically, end users will not use the \code{.DefaultTITELogisticLogNormal()} function.
-
 This class inherits from the \code{\link{LogisticLogNormal}}.
 }
 \section{Slots}{
@@ -44,6 +42,9 @@ This class inherits from the \code{\link{LogisticLogNormal}}.
 or adaptive. This was used in Liu, Yin and Yuan's paper.}
 }}
 
+\note{
+Typically, end users will not use the \code{.DefaultTITELogisticLogNormal()} function.
+}
 \examples{
 my_model <- TITELogisticLogNormal(
   mean = c(0, 1),
@@ -58,7 +59,6 @@ my_model1 <- TITELogisticLogNormal(
   ref_dose = 1,
   weight_method = "adaptive"
 )
-.DefaultTITELogisticLogNormal()
 }
 \seealso{
 \code{\link{DALogisticLogNormal}}.

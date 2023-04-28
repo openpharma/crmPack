@@ -22,8 +22,6 @@ StoppingPatientsNearDose(nPatients, percentage = 50)
 
 \code{\link{StoppingPatientsNearDose}} is the class for stopping based on number of
 patients near to next best dose.
-
-Typically, end users will not use the \code{.DefaultStoppingPatientsNearDose()} function.
 }
 \section{Slots}{
 
@@ -34,6 +32,9 @@ Typically, end users will not use the \code{.DefaultStoppingPatientsNearDose()} 
 within the next best dose the patients must lie.}
 }}
 
+\note{
+Typically, end users will not use the \code{.DefaultStoppingPatientsNearDose()} function.
+}
 \examples{
 
 # As example, here is the rule for stopping the study if at least 9 patients
@@ -43,5 +44,4 @@ my_stopping <- StoppingPatientsNearDose(
   nPatients = 9,
   percentage = 20
 )
-.DefaultStoppingPatientsNearDose()
 }

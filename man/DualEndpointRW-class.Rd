@@ -28,8 +28,6 @@ random walk of second order is used.}
 
 \code{\link{DualEndpointRW}} is the class for the dual endpoint model with random walk
 prior for biomarker.
-
-Typically, end users will not use the \code{.DefaultDualEndpointRW()} function.
 }
 \details{
 This class extends the \code{\link{DualEndpoint}} class so that the dose-biomarker
@@ -67,6 +65,8 @@ Please note that due to impropriety of the random walk prior distributions,
 it is not possible to produce MCMC samples with empty data objects (i.e.,
 sample from the prior). This is not a bug, but a theoretical feature of this
 model.
+
+Typically, end users will not use the \code{.DefaultDualEndpointRW()} function.
 }
 \examples{
 my_model <- DualEndpointRW(
@@ -77,7 +77,6 @@ my_model <- DualEndpointRW(
   sigma2betaW = 0.01,
   rw1 = TRUE
 )
-.DefaultDualEndpointRW()
 }
 \seealso{
 \code{\link{DualEndpoint}}, \code{\link{DualEndpointBeta}}, \code{\link{DualEndpointEmax}}.

@@ -36,9 +36,6 @@ intercept and slope parameters. The weights of the normal priors are fixed,
 hence no additional model parameters are introduced. This type of prior is
 often used to better approximate a given posterior distribution, or when the
 information is given in terms of a mixture.
-
-Typically, end-users will not use the \code{.DefaultLogisticNormalFixedMixture()}
-function.
 }
 \details{
 The covariate is the natural logarithm of the dose \eqn{x} divided
@@ -75,6 +72,10 @@ that the mean vectors and covariance matrices are valid for the intercept
 and log slope?}
 }}
 
+\note{
+Typically, end-users will not use the \code{.DefaultLogisticNormalFixedMixture()}
+function.
+}
 \examples{
 my_model <- LogisticNormalFixedMixture(
   components = list(
@@ -90,7 +91,6 @@ my_model <- LogisticNormalFixedMixture(
   weights = c(0.3, 0.7),
   ref_dose = positive_number(50)
 )
-.DefaultLogisticNormalFixedMixture()
 }
 \seealso{
 \code{\link{ModelParamsNormal}}, \code{\link{ModelLogNormal}},

@@ -30,8 +30,6 @@ of the model parameters. There are two target probabilities of the
 occurrence of a DLT that must be specified: target probability to be used
 during the trial and target probability to be used at the end of the trial.
 It is suitable to use it only with the \code{\link{ModelTox}} model class.
-
-Typically, end users will not use the \code{.DefaultNextBestTD()} function.
 }
 \section{Slots}{
 
@@ -43,7 +41,9 @@ of the occurrence of a DLT to be used during the trial.}
 of the occurrence of a DLT to be used at the end of the trial.}
 }}
 
+\note{
+Typically, end users will not use the \code{.DefaultNextBestTD()} function.
+}
 \examples{
-.DefaultNextBestTD()
 my_next_best <- NextBestTD(0.35, 0.3)
 }

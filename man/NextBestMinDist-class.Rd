@@ -20,8 +20,6 @@ NextBestMinDist(target)
 
 \code{\link{NextBestMinDist}} is the class for next best dose that is based on minimum
 distance to target probability.
-
-Typically, end users will not use the \code{.DefaultNextBestMinDist()} function.
 }
 \section{Slots}{
 
@@ -30,9 +28,11 @@ Typically, end users will not use the \code{.DefaultNextBestMinDist()} function.
 0 or 1.}
 }}
 
+\note{
+Typically, end users will not use the \code{.DefaultNextBestMinDist()} function.
+}
 \examples{
 # In the example below, the MTD is defined as the dose with the toxicity rate
 # with minimal distance to the target of 30\%.
 next_best_min_dist <- NextBestMinDist(target = 0.3)
-.DefaultNextBestMinDist()
 }

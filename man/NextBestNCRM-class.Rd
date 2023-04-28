@@ -24,8 +24,6 @@ NextBestNCRM(target, overdose, max_overdose_prob)
 
 \code{\link{NextBestNCRM}} is the class for next best dose that finds the next dose
 with high posterior probability to be in the target toxicity interval.
-
-Typically, end users will not use the \code{.DefaultNextBestNCRM()} function.
 }
 \details{
 To avoid numerical problems, the dose selection algorithm has been
@@ -48,6 +46,9 @@ excluded, upper limit included). It is used to filter probability samples.}
 probability that is allowed, except 0 or 1.}
 }}
 
+\note{
+Typically, end users will not use the \code{.DefaultNextBestNCRM()} function.
+}
 \examples{
 # In the example below, the target toxicity interval [0.2, 0.35] while the
 # overdose interval is (0.35,1]. Finally we would like to constrain the
@@ -57,5 +58,4 @@ my_next_best <- NextBestNCRM(
   overdose = c(0.35, 1),
   max_overdose_prob = 0.25
 )
-.DefaultNextBestNCRM()
 }

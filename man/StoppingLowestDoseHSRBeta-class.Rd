@@ -33,8 +33,6 @@ lowest dose level and a Beta(a,b) prior distribution.
 The default prior is Beta(1,1).
 In case that placebo is used, the rule is evaluated at the second dose of the
 dose grid, i.e. at the lowest non-placebo dose.
-
-Typically, end users will not use the \code{.DefaultStoppingLowestDoseHSRBeta()} function.
 }
 \section{Slots}{
 
@@ -53,6 +51,8 @@ Beta (a,b).}
 
 \note{
 This stopping rule is independent from the underlying model.
+
+Typically, end users will not use the \code{.DefaultStoppingLowestDoseHSRBeta()} function.
 }
 \examples{
 
@@ -71,5 +71,4 @@ my_stopping <- StoppingLowestDoseHSRBeta(
   a = 0.5,
   b = 0.5
 )
-.DefaultStoppingLowestDoseHSRBeta()
 }

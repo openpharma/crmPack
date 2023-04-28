@@ -27,8 +27,6 @@ number).}
 
 \code{\link{ProbitLogNormal}} is the class for probit regression model with a
 bivariate normal prior on the intercept and log slope.
-
-Typically, end users will not use the \code{.DefaultProbitLogNormal()} function.
 }
 \details{
 The covariate is the natural logarithm of dose \eqn{x} divided by a
@@ -42,6 +40,8 @@ This model is also used in the \code{\link{DualEndpoint}} classes, so this class
 can be used to check the prior assumptions on the dose-toxicity model, even
 when sampling from the prior distribution of the dual endpoint model is not
 possible.
+
+Typically, end users will not use the \code{.DefaultProbitLogNormal()} function.
 }
 \examples{
 my_model <- ProbitLogNormal(
@@ -49,7 +49,6 @@ my_model <- ProbitLogNormal(
   cov = matrix(c(1, -0.5, -0.5, 1), nrow = 2),
   ref_dose = 7.2
 )
-.DefaultProbitLogNormal()
 }
 \seealso{
 \code{\link{ModelLogNormal}}, \code{\link{LogisticNormal}}, \code{\link{LogisticLogNormal}},

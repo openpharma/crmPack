@@ -25,8 +25,6 @@ LogisticLogNormalSub(mean, cov, ref_dose = 0)
 
 \code{\link{LogisticLogNormalSub}} is the class for a standard logistic model with
 bivariate (log) normal prior with subtractive dose standardization.
-
-Typically, end-users will not use the \code{.DefaultLogisticLogNormalSub()} function.
 }
 \details{
 The covariate is the dose \eqn{x} minus the reference dose \eqn{x*},
@@ -43,13 +41,15 @@ The prior \deqn{(alpha0, log(alpha1)) ~ Normal(mean, cov).}
 \item{\code{ref_dose}}{(\code{number})\cr the reference dose \eqn{x*}.}
 }}
 
+\note{
+Typically, end-users will not use the \code{.DefaultLogisticLogNormalSub()} function.
+}
 \examples{
 my_model <- LogisticLogNormalSub(
   mean = c(-0.85, 1),
   cov = matrix(c(1, -0.5, -0.5, 1), nrow = 2),
   ref_dose = 50
 )
-.DefaultLogisticLogNormalSub()
 }
 \seealso{
 \code{\link{LogisticNormal}}, \code{\link{LogisticLogNormal}}, \code{\link{ProbitLogNormal}},

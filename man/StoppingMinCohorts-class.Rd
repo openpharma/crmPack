@@ -20,8 +20,6 @@ StoppingMinCohorts(nCohorts)
 
 \code{\link{StoppingMinCohorts}} is the class for stopping based on minimum number of
 cohorts.
-
-Typically, end users will not use the \code{.DefaultStoppingMinCohorts()} function.
 }
 \section{Slots}{
 
@@ -29,10 +27,12 @@ Typically, end users will not use the \code{.DefaultStoppingMinCohorts()} functi
 \item{\code{nCohorts}}{(\code{number})\cr minimum required number of cohorts.}
 }}
 
+\note{
+Typically, end users will not use the \code{.DefaultStoppingMinCohorts()} function.
+}
 \examples{
 
 # As example, here is the rule for stopping the study if at least 6 cohorts
 # were already dosed.
 my_stopping <- StoppingMinCohorts(nCohorts = 6)
-.DefaultStoppingMinCohorts()
 }

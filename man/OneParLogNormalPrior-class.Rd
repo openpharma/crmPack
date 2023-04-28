@@ -29,8 +29,6 @@ an instance of the \code{OneParLogNormalPrior} class
 
 \code{\link{OneParLogNormalPrior}} is the class for a standard CRM with a normal prior on
 the log power parameter for the skeleton prior probabilities.
-
-Typically, end users will not use the \code{DefaultOneParLogNormalPrior()} function.
 }
 \section{Slots}{
 
@@ -51,7 +49,6 @@ my_model <- OneParLogNormalPrior(
   dose_grid = 1:5,
   sigma2 = 2
 )
-.DefaultOneParLogNormalPrior()
 }
 \seealso{
 \code{\link{ModelLogNormal}}.

@@ -19,8 +19,6 @@ CohortSizeConst(size)
 \ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#stable}{\figure{lifecycle-stable.svg}{options: alt='[Stable]'}}}{\strong{[Stable]}}
 
 \code{\link{CohortSizeConst}} is the class for fixed and constant size of cohort.
-
-Typically, end users will not use the \code{.DefaultCohortSizeConst()} function.
 }
 \section{Slots}{
 
@@ -28,9 +26,11 @@ Typically, end users will not use the \code{.DefaultCohortSizeConst()} function.
 \item{\code{size}}{(\code{integer})\cr cohort size.}
 }}
 
+\note{
+Typically, end users will not use the \code{.DefaultCohortSizeConst()} function.
+}
 \examples{
 
 # Cohort of size 3, constant along the study.
 my_size <- CohortSizeConst(size = 3)
-.DefaultCohortSizeConst()
 }

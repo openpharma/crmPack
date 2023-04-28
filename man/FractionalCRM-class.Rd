@@ -32,7 +32,8 @@ Kaplan-Meier based estimation of the conditional probability to experience a
 DLT for non-complete observations.
 
 This fractional CRM model follows the paper and code by Guosheng Yin et al.
-
+}
+\note{
 Typically, end users will not use the \code{.DefaultTITELogisticLogNormal()} function.
 }
 \examples{
@@ -41,7 +42,6 @@ my_model <- FractionalCRM(
   dose_grid = c(10, 30, 50, 100),
   sigma2 = 2
 )
-.DefaultFractionalCRM()
 }
 \seealso{
 \code{\link{TITELogisticLogNormal}}.

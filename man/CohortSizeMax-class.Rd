@@ -22,8 +22,6 @@ CohortSizeMax(cohort_size_list)
 multiple cohort size rules. The \code{cohort_size_list} slot stores a set of cohort
 size rules, which are again the objects of class \code{\link{CohortSize}}. The maximum
 of these individual cohort sizes is taken to give the final cohort size.
-
-Typically, end users will not use the \code{.DefaultCohortSizeMax()} function.
 }
 \section{Slots}{
 
@@ -32,8 +30,10 @@ Typically, end users will not use the \code{.DefaultCohortSizeMax()} function.
 of class \code{\link{CohortSize}}.}
 }}
 
+\note{
+Typically, end users will not use the \code{.DefaultCohortSizeMax()} function.
+}
 \examples{
-.DefaultCohortSizeMax()
 
 # Rule for cohort of size 1 for doses <30 and cohort of size 3 for doses >=30.
 my_size1 <- CohortSizeRange(intervals = c(0, 10), cohort_size = c(1, 3))

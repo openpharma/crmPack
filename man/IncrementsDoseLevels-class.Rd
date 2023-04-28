@@ -22,8 +22,6 @@ IncrementsDoseLevels(levels = 1L, basis_level = "last")
 
 \code{\link{IncrementsDoseLevels}} is the class for increments control based on the
 number of dose levels.
-
-Typically, end users will not use the \code{.DefaultIncrementsDoseLevels()} function.
 }
 \section{Slots}{
 
@@ -41,9 +39,11 @@ last dose given. If \code{max} is specified, then the current base dose level is
 set to the maximum dose level given.}
 }}
 
+\note{
+Typically, end users will not use the \code{.DefaultIncrementsDoseLevels()} function.
+}
 \examples{
 # The rule for dose increments which allows for maximum skip one dose level,
 # that is 2 dose levels higher than the last dose given.
 my_increments <- IncrementsDoseLevels(levels = 2, basis_level = "last")
-.DefaultIncrementsDoseLevels()
 }

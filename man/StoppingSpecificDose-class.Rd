@@ -22,8 +22,6 @@ StoppingSpecificDose(rule, dose)
 
 \code{\link{StoppingSpecificDose}} is the class for testing a stopping rule at specific
 dose of the dose grid and not at the next best dose.
-
-Typically, end users will not use the \code{.DefaultStoppingSpecificDose()} function.
 }
 \section{Slots}{
 
@@ -34,6 +32,9 @@ Typically, end users will not use the \code{.DefaultStoppingSpecificDose()} func
 grid of the data.}
 }}
 
+\note{
+Typically, end users will not use the \code{.DefaultStoppingSpecificDose()} function.
+}
 \examples{
 
 # Stop if highest dose 80 is safe.
@@ -47,5 +48,4 @@ lowest_dose_toxic <- StoppingSpecificDose(
   rule = StoppingTargetProb(target = c(0.3, 1), prob = 0.8),
   dose = 10
 )
-.DefaultStoppingSpecificDose()
 }

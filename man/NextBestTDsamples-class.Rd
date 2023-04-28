@@ -28,8 +28,6 @@ for allocation during the trial and the second for final recommendation at
 the end of a trial. Hence, there are two target probabilities of the
 occurrence of a DLT that must be specified: target probability to be used
 during the trial and target probability to be used at the end of the trial.
-
-Typically, end users will not use the \code{.DefaultNextBestTDsamples()} function.
 }
 \section{Slots}{
 
@@ -41,6 +39,9 @@ therefore accept one and only one argument, which is a numeric vector, and
 return a number.}
 }}
 
+\note{
+Typically, end users will not use the \code{.DefaultNextBestTDsamples()} function.
+}
 \examples{
 # Target probability of the occurrence of a DLT during the trial is set to 0.35.
 # Target probability of the occurrence of a DLT at the end of the trial is set to 0.3.
@@ -53,5 +54,4 @@ my_next_best <- NextBestTDsamples(
     as.numeric(quantile(samples, probs = 0.3))
   }
 )
-.DefaultNextBestTDsamples()
 }

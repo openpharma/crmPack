@@ -24,7 +24,8 @@ IncrementsRelativeDLTCurrent(dlt_intervals = c(0, 1), increments = c(2, 1))
 relative differences and current DLTs. The class is based on the number of
 DLTs observed in the current cohort, but not cumulatively over all cohorts
 so far.
-
+}
+\note{
 Typically, end users will not use the \code{.DefaultIncrementsRelativeDLTCurrent()} function.
 }
 \examples{
@@ -38,7 +39,6 @@ my_increments <- IncrementsRelativeDLTCurrent(
   dlt_intervals = c(0, 1, 3),
   increments = c(1, 0.33, 0.2)
 )
-.DefaultIncrementsRelativeDLTCurrent()
 }
 \seealso{
 \link{IncrementsRelativeDLT}.

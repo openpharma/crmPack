@@ -36,8 +36,6 @@ inherited \code{\link{DualEndpoint}} model).}
 
 \code{\link{DualEndpointBeta}} is the class for the dual endpoint model with beta
 function for dose-biomarker relationship.
-
-Typically, end users will not use the \code{.DefaultDualEndpointBeta()} function.
 }
 \details{
 This class extends the \code{\link{DualEndpoint}} class so that the dose-biomarker
@@ -78,6 +76,9 @@ that this is different from the \code{ref_dose} in the inherited \code{\link{Dua
 model).}
 }}
 
+\note{
+Typically, end users will not use the \code{.DefaultDualEndpointBeta()} function.
+}
 \examples{
 my_model <- DualEndpointBeta(
   mean = c(0, 1),
@@ -92,7 +93,6 @@ my_model <- DualEndpointBeta(
   mode = c(1, 15),
   ref_dose_beta = 1000
 )
-.DefaultDualEndpointBeta()
 }
 \seealso{
 \code{\link{DualEndpoint}}, \code{\link{DualEndpointRW}}, \code{\link{DualEndpointEmax}}.

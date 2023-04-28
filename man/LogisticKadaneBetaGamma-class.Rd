@@ -36,8 +36,6 @@ LogisticKadaneBetaGamma(theta, xmin, xmax, alpha, beta, shape, rate)
 
 \code{\link{LogisticKadaneBetaGamma}} is the class for the logistic model in the parametrization
 of Kadane et al. (1980), using a beta and a gamma distribution as the model priors.
-
-Typically, end users will not use the \code{.Default()} function.
 }
 \details{
 Let \code{rho0 = p(xmin)} be the probability of a DLT at the minimum dose
@@ -78,6 +76,8 @@ The slots of this class, required for creating the model, are the same
 as in the \code{LogisticKadane} class. In addition, the shape parameters of the
 Beta prior distribution of \code{rho0} and the shape and rate parameters of the
 Gamma prior distribution of \code{gamma}, are required for creating the prior model.
+
+Typically, end users will not use the \code{.Default()} function.
 }
 \examples{
 my_model <- LogisticKadaneBetaGamma(
@@ -89,7 +89,6 @@ my_model <- LogisticKadaneBetaGamma(
   shape = 0.5625,
   rate = 0.125
 )
-.DefaultLogisticKadaneBetaGamma()
 }
 \seealso{
 \code{\link{ModelLogNormal}}, \code{\link{LogisticKadane}}.

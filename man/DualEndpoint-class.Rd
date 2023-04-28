@@ -71,8 +71,6 @@ a prior distribution from the scaled Beta family; see the details below
 under slot \code{rho}.
 
 Please see the example vignette by typing \code{crmPackExample()} for a full example.
-
-Typically, end users will not use the \code{DefaultDualEndpoint()} function.
 }
 \section{Slots}{
 
@@ -101,10 +99,8 @@ or \code{rho} (for each parameter separately) is used or not. This slot is
 needed for internal purposes and must not be touched by the user.}
 }}
 
-\examples{
-\dontrun{
-.DefaultDualEndpoint()
-}
+\note{
+Typically, end users will not use the \code{DefaultDualEndpoint()} function.
 }
 \seealso{
 \code{\link{DualEndpointRW}}, \code{\link{DualEndpointBeta}}, \code{\link{DualEndpointEmax}}.

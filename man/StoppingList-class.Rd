@@ -27,8 +27,6 @@ of \code{stop_list} and returns a single logical value. For example, if the func
 \code{all} is specified as a \code{summary} function, then that all stopping rules
 defined in \code{stop_list} must be satisfied in order the result of this rule to
 be \code{TRUE}.
-
-Typically, end users will not use the \code{.DefaultStoppingList()} function.
 }
 \section{Slots}{
 
@@ -39,6 +37,9 @@ Typically, end users will not use the \code{.DefaultStoppingList()} function.
 the stopping rules into a single result.}
 }}
 
+\note{
+Typically, end users will not use the \code{.DefaultStoppingList()} function.
+}
 \examples{
 
 # Define some stopping rules.
@@ -53,5 +54,4 @@ my_stopping <- StoppingList(
   stop_list = c(my_stopping1, my_stopping2, my_stopping3),
   summary = any
 )
-.DefaultStoppingList()
 }
