@@ -5,9 +5,12 @@
 \alias{StoppingTDCIRatio-class}
 \alias{.StoppingTDCIRatio}
 \alias{StoppingTDCIRatio}
+\alias{.DefaultStoppingTDCIRatio}
 \title{\code{StoppingTDCIRatio}}
 \usage{
 StoppingTDCIRatio(target_ratio, prob_target)
+
+.DefaultStoppingTDCIRatio()
 }
 \arguments{
 \item{target_ratio}{(\code{numeric})\cr see slot definition.}
@@ -33,6 +36,9 @@ interval's estimate, that is required to stop a trial.}
 of a DLT.}
 }}
 
+\note{
+Typically, end users will not use the \code{.DefaultStoppingTDCIRatio()} function.
+}
 \examples{
 
 # Define the target stopping ratio (5) and the target probability of a DLT to

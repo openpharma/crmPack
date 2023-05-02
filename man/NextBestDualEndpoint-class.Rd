@@ -5,6 +5,7 @@
 \alias{NextBestDualEndpoint-class}
 \alias{.NextBestDualEndpoint}
 \alias{NextBestDualEndpoint}
+\alias{.DefaultNextBestDualEndpoint}
 \title{\code{NextBestDualEndpoint}}
 \usage{
 NextBestDualEndpoint(
@@ -14,6 +15,8 @@ NextBestDualEndpoint(
   target_relative = TRUE,
   target_thresh = 0.01
 )
+
+.DefaultNextBestDualEndpoint()
 }
 \arguments{
 \item{target}{(\code{numeric})\cr see slot definition.}
@@ -69,6 +72,9 @@ needs to be fulfilled before the target probability will be used for
 deriving the next best dose (default to 0.01).}
 }}
 
+\note{
+Typically, end users will not use the \code{.DefaultNextBestDualEndpoint()} function.
+}
 \examples{
 # Target a dose achieving at least 0.9 of maximum biomarker level (efficacy)
 # and with a probability below 0.25 that prob(DLT) > 0.35 (safety).

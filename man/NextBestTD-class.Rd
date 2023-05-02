@@ -5,8 +5,11 @@
 \alias{NextBestTD-class}
 \alias{.NextBestTD}
 \alias{NextBestTD}
+\alias{.DefaultNextBestTD}
 \title{\code{NextBestTD}}
 \usage{
+.DefaultNextBestTD()
+
 NextBestTD(prob_target_drt, prob_target_eot)
 }
 \arguments{
@@ -38,6 +41,9 @@ of the occurrence of a DLT to be used during the trial.}
 of the occurrence of a DLT to be used at the end of the trial.}
 }}
 
+\note{
+Typically, end users will not use the \code{.DefaultNextBestTD()} function.
+}
 \examples{
 my_next_best <- NextBestTD(0.35, 0.3)
 }

@@ -5,9 +5,12 @@
 \alias{LogisticLogNormalMixture-class}
 \alias{.LogisticLogNormalMixture}
 \alias{LogisticLogNormalMixture}
+\alias{.DefaultLogisticLogNormalMixture}
 \title{\code{LogisticLogNormalMixture}}
 \usage{
 LogisticLogNormalMixture(mean, cov, ref_dose, share_weight)
+
+.DefaultLogisticLogNormalMixture()
 }
 \arguments{
 \item{mean}{(\code{numeric})\cr the prior mean vector.}
@@ -48,6 +51,9 @@ which can be specified by the user, and which is inherited from the
 \eqn{p_{1}(x)}.}
 }}
 
+\note{
+Typically, end users will not use the \code{.DefaultLogNormalMixture()} function.
+}
 \examples{
 # Decide on the dose grid and MCMC options.
 dose_grid <- 1:80

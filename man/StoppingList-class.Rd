@@ -5,9 +5,12 @@
 \alias{StoppingList-class}
 \alias{.StoppingList}
 \alias{StoppingList}
+\alias{.DefaultStoppingList}
 \title{\code{StoppingList}}
 \usage{
 StoppingList(stop_list, summary)
+
+.DefaultStoppingList()
 }
 \arguments{
 \item{stop_list}{(\code{list})\cr see slot definition.}
@@ -34,6 +37,9 @@ be \code{TRUE}.
 the stopping rules into a single result.}
 }}
 
+\note{
+Typically, end users will not use the \code{.DefaultStoppingList()} function.
+}
 \examples{
 
 # Define some stopping rules.

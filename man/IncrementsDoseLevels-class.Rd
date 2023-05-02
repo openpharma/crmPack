@@ -5,9 +5,12 @@
 \alias{IncrementsDoseLevels-class}
 \alias{.IncrementsDoseLevels}
 \alias{IncrementsDoseLevels}
+\alias{.DefaultIncrementsDoseLevels}
 \title{\code{IncrementsDoseLevels}}
 \usage{
 IncrementsDoseLevels(levels = 1L, basis_level = "last")
+
+.DefaultIncrementsDoseLevels()
 }
 \arguments{
 \item{levels}{(\code{count})\cr see slot definition.}
@@ -36,6 +39,9 @@ last dose given. If \code{max} is specified, then the current base dose level is
 set to the maximum dose level given.}
 }}
 
+\note{
+Typically, end users will not use the \code{.DefaultIncrementsDoseLevels()} function.
+}
 \examples{
 # The rule for dose increments which allows for maximum skip one dose level,
 # that is 2 dose levels higher than the last dose given.

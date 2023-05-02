@@ -5,9 +5,12 @@
 \alias{IncrementsRelativeDLTCurrent-class}
 \alias{.IncrementsRelativeDLTCurrent}
 \alias{IncrementsRelativeDLTCurrent}
+\alias{.DefaultIncrementsRelativeDLTCurrent}
 \title{\code{IncrementsRelativeDLTCurrent}}
 \usage{
 IncrementsRelativeDLTCurrent(dlt_intervals = c(0, 1), increments = c(2, 1))
+
+.DefaultIncrementsRelativeDLTCurrent()
 }
 \arguments{
 \item{dlt_intervals}{(\code{numeric})\cr see slot definition.}
@@ -21,6 +24,9 @@ IncrementsRelativeDLTCurrent(dlt_intervals = c(0, 1), increments = c(2, 1))
 relative differences and current DLTs. The class is based on the number of
 DLTs observed in the current cohort, but not cumulatively over all cohorts
 so far.
+}
+\note{
+Typically, end users will not use the \code{.DefaultIncrementsRelativeDLTCurrent()} function.
 }
 \examples{
 

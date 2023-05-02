@@ -66,6 +66,16 @@ test_that("LogisticNormal object can be created with user constructor", {
   expect_valid(result, "LogisticNormal")
 })
 
+test_that(".DefaultLogisticNormal works as expected", {
+  expect_equal(
+    .DefaultLogisticNormal(),
+    LogisticNormal(
+      mean = c(-0.85, 1),
+      cov = matrix(c(1, -0.5, -0.5, 1), nrow = 2)
+    )
+  )
+})
+
 ## mcmc ----
 
 test_that("MCMC computes correct values for LogisticNormal model", {
@@ -99,6 +109,17 @@ test_that("LogisticLogNormal object can be created with user constructor", {
     )
   )
   expect_valid(result, "LogisticLogNormal")
+})
+
+test_that(".DefaultLogisticLogNormal works as expected", {
+  expect_equal(
+    .DefaultLogisticLogNormal(),
+    LogisticLogNormal(
+      mean = c(-0.85, 1),
+      cov = matrix(c(1, -0.5, -0.5, 1), nrow = 2),
+      ref_dose = 50
+    )
+  )
 })
 
 ## mcmc ----
@@ -136,6 +157,17 @@ test_that("LogisticLogNormalSub object can be created with user constructor", {
   expect_valid(result, "LogisticLogNormalSub")
 })
 
+test_that(".DefaultLogisticLogNormalSub works correctly", {
+  expect_equal(
+    .DefaultLogisticLogNormalSub(),
+    LogisticLogNormalSub(
+      mean = c(-0.85, 1),
+      cov = matrix(c(1, -0.5, -0.5, 1), nrow = 2),
+      ref_dose = 50
+    )
+  )
+})
+
 ## mcmc ----
 
 test_that("MCMC computes correct values for LogisticLogNormalSub model", {
@@ -169,6 +201,17 @@ test_that("ProbitLogNormal object can be created with user constructor", {
     )
   )
   expect_valid(result, "ProbitLogNormal")
+})
+
+test_that(".DefaultProbitLogNormal works correctly", {
+  expect_equal(
+    .DefaultProbitLogNormal(),
+    ProbitLogNormal(
+      mean = c(-0.85, 1),
+      cov = matrix(c(1, -0.5, -0.5, 1), nrow = 2),
+      ref_dose = 7.2
+    )
+  )
 })
 
 ## mcmc ----
@@ -206,6 +249,16 @@ test_that("ProbitLogNormalRel object can be created with user constructor", {
   expect_valid(result, "ProbitLogNormalRel")
 })
 
+test_that(".DefaultProbitLogNormalRel works correctly", {
+  expect_equal(
+    .DefaultProbitLogNormalRel(),
+    ProbitLogNormalRel(
+      mean = c(-0.85, 1),
+      cov = matrix(c(1, -0.5, -0.5, 1), nrow = 2)
+    )
+  )
+})
+
 ## mcmc ----
 
 test_that("MCMC computes correct values for ProbitLogNormalRel model", {
@@ -239,6 +292,13 @@ test_that("LogisticKadane object can be created with user constructor", {
     )
   )
   expect_valid(result, "LogisticKadane")
+})
+
+test_that(".DefaultLogisticKadane works correctly", {
+  expect_equal(
+    .DefaultLogisticKadane(),
+    LogisticKadane(theta = 0.33, xmin = 1, xmax = 200)
+  )
 })
 
 ## mcmc ----
@@ -280,6 +340,21 @@ test_that("LogisticKadaneBetaGamma object can be created with user constructor",
   expect_valid(result, "LogisticKadaneBetaGamma")
 })
 
+test_that(".DefaultLogisticKadaneBetaGamma works correctly", {
+  expect_equal(
+    .DefaultLogisticKadaneBetaGamma(),
+    LogisticKadaneBetaGamma(
+      theta = 0.3,
+      xmin = 0,
+      xmax = 7,
+      alpha = 1,
+      beta = 19,
+      shape = 0.5625,
+      rate = 0.125
+    )
+  )
+})
+
 ## mcmc ----
 
 test_that("MCMC computes correct values for LogisticKadaneBetaGamma model", {
@@ -316,6 +391,24 @@ test_that("LogisticNormalMixture object can be created with user constructor", {
   expect_valid(result, "LogisticNormalMixture")
 })
 
+
+test_that(".DefaultLogisticNormalMixture works correctly", {
+  expect_equal(
+    .DefaultLogisticNormalMixture(),
+    LogisticNormalMixture(
+      comp1 = ModelParamsNormal(
+        mean = c(-0.85, 1),
+        cov = matrix(c(1, -0.5, -0.5, 1), nrow = 2)
+      ),
+      comp2 = ModelParamsNormal(
+        mean = c(1, 1.5),
+        cov = matrix(c(1.2, -0.45, -0.45, 0.6), nrow = 2)
+      ),
+      weightpar = c(a = 1, b = 1),
+      ref_dose = positive_number(50)
+    )
+  )
+})
 ## mcmc ----
 
 test_that("MCMC computes correct values for LogisticNormalMixture model", {
@@ -360,6 +453,26 @@ test_that("LogisticNormalFixedMixture object can be created with user constructo
   expect_valid(result, "LogisticNormalFixedMixture")
 })
 
+test_that(".DefaultLogisticNormalFixedMixture works as expected", {
+  expect_equal(
+    .DefaultLogisticNormalFixedMixture(),
+    LogisticNormalFixedMixture(
+      components = list(
+        comp1 = ModelParamsNormal(
+          mean = c(-0.85, 1),
+          cov = matrix(c(1, -0.5, -0.5, 1), nrow = 2)
+        ),
+        comp2 = ModelParamsNormal(
+          mean = c(1, 1.5),
+          cov = matrix(c(1.2, -0.45, -0.45, 0.6), nrow = 2)
+        )
+      ),
+      weights = c(0.3, 0.7),
+      ref_dose = positive_number(50)
+    )
+  )
+})
+
 ## mcmc ----
 
 test_that("MCMC computes correct values for LogisticNormalFixedMixture model", {
@@ -400,6 +513,19 @@ test_that("LogisticLogNormalMixture object can be created with user constructor"
     )
   )
   expect_valid(result, "LogisticLogNormalMixture")
+})
+
+test_that(".DefaultLogisticLogNormalMixture works as expected", {
+  test_obj <-
+  expect_equal(
+    .DefaultLogisticLogNormalMixture(),
+    LogisticLogNormalMixture(
+      share_weight = 0.1,
+      mean = c(-0.85, 1),
+      cov = matrix(c(1, -0.5, -0.5, 1), nrow = 2),
+      ref_dose = 50
+    )
+  )
 })
 
 ## mcmc ----
@@ -448,6 +574,20 @@ test_that("DualEndpointRW object can be created with user constructor (fixed par
 test_that("DualEndpointRW object can be created with user constructor", {
   result <- expect_silent(h_get_dual_endpoint_rw(fixed = FALSE))
   expect_valid(result, "DualEndpointRW")
+})
+
+test_that(".DefaultDualEndpointRW works correctly", {
+  expect_equal(
+    .DefaultDualEndpointRW(),
+    DualEndpointRW(
+      mean = c(0, 1),
+      cov = matrix(c(1, 0, 0, 1), nrow = 2),
+      sigma2W = c(a = 0.1, b = 0.1),
+      rho = c(a = 1, b = 1),
+      sigma2betaW = 0.01,
+      rw1 = TRUE
+    )
+  )
 })
 
 ## mcmc ----
@@ -598,6 +738,25 @@ test_that("DualEndpointBeta object can be created with user constructor", {
   expect_valid(result, "DualEndpointBeta")
 })
 
+test_that(".DefaultDualEndpointBeta works as expected", {
+  expect_equal(
+    .DefaultDualEndpointBeta(),
+    DualEndpointBeta(
+      mean = c(0, 1),
+      cov = matrix(c(1, 0, 0, 1), nrow = 2),
+      ref_dose = 10,
+      use_log_dose = TRUE,
+      sigma2W = c(a = 0.1, b = 0.1),
+      rho = c(a = 1, b = 1),
+      E0 = c(0, 100),
+      Emax = c(0, 500),
+      delta1 = c(0, 5),
+      mode = c(1, 15),
+      ref_dose_beta = 1000
+    )
+  )
+})
+
 ## mcmc ----
 
 test_that("MCMC computes correct values for DualEndpointBeta model with fixed parameters", {
@@ -683,6 +842,22 @@ test_that("DualEndpointEmax object can be created with user constructor (fixed p
 test_that("DualEndpointEmax object can be created with user constructor", {
   result <- expect_silent(h_get_dual_endpoint_emax(fixed = FALSE))
   expect_valid(result, "DualEndpointEmax")
+})
+
+test_that(".DefaultDualEndpointEmax works correctly", {
+  expect_equal(
+    .DefaultDualEndpointEmax(),
+    DualEndpointEmax(
+      mean = c(0, 1),
+      cov = matrix(c(1, 0, 0, 1), nrow = 2),
+      sigma2W = c(a = 0.1, b = 0.1),
+      rho = c(a = 1, b = 1),
+      E0 = c(0, 100),
+      Emax = c(0, 500),
+      ED50 = c(10, 200),
+      ref_dose_emax = 1000
+    )
+  )
 })
 
 ## mcmc ----
@@ -838,6 +1013,20 @@ test_that("EffFlexi object can be created with user constructor (empty data, RW2
   expect_valid(result, "EffFlexi")
 })
 
+# test_that(".DefaultEffFlexi works correctly", {
+#   expect_equal(
+#     .DefaultEffFlexi(),
+#     EffFlexi(
+#       eff = c(1.223, 2.513),
+#       eff_dose = c(25, 300),
+#       sigma2W = c(a = 0.1, b = 0.1),
+#       sigma2betaW = c(a = 20, b = 50),
+#       rw1 = FALSE,
+#       data = emptydata
+#     )
+#   )
+# })
+
 ## mcmc ----
 
 test_that("MCMC computes correct values for EffFlexi model", {
@@ -890,6 +1079,27 @@ test_that("DALogisticLogNormal object can be created with user constructor", {
   expect_valid(result, "DALogisticLogNormal")
 })
 
+test_that(".DefaultDALogisticLogNormal works as expected", {
+  npiece <- 10
+  Tmax <- 60
+
+  lambda_prior <- function(k) {
+    npiece / (Tmax * (npiece - k + 0.5))
+  }
+
+  test_obj <-
+  expect_equal(
+    .DefaultDALogisticLogNormal(),
+    DALogisticLogNormal(
+      mean = c(-0.85, 1),
+      cov = matrix(c(1, -0.5, -0.5, 1), nrow = 2),
+      ref_dose = 56,
+      npiece = npiece,
+      l = as.numeric(t(apply(as.matrix(c(1:npiece), 1, npiece), 2, lambda_prior))),
+      c_par = 2
+    )
+  )
+})
 ## mcmc ----
 
 test_that("MCMC computes correct values for DALogisticLogNormal model", {
@@ -922,6 +1132,18 @@ test_that("TITELogisticLogNormal object can be created with user constructor (li
 test_that("TITELogisticLogNormal object can be created with user constructor (adaptive weight)", {
   result <- expect_silent(h_get_tite_logistic_log_normal("adaptive"))
   expect_valid(result, "TITELogisticLogNormal")
+})
+
+test_that(".DefaultTITELogisticLogNormal object can be created with user constructor (linear weight)", {
+  expect_equal(
+    .DefaultTITELogisticLogNormal(),
+    TITELogisticLogNormal(
+      mean = c(0, 1),
+      cov = diag(2),
+      ref_dose = 1,
+      weight_method = "linear"
+    )
+  )
 })
 
 ## mcmc ----
@@ -1229,6 +1451,17 @@ test_that("FractionalCRM object can be created with user constructor", {
     )
   )
   expect_valid(result, "FractionalCRM")
+})
+
+test_that(".DefaultFractionalCRM works correctly", {
+  expect_equal(
+    .DefaultFractionalCRM(),
+    FractionalCRM(
+    skel_probs = c(0.1, 0.2, 0.3, 0.4),
+    dose_grid = c(10, 30, 50, 100),
+    sigma2 = 2
+    )
+  )
 })
 
 ## mcmc ----

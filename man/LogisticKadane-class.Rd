@@ -5,9 +5,12 @@
 \alias{LogisticKadane-class}
 \alias{.LogisticKadane}
 \alias{LogisticKadane}
+\alias{.DefaultLogisticKadane}
 \title{\code{LogisticKadane}}
 \usage{
 LogisticKadane(theta, xmin, xmax)
+
+.DefaultLogisticKadane()
 }
 \arguments{
 \item{theta}{(\code{proportion})\cr the target toxicity probability.}
@@ -49,6 +52,8 @@ The slots of this class, required for creating the model, are the target
 toxicity, as well as the minimum and maximum of the dose range. Note that
 these can be different from the minimum and maximum of the dose grid in the
 data later on.
+
+Typically, end-users will not use the \code{.DefaultLogisticKadane()} function.
 }
 \examples{
 my_model <- LogisticKadane(theta = 0.33, xmin = 1, xmax = 200)

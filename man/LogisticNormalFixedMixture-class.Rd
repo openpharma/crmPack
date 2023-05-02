@@ -5,9 +5,12 @@
 \alias{LogisticNormalFixedMixture-class}
 \alias{.LogisticNormalFixedMixture}
 \alias{LogisticNormalFixedMixture}
+\alias{.DefaultLogisticNormalFixedMixture}
 \title{\code{LogisticNormalFixedMixture}}
 \usage{
 LogisticNormalFixedMixture(components, weights, ref_dose, log_normal = FALSE)
+
+.DefaultLogisticNormalFixedMixture()
 }
 \arguments{
 \item{components}{(\code{list})\cr the specifications of the mixture components,
@@ -69,6 +72,10 @@ that the mean vectors and covariance matrices are valid for the intercept
 and log slope?}
 }}
 
+\note{
+Typically, end-users will not use the \code{.DefaultLogisticNormalFixedMixture()}
+function.
+}
 \examples{
 my_model <- LogisticNormalFixedMixture(
   components = list(
@@ -82,7 +89,7 @@ my_model <- LogisticNormalFixedMixture(
     )
   ),
   weights = c(0.3, 0.7),
-  ref_dose = 50
+  ref_dose = positive_number(50)
 )
 }
 \seealso{
