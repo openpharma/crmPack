@@ -468,7 +468,7 @@ test_that("default constructors exist for all subclasses of GeneralModel", {
     classesToTest,
     function(cls) {
       # Function exists
-      expect_true(length(findFunction(paste0(".Default", cls), where=asNamespace("crmPack"))) > 1)
+      expect_true(length(findFunction(paste0(".Default", cls), where = asNamespace("crmPack"))) > 1)
       # Return value is of the correct class
       test_obj <- eval(parse(text = paste0(".Default", cls, "()")))
       expect_class(test_obj, cls)
@@ -483,7 +483,7 @@ test_that("default constructors exist for all subclasses of Increments", {
     classesToTest,
     function(cls) {
       # Function exists
-      expect_true(length(findFunction(paste0(".Default", cls), where=asNamespace("crmPack"))) > 1)
+      expect_true(length(findFunction(paste0(".Default", cls), where = asNamespace("crmPack"))) > 1)
       # Return value is of the correct class
       test_obj <- eval(parse(text = paste0(".Default", cls, "()")))
       expect_class(test_obj, cls)
@@ -498,7 +498,7 @@ test_that("default constructors exist for all subclasses of NextBest", {
     classesToTest,
     function(cls) {
       # Function exists
-      expect_true(length(findFunction(paste0(".Default", cls), where=asNamespace("crmPack"))) > 1)
+      expect_true(length(findFunction(paste0(".Default", cls), where = asNamespace("crmPack"))) > 1)
       # Return value is of the correct class
       test_obj <- eval(parse(text = paste0(".Default", cls, "()")))
       expect_class(test_obj, cls)
@@ -513,7 +513,7 @@ test_that("default constructors exist for all subclasses of Stopping", {
     classesToTest,
     function(cls) {
       # Function exists
-      expect_true(length(findFunction(paste0(".Default", cls), where=asNamespace("crmPack"))) > 1)
+      expect_true(length(findFunction(paste0(".Default", cls), where = asNamespace("crmPack"))) > 1)
       # Return value is of the correct class
       test_obj <- eval(parse(text = paste0(".Default", cls, "()")))
       expect_class(test_obj, cls)
