@@ -1013,20 +1013,6 @@ test_that("EffFlexi object can be created with user constructor (empty data, RW2
   expect_valid(result, "EffFlexi")
 })
 
-# test_that(".DefaultEffFlexi works correctly", {
-#   expect_equal(
-#     .DefaultEffFlexi(),
-#     EffFlexi(
-#       eff = c(1.223, 2.513),
-#       eff_dose = c(25, 300),
-#       sigma2W = c(a = 0.1, b = 0.1),
-#       sigma2betaW = c(a = 20, b = 50),
-#       rw1 = FALSE,
-#       data = emptydata
-#     )
-#   )
-# })
-
 ## mcmc ----
 
 test_that("MCMC computes correct values for EffFlexi model", {

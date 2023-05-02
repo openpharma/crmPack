@@ -789,13 +789,13 @@ LogisticKadaneBetaGamma <- function(theta, xmin, xmax, alpha, beta, shape, rate)
     comp1 = "ModelParamsNormal",
     comp2 = "ModelParamsNormal",
     weightpar = "numeric",
-    ref_dose = "positive_number"
+    ref_dose = "numeric"
   ),
   prototype = prototype(
     comp1 = ModelParamsNormal(mean = c(0, 1), cov = diag(2)),
     comp2 = ModelParamsNormal(mean = c(-1, 1), cov = diag(2)),
     weightpar = c(a = 1, b = 1),
-    ref_dose = positive_number(1)
+    ref_dose = 1
   ),
   validity = v_model_logistic_normal_mix
 )
@@ -827,7 +827,7 @@ LogisticNormalMixture <- function(comp1,
     comp1 = comp1,
     comp2 = comp2,
     weightpar = weightpar,
-    ref_dose = positive_number(ref_dose),
+    ref_dose = ref_dose,
     datamodel = function() {
       # The logistic likelihood - the same as for non-mixture case.
       for (i in 1:nObs) {
@@ -881,7 +881,7 @@ LogisticNormalMixture <- function(comp1,
       cov = matrix(c(1.2, -0.45, -0.45, 0.6), nrow = 2)
     ),
     weightpar = c(a = 1, b = 1),
-    ref_dose = positive_number(50)
+    ref_dose = 50
   )
 }
 
@@ -939,7 +939,7 @@ LogisticNormalMixture <- function(comp1,
   slots = c(
     components = "list",
     weights = "numeric",
-    ref_dose = "positive_number",
+    ref_dose = "numeric",
     log_normal = "logical"
   ),
   prototype = prototype(
@@ -948,7 +948,7 @@ LogisticNormalMixture <- function(comp1,
       comp2 = ModelParamsNormal(mean = c(-1, 1), cov = diag(2))
     ),
     weights = c(0.5, 0.5),
-    ref_dose = positive_number(1),
+    ref_dose = 1,
     log_normal = FALSE
   ),
   validity = v_model_logistic_normal_fixed_mix

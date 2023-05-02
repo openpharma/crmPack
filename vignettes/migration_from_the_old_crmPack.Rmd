@@ -288,5 +288,5 @@ Here are some examples of their use:
 .DefaultStoppingAll()
 
 class_name <- "LogisticNormal"
-eval(parse(text=paste0(".Default", class_name, "()")))
+eval(parse(text = paste0(".Default", class_name, "()")))
 ```

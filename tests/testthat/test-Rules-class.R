@@ -210,25 +210,6 @@ test_that(".DefaultNextBestMaxGainSamples works as expected", {
   expect_identical(result@prob_target_eot, 0.3)
   expect_identical(result@derive(c(1:5)), 2.2) # nolintr
   expect_identical(result@mg_derive(c(1:5)), 3.0) # nolintr
-
-  # This construction of the test fails with
-  # .DefaultNextBestMaxGainSamples() (`actual`) not equal to NextBestMaxGainSamples(...) (`expected`).
-  #
-  # `parent.env(environment(actual@derive))` is <env:namespace:crmPack>
-  # `parent.env(environment(expected@derive))` is <env:0x559ef65d1600>
-  # expect_equal(
-  #   .DefaultNextBestMaxGainSamples(),
-  #   NextBestMaxGainSamples(
-  #     prob_target_drt = 0.35,
-  #     prob_target_eot = 0.3,
-  #     derive = function(samples) {
-  #       as.numeric(quantile(samples, prob = 0.3))
-  #     },
-  #     mg_derive = function(mg_samples) {
-  #       as.numeric(quantile(mg_samples, prob = 0.5))
-  #     }
-  #   )
-  # )
 })
 
 # Increments ----
