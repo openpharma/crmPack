@@ -204,21 +204,32 @@ test_that("NextBestMaxGainSamples object can be created with user constructor", 
 })
 
 test_that(".DefaultNextBestMaxGainSamples works as expected", {
-  expect_equal(
-    .DefaultNextBestMaxGainSamples(),
-    NextBestMaxGainSamples(
-      prob_target_drt = 0.35,
-      prob_target_eot = 0.3,
-      derive = function(samples) {
-        as.numeric(quantile(samples, prob = 0.3))
-      },
-      mg_derive = function(mg_samples) {
-        as.numeric(quantile(mg_samples, prob = 0.5))
-      }
-    )
-  )
-})
+  result <- .DefaultNextBestMaxGainSamples()
+  expect_valid(result, "NextBestMaxGainSamples")
+  expect_identical(result@prob_target_drt, 0.35)
+  expect_identical(result@prob_target_eot, 0.3)
+  expect_identical(result@derive(c(1:5)), 2.2) # nolintr
+  expect_identical(result@mg_derive(c(1:5)), 3.0) # nolintr
 
+  # This construction of the test fails with
+  # .DefaultNextBestMaxGainSamples() (`actual`) not equal to NextBestMaxGainSamples(...) (`expected`).
+  #
+  # `parent.env(environment(actual@derive))` is <env:namespace:crmPack>
+  # `parent.env(environment(expected@derive))` is <env:0x559ef65d1600>
+  # expect_equal(
+  #   .DefaultNextBestMaxGainSamples(),
+  #   NextBestMaxGainSamples(
+  #     prob_target_drt = 0.35,
+  #     prob_target_eot = 0.3,
+  #     derive = function(samples) {
+  #       as.numeric(quantile(samples, prob = 0.3))
+  #     },
+  #     mg_derive = function(mg_samples) {
+  #       as.numeric(quantile(mg_samples, prob = 0.5))
+  #     }
+  #   )
+  # )
+})
 
 # Increments ----
 
@@ -440,6 +451,13 @@ test_that("StoppingCohortsNearDose object can be created with user constructor",
   expect_identical(result@percentage, 40)
 })
 
+test_that(".DefaultStoppingCohortsNearDose works as expected", {
+  expect_equal(
+    .DefaultStoppingCohortsNearDose(),
+    StoppingCohortsNearDose(nCohorts = 3, percentage = 0.2)
+  )
+})
+
 ## StoppingPatientsNearDose ----
 
 test_that(".StoppingPatientsNearDose works as expected", {
@@ -461,6 +479,13 @@ test_that("StoppingPatientsNearDose object can be created with user constructor"
   expect_identical(result@percentage, 40)
 })
 
+test_that(".DefaultStoppingPatientsNearDose works as expected", {
+  expect_equal(
+    .DefaultStoppingPatientsNearDose(),
+    StoppingPatientsNearDose(nPatients = 9, percentage = 20)
+  )
+})
+
 ## StoppingMinCohorts ----
 
 test_that(".StoppingMinCohorts works as expected", {
@@ -472,6 +497,13 @@ test_that("StoppingMinCohorts object can be created with user constructor", {
   result <- expect_silent(StoppingMinCohorts(5L))
   expect_valid(result, "StoppingMinCohorts")
   expect_identical(result@nCohorts, 5L)
+})
+
+test_that(".DefaultStoppingMinCohorts works as expected", {
+  expect_equal(
+    .DefaultStoppingMinCohorts(),
+    StoppingMinCohorts(nCohorts = 6)
+  )
 })
 
 ## StoppingMinPatients ----
@@ -487,6 +519,13 @@ test_that("StoppingMinPatients object can be created with user constructor", {
   expect_identical(result@nPatients, 5L)
 })
 
+test_that(".DefaultStoppingMinPatients works as expected", {
+  expect_equal(
+    .DefaultStoppingMinPatients(),
+    StoppingMinPatients(nPatients = 20)
+  )
+})
+
 ## StoppingTargetProb ----
 
 test_that(".StoppingTargetProb works as expected", {
@@ -499,6 +538,13 @@ test_that("StoppingTargetProb object can be created with user constructor", {
   expect_valid(result, "StoppingTargetProb")
   expect_identical(result@target, c(0.3, 0.45))
   expect_identical(result@prob, 0.5)
+})
+
+test_that(".DefaultStoppingTargetProb works as expected", {
+  expect_equal(
+    .DefaultStoppingTargetProb(),
+    StoppingTargetProb(target = c(0.2, 0.35), prob = 0.5)
+  )
 })
 
 ## StoppingMTDdistribution ----
@@ -516,6 +562,13 @@ test_that("StoppingMTDdistribution object can be created with user constructor",
   expect_identical(result@target, 0.33)
   expect_identical(result@thresh, 0.5)
   expect_identical(result@prob, 0.9)
+})
+
+test_that(".DefaultStoppingMTDdistribution works as expected", {
+  expect_equal(
+    .DefaultStoppingMTDdistribution(),
+    StoppingMTDdistribution(target = 0.33, thresh = 0.5, prob = 0.9)
+  )
 })
 
 ## StoppingMTDCV ----
@@ -537,6 +590,13 @@ test_that("StoppingMTDCV object can be created with user constructor", {
   expect_valid(result, "StoppingMTDCV")
   expect_identical(result@target, 0.4)
   expect_identical(result@thresh_cv, 70)
+})
+
+test_that(".DefaultStoppingMTDCV works as expected", {
+  expect_equal(
+    .DefaultStoppingMTDCV(),
+    StoppingMTDCV(target = 0.3, thresh_cv = 40)
+  )
 })
 
 ## StoppingLowestDoseHSRBeta
@@ -597,6 +657,13 @@ test_that("StoppingTargetBiomarker object can be created with user constructor",
   expect_identical(result@target, c(0.85, 1))
   expect_identical(result@is_relative, FALSE)
   expect_identical(result@prob, 0.4)
+})
+
+test_that(".DefaultStoppingTargetBiomarker works as expected", {
+  expect_equal(
+    .DefaultStoppingTargetBiomarker(),
+    StoppingTargetBiomarker(target = c(0.9, 1), prob = 0.5)
+  )
 })
 
 ## StoppingSpecificDose ----
@@ -764,6 +831,13 @@ test_that("StoppingTDCIRatio object can be created with user constructor", {
   expect_identical(result@prob_target, 0.5)
 })
 
+test_that(".DefaultStoppingTDCIRatio works as expected", {
+  expect_equal(
+    .DefaultStoppingTDCIRatio(),
+    StoppingTDCIRatio(target_ratio = 5, prob_target = 0.3)
+  )
+})
+
 ## StoppingMaxGainCIRatio ----
 
 test_that(".StoppingMaxGainCIRatio works as expected", {
@@ -776,6 +850,13 @@ test_that("StoppingMaxGainCIRatio object can be created with user constructor", 
   expect_valid(result, "StoppingMaxGainCIRatio")
   expect_identical(result@target_ratio, 6)
   expect_identical(result@prob_target, 0.5)
+})
+
+test_that(".DefaultStoppingMaxGainCIRatio works as expected", {
+  expect_equal(
+    .DefaultStoppingMaxGainCIRatio(),
+    StoppingMaxGainCIRatio(target_ratio = 5, prob_target = 0.3)
+  )
 })
 
 # CohortSize ----
