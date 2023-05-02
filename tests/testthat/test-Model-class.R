@@ -517,15 +517,15 @@ test_that("LogisticLogNormalMixture object can be created with user constructor"
 
 test_that(".DefaultLogisticLogNormalMixture works as expected", {
   test_obj <-
-  expect_equal(
-    .DefaultLogisticLogNormalMixture(),
-    LogisticLogNormalMixture(
-      share_weight = 0.1,
-      mean = c(-0.85, 1),
-      cov = matrix(c(1, -0.5, -0.5, 1), nrow = 2),
-      ref_dose = 50
+    expect_equal(
+      .DefaultLogisticLogNormalMixture(),
+      LogisticLogNormalMixture(
+        share_weight = 0.1,
+        mean = c(-0.85, 1),
+        cov = matrix(c(1, -0.5, -0.5, 1), nrow = 2),
+        ref_dose = 50
+      )
     )
-  )
 })
 
 ## mcmc ----
@@ -1088,17 +1088,17 @@ test_that(".DefaultDALogisticLogNormal works as expected", {
   }
 
   test_obj <-
-  expect_equal(
-    .DefaultDALogisticLogNormal(),
-    DALogisticLogNormal(
-      mean = c(-0.85, 1),
-      cov = matrix(c(1, -0.5, -0.5, 1), nrow = 2),
-      ref_dose = 56,
-      npiece = npiece,
-      l = as.numeric(t(apply(as.matrix(c(1:npiece), 1, npiece), 2, lambda_prior))),
-      c_par = 2
+    expect_equal(
+      .DefaultDALogisticLogNormal(),
+      DALogisticLogNormal(
+        mean = c(-0.85, 1),
+        cov = matrix(c(1, -0.5, -0.5, 1), nrow = 2),
+        ref_dose = 56,
+        npiece = npiece,
+        l = as.numeric(t(apply(as.matrix(c(1:npiece), 1, npiece), 2, lambda_prior))),
+        c_par = 2
+      )
     )
-  )
 })
 ## mcmc ----
 
@@ -1457,9 +1457,9 @@ test_that(".DefaultFractionalCRM works correctly", {
   expect_equal(
     .DefaultFractionalCRM(),
     FractionalCRM(
-    skel_probs = c(0.1, 0.2, 0.3, 0.4),
-    dose_grid = c(10, 30, 50, 100),
-    sigma2 = 2
+      skel_probs = c(0.1, 0.2, 0.3, 0.4),
+      dose_grid = c(10, 30, 50, 100),
+      sigma2 = 2
     )
   )
 })
