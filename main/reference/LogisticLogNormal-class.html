@@ -40,12 +40,6 @@ with a bivariate normal prior on the intercept and log slope."><meta property="o
 <li class="nav-item">
   <a class="nav-link" href="../news/index.html">Changelog</a>
 </li>
-<!-- start dropdown for versions --> <li class="nav-item dropdown">
-        <a href="#" class="nav-link dropdown-toggle"
-          data-bs-toggle="dropdown" role="button"
-          aria-expanded="false" aria-haspopup="true"
-          id="dropdown-versions">Versions</a> <div class="dropdown-menu" aria-labelledby="dropdown-versions"> <a class="dropdown-item" data-toggle="tooltip" title="" href="https://Roche.github.io/crmPack/main">main</a> </div></li>
-<!-- end dropdown for versions -->
       </ul><form class="form-inline my-2 my-lg-0" role="search">
         <input type="search" class="form-control me-sm-2" aria-label="Toggle navigation" name="search-input" data-search-index="../search.json" id="search-input" placeholder="Search for" autocomplete="off"></form>
 
@@ -146,8 +140,8 @@ The prior $$(alpha0, log(alpha1)) ~ Normal(mean, cov).$$</p>
 <span class="r-out co"><span class="r-pr">#&gt;</span>         y[i] ~ dbern(p[i])</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>     }</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> }</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> &lt;bytecode: 0x562abc36d3d8&gt;</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> &lt;environment: 0x562abfa0cc58&gt;</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> &lt;bytecode: 0x5608c7ac6400&gt;</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> &lt;environment: 0x5608c4308d98&gt;</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Slot "priormodel":</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> function () </span>
@@ -156,8 +150,8 @@ The prior $$(alpha0, log(alpha1)) ~ Normal(mean, cov).$$</p>
 <span class="r-out co"><span class="r-pr">#&gt;</span>     alpha0 &lt;- theta[1]</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>     alpha1 &lt;- exp(theta[2])</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> }</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> &lt;bytecode: 0x562abc376018&gt;</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> &lt;environment: 0x562abfa0ca28&gt;</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> &lt;bytecode: 0x5608c7acf1a0&gt;</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> &lt;environment: 0x5608c4308b68&gt;</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Slot "modelspecs":</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> function (from_prior) </span>
@@ -168,16 +162,16 @@ The prior $$(alpha0, log(alpha1)) ~ Normal(mean, cov).$$</p>
 <span class="r-out co"><span class="r-pr">#&gt;</span>     }</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>     ms</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> }</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> &lt;bytecode: 0x562abc3759c0&gt;</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> &lt;environment: 0x562abfa0ca28&gt;</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> &lt;bytecode: 0x5608c7aceb48&gt;</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> &lt;environment: 0x5608c4308b68&gt;</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Slot "init":</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> function () </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> {</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>     list(theta = c(0, 1))</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> }</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> &lt;bytecode: 0x562abc3750c8&gt;</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> &lt;environment: 0x562abfa0ca28&gt;</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> &lt;bytecode: 0x5608c7ace250&gt;</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> &lt;environment: 0x5608c4308b68&gt;</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Slot "datanames":</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [1] "nObs" "y"    "x"   </span>
@@ -195,7 +189,7 @@ The prior $$(alpha0, log(alpha1)) ~ Normal(mean, cov).$$</p>
 
 
     <footer><div class="pkgdown-footer-left">
-  <p></p><p>Developed by Daniel Sabanes Bove, Wai Yin Yeung, Burak Kuersad Guenhan, Giuseppe Palermo, Thomas Jaki, Jiawen Zhu, Ziwei Liao, Dimitris Kontos, Marlene Schulte-Goebel.</p>
+  <p></p><p>Developed by Daniel Sabanes Bove, Wai Yin Yeung, Burak Kuersad Guenhan, Giuseppe Palermo, Thomas Jaki, Jiawen Zhu, Ziwei Liao, Dimitris Kontos, Marlene Schulte-Goebel, Doug <a href="mailto:doug.kelkhoff@roche.com" class="email">doug.kelkhoff@roche.com</a> Kelkhoff.</p>
 </div>
 
 <div class="pkgdown-footer-right">
