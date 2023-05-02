@@ -1050,7 +1050,7 @@ LogisticNormalFixedMixture <- function(components,
       )
     ),
     weights = c(0.3, 0.7),
-    ref_dose = positive_number(50)
+    ref_dose = 50
   )
 }
 
