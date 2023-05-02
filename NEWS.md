@@ -1,5 +1,5 @@
 # Version 1.0.9000.9133
-* Added no-parameter factory functions named `.Default<class name>` to provide
+* Added no-parameter constructor functions named `.Default<class name>` to provide
 usable instances of all concrete subclasses of `Increments`, `Model`, `NextBest` and
 `Stopping`.
 * Added new function `dose_grid_range` that returns the range of doses in the dose grid. 
