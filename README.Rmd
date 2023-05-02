@@ -140,9 +140,9 @@ time <- system.time(
 
 The package vignettes provide information on various aspects of CRM trial design, implementation, simulation and analysis:
 
-* [Trial definition](trial_definition.html)
-* [Trial analysis](trial_analysis.html)
-* [Simulation of operating characteristics](trial_simulation.html)
-* [Extending crmPack](extending_crmpack.html)
+* [Trial definition](https://roche.github.io/crmPack/main/articles/trial_definition.html)
+* [Trial analysis](https://roche.github.io/crmPack/main/articles/trial_analysis.html)
+* [Simulation of operating characteristics](https://roche.github.io/crmPack/main/articles/trial_simulation.html)
+* [Extending crmPack](https://roche.github.io/crmPack/main/articles/parallel_computing_with_extensions.html)
 
-* Sabanes Bove et al (2019)  [Model-based Dose Escalation Designs in R with crmPack](crmPack-jss-paper.html). JSS 89:10 [DOI 10.18637/jss.v089.i10](https://www.jstatsoft.org/article/view/v089i10)
+* Sabanes Bove et al (2019)  Model-based Dose Escalation Designs in R with crmPack. JSS 89:10 [DOI 10.18637/jss.v089.i10](https://www.jstatsoft.org/article/view/v089i10)
