@@ -76,7 +76,7 @@ my_model <- LogisticNormalMixture(
     cov = matrix(c(1.2, -0.45, -0.45, 0.6), nrow = 2)
   ),
   weightpar = c(a = 1, b = 1),
-  ref_dose = positive_number(50)
+  ref_dose = 50
 )
 }
 \seealso{
