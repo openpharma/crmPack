@@ -11,6 +11,8 @@
 \alias{v_next_best_td}
 \alias{v_next_best_td_samples}
 \alias{v_next_best_max_gain_samples}
+\alias{v_next_best_prob_mtd_lte}
+\alias{v_next_best_prob_mtd_min_dist}
 \title{Internal Helper Functions for Validation of \code{\link{NextBest}} Objects}
 \usage{
 v_next_best_mtd(object)
@@ -30,6 +32,10 @@ v_next_best_td(object)
 v_next_best_td_samples(object)
 
 v_next_best_max_gain_samples(object)
+
+v_next_best_prob_mtd_lte(object)
+
+v_next_best_prob_mtd_min_dist(object)
 }
 \arguments{
 \item{object}{(\code{NextBest})\cr object to validate.}
@@ -73,5 +79,11 @@ contains valid \code{derive} function.
 
 \item \code{v_next_best_max_gain_samples()}: validates that the \code{\link{NextBestMaxGainSamples}} object
 contains valid \code{derive} and \code{mg_derive} functions.
+
+\item \code{v_next_best_prob_mtd_lte()}: validates that the \code{\link{NextBestProbMTDLTE}} object
+contains valid \code{target} probability and \code{method} string value.
+
+\item \code{v_next_best_prob_mtd_min_dist()}: validates that the \code{\link{NextBestProbMTDMinDist}} object
+contains valid \code{target} probability and \code{method} string value.
 
 }}
