@@ -52,12 +52,6 @@ dose with lowest loss function (Bayes risk) is recommended for the next dose."><
 <li class="nav-item">
   <a class="nav-link" href="../news/index.html">Changelog</a>
 </li>
-<!-- start dropdown for versions --> <li class="nav-item dropdown">
-        <a href="#" class="nav-link dropdown-toggle"
-          data-bs-toggle="dropdown" role="button"
-          aria-expanded="false" aria-haspopup="true"
-          id="dropdown-versions">Versions</a> <div class="dropdown-menu" aria-labelledby="dropdown-versions"> <a class="dropdown-item" data-toggle="tooltip" title="" href="https://Roche.github.io/crmPack/main">main</a> </div></li>
-<!-- end dropdown for versions -->
       </ul><form class="form-inline my-2 my-lg-0" role="search">
         <input type="search" class="form-control me-sm-2" aria-label="Toggle navigation" name="search-input" data-search-index="../search.json" id="search-input" placeholder="Search for" autocomplete="off"></form>
 
@@ -99,7 +93,9 @@ dose with lowest loss function (Bayes risk) is recommended for the next dose.</p
 <span>  unacceptable <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">1</span>, <span class="fl">1</span><span class="op">)</span>,</span>
 <span>  <span class="va">max_overdose_prob</span>,</span>
 <span>  <span class="va">losses</span></span>
-<span><span class="op">)</span></span></code></pre></div>
+<span><span class="op">)</span></span>
+<span></span>
+<span><span class="fu">.DefaultNextBestNCRMLoss</span><span class="op">(</span><span class="op">)</span></span></code></pre></div>
     </div>
 
     <div class="section level2">
@@ -161,6 +157,7 @@ This is because the loss function values must be specified for each
 interval, that is under-dosing, target toxicity, and overdosing toxicity or
 under-dosing, target toxicity, overdosing (excessive) toxicity, and
 unacceptable toxicity intervals.</p>
+<p>Typically, end users will not use the <code>.DefaultNextBestnCRMLoss()</code> function.</p>
     </div>
 
     <div class="section level2">

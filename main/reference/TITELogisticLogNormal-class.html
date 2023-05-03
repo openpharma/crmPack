@@ -44,12 +44,6 @@ This class inherits from the LogisticLogNormal."><meta property="og:image" conte
 <li class="nav-item">
   <a class="nav-link" href="../news/index.html">Changelog</a>
 </li>
-<!-- start dropdown for versions --> <li class="nav-item dropdown">
-        <a href="#" class="nav-link dropdown-toggle"
-          data-bs-toggle="dropdown" role="button"
-          aria-expanded="false" aria-haspopup="true"
-          id="dropdown-versions">Versions</a> <div class="dropdown-menu" aria-labelledby="dropdown-versions"> <a class="dropdown-item" data-toggle="tooltip" title="" href="https://Roche.github.io/crmPack/main">main</a> </div></li>
-<!-- end dropdown for versions -->
       </ul><form class="form-inline my-2 my-lg-0" role="search">
         <input type="search" class="form-control me-sm-2" aria-label="Toggle navigation" name="search-input" data-search-index="../search.json" id="search-input" placeholder="Search for" autocomplete="off"></form>
 
@@ -75,13 +69,15 @@ This class inherits from the LogisticLogNormal."><meta property="og:image" conte
     <p><a href="https://lifecycle.r-lib.org/articles/stages.html#stable" class="external-link"><img src="figures/lifecycle-stable.svg" alt="[Stable]"></a></p>
 <p><code>TITELogisticLogNormal</code> is the class for TITE-CRM based on a logistic
 regression model using a bivariate normal prior on the intercept and log
-slope parameters.
-This class inherits from the <code><a href="LogisticLogNormal-class.html">LogisticLogNormal</a></code>.</p>
+slope parameters.</p>
+<p>This class inherits from the <code><a href="LogisticLogNormal-class.html">LogisticLogNormal</a></code>.</p>
     </div>
 
     <div class="section level2">
     <h2 id="ref-usage">Usage<a class="anchor" aria-label="anchor" href="#ref-usage"></a></h2>
-    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">TITELogisticLogNormal</span><span class="op">(</span>weight_method <span class="op">=</span> <span class="st">"linear"</span>, <span class="va">...</span><span class="op">)</span></span></code></pre></div>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">TITELogisticLogNormal</span><span class="op">(</span>weight_method <span class="op">=</span> <span class="st">"linear"</span>, <span class="va">...</span><span class="op">)</span></span>
+<span></span>
+<span><span class="fu">.DefaultTITELogisticLogNormal</span><span class="op">(</span><span class="op">)</span></span></code></pre></div>
     </div>
 
     <div class="section level2">
@@ -117,6 +113,10 @@ or adaptive. This was used in Liu, Yin and Yuan's paper.</p></dd>
 
 
 </dl></div>
+    <div class="section level2">
+    <h2 id="note">Note<a class="anchor" aria-label="anchor" href="#note"></a></h2>
+    <p>Typically, end users will not use the <code>.DefaultTITELogisticLogNormal()</code> function.</p>
+    </div>
     <div class="section level2">
     <h2 id="see-also">See also<a class="anchor" aria-label="anchor" href="#see-also"></a></h2>
     <div class="dont-index"><p><code><a href="DALogisticLogNormal-class.html">DALogisticLogNormal</a></code>.</p></div>

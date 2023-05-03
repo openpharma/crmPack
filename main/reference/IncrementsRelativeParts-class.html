@@ -42,12 +42,6 @@ beginning of part 2."><meta property="og:image" content="https://roche.github.io
 <li class="nav-item">
   <a class="nav-link" href="../news/index.html">Changelog</a>
 </li>
-<!-- start dropdown for versions --> <li class="nav-item dropdown">
-        <a href="#" class="nav-link dropdown-toggle"
-          data-bs-toggle="dropdown" role="button"
-          aria-expanded="false" aria-haspopup="true"
-          id="dropdown-versions">Versions</a> <div class="dropdown-menu" aria-labelledby="dropdown-versions"> <a class="dropdown-item" data-toggle="tooltip" title="" href="https://Roche.github.io/crmPack/main">main</a> </div></li>
-<!-- end dropdown for versions -->
       </ul><form class="form-inline my-2 my-lg-0" role="search">
         <input type="search" class="form-control me-sm-2" aria-label="Toggle navigation" name="search-input" data-search-index="../search.json" id="search-input" placeholder="Search for" autocomplete="off"></form>
 
@@ -78,7 +72,9 @@ beginning of part 2.</p>
 
     <div class="section level2">
     <h2 id="ref-usage">Usage<a class="anchor" aria-label="anchor" href="#ref-usage"></a></h2>
-    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">IncrementsRelativeParts</span><span class="op">(</span><span class="va">dlt_start</span>, <span class="va">clean_start</span>, <span class="va">...</span><span class="op">)</span></span></code></pre></div>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">IncrementsRelativeParts</span><span class="op">(</span><span class="va">dlt_start</span>, <span class="va">clean_start</span>, <span class="va">...</span><span class="op">)</span></span>
+<span></span>
+<span><span class="fu">.DefaultIncrementsRelativeParts</span><span class="op">(</span><span class="op">)</span></span></code></pre></div>
     </div>
 
     <div class="section level2">
@@ -139,6 +135,7 @@ is not a prerequisite for any function (except of the class' validation
 function) that works with objects of this class. It is rather motivated by
 the semantics. That is, if we observe a DLT in part 1, we cannot be more
 aggressive than in case of a clean part 1 without DLT.</p>
+<p>Typically, end users will not use the <code>.DefaultIncrementsRelativeParts()</code> function.</p>
     </div>
 
     <div class="section level2">
