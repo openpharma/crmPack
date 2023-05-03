@@ -5,9 +5,12 @@
 \alias{NextBestProbMTDMinDist-class}
 \alias{.NextBestProbMTDMinDist}
 \alias{NextBestProbMTDMinDist}
+\alias{.DefaultNextBestProbMTDMinDist}
 \title{\code{NextBestProbMTDMinDist}}
 \usage{
 NextBestProbMTDMinDist(target)
+
+.DefaultNextBestProbMTDMinDist()
 }
 \arguments{
 \item{target}{(\code{numeric})\cr see slot definition.}
@@ -22,8 +25,9 @@ The dose is determined by calculating the posterior toxicity probability
 for each dose per iteration and select the dose that has the smallest toxicity
 probability distance to the target. The dose with the highest frequency
 of being selected as MTD across iterations is the next best dose. Placebo
-is not considered in the calculation and removed from the dose grid for
-any calculations.
+is not considered as the next dose and for that reason not used in
+calculations. I.e. for placebo the toxicity probability distance to target
+is not calculated and taken into account for determination of the next dose.
 }
 \section{Slots}{
 
@@ -31,8 +35,10 @@ any calculations.
 \item{\code{target}}{(\code{numeric})\cr the target toxicity probability.}
 }}
 
+\note{
+Typically, end users will not use the \code{.DefaultNextBestProbMTDMinDist()} function.
+}
 \examples{
-
 # In the example below, the MTD is defined as the dose with the highest
 # probability of having a toxicity rate with minimal distance
 # to the target of 30\%.

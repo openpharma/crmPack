@@ -5,9 +5,12 @@
 \alias{CohortSizeRange-class}
 \alias{.CohortSizeRange}
 \alias{CohortSizeRange}
+\alias{.DefaultCohortSizeRange}
 \title{\code{CohortSizeRange}}
 \usage{
 CohortSizeRange(intervals, cohort_size)
+
+.DefaultCohortSizeRange()
 }
 \arguments{
 \item{intervals}{(\code{numeric})\cr see slot definition.}
@@ -29,6 +32,9 @@ dose intervals.}
 corresponding to the elements of \code{intervals}.}
 }}
 
+\note{
+Typically, end users will not use the \code{.DefaultCohortSizeRange()} function.
+}
 \examples{
 
 # Example for the rule having cohort of size 1 for doses <30

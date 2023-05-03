@@ -5,9 +5,12 @@
 \alias{DALogisticLogNormal-class}
 \alias{.DALogisticLogNormal}
 \alias{DALogisticLogNormal}
+\alias{.DefaultDALogisticLogNormal}
 \title{\code{DALogisticLogNormal}}
 \usage{
 DALogisticLogNormal(npiece = 3, l, c_par = 2, cond_pem = TRUE, ...)
+
+.DefaultDALogisticLogNormal()
 }
 \arguments{
 \item{npiece}{(\code{number})\cr the number of pieces in the \code{PEM}.}
@@ -53,6 +56,8 @@ Liu's paper, \code{c_par = 2} is recommended.}
 
 \note{
 We still need to include here formula for the lambda prior.
+
+Typically, end users will not use the \code{.DefaultDALogisticLogNormal()} function.
 }
 \examples{
 npiece <- 10

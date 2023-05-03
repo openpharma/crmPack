@@ -5,9 +5,12 @@
 \alias{DualEndpointEmax-class}
 \alias{.DualEndpointEmax}
 \alias{DualEndpointEmax}
+\alias{.DefaultDualEndpointEmax}
 \title{\code{DualEndpointEmax}}
 \usage{
 DualEndpointEmax(E0, Emax, ED50, ref_dose_emax = 1, ...)
+
+.DefaultDualEndpointEmax()
 }
 \arguments{
 \item{E0}{(\code{numeric})\cr either a fixed number or the two uniform distribution
@@ -57,6 +60,9 @@ that this is different from the \code{ref_dose} in the inherited \code{\link{Dua
 model).}
 }}
 
+\note{
+Typically, end users will not use the \code{.DefaultDualEndpointEmax()} function.
+}
 \examples{
 my_model <- DualEndpointEmax(
   mean = c(0, 1),

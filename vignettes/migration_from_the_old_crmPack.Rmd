@@ -276,3 +276,17 @@ details in the help page for the `McmcOptions` class.
 Any RNG-related user settings at the R session level (such us those with
 `set.seed()`) are ignored by the MCMC sampler.
 
+# New no-argument constructors
+
+To aid software development, new no-argument constructs for all sub-classes of `GeneralModel`, `Increments`, `NextBest` and `Stopping` have been introduced.  The names of these constructors take the form `.Default<classname>`, where `<classname>` is the name of the class being created.
+
+These constructors return valid, but not necessarily contextually sensible, objects of the required class.  One reason the objects returned may not be contextually sensible is that the constructors take no account of any associated `doseGrid`.
+
+Here are some examples of their use:
+
+```{r}
+.DefaultStoppingAll()
+
+class_name <- "LogisticNormal"
+eval(parse(text = paste0(".Default", class_name, "()")))
+```
