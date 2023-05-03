@@ -5,9 +5,12 @@
 \alias{NextBestProbMTDLTE-class}
 \alias{.NextBestProbMTDLTE}
 \alias{NextBestProbMTDLTE}
+\alias{.DefaultNextBestProbMTDLTE}
 \title{\code{NextBestProbMTDLTE}}
 \usage{
 NextBestProbMTDLTE(target)
+
+.DefaultNextBestProbMTDLTE()
 }
 \arguments{
 \item{target}{(\code{numeric})\cr see slot definition.}
@@ -31,8 +34,10 @@ any calculations.
 \item{\code{target}}{(\code{numeric})\cr the target toxicity probability.}
 }}
 
+\note{
+Typically, end users will not use the \code{.DefaultNextBestProbMTDLTE()} function.
+}
 \examples{
-
 # In the example below, the MTD is defined as the dose with the highest
 # probability of having a toxicity rate below 30\%.
 next_best_prob_mtd_lte <- NextBestProbMTDLTE(target = 0.3)

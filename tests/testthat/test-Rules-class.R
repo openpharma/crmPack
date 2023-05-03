@@ -227,6 +227,11 @@ test_that("NextBestProbMTDLTE object can be created with user constructor", {
   expect_identical(result@target, 0.4)
 })
 
+test_that(".DefaultNextBestProbMTDLTE works as expected", {
+  result <- expect_silent(.DefaultNextBestProbMTDLTE())
+  expect_valid(result, "NextBestProbMTDLTE")
+})
+
 ## NextBestProbMTDMinDist ----
 
 test_that(".NextBestProbMTDMinDist works as expected", {
@@ -238,6 +243,11 @@ test_that("NextBestProbMTDMinDist object can be created with user constructor", 
   result <- expect_silent(NextBestProbMTDMinDist(0.4))
   expect_valid(result, "NextBestProbMTDMinDist")
   expect_identical(result@target, 0.4)
+})
+
+test_that(".DefaultNextBestProbMTDMinDist works as expected", {
+  result <- expect_silent(.DefaultNextBestProbMTDMinDist())
+  expect_valid(result, "NextBestProbMTDMinDist")
 })
 
 # Increments ----

@@ -850,6 +850,15 @@ NextBestProbMTDLTE <- function(target) {
   .NextBestProbMTDLTE(target = target)
 }
 
+## default constructor ----
+
+#' @rdname NextBestProbMTDLTE-class
+#' @note Typically, end users will not use the `.DefaultNextBestProbMTDLTE()` function.
+#' @export
+.DefaultNextBestProbMTDLTE <- function() {
+  NextBestProbMTDLTE(target = 0.3)
+}
+
 # NextBestProbMTDMinDist ----
 
 ## class ----
@@ -892,6 +901,15 @@ NextBestProbMTDLTE <- function(target) {
 #'
 NextBestProbMTDMinDist <- function(target) {
   .NextBestProbMTDMinDist(target = target)
+}
+
+## default constructor ----
+
+#' @rdname NextBestProbMTDMinDist-class
+#' @note Typically, end users will not use the `.DefaultNextBestProbMTDMinDist()` function.
+#' @export
+.DefaultNextBestProbMTDMinDist <- function() {
+  NextBestProbMTDMinDist(target = 0.3)
 }
 
 # Increments ----
