@@ -68,6 +68,11 @@ h_jags_join_models <- function(model1, model2) {
   assert_class(body(model1), "{")
   assert_class(body(model2), "{")
 
+  # This workaround is needed to avoid bugs related to covr-injected code.
+  if (h_covr_active()) {
+    body(model2) <- h_covr_detrace(body(model2))
+  }
+
   body2 <- as.list(body(model2))
   if (length(body2) >= 2) {
     body1 <- as.list(body(model1))
@@ -75,6 +80,7 @@ h_jags_join_models <- function(model1, model2) {
   }
   model1
 }
+
 
 #' Setting Initial Values for `JAGS` Model Parameters
 #'
@@ -184,6 +190,11 @@ h_jags_get_data <- function(model, data, from_prior) {
 h_jags_write_model <- function(model, file = NULL, digits = 5) {
   assert_function(model)
   assert_count(digits)
+
+  # This workaround is needed to avoid bugs related to covr-injected code.
+  if (h_covr_active()) {
+    body(model) <- h_covr_detrace(body(model))
+  }
 
   if (!is.null(file)) {
     assert_path_for_output(file)
