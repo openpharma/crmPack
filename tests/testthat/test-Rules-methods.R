@@ -1552,3 +1552,428 @@ test_that("StoppingSpecificDose correclty replaces next best string with specifi
   )
   expect_identical(result, expected)
 })
+
+test_that("Logical operators for combining Stopping rules work correctly", {
+  s1 <- StoppingMinCohorts(nCohorts = 2)
+  s2 <- StoppingHighestDose()
+  s3 <- StoppingPatientsNearDose(nPatients = 9, percentage = 25)
+  all1 <- StoppingAll(stop_list = list(s1, s2))
+  any1 <- StoppingAny(stop_list = list(s1, s2))
+
+  expect_identical(s1 & s2, StoppingAll(stop_list=list(s1, s2)))
+  expect_identical(s1 | s2, StoppingAny(stop_list=list(s1, s2)))
+
+  expect_identical(all1 & s3, StoppingAll(stop_list=list(s1, s2, s3)))
+  expect_identical(any1 | s3, StoppingAny(stop_list=list(s1, s2, s3)))
+  expect_identical(s3 & all1, StoppingAll(stop_list=list(s3, s1, s2)))
+  expect_identical(s3 | any1, StoppingAny(stop_list=list(s3, s1, s2)))
+})
+
+test_that("stopTrial works correctly in edge cases", {
+  s1 <- StoppingMinCohorts(nCohorts = 2)
+
+  rv <- stopTrial(s1, NA)
+  expect_true(rv)
+  expect_equal(attributes(rv), list(message="Recommended next best dose is NA"))
+
+  rv <- stopTrial(s1, dose = 0, data=Data(doseGrid = c(0, 1), placebo = TRUE))
+  expect_true(rv)
+  expect_equal(attributes(rv), list(message="Recommended next best dose is placebo dose"))
+})
+
+test_that("stopTrial works correctly for StoppingList", {
+  s1 <- StoppingMinCohorts(nCohorts = 2)
+  s2 <- StoppingHighestDose()
+  any1 <- StoppingList(stop_list = list(s1, s2), summary = any)
+  all1 <- StoppingList(stop_list = list(s1, s2), summary = all)
+
+  data_none <- Data(x = c(1, 1), y = c(0, 0), cohort = c(1L, 1L), ID = 1:2, doseGrid = 1:3)
+  data_any1 <- Data(x = c(3, 3), y = c(0, 0), cohort = c(1L, 1L), ID=1:2, doseGrid = 1:3)
+  data_any2 <- Data(x = c(1, 2), y = c(0, 0), cohort = c(1L, 2L), ID = 1:2, doseGrid = 1:3)
+  data_all <-  Data(x = c(1, 3), y = c(0, 0), cohort = c(1L, 2L), ID = 1:2, doseGrid = 1:3)
+
+  rv <- stopTrial(
+    stopping = any1,
+    dose = 1,
+    model = LogisticLogNormal(mean = c(0, 1), cov = diag(2)),
+    data = data_none
+  )
+  expect_false(rv)
+  expect_equal(
+    attributes(rv),
+    list(
+      message=list(
+        "Number of cohorts is 1 and thus below the prespecified minimum number 2",
+        "Next best dose is 1 and thus not the highest dose"
+      )
+    )
+  )
+  rv <- stopTrial(
+    stopping = all1,
+    dose = 1,
+    model = LogisticLogNormal(mean = c(0, 1), cov = diag(2)),
+    data = data_none
+  )
+  expect_false(rv)
+  expect_equal(
+    attributes(rv),
+    list(
+      message=list(
+        "Number of cohorts is 1 and thus below the prespecified minimum number 2",
+        "Next best dose is 1 and thus not the highest dose"
+      )
+    )
+  )
+
+  rv <- stopTrial(
+    stopping = any1,
+    dose = 3,
+    model = LogisticLogNormal(mean = c(0, 1), cov = diag(2)),
+    data = data_any1
+  )
+  expect_true(rv)
+  expect_equal(
+    attributes(rv),
+    list(
+      message=list(
+        "Number of cohorts is 1 and thus below the prespecified minimum number 2",
+        "Next best dose is 3 and thus the highest dose"
+      )
+    )
+  )
+  rv <- stopTrial(
+    stopping = all1,
+    dose = 1,
+    model = LogisticLogNormal(mean = c(0, 1), cov = diag(2)),
+    data = data_any1
+  )
+  expect_false(rv)
+  expect_equal(
+    attributes(rv),
+    list(
+      message=list(
+        "Number of cohorts is 1 and thus below the prespecified minimum number 2",
+        "Next best dose is 1 and thus not the highest dose"
+      )
+    )
+  )
+
+  rv <- stopTrial(
+    stopping = any1,
+    dose = 2,
+    model = LogisticLogNormal(mean = c(0, 1), cov = diag(2)),
+    data = data_any2
+  )
+  expect_true(rv)
+  expect_equal(
+    attributes(rv),
+    list(
+      message=list(
+        "Number of cohorts is 2 and thus reached the prespecified minimum number 2",
+        "Next best dose is 2 and thus not the highest dose"
+      )
+    )
+  )
+
+  rv <- stopTrial(
+    stopping = all1,
+    dose = 1,
+    model = LogisticLogNormal(mean = c(0, 1), cov = diag(2)),
+    data = data_any2
+  )
+  expect_false(rv)
+  expect_equal(
+    attributes(rv),
+    list(
+      message=list(
+        "Number of cohorts is 2 and thus reached the prespecified minimum number 2",
+        "Next best dose is 1 and thus not the highest dose"
+      )
+    )
+  )
+
+  rv <- stopTrial(
+    stopping = all1,
+    dose = 3,
+    model = LogisticLogNormal(mean = c(0, 1), cov = diag(2)),
+    data = data_all
+  )
+  expect_true(rv)
+  expect_equal(
+    attributes(rv),
+    list(
+      message=list(
+        "Number of cohorts is 2 and thus reached the prespecified minimum number 2",
+        "Next best dose is 3 and thus the highest dose"
+      )
+    )
+  )
+
+  rv <- stopTrial(
+    stopping = any1,
+    dose = 1,
+    model = LogisticLogNormal(mean = c(0, 1), cov = diag(2)),
+    data = data_none,
+    samples = new("Samples")
+  )
+  expect_false(rv)
+  expect_equal(
+    attributes(rv),
+    list(
+      message=list(
+        "Number of cohorts is 1 and thus below the prespecified minimum number 2",
+        "Next best dose is 1 and thus not the highest dose"
+      )
+    )
+  )
+
+  data_any1 <- Data(x = c(3, 3), y = c(0, 0), cohort = c(1L, 1L), ID=1:2, doseGrid = 1:3)
+  rv <- stopTrial(
+    stopping = any1,
+    dose = 3,
+    model = LogisticLogNormal(mean = c(0, 1), cov = diag(2)),
+    data = data_any1,
+    samples = new("Samples")
+  )
+  expect_true(rv)
+  expect_equal(
+    attributes(rv),
+    list(
+      message=list(
+        "Number of cohorts is 1 and thus below the prespecified minimum number 2",
+        "Next best dose is 3 and thus the highest dose"
+      )
+    )
+  )
+
+  data_any2 <- Data(x = c(1, 2), y = c(0, 0), cohort = c(1L, 2L), ID = 1:2, doseGrid = 1:3)
+  rv <- stopTrial(
+    stopping = any1,
+    dose = 2,
+    model = LogisticLogNormal(mean = c(0, 1), cov = diag(2)),
+    data = data_any2,
+    samples = new("Samples")
+  )
+  expect_true(rv)
+  expect_equal(
+    attributes(rv),
+    list(
+      message=list(
+        "Number of cohorts is 2 and thus reached the prespecified minimum number 2",
+        "Next best dose is 2 and thus not the highest dose"
+      )
+    )
+  )
+
+  rv <- stopTrial(
+    stopping = all1,
+    dose = 1,
+    model = LogisticLogNormal(mean = c(0, 1), cov = diag(2)),
+    data = data_any2,
+    samples = new("Samples")
+  )
+  expect_false(rv)
+  expect_equal(
+    attributes(rv),
+    list(
+      message=list(
+        "Number of cohorts is 2 and thus reached the prespecified minimum number 2",
+        "Next best dose is 1 and thus not the highest dose"
+      )
+    )
+  )
+
+  rv <- stopTrial(
+    stopping = all1,
+    dose = 3,
+    model = LogisticLogNormal(mean = c(0, 1), cov = diag(2)),
+    data = data_all,
+    samples = new("Samples")
+  )
+  expect_true(rv)
+  expect_equal(
+    attributes(rv),
+    list(
+      message=list(
+        "Number of cohorts is 2 and thus reached the prespecified minimum number 2",
+        "Next best dose is 3 and thus the highest dose"
+      )
+    )
+  )
+
+})
+
+
+
+
+
+test_that("stopTrial works correctly for StoppingAll", {
+  s1 <- StoppingMinCohorts(nCohorts = 2)
+  s2 <- StoppingHighestDose()
+  all1 <- StoppingAll(stop_list = list(s1, s2))
+
+  data_none <- Data(x = c(1, 1), y = c(0, 0), cohort = c(1L, 1L), ID = 1:2, doseGrid = 1:3)
+  data_any1 <- Data(x = c(3, 3), y = c(0, 0), cohort = c(1L, 1L), ID=1:2, doseGrid = 1:3)
+  data_any2 <- Data(x = c(1, 2), y = c(0, 0), cohort = c(1L, 2L), ID = 1:2, doseGrid = 1:3)
+  data_all <-  Data(x = c(1, 3), y = c(0, 0), cohort = c(1L, 2L), ID = 1:2, doseGrid = 1:3)
+
+  rv <- stopTrial(
+    stopping = all1,
+    dose = 1,
+    model = LogisticLogNormal(mean = c(0, 1), cov = diag(2)),
+    data = data_none
+  )
+  expect_false(rv)
+  expect_equal(
+    attributes(rv),
+    list(
+      message=list(
+        "Number of cohorts is 1 and thus below the prespecified minimum number 2",
+        "Next best dose is 1 and thus not the highest dose"
+      )
+    )
+  )
+
+  rv <- stopTrial(
+    stopping = all1,
+    dose = 3,
+    model = LogisticLogNormal(mean = c(0, 1), cov = diag(2)),
+    data = data_any1
+  )
+  expect_false(rv)
+  expect_equal(
+    attributes(rv),
+    list(
+      message=list(
+        "Number of cohorts is 1 and thus below the prespecified minimum number 2",
+        "Next best dose is 3 and thus the highest dose"
+      )
+    )
+  )
+  rv <- stopTrial(
+    stopping = all1,
+    dose = 1,
+    model = LogisticLogNormal(mean = c(0, 1), cov = diag(2)),
+    data = data_any2
+  )
+  expect_false(rv)
+  expect_equal(
+    attributes(rv),
+    list(
+      message=list(
+        "Number of cohorts is 2 and thus reached the prespecified minimum number 2",
+        "Next best dose is 1 and thus not the highest dose"
+      )
+    )
+  )
+
+  rv <- stopTrial(
+    stopping = all1,
+    dose = 3,
+    model = LogisticLogNormal(mean = c(0, 1), cov = diag(2)),
+    data = data_all
+  )
+  expect_true(rv)
+  expect_equal(
+    attributes(rv),
+    list(
+      message=list(
+        "Number of cohorts is 2 and thus reached the prespecified minimum number 2",
+        "Next best dose is 3 and thus the highest dose"
+      )
+    )
+  )
+
+  rv <- stopTrial(
+    stopping = all1,
+    dose = 1,
+    model = LogisticLogNormal(mean = c(0, 1), cov = diag(2)),
+    data = data_none,
+    samples = new("Samples")
+  )
+  expect_false(rv)
+  expect_equal(
+    attributes(rv),
+    list(
+      message=list(
+        "Number of cohorts is 1 and thus below the prespecified minimum number 2",
+        "Next best dose is 1 and thus not the highest dose"
+      )
+    )
+  )
+
+  rv <- stopTrial(
+    stopping = all1,
+    dose = 3,
+    model = LogisticLogNormal(mean = c(0, 1), cov = diag(2)),
+    data = data_any1,
+    samples = new("Samples")
+  )
+  expect_false(rv)
+  expect_equal(
+    attributes(rv),
+    list(
+      message=list(
+        "Number of cohorts is 1 and thus below the prespecified minimum number 2",
+        "Next best dose is 3 and thus the highest dose"
+      )
+    )
+  )
+
+  data_any2 <- Data(x = c(1, 2), y = c(0, 0), cohort = c(1L, 2L), ID = 1:2, doseGrid = 1:3)
+  rv <- stopTrial(
+    stopping = all1,
+    dose = 2,
+    model = LogisticLogNormal(mean = c(0, 1), cov = diag(2)),
+    data = data_any2,
+    samples = new("Samples")
+  )
+  expect_false(rv)
+  expect_equal(
+    attributes(rv),
+    list(
+      message=list(
+        "Number of cohorts is 2 and thus reached the prespecified minimum number 2",
+        "Next best dose is 2 and thus not the highest dose"
+      )
+    )
+  )
+
+  rv <- stopTrial(
+    stopping = all1,
+    dose = 1,
+    model = LogisticLogNormal(mean = c(0, 1), cov = diag(2)),
+    data = data_any2,
+    samples = new("Samples")
+  )
+  expect_false(rv)
+  expect_equal(
+    attributes(rv),
+    list(
+      message=list(
+        "Number of cohorts is 2 and thus reached the prespecified minimum number 2",
+        "Next best dose is 1 and thus not the highest dose"
+      )
+    )
+  )
+
+  rv <- stopTrial(
+    stopping = all1,
+    dose = 3,
+    model = LogisticLogNormal(mean = c(0, 1), cov = diag(2)),
+    data = data_all,
+    samples = new("Samples")
+  )
+  expect_true(rv)
+  expect_equal(
+    attributes(rv),
+    list(
+      message=list(
+        "Number of cohorts is 2 and thus reached the prespecified minimum number 2",
+        "Next best dose is 3 and thus the highest dose"
+      )
+    )
+  )
+
+})
+
