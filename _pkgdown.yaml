@@ -75,6 +75,7 @@ reference:
       - IncrementsDoseLevels
       - IncrementsHSRBeta
       - IncrementsMin
+      - Stopping
       - StoppingCohortsNearDose
       - StoppingPatientsNearDose
       - StoppingMinCohorts
@@ -104,7 +105,8 @@ reference:
       - RuleDesign
       - Design
       - DualDesign
-      - ThreePlusThreeDesign
+      - TDsamplesDesign
+      - TDDesign
   - title: Internal Helper Functions
     contents:
       - h_doses_unique_per_cohort
@@ -141,6 +143,7 @@ reference:
       - h_next_best_td_plot
       - h_next_best_mg_plot
       - h_next_best_mgsamples_plot
+      - h_covr_helpers
   - title: Internal Validation Functions
     contents:
       - v_general_data
@@ -365,11 +368,6 @@ reference:
       - Simulations-class
       - Simulations
       - SimulationsSummary-class
-      - Stopping-class
-      - TDDesign-class
-      - TDDesign
-      - TDsamplesDesign-class
-      - TDsamplesDesign
       - approximate
       - assertions
       - crmPackExample

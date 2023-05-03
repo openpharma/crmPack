@@ -68,8 +68,8 @@ setSeed <- function(seed = NULL) {
 
 ##' Helper function to obtain simulation results list
 ##'
-##' The function \code{fun} can use variables that are visible to itself. The
-##' names of these variables have to given in the vector \code{vars}.
+##' The function \code{fun} can use variables that are visible to itself.
+##' The names of these variables have to given in the vector \code{vars}.
 ##'
 ##' @param fun the simulation function for a single iteration, which takes as
 ##' single parameter the iteration index
@@ -288,7 +288,7 @@ setMethod("simulate",
 
           ## In case there are placebo
           if (thisData@placebo) {
-            thisSize.PL <- size(object@PLcohortSize,
+            thisSize.PL <- size(object@pl_cohort_size,
               dose = thisDose,
               data = thisData
             )
@@ -838,7 +838,7 @@ setMethod("simulate",
           ## In case there are placebo
           ## what is the cohort size at this dose for Placebo?
           if (thisData@placebo) {
-            thisSize.PL <- size(object@PLcohortSize,
+            thisSize.PL <- size(object@pl_cohort_size,
               dose = thisDose,
               data = thisData
             )
@@ -1198,7 +1198,7 @@ setMethod("examine",
         )
 
         if (baseData@placebo) {
-          thisSize.PL <- size(object@PLcohortSize,
+          thisSize.PL <- size(object@pl_cohort_size,
             dose = thisDose,
             data = baseData
           )
@@ -1997,7 +1997,7 @@ setMethod("simulate",
 
           ## In case there are placebo
           if (thisData@placebo) {
-            thisSize.PL <- size(object@PLcohortSize,
+            thisSize.PL <- size(object@pl_cohort_size,
               dose = thisDose,
               data = thisData
             )
@@ -2359,7 +2359,7 @@ setMethod("simulate",
 
           ## In case there are placebo
           if (thisData@placebo) {
-            thisSize.PL <- size(object@PLcohortSize,
+            thisSize.PL <- size(object@pl_cohort_size,
               dose = thisDose,
               data = thisData
             )
@@ -2745,7 +2745,7 @@ setMethod("simulate",
           ## In case there are placebo
           ## what is the cohort size at this dose for Placebo?
           if (thisData@placebo) {
-            thisSize.PL <- size(object@PLcohortSize,
+            thisSize.PL <- size(object@pl_cohort_size,
               dose = thisDose,
               data = thisData
             )
@@ -3271,7 +3271,7 @@ setMethod("simulate",
             )
 
             if (thisData@placebo) {
-              thisSize.PL <- size(object@PLcohortSize,
+              thisSize.PL <- size(object@pl_cohort_size,
                 dose = thisDose,
                 data = thisData
               )
@@ -4352,7 +4352,7 @@ setMethod("simulate",
 
           ## In case there are placebo
           if (thisData@placebo) {
-            thisSize.PL <- size(object@PLcohortSize,
+            thisSize.PL <- size(object@pl_cohort_size,
               dose = thisDose,
               data = thisData
             )
