@@ -1228,7 +1228,7 @@ StoppingCohortsNearDose <- function(nCohorts = 2L,
 #' @example examples/Rules-class-StoppingPatientsNearDose.R
 #' @export
 #'
-StoppingPatientsNearDose <- function(nPatients,
+StoppingPatientsNearDose <- function(nPatients = 10L,
                                      percentage = 50,
                                      report_label = NA_character_) {
   nPatients <- safeInteger(nPatients)
@@ -1278,7 +1278,7 @@ StoppingPatientsNearDose <- function(nPatients,
 #' @example examples/Rules-class-StoppingMinCohorts.R
 #' @export
 #'
-StoppingMinCohorts <- function(nCohorts,
+StoppingMinCohorts <- function(nCohorts = 2L,
                                report_label = NA_character_) {
   nCohorts <- safeInteger(nCohorts)
   report_label <- h_default_if_empty(
@@ -1326,7 +1326,7 @@ StoppingMinCohorts <- function(nCohorts,
 #' @example examples/Rules-class-StoppingMinPatients.R
 #' @export
 #'
-StoppingMinPatients <- function(nPatients,
+StoppingMinPatients <- function(nPatients = 20L,
                                 report_label = NA_character_) {
   nPatients <- safeInteger(nPatients)
   report_label <- h_default_if_empty(
@@ -1383,8 +1383,8 @@ StoppingMinPatients <- function(nPatients,
 #' @example examples/Rules-class-StoppingTargetProb.R
 #' @export
 #'
-StoppingTargetProb <- function(target,
-                               prob,
+StoppingTargetProb <- function(target = c(0.2, 0.35),
+                               prob = 0.4,
                                report_label = NA_character_) {
   assert_numeric(target, len = 2)
   report_label <- h_default_if_empty(
@@ -1451,9 +1451,9 @@ StoppingTargetProb <- function(target,
 #' @example examples/Rules-class-StoppingMTDdistribution.R
 #' @export
 #'
-StoppingMTDdistribution <- function(target,
-                                    thresh,
-                                    prob,
+StoppingMTDdistribution <- function(target = 0.33,
+                                    thresh = 0.5,
+                                    prob = 0.9,
                                     report_label = NA_character_) {
   report_label <- h_default_if_empty(
     as.character(report_label),
@@ -1598,7 +1598,7 @@ StoppingLowestDoseHSRBeta <- function(target = 0.3,
                                       report_label = NA_character_) {
   report_label <- h_default_if_empty(
     as.character(report_label),
-    "Stopping Lowest Dose HSRBeta label:"
+    "to be defined"
   )
 
   .StoppingLowestDoseHSRBeta(
@@ -1662,8 +1662,8 @@ StoppingLowestDoseHSRBeta <- function(target = 0.3,
 #' @export
 #' @example examples/Rules-class-StoppingTargetBiomarker.R
 #'
-StoppingTargetBiomarker <- function(target,
-                                    prob,
+StoppingTargetBiomarker <- function(target = c(0.9, 1),
+                                    prob = 0.3,
                                     is_relative = TRUE,
                                     report_label = NA_character_) {
   assert_numeric(target, len = 2)
@@ -1680,7 +1680,8 @@ StoppingTargetBiomarker <- function(target,
   .StoppingTargetBiomarker(
     target = target,
     is_relative = is_relative,
-    prob = prob
+    prob = prob,
+    report_label = report_label
   )
 }
 
@@ -1722,7 +1723,9 @@ StoppingTargetBiomarker <- function(target,
 #' @export
 #' @example examples/Rules-class-StoppingSpecificDose.R
 #'
-StoppingSpecificDose <- function(rule, dose, report_label = NA_character_) {
+StoppingSpecificDose <- function(rule = StoppingTargetProb(target = c(0, 0.3), prob = 0.8), 
+                                  dose = 80, 
+                                  report_label = NA_character_) {
   report_label <- h_default_if_empty(
     as.character(report_label),
     "Reached specific dose"
@@ -1818,7 +1821,9 @@ StoppingHighestDose <- function(report_label = NA_character_) {
 #' @export
 #' @example examples/Rules-class-StoppingTDCIRatio.R
 #'
-StoppingTDCIRatio <- function(target_ratio, prob_target, report_label = NA_character_) {
+StoppingTDCIRatio <- function(target_ratio = 5, 
+                              prob_target = 0.3, 
+                              report_label = NA_character_) {
   report_label <- h_default_if_empty(
     as.character(report_label),
     paste("TD", target_ratio, "for", prob_target, "target prob")
@@ -1881,7 +1886,9 @@ StoppingTDCIRatio <- function(target_ratio, prob_target, report_label = NA_chara
 #' @export
 #' @example examples/Rules-class-StoppingMaxGainCIRatio.R
 #'
-StoppingMaxGainCIRatio <- function(target_ratio, prob_target, report_label = NA_character_) {
+StoppingMaxGainCIRatio <- function(target_ratio = 5, 
+                                  prob_target = 0.3, 
+                                  report_label = NA_character_) {
   report_label <- h_default_if_empty(
     as.character(report_label),
     paste("GStar", target_ratio, "for", prob_target, "target prob")
