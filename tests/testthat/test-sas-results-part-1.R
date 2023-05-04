@@ -1,6 +1,9 @@
 test_that("Posterior summaries for probabilities of
           DLT (2-parameter logistic model) and recommended doses (NCRMLoss):
           crmPack vs. SAS - Example 1", {
+
+  skip_on_cran()
+
   set.seed(0504201914)
   mcmc_options <- McmcOptions(
     burnin = 5000,
