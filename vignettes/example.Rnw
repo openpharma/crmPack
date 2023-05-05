@@ -538,11 +538,13 @@ DLTsamples <- mcmc(data = data1, model = DLTmodel, options = options)
 The prior samples of the model parameters are now saved in the variable \texttt{DLTsamples}.
 
 <<mcmc-postDLTsamples, results=hide>>==
-data3 <-Data(x=c(25,50,50,75,100,100,225,300),
-             y=c(0,0,0,0,1,1,1,1),
-             ID = as.integer(1:8),
-             cohort = c(1, 2, 2, 3, 4, 4, 5, 6),
-             doseGrid = seq(from = 25, to = 300, by = 25))
+data3 <- Data(
+  x = c(25, 50, 50, 75, 100, 100, 225, 300),
+  y = c(0, 0, 0, 0, 1, 1, 1, 1),
+  ID = as.integer(1:8),
+  cohort = c(1, 2, 2, 3, 4, 4, 5, 6),
+  doseGrid = seq(from = 25, to = 300, by = 25)
+)
 DLTpostsamples <- mcmc(data = data3, model = DLTmodel, options = options)
 @
 
