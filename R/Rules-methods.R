@@ -1222,7 +1222,7 @@ setMethod(
 #' @aliases nextBest-NextBestProbMTDMinDist
 #'
 #' @export
-#' @example examples/Rules-method-nextBest-NextBestProbMTDMinDist.R
+#' @example examples/Rules-method-nextBest-NextBestProbMtdMinDist.R
 #'
 setMethod(
   f = "nextBest",
