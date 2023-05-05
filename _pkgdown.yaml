@@ -11,6 +11,17 @@ navbar:
     - icon: fa-github fa-lg
       href: https://github.com/roche/crmPack
 
+articles:
+  - title: Articles
+    navbar: ~
+    contents:
+    - trial_definition
+    - trial_analysis
+    - trial_simulation
+    - rolling-crm
+    - simulations
+    - migration_from_the_old_crmPack
+
 reference:
   - title: Package
     contents:
