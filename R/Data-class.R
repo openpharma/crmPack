@@ -123,11 +123,6 @@ Data <- function(x = numeric(),
 
   doseGrid <- as.numeric(sort(doseGrid))
 
-  if (length(ID) == 0 && length(x) > 0) {
-    message("Used default patient IDs!")
-    ID <- seq_along(x)
-  }
-
   if (!placebo && length(cohort) == 0 && length(x) > 0) {
     message("Used best guess cohort indices!")
     # This is just assuming that consecutive patients

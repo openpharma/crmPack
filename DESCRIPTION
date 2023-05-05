@@ -35,8 +35,8 @@ Imports:
     futile.logger,
     GenSA,
     grid,
+    magrittr,
     gridExtra,
-    kableExtra,
     lifecycle,
     magrittr,
     methods,
@@ -47,7 +47,8 @@ Imports:
     survival,
     tibble,
     tools,
-    utils
+    utils,
+    kableExtra
 Suggests:
     dplyr,
     ggmcmc,
