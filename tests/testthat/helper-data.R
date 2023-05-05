@@ -26,7 +26,7 @@ h_get_data <- function(empty = FALSE, placebo = TRUE) {
   }
 }
 
-# Sample data to test e.g. maxDose of IncrementsNumDoseLevels method.
+# Sample data to test e.g. maxDose of IncrementsDoseLevels method.
 h_get_data_1 <- function() {
   Data(
     x = c(0.1, 0.5, 1.5, 3, 6, 8, 8, 8, 12, 12, 12, 16, 16, 16, 10, 10, 10),

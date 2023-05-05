@@ -5,8 +5,11 @@
 \alias{CohortSizeMax-class}
 \alias{.CohortSizeMax}
 \alias{CohortSizeMax}
+\alias{.DefaultCohortSizeMax}
 \title{\code{CohortSizeMax}}
 \usage{
+.DefaultCohortSizeMax()
+
 CohortSizeMax(cohort_size_list)
 }
 \arguments{
@@ -27,6 +30,9 @@ of these individual cohort sizes is taken to give the final cohort size.
 of class \code{\link{CohortSize}}.}
 }}
 
+\note{
+Typically, end users will not use the \code{.DefaultCohortSizeMax()} function.
+}
 \examples{
 
 # Rule for cohort of size 1 for doses <30 and cohort of size 3 for doses >=30.

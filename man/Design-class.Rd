@@ -4,72 +4,100 @@
 \name{Design-class}
 \alias{Design-class}
 \alias{.Design}
-\title{Class for the CRM design}
+\alias{Design}
+\title{\code{Design}}
+\usage{
+Design(model, stopping, increments, pl_cohort_size = CohortSizeConst(0L), ...)
+}
+\arguments{
+\item{model}{(\code{GeneralModel})\cr see slot definition.}
+
+\item{stopping}{(\code{Stopping})\cr see slot definition.}
+
+\item{increments}{(\code{Increments})\cr see slot definition.}
+
+\item{pl_cohort_size}{(\code{CohortSize})\cr see slot definition.}
+
+\item{...}{
+  Arguments passed on to \code{\link[=RuleDesign]{RuleDesign}}
+  \describe{
+    \item{\code{nextBest}}{(\code{NextBest})\cr see slot definition.}
+    \item{\code{cohortSize}}{(\code{CohortSize})\cr see slot definition.}
+    \item{\code{data}}{(\code{Data})\cr see slot definition.}
+    \item{\code{startingDose}}{(\code{number})\cr see slot definition.}
+  }}
+}
 \description{
-In addition to the slots in the more simple \code{\linkS4class{RuleDesign}},
-objects of this class contain:
+\ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#stable}{\figure{lifecycle-stable.svg}{options: alt='[Stable]'}}}{\strong{[Stable]}}
+
+\code{\link{Design}} is the class for rule-based designs. The difference between
+this class and its parent \code{\link{RuleDesign}} class is that \code{\link{Design}} class
+contains additional \code{model}, \code{stopping} and \code{increments} slots.
 }
 \section{Slots}{
 
 \describe{
-\item{\code{model}}{the model to be used, an object of class
-\code{\linkS4class{GeneralModel}}}
+\item{\code{model}}{(\code{GeneralModel})\cr the model to be used.}
 
-\item{\code{stopping}}{stopping rule(s) for the trial, an object of class
-\code{\linkS4class{Stopping}}}
+\item{\code{stopping}}{(\code{Stopping})\cr stopping rule(s) for the trial.}
 
-\item{\code{increments}}{how to control increments between dose levels,
-an object of class \code{\linkS4class{Increments}}}
+\item{\code{increments}}{(\code{Increments})\cr how to control increments between dose levels.}
 
-\item{\code{PLcohortSize}}{rules for the cohort sizes for placebo, if any planned
-an object of class \code{\linkS4class{CohortSize}} (defaults to constant
-0 placebo patients)}
+\item{\code{pl_cohort_size}}{(\code{CohortSize})\cr rules for the cohort sizes for placebo,
+if any planned (defaults to constant 0 placebo patients).}
 }}
 
 \examples{
-# nolint start
+empty_data <- Data(doseGrid = c(1, 3, 5, 10, 15, 20, 25, 40, 50, 80, 100))
 
-# Define the dose-grid
-emptydata <- Data(doseGrid = c(1, 3, 5, 10, 15, 20, 25, 40, 50, 80, 100))
+# Initialize the CRM model.
+my_model <- LogisticLogNormal(
+  mean = c(-0.85, 1),
+  cov = matrix(c(1, -0.5, -0.5, 1), nrow = 2),
+  ref_dose = 56
+)
 
-# Initialize the CRM model
-model <- LogisticLogNormal(mean=c(-0.85, 1),
-                           cov=
-                             matrix(c(1, -0.5, -0.5, 1),
-                                    nrow=2),
-                           ref_dose=56)
+# Choose the rule for selecting the next dose.
+my_next_best <- NextBestNCRM(
+  target = c(0.2, 0.35),
+  overdose = c(0.35, 1),
+  max_overdose_prob = 0.25
+)
 
-# Choose the rule for selecting the next dose
-myNextBest <- NextBestNCRM(target=c(0.2, 0.35),
-                           overdose=c(0.35, 1),
-                           max_overdose_prob=0.25)
+# Choose the rule for the cohort-size.
+my_size1 <- CohortSizeRange(
+  intervals = c(0, 30),
+  cohort_size = c(1, 3)
+)
+my_size2 <- CohortSizeDLT(
+  dlt_intervals = c(0, 1),
+  cohort_size = c(1, 3)
+)
+my_size <- maxSize(my_size1, my_size2)
 
-# Choose the rule for the cohort-size
-mySize1 <- CohortSizeRange(intervals=c(0, 30),
-                           cohort_size=c(1, 3))
-mySize2 <- CohortSizeDLT(dlt_intervals=c(0, 1),
-                         cohort_size=c(1, 3))
-mySize <- maxSize(mySize1, mySize2)
+# Choose the rule for stopping.
+my_stopping1 <- StoppingMinCohorts(nCohorts = 3)
+my_stopping2 <- StoppingTargetProb(
+  target = c(0.2, 0.35),
+  prob = 0.5
+)
+my_stopping3 <- StoppingMinPatients(nPatients = 20)
+my_stopping <- (my_stopping1 & my_stopping2) | my_stopping3
 
-# Choose the rule for stopping
-myStopping1 <- StoppingMinCohorts(nCohorts=3)
-myStopping2 <- StoppingTargetProb(target=c(0.2, 0.35),
-                                  prob=0.5)
-myStopping3 <- StoppingMinPatients(nPatients=20)
-myStopping <- (myStopping1 & myStopping2) | myStopping3
+# Choose the rule for dose increments.
+my_increments <- IncrementsRelative(
+  intervals = c(0, 20),
+  increments = c(1, 0.33)
+)
 
-# Choose the rule for dose increments
-myIncrements <- IncrementsRelative(intervals=c(0, 20),
-                                   increments=c(1, 0.33))
-
-# Initialize the design
-design <- Design(model=model,
-                 nextBest=myNextBest,
-                 stopping=myStopping,
-                 increments=myIncrements,
-                 cohortSize=mySize,
-                 data=emptydata,
-                 startingDose=3)
-# nolint end
+# Initialize the design.
+design <- Design(
+  model = my_model,
+  nextBest = my_next_best,
+  stopping = my_stopping,
+  increments = my_increments,
+  cohortSize = my_size,
+  data = empty_data,
+  startingDose = 3
+)
 }
-\keyword{classes}

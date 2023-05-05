@@ -65,6 +65,7 @@ reference:
       - OneParLogNormalPrior
       - OneParExpPrior
       - FractionalCRM
+      - Samples
       - NextBest
       - NextBestMTD
       - NextBestNCRM
@@ -77,14 +78,17 @@ reference:
       - NextBestTDsamples
       - NextBestMaxGain
       - NextBestMaxGainSamples
+      - NextBestProbMTDLTE
+      - NextBestProbMTDMinDist
       - Increments
       - IncrementsRelative
       - IncrementsRelativeParts
       - IncrementsRelativeDLT
       - IncrementsRelativeDLTCurrent
-      - IncrementsNumDoseLevels
+      - IncrementsDoseLevels
       - IncrementsHSRBeta
       - IncrementsMin
+      - Stopping
       - StoppingCohortsNearDose
       - StoppingPatientsNearDose
       - StoppingMinCohorts
@@ -111,6 +115,11 @@ reference:
       - SafetyWindow
       - SafetyWindowSize
       - SafetyWindowConst
+      - RuleDesign
+      - Design
+      - DualDesign
+      - TDsamplesDesign
+      - TDDesign
   - title: Internal Helper Functions
     contents:
       - h_doses_unique_per_cohort
@@ -146,6 +155,7 @@ reference:
       - h_next_best_td_plot
       - h_next_best_mg_plot
       - h_next_best_mgsamples_plot
+      - h_covr_helpers
   - title: Internal Validation Functions
     contents:
       - v_general_data
@@ -173,6 +183,7 @@ reference:
       - v_model_tite_logistic_log_normal
       - v_model_one_par_exp_normal_prior
       - v_model_one_par_exp_prior
+      - v_samples
       - v_next_best_mtd
       - v_next_best_ncrm
       - v_next_best_ncrm_loss
@@ -182,10 +193,12 @@ reference:
       - v_next_best_td
       - v_next_best_td_samples
       - v_next_best_max_gain_samples
+      - v_next_best_prob_mtd_lte
+      - v_next_best_prob_mtd_min_dist
       - v_increments_relative
       - v_increments_relative_parts
       - v_increments_relative_dlt
-      - v_increments_num_dose_levels
+      - v_increments_dose_levels
       - v_increments_hsr_beta
       - v_increments_min
       - v_stopping_cohorts_near_dose
@@ -205,6 +218,7 @@ reference:
       - v_cohort_size_max
       - v_safety_window_size
       - v_safety_window_const
+      - v_rule_design
   - title: Custom Checkmate Assertions
     contents:
       - assert_probabilities
@@ -321,10 +335,18 @@ reference:
       - nextBest-NextBestTD
       - nextBest-NextBestMaxGain
       - nextBest-NextBestMaxGainSamples
+      - nextBest-NextBestProbMTDLTE
+      - nextBest-NextBestProbMTDMinDist
       - stopTrial-StoppingLowestDoseHSRBeta
       - stopTrial-StoppingMTDCV
-      - maxDose-IncrementsNumDoseLevels
+      - maxDose
+      - maxDose-IncrementsRelative
+      - maxDose-IncrementsRelativeDLT
+      - maxDose-IncrementsRelativeDLTCurrent
+      - maxDose-IncrementsRelativeParts
+      - maxDose-IncrementsDoseLevels
       - maxDose-IncrementsHSRBeta
+      - maxDose-IncrementsMin
   - title: Functions
     contents:
       - enable_logging
@@ -338,10 +360,6 @@ reference:
       - DADesign
       - DASimulations-class
       - DASimulations
-      - Design-class
-      - Design
-      - DualDesign-class
-      - DualDesign
       - DualResponsesDesign-class
       - DualResponsesDesign
       - DualResponsesSamplesDesign-class
@@ -363,19 +381,9 @@ reference:
       - PseudoSimulationsSummary-class
       - Quantiles2LogisticNormal
       - Report
-      - RuleDesign
-      - RuleDesign-class
-      - Samples-class
-      - Samples
       - Simulations-class
       - Simulations
       - SimulationsSummary-class
-      - Stopping-class
-      - TDDesign-class
-      - TDDesign
-      - TDsamplesDesign-class
-      - TDsamplesDesign
-      - ThreePlusThreeDesign
       - approximate
       - assertions
       - crmPackExample
@@ -432,8 +440,8 @@ reference:
       - summary,GeneralSimulations-method
       - summary,PseudoDualFlexiSimulations-method
       - summary,PseudoDualSimulations-method
-      - summary,PseudoSimulations-method
       - summary,Simulations-method
+      - summary,PseudoSimulations-method
       - windowLength
       - "&,Stopping,Stopping-method"
       - "&,Stopping,StoppingAll-method"

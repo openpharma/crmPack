@@ -1,97 +1,66 @@
-# nolint start
+#' @include Design-validity.R
+#' @include Model-class.R
+#' @include Rules-class.R
+#' @include Data-class.R
+#' @include helpers.R
+NULL
 
-#####################################################################################
-## Author: Daniel Sabanes Bove [sabanesd *a*t* roche *.* com]
-##         Wai Yin Yeung [ w*.* yeung1 *a*t* lancaster *.* ac *.* uk]
-## Project: Object-oriented implementation of CRM designs
-##
-## Time-stamp: <[Design-class.R] by DSB Son 18/01/2015 21:35>
-##
-## Description:
-## This class encapsulates a whole CRM design.
-##
-## History:
-## 12/02/2014   file creation
-## 10/07/2015  adding designs for Pseudo models
-#####################################################################################
+# RuleDesign ----
 
-##' @include Model-class.R
-##' @include Rules-class.R
-##' @include Data-class.R
-##' @include helpers.R
-{}
+## class ----
 
+#' `RuleDesign`
+#'
+#' @description `r lifecycle::badge("stable")`
+#'
+#' [`RuleDesign`] is the class for rule-based designs. The difference between
+#' this class and the [`Design`] class is that [`RuleDesign`] does not contain
+#' `model`, `stopping` and `increments` slots.
+#'
+#' @slot nextBest (`NextBest`)\cr how to find the next best dose.
+#' @slot cohortSize (`CohortSize`)\cr rules for the cohort sizes.
+#' @slot data (`Data`)\cr specifies dose grid, any previous data, etc.
+#' @slot startingDose (`number`)\cr the starting dose, it must lie on the dose
+#'   grid in `data`.
+#'
+#' @aliases RuleDesign
+#' @export
+#'
+.RuleDesign <- setClass(
+  Class = "RuleDesign",
+  slots = c(
+    nextBest = "NextBest",
+    cohortSize = "CohortSize",
+    data = "Data",
+    startingDose = "numeric"
+  ),
+  prototype = prototype(
+    nextBest = .NextBestThreePlusThree(),
+    cohortSize = CohortSizeConst(3),
+    data = Data(doseGrid = 1:3),
+    startingDose = 1
+  ),
+  validity = v_rule_design
+)
 
-## --------------------------------------------------
-## Classes for rule-based designs
-## --------------------------------------------------
+## constructor ----
 
-
-##' Class for rule-based designs
-##'
-##' The difference to \code{\linkS4class{Design}} class is that
-##' model, stopping and increments slots are missing.
-##'
-##' @slot nextBest how to find the next best dose, an object of class
-##' \code{\linkS4class{NextBest}}
-##' @slot cohortSize rules for the cohort sizes,
-##' an object of class \code{\linkS4class{CohortSize}}
-##' @slot data what is the dose grid, any previous data, etc., contained
-##' in an object of class \code{\linkS4class{Data}}
-##' @slot startingDose what is the starting dose? Must lie on the grid in
-##' \code{data}
-##'
-##' @example examples/design-class-RuleDesign.R
-##' @export
-##' @keywords classes
-.RuleDesign <-
-  setClass(
-    Class = "RuleDesign",
-    representation(
-      nextBest = "NextBest",
-      cohortSize = "CohortSize",
-      data = "Data",
-      startingDose = "numeric"
-    ),
-    prototype(
-      nextBest = .NextBestThreePlusThree(),
-      cohortSize = CohortSizeConst(3),
-      data = Data(doseGrid = 1:3),
-      startingDose = 1
-    ),
-    validity =
-      function(object) {
-        o <- Validate()
-
-        o$check(
-          is.scalar(object@startingDose),
-          "startingDose must be scalar"
-        )
-        o$check(
-          object@startingDose %~% object@data@doseGrid,
-          "startingDose must be included in data@doseGrid (tolerance 1e-10)"
-        )
-
-        o$result()
-      }
-  )
-validObject(.RuleDesign())
-
-##' Initialization function for "RuleDesign"
-##'
-##' @param nextBest see \code{\linkS4class{RuleDesign}}
-##' @param cohortSize see \code{\linkS4class{RuleDesign}}
-##' @param data see \code{\linkS4class{RuleDesign}}
-##' @param startingDose see \code{\linkS4class{RuleDesign}}
-##' @return the \code{\linkS4class{RuleDesign}} object
-##'
-##' @export
-##' @keywords methods
+#' @rdname RuleDesign-class
+#'
+#' @param nextBest (`NextBest`)\cr see slot definition.
+#' @param cohortSize (`CohortSize`)\cr see slot definition.
+#' @param data (`Data`)\cr see slot definition.
+#' @param startingDose (`number`)\cr see slot definition.
+#'
+#' @export
+#' @example examples/Design-class-RuleDesign.R
+#'
 RuleDesign <- function(nextBest,
                        cohortSize,
                        data,
                        startingDose) {
-  .RuleDesign(
+  new(
+    "RuleDesign",
     nextBest = nextBest,
     cohortSize = cohortSize,
     data = data,
@@ -99,284 +68,291 @@ RuleDesign <- function(nextBest,
   )
 }
 
+## ThreePlusThreeDesign ----
 
-## --------------------------------------------------
-## Classes for model-based designs
-## --------------------------------------------------
+#' @describeIn RuleDesign-class creates a new 3+3 design object from a dose grid.
+#'
+#' @param doseGrid (`numeric`)\cr the dose grid to be used (sorted).
+#'
+#' @export
+#' @example examples/Design-class-ThreePlusThreeDesign.R
+#'
+ThreePlusThreeDesign <- function(doseGrid) {
+  empty_data <- Data(doseGrid = doseGrid)
 
-##' Class for the CRM design
-##'
-##' In addition to the slots in the more simple \code{\linkS4class{RuleDesign}},
-##' objects of this class contain:
-##'
-##' @slot model the model to be used, an object of class
-##' \code{\linkS4class{GeneralModel}}
-##' @slot stopping stopping rule(s) for the trial, an object of class
-##' \code{\linkS4class{Stopping}}
-##' @slot increments how to control increments between dose levels,
-##' an object of class \code{\linkS4class{Increments}}
-##' @slot PLcohortSize rules for the cohort sizes for placebo, if any planned
-##' an object of class \code{\linkS4class{CohortSize}} (defaults to constant
-##' 0 placebo patients)
-##'
-##' @example examples/design-class-Design.R
-##' @export
-##' @keywords classes
-.Design <-
-  setClass(
-    Class = "Design",
-    representation(
-      model = "GeneralModel",
-      stopping = "Stopping",
-      increments = "Increments",
-      PLcohortSize = "CohortSize"
-    ),
-    prototype(
-      model = .LogisticNormal(),
-      nextBest = .NextBestNCRM(),
-      stopping = .StoppingMinPatients(),
-      increments = .IncrementsRelative(),
-      PLcohortSize = CohortSizeConst(0L)
-    ),
-    contains = list("RuleDesign")
-  )
-validObject(.Design())
-
-
-##' Initialization function for "Design"
-##'
-##' @param model see \code{\linkS4class{Design}}
-##' @param stopping see \code{\linkS4class{Design}}
-##' @param increments see \code{\linkS4class{Design}}
-##' @param PLcohortSize see \code{\linkS4class{Design}}
-##' @param \dots additional arguments for \code{\link{RuleDesign}}
-##' @return the \code{\linkS4class{Design}} object
-##'
-##' @export
-##' @keywords methods
-Design <- function(model,
-                   stopping,
-                   increments,
-                   PLcohortSize = CohortSizeConst(0L),
-                   ...) {
-  start <- RuleDesign(...)
-  .Design(start,
-    model = model,
-    stopping = stopping,
-    increments = increments,
-    PLcohortSize = PLcohortSize
+  # Using a constant cohort size of 3 we obtain exactly the 3+3 design.
+  RuleDesign(
+    nextBest = NextBestThreePlusThree(),
+    data = empty_data,
+    cohortSize = CohortSizeConst(size = 3L),
+    startingDose = doseGrid[1]
   )
 }
 
+# Design ----
 
+## class ----
 
-##' Class for the dual-endpoint CRM design
-##'
-##' This class has special requirements for the \code{model} and \code{data}
-##' slots in comparison to the parent class \code{\linkS4class{Design}}:
-##'
-##' @slot model the model to be used, an object of class
-##' \code{\linkS4class{DualEndpoint}}
-##' @slot data what is the dose grid, any previous data, etc., contained
-##' in an object of class \code{\linkS4class{DataDual}}
-##'
-##' Note that the \code{NextBest} slot can be of any class, this allows for easy
-##' comparison with recommendation methods that don't use the
-##' biomarker information.
-##'
-##' @example examples/design-class-DualDesign.R
-##' @export
-##' @keywords classes
-.DualDesign <-
-  setClass(
-    Class = "DualDesign",
-    representation(
-      model = "DualEndpoint",
-      data = "DataDual"
-    ),
-    prototype(
-      model = .DualEndpoint(),
-      nextBest = .NextBestDualEndpoint(),
-      data = DataDual(doseGrid = 1:2),
-      startingDose = 1
-    ),
-    contains = list("Design")
+#' `Design`
+#'
+#' @description `r lifecycle::badge("stable")`
+#'
+#' [`Design`] is the class for rule-based designs. The difference between
+#' this class and its parent [`RuleDesign`] class is that [`Design`] class
+#' contains additional `model`, `stopping` and `increments` slots.
+#'
+#' @slot model (`GeneralModel`)\cr the model to be used.
+#' @slot stopping (`Stopping`)\cr stopping rule(s) for the trial.
+#' @slot increments (`Increments`)\cr how to control increments between dose levels.
+#' @slot pl_cohort_size (`CohortSize`)\cr rules for the cohort sizes for placebo,
+#'   if any planned (defaults to constant 0 placebo patients).
+#'
+#' @aliases Design
+#' @export
+#'
+.Design <- setClass(
+  Class = "Design",
+  slots = c(
+    model = "GeneralModel",
+    stopping = "Stopping",
+    increments = "Increments",
+    pl_cohort_size = "CohortSize"
+  ),
+  prototype = prototype(
+    model = .LogisticNormal(),
+    nextBest = .NextBestNCRM(),
+    stopping = .StoppingMinPatients(),
+    increments = .IncrementsRelative(),
+    pl_cohort_size = CohortSizeConst(0L)
+  ),
+  contains = "RuleDesign"
+)
+
+## constructor ----
+
+#' @rdname Design-class
+#'
+#' @param model (`GeneralModel`)\cr see slot definition.
+#' @param stopping (`Stopping`)\cr see slot definition.
+#' @param increments (`Increments`)\cr see slot definition.
+#' @param pl_cohort_size (`CohortSize`)\cr see slot definition.
+#' @inheritDotParams RuleDesign
+#'
+#' @export
+#' @example examples/Design-class-Design.R
+#'
+#'
+Design <- function(model,
+                   stopping,
+                   increments,
+                   pl_cohort_size = CohortSizeConst(0L),
+                   ...) {
+  start <- RuleDesign(...)
+  new(
+    "Design",
+    start,
+    model = model,
+    stopping = stopping,
+    increments = increments,
+    pl_cohort_size = pl_cohort_size
   )
-validObject(.DualDesign())
+}
 
+# DualDesign ----
 
-##' Initialization function for "DualDesign"
-##'
-##' @param model see \code{\linkS4class{DualDesign}}
-##' @param data see \code{\linkS4class{DualDesign}}
-##' @param \dots additional arguments for \code{\link{Design}}
-##' @return the \code{\linkS4class{DualDesign}} object
-##'
-##' @export
-##' @keywords methods
+## class ----
+
+#' `DualDesign`
+#'
+#' @description `r lifecycle::badge("stable")`
+#'
+#' [`DualDesign`] is the class for the dual-endpoint CRM design. This class has
+#' special requirements for the `model` and `data` slots in comparison to the
+#' parent class [`Design`].
+#'
+#' @note the `nextBest` slot can be of any class, this allows for easy comparison
+#'   with recommendation methods that don't use the biomarker information.
+#'
+#' @slot model (`DualEndpoint`)\cr the model to be used.
+#' @slot data (`DataDual`)\cr specifies dose grid, any previous data, etc.
+#'
+#' @aliases DualDesign
+#' @export
+#'
+.DualDesign <- setClass(
+  Class = "DualDesign",
+  slots = c(
+    model = "DualEndpoint",
+    data = "DataDual"
+  ),
+  prototype = prototype(
+    model = .DualEndpoint(),
+    nextBest = .NextBestDualEndpoint(),
+    data = DataDual(doseGrid = 1:2),
+    startingDose = 1
+  ),
+  contains = "Design"
+)
+
+## constructor ----
+
+#' @rdname DualDesign-class
+#'
+#' @param model (`DualEndpoint`)\cr see slot definition.
+#' @param data (`DataDual`)\cr see slot definition.
+#' @inheritDotParams Design
+#'
+#' @export
+#' @example examples/Design-class-DualDesign.R
+#'
 DualDesign <- function(model,
                        data,
                        ...) {
-  start <- Design(
-    data = data,
-    model = model,
-    ...
-  )
-  .DualDesign(start,
+  start <- Design(model = model, data = data, ...)
+  new(
+    "DualDesign",
+    start,
     model = model,
     data = data
   )
 }
 
+# TDsamplesDesign ----
 
+## class ----
 
+#' `TDsamplesDesign`
+#'
+#' @description `r lifecycle::badge("stable")`
+#'
+#' [`TDsamplesDesign`] is the class of design based only on DLT responses using
+#' [`ModelTox`] class model (i.e. [`LogisticIndepBeta`]) as well as MCMC samples
+#' obtained for this model.
+#'
+#' @slot model (`ModelTox`)\cr the pseudo DLT model to be used.
+#' @slot stopping (`Stopping`)\cr stopping rule(s) for the trial.
+#' @slot increments (`Increments`)\cr how to control increments between dose levels.
+#' @slot pl_cohort_size (`CohortSize`)\cr rules for the cohort sizes for placebo,
+#'   if any planned (defaults to constant 0 placebo patients).
+#'
+#' @aliases TDsamplesDesign
+#' @export
+#'
+.TDsamplesDesign <- setClass(
+  Class = "TDsamplesDesign",
+  slots = c(
+    model = "ModelTox",
+    stopping = "Stopping",
+    increments = "Increments",
+    pl_cohort_size = "CohortSize"
+  ),
+  prototype = prototype(
+    model = .LogisticIndepBeta(),
+    nextBest = .NextBestTDsamples(),
+    stopping = .StoppingMinPatients(),
+    increments = .IncrementsRelative(),
+    pl_cohort_size = CohortSizeConst(0L)
+  ),
+  contains = "RuleDesign"
+)
 
-##' Creates a new 3+3 design object from a dose grid
-##'
-##' @param doseGrid the dose grid to be used
-##' @return the object of class \code{\linkS4class{RuleDesign}} with the
-##' 3+3 design
-##'
-##' @example examples/design-class-ThreePlusThreeDesign.R
-##' @export
-##' @keywords programming
-##' @author Daniel Sabanes Bove \email{sabanesd@@roche.com}
-ThreePlusThreeDesign <- function(doseGrid) {
-  emptydata <- Data(doseGrid = doseGrid)
+## constructor ----
 
-  design <- RuleDesign(
-    nextBest = NextBestThreePlusThree(),
-    data = emptydata,
-    cohortSize = CohortSizeConst(size = 3L),
-    ## using a constant cohort size of 3,
-    ## we obtain exactly the 3+3 design
-    startingDose = head(emptydata@doseGrid, 1)
-  )
-
-  return(design)
-}
-
-## ===================================================================================
-## -------------------------------------------------------------------------------
-## Design class using DLE responses only based on the pseudo DLE model with samples
-## ---------------------------------------------------------------------------
-##' This is a class of design based only on DLE responses using the 'LogisticIndepBeta' class model
-##' and DLE samples are also used.
-##' In addition to the slots in the more simple \code{\linkS4class{RuleDesign}},
-##' objects of this class contain:
-##'
-##' @slot model the pseudo DLE model to be used, an object class of
-##' \code{\linkS4class{ModelTox}}
-##' @slot stopping stopping rule(s) for the trial, an object class of \code{\linkS4class{Stopping}}
-##' @slot increments how to control increments between dose levels, an object class of
-##' \code{\linkS4class{Increments}}
-##' @slot PLcohortSize rules for the cohort sizes for placebo, if any planned
-##' an object of class \code{\linkS4class{CohortSize}}
-##'
-##' @example examples/design-class-TDsamplesDesign.R
-##' @export
-##' @keywords class
-.TDsamplesDesign <-
-  setClass(
-    Class = "TDsamplesDesign",
-    representation(
-      model = "ModelTox",
-      stopping = "Stopping",
-      increments = "Increments",
-      PLcohortSize = "CohortSize"
-    ),
-    prototype(
-      model = .LogisticIndepBeta(),
-      nextBest = .NextBestTDsamples(),
-      stopping = .StoppingMinPatients(),
-      increments = .IncrementsRelative(),
-      PLcohortSize = CohortSizeConst(0L)
-    ),
-    contains = list("RuleDesign")
-  )
-
-validObject(.TDsamplesDesign())
-##' Initialization function for 'TDsamplesDesign' class
-##'
-##' @param model see \code{\linkS4class{TDsamplesDesign}}
-##' @param stopping see \code{\linkS4class{TDsamplesDesign}}
-##' @param increments see \code{\linkS4class{TDsamplesDesign}}
-##' @param PLcohortSize see \code{\linkS4class{TDsamplesDesign}}
-##' @param \dots additional arguments for \code{\linkS4class{RuleDesign}}
-##' @return the \code{\linkS4class{TDsamplesDesign}} class object
-##'
-##' @export
-##' @keywords methods
-TDsamplesDesign <- function(model, stopping, increments, PLcohortSize = CohortSizeConst(0L), ...) {
+#' @rdname TDsamplesDesign-class
+#'
+#' @param model (`ModelTox`)\cr see slot definition.
+#' @param stopping (`Stopping`)\cr see slot definition.
+#' @param increments (`Increments`)\cr see slot definition.
+#' @param pl_cohort_size (`CohortSize`)\cr see slot definition.
+#' @inheritDotParams RuleDesign
+#'
+#' @export
+#' @example examples/Design-class-TDsamplesDesign.R
+#'
+TDsamplesDesign <- function(model,
+                            stopping,
+                            increments,
+                            pl_cohort_size = CohortSizeConst(0L),
+                            ...) {
   start <- RuleDesign(...)
-  .TDsamplesDesign(start, model = model, stopping = stopping, increments = increments, PLcohortSize = PLcohortSize)
+  new(
+    "TDsamplesDesign",
+    start,
+    model = model,
+    stopping = stopping,
+    increments = increments,
+    pl_cohort_size = pl_cohort_size
+  )
 }
 
-## =============================================================================
-## -------------------------------------------------------------------------------
-##' Design class using DLE responses only based on the pseudo DLE model without sample
-##'
-##' This is a class of design based only on DLE responses using the 'LogisticIndepBeta' class model
-##' are used without samples.
-##' In addition to the slots in the more simple \code{\linkS4class{RuleDesign}},
-##' objects of this class contain:
-##'
-##' @slot model the pseudo DLE model to be used, an object class of
-##' \code{\linkS4class{ModelTox}}
-##' @slot stopping stopping rule(s) for the trial, an object class of \code{\linkS4class{Stopping}}
-##' @slot increments how to control increments between dose levels, an object class of
-##' \code{\linkS4class{Increments}}
-##' @slot PLcohortSize rules for the cohort sizes for placebo, if any planned
-##' an object of class \code{\linkS4class{CohortSize}}
-##'
-##' @example examples/design-class-TDDesign.R
-##' @export
-##' @keywords class
-.TDDesign <-
-  setClass(
-    Class = "TDDesign",
-    representation(
-      model = "ModelTox",
-      stopping = "Stopping",
-      increments = "Increments",
-      PLcohortSize = "CohortSize"
-    ),
-    prototype(
-      model = .LogisticIndepBeta(),
-      nextBest = .NextBestTD(),
-      stopping = .StoppingMinPatients(),
-      increments = .IncrementsRelative(),
-      PLcohortSize = CohortSizeConst(0L)
-    ),
-    contains = list("RuleDesign")
-  )
+# TDDesign ----
 
-validObject(.TDDesign())
+## class ----
 
-##' Initialization function for 'TDDesign' class
-##'
-##' @param model please refer to \code{\linkS4class{TDDesign}} class object
-##' @param stopping please refer to \code{\linkS4class{TDDesign}} class object
-##' @param increments please refer to \code{\linkS4class{TDDesign}} class object
-##' @param PLcohortSize see \code{\linkS4class{TDDesign}}
-##' @param \dots additional arguments for \code{\linkS4class{RuleDesign}}
-##' @return the \code{\linkS4class{TDDesign}} class object
-##'
-##' @export
-##' @keywords methods
+#' `TDDesign`
+#'
+#' @description `r lifecycle::badge("stable")`
+#'
+#' [`TDDesign`] is the class of design based only on DLT responses using
+#' [`ModelTox`] class model (i.e. [`LogisticIndepBeta`]) without MCMC samples.
+#'
+#' @slot model (`ModelTox`)\cr the pseudo DLT model to be used.
+#' @slot stopping (`Stopping`)\cr stopping rule(s) for the trial.
+#' @slot increments (`Increments`)\cr how to control increments between dose levels.
+#' @slot pl_cohort_size (`CohortSize`)\cr rules for the cohort sizes for placebo,
+#'   if any planned (defaults to constant 0 placebo patients).
+#'
+#' @aliases TDDesign
+#' @export
+#'
+.TDDesign <- setClass(
+  Class = "TDDesign",
+  slots = c(
+    model = "ModelTox",
+    stopping = "Stopping",
+    increments = "Increments",
+    pl_cohort_size = "CohortSize"
+  ),
+  prototype = prototype(
+    model = .LogisticIndepBeta(),
+    nextBest = .NextBestTD(),
+    stopping = .StoppingMinPatients(),
+    increments = .IncrementsRelative(),
+    pl_cohort_size = CohortSizeConst(0L)
+  ),
+  contains = "RuleDesign"
+)
+
+## constructor ----
+
+#' @rdname TDDesign-class
+#'
+#' @param model (`ModelTox`)\cr see slot definition.
+#' @param stopping (`Stopping`)\cr see slot definition.
+#' @param increments (`Increments`)\cr see slot definition.
+#' @param pl_cohort_size (`CohortSize`)\cr see slot definition.
+#' @inheritDotParams RuleDesign
+#'
+#' @export
+#' @example examples/Design-class-TDDesign.R
+#'
 TDDesign <- function(model,
                      stopping,
                      increments,
-                     PLcohortSize = CohortSizeConst(0L),
+                     pl_cohort_size = CohortSizeConst(0L),
                      ...) {
   start <- RuleDesign(...)
-  .TDDesign(start,
-    model = model, stopping = stopping, increments = increments,
-    PLcohortSize = PLcohortSize
+  new(
+    "TDDesign",
+    start,
+    model = model,
+    stopping = stopping,
+    increments = increments,
+    pl_cohort_size = pl_cohort_size
   )
 }
 
-
+# nolint start
 
 ## ---------------------------------------------------------------------------------------------------
 ## class for design based on DLE and efficacy response with samples using pseudo DLE and efficacy models
@@ -551,7 +527,7 @@ validObject(DADesign(
   startingDose = 1,
   cohortSize = CohortSizeConst(3),
   stopping = StoppingMinCohorts(10),
-  increments = IncrementsNumDoseLevels(2)
+  increments = IncrementsDoseLevels(2)
 ))
 
 # nolint end

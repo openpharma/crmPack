@@ -1,4 +1,4 @@
-# McmcOptions-class ----
+# McmcOptions ----
 
 test_that(".McmcOptions works as expected", {
   result <- expect_silent(.McmcOptions())
@@ -17,8 +17,6 @@ test_that(".McmcOptions works as expected with custom values", {
   )
   expect_valid(result, "McmcOptions")
 })
-
-# McmcOptions-constructor ----
 
 test_that("McmcOptions object can be created with user constructor", {
   result <- expect_silent(McmcOptions())

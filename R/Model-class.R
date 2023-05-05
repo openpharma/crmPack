@@ -149,6 +149,14 @@ ModelLogNormal <- function(mean, cov, ref_dose = 1) {
   )
 }
 
+## default constructor ----
+
+#' @rdname ModelLogNormal-class
+#' @export
+.DefaultModelLogNormal <- function() {
+  ModelLogNormal(mean = c(-0.85, 1), cov = matrix(c(1, -0.5, -0.5, 1), nrow = 2))
+}
+
 # LogisticNormal ----
 
 ## class ----
@@ -205,6 +213,16 @@ LogisticNormal <- function(mean, cov, ref_dose = 1) {
   )
 }
 
+## default constructor ----
+
+#' @rdname LogisticNormal-class
+#' @note Typically, end users will not use the `.DefaultLogisticNormal()` function.
+#' @export
+.DefaultLogisticNormal <- function() {
+  LogisticNormal(mean = c(-0.85, 1), cov = matrix(c(1, -0.5, -0.5, 1), nrow = 2))
+}
+
+
 # LogisticLogNormal ----
 
 ## class ----
@@ -254,6 +272,19 @@ LogisticLogNormal <- function(mean, cov, ref_dose = 1) {
         y[i] ~ dbern(p[i])
       }
     }
+  )
+}
+
+## default constructor ----
+
+#' @rdname LogisticLogNormal-class
+#' @note Typically, end users will not use the `.DefaultLogisticLogNormal()` function.
+#' @export
+.DefaultLogisticLogNormal <- function() {
+  LogisticLogNormal(
+    mean = c(-0.85, 1),
+    cov = matrix(c(1, -0.5, -0.5, 1), nrow = 2),
+    ref_dose = 50
   )
 }
 
@@ -335,6 +366,20 @@ LogisticLogNormalSub <- function(mean, cov, ref_dose = 0) {
   )
 }
 
+
+## default constructor ----
+
+#' @rdname LogisticLogNormalSub-class
+#' @note Typically, end-users will not use the `.DefaultLogisticLogNormalSub()` function.
+#' @export
+.DefaultLogisticLogNormalSub <- function() {
+  LogisticLogNormalSub(
+    mean = c(-0.85, 1),
+    cov = matrix(c(1, -0.5, -0.5, 1), nrow = 2),
+    ref_dose = 50
+  )
+}
+
 # ProbitLogNormal ----
 
 ## class ----
@@ -388,6 +433,19 @@ ProbitLogNormal <- function(mean, cov, ref_dose = 1) {
         y[i] ~ dbern(p[i])
       }
     }
+  )
+}
+
+## default constructor ----
+
+#' @rdname ProbitLogNormal-class
+#' @note Typically, end users will not use the `.DefaultProbitLogNormal()` function.
+#' @export
+.DefaultProbitLogNormal <- function() {
+  ProbitLogNormal(
+    mean = c(-0.85, 1),
+    cov = matrix(c(1, -0.5, -0.5, 1), nrow = 2),
+    ref_dose = 7.2
   )
 }
 
@@ -445,6 +503,15 @@ ProbitLogNormalRel <- function(mean, cov, ref_dose = 1) {
       }
     }
   )
+}
+
+## default constructor ----
+
+#' @rdname ProbitLogNormalRel-class
+#' @note Typically, end users will not use the `.DefaultProbitLogNormalRel()` function.
+#' @export
+.DefaultProbitLogNormalRel <- function() {
+  ProbitLogNormalRel(mean = c(-0.85, 1), cov = matrix(c(1, -0.5, -0.5, 1), nrow = 2))
 }
 
 # LogisticKadane ----
@@ -536,6 +603,16 @@ LogisticKadane <- function(theta, xmin, xmax) {
     sample = c("rho0", "gamma")
   )
 }
+
+## default constructor ----
+
+#' @rdname LogisticKadane-class
+#' @note Typically, end-users will not use the `.DefaultLogisticKadane()` function.
+#' @export
+.DefaultLogisticKadane <- function() {
+  LogisticKadane(theta = 0.33, xmin = 1, xmax = 200)
+}
+
 
 # LogisticKadaneBetaGamma ----
 
@@ -649,6 +726,23 @@ LogisticKadaneBetaGamma <- function(theta, xmin, xmax, alpha, beta, shape, rate)
   )
 }
 
+## default constructor ----
+
+#' @rdname LogisticKadaneBetaGamma-class
+#' @note Typically, end users will not use the `.Default()` function.
+#' @export
+.DefaultLogisticKadaneBetaGamma <- function() {
+  LogisticKadaneBetaGamma(
+    theta = 0.3,
+    xmin = 0,
+    xmax = 7,
+    alpha = 1,
+    beta = 19,
+    shape = 0.5625,
+    rate = 0.125
+  )
+}
+
 # LogisticNormalMixture ----
 
 ## class ----
@@ -695,13 +789,13 @@ LogisticKadaneBetaGamma <- function(theta, xmin, xmax, alpha, beta, shape, rate)
     comp1 = "ModelParamsNormal",
     comp2 = "ModelParamsNormal",
     weightpar = "numeric",
-    ref_dose = "positive_number"
+    ref_dose = "numeric"
   ),
   prototype = prototype(
     comp1 = ModelParamsNormal(mean = c(0, 1), cov = diag(2)),
     comp2 = ModelParamsNormal(mean = c(-1, 1), cov = diag(2)),
     weightpar = c(a = 1, b = 1),
-    ref_dose = positive_number(1)
+    ref_dose = 1
   ),
   validity = v_model_logistic_normal_mix
 )
@@ -733,7 +827,7 @@ LogisticNormalMixture <- function(comp1,
     comp1 = comp1,
     comp2 = comp2,
     weightpar = weightpar,
-    ref_dose = positive_number(ref_dose),
+    ref_dose = ref_dose,
     datamodel = function() {
       # The logistic likelihood - the same as for non-mixture case.
       for (i in 1:nObs) {
@@ -768,6 +862,26 @@ LogisticNormalMixture <- function(comp1,
     },
     datanames = c("nObs", "y", "x"),
     sample = c("alpha0", "alpha1", "w")
+  )
+}
+
+## default constructor ----
+
+#' @rdname LogisticNormalMixture-class
+#' @note Typically, end-users will not use the `.DefaultLogisticNormalMixture()` function.
+#' @export
+.DefaultLogisticNormalMixture <- function() { # nolint
+  LogisticNormalMixture(
+    comp1 = ModelParamsNormal(
+      mean = c(-0.85, 1),
+      cov = matrix(c(1, -0.5, -0.5, 1), nrow = 2)
+    ),
+    comp2 = ModelParamsNormal(
+      mean = c(1, 1.5),
+      cov = matrix(c(1.2, -0.45, -0.45, 0.6), nrow = 2)
+    ),
+    weightpar = c(a = 1, b = 1),
+    ref_dose = 50
   )
 }
 
@@ -825,7 +939,7 @@ LogisticNormalMixture <- function(comp1,
   slots = c(
     components = "list",
     weights = "numeric",
-    ref_dose = "positive_number",
+    ref_dose = "numeric",
     log_normal = "logical"
   ),
   prototype = prototype(
@@ -834,7 +948,7 @@ LogisticNormalMixture <- function(comp1,
       comp2 = ModelParamsNormal(mean = c(-1, 1), cov = diag(2))
     ),
     weights = c(0.5, 0.5),
-    ref_dose = positive_number(1),
+    ref_dose = 1,
     log_normal = FALSE
   ),
   validity = v_model_logistic_normal_fixed_mix
@@ -914,6 +1028,29 @@ LogisticNormalFixedMixture <- function(components,
     },
     datanames = c("nObs", "y", "x"),
     sample = c("alpha0", "alpha1")
+  )
+}
+
+## default constructor ----
+
+#' @rdname LogisticNormalFixedMixture-class
+#' @note Typically, end-users will not use the `.DefaultLogisticNormalFixedMixture()`
+#' function.
+#' @export
+.DefaultLogisticNormalFixedMixture <- function() { # nolint
+  LogisticNormalFixedMixture(
+    components = list(
+      comp1 = ModelParamsNormal(
+        mean = c(-0.85, 1),
+        cov = matrix(c(1, -0.5, -0.5, 1), nrow = 2)
+      ),
+      comp2 = ModelParamsNormal(
+        mean = c(1, 1.5),
+        cov = matrix(c(1.2, -0.45, -0.45, 0.6), nrow = 2)
+      )
+    ),
+    weights = c(0.3, 0.7),
+    ref_dose = 50
   )
 }
 
@@ -1022,6 +1159,20 @@ LogisticLogNormalMixture <- function(mean,
     },
     datanames = c("nObs", "y", "x", "nObsshare", "yshare", "xshare"),
     sample = c("alpha0", "alpha1", "comp")
+  )
+}
+
+## default constructor ----
+
+#' @rdname LogisticLogNormalMixture-class
+#' @note Typically, end users will not use the `.DefaultLogNormalMixture()` function.
+#' @export
+.DefaultLogisticLogNormalMixture <- function() { # nolint
+  LogisticLogNormalMixture(
+    share_weight = 0.1,
+    mean = c(-0.85, 1),
+    cov = matrix(c(1, -0.5, -0.5, 1), nrow = 2),
+    ref_dose = 50
   )
 }
 
@@ -1221,6 +1372,15 @@ DualEndpoint <- function(mean,
   )
 }
 
+## default constructor ----
+
+#' @rdname DualEndpoint-class
+#' @note Typically, end users will not use the `DefaultDualEndpoint()` function.
+#' @export
+.DefaultDualEndpoint <- function() {
+  stop(paste0("Class DualEndpoint cannot be instantiated directly.  Please use one of its subclasses instead."))
+}
+
 # DualEndpointRW ----
 
 ## class ----
@@ -1231,6 +1391,7 @@ DualEndpoint <- function(mean,
 #'
 #' [`DualEndpointRW`] is the class for the dual endpoint model with random walk
 #' prior for biomarker.
+#'
 #'
 #' @details This class extends the [`DualEndpoint`] class so that the dose-biomarker
 #'   relationship \eqn{f(x)} is modelled by a non-parametric random walk of first
@@ -1349,6 +1510,22 @@ DualEndpointRW <- function(sigma2betaW,
     start,
     sigma2betaW = sigma2betaW,
     rw1 = rw1
+  )
+}
+
+## default constructor ----
+
+#' @rdname DualEndpointRW-class
+#' @note Typically, end users will not use the `.DefaultDualEndpointRW()` function.
+#' @export
+.DefaultDualEndpointRW <- function() {
+  DualEndpointRW(
+    mean = c(0, 1),
+    cov = matrix(c(1, 0, 0, 1), nrow = 2),
+    sigma2W = c(a = 0.1, b = 0.1),
+    rho = c(a = 1, b = 1),
+    sigma2betaW = 0.01,
+    rw1 = TRUE
   )
 }
 
@@ -1527,6 +1704,27 @@ DualEndpointBeta <- function(E0,
   )
 }
 
+## default constructor ----
+
+#' @rdname DualEndpointBeta-class
+#' @note Typically, end users will not use the `.DefaultDualEndpointBeta()` function.
+#' @export
+.DefaultDualEndpointBeta <- function() {
+  DualEndpointBeta(
+    mean = c(0, 1),
+    cov = matrix(c(1, 0, 0, 1), nrow = 2),
+    ref_dose = 10,
+    use_log_dose = TRUE,
+    sigma2W = c(a = 0.1, b = 0.1),
+    rho = c(a = 1, b = 1),
+    E0 = c(0, 100),
+    Emax = c(0, 500),
+    delta1 = c(0, 5),
+    mode = c(1, 15),
+    ref_dose_beta = 1000
+  )
+}
+
 # DualEndpointEmax ----
 
 ## class ----
@@ -1666,6 +1864,24 @@ DualEndpointEmax <- function(E0,
     Emax = Emax,
     ED50 = ED50,
     ref_dose_emax = positive_number(ref_dose_emax)
+  )
+}
+
+## default constructor ----
+
+#' @rdname DualEndpointEmax-class
+#' @note Typically, end users will not use the `.DefaultDualEndpointEmax()` function.
+#' @export
+.DefaultDualEndpointEmax <- function() {
+  DualEndpointEmax(
+    mean = c(0, 1),
+    cov = matrix(c(1, 0, 0, 1), nrow = 2),
+    sigma2W = c(a = 0.1, b = 0.1),
+    rho = c(a = 1, b = 1),
+    E0 = c(0, 100),
+    Emax = c(0, 500),
+    ED50 = c(10, 200),
+    ref_dose_emax = 1000
   )
 }
 
@@ -2462,6 +2678,29 @@ DALogisticLogNormal <- function(npiece = 3,
   )
 }
 
+## default constructor ----
+
+#' @rdname DALogisticLogNormal-class
+#' @note Typically, end users will not use the `.DefaultDALogisticLogNormal()` function.
+#' @export
+.DefaultDALogisticLogNormal <- function() {
+  npiece <- 10
+  Tmax <- 60
+
+  lambda_prior <- function(k) {
+    npiece / (Tmax * (npiece - k + 0.5))
+  }
+
+  DALogisticLogNormal(
+    mean = c(-0.85, 1),
+    cov = matrix(c(1, -0.5, -0.5, 1), nrow = 2),
+    ref_dose = 56,
+    npiece = npiece,
+    l = as.numeric(t(apply(as.matrix(c(1:npiece), 1, npiece), 2, lambda_prior))),
+    c_par = 2
+  )
+}
+
 # TITELogisticLogNormal ----
 
 ## class ----
@@ -2473,6 +2712,7 @@ DALogisticLogNormal <- function(npiece = 3,
 #' [`TITELogisticLogNormal`] is the class for TITE-CRM based on a logistic
 #' regression model using a bivariate normal prior on the intercept and log
 #' slope parameters.
+#'
 #' This class inherits from the [`LogisticLogNormal`].
 #'
 #' @slot weight_method (`string`)\cr the weight function method: either linear
@@ -2568,6 +2808,20 @@ TITELogisticLogNormal <- function(weight_method = "linear",
   )
 }
 
+## default constructor ----
+
+#' @rdname TITELogisticLogNormal-class
+#' @note Typically, end users will not use the `.DefaultTITELogisticLogNormal()` function.
+#' @export
+.DefaultTITELogisticLogNormal <- function() {
+  TITELogisticLogNormal(
+    mean = c(0, 1),
+    cov = diag(2),
+    ref_dose = 1,
+    weight_method = "linear"
+  )
+}
+
 # OneParLogNormalPrior ----
 
 ## class ----
@@ -2653,6 +2907,19 @@ OneParLogNormalPrior <- function(skel_probs,
   )
 }
 
+## default constructor ----
+
+#' @rdname OneParLogNormalPrior-class
+#' @return an instance of the `OneParLogNormalPrior` class
+#' @export
+.DefaultOneParLogNormalPrior <- function() {
+  OneParLogNormalPrior(
+    skel_probs = seq(from = 0.1, to = 0.9, length = 5),
+    dose_grid = 1:5,
+    sigma2 = 2
+  )
+}
+
 # OneParExpPrior ----
 
 ## class ----
@@ -2664,6 +2931,8 @@ OneParLogNormalPrior <- function(skel_probs,
 #' [`OneParExpPrior`] is the class for a standard CRM with an exponential prior
 #' on the power parameter for the skeleton prior probabilities. It is an
 #' implementation of a version of the one-parameter CRM (O’Quigley et al. 1990).
+#'
+#' @note Typically, end users will not use the `.DefaultOneparExpPrior()` function.
 #'
 #' @slot skel_fun (`function`)\cr function to calculate the prior DLT probabilities.
 #' @slot skel_fun_inv (`function`)\cr inverse function of `skel_fun`.
@@ -2737,6 +3006,19 @@ OneParExpPrior <- function(skel_probs,
   )
 }
 
+## default constructor ----
+
+#' @rdname OneParExpPrior-class
+#' @note Typically, end users will not use the `DefaultOneParLogNormalPrior()` function.
+#' @export
+.DefaultOneParExpPrior <- function() {
+  OneParExpPrior(
+    skel_probs = c(0.1, 0.3, 0.5, 0.7, 0.9),
+    dose_grid = 1:5,
+    lambda = 2
+  )
+}
+
 # FractionalCRM ----
 
 ## class ----
@@ -2749,6 +3031,7 @@ OneParExpPrior <- function(skel_probs,
 #' parameter CRM (with normal prior on the log-power parameter) as well as
 #' Kaplan-Meier based estimation of the conditional probability to experience a
 #' DLT for non-complete observations.
+#'
 #' This fractional CRM model follows the paper and code by Guosheng Yin et al.
 #'
 #' @seealso [`TITELogisticLogNormal`].
@@ -2820,5 +3103,18 @@ FractionalCRM <- function(...) {
     datamodel = datamodel,
     modelspecs = modelspecs,
     datanames = c("nObs", "xLevel")
+  )
+}
+
+## default constructor ----
+
+#' @rdname FractionalCRM-class
+#' @note Typically, end users will not use the `.DefaultTITELogisticLogNormal()` function.
+#' @export
+.DefaultFractionalCRM <- function() {
+  FractionalCRM(
+    skel_probs = c(0.1, 0.2, 0.3, 0.4),
+    dose_grid = c(10, 30, 50, 100),
+    sigma2 = 2
   )
 }

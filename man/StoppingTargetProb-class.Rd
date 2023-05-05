@@ -5,9 +5,12 @@
 \alias{StoppingTargetProb-class}
 \alias{.StoppingTargetProb}
 \alias{StoppingTargetProb}
+\alias{.DefaultStoppingTargetProb}
 \title{\code{StoppingTargetProb}}
 \usage{
 StoppingTargetProb(target, prob)
+
+.DefaultStoppingTargetProb()
 }
 \arguments{
 \item{target}{(\code{number})\cr see slot definition.}
@@ -29,6 +32,9 @@ the DLT rate being in the target toxicity interval.
 for reaching sufficient precision.}
 }}
 
+\note{
+Typically, end users will not use the \code{.DefaultStoppingTargetProb()} function.
+}
 \examples{
 
 # As example, here is the rule for stopping the study if the posterior

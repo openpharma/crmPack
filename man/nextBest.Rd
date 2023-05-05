@@ -26,6 +26,10 @@
 \alias{nextBest-NextBestMaxGain}
 \alias{nextBest,NextBestMaxGainSamples,numeric,Samples,ModelTox,DataDual-method}
 \alias{nextBest-NextBestMaxGainSamples}
+\alias{nextBest,NextBestProbMTDLTE,numeric,Samples,GeneralModel,Data-method}
+\alias{nextBest-NextBestProbMTDLTE}
+\alias{nextBest,NextBestProbMTDMinDist,numeric,Samples,GeneralModel,Data-method}
+\alias{nextBest-NextBestProbMTDMinDist}
 \title{Finding the Next Best Dose}
 \usage{
 nextBest(nextBest, doselimit, samples, model, data, ...)
@@ -71,6 +75,10 @@ nextBest(nextBest, doselimit, samples, model, data, ...)
   in_sim = FALSE,
   ...
 )
+
+\S4method{nextBest}{NextBestProbMTDLTE,numeric,Samples,GeneralModel,Data}(nextBest, doselimit, samples, model, data, ...)
+
+\S4method{nextBest}{NextBestProbMTDMinDist,numeric,Samples,GeneralModel,Data}(nextBest, doselimit, samples, model, data, ...)
 }
 \arguments{
 \item{nextBest}{(\code{NextBest})\cr the rule for the next best dose.}
@@ -224,6 +232,26 @@ and for \code{\link{LogisticIndepBeta}} model class object involving DLT samples
   data = DataDual
 )}: find the next best dose based on DLT and efficacy
 responses with DLT and efficacy samples.
+
+\item \code{nextBest(
+  nextBest = NextBestProbMTDLTE,
+  doselimit = numeric,
+  samples = Samples,
+  model = GeneralModel,
+  data = Data
+)}: find the next best dose based with the highest
+probability of having a toxicity rate less or equal to the target toxicity
+level.
+
+\item \code{nextBest(
+  nextBest = NextBestProbMTDMinDist,
+  doselimit = numeric,
+  samples = Samples,
+  model = GeneralModel,
+  data = Data
+)}: find the next best dose based with the highest
+probability of having a toxicity rate with minimum distance to the
+target toxicity level.
 
 }}
 \examples{
@@ -562,7 +590,6 @@ dose_recommendation <- nextBest(
 
 dose_recommendation$next_dose_drt
 dose_recommendation$plot
-
 # Example of usage for `NextBestTDsamples` NextBest class.
 my_data <- Data(
   x = c(25, 50, 50, 75, 150, 200, 225, 300),
@@ -744,4 +771,88 @@ dose_recommendation <- nextBest(
 
 dose_recommendation$next_dose
 dose_recommendation$plot
+# Example of usage for `NextBestProbMTDLTE` NextBest class.
+
+# Create the data.
+my_data <- Data(
+  x = c(0.1, 0.5, 1.5, 3, 6, 10, 10, 10),
+  y = c(0, 0, 0, 0, 0, 0, 1, 0),
+  ID = 1:8,
+  cohort = c(0, 1, 2, 3, 4, 5, 5, 5),
+  doseGrid = c(0.1, 0.5, 1.5, 3, 6, seq(from = 10, to = 80, by = 2))
+)
+
+# Initialize the CRM model used to model the data.
+my_model <- LogisticLogNormal(
+  mean = c(-0.85, 1),
+  cov = matrix(c(1, -0.5, -0.5, 1), nrow = 2),
+  ref_dose = 56
+)
+
+# Set-up some MCMC parameters and generate samples from the posterior.
+my_options <- McmcOptions(burnin = 100, step = 2, samples = 500)
+my_samples <- mcmc(my_data, my_model, my_options)
+
+# Define the rule for dose increments and calculate the maximum dose allowed.
+my_increments <- IncrementsRelative(
+  intervals = c(0, 20),
+  increments = c(1, 0.33)
+)
+next_max_dose <- maxDose(my_increments, data = my_data)
+
+# Define the rule which will be used to select the next best dose
+# based on the 'NextBestProbMTDLTE' class.
+nb_mtd_lte <- NextBestProbMTDLTE(target = 0.33)
+
+# Calculate the next best dose.
+dose_recommendation <- nextBest(
+  nextBest = nb_mtd_lte,
+  doselimit = next_max_dose,
+  samples = my_samples,
+  model = my_model,
+  data = my_data
+)
+# Example of usage for `NextBestProbMTDMinDist` NextBest class.
+
+# Create the data.
+my_data <- Data(
+  x = c(1.5, 1.5, 1.5, 2.5, 2.5, 2.5, 3.5, 3.5, 3.5),
+  y = c(0, 0, 0, 0, 0, 0, 1, 1, 0),
+  ID = 1:9,
+  cohort = c(1, 1, 1, 2, 2, 2, 3, 3, 3),
+  doseGrid = c(1.5, 2.5, 3.5, 4.5, 6, 7)
+)
+
+# Initialize the CRM model used to model the data.
+my_model <- my_model <- LogisticKadaneBetaGamma(
+  theta = 0.3,
+  xmin = 1.5,
+  xmax = 7,
+  alpha = 1,
+  beta = 19,
+  shape = 0.5625,
+  rate = 0.125
+)
+
+# Set-up some MCMC parameters and generate samples from the posterior.
+my_options <- McmcOptions(burnin = 100, step = 2, samples = 500)
+my_samples <- mcmc(my_data, my_model, my_options)
+
+# Define the rule for dose increments and calculate the maximum dose allowed.
+my_increments <- IncrementsDoseLevels(levels = 1)
+
+next_max_dose <- maxDose(my_increments, data = my_data)
+
+# Define the rule which will be used to select the next best dose
+# based on the 'NextBestProbMTDMinDist' class.
+nb_mtd_min_dist <- NextBestProbMTDMinDist(target = 0.3)
+
+# Calculate the next best dose.
+dose_recommendation <- nextBest(
+  nextBest = nb_mtd_min_dist,
+  doselimit = next_max_dose,
+  samples = my_samples,
+  model = my_model,
+  data = my_data
+)
 }

@@ -5,9 +5,12 @@
 \alias{LogisticNormalMixture-class}
 \alias{.LogisticNormalMixture}
 \alias{LogisticNormalMixture}
+\alias{.DefaultLogisticNormalMixture}
 \title{\code{LogisticNormalMixture}}
 \usage{
 LogisticNormalMixture(comp1, comp2, weightpar, ref_dose)
+
+.DefaultLogisticNormalMixture()
 }
 \arguments{
 \item{comp1}{(\code{ModelParamsNormal})\cr bivariate normal prior specification of
@@ -59,6 +62,8 @@ The weight of the two normal priors is a model parameter, hence it is a
 flexible mixture. This type of prior is often used with a mixture of a minimal
 informative and an informative component, in order to make the CRM more robust
 to data deviations from the informative component.
+
+Typically, end-users will not use the \code{.DefaultLogisticNormalMixture()} function.
 }
 \examples{
 my_model <- LogisticNormalMixture(

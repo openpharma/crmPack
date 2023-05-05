@@ -40,17 +40,17 @@ install.packages("crmPack")
 The package vignettes provide information on various aspects of CRM
 trial design, implementation, simulation and analysis:
 
--   [Trial definition](main/articles/trial_definition.html)
+- [Trial definition](trial_definition.html)
 
--   [Trial analysis](main/articles/trial_analysis.html)
+- [Trial analysis](trial_analysis.html)
 
--   [Simulation of operating
-    characteristics](main/articles/trial_simulation.html)
+- [Simulation of operating characteristics](trial_simulation.html)
 
--   [Extending crmPack](main/articles/extending_crmpack.html)
+- [Extending crmPack](extending_crmpack.html)
 
--   [Migration from the old
-    crmPack](main/articles/migration_from_the_old_crmPack.html)
+- Sabanes Bove et al (2019) [Model-based Dose Escalation Designs in R
+  with crmPack](crmPack-jss-paper.html). JSS 89:10 [DOI
+  10.18637/jss.v089.i10](https://www.jstatsoft.org/article/view/v089i10)
 
 -   Sabanes Bove et al (2019) [Model-based Dose Escalation Designs in R
     with crmPack](main/articles/crmPack-jss-paper.html). JSS 89:10 [DOI

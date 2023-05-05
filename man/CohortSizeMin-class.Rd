@@ -5,9 +5,12 @@
 \alias{CohortSizeMin-class}
 \alias{.CohortSizeMin}
 \alias{CohortSizeMin}
+\alias{.DefaultCohortSizeMin}
 \title{\code{CohortSizeMin}}
 \usage{
 CohortSizeMin(cohort_size_list)
+
+.DefaultCohortSizeMin()
 }
 \arguments{
 \item{cohort_size_list}{(\code{list})\cr see slot definition.}
@@ -27,6 +30,9 @@ of these individual cohort sizes is taken to give the final cohort size.
 of class \code{\link{CohortSize}}.}
 }}
 
+\note{
+Typically, end users will not use the \code{.DefaultCohortSizeMin()} function.
+}
 \examples{
 
 # Rule for cohort of size 1 for doses <30 and cohort of size 3 for doses >=30.
