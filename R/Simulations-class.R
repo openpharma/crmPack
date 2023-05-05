@@ -50,14 +50,14 @@
             y = 0:1,
             doseGrid = 1:2,
             ID = 1:2,
-            cohort=1:2
+            cohort = 1:2
           ),
           Data(
             x = 3:4,
             y = 0:1,
             doseGrid = 3:4,
             ID = 1:2,
-            cohort=1:2
+            cohort = 1:2
           )
         ),
       doses = c(1, 2),
