@@ -1,5 +1,5 @@
 ---
-title: "How to use parallel computing with extensions to the package, an example"
+title: "Parallel computing with extensions"
 author: "Oliver Boix"
 date: "14 March 2023"
 output: rmarkdown::html_vignette

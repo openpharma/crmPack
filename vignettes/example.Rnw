@@ -124,12 +124,13 @@ dose, then you have data from the previous patients for input into the model.
 This data can also be captured in a \texttt{Data} object. For example:
 
 <<data>>=
-data <- Data(x=c(0.1, 0.5, 1.5, 3, 6, 10, 10, 10),
-             y=c(0, 0, 0, 0, 0, 0, 1, 0),
-             cohort=c(0, 1, 2, 3, 4, 5, 5, 5),
-             doseGrid=
+data <- Data(x = c(0.1, 0.5, 1.5, 3, 6, 10, 10, 10),
+             y = c(0, 0, 0, 0, 0, 0, 1, 0),
+             cohort = c(0, 1, 2, 3, 4, 5, 5, 5),
+             ID = as.integer(1:8),
+             doseGrid =
                  c(0.1, 0.5, 1.5, 3, 6,
-                   seq(from=10, to=80, by=2)))
+                   seq(from = 10, to = 80, by = 2)))
 @
 
 Most important are \texttt{x} (the doses) and \texttt{y} (the DLTs, 0 for no DLT
