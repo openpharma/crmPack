@@ -3161,7 +3161,7 @@ setMethod("simulate",
       )
 
       ## check if special case applies
-      isFlexi <- is(object@Effmodel, "EffFlexi")
+      isFlexi <- is(object@eff_model, "EffFlexi")
 
       ## conditional code from here on:
       if (isFlexi) {
@@ -3383,7 +3383,7 @@ setMethod("simulate",
             )
 
             thisEffModel <- update(
-              object = object@Effmodel,
+              object = object@eff_model,
               data = thisData
             )
 
@@ -3857,7 +3857,7 @@ setMethod("simulate",
             )
 
             thisEffModel <- update(
-              object = object@Effmodel,
+              object = object@eff_model,
               data = thisData
             )
 
