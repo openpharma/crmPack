@@ -12,7 +12,7 @@ DLEmodel <- LogisticIndepBeta(binDLE=c(1.05,1.8),
 
 ##The efficacy model must be of 'EffFlexi' class
 
-Effmodel<- EffFlexi(eff=c(1.223, 2.513),eff_dose=c(25,300),
+eff_model<- EffFlexi(eff=c(1.223, 2.513),eff_dose=c(25,300),
                     sigma2W=c(a=0.1,b=0.1),sigma2betaW=c(a=20,b=50),rw1 = FALSE,data=data)
 
 ##The escalation rule using the 'NextBestMaxGainSamples' class
@@ -44,7 +44,7 @@ design <- DualResponsesSamplesDesign(nextBest=mynextbest,
                                      cohortSize=mySize,
                                      startingDose=25,
                                      model=DLEmodel,
-                                     Effmodel=Effmodel,
+                                     eff_model=eff_model,
                                      data=data,
                                      stopping=myStopping,
                                      increments=myIncrements)
