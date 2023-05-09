@@ -4,23 +4,38 @@
 \name{DualResponsesSamplesDesign-class}
 \alias{DualResponsesSamplesDesign-class}
 \alias{.DualResponsesSamplesDesign}
-\title{This is a class of design based on DLE responses using the \code{\linkS4class{LogisticIndepBeta}} model
-model and efficacy responses using \code{\linkS4class{ModelEff}}  model class
-with DLE and efficacy samples.It contain all slots in
-\code{\linkS4class{RuleDesign}} and \code{\linkS4class{TDsamplesDesign}} class object}
+\alias{DualResponsesSamplesDesign}
+\title{\code{DualResponsesSamplesDesign}}
+\usage{
+DualResponsesSamplesDesign(eff_model, data, ...)
+}
+\arguments{
+\item{eff_model}{(\code{ModelEff})\cr see slot definition.}
+
+\item{data}{(\code{DataDual})\cr see slot definition.}
+
+\item{...}{
+  Arguments passed on to \code{\link[=TDsamplesDesign]{TDsamplesDesign}}
+  \describe{
+    \item{\code{model}}{(\code{ModelTox})\cr see slot definition.}
+    \item{\code{stopping}}{(\code{Stopping})\cr see slot definition.}
+    \item{\code{increments}}{(\code{Increments})\cr see slot definition.}
+    \item{\code{pl_cohort_size}}{(\code{CohortSize})\cr see slot definition.}
+  }}
+}
 \description{
-This is a class of design based on DLE responses using the \code{\linkS4class{LogisticIndepBeta}} model
-model and efficacy responses using \code{\linkS4class{ModelEff}}  model class
-with DLE and efficacy samples.It contain all slots in
-\code{\linkS4class{RuleDesign}} and \code{\linkS4class{TDsamplesDesign}} class object
+\ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#stable}{\figure{lifecycle-stable.svg}{options: alt='[Stable]'}}}{\strong{[Stable]}}
+
+This is a class of design based on DLE responses using the \code{\link{LogisticIndepBeta}} model
+with DLE and efficacy samples. It contain all slots in
+\code{\link{RuleDesign}} and \code{\link{TDsamplesDesign}} class objects.
 }
 \section{Slots}{
 
 \describe{
-\item{\code{data}}{the data set of \code{\linkS4class{DataDual}} class object}
+\item{\code{data}}{(\code{DataDual})\cr the data set.}
 
-\item{\code{Effmodel}}{the pseudo efficacy model to be used, an object class of
-\code{\linkS4class{ModelEff}}}
+\item{\code{eff_model}}{(\code{ModelEff})\cr the pseudo efficacy model to be used.}
 }}
 
 \examples{
@@ -77,4 +92,3 @@ design <- DualResponsesSamplesDesign(nextBest=mynextbest,
                                      increments=myIncrements)
 # nolint end
 }
-\keyword{class}
