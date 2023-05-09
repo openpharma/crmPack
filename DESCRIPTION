@@ -49,6 +49,7 @@ Imports:
     tools,
     utils
 Suggests:
+    covr,
     dplyr,
     ggmcmc,
     knitr,
@@ -56,7 +57,8 @@ Suggests:
     stringr,
     testthat (>= 3.0.0),
     tidyr,
-    vdiffr
+    vdiffr,
+    withr
 VignetteBuilder: 
     knitr
 Config/testthat/edition: 3
