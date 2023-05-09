@@ -2058,7 +2058,7 @@ design1 <- DualResponsesDesign(nextBest=GainNextBest,
 
 design2 <- DualResponsesSamplesDesign(nextBest=GainsamplesNextBest,
                                       model=DLTmodel,
-                                      Effmodel=Effmodel,
+                                      eff_model=Effmodel,
                                       data=data2,
                                       stopping=myStopping8,
                                       increments=myIncrements1,
@@ -2070,7 +2070,7 @@ We can use the function \texttt{DualResponsesSamplesDesign} to specify a design 
 <<DualResponsesDesign-Flexi>>=
 design3 <- DualResponsesSamplesDesign(nextBest=GainsamplesNextBest,
                                       model=DLTmodel,
-                                      Effmodel=Effmodel2,
+                                      eff_model=Effmodel2,
                                       data=data2,
                                       stopping=myStopping8,
                                       increments=myIncrements1,
