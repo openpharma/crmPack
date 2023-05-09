@@ -58,8 +58,8 @@ email to the package maintainer:
 Thank you very much in advance!
 
 <<setup, echo=FALSE, results=hide>>=
-options(continue="  ")                  # use two blanks instead of "+" for
-                                        # continued lines (for easy copying)
+options(continue = "  ") # use two blanks instead of "+" for
+# continued lines (for easy copying)
 @
 
 \section{Installation}
@@ -109,9 +109,13 @@ We have three data classes for this package. The parent class is the \texttt{Gen
 
 First, we will set up the data set. If you are at the beginning of a trial, no observations will be available. Then we can define an empty data set, for example:
 <<emptydata>>=
-emptydata <- Data(doseGrid=
-                 c(0.1, 0.5, 1.5, 3, 6,
-                   seq(from=10, to=80, by=2)))
+emptydata <- Data(
+  doseGrid =
+    c(
+      0.1, 0.5, 1.5, 3, 6,
+      seq(from = 10, to = 80, by = 2)
+    )
+)
 @
 The \texttt{R}-package \texttt{crmPack} uses the S4 class system for
 implementation of the dose-escalation designs. There is the convention that
@@ -124,12 +128,16 @@ dose, then you have data from the previous patients for input into the model.
 This data can also be captured in a \texttt{Data} object. For example:
 
 <<data>>=
-data <- Data(x=c(0.1, 0.5, 1.5, 3, 6, 10, 10, 10),
-             y=c(0, 0, 0, 0, 0, 0, 1, 0),
-             cohort=c(0, 1, 2, 3, 4, 5, 5, 5),
-             doseGrid=
-                 c(0.1, 0.5, 1.5, 3, 6,
-                   seq(from=10, to=80, by=2)))
+data <- Data(
+  x = c(0.1, 0.5, 1.5, 3, 6, 10, 10, 10),
+  y = c(0, 0, 0, 0, 0, 0, 1, 0),
+  cohort = c(0, 1, 2, 3, 4, 5, 5, 5),
+  doseGrid =
+    c(
+      0.1, 0.5, 1.5, 3, 6,
+      seq(from = 10, to = 80, by = 2)
+    )
+)
 @
 
 Most important are \texttt{x} (the doses) and \texttt{y} (the DLTs, 0 for no DLT
@@ -233,11 +241,14 @@ information for the next steps.
 With the following command, we create a new model of class \texttt{LogisticLogNormal}, with certain mean and covariance prior parameters and reference dose:
 
 <<model-setup>>=
-model <- LogisticLogNormal(mean=c(-0.85, 1),
-                           cov=
-                               matrix(c(1, -0.5, -0.5, 1),
-                                      nrow=2),
-                           ref_dose=56)
+model <- LogisticLogNormal(
+  mean = c(-0.85, 1),
+  cov =
+    matrix(c(1, -0.5, -0.5, 1),
+      nrow = 2
+    ),
+  ref_dose = 56
+)
 @
 
 We can query the class that an object belongs to with the
@@ -280,8 +291,10 @@ Either an empty data set or a data set that contains all currently available obs
 
 Therefore, let's assume an empty data set is set up. For example, we will use 12 dose levels from 25 to 300 mg with increments of 25 mg. Then we have:
 <<emptydata_12>>=
-emptydata <- Data(doseGrid=
-                   seq(from=25, to=300, by=25))
+emptydata <- Data(
+  doseGrid =
+    seq(from = 25, to = 300, by = 25)
+)
 data1 <- emptydata
 @
 Then we express our prior in form of pseudo data. The idea is as follows.
@@ -306,8 +319,10 @@ $\phi_2$.
 With the following commands, we create the model of class \texttt{LogisticIndepBeta}, with the prior specified in form of pseudo data.
 
 <<LogisticIndepBeta>>=
-DLTmodel<-LogisticIndepBeta(binDLE=c(1.05,1.8),DLEweights=c(3,3),
-                            DLEdose=c(25,300),data=data1)
+DLTmodel <- LogisticIndepBeta(
+  binDLE = c(1.05, 1.8), DLEweights = c(3, 3),
+  DLEdose = c(25, 300), data = data1
+)
 @
 
 (Note that in some functions including this initialization function, DLE instead of DLT is used. In this vignette we use the unified abbreviation DLT throughout the text and variable names.)
@@ -357,14 +372,18 @@ mg and a maximum dose of 100 mg:
 
 <<min-inf>>=
 coarseGrid <- c(0.1, 10, 30, 60, 100)
-minInfModel <- MinimalInformative(dosegrid = coarseGrid,
-                                  refDose=50,
-                                  threshmin=0.2,
-                                  threshmax=0.3,
-                                  control=
-                                 list(threshold.stop=0.03,
-                                       maxit=200),
-                                  seed=432)
+minInfModel <- MinimalInformative(
+  dosegrid = coarseGrid,
+  refDose = 50,
+  threshmin = 0.2,
+  threshmax = 0.3,
+  control =
+    list(
+      threshold.stop = 0.03,
+      maxit = 200
+    ),
+  seed = 432
+)
 @
 
 We use a few grid points between the minimum and the maximum to guide the
@@ -380,19 +399,24 @@ The result \texttt{minInfModel} is a list, and we can use its contents to
 illustrate the creation of the prior:
 
 <<min-inf-res, fig=TRUE>>=
-matplot(x=coarseGrid,
-        y=minInfModel$required,
-        type="b", pch=19, col="blue", lty=1,
-        xlab="dose",
-        ylab="prior probability of DLT")
-matlines(x=coarseGrid,
-         y=minInfModel$quantiles,
-         type="b", pch=19, col="red", lty=1)
+matplot(
+  x = coarseGrid,
+  y = minInfModel$required,
+  type = "b", pch = 19, col = "blue", lty = 1,
+  xlab = "dose",
+  ylab = "prior probability of DLT"
+)
+matlines(
+  x = coarseGrid,
+  y = minInfModel$quantiles,
+  type = "b", pch = 19, col = "red", lty = 1
+)
 legend("right",
-       legend=c("quantiles", "approximation"),
-       col=c("blue", "red"),
-       lty=1,
-       bty="n")
+  legend = c("quantiles", "approximation"),
+  col = c("blue", "red"),
+  lty = 1,
+  bty = "n"
+)
 @
 
 In this plot we see in blue the quantiles (2.5\%, 50\%, and 97.5\%) of
@@ -436,9 +460,11 @@ As said before, models inheriting from the \texttt{GeneralModel} class rely on M
 for example as follows:
 
 <<mcmc-opts>>=
-options <- McmcOptions(burnin=100,
-                       step=2,
-                       samples=2000)
+options <- McmcOptions(
+  burnin = 100,
+  step = 2,
+  samples = 2000
+)
 @
 
 Now the object \texttt{options} specifies that you would like to have 2000
@@ -498,23 +524,25 @@ consider using a higher thinning parameter in order to decrease it.
 You can find other useful plotting functions in the package information:
 
 <<ggmcmc-help, eval=FALSE>>=
-help(package="ggmcmc", help_type="html")
+help(package = "ggmcmc", help_type = "html")
 @
 
 Similarly, using models from \texttt{ModelPseudo} class, we can also obtain the prior and posterior samples of the model parameters via MCMC.
 
 For example, using the DLTmodel, data1, the empty data set and options specified in earlier examples.
 <<mcmc-DLTsamples, results=hide>>=
-DLTsamples <- mcmc(data=data1,model=DLTmodel,options=options)
+DLTsamples <- mcmc(data = data1, model = DLTmodel, options = options)
 @
 
 The prior samples of the model parameters are now saved in the variable \texttt{DLTsamples}.
 
 <<mcmc-postDLTsamples, results=hide>>==
-data3 <-Data(x=c(25,50,50,75,100,100,225,300),
-             y=c(0,0,0,0,1,1,1,1),
-             doseGrid=seq(from=25,to=300,by=25))
-DLTpostsamples <- mcmc(data=data3,model=DLTmodel,options=options)
+data3 <- Data(
+  x = c(25, 50, 50, 75, 100, 100, 225, 300),
+  y = c(0, 0, 0, 0, 1, 1, 1, 1),
+  doseGrid = seq(from = 25, to = 300, by = 25)
+)
+DLTpostsamples <- mcmc(data = data3, model = DLTmodel, options = options)
 @
 
 Similarly, \texttt{DLTpostsamples} now contains the posterior samples of the model parameters.
@@ -531,7 +559,7 @@ When no MCMC sampling is involved, the posterior modal estimates of the model pa
 For example, we have some new observations specified in the data set \texttt{data3} and update the DLT model:
 
 <<update-DLTmodel>>=
-newDLTmodel <- update(object=DLTmodel,data=data3)
+newDLTmodel <- update(object = DLTmodel, data = data3)
 newDLTmodel@phi1
 newDLTmodel@phi2
 @
@@ -557,7 +585,7 @@ same way as with data, just that we use an empty data object:
 
 <<empty-data, fig=TRUE>>=
 ## provide only the dose grid:
-emptydata <- Data(doseGrid=data@doseGrid)
+emptydata <- Data(doseGrid = data@doseGrid)
 ## obtain prior samples with this Data object
 priorsamples <- mcmc(emptydata, model, options)
 ## then produce the plot
@@ -567,14 +595,14 @@ print(plot(priorsamples, model, emptydata))
 
 This \texttt{plot} function can also apply to the \texttt{DLTmodel} when samples of the parameters have been generated:
 <<plot-samplesdata1 , fig=TRUE>>=
-print(plot(DLTsamples,DLTmodel,data1))
+print(plot(DLTsamples, DLTmodel, data1))
 @
 
 
 In addition, we can also plot the fitted dose-response curve using the prior or the posterior modal estimates of the model parameters when no MCMC sampling is used. For example, we have the \texttt{DLTmodel} specified earlier under the \texttt{ModelTox} class with the data set \texttt{data1} we specified earlier:
 
 <<emptydatanoDLTsamples, fig=TRUE>>=
-print(plot(data1,DLTmodel))
+print(plot(data1, DLTmodel))
 @
 
 Since no samples are involved, only the curve using the prior or posterior modal estimates of the parameters are produced, without 95\% credibility intervals.
@@ -634,8 +662,10 @@ For example, in order to specify a maximum increase of 100\% for doses up to 20 
 and a maximum of 33\% for doses above 20 mg, we can setup the following increments rule:
 
 <<rel-incs>>=
-myIncrements <- IncrementsRelative(intervals=c(0, 20),
-                                   increments=c(1, 0.33))
+myIncrements <- IncrementsRelative(
+  intervals = c(0, 20),
+  increments = c(1, 0.33)
+)
 @
 
 Here the \texttt{intervals} slot specifies the left bounds of the intervals, in
@@ -647,7 +677,8 @@ maximum allowable dose given the current data:
 
 <<max-dose>>=
 nextMaxDose <- maxDose(myIncrements,
-                       data=data)
+  data = data
+)
 nextMaxDose
 @
 
@@ -655,8 +686,10 @@ So in this case, the next dose could not be larger than 20 mg.
 
 In the following example the dose escalation will be restricted to a 3-fold (= 200\%) increase:
 <<3fold-incs>>=
-myIncrements1 <- IncrementsRelative(intervals=c(25),
-                                   increments=c(2))
+myIncrements1 <- IncrementsRelative(
+  intervals = c(25),
+  increments = c(2)
+)
 @
 From all doses (since the dose grid starts at 25 mg) there is a maximum increase of 200\% here.
 
@@ -721,9 +754,11 @@ For example, in order to use the N-CRM with a target toxicity interval from 20\%
 to 35\%, and a maximum overdosing probability of 25\%, we specify:
 
 <<ncrm-spec>>=
-myNextBest <- NextBestNCRM(target=c(0.2, 0.35),
-                           overdose=c(0.35, 1),
-                           max_overdose_prob=0.25)
+myNextBest <- NextBestNCRM(
+  target = c(0.2, 0.35),
+  overdose = c(0.35, 1),
+  max_overdose_prob = 0.25
+)
 @
 
 Alternatively, we could use an MTD driven recommendation rule. For example, with
@@ -731,11 +766,13 @@ a target toxicity rate of 33\%, and recommending the 25\% posterior quantile of
 the MTD, we specify
 
 <<mtd-spec>>=
-mtdNextBest <- NextBestMTD(target=0.33,
-                           derive=
-                               function(mtd_samples){
-                                   quantile(mtd_samples, probs=0.25)
-                               })
+mtdNextBest <- NextBestMTD(
+  target = 0.33,
+  derive =
+    function(mtd_samples) {
+      quantile(mtd_samples, probs = 0.25)
+    }
+)
 @
 Note that the \texttt{NextBestMTD} class is quite flexible, because you can
 specify a function \texttt{derive} that derives the next best dose from the
@@ -775,8 +812,9 @@ samples, the model and the data:
 
 <<next-best-run>>=
 doseRecommendation <- nextBest(myNextBest,
-                               doselimit=nextMaxDose,
-                               samples=samples, model=model, data=data)
+  doselimit = nextMaxDose,
+  samples = samples, model = model, data = data
+)
 @
 
 The result is a list with two elements: \texttt{value} contains the numeric
@@ -794,7 +832,7 @@ print(doseRecommendation$plot)
 Similarly, we can use the the generic \texttt{nextBest} function for the\texttt{NextBestTD} and \texttt{NextBestTDsamples} rules. In the example below we will use the data set \texttt{data3} with DLT observations. We can compute the next best dose to be given to the next cohort using the posterior modal estimates of the DLT model (i.e., no MCMC sampling involved here):
 
 <<next-best-TD-run>>=
-doseRecDLT <- nextBest(TDNextBest,doselimit=300,model=newDLTmodel,data=data3)
+doseRecDLT <- nextBest(TDNextBest, doselimit = 300, model = newDLTmodel, data = data3)
 @
 
 A list of numerical values and a plot showing how the next best dose was computed will be given. This list of results will provide the numerical values for the next dose level, \texttt{next\_dose\_drt}; the target probability of DLT used during the trial, \texttt{prob\_target\_drt}; the estimated dose level for which its probability of DLT equals the target probability used during the trial, \texttt{dose\_target\_drt}; the target probability of DLT used at the end of a trial, \texttt{prob\_target\_eot}; the estimated dose level for which its probability of DLT equals the target probability of DLT used at the end of a trial \texttt{dose\_target\_eot}; and the dose level at dose grid closest and less than the \texttt{dose\_target\_eot}, \texttt{next\_dose\_eot}. We can use the \verb|$| operator to obtain these values and the plot from the list. For example,
@@ -811,9 +849,11 @@ We can see that the next dose suggested to be given to the next cohort of subjec
 
 When MCMC sampling is involved, we will use the samples of model parameters to choose the next best dose. For example, in the following code chunk we use the data set, \texttt{data3}, with some DLT observations and the posterior samples of the model parameters, \texttt{DLTpostsamples} to compute the next best dose:
 <<next-bestTDsamples-run>>=
-doseRecDLTSamples <- nextBest(TDsamplesNextBest,doselimit=300,
-                              samples=DLTpostsamples,model=newDLTmodel,
-                              data=data3)
+doseRecDLTSamples <- nextBest(TDsamplesNextBest,
+  doselimit = 300,
+  samples = DLTpostsamples, model = newDLTmodel,
+  data = data3
+)
 @
 
 The same list of results will be produced as in the example before: The values of the \texttt{next\_dose\_drt}, \texttt{prob\_target\_drt}, \texttt{dose\_target\_drt}, \texttt{prob\_target\_eot}, \texttt{dose\_target\_eot} and \texttt{next\_dose\_eot} can be obtained using the \verb|$| operator. The only difference is that the plot in this example will look slightly different than in the previous example:
@@ -898,8 +938,9 @@ next cohort:
 
 <<size-eval>>=
 size(mySize,
-     dose=doseRecommendation$value,
-     data=data)
+  dose = doseRecommendation$value,
+  data = data
+)
 @
 
 Here, because we have one DLT already, we would go for 3 patients for the next cohort.
@@ -909,7 +950,7 @@ following \texttt{CohortSizeConst} class, which we will use (with three
 patients) for simplicity for the remainder of this vignette:
 
 <<size-const>>=
-mySize <- CohortSizeConst(size=3)
+mySize <- CohortSizeConst(size = 3)
 @
 
 
@@ -954,10 +995,12 @@ Then we start by creating the three
 pieces the rule is composed of:
 
 <<rules-bits>>=
-myStopping1 <- StoppingMinCohorts(nCohorts=3)
-myStopping2 <- StoppingTargetProb(target=c(0.2, 0.35),
-                                  prob=0.5)
-myStopping3 <- StoppingMinPatients(nPatients=20)
+myStopping1 <- StoppingMinCohorts(nCohorts = 3)
+myStopping2 <- StoppingTargetProb(
+  target = c(0.2, 0.35),
+  prob = 0.5
+)
+myStopping3 <- StoppingMinPatients(nPatients = 20)
 @
 
 Finally we combine these with the ``and'' operator \texttt{\&} and the ``or'' operator \verb-|-:
@@ -980,8 +1023,10 @@ myStopping4 <- StoppingTDCIRatio(target_ratio = 5, prob_target = 0.3)
 During the dose escalation study, any (atomic or combined) stopping rule can be used by the function \texttt{stopTrial} to determine if the rule has already been fulfilled. For example in our case:
 
 <<rules-try>>=
-stopTrial(stopping=myStopping, dose=doseRecommendation$value,
-          samples=samples, model=model, data=data)
+stopTrial(
+  stopping = myStopping, dose = doseRecommendation$value,
+  samples = samples, model = model, data = data
+)
 @
 
 
@@ -994,11 +1039,15 @@ shall continue.
 
 In the same way the stopping rule \texttt{myStopping4} (no samples and with samples) can be evaluated:
 <<rules2-try>>=
-stopTrial(stopping= myStopping4, dose=doseRecDLTSamples$next_dose_drt,
-          samples=DLTpostsamples,model=newDLTmodel,data=data3)
+stopTrial(
+  stopping = myStopping4, dose = doseRecDLTSamples$next_dose_drt,
+  samples = DLTpostsamples, model = newDLTmodel, data = data3
+)
 
-stopTrial(stopping= myStopping4, dose=doseRecDLT$next_dose_drt,
-          model=newDLTmodel,data=data3)
+stopTrial(
+  stopping = myStopping4, dose = doseRecDLT$next_dose_drt,
+  model = newDLTmodel, data = data3
+)
 @
 % when DLT samples or no DLT samples are involved.
 Note that at the moment the "and" operator \texttt{\&} and the ``or''
@@ -1057,38 +1106,44 @@ that this makes sense. First, we use our \texttt{emptydata} object that only
 contains the dose grid, and a cohorts of 3 patients, starting from 0.1 mg:
 
 <<design-setup>>=
-design <- Design(model=model,
-                 nextBest=myNextBest,
-                 stopping=myStopping,
-                 increments=myIncrements,
-                 cohortSize=mySize,
-                 data=emptydata,
-                 startingDose=3)
+design <- Design(
+  model = model,
+  nextBest = myNextBest,
+  stopping = myStopping,
+  increments = myIncrements,
+  cohortSize = mySize,
+  data = emptydata,
+  startingDose = 3
+)
 @
 
 
 Another example will be given when the \texttt{TDDesign} class is used. The empty data set, \texttt{data1} will be used, and the starting dose will be 25 mg. The code below will be a design defined when no MCMC sampling is involved. The \texttt{nextBest} slot under this \texttt{TDDesign} class function has to be defined with the \texttt{TDNextBest} class object to ensure we will pick the next best dose using rules as defined when no MCMC sampling is involved. In addition, we define here with \texttt{myStopping4} that the trial will only stop when the ratio of the 95\% credibility interval limits of the current estimate of TD30 (TDtargetEndOfTrial) is less than or equal to 5. In addition, we also use \texttt{myIncrements1}, \texttt{mySize} and \texttt{data1} defined in earlier examples for the \texttt{increments}, \texttt{cohortSize} and  \texttt{data} slots in defining the \texttt{TDDesign} object:
 
 <<TDDesign-setup>>=
-DLTdesign <-TDDesign(model=DLTmodel,
-                     nextBest=TDNextBest,
-                     stopping=myStopping4,
-                     increments=myIncrements1,
-                     cohortSize=mySize,
-                     data=data1,
-                     startingDose=25)
+DLTdesign <- TDDesign(
+  model = DLTmodel,
+  nextBest = TDNextBest,
+  stopping = myStopping4,
+  increments = myIncrements1,
+  cohortSize = mySize,
+  data = data1,
+  startingDose = 25
+)
 @
 
 When MCMC samples are involved, we also have to specify a design to ensure our package will run the simulations using the MCMC samples of the model parameters for models specified under the \texttt{ModelPseudo} class object. In the example, the \texttt{TDsamplesDesign} class object has to be used with the \texttt{TDsamplesNextBest} class object in the \texttt{nextBest} slot to ensure MCMC sampling is involved for this design. We also apply the stopping rule \texttt{myStopping4} or \texttt{myStopping3} such that the trial will stop either when the ratio of the 95\% credibility interval limits of the current estimate of TD30 (TDtargetEndOfTrial) is less than or equal to 5 (\texttt{myStopping4}) or when a maximum of 30 patients has been enrolled in the trial (\texttt{myStopping3}):
 
 <<TDsamplesDesign-set-up>>=
-DLTsamplesDesign <- TDsamplesDesign(model=DLTmodel,
-                                    nextBest=TDsamplesNextBest,
-                                    stopping=(myStopping4|myStopping3),
-                                    increments = myIncrements1,
-                                    cohortSize=mySize,
-                                    data=data1,
-                                    startingDose=25)
+DLTsamplesDesign <- TDsamplesDesign(
+  model = DLTmodel,
+  nextBest = TDsamplesNextBest,
+  stopping = (myStopping4 | myStopping3),
+  increments = myIncrements1,
+  cohortSize = mySize,
+  data = data1,
+  startingDose = 25
+)
 @
 
 \subsection{Examining single trial behavior}
@@ -1133,7 +1188,7 @@ specific case of the function contained in the model space:
 myTruth <- probFunction(model, alpha0 = 7, alpha1 = 8)
 
 ## plot it in the range of the dose grid
-curve(myTruth(x), from=0, to=80, ylim=c(0, 1))
+curve(myTruth(x), from = 0, to = 80, ylim = c(0, 1))
 @
 
 
@@ -1144,7 +1199,7 @@ First, we will specified the true DLT scenario such that
 TrueDLT <- probFunction(DLTmodel, phi1 = -53.66584, phi2 = 10.50499)
 
 ## plot it in the range of the dose grid
-curve(TrueDLT, from=25, to=300, ylim=c(0, 1))
+curve(TrueDLT, from = 25, to = 300, ylim = c(0, 1))
 @
 
 This true DLT scenario will be used for both the \texttt{TDDesign} and the \texttt{TDsamplesDesign}
@@ -1155,12 +1210,13 @@ least 500:
 
 <<run-sims>>=
 time <- system.time(mySims <- simulate(design,
-                                       args=NULL,
-                                       truth=myTruth,
-                                       nsim=100,
-                                       seed=819,
-                                       mcmcOptions=options,
-                                       parallel=FALSE))[3]
+  args = NULL,
+  truth = myTruth,
+  nsim = 100,
+  seed = 819,
+  mcmcOptions = options,
+  parallel = FALSE
+))[3]
 time
 @
 
@@ -1186,7 +1242,7 @@ class(mySims)
 From the help page
 
 <<sim-help>>=
-help("Simulations-class", help="html")
+help("Simulations-class", help = "html")
 @
 
 we see that this class is a subclass of the ``GeneralSimulations'' class. By
@@ -1230,7 +1286,8 @@ true dose-toxicity function. We take the same (\texttt{myTruth}) as above:
 
 <<sim-summary>>=
 summary(mySims,
-        truth=myTruth)
+  truth = myTruth
+)
 @
 
 Note that sometimes the observed toxicity rate at the dose most often selected
@@ -1245,7 +1302,8 @@ detail than the textual summary we have just seen:
 
 <<sim-sum-plot, fig=TRUE>>=
 simSum <- summary(mySims,
-                  truth=myTruth)
+  truth = myTruth
+)
 print(plot(simSum))
 @
 
@@ -1269,8 +1327,8 @@ plot this one and add x-axis customization on top: (see the \texttt{ggplot2}
 documentation for more information on customizing the plots)
 
 <<sim-sum-plot2, fig=TRUE>>=
-dosePlot <- plot(simSum, type="doseSelected") +
-      scale_x_continuous(breaks=10:30, limits=c(10, 30))
+dosePlot <- plot(simSum, type = "doseSelected") +
+  scale_x_continuous(breaks = 10:30, limits = c(10, 30))
 print(dosePlot)
 @
 
@@ -1278,23 +1336,25 @@ Some further examples will be given for simulations using the \texttt{TDDesign} 
 
 <<DLTSim-run>>=
 DLTSim <- simulate(DLTdesign,
-                   args=NULL,
-                   truth=TrueDLT,
-                   nsim=10,
-                   seed=819,
-                   parallel=FALSE)
+  args = NULL,
+  truth = TrueDLT,
+  nsim = 10,
+  seed = 819,
+  parallel = FALSE
+)
 @
 
 The above is an example when no MCMC sampling is involved and we have another example below for simulation when MCMC sampling is involved:
 
 <<DLTsampSim-run,results=hide>>=
 DLTsampSim <- simulate(DLTsamplesDesign,
-                       args=NULL,
-                       truth=TrueDLT,
-                       nsim=10,
-                       seed=819,
-                       mcmcOptions=options,
-                       parallel=FALSE)
+  args = NULL,
+  truth = TrueDLT,
+  nsim = 10,
+  seed = 819,
+  mcmcOptions = options,
+  parallel = FALSE
+)
 @
 
 The meaning of these arguments are the same as those defined and explained above in the \texttt{simulate} example for the \texttt{Design} class.
@@ -1335,25 +1395,29 @@ which show the trial trajectories and the proportion of doses level tried.
 These simulation results can also be summarized using the \texttt{summary} function given the truth:
 <<DLTSim-summary>>=
 summary(DLTSim,
-        truth=TrueDLT)
+  truth = TrueDLT
+)
 @
 
 <<DLTsampSim-summary>>=
 summary(DLTsampSim,
-        truth=TrueDLT)
+  truth = TrueDLT
+)
 @
 
 Then we can also plot the summary of these two simulations using the \texttt{plot} function:
 <<DLTSim-plotsummary,fig=TRUE>>=
 DLTsimSum <- summary(DLTSim,
-             truth=TrueDLT)
+  truth = TrueDLT
+)
 print(plot(DLTsimSum))
 @
 
 and
 <<DLTsampSim-plotsummary,fig=TRUE>>=
 DLTsimsampSum <- summary(DLTsampSim,
-                truth=TrueDLT)
+  truth = TrueDLT
+)
 print(plot(DLTsimsampSum))
 @
 
@@ -1377,7 +1441,7 @@ argument. In our case, we want to supply the posterior samples of
 the 2000 posterior samples in order to reduce the runtime for this example:
 
 <<fut-samples>>=
-postSamples <- as.data.frame(samples@data)[(1:20)*50, ]
+postSamples <- as.data.frame(samples@data)[(1:20) * 50, ]
 postSamples
 @
 
@@ -1388,41 +1452,44 @@ Furthermore we have to make a new \texttt{Design} object that contains the
 current data to start from, and the current recommended dose as the starting dose:
 
 <<design-future>>=
-nowDesign <- Design(model=model,
-                    nextBest=myNextBest,
-                    stopping=myStopping,
-                    increments=myIncrements,
-                    cohortSize=mySize,
-                    ## use the current data:
-                    data=data,
-                    ## and the recommended dose as the starting dose:
-                    startingDose=doseRecommendation$value)
+nowDesign <- Design(
+  model = model,
+  nextBest = myNextBest,
+  stopping = myStopping,
+  increments = myIncrements,
+  cohortSize = mySize,
+  ## use the current data:
+  data = data,
+  ## and the recommended dose as the starting dose:
+  startingDose = doseRecommendation$value
+)
 @
 
 Finally we can execute the simulations:
 
 <<sim-future>>=
 time <- system.time(futureSims <- simulate(
-    ## supply the new design here
-    nowDesign,
-    ## the truth is the assumed prob function
-    truth=function(dose, alpha0, alpha1) {
-      samples <- Samples(
-        data = list(alpha0 = alpha0, alpha1 = alpha1),
-        options = McmcOptions(samples = 1)
-      )
-      prob(dose, model, samples)
-    },
-    ## further arguments are the
-    ## posterior samples
-    args=postSamples,
-    ## do exactly so many simulations as
-    ## we have samples
-    nsim=nrow(postSamples),
-    seed=918,
-    ## this remains the same:
-    mcmcOptions=options,
-    parallel=FALSE))[3]
+  ## supply the new design here
+  nowDesign,
+  ## the truth is the assumed prob function
+  truth = function(dose, alpha0, alpha1) {
+    samples <- Samples(
+      data = list(alpha0 = alpha0, alpha1 = alpha1),
+      options = McmcOptions(samples = 1)
+    )
+    prob(dose, model, samples)
+  },
+  ## further arguments are the
+  ## posterior samples
+  args = postSamples,
+  ## do exactly so many simulations as
+  ## we have samples
+  nsim = nrow(postSamples),
+  seed = 918,
+  ## this remains the same:
+  mcmcOptions = options,
+  parallel = FALSE
+))[3]
 time
 @
 
@@ -1440,7 +1507,8 @@ performance of our CRM relative to a truth:
 
 <<sim-future-summary>>=
 summary(futureSims,
-        truth=myTruth)
+  truth = myTruth
+)
 @
 
 We see here e.g. that the estimated number of patients overall is 19, so 11 more
@@ -1460,7 +1528,7 @@ The easiest way to setup a 3+3 design is the function
 \texttt{ThreePlusThreeDesign}:
 
 <<three-plus-three-setup>>=
-threeDesign <- ThreePlusThreeDesign(doseGrid=c(5, 10, 15, 25, 35, 50, 80))
+threeDesign <- ThreePlusThreeDesign(doseGrid = c(5, 10, 15, 25, 35, 50, 80))
 class(threeDesign)
 @
 
@@ -1474,17 +1542,19 @@ relationship:
 
 <<three-sims>>=
 threeSims <- simulate(threeDesign,
-                      nsim=1000,
-                      seed=35,
-                      truth=myTruth,
-                      parallel=FALSE)
+  nsim = 1000,
+  seed = 35,
+  truth = myTruth,
+  parallel = FALSE
+)
 @
 
 As before for the model-based design, we can summarize the simulations:
 
 <<three-sims-summary>>=
 threeSimsSum <- summary(threeSims,
-                        truth=myTruth)
+  truth = myTruth
+)
 threeSimsSum
 @
 
@@ -1530,18 +1600,27 @@ will always lead to better efficacy.
 Let's look at the data structure. Here is an example:
 <<dual-data-struct>>=
 data <- DataDual(
-    x=
-        c(0.1, 0.5, 1.5, 3, 6, 10, 10, 10,
-          20, 20, 20, 40, 40, 40, 50, 50, 50),
-    y=
-        c(0, 0, 0, 0, 0, 0, 1, 0,
-          0, 1, 1, 0, 0, 1, 0, 1, 1),
-    w=
-        c(0.31, 0.42, 0.59, 0.45, 0.6, 0.7, 0.55, 0.6,
-          0.52, 0.54, 0.56, 0.43, 0.41, 0.39, 0.34, 0.38, 0.21),
-    doseGrid=
-        c(0.1, 0.5, 1.5, 3, 6,
-          seq(from=10, to=80, by=2)))
+  x =
+    c(
+      0.1, 0.5, 1.5, 3, 6, 10, 10, 10,
+      20, 20, 20, 40, 40, 40, 50, 50, 50
+    ),
+  y =
+    c(
+      0, 0, 0, 0, 0, 0, 1, 0,
+      0, 1, 1, 0, 0, 1, 0, 1, 1
+    ),
+  w =
+    c(
+      0.31, 0.42, 0.59, 0.45, 0.6, 0.7, 0.55, 0.6,
+      0.52, 0.54, 0.56, 0.43, 0.41, 0.39, 0.34, 0.38, 0.21
+    ),
+  doseGrid =
+    c(
+      0.1, 0.5, 1.5, 3, 6,
+      seq(from = 10, to = 80, by = 2)
+    )
+)
 @
 
 The corresponding plot can again be obtained with:
@@ -1555,15 +1634,17 @@ already. In order to model this data, we consider a dual-endpoint model with a f
 structure for the dose-biomarker relationship:
 
 <<dual-rw1-model>>=
-model <- DualEndpointRW(mean=c(0, 1),
-                        cov=matrix(c(1, 0, 0, 1), nrow=2),
-                        sigma2betaW=
-                        0.01,
-                        sigma2W=
-                        c(a=0.1, b=0.1),
-                        rho=
-                        c(a=1, b=1),
-                        rw1=TRUE)
+model <- DualEndpointRW(
+  mean = c(0, 1),
+  cov = matrix(c(1, 0, 0, 1), nrow = 2),
+  sigma2betaW =
+    0.01,
+  sigma2W =
+    c(a = 0.1, b = 0.1),
+  rho =
+    c(a = 1, b = 1),
+  rw1 = TRUE
+)
 @
 
 We use a smoothing parameter $\sigma^{2}_{\beta_{W}} = 0.01$, an inverse-gamma
@@ -1576,9 +1657,11 @@ sufficiently long Markov chain for fitting them. Here we just use for illustrati
 purposes a quite small Markov chain -- again, for the real application, this would need to be at least 25 times longer!
 
 <<dual-options>>=
-options <- McmcOptions(burnin=100,
-                       step=2,
-                       samples=2000)
+options <- McmcOptions(
+  burnin = 100,
+  step = 2,
+  samples = 2000
+)
 @
 
 Then we can obtain the MCMC samples:
@@ -1603,7 +1686,7 @@ number of gridpoints.) So we can plot the model fit:
 
 \setkeys{Gin}{width=\textwidth}
 <<dual-modelfit, fig=TRUE>>=
-print(plot(samples, model, data, extrapolate=FALSE))
+print(plot(samples, model, data, extrapolate = FALSE))
 @
 \setkeys{Gin}{width=0.65\textwidth}
 
@@ -1624,9 +1707,11 @@ least 90\% of the maximum biomarker response, and a 25\% maximum overdose
 probability for the next dose, we specify:
 
 <<dual-nextbest>>=
-myNextBest <- NextBestDualEndpoint(target=c(0.9,1),
-                                   overdose=c(0.35, 1),
-                                   max_overdose_prob=0.25)
+myNextBest <- NextBestDualEndpoint(
+  target = c(0.9, 1),
+  overdose = c(0.35, 1),
+  max_overdose_prob = 0.25
+)
 @
 
 In our example, and assuming a dose limit of 50~mg given by the maximum
@@ -1634,10 +1719,11 @@ allowable increments, the next dose can then be found as follows:
 
 <<dual-nextdose-eval>>=
 nextDose <- nextBest(myNextBest,
-                     doselimit=50,
-                     samples=samples,
-                     model=model,
-                     data=data)
+  doselimit = 50,
+  samples = samples,
+  model = model,
+  data = data
+)
 nextDose$value
 @
 
@@ -1663,15 +1749,19 @@ gives back \texttt{TRUE} when queried if it has been fulfilled by the
 probability to be above 90\% biomarker response, we specify:
 
 <<dual-stop>>=
-myStopping6 <- StoppingTargetBiomarker(target=c(0.9,1),
-                                       prob=0.5)
+myStopping6 <- StoppingTargetBiomarker(
+  target = c(0.9, 1),
+  prob = 0.5
+)
 @
 
 In this case, the rule has not been fulfilled yet, as we see here:
 
 <<dual-stop-try>>=
-stopTrial(myStopping6, dose=nextDose$value,
-          samples, model, data)
+stopTrial(myStopping6,
+  dose = nextDose$value,
+  samples, model, data
+)
 @
 
 Again, this dual-endpoint specific rule can be combined as required with any
@@ -1689,14 +1779,16 @@ data set, and use the relative increments rule defined in a previous section and
 use a constant cohort size of 3 patients:
 
 <<dual-design>>=
-emptydata <- DataDual(doseGrid=data@doseGrid)
-design <- DualDesign(model=model,
-                     data=emptydata,
-                     nextBest=myNextBest,
-                     stopping=myStopping,
-                     increments=myIncrements,
-                     cohortSize=CohortSizeConst(3),
-                     startingDose=6)
+emptydata <- DataDual(doseGrid = data@doseGrid)
+design <- DualDesign(
+  model = model,
+  data = emptydata,
+  nextBest = myNextBest,
+  stopping = myStopping,
+  increments = myIncrements,
+  cohortSize = CohortSizeConst(3),
+  startingDose = 6
+)
 @
 
 In order to study operating characteristics, we need to determine true biomarker
@@ -1707,28 +1799,25 @@ response function. Have a look at the corresponding help page for more
 information on that. But let's come back to our scenario definition:
 
 <<dual-scenario>>=
-betaMod <- function (dose, e0, eMax, delta1, delta2, scal)
-{
-    maxDens <- (delta1^delta1) * (delta2^delta2)/((delta1 + delta2)^(delta1 + delta2))
-    dose <- dose/scal
-    e0 + eMax/maxDens * (dose^delta1) * (1 - dose)^delta2
+betaMod <- function(dose, e0, eMax, delta1, delta2, scal) {
+  maxDens <- (delta1^delta1) * (delta2^delta2) / ((delta1 + delta2)^(delta1 + delta2))
+  dose <- dose / scal
+  e0 + eMax / maxDens * (dose^delta1) * (1 - dose)^delta2
 }
-trueBiomarker <- function(dose)
-{
-    betaMod(dose, e0=0.2, eMax=0.6, delta1=5, delta2=5 * 0.5 / 0.5, scal=100)
+trueBiomarker <- function(dose) {
+  betaMod(dose, e0 = 0.2, eMax = 0.6, delta1 = 5, delta2 = 5 * 0.5 / 0.5, scal = 100)
 }
-trueTox <- function(dose)
-{
-    pnorm((dose-60)/10)
+trueTox <- function(dose) {
+  pnorm((dose - 60) / 10)
 }
 @
 
 We can draw the corresponding curves:
 
 <<dual-sc-plot, fig=TRUE>>=
-par(mfrow=c(1, 2))
-curve(trueTox(x), from=0, to=80)
-curve(trueBiomarker(x), from=0, to=80)
+par(mfrow = c(1, 2))
+curve(trueTox(x), from = 0, to = 80)
+curve(trueBiomarker(x), from = 0, to = 80)
 @
 
 So the biomarker response peaks at 50~mg, where the toxicity is still low. After
@@ -1738,18 +1827,21 @@ simulating trials (starting each with 6~mg):
 
 <<dual-sims>>=
 mySims <- simulate(design,
-                   trueTox=trueTox,
-                   trueBiomarker=trueBiomarker,
-                   sigma2W=0.01,
-                   rho=0,
-                   nsim=10,
-                   parallel=FALSE,
-                   seed=3,
-                   startingDose=6,
-                   mcmcOptions =
-                       McmcOptions(burnin=1000,
-                                   step=1,
-                                   samples=3000))
+  trueTox = trueTox,
+  trueBiomarker = trueBiomarker,
+  sigma2W = 0.01,
+  rho = 0,
+  nsim = 10,
+  parallel = FALSE,
+  seed = 3,
+  startingDose = 6,
+  mcmcOptions =
+    McmcOptions(
+      burnin = 1000,
+      step = 1,
+      samples = 3000
+    )
+)
 @
 
 Note that we are having a ``small'' MCMC option set here, in order to reduce
@@ -1767,8 +1859,9 @@ Finally, a summary of the simulations can be obtained with the corresponding fun
 
 <<dual-sims-sum>>=
 sumOut <- summary(mySims,
-                  trueTox=trueTox,
-                  trueBiomarker=trueBiomarker)
+  trueTox = trueTox,
+  trueBiomarker = trueBiomarker
+)
 sumOut
 @
 
@@ -1801,13 +1894,14 @@ In this subsection, we will look into the dose-escalation designs where we model
 First, we have to define the data sets for the dual responses using the \texttt{DataDual} function just like in the example given in the last subsection.
 
 <<dualdata>>=
-data2<-DataDual(doseGrid=seq(25,300,25))
+data2 <- DataDual(doseGrid = seq(25, 300, 25))
 
-data4<-DataDual(x=c(25,50,50,75,100,100,225,300),
-                y=c(0,0,0,0,1,1,1,1),
-                w=c(0.31,0.42,0.59,0.45,0.6,0.7,0.6,0.52),
-                doseGrid=seq(25,300,25))
-
+data4 <- DataDual(
+  x = c(25, 50, 50, 75, 100, 100, 225, 300),
+  y = c(0, 0, 0, 0, 1, 1, 1, 1),
+  w = c(0.31, 0.42, 0.59, 0.45, 0.6, 0.7, 0.6, 0.52),
+  doseGrid = seq(25, 300, 25)
+)
 @
 In this example, \texttt{data2} is the empty data set where 12 dose levels, from 25 to 300 mg with increments of 25 mg are used. The variable \texttt{data4} contains the data set with both the binary DLT and continuous efficacy responses observations. The elements in the slot \texttt{x} are the dose levels where 8 subjects are treated. The elements in slot \texttt{y} represent the corresponding binary DLT responses observed for these 8 subjects and the elements in slot \texttt{w} represent the continuous efficacy responses obtained for the 8 subjects.
 
@@ -1824,7 +1918,7 @@ The following commands show how we set up the \texttt{Effloglog} model. This is 
 Similarly to other pseudo models, the data set has to be specified before setting up the model:
 
 <<modelEff>>=
-Effmodel <- Effloglog(eff = c(1.223,2.513), eff_dose=c(25,300), nu = c(a = 1, b = 0.025), data = data2)
+Effmodel <- Effloglog(eff = c(1.223, 2.513), eff_dose = c(25, 300), nu = c(a = 1, b = 0.025), data = data2)
 @
 
 For the specification of the prior pseudo data, two dose levels 25 and 300 mg are fixed and specified in the \texttt{eff\_dose} slot. After eliciting the prior expected efficacy values at these two dose levels (e.g. by asking for experts'), these are specified in the \texttt{eff} slot. Here for example, 1.223 is the expected efficacy value for subjects treated at dose 25 mg and 2.513 is the expected efficacy value for subjects treated at 300 mg. The slot \texttt{nu} represents the prior precision of the efficacy responses. In this example, two positive scalars for $a$ and $b$ are specified suggesting the prior distribution of the precision is gamma with shape parameter $a=1$ and rate parameter $b=0.025$. Note here, since a gamma distribution is used as the prior distribution of $\nu$, the posterior distribution will again be a gamma distribution, because the gamma prior on the precision is conjugate to the normal likelihood.
@@ -1868,13 +1962,13 @@ As discussed, the posterior estimates for model parameters specified under \text
 % using Effmodel or Effmodel2, respectively with data2 and options specified earlier
 
 <<mcmc-Effsamples>>=
-Effsamples <- mcmc(data=data2,model=Effmodel,options)
-Effsamples2 <- mcmc(data=data2, model=Effmodel2, options)
+Effsamples <- mcmc(data = data2, model = Effmodel, options)
+Effsamples2 <- mcmc(data = data2, model = Effmodel2, options)
 @
 
 <<mcmc-Effpostsamples>>=
-Effpostsamples <- mcmc(data=data2,model=Effmodel,options)
-Effpostsamples2 <- mcmc(data=data2, model=Effmodel2, options)
+Effpostsamples <- mcmc(data = data2, model = Effmodel, options)
+Effpostsamples2 <- mcmc(data = data2, model = Effmodel2, options)
 @
 
 Under the \texttt{Effloglog} (Effmodel) model, samples of the intercept $\theta_1$, the slope $\theta_2$ of the efficacy linear log-log model and the precision $\nu$ of the efficacy responses can be obtained. For the \texttt{EffFlexi} (Effmodel2) model, the samples of the mean efficacy responses at all dose levels, the variance $\sigma^2$ (sigma2) of the efficacy responses and the variance $\sigma^2_{\beta_W}$ (sigma2betaW) of the random walk model are obtained. It is also again possible to look at the structure (\texttt{str}) and extract (\texttt{get}) and obtain plots (\texttt{\text{ggs\_traceplot}} and \texttt{\text{ggs\_autocorrelation}}) of the samples of the parameters.
@@ -1882,7 +1976,7 @@ Under the \texttt{Effloglog} (Effmodel) model, samples of the intercept $\theta_
 If no MCMC sampling is involved, the prior or the posterior modal estimates can be obtained in the output of the models. If some observations for both responses are available, they can be put in a \texttt{DataDual} data set, and given to the \texttt{data} slot under each model. We can also do so by updating the current model with the new observations using the \texttt{update} function. Then the prior or the posterior modal estimates of the model parameters can be obtained using the \verb|@| operator of the model. For example, for the \texttt{Effloglog} class model:
 
 <<update-Effmodel>>=
-newEffmodel <- update(object=Effmodel,data=data4)
+newEffmodel <- update(object = Effmodel, data = data4)
 newEffmodel@theta1
 newEffmodel@theta2
 newEffmodel@nu
@@ -1891,7 +1985,7 @@ The posterior modal estimates of $\theta_1$ and $\theta_2$ and the updated value
 
 Similarly we can update with new data for the \texttt{EffFlexi} class model:
 <<update-Effmodel2>>=
-newEffmodel2 <- update(object=Effmodel2,data=data4)
+newEffmodel2 <- update(object = Effmodel2, data = data4)
 newEffmodel2@RW
 @
 % such that the updated random walk difference matrix can be obtained.
@@ -1899,17 +1993,17 @@ newEffmodel2@RW
 The \texttt{plot} function can also be applied to the \texttt{Effloglog} model class or the \texttt{EffFlexi} model class objects, when samples of the parameters are generated under all these models:
 
 <<plot-samplesdata2loglog, fig=TRUE>>=
-print(plot(Effpostsamples, newEffmodel,data4))
+print(plot(Effpostsamples, newEffmodel, data4))
 @
 
 <<plot-samplesdata2Flexi, fig=TRUE>>=
-print(plot(Effpostsamples2,newEffmodel2,data4))
+print(plot(Effpostsamples2, newEffmodel2, data4))
 @
 
 In addition, we can also plot the fitted dose-efficacy curve using the prior or the posterior modal estimates of the model parameters when no MCMC sampling is used. For example, using \texttt{Effmodel} and data set \texttt{data2} specified earlier:
 
 <<plot-nosamplesEffmodel, fig=TRUE>>=
-print(plot(data2,Effmodel))
+print(plot(data2, Effmodel))
 @
 
 
@@ -1920,14 +2014,18 @@ Furthermore, we can also plot the estimated DLT probability and efficacy curve s
 For example, using the \texttt{DLTmodel}, \texttt{Effmodel} and \texttt{data2} specified in earlier examples:
 
 <<plotDualResponseNoSamples, fig=TRUE>>=
-plotDualResponses(DLEmodel=DLTmodel,
-                  Effmodel=Effmodel,data=data2)
+plotDualResponses(
+  DLEmodel = DLTmodel,
+  Effmodel = Effmodel, data = data2
+)
 @
 
 When the MCMC samples are used, we have:
 <<plotDualResponseSamples, fig=TRUE>>=
-plotDualResponses(DLEmodel=DLTmodel,DLEsamples=DLTsamples,
-                  Effmodel=Effmodel,Effsamples=Effsamples,data=data2)
+plotDualResponses(
+  DLEmodel = DLTmodel, DLEsamples = DLTsamples,
+  Effmodel = Effmodel, Effsamples = Effsamples, data = data2
+)
 @
 
 
@@ -1944,7 +2042,7 @@ For example, the most ideal case is that both the probability of no DLT and the 
 We can plot the gain function given a DLT model specified under the \texttt{ModelTox} class and an efficacy model specified under the \texttt{ModelEff} class using the \texttt{plotGain} function. For example, using the variables \texttt{newDLTmodel}, \texttt{newEffmodel} and the data set with observations, \texttt{data4}, specified in earlier examples, we have:
 
 <<plotGain, fig=TRUE>>=
-plotGain(DLEmodel=newDLTmodel,Effmodel=newEffmodel,data=data4)
+plotGain(DLEmodel = newDLTmodel, Effmodel = newEffmodel, data = data4)
 @
 
 This is a case where no MCMC sampling is involved such that the prior and posterior modal estimates of the model parameters are used.
@@ -1961,10 +2059,11 @@ GainNextBest <- NextBestMaxGain(
 To use the \texttt{NextBestMaxGain}, we have to specify the target probability of the occurrence of a DLT to be used during the trial or at the end of the trial. In this example, the target probability of DLT to be used during the trial and at the end of the trial are 0.35 and 0.3, respectively. Therefore, under this rule we will suggest the dose level which gives the maximum gain value and has a probability of DLT less than or equal to 0.35 to administer to the next cohort of subjects. At the end of the trial, we will recommend the dose with maximum gain value and probability of DLT less than or equal to 0.3. In order to derive the next best dose for administration, we have to use the \texttt{nextBest} function with this \texttt{NextBestMaxGain} object given the doselimit, both the DLT and the efficacy models and the data set, which includes all currently available observations:
 <<nextbest-maxgain>>=
 doseRecGain <- nextBest(GainNextBest,
-                        doselimit=max(data4@doseGrid),
-                        model=newDLTmodel,
-                        model_eff=newEffmodel,
-                        data=data4)
+  doselimit = max(data4@doseGrid),
+  model = newDLTmodel,
+  model_eff = newEffmodel,
+  data = data4
+)
 @
 The results will be a list of numerical values with a plot illustrating how the next best dose was computed. The list of numerical values include the next best dose suggested, the values of the target probabilities of DLT used during and at the end of a trial. Furthermore, the estimated doses for these two targets, as well as the "Gstar" estimated dose (the dose with gives the maximum gain value) are provided along with the corresponding dose level in the dose grid for the above three estimates. We can also get to see the plot about the next best dose recommendation using the \verb|$| operator.
 
@@ -1995,12 +2094,13 @@ Again, the generic function \texttt{nextBest} will be used together with this ru
 
 <<nextbest-NextBestMaxGainSamples>>=
 doseRecGainSamples <- nextBest(GainsamplesNextBest,
-                               doselimit=max(data4@doseGrid),
-                               model=newDLTmodel,
-                               samples=DLTpostsamples,
-                               model_eff=newEffmodel,
-                               samples_eff=Effpostsamples,
-                               data=data4)
+  doselimit = max(data4@doseGrid),
+  model = newDLTmodel,
+  samples = DLTpostsamples,
+  model_eff = newEffmodel,
+  samples_eff = Effpostsamples,
+  data = data4
+)
 @
 The list of numerical results given in the output will be the same as those given using \texttt{NextBestMaxGain} class object which includes the next dose suggested, the current estimates of TD30, TD35 and Gstar and their corresponding dose levels at dose Grid. We can also see the plot:
 <<nextbest-NextBestMaxGainSamplesplot,fig=TRUE>>=
@@ -2024,21 +2124,26 @@ To note here, at the moment the class \texttt{StoppingMaxGainCIRatio} cannot be 
 
 Similarly, the \texttt{stopTrial} function can then be used in order to determine if the rule has been fulfilled:
 <<StopTrial-stoppingGstar>>=
+stopTrial(
+  stopping = myStopping7, dose = doseRecGain$next_dose, model = newDLTmodel,
+  data = data4, Effmodel = newEffmodel
+)
 
-stopTrial(stopping=myStopping7,dose=doseRecGain$next_dose,model=newDLTmodel,
-          data=data4, Effmodel=newEffmodel)
-
-stopTrial(stopping=myStopping7,
-          dose=doseRecGainSamples$next_dose,
-          samples=DLTpostsamples,
-          model=newDLTmodel,
-          data=data4,
-          TDderive=function(TDsamples){
-            quantile(TDsamples,prob=0.3)},
-          Effmodel=newEffmodel,
-          Effsamples=Effpostsamples,
-          Gstarderive=function(Gstarsamples){
-            quantile(Gstarsamples,prob=0.5)})
+stopTrial(
+  stopping = myStopping7,
+  dose = doseRecGainSamples$next_dose,
+  samples = DLTpostsamples,
+  model = newDLTmodel,
+  data = data4,
+  TDderive = function(TDsamples) {
+    quantile(TDsamples, prob = 0.3)
+  },
+  Effmodel = newEffmodel,
+  Effsamples = Effpostsamples,
+  Gstarderive = function(Gstarsamples) {
+    quantile(Gstarsamples, prob = 0.5)
+  }
+)
 @
 % For cases when either no or DLT and efficacy samples are involved.
 
@@ -2047,35 +2152,41 @@ Next, we will now look at how to construct the design objects. We will also star
 There are two functions which we can used. The \texttt{DualResponsesDesign} can be used without MCMC samples, while \texttt{DualResponsesSamplesDesign} can be used when MCMC samples are involved. For example, we use the object \texttt{Effmodel} of the \texttt{Effloglog} class specified earlier as the efficacy model in the following code:
 
 <<DualResponseDesign>>=
-design1 <- DualResponsesDesign(nextBest=GainNextBest,
-                               model=DLTmodel,
-                               Effmodel=Effmodel,
-                               data=data2,
-                               stopping=myStopping7,
-                               increments=myIncrements1,
-                               cohortSize=mySize,
-                               startingDose=25)
+design1 <- DualResponsesDesign(
+  nextBest = GainNextBest,
+  model = DLTmodel,
+  Effmodel = Effmodel,
+  data = data2,
+  stopping = myStopping7,
+  increments = myIncrements1,
+  cohortSize = mySize,
+  startingDose = 25
+)
 
-design2 <- DualResponsesSamplesDesign(nextBest=GainsamplesNextBest,
-                                      model=DLTmodel,
-                                      eff_model=Effmodel,
-                                      data=data2,
-                                      stopping=myStopping8,
-                                      increments=myIncrements1,
-                                      cohortSize=mySize,
-                                      startingDose=25)
+design2 <- DualResponsesSamplesDesign(
+  nextBest = GainsamplesNextBest,
+  model = DLTmodel,
+  eff_model = Effmodel,
+  data = data2,
+  stopping = myStopping8,
+  increments = myIncrements1,
+  cohortSize = mySize,
+  startingDose = 25
+)
 @
 
 We can use the function \texttt{DualResponsesSamplesDesign} to specify a design when an efficacy model is specified under the \texttt{EffFlexi} class object. For example, we use the object \texttt{Effmodel2} of the  \texttt{EffFlexi} class specified in earlier examples here:
 <<DualResponsesDesign-Flexi>>=
-design3 <- DualResponsesSamplesDesign(nextBest=GainsamplesNextBest,
-                                      model=DLTmodel,
-                                      eff_model=Effmodel2,
-                                      data=data2,
-                                      stopping=myStopping8,
-                                      increments=myIncrements1,
-                                      cohortSize=mySize,
-                                      startingDose=25)
+design3 <- DualResponsesSamplesDesign(
+  nextBest = GainsamplesNextBest,
+  model = DLTmodel,
+  eff_model = Effmodel2,
+  data = data2,
+  stopping = myStopping8,
+  increments = myIncrements1,
+  cohortSize = mySize,
+  startingDose = 25
+)
 @
 
 We specified the above three designs using all previous rules for nextBest (the escalation rule), stopping, increments and cohort size.
@@ -2087,32 +2198,40 @@ Next, we have to specify the scenarios for simulations. For example, for simulat
 myTruthDLT <- probFunction(DLTmodel, phi1 = -53.66584, phi2 = 10.50499)
 myTruthEff <- efficacyFunction(Effmodel, theta1 = -4.818429, theta2 = 3.653058)
 
-myTruthGain <- function(dose)
-{return(myTruthEff(dose) * (1-myTruthDLT(dose)))}
+myTruthGain <- function(dose) {
+  return(myTruthEff(dose) * (1 - myTruthDLT(dose)))
+}
 @
 
 The true DLT, efficacy and gain curves can be obtained. We can see the corresponding curves as
 <<Truecurves, fig=TRUE>>=
 TruthTD <- doseFunction(DLTmodel, phi1 = -53.66584, phi2 = 10.50499)
 
-GAIN<-function(xi){-(-4.8218429+3.653058*log(xi))/(1+exp(-53.66584+10.50499*xi))}
-Txi<-(optim(1,GAIN,method="BFGS")$par)
-maxg<-(optim(1,GAIN,method="BFGS")$value)
-gstar<-exp(Txi)
-td30<-TruthTD(0.3)
-td35<-TruthTD(0.35)
-DoseLevels<-seq(2,300,1)
-plot(DoseLevels,myTruthDLT(DoseLevels), col='red',type='l',lwd=3,ylab='Values',
-  ylim=c(0,max(1,max(myTruthEff(DoseLevels)))))
-points(td30,0.3,col='violet',pch=15,cex=2)
-points(td35,0.35,col='violet',pch=16,cex=2)
-lines(DoseLevels,myTruthEff(DoseLevels),col='blue',type='l',lwd=3)
-lines(DoseLevels,myTruthGain(DoseLevels),col='green3',type='l',lwd=3)
-points(gstar,-maxg,col='green3',pch=17,cex=2)
-legend('topright',bty='n',cex=1.2,c('p(DLT)=0.3','p(DLT)=0.35','Max gain','p(DLTs)',
-'efficacy','gain'),text.col=c('violet','violet','green3','red','blue','green3'),
-pch=c(15,16,17,NA,NA,NA),lty=c(NA,NA,NA,1,1,1),col=c('violet','violet','green3','red','blue','green3'))
-
+GAIN <- function(xi) {
+  -(-4.8218429 + 3.653058 * log(xi)) / (1 + exp(-53.66584 + 10.50499 * xi))
+}
+Txi <- (optim(1, GAIN, method = "BFGS")$par)
+maxg <- (optim(1, GAIN, method = "BFGS")$value)
+gstar <- exp(Txi)
+td30 <- TruthTD(0.3)
+td35 <- TruthTD(0.35)
+DoseLevels <- seq(2, 300, 1)
+plot(DoseLevels, myTruthDLT(DoseLevels),
+  col = "red", type = "l", lwd = 3, ylab = "Values",
+  ylim = c(0, max(1, max(myTruthEff(DoseLevels))))
+)
+points(td30, 0.3, col = "violet", pch = 15, cex = 2)
+points(td35, 0.35, col = "violet", pch = 16, cex = 2)
+lines(DoseLevels, myTruthEff(DoseLevels), col = "blue", type = "l", lwd = 3)
+lines(DoseLevels, myTruthGain(DoseLevels), col = "green3", type = "l", lwd = 3)
+points(gstar, -maxg, col = "green3", pch = 17, cex = 2)
+legend("topright",
+  bty = "n", cex = 1.2, c(
+    "p(DLT)=0.3", "p(DLT)=0.35", "Max gain", "p(DLTs)",
+    "efficacy", "gain"
+  ), text.col = c("violet", "violet", "green3", "red", "blue", "green3"),
+  pch = c(15, 16, 17, NA, NA, NA), lty = c(NA, NA, NA, 1, 1, 1), col = c("violet", "violet", "green3", "red", "blue", "green3")
+)
 @
 
 Using all the above commands, we can obtained the DLT (red), efficacy(blue) and gain (green) curves and also their corresponding true values for the TD30 (TDtargetEndOfTrial), TD35 (TDtargetDuringTrial) and the Gstar. In addition, the above scenario for DLT and efficacy can be used for both cases (modal estimates or MCMC samples).
@@ -2120,35 +2239,45 @@ Using all the above commands, we can obtained the DLT (red), efficacy(blue) and 
 If the \texttt{EffFlexi} class object will be used for the simulations. Using the same DLT scenario and a new efficacy scenario will be specified such that
 
 <<TruecurveswithFlexi>>=
-myTruthEff1<- c(-0.5478867, 0.1645417,  0.5248031,  0.7604467,
-               0.9333009  ,1.0687031,  1.1793942 , 1.2726408 ,
-               1.3529598 , 1.4233411 , 1.4858613 , 1.5420182)
+myTruthEff1 <- c(
+  -0.5478867, 0.1645417, 0.5248031, 0.7604467,
+  0.9333009, 1.0687031, 1.1793942, 1.2726408,
+  1.3529598, 1.4233411, 1.4858613, 1.5420182
+)
 
 d1 <- data2@doseGrid
-myTruthGain1 <- myTruthEff1 * (1-myTruthDLT(d1))
+myTruthGain1 <- myTruthEff1 * (1 - myTruthDLT(d1))
 @
 
 
 The corresponding curves can also be plotted as:
 
 <<TruecurvesFlexi,fig=TRUE>>=
-maxg1<-max(myTruthGain1)
+maxg1 <- max(myTruthGain1)
 gstar1 <- data2@doseGrid[which.max(myTruthGain1)]
-DoseLevels1<-seq(1,300,1)
+DoseLevels1 <- seq(1, 300, 1)
 TruthTD <- doseFunction(DLTmodel, phi1 = -53.66584, phi2 = 10.50499)
-td30<-TruthTD(0.3)
-td35<-TruthTD(0.35)
-plot(DoseLevels1,myTruthDLT(DoseLevels1), col='red',type='l',
-  lwd=3,ylab='Values',ylim=c(0,max(1,max(myTruthEff1))))
-points(td30,0.3,col='violet',pch=15,cex=2)
-points(td35,0.35,col='violet',pch=16,cex=2)
-lines(d1,myTruthEff1,col='blue',type='l',lwd=3)
-lines(d1,myTruthGain1,col='green3',type='l',lwd=3)
-points(gstar1,maxg1,col='green3',pch=17,cex=2)
-legend('topright',bty='n',cex=1.2,c('p(DLT)=0.3','p(DLT)=0.35',
-'Max gain','p(DLTs)','efficacy','gain'),text.col=c('violet','violet',
-'green3','red','blue','green3'),pch=c(15,16,17,NA,NA,NA),
-lty=c(NA,NA,NA,1,1,1),col=c('violet','violet','green3','red','blue','green3'))
+td30 <- TruthTD(0.3)
+td35 <- TruthTD(0.35)
+plot(DoseLevels1, myTruthDLT(DoseLevels1),
+  col = "red", type = "l",
+  lwd = 3, ylab = "Values", ylim = c(0, max(1, max(myTruthEff1)))
+)
+points(td30, 0.3, col = "violet", pch = 15, cex = 2)
+points(td35, 0.35, col = "violet", pch = 16, cex = 2)
+lines(d1, myTruthEff1, col = "blue", type = "l", lwd = 3)
+lines(d1, myTruthGain1, col = "green3", type = "l", lwd = 3)
+points(gstar1, maxg1, col = "green3", pch = 17, cex = 2)
+legend("topright",
+  bty = "n", cex = 1.2, c(
+    "p(DLT)=0.3", "p(DLT)=0.35",
+    "Max gain", "p(DLTs)", "efficacy", "gain"
+  ), text.col = c(
+    "violet", "violet",
+    "green3", "red", "blue", "green3"
+  ), pch = c(15, 16, 17, NA, NA, NA),
+  lty = c(NA, NA, NA, 1, 1, 1), col = c("violet", "violet", "green3", "red", "blue", "green3")
+)
 @
 
 
@@ -2156,14 +2285,16 @@ Similarly, we also get the DLT, efficacy and gain values and the corresponding r
 
 Then after establishing the real scenarios, we can simulate the trials. First, we will look at two examples when the \texttt{Effloglog} class object is used as the efficacy model. We will show first an example when no MCMC samples are involved:
 <<simulateDualResponseDesign,results=hide>>=
-Sim1 <- simulate(object=design1,
-                 args=NULL,
-                 trueDLE=myTruthDLT,
-                 trueEff=myTruthEff,
-                 trueNu=1/0.025,
-                 nsim=10,
-                 seed=819,
-                 parallel=FALSE)
+Sim1 <- simulate(
+  object = design1,
+  args = NULL,
+  trueDLE = myTruthDLT,
+  trueEff = myTruthEff,
+  trueNu = 1 / 0.025,
+  nsim = 10,
+  seed = 819,
+  parallel = FALSE
+)
 @
 
 
@@ -2173,30 +2304,34 @@ The \texttt{simulate} function is used in all cases to simulate trials with spec
 When MCMC samples are used, we can also specify the simulations in a similar way with an additional argument \texttt{mcmcOptions} such that we have
 
 <<simulateDualResponsesamplesDesign,results=hide>>=
-Sim2 <- simulate(object=design2,
-                 args=NULL,
-                 trueDLE=myTruthDLT,
-                 trueEff=myTruthEff,
-                 trueNu=1/0.025,
-                 nsim=10,
-                 seed=819,
-                 mcmcOptions=options,
-                 parallel=FALSE)
+Sim2 <- simulate(
+  object = design2,
+  args = NULL,
+  trueDLE = myTruthDLT,
+  trueEff = myTruthEff,
+  trueNu = 1 / 0.025,
+  nsim = 10,
+  seed = 819,
+  mcmcOptions = options,
+  parallel = FALSE
+)
 @
 
 
 When the \texttt{EffFlexi} class object is used as the efficacy model, we will generate the simulations as follows:
 <<simulateDualResponseFlexiDesign,results=hide>>=
-Sim3<-simulate(object=design3,
-               args=NULL,
-               trueDLE=myTruthDLT,
-               trueEff=myTruthEff1,
-               trueSigma2=0.025,
-               trueSigma2betaW=1,
-               mcmcOptions=options,
-               nsim=10,
-               seed=819,
-               parallel=FALSE)
+Sim3 <- simulate(
+  object = design3,
+  args = NULL,
+  trueDLE = myTruthDLT,
+  trueEff = myTruthEff1,
+  trueSigma2 = 0.025,
+  trueSigma2betaW = 1,
+  mcmcOptions = options,
+  nsim = 10,
+  seed = 819,
+  parallel = FALSE
+)
 @
 
 
@@ -2220,24 +2355,27 @@ Then, the summary and the plot of the summary of the simulations can be obtained
 
 <<summarysimulationresults1, fig=TRUE>>=
 Sum1 <- summary(Sim1,
-                trueDLE=myTruthDLT,
-                trueEff=myTruthEff)
+  trueDLE = myTruthDLT,
+  trueEff = myTruthEff
+)
 Sum1
 print(plot(Sum1))
 @
 
 <<summarysimulationresults2,fig=TRUE>>=
 Sum2 <- summary(Sim2,
-                trueDLE=myTruthDLT,
-                trueEff=myTruthEff)
+  trueDLE = myTruthDLT,
+  trueEff = myTruthEff
+)
 Sum2
 print(plot(Sum2))
 @
 
 <<summarysimulationresults3,fig=TRUE>>=
 Sum3 <- summary(Sim3,
-                trueDLE=myTruthDLT,
-                trueEff=myTruthEff1)
+  trueDLE = myTruthDLT,
+  trueEff = myTruthEff1
+)
 Sum3
 print(plot(Sum3))
 
