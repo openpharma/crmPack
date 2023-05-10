@@ -21,6 +21,7 @@ articles:
     - rolling-crm
     - simulations
     - migration_from_the_old_crmPack
+    - parallel_computing_with_extensions
 
 reference:
   - title: Package
