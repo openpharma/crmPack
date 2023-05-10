@@ -39,7 +39,7 @@ The doses are computed based on the samples of the model parameters (samples).">
   <a href="#" class="nav-link dropdown-toggle" data-bs-toggle="dropdown" role="button" aria-expanded="false" aria-haspopup="true" id="dropdown-articles">Articles</a>
   <div class="dropdown-menu" aria-labelledby="dropdown-articles">
     <a class="dropdown-item" href="../articles/migration_from_the_old_crmPack.html">Migrating from crmPack version 1.0.3</a>
-    <a class="dropdown-item" href="../articles/parallel_computing_with_extensions.html">How to use parallel computing with extensions to the package, an example</a>
+    <a class="dropdown-item" href="../articles/parallel_computing_with_extensions.html">Parallel computing with extensions</a>
     <a class="dropdown-item" href="../articles/rolling-crm.html">Rolling CRM Example</a>
     <a class="dropdown-item" href="../articles/simulations.html">Simulation study example</a>
     <a class="dropdown-item" href="../articles/trial_analysis.html">Trial Analysis</a>
@@ -50,12 +50,6 @@ The doses are computed based on the samples of the model parameters (samples).">
 <li class="nav-item">
   <a class="nav-link" href="../news/index.html">Changelog</a>
 </li>
-<!-- start dropdown for versions --> <li class="nav-item dropdown">
-        <a href="#" class="nav-link dropdown-toggle"
-          data-bs-toggle="dropdown" role="button"
-          aria-expanded="false" aria-haspopup="true"
-          id="dropdown-versions">Versions</a> <div class="dropdown-menu" aria-labelledby="dropdown-versions"> <a class="dropdown-item" data-toggle="tooltip" title="" href="https://Roche.github.io/crmPack/main">main</a> </div></li>
-<!-- end dropdown for versions -->
       </ul><form class="form-inline my-2 my-lg-0" role="search">
         <input type="search" class="form-control me-sm-2" aria-label="Toggle navigation" name="search-input" data-search-index="../search.json" id="search-input" placeholder="Search for" autocomplete="off"></form>
 
@@ -264,9 +258,9 @@ variable that dose depends on, represents toxicity probability.</p>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co"># Posterior for the dose achieving Prob(DLT) = 0.45.</span></span></span>
 <span class="r-in"><span><span class="fu">dose</span><span class="op">(</span>x <span class="op">=</span> <span class="fl">0.45</span>, model <span class="op">=</span> <span class="va">my_model</span>, samples <span class="op">=</span> <span class="va">my_samples</span><span class="op">)</span></span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  [1] 234.31902 234.31902  29.50388  29.50388  29.50388  29.50388  71.79365</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  [8]  66.33470  74.90187  74.90187  36.60538  36.60538  36.60538  36.60538</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [15]  36.60538  36.60538  36.60538  36.60538  72.92846  72.92846</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  [1] 27.739898 27.739898 78.109862 78.109862 78.109862 63.521840 52.922684</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  [8] 59.421381 59.421381 44.061417 15.899580 15.899580 15.899580 23.833876</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [15] 48.376142 18.253600 18.253600  8.251107  8.251107  5.030166</span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co"># Create data from the 'Data' (or 'DataDual') class.</span></span></span>
 <span class="r-in"><span><span class="va">dlt_data</span> <span class="op">&lt;-</span> <span class="fu"><a href="Data-class.html">Data</a></span><span class="op">(</span></span></span>
@@ -303,7 +297,7 @@ variable that dose depends on, represents toxicity probability.</p>
 
 
     <footer><div class="pkgdown-footer-left">
-  <p></p><p>Developed by Daniel Sabanes Bove, Wai Yin Yeung, Burak Kuersad Guenhan, Giuseppe Palermo, Thomas Jaki, Jiawen Zhu, Ziwei Liao, Dimitris Kontos, Marlene Schulte-Goebel, Doug <a href="mailto:doug.kelkhoff@roche.com" class="email">doug.kelkhoff@roche.com</a> Kelkhoff.</p>
+  <p></p><p>Developed by Daniel Sabanes Bove, Wai Yin Yeung, Burak Kuersad Guenhan, Giuseppe Palermo, Thomas Jaki, Jiawen Zhu, Ziwei Liao, Dimitris Kontos, Marlene Schulte-Goebel, Doug Kelkhoff.</p>
 </div>
 
 <div class="pkgdown-footer-right">

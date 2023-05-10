@@ -25,7 +25,7 @@
   <a href="#" class="nav-link dropdown-toggle" data-bs-toggle="dropdown" role="button" aria-expanded="false" aria-haspopup="true" id="dropdown-articles">Articles</a>
   <div class="dropdown-menu" aria-labelledby="dropdown-articles">
     <a class="dropdown-item" href="../articles/migration_from_the_old_crmPack.html">Migrating from crmPack version 1.0.3</a>
-    <a class="dropdown-item" href="../articles/parallel_computing_with_extensions.html">How to use parallel computing with extensions to the package, an example</a>
+    <a class="dropdown-item" href="../articles/parallel_computing_with_extensions.html">Parallel computing with extensions</a>
     <a class="dropdown-item" href="../articles/rolling-crm.html">Rolling CRM Example</a>
     <a class="dropdown-item" href="../articles/simulations.html">Simulation study example</a>
     <a class="dropdown-item" href="../articles/trial_analysis.html">Trial Analysis</a>
@@ -36,12 +36,6 @@
 <li class="nav-item">
   <a class="nav-link" href="../news/index.html">Changelog</a>
 </li>
-<!-- start dropdown for versions --> <li class="nav-item dropdown">
-        <a href="#" class="nav-link dropdown-toggle"
-          data-bs-toggle="dropdown" role="button"
-          aria-expanded="false" aria-haspopup="true"
-          id="dropdown-versions">Versions</a> <div class="dropdown-menu" aria-labelledby="dropdown-versions"> <a class="dropdown-item" data-toggle="tooltip" title="" href="https://Roche.github.io/crmPack/main">main</a> </div></li>
-<!-- end dropdown for versions -->
       </ul><form class="form-inline my-2 my-lg-0" role="search">
         <input type="search" class="form-control me-sm-2" aria-label="Toggle navigation" name="search-input" data-search-index="../search.json" id="search-input" placeholder="Search for" autocomplete="off"></form>
 
@@ -133,7 +127,7 @@ the doses tested in patients</p></dd>
 <span class="r-in"><span>                              data<span class="op">=</span><span class="va">data</span><span class="op">)</span></span></span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co">##The efficacy model of 'ModelEff' (e.g 'Effloglog') class</span></span></span>
-<span class="r-in"><span><span class="va">Effmodel</span><span class="op">&lt;-</span><span class="fu"><a href="Effloglog-class.html">Effloglog</a></span><span class="op">(</span>eff<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">1.223</span>,<span class="fl">2.513</span><span class="op">)</span>,eff_dose<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">25</span>,<span class="fl">300</span><span class="op">)</span>,</span></span>
+<span class="r-in"><span><span class="va">eff_model</span><span class="op">&lt;-</span><span class="fu"><a href="Effloglog-class.html">Effloglog</a></span><span class="op">(</span>eff<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">1.223</span>,<span class="fl">2.513</span><span class="op">)</span>,eff_dose<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">25</span>,<span class="fl">300</span><span class="op">)</span>,</span></span>
 <span class="r-in"><span>                    nu<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span>a<span class="op">=</span><span class="fl">1</span>,b<span class="op">=</span><span class="fl">0.025</span><span class="op">)</span>,data<span class="op">=</span><span class="va">data</span><span class="op">)</span></span></span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co">##The escalation rule using the 'NextBestMaxGain' class</span></span></span>
@@ -154,14 +148,14 @@ the doses tested in patients</p></dd>
 <span class="r-in"><span><span class="co">##Specified the design(for details please refer to the 'DualResponsesDesign' example)</span></span></span>
 <span class="r-in"><span><span class="va">design</span> <span class="op">&lt;-</span> <span class="fu"><a href="DualResponsesDesign.html">DualResponsesDesign</a></span><span class="op">(</span>nextBest<span class="op">=</span><span class="va">mynextbest</span>,</span></span>
 <span class="r-in"><span>                              model<span class="op">=</span><span class="va">DLEmodel</span>,</span></span>
-<span class="r-in"><span>                              Effmodel<span class="op">=</span><span class="va">Effmodel</span>,</span></span>
+<span class="r-in"><span>                              Effmodel<span class="op">=</span><span class="va">eff_model</span>,</span></span>
 <span class="r-in"><span>                              stopping<span class="op">=</span><span class="va">myStopping</span>,</span></span>
 <span class="r-in"><span>                              increments<span class="op">=</span><span class="va">myIncrements</span>,</span></span>
 <span class="r-in"><span>                              cohortSize<span class="op">=</span><span class="va">mySize</span>,</span></span>
 <span class="r-in"><span>                              data<span class="op">=</span><span class="va">data</span>,startingDose<span class="op">=</span><span class="fl">25</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="co">##Specify the true DLE and efficacy curves</span></span></span>
 <span class="r-in"><span><span class="va">myTruthDLE</span> <span class="op">&lt;-</span> <span class="fu"><a href="probFunction.html">probFunction</a></span><span class="op">(</span><span class="va">DLEmodel</span>, phi1 <span class="op">=</span> <span class="op">-</span><span class="fl">53.66584</span>, phi2 <span class="op">=</span> <span class="fl">10.50499</span><span class="op">)</span></span></span>
-<span class="r-in"><span><span class="va">myTruthEff</span> <span class="op">&lt;-</span> <span class="fu"><a href="efficacyFunction.html">efficacyFunction</a></span><span class="op">(</span><span class="va">Effmodel</span>, theta1 <span class="op">=</span> <span class="op">-</span><span class="fl">4.818429</span>, theta2 <span class="op">=</span> <span class="fl">3.653058</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="va">myTruthEff</span> <span class="op">&lt;-</span> <span class="fu"><a href="efficacyFunction.html">efficacyFunction</a></span><span class="op">(</span><span class="va">eff_model</span>, theta1 <span class="op">=</span> <span class="op">-</span><span class="fl">4.818429</span>, theta2 <span class="op">=</span> <span class="fl">3.653058</span><span class="op">)</span></span></span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co">## Then specified the simulations and generate the trial</span></span></span>
 <span class="r-in"><span><span class="co">##For illustration purpose only 1 simulation is produced (nsim=1).</span></span></span>
@@ -194,14 +188,17 @@ the doses tested in patients</p></dd>
 <span class="r-in"><span><span class="op">)</span></span></span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co">##The design of 'DualResponsesSamplesDesign' class</span></span></span>
-<span class="r-in"><span><span class="va">design</span> <span class="op">&lt;-</span> <span class="fu"><a href="DualResponsesSamplesDesign.html">DualResponsesSamplesDesign</a></span><span class="op">(</span>nextBest<span class="op">=</span><span class="va">mynextbest</span>,</span></span>
-<span class="r-in"><span>                                     cohortSize<span class="op">=</span><span class="va">mySize</span>,</span></span>
-<span class="r-in"><span>                                     startingDose<span class="op">=</span><span class="fl">25</span>,</span></span>
-<span class="r-in"><span>                                     model<span class="op">=</span><span class="va">DLEmodel</span>,</span></span>
-<span class="r-in"><span>                                     Effmodel<span class="op">=</span><span class="va">Effmodel</span>,</span></span>
-<span class="r-in"><span>                                     data<span class="op">=</span><span class="va">data</span>,</span></span>
-<span class="r-in"><span>                                     stopping<span class="op">=</span><span class="va">myStopping</span>,</span></span>
-<span class="r-in"><span>                                     increments<span class="op">=</span><span class="va">myIncrements</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="va">design</span> <span class="op">&lt;-</span> <span class="fu"><a href="DualResponsesSamplesDesign-class.html">DualResponsesSamplesDesign</a></span><span class="op">(</span></span></span>
+<span class="r-in"><span>  nextBest<span class="op">=</span><span class="va">mynextbest</span>,</span></span>
+<span class="r-in"><span>  cohortSize<span class="op">=</span><span class="va">mySize</span>,</span></span>
+<span class="r-in"><span>  startingDose<span class="op">=</span><span class="fl">25</span>,</span></span>
+<span class="r-in"><span>  model<span class="op">=</span><span class="va">DLEmodel</span>,</span></span>
+<span class="r-in"><span>  eff_model<span class="op">=</span><span class="va">eff_model</span>,</span></span>
+<span class="r-in"><span>  data<span class="op">=</span><span class="va">data</span>,</span></span>
+<span class="r-in"><span>  stopping<span class="op">=</span><span class="va">myStopping</span>,</span></span>
+<span class="r-in"><span>  increments<span class="op">=</span><span class="va">myIncrements</span></span></span>
+<span class="r-in"><span><span class="op">)</span></span></span>
+<span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co">##options for MCMC</span></span></span>
 <span class="r-in"><span><span class="va">options</span><span class="op">&lt;-</span><span class="fu"><a href="McmcOptions-class.html">McmcOptions</a></span><span class="op">(</span>burnin<span class="op">=</span><span class="fl">10</span>,step<span class="op">=</span><span class="fl">1</span>,samples<span class="op">=</span><span class="fl">20</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="co">##The simulations</span></span></span>
@@ -227,7 +224,7 @@ the doses tested in patients</p></dd>
 
 
     <footer><div class="pkgdown-footer-left">
-  <p></p><p>Developed by Daniel Sabanes Bove, Wai Yin Yeung, Burak Kuersad Guenhan, Giuseppe Palermo, Thomas Jaki, Jiawen Zhu, Ziwei Liao, Dimitris Kontos, Marlene Schulte-Goebel, Doug <a href="mailto:doug.kelkhoff@roche.com" class="email">doug.kelkhoff@roche.com</a> Kelkhoff.</p>
+  <p></p><p>Developed by Daniel Sabanes Bove, Wai Yin Yeung, Burak Kuersad Guenhan, Giuseppe Palermo, Thomas Jaki, Jiawen Zhu, Ziwei Liao, Dimitris Kontos, Marlene Schulte-Goebel, Doug Kelkhoff.</p>
 </div>
 
 <div class="pkgdown-footer-right">

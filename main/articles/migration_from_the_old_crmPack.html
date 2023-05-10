@@ -49,7 +49,7 @@
   <a href="#" class="nav-link dropdown-toggle" data-bs-toggle="dropdown" role="button" aria-expanded="false" aria-haspopup="true" id="dropdown-articles">Articles</a>
   <div class="dropdown-menu" aria-labelledby="dropdown-articles">
     <a class="dropdown-item" href="../articles/migration_from_the_old_crmPack.html">Migrating from crmPack version 1.0.3</a>
-    <a class="dropdown-item" href="../articles/parallel_computing_with_extensions.html">How to use parallel computing with extensions to the package, an example</a>
+    <a class="dropdown-item" href="../articles/parallel_computing_with_extensions.html">Parallel computing with extensions</a>
     <a class="dropdown-item" href="../articles/rolling-crm.html">Rolling CRM Example</a>
     <a class="dropdown-item" href="../articles/simulations.html">Simulation study example</a>
     <a class="dropdown-item" href="../articles/trial_analysis.html">Trial Analysis</a>
@@ -60,12 +60,6 @@
 <li class="nav-item">
   <a class="nav-link" href="../news/index.html">Changelog</a>
 </li>
-<!-- start dropdown for versions --> <li class="nav-item dropdown">
-        <a href="#" class="nav-link dropdown-toggle"
-          data-bs-toggle="dropdown" role="button"
-          aria-expanded="false" aria-haspopup="true"
-          id="dropdown-versions">Versions</a> <div class="dropdown-menu" aria-labelledby="dropdown-versions"> <a class="dropdown-item" data-toggle="tooltip" title="" href="https://Roche.github.io/crmPack/main">main</a> </div></li>
-<!-- end dropdown for versions -->
       </ul>
 <form class="form-inline my-2 my-lg-0" role="search">
         <input type="search" class="form-control me-sm-2" aria-label="Toggle navigation" name="search-input" data-search-index="../search.json" id="search-input" placeholder="Search for" autocomplete="off">
@@ -2046,10 +2040,9 @@ of a fixed model’s parameters values.</p>
 <span><span class="co"># given a particular models and samples.</span></span>
 <span><span class="co"># Every single dose corresponds to one particular sample in `my_samples`.</span></span>
 <span><span class="fu"><a href="../reference/dose.html">dose</a></span><span class="op">(</span><span class="fl">0.3</span>, <span class="va">my_model</span>, <span class="va">my_samples</span><span class="op">)</span></span></code></pre></div>
-<pre><code><span><span class="co">##  [1] 3.594281e-01 5.654679e-01 2.089696e+00 1.323056e+00 2.024545e-03</span></span>
-<span><span class="co">##  [6] 1.371013e+00 5.260738e+00 1.536109e+00 1.150483e+00 1.323855e+00</span></span>
-<span><span class="co">## [11] 1.033597e+00 2.386531e+00 5.081636e-01 8.465561e-01 2.201366e+00</span></span>
-<span><span class="co">## [16] 1.585996e-01 2.942903e+00 7.723774e-05 9.385524e-01 9.062692e-01</span></span></code></pre>
+<pre><code><span><span class="co">##  [1] 0.5875160 3.1010451 1.1164193 0.9586064 0.8852840 1.2109679 0.3503065</span></span>
+<span><span class="co">##  [8] 1.0573403 0.7283099 1.6908311 1.3230536 1.2844363 5.1553302 1.7336353</span></span>
+<span><span class="co">## [15] 1.0231778 0.9006214 4.1685602 0.7702810 1.4609884 0.9814177</span></span></code></pre>
 <div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># True dose-DLT relationship.</span></span>
 <span><span class="co"># Say that -0.8 and 1 are the true values for models parameters alpha0 and alpha1 respectively.</span></span>
@@ -2067,10 +2060,9 @@ of a fixed model’s parameters values.</p>
 <code class="sourceCode R"><span><span class="co"># Toxicity probabilities for a given dose (equal to 10), model and samples.</span></span>
 <span><span class="co"># Every single probability value corresponds to one particular sample in `my_samples`.</span></span>
 <span><span class="fu"><a href="../reference/prob.html">prob</a></span><span class="op">(</span><span class="fl">10</span>, <span class="va">my_model</span>, <span class="va">my_samples</span><span class="op">)</span></span></code></pre></div>
-<pre><code><span><span class="co">##  [1] 0.95783061 0.93885695 0.77884671 0.99728355 0.72889831 0.84280850</span></span>
-<span><span class="co">##  [7] 0.26396031 0.72567601 0.86815493 0.99846570 0.49718658 0.55309087</span></span>
-<span><span class="co">## [13] 0.97879786 0.97604185 0.83449799 0.04493087 0.71283120 0.88206909</span></span>
-<span><span class="co">## [19] 0.94744814 0.95873553</span></span></code></pre>
+<pre><code><span><span class="co">##  [1] 0.9877452 0.7750593 0.9943105 0.7060354 0.8115201 0.9654951 0.9021443</span></span>
+<span><span class="co">##  [8] 0.9669010 0.6895091 0.9680060 0.7398730 0.9389306 0.4049892 0.8846143</span></span>
+<span><span class="co">## [15] 0.8103551 0.9090079 0.5706343 0.9632616 0.8462839 0.9510551</span></span></code></pre>
 <div class="sourceCode" id="cb12"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># True DLT-dose relationship.</span></span>
 <span><span class="co"># Say that -0.8 and 1 are the true values for models parameters alpha0 and alpha1 respectively.</span></span>
@@ -2163,8 +2155,8 @@ account of any associated <code>doseGrid</code>.</p>
 <span><span class="co">##         y[i] ~ dbern(p[i])</span></span>
 <span><span class="co">##     }</span></span>
 <span><span class="co">## }</span></span>
-<span><span class="co">## &lt;bytecode: 0x56008c598d60&gt;</span></span>
-<span><span class="co">## &lt;environment: 0x56008d6c0f08&gt;</span></span>
+<span><span class="co">## &lt;bytecode: 0x55605d78cba8&gt;</span></span>
+<span><span class="co">## &lt;environment: 0x55605e8a5aa0&gt;</span></span>
 <span><span class="co">## </span></span>
 <span><span class="co">## Slot "priormodel":</span></span>
 <span><span class="co">## function () </span></span>
@@ -2173,8 +2165,8 @@ account of any associated <code>doseGrid</code>.</p>
 <span><span class="co">##     alpha0 &lt;- theta[1]</span></span>
 <span><span class="co">##     alpha1 &lt;- theta[2]</span></span>
 <span><span class="co">## }</span></span>
-<span><span class="co">## &lt;bytecode: 0x56008c597e80&gt;</span></span>
-<span><span class="co">## &lt;environment: 0x56008d6c0f08&gt;</span></span>
+<span><span class="co">## &lt;bytecode: 0x55605d78faf8&gt;</span></span>
+<span><span class="co">## &lt;environment: 0x55605e8a5aa0&gt;</span></span>
 <span><span class="co">## </span></span>
 <span><span class="co">## Slot "modelspecs":</span></span>
 <span><span class="co">## function (from_prior) </span></span>
@@ -2185,16 +2177,16 @@ account of any associated <code>doseGrid</code>.</p>
 <span><span class="co">##     }</span></span>
 <span><span class="co">##     ms</span></span>
 <span><span class="co">## }</span></span>
-<span><span class="co">## &lt;bytecode: 0x56008c5990b8&gt;</span></span>
-<span><span class="co">## &lt;environment: 0x56008d6c69f0&gt;</span></span>
+<span><span class="co">## &lt;bytecode: 0x55605d790d30&gt;</span></span>
+<span><span class="co">## &lt;environment: 0x55605e8a5838&gt;</span></span>
 <span><span class="co">## </span></span>
 <span><span class="co">## Slot "init":</span></span>
 <span><span class="co">## function () </span></span>
 <span><span class="co">## {</span></span>
 <span><span class="co">##     list(theta = c(0, 1))</span></span>
 <span><span class="co">## }</span></span>
-<span><span class="co">## &lt;bytecode: 0x56008c59c5f0&gt;</span></span>
-<span><span class="co">## &lt;environment: 0x56008d6c69f0&gt;</span></span>
+<span><span class="co">## &lt;bytecode: 0x55605d790438&gt;</span></span>
+<span><span class="co">## &lt;environment: 0x55605e8a5838&gt;</span></span>
 <span><span class="co">## </span></span>
 <span><span class="co">## Slot "datanames":</span></span>
 <span><span class="co">## [1] "nObs" "y"    "x"   </span></span>
@@ -2213,7 +2205,7 @@ account of any associated <code>doseGrid</code>.</p>
 
     <footer><div class="pkgdown-footer-left">
   <p></p>
-<p>Developed by Daniel Sabanes Bove, Wai Yin Yeung, Burak Kuersad Guenhan, Giuseppe Palermo, Thomas Jaki, Jiawen Zhu, Ziwei Liao, Dimitris Kontos, Marlene Schulte-Goebel, Doug <a href="mailto:doug.kelkhoff@roche.com" class="email">doug.kelkhoff@roche.com</a> Kelkhoff.</p>
+<p>Developed by Daniel Sabanes Bove, Wai Yin Yeung, Burak Kuersad Guenhan, Giuseppe Palermo, Thomas Jaki, Jiawen Zhu, Ziwei Liao, Dimitris Kontos, Marlene Schulte-Goebel, Doug Kelkhoff.</p>
 </div>
 
 <div class="pkgdown-footer-right">
