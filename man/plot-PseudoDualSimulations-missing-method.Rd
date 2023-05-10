@@ -48,7 +48,7 @@ DLEmodel <- LogisticIndepBeta(binDLE=c(1.05,1.8),
                               data=data)
 
 ##The efficacy model of 'ModelEff' (e.g 'Effloglog') class
-Effmodel<-Effloglog(eff=c(1.223,2.513),eff_dose=c(25,300),
+eff_model<-Effloglog(eff=c(1.223,2.513),eff_dose=c(25,300),
                     nu=c(a=1,b=0.025),data=data)
 
 ##The escalation rule using the 'NextBestMaxGain' class
@@ -69,14 +69,14 @@ myStopping <- StoppingMinPatients(nPatients=36)
 ##Specified the design(for details please refer to the 'DualResponsesDesign' example)
 design <- DualResponsesDesign(nextBest=mynextbest,
                               model=DLEmodel,
-                              Effmodel=Effmodel,
+                              Effmodel=eff_model,
                               stopping=myStopping,
                               increments=myIncrements,
                               cohortSize=mySize,
                               data=data,startingDose=25)
 ##Specify the true DLE and efficacy curves
 myTruthDLE <- probFunction(DLEmodel, phi1 = -53.66584, phi2 = 10.50499)
-myTruthEff <- efficacyFunction(Effmodel, theta1 = -4.818429, theta2 = 3.653058)
+myTruthEff <- efficacyFunction(eff_model, theta1 = -4.818429, theta2 = 3.653058)
 
 ## Then specified the simulations and generate the trial
 ##For illustration purpose only 1 simulation is produced (nsim=1).
@@ -106,14 +106,17 @@ mynextbest <- NextBestMaxGainSamples(
 )
 
 ##The design of 'DualResponsesSamplesDesign' class
-design <- DualResponsesSamplesDesign(nextBest=mynextbest,
-                                     cohortSize=mySize,
-                                     startingDose=25,
-                                     model=DLEmodel,
-                                     Effmodel=Effmodel,
-                                     data=data,
-                                     stopping=myStopping,
-                                     increments=myIncrements)
+design <- DualResponsesSamplesDesign(
+  nextBest=mynextbest,
+  cohortSize=mySize,
+  startingDose=25,
+  model=DLEmodel,
+  eff_model=eff_model,
+  data=data,
+  stopping=myStopping,
+  increments=myIncrements
+)
+
 ##options for MCMC
 options<-McmcOptions(burnin=10,step=1,samples=20)
 ##The simulations
