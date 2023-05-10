@@ -1618,7 +1618,7 @@ test_that("StoppingSpecificDose works correctly if dose rec. = specific and stop
   expect_identical(result, expected)
 })
 
-test_that("StoppingSpecificDose correclty replaces next best string with specific string", {
+test_that("StoppingSpecificDose correctly replaces next best string with specific string", {
   my_stopping <- StoppingSpecificDose(
     rule = StoppingPatientsNearDose(nPatients = 9, percentage = 5),
     dose = 80
