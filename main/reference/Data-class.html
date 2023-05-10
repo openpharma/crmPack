@@ -28,24 +28,18 @@ It inherits from GeneralData."><meta property="og:image" content="https://roche.
 <li class="nav-item dropdown">
   <a href="#" class="nav-link dropdown-toggle" data-bs-toggle="dropdown" role="button" aria-expanded="false" aria-haspopup="true" id="dropdown-articles">Articles</a>
   <div class="dropdown-menu" aria-labelledby="dropdown-articles">
-    <a class="dropdown-item" href="../articles/migration_from_the_old_crmPack.html">Migrating from crmPack version 1.0.3</a>
-    <a class="dropdown-item" href="../articles/parallel_computing_with_extensions.html">Parallel computing with extensions</a>
+    <a class="dropdown-item" href="../articles/trial_definition.html">Trial Definition</a>
+    <a class="dropdown-item" href="../articles/trial_analysis.html">Trial Analysis</a>
+    <a class="dropdown-item" href="../articles/trial_simulation.html">Trial Simulation</a>
     <a class="dropdown-item" href="../articles/rolling-crm.html">Rolling CRM Example</a>
     <a class="dropdown-item" href="../articles/simulations.html">Simulation study example</a>
-    <a class="dropdown-item" href="../articles/trial_analysis.html">Trial Analysis</a>
-    <a class="dropdown-item" href="../articles/trial_definition.html">Trial Definition</a>
-    <a class="dropdown-item" href="../articles/trial_simulation.html">Trial Simulation</a>
+    <a class="dropdown-item" href="../articles/migration_from_the_old_crmPack.html">Migrating from crmPack version 1.0.3</a>
+    <a class="dropdown-item" href="../articles/parallel_computing_with_extensions.html">Parallel computing with extensions</a>
   </div>
 </li>
 <li class="nav-item">
   <a class="nav-link" href="../news/index.html">Changelog</a>
 </li>
-<!-- start dropdown for versions --> <li class="nav-item dropdown">
-        <a href="#" class="nav-link dropdown-toggle"
-          data-bs-toggle="dropdown" role="button"
-          aria-expanded="false" aria-haspopup="true"
-          id="dropdown-versions">Versions</a> <div class="dropdown-menu" aria-labelledby="dropdown-versions"> <a class="dropdown-item" data-toggle="tooltip" title="" href="https://Roche.github.io/crmPack/main">main</a> </div></li>
-<!-- end dropdown for versions -->
       </ul><form class="form-inline my-2 my-lg-0" role="search">
         <input type="search" class="form-control me-sm-2" aria-label="Toggle navigation" name="search-input" data-search-index="../search.json" id="search-input" placeholder="Search for" autocomplete="off"></form>
 
@@ -172,13 +166,13 @@ i.e. a sorted (in ascending order) sequence of values from <code>{1, 2, ...}</co
     <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="va">my_data</span> <span class="op">&lt;-</span> <span class="fu">Data</span><span class="op">(</span></span></span>
 <span class="r-in"><span>  x <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">0.1</span>, <span class="fl">0.5</span>, <span class="fl">1.5</span>, <span class="fl">3</span>, <span class="fl">6</span>, <span class="fl">10</span>, <span class="fl">10</span>, <span class="fl">10</span><span class="op">)</span>,</span></span>
 <span class="r-in"><span>  y <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">0</span>, <span class="fl">0</span>, <span class="fl">0</span>, <span class="fl">0</span>, <span class="fl">0</span>, <span class="fl">0</span>, <span class="fl">1</span>, <span class="fl">0</span><span class="op">)</span>,</span></span>
+<span class="r-in"><span>  ID <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/integer.html" class="external-link">as.integer</a></span><span class="op">(</span><span class="fl">1</span><span class="op">:</span><span class="fl">8</span><span class="op">)</span>,</span></span>
+<span class="r-in"><span>  cohort <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/integer.html" class="external-link">as.integer</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">1</span>, <span class="fl">2</span>, <span class="fl">3</span>, <span class="fl">4</span>, <span class="fl">5</span>, <span class="fl">6</span>, <span class="fl">6</span>, <span class="fl">6</span><span class="op">)</span><span class="op">)</span>,</span></span>
 <span class="r-in"><span>  doseGrid <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span></span></span>
 <span class="r-in"><span>    <span class="fl">0.1</span>, <span class="fl">0.5</span>, <span class="fl">1.5</span>, <span class="fl">3</span>, <span class="fl">6</span>,</span></span>
 <span class="r-in"><span>    <span class="fu"><a href="https://rdrr.io/r/base/seq.html" class="external-link">seq</a></span><span class="op">(</span>from <span class="op">=</span> <span class="fl">10</span>, to <span class="op">=</span> <span class="fl">80</span>, by <span class="op">=</span> <span class="fl">2</span><span class="op">)</span></span></span>
 <span class="r-in"><span>  <span class="op">)</span></span></span>
 <span class="r-in"><span><span class="op">)</span></span></span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Used default patient IDs!</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Used best guess cohort indices!</span>
 <span class="r-in"><span><span class="va">my_data</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> An object of class "Data"</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Slot "x":</span>

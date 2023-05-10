@@ -68,24 +68,18 @@
 <li class="nav-item dropdown">
   <a href="#" class="nav-link dropdown-toggle" data-bs-toggle="dropdown" role="button" aria-expanded="false" aria-haspopup="true" id="dropdown-articles">Articles</a>
   <div class="dropdown-menu" aria-labelledby="dropdown-articles">
-    <a class="dropdown-item" href="articles/migration_from_the_old_crmPack.html">Migrating from crmPack version 1.0.3</a>
-    <a class="dropdown-item" href="articles/parallel_computing_with_extensions.html">Parallel computing with extensions</a>
+    <a class="dropdown-item" href="articles/trial_definition.html">Trial Definition</a>
+    <a class="dropdown-item" href="articles/trial_analysis.html">Trial Analysis</a>
+    <a class="dropdown-item" href="articles/trial_simulation.html">Trial Simulation</a>
     <a class="dropdown-item" href="articles/rolling-crm.html">Rolling CRM Example</a>
     <a class="dropdown-item" href="articles/simulations.html">Simulation study example</a>
-    <a class="dropdown-item" href="articles/trial_analysis.html">Trial Analysis</a>
-    <a class="dropdown-item" href="articles/trial_definition.html">Trial Definition</a>
-    <a class="dropdown-item" href="articles/trial_simulation.html">Trial Simulation</a>
+    <a class="dropdown-item" href="articles/migration_from_the_old_crmPack.html">Migrating from crmPack version 1.0.3</a>
+    <a class="dropdown-item" href="articles/parallel_computing_with_extensions.html">Parallel computing with extensions</a>
   </div>
 </li>
 <li class="nav-item">
   <a class="nav-link" href="news/index.html">Changelog</a>
 </li>
-<!-- start dropdown for versions --> <li class="nav-item dropdown">
-        <a href="#" class="nav-link dropdown-toggle"
-          data-bs-toggle="dropdown" role="button"
-          aria-expanded="false" aria-haspopup="true"
-          id="dropdown-versions">Versions</a> <div class="dropdown-menu" aria-labelledby="dropdown-versions"> <a class="dropdown-item" data-toggle="tooltip" title="" href="https://Roche.github.io/crmPack/main">main</a> </div></li>
-<!-- end dropdown for versions -->
       </ul>
 <form class="form-inline my-2 my-lg-0" role="search">
         <input type="search" class="form-control me-sm-2" aria-label="Toggle navigation" name="search-input" data-search-index="search.json" id="search-input" placeholder="Search for" autocomplete="off">
@@ -122,106 +116,17 @@
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/utils/install.packages.html" class="external-link">install.packages</a></span><span class="op">(</span><span class="st">"crmPack"</span><span class="op">)</span></span></code></pre></div>
 </div>
 <div class="section level2">
-<h2 id="example">Example<a class="anchor" aria-label="anchor" href="#example"></a>
-</h2>
-<p>This is a basic example which shows how to run simulations from a CRM with a 2-parameter logistic regression model, using a log normal prior distribution, and custom cohort size, stopping and maximum increments rules:</p>
-<div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://github.com/roche/crmPack" class="external-link">crmPack</a></span><span class="op">)</span></span>
-<span></span>
-<span><span class="co"># Define the dose grid.</span></span>
-<span><span class="va">empty_data</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/Data-class.html">Data</a></span><span class="op">(</span>doseGrid <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">1</span>, <span class="fl">3</span>, <span class="fl">5</span>, <span class="fl">10</span>, <span class="fl">15</span>, <span class="fl">20</span>, <span class="fl">25</span>, <span class="fl">40</span>, <span class="fl">50</span>, <span class="fl">80</span>, <span class="fl">100</span><span class="op">)</span><span class="op">)</span></span>
-<span></span>
-<span><span class="co"># Initialize the CRM model.</span></span>
-<span><span class="va">model</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/LogisticLogNormal-class.html">LogisticLogNormal</a></span><span class="op">(</span></span>
-<span>  mean <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="op">-</span><span class="fl">0.85</span>, <span class="fl">1</span><span class="op">)</span>,</span>
-<span>  cov <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/matrix.html" class="external-link">matrix</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">1</span>, <span class="op">-</span><span class="fl">0.5</span>, <span class="op">-</span><span class="fl">0.5</span>, <span class="fl">1</span><span class="op">)</span>, nrow <span class="op">=</span> <span class="fl">2</span><span class="op">)</span>,</span>
-<span>  ref_dose <span class="op">=</span> <span class="fl">56</span></span>
-<span><span class="op">)</span></span>
-<span></span>
-<span><span class="co"># Choose the rule for selecting the next dose.</span></span>
-<span><span class="va">my_next_best</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/NextBestNCRM-class.html">NextBestNCRM</a></span><span class="op">(</span></span>
-<span>  target <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">0.2</span>, <span class="fl">0.35</span><span class="op">)</span>,</span>
-<span>  overdose <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">0.35</span>, <span class="fl">1</span><span class="op">)</span>,</span>
-<span>  max_overdose_prob <span class="op">=</span> <span class="fl">0.25</span></span>
-<span><span class="op">)</span></span>
-<span></span>
-<span><span class="co"># Choose the rule for the cohort size.</span></span>
-<span><span class="va">my_size_1</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/CohortSizeRange-class.html">CohortSizeRange</a></span><span class="op">(</span></span>
-<span>  intervals <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">0</span>, <span class="fl">30</span><span class="op">)</span>,</span>
-<span>  cohort_size <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">1</span>, <span class="fl">3</span><span class="op">)</span></span>
-<span><span class="op">)</span></span>
-<span><span class="va">my_size_2</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/CohortSizeDLT-class.html">CohortSizeDLT</a></span><span class="op">(</span></span>
-<span>  dlt_intervals <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">0</span>, <span class="fl">1</span><span class="op">)</span>,</span>
-<span>  cohort_size <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">1</span>, <span class="fl">3</span><span class="op">)</span></span>
-<span><span class="op">)</span></span>
-<span><span class="va">my_size</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/maxSize.html">maxSize</a></span><span class="op">(</span><span class="va">my_size_1</span>, <span class="va">my_size_2</span><span class="op">)</span></span>
-<span></span>
-<span><span class="co"># Choose the rule for stopping.</span></span>
-<span><span class="va">my_stopping_1</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/StoppingMinCohorts-class.html">StoppingMinCohorts</a></span><span class="op">(</span>nCohorts <span class="op">=</span> <span class="fl">3</span><span class="op">)</span></span>
-<span><span class="va">my_stopping_2</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/StoppingTargetProb-class.html">StoppingTargetProb</a></span><span class="op">(</span></span>
-<span>  target <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">0.2</span>, <span class="fl">0.35</span><span class="op">)</span>,</span>
-<span>  prob <span class="op">=</span> <span class="fl">0.5</span></span>
-<span><span class="op">)</span></span>
-<span><span class="va">my_stopping_3</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/StoppingMinPatients-class.html">StoppingMinPatients</a></span><span class="op">(</span>nPatients <span class="op">=</span> <span class="fl">20</span><span class="op">)</span></span>
-<span><span class="va">my_stopping</span> <span class="op">&lt;-</span> <span class="op">(</span><span class="va">my_stopping_1</span> <span class="op">&amp;</span> <span class="va">my_stopping_2</span><span class="op">)</span> <span class="op">|</span> <span class="va">my_stopping_3</span></span>
-<span></span>
-<span><span class="co"># Choose the rule for dose increments.</span></span>
-<span><span class="va">my_increments</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/IncrementsRelative-class.html">IncrementsRelative</a></span><span class="op">(</span></span>
-<span>  intervals <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">0</span>, <span class="fl">20</span><span class="op">)</span>,</span>
-<span>  increments <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">1</span>, <span class="fl">0.33</span><span class="op">)</span></span>
-<span><span class="op">)</span></span>
-<span></span>
-<span><span class="co"># Initialize the design.</span></span>
-<span><span class="va">design</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/Design-class.html">Design</a></span><span class="op">(</span></span>
-<span>  model <span class="op">=</span> <span class="va">model</span>,</span>
-<span>  nextBest <span class="op">=</span> <span class="va">my_next_best</span>,</span>
-<span>  stopping <span class="op">=</span> <span class="va">my_stopping</span>,</span>
-<span>  increments <span class="op">=</span> <span class="va">my_increments</span>,</span>
-<span>  cohortSize <span class="op">=</span> <span class="va">my_size</span>,</span>
-<span>  data <span class="op">=</span> <span class="va">empty_data</span>,</span>
-<span>  startingDose <span class="op">=</span> <span class="fl">3</span></span>
-<span><span class="op">)</span></span>
-<span></span>
-<span><span class="co"># Define the true function.</span></span>
-<span><span class="va">my_truth</span> <span class="op">&lt;-</span> <span class="kw">function</span><span class="op">(</span><span class="va">dose</span><span class="op">)</span> <span class="op">{</span></span>
-<span>  <span class="va">alpha0</span> <span class="op">&lt;-</span> <span class="fl">7</span></span>
-<span>  <span class="va">alpha1</span> <span class="op">&lt;-</span> <span class="fl">8</span></span>
-<span>  <span class="va">ref_dose</span> <span class="op">&lt;-</span> <span class="fl">56</span></span>
-<span>  <span class="va">stand_log_dose</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/Log.html" class="external-link">log</a></span><span class="op">(</span><span class="va">dose</span> <span class="op">/</span> <span class="va">ref_dose</span><span class="op">)</span></span>
-<span>  <span class="fu"><a href="https://rdrr.io/r/stats/Logistic.html" class="external-link">plogis</a></span><span class="op">(</span><span class="va">alpha0</span> <span class="op">+</span> <span class="va">alpha1</span> <span class="op">*</span> <span class="va">stand_log_dose</span><span class="op">)</span></span>
-<span><span class="op">}</span></span>
-<span></span>
-<span><span class="co"># Run the simulation on the desired design.</span></span>
-<span><span class="co"># We only generate 1 trial outcome here for illustration, for the actual study</span></span>
-<span><span class="co"># this should be increased of course.</span></span>
-<span><span class="va">options</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/McmcOptions-class.html">McmcOptions</a></span><span class="op">(</span></span>
-<span>  burnin <span class="op">=</span> <span class="fl">100</span>,</span>
-<span>  step <span class="op">=</span> <span class="fl">1</span>,</span>
-<span>  samples <span class="op">=</span> <span class="fl">2000</span></span>
-<span><span class="op">)</span></span>
-<span></span>
-<span><span class="va">time</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/system.time.html" class="external-link">system.time</a></span><span class="op">(</span></span>
-<span>  <span class="va">my_sims</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/stats/simulate.html" class="external-link">simulate</a></span><span class="op">(</span></span>
-<span>    <span class="va">design</span>,</span>
-<span>    args <span class="op">=</span> <span class="cn">NULL</span>,</span>
-<span>    truth <span class="op">=</span> <span class="va">my_truth</span>,</span>
-<span>    nsim <span class="op">=</span> <span class="fl">1</span>,</span>
-<span>    seed <span class="op">=</span> <span class="fl">819</span>,</span>
-<span>    mcmcOptions <span class="op">=</span> <span class="va">options</span>,</span>
-<span>    parallel <span class="op">=</span> <span class="cn">FALSE</span></span>
-<span>  <span class="op">)</span></span>
-<span><span class="op">)</span><span class="op">[</span><span class="fl">3</span><span class="op">]</span></span></code></pre></div>
-</div>
-<div class="section level2">
-<h2 id="further-information">Further information<a class="anchor" aria-label="anchor" href="#further-information"></a>
+<h2 id="examples">Examples<a class="anchor" aria-label="anchor" href="#examples"></a>
 </h2>
 <p>The package vignettes provide information on various aspects of CRM trial design, implementation, simulation and analysis:</p>
 <ul>
-<li><p><a href="https://roche.github.io/crmPack/main/articles/trial_definition.html">Trial definition</a></p></li>
-<li><p><a href="https://roche.github.io/crmPack/main/articles/trial_analysis.html">Trial analysis</a></p></li>
-<li><p><a href="https://roche.github.io/crmPack/main/articles/trial_simulation.html">Simulation of operating characteristics</a></p></li>
-<li><p><a href="https://roche.github.io/crmPack/main/articles/parallel_computing_with_extensions.html">Extending crmPack</a></p></li>
-<li><p>Sabanes Bove et al (2019) Model-based Dose Escalation Designs in R with crmPack. JSS 89:10 <a href="https://www.jstatsoft.org/article/view/v089i10" class="external-link">DOI 10.18637/jss.v089.i10</a></p></li>
+<li><a href="https://roche.github.io/crmPack/main/articles/trial_definition.html">Trial definition</a></li>
+<li><a href="https://roche.github.io/crmPack/main/articles/trial_analysis.html">Trial analysis</a></li>
+<li><a href="https://roche.github.io/crmPack/main/articles/trial_simulation.html">Simulation of operating characteristics</a></li>
+<li><a href="https://roche.github.io/crmPack/main/articles/parallel_computing_with_extensions.html">Extending crmPack</a></li>
+<li><a href="https://roche.github.io/crmPack/main/articles/migration_from_the_old_crmPack.html">Migration from the old crmPack</a></li>
+<li>Sabanes Bove et al (2019) Model-based Dose Escalation Designs in R with crmPack. JSS 89:10 <a href="https://www.jstatsoft.org/article/view/v089i10" class="external-link">DOI 10.18637/jss.v089.i10</a>
+</li>
 </ul>
 </div>
 

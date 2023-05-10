@@ -48,24 +48,18 @@
 <li class="active nav-item dropdown">
   <a href="#" class="nav-link dropdown-toggle" data-bs-toggle="dropdown" role="button" aria-expanded="false" aria-haspopup="true" id="dropdown-articles">Articles</a>
   <div class="dropdown-menu" aria-labelledby="dropdown-articles">
-    <a class="dropdown-item" href="../articles/migration_from_the_old_crmPack.html">Migrating from crmPack version 1.0.3</a>
-    <a class="dropdown-item" href="../articles/parallel_computing_with_extensions.html">Parallel computing with extensions</a>
+    <a class="dropdown-item" href="../articles/trial_definition.html">Trial Definition</a>
+    <a class="dropdown-item" href="../articles/trial_analysis.html">Trial Analysis</a>
+    <a class="dropdown-item" href="../articles/trial_simulation.html">Trial Simulation</a>
     <a class="dropdown-item" href="../articles/rolling-crm.html">Rolling CRM Example</a>
     <a class="dropdown-item" href="../articles/simulations.html">Simulation study example</a>
-    <a class="dropdown-item" href="../articles/trial_analysis.html">Trial Analysis</a>
-    <a class="dropdown-item" href="../articles/trial_definition.html">Trial Definition</a>
-    <a class="dropdown-item" href="../articles/trial_simulation.html">Trial Simulation</a>
+    <a class="dropdown-item" href="../articles/migration_from_the_old_crmPack.html">Migrating from crmPack version 1.0.3</a>
+    <a class="dropdown-item" href="../articles/parallel_computing_with_extensions.html">Parallel computing with extensions</a>
   </div>
 </li>
 <li class="nav-item">
   <a class="nav-link" href="../news/index.html">Changelog</a>
 </li>
-<!-- start dropdown for versions --> <li class="nav-item dropdown">
-        <a href="#" class="nav-link dropdown-toggle"
-          data-bs-toggle="dropdown" role="button"
-          aria-expanded="false" aria-haspopup="true"
-          id="dropdown-versions">Versions</a> <div class="dropdown-menu" aria-labelledby="dropdown-versions"> <a class="dropdown-item" data-toggle="tooltip" title="" href="https://Roche.github.io/crmPack/main">main</a> </div></li>
-<!-- end dropdown for versions -->
       </ul>
 <form class="form-inline my-2 my-lg-0" role="search">
         <input type="search" class="form-control me-sm-2" aria-label="Toggle navigation" name="search-input" data-search-index="../search.json" id="search-input" placeholder="Search for" autocomplete="off">
@@ -2046,9 +2040,10 @@ of a fixed model’s parameters values.</p>
 <span><span class="co"># given a particular models and samples.</span></span>
 <span><span class="co"># Every single dose corresponds to one particular sample in `my_samples`.</span></span>
 <span><span class="fu"><a href="../reference/dose.html">dose</a></span><span class="op">(</span><span class="fl">0.3</span>, <span class="va">my_model</span>, <span class="va">my_samples</span><span class="op">)</span></span></code></pre></div>
-<pre><code><span><span class="co">##  [1] 0.5875160 3.1010451 1.1164193 0.9586064 0.8852840 1.2109679 0.3503065</span></span>
-<span><span class="co">##  [8] 1.0573403 0.7283099 1.6908311 1.3230536 1.2844363 5.1553302 1.7336353</span></span>
-<span><span class="co">## [15] 1.0231778 0.9006214 4.1685602 0.7702810 1.4609884 0.9814177</span></span></code></pre>
+<pre><code><span><span class="co">##  [1] 1.973060e-01 2.089250e-07 1.178303e+00 1.392728e+01 3.306929e+00</span></span>
+<span><span class="co">##  [6] 8.160050e-01 1.304087e+00 4.553147e-02 4.699379e-01 7.293861e-01</span></span>
+<span><span class="co">## [11] 2.510065e+00 1.064858e+00 9.028048e-01 3.704360e+01 1.077034e+00</span></span>
+<span><span class="co">## [16] 6.769865e-01 1.208896e+00 2.314955e-01 1.218118e+00 1.708167e+00</span></span></code></pre>
 <div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># True dose-DLT relationship.</span></span>
 <span><span class="co"># Say that -0.8 and 1 are the true values for models parameters alpha0 and alpha1 respectively.</span></span>
@@ -2066,9 +2061,9 @@ of a fixed model’s parameters values.</p>
 <code class="sourceCode R"><span><span class="co"># Toxicity probabilities for a given dose (equal to 10), model and samples.</span></span>
 <span><span class="co"># Every single probability value corresponds to one particular sample in `my_samples`.</span></span>
 <span><span class="fu"><a href="../reference/prob.html">prob</a></span><span class="op">(</span><span class="fl">10</span>, <span class="va">my_model</span>, <span class="va">my_samples</span><span class="op">)</span></span></code></pre></div>
-<pre><code><span><span class="co">##  [1] 0.9877452 0.7750593 0.9943105 0.7060354 0.8115201 0.9654951 0.9021443</span></span>
-<span><span class="co">##  [8] 0.9669010 0.6895091 0.9680060 0.7398730 0.9389306 0.4049892 0.8846143</span></span>
-<span><span class="co">## [15] 0.8103551 0.9090079 0.5706343 0.9632616 0.8462839 0.9510551</span></span></code></pre>
+<pre><code><span><span class="co">##  [1] 0.9789124 0.4174053 0.6342234 0.2686818 0.6128031 0.9513383 0.8746466</span></span>
+<span><span class="co">##  [8] 0.8217210 0.9356470 0.9971067 0.1172497 0.9902788 0.7262234 0.4231737</span></span>
+<span><span class="co">## [15] 0.9839573 0.9913317 0.9545868 0.4526682 0.8834425 0.9462294</span></span></code></pre>
 <div class="sourceCode" id="cb12"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># True DLT-dose relationship.</span></span>
 <span><span class="co"># Say that -0.8 and 1 are the true values for models parameters alpha0 and alpha1 respectively.</span></span>
@@ -2161,8 +2156,8 @@ account of any associated <code>doseGrid</code>.</p>
 <span><span class="co">##         y[i] ~ dbern(p[i])</span></span>
 <span><span class="co">##     }</span></span>
 <span><span class="co">## }</span></span>
-<span><span class="co">## &lt;bytecode: 0x55605d78cba8&gt;</span></span>
-<span><span class="co">## &lt;environment: 0x55605e8a5aa0&gt;</span></span>
+<span><span class="co">## &lt;bytecode: 0x556e81d427a0&gt;</span></span>
+<span><span class="co">## &lt;environment: 0x556e82e71088&gt;</span></span>
 <span><span class="co">## </span></span>
 <span><span class="co">## Slot "priormodel":</span></span>
 <span><span class="co">## function () </span></span>
@@ -2171,8 +2166,8 @@ account of any associated <code>doseGrid</code>.</p>
 <span><span class="co">##     alpha0 &lt;- theta[1]</span></span>
 <span><span class="co">##     alpha1 &lt;- theta[2]</span></span>
 <span><span class="co">## }</span></span>
-<span><span class="co">## &lt;bytecode: 0x55605d78faf8&gt;</span></span>
-<span><span class="co">## &lt;environment: 0x55605e8a5aa0&gt;</span></span>
+<span><span class="co">## &lt;bytecode: 0x556e81d418c0&gt;</span></span>
+<span><span class="co">## &lt;environment: 0x556e82e71088&gt;</span></span>
 <span><span class="co">## </span></span>
 <span><span class="co">## Slot "modelspecs":</span></span>
 <span><span class="co">## function (from_prior) </span></span>
@@ -2183,16 +2178,16 @@ account of any associated <code>doseGrid</code>.</p>
 <span><span class="co">##     }</span></span>
 <span><span class="co">##     ms</span></span>
 <span><span class="co">## }</span></span>
-<span><span class="co">## &lt;bytecode: 0x55605d790d30&gt;</span></span>
-<span><span class="co">## &lt;environment: 0x55605e8a5838&gt;</span></span>
+<span><span class="co">## &lt;bytecode: 0x556e81d42af8&gt;</span></span>
+<span><span class="co">## &lt;environment: 0x556e82e70e20&gt;</span></span>
 <span><span class="co">## </span></span>
 <span><span class="co">## Slot "init":</span></span>
 <span><span class="co">## function () </span></span>
 <span><span class="co">## {</span></span>
 <span><span class="co">##     list(theta = c(0, 1))</span></span>
 <span><span class="co">## }</span></span>
-<span><span class="co">## &lt;bytecode: 0x55605d790438&gt;</span></span>
-<span><span class="co">## &lt;environment: 0x55605e8a5838&gt;</span></span>
+<span><span class="co">## &lt;bytecode: 0x556e81d47f50&gt;</span></span>
+<span><span class="co">## &lt;environment: 0x556e82e70e20&gt;</span></span>
 <span><span class="co">## </span></span>
 <span><span class="co">## Slot "datanames":</span></span>
 <span><span class="co">## [1] "nObs" "y"    "x"   </span></span>

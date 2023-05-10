@@ -48,24 +48,18 @@
 <li class="active nav-item dropdown">
   <a href="#" class="nav-link dropdown-toggle" data-bs-toggle="dropdown" role="button" aria-expanded="false" aria-haspopup="true" id="dropdown-articles">Articles</a>
   <div class="dropdown-menu" aria-labelledby="dropdown-articles">
-    <a class="dropdown-item" href="../articles/migration_from_the_old_crmPack.html">Migrating from crmPack version 1.0.3</a>
-    <a class="dropdown-item" href="../articles/parallel_computing_with_extensions.html">Parallel computing with extensions</a>
+    <a class="dropdown-item" href="../articles/trial_definition.html">Trial Definition</a>
+    <a class="dropdown-item" href="../articles/trial_analysis.html">Trial Analysis</a>
+    <a class="dropdown-item" href="../articles/trial_simulation.html">Trial Simulation</a>
     <a class="dropdown-item" href="../articles/rolling-crm.html">Rolling CRM Example</a>
     <a class="dropdown-item" href="../articles/simulations.html">Simulation study example</a>
-    <a class="dropdown-item" href="../articles/trial_analysis.html">Trial Analysis</a>
-    <a class="dropdown-item" href="../articles/trial_definition.html">Trial Definition</a>
-    <a class="dropdown-item" href="../articles/trial_simulation.html">Trial Simulation</a>
+    <a class="dropdown-item" href="../articles/migration_from_the_old_crmPack.html">Migrating from crmPack version 1.0.3</a>
+    <a class="dropdown-item" href="../articles/parallel_computing_with_extensions.html">Parallel computing with extensions</a>
   </div>
 </li>
 <li class="nav-item">
   <a class="nav-link" href="../news/index.html">Changelog</a>
 </li>
-<!-- start dropdown for versions --> <li class="nav-item dropdown">
-        <a href="#" class="nav-link dropdown-toggle"
-          data-bs-toggle="dropdown" role="button"
-          aria-expanded="false" aria-haspopup="true"
-          id="dropdown-versions">Versions</a> <div class="dropdown-menu" aria-labelledby="dropdown-versions"> <a class="dropdown-item" data-toggle="tooltip" title="" href="https://Roche.github.io/crmPack/main">main</a> </div></li>
-<!-- end dropdown for versions -->
       </ul>
 <form class="form-inline my-2 my-lg-0" role="search">
         <input type="search" class="form-control me-sm-2" aria-label="Toggle navigation" name="search-input" data-search-index="../search.json" id="search-input" placeholder="Search for" autocomplete="off">
@@ -117,46 +111,58 @@ Daniel Sabanes Bove</h4>
 <pre><code><span><span class="co">## Type crmPackHelp() to open help browser</span></span>
 <span><span class="co">## Type crmPackExample() to open example</span></span></code></pre>
 <div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">data</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/DataDA-class.html">DataDA</a></span><span class="op">(</span>x<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">0.1</span>, <span class="fl">0.5</span>, <span class="fl">1.5</span>, <span class="fl">3</span>, <span class="fl">6</span>, <span class="fl">10</span>, <span class="fl">10</span>, <span class="fl">10</span><span class="op">)</span>, </span>
-<span>               y<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">0</span>, <span class="fl">0</span>, <span class="fl">1</span>, <span class="fl">1</span>, <span class="fl">0</span>, <span class="fl">0</span>, <span class="fl">1</span>, <span class="fl">0</span><span class="op">)</span>,</span>
-<span>               doseGrid<span class="op">=</span></span>
-<span>                 <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">0.1</span>, <span class="fl">0.5</span>, <span class="fl">1.5</span>, <span class="fl">3</span>, <span class="fl">6</span>,</span>
-<span>                   <span class="fu"><a href="https://rdrr.io/r/base/seq.html" class="external-link">seq</a></span><span class="op">(</span>from<span class="op">=</span><span class="fl">10</span>, to<span class="op">=</span><span class="fl">80</span>, by<span class="op">=</span><span class="fl">2</span><span class="op">)</span><span class="op">)</span>,</span>
-<span>               u<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">42</span>,<span class="fl">30</span>,<span class="fl">15</span>,<span class="fl">5</span>,<span class="fl">20</span>,<span class="fl">25</span>,<span class="fl">30</span>,<span class="fl">60</span><span class="op">)</span>,</span>
-<span>               t0<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/base/rep.html" class="external-link">rep</a></span><span class="op">(</span><span class="fl">0</span>, <span class="fl">8</span><span class="op">)</span>,</span>
-<span>               Tmax<span class="op">=</span><span class="fl">60</span><span class="op">)</span></span></code></pre></div>
-<pre><code><span><span class="co">## Used default patient IDs!</span></span></code></pre>
-<pre><code><span><span class="co">## Used best guess cohort indices!</span></span></code></pre>
-<div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">emptydata</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/DataDA-class.html">DataDA</a></span><span class="op">(</span>doseGrid<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">0.1</span>, <span class="fl">0.5</span>,<span class="fl">1</span>, <span class="fl">1.5</span>, <span class="fl">3</span>, <span class="fl">6</span>,</span>
-<span>                               <span class="fu"><a href="https://rdrr.io/r/base/seq.html" class="external-link">seq</a></span><span class="op">(</span>from<span class="op">=</span><span class="fl">10</span>, to<span class="op">=</span><span class="fl">80</span>, by<span class="op">=</span><span class="fl">2</span><span class="op">)</span><span class="op">)</span>,</span>
-<span>                    Tmax<span class="op">=</span><span class="fl">60</span><span class="op">)</span></span></code></pre></div>
+<code class="sourceCode R"><span><span class="va">data</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/DataDA-class.html">DataDA</a></span><span class="op">(</span></span>
+<span>  x <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">0.1</span>, <span class="fl">0.5</span>, <span class="fl">1.5</span>, <span class="fl">3</span>, <span class="fl">6</span>, <span class="fl">10</span>, <span class="fl">10</span>, <span class="fl">10</span><span class="op">)</span>,</span>
+<span>  y <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">0</span>, <span class="fl">0</span>, <span class="fl">1</span>, <span class="fl">1</span>, <span class="fl">0</span>, <span class="fl">0</span>, <span class="fl">1</span>, <span class="fl">0</span><span class="op">)</span>,</span>
+<span>  ID <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/integer.html" class="external-link">as.integer</a></span><span class="op">(</span><span class="fl">1</span><span class="op">:</span><span class="fl">8</span><span class="op">)</span>,</span>
+<span>  cohort <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/integer.html" class="external-link">as.integer</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">1</span>, <span class="fl">2</span>, <span class="fl">3</span>, <span class="fl">4</span>, <span class="fl">5</span>, <span class="fl">6</span>, <span class="fl">6</span>, <span class="fl">6</span><span class="op">)</span><span class="op">)</span>,</span>
+<span>  doseGrid <span class="op">=</span></span>
+<span>    <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span></span>
+<span>      <span class="fl">0.1</span>, <span class="fl">0.5</span>, <span class="fl">1.5</span>, <span class="fl">3</span>, <span class="fl">6</span>,</span>
+<span>      <span class="fu"><a href="https://rdrr.io/r/base/seq.html" class="external-link">seq</a></span><span class="op">(</span>from <span class="op">=</span> <span class="fl">10</span>, to <span class="op">=</span> <span class="fl">80</span>, by <span class="op">=</span> <span class="fl">2</span><span class="op">)</span></span>
+<span>    <span class="op">)</span>,</span>
+<span>  u <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">42</span>, <span class="fl">30</span>, <span class="fl">15</span>, <span class="fl">5</span>, <span class="fl">20</span>, <span class="fl">25</span>, <span class="fl">30</span>, <span class="fl">60</span><span class="op">)</span>,</span>
+<span>  t0 <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/rep.html" class="external-link">rep</a></span><span class="op">(</span><span class="fl">0</span>, <span class="fl">8</span><span class="op">)</span>,</span>
+<span>  Tmax <span class="op">=</span> <span class="fl">60</span></span>
+<span><span class="op">)</span></span>
+<span></span>
+<span><span class="va">emptydata</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/DataDA-class.html">DataDA</a></span><span class="op">(</span></span>
+<span>  doseGrid <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span></span>
+<span>    <span class="fl">0.1</span>, <span class="fl">0.5</span>, <span class="fl">1</span>, <span class="fl">1.5</span>, <span class="fl">3</span>, <span class="fl">6</span>,</span>
+<span>    <span class="fu"><a href="https://rdrr.io/r/base/seq.html" class="external-link">seq</a></span><span class="op">(</span>from <span class="op">=</span> <span class="fl">10</span>, to <span class="op">=</span> <span class="fl">80</span>, by <span class="op">=</span> <span class="fl">2</span><span class="op">)</span></span>
+<span>  <span class="op">)</span>,</span>
+<span>  Tmax <span class="op">=</span> <span class="fl">60</span></span>
+<span><span class="op">)</span></span></code></pre></div>
 </div>
 <div class="section level3">
 <h3 id="structure-of-the-model-class">Structure of the model class<a class="anchor" aria-label="anchor" href="#structure-of-the-model-class"></a>
 </h3>
-<div class="sourceCode" id="cb9"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">npiece_</span><span class="op">=</span><span class="fl">10</span></span>
-<span><span class="va">Tmax_</span><span class="op">=</span><span class="fl">60</span></span>
+<div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">npiece_</span> <span class="op">&lt;-</span> <span class="fl">10</span></span>
+<span><span class="va">Tmax_</span> <span class="op">&lt;-</span> <span class="fl">60</span></span>
 <span></span>
-<span><span class="va">lambda_prior</span><span class="op">&lt;-</span><span class="kw">function</span><span class="op">(</span><span class="va">k</span><span class="op">)</span><span class="op">{</span></span>
-<span>  <span class="va">npiece_</span><span class="op">/</span><span class="op">(</span><span class="va">Tmax_</span><span class="op">*</span><span class="op">(</span><span class="va">npiece_</span><span class="op">-</span><span class="va">k</span><span class="op">+</span><span class="fl">0.5</span><span class="op">)</span><span class="op">)</span></span>
+<span><span class="va">lambda_prior</span> <span class="op">&lt;-</span> <span class="kw">function</span><span class="op">(</span><span class="va">k</span><span class="op">)</span> <span class="op">{</span></span>
+<span>  <span class="va">npiece_</span> <span class="op">/</span> <span class="op">(</span><span class="va">Tmax_</span> <span class="op">*</span> <span class="op">(</span><span class="va">npiece_</span> <span class="op">-</span> <span class="va">k</span> <span class="op">+</span> <span class="fl">0.5</span><span class="op">)</span><span class="op">)</span></span>
 <span><span class="op">}</span></span>
 <span></span>
-<span><span class="va">model</span><span class="op">&lt;-</span><span class="fu"><a href="../reference/DALogisticLogNormal-class.html">DALogisticLogNormal</a></span><span class="op">(</span>mean<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="op">-</span><span class="fl">0.85</span>,<span class="fl">1</span><span class="op">)</span>,</span>
-<span>                           cov<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/base/matrix.html" class="external-link">matrix</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">1</span>,<span class="op">-</span><span class="fl">0.5</span>,<span class="op">-</span><span class="fl">0.5</span>,<span class="fl">1</span><span class="op">)</span>,nrow<span class="op">=</span><span class="fl">2</span><span class="op">)</span>,</span>
-<span>                           ref_dose<span class="op">=</span><span class="fl">56</span>,</span>
-<span>                           npiece<span class="op">=</span><span class="va">npiece_</span>,</span>
-<span>                           l<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/base/numeric.html" class="external-link">as.numeric</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/t.html" class="external-link">t</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/apply.html" class="external-link">apply</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/matrix.html" class="external-link">as.matrix</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">1</span><span class="op">:</span><span class="va">npiece_</span><span class="op">)</span>,<span class="fl">1</span>,<span class="va">npiece_</span><span class="op">)</span>,<span class="fl">2</span>,<span class="va">lambda_prior</span><span class="op">)</span><span class="op">)</span><span class="op">)</span>,</span>
-<span>                           c_par<span class="op">=</span><span class="fl">2</span><span class="op">)</span></span></code></pre></div>
+<span><span class="va">model</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/DALogisticLogNormal-class.html">DALogisticLogNormal</a></span><span class="op">(</span></span>
+<span>  mean <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="op">-</span><span class="fl">0.85</span>, <span class="fl">1</span><span class="op">)</span>,</span>
+<span>  cov <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/matrix.html" class="external-link">matrix</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">1</span>, <span class="op">-</span><span class="fl">0.5</span>, <span class="op">-</span><span class="fl">0.5</span>, <span class="fl">1</span><span class="op">)</span>, nrow <span class="op">=</span> <span class="fl">2</span><span class="op">)</span>,</span>
+<span>  ref_dose <span class="op">=</span> <span class="fl">56</span>,</span>
+<span>  npiece <span class="op">=</span> <span class="va">npiece_</span>,</span>
+<span>  l <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/numeric.html" class="external-link">as.numeric</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/t.html" class="external-link">t</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/apply.html" class="external-link">apply</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/matrix.html" class="external-link">as.matrix</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">1</span><span class="op">:</span><span class="va">npiece_</span><span class="op">)</span>, <span class="fl">1</span>, <span class="va">npiece_</span><span class="op">)</span>, <span class="fl">2</span>, <span class="va">lambda_prior</span><span class="op">)</span><span class="op">)</span><span class="op">)</span>,</span>
+<span>  c_par <span class="op">=</span> <span class="fl">2</span></span>
+<span><span class="op">)</span></span></code></pre></div>
 </div>
 <div class="section level3">
 <h3 id="obtain-the-posterior">Obtain the posterior<a class="anchor" aria-label="anchor" href="#obtain-the-posterior"></a>
 </h3>
-<div class="sourceCode" id="cb10"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">options</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/McmcOptions-class.html">McmcOptions</a></span><span class="op">(</span>burnin<span class="op">=</span><span class="fl">10</span>,</span>
-<span>                       step<span class="op">=</span><span class="fl">2</span>,</span>
-<span>                       samples<span class="op">=</span><span class="fl">1e2</span><span class="op">)</span></span>
+<div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">options</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/McmcOptions-class.html">McmcOptions</a></span><span class="op">(</span></span>
+<span>  burnin <span class="op">=</span> <span class="fl">10</span>,</span>
+<span>  step <span class="op">=</span> <span class="fl">2</span>,</span>
+<span>  samples <span class="op">=</span> <span class="fl">1e2</span></span>
+<span><span class="op">)</span></span>
 <span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/Random.html" class="external-link">set.seed</a></span><span class="op">(</span><span class="fl">94</span><span class="op">)</span></span>
 <span><span class="va">samples</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/mcmc.html">mcmc</a></span><span class="op">(</span><span class="va">data</span>, <span class="va">model</span>, <span class="va">options</span><span class="op">)</span></span></code></pre></div>
@@ -164,7 +170,7 @@ Daniel Sabanes Bove</h4>
 <div class="section level3">
 <h3 id="use-ggmcmc-to-diagnose">Use ggmcmc to diagnose<a class="anchor" aria-label="anchor" href="#use-ggmcmc-to-diagnose"></a>
 </h3>
-<div class="sourceCode" id="cb11"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="http://xavier-fim.net/packages/ggmcmc/" class="external-link">ggmcmc</a></span><span class="op">)</span></span></code></pre></div>
 <pre><code><span><span class="co">## Loading required package: dplyr</span></span></code></pre>
 <pre><code><span><span class="co">## </span></span>
@@ -179,34 +185,36 @@ Daniel Sabanes Bove</h4>
 <pre><code><span><span class="co">## Registered S3 method overwritten by 'GGally':</span></span>
 <span><span class="co">##   method from   </span></span>
 <span><span class="co">##   +.gg   ggplot2</span></span></code></pre>
-<div class="sourceCode" id="cb18"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">alpha0samples</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/get.html" class="external-link">get</a></span><span class="op">(</span><span class="va">samples</span>,<span class="st">"alpha0"</span><span class="op">)</span></span>
+<div class="sourceCode" id="cb15"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">alpha0samples</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/get.html" class="external-link">get</a></span><span class="op">(</span><span class="va">samples</span>, <span class="st">"alpha0"</span><span class="op">)</span></span>
 <span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/print.html" class="external-link">print</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/pkg/ggmcmc/man/ggs_traceplot.html" class="external-link">ggs_traceplot</a></span><span class="op">(</span><span class="va">alpha0samples</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
 <p><img src="rolling-crm_files/figure-html/Diagnose-1.png" width="700"></p>
-<div class="sourceCode" id="cb19"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb16"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/base/print.html" class="external-link">print</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/pkg/ggmcmc/man/ggs_autocorrelation.html" class="external-link">ggs_autocorrelation</a></span><span class="op">(</span><span class="va">alpha0samples</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
 <p><img src="rolling-crm_files/figure-html/Diagnose-2.png" width="700"></p>
 </div>
 <div class="section level3">
 <h3 id="plot-the-model-fit">Plot the model fit<a class="anchor" aria-label="anchor" href="#plot-the-model-fit"></a>
 </h3>
-<div class="sourceCode" id="cb20"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">samples</span>, <span class="va">model</span>,<span class="va">data</span>,hazard<span class="op">=</span><span class="cn">TRUE</span><span class="op">)</span></span>
+<div class="sourceCode" id="cb17"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">samples</span>, <span class="va">model</span>, <span class="va">data</span>, hazard <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span>
 <span></span>
-<span><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">samples</span>, <span class="va">model</span>,<span class="va">data</span>,hazard<span class="op">=</span><span class="cn">FALSE</span><span class="op">)</span></span></code></pre></div>
+<span><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">samples</span>, <span class="va">model</span>, <span class="va">data</span>, hazard <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></span></code></pre></div>
 <p><img src="rolling-crm_files/figure-html/Fit-1.png" width="700"></p>
 </div>
 <div class="section level3">
 <h3 id="prior-mean-curve">prior mean curve<a class="anchor" aria-label="anchor" href="#prior-mean-curve"></a>
 </h3>
-<div class="sourceCode" id="cb21"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">emptydata</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/DataDA-class.html">DataDA</a></span><span class="op">(</span>doseGrid<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">0.1</span>, <span class="fl">0.5</span>, <span class="fl">1.5</span>, <span class="fl">3</span>, <span class="fl">6</span>,</span>
-<span>                               <span class="fu"><a href="https://rdrr.io/r/base/seq.html" class="external-link">seq</a></span><span class="op">(</span>from<span class="op">=</span><span class="fl">10</span>, to<span class="op">=</span><span class="fl">80</span>, by<span class="op">=</span><span class="fl">2</span><span class="op">)</span><span class="op">)</span>,Tmax<span class="op">=</span><span class="fl">60</span><span class="op">)</span></span>
+<div class="sourceCode" id="cb18"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">emptydata</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/DataDA-class.html">DataDA</a></span><span class="op">(</span>doseGrid <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span></span>
+<span>  <span class="fl">0.1</span>, <span class="fl">0.5</span>, <span class="fl">1.5</span>, <span class="fl">3</span>, <span class="fl">6</span>,</span>
+<span>  <span class="fu"><a href="https://rdrr.io/r/base/seq.html" class="external-link">seq</a></span><span class="op">(</span>from <span class="op">=</span> <span class="fl">10</span>, to <span class="op">=</span> <span class="fl">80</span>, by <span class="op">=</span> <span class="fl">2</span><span class="op">)</span></span>
+<span><span class="op">)</span>, Tmax <span class="op">=</span> <span class="fl">60</span><span class="op">)</span></span>
 <span></span>
 <span><span class="va">Priorsamples</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/mcmc.html">mcmc</a></span><span class="op">(</span><span class="va">emptydata</span>, <span class="va">model</span>, <span class="va">options</span><span class="op">)</span></span>
 <span></span>
-<span><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">Priorsamples</span>, <span class="va">model</span>,<span class="va">emptydata</span>,hazard<span class="op">=</span><span class="cn">FALSE</span><span class="op">)</span></span></code></pre></div>
+<span><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">Priorsamples</span>, <span class="va">model</span>, <span class="va">emptydata</span>, hazard <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></span></code></pre></div>
 <p><img src="rolling-crm_files/figure-html/Prior-1.png" width="700"></p>
 </div>
 <div class="section level3">
@@ -214,7 +222,7 @@ Daniel Sabanes Bove</h4>
 </h3>
 <p>Need to fill in (use the same rule in the section 8 of “using the
 package crmPack: introductory examples”)</p>
-<div class="sourceCode" id="cb22"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb19"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">myIncrements</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/IncrementsRelative-class.html">IncrementsRelative</a></span><span class="op">(</span></span>
 <span>  intervals <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">0</span>, <span class="fl">20</span><span class="op">)</span>,</span>
 <span>  increments <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">1</span>, <span class="fl">0.33</span><span class="op">)</span></span>
@@ -239,17 +247,18 @@ package crmPack: introductory examples”)</p>
 <div class="section level3">
 <h3 id="recommended-dose-for-the-next-cohort">Recommended dose for the next cohort<a class="anchor" aria-label="anchor" href="#recommended-dose-for-the-next-cohort"></a>
 </h3>
-<div class="sourceCode" id="cb23"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb20"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">doseRecommendation</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/nextBest.html">nextBest</a></span><span class="op">(</span><span class="va">myNextBest</span>,</span>
-<span>                               doselimit<span class="op">=</span><span class="va">nextMaxDose</span>,</span>
-<span>                               samples<span class="op">=</span><span class="va">samples</span>,</span>
-<span>                               model<span class="op">=</span><span class="va">model</span>,</span>
-<span>                               data<span class="op">=</span><span class="va">data</span><span class="op">)</span></span>
+<span>  doselimit <span class="op">=</span> <span class="va">nextMaxDose</span>,</span>
+<span>  samples <span class="op">=</span> <span class="va">samples</span>,</span>
+<span>  model <span class="op">=</span> <span class="va">model</span>,</span>
+<span>  data <span class="op">=</span> <span class="va">data</span></span>
+<span><span class="op">)</span></span>
 <span></span>
 <span></span>
 <span><span class="va">doseRecommendation</span><span class="op">$</span><span class="va">plot</span></span></code></pre></div>
 <p><img src="rolling-crm_files/figure-html/Recommend-1.png" width="700"></p>
-<div class="sourceCode" id="cb24"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb21"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">doseRecommendation</span><span class="op">$</span><span class="va">value</span></span></code></pre></div>
 <pre><code><span><span class="co">## [1] 0.1</span></span></code></pre>
 </div>
@@ -261,69 +270,70 @@ characteristics<a class="anchor" aria-label="anchor" href="#example-2-run-a-simu
 <div class="section level3">
 <h3 id="set-up-safety-window-and-dadesign-to-be-completed">Set up safety window and <code>DADesign</code> to be completed<a class="anchor" aria-label="anchor" href="#set-up-safety-window-and-dadesign-to-be-completed"></a>
 </h3>
-<div class="sourceCode" id="cb26"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">mysafetywindow</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/SafetyWindowConst-class.html">SafetyWindowConst</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">6</span>,<span class="fl">2</span><span class="op">)</span>,<span class="fl">7</span>,<span class="fl">7</span><span class="op">)</span></span>
+<div class="sourceCode" id="cb23"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">mysafetywindow</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/SafetyWindowConst-class.html">SafetyWindowConst</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">6</span>, <span class="fl">2</span><span class="op">)</span>, <span class="fl">7</span>, <span class="fl">7</span><span class="op">)</span></span>
 <span></span>
-<span><span class="va">design</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/DADesign.html">DADesign</a></span><span class="op">(</span>model<span class="op">=</span><span class="va">model</span>,</span>
-<span>                   increments<span class="op">=</span><span class="va">myIncrements</span>,</span>
-<span>                   nextBest<span class="op">=</span><span class="va">myNextBest</span>,</span>
-<span>                   stopping<span class="op">=</span><span class="va">myStopping</span>,</span>
-<span>                   cohortSize<span class="op">=</span><span class="va">mySize</span>,</span>
-<span>                   data<span class="op">=</span><span class="va">emptydata</span>,</span>
-<span>                   safetyWindow<span class="op">=</span><span class="va">mysafetywindow</span>,</span>
-<span>                   startingDose<span class="op">=</span><span class="fl">3</span><span class="op">)</span></span></code></pre></div>
+<span><span class="va">design</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/DADesign.html">DADesign</a></span><span class="op">(</span></span>
+<span>  model <span class="op">=</span> <span class="va">model</span>,</span>
+<span>  increments <span class="op">=</span> <span class="va">myIncrements</span>,</span>
+<span>  nextBest <span class="op">=</span> <span class="va">myNextBest</span>,</span>
+<span>  stopping <span class="op">=</span> <span class="va">myStopping</span>,</span>
+<span>  cohortSize <span class="op">=</span> <span class="va">mySize</span>,</span>
+<span>  data <span class="op">=</span> <span class="va">emptydata</span>,</span>
+<span>  safetyWindow <span class="op">=</span> <span class="va">mysafetywindow</span>,</span>
+<span>  startingDose <span class="op">=</span> <span class="fl">3</span></span>
+<span><span class="op">)</span></span></code></pre></div>
 </div>
 <div class="section level3">
 <h3 id="set-up-true-curves">Set up true curves<a class="anchor" aria-label="anchor" href="#set-up-true-curves"></a>
 </h3>
-<div class="sourceCode" id="cb27"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb24"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">myTruth</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/probFunction.html">probFunction</a></span><span class="op">(</span><span class="va">model</span>, alpha0 <span class="op">=</span> <span class="fl">2</span>, alpha1 <span class="op">=</span> <span class="fl">3</span><span class="op">)</span></span>
-<span><span class="fu"><a href="https://rdrr.io/r/graphics/curve.html" class="external-link">curve</a></span><span class="op">(</span><span class="fu">myTruth</span><span class="op">(</span><span class="va">x</span><span class="op">)</span>, from<span class="op">=</span><span class="fl">0</span>, to<span class="op">=</span><span class="fl">100</span>, ylim<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">0</span>, <span class="fl">1</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
+<span><span class="fu"><a href="https://rdrr.io/r/graphics/curve.html" class="external-link">curve</a></span><span class="op">(</span><span class="fu">myTruth</span><span class="op">(</span><span class="va">x</span><span class="op">)</span>, from <span class="op">=</span> <span class="fl">0</span>, to <span class="op">=</span> <span class="fl">100</span>, ylim <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">0</span>, <span class="fl">1</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
 <p><img src="rolling-crm_files/figure-html/Truth-1.png" width="700"></p>
-<div class="sourceCode" id="cb28"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb25"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">onset</span> <span class="op">&lt;-</span> <span class="fl">15</span></span>
-<span><span class="va">exp_cond.cdf</span><span class="op">&lt;-</span><span class="kw">function</span><span class="op">(</span><span class="va">x</span><span class="op">)</span><span class="op">{</span></span>
-<span>  </span>
-<span>  <span class="fl">1</span><span class="op">-</span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/stats/Exponential.html" class="external-link">pexp</a></span><span class="op">(</span><span class="va">x</span>,<span class="fl">1</span><span class="op">/</span><span class="va">onset</span>,lower.tail<span class="op">=</span><span class="cn">FALSE</span><span class="op">)</span><span class="op">-</span><span class="fu"><a href="https://rdrr.io/r/stats/Exponential.html" class="external-link">pexp</a></span><span class="op">(</span><span class="fl">28</span>,<span class="fl">1</span><span class="op">/</span><span class="va">onset</span>,lower.tail<span class="op">=</span><span class="cn">FALSE</span><span class="op">)</span><span class="op">)</span><span class="op">/</span><span class="fu"><a href="https://rdrr.io/r/stats/Exponential.html" class="external-link">pexp</a></span><span class="op">(</span><span class="fl">28</span>,<span class="fl">1</span><span class="op">/</span><span class="va">onset</span><span class="op">)</span></span>
-<span>  </span>
+<span><span class="va">exp_cond.cdf</span> <span class="op">&lt;-</span> <span class="kw">function</span><span class="op">(</span><span class="va">x</span><span class="op">)</span> <span class="op">{</span></span>
+<span>  <span class="fl">1</span> <span class="op">-</span> <span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/stats/Exponential.html" class="external-link">pexp</a></span><span class="op">(</span><span class="va">x</span>, <span class="fl">1</span> <span class="op">/</span> <span class="va">onset</span>, lower.tail <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span> <span class="op">-</span> <span class="fu"><a href="https://rdrr.io/r/stats/Exponential.html" class="external-link">pexp</a></span><span class="op">(</span><span class="fl">28</span>, <span class="fl">1</span> <span class="op">/</span> <span class="va">onset</span>, lower.tail <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span><span class="op">)</span> <span class="op">/</span> <span class="fu"><a href="https://rdrr.io/r/stats/Exponential.html" class="external-link">pexp</a></span><span class="op">(</span><span class="fl">28</span>, <span class="fl">1</span> <span class="op">/</span> <span class="va">onset</span><span class="op">)</span></span>
 <span><span class="op">}</span></span></code></pre></div>
 </div>
 <div class="section level3">
 <h3 id="perform-the-simulations">Perform the simulations<a class="anchor" aria-label="anchor" href="#perform-the-simulations"></a>
 </h3>
-<div class="sourceCode" id="cb29"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb26"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">mySims</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/stats/simulate.html" class="external-link">simulate</a></span><span class="op">(</span><span class="va">design</span>,</span>
-<span>                   args<span class="op">=</span><span class="cn">NULL</span>,</span>
-<span>                   truthTox<span class="op">=</span><span class="va">myTruth</span>,</span>
-<span>                   truthSurv<span class="op">=</span><span class="va">exp_cond.cdf</span>,<span class="co">#piece_exp_cond.cdf,</span></span>
-<span>                   trueTmax<span class="op">=</span><span class="fl">80</span>,</span>
-<span>                   nsim<span class="op">=</span><span class="fl">2</span>,</span>
-<span>                   seed<span class="op">=</span><span class="fl">819</span>,</span>
-<span>                   mcmcOptions<span class="op">=</span><span class="va">options</span>,</span>
-<span>                   firstSeparate<span class="op">=</span><span class="cn">TRUE</span>,</span>
-<span>                   deescalate<span class="op">=</span><span class="cn">FALSE</span>,</span>
-<span>                   parallel<span class="op">=</span><span class="cn">FALSE</span><span class="op">)</span></span></code></pre></div>
+<span>  args <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  truthTox <span class="op">=</span> <span class="va">myTruth</span>,</span>
+<span>  truthSurv <span class="op">=</span> <span class="va">exp_cond.cdf</span>, <span class="co"># piece_exp_cond.cdf,</span></span>
+<span>  trueTmax <span class="op">=</span> <span class="fl">80</span>,</span>
+<span>  nsim <span class="op">=</span> <span class="fl">2</span>,</span>
+<span>  seed <span class="op">=</span> <span class="fl">819</span>,</span>
+<span>  mcmcOptions <span class="op">=</span> <span class="va">options</span>,</span>
+<span>  firstSeparate <span class="op">=</span> <span class="cn">TRUE</span>,</span>
+<span>  deescalate <span class="op">=</span> <span class="cn">FALSE</span>,</span>
+<span>  parallel <span class="op">=</span> <span class="cn">FALSE</span></span>
+<span><span class="op">)</span></span></code></pre></div>
 </div>
 <div class="section level3">
 <h3 id="interpret-the-simulation-results">Interpret the simulation results<a class="anchor" aria-label="anchor" href="#interpret-the-simulation-results"></a>
 </h3>
 <p>Use a similar way as section 9.2 in the “using the package crmPack:
 introductory examples” document</p>
-<div class="sourceCode" id="cb30"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">a</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/summary.html" class="external-link">summary</a></span><span class="op">(</span><span class="va">mySims</span>,truth<span class="op">=</span><span class="va">myTruth</span><span class="op">)</span></span>
+<div class="sourceCode" id="cb27"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">a</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/summary.html" class="external-link">summary</a></span><span class="op">(</span><span class="va">mySims</span>, truth <span class="op">=</span> <span class="va">myTruth</span><span class="op">)</span></span>
 <span><span class="va">b</span> <span class="op">&lt;-</span> <span class="va">mySims</span><span class="op">@</span><span class="va">data</span><span class="op">[[</span><span class="fl">1</span><span class="op">]</span><span class="op">]</span></span>
 <span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">mySims</span><span class="op">)</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">b</span><span class="op">)</span></span></code></pre></div>
 <p><img src="rolling-crm_files/figure-html/Interpret-1.png" width="700"></p>
-<div class="sourceCode" id="cb31"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb28"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">mySims</span><span class="op">@</span><span class="va">stopReasons</span><span class="op">[[</span><span class="fl">2</span><span class="op">]</span><span class="op">]</span></span></code></pre></div>
 <pre><code><span><span class="co">## [[1]]</span></span>
-<span><span class="co">## [1] "Probability for target toxicity is 50 % for dose 26 and thus above the required 50 %"</span></span>
+<span><span class="co">## [1] "Probability for target toxicity is 60 % for dose 18 and thus above the required 50 %"</span></span>
 <span><span class="co">## </span></span>
 <span><span class="co">## [[2]]</span></span>
-<span><span class="co">## [1] "Number of patients is 14 and thus below the prespecified minimum number 50"</span></span></code></pre>
-<div class="sourceCode" id="cb33"><pre class="downlit sourceCode r">
+<span><span class="co">## [1] "Number of patients is 8 and thus below the prespecified minimum number 50"</span></span></code></pre>
+<div class="sourceCode" id="cb30"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># nolint end</span></span></code></pre></div>
 </div>
 </div>
