@@ -23,7 +23,7 @@ Description: Implements a wide range of model-based dose escalation
     non-Bayesian estimation. The whole package is written in a modular
     form in the S4 class system, making it very flexible for adaptation to
     new models, escalation or stopping rules. Further details are presented in 
-    Sabanés Bové et al. (2019) <doi:10.18637/jss.v089.i10>.
+    Sabanes Bove et al. (2019) <doi:10.18637/jss.v089.i10>.
 License: GPL (>= 2)
 URL: https://github.com/roche/crmPack
 BugReports: https://github.com/roche/crmPack/issues
