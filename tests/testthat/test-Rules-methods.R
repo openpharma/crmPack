@@ -2723,6 +2723,53 @@ test_that("stopTrial works correctly for StoppingTDCIRatio when samples are not 
   }
 })
 
-test_that("stopTrial for StoppingMaxGainCIRatio fails gracefully with bad inputs", {
+test_that("windowLength works correctly", {
+  # Window length depends only on cohort size, so use an empty Data object and
+  # an arbitrary dose grid
+  emptyData <- Data(doseGrid=1:5)
 
+  windowLengthVariable <- SafetyWindowSize(
+    gap = list(c(7, 3), c(9, 7, 5)),
+    size = c(1, 4),
+    follow = 7,
+    follow_min = 14
+  )
+  windowLengthConst <- SafetyWindowConst(gap = c(7, 3), follow = 7, follow_min = 14)
+
+  for (d in emptyData@doseGrid) {
+    for (cSize in 1:6) {
+      cohortSize <- CohortSizeConst(size = cSize)
+      sizeRecommendation <- size(cohortSize, dose = d, data = emptyData)
+
+      actual <- windowLength(windowLengthVariable, size=sizeRecommendation)
+      expect_equal(names(actual), c("patientGap", "patientFollow", "patientFollowMin"))
+      expect_equal(length(actual$patientGap), cSize)
+      expect_equal(actual$patientFollow, 7)
+      expect_equal(actual$patientFollowMin, 14)
+      if (cSize == 1) {
+        expectedGaps <- c(0)
+      } else if (cSize == 2) {
+        expectedGaps <- c(0, 7)
+      } else if (cSize == 3) {
+        expectedGaps <- c(0, 7, 3)
+      } else if (cSize > 3) {
+        expectedGaps <- c(0, 9, 7, rep(5, cSize - 3))
+      }
+      expect_equal(actual$patientGap, expectedGaps)
+
+      actual <- windowLength(windowLengthConst, size=sizeRecommendation)
+      expect_equal(names(actual), c("patientGap", "patientFollow", "patientFollowMin"))
+      expect_equal(length(actual$patientGap), cSize)
+      expect_equal(actual$patientFollow, 7)
+      expect_equal(actual$patientFollowMin, 14)
+      if (cSize == 1) {
+        expectedGaps <- c(0)
+      } else if (cSize == 2) {
+        expectedGaps <- c(0, 7)
+      } else if (cSize > 3) {
+        expectedGaps <- c(0, 7, rep(3, cSize - 2))
+      }
+      expect_equal(actual$patientGap, expectedGaps)
+    }
+  }
 })
