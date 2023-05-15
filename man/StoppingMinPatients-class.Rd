@@ -5,9 +5,12 @@
 \alias{StoppingMinPatients-class}
 \alias{.StoppingMinPatients}
 \alias{StoppingMinPatients}
+\alias{.DefaultStoppingMinPatients}
 \title{\code{StoppingMinPatients}}
 \usage{
 StoppingMinPatients(nPatients)
+
+.DefaultStoppingMinPatients()
 }
 \arguments{
 \item{nPatients}{(\code{number})\cr see slot definition.}
@@ -24,6 +27,9 @@ patients
 \item{\code{nPatients}}{(\code{number})\cr minimum allowed number of patients.}
 }}
 
+\note{
+Typically, end users will not use the \code{.DefaultStoppingMinPatients()} function.
+}
 \examples{
 
 # As example, here is the rule for stopping the study if at least 20 patients

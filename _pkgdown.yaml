@@ -11,6 +11,18 @@ navbar:
     - icon: fa-github fa-lg
       href: https://github.com/roche/crmPack
 
+articles:
+  - title: Articles
+    navbar: ~
+    contents:
+    - trial_definition
+    - trial_analysis
+    - trial_simulation
+    - rolling-crm
+    - simulations
+    - migration_from_the_old_crmPack
+    - parallel_computing_with_extensions
+
 reference:
   - title: Package
     contents:
@@ -67,6 +79,8 @@ reference:
       - NextBestTDsamples
       - NextBestMaxGain
       - NextBestMaxGainSamples
+      - NextBestProbMTDLTE
+      - NextBestProbMTDMinDist
       - Increments
       - IncrementsRelative
       - IncrementsRelativeParts
@@ -180,6 +194,8 @@ reference:
       - v_next_best_td
       - v_next_best_td_samples
       - v_next_best_max_gain_samples
+      - v_next_best_prob_mtd_lte
+      - v_next_best_prob_mtd_min_dist
       - v_increments_relative
       - v_increments_relative_parts
       - v_increments_relative_dlt
@@ -320,6 +336,8 @@ reference:
       - nextBest-NextBestTD
       - nextBest-NextBestMaxGain
       - nextBest-NextBestMaxGainSamples
+      - nextBest-NextBestProbMTDLTE
+      - nextBest-NextBestProbMTDMinDist
       - stopTrial-StoppingLowestDoseHSRBeta
       - stopTrial-StoppingMTDCV
       - maxDose

@@ -5,9 +5,12 @@
 \alias{OneParLogNormalPrior-class}
 \alias{.OneParLogNormalPrior}
 \alias{OneParLogNormalPrior}
+\alias{.DefaultOneParLogNormalPrior}
 \title{\code{OneParLogNormalPrior}}
 \usage{
 OneParLogNormalPrior(skel_probs, dose_grid, sigma2)
+
+.DefaultOneParLogNormalPrior()
 }
 \arguments{
 \item{skel_probs}{(\code{numeric})\cr skeleton prior probabilities. This is a vector
@@ -17,6 +20,9 @@ of unique and sorted probability values between 0 and 1.}
 of the same length as \code{skel_probs}.}
 
 \item{sigma2}{(\code{number})\cr prior variance of log power parameter alpha.}
+}
+\value{
+an instance of the \code{OneParLogNormalPrior} class
 }
 \description{
 \ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#stable}{\figure{lifecycle-stable.svg}{options: alt='[Stable]'}}}{\strong{[Stable]}}

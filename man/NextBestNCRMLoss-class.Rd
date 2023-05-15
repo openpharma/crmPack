@@ -5,6 +5,7 @@
 \alias{NextBestNCRMLoss-class}
 \alias{.NextBestNCRMLoss}
 \alias{NextBestNCRMLoss}
+\alias{.DefaultNextBestNCRMLoss}
 \title{\code{NextBestNCRMLoss}}
 \usage{
 NextBestNCRMLoss(
@@ -14,6 +15,8 @@ NextBestNCRMLoss(
   max_overdose_prob,
   losses
 )
+
+.DefaultNextBestNCRMLoss()
 }
 \arguments{
 \item{target}{(\code{numeric})\cr see slot definition.}
@@ -65,6 +68,8 @@ This is because the loss function values must be specified for each
 interval, that is under-dosing, target toxicity, and overdosing toxicity or
 under-dosing, target toxicity, overdosing (excessive) toxicity, and
 unacceptable toxicity intervals.
+
+Typically, end users will not use the \code{.DefaultNextBestnCRMLoss()} function.
 }
 \examples{
 # In the example below, the target toxicity interval [0.2, 0.35] while the

@@ -5,9 +5,12 @@
 \alias{CohortSizeDLT-class}
 \alias{.CohortSizeDLT}
 \alias{CohortSizeDLT}
+\alias{.DefaultCohortSizeDLT}
 \title{\code{CohortSizeDLT}}
 \usage{
 CohortSizeDLT(dlt_intervals, cohort_size)
+
+.DefaultCohortSizeDLT()
 }
 \arguments{
 \item{dlt_intervals}{(\code{numeric})\cr see slot definition.}
@@ -29,6 +32,9 @@ relevant DLT intervals.}
 to the elements of \code{dlt_intervals}.}
 }}
 
+\note{
+Typically, end users will not use the \code{.DefaultCohortSizeDLT()} function.
+}
 \examples{
 
 # Rule for having cohort of size 1 until no DLT is observed and having cohort

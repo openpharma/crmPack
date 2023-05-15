@@ -5,9 +5,12 @@
 \alias{NextBestMaxGainSamples-class}
 \alias{.NextBestMaxGainSamples}
 \alias{NextBestMaxGainSamples}
+\alias{.DefaultNextBestMaxGainSamples}
 \title{\code{NextBestMaxGainSamples}}
 \usage{
 NextBestMaxGainSamples(prob_target_drt, prob_target_eot, derive, mg_derive)
+
+.DefaultNextBestMaxGainSamples()
 }
 \arguments{
 \item{prob_target_drt}{(\code{proportion})\cr see slot definition in \code{\link{NextBestMaxGain}}.}
@@ -44,6 +47,9 @@ the dose that gives the maximum gain value. It must therefore accept one
 and only one argument, which is a numeric vector, and return a number.}
 }}
 
+\note{
+Typically, end users will not use the \code{.DefaultNextBestMaxGainSamples()} function.
+}
 \examples{
 # Target probability of the occurrence of a DLT during the trial is set to 0.35.
 # Target probability of the occurrence of a DLT at the end of the trial is set to 0.3.
