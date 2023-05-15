@@ -464,6 +464,9 @@ DualResponsesDesign <- function(Effmodel,
 
 ## ===============================================================================
 
+# DADesign ----
+
+## class ----
 
 ##' Class for the time-to-DLT augmented CRM design
 ##'
@@ -501,6 +504,8 @@ DualResponsesDesign <- function(Effmodel,
 validObject(.DADesign())
 
 
+## constructor ----
+
 ##' Initialization function for `DADesign`
 ##'
 ##' @param model see \code{\linkS4class{DADesign}}
@@ -511,6 +516,7 @@ validObject(.DADesign())
 ##'
 ##' @export
 ##' @keywords methods
+
 DADesign <- function(model,
                      data,
                      safetyWindow,
