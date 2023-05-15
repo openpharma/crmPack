@@ -411,6 +411,9 @@ DualResponsesSamplesDesign <- function(eff_model,
 
 # nolint start
 
+# DualResponsesDesign ----
+
+## class ----
 ## ---------------------------------------------------------------------------------------------------
 ## class for design based on DLE and efficacy response without  samples using pseudo DLE and efficacy models
 ## ----------------------------------------------------------------------------------------------------
@@ -443,6 +446,7 @@ DualResponsesSamplesDesign <- function(eff_model,
   )
 validObject(.DualResponsesDesign())
 
+## constructor ----
 
 ##' Initialization function for 'DualResponsesDesign"
 ##' @param data please refer to \code{\linkS4class{DualResponsesDesign}} class object
