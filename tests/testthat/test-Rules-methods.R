@@ -2631,12 +2631,6 @@ test_that("stopTrial works for StoppingTargetBiomarker", {
   samples <- mcmc(data, model, options)
 
   # Set-up some MCMC parameters and generate samples from the posterior
-  doseRecommendation <- nextBest(myNextBest,
-    doselimit = nextMaxDose,
-    samples = samples,
-    model = model,
-    data = data
-  )
   samples <- mcmc(data, model, options)
 
   # Define the rule for dose increments and calculate the maximum dose allowed
