@@ -2777,7 +2777,7 @@ test_that("stopTrial works correctly for StoppingTDCIRatio when samples are prov
           data = emptyData
         )
         direction <- ifelse(expected, "less", "greater")
-        attr(expected, "messgae") <- paste0(
+        attr(expected, "message") <- paste0(
           "95% CI is (",
           sampledLimits[[1]],
           ", ",
@@ -2824,7 +2824,7 @@ test_that("stopTrial works correctly for StoppingTDCIRatio when samples are not 
           model = model,
           data = emptyData
         )
-        # TODO: messgae/message attribute not checked
+        # TODO: message attribute not checked
         expect_false(result, expected)
       }
     }
