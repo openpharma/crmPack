@@ -423,7 +423,7 @@ DualResponsesSamplesDesign <- function(eff_model,
 ##' \code{\linkS4class{RuleDesign}} and \code{\linkS4class{TDDesign}} class object
 ##'
 ##' @slot data the data set of \code{\linkS4class{DataDual}} class object
-##' @slot Effmodel the pseudo efficacy model to be used, an object class of
+##' @slot eff_model the pseudo efficacy model to be used, an object class of
 ##' \code{\linkS4class{ModelEff}}
 ##'
 ##' @example examples/design-class-DualResponsesDesign.R
@@ -433,7 +433,7 @@ DualResponsesSamplesDesign <- function(eff_model,
   setClass(
     Class = "DualResponsesDesign",
     representation(
-      Effmodel = "ModelEff",
+      eff_model = "ModelEff",
       data = "DataDual"
     ),
     prototype(
@@ -450,18 +450,18 @@ validObject(.DualResponsesDesign())
 
 ##' Initialization function for 'DualResponsesDesign"
 ##' @param data please refer to \code{\linkS4class{DualResponsesDesign}} class object
-##' @param Effmodel please refer to \code{\linkS4class{DualResponsesDesign}} class object
+##' @param eff_model please refer to \code{\linkS4class{DualResponsesDesign}} class object
 ##' @param \dots additional arguments for \code{\link{TDDesign}}
 ##' @return the \code{\linkS4class{DualResponsesDesign}} class object
 ##'
 ##' @export
 ##' @keywords methods
-DualResponsesDesign <- function(Effmodel,
+DualResponsesDesign <- function(eff_model,
                                 data,
                                 ...) {
   start <- TDDesign(data = data, ...)
   .DualResponsesDesign(start,
-    Effmodel = Effmodel,
+    eff_model = eff_model,
     data = data
   )
 }
