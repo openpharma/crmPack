@@ -414,17 +414,19 @@ DualResponsesSamplesDesign <- function(eff_model,
 # DualResponsesDesign ----
 
 ## class ----
-# ---------------------------------------------------------------------------------------------------
-# class for design based on DLE and efficacy response without  samples using pseudo DLE and efficacy models
-# ----------------------------------------------------------------------------------------------------
-#' This is a class of design based on DLE responses using the \code{\linkS4class{LogisticIndepBeta}} model
-#' model and efficacy responses using \code{\linkS4class{ModelEff}}  model class
-#' without DLE and efficacy samples. It contain all slots in
-#' \code{\linkS4class{RuleDesign}} and \code{\linkS4class{TDDesign}} class object
+
+#' `DualResponsesDesign` 
 #'
-#' @slot data the data set of \code{\linkS4class{DataDual}} class object
+#' @description `r lifecycle::badge("stable")`
+#'
+#' This is a class of design based on DLE responses using the [`LogisticIndepBeta`] model
+#' model and efficacy responses using [`ModelEff`]  model class
+#' without DLE and efficacy samples. It contain all slots in
+#' [`RuleDesign`] and [`TDDesign`] class object
+#'
+#' @slot data the data set of [`DataDual`] class object
 #' @slot eff_model the pseudo efficacy model to be used, an object class of
-#' \code{\linkS4class{ModelEff}}
+#' [`ModelEff`]
 #'
 #' @example examples/design-class-DualResponsesDesign.R
 #' @export
@@ -448,10 +450,10 @@ validObject(.DualResponsesDesign())
 ## constructor ----
 
 #' Initialization function for 'DualResponsesDesign"
-#' @param data please refer to \code{\linkS4class{DualResponsesDesign}} class object
-#' @param eff_model please refer to \code{\linkS4class{DualResponsesDesign}} class object
+#' @param data please refer to [`DualResponsesDesign`] class object
+#' @param eff_model please refer to [`DualResponsesDesign`] class object
 #' @param \dots additional arguments for \code{\link{TDDesign}}
-#' @return the \code{\linkS4class{DualResponsesDesign}} class object
+#' @return the [`DualResponsesDesign`] class object
 #'
 #' @export
 #' @keywords methods
@@ -471,18 +473,21 @@ DualResponsesDesign <- function(eff_model,
 
 ## class ----
 
-#' Class for the time-to-DLT augmented CRM design
+
+#' `DADesign` 
+#'
+#' @description `r lifecycle::badge("stable")`
 #'
 #' This class has special requirements for the \code{model} and \code{data}
-#' slots in comparison to the parent class \code{\linkS4class{Design}}:
+#' slots in comparison to the parent class [`Design`]:
 #'
-#' @slot model the model to be used, an object of or inheriting from class
-#' \code{\linkS4class{GeneralModel}}, see in particular
-#' \code{\linkS4class{DALogisticLogNormal}} and
-#' \code{\linkS4class{TITELogisticLogNormal}} which make use of the
+#' @slot model (`DADesign`), an object of or inheriting from class
+#' [`GeneralModel`], see in particular
+#' [`DALogisticLogNormal`] and
+#' [`TITELogisticLogNormal`] which make use of the
 #' time-to-DLT data
 #' @slot data what is the dose grid, any previous data, etc., contained
-#' in an object of class \code{\linkS4class{DataDA}}
+#' in an object of class [`DataDA`]
 #' @slot safetyWindow still to be documented.
 #'
 #' @example examples/design-class-DADesign.R
@@ -510,11 +515,11 @@ validObject(.DADesign())
 
 #' Initialization function for `DADesign`
 #'
-#' @param model see \code{\linkS4class{DADesign}}
-#' @param data see \code{\linkS4class{DADesign}}
-#' @param safetyWindow see \code{\linkS4class{DADesign}}
+#' @param model see [`DADesign`]
+#' @param data see [`DADesign`]
+#' @param safetyWindow see [`DADesign`]
 #' @param \dots additional arguments for \code{\link{Design}}
-#' @return the \code{\linkS4class{DADesign}} object
+#' @return the [`DADesign`] object
 #'
 #' @export
 #' @keywords methods
