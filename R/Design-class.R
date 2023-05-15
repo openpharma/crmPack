@@ -414,21 +414,20 @@ DualResponsesSamplesDesign <- function(eff_model,
 # DualResponsesDesign ----
 
 ## class ----
-## ---------------------------------------------------------------------------------------------------
-## class for design based on DLE and efficacy response without  samples using pseudo DLE and efficacy models
-## ----------------------------------------------------------------------------------------------------
-##' This is a class of design based on DLE responses using the \code{\linkS4class{LogisticIndepBeta}} model
-##' model and efficacy responses using \code{\linkS4class{ModelEff}}  model class
-##' without DLE and efficacy samples. It contain all slots in
-##' \code{\linkS4class{RuleDesign}} and \code{\linkS4class{TDDesign}} class object
-##'
-##' @slot data the data set of \code{\linkS4class{DataDual}} class object
-##' @slot eff_model the pseudo efficacy model to be used, an object class of
-##' \code{\linkS4class{ModelEff}}
-##'
-##' @example examples/design-class-DualResponsesDesign.R
-##' @export
-##' @keywords class
+# ---------------------------------------------------------------------------------------------------
+# class for design based on DLE and efficacy response without  samples using pseudo DLE and efficacy models
+# ----------------------------------------------------------------------------------------------------
+#' This is a class of design based on DLE responses using the \code{\linkS4class{LogisticIndepBeta}} model
+#' model and efficacy responses using \code{\linkS4class{ModelEff}}  model class
+#' without DLE and efficacy samples. It contain all slots in
+#' \code{\linkS4class{RuleDesign}} and \code{\linkS4class{TDDesign}} class object
+#'
+#' @slot data the data set of \code{\linkS4class{DataDual}} class object
+#' @slot eff_model the pseudo efficacy model to be used, an object class of
+#' \code{\linkS4class{ModelEff}}
+#'
+#' @example examples/design-class-DualResponsesDesign.R
+#' @export
 .DualResponsesDesign <-
   setClass(
     Class = "DualResponsesDesign",
@@ -448,14 +447,14 @@ validObject(.DualResponsesDesign())
 
 ## constructor ----
 
-##' Initialization function for 'DualResponsesDesign"
-##' @param data please refer to \code{\linkS4class{DualResponsesDesign}} class object
-##' @param eff_model please refer to \code{\linkS4class{DualResponsesDesign}} class object
-##' @param \dots additional arguments for \code{\link{TDDesign}}
-##' @return the \code{\linkS4class{DualResponsesDesign}} class object
-##'
-##' @export
-##' @keywords methods
+#' Initialization function for 'DualResponsesDesign"
+#' @param data please refer to \code{\linkS4class{DualResponsesDesign}} class object
+#' @param eff_model please refer to \code{\linkS4class{DualResponsesDesign}} class object
+#' @param \dots additional arguments for \code{\link{TDDesign}}
+#' @return the \code{\linkS4class{DualResponsesDesign}} class object
+#'
+#' @export
+#' @keywords methods
 DualResponsesDesign <- function(eff_model,
                                 data,
                                 ...) {
@@ -466,29 +465,28 @@ DualResponsesDesign <- function(eff_model,
   )
 }
 
-## ===============================================================================
+# ===============================================================================
 
 # DADesign ----
 
 ## class ----
 
-##' Class for the time-to-DLT augmented CRM design
-##'
-##' This class has special requirements for the \code{model} and \code{data}
-##' slots in comparison to the parent class \code{\linkS4class{Design}}:
-##'
-##' @slot model the model to be used, an object of or inheriting from class
-##' \code{\linkS4class{GeneralModel}}, see in particular
-##' \code{\linkS4class{DALogisticLogNormal}} and
-##' \code{\linkS4class{TITELogisticLogNormal}} which make use of the
-##' time-to-DLT data
-##' @slot data what is the dose grid, any previous data, etc., contained
-##' in an object of class \code{\linkS4class{DataDA}}
-##' @slot safetyWindow still to be documented.
-##'
-##' @example examples/design-class-DADesign.R
-##' @export
-##' @keywords classes
+#' Class for the time-to-DLT augmented CRM design
+#'
+#' This class has special requirements for the \code{model} and \code{data}
+#' slots in comparison to the parent class \code{\linkS4class{Design}}:
+#'
+#' @slot model the model to be used, an object of or inheriting from class
+#' \code{\linkS4class{GeneralModel}}, see in particular
+#' \code{\linkS4class{DALogisticLogNormal}} and
+#' \code{\linkS4class{TITELogisticLogNormal}} which make use of the
+#' time-to-DLT data
+#' @slot data what is the dose grid, any previous data, etc., contained
+#' in an object of class \code{\linkS4class{DataDA}}
+#' @slot safetyWindow still to be documented.
+#'
+#' @example examples/design-class-DADesign.R
+#' @export
 .DADesign <-
   setClass(
     Class = "DADesign",
@@ -510,16 +508,16 @@ validObject(.DADesign())
 
 ## constructor ----
 
-##' Initialization function for `DADesign`
-##'
-##' @param model see \code{\linkS4class{DADesign}}
-##' @param data see \code{\linkS4class{DADesign}}
-##' @param safetyWindow see \code{\linkS4class{DADesign}}
-##' @param \dots additional arguments for \code{\link{Design}}
-##' @return the \code{\linkS4class{DADesign}} object
-##'
-##' @export
-##' @keywords methods
+#' Initialization function for `DADesign`
+#'
+#' @param model see \code{\linkS4class{DADesign}}
+#' @param data see \code{\linkS4class{DADesign}}
+#' @param safetyWindow see \code{\linkS4class{DADesign}}
+#' @param \dots additional arguments for \code{\link{Design}}
+#' @return the \code{\linkS4class{DADesign}} object
+#'
+#' @export
+#' @keywords methods
 
 DADesign <- function(model,
                      data,
