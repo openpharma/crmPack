@@ -1175,7 +1175,7 @@ StoppingCohortsNearDose <- function(nCohorts = 2L,
   nCohorts <- safeInteger(nCohorts)
   report_label <- h_default_if_empty(
     as.character(report_label),
-    paste("\u2265", nCohorts, "cohorts in", percentage, "% dose range around NBD")
+    paste("\u2265", nCohorts, "cohorts dosed in", percentage, "% dose range around NBD")
   )
 
   .StoppingCohortsNearDose(
@@ -1234,7 +1234,7 @@ StoppingPatientsNearDose <- function(nPatients = 10L,
   nPatients <- safeInteger(nPatients)
   report_label <- h_default_if_empty(
     as.character(report_label),
-    paste("\u2265", nPatients, "patients in", percentage, "% dose range around NBD")
+    paste("\u2265", nPatients, "patients dosed in", percentage, "% dose range around NBD")
   )
 
   .StoppingPatientsNearDose(
@@ -1283,7 +1283,7 @@ StoppingMinCohorts <- function(nCohorts = 2L,
   nCohorts <- safeInteger(nCohorts)
   report_label <- h_default_if_empty(
     as.character(report_label),
-    paste("Minimum number of", nCohorts, "cohorts reached")
+    paste("\u2265", nCohorts, "cohorts dosed")
   )
 
   .StoppingMinCohorts(
@@ -1331,7 +1331,7 @@ StoppingMinPatients <- function(nPatients = 20L,
   nPatients <- safeInteger(nPatients)
   report_label <- h_default_if_empty(
     as.character(report_label),
-    paste("Minimum number of", nPatients, "patients reached")
+    paste("\u2265", nPatients, "patients dosed")
   )
 
   .StoppingMinPatients(
@@ -1389,7 +1389,7 @@ StoppingTargetProb <- function(target = c(0.2, 0.35),
   assert_numeric(target, len = 2)
   report_label <- h_default_if_empty(
     as.character(report_label),
-    paste("P(", target[1], "\u2264 prob(DLE | NBD) \u2264", target[2], ") \u2265", prob)
+    paste0("P(", target[1], " \u2264 prob(DLE | NBD) \u2264 ", target[2], ") \u2265 ", prob)
   )
 
   .StoppingTargetProb(
@@ -1457,7 +1457,7 @@ StoppingMTDdistribution <- function(target = 0.33,
                                     report_label = NA_character_) {
   report_label <- h_default_if_empty(
     as.character(report_label),
-    paste("P(MTD >", thresh, "* NBD | P(DLE) = ", target, ") \u2265 ", prob)
+    paste0("P(MTD > ", thresh, " * NBD | P(DLE) = ", target, ") \u2265 ", prob)
   )
 
   .StoppingMTDdistribution(
@@ -1519,7 +1519,8 @@ StoppingMTDCV <- function(target = 0.3,
                           report_label = NA_character_) {
   report_label <- h_default_if_empty(
     as.character(report_label),
-    paste0("P(MTD > ", thresh_cv, " * NBD | P(DLE) = ", target, ")")
+    #paste0("P(MTD > ", thresh_cv, " * NBD | P(DLE) = ", target, ")")
+    paste("CV(MTD) >", target)
   )
 
   .StoppingMTDCV(
@@ -1598,7 +1599,7 @@ StoppingLowestDoseHSRBeta <- function(target = 0.3,
                                       report_label = NA_character_) {
   report_label <- h_default_if_empty(
     as.character(report_label),
-    "to be defined"
+    paste0("P\u03B2(lowest dose > P(DLE) = ", target, ") > ", prob)
   )
 
   .StoppingLowestDoseHSRBeta(
@@ -1671,9 +1672,9 @@ StoppingTargetBiomarker <- function(target = c(0.9, 1),
 
   report_label <- h_default_if_empty(
     as.character(report_label),
-    paste(
-      "P(", target[1], "\u2264", "Biomarker \u2264", target[2], ") \u2265 ", prob,
-      ifelse(is_relative, "(relative)", "(absolute)")
+    paste0(
+      "P(", target[1], " \u2264 ", "Biomarker \u2264 ", target[2], ") \u2265 ", prob,
+      ifelse(is_relative, " (relative)", " (absolute)")
     )
   )
 
@@ -1723,12 +1724,12 @@ StoppingTargetBiomarker <- function(target = c(0.9, 1),
 #' @export
 #' @example examples/Rules-class-StoppingSpecificDose.R
 #'
-StoppingSpecificDose <- function(rule = StoppingTargetProb(target = c(0, 0.3), prob = 0.8), 
-                                  dose = 80, 
+StoppingSpecificDose <- function(rule = StoppingTargetProb(target = c(0, 0.3), prob = 0.8),
+                                  dose = 80,
                                   report_label = NA_character_) {
   report_label <- h_default_if_empty(
     as.character(report_label),
-    "Reached specific dose"
+    paste0("Dose ", dose, " used for testing a stopping rule")
   )
 
   .StoppingSpecificDose(
@@ -1768,7 +1769,7 @@ StoppingSpecificDose <- function(rule = StoppingTargetProb(target = c(0, 0.3), p
 StoppingHighestDose <- function(report_label = NA_character_) {
   report_label <- h_default_if_empty(
     as.character(report_label),
-    "Reached highest dose"
+    "NBD is the highest dose"
   )
 
   .StoppingHighestDose(report_label = report_label)
@@ -1821,8 +1822,8 @@ StoppingHighestDose <- function(report_label = NA_character_) {
 #' @export
 #' @example examples/Rules-class-StoppingTDCIRatio.R
 #'
-StoppingTDCIRatio <- function(target_ratio = 5, 
-                              prob_target = 0.3, 
+StoppingTDCIRatio <- function(target_ratio = 5,
+                              prob_target = 0.3,
                               report_label = NA_character_) {
   report_label <- h_default_if_empty(
     as.character(report_label),
@@ -1886,8 +1887,8 @@ StoppingTDCIRatio <- function(target_ratio = 5,
 #' @export
 #' @example examples/Rules-class-StoppingMaxGainCIRatio.R
 #'
-StoppingMaxGainCIRatio <- function(target_ratio = 5, 
-                                  prob_target = 0.3, 
+StoppingMaxGainCIRatio <- function(target_ratio = 5,
+                                  prob_target = 0.3,
                                   report_label = NA_character_) {
   report_label <- h_default_if_empty(
     as.character(report_label),
