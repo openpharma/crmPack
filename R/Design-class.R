@@ -415,7 +415,7 @@ DualResponsesSamplesDesign <- function(eff_model,
 
 ## class ----
 
-#' `DualResponsesDesign` 
+#' `DualResponsesDesign`
 #'
 #' @description `r lifecycle::badge("stable")`
 #'
@@ -474,7 +474,7 @@ DualResponsesDesign <- function(eff_model,
 ## class ----
 
 
-#' `DADesign` 
+#' `DADesign`
 #'
 #' @description `r lifecycle::badge("stable")`
 #'
@@ -490,6 +490,7 @@ DualResponsesDesign <- function(eff_model,
 #' in an object of class [`DataDA`]
 #' @slot safetyWindow still to be documented.
 #'
+#' @aliases DADesign
 #' @example examples/design-class-DADesign.R
 #' @export
 .DADesign <-
