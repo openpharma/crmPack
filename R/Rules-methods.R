@@ -2267,7 +2267,7 @@ setMethod("stopTrial",
           "is",
           round(prob * 100),
           "% and thus",
-          ifelse(doStop, "above", "below"),
+          ifelse(doStop, "greater than or equal to", "strictly less than"),
           "the required",
           round(stopping@prob * 100),
           "%"

@@ -2453,7 +2453,7 @@ test_that("stopTrial works correctly for StoppingMTDdistribution", {
             model,
             data = emptyData
           )
-          direction <- ifelse(as.logical(result), "above", "below")
+          direction <- ifelse(as.logical(result), "greater than or equal to", "strictly less than")
           expected <- sampledConfidence >= confidence
           if (expected != as.logical(result)) {
             print(
