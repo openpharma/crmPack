@@ -1,4 +1,6 @@
 # Version 1.0.9000.9133
+* Corrected the spelling of the name of the `messgae` [sic] attribute of the 
+return value of `stopTrial` with signature `stopping = "StoppingTDCIRatio"`.
 * Changed the type of `ref_dose` in the `LogisticNormalMixture` and 
 `LogisticNormalFixedMixture` classes from `positive_number` to `numeric` for 
 consistency with other classes.
