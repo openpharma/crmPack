@@ -4,22 +4,25 @@
 \name{DADesign-class}
 \alias{DADesign-class}
 \alias{.DADesign}
-\title{Class for the time-to-DLT augmented CRM design}
+\alias{DADesign}
+\title{\code{DADesign}}
 \description{
+\ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#stable}{\figure{lifecycle-stable.svg}{options: alt='[Stable]'}}}{\strong{[Stable]}}
+
 This class has special requirements for the \code{model} and \code{data}
-slots in comparison to the parent class \code{\linkS4class{Design}}:
+slots in comparison to the parent class \code{\link{Design}}:
 }
 \section{Slots}{
 
 \describe{
-\item{\code{model}}{the model to be used, an object of or inheriting from class
-\code{\linkS4class{GeneralModel}}, see in particular
-\code{\linkS4class{DALogisticLogNormal}} and
-\code{\linkS4class{TITELogisticLogNormal}} which make use of the
+\item{\code{model}}{(\code{DADesign}), an object of or inheriting from class
+\code{\link{GeneralModel}}, see in particular
+\code{\link{DALogisticLogNormal}} and
+\code{\link{TITELogisticLogNormal}} which make use of the
 time-to-DLT data}
 
 \item{\code{data}}{what is the dose grid, any previous data, etc., contained
-in an object of class \code{\linkS4class{DataDA}}}
+in an object of class \code{\link{DataDA}}}
 
 \item{\code{safetyWindow}}{still to be documented.}
 }}
@@ -96,4 +99,3 @@ design <- DADesign(
 )
 # nolint end
 }
-\keyword{classes}
