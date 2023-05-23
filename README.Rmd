@@ -48,6 +48,7 @@ The package vignettes provide information on various aspects of CRM trial design
 
 * [Trial definition](https://roche.github.io/crmPack/main/articles/trial_definition.html)
 * [Trial analysis](https://roche.github.io/crmPack/main/articles/trial_analysis.html)
+* [Sanity checking](https://roche.github.io/crmPack/main/articles/trial_sanity_checks.html)
 * [Simulation of operating characteristics](https://roche.github.io/crmPack/main/articles/trial_simulation.html)
 * [Extending crmPack](https://roche.github.io/crmPack/main/articles/parallel_computing_with_extensions.html)
 * [Migration from the old crmPack](https://roche.github.io/crmPack/main/articles/migration_from_the_old_crmPack.html)

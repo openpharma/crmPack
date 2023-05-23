@@ -18,7 +18,7 @@ library(tidyverse)
 library(kableExtra)
 ```
 
-> The `tidy()` methods used in this vignette follow the pattern established by the `broom` package and turn objects of various classes into tibbles.  Currently, they are defined in a code chunk within this tibble that is not displayed, but will be added to the main `crmpack` package at a later date.
+> The `tidy()` methods used in this vignette follow the pattern established by the `broom` package and turn objects of various classes into tibbles.  Currently, they are defined in a code chunk within this tibble that is not displayed, but they will be added to the main `crmPack` package at a later date.
 
 ```{r function-definitions, echo=FALSE}
 library(broom)
@@ -123,7 +123,7 @@ examine(design) %>% kable()
 ```
 
 Cheung [@dfcrm2013] (p146) describes a CRM trial* as *rigid* if there exists a dose from which escalation is not possible regardless of the number of participants who do not experience when treated at that dose.  He then (p164) defines a CRM trial as *incoherent* if, among other criteria, it recommends a dose escalation immediately following the first report of a DLT.
-> *: Strictly, Cheung defines incoherence and rigidity *only* in terms of a trial's dose-toxicity model.  We extend the terms to include all of a trial's design features, inclusing its escalation, dose selection, increments and stopping rules.
+> *: Strictly, Cheung defines incoherence and rigidity *only* in terms of a trial's dose-toxicity model.  We extend the terms to include all of a trial's design features, including its escalation, dose selection, increments and stopping rules.
 
 The output from `examine` shows that our initial design is not incoherent (because there is no recommendation to increase the dose used in the next cohort following the first report of a DLT), but it is rigid.  It is rigid because, even when no toxicities are reported at 25 mg, the model is unable to recommend escalation before the trial's futility stopping rule (defined by `stopping_futility` above) is satisfied.
 
