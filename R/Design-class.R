@@ -433,7 +433,7 @@ DualResponsesSamplesDesign <- function(eff_model,
 .DualResponsesDesign <-
   setClass(
     Class = "DualResponsesDesign",
-    representation(
+    slots = c(
       eff_model = "ModelEff",
       data = "DataDual"
     ),
@@ -496,7 +496,7 @@ DualResponsesDesign <- function(eff_model,
 .DADesign <-
   setClass(
     Class = "DADesign",
-    representation(
+    slots = c(
       model = "GeneralModel",
       data = "DataDA",
       safetyWindow = "SafetyWindow"
