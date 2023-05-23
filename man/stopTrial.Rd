@@ -267,6 +267,10 @@ interval of the estimate (the minimum of Gstar and TDtargetEndOfTrial). This is 
 incorporate DLE and efficacy responses without DLE and efficacy samples involved.
 
 }}
+\note{
+If the recommended next best dose is \code{NA} or the placebo dose, then
+the trial always stops, independent of the concrete \code{stopping} rule used.
+}
 \examples{
 
 ## Example of combining stopping rules with '&' and/or '|' operators

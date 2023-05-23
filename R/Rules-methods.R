@@ -1222,7 +1222,7 @@ setMethod(
 #' @aliases nextBest-NextBestProbMTDMinDist
 #'
 #' @export
-#' @example examples/Rules-method-nextBest-NextBestProbMTDMinDist.R
+#' @example examples/Rules-method-nextBest-NextBestProbMtdMinDist.R
 #'
 setMethod(
   f = "nextBest",
@@ -1786,6 +1786,9 @@ setMethod("|",
 ##' otherwise. It should have an attribute \code{message} which gives the reason
 ##' for the decision.
 ##'
+##' @note If the recommended next best dose is `NA` or the placebo dose, then
+##' the trial always stops, independent of the concrete `stopping` rule used.
+##'
 ##' @export
 ##' @example examples/Rules-method-CombiningStoppingRulesAndOr.R
 ##' @keywords methods
@@ -2264,7 +2267,7 @@ setMethod("stopTrial",
           "is",
           round(prob * 100),
           "% and thus",
-          ifelse(doStop, "above", "below"),
+          ifelse(doStop, "greater than or equal to", "strictly less than"),
           "the required",
           round(stopping@prob * 100),
           "%"
@@ -2863,7 +2866,7 @@ setMethod(
       ifelse(do_stop, "less than or equal to ", "greater than "),
       "target_ratio = ", stopping@target_ratio
     )
-    structure(do_stop, messgae = text)
+    structure(do_stop, message = text)
   }
 )
 
@@ -2901,14 +2904,14 @@ setMethod("stopTrial",
 
       ## so can we stop?
       doStop <- ratio <= stopping@target_ratio
-      ## generate messgae
+      ## generate message
       text <- paste(
         "95% CI is (", round(CI[1], 4), ",", round(CI[2], 4), "), Ratio =", round(ratio, 4), "is ", ifelse(doStop, "is less than or equal to", "greater than"),
         "target_ratio =", stopping@target_ratio
       )
       ## return both
       return(structure(doStop,
-        messgae = text
+        message = text
       ))
     }
 )
@@ -3016,7 +3019,7 @@ setMethod("stopTrial",
 
       ## so can we stop?
       doStop <- ratio <= stopping@target_ratio
-      ## generate messgae
+      ## generate message
       text1 <- paste(
         "Gstar estimate is", round(Gstar, 4), "with 95% CI (", round(CIGstar[1], 4), ",", round(CIGstar[2], 4),
         ") and its ratio =",
