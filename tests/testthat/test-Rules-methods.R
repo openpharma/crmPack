@@ -2453,7 +2453,7 @@ test_that("stopTrial works correctly for StoppingMTDdistribution", {
             model,
             data = emptyData
           )
-          direction <- ifelse(as.logical(result), "above", "below")
+          direction <- ifelse(as.logical(result), "greater than or equal to", "strictly less than")
           expected <- sampledConfidence >= confidence
           if (expected != as.logical(result)) {
             print(
@@ -2631,12 +2631,6 @@ test_that("stopTrial works for StoppingTargetBiomarker", {
   samples <- mcmc(data, model, options)
 
   # Set-up some MCMC parameters and generate samples from the posterior
-  doseRecommendation <- nextBest(myNextBest,
-    doselimit = nextMaxDose,
-    samples = samples,
-    model = model,
-    data = data
-  )
   samples <- mcmc(data, model, options)
 
   # Define the rule for dose increments and calculate the maximum dose allowed
@@ -2777,7 +2771,7 @@ test_that("stopTrial works correctly for StoppingTDCIRatio when samples are prov
           data = emptyData
         )
         direction <- ifelse(expected, "less", "greater")
-        attr(expected, "messgae") <- paste0(
+        attr(expected, "message") <- paste0(
           "95% CI is (",
           sampledLimits[[1]],
           ", ",
@@ -2824,7 +2818,7 @@ test_that("stopTrial works correctly for StoppingTDCIRatio when samples are not 
           model = model,
           data = emptyData
         )
-        # TODO: messgae/message attribute not checked
+        # TODO: message attribute not checked
         expect_false(result, expected)
       }
     }
