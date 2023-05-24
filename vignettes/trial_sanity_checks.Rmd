@@ -247,9 +247,9 @@ if (file.exists("minInfModel.Rds")) {
         add_column(Type = "Fitted")
     ) %>%
     ggplot() +
-      geom_line(aes(x = Dose, y = median, colour = Type), linetype = "solid") +
-      geom_line(aes(x = Dose, y = lower, colour = Type), linetype = "dotted") +
-      geom_line(aes(x = Dose, y = upper, colour = Type), linetype = "dotted")
+    geom_line(aes(x = Dose, y = median, colour = Type), linetype = "solid") +
+    geom_line(aes(x = Dose, y = lower, colour = Type), linetype = "dotted") +
+    geom_line(aes(x = Dose, y = upper, colour = Type), linetype = "dotted")
 
   saveRDS(min_inf_model, "minInfModel.Rds")
 }
@@ -264,7 +264,7 @@ $$\binom{\alpha}{log(\beta)} \sim N \left( \left[\begin{array}{rr}`r sprintf(" %
 Does this fix the rigidity problem?
 
 ```{r}
-revised_model <-  min_inf_model$model
+revised_model <- min_inf_model$model
 
 revised_design1 <- Design(
   model = revised_model,
