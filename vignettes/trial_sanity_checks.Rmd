@@ -30,7 +30,7 @@ setMethod(
     rv <- lapply(
       names(x@data),
       function(col) {
-        tibble(!! as.symbol(col) := x@data[[col]])
+        tibble(!!as.symbol(col) := x@data[[col]])
       }
     ) %>% bind_cols()
     if (!is.null(data)) {
@@ -152,7 +152,8 @@ revised_increment_rule <- IncrementsRelative(
 )
 tibble(
   HighestDoseUsed = dose_grid,
-  MaxPermittedDose = c(NA,
+  MaxPermittedDose = c(
+    NA,
     sapply(
       seq_along(dose_grid[-1]),
       function(n) {
@@ -169,9 +170,8 @@ tibble(
     )
   )
 ) %>%
-mutate(EscalationPermitted = lead(HighestDoseUsed < MaxPermittedDose)) %>%
-kable()
-
+  mutate(EscalationPermitted = lead(HighestDoseUsed < MaxPermittedDose)) %>%
+  kable()
 ```
 
 Yes, it does.  So we update the design:
@@ -260,10 +260,12 @@ min_inf_model$model@params
 The minimally informative model has a prior distribution of 
 
 $$\binom{\alpha}{log(\beta)} \sim N \left( \left[\begin{array}{rr}`r sprintf(" %0.3f", min_inf_model$model@params@mean[1])` \\ `r sprintf(" %0.3f", min_inf_model$model@params@mean[2])` \end{array}\right], \left[\begin{array}{rr} `r sprintf(" %0.3f", min_inf_model$model@params@cov[1, 1])` & `r sprintf(" %0.3f", min_inf_model$model@params@cov[1, 2])` \\ `r sprintf(" %0.3f", min_inf_model$model@params@cov[2, 1])` & `r sprintf(" %0.3f", min_inf_model$model@params@cov[2, 2])`\end{array}\right]\right)$$
+
 Does this fix the rigidity problem?
 
-```{r, fig.width=7}
+```{r}
 revised_model <-  min_inf_model$model
+
 revised_design1 <- Design(
   model = revised_model,
   nextBest = next_best,
