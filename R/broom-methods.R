@@ -872,7 +872,7 @@ setMethod(
   }
 )
 
-# tidy Samples ----
+# tidy Simulations ----
 
 #' @rdname tidy
 #' @aliases tidy-Simulations
@@ -889,6 +889,25 @@ setMethod(
       fit = lapply(object@fit, as_tibble),
       stopReasons = object@stopReasons
     )
+    return(rv)
+  }
+)
+
+# tidy Simulations ----
+
+#' @rdname tidy
+#' @aliases tidy-DualSimulations
+#' @example examples/DualSimulations-method-tidy.R
+#' @export
+setMethod(
+  f = "tidy",
+  signature = signature(object = "DualSimulations"),
+  definition = function(object, ...) {
+    rv <- callNextMethod()
+    rv <- rv %>%
+      add_column(rhoEst = object@rhoEst) %>%
+      add_column(sigma2West = object@sigma2West) %>%
+      add_column(fitBiomarker = lapply(object@fitBiomarker, as_tibble))
     return(rv)
   }
 )
