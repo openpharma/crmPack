@@ -827,3 +827,48 @@ setMethod(
     return(rv)
   }
 )
+
+# tidy Samples ----
+
+#' @rdname tidy
+#' @aliases tidy-Samples
+#' @example examples/Samples-method-tidy.R
+#' @export
+setMethod(
+  f = "tidy",
+  signature = signature(object = "Samples"),
+  definition = function(object, ...) {
+    rv <- lapply(
+      names(object@data),
+      function(x) {
+        z <- tibble::tibble(unlist(object@data[x]))
+        names(z) <- x
+        z
+      }
+    ) %>%
+      dplyr::bind_cols() %>%
+      dplyr::bind_cols(object@options %>% tidy())
+    return(rv)
+  }
+)
+
+# tidy McmcOptions ----
+
+#' @rdname tidy
+#' @aliases tidy-McmcOptions
+#' @example examples/McmcOptions-method-tidy.R
+#' @export
+setMethod(
+  f = "tidy",
+  signature = signature(object = "McmcOptions"),
+  definition = function(object, ...) {
+    tibble(
+      iterations = object@iterations,
+      burnin = object@burnin,
+      step = object@step,
+      rng_kind = object@rng_kind,
+      rng_seed = object@rng_seed
+    )
+  }
+)
+

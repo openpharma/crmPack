@@ -502,7 +502,8 @@ see this as a relatively low priority task.</li>
 support nesting, such as <code>StoppingAll</code> and
 <code>StoppingAny</code> when more than two levels of nesting are
 used.</li>
-<li>Update README once these changes are merged with main.</li>
+<li>Update README and various vignettes once these changes are merged
+with main.</li>
 </ul>
 </div>
 </div>
@@ -628,16 +629,16 @@ mySize %&gt;% tidy()</code></pre>
 ## Used best guess cohort indices!</code></pre>
 <pre class="r"><code>tidyDataDual</code></pre>
 <pre><code>## # A tibble: 8 × 10
-##      ID cohort     x     y nGrid       w xLevel  nObs placebo doseGrid         
-##   &lt;int&gt;  &lt;int&gt; &lt;dbl&gt; &lt;int&gt; &lt;int&gt;   &lt;dbl&gt;  &lt;int&gt; &lt;int&gt; &lt;lgl&gt;   &lt;list&gt;           
-## 1     1      1   0.1     0    41 -0.561       1     8 FALSE   &lt;tibble [41 × 2]&gt;
-## 2     2      2   0.5     0    41 -0.0555      2     8 FALSE   &lt;tibble [41 × 2]&gt;
-## 3     3      3   1.5     0    41 -0.507       3     8 FALSE   &lt;tibble [41 × 2]&gt;
-## 4     4      4   3       0    41 -0.435       4     8 FALSE   &lt;tibble [41 × 2]&gt;
-## 5     5      5   6       0    41 -0.0978      5     8 FALSE   &lt;tibble [41 × 2]&gt;
-## 6     6      6  10       0    41 -0.0342      6     8 FALSE   &lt;tibble [41 × 2]&gt;
-## 7     7      6  10       1    41 -1.76        6     8 FALSE   &lt;tibble [41 × 2]&gt;
-## 8     8      6  10       0    41  0.477       6     8 FALSE   &lt;tibble [41 × 2]&gt;</code></pre>
+##      ID cohort     x     y nGrid        w xLevel  nObs placebo doseGrid         
+##   &lt;int&gt;  &lt;int&gt; &lt;dbl&gt; &lt;int&gt; &lt;int&gt;    &lt;dbl&gt;  &lt;int&gt; &lt;int&gt; &lt;lgl&gt;   &lt;list&gt;           
+## 1     1      1   0.1     0    41  0.815        1     8 FALSE   &lt;tibble [41 × 2]&gt;
+## 2     2      2   0.5     0    41  0.179        2     8 FALSE   &lt;tibble [41 × 2]&gt;
+## 3     3      3   1.5     0    41  2.03         3     8 FALSE   &lt;tibble [41 × 2]&gt;
+## 4     4      4   3       0    41 -0.00920      4     8 FALSE   &lt;tibble [41 × 2]&gt;
+## 5     5      5   6       0    41 -1.08         5     8 FALSE   &lt;tibble [41 × 2]&gt;
+## 6     6      6  10       0    41  0.532        6     8 FALSE   &lt;tibble [41 × 2]&gt;
+## 7     7      6  10       1    41  1.43         6     8 FALSE   &lt;tibble [41 × 2]&gt;
+## 8     8      6  10       0    41 -0.376        6     8 FALSE   &lt;tibble [41 × 2]&gt;</code></pre>
 <pre class="r"><code>tidyDataDual$doseGrid[1]</code></pre>
 <pre><code>## [[1]]
 ## # A tibble: 41 × 2
@@ -1172,15 +1173,11 @@ method</p>
 <h2>Increments</h2>
 <pre class="r"><code>names(getClass(&quot;Increments&quot;)@subclasses)</code></pre>
 <pre><code>## [1] &quot;IncrementsRelative&quot;           &quot;IncrementsRelativeDLT&quot;       
-## [3] &quot;IncrementsNumDoseLevels&quot;      &quot;IncrementsHSRBeta&quot;           
+## [3] &quot;IncrementsDoseLevels&quot;         &quot;IncrementsHSRBeta&quot;           
 ## [5] &quot;IncrementsMin&quot;                &quot;IncrementsRelativeParts&quot;     
 ## [7] &quot;IncrementsRelativeDLTCurrent&quot;</code></pre>
-<pre class="r"><code>IncrementsNumDoseLevels(max_levels = 2) %&gt;% tidy()</code></pre>
-<pre><code>## # A tibble: 1 × 2
-##   max_levels basis_level
-##        &lt;int&gt; &lt;chr&gt;      
-## 1          2 last</code></pre>
-<pre class="r"><code>IncrementsRelative(intervals = c(0, 20), increments = c(1, 0.33)) %&gt;% tidy()</code></pre>
+<pre class="r"><code># IncrementsNumDoseLevels(max_levels = 2) %&gt;% tidy()
+IncrementsRelative(intervals = c(0, 20), increments = c(1, 0.33)) %&gt;% tidy()</code></pre>
 <pre><code>## # A tibble: 2 × 2
 ##   intervals increments
 ##       &lt;dbl&gt;      &lt;dbl&gt;
@@ -1209,12 +1206,8 @@ IncrementsMin(increments_list = list(myIncrements1, myIncrements2)) %&gt;% tidy(
 ## 3 1                 3       0.2         NA
 ## 4 2                NA       1            0
 ## 5 2                NA       0.33        20</code></pre>
-<pre class="r"><code>IncrementsNumDoseLevels(max_levels = 1) %&gt;% tidy()</code></pre>
-<pre><code>## # A tibble: 1 × 2
-##   max_levels basis_level
-##        &lt;int&gt; &lt;chr&gt;      
-## 1          1 last</code></pre>
-<pre class="r"><code>IncrementsRelative(intervals = c(0, 20), increments = c(1, 0.33)) %&gt;% tidy()</code></pre>
+<pre class="r"><code># IncrementsNumDoseLevels(max_levels = 1) %&gt;% tidy()
+IncrementsRelative(intervals = c(0, 20), increments = c(1, 0.33)) %&gt;% tidy()</code></pre>
 <pre><code>## # A tibble: 2 × 2
 ##   intervals increments
 ##       &lt;dbl&gt;      &lt;dbl&gt;
@@ -1343,10 +1336,11 @@ DALogisticLogNormal(
 <pre class="r"><code>DualEndpoint(
   mean = c(-0.85, 1),
   cov = matrix(c(1, -0.5, -0.5, 1), nrow = 2),
-  ref_dose = 1, 
-  use_log_dose = FALSE, 
-  sigma2W=0.5, 
-  rho=-0.2) %&gt;% tidy()</code></pre>
+  ref_dose = 1,
+  use_log_dose = FALSE,
+  sigma2W = 0.5,
+  rho = -0.2
+) %&gt;% tidy()</code></pre>
 <pre><code>## $betaZ_params
 ## $mean
 ## # A tibble: 2 × 2
@@ -1558,12 +1552,13 @@ DALogisticLogNormal(
 <pre class="r"><code>DualEndpointRW(
   mean = c(-0.85, 1),
   cov = matrix(c(1, -0.5, -0.5, 1), nrow = 2),
-  ref_dose = 1, 
-  use_log_dose = FALSE, 
-  sigma2W=0.5, 
-  sigma2betaW = c(a=1, b=2),
+  ref_dose = 1,
+  use_log_dose = FALSE,
+  sigma2W = 0.5,
+  sigma2betaW = c(a = 1, b = 2),
   rw1 = TRUE,
-  rho=-0.2) %&gt;%  tidy()</code></pre>
+  rho = -0.2
+) %&gt;% tidy()</code></pre>
 <pre><code>## $betaZ_params
 ## $mean
 ## # A tibble: 2 × 2
@@ -1738,9 +1733,9 @@ DALogisticLogNormal(
 ## attr(,&quot;class&quot;)
 ## [1] &quot;tbl_LogisticLogNormal&quot; &quot;list&quot;</code></pre>
 <pre class="r"><code>LogisticLogNormalSub(
-    mean = c(-0.85, 1),
-    cov = matrix(c(1, -0.5, -0.5, 1), nrow = 2),
-    ref_dose = 50
+  mean = c(-0.85, 1),
+  cov = matrix(c(1, -0.5, -0.5, 1), nrow = 2),
+  ref_dose = 50
 ) %&gt;% tidy()</code></pre>
 <pre><code>## $params
 ## $mean
@@ -2059,7 +2054,8 @@ DALogisticLogNormal(
 ModelLogNormal(
   mean = c(-0.85, 1),
   cov = matrix(c(1, -0.5, -0.5, 1), nrow = 2),
-  ref_dose = 50) %&gt;% tidy()</code></pre>
+  ref_dose = 50
+) %&gt;% tidy()</code></pre>
 <pre><code>## $params
 ## $mean
 ## # A tibble: 2 × 2
@@ -2233,6 +2229,44 @@ ModelLogNormal(
 ## attr(,&quot;class&quot;)
 ## [1] &quot;tbl_TITELogisticLogNormal&quot; &quot;tbl_TITELogisticLogNormal&quot;
 ## [3] &quot;list&quot;</code></pre>
+</div>
+<div id="samples-mcmcoptions" class="section level2">
+<h2>Samples &amp; McmcOptions</h2>
+<pre class="r"><code>options &lt;- McmcOptions(burnin=1000, step=2, samples=2000)
+
+model &lt;- LogisticLogNormal(mean=c(-0.85, 1),
+                           cov= matrix(c(1, -0.5, -0.5, 1), nrow=2), ref_dose=56)
+
+data &lt;- Data(x=c(0.1, 0.5, 1.5, 3, 6, 10, 10, 10),
+             y=c(0, 0, 0, 0, 0, 0, 1, 0),
+             ID=1:8,
+             cohort=c(0, 1, 2, 3, 4, 5, 5, 5),
+             doseGrid=c(0.1, 0.5, 1.5, 3, 6, seq(from=10, to=80, by=2)))
+
+names(getClass(&quot;Samples&quot;)@subclasses)</code></pre>
+<pre><code>## NULL</code></pre>
+<pre class="r"><code>samples &lt;- mcmc(data, model, options)
+
+options %&gt;% tidy()</code></pre>
+<pre><code>## # A tibble: 1 × 5
+##   iterations burnin  step rng_kind rng_seed
+##        &lt;int&gt;  &lt;int&gt; &lt;int&gt; &lt;chr&gt;       &lt;int&gt;
+## 1       5000   1000     2 &lt;NA&gt;           NA</code></pre>
+<pre class="r"><code>samples %&gt;% tidy()</code></pre>
+<pre><code>## # A tibble: 2,000 × 7
+##    alpha0 alpha1 iterations burnin  step rng_kind rng_seed
+##     &lt;dbl&gt;  &lt;dbl&gt;      &lt;int&gt;  &lt;int&gt; &lt;int&gt; &lt;chr&gt;       &lt;int&gt;
+##  1 -0.224   1.76       5000   1000     2 &lt;NA&gt;           NA
+##  2 -0.224   1.76       5000   1000     2 &lt;NA&gt;           NA
+##  3 -0.224   1.76       5000   1000     2 &lt;NA&gt;           NA
+##  4 -0.224   1.76       5000   1000     2 &lt;NA&gt;           NA
+##  5 -0.224   1.76       5000   1000     2 &lt;NA&gt;           NA
+##  6 -0.224   1.76       5000   1000     2 &lt;NA&gt;           NA
+##  7  0.431   1.10       5000   1000     2 &lt;NA&gt;           NA
+##  8  0.865   1.54       5000   1000     2 &lt;NA&gt;           NA
+##  9  0.865   1.54       5000   1000     2 &lt;NA&gt;           NA
+## 10  0.865   1.54       5000   1000     2 &lt;NA&gt;           NA
+## # … with 1,990 more rows</code></pre>
 </div>
 
 
