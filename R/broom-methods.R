@@ -872,3 +872,23 @@ setMethod(
   }
 )
 
+# tidy Samples ----
+
+#' @rdname tidy
+#' @aliases tidy-Simulations
+#' @example examples/Simulations-method-tidy.R
+#' @export
+setMethod(
+  f = "tidy",
+  signature = signature(object = "Simulations"),
+  definition = function(object, ...) {
+    rv <- tibble(
+      seed = object@seed,
+      doses = object@doses,
+      data = lapply(object@data, tidy),
+      fit = lapply(object@fit, as_tibble),
+      stopReasons = object@stopReasons
+    )
+    return(rv)
+  }
+)

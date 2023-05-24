@@ -427,7 +427,7 @@ TITELogisticLogNormal(
 ) %>% tidy()
 ```
 
-## Samples & McmcOptions
+## Samples, Simulations & McmcOptions
 
 ```{r}
 options <- McmcOptions(burnin=1000, step=2, samples=2000)
@@ -447,4 +447,54 @@ samples <- mcmc(data, model, options)
 options %>% tidy()
 
 samples %>% tidy()
+
+stopping_efficacy1 <- StoppingMinCohorts(nCohorts = 3)
+stopping_efficacy2 <- StoppingTargetProb(target = c(0.2, 0.35), prob = 0.5)
+stopping_futility <- StoppingMinPatients(nPatients = 40)
+trial_stopping <- (stopping_efficacy1 & stopping_efficacy2) | stopping_futility
+
+cohort_size <- CohortSizeConst(size = 3)
+
+next_best <- NextBestNCRM(
+               target = c(0.2, 0.35),
+               overdose = c(0.35, 1),
+               max_overdose_prob = 0.25
+             )
+
+increments <- IncrementsRelative(intervals = c(0, 50, 200),increments = c(2, 1.33, 0.67))
+
+empty_data <- Data(doseGrid=seq(from=25, to=300, by=25))
+
+model <- LogisticLogNormal(
+           mean = c(-0.85, 1),
+           cov  =matrix(c(1, -0.5, -0.5, 1), nrow = 2),
+           ref_dose = 150
+         )
+
+design <- Design(
+            model = model,
+            nextBest = next_best,
+            stopping = trial_stopping,
+            increments = increments,
+            cohortSize = cohort_size,
+            data = empty_data,
+            startingDose = 50
+          )
+
+truth <- function(dose) {
+  probFunction(model, alpha0 = -2, alpha1 = 10)(dose)
+}
+
+names(getClass("Simulations")@subclasses)
+
+simulations <- simulate(
+                 design,
+                 args = NULL,
+                 truth = truth,
+                 nsim = 5, 
+                 mcmcOptions = options,
+                 parallel = FALSE
+               )
+
+simulations %>% tidy()
 ```
