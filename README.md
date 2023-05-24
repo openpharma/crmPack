@@ -44,6 +44,8 @@ trial design, implementation, simulation and analysis:
   definition](https://roche.github.io/crmPack/main/articles/trial_definition.html)
 - [Trial
   analysis](https://roche.github.io/crmPack/main/articles/trial_analysis.html)
+- [Sanity
+  checking](https://roche.github.io/crmPack/main/articles/trial_sanity_checks.html)
 - [Simulation of operating
   characteristics](https://roche.github.io/crmPack/main/articles/trial_simulation.html)
 - [Extending
