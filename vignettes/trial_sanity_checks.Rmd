@@ -14,8 +14,13 @@ knitr::opts_chunk$set(
   comment = "#>"
 )
 
-library(tidyverse)
+library(dplyr)
+library(ggplot2)
 library(kableExtra)
+library(knitr)
+library(magrittr)
+library(tibble)
+library(tidyr)
 ```
 
 > The `tidy()` methods used in this vignette follow the pattern established by the `broom` package and turn objects of various classes into tibbles.  Currently, they are defined in a code chunk within this tibble that is not displayed, but they will be added to the main `crmPack` package at a later date.
