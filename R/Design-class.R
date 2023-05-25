@@ -428,7 +428,6 @@ DualResponsesSamplesDesign <- function(eff_model,
 #' @slot eff_model the pseudo efficacy model to be used, an object class of
 #' [`ModelEff`]
 #'
-#' @example examples/design-class-DualResponsesDesign.R
 #' @export
 .DualResponsesDesign <-
   setClass(
@@ -454,6 +453,7 @@ DualResponsesSamplesDesign <- function(eff_model,
 #' @param \dots additional arguments for \code{\link{TDDesign}}
 #' @inheritDotParams RuleDesign
 #'
+#' @example examples/design-class-DualResponsesDesign.R
 #' @export
 DualResponsesDesign <- function(eff_model,
                                 data,
@@ -489,7 +489,6 @@ DualResponsesDesign <- function(eff_model,
 #' @slot safetyWindow still to be documented.
 #'
 #' @aliases DADesign
-#' @example examples/design-class-DADesign.R
 #' @export
 .DADesign <-
   setClass(
@@ -520,6 +519,7 @@ DualResponsesDesign <- function(eff_model,
 #' @param \dots additional arguments for \code{\link{Design}}
 #' @inheritDotParams RuleDesign
 #'
+#' @example examples/design-class-DADesign.R
 #' @export
 DADesign <- function(model, data,
                      safetyWindow,
