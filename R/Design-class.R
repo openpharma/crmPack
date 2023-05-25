@@ -409,11 +409,9 @@ DualResponsesSamplesDesign <- function(eff_model,
   )
 }
 
-# nolint start
-
 # DualResponsesDesign ----
 
-# class ----
+## class ----
 
 #' `DualResponsesDesign`
 #'
@@ -467,12 +465,10 @@ DualResponsesDesign <- function(eff_model,
   )
 }
 
-# ===============================================================================
 
 # DADesign ----
 
 ## class ----
-
 
 #' `DADesign`
 #'
@@ -513,7 +509,6 @@ DualResponsesDesign <- function(eff_model,
 
 ## constructor ----
 
-
 #' @rdname DADesign-class
 #'
 #' @param model (`DALogisticLogNormal`)\cr see slot definition.
@@ -537,6 +532,4 @@ DADesign <- function(model, data,
     safetyWindow = safetyWindow
   )
 }
-
-# nolint end
 
