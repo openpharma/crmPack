@@ -380,7 +380,7 @@ test_that("nextBest-NextBestMinDist returns expected values and plot (no doselim
   result <- nextBest(nb_md, Inf, samples, model, data)
   expect_identical(result$value, 75)
   expect_snapshot(result$probs)
-  vdiffr::expect_doppelganger("Plot of nextBest-NextBestMinDist without doselimit", result$plot)
+  vdiffr::expect_doppelganger("Plot nextBest-NextBestMinDist w/o doselimit", result$plot)
 })
 
 ## NextBestInfTheory ----
@@ -783,7 +783,7 @@ test_that("nextBest-NextBestProbMTDLTE returns correct next dose and plot (no do
   result <- nextBest(nb_prob_mtd, Inf, samples, model, data)
   expect_identical(result$value, 125)
   expect_snapshot(result$allocation)
-  vdiffr::expect_doppelganger("Plot of nextBest-NextBestProbMTDLTE without doselimit", result$plot)
+  vdiffr::expect_doppelganger("Plot nextBest-NextBestProbMTDLTE w/o doselimit", result$plot)
 })
 
 ## NextBestProbMTDMinDist ----

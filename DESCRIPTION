@@ -46,7 +46,6 @@ Imports:
     magrittr,
     gridExtra,
     lifecycle,
-    magrittr,
     methods,
     mvtnorm,
     parallel,
