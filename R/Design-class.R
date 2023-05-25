@@ -445,7 +445,6 @@ DualResponsesSamplesDesign <- function(eff_model,
     ),
     contains = "TDDesign"
   )
-validObject(.DualResponsesDesign())
 
 ## constructor ----
 
@@ -509,7 +508,6 @@ DualResponsesDesign <- function(eff_model,
     ),
     contains = "Design"
   )
-validObject(.DADesign())
 
 
 ## constructor ----
@@ -538,7 +536,6 @@ DADesign <- function(model,
     safetyWindow = safetyWindow
   )
 }
-validObject(DADesign(
   model = .DALogisticLogNormal(),
   data = DataDA(doseGrid = 1:2),
   safetyWindow = .SafetyWindowConst(),
