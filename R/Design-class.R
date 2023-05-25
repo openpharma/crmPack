@@ -515,7 +515,7 @@ DualResponsesDesign <- function(eff_model,
 
 #' @rdname DADesign-class
 #'
-#' @param model see [`DADesign`]
+#' @param model (`DALogisticLogNormal`)\cr see slot definition.
 #' @param data see [`DADesign`]
 #' @param safetyWindow see [`DADesign`]
 #' @param \dots additional arguments for \code{\link{Design}}
