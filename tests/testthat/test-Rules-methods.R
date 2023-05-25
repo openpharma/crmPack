@@ -15,7 +15,13 @@ test_that("nextBest-NextBestMTD returns correct next dose and plot", {
     }
   )
 
-  result <- nextBest(nb_mtd, 90, samples, model, data)
+  result <- nextBest(
+    nextBest = nb_mtd,
+    doselimit = 90,
+    samples = samples,
+    model = model,
+    data = data
+  )
   expect_identical(result$value, 75)
   vdiffr::expect_doppelganger("Plot of nextBest-NextBestMTD", result$plot)
 })
@@ -1210,7 +1216,7 @@ test_that("maxDose-IncrementsRelativeParts throws error when part1Ladder is exce
 
 test_that("maxDose-IncrementsDoseLevels works correctly for 'last' basis_level and 1 level increase", {
   increments <- IncrementsDoseLevels(levels = 1)
-  data <- data <- Data(
+  data <- Data(
     x = c(5, 250, 100), y = c(0L, 1L, 1L), doseGrid = c(5, 100, 250, 300, 400), ID = 1:3, cohort = 1:3
   )
   result <- maxDose(increments, data = data)
@@ -1219,7 +1225,7 @@ test_that("maxDose-IncrementsDoseLevels works correctly for 'last' basis_level a
 
 test_that("maxDose-IncrementsDoseLevels works correctly for 'last' basis_level and 2 levels increase", {
   increments <- IncrementsDoseLevels(levels = 2)
-  data <- data <- Data(
+  data <- Data(
     x = c(5, 250, 100), y = c(0L, 1L, 1L), doseGrid = c(5, 100, 250, 300, 400), ID = 1:3, cohort = 1:3
   )
   result <- maxDose(increments, data = data)
@@ -1228,7 +1234,7 @@ test_that("maxDose-IncrementsDoseLevels works correctly for 'last' basis_level a
 
 test_that("maxDose-IncrementsDoseLevels works correctly for 'max' basis_level and 1 level increase", {
   increments <- IncrementsDoseLevels(levels = 1, basis_level = "max")
-  data <- data <- Data(
+  data <- Data(
     x = c(5, 250, 100), y = c(0L, 1L, 1L), doseGrid = c(5, 100, 250, 300, 400), ID = 1:3, cohort = 1:3
   )
   result <- maxDose(increments, data = data)
@@ -1237,7 +1243,7 @@ test_that("maxDose-IncrementsDoseLevels works correctly for 'max' basis_level an
 
 test_that("maxDose-IncrementsDoseLevels works correctly for 'max' basis_level and 2 levels increase", {
   increments <- IncrementsDoseLevels(levels = 2, basis_level = "max")
-  data <- data <- Data(
+  data <- Data(
     x = c(5, 250, 100), y = c(0L, 1L, 1L), doseGrid = c(5, 100, 250, 300, 400), ID = 1:3, cohort = 1:3
   )
   result <- maxDose(increments, data = data)
@@ -1246,7 +1252,7 @@ test_that("maxDose-IncrementsDoseLevels works correctly for 'max' basis_level an
 
 test_that("maxDose-IncrementsDoseLevels works correctly for 'last' basis_level and over-grid increase", {
   increments <- IncrementsDoseLevels(levels = 4)
-  data <- data <- Data(
+  data <- Data(
     x = c(5, 250, 100), y = c(0L, 1L, 1L), doseGrid = c(5, 100, 250, 300, 400), ID = 1:3, cohort = 1:3
   )
   result <- maxDose(increments, data = data)
@@ -1255,7 +1261,7 @@ test_that("maxDose-IncrementsDoseLevels works correctly for 'last' basis_level a
 
 test_that("maxDose-IncrementsDoseLevels works correctly for 'max' basis_level and over-grid increase", {
   increments <- IncrementsDoseLevels(levels = 3, basis_level = "max")
-  data <- data <- Data(
+  data <- Data(
     x = c(5, 250, 100), y = c(0L, 1L, 1L), doseGrid = c(5, 100, 250, 300, 400), ID = 1:3, cohort = 1:3
   )
   result <- maxDose(increments, data = data)
