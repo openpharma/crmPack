@@ -413,7 +413,7 @@ DualResponsesSamplesDesign <- function(eff_model,
 
 # DualResponsesDesign ----
 
-## class ----
+# class ----
 
 #' `DualResponsesDesign`
 #'
@@ -429,14 +429,15 @@ DualResponsesSamplesDesign <- function(eff_model,
 #' [`ModelEff`]
 #'
 #' @export
+#'
 .DualResponsesDesign <-
   setClass(
     Class = "DualResponsesDesign",
-    slots = c(
+    representation = list(
       eff_model = "ModelEff",
       data = "DataDual"
     ),
-    prototype(
+    prototype = prototype(
       nextBest = .NextBestMaxGain(),
       data = DataDual(doseGrid = 1:2),
       startingDose = 1,
@@ -455,6 +456,7 @@ DualResponsesSamplesDesign <- function(eff_model,
 #'
 #' @example examples/design-class-DualResponsesDesign.R
 #' @export
+#'
 DualResponsesDesign <- function(eff_model,
                                 data,
                                 ...) {
@@ -490,15 +492,16 @@ DualResponsesDesign <- function(eff_model,
 #'
 #' @aliases DADesign
 #' @export
+#'
 .DADesign <-
   setClass(
     Class = "DADesign",
-    slots = c(
+    representation = list(
       model = "GeneralModel",
       data = "DataDA",
       safetyWindow = "SafetyWindow"
     ),
-    prototype(
+    prototype = prototype(
       model = .DALogisticLogNormal(),
       nextBest = .NextBestNCRM(),
       data = DataDA(doseGrid = 1:2),
@@ -521,6 +524,7 @@ DualResponsesDesign <- function(eff_model,
 #'
 #' @example examples/design-class-DADesign.R
 #' @export
+#'
 DADesign <- function(model, data,
                      safetyWindow,
                      ...) {
@@ -533,14 +537,6 @@ DADesign <- function(model, data,
     safetyWindow = safetyWindow
   )
 }
-  model = .DALogisticLogNormal(),
-  data = DataDA(doseGrid = 1:2),
-  safetyWindow = .SafetyWindowConst(),
-  nextBest = .NextBestNCRM(),
-  startingDose = 1,
-  cohortSize = CohortSizeConst(3),
-  stopping = StoppingMinCohorts(10),
-  increments = IncrementsDoseLevels(2)
-))
 
 # nolint end
+
