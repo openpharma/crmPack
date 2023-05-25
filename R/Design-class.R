@@ -448,7 +448,7 @@ DualResponsesSamplesDesign <- function(eff_model,
 
 ## constructor ----
 
-#' Initialization function for 'DualResponsesDesign"
+#' @rdname DualResponsesDesign-class
 #' @param data please refer to [`DualResponsesDesign`] class object
 #' @param eff_model please refer to [`DualResponsesDesign`] class object
 #' @param \dots additional arguments for \code{\link{TDDesign}}
@@ -512,7 +512,8 @@ DualResponsesDesign <- function(eff_model,
 
 ## constructor ----
 
-#' Initialization function for `DADesign`
+
+#' @rdname DADesign-class
 #'
 #' @param model see [`DADesign`]
 #' @param data see [`DADesign`]
