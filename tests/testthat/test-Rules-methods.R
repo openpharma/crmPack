@@ -827,7 +827,7 @@ test_that("nextBest-NextBestProbMTDMinDist returns correct next dose and plot (n
   result <- nextBest(nb_prob_mtd, Inf, samples, model, data)
   expect_identical(result$value, 25)
   expect_snapshot(result$allocation)
-  vdiffr::expect_doppelganger("Plot of nextBest-NextBestProbMTDMinDist without doselimit", result$plot)
+  vdiffr::expect_doppelganger("Plot nextBest-NextBestProbMTDMinDist w/o doselimit", result$plot)
 })
 
 
