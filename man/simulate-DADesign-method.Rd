@@ -78,10 +78,11 @@ Simulate outcomes from a time-to-DLT augmented CRM design (\code{DADesign})
 # nolint start
 
 # Define the dose-grid and PEM parameters
-emptydata <- DataDA(doseGrid = c(
-  0.1, 0.5, 1, 1.5, 3, 6,
-  seq(from = 10, to = 80, by = 2)
-), Tmax = 60)
+emptydata <- DataDA(
+  doseGrid = c(0.1, 0.5, 1, 1.5, 3, 6, seq(from = 10, to = 80, by = 2)),
+  Tmax = 60
+)
+
 # Initialize the mDA-CRM model
 npiece_ <- 10
 Tmax_ <- 60
@@ -156,23 +157,22 @@ exp_cond.cdf <- function(x, onset = 15) {
 
 # set up simulation settings
 options <- McmcOptions(
-  burnin = 100,
+  burnin = 10,
   step = 1,
-  samples = 2000
+  samples = 200
 )
 
 mySims <- simulate(design,
   args = NULL,
   truthTox = myTruth,
-  truthSurv = exp_cond.cdf, # piece_exp_cond.cdf,
+  truthSurv = exp_cond.cdf,
   trueTmax = 80,
   nsim = 2,
   seed = 819,
   mcmcOptions = options,
   firstSeparate = TRUE,
   deescalate = FALSE,
-  parallel = TRUE,
-  nCores = 2
+  parallel = FALSE
 )
 
 # nolint end
