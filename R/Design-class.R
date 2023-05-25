@@ -522,7 +522,7 @@ DualResponsesDesign <- function(eff_model,
 #' @param \dots additional arguments for \code{\link{Design}}
 #' @inheritDotParams RuleDesign
 #'
-#' @example examples/design-class-DADesign.R
+#' @example examples/Design-class-DADesign.R
 #' @export
 #'
 DADesign <- function(model, data,
