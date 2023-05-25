@@ -50,12 +50,6 @@ The doses are computed based on the samples of the model parameters (samples).">
 <li class="nav-item">
   <a class="nav-link" href="../news/index.html">Changelog</a>
 </li>
-<!-- start dropdown for versions --> <li class="nav-item dropdown">
-        <a href="#" class="nav-link dropdown-toggle"
-          data-bs-toggle="dropdown" role="button"
-          aria-expanded="false" aria-haspopup="true"
-          id="dropdown-versions">Versions</a> <div class="dropdown-menu" aria-labelledby="dropdown-versions"> <a class="dropdown-item" data-toggle="tooltip" title="" href="https://Roche.github.io/crmPack/main">main</a> </div></li>
-<!-- end dropdown for versions -->
       </ul><form class="form-inline my-2 my-lg-0" role="search">
         <input type="search" class="form-control me-sm-2" aria-label="Toggle navigation" name="search-input" data-search-index="../search.json" id="search-input" placeholder="Search for" autocomplete="off"></form>
 
@@ -264,9 +258,10 @@ variable that dose depends on, represents toxicity probability.</p>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co"># Posterior for the dose achieving Prob(DLT) = 0.45.</span></span></span>
 <span class="r-in"><span><span class="fu">dose</span><span class="op">(</span>x <span class="op">=</span> <span class="fl">0.45</span>, model <span class="op">=</span> <span class="va">my_model</span>, samples <span class="op">=</span> <span class="va">my_samples</span><span class="op">)</span></span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  [1]  83.10966  83.10966  83.10966  83.10966 189.37373 189.37373 189.37373</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  [8]  10.88786  45.60482  61.40395  61.40395 164.31365 164.31365 164.31365</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [15] 164.31365  12.01982  12.01982  11.78785  11.78785  11.78785</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  [1] 130.688916  70.468009  70.468009  18.592569  18.592569  18.592569</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  [7]  52.638815  49.984356  49.984356  30.577847   7.849589   7.849589</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [13]  16.457191 234.038736  94.895474  94.895474  94.895474 184.848347</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [19] 184.848347  94.332493</span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co"># Create data from the 'Data' (or 'DataDual') class.</span></span></span>
 <span class="r-in"><span><span class="va">dlt_data</span> <span class="op">&lt;-</span> <span class="fu"><a href="Data-class.html">Data</a></span><span class="op">(</span></span></span>
@@ -303,7 +298,7 @@ variable that dose depends on, represents toxicity probability.</p>
 
 
     <footer><div class="pkgdown-footer-left">
-  <p></p><p>Developed by Daniel Sabanes Bove, Wai Yin Yeung, Burak Kuersad Guenhan, Giuseppe Palermo, Thomas Jaki, Jiawen Zhu, Ziwei Liao, Dimitris Kontos, Marlene Schulte-Goebel, Doug Kelkhoff.</p>
+  <p></p><p>Developed by Daniel Sabanes Bove, Wai Yin Yeung, Burak Kuersad Guenhan, Giuseppe Palermo, Thomas Jaki, Jiawen Zhu, Ziwei Liao, Dimitris Kontos, Marlene Schulte-Goebel, Doug Kelkhoff, Oliver Boix, Robert Adams, Clara Beck, John Kirkpatrick, F. Hoffmann-La Roche AG, Merck Healthcare KGaA, Bayer AG.</p>
 </div>
 
 <div class="pkgdown-footer-right">

@@ -60,12 +60,6 @@
 <li class="nav-item">
   <a class="nav-link" href="../news/index.html">Changelog</a>
 </li>
-<!-- start dropdown for versions --> <li class="nav-item dropdown">
-        <a href="#" class="nav-link dropdown-toggle"
-          data-bs-toggle="dropdown" role="button"
-          aria-expanded="false" aria-haspopup="true"
-          id="dropdown-versions">Versions</a> <div class="dropdown-menu" aria-labelledby="dropdown-versions"> <a class="dropdown-item" data-toggle="tooltip" title="" href="https://Roche.github.io/crmPack/main">main</a> </div></li>
-<!-- end dropdown for versions -->
       </ul>
 <form class="form-inline my-2 my-lg-0" role="search">
         <input type="search" class="form-control me-sm-2" aria-label="Toggle navigation" name="search-input" data-search-index="../search.json" id="search-input" placeholder="Search for" autocomplete="off">
@@ -2046,10 +2040,10 @@ of a fixed model’s parameters values.</p>
 <span><span class="co"># given a particular models and samples.</span></span>
 <span><span class="co"># Every single dose corresponds to one particular sample in `my_samples`.</span></span>
 <span><span class="fu"><a href="../reference/dose.html">dose</a></span><span class="op">(</span><span class="fl">0.3</span>, <span class="va">my_model</span>, <span class="va">my_samples</span><span class="op">)</span></span></code></pre></div>
-<pre><code><span><span class="co">##  [1] 1.378502e+01 2.189360e+00 7.783616e-05 1.264908e+00 1.371130e+00</span></span>
-<span><span class="co">##  [6] 5.394945e+01 2.752944e+00 3.829759e+03 2.338905e+00 3.933355e+00</span></span>
-<span><span class="co">## [11] 4.137325e-01 2.148016e+00 1.159981e+00 1.974641e+00 1.821254e+17</span></span>
-<span><span class="co">## [16] 1.838157e+00 9.353690e-01 1.457252e-01 1.253846e+00 1.326903e+00</span></span></code></pre>
+<pre><code><span><span class="co">##  [1] 1.169612e+00 1.309984e+00 1.546158e+00 3.174019e-22 2.783420e+00</span></span>
+<span><span class="co">##  [6] 5.885203e+00 1.282937e+02 1.411623e-01 2.662888e-01 6.202143e-01</span></span>
+<span><span class="co">## [11] 4.113123e-01 3.852159e-01 1.406265e+00 6.063206e-01 2.377282e+00</span></span>
+<span><span class="co">## [16] 5.361834e+00 3.797086e+04 1.109774e+00 5.558852e-01 2.710076e-01</span></span></code></pre>
 <div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># True dose-DLT relationship.</span></span>
 <span><span class="co"># Say that -0.8 and 1 are the true values for models parameters alpha0 and alpha1 respectively.</span></span>
@@ -2067,9 +2061,9 @@ of a fixed model’s parameters values.</p>
 <code class="sourceCode R"><span><span class="co"># Toxicity probabilities for a given dose (equal to 10), model and samples.</span></span>
 <span><span class="co"># Every single probability value corresponds to one particular sample in `my_samples`.</span></span>
 <span><span class="fu"><a href="../reference/prob.html">prob</a></span><span class="op">(</span><span class="fl">10</span>, <span class="va">my_model</span>, <span class="va">my_samples</span><span class="op">)</span></span></code></pre></div>
-<pre><code><span><span class="co">##  [1] 0.3215975 0.8880120 0.6873123 0.9080974 0.8494559 0.4017009 0.6087488</span></span>
-<span><span class="co">##  [8] 0.5681093 0.8066375 0.5871128 0.9484428 0.5690739 0.8732050 0.6473593</span></span>
-<span><span class="co">## [15] 0.4829404 0.6698174 0.4395288 0.6625914 0.9941070 0.9860175</span></span></code></pre>
+<pre><code><span><span class="co">##  [1] 0.9795793 0.9563587 0.8675406 0.5137039 0.4157926 0.1897760 0.5582709</span></span>
+<span><span class="co">##  [8] 0.8871369 0.1965607 0.2130319 0.8763028 0.9449569 0.9763460 0.7908656</span></span>
+<span><span class="co">## [15] 0.8172429 0.3365544 0.6930389 0.9681711 0.6657578 0.8829745</span></span></code></pre>
 <div class="sourceCode" id="cb12"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># True DLT-dose relationship.</span></span>
 <span><span class="co"># Say that -0.8 and 1 are the true values for models parameters alpha0 and alpha1 respectively.</span></span>
@@ -2162,8 +2156,8 @@ account of any associated <code>doseGrid</code>.</p>
 <span><span class="co">##         y[i] ~ dbern(p[i])</span></span>
 <span><span class="co">##     }</span></span>
 <span><span class="co">## }</span></span>
-<span><span class="co">## &lt;bytecode: 0x55e48d0aa8c8&gt;</span></span>
-<span><span class="co">## &lt;environment: 0x55e48e1c9590&gt;</span></span>
+<span><span class="co">## &lt;bytecode: 0x5572cfc24888&gt;</span></span>
+<span><span class="co">## &lt;environment: 0x5572d0d42620&gt;</span></span>
 <span><span class="co">## </span></span>
 <span><span class="co">## Slot "priormodel":</span></span>
 <span><span class="co">## function () </span></span>
@@ -2172,8 +2166,8 @@ account of any associated <code>doseGrid</code>.</p>
 <span><span class="co">##     alpha0 &lt;- theta[1]</span></span>
 <span><span class="co">##     alpha1 &lt;- theta[2]</span></span>
 <span><span class="co">## }</span></span>
-<span><span class="co">## &lt;bytecode: 0x55e48d0a99e8&gt;</span></span>
-<span><span class="co">## &lt;environment: 0x55e48e1c9590&gt;</span></span>
+<span><span class="co">## &lt;bytecode: 0x5572cfc277d8&gt;</span></span>
+<span><span class="co">## &lt;environment: 0x5572d0d42620&gt;</span></span>
 <span><span class="co">## </span></span>
 <span><span class="co">## Slot "modelspecs":</span></span>
 <span><span class="co">## function (from_prior) </span></span>
@@ -2184,16 +2178,16 @@ account of any associated <code>doseGrid</code>.</p>
 <span><span class="co">##     }</span></span>
 <span><span class="co">##     ms</span></span>
 <span><span class="co">## }</span></span>
-<span><span class="co">## &lt;bytecode: 0x55e48d0aea50&gt;</span></span>
-<span><span class="co">## &lt;environment: 0x55e48e1c9328&gt;</span></span>
+<span><span class="co">## &lt;bytecode: 0x5572cfc28a10&gt;</span></span>
+<span><span class="co">## &lt;environment: 0x5572d0d423b8&gt;</span></span>
 <span><span class="co">## </span></span>
 <span><span class="co">## Slot "init":</span></span>
 <span><span class="co">## function () </span></span>
 <span><span class="co">## {</span></span>
 <span><span class="co">##     list(theta = c(0, 1))</span></span>
 <span><span class="co">## }</span></span>
-<span><span class="co">## &lt;bytecode: 0x55e48d0ae158&gt;</span></span>
-<span><span class="co">## &lt;environment: 0x55e48e1c9328&gt;</span></span>
+<span><span class="co">## &lt;bytecode: 0x5572cfc28118&gt;</span></span>
+<span><span class="co">## &lt;environment: 0x5572d0d423b8&gt;</span></span>
 <span><span class="co">## </span></span>
 <span><span class="co">## Slot "datanames":</span></span>
 <span><span class="co">## [1] "nObs" "y"    "x"   </span></span>
@@ -2212,7 +2206,7 @@ account of any associated <code>doseGrid</code>.</p>
 
     <footer><div class="pkgdown-footer-left">
   <p></p>
-<p>Developed by Daniel Sabanes Bove, Wai Yin Yeung, Burak Kuersad Guenhan, Giuseppe Palermo, Thomas Jaki, Jiawen Zhu, Ziwei Liao, Dimitris Kontos, Marlene Schulte-Goebel, Doug Kelkhoff.</p>
+<p>Developed by Daniel Sabanes Bove, Wai Yin Yeung, Burak Kuersad Guenhan, Giuseppe Palermo, Thomas Jaki, Jiawen Zhu, Ziwei Liao, Dimitris Kontos, Marlene Schulte-Goebel, Doug Kelkhoff, Oliver Boix, Robert Adams, Clara Beck, John Kirkpatrick, F. Hoffmann-La Roche AG, Merck Healthcare KGaA, Bayer AG.</p>
 </div>
 
 <div class="pkgdown-footer-right">
