@@ -455,7 +455,6 @@ DualResponsesSamplesDesign <- function(eff_model,
 #' @return the [`DualResponsesDesign`] class object
 #'
 #' @export
-#' @keywords methods
 DualResponsesDesign <- function(eff_model,
                                 data,
                                 ...) {
@@ -522,8 +521,6 @@ DualResponsesDesign <- function(eff_model,
 #' @return the [`DADesign`] object
 #'
 #' @export
-#' @keywords methods
-
 DADesign <- function(model,
                      data,
                      safetyWindow,
