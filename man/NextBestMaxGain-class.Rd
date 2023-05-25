@@ -5,9 +5,12 @@
 \alias{NextBestMaxGain-class}
 \alias{.NextBestMaxGain}
 \alias{NextBestMaxGain}
+\alias{.DefaultNextBestMaxGain}
 \title{\code{NextBestMaxGain}}
 \usage{
 NextBestMaxGain(prob_target_drt, prob_target_eot)
+
+.DefaultNextBestMaxGain()
 }
 \arguments{
 \item{prob_target_drt}{(\code{proportion})\cr see slot definition.}
@@ -37,6 +40,9 @@ occurrence of a DLT to be used during the trial.}
 occurrence of a DLT to be used at the end of the trial.}
 }}
 
+\note{
+Typically, end users will not use the \code{.DefaultNextBestMaxGain()} function.
+}
 \examples{
 my_next_best <- NextBestMaxGain(0.35, 0.3)
 }

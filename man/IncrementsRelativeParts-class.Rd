@@ -5,9 +5,12 @@
 \alias{IncrementsRelativeParts-class}
 \alias{.IncrementsRelativeParts}
 \alias{IncrementsRelativeParts}
+\alias{.DefaultIncrementsRelativeParts}
 \title{\code{IncrementsRelativeParts}}
 \usage{
 IncrementsRelativeParts(dlt_start, clean_start, ...)
+
+.DefaultIncrementsRelativeParts()
 }
 \arguments{
 \item{dlt_start}{(\code{count})\cr see slot definition.}
@@ -58,6 +61,8 @@ is not a prerequisite for any function (except of the class' validation
 function) that works with objects of this class. It is rather motivated by
 the semantics. That is, if we observe a DLT in part 1, we cannot be more
 aggressive than in case of a clean part 1 without DLT.
+
+Typically, end users will not use the \code{.DefaultIncrementsRelativeParts()} function.
 }
 \examples{
 

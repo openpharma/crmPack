@@ -5,9 +5,12 @@
 \alias{ModelLogNormal-class}
 \alias{.ModelLogNormal}
 \alias{ModelLogNormal}
+\alias{.DefaultModelLogNormal}
 \title{\code{ModelLogNormal}}
 \usage{
 ModelLogNormal(mean, cov, ref_dose = 1)
+
+.DefaultModelLogNormal()
 }
 \arguments{
 \item{mean}{(\code{numeric})\cr the prior mean vector.}

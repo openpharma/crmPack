@@ -5,9 +5,12 @@
 \alias{StoppingMTDdistribution-class}
 \alias{.StoppingMTDdistribution}
 \alias{StoppingMTDdistribution}
+\alias{.DefaultStoppingMTDdistribution}
 \title{\code{StoppingMTDdistribution}}
 \usage{
 StoppingMTDdistribution(target, thresh, prob)
+
+.DefaultStoppingMTDdistribution()
 }
 \arguments{
 \item{target}{(\code{proportion})\cr see slot definition.}
@@ -38,6 +41,9 @@ recommended next best dose.}
 \item{\code{prob}}{(\code{proportion})\cr required minimum probability, except 0 or 1.}
 }}
 
+\note{
+Typically, end users will not use the \code{.DefaultStoppingMTDDistribution()} function.
+}
 \examples{
 
 # As example, here is the rule for stopping the study if there is at least 0.9

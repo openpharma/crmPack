@@ -92,3 +92,44 @@ test_that("NextBestInfTheory produces consistent results with a dataset", {
   expect_equal(result@toxAtDosesSelected, rep(1L, 5))
   expect_snapshot(result@meanFit)
 })
+
+## stopReasons integration test ----
+
+test_that("stopReasons can be NA with certain stopping rule settings", {
+  data <- h_get_data(placebo = FALSE)
+  model <- h_get_logistic_normal()
+  increments <- h_increments_relative()
+  next_best <- h_next_best_ncrm()
+  size <- CohortSizeConst(size = 3)
+  # Extreme truth function, which has constant probability 1 in dose grid range.
+  truth <- probFunction(model, alpha0 = 175, alpha1 = 5)
+  stopping <- StoppingMinPatients(nPatients = 16)
+  design <- Design(
+    model = model,
+    stopping = stopping,
+    increments = increments,
+    nextBest = next_best,
+    cohortSize = size,
+    data = data,
+    startingDose = 25
+  )
+  sim <- simulate(
+    design,
+    nsim = 5,
+    truth = truth,
+    seed = 819,
+    mcmcOptions = h_get_mcmc_options()
+  )
+  result <- sim@stopReasons
+  # In this case the trial always stops because no dose is deemed safe enough
+  # to continue the trial. This is the default behavior of the
+  # stopTrial() method.
+  expected <- list(
+    "Recommended next best dose is NA",
+    "Recommended next best dose is NA",
+    "Recommended next best dose is NA",
+    "Recommended next best dose is NA",
+    "Recommended next best dose is NA"
+  )
+  expect_identical(result, expected)
+})

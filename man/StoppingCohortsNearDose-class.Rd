@@ -5,9 +5,12 @@
 \alias{StoppingCohortsNearDose-class}
 \alias{.StoppingCohortsNearDose}
 \alias{StoppingCohortsNearDose}
+\alias{.DefaultStoppingCohortsNearDose}
 \title{\code{StoppingCohortsNearDose}}
 \usage{
 StoppingCohortsNearDose(nCohorts = 2L, percentage = 50)
+
+.DefaultStoppingCohortsNearDose()
 }
 \arguments{
 \item{nCohorts}{(\code{number})\cr see slot definition.}
@@ -29,6 +32,9 @@ cohorts near to next best dose.
 within the next best dose the cohorts must lie.}
 }}
 
+\note{
+Typically, end users will not use the \code{.DefaultStoppingCohortsNearDose()} function.
+}
 \examples{
 
 # Here, is the rule for stopping the study if at least 3 cohorts were dosed

@@ -21,7 +21,7 @@ v_general_data <- function(object) {
     return("nObs must be of type integer of length 1")
   }
   v$check(
-    test_integer(object@ID, len = object@nObs, any.missing = FALSE, unique = TRUE),
+    test_integer(object@ID, len = object@nObs, any.missing = FALSE, unique = TRUE, null.ok = TRUE),
     "ID must be of type integer and length nObs and unique"
   )
   v$check(

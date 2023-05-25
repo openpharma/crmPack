@@ -5,9 +5,12 @@
 \alias{StoppingMTDCV-class}
 \alias{.StoppingMTDCV}
 \alias{StoppingMTDCV}
+\alias{.DefaultStoppingMTDCV}
 \title{\code{StoppingMTDCV}}
 \usage{
 StoppingMTDCV(target = 0.3, thresh_cv = 40)
+
+.DefaultStoppingMTDCV()
 }
 \arguments{
 \item{target}{(\code{proportion})\cr see slot definition.}
@@ -32,6 +35,9 @@ considered accurate enough to stop the trial. The stopping occurs when the
 CV is less than or equal to \code{tresh_cv}.}
 }}
 
+\note{
+Typically, end users will not use the \code{.DefaultStoppingMTDCV()} function.
+}
 \examples{
 
 # Stopping the study if the MTD estimation is precise enough, i.e. if robust

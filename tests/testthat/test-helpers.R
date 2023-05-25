@@ -459,3 +459,65 @@ test_that("h_find_interval works as expected for custom replacement", {
   expect_identical(h_find_interval(1, c(2, 4, 6), replacement = -1), -1)
   expect_equal(h_find_interval(2, c(2, 4, 6)), 1)
 })
+
+test_that("default constructors exist for all subclasses of GeneralModel", {
+  classesToTest <- names(getClassDef("GeneralModel")@subclasses)
+  # Virtual class: throws exception
+  classesToTest <- classesToTest[which(!(classesToTest %in% c("DualEndpoint")))]
+  lapply(
+    classesToTest,
+    function(cls) {
+      # Function exists
+      expect_true(length(findFunction(paste0(".Default", cls), where = asNamespace("crmPack"))) > 1)
+      # Return value is of the correct class
+      test_obj <- eval(parse(text = paste0(".Default", cls, "()")))
+      expect_class(test_obj, cls)
+    }
+  )
+  expect_error(eval(parse(text = ".DefaultDualEndpoint()")))
+})
+
+test_that("default constructors exist for all subclasses of Increments", {
+  classesToTest <- names(getClassDef("Increments")@subclasses)
+  lapply(
+    classesToTest,
+    function(cls) {
+      # Function exists
+      expect_true(length(findFunction(paste0(".Default", cls), where = asNamespace("crmPack"))) > 1)
+      # Return value is of the correct class
+      test_obj <- eval(parse(text = paste0(".Default", cls, "()")))
+      expect_class(test_obj, cls)
+    }
+  )
+  expect_error(eval(parse(text = ".DefaultDualEndpoint()")))
+})
+
+test_that("default constructors exist for all subclasses of NextBest", {
+  classesToTest <- names(getClassDef("NextBest")@subclasses)
+  lapply(
+    classesToTest,
+    function(cls) {
+      # Function exists
+      expect_true(length(findFunction(paste0(".Default", cls), where = asNamespace("crmPack"))) > 1)
+      # Return value is of the correct class
+      test_obj <- eval(parse(text = paste0(".Default", cls, "()")))
+      expect_class(test_obj, cls)
+    }
+  )
+  expect_error(eval(parse(text = ".DefaultDualEndpoint()")))
+})
+
+test_that("default constructors exist for all subclasses of Stopping", {
+  classesToTest <- names(getClassDef("Stopping")@subclasses)
+  lapply(
+    classesToTest,
+    function(cls) {
+      # Function exists
+      expect_true(length(findFunction(paste0(".Default", cls), where = asNamespace("crmPack"))) > 1)
+      # Return value is of the correct class
+      test_obj <- eval(parse(text = paste0(".Default", cls, "()")))
+      expect_class(test_obj, cls)
+    }
+  )
+  expect_error(eval(parse(text = ".DefaultDualEndpoint()")))
+})

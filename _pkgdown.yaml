@@ -11,6 +11,18 @@ navbar:
     - icon: fa-github fa-lg
       href: https://github.com/roche/crmPack
 
+articles:
+  - title: Articles
+    navbar: ~
+    contents:
+    - trial_definition
+    - trial_analysis
+    - trial_simulation
+    - rolling-crm
+    - simulations
+    - migration_from_the_old_crmPack
+    - parallel_computing_with_extensions
+
 reference:
   - title: Package
     contents:
@@ -67,6 +79,8 @@ reference:
       - NextBestTDsamples
       - NextBestMaxGain
       - NextBestMaxGainSamples
+      - NextBestProbMTDLTE
+      - NextBestProbMTDMinDist
       - Increments
       - IncrementsRelative
       - IncrementsRelativeParts
@@ -75,6 +89,7 @@ reference:
       - IncrementsDoseLevels
       - IncrementsHSRBeta
       - IncrementsMin
+      - Stopping
       - StoppingCohortsNearDose
       - StoppingPatientsNearDose
       - StoppingMinCohorts
@@ -101,6 +116,11 @@ reference:
       - SafetyWindow
       - SafetyWindowSize
       - SafetyWindowConst
+      - RuleDesign
+      - Design
+      - DualDesign
+      - TDsamplesDesign
+      - TDDesign
   - title: Internal Helper Functions
     contents:
       - h_doses_unique_per_cohort
@@ -136,6 +156,7 @@ reference:
       - h_next_best_td_plot
       - h_next_best_mg_plot
       - h_next_best_mgsamples_plot
+      - h_covr_helpers
   - title: Internal Validation Functions
     contents:
       - v_general_data
@@ -173,6 +194,8 @@ reference:
       - v_next_best_td
       - v_next_best_td_samples
       - v_next_best_max_gain_samples
+      - v_next_best_prob_mtd_lte
+      - v_next_best_prob_mtd_min_dist
       - v_increments_relative
       - v_increments_relative_parts
       - v_increments_relative_dlt
@@ -196,6 +219,7 @@ reference:
       - v_cohort_size_max
       - v_safety_window_size
       - v_safety_window_const
+      - v_rule_design
   - title: Custom Checkmate Assertions
     contents:
       - assert_probabilities
@@ -312,14 +336,18 @@ reference:
       - nextBest-NextBestTD
       - nextBest-NextBestMaxGain
       - nextBest-NextBestMaxGainSamples
+      - nextBest-NextBestProbMTDLTE
+      - nextBest-NextBestProbMTDMinDist
       - stopTrial-StoppingLowestDoseHSRBeta
       - stopTrial-StoppingMTDCV
       - maxDose
       - maxDose-IncrementsRelative
       - maxDose-IncrementsRelativeDLT
+      - maxDose-IncrementsRelativeDLTCurrent
       - maxDose-IncrementsRelativeParts
       - maxDose-IncrementsDoseLevels
       - maxDose-IncrementsHSRBeta
+      - maxDose-IncrementsMin
   - title: Functions
     contents:
       - enable_logging
@@ -333,10 +361,6 @@ reference:
       - DADesign
       - DASimulations-class
       - DASimulations
-      - Design-class
-      - Design
-      - DualDesign-class
-      - DualDesign
       - DualResponsesDesign-class
       - DualResponsesDesign
       - DualResponsesSamplesDesign-class
@@ -358,17 +382,9 @@ reference:
       - PseudoSimulationsSummary-class
       - Quantiles2LogisticNormal
       - Report
-      - RuleDesign
-      - RuleDesign-class
       - Simulations-class
       - Simulations
       - SimulationsSummary-class
-      - Stopping-class
-      - TDDesign-class
-      - TDDesign
-      - TDsamplesDesign-class
-      - TDsamplesDesign
-      - ThreePlusThreeDesign
       - approximate
       - assertions
       - crmPackExample

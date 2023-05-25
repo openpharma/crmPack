@@ -7,6 +7,7 @@ test_that("doseFunction-GeneralModel returns correct dose function", {
   samples <- Samples(list(alpha0 = 1, alpha1 = 2), options = McmcOptions(samples = 1))
 
   dose_fun <- doseFunction(model, alpha0 = 1, alpha1 = 2)
+  dose_fun <- h_covr_detrace(dose_fun)
   dose_fun_env <- environment(dose_fun)
 
   expect_function(doseFunction, args = c("model", "..."), null.ok = FALSE)
@@ -47,13 +48,14 @@ test_that("doseFunction-GeneralModel returns correct dose function for matrix pa
     model,
     alpha0 = samples@data$alpha0, alpha1 = samples@data$alpha1, comp = samples@data$comp
   )
+  dose_fun <- h_covr_detrace(dose_fun)
   dose_fun_env <- environment(dose_fun)
 
   expect_function(doseFunction, args = c("model", "..."), null.ok = FALSE)
   expect_function(dose_fun, args = "x", nargs = 1, null.ok = FALSE)
 
   # Body of `dose_fun` must be a `dose` method with `x`, `model` and `samples` args.
-  dose_fun_body <- as.list(body(dose_fun)[[2]])
+  dose_fun_body <- as.list(body(dose_fun))[[2]]
   expect_identical(as.character(dose_fun_body[[1]]), "dose")
   expect_subset(c("x", "model", "samples"), names(dose_fun_body))
 
@@ -93,6 +95,8 @@ test_that("doseFunction-ModelPseudo returns correct dose function", {
   dose_args <- c("x", "model", "samples")
 
   dose_fun <- doseFunction(model, phi1 = 35, phi2 = 5)
+  dose_fun <- h_covr_detrace(dose_fun)
+
   dose_fun_dose_args <- as.character(body(dose_fun)[[2]][-1])
   dose_fun_env <- environment(dose_fun)
 
@@ -124,6 +128,7 @@ test_that("probFunction-GeneralModel returns correct prob function", {
   samples <- Samples(list(alpha0 = 1, alpha1 = 2), options = McmcOptions(samples = 1))
 
   prob_fun <- probFunction(model, alpha0 = 1, alpha1 = 2)
+  prob_fun <- h_covr_detrace(prob_fun)
   prob_fun_env <- environment(prob_fun)
 
   expect_function(probFunction, args = c("model", "..."), null.ok = FALSE)
@@ -164,6 +169,7 @@ test_that("probFunction-GeneralModel returns correct prob function for matrix pa
     model,
     alpha0 = samples@data$alpha0, alpha1 = samples@data$alpha1, comp = samples@data$comp
   )
+  prob_fun <- h_covr_detrace(prob_fun)
   prob_fun_env <- environment(prob_fun)
 
   expect_function(probFunction, args = c("model", "..."), null.ok = FALSE)
@@ -210,6 +216,7 @@ test_that("probFunction-ModelTox returns correct prob function", {
   prob_args <- c("dose", "model", "samples")
 
   prob_fun <- probFunction(model, phi1 = 35, phi2 = 5)
+  prob_fun <- h_covr_detrace(prob_fun)
   prob_fun_prob_args <- as.character(body(prob_fun)[[2]][-1])
   prob_fun_env <- environment(prob_fun)
 
@@ -241,6 +248,7 @@ test_that("efficacyFunction-ModelEff returns correct efficacy function", {
   samples <- Samples(list(theta1 = -4.8, theta2 = 3.7), options = McmcOptions(samples = 1))
 
   eff_fun <- efficacyFunction(model, theta1 = -4.8, theta2 = 3.7)
+  eff_fun <- h_covr_detrace(eff_fun)
   prob_fun_env <- environment(eff_fun)
 
   expect_function(efficacyFunction, args = c("model", "..."), null.ok = FALSE)

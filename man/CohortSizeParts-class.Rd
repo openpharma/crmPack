@@ -5,9 +5,12 @@
 \alias{CohortSizeParts-class}
 \alias{.CohortSizeParts}
 \alias{CohortSizeParts}
+\alias{.DefaultCohortSizeParts}
 \title{\code{CohortSizeParts}}
 \usage{
 CohortSizeParts(sizes)
+
+.DefaultCohortSizeParts()
 }
 \arguments{
 \item{sizes}{(\code{numeric})\cr see slot definition.}
@@ -26,6 +29,9 @@ objects.
 part 1, and one for part 2 respectively.}
 }}
 
+\note{
+Typically, end users will not use the \code{.DefaultCohortSizeParts()} function.
+}
 \examples{
 
 # Part 1 cohort size = 1, Part 2 cohort size = 3.
