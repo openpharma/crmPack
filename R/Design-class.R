@@ -452,7 +452,6 @@ DualResponsesSamplesDesign <- function(eff_model,
 #' @param data please refer to [`DualResponsesDesign`] class object
 #' @param eff_model please refer to [`DualResponsesDesign`] class object
 #' @param \dots additional arguments for \code{\link{TDDesign}}
-#' @return the [`DualResponsesDesign`] class object
 #'
 #' @export
 DualResponsesDesign <- function(eff_model,
@@ -518,11 +517,9 @@ DualResponsesDesign <- function(eff_model,
 #' @param data see [`DADesign`]
 #' @param safetyWindow see [`DADesign`]
 #' @param \dots additional arguments for \code{\link{Design}}
-#' @return the [`DADesign`] object
 #'
 #' @export
-DADesign <- function(model,
-                     data,
+DADesign <- function(model, data,
                      safetyWindow,
                      ...) {
   start <- Design(
