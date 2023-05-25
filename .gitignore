@@ -19,3 +19,5 @@ docs/
 pkgdown/
 *.log
 .DS_Store
+
+tests/vdiffr.Rout.fail
