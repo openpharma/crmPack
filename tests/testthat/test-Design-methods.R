@@ -159,7 +159,7 @@ test_that("NextBestInfTheory produces consistent results with a dataset", {
      data = data,
      startingDose = 25
    )
-#
+
    sim <- simulate(
      design,
      nsim = 5,
@@ -167,10 +167,10 @@ test_that("NextBestInfTheory produces consistent results with a dataset", {
      seed = 819,
      mcmcOptions = h_get_mcmc_options()
    )
-#
+
    expected <- matrix(nrow = 5, ncol = 5, c(TRUE, TRUE, FALSE, TRUE, TRUE), byrow = TRUE)
    colnames(expected) <- c("label_StoppingAll", "label_StoppingAny", "label_rule1", "label_rule2", "label_rule3")
-#
+
    expect_identical(sim@stop_report, expected)
  })
 
