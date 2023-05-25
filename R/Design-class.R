@@ -443,7 +443,7 @@ DualResponsesSamplesDesign <- function(eff_model,
       startingDose = 1,
       model = .LogisticIndepBeta()
     ),
-    contains = list("TDDesign")
+    contains = "TDDesign"
   )
 validObject(.DualResponsesDesign())
 
@@ -507,7 +507,7 @@ DualResponsesDesign <- function(eff_model,
       data = DataDA(doseGrid = 1:2),
       safetyWindow = .SafetyWindowConst()
     ),
-    contains = list("Design")
+    contains = "Design"
   )
 validObject(.DADesign())
 
