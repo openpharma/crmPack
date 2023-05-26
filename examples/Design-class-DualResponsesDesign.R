@@ -12,7 +12,7 @@ eff_model <- Effloglog(
   eff_dose = c(25, 300),
   nu = c(a = 1, b = 0.025),
   data = empty_data
-  )
+)
 
 my_next_best <- NextBestMaxGain(
   prob_target_drt = 0.35,
