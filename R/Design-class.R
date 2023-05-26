@@ -470,7 +470,7 @@ DualResponsesDesign <- function(Effmodel,
 #'
 #' @description `r lifecycle::badge("stable")`
 #'
-#' This class has special requirements for the \code{model} and \code{data}
+#' This class has special requirements for the `model` and `data`
 #' slots in comparison to the parent class [`Design`]:
 #'
 #' @slot model (`DADesign`), an object of or inheriting from class
