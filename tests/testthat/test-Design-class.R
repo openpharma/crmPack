@@ -365,3 +365,62 @@ test_that("DualResponsesDesign user constructor arguments names are as expected"
     ordered = TRUE
   )
 })
+
+# DADesign ----
+
+test_that(".DADesign works as expected", {
+  result <- .DADesign()
+
+  expect_true(inherits(result, "Design"))
+
+  expect_valid(result, "DADesign")
+
+  expect_true(identical(result@model, .DALogisticLogNormal()))
+  expect_true(identical(result@data, DataDA(doseGrid = 1:2)))
+  expect_true(identical(result@safetyWindow, .SafetyWindowConst()))
+})
+
+test_that("DADesign constructor works as expected", {
+  model <- .DALogisticLogNormal()
+  data <- DataDA(doseGrid = 1:10)
+  safety_window <- .SafetyWindowConst()
+  next_best <- .NextBestNCRM()
+  cohort_size <- CohortSizeRange(intervals = c(0, 30), cohort_size = c(1, 3))
+  starting_dose <- 3
+  stopping <- h_stopping_target_prob()
+  increments <- h_increments_relative()
+
+  result <- expect_silent(
+    DADesign(
+      model = model,
+      data = data,
+      nextBest = next_best,
+      safetyWindow = safety_window,
+      cohortSize = cohort_size,
+      startingDose = starting_dose,
+      stopping = stopping,
+      increments = increments
+    )
+  )
+
+  expect_valid(result, "DADesign")
+  expect_true(inherits(result, "Design"))
+  expect_true(inherits(result, "DADesign"))
+
+  expect_true(identical(result@model, model))
+  expect_true(identical(result@data, data))
+  expect_true(identical(result@safetyWindow, safety_window))
+  expect_true(identical(result@nextBest, next_best))
+  expect_true(identical(result@cohortSize, cohort_size))
+  expect_true(identical(result@startingDose, starting_dose))
+  expect_true(identical(result@stopping, stopping))
+  expect_true(identical(result@increments, increments))
+})
+
+test_that("DADesign user constructor arguments names are as expected", {
+  expect_function(
+    Design,
+    args = c("model", "stopping", "increments", "pl_cohort_size", "..."),
+    ordered = TRUE
+  )
+})

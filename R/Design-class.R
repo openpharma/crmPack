@@ -466,56 +466,56 @@ DualResponsesDesign <- function(eff_model,
   )
 }
 
-# nolint start
+# DADesign ----
 
-##' Class for the time-to-DLT augmented CRM design
-##'
-##' This class has special requirements for the \code{model} and \code{data}
-##' slots in comparison to the parent class \code{\linkS4class{Design}}:
-##'
-##' @slot model the model to be used, an object of or inheriting from class
-##' \code{\linkS4class{GeneralModel}}, see in particular
-##' \code{\linkS4class{DALogisticLogNormal}} and
-##' \code{\linkS4class{TITELogisticLogNormal}} which make use of the
-##' time-to-DLT data
-##' @slot data what is the dose grid, any previous data, etc., contained
-##' in an object of class \code{\linkS4class{DataDA}}
-##' @slot safetyWindow still to be documented.
-##'
-##' @example examples/design-class-DADesign.R
-##' @export
-##' @keywords classes
+## class ----
+
+#' `DADesign`
+#'
+#' @description `r lifecycle::badge("stable")`
+#'
+#' This class has special requirements for the `model` and `data`
+#' slots in comparison to the parent class [`Design`]:
+#'
+#' @slot model (`GeneralModel`)\cr the model to use, see in particular [`DALogisticLogNormal`] and
+#' [`TITELogisticLogNormal`] which make use of the time-to-DLT data.
+#' @slot data (`DataDA`)\cr what is the dose grid, any previous data, etc.
+#' @slot safetyWindow (`SafetyWindow`)\cr the safety window to apply between cohorts.
+#'
+#' @aliases DADesign
+#' @export
+#'
 .DADesign <-
   setClass(
     Class = "DADesign",
-    representation(
+    slots = c(
       model = "GeneralModel",
       data = "DataDA",
       safetyWindow = "SafetyWindow"
     ),
-    prototype(
+    prototype = prototype(
       model = .DALogisticLogNormal(),
       nextBest = .NextBestNCRM(),
       data = DataDA(doseGrid = 1:2),
       safetyWindow = .SafetyWindowConst()
     ),
-    contains = list("Design")
+    contains = "Design"
   )
-validObject(.DADesign())
 
 
-##' Initialization function for `DADesign`
-##'
-##' @param model see \code{\linkS4class{DADesign}}
-##' @param data see \code{\linkS4class{DADesign}}
-##' @param safetyWindow see \code{\linkS4class{DADesign}}
-##' @param \dots additional arguments for \code{\link{Design}}
-##' @return the \code{\linkS4class{DADesign}} object
-##'
-##' @export
-##' @keywords methods
-DADesign <- function(model,
-                     data,
+## constructor ----
+
+#' @rdname DADesign-class
+#'
+#' @param model (`GeneralModel`)\cr see slot definition.
+#' @param data (`DataDA`)\cr see slot definition.
+#' @param safetyWindow (`SafetyWindow`)\cr see slot definition.
+#' @inheritDotParams Design
+#'
+#' @example examples/Design-class-DADesign.R
+#' @export
+#'
+DADesign <- function(model, data,
                      safetyWindow,
                      ...) {
   start <- Design(
@@ -527,15 +527,3 @@ DADesign <- function(model,
     safetyWindow = safetyWindow
   )
 }
-validObject(DADesign(
-  model = .DALogisticLogNormal(),
-  data = DataDA(doseGrid = 1:2),
-  safetyWindow = .SafetyWindowConst(),
-  nextBest = .NextBestNCRM(),
-  startingDose = 1,
-  cohortSize = CohortSizeConst(3),
-  stopping = StoppingMinCohorts(10),
-  increments = IncrementsDoseLevels(2)
-))
-
-# nolint end
