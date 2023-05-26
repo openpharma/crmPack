@@ -321,19 +321,15 @@ test_that("DualResponsesSamplesDesign user constructor arguments names are as ex
 # DADesign ----
 
 test_that(".DADesign works as expected", {
-  # Create an instance of .DADesign
-  dad <- .DADesign()
+  result <- .DADesign()
 
-  # Test class inheritance
-  expect_true(inherits(dad, "Design"))
+  expect_true(inherits(result, "Design"))
 
-  # Test validity of the object
-  expect_valid(dad, "DADesign")
+  expect_valid(result, "DADesign")
 
-  # Test slot values
-  expect_true(identical(dad@model, .DALogisticLogNormal()))
-  expect_true(identical(dad@data, DataDA(doseGrid = 1:2)))
-  expect_true(identical(dad@safetyWindow, .SafetyWindowConst()))
+  expect_true(identical(result@model, .DALogisticLogNormal()))
+  expect_true(identical(result@data, DataDA(doseGrid = 1:2)))
+  expect_true(identical(result@safetyWindow, .SafetyWindowConst()))
 })
 
 test_that("DADesign constructor works as expected", {
