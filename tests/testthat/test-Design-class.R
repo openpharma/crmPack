@@ -317,3 +317,76 @@ test_that("DualResponsesSamplesDesign user constructor arguments names are as ex
     ordered = TRUE
   )
 })
+
+# DADesign ----
+
+test_that(".DADesign works as expected", {
+  # Create an instance of .DADesign
+  dad <- .DADesign()
+  
+  # Test class inheritance
+  expect_true(inherits(dad, "Design"))
+
+  # Test validity of the object
+  expect_valid(dad, "DADesign")
+
+  # Test slot values
+  expect_true(identical(dad@model, .DALogisticLogNormal()))
+  expect_true(identical(dad@data, DataDA(doseGrid = 1:2)))
+  expect_true(identical(dad@safetyWindow, .SafetyWindowConst()))
+})
+
+test_that("DADesign constructor works as expected", {
+
+  # Test objects
+  model <- .DALogisticLogNormal()
+  data <- DataDA(doseGrid = 1:10)
+  safety_window <- .SafetyWindowConst()
+
+  # Mock the missing nextBest, cohortSize, and startingDose arguments
+  next_best <- .NextBestNCRM()
+  cohort_size <- CohortSizeRange(intervals = c(0, 30), cohort_size = c(1, 3))
+  starting_dose <- 3
+  stopping <- h_stopping_target_prob()
+  increments <- h_increments_relative()
+
+  # Create an instance of DADesign using the constructor
+  dad <- expect_silent(
+    DADesign(
+      model = model, 
+      data = data, 
+      nextBest = next_best, 
+      safetyWindow = safety_window, 
+      cohortSize = cohort_size, 
+      startingDose = starting_dose, 
+      stopping = stopping,
+      increments = increments
+    )
+  )
+
+
+  # Test class inheritance
+  expect_true(inherits(dad, "Design"))
+  expect_true(inherits(dad, "DADesign"))
+
+  # Test validity of the object
+  expect_valid(dad, "DADesign")
+
+  # Test slot values
+  expect_true(identical(dad@model, model))
+  expect_true(identical(dad@data, data))
+  expect_true(identical(dad@safetyWindow, safety_window))
+  expect_true(identical(dad@nextBest, next_best))
+  expect_true(identical(dad@cohortSize, cohort_size))
+  expect_true(identical(dad@startingDose, starting_dose))
+  expect_true(identical(dad@stopping, stopping))
+  expect_true(identical(dad@increments, increments))
+})
+
+test_that("Design user constructor arguments names are as expected", {
+  expect_function(
+    Design,
+    args = c("model", "stopping", "increments", "pl_cohort_size", "..."),
+    ordered = TRUE
+  )
+})
