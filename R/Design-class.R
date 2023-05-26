@@ -422,9 +422,8 @@ DualResponsesSamplesDesign <- function(eff_model,
 #' It contains all slots from the [`RuleDesign`] and [`TDDesign`] classes, as it inherits from
 #' [`TDDesign`].
 #'
-#' @slot data the data set of [`DataDual`] class object
-#' @slot eff_model the pseudo efficacy model to be used, an object class of
-#' [`ModelEff`]
+#' @slot data (`DataDual`)\cr the data.
+#' @slot eff_model (`ModelEff`)\cr the pseudo efficacy model.
 #'
 #' @export
 #'
