@@ -10,20 +10,18 @@
 DADesign(model, data, safetyWindow, ...)
 }
 \arguments{
-\item{model}{(\code{DALogisticLogNormal})\cr see slot definition.}
+\item{model}{(\code{GeneralModel})\cr see slot definition.}
 
-\item{data}{see \code{\link{DADesign}}}
+\item{data}{(\code{DataDA})\cr see slot definition.}
 
-\item{safetyWindow}{see \code{\link{DADesign}}}
-
-\item{\dots}{additional arguments for \code{\link{Design}}}
+\item{safetyWindow}{(\code{SafetyWindow})\cr see slot definition.}
 
 \item{...}{
-  Arguments passed on to \code{\link[=RuleDesign]{RuleDesign}}
+  Arguments passed on to \code{\link[=Design]{Design}}
   \describe{
-    \item{\code{nextBest}}{(\code{NextBest})\cr see slot definition.}
-    \item{\code{cohortSize}}{(\code{CohortSize})\cr see slot definition.}
-    \item{\code{startingDose}}{(\code{number})\cr see slot definition.}
+    \item{\code{stopping}}{(\code{Stopping})\cr see slot definition.}
+    \item{\code{increments}}{(\code{Increments})\cr see slot definition.}
+    \item{\code{pl_cohort_size}}{(\code{CohortSize})\cr see slot definition.}
   }}
 }
 \description{
@@ -35,28 +33,20 @@ slots in comparison to the parent class \code{\link{Design}}:
 \section{Slots}{
 
 \describe{
-\item{\code{model}}{(\code{DADesign}), an object of or inheriting from class
-\code{\link{GeneralModel}}, see in particular
-\code{\link{DALogisticLogNormal}} and
-\code{\link{TITELogisticLogNormal}} which make use of the
-time-to-DLT data}
+\item{\code{model}}{(\code{GeneralModel})\cr the model to use, see in particular \code{\link{DALogisticLogNormal}} and
+\code{\link{TITELogisticLogNormal}} which make use of the time-to-DLT data.}
 
-\item{\code{data}}{what is the dose grid, any previous data, etc., contained
-in an object of class \code{\link{DataDA}}}
+\item{\code{data}}{(\code{DataDA})\cr what is the dose grid, any previous data, etc.}
 
-\item{\code{safetyWindow}}{still to be documented.}
+\item{\code{safetyWindow}}{(\code{SafetyWindow})\cr the safety window to apply between cohorts.}
 }}
 
 \examples{
-# nolint start
-
-# Define the dose-grid and PEM parameters
 empty_data <- DataDA(doseGrid = c(
   0.1, 0.5, 1, 1.5, 3, 6,
   seq(from = 10, to = 80, by = 2)
 ), Tmax = 60)
 
-# Initialize the mDA-CRM model
 npiece_ <- 10
 Tmax_ <- 60
 
@@ -73,7 +63,6 @@ model <- DALogisticLogNormal(
   c_par = 2
 )
 
-# Choose the rule for dose increments
 my_increments <- IncrementsRelative(
   intervals = c(0, 20),
   increments = c(1, 0.33)
@@ -85,7 +74,6 @@ my_next_best <- NextBestNCRM(
   max_overdose_prob = 0.25
 )
 
-# Choose the rule for the cohort-size
 my_size1 <- CohortSizeRange(
   intervals = c(0, 30),
   cohort_size = c(1, 3)
@@ -98,7 +86,6 @@ my_size2 <- CohortSizeDLT(
 
 my_size <- maxSize(my_size1, my_size2)
 
-# Choose the rule for stopping
 my_stopping1 <- StoppingTargetProb(
   target = c(0.2, 0.35),
   prob = 0.5
@@ -108,10 +95,8 @@ my_stopping2 <- StoppingMinPatients(nPatients = 50)
 
 my_stopping <- (my_stopping1 | my_stopping2)
 
-# Choose the safety window
 my_safety_window <- SafetyWindowConst(c(6, 2), 7, 7)
 
-# Initialize the design
 design <- DADesign(
   model = model,
   increments = my_increments,
