@@ -484,7 +484,7 @@ DualResponsesDesign <- function(Effmodel,
 .DADesign <-
   setClass(
     Class = "DADesign",
-    representation = list(
+    slots = c(
       model = "GeneralModel",
       data = "DataDA",
       safetyWindow = "SafetyWindow"
