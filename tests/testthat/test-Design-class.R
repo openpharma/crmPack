@@ -355,7 +355,6 @@ test_that("DADesign constructor works as expected", {
     )
   )
 
-
   expect_valid(result, "DADesign")
   expect_true(inherits(result, "Design"))
   expect_true(inherits(result, "DADesign"))
@@ -370,7 +369,7 @@ test_that("DADesign constructor works as expected", {
   expect_true(identical(result@increments, increments))
 })
 
-test_that("Design user constructor arguments names are as expected", {
+test_that("DADesign user constructor arguments names are as expected", {
   expect_function(
     Design,
     args = c("model", "stopping", "increments", "pl_cohort_size", "..."),
