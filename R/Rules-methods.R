@@ -185,7 +185,7 @@ setMethod(
         colour = "darkgreen",
         fill = "darkgreen"
       ) +
-      ylim(c(0, 100)) +
+      coord_cartesian(ylim = c(0, 100)) +
       ylab(paste("Target probability [%]"))
 
     if (is.finite(doselimit)) {
@@ -196,7 +196,8 @@ setMethod(
       p1 <- p1 +
         geom_vline(xintercept = data@doseGrid[sum(is_dose_eligible)], lwd = 1.1, lty = 2, colour = "red") +
         geom_point(
-          aes(x = next_dose, y = prob_target[is_dose_eligible][next_best_level] * 100 + 0.03),
+          data = data.frame(x = next_dose, y = prob_target[is_dose_eligible][next_best_level] * 100 + 0.03),
+          aes(x = x, y = y),
           size = 3,
           pch = 25,
           col = "red",
@@ -2267,7 +2268,7 @@ setMethod("stopTrial",
           "is",
           round(prob * 100),
           "% and thus",
-          ifelse(doStop, "above", "below"),
+          ifelse(doStop, "greater than or equal to", "strictly less than"),
           "the required",
           round(stopping@prob * 100),
           "%"
@@ -2866,7 +2867,7 @@ setMethod(
       ifelse(do_stop, "less than or equal to ", "greater than "),
       "target_ratio = ", stopping@target_ratio
     )
-    structure(do_stop, messgae = text)
+    structure(do_stop, message = text)
   }
 )
 
@@ -2904,14 +2905,14 @@ setMethod("stopTrial",
 
       ## so can we stop?
       doStop <- ratio <= stopping@target_ratio
-      ## generate messgae
+      ## generate message
       text <- paste(
         "95% CI is (", round(CI[1], 4), ",", round(CI[2], 4), "), Ratio =", round(ratio, 4), "is ", ifelse(doStop, "is less than or equal to", "greater than"),
         "target_ratio =", stopping@target_ratio
       )
       ## return both
       return(structure(doStop,
-        messgae = text
+        message = text
       ))
     }
 )
@@ -3019,7 +3020,7 @@ setMethod("stopTrial",
 
       ## so can we stop?
       doStop <- ratio <= stopping@target_ratio
-      ## generate messgae
+      ## generate message
       text1 <- paste(
         "Gstar estimate is", round(Gstar, 4), "with 95% CI (", round(CIGstar[1], 4), ",", round(CIGstar[2], 4),
         ") and its ratio =",

@@ -93,11 +93,11 @@
 <rect x='676.59' y='259.00' width='37.93' height='49.89' style='stroke-width: 1.07; stroke: none; fill: #FFFFFF;' />
 <text x='676.59' y='267.71' style='font-size: 11.00px; font-family: sans;' textLength='37.29px' lengthAdjust='spacingAndGlyphs'>Toxicity</text>
 <rect x='676.59' y='274.33' width='17.28' height='17.28' style='stroke-width: 1.07; stroke: none; fill: #FFFFFF;' />
-<polygon points='685.23,277.45 690.02,285.74 680.44,285.74 ' style='stroke-width: 0.71; stroke: none; fill: #FF0000;' />
+<circle cx='685.23' cy='282.97' r='3.56' style='stroke-width: 0.71; stroke: none; fill: #000000;' />
 <rect x='676.59' y='291.61' width='17.28' height='17.28' style='stroke-width: 1.07; stroke: none; fill: #FFFFFF;' />
-<circle cx='685.23' cy='300.25' r='3.56' style='stroke-width: 0.71; stroke: none; fill: #000000;' />
-<text x='699.35' y='286.00' style='font-size: 8.80px; font-family: sans;' textLength='15.17px' lengthAdjust='spacingAndGlyphs'>Yes</text>
-<text x='699.35' y='303.28' style='font-size: 8.80px; font-family: sans;' textLength='11.25px' lengthAdjust='spacingAndGlyphs'>No</text>
+<polygon points='685.23,294.73 690.02,303.02 680.44,303.02 ' style='stroke-width: 0.71; stroke: none; fill: #FF0000;' />
+<text x='699.35' y='286.00' style='font-size: 8.80px; font-family: sans;' textLength='11.25px' lengthAdjust='spacingAndGlyphs'>No</text>
+<text x='699.35' y='303.28' style='font-size: 8.80px; font-family: sans;' textLength='15.17px' lengthAdjust='spacingAndGlyphs'>Yes</text>
 <text x='37.69' y='14.56' style='font-size: 13.20px; font-family: sans;' textLength='146.03px' lengthAdjust='spacingAndGlyphs'>Plot of Data with placebo</text>
 </g>
 </svg>
