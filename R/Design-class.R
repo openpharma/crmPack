@@ -417,10 +417,10 @@ DualResponsesSamplesDesign <- function(eff_model,
 #'
 #' @description `r lifecycle::badge("stable")`
 #'
-#' This is a class of design based on DLE responses using the [`LogisticIndepBeta`] model
-#' model and efficacy responses using [`ModelEff`]  model class
-#' without DLE and efficacy samples. It contain all slots in
-#' [`RuleDesign`] and [`TDDesign`] class object
+#' This is a class of designs based on DLE responses using the [`LogisticIndepBeta`] model
+#' and efficacy responses using the [`ModelEff`]  model, without DLE and efficacy samples. 
+#' It contains all slots from the [`RuleDesign`] and [`TDDesign`] classes, as it inherits from
+#' [`TDDesign`].
 #'
 #' @slot data the data set of [`DataDual`] class object
 #' @slot eff_model the pseudo efficacy model to be used, an object class of
