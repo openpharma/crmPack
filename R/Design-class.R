@@ -532,4 +532,3 @@ DADesign <- function(model, data,
     safetyWindow = safetyWindow
   )
 }
-

@@ -323,7 +323,7 @@ test_that("DualResponsesSamplesDesign user constructor arguments names are as ex
 test_that(".DADesign works as expected", {
   # Create an instance of .DADesign
   dad <- .DADesign()
-  
+
   # Test class inheritance
   expect_true(inherits(dad, "Design"))
 
@@ -337,7 +337,6 @@ test_that(".DADesign works as expected", {
 })
 
 test_that("DADesign constructor works as expected", {
-
   # Test objects
   model <- .DALogisticLogNormal()
   data <- DataDA(doseGrid = 1:10)
@@ -353,12 +352,12 @@ test_that("DADesign constructor works as expected", {
   # Create an instance of DADesign using the constructor
   dad <- expect_silent(
     DADesign(
-      model = model, 
-      data = data, 
-      nextBest = next_best, 
-      safetyWindow = safety_window, 
-      cohortSize = cohort_size, 
-      startingDose = starting_dose, 
+      model = model,
+      data = data,
+      nextBest = next_best,
+      safetyWindow = safety_window,
+      cohortSize = cohort_size,
+      startingDose = starting_dose,
       stopping = stopping,
       increments = increments
     )
