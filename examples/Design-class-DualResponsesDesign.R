@@ -14,7 +14,7 @@ eff_model <- Effloglog(
   data = empty_data
   )
 
-my_nextbest <- NextBestMaxGain(
+my_next_best <- NextBestMaxGain(
   prob_target_drt = 0.35,
   prob_target_eot = 0.3
 )
