@@ -416,7 +416,7 @@ DualResponsesSamplesDesign <- function(eff_model,
 #' `DualResponsesDesign.R`
 #'
 #' @description `r lifecycle::badge("stable")`
-#' #'
+#'
 #' This is a class of design based on DLE responses using the [`LogisticIndepBeta`] model
 #  and efficacy responses using [`ModelEff`]  model class
 #' without DLE and efficacy samples. It contains all slots in
