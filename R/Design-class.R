@@ -503,11 +503,10 @@ DualResponsesDesign <- function(Effmodel,
 
 #' @rdname DADesign-class
 #'
-#' @param model (`DALogisticLogNormal`)\cr see slot definition.
-#' @param data see [`DADesign`]
-#' @param safetyWindow see [`DADesign`]
-#' @param \dots additional arguments for \code{\link{Design}}
-#' @inheritDotParams RuleDesign
+#' @param model (`GeneralModel`)\cr see slot definition.
+#' @param data (`DataDA`)\cr see slot definition.
+#' @param safetyWindow (`SafetyWindow`)\cr see slot definition.
+#' @inheritDotParams Design
 #'
 #' @example examples/Design-class-DADesign.R
 #' @export
