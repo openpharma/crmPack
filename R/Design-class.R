@@ -473,14 +473,10 @@ DualResponsesDesign <- function(Effmodel,
 #' This class has special requirements for the `model` and `data`
 #' slots in comparison to the parent class [`Design`]:
 #'
-#' @slot model (`DADesign`), an object of or inheriting from class
-#' [`GeneralModel`], see in particular
-#' [`DALogisticLogNormal`] and
-#' [`TITELogisticLogNormal`] which make use of the
-#' time-to-DLT data
-#' @slot data what is the dose grid, any previous data, etc., contained
-#' in an object of class [`DataDA`]
-#' @slot safetyWindow still to be documented.
+#' @slot model (`GeneralModel`)\cr the model to use, see in particular [`DALogisticLogNormal`] and
+#' [`TITELogisticLogNormal`] which make use of the time-to-DLT data.
+#' @slot data (`DataDA`)\cr what is the dose grid, any previous data, etc.
+#' @slot safetyWindow (`SafetyWindow`)\cr the safety window to apply between cohorts.
 #'
 #' @aliases DADesign
 #' @export
