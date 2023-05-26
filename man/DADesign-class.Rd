@@ -47,19 +47,19 @@ empty_data <- DataDA(doseGrid = c(
   seq(from = 10, to = 80, by = 2)
 ), Tmax = 60)
 
-npiece_ <- 10
-Tmax_ <- 60
+npiece <- 10
+t_max <- 60
 
 lambda_prior <- function(k) {
-  npiece_ / (Tmax_ * (npiece_ - k + 0.5))
+  npiece / (t_max * (npiece - k + 0.5))
 }
 
 model <- DALogisticLogNormal(
   mean = c(-0.85, 1),
   cov = matrix(c(1, -0.5, -0.5, 1), nrow = 2),
   ref_dose = 56,
-  npiece = npiece_,
-  l = as.numeric(t(apply(as.matrix(c(1:npiece_), 1, npiece_), 2, lambda_prior))),
+  npiece = npiece,
+  l = as.numeric(t(apply(as.matrix(c(1:npiece), 1, npiece), 2, lambda_prior))),
   c_par = 2
 )
 
