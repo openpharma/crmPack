@@ -18,3 +18,4 @@ TODO
 ^\.travis\.yml$
 ^\.lintr$
 ^vignettes\*.bib$
+Rplots.pdf
