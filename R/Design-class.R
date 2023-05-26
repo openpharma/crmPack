@@ -462,6 +462,8 @@ DualResponsesDesign <- function(Effmodel,
   )
 }
 
+# nolint end
+
 # DADesign ----
 
 ## class ----
