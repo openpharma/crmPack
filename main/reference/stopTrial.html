@@ -58,12 +58,6 @@ based on DLT probability."><meta property="og:image" content="https://roche.gith
 <li class="nav-item">
   <a class="nav-link" href="../news/index.html">Changelog</a>
 </li>
-<!-- start dropdown for versions --> <li class="nav-item dropdown">
-        <a href="#" class="nav-link dropdown-toggle"
-          data-bs-toggle="dropdown" role="button"
-          aria-expanded="false" aria-haspopup="true"
-          id="dropdown-versions">Versions</a> <div class="dropdown-menu" aria-labelledby="dropdown-versions"> <a class="dropdown-item" data-toggle="tooltip" title="" href="https://Roche.github.io/crmPack/main">main</a> </div></li>
-<!-- end dropdown for versions -->
       </ul><form class="form-inline my-2 my-lg-0" role="search">
         <input type="search" class="form-control me-sm-2" aria-label="Toggle navigation" name="search-input" data-search-index="../search.json" id="search-input" placeholder="Search for" autocomplete="off"></form>
 
@@ -443,7 +437,7 @@ the trial always stops, independent of the concrete <code>stopping</code> rule u
 <span class="r-out co"><span class="r-pr">#&gt;</span> [1] "Number of cohorts is 6 and thus reached the prespecified minimum number 3"</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> attr(,"message")[[1]][[2]]</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [1] "Probability for target toxicity is 36 % for dose 20 and thus below the required 50 %"</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] "Probability for target toxicity is 34 % for dose 20 and thus below the required 50 %"</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> attr(,"message")[[2]]</span>
@@ -513,7 +507,7 @@ the trial always stops, independent of the concrete <code>stopping</code> rule u
 <span class="r-out co"><span class="r-pr">#&gt;</span> [1] "Number of cohorts is 6 and thus reached the prespecified minimum number 3"</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> attr(,"message")[[1]][[2]]</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [1] "Probability for target toxicity is 35 % for dose 20 and thus below the required 50 %"</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] "Probability for target toxicity is 34 % for dose 18 and thus below the required 50 %"</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> attr(,"message")[[2]]</span>
@@ -582,7 +576,7 @@ the trial always stops, independent of the concrete <code>stopping</code> rule u
 <span class="r-out co"><span class="r-pr">#&gt;</span> [1] "Number of cohorts is 6 and thus reached the prespecified minimum number 3"</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> attr(,"message")[[2]]</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [1] "Probability for target toxicity is 36 % for dose 20 and thus below the required 50 %"</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] "Probability for target toxicity is 35 % for dose 20 and thus below the required 50 %"</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> attr(,"message")[[3]]</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [1] "Number of patients is 8 and thus below the prespecified minimum number 20"</span>
@@ -866,7 +860,7 @@ the trial always stops, independent of the concrete <code>stopping</code> rule u
 <span class="r-in"><span>          data<span class="op">=</span><span class="va">data</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [1] FALSE</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> attr(,"message")</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [1] "Probability for target toxicity is 37 % for dose 18 and thus below the required 50 %"</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] "Probability for target toxicity is 34 % for dose 18 and thus below the required 50 %"</span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co"># nolint end</span></span></span>
 <span class="r-in"><span><span class="co"># nolint start</span></span></span>
@@ -924,9 +918,9 @@ the trial always stops, independent of the concrete <code>stopping</code> rule u
 <span class="r-in"><span>          samples<span class="op">=</span><span class="va">samples</span>,</span></span>
 <span class="r-in"><span>          model<span class="op">=</span><span class="va">model</span>,</span></span>
 <span class="r-in"><span>          data<span class="op">=</span><span class="va">data</span><span class="op">)</span></span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [1] TRUE</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] FALSE</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> attr(,"message")</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [1] "Probability of MTD above 50 % of current dose 20 is 91 % and thus greater than or equal to the required 90 %"</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] "Probability of MTD above 50 % of current dose 20 is 89 % and thus strictly less than the required 90 %"</span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co"># nolint end</span></span></span>
 <span class="r-in"><span><span class="co"># Create the data.</span></span></span>
@@ -1121,7 +1115,7 @@ the trial always stops, independent of the concrete <code>stopping</code> rule u
 <span class="r-in"><span>          data<span class="op">=</span><span class="va">data</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [1] FALSE</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> attr(,"message")</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [1] "Probability for target biomarker is 13 % for dose 10 and thus below the required 50 %"</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] "Probability for target biomarker is 12 % for dose 6 and thus below the required 50 %"</span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co"># nolint end</span></span></span>
 <span class="r-in"><span></span></span>
@@ -1183,7 +1177,7 @@ the trial always stops, independent of the concrete <code>stopping</code> rule u
 <span class="r-in"><span>  model <span class="op">=</span> <span class="va">model</span>,</span></span>
 <span class="r-in"><span>  data <span class="op">=</span> <span class="va">data</span></span></span>
 <span class="r-in"><span><span class="op">)</span></span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [1] TRUE</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] FALSE</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> attr(,"message")</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> attr(,"message")[[1]]</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [1] "Probability for target toxicity is 0 % for dose 80 and thus below the required 80 %"</span>
@@ -1192,7 +1186,7 @@ the trial always stops, independent of the concrete <code>stopping</code> rule u
 <span class="r-out co"><span class="r-pr">#&gt;</span> [1] "Number of patients is 17 and thus below the prespecified minimum number 20"</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> attr(,"message")[[3]]</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [1] "3 patients lie within 0% of the next best dose 10. This reached the required 3 patients"</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] "1 patients lie within 0% of the next best dose 6. This is below the required 3 patients"</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-in"><span><span class="co"># nolint start</span></span></span>
 <span class="r-in"><span></span></span>
@@ -1258,20 +1252,20 @@ the trial always stops, independent of the concrete <code>stopping</code> rule u
 <span class="r-in"><span>          samples<span class="op">=</span><span class="va">samples</span>,</span></span>
 <span class="r-in"><span>          model<span class="op">=</span><span class="va">model</span>,</span></span>
 <span class="r-in"><span>          data<span class="op">=</span><span class="va">data</span><span class="op">)</span></span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [1] TRUE</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] FALSE</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> attr(,"message")</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> attr(,"message")[[1]]</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [1] "Probability for target toxicity is 51 % for dose 58 and thus above the required 50 %"</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] "Probability for target toxicity is 49 % for dose 60 and thus below the required 50 %"</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> attr(,"message")[[2]]</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> attr(,"message")[[2]][[1]]</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [1] "Next best dose is 58 and thus not the highest dose"</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] "Next best dose is 60 and thus not the highest dose"</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> attr(,"message")[[2]][[2]]</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [1] "0 patients lie within 0% of the next best dose 58. This is below the required 3 patients"</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] "0 patients lie within 0% of the next best dose 60. This is below the required 3 patients"</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> attr(,"message")[[2]][[3]]</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [1] "Probability for target toxicity is 31 % for dose 58 and thus below the required 50 %"</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] "Probability for target toxicity is 31 % for dose 60 and thus below the required 50 %"</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-in"><span></span></span>
