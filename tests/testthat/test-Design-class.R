@@ -318,6 +318,54 @@ test_that("DualResponsesSamplesDesign user constructor arguments names are as ex
   )
 })
 
+# DualResponsesDesign ----
+
+test_that(".DualResponsesDesign works as expected", {
+  result <- expect_silent(.DualResponsesDesign())
+  expect_valid(result, "DualResponsesDesign")
+})
+
+test_that("DualResponsesDesign object can be created with user constructor", {
+  empty_data <- DataDual(doseGrid = 2:50)
+  model <- h_get_logistic_indep_beta(emptydata = TRUE)
+  eff_model <- h_get_eff_log_log(emptydata = TRUE)
+  stopping <- StoppingMinPatients(nPatients = 30)
+  increments <- h_increments_relative()
+  next_best <- h_next_best_tdsamples()
+  cohort_size <- CohortSizeConst(size = 3)
+
+  result <- expect_silent(
+    DualResponsesDesign(
+      model = model,
+      eff_model = eff_model,
+      stopping = stopping,
+      increments = increments,
+      nextBest = next_best,
+      cohortSize = cohort_size,
+      data = empty_data,
+      startingDose = 3
+    )
+  )
+  expect_valid(result, "DualResponsesDesign")
+  expect_identical(result@model, model)
+  expect_identical(result@eff_model, eff_model)
+  expect_identical(result@stopping, stopping)
+  expect_identical(result@increments, increments)
+  expect_identical(result@pl_cohort_size, CohortSizeConst(0))
+  expect_identical(result@nextBest, next_best)
+  expect_identical(result@cohortSize, cohort_size)
+  expect_identical(result@data, empty_data)
+  expect_identical(result@startingDose, 3)
+})
+
+test_that("DualResponsesDesign user constructor arguments names are as expected", {
+  expect_function(
+    DualResponsesDesign,
+    args = c("eff_model", "data", "..."),
+    ordered = TRUE
+  )
+})
+
 # DADesign ----
 
 test_that(".DADesign works as expected", {

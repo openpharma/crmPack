@@ -409,60 +409,62 @@ DualResponsesSamplesDesign <- function(eff_model,
   )
 }
 
-# nolint start
+# DualResponsesDesign.R ----
 
-## ---------------------------------------------------------------------------------------------------
-## class for design based on DLE and efficacy response without  samples using pseudo DLE and efficacy models
-## ----------------------------------------------------------------------------------------------------
-##' This is a class of design based on DLE responses using the \code{\linkS4class{LogisticIndepBeta}} model
-##' model and efficacy responses using \code{\linkS4class{ModelEff}}  model class
-##' without DLE and efficacy samples. It contain all slots in
-##' \code{\linkS4class{RuleDesign}} and \code{\linkS4class{TDDesign}} class object
-##'
-##' @slot data the data set of \code{\linkS4class{DataDual}} class object
-##' @slot Effmodel the pseudo efficacy model to be used, an object class of
-##' \code{\linkS4class{ModelEff}}
-##'
-##' @example examples/design-class-DualResponsesDesign.R
-##' @export
-##' @keywords class
+## class ----
+
+#' `DualResponsesDesign.R`
+#'
+#' @description `r lifecycle::badge("stable")`
+#'
+#' This is a class of design based on DLE responses using the [`LogisticIndepBeta`] model
+#  and efficacy responses using the [`ModelEff`]  model class
+#' without DLE and efficacy samples. It contains all slots from the
+#' [`RuleDesign`] and [`TDsamplesDesign`] classes.
+#
+#' @slot data (`DataDual`)\cr the data set.
+#' @slot eff_model (`ModelEff`)\cr the pseudo efficacy model to be used.
+#'
+#' @aliases DualResponsesDesign
+#' @export
+#'
 .DualResponsesDesign <-
   setClass(
     Class = "DualResponsesDesign",
-    representation(
-      Effmodel = "ModelEff",
+    slots = c(
+      eff_model = "ModelEff",
       data = "DataDual"
     ),
-    prototype(
+    prototype = prototype(
       nextBest = .NextBestMaxGain(),
       data = DataDual(doseGrid = 1:2),
       startingDose = 1,
       model = .LogisticIndepBeta()
     ),
-    contains = list("TDDesign")
+    contains = "TDDesign"
   )
-validObject(.DualResponsesDesign())
 
+## constructor ----
 
-##' Initialization function for 'DualResponsesDesign"
-##' @param data please refer to \code{\linkS4class{DualResponsesDesign}} class object
-##' @param Effmodel please refer to \code{\linkS4class{DualResponsesDesign}} class object
-##' @param \dots additional arguments for \code{\link{TDDesign}}
-##' @return the \code{\linkS4class{DualResponsesDesign}} class object
-##'
-##' @export
-##' @keywords methods
-DualResponsesDesign <- function(Effmodel,
+#' @rdname DualResponsesDesign-class
+#'
+#' @param data (`DataDual`)\cr see slot definition.
+#' @param eff_model (`ModelEff`)\cr see slot definition.
+#' @inheritDotParams TDDesign
+#'
+#' @example examples/Design-class-DualResponsesDesign.R
+#' @export
+#'
+DualResponsesDesign <- function(eff_model,
                                 data,
                                 ...) {
   start <- TDDesign(data = data, ...)
-  .DualResponsesDesign(start,
-    Effmodel = Effmodel,
+  .DualResponsesDesign(
+    start,
+    eff_model = eff_model,
     data = data
   )
 }
-
-# nolint end
 
 # DADesign ----
 
