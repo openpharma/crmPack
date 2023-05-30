@@ -21,3 +21,4 @@ pkgdown/
 .DS_Store
 /doc/
 /Meta/
+tests/vdiffr.Rout.fail
