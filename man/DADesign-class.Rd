@@ -4,96 +4,107 @@
 \name{DADesign-class}
 \alias{DADesign-class}
 \alias{.DADesign}
-\title{Class for the time-to-DLT augmented CRM design}
+\alias{DADesign}
+\title{\code{DADesign}}
+\usage{
+DADesign(model, data, safetyWindow, ...)
+}
+\arguments{
+\item{model}{(\code{GeneralModel})\cr see slot definition.}
+
+\item{data}{(\code{DataDA})\cr see slot definition.}
+
+\item{safetyWindow}{(\code{SafetyWindow})\cr see slot definition.}
+
+\item{...}{
+  Arguments passed on to \code{\link[=Design]{Design}}
+  \describe{
+    \item{\code{stopping}}{(\code{Stopping})\cr see slot definition.}
+    \item{\code{increments}}{(\code{Increments})\cr see slot definition.}
+    \item{\code{pl_cohort_size}}{(\code{CohortSize})\cr see slot definition.}
+  }}
+}
 \description{
+\ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#stable}{\figure{lifecycle-stable.svg}{options: alt='[Stable]'}}}{\strong{[Stable]}}
+
 This class has special requirements for the \code{model} and \code{data}
-slots in comparison to the parent class \code{\linkS4class{Design}}:
+slots in comparison to the parent class \code{\link{Design}}:
 }
 \section{Slots}{
 
 \describe{
-\item{\code{model}}{the model to be used, an object of or inheriting from class
-\code{\linkS4class{GeneralModel}}, see in particular
-\code{\linkS4class{DALogisticLogNormal}} and
-\code{\linkS4class{TITELogisticLogNormal}} which make use of the
-time-to-DLT data}
+\item{\code{model}}{(\code{GeneralModel})\cr the model to use, see in particular \code{\link{DALogisticLogNormal}} and
+\code{\link{TITELogisticLogNormal}} which make use of the time-to-DLT data.}
 
-\item{\code{data}}{what is the dose grid, any previous data, etc., contained
-in an object of class \code{\linkS4class{DataDA}}}
+\item{\code{data}}{(\code{DataDA})\cr what is the dose grid, any previous data, etc.}
 
-\item{\code{safetyWindow}}{still to be documented.}
+\item{\code{safetyWindow}}{(\code{SafetyWindow})\cr the safety window to apply between cohorts.}
 }}
 
 \examples{
-# nolint start
-
-# Define the dose-grid and PEM parameters
-emptydata <- DataDA(doseGrid = c(
+empty_data <- DataDA(doseGrid = c(
   0.1, 0.5, 1, 1.5, 3, 6,
   seq(from = 10, to = 80, by = 2)
 ), Tmax = 60)
-# Initialize the mDA-CRM model
-npiece_ <- 10
-Tmax_ <- 60
+
+npiece <- 10
+t_max <- 60
 
 lambda_prior <- function(k) {
-  npiece_ / (Tmax_ * (npiece_ - k + 0.5))
+  npiece / (t_max * (npiece - k + 0.5))
 }
 
 model <- DALogisticLogNormal(
   mean = c(-0.85, 1),
   cov = matrix(c(1, -0.5, -0.5, 1), nrow = 2),
   ref_dose = 56,
-  npiece = npiece_,
-  l = as.numeric(t(apply(as.matrix(c(1:npiece_), 1, npiece_), 2, lambda_prior))),
+  npiece = npiece,
+  l = as.numeric(t(apply(as.matrix(c(1:npiece), 1, npiece), 2, lambda_prior))),
   c_par = 2
 )
-# Choose the rule for dose increments
-myIncrements <- IncrementsRelative(
+
+my_increments <- IncrementsRelative(
   intervals = c(0, 20),
   increments = c(1, 0.33)
 )
 
-myNextBest <- NextBestNCRM(
+my_next_best <- NextBestNCRM(
   target = c(0.2, 0.35),
   overdose = c(0.35, 1),
   max_overdose_prob = 0.25
 )
 
-# Choose the rule for the cohort-size
-mySize1 <- CohortSizeRange(
+my_size1 <- CohortSizeRange(
   intervals = c(0, 30),
   cohort_size = c(1, 3)
 )
-mySize2 <- CohortSizeDLT(
+
+my_size2 <- CohortSizeDLT(
   dlt_intervals = c(0, 1),
   cohort_size = c(1, 3)
 )
-mySize <- maxSize(mySize1, mySize2)
 
-# Choose the rule for stopping
-myStopping1 <- StoppingTargetProb(
+my_size <- maxSize(my_size1, my_size2)
+
+my_stopping1 <- StoppingTargetProb(
   target = c(0.2, 0.35),
   prob = 0.5
 )
-myStopping2 <- StoppingMinPatients(nPatients = 50)
 
-myStopping <- (myStopping1 | myStopping2)
+my_stopping2 <- StoppingMinPatients(nPatients = 50)
 
-# Choose the safety window
-mysafetywindow <- SafetyWindowConst(c(6, 2), 7, 7)
+my_stopping <- (my_stopping1 | my_stopping2)
 
-# Initialize the design
+my_safety_window <- SafetyWindowConst(c(6, 2), 7, 7)
+
 design <- DADesign(
   model = model,
-  increments = myIncrements,
-  nextBest = myNextBest,
-  stopping = myStopping,
-  cohortSize = mySize,
-  data = emptydata,
-  safetyWindow = mysafetywindow,
+  increments = my_increments,
+  nextBest = my_next_best,
+  stopping = my_stopping,
+  cohortSize = my_size,
+  data = empty_data,
+  safetyWindow = my_safety_window,
   startingDose = 3
 )
-# nolint end
 }
-\keyword{classes}

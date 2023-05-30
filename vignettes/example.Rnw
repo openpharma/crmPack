@@ -2162,7 +2162,7 @@ There are two functions which we can used. The \texttt{DualResponsesDesign} can 
 design1 <- DualResponsesDesign(
   nextBest = GainNextBest,
   model = DLTmodel,
-  Effmodel = Effmodel,
+  eff_model = Effmodel,
   data = data2,
   stopping = myStopping7,
   increments = myIncrements1,
