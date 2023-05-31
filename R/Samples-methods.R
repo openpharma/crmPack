@@ -87,7 +87,9 @@ setMethod("get",
              mode = NULL,
              inherits = NULL) {
       ## check the parameter name
-      stopifnot(is.scalar(pos), pos %in% names(x))
+      #stopifnot(is.scalar(pos), pos %in% names(x))
+      checkmate::assert_scalar(pos)
+      checkmate::assert_choice(pos, names(x))
 
       ## get the samples for this parameter
       d <- x@data[[pos]]
@@ -115,11 +117,8 @@ setMethod("get",
           if (is.null(envir)) {
             seq_along(elements)
           } else {
-            stopifnot(
-              is.numeric(envir),
-              all(envir %in% seq_along(elements))
-            )
-            as.integer(envir)
+            checkmate::assert_integer(envir)
+            checkmate::assert_subset(envir, seq_along(elements))
           }
 
         ## subset the data matrix and par names appropriately
@@ -219,10 +218,12 @@ setMethod("fit",
              middle = mean,
              ...) {
       ## some checks
-      stopifnot(
-        is.probRange(quantiles),
-        is.numeric(points)
-      )
+      assert_probability_range(quantiles)
+      checkmate::assert_numeric(points)
+      # stopifnot(
+      #   is.probRange(quantiles),
+      #   is.numeric(points)
+      # )
 
       ## first we have to get samples from the dose-tox
       ## curve at the dose grid points.
@@ -232,8 +233,7 @@ setMethod("fit",
       )
 
       ## evaluate the probs, for all samples.
-      for (i in seq_along(points))
-      {
+      for (i in seq_along(points)) {
         ## Now we want to evaluate for the
         ## following dose:
         probSamples[, i] <- prob(
@@ -289,7 +289,8 @@ setMethod("fit",
              middle = mean,
              ...) {
       ## some checks
-      stopifnot(is.probRange(quantiles))
+      # stopifnot(is.probRange(quantiles))
+      assert_probability_range(quantiles)
 
       ## first obtain the dose-tox curve results from the parent method
       start <- callNextMethod(
