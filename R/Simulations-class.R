@@ -19,21 +19,24 @@
 {}
 
 
-##' General class for the simulations output
-##'
-##' This class captures trial simulations.
-##'
-##' Here also the random generator state before starting the simulation is
-##' saved, in order to be able to reproduce the outcome. For this just use
-##' \code{\link{set.seed}} with the \code{seed} as argument before running
-##' \code{\link{simulate,Design-method}}.
-##'
-##' @slot data list of produced \code{\linkS4class{Data}} objects
-##' @slot doses the vector of final dose recommendations
-##' @slot seed random generator state before starting the simulation
-##'
-##' @export
-##' @keywords classes
+# GeneralSimulations class ----
+
+## class ----
+
+#' General class for the simulations output
+#'
+#' This class captures trial simulations.
+#'
+#' Here also the random generator state before starting the simulation is
+#' saved, in order to be able to reproduce the outcome. For this just use
+#' [`set.seed`] with the `seed` as argument before running
+#' [`simulate,Design-method`].
+#'
+#' @slot data list of produced [`Data`] objects
+#' @slot doses the vector of final dose recommendations
+#' @slot seed random generator state before starting the simulation
+#'
+#' @export
 .GeneralSimulations <-
   setClass(
     Class = "GeneralSimulations",
@@ -83,15 +86,17 @@
   )
 validObject(.GeneralSimulations())
 
-##' Initialization function for "GeneralSimulations"
-##'
-##' @param data see \code{\linkS4class{GeneralSimulations}}
-##' @param doses see \code{\linkS4class{GeneralSimulations}}
-##' @param seed see \code{\linkS4class{GeneralSimulations}}
-##' @return the \code{\linkS4class{GeneralSimulations}} object
-##'
-##' @export
-##' @keywords methods
+## constructor ----
+
+#' Initialization function for "GeneralSimulations"
+#'
+#' @param data see [`GeneralSimulations`]
+#' @param doses see [`GeneralSimulations`]
+#' @param seed see [`GeneralSimulations`]
+#' @return the [`GeneralSimulations`] object
+#'
+#' @export
+#' @keywords methods
 GeneralSimulations <- function(data,
                                doses,
                                seed) {
