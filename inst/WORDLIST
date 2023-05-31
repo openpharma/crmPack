@@ -26,6 +26,7 @@ BayesLogit
 bb
 BCE
 bcrm
+behaviour
 betaW
 binded
 binDLE
@@ -42,6 +43,7 @@ byrow
 cdf
 cdisc
 CDISC
+Cheung
 Choi
 ci
 CMD
@@ -122,6 +124,7 @@ emptydata
 eot
 Equalness
 equi
+ESS
 et
 firstSeparate
 fromPrior
@@ -145,6 +148,7 @@ Gstarderive
 gtable
 Guosheng
 gz
+Hmmm
 Hoffmann
 http
 https
@@ -253,6 +257,7 @@ paramters
 pharmacodynamic
 pharmacokinetic
 pkgdown
+plateaux
 PLcohortSize
 plotlist
 positivity
@@ -362,6 +367,8 @@ ThreePlusThreeDesign
 threeSimsSum
 threshmax
 threshmin
+tibble
+tibbles
 TITE
 TLG
 TLGs
@@ -398,6 +405,8 @@ Yeung
 YJ
 yml
 ### LaTeX keywords below here.
+binom
 bmatrix
 frac
 pmatrix
+rr

@@ -17,6 +17,7 @@ articles:
     contents:
     - trial_definition
     - trial_analysis
+    - trial_sanity_checks
     - trial_simulation
     - rolling-crm
     - simulations
