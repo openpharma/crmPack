@@ -42,12 +42,12 @@
 .GeneralSimulations <-
   setClass(
     Class = "GeneralSimulations",
-    representation(
+    slots = c(
       data = "list",
       doses = "numeric",
       seed = "integer"
     ),
-    prototype(
+    prototype = prototype(
       data =
         list(
           Data(
