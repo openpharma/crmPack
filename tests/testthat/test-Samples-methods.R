@@ -1,3 +1,5 @@
+# nolint start
+
 # size ----
 
 ## Samples ----
@@ -192,6 +194,7 @@ test_that("fit-Samples works correctly for tox-only models", {
   checkIt(seed = 456, middleFunc = median)
   checkIt(seed = 789, lowerQuantile = 0.25, upperQuantile = 0.75)
 })
+
 test_that("fit-Samples works correctly for dual models", {
   #TODO: Check for numerical correctness
   dualData <- DataDual(
@@ -213,14 +216,197 @@ test_that("fit-Samples works correctly for dual models", {
   )
 
 
-  options <- McmcOptions()
+  options <- McmcOptions(rng_kind = "Mersenne-Twister", rng_seed = 1234567)
   samples <- mcmc(dualData, model, options)
 
   actual <- fit(samples, model, dualData)
 
   expect_equal(class(actual), "data.frame")
   expect_setequal(names(actual), c("dose", "middle", "lower", "upper", "middleBiomarker", "lowerBiomarker", "upperBiomarker"))
+  expect_snapshot(actual)
+})
+
+test_that("Samples-approximate works correctly", {
+  data <- Data(
+    x = c(3, 6, 10, 10, 10),
+    y = c(0, 0, 0, 1, 0),
+    ID = 1L:5L,
+    cohort = c(3, 4, 5, 5, 5),
+    doseGrid = c(0.1, 0.5, 1.5, 3, 6, seq(from = 10, to = 80, by=2)))
+
+  model <- LogisticLogNormal(
+    mean = c(-0.85, 1),
+    cov = matrix(c(1, -0.5, -0.5, 1), nrow = 2),
+    ref_dose = 56
+  )
+
+  options <- McmcOptions(burnin = 100, step = 2, samples = 2000, rng_kind = "Mersenne-Twister", rng_seed = 303010)
+  samples <- mcmc(data, model, options)
+
+  posterior <- approximate(
+    object = samples,
+    model = model,
+    data = data,
+    logNormal=TRUE,
+    control = list(threshold.stop = 0.1, max.time = 1, maxit = 1),
+    verbose = FALSE
+  )
+  expect_snapshot_value(posterior, style = "serialize")
+
+  model1 <- LogisticNormal(
+    mean = c(-0.85, 1),
+    cov = matrix(c(1, -0.5, -0.5, 1), nrow = 2),
+    ref_dose = 56
+  )
+
+  posterior1 <- approximate(
+    object = samples,
+    model = model1,
+    data = data,
+    logNormal=TRUE,
+    control = list(threshold.stop = 0.1, max.time = 1, maxit = 1)
+  )
+  expect_snapshot_value(posterior1, style = "serialize")
+
+  posterior2 <- approximate(
+    object = samples,
+    model = model1,
+    data = data,
+    logNormal=FALSE,
+    control = list(threshold.stop = 0.1, max.time = 1, maxit = 1)
+  )
+  expect_snapshot_value(posterior2, style = "serialize")
+})
+
+test_that("plot-Samples fails gracefully with bad input", {
+  data <- Data(
+    x = c(0.1, 0.5, 1.5, 3, 6, 10, 10, 10),
+    y = c(0, 0, 0, 0, 0, 0, 1, 0),
+    ID = 1L:8L,
+    cohort = c(0, 1, 2, 3, 4, 5, 5, 5),
+    doseGrid = c(0.1, 0.5, 1.5, 3, 6, seq(from = 10, to = 80, by=2)))
+  model <- LogisticLogNormal(
+    mean = c(-0.85, 1),
+    cov = matrix(c(1, -0.5, -0.5, 1), nrow = 2),
+    ref_dose = 56
+  )
+  options <- McmcOptions(burnin = 100, step = 2, samples = 2000, rng_kind = "Mersenne-Twister", rng_seed = 303010)
+  samples <- mcmc(data, model, options)
+  expect_error(
+    plot(x = samples, y = model, data = data, showLegend = "NotLogical"),
+    "Assertion on 'showLegend' failed: Must be of type 'logical', not 'character'."
+  )
+})
+
+test_that("plot-Samples works correctly", {
+  data <- Data(
+    x = c(0.1, 0.5, 1.5, 3, 6, 10, 10, 10),
+    y = c(0, 0, 0, 0, 0, 0, 1, 0),
+    ID = 1L:8L,
+    cohort = c(0, 1, 2, 3, 4, 5, 5, 5),
+    doseGrid = c(0.1, 0.5, 1.5, 3, 6, seq(from = 10, to = 80, by=2)))
+  model <- LogisticLogNormal(
+    mean = c(-0.85, 1),
+    cov = matrix(c(1, -0.5, -0.5, 1), nrow = 2),
+    ref_dose = 56
+  )
+  options <- McmcOptions(burnin = 100, step = 2, samples = 2000, rng_kind = "Mersenne-Twister", rng_seed = 303010)
+  samples <- mcmc(data, model, options)
+  actual <- plot(x = samples, y = model, data = data)
+
+  expect_snapshot_file(test_path("_snaps", "Samples-methods", "plot-Samples.png"), actual)
+
+  actual1 <- plot(x = samples, y = model, data = data, showLegend = FALSE)
+  expect_snapshot_file(test_path("_snaps", "Samples-methods", "plot-Samples-no-legend.png"), actual1)
+})
+
+test_that("plot-Samples-DualEndpoint fails gracefully with bad input", {
+  data <- DataDual(
+    x=c(0.1, 0.5, 1.5, 3, 6, 10, 10, 10, 20, 20, 20, 40, 40, 40, 50, 50, 50),
+    y=c(0, 0, 0, 0, 0, 0, 1, 0, 0, 1, 1, 0, 0, 1, 0, 1, 1),
+    w=c(0.31, 0.42, 0.59, 0.45, 0.6, 0.7, 0.55, 0.6, 0.52, 0.54, 0.56, 0.43, 0.41, 0.39, 0.34, 0.38, 0.21),
+    doseGrid=c(0.1, 0.5, 1.5, 3, 6, seq(from=10, to=80, by=2)),
+    ID = 1L:17L,
+    cohort = as.integer(c(1:5, rep(6:9, each = 3)))
+  )
+  model <- DualEndpointRW(
+    mean = c(0, 1),
+    cov = matrix(c(1, 0, 0, 1), nrow=2),
+    sigma2betaW = 0.01,
+    sigma2W = c(a=0.1, b=0.1),
+    rho = c(a=1, b=1),
+    rw1 = TRUE
+  )
+  options <- McmcOptions(burnin=100, step=2, samples=2000, rng_kind = "Mersenne-Twister", rng_seed = 393015)
+  samples <- mcmc(data, model, options)
+
+  expect_error(
+    plot(x = samples, y = model, data = data, extrapolate = "NotLogical"),
+    "Assertion on 'extrapolate' failed: Must be of type 'logical', not 'character'."
+  )
+})
+
+test_that("plot-Samples-DualEndpoint works correctly", {
+  data <- DataDual(
+    x=c(0.1, 0.5, 1.5, 3, 6, 10, 10, 10, 20, 20, 20, 40, 40, 40, 50, 50, 50),
+    y=c(0, 0, 0, 0, 0, 0, 1, 0, 0, 1, 1, 0, 0, 1, 0, 1, 1),
+    w=c(0.31, 0.42, 0.59, 0.45, 0.6, 0.7, 0.55, 0.6, 0.52, 0.54, 0.56, 0.43, 0.41, 0.39, 0.34, 0.38, 0.21),
+    doseGrid=c(0.1, 0.5, 1.5, 3, 6, seq(from=10, to=80, by=2)),
+    ID = 1L:17L,
+    cohort = as.integer(c(1:5, rep(6:9, each = 3)))
+  )
+  model <- DualEndpointRW(
+    mean = c(0, 1),
+    cov = matrix(c(1, 0, 0, 1), nrow=2),
+    sigma2betaW = 0.01,
+    sigma2W = c(a=0.1, b=0.1),
+    rho = c(a=1, b=1),
+    rw1 = TRUE
+  )
+  options <- McmcOptions(burnin=100, step=2, samples=2000, rng_kind = "Mersenne-Twister", rng_seed = 393015)
+  samples <- mcmc(data, model, options)
+
+  actual <- plot(x = samples, y = model, data = data)
+  expect_snapshot_file(test_path("_snaps", "Samples-methods", "plot-Samples-DualEndpoint.png"), actual)
+
+  actual1 <- plot(x = samples, y = model, data = data, extrapolate = FALSE)
+  expect_snapshot_file(
+    test_path("_snaps", "Samples-methods", "plot-Samples-DualEndpoint_extrapolateFALSE.png"),
+    actual1
+  )
+
+})
+
+test_that("fit-Samples-LogisticIndepBeta fails gracefully with bad input", {
+  expect_error(
+    fit(object=samples, model=model,data=data, points = "NotNumeric"),
+    "Assertion on 'points' failed: Must be of type 'numeric', not 'character'."
+  )
+  expect_error(
+    fit(object=samples, model=model,data=data, quantiles = c(0.1, 99)),
+    "Assertion on 'quantiles' failed: Probability must be within [0, 1] bounds but it is not."
+  )
+  expect_error(
+    fit(object=samples, model=model,data=data, quantiles = c(0.1, 0.2, 0.3)),
+    "Assertion on 'quantiles' failed: Must have length 2, but has length 3."
+  )
+})
+
+test_that("fit-Samples-LogisticIndepBeta works", {
+  data<-Data(
+    ID=1L:8L,
+    cohort=as.integer(c(1, 2, 2, 3, 4, 5, 6, 7)),
+    x=c(25,50,50,75,150,200,225,300),
+    y=c(0,0,0,0,1,1,1,1),
+    doseGrid=seq(from=25,to=300,by=25)
+  )
+  model<-LogisticIndepBeta(binDLE=c(1.05,1.8),DLEweights=c(3,3),DLEdose=c(25,300),data=data)
+  options<-McmcOptions(burnin=500,step=2,samples=2000, rng_kind = "Mersenne-Twister", rng_seed = 405017)
+  samples<-mcmc(data,model,options)
+
+  actual <- fit(object=samples, model=model,data=data, quantiles = c(0.1, 0.2, 0.3))
+  expect_snapshot(actual)
 })
 
 
-
+# nolint end

@@ -289,7 +289,6 @@ setMethod("fit",
              middle = mean,
              ...) {
       ## some checks
-      # stopifnot(is.probRange(quantiles))
       assert_probability_range(quantiles)
 
       ## first obtain the dose-tox curve results from the parent method
@@ -503,7 +502,7 @@ setMethod("plot",
              ylab = "Probability of DLT [%]",
              showLegend = TRUE) {
       ## check args
-      stopifnot(is.bool(showLegend))
+      checkmate::assert_logical(showLegend)
 
       ## get the fit
       plotData <- fit(x,
@@ -604,7 +603,7 @@ setMethod("plot",
     ),
   def =
     function(x, y, data, extrapolate = TRUE, showLegend = FALSE, ...) {
-      stopifnot(is.bool(extrapolate))
+      checkmate::assert_logical(extrapolate)
 
       ## call the superclass method, to get the toxicity plot
       plot1 <- callNextMethod(x, y, data, showLegend = showLegend, ...)
@@ -721,10 +720,12 @@ setMethod("fit",
              middle = mean,
              ...) {
       ## some checks
-      stopifnot(
-        is.probRange(quantiles),
-        is.numeric(points)
-      )
+      assert_probability_range(quantiles)
+      checkmate::assert_numeric(points)
+      # stopifnot(
+      #   is.probRange(quantiles),
+      #   is.numeric(points)
+      # )
 
       ## first we have to get samples from the dose-tox
       ## curve at the dose grid points.
@@ -734,8 +735,7 @@ setMethod("fit",
       )
 
       ## evaluate the probs, for all samples.
-      for (i in seq_along(points))
-      {
+      for (i in seq_along(points)) {
         ## Now we want to evaluate for the
         ## following dose:
         probSamples[, i] <- prob(
