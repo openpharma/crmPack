@@ -39,7 +39,6 @@ test_that("Posterior summaries for probabilities of
 
   combIncrement <- IncrementsMin(increments_list = list(increment1, increment2))
 
-
   ncrm_loss_sc3 <- NextBestNCRMLoss(
     target = c(0.2, 0.35),
     overdose = c(0.35, 0.6),
@@ -155,7 +154,6 @@ test_that("Posterior summaries for probabilities of
 
   combIncrement <- IncrementsMin(increments_list = list(increment1, increment2))
 
-
   ncrm_loss_sc3 <- NextBestNCRMLoss(
     target = c(0.2, 0.35),
     overdose = c(0.35, 0.6),
@@ -169,7 +167,6 @@ test_that("Posterior summaries for probabilities of
     overdose = c(0.35, 1),
     max_overdose_prob = 0.25
   )
-
 
   postSamples <- mcmc(data, model_bcrm_sc3, mcmc_options)
 
@@ -185,7 +182,6 @@ test_that("Posterior summaries for probabilities of
 
   rec_dose_loss_sc3 <- dose_rec_loss$value
   rec_dose_sc3 <- dose_rec$value
-
 
   prob_samples_mat <- matrix(
     nrow = size(postSamples@options),
@@ -273,7 +269,6 @@ test_that("Posterior summaries for probabilities of
 
   combIncrement <- IncrementsMin(increments_list = list(increment1, increment2))
 
-
   ncrm_loss_sc3 <- NextBestNCRMLoss(
     target = c(0.2, 0.35),
     overdose = c(0.35, 0.6),
@@ -302,7 +297,6 @@ test_that("Posterior summaries for probabilities of
 
   rec_dose_loss_sc3 <- dose_rec_loss$value
   rec_dose_sc3 <- dose_rec$value
-
 
   prob_samples_mat <- matrix(
     nrow = size(postSamples@options),
@@ -389,7 +383,6 @@ test_that("Posterior summaries for probabilities of
   )
 
   combIncrement <- IncrementsMin(increments_list = list(increment1, increment2))
-
 
   ncrm_loss_sc3 <- NextBestNCRMLoss(
     target = c(0.2, 0.35),
