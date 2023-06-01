@@ -37,6 +37,7 @@
 #' @slot doses (`numeric`)\cr the vector of final dose recommendations
 #' @slot seed (`integer`)\cr random generator state before starting the simulation
 #'
+#' @aliases GeneralSimulations
 #' @export
 .GeneralSimulations <-
   setClass(
