@@ -1,6 +1,10 @@
 test_that("Posterior summaries for probabilities of
           DLT (2-parameter logistic model) and recommended doses (NCRMLoss):
           crmPack vs. SAS - Example 1", {
+<<<<<<< HEAD
+=======
+
+>>>>>>> 0ac12f10bd26d066f6731dc6a9d8a2bd7bef5055
   skip_on_cran()
 
   set.seed(0504201914)
