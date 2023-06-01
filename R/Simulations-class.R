@@ -86,7 +86,6 @@
         o$result()
       }
   )
-validObject(.GeneralSimulations())
 
 ## constructor ----
 
