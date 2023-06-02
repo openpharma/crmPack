@@ -3,6 +3,7 @@ title: "Migrating from crmPack version 1.0.3"
 author: "Wojciech Wójciak"
 date: "05 October 2022"
 output: rmarkdown::html_vignette
+bibliography: vignettes.bib  
 vignette: >
   %\VignetteIndexEntry{Migrating from crmPack version 1.0.3}
   %\VignetteEngine{knitr::rmarkdown}
@@ -22,6 +23,10 @@ package as a result of the package's refactoring. One row in below tables
 represents a single-type, consistent change.
 
 # Class and Methods Name Changes
+
+## Motivation
+
+To be close to common R style guidelines [@advancedR] and use consistent naming conventions within the `crmPack` package, `CamelCase` notation is used for `class` names, `method` names and constructor function names, and `snake_case` notation is used for `slot` names throughout the package.
 
 ## Classes
 
@@ -46,10 +51,10 @@ class_changes <- tribble(
   "DALogisticLogNormal", "", "C_par", "c_par", FALSE, "",
   "DALogisticLogNormal", "", "conditionalPEM", "cond_pem", FALSE, "",
   "TITELogisticLogNormal", "", "weightMethod", "weight_method", FALSE, "",
-  "OneParLogNormalPrior", "", "skeletonFun", "skel_fun", FALSE, "",
+  "OneParLogNormalPrior", "", "", "skel_fun", FALSE, "",
   "OneParLogNormalPrior", "", "", "skel_fun_inv", FALSE, "",
-  "OneParLogNormalPrior", "", "skeletonProbs", "skel_probs", FALSE, "",
-  "OneParLogNormalPrior()", "", "doseGrid", "dose_grid", FALSE, "",
+  "OneParLogNormalPrior", "", "", "skel_probs", FALSE, "",
+  "OneParLogNormalPrior()", "", "", "dose_grid", FALSE, "",
   "DualEndpointBeta", "", "refDoseBeta", "ref_dose_beta", FALSE, "",
   "DualEndpointEmax", "", "refDoseEmax", "ref_dose_emax", FALSE, "",
   "DualEndpointRW", "", "useRW1", "rw1", FALSE, "",
@@ -102,7 +107,7 @@ class_changes <- tribble(
   "SafetyWindowConst", "", "patientGap", "gap", FALSE, "",
   "SafetyWindowConst", "", "patientFollow", "follow", FALSE, "",
   "SafetyWindowConst", "", "patientFollowMin", "follow_min", FALSE, "",
-  "OneParExpNormalPrior", "OneParLogNormalPrior", "", "", FALSE, "",
+  "", "OneParLogNormalPrior", "", "", FALSE, "",
   "Design", "", "PLcohortSize", "pl_cohort_size", FALSE, "",
   "TDsamplesDesign", "", "PLcohortSize", "pl_cohort_size", FALSE, "",
   "TDDesign", "", "PLcohortSize", "pl_cohort_size", FALSE, ""
@@ -218,6 +223,7 @@ Moved `dose` and `prob` functions from model class slots to model class methods.
 Example of usage: `dose`/`prob` function as a true dose-DLT/DLT-dose relationship.
 
 ## Generate data, define a model and get samples
+
 ```{r data_model_samples}
 library(crmPack)
 
@@ -290,3 +296,5 @@ Here are some examples of their use:
 class_name <- "LogisticNormal"
 eval(parse(text = paste0(".Default", class_name, "()")))
 ```
+
+# References
