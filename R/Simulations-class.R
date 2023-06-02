@@ -89,15 +89,15 @@
 
 ## constructor ----
 
+#' @rdname GeneralSimulations-class
+#'
 #' Initialization function for "GeneralSimulations"
 #'
-#' @param data see [`GeneralSimulations`]
-#' @param doses see [`GeneralSimulations`]
-#' @param seed see [`GeneralSimulations`]
-#' @return the [`GeneralSimulations`] object
+#' @param data (`list`)\cr see slot definition.
+#' @param doses (`numeric`)\cr see slot definition.
+#' @param seed (`integer`)\cr see slot definition.
 #'
 #' @export
-#' @keywords methods
 GeneralSimulations <- function(data,
                                doses,
                                seed) {
