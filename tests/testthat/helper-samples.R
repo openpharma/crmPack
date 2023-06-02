@@ -1,3 +1,4 @@
+
 h_as_samples <- function(x, burnin = 50, fixed = TRUE) {
   dim_x <- dim(x[[1]])
   n_samples <- if (is.null(dim_x)) {

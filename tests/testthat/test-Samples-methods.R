@@ -136,9 +136,8 @@ test_that("fit-Samples fails gracefully with bad inputs", {
 
   expect_error(
     fit(samples, model, emptyData, quantiles = c(0.025, 99))
-    #,
-    # "Assertion on 'quantiles' failed: Probability must be within [0, 1] bounds but it is not."
-    # This is the correct error message, so why dos expect_error fail?
+    ,
+    "Assertion on 'quantiles' failed: Probability must be within \\[0, 1\\] bounds but it is not."
   )
   expect_error(
     fit(samples, model, emptyData, points = "A"),
@@ -312,12 +311,12 @@ test_that("plot-Samples works correctly", {
   )
   options <- McmcOptions(burnin = 100, step = 2, samples = 2000, rng_kind = "Mersenne-Twister", rng_seed = 303010)
   samples <- mcmc(data, model, options)
-  actual <- plot(x = samples, y = model, data = data)
 
-  expect_snapshot_file(test_path("_snaps", "Samples-methods", "plot-Samples.png"), actual)
+  actual <- plot(x = samples, y = model, data = data)
+  vdiffr::expect_doppelganger("plot-Samples", actual)
 
   actual1 <- plot(x = samples, y = model, data = data, showLegend = FALSE)
-  expect_snapshot_file(test_path("_snaps", "Samples-methods", "plot-Samples-no-legend.png"), actual1)
+  vdiffr::expect_doppelganger("plot-Samples_showLegend-FALSE", actual1)
 })
 
 test_that("plot-Samples-DualEndpoint fails gracefully with bad input", {
@@ -367,24 +366,31 @@ test_that("plot-Samples-DualEndpoint works correctly", {
   samples <- mcmc(data, model, options)
 
   actual <- plot(x = samples, y = model, data = data)
-  expect_snapshot_file(test_path("_snaps", "Samples-methods", "plot-Samples-DualEndpoint.png"), actual)
+  vdiffr::expect_doppelganger("plot-Samples-DataDual", actual)
 
-  actual1 <- plot(x = samples, y = model, data = data, extrapolate = FALSE)
-  expect_snapshot_file(
-    test_path("_snaps", "Samples-methods", "plot-Samples-DualEndpoint_extrapolateFALSE.png"),
-    actual1
-  )
+  actual1 <- plot(x = samples, y = model, data = data, showLegend = FALSE)
+  vdiffr::expect_doppelganger("plot-Samples-DataDual_showlegend-FALSE", actual1)
 
 })
 
 test_that("fit-Samples-LogisticIndepBeta fails gracefully with bad input", {
+  data<-Data(
+    ID=1L:8L,
+    cohort=as.integer(c(1, 2, 2, 3, 4, 5, 6, 7)),
+    x=c(25,50,50,75,150,200,225,300),
+    y=c(0,0,0,0,1,1,1,1),
+    doseGrid=seq(from=25,to=300,by=25)
+  )
+  model<-LogisticIndepBeta(binDLE=c(1.05,1.8),DLEweights=c(3,3),DLEdose=c(25,300),data=data)
+  options<-McmcOptions(burnin=500,step=2,samples=2000, rng_kind = "Mersenne-Twister", rng_seed = 405017)
+  samples<-mcmc(data,model,options)
   expect_error(
     fit(object=samples, model=model,data=data, points = "NotNumeric"),
     "Assertion on 'points' failed: Must be of type 'numeric', not 'character'."
   )
   expect_error(
     fit(object=samples, model=model,data=data, quantiles = c(0.1, 99)),
-    "Assertion on 'quantiles' failed: Probability must be within [0, 1] bounds but it is not."
+    "Assertion on 'quantiles' failed: Probability must be within \\[0, 1\\] bounds but it is not."
   )
   expect_error(
     fit(object=samples, model=model,data=data, quantiles = c(0.1, 0.2, 0.3)),
@@ -404,9 +410,314 @@ test_that("fit-Samples-LogisticIndepBeta works", {
   options<-McmcOptions(burnin=500,step=2,samples=2000, rng_kind = "Mersenne-Twister", rng_seed = 405017)
   samples<-mcmc(data,model,options)
 
-  actual <- fit(object=samples, model=model,data=data, quantiles = c(0.1, 0.2, 0.3))
+  actual <- fit(object=samples, model=model,data=data, quantiles = c(0.1, 0.9))
   expect_snapshot(actual)
 })
 
+test_that("fit-Samples-Effloglog works correctly", {
+  data<-DataDual(
+    x=c(25,50,25,50,75,300,250,150),
+    y=c(0,0,0,0,0,1,1,0),
+    w=c(0.31,0.42,0.59,0.45,0.6,0.7,0.6,0.52),
+    doseGrid=seq(25,300,25),
+    placebo=FALSE,
+    ID=1L:8L,
+    cohort=1L:8L
+  )
+  model<-Effloglog(c(1.223,2.513),c(25,300),nu=c(a=1,b=0.025),data=data,c=0)
+  options<-McmcOptions(burnin=100,step=2,samples=200)
+  samples <- mcmc(
+    data=data,
+    model=model,
+    options=options,
+    rng_kind = "Mersenne-Twister",
+    rng_seed = 303012
+  )
+  actual <- fit(object=samples, model=model,data=data)
+  expect_snapshot(actual)
+
+  actual1 <- fit(object=samples, model=model,data=data, middle = median)
+  expect_snapshot(actual1)
+})
+
+test_that("fit-Samples-Effloglog fails gracefully with bad input", {
+  data<-DataDual(
+    x=c(25,50,25,50,75,300,250,150),
+    y=c(0,0,0,0,0,1,1,0),
+    w=c(0.31,0.42,0.59,0.45,0.6,0.7,0.6,0.52),
+    doseGrid=seq(25,300,25),
+    placebo=FALSE,
+    ID=1L:8L,
+    cohort=1L:8L
+  )
+  model<-Effloglog(c(1.223,2.513),c(25,300),nu=c(a=1,b=0.025),data=data,c=0)
+  options<-McmcOptions(burnin=100,step=2,samples=200)
+  samples <- mcmc(
+    data=data,
+    model=model,
+    options=options,
+    rng_kind = "Mersenne-Twister",
+    rng_seed = 303012
+  )
+  expect_error(
+    fit(object=samples, model=model,data=data, points = "NotNumeric"),
+    "Assertion on 'points' failed: Must be of type 'numeric', not 'character'."
+  )
+  expect_error(
+    fit(object=samples, model=model,data=data, quantiles = c(0.1, 99)),
+    "Assertion on 'quantiles' failed: Probability must be within \\[0, 1\\] bounds but it is not."
+  )
+  expect_error(
+    fit(object=samples, model=model,data=data, quantiles = c(0.1, 0.2, 0.3)),
+    "Assertion on 'quantiles' failed: Must have length 2, but has length 3."
+  )
+})
+
+test_that("fit-Samples-EffFlexi works correctly", {
+  data<-DataDual(
+    x=c(25,50,25,50,75,300,250,150),
+    y=c(0,0,0,0,0,1,1,0),
+    w=c(0.31,0.42,0.59,0.45,0.6,0.7,0.6,0.52),
+    doseGrid=seq(25,300,25),
+    placebo=FALSE,
+    ID=1L:8L,
+    cohort=1L:8L)
+  model<- EffFlexi(eff=c(1.223, 2.513),eff_dose=c(25,300),
+                   sigma2W=c(a=0.1,b=0.1),sigma2betaW=c(a=20,b=50),rw1 = FALSE,data=data)
+  options<-McmcOptions(
+    burnin=1000,
+    step=2,
+    samples=10000,
+    rng_kind = "Mersenne-Twister",
+    rng_seed = 574712
+  )
+  samples <- mcmc(data=data,model=model,options=options)
+
+  actual <- fit(object=samples, model=model,data=data)
+  expect_snapshot(actual)
+
+  actual1 <- fit(object=samples, model=model,data=data, middle = median)
+  expect_snapshot(actual1)
+})
+
+test_that("fit-Samples-EffFlexi fails gracefully with bad input", {
+  data<-DataDual(
+    x=c(25,50,25,50,75,300,250,150),
+    y=c(0,0,0,0,0,1,1,0),
+    w=c(0.31,0.42,0.59,0.45,0.6,0.7,0.6,0.52),
+    doseGrid=seq(25,300,25),
+    placebo=FALSE,
+    ID=1L:8L,
+    cohort=1L:8L)
+  model<- EffFlexi(eff=c(1.223, 2.513),eff_dose=c(25,300),
+                   sigma2W=c(a=0.1,b=0.1),sigma2betaW=c(a=20,b=50),rw1 = FALSE,data=data)
+  options<-McmcOptions(burnin=100,step=2,samples=200)
+  options<-McmcOptions(
+    burnin=100,
+    step=2,
+    samples=200,
+    rng_kind = "Mersenne-Twister",
+    rng_seed = 574712
+  )
+  samples <- mcmc(data=data,model=model,options=options)
+
+  expect_error(
+    fit(object=samples, model=model,data=data, points = "NotNumeric"),
+    "Assertion on 'points' failed: Must be of type 'numeric', not 'character'."
+  )
+  expect_error(
+    fit(object=samples, model=model,data=data, quantiles = c(0.1, 99)),
+    "Assertion on 'quantiles' failed: Probability must be within \\[0, 1\\] bounds but it is not."
+  )
+  expect_error(
+    fit(object=samples, model=model,data=data, quantiles = c(0.1, 0.2, 0.3)),
+    "Assertion on 'quantiles' failed: Must have length 2, but has length 3."
+  )
+})
+
+
+
+
+
+
+test_that("fitGain-Samples works correctly", {
+  data<-DataDual(
+    x=c(25,50,25,50,75,300,250,150),
+    y=c(0,0,0,0,0,1,1,0),
+    w=c(0.31,0.42,0.59,0.45,0.6,0.7,0.6,0.52),
+    doseGrid=seq(25,300,25),
+    placebo=FALSE,
+    ID=1L:8L,
+    cohort=1L:8L
+  )
+  DLEmodel<-LogisticIndepBeta(binDLE=c(1.05,1.8),DLEweights=c(3,3),DLEdose=c(25,300),data=data)
+
+  Effmodel<-Effloglog(c(1.223,2.513),c(25,300),nu=c(a=1,b=0.025),data=data,c=0)
+  options<-McmcOptions(
+    burnin=500,
+    step=2,
+    samples=5000,
+    rng_kind = "Mersenne-Twister",
+    rng_seed = 195612
+  )
+
+  data1 <- Data(
+    x=data@x,y=data@y,
+    doseGrid=data@doseGrid,
+    ID=1L:8L,
+    cohort=1L:8L
+  )
+
+  DLEsamples <- mcmc(data=data1,model=DLEmodel,options=options)
+  Effsamples <- mcmc(data=data,model=Effmodel,options=options)
+
+  actual <- fitGain(
+    DLEmodel=DLEmodel,DLEsamples=DLEsamples,
+    Effmodel=Effmodel, Effsamples=Effsamples,data=data
+  )
+
+  expect_snapshot(actual)
+})
+
+test_that("fitGain-Samples fails gracefully with bad input", {
+  data<-DataDual(
+    x=c(25,50,25,50,75,300,250,150),
+    y=c(0,0,0,0,0,1,1,0),
+    w=c(0.31,0.42,0.59,0.45,0.6,0.7,0.6,0.52),
+    doseGrid=seq(25,300,25),
+    placebo=FALSE,
+    ID=1L:8L,
+    cohort=1L:8L
+  )
+  DLEmodel<-LogisticIndepBeta(binDLE=c(1.05,1.8),DLEweights=c(3,3),DLEdose=c(25,300),data=data)
+
+  Effmodel<-Effloglog(c(1.223,2.513),c(25,300),nu=c(a=1,b=0.025),data=data,c=0)
+  options<-McmcOptions(
+    burnin=500,
+    step=2,
+    samples=5000,
+    rng_kind = "Mersenne-Twister",
+    rng_seed = 195612
+  )
+
+  data1 <- Data(
+    x=data@x,y=data@y,
+    doseGrid=data@doseGrid,
+    ID=1L:8L,
+    cohort=1L:8L
+  )
+
+  DLEsamples <- mcmc(data=data1,model=DLEmodel,options=options)
+  Effsamples <- mcmc(data=data,model=Effmodel,options=options)
+
+  expect_error(
+    fitGain(
+      DLEmodel=DLEmodel,DLEsamples=DLEsamples,
+      Effmodel=Effmodel, Effsamples=Effsamples,data=data, points = "NotNumeric"),
+    "Assertion on 'points' failed: Must be of type 'numeric', not 'character'."
+  )
+  expect_error(
+    fitGain(
+      DLEmodel=DLEmodel,DLEsamples=DLEsamples,
+      Effmodel=Effmodel, Effsamples=Effsamples,data=data, quantiles = c(0.1, 99)),
+    "Assertion on 'quantiles' failed: Probability must be within \\[0, 1\\] bounds but it is not."
+  )
+  expect_error(
+    fitGain(
+      DLEmodel=DLEmodel,DLEsamples=DLEsamples,
+      Effmodel=Effmodel, Effsamples=Effsamples,data=data, quantiles = c(0.1, 0.2, 0.3)),
+    "Assertion on 'quantiles' failed: Must have length 2, but has length 3."
+  )
+})
+
+test_that("fitGain-Samples-ModelEff works correctly", {
+  data<-DataDual(
+    x=c(25,50,25,50,75,300,250,150),
+    y=c(0,0,0,0,0,1,1,0),
+    w=c(0.31,0.42,0.59,0.45,0.6,0.7,0.6,0.52),
+    doseGrid=seq(25,300,25),
+    placebo=FALSE,
+    ID=1L:8L,
+    cohort=1L:8L
+  )
+  DLEmodel<-LogisticIndepBeta(binDLE=c(1.05,1.8),DLEweights=c(3,3),DLEdose=c(25,300),data=data)
+
+  Effmodel<-Effloglog(c(1.223,2.513),c(25,300),nu=c(a=1,b=0.025),data=data,c=0)
+  options<-McmcOptions(
+    burnin=500,
+    step=2,
+    samples=5000,
+    rng_kind = "Mersenne-Twister",
+    rng_seed = 431609
+  )
+  data1 <- Data(
+   x=data@x,
+    y=data@y,
+    doseGrid=data@doseGrid,
+    ID=1L:8L,
+    cohort=1L:8L
+  )
+
+  DLEsamples <- mcmc(data=data1,model=DLEmodel,options=options)
+  Effsamples <- mcmc(data=data,model=Effmodel,options=options)
+
+  actual <- fitGain(
+    DLEmodel=DLEmodel,DLEsamples=DLEsamples,
+    Effmodel=Effmodel, Effsamples=Effsamples,data=data
+  )
+
+  expect_snapshot(actual)
+})
+
+test_that("fitGain-Samples-ModelEff fails gracefully with bad input", {
+  data<-DataDual(
+    x=c(25,50,25,50,75,300,250,150),
+    y=c(0,0,0,0,0,1,1,0),
+    w=c(0.31,0.42,0.59,0.45,0.6,0.7,0.6,0.52),
+    doseGrid=seq(25,300,25),
+    placebo=FALSE,
+    ID=1L:8L,
+    cohort=1L:8L
+  )
+  DLEmodel<-LogisticIndepBeta(binDLE=c(1.05,1.8),DLEweights=c(3,3),DLEdose=c(25,300),data=data)
+
+  Effmodel<-Effloglog(c(1.223,2.513),c(25,300),nu=c(a=1,b=0.025),data=data,c=0)
+  options<-McmcOptions(
+    burnin=500,
+    step=2,
+    samples=5000,
+    rng_kind = "Mersenne-Twister",
+    rng_seed = 431609
+  )
+  data1 <- Data(
+    x=data@x,
+    y=data@y,
+    doseGrid=data@doseGrid,
+    ID=1L:8L,
+    cohort=1L:8L
+  )
+
+  DLEsamples <- mcmc(data=data1,model=DLEmodel,options=options)
+  Effsamples <- mcmc(data=data,model=Effmodel,options=options)
+
+  expect_error(
+    fitGain(
+      DLEmodel=DLEmodel,DLEsamples=DLEsamples,
+      Effmodel=Effmodel, Effsamples=Effsamples,data=data, points = "NotNumeric"),
+    "Assertion on 'points' failed: Must be of type 'numeric', not 'character'."
+  )
+  expect_error(
+    fitGain(
+      DLEmodel=DLEmodel,DLEsamples=DLEsamples,
+      Effmodel=Effmodel, Effsamples=Effsamples,data=data, quantiles = c(0.1, 99)),
+    "Assertion on 'quantiles' failed: Probability must be within \\[0, 1\\] bounds but it is not."
+  )
+  expect_error(
+    fitGain(
+      DLEmodel=DLEmodel,DLEsamples=DLEsamples,
+      Effmodel=Effmodel, Effsamples=Effsamples,data=data, quantiles = c(0.1, 0.2, 0.3)),
+    "Assertion on 'quantiles' failed: Must have length 2, but has length 3."
+  )
+})
 
 # nolint end

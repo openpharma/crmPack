@@ -52,25 +52,25 @@ setMethod(
 ## plots with "ggmcmc" package
 ## --------------------------------------------------
 
-##' Get specific parameter samples and produce a data.frame
-##'
-##' Here you have to specify with \code{pos} which
-##' parameter you would like to extract from the \code{\linkS4class{Samples}}
-##' object
-##'
-##' @param x the \code{\linkS4class{Samples}} object
-##' @param pos the name of the parameter
-##' @param envir for vectorial parameters, you can give the indices of the
-##' elements you would like to extract. If \code{NULL}, the whole vector samples
-##' will be returned
-##' @param mode not used
-##' @param inherits not used
-##'
-##' @return the data frame suitable for use with \code{\link[ggmcmc]{ggmcmc}}
-##'
-##' @example examples/Sample-methods-get.R
-##' @export
-##' @keywords methods
+#' Get specific parameter samples and produce a data.frame
+#'
+#' Here you have to specify with \code{pos} which
+#' parameter you would like to extract from the \code{\linkS4class{Samples}}
+#' object
+#'
+#' @param x the \code{\linkS4class{Samples}} object
+#' @param pos the name of the parameter
+#' @param envir for vectorial parameters, you can give the indices of the
+#' elements you would like to extract. If \code{NULL}, the whole vector samples
+#' will be returned
+#' @param mode not used
+#' @param inherits not used
+#'
+#' @return the data frame suitable for use with \code{\link[ggmcmc]{ggmcmc}}
+#'
+#' @example examples/Sample-methods-get.R
+#' @export
+#' @keywords methods
 setMethod("get",
   signature =
     signature(
@@ -88,8 +88,8 @@ setMethod("get",
              inherits = NULL) {
       ## check the parameter name
       #stopifnot(is.scalar(pos), pos %in% names(x))
-      checkmate::assert_scalar(pos)
-      checkmate::assert_choice(pos, names(x))
+      assert_scalar(pos)
+      assert_choice(pos, names(x))
 
       ## get the samples for this parameter
       d <- x@data[[pos]]
@@ -117,8 +117,8 @@ setMethod("get",
           if (is.null(envir)) {
             seq_along(elements)
           } else {
-            checkmate::assert_integer(envir)
-            checkmate::assert_subset(envir, seq_along(elements))
+            assert_integer(envir)
+            assert_subset(envir, seq_along(elements))
           }
 
         ## subset the data matrix and par names appropriately
@@ -159,20 +159,20 @@ setMethod("get",
 ## Get fitted curves from Samples
 ## --------------------------------------------------
 
-##' Fit method for the Samples class
-##'
-##' Note this new generic function is necessary because the \code{\link{fitted}}
-##' function only allows the first argument \code{object} to appear in the
-##' signature. But we need also other arguments in the signature.
-##'
-##' @param object the \code{\linkS4class{Samples}} object
-##' @param model the \code{\linkS4class{GeneralModel}} object
-##' @param data the \code{\linkS4class{Data}} object
-##' @param \dots unused
-##' @return the data frame with required information (see method details)
-##'
-##' @export
-##' @keywords methods
+#' Fit method for the Samples class
+#'
+#' Note this new generic function is necessary because the \code{\link{fitted}}
+#' function only allows the first argument \code{object} to appear in the
+#' signature. But we need also other arguments in the signature.
+#'
+#' @param object the \code{\linkS4class{Samples}} object
+#' @param model the \code{\linkS4class{GeneralModel}} object
+#' @param data the \code{\linkS4class{Data}} object
+#' @param \dots unused
+#' @return the data frame with required information (see method details)
+#'
+#' @export
+#' @keywords methods
 setGeneric("fit",
   def =
     function(object,
@@ -191,17 +191,17 @@ setGeneric("fit",
 ## Get fitted dose-tox curve from Samples
 ## --------------------------------------------------
 
-##' @param points at which dose levels is the fit requested? default is the dose
-##' grid
-##' @param quantiles the quantiles to be calculated (default: 0.025 and
-##' 0.975)
-##' @param middle the function for computing the middle point. Default:
-##' \code{\link{mean}}
-##'
-##' @describeIn fit This method returns a data frame with dose, middle, lower
-##' and upper quantiles for the dose-toxicity curve
-##' @example examples/Sample-methods-fit.R
-##'
+#' @param points at which dose levels is the fit requested? default is the dose
+#' grid
+#' @param quantiles the quantiles to be calculated (default: 0.025 and
+#' 0.975)
+#' @param middle the function for computing the middle point. Default:
+#' \code{\link{mean}}
+#'
+#' @describeIn fit This method returns a data frame with dose, middle, lower
+#' and upper quantiles for the dose-toxicity curve
+#' @example examples/Sample-methods-fit.R
+#'
 setMethod("fit",
   signature =
     signature(
@@ -219,11 +219,7 @@ setMethod("fit",
              ...) {
       ## some checks
       assert_probability_range(quantiles)
-      checkmate::assert_numeric(points)
-      # stopifnot(
-      #   is.probRange(quantiles),
-      #   is.numeric(points)
-      # )
+      assert_numeric(points)
 
       ## first we have to get samples from the dose-tox
       ## curve at the dose grid points.
@@ -268,12 +264,12 @@ setMethod("fit",
 ## Get fitted dose-tox and dose-biomarker curves from Samples
 ## --------------------------------------------------
 
-##' @describeIn fit This method returns a data frame with dose, and middle,
-##' lower and upper quantiles, for both the dose-tox and dose-biomarker (suffix
-##' "Biomarker") curves, for all grid points (Note that currently only the grid
-##' points can be used, because the DualEndpointRW models only allow that)
-##'
-##' @example examples/Sample-methods-fit-DualEndpoint.R
+#' @describeIn fit This method returns a data frame with dose, and middle,
+#' lower and upper quantiles, for both the dose-tox and dose-biomarker (suffix
+#' "Biomarker") curves, for all grid points (Note that currently only the grid
+#' points can be used, because the DualEndpointRW models only allow that)
+#'
+#' @example examples/Sample-methods-fit-DualEndpoint.R
 setMethod("fit",
   signature =
     signature(
@@ -333,19 +329,19 @@ setMethod("fit",
 ## Approximate posterior with (log) normal distribution
 ## --------------------------------------------------
 
-##' Approximate posterior with (log) normal distribution
-##'
-##' It is recommended to use \code{\link{set.seed}} before, in order
-##' to be able to reproduce the resulting approximating model exactly.
-##'
-##' @param object the \code{\linkS4class{Samples}} object
-##' @param model the \code{\linkS4class{GeneralModel}} object
-##' @param data the \code{\linkS4class{Data}} object
-##' @param \dots additional arguments (see methods)
-##' @return the approximation model
-##'
-##' @export
-##' @keywords methods
+#' Approximate posterior with (log) normal distribution
+#'
+#' It is recommended to use \code{\link{set.seed}} before, in order
+#' to be able to reproduce the resulting approximating model exactly.
+#'
+#' @param object the \code{\linkS4class{Samples}} object
+#' @param model the \code{\linkS4class{GeneralModel}} object
+#' @param data the \code{\linkS4class{Data}} object
+#' @param \dots additional arguments (see methods)
+#' @return the approximation model
+#'
+#' @export
+#' @keywords methods
 setGeneric("approximate",
   def =
     function(object, model, data, ...) {
@@ -358,20 +354,20 @@ setGeneric("approximate",
 
 
 
-##' @param points optional parameter, which gives the dose values at which
-##' the approximation should rely on (default: 5 values equally spaced from
-##' minimum to maximum of the dose grid)
-##' @param refDose the reference dose to be used (default: median of
-##' \code{points})
-##' @param logNormal use the log-normal prior? (not default) otherwise, the
-##' normal prior for the logistic regression coefficients is used
-##' @param verbose be verbose (progress statements and plot)? (default)
-##'
-##' @describeIn approximate Here the \dots argument can transport additional arguments for
-##' \code{\link{Quantiles2LogisticNormal}}, e.g. in order to control the
-##' approximation quality, etc.
-##'
-##' @example examples/Sample-methods-approximate.R
+#' @param points optional parameter, which gives the dose values at which
+#' the approximation should rely on (default: 5 values equally spaced from
+#' minimum to maximum of the dose grid)
+#' @param refDose the reference dose to be used (default: median of
+#' \code{points})
+#' @param logNormal use the log-normal prior? (not default) otherwise, the
+#' normal prior for the logistic regression coefficients is used
+#' @param verbose be verbose (progress statements and plot)? (default)
+#'
+#' @describeIn approximate Here the \dots argument can transport additional arguments for
+#' \code{\link{Quantiles2LogisticNormal}}, e.g. in order to control the
+#' approximation quality, etc.
+#'
+#' @example examples/Sample-methods-approximate.R
 setMethod("approximate",
   signature =
     signature(object = "Samples"),
@@ -475,21 +471,21 @@ setMethod("approximate",
 ## --------------------------------------------------
 
 
-##' Plotting dose-toxicity model fits
-##'
-##' @param x the \code{\linkS4class{Samples}} object
-##' @param y the \code{\linkS4class{GeneralModel}} object
-##' @param data the \code{\linkS4class{Data}} object
-##' @param xlab the x axis label
-##' @param ylab the y axis label
-##' @param showLegend should the legend be shown? (default)
-##' @param \dots not used
-##' @return This returns the \code{\link[ggplot2]{ggplot}}
-##' object for the dose-toxicity model fit
-##'
-##' @example examples/Sample-methods-plot.R
-##' @export
-##' @importFrom ggplot2 qplot scale_linetype_manual
+#' Plotting dose-toxicity model fits
+#'
+#' @param x the \code{\linkS4class{Samples}} object
+#' @param y the \code{\linkS4class{GeneralModel}} object
+#' @param data the \code{\linkS4class{Data}} object
+#' @param xlab the x axis label
+#' @param ylab the y axis label
+#' @param showLegend should the legend be shown? (default)
+#' @param \dots not used
+#' @return This returns the \code{\link[ggplot2]{ggplot}}
+#' object for the dose-toxicity model fit
+#'
+#' @example examples/Sample-methods-plot.R
+#' @export
+#' @importFrom ggplot2 qplot scale_linetype_manual
 setMethod("plot",
   signature =
     signature(
@@ -502,7 +498,7 @@ setMethod("plot",
              ylab = "Probability of DLT [%]",
              showLegend = TRUE) {
       ## check args
-      checkmate::assert_logical(showLegend)
+      assert_logical(showLegend)
 
       ## get the fit
       plotData <- fit(x,
@@ -577,24 +573,24 @@ setMethod("plot",
 ## --------------------------------------------------
 
 
-##' Plotting dose-toxicity and dose-biomarker model fits
-##'
-##' When we have the dual endpoint model,
-##' also the dose-biomarker fit is shown in the plot
-##'
-##' @param x the \code{\linkS4class{Samples}} object
-##' @param y the \code{\linkS4class{DualEndpoint}} object
-##' @param data the \code{\linkS4class{DataDual}} object
-##' @param extrapolate should the biomarker fit be extrapolated to the whole
-##' dose grid? (default)
-##' @param showLegend should the legend be shown? (not default)
-##' @param \dots additional arguments for the parent method
-##' \code{\link{plot,Samples,GeneralModel-method}}
-##' @return This returns the \code{\link[ggplot2]{ggplot}}
-##' object with the dose-toxicity and dose-biomarker model fits
-##'
-##' @example examples/Sample-methods-plot-DualEndpoint.R
-##' @export
+#' Plotting dose-toxicity and dose-biomarker model fits
+#'
+#' When we have the dual endpoint model,
+#' also the dose-biomarker fit is shown in the plot
+#'
+#' @param x the \code{\linkS4class{Samples}} object
+#' @param y the \code{\linkS4class{DualEndpoint}} object
+#' @param data the \code{\linkS4class{DataDual}} object
+#' @param extrapolate should the biomarker fit be extrapolated to the whole
+#' dose grid? (default)
+#' @param showLegend should the legend be shown? (not default)
+#' @param \dots additional arguments for the parent method
+#' \code{\link{plot,Samples,GeneralModel-method}}
+#' @return This returns the \code{\link[ggplot2]{ggplot}}
+#' object with the dose-toxicity and dose-biomarker model fits
+#'
+#' @example examples/Sample-methods-plot-DualEndpoint.R
+#' @export
 setMethod("plot",
   signature =
     signature(
@@ -603,7 +599,7 @@ setMethod("plot",
     ),
   def =
     function(x, y, data, extrapolate = TRUE, showLegend = FALSE, ...) {
-      checkmate::assert_logical(extrapolate)
+      assert_logical(extrapolate)
 
       ## call the superclass method, to get the toxicity plot
       plot1 <- callNextMethod(x, y, data, showLegend = showLegend, ...)
@@ -701,9 +697,9 @@ setMethod("plot",
 ## -------------------------------------------------------------------------------------
 ## Get fitted dose-tox curve from Samples for 'LogisticIndepBeta' model class
 ## ------------------------------------------------------------------------------------
-##' @describeIn fit This method return a data frame with dose, middle lower and upper quantiles
-##' for the dose-DLE curve using DLE samples for \dQuote{LogisticIndepBeta} model class
-##' @example examples/Samples-method-fitDLE.R
+#' @describeIn fit This method return a data frame with dose, middle lower and upper quantiles
+#' for the dose-DLE curve using DLE samples for \dQuote{LogisticIndepBeta} model class
+#' @example examples/Samples-method-fitDLE.R
 setMethod("fit",
   signature =
     signature(
@@ -721,11 +717,7 @@ setMethod("fit",
              ...) {
       ## some checks
       assert_probability_range(quantiles)
-      checkmate::assert_numeric(points)
-      # stopifnot(
-      #   is.probRange(quantiles),
-      #   is.numeric(points)
-      # )
+      assert_numeric(points)
 
       ## first we have to get samples from the dose-tox
       ## curve at the dose grid points.
@@ -770,9 +762,9 @@ setMethod("fit",
 ## Get fitted dose-efficacy curve from Samples for 'Effloglog' model class
 ## ------------------------------------------------------------------------------------
 
-##' @describeIn fit This method returns a data frame with dose, middle, lower, upper quantiles for
-##' the dose-efficacy curve using efficacy samples for \dQuote{Effloglog} model class
-##' @example examples/Samples-method-fitEff.R
+#' @describeIn fit This method returns a data frame with dose, middle, lower, upper quantiles for
+#' the dose-efficacy curve using efficacy samples for \dQuote{Effloglog} model class
+#' @example examples/Samples-method-fitEff.R
 setMethod("fit",
   signature =
     signature(
@@ -789,10 +781,8 @@ setMethod("fit",
              middle = mean,
              ...) {
       ## some checks
-      stopifnot(
-        is.probRange(quantiles),
-        is.numeric(points)
-      )
+      assert_probability_range(quantiles)
+      assert_numeric(points)
 
       ## first we have to get samples from the dose-tox
       ## curve at the dose grid points.
@@ -837,10 +827,10 @@ setMethod("fit",
 ## --------------------------------------------------------------------
 ## Get fitted dose-efficacy based on the Efficacy Flexible model
 ## -------------------------------------------------------------
-##' @describeIn fit This method returns a data frame with dose, middle, lower and upper
-##' quantiles for the dose-efficacy curve using efficacy samples for \dQuote{EffFlexi}
-##' model class
-##' @example examples/Samples-method-fitEffFlexi.R
+#' @describeIn fit This method returns a data frame with dose, middle, lower and upper
+#' quantiles for the dose-efficacy curve using efficacy samples for \dQuote{EffFlexi}
+#' model class
+#' @example examples/Samples-method-fitEffFlexi.R
 setMethod("fit",
   signature =
     signature(
@@ -857,10 +847,8 @@ setMethod("fit",
              middle = mean,
              ...) {
       ## some checks
-      stopifnot(
-        is.probRange(quantiles),
-        is.numeric(points)
-      )
+      assert_probability_range(quantiles)
+      assert_numeric(points)
 
       ## first we have to get samples from the dose-tox
       ## curve at the dose grid points.
@@ -905,20 +893,21 @@ setMethod("fit",
 ## ----------------------------------------------------------------
 ## Get fitted values at all dose levels from gain samples
 ## -----------------------------------------------------------------
-##' Get the fitted values for the gain values at all dose levels based on
-##' a given pseudo DLE model, DLE sample, a pseudo efficacy model, a Efficacy sample
-##' and data. This method returns a data frame with dose, middle, lower and upper quantiles
-##' of the gain value samples
-##'
-##' @param DLEmodel the DLE pseudo model of \code{\linkS4class{ModelTox}} class object
-##' @param DLEsamples the DLE samples of \code{\linkS4class{Samples}} class object
-##' @param Effmodel the efficacy pseudo model of \code{\linkS4class{ModelEff}} class object
-##' @param Effsamples the efficacy samples of \code{\linkS4class{Samples}} class object
-##' @param data the data input of \code{\linkS4class{DataDual}} class object
-##' @param \dots additional arguments for methods
-##'
-##' @export
-##' @keywords methods
+#' Get the fitted values for the gain values at all dose levels based on
+#' a given pseudo DLE model, DLE sample, a pseudo efficacy model, a Efficacy sample
+#' and data. This method returns a data frame with dose, middle, lower and upper quantiles
+#' of the gain value samples
+#'
+#' @param DLEmodel the DLE pseudo model of \code{\linkS4class{ModelTox}} class object
+#' @param DLEsamples the DLE samples of \code{\linkS4class{Samples}} class object
+#' @param Effmodel the efficacy pseudo model of \code{\linkS4class{ModelEff}} class object
+#' @param Effsamples the efficacy samples of \code{\linkS4class{Samples}} class object
+#' @param data the data input of \code{\linkS4class{DataDual}} class object
+#' @param \dots additional arguments for methods
+#'
+#' @export
+#' @keywords methods
+#' @example examples/Samples-method-fitGain.R
 setGeneric("fitGain",
   def =
     function(DLEmodel,
@@ -934,15 +923,15 @@ setGeneric("fitGain",
   valueClass = "data.frame"
 )
 
-##' @describeIn fitGain This method returns a data frame with dose, middle, lower, upper quantiles for
-##' the gain values obtained given the DLE and the efficacy samples
-##' @param points at which dose levels is the fit requested? default is the dose
-##' grid
-##' @param quantiles the quantiles to be calculated (default: 0.025 and
-##' 0.975)
-##' @param middle the function for computing the middle point. Default:
-##' \code{\link{mean}}
-##' @example examples/Samples-method-fitGain.R
+#' @describeIn fitGain This method returns a data frame with dose, middle, lower, upper quantiles for
+#' the gain values obtained given the DLE and the efficacy samples
+#' @param points at which dose levels is the fit requested? default is the dose
+#' grid
+#' @param quantiles the quantiles to be calculated (default: 0.025 and
+#' 0.975)
+#' @param middle the function for computing the middle point. Default:
+#' \code{\link{mean}}
+#' @example examples/Samples-method-fitGain.R
 setMethod("fitGain",
   signature =
     signature(
@@ -963,10 +952,8 @@ setMethod("fitGain",
              middle = mean,
              ...) {
       ## some checks
-      stopifnot(
-        is.probRange(quantiles),
-        is.numeric(points)
-      )
+      assert_probability_range(quantiles)
+      assert_numeric(points)
 
       ## first we have to get samples from the gain
       ## at the dose grid points.
@@ -1012,22 +999,22 @@ setMethod("fitGain",
 ## ---------------------------------------------------------------------------------
 ## Plot the fitted dose-DLE curve with pseudo DLE model with samples
 ## -------------------------------------------------------------------------------
-##' Plot the fitted dose-DLE curve using a \code{\linkS4class{ModelTox}} class model with samples
-##'
-##' @param x the \code{\linkS4class{Samples}} object
-##' @param y the \code{\linkS4class{ModelTox}} model class object
-##' @param data the \code{\linkS4class{Data}} object
-##' @param xlab the x axis label
-##' @param ylab the y axis label
-##' @param showLegend should the legend be shown? (default)
-##' @param \dots not used
-##' @return This returns the \code{\link[ggplot2]{ggplot}}
-##' object for the dose-DLE model fit
-##'
-##' @example examples/Samples-method-plotModelTox.R
-##' @export
-##' @keywords methods
-##' @importFrom ggplot2 qplot scale_linetype_manual
+#' Plot the fitted dose-DLE curve using a \code{\linkS4class{ModelTox}} class model with samples
+#'
+#' @param x the \code{\linkS4class{Samples}} object
+#' @param y the \code{\linkS4class{ModelTox}} model class object
+#' @param data the \code{\linkS4class{Data}} object
+#' @param xlab the x axis label
+#' @param ylab the y axis label
+#' @param showLegend should the legend be shown? (default)
+#' @param \dots not used
+#' @return This returns the \code{\link[ggplot2]{ggplot}}
+#' object for the dose-DLE model fit
+#'
+#' @example examples/Samples-method-plotModelTox.R
+#' @export
+#' @keywords methods
+#' @importFrom ggplot2 qplot scale_linetype_manual
 setMethod("plot",
   signature =
     signature(
@@ -1114,23 +1101,23 @@ setMethod("plot",
 # --------------------------------------------------------------------------------------------
 ## Plot the fitted dose-efficacy curve using a pseudo efficacy model with samples
 ## -------------------------------------------------------------------------------------------
-##' Plot the fitted dose-efficacy curve using a model from \code{\linkS4class{ModelEff}} class
-##' with samples
-##'
-##' @param x the \code{\linkS4class{Samples}} object
-##' @param y the \code{\linkS4class{ModelEff}} model class object
-##' @param data the \code{\linkS4class{Data}} object
-##' @param xlab the x axis label
-##' @param ylab the y axis label
-##' @param showLegend should the legend be shown? (default)
-##' @param \dots not used
-##' @return This returns the \code{\link[ggplot2]{ggplot}}
-##' object for the dose-efficacy model fit
-##'
-##' @example examples/Samples-method-plotModelEff.R
-##' @export
-##' @keywords methods
-##' @importFrom ggplot2 qplot scale_linetype_manual
+#' Plot the fitted dose-efficacy curve using a model from \code{\linkS4class{ModelEff}} class
+#' with samples
+#'
+#' @param x the \code{\linkS4class{Samples}} object
+#' @param y the \code{\linkS4class{ModelEff}} model class object
+#' @param data the \code{\linkS4class{Data}} object
+#' @param xlab the x axis label
+#' @param ylab the y axis label
+#' @param showLegend should the legend be shown? (default)
+#' @param \dots not used
+#' @return This returns the \code{\link[ggplot2]{ggplot}}
+#' object for the dose-efficacy model fit
+#'
+#' @example examples/Samples-method-plotModelEff.R
+#' @export
+#' @keywords methods
+#' @importFrom ggplot2 qplot scale_linetype_manual
 setMethod("plot",
   signature =
     signature(
@@ -1215,21 +1202,21 @@ setMethod("plot",
 ## ----------------------------------------------------------------------------------------
 ## Plot of fitted dose-DLE curve based on a pseudo DLE model without sample
 ## -------------------------------------------------------------------------------------
-##' Plot of the fitted dose-tox based with a given pseudo DLE model and data without samples
-##'
-##' @param x the data of \code{\linkS4class{Data}} class object
-##' @param y the model of the \code{\linkS4class{ModelTox}} class object
-##' @param xlab the x axis label
-##' @param ylab the y axis label
-##' @param showLegend should the legend be shown? (default)
-##' @param \dots not used
-##' @return This returns the \code{\link[ggplot2]{ggplot}}
-##' object for the dose-DLE model plot
-##'
-##' @example examples/Samples-method-plotModelToxNoSamples.R
-##' @export
-##' @keywords methods
-##' @importFrom ggplot2 qplot scale_linetype_manual
+#' Plot of the fitted dose-tox based with a given pseudo DLE model and data without samples
+#'
+#' @param x the data of \code{\linkS4class{Data}} class object
+#' @param y the model of the \code{\linkS4class{ModelTox}} class object
+#' @param xlab the x axis label
+#' @param ylab the y axis label
+#' @param showLegend should the legend be shown? (default)
+#' @param \dots not used
+#' @return This returns the \code{\link[ggplot2]{ggplot}}
+#' object for the dose-DLE model plot
+#'
+#' @example examples/Samples-method-plotModelToxNoSamples.R
+#' @export
+#' @keywords methods
+#' @importFrom ggplot2 qplot scale_linetype_manual
 setMethod("plot",
   signature =
     signature(
@@ -1310,21 +1297,21 @@ setMethod("plot",
 ## ---------------------------------------------------------------------------------------------
 ## Plot the fitted dose-efficacy curve given a pseudo efficacy model without samples
 ## ----------------------------------------------------------------------------------
-##' Plot of the fitted dose-efficacy based with a given pseudo efficacy model and data without samples
-##'
-##' @param x the data of \code{\linkS4class{DataDual}} class object
-##' @param y the model of the \code{\linkS4class{ModelEff}} class object
-##' @param xlab the x axis label
-##' @param ylab the y axis label
-##' @param showLegend should the legend be shown? (default)
-##' @param \dots not used
-##' @return This returns the \code{\link[ggplot2]{ggplot}}
-##' object for the dose-efficacy model plot
-##'
-##' @example examples/Samples-method-plotModelEffNoSamples.R
-##' @export
-##' @keywords methods
-##' @importFrom ggplot2 qplot scale_linetype_manual
+#' Plot of the fitted dose-efficacy based with a given pseudo efficacy model and data without samples
+#'
+#' @param x the data of \code{\linkS4class{DataDual}} class object
+#' @param y the model of the \code{\linkS4class{ModelEff}} class object
+#' @param xlab the x axis label
+#' @param ylab the y axis label
+#' @param showLegend should the legend be shown? (default)
+#' @param \dots not used
+#' @return This returns the \code{\link[ggplot2]{ggplot}}
+#' object for the dose-efficacy model plot
+#'
+#' @example examples/Samples-method-plotModelEffNoSamples.R
+#' @export
+#' @keywords methods
+#' @importFrom ggplot2 qplot scale_linetype_manual
 
 setMethod("plot",
   signature =
@@ -1381,21 +1368,21 @@ setMethod("plot",
 ## ----------------------------------------------------------------------------------------------------------
 ## Plot the gain curve using a pseudo DLE and a pseudo Efficacy model with samples
 ## ----------------------------------------------------------------------------------------------------
-##' Plot the gain curve in addition with the dose-DLE and dose-efficacy curve using a given DLE pseudo model,
-##' a DLE sample, a given efficacy pseudo model and an efficacy sample
-##'
-##' @param DLEmodel the dose-DLE model of \code{\linkS4class{ModelTox}} class object
-##' @param DLEsamples the DLE sample of \code{\linkS4class{Samples}} class object
-##' @param Effmodel the dose-efficacy model of \code{\linkS4class{ModelEff}} class object
-##' @param Effsamples the efficacy sample of of \code{\linkS4class{Samples}} class object
-##' @param data the data input of \code{\linkS4class{DataDual}} class object
-##' @param \dots not used
-##' @return This returns the \code{\link[ggplot2]{ggplot}}
-##' object for the plot
-##'
-##' @example examples/Samples-method-plotGain.R
-##' @export
-##' @keywords methods
+#' Plot the gain curve in addition with the dose-DLE and dose-efficacy curve using a given DLE pseudo model,
+#' a DLE sample, a given efficacy pseudo model and an efficacy sample
+#'
+#' @param DLEmodel the dose-DLE model of \code{\linkS4class{ModelTox}} class object
+#' @param DLEsamples the DLE sample of \code{\linkS4class{Samples}} class object
+#' @param Effmodel the dose-efficacy model of \code{\linkS4class{ModelEff}} class object
+#' @param Effsamples the efficacy sample of of \code{\linkS4class{Samples}} class object
+#' @param data the data input of \code{\linkS4class{DataDual}} class object
+#' @param \dots not used
+#' @return This returns the \code{\link[ggplot2]{ggplot}}
+#' object for the plot
+#'
+#' @example examples/Samples-method-plotGain.R
+#' @export
+#' @keywords methods
 setGeneric("plotGain",
   def =
     function(DLEmodel,
@@ -1406,7 +1393,7 @@ setGeneric("plotGain",
       standardGeneric("plotGain")
     }
 )
-##' @describeIn plotGain Standard method
+#' @describeIn plotGain Standard method
 setMethod("plotGain",
   signature =
     signature(
@@ -1488,14 +1475,14 @@ setMethod("plotGain",
 ## ----------------------------------------------------------------------------------------------------
 ## Plot the gain curve using a pseudo DLE and a pseudo Efficacy model without samples
 ## ----------------------------------------------------------------------------------------------------
-##' Plot the gain curve in addition with the dose-DLE and dose-efficacy curve using a given DLE pseudo model,
-##' and a given efficacy pseudo model
-##'
-##' @describeIn plotGain Standard method
-##'
-##' @example examples/Samples-method-plotGainNoSamples.R
-##' @export
-##' @keywords methods
+#' Plot the gain curve in addition with the dose-DLE and dose-efficacy curve using a given DLE pseudo model,
+#' and a given efficacy pseudo model
+#'
+#' @describeIn plotGain Standard method
+#'
+#' @example examples/Samples-method-plotGainNoSamples.R
+#' @export
+#' @keywords methods
 setMethod("plotGain",
   signature =
     signature(
@@ -1589,26 +1576,26 @@ setMethod("plotGain",
 ## -------------------------------------------------------------------------------
 ## Plot of the DLE and efficacy curve sides by side with samples
 ## -----------------------------------------------------------------------------
-##' Plot of the DLE and efficacy curve side by side given a DLE pseudo model,
-##' a DLE sample, an efficacy pseudo model and a given efficacy sample
-##'
-##' @param DLEmodel the pseudo DLE model of \code{\linkS4class{ModelTox}} class object
-##' @param DLEsamples the DLE samples of \code{\linkS4class{Samples}} class object
-##' @param Effmodel the pseudo efficacy model of \code{\linkS4class{ModelEff}} class object
-##' @param Effsamples the Efficacy samples of \code{\linkS4class{Samples}} class object
-##' @param data the data input of \code{\linkS4class{DataDual}} class object
-##' @param extrapolate should the biomarker fit be extrapolated to the whole
-##' dose grid? (default)
-##' @param showLegend should the legend be shown? (not default)
-##' @param \dots additional arguments for the parent method
-##' \code{\link{plot,Samples,GeneralModel-method}}
-##' @return This returns the \code{\link[ggplot2]{ggplot}}
-##' object with the dose-toxicity and dose-efficacy model fits
-##'
-##' @example examples/Samples-method-plotDualResponses.R
-##'
-##' @export
-##' @keywords methods
+#' Plot of the DLE and efficacy curve side by side given a DLE pseudo model,
+#' a DLE sample, an efficacy pseudo model and a given efficacy sample
+#'
+#' @param DLEmodel the pseudo DLE model of \code{\linkS4class{ModelTox}} class object
+#' @param DLEsamples the DLE samples of \code{\linkS4class{Samples}} class object
+#' @param Effmodel the pseudo efficacy model of \code{\linkS4class{ModelEff}} class object
+#' @param Effsamples the Efficacy samples of \code{\linkS4class{Samples}} class object
+#' @param data the data input of \code{\linkS4class{DataDual}} class object
+#' @param extrapolate should the biomarker fit be extrapolated to the whole
+#' dose grid? (default)
+#' @param showLegend should the legend be shown? (not default)
+#' @param \dots additional arguments for the parent method
+#' \code{\link{plot,Samples,GeneralModel-method}}
+#' @return This returns the \code{\link[ggplot2]{ggplot}}
+#' object with the dose-toxicity and dose-efficacy model fits
+#'
+#' @example examples/Samples-method-plotDualResponses.R
+#'
+#' @export
+#' @keywords methods
 setGeneric("plotDualResponses",
   def =
     function(DLEmodel,
@@ -1620,7 +1607,7 @@ setGeneric("plotDualResponses",
     }
 )
 
-##' @describeIn plotDualResponses function still to be documented
+#' @describeIn plotDualResponses function still to be documented
 setMethod("plotDualResponses",
   signature =
     signature(
@@ -1791,16 +1778,16 @@ setMethod("plotDualResponses",
 ## ------------------------------------------------------------------------------
 ## Plot of the DLE and efficacy curve sides by side without  samples
 ## -----------------------------------------------------------------------------
-##' Plot of the dose-DLE and dose-efficacy curve side by side given a DLE pseudo model
-##' and a given pseudo efficacy model without DLE and efficacy samples
-##'
-##' @describeIn plotDualResponses Plot the DLE and efficacy curve side by side given a DLE model
-##' and an efficacy model without any samples
-##'
-##' @example examples/Samples-method-plotDualResponsesNoSamples.R
-##'
-##' @export
-##' @keywords methods
+#' Plot of the dose-DLE and dose-efficacy curve side by side given a DLE pseudo model
+#' and a given pseudo efficacy model without DLE and efficacy samples
+#'
+#' @describeIn plotDualResponses Plot the DLE and efficacy curve side by side given a DLE model
+#' and an efficacy model without any samples
+#'
+#' @example examples/Samples-method-plotDualResponsesNoSamples.R
+#'
+#' @export
+#' @keywords methods
 setMethod("plotDualResponses",
   signature =
     signature(
@@ -1892,22 +1879,22 @@ setMethod("plotDualResponses",
 ## Get fitted DLT free survival (piecewise exponential model) based on
 ## the DA-CRM model
 ## -----------------------------------------------------------------
-##' Get the fitted DLT free survival (piecewise exponential model).
-##' This function returns a data frame with dose, middle, lower and upper
-##' quantiles for the `PEM` curve. If hazard=TRUE,
-##' @param object mcmc samples
-##' @param model the mDA-CRM model
-##' @param data the data input, a \code{\linkS4class{DataDA}} class object
-##' @param quantiles the quantiles to be calculated (default: 0.025 and
-##' 0.975)
-##' @param middle the function for computing the middle point. Default:
-##' \code{\link{mean}}
-##' @param hazard should the the hazard over time be plotted based on the `PEM`? (not default)
-##'   Otherwise ...
-##' @param \dots additional arguments for methods
-##'
-##' @export
-##' @keywords methods
+#' Get the fitted DLT free survival (piecewise exponential model).
+#' This function returns a data frame with dose, middle, lower and upper
+#' quantiles for the `PEM` curve. If hazard=TRUE,
+#' @param object mcmc samples
+#' @param model the mDA-CRM model
+#' @param data the data input, a \code{\linkS4class{DataDA}} class object
+#' @param quantiles the quantiles to be calculated (default: 0.025 and
+#' 0.975)
+#' @param middle the function for computing the middle point. Default:
+#' \code{\link{mean}}
+#' @param hazard should the the hazard over time be plotted based on the `PEM`? (not default)
+#'   Otherwise ...
+#' @param \dots additional arguments for methods
+#'
+#' @export
+#' @keywords methods
 setGeneric("fitPEM",
   def =
     function(object,
@@ -1994,9 +1981,9 @@ DLTLikelihood <- function(lambda,
 ## Get fitted DLT free survival (piecewise exponential model) based on
 ## the DA-CRM model
 ## -------------------------------------------------------------
-##' @describeIn fitPEM This method works for the \code{\linkS4class{DALogisticLogNormal}}
-##' model class.
-##' @example examples/Samples-method-fitPEM-DALogisticLogNormal.R
+#' @describeIn fitPEM This method works for the \code{\linkS4class{DALogisticLogNormal}}
+#' model class.
+#' @example examples/Samples-method-fitPEM-DALogisticLogNormal.R
 setMethod("fitPEM",
   signature =
     signature(
@@ -2074,20 +2061,20 @@ setMethod("fitPEM",
 ## --------------------------------------------------
 
 ## todo: add example file
-##' Plotting dose-toxicity model fits
-##'
-##' @param x the \code{\linkS4class{Samples}} object
-##' @param y the \code{\linkS4class{DALogisticLogNormal}} object
-##' @param data the \code{\linkS4class{DataDA}} object
-##' @param hazard see \code{\link{fitPEM}} for the explanation
-##' @param \dots not used
-##' @param showLegend should the legend be shown? (default)
-##' @return This returns the \code{\link[ggplot2]{ggplot}}
-##' object for the dose-toxicity model fit
-##'
-##' @export
-##' @importFrom ggplot2 qplot scale_linetype_manual
-##' @importFrom gridExtra arrangeGrob
+#' Plotting dose-toxicity model fits
+#'
+#' @param x the \code{\linkS4class{Samples}} object
+#' @param y the \code{\linkS4class{DALogisticLogNormal}} object
+#' @param data the \code{\linkS4class{DataDA}} object
+#' @param hazard see \code{\link{fitPEM}} for the explanation
+#' @param \dots not used
+#' @param showLegend should the legend be shown? (default)
+#' @return This returns the \code{\link[ggplot2]{ggplot}}
+#' object for the dose-toxicity model fit
+#'
+#' @export
+#' @importFrom ggplot2 qplot scale_linetype_manual
+#' @importFrom gridExtra arrangeGrob
 setMethod("plot",
   signature =
     signature(
