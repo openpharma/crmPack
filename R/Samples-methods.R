@@ -1027,7 +1027,7 @@ setMethod("plot",
              ylab = "Probability of DLT [%]",
              showLegend = TRUE) {
       ## check args
-      stopifnot(is.bool(showLegend))
+      assert_logical(showLegend)
 
 
       ## get the fit
@@ -1130,7 +1130,7 @@ setMethod("plot",
              ylab = "Expected Efficacy",
              showLegend = TRUE) {
       ## check args
-      stopifnot(is.bool(showLegend))
+      assert_logical(showLegend)
 
       ## get the fit
       plotData <- fit(x,
@@ -1229,8 +1229,7 @@ setMethod("plot",
              ylab = "Probability of DLE",
              showLegend = TRUE, ...) {
       ## check args
-
-      stopifnot(is.bool(showLegend))
+      assert_logical(showLegend)
 
       ## Make sure the right model estimates are use with the given data
       y <- update(object = y, data = x)
@@ -1325,8 +1324,7 @@ setMethod("plot",
              ylab = "Expected Efficacy",
              showLegend = TRUE) {
       ## check args
-
-      stopifnot(is.bool(showLegend))
+      assert_logical(showLegend)
       y <- update(object = y, data = x)
 
       ## create data frame
@@ -1412,8 +1410,6 @@ setMethod("plotGain",
         middle = mean
       )
 
-
-
       ## Get fitted values for mean efficacy values at all dose levels
       plotEffData <- fit(Effsamples,
         model = Effmodel,
@@ -1465,9 +1461,6 @@ setMethod("plotGain",
         xlim(c(0, max(data@doseGrid))) +
         ylab(paste("Values")) +
         ylim(c(min(gdata$y), max(gdata$y)))
-
-
-
       return(plot1)
     }
 )
@@ -1539,8 +1532,6 @@ setMethod("plotGain",
         ylab(paste("Values")) +
         ylim(c(min(gdata$y), max(gdata$y)))
 
-
-
       TD30 <- dose(x = 0.3, model = DLEmodel)
 
       Gainfun <- function(DOSE) {
@@ -1548,7 +1539,6 @@ setMethod("plotGain",
       }
       Gstar <- (optim(min(data@doseGrid), Gainfun, method = "L-BFGS-B", lower = min(data@doseGrid), upper = max(data@doseGrid))$par)
       MaxGain <- -(optim(min(data@doseGrid), Gainfun, method = "L-BFGS-B", lower = min(data@doseGrid), upper = max(data@doseGrid))$value)
-
 
       if ((TD30 < min(data@doseGrid)) | (TD30 > max(data@doseGrid))) {
         plot1 <- plot1
@@ -1558,8 +1548,6 @@ setMethod("plotGain",
           annotate("text", label = "p(DLE=0.3)", x = TD30 + 1, y = 0.2, size = 5, colour = "violet")
       }
 
-
-
       if ((Gstar < min(data@doseGrid)) | (Gstar > max(data@doseGrid))) {
         plot1 <- plot1
         print(paste("Gstar=", paste(Gstar, " not within dose Grid")))
@@ -1567,7 +1555,6 @@ setMethod("plotGain",
         plot1 <- plot1 + geom_point(data = data.frame(x = Gstar, y = MaxGain), aes(x = x, y = y), colour = "green3", shape = 17, size = 8) +
           annotate("text", label = "Max Gain", x = Gstar, y = MaxGain - 0.1, size = 5, colour = "green3")
       }
-
       return(plot1)
     }
 )
@@ -1618,7 +1605,8 @@ setMethod("plotDualResponses",
     ),
   def =
     function(DLEmodel, DLEsamples, Effmodel, Effsamples, data, extrapolate = TRUE, showLegend = FALSE, ...) {
-      stopifnot(is.bool(extrapolate))
+      assert_logical(extrapolate)
+      assert_logical(showLegend)
       ## Get Toxicity plot
       ## get the fit
 
@@ -2000,8 +1988,8 @@ setMethod("fitPEM",
              hazard = FALSE,
              ...) {
       ## some checks
-      stopifnot(is.probRange(quantiles))
-
+      assert_probability_range(quantiles)
+      assert_logical(hazard)
       ## Plot points
       points <- seq(0, data@Tmax, length = model@npiece + 1)
       ## first we have to get samples from the PEM
@@ -2018,7 +2006,7 @@ setMethod("fitPEM",
       # The PEM
       if (hazard == FALSE) {
         PEMSamples <- t(apply(object@data$lambda, 1, function(x) {
-          fit <- DLTLikelihood(x, data@Tmax)
+          fit <- crmPack:::DLTLikelihood(x, data@Tmax)
           return(fit)
         }))
       } else if (hazard == TRUE) {
@@ -2085,7 +2073,8 @@ setMethod("plot",
     function(x, y, data, hazard = FALSE, ...,
              showLegend = TRUE) {
       ## check args
-      stopifnot(is.bool(showLegend))
+      assert_logical(showLegend)
+      assert_logical(hazard)
 
       ## call the superclass method, to get the toxicity plot
       plot1 <- callNextMethod(x, y, data, showLegend = showLegend, ...)

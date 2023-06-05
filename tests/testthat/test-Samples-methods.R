@@ -720,4 +720,591 @@ test_that("fitGain-Samples-ModelEff fails gracefully with bad input", {
   )
 })
 
+test_that("Check that plot-Samples-ModelTox fails gracefully with bad input", {
+  data<-Data(
+    x=c(25,50,50,75,150,200,225,300),
+    y=c(0,0,0,0,1,1,1,1),
+    doseGrid=seq(from=25,to=300,by=25),
+    ID=1L:8L,
+    cohort=as.integer(c(1, 2, 2, 3:7))
+  )
+  model <-LogisticIndepBeta(binDLE=c(1.05,1.8),DLEweights=c(3,3),DLEdose=c(25,300),data=data)
+  options<-McmcOptions(burnin=100,step=2,samples=200)
+  samples <- mcmc(data=data,model=model,options=options)
+
+  expect_error(
+    plot(x=samples ,y=model, data=data, showLegend = "NotLogical"),
+    "Assertion on 'showLegend' failed: Must be of type 'logical', not 'character'."
+  )
+})
+
+test_that("Check that plot-Samples-ModelTox works correctly", {
+  data<-Data(
+    x=c(25,50,50,75,150,200,225,300),
+    y=c(0,0,0,0,1,1,1,1),
+    doseGrid=seq(from=25,to=300,by=25),
+    ID=1L:8L,
+    cohort=as.integer(c(1, 2, 2, 3:7))
+  )
+  model <-LogisticIndepBeta(binDLE=c(1.05,1.8),DLEweights=c(3,3),DLEdose=c(25,300),data=data)
+  options<-McmcOptions(
+    burnin=500,step=2,
+    samples=5000,
+     rng_kind = "Mersenne-Twister",
+     rng_seed = 565409
+  )
+  samples <- mcmc(data=data,model=model,options=options)
+
+  actual <- plot(x=samples ,y=model, data=data)
+  vdiffr::expect_doppelganger("plot-Samples-ModelTox", actual)
+
+  actual1 <- plot(x=samples ,y=model, data=data, showLegend = FALSE)
+  vdiffr::expect_doppelganger("plot-Samples-ModelTox_showlegend-FALSE", actual1)
+})
+
+
+
+
+
+
+
+test_that("Check that plot-Samples-ModelEff fails gracefully with bad input", {
+  data <-DataDual(
+    x=c(25,50,25,50,75,300,250,150),
+    y=c(0,0,0,0,0,1,1,0),
+    w=c(0.31,0.42,0.59,0.45,0.6,0.7,0.6,0.52),
+    doseGrid=seq(25,300,25),
+    placebo=FALSE,
+    ID=1L:8L,
+    cohort=1L:8L
+  )
+  model<-Effloglog(eff=c(1.223,2.513),eff_dose=c(25,300),nu=c(a=1,b=0.025),data=data)
+  options<-McmcOptions(
+    burnin=100,step=2,
+    samples=200,
+    rng_kind = "Mersenne-Twister",
+    rng_seed = 565409
+  )
+  samples <- mcmc(data=data,model=model,options=options)
+
+  expect_error(
+    plot(x=samples ,y=model, data=data, showLegend = "NotLogical"),
+    "Assertion on 'showLegend' failed: Must be of type 'logical', not 'character'."
+  )
+})
+
+test_that("Check that plot-Samples-ModelEff works correctly", {
+  data <-DataDual(
+    x=c(25,50,25,50,75,300,250,150),
+    y=c(0,0,0,0,0,1,1,0),
+    w=c(0.31,0.42,0.59,0.45,0.6,0.7,0.6,0.52),
+    doseGrid=seq(25,300,25),
+    placebo=FALSE,
+    ID=1L:8L,
+    cohort=1L:8L
+  )
+  model<-Effloglog(eff=c(1.223,2.513),eff_dose=c(25,300),nu=c(a=1,b=0.025),data=data)
+  options<-McmcOptions(
+    burnin=100,step=2,
+    samples=200,
+    rng_kind = "Mersenne-Twister",
+    rng_seed = 565409
+  )
+  samples <- mcmc(data=data,model=model,options=options)
+
+  actual <- plot(x=samples ,y=model, data=data)
+  vdiffr::expect_doppelganger("plot-Samples-ModelEff", actual)
+
+  actual1 <- plot(x=samples ,y=model, data=data, showLegend = FALSE)
+  vdiffr::expect_doppelganger("plot-Samples-ModelEff_showlegend-FALSE", actual1)
+})
+
+test_that("Check that plot-Samples-ModelEffloglog fails gracefully with bad input", {
+  data <-DataDual(
+    x=c(25,50,25,50,75,300,250,150),
+    y=c(0,0,0,0,0,1,1,0),
+    w=c(0.31,0.42,0.59,0.45,0.6,0.7,0.6,0.52),
+    doseGrid=seq(25,300,25),
+    placebo=FALSE,
+    ID=1L:8L,
+    cohort=1L:8L
+  )
+  model<-Effloglog(eff=c(1.223,2.513),eff_dose=c(25,300),nu=c(a=1,b=0.025),data=data)
+  options<-McmcOptions(
+    burnin=100,step=2,
+    samples=200,
+    rng_kind = "Mersenne-Twister",
+    rng_seed = 565409
+  )
+  samples <- mcmc(data=data,model=model,options=options)
+
+  expect_error(
+    plot(x=samples ,y=model, data=data, showLegend = "NotLogical"),
+    "Assertion on 'showLegend' failed: Must be of type 'logical', not 'character'."
+  )
+})
+
+test_that("Check that plot-Samples-ModelEffloglog works correctly", {
+  data <-DataDual(
+    x=c(25,50,25,50,75,300,250,150),
+    y=c(0,0,0,0,0,1,1,0),
+    w=c(0.31,0.42,0.59,0.45,0.6,0.7,0.6,0.52),
+    doseGrid=seq(25,300,25),
+    placebo=FALSE,
+    ID=1L:8L,
+    cohort=1L:8L
+  )
+  model<-Effloglog(eff=c(1.223,2.513),eff_dose=c(25,300),nu=c(a=1,b=0.025),data=data)
+  options<-McmcOptions(
+    burnin=100,step=2,
+    samples=200,
+    rng_kind = "Mersenne-Twister",
+    rng_seed = 565409
+  )
+  samples <- mcmc(data=data,model=model,options=options)
+
+  actual <- plot(x=samples ,y=model, data=data)
+  vdiffr::expect_doppelganger("plot-Samples-ModelEffloglog", actual)
+
+  actual1 <- plot(x=samples ,y=model, data=data, showLegend = FALSE)
+  vdiffr::expect_doppelganger("plot-Samples-ModelEffloglog_showlegend-FALSE", actual1)
+})
+
+test_that("Check that plot-Samples-ModelEffNoSamples fails gracefully with bad input", {
+  data<-Data(
+    x=c(25,50,50,75,100,100,225,300),
+    y=c(0,0,0,0,1,1,1,1),
+    doseGrid=seq(25,300,25),
+    ID=1L:8L,
+    cohort=1L:8L
+  )
+  model <-LogisticIndepBeta(binDLE=c(1.05,1.8),DLEweights=c(3,3),DLEdose=c(25,300),data=data)
+
+  expect_error(
+    plot(y=model, x=data, showLegend = "NotLogical"),
+    "Assertion on 'showLegend' failed: Must be of type 'logical', not 'character'."
+  )
+})
+
+test_that("Check that plot-Samples-ModelEffNoSamples works correctly", {
+  data<-Data(
+    x=c(25,50,50,75,100,100,225,300),
+    y=c(0,0,0,0,1,1,1,1),
+    doseGrid=seq(25,300,25),
+    ID=1L:8L,
+    cohort=1L:8L
+  )
+  model <-LogisticIndepBeta(binDLE=c(1.05,1.8),DLEweights=c(3,3),DLEdose=c(25,300),data=data)
+
+  actual <- plot(y=model, x=data)
+  vdiffr::expect_doppelganger("plot-Samples-ModelEffNoSamples", actual)
+
+  actual1 <- plot(y=model, x=data, showLegend = FALSE)
+  vdiffr::expect_doppelganger("plot-Samples-ModelEffNoSamples_showlegend-FALSE", actual1)
+})
+
+test_that("plotGain-ModelTox-Samples-ModelEff-Samples works correctly", {
+  data <-DataDual(
+    x=c(25,50,25,50,75,300,250,150),
+    y=c(0,0,0,0,0,1,1,0),
+    w=c(0.31,0.42,0.59,0.45,0.6,0.7,0.6,0.52),
+    doseGrid=seq(25,300,25),
+    placebo=FALSE,
+    ID=1L:8L,
+    cohort=1L:8L
+  )
+  DLEmodel<-LogisticIndepBeta(binDLE=c(1.05,1.8),DLEweights=c(3,3),DLEdose=c(25,300),data=data)
+  Effmodel<-Effloglog(eff=c(1.223,2.513),eff_dose=c(25,300),nu=c(a=1,b=0.025),data=data,const=0)
+  data1 <- Data(
+    x=data@x,
+    y=data@y,
+    doseGrid=data@doseGrid,
+    ID=1L:8L,
+    cohort=1L:8L
+  )
+  optionsDLE <- McmcOptions(
+    burnin=1000,
+    step=2,
+    samples=10000,
+    rng_kind = "Mersenne-Twister",
+    rng_seed = 114810
+  )
+  optionsTox <- McmcOptions(
+    burnin=1000,
+    step=2,
+    samples=10000,
+    rng_kind = "Mersenne-Twister",
+    rng_seed = 265310
+  )
+  DLEsamples <- mcmc(data=data1,model=DLEmodel,options=optionsDLE)
+  Effsamples <- mcmc(data=data,model=Effmodel,options=optionsTox)
+  actual <- plotGain(
+    DLEmodel=DLEmodel,DLEsamples=DLEsamples,
+    Effmodel=Effmodel,Effsamples=Effsamples,
+    data=data
+  )
+  vdiffr::expect_doppelganger("plotGain-ModelTox-Samples-ModelEff-Samples", actual)
+})
+
+
+test_that("plotGain-ModelTox-Missing-ModelEff-Missing works correctly", {
+  data <-DataDual(
+    x=c(25,50,25,50,75,300,250,150),
+    y=c(0,0,0,0,0,1,1,0),
+    w=c(0.31,0.42,0.59,0.45,0.6,0.7,0.6,0.52),
+    doseGrid=seq(25,300,25),
+    placebo=FALSE,
+    ID=1L:8L,
+    cohort=1L:8L
+  )
+  DLEmodel<-LogisticIndepBeta(binDLE=c(1.05,1.8),DLEweights=c(3,3),DLEdose=c(25,300),data=data)
+  Effmodel<-Effloglog(eff=c(1.223,2.513),eff_dose=c(25,300),nu=c(a=1,b=0.025),data=data)
+  actual <- plotGain(
+    DLEmodel=DLEmodel,
+    Effmodel=Effmodel,
+    data=data
+  )
+  vdiffr::expect_doppelganger("plotGain-ModelTox-Missing-ModelEff-Missing", actual)
+})
+
+test_that("plotDualResponses fails gracefully with bad arguments", {
+  data <-DataDual(
+    x=c(25,50,25,50,75,300,250,150),
+    y=c(0,0,0,0,0,1,1,0),
+    w=c(0.31,0.42,0.59,0.45,0.6,0.7,0.6,0.52),
+    doseGrid=seq(25,300,25),
+    placebo=FALSE,
+    ID=1L:8L,
+    cohort=1L:8L
+  )
+  DLEmodel<-LogisticIndepBeta(binDLE=c(1.05,1.8),DLEweights=c(3,3),DLEdose=c(25,300),data=data)
+  Effmodel<-Effloglog(eff=c(1.223,2.513),eff_dose=c(25,300),nu=c(a=1,b=0.025),data=data)
+  data1 <- Data(
+    x=data@x,y=data@y,
+    doseGrid=data@doseGrid,
+    ID=1L:8L,
+    cohort=1L:8L
+  )
+  optionsDLE <- McmcOptions(
+    burnin=1000,
+    step=2,
+    samples=10000,
+    rng_kind = "Mersenne-Twister",
+    rng_seed = 284211
+  )
+  optionsEff <- McmcOptions(
+    burnin=1000,
+    step=2,
+    samples=10000,
+    rng_kind = "Mersenne-Twister",
+    rng_seed = 374211
+  )
+  DLEsamples <- mcmc(data=data1,model=DLEmodel,options=optionsDLE)
+  Effsamples <- mcmc(data=data,model=Effmodel,options=optionsEff)
+  expect_error(
+    plotDualResponses(
+      DLEmodel=DLEmodel,
+      DLEsamples=DLEsamples,
+      Effmodel=Effmodel,
+      Effsamples=Effsamples,
+      data=data,
+      extrapolate="NotLogical"
+    ),
+    "Assertion on 'extrapolate' failed: Must be of type 'logical', not 'character'."
+  )
+  expect_error(
+    plotDualResponses(
+      DLEmodel=DLEmodel,
+      DLEsamples=DLEsamples,
+      Effmodel=Effmodel,
+      Effsamples=Effsamples,
+      data=data,
+      showLegend="NotLogical"
+    ),
+    "Assertion on 'showLegend' failed: Must be of type 'logical', not 'character'."
+  )
+
+})
+
+test_that("plotDualResponses works correctly", {
+  data <-DataDual(
+    x=c(25,50,25,50,75,300,250,150),
+    y=c(0,0,0,0,0,1,1,0),
+    w=c(0.31,0.42,0.59,0.45,0.6,0.7,0.6,0.52),
+    doseGrid=seq(25,300,25),
+    placebo=FALSE,
+    ID=1L:8L,
+    cohort=1L:8L
+  )
+  DLEmodel<-LogisticIndepBeta(binDLE=c(1.05,1.8),DLEweights=c(3,3),DLEdose=c(25,300),data=data)
+  Effmodel<-Effloglog(eff=c(1.223,2.513),eff_dose=c(25,300),nu=c(a=1,b=0.025),data=data)
+  data1 <- Data(
+    x=data@x,y=data@y,
+    doseGrid=data@doseGrid,
+    ID=1L:8L,
+    cohort=1L:8L
+  )
+  optionsDLE <- McmcOptions(
+    burnin=1000,
+    step=2,
+    samples=10000,
+    rng_kind = "Mersenne-Twister",
+    rng_seed = 284211
+  )
+  optionsEff <- McmcOptions(
+    burnin=1000,
+    step=2,
+    samples=10000,
+    rng_kind = "Mersenne-Twister",
+    rng_seed = 374211
+  )
+  DLEsamples <- mcmc(data=data1,model=DLEmodel,options=optionsDLE)
+  Effsamples <- mcmc(data=data,model=Effmodel,options=optionsEff)
+
+  actual <- plotDualResponses(
+    DLEmodel=DLEmodel,
+    DLEsamples=DLEsamples,
+    Effmodel=Effmodel,
+    Effsamples=Effsamples,
+    data=data
+  )
+  vdiffr::expect_doppelganger("plotDualResponses", actual)
+
+  actual1 <- plotDualResponses(
+    DLEmodel=DLEmodel,
+    DLEsamples=DLEsamples,
+    Effmodel=Effmodel,
+    Effsamples=Effsamples,
+    data=data,
+    extrapolate=FALSE
+  )
+  vdiffr::expect_doppelganger("plotDualResponses_extrapolate-FALSE", actual1)
+
+  actual2 <- plotDualResponses(
+    DLEmodel=DLEmodel,
+    DLEsamples=DLEsamples,
+    Effmodel=Effmodel,
+    Effsamples=Effsamples,
+    data=data,
+    showLegend=TRUE
+  )
+  vdiffr::expect_doppelganger("plotDualResponses_showlegend-TRUE", actual2)
+
+  actual3 <- plotDualResponses(
+    DLEmodel=DLEmodel,
+    DLEsamples=DLEsamples,
+    Effmodel=Effmodel,
+    Effsamples=Effsamples,
+    data=data,
+    showLegend=TRUE,
+    extrapolate=FALSE
+  )
+  vdiffr::expect_doppelganger("plotDualResponses_showlegend-TRUE_extrapolate-FALSE", actual3)
+})
+
+test_that("plotDualResponses-ModelTox-Missing-ModelEff-Missing works as expected", {
+  data <-DataDual(
+    x=c(25,50,25,50,75,300,250,150),
+    y=c(0,0,0,0,0,1,1,0),
+    w=c(0.31,0.42,0.59,0.45,0.6,0.7,0.6,0.52),
+    doseGrid=seq(25,300,25),
+    placebo=FALSE,
+    ID=1L:8L,
+    cohort=1L:8L
+  )
+  DLEmodel<-LogisticIndepBeta(binDLE=c(1.05,1.8),DLEweights=c(3,3),DLEdose=c(25,300),data=data)
+  Effmodel<-Effloglog(eff=c(1.223,2.513),eff_dose=c(25,300),nu=c(a=1,b=0.025),data=data)
+  actual <- plotDualResponses(
+    DLEmodel=DLEmodel,
+    Effmodel=Effmodel,
+    data=data
+  )
+  vdiffr::expect_doppelganger("plotDualResponses-ModelTox-Missing-ModelEff-Missing", actual)
+})
+
+test_that("fitPEM-Samples-DALogisticLogNormal-DataDA fails gracefully with bad input", {
+  data <- DataDA(
+    x=c(0.1, 0.5, 1.5, 3, 6, 10, 10, 10),
+    y=c(0, 0, 1, 1, 0, 0, 1, 0),
+    doseGrid=c(0.1, 0.5, 1.5, 3, 6, seq(from=10, to=80, by=2)),
+    u=c(42,30,15,5,20,25,30,60),
+    t0=c(0,15,30,40,55,70,75,85),
+    Tmax=60,
+    ID=1L:8L,
+    cohort=as.integer(c(1:5, 6, 6, 6))
+  )
+  npiece_ <- 10
+  lambda_prior<-function(k){
+    npiece_/(data@Tmax*(npiece_-k+0.5))
+  }
+  model<-DALogisticLogNormal(
+    mean=c(-0.85,1),
+    cov=matrix(c(1,-0.5,-0.5,1),nrow=2),
+    ref_dose=56,
+    npiece=npiece_,
+    l=as.numeric(t(apply(as.matrix(c(1:npiece_),1,npiece_),2,lambda_prior))),
+    c_par=2
+  )
+  options <- McmcOptions(
+    burnin=500,
+    step=2,
+    samples=5000,
+    rng_kind = "Mersenne-Twister",
+    rng_seed = 225013
+  )
+  samples <- mcmc (data,model,options)
+
+  expect_error(
+    fitted  <- fitPEM(samples,model, data, quantiles=c(35,0.975)),
+    "Assertion on 'quantiles' failed: Must be sorted."
+  )
+  expect_error(
+    fitted  <- fitPEM(samples,model, data, quantiles=c(0.025, 975)),
+    "Assertion on 'quantiles' failed: Probability must be within \\[0, 1\\] bounds but it is not."
+  )
+  expect_error(
+    fitted  <- fitPEM(samples,model, data, quantiles=c(0.025, 0.6, 975)),
+    "Assertion on 'quantiles' failed: Must have length 2, but has length 3."
+  )
+  expect_error(
+    fitted  <- fitPEM(samples,model, data, quantiles=c(0.025, 0.975), hazard = "NotLogical"),
+    "Assertion on 'hazard' failed: Must be of type 'logical', not 'character'."
+  )
+})
+
+test_that("fitPEM-Samples-DALogisticLogNormal-DataDA works correctly", {
+  data <- DataDA(
+    x=c(0.1, 0.5, 1.5, 3, 6, 10, 10, 10),
+    y=c(0, 0, 1, 1, 0, 0, 1, 0),
+    doseGrid=c(0.1, 0.5, 1.5, 3, 6, seq(from=10, to=80, by=2)),
+    u=c(42,30,15,5,20,25,30,60),
+    t0=c(0,15,30,40,55,70,75,85),
+    Tmax=60,
+    ID=1L:8L,
+    cohort=as.integer(c(1:5, 6, 6, 6))
+  )
+  npiece_ <- 10
+  lambda_prior<-function(k){
+    npiece_/(data@Tmax*(npiece_-k+0.5))
+  }
+  model<-DALogisticLogNormal(
+    mean=c(-0.85,1),
+    cov=matrix(c(1,-0.5,-0.5,1),nrow=2),
+    ref_dose=56,
+    npiece=npiece_,
+    l=as.numeric(t(apply(as.matrix(c(1:npiece_),1,npiece_),2,lambda_prior))),
+    c_par=2
+  )
+  options <- McmcOptions(
+    burnin=500,
+    step=2,
+    samples=5000,
+    rng_kind = "Mersenne-Twister",
+    rng_seed = 225013
+  )
+  samples <- mcmc (data,model,options)
+
+  actual <- fitPEM(samples, model, data)
+  expect_snapshot(actual)
+
+  actual1 <- fitPEM(samples, model, data, middle=median)
+  expect_snapshot(actual1)
+
+  actual2 <- fitPEM(samples, model, data, quantiles=c(0.2, 0.8))
+  expect_snapshot(actual2)
+
+  actual3 <- fitPEM(samples, model, data, hazard=TRUE)
+  expect_snapshot(actual3)
+})
+
+test_that("plot-Samples-DALogisticNormal fails gracefully with bad input", {
+  data <- DataDA(
+    x=c(0.1, 0.5, 1.5, 3, 6, 10, 10, 10),
+    y=c(0, 0, 1, 1, 0, 0, 1, 0),
+    doseGrid=c(0.1, 0.5, 1.5, 3, 6, seq(from=10, to=80, by=2)),
+    u=c(42,30,15,5,20,25,30,60),
+    t0=c(0,15,30,40,55,70,75,85),
+    Tmax=60,
+    ID=1L:8L,
+    cohort=1L:8L
+  )
+  npiece_ <- 10
+  lambda_prior<-function(k){
+    npiece_/(data@Tmax*(npiece_-k+0.5))
+  }
+
+  model<-DALogisticLogNormal(
+    mean=c(-0.85,1),
+    cov=matrix(c(1,-0.5,-0.5,1),nrow=2),
+    ref_dose=56,
+    npiece=npiece_,
+    l=as.numeric(t(apply(as.matrix(c(1:npiece_),1,npiece_),2,lambda_prior))),
+    c_par=2
+  )
+  options <- McmcOptions(
+    burnin=100,
+    step=2,
+    samples=1000,
+    rng_kind = "Mersenne-Twister",
+    rng_seed = 552914
+  )
+  samples <- mcmc (data,model,options)
+
+  expect_error(
+    plot(samples, model, data, showLegend="NotLogical"),
+    "Assertion on 'showLegend' failed: Must be of type 'logical', not 'character'."
+  )
+  expect_error(
+    plot(samples, model, data, hazard="NotLogical"),
+    "Assertion on 'hazard' failed: Must be of type 'logical', not 'character'."
+  )
+})
+
+test_that("plot-Samples-DALogisticNormal works correctly", {
+  data <- DataDA(
+    x=c(0.1, 0.5, 1.5, 3, 6, 10, 10, 10),
+    y=c(0, 0, 1, 1, 0, 0, 1, 0),
+    doseGrid=c(0.1, 0.5, 1.5, 3, 6, seq(from=10, to=80, by=2)),
+    u=c(42,30,15,5,20,25,30,60),
+    t0=c(0,15,30,40,55,70,75,85),
+    Tmax=60,
+    ID=1L:8L,
+    cohort=1L:8L
+  )
+  npiece_ <- 10
+  lambda_prior<-function(k){
+    npiece_/(data@Tmax*(npiece_-k+0.5))
+  }
+
+  model<-DALogisticLogNormal(
+    mean=c(-0.85,1),
+    cov=matrix(c(1,-0.5,-0.5,1),nrow=2),
+    ref_dose=56,
+    npiece=npiece_,
+    l=as.numeric(t(apply(as.matrix(c(1:npiece_),1,npiece_),2,lambda_prior))),
+    c_par=2
+  )
+  options <- McmcOptions(
+    burnin=100,
+    step=2,
+    samples=1000,
+    rng_kind = "Mersenne-Twister",
+    rng_seed = 552914
+  )
+  samples <- mcmc (data,model,options)
+
+  actual <- plot(samples, model, data)
+  vdiffr::expect_doppelganger("plot-Samples-DALogisticLogNormal", actual)
+
+  actual1 <- plot(samples, model, data, hazard=TRUE)
+  vdiffr::expect_doppelganger("plot-Samples-DALogisticLogNormal_hazard-TRUE", actual1)
+
+  actual2 <- plot(samples, model, data, showLegend=FALSE)
+  vdiffr::expect_doppelganger("plot-Samples-DALogisticLogNormal_showLegend-FALSE", actual2)
+
+  actual3 <- plot(samples, model, data, showLegend=FALSE, hazard=TRUE)
+  vdiffr::expect_doppelganger("plot-Samples-DALogisticLogNormal_hazard-TRUE_showLegend-FALSE", actual3)
+})
+
 # nolint end
+
