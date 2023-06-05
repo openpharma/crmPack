@@ -2459,7 +2459,11 @@ test_that("stopTrial works correctly for StoppingMTDdistribution", {
             model,
             data = emptyData
           )
+<<<<<<< HEAD
+          direction <- ifelse(as.logical(result), "above", "below")
+=======
           direction <- ifelse(as.logical(result), "greater than or equal to", "strictly less than")
+>>>>>>> 60469704a8c24284b238debce9626de36873b9cb
           expected <- sampledConfidence >= confidence
           if (expected != as.logical(result)) {
             print(
@@ -2634,9 +2638,7 @@ test_that("stopTrial works for StoppingTargetBiomarker", {
     rng_kind = "Mersenne-Twister",
     rng_seed = 94
   )
-  samples <- mcmc(data, model, options)
 
-  # Set-up some MCMC parameters and generate samples from the posterior
   samples <- mcmc(data, model, options)
 
   # Define the rule for dose increments and calculate the maximum dose allowed
@@ -2777,6 +2779,7 @@ test_that("stopTrial works correctly for StoppingTDCIRatio when samples are prov
           data = emptyData
         )
         direction <- ifelse(expected, "less", "greater")
+
         attr(expected, "message") <- paste0(
           "95% CI is (",
           sampledLimits[[1]],

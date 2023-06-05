@@ -1,0 +1,669 @@
+<!DOCTYPE html>
+
+<html>
+
+<head>
+
+<meta charset="utf-8" />
+<meta name="generator" content="pandoc" />
+<meta http-equiv="X-UA-Compatible" content="IE=EDGE" />
+
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+
+
+
+<title>Trial Definition</title>
+
+<script>// Pandoc 2.9 adds attributes on both header and div. We remove the former (to
+// be compatible with the behavior of Pandoc < 2.8).
+document.addEventListener('DOMContentLoaded', function(e) {
+  var hs = document.querySelectorAll("div.section[class*='level'] > :first-child");
+  var i, h, a;
+  for (i = 0; i < hs.length; i++) {
+    h = hs[i];
+    if (!/^h[1-6]$/i.test(h.tagName)) continue;  // it should be a header h1-h6
+    a = h.attributes;
+    while (a.length > 0) h.removeAttribute(a[0].name);
+  }
+});
+</script>
+
+<style type="text/css">
+code{white-space: pre-wrap;}
+span.smallcaps{font-variant: small-caps;}
+span.underline{text-decoration: underline;}
+div.column{display: inline-block; vertical-align: top; width: 50%;}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+</style>
+
+
+
+<style type="text/css">
+code {
+white-space: pre;
+}
+.sourceCode {
+overflow: visible;
+}
+</style>
+<style type="text/css" data-origin="pandoc">
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+{ counter-reset: source-line 0; }
+pre.numberSource code > span
+{ position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+{ content: counter(source-line);
+position: relative; left: -1em; text-align: right; vertical-align: baseline;
+border: none; display: inline-block;
+-webkit-touch-callout: none; -webkit-user-select: none;
+-khtml-user-select: none; -moz-user-select: none;
+-ms-user-select: none; user-select: none;
+padding: 0 4px; width: 4em;
+color: #aaaaaa;
+}
+pre.numberSource { margin-left: 3em; border-left: 1px solid #aaaaaa; padding-left: 4px; }
+div.sourceCode
+{ }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+code span.al { color: #ff0000; font-weight: bold; } 
+code span.an { color: #60a0b0; font-weight: bold; font-style: italic; } 
+code span.at { color: #7d9029; } 
+code span.bn { color: #40a070; } 
+code span.bu { color: #008000; } 
+code span.cf { color: #007020; font-weight: bold; } 
+code span.ch { color: #4070a0; } 
+code span.cn { color: #880000; } 
+code span.co { color: #60a0b0; font-style: italic; } 
+code span.cv { color: #60a0b0; font-weight: bold; font-style: italic; } 
+code span.do { color: #ba2121; font-style: italic; } 
+code span.dt { color: #902000; } 
+code span.dv { color: #40a070; } 
+code span.er { color: #ff0000; font-weight: bold; } 
+code span.ex { } 
+code span.fl { color: #40a070; } 
+code span.fu { color: #06287e; } 
+code span.im { color: #008000; font-weight: bold; } 
+code span.in { color: #60a0b0; font-weight: bold; font-style: italic; } 
+code span.kw { color: #007020; font-weight: bold; } 
+code span.op { color: #666666; } 
+code span.ot { color: #007020; } 
+code span.pp { color: #bc7a00; } 
+code span.sc { color: #4070a0; } 
+code span.ss { color: #bb6688; } 
+code span.st { color: #4070a0; } 
+code span.va { color: #19177c; } 
+code span.vs { color: #4070a0; } 
+code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } 
+</style>
+<script>
+// apply pandoc div.sourceCode style to pre.sourceCode instead
+(function() {
+  var sheets = document.styleSheets;
+  for (var i = 0; i < sheets.length; i++) {
+    if (sheets[i].ownerNode.dataset["origin"] !== "pandoc") continue;
+    try { var rules = sheets[i].cssRules; } catch (e) { continue; }
+    var j = 0;
+    while (j < rules.length) {
+      var rule = rules[j];
+      // check if there is a div.sourceCode rule
+      if (rule.type !== rule.STYLE_RULE || rule.selectorText !== "div.sourceCode") {
+        j++;
+        continue;
+      }
+      var style = rule.style.cssText;
+      // check if color or background-color is set
+      if (rule.style.color === '' && rule.style.backgroundColor === '') {
+        j++;
+        continue;
+      }
+      // replace div.sourceCode by a pre.sourceCode rule
+      sheets[i].deleteRule(j);
+      sheets[i].insertRule('pre.sourceCode{' + style + '}', j);
+    }
+  }
+})();
+</script>
+
+
+
+<style type="text/css">
+
+div.csl-bib-body { }
+div.csl-entry {
+clear: both;
+}
+.hanging div.csl-entry {
+margin-left:2em;
+text-indent:-2em;
+}
+div.csl-left-margin {
+min-width:2em;
+float:left;
+}
+div.csl-right-inline {
+margin-left:2em;
+padding-left:1em;
+}
+div.csl-indent {
+margin-left: 2em;
+}
+</style>
+
+<style type="text/css">body {
+background-color: #fff;
+margin: 1em auto;
+max-width: 700px;
+overflow: visible;
+padding-left: 2em;
+padding-right: 2em;
+font-family: "Open Sans", "Helvetica Neue", Helvetica, Arial, sans-serif;
+font-size: 14px;
+line-height: 1.35;
+}
+#TOC {
+clear: both;
+margin: 0 0 10px 10px;
+padding: 4px;
+width: 400px;
+border: 1px solid #CCCCCC;
+border-radius: 5px;
+background-color: #f6f6f6;
+font-size: 13px;
+line-height: 1.3;
+}
+#TOC .toctitle {
+font-weight: bold;
+font-size: 15px;
+margin-left: 5px;
+}
+#TOC ul {
+padding-left: 40px;
+margin-left: -1.5em;
+margin-top: 5px;
+margin-bottom: 5px;
+}
+#TOC ul ul {
+margin-left: -2em;
+}
+#TOC li {
+line-height: 16px;
+}
+table {
+margin: 1em auto;
+border-width: 1px;
+border-color: #DDDDDD;
+border-style: outset;
+border-collapse: collapse;
+}
+table th {
+border-width: 2px;
+padding: 5px;
+border-style: inset;
+}
+table td {
+border-width: 1px;
+border-style: inset;
+line-height: 18px;
+padding: 5px 5px;
+}
+table, table th, table td {
+border-left-style: none;
+border-right-style: none;
+}
+table thead, table tr.even {
+background-color: #f7f7f7;
+}
+p {
+margin: 0.5em 0;
+}
+blockquote {
+background-color: #f6f6f6;
+padding: 0.25em 0.75em;
+}
+hr {
+border-style: solid;
+border: none;
+border-top: 1px solid #777;
+margin: 28px 0;
+}
+dl {
+margin-left: 0;
+}
+dl dd {
+margin-bottom: 13px;
+margin-left: 13px;
+}
+dl dt {
+font-weight: bold;
+}
+ul {
+margin-top: 0;
+}
+ul li {
+list-style: circle outside;
+}
+ul ul {
+margin-bottom: 0;
+}
+pre, code {
+background-color: #f7f7f7;
+border-radius: 3px;
+color: #333;
+white-space: pre-wrap; 
+}
+pre {
+border-radius: 3px;
+margin: 5px 0px 10px 0px;
+padding: 10px;
+}
+pre:not([class]) {
+background-color: #f7f7f7;
+}
+code {
+font-family: Consolas, Monaco, 'Courier New', monospace;
+font-size: 85%;
+}
+p > code, li > code {
+padding: 2px 0px;
+}
+div.figure {
+text-align: center;
+}
+img {
+background-color: #FFFFFF;
+padding: 2px;
+border: 1px solid #DDDDDD;
+border-radius: 3px;
+border: 1px solid #CCCCCC;
+margin: 0 5px;
+}
+h1 {
+margin-top: 0;
+font-size: 35px;
+line-height: 40px;
+}
+h2 {
+border-bottom: 4px solid #f7f7f7;
+padding-top: 10px;
+padding-bottom: 2px;
+font-size: 145%;
+}
+h3 {
+border-bottom: 2px solid #f7f7f7;
+padding-top: 10px;
+font-size: 120%;
+}
+h4 {
+border-bottom: 1px solid #f7f7f7;
+margin-left: 8px;
+font-size: 105%;
+}
+h5, h6 {
+border-bottom: 1px solid #ccc;
+font-size: 105%;
+}
+a {
+color: #0033dd;
+text-decoration: none;
+}
+a:hover {
+color: #6666ff; }
+a:visited {
+color: #800080; }
+a:visited:hover {
+color: #BB00BB; }
+a[href^="http:"] {
+text-decoration: underline; }
+a[href^="https:"] {
+text-decoration: underline; }
+
+code > span.kw { color: #555; font-weight: bold; } 
+code > span.dt { color: #902000; } 
+code > span.dv { color: #40a070; } 
+code > span.bn { color: #d14; } 
+code > span.fl { color: #d14; } 
+code > span.ch { color: #d14; } 
+code > span.st { color: #d14; } 
+code > span.co { color: #888888; font-style: italic; } 
+code > span.ot { color: #007020; } 
+code > span.al { color: #ff0000; font-weight: bold; } 
+code > span.fu { color: #900; font-weight: bold; } 
+code > span.er { color: #a61717; background-color: #e3d2d2; } 
+</style>
+
+
+
+
+</head>
+
+<body>
+
+
+
+
+<h1 class="title toc-ignore">Trial Definition</h1>
+
+
+
+<div id="defining-the-design" class="section level2">
+<h2>Defining the design</h2>
+<p>A CRM study consists of six basic elements:</p>
+<ul>
+<li>The dose grid</li>
+<li>The dose-toxicity model</li>
+<li>The increment rule_<sup>1</sup></li>
+<li>The dose recommendation rule<sup>1</sup></li>
+<li>The cohort size<sup>1</sup></li>
+<li>The stopping rule</li>
+</ul>
+<p>1: Note that in <code>crmPack</code>, the increment, dose selection
+and cohort size rules are collectively known as the <i>escalation
+rules</i>.</p>
+<p>There are many, many possible choices for each element. In this
+introduction, we make simple choices for the value of each element.</p>
+<p>We start by loading the <code>crmPack</code> package …</p>
+<div class="sourceCode" id="cb1"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(crmPack)</span></code></pre></div>
+<p>… and defining each element in turn.</p>
+<div id="the-dose-grid" class="section level3">
+<h3>The dose grid</h3>
+<p>First, we list the doses that <em>might</em> be used during the
+trial.</p>
+<div class="sourceCode" id="cb2"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Define the dose grid.</span></span>
+<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a>empty_data <span class="ot">&lt;-</span> <span class="fu">Data</span>(<span class="at">doseGrid =</span> <span class="fu">c</span>(<span class="dv">1</span>, <span class="dv">3</span>, <span class="dv">9</span>, <span class="dv">20</span>, <span class="dv">30</span>, <span class="dv">45</span>, <span class="dv">60</span>, <span class="dv">80</span>, <span class="dv">100</span>))</span></code></pre></div>
+<p>There is no commitment to use every dose in the grid. Here we define
+a grid of 9 doses ranging between 1 and 100. <code>crmPack</code> is
+agnostic with respect to the units used to measure the doses. The only
+requirements are that the dose grid is ordered and one dimensional.</p>
+<p>Additional doses can be added whilst the trial is running. This will
+not affect the validity of the results of the trial prior to the
+addition, but will probably affect the trial’s operating
+characteristics.</p>
+</div>
+<div id="the-dose-toxicity-model" class="section level3">
+<h3>The dose toxicity model</h3>
+<p>Next, define the dose toxicity model.</p>
+<div class="sourceCode" id="cb3"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Initialize the CRM model.</span></span>
+<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a>model <span class="ot">&lt;-</span> <span class="fu">LogisticLogNormal</span>(</span>
+<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a>  <span class="at">mean =</span> <span class="fu">c</span>(<span class="sc">-</span><span class="fl">0.85</span>, <span class="dv">1</span>),</span>
+<span id="cb3-4"><a href="#cb3-4" aria-hidden="true" tabindex="-1"></a>  <span class="at">cov =</span> <span class="fu">matrix</span>(<span class="fu">c</span>(<span class="dv">1</span>, <span class="sc">-</span><span class="fl">0.5</span>, <span class="sc">-</span><span class="fl">0.5</span>, <span class="dv">1</span>), <span class="at">nrow =</span> <span class="dv">2</span>),</span>
+<span id="cb3-5"><a href="#cb3-5" aria-hidden="true" tabindex="-1"></a>  <span class="at">ref_dose =</span> <span class="dv">56</span></span>
+<span id="cb3-6"><a href="#cb3-6" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div>
+<p>In <code>crmPack</code>, the <code>LogisticLogNormal</code> class
+fits a model of the following form:</p>
+<p><span class="math display">\[log(\frac{p_i}{1 - p_i}) = \alpha +
+\beta (d_i - d^*)\]</span></p>
+<p>where <span class="math inline">\(d^*\)</span> is a reference dose
+(specified by the <code>ref_dose</code> argument to the
+<code>LogisticLogNormal</code> function above) and the prior joint
+distribution of <span class="math inline">\(\alpha\)</span> and <span class="math inline">\(\beta\)</span> is</p>
+<p><span class="math display">\[\begin{bmatrix}
+\alpha \\
+log(\beta)
+\end{bmatrix}   \sim
+N\begin{pmatrix}
+\begin{bmatrix}
+\mu_{\alpha}\\ \mu_{\beta}
+\end{bmatrix}   ,
+\begin{bmatrix}
+\sigma_{\alpha\alpha} &amp; \sigma_{\alpha\beta} \\
+\sigma_{{\beta\alpha}} &amp; \sigma_{\beta\beta}
+\end{bmatrix}   
+\end{pmatrix}.
+\]</span></p>
+<p>The mean and covariance matrices are defined by the <code>mean</code>
+and <code>cov</code> parameters to the <code>LogisticLogNormal</code>
+call. So the code above defines the prior joint distribution of <span class="math inline">\(\alpha\)</span> and <span class="math inline">\(log(\beta)\)</span> to be</p>
+<p><span class="math display">\[
+N\begin{pmatrix}
+\begin{bmatrix}
+-0.85\\0
+\end{bmatrix}   ,
+\begin{bmatrix}
+1 &amp; -0.5 \\
+-0.5 &amp; 1
+\end{bmatrix}   
+\end{pmatrix}.
+\]</span></p>
+<p>It is easy to obtain a visual representation of the prior:</p>
+<div class="sourceCode" id="cb4"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a>vignetteMcmcOptions <span class="ot">&lt;-</span> <span class="fu">McmcOptions</span>(<span class="at">burnin =</span> <span class="dv">100</span>, <span class="at">step =</span> <span class="dv">2</span>, <span class="at">samples =</span> <span class="dv">1000</span>)</span>
+<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a>prior_samples <span class="ot">&lt;-</span> <span class="fu">mcmc</span>(</span>
+<span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a>  <span class="at">data =</span> empty_data,</span>
+<span id="cb4-4"><a href="#cb4-4" aria-hidden="true" tabindex="-1"></a>  <span class="at">model =</span> model,</span>
+<span id="cb4-5"><a href="#cb4-5" aria-hidden="true" tabindex="-1"></a>  <span class="at">options =</span> vignetteMcmcOptions</span>
+<span id="cb4-6"><a href="#cb4-6" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb4-7"><a href="#cb4-7" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(prior_samples, model, empty_data)</span></code></pre></div>
+<p><img src="data:image/png;base64,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" /><!-- --></p>
+</div>
+<div id="the-escalation-rules" class="section level3">
+<h3>The escalation rules</h3>
+<div id="the-maximum-increment" class="section level4">
+<h4>The maximum increment</h4>
+<p>Now, we define the maximum possible increment between the dose used
+in current cohort and the dose used in the next, regardless of likely
+toxicity.</p>
+<div class="sourceCode" id="cb5"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Choose the rule for dose increments.</span></span>
+<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a>my_increments <span class="ot">&lt;-</span> <span class="fu">IncrementsRelative</span>(</span>
+<span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a>  <span class="at">intervals =</span> <span class="fu">c</span>(<span class="dv">0</span>, <span class="dv">30</span>),</span>
+<span id="cb5-4"><a href="#cb5-4" aria-hidden="true" tabindex="-1"></a>  <span class="at">increments =</span> <span class="fu">c</span>(<span class="dv">1</span>, <span class="fl">0.5</span>)</span>
+<span id="cb5-5"><a href="#cb5-5" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div>
+<p>The rule we have chosen here defines the maximum possible increment
+in terms of multiples of the highest dose so far administered: for doses
+greater than <code>0</code> and less than <code>20</code>, the maximum
+increment is 100 x (1 + 1)%, or 200% of the highest dose used so far.
+For doses of <code>20</code> or more, the maximum increment is 100 x (1
++ 0.5)%, or 150% of the highest dose used so far.</p>
+<p>Note that a 2-fold <em>increment</em> corresponds to a 3-fold
+<em>escalation</em>.</p>
+<p>In tabular form, based on the dose grid defined above, the maximum
+permitted escalation is</p>
+<table>
+<colgroup>
+<col width="33%" />
+<col width="33%" />
+<col width="33%" />
+</colgroup>
+<thead>
+<tr class="header">
+<th align="right">Highest dose<br>administered so far</th>
+<th align="right">Maximum permitted increment</th>
+<th align="right">Maximum permitted dose</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="right">1</td>
+<td align="right">2.0</td>
+<td align="right">3.0</td>
+</tr>
+<tr class="even">
+<td align="right">3</td>
+<td align="right">6.0</td>
+<td align="right">9.0</td>
+</tr>
+<tr class="odd">
+<td align="right">9</td>
+<td align="right">18.0</td>
+<td align="right">27.0</td>
+</tr>
+<tr class="even">
+<td align="right">20</td>
+<td align="right">40.0</td>
+<td align="right">60.0</td>
+</tr>
+<tr class="odd">
+<td align="right">30</td>
+<td align="right">45.0</td>
+<td align="right">75.0</td>
+</tr>
+<tr class="even">
+<td align="right">45</td>
+<td align="right">67.5</td>
+<td align="right">112.5</td>
+</tr>
+<tr class="odd">
+<td align="right">60</td>
+<td align="right">90.0</td>
+<td align="right">150.0</td>
+</tr>
+<tr class="even">
+<td align="right">80</td>
+<td align="right">120.0</td>
+<td align="right">200.0</td>
+</tr>
+<tr class="odd">
+<td align="right">100</td>
+<td align="right">200.0</td>
+<td align="right">Not applicable</td>
+</tr>
+</tbody>
+</table>
+<p>So, if the highest dose used so far is <code>9</code>, the highest
+dose in the dose grid that can be used in the next cohort is
+<code>20</code>, even if <code>30</code> or higher doses are deemed safe
+by the <code>NextBest</code> rule.</p>
+<p>Next, we define the rule for choosing the <em>best</em> dose for the
+<em>next</em> cohort</p>
+</div>
+<div id="the-nextbest-rule-for-recommending-the-best-dose-for-the-next-cohort" class="section level4">
+<h4>The NextBest rule for recommending the best dose for the next
+cohort</h4>
+<div class="sourceCode" id="cb6"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Choose the rule for selecting the next dose.</span></span>
+<span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a>my_next_best <span class="ot">&lt;-</span> <span class="fu">NextBestNCRM</span>(</span>
+<span id="cb6-3"><a href="#cb6-3" aria-hidden="true" tabindex="-1"></a>  <span class="at">target =</span> <span class="fu">c</span>(<span class="fl">0.2</span>, <span class="fl">0.35</span>),</span>
+<span id="cb6-4"><a href="#cb6-4" aria-hidden="true" tabindex="-1"></a>  <span class="at">overdose =</span> <span class="fu">c</span>(<span class="fl">0.35</span>, <span class="dv">1</span>),</span>
+<span id="cb6-5"><a href="#cb6-5" aria-hidden="true" tabindex="-1"></a>  <span class="at">max_overdose_prob =</span> <span class="fl">0.25</span></span>
+<span id="cb6-6"><a href="#cb6-6" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div>
+<p>Here, we choose to use Neuenschwander’s rule <span class="citation">(Neuenschwander, Branson, and Gsponer 2008)</span>, in
+which the dose for the next cohort to be the dose (amongst those doses
+that are eligible for selection according to the escalation rule) that
+has the highest posterior chance of having a probability of toxicity in
+the target range - here [0.2, 0.35) - provided that the dose’s chance of
+having a probability of toxicity in the overdose range - here [0.35,
+1.0] - is less than 0.25.</p>
+</div>
+<div id="the-cohort-size" class="section level4">
+<h4>The cohort size</h4>
+<p>Now, we define the rule for choosing the size of the next cohort.</p>
+<blockquote>
+<p>Note, the term “cohort size” is somewhat anachronistic. It is a
+hangover from the days of the 3+3 design. In the context of CRM trials,
+it is best interpreted as “the largest permitted interval between CRM
+model updates”. In a CRM trial, the model can be updated <em>at any
+time</em> and there is no mathematical need to halt recruitment to allow
+the model to be updated.</p>
+</blockquote>
+<p>We elect to define the cohort size using a compound rule. Both the
+dose to be used and the number of DLTs so far observed contribute to the
+decision. The first part of the compound rule (<code>my_size_1</code>),
+based on the dose to be used, permits the use a single patient run-in up
+to and including a dose of <code>20</code>. For doses above
+<code>20</code>, the minimum cohort size is <code>3</code>. The second
+part of the compound rule (<code>my_size_2</code>) also permits a single
+patient run-in, so long as no DLTs have so far been observed. As soon as
+the first DLT is reported, the minimum cohort size is <code>3</code>. To
+determine the <em>actual</em> size of the next cohort, the larger number
+required by the two parts of the compound rule is used.</p>
+<div class="sourceCode" id="cb7"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Choose the rule for the cohort size.</span></span>
+<span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a>my_size_1 <span class="ot">&lt;-</span> <span class="fu">CohortSizeRange</span>(</span>
+<span id="cb7-3"><a href="#cb7-3" aria-hidden="true" tabindex="-1"></a>  <span class="at">intervals =</span> <span class="fu">c</span>(<span class="dv">0</span>, <span class="dv">30</span>),</span>
+<span id="cb7-4"><a href="#cb7-4" aria-hidden="true" tabindex="-1"></a>  <span class="at">cohort_size =</span> <span class="fu">c</span>(<span class="dv">1</span>, <span class="dv">3</span>)</span>
+<span id="cb7-5"><a href="#cb7-5" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb7-6"><a href="#cb7-6" aria-hidden="true" tabindex="-1"></a>my_size_2 <span class="ot">&lt;-</span> <span class="fu">CohortSizeDLT</span>(</span>
+<span id="cb7-7"><a href="#cb7-7" aria-hidden="true" tabindex="-1"></a>  <span class="at">dlt_intervals =</span> <span class="fu">c</span>(<span class="dv">0</span>, <span class="dv">1</span>),</span>
+<span id="cb7-8"><a href="#cb7-8" aria-hidden="true" tabindex="-1"></a>  <span class="at">cohort_size =</span> <span class="fu">c</span>(<span class="dv">1</span>, <span class="dv">3</span>)</span>
+<span id="cb7-9"><a href="#cb7-9" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb7-10"><a href="#cb7-10" aria-hidden="true" tabindex="-1"></a>my_size <span class="ot">&lt;-</span> <span class="fu">maxSize</span>(my_size_1, my_size_2)</span></code></pre></div>
+<p>In other words, provided the dose is <code>20</code> or below and no
+DLTs have been observed, a single patient cohort is permitted. In all
+other cases, the required cohort size is <code>3</code>.</p>
+</div>
+</div>
+<div id="the-stopping-rules" class="section level3">
+<h3>The stopping rules</h3>
+<p>Now we create the rules that define when the trial’s objectives have
+been met (or when it should be stopped for futility).<br />
+The futility rule is the easiest to explain: if twenty patients have
+been recruited, the study should stop (<code>my_stopping_3</code>). The
+success rule requires both of the following conditions to have been
+met:</p>
+<ul>
+<li>At least three cohorts must have been treated</li>
+<li>The probability that the current estimate of the MTD is in the
+target toxicity range must be at least 0.5.</li>
+</ul>
+<p>The trial will stop of either the futility rule or <em>both</em>
+components of the success rule are satisfied.</p>
+<div class="sourceCode" id="cb8"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Choose the rule for stopping.</span></span>
+<span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a>my_stopping_1 <span class="ot">&lt;-</span> <span class="fu">StoppingMinCohorts</span>(<span class="at">nCohorts =</span> <span class="dv">3</span>)</span>
+<span id="cb8-3"><a href="#cb8-3" aria-hidden="true" tabindex="-1"></a>my_stopping_2 <span class="ot">&lt;-</span> <span class="fu">StoppingTargetProb</span>(</span>
+<span id="cb8-4"><a href="#cb8-4" aria-hidden="true" tabindex="-1"></a>  <span class="at">target =</span> <span class="fu">c</span>(<span class="fl">0.2</span>, <span class="fl">0.35</span>),</span>
+<span id="cb8-5"><a href="#cb8-5" aria-hidden="true" tabindex="-1"></a>  <span class="at">prob =</span> <span class="fl">0.5</span></span>
+<span id="cb8-6"><a href="#cb8-6" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb8-7"><a href="#cb8-7" aria-hidden="true" tabindex="-1"></a>my_stopping_3 <span class="ot">&lt;-</span> <span class="fu">StoppingMinPatients</span>(<span class="at">nPatients =</span> <span class="dv">20</span>)</span>
+<span id="cb8-8"><a href="#cb8-8" aria-hidden="true" tabindex="-1"></a>my_stopping <span class="ot">&lt;-</span> (my_stopping_1 <span class="sc">&amp;</span> my_stopping_2) <span class="sc">|</span> my_stopping_3</span></code></pre></div>
+</div>
+<div id="the-overall-trial-design" class="section level3">
+<h3>The overall trial design</h3>
+<p>Finally, we combine all six elements of the design, together with the
+starting dose, to define the trial.</p>
+<div class="sourceCode" id="cb9"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Initialize the design.</span></span>
+<span id="cb9-2"><a href="#cb9-2" aria-hidden="true" tabindex="-1"></a>design <span class="ot">&lt;-</span> <span class="fu">Design</span>(</span>
+<span id="cb9-3"><a href="#cb9-3" aria-hidden="true" tabindex="-1"></a>  <span class="at">model =</span> model,</span>
+<span id="cb9-4"><a href="#cb9-4" aria-hidden="true" tabindex="-1"></a>  <span class="at">nextBest =</span> my_next_best,</span>
+<span id="cb9-5"><a href="#cb9-5" aria-hidden="true" tabindex="-1"></a>  <span class="at">stopping =</span> my_stopping,</span>
+<span id="cb9-6"><a href="#cb9-6" aria-hidden="true" tabindex="-1"></a>  <span class="at">increments =</span> my_increments,</span>
+<span id="cb9-7"><a href="#cb9-7" aria-hidden="true" tabindex="-1"></a>  <span class="at">cohortSize =</span> my_size,</span>
+<span id="cb9-8"><a href="#cb9-8" aria-hidden="true" tabindex="-1"></a>  <span class="at">data =</span> empty_data,</span>
+<span id="cb9-9"><a href="#cb9-9" aria-hidden="true" tabindex="-1"></a>  <span class="at">startingDose =</span> <span class="dv">3</span></span>
+<span id="cb9-10"><a href="#cb9-10" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div>
+<p>We are now ready to use our trial definition, either to analyse a
+real trial or to simulate the long term operating characteristics of the
+design. These processes are described in their own vignettes <a href="trial_analysis.html">here</a> and <a href="trial_simulation.html">here</a>.</p>
+</div>
+</div>
+<div id="references" class="section level2 unnumbered">
+<h2 class="unnumbered">References</h2>
+<div id="refs" class="references csl-bib-body hanging-indent">
+<div id="ref-Neuenschwander2008" class="csl-entry">
+Neuenschwander, Beat, Michael Branson, and Thomas Gsponer. 2008.
+<span>“Critical Aspects of the Bayesian Approach to Phase i Cancer
+Trials.”</span> <em><span>Statistics in Medicine</span></em> 27 (13):
+2420–39.
+</div>
+</div>
+</div>
+
+
+
+<!-- code folding -->
+
+
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+  (function () {
+    var script = document.createElement("script");
+    script.type = "text/javascript";
+    script.src  = "https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML";
+    document.getElementsByTagName("head")[0].appendChild(script);
+  })();
+</script>
+
+</body>
+</html>
