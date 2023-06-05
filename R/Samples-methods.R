@@ -87,7 +87,7 @@ setMethod("get",
              mode = NULL,
              inherits = NULL) {
       ## check the parameter name
-      #stopifnot(is.scalar(pos), pos %in% names(x))
+      # stopifnot(is.scalar(pos), pos %in% names(x))
       assert_scalar(pos)
       assert_choice(pos, names(x))
 
