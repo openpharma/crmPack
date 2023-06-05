@@ -2860,7 +2860,7 @@ setMethod("simulate",
           )
 
           thisEffModel <- update(
-            object = object@Effmodel,
+            object = object@eff_model,
             data = thisData
           )
 

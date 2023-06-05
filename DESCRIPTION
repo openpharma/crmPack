@@ -9,9 +9,16 @@ Authors@R: c(
     person("Thomas", "Jaki", , "jaki.thomas@gmail.com", role = "aut"),
     person("Jiawen", "Zhu", , "zhu.jiawen@gene.com", role = "aut"),
     person("Ziwei", "Liao", , "ziwei.liao.fdu@gmail.com", role = "aut"),
-    person("Dimitris", "Kontos", , "dimitris.kontos@clinbay.com", role = "aut"),
+    person("Dimitris", "Kontos", , "dimitris.kontos@bayer.com", role = "aut"),
     person("Marlene", "Schulte-Goebel", , "marlene.schulte-goebel@merckgroup.com", role = "aut"),
-    person("Doug", "Kelkhoff", , "doug.kelkhoff@roche.com", role = "aut", comment = c(ORCID = "0009-0003-7845-4061"))
+    person("Doug", "Kelkhoff", , "doug.kelkhoff@roche.com", role = "aut", comment = c(ORCID = "0009-0003-7845-4061")),
+    person("Oliver", "Boix", , "oliver.boix@bayer.com", role = "aut"),
+    person("Robert", "Adams", , "robert.adams@bayer.com", role = "aut"),
+    person("Clara", "Beck", , "clara.beck@bayer.com", role = "aut"),
+    person("John", "Kirkpatrick", , "john.kirkpatrick@roche.com", role = "aut"),
+    person("F. Hoffmann-La Roche AG", role = c("cph", "fnd")),
+    person("Merck Healthcare KGaA", role = c("cph", "fnd")),
+    person("Bayer AG", role = c("cph", "fnd"))
   )
 Description: Implements a wide range of model-based dose escalation
     designs, ranging from classical and modern continual reassessment
@@ -39,7 +46,6 @@ Imports:
     magrittr,
     gridExtra,
     lifecycle,
-    magrittr,
     methods,
     mvtnorm,
     parallel,
@@ -64,8 +70,6 @@ Suggests:
 VignetteBuilder: 
     knitr
 Config/testthat/edition: 3
-Copyright: F. Hoffmann-La Roche Ltd, except Google LLC for contributions
-    by Daniel Sabanes Bove between 6 August 2018 and 31 May 2020.
 Encoding: UTF-8
 Language: en-US
 LazyLoad: yes

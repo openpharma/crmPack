@@ -693,7 +693,7 @@ than~\Sexpr{myStopping4@target_ratio}.
 <<design>>=
 design2 <- DualResponsesDesign(
   nextBest = GainNextBest, model = DLTmodel,
-  Effmodel = Effmodel, data = emptydata2,
+  eff_model = Effmodel, data = emptydata2,
   stopping = myStoppingDual,
   increments = myIncrements,
   cohortSize = mySize, startingDose = 25

@@ -15,7 +15,13 @@ test_that("nextBest-NextBestMTD returns correct next dose and plot", {
     }
   )
 
-  result <- nextBest(nb_mtd, 90, samples, model, data)
+  result <- nextBest(
+    nextBest = nb_mtd,
+    doselimit = 90,
+    samples = samples,
+    model = model,
+    data = data
+  )
   expect_identical(result$value, 75)
   vdiffr::expect_doppelganger("Plot of nextBest-NextBestMTD", result$plot)
 })
@@ -374,7 +380,7 @@ test_that("nextBest-NextBestMinDist returns expected values and plot (no doselim
   result <- nextBest(nb_md, Inf, samples, model, data)
   expect_identical(result$value, 75)
   expect_snapshot(result$probs)
-  vdiffr::expect_doppelganger("Plot of nextBest-NextBestMinDist without doselimit", result$plot)
+  vdiffr::expect_doppelganger("Plot nextBest-NextBestMinDist w/o doselimit", result$plot)
 })
 
 ## NextBestInfTheory ----
@@ -777,7 +783,7 @@ test_that("nextBest-NextBestProbMTDLTE returns correct next dose and plot (no do
   result <- nextBest(nb_prob_mtd, Inf, samples, model, data)
   expect_identical(result$value, 125)
   expect_snapshot(result$allocation)
-  vdiffr::expect_doppelganger("Plot of nextBest-NextBestProbMTDLTE without doselimit", result$plot)
+  vdiffr::expect_doppelganger("Plot nextBest-NextBestProbMTDLTE w/o doselimit", result$plot)
 })
 
 ## NextBestProbMTDMinDist ----
@@ -821,7 +827,7 @@ test_that("nextBest-NextBestProbMTDMinDist returns correct next dose and plot (n
   result <- nextBest(nb_prob_mtd, Inf, samples, model, data)
   expect_identical(result$value, 25)
   expect_snapshot(result$allocation)
-  vdiffr::expect_doppelganger("Plot of nextBest-NextBestProbMTDMinDist without doselimit", result$plot)
+  vdiffr::expect_doppelganger("Plot nextBest-NextBestProbMTDMinDist w/o doselimit", result$plot)
 })
 
 
@@ -1210,7 +1216,7 @@ test_that("maxDose-IncrementsRelativeParts throws error when part1Ladder is exce
 
 test_that("maxDose-IncrementsDoseLevels works correctly for 'last' basis_level and 1 level increase", {
   increments <- IncrementsDoseLevels(levels = 1)
-  data <- data <- Data(
+  data <- Data(
     x = c(5, 250, 100), y = c(0L, 1L, 1L), doseGrid = c(5, 100, 250, 300, 400), ID = 1:3, cohort = 1:3
   )
   result <- maxDose(increments, data = data)
@@ -1219,7 +1225,7 @@ test_that("maxDose-IncrementsDoseLevels works correctly for 'last' basis_level a
 
 test_that("maxDose-IncrementsDoseLevels works correctly for 'last' basis_level and 2 levels increase", {
   increments <- IncrementsDoseLevels(levels = 2)
-  data <- data <- Data(
+  data <- Data(
     x = c(5, 250, 100), y = c(0L, 1L, 1L), doseGrid = c(5, 100, 250, 300, 400), ID = 1:3, cohort = 1:3
   )
   result <- maxDose(increments, data = data)
@@ -1228,7 +1234,7 @@ test_that("maxDose-IncrementsDoseLevels works correctly for 'last' basis_level a
 
 test_that("maxDose-IncrementsDoseLevels works correctly for 'max' basis_level and 1 level increase", {
   increments <- IncrementsDoseLevels(levels = 1, basis_level = "max")
-  data <- data <- Data(
+  data <- Data(
     x = c(5, 250, 100), y = c(0L, 1L, 1L), doseGrid = c(5, 100, 250, 300, 400), ID = 1:3, cohort = 1:3
   )
   result <- maxDose(increments, data = data)
@@ -1237,7 +1243,7 @@ test_that("maxDose-IncrementsDoseLevels works correctly for 'max' basis_level an
 
 test_that("maxDose-IncrementsDoseLevels works correctly for 'max' basis_level and 2 levels increase", {
   increments <- IncrementsDoseLevels(levels = 2, basis_level = "max")
-  data <- data <- Data(
+  data <- Data(
     x = c(5, 250, 100), y = c(0L, 1L, 1L), doseGrid = c(5, 100, 250, 300, 400), ID = 1:3, cohort = 1:3
   )
   result <- maxDose(increments, data = data)
@@ -1246,7 +1252,7 @@ test_that("maxDose-IncrementsDoseLevels works correctly for 'max' basis_level an
 
 test_that("maxDose-IncrementsDoseLevels works correctly for 'last' basis_level and over-grid increase", {
   increments <- IncrementsDoseLevels(levels = 4)
-  data <- data <- Data(
+  data <- Data(
     x = c(5, 250, 100), y = c(0L, 1L, 1L), doseGrid = c(5, 100, 250, 300, 400), ID = 1:3, cohort = 1:3
   )
   result <- maxDose(increments, data = data)
@@ -1255,7 +1261,7 @@ test_that("maxDose-IncrementsDoseLevels works correctly for 'last' basis_level a
 
 test_that("maxDose-IncrementsDoseLevels works correctly for 'max' basis_level and over-grid increase", {
   increments <- IncrementsDoseLevels(levels = 3, basis_level = "max")
-  data <- data <- Data(
+  data <- Data(
     x = c(5, 250, 100), y = c(0L, 1L, 1L), doseGrid = c(5, 100, 250, 300, 400), ID = 1:3, cohort = 1:3
   )
   result <- maxDose(increments, data = data)
@@ -2453,7 +2459,11 @@ test_that("stopTrial works correctly for StoppingMTDdistribution", {
             model,
             data = emptyData
           )
+<<<<<<< HEAD
           direction <- ifelse(as.logical(result), "above", "below")
+=======
+          direction <- ifelse(as.logical(result), "greater than or equal to", "strictly less than")
+>>>>>>> 60469704a8c24284b238debce9626de36873b9cb
           expected <- sampledConfidence >= confidence
           if (expected != as.logical(result)) {
             print(
@@ -2628,15 +2638,7 @@ test_that("stopTrial works for StoppingTargetBiomarker", {
     rng_kind = "Mersenne-Twister",
     rng_seed = 94
   )
-  samples <- mcmc(data, model, options)
 
-  # Set-up some MCMC parameters and generate samples from the posterior
-  doseRecommendation <- nextBest(myNextBest,
-    doselimit = nextMaxDose,
-    samples = samples,
-    model = model,
-    data = data
-  )
   samples <- mcmc(data, model, options)
 
   # Define the rule for dose increments and calculate the maximum dose allowed
@@ -2777,7 +2779,8 @@ test_that("stopTrial works correctly for StoppingTDCIRatio when samples are prov
           data = emptyData
         )
         direction <- ifelse(expected, "less", "greater")
-        attr(expected, "messgae") <- paste0(
+
+        attr(expected, "message") <- paste0(
           "95% CI is (",
           sampledLimits[[1]],
           ", ",
@@ -2824,7 +2827,7 @@ test_that("stopTrial works correctly for StoppingTDCIRatio when samples are not 
           model = model,
           data = emptyData
         )
-        # TODO: messgae/message attribute not checked
+        # TODO: message attribute not checked
         expect_false(result, expected)
       }
     }
