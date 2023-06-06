@@ -1364,6 +1364,25 @@ test_that("maxDose-IncrementsMin works correctly when incr2 is minimum", {
 
 ## StoppingMTDCV ----
 
+test_that("StoppingMTDCV can handle when dose is NA", {
+  my_data <- h_get_data()
+  my_model <- h_get_logistic_kadane()
+  my_samples <- mcmc(my_data, my_model, h_get_mcmc_options(samples = 1000, burnin = 1000))
+  stopping <- StoppingMTDCV(target = 0.3, thresh_cv = 50)
+  result <- stopTrial(
+    stopping = stopping,
+    dose = NA_real_,
+    samples = my_samples,
+    model = my_model,
+    data = my_data
+  )
+  expected <- structure(
+    TRUE,
+    message = "CV of MTD is 40 % and thus below the required precision threshold of 50 %"
+  )
+  expect_identical(result, expected) # CV is 23% < 30%.
+})
+
 test_that("StoppingMTDCV works correctly if CV is below threshold", {
   my_data <- h_get_data()
   my_model <- h_get_logistic_kadane()
@@ -1403,6 +1422,29 @@ test_that("StoppingMTDCV works correctly if CV is above threshold", {
 })
 
 ## StoppingLowestDoseHSRBeta ----
+
+test_that("StoppingLowestDoseHSRBeta works correctly if next dose is NA", {
+  my_data <- h_get_data()
+  my_model <- h_get_logistic_kadane()
+  my_samples <- mcmc(my_data, my_model, h_get_mcmc_options(fixed = FALSE))
+  stopping <- StoppingLowestDoseHSRBeta(target = 0.3, prob = 0.9)
+  result <- stopTrial(
+    stopping = stopping,
+    dose = NA_real_,
+    samples = my_samples,
+    model = my_model,
+    data = my_data
+  )
+  expected <- structure(
+    FALSE,
+    message = paste(
+      "Probability that the lowest active dose of 25 being toxic",
+      "based on posterior Beta distribution using a Beta(1,1) prior",
+      "is 24% and thus below the required 90% threshold."
+    )
+  )
+  expect_identical(result, expected) # Prob being toxic is 24% < 90%.
+})
 
 test_that("StoppingLowestDoseHSRBeta works correctly if first active dose is not toxic", {
   my_data <- h_get_data()
@@ -1537,6 +1579,24 @@ test_that("StoppingLowestDoseHSRBeta works correctly if first active dose is not
 })
 
 ## StoppingSpecificDose ----
+
+test_that("StoppingSpecificDose works correctly if next dose is NA", {
+  my_samples <- h_as_samples(
+    list(alpha0 = c(1.2, 0, -0.4, -0.1, 0.9), alpha1 = c(0.7, 1.7, 1.9, 0.6, 2.8))
+  )
+  result <- stopTrial(
+    stopping = h_stopping_specific_dose(),
+    dose = NA_real_,
+    samples = my_samples,
+    model = h_get_logistic_log_normal(),
+    data = h_get_data_sr_1()
+  )
+  expected <- structure(
+    FALSE,
+    message = "Probability for target toxicity is 0 % for dose 80 and thus below the required 80 %"
+  )
+  expect_identical(result, expected)
+})
 
 test_that("StoppingSpecificDose works correctly if dose rec. differs from specific and stop crit. not met", {
   # StoppingSpecificDose works correctly if dose recommendation is not the same
