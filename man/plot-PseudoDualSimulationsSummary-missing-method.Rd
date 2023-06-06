@@ -54,7 +54,12 @@ DLEmodel <- LogisticIndepBeta(
 )
 
 ## The efficacy model of 'ModelEff' (e.g 'Effloglog') class
-Effmodel <- Effloglog(eff = c(1.223, 2.513), eff_dose = c(25, 300), nu = c(a = 1, b = 0.025), data = data)
+Effmodel <- Effloglog(
+  eff = c(1.223, 2.513),
+  eff_dose = c(25, 300),
+  nu = c(a = 1, b = 0.025),
+  data = data
+)
 
 ## The escalation rule using the 'NextBestMaxGain' class
 mynextbest <- NextBestMaxGain(
@@ -79,7 +84,7 @@ myStopping <- StoppingMinPatients(nPatients = 10)
 design <- DualResponsesDesign(
   nextBest = mynextbest,
   model = DLEmodel,
-  Effmodel = Effmodel,
+  eff_model = Effmodel,
   stopping = myStopping,
   increments = myIncrements,
   cohortSize = mySize,

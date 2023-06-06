@@ -185,7 +185,7 @@ setMethod(
         colour = "darkgreen",
         fill = "darkgreen"
       ) +
-      ylim(c(0, 100)) +
+      coord_cartesian(ylim = c(0, 100)) +
       ylab(paste("Target probability [%]"))
 
     if (is.finite(doselimit)) {
@@ -196,7 +196,8 @@ setMethod(
       p1 <- p1 +
         geom_vline(xintercept = data@doseGrid[sum(is_dose_eligible)], lwd = 1.1, lty = 2, colour = "red") +
         geom_point(
-          aes(x = next_dose, y = prob_target[is_dose_eligible][next_best_level] * 100 + 0.03),
+          data = data.frame(x = next_dose, y = prob_target[is_dose_eligible][next_best_level] * 100 + 0.03),
+          aes(x = x, y = y),
           size = 3,
           pch = 25,
           col = "red",
