@@ -2430,11 +2430,8 @@ test_that("stopTrial works correctly for StoppingMinPatients", {
 })
 
 test_that("stopTrial works correctly for StoppingMTDdistribution", {
-  # Observed data is irrelevant in this case.  provide an empty Data object
   emptyData <- Data(doseGrid = 1:5)
-  # Define a model
   model <- LogisticLogNormal(mean = c(-3, 2), cov = diag(2))
-  # Generate some samples from the model
   n_samples <- 100
   samples <- mcmc(
     emptyData,
@@ -2459,11 +2456,7 @@ test_that("stopTrial works correctly for StoppingMTDdistribution", {
             model,
             data = emptyData
           )
-<<<<<<< HEAD
-          direction <- ifelse(as.logical(result), "above", "below")
-=======
           direction <- ifelse(as.logical(result), "greater than or equal to", "strictly less than")
->>>>>>> 60469704a8c24284b238debce9626de36873b9cb
           expected <- sampledConfidence >= confidence
           if (expected != as.logical(result)) {
             print(
