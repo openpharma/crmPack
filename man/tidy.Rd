@@ -2,6 +2,25 @@
 % Please edit documentation in R/broom-methods.R
 \name{tidy}
 \alias{tidy}
+\alias{tidy,NextBest-method}
+\alias{tidy-NextBest}
+\alias{tidy,NextBestInfTheory-method}
+\alias{tidy-NextBestInfTheory}
+\alias{tidy,NextBestNCRM-method}
+\alias{tidy-NextBestNCRM}
+\alias{tidy,NextBestNCRMLoss-method}
+\alias{tidy-NextBestNCRMLoss}
+\alias{tidy,NextBestTD-method}
+\alias{tidy-NextBestTDsamples}
+\alias{tidy,NextBestTDsamples-method}
+\alias{tidy,NextBestMaxGain-method}
+\alias{tidy-NextBestMaxGain}
+\alias{tidy,NextBestMaxGainSamples-method}
+\alias{tidy-NextBestMaxGainSamples}
+\alias{tidy,NextBestDualEndpoint-method}
+\alias{tidy-NextBestDualEndpoint}
+\alias{tidy,NextBestThreePlusThree-method}
+\alias{tidy-NextBestThreePlusThree}
 \alias{tidy,CohortSize-method}
 \alias{tidy-CohortSize}
 \alias{tidy,CohortSizeMax-method}
@@ -20,10 +39,36 @@
 \alias{tidy-DataMixture}
 \alias{tidy,DataParts-method}
 \alias{tidy-DataParts}
+\alias{tidy,Design-method}
+\alias{tidy-Design}
+\alias{tidy,RuleDesign-method}
+\alias{tidy-RuleDesign}
 \alias{tidy,Increments-method}
 \alias{tidy-Increments}
 \alias{tidy,IncrementsMin-method}
 \alias{tidy-IncrementsMin}
+\alias{tidy,ModelParamsNormal-method}
+\alias{ModelParamsNormal}
+\alias{tidy,GeneralModel-method}
+\alias{tidy-GeneralModel}
+\alias{tidy,LogisticNormalMixture-method}
+\alias{tidy-LogisticNormalMixture}
+\alias{tidy,LogisticNormalFixedMixture-method}
+\alias{tidy-LogisticNormalFixedMixture}
+\alias{tidy,LogisticKadaneBetaGamma-method}
+\alias{tidy-LogisticKadaneBetaGamma}
+\alias{tidy,DualEndpoint-method}
+\alias{tidy-DualEndpoint}
+\alias{tidy,LogisticKadane-method}
+\alias{tidy-LogisticKadane}
+\alias{tidy,DALogisticLogNormal-method}
+\alias{tidy-DALogisticLogNormal}
+\alias{tidy,TITELogisticLogNormal-method}
+\alias{tidy-TITELogisticLogNormal}
+\alias{tidy,FractionalCRM-method}
+\alias{tidy-FractionalCRM}
+\alias{tidy,OneParExpNormalPrior-method}
+\alias{tidy-OneParExpNormalPrior}
 \alias{tidy,Stopping-method}
 \alias{tidy-Stopping}
 \alias{tidy,StoppingAll-method}
@@ -34,9 +79,37 @@
 \alias{tidy-StoppingHighestDose}
 \alias{tidy,StoppingList-method}
 \alias{tidy-StoppingList}
+\alias{tidy,Samples-method}
+\alias{tidy-Samples}
+\alias{tidy,McmcOptions-method}
+\alias{tidy-McmcOptions}
+\alias{tidy,Simulations-method}
+\alias{tidy-Simulations}
+\alias{tidy,DualSimulations-method}
+\alias{tidy-DualSimulations}
 \title{Conversion of crmPack objects to data.frames/tibbles}
 \usage{
 tidy(object, ...)
+
+\S4method{tidy}{NextBest}(object, ...)
+
+\S4method{tidy}{NextBestInfTheory}(object, ...)
+
+\S4method{tidy}{NextBestNCRM}(object, ...)
+
+\S4method{tidy}{NextBestNCRMLoss}(object, ...)
+
+\S4method{tidy}{NextBestTD}(object, ...)
+
+\S4method{tidy}{NextBestTDsamples}(object, ...)
+
+\S4method{tidy}{NextBestMaxGain}(object, ...)
+
+\S4method{tidy}{NextBestMaxGainSamples}(object, ...)
+
+\S4method{tidy}{NextBestDualEndpoint}(object, ...)
+
+\S4method{tidy}{NextBestThreePlusThree}(object, ...)
 
 \S4method{tidy}{CohortSize}(object, ...)
 
@@ -56,9 +129,35 @@ tidy(object, ...)
 
 \S4method{tidy}{DataParts}(object, ...)
 
-\S4method{tidy}{Increments}(object, ...)
+\S4method{tidy}{Design}(object, ...)
+
+\S4method{tidy}{RuleDesign}(object, ...)
+
+\S4method{tidy}{Increments}(object, interval_name = NA, ...)
 
 \S4method{tidy}{IncrementsMin}(object, ...)
+
+\S4method{tidy}{ModelParamsNormal}(object, param_names = c("alpha0", "alpha1"), ...)
+
+\S4method{tidy}{GeneralModel}(object, param_names = NA, ...)
+
+\S4method{tidy}{LogisticNormalMixture}(object, param_names = NA, ...)
+
+\S4method{tidy}{LogisticNormalFixedMixture}(object, ...)
+
+\S4method{tidy}{LogisticKadaneBetaGamma}(object, ...)
+
+\S4method{tidy}{DualEndpoint}(object, ...)
+
+\S4method{tidy}{LogisticKadane}(object, param_names = NA, ...)
+
+\S4method{tidy}{DALogisticLogNormal}(object, param_names = NA, ...)
+
+\S4method{tidy}{TITELogisticLogNormal}(object, param_names = NA, ...)
+
+\S4method{tidy}{FractionalCRM}(object, param_names = NA, ...)
+
+\S4method{tidy}{OneParExpNormalPrior}(object, param_names = NA, ...)
 
 \S4method{tidy}{Stopping}(object, ...)
 
@@ -69,6 +168,14 @@ tidy(object, ...)
 \S4method{tidy}{StoppingHighestDose}(object, ...)
 
 \S4method{tidy}{StoppingList}(object, ...)
+
+\S4method{tidy}{Samples}(object, ...)
+
+\S4method{tidy}{McmcOptions}(object, ...)
+
+\S4method{tidy}{Simulations}(object, ...)
+
+\S4method{tidy}{DualSimulations}(object, ...)
 }
 \arguments{
 \item{object}{(\code{DataDual})\cr the object to convert}
@@ -76,7 +183,7 @@ tidy(object, ...)
 \item{...}{not used.}
 }
 \value{
-(\code{tbl_df} or named list \link[=of `tbl_df`]{of \code{tbl_df}})
+(\code{tbl_df} or named list )
 }
 \description{
 \ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#experimental}{\figure{lifecycle-experimental.svg}{options: alt='[Experimental]'}}}{\strong{[Experimental]}}
@@ -85,22 +192,69 @@ A method that converts a crmPack S4 object to a tibble or list of tibbles,
 in the style of \code{broom::tidy()}.
 }
 \examples{
+NextBestMTD(
+  target = 0.33,
+  derive = function(mtd_samples) {
+    quantile(mtd_samples, probs = 0.25)
+  }
+) \%>\% tidy()
+
+NextBestMinDist(
+  target = 0.33
+) \%>\% tidy()
+NextBestInfTheory(
+  target = 0.3,
+  asymmetry = 1
+) \%>\% tidy()
+NextBestNCRM(
+  target = c(0.2, 0.35),
+  overdose = c(0.35, 1),
+  max_overdose_prob = 0.25
+) \%>\% tidy()
+NextBestNCRMLoss(
+  target = c(0.2, 0.35),
+  overdose = c(0.35, 0.6),
+  unacceptable = c(0.6, 1),
+  max_overdose_prob = 0.25,
+  losses = c(1, 0, 1, 2)
+) \%>\% tidy()
+NextBestMaxGainSamples(
+  prob_target_drt = 0.3,
+  prob_target_eot = 0.4
+) \%>\% tidy()
+NextBestMaxGainSamples(
+  prob_target_drt = 0.3,
+  prob_target_eot = 0.4,
+  derive = function(dose_samples) {
+    as.numeric(quantile(dose_samples, prob = 0.3))
+  },
+  mg_derive = function(dose_samples) {
+    as.numeric(quantile(dose_samples, prob = 0.5))
+  }
+) \%>\% tidy()
+NextBestDualEndpoint(
+  target = c(200, 300),
+  overdose = c(0.35, 1),
+  max_overdose_prob = 0.25,
+  target_relative = FALSE
+) \%>\% tidy()
 CohortSizeConst(3) \%>\% tidy()
-CohortSizeDLT(DLTintervals=0:2, cohortSize=2:0) \%>\% tidy()
-CohortSizeParts(sizes=c(1,3)) \%>\%  tidy()
+CohortSizeDLT(DLTintervals = 0:2, cohortSize = 2:0) \%>\% tidy()
+CohortSizeParts(sizes = c(1, 3)) \%>\% tidy()
 mySize1 <- CohortSizeRange(intervals = c(0, 10), cohortSize = c(1, 3))
-mySize2 <- CohortSizeDLT(DLTintervals=c(0, 1), cohortSize=c(1, 3))
-mySize <- CohortSizeMax(cohortSizeList=list(mySize1, mySize2))
+mySize2 <- CohortSizeDLT(DLTintervals = c(0, 1), cohortSize = c(1, 3))
+mySize <- CohortSizeMax(cohortSizeList = list(mySize1, mySize2))
 
 mySize \%>\% tidy()
 mySize <- CohortSizeRange(intervals = c(0, 10), cohortSize = c(1, 3))
 
 mySize \%>\% tidy()
-CohortSizeParts(sizes=c(1,3)) \%>\% tidy()
+CohortSizeParts(sizes = c(1, 3)) \%>\% tidy()
 d <- Data(
   doseGrid = c(1, 3, 5, 10, 15, 20, 25, 40, 50, 80, 100),
-  x=c(1, 3, 5, 10, 15),
-  y=c(0, 0, 0, 0, 1))
+  x = c(1, 3, 5, 10, 15),
+  y = c(0, 0, 0, 0, 1)
+)
 
 d \%>\% tidy()
 DataDA(
@@ -111,56 +265,156 @@ DataDA(
   y = c(0, 0, 1, 1, 0, 0, 1, 0),
   doseGrid = c(0.1, 0.5, 1.5, 3, 6, seq(from = 10, to = 80, by = 2))
 ) \%>\%
-tidy()
+  tidy()
 set.seed(123)
 
 myData <- DataDual(
-            x=c(0.1,0.5,1.5,3,6,10,10,10),
-            y=c(0,0,0,0,0,0,1,0),
-            w=rnorm(8),
-            doseGrid=c(0.1,0.5,1.5,3,6, seq(from=10,to=80,by=2))
-          )
+  x = c(0.1, 0.5, 1.5, 3, 6, 10, 10, 10),
+  y = c(0, 0, 0, 0, 0, 0, 1, 0),
+  w = rnorm(8),
+  doseGrid = c(0.1, 0.5, 1.5, 3, 6, seq(from = 10, to = 80, by = 2))
+)
 
 myData \%>\% tidy()
 d <- DataMixture(
-  xshare= c(rep(10, 4), rep(20, 4), rep(40, 4)),
-  yshare= c(rep(0L, 4), rep(0L, 4), rep(0L, 4)),
-  ID=1:3,
-  cohort=c(1, 1, 2),
-  x=c(5, 5, 10),
-  y=c(0, 0, 0),
-  doseGrid=c(5, 10, 20, 40, 80)
+  xshare = c(rep(10, 4), rep(20, 4), rep(40, 4)),
+  yshare = c(rep(0L, 4), rep(0L, 4), rep(0L, 4)),
+  ID = 1:3,
+  cohort = c(1, 1, 2),
+  x = c(5, 5, 10),
+  y = c(0, 0, 0),
+  doseGrid = c(5, 10, 20, 40, 80)
 )
 d \%>\% tidy()
-myData <- DataParts(x=c(0.1,0.5,1.5),
-y=c(0,0,0),
-doseGrid=c(0.1,0.5,1.5,3,6,
-seq(from=10,to=80,by=2)),
-part=c(1L,1L,1L),
-nextPart=1L,
-part1Ladder=c(0.1,0.5,1.5,3,6,10))
+myData <- DataParts(
+  x = c(0.1, 0.5, 1.5),
+  y = c(0, 0, 0),
+  doseGrid = c(
+    0.1, 0.5, 1.5, 3, 6,
+    seq(from = 10, to = 80, by = 2)
+  ),
+  part = c(1L, 1L, 1L),
+  nextPart = 1L,
+  part1Ladder = c(0.1, 0.5, 1.5, 3, 6, 10)
+)
 
 myData \%>\% tidy()
-IncrementsNumDoseLevels(max_levels=2) \%>\% tidy()
-IncrementsRelative(intervals=c(0, 20), increments=c(1, 0.33)) \%>\% tidy()
-IncrementsRelativeDLT(dlt_intervals=c(0, 20), increments=c(1, 0.33)) \%>\% tidy()
-IncrementsRelativeParts(dlt_start=0, clean_start=1) \%>\% tidy()
+emptydata <- Data(doseGrid = c(1, 3, 5, 10, 15, 20, 25, 40, 50, 80, 100))
+
+model <- LogisticLogNormal(
+  mean = c(-0.85, 1),
+  cov =
+    matrix(c(1, -0.5, -0.5, 1),
+      nrow = 2
+    ),
+  refDose = 56
+)
+
+myNextBest <- NextBestNCRM(
+  target = c(0.2, 0.35),
+  overdose = c(0.35, 1),
+  maxOverdoseProb = 0.25
+)
+
+mySize1 <- CohortSizeRange(
+  intervals = c(0, 30),
+  cohortSize = c(1, 3)
+)
+mySize2 <- CohortSizeDLT(
+  DLTintervals = c(0, 1),
+  cohortSize = c(1, 3)
+)
+mySize <- maxSize(mySize1, mySize2)
+
+myStopping1 <- StoppingMinCohorts(nCohorts = 3)
+myStopping2 <- StoppingTargetProb(target = c(0.2, 0.35), prob = 0.5)
+myStopping3 <- StoppingMinPatients(nPatients = 20)
+myStopping <- (myStopping1 & myStopping2) | myStopping3
+
+myIncrements <- IncrementsRelative(intervals = c(0, 20), increments = c(1, 0.33))
+
+# Initialize the design
+Design( #
+  model = model,
+  nextBest = myNextBest,
+  stopping = myStopping,
+  increments = myIncrements,
+  cohortSize = mySize,
+  data = emptydata,
+  startingDose = 3
+) \%>\% tidy()
+RuleDesign(
+  nextBest = NextBestThreePlusThree(),
+  cohortSize = CohortSizeConst(size = 3L),
+  data = Data(doseGrid = c(5, 10, 15, 25, 35, 50, 80)),
+  startingDose = 5
+) \%>\% tidy()
+IncrementsNumDoseLevels(max_levels = 2) \%>\% tidy()
+IncrementsRelative(intervals = c(0, 20), increments = c(1, 0.33)) \%>\% tidy()
+IncrementsRelativeDLT(dlt_intervals = c(0, 20), increments = c(1, 0.33)) \%>\% tidy()
+IncrementsRelativeParts(dlt_start = 0, clean_start = 1) \%>\% tidy()
 myIncrements1 <- IncrementsRelativeDLT(dlt_intervals = c(0, 1, 3), increments = c(1, 0.33, 0.2))
-myIncrements2 <- IncrementsRelative(intervals=c(0, 20), increments=c(1, 0.33))
+myIncrements2 <- IncrementsRelative(intervals = c(0, 20), increments = c(1, 0.33))
 
-myIncrements1 \%>\%  tidy()
-myIncrements2 \%>\%  tidy()
+myIncrements1 \%>\% tidy()
+myIncrements2 \%>\% tidy()
 
-IncrementsMin(increments_list=list(myIncrements1,myIncrements2)) \%>\%  tidy()
+IncrementsMin(increments_list = list(myIncrements1, myIncrements2)) \%>\% tidy()
+ModelParamsNormal(
+  mean = c(-0.85, 1),
+  cov = matrix(c(1, -0.5, -0.5, 1), nrow = 2)
+) \%>\% tidy()
+LogisticNormalFixedMixture(
+  components = list(
+    comp1 = ModelParamsNormal(
+      mean = c(-0.85, 1),
+      cov = matrix(c(1, -0.5, -0.5, 1), nrow = 2)
+    ),
+    comp2 = ModelParamsNormal(
+      mean = c(1, 1.5),
+      cov = matrix(c(1.2, -0.45, -0.45, 0.6), nrow = 2)
+    )
+  ),
+  weights = c(0.3, 0.7),
+  ref_dose = 50
+) \%>\%
+  tidy()
+LogisticKadaneBetaGamma(
+  theta = 0.3,
+  xmin = 0,
+  xmax = 7,
+  alpha = 1,
+  beta = 19,
+  shape = 0.5625,
+  rate = 0.125
+) \%>\%
+  tidy()
+LogisticKadane(theta = 0.33, xmin = 1, xmax = 200) \%>\% tidy()
+TITELogisticLogNormal(
+  mean = c(0, 1),
+  cov = diag(2),
+  ref_dose = 1,
+  weight_method = "adaptive"
+) \%>\% tidy()
+FractionalCRM(
+  skel_probs = c(0.1, 0.2, 0.3, 0.4),
+  dose_grid = c(10, 30, 50, 100),
+  sigma2 = 2
+) \%>\% tidy()
+OneParExpNormalPrior(
+  skel_probs = seq(from = 0.1, to = 0.9, length = 5),
+  dose_grid = 1:5,
+  sigma2 = 2
+) \%>\% tidy()
 StoppingCohortsNearDose(nCohorts = 3, percentage = 0.2) \%>\% tidy()
-StoppingGstarCIRatio(targetRatio=5, targetEndOfTrial=0.3) \%>\% tidy()
+StoppingGstarCIRatio(targetRatio = 5, targetEndOfTrial = 0.3) \%>\% tidy()
 StoppingMinCohorts(nCohorts = 6) \%>\% tidy()
 StoppingMinPatients(nPatients = 20) \%>\% tidy()
 StoppingMTDdistribution(target = 0.33, thresh = 0.5, prob = 0.9) \%>\% tidy()
 StoppingPatientsNearDose(nPatients = 9, percentage = 0.2) \%>\% tidy()
 StoppingTargetBiomarker(target = c(0.9, 1), prob = 0.5) \%>\% tidy()
-StoppingTargetProb(target=c(0.2, 0.35), prob=0.5) \%>\% tidy()
-StoppingTDCIRatio(targetRatio=5, targetEndOfTrial=0.3) \%>\% tidy()
+StoppingTargetProb(target = c(0.2, 0.35), prob = 0.5) \%>\% tidy()
+StoppingTDCIRatio(targetRatio = 5, targetEndOfTrial = 0.3) \%>\% tidy()
 
 #
 #
@@ -168,19 +422,171 @@ StoppingTDCIRatio(targetRatio=5, targetEndOfTrial=0.3) \%>\% tidy()
 #   tidy() \%>\%
 #   tibble::add_column(limit=c("min", "max")) \%>\%
 #   tidyr::pivot_wider(names_from=limit, values_from=target)
-myStopping1 <- StoppingMinCohorts(nCohorts=3)
-myStopping2 <- StoppingTargetProb(target=c(0.2, 0.35), prob=0.5)
-myStopping3 <- StoppingMinPatients(nPatients=20)
+myStopping1 <- StoppingMinCohorts(nCohorts = 3)
+myStopping2 <- StoppingTargetProb(target = c(0.2, 0.35), prob = 0.5)
+myStopping3 <- StoppingMinPatients(nPatients = 20)
 
-StoppingAll(stopList=c(myStopping1,myStopping2,myStopping3)) \%>\% tidy()
-myStopping1 <- StoppingMinCohorts(nCohorts=3)
-myStopping2 <- StoppingTargetProb(target=c(0.2, 0.35), prob=0.5)
-myStopping3 <- StoppingMinPatients(nPatients=20)
+StoppingAll(stopList = c(myStopping1, myStopping2, myStopping3)) \%>\% tidy()
+myStopping1 <- StoppingMinCohorts(nCohorts = 3)
+myStopping2 <- StoppingTargetProb(target = c(0.2, 0.35), prob = 0.5)
+myStopping3 <- StoppingMinPatients(nPatients = 20)
 
-StoppingAny(stopList=c(myStopping1,myStopping2,myStopping3)) \%>\%  tidy()
+StoppingAny(stopList = c(myStopping1, myStopping2, myStopping3)) \%>\% tidy()
 StoppingHighestDose() \%>\% tidy()
-myStopping1 <- StoppingMinCohorts(nCohorts=3)
-myStopping2 <- StoppingTargetProb(target=c(0.2, 0.35), prob=0.5)
-myStopping3 <- StoppingMinPatients(nPatients=20)
-StoppingList(stopList=c(myStopping1,myStopping2,myStopping3), summary=any) \%>\% tidy()
+myStopping1 <- StoppingMinCohorts(nCohorts = 3)
+myStopping2 <- StoppingTargetProb(target = c(0.2, 0.35), prob = 0.5)
+myStopping3 <- StoppingMinPatients(nPatients = 20)
+StoppingList(stopList = c(myStopping1, myStopping2, myStopping3), summary = any) \%>\% tidy()
+model <- LogisticLogNormal(
+           mean = c(-0.85, 1),
+           cov = matrix(c(1, -0.5, -0.5, 1), nrow = 2),
+           ref_dose = 56
+         )
+data <- Data(
+          x = c(0.1, 0.5, 1.5, 3, 6, 10, 10, 10),
+          y = c(0, 0, 0, 0, 0, 0, 1, 0),
+          ID = 1:8,
+          cohort = c(0, 1, 2, 3, 4, 5, 5, 5),
+          doseGrid = c(0.1, 0.5, 1.5, 3, 6, seq(from=10, to=80, by=2))
+        )
+samples <- mcmc(data, model, options)
+
+samples \%>\% tidy()
+McmcOptions(burnin=1000, step=2, samples=2000) \%>\% tidy()
+options <- McmcOptions(burnin=1000, step=2, samples=2000)
+
+model <- LogisticLogNormal(mean=c(-0.85, 1),
+                           cov= matrix(c(1, -0.5, -0.5, 1), nrow=2), ref_dose=56)
+
+data <- Data(x=c(0.1, 0.5, 1.5, 3, 6, 10, 10, 10),
+             y=c(0, 0, 0, 0, 0, 0, 1, 0),
+             ID=1:8,
+             cohort=c(0, 1, 2, 3, 4, 5, 5, 5),
+             doseGrid=c(0.1, 0.5, 1.5, 3, 6, seq(from=10, to=80, by=2)))
+
+stopping_efficacy1 <- StoppingMinCohorts(nCohorts = 3)
+stopping_efficacy2 <- StoppingTargetProb(target = c(0.2, 0.35), prob = 0.5)
+stopping_futility <- StoppingMinPatients(nPatients = 40)
+trial_stopping <- (stopping_efficacy1 & stopping_efficacy2) | stopping_futility
+
+cohort_size <- CohortSizeConst(size = 3)
+
+next_best <- NextBestNCRM(
+  target = c(0.2, 0.35),
+  overdose = c(0.35, 1),
+  max_overdose_prob = 0.25
+)
+
+increments <- IncrementsRelative(intervals = c(0, 50, 200),increments = c(2, 1.33, 0.67))
+
+empty_data <- Data(doseGrid=seq(from=25, to=300, by=25))
+
+model <- LogisticLogNormal(
+  mean = c(-0.85, 1),
+  cov  =matrix(c(1, -0.5, -0.5, 1), nrow = 2),
+  ref_dose = 150
+)
+
+design <- Design(
+  model = model,
+  nextBest = next_best,
+  stopping = trial_stopping,
+  increments = increments,
+  cohortSize = cohort_size,
+  data = empty_data,
+  startingDose = 50
+)
+
+truth <- function(dose) {
+  probFunction(model, alpha0 = -2, alpha1 = 10)(dose)
+}
+
+simulations <- simulate(
+  design,
+  args = NULL,
+  truth = truth,
+  nsim = 5,
+  mcmcOptions = options,
+  parallel = FALSE
+)
+
+simulations \%>\% tidy()
+emptydata <- DataDual(doseGrid = c(1, 3, 5, 10, 15, 20, 25, 40, 50, 80, 100))
+
+# Initialize the CRM model
+model <- DualEndpointRW(mean = c(0, 1),
+                        cov = matrix(c(1, 0, 0, 1), nrow=2),
+                        sigma2betaW = 0.01,
+                        sigma2W = c(a=0.1, b=0.1),
+                        use_log_dose=TRUE,
+                        ref_dose=2,
+                        rho = c(a=1, b=1),
+                        rw1 = TRUE)
+
+# Choose the rule for selecting the next dose
+myNextBest <- NextBestDualEndpoint(target=c(0.9, 1),
+                                   overdose=c(0.35, 1),
+                                   max_overdose_prob=0.25)
+
+# Choose the rule for the cohort-size
+mySize1 <- CohortSizeRange(intervals=c(0, 30),
+                           cohort_size=c(1, 3))
+mySize2 <- CohortSizeDLT(dlt_intervals=c(0, 1),
+                         cohort_size=c(1, 3))
+mySize <- maxSize(mySize1, mySize2)
+
+# Choose the rule for stopping
+myStopping4 <- StoppingTargetBiomarker(target=c(0.9, 1),
+                                       prob=0.5)
+myStopping <- myStopping4 | StoppingMinPatients(10)
+
+# Choose the rule for dose increments
+myIncrements <- IncrementsRelative(intervals=c(0, 20),
+                                   increments=c(1, 0.33))
+
+# Initialize the design
+design <- DualDesign(model = model,
+                     data = emptydata,
+                     nextBest = myNextBest,
+                     stopping = myStopping,
+                     increments = myIncrements,
+                     cohortSize = mySize,
+                     startingDose = 3)
+
+# define scenarios for the TRUE toxicity and efficacy profiles
+betaMod <- function (dose, e0, eMax, delta1, delta2, scal)
+{
+  maxDens <- (delta1^delta1) * (delta2^delta2)/((delta1 + delta2)^(delta1 + delta2))
+  dose <- dose/scal
+  e0 + eMax/maxDens * (dose^delta1) * (1 - dose)^delta2
+}
+
+trueBiomarker <- function(dose)
+{
+  betaMod(dose, e0=0.2, eMax=0.6, delta1=5, delta2=5 * 0.5 / 0.5, scal=100)
+}
+
+trueTox <- function(dose)
+{
+  pnorm((dose-60)/10)
+}
+
+
+
+simulations <- simulate(design,
+                   trueTox=trueTox,
+                   trueBiomarker=trueBiomarker,
+                   sigma2W=0.01,
+                   rho=0,
+                   nsim=5,
+                   parallel=FALSE,
+                   seed=3,
+                   startingDose=6,
+                   mcmcOptions =
+                     McmcOptions(burnin=100,
+                                 step=1,
+                                 samples=300))
+
+simulations \%>\% tidy()
+
 }
