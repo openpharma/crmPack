@@ -1796,7 +1796,7 @@ setMethod("|",
 setGeneric(
   name = "stopTrial",
   def = function(stopping, dose, samples, model, data, ...) {
-      standardGeneric("stopTrial")
+    standardGeneric("stopTrial")
   },
   valueClass = "logical"
 )

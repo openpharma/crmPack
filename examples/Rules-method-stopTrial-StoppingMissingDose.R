@@ -64,7 +64,8 @@ my_stopping <- StoppingAny(
   stop_list = c(
     StoppingMinPatients(nPatients = 16),
     StoppingMissingDose()
-  ))
+  )
+)
 
 # Evaluate if to stop the trial.
 stopTrial(
