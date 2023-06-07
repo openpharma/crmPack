@@ -171,7 +171,7 @@ setMethod(
       )
       data@doseGrid[is_dose_eligible][next_best_level]
     } else {
-      NA
+      NA_real_
     }
 
     # Build plots, first for the target probability.
@@ -337,7 +337,7 @@ setMethod("nextBest",
       next_best_level <- which.min(posterior_loss[is_dose_eligible])
       data@doseGrid[is_dose_eligible][next_best_level]
     } else {
-      NA
+      NA_real_
     }
 
     # Build plot.
@@ -471,7 +471,7 @@ setMethod(
       )
       data@doseGrid[is_dose_eligible][next_dose_level]
     } else {
-      NA
+      NA_real_
     }
 
     # Build plots, first for the target probability.
@@ -1765,56 +1765,76 @@ setMethod("|",
     }
 )
 
+# nolint end
 
+# Stopping ----
 
-## --------------------------------------------------
-## Stop the trial?
-## --------------------------------------------------
+## generic ----
 
-##' Stop the trial?
-##'
-##' This function returns whether to stop the trial.
-##'
-##' @param stopping The rule, an object of class
-##' \code{\linkS4class{Stopping}}
-##' @param dose the recommended next best dose
-##' @param samples the \code{\linkS4class{Samples}} object
-##' @param model The model input, an object of class \code{\linkS4class{GeneralModel}}
-##' @param data The data input, an object of class \code{\linkS4class{Data}}
-##' @param \dots additional arguments
-##'
-##' @return logical value: \code{TRUE} if the trial can be stopped, \code{FALSE}
-##' otherwise. It should have an attribute \code{message} which gives the reason
-##' for the decision.
-##'
-##' @note If the recommended next best dose is `NA` or the placebo dose, then
-##' the trial always stops, independent of the concrete `stopping` rule used.
-##'
-##' @export
-##' @example examples/Rules-method-CombiningStoppingRulesAndOr.R
-##' @keywords methods
-setGeneric("stopTrial",
-  def =
-    function(stopping, dose, samples, model, data, ...) {
-      ## if the recommended next dose is NA,
-      ## stop in any case.
-      if (is.na(dose)) {
-        return(structure(TRUE,
-          message = "Recommended next best dose is NA"
-        ))
-      } else if (data@placebo && dose == min(data@doseGrid)) {
-        return(structure(TRUE,
-          message = "Recommended next best dose is placebo dose"
-        ))
-      }
-
-      ## there should be no default method,
-      ## therefore just forward to next method!
+#' Stop the trial?
+#'
+#' @description `r lifecycle::badge("stable")`
+#'
+#' This function returns whether to stop the trial.
+#'
+#' @param stopping (`Stopping`)\cr the rule for stopping the trial.
+#' @param dose the recommended next best dose.
+#' @param samples (`Samples`)\cr the mcmc samples.
+#' @param model (`GeneralModel`)\cr the model.
+#' @param data (`Data`)\cr input data.
+#' @param ... additional arguments without method dispatch.
+#'
+#' @return logical value: `TRUE` if the trial can be stopped, `FALSE`
+#' otherwise. It should have an attribute `message` which gives the reason
+#' for the decision.
+#'
+#' @note If the recommended next best dose is `NA` or the placebo dose, then
+#' the trial always stops, independent of the concrete `stopping` rule used.
+#'
+#' @export
+#' @example examples/Rules-method-CombiningStoppingRulesAndOr.R
+setGeneric(
+  name = "stopTrial",
+  def = function(stopping, dose, samples, model, data, ...) {
       standardGeneric("stopTrial")
-    },
+  },
   valueClass = "logical"
 )
 
+## StoppingMissingDose ----
+
+#' @describeIn stopTrial Stop based on value returned by next best dose.
+#'
+#' @description `r lifecycle::badge("experimental")`
+#'
+#' @example examples/Rules-method-stopTrial-StoppingMissingDose.R
+#'
+setMethod(
+  f = "stopTrial",
+  signature = signature(
+    stopping = "StoppingMissingDose",
+    dose = "numeric",
+    samples = "ANY",
+    model = "ANY",
+    data = "Data"
+  ),
+  def = function(stopping, dose, samples, model, data, ...) {
+    do_stop <- is.na(dose) || (data@placebo && dose == min(data@doseGrid))
+
+    msg <- paste(
+      "Recommended next best dose is",
+      ifelse(
+        do_stop,
+        ifelse(data@placebo && dose == min(data@doseGrid), "placebo dose", "NA"),
+        "an actual dose"
+      )
+    )
+
+    structure(do_stop, message = msg)
+  }
+)
+
+# nolint start
 
 ## --------------------------------------------------
 ## Stopping based on multiple stopping rules
@@ -2056,7 +2076,11 @@ setMethod("stopTrial",
       upper <- (100 + stopping@percentage) / 100 * dose
 
       ## how many patients lie there?
-      nPatients <- sum((data@x >= lower) & (data@x <= upper))
+      nPatients <- ifelse(
+        is.na(dose),
+        0,
+        sum((data@x >= lower) & (data@x <= upper))
+      )
 
       ## so can we stop?
       doStop <- nPatients >= stopping@nPatients
@@ -2253,7 +2277,11 @@ setMethod("stopTrial",
       absThresh <- stopping@thresh * dose
 
       ## what is the probability to be above this dose?
-      prob <- mean(mtdSamples > absThresh)
+      prob <- ifelse(
+        is.na(absThresh),
+        0,
+        mean(mtdSamples > absThresh)
+      )
 
       ## so can we stop?
       doStop <- prob >= stopping@prob
@@ -2552,7 +2580,11 @@ setMethod("stopTrial",
     ),
   def =
     function(stopping, dose, samples, model, data, ...) {
-      isHighestDose <- (dose == data@doseGrid[data@nGrid])
+      isHighestDose <- ifelse(
+        is.na(dose),
+        FALSE,
+        (dose == data@doseGrid[data@nGrid])
+      )
       return(structure(isHighestDose,
         message =
           paste(
