@@ -39,7 +39,7 @@ Depends:
     graphics,
     R (>= 3.0.0)
 Imports:
-    checkmate,
+    checkmate (>= 2.2.0),
     futile.logger,
     GenSA,
     grid,
