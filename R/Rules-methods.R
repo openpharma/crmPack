@@ -171,7 +171,7 @@ setMethod(
       )
       data@doseGrid[is_dose_eligible][next_best_level]
     } else {
-      NA
+      NA_real_
     }
 
     # Build plots, first for the target probability.
@@ -337,7 +337,7 @@ setMethod("nextBest",
       next_best_level <- which.min(posterior_loss[is_dose_eligible])
       data@doseGrid[is_dose_eligible][next_best_level]
     } else {
-      NA
+      NA_real_
     }
 
     # Build plot.
@@ -471,7 +471,7 @@ setMethod(
       )
       data@doseGrid[is_dose_eligible][next_dose_level]
     } else {
-      NA
+      NA_real_
     }
 
     # Build plots, first for the target probability.
@@ -1765,6 +1765,8 @@ setMethod("|",
     }
 )
 
+# nolint end
+
 # Stopping ----
 
 ## generic ----
@@ -1799,6 +1801,40 @@ setGeneric(
   valueClass = "logical"
 )
 
+## StoppingMissingDose ----
+
+#' @describeIn stopTrial Stop based on value returned by next best dose.
+#'
+#' @description `r lifecycle::badge("experimental")`
+#'
+#' @example examples/Rules-method-stopTrial-StoppingMissingDose.R
+#'
+setMethod(
+  f = "stopTrial",
+  signature = signature(
+    stopping = "StoppingMissingDose",
+    dose = "numeric",
+    samples = "ANY",
+    model = "ANY",
+    data = "Data"
+  ),
+  def = function(stopping, dose, samples, model, data, ...) {
+    do_stop <- is.na(dose) || (data@placebo && dose == min(data@doseGrid))
+
+    msg <- paste(
+      "Recommended next best dose is",
+      ifelse(
+        do_stop,
+        ifelse(data@placebo && dose == min(data@doseGrid), "placebo dose", "NA"),
+        "an actual dose"
+      )
+    )
+
+    structure(do_stop, message = msg)
+  }
+)
+
+# nolint start
 
 ## --------------------------------------------------
 ## Stopping based on multiple stopping rules
@@ -2040,7 +2076,11 @@ setMethod("stopTrial",
       upper <- (100 + stopping@percentage) / 100 * dose
 
       ## how many patients lie there?
-      nPatients <- sum((data@x >= lower) & (data@x <= upper))
+      nPatients <- ifelse(
+        is.na(dose),
+        0,
+        sum((data@x >= lower) & (data@x <= upper))
+      )
 
       ## so can we stop?
       doStop <- nPatients >= stopping@nPatients
@@ -2237,7 +2277,11 @@ setMethod("stopTrial",
       absThresh <- stopping@thresh * dose
 
       ## what is the probability to be above this dose?
-      prob <- mean(mtdSamples > absThresh)
+      prob <- ifelse(
+        is.na(absThresh),
+        0,
+        mean(mtdSamples > absThresh)
+      )
 
       ## so can we stop?
       doStop <- prob >= stopping@prob
@@ -2536,7 +2580,11 @@ setMethod("stopTrial",
     ),
   def =
     function(stopping, dose, samples, model, data, ...) {
-      isHighestDose <- (dose == data@doseGrid[data@nGrid])
+      isHighestDose <- ifelse(
+        is.na(dose),
+        FALSE,
+        (dose == data@doseGrid[data@nGrid])
+      )
       return(structure(isHighestDose,
         message =
           paste(
