@@ -5,9 +5,12 @@
 \alias{IncrementsHSRBeta-class}
 \alias{.IncrementsHSRBeta}
 \alias{IncrementsHSRBeta}
+\alias{.DefaultIncrementsHSRBeta}
 \title{\code{IncrementsHSRBeta}}
 \usage{
 IncrementsHSRBeta(target = 0.3, prob = 0.95, a = 1, b = 1)
+
+.DefaultIncrementsHSRBeta()
 }
 \arguments{
 \item{target}{(\code{proportion})\cr see slot definition.}
@@ -47,6 +50,9 @@ Beta (a,b).}
 Beta (a,b).}
 }}
 
+\note{
+Typically, end users will not use the \code{.DefaultIncrementsHSRBeta()} function.
+}
 \examples{
 
 # Limit the escalation with a hard safety criteria to the doses that are below

@@ -5,9 +5,12 @@
 \alias{NextBestTDsamples-class}
 \alias{.NextBestTDsamples}
 \alias{NextBestTDsamples}
+\alias{.DefaultNextBestTDsamples}
 \title{\code{NextBestTDsamples}}
 \usage{
 NextBestTDsamples(prob_target_drt, prob_target_eot, derive)
+
+.DefaultNextBestTDsamples()
 }
 \arguments{
 \item{prob_target_drt}{(\code{proportion})\cr see slot definition in \code{\link{NextBestTD}}.}
@@ -36,6 +39,9 @@ therefore accept one and only one argument, which is a numeric vector, and
 return a number.}
 }}
 
+\note{
+Typically, end users will not use the \code{.DefaultNextBestTDsamples()} function.
+}
 \examples{
 # Target probability of the occurrence of a DLT during the trial is set to 0.35.
 # Target probability of the occurrence of a DLT at the end of the trial is set to 0.3.

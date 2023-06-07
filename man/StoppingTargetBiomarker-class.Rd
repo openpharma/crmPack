@@ -5,9 +5,12 @@
 \alias{StoppingTargetBiomarker-class}
 \alias{.StoppingTargetBiomarker}
 \alias{StoppingTargetBiomarker}
+\alias{.DefaultStoppingTargetBiomarker}
 \title{\code{StoppingTargetBiomarker}}
 \usage{
 StoppingTargetBiomarker(target, prob, is_relative = TRUE)
+
+.DefaultStoppingTargetBiomarker()
 }
 \arguments{
 \item{target}{(\code{numeric})\cr see slot definition.}
@@ -38,6 +41,9 @@ biomarker range.}
 reaching sufficient precision.}
 }}
 
+\note{
+Typically, end users will not use the \code{.DefaultStoppingTargetBiomarker()} function.
+}
 \examples{
 
 # Stopping the study if there is at least 0.5 probability that the biomarker

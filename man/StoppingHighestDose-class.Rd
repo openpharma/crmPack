@@ -5,15 +5,21 @@
 \alias{StoppingHighestDose-class}
 \alias{.StoppingHighestDose}
 \alias{StoppingHighestDose}
+\alias{.DefaultStoppingHighestDose}
 \title{\code{StoppingHighestDose}}
 \usage{
 StoppingHighestDose()
+
+.DefaultStoppingHighestDose()
 }
 \description{
 \ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#experimental}{\figure{lifecycle-experimental.svg}{options: alt='[Experimental]'}}}{\strong{[Experimental]}}
 
 \code{\link{StoppingHighestDose}} is the class for stopping based on the highest dose.
 That is, the stopping occurs when the highest dose is reached.
+}
+\note{
+Typically, end users will not use the \code{.DefaultStoppingHighestDose()} function.
 }
 \examples{
 

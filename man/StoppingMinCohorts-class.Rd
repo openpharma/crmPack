@@ -5,9 +5,12 @@
 \alias{StoppingMinCohorts-class}
 \alias{.StoppingMinCohorts}
 \alias{StoppingMinCohorts}
+\alias{.DefaultStoppingMinCohorts}
 \title{\code{StoppingMinCohorts}}
 \usage{
 StoppingMinCohorts(nCohorts)
+
+.DefaultStoppingMinCohorts()
 }
 \arguments{
 \item{nCohorts}{(\code{number})\cr see slot definition.}
@@ -24,6 +27,9 @@ cohorts.
 \item{\code{nCohorts}}{(\code{number})\cr minimum required number of cohorts.}
 }}
 
+\note{
+Typically, end users will not use the \code{.DefaultStoppingMinCohorts()} function.
+}
 \examples{
 
 # As example, here is the rule for stopping the study if at least 6 cohorts

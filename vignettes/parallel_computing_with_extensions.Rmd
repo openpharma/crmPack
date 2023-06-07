@@ -1,5 +1,5 @@
 ---
-title: "How to use parallel computing with extensions to the package, an example"
+title: "Parallel computing with extensions"
 author: "Oliver Boix"
 date: "14 March 2023"
 output: rmarkdown::html_vignette
@@ -156,7 +156,7 @@ my_own_extension <- function() {
       samples = "Samples"
     ),
     definition = function(x, model, samples) {
-      checkmate::assert_probabilities(x)
+      assert_probabilities(x)
       checkmate::assert_subset(c("alpha0", "alpha1"), names(samples))
       assert_length(x, len = size(samples))
 

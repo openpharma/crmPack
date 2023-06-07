@@ -5,9 +5,12 @@
 \alias{ProbitLogNormalRel-class}
 \alias{.ProbitLogNormalRel}
 \alias{ProbitLogNormalRel}
+\alias{.DefaultProbitLogNormalRel}
 \title{\code{ProbitLogNormalRel}}
 \usage{
 ProbitLogNormalRel(mean, cov, ref_dose = 1)
+
+.DefaultProbitLogNormalRel()
 }
 \arguments{
 \item{mean}{(\code{numeric})\cr the prior mean vector.}
@@ -36,6 +39,8 @@ This model is also used in the \code{\link{DualEndpoint}} classes, so this class
 can be used to check the prior assumptions on the dose-toxicity model, even
 when sampling from the prior distribution of the dual endpoint model is not
 possible.
+
+Typically, end users will not use the \code{.DefaultProbitLogNormalRel()} function.
 }
 \examples{
 my_model <- ProbitLogNormalRel(

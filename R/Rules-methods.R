@@ -185,7 +185,7 @@ setMethod(
         colour = "darkgreen",
         fill = "darkgreen"
       ) +
-      ylim(c(0, 100)) +
+      coord_cartesian(ylim = c(0, 100)) +
       ylab(paste("Target probability [%]"))
 
     if (is.finite(doselimit)) {
@@ -196,7 +196,8 @@ setMethod(
       p1 <- p1 +
         geom_vline(xintercept = data@doseGrid[sum(is_dose_eligible)], lwd = 1.1, lty = 2, colour = "red") +
         geom_point(
-          aes(x = next_dose, y = prob_target[is_dose_eligible][next_best_level] * 100 + 0.03),
+          data = data.frame(x = next_dose, y = prob_target[is_dose_eligible][next_best_level] * 100 + 0.03),
+          aes(x = x, y = y),
           size = 3,
           pch = 25,
           col = "red",
@@ -1061,6 +1062,300 @@ setMethod(
   }
 )
 
+## NextBestProbMTDLTE ----
+
+#' @describeIn nextBest find the next best dose based with the highest
+#'  probability of having a toxicity rate less or equal to the target toxicity
+#'  level.
+#'
+#' @aliases nextBest-NextBestProbMTDLTE
+#'
+#' @export
+#' @example examples/Rules-method-nextBest-NextBestProbMTDLTE.R
+#'
+setMethod(
+  f = "nextBest",
+  signature = signature(
+    nextBest = "NextBestProbMTDLTE",
+    doselimit = "numeric",
+    samples = "Samples",
+    model = "GeneralModel",
+    data = "Data"
+  ),
+  definition = function(nextBest, doselimit, samples, model, data, ...) {
+    # Matrix with samples from the dose-tox curve at the dose grid points.
+    prob_samples <- sapply(data@doseGrid, prob, model = model, samples = samples)
+
+    # Determine the maximum dose level with a toxicity probability below or
+    # equal to the target and calculate how often a dose is selected as MTD
+    # across iterations.
+    # The first element of the vector is the relative frequency that no
+    # dose in the grid is below or equal to the target, the
+    # second element that the 1st dose of the grid is the MTD, etc..
+    prob_mtd_lte <- prop.table(
+      table(factor(
+        rowSums(prob_samples <= nextBest@target),
+        levels = 0:data@nGrid
+      ))
+    )
+
+    allocation_crit <- as.vector(prob_mtd_lte)
+    names(allocation_crit) <- as.character(c(0, data@doseGrid))
+
+    # In case that placebo is used, placebo and the portion that is not assigned
+    # to any dose of the grid are merged.
+    if (data@placebo) {
+      allocation_crit[1] <- sum(allocation_crit[1:2])
+      allocation_crit <- allocation_crit[-2]
+    }
+
+    # Handling of the portion that is not assigned to an active dose of
+    # the dose grid. The portion is added to the minimum active dose
+    # of the dose grid.
+    allocation_crit[2] <- sum(allocation_crit[1:2])
+    allocation_crit <- allocation_crit[-1]
+
+    # Determine the dose with the highest relative frequency.
+    allocation_crit_dose <- as.numeric(names(allocation_crit))
+    dose_target <- allocation_crit_dose[which.max(allocation_crit)]
+
+    # Determine next dose.
+    doses_eligible <- h_next_best_eligible_doses(
+      data@doseGrid,
+      doselimit,
+      data@placebo
+    )
+    next_dose_level_eligible <- which.min(abs(doses_eligible - dose_target))
+    next_dose <- doses_eligible[next_dose_level_eligible]
+
+    # Create a plot.
+    plt_data <- if (data@placebo && (data@doseGrid[1] == next_dose)) {
+      data.frame(
+        x = as.factor(data@doseGrid),
+        y = c(0, as.numeric(allocation_crit)) * 100
+      )
+    } else {
+      data.frame(
+        x = as.factor(allocation_crit_dose),
+        y = as.numeric(allocation_crit) * 100
+      )
+    }
+
+    p <- ggplot(
+      data = plt_data,
+      fill = "grey50",
+      colour = "grey50"
+    ) +
+      geom_col(aes(x, y), fill = "grey75") +
+      scale_x_discrete(drop = FALSE, guide = guide_axis(check.overlap = TRUE)) +
+      geom_vline(
+        xintercept = as.factor(dose_target),
+        lwd = 1.1,
+        colour = "black"
+      ) +
+      geom_text(
+        data = data.frame(x = as.factor(dose_target)),
+        aes(.data$x, 0),
+        label = "Est",
+        vjust = -0.5,
+        hjust = -0.5,
+        colour = "black",
+        angle = 90
+      ) +
+      xlab("Dose") +
+      ylab(paste("Allocation criterion [%]"))
+
+    if (is.finite(doselimit)) {
+      doselimit_level <- if (sum(allocation_crit_dose == doselimit) > 0) {
+        which(allocation_crit_dose == doselimit)
+      } else {
+        ifelse(test = data@placebo && (data@doseGrid[1] == next_dose),
+          yes = 1.5,
+          no = sum(allocation_crit_dose < doselimit) + 0.5
+        )
+      }
+
+      p <- p +
+        geom_vline(
+          xintercept = doselimit_level,
+          colour = "red", lwd = 1.1
+        ) +
+        geom_text(
+          data = data.frame(x = doselimit_level),
+          aes(.data$x, 0),
+          label = "Max",
+          vjust = -0.5,
+          hjust = -1.5,
+          colour = "red",
+          angle = 90
+        )
+    }
+
+    p <- p +
+      geom_vline(
+        xintercept = as.factor(next_dose),
+        colour = "blue", lwd = 1.1
+      ) +
+      geom_text(
+        data = data.frame(x = as.factor(next_dose)),
+        aes(.data$x, 0),
+        label = "Next",
+        vjust = -0.5,
+        hjust = -2.5,
+        colour = "blue",
+        angle = 90
+      )
+
+    list(
+      value = next_dose,
+      allocation = cbind(dose = allocation_crit_dose, allocation = allocation_crit),
+      plot = p
+    )
+  }
+)
+
+## NextBestProbMTDMinDist ----
+
+#' @describeIn nextBest find the next best dose based with the highest
+#'  probability of having a toxicity rate with minimum distance to the
+#'  target toxicity level.
+#'
+#' @aliases nextBest-NextBestProbMTDMinDist
+#'
+#' @export
+#' @example examples/Rules-method-nextBest-NextBestProbMtdMinDist.R
+#'
+setMethod(
+  f = "nextBest",
+  signature = signature(
+    nextBest = "NextBestProbMTDMinDist",
+    doselimit = "numeric",
+    samples = "Samples",
+    model = "GeneralModel",
+    data = "Data"
+  ),
+  definition = function(nextBest, doselimit, samples, model, data, ...) {
+    # Matrix with samples from the dose-tox curve at the dose grid points.
+    prob_samples <- sapply(data@doseGrid, prob, model = model, samples = samples)
+
+    # Determine which dose level has the minimum distance to target.
+    dose_min_mtd_dist <- apply(
+      prob_samples, 1, function(x) which.min(abs(x - nextBest@target))
+    )
+
+    allocation_crit <- prop.table(
+      table(factor(dose_min_mtd_dist, levels = 1:data@nGrid))
+    )
+    names(allocation_crit) <- as.character(data@doseGrid)
+
+    # In case that placebo is used, placebo and the first non-placebo dose
+    # of the grid are merged.
+    if (data@placebo) {
+      allocation_crit[2] <- sum(allocation_crit[1:2])
+      allocation_crit <- allocation_crit[-1]
+    }
+
+    # Determine the dose with the highest relative frequency.
+    allocation_crit_dose <- as.numeric(names(allocation_crit))
+    dose_target <- allocation_crit_dose[which.max(allocation_crit)]
+
+    # Determine next dose.
+    doses_eligible <- h_next_best_eligible_doses(
+      data@doseGrid,
+      doselimit,
+      data@placebo
+    )
+    next_dose_level_eligible <- which.min(abs(doses_eligible - dose_target))
+    next_dose <- doses_eligible[next_dose_level_eligible]
+
+    # Create a plot.
+    plt_data <- if (data@placebo && data@doseGrid[1] == next_dose) {
+      data.frame(
+        x = as.factor(data@doseGrid),
+        y = c(0, as.numeric(allocation_crit)) * 100
+      )
+    } else {
+      data.frame(
+        x = as.factor(allocation_crit_dose),
+        y = as.numeric(allocation_crit) * 100
+      )
+    }
+
+    p <- ggplot(
+      data = plt_data,
+      fill = "grey50",
+      colour = "grey50"
+    ) +
+      geom_col(aes(x, y), fill = "grey75") +
+      scale_x_discrete(guide = guide_axis(check.overlap = TRUE)) +
+      geom_vline(
+        xintercept = as.factor(dose_target),
+        lwd = 1.1,
+        colour = "black"
+      ) +
+      geom_text(
+        data = data.frame(x = as.factor(dose_target)),
+        aes(.data$x, 0),
+        label = "Est",
+        vjust = -0.5,
+        hjust = -0.5,
+        colour = "black",
+        angle = 90
+      ) +
+      xlab("Dose") +
+      ylab(paste("Allocation criterion [%]"))
+
+
+    if (is.finite(doselimit)) {
+      doselimit_level <- if (any(allocation_crit_dose == doselimit)) {
+        which(allocation_crit_dose == doselimit)
+      } else {
+        ifelse(test = data@placebo && data@doseGrid[1] == next_dose,
+          yes = 1.5,
+          no = sum(allocation_crit_dose < doselimit) + 0.5
+        )
+      }
+
+      p <- p +
+        geom_vline(
+          xintercept = doselimit_level,
+          colour = "red", lwd = 1.1
+        ) +
+        geom_text(
+          data = data.frame(x = doselimit_level),
+          aes(.data$x, 0),
+          label = "Max",
+          vjust = -0.5,
+          hjust = -1.5,
+          colour = "red",
+          angle = 90
+        )
+    }
+
+    p <- p +
+      geom_vline(
+        xintercept = as.factor(next_dose),
+        colour = "blue", lwd = 1.1
+      ) +
+      geom_text(
+        data = data.frame(x = as.factor(next_dose)),
+        aes(.data$x, 0),
+        label = "Next",
+        vjust = -0.5,
+        hjust = -2.5,
+        colour = "blue",
+        angle = 90
+      )
+
+    list(
+      value = next_dose,
+      allocation = cbind(dose = allocation_crit_dose, allocation = allocation_crit),
+      plot = p
+    )
+  }
+)
+
+
 # maxDose ----
 
 ## generic ----
@@ -1132,110 +1427,85 @@ setMethod(
   definition = function(increments, data, ...) {
     dlt_count <- sum(data@y)
     # Determine in which interval the `dlt_count` is.
-    assert_true(dlt_count >= head(increments@dlt_intervals, 1))
+    assert_true(dlt_count >= increments@dlt_intervals[1])
     dlt_count_interval <- findInterval(x = dlt_count, vec = increments@dlt_intervals)
     (1 + increments@increments[dlt_count_interval]) * data@x[data@nObs]
   }
 )
 
-# nolint start
+## IncrementsRelativeDLTCurrent ----
 
-## --------------------------------------------------
-## The maximum allowable relative increments, with special rules for
-## part 1 and beginning of part 2, method method
-## --------------------------------------------------
+#' @describeIn maxDose determine the maximum possible next dose based on
+#'   relative increments determined by DLTs in the current cohort.
+#'
+#' @aliases maxDose-IncrementsRelativeDLTCurrent
+#'
+#' @export
+#' @example examples/Rules-method-maxDose-IncrementsRelativeDLTCurrent.R
+#'
+setMethod(
+  f = "maxDose",
+  signature = signature(
+    increments = "IncrementsRelativeDLTCurrent",
+    data = "Data"
+  ),
+  definition = function(increments, data, ...) {
+    last_dose <- data@x[data@nObs]
 
-##' @describeIn maxDose Determine the maximum possible next dose based on
-##' relative increments and part 1 and 2
-##' @example examples/Rules-method-maxDose-IncrementsRelativeParts.R
-setMethod("maxDose",
-  signature =
-    signature(
-      increments = "IncrementsRelativeParts",
-      data = "DataParts"
-    ),
-  def =
-    function(increments, data, ...) {
-      ## determine if there are already cohorts
-      ## belonging to part 2:
-      alreadyInPart2 <- any(data@part == 2L)
+    # Determine how many DLTs have occurred in the last cohort.
+    last_cohort <- data@cohort[data@nObs]
+    last_cohort_indices <- which(data@cohort == last_cohort)
+    dlt_count_lcohort <- sum(data@y[last_cohort_indices])
 
-      ## if so, we just call the next higher method
-      if (alreadyInPart2) {
-        callNextMethod(increments, data, ...)
-      } else {
-        ## otherwise we have special rules.
-
-        ## what dose level (index) has the highest dose
-        ## so far?
-        lastDoseLevel <- matchTolerance(
-          max(data@x),
-          data@part1Ladder
-        )
-
-        ## determine the next maximum dose
-        ret <-
-          if (data@nextPart == 1L) {
-            ## here the next cohort will still be in part 1.
-            ## Therefore we just make one step on the part 1 ladder:
-            data@part1Ladder[lastDoseLevel + 1L]
-          } else {
-            ## the next cohort will start part 2.
-
-            ## if there was a DLT so far:
-            if (any(data@y == 1L)) {
-              data@part1Ladder[lastDoseLevel + increments@dlt_start]
-            } else {
-              ## otherwise
-              if (increments@clean_start > 0) {
-                ## if we want to start part 2 higher than
-                ## the last part 1 dose, use usual increments
-                callNextMethod(increments, data, ...)
-              } else {
-                ## otherwise
-                data@part1Ladder[lastDoseLevel + increments@clean_start]
-              }
-            }
-          }
-
-        return(ret)
-      }
-    }
+    # Determine in which interval the `dlt_count_lcohort` is.
+    assert_true(dlt_count_lcohort >= increments@dlt_intervals[1])
+    dlt_count_lcohort_int <- findInterval(x = dlt_count_lcohort, vec = increments@dlt_intervals)
+    (1 + increments@increments[dlt_count_lcohort_int]) * last_dose
+  }
 )
 
-## --------------------------------------------------
-## The maximum allowable relative increments in terms of DLTs
-## --------------------------------------------------
+## IncrementsRelativeParts ----
 
-##' @describeIn maxDose Determine the maximum possible next dose based on
-##' relative increments determined by DLTs in the current cohort.
-##'
-##' @example examples/Rules-method-maxDose-IncrementsRelativeDLTCurrent.R
-setMethod("maxDose",
-  signature =
-    signature(
-      increments = "IncrementsRelativeDLTCurrent",
-      data = "Data"
-    ),
-  def =
-    function(increments, data, ...) {
-      # Determine what was the last dose.
-      lastDose <- tail(data@x, 1)
-
-      # Determine how many DLTs have occurred in last cohort.
-      lastCohort <- tail(data@cohort, 1)
-      index <- which(data@cohort == lastCohort)
-      dltHappened <- sum(data@y[index])
-
-      # Determine in which interval this is.
-      interval <-
-        findInterval(
-          x = dltHappened,
-          vec = increments@dlt_intervals
-        )
-
-      (1 + increments@increments[interval]) * lastDose
+#' @describeIn maxDose determine the maximum possible next dose based on
+#'   relative increments as well as part 1 and beginning of part 2.
+#'
+#' @aliases maxDose-IncrementsRelativeParts
+#'
+#' @export
+#' @example examples/Rules-method-maxDose-IncrementsRelativeParts.R
+#'
+setMethod(
+  f = "maxDose",
+  signature = signature(
+    increments = "IncrementsRelativeParts",
+    data = "DataParts"
+  ),
+  definition = function(increments, data, ...) {
+    all_in_part1 <- all(data@part == 1L)
+    incrmnt <- if (all_in_part1) {
+      part2_started <- data@nextPart == 2L
+      if (part2_started) {
+        any_dlt <- any(data@y == 1L)
+        if (any_dlt) {
+          increments@dlt_start
+        } else if (increments@clean_start <= 0L) {
+          increments@clean_start
+        }
+      } else {
+        1L
+      }
     }
+
+    if (is.null(incrmnt)) {
+      callNextMethod(increments, data, ...)
+    } else {
+      max_dose_lev_part1 <- matchTolerance(max(data@x), data@part1Ladder)
+      new_max_dose_level <- max_dose_lev_part1 + incrmnt
+      assert_true(new_max_dose_level >= 0L)
+      assert_true(new_max_dose_level <= length(data@part1Ladder))
+      data@part1Ladder[new_max_dose_level]
+    }
+  }
 )
 
 ## IncrementsDoseLevels ----
@@ -1271,15 +1541,15 @@ setMethod(
 
 ## IncrementsHSRBeta ----
 
-#' @rdname maxDose
-#'
-#' @description Determine the maximum possible dose for escalation.
+#' @describeIn maxDose determine the maximum possible next dose for escalation.
 #'
 #' @aliases maxDose-IncrementsHSRBeta
-#' @example examples/Rules-method-maxDose-IncrementsHSRBeta.R
+#'
 #' @export
+#' @example examples/Rules-method-maxDose-IncrementsHSRBeta.R
+#'
 setMethod(
-  "maxDose",
+  f = "maxDose",
   signature = signature(
     increments = "IncrementsHSRBeta",
     data = "Data"
@@ -1325,36 +1595,29 @@ setMethod(
   }
 )
 
-## --------------------------------------------------
-## The maximum allowable relative increments in terms of DLTs
-## --------------------------------------------------
+## IncrementsMin ----
 
-##' @describeIn maxDose Determine the maximum possible next dose based on
-##' multiple increment rules (taking the minimum across individual increments).
-##'
-##' @example examples/Rules-method-maxDose-IncrementsMin.R
-setMethod("maxDose",
-  signature =
-    signature(
-      increments = "IncrementsMin",
-      data = "Data"
-    ),
-  def =
-    function(increments, data, ...) {
-      ## apply the multiple increment rules
-      individualResults <-
-        sapply(increments@increments_list,
-          maxDose,
-          data = data,
-          ...
-        )
-
-      ## so the maximum increment is the minimum across the individual increments
-      ret <- min(individualResults)
-
-      return(ret)
-    }
+#' @describeIn maxDose determine the maximum possible next dose based on
+#'   multiple increment rules, taking the minimum across individual increments.
+#'
+#' @aliases maxDose-IncrementsMin
+#'
+#' @export
+#' @example examples/Rules-method-maxDose-IncrementsMin.R
+#'
+setMethod(
+  f = "maxDose",
+  signature = signature(
+    increments = "IncrementsMin",
+    data = "Data"
+  ),
+  definition = function(increments, data, ...) {
+    individual_results <- sapply(increments@increments_list, maxDose, data = data, ...)
+    min(individual_results)
+  }
 )
+
+# nolint start
 
 ## ============================================================
 
@@ -1523,6 +1786,9 @@ setMethod("|",
 ##' @return logical value: \code{TRUE} if the trial can be stopped, \code{FALSE}
 ##' otherwise. It should have an attribute \code{message} which gives the reason
 ##' for the decision.
+##'
+##' @note If the recommended next best dose is `NA` or the placebo dose, then
+##' the trial always stops, independent of the concrete `stopping` rule used.
 ##'
 ##' @export
 ##' @example examples/Rules-method-CombiningStoppingRulesAndOr.R
@@ -2002,7 +2268,7 @@ setMethod("stopTrial",
           "is",
           round(prob * 100),
           "% and thus",
-          ifelse(doStop, "above", "below"),
+          ifelse(doStop, "greater than or equal to", "strictly less than"),
           "the required",
           round(stopping@prob * 100),
           "%"
@@ -2601,7 +2867,7 @@ setMethod(
       ifelse(do_stop, "less than or equal to ", "greater than "),
       "target_ratio = ", stopping@target_ratio
     )
-    structure(do_stop, messgae = text)
+    structure(do_stop, message = text)
   }
 )
 
@@ -2639,14 +2905,14 @@ setMethod("stopTrial",
 
       ## so can we stop?
       doStop <- ratio <= stopping@target_ratio
-      ## generate messgae
+      ## generate message
       text <- paste(
         "95% CI is (", round(CI[1], 4), ",", round(CI[2], 4), "), Ratio =", round(ratio, 4), "is ", ifelse(doStop, "is less than or equal to", "greater than"),
         "target_ratio =", stopping@target_ratio
       )
       ## return both
       return(structure(doStop,
-        messgae = text
+        message = text
       ))
     }
 )
@@ -2754,7 +3020,7 @@ setMethod("stopTrial",
 
       ## so can we stop?
       doStop <- ratio <= stopping@target_ratio
-      ## generate messgae
+      ## generate message
       text1 <- paste(
         "Gstar estimate is", round(Gstar, 4), "with 95% CI (", round(CIGstar[1], 4), ",", round(CIGstar[2], 4),
         ") and its ratio =",

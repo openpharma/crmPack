@@ -23,8 +23,8 @@ the list with all simulation results (one iteration corresponds
 to one list element)
 }
 \description{
-The function \code{fun} can use variables that are visible to itself. The
-names of these variables have to given in the vector \code{vars}.
+The function \code{fun} can use variables that are visible to itself.
+The names of these variables have to given in the vector \code{vars}.
 }
 \author{
 Daniel Sabanes Bove \email{sabanesd@roche.com}
