@@ -91,8 +91,6 @@
 
 #' @rdname GeneralSimulations-class
 #'
-#' Initialization function for "GeneralSimulations"
-#'
 #' @param data (`list`)\cr see slot definition.
 #' @param doses (`numeric`)\cr see slot definition.
 #' @param seed (`integer`)\cr see slot definition.
