@@ -97,6 +97,7 @@
 #' @param doses (`numeric`)\cr see slot definition.
 #' @param seed (`integer`)\cr see slot definition.
 #'
+#' @example examples/Simulations-class-GeneralSimulations.R
 #' @export
 GeneralSimulations <- function(data,
                                doses,
