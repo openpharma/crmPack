@@ -91,6 +91,7 @@ reference:
       - IncrementsHSRBeta
       - IncrementsMin
       - Stopping
+      - StoppingMissingDose
       - StoppingCohortsNearDose
       - StoppingPatientsNearDose
       - StoppingMinCohorts
@@ -339,6 +340,7 @@ reference:
       - nextBest-NextBestMaxGainSamples
       - nextBest-NextBestProbMTDLTE
       - nextBest-NextBestProbMTDMinDist
+      - stopTrial-StoppingMissingDose
       - stopTrial-StoppingLowestDoseHSRBeta
       - stopTrial-StoppingMTDCV
       - maxDose
