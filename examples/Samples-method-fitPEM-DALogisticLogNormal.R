@@ -4,6 +4,8 @@
 data <- DataDA(
   x = c(0.1, 0.5, 1.5, 3, 6, 10, 10, 10),
   y = c(0, 0, 1, 1, 0, 0, 1, 0),
+  ID = 1L:8L,
+  cohort = as.integer(c(1:5, 6, 6, 6)),
   doseGrid =
     c(
       0.1, 0.5, 1.5, 3, 6,
@@ -50,7 +52,7 @@ fitted <- fitPEM(
   data = data,
   middle = mean,
   hazard = TRUE,
-  quantiles = c(22, 0.75)
+  quantiles = c(0.25, 0.75)
 )
 
 # nolint end

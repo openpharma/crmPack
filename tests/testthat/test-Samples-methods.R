@@ -26,6 +26,10 @@ test_that("names-Samples returns correct names of the parameters", {
   expect_identical(names(samples2), c("a", "z"))
 })
 
+# get ----
+
+## Samples ----
+
 test_that("get-Samples fails gracefully with bad input", {
   samples <- Samples(data = list(good = 1:3), options = McmcOptions(samples = 3))
   expect_error(
@@ -126,6 +130,10 @@ test_that("get-Samples returns correct values", {
   }
 })
 
+# fit ----
+
+## Samples-GeneralModel ----
+
 test_that("fit-Samples fails gracefully with bad inputs", {
   mcmcOptions <- McmcOptions(samples = 3)
   samples <- Samples(data = list(alpha0 = 1:3, alpha1 = 4:6), options = mcmcOptions)
@@ -198,6 +206,8 @@ test_that("fit-Samples works correctly for tox-only models", {
   checkIt(seed = 789, lowerQuantile = 0.25, upperQuantile = 0.75)
 })
 
+## Samples-DataModel ----
+
 test_that("fit-Samples works correctly for dual models", {
   # TODO: Check for numerical correctness
   dualData <- DataDual(
@@ -218,7 +228,6 @@ test_that("fit-Samples works correctly for dual models", {
     rw1 = TRUE
   )
 
-
   options <- McmcOptions(rng_kind = "Mersenne-Twister", rng_seed = 1234567)
   samples <- mcmc(dualData, model, options)
 
@@ -228,6 +237,10 @@ test_that("fit-Samples works correctly for dual models", {
   expect_setequal(names(actual), c("dose", "middle", "lower", "upper", "middleBiomarker", "lowerBiomarker", "upperBiomarker"))
   expect_snapshot(actual)
 })
+
+# approximate ----
+
+## Samples-GeneralModel ----
 
 test_that("Samples-approximate works correctly", {
   data <- Data(
@@ -281,6 +294,10 @@ test_that("Samples-approximate works correctly", {
   )
   expect_snapshot_value(posterior2, style = "serialize")
 })
+
+# plot ----
+
+## Samples-GeneralModel ----
 
 test_that("plot-Samples fails gracefully with bad input", {
   data <- Data(
@@ -352,6 +369,8 @@ test_that("plot-Samples-DualEndpoint fails gracefully with bad input", {
   )
 })
 
+## Samples-DualEndpoint ----
+
 test_that("plot-Samples-DualEndpoint works correctly", {
   data <- DataDual(
     x = c(0.1, 0.5, 1.5, 3, 6, 10, 10, 10, 20, 20, 20, 40, 40, 40, 50, 50, 50),
@@ -379,6 +398,8 @@ test_that("plot-Samples-DualEndpoint works correctly", {
   vdiffr::expect_doppelganger("plot-Samples-DataDual_showlegend-FALSE", actual1)
 })
 
+## Samples-LogisticIndepBeta ----
+
 test_that("fit-Samples-LogisticIndepBeta fails gracefully with bad input", {
   data <- Data(
     ID = 1L:8L,
@@ -404,6 +425,10 @@ test_that("fit-Samples-LogisticIndepBeta fails gracefully with bad input", {
   )
 })
 
+# fit ----
+
+## Samples-LogisticIndepBeta ----
+
 test_that("fit-Samples-LogisticIndepBeta works", {
   data <- Data(
     ID = 1L:8L,
@@ -419,6 +444,8 @@ test_that("fit-Samples-LogisticIndepBeta works", {
   actual <- fit(object = samples, model = model, data = data, quantiles = c(0.1, 0.9))
   expect_snapshot(actual)
 })
+
+## Samples-Effloglog ----
 
 test_that("fit-Samples-Effloglog works correctly", {
   data <- DataDual(
@@ -478,6 +505,8 @@ test_that("fit-Samples-Effloglog fails gracefully with bad input", {
     "Assertion on 'quantiles' failed: Must have length 2, but has length 3."
   )
 })
+
+## Samples-EffFlexi ----
 
 test_that("fit-Samples-EffFlexi works correctly", {
   data <- DataDual(
@@ -547,10 +576,9 @@ test_that("fit-Samples-EffFlexi fails gracefully with bad input", {
   )
 })
 
+# fitGain ----
 
-
-
-
+## Samples ----
 
 test_that("fitGain-Samples works correctly", {
   data <- DataDual(
@@ -645,6 +673,8 @@ test_that("fitGain-Samples fails gracefully with bad input", {
   )
 })
 
+## Samples-DataDual ----
+
 test_that("fitGain-Samples-ModelEff works correctly", {
   data <- DataDual(
     x = c(25, 50, 25, 50, 75, 300, 250, 150),
@@ -738,6 +768,10 @@ test_that("fitGain-Samples-ModelEff fails gracefully with bad input", {
   )
 })
 
+# plot ----
+
+## Samples-GeneralModel ----
+
 test_that("Check that plot-Samples-ModelTox fails gracefully with bad input", {
   data <- Data(
     x = c(25, 50, 50, 75, 150, 200, 225, 300),
@@ -780,11 +814,7 @@ test_that("Check that plot-Samples-ModelTox works correctly", {
   vdiffr::expect_doppelganger("plot-Samples-ModelTox_showlegend-FALSE", actual1)
 })
 
-
-
-
-
-
+## Samples-DataDual ----
 
 test_that("Check that plot-Samples-ModelEff fails gracefully with bad input", {
   data <- DataDual(
@@ -837,6 +867,8 @@ test_that("Check that plot-Samples-ModelEff works correctly", {
   vdiffr::expect_doppelganger("plot-Samples-ModelEff_showlegend-FALSE", actual1)
 })
 
+## Samples-DataDual-ModelEffloglog ----
+
 test_that("Check that plot-Samples-ModelEffloglog fails gracefully with bad input", {
   data <- DataDual(
     x = c(25, 50, 25, 50, 75, 300, 250, 150),
@@ -888,6 +920,10 @@ test_that("Check that plot-Samples-ModelEffloglog works correctly", {
   vdiffr::expect_doppelganger("plot-Samples-ModelEffloglog_showlegend-FALSE", actual1)
 })
 
+# plot
+
+## Samples-GeneralModel-Missing----
+
 test_that("Check that plot-Samples-ModelEffNoSamples fails gracefully with bad input", {
   data <- Data(
     x = c(25, 50, 50, 75, 100, 100, 225, 300),
@@ -920,6 +956,10 @@ test_that("Check that plot-Samples-ModelEffNoSamples works correctly", {
   actual1 <- plot(y = model, x = data, showLegend = FALSE)
   vdiffr::expect_doppelganger("plot-Samples-ModelEffNoSamples_showlegend-FALSE", actual1)
 })
+
+# plotGain ----
+
+## ModelTox-Samples-ModelEff-Samples ----
 
 test_that("plotGain-ModelTox-Samples-ModelEff-Samples works correctly", {
   data <- DataDual(
@@ -964,6 +1004,7 @@ test_that("plotGain-ModelTox-Samples-ModelEff-Samples works correctly", {
   vdiffr::expect_doppelganger("plotGain-ModelTox-Samples-ModelEff-Samples", actual)
 })
 
+## ModelTox-Missing-ModelEff-Missing ----
 
 test_that("plotGain-ModelTox-Missing-ModelEff-Missing works correctly", {
   data <- DataDual(
@@ -984,6 +1025,10 @@ test_that("plotGain-ModelTox-Missing-ModelEff-Missing works correctly", {
   )
   vdiffr::expect_doppelganger("plotGain-ModelTox-Missing-ModelEff-Missing", actual)
 })
+
+# plotDualResponses ----
+
+## Samples ----
 
 test_that("plotDualResponses fails gracefully with bad arguments", {
   data <- DataDual(
@@ -1139,6 +1184,10 @@ test_that("plotDualResponses-ModelTox-Missing-ModelEff-Missing works as expected
   vdiffr::expect_doppelganger("plotDualResponses-ModelTox-Missing-ModelEff-Missing", actual)
 })
 
+# fitPEM ----
+
+## Samples-DALogisticLogNormal-DataDA ----
+
 test_that("fitPEM-Samples-DALogisticLogNormal-DataDA fails gracefully with bad input", {
   data <- DataDA(
     x = c(0.1, 0.5, 1.5, 3, 6, 10, 10, 10),
@@ -1188,6 +1237,8 @@ test_that("fitPEM-Samples-DALogisticLogNormal-DataDA fails gracefully with bad i
     "Assertion on 'hazard' failed: Must be of type 'logical', not 'character'."
   )
 })
+
+## Samples-DALogisticLogNormal-DataDA ----
 
 test_that("fitPEM-Samples-DALogisticLogNormal-DataDA works correctly", {
   data <- DataDA(
@@ -1276,6 +1327,10 @@ test_that("plot-Samples-DALogisticNormal fails gracefully with bad input", {
     "Assertion on 'hazard' failed: Must be of type 'logical', not 'character'."
   )
 })
+
+# plot ----
+
+## Samples-DALogisticLogNormal-DataDA
 
 test_that("plot-Samples-DALogisticNormal works correctly", {
   data <- DataDA(

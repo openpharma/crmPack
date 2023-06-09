@@ -45,8 +45,6 @@ setMethod(
   }
 )
 
-# nolint start
-
 ## --------------------------------------------------
 ## Extract certain parameter from "Samples" object to produce
 ## plots with "ggmcmc" package
@@ -87,7 +85,6 @@ setMethod("get",
              mode = NULL,
              inherits = NULL) {
       ## check the parameter name
-      # stopifnot(is.scalar(pos), pos %in% names(x))
       assert_scalar(pos)
       assert_choice(pos, names(x))
 
@@ -792,8 +789,7 @@ setMethod("fit",
       )
 
       ## evaluate the probs, for all samples.
-      for (i in seq_along(points))
-      {
+      for (i in seq_along(points)) {
         ## Now we want to evaluate for the
         ## following dose:
         ExpEffSamples[, i] <- efficacy(
@@ -858,8 +854,7 @@ setMethod("fit",
       )
 
       ## evaluate the probs, for all samples.
-      for (i in seq_along(points))
-      {
+      for (i in seq_along(points)) {
         ## Now we want to evaluate for the
         ## following dose:
         ExpEffSamples[, i] <- efficacy(
@@ -963,8 +958,7 @@ setMethod("fitGain",
       )
 
       ## evaluate the probs, for all gain samples.
-      for (i in seq_along(points))
-      {
+      for (i in seq_along(points)) {
         ## Now we want to evaluate for the
         ## following dose:
         GainSamples[, i] <- gain(
@@ -1522,8 +1516,6 @@ setMethod("plotGain",
         )
       )
 
-      ## plot1 <- ggplot(data=gdata, aes(x=x,y=y))+geom_line(aes(group=group,color=group),size=1.5)
-
       plot1 <- ggplot(data = gdata, aes(x = x, y = y)) +
         geom_line(aes(group = group, color = group), size = 1.5) +
         ggplot2::scale_colour_manual(name = "curves", values = c("blue", "green3", "red")) +
@@ -1537,23 +1529,67 @@ setMethod("plotGain",
       Gainfun <- function(DOSE) {
         -gain(DOSE, model_dle = DLEmodel, model_eff = Effmodel)
       }
-      Gstar <- (optim(min(data@doseGrid), Gainfun, method = "L-BFGS-B", lower = min(data@doseGrid), upper = max(data@doseGrid))$par)
-      MaxGain <- -(optim(min(data@doseGrid), Gainfun, method = "L-BFGS-B", lower = min(data@doseGrid), upper = max(data@doseGrid))$value)
+      Gstar <- (
+        optim(
+          min(data@doseGrid),
+          Gainfun,
+          method = "L-BFGS-B",
+          lower = min(data@doseGrid),
+          upper = max(data@doseGrid)
+        )$par
+      )
+      MaxGain <- -(
+        optim(
+          min(data@doseGrid),
+          Gainfun,
+          method = "L-BFGS-B",
+          lower = min(data@doseGrid),
+          upper = max(data@doseGrid)
+        )$value
+      )
 
       if ((TD30 < min(data@doseGrid)) | (TD30 > max(data@doseGrid))) {
         plot1 <- plot1
         print(paste("TD30", paste(TD30, " not within dose Grid")))
       } else {
-        plot1 <- plot1 + geom_point(data = data.frame(x = TD30, y = 0.3), aes(x = x, y = y), colour = "violet", shape = 16, size = 8) +
-          annotate("text", label = "p(DLE=0.3)", x = TD30 + 1, y = 0.2, size = 5, colour = "violet")
+        plot1 <- plot1 +
+          geom_point(
+            data = data.frame(x = TD30, y = 0.3),
+            aes(x = x, y = y),
+            colour = "violet",
+            shape = 16,
+            size = 8
+          ) +
+          annotate(
+            "text",
+            label = "p(DLE=0.3)",
+            x = TD30 + 1,
+            y = 0.2,
+            size = 5,
+            colour = "violet"
+          )
       }
 
       if ((Gstar < min(data@doseGrid)) | (Gstar > max(data@doseGrid))) {
         plot1 <- plot1
         print(paste("Gstar=", paste(Gstar, " not within dose Grid")))
       } else {
-        plot1 <- plot1 + geom_point(data = data.frame(x = Gstar, y = MaxGain), aes(x = x, y = y), colour = "green3", shape = 17, size = 8) +
-          annotate("text", label = "Max Gain", x = Gstar, y = MaxGain - 0.1, size = 5, colour = "green3")
+        plot1 <- plot1 +
+          geom_point(
+            data = data.frame(x = Gstar, y = MaxGain),
+            aes(x = x, y = y),
+            colour = "green3",
+            shape = 17,
+            size = 8
+          ) +
+          annotate(
+            "text",
+            label = "Max Gain",
+            x = Gstar,
+            y = MaxGain - 0.1,
+            size = 5,
+            colour = "green3"
+          )
       }
       return(plot1)
     }
@@ -1683,8 +1719,7 @@ setMethod("plotDualResponses",
         ncol = length(xLevels)
       )
       ## evaluate the efficacy for all samples
-      for (i in seq_along(xLevels))
-      {
+      for (i in seq_along(xLevels)) {
         ## Now we want to evaluate for the following dose
         functionSamples[, i] <- efficacy(
           dose = data@doseGrid[xLevels[i]],
@@ -1936,24 +1971,19 @@ DLTLikelihood <- function(lambda,
   # The cumulative hazard function
   expNmu <- function(t) {
     ret <- 1
-
-    for (j in 1:npiece)
-    {
+    for (j in 1:npiece) {
       ret <- ret * exp(-lambda[j] * s_ij(t, j))
     }
-
     return(ret)
   }
 
-
   # CDF of the piecewise exponential
-
-  piece_exp.cdf <- function(x) {
+  piece_exp_cdf <- function(x) {
     1 - expNmu(x)
   }
 
   DLTFreeS <- function(x) {
-    (expNmu(x) - expNmu(Tmax)) / piece_exp.cdf(Tmax)
+    (expNmu(x) - expNmu(Tmax)) / piece_exp_cdf(Tmax)
   }
 
   pDLT <- rep(0, npiece + 1)
@@ -2006,12 +2036,11 @@ setMethod("fitPEM",
       # The PEM
       if (hazard == FALSE) {
         PEMSamples <- t(apply(object@data$lambda, 1, function(x) {
-          fit <- crmPack:::DLTLikelihood(x, data@Tmax)
+          fit <- DLTLikelihood(x, data@Tmax)
           return(fit)
         }))
       } else if (hazard == TRUE) {
-        for (i in seq_along(points))
-        {
+        for (i in seq_along(points)) {
           if (i == i_max) {
             PEMSamples[, i_max] <- object@data$lambda[, model@npiece]
           } else {
@@ -2140,5 +2169,3 @@ setMethod("plot",
 
 
 ## =======================================================================================================
-
-# nolint end
