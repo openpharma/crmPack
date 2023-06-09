@@ -1,4 +1,3 @@
-# nolint start
 #####################################################################################
 ## Author: Daniel Sabanes Bove [sabanesd *a*t* roche *.* com]
 ##         Wai Yin Yeung [w *.* yeung1 *a*t* lancaster *.* ac *.* uk]
@@ -19,30 +18,35 @@
 {}
 
 
-##' General class for the simulations output
-##'
-##' This class captures trial simulations.
-##'
-##' Here also the random generator state before starting the simulation is
-##' saved, in order to be able to reproduce the outcome. For this just use
-##' \code{\link{set.seed}} with the \code{seed} as argument before running
-##' \code{\link{simulate,Design-method}}.
-##'
-##' @slot data list of produced \code{\linkS4class{Data}} objects
-##' @slot doses the vector of final dose recommendations
-##' @slot seed random generator state before starting the simulation
-##'
-##' @export
-##' @keywords classes
+# GeneralSimulations ----
+
+## class ----
+
+#' `GeneralSimulations`
+#'
+#' @description `r lifecycle::badge("stable")`
+#'
+#' This class captures trial simulations.
+#' Here also the random generator state before starting the simulation is
+#' saved, in order to be able to reproduce the outcome. For this just use
+#' [`set.seed`] with the `seed` as argument before running
+#' [`simulate,Design-method`].
+#'
+#' @slot data (`list`)\cr produced [`Data`] objects.
+#' @slot doses (`numeric`)\cr final dose recommendations.
+#' @slot seed (`integer`)\cr random generator state before starting the simulation.
+#'
+#' @aliases GeneralSimulations
+#' @export
 .GeneralSimulations <-
   setClass(
     Class = "GeneralSimulations",
-    representation(
+    slots = c(
       data = "list",
       doses = "numeric",
       seed = "integer"
     ),
-    prototype(
+    prototype = prototype(
       data =
         list(
           Data(
@@ -81,17 +85,17 @@
         o$result()
       }
   )
-validObject(.GeneralSimulations())
 
-##' Initialization function for "GeneralSimulations"
-##'
-##' @param data see \code{\linkS4class{GeneralSimulations}}
-##' @param doses see \code{\linkS4class{GeneralSimulations}}
-##' @param seed see \code{\linkS4class{GeneralSimulations}}
-##' @return the \code{\linkS4class{GeneralSimulations}} object
-##'
-##' @export
-##' @keywords methods
+## constructor ----
+
+#' @rdname GeneralSimulations-class
+#'
+#' @param data (`list`)\cr see slot definition.
+#' @param doses (`numeric`)\cr see slot definition.
+#' @param seed (`integer`)\cr see slot definition.
+#'
+#' @example examples/Simulations-class-GeneralSimulations.R
+#' @export
 GeneralSimulations <- function(data,
                                doses,
                                seed) {
@@ -102,8 +106,7 @@ GeneralSimulations <- function(data,
   )
 }
 
-
-
+# nolint start
 ##' Class for the simulations output from model based designs
 ##'
 ##' This class captures the trial simulations from model based designs.
