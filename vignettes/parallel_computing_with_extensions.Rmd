@@ -265,7 +265,7 @@ plot(my_samples, my_model, my_data)
 
 # Specify increments.
 my_increments <- IncrementsRelativeDLT(
-  dlt_intervals = c(0, 1),
+  intervals = c(0, 1),
   increments = c(1, 0.5)
 )
 
@@ -286,7 +286,7 @@ stopTrial(my_stopping, this_next_dose, my_samples, my_model, my_data)
 
 # Cohorts size.
 my_size <- CohortSizeDLT(
-  dlt_intervals = c(0, 1),
+  intervals = c(0, 1),
   cohort_size = c(1, 3)
 )
 
@@ -296,7 +296,7 @@ my_design <- Design(
   nextBest = my_next_best,
   stopping = my_stopping,
   increments = my_increments,
-  cohortSize = my_size,
+  cohort_size = my_size,
   data = emptydata,
   startingDose = 10
 )

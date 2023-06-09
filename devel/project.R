@@ -322,7 +322,7 @@ myIncrements <- IncrementsRelative(intervals=c(0, 20),
 ## cohort size:
 ## DLT rule says to have size 1 if no DLT has happened,
 ## and size 3 if at least 1 DLT has happened
-mySize <- CohortSizeDLT(dlt_intervals=c(0, 1),
+mySize <- CohortSizeDLT(intervals=c(0, 1),
                         cohort_size=c(1, 3))
 
 ## Range rule says to have size 1 until 30 mg, then size 3.
@@ -341,7 +341,7 @@ design <- Design(model=model,
                  nextBest=myNextBest,
                  stopping=myStoppingEasy,
                  increments=myIncrements,
-                 cohortSize=mySizeCombined,
+                 cohort_size=mySizeCombined,
                  data=emptydata,
                  startingDose=0.1)
 

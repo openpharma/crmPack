@@ -80,7 +80,7 @@ myNextBest <- NextBestNCRM(target=c(0.2, 0.35),
 # Choose the rule for the cohort-size
 mySize1 <- CohortSizeRange(intervals=c(0, 30),
                            cohort_size=c(1, 3))
-mySize2 <- CohortSizeDLT(dlt_intervals=c(0, 1),
+mySize2 <- CohortSizeDLT(intervals=c(0, 1),
                          cohort_size=c(1, 3))
 mySize <- maxSize(mySize1, mySize2)
 
@@ -100,7 +100,7 @@ design <- Design(model=model,
                  nextBest=myNextBest,
                  stopping=myStopping,
                  increments=myIncrements,
-                 cohortSize=mySize,
+                 cohort_size=mySize,
                  data=emptydata,
                  startingDose=3)
 
@@ -118,7 +118,7 @@ design <- Design(model=model,
                  nextBest=myNextBest,
                  stopping=myStopping,
                  increments=myIncrements,
-                 cohortSize=mySize,
+                 cohort_size=mySize,
                  data=emptydata,
                  startingDose=3)
 examine(design,mcmcOptions=options)
@@ -133,7 +133,7 @@ design <- Design(model=model,
                  nextBest=myNextBest,
                  stopping=myStopping,
                  increments=myIncrements,
-                 cohortSize=mySize,
+                 cohort_size=mySize,
                  data=emptydata,
                  startingDose=3)
 examine(design, mcmcOptions=options, maxNoIncrement = 2)
@@ -146,10 +146,10 @@ emptydata <- Data(doseGrid = c(5, 10, 15, 25, 35, 50, 80))
 # inizialing a 3+3 design with constant cohort size of 3 and
 # starting dose equal 5
 myDesign <- RuleDesign(nextBest = NextBestThreePlusThree(),
-                       cohortSize = CohortSizeConst(size=3L),
+                       cohort_size = CohortSizeConst(size=3L),
                        data = emptydata,
                        startingDose = 5)
-  
+
 # Examine the design
 set.seed(4235)
 examine(myDesign)
@@ -194,7 +194,7 @@ mySize1 <- CohortSizeRange(
   cohort_size = c(1, 3)
 )
 mySize2 <- CohortSizeDLT(
-  dlt_intervals = c(0, 1),
+  intervals = c(0, 1),
   cohort_size = c(1, 3)
 )
 mySize <- maxSize(mySize1, mySize2)
@@ -217,7 +217,7 @@ design <- DADesign(
   increments = myIncrements,
   nextBest = myNextBest,
   stopping = myStopping,
-  cohortSize = mySize,
+  cohort_size = mySize,
   data = emptydata,
   safetyWindow = mysafetywindow,
   startingDose = 3

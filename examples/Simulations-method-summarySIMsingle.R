@@ -31,7 +31,7 @@ design <- TDDesign(model=model,
                    nextBest=tdNextBest,
                    stopping=myStopping,
                    increments=myIncrements,
-                   cohortSize=mySize,
+                   cohort_size=mySize,
                    data=data,startingDose=25)
 
 ##Specify the truth of the DLE responses
@@ -63,7 +63,7 @@ design <- TDsamplesDesign(model=model,
                           nextBest=tdNextBest,
                           stopping=myStopping,
                           increments=myIncrements,
-                          cohortSize=mySize,
+                          cohort_size=mySize,
                           data=data,startingDose=25)
 ##options for MCMC
 ##For illustration purpose, we will use 50 burn-ins to generate 200 samples

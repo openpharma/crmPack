@@ -18,7 +18,7 @@ NULL
 #' `model`, `stopping` and `increments` slots.
 #'
 #' @slot nextBest (`NextBest`)\cr how to find the next best dose.
-#' @slot cohortSize (`CohortSize`)\cr rules for the cohort sizes.
+#' @slot cohort_size (`CohortSize`)\cr rules for the cohort sizes.
 #' @slot data (`Data`)\cr specifies dose grid, any previous data, etc.
 #' @slot startingDose (`number`)\cr the starting dose, it must lie on the dose
 #'   grid in `data`.
@@ -30,13 +30,13 @@ NULL
   Class = "RuleDesign",
   slots = c(
     nextBest = "NextBest",
-    cohortSize = "CohortSize",
+    cohort_size = "CohortSize",
     data = "Data",
     startingDose = "numeric"
   ),
   prototype = prototype(
     nextBest = .NextBestThreePlusThree(),
-    cohortSize = CohortSizeConst(3),
+    cohort_size = CohortSizeConst(3),
     data = Data(doseGrid = 1:3),
     startingDose = 1
   ),
@@ -48,7 +48,7 @@ NULL
 #' @rdname RuleDesign-class
 #'
 #' @param nextBest (`NextBest`)\cr see slot definition.
-#' @param cohortSize (`CohortSize`)\cr see slot definition.
+#' @param cohort_size (`CohortSize`)\cr see slot definition.
 #' @param data (`Data`)\cr see slot definition.
 #' @param startingDose (`number`)\cr see slot definition.
 #'
@@ -56,13 +56,13 @@ NULL
 #' @example examples/Design-class-RuleDesign.R
 #'
 RuleDesign <- function(nextBest,
-                       cohortSize,
+                       cohort_size,
                        data,
                        startingDose) {
   new(
     "RuleDesign",
     nextBest = nextBest,
-    cohortSize = cohortSize,
+    cohort_size = cohort_size,
     data = data,
     startingDose = as.numeric(startingDose)
   )
@@ -84,7 +84,7 @@ ThreePlusThreeDesign <- function(doseGrid) {
   RuleDesign(
     nextBest = NextBestThreePlusThree(),
     data = empty_data,
-    cohortSize = CohortSizeConst(size = 3L),
+    cohort_size = CohortSizeConst(size = 3L),
     startingDose = doseGrid[1]
   )
 }

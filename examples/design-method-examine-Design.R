@@ -18,7 +18,7 @@ myNextBest <- NextBestNCRM(target=c(0.2, 0.35),
 # Choose the rule for the cohort-size
 mySize1 <- CohortSizeRange(intervals=c(0, 30),
                            cohort_size=c(1, 3))
-mySize2 <- CohortSizeDLT(dlt_intervals=c(0, 1),
+mySize2 <- CohortSizeDLT(intervals=c(0, 1),
                          cohort_size=c(1, 3))
 mySize <- maxSize(mySize1, mySize2)
 
@@ -38,7 +38,7 @@ design <- Design(model=model,
                  nextBest=myNextBest,
                  stopping=myStopping,
                  increments=myIncrements,
-                 cohortSize=mySize,
+                 cohort_size=mySize,
                  data=emptydata,
                  startingDose=3)
 
@@ -56,7 +56,7 @@ design <- Design(model=model,
                  nextBest=myNextBest,
                  stopping=myStopping,
                  increments=myIncrements,
-                 cohortSize=mySize,
+                 cohort_size=mySize,
                  data=emptydata,
                  startingDose=3)
 examine(design,mcmcOptions=options)
@@ -71,7 +71,7 @@ design <- Design(model=model,
                  nextBest=myNextBest,
                  stopping=myStopping,
                  increments=myIncrements,
-                 cohortSize=mySize,
+                 cohort_size=mySize,
                  data=emptydata,
                  startingDose=3)
 examine(design, mcmcOptions=options, maxNoIncrement = 2)

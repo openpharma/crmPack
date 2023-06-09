@@ -42,7 +42,7 @@ doseRecommendation <- nextBest(myNextBest,
 # Rule for the cohort size:
 #   - having cohort of size 1 if no DLTs were yet observed
 #   - and having cohort of size 3 if at least 1 DLT was already observed
-mySize <- CohortSizeDLT(dlt_intervals = c(0, 1),
+mySize <- CohortSizeDLT(intervals = c(0, 1),
                         cohort_size = c(1, 3))
 
 # Determine the cohort size for the next cohort

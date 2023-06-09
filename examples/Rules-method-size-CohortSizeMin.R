@@ -46,7 +46,7 @@ mySize1 <- CohortSizeRange(intervals = c(0, 30),
 
 # Rule for having cohort of size 1 until no DLT were observed
 #      and having cohort of size 3 as soon as 1 DLT is observed
-mySize2 <- CohortSizeDLT(dlt_intervals=c(0, 1),
+mySize2 <- CohortSizeDLT(intervals=c(0, 1),
                          cohort_size=c(1, 3))
 
 # Combining the two rules for cohort size by taking the minimum of the sample sizes

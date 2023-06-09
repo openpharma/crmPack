@@ -28,7 +28,7 @@ TDsamplesDesign(
   Arguments passed on to \code{\link[=RuleDesign]{RuleDesign}}
   \describe{
     \item{\code{nextBest}}{(\code{NextBest})\cr see slot definition.}
-    \item{\code{cohortSize}}{(\code{CohortSize})\cr see slot definition.}
+    \item{\code{cohort_size}}{(\code{CohortSize})\cr see slot definition.}
     \item{\code{data}}{(\code{Data})\cr see slot definition.}
     \item{\code{startingDose}}{(\code{number})\cr see slot definition.}
   }}
@@ -91,7 +91,7 @@ design <- TDsamplesDesign(
   stopping = my_stopping,
   increments = my_increments,
   nextBest = my_next_best,
-  cohortSize = my_size,
+  cohort_size = my_size,
   data = empty_data,
   startingDose = 25
 )

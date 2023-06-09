@@ -88,7 +88,7 @@ myStopping <- StoppingMinPatients(nPatients = 36)
 ## Specified the design
 design <- DualResponsesSamplesDesign(
   nextBest = mynextbest,
-  cohortSize = mySize,
+  cohort_size = mySize,
   startingDose = 25,
   model = DLEmodel,
   eff_model = eff_model,

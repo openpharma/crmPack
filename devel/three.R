@@ -70,8 +70,7 @@ source("../R/Design-class.R")
 design <- RuleDesign(
               nextBest=myNextBest,
               data=emptydata,
-              cohortSize=
-              CohortSizeConst(size=3L),
+              cohort_size=CohortSizeConst(size=3L),
               ## using a constant cohort size of 3,
               ## we obtain exactly the 3+3 design
               startingDose=0.1)
