@@ -1819,11 +1819,18 @@ setMethod(
     do_stop <- is.na(dose) || (data@placebo && dose == min(data@doseGrid))
 
     msg <- paste(
-      "Recommended next best dose is",
+      "Next dose is",
       ifelse(
         do_stop,
-        ifelse(data@placebo && dose == min(data@doseGrid), "placebo dose", "NA"),
-        "an actual dose"
+        paste(
+          ifelse(
+            data@placebo && dose == min(data@doseGrid),
+            "placebo dose",
+            "NA"
+          ),
+          ", i.e., no active dose is safe enough according to the NextBest rule."
+        ),
+        "available at the dose grid."
       )
     )
 

@@ -1365,19 +1365,44 @@ test_that("maxDose-IncrementsMin works correctly when incr2 is minimum", {
 ## StoppingMissingDose ----
 
 test_that("StoppingMissingDose works correctly", {
-  s1 <- StoppingMissingDose()
+  stopping <- StoppingMissingDose()
 
-  rv <- stopTrial(s1, dose = NA_real_, data = Data(doseGrid = c(0, 1), placebo = TRUE))
-  expect_true(rv)
-  expect_equal(attributes(rv), list(message = "Recommended next best dose is NA"))
+  result <- stopTrial(
+    stopping,
+    dose = NA_real_,
+    data = Data(doseGrid = c(0, 1), placebo = TRUE)
+  )
+  expect_true(result)
+  expect_equal(
+    attributes(result),
+    list(
+      message = "Next dose is NA , i.e., no active dose is safe enough according to the NextBest rule."
+    )
+  )
 
-  rv <- stopTrial(s1, dose = 0, data = Data(doseGrid = c(0, 1), placebo = TRUE))
-  expect_true(rv)
-  expect_equal(attributes(rv), list(message = "Recommended next best dose is placebo dose"))
+  result <- stopTrial(
+    stopping,
+    dose = 0,
+    data = Data(doseGrid = c(0, 1), placebo = TRUE)
+  )
+  expect_true(result)
+  expect_equal(
+    attributes(result),
+    list(
+      message = "Next dose is placebo dose , i.e., no active dose is safe enough according to the NextBest rule."
+    )
+  )
 
-  rv <- stopTrial(s1, dose = 1, data = Data(doseGrid = c(0, 1), placebo = TRUE))
-  expect_false(rv)
-  expect_equal(attributes(rv), list(message = "Recommended next best dose is an actual dose"))
+  result <- stopTrial(
+    stopping,
+    dose = 1,
+    data = Data(doseGrid = c(0, 1), placebo = TRUE)
+  )
+  expect_false(result)
+  expect_equal(
+    attributes(result),
+    list(message = "Next dose is available at the dose grid.")
+  )
 })
 
 ## StoppingCohortsNearDose ----
