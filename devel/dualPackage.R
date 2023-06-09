@@ -193,7 +193,7 @@ design <- new("DualDesign",
                   doseGrid=
                   c(0.1, 0.5, 1.5, 3, 6,
                     seq(from=10, to=80, by=2))),
-              cohortSize=new("CohortSizeConst", size=3L),
+              cohort_size=new("CohortSizeConst", size=3L),
               startingDose=6)
 
 

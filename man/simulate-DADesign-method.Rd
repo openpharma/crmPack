@@ -140,7 +140,7 @@ design <- DADesign(
   increments = myIncrements,
   nextBest = myNextBest,
   stopping = myStopping,
-  cohortSize = mySize,
+  cohort_size = mySize,
   data = emptydata,
   safetyWindow = mysafetywindow,
   startingDose = 3

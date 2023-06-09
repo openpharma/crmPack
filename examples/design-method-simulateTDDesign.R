@@ -37,7 +37,7 @@ design <- TDDesign(model=model,
                    nextBest=tdNextBest,
                    stopping=myStopping,
                    increments=myIncrements,
-                   cohortSize=mySize,
+                   cohort_size=mySize,
                    data=data,startingDose=25)
 
 ##Specify the truth of the DLE responses

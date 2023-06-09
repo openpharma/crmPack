@@ -38,7 +38,7 @@ design <- Design(model=model,
                  nextBest=myNextBest,
                  stopping=myStopping,
                  increments=myIncrements,
-                 cohortSize=mySize,
+                 cohort_size=mySize,
                  data=emptydata,
                  startingDose=3)
 
@@ -56,7 +56,7 @@ design <- Design(model=model,
                  nextBest=myNextBest,
                  stopping=myStopping,
                  increments=myIncrements,
-                 cohortSize=mySize,
+                 cohort_size=mySize,
                  data=emptydata,
                  startingDose=3)
 examine(design,mcmcOptions=options)
@@ -71,7 +71,7 @@ design <- Design(model=model,
                  nextBest=myNextBest,
                  stopping=myStopping,
                  increments=myIncrements,
-                 cohortSize=mySize,
+                 cohort_size=mySize,
                  data=emptydata,
                  startingDose=3)
 examine(design, mcmcOptions=options, maxNoIncrement = 2)

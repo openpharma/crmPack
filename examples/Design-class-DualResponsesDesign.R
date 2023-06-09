@@ -29,7 +29,7 @@ my_stopping <- StoppingMinPatients(nPatients = 36)
 
 design <- DualResponsesDesign(
   nextBest = my_next_best,
-  cohortSize = my_size,
+  cohort_size = my_size,
   startingDose = 25,
   model = tox_model,
   eff_model = eff_model,

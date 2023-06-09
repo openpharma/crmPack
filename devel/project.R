@@ -341,7 +341,7 @@ design <- Design(model=model,
                  nextBest=myNextBest,
                  stopping=myStoppingEasy,
                  increments=myIncrements,
-                 cohortSize=mySizeCombined,
+                 cohort_size=mySizeCombined,
                  data=emptydata,
                  startingDose=0.1)
 

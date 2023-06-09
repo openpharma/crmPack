@@ -62,7 +62,7 @@ RuleDesign <- function(nextBest,
   new(
     "RuleDesign",
     nextBest = nextBest,
-    cohort_size = cohortSize,
+    cohort_size = cohort_size,
     data = data,
     startingDose = as.numeric(startingDose)
   )

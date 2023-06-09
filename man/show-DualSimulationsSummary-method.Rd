@@ -59,7 +59,7 @@ design <- DualDesign(model = model,
                      nextBest = myNextBest,
                      stopping = myStopping,
                      increments = myIncrements,
-                     cohortSize = CohortSizeConst(3),
+                     cohort_size = CohortSizeConst(3),
                      startingDose = 3)
 
 # define scenarios for the TRUE toxicity and efficacy profiles

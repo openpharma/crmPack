@@ -58,7 +58,7 @@ design <- Design(model=model,
                  nextBest=myNextBest,
                  stopping=myStopping,
                  increments=myIncrements,
-                 cohortSize=mySize,
+                 cohort_size=mySize,
                  data=emptydata,
                  startingDose=3)
 

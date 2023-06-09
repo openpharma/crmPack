@@ -619,7 +619,7 @@ For the dose escalation, there are four kinds of rules:
 \item \texttt{Increments}: For specifying maximum allowable increments between
   doses
 \item \texttt{NextBest}: How to derive the next best dose
-\item \texttt{CohortSize}: For specifying the cohort size
+\item \texttt{cohort_size}: For specifying the cohort size
 \item \texttt{Stopping}: Stopping rules for finishing the dose escalation
 \end{enumerate}
 We have listed here the classes of these rules, and there are multiple
@@ -1114,14 +1114,14 @@ design <- Design(
   nextBest = myNextBest,
   stopping = myStopping,
   increments = myIncrements,
-  cohortSize = mySize,
+  cohort_size = mySize,
   data = emptydata,
   startingDose = 3
 )
 @
 
 
-Another example will be given when the \texttt{TDDesign} class is used. The empty data set, \texttt{data1} will be used, and the starting dose will be 25 mg. The code below will be a design defined when no MCMC sampling is involved. The \texttt{nextBest} slot under this \texttt{TDDesign} class function has to be defined with the \texttt{TDNextBest} class object to ensure we will pick the next best dose using rules as defined when no MCMC sampling is involved. In addition, we define here with \texttt{myStopping4} that the trial will only stop when the ratio of the 95\% credibility interval limits of the current estimate of TD30 (TDtargetEndOfTrial) is less than or equal to 5. In addition, we also use \texttt{myIncrements1}, \texttt{mySize} and \texttt{data1} defined in earlier examples for the \texttt{increments}, \texttt{cohortSize} and  \texttt{data} slots in defining the \texttt{TDDesign} object:
+Another example will be given when the \texttt{TDDesign} class is used. The empty data set, \texttt{data1} will be used, and the starting dose will be 25 mg. The code below will be a design defined when no MCMC sampling is involved. The \texttt{nextBest} slot under this \texttt{TDDesign} class function has to be defined with the \texttt{TDNextBest} class object to ensure we will pick the next best dose using rules as defined when no MCMC sampling is involved. In addition, we define here with \texttt{myStopping4} that the trial will only stop when the ratio of the 95\% credibility interval limits of the current estimate of TD30 (TDtargetEndOfTrial) is less than or equal to 5. In addition, we also use \texttt{myIncrements1}, \texttt{mySize} and \texttt{data1} defined in earlier examples for the \texttt{increments}, \texttt{cohort_size} and  \texttt{data} slots in defining the \texttt{TDDesign} object:
 
 <<TDDesign-setup>>=
 DLTdesign <- TDDesign(
@@ -1129,7 +1129,7 @@ DLTdesign <- TDDesign(
   nextBest = TDNextBest,
   stopping = myStopping4,
   increments = myIncrements1,
-  cohortSize = mySize,
+  cohort_size = mySize,
   data = data1,
   startingDose = 25
 )
@@ -1143,7 +1143,7 @@ DLTsamplesDesign <- TDsamplesDesign(
   nextBest = TDsamplesNextBest,
   stopping = (myStopping4 | myStopping3),
   increments = myIncrements1,
-  cohortSize = mySize,
+  cohort_size = mySize,
   data = data1,
   startingDose = 25
 )
@@ -1460,7 +1460,7 @@ nowDesign <- Design(
   nextBest = myNextBest,
   stopping = myStopping,
   increments = myIncrements,
-  cohortSize = mySize,
+  cohort_size = mySize,
   ## use the current data:
   data = data,
   ## and the recommended dose as the starting dose:
@@ -1791,7 +1791,7 @@ design <- DualDesign(
   nextBest = myNextBest,
   stopping = myStopping,
   increments = myIncrements,
-  cohortSize = CohortSizeConst(3),
+  cohort_size = CohortSizeConst(3),
   startingDose = 6
 )
 @
@@ -2166,7 +2166,7 @@ design1 <- DualResponsesDesign(
   data = data2,
   stopping = myStopping7,
   increments = myIncrements1,
-  cohortSize = mySize,
+  cohort_size = mySize,
   startingDose = 25
 )
 
@@ -2177,7 +2177,7 @@ design2 <- DualResponsesSamplesDesign(
   data = data2,
   stopping = myStopping8,
   increments = myIncrements1,
-  cohortSize = mySize,
+  cohort_size = mySize,
   startingDose = 25
 )
 @
@@ -2191,7 +2191,7 @@ design3 <- DualResponsesSamplesDesign(
   data = data2,
   stopping = myStopping8,
   increments = myIncrements1,
-  cohortSize = mySize,
+  cohort_size = mySize,
   startingDose = 25
 )
 @

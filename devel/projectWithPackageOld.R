@@ -203,7 +203,7 @@ design <- new("Design",
               stopping=myStopping,
               increments=myIncrements,
               data=data,
-              cohortSize=3L,
+              cohort_size=3L,
               startingDose=12)
 
 
