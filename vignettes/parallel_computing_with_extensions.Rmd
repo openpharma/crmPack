@@ -68,10 +68,9 @@ Please note that for this example the extra code is directly inserted into the o
 library(crmPack)
 
 my_own_extension <- function() {
-  
   # Uncomment next line to avoid the use of the :: operator below.
   # library(checkmate)
-  
+
   # LogisticNormalTruncPrior ----
 
   ## class ----
@@ -190,7 +189,8 @@ my_own_extension <- function() {
     ),
     definition = function(dose, model, samples) {
       checkmate::assert_numeric(
-        dose, lower = 0L, any.missing = FALSE, min.len = 1
+        dose,
+        lower = 0L, any.missing = FALSE, min.len = 1
       )
       checkmate::assert_subset(c("alpha0", "alpha1"), names(samples))
       assert_length(dose, len = size(samples))
@@ -413,17 +413,17 @@ time <- system.time({
 As an alternative it may be more convenient to store the user extensions in an external file and source the file in the wrapper function. This has the advantage, that the `<<-` operator is not necessary for user constructor functions and can be replaced by the usual assignment `<-`.
 
 ```{r user code stored in external file,  eval=FALSE}
-# Store code example form above in external file and 
+# Store code example form above in external file and
 # remove the wrapper function structure.
 dump("my_own_extension", file = "user_extension.R")
 file_con <- file("user_extension.R")
-tmp <- readLines(file_con)[-c(1:3,135)]
+tmp <- readLines(file_con)[-c(1:3, 135)]
 tmp <- gsub("<<-", "<-", tmp)
 writeLines(tmp, file_con)
 
 # Source the stored file in the wrapper function.
 my_own_extension2 <- function() {
-   source("user_extension.R")
+  source("user_extension.R")
 }
 
 options(crmpack_extensions = my_own_extension2)
