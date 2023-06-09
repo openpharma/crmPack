@@ -8,4 +8,4 @@ my_size2 <- CohortSizeDLT(intervals = c(0, 1), cohort_size = c(1, 3))
 
 # Cohort size rules of class 'CohortSizeMin' which will then be combined with
 # the 'min' operation.
-my_size <- CohortSizeMin(cohort_size_list = list(my_size1, my_size2))
+my_size <- CohortSizeMin(cohort_sizes = list(my_size1, my_size2))

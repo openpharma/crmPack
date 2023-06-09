@@ -2589,7 +2589,7 @@ CohortSizeConst <- function(size) {
 #'
 .CohortSizeParts <- setClass(
   Class = "CohortSizeParts",
-  slots = c(sizes = "integer"),
+  slots = c(cohort_sizes = "integer"),
   prototype = prototype(sizes = c(1L, 3L)),
   contains = "CohortSize",
   validity = v_cohort_size_parts
@@ -2604,8 +2604,8 @@ CohortSizeConst <- function(size) {
 #' @export
 #' @example examples/Rules-class-CohortSizeParts.R
 #'
-CohortSizeParts <- function(sizes) {
-  .CohortSizeParts(sizes = safeInteger(sizes))
+CohortSizeParts <- function(cohort_sizes) {
+  .CohortSizeParts(cohort_sizes = safeInteger(cohort_sizes))
 }
 
 ## default constructor ----
@@ -2614,7 +2614,7 @@ CohortSizeParts <- function(sizes) {
 #' @note Typically, end users will not use the `.DefaultCohortSizeParts()` function.
 #' @export
 .DefaultCohortSizeParts <- function() {
-  CohortSizeParts(sizes = c(1L, 3L))
+  CohortSizeParts(cohort_sizes = c(1L, 3L))
 }
 
 # CohortSizeMax ----
@@ -2626,11 +2626,11 @@ CohortSizeParts <- function(sizes) {
 #' @description `r lifecycle::badge("stable")`
 #'
 #' [`CohortSizeMax`] is the class for cohort size that is based on maximum of
-#' multiple cohort size rules. The `cohort_size_list` slot stores a set of cohort
+#' multiple cohort size rules. The `cohort_sizes` slot stores a set of cohort
 #' size rules, which are again the objects of class [`CohortSize`]. The maximum
 #' of these individual cohort sizes is taken to give the final cohort size.
 #'
-#' @slot cohort_size_list (`list`)\cr a list of cohort size rules, i.e. objects
+#' @slot cohort_sizes (`list`)\cr a list of cohort size rules, i.e. objects
 #' of class [`CohortSize`].
 #'
 #' @aliases CohortSizeMax
@@ -2638,9 +2638,9 @@ CohortSizeParts <- function(sizes) {
 #'
 .CohortSizeMax <- setClass(
   Class = "CohortSizeMax",
-  slots = c(cohort_size_list = "list"),
+  slots = c(cohort_sizes = "list"),
   prototype = prototype(
-    cohort_size_list = list(
+    cohort_sizes = list(
       CohortSizeRange(intervals = c(0, 30), cohort_size = c(1, 3)),
       CohortSizeDLT(intervals = c(0, 1), cohort_size = c(1, 3))
     )
@@ -2657,7 +2657,7 @@ CohortSizeParts <- function(sizes) {
 #' @export
 .DefaultCohortSizeMax <- function() {
   CohortSizeMax(
-    cohort_size_list = list(
+    cohort_sizes = list(
       CohortSizeRange(intervals = c(0, 10), cohort_size = c(1L, 3L)),
       CohortSizeDLT(intervals = c(0L, 1L), cohort_size = c(1L, 3L))
     )
@@ -2668,13 +2668,13 @@ CohortSizeParts <- function(sizes) {
 
 #' @rdname CohortSizeMax-class
 #'
-#' @param cohort_size_list (`list`)\cr see slot definition.
+#' @param cohort_sizes (`list`)\cr see slot definition.
 #'
 #' @export
 #' @example examples/Rules-class-CohortSizeMax.R
 #'
-CohortSizeMax <- function(cohort_size_list) {
-  .CohortSizeMax(cohort_size_list = cohort_size_list)
+CohortSizeMax <- function(cohort_sizes) {
+  .CohortSizeMax(cohort_sizes = cohort_sizes)
 }
 
 # CohortSizeMin ----
@@ -2686,11 +2686,11 @@ CohortSizeMax <- function(cohort_size_list) {
 #' @description `r lifecycle::badge("stable")`
 #'
 #' [`CohortSizeMin`] is the class for cohort size that is based on minimum of
-#' multiple cohort size rules. The `cohort_size_list` slot stores a set of cohort
+#' multiple cohort size rules. The `cohort_sizes` slot stores a set of cohort
 #' size rules, which are again the objects of class [`CohortSize`]. The minimum
 #' of these individual cohort sizes is taken to give the final cohort size.
 #'
-#' @slot cohort_size_list (`list`)\cr a list of cohort size rules, i.e. objects
+#' @slot cohort_sizes (`list`)\cr a list of cohort size rules, i.e. objects
 #' of class [`CohortSize`].
 #'
 #' @aliases CohortSizeMin
@@ -2698,9 +2698,9 @@ CohortSizeMax <- function(cohort_size_list) {
 #'
 .CohortSizeMin <- setClass(
   Class = "CohortSizeMin",
-  slots = c(cohort_size_list = "list"),
+  slots = c(cohort_sizes = "list"),
   prototype = prototype(
-    cohort_size_list =
+    cohort_sizes =
       list(
         CohortSizeRange(intervals = c(0, 30), cohort_size = c(1, 3)),
         CohortSizeDLT(intervals = c(0, 1), cohort_size = c(1, 3))
@@ -2714,13 +2714,13 @@ CohortSizeMax <- function(cohort_size_list) {
 
 #' @rdname CohortSizeMin-class
 #'
-#' @param cohort_size_list (`list`)\cr see slot definition.
+#' @param cohort_sizes (`list`)\cr see slot definition.
 #'
 #' @export
 #' @example examples/Rules-class-CohortSizeMin.R
 #'
-CohortSizeMin <- function(cohort_size_list) {
-  .CohortSizeMin(cohort_size_list = cohort_size_list)
+CohortSizeMin <- function(cohort_sizes) {
+  .CohortSizeMin(cohort_sizes = cohort_sizes)
 }
 
 ## default constructor ----
@@ -2730,7 +2730,7 @@ CohortSizeMin <- function(cohort_size_list) {
 #' @export
 .DefaultCohortSizeMin <- function() {
   CohortSizeMin(
-    cohort_size_list = list(
+    cohort_sizes = list(
       CohortSizeRange(intervals = c(0, 10), cohort_size = c(1L, 3L)),
       CohortSizeDLT(intervals = c(0L, 1L), cohort_size = c(1L, 3L))
     )

@@ -596,19 +596,19 @@ v_cohort_size_const <- function(object) {
 v_cohort_size_parts <- function(object) {
   v <- Validate()
   v$check(
-    test_integer(object@sizes, lower = .Machine$double.xmin, any.missing = FALSE, len = 2),
+    test_integer(object@cohort_sizes, lower = .Machine$double.xmin, any.missing = FALSE, len = 2),
     "sizes needs to be an integer vector of length 2 with all elements positive"
   )
   v$result()
 }
 
 #' @describeIn v_cohort_size validates that the [`CohortSizeMax`] object
-#'   contains valid `cohort_size_list` slot.
+#'   contains valid `cohort_sizes` slot.
 v_cohort_size_max <- function(object) {
   v <- Validate()
   v$check(
-    test_list(object@cohort_size_list, types = "CohortSize", any.missing = FALSE, min.len = 2, unique = TRUE),
-    "cohort_size_list must be a list of CohortSize (unique) objects only and be of length >= 2"
+    test_list(object@cohort_sizes, types = "CohortSize", any.missing = FALSE, min.len = 2, unique = TRUE),
+    "cohort_sizes must be a list of CohortSize (unique) objects only and be of length >= 2"
   )
   v$result()
 }

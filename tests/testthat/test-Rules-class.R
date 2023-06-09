@@ -952,7 +952,7 @@ test_that(".CohortSizeParts works as expected", {
 test_that("CohortSizeParts object can be created with user constructor", {
   result <- expect_silent(CohortSizeParts(c(1, 4)))
   expect_valid(result, "CohortSizeParts")
-  expect_identical(result@sizes, c(1L, 4L))
+  expect_identical(result@cohort_sizes, c(1L, 4L))
 })
 
 ## CohortSizeMax ----
@@ -963,22 +963,22 @@ test_that(".CohortSizeMax works as expected", {
 })
 
 test_that("CohortSizeMax object can be created with user constructor", {
-  cohort_size_list <- h_cohort_size_list()
-  result <- expect_silent(CohortSizeMax(cohort_size_list = cohort_size_list))
+  cohort_sizes <- h_cohort_sizes()
+  result <- expect_silent(CohortSizeMax(cohort_sizes = cohort_sizes))
   expect_valid(result, "CohortSizeMax")
-  expect_identical(result@cohort_size_list, cohort_size_list)
+  expect_identical(result@cohort_sizes, cohort_sizes)
 
-  cohort_size_list <- h_cohort_size_list(three_rules = TRUE)
-  result <- expect_silent(CohortSizeMax(cohort_size_list = cohort_size_list))
+  cohort_sizes <- h_cohort_sizes(three_rules = TRUE)
+  result <- expect_silent(CohortSizeMax(cohort_sizes = cohort_sizes))
   expect_valid(result, "CohortSizeMax")
-  expect_identical(result@cohort_size_list, cohort_size_list)
+  expect_identical(result@cohort_sizes, cohort_sizes)
 })
 
 test_that(".DefaultCohortSizeMax works as expected", {
   expect_equal(
     .DefaultCohortSizeMax(),
     CohortSizeMax(
-      cohort_size_list = list(
+      cohort_sizes = list(
         CohortSizeRange(intervals = c(0, 10), cohort_size = c(1, 3)),
         CohortSizeDLT(intervals = c(0, 1), cohort_size = c(1, 3))
       )
@@ -994,22 +994,22 @@ test_that(".CohortSizeMin works as expected", {
 })
 
 test_that("CohortSizeMin object can be created with user constructor", {
-  cohort_size_list <- h_cohort_size_list()
-  result <- expect_silent(CohortSizeMin(cohort_size_list = cohort_size_list))
+  cohort_sizes <- h_cohort_sizes()
+  result <- expect_silent(CohortSizeMin(cohort_sizes = cohort_sizes))
   expect_valid(result, "CohortSizeMin")
-  expect_identical(result@cohort_size_list, cohort_size_list)
+  expect_identical(result@cohort_sizes, cohort_sizes)
 
-  cohort_size_list <- h_cohort_size_list(three_rules = TRUE)
-  result <- expect_silent(CohortSizeMin(cohort_size_list = cohort_size_list))
+  cohort_sizes <- h_cohort_sizes(three_rules = TRUE)
+  result <- expect_silent(CohortSizeMin(cohort_sizes = cohort_sizes))
   expect_valid(result, "CohortSizeMin")
-  expect_identical(result@cohort_size_list, cohort_size_list)
+  expect_identical(result@cohort_sizes, cohort_sizes)
 })
 
 test_that(".DefaultCohortSizeMain works as expected", {
   expect_equal(
     .DefaultCohortSizeMin(),
     CohortSizeMin(
-      cohort_size_list = list(
+      cohort_sizes = list(
         CohortSizeRange(intervals = c(0, 10), cohort_size = c(1, 3)),
         CohortSizeDLT(intervals = c(0, 1), cohort_size = c(1, 3))
       )

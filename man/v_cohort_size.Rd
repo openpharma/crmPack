@@ -47,6 +47,6 @@ contains valid \code{size} slot.
 contains valid \code{sizes} slot.
 
 \item \code{v_cohort_size_max()}: validates that the \code{\link{CohortSizeMax}} object
-contains valid \code{cohort_size_list} slot.
+contains valid \code{cohort_sizes} slot.
 
 }}

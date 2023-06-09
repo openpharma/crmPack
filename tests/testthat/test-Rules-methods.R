@@ -2544,7 +2544,7 @@ test_that("size works as expected for CohortSizeRange", {
 test_that("size works as expected for CohortSizeMax", {
   doseGrid <- 1:5
   cohortSize <- CohortSizeMax(
-    cohort_size_list = list(
+    cohort_sizes = list(
       CohortSizeRange(intervals = c(0, 3), cohort_size = 1:2),
       CohortSizeDLT(intervals = 0:2, cohort_size = c(1, 3, 6))
     )
@@ -2565,7 +2565,7 @@ test_that("size works as expected for CohortSizeMax", {
 test_that("size works as expected for CohortSizeMin", {
   doseGrid <- 1:5
   cohortSize <- CohortSizeMin(
-    cohort_size_list = list(
+    cohort_sizes = list(
       CohortSizeRange(intervals = c(0, 3), cohort_size = 1:2),
       CohortSizeDLT(intervals = 0:2, cohort_size = c(1, 3, 6))
     )
@@ -2585,7 +2585,7 @@ test_that("size works as expected for CohortSizeMin", {
 
 test_that("size works as expected for CohortSizeMin", {
   doseGrid <- 1:5
-  cohortSize <- CohortSizeParts(sizes = c(1, 3))
+  cohortSize <- CohortSizeParts(cohort_sizes = c(1, 3))
   expect_equal(size(cohortSize, NA, DataParts(nextPart = 1L)), 0)
   expect_equal(size(cohortSize, NA, DataParts(nextPart = 2L)), 0)
   for (dose in doseGrid) {
@@ -2729,14 +2729,14 @@ test_that("stopTrial works for StoppingTargetBiomarker", {
 test_that("maxSize works as expected", {
   size1 <- CohortSizeRange(intervals = c(0, 3), cohort_size = 1:2)
   size2 <- CohortSizeDLT(intervals = 0:2, cohort_size = c(1, 3, 6))
-  cohortSize <- CohortSizeMax(cohort_size_list = list(size1, size2))
+  cohortSize <- CohortSizeMax(cohort_sizes = list(size1, size2))
   expect_equal(maxSize(size1, size2), cohortSize)
 })
 
 test_that("minSize works as expected", {
   size1 <- CohortSizeRange(intervals = c(0, 3), cohort_size = 1:2)
   size2 <- CohortSizeDLT(intervals = 0:2, cohort_size = c(1, 3, 6))
-  cohortSize <- CohortSizeMin(cohort_size_list = list(size1, size2))
+  cohortSize <- CohortSizeMin(cohort_sizes = list(size1, size2))
   expect_equal(minSize(size1, size2), cohortSize)
 })
 

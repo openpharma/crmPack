@@ -132,7 +132,7 @@ h_stopping_list <- function() {
 
 # CohortSize ----
 
-h_cohort_size_list <- function(three_rules = FALSE) {
+h_cohort_sizes <- function(three_rules = FALSE) {
   size1 <- CohortSizeRange(intervals = c(0, 30), cohort_size = c(2, 6))
   size2 <- CohortSizeDLT(intervals = c(0, 1), cohort_size = c(3, 9))
   if (!three_rules) {
