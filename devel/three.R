@@ -19,25 +19,30 @@ source("../R/Data-class.R")
 source("../R/Data-methods.R")
 
 ## create some test data
-data <- Data(x=
-                 c(0.1, 0.1, 0.1,
-                   10, 10, 10,
-                   10, 10, 10,
-                   20, 20, 20,
-                   30, 30, 30,
-                   60, 60, 60,
-                   60, 60, 60),
-             y=
-                 as.integer(c(1, 1, 0,
-                              0, 0, 1,
-                              0, 0, 0,
-                              0, 0, 0,
-                              0, 0, 0,
-                              0, 0, 0,
-                              1, 0, 0
-                              )),
-             doseGrid=
-                 c(0.1, 10, 20, 30, 60))
+data <- Data(
+  x =
+    c(
+      0.1, 0.1, 0.1,
+      10, 10, 10,
+      10, 10, 10,
+      20, 20, 20,
+      30, 30, 30,
+      60, 60, 60,
+      60, 60, 60
+    ),
+  y =
+    as.integer(c(
+      1, 1, 0,
+      0, 0, 1,
+      0, 0, 0,
+      0, 0, 0,
+      0, 0, 0,
+      0, 0, 0,
+      1, 0, 0
+    )),
+  doseGrid =
+    c(0.1, 10, 20, 30, 60)
+)
 data
 data@nGrid
 
@@ -57,23 +62,24 @@ source("../R/Rules-methods.R")
 ## next best method
 myNextBest <- NextBestThreePlusThree()
 
-nextDose <- nextBest(myNextBest, data=data)
+nextDose <- nextBest(myNextBest, data = data)
 nextDose$value
 nextDose$stopHere
 data
 
 
 ## test design
-emptydata <- Data(doseGrid=c(0.1, 10, 20, 30, 60))
+emptydata <- Data(doseGrid = c(0.1, 10, 20, 30, 60))
 
 source("../R/Design-class.R")
 design <- RuleDesign(
-              nextBest=myNextBest,
-              data=emptydata,
-              cohort_size=CohortSizeConst(size=3L),
-              ## using a constant cohort size of 3,
-              ## we obtain exactly the 3+3 design
-              startingDose=0.1)
+  nextBest = myNextBest,
+  data = emptydata,
+  cohort_size = CohortSizeConst(size = 3L),
+  ## using a constant cohort size of 3,
+  ## we obtain exactly the 3+3 design
+  startingDose = 0.1
+)
 
 ## alternative:
 design <- ThreePlusThreeDesign(emptydata@doseGrid)
@@ -86,17 +92,18 @@ design <- ThreePlusThreeDesign(emptydata@doseGrid)
 
 ## for testing the simulate function:
 object <- design
-truth <- function(dose, alpha0, alpha1)
-{
-    plogis(alpha0 + alpha1 * dose)
+truth <- function(dose, alpha0, alpha1) {
+  plogis(alpha0 + alpha1 * dose)
 }
 
 ## args <- list(rho0=0.1,
 ##              gamma=20)
-args <- list(alpha0=-10,
-             alpha1=0.3)
+args <- list(
+  alpha0 = -10,
+  alpha1 = 0.3
+)
 
-curve(truth(x, args$alpha0, args$alpha1), from=0.1, to=60)
+curve(truth(x, args$alpha0, args$alpha1), from = 0.1, to = 60)
 nsim <- 10L
 seed <- 23
 
@@ -107,9 +114,10 @@ source("../R/Simulations-class.R")
 source("../R/Design-methods.R")
 
 mySims <- simulate(design,
-                   truth=truth,
-                   args=args,
-                   nsim=10L)
+  truth = truth,
+  args = args,
+  nsim = 10L
+)
 
 str(mySims)
 
@@ -122,19 +130,24 @@ plot(mySims@data[[2]])
 mySims@doses
 
 ## what is the true prob at these doses?
-truth(mySims@doses,
-      args$alpha0, args$alpha1)
+truth(
+  mySims@doses,
+  args$alpha0, args$alpha1
+)
 
 
 ## extract operating characteristics
 source("../R/Simulations-methods.R")
 
 ## the truth we want to compare it with:
-myTruth <- function(dose){truth(dose, args$alpha0, args$alpha1)}
-curve(myTruth(x), from=0, to=60)
+myTruth <- function(dose) {
+  truth(dose, args$alpha0, args$alpha1)
+}
+curve(myTruth(x), from = 0, to = 60)
 
 sumOut <- summary(mySims,
-                  truth=myTruth)
+  truth = myTruth
+)
 sumOut
 
 mySims@doses
@@ -147,7 +160,7 @@ str(sumOut)
 plot(sumOut)
 plot(mySims)
 
-plot(sumOut, type=c("nObs"))
+plot(sumOut, type = c("nObs"))
 
 ## now from the raw simulation output
 str(mySims@data)

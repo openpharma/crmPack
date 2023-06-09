@@ -18,54 +18,69 @@ source("../R/helpers.R")
 source("../R/Model-class.R")
 
 ## set up the model
-model <- DualEndpointRW(mu=c(0, 1),
-                        Sigma=matrix(c(1, 0, 0, 1), nrow=2),
-                        sigma2betaW=
-                        0.01,
-                        ## c(a=20, b=50), ## gives very unstable results!!
-                        sigma2W=
-                        c(a=0.1, b=0.1),
-                        rho=
-                        c(a=1, b=1),
-                        ## c(a=20, b=10)
-                        smooth="RW1")
+model <- DualEndpointRW(
+  mu = c(0, 1),
+  Sigma = matrix(c(1, 0, 0, 1), nrow = 2),
+  sigma2betaW =
+    0.01,
+  ## c(a=20, b=50), ## gives very unstable results!!
+  sigma2W =
+    c(a = 0.1, b = 0.1),
+  rho =
+    c(a = 1, b = 1),
+  ## c(a=20, b=10)
+  smooth = "RW1"
+)
 
 model <-
-    DualEndpointBeta(E0=0.001,
-                     Emax=c(0.51, 1.5),
-                     delta1=c(0, 100),
-                     mode=c(0, 90),
-                     refDose=100,
-                     mu=c(0, 1),
-                     Sigma=matrix(c(1, 0, 0, 1), nrow=2),
-                     sigma2W=
-                     c(a=0.1, b=0.1),
-                     rho=
-                     c(a=1, b=1))
+  DualEndpointBeta(
+    E0 = 0.001,
+    Emax = c(0.51, 1.5),
+    delta1 = c(0, 100),
+    mode = c(0, 90),
+    refDose = 100,
+    mu = c(0, 1),
+    Sigma = matrix(c(1, 0, 0, 1), nrow = 2),
+    sigma2W =
+      c(a = 0.1, b = 0.1),
+    rho =
+      c(a = 1, b = 1)
+  )
 
 library(DoseFinding)
-curve(betaMod(x, e0=0.2, eMax=0.6, delta1=5, delta2=5 * 0.9 / 0.1, scal=100),
-      from=0, to=50)
-curve(betaMod(x, e0=0.2, eMax=0.6, delta1=1, delta2=1 * 0.9 / 0.1, scal=100),
-      from=0, to=50)
+curve(betaMod(x, e0 = 0.2, eMax = 0.6, delta1 = 5, delta2 = 5 * 0.9 / 0.1, scal = 100),
+  from = 0, to = 50
+)
+curve(betaMod(x, e0 = 0.2, eMax = 0.6, delta1 = 1, delta2 = 1 * 0.9 / 0.1, scal = 100),
+  from = 0, to = 50
+)
 
 
 source("../R/Data-class.R")
 source("../R/Data-methods.R")
 ## create some test data
 data <- new("DataDual",
-            x=
-            c(0.1, 0.5, 1.5, 3, 6, 10, 10, 10,
-              20, 20, 20, 40, 40, 40, 50, 50, 50),
-            y=
-            as.integer(c(0, 0, 0, 0, 0, 0, 1, 0,
-                         0, 1, 1, 0, 0, 1, 0, 1, 1)),
-            w=
-            c(0.3, 0.4, 0.5, 0.4, 0.6, 0.7, 0.5, 0.6,
-              0.5, 0.5, 0.55, 0.4, 0.41, 0.39, 0.3, 0.3, 0.2),
-            doseGrid=
-            c(0.1, 0.5, 1.5, 3, 6,
-              seq(from=10, to=80, by=2)))
+  x =
+    c(
+      0.1, 0.5, 1.5, 3, 6, 10, 10, 10,
+      20, 20, 20, 40, 40, 40, 50, 50, 50
+    ),
+  y =
+    as.integer(c(
+      0, 0, 0, 0, 0, 0, 1, 0,
+      0, 1, 1, 0, 0, 1, 0, 1, 1
+    )),
+  w =
+    c(
+      0.3, 0.4, 0.5, 0.4, 0.6, 0.7, 0.5, 0.6,
+      0.5, 0.5, 0.55, 0.4, 0.41, 0.39, 0.3, 0.3, 0.2
+    ),
+  doseGrid =
+    c(
+      0.1, 0.5, 1.5, 3, 6,
+      seq(from = 10, to = 80, by = 2)
+    )
+)
 data
 data@nGrid
 data@nObs
@@ -77,9 +92,10 @@ source("../R/McmcOptions-class.R")
 source("../R/McmcOptions-methods.R")
 ## and some MCMC options
 options <- new("McmcOptions",
-               burnin=10000,
-               step=2,
-               samples=50000)
+  burnin = 10000,
+  step = 2,
+  samples = 50000
+)
 
 
 source("../R/mcmc.R")
@@ -88,12 +104,12 @@ source("../R/Samples-class.R")
 
 ## obtain the samples
 library(rjags)
-samples <- mcmc(data, model, options, verbose=TRUE)
+samples <- mcmc(data, model, options, verbose = TRUE)
 
 str(samples)
 
-plot(samples@data$betaW[, 40], type="l")
-plot(samples@data$betaW[, 30], type="l")
+plot(samples@data$betaW[, 40], type = "l")
+plot(samples@data$betaW[, 30], type = "l")
 ## ok, so we don't have convergence for RW2 at least with JAGS!
 ## there is convergence with WinBUGS however.
 
@@ -140,10 +156,10 @@ source("../R/Model-methods.R")
 
 plot(samples, model, data)
 x11()
-plot(samples, model, data, extrapolate=FALSE)
+plot(samples, model, data, extrapolate = FALSE)
 
-betaModList <- list(betaMod = rbind(c(1,1), c(1.5,0.75), c(0.8,2.5), c(0.4,0.9)))
-plotModels(betaModList, c(0,1), base = 0, maxEff = 1, scal = 1.2)
+betaModList <- list(betaMod = rbind(c(1, 1), c(1.5, 0.75), c(0.8, 2.5), c(0.4, 0.9)))
+plotModels(betaModList, c(0, 1), base = 0, maxEff = 1, scal = 1.2)
 
 
 ## now on to the rules:
@@ -154,11 +170,12 @@ source("../R/Rules-methods.R")
 ## target level is 90% of maximum biomarker level
 ## overdose tox interval is 35%+
 myNextBest <- new("NextBestDualEndpoint",
-                  target=0.9,
-                  overdose=c(0.35, 1),
-                  maxOverdoseProb=0.25)
+  target = 0.9,
+  overdose = c(0.35, 1),
+  maxOverdoseProb = 0.25
+)
 
-nextDose <- nextBest(myNextBest, doselimit=50, samples=samples, model=model, data=data)
+nextDose <- nextBest(myNextBest, doselimit = 50, samples = samples, model = model, data = data)
 nextDose$plot
 nextDose$value
 data
@@ -168,21 +185,30 @@ data
 ## min 3 cohorts and at least 50% prob in for targeting biomarker,
 ## or max 20 patients
 myStopping1 <- new("StoppingMinCohorts",
-                   nCohorts=3L)
+  nCohorts = 3L
+)
 myStopping2 <- new("StoppingMaxPatients",
-                   nPatients=50L)
+  nPatients = 50L
+)
 myStopping3 <- new("StoppingTargetBiomarker",
-                   target=0.9,
-                   prob=0.5)
+  target = 0.9,
+  prob = 0.5
+)
 
 ## you can either write this:
 myStopping <- new("StoppingAny",
-                  stop_list=
-                  list(new("StoppingAll",
-                           stop_list=
-                           list(myStopping1,
-                                myStopping3)),
-                       myStopping2))
+  stop_list =
+    list(
+      new("StoppingAll",
+        stop_list =
+          list(
+            myStopping1,
+            myStopping3
+          )
+      ),
+      myStopping2
+    )
+)
 
 ## or much more intuitively:
 myStoppingEasy <- (myStopping1 & myStopping3) | myStopping2
@@ -190,31 +216,38 @@ myStoppingEasy
 identical(myStopping, myStoppingEasy)
 
 
-stopTrial(myStopping, dose=nextDose$value,
-          samples, model, data)
+stopTrial(myStopping,
+  dose = nextDose$value,
+  samples, model, data
+)
 
 ## relative increments:
 myIncrements <- new("IncrementsRelative",
-                    intervals=c(0, 20, Inf),
-                    increments=c(1, 0.33))
+  intervals = c(0, 20, Inf),
+  increments = c(1, 0.33)
+)
 
 ## test design
 source("../R/Design-class.R")
 design <- new("DualDesign",
-              model=model,
-              nextBest=myNextBest,
-              stopping=myStopping,
-              increments=myIncrements,
-              data=
-              new("DataDual",
-                  x=numeric(),
-                  y=integer(),
-                  w=numeric(),
-                  doseGrid=
-                  c(0.1, 0.5, 1.5, 3, 6,
-                    seq(from=10, to=80, by=2))),
-              cohort_size=new("CohortSizeConst", size=3L),
-              startingDose=6)
+  model = model,
+  nextBest = myNextBest,
+  stopping = myStopping,
+  increments = myIncrements,
+  data =
+    new("DataDual",
+      x = numeric(),
+      y = integer(),
+      w = numeric(),
+      doseGrid =
+        c(
+          0.1, 0.5, 1.5, 3, 6,
+          seq(from = 10, to = 80, by = 2)
+        )
+    ),
+  cohort_size = new("CohortSizeConst", size = 3L),
+  startingDose = 6
+)
 
 
 
@@ -236,44 +269,48 @@ source("../R/Simulations-class.R")
 source("../R/Design-methods.R")
 
 betaMod <-
-    function (dose, e0, eMax, delta1, delta2, scal)
-{
-    maxDens <- (delta1^delta1) * (delta2^delta2)/((delta1 + delta2)^(delta1 +
-                                                                     delta2))
-    dose <- dose/scal
-    e0 + eMax/maxDens * (dose^delta1) * (1 - dose)^delta2
+  function(dose, e0, eMax, delta1, delta2, scal) {
+    maxDens <- (delta1^delta1) * (delta2^delta2) / ((delta1 + delta2)^(delta1 +
+      delta2))
+    dose <- dose / scal
+    e0 + eMax / maxDens * (dose^delta1) * (1 - dose)^delta2
+  }
+## trace(simulate, browser, signature=c("DualDesign"))
+trueTox <- function(dose) {
+  pnorm((dose - 60) / 10)
 }
-##trace(simulate, browser, signature=c("DualDesign"))
-trueTox <- function(dose){
-    pnorm((dose-60)/10)
-}
-trueBiomarker <- function(dose){
-    betaMod(dose, e0=0.2, eMax=0.6, delta1=5, delta2=5 * 0.5 / 0.5, scal=100)
+trueBiomarker <- function(dose) {
+  betaMod(dose, e0 = 0.2, eMax = 0.6, delta1 = 5, delta2 = 5 * 0.5 / 0.5, scal = 100)
 }
 mySims <- simulate(design,
-                   trueTox=trueTox,
-                   trueBiomarker=trueBiomarker,
-                   sigma2W=0.001,
-                   rho=0,
-                   nsim=3L,
-                   firstSeparate=FALSE,
-                   parallel=FALSE,
-                   seed=3)
+  trueTox = trueTox,
+  trueBiomarker = trueBiomarker,
+  sigma2W = 0.001,
+  rho = 0,
+  nsim = 3L,
+  firstSeparate = FALSE,
+  parallel = FALSE,
+  seed = 3
+)
 ## todo: check parallel=TRUE in package version of this dual.R
 
 source("../R/Simulations-methods.R")
 
 str(mySims, 2)
 str(mySims@fitBiomarker, 2)
-identical(mySims@fitBiomarker[[1]],
-          mySims@fitBiomarker[[2]])
-identical(mySims@fitBiomarker[[2]],
-          mySims@fitBiomarker[[3]])
+identical(
+  mySims@fitBiomarker[[1]],
+  mySims@fitBiomarker[[2]]
+)
+identical(
+  mySims@fitBiomarker[[2]],
+  mySims@fitBiomarker[[3]]
+)
 
-plot(mySims@fitBiomarker[[1]]$middleBiomarker, type="l")
+plot(mySims@fitBiomarker[[1]]$middleBiomarker, type = "l")
 
 mySims@stopReasons
-plot(mySims, type=c("dose", "rho"))
+plot(mySims, type = c("dose", "rho"))
 plot(mySims)
 
 
@@ -291,8 +328,9 @@ mySims@doses
 
 ## the truth we want to compare it with:
 sumOut <- summary(mySims,
-                  trueTox=trueTox,
-                  trueBiomarker=trueBiomarker)
+  trueTox = trueTox,
+  trueBiomarker = trueBiomarker
+)
 sumOut
 
 mySims@doses
@@ -304,9 +342,9 @@ str(sumOut)
 
 plot(sumOut)
 
-plot(sumOut, type="meanFit")
+plot(sumOut, type = "meanFit")
 
-plot(sumOut, type=c("nObs", "meanFit"))
+plot(sumOut, type = c("nObs", "meanFit"))
 
 ## now from the raw simulation output
 str(mySims@data)

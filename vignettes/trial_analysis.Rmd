@@ -17,11 +17,15 @@ knitr::opts_chunk$set(
 ```
 ```{r checkPacakges, echo=FALSE}
 notFound <- which(
-              !sapply(c("kableExtra", "tibble", "magrittr", "dplyr",
-                        "tidyr", "stringr", "kableExtra", "knitr"),
-                      requireNamespace,
-                      quietly = TRUE)
-            )
+  !sapply(
+    c(
+      "kableExtra", "tibble", "magrittr", "dplyr",
+      "tidyr", "stringr", "kableExtra", "knitr"
+    ),
+    requireNamespace,
+    quietly = TRUE
+  )
+)
 cantRun <- length(notFound) > 0
 ```
 ```{r, eval=cantRun, results="asis", echo=FALSE}
