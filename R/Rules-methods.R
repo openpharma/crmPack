@@ -2819,7 +2819,7 @@ setMethod(
       return(0L)
     } else {
       assert_class(data, "DataParts")
-      object@sizes[data@nextPart]
+      object@cohort_sizes[data@nextPart]
     }
   }
 )

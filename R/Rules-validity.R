@@ -597,7 +597,7 @@ v_cohort_size_parts <- function(object) {
   v <- Validate()
   v$check(
     test_integer(object@cohort_sizes, lower = .Machine$double.xmin, any.missing = FALSE, len = 2),
-    "sizes needs to be an integer vector of length 2 with all elements positive"
+    "cohort_sizes needs to be an integer vector of length 2 with all elements positive"
   )
   v$result()
 }

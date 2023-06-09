@@ -2581,7 +2581,7 @@ CohortSizeConst <- function(size) {
 #' part of the dose escalation. It works only in conjunction with [`DataParts`]
 #' objects.
 #'
-#' @slot sizes (`integer`)\cr a vector of length two with two sizes, one for
+#' @slot cohort_sizes (`integer`)\cr a vector of length two with two sizes, one for
 #'   part 1, and one for part 2 respectively.
 #'
 #' @aliases CohortSizeParts
@@ -2590,7 +2590,7 @@ CohortSizeConst <- function(size) {
 .CohortSizeParts <- setClass(
   Class = "CohortSizeParts",
   slots = c(cohort_sizes = "integer"),
-  prototype = prototype(sizes = c(1L, 3L)),
+  prototype = prototype(cohort_sizes = c(1L, 3L)),
   contains = "CohortSize",
   validity = v_cohort_size_parts
 )

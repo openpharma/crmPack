@@ -1421,15 +1421,15 @@ test_that("v_cohort_size_parts passes for valid object", {
 })
 
 test_that("v_cohort_size_parts returns message for non-valid cohort_sizes", {
-  err_msg <- "sizes needs to be an integer vector of length 2 with all elements positive"
-  object <- CohortSizeParts(c(1, 4))
+  err_msg <- "cohort_sizes needs to be an integer vector of length 2 with all elements positive"
+  object <- CohortSizeParts(c(1L, 4L))
 
-  # Changing `sizes` so that it is not of length 2.
-  object@sizes <- c(1L, 4L, 7L)
+  # Changing `cohort_sizes` so that it is not of length 2.
+  object@cohort_sizes <- c(1L, 4L, 7L)
   expect_equal(v_cohort_size_parts(object), err_msg)
-  object@sizes <- 2L
+  object@cohort_sizes <- 2L
   expect_equal(v_cohort_size_parts(object), err_msg)
-  object@sizes <- integer(0)
+  object@cohort_sizes <- integer(0)
   expect_equal(v_cohort_size_parts(object), err_msg)
 
   # Changing `cohort_sizes` so that it contains not allowed elements.

@@ -25,7 +25,7 @@ objects.
 \section{Slots}{
 
 \describe{
-\item{\code{sizes}}{(\code{integer})\cr a vector of length two with two sizes, one for
+\item{\code{cohort_sizes}}{(\code{integer})\cr a vector of length two with two sizes, one for
 part 1, and one for part 2 respectively.}
 }}
 
