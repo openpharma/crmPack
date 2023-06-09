@@ -281,7 +281,7 @@ setMethod("simulate",
           thisProb <- thisTruth(thisDose)
 
           ## what is the cohort size at this dose?
-          thisSize <- size(object@cohortSize,
+          thisSize <- size(object@cohort_size,
             dose = thisDose,
             data = thisData
           )
@@ -577,7 +577,7 @@ setMethod("simulate",
           thisProb <- thisTruth(thisDose)
 
           ## what is the cohort size at this dose?
-          thisSize <- size(object@cohortSize,
+          thisSize <- size(object@cohort_size,
             dose = thisDose,
             data = thisData
           )
@@ -808,7 +808,7 @@ setMethod("simulate",
           thisMeanBiomarker <- thisTrueBiomarker(thisDose)
 
           ## what is the cohort size at this dose?
-          thisSize <- size(object@cohortSize,
+          thisSize <- size(object@cohort_size,
             dose = thisDose,
             data = thisData
           )
@@ -1166,7 +1166,7 @@ setMethod("examine",
       ## stopping
       while (!stopit) {
         ## what is the cohort size at this dose?
-        thisSize <- size(object@cohortSize,
+        thisSize <- size(object@cohort_size,
           dose = thisDose,
           data = baseData
         )
@@ -1378,7 +1378,7 @@ setMethod("examine",
       ## stopping
       while (!stopit) {
         ## what is the cohort size at this dose?
-        thisSize <- size(object@cohortSize,
+        thisSize <- size(object@cohort_size,
           dose = thisDose,
           data = baseData
         )
@@ -1580,7 +1580,7 @@ setMethod("examine",
       ## stopping
       while (!stopit) {
         ## what is the cohort size at this dose?
-        thisSize <- size(object@cohortSize,
+        thisSize <- size(object@cohort_size,
           dose = thisDose,
           data = baseData
         )
@@ -1964,7 +1964,7 @@ setMethod("simulate",
 
 
           ## what is the cohort size at this dose?
-          thisSize <- size(object@cohortSize,
+          thisSize <- size(object@cohort_size,
             dose = thisDose,
             data = thisData
           )
@@ -2326,7 +2326,7 @@ setMethod("simulate",
           thisProb <- thisTruth(thisDose)
 
           ## what is the cohort size at this dose?
-          thisSize <- size(object@cohortSize,
+          thisSize <- size(object@cohort_size,
             dose = thisDose,
             data = thisData
           )
@@ -2710,7 +2710,7 @@ setMethod("simulate",
           thisMeanEff <- thisTruthEff(thisDose)
 
           ## what is the cohort size at this dose?
-          thisSize <- size(object@cohortSize,
+          thisSize <- size(object@cohort_size,
             dose = thisDose,
             data = thisData
           )
@@ -3239,7 +3239,7 @@ setMethod("simulate",
 
 
             ## what is the cohort size at this dose?
-            thisSize <- size(object@cohortSize,
+            thisSize <- size(object@cohort_size,
               dose = thisDose,
               data = thisData
             )
@@ -3715,7 +3715,7 @@ setMethod("simulate",
             thisMeanEff <- thisTruthEff(thisDose)
 
             ## what is the cohort size at this dose?
-            thisSize <- size(object@cohortSize,
+            thisSize <- size(object@cohort_size,
               dose = thisDose,
               data = thisData
             )
@@ -4316,7 +4316,7 @@ setMethod("simulate",
           thisProb <- thisTruth(thisDose)
 
           ## what is the cohort size at this dose?
-          thisSize <- size(object@cohortSize,
+          thisSize <- size(object@cohort_size,
             dose = thisDose,
             data = thisData
           )

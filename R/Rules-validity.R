@@ -267,16 +267,16 @@ v_increments_relative_parts <- function(object) {
 }
 
 #' @describeIn v_increments validates that the [`IncrementsRelativeDLT`] object
-#'   contains valid `dlt_intervals` and `increments` parameters.
+#'   contains valid `intervals` and `increments` parameters.
 v_increments_relative_dlt <- function(object) {
   v <- Validate()
   v$check(
-    test_integer(object@dlt_intervals, lower = 0, any.missing = FALSE, unique = TRUE, sorted = TRUE),
-    "dlt_intervals has to be an integer vector with unique, finite, non-negative and sorted non-missing values"
+    test_integer(object@intervals, lower = 0, any.missing = FALSE, unique = TRUE, sorted = TRUE),
+    "intervals has to be an integer vector with unique, finite, non-negative and sorted non-missing values"
   )
   v$check(
-    test_numeric(object@increments, finite = TRUE, any.missing = FALSE, len = length(object@dlt_intervals)),
-    "increments has to be a numerical vector of the same length as `dlt_intervals` with finite values"
+    test_numeric(object@increments, finite = TRUE, any.missing = FALSE, len = length(object@intervals)),
+    "increments has to be a numerical vector of the same length as `intervals` with finite values"
   )
   v$result()
 }
@@ -560,22 +560,22 @@ v_cohort_size_range <- function(object) {
 }
 
 #' @describeIn v_cohort_size validates that the [`CohortSizeDLT`] object
-#'   contains valid `dlt_intervals` and  `cohort_size` slots.
+#'   contains valid `intervals` and  `cohort_size` slots.
 v_cohort_size_dlt <- function(object) {
   v <- Validate()
   v$check(
     test_integer(
-      object@dlt_intervals,
+      object@intervals,
       lower = 0, any.missing = FALSE, min.len = 1, unique = TRUE, sorted = TRUE
     ),
-    "dlt_intervals must be an integer vector with non-negative, sorted (asc.) and unique values"
+    "intervals must be an integer vector with non-negative, sorted (asc.) and unique values"
   )
   v$check(
     test_integer(
       object@cohort_size,
-      lower = 0, any.missing = FALSE, len = length(object@dlt_intervals)
+      lower = 0, any.missing = FALSE, len = length(object@intervals)
     ),
-    "cohort_size must be an integer vector of the same length as dlt_intervals, containing non-negative values only"
+    "cohort_size must be an integer vector of the same length as intervals, containing non-negative values only"
   )
   v$result()
 }

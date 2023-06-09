@@ -86,7 +86,7 @@ cohort_size1 <- CohortSizeRange(
   cohort_size = c(1, 3)
 )
 cohort_size2 <- CohortSizeDLT(
-  dlt_intervals = c(0, 1),
+  intervals = c(0, 1),
   cohort_size = c(1, 3)
 )
 cohort_size <- maxSize(cohort_size1, cohort_size2)

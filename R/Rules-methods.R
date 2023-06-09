@@ -1427,8 +1427,8 @@ setMethod(
   definition = function(increments, data, ...) {
     dlt_count <- sum(data@y)
     # Determine in which interval the `dlt_count` is.
-    assert_true(dlt_count >= increments@dlt_intervals[1])
-    dlt_count_interval <- findInterval(x = dlt_count, vec = increments@dlt_intervals)
+    assert_true(dlt_count >= increments@intervals[1])
+    dlt_count_interval <- findInterval(x = dlt_count, vec = increments@intervals)
     (1 + increments@increments[dlt_count_interval]) * data@x[data@nObs]
   }
 )
@@ -1458,8 +1458,8 @@ setMethod(
     dlt_count_lcohort <- sum(data@y[last_cohort_indices])
 
     # Determine in which interval the `dlt_count_lcohort` is.
-    assert_true(dlt_count_lcohort >= increments@dlt_intervals[1])
-    dlt_count_lcohort_int <- findInterval(x = dlt_count_lcohort, vec = increments@dlt_intervals)
+    assert_true(dlt_count_lcohort >= increments@intervals[1])
+    dlt_count_lcohort_int <- findInterval(x = dlt_count_lcohort, vec = increments@intervals)
     (1 + increments@increments[dlt_count_lcohort_int]) * last_dose
   }
 )
@@ -2698,7 +2698,7 @@ setMethod(
     dlt_happened <- sum(data@y)
 
     # Determine in which interval this is.
-    interval <- findInterval(x = dlt_happened, vec = object@dlt_intervals)
+    interval <- findInterval(x = dlt_happened, vec = object@intervals)
     object@cohort_size[interval]
   }
 )

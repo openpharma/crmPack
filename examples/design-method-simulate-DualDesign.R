@@ -21,7 +21,7 @@ myNextBest <- NextBestDualEndpoint(target=c(0.9, 1),
 # Choose the rule for the cohort-size
 mySize1 <- CohortSizeRange(intervals=c(0, 30),
                            cohort_size=c(1, 3))
-mySize2 <- CohortSizeDLT(dlt_intervals=c(0, 1),
+mySize2 <- CohortSizeDLT(intervals=c(0, 1),
                          cohort_size=c(1, 3))
 mySize <- maxSize(mySize1, mySize2)
 
