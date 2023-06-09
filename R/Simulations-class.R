@@ -33,9 +33,9 @@
 #' [`set.seed`] with the `seed` as argument before running
 #' [`simulate,Design-method`].
 #'
-#' @slot data (`list`)\cr list of produced [`Data`] objects
-#' @slot doses (`numeric`)\cr the vector of final dose recommendations
-#' @slot seed (`integer`)\cr random generator state before starting the simulation
+#' @slot data (`list`)\cr produced [`Data`] objects.
+#' @slot doses (`numeric`)\cr final dose recommendations.
+#' @slot seed (`integer`)\cr random generator state before starting the simulation.
 #'
 #' @aliases GeneralSimulations
 #' @export
