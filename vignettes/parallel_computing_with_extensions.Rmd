@@ -68,8 +68,8 @@ Please note that for this example the extra code is directly inserted into the o
 library(crmPack)
 
 my_own_extension <- function() {
-  # Uncomment next line to avoid the use of the :: operator below.
-  # library(checkmate)
+  # Attach the package checkmate with library(checkmate) here, to avoid usage of
+  # the :: operator in the code below.
 
   # LogisticNormalTruncPrior ----
 
@@ -205,7 +205,7 @@ my_own_extension <- function() {
 
 After the new code is defined and embedded into a function, we can store the function as value of a global option, which we will name `crmpack_extensions`.
 
-Please note that `<<-`operator is used to assign the `LogisticNormalTruncPrior` function to the global environment. The assertion functions from the package `checkmate` are referenced by the double colon operator in this example. In case that the package `checkmate` is attached within the function, i.e., the statement `library(checkmate)` is uncommented in the code above, the direct reference `checkmate::` can be removed. Either way works with parallel computing as this makes sure that the functions can be used in the current environment and at the workers when parallel study simulations are performed.
+Please note that `<<-`operator is used to assign the `LogisticNormalTruncPrior` function to the global environment. The assertion functions from the package `checkmate` are referenced by the double colon operator in this example. In case that the package `checkmate` is attached within the function, i.e., the statement `library(checkmate)` is used in the code above, the direct reference `checkmate::` can be removed. Either way works with parallel computing as this makes sure that the functions can be used in the current environment and at the workers when parallel study simulations are performed.
 
 ```{r , eval = FALSE}
 # Store the function into the global option crmpack_extensions.
