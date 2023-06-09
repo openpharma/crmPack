@@ -8,12 +8,12 @@
 \alias{.DefaultIncrementsRelativeDLTCurrent}
 \title{\code{IncrementsRelativeDLTCurrent}}
 \usage{
-IncrementsRelativeDLTCurrent(dlt_intervals = c(0, 1), increments = c(2, 1))
+IncrementsRelativeDLTCurrent(intervals = c(0, 1), increments = c(2, 1))
 
 .DefaultIncrementsRelativeDLTCurrent()
 }
 \arguments{
-\item{dlt_intervals}{(\code{numeric})\cr see slot definition.}
+\item{intervals}{(\code{numeric})\cr see slot definition.}
 
 \item{increments}{(\code{numeric})\cr see slot definition.}
 }
@@ -36,7 +36,7 @@ Typically, end users will not use the \code{.DefaultIncrementsRelativeDLTCurrent
 # or maximum increasing the dose by 1.22 if 3 or more DLTs were observed.
 
 my_increments <- IncrementsRelativeDLTCurrent(
-  dlt_intervals = c(0, 1, 3),
+  intervals = c(0, 1, 3),
   increments = c(1, 0.33, 0.2)
 )
 }

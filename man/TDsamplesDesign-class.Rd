@@ -28,7 +28,7 @@ TDsamplesDesign(
   Arguments passed on to \code{\link[=RuleDesign]{RuleDesign}}
   \describe{
     \item{\code{nextBest}}{(\code{NextBest})\cr see slot definition.}
-    \item{\code{cohortSize}}{(\code{CohortSize})\cr see slot definition.}
+    \item{\code{cohort_size}}{(\code{CohortSize})\cr see slot definition.}
     \item{\code{data}}{(\code{Data})\cr see slot definition.}
     \item{\code{startingDose}}{(\code{number})\cr see slot definition.}
   }}

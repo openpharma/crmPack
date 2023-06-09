@@ -44,7 +44,7 @@ contains valid \code{intervals} and \code{increments} parameters.
 contains valid \code{dlt_start} and \code{clean_start} parameters.
 
 \item \code{v_increments_relative_dlt()}: validates that the \code{\link{IncrementsRelativeDLT}} object
-contains valid \code{dlt_intervals} and \code{increments} parameters.
+contains valid \code{intervals} and \code{increments} parameters.
 
 \item \code{v_increments_dose_levels()}: validates that the \code{\link{IncrementsDoseLevels}} object
 contains valid \code{levels} and \code{basis_level} option.
