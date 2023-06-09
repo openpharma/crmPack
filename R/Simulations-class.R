@@ -19,7 +19,7 @@
 {}
 
 
-# GeneralSimulations class ----
+# GeneralSimulations ----
 
 ## class ----
 
