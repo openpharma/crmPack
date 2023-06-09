@@ -1788,9 +1788,6 @@ setMethod("|",
 #' otherwise. It should have an attribute `message` which gives the reason
 #' for the decision.
 #'
-#' @note If the recommended next best dose is `NA` or the placebo dose, then
-#' the trial always stops, independent of the concrete `stopping` rule used.
-#'
 #' @export
 #' @example examples/Rules-method-CombiningStoppingRulesAndOr.R
 setGeneric(
