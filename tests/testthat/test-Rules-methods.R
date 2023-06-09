@@ -1726,18 +1726,55 @@ test_that("StoppingTargetProb can handle when dose is NA", {
   my_data <- h_get_data()
   my_model <- h_get_logistic_kadane()
   my_samples <- mcmc(my_data, my_model, h_get_mcmc_options(samples = 1000, burnin = 1000))
-  stopping <- StoppingTargetProb(target = c(0.25, 0.3), prob = 0.3)
+  stopping <- StoppingTargetProb(target = c(0.15, 0.2), prob = 0.3)
   result <- stopTrial(
     stopping = stopping,
-    # Placeholder for NA_real_: How should the method be changed to account for NA?
-    dose = 0,
+    dose = NA_real_,
     samples = my_samples,
     model = my_model,
     data = my_data
   )
   expected <- structure(
     FALSE,
-    message = "Probability for target toxicity is 6 % for dose 0 and thus below the required 30 %"
+    message = "Probability for target toxicity is 0 % for dose NA and thus below the required 30 %"
+  )
+  expect_identical(result, expected)
+})
+
+test_that("StoppingTargetProb works correctly when below threshold", {
+  my_data <- h_get_data()
+  my_model <- h_get_logistic_kadane()
+  my_samples <- mcmc(my_data, my_model, h_get_mcmc_options(samples = 1000, burnin = 1000))
+  stopping <- StoppingTargetProb(target = c(0.15, 0.2), prob = 0.3)
+  result <- stopTrial(
+    stopping = stopping,
+    dose = 100,
+    samples = my_samples,
+    model = my_model,
+    data = my_data
+  )
+  expected <- structure(
+    FALSE,
+    message = "Probability for target toxicity is 14 % for dose 100 and thus below the required 30 %"
+  )
+  expect_identical(result, expected)
+})
+
+test_that("StoppingTargetProb works correctly when above threshold", {
+  my_data <- h_get_data()
+  my_model <- h_get_logistic_kadane()
+  my_samples <- mcmc(my_data, my_model, h_get_mcmc_options(samples = 1000, burnin = 1000))
+  stopping <- StoppingTargetProb(target = c(0.1, 0.4), prob = 0.3)
+  result <- stopTrial(
+    stopping = stopping,
+    dose = 100,
+    samples = my_samples,
+    model = my_model,
+    data = my_data
+  )
+  expected <- structure(
+    TRUE,
+    message = "Probability for target toxicity is 82 % for dose 100 and thus above the required 30 %"
   )
   expect_identical(result, expected)
 })

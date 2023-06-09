@@ -1815,7 +1815,7 @@ setMethod(
     model = "ANY",
     data = "Data"
   ),
-  def = function(stopping, dose, samples, model, data, ...) {
+  definition = function(stopping, dose, samples, model, data, ...) {
     do_stop <- is.na(dose) || (data@placebo && dose == min(data@doseGrid))
 
     msg <- paste(
@@ -2191,15 +2191,16 @@ setMethod("stopTrial",
     }
 )
 
+# nolint end
 
-## --------------------------------------------------
-## Stopping based on probability of target tox interval
-## --------------------------------------------------
+## StoppingTargetProb ----
 
-##' @describeIn stopTrial Stop based on probability of target tox interval
-##'
-##' @example examples/Rules-method-stopTrial-StoppingTargetProb.R
-setMethod("stopTrial",
+#' @describeIn stopTrial Stop based on probability of target tox interval
+#'
+#' @aliases stopTrial-StoppingTargetProb
+#' @example examples/Rules-method-stopTrial-StoppingTargetProb.R
+setMethod(
+  f = "stopTrial",
   signature =
     signature(
       stopping = "StoppingTargetProb",
@@ -2208,45 +2209,36 @@ setMethod("stopTrial",
       model = "GeneralModel",
       data = "ANY"
     ),
-  def =
-    function(stopping, dose, samples, model, data, ...) {
-      ## first we have to get samples from the dose-tox
-      ## curve at the dose.
-      probSamples <- prob(
-        dose = dose,
-        model,
-        samples
+  definition = function(stopping, dose, samples, model, data, ...) {
+    # Compute probability to be in target interval.
+    prob_target <- ifelse(
+      is.na(dose),
+      0,
+      mean(
+        prob(dose = dose, model, samples) >= stopping@target[1] &
+         prob(dose = dose, model, samples) <= stopping@target[2]
       )
+    )
 
-      ## Now compute probability to be in target interval
-      probTarget <-
-        mean((probSamples >= stopping@target[1]) &
-          (probSamples <= stopping@target[2]))
+    do_stop <- prob_target >= stopping@prob
 
-      ## so can we stop?
-      doStop <- probTarget >= stopping@prob
+    msg <- paste(
+      "Probability for target toxicity is",
+      round(prob_target * 100),
+      "% for dose",
+      dose,
+      "and thus",
+      ifelse(do_stop, "above", "below"),
+      "the required",
+      round(stopping@prob * 100),
+      "%"
+    )
 
-      ## generate message
-      text <-
-        paste(
-          "Probability for target toxicity is",
-          round(probTarget * 100),
-          "% for dose",
-          dose,
-          "and thus",
-          ifelse(doStop, "above", "below"),
-          "the required",
-          round(stopping@prob * 100),
-          "%"
-        )
-
-      ## return both
-      return(structure(doStop,
-        message = text
-      ))
-    }
+    structure(do_stop, message = msg)
+  }
 )
 
+# nolint start
 
 ## --------------------------------------------------
 ## Stopping based on MTD distribution
@@ -2329,7 +2321,7 @@ setMethod("stopTrial",
 #' @export
 #'
 setMethod(
-  "stopTrial",
+  f = "stopTrial",
   signature = signature(
     stopping = "StoppingMTDCV",
     dose = "numeric",
@@ -2376,7 +2368,7 @@ setMethod(
 #' @example examples/Rules-method-stopTrial-StoppingLowestDoseHSRBeta.R
 #' @export
 setMethod(
-  "stopTrial",
+  f = "stopTrial",
   signature = signature(
     stopping = "StoppingLowestDoseHSRBeta",
     dose = "numeric",
