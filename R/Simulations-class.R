@@ -1,4 +1,3 @@
-# nolint start
 #####################################################################################
 ## Author: Daniel Sabanes Bove [sabanesd *a*t* roche *.* com]
 ##         Wai Yin Yeung [w *.* yeung1 *a*t* lancaster *.* ac *.* uk]
@@ -107,8 +106,7 @@ GeneralSimulations <- function(data,
   )
 }
 
-
-
+# nolint start
 ##' Class for the simulations output from model based designs
 ##'
 ##' This class captures the trial simulations from model based designs.
