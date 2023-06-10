@@ -13,8 +13,8 @@
 ## 10/07/2015   added Pseudo simulation class
 ###################################################################################
 
-##' @include helpers.R
-##' @include Data-class.R
+#' @include helpers.R
+#' @include Data-class.R
 {}
 
 
