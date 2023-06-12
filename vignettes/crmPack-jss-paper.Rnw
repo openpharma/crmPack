@@ -570,7 +570,7 @@ mySims@data[[3]]@nObs
 mySims@doses[3]
 @
 Furthermore, we can plot the \code{Simulations} object by calling the \code{plot} method on it, see Figure~\ref{fig:sim-plot}. You can select the plots by changing the \code{type} argument of \code{plot}, which by default is \code{type = c("trajectory", "dosesTried")}.
-<<sim-plot, echo=FALSE, fig.width=4,fig.height=4,out.width='.5\\linewidth',fig.align='center',fig.env='figure', fig.cap='Simulation plot. On the top panel a summary of the trial trajectories, and on the bottom, the proportions of doses tried, averaged over the simulated trials, are shown.'>>=
+<<sim-plot, echo=FALSE, fig.width=4,fig.height=4,out.width='.5\\linewidth',fig.align='center',fig.env='figure', fig.cap='Simulation plot'>>=
 plot(mySims)
 @
 
