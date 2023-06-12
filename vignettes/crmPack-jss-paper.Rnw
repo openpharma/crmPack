@@ -497,7 +497,7 @@ nextDoseRes <- nextBest(myNextBest, nextMaxDose, samples, model, data)
 (nextDoseVal <- nextDoseRes$value)
 @
 The returned list also contains an accompanying plot (\code{nextDoseRes$plot}), see Figure~\ref{fig:nextBest-ncrm}.
-<<nextBest-ncrm,echo=FALSE,fig.width=4,fig.height=4,out.width='.5\\linewidth',fig.align='center',fig.env='figure', fig.cap='Dose recommendation plot from NCRM design. Target probabilities as green bars, overdose probabilities as red bars, maximum next dose as vertical dashed black line, highest dose with probability of overdosing not exceeding 25 percent as vertical dashed red line, final dose recommendation with a red triangle.'>>=
+<<nextBest-ncrm,echo=FALSE,fig.width=4,fig.height=4,out.width='.5\\linewidth',fig.align='center',fig.env='figure', fig.cap='Dose recommendation plot from NCRM design'>>=
 nextDoseRes$plot
 @
 
