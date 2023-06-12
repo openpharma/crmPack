@@ -377,7 +377,7 @@ relationship, and hence would like to use a minimally informative prior
 internally, setting of a seed is required for reproducibility.
 Furthermore, it is recommended to specify a coarse dose grid across the original dose range (excluding the placebo dose) to avoid long computation time:
 
-<<min-inf, warning=FALSE, message=FALSE, results="hide">>=
+<<min-inf, warning=FALSE, message=FALSE, results=hide>>=
 coarseGrid <- c(25, 50, 100, 200, 300)
 model <- MinimalInformative(
   dosegrid = coarseGrid, refDose = 100,
@@ -873,7 +873,7 @@ initialization function, although there is no technical need in this case.
 In order to make it usable we need to define the \code{nextBest} method for this
 new rule. Note that we do only specialize the method for the first argument,
 such that this rule could also be used with other models.
-<<newNextBest-method, results='hide'>>=
+<<newNextBest-method, results=hide>>=
 setMethod(
   "nextBest",
   signature = signature(
