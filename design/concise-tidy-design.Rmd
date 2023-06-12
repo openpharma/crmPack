@@ -38,19 +38,19 @@ Please also read [Issue 407](https://github.com/Roche/crmPack/issues/407) regard
 
 ### Definition of the generic
 ```{r}
-if (!requireNamespace("broom", quietly=TRUE)) {
-#' Conversion of crmPack objects to data.frames/tibbles
-#'
-#' @description `r lifecycle::badge("experimental")`
-#'
-#' A method that converts a crmPack S4 object to a tibble or list of tibbles,
-#' in the style of `broom::tidy()`.
-#'
-#' @param object \cr the object to convert
-#' @param ... additional arguments passed to class-specific implementations.
-#' @return (`tbl_df` or named `list` [of `tbl_df`])
-#' @export
-#'
+if (!requireNamespace("broom", quietly = TRUE)) {
+  #' Conversion of crmPack objects to data.frames/tibbles
+  #'
+  #' @description `r lifecycle::badge("experimental")`
+  #'
+  #' A method that converts a crmPack S4 object to a tibble or list of tibbles,
+  #' in the style of `broom::tidy()`.
+  #'
+  #' @param object \cr the object to convert
+  #' @param ... additional arguments passed to class-specific implementations.
+  #' @return (`tbl_df` or named `list` [of `tbl_df`])
+  #' @export
+  #'
   setGeneric(
     name = "tidy",
     def = function(object, ...) {
@@ -208,7 +208,7 @@ x <- LogisticLogNormal(
   mean = c(-0.85, 1),
   cov = matrix(c(1, -0.5, -0.5, 1), nrow = 2),
   ref_dose = 50
-) 
+)
 x %>% tidy()
 
 lapply(slotNames(x), function(z) class(slot(x, z)))
