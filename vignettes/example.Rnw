@@ -2418,4 +2418,3 @@ we can see that in all cases, the fitted dose-DLT curves (solid-red curve) do no
 %%% coding: utf-8-unix
 %%% ispell-local-dictionary: "american"
 %%% End:
-  Here, we need to see enough of your data to reproduce your problem
