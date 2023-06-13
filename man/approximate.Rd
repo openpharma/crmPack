@@ -44,7 +44,7 @@ normal prior for the logistic regression coefficients is used}
 }
 \value{
 a \code{list} containing the approximation model and, if requested, a
-\code{ggplot2} object containing a graphicl representation of the fitted model
+\code{ggplot2} object containing a graphical representation of the fitted model
 }
 \description{
 It is recommended to use \code{\link{set.seed}} before, in order

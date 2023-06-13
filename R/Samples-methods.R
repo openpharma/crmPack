@@ -343,7 +343,7 @@ setMethod("fit",
 ##' @param data the \code{\linkS4class{Data}} object
 ##' @param \dots additional arguments (see methods)
 ##' @return a `list` containing the approximation model and, if requested, a
-##' `ggplot2` object containing a graphicl representation of the fitted model
+##' `ggplot2` object containing a graphical representation of the fitted model
 ##'
 ##' @export
 ##' @keywords methods
