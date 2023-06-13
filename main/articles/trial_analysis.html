@@ -61,12 +61,6 @@
 <li class="nav-item">
   <a class="nav-link" href="../news/index.html">Changelog</a>
 </li>
-<!-- start dropdown for versions --> <li class="nav-item dropdown">
-        <a href="#" class="nav-link dropdown-toggle"
-          data-bs-toggle="dropdown" role="button"
-          aria-expanded="false" aria-haspopup="true"
-          id="dropdown-versions">Versions</a> <div class="dropdown-menu" aria-labelledby="dropdown-versions"> <a class="dropdown-item" data-toggle="tooltip" title="" href="https://Roche.github.io/crmPack/main">main</a> </div></li>
-<!-- end dropdown for versions -->
       </ul>
 <form class="form-inline my-2 my-lg-0" role="search">
         <input type="search" class="form-control me-sm-2" aria-label="Toggle navigation" name="search-input" data-search-index="../search.json" id="search-input" placeholder="Search for" autocomplete="off">
@@ -286,14 +280,13 @@ dose recommended for the next cohort.</p>
 <span>    <span class="fu"><a href="https://dplyr.tidyverse.org/reference/select.html" class="external-link">select</a></span><span class="op">(</span><span class="va">dose</span>, <span class="va">Treated</span>, <span class="va">WithDLT</span>, <span class="va">target</span>, <span class="va">overdose</span><span class="op">)</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span></span>
 <span>    <span class="fu">kableExtra</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/knitr/man/kable.html" class="external-link">kable</a></span><span class="op">(</span></span>
 <span>      col.names <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"Dose"</span>, <span class="st">"Treated"</span>, <span class="st">"With DLT"</span>, <span class="st">"Target range"</span>, <span class="st">"Overdose range"</span><span class="op">)</span>,</span>
-<span>      table.attr <span class="op">=</span> <span class="st">"style='width:60%;'"</span>,</span>
 <span>      digits <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">0</span>, <span class="fl">0</span>, <span class="fl">0</span>, <span class="fl">3</span>, <span class="fl">3</span><span class="op">)</span></span>
 <span>    <span class="op">)</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span></span>
 <span>    <span class="fu">kableExtra</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/kableExtra/man/add_header_above.html" class="external-link">add_header_above</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">" "</span> <span class="op">=</span> <span class="fl">1</span>, <span class="st">"Participants"</span> <span class="op">=</span> <span class="fl">2</span>, <span class="st">"Probability that dose is in "</span> <span class="op">=</span> <span class="fl">2</span><span class="op">)</span><span class="op">)</span></span>
 <span><span class="op">}</span></span>
 <span></span>
 <span><span class="fu">tabulatePosterior</span><span class="op">(</span><span class="va">postSamples</span>, <span class="va">firstFour</span><span class="op">)</span></span></code></pre></div>
-<table style="width:60%;" class="table">
+<table class="table">
 <thead>
 <tr>
 <th style="empty-cells: hide;border-bottom:hidden;" colspan="1">
@@ -342,7 +335,7 @@ Overdose range
 0.029
 </td>
 <td style="text-align:right;">
-0.006
+0.014
 </td>
 </tr>
 <tr>
@@ -356,10 +349,10 @@ Overdose range
 0
 </td>
 <td style="text-align:right;">
-0.069
+0.066
 </td>
 <td style="text-align:right;">
-0.022
+0.034
 </td>
 </tr>
 <tr>
@@ -373,10 +366,10 @@ Overdose range
 0
 </td>
 <td style="text-align:right;">
-0.166
+0.136
 </td>
 <td style="text-align:right;">
-0.082
+0.074
 </td>
 </tr>
 <tr>
@@ -390,10 +383,10 @@ Overdose range
 1
 </td>
 <td style="text-align:right;">
-0.303
+0.258
 </td>
 <td style="text-align:right;">
-0.248
+0.192
 </td>
 </tr>
 <tr>
@@ -407,10 +400,10 @@ Overdose range
 0
 </td>
 <td style="text-align:right;">
-0.297
+0.313
 </td>
 <td style="text-align:right;">
-0.437
+0.361
 </td>
 </tr>
 <tr>
@@ -424,10 +417,10 @@ Overdose range
 0
 </td>
 <td style="text-align:right;">
-0.238
+0.259
 </td>
 <td style="text-align:right;">
-0.668
+0.620
 </td>
 </tr>
 <tr>
@@ -441,10 +434,10 @@ Overdose range
 0
 </td>
 <td style="text-align:right;">
-0.148
+0.171
 </td>
 <td style="text-align:right;">
-0.830
+0.771
 </td>
 </tr>
 <tr>
@@ -458,10 +451,10 @@ Overdose range
 0
 </td>
 <td style="text-align:right;">
-0.076
+0.092
 </td>
 <td style="text-align:right;">
-0.914
+0.879
 </td>
 </tr>
 <tr>
@@ -475,10 +468,10 @@ Overdose range
 0
 </td>
 <td style="text-align:right;">
-0.037
+0.069
 </td>
 <td style="text-align:right;">
-0.958
+0.925
 </td>
 </tr>
 </tbody>
@@ -540,7 +533,7 @@ satisfied:</p>
 <span><span class="co">#&gt; [1] "Number of cohorts is 4 and thus reached the prespecified minimum number 3"</span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; attr(,"message")[[1]][[2]]</span></span>
-<span><span class="co">#&gt; [1] "Probability for target toxicity is 30 % for dose 20 and thus below the required 50 %"</span></span>
+<span><span class="co">#&gt; [1] "Probability for target toxicity is 26 % for dose 20 and thus below the required 50 %"</span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; attr(,"message")[[2]]</span></span>
@@ -569,7 +562,7 @@ report a DLT:</p>
 <p>Tabulate the posterior:</p>
 <div class="sourceCode" id="cb12"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu">tabulatePosterior</span><span class="op">(</span><span class="va">postSamples1</span>, <span class="va">firstFullCohort</span><span class="op">)</span></span></code></pre></div>
-<table style="width:60%;" class="table">
+<table class="table">
 <thead>
 <tr>
 <th style="empty-cells: hide;border-bottom:hidden;" colspan="1">
@@ -615,7 +608,7 @@ Overdose range
 0
 </td>
 <td style="text-align:right;">
-0.004
+0.016
 </td>
 <td style="text-align:right;">
 0.000
@@ -632,7 +625,7 @@ Overdose range
 0
 </td>
 <td style="text-align:right;">
-0.016
+0.025
 </td>
 <td style="text-align:right;">
 0.000
@@ -649,10 +642,10 @@ Overdose range
 0
 </td>
 <td style="text-align:right;">
-0.065
+0.072
 </td>
 <td style="text-align:right;">
-0.008
+0.013
 </td>
 </tr>
 <tr>
@@ -666,10 +659,10 @@ Overdose range
 1
 </td>
 <td style="text-align:right;">
-0.227
+0.235
 </td>
 <td style="text-align:right;">
-0.069
+0.061
 </td>
 </tr>
 <tr>
@@ -683,10 +676,10 @@ Overdose range
 0
 </td>
 <td style="text-align:right;">
-0.388
+0.333
 </td>
 <td style="text-align:right;">
-0.176
+0.185
 </td>
 </tr>
 <tr>
@@ -700,10 +693,10 @@ Overdose range
 0
 </td>
 <td style="text-align:right;">
-0.389
+0.412
 </td>
 <td style="text-align:right;">
-0.462
+0.432
 </td>
 </tr>
 <tr>
@@ -717,10 +710,10 @@ Overdose range
 0
 </td>
 <td style="text-align:right;">
-0.240
+0.268
 </td>
 <td style="text-align:right;">
-0.713
+0.668
 </td>
 </tr>
 <tr>
@@ -734,10 +727,10 @@ Overdose range
 0
 </td>
 <td style="text-align:right;">
-0.120
+0.134
 </td>
 <td style="text-align:right;">
-0.865
+0.852
 </td>
 </tr>
 <tr>
@@ -751,10 +744,10 @@ Overdose range
 0
 </td>
 <td style="text-align:right;">
-0.077
+0.084
 </td>
 <td style="text-align:right;">
-0.917
+0.912
 </td>
 </tr>
 </tbody>
@@ -812,7 +805,7 @@ DLT:</p>
 <p>Tabulate the posterior:</p>
 <div class="sourceCode" id="cb16"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu">tabulatePosterior</span><span class="op">(</span><span class="va">postSamples2</span>, <span class="va">secondFullCohort</span><span class="op">)</span></span></code></pre></div>
-<table style="width:60%;" class="table">
+<table class="table">
 <thead>
 <tr>
 <th style="empty-cells: hide;border-bottom:hidden;" colspan="1">
@@ -858,7 +851,7 @@ Overdose range
 0
 </td>
 <td style="text-align:right;">
-0.002
+0.000
 </td>
 <td style="text-align:right;">
 0.000
@@ -875,7 +868,7 @@ Overdose range
 0
 </td>
 <td style="text-align:right;">
-0.008
+0.003
 </td>
 <td style="text-align:right;">
 0.000
@@ -892,7 +885,7 @@ Overdose range
 0
 </td>
 <td style="text-align:right;">
-0.029
+0.025
 </td>
 <td style="text-align:right;">
 0.000
@@ -909,10 +902,10 @@ Overdose range
 1
 </td>
 <td style="text-align:right;">
-0.144
+0.115
 </td>
 <td style="text-align:right;">
-0.009
+0.016
 </td>
 </tr>
 <tr>
@@ -926,10 +919,10 @@ Overdose range
 0
 </td>
 <td style="text-align:right;">
-0.286
+0.297
 </td>
 <td style="text-align:right;">
-0.079
+0.063
 </td>
 </tr>
 <tr>
@@ -943,10 +936,10 @@ Overdose range
 0
 </td>
 <td style="text-align:right;">
-0.451
+0.448
 </td>
 <td style="text-align:right;">
-0.295
+0.291
 </td>
 </tr>
 <tr>
@@ -960,10 +953,10 @@ Overdose range
 0
 </td>
 <td style="text-align:right;">
-0.299
+0.347
 </td>
 <td style="text-align:right;">
-0.606
+0.570
 </td>
 </tr>
 <tr>
@@ -977,10 +970,10 @@ Overdose range
 0
 </td>
 <td style="text-align:right;">
-0.132
+0.179
 </td>
 <td style="text-align:right;">
-0.827
+0.795
 </td>
 </tr>
 <tr>
@@ -994,10 +987,10 @@ Overdose range
 0
 </td>
 <td style="text-align:right;">
-0.087
+0.096
 </td>
 <td style="text-align:right;">
-0.897
+0.894
 </td>
 </tr>
 </tbody>
@@ -1056,7 +1049,7 @@ DLT:</p>
 <p>Tabulate the posterior:</p>
 <div class="sourceCode" id="cb20"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu">tabulatePosterior</span><span class="op">(</span><span class="va">postSamples3</span>, <span class="va">thirdFullCohort</span><span class="op">)</span></span></code></pre></div>
-<table style="width:60%;" class="table">
+<table class="table">
 <thead>
 <tr>
 <th style="empty-cells: hide;border-bottom:hidden;" colspan="1">
@@ -1102,7 +1095,7 @@ Overdose range
 0
 </td>
 <td style="text-align:right;">
-0.002
+0.000
 </td>
 <td style="text-align:right;">
 0.000
@@ -1119,7 +1112,7 @@ Overdose range
 0
 </td>
 <td style="text-align:right;">
-0.002
+0.001
 </td>
 <td style="text-align:right;">
 0.000
@@ -1136,10 +1129,10 @@ Overdose range
 0
 </td>
 <td style="text-align:right;">
-0.011
+0.013
 </td>
 <td style="text-align:right;">
-0.002
+0.000
 </td>
 </tr>
 <tr>
@@ -1156,7 +1149,7 @@ Overdose range
 0.073
 </td>
 <td style="text-align:right;">
-0.007
+0.006
 </td>
 </tr>
 <tr>
@@ -1170,10 +1163,10 @@ Overdose range
 0
 </td>
 <td style="text-align:right;">
-0.223
+0.189
 </td>
 <td style="text-align:right;">
-0.040
+0.022
 </td>
 </tr>
 <tr>
@@ -1187,10 +1180,10 @@ Overdose range
 0
 </td>
 <td style="text-align:right;">
-0.443
+0.405
 </td>
 <td style="text-align:right;">
-0.220
+0.153
 </td>
 </tr>
 <tr>
@@ -1204,10 +1197,10 @@ Overdose range
 0
 </td>
 <td style="text-align:right;">
-0.336
+0.394
 </td>
 <td style="text-align:right;">
-0.513
+0.440
 </td>
 </tr>
 <tr>
@@ -1221,10 +1214,10 @@ Overdose range
 0
 </td>
 <td style="text-align:right;">
-0.207
+0.228
 </td>
 <td style="text-align:right;">
-0.742
+0.719
 </td>
 </tr>
 <tr>
@@ -1238,10 +1231,10 @@ Overdose range
 0
 </td>
 <td style="text-align:right;">
-0.142
+0.138
 </td>
 <td style="text-align:right;">
-0.831
+0.837
 </td>
 </tr>
 </tbody>
@@ -1300,7 +1293,251 @@ DLT:</p>
 <p>Tabulate the posterior:</p>
 <div class="sourceCode" id="cb24"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu">tabulatePosterior</span><span class="op">(</span><span class="va">postSamples4</span>, <span class="va">fourthFullCohort</span><span class="op">)</span></span></code></pre></div>
-<table style="width:60%;" class="table">
+<table class="table">
+<thead>
+<tr>
+<th style="empty-cells: hide;border-bottom:hidden;" colspan="1">
+</th>
+<th style="border-bottom:hidden;padding-bottom:0; padding-left:3px;padding-right:3px;text-align: center; " colspan="2">
+<div style="border-bottom: 1px solid #ddd; padding-bottom: 5px; ">
+Participants
+</div>
+</th>
+<th style="border-bottom:hidden;padding-bottom:0; padding-left:3px;padding-right:3px;text-align: center; " colspan="2">
+<div style="border-bottom: 1px solid #ddd; padding-bottom: 5px; ">
+Probability that dose is in
+</div>
+</th>
+</tr>
+<tr>
+<th style="text-align:right;">
+Dose
+</th>
+<th style="text-align:right;">
+Treated
+</th>
+<th style="text-align:right;">
+With DLT
+</th>
+<th style="text-align:right;">
+Target range
+</th>
+<th style="text-align:right;">
+Overdose range
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:right;">
+1
+</td>
+<td style="text-align:right;">
+1
+</td>
+<td style="text-align:right;">
+0
+</td>
+<td style="text-align:right;">
+0.000
+</td>
+<td style="text-align:right;">
+0.000
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+3
+</td>
+<td style="text-align:right;">
+1
+</td>
+<td style="text-align:right;">
+0
+</td>
+<td style="text-align:right;">
+0.000
+</td>
+<td style="text-align:right;">
+0.000
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+9
+</td>
+<td style="text-align:right;">
+1
+</td>
+<td style="text-align:right;">
+0
+</td>
+<td style="text-align:right;">
+0.001
+</td>
+<td style="text-align:right;">
+0.000
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+20
+</td>
+<td style="text-align:right;">
+4
+</td>
+<td style="text-align:right;">
+1
+</td>
+<td style="text-align:right;">
+0.031
+</td>
+<td style="text-align:right;">
+0.001
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+30
+</td>
+<td style="text-align:right;">
+6
+</td>
+<td style="text-align:right;">
+0
+</td>
+<td style="text-align:right;">
+0.116
+</td>
+<td style="text-align:right;">
+0.003
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+45
+</td>
+<td style="text-align:right;">
+3
+</td>
+<td style="text-align:right;">
+0
+</td>
+<td style="text-align:right;">
+0.345
+</td>
+<td style="text-align:right;">
+0.063
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+60
+</td>
+<td style="text-align:right;">
+0
+</td>
+<td style="text-align:right;">
+0
+</td>
+<td style="text-align:right;">
+0.476
+</td>
+<td style="text-align:right;">
+0.281
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+80
+</td>
+<td style="text-align:right;">
+0
+</td>
+<td style="text-align:right;">
+0
+</td>
+<td style="text-align:right;">
+0.343
+</td>
+<td style="text-align:right;">
+0.583
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+100
+</td>
+<td style="text-align:right;">
+0
+</td>
+<td style="text-align:right;">
+0
+</td>
+<td style="text-align:right;">
+0.205
+</td>
+<td style="text-align:right;">
+0.755
+</td>
+</tr>
+</tbody>
+</table>
+<p><code>60</code> is now the dose with the highest posterior
+probability of being in the target toxicity range, but its probability
+of being in the overdose range is unacceptable. Therefore, the trial
+should continue and the next cohort should be treated at
+<code>45</code>:</p>
+<div class="sourceCode" id="cb25"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">nextMaxDose</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/maxDose.html">maxDose</a></span><span class="op">(</span><span class="va">my_increments</span>, <span class="va">fourthFullCohort</span><span class="op">)</span></span>
+<span><span class="va">nextMaxDose</span></span>
+<span><span class="co">#&gt; [1] 67.5</span></span>
+<span></span>
+<span><span class="va">doseRecommendation</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/nextBest.html">nextBest</a></span><span class="op">(</span></span>
+<span>  <span class="va">my_next_best</span>,</span>
+<span>  doselimit <span class="op">=</span> <span class="va">nextMaxDose</span>,</span>
+<span>  samples <span class="op">=</span> <span class="va">postSamples4</span>,</span>
+<span>  model <span class="op">=</span> <span class="va">model</span>,</span>
+<span>  data <span class="op">=</span> <span class="va">fourthFullCohort</span></span>
+<span><span class="op">)</span></span>
+<span><span class="va">doseRecommendation</span><span class="op">$</span><span class="va">value</span></span>
+<span><span class="co">#&gt; [1] 45</span></span>
+<span></span>
+<span><span class="va">x</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/stopTrial.html">stopTrial</a></span><span class="op">(</span></span>
+<span>  <span class="va">my_stopping</span>,</span>
+<span>  dose <span class="op">=</span> <span class="va">doseRecommendation</span><span class="op">$</span><span class="va">value</span>,</span>
+<span>  <span class="va">postSamples4</span>,</span>
+<span>  <span class="va">model</span>,</span>
+<span>  <span class="va">fourthFullCohort</span></span>
+<span><span class="op">)</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/base/attributes.html" class="external-link">attributes</a></span><span class="op">(</span><span class="va">x</span><span class="op">)</span> <span class="op">&lt;-</span> <span class="cn">NULL</span></span>
+<span><span class="va">x</span></span>
+<span><span class="co">#&gt; [1] FALSE</span></span></code></pre></div>
+</div>
+<div class="section level3">
+<h3 id="the-fifth-full-cohort">The fifth full cohort<a class="anchor" aria-label="anchor" href="#the-fifth-full-cohort"></a>
+</h3>
+<p>Assume that two of the three patients in the fourth cohort report a
+DLT:</p>
+<div class="sourceCode" id="cb26"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">fifthFullCohort</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/Data-class.html">Data</a></span><span class="op">(</span></span>
+<span>  x <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">1</span>, <span class="fl">3</span>, <span class="fl">9</span>, <span class="fu"><a href="https://rdrr.io/r/base/rep.html" class="external-link">rep</a></span><span class="op">(</span><span class="fl">20</span>, <span class="fl">4</span><span class="op">)</span>, <span class="fu"><a href="https://rdrr.io/r/base/rep.html" class="external-link">rep</a></span><span class="op">(</span><span class="fl">30</span>, <span class="fl">6</span><span class="op">)</span>, <span class="fu"><a href="https://rdrr.io/r/base/rep.html" class="external-link">rep</a></span><span class="op">(</span><span class="fl">45</span>, <span class="fl">6</span><span class="op">)</span><span class="op">)</span>,</span>
+<span>  y <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">0</span>, <span class="fl">0</span>, <span class="fl">0</span>, <span class="fl">1</span>, <span class="fu"><a href="https://rdrr.io/r/base/rep.html" class="external-link">rep</a></span><span class="op">(</span><span class="fl">0</span>, <span class="fl">13</span><span class="op">)</span>, <span class="fl">1</span>, <span class="fl">1</span><span class="op">)</span>,</span>
+<span>  ID <span class="op">=</span> <span class="fl">1</span><span class="op">:</span><span class="fl">19</span>,</span>
+<span>  cohort <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">1</span><span class="op">:</span><span class="fl">4</span>, <span class="fu"><a href="https://rdrr.io/r/base/rep.html" class="external-link">rep</a></span><span class="op">(</span><span class="fl">5</span><span class="op">:</span><span class="fl">9</span>, each <span class="op">=</span> <span class="fl">3</span><span class="op">)</span><span class="op">)</span>,</span>
+<span>  doseGrid <span class="op">=</span> <span class="va">doseGrid</span></span>
+<span><span class="op">)</span></span></code></pre></div>
+<p>Update the model:</p>
+<div class="sourceCode" id="cb27"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">postSamples5</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/mcmc.html">mcmc</a></span><span class="op">(</span></span>
+<span>  data <span class="op">=</span> <span class="va">fifthFullCohort</span>,</span>
+<span>  model <span class="op">=</span> <span class="va">model</span>,</span>
+<span>  options <span class="op">=</span> <span class="va">vignetteMcmcOptions</span></span>
+<span><span class="op">)</span></span></code></pre></div>
+<p>Tabulate the posterior:</p>
+<div class="sourceCode" id="cb28"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="fu">tabulatePosterior</span><span class="op">(</span><span class="va">postSamples5</span>, <span class="va">fifthFullCohort</span><span class="op">)</span></span></code></pre></div>
+<table class="table">
 <thead>
 <tr>
 <th style="empty-cells: hide;border-bottom:hidden;" colspan="1">
@@ -1380,255 +1617,11 @@ Overdose range
 0
 </td>
 <td style="text-align:right;">
-0.011
-</td>
-<td style="text-align:right;">
-0.000
-</td>
-</tr>
-<tr>
-<td style="text-align:right;">
-20
-</td>
-<td style="text-align:right;">
-4
-</td>
-<td style="text-align:right;">
-1
-</td>
-<td style="text-align:right;">
-0.049
-</td>
-<td style="text-align:right;">
-0.001
-</td>
-</tr>
-<tr>
-<td style="text-align:right;">
-30
-</td>
-<td style="text-align:right;">
-6
-</td>
-<td style="text-align:right;">
-0
-</td>
-<td style="text-align:right;">
-0.123
-</td>
-<td style="text-align:right;">
-0.006
-</td>
-</tr>
-<tr>
-<td style="text-align:right;">
-45
-</td>
-<td style="text-align:right;">
-3
-</td>
-<td style="text-align:right;">
-0
-</td>
-<td style="text-align:right;">
-0.418
-</td>
-<td style="text-align:right;">
-0.074
-</td>
-</tr>
-<tr>
-<td style="text-align:right;">
-60
-</td>
-<td style="text-align:right;">
-0
-</td>
-<td style="text-align:right;">
-0
-</td>
-<td style="text-align:right;">
-0.403
-</td>
-<td style="text-align:right;">
-0.361
-</td>
-</tr>
-<tr>
-<td style="text-align:right;">
-80
-</td>
-<td style="text-align:right;">
-0
-</td>
-<td style="text-align:right;">
-0
-</td>
-<td style="text-align:right;">
-0.214
-</td>
-<td style="text-align:right;">
-0.700
-</td>
-</tr>
-<tr>
-<td style="text-align:right;">
-100
-</td>
-<td style="text-align:right;">
-0
-</td>
-<td style="text-align:right;">
-0
-</td>
-<td style="text-align:right;">
-0.135
-</td>
-<td style="text-align:right;">
-0.825
-</td>
-</tr>
-</tbody>
-</table>
-<p><code>60</code> is now the dose with the highest posterior
-probability of being in the target toxicity range, but its probability
-of being in the overdose range is unacceptable. Therefore, the trial
-should continue and the next cohort should be treated at
-<code>45</code>:</p>
-<div class="sourceCode" id="cb25"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">nextMaxDose</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/maxDose.html">maxDose</a></span><span class="op">(</span><span class="va">my_increments</span>, <span class="va">fourthFullCohort</span><span class="op">)</span></span>
-<span><span class="va">nextMaxDose</span></span>
-<span><span class="co">#&gt; [1] 67.5</span></span>
-<span></span>
-<span><span class="va">doseRecommendation</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/nextBest.html">nextBest</a></span><span class="op">(</span></span>
-<span>  <span class="va">my_next_best</span>,</span>
-<span>  doselimit <span class="op">=</span> <span class="va">nextMaxDose</span>,</span>
-<span>  samples <span class="op">=</span> <span class="va">postSamples4</span>,</span>
-<span>  model <span class="op">=</span> <span class="va">model</span>,</span>
-<span>  data <span class="op">=</span> <span class="va">fourthFullCohort</span></span>
-<span><span class="op">)</span></span>
-<span><span class="va">doseRecommendation</span><span class="op">$</span><span class="va">value</span></span>
-<span><span class="co">#&gt; [1] 45</span></span>
-<span></span>
-<span><span class="va">x</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/stopTrial.html">stopTrial</a></span><span class="op">(</span></span>
-<span>  <span class="va">my_stopping</span>,</span>
-<span>  dose <span class="op">=</span> <span class="va">doseRecommendation</span><span class="op">$</span><span class="va">value</span>,</span>
-<span>  <span class="va">postSamples4</span>,</span>
-<span>  <span class="va">model</span>,</span>
-<span>  <span class="va">fourthFullCohort</span></span>
-<span><span class="op">)</span></span>
-<span><span class="fu"><a href="https://rdrr.io/r/base/attributes.html" class="external-link">attributes</a></span><span class="op">(</span><span class="va">x</span><span class="op">)</span> <span class="op">&lt;-</span> <span class="cn">NULL</span></span>
-<span><span class="va">x</span></span>
-<span><span class="co">#&gt; [1] FALSE</span></span></code></pre></div>
-</div>
-<div class="section level3">
-<h3 id="the-fifth-full-cohort">The fifth full cohort<a class="anchor" aria-label="anchor" href="#the-fifth-full-cohort"></a>
-</h3>
-<p>Assume that two of the three patients in the fourth cohort report a
-DLT:</p>
-<div class="sourceCode" id="cb26"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">fifthFullCohort</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/Data-class.html">Data</a></span><span class="op">(</span></span>
-<span>  x <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">1</span>, <span class="fl">3</span>, <span class="fl">9</span>, <span class="fu"><a href="https://rdrr.io/r/base/rep.html" class="external-link">rep</a></span><span class="op">(</span><span class="fl">20</span>, <span class="fl">4</span><span class="op">)</span>, <span class="fu"><a href="https://rdrr.io/r/base/rep.html" class="external-link">rep</a></span><span class="op">(</span><span class="fl">30</span>, <span class="fl">6</span><span class="op">)</span>, <span class="fu"><a href="https://rdrr.io/r/base/rep.html" class="external-link">rep</a></span><span class="op">(</span><span class="fl">45</span>, <span class="fl">6</span><span class="op">)</span><span class="op">)</span>,</span>
-<span>  y <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">0</span>, <span class="fl">0</span>, <span class="fl">0</span>, <span class="fl">1</span>, <span class="fu"><a href="https://rdrr.io/r/base/rep.html" class="external-link">rep</a></span><span class="op">(</span><span class="fl">0</span>, <span class="fl">13</span><span class="op">)</span>, <span class="fl">1</span>, <span class="fl">1</span><span class="op">)</span>,</span>
-<span>  ID <span class="op">=</span> <span class="fl">1</span><span class="op">:</span><span class="fl">19</span>,</span>
-<span>  cohort <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">1</span><span class="op">:</span><span class="fl">4</span>, <span class="fu"><a href="https://rdrr.io/r/base/rep.html" class="external-link">rep</a></span><span class="op">(</span><span class="fl">5</span><span class="op">:</span><span class="fl">9</span>, each <span class="op">=</span> <span class="fl">3</span><span class="op">)</span><span class="op">)</span>,</span>
-<span>  doseGrid <span class="op">=</span> <span class="va">doseGrid</span></span>
-<span><span class="op">)</span></span></code></pre></div>
-<p>Update the model:</p>
-<div class="sourceCode" id="cb27"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">postSamples5</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/mcmc.html">mcmc</a></span><span class="op">(</span></span>
-<span>  data <span class="op">=</span> <span class="va">fifthFullCohort</span>,</span>
-<span>  model <span class="op">=</span> <span class="va">model</span>,</span>
-<span>  options <span class="op">=</span> <span class="va">vignetteMcmcOptions</span></span>
-<span><span class="op">)</span></span></code></pre></div>
-<p>Tabulate the posterior:</p>
-<div class="sourceCode" id="cb28"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="fu">tabulatePosterior</span><span class="op">(</span><span class="va">postSamples5</span>, <span class="va">fifthFullCohort</span><span class="op">)</span></span></code></pre></div>
-<table style="width:60%;" class="table">
-<thead>
-<tr>
-<th style="empty-cells: hide;border-bottom:hidden;" colspan="1">
-</th>
-<th style="border-bottom:hidden;padding-bottom:0; padding-left:3px;padding-right:3px;text-align: center; " colspan="2">
-<div style="border-bottom: 1px solid #ddd; padding-bottom: 5px; ">
-Participants
-</div>
-</th>
-<th style="border-bottom:hidden;padding-bottom:0; padding-left:3px;padding-right:3px;text-align: center; " colspan="2">
-<div style="border-bottom: 1px solid #ddd; padding-bottom: 5px; ">
-Probability that dose is in
-</div>
-</th>
-</tr>
-<tr>
-<th style="text-align:right;">
-Dose
-</th>
-<th style="text-align:right;">
-Treated
-</th>
-<th style="text-align:right;">
-With DLT
-</th>
-<th style="text-align:right;">
-Target range
-</th>
-<th style="text-align:right;">
-Overdose range
-</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td style="text-align:right;">
-1
-</td>
-<td style="text-align:right;">
-1
-</td>
-<td style="text-align:right;">
-0
-</td>
-<td style="text-align:right;">
-0.000
-</td>
-<td style="text-align:right;">
-0.000
-</td>
-</tr>
-<tr>
-<td style="text-align:right;">
-3
-</td>
-<td style="text-align:right;">
-1
-</td>
-<td style="text-align:right;">
-0
-</td>
-<td style="text-align:right;">
-0.001
-</td>
-<td style="text-align:right;">
-0.000
-</td>
-</tr>
-<tr>
-<td style="text-align:right;">
-9
-</td>
-<td style="text-align:right;">
-1
-</td>
-<td style="text-align:right;">
-0
+0.012
 </td>
 <td style="text-align:right;">
 0.004
 </td>
-<td style="text-align:right;">
-0.000
-</td>
 </tr>
 <tr>
 <td style="text-align:right;">
@@ -1641,10 +1634,10 @@ Overdose range
 1
 </td>
 <td style="text-align:right;">
-0.059
+0.076
 </td>
 <td style="text-align:right;">
-0.001
+0.008
 </td>
 </tr>
 <tr>
@@ -1658,10 +1651,10 @@ Overdose range
 0
 </td>
 <td style="text-align:right;">
-0.204
+0.246
 </td>
 <td style="text-align:right;">
-0.022
+0.029
 </td>
 </tr>
 <tr>
@@ -1675,10 +1668,10 @@ Overdose range
 2
 </td>
 <td style="text-align:right;">
-0.491
+0.580
 </td>
 <td style="text-align:right;">
-0.223
+0.202
 </td>
 </tr>
 <tr>
@@ -1692,10 +1685,10 @@ Overdose range
 0
 </td>
 <td style="text-align:right;">
-0.381
+0.330
 </td>
 <td style="text-align:right;">
-0.539
+0.613
 </td>
 </tr>
 <tr>
@@ -1709,10 +1702,10 @@ Overdose range
 0
 </td>
 <td style="text-align:right;">
-0.188
+0.152
 </td>
 <td style="text-align:right;">
-0.791
+0.835
 </td>
 </tr>
 <tr>
@@ -1726,10 +1719,10 @@ Overdose range
 0
 </td>
 <td style="text-align:right;">
-0.095
+0.076
 </td>
 <td style="text-align:right;">
-0.895
+0.917
 </td>
 </tr>
 </tbody>
@@ -1763,14 +1756,14 @@ should stop and conclude that <code>45</code> is the MTD:</p>
 <span>  <span class="va">fifthFullCohort</span></span>
 <span><span class="op">)</span></span>
 <span><span class="va">x</span></span>
-<span><span class="co">#&gt; [1] FALSE</span></span>
+<span><span class="co">#&gt; [1] TRUE</span></span>
 <span><span class="co">#&gt; attr(,"message")</span></span>
 <span><span class="co">#&gt; attr(,"message")[[1]]</span></span>
 <span><span class="co">#&gt; attr(,"message")[[1]][[1]]</span></span>
 <span><span class="co">#&gt; [1] "Number of cohorts is 9 and thus reached the prespecified minimum number 3"</span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; attr(,"message")[[1]][[2]]</span></span>
-<span><span class="co">#&gt; [1] "Probability for target toxicity is 49 % for dose 45 and thus below the required 50 %"</span></span>
+<span><span class="co">#&gt; [1] "Probability for target toxicity is 58 % for dose 45 and thus above the required 50 %"</span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; attr(,"message")[[2]]</span></span>
@@ -1892,7 +1885,10 @@ Median
 1
 </td>
 <td style="text-align:right;">
-0.006
+0.008
+</td>
+<td style="text-align:right;">
+0.001
 </td>
 <td style="text-align:right;">
 0.000
@@ -1904,16 +1900,13 @@ Median
 0.000
 </td>
 <td style="text-align:right;">
-0.000
+0.007
 </td>
 <td style="text-align:right;">
-0.003
+0.023
 </td>
 <td style="text-align:right;">
-0.017
-</td>
-<td style="text-align:right;">
-0.035
+0.041
 </td>
 </tr>
 <tr>
@@ -1921,7 +1914,7 @@ Median
 3
 </td>
 <td style="text-align:right;">
-0.013
+0.018
 </td>
 <td style="text-align:right;">
 0.003
@@ -1936,13 +1929,13 @@ Median
 0.000
 </td>
 <td style="text-align:right;">
-0.012
+0.021
 </td>
 <td style="text-align:right;">
-0.041
+0.051
 </td>
 <td style="text-align:right;">
-0.079
+0.083
 </td>
 </tr>
 <tr>
@@ -1950,13 +1943,13 @@ Median
 9
 </td>
 <td style="text-align:right;">
-0.036
+0.044
 </td>
 <td style="text-align:right;">
-0.021
+0.022
 </td>
 <td style="text-align:right;">
-0.000
+0.001
 </td>
 <td style="text-align:right;">
 0.001
@@ -1965,13 +1958,13 @@ Median
 0.006
 </td>
 <td style="text-align:right;">
-0.044
+0.060
 </td>
 <td style="text-align:right;">
-0.093
+0.113
 </td>
 <td style="text-align:right;">
-0.144
+0.166
 </td>
 </tr>
 <tr>
@@ -1979,28 +1972,28 @@ Median
 20
 </td>
 <td style="text-align:right;">
-0.088
+0.099
 </td>
 <td style="text-align:right;">
-0.069
+0.080
 </td>
 <td style="text-align:right;">
-0.009
+0.013
 </td>
 <td style="text-align:right;">
-0.016
+0.017
 </td>
 <td style="text-align:right;">
-0.035
+0.037
 </td>
 <td style="text-align:right;">
-0.118
+0.140
 </td>
 <td style="text-align:right;">
-0.198
+0.211
 </td>
 <td style="text-align:right;">
-0.236
+0.250
 </td>
 </tr>
 <tr>
@@ -2008,28 +2001,28 @@ Median
 30
 </td>
 <td style="text-align:right;">
+0.161
+</td>
+<td style="text-align:right;">
 0.150
 </td>
 <td style="text-align:right;">
-0.130
-</td>
-<td style="text-align:right;">
-0.040
+0.045
 </td>
 <td style="text-align:right;">
 0.055
 </td>
 <td style="text-align:right;">
-0.086
+0.090
 </td>
 <td style="text-align:right;">
-0.196
+0.219
 </td>
 <td style="text-align:right;">
-0.276
+0.284
 </td>
 <td style="text-align:right;">
-0.332
+0.330
 </td>
 </tr>
 <tr>
@@ -2037,28 +2030,28 @@ Median
 45
 </td>
 <td style="text-align:right;">
-0.263
+0.272
 </td>
 <td style="text-align:right;">
-0.248
+0.265
 </td>
 <td style="text-align:right;">
-0.110
+0.115
 </td>
 <td style="text-align:right;">
-0.130
+0.135
 </td>
 <td style="text-align:right;">
-0.176
+0.197
 </td>
 <td style="text-align:right;">
-0.342
+0.339
 </td>
 <td style="text-align:right;">
-0.411
+0.415
 </td>
 <td style="text-align:right;">
-0.458
+0.462
 </td>
 </tr>
 <tr>
@@ -2066,28 +2059,28 @@ Median
 60
 </td>
 <td style="text-align:right;">
+0.384
+</td>
+<td style="text-align:right;">
 0.380
 </td>
 <td style="text-align:right;">
-0.363
+0.179
 </td>
 <td style="text-align:right;">
-0.169
+0.210
 </td>
 <td style="text-align:right;">
-0.198
+0.280
 </td>
 <td style="text-align:right;">
-0.270
+0.473
 </td>
 <td style="text-align:right;">
-0.481
+0.580
 </td>
 <td style="text-align:right;">
-0.569
-</td>
-<td style="text-align:right;">
-0.629
+0.627
 </td>
 </tr>
 <tr>
@@ -2095,28 +2088,28 @@ Median
 80
 </td>
 <td style="text-align:right;">
-0.505
+0.503
 </td>
 <td style="text-align:right;">
-0.506
+0.491
 </td>
 <td style="text-align:right;">
-0.227
+0.235
 </td>
 <td style="text-align:right;">
-0.260
+0.285
 </td>
 <td style="text-align:right;">
-0.361
+0.367
 </td>
 <td style="text-align:right;">
-0.642
+0.627
 </td>
 <td style="text-align:right;">
-0.761
+0.747
 </td>
 <td style="text-align:right;">
-0.815
+0.814
 </td>
 </tr>
 <tr>
@@ -2124,28 +2117,28 @@ Median
 100
 </td>
 <td style="text-align:right;">
-0.591
+0.587
 </td>
 <td style="text-align:right;">
-0.605
+0.577
 </td>
 <td style="text-align:right;">
-0.264
+0.279
 </td>
 <td style="text-align:right;">
-0.314
+0.344
 </td>
 <td style="text-align:right;">
-0.427
+0.438
 </td>
 <td style="text-align:right;">
-0.752
+0.725
 </td>
 <td style="text-align:right;">
-0.868
+0.859
 </td>
 <td style="text-align:right;">
-0.908
+0.900
 </td>
 </tr>
 </tbody>

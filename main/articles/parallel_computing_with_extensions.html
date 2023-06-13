@@ -61,12 +61,6 @@
 <li class="nav-item">
   <a class="nav-link" href="../news/index.html">Changelog</a>
 </li>
-<!-- start dropdown for versions --> <li class="nav-item dropdown">
-        <a href="#" class="nav-link dropdown-toggle"
-          data-bs-toggle="dropdown" role="button"
-          aria-expanded="false" aria-haspopup="true"
-          id="dropdown-versions">Versions</a> <div class="dropdown-menu" aria-labelledby="dropdown-versions"> <a class="dropdown-item" data-toggle="tooltip" title="" href="https://Roche.github.io/crmPack/main">main</a> </div></li>
-<!-- end dropdown for versions -->
       </ul>
 <form class="form-inline my-2 my-lg-0" role="search">
         <input type="search" class="form-control me-sm-2" aria-label="Toggle navigation" name="search-input" data-search-index="../search.json" id="search-input" placeholder="Search for" autocomplete="off">
@@ -172,12 +166,31 @@ core at the time of initialization, i.e., the character string that is
 equal to the global option <code>crmpack_extensions</code> is executed
 at any core of the cluster, so that the code is available for the use
 with parallel computing.</p>
-<p>Note that the <code>&lt;&lt;-</code> operator must be used for any
-new user defined constructor function that is defined within the wrapper
-function that is the value of the global option
-<code>crmpack_extensions</code>. The <code>&lt;&lt;-</code> operator
-will force a function to become visible within the global
-environment.</p>
+<p>Please note that the wrapper function that holds the user extensions
+is the most convenient way to hand over <code>class</code> and
+<code>method</code> definitions and the user constructor function to the
+<code>crmpack_extensions</code> option. However, the constructor
+function must be available in the environment from which it is called.
+When the extensions are directly coded within the wrapper function, the
+<code>&lt;&lt;-</code> operator must be used for any new user defined
+constructor function that is defined within the wrapper function. The
+<code>&lt;&lt;-</code> operator will force a function to become visible
+within the global environment. Another possibility is to store the user
+extensions in a file that is sourced within the wrapper function. In
+this case user defined constructor function can be assigned with the
+regular <code>&lt;-</code> operator, as source parse the content of the
+file in the environment.</p>
+<p>To avoid errors it is important to understand that packages attached
+to the current environment are not available at the workers environment.
+I.e., even though the code may work without any problems when used with
+single core processing, it may fail in parallel execution as functions
+are not attached to the workers environment. Therefore it is necessary
+to make sure that all called functions are available in the workers
+environment. This can be achieved by including a <code>library</code>
+statement within the wrapper function or by using the double colon
+operator <code>::</code>.</p>
+<p>Any of the above described usage options are further detailed in the
+example.</p>
 </div>
 <div class="section level2">
 <h2 id="information-for-debugging">Information for debugging<a class="anchor" aria-label="anchor" href="#information-for-debugging"></a>
@@ -213,6 +226,9 @@ during the whole execution and the results are as expected.</p>
 <code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://github.com/roche/crmPack" class="external-link">crmPack</a></span><span class="op">)</span></span>
 <span></span>
 <span><span class="va">my_own_extension</span> <span class="op">&lt;-</span> <span class="kw">function</span><span class="op">(</span><span class="op">)</span> <span class="op">{</span></span>
+<span>  <span class="co"># Attach the package checkmate with library(checkmate) here, to avoid usage of</span></span>
+<span>  <span class="co"># the :: operator in the code below.</span></span>
+<span></span>
 <span>  <span class="co"># LogisticNormalTruncPrior ----</span></span>
 <span></span>
 <span>  <span class="co">## class ----</span></span>
@@ -305,7 +321,7 @@ during the whole execution and the results are as expected.</p>
 <span>      samples <span class="op">=</span> <span class="st">"Samples"</span></span>
 <span>    <span class="op">)</span>,</span>
 <span>    definition <span class="op">=</span> <span class="kw">function</span><span class="op">(</span><span class="va">x</span>, <span class="va">model</span>, <span class="va">samples</span><span class="op">)</span> <span class="op">{</span></span>
-<span>      <span class="fu"><a href="../reference/check_probabilities.html">assert_probabilities</a></span><span class="op">(</span><span class="va">x</span><span class="op">)</span></span>
+<span>      <span class="fu">checkmate</span><span class="fu">::</span><span class="fu">assert_probabilities</span><span class="op">(</span><span class="va">x</span><span class="op">)</span></span>
 <span>      <span class="fu">checkmate</span><span class="fu">::</span><span class="fu"><a href="https://mllg.github.io/checkmate/reference/checkSubset.html" class="external-link">assert_subset</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"alpha0"</span>, <span class="st">"alpha1"</span><span class="op">)</span>, <span class="fu"><a href="https://rdrr.io/r/base/names.html" class="external-link">names</a></span><span class="op">(</span><span class="va">samples</span><span class="op">)</span><span class="op">)</span></span>
 <span>      <span class="fu"><a href="../reference/check_length.html">assert_length</a></span><span class="op">(</span><span class="va">x</span>, len <span class="op">=</span> <span class="fu"><a href="../reference/size.html">size</a></span><span class="op">(</span><span class="va">samples</span><span class="op">)</span><span class="op">)</span></span>
 <span></span>
@@ -346,6 +362,17 @@ during the whole execution and the results are as expected.</p>
 <p>After the new code is defined and embedded into a function, we can
 store the function as value of a global option, which we will name
 <code>crmpack_extensions</code>.</p>
+<p>Please note that <code>&lt;&lt;-</code>operator is used to assign the
+<code>LogisticNormalTruncPrior</code> function to the global
+environment. The assertion functions from the package
+<code>checkmate</code> are referenced by the double colon operator in
+this example. In case that the package <code>checkmate</code> is
+attached within the function, i.e., the statement
+<code><a href="https://mllg.github.io/checkmate/" class="external-link">library(checkmate)</a></code> is used in the code above, the direct
+reference <code>checkmate::</code> can be removed. Either way works with
+parallel computing as this makes sure that the functions can be used in
+the current environment and at the workers when parallel study
+simulations are performed.</p>
 <div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># Store the function into the global option crmpack_extensions.</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/options.html" class="external-link">options</a></span><span class="op">(</span>crmpack_extensions <span class="op">=</span> <span class="va">my_own_extension</span><span class="op">)</span></span></code></pre></div>
@@ -545,6 +572,33 @@ derived.</p>
 <span></span>
 <span>  <span class="fu">report_time</span><span class="op">(</span><span class="st">"peak"</span><span class="op">)</span></span>
 <span><span class="op">}</span><span class="op">)</span></span></code></pre></div>
+</div>
+<div class="section level2">
+<h2 id="alternative-read-user-code-from-external-file">Alternative: read user code from external file<a class="anchor" aria-label="anchor" href="#alternative-read-user-code-from-external-file"></a>
+</h2>
+<p>As an alternative it may be more convenient to store the user
+extensions in an external file and source the file in the wrapper
+function. This has the advantage, that the <code>&lt;&lt;-</code>
+operator is not necessary for user constructor functions and can be
+replaced by the usual assignment <code>&lt;-</code>.</p>
+<div class="sourceCode" id="cb9"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="co"># Store code example form above in external file and</span></span>
+<span><span class="co"># remove the wrapper function structure.</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/base/dump.html" class="external-link">dump</a></span><span class="op">(</span><span class="st">"my_own_extension"</span>, file <span class="op">=</span> <span class="st">"user_extension.R"</span><span class="op">)</span></span>
+<span><span class="va">file_con</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/connections.html" class="external-link">file</a></span><span class="op">(</span><span class="st">"user_extension.R"</span><span class="op">)</span></span>
+<span><span class="va">tmp</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/readLines.html" class="external-link">readLines</a></span><span class="op">(</span><span class="va">file_con</span><span class="op">)</span><span class="op">[</span><span class="op">-</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">1</span><span class="op">:</span><span class="fl">3</span>, <span class="fl">135</span><span class="op">)</span><span class="op">]</span></span>
+<span><span class="va">tmp</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/grep.html" class="external-link">gsub</a></span><span class="op">(</span><span class="st">"&lt;&lt;-"</span>, <span class="st">"&lt;-"</span>, <span class="va">tmp</span><span class="op">)</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/base/writeLines.html" class="external-link">writeLines</a></span><span class="op">(</span><span class="va">tmp</span>, <span class="va">file_con</span><span class="op">)</span></span>
+<span></span>
+<span><span class="co"># Source the stored file in the wrapper function.</span></span>
+<span><span class="va">my_own_extension2</span> <span class="op">&lt;-</span> <span class="kw">function</span><span class="op">(</span><span class="op">)</span> <span class="op">{</span></span>
+<span>  <span class="kw"><a href="https://rdrr.io/r/base/source.html" class="external-link">source</a></span><span class="op">(</span><span class="st">"user_extension.R"</span><span class="op">)</span></span>
+<span><span class="op">}</span></span>
+<span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/base/options.html" class="external-link">options</a></span><span class="op">(</span>crmpack_extensions <span class="op">=</span> <span class="va">my_own_extension2</span><span class="op">)</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/base/options.html" class="external-link">getOption</a></span><span class="op">(</span><span class="st">"crmpack_extensions"</span><span class="op">)</span><span class="op">(</span><span class="op">)</span></span>
+<span></span>
+<span><span class="co"># Run the rest of the code from above example</span></span></code></pre></div>
 </div>
 <div class="section level2">
 <h2 id="note">Note<a class="anchor" aria-label="anchor" href="#note"></a>
