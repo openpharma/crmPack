@@ -15,7 +15,7 @@
 
 #' @include helpers.R
 #' @include Data-class.R
-{}
+NULL
 
 
 # GeneralSimulations ----
