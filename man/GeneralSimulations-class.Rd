@@ -28,17 +28,17 @@ saved, in order to be able to reproduce the outcome. For this just use
 \section{Slots}{
 
 \describe{
-\item{\code{data}}{(\code{list})\cr list of produced \code{\link{Data}} objects}
+\item{\code{data}}{(\code{list})\cr produced \code{\link{Data}} objects.}
 
-\item{\code{doses}}{(\code{numeric})\cr the vector of final dose recommendations}
+\item{\code{doses}}{(\code{numeric})\cr final dose recommendations.}
 
-\item{\code{seed}}{(\code{integer})\cr random generator state before starting the simulation}
+\item{\code{seed}}{(\code{integer})\cr random generator state before starting the simulation.}
 }}
 
 \examples{
 data <- list(
-  Data(x = 1:3, y = 0:2, doseGrid = 1:3, ID = 1L:3L, cohort = 1L:3L),
-  Data(x = 4:6, y = 0:2, doseGrid = 4:6, ID = 1L:3L, cohort = 1L:3L)
+  Data(x = 1:3, y = c(0, 1, 0), doseGrid = 1:3, ID = 1L:3L, cohort = 1L:3L),
+  Data(x = 4:6, y = c(0, 1, 0), doseGrid = 4:6, ID = 1L:3L, cohort = 1L:3L)
 )
 
 doses <- c(1, 2)
