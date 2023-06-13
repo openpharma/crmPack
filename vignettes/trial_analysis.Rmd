@@ -228,17 +228,17 @@ tabulatePosterior <- function(mcmcSamples, observedData) {
     replace_na(list(Treated = 0, WithDLT = 0)) %>%
     select(dose, Treated, WithDLT, target, overdose) %>%
     {
-      if (knitr::is_html_output()) {
+      if (knitr::is_latex_output()) {
         kableExtra::kable(
           .,
           col.names = c("Dose", "Treated", "With DLT", "Target range", "Overdose range"),
-          table.attr = "style='width:60%;'",
           digits = c(0, 0, 0, 3, 3)
         )
       } else {
         kableExtra::kable(
           .,
           col.names = c("Dose", "Treated", "With DLT", "Target range", "Overdose range"),
+          table.attr = "style='width:60%;'",
           digits = c(0, 0, 0, 3, 3)
         )
       }
