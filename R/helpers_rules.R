@@ -497,7 +497,7 @@ h_next_best_td_plot <- function(prob_target_drt,
     data = data.frame(x = data@doseGrid, y = prob_dlt),
     aes(x = .data$x, y = .data$y)
   ) +
-    geom_line(colour = "red", linewidth = 1.5) +
+    geom_line(colour = "red", size = 1.5) +
     coord_cartesian(xlim = c(0, dosegrid_range[2])) +
     ylim(c(0, 1)) +
     xlab("Dose Levels") +
@@ -624,7 +624,7 @@ h_next_best_mg_plot <- function(prob_target_drt,
   )
 
   p <- ggplot(data = data_plot, aes(x = .data$dose, y = .data$y)) +
-    geom_line(aes(group = group, color = group), linewidth = 1.5) +
+    geom_line(aes(group = group, color = group), size = 1.5) +
     ggplot2::scale_colour_manual(name = "curves", values = c("blue", "green3", "red")) +
     coord_cartesian(xlim = c(0, dosegrid_range[2])) +
     ylim(range(data_plot$y)) +
