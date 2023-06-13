@@ -1,18 +1,3 @@
-#####################################################################################
-## Author: Daniel Sabanes Bove [sabanesd *a*t* roche *.* com]
-##         Wai Yin Yeung [w *.* yeung1 *a*t* lancaster *.* ac *.* uk]
-## Project: Object-oriented implementation of CRM designs
-##
-## Time-stamp: <[Simulations-class.R] by DSB Sam 17/01/2015 19:42>
-##
-## Description:
-## Encapsulate the simulations output in a formal class.
-##
-## History:
-## 12/02/2014   file creation
-## 10/07/2015   added Pseudo simulation class
-###################################################################################
-
 #' @include helpers.R
 #' @include Data-class.R
 NULL
