@@ -37,7 +37,7 @@
 %% no indentation of paragraphs
 \noindent
 
-<<load, echo=FALSE, results=hide>>=
+<<load, echo=FALSE, results=FALSE>>=
 # nolint start
 ## load package already here to be able to reference the package version!!
 library(crmPack)
@@ -57,7 +57,7 @@ email to the package maintainer:
 \href{mailto:sabanesd@roche.com}{\nolinkurl{sabanesd@roche.com}}
 Thank you very much in advance!
 
-<<setup, echo=FALSE, results=hide>>=
+<<setup, echo=FALSE, results=FALSE>>=
 options(continue = "  ") # use two blanks instead of "+" for
 # continued lines (for easy copying)
 @
@@ -531,13 +531,13 @@ help(package = "ggmcmc", help_type = "html")
 Similarly, using models from \texttt{ModelPseudo} class, we can also obtain the prior and posterior samples of the model parameters via MCMC.
 
 For example, using the DLTmodel, data1, the empty data set and options specified in earlier examples.
-<<mcmc-DLTsamples, results=hide>>=
+<<mcmc-DLTsamples, results=FALSE>>=
 DLTsamples <- mcmc(data = data1, model = DLTmodel, options = options)
 @
 
 The prior samples of the model parameters are now saved in the variable \texttt{DLTsamples}.
 
-<<mcmc-postDLTsamples, results=hide>>==
+<<mcmc-postDLTsamples, results=FALSE>>==
 data3 <- Data(
   x = c(25, 50, 50, 75, 100, 100, 225, 300),
   y = c(0, 0, 0, 0, 1, 1, 1, 1),
@@ -1349,7 +1349,7 @@ DLTSim <- simulate(DLTdesign,
 
 The above is an example when no MCMC sampling is involved and we have another example below for simulation when MCMC sampling is involved:
 
-<<DLTsampSim-run,results=hide>>=
+<<DLTsampSim-run,results=FALSE>>=
 DLTsampSim <- simulate(DLTsamplesDesign,
   args = NULL,
   truth = TrueDLT,
@@ -1680,7 +1680,7 @@ plotting their traceplots:
 
 <<dual-conv, fig=TRUE>>=
 data@nGrid
-betaWpicks <- get(samples, "betaW", c(1, 5, 10, 25))
+betaWpicks <- get(samples, "betaW", c(1L, 5L, 10L, 25L))
 ggs_traceplot(betaWpicks)
 @
 
@@ -2162,7 +2162,7 @@ There are two functions which we can used. The \texttt{DualResponsesDesign} can 
 design1 <- DualResponsesDesign(
   nextBest = GainNextBest,
   model = DLTmodel,
-  eff_model = Effmodel,
+  Effmodel = Effmodel,
   data = data2,
   stopping = myStopping7,
   increments = myIncrements1,
@@ -2291,7 +2291,7 @@ legend("topright",
 Similarly, we also get the DLT, efficacy and gain values and the corresponding real values of the TD30, TD35 and Gstar.
 
 Then after establishing the real scenarios, we can simulate the trials. First, we will look at two examples when the \texttt{Effloglog} class object is used as the efficacy model. We will show first an example when no MCMC samples are involved:
-<<simulateDualResponseDesign,results=hide>>=
+<<simulateDualResponseDesign,results=FALSE>>=
 Sim1 <- simulate(
   object = design1,
   args = NULL,
@@ -2310,7 +2310,7 @@ The \texttt{simulate} function is used in all cases to simulate trials with spec
 
 When MCMC samples are used, we can also specify the simulations in a similar way with an additional argument \texttt{mcmcOptions} such that we have
 
-<<simulateDualResponsesamplesDesign,results=hide>>=
+<<simulateDualResponsesamplesDesign,results=FALSE>>=
 Sim2 <- simulate(
   object = design2,
   args = NULL,
@@ -2326,7 +2326,7 @@ Sim2 <- simulate(
 
 
 When the \texttt{EffFlexi} class object is used as the efficacy model, we will generate the simulations as follows:
-<<simulateDualResponseFlexiDesign,results=hide>>=
+<<simulateDualResponseFlexiDesign,results=FALSE>>=
 Sim3 <- simulate(
   object = design3,
   args = NULL,

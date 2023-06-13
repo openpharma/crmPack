@@ -342,7 +342,8 @@ setMethod("fit",
 ##' @param model the \code{\linkS4class{GeneralModel}} object
 ##' @param data the \code{\linkS4class{Data}} object
 ##' @param \dots additional arguments (see methods)
-##' @return the approximation model
+##' @return a `list` containing the approximation model and, if requested, a
+##' `ggplot2` object containing a graphicl representation of the fitted model
 ##'
 ##' @export
 ##' @keywords methods
@@ -353,7 +354,7 @@ setGeneric("approximate",
       ## therefore just forward to next method!
       standardGeneric("approximate")
     },
-  valueClass = "GeneralModel"
+  valueClass = "list"
 )
 
 
@@ -365,7 +366,8 @@ setGeneric("approximate",
 ##' \code{points})
 ##' @param logNormal use the log-normal prior? (not default) otherwise, the
 ##' normal prior for the logistic regression coefficients is used
-##' @param verbose be verbose (progress statements and plot)? (default)
+##' @param verbose be verbose (progress statements)? (default)
+##' @param create_plot add a `ggplot2` object to the return value (default)
 ##'
 ##' @describeIn approximate Here the \dots argument can transport additional arguments for
 ##' \code{\link{Quantiles2LogisticNormal}}, e.g. in order to control the
@@ -388,14 +390,21 @@ setMethod("approximate",
              refDose = median(points),
              logNormal = FALSE,
              verbose = TRUE,
+             create_plot = TRUE,
              ...) {
+      # Validation
+      assert_logical(logNormal)
+      assert_logical(verbose)
+      assert_logical(create_plot)
+      assert_numeric(points)
+      assert_numeric(refDose)
       ## get the required quantiles at these dose levels:
       quants <- fit(object,
-        model,
-        data,
-        points = points,
-        quantiles = c(0.025, 0.975),
-        middle = median
+                    model,
+                    data,
+                    points = points,
+                    quantiles = c(0.025, 0.975),
+                    middle = median
       )
 
       ## get better starting values if it is already a logistic normal
@@ -445,28 +454,51 @@ setMethod("approximate",
         logNormal = logNormal,
         ...
       )
-
-      if (verbose) {
-        matplot(
-          x = points,
-          quantRes$required,
-          type = "l", col = "blue", lty = 1
-        )
-        matlines(
-          x = points,
-          quantRes$quantiles,
-          col = "red", lty = 1
-        )
-        legend("bottomright",
-          legend = c("original", "approximation"),
-          col = c("blue", "red"),
-          lty = 1,
-          bty = "n"
-        )
+      rv <- list()
+      rv$model <- quantRes$model
+      if (create_plot) {
+        rv$plot <- tibble::as_tibble(quantRes$required) %>%
+          tibble::add_column(Type = "original") %>%
+          tibble::add_column(x = points) %>%
+          dplyr::bind_rows(
+            tibble::as_tibble(quantRes$quantiles) %>%
+              tibble::add_column(Type = "approximation") %>%
+              tibble::add_column(x = points)
+          ) %>%
+          tidyr::pivot_longer(
+            c(lower, median, upper),
+            names_to = "Line",
+            values_to = "y"
+          ) %>%
+          ggplot2::ggplot(
+            aes(
+              x = x,
+              y = y,
+              colour = Type,
+              group = interaction(Type, Line),
+              linetype = (Line == "median")
+            )
+          ) +
+          ggplot2::geom_line() +
+          ggplot2::scale_colour_manual(
+            name = " ",
+            values = c("red", "blue")
+          ) +
+          ggplot2::scale_linetype_manual(
+            name = " ",
+            values = c("dotted", "solid"),
+            labels = c("95% CI", "Median"),
+            guide = ggplot2::guide_legend(reverse=TRUE)
+          ) +
+          ggplot2::labs(
+            x = "Dose",
+            y = "p(Tox)"
+          ) +
+          ggplot2::theme_light()
       }
 
-      ## return the model
-      return(quantRes$model)
+      ## return the results
+      return(rv)
     }
 )
 
