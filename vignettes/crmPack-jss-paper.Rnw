@@ -2,7 +2,7 @@
 %%\VignetteKeywords{continual reassessment method, model based dose escalation, dual-endpoint design, R, object oriented}
 %%\VignettePackage{crmPack}
 %%\VignetteDepends{crmPack,grid}
-%%\VignetteEngine{knitr::knitr}
+%%\VignetteEngine{utils::Sweave}
 
 \documentclass[nojss]{jss}
 \usepackage[sumlimits, intlimits, namelimits]{amsmath}
@@ -377,7 +377,7 @@ relationship, and hence would like to use a minimally informative prior
 internally, setting of a seed is required for reproducibility.
 Furthermore, it is recommended to specify a coarse dose grid across the original dose range (excluding the placebo dose) to avoid long computation time:
 
-<<min-inf, warning=FALSE, message=FALSE, results="hide">>=
+<<min-inf, warning=FALSE, message=FALSE, results=hide>>=
 coarseGrid <- c(25, 50, 100, 200, 300)
 model <- MinimalInformative(
   dosegrid = coarseGrid, refDose = 100,
@@ -497,7 +497,7 @@ nextDoseRes <- nextBest(myNextBest, nextMaxDose, samples, model, data)
 (nextDoseVal <- nextDoseRes$value)
 @
 The returned list also contains an accompanying plot (\code{nextDoseRes$plot}), see Figure~\ref{fig:nextBest-ncrm}.
-<<nextBest-ncrm,echo=FALSE,fig.width=4,fig.height=4,out.width='.5\\linewidth',fig.align='center',fig.env='figure', fig.cap='Dose recommendation plot from NCRM design. Target probabilities as green bars, overdose probabilities as red bars, maximum next dose $t_{N+1}$ as vertical dashed black line, highest dose with probability of overdosing not exceeding 25\\% as vertical dashed red line, final dose recommendation with a red triangle.'>>=
+<<nextBest-ncrm,echo=FALSE,fig.width=4,fig.height=4,out.width='.5\\linewidth',fig.align='center',fig.env='figure', fig.cap='Dose recommendation plot from NCRM design'>>=
 nextDoseRes$plot
 @
 
@@ -570,7 +570,7 @@ mySims@data[[3]]@nObs
 mySims@doses[3]
 @
 Furthermore, we can plot the \code{Simulations} object by calling the \code{plot} method on it, see Figure~\ref{fig:sim-plot}. You can select the plots by changing the \code{type} argument of \code{plot}, which by default is \code{type = c("trajectory", "dosesTried")}.
-<<sim-plot, echo=FALSE, fig.width=4,fig.height=4,out.width='.5\\linewidth',fig.align='center',fig.env='figure', fig.cap='Simulation plot. On the top panel a summary of the trial trajectories, and on the bottom, the proportions of doses tried, averaged over the simulated trials, are shown.'>>=
+<<sim-plot, echo=FALSE, fig.width=4,fig.height=4,out.width='.5\\linewidth',fig.align='center',fig.env='figure', fig.cap='Simulation plot'>>=
 plot(mySims)
 @
 
@@ -873,7 +873,7 @@ initialization function, although there is no technical need in this case.
 In order to make it usable we need to define the \code{nextBest} method for this
 new rule. Note that we do only specialize the method for the first argument,
 such that this rule could also be used with other models.
-<<newNextBest-method, results='hide'>>=
+<<newNextBest-method, results=hide>>=
 setMethod(
   "nextBest",
   signature = signature(
