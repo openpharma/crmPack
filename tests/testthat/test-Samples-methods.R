@@ -27,7 +27,7 @@ test_that("names-Samples returns correct names of the parameters", {
 })
 
 
-test_that("Approximate fails gracefully with bad input", {
+test_that("approximate fails gracefully with bad input", {
   data <- Data(
     x = c(0.1, 0.5, 1.5, 3, 6, 10, 10, 10),
     y = c(0, 0, 0, 0, 0, 0, 1, 0),
