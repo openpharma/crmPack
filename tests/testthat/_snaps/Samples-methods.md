@@ -1,4 +1,4 @@
-# Approximate works correctly
+# approximate works correctly
 
     Code
       slot(actual$model, slot_name)

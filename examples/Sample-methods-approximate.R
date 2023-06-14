@@ -31,7 +31,7 @@ samples <- mcmc(data, model, options)
 # max.time and maxit are very small only for the purpose of showing the example. They
 # should be increased for a real case.
 set.seed(94)
-posterior <- (approximate(
+approximation <- approximate(
   object = samples,
   model = model,
   data = data,
@@ -41,6 +41,8 @@ posterior <- (approximate(
     max.time = 1,
     maxit = 1
   )
-))$model
+)
+
+posterior <- approximation$model
 
 # nolint end
