@@ -1,74 +1,51 @@
-# nolint start
-#####################################################################################
-## Author: Daniel Sabanes Bove [sabanesd *a*t* roche *.* com]
-## Project: Object-oriented implementation of CRM designs
-##
-## Time-stamp: <[Samples-class.R] by DSB Fre 16/01/2015 12:05>
-##
-## Description:
-## A class for the MCMC samples. We need to have something slightly more
-## flexible than the "mcmc" class from the "coda" package
-##
-## History:
-## 25/03/2014   file creation
-#####################################################################################
+#' @include McmcOptions-class.R
+#' @include Samples-validity.R
+NULL
 
-##' @include McmcOptions-class.R
-##' @include McmcOptions-methods.R
-{}
+# Samples ----
 
-## --------------------------------------------------
-## Class for the MCMC output
-## --------------------------------------------------
+## class ----
 
-##' Class for the MCMC output
-##'
-##' @slot data a list where each entry contains the samples of a (vector-valued)
-##' parameter in a vector/matrix in the format (number of samples) x (dimension
-##' of the parameter).
-##' @slot options the \code{\linkS4class{McmcOptions}} which have been used
-##'
-##' @example examples/Sample-class-Samples.R
-##' @export
-##' @keywords classes
-.Samples <-
-    setClass(Class="Samples",
-             representation(data="list",
-                            options="McmcOptions"),
-             prototype(data=
-                           list(alpha=matrix(0, nrow=1, ncol=1),
-                                beta=matrix(0, nrow=1, ncol=1)),
-                       options=
-                           McmcOptions(burnin=1,
-                                       step=1,
-                                       samples=1)),
-             validity=
-                 function(object){
-                     o <- Validate()
+#' `Samples`
+#'
+#' @description `r lifecycle::badge("stable")`
+#'
+#' [`Samples`] is the class to store the MCMC samples.
+#'
+#' @slot data (`list`)\cr MCMC samples of the parameter. Each entry in this list
+#'   must be a vector (in case of a scalar parameter) or matrix (in case of a
+#'   vector-valued parameter) with samples.
+#'   In case of matrix, every row is a separate sample, while columns correspond
+#'   to the dimension of the parameter.
+#' @slot options (`McmcOptions`)\cr MCMC options that were used to generate the
+#'   samples.
+#'
+#' @aliases Samples
+#' @export
+#'
+.Samples <- setClass(
+  Class = "Samples",
+  slots = c(
+    data = "list",
+    options = "McmcOptions"
+  ),
+  prototype = prototype(
+    data = list(),
+    options = McmcOptions()
+  ),
+  validity = v_samples
+)
 
-                     o$check(all(sapply(object@data,
-                                        NROW) == size(object@options)),
-                             "all data elements must have as many rows as the sample size was")
-                     o$check(all(sapply(object@data, test_numeric, finite = TRUE, any.missing = FALSE)),
-                             "all data elements must be finite numeric values")
-                     o$result()
-                 })
-validObject(.Samples())
+## constructor ----
 
-
-##' Initialization function for "Samples"
-##'
-##' @param data see \code{\linkS4class{Samples}}
-##' @param options see \code{\linkS4class{Samples}}
-##' @return the \code{\linkS4class{Samples}} object
-##'
-##' @export
-##' @keywords methods
-Samples <- function(data,
-                    options)
-{
-    .Samples(data=data,
-             options=options)
+#' @rdname Samples-class
+#'
+#' @param data see slot definition.
+#' @param options see slot definition.
+#'
+#' @export
+#' @example examples/Samples-class.R
+#'
+Samples <- function(data, options) {
+  new("Samples", data = data, options = options)
 }
-
-# nolint end

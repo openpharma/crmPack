@@ -5,9 +5,12 @@
 \alias{DualEndpointRW-class}
 \alias{.DualEndpointRW}
 \alias{DualEndpointRW}
+\alias{.DefaultDualEndpointRW}
 \title{\code{DualEndpointRW}}
 \usage{
 DualEndpointRW(sigma2betaW, rw1 = TRUE, ...)
+
+.DefaultDualEndpointRW()
 }
 \arguments{
 \item{sigma2betaW}{(\code{numeric})\cr the prior variance factor of the random walk
@@ -62,6 +65,8 @@ Please note that due to impropriety of the random walk prior distributions,
 it is not possible to produce MCMC samples with empty data objects (i.e.,
 sample from the prior). This is not a bug, but a theoretical feature of this
 model.
+
+Typically, end users will not use the \code{.DefaultDualEndpointRW()} function.
 }
 \examples{
 my_model <- DualEndpointRW(

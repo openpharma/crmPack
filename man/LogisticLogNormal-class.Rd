@@ -5,9 +5,12 @@
 \alias{LogisticLogNormal-class}
 \alias{.LogisticLogNormal}
 \alias{LogisticLogNormal}
+\alias{.DefaultLogisticLogNormal}
 \title{\code{LogisticLogNormal}}
 \usage{
 LogisticLogNormal(mean, cov, ref_dose = 1)
+
+.DefaultLogisticLogNormal()
 }
 \arguments{
 \item{mean}{(\code{numeric})\cr the prior mean vector.}
@@ -30,6 +33,9 @@ the reference dose \eqn{x*}, i.e.:
 \deqn{logit[p(x)] = alpha0 + alpha1 * log(x/x*),}
 where \eqn{p(x)} is the probability of observing a DLT for a given dose \eqn{x}.
 The prior \deqn{(alpha0, log(alpha1)) ~ Normal(mean, cov).}
+}
+\note{
+Typically, end users will not use the \code{.DefaultLogisticLogNormal()} function.
 }
 \examples{
 my_model <- LogisticLogNormal(

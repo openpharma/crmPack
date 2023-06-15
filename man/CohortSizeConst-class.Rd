@@ -5,9 +5,12 @@
 \alias{CohortSizeConst-class}
 \alias{.CohortSizeConst}
 \alias{CohortSizeConst}
+\alias{.DefaultCohortSizeConst}
 \title{\code{CohortSizeConst}}
 \usage{
 CohortSizeConst(size)
+
+.DefaultCohortSizeConst()
 }
 \arguments{
 \item{size}{(\code{number})\cr see slot definition.}
@@ -23,6 +26,9 @@ CohortSizeConst(size)
 \item{\code{size}}{(\code{integer})\cr cohort size.}
 }}
 
+\note{
+Typically, end users will not use the \code{.DefaultCohortSizeConst()} function.
+}
 \examples{
 
 # Cohort of size 3, constant along the study.

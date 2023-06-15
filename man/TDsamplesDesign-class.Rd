@@ -4,49 +4,67 @@
 \name{TDsamplesDesign-class}
 \alias{TDsamplesDesign-class}
 \alias{.TDsamplesDesign}
-\title{This is a class of design based only on DLE responses using the 'LogisticIndepBeta' class model
-and DLE samples are also used.
-In addition to the slots in the more simple \code{\linkS4class{RuleDesign}},
-objects of this class contain:}
+\alias{TDsamplesDesign}
+\title{\code{TDsamplesDesign}}
+\usage{
+TDsamplesDesign(
+  model,
+  stopping,
+  increments,
+  pl_cohort_size = CohortSizeConst(0L),
+  ...
+)
+}
+\arguments{
+\item{model}{(\code{ModelTox})\cr see slot definition.}
+
+\item{stopping}{(\code{Stopping})\cr see slot definition.}
+
+\item{increments}{(\code{Increments})\cr see slot definition.}
+
+\item{pl_cohort_size}{(\code{CohortSize})\cr see slot definition.}
+
+\item{...}{
+  Arguments passed on to \code{\link[=RuleDesign]{RuleDesign}}
+  \describe{
+    \item{\code{nextBest}}{(\code{NextBest})\cr see slot definition.}
+    \item{\code{cohortSize}}{(\code{CohortSize})\cr see slot definition.}
+    \item{\code{data}}{(\code{Data})\cr see slot definition.}
+    \item{\code{startingDose}}{(\code{number})\cr see slot definition.}
+  }}
+}
 \description{
-This is a class of design based only on DLE responses using the 'LogisticIndepBeta' class model
-and DLE samples are also used.
-In addition to the slots in the more simple \code{\linkS4class{RuleDesign}},
-objects of this class contain:
+\ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#stable}{\figure{lifecycle-stable.svg}{options: alt='[Stable]'}}}{\strong{[Stable]}}
+
+\code{\link{TDsamplesDesign}} is the class of design based only on DLT responses using
+\code{\link{ModelTox}} class model (i.e. \code{\link{LogisticIndepBeta}}) as well as MCMC samples
+obtained for this model.
 }
 \section{Slots}{
 
 \describe{
-\item{\code{model}}{the pseudo DLE model to be used, an object class of
-\code{\linkS4class{ModelTox}}}
+\item{\code{model}}{(\code{ModelTox})\cr the pseudo DLT model to be used.}
 
-\item{\code{stopping}}{stopping rule(s) for the trial, an object class of \code{\linkS4class{Stopping}}}
+\item{\code{stopping}}{(\code{Stopping})\cr stopping rule(s) for the trial.}
 
-\item{\code{increments}}{how to control increments between dose levels, an object class of
-\code{\linkS4class{Increments}}}
+\item{\code{increments}}{(\code{Increments})\cr how to control increments between dose levels.}
 
-\item{\code{PLcohortSize}}{rules for the cohort sizes for placebo, if any planned
-an object of class \code{\linkS4class{CohortSize}}}
+\item{\code{pl_cohort_size}}{(\code{CohortSize})\cr rules for the cohort sizes for placebo,
+if any planned (defaults to constant 0 placebo patients).}
 }}
 
 \examples{
-# nolint start
+empty_data <- Data(doseGrid = seq(25, 300, 25))
 
-##Specified the design to run simulations
-##The design comprises a model, the escalation rule, starting data,
-##a cohort size and a starting dose
-##Define your data set first using an empty data set
-## with dose levels from 25 to 300 with increments 25
-data <- Data(doseGrid=seq(25,300,25))
+my_model <- LogisticIndepBeta(
+  binDLE = c(1.05, 1.8),
+  DLEweights = c(3, 3),
+  DLEdose = c(25, 300),
+  data = empty_data
+)
 
-##The design only incorporate DLE responses and DLE samples are involved
-##Specified the model of 'ModelTox' class eg 'LogisticIndepBeta' class model
-model<-LogisticIndepBeta(binDLE=c(1.05,1.8),DLEweights=c(3,3),DLEdose=c(25,300),data=data)
-
-samples <- mcmc(data=data, model=model, options=McmcOptions(burnin=100,step=2,samples=200))
-
-##Then the escalation rule
-tdNextBest <- NextBestTDsamples(
+# The escalation rule.
+my_next_best <- NextBestTDsamples(
   prob_target_drt = 0.35,
   prob_target_eot = 0.3,
   derive = function(samples) {
@@ -54,24 +72,27 @@ tdNextBest <- NextBestTDsamples(
   }
 )
 
-## The cohort size, size of 3 subjects
-mySize <-CohortSizeConst(size=3)
-##Deifne the increments for the dose-escalation process
-##The maximum increase of 200\% for doses up to the maximum of the dose specified in the doseGrid
-##The maximum increase of 200\% for dose above the maximum of the dose specified in the doseGrid
-##This is to specified a maximum of 3-fold restriction in dose-esclation
-myIncrements<-IncrementsRelative(intervals=c(min(data@doseGrid),max(data@doseGrid)),
-                                 increments=c(2,2))
-##Specified the stopping rule e.g stop when the maximum sample size of 36 patients has been reached
-myStopping <- StoppingMinPatients(nPatients=36)
-##Now specified the design with all the above information and starting with a dose of 25
-design <- TDsamplesDesign(model=model,
-                          nextBest=tdNextBest,
-                          stopping=myStopping,
-                          increments=myIncrements,
-                          cohortSize=mySize,
-                          data=data,startingDose=25)
+my_size <- CohortSizeConst(size = 3)
 
-# nolint end
+# The increments for the dose-escalation process:
+#  the maximum increase of 200\% for doses up to the maximum dose in grid,
+#  the maximum increase of 200\% for dose above the maximum dose in grid.
+my_increments <- IncrementsRelative(
+  intervals = range(empty_data@doseGrid),
+  increments = c(2, 2)
+)
+
+# Stop when the maximum sample size of 36 patients is reached.
+my_stopping <- StoppingMinPatients(nPatients = 36)
+
+# The design with all the above information and starting with a dose of 25.
+design <- TDsamplesDesign(
+  model = my_model,
+  stopping = my_stopping,
+  increments = my_increments,
+  nextBest = my_next_best,
+  cohortSize = my_size,
+  data = empty_data,
+  startingDose = 25
+)
 }
-\keyword{class}

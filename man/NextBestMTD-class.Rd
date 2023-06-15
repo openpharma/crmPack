@@ -5,9 +5,12 @@
 \alias{NextBestMTD-class}
 \alias{.NextBestMTD}
 \alias{NextBestMTD}
+\alias{.DefaultNextBestMTD}
 \title{\code{NextBestMTD}}
 \usage{
 NextBestMTD(target, derive)
+
+.DefaultNextBestMTD()
 }
 \arguments{
 \item{target}{(\code{proportion})\cr see slot definition.}
@@ -29,6 +32,9 @@ estimate, based on vector of posterior MTD samples. It must therefore accept
 one and only one argument, which is a numeric vector, and return a number.}
 }}
 
+\note{
+Typically, end users will not use the \code{.DefaultNextBestMTD()} function.
+}
 \examples{
 # In the example below, the MTD is defined as the dose for which prob(DLE) = 0.33
 # and we will use the 25th quantile of the posterior of MTD as our next best dose.

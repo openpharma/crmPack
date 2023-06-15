@@ -5,9 +5,12 @@
 \alias{IncrementsRelativeDLT-class}
 \alias{.IncrementsRelativeDLT}
 \alias{IncrementsRelativeDLT}
+\alias{.DefaultIncrementsRelativeDLT}
 \title{\code{IncrementsRelativeDLT}}
 \usage{
 IncrementsRelativeDLT(dlt_intervals, increments)
+
+.DefaultIncrementsRelativeDLT()
 }
 \arguments{
 \item{dlt_intervals}{(\code{numeric})\cr see slot definition.}
@@ -23,10 +26,9 @@ relative differences in terms of DLTs.
 \section{Slots}{
 
 \describe{
-\item{\code{dlt_intervals}}{(\code{integer})\cr an vector with the left bounds of the
-relevant DLT intervals. This parameters specifies the right bounds of the
-intervals. For example, \code{dlt_intervals  = c(0, 1, 3)} specifies three
-intervals (sets of DLTs: first, 0 DLT; second 1 or 2 DLTs; and the third
+\item{\code{dlt_intervals}}{(\code{integer})\cr a vector with the left bounds of the
+relevant DLT intervals. For example, \code{dlt_intervals  = c(0, 1, 3)} specifies
+three intervals (sets of DLTs: first, 0 DLT; second 1 or 2 DLTs; and the third
 one, at least 3 DLTs. That means, the right bound of the intervals are
 exclusive to the interval and the last interval goes from the last value to
 infinity.}
@@ -38,6 +40,8 @@ as the length of \code{dlt_intervals}.}
 
 \note{
 This considers all DLTs across all cohorts observed so far.
+
+Typically, end users will not use the \code{.DefaultIncrementsRelativeDLT()} function.
 }
 \examples{
 

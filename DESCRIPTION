@@ -1,6 +1,6 @@
 Package: crmPack
 Title: Object-Oriented Implementation of CRM Designs
-Version: 1.0.9000.9131
+Version: 1.0.9000.9133
 Authors@R: c(
     person("Daniel", "Sabanes Bove", , "daniel.sabanesbove@gmx.net", role = c("aut", "cre")),
     person("Wai", "Yin Yeung", , "winnie.yeung@roche.com", role = "aut"),
@@ -9,8 +9,16 @@ Authors@R: c(
     person("Thomas", "Jaki", , "jaki.thomas@gmail.com", role = "aut"),
     person("Jiawen", "Zhu", , "zhu.jiawen@gene.com", role = "aut"),
     person("Ziwei", "Liao", , "ziwei.liao.fdu@gmail.com", role = "aut"),
-    person("Dimitris", "Kontos", , "dimitris.kontos@clinbay.com", role = "aut"),
-    person("Marlene", "Schulte-Goebel", , "marlene.schulte-goebel@merckgroup.com", role = "aut")
+    person("Dimitris", "Kontos", , "dimitris.kontos@bayer.com", role = "aut"),
+    person("Marlene", "Schulte-Goebel", , "marlene.schulte-goebel@merckgroup.com", role = "aut"),
+    person("Doug", "Kelkhoff", , "doug.kelkhoff@roche.com", role = "aut", comment = c(ORCID = "0009-0003-7845-4061")),
+    person("Oliver", "Boix", , "oliver.boix@bayer.com", role = "aut"),
+    person("Robert", "Adams", , "robert.adams@bayer.com", role = "aut"),
+    person("Clara", "Beck", , "clara.beck@bayer.com", role = "aut"),
+    person("John", "Kirkpatrick", , "john.kirkpatrick@roche.com", role = "aut"),
+    person("F. Hoffmann-La Roche AG", role = c("cph", "fnd")),
+    person("Merck Healthcare KGaA", role = c("cph", "fnd")),
+    person("Bayer AG", role = c("cph", "fnd"))
   )
 Description: Implements a wide range of model-based dose escalation
     designs, ranging from classical and modern continual reassessment
@@ -21,7 +29,8 @@ Description: Implements a wide range of model-based dose escalation
     possible to implement 3+3 designs for comparison or models with
     non-Bayesian estimation. The whole package is written in a modular
     form in the S4 class system, making it very flexible for adaptation to
-    new models, escalation or stopping rules.
+    new models, escalation or stopping rules. Further details are presented in 
+    Sabanes Bove et al. (2019) <doi:10.18637/jss.v089.i10>.
 License: GPL (>= 2)
 URL: https://github.com/roche/crmPack
 BugReports: https://github.com/roche/crmPack/issues
@@ -30,23 +39,25 @@ Depends:
     graphics,
     R (>= 3.0.0)
 Imports:
-    checkmate,
+    checkmate (>= 2.2.0),
     futile.logger,
     GenSA,
     grid,
-    gridExtra,
-    kableExtra,
-    lifecycle,
     magrittr,
+    gridExtra,
+    lifecycle,
     methods,
     mvtnorm,
     parallel,
+    parallelly,
     rjags,
     survival,
     tibble,
     tools,
-    utils
+    utils,
+    kableExtra
 Suggests:
+    covr,
     dplyr,
     ggmcmc,
     knitr,
@@ -54,12 +65,11 @@ Suggests:
     stringr,
     testthat (>= 3.0.0),
     tidyr,
-    vdiffr
+    vdiffr,
+    withr
 VignetteBuilder: 
-    knitr
+    utils, knitr
 Config/testthat/edition: 3
-Copyright: F. Hoffmann-La Roche Ltd, except Google LLC for contributions
-    by Daniel Sabanes Bove between 6 August 2018 and 31 May 2020.
 Encoding: UTF-8
 Language: en-US
 LazyLoad: yes
@@ -77,10 +87,12 @@ Collate:
     'Model-validity.R'
     'helpers_jags.R'
     'Model-class.R'
+    'Design-validity.R'
     'Design-class.R'
     'McmcOptions-validity.R'
     'McmcOptions-class.R'
     'McmcOptions-methods.R'
+    'Samples-validity.R'
     'Samples-class.R'
     'mcmc.R'
     'Simulations-class.R'
@@ -93,6 +105,7 @@ Collate:
     'Simulations-methods.R'
     'checkmate.R'
     'crmPack-package.R'
+    'helpers_covr.R'
     'helpers_model.R'
     'logger.R'
     'utils-pipe.R'

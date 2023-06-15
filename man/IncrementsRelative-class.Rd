@@ -5,9 +5,12 @@
 \alias{IncrementsRelative-class}
 \alias{.IncrementsRelative}
 \alias{IncrementsRelative}
+\alias{.DefaultIncrementsRelative}
 \title{\code{IncrementsRelative}}
 \usage{
 IncrementsRelative(intervals, increments)
+
+.DefaultIncrementsRelative()
 }
 \arguments{
 \item{intervals}{(\code{numeric})\cr see slot definition.}
@@ -24,8 +27,7 @@ differences in intervals.
 
 \describe{
 \item{\code{intervals}}{(\code{numeric})\cr a vector with the left bounds of the relevant
-intervals. This parameters specifies the right bounds of the intervals.
-For example, \code{intervals  = c(0, 50, 100)} specifies three intervals:
+intervals. For example, \code{intervals  = c(0, 50, 100)} specifies three intervals:
 \eqn{(0, 50)}, \eqn{[50, 100)} and \eqn{[100, +Inf)}. That means, the right
 bound of the intervals are exclusive to the interval and the last interval
 goes from the last value to infinity.}
@@ -34,6 +36,9 @@ goes from the last value to infinity.}
 allowable relative increments in the \code{intervals}.}
 }}
 
+\note{
+Typically, end users will not use the \code{.DefaultIncrementsRelative()} function.
+}
 \examples{
 
 # This is the example of a rule for:

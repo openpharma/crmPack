@@ -5,9 +5,12 @@
 \alias{OneParExpPrior-class}
 \alias{.OneParExpPrior}
 \alias{OneParExpPrior}
+\alias{.DefaultOneParExpPrior}
 \title{\code{OneParExpPrior}}
 \usage{
 OneParExpPrior(skel_probs, dose_grid, lambda)
+
+.DefaultOneParExpPrior()
 }
 \arguments{
 \item{skel_probs}{see slot definition.}
@@ -38,6 +41,11 @@ of unique and sorted probability values between 0 and 1.}
 for theta.}
 }}
 
+\note{
+Typically, end users will not use the \code{.DefaultOneparExpPrior()} function.
+
+Typically, end users will not use the \code{DefaultOneParLogNormalPrior()} function.
+}
 \examples{
 my_model <- OneParExpPrior(
   skel_probs = c(0.1, 0.3, 0.5, 0.7, 0.9),

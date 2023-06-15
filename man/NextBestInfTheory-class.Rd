@@ -5,9 +5,12 @@
 \alias{NextBestInfTheory-class}
 \alias{.NextBestInfTheory}
 \alias{NextBestInfTheory}
+\alias{.DefaultNextBestInfTheory}
 \title{\code{NextBestInfTheory}}
 \usage{
 NextBestInfTheory(target, asymmetry)
+
+.DefaultNextBestInfTheory()
 }
 \arguments{
 \item{target}{(\code{proportion})\cr see slot definition.}
@@ -30,3 +33,6 @@ divergence function that describes the rate of penalization for overly
 toxic does. It must be a value from \eqn{(0, 2)} interval.}
 }}
 
+\note{
+Typically, end users will not use the \code{.DefaultNextBestInfTheory()} function.
+}

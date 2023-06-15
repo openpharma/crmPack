@@ -5,9 +5,12 @@
 \alias{DualEndpoint-class}
 \alias{.DualEndpoint}
 \alias{DualEndpoint}
+\alias{.DefaultDualEndpoint}
 \title{\code{DualEndpoint}}
 \usage{
 DualEndpoint(mean, cov, ref_dose = 1, use_log_dose = FALSE, sigma2W, rho)
+
+.DefaultDualEndpoint()
 }
 \arguments{
 \item{mean}{(\code{numeric})\cr for the probit toxicity model, the prior mean vector.}
@@ -96,6 +99,9 @@ or \code{rho} (for each parameter separately) is used or not. This slot is
 needed for internal purposes and must not be touched by the user.}
 }}
 
+\note{
+Typically, end users will not use the \code{DefaultDualEndpoint()} function.
+}
 \seealso{
 \code{\link{DualEndpointRW}}, \code{\link{DualEndpointBeta}}, \code{\link{DualEndpointEmax}}.
 }

@@ -26,7 +26,6 @@ represents a single-type, consistent change.
 ## Classes
 
 ```{r class_changes, echo=FALSE}
-
 class_changes <- tribble(
   ~class_name, ~class_new_name, ~slot_name, ~slot_new_name, ~was_removed, ~comment,
   "", "positive_number", "", "", FALSE, "to handle strictly positive valued slots
@@ -76,8 +75,9 @@ class_changes <- tribble(
   "IncrementsRelativeParts", "", "dltStart", "dlt_start", FALSE, "",
   "IncrementsRelativeParts", "", "cleanStart", "clean_start", FALSE, "change applied also to other dependent classes",
   "IncrementsRelativeDLT", "", "DLTintervals", "dlt_intervals", FALSE, "change applied also to other dependent classes",
-  "IncrementsNumDoseLevels", "", "maxLevels", "max_levels", FALSE, "change applied also to other dependent classes",
-  "IncrementsNumDoseLevels", "", "", "basis_level", FALSE, "",
+  "IncrementsNumDoseLevels", "IncrementsDoseLevels", "", "", FALSE, "",
+  "IncrementsDoseLevels", "", "maxLevels", "levels", FALSE, "change applied also to other dependent classes",
+  "IncrementsDoseLevels", "", "", "basis_level", FALSE, "",
   "IncrementMin", "IncrementsMin", "", "", FALSE, "",
   "IncrementsMin", "", "IncrementsList", "increments_list", FALSE, "change applied also to other dependent classes",
   "StoppingTargetBiomarker", "", "scale", "", TRUE, "replaced by `is_relative` flag",
@@ -102,12 +102,14 @@ class_changes <- tribble(
   "SafetyWindowConst", "", "patientGap", "gap", FALSE, "",
   "SafetyWindowConst", "", "patientFollow", "follow", FALSE, "",
   "SafetyWindowConst", "", "patientFollowMin", "follow_min", FALSE, "",
-  "OneParExpNormalPrior", "OneParLogNormalPrior", "", "", FALSE, ""
+  "OneParExpNormalPrior", "OneParLogNormalPrior", "", "", FALSE, "",
+  "Design", "", "PLcohortSize", "pl_cohort_size", FALSE, "",
+  "TDsamplesDesign", "", "PLcohortSize", "pl_cohort_size", FALSE, "",
+  "TDDesign", "", "PLcohortSize", "pl_cohort_size", FALSE, ""
 )
 ```
 
 ```{r class_changes_kbl, echo=FALSE, results='markup'}
-
 cc <- class_changes
 cc <- cc[order(cc$class_name, cc$class_new_name, cc$slot_name, cc$slot_new_name), ]
 
@@ -143,7 +145,6 @@ Strikeout indicates that the class/slot was removed.
 ## Methods
 
 ```{r method_changes, echo=FALSE}
-
 method_changes <- tribble(
   ~method_name, ~method_new_name, ~arg_name, ~arg_new_name, ~was_removed, ~output_changes, ~comment,
   "update-Data", "", "newCohort", "new_cohort", FALSE, "", "",
@@ -187,7 +188,6 @@ method_changes <- tribble(
 ```
 
 ```{r method_changes_kbl, echo=FALSE, results='markup'}
-
 mc <- method_changes
 mc <- mc[order(mc$method_name, mc$method_new_name, mc$arg_name, mc$arg_new_name), ]
 
@@ -276,3 +276,17 @@ details in the help page for the `McmcOptions` class.
 Any RNG-related user settings at the R session level (such us those with
 `set.seed()`) are ignored by the MCMC sampler.
 
+# New no-argument constructors
+
+To aid software development, new no-argument constructs for all sub-classes of `GeneralModel`, `Increments`, `NextBest` and `Stopping` have been introduced.  The names of these constructors take the form `.Default<classname>`, where `<classname>` is the name of the class being created.
+
+These constructors return valid, but not necessarily contextually sensible, objects of the required class.  One reason the objects returned may not be contextually sensible is that the constructors take no account of any associated `doseGrid`.
+
+Here are some examples of their use:
+
+```{r}
+.DefaultStoppingAll()
+
+class_name <- "LogisticNormal"
+eval(parse(text = paste0(".Default", class_name, "()")))
+```

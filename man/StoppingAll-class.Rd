@@ -5,9 +5,12 @@
 \alias{StoppingAll-class}
 \alias{.StoppingAll}
 \alias{StoppingAll}
+\alias{.DefaultStoppingAll}
 \title{\code{StoppingAll}}
 \usage{
 StoppingAll(stop_list)
+
+.DefaultStoppingAll()
 }
 \arguments{
 \item{stop_list}{(\code{list})\cr see slot definition.}
@@ -26,6 +29,9 @@ to be \code{TRUE}.
 \item{\code{stop_list}}{(\code{list})\cr list of stopping rules.}
 }}
 
+\note{
+Typically, end users will not use the \code{.DefaultStoppingAll()} function.
+}
 \examples{
 
 # Define some stopping rules.

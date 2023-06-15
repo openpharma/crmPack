@@ -109,42 +109,6 @@ test_that("h_plot_data_cohort_lines works as expected for single cohort", {
   )
 })
 
-# h_dose_grid_range ----
-
-test_that("h_dose_grid_range works as expected for regular dose grid", {
-  data <- Data(placebo = TRUE, doseGrid = c(0.01, 10, 25, 50, 75))
-  result <- h_dose_grid_range(data)
-  expect_identical(result, c(10, 75))
-
-  data <- Data(placebo = FALSE, doseGrid = c(10, 25, 50, 75))
-  result <- h_dose_grid_range(data)
-  expect_identical(result, c(10, 75))
-})
-
-test_that("h_dose_grid_range works as expected for empty grid", {
-  data <- Data(placebo = TRUE)
-  result <- h_dose_grid_range(data)
-  expect_identical(result, c(-Inf, Inf))
-
-  data <- Data(placebo = TRUE, doseGrid = 0.01)
-  result <- h_dose_grid_range(data)
-  expect_identical(result, c(-Inf, Inf))
-
-  data <- Data(placebo = FALSE)
-  result <- h_dose_grid_range(data)
-  expect_identical(result, c(-Inf, Inf))
-})
-
-test_that("h_dose_grid_range works as expected for non empty edge grid", {
-  data <- Data(placebo = TRUE, doseGrid = c(0.01, 10))
-  result <- h_dose_grid_range(data)
-  expect_identical(result, c(10, 10))
-
-  data <- Data(placebo = FALSE, doseGrid = c(10))
-  result <- h_dose_grid_range(data)
-  expect_identical(result, c(10, 10))
-})
-
 # h_check_fun_formals ----
 
 test_that("h_check_fun_formals returns TRUE for valid arguments", {
@@ -494,4 +458,66 @@ test_that("h_find_interval works as expected for custom replacement", {
   expect_identical(h_find_interval(-Inf, c(2, 4, 6), replacement = -1), -1)
   expect_identical(h_find_interval(1, c(2, 4, 6), replacement = -1), -1)
   expect_equal(h_find_interval(2, c(2, 4, 6)), 1)
+})
+
+test_that("default constructors exist for all subclasses of GeneralModel", {
+  classesToTest <- names(getClassDef("GeneralModel")@subclasses)
+  # Virtual class: throws exception
+  classesToTest <- classesToTest[which(!(classesToTest %in% c("DualEndpoint")))]
+  lapply(
+    classesToTest,
+    function(cls) {
+      # Function exists
+      expect_true(length(findFunction(paste0(".Default", cls), where = asNamespace("crmPack"))) > 1)
+      # Return value is of the correct class
+      test_obj <- eval(parse(text = paste0(".Default", cls, "()")))
+      expect_class(test_obj, cls)
+    }
+  )
+  expect_error(eval(parse(text = ".DefaultDualEndpoint()")))
+})
+
+test_that("default constructors exist for all subclasses of Increments", {
+  classesToTest <- names(getClassDef("Increments")@subclasses)
+  lapply(
+    classesToTest,
+    function(cls) {
+      # Function exists
+      expect_true(length(findFunction(paste0(".Default", cls), where = asNamespace("crmPack"))) > 1)
+      # Return value is of the correct class
+      test_obj <- eval(parse(text = paste0(".Default", cls, "()")))
+      expect_class(test_obj, cls)
+    }
+  )
+  expect_error(eval(parse(text = ".DefaultDualEndpoint()")))
+})
+
+test_that("default constructors exist for all subclasses of NextBest", {
+  classesToTest <- names(getClassDef("NextBest")@subclasses)
+  lapply(
+    classesToTest,
+    function(cls) {
+      # Function exists
+      expect_true(length(findFunction(paste0(".Default", cls), where = asNamespace("crmPack"))) > 1)
+      # Return value is of the correct class
+      test_obj <- eval(parse(text = paste0(".Default", cls, "()")))
+      expect_class(test_obj, cls)
+    }
+  )
+  expect_error(eval(parse(text = ".DefaultDualEndpoint()")))
+})
+
+test_that("default constructors exist for all subclasses of Stopping", {
+  classesToTest <- names(getClassDef("Stopping")@subclasses)
+  lapply(
+    classesToTest,
+    function(cls) {
+      # Function exists
+      expect_true(length(findFunction(paste0(".Default", cls), where = asNamespace("crmPack"))) > 1)
+      # Return value is of the correct class
+      test_obj <- eval(parse(text = paste0(".Default", cls, "()")))
+      expect_class(test_obj, cls)
+    }
+  )
+  expect_error(eval(parse(text = ".DefaultDualEndpoint()")))
 })

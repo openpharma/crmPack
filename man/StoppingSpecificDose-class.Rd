@@ -5,9 +5,12 @@
 \alias{StoppingSpecificDose-class}
 \alias{.StoppingSpecificDose}
 \alias{StoppingSpecificDose}
+\alias{.DefaultStoppingSpecificDose}
 \title{\code{StoppingSpecificDose}}
 \usage{
 StoppingSpecificDose(rule, dose)
+
+.DefaultStoppingSpecificDose()
 }
 \arguments{
 \item{rule}{(\code{Stopping})\cr see slot definition.}
@@ -29,6 +32,9 @@ dose of the dose grid and not at the next best dose.
 grid of the data.}
 }}
 
+\note{
+Typically, end users will not use the \code{.DefaultStoppingSpecificDose()} function.
+}
 \examples{
 
 # Stop if highest dose 80 is safe.

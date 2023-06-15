@@ -2,7 +2,7 @@
 %%\VignetteKeywords{continual reassessment method, model based dose escalation, dual-endpoint design, R, object oriented}
 %%\VignettePackage{crmPack}
 %%\VignetteDepends{crmPack,grid}
-%%\VignetteEngine{knitr::knitr}
+%%\VignetteEngine{utils::Sweave}
 
 \documentclass[nojss]{jss}
 \usepackage[sumlimits, intlimits, namelimits]{amsmath}
@@ -32,34 +32,44 @@
 # nolint start
 knitr::render_sweave()
 options(prompt = "R> ", continue = "+  ", width = 76, useFancyQuotes = FALSE)
-knitr::opts_chunk$set(abbreviate=0, wrap=FALSE)
-Sys.setenv(TEXINPUTS=getwd(),
-           BIBINPUTS=getwd(),
-           BSTINPUTS=getwd())
+knitr::opts_chunk$set(abbreviate = 0, wrap = FALSE)
+Sys.setenv(
+  TEXINPUTS = getwd(),
+  BIBINPUTS = getwd(),
+  BSTINPUTS = getwd()
+)
 ## opts_chunk$set(cache=TRUE)  # to prevent rerunning the code every time
 
 oh <- knitr::knit_hooks$get("output")
 knitr::knit_hooks$set(output = function(x, options) {
   ## do we need to abbreviate the output?
-  if(options$abbreviate > 0)
-  {
+  if (options$abbreviate > 0) {
     ret <- strsplit(x, "\n")[[1]]
-    ret <- if (length(ret) > options$abbreviate * 2)
-      paste(paste(head(ret, options$abbreviate),
-                  collapse="\n"),
-            "\n...\n",
-            paste(tail(ret, options$abbreviate),
-                  collapse="\n"),
-            "\n",
-            sep="")
-    else
+    ret <- if (length(ret) > options$abbreviate * 2) {
+      paste(
+        paste(head(ret, options$abbreviate),
+          collapse = "\n"
+        ),
+        "\n...\n",
+        paste(tail(ret, options$abbreviate),
+          collapse = "\n"
+        ),
+        "\n",
+        sep = ""
+      )
+    } else {
       ret
+    }
     oh(ret, options)
-  } else if(options$wrap) {
+  } else if (options$wrap) {
     ## do we need to wrap the output?
-    oh(paste(paste(strwrap(strsplit(x, "\n")[[1]]), collapse="\n"),
-             "\n"),
-       options)
+    oh(
+      paste(
+        paste(strwrap(strsplit(x, "\n")[[1]]), collapse = "\n"),
+        "\n"
+      ),
+      options
+    )
   } else {
     ## original output hook
     oh(x, options)
@@ -367,12 +377,14 @@ relationship, and hence would like to use a minimally informative prior
 internally, setting of a seed is required for reproducibility.
 Furthermore, it is recommended to specify a coarse dose grid across the original dose range (excluding the placebo dose) to avoid long computation time:
 
-<<min-inf, warning=FALSE, message=FALSE, results="hide">>=
+<<min-inf, warning=FALSE, message=FALSE, results=hide>>=
 coarseGrid <- c(25, 50, 100, 200, 300)
-model <- MinimalInformative(dosegrid = coarseGrid, refDose = 100,
-                            logNormal = TRUE, threshmin = 0.1,
-                            threshmax = 0.2, seed = 432,
-                            control = list(max.time = 30))$model
+model <- MinimalInformative(
+  dosegrid = coarseGrid, refDose = 100,
+  logNormal = TRUE, threshmin = 0.1,
+  threshmax = 0.2, seed = 432,
+  control = list(max.time = 30)
+)$model
 @
 
 The resulting \code{model} (which is an object of class \code{LogisticLogNormal})
@@ -398,12 +410,14 @@ name (which is a general convention in \pkg{crmPack}):
 
 <<init-Data>>=
 PL <- 0.001
-data <- Data(x = c(PL, 25, 25, 25, PL, 50, 50, 50, PL, 100, 100, 100),
-             y = c(0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0),
-             cohort = c(1, 1, 1, 1, 2, 2, 2, 2, 3, 3, 3, 3),
-             doseGrid = c(PL, seq(25, 300, 25)),
-             ID = 1:12,
-             placebo = TRUE)
+data <- Data(
+  x = c(PL, 25, 25, 25, PL, 50, 50, 50, PL, 100, 100, 100),
+  y = c(0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0),
+  cohort = c(1, 1, 1, 1, 2, 2, 2, 2, 3, 3, 3, 3),
+  doseGrid = c(PL, seq(25, 300, 25)),
+  ID = 1:12,
+  placebo = TRUE
+)
 @
 
 The argument \code{x} takes the doses $x_{1}=\Sexpr{PL}, x_{2}=25, x_{3} = 50, x_{4} = 100$ (note
@@ -459,8 +473,10 @@ specifying the maximum increments function $\tau$. In the example below a maximu
 for doses below 100 mg, 50\% for doses in the range from 100 mg to 200 mg, and 33\%
 for doses equal or above 200 mg is specified using the class \code{IncrementsRelative}:
 <<rel-incrs>>=
-myIncrements <- IncrementsRelative(intervals = c(0, 100, 200),
-                                   increments = c(1, 0.5, 0.33))
+myIncrements <- IncrementsRelative(
+  intervals = c(0, 100, 200),
+  increments = c(1, 0.5, 0.33)
+)
 @
 This specific rule $\tau$ can then be evaluated on the current dataset ${\cal D}_{N}$ by
 the \code{maxDose} function to obtain the maximum next dose $t_{N+1} = \tau({\cal D}_{N})$:
@@ -470,8 +486,10 @@ the \code{maxDose} function to obtain the maximum next dose $t_{N+1} = \tau({\ca
 
 We then define the function $\nu$ for selecting a dose for the next cohort. In this case we would like to select the dose which maximizes the probability of the DLT rate being in the target toxicity range from 20\% to 35\%, but with the probability of overdosing not exceeding 25\% \citep{Neuenschwander2008}, using the \code{NextBestNCRM} class:
 <<nextBest-ncrm-def>>=
-myNextBest <- NextBestNCRM(target = c(0.2, 0.35), overdose = c(0.35, 1),
-                           max_overdose_prob = 0.25)
+myNextBest <- NextBestNCRM(
+  target = c(0.2, 0.35), overdose = c(0.35, 1),
+  max_overdose_prob = 0.25
+)
 @
 This rule can then be evaluated with the function \code{nextBest} to obtain the next dose $x_{N+1}=\nu({\cal D}_{N}, t_{N+1})$:
 <<nextBest-ncrm-eval>>=
@@ -479,7 +497,7 @@ nextDoseRes <- nextBest(myNextBest, nextMaxDose, samples, model, data)
 (nextDoseVal <- nextDoseRes$value)
 @
 The returned list also contains an accompanying plot (\code{nextDoseRes$plot}), see Figure~\ref{fig:nextBest-ncrm}.
-<<nextBest-ncrm,echo=FALSE,fig.width=4,fig.height=4,out.width='.5\\linewidth',fig.align='center',fig.env='figure', fig.cap='Dose recommendation plot from NCRM design. Target probabilities as green bars, overdose probabilities as red bars, maximum next dose $t_{N+1}$ as vertical dashed black line, highest dose with probability of overdosing not exceeding 25\\% as vertical dashed red line, final dose recommendation with a red triangle.'>>=
+<<nextBest-ncrm,echo=FALSE,fig.width=4,fig.height=4,out.width='.5\\linewidth',fig.align='center',fig.env='figure', fig.cap='Dose recommendation plot from NCRM design'>>=
 nextDoseRes$plot
 @
 
@@ -506,16 +524,18 @@ In this case we will use a fixed cohort size of 3 patients on active and 1 patie
 mySize <- CohortSizeConst(3)
 mySizePL <- CohortSizeConst(1)
 
-design <- Design(model = model, nextBest = myNextBest,
-                 stopping = myStopping, increments = myIncrements,
-                 cohortSize = mySize, PLcohortSize = mySizePL,
-                 data = emptydata, startingDose = 25)
+design <- Design(
+  model = model, nextBest = myNextBest,
+  stopping = myStopping, increments = myIncrements,
+  cohortSize = mySize, pl_cohort_size = mySizePL,
+  data = emptydata, startingDose = 25
+)
 @
 We can then start by looking at the single trial operating characteristics of the dose escalation design with the function \code{examine}, which generates a data frame showing the beginning of several hypothetical trial courses under the design. Assuming no DLTs have been seen until a certain dose, then the consequences of different number of DLTs being observed at this dose are shown. For example, if we observe 3 DLTs at the starting dose of 25~mg, we would
 need to stop the trial, while we would enroll another cohort at the same dose level in case of 2 DLTs. In the last rows of the output we see that if no DLTs were observed before the 250~mg cohort, the maximum considered dose of 300~mg dose can be reached in the next cohort if also no DLTs are observed at 250~mg. If 1, 2 or 3 DLTs are observed, the next dose is recommended as 225, 175 and 150~mg, respectively.
 <<design-examine, abbreviate=5>>=
 set.seed(23)
-examine(design, mcmcOptions=options)
+examine(design, mcmcOptions = options)
 @
 
 \paragraph{Simulating operating characteristics} For the many trials operating characteristics, we first have to define true scenarios, from which the data should arise. In this case, this only requires a function that computes the probability of DLT given a dose. As an example we use here the function contained in the slot \code{prob} of the object \code{model}:
@@ -527,14 +547,18 @@ Note that any possible R-function returning a vector of probabilities upon input
 <<true-def-alternative>>=
 doseProbMatrix <- cbind(c(1, 2, 3, 4, 5), c(0.01, 0.02, 0.04, 0.06, 0.09))
 myTruthMatrix <-
-  function(dose){doseProbMatrix[match(dose, doseProbMatrix[, 1]), 2]}
+  function(dose) {
+    doseProbMatrix[match(dose, doseProbMatrix[, 1]), 2]
+  }
 @
 Now we can proceed to the simulations using the function \code{simulate}:
 <<run-sims>>=
 mySimsTime <-
-  system.time(mySims <- simulate(design, truth = myTruth, nsim = 100,
-                                 seed = 819, mcmcOptions = options,
-                                 parallel = FALSE))[3]
+  system.time(mySims <- simulate(design,
+    truth = myTruth, nsim = 100,
+    seed = 819, mcmcOptions = options,
+    parallel = FALSE
+  ))[3]
 @
 The number of simulated trials depends on the required accuracy of the results. The argument \code{parallel} can be set to \code{TRUE} if one wishes to run the iterations in parallel on all processors of the computer, which can yield a meaningful speedup. Here we
 needed \Sexpr{round(mySimsTime)}~seconds for \Sexpr{length(mySims@data)}~simulated trials
@@ -546,7 +570,7 @@ mySims@data[[3]]@nObs
 mySims@doses[3]
 @
 Furthermore, we can plot the \code{Simulations} object by calling the \code{plot} method on it, see Figure~\ref{fig:sim-plot}. You can select the plots by changing the \code{type} argument of \code{plot}, which by default is \code{type = c("trajectory", "dosesTried")}.
-<<sim-plot, echo=FALSE, fig.width=4,fig.height=4,out.width='.5\\linewidth',fig.align='center',fig.env='figure', fig.cap='Simulation plot. On the top panel a summary of the trial trajectories, and on the bottom, the proportions of doses tried, averaged over the simulated trials, are shown.'>>=
+<<sim-plot, echo=FALSE, fig.width=4,fig.height=4,out.width='.5\\linewidth',fig.align='center',fig.env='figure', fig.cap='Simulation plot'>>=
 plot(mySims)
 @
 
@@ -567,10 +591,14 @@ plot(simSum)
 In this section, dose escalation designs incorporating both safety (as binary DLT) and efficacy endpoints (continuous response) will be introduced. Dual endpoint datasets are implemented with the \code{DualData} class, where here we illustrate
 the addition of the efficacy data \code{w} to the previous dataset:
 <<data-dual, warning=FALSE>>=
-data2 <- DataDual(x = data@x, y = data@y, placebo = TRUE,
-                  w = c(0.02, 0.42, 0.59, 0.45, 0.03, 0.7, 0.6, 0.52,
-                        0.01, 0.71, 0.54, 0.45), cohort = data@cohort,
-                  doseGrid = data@doseGrid, ID = data@ID)
+data2 <- DataDual(
+  x = data@x, y = data@y, placebo = TRUE,
+  w = c(
+    0.02, 0.42, 0.59, 0.45, 0.03, 0.7, 0.6, 0.52,
+    0.01, 0.71, 0.54, 0.45
+  ), cohort = data@cohort,
+  doseGrid = data@doseGrid, ID = data@ID
+)
 @
 The endpoints can be modelled jointly or separately. For joint modelling derived from \cite{bekele2005}, please see the package vignette and the \code{DualEndpoint} class. In the following section we will describe separate modelling, as proposed in \cite{yeung2015}. We will show how the dual endpoint design can help to estimate an optimal dose level which represents the best trade-off between safety and efficacy.
 
@@ -590,15 +618,19 @@ DLTs being observed at these two dose levels, respectively. This corresponds to 
 means of 0.35 and 0.6 for the DLT probabilities. We implement
 model~\eqref{eq:LogisticLogNormal} with this pseudo data prior as follows:
 <<DLTmodel>>=
-DLTmodel <- LogisticIndepBeta(binDLE = c(1.05, 1.8), DLEweights = c(3, 3),
-                              DLEdose = c(25, 300), data = emptydata)
+DLTmodel <- LogisticIndepBeta(
+  binDLE = c(1.05, 1.8), DLEweights = c(3, 3),
+  DLEdose = c(25, 300), data = emptydata
+)
 @
 
 The efficacy model can similarly be specified as
 <<Effmodel>>=
 emptydata2 <- DataDual(doseGrid = emptydata@doseGrid, placebo = TRUE)
-Effmodel <- Effloglog(eff = c(1.223, 2.513), eff_dose = c(25, 300),
-                      nu = c(a = 1, b = 0.025), data = emptydata2, c = 2)
+Effmodel <- Effloglog(
+  eff = c(1.223, 2.513), eff_dose = c(25, 300),
+  nu = c(a = 1, b = 0.025), data = emptydata2, c = 2
+)
 @
 Here the argument \code{Eff} takes the vector of pseudo efficacy responses at the two fixed dose levels, assuming one subject is treated at each of these dose levels. The argument \code{nu} specifies a Gamma prior distribution with shape 1 and rate 0.025 for the precision parameter of the pseudo efficacy responses.
 
@@ -630,9 +662,11 @@ As in Section~\ref{subsec:crmtrial} this rule $\nu$ can be evaluated using
 $\tau$ using \code{maxDose} to obtain $t_{N+1}$:
 <<nextBest>>=
 (nextMaxDose <- maxDose(myIncrements, data2))
-doseRecGain <- nextBest(GainNextBest, doselimit = nextMaxDose,
-                        model = newDLTmodel, model_eff = newEffmodel,
-                        data = data2)
+doseRecGain <- nextBest(GainNextBest,
+  doselimit = nextMaxDose,
+  model = newDLTmodel, model_eff = newEffmodel,
+  data = data2
+)
 (nextDoseVal <- doseRecGain$next_dose)
 @
 The plot for the next dose allocation is contained in \code{doseRecGain$plot} and shown in Figure~\ref{fig:doseRecommendation}.
@@ -657,16 +691,18 @@ than~\Sexpr{myStopping4@target_ratio}.
 
 \paragraph{Simulations} To simulate the operating characteristics, first a design has to be built:
 <<design>>=
-design2 <- DualResponsesDesign(nextBest = GainNextBest, model = DLTmodel,
-                               Effmodel = Effmodel, data = emptydata2,
-                               stopping = myStoppingDual,
-                               increments = myIncrements,
-                               cohortSize = mySize, startingDose = 25)
+design2 <- DualResponsesDesign(
+  nextBest = GainNextBest, model = DLTmodel,
+  eff_model = Effmodel, data = emptydata2,
+  stopping = myStoppingDual,
+  increments = myIncrements,
+  cohortSize = mySize, startingDose = 25
+)
 @
 Note that an additional slot for the efficacy model is included in this design class. We can then specify the scenario for the simulation, by defining the true DLT and efficacy curves that we will be using:
 <<scenario>>=
 myTruthDLT <- probFunction(DLTmodel, phi1 = -53, phi2 = 10)
-myTruthEff<- efficacyFunction(Effmodel, theta1 = -4.8, theta2 = 3.7)
+myTruthEff <- efficacyFunction(Effmodel, theta1 = -4.8, theta2 = 3.7)
 myTruthGain <- function(dose) {
   myTruthEff(dose) * (1 - myTruthDLT(dose))
 }
@@ -675,9 +711,11 @@ Please note that the parameter names \code{phi1}, \code{phi2}, \code{theta1} and
 \code{theta2} correspond to $\alpha_0, \alpha_1, \gamma$ and $\delta$, respectively.
 Simulations are again produced by the \code{simulate} function:
 <<simulate>>=
-Sim1 <- simulate(object = design2, args = NULL, trueDLE = myTruthDLT,
-                 trueEff = myTruthEff, trueNu = 1 / 0.025, nsim = 20,
-                 seed = 819, parallel = FALSE)
+Sim1 <- simulate(
+  object = design2, args = NULL, trueDLE = myTruthDLT,
+  trueEff = myTruthEff, trueNu = 1 / 0.025, nsim = 20,
+  seed = 819, parallel = FALSE
+)
 @
 Note that the fixed precision \code{nu} $1/\sigma^{2}$ is specified instead of the
 variance $\sigma^{2}$.
@@ -821,17 +859,21 @@ In a second step we would like to create a new dose recommendation rule, which
 proposes the dose with estimated DLT probability closest to the target. Again
 we start with the class, now inheriting from \code{NextBest}:
 <<newNextBest-def>>=
-.NextBestMinDist <- setClass(Class = "NextBestMinDist",
-                             contains = "NextBest",
-                             representation(target = "numeric"))
-NextBestMinDist <- function(target){ .NextBestMinDist(target = target) }
+.NextBestMinDist <- setClass(
+  Class = "NextBestMinDist",
+  contains = "NextBest",
+  representation(target = "numeric")
+)
+NextBestMinDist <- function(target) {
+  .NextBestMinDist(target = target)
+}
 @
 Note that here we keep to the convention of separate class definition and
 initialization function, although there is no technical need in this case.
 In order to make it usable we need to define the \code{nextBest} method for this
 new rule. Note that we do only specialize the method for the first argument,
 such that this rule could also be used with other models.
-<<newNextBest-method, results='hide'>>=
+<<newNextBest-method, results=hide>>=
 setMethod(
   "nextBest",
   signature = signature(
@@ -841,19 +883,21 @@ setMethod(
     model = "GeneralModel",
     data = "Data"
   ),
-  def = function(nextBest, doselimit, samples, model, data, ...){
-            dosesOK <-
-                if(length(doselimit))
-                  which(data@doseGrid <= doselimit)
-              else
-                seq_along(data@doseGrid)
-              modelfit <- fit(samples, model, data)
-              probDLT <- modelfit$middle[dosesOK]
-              doses <- modelfit$dose[dosesOK]
-              bestIndex <- which.min(abs(probDLT - nextBest@target))
-              bestDose <- doses[bestIndex]
-              return(list(value = bestDose))
-            })
+  def = function(nextBest, doselimit, samples, model, data, ...) {
+    dosesOK <-
+      if (length(doselimit)) {
+        which(data@doseGrid <= doselimit)
+      } else {
+        seq_along(data@doseGrid)
+      }
+    modelfit <- fit(samples, model, data)
+    probDLT <- modelfit$middle[dosesOK]
+    doses <- modelfit$dose[dosesOK]
+    bestIndex <- which.min(abs(probDLT - nextBest@target))
+    bestDose <- doses[bestIndex]
+    return(list(value = bestDose))
+  }
+)
 @
 In the method definition, we can use the \code{fit} function in order to obtain
 the estimated DLT rates. We need to return a \code{list} from this method,
@@ -863,8 +907,10 @@ value. Immediately we can now use this rule in order to obtain the next dose
 recommendation, e.g., after specifying a target dose of 30\%:
 <<newNextBest-try>>=
 newMyNextBest <- NextBestMinDist(target = 0.3)
-(newNextDoseVal <- nextBest(newMyNextBest, nextMaxDose,
-                            newSamples, newModel, data)$value)
+(newNextDoseVal <- nextBest(
+  newMyNextBest, nextMaxDose,
+  newSamples, newModel, data
+)$value)
 
 # nolint end
 @
