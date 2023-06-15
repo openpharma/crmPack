@@ -1680,7 +1680,7 @@ plotting their traceplots:
 
 <<dual-conv, fig=TRUE>>=
 data@nGrid
-betaWpicks <- get(samples, "betaW", c(1, 5, 10, 25))
+betaWpicks <- get(samples, "betaW", c(1L, 5L, 10L, 25L))
 ggs_traceplot(betaWpicks)
 @
 
