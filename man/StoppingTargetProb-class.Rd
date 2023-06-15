@@ -7,7 +7,11 @@
 \alias{StoppingTargetProb}
 \title{\code{StoppingTargetProb}}
 \usage{
-StoppingTargetProb(target, prob, report_label = NA_character_)
+StoppingTargetProb(
+  target = c(0.2, 0.35),
+  prob = 0.4,
+  report_label = NA_character_
+)
 }
 \arguments{
 \item{target}{(\code{number})\cr see slot definition.}

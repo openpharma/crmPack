@@ -8,8 +8,8 @@
 \title{\code{StoppingTargetBiomarker}}
 \usage{
 StoppingTargetBiomarker(
-  target,
-  prob,
+  target = c(0.9, 1),
+  prob = 0.3,
   is_relative = TRUE,
   report_label = NA_character_
 )

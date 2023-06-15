@@ -7,7 +7,7 @@
 \alias{StoppingMinPatients}
 \title{\code{StoppingMinPatients}}
 \usage{
-StoppingMinPatients(nPatients, report_label = NA_character_)
+StoppingMinPatients(nPatients = 20L, report_label = NA_character_)
 }
 \arguments{
 \item{nPatients}{(\code{number})\cr see slot definition.}

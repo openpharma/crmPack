@@ -7,7 +7,11 @@
 \alias{StoppingMaxGainCIRatio}
 \title{\code{StoppingMaxGainCIRatio}}
 \usage{
-StoppingMaxGainCIRatio(target_ratio, prob_target, report_label = NA_character_)
+StoppingMaxGainCIRatio(
+  target_ratio = 5,
+  prob_target = 0.3,
+  report_label = NA_character_
+)
 }
 \arguments{
 \item{target_ratio}{(\code{numeric})\cr see slot definition.}

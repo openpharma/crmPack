@@ -7,7 +7,11 @@
 \alias{StoppingTDCIRatio}
 \title{\code{StoppingTDCIRatio}}
 \usage{
-StoppingTDCIRatio(target_ratio, prob_target, report_label = NA_character_)
+StoppingTDCIRatio(
+  target_ratio = 5,
+  prob_target = 0.3,
+  report_label = NA_character_
+)
 }
 \arguments{
 \item{target_ratio}{(\code{numeric})\cr see slot definition.}

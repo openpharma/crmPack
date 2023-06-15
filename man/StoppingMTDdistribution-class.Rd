@@ -7,7 +7,12 @@
 \alias{StoppingMTDdistribution}
 \title{\code{StoppingMTDdistribution}}
 \usage{
-StoppingMTDdistribution(target, thresh, prob, report_label = NA_character_)
+StoppingMTDdistribution(
+  target = 0.33,
+  thresh = 0.5,
+  prob = 0.9,
+  report_label = NA_character_
+)
 }
 \arguments{
 \item{target}{(\code{proportion})\cr see slot definition.}

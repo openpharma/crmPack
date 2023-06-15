@@ -8,7 +8,7 @@
 \title{\code{StoppingPatientsNearDose}}
 \usage{
 StoppingPatientsNearDose(
-  nPatients,
+  nPatients = 10L,
   percentage = 50,
   report_label = NA_character_
 )

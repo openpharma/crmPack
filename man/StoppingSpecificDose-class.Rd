@@ -7,7 +7,11 @@
 \alias{StoppingSpecificDose}
 \title{\code{StoppingSpecificDose}}
 \usage{
-StoppingSpecificDose(rule, dose, report_label = NA_character_)
+StoppingSpecificDose(
+  rule = StoppingTargetProb(target = c(0, 0.3), prob = 0.8),
+  dose = 80,
+  report_label = NA_character_
+)
 }
 \arguments{
 \item{rule}{(\code{Stopping})\cr see slot definition.}
