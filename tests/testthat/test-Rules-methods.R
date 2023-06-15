@@ -3059,8 +3059,8 @@ test_that("StoppingTDCIRatio works correctly when dose is NA", {
     )
   )
   # This is necessary as rng do not work with model
-  samples@data$phi1 <- c(0.04748928, -3.69616243, -7.38656113,  0.04428348)
-  samples@data$phi2 <- c(-0.009012972,  0.737940430,  1.245383234,  0.053978501)
+  samples@data$phi1 <- c(0.04748928, -3.69616243, -7.38656113, 0.04428348)
+  samples@data$phi2 <- c(-0.009012972, 0.737940430, 1.245383234, 0.053978501)
   result <- stopTrial(
     StoppingTDCIRatio(3, 0.5),
     NA_real_,
