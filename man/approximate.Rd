@@ -15,6 +15,7 @@ approximate(object, model, data, ...)
   refDose = median(points),
   logNormal = FALSE,
   verbose = TRUE,
+  create_plot = TRUE,
   ...
 )
 }
@@ -37,10 +38,13 @@ minimum to maximum of the dose grid)}
 \item{logNormal}{use the log-normal prior? (not default) otherwise, the
 normal prior for the logistic regression coefficients is used}
 
-\item{verbose}{be verbose (progress statements and plot)? (default)}
+\item{verbose}{be verbose (progress statements)? (default)}
+
+\item{create_plot}{add a \code{ggplot2} object to the return value (default)}
 }
 \value{
-the approximation model
+a \code{list} containing the approximation model and, if requested, a
+\code{ggplot2} object containing a graphical representation of the fitted model
 }
 \description{
 It is recommended to use \code{\link{set.seed}} before, in order
@@ -63,7 +67,7 @@ data <- Data(x = c(0.1, 0.5, 1.5, 3, 6, 10, 10, 10),
              doseGrid = c(0.1, 0.5, 1.5, 3, 6,
                           seq(from = 10, to = 80, by=2)))
 
-# Initialize a model 
+# Initialize a model
 model <- LogisticLogNormal(mean = c(-0.85, 1),
                            cov = matrix(c(1, -0.5, -0.5, 1), nrow = 2),
                            ref_dose = 56)
@@ -76,16 +80,16 @@ set.seed(94)
 samples <- mcmc(data, model, options)
 
 # Approximate the posterior distribution with a bivariate normal
-# max.time and maxit are very small only for the purpose of showing the example. They 
+# max.time and maxit are very small only for the purpose of showing the example. They
 # should be increased for a real case.
 set.seed(94)
-posterior <- approximate(object = samples,
+posterior <- (approximate(object = samples,
                          model = model,
                          data = data,
                          logNormal=TRUE,
                          control = list(threshold.stop = 0.1,
                                         max.time = 1,
-                                        maxit = 1))
+                                        maxit = 1)))$model
 
 # nolint end
 }
