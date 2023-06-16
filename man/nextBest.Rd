@@ -495,7 +495,6 @@ my_next_best <- NextBestThreePlusThree()
 
 # Calculate the next best dose.
 dose_recommendation <- nextBest(my_next_best, data = my_data)
-
 # Example of usage for `NextBestDualEndpoint` NextBest class.
 
 # Create the data.
@@ -558,8 +557,9 @@ print(dose_recommendation$plot)
 
 # Show customization of single plot.
 variant1 <- dose_recommendation$singlePlots$plot1 + xlim(0, 20)
-#print(variant1)
-
+# nolint start
+# print(variant1)
+# nolint end
 
 # Example of usage for `NextBestTD` NextBest class.
 my_data <- Data(
