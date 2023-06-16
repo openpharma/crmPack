@@ -449,6 +449,20 @@ test_that(".DefaultIncrementsMin works as expected", {
 
 # Stopping ----
 
+## StoppingMissingDose ----
+
+test_that(".StoppingMissingDose works as expected", {
+  result <- expect_silent(.StoppingMissingDose())
+  expect_valid(result, "StoppingMissingDose")
+})
+
+test_that(".DefaultStoppingMissingDose works as expected", {
+  expect_equal(
+    .DefaultStoppingMissingDose(),
+    StoppingMissingDose()
+  )
+})
+
 ## StoppingCohortsNearDose ----
 
 test_that(".StoppingCohortsNearDose works as expected", {

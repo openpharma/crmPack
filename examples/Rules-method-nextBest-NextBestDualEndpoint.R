@@ -61,4 +61,5 @@ print(dose_recommendation$plot)
 
 # Show customization of single plot.
 variant1 <- dose_recommendation$singlePlots$plot1 + xlim(0, 20)
-print(variant1)
+#print(variant1)
+
