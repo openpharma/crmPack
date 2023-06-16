@@ -2305,6 +2305,8 @@ setMethod("stopTrial",
     }
 )
 
+# nolint end
+
 ## StoppingMTDCV ----
 
 #' @rdname stopTrial
@@ -2412,105 +2414,98 @@ setMethod(
   }
 )
 
-## --------------------------------------------------
-## Stopping based on probability of targeting biomarker
-## --------------------------------------------------
+## StoppingTargetBiomarker ----
 
-##' @describeIn stopTrial Stop based on probability of targeting biomarker
-##'
-##' @example examples/Rules-method-stopTrial-StoppingTargetBiomarker.R
-setMethod("stopTrial",
-  signature =
-    signature(
-      stopping = "StoppingTargetBiomarker",
-      dose = "numeric",
-      samples = "Samples",
-      model = "DualEndpoint",
-      data = "ANY"
-    ),
-  def =
-    function(stopping, dose, samples, model, data, ...) {
-      ## compute the target biomarker prob at this dose
-      ## get the biomarker level samples
-      ## at the dose grid points.
-      biomLevelSamples <- biomarker(xLevel = seq_len(data@nGrid), model, samples)
+#' @describeIn stopTrial Stop based on probability of targeting biomarker
+#'
+#' @aliases stopTrial-StoppingTargetBiomarker
+#' @example examples/Rules-method-stopTrial-StoppingTargetBiomarker.R
+setMethod(
+  f = "stopTrial",
+  signature = signature(
+    stopping = "StoppingTargetBiomarker",
+    dose = "numeric",
+    samples = "Samples",
+    model = "DualEndpoint",
+    data = "ANY"
+  ),
+  definition = function(stopping, dose, samples, model, data, ...) {
+    # Compute the target biomarker prob at this dose.
+    # Get the biomarker level samples at the dose grid points.
+    biom_level_samples <- biomarker(xLevel = seq_len(data@nGrid), model, samples)
 
-      ## if target is relative to maximum
-      if (stopping@is_relative) {
-        ## If there is an 'Emax' parameter, target biomarker level will
-        ## be relative to 'Emax', otherwise will be relative to the
-        ## maximum biomarker level achieved in the given dose range.
-        if ("Emax" %in% names(samples)) {
-          ## For each sample, look which dose is maximizing the
-          ## simultaneous probability to be in the target biomarker
-          ## range and below overdose toxicity
-          probTarget <- numeric(ncol(biomLevelSamples))
-          probTarget <- sapply(
-            seq(1, ncol(biomLevelSamples)),
-            function(x) {
-              sum(biomLevelSamples[, x] >= stopping@target[1] * samples@data$Emax &
-                biomLevelSamples[, x] <= stopping@target[2] * samples@data$Emax) / nrow(biomLevelSamples)
-            }
-          )
-        } else {
-          ## For each sample, look which was the minimum dose giving
-          ## relative target level
-          targetIndex <- apply(
-            biomLevelSamples, 1L,
-            function(x) {
-              rnx <- range(x)
-              min(which((x >= stopping@target[1] * diff(rnx) + rnx[1]) &
-                (x <= stopping@target[2] * diff(rnx) + rnx[1] + 1e-10)))
-            }
-          )
-
-          probTarget <- numeric(ncol(biomLevelSamples))
-          tab <- table(targetIndex)
-          probTarget[as.numeric(names(tab))] <- tab
-          probTarget <- probTarget / nrow(biomLevelSamples)
-        }
-      } else {
-        ## otherwise target is absolute
-
+    # If target is relative to maximum.
+    if (stopping@is_relative) {
+      # If there is an 'Emax' parameter, target biomarker level will
+      # be relative to 'Emax', otherwise will be relative to the
+      # maximum biomarker level achieved in the given dose range.
+      if ("Emax" %in% names(samples)) {
         # For each sample, look which dose is maximizing the
-        ## simultaneous probability to be in the target biomarker
-        ## range and below overdose toxicity
-        probTarget <- numeric(ncol(biomLevelSamples))
-        probTarget <- sapply(
-          seq(1, ncol(biomLevelSamples)),
+        # simultaneous probability to be in the target biomarker
+        # range and below overdose toxicity.
+        prob_target <- numeric(ncol(biom_level_samples))
+        prob_target <- sapply(
+          seq(1, ncol(biom_level_samples)),
           function(x) {
-            sum(biomLevelSamples[, x] >= stopping@target[1] &
-              biomLevelSamples[, x] <= stopping@target[2]) /
-              nrow(biomLevelSamples)
+            sum(biom_level_samples[, x] >= stopping@target[1] * samples@data$Emax &
+              biom_level_samples[, x] <= stopping@target[2] * samples@data$Emax) /
+              nrow(biom_level_samples)
           }
         )
-      }
-
-      ## so for this dose we have:
-      probTarget <- probTarget[which(data@doseGrid == dose)]
-
-      ## so can we stop?
-      doStop <- probTarget >= stopping@prob
-
-      ## generate message
-      text <-
-        paste(
-          "Probability for target biomarker is",
-          round(probTarget * 100),
-          "% for dose",
-          dose,
-          "and thus",
-          ifelse(doStop, "above", "below"),
-          "the required",
-          round(stopping@prob * 100),
-          "%"
+      } else {
+        # For each sample, look which was the minimum dose giving
+        # relative target level.
+        targetIndex <- apply(
+          biom_level_samples, 1L,
+          function(x) {
+            rnx <- range(x)
+            min(which((x >= stopping@target[1] * diff(rnx) + rnx[1]) &
+              (x <= stopping@target[2] * diff(rnx) + rnx[1] + 1e-10)))
+          }
         )
-
-      ## return both
-      return(structure(doStop,
-        message = text
-      ))
+        prob_target <- numeric(ncol(biom_level_samples))
+        tab <- table(targetIndex)
+        prob_target[as.numeric(names(tab))] <- tab
+        prob_target <- prob_target / nrow(biom_level_samples)
+      }
+    } else {
+      # Otherwise the target is absolute.
+      # For each sample, look which dose is maximizing the
+      # simultaneous probability to be in the target biomarker
+      # range and below overdose toxicity.
+      prob_target <- numeric(ncol(biom_level_samples))
+      prob_target <- sapply(
+        seq(1, ncol(biom_level_samples)),
+        function(x) {
+          sum(biom_level_samples[, x] >= stopping@target[1] &
+            biom_level_samples[, x] <= stopping@target[2]) /
+            nrow(biom_level_samples)
+        }
+      )
     }
+
+    prob_target <- ifelse(
+      is.na(dose),
+      0,
+      prob_target[which(data@doseGrid == dose)]
+    )
+
+    do_stop <- prob_target >= stopping@prob
+
+    msg <- paste(
+      "Probability for target biomarker is",
+      round(prob_target * 100),
+      "% for dose",
+      dose,
+      "and thus",
+      ifelse(do_stop, "above", "below"),
+      "the required",
+      round(stopping@prob * 100),
+      "%"
+    )
+
+    structure(do_stop, message = msg)
+  }
 )
 
 ## StoppingSpecificDose ----
@@ -2556,7 +2551,7 @@ setMethod(
   }
 )
 
-
+# nolint start
 
 ## --------------------------------------------------
 ## Stopping when the highest dose is reached
