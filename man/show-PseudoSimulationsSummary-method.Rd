@@ -19,7 +19,7 @@ Show the summary of the simulations
 }
 \examples{
 # nolint start
-
+\dontrun{
 ##obtain the plot for the simulation results
 ##If only DLE responses are considered in the simulations
 ##Specified your simulations when no DLE samples are used
@@ -106,7 +106,7 @@ MYSUM <- summary(mySim,
          truth=myTruth)
 ##show the summary of the simulated results in a data frame
 show(MYSUM)
-
+}
 # nolint end
 }
 \keyword{methods}

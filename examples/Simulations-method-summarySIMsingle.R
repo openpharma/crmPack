@@ -1,5 +1,5 @@
 # nolint start
-
+\dontrun{
 ##If only DLE responses are considered in the simulations
 ##Specified your simulations when no DLE samples are used
 ## data set with dose levels from 25 to 300 with increments 25
@@ -80,5 +80,5 @@ mySim <- simulate(design,
 ##Then produce a summary of your simulations
 summary(mySim,
         truth=myTruth)
-
+}
 # nolint end

@@ -17,7 +17,7 @@ Show the summary of Pseudo Dual simulations summary
 }
 \examples{
 # nolint start
-
+\dontrun{
 ## If DLE and efficacy responses are considered in the simulations
 ## Specified your simulations when no samples are used
 ## we need a data object with doses >= 1:
@@ -139,7 +139,7 @@ MYSUM <- summary(mySim,
 )
 ## Then show the summary in data frame for your simulations
 show(MYSUM)
-
+}
 # nolint end
 }
 \keyword{methods}

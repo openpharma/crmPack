@@ -34,7 +34,7 @@ You can specify one or both of these in the
 }
 \examples{
 # nolint start
-
+\dontrun{
 ## obtain the plot for the simulation results
 ## If DLE and efficacy responses are considered in the simulations
 ## Specified your simulations when no samples are used
@@ -146,7 +146,7 @@ mySim <- simulate(
 )
 ## plot the simulation results
 print(plot(mySim))
-
+}
 # nolint end
 }
 \keyword{methods}
