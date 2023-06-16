@@ -236,7 +236,7 @@ test_that("v_model_logistic_normal_fixed_mix returns message for weights and com
 
   expect_equal(
     v_model_logistic_normal_fixed_mix(object),
-    "components must have same length as weights"
+    c("components must have same length as weights", "weights must sum to 1")
   )
 })
 
