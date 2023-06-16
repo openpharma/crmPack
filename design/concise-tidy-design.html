@@ -360,6 +360,21 @@ display: none;
 <h2>Introduction</h2>
 <p>Here is a first draft implementation of broom-like methods for
 `crmPack, as suggested in <a href="https://github.com/Roche/crmPack/issues/323">issue 323</a>.</p>
+<p>Whilst variants of “How do I convert an S4 object to a
+<code>data.frame</code>/<code>tibble</code>?” are commonly asked
+questions on StackOverflow [see, for example, <a href="https://stackoverflow.com/questions/57317958/general-way-to-transform-s4-object-to-dataframe-r">here</a>
+and <a href="https://stackoverflow.com/questions/14604269/how-to-create-a-dataframe-of-user-defined-s4-classes-in-r">here</a>],
+there appears to be no existing package to do this. However, the
+approach generally suggested in answers to these questions is
+essentially the same as suggested here:</p>
+<ul>
+<li>Deal with the object slot by slot<br />
+</li>
+<li>Convert each slot to a <code>tibble</code><br />
+</li>
+<li>Return the slot-specific <code>tibble</code>s in a
+<code>list</code></li>
+</ul>
 <div id="principles" class="section level3">
 <h3>Principles</h3>
 <p>The general principles I propose for tidying <code>crmPack</code>
@@ -410,34 +425,14 @@ regarding inconsistent slot names.</p>
 <h2>Implementation</h2>
 <p><code>tidy()</code> is a generic defined in <code>broom</code>. An
 end-user of <code>crmPack</code> may not have installed
-<code>broom</code>. Therefore, we need to define an appropriate geneic
-when necessary.</p>
-<div id="definition-of-the-generic" class="section level3">
-<h3>Definition of the generic</h3>
-<pre class="r"><code>if (!requireNamespace(&quot;broom&quot;, quietly=TRUE)) {
-#&#39; Conversion of crmPack objects to data.frames/tibbles
-#&#39;
-#&#39; @description `r lifecycle::badge(&quot;experimental&quot;)`
-#&#39;
-#&#39; A method that converts a crmPack S4 object to a tibble or list of tibbles,
-#&#39; in the style of `broom::tidy()`.
-#&#39;
-#&#39; @param object \cr the object to convert
-#&#39; @param ... additional arguments passed to class-specific implementations.
-#&#39; @return (`tbl_df` or named `list` [of `tbl_df`])
-#&#39; @export
-#&#39;
-  setGeneric(
-    name = &quot;tidy&quot;,
-    def = function(object, ...) {
-      standardGeneric(&quot;tidy&quot;)
-    },
-    valueClass = c(&quot;tbl_df&quot;, &quot;tbl&quot;, &quot;data.frame&quot;, &quot;list&quot;)
-  )
-} else {
-  library(broom)
-}</code></pre>
-</div>
+<code>broom</code>. Therefore, we have too options:</p>
+<ul>
+<li>Make <code>crmPack</code> Depend on <code>broom</code></li>
+<li>On loading <code>crmPack</code>, determine if <code>broom</code> is
+ana vailable namespace and, if not, define the appropriate generic</li>
+</ul>
+<p>Afer discussion, we take the first approach and make
+<code>crmPack</code> Depend on <code>broom</code>.</p>
 <div id="simple-examples" class="section level3">
 <h3>Simple examples</h3>
 <p><code>CohortSizeConst</code> is a trivial example.</p>
@@ -596,7 +591,7 @@ x &lt;- LogisticLogNormal(
   mean = c(-0.85, 1),
   cov = matrix(c(1, -0.5, -0.5, 1), nrow = 2),
   ref_dose = 50
-) 
+)
 x %&gt;% tidy()</code></pre>
 <pre><code>## $params
 ## $mean

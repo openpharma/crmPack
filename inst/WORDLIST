@@ -64,6 +64,7 @@ covr
 cran
 crm
 CRM
+crmPack
 crmPackExample
 crmPackHelp
 crmPackUpgrade
@@ -161,6 +162,7 @@ IncrementsRelative
 IncrementsRelativeDLT
 IncrementsRelativeDLTs
 IncrementsRelativeParts
+ing
 inputId
 intialization
 Intialization
@@ -314,6 +316,7 @@ slotNames
 songy
 sourceforge
 SREPs
+StackOverflow
 Stata
 StoppingAll
 StoppingAny
