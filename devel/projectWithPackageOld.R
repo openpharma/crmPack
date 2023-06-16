@@ -24,24 +24,28 @@ library(crmPack)
 
 
 model <- new("LogisticKadane",
-             theta=0.33,
-             xmin=0.1,
-             xmax=100)
+  theta = 0.33,
+  xmin = 0.1,
+  xmax = 100
+)
 model
 
 
 
 ## create some test data
 data <- new("Data",
-            x=
-            c(0.1, 0.5, 1.5, 3, 6, 10, 10, 10),
-            y=
-            as.integer(c(0, 0, 0, 0, 0, 0, 1, 0)),
-            cohort=
-            as.integer(c(0, 1, 2, 3, 4, 5, 5, 5)),
-            doseGrid=
-            c(0.1, 0.5, 1.5, 3, 6,
-              seq(from=10, to=80, by=2)))
+  x =
+    c(0.1, 0.5, 1.5, 3, 6, 10, 10, 10),
+  y =
+    as.integer(c(0, 0, 0, 0, 0, 0, 1, 0)),
+  cohort =
+    as.integer(c(0, 1, 2, 3, 4, 5, 5, 5)),
+  doseGrid =
+    c(
+      0.1, 0.5, 1.5, 3, 6,
+      seq(from = 10, to = 80, by = 2)
+    )
+)
 
 ## data <- new("Data",
 ##             x=
@@ -59,9 +63,10 @@ plot(data)
 
 ## and some MCMC options
 options <- new("McmcOptions",
-               burnin=100,
-               step=2,
-               samples=1000)
+  burnin = 100,
+  step = 2,
+  samples = 1000
+)
 
 
 ## obtain the samples
@@ -89,11 +94,13 @@ data@doseGrid
 
 ## relative increments:
 myIncrements <- new("IncrementsRelative",
-                    intervals=c(0, 20, Inf),
-                    increments=c(1, 0.33))
+  intervals = c(0, 20, Inf),
+  increments = c(1, 0.33)
+)
 
 nextMaxDose <- maxDose(myIncrements,
-                       data=data)
+  data = data
+)
 nextMaxDose
 
 ## target tox rate is 33%.
@@ -102,14 +109,17 @@ nextMaxDose
 ## that is the probability that the MTD is above 50% of the current estimate
 ## must be larger than 90%
 myNextBest <- new("NextBestMTD",
-                  target=0.33,
-                  derive=
-                  function(mtdSamples){
-                      quantile(mtdSamples, probs=0.25)
-                  })
+  target = 0.33,
+  derive =
+    function(mtdSamples) {
+      quantile(mtdSamples, probs = 0.25)
+    }
+)
 
-res <- nextBest(myNextBest, doselimit=nextMaxDose, samples=samples, model=model,
-                data=data)
+res <- nextBest(myNextBest,
+  doselimit = nextMaxDose, samples = samples, model = model,
+  data = data
+)
 res$value
 res$plot
 
@@ -117,12 +127,15 @@ res$plot
 ## overdose tox interval is 35%+
 ## required prob for target is 25%
 myNextBest <- new("NextBestNCRM",
-                  target=c(0.2, 0.35),
-                  overdose=c(0.35, 1),
-                  maxOverdoseProb=0.25)
+  target = c(0.2, 0.35),
+  overdose = c(0.35, 1),
+  maxOverdoseProb = 0.25
+)
 
-res <- nextBest(myNextBest, doselimit=nextMaxDose, samples=samples, model=model,
-                data=data)
+res <- nextBest(myNextBest,
+  doselimit = nextMaxDose, samples = samples, model = model,
+  data = data
+)
 res$value
 res$plot
 
@@ -131,61 +144,80 @@ res$plot
 ## test quantiles function
 set.seed(92)
 quantTest <-
-    Quantiles2LogisticNormal(dosegrid=1:5,
-                             refDose=2.5,
-                             lower=c(0.01, 0.02, 0.05, 0.1, 0.3),
-                             upper=c(0.5, 0.6, 0.7, 0.8, 0.95),
-                             median=c(0.2, 0.3, 0.4, 0.45, 0.5),
-                             control=
-                             list(threshold.stop=0.01,
-                                  maxit=50000,
-                                  temperature=50000,
-                                  max.time=10,
-                                  verbose=TRUE))
+  Quantiles2LogisticNormal(
+    dosegrid = 1:5,
+    refDose = 2.5,
+    lower = c(0.01, 0.02, 0.05, 0.1, 0.3),
+    upper = c(0.5, 0.6, 0.7, 0.8, 0.95),
+    median = c(0.2, 0.3, 0.4, 0.45, 0.5),
+    control =
+      list(
+        threshold.stop = 0.01,
+        maxit = 50000,
+        temperature = 50000,
+        max.time = 10,
+        verbose = TRUE
+      )
+  )
 str(quantTest)
 
 matplot(quantTest$required,
-        type="l", col="blue", lty=1)
+  type = "l", col = "blue", lty = 1
+)
 matlines(quantTest$quantiles,
-         col="red", lty=1)
+  col = "red", lty = 1
+)
 
 ## test minimally informative
-minTest <- MinimalInformative(dosegrid=1:5,
-                              refDose=2.5,
-                              control=
-                              list(threshold.stop=0.01,
-                                   maxit=50000,
-                                   temperature=50000,
-                                   max.time=20,
-                                   verbose=TRUE))
+minTest <- MinimalInformative(
+  dosegrid = 1:5,
+  refDose = 2.5,
+  control =
+    list(
+      threshold.stop = 0.01,
+      maxit = 50000,
+      temperature = 50000,
+      max.time = 20,
+      verbose = TRUE
+    )
+)
 
-minTest <- MinimalInformative(dosegrid=1:5,
-                              refDose=2.5,
-                              parstart=minTest$parameters,
-                              control=
-                              list(threshold.stop=0.01,
-                                   maxit=50000,
-                                   temperature=50000,
-                                   max.time=20,
-                                   verbose=TRUE))
+minTest <- MinimalInformative(
+  dosegrid = 1:5,
+  refDose = 2.5,
+  parstart = minTest$parameters,
+  control =
+    list(
+      threshold.stop = 0.01,
+      maxit = 50000,
+      temperature = 50000,
+      max.time = 20,
+      verbose = TRUE
+    )
+)
 str(minTest)
 
 matplot(minTest$required,
-        type="l", col="blue", lty=1)
+  type = "l", col = "blue", lty = 1
+)
 matlines(minTest$quantiles,
-         col="red", lty=1)
+  col = "red", lty = 1
+)
 
 
 ## stopping rule:
 ## min 3 cohorts and at least 50% prob in target interval,
 ## or max 20 patients
 myStopping1 <- new("StoppingMinCohorts",
-                   nCohorts=3L)
+  nCohorts = 3L
+)
 myStopping2 <- new("StoppingMaxPatients",
-                   nPatients=20L)
+  nPatients = 20L
+)
 myStopping3 <- new("StoppingTargetProb",
-                   target=c(0.2, 0.35),
-                   prob=0.5)
+  target = c(0.2, 0.35),
+  prob = 0.5
+)
 
 ## easy syntax:
 myStopping <- (myStopping1 & myStopping3) | myStopping2
@@ -193,28 +225,33 @@ myStopping <- (myStopping1 & myStopping3) | myStopping2
 
 ## relative increments:
 myIncrements <- new("IncrementsRelative",
-                    intervals=c(0, 20, Inf),
-                    increments=c(1, 0.33))
+  intervals = c(0, 20, Inf),
+  increments = c(1, 0.33)
+)
 
 ## test design
 design <- new("Design",
-              model=model,
-              nextBest=myNextBest,
-              stopping=myStopping,
-              increments=myIncrements,
-              data=data,
-              cohort_size=3L,
-              startingDose=12)
+  model = model,
+  nextBest = myNextBest,
+  stopping = myStopping,
+  increments = myIncrements,
+  data = data,
+  cohort_size = 3L,
+  startingDose = 12
+)
 
 
-myTruth <- function(dose){model@prob(dose, rho0=0.2, gamma=10)}
-curve(myTruth(x), from=0, to=30)
+myTruth <- function(dose) {
+  model@prob(dose, rho0 = 0.2, gamma = 10)
+}
+curve(myTruth(x), from = 0, to = 30)
 
 mySims <- simulate(design,
-                   truth=myTruth,
-                   args=list(),
-                   nsim=10L,
-                   mcmcOptions=options)
+  truth = myTruth,
+  args = list(),
+  nsim = 10L,
+  mcmcOptions = options
+)
 
 str(mySims)
 
@@ -236,7 +273,8 @@ myTruth(mySims@doses)
 ## the truth we want to compare it with:
 
 sumOut <- summary(mySims,
-                  truth=myTruth)
+  truth = myTruth
+)
 sumOut
 ## todo: write output function
 

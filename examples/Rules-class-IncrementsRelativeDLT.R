@@ -1,4 +1,3 @@
-
 # This is the example of a rule for:
 # maximum doubling the dose if no DLTs were observed in the whole study so far
 # or maximum increasing the dose by 1.33 if 1 or 2 DLTs were observed so far
