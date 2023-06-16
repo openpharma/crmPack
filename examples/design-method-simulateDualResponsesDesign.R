@@ -73,4 +73,3 @@ mySim <- simulate(
 )
 
 # nolint end
-

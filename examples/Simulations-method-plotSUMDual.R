@@ -185,4 +185,3 @@ myTruthGain <- function(dose) {
 # print(plot(MYSUM))
 
 # nolint end
-
