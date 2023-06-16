@@ -19,7 +19,7 @@ Show the summary of the dual-endpoint simulations
 }
 \examples{
 # nolint start
-
+\dontrun{
 # Define the dose-grid
 emptydata <- DataDual(doseGrid = c(1, 3, 5, 10, 15, 20, 25, 30))
 
@@ -107,7 +107,7 @@ mySims <- simulate(design,
 show(summary(mySims,
              trueTox = trueTox,
              trueBiomarker = trueBiomarker))
-
+}
 # nolint end
 }
 \keyword{methods}

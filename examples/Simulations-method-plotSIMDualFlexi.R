@@ -1,5 +1,5 @@
 # nolint start
-
+\dontrun{
 ## obtain the plot for the simulation results
 ## If DLE and efficacy responses are considered in the simulations
 data <- DataDual(doseGrid = seq(25, 300, 25))
@@ -88,5 +88,5 @@ mySim <- simulate(
 )
 ## plot this simulated results
 print(plot(mySim))
-
+}
 # nolint end

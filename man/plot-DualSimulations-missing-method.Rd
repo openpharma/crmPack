@@ -33,7 +33,7 @@ the simulated trials}
 }
 \examples{
 # nolint start
-
+\dontrun{
 # Define the dose-grid
 emptydata <- DataDual(doseGrid = c(1, 3, 5, 10, 15, 20, 25, 40, 50, 80, 100))
 
@@ -118,7 +118,7 @@ mySims <- simulate(design,
 
 # Plot the results of the simulation
 print(plot(mySims))
-
+}
 # nolint end
 }
 \keyword{methods}

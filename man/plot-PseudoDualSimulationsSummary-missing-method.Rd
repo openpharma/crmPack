@@ -224,5 +224,6 @@ myTruthGain <- function(dose) {
 # print(plot(MYSUM))
 
 # nolint end
+
 }
 \keyword{methods}

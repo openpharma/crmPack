@@ -140,5 +140,6 @@ mySim <- simulate(
 )
 
 # nolint end
+
 }
 \keyword{methods}

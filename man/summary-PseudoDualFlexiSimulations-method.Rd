@@ -123,5 +123,6 @@ summary(mySim,
 )
 
 # nolint end
+
 }
 \keyword{methods}

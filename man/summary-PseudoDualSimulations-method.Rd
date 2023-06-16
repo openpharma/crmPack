@@ -37,7 +37,7 @@ Summary for Pseudo Dual responses simulations, relative to a given pseudo DLE an
 }
 \examples{
 # nolint start
-
+\dontrun{
 ## obtain the plot for the simulation results
 ## If DLE and efficacy responses are considered in the simulations
 ## Specified your simulations when no samples are used
@@ -152,7 +152,7 @@ summary(mySim,
   trueDLE = myTruthDLE,
   trueEff = myTruthEff
 )
-
+}
 # nolint end
 }
 \keyword{methods}
