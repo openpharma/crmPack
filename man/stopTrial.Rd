@@ -3,6 +3,7 @@
 \name{stopTrial}
 \alias{stopTrial}
 \alias{stopTrial,StoppingMissingDose,numeric,ANY,ANY,Data-method}
+\alias{stopTrial-StoppingMissingDose}
 \alias{stopTrial,StoppingList,ANY,ANY,ANY,ANY-method}
 \alias{stopTrial,StoppingAll,ANY,ANY,ANY,ANY-method}
 \alias{stopTrial,StoppingAny,ANY,ANY,ANY,ANY-method}
