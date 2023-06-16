@@ -22,7 +22,6 @@ next best dose.
 Typically, end users will not use the \code{.DefaultStoppingMissingDose()} function.
 }
 \examples{
-
 # The rule for stopping the study if NA or Placebo is returned as
 # next best dose.
 my_stopping <- StoppingMissingDose()

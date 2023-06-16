@@ -11,12 +11,14 @@
 \alias{stopTrial,StoppingMinCohorts,ANY,ANY,ANY,Data-method}
 \alias{stopTrial,StoppingMinPatients,ANY,ANY,ANY,Data-method}
 \alias{stopTrial,StoppingTargetProb,numeric,Samples,GeneralModel,ANY-method}
+\alias{stopTrial-StoppingTargetProb}
 \alias{stopTrial,StoppingMTDdistribution,numeric,Samples,GeneralModel,ANY-method}
 \alias{stopTrial,StoppingMTDCV,numeric,Samples,GeneralModel,ANY-method}
 \alias{stopTrial-StoppingMTDCV}
 \alias{stopTrial,StoppingLowestDoseHSRBeta,numeric,Samples,ANY,ANY-method}
 \alias{stopTrial-StoppingLowestDoseHSRBeta}
 \alias{stopTrial,StoppingTargetBiomarker,numeric,Samples,DualEndpoint,ANY-method}
+\alias{stopTrial-StoppingTargetBiomarker}
 \alias{stopTrial,StoppingSpecificDose,numeric,ANY,ANY,Data-method}
 \alias{stopTrial-StoppingSpecificDose}
 \alias{stopTrial,StoppingHighestDose,numeric,ANY,ANY,Data-method}
@@ -281,10 +283,6 @@ interval of the estimate (the minimum of Gstar and TDtargetEndOfTrial). This is 
 incorporate DLE and efficacy responses without DLE and efficacy samples involved.
 
 }}
-\note{
-If the recommended next best dose is \code{NA} or the placebo dose, then
-the trial always stops, independent of the concrete \code{stopping} rule used.
-}
 \examples{
 
 ## Example of combining stopping rules with '&' and/or '|' operators
@@ -365,7 +363,8 @@ my_stopping <- StoppingAny(
   stop_list = c(
     StoppingMinPatients(nPatients = 16),
     StoppingMissingDose()
-  ))
+  )
+)
 
 # Evaluate if to stop the trial.
 stopTrial(
