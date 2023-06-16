@@ -125,11 +125,11 @@ test_that("stopReasons can be NA with certain stopping rule settings", {
   # to continue the trial. This is the default behavior of the
   # stopTrial() method.
   expected <- list(
-    "Recommended next best dose is NA",
-    "Recommended next best dose is NA",
-    "Recommended next best dose is NA",
-    "Recommended next best dose is NA",
-    "Recommended next best dose is NA"
+    "Next dose is NA , i.e., no active dose is safe enough according to the NextBest rule.",
+    "Next dose is NA , i.e., no active dose is safe enough according to the NextBest rule.",
+    "Next dose is NA , i.e., no active dose is safe enough according to the NextBest rule.",
+    "Next dose is NA , i.e., no active dose is safe enough according to the NextBest rule.",
+    "Next dose is NA , i.e., no active dose is safe enough according to the NextBest rule."
   )
   expect_identical(result, expected)
 })
