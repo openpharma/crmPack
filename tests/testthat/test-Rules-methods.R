@@ -3078,7 +3078,10 @@ test_that("StoppingTDCIRatio works correctly when dose is NA", {
   )
   expected <- structure(
     FALSE,
-    message = "95% CI is (3.56190161486129, 1.20753437767844e+43), Ratio = 3.39013961710862e+42 is greater than target_ratio = 5"
+    message = paste(
+      "95% CI is (3.56190161486129, 1.20753437767844e+43),",
+      "Ratio = 3.39013961710862e+42 is greater than target_ratio = 5"
+    )
   )
   expect_identical(result, expected)
 })
