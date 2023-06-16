@@ -1804,6 +1804,7 @@ setGeneric(
 #'
 #' @description `r lifecycle::badge("experimental")`
 #'
+#' @aliases stopTrial-StoppingMissingDose
 #' @example examples/Rules-method-stopTrial-StoppingMissingDose.R
 #'
 setMethod(
