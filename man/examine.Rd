@@ -136,7 +136,7 @@ design <- Design(model=model,
                  cohortSize=mySize,
                  data=emptydata,
                  startingDose=3)
-examine(design, mcmcOptions=options, maxNoIncrement = 2)
+#examine(design, mcmcOptions=options, maxNoIncrement = 2)
 
 # nolint end
 
