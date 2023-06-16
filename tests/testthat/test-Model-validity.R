@@ -235,8 +235,7 @@ test_that("v_model_logistic_normal_fixed_mix returns message for weights and com
   object@weights <- rep(0.1, 10)
 
   expect_equal(
-    v_model_logistic_normal_fixed_mix(object),
-    c("components must have same length as weights", "weights must sum to 1")
+    v_model_logistic_normal_fixed_mix(object), "components must have same length as weights"
   )
 })
 

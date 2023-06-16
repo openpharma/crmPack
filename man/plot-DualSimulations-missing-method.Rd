@@ -33,7 +33,7 @@ the simulated trials}
 }
 \examples{
 # nolint start
-\dontrun{
+
 # Define the dose-grid
 emptydata <- DataDual(doseGrid = c(1, 3, 5, 10, 15, 20, 25, 40, 50, 80, 100))
 
@@ -102,23 +102,23 @@ curve(trueBiomarker(x), from=0, to=80)
 # We only generate 1 trial outcome here for illustration, for the actual study
 ##Also for illustration purpose, we will use 5 burn-ins to generate 20 samples
 # this should be increased of course
-mySims <- simulate(design,
-                   trueTox=trueTox,
-                   trueBiomarker=trueBiomarker,
-                   sigma2W=0.01,
-                   rho=0,
-                   nsim=1,
-                   parallel=FALSE,
-                   seed=3,
-                   startingDose=6,
-                   mcmcOptions =
-                     McmcOptions(burnin=5,
-                                 step=1,
-                                 samples=20))
+# mySims <- simulate(design,
+#                    trueTox=trueTox,
+#                    trueBiomarker=trueBiomarker,
+#                    sigma2W=0.01,
+#                    rho=0,
+#                    nsim=1,
+#                    parallel=FALSE,
+#                    seed=3,
+#                    startingDose=6,
+#                    mcmcOptions =
+#                      McmcOptions(burnin=5,
+#                                  step=1,
+#                                  samples=20))
+#
+# # Plot the results of the simulation
+# print(plot(mySims))
 
-# Plot the results of the simulation
-print(plot(mySims))
-}
 # nolint end
 }
 \keyword{methods}

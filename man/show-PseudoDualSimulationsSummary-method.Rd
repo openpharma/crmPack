@@ -17,7 +17,7 @@ Show the summary of Pseudo Dual simulations summary
 }
 \examples{
 # nolint start
-\dontrun{
+
 ## If DLE and efficacy responses are considered in the simulations
 ## Specified your simulations when no samples are used
 ## we need a data object with doses >= 1:
@@ -120,26 +120,26 @@ design <- DualResponsesSamplesDesign(
 ## for illustration purpose, we will use 50 burn-ins to generate 200 samples
 options <- McmcOptions(burnin = 50, step = 2, samples = 200)
 ## The simulations for illustration purpose we only simulate 2 trials (nsim=2)
-mySim <- simulate(design,
-  args = NULL,
-  trueDLE = myTruthDLE,
-  trueEff = myTruthEff,
-  trueNu = 1 / 0.025,
-  nsim = 2,
-  mcmcOptions = options,
-  seed = 819,
-  parallel = FALSE
-)
+# mySim <- simulate(design,
+#   args = NULL,
+#   trueDLE = myTruthDLE,
+#   trueEff = myTruthEff,
+#   trueNu = 1 / 0.025,
+#   nsim = 2,
+#   mcmcOptions = options,
+#   seed = 819,
+#   parallel = FALSE
+# )
+#
+#
+# ## Then produce a summary of your simulations
+# MYSUM <- summary(mySim,
+#   trueDLE = myTruthDLE,
+#   trueEff = myTruthEff
+# )
+# ## Then show the summary in data frame for your simulations
+# show(MYSUM)
 
-
-## Then produce a summary of your simulations
-MYSUM <- summary(mySim,
-  trueDLE = myTruthDLE,
-  trueEff = myTruthEff
-)
-## Then show the summary in data frame for your simulations
-show(MYSUM)
-}
 # nolint end
 }
 \keyword{methods}

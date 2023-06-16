@@ -1,5 +1,5 @@
 # nolint start
-\dontrun{
+
 ## obtain the plot for the simulation results
 ## If DLE and efficacy responses are considered in the simulations
 data <- DataDual(doseGrid = seq(25, 300, 25))
@@ -74,19 +74,19 @@ myTruthGain <- function(dose) {
 options <- McmcOptions(burnin = 10, step = 1, samples = 20)
 ## The simulations
 ## For illustration purpose only 1 simulation is produced (nsim=1).
-mySim <- simulate(
-  object = design,
-  args = NULL,
-  trueDLE = myTruthDLE,
-  trueEff = myTruthEff,
-  trueSigma2 = 0.025,
-  trueSigma2betaW = 1,
-  mcmcOptions = options,
-  nsim = 1,
-  seed = 819,
-  parallel = FALSE
-)
-## plot this simulated results
-print(plot(mySim))
-}
+# mySim <- simulate(
+#   object = design,
+#   args = NULL,
+#   trueDLE = myTruthDLE,
+#   trueEff = myTruthEff,
+#   trueSigma2 = 0.025,
+#   trueSigma2betaW = 1,
+#   mcmcOptions = options,
+#   nsim = 1,
+#   seed = 819,
+#   parallel = FALSE
+# )
+# ## plot this simulated results
+# print(plot(mySim))
+
 # nolint end

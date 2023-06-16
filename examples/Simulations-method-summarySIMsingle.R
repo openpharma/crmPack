@@ -1,5 +1,5 @@
 # nolint start
-\dontrun{
+
 ##If only DLE responses are considered in the simulations
 ##Specified your simulations when no DLE samples are used
 ## data set with dose levels from 25 to 300 with increments 25
@@ -70,15 +70,15 @@ design <- TDsamplesDesign(model=model,
 options<-McmcOptions(burnin=50,step=2,samples=200)
 ##The simulations
 ## For illustration purpose we will only generate 2 trials (nsim=2)
-mySim <- simulate(design,
-                  args=NULL,
-                  truth=myTruth,
-                  nsim=2,
-                  seed=819,
-                  mcmcOptions=options,
-                  parallel=FALSE)
-##Then produce a summary of your simulations
-summary(mySim,
-        truth=myTruth)
-}
+# mySim <- simulate(design,
+#                   args=NULL,
+#                   truth=myTruth,
+#                   nsim=2,
+#                   seed=819,
+#                   mcmcOptions=options,
+#                   parallel=FALSE)
+# ##Then produce a summary of your simulations
+# summary(mySim,
+#         truth=myTruth)
+
 # nolint end

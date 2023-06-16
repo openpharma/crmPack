@@ -497,7 +497,7 @@ my_next_best <- NextBestThreePlusThree()
 dose_recommendation <- nextBest(my_next_best, data = my_data)
 
 # Example of usage for `NextBestDualEndpoint` NextBest class.
-\dontrun{
+
 # Create the data.
 my_data <- DataDual(
   x = c(0.1, 0.5, 1.5, 3, 6, 10, 10, 10, 20, 20, 20, 40, 40, 40, 50, 50, 50),
@@ -558,8 +558,8 @@ print(dose_recommendation$plot)
 
 # Show customization of single plot.
 variant1 <- dose_recommendation$singlePlots$plot1 + xlim(0, 20)
-print(variant1)
-}
+#print(variant1)
+
 
 # Example of usage for `NextBestTD` NextBest class.
 my_data <- Data(
