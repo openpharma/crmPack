@@ -103,7 +103,7 @@ test_that("stopReasons can be NA with certain stopping rule settings", {
   size <- CohortSizeConst(size = 3)
   # Extreme truth function, which has constant probability 1 in dose grid range.
   truth <- probFunction(model, alpha0 = 175, alpha1 = 5)
-  stopping <- StoppingMinPatients(nPatients = 16)
+  stopping <- StoppingMissingDose()
   design <- Design(
     model = model,
     stopping = stopping,
