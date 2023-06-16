@@ -2080,6 +2080,29 @@ test_that("StoppingLowestDoseHSRBeta works correctly if first active dose is not
 
 ## StoppingTargetBiomarker ----
 
+test_that("StoppingTargetBiomarker can handle when dose is NA", {
+  data <- h_get_data_dual()
+  model <- h_get_dual_endpoint_rw()
+  options <- h_get_mcmc_options()
+  samples <- mcmc(data, model, options)
+  stopping <- StoppingTargetBiomarker(
+    target = c(0.9, 1),
+    prob = 0.5
+  )
+  result <- stopTrial(
+    stopping = stopping,
+    dose = NA_real_,
+    samples = samples,
+    model = model,
+    data = data
+  )
+  expected <- structure(
+    FALSE,
+    message = "Probability for target biomarker is 0 % for dose NA and thus below the required 50 %"
+  )
+  expect_identical(result, expected)
+})
+
 test_that("stopTrial works for StoppingTargetBiomarker", {
   # Simply copying example code.  probably needs more thoughtful testing
   data <- DataDual(
@@ -3038,35 +3061,20 @@ test_that("Logical operators for combining Stopping rules work correctly", {
 
 # Numerically not stable. Need to investigate why.
 test_that("StoppingTDCIRatio works correctly when dose is NA", {
-  # Observed data is irrelevant in this case.  provide an empty Data object
-  emptyData <- Data(doseGrid = seq(25, 300, 25))
-  # Define a model
-  model <- LogisticIndepBeta(
-    binDLE = c(1.05, 1.8),
-    DLEdose = c(25, 300),
-    DLEweights = c(3, 3),
-    data = emptyData
-  )
-  # Generate some samples from the model
-  n_samples <- 4
-  samples <- mcmc(
-    emptyData,
-    model,
-    McmcOptions(
-      samples = n_samples,
-      rng_kind = "Mersenne-Twister",
-      rng_seed = 12911
-    )
-  )
+  data <- h_get_data_dual()
+  model <- h_get_logistic_indep_beta()
+  options <- h_get_mcmc_options()
+  samples <- mcmc(data, model, options)
   # This is necessary as rng do not work with model
   samples@data$phi1 <- c(0.04748928, -3.69616243, -7.38656113,  0.04428348)
   samples@data$phi2 <- c(-0.009012972,  0.737940430,  1.245383234,  0.053978501)
+  stopping <- StoppingMaxGainCIRatio(target_ratio = 5, prob_target = 0.3)
   result <- stopTrial(
-    StoppingTDCIRatio(3, 0.5),
+    stopping,
     NA_real_,
     samples,
     model,
-    data = emptyData
+    data = data
   )
   expected <- structure(
     FALSE,
@@ -3167,6 +3175,46 @@ test_that("stopTrial works correctly for StoppingTDCIRatio when samples are not 
 })
 
 ## StoppingMaxGainCIRatio ----
+
+test_that("StoppingMaxGainCIRatio works correctly when dose is NA", {
+  # Observed data is irrelevant in this case. provide an empty Data object
+  emptyData <- Data(doseGrid = seq(25, 300, 25))
+  # Define a model
+  model <- LogisticIndepBeta(
+    binDLE = c(1.05, 1.8),
+    DLEdose = c(25, 300),
+    DLEweights = c(3, 3),
+    data = emptyData
+  )
+  # Generate some samples from the model
+  n_samples <- 4
+  samples <- mcmc(
+    emptyData,
+    model,
+    McmcOptions(
+      samples = n_samples,
+      rng_kind = "Mersenne-Twister",
+      rng_seed = 12911
+    )
+  )
+  # This is necessary as rng do not work with model
+  samples@data$phi1 <- c(0.04748928, -3.69616243, -7.38656113,  0.04428348)
+  samples@data$phi2 <- c(-0.009012972,  0.737940430,  1.245383234,  0.053978501)
+  result <- stopTrial(
+    StoppingTDCIRatio(3, 0.5),
+    NA_real_,
+    samples,
+    model,
+    data = emptyData
+  )
+  expected <- structure(
+    FALSE,
+    message = "95% CI is (11.6361006464921, 362.911580229316), Ratio = 31.1884 is greater than target_ratio = 3"
+  )
+  expect_identical(result, expected)
+})
+
+
 
 # CohortSize ----
 
