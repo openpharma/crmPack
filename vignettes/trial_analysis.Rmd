@@ -229,7 +229,6 @@ tabulatePosterior <- function(mcmcSamples, observedData) {
     select(dose, Treated, WithDLT, target, overdose) %>%
     kableExtra::kable(
       col.names = c("Dose", "Treated", "With DLT", "Target range", "Overdose range"),
-      table.attr = "style='width:60%;'",
       digits = c(0, 0, 0, 3, 3)
     ) %>%
     kableExtra::add_header_above(c(" " = 1, "Participants" = 2, "Probability that dose is in " = 2))

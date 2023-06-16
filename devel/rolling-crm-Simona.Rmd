@@ -208,10 +208,11 @@ plot(samples_TCBS, model_TCBS, data_TCBS)
 
 ```{R inf_mod}
 # informative component
-inmodel <- approximate(samples_TCBS, model_TCBS, data_TCBS,
+rv <- (approximate(samples_TCBS, model_TCBS, data_TCBS,
   points = c(1, 20, 50, 100, 200, 400),
   refDose = myrefDose, logNormal = TRUE, verbose = TRUE
 )
+rv$model
 
 
 ## creating an empty dataset, provide only the dose grid:
@@ -365,7 +366,8 @@ p2innoin + labs(caption = c("In black the Inf. model, in blue the min. inf. mod.
 ```
 
 ```{r appr_mix}
-posterior_hist <- approximate(priorsamples_2575, mixmodel_2575, emptydata,
+
+rv <- approximate(priorsamples_2575, mixmodel_2575, emptydata,
   refDose = mixmodel_2575@refDose, logNormal = TRUE,
   seed = 12345,
   control = list(
@@ -373,6 +375,7 @@ posterior_hist <- approximate(priorsamples_2575, mixmodel_2575, emptydata,
     temperature = 50000, max.time = 120
   )
 )
+prior_hist < rv$model
 
 posterior_hist@mean
 posterior_hist@cov
@@ -384,7 +387,8 @@ plot_priorsam <- plot(priorsamples_post, posterior_hist, emptydata)
 multiplot(p2, plot_priorsam)
 
 
-# posterior_hist2 <- approximate(priorsamples_2575, mixmodel_2575, emptydata, #refDose=mixmodel_2575@refDose, logNormal = FALSE)
+rv <- approximate(priorsamples_2575, mixmodel_2575, emptydata, #refDose=mixmodel_2575@refDose, logNormal = FALSE)
+prior_hist2 <- rv$model
 
 # posterior_hist2@mean
 # posterior_hist2@cov
