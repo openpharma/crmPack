@@ -78,8 +78,6 @@ my_size <- CohortSizeConst(size = 3)
 # Allow increase of 200\%.
 my_increments <- IncrementsRelative(intervals = 0, increments = 2)
 
-maxDose(my_increments, emptydata)
-
 # Define the stopping rule. Stop when the maximum sample size of 36 patients has
 # been reached or when the next dose is NA.
 my_stopping <- StoppingMinPatients(nPatients = 36) | StoppingMissingDose()
