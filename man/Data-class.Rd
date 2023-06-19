@@ -6,48 +6,11 @@
 \alias{.Data}
 \alias{Data}
 \title{\code{Data}}
-\usage{
-Data(
-  x = numeric(),
-  y = integer(),
-  ID = integer(),
-  cohort = integer(),
-  doseGrid = numeric(),
-  placebo = FALSE,
-  ...
-)
-}
-\arguments{
-\item{x}{(\code{numeric})\cr the doses for the patients.}
-
-\item{y}{(\code{integer})\cr the vector of toxicity events (0 or 1).
-You can also supply \code{numeric} vectors, but these will then be converted to
-\code{integer} internally.}
-
-\item{ID}{(\code{integer})\cr unique patient IDs.
-You can also supply \code{numeric} vectors, but these will then be converted to
-\code{integer} internally.}
-
-\item{cohort}{(\code{integer})\cr the cohort (non-negative sorted) indices.
-You can also supply \code{numeric} vectors, but these will then be converted to
-\code{integer} internally.}
-
-\item{doseGrid}{(\code{numeric})\cr all possible doses.}
-
-\item{placebo}{(\code{flag})\cr if \code{TRUE} the first dose level
-in the \code{doseGrid} is considered as placebo.}
-
-\item{...}{not used.}
-}
 \description{
 \ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#stable}{\figure{lifecycle-stable.svg}{options: alt='[Stable]'}}}{\strong{[Stable]}}
 
 \code{\link{Data}} is a class for the data input.
 It inherits from \code{\link{GeneralData}}.
-}
-\details{
-The \code{cohort} can be missing if and only if \code{placebo} is equal to
-\code{FALSE}.
 }
 \section{Slots}{
 
@@ -68,21 +31,3 @@ w.r.t \code{doseGrid}.}
 in the \code{doseGrid}is considered as PLACEBO.}
 }}
 
-\note{
-\code{ID} and \code{cohort} can be missing. Then a message will be issued
-and the variables will be filled with default IDs and best guesses cohort,
-i.e. a sorted (in ascending order) sequence of values from \verb{\{1, 2, ...\}}.
-}
-\examples{
-my_data <- Data(
-  x = c(0.1, 0.5, 1.5, 3, 6, 10, 10, 10),
-  y = c(0, 0, 0, 0, 0, 0, 1, 0),
-  ID = as.integer(1:8),
-  cohort = as.integer(c(1, 2, 3, 4, 5, 6, 6, 6)),
-  doseGrid = c(
-    0.1, 0.5, 1.5, 3, 6,
-    seq(from = 10, to = 80, by = 2)
-  )
-)
-my_data
-}

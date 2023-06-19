@@ -4,11 +4,14 @@
 \alias{dose_grid_range}
 \alias{dose_grid_range,Data-method}
 \alias{dose_grid_range-Data}
+\alias{dose_grid_range,DataOrdinal-method}
 \title{Getting the Dose Grid Range}
 \usage{
 dose_grid_range(object, ...)
 
 \S4method{dose_grid_range}{Data}(object, ignore_placebo = TRUE)
+
+\S4method{dose_grid_range}{DataOrdinal}(object, ignore_placebo = TRUE)
 }
 \arguments{
 \item{object}{(\code{Data})\cr object with dose grid.}

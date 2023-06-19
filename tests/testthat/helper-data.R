@@ -1,3 +1,32 @@
+h_get_data_ordinal <- function(empty = FALSE, placebo = TRUE) {
+  dose_grid <- seq(25, 300, 25)
+  if (placebo) {
+    dose_grid <- c(0.001, dose_grid)
+  }
+
+  if (empty) {
+    DataOrdinal(
+      doseGrid = dose_grid,
+      placebo = placebo
+    )
+  } else {
+    x <- if (placebo) {
+      c(0.001, 25, 25, 25, 0.001, 50, 50, 50, 0.001, 100, 100, 100)
+    } else {
+      c(25, 25, 25, 25, 50, 50, 50, 50, 100, 100, 100, 100)
+    }
+    DataOrdinal(
+      x = x,
+      y = c(0L, 0L, 0L, 0L, 0L, 0L, 0L, 0L, 0L, 0L, 1L, 2L),
+      doseGrid = dose_grid,
+      placebo = placebo,
+      ID = 1:12,
+      cohort = c(1L, 1L, 1L, 1L, 2L, 2L, 2L, 2L, 3L, 3L, 3L, 3L),
+      yCategories = c("No tox" = 1L, "Sub-tox AE" = 2L, "DLT" = 3L)
+    )
+  }
+}
+
 h_get_data <- function(empty = FALSE, placebo = TRUE) {
   dose_grid <- seq(25, 300, 25)
   if (placebo) {

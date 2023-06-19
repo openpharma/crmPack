@@ -185,3 +185,66 @@ test_that("DataDA object can be created with custom values", {
   )
   expect_valid(result, "DataDA")
 })
+
+
+# DataOrdinal-class ----
+
+test_that(".Dataordinal works as expected", {
+  result <- expect_silent(.DataOrdinal())
+  expect_valid(result, "DataOrdinal")
+})
+
+# Data-constructor ----
+
+test_that("DataOrdinal object can be created with user constructor DataOrdinal", {
+  result <- expect_silent(DataOrdinal())
+  expect_valid(result, "DataOrdinal")
+})
+
+test_that("DataOrdinal object can be created with custom values", {
+  placebo <- 0.01
+  result <- expect_silent(
+    DataOrdinal(
+      x = c(placebo, 25, 25, 25, placebo, 50, 50, 50, placebo, 100, 100, 100),
+      y = c(0L, 0L, 0L, 0L, 0L, 0L, 0L, 0L, 0L, 1L, 2L, 3L),
+      ID = 1:12,
+      cohort = c(1L, 1L, 1L, 1L, 2L, 2L, 2L, 2L, 3L, 3L, 3L, 3L),
+      doseGrid = c(placebo, seq(25, 300, 25)),
+      placebo = TRUE,
+      yCategories = c("OK" = 0L, "Not too bad" = 1L, "Bad" = 2L, "Dead" = 3L)
+    )
+  )
+  expect_valid(result, "DataOrdinal")
+})
+
+test_that("DataOrdinal constructor handles default IDs as expected", {
+  placebo <- 0.05
+  expect_message(
+    result <-
+      DataOrdinal(
+        x = c(placebo, 25, 25, 25, placebo, 50, 50, 50, placebo, 100, 100, 100),
+        y = c(0L, 0L, 0L, 0L, 0L, 0L, 0L, 0L, 0L, 0L, 1L, 0L),
+        cohort = c(1L, 1L, 1L, 1L, 2L, 2L, 2L, 2L, 3L, 3L, 3L, 3L),
+        doseGrid = c(placebo, seq(25, 300, 25)),
+        placebo = TRUE,
+      ),
+    regexp = "Used default patient IDs!"
+  )
+  expect_valid(result, "DataOrdinal")
+})
+
+test_that("DataOrdinal constructor works as expected without cohort and no placebo", {
+  placebo <- 0.001
+  expect_message(
+    result <-
+      DataOrdinal(
+        x = c(placebo, 25, 25, 25, placebo, 50, 50, 50, placebo, 100, 100, 100),
+        y = c(0L, 0L, 0L, 0L, 0L, 0L, 0L, 0L, 0L, 0L, 1L, 0L),
+        ID = 1:12,
+        doseGrid = c(placebo, seq(25, 300, 25)),
+        placebo = FALSE,
+      ),
+    regexp = "Used best guess cohort indices!"
+  )
+  expect_valid(result, "DataOrdinal")
+})

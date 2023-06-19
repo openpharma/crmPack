@@ -2,11 +2,11 @@
 
 ## Data ----
 
-#' Plot Method for the [`Data`] Class
+#' Helper Function for the Plot Method of the Data and DataOrdinal Classes
 #'
 #' @description `r lifecycle::badge("stable")`
 #'
-#' A method that creates a plot for [`Data`] object.
+#' A method that creates a plot for [`Data`]  and [`DataOrdinal`]objects.
 #'
 #' @param x (`Data`)\cr object we want to plot.
 #' @param y (`missing`)\cr missing object, for compatibility with the generic
@@ -15,10 +15,87 @@
 #'   If `TRUE`, then placebo subjects are reported at the same level
 #'   as the active dose level in the corresponding cohort,
 #'   and DLTs are always assigned to the first subjects in a cohort.
+#' @param tox_labels (`character`)\cr the toxicity category labels
+#' @param tox_shapes (`integer`)\cr the shapes used to plot the various toxicity
+#' categories
 #' @param legend (`flag`)\cr whether the legend should be added.
 #' @param ... not used.
 #'
+#' @note The default values of `tox_shapes` and `tox_labels` result in DLTs
+#' being displayed as red triangles and other responses as black circles.
 #' @return The [`ggplot2`] object.
+#'
+#' @aliases plot-Data
+h_plot_data_dataordinal <- function(
+    x,
+    blind = FALSE,
+    legend = TRUE,
+    tox_labels = c(Yes = "red", No = "black"),
+    tox_shapes = c(Yes = 17L, No = 16L),
+    ...) {
+  assert_flag(blind)
+  assert_flag(legend)
+  assert_character(tox_labels, any.missing = FALSE, unique = TRUE)
+  assert_integer(tox_shapes, any.missing = FALSE, unique = TRUE)
+  assert_true(length(tox_shapes) == length(tox_labels))
+  assert_subset(x@y, as.integer(0:(length(tox_shapes) - 1)))
+  if (x@nObs == 0L) {
+    return()
+  }
+  df <- h_plot_data_df(x, blind, ...)
+
+  p <- ggplot(df, aes(x = patient, y = dose)) +
+    geom_point(aes(shape = toxicity, colour = toxicity), size = 3) +
+    scale_colour_manual(
+      name = "Toxicity",
+      values = tox_labels,
+      breaks = names(tox_labels),
+      guide = guide_legend(reverse = TRUE)
+    ) +
+    scale_shape_manual(
+      name = "Toxicity",
+      values = tox_shapes,
+      breaks = names(tox_shapes),
+      guide = guide_legend(reverse = TRUE)
+    ) +
+    scale_x_continuous(breaks = df$patient, minor_breaks = NULL) +
+    scale_y_continuous(
+      breaks = sort(unique(c(0, df$dose))),
+      minor_breaks = NULL,
+      limits = c(0, max(df$dose) * 1.1)
+    ) +
+    xlab("Patient") +
+    ylab("Dose Level")
+
+  p <- p + h_plot_data_cohort_lines(df$cohort, placebo = x@placebo)
+
+  if (!blind) {
+    p <- p +
+      geom_text(
+        aes(label = ID, size = 2),
+        data = df,
+        hjust = 0,
+        vjust = 0.5,
+        angle = 90,
+        colour = "black",
+        show.legend = FALSE
+      )
+  }
+
+  if (!legend) {
+    p <- p + theme(legend.position = "none")
+  }
+
+  p
+}
+
+#' Plot Method for the [`Data`] Class
+#'
+#' @description `r lifecycle::badge("stable")`
+#'
+#' A method that creates a plot for [`Data`] object.
+#'
+#' @inherit h_plot_data_dataordinal params return
 #'
 #' @aliases plot-Data
 #' @export
@@ -28,50 +105,72 @@ setMethod(
   f = "plot",
   signature = signature(x = "Data", y = "missing"),
   definition = function(x, y, blind = FALSE, legend = TRUE, ...) {
-    assert_flag(blind)
-    assert_flag(legend)
+    h_plot_data_dataordinal(x, blind, legend, ...)
+  }
+)
 
-    if (x@nObs == 0L) {
-      return()
+## Data ----
+
+#' Plot Method for the [`DataOrdinal`] Class
+#'
+#' @description `r lifecycle::badge("experimental")`
+#'
+#' A method that creates a plot for [`DataOrdinal`] object.
+#'
+#' @param x (`DataOrdinal`)\cr object we want to plot.
+#' @param y (`missing`)\cr missing object, for compatibility with the generic
+#'   function.
+#' @param blind (`flag`)\cr indicates whether to blind the data.
+#'   If `TRUE`, then placebo subjects are reported at the same level
+#'   as the active dose level in the corresponding cohort,
+#'   and DLTs are always assigned to the first subjects in a cohort.
+#' @param legend (`flag`)\cr whether the legend should be added.
+#' @param ... not used.
+#'
+#' @note With more than 9 toxicity categories, toxicity symbols must be
+#' specified manually.\cr With more than 5 toxicity categories, toxicity labels
+#' must be specified manually.
+#'
+#' @return The [`ggplot2`] object.
+#'
+#' @aliases plot-Data
+#' @export
+#' @example examples/DataOrdinal-method-plot.R
+setMethod(
+  f = "plot",
+  signature = signature(x = "DataOrdinal", y = "missing"),
+  definition = function(
+    x,
+    y,
+    blind = FALSE,
+    legend = TRUE,
+    tox_labels = NULL,
+    tox_shapes = NULL,
+    ...
+  ) {
+    if (is.null(tox_shapes)) {
+      assert_true(length(x@yCategories) <= 9)
+      tox_shapes <- c(17L, 16L, 15L, 18L, 0L:2L, 5L, 6L)[seq_along(x@yCategories)]
     }
-
-    df <- h_plot_data_df(x, blind)
-
-    p <- ggplot(df, aes(x = patient, y = dose)) +
-      geom_point(aes(shape = toxicity, colour = toxicity), size = 3) +
-      scale_colour_manual(
-        name = "Toxicity", values = c(Yes = "red", No = "black")
-      ) +
-      scale_shape_manual(name = "Toxicity", values = c(Yes = 17, No = 16)) +
-      scale_x_continuous(breaks = df$patient, minor_breaks = NULL) +
-      scale_y_continuous(
-        breaks = sort(unique(c(0, df$dose))),
-        minor_breaks = NULL,
-        limits = c(0, max(df$dose) * 1.1)
-      ) +
-      xlab("Patient") +
-      ylab("Dose Level")
-
-    p <- p + h_plot_data_cohort_lines(df$cohort, placebo = x@placebo)
-
-    if (!blind) {
-      p <- p +
-        geom_text(
-          aes(label = ID, size = 2),
-          data = df,
-          hjust = 0,
-          vjust = 0.5,
-          angle = 90,
-          colour = "black",
-          show.legend = FALSE
-        )
+    if (is.null(tox_labels)) {
+      assert_true(length(x@yCategories) <= 5)
+      tox_labels <- switch(
+                  length(x@yCategories),
+                  c("black"),
+                  c("black", "red"),
+                  c("black", "orange", "red"),
+                  c("black", "green", "orange", "red"),
+                  c("black", "green", "yellow", "orange", "red")
+      )
     }
-
-    if (!legend) {
-      p <- p + theme(legend.position = "none")
-    }
-
-    p
+    h_plot_data_dataordinal(
+      x,
+      blind,
+      legend,
+      tox_labels = tox_labels,
+      tox_shapes = tox_shapes,
+      ...
+    )
   }
 )
 
@@ -646,6 +745,35 @@ setGeneric(
 setMethod(
   f = "dose_grid_range",
   signature = signature(object = "Data"),
+  definition = function(object, ignore_placebo = TRUE) {
+    assert_flag(ignore_placebo)
+
+    dose_grid <- if (ignore_placebo && object@placebo && object@nGrid >= 1) {
+      object@doseGrid[-1]
+    } else {
+      object@doseGrid
+    }
+
+    if (length(dose_grid) == 0L) {
+      c(-Inf, Inf)
+    } else {
+      range(dose_grid)
+    }
+  }
+)
+
+## DataOrdinal ----
+
+#' @rdname dose_grid_range
+#'
+#' @param ignore_placebo (`flag`)\cr should placebo dose (if any) not be counted?
+#'
+#' @aliases dose_grid_range-Data
+#' @example examples/DataOrdinal-method-dose_grid_range.R
+#'
+setMethod(
+  f = "dose_grid_range",
+  signature = signature(object = "DataOrdinal"),
   definition = function(object, ignore_placebo = TRUE) {
     assert_flag(ignore_placebo)
 

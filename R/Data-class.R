@@ -80,7 +80,7 @@ NULL
 
 ## constructor ----
 
-#' @rdname Data-class
+#' @rdname DataOrdinal-class
 #'
 #' @details The `cohort` can be missing if and only if `placebo` is equal to
 #'   `FALSE`.
@@ -89,23 +89,10 @@ NULL
 #'   and the variables will be filled with default IDs and best guesses cohort,
 #'   i.e. a sorted (in ascending order) sequence of values from `{1, 2, ...}`.
 #'
-#' @param x (`numeric`)\cr the doses for the patients.
-#' @param y (`integer`)\cr the vector of toxicity events (0 or 1).
-#'   You can also supply `numeric` vectors, but these will then be converted to
-#'   `integer` internally.
-#' @param ID (`integer`)\cr unique patient IDs.
-#'   You can also supply `numeric` vectors, but these will then be converted to
-#'   `integer` internally.
-#' @param cohort (`integer`)\cr the cohort (non-negative sorted) indices.
-#'   You can also supply `numeric` vectors, but these will then be converted to
-#'   `integer` internally.
-#' @param doseGrid (`numeric`)\cr all possible doses.
-#' @param placebo (`flag`)\cr if `TRUE` the first dose level
-#'   in the `doseGrid` is considered as placebo.
-#' @param ... not used.
-#'
+#' @inheritParams Data
+#' @inherit Data details note
 #' @export
-#' @example examples/Data-class.R
+#' @example examples/Data-class-DataOrdinal.R
 #'
 Data <- function(x = numeric(),
                  y = integer(),
@@ -375,5 +362,110 @@ DataDA <- function(u = numeric(),
     u = as.numeric(u),
     t0 = as.numeric(t0),
     Tmax = as.numeric(Tmax)
+  )
+}
+
+# DataOrdinal ----
+
+## class ----
+
+#' `DataOrdinal`
+#'
+#' @description `r lifecycle::badge("experimental")`
+#'
+#' [`DataOrdinal`] is a class ordinal toxicity data.
+#' It inherits from [`GeneralData`] and it describes toxicity responses on an
+#' ordinal rather than binary scale.
+#'
+#' @note This class has been implemented as a sibling of the existing `Data` class
+#' (rather than as a parent or child) to minimise the risk of unintended side
+#' effects on existing classes and methods.
+#'
+#' @note The default setting for the `yCagetories` slot replicates the behaviour
+#' of the existing `Data` class.
+#'
+#'
+#' @aliases DataOrdinal
+#' @export
+.DataOrdinal <- setClass(
+  Class = "DataOrdinal",
+  contains = "GeneralData",
+  slots = c(
+    x = "numeric",
+    y = "integer",
+    doseGrid = "numeric",
+    nGrid = "integer",
+    xLevel = "integer",
+    yCategories = "integer",
+    placebo = "logical"
+  ),
+  prototype = prototype(
+    x = numeric(),
+    y = integer(),
+    doseGrid = numeric(),
+    nGrid = 0L,
+    xLevel = integer(),
+    yCategories = c("No DLT" = 0L, "DLT" = 1L),
+    placebo = FALSE
+  ),
+  validity = v_data_ordinal
+)
+
+
+## constructor ----
+
+#' @rdname DataOrdinal-class
+#' @param yCategories (`named integer vector`)\cr the names and codes for the
+#' toxicity categories used in the data.  Category labels are taken from the
+#' names of the vector.  The names of the vector must be unique and its values
+#' must be sorted and take the values 0, 1, 2, ...
+#' @example examples/Data-class-DataOrdinal.R
+#' @export
+DataOrdinal <- function(
+    x = numeric(),
+    y = integer(),
+    ID = integer(),
+    cohort = integer(),
+    doseGrid = numeric(),
+    placebo = FALSE,
+    yCategories = c("No DLT" = 0L, "DLT" = 1L),
+    ...
+) {
+  assert_numeric(x)
+  assert_numeric(y)
+  assert_numeric(ID)
+  assert_numeric(cohort)
+  assert_numeric(doseGrid, any.missing = FALSE, unique = TRUE)
+  assert_numeric(yCategories, any.missing = FALSE, unique = TRUE)
+  assert_character(names(yCategories), any.missing = FALSE, unique = TRUE)
+  assert_flag(placebo)
+
+  doseGrid <- as.numeric(sort(doseGrid))
+
+  if (length(ID) == 0 && length(x) > 0) {
+    message("Used default patient IDs!")
+    ID <- seq_along(x)
+  }
+
+  if (!placebo && length(cohort) == 0 && length(x) > 0) {
+    message("Used best guess cohort indices!")
+    # This is just assuming that consecutive patients
+    # in the data set are in the same cohort if they
+    # have the same dose. Note that this could be wrong,
+    # if two subsequent cohorts are at the same dose.
+    cohort <- as.integer(c(1, 1 + cumsum(diff(x) != 0)))
+  }
+
+  .DataOrdinal(
+    x = as.numeric(x),
+    y = safeInteger(y),
+    ID = safeInteger(ID),
+    cohort = safeInteger(cohort),
+    doseGrid = doseGrid,
+    nObs = length(x),
+    nGrid = length(doseGrid),
+    xLevel = matchTolerance(x = x, table = doseGrid),
+    placebo = placebo,
+    yCategories = yCategories
   )
 }

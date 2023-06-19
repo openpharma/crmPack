@@ -563,6 +563,112 @@ h_all_equivalent <- function(target,
   isTRUE(tmp)
 }
 
+# h_plot_data_df ----
+
+## generic ----
+
+#' Helper Function for the Plot Method of subclasses of DataGeneral
+#'
+#' @description `r lifecycle::badge("experimental")`
+#'
+#' A method that transforms [`DataGeneral`]  objects into a `tibble` suitable for
+#' plotting with `ggplot2` methods
+#'
+#' @param data (`DataGeneral`)\cr object from which data is extracted and converted
+#' into a data frame.
+#' @param ... further arguments passed to class-specific methods.
+#' @return `data.frame` containing columns for patient, cohort, dose and toxicity grade
+#'
+setGeneric(
+  name = "h_plot_data_df",
+  def = function(data, ...) standardGeneric("h_plot_data_df"),
+  valueClass = "data.frame"
+)
+
+# Data ----
+
+#' @param data (`Data`)\cr object from which data is extracted and converted
+#'   into a data frame.
+#' @param blind (`flag`)\cr should data be blinded?
+#'   If `TRUE`, then for each cohort, all DLTs are assigned to the first
+#'   subjects in the cohort. In addition, the placebo (if any) is set to the
+#'   active dose level for that cohort.
+#' @param ... further arguments passed to `data.frame` constructor.
+#'   It can be e.g. an extra `column_name = value` pair based on a slot
+#'   from `x` (which in this case might be a subclass of `Data`)
+#'   which does not appear in `Data`.
+#' @return A [`data.frame`] object with columns patient, ID, cohort, dose and
+#' toxicity.
+setMethod(
+  f = "h_plot_data_df",
+  signature = signature(data = "Data"),
+  definition = function(data, blind = FALSE, legend = TRUE, ...) {
+    df <- data.frame(
+      patient = seq_along(data@x),
+      ID = paste(" ", data@ID),
+      cohort = data@cohort,
+      dose = data@x,
+      toxicity = ifelse(data@y == 1, "Yes", "No"),
+      ...
+    )
+    df <- h_blind_plot_data(df, blind, data@placebo, data@doseGrid[1])
+    df
+  }
+)
+
+# DataOrdinal ----
+
+#' @param data (`DataOrdinal`)\cr object from which data is extracted and converted
+#'   into a data frame.
+#' @param blind (`flag`)\cr should data be blinded?
+#'   If `TRUE`, then for each cohort, all DLTs are assigned to the first
+#'   subjects in the cohort. In addition, the placebo (if any) is set to the
+#'   active dose level for that cohort.
+#' @param ... further arguments passed to `data.frame` constructor.
+#'   It can be e.g. an extra `column_name = value` pair based on a slot
+#'   from `x` (which in this case might be a subclass of `Data`)
+#'   which does not appear in `Data`.
+#' @return A [`data.frame`] object with values to plot.
+setMethod(
+  f = "h_plot_data_df",
+  signature = signature(data = "DataOrdinal"),
+  definition = function(data, blind = FALSE, legend = TRUE, ...) {
+    df <- data.frame(
+      patient = seq_along(data@x),
+      ID = paste(" ", data@ID),
+      cohort = data@cohort,
+      dose = data@x,
+      toxicity = names(data@yCategories)[1 + data@y],
+      ...
+    )
+    df <- h_blind_plot_data(df, blind, data@placebo, data@doseGrid[1])
+    df
+  }
+)
+
+
+
+h_blind_plot_data <- function(df, blind, has_placebo, pbo_dose) {
+  if (blind) {
+    # This is to blind the data.
+    # For each cohort, all DLTs are assigned to the first subjects in the cohort.
+    # In addition, the placebo (if any) is set to the active dose level for that
+    # cohort.
+    # Notice: dapply reorders records of df according to the lexicographic order
+    # of cohort.
+    df <- dapply(df, f = ~cohort, FUN = function(coh) {
+      coh$toxicity <- sort(coh$toxicity, decreasing = TRUE)
+      coh$dose <- max(coh$dose)
+      coh
+    })
+  } else if (has_placebo) {
+    # Placebo will be plotted at y = 0 level.
+    df$dose[df$dose == pbo_dose] <- 0
+  }
+  df
+}
+
+
 #' Preparing Data for Plotting
 #'
 #' @description `r lifecycle::badge("experimental")`
@@ -583,35 +689,38 @@ h_all_equivalent <- function(target,
 #'   which does not appear in `Data`.
 #' @return A [`data.frame`] object with values to plot.
 #'
-h_plot_data_df <- function(data, blind = FALSE, ...) {
-  df <- data.frame(
-    patient = seq_along(data@x),
-    ID = paste(" ", data@ID),
-    cohort = data@cohort,
-    dose = data@x,
-    toxicity = ifelse(data@y == 1, "Yes", "No"),
-    ...
-  )
-
-  if (blind) {
-    # This is to blind the data.
-    # For each cohort, all DLTs are assigned to the first subjects in the cohort.
-    # In addition, the placebo (if any) is set to the active dose level for that
-    # cohort.
-    # Notice: dapply reorders records of df according to the lexicographic order
-    # of cohort.
-    df <- dapply(df, f = ~cohort, FUN = function(coh) {
-      coh$toxicity <- sort(coh$toxicity, decreasing = TRUE)
-      coh$dose <- max(coh$dose)
-      coh
-    })
-  } else if (data@placebo) {
-    # Placebo will be plotted at y = 0 level.
-    df$dose[df$dose == data@doseGrid[1]] <- 0
-  }
-
-  df
-}
+# h_plot_data_df <- function(data, blind = FALSE, toxicity = NULL, ...) {
+#   if (is.null(toxicity)) {
+#     toxicity <- ifelse(data@y > 0, "Yes", "No")
+#   }
+#   df <- data.frame(
+#     patient = seq_along(data@x),
+#     ID = paste(" ", data@ID),
+#     cohort = data@cohort,
+#     dose = data@x,
+#     toxicity = toxicity,
+#     ...
+#   )
+#
+#   if (blind) {
+#     # This is to blind the data.
+#     # For each cohort, all DLTs are assigned to the first subjects in the cohort.
+#     # In addition, the placebo (if any) is set to the active dose level for that
+#     # cohort.
+#     # Notice: dapply reorders records of df according to the lexicographic order
+#     # of cohort.
+#     df <- dapply(df, f = ~cohort, FUN = function(coh) {
+#       coh$toxicity <- sort(coh$toxicity, decreasing = TRUE)
+#       coh$dose <- max(coh$dose)
+#       coh
+#     })
+#   } else if (data@placebo) {
+#     # Placebo will be plotted at y = 0 level.
+#     df$dose[df$dose == data@doseGrid[1]] <- 0
+#   }
+#
+#   df
+# }
 
 #' Preparing Cohort Lines for Data Plot
 #'

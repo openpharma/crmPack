@@ -9,6 +9,7 @@
 \alias{v_data_parts}
 \alias{v_data_mixture}
 \alias{v_data_da}
+\alias{v_data_ordinal}
 \title{Internal Helper Functions for Validation of \code{\link{GeneralData}} Objects}
 \usage{
 v_general_data(object)
@@ -24,6 +25,8 @@ v_data_parts(object)
 v_data_mixture(object)
 
 v_data_da(object)
+
+v_data_ordinal(object)
 }
 \arguments{
 \item{object}{(\code{GeneralData})\cr object to validate.}
@@ -43,6 +46,8 @@ or \code{TRUE} in case validation passes.
 
 These functions are only used internally to validate the format of an input
 \code{\link{GeneralData}} or inherited classes and therefore not exported.
+
+\ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#experimental}{\figure{lifecycle-experimental.svg}{options: alt='[Experimental]'}}}{\strong{[Experimental]}}
 }
 \section{Functions}{
 \itemize{
@@ -67,5 +72,8 @@ contains valid elements with respect to their types, dependency and length.
 
 \item \code{v_data_da()}: validates that the \code{\link{DataDA}} object
 contains valid elements with respect to their types, dependency and length.
+
+\item \code{v_data_ordinal()}: validates that the \code{\link{DataOrdinal}} object contains
+valid elements with respect to their types, dependency and length.
 
 }}

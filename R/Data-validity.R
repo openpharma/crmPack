@@ -180,3 +180,65 @@ v_data_da <- function(object) {
   )
   v$result()
 }
+
+#' @description `r lifecycle::badge("experimental")`
+#' @describeIn v_data_objects validates that the [`DataOrdinal`] object contains
+#'   valid elements with respect to their types, dependency and length.
+
+v_data_ordinal <- function(object) {
+  v <- Validate()
+  v$check(
+    test_double(object@x, len = object@nObs, any.missing = FALSE),
+    "Doses vector x must be of type double and length nObs"
+  )
+  v$check(
+    test_integer(object@y, lower = 0, upper = length(object@yCategories)-1, len = object@nObs, any.missing = FALSE),
+    paste(
+      "DLT vector y must be nObs long and contain integers in the range 0 to",
+      length(object@yCategories) - 1,
+      "only"
+    )
+  )
+  v$check(
+    test_double(object@doseGrid, len = object@nGrid, any.missing = FALSE, unique = TRUE, sorted = TRUE),
+    "doseGrid must be of type double and length nGrid and contain unique, sorted values"
+  )
+  v$check(
+    test_int(object@nGrid),
+    "Number of dose grid values nGrid must be scalar integer"
+  )
+  v$check(
+    test_integer(object@xLevel, len = object@nObs, any.missing = FALSE),
+    "Levels xLevel for the doses the patients have been given must be of type integer and length nObs"
+  )
+  v$check(
+    test_flag(object@placebo),
+    "The placebo flag must be scalar logical"
+  )
+  v$check(
+    test_subset(object@x, object@doseGrid),
+    "Dose values in x must be from doseGrid"
+  )
+  v$check(
+    h_all_equivalent(object@x, object@doseGrid[object@xLevel]),
+    "x must be equivalent to doseGrid[xLevel] (up to numerical tolerance)"
+  )
+  if (object@placebo) {
+    is_placebo <- object@x == object@doseGrid[1]
+    v$check(
+      test_set_equal(object@cohort, object@cohort[!is_placebo]),
+      "A cohort with only placebo is not allowed"
+    )
+    v$check(
+      h_doses_unique_per_cohort(dose = object@x[!is_placebo], cohort = object@cohort[!is_placebo]),
+      "There must be only one dose level, other than placebo, per cohort"
+    )
+  } else {
+    v$check(
+      h_doses_unique_per_cohort(dose = object@x, cohort = object@cohort),
+      "There must be only one dose level, per cohort"
+    )
+  }
+  v$result()
+}
+

@@ -258,3 +258,53 @@ test_that("v_data_da: error for t0 of wrong length, negative values", {
     "t0 must be of type double, nObs length, sorted non-negative"
   )
 })
+
+# v_data_ordinal ----
+
+test_that("v_data_ordinal passes for valid object", {
+  object <- h_get_data_ordinal()
+  expect_true(v_data_ordinal(object))
+})
+
+test_that("v_data_ordinal returns error when only placebo in cohort", {
+  object <- h_get_data_ordinal()
+
+  # We assign only placebo to all cohort 3 patients.
+  object@x[which(object@cohort == 3L)] <- object@doseGrid[1]
+
+  expect_equal(
+    v_data_ordinal(object),
+    c(
+      "x must be equivalent to doseGrid[xLevel] (up to numerical tolerance)",
+      "A cohort with only placebo is not allowed"
+    )
+  )
+})
+
+test_that("v_data_ordinal: error when multiple different doses in a cohort", {
+  object <- h_get_data_ordinal()
+
+  # We assign multiple doses to cohort 1.
+  cohort_1 <- which(object@cohort == 1L)
+  object@x[cohort_1] <- sample(x = object@doseGrid[-1], size = length(cohort_1))
+
+  expect_equal(
+    v_data_ordinal(object),
+    c(
+      "x must be equivalent to doseGrid[xLevel] (up to numerical tolerance)",
+      "There must be only one dose level, other than placebo, per cohort"
+    )
+  )
+})
+
+test_that("v_data_ordinal returns error when first xLevel does not match x", {
+  object <- h_get_data_ordinal()
+
+  # We assign a wrong xLevel for the first patient.
+  object@xLevel[1] <- object@xLevel[1] + 20L
+
+  expect_equal(
+    v_data_ordinal(object),
+    c("x must be equivalent to doseGrid[xLevel] (up to numerical tolerance)")
+  )
+})
