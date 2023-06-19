@@ -147,7 +147,7 @@ myIncrements <- IncrementsRelative(
   intervals = c(0, 20),
   increments = c(1, 0.00001)
 )
-myStopping <- (myStopping1 & myStopping2)
+myStopping <- (myStopping1 & myStopping2) | StoppingMissingDose()
 design <- Design(
   model = model,
   nextBest = myNextBest,
@@ -157,7 +157,7 @@ design <- Design(
   data = emptydata,
   startingDose = 3
 )
-# examine(design, mcmcOptions=options, maxNoIncrement = 2)
+examine(design, mcmcOptions=options, maxNoIncrement = 2)
 
 # nolint end
 
