@@ -61,13 +61,8 @@ my_next_best <- NextBestMaxGain(
   prob_target_eot = 0.3
 )
 
-# Define the increments (see increments class examples).
-# Here 200\% allowable increase for dose below 300 and 200\% increase for dose
-# above 300 is defined.
-my_increments <- IncrementsRelative(
-  intervals = c(25, 300),
-  increments = c(2, 2)
-)
+# Allow increase of 200\%.
+my_increments <- IncrementsRelative(intervals = 0, increments = 2)
 
 # Cohort size of 3.
 my_size <- CohortSizeConst(size = 3)
