@@ -1,10 +1,8 @@
-# nolint start
-
-# Define the dose-grid
+# Define the dose-grid.
 emptydata <- Data(doseGrid = c(1, 3, 5, 10, 15, 20, 25))
 
-# Initialize the CRM model
-model <- LogisticLogNormal(
+# Initialize the CRM model.
+my_model <- LogisticLogNormal(
   mean = c(-0.85, 1),
   cov =
     matrix(c(1, -0.5, -0.5, 1),
@@ -13,88 +11,94 @@ model <- LogisticLogNormal(
   ref_dose = 56
 )
 
-# Choose the rule for selecting the next dose
-myNextBest <- NextBestNCRM(
+# Choose the rule for selecting the next dose.
+my_next_best <- NextBestNCRM(
   target = c(0.2, 0.35),
   overdose = c(0.35, 1),
   max_overdose_prob = 0.25
 )
 
-# Choose the rule for the cohort-size
-mySize1 <- CohortSizeRange(
+# Choose the rule for the cohort-size.
+my_size1 <- CohortSizeRange(
   intervals = c(0, 30),
   cohort_size = c(1, 3)
 )
-mySize2 <- CohortSizeDLT(
+my_size2 <- CohortSizeDLT(
   dlt_intervals = c(0, 1),
   cohort_size = c(1, 3)
 )
-mySize <- maxSize(mySize1, mySize2)
+my_size <- maxSize(my_size1, my_size2)
 
-# Choose the rule for stopping
-myStopping1 <- StoppingMinCohorts(nCohorts = 3)
-myStopping2 <- StoppingTargetProb(
+# Choose the rule for stopping.
+my_stopping1 <- StoppingMinCohorts(nCohorts = 3)
+my_stopping2 <- StoppingTargetProb(
   target = c(0.2, 0.35),
   prob = 0.5
 )
-myStopping3 <- StoppingMinPatients(nPatients = 20)
-myStopping <- (myStopping1 & myStopping2) | myStopping3
+my_stopping3 <- StoppingMinPatients(nPatients = 20)
+my_stopping <- (my_stopping1 & my_stopping2) | my_stopping3
 
-# Choose the rule for dose increments
-myIncrements <- IncrementsRelative(
+# Choose the rule for dose increments.
+my_increments <- IncrementsRelative(
   intervals = c(0, 20),
   increments = c(1, 0.33)
 )
 
-# Initialize the design
-design <- Design(
-  model = model,
-  nextBest = myNextBest,
-  stopping = myStopping,
-  increments = myIncrements,
-  cohortSize = mySize,
+# Initialize the design.
+my_design <- Design(
+  model = my_model,
+  nextBest = my_next_best,
+  stopping = my_stopping,
+  increments = my_increments,
+  cohortSize = my_size,
   data = emptydata,
   startingDose = 3
 )
 
-# Examine the design
-set.seed(4235)
+# Examine the design.
 # MCMC parameters are set to small values only to show this example. They should be
 # increased for a real case.
-options <- McmcOptions(burnin = 10, step = 1, samples = 20)
-examine(design, options)
+my_options <- McmcOptions(
+  burnin = 10, step = 1, samples = 20, rng_kind = "Super-Duper",
+  rng_seed = 94
+)
 
-## example where examine stops because stopping rule already fulfilled
-myStopping4 <- StoppingMinPatients(nPatients = 3)
-myStopping <- (myStopping1 & myStopping2) | myStopping4
-design <- Design(
-  model = model,
-  nextBest = myNextBest,
-  stopping = myStopping,
-  increments = myIncrements,
-  cohortSize = mySize,
+examine(my_design, my_options)
+
+# Example where examine stops because stopping rule already fulfilled.
+my_stopping4 <- StoppingMinPatients(nPatients = 3)
+my_stopping <- (my_stopping1 & my_stopping2) | my_stopping4
+
+my_design <- Design(
+  model = my_model,
+  nextBest = my_next_best,
+  stopping = my_stopping,
+  increments = my_increments,
+  cohortSize = my_size,
   data = emptydata,
   startingDose = 3
 )
-examine(design, mcmcOptions = options)
 
-## example where examine stops because infinite looping
-## (note that here a very low threshold is used for the parameter
-## "maxNoIncrement" in "examine" to keep the execution time short)
-myIncrements <- IncrementsRelative(
+examine(my_design, mcmcOptions = my_options)
+
+# Example where examine stops because infinite looping
+# (note that here a very low threshold is used for the parameter
+# "maxNoIncrement" in "examine" to keep the execution time short).
+my_increments <- IncrementsRelative(
   intervals = c(0, 20),
   increments = c(1, 0.00001)
 )
-myStopping <- (myStopping1 & myStopping2) | StoppingMissingDose()
+
+my_stopping <- (my_stopping1 & my_stopping2) | StoppingMissingDose()
+
 design <- Design(
-  model = model,
-  nextBest = myNextBest,
-  stopping = myStopping,
-  increments = myIncrements,
-  cohortSize = mySize,
+  model = my_model,
+  nextBest = my_next_best,
+  stopping = my_stopping,
+  increments = my_increments,
+  cohortSize = my_size,
   data = emptydata,
   startingDose = 3
 )
-examine(design, mcmcOptions = options, maxNoIncrement = 2)
 
-# nolint end
+examine(my_design, mcmcOptions = my_options, maxNoIncrement = 2)
