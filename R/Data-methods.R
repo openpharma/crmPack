@@ -417,6 +417,94 @@ setMethod(
     object
   }
 )
+## DataOrdinal ----
+
+#' Updating `DataOrdinal` Objects
+#'
+#' @description `r lifecycle::badge("experimental")`
+#'
+#' A method that updates existing [`DataOrdinal`] object with new data.
+#'
+#' @param object (`DataOrdinal`)\cr object you want to update.
+#' @param x (`number`)\cr the dose level (one level only!).
+#' @param y (`integer`)\cr the DLT vector for all patients in this
+#'   cohort. You can also supply `numeric` vectors, but these will then be
+#'   converted to `integer` internally.
+#' @param ID (`integer`)\cr the patient IDs.
+#'   You can also supply `numeric` vectors, but these will then be converted to
+#'   `integer` internally.
+#' @param new_cohort (`flag`)\cr if `TRUE` (default) the new data are assigned
+#'   to a new cohort.
+#' @param check (`flag`)\cr whether the validation of the updated object should
+#'   be conducted. Current implementation of this `update` method allows for
+#'   updating the `DataOrdinal` class object by adding a single dose level `x` only.
+#'   However, there might be some use cases where the new cohort to be added
+#'   contains a placebo and active dose. Hence, such update would need to be
+#'   performed iteratively by calling the `update` method twice. For example,
+#'   in the first call a user can add a placebo, and then in the second call,
+#'   an active dose. Since having a cohort with placebo only is not allowed,
+#'   the `update` method would normally throw the error when attempting to add
+#'   a placebo in the first call. To allow for such updates, the `check`
+#'   parameter should be then set to `FALSE` for that first call.
+#' @param ... not used.
+#'
+#' @return The new, updated [`DataOrdinal`] object.
+#'
+#' @aliases update-DataOrdinal
+#' @export
+#' @example examples/DataOrdinal-method-update.R
+#'
+setMethod(
+  f = "update",
+  signature = signature(object = "DataOrdinal"),
+  definition = function(object,
+                        x,
+                        y,
+                        ID = length(object@ID) + seq_along(y),
+                        new_cohort = TRUE,
+                        check = TRUE,
+                        ...) {
+    assert_numeric(x, min.len = 0, max.len = 1)
+    assert_numeric(y, lower = 0, upper = length(object@yCategories) - 1)
+    assert_numeric(ID, len = length(y))
+    assert_disjunct(object@ID, ID)
+    assert_flag(new_cohort)
+    assert_flag(check)
+
+    # How many additional patients, ie. the length of the update.
+    n <- length(y)
+
+    # Which grid level is the dose?
+    gridLevel <- matchTolerance(x, object@doseGrid)
+    object@xLevel <- c(object@xLevel, rep(gridLevel, n))
+
+    # Add dose.
+    object@x <- c(object@x, rep(as.numeric(x), n))
+
+    # Add DLT data.
+    object@y <- c(object@y, safeInteger(y))
+
+    # Add ID.
+    object@ID <- c(object@ID, safeInteger(ID))
+
+    # Add cohort number.
+    new_cohort_id <- if (object@nObs == 0) {
+      1L
+    } else {
+      tail(object@cohort, 1L) + ifelse(new_cohort, 1L, 0L)
+    }
+    object@cohort <- c(object@cohort, rep(new_cohort_id, n))
+
+    # Increment sample size.
+    object@nObs <- object@nObs + n
+
+    if (check) {
+      validObject(object)
+    }
+
+    object
+  }
+)
 
 ## DataParts ----
 
