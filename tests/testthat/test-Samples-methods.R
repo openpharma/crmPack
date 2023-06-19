@@ -27,13 +27,21 @@ test_that("names-Samples returns correct names of the parameters", {
 })
 
 
+<<<<<<< HEAD
 test_that("Approximate fails gracefully with bad input", {
+=======
+test_that("approximate fails gracefully with bad input", {
+>>>>>>> 45916498622a218c04904df6489c8078dda51f1e
   data <- Data(
     x = c(0.1, 0.5, 1.5, 3, 6, 10, 10, 10),
     y = c(0, 0, 0, 0, 0, 0, 1, 0),
     ID = 1L:8L,
     cohort = c(0, 1, 2, 3, 4, 5, 5, 5),
+<<<<<<< HEAD
     doseGrid = c(0.1, 0.5, 1.5, 3, 6, seq(from = 10, to = 80, by=2))
+=======
+    doseGrid = c(0.1, 0.5, 1.5, 3, 6, seq(from = 10, to = 80, by = 2))
+>>>>>>> 45916498622a218c04904df6489c8078dda51f1e
   )
 
   model <- LogisticLogNormal(
@@ -104,13 +112,13 @@ test_that("Approximate fails gracefully with bad input", {
   )
 })
 
-test_that("Approximate works correctly", {
+test_that("approximate works correctly", {
   data <- Data(
     x = c(0.1, 0.5, 1.5, 3, 6, 10, 10, 10),
     y = c(0, 0, 0, 0, 0, 0, 1, 0),
     ID = 1L:8L,
     cohort = c(0, 1, 2, 3, 4, 5, 5, 5),
-    doseGrid = c(0.1, 0.5, 1.5, 3, 6, seq(from = 10, to = 80, by=2))
+    doseGrid = c(0.1, 0.5, 1.5, 3, 6, seq(from = 10, to = 80, by = 2))
   )
 
   model <- LogisticLogNormal(
@@ -156,5 +164,3 @@ test_that("Approximate works correctly", {
   expect_set_equal(names(actual1), c("model"))
 
 })
-
-## nolint end

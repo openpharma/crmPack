@@ -1,4 +1,8 @@
+<<<<<<< HEAD
 # Approximate works correctly
+=======
+# approximate works correctly
+>>>>>>> 45916498622a218c04904df6489c8078dda51f1e
 
     Code
       slot(actual$model, slot_name)
