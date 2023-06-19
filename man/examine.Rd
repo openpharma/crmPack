@@ -228,9 +228,10 @@ set.seed(4235)
 # increased for a real case.
 # This procedure will take a while.
 options <- McmcOptions(burnin = 10, step = 1, samples = 100)
-# examine(design, mcmcOptions=options)
+examine(design, mcmcOptions=options)
 
 # nolint end
+
 }
 \keyword{methods}
 \keyword{regression}
