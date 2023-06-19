@@ -27,7 +27,7 @@ myIncrements <- IncrementsRelative(
   increments = c(2, 2)
 )
 ## Specified the stopping rule e.g stop when the maximum sample size of 36 patients has been reached
-myStopping <- StoppingMinPatients(nPatients = 36)
+myStopping <- StoppingMinPatients(nPatients = 36) | StoppingMissingDose()
 
 
 ## Specified the design(for details please refer to the 'TDDesign' example)
@@ -80,15 +80,15 @@ design <- TDsamplesDesign(
 options <- McmcOptions(burnin = 50, step = 2, samples = 200)
 ## The simulations
 ## For illustration purpose we will only generate 2 trials (nsim=2)
-# mySim <- simulate(design,
-#                   args=NULL,
-#                   truth=myTruth,
-#                   nsim=2,
-#                   seed=819,
-#                   mcmcOptions=options,
-#                   parallel=FALSE)
-# ##Then produce a summary of your simulations
-# summary(mySim,
-#         truth=myTruth)
+mySim <- simulate(design,
+                  args=NULL,
+                  truth=myTruth,
+                  nsim=2,
+                  seed=819,
+                  mcmcOptions=options,
+                  parallel=FALSE)
+##Then produce a summary of your simulations
+summary(mySim,
+        truth=myTruth)
 
 # nolint end

@@ -112,23 +112,23 @@ design <- DualResponsesSamplesDesign(
 options <- McmcOptions(burnin = 10, step = 2, samples = 50)
 ## The simulations
 ## For illustration purpose only 1 simulation is produced (nsim=1).
-# mySim<-simulate(design,
-#                 args=NULL,
-#                 trueDLE=myTruthDLE,
-#                 trueEff=myTruthEff,
-#                 trueNu=1/0.025,
-#                 nsim=1,
-#                 mcmcOptions=options,
-#                 seed=819,
-#                 parallel=FALSE)
-#
-# ##Then produce a summary of your simulations
-# MYSUM <- summary(mySim,
-#                  trueDLE=myTruthDLE,
-#                  trueEff=myTruthEff)
-#
-# ##Then plot the summary of the simulations
-# print(plot(MYSUM))
+mySim<-simulate(design,
+                args=NULL,
+                trueDLE=myTruthDLE,
+                trueEff=myTruthEff,
+                trueNu=1/0.025,
+                nsim=1,
+                mcmcOptions=options,
+                seed=819,
+                parallel=FALSE)
+
+##Then produce a summary of your simulations
+MYSUM <- summary(mySim,
+                 trueDLE=myTruthDLE,
+                 trueEff=myTruthEff)
+
+##Then plot the summary of the simulations
+print(plot(MYSUM))
 
 
 
@@ -165,23 +165,23 @@ myTruthGain <- function(dose) {
 }
 
 ## The simulations
-# ##For illustration purpose only 1 simulation is produced (nsim=1).
-# mySim<-simulate(object=design,
-#                 args=NULL,
-#                 trueDLE=myTruthDLE,
-#                 trueEff=myTruthEff,
-#                 trueSigma2=0.025,
-#                 trueSigma2betaW=1,
-#                 nsim=1,
-#                 mcmcOptions=options,
-#                 seed=819,
-#                 parallel=FALSE)
-# ##Then produce a summary of your simulations
-# MYSUM <- summary(mySim,
-#                  trueDLE=myTruthDLE,
-#                  trueEff=myTruthEff)
-#
-# ##Then plot the summary of the simulations
-# print(plot(MYSUM))
+##For illustration purpose only 1 simulation is produced (nsim=1).
+mySim<-simulate(object=design,
+                args=NULL,
+                trueDLE=myTruthDLE,
+                trueEff=myTruthEff,
+                trueSigma2=0.025,
+                trueSigma2betaW=1,
+                nsim=1,
+                mcmcOptions=options,
+                seed=819,
+                parallel=FALSE)
+##Then produce a summary of your simulations
+MYSUM <- summary(mySim,
+                 trueDLE=myTruthDLE,
+                 trueEff=myTruthEff)
+
+##Then plot the summary of the simulations
+print(plot(MYSUM))
 
 # nolint end
