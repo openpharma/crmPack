@@ -22,14 +22,8 @@ td_next_best <- NextBestTD(
 # The cohort size is 3 subjects.
 my_size <- CohortSizeConst(size = 3)
 
-# Define the increments for the dose-escalation process.
-# The maximum increase of 200% for doses up to the maximum of the dose specified in the doseGrid.
-# The maximum increase of 200% for dose above the maximum of the dose specified in the doseGrid.
-# This is to specified a maximum of 3-fold restriction in dose-escalation.
-my_increments <- IncrementsRelative(
-  intervals = c(min(emptydata@doseGrid), max(emptydata@doseGrid)),
-  increments = c(2, 2)
-)
+# Allow increase of 200%.
+my_increments <- IncrementsRelative(intervals = 0, increments = 2)
 
 # Specify the stopping rule with maximum sample size of 36 patients or when the
 # next dose is NA.
