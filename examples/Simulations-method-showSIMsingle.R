@@ -85,16 +85,18 @@ design <- TDsamplesDesign(
 options <- McmcOptions(burnin = 50, step = 2, samples = 200)
 ## The simualtions
 mySim <- simulate(design,
-                  args=NULL,
-                  truth=myTruth,
-                  nsim=2,
-                  seed=819,
-                  mcmcOptions=options,
-                  parallel=FALSE)
-##Then produce a summary of your simulations
+  args = NULL,
+  truth = myTruth,
+  nsim = 2,
+  seed = 819,
+  mcmcOptions = options,
+  parallel = FALSE
+)
+## Then produce a summary of your simulations
 MYSUM <- summary(mySim,
-         truth=myTruth)
-##show the summary of the simulated results in a data frame
+  truth = myTruth
+)
+## show the summary of the simulated results in a data frame
 show(MYSUM)
 
 # nolint end

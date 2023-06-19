@@ -95,6 +95,6 @@ design <- Design(
   data = emptydata,
   startingDose = 3
 )
-examine(design, mcmcOptions=options, maxNoIncrement = 2)
+examine(design, mcmcOptions = options, maxNoIncrement = 2)
 
 # nolint end

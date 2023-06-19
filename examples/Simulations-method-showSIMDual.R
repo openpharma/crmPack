@@ -35,7 +35,7 @@ myIncrements <- IncrementsRelative(
 ## cohort size of 3
 mySize <- CohortSizeConst(size = 3)
 ## Stop only when 36 subjects are treated
-myStopping <- StoppingMinPatients(nPatients = 36)  | StoppingMissingDose()
+myStopping <- StoppingMinPatients(nPatients = 36) | StoppingMissingDose()
 ## Now specified the design with all the above information and starting with a dose of 25
 
 ## Specified the design(for details please refer to the 'DualResponsesDesign' example)

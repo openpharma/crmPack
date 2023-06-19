@@ -5,14 +5,23 @@ emptydata <- DataDual(doseGrid = c(1, 3, 5, 10, 15, 20, 25, 40, 50, 80, 100))
 
 # Create some data
 data <- DataDual(
-  x=c(0.1, 0.5, 1.5, 3, 6, 10, 10, 10,
-      20, 20, 20, 40, 40, 40, 50, 50, 50),
-  y=c(0, 0, 0, 0, 0, 0, 1, 0,
-      0, 1, 1, 0, 0, 1, 0, 1, 1),
-  w=c(0.31, 0.42, 0.59, 0.45, 0.6, 0.7, 0.55, 0.6,
-      0.52, 0.54, 0.56, 0.43, 0.41, 0.39, 0.34, 0.38, 0.21),
-  doseGrid=c(0.1, 0.5, 1.5, 3, 6,
-             seq(from=10, to=80, by=2)))
+  x = c(
+    0.1, 0.5, 1.5, 3, 6, 10, 10, 10,
+    20, 20, 20, 40, 40, 40, 50, 50, 50
+  ),
+  y = c(
+    0, 0, 0, 0, 0, 0, 1, 0,
+    0, 1, 1, 0, 0, 1, 0, 1, 1
+  ),
+  w = c(
+    0.31, 0.42, 0.59, 0.45, 0.6, 0.7, 0.55, 0.6,
+    0.52, 0.54, 0.56, 0.43, 0.41, 0.39, 0.34, 0.38, 0.21
+  ),
+  doseGrid = c(
+    0.1, 0.5, 1.5, 3, 6,
+    seq(from = 10, to = 80, by = 2)
+  )
+)
 
 # Initialize the CRM model
 model <- DualEndpointRW(
@@ -70,7 +79,7 @@ design <- DualDesign(
 
 # This is not possible with emptydata (why?)
 maxDose(myIncrements, data)
-#maxDose(myIncrements, emptydata)
+# maxDose(myIncrements, emptydata)
 
 my_options <- McmcOptions(burnin = 100, step = 2, samples = 500)
 
@@ -107,21 +116,23 @@ curve(trueBiomarker(x), from = 0, to = 80)
 # Also for illustration purpose, we will use 5 burn-ins to generate 20 samples
 # this should be increased of course
 mySims <- simulate(design,
-                   trueTox=trueTox,
-                   trueBiomarker=trueBiomarker,
-                   sigma2W=0.01,
-                   rho=0,
-                   nsim=1,
-                   parallel=FALSE,
-                   seed=9,
-                   startingDose=6,
-                   mcmcOptions =
-                     McmcOptions(burnin=1,
-                                 step=1,
-                                 samples=2))
+  trueTox = trueTox,
+  trueBiomarker = trueBiomarker,
+  sigma2W = 0.01,
+  rho = 0,
+  nsim = 1,
+  parallel = FALSE,
+  seed = 9,
+  startingDose = 6,
+  mcmcOptions =
+    McmcOptions(
+      burnin = 1,
+      step = 1,
+      samples = 2
+    )
+)
 
 # Plot the results of the simulation
 print(plot(mySims))
 
 # nolint end
-

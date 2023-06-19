@@ -37,7 +37,7 @@ myStopping4 <- StoppingTargetBiomarker(
   prob = 0.5
 )
 # small number of patients just for illustration here
-myStopping <- myStopping4 | StoppingMinPatients(10)  | StoppingMissingDose()
+myStopping <- myStopping4 | StoppingMinPatients(10) | StoppingMissingDose()
 
 # Choose the rule for dose increments
 myIncrements <- IncrementsRelative(
@@ -81,22 +81,26 @@ curve(trueBiomarker(x), from = 0, to = 80)
 # Also for illustration purpose, we will use 5 burn-ins to generate 20 samples
 # this should be increased of course
 mySims <- simulate(design,
-                   trueTox=trueTox,
-                   trueBiomarker=trueBiomarker,
-                   sigma2W=0.01,
-                   rho=0,
-                   nsim=1,
-                   parallel=FALSE,
-                   seed=3,
-                   startingDose=6,
-                   mcmcOptions =
-                     McmcOptions(burnin=5,
-                                 step=1,
-                                 samples=20))
+  trueTox = trueTox,
+  trueBiomarker = trueBiomarker,
+  sigma2W = 0.01,
+  rho = 0,
+  nsim = 1,
+  parallel = FALSE,
+  seed = 3,
+  startingDose = 6,
+  mcmcOptions =
+    McmcOptions(
+      burnin = 5,
+      step = 1,
+      samples = 20
+    )
+)
 
 # Show the summary of the Simulations
 show(summary(mySims,
-             trueTox = trueTox,
-             trueBiomarker = trueBiomarker))
+  trueTox = trueTox,
+  trueBiomarker = trueBiomarker
+))
 
 # nolint end
