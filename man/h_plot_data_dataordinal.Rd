@@ -5,7 +5,14 @@
 \alias{plot-Data}
 \title{Helper Function for the Plot Method of the Data and DataOrdinal Classes}
 \usage{
-h_plot_data_dataordinal(x, blind = FALSE, legend = TRUE, ...)
+h_plot_data_dataordinal(
+  x,
+  blind = FALSE,
+  legend = TRUE,
+  tox_labels = c(Yes = "red", No = "black"),
+  tox_shapes = c(Yes = 17L, No = 16L),
+  ...
+)
 }
 \arguments{
 \item{x}{(\code{Data})\cr object we want to plot.}
@@ -16,6 +23,11 @@ as the active dose level in the corresponding cohort,
 and DLTs are always assigned to the first subjects in a cohort.}
 
 \item{legend}{(\code{flag})\cr whether the legend should be added.}
+
+\item{tox_labels}{(\code{character})\cr the toxicity category labels}
+
+\item{tox_shapes}{(\code{integer})\cr the shapes used to plot the various toxicity
+categories}
 
 \item{...}{not used.}
 
@@ -29,4 +41,8 @@ The \code{\link{ggplot2}} object.
 \ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#stable}{\figure{lifecycle-stable.svg}{options: alt='[Stable]'}}}{\strong{[Stable]}}
 
 A method that creates a plot for \code{\link{Data}}  and \code{\link{DataOrdinal}}objects.
+}
+\note{
+The default values of \code{tox_shapes} and \code{tox_labels} result in DLTs
+being displayed as red triangles and other responses as black circles.
 }

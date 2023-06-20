@@ -2,9 +2,8 @@
 % Please edit documentation in R/Data-methods.R
 \name{plot,DataDual,missing-method}
 \alias{plot,DataDual,missing-method}
-\alias{plot-Data}
 \alias{plot-DataDual}
-\title{Plot Method for the \code{\link{DataOrdinal}} Class}
+\title{Plot Method for the \code{\link{DataDual}} Class}
 \usage{
 \S4method{plot}{DataDual,missing}(x, y, blind = FALSE, ...)
 }
@@ -21,19 +20,11 @@ and DLTs are always assigned to the first subjects in a cohort.}
 
 \item{...}{passed to the first inherited method \code{plot} after this current
 method.}
-
-\item{legend}{(\code{flag})\cr whether the legend should be added.}
 }
 \value{
 The \code{\link{ggplot2}} object.
-
-The \code{\link{ggplot2}} object.
 }
 \description{
-\ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#experimental}{\figure{lifecycle-experimental.svg}{options: alt='[Experimental]'}}}{\strong{[Experimental]}}
-
-A method that creates a plot for \code{\link{DataOrdinal}} object.
-
 \ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#stable}{\figure{lifecycle-stable.svg}{options: alt='[Stable]'}}}{\strong{[Stable]}}
 
 A method that creates a plot for \code{\link{DataDual}} object.

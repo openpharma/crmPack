@@ -2,31 +2,22 @@
 % Please edit documentation in R/helpers.R
 \name{h_plot_data_df}
 \alias{h_plot_data_df}
-\title{Preparing Data for Plotting}
+\title{Helper Function for the Plot Method of subclasses of DataGeneral}
 \usage{
-h_plot_data_df(data, blind = FALSE, ...)
+h_plot_data_df(data, ...)
 }
 \arguments{
-\item{data}{(\code{Data})\cr object from which data is extracted and converted
+\item{data}{(\code{DataGeneral})\cr object from which data is extracted and converted
 into a data frame.}
 
-\item{blind}{(\code{flag})\cr should data be blinded?
-If \code{TRUE}, then for each cohort, all DLTs are assigned to the first
-subjects in the cohort. In addition, the placebo (if any) is set to the
-active dose level for that cohort.}
-
-\item{...}{further arguments passed to \code{data.frame} constructor.
-It can be e.g. an extra \code{column_name = value} pair based on a slot
-from \code{x} (which in this case might be a subclass of \code{Data})
-which does not appear in \code{Data}.}
+\item{...}{further arguments passed to class-specific methods.}
 }
 \value{
-A \code{\link{data.frame}} object with values to plot.
+\code{data.frame} containing columns for patient, cohort, dose and toxicity grade
 }
 \description{
 \ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#experimental}{\figure{lifecycle-experimental.svg}{options: alt='[Experimental]'}}}{\strong{[Experimental]}}
 
-This helper function prepares a \code{data.frame} object based on \code{Data} class
-object. The resulting data frame is used by the plot function for \code{Data}
-class objects.
+A method that transforms \code{\link{DataGeneral}}  objects into a \code{tibble} suitable for
+plotting with \code{ggplot2} methods
 }

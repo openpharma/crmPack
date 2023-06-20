@@ -2,7 +2,7 @@
 % Please edit documentation in R/helpers.R
 \name{h_plot_data_cohort_lines}
 \alias{h_plot_data_cohort_lines}
-\title{Preparing Cohort Lines for Data Plot}
+\title{Preparing Data for Plotting}
 \usage{
 h_plot_data_cohort_lines(cohort, placebo, vertical = TRUE)
 }
@@ -15,8 +15,32 @@ in a given cohort are equal and there is no need to separate them.}
 
 \item{vertical}{(\code{flag})\cr should the line be vertical? Otherwise it is
 horizontal.}
+
+\item{data}{(\code{Data})\cr object from which data is extracted and converted
+into a data frame.}
+
+\item{blind}{(\code{flag})\cr should data be blinded?
+If \code{TRUE}, then for each cohort, all DLTs are assigned to the first
+subjects in the cohort. In addition, the placebo (if any) is set to the
+active dose level for that cohort.}
+
+\item{...}{further arguments passed to \code{data.frame} constructor.
+It can be e.g. an extra \code{column_name = value} pair based on a slot
+from \code{x} (which in this case might be a subclass of \code{Data})
+which does not appear in \code{Data}.}
+}
+\value{
+A \code{\link{data.frame}} object with values to plot.
+
+Preparing Cohort Lines for Data Plot
 }
 \description{
+\ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#experimental}{\figure{lifecycle-experimental.svg}{options: alt='[Experimental]'}}}{\strong{[Experimental]}}
+
+This helper function prepares a \code{data.frame} object based on \code{Data} class
+object. The resulting data frame is used by the plot function for \code{Data}
+class objects.
+
 \ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#experimental}{\figure{lifecycle-experimental.svg}{options: alt='[Experimental]'}}}{\strong{[Experimental]}}
 
 This helper function prepares a \code{ggplot} geom with reference lines
