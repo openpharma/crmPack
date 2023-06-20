@@ -3109,7 +3109,7 @@ FractionalCRM <- function(...) {
 ## default constructor ----
 
 #' @rdname FractionalCRM-class
-#' @note Typically, end users will not use the `.DefaultTITELogisticLogNormal()` function.
+#' @note Typically, end users will not use the `.DefaultFractionalCRM()` function.
 #' @export
 .DefaultFractionalCRM <- function() {
   FractionalCRM(
@@ -3118,3 +3118,58 @@ FractionalCRM <- function(...) {
     sigma2 = 2
   )
 }
+
+
+
+
+
+## class ----
+
+#' `OrdinalLogisticLogNormal`
+#'
+#' @description `r lifecycle::badge("experimental")`
+#'
+#' [`OrdinalLogisticLogNormal`] is the class for a logistic lognormal CRM model
+#' using an ordinal toxicity scale.
+#'
+#' @aliases OrdinalLogisticLogNormal
+#' @export
+#'
+
+# .OrdinalLogisticLogNormal <- setClass(
+#   Class = "OrdinalLogisticLogNormal"
+# )
+
+## constructor ----
+
+#' @rdname OrdinalLogisticLogNormal-class
+#'
+#' @export
+#' @example examples/Model-class-OrdinalLogisticLogNormal.R
+#'
+
+# OrdinalLogisticLogNormal <- function(...) {
+#   start <- OneParLogNormalPrior(...)
+#
+#   # This is adapted from the TITELogisticLogNormal class.
+#   datamodel <- function() {
+#
+#   }
+#
+#   modelspecs <- function(nObs, u, Tmax, y, from_prior) {
+#   }
+#
+#   .OrdinalLogisticLogNormal()
+# }
+
+## default constructor ----
+
+#' @rdname OrdinalLogisticLogNormal-class
+#' @note Typically, end users will not use the `.DefaultOrdinalLogisticLogNormal()` function.
+#' @export
+
+# .OrdinalLogisticLogNormal <- function() {
+#   OrdinalLogisticLogNormal()
+# }
+
+

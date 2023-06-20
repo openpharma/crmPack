@@ -18,22 +18,22 @@ v_model_params_normal <- function(object) {
   v <- Validate()
 
   v$check(
-    test_numeric(x = object@mean, len = 2L, any.missing = FALSE),
-    "mean must have length 2 and no missing values are allowed"
+    test_numeric(x = object@mean, min.len = 2L, any.missing = FALSE),
+    "mean must have length of at least 2 and no missing values are allowed"
   )
   is_cov_valid <- h_is_positive_definite(object@cov)
   v$check(
     is_cov_valid,
-    "cov must be 2x2 positive-definite matrix without any missing values"
+    "cov must be a square positive-definite matrix without any missing values"
   )
   is_prec_valid <- h_is_positive_definite(object@prec)
   v$check(
     is_prec_valid,
-    "prec must be 2x2 positive-definite matrix without any missing values"
+    "prec must be a square positive-definite matrix without any missing values"
   )
   if (is_cov_valid && is_prec_valid) {
     v$check(
-      all.equal(object@cov %*% object@prec, diag(1, 2), check.attributes = FALSE) == TRUE,
+      all.equal(object@cov %*% object@prec, diag(1, nrow(object@cov)), check.attributes = FALSE) == TRUE,
       "prec must be inverse of cov"
     )
   }

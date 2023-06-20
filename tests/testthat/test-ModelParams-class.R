@@ -24,3 +24,10 @@ test_that("ModelParamsNormal object can be created with user constructor", {
   )
   expect_valid(result, "ModelParamsNormal")
 })
+
+## default constructor ----
+
+test_that("ModelParamsNormal object can be created with user constructor", {
+  result <- expect_silent(DefaultModelParamsNormal())
+  expect_valid(result, "ModelParamsNormal")
+})
