@@ -108,7 +108,7 @@ test_that("Posterior summaries for probabilities of
 
   # Recommended dose computed by SAS
   sas_dose_rec <- 15
-  # compare recommended doses: crmPack vs. SAS
+  # compare the recommended doses: crmPack vs. SAS
   expect_equal(rec_dose_sc3, sas_dose_rec, tolerance = 0)
 })
 
@@ -223,7 +223,7 @@ test_that("Posterior summaries for probabilities of
 
   # Recommended dose computed by SAS
   sas_dose_rec <- 45
-  # compare recommended doses: crmPack vs. SAS
+  # compare the recommended doses: crmPack vs. SAS
   expect_equal(rec_dose_sc3, sas_dose_rec, tolerance = 0)
 })
 
@@ -338,7 +338,7 @@ test_that("Posterior summaries for probabilities of
 
   # Recommended dose computed by SAS
   sas_dose_rec <- 90
-  # compare recommended doses: crmPack vs. SAS
+  # compare the recommended doses: crmPack vs. SAS
   expect_equal(rec_dose_sc3, sas_dose_rec, tolerance = 0)
 })
 
@@ -453,6 +453,6 @@ test_that("Posterior summaries for probabilities of
 
   # Recommended dose computed by SAS
   sas_dose_rec <- 90
-  # compare recommended doses: crmPack vs. SAS
+  # compare the recommended doses: crmPack vs. SAS
   expect_equal(rec_dose_sc3, sas_dose_rec, tolerance = 0)
 })
