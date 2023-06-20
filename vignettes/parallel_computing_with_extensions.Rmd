@@ -49,7 +49,11 @@ options(
 
 When operation characteristics of the design needs to be derived utilizing parallel computing, the simulation function must be executed with the parameter `parallel = TRUE` and `nCores =` a number greater than one. In this case, it is evaluated if a global option with the name `crmpack_extensions` exists. If this is true, the value of the global option `crmpack_extensions` is executed at each core at the time of initialization, i.e., the character string that is equal to the global option `crmpack_extensions` is executed at any core of the cluster, so that the code is available for the use with parallel computing.
 
-Note that the `<<-` operator must be used for any new user defined constructor function that is defined within the wrapper function that is the value of the global option `crmpack_extensions`. The `<<-` operator will force a function to become visible within the global environment.
+Please note that the wrapper function that holds the user extensions is the most convenient way to hand over `class` and `method` definitions and the user constructor function to the `crmpack_extensions` option. However, the constructor function must be available in the environment from which it is called. When the extensions are directly coded within the wrapper function, the `<<-` operator must be used for any new user defined constructor function that is defined within the wrapper function. The `<<-` operator will force a function to become visible within the global environment. Another possibility is to store the user extensions in a file that is sourced within the wrapper function. In this case user defined constructor function can be assigned with the regular `<-` operator, as source parse the content of the file in the environment.
+
+To avoid errors it is important to understand that packages attached to the current environment are not available at the workers environment. I.e., even though the code may work without any problems when used with single core processing, it may fail in parallel execution as functions are not attached to the workers environment. Therefore it is necessary to make sure that all called functions are available in the workers environment. This can be achieved by including a `library` statement within the wrapper function or by using the double colon operator `::`.
+
+Any of the above described usage options are further detailed in the example.
 
 ## Information for debugging
 
@@ -64,6 +68,9 @@ Please note that for this example the extra code is directly inserted into the o
 library(crmPack)
 
 my_own_extension <- function() {
+  # Attach the package checkmate with library(checkmate) here, to avoid usage of
+  # the :: operator in the code below.
+
   # LogisticNormalTruncPrior ----
 
   ## class ----
@@ -197,6 +204,8 @@ my_own_extension <- function() {
 ```
 
 After the new code is defined and embedded into a function, we can store the function as value of a global option, which we will name `crmpack_extensions`.
+
+Please note that `<<-`operator is used to assign the `LogisticNormalTruncPrior` function to the global environment. The assertion functions from the package `checkmate` are referenced by the double colon operator in this example. In case that the package `checkmate` is attached within the function, i.e., the statement `library(checkmate)` is used in the code above, the direct reference `checkmate::` can be removed. Either way works with parallel computing as this makes sure that the functions can be used in the current environment and at the workers when parallel study simulations are performed.
 
 ```{r , eval = FALSE}
 # Store the function into the global option crmpack_extensions.
@@ -399,6 +408,31 @@ time <- system.time({
   report_time("peak")
 })
 ```
+## Alternative: read user code from external file
+
+As an alternative it may be more convenient to store the user extensions in an external file and source the file in the wrapper function. This has the advantage, that the `<<-` operator is not necessary for user constructor functions and can be replaced by the usual assignment `<-`.
+
+```{r user code stored in external file,  eval=FALSE}
+# Store code example form above in external file and
+# remove the wrapper function structure.
+dump("my_own_extension", file = "user_extension.R")
+file_con <- file("user_extension.R")
+tmp <- readLines(file_con)[-c(1:3, 135)]
+tmp <- gsub("<<-", "<-", tmp)
+writeLines(tmp, file_con)
+
+# Source the stored file in the wrapper function.
+my_own_extension2 <- function() {
+  source("user_extension.R")
+}
+
+options(crmpack_extensions = my_own_extension2)
+getOption("crmpack_extensions")()
+
+# Run the rest of the code from above example
+```
+
+
 
 ## Note
 

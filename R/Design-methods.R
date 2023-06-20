@@ -3388,7 +3388,6 @@ setMethod("simulate",
             )
 
 
-
             ## what is the dose limit?
             doselimit <- maxDose(object@increments,
               data = thisData
@@ -3407,8 +3406,7 @@ setMethod("simulate",
               options = mcmcOptions
             )
 
-
-            thisSigma2 <- mean(thisEffsamples@data$sigma2)
+            thisSigma2 <- mean(thisEffsamples@data$sigma2W)
 
             thisSigma2betaW <- mean(thisEffsamples@data$sigma2betaW)
 
