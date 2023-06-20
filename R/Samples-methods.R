@@ -475,8 +475,8 @@ setMethod("approximate",
               x = x,
               y = y,
               colour = Type,
-              group = interaction(Type, Line),
-              linetype = (Line == "median")
+              group = interaction(Type, .data$Line),
+              linetype = (.data$Line == "median")
             )
           ) +
           ggplot2::geom_line() +

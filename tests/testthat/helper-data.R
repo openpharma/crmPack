@@ -22,7 +22,7 @@ h_get_data_ordinal <- function(empty = FALSE, placebo = TRUE) {
       placebo = placebo,
       ID = 1:12,
       cohort = c(1L, 1L, 1L, 1L, 2L, 2L, 2L, 2L, 3L, 3L, 3L, 3L),
-      yCategories = c("No tox" = 1L, "Sub-tox AE" = 2L, "DLT" = 3L)
+      yCategories = c("No tox" = 0L, "Sub-tox AE" = 1L, "DLT" = 2L)
     )
   }
 }

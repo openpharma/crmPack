@@ -23,6 +23,11 @@ test_that("Plot works for Data object with placebo, blinding and no legend", {
   )
 })
 
+test_that("plot-Data returns NULL for empty data", {
+  empty_data <- Data(doseGrid = seq(10, 100, 10))
+  expect_null(plot(empty_data))
+})
+
 # plot-DataDual ----
 
 test_that("Plot works as expected for DataDual object with placebo", {
@@ -519,26 +524,26 @@ test_that("dose_grid_range-DataOrdinal works as expected without placebo in grid
 
 # plot-DataOrdinal ----
 
-test_that("Plot works as expected for DataOrdinal object with placebo", {
+test_that("plot-DataOrdina-placebo_TRUE", {
   data <- h_get_data_ordinal()
   result <- plot(data)
 
-  vdiffr::expect_doppelganger("Plot of DataOrdinal with placebo", result)
+  vdiffr::expect_doppelganger("plot-DataOrdinal-placebo_TRUE", result)
 })
 
-test_that("Plot works as expected for DataOrdinal object with placebo and blinding", {
+test_that("plot-DataOrdinal-placebo_TRUE-blind_TRUE", {
   data <- h_get_data_ordinal()
   result <- plot(data, blind = TRUE)
 
-  vdiffr::expect_doppelganger("Plot of DataOrdinal with placebo and blinding", result)
+  vdiffr::expect_doppelganger("plot-DataOrdinal-placebo_TRUE-blind_TRUE", result)
 })
 
-test_that("Plot works for DataOrdinal object with placebo, blinding and no legend", {
+test_that("plot-DataOrdinal-placebo_TRUE-blind_TRUE-legend_FALSE", {
   data <- h_get_data_ordinal()
   result <- plot(data, blind = TRUE, legend = FALSE)
 
   vdiffr::expect_doppelganger(
-    "Plot of DataOrdinal with placebo, blinding and no legend", result
+    "plot-DataOrdinal-placebo_TRUE-blind_TRUE-legend_FALSE", result
   )
 })
 

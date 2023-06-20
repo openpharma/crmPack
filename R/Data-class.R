@@ -55,7 +55,6 @@ NULL
 #'
 #' @aliases Data
 #' @export
-#'
 .Data <- setClass(
   Class = "Data",
   contains = "GeneralData",
@@ -80,7 +79,7 @@ NULL
 
 ## constructor ----
 
-#' @rdname DataOrdinal-class
+#' @rdname Data-class
 #'
 #' @details The `cohort` can be missing if and only if `placebo` is equal to
 #'   `FALSE`.
@@ -89,10 +88,9 @@ NULL
 #'   and the variables will be filled with default IDs and best guesses cohort,
 #'   i.e. a sorted (in ascending order) sequence of values from `{1, 2, ...}`.
 #'
-#' @inheritParams Data
-#' @inherit Data details note
+#' @inherit Data details note params
 #' @export
-#' @example examples/Data-class-DataOrdinal.R
+#' @example examples/Data-class-Data.R
 #'
 Data <- function(x = numeric(),
                  y = integer(),
@@ -384,7 +382,7 @@ DataDA <- function(u = numeric(),
 #' @note The default setting for the `yCagetories` slot replicates the behaviour
 #' of the existing `Data` class.
 #'
-#'
+#' @inheritParams Data
 #' @aliases DataOrdinal
 #' @export
 .DataOrdinal <- setClass(
@@ -469,3 +467,4 @@ DataOrdinal <- function(
     yCategories = yCategories
   )
 }
+

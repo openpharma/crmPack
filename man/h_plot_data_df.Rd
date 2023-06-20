@@ -2,22 +2,50 @@
 % Please edit documentation in R/helpers.R
 \name{h_plot_data_df}
 \alias{h_plot_data_df}
-\title{Helper Function for the Plot Method of subclasses of DataGeneral}
+\alias{h_plot_data_df,Data-method}
+\alias{h_plot_data_df,DataOrdinal-method}
+\title{Helper Function for the Plot Method of \code{\link{Data}}}
 \usage{
 h_plot_data_df(data, ...)
+
+\S4method{h_plot_data_df}{Data}(data, blind = FALSE, legend = TRUE, ...)
+
+\S4method{h_plot_data_df}{DataOrdinal}(data, blind = FALSE, legend = TRUE, ...)
 }
 \arguments{
-\item{data}{(\code{DataGeneral})\cr object from which data is extracted and converted
+\item{data}{(\code{DataOrdinal})\cr object from which data is extracted and converted
 into a data frame.}
 
-\item{...}{further arguments passed to class-specific methods.}
+\item{...}{further arguments passed to \code{data.frame} constructor.
+It can be e.g. an extra \code{column_name = value} pair based on a slot
+from \code{x} (which in this case might be a subclass of \code{Data})
+which does not appear in \code{Data}.}
+
+\item{blind}{(\code{flag})\cr should data be blinded?
+If \code{TRUE}, then for each cohort, all DLTs are assigned to the first
+subjects in the cohort. In addition, the placebo (if any) is set to the
+active dose level for that cohort.}
+
+\item{legend}{(\code{flag})\cr Display the legend for the toxicity categories}
 }
 \value{
 \code{data.frame} containing columns for patient, cohort, dose and toxicity grade
+
+A \code{\link{data.frame}} object with columns patient, ID, cohort, dose and
+toxicity.
+
+A \code{\link{data.frame}} object with values to plot.
 }
 \description{
 \ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#experimental}{\figure{lifecycle-experimental.svg}{options: alt='[Experimental]'}}}{\strong{[Experimental]}}
 
-A method that transforms \code{\link{DataGeneral}}  objects into a \code{tibble} suitable for
+A method that transforms \code{\link{GeneralData}}  objects into a \code{tibble} suitable for
 plotting with \code{ggplot2} methods
 }
+\section{Methods (by class)}{
+\itemize{
+\item \code{h_plot_data_df(Data)}: Class specific method for \code{\link{Data}}
+
+\item \code{h_plot_data_df(DataOrdinal)}: Class specific method for \code{\link{DataOrdinal}}
+
+}}

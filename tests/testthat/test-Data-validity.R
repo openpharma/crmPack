@@ -308,3 +308,18 @@ test_that("v_data_ordinal returns error when first xLevel does not match x", {
     c("x must be equivalent to doseGrid[xLevel] (up to numerical tolerance)")
   )
 })
+
+test_that("v_data_ordinal returns error when yCategories is illegal", {
+  expect_error(
+    DataOrdinal(
+      x = c(25, 25, 25, 25, 50, 50, 50, 50, 100, 100, 100, 100),
+      y = c(0L, 0L, 0L, 0L, 0L, 0L, 0L, 0L, 0L, 0L, 1L, 4L),
+      doseGrid = seq(25, 300, 25),
+      placebo = FALSE,
+      ID = 1:12,
+      cohort = c(1L, 1L, 1L, 1L, 2L, 2L, 2L, 2L, 3L, 3L, 3L, 3L),
+      yCategories = c("No tox" = 1L, "Sub-tox AE" = 2L, "DLT" = 3L)
+    ),
+    "Values of yCategories must be integers in the range 0 to 2"
+  )
+})

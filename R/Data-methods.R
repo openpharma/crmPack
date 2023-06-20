@@ -25,7 +25,7 @@
 #' being displayed as red triangles and other responses as black circles.
 #' @return The [`ggplot2`] object.
 #'
-#' @aliases plot-Data
+#' @rdname plot-Data
 h_plot_data_dataordinal <- function(
     x,
     blind = FALSE,
@@ -95,9 +95,7 @@ h_plot_data_dataordinal <- function(
 #'
 #' A method that creates a plot for [`Data`] object.
 #'
-#' @inherit h_plot_data_dataordinal params return
-#'
-#' @aliases plot-Data
+#' @rdname plot-Data
 #' @export
 #' @example examples/Data-method-plot.R
 #'
@@ -109,7 +107,7 @@ setMethod(
   }
 )
 
-## Data ----
+## DataOrdinal ----
 
 #' Plot Method for the [`DataOrdinal`] Class
 #'
@@ -125,6 +123,10 @@ setMethod(
 #'   as the active dose level in the corresponding cohort,
 #'   and DLTs are always assigned to the first subjects in a cohort.
 #' @param legend (`flag`)\cr whether the legend should be added.
+#' @param tox_labels (`named list of character`)\cr The labels of the toxicity
+#' categories
+#' @param tox_shapes (`names list of integers`)\cr The symbols used to identify
+#' the toxicity categories
 #' @param ... not used.
 #'
 #' @note With more than 9 toxicity categories, toxicity symbols must be
@@ -133,7 +135,7 @@ setMethod(
 #'
 #' @return The [`ggplot2`] object.
 #'
-#' @aliases plot-Data
+#' @rdname plot-Data
 #' @export
 #' @example examples/DataOrdinal-method-plot.R
 setMethod(
@@ -362,6 +364,7 @@ setMethod(
 #'
 #' @return The new, updated [`Data`] object.
 #'
+#' @rdname update-Data
 #' @aliases update-Data
 #' @export
 #' @example examples/Data-method-update.R
@@ -450,7 +453,7 @@ setMethod(
 #'
 #' @return The new, updated [`DataOrdinal`] object.
 #'
-#' @aliases update-DataOrdinal
+#' @rdname update-DataOrdinal
 #' @export
 #' @example examples/DataOrdinal-method-update.R
 #'

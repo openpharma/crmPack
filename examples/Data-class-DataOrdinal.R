@@ -7,5 +7,5 @@ DataOrdinal(
     seq(from = 10, to = 80, by = 10)
   ),
   y = c(0, 0, 0, 0, 2, 0, 2, 0),
-  yCategories = c("No Toxicity" = 0, "Sub-toxic AE" = 1, "DLT" = 2)
+  yCategories = c("No Toxicity" = 0L, "Sub-toxic AE" = 1L, "DLT" = 2L)
 )

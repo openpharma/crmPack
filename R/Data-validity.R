@@ -239,6 +239,13 @@ v_data_ordinal <- function(object) {
       "There must be only one dose level, per cohort"
     )
   }
+  v$check(
+    test_set_equal(object@yCategories, as.integer(0:(length(object@yCategories) - 1))),
+    paste0(
+      "Values of yCategories must be integers in the range 0 to ",
+      length(object@yCategories) - 1
+    )
+  )
   v$result()
 }
 

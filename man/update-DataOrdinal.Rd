@@ -2,7 +2,6 @@
 % Please edit documentation in R/Data-methods.R
 \name{update,DataOrdinal-method}
 \alias{update,DataOrdinal-method}
-\alias{update-DataOrdinal}
 \title{Updating \code{DataOrdinal} Objects}
 \usage{
 \S4method{update}{DataOrdinal}(
@@ -52,4 +51,17 @@ The new, updated \code{\link{DataOrdinal}} object.
 \ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#experimental}{\figure{lifecycle-experimental.svg}{options: alt='[Experimental]'}}}{\strong{[Experimental]}}
 
 A method that updates existing \code{\link{DataOrdinal}} object with new data.
+}
+\examples{
+d <- DataOrdinal(
+  x = c(25, 25, 25, 25, 50, 50, 50, 50, 100, 100, 100, 100),
+  y = c(0L, 0L, 0L, 0L, 0L, 0L, 0L, 0L, 0L, 0L, 1L, 2L),
+  doseGrid = seq(25, 300, 25),
+  placebo = FALSE,
+  ID = 1:12,
+  cohort = c(1L, 1L, 1L, 1L, 2L, 2L, 2L, 2L, 3L, 3L, 3L, 3L),
+  yCategories = c("No tox" = 0L, "Sub-tox AE" = 1L, "DLT" = 2L)
+)
+
+update(d, x = 50, y = c(0L, 0L, 1L))
 }
