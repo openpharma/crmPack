@@ -590,3 +590,14 @@ v_model_one_par_exp_prior <- function(object) {
 
   v$result()
 }
+
+#' @describeIn v_model_objects validates that [`OrdinalLogisticLogNormal`] class slots are valid.
+v_model_ordinal_logistic_log_normal <- function(object) {
+  v <- v_model_logistic_log_normal()
+  # In addition, the covariance matrix must be diagonal
+  v$check(
+    test_true(object@cov ==  diag(object@cov)),
+    "cov must be diagonal"
+  )
+  v$result()
+}

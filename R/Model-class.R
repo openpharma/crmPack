@@ -3137,24 +3137,33 @@ FractionalCRM <- function(...) {
 #'
 
 # .OrdinalLogisticLogNormal <- setClass(
-#   Class = "OrdinalLogisticLogNormal"
-# )
+#   Class = "OrdinalLogisticLogNormal",
+#   contains = "ModelLogNormal",
+#   priormodel = function() {
+#     theta ~ dmnorm(mean, prec)
+#     alpha <- theta[1]
+#     beta <- exp(theta[-1])
+#   }
+#
+#   datamodel <- function() {
+#
+#   })
 
 ## constructor ----
 
 #' @rdname OrdinalLogisticLogNormal-class
-#'
+#' @inheritParams ModelLogNormal
 #' @export
 #' @example examples/Model-class-OrdinalLogisticLogNormal.R
 #'
 
-# OrdinalLogisticLogNormal <- function(...) {
-#   start <- OneParLogNormalPrior(...)
-#
-#   # This is adapted from the TITELogisticLogNormal class.
-#   datamodel <- function() {
-#
-#   }
+# OrdinalLogisticLogNormal <- function(mean, cov, ref_dose) {
+#   params <- ModelParamsNormal(mean, cov)
+#   .OrdinalLogisticLogNormal(
+#     params = params,
+#     ref_dose = positive_number(ref_dose)
+#   )
+# }
 #
 #   modelspecs <- function(nObs, u, Tmax, y, from_prior) {
 #   }

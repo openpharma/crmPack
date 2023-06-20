@@ -49,7 +49,7 @@ ModelParamsNormal <- function(mean, cov) {
   assert_true(length(mean) == nrow(cov))
   assert_true(length(mean) == ncol(cov))
   assert_matrix(cov, mode = "numeric", any.missing = FALSE)
-  assert_true(h_is_positive_definite(cov)) # To ensure that `cov` is invertible.
+  assert_true(h_is_positive_definite(cov, size = nrow(cov))) # To ensure that `cov` is invertible.
 
   .ModelParamsNormal(
     mean = mean,

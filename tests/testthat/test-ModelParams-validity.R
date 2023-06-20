@@ -23,8 +23,11 @@ test_that("v_model_params_normal returns error for cov with NA", {
 
   expect_equal(
     v_model_params_normal(object),
-    "cov must be a square positive-definite matrix without any missing values"
-  )
+    c(
+      "cov must be a square positive-definite matrix without any missing values",
+      "prec must be a square positive-definite matrix without any missing values"
+    )
+    )
 })
 
 test_that("v_model_params_normal returns error for prec with NA", {
@@ -72,5 +75,5 @@ test_that("v_model_params_normal returns error for wrong prec (not an inverse of
 })
 
 test_that("v_model_params_normal does not return error for models with >2 parameters", {
-  expect_error(ModelParamsNormal(mean = 1:3, cov = diag(3)), NULL)
+  expect_no_error(ModelParamsNormal(mean = 1:3, cov = diag(3)))
 })
