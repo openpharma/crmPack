@@ -1714,7 +1714,7 @@ setMethod("examine",
                 ) #### the u will be updated
               } else {
                 # scenario 2: The patients with shortest follow up have DLTs
-                
+
                 if (length(thisSurv[rev(thiscensored)][1:numDLTs]) != length(c(apply(rbind(rep(1, numDLTs), pretime + 1 - factT0[rev(thiscensored)][1:numDLTs]), 2, max)))) {
                   print("Scenario 2")
                   print(length(thisSurv[rev(thiscensored)][1:numDLTs]))
@@ -1811,7 +1811,7 @@ setMethod("examine",
 
         ## what is the difference to the previous dose?
         doseDiff <- newDose - thisDose
-        
+
         if (length(doseDiff) > 1) {
           print(tibble::as_tibble(ret))
           print(tibble::as_tibble(resultsNoDLTs))
@@ -1819,7 +1819,7 @@ setMethod("examine",
           print(thisDose)
           print(doseDiff)
         }
-        
+
 
         ## would stopping rule be fulfilled already?
         stopAlready <- resultsNoDLTs$stop
