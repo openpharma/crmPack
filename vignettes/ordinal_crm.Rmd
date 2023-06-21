@@ -1,0 +1,56 @@
+---
+title: "The Ordinal CRM"
+bibliography: vignettes.bib
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{The Ordinal CRM}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>"
+)
+
+library(dplyr)
+library(ggplot2)
+library(kableExtra)
+library(knitr)
+library(magrittr)
+library(tibble)
+library(tidyr)
+```
+
+## The Ordinal CRM
+The ordinal CRM, or oCRM, is an extension to the standard CRM in which the patient's response is not binary (no DLT, DLT) but ordinal (for example: None, sub-DLT, DLT).  The number of categories in the response scale is arbitrary.  The responses are modeled using a standard parameterisation for ordered logistic regression:
+
+Let p~k~(x_d) be the probability that the response of a patient treated at dose x~d~ is in category k *_or higher_*, k=0, ..., K; d=1, ..., D.
+
+Then 
+$$ 
+log\left(\frac{p_k(x_d)}{1 - p_k(x_d)}\right) = \alpha_k + \beta \times log(x_d/x_{ref}), k=1, ..., K. 
+$$
+[p~0~(d) = 1 by definition.]
+
+where x~ref~ is a reference dose.  The &alpha;s are constrained such that &alpha;~1~ > &alpha;~2~ > ... > &alpha;~K~.
+
+The model is a constrained parallel lines regression on the logit scale with appropriate priors imposed on the &alpha;~k~s and &beta;.
+
+Note that the constraints on the \alpha~k~s induces a correlation between the model parameters that is difficult to quantify in advance and which will change over time as the model evolves as responses are observed.  For this reason, `crmPack` does not allow the specification of priors for this model that involve  non-zero correlations between the model's parameters.  They must be independent.  The priors for the model parameters are
+
+$$ \alpha_1 \sim N(\mu_1, \sigma_1^2), $$
+$$ \alpha_i \sim N(\mu_i, \sigma_i^2)  T( , \alpha_{i-1}) $$ for i = 2, ..., k and
+
+$$ log(\beta) \sim N(\mu_{beta}, \sigma_{beta}^2) $$
+where T(L, U) denotes truncation of the underlying distribution between limits L and U, with missing arguments being interpreted as infinite.
+
+## Implementation
+The `OrdinalLogisticLogNormal` class implements models of this type in `crmPack`.  `OrdinalLogisticLogNormal` is a sub-class of `ModelLogNormal`.  The constructor has arguments `mean`, `cov` and `ref_dose`, which all have the obvious meanings.  For consistency with other sub-classes of `ModelLogNormal`, `cov` should be a (diagonal) matrix rather than a vector.  Elements of both `mean` and `cov` define the parameters of the priors for the model parameters &alpha;~1~, &alpha;~2~, ..., &alpha;~k~ and log(&beta;), in that order.  Because p~0~ is fixed by definition, there is no &alpha;~0~ in the model.
+
+
+## Final observation
+The simulations used in this vignette have used relatively short chains of 1000 samples, purely in the interests of speed.  When investigating the properties of a real trial, much longer chain lengths should be used.  For example, to estimate a binomial probability to an accuracy of &plusmn;1%, an effective sample size (ESS) of around 40,000 is required.
+
+## References
