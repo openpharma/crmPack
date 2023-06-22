@@ -94,18 +94,18 @@ request)
 ----------------------------------------------------------------
 NEW FEATURES:
 
-- add slide production with ReporteRs package examples (to demo folder?)
+#606 - add slide production with ReporteRs package examples (to demo folder?)
 
-- be able to run simulations on a cluster: use the BatchJobs package that is installed
+#609 - be able to run simulations on a cluster: use the BatchJobs package that is installed
   on the new Roche HPC - potentially as different fork of the package??
 
-- production of Word output tables from simulation summaries
+#608 - production of Word output tables from simulation summaries
 
-- minimal informative prior construction for other model(s), especially the probit model
+#607 - minimal informative prior construction for other model(s), especially the probit model
   to allow construction for the dual endpoint models.
 
-- other prior in the Kadane model -> how?
+#606 - other prior in the Kadane model -> how?
 
-- historical data prior,
+#610- historical data prior,
   pseudodata prior
 
