@@ -34,7 +34,8 @@ To be close to common R style guidelines [@advancedR] and use consistent naming 
 new_classes <- tribble(
   ~category, ~class_new_name, ~comment,
   "Parent model class", "ModelParamsNormal", "Represents parameters of bivariate normal distribution.",
-  "Model", "OneParLogNormalPrior", "standard CRM with a normal prior on the log power parameter for the skeleton prior probabilities",
+  "Model", "OneParLogNormalPrior",
+    "standard CRM with a normal prior on the log power parameter for the skeleton prior probabilities",
   "Design", "DADesign", "Design for data augmentation.",
   "Model", "DALogisticLogNormal", "Logistic model with bivariate (log) normal prior and data augmentation.",
   "Data", "DataDA", "Time-to-DLT augmented data.",
@@ -44,16 +45,26 @@ new_classes <- tribble(
   "nextBest", "NextBestInfTheory", "Next best dose that is based on information theory.",
   "nextBest", "NextBestMinDist", "Next best dose that is based on minimum distance to target probability.",
   "nextBest", "NextBestNCRMLoss", "Next best dose based on NCRM rule and loss function.",
-  "nextBest", "NextBestProbMTDLTE", "Next best dose that selects the dose with the highest probability of having a toxicity rate less or equal to the toxicity target.",
-  "nextBest", "NextBestProbMTDMinDist", "Next best dose that selects the dose with the highest probability of having a toxicity rate with the smallest distance to the toxicity target.",
+  "nextBest", "NextBestProbMTDLTE", paste(
+    "Next best dose that selects the dose with the highest probability of having a toxicity",
+    "rate less or equal to the toxicity target."
+    ),
+  "nextBest", "NextBestProbMTDMinDist", Paste("
+     Next best dose that selects the dose with the highest probability of having a toxicity",
+     "rate with the smallest distance to the toxicity target."
+     ),
   "Model", "OneParExpPrior", "Standard CRM with an exponential prior on the power parameter.",
-  "Model", "ProbitLogNormalRel", "Probit regression model with a bivariate normal prior on the intercept and log slope.",
+  "Model", "ProbitLogNormalRel",
+    "Probit regression model with a bivariate normal prior on the intercept and log slope.",
   "SafetyWindow", "SafetyWindowConst", "Safety window length used when the `gap` should be kept constant.",
   "SafetyWindow", "SafetyWindowSize", "Safety window length based on cohort size.",
-  "Stopping", "StoppingLowestDoseHSRBeta", "Stopping based on a Hard Safety Rule using the Beta posterior distribution.",
-  "Stopping", "StoppingMTDCV", "Stopping rule based on precision of MTD which is calculated as the coefficient of variation (CV) of the MTD.",
+  "Stopping", "StoppingLowestDoseHSRBeta",
+    "Stopping based on a Hard Safety Rule using the Beta posterior distribution.",
+  "Stopping", "StoppingMTDCV",
+    "Stopping rule based on precision of MTD which is calculated as the coefficient of variation (CV) of the MTD.",
   "Stopping", "StoppingMissingDose", "Stopping based on NA returned by next best dose.",
-  "Stopping", "StoppingSpecificDose", "Testing a stopping rule at specific dose of the dose grid and not at the next best dose."
+  "Stopping", "StoppingSpecificDose",
+    "Testing a stopping rule at specific dose of the dose grid and not at the next best dose."
 )
 ```
 
@@ -137,9 +148,11 @@ class_changes <- tribble(
   "IncrementsRelativeParts", "dltStart", "dlt_start", FALSE, "",
   "IncrementsRelativeParts", "cleanStart", "clean_start", FALSE, "change applied also to other dependent classes",
   "IncrementsRelativeDLT", "DLTintervals", "dlt_intervals", FALSE, "change applied also to other dependent classes",
-  "IncrementsDoseLevels (IncrementsNumDoseLevels)", "maxLevels", "levels", FALSE, "change applied also to other dependent classes",
+  "IncrementsDoseLevels (IncrementsNumDoseLevels)", "maxLevels", "levels", FALSE,
+    "change applied also to other dependent classes",
   "IncrementsDoseLevels  (IncrementsNumDoseLevels)", "", "basis_level", FALSE, "",
-  "IncrementsMin (IncrementMin)", "IncrementsList", "increments_list", FALSE, "change applied also to other dependent classes",
+  "IncrementsMin (IncrementMin)", "IncrementsList",
+    "increments_list", FALSE, "change applied also to other dependent classes",
   "StoppingTargetBiomarker", "scale", "", TRUE, "replaced by `is_relative` flag",
   "StoppingTargetBiomarker", "", "is_relative", FALSE, "replaces `scale` string",
   "StoppingList", "stopList", "stop_list", FALSE, "",
