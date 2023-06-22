@@ -187,7 +187,7 @@ h_jags_get_data <- function(model, data, from_prior) {
 #' @export
 #' @example examples/helpers-jags_write_model.R
 #'
-h_jags_write_model <- function(model, file = NULL, digits = 5) {
+h_jags_write_model <- function(model, datablock, file = NULL, digits = 5) {
   assert_function(model)
   assert_count(digits)
 

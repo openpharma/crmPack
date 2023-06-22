@@ -34,7 +34,7 @@ DLT for non-complete observations.
 This fractional CRM model follows the paper and code by Guosheng Yin et al.
 }
 \note{
-Typically, end users will not use the \code{.DefaultTITELogisticLogNormal()} function.
+Typically, end users will not use the \code{.DefaultFractionalCRM()} function.
 }
 \examples{
 my_model <- FractionalCRM(

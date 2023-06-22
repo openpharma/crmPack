@@ -66,13 +66,9 @@ setMethod(
       h_jags_join_models(model@datamodel, model@priormodel)
     }
 
-    model_file <- h_jags_write_model(model_fun)
+    model_file <- h_jags_write_model(model_fun, model@datablock)
     model_inits <- h_jags_get_model_inits(model, data)
     model_data <- h_jags_get_data(model, data, from_prior)
-
-    print(readLines(model_file))
-    print(model_data)
-
     jags_model <- rjags::jags.model(
       file = model_file,
       data = model_data,
