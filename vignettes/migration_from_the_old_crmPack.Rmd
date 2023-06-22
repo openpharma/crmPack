@@ -22,13 +22,13 @@ The following vignette describes the changes that were introduced to the `crmPac
 package as a result of the package's refactoring. One row in below tables
 represents a single-type, consistent change.
 
-# Class and slot changes
+## Class and slot changes
 
-## Naming convention motivation
+### Naming convention motivation
 
 To be close to common R style guidelines [@advancedR] and use consistent naming conventions within the `crmPack` package, `CamelCase` notation is used for `class` names, `method` names and constructor function names, and `snake_case` notation is used for `slot` names throughout the package.
 
-## New classes
+### New classes
 
 ```{r new_classes, echo=FALSE}
 new_classes <- tribble(
@@ -79,7 +79,7 @@ kbl(cn, longtable = TRUE, booktabs = TRUE, col.names = NULL, escape = FALSE) %>%
   kable_styling(latex_options = c("repeat_header"), font_size = 11)
 ```
 
-## Renamed classes
+### Renamed classes
 
 ```{r renamed_classes, echo=FALSE}
 renamed_classes <- tribble(
@@ -100,7 +100,7 @@ kbl(cr, longtable = TRUE, booktabs = TRUE, col.names = NULL, escape = FALSE) %>%
   kable_styling(latex_options = c("repeat_header"), font_size = 11)
 ```
 
-## Renamed slots
+### Renamed slots
 
 ```{r renamed_slots, echo=FALSE}
 #   "helper", "positive_number", "", "", FALSE, "to handle strictly positive valued slots
@@ -209,12 +209,12 @@ Strikeout indicates that the class/slot was removed.
 
 
 
-# Moved `dose` and `prob` Functions from Slots to Methods
+## Moved `dose` and `prob` Functions from Slots to Methods
 
 Moved `dose` and `prob` functions from model class slots to model class methods.
 Example of usage: `dose`/`prob` function as a true dose-DLT/DLT-dose relationship.
 
-## Generate data, define a model and get samples
+### Generate data, define a model and get samples
 
 ```{r data_model_samples}
 library(crmPack)
@@ -228,7 +228,7 @@ my_options <- McmcOptions(burnin = 2, step = 2, samples = 20)
 my_samples <- mcmc(empty_data, my_model, my_options)
 ```
 
-## Dose
+### Dose
 
 Here is the example on how the `dose` function can be used in case of different
 inputs, i.e. model's parameters samples or in case of a fixed model's parameters
@@ -249,7 +249,7 @@ true_dose_fun <- doseFunction(my_model, alpha0 = -0.8, alpha1 = 1)
 true_dose_fun(0.3)
 ```
 
-## Prob
+### Prob
 
 ```{r prob_function}
 # Toxicity probabilities for a given dose (equal to 10), model and samples.
@@ -265,7 +265,7 @@ true_prob_fun <- probFunction(my_model, alpha0 = -0.8, alpha1 = 1)
 true_prob_fun(10)
 ```
 
-# New Random Number Generator settings for the MCMC
+## New Random Number Generator settings for the MCMC
 
 The Random Number Generator (RNG) settings used by the JAGS for the MCMC are now
 configured solely through the `McmcOptions` class. The RNG settings are:
@@ -274,7 +274,7 @@ details in the help page for the `McmcOptions` class.
 Any RNG-related user settings at the R session level (such us those with
 `set.seed()`) are ignored by the MCMC sampler.
 
-# New no-argument constructors
+## New no-argument constructors
 
 To aid software development, new no-argument constructs for all sub-classes of `GeneralModel`, `Increments`, `NextBest` and `Stopping` have been introduced.  The names of these constructors take the form `.Default<classname>`, where `<classname>` is the name of the class being created.
 
@@ -289,18 +289,18 @@ class_name <- "LogisticNormal"
 eval(parse(text = paste0(".Default", class_name, "()")))
 ```
 
-# Handling of `NA` or placebo returned as next dose
+## Handling of `NA` or placebo returned as next dose
 
 For consistent handling how the study is stopped and to facilitate analysis of stop reasons in the operation characteristics, the handling of `NA` and placebo returned by `nextBest` methods is changed. In the previous version of `crmPack` stopping for placebo or `NA` returned by a `nextBest` method was handled automatically in the generic `Stopping` method. This is now moved into a new stopping rule `StoppingMissingDose`. As a consequence, the stopping rule `StoppingMissingDose` must be specified for those `nextBest` methods that can return NA, or when placebo is used. Otherwise the simulation may run into an error if the study is not stopped when  `NA` is returned as the next dose. `nextBest` methods that can return `NA` are `NextBestNCRM`, `NextBestNCRMLoss` and `NextBestDualEndpoint`.
 
-# Evaluation of stopping rules at a specific dose
+## Evaluation of stopping rules at a specific dose
 
 Without further specification, stopping rules are evaluated at the dose returned by the used `nextBest` method. With the new stopping rule `StoppingSpecificDose` it is possible to evaluate stopping rules at any dose. For usage see documentation of `StoppingSpecificDose`.
 
 
-# Further details in class and methods name changes
+## Further details in class and methods name changes
 
-## Classes
+### Classes
 
 ```{r class_changes, echo=FALSE}
 class_changes <- tribble(
@@ -350,7 +350,7 @@ kbl(cc, longtable = TRUE, booktabs = TRUE, col.names = NULL, escape = FALSE) %>%
 
 Strikeout indicates that the class/slot was removed.
 
-## Methods
+### Methods
 
 ```{r method_changes, echo=FALSE}
 method_changes <- tribble(
@@ -420,4 +420,4 @@ kbl(mc, longtable = TRUE, booktabs = TRUE, col.names = NULL, escape = FALSE) %>%
 
 Strikeout indicates that the method/argument was removed.
 
-# References
+## References
