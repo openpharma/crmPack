@@ -224,10 +224,10 @@ test_that("h_jags_join_models throws the error for non-braced expression", {
 # h_jags_write_model ----
 
 test_that("h_jags_write_model works as expected", {
-  my_model <- function() {
+  my_model <- GeneralModel(datamodel=function() {
     alpha0 <- mean(1:10)
     alpha1 <- 600000
-  }
+  })
 
   model_file <- h_jags_write_model(my_model, digits = 5)
   expect_snapshot(readLines(model_file))

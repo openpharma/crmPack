@@ -60,15 +60,10 @@ setMethod(
                  ...) {
     assert_flag(from_prior)
 
-    model_fun <- if (from_prior) {
-      model@priormodel
-    } else {
-      h_jags_join_models(model@datamodel, model@priormodel)
-    }
-
-    model_file <- h_jags_write_model(model_fun, model@datablock)
+    model_file <- h_jags_write_model(model, from_prior)
     model_inits <- h_jags_get_model_inits(model, data)
     model_data <- h_jags_get_data(model, data, from_prior)
+
     jags_model <- rjags::jags.model(
       file = model_file,
       data = model_data,

@@ -175,7 +175,10 @@ h_jags_get_data <- function(model, data, from_prior) {
 #'   format, it is required that the body of a model function does not contain
 #'   `TEMP_NUM_PREF_` or `_TEMP_NUM_SUF` character constants in its body.
 #'
-#' @param model (`function`)\cr function containing the JAGS model.
+#' @param model (`GeneralModel`)\cr object defining the JAGS model.
+#' @param from_prior (`flag`)\cr sample from the prior only? Default to `TRUE`
+#'   when number of observations in `data` is `0`. For some models it might be
+#'   necessary to specify it manually here though.
 #' @param file (`string` or `NULL`)\cr the name of the file (including the
 #'   optional path) where the model will be saved. If `NULL`, the file will be
 #'   created in a `R_crmPack` folder placed under temporary directory indicated
@@ -187,13 +190,19 @@ h_jags_get_data <- function(model, data, from_prior) {
 #' @export
 #' @example examples/helpers-jags_write_model.R
 #'
-h_jags_write_model <- function(model, datablock, file = NULL, digits = 5) {
-  assert_function(model)
+h_jags_write_model <- function(model, from_prior, file = NULL, digits = 5) {
+  assert_function(model@datamodel)
   assert_count(digits)
 
   # This workaround is needed to avoid bugs related to covr-injected code.
   if (h_covr_active()) {
-    body(model) <- h_covr_detrace(body(model))
+    body(model@datamodel) <- h_covr_detrace(body(model@datamodel))
+  }
+
+  model_fun <- if (from_prior) {
+    model@priormodel
+  } else {
+    h_jags_join_models(model@datamodel, model@priormodel)
   }
 
   if (!is.null(file)) {
@@ -211,7 +220,7 @@ h_jags_write_model <- function(model, datablock, file = NULL, digits = 5) {
 
   # Replace scientific notation.
   model_sci_replaced <- h_rapply(
-    x = body(model),
+    x = body(model_fun),
     fun = h_format_number,
     classes = c("integer", "numeric"),
     digits = digits,
@@ -223,9 +232,16 @@ h_jags_write_model <- function(model, datablock, file = NULL, digits = 5) {
   model_text <- gsub("\"TEMP_NUM_PREF_|_TEMP_NUM_SUF\"", "", model_text)
   model_text <- gsub("%_% ", "", model_text)
   model_text <- c("model", model_text)
+  # Transform `datablock` body into character vector.
+  if (from_prior) {
+    data_text <- ""
+  } else {
+    data_text <- deparse(body(model@datablock), control = NULL)
+    data_text <- c("data", data_text)
+  }
 
   log_trace("Writting JAGS model function into: %s", file)
-  writeLines(model_text, con = file)
+  writeLines(c(data_text, model_text), con = file)
   file
 }
 

@@ -21,6 +21,8 @@ NULL
 #'
 #' @slot datamodel (`function`)\cr a function representing the `JAGS` data model
 #'   specification.
+#' @slot datablock (`function`)\cr a function representing the `JAGS` data block
+#'   specification.
 #' @slot priormodel (`function`)\cr a function representing the `JAGS` prior
 #'   specification.
 #' @slot modelspecs (`function`)\cr a function computing the list of the data
@@ -57,6 +59,7 @@ NULL
   Class = "GeneralModel",
   slots = c(
     datamodel = "function",
+    datablock = "function",
     priormodel = "function",
     modelspecs = "function",
     init = "function",
@@ -66,6 +69,7 @@ NULL
   ),
   prototype = prototype(
     datamodel = I,
+    datablock = function() {},
     priormodel = I,
     init = function() {
       list()
@@ -3155,38 +3159,40 @@ LogisticLogNormalOrdinal <- function(mean, cov, ref_dose) {
     priormodel = function() {
       alpha[1] ~ dnorm(mean[1], prec[1, 1])
       for (i in 2:(k-1)) {
-        alpha[i] ~ dnorm(mean[i], prec[i, i]) %_% T( , alpha[i - 1])
+        alpha[i] ~ dnorm(mean[i], prec[i, i]) %_% T( , alpha[i-1])
       }
       gamma ~ dnorm(mean[k], prec[k, k])
       beta <- exp(gamma)
     },
     datamodel = function() {
-      for (pt in 1:nObs) {
-        for (cat in 1:(k-1)) {
-          z[pt, cat] <- alpha[cat] + beta * log(x[pt] / ref_dose)
-          p[pt, cat] <- exp(z[pt, cat] / (1 + z[pt, cat]))
-          tox[pt, cat] ~ dbern(p[pt, cat])
+      for (i in 1:nObs) {
+        xhat[i] <- log(x[i] / ref_dose)
+        for (j in 1:(k-1)) {
+          z[i, j] <- alpha[j] + beta * xhat[i]
+          p[i, j] <- exp(z[i, j]) / (1 + exp(z[i, j]))
+          tox[i, j] ~ dbern(p[i, j])
         }
       }
     },
     datablock = function() {
-      for (pt in 1:nObs) {
-        for (cat in 1:(k-1)) {
-          tox[pt, cat] <- y[pt] >= cat
+      for (i in 1:nObs) {
+        for (j in 1:(k-1)) {
+          tox[i, j] <- y[i] >= j
         }
       }
-
     },
     modelspecs = function(from_prior) {
       ms <- list(mean = params@mean, prec = params@prec)
       ms$k <- length(mean)
-      ms$ref_dose <- ref_dose
+      if (!from_prior) {
+        ms$ref_dose <- ref_dose
+      }
       ms
     },
     init = function() {
       list(alpha = sapply(1:(length(mean)-1), function(x) -(x+1)), gamma = 1)
     },
-    datanames = c("nObs", "y", "x"),
+    datanames = c("nObs", "y", "x", "nObs"),
     sample = c(paste0("alpha[", 1:(length(mean) - 1), "]"), "beta")
   )
 }
