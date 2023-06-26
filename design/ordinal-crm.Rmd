@@ -729,18 +729,113 @@ dose_grid_range(ordinal_data)
 
 ### plot-DataOrdinal
 
-Much of the code in `plot` is common to objects of both `Data` and `DataOrdinal`, but there are some differences.  If `DataOrdinal` were the super-class of `Data` (or vice versa), we could use standard inheritance to reuse the common code.  But they are siblings.  So introduce a new helper function and modify the body of `plot-Data` accordingly.  Place the helper function in a new file `helpers-data.R`.
+Much of the code in `plot` is common to objects of both `Data` and `DataOrdinal`, but there are some differences.  If `DataOrdinal` were the super-class of `Data` (or vice versa), we could use standard inheritance to reuse the common code.  But they are siblings.  So introduce new helper function and modify the body of `plot-Data` accordingly.  Place the helper functions in a new file `helpers-data.R`.
 
 `helpers-data.R`
 
 ```{r}
+# h_plot_data_df ----
+#' @include Data-class.R
+
+## generic ----
+
+#' Helper Function for the Plot Method of subclasses of [`GeneralData`]
+#'
+#' @description `r lifecycle::badge("experimental")`
+#'
+#' A method that transforms [`GeneralData`]  objects into a `tibble` suitable for
+#' plotting with `ggplot2` methods
+#'
+#' @param data (`GeneralData`)\cr object from which data is extracted and converted
+#' into a data frame.
+#' @param ... further arguments passed to class-specific methods.
+#' @return `data.frame` containing columns for patient, cohort, dose and toxicity grade
+#' @aliases h_plot_data_df
+#'
+setGeneric(
+  name = "h_plot_data_df",
+  def = function(data, ...) standardGeneric("h_plot_data_df"),
+  valueClass = "data.frame"
+)
+
+# Data ----
+
+#' Helper Function for the Plot Method of [`Data`]
+#'
+#' @param data (`Data`)\cr object from which data is extracted and converted
+#'   into a data frame.
+#' @param blind (`flag`)\cr should data be blinded?
+#'   If `TRUE`, then for each cohort, all DLTs are assigned to the first
+#'   subjects in the cohort. In addition, the placebo (if any) is set to the
+#'   active dose level for that cohort.
+#' @param legend (`flag`)\cr Display the legend for the toxicity categories
+#' @param ... further arguments passed to `data.frame` constructor.
+#'   It can be e.g. an extra `column_name = value` pair based on a slot
+#'   from `x` (which in this case might be a subclass of `Data`)
+#'   which does not appear in `Data`.
+#' @return A [`data.frame`] object with columns patient, ID, cohort, dose and
+#' toxicity.
+#' @describeIn h_plot_data_df Class specific method for [`Data`]
+setMethod(
+  f = "h_plot_data_df",
+  signature = signature(data = "Data"),
+  definition = function(data, blind = FALSE, legend = TRUE, ...) {
+    df <- data.frame(
+      patient = seq_along(data@x),
+      ID = paste(" ", data@ID),
+      cohort = data@cohort,
+      dose = data@x,
+      toxicity = ifelse(data@y == 1, "Yes", "No"),
+      ...
+    )
+    df <- crmPack:::h_blind_plot_data(df, blind, data@placebo, data@doseGrid[1])
+    df
+  }
+)
+
+# DataOrdinal ----
+
+#' Helper Function for the Plot Method of [`DataOrdinal`]
+#'
+#' @param data (`DataOrdinal`)\cr object from which data is extracted and converted
+#'   into a data frame.
+#' @param blind (`flag`)\cr should data be blinded?
+#'   If `TRUE`, then for each cohort, all DLTs are assigned to the first
+#'   subjects in the cohort. In addition, the placebo (if any) is set to the
+#'   active dose level for that cohort.
+#' @param ... further arguments passed to `data.frame` constructor.
+#'   It can be e.g. an extra `column_name = value` pair based on a slot
+#'   from `x` (which in this case might be a subclass of `Data`)
+#'   which does not appear in `Data`.
+#' @return A [`data.frame`] object with values to plot.
+#' @describeIn h_plot_data_df Class specific method for [`DataOrdinal`]
+setMethod(
+  f = "h_plot_data_df",
+  signature = signature(data = "DataOrdinal"),
+  definition = function(data, blind = FALSE, legend = TRUE, ...) {
+    df <- data.frame(
+      patient = seq_along(data@x),
+      ID = paste(" ", data@ID),
+      cohort = data@cohort,
+      dose = data@x,
+      toxicity = names(data@yCategories)[1 + data@y],
+      ...
+    )
+    df <- crmPack:::h_blind_plot_data(df, blind, data@placebo, data@doseGrid[1])
+    df
+  }
+)
+
+
+# h_plot_data_dataordinal
+
 ## Data ----
 
 #' Helper Function for the Plot Method of the Data and DataOrdinal Classes
 #'
 #' @description `r lifecycle::badge("stable")`
 #'
-#' A method that creates a plot for [`Data`]  and [`DataOrdinal`]objects.
+#' A method that creates a plot for [`Data`]  and [`DataOrdinal`] objects.
 #'
 #' @param x (`Data`)\cr object we want to plot.
 #' @param y (`missing`)\cr missing object, for compatibility with the generic
@@ -801,7 +896,7 @@ h_plot_data_dataordinal <- function(
     xlab("Patient") +
     ylab("Dose Level")
 
-  p <- p + h_plot_data_cohort_lines(df$cohort, placebo = x@placebo)
+  p <- p + crmPack:::h_plot_data_cohort_lines(df$cohort, placebo = x@placebo)
 
   if (!blind) {
     p <- p +
@@ -921,6 +1016,30 @@ setMethod(
 )
 
 plot(ordinal_data)
+
+ordinal_data1 <- ordinal_data
+ordinal_data1@placebo <- TRUE
+
+plot(ordinal_data1)
+```
+
+And, as a regression check...
+
+```{r, fig.height=3, fig.width=6}
+binary_data <- Data(
+  doseGrid = seq(10, 100, 10),
+  x = c(10, 20, 30, 40, 50, 50, 50),
+  y = c(0L, 0L, 0L, 0L, 0L, 1L, 1L),
+  ID = 1L:7L,
+  cohort = as.integer(c(1:4, 5, 5, 5))
+)
+
+plot(binary_data)
+
+binary_data1 <- binary_data
+binary_data1@placebo <- TRUE
+
+plot(binary_data1)
 ```
 
 ## Model-class (LogisticLogNormOrd)
