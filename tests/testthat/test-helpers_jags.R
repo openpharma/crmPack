@@ -224,12 +224,12 @@ test_that("h_jags_join_models throws the error for non-braced expression", {
 # h_jags_write_model ----
 
 test_that("h_jags_write_model works as expected", {
-  my_model <- GeneralModel(datamodel=function() {
+  my_model <- .GeneralModel(datamodel=function() {
     alpha0 <- mean(1:10)
     alpha1 <- 600000
   })
 
-  model_file <- h_jags_write_model(my_model, digits = 5)
+  model_file <- h_jags_write_model(my_model, from_prior = FALSE, digits = 5)
   expect_snapshot(readLines(model_file))
   unlink(model_file)
 })
@@ -241,7 +241,7 @@ test_that("h_jags_write_model works as expected for truncation", {
   }
 
   model_file <- tempfile("crmPack-testthat-h_jags_write_model-trunc.jags")
-  h_jags_write_model(my_model, model_file, 5)
+  h_jags_write_model(my_model, from_prior = FALSE, model_file, 5)
   expect_snapshot(readLines(model_file))
   unlink(model_file)
 })

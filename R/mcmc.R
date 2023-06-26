@@ -389,8 +389,7 @@ myBayesLogit <- function(y,
   }
 
   ## write the model file into it
-  modelFileName <- h_jags_write_model(bugsModel)
-
+  modelFileName <- h_jags_write_model(bugsModel, FALSE)
   jagsModel <- rjags::jags.model(modelFileName,
     data = list(
       "X" = X,

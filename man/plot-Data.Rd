@@ -4,7 +4,7 @@
 \alias{h_plot_data_dataordinal}
 \alias{plot,Data,missing-method}
 \alias{plot,DataOrdinal,missing-method}
-\title{Helper Function for the Plot Method of the Data and DataOrdinal Classes}
+\title{Plot Method for the \code{\link{Data}} Class}
 \usage{
 h_plot_data_dataordinal(
   x,

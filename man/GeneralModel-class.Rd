@@ -18,6 +18,9 @@ model-like classes inherit.
 \item{\code{datamodel}}{(\code{function})\cr a function representing the \code{JAGS} data model
 specification.}
 
+\item{\code{datablock}}{(\code{function})\cr a function representing the \code{JAGS} data block
+specification.}
+
 \item{\code{priormodel}}{(\code{function})\cr a function representing the \code{JAGS} prior
 specification.}
 

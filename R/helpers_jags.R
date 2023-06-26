@@ -191,18 +191,31 @@ h_jags_get_data <- function(model, data, from_prior) {
 #' @example examples/helpers-jags_write_model.R
 #'
 h_jags_write_model <- function(model, from_prior, file = NULL, digits = 5) {
-  assert_function(model@datamodel)
+  # Ugly hack for LogisticIndepBeta
+  if (!is.function(model)) {
+    assert_function(model@datamodel)
+  }
   assert_count(digits)
 
   # This workaround is needed to avoid bugs related to covr-injected code.
   if (h_covr_active()) {
-    body(model@datamodel) <- h_covr_detrace(body(model@datamodel))
+    # Ugly hack for LogisticIndepBeta
+    if (is.function(model)) {
+      body(model) <- h_covr_detrace(body(model))
+    } else {
+      body(model@datamodel) <- h_covr_detrace(body(model@datamodel))
+    }
   }
 
   model_fun <- if (from_prior) {
     model@priormodel
   } else {
-    h_jags_join_models(model@datamodel, model@priormodel)
+    # Ugly hack for LogisticIndepBeta
+    if (is.function(model)) {
+      h_jags_join_models(model, model)
+    } else {
+      h_jags_join_models(model@datamodel, model@priormodel)
+    }
   }
 
   if (!is.null(file)) {
@@ -236,8 +249,16 @@ h_jags_write_model <- function(model, from_prior, file = NULL, digits = 5) {
   if (from_prior) {
     data_text <- ""
   } else {
-    data_text <- deparse(body(model@datablock), control = NULL)
-    data_text <- c("data", data_text)
+    if (is.function(model)) {
+      data_text <- ""
+    } else {
+      data_text <- deparse(body(model@datablock), control = NULL)
+      if(identical(data_text, c("{", "}"))) {
+        data_text <-  ""
+      } else {
+        data_text <- c("data", data_text)
+      }
+    }
   }
 
   log_trace("Writting JAGS model function into: %s", file)

@@ -15,6 +15,7 @@ NULL
 #' @slot nObs (`integer`)\cr number of observations, a single value.
 #'
 #' @aliases GeneralData
+#' @rdname GeneralData
 #' @export
 #'
 .GeneralData <- setClass(
@@ -88,7 +89,16 @@ NULL
 #'   and the variables will be filled with default IDs and best guesses cohort,
 #'   i.e. a sorted (in ascending order) sequence of values from `{1, 2, ...}`.
 #'
-#' @inherit Data details note params
+#' @param x (`numeric`)\cr the doses for the patients.
+#' @param y (`integer`)\cr the vector of toxicity events (0 or 1 integers).
+#' @param doseGrid (`numeric`)\cr the vector of all possible doses (sorted),
+#'   i.e. the dose grid.
+#' @param nGrid (`integer`)\cr number of gridpoints.
+#' @param xLevel (`integer`)\cr the levels for the doses the patients have been given,
+#'   w.r.t `doseGrid`.
+#' @param placebo (`logical`)\cr if `TRUE` the first dose level
+#'   in the `doseGrid`is considered as PLACEBO.
+#'
 #' @export
 #' @example examples/Data-class-Data.R
 #'
@@ -379,7 +389,7 @@ DataDA <- function(u = numeric(),
 #' (rather than as a parent or child) to minimise the risk of unintended side
 #' effects on existing classes and methods.
 #'
-#' @note The default setting for the `yCagetories` slot replicates the behaviour
+#' @note The default setting for the `yCategories` slot replicates the behaviour
 #' of the existing `Data` class.
 #'
 #' @inheritParams Data
@@ -416,7 +426,8 @@ DataDA <- function(u = numeric(),
 #' @param yCategories (`named integer vector`)\cr the names and codes for the
 #' toxicity categories used in the data.  Category labels are taken from the
 #' names of the vector.  The names of the vector must be unique and its values
-#' must be sorted and take the values 0, 1, 2, ...
+#' must be sorted and take the values 0, 1, 2, ...##'
+#' @inherit Data details note params
 #' @example examples/Data-class-DataOrdinal.R
 #' @export
 DataOrdinal <- function(

@@ -1,3 +1,4 @@
+#' @include Data-class.R
 # plot ----
 
 ## Data ----
@@ -39,7 +40,7 @@ h_plot_data_dataordinal <- function(
   assert_integer(tox_shapes, any.missing = FALSE, unique = TRUE)
   assert_true(length(tox_shapes) == length(tox_labels))
   assert_subset(x@y, as.integer(0:(length(tox_shapes) - 1)))
-  if (x@nObs == 0L) {
+    if (x@nObs == 0L) {
     return()
   }
   df <- h_plot_data_df(x, blind, ...)
@@ -153,6 +154,7 @@ setMethod(
     if (is.null(tox_shapes)) {
       assert_true(length(x@yCategories) <= 9)
       tox_shapes <- c(17L, 16L, 15L, 18L, 0L:2L, 5L, 6L)[seq_along(x@yCategories)]
+      names(tox_shapes) <- names(x@yCategories)
     }
     if (is.null(tox_labels)) {
       assert_true(length(x@yCategories) <= 5)
@@ -164,6 +166,7 @@ setMethod(
                   c("black", "green", "orange", "red"),
                   c("black", "green", "yellow", "orange", "red")
       )
+      names(tox_labels) <- names(x@yCategories)
     }
     h_plot_data_dataordinal(
       x,

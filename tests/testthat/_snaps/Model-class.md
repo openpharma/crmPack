@@ -1798,3 +1798,18 @@
       [1] -1.0265273  0.3965024 -2.2694077  0.6403072
       
 
+# MCMC computes correct values for LogisticLogNormalOrdinal model
+
+    Code
+      result@data
+    Output
+      $`alpha[1]`
+      [1] -3.269976 -2.376595 -3.288404 -4.170735
+      
+      $`alpha[2]`
+      [1] -7.251448 -5.850534 -4.687091 -4.765112
+      
+      $beta
+      [1] 4.891794 3.428977 5.858323 5.328476
+      
+

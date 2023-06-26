@@ -65,7 +65,7 @@ If `yCategories` is omitted from the call to `DataOrdinal`, a default value of `
 As with `Data` objects, the `update` method can be used to add observed data to a `DataOrdinal` object, or the `x` and `y` arguments to the constructor can provide observed data on creation.
 
 ```{r}
-trial_data0 <- update(trial_data0, x = 50, y=0L)
+trial_data0 <- update(trial_data0, x = 50, y = 0L)
 
 trial_data1 <- DataOrdinal(
   doseGrid = seq(10, 100, 10),
@@ -95,7 +95,7 @@ plot(trial_data, legend = TRUE)
 
 The `plot` method has parameters `tox_labels` and `tox_shapes` to allow customisation of its output.  The method attempts to choose sensible shapes when the there are fewer than ten toxicity categories and sensible colours when there are fewer than six.
 
-> Clearly, the existing `Data` class could be considered a special case of `DataOrdinal` with two toxicity categories and fixed labels.  Thus, there is a strong case from the purist point of view for making `Data` a sub-class of the `DataOrdinal` sub-class.  However, we took a defensive and pragramatic decision when introducing the `DataOrdinal` class to make it a sibling of `Data`, making both direct descendants of `GeneralData`.  We did this both to reduce the amount of work to make the change and to minimise the risk of unexpected conseqences for end users of `crmPack`, there being many instances in the existing code base of an implicit assumption that there are only two possible toxicity categories.
+> Clearly, the existing `Data` class could be considered a special case of `DataOrdinal` with two toxicity categories and fixed labels.  Thus, there is a strong case from the purist point of view for making `Data` a sub-class of the `DataOrdinal` sub-class.  However, we took a defensive and pragmatic decision when introducing the `DataOrdinal` class to make it a sibling of `Data`, making both direct descendants of `GeneralData`.  We did this both to reduce the amount of work to make the change and to minimise the risk of unexpected consequences for end users of `crmPack`, there being many instances in the existing code base of an implicit assumption that there are only two possible toxicity categories.
 
 ### The ordinal CRM model
 The `OrdinalLogisticLogNormal` class implements models of this type in `crmPack`.  `OrdinalLogisticLogNormal` is a sub-class of `ModelLogNormal`.  The constructor has arguments `mean`, `cov` and `ref_dose`, which all have the obvious meanings.  For consistency with other sub-classes of `ModelLogNormal`, `cov` should be a (diagonal) matrix rather than a vector.  Elements of both `mean` and `cov` define the parameters of the priors for the model parameters &alpha;~1~, &alpha;~2~, ..., &alpha;~k~ and log(&beta;), in that order.  Because p~0~ is fixed by definition, there is no &alpha;~0~ in the model.
@@ -108,8 +108,8 @@ The `mcmc` method works without change:
 mcmc_options <- McmcOptions(burnin = 500, samples = 1000)
 
 model <- LogisticLogNormalOrdinal(
-  mean = c(-3, -4, 0), 
-  cov=diag(c(3, 4, 1)), 
+  mean = c(-3, -4, 0),
+  cov = diag(c(3, 4, 1)),
   ref_dose = 50
 )
 
@@ -171,7 +171,7 @@ would apply a `NextBestNCRM` rule to the posterior probabilities of grade 2 toxi
 
 ## Consequential changes to existing classes and methods
 
-*  The `datablock` slot has been introduced to the `GeneralModel` class.  This is used to create a JAGS data block.  This is unnecessary for all classes other than `DataOrdinal` nd so returns an empty string.  For `DataOrdinal`, it transforms the observed vector of participant-level toxicity grades into the matrix of flags indicating whether or not the participant experienced a toxicity of the given grade _or higher_.  There are minor consequential changes to `h_jags_write_model` function.
+*  The `datablock` slot has been introduced to the `GeneralModel` class.  This is used to create a JAGS data block.  This is unnecessary for all classes other than `DataOrdinal` and so returns an empty string.  For `DataOrdinal`, it transforms the observed vector of participant-level toxicity grades into the matrix of flags indicating whether or not the participant experienced a toxicity of the given grade _or higher_.  There are minor consequential changes to `h_jags_write_model` function.
 *  `h_plot_data_df` is now generic.  It's behaviour for existing `Data` classes is unchanged.
 *  `ModelParams` now supports models with more than two parameters.
 

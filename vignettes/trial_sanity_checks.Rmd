@@ -229,7 +229,7 @@ Whilst the increments rule allows escalation to 83.5 mg, the toxicity estimates 
 
 Again, we have several options.  We can introduce intermediate doses, thus slowing escalation and allowing the prior model more time to adapt (but probably requiring a larger trial), or we can modify the prior so that it allows faster, but still reasonable, escalation.  Let's try creating a minimally informative prior that is consistent with our first attempt.
 
-```{r, error=TRUE}
+```{r}
 # Fitting the min_inf_model is slow.
 if (file.exists("minInfModel.Rds")) {
   min_inf_model <- readRDS("minInfModel.Rds")
@@ -264,13 +264,19 @@ min_inf_model$model@params
 
 The minimally informative model has a prior distribution of 
 
-$$\binom{\alpha}{log(\beta)} \sim N \left( \left[\begin{array}{rr}`r sprintf(" %0.3f", min_inf_model$model@params@mean[1])` \\ `r sprintf(" %0.3f", min_inf_model$model@params@mean[2])` \end{array}\right], \left[\begin{array}{rr} `r sprintf(" %0.3f", min_inf_model$model@params@cov[1, 1])` & `r sprintf(" %0.3f", min_inf_model$model@params@cov[1, 2])` \\ `r sprintf(" %0.3f", min_inf_model$model@params@cov[2, 1])` & `r sprintf(" %0.3f", min_inf_model$model@params@cov[2, 2])`\end{array}\right]\right)$$
+$$\binom{\alpha}{\beta} \sim N \left( \left[\begin{array}{rr}`r sprintf(" %0.3f", min_inf_model$model@params@mean[1])` \\ `r sprintf(" %0.3f", min_inf_model$model@params@mean[2])` \end{array}\right], \left[\begin{array}{rr} `r sprintf(" %0.3f", min_inf_model$model@params@cov[1, 1])` & `r sprintf(" %0.3f", min_inf_model$model@params@cov[1, 2])` \\ `r sprintf(" %0.3f", min_inf_model$model@params@cov[2, 1])` & `r sprintf(" %0.3f", min_inf_model$model@params@cov[2, 2])`\end{array}\right]\right)$$
+Note that `MinimalInformative` returns a `LogisticNormal` model, not a `LogisticLogNormal` model that we are using.  So we need to adjust its parameters accordingly.  For simplicity, adjust only the mean of &beta;, not the variance or correlation with &alpha;...
+
+```{r}
+mu <- min_inf_model$model@params@mean
+mu[2] <- log(mu[2])
+sigma <- min_inf_model$model@params@cov
+revised_model <- LogisticLogNormal(mean = mu, cov = sigma, ref_dose = initial_model@ref_dose)
+```
 
 Does this fix the rigidity problem?
 
 ```{r}
-revised_model <- min_inf_model$model
-
 revised_design1 <- Design(
   model = revised_model,
   nextBest = next_best,
@@ -284,7 +290,7 @@ revised_design1 <- Design(
 examine(revised_design1) %>% kable()
 ```
 
-Yes, it does.  We can now escalate to dose 80, but there are few plateaux as we do so.  First, two toxicity-free participants, rather than just one, are needed to escalate from 20 mg to 25 mg.  Similarly, four toxicity-free participants are required to escalate from 25 mg to 40 mg.  Further fine tuning of the prior would probably allow these numbers to be reduced, but for the purposes of this vignette, we do not explore this possibility.
+Yes, it does.  We can now escalate to dose 80, but there are few plateaux as we do so.  First, two toxicity-free participants, rather than just one, are needed to escalate from 20 mg to 25 mg.  Similarly, four toxicity-free participants are required to escalate from 25 mg to 40 mg and from 50 to 80.  Further fine tuning of the prior would probably allow these numbers to be reduced, but for the purposes of this vignette, we do not explore this possibility.
 
 Now create some data that represent a trial that escalates without any reports of toxicity, and fit the revised model …
 

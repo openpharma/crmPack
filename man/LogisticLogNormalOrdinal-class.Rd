@@ -33,8 +33,8 @@ Typically, end users will not use the \code{.DefaultLogisticLogNormalOrdinal()} 
 }
 \examples{
 LogisticLogNormalOrdinal(
-  mean=1:3,
-  cov=diag(1, 3),
+  mean=c(-3, -4, 1),
+  cov=diag(c(3, 4, 1)),
   ref_dose = 50
 )
 }

@@ -13,6 +13,8 @@ ADSL
 ADTTE
 ADVS
 al
+α
+αs
 AllModels
 amongst
 analyse
@@ -27,6 +29,7 @@ bb
 BCE
 bcrm
 behaviour
+β
 betaW
 binded
 binDLE
@@ -70,11 +73,13 @@ crmPackUpgrade
 crmPackVersion
 CRMs
 customised
+customisation
 DataCombo
 DataDual
 DataMixture
 dataname
 datanames
+DataOrdinal
 DataParts
 detial
 df
@@ -206,6 +211,7 @@ McmcOptions
 md
 mDA
 MinimalInformative
+minimise
 minInfModel
 ModelEff
 modelled
@@ -243,6 +249,7 @@ npaszty
 nrow
 nSamples
 nsim
+oCRM
 O’Quigley
 onwards
 optimisation

@@ -17,6 +17,22 @@ Data(
   ...
 )
 }
+\arguments{
+\item{x}{(\code{numeric})\cr the doses for the patients.}
+
+\item{y}{(\code{integer})\cr the vector of toxicity events (0 or 1 integers).}
+
+\item{doseGrid}{(\code{numeric})\cr the vector of all possible doses (sorted),
+i.e. the dose grid.}
+
+\item{placebo}{(\code{logical})\cr if \code{TRUE} the first dose level
+in the \code{doseGrid}is considered as PLACEBO.}
+
+\item{nGrid}{(\code{integer})\cr number of gridpoints.}
+
+\item{xLevel}{(\code{integer})\cr the levels for the doses the patients have been given,
+w.r.t \code{doseGrid}.}
+}
 \description{
 \ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#stable}{\figure{lifecycle-stable.svg}{options: alt='[Stable]'}}}{\strong{[Stable]}}
 

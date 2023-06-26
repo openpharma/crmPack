@@ -19,10 +19,20 @@ DataOrdinal(
 )
 }
 \arguments{
+\item{x}{(\code{numeric})\cr the doses for the patients.}
+
+\item{y}{(\code{integer})\cr the vector of toxicity events (0 or 1 integers).}
+
+\item{doseGrid}{(\code{numeric})\cr the vector of all possible doses (sorted),
+i.e. the dose grid.}
+
+\item{placebo}{(\code{logical})\cr if \code{TRUE} the first dose level
+in the \code{doseGrid}is considered as PLACEBO.}
+
 \item{yCategories}{(\verb{named integer vector})\cr the names and codes for the
 toxicity categories used in the data.  Category labels are taken from the
 names of the vector.  The names of the vector must be unique and its values
-must be sorted and take the values 0, 1, 2, ...}
+must be sorted and take the values 0, 1, 2, ...##'}
 }
 \description{
 \ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#experimental}{\figure{lifecycle-experimental.svg}{options: alt='[Experimental]'}}}{\strong{[Experimental]}}
@@ -31,12 +41,16 @@ must be sorted and take the values 0, 1, 2, ...}
 It inherits from \code{\link{GeneralData}} and it describes toxicity responses on an
 ordinal rather than binary scale.
 }
+\details{
+The \code{cohort} can be missing if and only if \code{placebo} is equal to
+\code{FALSE}.
+}
 \note{
 This class has been implemented as a sibling of the existing \code{Data} class
 (rather than as a parent or child) to minimise the risk of unintended side
 effects on existing classes and methods.
 
-The default setting for the \code{yCagetories} slot replicates the behaviour
+The default setting for the \code{yCategories} slot replicates the behaviour
 of the existing \code{Data} class.
 }
 \examples{

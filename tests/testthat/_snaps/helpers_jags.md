@@ -3,16 +3,22 @@
     Code
       readLines(model_file)
     Output
-      [1] "model"                     "{"                        
-      [3] "    alpha0 <- mean(1:10)"  "    alpha1 <- 6.00000E+05"
-      [5] "}"                        
+      [1] ""                                                        
+      [2] "model"                                                   
+      [3] "{"                                                       
+      [4] "    alpha0 <- mean(1:10)"                                
+      [5] "    alpha1 <- 6.00000E+05"                               
+      [6] "    class(x) <- unique.default(c(\"AsIs\", oldClass(x)))"
+      [7] "    x"                                                   
+      [8] "}"                                                       
 
 # h_jags_write_model works as expected for truncation
 
     Code
       readLines(model_file)
     Output
-      [1] "model"                       "{"                          
-      [3] "    alpha0 <- dnorm(4) I(4)" "    alpha1 <- 6.00000E+05"  
-      [5] "}"                          
+      [1] ""                            "model"                      
+      [3] "{"                           "    alpha0 <- dnorm(4) I(4)"
+      [5] "    alpha1 <- 6.00000E+05"   "    alpha0 <- dnorm(4) I(4)"
+      [7] "    alpha1 <- 6.00000E+05"   "}"                          
 

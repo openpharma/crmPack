@@ -4,10 +4,14 @@
 \alias{h_jags_write_model}
 \title{Writing JAGS Model to a File}
 \usage{
-h_jags_write_model(model, file = NULL, digits = 5)
+h_jags_write_model(model, from_prior, file = NULL, digits = 5)
 }
 \arguments{
-\item{model}{(\code{function})\cr function containing the JAGS model.}
+\item{model}{(\code{GeneralModel})\cr object defining the JAGS model.}
+
+\item{from_prior}{(\code{flag})\cr sample from the prior only? Default to \code{TRUE}
+when number of observations in \code{data} is \code{0}. For some models it might be
+necessary to specify it manually here though.}
 
 \item{file}{(\code{string} or \code{NULL})\cr the name of the file (including the
 optional path) where the model will be saved. If \code{NULL}, the file will be
