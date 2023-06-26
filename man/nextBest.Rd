@@ -557,9 +557,7 @@ print(dose_recommendation$plot)
 
 # Show customization of single plot.
 variant1 <- dose_recommendation$singlePlots$plot1 + xlim(0, 20)
-# nolint start
-# print(variant1)
-# nolint end
+print(variant1)
 
 # Example of usage for `NextBestTD` NextBest class.
 my_data <- Data(
