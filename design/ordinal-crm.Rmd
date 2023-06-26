@@ -392,6 +392,13 @@ than subclasse it, we need to make sure that the `Data` instances that are passe
 existing models have `length(yCategories) <= 2`, which would be quite unpractical. Not to mentioned
 some other changes to `Data` specific methods, such as, `update`, `plot` or validation function.
 
+# Implementation
+
+## Data-class (DataOrdinal)
+```{r}
+
+```
+
 ## Model-class (LogisticLogNormOrd)
 
 For simplicity of notation, unless we need to refer to particular subjects or to particular values
