@@ -130,6 +130,7 @@ h_jags_get_data <- function(model, data, from_prior) {
   } else {
     h_slots(data, ms_args_names)
   }
+
   modelspecs <- do.call(model@modelspecs, ms_args)
   assert_list(modelspecs)
 
