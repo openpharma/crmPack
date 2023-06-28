@@ -1,0 +1,1617 @@
+---
+title: "Design of ordinal CRM"
+author: "John Kirkpatrick and Wojciech Wójciak"
+date: "Last run on `r Sys.Date()` by `r Sys.info()[['user']]` on `r Sys.info()['nodename']`"
+output:
+  # pdf_document:
+  #   number_sections: true
+  html_document:
+    number_sections: true
+---
+
+```{r setup, include=FALSE}
+library(crmPack)
+library(checkmate)
+library(ggplot2)
+
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+# The statistical model and theory about it.
+
+The patient's toxicity response is not binary (no DLT, DLT) but categorical (for example: no DLT,
+sub-DLT, DLT). Furthermore, multicategory toxicity responses are treated as ordinal due to their
+ordinal characteristics such as a monotone trend.
+
+## The model: Cumulative Link Models
+
+These type of responses can be modeled using Generalized Linear Model (GLM), where the model is
+expressed in terms of the cumulative response probabilities. Hence, the name: Cumulative Link Model,
+or CLM. The CLM assumes the form: $$
+h[p_{ij}] = h[P(Y_i \leq j)] = \alpha_j + \mathbf x_i^T \boldsymbol \beta, \qquad j = 1, \ldots, c - 1; \, i \geq 1
+$$ where $c \in \{2, 3, \ldots \}$ denotes a number of toxicity categories on ordinal scale, and the
+components of the model are as follows:
+
+1.  $h$ - link function. The most common link functions are "logit" and "probit", which result in
+    Cumulative Logit Model and Cumulative Probit Model respectively.
+2.  $Y_i$ - random variable that represents the response outcome category for subject $i \geq 1$,
+    i.e. $supp(Y_i) = \{1, 2, \ldots, c\},\, i \geq 1$. Probabilities
+    $P(Y_i = j),\, j = 1, \ldots, c$, for $i \geq 1$, are called category probabilities, and the
+    cumulative response probabilities for subject $i \geq 1$ are defined as
+    $$p_{ij} = P(Y_i \leq j) = P(Y_i = 1) + \cdots + P(Y_i = j), \qquad j = 1, \ldots, c; ~ i \geq 1,$$
+3.  $\mathbf x_i$ - a vector of covariates corresponding to main effects and interactions for
+    subject $i \geq 1$.
+4.  $\alpha_j$, $j = 1, \ldots, c - 1$ are "cutpoints" and $\boldsymbol\beta$ is a vector of effects
+    (without intercept term). Although each response category has a corresponding cutpoint, the
+    regression coefficients $\boldsymbol\beta$ are constant across categories. Each cumulative logs
+    has its own intercept ("cutpoint"). Furthermore, if link function $h$ is strictly increasing
+    function of $P(Y_i \leq j)$, $i \geq 1$ (such as logit or probit), then \begin{equation}
+      \label{alpha_ordering0}
+      -\infty < \alpha_1 < \alpha_2 < \cdots < \alpha_{c-1} < \infty,
+    \end{equation} because $P(Y_i \leq j)$ increases in $j$ at any fixed $\mathbf x_i$.
+
+Note that a model for $logit[p_{ij}]$ alone is an ordinary logistic model for a binary response in
+which categories $1$ to $j$ represent "success" and categories $j+1$ to $c$ represent "failure".
+
+### Why cumulative probabilities rather than category probabilities?
+
+As explained by McCullagh and Nelder (1989), the choice and definition of response categories is
+often arbitrary. It is essential, therefore, if we are to arrive at valid conclusions, that the
+nature of those conclusions should not be affected by the number of choice of response categories.
+Such considerations lead to models that based on the cumulative probabilities rather than category
+probabilities. These two sets of probabilities are equivalent, but simple models for the cumulative
+probabilities are likely to have better properties for ordinal response scales than equally simple
+models based on the category probabilities.
+
+### Backward compatible CLM model
+
+In current version of the `crmPack`, we support only two toxicity categories, i.e. no DLT and DLT.
+We code it as 0 (no DLT) and 1 (DLT) and we compute the probability of the DLT, i.e.
+$0 < P(DLT) < 1$. To preserve this schema for multi-category toxicities, we propose the following
+form of the CLM model:
+
+```{=tex}
+\begin{equation}
+  \label{model}
+  h[p_{ij}] = h[P(Y_i \geq j)] = \alpha_j + \mathbf x_i^T \boldsymbol \beta, \qquad j = 0, \ldots, c-1, \; i \geq 1,
+\end{equation}
+```
+where $c \in \mathbb N$, such that $c \geq 2$, denotes a number of toxicity categories on ordinal
+scale. This yields:
+
+```{=tex}
+\begin{equation}
+  \label{alpha_ordering}
+  \infty > \alpha_0 > \cdots > \alpha_{c-1} > -\infty.
+\end{equation}
+```
+This convention directly simplifies to existing `crmPack` coding for $c = 2$, i.e. $$
+P(DLT) = P(Y \geq 1) = P(Y = 1)
+$$ Also, since $P(Y \geq 0) = 1$, we are not interested in specifying $\alpha_0$.
+
+## The prior
+
+Specifying prior for $\boldsymbol \beta$ is straightforward. Let
+$\boldsymbol \alpha = [\alpha_1, \ldots, \alpha_{c-1}]^T$ be a random vector, where $c \geq 2$
+denotes a number of toxicity categories. Specifying prior for $\boldsymbol \alpha$ is challenging
+because of the ordering restriction \eqref{alpha_ordering} (or \eqref{alpha_ordering0}). In the
+following sections we present most popular approaches that are discussed in currently available
+subject domain literature, including our own comments and considerations.
+
+### Truncated prior distribution (we propose to implement this approach in crmPack)
+
+We specify this prior for model \eqref{model}.
+
+\begin{equation}
+  \label{prior1}
+  \begin{aligned}
+    \alpha_1 &\sim \mathcal{N}(\mu_1, \sigma^2_1), \\
+    \alpha_j | \alpha_{j-1} &\sim \mathcal{N}(\mu_j, \sigma^2_j)\, T(-\infty, \alpha_{j-1}), \quad j = 2, \ldots, c - 1 \geq 2,
+  \end{aligned}
+\end{equation} where $\mu_j \in \mathbb R$, $\sigma^2_j \in \mathbb R_+$. This yields
+$supp(\alpha_j) = (-\infty, \alpha_{j-1})$, $j = 2, \ldots, c - 1 \geq 2$, ensuring
+\eqref{alpha_ordering}.
+
+See McKinley et al. (2013) (equation (11)) and the references given therein, i.e. Albert and Chib
+(1993), Johnson and Albert (1999), Congdon (2005). Eventually see James et al. (2022)
+
+However, we see the following issues (drawbacks) with this model:
+
+1.  If $\alpha_k$ for some $k \in \{1, \ldots, c - 2\}$ is small by a chance, then it forces that
+    $\alpha_{k+1}$ will be even smaller, regardless of whether it is practically justified. This may
+    become an issue, especially if the number of categories $c$ is high. So the alternative could be
+    doubly-truncated distributions, which is somehow given in Congdon (2005), but it is unclear to
+    me how this should be used exactly. \newline John's experience is that it has not been an issue
+    in the models he has fitted to date.
+
+2.  It might not be entirely clear for the user what the exact (unconditional) distributions of
+    $\alpha_2, \ldots, \alpha_{c-1}$ are, as well as what the var-cov structure for
+    $\boldsymbol \alpha$ is. The user can obliviously work it out, but to do that, he needs to know
+    about conditional probability distributions tools and methods and it is still not that trivial.
+    For instance, see just the beginning of the computations for a bivariate $\boldsymbol \alpha$.
+    $$
+    \begin{aligned}
+      f_{\alpha_2}(x_2) &=  \int_{\mathbb R} f_{\alpha_1, \alpha_2}(x_1, x_2) \, dx_1 \\
+      & = \int_{\mathbb R} f_{\alpha_2|\alpha_1 = x_1} (x_2) f_{\alpha_1} (x_1) dx_1 \\
+      &= \int_{\mathbb R} \tfrac{1}{\sigma_2} \tfrac{\varphi(\tfrac{x_2 - \mu_2}{\sigma_2})}{\Phi(\tfrac{x_1 - \mu_2}{\sigma_2})}  I(x_2 < x_1) \tfrac{1}{\sigma_1} \varphi(\tfrac{x_1 - \mu_1}{\sigma_1}) \, dx_1 \\
+      &= \tfrac{1}{\sigma_1 \sigma_2} \varphi(\tfrac{x_2 - \mu_2}{\sigma_2}) \int_{x_2}^{\infty} \tfrac{\varphi(\tfrac{x_1 - \mu_1}{\sigma_1})}{\Phi(\tfrac{x_1 - \mu_2}{\sigma_2})} \, dx_1 \\
+      &= ...
+      \end{aligned}
+    $$ for $x_2 \in \mathbb R$, where $\varphi$ is the probability density function of the standard
+    normal distribution and $\Phi$ is its cumulative distribution function. Below is the example
+    shape of $f_{\alpha_2}$ function.
+
+```{r f_alpha2, eval=TRUE, fig.height = 3, fig.width = 5, fig.align = "center"}
+    f <- function(x2, mu1 = 8, mu2 = 5, sd1 = 2, sd2 = 2) {
+      phi <- dnorm
+      Phi <- pnorm
+      to_integrate <- function(x1, mu1, mu2, sd1, sd2) {
+        phi((x1 - mu1) / sd1) / Phi((x1 - mu2) / sd2)
+      }
+      intgrl <- integrate(
+        to_integrate,
+        lower = x2, upper = Inf,
+        mu1 = mu1, mu2 = mu2, sd1 = sd1, sd2 = sd2
+      )
+      1 / (sd1 * sd2) * phi((x2 - mu2) / sd2) * intgrl$value
+    }
+    f <- Vectorize(f)
+    
+    ggplot() +
+      geom_function(fun = dnorm, colour = "black", args = list(mean = 5, sd = 2)) +
+      geom_function(fun = f, colour = "red") +
+      scale_x_continuous(breaks = seq(-5, 15, 2), limits = c(-5, 15)) +
+      xlab("x2") +
+      ylab("PDF") +
+      ggtitle("PDF of: N(5, sd = 2) [black] and alpha2 (uncond.) [red]")
+    
+    optimize(f, interval = c(1, 7), maximum = TRUE)
+```
+
+3.  In JAGS, we can specify $\alpha_j,\, j = 2, \ldots, c - 1$ with
+
+    ```{=tex}
+    \begin{center}
+      \tt alpha[j] $\sim$ dnorm(meanAlpha[j], precAlpha[j]) T(, alpha[j-1])
+    \end{center}
+    ```
+    However, I think we need to make sure the sample that is being obtained by this is indeed from
+    an unconditional distribution of $\alpha_j$, $j = 2, \ldots, c-1$.
+
+### Multivariate Truncated Normal Distribution
+
+We specify this prior for model \eqref{model}.
+
+This approach allows a user for a full control of var-cov structure of random vector
+$\boldsymbol \alpha$. Following [15], we specify distribution of $\boldsymbol \alpha$ as
+multivariate truncated normal distribution. Consider first
+$\boldsymbol \alpha^* \sim N_{c-1}(\boldsymbol \mu, \Sigma)$. Now, let $\boldsymbol \alpha$ be
+truncation of $\boldsymbol \alpha^*$ above $\boldsymbol k \in \mathbb R^{c-1}$. $\boldsymbol \alpha$
+has a $(c-1)$-variate truncated normal distribution given by $$
+f_{\boldsymbol \alpha}(\boldsymbol x; \boldsymbol \mu, \Sigma, \boldsymbol k) =
+\frac{exp\{-\tfrac{1}{2}(\boldsymbol x - \boldsymbol \mu)^T \Sigma (\boldsymbol x - \boldsymbol \mu)\}}
+{\idotsint_{R^{c-1}_{\leq \boldsymbol k}} exp\{-\tfrac{1}{2}(\boldsymbol x - \boldsymbol \mu)^T \Sigma (\boldsymbol x - \boldsymbol \mu)\} \,dx_1 \dots dx_{c-1}}
+$$ where $$
+\begin{aligned}
+\boldsymbol x &\in \mathbb R^{c-1}_{\leq \boldsymbol k} \\
+\boldsymbol \mu &\in \mathbb R^{c-1} \\
+\Sigma &\text{ is } (c-1) \times (c-1) \text{ var-cov matrix,} \\
+\boldsymbol k &\in \mathbb R^{c-1},
+\end{aligned}
+$$ with $c \geq 2$. Due to CLM model restriction \eqref{alpha_ordering}, we further require that
+$\boldsymbol k = [k_1, k_2, \ldots, k_{c-1}]^T$ is such that
+$\infty = k_1 > k_2 > \cdots > k_{c-1} > -\infty$. Note that for $c = 2$ we obtain a univariate
+normal distribution without truncation, which somehow corresponds to $\alpha_1$ in \eqref{prior1}.
+
+Unfortunately, the marginals of multivariate truncated normal variates do not need to be truncated
+normal in general. The exact formula for the marginal probability densities functions are given in
+[16].
+
+Then, in JAGS we would simply need to generate these marginal r.vs. (see also `tmvtnorm` R package)
+
+### Transformation of the intercepts to an unconstrained space
+
+$\delta_1$ := $log(\alpha_1)$, $\delta_j$ := $log(\alpha_j - \alpha_{j-1})$,
+$j = 2, \ldots, c - 1 \geq 2$. Then, e.g. $\boldsymbol \delta \sim \mathcal{N}_{c-1}(\mu, \Sigma)$.
+
+Note that it is required that $\alpha_1$ \> $0$.
+
+See Albert and Chib (1997) for more details.
+
+### An ordered uniform distribution (Ishwaran, 2000)
+
+This approach was mentioned in few sources, but it is still a bit unclear to me. For instance, in
+Congdon (2005), on page 239, the author writes: "An alternative suggested by Ishwaran (2000) is a
+uniform density $$
+0 = \alpha_1 < \alpha_2 < \cdots < \alpha_{c-1} = U,
+$$ where $U$ is equal to or less than $c$." I think this approach is about to a simple sequence or
+non overlapping uniform distributions.
+
+### Latent response model
+
+With this approach, the observed response $Y$ is often taken to reflect an underlying continuous
+random variable $Y^*$ with $c-1$ thresholds or cut points. Albert and Chib (1993) presented a
+Bayesian analysis that utilizes the latent (response) variable model: $$
+Y^*_i = \mathbf x_i^T \boldsymbol\beta + \epsilon_i, \qquad i \geq 1,
+$$ where $\epsilon_i$ are iid and $\epsilon_i \sim \mathcal{N}(0, 1), i \geq 1$. Here we have that
+$$
+Y_i = j \quad \text{iff} \quad \alpha_{j-1} < Y^*_i \leq \alpha_j, \quad j = 2, \ldots, c - 1,
+$$ where $\alpha_0 := -\infty$ and $\alpha_c := \infty$.
+
+Following Congdon (2005) (see Chapter 7.2) that is based on Johnson and Albert (1999) (Chapter 4.3),
+the cut points are sampled in a way that takes account of the sampled $Y^*$. Thus, at iteration $t$:
+$$
+\alpha^{(t)}_j \sim \mathcal{N}(0, V_{\alpha})\, T(L_j, U_j), \quad j = 1, \ldots, c-1,\\
+$$ where $V_{\alpha}$ is preset and $$
+L_j = max(Y^{*(t)},\, Y_i = j) \\
+U_j = min(Y^{*(t)},\, Y_i = j+1)
+$$ and $$
+Y_i^* \sim \mathcal{N}(\mathbf x_i^T \boldsymbol\beta, \gamma_i)\, T(\alpha_{y_{i-1}}, \alpha_{y_i}),
+$$ where $\gamma_i \sim Ga(0.5v, 0.5v)$, with $v$ preset.
+
+
+# Implementation
+
+> The bodies of `v_xxxx` functions are not shown for brevity and the corresponding slots in new classes are consequently commented out.  Also various helper functions that are not exported from `crmpack` are referenced using `:::` in this sample code.  This will be changed in production.
+## Data-class (DataOrdinal)
+
+Add to `Data-class.R`
+
+```{r}
+# DataOrdinal ----
+
+## class ----
+
+#' `DataOrdinal`
+#'
+#' @description `r lifecycle::badge("experimental")`
+#'
+#' [`DataOrdinal`] is a class ordinal toxicity data.
+#' It inherits from [`GeneralData`] and it describes toxicity responses on an
+#' ordinal rather than binary scale.
+#'
+#' @note This class has been implemented as a sibling of the existing `Data` class
+#' (rather than as a parent or child) to minimise the risk of unintended side
+#' effects on existing classes and methods.
+#'
+#' @note The default setting for the `yCategories` slot replicates the behaviour
+#' of the existing `Data` class.
+#'
+#' @inheritParams Data
+#' @aliases DataOrdinal
+#' @export
+.DataOrdinal <- setClass(
+  Class = "DataOrdinal",
+  contains = "GeneralData",
+  slots = c(
+    x = "numeric",
+    y = "integer",
+    doseGrid = "numeric",
+    nGrid = "integer",
+    xLevel = "integer",
+    yCategories = "integer",
+    placebo = "logical"
+  ),
+  prototype = prototype(
+    x = numeric(),
+    y = integer(),
+    doseGrid = numeric(),
+    nGrid = 0L,
+    xLevel = integer(),
+    yCategories = c("No DLT" = 0L, "DLT" = 1L),
+    placebo = FALSE
+  )
+  # ,
+  # validity = v_data_ordinal
+)
+
+## constructor ----
+
+#' @rdname DataOrdinal-class
+#' @param yCategories (`named integer vector`)\cr the names and codes for the
+#' toxicity categories used in the data.  Category labels are taken from the
+#' names of the vector.  The names of the vector must be unique and its values
+#' must be sorted and take the values 0, 1, 2, ...##'
+#' @inherit Data details note params
+#' @example examples/Data-class-DataOrdinal.R
+#' @export
+DataOrdinal <- function(
+    x = numeric(),
+    y = integer(),
+    ID = integer(),
+    cohort = integer(),
+    doseGrid = numeric(),
+    placebo = FALSE,
+    yCategories = c("No DLT" = 0L, "DLT" = 1L),
+    ...
+) {
+  assert_numeric(x)
+  assert_numeric(y)
+  assert_numeric(ID)
+  assert_numeric(cohort)
+  assert_numeric(doseGrid, any.missing = FALSE, unique = TRUE)
+  assert_numeric(yCategories, any.missing = FALSE, unique = TRUE)
+  assert_character(names(yCategories), any.missing = FALSE, unique = TRUE)
+  assert_flag(placebo)
+
+  doseGrid <- as.numeric(sort(doseGrid))
+
+  if (length(ID) == 0 && length(x) > 0) {
+    message("Used default patient IDs!")
+    ID <- seq_along(x)
+  }
+
+  if (!placebo && length(cohort) == 0 && length(x) > 0) {
+    message("Used best guess cohort indices!")
+    # This is just assuming that consecutive patients
+    # in the data set are in the same cohort if they
+    # have the same dose. Note that this could be wrong,
+    # if two subsequent cohorts are at the same dose.
+    cohort <- as.integer(c(1, 1 + cumsum(diff(x) != 0)))
+  }
+
+  .DataOrdinal(
+    x = as.numeric(x),
+    y = crmPack:::safeInteger(y),
+    ID = crmPack:::safeInteger(ID),
+    cohort = crmPack:::safeInteger(cohort),
+    doseGrid = doseGrid,
+    nObs = length(x),
+    nGrid = length(doseGrid),
+    xLevel = matchTolerance(x = x, table = doseGrid),
+    placebo = placebo,
+    yCategories = yCategories
+  )
+}
+```
+
+Create a test object
+
+```{r}
+ordinal_data <- DataOrdinal(
+  doseGrid = seq(10, 100, 10),
+  x = c(10, 20, 30, 40, 50, 50, 50),
+  y = c(0L, 0L, 0L, 0L, 0L, 1L, 2L),
+  ID = 1L:7L,
+  cohort = as.integer(c(1:4, 5, 5, 5)),
+  yCategories = c("No Tox" = 0L, "Sub tox AE" = 1L, "DLT" = 2L)
+)
+
+ordinal_data
+```
+
+### update-DataOrdinal
+
+Add to `data-methods-R`
+```{r}
+## DataOrdinal ----
+
+#' Updating `DataOrdinal` Objects
+#'
+#' @description `r lifecycle::badge("experimental")`
+#'
+#' A method that updates existing [`DataOrdinal`] object with new data.
+#'
+#' @param object (`DataOrdinal`)\cr object you want to update.
+#' @param x (`number`)\cr the dose level (one level only!).
+#' @param y (`integer`)\cr the DLT vector for all patients in this
+#'   cohort. You can also supply `numeric` vectors, but these will then be
+#'   converted to `integer` internally.
+#' @param ID (`integer`)\cr the patient IDs.
+#'   You can also supply `numeric` vectors, but these will then be converted to
+#'   `integer` internally.
+#' @param new_cohort (`flag`)\cr if `TRUE` (default) the new data are assigned
+#'   to a new cohort.
+#' @param check (`flag`)\cr whether the validation of the updated object should
+#'   be conducted. Current implementation of this `update` method allows for
+#'   updating the `DataOrdinal` class object by adding a single dose level `x` only.
+#'   However, there might be some use cases where the new cohort to be added
+#'   contains a placebo and active dose. Hence, such update would need to be
+#'   performed iteratively by calling the `update` method twice. For example,
+#'   in the first call a user can add a placebo, and then in the second call,
+#'   an active dose. Since having a cohort with placebo only is not allowed,
+#'   the `update` method would normally throw the error when attempting to add
+#'   a placebo in the first call. To allow for such updates, the `check`
+#'   parameter should be then set to `FALSE` for that first call.
+#' @param ... not used.
+#'
+#' @return The new, updated [`DataOrdinal`] object.
+#'
+#' @rdname update-DataOrdinal
+#' @export
+#' @example examples/DataOrdinal-method-update.R
+#'
+setMethod(
+  f = "update",
+  signature = signature(object = "DataOrdinal"),
+  definition = function(object,
+                        x,
+                        y,
+                        ID = length(object@ID) + seq_along(y),
+                        new_cohort = TRUE,
+                        check = TRUE,
+                        ...) {
+    assert_numeric(x, min.len = 0, max.len = 1)
+    assert_numeric(y, lower = 0, upper = length(object@yCategories) - 1)
+    assert_numeric(ID, len = length(y))
+    assert_disjunct(object@ID, ID)
+    assert_flag(new_cohort)
+    assert_flag(check)
+
+    # How many additional patients, ie. the length of the update.
+    n <- length(y)
+
+    # Which grid level is the dose?
+    gridLevel <- matchTolerance(x, object@doseGrid)
+    object@xLevel <- c(object@xLevel, rep(gridLevel, n))
+
+    # Add dose.
+    object@x <- c(object@x, rep(as.numeric(x), n))
+
+    # Add DLT data.
+    object@y <- c(object@y, crmPack:::safeInteger(y))
+
+    # Add ID.
+    object@ID <- c(object@ID, crmPack:::safeInteger(ID))
+
+    # Add cohort number.
+    new_cohort_id <- if (object@nObs == 0) {
+      1L
+    } else {
+      tail(object@cohort, 1L) + ifelse(new_cohort, 1L, 0L)
+    }
+    object@cohort <- c(object@cohort, rep(new_cohort_id, n))
+
+    # Increment sample size.
+    object@nObs <- object@nObs + n
+
+    if (check) {
+      validObject(object)
+    }
+
+    object
+  }
+)
+
+update(ordinal_data, x = 60, y = c(0L, 1L, 0L))
+```
+
+### dose_grid_range-DataOrdinal
+
+Add to `data-Methods.R`
+
+```{r}
+## DataOrdinal ----
+#' @include Data-methods.R
+#' @rdname dose_grid_range
+#'
+#' @param ignore_placebo (`flag`)\cr should placebo dose (if any) not be counted?
+#'
+#' @aliases dose_grid_range-Data
+#' @example examples/DataOrdinal-method-dose_grid_range.R
+#'
+setMethod(
+  f = "dose_grid_range",
+  signature = signature(object = "DataOrdinal"),
+  definition = function(object, ignore_placebo = TRUE) {
+    assert_flag(ignore_placebo)
+
+    dose_grid <- if (ignore_placebo && object@placebo && object@nGrid >= 1) {
+      object@doseGrid[-1]
+    } else {
+      object@doseGrid
+    }
+
+    if (length(dose_grid) == 0L) {
+      c(-Inf, Inf)
+    } else {
+      range(dose_grid)
+    }
+  }
+)
+
+dose_grid_range(ordinal_data)
+```
+
+### plot-DataOrdinal
+
+Much of the code in `plot` is common to objects of both `Data` and `DataOrdinal`, but there are some differences.  If `DataOrdinal` were the super-class of `Data` (or vice versa), we could use standard inheritance to reuse the common code.  But they are siblings.  So introduce new helper function and modify the body of `plot-Data` accordingly.  Place the helper functions in a new file `helpers-data.R`.
+
+`helpers-data.R`
+
+```{r}
+
+h_blind_plot_data <- function(df, blind, has_placebo, pbo_dose) {
+  if (blind) {
+    # This is to blind the data.
+    # For each cohort, all DLTs are assigned to the first subjects in the cohort.
+    # In addition, the placebo (if any) is set to the active dose level for that
+    # cohort.
+    # Notice: dapply reorders records of df according to the lexicographic order
+    # of cohort.
+    df <- dapply(df, f = ~cohort, FUN = function(coh) {
+      coh$toxicity <- sort(coh$toxicity, decreasing = TRUE)
+      coh$dose <- max(coh$dose)
+      coh
+    })
+  } else if (has_placebo) {
+    # Placebo will be plotted at y = 0 level.
+    df$dose[df$dose == pbo_dose] <- 0
+  }
+  df
+}
+
+# h_plot_data_df ----
+
+## generic ----
+
+#' Helper Function for the Plot Method of subclasses of [`GeneralData`]
+#'
+#' @description `r lifecycle::badge("experimental")`
+#'
+#' A method that transforms [`GeneralData`]  objects into a `tibble` suitable for
+#' plotting with `ggplot2` methods
+#'
+#' @param data (`GeneralData`)\cr object from which data is extracted and converted
+#' into a data frame.
+#' @param ... further arguments passed to class-specific methods.
+#' @return `data.frame` containing columns for patient, cohort, dose and toxicity grade
+#' @aliases h_plot_data_df
+#'
+setGeneric(
+  name = "h_plot_data_df",
+  def = function(data, ...) standardGeneric("h_plot_data_df"),
+  valueClass = "data.frame"
+)
+
+# Data ----
+
+#' Helper Function for the Plot Method of [`Data`]
+#'
+#' @param data (`Data`)\cr object from which data is extracted and converted
+#'   into a data frame.
+#' @param blind (`flag`)\cr should data be blinded?
+#'   If `TRUE`, then for each cohort, all DLTs are assigned to the first
+#'   subjects in the cohort. In addition, the placebo (if any) is set to the
+#'   active dose level for that cohort.
+#' @param legend (`flag`)\cr Display the legend for the toxicity categories
+#' @param ... further arguments passed to `data.frame` constructor.
+#'   It can be e.g. an extra `column_name = value` pair based on a slot
+#'   from `x` (which in this case might be a subclass of `Data`)
+#'   which does not appear in `Data`.
+#' @return A [`data.frame`] object with columns patient, ID, cohort, dose and
+#' toxicity.
+#' @describeIn h_plot_data_df Class specific method for [`Data`]
+setMethod(
+  f = "h_plot_data_df",
+  signature = signature(data = "Data"),
+  definition = function(data, blind = FALSE, legend = TRUE, ...) {
+    df <- data.frame(
+      patient = seq_along(data@x),
+      ID = paste(" ", data@ID),
+      cohort = data@cohort,
+      dose = data@x,
+      toxicity = ifelse(data@y == 1, "Yes", "No"),
+      ...
+    )
+    df <- h_blind_plot_data(df, blind, data@placebo, data@doseGrid[1])
+    df
+  }
+)
+
+# DataOrdinal ----
+
+#' Helper Function for the Plot Method of [`DataOrdinal`]
+#'
+#' @param data (`DataOrdinal`)\cr object from which data is extracted and converted
+#'   into a data frame.
+#' @param blind (`flag`)\cr should data be blinded?
+#'   If `TRUE`, then for each cohort, all DLTs are assigned to the first
+#'   subjects in the cohort. In addition, the placebo (if any) is set to the
+#'   active dose level for that cohort.
+#' @param ... further arguments passed to `data.frame` constructor.
+#'   It can be e.g. an extra `column_name = value` pair based on a slot
+#'   from `x` (which in this case might be a subclass of `Data`)
+#'   which does not appear in `Data`.
+#' @return A [`data.frame`] object with values to plot.
+#' @describeIn h_plot_data_df Class specific method for [`DataOrdinal`]
+setMethod(
+  f = "h_plot_data_df",
+  signature = signature(data = "DataOrdinal"),
+  definition = function(data, blind = FALSE, legend = TRUE, ...) {
+    df <- data.frame(
+      patient = seq_along(data@x),
+      ID = paste(" ", data@ID),
+      cohort = data@cohort,
+      dose = data@x,
+      toxicity = names(data@yCategories)[1 + data@y],
+      ...
+    )
+    df <- h_blind_plot_data(df, blind, data@placebo, data@doseGrid[1])
+    df
+  }
+)
+
+
+# h_plot_data_dataordinal
+
+## Data ----
+
+#' Helper Function for the Plot Method of the Data and DataOrdinal Classes
+#'
+#' @description `r lifecycle::badge("stable")`
+#'
+#' A method that creates a plot for [`Data`]  and [`DataOrdinal`] objects.
+#'
+#' @param x (`Data`)\cr object we want to plot.
+#' @param y (`missing`)\cr missing object, for compatibility with the generic
+#'   function.
+#' @param blind (`flag`)\cr indicates whether to blind the data.
+#'   If `TRUE`, then placebo subjects are reported at the same level
+#'   as the active dose level in the corresponding cohort,
+#'   and DLTs are always assigned to the first subjects in a cohort.
+#' @param tox_labels (`character`)\cr the toxicity category labels
+#' @param tox_shapes (`integer`)\cr the shapes used to plot the various toxicity
+#' categories
+#' @param legend (`flag`)\cr whether the legend should be added.
+#' @param ... not used.
+#'
+#' @note The default values of `tox_shapes` and `tox_labels` result in DLTs
+#' being displayed as red triangles and other responses as black circles.
+#' @return The [`ggplot2`] object.
+#'
+#' @rdname plot-Data
+h_plot_data_dataordinal <- function(
+    x,
+    blind = FALSE,
+    legend = TRUE,
+    tox_labels = c(Yes = "red", No = "black"),
+    tox_shapes = c(Yes = 17L, No = 16L),
+    ...) {
+  assert_flag(blind)
+  assert_flag(legend)
+  assert_character(tox_labels, any.missing = FALSE, unique = TRUE)
+  assert_integer(tox_shapes, any.missing = FALSE, unique = TRUE)
+  assert_true(length(tox_shapes) == length(tox_labels))
+  assert_subset(x@y, as.integer(0:(length(tox_shapes) - 1)))
+    if (x@nObs == 0L) {
+    return()
+  }
+  df <- h_plot_data_df(x, blind, ...)
+
+  p <- ggplot(df, aes(x = patient, y = dose)) +
+    geom_point(aes(shape = toxicity, colour = toxicity), size = 3) +
+    scale_colour_manual(
+      name = "Toxicity",
+      values = tox_labels,
+      breaks = names(tox_labels),
+      guide = guide_legend(reverse = TRUE)
+    ) +
+    scale_shape_manual(
+      name = "Toxicity",
+      values = tox_shapes,
+      breaks = names(tox_shapes),
+      guide = guide_legend(reverse = TRUE)
+    ) +
+    scale_x_continuous(breaks = df$patient, minor_breaks = NULL) +
+    scale_y_continuous(
+      breaks = sort(unique(c(0, df$dose))),
+      minor_breaks = NULL,
+      limits = c(0, max(df$dose) * 1.1)
+    ) +
+    xlab("Patient") +
+    ylab("Dose Level")
+
+  p <- p + crmPack:::h_plot_data_cohort_lines(df$cohort, placebo = x@placebo)
+
+  if (!blind) {
+    p <- p +
+      geom_text(
+        aes(label = ID, size = 2),
+        data = df,
+        hjust = 0,
+        vjust = 0.5,
+        angle = 90,
+        colour = "black",
+        show.legend = FALSE
+      )
+  }
+
+  if (!legend) {
+    p <- p + theme(legend.position = "none")
+  }
+
+  p
+}
+```
+
+Modify `plot-Data` in `Data-methods.R`
+
+```{r}
+#' Plot Method for the [`Data`] Class
+#'
+#' @description `r lifecycle::badge("stable")`
+#'
+#' A method that creates a plot for [`Data`] object.
+#'
+#' @rdname plot-Data
+#' @export
+#' @example examples/Data-method-plot.R
+#'
+setMethod(
+  f = "plot",
+  signature = signature(x = "Data", y = "missing"),
+  definition = function(x, y, blind = FALSE, legend = TRUE, ...) {
+    h_plot_data_dataordinal(x, blind, legend, ...)
+  }
+)
+```
+
+Add to `Data-methods.R`
+
+```{r, fig.height=3, fig.width=6}
+## DataOrdinal ----
+
+#' Plot Method for the [`DataOrdinal`] Class
+#'
+#' @description `r lifecycle::badge("experimental")`
+#'
+#' A method that creates a plot for [`DataOrdinal`] object.
+#'
+#' @param x (`DataOrdinal`)\cr object we want to plot.
+#' @param y (`missing`)\cr missing object, for compatibility with the generic
+#'   function.
+#' @param blind (`flag`)\cr indicates whether to blind the data.
+#'   If `TRUE`, then placebo subjects are reported at the same level
+#'   as the active dose level in the corresponding cohort,
+#'   and DLTs are always assigned to the first subjects in a cohort.
+#' @param legend (`flag`)\cr whether the legend should be added.
+#' @param tox_labels (`named list of character`)\cr The labels of the toxicity
+#' categories
+#' @param tox_shapes (`names list of integers`)\cr The symbols used to identify
+#' the toxicity categories
+#' @param ... not used.
+#'
+#' @note With more than 9 toxicity categories, toxicity symbols must be
+#' specified manually.\cr With more than 5 toxicity categories, toxicity labels
+#' must be specified manually.
+#'
+#' @return The [`ggplot2`] object.
+#'
+#' @rdname plot-Data
+#' @export
+#' @example examples/DataOrdinal-method-plot.R
+setMethod(
+  f = "plot",
+  signature = signature(x = "DataOrdinal", y = "missing"),
+  definition = function(
+    x,
+    y,
+    blind = FALSE,
+    legend = TRUE,
+    tox_labels = NULL,
+    tox_shapes = NULL,
+    ...
+  ) {
+    if (is.null(tox_shapes)) {
+      assert_true(length(x@yCategories) <= 9)
+      tox_shapes <- c(17L, 16L, 15L, 18L, 0L:2L, 5L, 6L)[seq_along(x@yCategories)]
+      names(tox_shapes) <- names(x@yCategories)
+    }
+    if (is.null(tox_labels)) {
+      assert_true(length(x@yCategories) <= 5)
+      tox_labels <- switch(
+                  length(x@yCategories),
+                  c("black"),
+                  c("black", "red"),
+                  c("black", "orange", "red"),
+                  c("black", "green", "orange", "red"),
+                  c("black", "green", "yellow", "orange", "red")
+      )
+      names(tox_labels) <- names(x@yCategories)
+    }
+    h_plot_data_dataordinal(
+      x,
+      blind,
+      legend,
+      tox_labels = tox_labels,
+      tox_shapes = tox_shapes,
+      ...
+    )
+  }
+)
+
+plot(ordinal_data)
+
+ordinal_data1 <- ordinal_data
+ordinal_data1@placebo <- TRUE
+
+plot(ordinal_data1)
+```
+
+And, as a regression check...
+
+```{r, fig.height=3, fig.width=6}
+binary_data <- Data(
+  doseGrid = seq(10, 100, 10),
+  x = c(10, 20, 30, 40, 50, 50, 50),
+  y = c(0L, 0L, 0L, 0L, 0L, 1L, 1L),
+  ID = 1L:7L,
+  cohort = as.integer(c(1:4, 5, 5, 5))
+)
+
+plot(binary_data)
+
+binary_data1 <- binary_data
+binary_data1@placebo <- TRUE
+
+plot(binary_data1)
+```
+
+## Model-class (LogisticLogNormalOrdinal)
+
+For simplicity of notation, unless we need to refer to particular subjects or to particular values
+of the explanatory variables, we replace $p_{ij}$ (i.e. $P(X_i \geq j)$) in such equations by $p_j$
+(i.e. $P(Y \geq j)$), keeping in mind that in the model this is actually a conditional probability
+at each fixed value for the explanatory variables.
+
+The following basic CLM can be considered as a single-agent toxicity model, in which the covariate
+is the natural logarithm of the dose $x$ divided by the reference dose $x^*$, i.e.: $$
+logit[p_j] = \alpha_j + \beta \, log(\tfrac{x}{x^*}), \quad j = 1, \ldots, c-1.
+$$ The prior is: $$
+log(\beta) \sim N(\mu_{\beta}, \sigma_{\beta}^2)
+$$ and for $\{\alpha_j\}_{j \in \{1, \ldots, c-1\}}$ we propose prior as in \eqref{prior1}.
+
+Even though we restrict the covariance matrix to be diagonal for this class, specify the covariance as a matrix rather than a vector for consistency with other classes, and check that it is diagonal in `ValidObject()`.  
+
+Add to `Model-class.R`.  
+
+```{r, error = TRUE}
+## class ----
+
+#' `OrdinalLogisticLogNormal`
+#'
+#' @description `r lifecycle::badge("experimental")`
+#'
+#' [`OrdinalLogisticLogNormal`] is the class for a logistic lognormal CRM model
+#' using an ordinal toxicity scale.
+#'
+#' @aliases OrdinalLogisticLogNormal
+#' @export
+#'
+
+.LogisticLogNormalOrdinal <- setClass(
+  Class = "LogisticLogNormalOrdinal",
+  contains = "ModelLogNormal",
+  slots = c(datablock = "function")
+  # ,
+  # validity = v_model_ordinal_logistic_log_normal
+)
+
+## constructor ----
+
+#' @rdname LogisticLogNormalOrdinal-class
+#' @inheritParams ModelLogNormal
+#' @export
+#' @example examples/Model-class-LogisticLogNormalOrdinal.R
+#'
+
+LogisticLogNormalOrdinal <- function(mean, cov, ref_dose) {
+  params <- ModelParamsNormal(mean, cov)
+  .LogisticLogNormalOrdinal(
+    params = params,
+    ref_dose = crmPack:::positive_number(ref_dose),
+    priormodel = function() {
+      alpha[1] ~ dnorm(mean[1], prec[1, 1])
+      for (i in 2:(k-1)) {
+        alpha[i] ~ dnorm(mean[i], prec[i, i]) %_% T( , alpha[i-1])
+      }
+      gamma ~ dnorm(mean[k], prec[k, k])
+      beta <- exp(gamma)
+    },
+    datamodel = function() {
+      for (i in 1:nObs) {
+        xhat[i] <- log(x[i] / ref_dose)
+        for (j in 1:(k-1)) {
+          z[i, j] <- alpha[j] + beta * xhat[i]
+          p[i, j] <- exp(z[i, j]) / (1 + exp(z[i, j]))
+          tox[i, j] ~ dbern(p[i, j])
+        }
+      }
+    },
+    modelspecs = function(y, from_prior) {
+      ms <- list(
+        mean = params@mean, 
+        prec = params@prec,
+        k = length(mean),
+        tox = array(dim = c(length(y), length(mean) - 1))
+      )
+      if (!from_prior) {
+        for (i in 1:length(y)) {
+          for (j in 1:(ms$k-1)) {
+            ms$tox[i, j] <- y[i] >= j
+          }
+        }
+        ms$ref_dose <- ref_dose
+      }
+      ms
+    },
+    init = function() {
+      list(alpha = sapply(1:(length(mean)-1), function(x) -(x+1)), gamma = 1)
+    },
+    datanames = c("nObs", "y", "x"),
+    sample = c(paste0("alpha[", 1:(length(mean) - 1), "]"), "beta")
+  )
+}
+
+## default constructor ----
+
+#' @rdname LogisticLogNormalOrdinal-class
+#' @note Typically, end users will not use the `.DefaultLogisticLogNormalOrdinal()` function.
+#' @export
+
+.DefaultLogisticLogNormalOrdinal <- function() {
+  LogisticLogNormalOrdinal(
+    mean=c(-3, -4, 1),
+    cov=diag(c(3, 4, 1)),
+    ref_dose = 50
+  )
+}
+
+ordinal_data <- DataOrdinal(
+  doseGrid = seq(10, 100, 10),
+  x = c(10, 20, 30, 40, 50, 50, 50),
+  y = c(0L, 0L, 0L, 0L, 0L, 1L, 2L),
+  ID = 1L:7L,
+  cohort = as.integer(c(1:4, 5, 5, 5)),
+  yCategories = c("No Tox" = 0L, "Sub tox AE" = 1L, "DLT" = 2L)
+)
+
+ordinal_model <- .DefaultLogisticLogNormalOrdinal()
+```
+
+
+### mcmc-LogisticLogNormalOrdinal
+
+`mcmc` requires no change.
+
+```{r, error = TRUE}
+ordinal_data <- DataOrdinal(
+  doseGrid = seq(10, 100, 10),
+  x = c(10, 20, 30, 40, 50, 50, 50),
+  y = c(0L, 0L, 0L, 0L, 0L, 1L, 2L),
+  ID = 1L:7L,
+  cohort = as.integer(c(1:4, 5, 5, 5)),
+  yCategories = c("No Tox" = 0L, "Sub tox AE" = 1L, "DLT" = 2L)
+)
+
+mcmc_options <- McmcOptions()
+
+samples <- mcmc(ordinal_data, ordinal_model, mcmc_options)
+```
+
+>  The `modelspecs` function transforms the `y` vector in `DataOrdinal` to  the `ms$tox` matrix of indicator flags.  `tox` is what is actually used in the model fitting.  `y` is superfluous at that stage.  How can we prevent the warning?  That is, remove it from the JAGS environment.
+
+### prob-Samples-LogisticLogOrdinalModel
+
+Existing `prob` functions have to deal only with binary data and hence there is no sense of cumulative probabilities.  The ordinal model has that possibility.  In addition, probabilities associated with a particular toxicity grade may be of interest in the ordinal model.  Therefore, introduce two new parameters: `grade`, indicating the toxicity grade9s) for which probabioities are required, and `cumulative`, a flag indicating whether or not cumulative probabilities are of interest.
+
+> In the existing `prob-Samples-LogisticLogNormal`, the parameters in the validity check for `names(samples)` are reversed, leading to a potentially misleading error message.
+
+```{r}
+## LogisticLogNormal ----
+
+#' @describeIn prob
+#' @param category (`integer` or `integer_vector`)\cr The toxicity grade for which probabilities are required
+#' @param cumulative (`flag`)\cr Should the returned probability be cumulative
+#' (the default) or grade-specific?
+#' @note
+#' @aliases prob-LogisticLogNormalOrdinal
+#' @export
+#'
+setMethod(
+  f = "prob",
+  signature = signature(
+    dose = "numeric",
+    model = "LogisticLogNormalOrdinal",
+    samples = "Samples"
+  ),
+  definition = function(dose, model, samples, grade, cumulative = TRUE) {
+    assert_numeric(dose, lower = 0L, any.missing = FALSE, min.len = 1L)
+    assert_integer(
+      grade,
+      min.len = 1,
+      max.len = length(model@params@mean) - 1,
+      lower = 0,
+      upper = length(model@params@mean) - 1
+    )
+    assert_subset(
+      names(samples),
+      c(paste0("alpha[", 0:(length(model@params@mean)-1), "]"), "beta")
+    )
+    assert_length(dose, len = size(samples))
+
+    rv <- lapply(
+      grade,
+      function(g) {
+        alpha <- samples@data[[paste0("alpha[", g, "]")]]
+        beta <- samples@data$beta
+        ref_dose <- as.numeric(model@ref_dose)
+
+        cumulative_prob <- plogis(alpha + beta * log(dose / ref_dose))
+        if (cumulative | g == as.integer(length(model@params@mean)-1)) return(cumulative_prob)
+
+        # Calculate grade-specific probabilities
+        alpha0 <- samples@data[[paste0("alpha[", g + 1, "]")]]
+        grade_prob <- cumulative_prob - plogis(alpha0 + beta * log(dose / ref_dose))
+        return(grade_prob)
+      }
+    )
+    if (length(rv) == 1) return(rv[[1]])
+    names(rv) <- as.character(grade)
+    return(rv)
+  }
+)
+
+prob(30, ordinal_model, samples, grade = 1L)[1:10]
+prob(30, ordinal_model, samples, grade = 2L)[1:10]
+prob(30, ordinal_model, samples, grade = 1L, cumulative = FALSE)[1:10]
+```
+
+Unfortunately, the existing generic does not allow `prob` to return a list.  Therefore we will have to modify the generic or introduce a class-specific function to allow this.  The code above assumes we modify the generic.
+
+```{r error = TRUE}
+prob(30, ordinal_model, samples,  grade = 1L:2L)
+# prob(30, ordinal_model, samples, grade = 1L:2L, cumulative = TRUE)
+```
+
+### fit-Samples-LogisticLogNormalOrdinal
+
+As with `prob` above, additional parameters to define the toxicity grade of interest and whether cumulative probabilities are requested.  The existing `fit` fuunction could be used if the `...` parameters were passed to the call to `prob`.
+
+```{r}
+##' @param points at which dose levels is the fit requested? default is the dose
+##' grid
+##' @param quantiles the quantiles to be calculated (default: 0.025 and
+##' 0.975)
+##' @param middle the function for computing the middle point. Default:
+##' \code{\link{mean}}
+##'
+##' @describeIn fit This method returns a data frame with dose, middle, lower
+##' and upper quantiles for the dose-toxicity curve
+##' @example examples/Sample-methods-fit.R
+##'
+setMethod("fit",
+  signature =
+    signature(
+      object = "Samples",
+      model = "GeneralModel",
+      data = "DataOrdinal"
+    ),
+  def =
+    function(object,
+             model,
+             data,
+             points = data@doseGrid,
+             quantiles = c(0.025, 0.975),
+             middle = mean,
+             ...) {
+      ## some checks
+      assert_probability_range(quantiles)
+      assert_numeric(points)
+      assert_function(middle)
+
+      ## first we have to get samples from the dose-tox
+      ## curve at the dose grid points.
+      probSamples <- matrix(
+        nrow = size(object),
+        ncol = length(points)
+      )
+
+      ## evaluate the probs, for all samples.
+      for (i in seq_along(points))
+      {
+        ## Now we want to evaluate for the
+        ## following dose:
+        probSamples[, i] <- prob(
+          dose = points[i],
+          model,
+          object,
+          ...
+        )
+      }
+
+      ## extract middle curve
+      middleCurve <- apply(probSamples, 2L, FUN = middle)
+
+      ## extract quantiles
+      quantCurve <- apply(probSamples, 2L, quantile,
+        prob = quantiles
+      )
+
+      ## now create the data frame
+      ret <- data.frame(
+        dose = points,
+        middle = middleCurve,
+        lower = quantCurve[1, ],
+        upper = quantCurve[2, ]
+      )
+
+      ## return it
+      return(ret)
+    }
+)
+
+fit(samples, ordinal_model, ordinal_data, grade = 2L)
+fit(samples, ordinal_model, ordinal_data, grade = 1L)
+fit(samples, ordinal_model, ordinal_data, grade = 1L, cumulative = FALSE)
+fit(samples, ordinal_model, ordinal_data, grade = 1L, cumulative = FALSE, middle = median)
+```
+
+### `Samples-plot`
+
+```{r, error = TRUE}
+
+
+## --------------------------------------------------
+## Plot dose-tox fit from a model
+## --------------------------------------------------
+
+
+##' Plotting dose-toxicity model fits
+##'
+##' @param x the \code{\linkS4class{Samples}} object
+##' @param y the \code{\linkS4class{GeneralModel}} object
+##' @param data the \code{\linkS4class{Data}} object
+##' @param xlab the x axis label
+##' @param ylab the y axis label
+##' @param showLegend should the legend be shown? (default)
+##' @param \dots not used
+##' @return This returns the \code{\link[ggplot2]{ggplot}}
+##' object for the dose-toxicity model fit
+##'
+##' @example examples/Sample-methods-plot.R
+##' @export
+##' @importFrom ggplot2 qplot scale_linetype_manual
+setMethod("plot",
+  signature =
+    signature(
+      x = "Samples",
+      y = "LogisticLogNormalOrdinal"
+    ),
+  def =
+    function(x, y, data, ...,
+             grade,
+             xlab = "Dose level",
+             showLegend = TRUE,
+             cumulative = TRUE,
+             ylab = ifelse(
+               !is.null(data), 
+               paste0(
+                 "Probability of ", 
+                 names(data@yCategories)[grade + 1] ,
+                 ifelse(cumulative, " or greater", ""),
+                 " [%]"
+               ),
+               "probability [%]"
+             )) {
+      ## check args
+      assert_logical(showLegend)
+      assert_logical(cumulative)
+
+      ## get the fit
+      plotData <- fit(x,
+        model = y,
+        data = data,
+        quantiles = c(0.025, 0.975),
+        middle = mean,
+        grade = grade,
+        cumulative = cumulative
+      )
+
+      ## make the plot
+      gdata <-
+        with(
+          plotData,
+          data.frame(
+            x = rep(dose, 3),
+            y = c(middle, lower, upper) * 100,
+            group =
+              rep(c("mean", "lower", "upper"),
+                each = nrow(plotData)
+              ),
+            Type =
+              factor(
+                c(
+                  rep(
+                    "Estimate",
+                    nrow(plotData)
+                  ),
+                  rep(
+                    "95% Credible Interval",
+                    nrow(plotData) * 2
+                  )
+                ),
+                levels =
+                  c(
+                    "Estimate",
+                    "95% Credible Interval"
+                  )
+              )
+          )
+        )
+
+      ret <- ggplot2::qplot(
+        x = x,
+        y = y,
+        data = gdata,
+        group = group,
+        linetype = Type,
+        colour = I("red"),
+        geom = "line",
+        xlab = xlab,
+        ylab = ylab,
+        ylim = c(0, 100)
+      )
+
+      ret <- ret +
+        ggplot2::scale_linetype_manual(
+          breaks =
+            c(
+              "Estimate",
+              "95% Credible Interval"
+            ),
+          values = c(1, 2), guide = ifelse(showLegend, "legend", "none")
+        )
+      
+      return(ret)
+    }
+)
+
+plot(x = samples, y = ordinal_model, data = ordinal_data, grade = 1L)
+plot(x = samples, y = ordinal_model, data = ordinal_data, grade = 2L)
+plot(x = samples, y = ordinal_model, data = ordinal_data, grade = 1L, cumulative = FALSE)
+plot(x = samples, y = ordinal_model, data = ordinal_data, grade = 2L, cumulative = FALSE)
+```
+
+It would be useful to allow a faceted presentation of multiple toxicity grades.  For simplicity, that might be better reserved for a different method.
+
+### `dose`
+
+Add to `Models-methods.R`.  The same comments as for `prob()` above apply here as well.
+
+> I'm not yet convinced this implemntation is correct.  Does cumulative == FALSE even make sense here, and if it (sometimes), is the existence of a root always guaranteed? [I think so, but not necessarily at a sensible dose.]
+
+```{r}
+## LogisticLogNormal ----
+
+#' @describeIn dose compute the dose level reaching a specific target
+#'   probability of the occurrence of a DLE (`x`).
+#'
+#' @aliases dose-LogisticLogNormal
+#' @export
+#'
+setMethod(
+  f = "dose",
+  signature = signature(
+    x = "numeric",
+    model = "LogisticLogNormalOrdinal",
+    samples = "Samples"
+  ),
+  definition = function(x, model, samples, grade, cumulative = TRUE, ...) {
+    assert_probabilities(x)
+    assert_integer(
+      grade,
+      min.len = 1,
+      max.len = length(model@params@mean) - 1,
+      lower = 0,
+      upper = length(model@params@mean) - 1
+    )
+    assert_subset(
+      names(samples),
+      c(paste0("alpha[", 0:(length(model@params@mean)-1), "]"), "beta")
+    )
+    assert_length(x, len = size(samples))
+
+    rv <- lapply(
+      grade,
+      function(g) {
+        beta <- samples@data$beta
+        ref_dose <- as.numeric(model@ref_dose)
+        if (cumulative | g == as.integer(length(model@params@mean)-1)) {
+          alpha <- samples@data[[paste0("alpha[", g, "]")]]
+          dose <- exp((logit(x) - alpha) / beta) * ref_dose
+          return(mean(dose))
+        } else {
+          dot_params <- list(...)
+          if (!("interval" %in% names(dot_params))) {
+            dot_params[["interval"]] <- c(0, Inf)
+          }
+          dot_params[["f"]] <- function(d) {
+              p0 <- prob(d, model, samples, grade, TRUE)
+              p1 <- prob(d, model, samples, grade + 1L, TRUE)
+              p0 - p1 - x
+            }
+          zero <- do.call(uniroot, dot_params)
+          return(zero$root)
+        }
+      }
+    )
+    if (length(rv) == 1) return(rv[[1]])
+    names(rv) <- as.character(grade)
+    return(rv)
+  }
+)
+
+dose(0.05, ordinal_model, samples, 1L)
+dose(0.05, ordinal_model, samples, 2L)
+dose(0.1, ordinal_model, samples, 1L)
+dose(0.1, ordinal_model, samples, 2L)
+```
+
+## doseFunction-LogisticLogNormalOrdinal
+
+The generic needs to be overridden to ensure that class-specific parameters to `dose()` are handled correctly.  That said, I'm not sure this function makes sense in the context of a `LogisticLogNormalOrdinal` model: we have multiple probabities associatd with each dose and multiple doses associated with each probability...
+
+Eg `doseFunction(ordinal_model, alpha = c(2, 1), beta = 3, grade = 1L)` might make more sense: returning all probabilties associated with given dose?
+
+```{r, error = TRUE}
+### `doseFunction`
+
+## GeneralModel ----
+
+#' @describeIn doseFunction
+#'
+#' @aliases doseFunction-GeneralModel
+#' @export
+#'
+setMethod(
+  f = "doseFunction",
+  signature = "GeneralModel",
+  definition = function(model, ..., grade, cumulative = TRUE) {
+    model_params <- list(...)
+    names(model_params)[which(names(model_params) == "alpha")] <- paste0("alpha[", grade, "]")
+    assert_subset(names(model_params), model@sample, empty.ok = FALSE)
+
+    samples <- Samples(
+      data = model_params,
+      options = McmcOptions(samples = NROW(model_params[[1]]))
+    )
+    function(x) {
+      dose(x = x, model = model, samples = samples, grade = grade, cumulative = cumulative)
+    }
+  }
+)
+
+dose_fun1 <- doseFunction(ordinal_model, alpha = 2, beta = 3, grade = 1L)
+dose_fun1(0.25)
+
+dose_fun1 <- doseFunction(ordinal_model, alpha = 2, beta = 3, grade = 2L)
+dose_fun1(0.25)
+
+```
+
+### `probFunction-LogisticLogNormalOrdinal`
+
+Analogously to `doseFunction()`, we need to ensure that class-specific parameters to `prob()` are correctly handled.  Agsin, does this function make sense in the context of a `LogisticLogNormalOrdinal` model?
+
+```{r}
+#' @describeIn probFunction
+#'
+#' @aliases probFunction-ModelTox
+#' @export
+#'
+setMethod(
+  f = "probFunction",
+  signature = "LogisticLogNormalOrdinal",
+  definition = function(model, ..., grade, cumulative = TRUE) {
+    model_params <- list(...)
+    names(model_params)[which(names(model_params) == "alpha")] <- paste0("alpha[", grade, "]")
+    assert_character(names(model_params), len = length(model_params), any.missing = FALSE, unique = TRUE)
+
+    samples <- Samples(
+      data = model_params,
+      options = McmcOptions(samples = length(model_params[[1]]))
+    )
+    function(dose) {
+      prob(dose = dose, model = model, samples = samples, grade = grade, cumulative = cumulative)
+    }
+  }
+)
+
+prob_fun1 <- probFunction(ordinal_model, alpha = 2, beta = 3, grade = 1L)
+prob_fun1(15)
+
+prob_fun1 <- probFunction(ordinal_model, alpha = 2, beta = 3, grade = 2L)
+prob_fun1(25)
+
+```
+
+### `Samples-approximate`
+
+Needs to be modified to take account of `grade`...
+
+Alternatively, do we want a version that, given `LogisticLogNormalOrdinal` and  `DataOrdinal` objects (we can't dispatch on `Samples`) derives a best fit for _each_ toxicity grade?  I'm not sure how we could implement the "common slope" part of the model doing it that way...
+
+```{r}
+##' @param points optional parameter, which gives the dose values at which
+##' the approximation should rely on (default: 5 values equally spaced from
+##' minimum to maximum of the dose grid)
+##' @param refDose the reference dose to be used (default: median of
+##' \code{points})
+##' @param logNormal use the log-normal prior? (not default) otherwise, the
+##' normal prior for the logistic regression coefficients is used
+##' @param verbose be verbose (progress statements and plot)? (default)
+##'
+##' @describeIn approximate Here the \dots argument can transport additional arguments for
+##' \code{\link{Quantiles2LogisticNormal}}, e.g. in order to control the
+##' approximation quality, etc.
+##'
+##' @example examples/Sample-methods-approximate.R
+setMethod("approximate",
+  signature =
+    signature(object = "Samples", model = "LogisticLogNormalOrdinal"),
+  def =
+    function(object,
+             model,
+             data,
+             points =
+               seq(
+                 from = min(data@doseGrid),
+                 to = max(data@doseGrid),
+                 length = 5L
+               ),
+             refDose = median(points),
+             logNormal = FALSE,
+             verbose = TRUE,
+             grade,
+             ...) {
+      ## get the required quantiles at these dose levels:
+      quants <- fit(object,
+        model,
+        data,
+        points = points,
+        quantiles = c(0.025, 0.975),
+        middle = median,
+        grade = grade
+      )
+
+      ## get better starting values if it is already a logistic normal
+      ## model
+      if (is(model, "LogisticNormal") && (!logNormal)) {
+        means <- sapply(
+          object@data,
+          mean
+        )
+        cov <- cov(as.data.frame(object@data))
+
+        parstart <- c(
+          means[1], means[2],
+          sqrt(cov[1, 1]), sqrt(cov[2, 2]),
+          cov2cor(cov)[1, 2]
+        )
+      } else if (is(model, "LogisticLogNormal") && logNormal) {
+        datTrafo <- with(
+          object@data,
+          cbind(
+            alpha0,
+            log(alpha1)
+          )
+        )
+
+        means <- colMeans(datTrafo)
+        cov <- cov(datTrafo)
+
+        parstart <- c(
+          means[1], means[2],
+          sqrt(cov[1, 1]), sqrt(cov[2, 2]),
+          cov2cor(cov)[1, 2]
+        )
+      } else {
+        parstart <- NULL
+      }
+
+      ## run the approx function
+      quantRes <- Quantiles2LogisticNormal(
+        dosegrid = quants$dose,
+        refDose = refDose,
+        lower = quants$lower,
+        upper = quants$upper,
+        median = quants$middle,
+        verbose = verbose,
+        parstart = parstart,
+        logNormal = logNormal,
+        ...
+      )
+
+      if (verbose) {
+        matplot(
+          x = points,
+          quantRes$required,
+          type = "l", col = "blue", lty = 1
+        )
+        matlines(
+          x = points,
+          quantRes$quantiles,
+          col = "red", lty = 1
+        )
+        legend("bottomright",
+          legend = c("original", "approximation"),
+          col = c("blue", "red"),
+          lty = 1,
+          bty = "n"
+        )
+      }
+
+      ## return the model
+      return(quantRes$model)
+    }
+)
+approximate(samples, ordinal_model, ordinal_data, grade = 1L)
+```
+
+# To do: Interaction with other `crmPack` classes
+`DataOrdinal` and `LogisiticLogNormalOrdinal` objects need to interact with other `crmPack` classes such as `CohortSize`, `increments` and `NextBest` many of which make an implicit assumption that toxicity is dichotomous.  With ordinal data, this is not the case.  One could create ordinal variants of every such class.  This is a significant amount of work.  Pragmatically, I suggest a potentially simpler solution...
+
+For each `crmPack` super-class (such as `CohortSize` and `Stopping`), define a wrapper ordinal-specific class with three slots: `grade`, `cumulative` and `rule`, where `rule` is one of the existing concrete classes.  The wrapper class would extract the relevant `grade`-specific probabilities of toxicity from the supplied `Samples` object, create a pseudo `Samples` object of the equivalent binary probabilities and pass this pseudo object to the rule.  `cumulative` would be a `flag` indicating whether or not the probabilities used would refer to the given `grade` alone or all `grade`s equal to or greater than the given `grade`.  This allows all existing rules to be applied to the results of an ordinal CRM trial with minimum effort.
+
+For example
+```{r, eval = FALSE}
+NextBestOrdinal(
+  grade = 2,
+  NextBestNCRM(target = c(0.2, 0.35), overdose = c(0.35, 1), max_over_dose_prob = 0.25),
+  cumulative = FALSE
+)
+```
+
+would apply a `NextBestNCRM` rule to the posterior probabilities of grade 2 toxicity.
+
+# References
+
+[1] Agresti, A. (2010). Analysis of Ordinal Categorical Data. Hoboken, NJ: John Wiley & Sons.
+
+[2] Agresti, A. (2013). Categorical Data Analysis. Hoboken, NJ: John Wiley & Sons.
+
+[3] Agresti, A. (2015). Foundations of Linear and Generalized Linear Models. Hoboken, NJ: John Wiley
+& Sons.
+
+[4] Albert, J. H. and Chib, S. (1993). Bayesian analysis of binary and polychotomous response data.
+Journal of the American Statistical Association, 88(422): 669--679.
+
+[5] Albert, J. and Chib, S. (1997). Bayesian methods for cumulative, sequential and twostep ordinal
+data regression models. Technical report.
+
+[6] Congdon, P. (2005). Bayesian Model for Categorical Data, Willey.
+
+[7] Ishwaran, H. (2000). Univariate and Multirater Ordinal Cumulative Link Regression with Covariate
+SpecificCutpoints. The Canadian Journal of Statistics / La Revue Canadienne de Statistique, Vol. 28,
+No. 4 (Dec., 2000), pp. 715-730
+
+[8] James, N. T., Harrell Jr, F. E., Shepherd, B. E. (2022) Bayesian Cumulative Probability Models
+for Continuous and Mixed Outcomes. arXiv:2102.00330v2 [stat.ME]
+
+[9] Johnson, V. E. and Albert, J. H. (1999). Ordinal Data Modeling. Springer-Verlag, New York.
+
+[10] McKinley, T. J., Morters, M., Wood, J. L. N. (2015) Bayesian Model Choice in Cumulative Link
+Ordinal Regression Models.
+
+[11] McCullagh, P., and Nelder, J. A. (1989). Generalized Linear Models. 2nd ed. London: Chapman &
+Hall\
+<https://www.utstat.toronto.edu/~brunner/oldclass/2201s11/readings/glmbook.pdf>
+
+[12] Van Meter EM, Garrett-Mayer E, Bandyopadhyay D. Dose-finding clinical trial design for ordinal
+toxicity grades using the continuation ratio model: an extension of the continual reassessment
+method. Clin Trials. 2012 Jun;9(3):303-13. doi: 10.1177/1740774512443593. Epub 2012 Apr 30.\
+<https://www.ncbi.nlm.nih.gov/pmc/articles/PMC5531273/>
+
+[13] Wikipedia, <https://en.wikipedia.org/wiki/Truncated_normal_distribution>.
+
+[14] Greene, William H. (2003). Econometric Analysis (5th ed.). Prentice Hall.
+
+[15] Horrace, William C., "Some Results on the Multivariate Truncated Normal Distribution" (2005).
+Economics - Faculty Scholarship. 19.
+
+[16] Jack Cartinhour (1990) One-dimensional marginal density functions of a truncated multivariate
+normal density function, Communications in Statistics - Theory and Methods, 19:1, 197-203, DOI:
+10.1080/03610929008830197#
+
