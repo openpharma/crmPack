@@ -495,7 +495,6 @@ my_next_best <- NextBestThreePlusThree()
 
 # Calculate the next best dose.
 dose_recommendation <- nextBest(my_next_best, data = my_data)
-
 # Example of usage for `NextBestDualEndpoint` NextBest class.
 
 # Create the data.

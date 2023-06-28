@@ -4,11 +4,22 @@
 \name{GeneralSimulations-class}
 \alias{GeneralSimulations-class}
 \alias{.GeneralSimulations}
-\title{General class for the simulations output}
-\description{
-This class captures trial simulations.
+\alias{GeneralSimulations}
+\title{\code{GeneralSimulations}}
+\usage{
+GeneralSimulations(data, doses, seed)
 }
-\details{
+\arguments{
+\item{data}{(\code{list})\cr see slot definition.}
+
+\item{doses}{(\code{numeric})\cr see slot definition.}
+
+\item{seed}{(\code{integer})\cr see slot definition.}
+}
+\description{
+\ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#stable}{\figure{lifecycle-stable.svg}{options: alt='[Stable]'}}}{\strong{[Stable]}}
+
+This class captures trial simulations.
 Here also the random generator state before starting the simulation is
 saved, in order to be able to reproduce the outcome. For this just use
 \code{\link{set.seed}} with the \code{seed} as argument before running
@@ -17,11 +28,22 @@ saved, in order to be able to reproduce the outcome. For this just use
 \section{Slots}{
 
 \describe{
-\item{\code{data}}{list of produced \code{\linkS4class{Data}} objects}
+\item{\code{data}}{(\code{list})\cr produced \code{\link{Data}} objects.}
 
-\item{\code{doses}}{the vector of final dose recommendations}
+\item{\code{doses}}{(\code{numeric})\cr final dose recommendations.}
 
-\item{\code{seed}}{random generator state before starting the simulation}
+\item{\code{seed}}{(\code{integer})\cr random generator state before starting the simulation.}
 }}
 
-\keyword{classes}
+\examples{
+data <- list(
+  Data(x = 1:3, y = c(0, 1, 0), doseGrid = 1:3, ID = 1L:3L, cohort = 1L:3L),
+  Data(x = 4:6, y = c(0, 1, 0), doseGrid = 4:6, ID = 1L:3L, cohort = 1L:3L)
+)
+
+doses <- c(1, 2)
+
+seed <- 123L
+
+simulations <- GeneralSimulations(data, doses, seed)
+}

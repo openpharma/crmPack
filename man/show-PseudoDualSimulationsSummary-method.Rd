@@ -16,86 +16,84 @@ invisibly returns a data frame of the results with one row and appropriate colum
 Show the summary of Pseudo Dual simulations summary
 }
 \examples{
-# nolint start
+# Example where DLE and efficacy responses are considered in the simulations.
+# In simulations where no samples are used a data object with doses >= 1 needs
+# to be generated.
+emptydata <- DataDual(doseGrid = seq(25, 300, 25), placebo = FALSE)
 
-## If DLE and efficacy responses are considered in the simulations
-## Specified your simulations when no samples are used
-## we need a data object with doses >= 1:
-data <- DataDual(doseGrid = seq(25, 300, 25), placebo = FALSE)
-## First for the DLE model
-## The DLE model must be of 'ModelTox' (e.g 'LogisticIndepBeta') class
-DLEmodel <- LogisticIndepBeta(
+# The DLE model must be of 'ModelTox' (e.g 'LogisticIndepBeta') class.
+dle_model <- LogisticIndepBeta(
   binDLE = c(1.05, 1.8),
   DLEweights = c(3, 3),
   DLEdose = c(25, 300),
-  data = data
+  data = emptydata
 )
 
-## The efficacy model of 'ModelEff' (e.g 'Effloglog') class
-Effmodel <- Effloglog(
-  eff = c(1.223, 2.513), eff_dose = c(25, 300),
-  nu = c(a = 1, b = 0.025), data = data
+# The efficacy model of 'ModelEff' (e.g 'Effloglog') class.
+eff_model <- Effloglog(
+  eff = c(1.223, 2.513),
+  eff_dose = c(25, 300),
+  nu = c(a = 1, b = 0.025),
+  data = emptydata
 )
 
-## The escalation rule using the 'NextBestMaxGain' class
-mynextbest <- NextBestMaxGain(
+# The escalation rule using the 'NextBestMaxGain' class.
+my_next_best <- NextBestMaxGain(
   prob_target_drt = 0.35,
   prob_target_eot = 0.3
 )
 
+# Allow increase of 200\%.
+my_increments <- IncrementsRelative(intervals = 0, increments = 2)
 
-## The increments (see Increments class examples)
-## 200\% allowable increase for dose below 300 and 200\% increase for dose above 300
-myIncrements <- IncrementsRelative(
-  intervals = c(25, 300),
-  increments = c(2, 2)
+# Cohort size of 3.
+my_size <- CohortSizeConst(size = 3)
+
+# Stop when 36 subjects are treated or next dose is NA.
+my_stopping <- StoppingMinPatients(nPatients = 36) | StoppingMissingDose()
+
+# Specify the design. (For details please refer to the 'DualResponsesDesign' example.)
+my_design <- DualResponsesDesign(
+  nextBest = my_next_best,
+  model = dle_model,
+  eff_model = eff_model,
+  stopping = my_stopping,
+  increments = my_increments,
+  cohortSize = my_size,
+  data = emptydata,
+  startingDose = 25
 )
-## cohort size of 3
-mySize <- CohortSizeConst(size = 3)
-## Stop only when 36 subjects are treated
-myStopping <- StoppingMinPatients(nPatients = 36)
-## Now specified the design with all the above information and starting with a dose of 25
 
-## Specified the design(for details please refer to the 'DualResponsesDesign' example)
-design <- DualResponsesDesign(
-  nextBest = mynextbest,
-  model = DLEmodel,
-  Effmodel = Effmodel,
-  stopping = myStopping,
-  increments = myIncrements,
-  cohortSize = mySize,
-  data = data, startingDose = 25
-)
-## Specify the true DLE and efficacy curves
-myTruthDLE <- probFunction(DLEmodel, phi1 = -53.66584, phi2 = 10.50499)
-myTruthEff <- efficacyFunction(Effmodel, theta1 = -4.818429, theta2 = 3.653058)
+# Specify the true DLE and efficacy curves.
+my_truth_dle <- probFunction(dle_model, phi1 = -53.66584, phi2 = 10.50499)
+my_truth_eff <- efficacyFunction(eff_model, theta1 = -4.818429, theta2 = 3.653058)
 
-## Then specified the simulations and generate the trial
-## For illustration purpose only 2 simulation is produced (nsim=2).
-mySim <- simulate(
-  object = design,
+# For illustration purpose only 2 simulations are produced.
+my_sim <- simulate(
+  object = my_design,
   args = NULL,
-  trueDLE = myTruthDLE,
-  trueEff = myTruthEff,
+  trueDLE = my_truth_dle,
+  trueEff = my_truth_eff,
   trueNu = 1 / 0.025,
   nsim = 2,
   seed = 819,
   parallel = FALSE
 )
-## Then produce a summary of your simulations
-MYSUM <- summary(mySim,
-  trueDLE = myTruthDLE,
-  trueEff = myTruthEff
+
+# Summary of the simulations.
+my_sum <- summary(
+  my_sim,
+  trueDLE = my_truth_dle,
+  trueEff = my_truth_eff
 )
-## Then show the summary in data frame for your simulations
-show(MYSUM)
 
+# Show the summary of the simulations in a data frame.
+show(my_sum)
 
+# Example when DLE and efficacy samples are involved.
 
-
-## If DLE and efficacy samples are involved
-## The escalation rule using the 'NextBestMaxGainSamples' class
-mynextbest <- NextBestMaxGainSamples(
+# The escalation rule using the 'NextBestMaxGainSamples' class.
+my_next_best <- NextBestMaxGainSamples(
   prob_target_drt = 0.35,
   prob_target_eot = 0.3,
   derive = function(samples) {
@@ -105,41 +103,44 @@ mynextbest <- NextBestMaxGainSamples(
     as.numeric(quantile(mg_samples, prob = 0.5))
   }
 )
-## The design of 'DualResponsesSamplesDesign' class
-design <- DualResponsesSamplesDesign(
-  nextBest = mynextbest,
-  cohortSize = mySize,
+
+# The design of 'DualResponsesSamplesDesign' class.
+my_design <- DualResponsesSamplesDesign(
+  nextBest = my_next_best,
+  cohortSize = my_size,
   startingDose = 25,
-  model = DLEmodel,
-  eff_model = Effmodel,
-  data = data,
-  stopping = myStopping,
-  increments = myIncrements
+  model = dle_model,
+  eff_model = eff_model,
+  data = emptydata,
+  stopping = my_stopping,
+  increments = my_increments
 )
-## options for MCMC
-## for illustration purpose, we will use 50 burn-ins to generate 200 samples
-options <- McmcOptions(burnin = 50, step = 2, samples = 200)
-## The simulations for illustration purpose we only simulate 2 trials (nsim=2)
-mySim <- simulate(design,
+
+# MCMC options.
+# For illustration purpose 50 burn-ins to generate 200 samples are used.
+my_options <- McmcOptions(burnin = 50, step = 2, samples = 200)
+
+# For illustration purpose 2 trials are simulated.
+my_sim <- simulate(
+  object = my_design,
   args = NULL,
-  trueDLE = myTruthDLE,
-  trueEff = myTruthEff,
+  trueDLE = my_truth_dle,
+  trueEff = my_truth_eff,
   trueNu = 1 / 0.025,
   nsim = 2,
-  mcmcOptions = options,
+  mcmcOptions = my_options,
   seed = 819,
   parallel = FALSE
 )
 
-
-## Then produce a summary of your simulations
-MYSUM <- summary(mySim,
-  trueDLE = myTruthDLE,
-  trueEff = myTruthEff
+# Produce a summary of the simulations.
+my_sum <- summary(
+  my_sim,
+  trueDLE = my_truth_dle,
+  trueEff = my_truth_eff
 )
-## Then show the summary in data frame for your simulations
-show(MYSUM)
 
-# nolint end
+# Show the summary in data frame for the simulations.
+show(my_sum)
 }
 \keyword{methods}

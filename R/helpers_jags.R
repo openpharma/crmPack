@@ -194,42 +194,41 @@ h_jags_get_data <- function(model, data, from_prior) {
 #'   for numbers used in JAGS input, see [formatC()].
 #' @export
 h_jags_write_model <- function(model, file = NULL, digits = 5) {
-    assert_function(model)
-    assert_count(digits)
+  assert_function(model)
+  assert_count(digits)
 
-    if (!is.null(file)) {
-      assert_path_for_output(file)
-    } else {
-      dir <- file.path(tempdir(), "R_crmPack")
-      # Don't warn, as the temp dir often exists (which is OK).
-      dir.create(dir, showWarnings = FALSE)
-      file <- tempfile(
-        pattern = "jags_model_fun",
-        tmpdir = dir,
-        fileext = ".txt"
-      )
-    }
-
-    # Replace scientific notation.
-    model_sci_replaced <- h_rapply(
-      x = body(model),
-      fun = h_format_number,
-      classes = c("integer", "numeric"),
-      digits = digits,
-      prefix = "TEMP_NUM_PREF_",
-      suffix = "_TEMP_NUM_SUF"
-
+  if (!is.null(file)) {
+    assert_path_for_output(file)
+  } else {
+    dir <- file.path(tempdir(), "R_crmPack")
+    # Don't warn, as the temp dir often exists (which is OK).
+    dir.create(dir, showWarnings = FALSE)
+    file <- tempfile(
+      pattern = "jags_model_fun",
+      tmpdir = dir,
+      fileext = ".txt"
     )
-    # Transform `model` body into character vector.
-    model_text <- deparse(model_sci_replaced, control = NULL)
-    model_text <- gsub("\"TEMP_NUM_PREF_|_TEMP_NUM_SUF\"", "", model_text)
-    model_text <- gsub("%_% ", "", model_text)
-    model_text <- c("model", model_text)
-
-    log_trace("Writing JAGS model function into: %s", file)
-    writeLines(model_text, con = file)
-    file
   }
+
+  # Replace scientific notation.
+  model_sci_replaced <- h_rapply(
+    x = body(model),
+    fun = h_format_number,
+    classes = c("integer", "numeric"),
+    digits = digits,
+    prefix = "TEMP_NUM_PREF_",
+    suffix = "_TEMP_NUM_SUF"
+  )
+  # Transform `model` body into character vector.
+  model_text <- deparse(model_sci_replaced, control = NULL)
+  model_text <- gsub("\"TEMP_NUM_PREF_|_TEMP_NUM_SUF\"", "", model_text)
+  model_text <- gsub("%_% ", "", model_text)
+  model_text <- c("model", model_text)
+
+  log_trace("Writing JAGS model function into: %s", file)
+  writeLines(model_text, con = file)
+  file
+}
 
 #' Extracting Samples from `JAGS` `mcarray` Object
 #'
