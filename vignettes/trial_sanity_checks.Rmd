@@ -122,7 +122,7 @@ design <- Design(
 
 The `examine` function lists the dose recommendations made by CRM design after the first DLT is reported.  The output shows, for each dose and number of DLTs reported, the dose recommendation (`nextBest` dose) made by the model on the assumption that no earlier DLTs were reported at lower doses.
 
-```{r}
+```{r examine}
 examine(design) %>% kable()
 ```
 
@@ -134,7 +134,7 @@ The output from `examine` shows that our initial design is not incoherent (becau
 
 This is clearly unsatisfactory.  The problem lies with the increments rule, which allows a maximum escalation of 33% between one dose and the next for doses above 20 mg.  The dose grid being used is `r empty_data@doseGrid`.  The ratio between 20 and 25 is `r 25/20`, but between 25 and 40 is `r 40/25`.  We can confirm this by checking the behaviour of `maxDose` with artificial data:
 
-```{r}
+```{r next-dose-example}
 no_tox_below_25_data <- Data(
   doseGrid = dose_grid,
   x = c(1, 3, 5, 10, 15, 20, 25),
@@ -150,7 +150,7 @@ next_dose
 
 Thus, the initial dose rule permanently prevents escalation above 25 mg because the highest permitted dose above 25 mg is `r next_dose` but the lowest such dose in the dose grid is 40.  The problem can be solved in at least two ways: we can either relax the increments rule or we can introduce one or more intermediate doses.  (We could, of course, do both.)  We choose to relax the increments rule and check that, ceteris paribus, this permits escalation from every dose:
 
-```{r}
+```{r revised-increment}
 revised_increment_rule <- IncrementsRelative(
   intervals = c(0, 20, 80),
   increments = c(1, 0.67, 0.33)
@@ -181,7 +181,7 @@ tibble(
 
 Yes, it does.  So we update the design:
 
-```{r}
+```{r revised-design}
 revised_design <- Design(
   model = initial_model,
   nextBest = next_best,
@@ -195,13 +195,13 @@ revised_design <- Design(
 
 ## Does the prior make sense?
 
-```{r}
+```{r revised-examine}
 examine(revised_design) %>% kable()
 ```
 
 Hmmm. We now appear to be stuck at 50 mg.  Why is this?  Let's examine the state of the model after escalation to 50 mg without toxicity...
 
-```{r}
+```{r no-tox-below-50}
 no_tox_below_50_data <- Data(
   doseGrid = dose_grid,
   x = c(1, 3, 5, 10, 15, 20, 25, 40, 40, 40, 50, 50, 50),
@@ -229,7 +229,7 @@ Whilst the increments rule allows escalation to 83.5 mg, the toxicity estimates 
 
 Again, we have several options.  We can introduce intermediate doses, thus slowing escalation and allowing the prior model more time to adapt (but probably requiring a larger trial), or we can modify the prior so that it allows faster, but still reasonable, escalation.  Let's try creating a minimally informative prior that is consistent with our first attempt.
 
-```{r, error=TRUE}
+```{r minimal-informative, error=TRUE}
 # Fitting the min_inf_model is slow.
 if (file.exists("minInfModel.Rds")) {
   min_inf_model <- readRDS("minInfModel.Rds")
@@ -240,7 +240,8 @@ if (file.exists("minInfModel.Rds")) {
     threshmin = 0.1,
     threshmax = 0.4,
     probmin = 0.05,
-    probmax = 0.05
+    probmax = 0.05,
+    logNormal = TRUE
   )
 
   as_tibble(min_inf_model$required) %>%
@@ -268,7 +269,7 @@ $$\binom{\alpha}{log(\beta)} \sim N \left( \left[\begin{array}{rr}`r sprintf(" %
 
 Does this fix the rigidity problem?
 
-```{r}
+```{r second-revision}
 revised_model <- min_inf_model$model
 
 revised_design1 <- Design(
@@ -284,11 +285,11 @@ revised_design1 <- Design(
 examine(revised_design1) %>% kable()
 ```
 
-Yes, it does.  We can now escalate to dose 80, but there are few plateaux as we do so.  First, two toxicity-free participants, rather than just one, are needed to escalate from 20 mg to 25 mg.  Similarly, four toxicity-free participants are required to escalate from 25 mg to 40 mg.  Further fine tuning of the prior would probably allow these numbers to be reduced, but for the purposes of this vignette, we do not explore this possibility.
+Yes, it does.  We can now escalate to dose 80, but there are few plateaux as we do so.  First, two toxicity-free participants, rather than just one, are needed to escalate from 20 mg to 25 mg.  Similarly, four toxicity-free participants are required to escalate at every dose from 25 mg and above.  Further fine tuning of the prior would probably allow these numbers to be reduced, but for the purposes of this vignette, we do not explore this possibility.
 
 Now create some data that represent a trial that escalates without any reports of toxicity, and fit the revised model …
 
-```{r}
+```{r revised-no-tox-below-50}
 no_tox_data <- Data(
   doseGrid = c(1, 3, 5, 10, 15, 20, 25, 40, 50, 80, 100),
   x = c(c(1, 3, 5, 10, 15, 20), rep(c(25, 40, 50, 80, 100), each = 3)),
@@ -316,7 +317,7 @@ More importantly, these results illustrate something that should have been obvio
 
 So our final alteration is to increase the futility rule from 20 participants to 40.
 
-```{r}
+```{r final-design}
 revised_stopping_futility <- StoppingMinPatients(nPatients = 40)
 revised_stopping_trial <- (stopping_success1 & stopping_success2) | revised_stopping_futility
 
@@ -331,7 +332,7 @@ revised_design2 <- Design(
 )
 ```
 
-This new design allows us to escalate over the full extent of the dose grid before the futility stopping rule kicks in.  Further refinement of the prior model may remove the need for additional cohorts before escalation from 20, 25 and 50 mg.  We leave that as an exercise for the reader.
+This new design allows us to escalate over the full extent of the dose grid before the futility stopping rule kicks in.  Further refinement of the prior model may remove the need for additional cohorts before escalation above 25 mg.  We leave that as an exercise for the reader.
 
 We now have a design that is worthy of more detailed investigation of its operating characteristics.  We will do this in the next vignette in the series, which is yet to be written.
 
