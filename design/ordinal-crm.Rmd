@@ -142,30 +142,30 @@ However, we see the following issues (drawbacks) with this model:
     shape of $f_{\alpha_2}$ function.
 
 ```{r f_alpha2, eval=TRUE, fig.height = 3, fig.width = 5, fig.align = "center"}
-    f <- function(x2, mu1 = 8, mu2 = 5, sd1 = 2, sd2 = 2) {
-      phi <- dnorm
-      Phi <- pnorm
-      to_integrate <- function(x1, mu1, mu2, sd1, sd2) {
-        phi((x1 - mu1) / sd1) / Phi((x1 - mu2) / sd2)
-      }
-      intgrl <- integrate(
-        to_integrate,
-        lower = x2, upper = Inf,
-        mu1 = mu1, mu2 = mu2, sd1 = sd1, sd2 = sd2
-      )
-      1 / (sd1 * sd2) * phi((x2 - mu2) / sd2) * intgrl$value
-    }
-    f <- Vectorize(f)
-    
-    ggplot() +
-      geom_function(fun = dnorm, colour = "black", args = list(mean = 5, sd = 2)) +
-      geom_function(fun = f, colour = "red") +
-      scale_x_continuous(breaks = seq(-5, 15, 2), limits = c(-5, 15)) +
-      xlab("x2") +
-      ylab("PDF") +
-      ggtitle("PDF of: N(5, sd = 2) [black] and alpha2 (uncond.) [red]")
-    
-    optimize(f, interval = c(1, 7), maximum = TRUE)
+f <- function(x2, mu1 = 8, mu2 = 5, sd1 = 2, sd2 = 2) {
+  phi <- dnorm
+  Phi <- pnorm
+  to_integrate <- function(x1, mu1, mu2, sd1, sd2) {
+    phi((x1 - mu1) / sd1) / Phi((x1 - mu2) / sd2)
+  }
+  intgrl <- integrate(
+    to_integrate,
+    lower = x2, upper = Inf,
+    mu1 = mu1, mu2 = mu2, sd1 = sd1, sd2 = sd2
+  )
+  1 / (sd1 * sd2) * phi((x2 - mu2) / sd2) * intgrl$value
+}
+f <- Vectorize(f)
+
+ggplot() +
+  geom_function(fun = dnorm, colour = "black", args = list(mean = 5, sd = 2)) +
+  geom_function(fun = f, colour = "red") +
+  scale_x_continuous(breaks = seq(-5, 15, 2), limits = c(-5, 15)) +
+  xlab("x2") +
+  ylab("PDF") +
+  ggtitle("PDF of: N(5, sd = 2) [black] and alpha2 (uncond.) [red]")
+
+optimize(f, interval = c(1, 7), maximum = TRUE)
 ```
 
 3.  In JAGS, we can specify $\alpha_j,\, j = 2, \ldots, c - 1$ with
@@ -323,8 +323,7 @@ DataOrdinal <- function(
     doseGrid = numeric(),
     placebo = FALSE,
     yCategories = c("No DLT" = 0L, "DLT" = 1L),
-    ...
-) {
+    ...) {
   assert_numeric(x)
   assert_numeric(y)
   assert_numeric(ID)
@@ -520,7 +519,6 @@ Much of the code in `plot` is common to objects of both `Data` and `DataOrdinal`
 `helpers-data.R`
 
 ```{r}
-
 h_blind_plot_data <- function(df, blind, has_placebo, pbo_dose) {
   if (blind) {
     # This is to blind the data.
@@ -674,7 +672,7 @@ h_plot_data_dataordinal <- function(
   assert_integer(tox_shapes, any.missing = FALSE, unique = TRUE)
   assert_true(length(tox_shapes) == length(tox_labels))
   assert_subset(x@y, as.integer(0:(length(tox_shapes) - 1)))
-    if (x@nObs == 0L) {
+  if (x@nObs == 0L) {
     return()
   }
   df <- h_plot_data_df(x, blind, ...)
@@ -785,14 +783,13 @@ setMethod(
   f = "plot",
   signature = signature(x = "DataOrdinal", y = "missing"),
   definition = function(
-    x,
-    y,
-    blind = FALSE,
-    legend = TRUE,
-    tox_labels = NULL,
-    tox_shapes = NULL,
-    ...
-  ) {
+      x,
+      y,
+      blind = FALSE,
+      legend = TRUE,
+      tox_labels = NULL,
+      tox_shapes = NULL,
+      ...) {
     if (is.null(tox_shapes)) {
       assert_true(length(x@yCategories) <= 9)
       tox_shapes <- c(17L, 16L, 15L, 18L, 0L:2L, 5L, 6L)[seq_along(x@yCategories)]
@@ -800,13 +797,12 @@ setMethod(
     }
     if (is.null(tox_labels)) {
       assert_true(length(x@yCategories) <= 5)
-      tox_labels <- switch(
-                  length(x@yCategories),
-                  c("black"),
-                  c("black", "red"),
-                  c("black", "orange", "red"),
-                  c("black", "green", "orange", "red"),
-                  c("black", "green", "yellow", "orange", "red")
+      tox_labels <- switch(length(x@yCategories),
+        c("black"),
+        c("black", "red"),
+        c("black", "orange", "red"),
+        c("black", "green", "orange", "red"),
+        c("black", "green", "yellow", "orange", "red")
       )
       names(tox_labels) <- names(x@yCategories)
     }
@@ -903,8 +899,8 @@ LogisticLogNormalOrdinal <- function(mean, cov, ref_dose) {
     ref_dose = crmPack:::positive_number(ref_dose),
     priormodel = function() {
       alpha[1] ~ dnorm(mean[1], prec[1, 1])
-      for (i in 2:(k-1)) {
-        alpha[i] ~ dnorm(mean[i], prec[i, i]) %_% T( , alpha[i-1])
+      for (i in 2:(k - 1)) {
+        alpha[i] ~ dnorm(mean[i], prec[i, i]) %_% T(, alpha[i - 1])
       }
       gamma ~ dnorm(mean[k], prec[k, k])
       beta <- exp(gamma)
@@ -912,7 +908,7 @@ LogisticLogNormalOrdinal <- function(mean, cov, ref_dose) {
     datamodel = function() {
       for (i in 1:nObs) {
         xhat[i] <- log(x[i] / ref_dose)
-        for (j in 1:(k-1)) {
+        for (j in 1:(k - 1)) {
           z[i, j] <- alpha[j] + beta * xhat[i]
           p[i, j] <- exp(z[i, j]) / (1 + exp(z[i, j]))
           tox[i, j] ~ dbern(p[i, j])
@@ -921,14 +917,14 @@ LogisticLogNormalOrdinal <- function(mean, cov, ref_dose) {
     },
     modelspecs = function(y, from_prior) {
       ms <- list(
-        mean = params@mean, 
+        mean = params@mean,
         prec = params@prec,
         k = length(mean),
         tox = array(dim = c(length(y), length(mean) - 1))
       )
       if (!from_prior) {
         for (i in 1:length(y)) {
-          for (j in 1:(ms$k-1)) {
+          for (j in 1:(ms$k - 1)) {
             ms$tox[i, j] <- y[i] >= j
           }
         }
@@ -937,7 +933,7 @@ LogisticLogNormalOrdinal <- function(mean, cov, ref_dose) {
       ms
     },
     init = function() {
-      list(alpha = sapply(1:(length(mean)-1), function(x) -(x+1)), gamma = 1)
+      list(alpha = sapply(1:(length(mean) - 1), function(x) -(x + 1)), gamma = 1)
     },
     datanames = c("nObs", "y", "x"),
     sample = c(paste0("alpha[", 1:(length(mean) - 1), "]"), "beta")
@@ -952,8 +948,8 @@ LogisticLogNormalOrdinal <- function(mean, cov, ref_dose) {
 
 .DefaultLogisticLogNormalOrdinal <- function() {
   LogisticLogNormalOrdinal(
-    mean=c(-3, -4, 1),
-    cov=diag(c(3, 4, 1)),
+    mean = c(-3, -4, 1),
+    cov = diag(c(3, 4, 1)),
     ref_dose = 50
   )
 }
@@ -1027,7 +1023,7 @@ setMethod(
     )
     assert_subset(
       names(samples),
-      c(paste0("alpha[", 0:(length(model@params@mean)-1), "]"), "beta")
+      c(paste0("alpha[", 0:(length(model@params@mean) - 1), "]"), "beta")
     )
     assert_length(dose, len = size(samples))
 
@@ -1039,7 +1035,9 @@ setMethod(
         ref_dose <- as.numeric(model@ref_dose)
 
         cumulative_prob <- plogis(alpha + beta * log(dose / ref_dose))
-        if (cumulative | g == as.integer(length(model@params@mean)-1)) return(cumulative_prob)
+        if (cumulative | g == as.integer(length(model@params@mean) - 1)) {
+          return(cumulative_prob)
+        }
 
         # Calculate grade-specific probabilities
         alpha0 <- samples@data[[paste0("alpha[", g + 1, "]")]]
@@ -1047,7 +1045,9 @@ setMethod(
         return(grade_prob)
       }
     )
-    if (length(rv) == 1) return(rv[[1]])
+    if (length(rv) == 1) {
+      return(rv[[1]])
+    }
     names(rv) <- as.character(grade)
     return(rv)
   }
@@ -1061,7 +1061,7 @@ prob(30, ordinal_model, samples, grade = 1L, cumulative = FALSE)[1:10]
 Unfortunately, the existing generic does not allow `prob` to return a list.  Therefore we will have to modify the generic or introduce a class-specific function to allow this.  The code above assumes we modify the generic.
 
 ```{r error = TRUE}
-prob(30, ordinal_model, samples,  grade = 1L:2L)
+prob(30, ordinal_model, samples, grade = 1L:2L)
 # prob(30, ordinal_model, samples, grade = 1L:2L, cumulative = TRUE)
 ```
 
@@ -1151,8 +1151,6 @@ fit(samples, ordinal_model, ordinal_data, grade = 1L, cumulative = FALSE, middle
 ### `Samples-plot`
 
 ```{r, error = TRUE}
-
-
 ## --------------------------------------------------
 ## Plot dose-tox fit from a model
 ## --------------------------------------------------
@@ -1186,10 +1184,10 @@ setMethod("plot",
              showLegend = TRUE,
              cumulative = TRUE,
              ylab = ifelse(
-               !is.null(data), 
+               !is.null(data),
                paste0(
-                 "Probability of ", 
-                 names(data@yCategories)[grade + 1] ,
+                 "Probability of ",
+                 names(data@yCategories)[grade + 1],
                  ifelse(cumulative, " or greater", ""),
                  " [%]"
                ),
@@ -1263,7 +1261,7 @@ setMethod("plot",
             ),
           values = c(1, 2), guide = ifelse(showLegend, "legend", "none")
         )
-      
+
       return(ret)
     }
 )
@@ -1309,7 +1307,7 @@ setMethod(
     )
     assert_subset(
       names(samples),
-      c(paste0("alpha[", 0:(length(model@params@mean)-1), "]"), "beta")
+      c(paste0("alpha[", 0:(length(model@params@mean) - 1), "]"), "beta")
     )
     assert_length(x, len = size(samples))
 
@@ -1318,7 +1316,7 @@ setMethod(
       function(g) {
         beta <- samples@data$beta
         ref_dose <- as.numeric(model@ref_dose)
-        if (cumulative | g == as.integer(length(model@params@mean)-1)) {
+        if (cumulative | g == as.integer(length(model@params@mean) - 1)) {
           alpha <- samples@data[[paste0("alpha[", g, "]")]]
           dose <- exp((logit(x) - alpha) / beta) * ref_dose
           return(mean(dose))
@@ -1328,16 +1326,18 @@ setMethod(
             dot_params[["interval"]] <- c(0, Inf)
           }
           dot_params[["f"]] <- function(d) {
-              p0 <- prob(d, model, samples, grade, TRUE)
-              p1 <- prob(d, model, samples, grade + 1L, TRUE)
-              p0 - p1 - x
-            }
+            p0 <- prob(d, model, samples, grade, TRUE)
+            p1 <- prob(d, model, samples, grade + 1L, TRUE)
+            p0 - p1 - x
+          }
           zero <- do.call(uniroot, dot_params)
           return(zero$root)
         }
       }
     )
-    if (length(rv) == 1) return(rv[[1]])
+    if (length(rv) == 1) {
+      return(rv[[1]])
+    }
     names(rv) <- as.character(grade)
     return(rv)
   }
@@ -1388,7 +1388,6 @@ dose_fun1(0.25)
 
 dose_fun1 <- doseFunction(ordinal_model, alpha = 2, beta = 3, grade = 2L)
 dose_fun1(0.25)
-
 ```
 
 ### `probFunction-LogisticLogNormalOrdinal`
@@ -1424,7 +1423,6 @@ prob_fun1(15)
 
 prob_fun1 <- probFunction(ordinal_model, alpha = 2, beta = 3, grade = 2L)
 prob_fun1(25)
-
 ```
 
 ### `Samples-approximate`
