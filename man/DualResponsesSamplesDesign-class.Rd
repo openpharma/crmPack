@@ -4,49 +4,61 @@
 \name{DualResponsesSamplesDesign-class}
 \alias{DualResponsesSamplesDesign-class}
 \alias{.DualResponsesSamplesDesign}
-\title{This is a class of design based on DLE responses using the \code{\linkS4class{LogisticIndepBeta}} model
-model and efficacy responses using \code{\linkS4class{ModelEff}}  model class
-with DLE and efficacy samples.It contain all slots in
-\code{\linkS4class{RuleDesign}} and \code{\linkS4class{TDsamplesDesign}} class object}
+\alias{DualResponsesSamplesDesign}
+\title{\code{DualResponsesSamplesDesign}}
+\usage{
+DualResponsesSamplesDesign(eff_model, data, ...)
+}
+\arguments{
+\item{eff_model}{(\code{ModelEff})\cr see slot definition.}
+
+\item{data}{(\code{DataDual})\cr see slot definition.}
+
+\item{...}{
+  Arguments passed on to \code{\link[=TDsamplesDesign]{TDsamplesDesign}}
+  \describe{
+    \item{\code{model}}{(\code{ModelTox})\cr see slot definition.}
+    \item{\code{stopping}}{(\code{Stopping})\cr see slot definition.}
+    \item{\code{increments}}{(\code{Increments})\cr see slot definition.}
+    \item{\code{pl_cohort_size}}{(\code{CohortSize})\cr see slot definition.}
+  }}
+}
 \description{
-This is a class of design based on DLE responses using the \code{\linkS4class{LogisticIndepBeta}} model
-model and efficacy responses using \code{\linkS4class{ModelEff}}  model class
-with DLE and efficacy samples.It contain all slots in
-\code{\linkS4class{RuleDesign}} and \code{\linkS4class{TDsamplesDesign}} class object
+\ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#stable}{\figure{lifecycle-stable.svg}{options: alt='[Stable]'}}}{\strong{[Stable]}}
+
+This is a class of design based on DLE responses using the \code{\link{LogisticIndepBeta}} model
+with DLE and efficacy samples. It contain all slots in
+\code{\link{RuleDesign}} and \code{\link{TDsamplesDesign}} class objects.
 }
 \section{Slots}{
 
 \describe{
-\item{\code{data}}{the data set of \code{\linkS4class{DataDual}} class object}
+\item{\code{data}}{(\code{DataDual})\cr the data set.}
 
-\item{\code{Effmodel}}{the pseudo efficacy model to be used, an object class of
-\code{\linkS4class{ModelEff}}}
+\item{\code{eff_model}}{(\code{ModelEff})\cr the pseudo efficacy model to be used.}
 }}
 
 \examples{
-# nolint start
+empty_data <- DataDual(doseGrid = seq(25, 300, 25))
 
-##Construct the DualResponsesSamplesDesign for simulations
-##The design comprises the DLE and efficacy models, the escalation rule, starting data,
-##a cohort size and a starting dose
-##Define your data set first using an empty data set
-## with dose levels from 25 to 300 with increments 25
-data <- DataDual(doseGrid=seq(25,300,25),placebo=FALSE)
+tox_model <- LogisticIndepBeta(
+  binDLE = c(1.05, 1.8),
+  DLEweights = c(3, 3),
+  DLEdose = c(25, 300),
+  data = empty_data
+)
+options <- McmcOptions(burnin = 100, step = 2, samples = 200)
+tox_samples <- mcmc(empty_data, tox_model, options)
 
-## First for the DLE model and DLE samples
-## The DLE model must be of 'ModelTox'
-## (e.g 'LogisticIndepBeta') class and
-## DLEsamples of 'Samples' class
-options<-McmcOptions(burnin=100,step=2,samples=200)
-DLEmodel <- LogisticIndepBeta(binDLE=c(1.05,1.8),DLEweights=c(3,3),
-                              DLEdose=c(25,300),data=data)
-DLEsamples<-mcmc(data,DLEmodel,options)
-##The efficacy model of 'ModelEff' (e.g 'Effloglog') class and the efficacy samples
-Effmodel<-Effloglog(eff=c(1.223,2.513),eff_dose=c(25,300),nu=c(a=1,b=0.025),data=data)
-Effsamples<-mcmc(data,Effmodel,options)
+eff_model <- Effloglog(
+  eff = c(1.223, 2.513),
+  eff_dose = c(25, 300),
+  nu = c(a = 1, b = 0.025),
+  data = empty_data
+)
+eff_samples <- mcmc(empty_data, eff_model, options)
 
-##The escalation rule using the 'NextBestMaxGainSamples' class
-mynextbest <- NextBestMaxGainSamples(
+my_next_best <- NextBestMaxGainSamples(
   prob_target_drt = 0.35,
   prob_target_eot = 0.3,
   derive = function(samples) {
@@ -57,24 +69,21 @@ mynextbest <- NextBestMaxGainSamples(
   }
 )
 
-##The increments (see Increments class examples)
-## 200\% allowable increase for dose below 300 and 200\% increase for dose above 300
-myIncrements<-IncrementsRelative(intervals=c(25,300),
-                                 increments=c(2,2))
-##cohort size of 3
-mySize<-CohortSizeConst(size=3)
-##Stop only when 36 subjects are treated
-myStopping <- StoppingMinPatients(nPatients=36)
-##Now specified the design with all the above information and starting with a dose of 25
+my_increments <- IncrementsRelative(
+  intervals = c(25, 300),
+  increments = c(2, 2)
+)
+my_size <- CohortSizeConst(size = 3)
+my_stopping <- StoppingMinPatients(nPatients = 36)
 
-design <- DualResponsesSamplesDesign(nextBest=mynextbest,
-                                     cohortSize=mySize,
-                                     startingDose=25,
-                                     model=DLEmodel,
-                                     Effmodel=Effmodel,
-                                     data=data,
-                                     stopping=myStopping,
-                                     increments=myIncrements)
-# nolint end
+design <- DualResponsesSamplesDesign(
+  nextBest = my_next_best,
+  cohortSize = my_size,
+  startingDose = 25,
+  model = tox_model,
+  eff_model = eff_model,
+  data = empty_data,
+  stopping = my_stopping,
+  increments = my_increments
+)
 }
-\keyword{class}

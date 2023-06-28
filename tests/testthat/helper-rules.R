@@ -1,3 +1,5 @@
+# NextBest ----
+
 h_next_best_mtd <- function(target = 0.33) {
   NextBestMTD(
     target = target,
@@ -92,11 +94,28 @@ h_next_best_mgsamples <- function(td = 0.45, te = 0.4, p = 0.3, p_gstar = 0.5) {
   )
 }
 
-h_stopping_specific_dose <- function(rule = StoppingTargetProb(target = c(0, 0.3), prob = 0.8),
-                                     dose = 80) {
+# Increments ----
+
+h_increments_relative <- function() {
+  IncrementsRelative(
+    intervals = c(0, 20),
+    increments = c(1, 0.33)
+  )
+}
+
+# Stopping ----
+
+h_stopping_specific_dose <- function(dose = 80) {
   StoppingSpecificDose(
-    rule = rule,
+    rule = StoppingTargetProb(target = c(0, 0.3), prob = 0.8),
     dose = dose
+  )
+}
+
+h_stopping_target_prob <- function(prob = 0.5) {
+  StoppingTargetProb(
+    target = c(0.2, 0.35),
+    prob = prob
   )
 }
 
@@ -111,6 +130,8 @@ h_stopping_list <- function() {
   )
 }
 
+# CohortSize ----
+
 h_cohort_size_list <- function(three_rules = FALSE) {
   size1 <- CohortSizeRange(intervals = c(0, 30), cohort_size = c(2, 6))
   size2 <- CohortSizeDLT(dlt_intervals = c(0, 1), cohort_size = c(3, 9))
@@ -121,6 +142,8 @@ h_cohort_size_list <- function(three_rules = FALSE) {
     list(size1, size2, size3)
   }
 }
+
+# SafetyWindow ----
 
 h_safety_window_size <- function(three_cohorts = FALSE) {
   if (!three_cohorts) {

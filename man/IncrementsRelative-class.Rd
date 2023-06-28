@@ -5,9 +5,12 @@
 \alias{IncrementsRelative-class}
 \alias{.IncrementsRelative}
 \alias{IncrementsRelative}
+\alias{.DefaultIncrementsRelative}
 \title{\code{IncrementsRelative}}
 \usage{
 IncrementsRelative(intervals, increments)
+
+.DefaultIncrementsRelative()
 }
 \arguments{
 \item{intervals}{(\code{numeric})\cr see slot definition.}
@@ -33,6 +36,9 @@ goes from the last value to infinity.}
 allowable relative increments in the \code{intervals}.}
 }}
 
+\note{
+Typically, end users will not use the \code{.DefaultIncrementsRelative()} function.
+}
 \examples{
 
 # This is the example of a rule for:

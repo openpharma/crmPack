@@ -5,9 +5,12 @@
 \alias{NextBestMinDist-class}
 \alias{.NextBestMinDist}
 \alias{NextBestMinDist}
+\alias{.DefaultNextBestMinDist}
 \title{\code{NextBestMinDist}}
 \usage{
 NextBestMinDist(target)
+
+.DefaultNextBestMinDist()
 }
 \arguments{
 \item{target}{(\code{proportion})\cr see slot definition.}
@@ -25,6 +28,9 @@ distance to target probability.
 0 or 1.}
 }}
 
+\note{
+Typically, end users will not use the \code{.DefaultNextBestMinDist()} function.
+}
 \examples{
 # In the example below, the MTD is defined as the dose with the toxicity rate
 # with minimal distance to the target of 30\%.

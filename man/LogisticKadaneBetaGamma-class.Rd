@@ -5,9 +5,12 @@
 \alias{LogisticKadaneBetaGamma-class}
 \alias{.LogisticKadaneBetaGamma}
 \alias{LogisticKadaneBetaGamma}
+\alias{.DefaultLogisticKadaneBetaGamma}
 \title{\code{LogisticKadaneBetaGamma}}
 \usage{
 LogisticKadaneBetaGamma(theta, xmin, xmax, alpha, beta, shape, rate)
+
+.DefaultLogisticKadaneBetaGamma()
 }
 \arguments{
 \item{theta}{(\code{proportion})\cr the target toxicity probability.}
@@ -73,6 +76,8 @@ The slots of this class, required for creating the model, are the same
 as in the \code{LogisticKadane} class. In addition, the shape parameters of the
 Beta prior distribution of \code{rho0} and the shape and rate parameters of the
 Gamma prior distribution of \code{gamma}, are required for creating the prior model.
+
+Typically, end users will not use the \code{.Default()} function.
 }
 \examples{
 my_model <- LogisticKadaneBetaGamma(

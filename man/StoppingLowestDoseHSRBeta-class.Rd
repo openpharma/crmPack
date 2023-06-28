@@ -5,9 +5,12 @@
 \alias{StoppingLowestDoseHSRBeta-class}
 \alias{.StoppingLowestDoseHSRBeta}
 \alias{StoppingLowestDoseHSRBeta}
+\alias{.DefaultStoppingLowestDoseHSRBeta}
 \title{\code{StoppingLowestDoseHSRBeta}}
 \usage{
 StoppingLowestDoseHSRBeta(target = 0.3, prob = 0.95, a = 1, b = 1)
+
+.DefaultStoppingLowestDoseHSRBeta()
 }
 \arguments{
 \item{target}{(\code{proportion})\cr see slot definition.}
@@ -48,6 +51,8 @@ Beta (a,b).}
 
 \note{
 This stopping rule is independent from the underlying model.
+
+Typically, end users will not use the \code{.DefaultStoppingLowestDoseHSRBeta()} function.
 }
 \examples{
 

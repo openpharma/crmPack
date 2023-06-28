@@ -5,9 +5,12 @@
 \alias{NextBestNCRM-class}
 \alias{.NextBestNCRM}
 \alias{NextBestNCRM}
+\alias{.DefaultNextBestNCRM}
 \title{\code{NextBestNCRM}}
 \usage{
 NextBestNCRM(target, overdose, max_overdose_prob)
+
+.DefaultNextBestNCRM()
 }
 \arguments{
 \item{target}{(\code{numeric})\cr see slot definition.}
@@ -43,6 +46,9 @@ excluded, upper limit included). It is used to filter probability samples.}
 probability that is allowed, except 0 or 1.}
 }}
 
+\note{
+Typically, end users will not use the \code{.DefaultNextBestNCRM()} function.
+}
 \examples{
 # In the example below, the target toxicity interval [0.2, 0.35] while the
 # overdose interval is (0.35,1]. Finally we would like to constrain the

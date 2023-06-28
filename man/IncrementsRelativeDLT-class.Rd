@@ -5,9 +5,12 @@
 \alias{IncrementsRelativeDLT-class}
 \alias{.IncrementsRelativeDLT}
 \alias{IncrementsRelativeDLT}
+\alias{.DefaultIncrementsRelativeDLT}
 \title{\code{IncrementsRelativeDLT}}
 \usage{
 IncrementsRelativeDLT(dlt_intervals, increments)
+
+.DefaultIncrementsRelativeDLT()
 }
 \arguments{
 \item{dlt_intervals}{(\code{numeric})\cr see slot definition.}
@@ -37,6 +40,8 @@ as the length of \code{dlt_intervals}.}
 
 \note{
 This considers all DLTs across all cohorts observed so far.
+
+Typically, end users will not use the \code{.DefaultIncrementsRelativeDLT()} function.
 }
 \examples{
 

@@ -5,9 +5,12 @@
 \alias{DualEndpointBeta-class}
 \alias{.DualEndpointBeta}
 \alias{DualEndpointBeta}
+\alias{.DefaultDualEndpointBeta}
 \title{\code{DualEndpointBeta}}
 \usage{
 DualEndpointBeta(E0, Emax, delta1, mode, ref_dose_beta = 1, ...)
+
+.DefaultDualEndpointBeta()
 }
 \arguments{
 \item{E0}{(\code{numeric})\cr either a fixed number or the two uniform distribution
@@ -73,6 +76,9 @@ that this is different from the \code{ref_dose} in the inherited \code{\link{Dua
 model).}
 }}
 
+\note{
+Typically, end users will not use the \code{.DefaultDualEndpointBeta()} function.
+}
 \examples{
 my_model <- DualEndpointBeta(
   mean = c(0, 1),

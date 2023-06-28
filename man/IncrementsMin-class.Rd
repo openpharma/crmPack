@@ -5,9 +5,12 @@
 \alias{IncrementsMin-class}
 \alias{.IncrementsMin}
 \alias{IncrementsMin}
+\alias{.DefaultIncrementsMin}
 \title{\code{IncrementsMin}}
 \usage{
 IncrementsMin(increments_list)
+
+.DefaultIncrementsMin()
 }
 \arguments{
 \item{increments_list}{(\code{list})\cr see slot definition.}
@@ -26,6 +29,9 @@ individual increments is taken to give the final maximum increment.
 \item{\code{increments_list}}{(\code{list})\cr list with increment rules.}
 }}
 
+\note{
+Typically, end users will not use the \code{.DefaultIncrementsMin()} function.
+}
 \examples{
 
 # As example, here we are combining 2 different increment rules.

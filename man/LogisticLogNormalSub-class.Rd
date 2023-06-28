@@ -5,9 +5,12 @@
 \alias{LogisticLogNormalSub-class}
 \alias{.LogisticLogNormalSub}
 \alias{LogisticLogNormalSub}
+\alias{.DefaultLogisticLogNormalSub}
 \title{\code{LogisticLogNormalSub}}
 \usage{
 LogisticLogNormalSub(mean, cov, ref_dose = 0)
+
+.DefaultLogisticLogNormalSub()
 }
 \arguments{
 \item{mean}{(\code{numeric})\cr the prior mean vector.}
@@ -38,6 +41,9 @@ The prior \deqn{(alpha0, log(alpha1)) ~ Normal(mean, cov).}
 \item{\code{ref_dose}}{(\code{number})\cr the reference dose \eqn{x*}.}
 }}
 
+\note{
+Typically, end-users will not use the \code{.DefaultLogisticLogNormalSub()} function.
+}
 \examples{
 my_model <- LogisticLogNormalSub(
   mean = c(-0.85, 1),
