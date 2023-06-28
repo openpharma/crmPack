@@ -28,7 +28,7 @@ NULL
 #' @example examples/helpers-jags_add_dummy.R
 #'
 h_jags_add_dummy <- function(object, where, dummy = 0) {
-  assert_class(object, "DataOrdinal")
+  assert_true(class(object) %in% c("Data", "DataOrdinal"))
   assert_character(where)
   assert_subset(where, slotNames(object))
   assert_number(dummy)
