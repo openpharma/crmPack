@@ -5,7 +5,7 @@ NULL
 #'
 #' @description `r lifecycle::badge("experimental")`
 #'
-#' A helper function that appends a dummy value to a given slots in [`Data`]
+#' A helper function that appends a dummy value to a given slots in [`GeneralData`]
 #' class object, if and only if the total number of observations (as indicated
 #' by `object@nObs`) equals to `1`. Otherwise, the `object` is not changed.
 #'
@@ -16,19 +16,19 @@ NULL
 #'   As we don't change the number of observations (`nObs`), this addition of
 #'   zeros doesn't affect the results of `JAGS` computations.
 #'
-#' @param object (`Data`)\cr object into which dummy values will be added.
+#' @param object (`GeneralData`)\cr object into which dummy values will be added.
 #' @param where (`character`)\cr names of slots in `object` to which a `dummy`
 #'   number will be appended.
 #' @param dummy (`number`)\cr a dummy number that will be appended to selected
 #'   slots in `object`. Default to `0`.
 #'
-#' @return A [`Data`] object with slots updated with dummy number.
+#' @return A [`GeneralData`] object with slots updated with dummy number.
 #'
 #' @export
 #' @example examples/helpers-jags_add_dummy.R
 #'
 h_jags_add_dummy <- function(object, where, dummy = 0) {
-  assert_class(object, "Data")
+  assert_class(object, "GeneralData")
   assert_character(where)
   assert_subset(where, slotNames(object))
   assert_number(dummy)
