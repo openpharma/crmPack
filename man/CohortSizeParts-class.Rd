@@ -13,7 +13,7 @@ CohortSizeParts(cohort_sizes)
 .DefaultCohortSizeParts()
 }
 \arguments{
-\item{sizes}{(\code{numeric})\cr see slot definition.}
+\item{cohort_sizes}{(\code{numeric})\cr see slot definition.}
 }
 \description{
 \ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#stable}{\figure{lifecycle-stable.svg}{options: alt='[Stable]'}}}{\strong{[Stable]}}

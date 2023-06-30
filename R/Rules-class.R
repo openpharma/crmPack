@@ -1410,7 +1410,7 @@ IncrementsMin <- function(increments_list) {
 #'
 #' [`Stopping`] is a class for stopping rules.
 #'
-#' @seealso [`StoppingList`], [`StoppingCohortsNearDose`], [`StoppingPatientsNearDose`],
+#' @seealso [`StoppingMissingDose`], [`StoppingList`], [`StoppingCohortsNearDose`], [`StoppingPatientsNearDose`],
 #'   [`StoppingMinCohorts`], [`StoppingMinPatients`], [`StoppingTargetProb`],
 #'   [`StoppingMTDdistribution`], [`StoppingTargetBiomarker`], [`StoppingHighestDose`]
 #'   [`StoppingMTDCV`], [`StoppingLowestDoseHSRBeta`], [`StoppingSpecificDose`].
@@ -1421,6 +1421,46 @@ IncrementsMin <- function(increments_list) {
 setClass(
   Class = "Stopping"
 )
+
+# StoppingMissingDose ----
+
+## class ----
+
+#' `StoppingMissingDose`
+#'
+#' @description `r lifecycle::badge("experimental")`
+#'
+#' [`StoppingMissingDose`] is the class for stopping based on NA returned by
+#'  next best dose.
+#'
+#' @aliases StoppingMissingDose
+#' @export
+#'
+.StoppingMissingDose <- setClass(
+  Class = "StoppingMissingDose",
+  contains = "Stopping"
+)
+
+## constructor ----
+
+#' @rdname StoppingMissingDose-class
+#'
+#' @example examples/Rules-class-StoppingMissingDose.R
+#' @export
+#'
+StoppingMissingDose <- function() {
+  .StoppingMissingDose()
+}
+
+## default constructor ----
+
+#' @rdname StoppingMissingDose-class
+#' @note Typically, end users will not use the `.DefaultStoppingMissingDose()` function.
+#' @export
+#'
+.DefaultStoppingMissingDose <- function() {
+  StoppingMissingDose()
+}
 
 # StoppingCohortsNearDose ----
 
@@ -2599,7 +2639,7 @@ CohortSizeConst <- function(size) {
 
 #' @rdname CohortSizeParts-class
 #'
-#' @param sizes (`numeric`)\cr see slot definition.
+#' @param cohort_sizes (`numeric`)\cr see slot definition.
 #'
 #' @export
 #' @example examples/Rules-class-CohortSizeParts.R

@@ -15,14 +15,14 @@ articles:
   - title: Articles
     navbar: ~
     contents:
-    - trial_definition
-    - trial_analysis
-    - trial_sanity_checks
-    - trial_simulation
-    - rolling-crm
-    - simulations
-    - migration_from_the_old_crmPack
-    - parallel_computing_with_extensions
+      - trial_definition
+      - trial_analysis
+      - trial_sanity_checks
+      - trial_simulation
+      - rolling-crm
+      - simulations
+      - migration_from_the_old_crmPack
+      - parallel_computing_with_extensions
 
 reference:
   - title: Package
@@ -91,6 +91,7 @@ reference:
       - IncrementsHSRBeta
       - IncrementsMin
       - Stopping
+      - StoppingMissingDose
       - StoppingCohortsNearDose
       - StoppingPatientsNearDose
       - StoppingMinCohorts
@@ -339,6 +340,7 @@ reference:
       - nextBest-NextBestMaxGainSamples
       - nextBest-NextBestProbMTDLTE
       - nextBest-NextBestProbMTDMinDist
+      - stopTrial-StoppingMissingDose
       - stopTrial-StoppingLowestDoseHSRBeta
       - stopTrial-StoppingMTDCV
       - maxDose
