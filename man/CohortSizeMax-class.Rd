@@ -34,7 +34,6 @@ of class \code{\link{CohortSize}}.}
 Typically, end users will not use the \code{.DefaultCohortSizeMax()} function.
 }
 \examples{
-
 # Rule for cohort of size 1 for doses <30 and cohort of size 3 for doses >=30.
 my_size1 <- CohortSizeRange(intervals = c(0, 10), cohort_size = c(1, 3))
 

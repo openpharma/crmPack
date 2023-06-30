@@ -33,7 +33,6 @@ individual increments is taken to give the final maximum increment.
 Typically, end users will not use the \code{.DefaultIncrementsMin()} function.
 }
 \examples{
-
 # As example, here we are combining 2 different increment rules.
 
 # The first rule is the following:

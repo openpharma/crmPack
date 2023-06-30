@@ -26,7 +26,6 @@ the minimum of all sizes.
 
 }}
 \examples{
-
 # Here is the rule for:
 #   having cohort of size 1 for doses <30
 #   and having cohort of size 3 for doses >=30

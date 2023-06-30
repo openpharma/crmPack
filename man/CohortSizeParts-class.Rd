@@ -33,7 +33,6 @@ part 1, and one for part 2 respectively.}
 Typically, end users will not use the \code{.DefaultCohortSizeParts()} function.
 }
 \examples{
-
 # Part 1 cohort size = 1, Part 2 cohort size = 3.
 my_size <- CohortSizeParts(cohort_sizes = c(1, 3))
 }
