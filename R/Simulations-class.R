@@ -101,7 +101,7 @@ GeneralSimulations <- function(data,
 #' @description `r lifecycle::badge("stable")`
 #'
 #' This class captures the trial simulations from model based designs.
-#' Additional slots fit and stopReasons compared to the general class
+#' Additional slots [`fit`] and [`stop_reasons`] compared to the general class
 #' [`GeneralSimulations`].
 #'
 #' @slot fit (`list`)\cr final fits
