@@ -4,18 +4,40 @@
 \name{Simulations-class}
 \alias{Simulations-class}
 \alias{.Simulations}
-\title{Class for the simulations output from model based designs}
+\alias{Simulations}
+\title{\code{Simulations}}
+\usage{
+Simulations(fit, stop_reasons, ...)
+}
+\arguments{
+\item{fit}{(\code{list})\cr see slot definition.}
+
+\item{stop_reasons}{(\code{list})\cr see slot definition.}
+
+\item{\dots}{additional parameters from \code{\link{GeneralSimulations}}}
+}
 \description{
+\ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#stable}{\figure{lifecycle-stable.svg}{options: alt='[Stable]'}}}{\strong{[Stable]}}
+
 This class captures the trial simulations from model based designs.
 Additional slots fit and stopReasons compared to the general class
-\code{\linkS4class{GeneralSimulations}}.
+\code{\link{GeneralSimulations}}.
 }
 \section{Slots}{
 
 \describe{
-\item{\code{fit}}{list with the final fits}
+\item{\code{fit}}{(\code{list})\cr final fits}
 
-\item{\code{stopReasons}}{list of stopping reasons for each simulation run}
+\item{\code{stop_reasons}}{(\code{list})\cr stopping reasons for each simulation run}
 }}
 
-\keyword{classes}
+\examples{
+fit <- list(
+  c(0.1, 0.2),
+  c(0.3, 0.4)
+)
+
+stop_reasons <- list("A", "B")
+
+simulations <- Simulations(fit = fit, stop_reasons = stop_reasons)
+}
