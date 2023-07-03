@@ -20,7 +20,7 @@ Simulations(fit, stop_reasons, ...)
 \ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#stable}{\figure{lifecycle-stable.svg}{options: alt='[Stable]'}}}{\strong{[Stable]}}
 
 This class captures the trial simulations from model based designs.
-Additional slots fit and stopReasons compared to the general class
+Additional slots \code{\link{fit}} and \code{\link{stop_reasons}} compared to the general class
 \code{\link{GeneralSimulations}}.
 }
 \section{Slots}{
