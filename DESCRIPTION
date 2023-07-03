@@ -57,7 +57,9 @@ Imports:
     utils,
     kableExtra
 Suggests:
+    bookdown,
     covr,
+    data.tree,
     dplyr,
     ggmcmc,
     knitr,
@@ -67,8 +69,7 @@ Suggests:
     tidyr,
     vdiffr,
     withr
-VignetteBuilder: 
-    utils, knitr
+VignetteBuilder: knitr
 Config/testthat/edition: 3
 Encoding: UTF-8
 Language: en-US
