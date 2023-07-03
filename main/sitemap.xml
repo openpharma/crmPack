@@ -145,9 +145,6 @@
     <loc>https://roche.github.io/crmPack/main/reference/GeneralSimulations-class.html</loc>
   </url>
   <url>
-    <loc>https://roche.github.io/crmPack/main/reference/GeneralSimulations.html</loc>
-  </url>
-  <url>
     <loc>https://roche.github.io/crmPack/main/reference/GeneralSimulationsSummary-class.html</loc>
   </url>
   <url>
@@ -365,6 +362,9 @@
   </url>
   <url>
     <loc>https://roche.github.io/crmPack/main/reference/StoppingMinPatients-class.html</loc>
+  </url>
+  <url>
+    <loc>https://roche.github.io/crmPack/main/reference/StoppingMissingDose-class.html</loc>
   </url>
   <url>
     <loc>https://roche.github.io/crmPack/main/reference/StoppingPatientsNearDose-class.html</loc>

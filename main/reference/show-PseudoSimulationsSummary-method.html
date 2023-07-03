@@ -37,12 +37,6 @@
 <li class="nav-item">
   <a class="nav-link" href="../news/index.html">Changelog</a>
 </li>
-<!-- start dropdown for versions --> <li class="nav-item dropdown">
-        <a href="#" class="nav-link dropdown-toggle"
-          data-bs-toggle="dropdown" role="button"
-          aria-expanded="false" aria-haspopup="true"
-          id="dropdown-versions">Versions</a> <div class="dropdown-menu" aria-labelledby="dropdown-versions"> <a class="dropdown-item" data-toggle="tooltip" title="" href="https://Roche.github.io/crmPack/main">main</a> </div></li>
-<!-- end dropdown for versions -->
       </ul><form class="form-inline my-2 my-lg-0" role="search">
         <input type="search" class="form-control me-sm-2" aria-label="Toggle navigation" name="search-input" data-search-index="../search.json" id="search-input" placeholder="Search for" autocomplete="off"></form>
 
@@ -91,58 +85,69 @@ appropriate column names</p>
 
     <div class="section level2">
     <h2 id="ref-examples">Examples<a class="anchor" aria-label="anchor" href="#ref-examples"></a></h2>
-    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="co"># nolint start</span></span></span>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="co"># Obtain the plot for the simulation results if only DLE responses are</span></span></span>
+<span class="r-in"><span><span class="co"># considered in the simulations.</span></span></span>
 <span class="r-in"><span></span></span>
-<span class="r-in"><span><span class="co">##obtain the plot for the simulation results</span></span></span>
-<span class="r-in"><span><span class="co">##If only DLE responses are considered in the simulations</span></span></span>
-<span class="r-in"><span><span class="co">##Specified your simulations when no DLE samples are used</span></span></span>
-<span class="r-in"><span><span class="va">data</span> <span class="op">&lt;-</span> <span class="fu"><a href="Data-class.html">Data</a></span><span class="op">(</span>doseGrid<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/base/seq.html" class="external-link">seq</a></span><span class="op">(</span><span class="fl">25</span>,<span class="fl">300</span>,<span class="fl">25</span><span class="op">)</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="co"># Specified simulations when no DLE samples are used.</span></span></span>
+<span class="r-in"><span><span class="va">emptydata</span> <span class="op">&lt;-</span> <span class="fu"><a href="Data-class.html">Data</a></span><span class="op">(</span>doseGrid <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/seq.html" class="external-link">seq</a></span><span class="op">(</span><span class="fl">25</span>, <span class="fl">300</span>, <span class="fl">25</span><span class="op">)</span><span class="op">)</span></span></span>
 <span class="r-in"><span></span></span>
-<span class="r-in"><span><span class="co">##The design only incorporate DLE responses and DLE samples are involved</span></span></span>
-<span class="r-in"><span><span class="co">##Specified the model of 'ModelTox' class eg 'LogisticIndepBeta' class model</span></span></span>
-<span class="r-in"><span><span class="va">model</span><span class="op">&lt;-</span><span class="fu"><a href="LogisticIndepBeta-class.html">LogisticIndepBeta</a></span><span class="op">(</span>binDLE<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">1.05</span>,<span class="fl">1.8</span><span class="op">)</span>,DLEweights<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">3</span>,<span class="fl">3</span><span class="op">)</span>,DLEdose<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">25</span>,<span class="fl">300</span><span class="op">)</span>,data<span class="op">=</span><span class="va">data</span><span class="op">)</span></span></span>
-<span class="r-in"><span><span class="co">##Then the escalation rule</span></span></span>
-<span class="r-in"><span><span class="va">tdNextBest</span> <span class="op">&lt;-</span> <span class="fu"><a href="NextBestTD-class.html">NextBestTD</a></span><span class="op">(</span>prob_target_drt<span class="op">=</span><span class="fl">0.35</span>,</span></span>
-<span class="r-in"><span>                         prob_target_eot<span class="op">=</span><span class="fl">0.3</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="co"># The design only incorporate DLE responses and DLE samples are involved.</span></span></span>
+<span class="r-in"><span><span class="co"># Specify the model of 'ModelTox' class eg 'LogisticIndepBeta' class model.</span></span></span>
+<span class="r-in"><span><span class="va">my_model</span> <span class="op">&lt;-</span> <span class="fu"><a href="LogisticIndepBeta-class.html">LogisticIndepBeta</a></span><span class="op">(</span></span></span>
+<span class="r-in"><span>  binDLE <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">1.05</span>, <span class="fl">1.8</span><span class="op">)</span>,</span></span>
+<span class="r-in"><span>  DLEweights <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">3</span>, <span class="fl">3</span><span class="op">)</span>,</span></span>
+<span class="r-in"><span>  DLEdose <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">25</span>, <span class="fl">300</span><span class="op">)</span>,</span></span>
+<span class="r-in"><span>  data <span class="op">=</span> <span class="va">emptydata</span></span></span>
+<span class="r-in"><span><span class="op">)</span></span></span>
 <span class="r-in"><span></span></span>
-<span class="r-in"><span><span class="co">##Then the starting data, an empty data set</span></span></span>
-<span class="r-in"><span><span class="va">emptydata</span><span class="op">&lt;-</span><span class="fu"><a href="Data-class.html">Data</a></span><span class="op">(</span>doseGrid<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/base/seq.html" class="external-link">seq</a></span><span class="op">(</span><span class="fl">25</span>,<span class="fl">300</span>,<span class="fl">25</span><span class="op">)</span><span class="op">)</span></span></span>
-<span class="r-in"><span><span class="co">## The cohort size, size of 3 subjects</span></span></span>
-<span class="r-in"><span><span class="va">mySize</span> <span class="op">&lt;-</span><span class="fu"><a href="CohortSizeConst-class.html">CohortSizeConst</a></span><span class="op">(</span>size<span class="op">=</span><span class="fl">3</span><span class="op">)</span></span></span>
-<span class="r-in"><span><span class="co">##Deifne the increments for the dose-escalation process</span></span></span>
-<span class="r-in"><span><span class="co">##The maximum increase of 200% for doses up to the maximum of the dose specified in the doseGrid</span></span></span>
-<span class="r-in"><span><span class="co">##The maximum increase of 200% for dose above the maximum of the dose specified in the doseGrid</span></span></span>
-<span class="r-in"><span><span class="co">##This is to specified a maximum of 3-fold restriction in dose-esclation</span></span></span>
-<span class="r-in"><span><span class="va">myIncrements</span><span class="op">&lt;-</span><span class="fu"><a href="IncrementsRelative-class.html">IncrementsRelative</a></span><span class="op">(</span>intervals<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/Extremes.html" class="external-link">min</a></span><span class="op">(</span><span class="va">data</span><span class="op">@</span><span class="va">doseGrid</span><span class="op">)</span>,<span class="fu"><a href="https://rdrr.io/r/base/Extremes.html" class="external-link">max</a></span><span class="op">(</span><span class="va">data</span><span class="op">@</span><span class="va">doseGrid</span><span class="op">)</span><span class="op">)</span>,</span></span>
-<span class="r-in"><span>                                 increments<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">2</span>,<span class="fl">2</span><span class="op">)</span><span class="op">)</span></span></span>
-<span class="r-in"><span><span class="co">##Specified the stopping rule e.g stop when the maximum sample size of 36 patients has been reached</span></span></span>
-<span class="r-in"><span><span class="va">myStopping</span> <span class="op">&lt;-</span> <span class="fu"><a href="StoppingMinPatients-class.html">StoppingMinPatients</a></span><span class="op">(</span>nPatients<span class="op">=</span><span class="fl">36</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="co"># The escalation rule.</span></span></span>
+<span class="r-in"><span><span class="va">td_next_best</span> <span class="op">&lt;-</span> <span class="fu"><a href="NextBestTD-class.html">NextBestTD</a></span><span class="op">(</span></span></span>
+<span class="r-in"><span>  prob_target_drt <span class="op">=</span> <span class="fl">0.35</span>,</span></span>
+<span class="r-in"><span>  prob_target_eot <span class="op">=</span> <span class="fl">0.3</span></span></span>
+<span class="r-in"><span><span class="op">)</span></span></span>
 <span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="co"># The cohort size is 3 subjects.</span></span></span>
+<span class="r-in"><span><span class="va">my_size</span> <span class="op">&lt;-</span> <span class="fu"><a href="CohortSizeConst-class.html">CohortSizeConst</a></span><span class="op">(</span>size <span class="op">=</span> <span class="fl">3</span><span class="op">)</span></span></span>
 <span class="r-in"><span></span></span>
-<span class="r-in"><span><span class="co">##Specified the design(for details please refer to the 'TDDesign' example)</span></span></span>
-<span class="r-in"><span><span class="va">design</span> <span class="op">&lt;-</span> <span class="fu"><a href="TDDesign-class.html">TDDesign</a></span><span class="op">(</span>model<span class="op">=</span><span class="va">model</span>,</span></span>
-<span class="r-in"><span>                   nextBest<span class="op">=</span><span class="va">tdNextBest</span>,</span></span>
-<span class="r-in"><span>                   stopping<span class="op">=</span><span class="va">myStopping</span>,</span></span>
-<span class="r-in"><span>                   increments<span class="op">=</span><span class="va">myIncrements</span>,</span></span>
-<span class="r-in"><span>                   cohortSize<span class="op">=</span><span class="va">mySize</span>,</span></span>
-<span class="r-in"><span>                   data<span class="op">=</span><span class="va">data</span>,startingDose<span class="op">=</span><span class="fl">25</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="co"># Allow increase of 200%.</span></span></span>
+<span class="r-in"><span><span class="va">my_increments</span> <span class="op">&lt;-</span> <span class="fu"><a href="IncrementsRelative-class.html">IncrementsRelative</a></span><span class="op">(</span>intervals <span class="op">=</span> <span class="fl">0</span>, increments <span class="op">=</span> <span class="fl">2</span><span class="op">)</span></span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="co"># Specify the stopping rule with maximum sample size of 36 patients or when the</span></span></span>
+<span class="r-in"><span><span class="co"># next dose is NA.</span></span></span>
+<span class="r-in"><span><span class="va">my_stopping</span> <span class="op">&lt;-</span> <span class="fu"><a href="StoppingMinPatients-class.html">StoppingMinPatients</a></span><span class="op">(</span>nPatients <span class="op">=</span> <span class="fl">36</span><span class="op">)</span> <span class="op">|</span> <span class="fu"><a href="StoppingMissingDose-class.html">StoppingMissingDose</a></span><span class="op">(</span><span class="op">)</span></span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="co"># Specify the design. (For details please refer to the 'TDDesign' example.)</span></span></span>
+<span class="r-in"><span><span class="va">my_design</span> <span class="op">&lt;-</span> <span class="fu"><a href="TDDesign-class.html">TDDesign</a></span><span class="op">(</span></span></span>
+<span class="r-in"><span>  model <span class="op">=</span> <span class="va">my_model</span>,</span></span>
+<span class="r-in"><span>  nextBest <span class="op">=</span> <span class="va">td_next_best</span>,</span></span>
+<span class="r-in"><span>  stopping <span class="op">=</span> <span class="va">my_stopping</span>,</span></span>
+<span class="r-in"><span>  increments <span class="op">=</span> <span class="va">my_increments</span>,</span></span>
+<span class="r-in"><span>  cohortSize <span class="op">=</span> <span class="va">my_size</span>,</span></span>
+<span class="r-in"><span>  data <span class="op">=</span> <span class="va">emptydata</span>,</span></span>
+<span class="r-in"><span>  startingDose <span class="op">=</span> <span class="fl">25</span></span></span>
+<span class="r-in"><span><span class="op">)</span></span></span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co"># Specify the truth of the DLE responses.</span></span></span>
-<span class="r-in"><span><span class="va">myTruth</span> <span class="op">&lt;-</span> <span class="fu"><a href="probFunction.html">probFunction</a></span><span class="op">(</span><span class="va">model</span>, phi1 <span class="op">=</span> <span class="op">-</span><span class="fl">53.66584</span>, phi2 <span class="op">=</span> <span class="fl">10.50499</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="va">my_truth</span> <span class="op">&lt;-</span> <span class="fu"><a href="probFunction.html">probFunction</a></span><span class="op">(</span><span class="va">my_model</span>, phi1 <span class="op">=</span> <span class="op">-</span><span class="fl">53.66584</span>, phi2 <span class="op">=</span> <span class="fl">10.50499</span><span class="op">)</span></span></span>
 <span class="r-in"><span></span></span>
-<span class="r-in"><span><span class="co">##The simulations</span></span></span>
-<span class="r-in"><span><span class="co">##For illustration purpose only 1 simulation is produced (nsim=1).</span></span></span>
-<span class="r-in"><span><span class="va">mySim</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/stats/simulate.html" class="external-link">simulate</a></span><span class="op">(</span><span class="va">design</span>,</span></span>
-<span class="r-in"><span>                  args<span class="op">=</span><span class="cn">NULL</span>,</span></span>
-<span class="r-in"><span>                  truth<span class="op">=</span><span class="va">myTruth</span>,</span></span>
-<span class="r-in"><span>                  nsim<span class="op">=</span><span class="fl">1</span>,</span></span>
-<span class="r-in"><span>                  seed<span class="op">=</span><span class="fl">819</span>,</span></span>
-<span class="r-in"><span>                  parallel<span class="op">=</span><span class="cn">FALSE</span><span class="op">)</span></span></span>
-<span class="r-in"><span><span class="co">##Then produce a summary of your simulations</span></span></span>
-<span class="r-in"><span><span class="va">MYSUM</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/summary.html" class="external-link">summary</a></span><span class="op">(</span><span class="va">mySim</span>,</span></span>
-<span class="r-in"><span>                 truth<span class="op">=</span><span class="va">myTruth</span><span class="op">)</span></span></span>
-<span class="r-in"><span><span class="co">##show the summary of the simulated results in a data frame</span></span></span>
-<span class="r-in"><span><span class="fu">show</span><span class="op">(</span><span class="va">MYSUM</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="co"># For illustration purpose only 1 simulation is produced.</span></span></span>
+<span class="r-in"><span><span class="va">my_sim</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/stats/simulate.html" class="external-link">simulate</a></span><span class="op">(</span></span></span>
+<span class="r-in"><span>  object <span class="op">=</span> <span class="va">my_design</span>,</span></span>
+<span class="r-in"><span>  args <span class="op">=</span> <span class="cn">NULL</span>,</span></span>
+<span class="r-in"><span>  truth <span class="op">=</span> <span class="va">my_truth</span>,</span></span>
+<span class="r-in"><span>  nsim <span class="op">=</span> <span class="fl">1</span>,</span></span>
+<span class="r-in"><span>  seed <span class="op">=</span> <span class="fl">819</span>,</span></span>
+<span class="r-in"><span>  parallel <span class="op">=</span> <span class="cn">FALSE</span></span></span>
+<span class="r-in"><span><span class="op">)</span></span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="co"># Summary of the simulations.</span></span></span>
+<span class="r-in"><span><span class="va">my_sum</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/summary.html" class="external-link">summary</a></span><span class="op">(</span></span></span>
+<span class="r-in"><span>  <span class="va">my_sim</span>,</span></span>
+<span class="r-in"><span>  truth <span class="op">=</span> <span class="va">my_truth</span></span></span>
+<span class="r-in"><span><span class="op">)</span></span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="co"># Show the summary of the simulated results in a data frame.</span></span></span>
+<span class="r-in"><span><span class="fu">show</span><span class="op">(</span><span class="va">my_sum</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Summary of 1 simulations</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Target probability of DLE p(DLE) used at the end of a trial was 30 %</span>
@@ -182,41 +187,50 @@ appropriate column names</p>
 <span class="r-out co"><span class="r-pr">#&gt;</span>    2.405   2.405   2.405   2.405   2.405   2.405  </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="co"># Example where DLE samples are involved.</span></span></span>
 <span class="r-in"><span></span></span>
-<span class="r-in"><span></span></span>
-<span class="r-in"><span><span class="co">##If DLE samples are involved</span></span></span>
-<span class="r-in"><span><span class="co">##The escalation rule</span></span></span>
-<span class="r-in"><span><span class="va">tdNextBest</span> <span class="op">&lt;-</span> <span class="fu"><a href="NextBestTDsamples-class.html">NextBestTDsamples</a></span><span class="op">(</span></span></span>
+<span class="r-in"><span><span class="co"># The escalation rule.</span></span></span>
+<span class="r-in"><span><span class="va">td_next_best</span> <span class="op">&lt;-</span> <span class="fu"><a href="NextBestTDsamples-class.html">NextBestTDsamples</a></span><span class="op">(</span></span></span>
 <span class="r-in"><span>  prob_target_drt <span class="op">=</span> <span class="fl">0.35</span>,</span></span>
 <span class="r-in"><span>  prob_target_eot <span class="op">=</span> <span class="fl">0.3</span>,</span></span>
 <span class="r-in"><span>  derive <span class="op">=</span> <span class="kw">function</span><span class="op">(</span><span class="va">samples</span><span class="op">)</span> <span class="op">{</span></span></span>
 <span class="r-in"><span>    <span class="fu"><a href="https://rdrr.io/r/base/numeric.html" class="external-link">as.numeric</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/stats/quantile.html" class="external-link">quantile</a></span><span class="op">(</span><span class="va">samples</span>, probs <span class="op">=</span> <span class="fl">0.3</span><span class="op">)</span><span class="op">)</span></span></span>
 <span class="r-in"><span>  <span class="op">}</span></span></span>
 <span class="r-in"><span><span class="op">)</span></span></span>
-<span class="r-in"><span><span class="co">##The design</span></span></span>
-<span class="r-in"><span><span class="va">design</span> <span class="op">&lt;-</span> <span class="fu"><a href="TDsamplesDesign-class.html">TDsamplesDesign</a></span><span class="op">(</span>model<span class="op">=</span><span class="va">model</span>,</span></span>
-<span class="r-in"><span>                          nextBest<span class="op">=</span><span class="va">tdNextBest</span>,</span></span>
-<span class="r-in"><span>                          stopping<span class="op">=</span><span class="va">myStopping</span>,</span></span>
-<span class="r-in"><span>                          increments<span class="op">=</span><span class="va">myIncrements</span>,</span></span>
-<span class="r-in"><span>                          cohortSize<span class="op">=</span><span class="va">mySize</span>,</span></span>
-<span class="r-in"><span>                          data<span class="op">=</span><span class="va">data</span>,startingDose<span class="op">=</span><span class="fl">25</span><span class="op">)</span></span></span>
-<span class="r-in"><span><span class="co">##Options for MCMC</span></span></span>
-<span class="r-in"><span><span class="co">##For illustration purpose, we will use 50 burn-ins to generate 200 samples and</span></span></span>
-<span class="r-in"><span><span class="co">##only simulate for 2 trials (nsim=2)</span></span></span>
-<span class="r-in"><span><span class="va">options</span><span class="op">&lt;-</span><span class="fu"><a href="McmcOptions-class.html">McmcOptions</a></span><span class="op">(</span>burnin<span class="op">=</span><span class="fl">50</span>,step<span class="op">=</span><span class="fl">2</span>,samples<span class="op">=</span><span class="fl">200</span><span class="op">)</span></span></span>
-<span class="r-in"><span><span class="co">##The simualtions</span></span></span>
-<span class="r-in"><span><span class="va">mySim</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/stats/simulate.html" class="external-link">simulate</a></span><span class="op">(</span><span class="va">design</span>,</span></span>
-<span class="r-in"><span>                  args<span class="op">=</span><span class="cn">NULL</span>,</span></span>
-<span class="r-in"><span>                  truth<span class="op">=</span><span class="va">myTruth</span>,</span></span>
-<span class="r-in"><span>                  nsim<span class="op">=</span><span class="fl">2</span>,</span></span>
-<span class="r-in"><span>                  seed<span class="op">=</span><span class="fl">819</span>,</span></span>
-<span class="r-in"><span>                  mcmcOptions<span class="op">=</span><span class="va">options</span>,</span></span>
-<span class="r-in"><span>                  parallel<span class="op">=</span><span class="cn">FALSE</span><span class="op">)</span></span></span>
-<span class="r-in"><span><span class="co">##Then produce a summary of your simulations</span></span></span>
-<span class="r-in"><span><span class="va">MYSUM</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/summary.html" class="external-link">summary</a></span><span class="op">(</span><span class="va">mySim</span>,</span></span>
-<span class="r-in"><span>         truth<span class="op">=</span><span class="va">myTruth</span><span class="op">)</span></span></span>
-<span class="r-in"><span><span class="co">##show the summary of the simulated results in a data frame</span></span></span>
-<span class="r-in"><span><span class="fu">show</span><span class="op">(</span><span class="va">MYSUM</span><span class="op">)</span></span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="co"># The design.</span></span></span>
+<span class="r-in"><span><span class="va">my_design</span> <span class="op">&lt;-</span> <span class="fu"><a href="TDsamplesDesign-class.html">TDsamplesDesign</a></span><span class="op">(</span></span></span>
+<span class="r-in"><span>  model <span class="op">=</span> <span class="va">my_model</span>,</span></span>
+<span class="r-in"><span>  nextBest <span class="op">=</span> <span class="va">td_next_best</span>,</span></span>
+<span class="r-in"><span>  stopping <span class="op">=</span> <span class="va">my_stopping</span>,</span></span>
+<span class="r-in"><span>  increments <span class="op">=</span> <span class="va">my_increments</span>,</span></span>
+<span class="r-in"><span>  cohortSize <span class="op">=</span> <span class="va">my_size</span>,</span></span>
+<span class="r-in"><span>  data <span class="op">=</span> <span class="va">emptydata</span>,</span></span>
+<span class="r-in"><span>  startingDose <span class="op">=</span> <span class="fl">25</span></span></span>
+<span class="r-in"><span><span class="op">)</span></span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="co"># For illustration purposes 2 trails are simulated with 50 burn-ins to generate</span></span></span>
+<span class="r-in"><span><span class="co"># 200 samples.</span></span></span>
+<span class="r-in"><span><span class="va">my_options</span> <span class="op">&lt;-</span> <span class="fu"><a href="McmcOptions-class.html">McmcOptions</a></span><span class="op">(</span>burnin <span class="op">=</span> <span class="fl">50</span>, step <span class="op">=</span> <span class="fl">2</span>, samples <span class="op">=</span> <span class="fl">200</span><span class="op">)</span></span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="va">my_sim</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/stats/simulate.html" class="external-link">simulate</a></span><span class="op">(</span></span></span>
+<span class="r-in"><span>  object <span class="op">=</span> <span class="va">my_design</span>,</span></span>
+<span class="r-in"><span>  args <span class="op">=</span> <span class="cn">NULL</span>,</span></span>
+<span class="r-in"><span>  truth <span class="op">=</span> <span class="va">my_truth</span>,</span></span>
+<span class="r-in"><span>  nsim <span class="op">=</span> <span class="fl">2</span>,</span></span>
+<span class="r-in"><span>  seed <span class="op">=</span> <span class="fl">819</span>,</span></span>
+<span class="r-in"><span>  mcmcOptions <span class="op">=</span> <span class="va">my_options</span>,</span></span>
+<span class="r-in"><span>  parallel <span class="op">=</span> <span class="cn">FALSE</span></span></span>
+<span class="r-in"><span><span class="op">)</span></span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="co"># Produce a summary of the simulations.</span></span></span>
+<span class="r-in"><span><span class="va">my_sum</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/summary.html" class="external-link">summary</a></span><span class="op">(</span></span></span>
+<span class="r-in"><span>  <span class="va">my_sim</span>,</span></span>
+<span class="r-in"><span>  truth <span class="op">=</span> <span class="va">my_truth</span></span></span>
+<span class="r-in"><span><span class="op">)</span></span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="co"># Show the summary of the simulated results in a data frame.</span></span></span>
+<span class="r-in"><span><span class="fu">show</span><span class="op">(</span><span class="va">my_sum</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Summary of 2 simulations</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Target probability of DLE p(DLE) used at the end of a trial was 30 %</span>
@@ -255,8 +269,6 @@ appropriate column names</p>
 <span class="r-out co"><span class="r-pr">#&gt;</span>     Min. 1st Qu.  Median    Mean 3rd Qu.    Max.  </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>    473.5   781.3  1089.2  1089.2  1397.0  1704.8  </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
-<span class="r-in"><span></span></span>
-<span class="r-in"><span><span class="co"># nolint end</span></span></span>
 </code></pre></div>
     </div>
   </main><aside class="col-md-3"><nav id="toc"><h2>On this page</h2>
