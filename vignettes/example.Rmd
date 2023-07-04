@@ -1715,10 +1715,10 @@ Similarly to other pseudo models, the data set has to be specified before settin
 
 ```{r modelEff}
 Effmodel <- Effloglog(
-              eff = c(1.223, 2.513), 
-              eff_dose = c(25, 300), 
-              nu = c(a = 1, b = 0.025), 
-              data = data2
+  eff = c(1.223, 2.513),
+  eff_dose = c(25, 300),
+  nu = c(a = 1, b = 0.025),
+  data = data2
 )
 ```
 
