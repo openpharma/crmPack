@@ -570,6 +570,7 @@ setMethod(
     options = "McmcOptions"
   ),
   definition = function(data, model, options, ...) {
+    print("Here!")
     model <- update(object = model, data = data)
     sample_size <- size(options)
 
@@ -733,7 +734,7 @@ setMethod("mcmc",
           ## Metropolis-Hastings update step here, using
           ## an inverse gamma distribution
           aStar <- thismodel@sigma2W["a"] + length(x1) / 2
-          ## Second paramter bStar depends on the value for sigma2W
+          ## Second parameter bStar depends on the value for sigma2W
           bStar <- function(x) {
             adjW <- w1
             ret <- sum((adjW - betaW[x1Level])^2) / 2 + thismodel@sigma2W["b"]
