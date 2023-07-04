@@ -467,7 +467,7 @@ setMethod("simulate",
         data = dataList,
         doses = recommendedDoses,
         fit = fitList,
-        stopReasons = stopReasons,
+        stop_reasons = stopReasons,
         seed = RNGstate
       )
 
