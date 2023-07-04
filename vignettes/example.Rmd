@@ -317,7 +317,7 @@ results in the future. Please note that currently the reproducibility is under t
 unlikely (only 5% probability) to have the true probability of DLT at the minimum and
 maximum dose, respectively.
 
-The result `minInfModel} is a list, and we can use its contents to
+The result `minInfModel` is a list, and we can use its contents to
 illustrate the creation of the prior:
 
 ```{r min-inf-res, fig=TRUE, fig.width=6}
@@ -373,7 +373,7 @@ myModel <- minInfModel$model
 ```
 
 # Obtaining the posterior
-As said before, models inheriting from the `GeneralModel` class rely on MCMC sampling for obtaining the posterior distribution of the model parameters, given the data. Most of the models, except the `EffFlexi` class model (please refer to [Dual-endpoint dose escalation designs]Dual-endpoint dose escalation designs] for details), inheriting from the  `ModelPseudo` class do not necessarily require MCMC sampling to obtain posterior estimates. When no MCMC sampling is involved, the prior or posterior modal estimates of model estimates are used. But we can still obtain the full posterior distribution of the model parameters via MCMC for any models specified under `ModelPseudo` class. The MCMC sampling can be controlled with an object of class `mcmcOptions`, created for example as follows:
+As said before, models inheriting from the `GeneralModel` class rely on MCMC sampling for obtaining the posterior distribution of the model parameters, given the data. Most of the models, except the `EffFlexi` class model (please refer to [Dual-endpoint dose escalation designs] for details), inheriting from the `ModelPseudo` class do not necessarily require MCMC sampling to obtain posterior estimates. When no MCMC sampling is involved, the prior or posterior modal estimates of model estimates are used. But we can still obtain the full posterior distribution of the model parameters via MCMC for any models specified under `ModelPseudo` class. The MCMC sampling can be controlled with an object of class `mcmcOptions`, created for example as follows:
 
 ```{r mcmc-opts}
 options <- McmcOptions(
@@ -383,13 +383,13 @@ options <- McmcOptions(
 )
 ```
 
-Now the object `options` specifies that you would like to have 2000
+Now the object `options` specifies that you would like to have `2000`
 parameter samples obtained from a Markov chain that starts with a `burn-in`
-phase of 100 iterations that are discarded, and then save a sample every 2
+phase of `100` iterations that are discarded, and then save a sample every `2`
 iterations. Note that these numbers are too low for actual production use and are
 only used for illustrating purposes here; normally you would specify at least
 the default parameters of the initialization function `mcmcOptions`:
-$10,000$ burn-in iterations and $10,000$ samples saved every 2nd iteration.
+`10000` burn-in iterations and `10000` samples saved every 2^nd^ iteration.
 You can look these up in help browser under the link `McmcOptions`.
 
 After having set up the options, you can proceed to MCMC sampling by calling the
@@ -402,7 +402,7 @@ samples <- mcmc(data, model, options)
 
 The `mcmc` function takes the data object, the model and the MCMC
 options. By default, JAGS is used for obtaining the samples. Use the option
-`verbose=TRUE` to show a progress bar and detailed JAGS messages.
+`verbose = TRUE` to show a progress bar and detailed JAGS messages.
 
 Finally, it is good practice to check graphically that the Markov chain has
 really converged to the posterior distribution. To this end, `crmPack`
@@ -526,6 +526,7 @@ Since no samples are involved, only the curve using the prior or posterior modal
 
 # Escalation Rules
 For the dose escalation, there are four kinds of rules:
+
 * `Increments`: For specifying maximum allowable increments between
   doses
 * `NextBest`: How to derive the next best dose
@@ -541,7 +542,7 @@ and `Stopping-class`.
 
 Figure \@ref(fig:increments) shows the structure of the `Increments` classes:
 
-```{r increments, fig.cap = "Increments classes structure"}
+```{r increments, fig.cap = "Increments classes structure", echo = FALSE}
 df <- data.frame(
   pathString = c(
     "Increments/IncrementsRelative/IncrementsRelativeParts",
@@ -601,7 +602,7 @@ The `IncrementsRelativeDLT` class works similarly, taking the number of DLTs in 
 
 Figure \@ref(fig:rules) show the structure of the next best dose recommendation rules currently implemented in `crmPack`.
 
-```{r rules, fig.width=6, fig.cap="Escalation classes structure"}
+```{r rules, fig.width=6, fig.cap="Escalation classes structure", echo = FALSE}
 df <- data.frame(
   pathString = c(
     "NextBest/NextBestMTD",
@@ -656,7 +657,6 @@ Note that the `NextBestMTD` class is quite flexible, because you can
 specify a function `derive` that derives the next best dose from the
 posterior MTD samples.
 
-
 There are also two further next best dose recommendation rules when the model is inheriting from the  `ModelTox` class. One rule is specified when no samples for the model parameters are involved and the other one is when samples of the model parameters are generated and are incorporated into the dose-escalation procedure.
 
 The details about these rules are as follows. First, two probabilities of the occurrence of a DLT have to be fixed. The first one is called `targetDuringTrial` which is the target probability of the occurrence of a DLT to be used during the trial. The second probability is called `targetEndOfTrial` is the target probability of the occurrence of a DLT to be used at the end of a trial. The above two targets always have to be specified. For cases when samples are involved, an additional argument has to be used, which is a function to advise what we should recommend using the samples that we have. This will be elaborated in details in the example below.
@@ -680,9 +680,7 @@ TDsamplesNextBest <- NextBestTDsamples(
 )
 ```
 
-The slot for `targetDuringTrial` and `targetEndOfTrial` are specified in the same way as in the last example given the value of 0.35 and 0.3, respectively. The `derive` slot should always be specified with a function.
-% First, define the dose level for which its probability of the occurrence of a DLT during trial called the `TDtargetDuringTrial` and similarly, for `TDtargetEndOfTrial`. With this class and samples involved, we can obtain the `TDtargetDuringTrial` samples and `TDtargetEndOfTrial` samples.
-In this example, using the function specified in the `derive` slot says that we will recommend the 30% posterior quantiles of the samples to be the estimates for the doses corresponding to the `targetDuringTrial` and `targetEndOfTrial` doses.
+The slot for `targetDuringTrial` and `targetEndOfTrial` are specified in the same way as in the last example given the value of 0.35 and 0.3, respectively. The `derive` slot should always be specified with a function.  In this example, using the function specified in the `derive` slot says that we will recommend the 30% posterior quantiles of the samples to be the estimates for the doses corresponding to the `targetDuringTrial` and `targetEndOfTrial` doses.
 
 During the study, in order to derive the next best dose, we supply the generic
 `nextBest` function with the rule, the maximum dose, the posterior
@@ -739,9 +737,9 @@ The same list of results will be produced as in the example before: The values o
 ```{r next-bestTDsamples-results, fig=TRUE}
 print(doseRecDLTSamples$plot)
 ```
+> This graph is incorrect
 
 In the plot, vertical lines are given to show the value for the next dose, the TD30 estimate, the TD35 estimate and the maximum allowable dose level. Since samples of model parameters were utilized, the density curves of the TD30 (pink) and the TD35 (grey) are plotted.
-% , the area bounded under the grey curves shows the density of the TD35 samples while the area under the pink curve shows the density of the TD30 samples.
 
 ## Cohort size rules
 
@@ -890,7 +888,7 @@ stopTrial(
 ```
 when DLT samples or no DLT samples are involved.
 
-> Note that at the moment the "and" operator `&` and the `or`
+> Note that at the moment the `and` operator `&` and the `or`
 operator `|` cannot be used together with `StoppingTDCIRatio` class objects. This is still under development.
 
 # Simulations
@@ -898,7 +896,7 @@ In order to run simulations, we first have to build a specific design, that
 comprises a model, the escalation rules, starting data, a cohort size and a starting dose.
 
 The structure of the design classes in this package is shown in figure \@ref(fig:Design).
-```{r Design, fig.width=6, fig.cap="Design classes structure"}
+```{r Design, fig.width=6, fig.cap="Design classes structure", echo = FALSE}
 df <- data.frame(
   pathString = c(
     "RuleDesign/Design/DualDesign",
@@ -1168,18 +1166,7 @@ DLTsampSim <- simulate(DLTsamplesDesign,
 The meaning of these arguments are the same as those defined and explained above in the `simulate` example for the `Design` class.
 % With slots `args` to specify any additional arguments for the `truth` function, `truth` for the real DLT scenario to simulate responses from, `nsim` for the number of simulations, `seed`, the random generator seed and `parallel` to specify whether parallel computing is to be used for running the simulations.
 
-Similarly, the results of individual simulations can be obtained graphically using the `plot` function.
-%' Again for example we want to look at the results of the third trial. Since the `Data` slot of the simulations contains a list of data obtained in the simulated trial, the plots of the simulated results of the third trial for these two simulations are given as
-%' ```{r plotDLTSimdata,fig=TRUE}
-%' print(plot(DLTSim@data[[3]]))
-%' }
-%'
-%' ```{r plotDLTsampSimdata,fig=TRUE}
-%' print(plot(DLTsampSim@data[[3]]))
-%' }
-%'
-The dose level for recommendation that is the dose levels closest below the final estimated TD30 (the
-final estimates of the dose level with probability of DLT equals to the target end of trial) was
+Similarly, the results of individual simulations can be obtained graphically using the `plot` function.  The dose level for recommendation that is the dose levels closest below the final estimated TD30 (the final estimates of the dose level with probability of DLT equals to the target end of trial) was
 
 ```{r DLTSim-dose}
 DLTSim@doses[3]
@@ -1191,17 +1178,19 @@ DLTsampSim@doses[3]
 
 
 The overall results of the 100 trials for these two simulations can also be plotted as
-```{r plotDLTSim,fig=TRUE}
+
+```{r plotDLTSim, fig=TRUE}
 print(plot(DLTSim))
 ```
 
-```{r plotDLTsampSim,fig=TRUE}
+```{r plotDLTsampSim, fig=TRUE}
 print(plot(DLTsampSim))
 ```
 
 which show the trial trajectories and the proportion of doses level tried.
 
 These simulation results can also be summarized using the `summary` function given the truth:
+
 ```{r DLTSim-summary}
 summary(DLTSim,
   truth = TrueDLT
@@ -1385,15 +1374,13 @@ print(plot(threeSimsSum))
 
 # Dual-endpoint dose escalation designs
 
-In this section, we will look into dose-escalation procedures included in this package where two end points are incorporated into the study.
-% Assume that two endpoints/responses of observations will be collected from each subject.
-The first endpoint is the binary DLT response that we discussed already in the last sections. The second endpoint is the continuous biomarker/efficacy response. In this package, we can either model these two responses jointly (using a single model class, assuming correlation) or separately (using two separate model classes, assuming no correlation).
-% For the former, a correlation between the two responses can be assumed where the latter no correlation between the two responses are assumed.
+In this section, we will look into dose-escalation procedures included in this package where two end points are incorporated into the study.  The first endpoint is the binary DLT response that we discussed already in the last sections. The second endpoint is the continuous biomarker/efficacy response. In this package, we can either model these two responses jointly (using a single model class, assuming correlation) or separately (using two separate model classes, assuming no correlation).
+
 Now we will first describe how we model the two responses jointly.
 
 ## Dual-endpoint designs with a joint model
 
-As a disclaimer, please note that the designs in this section are
+> As a disclaimer, please note that the designs in this section are
 still under development, and so far we have not yet been published. Therefore please consider them as experimental.
 
 In the help page `DualEndpoint-class` the general joint model structure is
@@ -1727,7 +1714,12 @@ The following commands show how we set up the `Effloglog` model. This is an effi
 Similarly to other pseudo models, the data set has to be specified before setting up the model:
 
 ```{r modelEff}
-Effmodel <- Effloglog(eff = c(1.223, 2.513), eff_dose = c(25, 300), nu = c(a = 1, b = 0.025), data = data2)
+Effmodel <- Effloglog(
+              eff = c(1.223, 2.513), 
+              eff_dose = c(25, 300), 
+              nu = c(a = 1, b = 0.025), 
+              data = data2
+)
 ```
 
 For the specification of the prior pseudo data, two dose levels 25 and 300 mg are fixed and specified in the `eff_dose` slot. After eliciting the prior expected efficacy values at these two dose levels (e.g. by asking for experts'), these are specified in the `eff` slot. Here for example, 1.223 is the expected efficacy value for subjects treated at dose 25 mg and 2.513 is the expected efficacy value for subjects treated at 300 mg. The slot `nu` represents the prior precision of the efficacy responses. In this example, two positive scalars for $a$ and $b$ are specified suggesting the prior distribution of the precision is gamma with shape parameter $a=1$ and rate parameter $b=0.025$. Note here, since a gamma distribution is used as the prior distribution of $\nu$, the posterior distribution will again be a gamma distribution, because the gamma prior on the precision is conjugate to the normal likelihood.
@@ -1797,7 +1789,6 @@ Similarly we can update with new data for the `EffFlexi` class model:
 newEffmodel2 <- update(object = Effmodel2, data = data4)
 newEffmodel2@RW
 ```
-% such that the updated random walk difference matrix can be obtained.
 
 The `plot` function can also be applied to the `Effloglog` model class or the `EffFlexi` model class objects, when samples of the parameters are generated under all these models:
 
