@@ -1071,7 +1071,7 @@ setMethod("simulate",
         sigma2West = sigma2Westimates,
         fit = fitToxList,
         fitBiomarker = fitBiomarkerList,
-        stopReasons = stopReasons,
+        stop_reasons = stopReasons,
         seed = RNGstate
       )
 
@@ -4686,7 +4686,7 @@ setMethod("simulate",
         doses = recommendedDoses,
         fit = fitList,
         trialduration = trialduration,
-        stopReasons = stopReasons,
+        stop_reasons = stopReasons,
         seed = RNGstate
       )
 
