@@ -21,7 +21,7 @@ Sys.setenv(
   BIBINPUTS = getwd(),
   BSTINPUTS = getwd()
 )
-opts_chunk$set(cache = TRUE)  # to prevent rerunning the code every time
+opts_chunk$set(cache = TRUE) # to prevent rerunning the code every time
 
 oh <- knitr::knit_hooks$get("output")
 knitr::knit_hooks$set(output = function(x, options) {
