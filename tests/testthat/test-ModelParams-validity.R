@@ -5,14 +5,22 @@ test_that("v_model_params_normal passes for valid object", {
   expect_true(v_model_params_normal(object))
 })
 
-test_that("v_model_params_normal returns error for wrong mean and NA", {
-  object <- h_get_model_params_normal()
-  # Assigning mean vector of wrong length = 4 != 2, and with NA.
-  object@mean <- c(1:3, NA)
+test_that("v_model_params_normal passes for valid object with larger dimensions", {
+  object <- ModelParamsNormal(
+    mean = c(1, 6, 4),
+    cov = diag(3)
+  )
+  expect_true(v_model_params_normal(object))
+})
 
-  expect_equal(
+test_that("v_model_params_normal returns error for mean with NA", {
+  object <- h_get_model_params_normal()
+  # Assigning mean vector with NA.
+  object@mean <- c(1, NA)
+
+  expect_match(
     v_model_params_normal(object),
-    "mean must have length 2 and no missing values are allowed"
+    "mean must have length of at least 2 and no missing values are allowed"
   )
 })
 
@@ -23,7 +31,7 @@ test_that("v_model_params_normal returns error for cov with NA", {
 
   expect_equal(
     v_model_params_normal(object),
-    "cov must be 2x2 positive-definite matrix without any missing values"
+    "cov must be positive-definite matrix without any missing values"
   )
 })
 
@@ -34,7 +42,7 @@ test_that("v_model_params_normal returns error for prec with NA", {
 
   expect_equal(
     v_model_params_normal(object),
-    "prec must be 2x2 positive-definite matrix without any missing values"
+    "prec must be positive-definite matrix without any missing values"
   )
 })
 
@@ -45,7 +53,7 @@ test_that("v_model_params_normal returns error for wrong cov", {
 
   expect_equal(
     v_model_params_normal(object),
-    "cov must be 2x2 positive-definite matrix without any missing values"
+    "cov must be positive-definite matrix without any missing values"
   )
 })
 
@@ -56,7 +64,7 @@ test_that("v_model_params_normal returns error for wrong prec", {
 
   expect_equal(
     v_model_params_normal(object),
-    "prec must be 2x2 positive-definite matrix without any missing values"
+    "prec must be positive-definite matrix without any missing values"
   )
 })
 
