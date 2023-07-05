@@ -434,8 +434,6 @@ h_next_best_tdsamples_plot <- function(dose_target_drt_samples,
       colour = "violet"
     )
 
-  print(p)
-
   maxdoselimit <- min(doselimit, dose_grid_range[2])
 
   p +

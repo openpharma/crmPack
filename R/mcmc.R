@@ -570,7 +570,6 @@ setMethod(
     options = "McmcOptions"
   ),
   definition = function(data, model, options, ...) {
-    print("Here!")
     model <- update(object = model, data = data)
     sample_size <- size(options)
 

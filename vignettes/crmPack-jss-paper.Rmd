@@ -14,51 +14,7 @@ vignette: >
 bibliography: vignettes.bib
 ---
 ```{r, echo=FALSE}
-options(prompt = "R> ", continue = "+  ", width = 76, useFancyQuotes = FALSE)
 library(knitr)
-knitr::opts_chunk$set(abbreviate = 0, wrap = FALSE)
-Sys.setenv(
-  TEXINPUTS = getwd(),
-  BIBINPUTS = getwd(),
-  BSTINPUTS = getwd()
-)
-opts_chunk$set(cache = TRUE) # to prevent rerunning the code every time
-
-oh <- knitr::knit_hooks$get("output")
-knitr::knit_hooks$set(output = function(x, options) {
-  ## do we need to abbreviate the output?
-  if (options$abbreviate > 0) {
-    ret <- strsplit(x, "\n")[[1]]
-    ret <- if (length(ret) > options$abbreviate * 2) {
-      paste(
-        paste(head(ret, options$abbreviate),
-          collapse = "\n"
-        ),
-        "\n...\n",
-        paste(tail(ret, options$abbreviate),
-          collapse = "\n"
-        ),
-        "\n",
-        sep = ""
-      )
-    } else {
-      ret
-    }
-    oh(ret, options)
-  } else if (options$wrap) {
-    ## do we need to wrap the output?
-    oh(
-      paste(
-        paste(strwrap(strsplit(x, "\n")[[1]]), collapse = "\n"),
-        "\n"
-      ),
-      options
-    )
-  } else {
-    ## original output hook
-    oh(x, options)
-  }
-})
 ```
 
 # Abstract
@@ -145,11 +101,11 @@ for early phase trials from [@Thall2010]. Figure \@ref(fig:schematic) summarizes
 the framework in a schematic.
 
 ```{r schematic, fig.align='center', out.height = "540px", out.width="700px", fig.cap='Schematic of the framework'}
-knitr::include_graphics("./schematic.pdf")
+knitr::include_graphics("./schematic.png")
 ```
 
 Separate design features are implemented as classes (shown as gray boxes) and bundled together in the overarching `Design` object.
-They can be processed with various methods (blue text) to run the dose escalation trial and produce results (blue boxes). For example, the `Data` and `GeneralModel` objects can be processed by the `code` method in order to obtain posterior samples of the model parameters, and given the sample size and the dose for the next cohort, the updated `Data` closes the dose escalation loop. On the higher level, designs can be investigated with the `examine` and `simulate` methods to obtain hypothetical trial courses and operating characteristics, respectively. Note that individual model classes and methods are not shown here for clarity, please refer to the package documentation for details, e.g., by calling `crmPackHelp()`.'
+They can be processed with various methods (blue text) to run the dose escalation trial and produce results (blue boxes). For example, the `Data` and `GeneralModel` objects can be processed by the `mcmc` method in order to obtain posterior samples of the model parameters, and given the sample size and the dose for the next cohort, the updated `Data` closes the dose escalation loop. On the higher level, designs can be investigated with the `examine` and `simulate` methods to obtain hypothetical trial courses and operating characteristics, respectively. Note that individual model classes and methods are not shown here for clarity, please refer to the package documentation for details, e.g., by calling `crmPackHelp()`.'
 
 **Data** Let $x$ denote one specific treatment, chosen from the set
 of possible treatments ${\cal X}$. This could be one specific dose, but also
@@ -261,7 +217,7 @@ Suppose that 12 dose levels ranging from 25 to 300 mg in 25 mg increments of a
 novel agent are available in addition to placebo, defining our dose grid
 $\mathcal{X} = \{0.001,25, 50,\dotsc, 300\}$, with $x_{1} = 0.001$ mg representing
 placebo and  $x_{2} = 25$ being our starting dose. Note that here we used a very small dose instead of zero
-for $x_{1}$, since we consider here the regression model @\eqref(eq:LogisticLogNormal)
+for $x_{1}$, since we consider here the regression model \@eqref(eq:LogisticLogNormal)
 with a log transformation of the dose $x$ (with $x^{*} = 100$ chosen as reference dose).
 
 **Minimally informative prior** Here we assume that limited prior information is available on the dose-toxicity
@@ -333,7 +289,7 @@ plot(data, blind = TRUE)
 obtaining the posterior distribution of the model parameters $\theta$, and hence
 the DLT rates $Prob(Y=1 | x,\theta)$, at various doses $x$. The MCMC
 sampling can be controlled with an object of class `McmcOptions`, which is
-then provided to the `code` function, together with the `data` and the
+then provided to the `mcmc` function, together with the `data` and the
 `model` objects:
 
 ```{r mcmc-sampling}
