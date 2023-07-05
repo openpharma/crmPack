@@ -1,9 +1,9 @@
 ---
-title: "Model-based Dose Escalation Designs in R with crmPack"
+title: "Model-based Dose Escalation Designs in R with crmPack (JSS manuscript)"
 output: 
   bookdown::html_document2:
       base_format: rmarkdown::html_vignette
-      pandoc_args: ["-Fpandoc-crossref"]
+
 vignette: >
   %\VignetteIndexEntry{Model-based Dose Escalation Designs in R with crmPack (JSS manuscript)}
   %\VignetteEngine{knitr::rmarkdown}
@@ -15,6 +15,7 @@ bibliography: vignettes.bib
 ---
 ```{r, echo=FALSE}
 options(prompt = "R> ", continue = "+  ", width = 76, useFancyQuotes = FALSE)
+library(knitr)
 knitr::opts_chunk$set(abbreviate = 0, wrap = FALSE)
 Sys.setenv(
   TEXINPUTS = getwd(),
