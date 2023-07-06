@@ -17,10 +17,10 @@ bibliography: example.bib
 
 ```{r load, echo=FALSE, results=FALSE}
 # nolint start
-## load package already here to be able to reference the package version!!
 library(crmPack)
 library(knitr)
 crmPackVersion <- as.character(packageVersion("crmPack"))
+knitr::opts_chunk$set(fig.width = 6)
 ```
 
 This short vignette shall introduce into the usage of the package
