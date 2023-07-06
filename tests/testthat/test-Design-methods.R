@@ -133,3 +133,82 @@ test_that("stopReasons can be NA with certain stopping rule settings", {
   )
   expect_identical(result, expected)
 })
+
+ test_that("reporting labels and logicals are correctly returned using the recursive function in simulate", {
+   data <- h_get_data(placebo = FALSE)
+   model <- h_get_logistic_normal()
+
+   increments <- IncrementsRelative(
+     intervals = c(0, 20),
+     increments = c(1, 0.33)
+   )
+   new_next_best <- NextBestNCRM(
+     target = c(0.2, 0.35),
+     overdose = c(0.35, 1),
+     max_overdose_prob = 0.25
+   )
+   size <- CohortSizeConst(size = 3)
+
+   truth <- probFunction(model, alpha0 = 175, alpha1 = 5)
+
+   stopping1 <- StoppingMinCohorts(nCohorts = 4, report_label = "label_rule1")
+   stopping2 <- StoppingTargetProb(
+     target = c(0.2, 0.35), prob = 0.5,
+     report_label = "label_rule2"
+   ) # target toxicity level
+   stopping3 <- StoppingMinPatients(
+     nPatients = 10,
+     report_label = "label_rule3"
+   )
+   stopping <- StoppingAll(
+     stop_list =
+       list(
+         StoppingAny(
+           stop_list =
+             list(stopping1, stopping2),
+           report_label = "label_StoppingAny"
+         ),
+         stopping3
+       ),
+     report_label = "label_StoppingAll"
+   )
+
+   stopping1 <- StoppingMinCohorts(nCohorts = 5, report_label = "label_rule1")
+   stopping2 <- StoppingTargetProb(
+     target = c(0.2, 0.35),
+     prob = 0.5,
+     report_label = "label_rule2"
+   ) # target toxicity level
+   stopping3 <- StoppingMinPatients(nPatients = 15, report_label = "label_rule3")
+   stopping <- StoppingAll(
+     stop_list =
+       list(StoppingAny(
+         stop_list = list(stopping1, stopping2),
+         report_label = "label_StoppingAny"
+       ), stopping3),
+     report_label = "label_StoppingAll"
+   )
+
+  design <- Design(
+     model = model,
+     stopping = stopping,
+     increments = increments,
+     nextBest = new_next_best,
+     cohortSize = size,
+     data = data,
+     startingDose = 25
+   )
+
+   sim <- simulate(
+     design,
+     nsim = 5,
+     truth = truth,
+     seed = 819,
+     mcmcOptions = h_get_mcmc_options()
+   )
+
+   expected <- matrix(nrow = 5, ncol = 5, c(TRUE, TRUE, FALSE, TRUE, TRUE), byrow = TRUE)
+   colnames(expected) <- c("label_StoppingAll", "label_StoppingAny", "label_rule1", "label_rule2", "label_rule3")
+
+   expect_identical(sim@stop_report, expected)
+ })

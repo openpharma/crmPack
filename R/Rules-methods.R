@@ -1,6 +1,7 @@
 #' @include Model-methods.R
 #' @include Samples-class.R
 #' @include Rules-class.R
+#' @include helpers.R
 #' @include helpers_rules.R
 NULL
 
@@ -1888,7 +1889,8 @@ setMethod("stopTrial",
       overallText <- lapply(individualResults, attr, "message")
 
       return(structure(overallResult,
-        message = overallText
+        message = overallText,
+        individual = individualResults
       ))
     }
 )
@@ -1942,7 +1944,9 @@ setMethod("stopTrial",
       overallText <- lapply(individualResults, attr, "message")
 
       return(structure(overallResult,
-        message = overallText
+        message = overallText,
+        individual = individualResults,
+        report_label = stopping@report_label
       ))
     }
 )
@@ -1996,7 +2000,9 @@ setMethod("stopTrial",
       overallText <- lapply(individualResults, attr, "message")
 
       return(structure(overallResult,
-        message = overallText
+        message = overallText,
+        individual = individualResults,
+        report_label = stopping@report_label
       ))
     }
 )
@@ -2051,7 +2057,9 @@ setMethod("stopTrial",
 
       ## return both
       return(structure(doStop,
-        message = text
+        message = text,
+        message = text,
+        report_label = stopping@report_label
       ))
     }
 )
@@ -2106,7 +2114,8 @@ setMethod("stopTrial",
 
       ## return both
       return(structure(doStop,
-        message = text
+        message = text,
+        report_label = stopping@report_label
       ))
     }
 )
@@ -2148,7 +2157,8 @@ setMethod("stopTrial",
 
       ## return both
       return(structure(doStop,
-        message = text
+        message = text,
+        report_label = stopping@report_label
       ))
     }
 )
@@ -2187,7 +2197,8 @@ setMethod("stopTrial",
 
       ## return both
       return(structure(doStop,
-        message = text
+        message = text,
+        report_label = stopping@report_label
       ))
     }
 )
@@ -2235,7 +2246,10 @@ setMethod(
       "%"
     )
 
-    structure(do_stop, message = msg)
+    structure(
+      do_stop,
+      message = msg,
+      report_label = stopping@report_label)
   }
 )
 
@@ -2301,7 +2315,8 @@ setMethod("stopTrial",
 
       ## return both
       return(structure(doStop,
-        message = text
+        message = text,
+        report_label = stopping@report_label
       ))
     }
 )
@@ -2352,7 +2367,10 @@ setMethod(
       "%"
     )
 
-    structure(do_stop, message = msg)
+    structure(
+      do_stop,
+      message = msg,
+      report_label = stopping@report_label)
   }
 )
 
@@ -2411,7 +2429,10 @@ setMethod(
       )
     }
 
-    structure(do_stop, message = msg)
+    structure(
+      do_stop,
+      message = msg,
+      report_label = stopping@report_label)
   }
 )
 
@@ -2505,7 +2526,10 @@ setMethod(
       "%"
     )
 
-    structure(do_stop, message = msg)
+    structure(
+      do_stop,
+      message = msg,
+      report_label = stopping@report_label)
   }
 )
 
@@ -2585,7 +2609,8 @@ setMethod("stopTrial",
               "not the"
             ),
             "highest dose"
-          )
+          ),
+        report_label = stopping@report_label
       ))
     }
 )
@@ -2891,7 +2916,10 @@ setMethod(
       ifelse(do_stop, "less than or equal to ", "greater than "),
       "target_ratio = ", stopping@target_ratio
     )
-    structure(do_stop, message = text)
+    structure(do_stop,
+      message = text,
+      report_label = stopping@report_label
+    )
   }
 )
 
@@ -2935,8 +2963,10 @@ setMethod("stopTrial",
         "target_ratio =", stopping@target_ratio
       )
       ## return both
-      return(structure(doStop,
-        message = text
+      return(structure(
+        doStop,
+        message = text,
+        report_label = stopping@report_label
       ))
     }
 )
@@ -3063,7 +3093,8 @@ setMethod("stopTrial",
       text <- c(text1, text2, text3)
       ## return both
       return(structure(doStop,
-        message = text
+        message = text,
+        report_label = stopping@report_label
       ))
     }
 )
@@ -3208,7 +3239,8 @@ setMethod("stopTrial",
       text <- c(text1, text2, text3)
       ## return both
       return(structure(doStop,
-        message = text
+        message = text,
+        report_label = stopping@report_label
       ))
     }
 )

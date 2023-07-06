@@ -274,6 +274,16 @@ test_that("h_null_if_na throws an error for non-scalar, atomic argument", {
   )
 })
 
+# h_default_if_empty ----
+
+test_that("h_default_if_empty works as expected", {
+  default <- "default label"
+  expect_identical(h_default_if_empty(character(0), default), default)
+  expect_identical(h_default_if_empty("custom label", default), "custom label")
+  expect_identical(h_default_if_empty(NA, default), NA)
+  expect_identical(h_default_if_empty(NULL, default), default)
+})
+
 # h_is_positive_definite ----
 
 test_that("h_is_positive_definite returns TRUE for 2x2 positive-definite matrix", {
