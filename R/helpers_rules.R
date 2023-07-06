@@ -399,19 +399,21 @@ h_next_best_tdsamples_plot <- function(dose_target_drt_samples,
   assert_number(doselimit)
   assert_number(next_dose, na.ok = TRUE)
 
+  d <- rbind(
+    data.frame(period = "during", TD = dose_target_drt_samples),
+    data.frame(period = "end", TD = dose_target_eot_samples)
+  )
+  d <- d[which(d$TD >= 0 & d$TD <= dose_grid_range[2]), ]
+
   p <- ggplot(
-    data = rbind(
-      data.frame(period = "during", TD = dose_target_drt_samples),
-      data.frame(period = "end", TD = dose_target_eot_samples)
-    ),
+    data = d,
     aes(x = .data$TD, colour = .data$period),
   ) +
-    geom_density(fill = "grey50") +
-    coord_cartesian(xlim = dose_grid_range) +
-    scale_color_manual(values = c(during = "grey50", end = "violet")) +
+    geom_density(aes(fill = .data$period), alpha = 0.25) +
+    scale_color_manual(values = c(during = "orange", end = "violet")) +
     theme(legend.position = "none") +
     ylab("Posterior density") +
-    geom_vline(xintercept = dose_target_drt, colour = "orange", lwd = 1.1) +
+    geom_vline(xintercept = dose_target_drt, colour = "orange", lwd = 1) +
     annotate(
       geom = "text",
       label = paste("TD", nextBest@prob_target_drt * 100, "Estimate"),
@@ -422,7 +424,7 @@ h_next_best_tdsamples_plot <- function(dose_target_drt_samples,
       size = 5,
       colour = "orange"
     ) +
-    geom_vline(xintercept = dose_target_eot, colour = "violet", lwd = 1.1) +
+    geom_vline(xintercept = dose_target_eot, colour = "violet", lwd = 1) +
     annotate(
       geom = "text",
       label = paste("TD", nextBest@prob_target_eot * 100, "Estimate"),
