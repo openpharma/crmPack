@@ -10,30 +10,30 @@
 #'   or `TRUE` in case validation passes.
 NULL
 
-#' @describeIn v_model_params a helper function that validates bivariate normal
+#' @describeIn v_model_params a helper function that validates multivariate normal
 #'   parameters.
-#' @param object (`ModelParamsNormal`)\cr bivariate normal parameters object
+#' @param object (`ModelParamsNormal`)\cr multivariate normal parameters object
 #'   to validate.
 v_model_params_normal <- function(object) {
   v <- Validate()
 
   v$check(
-    test_numeric(x = object@mean, len = 2L, any.missing = FALSE),
-    "mean must have length 2 and no missing values are allowed"
+    test_numeric(x = object@mean, min.len = 2L, any.missing = FALSE),
+    "mean must have length of at least 2 and no missing values are allowed"
   )
-  is_cov_valid <- h_is_positive_definite(object@cov)
+  is_cov_valid <- h_is_positive_definite(object@cov, length(object@mean))
   v$check(
     is_cov_valid,
-    "cov must be 2x2 positive-definite matrix without any missing values"
+    "cov must be positive-definite matrix without any missing values"
   )
-  is_prec_valid <- h_is_positive_definite(object@prec)
+  is_prec_valid <- h_is_positive_definite(object@prec, length(object@mean))
   v$check(
     is_prec_valid,
-    "prec must be 2x2 positive-definite matrix without any missing values"
+    "prec must be positive-definite matrix without any missing values"
   )
   if (is_cov_valid && is_prec_valid) {
     v$check(
-      all.equal(object@cov %*% object@prec, diag(1, 2), check.attributes = FALSE) == TRUE,
+      all.equal(object@cov %*% object@prec, diag(1, length(object@mean)), check.attributes = FALSE) == TRUE,
       "prec must be inverse of cov"
     )
   }
