@@ -502,7 +502,6 @@ h_next_best_td_plot <- function(prob_target_drt,
     ylim(c(0, 1)) +
     xlab("Dose Levels") +
     ylab("Probability of DLT")
-
   if (h_in_range(dose_target_drt, range = dosegrid_range, bounds_closed = TRUE)) {
     p <- p +
       geom_point(
