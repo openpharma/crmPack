@@ -23,6 +23,8 @@ articles:
       - simulations
       - migration_from_the_old_crmPack
       - parallel_computing_with_extensions
+      - crmPack-jss-paper
+      - example
 
 reference:
   - title: Package
