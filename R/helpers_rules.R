@@ -399,64 +399,100 @@ h_next_best_tdsamples_plot <- function(dose_target_drt_samples,
   assert_number(doselimit)
   assert_number(next_dose, na.ok = TRUE)
 
-  d <- rbind(
-    data.frame(period = "during", TD = dose_target_drt_samples),
-    data.frame(period = "end", TD = dose_target_eot_samples)
+  lbl1 <- paste("TD", nextBest@prob_target_drt * 100, "Estimate")
+  lbl2 <- paste("TD", nextBest@prob_target_eot * 100, "Estimate")
+  labels <- data.frame(
+    Type = c("during", "end", "Max", "Next"),
+    Alpha = c(0.25, 0.25, 1, 1),
+    x = c(
+      dose_target_drt,
+      dose_target_eot,
+      min(doselimit, dose_grid_range[2]),
+      next_dose
+    )
   )
-  d <- d[which(d$TD >= 0 & d$TD <= dose_grid_range[2]), ]
-
   p <- ggplot(
-    data = d,
+    data = rbind(
+      data.frame(period = "during", TD = dose_target_drt_samples),
+      data.frame(period = "end", TD = dose_target_eot_samples)
+    ),
     aes(x = .data$TD, colour = .data$period),
   ) +
-    geom_density(aes(fill = .data$period), alpha = 0.25) +
-    scale_color_manual(values = c(during = "orange", end = "violet")) +
-    theme(legend.position = "none") +
+    geom_density(
+      aes(fill = .data$period,colour = .data$period),
+      alpha = 0.25,
+      bounds = dose_grid_range,
+      show.legend = FALSE
+    ) +
+    geom_vline(data = labels, aes(xintercept = x, colour = Type)) +
     ylab("Posterior density") +
-    geom_vline(xintercept = dose_target_drt, colour = "orange", lwd = 1) +
-    annotate(
-      geom = "text",
-      label = paste("TD", nextBest@prob_target_drt * 100, "Estimate"),
-      x = dose_target_drt,
-      y = 0,
-      hjust = -0.1,
-      vjust = -20,
-      size = 5,
-      colour = "orange"
+    scale_colour_manual(
+      name = NULL,
+      values = c("during" = "orange", "end" = "violet", "Max" = "red", "Next" = "blue"),
+      labels = c("during" = lbl1, "end" = lbl2, "Max" = "Max", "Next" = "Next")
     ) +
-    geom_vline(xintercept = dose_target_eot, colour = "violet", lwd = 1) +
-    annotate(
-      geom = "text",
-      label = paste("TD", nextBest@prob_target_eot * 100, "Estimate"),
-      x = dose_target_eot,
-      y = 0,
-      hjust = -0.1,
-      vjust = -25,
-      size = 5,
-      colour = "violet"
+    scale_fill_manual(
+      values = c("during" = "orange", "end" = "violet")
     )
 
-  maxdoselimit <- min(doselimit, dose_grid_range[2])
 
-  p +
-    geom_vline(xintercept = maxdoselimit, colour = "red", lwd = 1.1) +
-    geom_text(
-      data = data.frame(x = maxdoselimit),
-      aes(x, 0, label = "Max", hjust = +1, vjust = -35),
-      angle = 90,
-      vjust = 1.5,
-      hjust = 0.5,
-      colour = "red"
-    ) +
-    geom_vline(xintercept = next_dose, colour = "blue", lwd = 1.1) +
-    geom_text(
-      data = data.frame(x = next_dose),
-      aes(x, 0, label = "Next", hjust = 0.1, vjust = -30),
-      angle = 90,
-      vjust = -0.5,
-      hjust = 0.5,
-      colour = "blue"
-    )
+
+
+    # scale_fill_manual(values = c(during = "orange", end = "violet")) +
+    # scale_color_manual(values = c(during = "orange", end = "violet")) +
+    # theme(legend.position = "none") +
+    # geom_vline(data = NULL, xintercept = dose_target_drt, colour = "orange") +
+    # annotate(
+    #   geom = "text",
+    #   label = paste("TD", nextBest@prob_target_drt * 100, "Estimate"),
+    #   x = dose_target_drt,
+    #   y = 0,
+    #   hjust = -0.1,
+    #   vjust = -20,
+    #   size = 5,
+    #   colour = "orange"
+    # ) +
+    # geom_text(
+    #   aes(
+    #     x = dose_target_drt + (dose_grid_range[2] - dose_grid_range[1]) * 0.05,
+    #     y = 0.010,
+    #     label = paste("TD", nextBest@prob_target_drt * 100, "Estimate"),
+    #     colour = "orange"
+    #   )
+    # ) +
+    # geom_vline(xintercept = dose_target_eot, colour = "violet") +
+    # annotate(
+    #   geom = "text",
+    #   label = paste("TD", nextBest@prob_target_eot * 100, "Estimate"),
+    #   x = dose_target_eot,
+    #   y = 0,
+    #   hjust = -0.1,
+    #   vjust = -25,
+    #   size = 5,
+    #   colour = "violet"
+    # )
+
+  # maxdoselimit <- min(doselimit, dose_grid_range[2])
+
+  # p +
+  #   geom_vline(xintercept = maxdoselimit, colour = "red", lwd = 1.1) +
+  #   geom_text(
+  #     data = data.frame(x = maxdoselimit),
+  #     aes(x, 0, label = "Max", hjust = +1, vjust = -35),
+  #     angle = 90,
+  #     vjust = 1.5,
+  #     hjust = 0.5,
+  #     colour = "red"
+  #   ) +
+  #   geom_vline(xintercept = next_dose, colour = "blue", lwd = 1.1) +
+  #   geom_text(
+  #     data = data.frame(x = next_dose),
+  #     aes(x, 0, label = "Next", hjust = 0.1, vjust = -30),
+  #     angle = 90,
+  #     vjust = -0.5,
+  #     hjust = 0.5,
+  #     colour = "blue"
+  #   )
 }
 
 #' Building the Plot for `nextBest-NextBestTD` Method.
