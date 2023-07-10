@@ -1837,8 +1837,9 @@ setMethod(
     )
 
     structure(do_stop,
-              message = msg,
-              report_label = stopping@report_label)
+      message = msg,
+      report_label = stopping@report_label
+    )
   }
 )
 
@@ -2250,7 +2251,8 @@ setMethod(
     structure(
       do_stop,
       message = msg,
-      report_label = stopping@report_label)
+      report_label = stopping@report_label
+    )
   }
 )
 
@@ -2371,7 +2373,8 @@ setMethod(
     structure(
       do_stop,
       message = msg,
-      report_label = stopping@report_label)
+      report_label = stopping@report_label
+    )
   }
 )
 
@@ -2433,7 +2436,8 @@ setMethod(
     structure(
       do_stop,
       message = msg,
-      report_label = stopping@report_label)
+      report_label = stopping@report_label
+    )
   }
 )
 
@@ -2530,7 +2534,8 @@ setMethod(
     structure(
       do_stop,
       message = msg,
-      report_label = stopping@report_label)
+      report_label = stopping@report_label
+    )
   }
 )
 

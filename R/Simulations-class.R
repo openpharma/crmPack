@@ -109,7 +109,7 @@ GeneralSimulations <- function(data,
     representation(
       fit = "list",
       stopReasons = "list",
-    stop_report = "matrix"
+      stop_report = "matrix"
     ),
     ## note: this prototype is put together with the prototype
     ## for GeneralSimulations
@@ -121,7 +121,7 @@ GeneralSimulations <- function(data,
         ),
       stopReasons =
         list("A", "A"),
-    stop_report = matrix(TRUE, nrow = 2)
+      stop_report = matrix(TRUE, nrow = 2)
     ),
     contains = "GeneralSimulations",
     validity =
@@ -139,11 +139,11 @@ GeneralSimulations <- function(data,
           "stopReasons must have same length as data"
         )
 
-    o$check(
-      checkmate::test_matrix(object@stop_report, mode = "logical", nrows = nSims, min.cols = 1, any.missing = FALSE),
-      "stop_report must be a matrix of mode logical in which the number of rows equals the number of simulations
+        o$check(
+          checkmate::test_matrix(object@stop_report, mode = "logical", nrows = nSims, min.cols = 1, any.missing = FALSE),
+          "stop_report must be a matrix of mode logical in which the number of rows equals the number of simulations
       and which must not contain any missing values"
-    )
+        )
         o$result()
       }
   )
