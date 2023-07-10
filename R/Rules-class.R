@@ -1454,7 +1454,7 @@ setClass(
 ## constructor ----
 
 #' @rdname StoppingMissingDose-class
-#'
+#' @param report_label (`string` or `NA`)\cr see slot definition.
 #' @example examples/Rules-class-StoppingMissingDose.R
 #' @export
 #'
