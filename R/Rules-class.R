@@ -1458,8 +1458,16 @@ setClass(
 #' @example examples/Rules-class-StoppingMissingDose.R
 #' @export
 #'
-StoppingMissingDose <- function() {
-  .StoppingMissingDose()
+StoppingMissingDose <- function(
+    report_label = NA_character_) {
+
+  report_label <- h_default_if_empty(
+    as.character(report_label),
+    paste("Stopped because of missing dose")
+  )
+
+  .StoppingMissingDose(report_label = report_label)
+
 }
 
 ## default constructor ----

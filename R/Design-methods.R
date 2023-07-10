@@ -398,6 +398,7 @@ setMethod("simulate",
             data = thisData
           )$value
 
+
           ## evaluate stopping rules
           stopit <- stopTrial(object@stopping,
             dose = thisDose,
@@ -424,6 +425,7 @@ setMethod("simulate",
           }
 
           stopit_results <- unlist(unpack_stopit(stopit))
+
         }
 
         ## get the fit

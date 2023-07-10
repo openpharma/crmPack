@@ -1836,7 +1836,9 @@ setMethod(
       )
     )
 
-    structure(do_stop, message = msg)
+    structure(do_stop,
+              message = msg,
+              report_label = stopping@report_label)
   }
 )
 
@@ -2057,7 +2059,6 @@ setMethod("stopTrial",
 
       ## return both
       return(structure(doStop,
-        message = text,
         message = text,
         report_label = stopping@report_label
       ))
