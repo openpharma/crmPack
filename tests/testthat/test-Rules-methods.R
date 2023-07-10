@@ -1912,7 +1912,7 @@ test_that("stopTrial works correctly for StoppingMTDdistribution", {
             n_samples * confidence,
             " %"
           )
-          attr(expected,"report_label") <- NA_character_
+          attr(expected, "report_label") <- NA_character_
           expect_equal(result, expected)
         }
       }
@@ -2300,7 +2300,7 @@ test_that("stopTrial works for StoppingTargetBiomarker", {
       )
       expected <- FALSE
       attr(expected, "message") <- expectedAttributes[[as.character(d)]]
-      attr(expected,"report_label") <- NA_character_
+      attr(expected, "report_label") <- NA_character_
       expect_equal(actual, expected)
     }
   )
@@ -3299,7 +3299,7 @@ test_that("stopTrial works correctly for StoppingAny", {
     model = LogisticLogNormal(mean = c(0, 1), cov = diag(2)),
     data = data_none
   )
-  #attr(rv,"report_label") <- NA_character_
+
   expect_false(rv)
   expect_equal(
     attributes(rv),
@@ -3640,7 +3640,7 @@ test_that("stopTrial works correctly for StoppingTDCIRatio when samples are prov
             )
           )
         }
-        attr(expected,"report_label") <- NA_character_
+        attr(expected, "report_label") <- NA_character_
         expect_equal(result, expected)
       }
     }

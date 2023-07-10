@@ -867,7 +867,7 @@ test_that("StoppingHighestDose object can be created with user constructor (defa
 test_that("StoppingHighestDose object can be created with user constructor", {
   result <- expect_silent(StoppingHighestDose("custom label"))
   expect_valid(result, "StoppingHighestDose")
-  expect_identical(result@report_label,"custom label")
+  expect_identical(result@report_label, "custom label")
 })
 
 test_that("StoppingHighestDose replaces empty label with correct default label", {
@@ -935,7 +935,7 @@ test_that("StoppingAll object can be created with user constructor", {
   )
   expect_valid(result, "StoppingAll")
   expect_identical(result@stop_list, stop_list)
-  expect_identical(result@report_label,"custom label")
+  expect_identical(result@report_label, "custom label")
 })
 
 ## StoppingAny ----
@@ -1014,7 +1014,7 @@ test_that("StoppingMaxGainCIRatio object can be created with user constructor", 
   expect_valid(result, "StoppingMaxGainCIRatio")
   expect_identical(result@target_ratio, 6)
   expect_identical(result@prob_target, 0.5)
-  expect_identical(result@report_label,"custom label")
+  expect_identical(result@report_label, "custom label")
 })
 
 test_that("StoppingMaxGainCIRatio replaces empty label with correct default label", {
