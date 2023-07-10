@@ -849,6 +849,29 @@ h_null_if_na <- function(x) {
   }
 }
 
+#' Getting the default value for an empty object
+#'
+#' @description `r lifecycle::badge("stable")`
+#'
+#' A simple helper function that sets a default value for an empty object,
+#' that is an object for which [length()] function returns `0L`.
+#'
+#' @param x (`any`) \cr an object to handle. It can be any object for which
+#'   [length()] function is defined.
+#' @param default (`any`) \cr a default value for `x` object.
+#'
+#' @export
+#' @examples
+#' h_default_if_empty(character(0), default = "default label")
+#' h_default_if_empty("custom label", default = "default label")
+#' h_default_if_empty(NA, default = "default label")
+h_default_if_empty <- function(x, default) {
+  if (length(x) == 0L) {
+    default
+  } else {
+    x
+  }
+}
 #' Testing Matrix for Positive Definiteness
 #'
 #' @description `r lifecycle::badge("experimental")`
