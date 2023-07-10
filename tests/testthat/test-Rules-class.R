@@ -562,8 +562,10 @@ test_that("StoppingMinCohorts replaces empty label with correct default label", 
 test_that(".DefaultStoppingMinCohorts works as expected", {
   expect_equal(
     .DefaultStoppingMinCohorts(),
-    StoppingMinCohorts(nCohorts = 6,
-                       report_label = NA_character_)
+    StoppingMinCohorts(
+      nCohorts = 6,
+      report_label = NA_character_
+    )
   )
 })
 
@@ -789,9 +791,11 @@ test_that("StoppingTargetBiomarker replaces empty label with correct default lab
 test_that(".DefaultStoppingTargetBiomarker works as expected", {
   expect_equal(
     .DefaultStoppingTargetBiomarker(),
-    StoppingTargetBiomarker(target = c(0.9, 1),
-                            prob = 0.5,
-                            report_label = NA_character_)
+    StoppingTargetBiomarker(
+      target = c(0.9, 1),
+      prob = 0.5,
+      report_label = NA_character_
+    )
   )
 })
 
@@ -833,10 +837,10 @@ test_that("StoppingSpecificDose object can be created with user constructor", {
 
 test_that("StoppingSpecificDose replaces empty label with correct default label", {
   result <- expect_silent(StoppingSpecificDose(
-                            rule = StoppingTargetProb(target = c(0.1, 0.2), prob = 0.7),
-                            dose = 75,
-                            character(0))
-                          )
+    rule = StoppingTargetProb(target = c(0.1, 0.2), prob = 0.7),
+    dose = 75,
+    character(0)
+  ))
   expect_identical(result@report_label, "Dose 75 used for testing a stopping rule")
 })
 

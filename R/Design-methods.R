@@ -425,7 +425,6 @@ setMethod("simulate",
           }
 
           stopit_results <- unlist(unpack_stopit(stopit))
-
         }
 
         ## get the fit

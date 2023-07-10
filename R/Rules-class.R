@@ -1460,14 +1460,12 @@ setClass(
 #'
 StoppingMissingDose <- function(
     report_label = NA_character_) {
-
   report_label <- h_default_if_empty(
     as.character(report_label),
     paste("Stopped because of missing dose")
   )
 
   .StoppingMissingDose(report_label = report_label)
-
 }
 
 ## default constructor ----
@@ -1549,7 +1547,8 @@ StoppingCohortsNearDose <- function(nCohorts = 2L,
   StoppingCohortsNearDose(
     nCohorts = 3L,
     percentage = 0.2,
-    report_label = NA_character_)
+    report_label = NA_character_
+  )
 }
 
 
@@ -1621,7 +1620,8 @@ StoppingPatientsNearDose <- function(nPatients = 10L,
   StoppingPatientsNearDose(
     nPatients = 9L,
     percentage = 20,
-    report_label = NA_character_)
+    report_label = NA_character_
+  )
 }
 
 # StoppingMinCohorts ----
@@ -1680,7 +1680,8 @@ StoppingMinCohorts <- function(nCohorts = 2L,
 .DefaultStoppingMinCohorts <- function() {
   StoppingMinCohorts(
     nCohorts = 6L,
-    report_label = NA_character_)
+    report_label = NA_character_
+  )
 }
 
 # StoppingMinPatients ----
@@ -1740,7 +1741,7 @@ StoppingMinPatients <- function(nPatients = 20L,
   StoppingMinPatients(
     nPatients = 20L,
     report_label = NA_character_
-    )
+  )
 }
 
 # StoppingTargetProb ----
@@ -1811,7 +1812,8 @@ StoppingTargetProb <- function(target = c(0.2, 0.35),
   StoppingTargetProb(
     target = c(0.2, 0.35),
     prob = 0.5,
-    report_label = NA_character_)
+    report_label = NA_character_
+  )
 }
 
 # StoppingMTDdistribution ----
@@ -1893,7 +1895,8 @@ StoppingMTDdistribution <- function(target = 0.33,
     target = 0.33,
     thresh = 0.5,
     prob = 0.9,
-    report_label = NA_character_)
+    report_label = NA_character_
+  )
 }
 
 # StoppingMTDCV ----
@@ -1968,7 +1971,7 @@ StoppingMTDCV <- function(target = 0.3,
     target = 0.3,
     thresh_cv = 40,
     report_label = NA_character_
-    )
+  )
 }
 
 # StoppingLowestDoseHSRBeta ----
@@ -2063,7 +2066,8 @@ StoppingLowestDoseHSRBeta <- function(target = 0.3,
     prob = 0.95,
     a = 1,
     b = 1,
-    report_label = NA_character_)
+    report_label = NA_character_
+  )
 }
 
 # StoppingTargetBiomarker ----
@@ -2151,7 +2155,8 @@ StoppingTargetBiomarker <- function(target = c(0.9, 1),
     target = c(0.9, 1),
     prob = 0.5,
     is_relative = TRUE,
-    report_label = NA_character_)
+    report_label = NA_character_
+  )
 }
 
 # StoppingSpecificDose ----
@@ -2193,8 +2198,8 @@ StoppingTargetBiomarker <- function(target = c(0.9, 1),
 #' @example examples/Rules-class-StoppingSpecificDose.R
 #'
 StoppingSpecificDose <- function(rule = StoppingTargetProb(target = c(0, 0.3), prob = 0.8),
-                                  dose = 80,
-                                  report_label = NA_character_) {
+                                 dose = 80,
+                                 report_label = NA_character_) {
   report_label <- h_default_if_empty(
     as.character(report_label),
     paste0("Dose ", dose, " used for testing a stopping rule")
@@ -2335,7 +2340,8 @@ StoppingTDCIRatio <- function(target_ratio = 5,
   StoppingTDCIRatio(
     target_ratio = 5,
     prob_target = 0.3,
-    report_label = NA_character_)
+    report_label = NA_character_
+  )
 }
 
 # StoppingMaxGainCIRatio ----
@@ -2389,8 +2395,8 @@ StoppingTDCIRatio <- function(target_ratio = 5,
 #' @example examples/Rules-class-StoppingMaxGainCIRatio.R
 #'
 StoppingMaxGainCIRatio <- function(target_ratio = 5,
-                                  prob_target = 0.3,
-                                  report_label = NA_character_) {
+                                   prob_target = 0.3,
+                                   report_label = NA_character_) {
   report_label <- h_default_if_empty(
     as.character(report_label),
     paste("GStar", target_ratio, "for", prob_target, "target prob")
@@ -2414,7 +2420,8 @@ StoppingMaxGainCIRatio <- function(target_ratio = 5,
   StoppingMaxGainCIRatio(
     target_ratio = 5,
     prob_target = 0.3,
-    report_label = NA_character_)
+    report_label = NA_character_
+  )
 }
 
 
@@ -2511,7 +2518,7 @@ StoppingList <- function(stop_list, summary) {
   Class = "StoppingAll",
   slots = c(
     stop_list = "list"
-    ),
+  ),
   prototype = prototype(
     stop_list = list(
       StoppingMinPatients(50),

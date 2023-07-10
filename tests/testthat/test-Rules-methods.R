@@ -1687,7 +1687,8 @@ test_that("StoppingMinCohorts works correctly in edge cases", {
     attributes(rv),
     list(
       message = "Number of cohorts is 0 and thus below the prespecified minimum number 2",
-      report_label = NA_character_)
+      report_label = NA_character_
+    )
   )
 
   s1 <- StoppingMinCohorts(nCohorts = 1)
@@ -1698,7 +1699,8 @@ test_that("StoppingMinCohorts works correctly in edge cases", {
     attributes(rv),
     list(
       message = "Number of cohorts is 3 and thus reached the prespecified minimum number 1",
-      report_label = NA_character_)
+      report_label = NA_character_
+    )
   )
 })
 
@@ -1741,7 +1743,8 @@ test_that("stopTrial works correctly for StoppingMinPatients", {
     attributes(rv),
     list(
       message = "Number of patients is 2 and thus below the prespecified minimum number 3",
-      report_label = NA_character_)
+      report_label = NA_character_
+    )
   )
 
   rv <- stopTrial(
@@ -1755,7 +1758,8 @@ test_that("stopTrial works correctly for StoppingMinPatients", {
     attributes(rv),
     list(
       message = "Number of patients is 2 and thus below the prespecified minimum number 3",
-      report_label = NA_character_)
+      report_label = NA_character_
+    )
   )
 
   rv <- stopTrial(
@@ -1769,7 +1773,8 @@ test_that("stopTrial works correctly for StoppingMinPatients", {
     attributes(rv),
     list(
       message = "Number of patients is 3 and thus reached the prespecified minimum number 3",
-      report_label = NA_character_)
+      report_label = NA_character_
+    )
   )
 })
 
@@ -3299,7 +3304,11 @@ test_that("stopTrial works correctly for StoppingAny", {
     model = LogisticLogNormal(mean = c(0, 1), cov = diag(2)),
     data = data_none
   )
+<<<<<<< HEAD
 
+=======
+  # attr(rv,"report_label") <- NA_character_
+>>>>>>> 90b0562a3e9326ab57fbde23f7150add41810c4e
   expect_false(rv)
   expect_equal(
     attributes(rv),
