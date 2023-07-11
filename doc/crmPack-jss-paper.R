@@ -357,4 +357,3 @@ newMyNextBest <- NextBestMinDist(target = 0.3)
 )$value)
 
 # nolint end
-

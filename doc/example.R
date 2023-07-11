@@ -1468,5 +1468,3 @@ Sum3
 print(plot(Sum3))
 
 # nolint end
-
-
