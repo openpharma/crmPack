@@ -22,3 +22,4 @@ pkgdown/
 /doc/
 /Meta/
 tests/vdiffr.Rout.fail
+inst/doc

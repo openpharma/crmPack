@@ -30,6 +30,16 @@ test_that("h_jags_add_dummy works as expected for non-single observation", {
   expect_identical(result, data)
 })
 
+test_that("h_jags_add_dummy works for GeneralData too", {
+  gen_data <- .GeneralData(
+    nObs = 2L,
+    ID = 1:2,
+    cohort = 1:2
+  )
+  result <- h_jags_add_dummy(gen_data, where = "ID")
+  expect_identical(result, gen_data)
+})
+
 test_that("h_jags_add_dummy throws the error for wrong slot name", {
   data <- Data(x = 0.1, y = 0, doseGrid = c(0.1, 0.5), ID = 1, cohort = 1)
   expect_error(

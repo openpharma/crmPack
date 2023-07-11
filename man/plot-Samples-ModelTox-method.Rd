@@ -41,11 +41,11 @@ Plot the fitted dose-DLE curve using a \code{\linkS4class{ModelTox}} class model
 data<-Data(x=c(25,50,50,75,150,200,225,300),
            y=c(0,0,0,0,1,1,1,1),
            doseGrid=seq(from=25,to=300,by=25))
-##plot the dose-DLE curve with samples using the model from 'ModelTox' 
+##plot the dose-DLE curve with samples using the model from 'ModelTox'
 ##class e.g. 'LogisticIndepBeta' class model
 ##define the model (see LogisticIndepBeta example)
 model <-LogisticIndepBeta(binDLE=c(1.05,1.8),DLEweights=c(3,3),DLEdose=c(25,300),data=data)
-## define the samples obtained using the 'LogisticIndepGBeta' model 
+## define the samples obtained using the 'LogisticIndepGBeta' model
 
 ##Define options for MCMC
 options<-McmcOptions(burnin=100,step=2,samples=200)

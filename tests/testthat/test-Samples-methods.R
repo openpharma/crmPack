@@ -1,4 +1,5 @@
-# nolint start
+## nolint start
+
 
 # size ----
 
@@ -257,7 +258,14 @@ test_that("Samples-approximate works correctly", {
     ref_dose = 56
   )
 
-  options <- McmcOptions(burnin = 100, step = 2, samples = 2000, rng_kind = "Mersenne-Twister", rng_seed = 303010)
+  options <- McmcOptions(
+    burnin = 100,
+    step = 2,
+    samples = 2000,
+    rng_kind = "Mersenne-Twister",
+    rng_seed = 303010
+  )
+
   samples <- mcmc(data, model, options)
 
   posterior <- approximate(
@@ -299,7 +307,9 @@ test_that("Samples-approximate works correctly", {
 
 ## Samples-GeneralModel ----
 
-test_that("plot-Samples fails gracefully with bad input", {
+
+test_that("Approximate fails gracefully with bad input", {
+
   data <- Data(
     x = c(0.1, 0.5, 1.5, 3, 6, 10, 10, 10),
     y = c(0, 0, 0, 0, 0, 0, 1, 0),
@@ -328,11 +338,13 @@ test_that("plot-Samples works correctly", {
     cohort = c(0, 1, 2, 3, 4, 5, 5, 5),
     doseGrid = c(0.1, 0.5, 1.5, 3, 6, seq(from = 10, to = 80, by = 2))
   )
+
   model <- LogisticLogNormal(
     mean = c(-0.85, 1),
     cov = matrix(c(1, -0.5, -0.5, 1), nrow = 2),
     ref_dose = 56
   )
+
   options <- McmcOptions(burnin = 100, step = 2, samples = 2000, rng_kind = "Mersenne-Twister", rng_seed = 303010)
   samples <- mcmc(data, model, options)
 
@@ -396,6 +408,9 @@ test_that("plot-Samples-DualEndpoint works correctly", {
 
   actual1 <- plot(x = samples, y = model, data = data, showLegend = FALSE)
   vdiffr::expect_doppelganger("plot-Samples-DataDual_showlegend-FALSE", actual1)
+
+  actual2 <- plot(x = samples, y = model, data = data, extrapolate = FALSE)
+  vdiffr::expect_doppelganger("plot-Samples-DataDual_extrapolate-FALSE", actual2)
 })
 
 ## Samples-LogisticIndepBeta ----
@@ -800,7 +815,8 @@ test_that("Check that plot-Samples-ModelTox works correctly", {
   )
   model <- LogisticIndepBeta(binDLE = c(1.05, 1.8), DLEweights = c(3, 3), DLEdose = c(25, 300), data = data)
   options <- McmcOptions(
-    burnin = 500, step = 2,
+    burnin = 500,
+    step = 2,
     samples = 5000,
     rng_kind = "Mersenne-Twister",
     rng_seed = 565409
@@ -1098,8 +1114,18 @@ test_that("plotDualResponses works correctly", {
     ID = 1L:8L,
     cohort = 1L:8L
   )
-  DLEmodel <- LogisticIndepBeta(binDLE = c(1.05, 1.8), DLEweights = c(3, 3), DLEdose = c(25, 300), data = data)
-  Effmodel <- Effloglog(eff = c(1.223, 2.513), eff_dose = c(25, 300), nu = c(a = 1, b = 0.025), data = data)
+  DLEmodel <- LogisticIndepBeta(
+    binDLE = c(1.05, 1.8),
+    DLEweights = c(3, 3),
+    DLEdose = c(25, 300),
+    data = data
+  )
+  Effmodel <- Effloglog(
+    eff = c(1.223, 2.513),
+    eff_dose = c(25, 300),
+    nu = c(a = 1, b = 0.025),
+    data = data
+  )
   data1 <- Data(
     x = data@x, y = data@y,
     doseGrid = data@doseGrid,
@@ -1356,6 +1382,7 @@ test_that("plot-Samples-DALogisticNormal works correctly", {
     l = as.numeric(t(apply(as.matrix(c(1:npiece_), 1, npiece_), 2, lambda_prior))),
     c_par = 2
   )
+
   options <- McmcOptions(
     burnin = 100,
     step = 2,
@@ -1378,4 +1405,259 @@ test_that("plot-Samples-DALogisticNormal works correctly", {
   vdiffr::expect_doppelganger("plot-Samples-DALogisticLogNormal_hazard-TRUE_showLegend-FALSE", actual3)
 })
 
-# nolint end
+test_that("Approximate fails gracefully with bad input", {
+  data <- DataDA(
+    x = c(0.1, 0.5, 1.5, 3, 6, 10, 10, 10),
+    y = c(0, 0, 1, 1, 0, 0, 1, 0),
+    doseGrid = c(0.1, 0.5, 1.5, 3, 6, seq(from = 10, to = 80, by = 2)),
+    u = c(42, 30, 15, 5, 20, 25, 30, 60),
+    t0 = c(0, 15, 30, 40, 55, 70, 75, 85),
+    Tmax = 60,
+    ID = 1L:8L,
+    cohort = 1L:8L
+  )
+  npiece_ <- 10
+  lambda_prior <- function(k) {
+    npiece_ / (data@Tmax * (npiece_ - k + 0.5))
+  }
+
+  model <- DALogisticLogNormal(
+    mean = c(-0.85, 1),
+    cov = matrix(c(1, -0.5, -0.5, 1), nrow = 2),
+    ref_dose = 56,
+    npiece = npiece_,
+    l = as.numeric(t(apply(as.matrix(c(1:npiece_), 1, npiece_), 2, lambda_prior))),
+    c_par = 2
+  )
+  options <- McmcOptions(
+    burnin = 100,
+    step = 2,
+    samples = 1000,
+    rng_kind = "Mersenne-Twister",
+    rng_seed = 552914
+  )
+  samples <- mcmc(data, model, options)
+
+  expect_error(
+    approximate(
+      object = samples,
+      model = model,
+      data = data,
+      logNormal = "NotLogical",
+      control = list(threshold.stop = 0.1, max.time = 1, maxit = 1)
+    ),
+    "Assertion on 'logNormal' failed: Must be of type 'logical', not 'character'"
+  )
+  expect_error(
+    approximate(
+      object = samples,
+      model = model,
+      data = data,
+      verbose = "NotLogical",
+      control = list(threshold.stop = 0.1, max.time = 1, maxit = 1)
+    ),
+    "Assertion on 'verbose' failed: Must be of type 'logical', not 'character'"
+  )
+  expect_error(
+    approximate(
+      object = samples,
+      model = model,
+      data = data,
+      create_plot = "NotLogical",
+      control = list(threshold.stop = 0.1, max.time = 1, maxit = 1)
+    ),
+    "Assertion on 'create_plot' failed: Must be of type 'logical', not 'character'"
+  )
+  expect_error(
+    approximate(
+      object = samples,
+      model = model,
+      data = data,
+      refDose = "NotNumeric",
+      control = list(threshold.stop = 0.1, max.time = 1, maxit = 1)
+    ),
+    "Assertion on 'refDose' failed: Must be of type 'numeric', not 'character'"
+  )
+  expect_error(
+    approximate(
+      object = samples,
+      model = model,
+      data = data,
+      points = c(1:5, "NotNumeric"),
+      control = list(threshold.stop = 0.1, max.time = 1, maxit = 1)
+    ),
+    "Assertion on 'points' failed: Must be of type 'numeric', not 'character'"
+  )
+})
+
+test_that("approximate works correctly", {
+  data <- Data(
+    x = c(0.1, 0.5, 1.5, 3, 6, 10, 10, 10),
+    y = c(0, 0, 0, 0, 0, 0, 1, 0),
+    ID = 1L:8L,
+    cohort = c(0, 1, 2, 3, 4, 5, 5, 5),
+    doseGrid = c(0.1, 0.5, 1.5, 3, 6, seq(from = 10, to = 80, by = 2))
+  )
+
+  model <- LogisticLogNormal(
+    mean = c(-0.85, 1),
+    cov = matrix(c(1, -0.5, -0.5, 1), nrow = 2),
+    ref_dose = 56
+  )
+
+  options <- McmcOptions(
+    burnin = 100,
+    step = 2,
+    samples = 2000,
+    rng_seed = 544914,
+    rng_kind = "Mersenne-Twister"
+  )
+
+  samples <- mcmc(data, model, options)
+
+  actual <- approximate(
+    object = samples,
+    model = model,
+    data = data,
+    control = list(threshold.stop = 0.1, max.time = 1, maxit = 1)
+  )
+
+  expect_equal(length(actual), 2)
+  expect_set_equal(names(actual), c("model", "plot"))
+  for (slot_name in slotNames(actual$model)) {
+    if (!is.function(slot(actual$model, slot_name))) {
+      expect_snapshot(slot(actual$model, slot_name))
+    }
+  }
+  vdiffr::expect_doppelganger("approximate-Samples", actual$plot)
+
+  actual1 <- approximate(
+    object = samples,
+    model = model,
+    data = data,
+    create_plot = FALSE,
+    control = list(threshold.stop = 0.1, max.time = 1, maxit = 1)
+  )
+  expect_equal(length(actual1), 1)
+  expect_set_equal(names(actual1), c("model"))
+
+})
+
+test_that("fit-Samples-LogisticIndepBeta works correctly", {
+  data<-Data(
+    x = c(25, 50, 50, 75, 150, 200, 225, 300),
+    y = c( 0,  0,  0,  0,   1,   1,   1,   1),
+    ID = 1:8,
+    cohort = c(1, 2, 2, 3, 4, 5, 6, 7),
+    doseGrid = seq(from = 25, to = 300, by = 25)
+  )
+  model<-LogisticIndepBeta(
+    binDLE = c(1.05, 1.8),
+    DLEweights = c(3, 3),
+    DLEdose = c(25, 300),
+    data = data
+  )
+  options <- McmcOptions(
+    burnin = 100,
+    step = 2,
+    samples = 200,
+    rng_seed = 52513,
+    rng_kind = "Mersenne-Twister"
+  )
+  samples <- mcmc(data, model, options)
+
+  actual <- fit(object = samples, model = model, data = data)
+  expect_snapshot(actual)
+})
+
+test_that("fitGain-Samples-LogisticIndepBeta works correctly", {
+  data <- DataDual(
+    x = c(25, 50, 25, 50, 75, 300, 250, 150),
+    y = c( 0,  0,  0,  0,  0,   1,   1,   0),
+    w = c(0.31, 0.42, 0.59, 0.45, 0.6, 0.7, 0.6, 0.52),
+    ID = 1:8,
+    cohort = 1:8,
+    doseGrid = seq(25, 300, 25),
+    placebo=FALSE
+  )
+  DLEmodel <- LogisticIndepBeta(
+    binDLE = c(1.05, 1.8),
+    DLEweights = c(3, 3),
+    DLEdose = c(25, 300),
+    data = data
+  )
+  Effmodel <- Effloglog(
+    c(1.223, 2.513),
+    c(25, 300),
+    nu = c(a = 1, b = 0.025),
+    data = data,
+    c = 0
+  )
+  options <-McmcOptions(
+    burnin = 100,
+    step = 2,
+    samples = 200,
+    rng_seed = 52513,
+    rng_kind = "Mersenne-Twister"
+  )
+  data1 <- Data(x = data@x, y = data@y, doseGrid = data@doseGrid)
+
+  DLEsamples <- mcmc(data = data1, model = DLEmodel, options = options)
+  Effsamples <- mcmc(data = data, model = Effmodel, options = options)
+
+  actual <- fitGain(
+    DLEmodel = DLEmodel,
+    DLEsamples = DLEsamples,
+    Effmodel = Effmodel,
+    Effsamples = Effsamples,
+    data = data
+  )
+
+  expect_snapshot(actual)
+})
+
+
+test_that("plot-Samples-ModelTox works correctly", {
+  data <- Data(
+    x=c(25, 50, 50, 75, 150, 200, 225, 300),
+    y=c( 0,  0,  0,  0,   1,   1,   1,   1),
+    ID = 1:8,
+    cohort = c(1, 2, 2, 3, 4, 5, 6, 7),
+    doseGrid = seq(from = 25, to = 300, by = 25)
+  )
+  model <-LogisticIndepBeta(
+    binDLE = c(1.05,1.8),
+    DLEweights = c(3,3),
+    DLEdose = c(25,300),
+    data = data
+  )
+  options <- McmcOptions(
+    burnin = 100,
+    step = 2,
+    samples = 200,
+    rng_seed = 52513,
+    rng_kind = "Mersenne-Twister"
+  )
+  samples <- mcmc(data = data, model = model, options = options)
+  actual <- plot(x = samples, y = model, data = data)
+  vdiffr::expect_doppelganger("plot-Samples-ModelTox", actual)
+})
+
+test_that("plot-Samples-ModelEffNoSamples works correctly", {
+  data <- DataDual(
+    x = c(25, 50, 50, 75, 150, 200, 225, 300),
+    y = c( 0,  0,  0,  0,   1,   1,   1,   1),
+    w = c(0.31, 0.42, 0.59, 0.45, 0.6, 0.7, 0.6, 0.52),
+    ID = 1:8,
+    cohort = c(1, 2, 2, 3, 4, 5, 6, 7),
+    doseGrid = seq(from = 25, to = 300, by = 25)
+  )
+  Effmodel <- Effloglog(
+    eff = c(1.223, 2.513),
+    eff_dose = c(25,300),
+    nu = c(a = 1, b = 0.025),
+    data = data
+  )
+  actual <- plot(x = data, y = Effmodel)
+  vdiffr::expect_doppelganger("plot-Samples-ModelEffNoSamples", actual)
+})

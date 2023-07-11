@@ -39,7 +39,7 @@ Depends:
     graphics,
     R (>= 3.0.0)
 Imports:
-    checkmate,
+    checkmate (>= 2.2.0),
     futile.logger,
     GenSA,
     grid,
@@ -57,7 +57,10 @@ Imports:
     utils,
     kableExtra
 Suggests:
+    bookdown,
+    broom,
     covr,
+    data.tree,
     dplyr,
     ggmcmc,
     knitr,
@@ -67,8 +70,7 @@ Suggests:
     tidyr,
     vdiffr,
     withr
-VignetteBuilder: 
-    knitr
+VignetteBuilder: knitr
 Config/testthat/edition: 3
 Encoding: UTF-8
 Language: en-US

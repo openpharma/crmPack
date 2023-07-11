@@ -328,14 +328,15 @@ setMethod("fit",
 
 #' Approximate posterior with (log) normal distribution
 #'
-#' It is recommended to use \code{\link{set.seed}} before, in order
-#' to be able to reproduce the resulting approximating model exactly.
+#' To reproduce the resultant approximate model in the future exactly, include
+#' \code{seed = xxxx} in the call to `approximate`.
 #'
 #' @param object the \code{\linkS4class{Samples}} object
 #' @param model the \code{\linkS4class{GeneralModel}} object
 #' @param data the \code{\linkS4class{Data}} object
 #' @param \dots additional arguments (see methods)
-#' @return the approximation model
+#' @return a `list` containing the approximation model and, if requested, a
+#' `ggplot2` object containing a graphical representation of the fitted model
 #'
 #' @export
 #' @keywords methods
@@ -346,25 +347,25 @@ setGeneric("approximate",
       ## therefore just forward to next method!
       standardGeneric("approximate")
     },
-  valueClass = "GeneralModel"
+  valueClass = "list"
 )
 
 
-
-#' @param points optional parameter, which gives the dose values at which
-#' the approximation should rely on (default: 5 values equally spaced from
-#' minimum to maximum of the dose grid)
-#' @param refDose the reference dose to be used (default: median of
-#' \code{points})
-#' @param logNormal use the log-normal prior? (not default) otherwise, the
-#' normal prior for the logistic regression coefficients is used
-#' @param verbose be verbose (progress statements and plot)? (default)
-#'
-#' @describeIn approximate Here the \dots argument can transport additional arguments for
-#' \code{\link{Quantiles2LogisticNormal}}, e.g. in order to control the
-#' approximation quality, etc.
-#'
-#' @example examples/Sample-methods-approximate.R
+##' @param points optional parameter, which gives the dose values at which
+##' the approximation should rely on (default: 5 values equally spaced from
+##' minimum to maximum of the dose grid)
+##' @param refDose the reference dose to be used (default: median of
+##' \code{points})
+##' @param logNormal use the log-normal prior? (not default) otherwise, the
+##' normal prior for the logistic regression coefficients is used
+##' @param verbose be verbose (progress statements)? (default)
+##' @param create_plot add a `ggplot2` object to the return value (default)
+##'
+##' @describeIn approximate Here the \dots argument can transport additional arguments for
+##' \code{\link{Quantiles2LogisticNormal}}, e.g. in order to control the
+##' approximation quality, etc.
+##'
+##' @example examples/Sample-methods-approximate.R
 setMethod("approximate",
   signature =
     signature(object = "Samples"),
@@ -381,14 +382,21 @@ setMethod("approximate",
              refDose = median(points),
              logNormal = FALSE,
              verbose = TRUE,
+             create_plot = TRUE,
              ...) {
+      # Validation
+      assert_logical(logNormal)
+      assert_logical(verbose)
+      assert_logical(create_plot)
+      assert_numeric(points)
+      assert_numeric(refDose)
       ## get the required quantiles at these dose levels:
       quants <- fit(object,
-        model,
-        data,
-        points = points,
-        quantiles = c(0.025, 0.975),
-        middle = median
+                    model,
+                    data,
+                    points = points,
+                    quantiles = c(0.025, 0.975),
+                    middle = median
       )
 
       ## get better starting values if it is already a logistic normal
@@ -438,28 +446,51 @@ setMethod("approximate",
         logNormal = logNormal,
         ...
       )
-
-      if (verbose) {
-        matplot(
-          x = points,
-          quantRes$required,
-          type = "l", col = "blue", lty = 1
-        )
-        matlines(
-          x = points,
-          quantRes$quantiles,
-          col = "red", lty = 1
-        )
-        legend("bottomright",
-          legend = c("original", "approximation"),
-          col = c("blue", "red"),
-          lty = 1,
-          bty = "n"
-        )
+      rv <- list()
+      rv$model <- quantRes$model
+      if (create_plot) {
+        rv$plot <- tibble::as_tibble(quantRes$required) %>%
+          tibble::add_column(Type = "original") %>%
+          tibble::add_column(x = points) %>%
+          dplyr::bind_rows(
+            tibble::as_tibble(quantRes$quantiles) %>%
+              tibble::add_column(Type = "approximation") %>%
+              tibble::add_column(x = points)
+          ) %>%
+          tidyr::pivot_longer(
+            c(lower, median, upper),
+            names_to = "Line",
+            values_to = "y"
+          ) %>%
+          ggplot2::ggplot(
+            ggplot2::aes(
+              x = x,
+              y = y,
+              colour = Type,
+              group = interaction(Type, .data$Line),
+              linetype = (.data$Line == "median")
+            )
+          ) +
+          ggplot2::geom_line() +
+          ggplot2::scale_colour_manual(
+            name = " ",
+            values = c("red", "blue")
+          ) +
+          ggplot2::scale_linetype_manual(
+            name = " ",
+            values = c("dotted", "solid"),
+            labels = c("95% CI", "Median"),
+            guide = ggplot2::guide_legend(reverse = TRUE)
+          ) +
+          ggplot2::labs(
+            x = "Dose",
+            y = "p(Tox)"
+          ) +
+          ggplot2::theme_light()
       }
 
-      ## return the model
-      return(quantRes$model)
+      ## return the results
+      return(rv)
     }
 )
 
@@ -482,7 +513,6 @@ setMethod("approximate",
 #'
 #' @example examples/Sample-methods-plot.R
 #' @export
-#' @importFrom ggplot2 qplot scale_linetype_manual
 setMethod("plot",
   signature =
     signature(
@@ -537,18 +567,21 @@ setMethod("plot",
           )
         )
 
-      ret <- ggplot2::qplot(
-        x = x,
-        y = y,
-        data = gdata,
-        group = group,
-        linetype = Type,
-        colour = I("red"),
-        geom = "line",
-        xlab = xlab,
-        ylab = ylab,
-        ylim = c(0, 100)
-      )
+      ret <- gdata %>% ggplot2::ggplot() +
+        ggplot2::geom_line(
+          ggplot2::aes(
+            x = x,
+            y = y,
+            group = group,
+            linetype = Type,
+          ),
+          colour = I("red"),
+        ) +
+        ggplot2::coord_cartesian(ylim = c(0, 100)) +
+        ggplot2::labs(
+          x = xlab,
+          y = ylab,
+        )
 
       ret <- ret +
         ggplot2::scale_linetype_manual(
@@ -661,16 +694,19 @@ setMethod("plot",
           )
         )
 
-      plot2 <- ggplot2::qplot(
-        x = x,
-        y = y,
-        data = gdata,
-        group = group,
-        linetype = Type,
-        colour = I("blue"),
-        geom = "line",
-        xlab = "Dose level",
-        ylab = "Biomarker level"
+      plot2 <- gdata %>% ggplot2::ggplot() +
+        ggplot2::geom_line(
+          ggplot2::aes(
+            x = x,
+            y = y,
+            group = group,
+            linetype = Type
+          ),
+          colour = I("blue")
+      ) +
+      ggplot2::labs(
+        x = "Dose level",
+        y = "Biomarker level"
       )
 
       plot2 <- plot2 +
@@ -1008,7 +1044,6 @@ setMethod("fitGain",
 #' @example examples/Samples-method-plotModelTox.R
 #' @export
 #' @keywords methods
-#' @importFrom ggplot2 qplot scale_linetype_manual
 setMethod("plot",
   signature =
     signature(
@@ -1064,18 +1099,21 @@ setMethod("plot",
           )
         )
 
-      ret <- ggplot2::qplot(
-        x = x,
-        y = y,
-        data = gdata,
-        group = group,
-        linetype = Type,
-        colour = I("red"),
-        geom = "line",
-        xlab = xlab,
-        ylab = ylab,
-        ylim = c(0, 100)
-      )
+      ret <- gdata %>% ggplot2::ggplot() +
+        ggplot2::geom_line(
+          ggplot2::aes(
+            x = x,
+            y = y,
+            group = group,
+            linetype = Type
+          ),
+          colour = I("red"),
+        ) +
+        ggplot2::coord_cartesian(ylim = c(0, 100)) +
+        ggplot2::labs(
+          x = xlab,
+          y = ylab
+        )
 
       ret <- ret +
         ggplot2::scale_linetype_manual(
@@ -1111,7 +1149,6 @@ setMethod("plot",
 #' @example examples/Samples-method-plotModelEff.R
 #' @export
 #' @keywords methods
-#' @importFrom ggplot2 qplot scale_linetype_manual
 setMethod("plot",
   signature =
     signature(
@@ -1166,17 +1203,21 @@ setMethod("plot",
           )
         )
 
-      ret <- ggplot2::qplot(
-        x = x,
-        y = y,
-        data = gdata,
-        group = group,
-        linetype = Type,
-        colour = I("blue"),
-        geom = "line",
-        xlab = xlab,
-        ylab = ylab,
-        xlim = c(0, max(data@doseGrid))
+      ret <- gdata %>% ggplot2::ggplot() +
+        ggplot2::geom_line(
+          ggplot2::aes(
+            x = x,
+            y = y,
+            group = group,
+            linetype = Type
+          ),
+          colour = I("blue")
+        ) +
+        ggplot2::labs(
+          x = xlab,
+          y = ylab
+        ) +
+        ggplot2::coord_cartesian(xlim = c(0, max(data@doseGrid))
       )
 
       ret <- ret +
@@ -1210,7 +1251,6 @@ setMethod("plot",
 #' @example examples/Samples-method-plotModelToxNoSamples.R
 #' @export
 #' @keywords methods
-#' @importFrom ggplot2 qplot scale_linetype_manual
 setMethod("plot",
   signature =
     signature(
@@ -1259,29 +1299,27 @@ setMethod("plot",
         )
       )
 
-      plot1 <- ggplot2::qplot(
-        x = x,
-        y = y,
-        data = gdata,
-        group = group,
-        linetype = Type,
-        colour = I("red"),
-        geom = "line",
-        xlab = xlab,
-        ylab = ylab,
-        ylim = c(0, 1)
-      )
-
-      plot1 <- plot1 + ggplot2::scale_linetype_manual(
-        breaks = "Estimated DLE",
-        values = c(1, 2),
-        guide = ifelse(showLegend, "legend", "none")
-      )
-
-
-      plot1 <- plot1 +
-        geom_line(size = 1.5, colour = "red")
-
+      plot1 <- gdata %>% ggplot2::ggplot() +
+        ggplot2::geom_line(
+          ggplot2::aes(
+            x = x,
+            y = y,
+            group = group,
+            linetype = Type
+          ),
+          colour = I("red"),
+          linewidth = 1.5
+        ) +
+        ggplot2::labs(
+          x = xlab,
+          y = ylab
+        ) +
+        ggplot2::coord_cartesian(ylim = c(0, 1)) +
+        ggplot2::scale_linetype_manual(
+          breaks = "Estimated DLE",
+          values = c(1, 2),
+          guide = ifelse(showLegend, "legend", "none")
+        )
       return(plot1)
     }
 )
@@ -1304,8 +1342,6 @@ setMethod("plot",
 #' @example examples/Samples-method-plotModelEffNoSamples.R
 #' @export
 #' @keywords methods
-#' @importFrom ggplot2 qplot scale_linetype_manual
-
 setMethod("plot",
   signature =
     signature(
@@ -1347,10 +1383,10 @@ setMethod("plot",
         xlab("Dose Levels") +
         ylab(paste("Estimated Expected Efficacy")) +
         xlim(c(0, max(x@doseGrid))) +
-        geom_line(colour = I("blue"), size = 1.5)
+        geom_line(colour = I("blue"), linewidth = 1.5)
 
       plot2 <- plot2 +
-        geom_line(size = 1.5, colour = "blue")
+        geom_line(linewidth = 1.5, colour = "blue")
 
 
       return(plot2)
@@ -1449,7 +1485,7 @@ setMethod("plotGain",
       )
 
       plot1 <- ggplot(data = gdata, aes(x = x, y = y)) +
-        geom_line(aes(group = group, color = group), size = 1.5) +
+        geom_line(aes(group = group, color = group), linewidth = 1.5) +
         ggplot2::scale_colour_manual(name = "curves", values = c("green3", "blue", "red")) +
         xlab("Dose Level") +
         xlim(c(0, max(data@doseGrid))) +
@@ -1517,7 +1553,7 @@ setMethod("plotGain",
       )
 
       plot1 <- ggplot(data = gdata, aes(x = x, y = y)) +
-        geom_line(aes(group = group, color = group), size = 1.5) +
+        geom_line(aes(group = group, color = group), linewidth = 1.5) +
         ggplot2::scale_colour_manual(name = "curves", values = c("blue", "green3", "red")) +
         xlab("Dose Level") +
         xlim(c(0, max(data@doseGrid))) +
@@ -1550,7 +1586,7 @@ setMethod("plotGain",
 
       if ((TD30 < min(data@doseGrid)) | (TD30 > max(data@doseGrid))) {
         plot1 <- plot1
-        print(paste("TD30", paste(TD30, " not within dose Grid")))
+        message(paste("TD30", paste(TD30, " not within dose Grid")))
       } else {
         plot1 <- plot1 +
           geom_point(
@@ -1685,25 +1721,28 @@ setMethod("plotDualResponses",
           )
         )
 
-      ret1 <- ggplot2::qplot(
-        x = x,
-        y = y,
-        data = gdata,
-        group = group,
-        linetype = Type,
-        colour = I("red"),
-        geom = "line",
-        xlab = "Dose Levels",
-        ylab = "Probability of DLE [%]",
-        ylim = c(0, 100)
-      )
-
-      ret1 <- ret1 + ggplot2::scale_linetype_manual(
+      ret1 <- gdata %>% ggplot2::ggplot() +
+        ggplot2::geom_line(
+          ggplot2::aes(
+            x = x,
+            y = y,
+            group = group,
+            linetype = Type
+          ),
+          colour = I("red"),
+        ) +
+        ggplot2::labs(
+          x = "Dose Levels",
+          y = "Probability of DLE [%]"
+          ) +
+        ggplot2::coord_cartesian(ylim = c(0, 100)) +
+        ggplot2::scale_linetype_manual(
         breaks = c(
           "Estimate",
           "95% Credible Interval"
         ),
-        values = c(1, 2), guide = ifelse(showLegend, "legend", "none")
+        values = c(1, 2),
+        guide = ifelse(showLegend, "legend", "none")
       )
       ## only look at these dose levels for the plot:
 
@@ -1769,19 +1808,20 @@ setMethod("plotDualResponses",
           )
       ))
 
-      plot2 <- ggplot2::qplot(
-        x = x,
-        y = y,
-        data = ggdata,
-        group = group,
-        linetype = Type,
-        colour = I("blue"),
-        geom = "line",
-        xlab = "Dose level",
-        ylab = "Expected Efficacy"
-      )
-
-      plot2 <- plot2 +
+      plot2 <- ggdata %>% ggplot2::ggplot() +
+        ggplot2::geom_line(
+          ggplot2::aes(
+            x = x,
+            y = y,
+            group = group,
+            linetype = Type
+          ),
+          colour = I("blue"),
+        ) +
+        ggplot2::labs(
+          x = "Dose level",
+          y = "Expected Efficacy"
+        ) +
         ggplot2::scale_linetype_manual(
           breaks =
             c(
@@ -1853,11 +1893,11 @@ setMethod("plotDualResponses",
         ylab(paste("Probability of DLE")) +
         ylim(c(0, 1)) +
         xlim(c(0, max(data@doseGrid))) +
-        geom_line(colour = I("red"), size = 1.5)
+        geom_line(colour = I("red"), linewidth = 1.5)
 
 
       plot1 <- plot1 +
-        geom_line(size = 1.5, colour = "red")
+        geom_line(linewidth = 1.5, colour = "red")
 
       ## only look at these dose levels for the plot:
 
@@ -1886,10 +1926,10 @@ setMethod("plotDualResponses",
         xlab("Dose Levels") +
         ylab(paste("Estimatimated Expected Efficacy")) +
         xlim(c(0, max(data@doseGrid))) +
-        geom_line(colour = I("blue"), size = 1.5)
+        geom_line(colour = I("blue"), linewidth = 1.5)
 
       plot2 <- plot2 +
-        geom_line(size = 1.5, colour = "blue")
+        geom_line(linewidth = 1.5, colour = "blue")
 
       ## arrange both plots side by side
       ret <- gridExtra::arrangeGrob(plot1, plot2, ncol = 2)
@@ -2090,8 +2130,6 @@ setMethod("fitPEM",
 #' object for the dose-toxicity model fit
 #'
 #' @export
-#' @importFrom ggplot2 qplot scale_linetype_manual
-#' @importFrom gridExtra arrangeGrob
 setMethod("plot",
   signature =
     signature(
@@ -2149,18 +2187,23 @@ setMethod("plot",
               )
           )
         )
-      plot2 <- qplot(
-        x = x,
-        y = y,
-        data = plotData,
-        group = group,
-        linetype = Type,
-        colour = I("blue"),
-        geom = "step",
-        xlab = "Time",
-        ylab = if (hazard) "Hazard rate*100" else "Probability of DLT [%]",
-        ylim = if (hazard) range(plotData$y) else c(0, 100)
-      )
+      plot2 <- plotData %>% ggplot2::ggplot() +
+        ggplot2::geom_step(
+          ggplot2::aes(
+            x = x,
+            y = y,
+            group = group,
+            linetype = Type
+          ),
+          colour = I("blue")
+        ) +
+        ggplot2::labs(
+          x = "Time",
+          y = if (hazard) "Hazard rate*100" else "Probability of DLT [%]"
+        ) +
+        ggplot2::coord_cartesian(
+          ylim = if (hazard) range(plotData$y) else c(0, 100)
+        )
 
       ret <- gridExtra::arrangeGrob(plot1, plot2, ncol = 2)
       return(ret)
