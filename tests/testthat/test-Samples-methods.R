@@ -309,7 +309,6 @@ test_that("Samples-approximate works correctly", {
 
 
 test_that("Approximate fails gracefully with bad input", {
-
   data <- Data(
     x = c(0.1, 0.5, 1.5, 3, 6, 10, 10, 10),
     y = c(0, 0, 0, 0, 0, 0, 1, 0),
@@ -1540,18 +1539,17 @@ test_that("approximate works correctly", {
   )
   expect_equal(length(actual1), 1)
   expect_set_equal(names(actual1), c("model"))
-
 })
 
 test_that("fit-Samples-LogisticIndepBeta works correctly", {
-  data<-Data(
+  data <- Data(
     x = c(25, 50, 50, 75, 150, 200, 225, 300),
-    y = c( 0,  0,  0,  0,   1,   1,   1,   1),
+    y = c(0, 0, 0, 0, 1, 1, 1, 1),
     ID = 1:8,
     cohort = c(1, 2, 2, 3, 4, 5, 6, 7),
     doseGrid = seq(from = 25, to = 300, by = 25)
   )
-  model<-LogisticIndepBeta(
+  model <- LogisticIndepBeta(
     binDLE = c(1.05, 1.8),
     DLEweights = c(3, 3),
     DLEdose = c(25, 300),
@@ -1573,12 +1571,12 @@ test_that("fit-Samples-LogisticIndepBeta works correctly", {
 test_that("fitGain-Samples-LogisticIndepBeta works correctly", {
   data <- DataDual(
     x = c(25, 50, 25, 50, 75, 300, 250, 150),
-    y = c( 0,  0,  0,  0,  0,   1,   1,   0),
+    y = c(0, 0, 0, 0, 0, 1, 1, 0),
     w = c(0.31, 0.42, 0.59, 0.45, 0.6, 0.7, 0.6, 0.52),
     ID = 1:8,
     cohort = 1:8,
     doseGrid = seq(25, 300, 25),
-    placebo=FALSE
+    placebo = FALSE
   )
   DLEmodel <- LogisticIndepBeta(
     binDLE = c(1.05, 1.8),
@@ -1593,7 +1591,7 @@ test_that("fitGain-Samples-LogisticIndepBeta works correctly", {
     data = data,
     c = 0
   )
-  options <-McmcOptions(
+  options <- McmcOptions(
     burnin = 100,
     step = 2,
     samples = 200,
@@ -1619,16 +1617,16 @@ test_that("fitGain-Samples-LogisticIndepBeta works correctly", {
 
 test_that("plot-Samples-ModelTox works correctly", {
   data <- Data(
-    x=c(25, 50, 50, 75, 150, 200, 225, 300),
-    y=c( 0,  0,  0,  0,   1,   1,   1,   1),
+    x = c(25, 50, 50, 75, 150, 200, 225, 300),
+    y = c(0, 0, 0, 0, 1, 1, 1, 1),
     ID = 1:8,
     cohort = c(1, 2, 2, 3, 4, 5, 6, 7),
     doseGrid = seq(from = 25, to = 300, by = 25)
   )
-  model <-LogisticIndepBeta(
-    binDLE = c(1.05,1.8),
-    DLEweights = c(3,3),
-    DLEdose = c(25,300),
+  model <- LogisticIndepBeta(
+    binDLE = c(1.05, 1.8),
+    DLEweights = c(3, 3),
+    DLEdose = c(25, 300),
     data = data
   )
   options <- McmcOptions(
@@ -1646,7 +1644,7 @@ test_that("plot-Samples-ModelTox works correctly", {
 test_that("plot-Samples-ModelEffNoSamples works correctly", {
   data <- DataDual(
     x = c(25, 50, 50, 75, 150, 200, 225, 300),
-    y = c( 0,  0,  0,  0,   1,   1,   1,   1),
+    y = c(0, 0, 0, 0, 1, 1, 1, 1),
     w = c(0.31, 0.42, 0.59, 0.45, 0.6, 0.7, 0.6, 0.52),
     ID = 1:8,
     cohort = c(1, 2, 2, 3, 4, 5, 6, 7),
@@ -1654,7 +1652,7 @@ test_that("plot-Samples-ModelEffNoSamples works correctly", {
   )
   Effmodel <- Effloglog(
     eff = c(1.223, 2.513),
-    eff_dose = c(25,300),
+    eff_dose = c(25, 300),
     nu = c(a = 1, b = 0.025),
     data = data
   )

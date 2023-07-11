@@ -392,11 +392,11 @@ setMethod("approximate",
       assert_numeric(refDose)
       ## get the required quantiles at these dose levels:
       quants <- fit(object,
-                    model,
-                    data,
-                    points = points,
-                    quantiles = c(0.025, 0.975),
-                    middle = median
+        model,
+        data,
+        points = points,
+        quantiles = c(0.025, 0.975),
+        middle = median
       )
 
       ## get better starting values if it is already a logistic normal
@@ -703,11 +703,11 @@ setMethod("plot",
             linetype = Type
           ),
           colour = I("blue")
-      ) +
-      ggplot2::labs(
-        x = "Dose level",
-        y = "Biomarker level"
-      )
+        ) +
+        ggplot2::labs(
+          x = "Dose level",
+          y = "Biomarker level"
+        )
 
       plot2 <- plot2 +
         ggplot2::scale_linetype_manual(
@@ -1217,8 +1217,7 @@ setMethod("plot",
           x = xlab,
           y = ylab
         ) +
-        ggplot2::coord_cartesian(xlim = c(0, max(data@doseGrid))
-      )
+        ggplot2::coord_cartesian(xlim = c(0, max(data@doseGrid)))
 
       ret <- ret +
         ggplot2::scale_linetype_manual(
@@ -1734,16 +1733,16 @@ setMethod("plotDualResponses",
         ggplot2::labs(
           x = "Dose Levels",
           y = "Probability of DLE [%]"
-          ) +
+        ) +
         ggplot2::coord_cartesian(ylim = c(0, 100)) +
         ggplot2::scale_linetype_manual(
-        breaks = c(
-          "Estimate",
-          "95% Credible Interval"
-        ),
-        values = c(1, 2),
-        guide = ifelse(showLegend, "legend", "none")
-      )
+          breaks = c(
+            "Estimate",
+            "95% Credible Interval"
+          ),
+          values = c(1, 2),
+          guide = ifelse(showLegend, "legend", "none")
+        )
       ## only look at these dose levels for the plot:
 
       xLevels <- if (extrapolate) {
