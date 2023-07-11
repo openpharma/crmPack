@@ -158,4 +158,3 @@ plot(b)
 mySims@stopReasons[[2]]
 
 # nolint end
-

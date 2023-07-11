@@ -14,14 +14,6 @@ notFound <- which(
             )
 cantRun <- length(notFound) > 0
 
-## ---- eval=cantRun, results="asis", echo=FALSE--------------------------------
-#  cat(
-#    "The following packages are required to run this vignette but are not installed:",
-#    paste0(names(notFound), collapse = ", "),
-#    ".  Please install them and try again."
-#  )
-#  knitr::knit_exit()
-
 ## ----setup, echo=FALSE--------------------------------------------------------
 suppressPackageStartupMessages({
   library(crmPack)

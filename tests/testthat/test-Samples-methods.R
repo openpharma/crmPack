@@ -1659,3 +1659,4 @@ test_that("plot-Samples-ModelEffNoSamples works correctly", {
   actual <- plot(x = data, y = Effmodel)
   vdiffr::expect_doppelganger("plot-Samples-ModelEffNoSamples", actual)
 })
+## nolint end

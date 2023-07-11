@@ -24,13 +24,16 @@ notFound <- which(
             )
 cantRun <- length(notFound) > 0
 ```
-```{r, eval=cantRun, results="asis", echo=FALSE}
-cat(
-  "The following packages are required to run this vignette but are not installed:",
-  paste0(names(notFound), collapse = ", "),
-  ".  Please install them and try again."
-)
-knitr::knit_exit()
+
+```{r, eval=TRUE, results="asis", echo=FALSE}
+if (cantRun) {
+  cat(
+    "The following packages are required to run this vignette but are not installed:",
+    paste0(names(notFound), collapse = ", "),
+    ".  Please install them and try again."
+  )
+  knitr::knit_exit()
+}
 ```
 ```{r setup, echo=FALSE}
 suppressPackageStartupMessages({

@@ -224,4 +224,3 @@ true_prob_fun(10)
 
 class_name <- "LogisticNormal"
 eval(parse(text = paste0(".Default", class_name, "()")))
-

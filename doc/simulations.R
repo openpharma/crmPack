@@ -60,20 +60,4 @@ design <- DADesign(model=model,
                    data=emptydata,
                    safetyWindow=mysafetywindow,
                    startingDose=8)
-
-## ----simulation run, eval = FALSE---------------------------------------------
-#  options <- McmcOptions(burnin=20,
-#                         step=1,
-#                         samples=50)
-#  mySims <- simulate(design,
-#                     args=NULL,
-#                     truthTox=myTruth,
-#                     truthSurv=exp_cond.cdf,
-#                     trueTmax=42,
-#                     nsim=10,
-#                     seed=819,
-#                     mcmcOptions=options,
-#                     parallel=FALSE)
-#  
-#  # nolint end
-
+# nolint end
