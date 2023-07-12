@@ -37,7 +37,7 @@ BugReports: https://github.com/roche/crmPack/issues
 Depends:
     ggplot2 (>= 2.0.0),
     graphics,
-    R (>= 3.0.0)
+    R (>= 3.5.0)
 Imports:
     checkmate (>= 2.2.0),
     futile.logger,
