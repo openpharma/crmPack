@@ -207,11 +207,9 @@ plot(samples_TCBS, model_TCBS, data_TCBS)
 ```
 
 ```{R inf_mod}
-# informative component
-inmodel <- (approximate(samples_TCBS, model_TCBS, data_TCBS,
-  points = c(1, 20, 50, 100, 200, 400),
-  refDose = myrefDose, logNormal = TRUE, verbose = TRUE
-))$model
+#informative component
+inmodel<- (approximate(samples_TCBS, model_TCBS, data_TCBS, points = c(1,20,50,100,200,400),
+            refDose = myrefDose, logNormal = TRUE, verbose = TRUE))$model
 
 
 ## creating an empty dataset, provide only the dose grid:

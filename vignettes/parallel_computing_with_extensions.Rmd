@@ -412,27 +412,27 @@ time <- system.time({
 
 As an alternative it may be more convenient to store the user extensions in an external file and source the file in the wrapper function. This has the advantage, that the `<<-` operator is not necessary for user constructor functions and can be replaced by the usual assignment `<-`.
 
-```{r user code stored in external file,  eval=FALSE}
-# Store code example form above in external file and
-# remove the wrapper function structure.
-dump("my_own_extension", file = "user_extension.R")
-file_con <- file("user_extension.R")
-tmp <- readLines(file_con)[-c(1:3, 135)]
-tmp <- gsub("<<-", "<-", tmp)
-writeLines(tmp, file_con)
+```{r user code stored in external file}
+if (FALSE) {
+  # Store code example form above in external file and
+  # remove the wrapper function structure.
+  dump("my_own_extension", file = "user_extension.R")
+  file_con <- file("user_extension.R")
+  tmp <- readLines(file_con)[-c(1:3, 135)]
+  tmp <- gsub("<<-", "<-", tmp)
+  writeLines(tmp, file_con)
 
-# Source the stored file in the wrapper function.
-my_own_extension2 <- function() {
-  source("user_extension.R")
+  # Source the stored file in the wrapper function.
+  my_own_extension2 <- function() {
+    source("user_extension.R")
+  }
+
+  options(crmpack_extensions = my_own_extension2)
+  getOption("crmpack_extensions")()
+
+  # Run the rest of the code from above example
 }
-
-options(crmpack_extensions = my_own_extension2)
-getOption("crmpack_extensions")()
-
-# Run the rest of the code from above example
 ```
-
-
 
 ## Note
 
@@ -441,4 +441,3 @@ The analyses presented in this vignette have used chains of a very short length 
 In this example it is apparent that for small number of study simulations, the overhead of initializing the cluster for parallel computing, leads to longer run time of the simulations in comparison to single core processing. However, for a relevant number of study simulations, the substantial run time benefit utilizing parallel computation can easily be seen. 
 
 ## References
-

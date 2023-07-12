@@ -7,7 +7,7 @@
 h_jags_add_dummy(object, where, dummy = 0)
 }
 \arguments{
-\item{object}{(\code{Data})\cr object into which dummy values will be added.}
+\item{object}{(\code{GeneralData})\cr object into which dummy values will be added.}
 
 \item{where}{(\code{character})\cr names of slots in \code{object} to which a \code{dummy}
 number will be appended.}
@@ -16,12 +16,12 @@ number will be appended.}
 slots in \code{object}. Default to \code{0}.}
 }
 \value{
-A \code{\link{Data}} object with slots updated with dummy number.
+A \code{\link{GeneralData}} object with slots updated with dummy number.
 }
 \description{
 \ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#experimental}{\figure{lifecycle-experimental.svg}{options: alt='[Experimental]'}}}{\strong{[Experimental]}}
 
-A helper function that appends a dummy value to a given slots in \code{\link{Data}}
+A helper function that appends a dummy value to a given slots in \code{\link{GeneralData}}
 class object, if and only if the total number of observations (as indicated
 by \code{object@nObs}) equals to \code{1}. Otherwise, the \code{object} is not changed.
 }

@@ -8,7 +8,7 @@
 v_model_params_normal(object)
 }
 \arguments{
-\item{object}{(\code{ModelParamsNormal})\cr bivariate normal parameters object
+\item{object}{(\code{ModelParamsNormal})\cr multivariate normal parameters object
 to validate.}
 }
 \value{
@@ -23,7 +23,7 @@ with model parameters or inherited classes and therefore not exported.
 }
 \section{Functions}{
 \itemize{
-\item \code{v_model_params_normal()}: a helper function that validates bivariate normal
+\item \code{v_model_params_normal()}: a helper function that validates multivariate normal
 parameters.
 
 }}
