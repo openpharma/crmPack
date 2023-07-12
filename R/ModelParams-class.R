@@ -46,8 +46,15 @@ NULL
 #' @examples
 #' ModelParamsNormal(mean = c(1, 6), cov = diag(2))
 ModelParamsNormal <- function(mean, cov) {
-  assert_matrix(cov, mode = "numeric", any.missing = FALSE, nrows = 2, ncols = 2)
-  assert_true(h_is_positive_definite(cov)) # To ensure that `cov` is invertible.
+  assert_matrix(
+    cov,
+    mode = "numeric",
+    any.missing = FALSE,
+    nrows = length(mean),
+    ncols = length(mean)
+  )
+  # To ensure that `cov` is invertible:
+  assert_true(h_is_positive_definite(cov, length(mean)))
 
   .ModelParamsNormal(
     mean = mean,
