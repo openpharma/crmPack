@@ -1602,7 +1602,13 @@ test_that("fitGain-Samples-LogisticIndepBeta works correctly", {
     rng_seed = 52513,
     rng_kind = "Mersenne-Twister"
   )
-  data1 <- Data(x = data@x, y = data@y, doseGrid = data@doseGrid)
+  data1 <- Data(
+    x = data@x,
+    y = data@y,
+    ID = data@ID,
+    cohort = data@cohort,
+    doseGrid = data@doseGrid
+  )
 
   DLEsamples <- mcmc(data = data1, model = DLEmodel, options = options)
   Effsamples <- mcmc(data = data, model = Effmodel, options = options)
