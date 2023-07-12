@@ -217,7 +217,7 @@ b <- mySims@data[[1]]
 plot(mySims)
 plot(b)
 
-mySims@stop_reasons[[2]]
+mySims@stopReasons[[2]]
 
 # nolint end
 ```
