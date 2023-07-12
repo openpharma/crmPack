@@ -47,8 +47,8 @@ a \code{list} containing the approximation model and, if requested, a
 \code{ggplot2} object containing a graphical representation of the fitted model
 }
 \description{
-It is recommended to use \code{\link{set.seed}} before, in order
-to be able to reproduce the resulting approximating model exactly.
+To reproduce the resultant approximate model in the future exactly, include
+\code{seed = xxxx} in the call to \code{approximate}.
 }
 \section{Functions}{
 \itemize{
