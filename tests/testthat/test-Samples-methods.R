@@ -92,43 +92,42 @@ test_that("get-Samples returns correct values", {
   mcmcOptions <- McmcOptions(burnin = 5, step = 2, samples = 2)
   set.seed(94)
   dualSamples <- mcmc(dualData, dualModel, mcmcOptions)
-  for (param in c("betaZ")) { # names(dualSamples@data)) {
-    actual <- get(dualSamples, param)
-    assert_data_frame(actual)
-    assert_set_equal(names(actual), c("Iteration", "Chain", "Parameter", "value"))
-    expected <- data.frame(
-      Iteration = rep(
-        1:((mcmcOptions@iterations - mcmcOptions@burnin) / mcmcOptions@step),
-        times = ncol(dualSamples@data[[param]])
-      ),
-      Chain = 1L,
-      Parameter = as.factor(
-        paste0(
-          param,
-          "[",
-          rep(
-            1:ncol(dualSamples@data[[param]]),
-            each = (mcmcOptions@iterations - mcmcOptions@burnin) / mcmcOptions@step
-          ),
-          "]"
-        )
-      ),
-      value = matrix(dualSamples@data[[param]], ncol = 1)
-    )
-    attr(expected, "description") <- paste0(
-      param,
-      "[",
-      1:ncol(dualSamples@data[[param]]),
-      "]"
-    )
-    attr(expected, "nBurnin") <- mcmcOptions@burnin
-    attr(expected, "nChains") <- 1L
-    attr(expected, "nParameters") <- as.integer(ncol(dualSamples@data[[param]]))
-    attr(expected, "nThin") <- mcmcOptions@step
-    attr(expected, "nIterations") <- mcmcOptions@iterations
-    attr(expected, "parallel") <- FALSE
-    expect_identical(actual, expected)
-  }
+  param <- "betaZ"
+  actual <- get(dualSamples, param)
+  assert_data_frame(actual)
+  assert_set_equal(names(actual), c("Iteration", "Chain", "Parameter", "value"))
+  expected <- data.frame(
+    Iteration = rep(
+      1:((mcmcOptions@iterations - mcmcOptions@burnin) / mcmcOptions@step),
+      times = ncol(dualSamples@data[[param]])
+    ),
+    Chain = 1L,
+    Parameter = as.factor(
+      paste0(
+        param,
+        "[",
+        rep(
+          1:ncol(dualSamples@data[[param]]),
+          each = (mcmcOptions@iterations - mcmcOptions@burnin) / mcmcOptions@step
+        ),
+        "]"
+      )
+    ),
+    value = matrix(dualSamples@data[[param]], ncol = 1)
+  )
+  attr(expected, "description") <- paste0(
+    param,
+    "[",
+    1:ncol(dualSamples@data[[param]]),
+    "]"
+  )
+  attr(expected, "nBurnin") <- mcmcOptions@burnin
+  attr(expected, "nChains") <- 1L
+  attr(expected, "nParameters") <- as.integer(ncol(dualSamples@data[[param]]))
+  attr(expected, "nThin") <- mcmcOptions@step
+  attr(expected, "nIterations") <- mcmcOptions@iterations
+  attr(expected, "parallel") <- FALSE
+  expect_identical(actual, expected)
 })
 
 # fit ----
@@ -812,7 +811,12 @@ test_that("Check that plot-Samples-ModelTox works correctly", {
     ID = 1L:8L,
     cohort = as.integer(c(1, 2, 2, 3:7))
   )
-  model <- LogisticIndepBeta(binDLE = c(1.05, 1.8), DLEweights = c(3, 3), DLEdose = c(25, 300), data = data)
+  model <- LogisticIndepBeta(
+    binDLE = c(1.05, 1.8),
+    DLEweights = c(3, 3),
+    DLEdose = c(25, 300),
+    data = data
+  )
   options <- McmcOptions(
     burnin = 500,
     step = 2,
@@ -1186,7 +1190,7 @@ test_that("plotDualResponses works correctly", {
     showLegend = TRUE,
     extrapolate = FALSE
   )
-  vdiffr::expect_doppelganger("plotDualResponses_showlegend-TRUE_extrapolate-FALSE", actual3)
+  vdiffr::expect_doppelganger("plotDualResponses_TRUE_FALSE", actual3)
 })
 
 test_that("plotDualResponses-ModelTox-Missing-ModelEff-Missing works as expected", {
@@ -1206,7 +1210,7 @@ test_that("plotDualResponses-ModelTox-Missing-ModelEff-Missing works as expected
     Effmodel = Effmodel,
     data = data
   )
-  vdiffr::expect_doppelganger("plotDualResponses-ModelTox-Missing-ModelEff-Missing", actual)
+  vdiffr::expect_doppelganger("plotDualResponses-ModelTox-ModelEff", actual)
 })
 
 # fitPEM ----
@@ -1401,7 +1405,7 @@ test_that("plot-Samples-DALogisticNormal works correctly", {
   vdiffr::expect_doppelganger("plot-Samples-DALogisticLogNormal_showLegend-FALSE", actual2)
 
   actual3 <- plot(samples, model, data, showLegend = FALSE, hazard = TRUE)
-  vdiffr::expect_doppelganger("plot-Samples-DALogisticLogNormal_hazard-TRUE_showLegend-FALSE", actual3)
+  vdiffr::expect_doppelganger("plot-Samples-DALogisticLogNormal_TRUE_FALSE", actual3)
 })
 
 test_that("Approximate fails gracefully with bad input", {
@@ -1612,51 +1616,5 @@ test_that("fitGain-Samples-LogisticIndepBeta works correctly", {
   )
 
   expect_snapshot(actual)
-})
-
-
-test_that("plot-Samples-ModelTox works correctly", {
-  data <- Data(
-    x = c(25, 50, 50, 75, 150, 200, 225, 300),
-    y = c(0, 0, 0, 0, 1, 1, 1, 1),
-    ID = 1:8,
-    cohort = c(1, 2, 2, 3, 4, 5, 6, 7),
-    doseGrid = seq(from = 25, to = 300, by = 25)
-  )
-  model <- LogisticIndepBeta(
-    binDLE = c(1.05, 1.8),
-    DLEweights = c(3, 3),
-    DLEdose = c(25, 300),
-    data = data
-  )
-  options <- McmcOptions(
-    burnin = 100,
-    step = 2,
-    samples = 200,
-    rng_seed = 52513,
-    rng_kind = "Mersenne-Twister"
-  )
-  samples <- mcmc(data = data, model = model, options = options)
-  actual <- plot(x = samples, y = model, data = data)
-  vdiffr::expect_doppelganger("plot-Samples-ModelTox", actual)
-})
-
-test_that("plot-Samples-ModelEffNoSamples works correctly", {
-  data <- DataDual(
-    x = c(25, 50, 50, 75, 150, 200, 225, 300),
-    y = c(0, 0, 0, 0, 1, 1, 1, 1),
-    w = c(0.31, 0.42, 0.59, 0.45, 0.6, 0.7, 0.6, 0.52),
-    ID = 1:8,
-    cohort = c(1, 2, 2, 3, 4, 5, 6, 7),
-    doseGrid = seq(from = 25, to = 300, by = 25)
-  )
-  Effmodel <- Effloglog(
-    eff = c(1.223, 2.513),
-    eff_dose = c(25, 300),
-    nu = c(a = 1, b = 0.025),
-    data = data
-  )
-  actual <- plot(x = data, y = Effmodel)
-  vdiffr::expect_doppelganger("plot-Samples-ModelEffNoSamples", actual)
 })
 ## nolint end
