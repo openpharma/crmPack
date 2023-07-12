@@ -44,17 +44,13 @@ of the gain value samples"><meta property="og:image" content="https://roche.gith
     <a class="dropdown-item" href="../articles/simulations.html">Simulation study example</a>
     <a class="dropdown-item" href="../articles/migration_from_the_old_crmPack.html">Migrating from crmPack version 1.0.3</a>
     <a class="dropdown-item" href="../articles/parallel_computing_with_extensions.html">Parallel computing with extensions</a>
+    <a class="dropdown-item" href="../articles/crmPack-jss-paper.html">Model-based Dose Escalation Designs in R with crmPack (JSS manuscript)</a>
+    <a class="dropdown-item" href="../articles/example.html">crmPack: Object-oriented implementation of CRM designs</a>
   </div>
 </li>
 <li class="nav-item">
   <a class="nav-link" href="../news/index.html">Changelog</a>
 </li>
-<!-- start dropdown for versions --> <li class="nav-item dropdown">
-        <a href="#" class="nav-link dropdown-toggle"
-          data-bs-toggle="dropdown" role="button"
-          aria-expanded="false" aria-haspopup="true"
-          id="dropdown-versions">Versions</a> <div class="dropdown-menu" aria-labelledby="dropdown-versions"> <a class="dropdown-item" data-toggle="tooltip" title="" href="https://Roche.github.io/crmPack/main">main</a> </div></li>
-<!-- end dropdown for versions -->
       </ul><form class="form-inline my-2 my-lg-0" role="search">
         <input type="search" class="form-control me-sm-2" aria-label="Toggle navigation" name="search-input" data-search-index="../search.json" id="search-input" placeholder="Search for" autocomplete="off"></form>
 
@@ -201,6 +197,47 @@ the gain values obtained given the DLE and the efficacy samples</p></li>
 <span class="r-out co"><span class="r-pr">#&gt;</span> 10  250 0.6422299  0.1680738 1.2696973</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> 11  275 0.6276542  0.1555099 1.2693313</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> 12  300 0.6135277  0.1446233 1.2668871</span>
+<span class="r-in"><span><span class="co">##Obtain the 'fitGain' the middle, uppper and lower quantiles for the samples of gain values</span></span></span>
+<span class="r-in"><span><span class="co">## at all dose levels using a pseudo DLE model, a DLE sample, a pseudo Efficacy model and</span></span></span>
+<span class="r-in"><span><span class="co">## a efficacy sample</span></span></span>
+<span class="r-in"><span><span class="co">## data must be from 'DataDual' class</span></span></span>
+<span class="r-in"><span><span class="va">data</span><span class="op">&lt;-</span><span class="fu"><a href="DataDual-class.html">DataDual</a></span><span class="op">(</span>x<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">25</span>,<span class="fl">50</span>,<span class="fl">25</span>,<span class="fl">50</span>,<span class="fl">75</span>,<span class="fl">300</span>,<span class="fl">250</span>,<span class="fl">150</span><span class="op">)</span>,</span></span>
+<span class="r-in"><span>               y<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">0</span>,<span class="fl">0</span>,<span class="fl">0</span>,<span class="fl">0</span>,<span class="fl">0</span>,<span class="fl">1</span>,<span class="fl">1</span>,<span class="fl">0</span><span class="op">)</span>,</span></span>
+<span class="r-in"><span>               w<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">0.31</span>,<span class="fl">0.42</span>,<span class="fl">0.59</span>,<span class="fl">0.45</span>,<span class="fl">0.6</span>,<span class="fl">0.7</span>,<span class="fl">0.6</span>,<span class="fl">0.52</span><span class="op">)</span>,</span></span>
+<span class="r-in"><span>               doseGrid<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/base/seq.html" class="external-link">seq</a></span><span class="op">(</span><span class="fl">25</span>,<span class="fl">300</span>,<span class="fl">25</span><span class="op">)</span>,</span></span>
+<span class="r-in"><span>               placebo<span class="op">=</span><span class="cn">FALSE</span><span class="op">)</span></span></span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> Used default patient IDs!</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> Used best guess cohort indices!</span>
+<span class="r-in"><span><span class="co">## DLE model must be from 'ModelTox' class e.g using 'LogisticIndepBeta' model</span></span></span>
+<span class="r-in"><span><span class="va">DLEmodel</span><span class="op">&lt;-</span><span class="fu"><a href="LogisticIndepBeta-class.html">LogisticIndepBeta</a></span><span class="op">(</span>binDLE<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">1.05</span>,<span class="fl">1.8</span><span class="op">)</span>,DLEweights<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">3</span>,<span class="fl">3</span><span class="op">)</span>,DLEdose<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">25</span>,<span class="fl">300</span><span class="op">)</span>,data<span class="op">=</span><span class="va">data</span><span class="op">)</span></span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="co">## Efficacy model must be from 'ModelEff' class e.g using 'Effloglog' model</span></span></span>
+<span class="r-in"><span><span class="va">Effmodel</span><span class="op">&lt;-</span><span class="fu"><a href="Effloglog-class.html">Effloglog</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">1.223</span>,<span class="fl">2.513</span><span class="op">)</span>,<span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">25</span>,<span class="fl">300</span><span class="op">)</span>,nu<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span>a<span class="op">=</span><span class="fl">1</span>,b<span class="op">=</span><span class="fl">0.025</span><span class="op">)</span>,data<span class="op">=</span><span class="va">data</span>,c<span class="op">=</span><span class="fl">0</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="co">## samples must be from 'Samples' class (object slot in fit)</span></span></span>
+<span class="r-in"><span><span class="va">options</span><span class="op">&lt;-</span><span class="fu"><a href="McmcOptions-class.html">McmcOptions</a></span><span class="op">(</span>burnin<span class="op">=</span><span class="fl">100</span>,step<span class="op">=</span><span class="fl">2</span>,samples<span class="op">=</span><span class="fl">200</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="co">##set up the same data set in class 'Data' for MCMC sampling for DLE</span></span></span>
+<span class="r-in"><span><span class="va">data1</span> <span class="op">&lt;-</span> <span class="fu"><a href="Data-class.html">Data</a></span><span class="op">(</span>x<span class="op">=</span><span class="va">data</span><span class="op">@</span><span class="va">x</span>,y<span class="op">=</span><span class="va">data</span><span class="op">@</span><span class="va">y</span>,doseGrid<span class="op">=</span><span class="va">data</span><span class="op">@</span><span class="va">doseGrid</span><span class="op">)</span></span></span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> Used default patient IDs!</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> Used best guess cohort indices!</span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="va">DLEsamples</span> <span class="op">&lt;-</span> <span class="fu"><a href="mcmc.html">mcmc</a></span><span class="op">(</span>data<span class="op">=</span><span class="va">data1</span>,model<span class="op">=</span><span class="va">DLEmodel</span>,options<span class="op">=</span><span class="va">options</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="va">Effsamples</span> <span class="op">&lt;-</span> <span class="fu"><a href="mcmc.html">mcmc</a></span><span class="op">(</span>data<span class="op">=</span><span class="va">data</span>,model<span class="op">=</span><span class="va">Effmodel</span>,options<span class="op">=</span><span class="va">options</span><span class="op">)</span></span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="fu">fitGain</span><span class="op">(</span>DLEmodel<span class="op">=</span><span class="va">DLEmodel</span>,DLEsamples<span class="op">=</span><span class="va">DLEsamples</span>,</span></span>
+<span class="r-in"><span>        Effmodel<span class="op">=</span><span class="va">Effmodel</span>, Effsamples<span class="op">=</span><span class="va">Effsamples</span>,data<span class="op">=</span><span class="va">data</span><span class="op">)</span></span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>    dose    middle      lower     upper</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 1    25 0.3442700 -0.2511183 0.9175569</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 2    50 0.6051121  0.2599777 1.0301263</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 3    75 0.6827104  0.3462284 1.0908986</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 4   100 0.7050072  0.3326112 1.1992161</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 5   125 0.7057281  0.2824561 1.2516880</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 6   150 0.6972930  0.2543596 1.3306478</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 7   175 0.6849992  0.2131238 1.3920869</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 8   200 0.6712913  0.1845311 1.4412821</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 9   225 0.6573428  0.1655045 1.4802234</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 10  250 0.6437208  0.1457352 1.5127283</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 11  275 0.6306888  0.1270349 1.5067852</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 12  300 0.6183552  0.1115851 1.4874941</span>
 </code></pre></div>
     </div>
   </main><aside class="col-md-3"><nav id="toc"><h2>On this page</h2>
