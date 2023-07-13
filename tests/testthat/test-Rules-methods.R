@@ -1376,7 +1376,8 @@ test_that("StoppingMissingDose works correctly", {
   expect_equal(
     attributes(result),
     list(
-      message = "Next dose is NA , i.e., no active dose is safe enough according to the NextBest rule."
+      message = "Next dose is NA , i.e., no active dose is safe enough according to the NextBest rule.",
+      report_label = NA_character_
     )
   )
 
@@ -1389,7 +1390,8 @@ test_that("StoppingMissingDose works correctly", {
   expect_equal(
     attributes(result),
     list(
-      message = "Next dose is placebo dose , i.e., no active dose is safe enough according to the NextBest rule."
+      message = "Next dose is placebo dose , i.e., no active dose is safe enough according to the NextBest rule.",
+      report_label = NA_character_
     )
   )
 
@@ -1401,7 +1403,8 @@ test_that("StoppingMissingDose works correctly", {
   expect_false(result)
   expect_equal(
     attributes(result),
-    list(message = "Next dose is available at the dose grid.")
+    list(message = "Next dose is available at the dose grid.",
+         report_label = NA_character_)
   )
 })
 
@@ -2946,7 +2949,7 @@ test_that("StoppingAll works correctly if next dose is NA", {
         report_label = NA_character_
       )
     ),
-    report_label = character(0)
+    report_label = NA_character_
   )
   expect_identical(result, expected)
 })
@@ -2987,7 +2990,7 @@ test_that("stopTrial works correctly for StoppingAll", {
           report_label = NA_character_
         )
       ),
-      report_label = character(0)
+      report_label = NA_character_
     )
   )
 
@@ -3017,7 +3020,7 @@ test_that("stopTrial works correctly for StoppingAll", {
           report_label = NA_character_
         )
       ),
-      report_label = character(0)
+      report_label = NA_character_
     )
   )
   rv <- stopTrial(
@@ -3046,7 +3049,7 @@ test_that("stopTrial works correctly for StoppingAll", {
           report_label = NA_character_
         )
       ),
-      report_label = character(0)
+      report_label = NA_character_
     )
   )
 
@@ -3076,7 +3079,7 @@ test_that("stopTrial works correctly for StoppingAll", {
           report_label = NA_character_
         )
       ),
-      report_label = character(0)
+      report_label = NA_character_
     )
   )
 
@@ -3107,7 +3110,7 @@ test_that("stopTrial works correctly for StoppingAll", {
           report_label = NA_character_
         )
       ),
-      report_label = character(0)
+      report_label = NA_character_
     )
   )
 
@@ -3138,7 +3141,7 @@ test_that("stopTrial works correctly for StoppingAll", {
           report_label = NA_character_
         )
       ),
-      report_label = character(0)
+      report_label = NA_character_
     )
   )
 
@@ -3170,7 +3173,7 @@ test_that("stopTrial works correctly for StoppingAll", {
           report_label = NA_character_
         )
       ),
-      report_label = character(0)
+      report_label = NA_character_
     )
   )
 
@@ -3201,7 +3204,7 @@ test_that("stopTrial works correctly for StoppingAll", {
           report_label = NA_character_
         )
       ),
-      report_label = character(0)
+      report_label = NA_character_
     )
   )
 
@@ -3232,7 +3235,7 @@ test_that("stopTrial works correctly for StoppingAll", {
           report_label = NA_character_
         )
       ),
-      report_label = character(0)
+      report_label = NA_character_
     )
   )
 })
@@ -3283,7 +3286,7 @@ test_that("StoppingAny works correctly if next dose is NA", {
         report_label = NA_character_
       )
     ),
-    report_label = character(0)
+    report_label = NA_character_
   )
   expect_identical(result, expected)
 })
@@ -3304,11 +3307,8 @@ test_that("stopTrial works correctly for StoppingAny", {
     model = LogisticLogNormal(mean = c(0, 1), cov = diag(2)),
     data = data_none
   )
-<<<<<<< HEAD
 
-=======
-  # attr(rv,"report_label") <- NA_character_
->>>>>>> 90b0562a3e9326ab57fbde23f7150add41810c4e
+
   expect_false(rv)
   expect_equal(
     attributes(rv),
@@ -3329,7 +3329,7 @@ test_that("stopTrial works correctly for StoppingAny", {
           report_label = NA_character_
         )
       ),
-      report_label = character(0)
+      report_label = NA_character_
     )
   )
 
@@ -3359,7 +3359,7 @@ test_that("stopTrial works correctly for StoppingAny", {
           report_label = NA_character_
         )
       ),
-      report_label = character(0)
+      report_label = NA_character_
     )
   )
 
@@ -3389,7 +3389,7 @@ test_that("stopTrial works correctly for StoppingAny", {
           report_label = NA_character_
         )
       ),
-      report_label = character(0)
+      report_label = NA_character_
     )
   )
 
@@ -3419,7 +3419,7 @@ test_that("stopTrial works correctly for StoppingAny", {
           report_label = NA_character_
         )
       ),
-      report_label = character(0)
+      report_label = NA_character_
     )
   )
 
@@ -3450,7 +3450,7 @@ test_that("stopTrial works correctly for StoppingAny", {
           report_label = NA_character_
         )
       ),
-      report_label = character(0)
+      report_label = NA_character_
     )
   )
 
@@ -3481,7 +3481,7 @@ test_that("stopTrial works correctly for StoppingAny", {
           report_label = NA_character_
         )
       ),
-      report_label = character(0)
+      report_label = NA_character_
     )
   )
 
@@ -3512,7 +3512,7 @@ test_that("stopTrial works correctly for StoppingAny", {
           report_label = NA_character_
         )
       ),
-      report_label = character(0)
+      report_label = NA_character_
     )
   )
 
@@ -3543,7 +3543,7 @@ test_that("stopTrial works correctly for StoppingAny", {
           report_label = NA_character_
         )
       ),
-      report_label = character(0)
+      report_label = NA_character_
     )
   )
 })
