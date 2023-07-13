@@ -93,9 +93,9 @@ test_that("NextBestInfTheory produces consistent results with a dataset", {
   expect_snapshot(result@meanFit)
 })
 
-## stopReasons integration test ----
+## stop_reasons integration test ----
 
-test_that("stopReasons can be NA with certain stopping rule settings", {
+test_that("stop_reasons can be NA with certain stopping rule settings", {
   data <- h_get_data(placebo = FALSE)
   model <- h_get_logistic_normal()
   increments <- h_increments_relative()
@@ -120,7 +120,7 @@ test_that("stopReasons can be NA with certain stopping rule settings", {
     seed = 819,
     mcmcOptions = h_get_mcmc_options()
   )
-  result <- sim@stopReasons
+  result <- sim@stop_reasons
   # In this case the trial always stops because no dose is deemed safe enough
   # to continue the trial. This is the default behavior of the
   # stopTrial() method.
