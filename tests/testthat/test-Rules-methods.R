@@ -3340,7 +3340,6 @@ test_that("stopTrial works for StoppingTargetBiomarker", {
     rng_kind = "Mersenne-Twister",
     rng_seed = 94
   )
-  samples <- mcmc(data, model, options)
 
   # Set-up some MCMC parameters and generate samples from the posterior
   samples <- mcmc(data, model, options)
@@ -3445,6 +3444,99 @@ test_that("minSize works as expected", {
   cohortSize <- CohortSizeMin(cohort_sizes = list(size1, size2))
   expect_equal(minSize(size1, size2), cohortSize)
 })
+
+test_that("stopTrial works correctly for StoppingTDCIRatio when samples are provided", {
+  # Observed data is irrelevant in this case.  provide an empty Data object
+  emptyData <- Data(doseGrid = seq(25, 300, 25))
+  # Define a model
+  model <- LogisticIndepBeta(
+    binDLE = c(1.05, 1.8),
+    DLEdose = c(25, 300),
+    DLEweights = c(3, 3),
+    data = emptyData
+  )
+  # Generate some samples from the model
+  n_samples <- 100
+  samples <- mcmc(
+    emptyData,
+    model,
+    McmcOptions(
+      samples = n_samples,
+      rng_kind = "Mersenne-Twister",
+      rng_seed = 12911
+    )
+  )
+  for (targetRate in seq(0.05, 0.95, 0.1)) {
+    for (targetRatio in c(3, 6, 10, 20)) {
+      for (d in emptyData@doseGrid) {
+        sampledMTD <- dose(targetRate, model, samples)
+
+        sampledLimits <- quantile(sampledMTD, probs = c(0.025, 0.975))
+        sampledRatio <- sampledLimits[[2]] / sampledLimits[[1]]
+        expected <- sampledRatio < targetRatio
+        result <- stopTrial(
+          StoppingTDCIRatio(targetRatio, targetRate),
+          d,
+          samples,
+          model,
+          data = emptyData
+        )
+        direction <- ifelse(expected, "less", "greater")
+
+        attr(expected, "message") <- paste0(
+          "95% CI is (",
+          sampledLimits[[1]],
+          ", ",
+          sampledLimits[[2]],
+          "), Ratio = ",
+          round(sampledRatio, 4),
+          " is ",
+          direction,
+          " than target_ratio = ",
+          targetRatio
+        )
+        if (expected != as.logical(result)) {
+          print(
+            paste0(
+              "targetRate: ", targetRate, "; targetRatio: ", targetRatio,
+              "; d: ", d, "; expected: ",
+              expected, "; actual: ",
+              as.logical(result), " [", attr(result, "message"), "]"
+            )
+          )
+        }
+        expect_equal(result, expected)
+      }
+    }
+  }
+})
+
+test_that("stopTrial works correctly for StoppingTDCIRatio when samples are not provided", {
+  # Observed data is irrelevant in this case.  provide an empty Data object
+  emptyData <- Data(doseGrid = seq(25, 300, 25))
+  # Define a model
+  model <- LogisticIndepBeta(
+    binDLE = c(1.05, 1.8),
+    DLEdose = c(25, 300),
+    DLEweights = c(3, 3),
+    data = emptyData
+  )
+  for (targetRate in seq(0.05, 0.95, 0.1)) {
+    for (targetRatio in c(3, 6, 10, 20)) {
+      for (d in emptyData@doseGrid) {
+        result <- stopTrial(
+          stopping = StoppingTDCIRatio(targetRatio, targetRate),
+          dose = d,
+          model = model,
+          data = emptyData
+        )
+        # TODO: message attribute not checked
+        expect_false(result, expected)
+      }
+    }
+  }
+})
+
 
 # SafetyWindow ----
 
