@@ -22,7 +22,7 @@ Design(model, stopping, increments, pl_cohort_size = CohortSizeConst(0L), ...)
   Arguments passed on to \code{\link[=RuleDesign]{RuleDesign}}
   \describe{
     \item{\code{nextBest}}{(\code{NextBest})\cr see slot definition.}
-    \item{\code{cohortSize}}{(\code{CohortSize})\cr see slot definition.}
+    \item{\code{cohort_size}}{(\code{CohortSize})\cr see slot definition.}
     \item{\code{data}}{(\code{Data})\cr see slot definition.}
     \item{\code{startingDose}}{(\code{number})\cr see slot definition.}
   }}
@@ -70,7 +70,7 @@ my_size1 <- CohortSizeRange(
   cohort_size = c(1, 3)
 )
 my_size2 <- CohortSizeDLT(
-  dlt_intervals = c(0, 1),
+  intervals = c(0, 1),
   cohort_size = c(1, 3)
 )
 my_size <- maxSize(my_size1, my_size2)
@@ -96,7 +96,7 @@ design <- Design(
   nextBest = my_next_best,
   stopping = my_stopping,
   increments = my_increments,
-  cohortSize = my_size,
+  cohort_size = my_size,
   data = empty_data,
   startingDose = 3
 )

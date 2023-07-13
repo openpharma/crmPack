@@ -43,7 +43,7 @@ my_design <- DualResponsesDesign(
   eff_model = eff_model,
   stopping = my_stopping,
   increments = my_increments,
-  cohortSize = my_size,
+  cohort_size = my_size,
   data = emptydata,
   startingDose = 25
 )
@@ -83,7 +83,7 @@ my_next_best <- NextBestMaxGainSamples(
 # The design of 'DualResponsesSamplesDesign' class.
 my_design <- DualResponsesSamplesDesign(
   nextBest = my_next_best,
-  cohortSize = my_size,
+  cohort_size = my_size,
   startingDose = 25,
   model = dle_model,
   eff_model = eff_model,

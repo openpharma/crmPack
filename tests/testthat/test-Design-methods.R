@@ -22,7 +22,7 @@ test_that("NextBestInfTheory produces consistent results for empty data", {
     stopping = stop_rule,
     increments = increments,
     nextBest = new_my_next_best,
-    cohortSize = cohort,
+    cohort_size = cohort,
     data = emptydata,
     startingDose = 40
   )
@@ -68,7 +68,7 @@ test_that("NextBestInfTheory produces consistent results with a dataset", {
     stopping = stop_rule,
     increments = increments,
     nextBest = new_my_next_best,
-    cohortSize = cohort,
+    cohort_size = cohort,
     data = my_data,
     startingDose = 25
   )
@@ -109,7 +109,7 @@ test_that("stopReasons can be NA with certain stopping rule settings", {
     stopping = stopping,
     increments = increments,
     nextBest = next_best,
-    cohortSize = size,
+    cohort_size = size,
     data = data,
     startingDose = 25
   )

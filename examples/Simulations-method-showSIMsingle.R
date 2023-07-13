@@ -1,3 +1,4 @@
+
 # Obtain the plot for the simulation results if only DLE responses are
 # considered in the simulations.
 
@@ -35,7 +36,7 @@ my_design <- TDDesign(
   nextBest = td_next_best,
   stopping = my_stopping,
   increments = my_increments,
-  cohortSize = my_size,
+  cohort_size = my_size,
   data = emptydata,
   startingDose = 25
 )
@@ -79,7 +80,7 @@ my_design <- TDsamplesDesign(
   nextBest = td_next_best,
   stopping = my_stopping,
   increments = my_increments,
-  cohortSize = my_size,
+  cohort_size = my_size,
   data = emptydata,
   startingDose = 25
 )
