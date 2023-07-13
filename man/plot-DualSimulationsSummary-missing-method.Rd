@@ -105,11 +105,7 @@ beta_mod <- function(dose, e0, eMax, delta1, delta2, scal) {
   e0 + eMax / maxDens * (dose^delta1) * (1 - dose)^delta2
 }
 
-# Plot the summary of the Simulations
-plot(summary(my_sims,
-  trueTox = true_tox,
-  trueBiomarker = true_biomarker
-))
+
 
 true_biomarker <- function(dose) {
   beta_mod(dose, e0 = 0.2, eMax = 0.6, delta1 = 5, delta2 = 5 * 0.5 / 0.5, scal = 100)
@@ -150,6 +146,5 @@ plot(summary(my_sims,
   trueTox = true_tox,
   trueBiomarker = true_biomarker
 ))
-
 }
 \keyword{methods}

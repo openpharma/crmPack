@@ -41,18 +41,11 @@ my_design <- DualResponsesDesign(
   nextBest = my_next_best,
   model = dle_model,
   eff_model = eff_model,
-<<<<<<< HEAD
-  stopping = myStopping,
-  increments = myIncrements,
-  cohort_size = mySize,
-  data = data, startingDose = 25
-=======
   stopping = my_stopping,
   increments = my_increments,
-  cohortSize = my_size,
+  cohort_size = my_size,
   data = emptydata,
   startingDose = 25
->>>>>>> 7250896204e9af10986e9fcd84aba955b029a45d
 )
 
 # Specify the true DLE and efficacy curves.
@@ -87,17 +80,10 @@ my_next_best <- NextBestMaxGainSamples(
   }
 )
 
-<<<<<<< HEAD
-## The design of 'DualResponsesSamplesDesign' class
-design <- DualResponsesSamplesDesign(
-  nextBest = mynextbest,
-  cohort_size = mySize,
-=======
 # The design of 'DualResponsesSamplesDesign' class.
 my_design <- DualResponsesSamplesDesign(
   nextBest = my_next_best,
-  cohortSize = my_size,
->>>>>>> 7250896204e9af10986e9fcd84aba955b029a45d
+  cohort_size = my_size,
   startingDose = 25,
   model = dle_model,
   eff_model = eff_model,

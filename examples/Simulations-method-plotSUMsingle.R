@@ -8,7 +8,12 @@
 data <- Data(doseGrid = seq(25, 300, 25))
 
 ## Specified the model of 'ModelTox' class eg 'LogisticIndepBeta' class model
-model <- LogisticIndepBeta(binDLE = c(1.05, 1.8), DLEweights = c(3, 3), DLEdose = c(25, 300), data = data)
+model <- LogisticIndepBeta(
+  binDLE = c(1.05, 1.8),
+  DLEweights = c(3, 3),
+  DLEdose = c(25, 300),
+  data = data
+)
 ## Then the escalation rule
 tdNextBest <- NextBestTD(
   prob_target_drt = 0.35,

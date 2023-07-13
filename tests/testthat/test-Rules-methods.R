@@ -336,7 +336,7 @@ test_that("nextBest-NextBestDualEndpoint returns expected elements (absolute tar
   result <- nextBest(nb_de, Inf, samples, model, data)
   expect_identical(result$value, 100)
   expect_snapshot(result$probs)
-  vdiffr::expect_doppelganger("Plot of nextBest-NextBestDualEndpoint_atgt_nodlim", result$plot)
+  vdiffr::expect_doppelganger("nextBest-NextBestDualEndpoint_atgt_nodlim", result$plot)
 })
 
 ## NextBestMinDist ----
@@ -3262,7 +3262,7 @@ test_that("size works as expected for CohortSizeMax", {
 test_that("maxSize works as expected", {
   size1 <- CohortSizeRange(intervals = c(0, 3), cohort_size = 1:2)
   size2 <- CohortSizeDLT(intervals = 0:2, cohort_size = c(1, 3, 6))
-  cohortSize <- CohortSizeMax(cohort_size_list = list(size1, size2))
+  cohortSize <- CohortSizeMax(cohort_sizes = list(size1, size2))
   expect_equal(maxSize(size1, size2), cohortSize)
 })
 

@@ -474,9 +474,9 @@ setMethod("approximate",
             aes(
               x = x,
               y = y,
-              colour = Type,
-              group = interaction(Type, Line),
-              linetype = (Line == "median")
+              colour = .data$Type,
+              group = interaction(.data$Type, .data$Line),
+              linetype = (.data$Line == "median")
             )
           ) +
           ggplot2::geom_line() +
