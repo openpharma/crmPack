@@ -46,7 +46,7 @@ test_that("GeneralSimulations user constructor arguments names are as expected",
     ordered = TRUE
   )
 })
-
+# Simulations-class ----
 test_that("Simulations generator function works as expected", {
   result <- expect_silent(.Simulations())
   expect_valid(result, "Simulations")
