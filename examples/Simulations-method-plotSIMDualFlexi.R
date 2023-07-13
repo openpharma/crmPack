@@ -44,7 +44,6 @@ my_stopping <- StoppingMinPatients(nPatients = 36) | StoppingMissingDose()
 
 # Specify the design.
 design <- DualResponsesSamplesDesign(
-
   nextBest = my_next_best,
   cohort_size = my_size,
   startingDose = 25,
