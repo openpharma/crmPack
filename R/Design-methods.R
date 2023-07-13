@@ -406,25 +406,9 @@ setMethod("simulate",
             model = object@model,
             data = thisData
           )
-          stopit_unpacked <- list()
 
-          unpack_stopit <- function(stopit_tree) {
-            if (is.list(stopit_tree)) {
-              lapply(stopit_tree, unpack_stopit)
-            } else {
-              label <- attr(stopit_tree, "report_label")
-              value <- stopit_tree[1]
-              names(value) <- label
-              stopit_unpacked <- append(stopit_unpacked, value)
-              if (is.null(attr(stopit_tree, "individual"))) {
-                stopit_unpacked
-              } else {
-                append(stopit_unpacked, lapply(attr(stopit_tree, "individual"), unpack_stopit))
-              }
-            }
-          }
+          stopit_results <- unlist(h_unpack_stopit(stopit))
 
-          stopit_results <- unlist(unpack_stopit(stopit))
         }
 
         ## get the fit

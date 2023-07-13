@@ -1044,3 +1044,30 @@ h_find_interval <- function(..., replacement = -Inf) {
   x <- findInterval(...)
   ifelse(x == 0, yes = replacement, no = x)
 }
+
+
+
+#'unpack stopping rules and return list
+#'
+#'@description
+#'
+#'recursively unpack nested stopping rules logical value and label given
+#'
+#'@param stopit_tree object from simulate method
+
+h_unpack_stopit <- function(stopit_tree) {
+stopit_unpacked <- list()
+if (is.list(stopit_tree)) {
+  lapply(stopit_tree, h_unpack_stopit)
+} else {
+  label <- attr(stopit_tree, "report_label")
+  value <- stopit_tree[1]
+  names(value) <- label
+  stopit_unpacked <- append(stopit_unpacked, value)
+  if (is.null(attr(stopit_tree, "individual"))) {
+    stopit_unpacked
+  } else {
+    append(stopit_unpacked, lapply(attr(stopit_tree, "individual"), h_unpack_stopit))
+  }
+}
+}

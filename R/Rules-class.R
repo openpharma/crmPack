@@ -1547,7 +1547,7 @@ StoppingCohortsNearDose <- function(nCohorts = 2L,
   StoppingCohortsNearDose(
     nCohorts = 3L,
     percentage = 0.2,
-    report_label = NA_character_
+ #   report_label = NA_character_
   )
 }
 
@@ -1659,7 +1659,8 @@ StoppingPatientsNearDose <- function(nPatients = 10L,
 #' @export
 #'
 StoppingMinCohorts <- function(nCohorts = 2L,
-                               report_label = NA_character_) {
+                               report_label = NA_character_
+                               ) {
   nCohorts <- safeInteger(nCohorts)
   report_label <- h_default_if_empty(
     as.character(report_label),
@@ -1679,8 +1680,7 @@ StoppingMinCohorts <- function(nCohorts = 2L,
 #' @export
 .DefaultStoppingMinCohorts <- function() {
   StoppingMinCohorts(
-    nCohorts = 6L,
-    report_label = NA_character_
+    nCohorts = 6L
   )
 }
 
@@ -1739,8 +1739,7 @@ StoppingMinPatients <- function(nPatients = 20L,
 #' @export
 .DefaultStoppingMinPatients <- function() {
   StoppingMinPatients(
-    nPatients = 20L,
-    report_label = NA_character_
+    nPatients = 20L
   )
 }
 
@@ -1811,8 +1810,7 @@ StoppingTargetProb <- function(target = c(0.2, 0.35),
 .DefaultStoppingTargetProb <- function() {
   StoppingTargetProb(
     target = c(0.2, 0.35),
-    prob = 0.5,
-    report_label = NA_character_
+    prob = 0.5
   )
 }
 
@@ -1894,8 +1892,7 @@ StoppingMTDdistribution <- function(target = 0.33,
   StoppingMTDdistribution(
     target = 0.33,
     thresh = 0.5,
-    prob = 0.9,
-    report_label = NA_character_
+    prob = 0.9
   )
 }
 
@@ -1969,8 +1966,7 @@ StoppingMTDCV <- function(target = 0.3,
 .DefaultStoppingMTDCV <- function() {
   StoppingMTDCV(
     target = 0.3,
-    thresh_cv = 40,
-    report_label = NA_character_
+    thresh_cv = 40
   )
 }
 
@@ -2065,8 +2061,7 @@ StoppingLowestDoseHSRBeta <- function(target = 0.3,
     target = 0.3,
     prob = 0.95,
     a = 1,
-    b = 1,
-    report_label = NA_character_
+    b = 1
   )
 }
 
@@ -2154,8 +2149,7 @@ StoppingTargetBiomarker <- function(target = c(0.9, 1),
   StoppingTargetBiomarker(
     target = c(0.9, 1),
     prob = 0.5,
-    is_relative = TRUE,
-    report_label = NA_character_
+    is_relative = TRUE
   )
 }
 
@@ -2266,7 +2260,7 @@ StoppingHighestDose <- function(report_label = NA_character_) {
 #' @note Typically, end users will not use the `.DefaultStoppingHighestDose()` function.
 #' @export
 .DefaultStoppingHighestDose <- function() {
-  StoppingHighestDose(report_label = NA_character_)
+  StoppingHighestDose()
 }
 
 # StoppingTDCIRatio ----
@@ -2339,8 +2333,7 @@ StoppingTDCIRatio <- function(target_ratio = 5,
 .DefaultStoppingTDCIRatio <- function() {
   StoppingTDCIRatio(
     target_ratio = 5,
-    prob_target = 0.3,
-    report_label = NA_character_
+    prob_target = 0.3
   )
 }
 
@@ -2419,8 +2412,7 @@ StoppingMaxGainCIRatio <- function(target_ratio = 5,
 .DefaultStoppingMaxGainCIRatio <- function() {
   StoppingMaxGainCIRatio(
     target_ratio = 5,
-    prob_target = 0.3,
-    report_label = NA_character_
+    prob_target = 0.3
   )
 }
 
@@ -2538,7 +2530,7 @@ StoppingList <- function(stop_list, summary) {
 #' @export
 #' @example examples/Rules-class-StoppingAll.R
 #'
-StoppingAll <- function(stop_list, report_label = character(0)) {
+StoppingAll <- function(stop_list, report_label = NA_character_) {
   .StoppingAll(
     stop_list = stop_list,
     report_label = report_label
@@ -2600,7 +2592,7 @@ StoppingAll <- function(stop_list, report_label = character(0)) {
 #' @export
 #' @example examples/Rules-class-StoppingAny.R
 #'
-StoppingAny <- function(stop_list, report_label = character(0)) {
+StoppingAny <- function(stop_list, report_label = NA_character_) {
   .StoppingAny(
     stop_list = stop_list,
     report_label = report_label
