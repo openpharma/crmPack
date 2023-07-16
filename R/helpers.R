@@ -1055,19 +1055,35 @@ h_find_interval <- function(..., replacement = -Inf) {
 #'
 #'@param stopit_tree object from simulate method
 
+ # h_unpack_stopit <- function(stopit_tree) {
+ #   stopit_unpacked <- list()
+ #   if (is.list(stopit_tree)) {
+ #     print("is list")
+ #     lapply(stopit_tree, h_unpack_stopit)
+ #   } else {
+ #     print("is not list")
+ #     label <- attr(stopit_tree, "report_label")
+ #     value <- stopit_tree[1]
+ #     names(value) <- label
+ #     stopit_unpacked <- append(stopit_unpacked, value)
+ #     if (is.null(attr(stopit_tree, "individual"))) {
+ #       print("individual is null")
+ #       stopit_unpacked
+ #     } else {
+ #       print("individual not null")
+ #       append(stopit_unpacked, lapply(attr(stopit_tree, "individual"), h_unpack_stopit))
+ #     }
+ #   }
+ # }
+
 h_unpack_stopit <- function(stopit_tree) {
-stopit_unpacked <- list()
-if (is.list(stopit_tree)) {
-  lapply(stopit_tree, h_unpack_stopit)
-} else {
-  label <- attr(stopit_tree, "report_label")
-  value <- stopit_tree[1]
-  names(value) <- label
-  stopit_unpacked <- append(stopit_unpacked, value)
-  if (is.null(attr(stopit_tree, "individual"))) {
-    stopit_unpacked
-  } else {
-    append(stopit_unpacked, lapply(attr(stopit_tree, "individual"), h_unpack_stopit))
-  }
-}
+ label <- attr(stopit_tree, "report_label")
+ value <- stopit_tree[1]
+ names(value) <- label
+ value
+ if (is.null(attr(stopit_tree, "individual"))) {
+   return(value)
+ } else {
+   return(unlist(c(value, lapply(attr(stopit_tree, "individual"), h_unpack_stopit))))
+ }
 }

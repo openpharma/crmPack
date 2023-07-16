@@ -566,11 +566,65 @@ test_that("stopping rule unpacking works",{
             model = model,
             data=data)
 
-  result <-unlist(h_unpack_stopit(my_stopit))
+  result <- h_unpack_stopit(my_stopit)
 
   expected <- c(TRUE, FALSE, FALSE, FALSE, TRUE)
   names(expected) <- c("StoppingAny", "StoppingAll", "stop_rule_1", "stop_rule_2", "stop_rule_3")
 
+  expect_equal(result, expected)
+
+})
+
+test_that("conditions in stopping rule unpacking helpers work as expected",{
+
+  data <- h_get_data(placebo = FALSE)
+  model <- h_get_logistic_normal()
+  options <- McmcOptions(burnin=100,
+                         step=2,
+                         samples=2000)
+  samples <- mcmc(data, model, options)
+  increments <- h_increments_relative()
+  next_max_dose <- maxDose(increments,
+                           data=data)
+
+  next_best <- h_next_best_ncrm()
+
+  doseRecommendation <- nextBest(next_best,
+                                 doselimit=next_max_dose,
+                                 samples=samples, model=model, data=data)
+
+  myStopping1 <- StoppingMinCohorts(nCohorts=4, report_label = "stop_rule_1")
+  myStopping2 <- StoppingMissingDose(report_label ="stop_rule_2")
+  myStopping3 <- StoppingMinPatients(nPatients=1, report_label = "stop_rule_3")
+  myStopping <- StoppingAny(stop_list =
+                              c(StoppingAll(stop_list =
+                                              c(myStopping1, myStopping2),
+                                            report_label = "StoppingAll"),
+                                myStopping3), report_label = "StoppingAny")
+
+  #enters only "if is.null condition" since atomic
+  my_stopit <- stopTrial(stopping=myStopping1,
+                         dose=doseRecommendation$value,
+                         model = model,
+                         data=data)
+
+  result <- h_unpack_stopit(my_stopit)
+
+  expected <- c(FALSE)
+  names(expected) <- c("stop_rule_1")
+  expect_equal(result, expected)
+
+  #enters both "if is.null condition" and "else" branches since complex stopping rule
+  #"else branch" of h_unpack_stopit cannot be entered alone due to recursion
+  my_stopit <- stopTrial(stopping=myStopping,
+                         dose=doseRecommendation$value,
+                         model = model,
+                         data=data)
+
+  result <- h_unpack_stopit(my_stopit)
+
+  expected <- c(TRUE, FALSE, FALSE, FALSE, TRUE)
+  names(expected) <- c("StoppingAny", "StoppingAll", "stop_rule_1", "stop_rule_2", "stop_rule_3")
   expect_equal(result, expected)
 
 })

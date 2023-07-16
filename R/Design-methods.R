@@ -407,7 +407,7 @@ setMethod("simulate",
             data = thisData
           )
 
-          stopit_results <- unlist(h_unpack_stopit(stopit))
+          stopit_results <- h_unpack_stopit(stopit)
 
         }
 
