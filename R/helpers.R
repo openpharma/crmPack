@@ -1045,8 +1045,6 @@ h_find_interval <- function(..., replacement = -Inf) {
   ifelse(x == 0, yes = replacement, no = x)
 }
 
-
-
 #'unpack stopping rules and return list
 #'
 #'@description
@@ -1054,27 +1052,6 @@ h_find_interval <- function(..., replacement = -Inf) {
 #'recursively unpack nested stopping rules logical value and label given
 #'
 #'@param stopit_tree object from simulate method
-
- # h_unpack_stopit <- function(stopit_tree) {
- #   stopit_unpacked <- list()
- #   if (is.list(stopit_tree)) {
- #     print("is list")
- #     lapply(stopit_tree, h_unpack_stopit)
- #   } else {
- #     print("is not list")
- #     label <- attr(stopit_tree, "report_label")
- #     value <- stopit_tree[1]
- #     names(value) <- label
- #     stopit_unpacked <- append(stopit_unpacked, value)
- #     if (is.null(attr(stopit_tree, "individual"))) {
- #       print("individual is null")
- #       stopit_unpacked
- #     } else {
- #       print("individual not null")
- #       append(stopit_unpacked, lapply(attr(stopit_tree, "individual"), h_unpack_stopit))
- #     }
- #   }
- # }
 
 h_unpack_stopit <- function(stopit_tree) {
  label <- attr(stopit_tree, "report_label")
