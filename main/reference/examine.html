@@ -71,12 +71,6 @@ listed.
 <li class="nav-item">
   <a class="nav-link" href="../news/index.html">Changelog</a>
 </li>
-<!-- start dropdown for versions --> <li class="nav-item dropdown">
-        <a href="#" class="nav-link dropdown-toggle"
-          data-bs-toggle="dropdown" role="button"
-          aria-expanded="false" aria-haspopup="true"
-          id="dropdown-versions">Versions</a> <div class="dropdown-menu" aria-labelledby="dropdown-versions"> <a class="dropdown-item" data-toggle="tooltip" title="" href="https://Roche.github.io/crmPack/main">main</a> </div></li>
-<!-- end dropdown for versions -->
       </ul><form class="form-inline my-2 my-lg-0" role="search">
         <input type="search" class="form-control me-sm-2" aria-label="Toggle navigation" name="search-input" data-search-index="../search.json" id="search-input" placeholder="Search for" autocomplete="off"></form>
 
@@ -407,8 +401,17 @@ the standard options are used</p></dd>
 <span class="r-in"><span><span class="co"># MCMC parameters are set to small values only to show this example. They should be</span></span></span>
 <span class="r-in"><span><span class="co"># increased for a real case.</span></span></span>
 <span class="r-in"><span><span class="co"># This procedure will take a while.</span></span></span>
-<span class="r-in"><span><span class="va">options</span> <span class="op">&lt;-</span> <span class="fu"><a href="McmcOptions-class.html">McmcOptions</a></span><span class="op">(</span>burnin <span class="op">=</span> <span class="fl">10</span>, step <span class="op">=</span> <span class="fl">1</span>, samples <span class="op">=</span> <span class="fl">100</span><span class="op">)</span></span></span>
-<span class="r-in"><span><span class="co"># examine(design, mcmcOptions=options)</span></span></span>
+<span class="r-in"><span><span class="va">options</span> <span class="op">&lt;-</span> <span class="fu"><a href="McmcOptions-class.html">McmcOptions</a></span><span class="op">(</span></span></span>
+<span class="r-in"><span>  burnin <span class="op">=</span> <span class="fl">10</span>,</span></span>
+<span class="r-in"><span>  step <span class="op">=</span> <span class="fl">1</span>,</span></span>
+<span class="r-in"><span>  samples <span class="op">=</span> <span class="fl">100</span>,</span></span>
+<span class="r-in"><span>  rng_kind <span class="op">=</span> <span class="st">"Mersenne-Twister"</span>,</span></span>
+<span class="r-in"><span>  rng_seed <span class="op">=</span> <span class="fl">12</span></span></span>
+<span class="r-in"><span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="fu">testthat</span><span class="fu">::</span><span class="fu"><a href="https://testthat.r-lib.org/reference/expect_error.html" class="external-link">expect_warning</a></span><span class="op">(</span></span></span>
+<span class="r-in"><span>  <span class="va">result</span> <span class="op">&lt;-</span> <span class="fu">examine</span><span class="op">(</span><span class="va">design</span>, mcmcOptions <span class="op">=</span> <span class="va">options</span>, maxNoIncrement <span class="op">=</span> <span class="fl">2</span><span class="op">)</span>,</span></span>
+<span class="r-in"><span>  <span class="st">"Stopping because 2 times no increment"</span></span></span>
+<span class="r-in"><span><span class="op">)</span></span></span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co"># nolint end</span></span></span>
 </code></pre></div>
