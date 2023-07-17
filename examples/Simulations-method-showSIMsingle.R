@@ -1,4 +1,3 @@
-
 # Obtain the plot for the simulation results if only DLE responses are
 # considered in the simulations.
 

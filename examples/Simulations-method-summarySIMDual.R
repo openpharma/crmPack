@@ -45,7 +45,6 @@ my_design <- DualResponsesDesign(
   cohort_size = my_size,
   data = emptydata,
   startingDose = 25
-
 )
 
 # Specify the true DLE and efficacy curves.
@@ -120,4 +119,3 @@ summary(
   trueDLE = my_truth_dle,
   trueEff = my_truth_eff
 )
-
