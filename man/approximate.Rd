@@ -44,15 +44,11 @@ normal prior for the logistic regression coefficients is used}
 }
 \value{
 a \code{list} containing the approximation model and, if requested, a
-<<<<<<< HEAD
-\code{ggplot2} object containing a graphicl representation of the fitted model
-=======
 \code{ggplot2} object containing a graphical representation of the fitted model
->>>>>>> 45916498622a218c04904df6489c8078dda51f1e
 }
 \description{
-It is recommended to use \code{\link{set.seed}} before, in order
-to be able to reproduce the resulting approximating model exactly.
+To reproduce the resultant approximate model in the future exactly, include
+\code{seed = xxxx} in the call to \code{approximate}.
 }
 \section{Functions}{
 \itemize{
@@ -76,17 +72,11 @@ data <- Data(
 )
 
 # Initialize a model
-<<<<<<< HEAD
-model <- LogisticLogNormal(mean = c(-0.85, 1),
-                           cov = matrix(c(1, -0.5, -0.5, 1), nrow = 2),
-                           ref_dose = 56)
-=======
 model <- LogisticLogNormal(
   mean = c(-0.85, 1),
   cov = matrix(c(1, -0.5, -0.5, 1), nrow = 2),
   ref_dose = 56
 )
->>>>>>> 45916498622a218c04904df6489c8078dda51f1e
 
 # Get posterior for all model parameters
 options <- McmcOptions(
@@ -101,15 +91,6 @@ samples <- mcmc(data, model, options)
 # max.time and maxit are very small only for the purpose of showing the example. They
 # should be increased for a real case.
 set.seed(94)
-<<<<<<< HEAD
-posterior <- (approximate(object = samples,
-                         model = model,
-                         data = data,
-                         logNormal=TRUE,
-                         control = list(threshold.stop = 0.1,
-                                        max.time = 1,
-                                        maxit = 1)))$model
-=======
 approximation <- approximate(
   object = samples,
   model = model,
@@ -123,7 +104,6 @@ approximation <- approximate(
 )
 
 posterior <- approximation$model
->>>>>>> 45916498622a218c04904df6489c8078dda51f1e
 
 # nolint end
 }
