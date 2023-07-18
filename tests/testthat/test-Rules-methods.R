@@ -1377,7 +1377,7 @@ test_that("StoppingMissingDose works correctly", {
     attributes(result),
     list(
       message = "Next dose is NA , i.e., no active dose is safe enough according to the NextBest rule.",
-      report_label = NA_character_
+      report_label = cter_
     )
   )
 
@@ -1391,7 +1391,7 @@ test_that("StoppingMissingDose works correctly", {
     attributes(result),
     list(
       message = "Next dose is placebo dose , i.e., no active dose is safe enough according to the NextBest rule.",
-      report_label = NA_character_
+      report_label = cter_
     )
   )
 
@@ -1405,7 +1405,7 @@ test_that("StoppingMissingDose works correctly", {
     attributes(result),
     list(
       message = "Next dose is available at the dose grid.",
-      report_label = NA_character_
+      report_label = cter_
     )
   )
 })
@@ -1427,7 +1427,7 @@ test_that("StoppingCohortsNearDose can handle when dose is NA", {
   expected <- structure(
     FALSE,
     message = "0 cohorts lie within 0% of the next best dose NA. This is below the required 2 cohorts",
-    report_label = NA_character_
+    report_label = cter_
   )
   expect_identical(result, expected)
 })
@@ -1446,7 +1446,7 @@ test_that("stopTrial works correctly for StoppingCohortsNearDose", {
     attributes(rv),
     list(
       message = "1 cohorts lie within 0% of the next best dose 2. This is below the required 2 cohorts",
-       = NA_character_
+       report_label = cter_
     )
   )
   rv <- stopTrial(
@@ -1461,7 +1461,7 @@ test_that("stopTrial works correctly for StoppingCohortsNearDose", {
     attributes(rv),
     list(
       message = "1 cohorts lie within 0% of the next best dose 2. This is below the required 2 cohorts",
-       = NA_character_
+      report_label = cter_
     )
   )
 
@@ -1476,7 +1476,7 @@ test_that("stopTrial works correctly for StoppingCohortsNearDose", {
     attributes(rv),
     list(
       message = "2 cohorts lie within 0% of the next best dose 2. This reached the required 2 cohorts",
-       = NA_character_
+      report_label = cter_
     )
   )
 
@@ -1492,7 +1492,7 @@ test_that("stopTrial works correctly for StoppingCohortsNearDose", {
     attributes(rv),
     list(
       message = "2 cohorts lie within 0% of the next best dose 2. This reached the required 2 cohorts",
-       = NA_character_
+     report_label = cter_
     )
   )
 
@@ -1507,7 +1507,7 @@ test_that("stopTrial works correctly for StoppingCohortsNearDose", {
     attributes(rv),
     list(
       message = "1 cohorts lie within 0% of the next best dose 2. This is below the required 2 cohorts",
-       = NA_character_
+       report_label = cter_
     )
   )
 
@@ -1523,7 +1523,7 @@ test_that("stopTrial works correctly for StoppingCohortsNearDose", {
     attributes(rv),
     list(
       message = "1 cohorts lie within 0% of the next best dose 2. This is below the required 2 cohorts",
-       = NA_character_
+       report_label = cter_
     )
   )
 
@@ -1539,7 +1539,7 @@ test_that("stopTrial works correctly for StoppingCohortsNearDose", {
     attributes(rv),
     list(
       message = "2 cohorts lie within 0% of the next best dose 2. This reached the required 2 cohorts",
-       = NA_character_
+       report_label = cter_
     )
   )
 
@@ -1554,7 +1554,7 @@ test_that("stopTrial works correctly for StoppingCohortsNearDose", {
     attributes(rv),
     list(
       message = "2 cohorts lie within 0% of the next best dose 2. This reached the required 2 cohorts",
-       = NA_character_
+     report_label = cter_
     )
   )
 
@@ -1569,7 +1569,7 @@ test_that("stopTrial works correctly for StoppingCohortsNearDose", {
     attributes(rv),
     list(
       message = "1 cohorts lie within 0% of the next best dose 2. This is below the required 2 cohorts",
-       = NA_character_
+       report_label = cter_
     )
   )
 
@@ -1585,7 +1585,7 @@ test_that("stopTrial works correctly for StoppingCohortsNearDose", {
     attributes(rv),
     list(
       message = "1 cohorts lie within 0% of the next best dose 2. This is below the required 2 cohorts",
-       = NA_character_
+      report_label = cter_
     )
   )
 
@@ -1602,7 +1602,7 @@ test_that("stopTrial works correctly for StoppingCohortsNearDose", {
     attributes(rv),
     list(
       message = "1 cohorts lie within 35% of the next best dose 2. This is below the required 2 cohorts",
-       = NA_character_
+      report_label = cter_
     )
   )
 
@@ -1617,7 +1617,7 @@ test_that("stopTrial works correctly for StoppingCohortsNearDose", {
     attributes(rv),
     list(
       message = "1 cohorts lie within 35% of the next best dose 3. This is below the required 2 cohorts",
-       = NA_character_
+      report_label = cter_
     )
   )
 
@@ -1632,7 +1632,7 @@ test_that("stopTrial works correctly for StoppingCohortsNearDose", {
     attributes(rv),
     list(
       message = "2 cohorts lie within 35% of the next best dose 3. This reached the required 2 cohorts",
-       = NA_character_
+      report_label = cter_
     )
   )
 })
@@ -1654,7 +1654,7 @@ test_that("StoppingPatientsNearDose can handle when dose is NA", {
   expected <- structure(
     FALSE,
     message = "0 patients lie within 0% of the next best dose NA. This is below the required 9 patients",
-     = NA_character_
+     report_label = cter_
   )
   expect_identical(result, expected)
 })
@@ -1678,7 +1678,7 @@ test_that("StoppingMinCohorts works correctly if next dose is NA", {
     message = paste(
       "Number of cohorts is 3 and thus below the prespecified minimum number 4"
     ),
-     = NA_character_
+    report_label = cter_
   )
   expect_identical(result, expected)
 })
@@ -1692,7 +1692,7 @@ test_that("StoppingMinCohorts works correctly in edge cases", {
     attributes(rv),
     list(
       message = "Number of cohorts is 0 and thus below the prespecified minimum number 2",
-       = NA_character_
+      report_label = cter_
     )
   )
 
@@ -1704,7 +1704,7 @@ test_that("StoppingMinCohorts works correctly in edge cases", {
     attributes(rv),
     list(
       message = "Number of cohorts is 3 and thus reached the prespecified minimum number 1",
-       = NA_character_
+      report_label = cter_
     )
   )
 })
@@ -1728,7 +1728,7 @@ test_that("StoppingMinPatients works correctly if next dose is NA", {
     message = paste(
       "Number of patients is 12 and thus below the prespecified minimum number 18"
     ),
-     = NA_character_
+     report_label = cter_
   )
   expect_identical(result, expected)
 })
@@ -1748,7 +1748,7 @@ test_that("stopTrial works correctly for StoppingMinPatients", {
     attributes(rv),
     list(
       message = "Number of patients is 2 and thus below the prespecified minimum number 3",
-       = NA_character_
+      report_label = cter_
     )
   )
 
@@ -1763,7 +1763,7 @@ test_that("stopTrial works correctly for StoppingMinPatients", {
     attributes(rv),
     list(
       message = "Number of patients is 2 and thus below the prespecified minimum number 3",
-       = NA_character_
+      report_label = cter_
     )
   )
 
@@ -1778,7 +1778,7 @@ test_that("stopTrial works correctly for StoppingMinPatients", {
     attributes(rv),
     list(
       message = "Number of patients is 3 and thus reached the prespecified minimum number 3",
-       = NA_character_
+      report_label = cter_
     )
   )
 })
@@ -1800,7 +1800,7 @@ test_that("StoppingTargetProb can handle when dose is NA", {
   expected <- structure(
     FALSE,
     message = "Probability for target toxicity is 0 % for dose NA and thus below the required 30 %",
-     = NA_character_
+    report_label = cter_
   )
   expect_identical(result, expected)
 })
@@ -1820,7 +1820,7 @@ test_that("StoppingTargetProb works correctly when below threshold", {
   expected <- structure(
     FALSE,
     message = "Probability for target toxicity is 14 % for dose 100 and thus below the required 30 %",
-     = NA_character_
+    report_label = cter_
   )
   expect_identical(result, expected)
 })
@@ -1840,7 +1840,7 @@ test_that("StoppingTargetProb works correctly when above threshold", {
   expected <- structure(
     TRUE,
     message = "Probability for target toxicity is 82 % for dose 100 and thus above the required 30 %",
-     = NA_character_
+    report_label = cter_
   )
   expect_identical(result, expected)
 })
@@ -1862,7 +1862,7 @@ test_that("StoppingMTDdistribution can handle when dose is NA", {
   expected <- structure(
     FALSE,
     message = "Probability of MTD above 30 % of current dose NA is 0 % and thus strictly less than the required 30 %",
-     = NA_character_
+     report_label = cter_
   )
   expect_identical(result, expected) # CV is 23% < 30%.
 })
@@ -1922,7 +1922,7 @@ test_that("stopTrial works correctly for StoppingMTDdistribution", {
             n_samples * confidence,
             " %"
           )
-          attr(expected, "") <- NA_character_
+          attr(expected, "") <- cter_
           expect_equal(result, expected)
         }
       }
@@ -1947,7 +1947,7 @@ test_that("StoppingMTDCV can handle when dose is NA", {
   expected <- structure(
     FALSE,
     message = "CV of MTD is 40 % and thus above the required precision threshold of 30 %",
-     = NA_character_
+     report_label = cter_
   )
   expect_identical(result, expected) # CV is 23% < 30%.
 })
@@ -1967,7 +1967,7 @@ test_that("StoppingMTDCV works correctly if CV is below threshold", {
   expected <- structure(
     TRUE,
     message = "CV of MTD is 40 % and thus below the required precision threshold of 50 %",
-     = NA_character_
+    report_label = cter_
   )
   expect_identical(result, expected) # CV is 23% < 30%.
 })
@@ -1987,7 +1987,7 @@ test_that("StoppingMTDCV works correctly if CV is above threshold", {
   expected <- structure(
     FALSE,
     message = "CV of MTD is 40 % and thus above the required precision threshold of 20 %",
-     = NA_character_
+    report_label = cter_
   )
   expect_identical(result, expected) # CV is 23% > 20%.
 })
@@ -2013,7 +2013,7 @@ test_that("StoppingLowestDoseHSRBeta works correctly if next dose is NA", {
       "based on posterior Beta distribution using a Beta(1,1) prior",
       "is 24% and thus below the required 90% threshold."
     ),
-     = NA_character_
+    report_label = cter_
   )
   expect_identical(result, expected) # Prob being toxic is 24% < 90%.
 })
@@ -2037,7 +2037,7 @@ test_that("StoppingLowestDoseHSRBeta works correctly if first active dose is not
       "based on posterior Beta distribution using a Beta(1,1) prior",
       "is 24% and thus below the required 90% threshold."
     ),
-     = NA_character_
+    report_label = cter_
   )
   expect_identical(result, expected) # Prob being toxic is 24% < 90%.
 })
@@ -2061,7 +2061,7 @@ test_that("StoppingLowestDoseHSRBeta works correctly if first active dose is tox
       "based on posterior Beta distribution using a Beta(1,1) prior",
       "is 24% and thus above the required 10% threshold."
     ),
-     = NA_character_
+    report_label = cter_
   )
   expect_identical(result, expected) # Prob being toxic is 24% > 10%.
 })
@@ -2082,7 +2082,7 @@ test_that("StoppingLowestDoseHSRBeta works correctly if first active dose is not
   expected <- structure(
     FALSE,
     message = "Lowest active dose not tested, stopping rule not applied.",
-     = NA_character_
+    report_label = cter_
   )
   expect_identical(result, expected) # First active dose not applied.
 })
@@ -2106,7 +2106,7 @@ test_that("StoppingLowestDoseHSRBeta works correctly if first active dose is not
       "posterior Beta distribution using a Beta(1,1) prior is 17% and thus",
       "below the required 90% threshold."
     ),
-     = NA_character_
+    report_label = cter_
   )
   expect_identical(result, expected) # Prob being toxic is 24% < 90%.
 })
@@ -2130,7 +2130,7 @@ test_that("StoppingLowestDoseHSRBeta works correctly if first active dose is tox
       "posterior Beta distribution using a Beta(1,1) prior is 17% and thus",
       "above the required 10% threshold."
     ),
-     = NA_character_
+    report_label = cter_
   )
   expect_identical(result, expected) # Prob being toxic is 24% > 10%.
 })
@@ -2151,7 +2151,7 @@ test_that("StoppingLowestDoseHSRBeta works correctly if first active dose is not
   expected <- structure(
     FALSE,
     message = "Lowest active dose not tested, stopping rule not applied.",
-     = NA_character_
+    report_label = cter_
   )
   expect_identical(result, expected) # First active dose not applied.
 })
@@ -2177,7 +2177,7 @@ test_that("StoppingTargetBiomarker can handle when dose is NA", {
   expected <- structure(
     FALSE,
     message = "Probability for target biomarker is 0 % for dose NA and thus below the required 50 %",
-     = NA_character_
+    report_label = cter_
   )
   expect_identical(result, expected)
 })
@@ -2306,11 +2306,11 @@ test_that("stopTrial works for StoppingTargetBiomarker", {
         samples = samples,
         model = model,
         data = data,
-        report_label = NA_character_
+        report_label = cter_
       )
       expected <- FALSE
       attr(expected, "message") <- expectedAttributes[[as.character(d)]]
-      attr(expected, "report_label") <- NA_character_
+      attr(expected, "report_label") <- cter_
       expect_equal(actual, expected)
     }
   )
@@ -2333,7 +2333,7 @@ test_that("StoppingSpecificDose works correctly if next dose is NA", {
   expected <- structure(
     FALSE,
     message = "Probability for target toxicity is 0 % for dose 80 and thus below the required 80 %",
-    report_label = NA_character_
+    report_label = cter_
   )
   expect_identical(result, expected)
 })
@@ -2354,7 +2354,7 @@ test_that("StoppingSpecificDose works correctly if dose rec. differs from specif
   expected <- structure(
     FALSE,
     message = "Probability for target toxicity is 0 % for dose 80 and thus below the required 80 %",
-    report_label = NA_character_
+    report_label = cter_
   )
   expect_identical(result, expected)
 })
@@ -2378,7 +2378,7 @@ test_that("StoppingSpecificDose works correctly if dose rec. differs from specif
   expected <- structure(
     TRUE,
     message = "Probability for target toxicity is 90 % for dose 80 and thus above the required 80 %",
-    report_label = NA_character_
+    report_label = cter_
   )
   expect_identical(result, expected)
 })
@@ -2399,7 +2399,7 @@ test_that("StoppingSpecificDose works correctly if dose rec = specific and stop 
   expected <- structure(
     FALSE,
     message = "Probability for target toxicity is 0 % for dose 80 and thus below the required 80 %",
-    report_label = NA_character_
+    report_label = cter_
   )
   expect_identical(result, expected)
 })
@@ -2423,7 +2423,7 @@ test_that("StoppingSpecificDose works correctly if dose rec. = specific and stop
   expected <- structure(
     TRUE,
     message = "Probability for target toxicity is 90 % for dose 80 and thus above the required 80 %",
-    report_label = NA_character_
+    report_label = cter_
   )
   expect_identical(result, expected)
 })
@@ -2449,7 +2449,7 @@ test_that("StoppingSpecificDose correctly replaces next best string with specifi
   expected <- structure(
     TRUE,
     message = "12 patients lie within 5% of the specific dose 80. This reached the required 9 patients",
-    report_label = NA_character_
+    report_label = cter_
   )
   expect_identical(result, expected)
 })
@@ -2473,7 +2473,7 @@ test_that("StoppingHighestDose works correctly if next dose is NA", {
     message = paste(
       "Next best dose is NA and thus not the highest dose"
     ),
-    report_label = NA_character_
+    report_label = cter_
   )
   expect_identical(result, expected)
 })
@@ -2504,12 +2504,12 @@ test_that("StoppingList with any works correctly if next dose is NA", {
       structure(
         TRUE,
         message = "Number of cohorts is 3 and thus reached the prespecified minimum number 2",
-        report_label = NA_character_
+        report_label = cter_
       ),
       structure(
         FALSE,
         message = "Next best dose is NA and thus not the highest dose",
-        report_label = NA_character_
+        report_label = cter_
       )
     )
   )
@@ -2540,12 +2540,12 @@ test_that("StoppingList with all works correctly if next dose is NA", {
       structure(
         TRUE,
         message = "Number of cohorts is 3 and thus reached the prespecified minimum number 2",
-        report_label = NA_character_
+        report_label = cter_
       ),
       structure(
         FALSE,
         message = "Next best dose is NA and thus not the highest dose",
-        report_label = NA_character_
+        report_label = cter_
       )
     )
   )
@@ -2581,12 +2581,12 @@ test_that("stopTrial works correctly for StoppingList", {
         structure(
           FALSE,
           message = "Number of cohorts is 1 and thus below the prespecified minimum number 2",
-          report_label = NA_character_
+          report_label = cter_
         ),
         structure(
           FALSE,
           message = "Next best dose is 1 and thus not the highest dose",
-          report_label = NA_character_
+          report_label = cter_
         )
       )
     )
@@ -2609,12 +2609,12 @@ test_that("stopTrial works correctly for StoppingList", {
         structure(
           FALSE,
           message = "Number of cohorts is 1 and thus below the prespecified minimum number 2",
-          report_label = NA_character_
+          report_label = cter_
         ),
         structure(
           FALSE,
           message = "Next best dose is 1 and thus not the highest dose",
-          report_label = NA_character_
+          report_label = cter_
         )
       )
     )
@@ -2638,12 +2638,12 @@ test_that("stopTrial works correctly for StoppingList", {
         structure(
           FALSE,
           message = "Number of cohorts is 1 and thus below the prespecified minimum number 2",
-          report_label = NA_character_
+          report_label = cter_
         ),
         structure(
           TRUE,
           message = "Next best dose is 3 and thus the highest dose",
-          report_label = NA_character_
+          report_label = cter_
         )
       )
     )
@@ -2666,12 +2666,12 @@ test_that("stopTrial works correctly for StoppingList", {
         structure(
           FALSE,
           message = "Number of cohorts is 1 and thus below the prespecified minimum number 2",
-          report_label = NA_character_
+          report_label = cter_
         ),
         structure(
           FALSE,
           message = "Next best dose is 1 and thus not the highest dose",
-          report_label = NA_character_
+          report_label = cter_
         )
       )
     )
@@ -2695,12 +2695,12 @@ test_that("stopTrial works correctly for StoppingList", {
         structure(
           TRUE,
           message = "Number of cohorts is 2 and thus reached the prespecified minimum number 2",
-          report_label = NA_character_
+          report_label = cter_
         ),
         structure(
           FALSE,
           message = "Next best dose is 2 and thus not the highest dose",
-          report_label = NA_character_
+          report_label = cter_
         )
       )
     )
@@ -2724,12 +2724,12 @@ test_that("stopTrial works correctly for StoppingList", {
         structure(
           TRUE,
           message = "Number of cohorts is 2 and thus reached the prespecified minimum number 2",
-          report_label = NA_character_
+          report_label = cter_
         ),
         structure(
           FALSE,
           message = "Next best dose is 1 and thus not the highest dose",
-          report_label = NA_character_
+          report_label = cter_
         )
       )
     )
@@ -2753,12 +2753,12 @@ test_that("stopTrial works correctly for StoppingList", {
         structure(
           TRUE,
           message = "Number of cohorts is 2 and thus reached the prespecified minimum number 2",
-          report_label = NA_character_
+          report_label = cter_
         ),
         structure(
           TRUE,
           message = "Next best dose is 3 and thus the highest dose",
-          report_label = NA_character_
+          report_label = cter_
         )
       )
     )
@@ -2783,12 +2783,12 @@ test_that("stopTrial works correctly for StoppingList", {
         structure(
           FALSE,
           message = "Number of cohorts is 1 and thus below the prespecified minimum number 2",
-          report_label = NA_character_
+          report_label = cter_
         ),
         structure(
           FALSE,
           message = "Next best dose is 1 and thus not the highest dose",
-          report_label = NA_character_
+          report_label = cter_
         )
       )
     )
@@ -2814,12 +2814,12 @@ test_that("stopTrial works correctly for StoppingList", {
         structure(
           FALSE,
           message = "Number of cohorts is 1 and thus below the prespecified minimum number 2",
-          report_label = NA_character_
+          report_label = cter_
         ),
         structure(
           TRUE,
           message = "Next best dose is 3 and thus the highest dose",
-          report_label = NA_character_
+          report_label = cter_
         )
       )
     )
@@ -2845,12 +2845,12 @@ test_that("stopTrial works correctly for StoppingList", {
         structure(
           TRUE,
           message = "Number of cohorts is 2 and thus reached the prespecified minimum number 2",
-          report_label = NA_character_
+          report_label = cter_
         ),
         structure(
           FALSE,
           message = "Next best dose is 2 and thus not the highest dose",
-          report_label = NA_character_
+          report_label = cter_
         )
       )
     )
@@ -2875,12 +2875,12 @@ test_that("stopTrial works correctly for StoppingList", {
         structure(
           TRUE,
           message = "Number of cohorts is 2 and thus reached the prespecified minimum number 2",
-          report_label = NA_character_
+          report_label = cter_
         ),
         structure(
           FALSE,
           message = "Next best dose is 1 and thus not the highest dose",
-          report_label = NA_character_
+          report_label = cter_
         )
       )
     )
@@ -2905,12 +2905,12 @@ test_that("stopTrial works correctly for StoppingList", {
         structure(
           TRUE,
           message = "Number of cohorts is 2 and thus reached the prespecified minimum number 2",
-          report_label = NA_character_
+          report_label = cter_
         ),
         structure(
           TRUE,
           message = "Next best dose is 3 and thus the highest dose",
-          report_label = NA_character_
+          report_label = cter_
         )
       )
     )
@@ -2943,15 +2943,15 @@ test_that("StoppingAll works correctly if next dose is NA", {
       structure(
         TRUE,
         message = "Number of cohorts is 3 and thus reached the prespecified minimum number 2",
-        report_label = NA_character_
+        report_label = cter_
       ),
       structure(
         FALSE,
         message = "Next best dose is NA and thus not the highest dose",
-        report_label = NA_character_
+        report_label = cter_
       )
     ),
-    report_label = NA_character_
+    report_label = cter_
   )
   expect_identical(result, expected)
 })
@@ -2984,15 +2984,15 @@ test_that("stopTrial works correctly for StoppingAll", {
         structure(
           FALSE,
           message = "Number of cohorts is 1 and thus below the prespecified minimum number 2",
-          report_label = NA_character_
+          report_label = cter_
         ),
         structure(
           FALSE,
           message = "Next best dose is 1 and thus not the highest dose",
-          report_label = NA_character_
+          report_label = cter_
         )
       ),
-      report_label = NA_character_
+      report_label = cter_
     )
   )
 
@@ -3014,15 +3014,15 @@ test_that("stopTrial works correctly for StoppingAll", {
         structure(
           FALSE,
           message = "Number of cohorts is 1 and thus below the prespecified minimum number 2",
-          report_label = NA_character_
+          report_label = cter_
         ),
         structure(
           TRUE,
           message = "Next best dose is 3 and thus the highest dose",
-          report_label = NA_character_
+          report_label = cter_
         )
       ),
-      report_label = NA_character_
+      report_label = cter_
     )
   )
   rv <- stopTrial(
@@ -3043,15 +3043,15 @@ test_that("stopTrial works correctly for StoppingAll", {
         structure(
           TRUE,
           message = "Number of cohorts is 2 and thus reached the prespecified minimum number 2",
-          report_label = NA_character_
+          report_label = cter_
         ),
         structure(
           FALSE,
           message = "Next best dose is 1 and thus not the highest dose",
-          report_label = NA_character_
+          report_label = cter_
         )
       ),
-      report_label = NA_character_
+      report_label = cter_
     )
   )
 
@@ -3073,15 +3073,15 @@ test_that("stopTrial works correctly for StoppingAll", {
         structure(
           TRUE,
           message = "Number of cohorts is 2 and thus reached the prespecified minimum number 2",
-          report_label = NA_character_
+          report_label = cter_
         ),
         structure(
           TRUE,
           message = "Next best dose is 3 and thus the highest dose",
-          report_label = NA_character_
+          report_label = cter_
         )
       ),
-      report_label = NA_character_
+      report_label = cter_
     )
   )
 
@@ -3104,15 +3104,15 @@ test_that("stopTrial works correctly for StoppingAll", {
         structure(
           FALSE,
           message = "Number of cohorts is 1 and thus below the prespecified minimum number 2",
-          report_label = NA_character_
+          report_label = cter_
         ),
         structure(
           FALSE,
           message = "Next best dose is 1 and thus not the highest dose",
-          report_label = NA_character_
+          report_label = cter_
         )
       ),
-      report_label = NA_character_
+      report_label = cter_
     )
   )
 
@@ -3135,15 +3135,15 @@ test_that("stopTrial works correctly for StoppingAll", {
         structure(
           FALSE,
           message = "Number of cohorts is 1 and thus below the prespecified minimum number 2",
-          report_label = NA_character_
+          report_label = cter_
         ),
         structure(
           TRUE,
           message = "Next best dose is 3 and thus the highest dose",
-          report_label = NA_character_
+          report_label = cter_
         )
       ),
-      report_label = NA_character_
+      report_label = cter_
     )
   )
 
@@ -3167,15 +3167,15 @@ test_that("stopTrial works correctly for StoppingAll", {
         structure(
           TRUE,
           message = "Number of cohorts is 2 and thus reached the prespecified minimum number 2",
-          report_label = NA_character_
+          report_label = cter_
         ),
         structure(
           FALSE,
           message = "Next best dose is 2 and thus not the highest dose",
-          report_label = NA_character_
+          report_label = cter_
         )
       ),
-      report_label = NA_character_
+      report_label = cter_
     )
   )
 
@@ -3198,15 +3198,15 @@ test_that("stopTrial works correctly for StoppingAll", {
         structure(
           TRUE,
           message = "Number of cohorts is 2 and thus reached the prespecified minimum number 2",
-          report_label = NA_character_
+          report_label = cter_
         ),
         structure(
           FALSE,
           message = "Next best dose is 1 and thus not the highest dose",
-          report_label = NA_character_
+          report_label = cter_
         )
       ),
-      report_label = NA_character_
+      report_label = cter_
     )
   )
 
@@ -3229,15 +3229,15 @@ test_that("stopTrial works correctly for StoppingAll", {
         structure(
           TRUE,
           message = "Number of cohorts is 2 and thus reached the prespecified minimum number 2",
-          report_label = NA_character_
+          report_label = cter_
         ),
         structure(
           TRUE,
           message = "Next best dose is 3 and thus the highest dose",
-          report_label = NA_character_
+          report_label = cter_
         )
       ),
-      report_label = NA_character_
+      report_label = cter_
     )
   )
 })
@@ -3280,15 +3280,15 @@ test_that("StoppingAny works correctly if next dose is NA", {
       structure(
         TRUE,
         message = "Number of cohorts is 3 and thus reached the prespecified minimum number 2",
-        report_label = NA_character_
+        report_label = cter_
       ),
       structure(
         FALSE,
         message = "Next best dose is NA and thus not the highest dose",
-        report_label = NA_character_
+        report_label = cter_
       )
     ),
-    report_label = NA_character_
+    report_label = cter_
   )
   expect_identical(result, expected)
 })
@@ -3323,15 +3323,15 @@ test_that("stopTrial works correctly for StoppingAny", {
         structure(
           FALSE,
           message = "Number of cohorts is 1 and thus below the prespecified minimum number 2",
-          report_label = NA_character_
+          report_label = cter_
         ),
         structure(
           FALSE,
           message = "Next best dose is 1 and thus not the highest dose",
-          report_label = NA_character_
+          report_label = cter_
         )
       ),
-      report_label = NA_character_
+      report_label = cter_
     )
   )
 
@@ -3353,15 +3353,15 @@ test_that("stopTrial works correctly for StoppingAny", {
         structure(
           FALSE,
           message = "Number of cohorts is 1 and thus below the prespecified minimum number 2",
-          report_label = NA_character_
+          report_label = cter_
         ),
         structure(
           TRUE,
           message = "Next best dose is 3 and thus the highest dose",
-          report_label = NA_character_
+          report_label = cter_
         )
       ),
-      report_label = NA_character_
+      report_label = cter_
     )
   )
 
@@ -3383,15 +3383,15 @@ test_that("stopTrial works correctly for StoppingAny", {
         structure(
           TRUE,
           message = "Number of cohorts is 2 and thus reached the prespecified minimum number 2",
-          report_label = NA_character_
+          report_label = cter_
         ),
         structure(
           FALSE,
           message = "Next best dose is 1 and thus not the highest dose",
-          report_label = NA_character_
+          report_label = cter_
         )
       ),
-      report_label = NA_character_
+      report_label = cter_
     )
   )
 
@@ -3413,15 +3413,15 @@ test_that("stopTrial works correctly for StoppingAny", {
         structure(
           TRUE,
           message = "Number of cohorts is 2 and thus reached the prespecified minimum number 2",
-          report_label = NA_character_
+          report_label = cter_
         ),
         structure(
           TRUE,
           message = "Next best dose is 3 and thus the highest dose",
-          report_label = NA_character_
+          report_label = cter_
         )
       ),
-      report_label = NA_character_
+      report_label = cter_
     )
   )
 
@@ -3444,15 +3444,15 @@ test_that("stopTrial works correctly for StoppingAny", {
         structure(
           FALSE,
           message = "Number of cohorts is 1 and thus below the prespecified minimum number 2",
-          report_label = NA_character_
+          report_label = cter_
         ),
         structure(
           FALSE,
           message = "Next best dose is 1 and thus not the highest dose",
-          report_label = NA_character_
+          report_label = cter_
         )
       ),
-      report_label = NA_character_
+      report_label = cter_
     )
   )
 
@@ -3475,15 +3475,15 @@ test_that("stopTrial works correctly for StoppingAny", {
         structure(
           FALSE,
           message = "Number of cohorts is 1 and thus below the prespecified minimum number 2",
-          report_label = NA_character_
+          report_label = cter_
         ),
         structure(
           TRUE,
           message = "Next best dose is 3 and thus the highest dose",
-          report_label = NA_character_
+          report_label = cter_
         )
       ),
-      report_label = NA_character_
+      report_label = cter_
     )
   )
 
@@ -3506,15 +3506,15 @@ test_that("stopTrial works correctly for StoppingAny", {
         structure(
           TRUE,
           message = "Number of cohorts is 2 and thus reached the prespecified minimum number 2",
-          report_label = NA_character_
+          report_label = cter_
         ),
         structure(
           FALSE,
           message = "Next best dose is 1 and thus not the highest dose",
-          report_label = NA_character_
+          report_label = cter_
         )
       ),
-      report_label = NA_character_
+      report_label = cter_
     )
   )
 
@@ -3537,15 +3537,15 @@ test_that("stopTrial works correctly for StoppingAny", {
         structure(
           TRUE,
           message = "Number of cohorts is 2 and thus reached the prespecified minimum number 2",
-          report_label = NA_character_
+          report_label = cter_
         ),
         structure(
           TRUE,
           message = "Next best dose is 3 and thus the highest dose",
-          report_label = NA_character_
+          report_label = cter_
         )
       ),
-      report_label = NA_character_
+      report_label = cter_
     )
   )
 })
@@ -3587,7 +3587,7 @@ test_that("StoppingTDCIRatio works correctly when dose is NA", {
       "95% CI is (3.56190161486129, 1.20753437767844e+43),",
       "Ratio = 3.39013961710862e+42 is greater than target_ratio = 5"
     ),
-    report_label = NA_character_
+    report_label = cter_
   )
   expect_identical(result, expected)
 })
@@ -3651,7 +3651,7 @@ test_that("stopTrial works correctly for StoppingTDCIRatio when samples are prov
             )
           )
         }
-        attr(expected, "report_label") <- NA_character_
+        attr(expected, "report_label") <- cter_
         expect_equal(result, expected)
       }
     }
@@ -3932,7 +3932,7 @@ test_that("stopTrial works for StoppingTargetBiomarker", {
       )
       expected <- FALSE
       attr(expected, "message") <- expectedAttributes[[as.character(d)]]
-      attr(expected, "report_label") <- NA_character_
+      attr(expected, "report_label") <- cter_
       expect_equal(actual, expected)
     }
   )
@@ -3995,7 +3995,7 @@ test_that("stopTrial works correctly for StoppingTDCIRatio when samples are prov
           " than target_ratio = ",
           targetRatio
         )
-        attr(expected, "report_label") <- NA_character_
+        attr(expected, "report_label") <- cter_
         if (expected != as.logical(result)) {
           print(
             paste0(
