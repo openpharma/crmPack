@@ -274,6 +274,16 @@ test_that("h_null_if_na throws an error for non-scalar, atomic argument", {
   )
 })
 
+# h_default_if_empty ----
+
+test_that("h_default_if_empty works as expected", {
+  default <- "default label"
+  expect_identical(h_default_if_empty(character(0), default), default)
+  expect_identical(h_default_if_empty("custom label", default), "custom label")
+  expect_identical(h_default_if_empty(NA, default), NA)
+  expect_identical(h_default_if_empty(NULL, default), default)
+})
+
 # h_is_positive_definite ----
 
 test_that("h_is_positive_definite returns TRUE for 2x2 positive-definite matrix", {
@@ -520,4 +530,123 @@ test_that("default constructors exist for all subclasses of Stopping", {
     }
   )
   expect_error(eval(parse(text = ".DefaultDualEndpoint()")))
+})
+
+
+test_that("stopping rule unpacking works", {
+  data <- h_get_data(placebo = FALSE)
+  model <- h_get_logistic_normal()
+  options <- McmcOptions(
+    burnin = 100,
+    step = 2,
+    samples = 2000
+  )
+  samples <- mcmc(data, model, options)
+  increments <- h_increments_relative()
+  next_max_dose <- maxDose(increments,
+    data = data
+  )
+
+  next_best <- h_next_best_ncrm()
+
+  doseRecommendation <- nextBest(next_best,
+    doselimit = next_max_dose,
+    samples = samples, model = model, data = data
+  )
+
+  myStopping1 <- StoppingMinCohorts(nCohorts = 4, report_label = "stop_rule_1")
+  myStopping2 <- StoppingMissingDose(report_label = "stop_rule_2")
+  myStopping3 <- StoppingMinPatients(nPatients = 1, report_label = "stop_rule_3")
+  myStopping <- StoppingAny(
+    stop_list =
+      c(
+        StoppingAll(
+          stop_list =
+            c(myStopping1, myStopping2),
+          report_label = "StoppingAll"
+        ),
+        myStopping3
+      ), report_label = "StoppingAny"
+  )
+
+
+  my_stopit <- stopTrial(
+    stopping = myStopping,
+    dose = doseRecommendation$value,
+    model = model,
+    data = data
+  )
+
+  result <- h_unpack_stopit(my_stopit)
+
+  expected <- c(TRUE, FALSE, FALSE, FALSE, TRUE)
+  names(expected) <- c("StoppingAny", "StoppingAll", "stop_rule_1", "stop_rule_2", "stop_rule_3")
+
+  expect_equal(result, expected)
+})
+
+test_that("conditions in stopping rule unpacking helpers work as expected", {
+  data <- h_get_data(placebo = FALSE)
+  model <- h_get_logistic_normal()
+  options <- McmcOptions(
+    burnin = 100,
+    step = 2,
+    samples = 2000
+  )
+  samples <- mcmc(data, model, options)
+  increments <- h_increments_relative()
+  next_max_dose <- maxDose(increments,
+    data = data
+  )
+
+  next_best <- h_next_best_ncrm()
+
+  doseRecommendation <- nextBest(next_best,
+    doselimit = next_max_dose,
+    samples = samples, model = model, data = data
+  )
+
+  myStopping1 <- StoppingMinCohorts(nCohorts = 4, report_label = "stop_rule_1")
+  myStopping2 <- StoppingMissingDose(report_label = "stop_rule_2")
+  myStopping3 <- StoppingMinPatients(nPatients = 1, report_label = "stop_rule_3")
+  myStopping <- StoppingAny(
+    stop_list =
+      c(
+        StoppingAll(
+          stop_list =
+            c(myStopping1, myStopping2),
+          report_label = "StoppingAll"
+        ),
+        myStopping3
+      ), report_label = "StoppingAny"
+  )
+
+  # enters only "if is.null condition" since atomic
+  my_stopit <- stopTrial(
+    stopping = myStopping1,
+    dose = doseRecommendation$value,
+    model = model,
+    data = data
+  )
+
+  result <- h_unpack_stopit(my_stopit)
+
+  expected <- c(FALSE)
+  names(expected) <- c("stop_rule_1")
+  expect_equal(result, expected)
+
+  # enters both "if is.null condition" and "else" branches since complex stopping rule
+  # "else branch" of h_unpack_stopit cannot be entered alone due to recursion
+  my_stopit <- stopTrial(
+    stopping = myStopping,
+    dose = doseRecommendation$value,
+    model = model,
+    data = data
+  )
+
+  result <- h_unpack_stopit(my_stopit)
+
+  expected <- c(TRUE, FALSE, FALSE, FALSE, TRUE)
+  names(expected) <- c("StoppingAny", "StoppingAll", "stop_rule_1", "stop_rule_2", "stop_rule_3")
+  expect_equal(result, expected)
 })

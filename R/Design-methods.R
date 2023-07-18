@@ -398,6 +398,7 @@ setMethod("simulate",
             data = thisData
           )$value
 
+
           ## evaluate stopping rules
           stopit <- stopTrial(object@stopping,
             dose = thisDose,
@@ -405,6 +406,8 @@ setMethod("simulate",
             model = object@model,
             data = thisData
           )
+
+          stopit_results <- h_unpack_stopit(stopit)
         }
 
         ## get the fit
@@ -427,7 +430,8 @@ setMethod("simulate",
               attr(
                 stopit,
                 "message"
-              )
+              ),
+            report_results = stopit_results
           )
         return(thisResult)
       }
@@ -462,11 +466,16 @@ setMethod("simulate",
       ## the reasons for stopping
       stopReasons <- lapply(resultList, "[[", "stop")
 
+      # individual stopping rule results as matrix, labels as column names
+      stopResults <- lapply(resultList, "[[", "report_results")
+      stop_matrix <- as.matrix(do.call(rbind, stopResults))
+
       ## return the results in the Simulations class object
       ret <- Simulations(
         data = dataList,
         doses = recommendedDoses,
         fit = fitList,
+        stop_report = stop_matrix,
         stop_reasons = stopReasons,
         seed = RNGstate
       )
@@ -1063,6 +1072,9 @@ setMethod("simulate",
       ## the reasons for stopping
       stopReasons <- lapply(resultList, "[[", "stop")
 
+      ## for dual simulations as it would fail in summary otherwise (for dual simulations reporting is not implemented)
+      stop_report <- matrix(TRUE, nrow = nsim)
+
       ## return the results in the DualSimulations class object
       ret <- DualSimulations(
         data = dataList,
@@ -1071,6 +1083,7 @@ setMethod("simulate",
         sigma2West = sigma2Westimates,
         fit = fitToxList,
         fitBiomarker = fitBiomarkerList,
+        stop_report = stop_report,
         stop_reasons = stopReasons,
         seed = RNGstate
       )
@@ -4679,12 +4692,14 @@ setMethod("simulate",
       ## the reasons for stopping
       stopReasons <- lapply(resultList, "[[", "stop")
 
+      stop_report <- matrix(TRUE, nrow = nsim)
       ## return the results in the Simulations class object
       ret <- DASimulations(
         data = dataList,
         doses = recommendedDoses,
         fit = fitList,
         trialduration = trialduration,
+        stop_report = stop_report,
         stop_reasons = stopReasons,
         seed = RNGstate
       )
