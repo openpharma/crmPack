@@ -1547,7 +1547,7 @@ StoppingCohortsNearDose <- function(nCohorts = 2L,
   StoppingCohortsNearDose(
     nCohorts = 3L,
     percentage = 0.2,
- #   report_label = NA_character_
+    #   report_label = NA_character_
   )
 }
 
@@ -1659,8 +1659,7 @@ StoppingPatientsNearDose <- function(nPatients = 10L,
 #' @export
 #'
 StoppingMinCohorts <- function(nCohorts = 2L,
-                               report_label = NA_character_
-                               ) {
+                               report_label = NA_character_) {
   nCohorts <- safeInteger(nCohorts)
   report_label <- h_default_if_empty(
     as.character(report_label),

@@ -408,7 +408,6 @@ setMethod("simulate",
           )
 
           stopit_results <- h_unpack_stopit(stopit)
-
         }
 
         ## get the fit

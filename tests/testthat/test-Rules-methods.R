@@ -1403,8 +1403,10 @@ test_that("StoppingMissingDose works correctly", {
   expect_false(result)
   expect_equal(
     attributes(result),
-    list(message = "Next dose is available at the dose grid.",
-         report_label = NA_character_)
+    list(
+      message = "Next dose is available at the dose grid.",
+      report_label = NA_character_
+    )
   )
 })
 
