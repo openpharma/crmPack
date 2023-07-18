@@ -11,45 +11,60 @@
 ## 02/01/2015   file creation
 #####################################################################################
 
-setClass(Class="A",
-         representation=
-         representation(x="numeric"),
-         validity=
-         function(object){stopifnot(object@x > 0)})
+setClass(
+  Class = "A",
+  representation =
+    representation(x = "numeric"),
+  validity =
+    function(object) {
+      stopifnot(object@x > 0)
+    }
+)
 
-setMethod("initialize",
-          signature(.Object="A"),
-          function(.Object,
-                   ...,
-                   z){
-              x <- get("z") + 1
-              callNextMethod(.Object,
-                             ...,
-                             x=x)
-          })
+setMethod(
+  "initialize",
+  signature(.Object = "A"),
+  function(.Object,
+           ...,
+           z) {
+    x <- get("z") + 1
+    callNextMethod(.Object,
+      ...,
+      x = x
+    )
+  }
+)
 
-setClass(Class="B",
-         contains="A",
-         representation=
-         representation(y="numeric"),
-         validity=
-         function(object){stopifnot(object@y > 0)})
+setClass(
+  Class = "B",
+  contains = "A",
+  representation =
+    representation(y = "numeric"),
+  validity =
+    function(object) {
+      stopifnot(object@y > 0)
+    }
+)
 
-setMethod("initialize",
-          signature(.Object="B"),
-          function(.Object,
-                   ...,
-                   bla){
+setMethod(
+  "initialize",
+  signature(.Object = "B"),
+  function(.Object,
+           ...,
+           bla) {
+    .Object <- callNextMethod(
+      .Object,
+      ...
+    )
 
-              .Object <- callNextMethod(.Object,
-                                        ...)
-
-              .Object@y <- .Object@x + bla
-              return(.Object)
-          })
+    .Object@y <- .Object@x + bla
+    return(.Object)
+  }
+)
 
 test <- new("B",
-            z=4,
-            bla=5)
+  z = 4,
+  bla = 5
+)
 test
 source("../devel/classes.R")

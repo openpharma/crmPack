@@ -13,30 +13,26 @@
 
 
 
-afun <- function(x)
-{
-    print(ls(envir=parent.frame()))
+afun <- function(x) {
+  print(ls(envir = parent.frame()))
 }
 
-bfun <- function(y)
-{
-    afun(5 + y)
+bfun <- function(y) {
+  afun(5 + y)
 }
 
 bfun(3)
 
 
-f <- function()
-{
-    do.call("on.exit", list(quote(cat('ONEXIT!\n'))), envir = parent.frame())
-    42
+f <- function() {
+  do.call("on.exit", list(quote(cat("ONEXIT!\n"))), envir = parent.frame())
+  42
 }
 
-g <- function()
-{
-    x <- f()
-    cat('Not yet!\n')
-    x
+g <- function() {
+  x <- f()
+  cat("Not yet!\n")
+  x
 }
 
 g()

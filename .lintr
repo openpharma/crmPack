@@ -6,5 +6,3 @@ linters: linters_with_defaults(
   trailing_whitespace_linter = NULL,
   object_name_linter = object_name_linter(c("CamelCase", "camelCase", "snake_case"))
  )
-
-exclusions: list("devel")

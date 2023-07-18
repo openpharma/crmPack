@@ -24,41 +24,44 @@ slide.layouts(doc)
 
 
 ## First slide:
-doc <- addSlide( doc, "Two Content" )
+doc <- addSlide(doc, "Two Content")
 
 ## add into doc first 10 lines of iris
-doc <- addTitle( doc, "First 10 lines of iris" )
-doc <- addTable( doc, iris[1:10,] )
+doc <- addTitle(doc, "First 10 lines of iris")
+doc <- addTable(doc, iris[1:10, ])
 
 ## add text with stylename "Normal" into doc (and an empty line just before)
 doc <- addParagraph(doc,
-                    value = c("", "Hello World!"),
-                    stylename = "Normal")
+  value = c("", "Hello World!"),
+  stylename = "Normal"
+)
 
 ## Second slide:
-doc <- addSlide( doc, "Title and Content" )
+doc <- addSlide(doc, "Title and Content")
 
 ## add a plot into doc
-doc <- addPlot(doc,
-               function() plot( rnorm(10), rnorm(10) ))
+doc <- addPlot(
+  doc,
+  function() plot(rnorm(10), rnorm(10))
+)
 
 ## write the doc
-writeDoc( doc, pptx.file )
+writeDoc(doc, pptx.file)
 
 ## --------------------------------------------------
 
 ## Adding new slide in an existing Powerpoint document
 
 ## Create a new document
-doc <- pptx(title="test", template = "test2.pptx")
+doc <- pptx(title = "test", template = "test2.pptx")
 
 # replace slide 3 of MyExistingFileThatNeedAGraphToBeUpdated.pptx
 # by a new slide with layout "Title and Content" then add content
-doc <- addSlide( doc, slide.layout = "Title and Content", bookmark=2 )
-doc <- addTitle( doc, "my new graph")
+doc <- addSlide(doc, slide.layout = "Title and Content", bookmark = 2)
+doc <- addTitle(doc, "my new graph")
 
 ## myplot <- qplot(Sepal.Length, Petal.Length, data = iris, color = Species, size = Petal.Width, alpha = I(0.7))
 ## doc <- addPlot( doc, print, x = myplot )
 
 # Write the object in file "~/presentation.pptx"
-writeDoc( doc, "test3.pptx" )
+writeDoc(doc, "test3.pptx")
