@@ -157,7 +157,7 @@ GeneralSimulations <- function(data,
 #'
 #' @param fit (`list`)\cr see slot definition.
 #' @param stop_reasons (`list`)\cr see slot definition.
-#' @param stop_report see \code{\linkS4class{Simulations}}                        
+#' @param stop_report see \code{\linkS4class{Simulations}}
 #' @param \dots additional parameters from [`GeneralSimulations`]
 #'
 #' @example examples/Simulations-class-Simulations.R
