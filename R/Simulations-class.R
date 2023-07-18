@@ -113,7 +113,7 @@ GeneralSimulations <- function(data,
     Class = "Simulations",
     slots = c(
       fit = "list",
-      stop_report = "matrix"
+      stop_report = "matrix",
       stop_reasons = "list"
     ),
     prototype = prototype(
