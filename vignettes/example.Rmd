@@ -1071,7 +1071,7 @@ mySims@doses[3]
 and the stopping reason was
 
 ```{r third-stop}
-mySims@stopReasons[[3]]
+mySims@stop_reasons[[3]]
 ```
 
 Furthermore, with this object, we can apply two methods. First, we can plot it,

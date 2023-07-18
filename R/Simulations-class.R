@@ -91,37 +91,40 @@ GeneralSimulations <- function(data,
   )
 }
 
-# nolint start
-##' Class for the simulations output from model based designs
-##'
-##' This class captures the trial simulations from model based designs.
-##' Additional slots fit and stopReasons compared to the general class
-##' \code{\linkS4class{GeneralSimulations}}.
-##'
-##' @slot fit list with the final fits
-##' @slot stopReasons list of stopping reasons for each simulation run
-##' @slot stop_report matrix of stopping rule outcomes
-##' @export
-##' @keywords classes
+# Simulations ----
+
+## class ----
+
+#' `Simulations`
+#'
+#' @description `r lifecycle::badge("stable")`
+#'
+#' This class captures the trial simulations from model based designs.
+#' Additional slots `fit` and `stop_reasons` compared to the general class
+#' [`GeneralSimulations`].
+#'
+#' @slot fit (`list`)\cr final fits
+#' @slot stop_reasons (`list`)\cr stopping reasons for each simulation run
+#' @slot stop_report matrix of stopping rule outcomes
+#' @aliases Simulations
+#' @export
 .Simulations <-
   setClass(
     Class = "Simulations",
-    representation(
+    slots = c(
       fit = "list",
-      stopReasons = "list",
       stop_report = "matrix"
+      stop_reasons = "list"
     ),
-    ## note: this prototype is put together with the prototype
-    ## for GeneralSimulations
-    prototype(
+    prototype = prototype(
       fit =
         list(
           c(0.1, 0.2),
           c(0.1, 0.2)
         ),
-      stopReasons =
-        list("A", "A"),
-      stop_report = matrix(TRUE, nrow = 2)
+      stop_report = matrix(TRUE, nrow = 2),
+      stop_reasons =
+        list("A", "A")
     ),
     contains = "GeneralSimulations",
     validity =
@@ -135,8 +138,8 @@ GeneralSimulations <- function(data,
           "fit must have same length as data"
         )
         o$check(
-          identical(length(object@stopReasons), nSims),
-          "stopReasons must have same length as data"
+          identical(length(object@stop_reasons), nSims),
+          "stop_reasons must have same length as data"
         )
 
         o$check(
@@ -147,32 +150,31 @@ GeneralSimulations <- function(data,
         o$result()
       }
   )
-validObject(.Simulations())
 
+## constructor ----
 
-##' Initialization function for the "Simulations" class
-##'
-##' @param fit see \code{\linkS4class{Simulations}}
-##' @param stopReasons see \code{\linkS4class{Simulations}}
-##' @param stop_report see \code{\linkS4class{Simulations}}
-##' @param \dots additional parameters from \code{\link{GeneralSimulations}}
-##' @return the \code{\linkS4class{Simulations}} object
-##' @export
-##'
-##' @keywords methods
+#' @rdname Simulations-class
+#'
+#' @param fit (`list`)\cr see slot definition.
+#' @param stop_reasons (`list`)\cr see slot definition.
+#' @param stop_report see \code{\linkS4class{Simulations}}                        
+#' @param \dots additional parameters from [`GeneralSimulations`]
+#'
+#' @example examples/Simulations-class-Simulations.R
+#' @export
 Simulations <- function(fit,
-                        stopReasons,
-                        stop_report,
+                        stop_reasons,
+                        stop_report
                         ...) {
   start <- GeneralSimulations(...)
   .Simulations(start,
     fit = fit,
-    stopReasons = stopReasons,
-    stop_report = stop_report
+    stop_report = stop_report,
+    stop_reasons = stop_reasons
   )
 }
 
-
+# nolint start
 ##' Class for the simulations output from dual-endpoint model based designs
 ##'
 ##' This class captures the trial simulations from dual-endpoint model based
