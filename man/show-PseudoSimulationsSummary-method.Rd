@@ -18,7 +18,6 @@ appropriate column names
 Show the summary of the simulations
 }
 \examples{
-
 # Obtain the plot for the simulation results if only DLE responses are
 # considered in the simulations.
 

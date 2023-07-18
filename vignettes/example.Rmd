@@ -1667,7 +1667,7 @@ biomarker target instead, and the true biomarker response peaked at 50 mg.
 
 The corresponding plot looks as follows:
 
-```{r dual-sim-sum-plot, fig=TRUE, fig.width = 6}
+```{r dual-sim-sum-plot, fig=TRUE, fig.width = 6w}
 print(plot(sumOut))
 ```
 

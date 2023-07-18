@@ -314,7 +314,6 @@ class_changes <- tribble(
   "Model", "", "", "", TRUE, "",
   "GeneralModel", "", "", "datanames", FALSE, "moved from `AllModels`",
   "GeneralModel", "", "", "datanames_prior", FALSE, "",
-<<<<<<< HEAD
   "ModelEff", "", "dose", "", TRUE, "moved to model class method",
   "ModelEff", "", "ExpEff", "", TRUE, "moved to model class method and renamed to `efficacy`",
   "Effloglog", "", "several slots", "several slots", FALSE, "several slot changed, see man page",
@@ -384,8 +383,6 @@ class_changes <- tribble(
   "Design", "", "PLcohortSize", "pl_cohort_size", FALSE, "",
   "TDsamplesDesign", "", "PLcohortSize", "pl_cohort_size", FALSE, "",
   "TDDesign", "", "PLcohortSize", "pl_cohort_size", FALSE, ""
-=======
->>>>>>> 7250896204e9af10986e9fcd84aba955b029a45d
 )
 ```
 
