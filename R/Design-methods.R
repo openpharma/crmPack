@@ -467,7 +467,7 @@ setMethod("simulate",
         data = dataList,
         doses = recommendedDoses,
         fit = fitList,
-        stopReasons = stopReasons,
+        stop_reasons = stopReasons,
         seed = RNGstate
       )
 
@@ -1071,7 +1071,7 @@ setMethod("simulate",
         sigma2West = sigma2Westimates,
         fit = fitToxList,
         fitBiomarker = fitBiomarkerList,
-        stopReasons = stopReasons,
+        stop_reasons = stopReasons,
         seed = RNGstate
       )
 
@@ -1691,7 +1691,7 @@ setMethod("examine",
             ### comment here to show only no DLTs;
             #                                            }
           } else {
-            for (DLTsearly in 1:2) {
+            for (DLTsearly in 1:numDLTs) {
               # Update current {fact} variables
               thisDLTs <- factDLTs
               thisSurv <- factSurv
@@ -1803,21 +1803,20 @@ setMethod("examine",
         doseDiff <- newDose - thisDose
 
         ## would stopping rule be fulfilled already?
-        stopAlready <- resultsNoDLTs$stop
+        stopAlready <- any(resultsNoDLTs$stop)
 
         ## update dose
-        thisDose <- newDose
+        thisDose <- max(newDose)
 
         ## number of patients with un-completed DLT window;
         preSize <- sum(baseData@u[baseData@y == 0] < baseData@Tmax)
 
         ## update the counter for no increments of the dose
-        if (doseDiff == 0) {
+        if (all(doseDiff == 0)) {
           noIncrementCounter <- noIncrementCounter + 1L
         } else {
           noIncrementCounter <- 0L
         }
-
 
         ## too many times no increment?
         stopNoIncrement <- (noIncrementCounter >= maxNoIncrement)
@@ -4686,7 +4685,7 @@ setMethod("simulate",
         doses = recommendedDoses,
         fit = fitList,
         trialduration = trialduration,
-        stopReasons = stopReasons,
+        stop_reasons = stopReasons,
         seed = RNGstate
       )
 
