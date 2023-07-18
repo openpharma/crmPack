@@ -164,7 +164,7 @@ GeneralSimulations <- function(data,
 #' @export
 Simulations <- function(fit,
                         stop_reasons,
-                        stop_report
+                        stop_report,
                         ...) {
   start <- GeneralSimulations(...)
   .Simulations(start,
