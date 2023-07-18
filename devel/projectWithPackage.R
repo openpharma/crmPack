@@ -11,6 +11,8 @@
 ## 06/02/2014   file creation
 ###################################################################################
 
+# nolint start
+
 library(crmPack)
 
 ## model <- new("LogisticNormal",
@@ -315,3 +317,5 @@ plot(sumOut)
 
 ## we can also plot the raw simulation output
 plot(mySims1)
+
+# nolint end
