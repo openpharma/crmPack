@@ -1922,7 +1922,7 @@ test_that("stopTrial works correctly for StoppingMTDdistribution", {
             n_samples * confidence,
             " %"
           )
-          attr(expected, "") <- NA_character_
+          attr(expected, "report_label") <- NA_character_
           expect_equal(result, expected)
         }
       }
