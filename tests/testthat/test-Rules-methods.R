@@ -1446,7 +1446,7 @@ test_that("stopTrial works correctly for StoppingCohortsNearDose", {
     attributes(rv),
     list(
       message = "1 cohorts lie within 0% of the next best dose 2. This is below the required 2 cohorts",
-       report_label = cter_
+      report_label = cter_
     )
   )
   rv <- stopTrial(
@@ -1492,7 +1492,7 @@ test_that("stopTrial works correctly for StoppingCohortsNearDose", {
     attributes(rv),
     list(
       message = "2 cohorts lie within 0% of the next best dose 2. This reached the required 2 cohorts",
-     report_label = cter_
+      report_label = cter_
     )
   )
 
@@ -1507,7 +1507,7 @@ test_that("stopTrial works correctly for StoppingCohortsNearDose", {
     attributes(rv),
     list(
       message = "1 cohorts lie within 0% of the next best dose 2. This is below the required 2 cohorts",
-       report_label = cter_
+      report_label = cter_
     )
   )
 
@@ -1523,7 +1523,7 @@ test_that("stopTrial works correctly for StoppingCohortsNearDose", {
     attributes(rv),
     list(
       message = "1 cohorts lie within 0% of the next best dose 2. This is below the required 2 cohorts",
-       report_label = cter_
+      report_label = cter_
     )
   )
 
@@ -1539,7 +1539,7 @@ test_that("stopTrial works correctly for StoppingCohortsNearDose", {
     attributes(rv),
     list(
       message = "2 cohorts lie within 0% of the next best dose 2. This reached the required 2 cohorts",
-       report_label = cter_
+      report_label = cter_
     )
   )
 
@@ -1554,7 +1554,7 @@ test_that("stopTrial works correctly for StoppingCohortsNearDose", {
     attributes(rv),
     list(
       message = "2 cohorts lie within 0% of the next best dose 2. This reached the required 2 cohorts",
-     report_label = cter_
+      report_label = cter_
     )
   )
 
@@ -1569,7 +1569,7 @@ test_that("stopTrial works correctly for StoppingCohortsNearDose", {
     attributes(rv),
     list(
       message = "1 cohorts lie within 0% of the next best dose 2. This is below the required 2 cohorts",
-       report_label = cter_
+      report_label = cter_
     )
   )
 
@@ -1654,7 +1654,7 @@ test_that("StoppingPatientsNearDose can handle when dose is NA", {
   expected <- structure(
     FALSE,
     message = "0 patients lie within 0% of the next best dose NA. This is below the required 9 patients",
-     report_label = cter_
+    report_label = cter_
   )
   expect_identical(result, expected)
 })
@@ -1728,7 +1728,7 @@ test_that("StoppingMinPatients works correctly if next dose is NA", {
     message = paste(
       "Number of patients is 12 and thus below the prespecified minimum number 18"
     ),
-     report_label = cter_
+    report_label = cter_
   )
   expect_identical(result, expected)
 })
@@ -1862,7 +1862,7 @@ test_that("StoppingMTDdistribution can handle when dose is NA", {
   expected <- structure(
     FALSE,
     message = "Probability of MTD above 30 % of current dose NA is 0 % and thus strictly less than the required 30 %",
-     report_label = cter_
+    report_label = cter_
   )
   expect_identical(result, expected) # CV is 23% < 30%.
 })
@@ -1947,7 +1947,7 @@ test_that("StoppingMTDCV can handle when dose is NA", {
   expected <- structure(
     FALSE,
     message = "CV of MTD is 40 % and thus above the required precision threshold of 30 %",
-     report_label = cter_
+    report_label = cter_
   )
   expect_identical(result, expected) # CV is 23% < 30%.
 })
