@@ -26,4 +26,6 @@ fit <- list(
 
 stop_reasons <- list("A", "B")
 
-simulations <- Simulations(fit = fit, stop_reasons = stop_reasons, data, doses, seed)
+stop_report <- matrix(c(TRUE, FALSE), nrow = 2)
+
+simulations <- Simulations(fit = fit, stop_reasons = stop_reasons, stop_report = stop_report, data, doses, seed)
