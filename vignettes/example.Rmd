@@ -775,7 +775,7 @@ mySize1 <- CohortSizeRange(intervals = c(0, 30), cohort_size = c(1, 3))
 Then for the DLT range:
 
 ```{r size-dlt}
-mySize2 <- CohortSizeDLT(dlt_intervals = c(0, 1), cohort_size = c(1, 3))
+mySize2 <- CohortSizeDLT(intervals = c(0, 1), cohort_size = c(1, 3))
 ```
 
 Finally we combine the two rules by taking the maximum number of patients of
@@ -919,14 +919,14 @@ design <- Design(
   nextBest = myNextBest,
   stopping = myStopping,
   increments = myIncrements,
-  cohortSize = mySize,
+  cohort_size = mySize,
   data = emptydata,
   startingDose = 3
 )
 ```
 
 
-Another example will be given when the `TDDesign` class is used. The empty data set, `data1` will be used, and the starting dose will be 25 mg. The code below will be a design defined when no MCMC sampling is involved. The `nextBest` slot under this `TDDesign` class function has to be defined with the `TDNextBest` class object to ensure we will pick the next best dose using rules as defined when no MCMC sampling is involved. In addition, we define here with `myStopping4` that the trial will only stop when the ratio of the 95% credibility interval limits of the current estimate of TD30 (`TDtargetEndOfTrial`) is less than or equal to 5. In addition, we also use `myIncrements1`, `mySize` and `data1` defined in earlier examples for the `Increments`, `CohortSize` and  `Data` slots in defining the `TDDesign` object:
+Another example will be given when the `TDDesign` class is used. The empty data set, `data1` will be used, and the starting dose will be 25 mg. The code below will be a design defined when no MCMC sampling is involved. The `nextBest` slot under this `TDDesign` class function has to be defined with the `TDNextBest` class object to ensure we will pick the next best dose using rules as defined when no MCMC sampling is involved. In addition, we define here with `myStopping4` that the trial will only stop when the ratio of the 95% credibility interval limits of the current estimate of TD30 (`TDtargetEndOfTrial`) is less than or equal to 5. In addition, we also use `myIncrements1`, `mySize` and `data1` defined in earlier examples for the `increments`, `cohort_size` and  `data` slots in defining the `TDDesign` object:
 
 ```{r TDDesign-setup}
 DLTdesign <- TDDesign(
@@ -934,7 +934,7 @@ DLTdesign <- TDDesign(
   nextBest = TDNextBest,
   stopping = myStopping4,
   increments = myIncrements1,
-  cohortSize = mySize,
+  cohort_size = mySize,
   data = data1,
   startingDose = 25
 )
@@ -948,7 +948,7 @@ DLTsamplesDesign <- TDsamplesDesign(
   nextBest = TDsamplesNextBest,
   stopping = (myStopping4 | myStopping3),
   increments = myIncrements1,
-  cohortSize = mySize,
+  cohort_size = mySize,
   data = data1,
   startingDose = 25
 )
@@ -1255,7 +1255,7 @@ nowDesign <- Design(
   nextBest = myNextBest,
   stopping = myStopping,
   increments = myIncrements,
-  cohortSize = mySize,
+  cohort_size = mySize,
   ## use the current data:
   data = data,
   ## and the recommended dose as the starting dose:
@@ -1581,7 +1581,7 @@ design <- DualDesign(
   nextBest = myNextBest,
   stopping = myStopping,
   increments = myIncrements,
-  cohortSize = CohortSizeConst(3),
+  cohort_size = CohortSizeConst(3),
   startingDose = 6
 )
 ```
@@ -1667,7 +1667,7 @@ biomarker target instead, and the true biomarker response peaked at 50 mg.
 
 The corresponding plot looks as follows:
 
-```{r dual-sim-sum-plot, fig=TRUE, fig.width = 6w}
+```{r dual-sim-sum-plot, fig=TRUE, fig.width = 6}
 print(plot(sumOut))
 ```
 
@@ -1957,7 +1957,7 @@ design1 <- DualResponsesDesign(
   data = data2,
   stopping = myStopping7,
   increments = myIncrements1,
-  cohortSize = mySize,
+  cohort_size = mySize,
   startingDose = 25
 )
 
@@ -1968,7 +1968,7 @@ design2 <- DualResponsesSamplesDesign(
   data = data2,
   stopping = myStopping8,
   increments = myIncrements1,
-  cohortSize = mySize,
+  cohort_size = mySize,
   startingDose = 25
 )
 ```
@@ -1982,7 +1982,7 @@ design3 <- DualResponsesSamplesDesign(
   data = data2,
   stopping = myStopping8,
   increments = myIncrements1,
-  cohortSize = mySize,
+  cohort_size = mySize,
   startingDose = 25
 )
 ```
