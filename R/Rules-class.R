@@ -1546,8 +1546,7 @@ StoppingCohortsNearDose <- function(nCohorts = 2L,
 .DefaultStoppingCohortsNearDose <- function() { # nolint
   StoppingCohortsNearDose(
     nCohorts = 3L,
-    percentage = 0.2,
-    #   report_label = NA_character_
+    percentage = 0.2
   )
 }
 
