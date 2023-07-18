@@ -1427,7 +1427,7 @@ test_that("StoppingCohortsNearDose can handle when dose is NA", {
   expected <- structure(
     FALSE,
     message = "0 cohorts lie within 0% of the next best dose NA. This is below the required 2 cohorts",
-     = NA_character_
+    report_label = NA_character_
   )
   expect_identical(result, expected)
 })
