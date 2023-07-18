@@ -59,7 +59,7 @@ test_that("Simulations object can be created with the user constructor", {
   )
   stop_reasons <- list("A", "B")
 
-  stop_reasons <- matrix(c(TRUE, FALSE), nrow = 2)
+  stop_report <- matrix(c(TRUE, FALSE), nrow = 2)
 
   data <- list(
     Data(
