@@ -113,7 +113,7 @@ my_data_2 <- update(my_data, x = 3, y = c(0, 0), group = c("single", "combo"))
 plot(my_data_2)
 ```
 
-# The model: `LogisticLogNormalGroup`
+# The model: `LogisticLogNormalGrouped`
 
 We can inherit from `ModelLogNormal`. Compared to `LogisticLogNormal` etc.
 we have an additional parameter `theta[3]` which is then also exponentiated to 
@@ -121,10 +121,101 @@ obtain `alpha2`.
 
 ## Definition
 
-```{r LogisticLogNormalGroup-class}
+Note that this can easily be extended later (either with a flag or with another
+class) to not use log dose but dose instead (divided by reference dose).
 
+```{r LogisticLogNormalGrouped-class}
+.LogisticLogNormalGrouped <- setClass(
+  Class = "LogisticLogNormalGrouped",
+  contains = "ModelLogNormal"
+)
+
+LogisticLogNormalGrouped <- function(mean, cov, ref_dose = 1) {
+  params <- ModelParamsNormal(mean, cov)
+  .LogisticLogNormalGrouped(
+    params = params,
+    ref_dose = positive_number(ref_dose),
+    priormodel = function() {
+      theta ~ dmnorm(mean, prec)
+      alpha0 <- theta[1]
+      alpha1 <- exp(theta[2])
+      alpha2 <- exp(theta[3])
+    },
+    datamodel = function() {
+      for (i in 1:nObs) {
+        logit(p[i]) <- alpha0 + (alpha1 + is_combo[i] * alpha2) * log(x[i] / ref_dose)
+        y[i] ~ dbern(p[i])
+      }
+    },
+    modelspecs = function(group, from_prior) {
+      ms <- list(
+        mean = params@mean, 
+        prec = params@prec,
+        is_combo = as.integer(group == "combo")
+      )
+      if (!from_prior) {
+        ms$ref_dose <- ref_dose
+      }
+      ms
+    },
+    init = function() {
+      list(theta = c(0, 1, 1))
+    },
+    datanames = c("nObs", "y", "x", "group"),
+    sample = c("alpha0", "alpha1", "alpha2")
+  )
+}
 ```
 
+## Methods
 
+```{r LogisticLogNormalGrouped-methods}
+setMethod(
+  f = "prob",
+  signature = signature(
+    dose = "numeric",
+    model = "LogisticLogNormalGrouped",
+    samples = "Samples"
+  ),
+  definition = function(dose, model, samples, group) {
+    assert_numeric(dose, lower = 0L, any.missing = FALSE, min.len = 1L)
+    assert_subset(c("alpha0", "alpha1", "alpha2"), names(samples))
+    assert_length(dose, len = size(samples))
+    assert_factor(group, len = length(dose), levels = c("single", "combo"))
+
+    alpha0 <- samples@data$alpha0
+    alpha1 <- samples@data$alpha1
+    alpha2 <- samples@data$alpha2
+    ref_dose <- as.numeric(model@ref_dose)
+    is_combo <- as.integer(group == "combo")
+    plogis(alpha0 + (alpha1 + is_combo * alpha2) * log(dose / ref_dose))
+  }
+)
+
+setMethod(
+  f = "dose",
+  signature = signature(
+    x = "numeric",
+    model = "LogisticLogNormalGrouped",
+    samples = "Samples"
+  ),
+  definition = function(x, model, samples, group) {
+    assert_probabilities(x)
+    assert_subset(c("alpha0", "alpha1", "alpha2"), names(samples))
+    assert_length(x, len = size(samples))
+    assert_factor(group, len = length(x), levels = c("single", "combo"))
+    
+    alpha0 <- samples@data$alpha0
+    alpha1 <- samples@data$alpha1
+    alpha2 <- samples@data$alpha2
+    ref_dose <- as.numeric(model@ref_dose)
+    is_combo <- as.integer(group == "combo")
+    exp((logit(x) - alpha0) / (alpha1 + is_combo * alpha2)) * ref_dose
+  }
+)
+```
+
+Note that for the `fit` method we need to make sure that the `...` are passed down to `prob`,
+such that we can pass down the `group` argument.
 
 

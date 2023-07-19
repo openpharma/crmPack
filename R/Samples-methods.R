@@ -165,7 +165,7 @@ setMethod("get",
 #' @param object the \code{\linkS4class{Samples}} object
 #' @param model the \code{\linkS4class{GeneralModel}} object
 #' @param data the \code{\linkS4class{Data}} object
-#' @param \dots unused
+#' @param \dots passed down to the [prob()] method.
 #' @return the data frame with required information (see method details)
 #'
 #' @export
@@ -232,7 +232,8 @@ setMethod("fit",
         probSamples[, i] <- prob(
           dose = points[i],
           model,
-          object
+          object,
+          ...
         )
       }
 
