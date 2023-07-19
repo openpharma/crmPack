@@ -161,6 +161,8 @@ reference:
       - h_next_best_mg_plot
       - h_next_best_mgsamples_plot
       - h_covr_helpers
+      - h_default_if_empty
+      - h_unpack_stopit
   - title: Internal Validation Functions
     contents:
       - v_general_data
