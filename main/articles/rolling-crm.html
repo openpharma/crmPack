@@ -63,12 +63,6 @@
 <li class="nav-item">
   <a class="nav-link" href="../news/index.html">Changelog</a>
 </li>
-<!-- start dropdown for versions --> <li class="nav-item dropdown">
-        <a href="#" class="nav-link dropdown-toggle"
-          data-bs-toggle="dropdown" role="button"
-          aria-expanded="false" aria-haspopup="true"
-          id="dropdown-versions">Versions</a> <div class="dropdown-menu" aria-labelledby="dropdown-versions"> <a class="dropdown-item" data-toggle="tooltip" title="" href="https://Roche.github.io/crmPack/main">main</a> </div></li>
-<!-- end dropdown for versions -->
       </ul>
 <form class="form-inline my-2 my-lg-0" role="search">
         <input type="search" class="form-control me-sm-2" aria-label="Toggle navigation" name="search-input" data-search-index="../search.json" id="search-input" placeholder="Search for" autocomplete="off">
@@ -246,7 +240,7 @@ package crmPack: introductory examples”)</p>
 <span><span class="op">)</span></span>
 <span></span>
 <span><span class="va">mySize1</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/CohortSizeRange-class.html">CohortSizeRange</a></span><span class="op">(</span>intervals <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">0</span>, <span class="fl">30</span><span class="op">)</span>, cohort_size <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">1</span>, <span class="fl">3</span><span class="op">)</span><span class="op">)</span></span>
-<span><span class="va">mySize2</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/CohortSizeDLT-class.html">CohortSizeDLT</a></span><span class="op">(</span>dlt_intervals <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">0</span>, <span class="fl">1</span><span class="op">)</span>, cohort_size <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">1</span>, <span class="fl">3</span><span class="op">)</span><span class="op">)</span></span>
+<span><span class="va">mySize2</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/CohortSizeDLT-class.html">CohortSizeDLT</a></span><span class="op">(</span>intervals <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">0</span>, <span class="fl">1</span><span class="op">)</span>, cohort_size <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">1</span>, <span class="fl">3</span><span class="op">)</span><span class="op">)</span></span>
 <span><span class="va">mySize</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/maxSize.html">maxSize</a></span><span class="op">(</span><span class="va">mySize1</span>, <span class="va">mySize2</span><span class="op">)</span></span>
 <span></span>
 <span><span class="va">myStopping1</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/StoppingTargetProb-class.html">StoppingTargetProb</a></span><span class="op">(</span>target <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">0.2</span>, <span class="fl">0.35</span><span class="op">)</span>, prob <span class="op">=</span> <span class="fl">0.5</span><span class="op">)</span></span>
@@ -269,7 +263,7 @@ package crmPack: introductory examples”)</p>
 <p><img src="rolling-crm_files/figure-html/Recommend-1.png" width="700"></p>
 <div class="sourceCode" id="cb21"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">doseRecommendation</span><span class="op">$</span><span class="va">value</span></span></code></pre></div>
-<pre><code><span><span class="co">## [1] 0.5</span></span></code></pre>
+<pre><code><span><span class="co">## [1] 1.5</span></span></code></pre>
 </div>
 </div>
 <div class="section level2">
@@ -287,7 +281,7 @@ characteristics<a class="anchor" aria-label="anchor" href="#example-2-run-a-simu
 <span>  increments <span class="op">=</span> <span class="va">myIncrements</span>,</span>
 <span>  nextBest <span class="op">=</span> <span class="va">myNextBest</span>,</span>
 <span>  stopping <span class="op">=</span> <span class="va">myStopping</span>,</span>
-<span>  cohortSize <span class="op">=</span> <span class="va">mySize</span>,</span>
+<span>  cohort_size <span class="op">=</span> <span class="va">mySize</span>,</span>
 <span>  data <span class="op">=</span> <span class="va">emptydata</span>,</span>
 <span>  safetyWindow <span class="op">=</span> <span class="va">mysafetywindow</span>,</span>
 <span>  startingDose <span class="op">=</span> <span class="fl">3</span></span>
@@ -338,10 +332,10 @@ introductory examples” document</p>
 <div class="sourceCode" id="cb28"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">mySims</span><span class="op">@</span><span class="va">stop_reasons</span><span class="op">[[</span><span class="fl">2</span><span class="op">]</span><span class="op">]</span></span></code></pre></div>
 <pre><code><span><span class="co">## [[1]]</span></span>
-<span><span class="co">## [1] "Probability for target toxicity is 60 % for dose 22 and thus above the required 50 %"</span></span>
+<span><span class="co">## [1] "Probability for target toxicity is 50 % for dose 22 and thus above the required 50 %"</span></span>
 <span><span class="co">## </span></span>
 <span><span class="co">## [[2]]</span></span>
-<span><span class="co">## [1] "Number of patients is 17 and thus below the prespecified minimum number 50"</span></span></code></pre>
+<span><span class="co">## [1] "Number of patients is 11 and thus below the prespecified minimum number 50"</span></span></code></pre>
 <div class="sourceCode" id="cb30"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># nolint end</span></span></code></pre></div>
 </div>

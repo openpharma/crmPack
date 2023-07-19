@@ -47,12 +47,6 @@ You can specify any subset of these in the type argument."><meta property="og:im
 <li class="nav-item">
   <a class="nav-link" href="../news/index.html">Changelog</a>
 </li>
-<!-- start dropdown for versions --> <li class="nav-item dropdown">
-        <a href="#" class="nav-link dropdown-toggle"
-          data-bs-toggle="dropdown" role="button"
-          aria-expanded="false" aria-haspopup="true"
-          id="dropdown-versions">Versions</a> <div class="dropdown-menu" aria-labelledby="dropdown-versions"> <a class="dropdown-item" data-toggle="tooltip" title="" href="https://Roche.github.io/crmPack/main">main</a> </div></li>
-<!-- end dropdown for versions -->
       </ul><form class="form-inline my-2 my-lg-0" role="search">
         <input type="search" class="form-control me-sm-2" aria-label="Toggle navigation" name="search-input" data-search-index="../search.json" id="search-input" placeholder="Search for" autocomplete="off"></form>
 
@@ -158,6 +152,8 @@ asked for, otherwise a <code>gridExtra{gTree}</code> object.</p>
 <span class="r-in"><span><span class="co"># Stop when 10 subjects are treated (for illustration only).</span></span></span>
 <span class="r-in"><span><span class="va">my_stopping</span> <span class="op">&lt;-</span> <span class="fu"><a href="StoppingMinPatients-class.html">StoppingMinPatients</a></span><span class="op">(</span>nPatients <span class="op">=</span> <span class="fl">10</span><span class="op">)</span></span></span>
 <span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="co">## Now specified the design with all the above information and starting with a dose of 25</span></span></span>
+<span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co"># Specify the design. (For details please refer to the 'DualResponsesDesign' example.)</span></span></span>
 <span class="r-in"><span><span class="va">my_design</span> <span class="op">&lt;-</span> <span class="fu"><a href="DualResponsesDesign-class.html">DualResponsesDesign</a></span><span class="op">(</span></span></span>
 <span class="r-in"><span>  nextBest <span class="op">=</span> <span class="va">my_next_best</span>,</span></span>
@@ -165,7 +161,7 @@ asked for, otherwise a <code>gridExtra{gTree}</code> object.</p>
 <span class="r-in"><span>  eff_model <span class="op">=</span> <span class="va">eff_model</span>,</span></span>
 <span class="r-in"><span>  stopping <span class="op">=</span> <span class="va">my_stopping</span>,</span></span>
 <span class="r-in"><span>  increments <span class="op">=</span> <span class="va">my_increments</span>,</span></span>
-<span class="r-in"><span>  cohortSize <span class="op">=</span> <span class="va">my_size</span>,</span></span>
+<span class="r-in"><span>  cohort_size <span class="op">=</span> <span class="va">my_size</span>,</span></span>
 <span class="r-in"><span>  data <span class="op">=</span> <span class="va">emptydata</span>,</span></span>
 <span class="r-in"><span>  startingDose <span class="op">=</span> <span class="fl">25</span></span></span>
 <span class="r-in"><span><span class="op">)</span></span></span>
@@ -215,7 +211,7 @@ asked for, otherwise a <code>gridExtra{gTree}</code> object.</p>
 <span class="r-in"><span><span class="co"># Specify the design.</span></span></span>
 <span class="r-in"><span><span class="va">my_design</span> <span class="op">&lt;-</span> <span class="fu"><a href="DualResponsesSamplesDesign-class.html">DualResponsesSamplesDesign</a></span><span class="op">(</span></span></span>
 <span class="r-in"><span>  nextBest <span class="op">=</span> <span class="va">my_next_best</span>,</span></span>
-<span class="r-in"><span>  cohortSize <span class="op">=</span> <span class="va">my_size</span>,</span></span>
+<span class="r-in"><span>  cohort_size <span class="op">=</span> <span class="va">my_size</span>,</span></span>
 <span class="r-in"><span>  startingDose <span class="op">=</span> <span class="fl">25</span>,</span></span>
 <span class="r-in"><span>  model <span class="op">=</span> <span class="va">dle_model</span>,</span></span>
 <span class="r-in"><span>  eff_model <span class="op">=</span> <span class="va">eff_model</span>,</span></span>
@@ -240,6 +236,7 @@ asked for, otherwise a <code>gridExtra{gTree}</code> object.</p>
 <span class="r-in"><span>  parallel <span class="op">=</span> <span class="cn">FALSE</span></span></span>
 <span class="r-in"><span><span class="op">)</span></span></span>
 <span class="r-in"><span></span></span>
+<span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co"># Generate a summary of the simulations.</span></span></span>
 <span class="r-in"><span><span class="va">my_sum</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/summary.html" class="external-link">summary</a></span><span class="op">(</span></span></span>
 <span class="r-in"><span>  <span class="va">my_sim</span>,</span></span>
@@ -263,7 +260,7 @@ asked for, otherwise a <code>gridExtra{gTree}</code> object.</p>
 <span class="r-in"><span><span class="co"># Specify the design.</span></span></span>
 <span class="r-in"><span><span class="va">my_design</span> <span class="op">&lt;-</span> <span class="fu"><a href="DualResponsesSamplesDesign-class.html">DualResponsesSamplesDesign</a></span><span class="op">(</span></span></span>
 <span class="r-in"><span>  nextBest <span class="op">=</span> <span class="va">my_next_best</span>,</span></span>
-<span class="r-in"><span>  cohortSize <span class="op">=</span> <span class="va">my_size</span>,</span></span>
+<span class="r-in"><span>  cohort_size <span class="op">=</span> <span class="va">my_size</span>,</span></span>
 <span class="r-in"><span>  startingDose <span class="op">=</span> <span class="fl">25</span>,</span></span>
 <span class="r-in"><span>  model <span class="op">=</span> <span class="va">dle_model</span>,</span></span>
 <span class="r-in"><span>  eff_model <span class="op">=</span> <span class="va">eff_model</span>,</span></span>

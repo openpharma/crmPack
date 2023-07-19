@@ -71,12 +71,6 @@ listed.
 <li class="nav-item">
   <a class="nav-link" href="../news/index.html">Changelog</a>
 </li>
-<!-- start dropdown for versions --> <li class="nav-item dropdown">
-        <a href="#" class="nav-link dropdown-toggle"
-          data-bs-toggle="dropdown" role="button"
-          aria-expanded="false" aria-haspopup="true"
-          id="dropdown-versions">Versions</a> <div class="dropdown-menu" aria-labelledby="dropdown-versions"> <a class="dropdown-item" data-toggle="tooltip" title="" href="https://Roche.github.io/crmPack/main">main</a> </div></li>
-<!-- end dropdown for versions -->
       </ul><form class="form-inline my-2 my-lg-0" role="search">
         <input type="search" class="form-control me-sm-2" aria-label="Toggle navigation" name="search-input" data-search-index="../search.json" id="search-input" placeholder="Search for" autocomplete="off"></form>
 
@@ -170,6 +164,7 @@ the standard options are used</p></dd>
     <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="co"># Define the dose-grid.</span></span></span>
 <span class="r-in"><span><span class="va">emptydata</span> <span class="op">&lt;-</span> <span class="fu"><a href="Data-class.html">Data</a></span><span class="op">(</span>doseGrid <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">1</span>, <span class="fl">3</span>, <span class="fl">5</span>, <span class="fl">10</span>, <span class="fl">15</span>, <span class="fl">20</span>, <span class="fl">25</span><span class="op">)</span><span class="op">)</span></span></span>
 <span class="r-in"><span></span></span>
+<span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co"># Initialize the CRM model.</span></span></span>
 <span class="r-in"><span><span class="va">my_model</span> <span class="op">&lt;-</span> <span class="fu"><a href="LogisticLogNormal-class.html">LogisticLogNormal</a></span><span class="op">(</span></span></span>
 <span class="r-in"><span>  mean <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="op">-</span><span class="fl">0.85</span>, <span class="fl">1</span><span class="op">)</span>,</span></span>
@@ -187,13 +182,13 @@ the standard options are used</p></dd>
 <span class="r-in"><span>  max_overdose_prob <span class="op">=</span> <span class="fl">0.25</span></span></span>
 <span class="r-in"><span><span class="op">)</span></span></span>
 <span class="r-in"><span></span></span>
-<span class="r-in"><span><span class="co"># Choose the rule for the cohort-size.</span></span></span>
+<span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="va">my_size1</span> <span class="op">&lt;-</span> <span class="fu"><a href="CohortSizeRange-class.html">CohortSizeRange</a></span><span class="op">(</span></span></span>
 <span class="r-in"><span>  intervals <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">0</span>, <span class="fl">30</span><span class="op">)</span>,</span></span>
 <span class="r-in"><span>  cohort_size <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">1</span>, <span class="fl">3</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="va">my_size2</span> <span class="op">&lt;-</span> <span class="fu"><a href="CohortSizeDLT-class.html">CohortSizeDLT</a></span><span class="op">(</span></span></span>
-<span class="r-in"><span>  dlt_intervals <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">0</span>, <span class="fl">1</span><span class="op">)</span>,</span></span>
+<span class="r-in"><span>  intervals <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">0</span>, <span class="fl">1</span><span class="op">)</span>,</span></span>
 <span class="r-in"><span>  cohort_size <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">1</span>, <span class="fl">3</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="va">my_size</span> <span class="op">&lt;-</span> <span class="fu"><a href="maxSize.html">maxSize</a></span><span class="op">(</span><span class="va">my_size1</span>, <span class="va">my_size2</span><span class="op">)</span></span></span>
@@ -219,14 +214,11 @@ the standard options are used</p></dd>
 <span class="r-in"><span>  nextBest <span class="op">=</span> <span class="va">my_next_best</span>,</span></span>
 <span class="r-in"><span>  stopping <span class="op">=</span> <span class="va">my_stopping</span>,</span></span>
 <span class="r-in"><span>  increments <span class="op">=</span> <span class="va">my_increments</span>,</span></span>
-<span class="r-in"><span>  cohortSize <span class="op">=</span> <span class="va">my_size</span>,</span></span>
+<span class="r-in"><span>  cohort_size <span class="op">=</span> <span class="va">my_size</span>,</span></span>
 <span class="r-in"><span>  data <span class="op">=</span> <span class="va">emptydata</span>,</span></span>
 <span class="r-in"><span>  startingDose <span class="op">=</span> <span class="fl">3</span></span></span>
 <span class="r-in"><span><span class="op">)</span></span></span>
 <span class="r-in"><span></span></span>
-<span class="r-in"><span><span class="co"># Examine the design.</span></span></span>
-<span class="r-in"><span><span class="co"># MCMC parameters are set to small values only to show this example. They should be</span></span></span>
-<span class="r-in"><span><span class="co"># increased for a real case.</span></span></span>
 <span class="r-in"><span><span class="va">my_options</span> <span class="op">&lt;-</span> <span class="fu"><a href="McmcOptions-class.html">McmcOptions</a></span><span class="op">(</span></span></span>
 <span class="r-in"><span>  burnin <span class="op">=</span> <span class="fl">10</span>, step <span class="op">=</span> <span class="fl">1</span>, samples <span class="op">=</span> <span class="fl">20</span>, rng_kind <span class="op">=</span> <span class="st">"Super-Duper"</span>,</span></span>
 <span class="r-in"><span>  rng_seed <span class="op">=</span> <span class="fl">94</span></span></span>
@@ -252,7 +244,7 @@ the standard options are used</p></dd>
 <span class="r-in"><span>  nextBest <span class="op">=</span> <span class="va">my_next_best</span>,</span></span>
 <span class="r-in"><span>  stopping <span class="op">=</span> <span class="va">my_stopping</span>,</span></span>
 <span class="r-in"><span>  increments <span class="op">=</span> <span class="va">my_increments</span>,</span></span>
-<span class="r-in"><span>  cohortSize <span class="op">=</span> <span class="va">my_size</span>,</span></span>
+<span class="r-in"><span>  cohort_size <span class="op">=</span> <span class="va">my_size</span>,</span></span>
 <span class="r-in"><span>  data <span class="op">=</span> <span class="va">emptydata</span>,</span></span>
 <span class="r-in"><span>  startingDose <span class="op">=</span> <span class="fl">3</span></span></span>
 <span class="r-in"><span><span class="op">)</span></span></span>
@@ -281,7 +273,7 @@ the standard options are used</p></dd>
 <span class="r-in"><span>  nextBest <span class="op">=</span> <span class="va">my_next_best</span>,</span></span>
 <span class="r-in"><span>  stopping <span class="op">=</span> <span class="va">my_stopping</span>,</span></span>
 <span class="r-in"><span>  increments <span class="op">=</span> <span class="va">my_increments</span>,</span></span>
-<span class="r-in"><span>  cohortSize <span class="op">=</span> <span class="va">my_size</span>,</span></span>
+<span class="r-in"><span>  cohort_size <span class="op">=</span> <span class="va">my_size</span>,</span></span>
 <span class="r-in"><span>  data <span class="op">=</span> <span class="va">emptydata</span>,</span></span>
 <span class="r-in"><span>  startingDose <span class="op">=</span> <span class="fl">3</span></span></span>
 <span class="r-in"><span><span class="op">)</span></span></span>
@@ -294,17 +286,18 @@ the standard options are used</p></dd>
 <span class="r-out co"><span class="r-pr">#&gt;</span> 4    5    1        5 FALSE         0</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> 5   10    0       20  TRUE       100</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> 6   10    1        5  TRUE       -50</span>
-<span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co"># Define the dose-grid</span></span></span>
 <span class="r-in"><span><span class="va">emptydata</span> <span class="op">&lt;-</span> <span class="fu"><a href="Data-class.html">Data</a></span><span class="op">(</span>doseGrid <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">5</span>, <span class="fl">10</span>, <span class="fl">15</span>, <span class="fl">25</span>, <span class="fl">35</span>, <span class="fl">50</span>, <span class="fl">80</span><span class="op">)</span><span class="op">)</span></span></span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co"># inizialing a 3+3 design with constant cohort size of 3 and</span></span></span>
 <span class="r-in"><span><span class="co"># starting dose equal 5</span></span></span>
-<span class="r-in"><span><span class="va">myDesign</span> <span class="op">&lt;-</span> <span class="fu"><a href="RuleDesign-class.html">RuleDesign</a></span><span class="op">(</span>nextBest <span class="op">=</span> <span class="fu"><a href="NextBestThreePlusThree-class.html">NextBestThreePlusThree</a></span><span class="op">(</span><span class="op">)</span>,</span></span>
-<span class="r-in"><span>                       cohortSize <span class="op">=</span> <span class="fu"><a href="CohortSizeConst-class.html">CohortSizeConst</a></span><span class="op">(</span>size<span class="op">=</span><span class="fl">3L</span><span class="op">)</span>,</span></span>
-<span class="r-in"><span>                       data <span class="op">=</span> <span class="va">emptydata</span>,</span></span>
-<span class="r-in"><span>                       startingDose <span class="op">=</span> <span class="fl">5</span><span class="op">)</span></span></span>
-<span class="r-in"><span>  </span></span>
+<span class="r-in"><span><span class="va">myDesign</span> <span class="op">&lt;-</span> <span class="fu"><a href="RuleDesign-class.html">RuleDesign</a></span><span class="op">(</span></span></span>
+<span class="r-in"><span>  nextBest <span class="op">=</span> <span class="fu"><a href="NextBestThreePlusThree-class.html">NextBestThreePlusThree</a></span><span class="op">(</span><span class="op">)</span>,</span></span>
+<span class="r-in"><span>  cohort_size <span class="op">=</span> <span class="fu"><a href="CohortSizeConst-class.html">CohortSizeConst</a></span><span class="op">(</span>size <span class="op">=</span> <span class="fl">3L</span><span class="op">)</span>,</span></span>
+<span class="r-in"><span>  data <span class="op">=</span> <span class="va">emptydata</span>,</span></span>
+<span class="r-in"><span>  startingDose <span class="op">=</span> <span class="fl">5</span></span></span>
+<span class="r-in"><span><span class="op">)</span></span></span>
+<span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co"># Examine the design</span></span></span>
 <span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/base/Random.html" class="external-link">set.seed</a></span><span class="op">(</span><span class="fl">4235</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="fu">examine</span><span class="op">(</span><span class="va">myDesign</span><span class="op">)</span></span></span>
@@ -374,7 +367,7 @@ the standard options are used</p></dd>
 <span class="r-in"><span>  cohort_size <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">1</span>, <span class="fl">3</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="va">mySize2</span> <span class="op">&lt;-</span> <span class="fu"><a href="CohortSizeDLT-class.html">CohortSizeDLT</a></span><span class="op">(</span></span></span>
-<span class="r-in"><span>  dlt_intervals <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">0</span>, <span class="fl">1</span><span class="op">)</span>,</span></span>
+<span class="r-in"><span>  intervals <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">0</span>, <span class="fl">1</span><span class="op">)</span>,</span></span>
 <span class="r-in"><span>  cohort_size <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">1</span>, <span class="fl">3</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="va">mySize</span> <span class="op">&lt;-</span> <span class="fu"><a href="maxSize.html">maxSize</a></span><span class="op">(</span><span class="va">mySize1</span>, <span class="va">mySize2</span><span class="op">)</span></span></span>
@@ -397,7 +390,7 @@ the standard options are used</p></dd>
 <span class="r-in"><span>  increments <span class="op">=</span> <span class="va">myIncrements</span>,</span></span>
 <span class="r-in"><span>  nextBest <span class="op">=</span> <span class="va">myNextBest</span>,</span></span>
 <span class="r-in"><span>  stopping <span class="op">=</span> <span class="va">myStopping</span>,</span></span>
-<span class="r-in"><span>  cohortSize <span class="op">=</span> <span class="va">mySize</span>,</span></span>
+<span class="r-in"><span>  cohort_size <span class="op">=</span> <span class="va">mySize</span>,</span></span>
 <span class="r-in"><span>  data <span class="op">=</span> <span class="va">emptydata</span>,</span></span>
 <span class="r-in"><span>  safetyWindow <span class="op">=</span> <span class="va">mysafetywindow</span>,</span></span>
 <span class="r-in"><span>  startingDose <span class="op">=</span> <span class="fl">3</span></span></span>

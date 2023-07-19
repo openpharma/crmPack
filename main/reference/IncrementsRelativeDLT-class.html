@@ -43,12 +43,6 @@ relative differences in terms of DLTs."><meta property="og:image" content="https
 <li class="nav-item">
   <a class="nav-link" href="../news/index.html">Changelog</a>
 </li>
-<!-- start dropdown for versions --> <li class="nav-item dropdown">
-        <a href="#" class="nav-link dropdown-toggle"
-          data-bs-toggle="dropdown" role="button"
-          aria-expanded="false" aria-haspopup="true"
-          id="dropdown-versions">Versions</a> <div class="dropdown-menu" aria-labelledby="dropdown-versions"> <a class="dropdown-item" data-toggle="tooltip" title="" href="https://Roche.github.io/crmPack/main">main</a> </div></li>
-<!-- end dropdown for versions -->
       </ul><form class="form-inline my-2 my-lg-0" role="search">
         <input type="search" class="form-control me-sm-2" aria-label="Toggle navigation" name="search-input" data-search-index="../search.json" id="search-input" placeholder="Search for" autocomplete="off"></form>
 
@@ -78,14 +72,14 @@ relative differences in terms of DLTs.</p>
 
     <div class="section level2">
     <h2 id="ref-usage">Usage<a class="anchor" aria-label="anchor" href="#ref-usage"></a></h2>
-    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">IncrementsRelativeDLT</span><span class="op">(</span><span class="va">dlt_intervals</span>, <span class="va">increments</span><span class="op">)</span></span>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">IncrementsRelativeDLT</span><span class="op">(</span><span class="va">intervals</span>, <span class="va">increments</span><span class="op">)</span></span>
 <span></span>
 <span><span class="fu">.DefaultIncrementsRelativeDLT</span><span class="op">(</span><span class="op">)</span></span></code></pre></div>
     </div>
 
     <div class="section level2">
     <h2 id="arguments">Arguments<a class="anchor" aria-label="anchor" href="#arguments"></a></h2>
-    <dl><dt>dlt_intervals</dt>
+    <dl><dt>intervals</dt>
 <dd><p>(<code>numeric</code>)<br> see slot definition.</p></dd>
 
 
@@ -97,9 +91,9 @@ relative differences in terms of DLTs.</p>
     <h2 id="slots">Slots<a class="anchor" aria-label="anchor" href="#slots"></a></h2>
     
 
-<dl><dt><code>dlt_intervals</code></dt>
+<dl><dt><code>intervals</code></dt>
 <dd><p>(<code>integer</code>)<br> a vector with the left bounds of the
-relevant DLT intervals. For example, <code>dlt_intervals  = c(0, 1, 3)</code> specifies
+relevant DLT intervals. For example, <code>intervals  = c(0, 1, 3)</code> specifies
 three intervals (sets of DLTs: first, 0 DLT; second 1 or 2 DLTs; and the third
 one, at least 3 DLTs. That means, the right bound of the intervals are
 exclusive to the interval and the last interval goes from the last value to
@@ -108,8 +102,8 @@ infinity.</p></dd>
 
 <dt><code>increments</code></dt>
 <dd><p>(<code>numeric</code>)<br> a vector of maximum allowable relative
-increments corresponding to <code>dlt_intervals</code>. IT must be of the same length
-as the length of <code>dlt_intervals</code>.</p></dd>
+increments corresponding to <code>intervals</code>. IT must be of the same length
+as the length of <code>intervals</code>.</p></dd>
 
 
 </dl></div>
@@ -126,13 +120,12 @@ in the current cohort.</p></div>
 
     <div class="section level2">
     <h2 id="ref-examples">Examples<a class="anchor" aria-label="anchor" href="#ref-examples"></a></h2>
-    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span></span></span>
-<span class="r-in"><span><span class="co"># This is the example of a rule for:</span></span></span>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="co"># This is the example of a rule for:</span></span></span>
 <span class="r-in"><span><span class="co"># maximum doubling the dose if no DLTs were observed in the whole study so far</span></span></span>
 <span class="r-in"><span><span class="co"># or maximum increasing the dose by 1.33 if 1 or 2 DLTs were observed so far</span></span></span>
 <span class="r-in"><span><span class="co"># or maximum increasing the dose by 1.22 if 3 or more DLTs were observed so far.</span></span></span>
 <span class="r-in"><span><span class="va">my_increments</span> <span class="op">&lt;-</span> <span class="fu">IncrementsRelativeDLT</span><span class="op">(</span></span></span>
-<span class="r-in"><span>  dlt_intervals <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">0</span>, <span class="fl">1</span>, <span class="fl">3</span><span class="op">)</span>,</span></span>
+<span class="r-in"><span>  intervals <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">0</span>, <span class="fl">1</span>, <span class="fl">3</span><span class="op">)</span>,</span></span>
 <span class="r-in"><span>  increments <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">1</span>, <span class="fl">0.33</span>, <span class="fl">0.2</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="op">)</span></span></span>
 </code></pre></div>

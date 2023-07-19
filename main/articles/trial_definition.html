@@ -63,12 +63,6 @@
 <li class="nav-item">
   <a class="nav-link" href="../news/index.html">Changelog</a>
 </li>
-<!-- start dropdown for versions --> <li class="nav-item dropdown">
-        <a href="#" class="nav-link dropdown-toggle"
-          data-bs-toggle="dropdown" role="button"
-          aria-expanded="false" aria-haspopup="true"
-          id="dropdown-versions">Versions</a> <div class="dropdown-menu" aria-labelledby="dropdown-versions"> <a class="dropdown-item" data-toggle="tooltip" title="" href="https://Roche.github.io/crmPack/main">main</a> </div></li>
-<!-- end dropdown for versions -->
       </ul>
 <form class="form-inline my-2 my-lg-0" role="search">
         <input type="search" class="form-control me-sm-2" aria-label="Toggle navigation" name="search-input" data-search-index="../search.json" id="search-input" placeholder="Search for" autocomplete="off">
@@ -347,7 +341,7 @@ required by the two parts of the compound rule is used.</p>
 <span>  cohort_size <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">1</span>, <span class="fl">3</span><span class="op">)</span></span>
 <span><span class="op">)</span></span>
 <span><span class="va">my_size_2</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/CohortSizeDLT-class.html">CohortSizeDLT</a></span><span class="op">(</span></span>
-<span>  dlt_intervals <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">0</span>, <span class="fl">1</span><span class="op">)</span>,</span>
+<span>  intervals <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">0</span>, <span class="fl">1</span><span class="op">)</span>,</span>
 <span>  cohort_size <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">1</span>, <span class="fl">3</span><span class="op">)</span></span>
 <span><span class="op">)</span></span>
 <span><span class="va">my_size</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/maxSize.html">maxSize</a></span><span class="op">(</span><span class="va">my_size_1</span>, <span class="va">my_size_2</span><span class="op">)</span></span></code></pre></div>
@@ -394,7 +388,7 @@ starting dose, to define the trial.</p>
 <span>  nextBest <span class="op">=</span> <span class="va">my_next_best</span>,</span>
 <span>  stopping <span class="op">=</span> <span class="va">my_stopping</span>,</span>
 <span>  increments <span class="op">=</span> <span class="va">my_increments</span>,</span>
-<span>  cohortSize <span class="op">=</span> <span class="va">my_size</span>,</span>
+<span>  cohort_size <span class="op">=</span> <span class="va">my_size</span>,</span>
 <span>  data <span class="op">=</span> <span class="va">empty_data</span>,</span>
 <span>  startingDose <span class="op">=</span> <span class="fl">3</span></span>
 <span><span class="op">)</span></span></code></pre></div>

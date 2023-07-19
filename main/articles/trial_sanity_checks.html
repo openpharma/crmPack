@@ -63,12 +63,6 @@
 <li class="nav-item">
   <a class="nav-link" href="../news/index.html">Changelog</a>
 </li>
-<!-- start dropdown for versions --> <li class="nav-item dropdown">
-        <a href="#" class="nav-link dropdown-toggle"
-          data-bs-toggle="dropdown" role="button"
-          aria-expanded="false" aria-haspopup="true"
-          id="dropdown-versions">Versions</a> <div class="dropdown-menu" aria-labelledby="dropdown-versions"> <a class="dropdown-item" data-toggle="tooltip" title="" href="https://Roche.github.io/crmPack/main">main</a> </div></li>
-<!-- end dropdown for versions -->
       </ul>
 <form class="form-inline my-2 my-lg-0" role="search">
         <input type="search" class="form-control me-sm-2" aria-label="Toggle navigation" name="search-input" data-search-index="../search.json" id="search-input" placeholder="Search for" autocomplete="off">
@@ -128,6 +122,7 @@ permitted increment and selecting the dose for the nest study.</p>
 <div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://github.com/roche/crmPack" class="external-link">crmPack</a></span><span class="op">)</span></span>
 <span></span>
+<span></span>
 <span><span class="co"># Define the dose grid and an empty data object</span></span>
 <span><span class="va">dose_grid</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">1</span>, <span class="fl">3</span>, <span class="fl">5</span>, <span class="fl">10</span>, <span class="fl">15</span>, <span class="fl">20</span>, <span class="fl">25</span>, <span class="fl">40</span>, <span class="fl">50</span>, <span class="fl">80</span>, <span class="fl">100</span><span class="op">)</span></span>
 <span><span class="va">empty_data</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/Data-class.html">Data</a></span><span class="op">(</span>doseGrid <span class="op">=</span> <span class="va">dose_grid</span><span class="op">)</span></span>
@@ -152,7 +147,7 @@ permitted increment and selecting the dose for the nest study.</p>
 <span>  cohort_size <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">1</span>, <span class="fl">3</span><span class="op">)</span></span>
 <span><span class="op">)</span></span>
 <span><span class="va">cohort_size2</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/CohortSizeDLT-class.html">CohortSizeDLT</a></span><span class="op">(</span></span>
-<span>  dlt_intervals <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">0</span>, <span class="fl">1</span><span class="op">)</span>,</span>
+<span>  intervals <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">0</span>, <span class="fl">1</span><span class="op">)</span>,</span>
 <span>  cohort_size <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">1</span>, <span class="fl">3</span><span class="op">)</span></span>
 <span><span class="op">)</span></span>
 <span><span class="va">cohort_size</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/maxSize.html">maxSize</a></span><span class="op">(</span><span class="va">cohort_size1</span>, <span class="va">cohort_size2</span><span class="op">)</span></span>
@@ -178,7 +173,7 @@ permitted increment and selecting the dose for the nest study.</p>
 <span>  nextBest <span class="op">=</span> <span class="va">next_best</span>,</span>
 <span>  stopping <span class="op">=</span> <span class="va">stopping_trial</span>,</span>
 <span>  increments <span class="op">=</span> <span class="va">increment_rule</span>,</span>
-<span>  cohortSize <span class="op">=</span> <span class="va">cohort_size</span>,</span>
+<span>  cohort_size <span class="op">=</span> <span class="va">cohort_size</span>,</span>
 <span>  data <span class="op">=</span> <span class="va">empty_data</span>,</span>
 <span>  startingDose <span class="op">=</span> <span class="fl">3</span></span>
 <span><span class="op">)</span></span></code></pre></div>
@@ -1108,7 +1103,7 @@ NA
 <span>  nextBest <span class="op">=</span> <span class="va">next_best</span>,</span>
 <span>  stopping <span class="op">=</span> <span class="va">stopping_trial</span>,</span>
 <span>  increments <span class="op">=</span> <span class="va">revised_increment_rule</span>,</span>
-<span>  cohortSize <span class="op">=</span> <span class="va">cohort_size</span>,</span>
+<span>  cohort_size <span class="op">=</span> <span class="va">cohort_size</span>,</span>
 <span>  data <span class="op">=</span> <span class="va">empty_data</span>,</span>
 <span>  startingDose <span class="op">=</span> <span class="fl">3</span></span>
 <span><span class="op">)</span></span></code></pre></div>
@@ -1677,19 +1672,19 @@ the state of the model after escalation to 50 mg without toxicity…</p>
 <span><span class="co">#&gt;  [2,]    3  0.000    0.000</span></span>
 <span><span class="co">#&gt;  [3,]    5  0.000    0.000</span></span>
 <span><span class="co">#&gt;  [4,]   10  0.000    0.000</span></span>
-<span><span class="co">#&gt;  [5,]   15  0.000    0.000</span></span>
+<span><span class="co">#&gt;  [5,]   15  0.002    0.000</span></span>
 <span><span class="co">#&gt;  [6,]   20  0.003    0.000</span></span>
-<span><span class="co">#&gt;  [7,]   25  0.003    0.000</span></span>
-<span><span class="co">#&gt;  [8,]   40  0.040    0.001</span></span>
-<span><span class="co">#&gt;  [9,]   50  0.121    0.025</span></span>
-<span><span class="co">#&gt; [10,]   80  0.126    0.804</span></span>
-<span><span class="co">#&gt; [11,]  100  0.052    0.924</span></span>
+<span><span class="co">#&gt;  [7,]   25  0.017    0.000</span></span>
+<span><span class="co">#&gt;  [8,]   40  0.057    0.008</span></span>
+<span><span class="co">#&gt;  [9,]   50  0.150    0.029</span></span>
+<span><span class="co">#&gt; [10,]   80  0.136    0.805</span></span>
+<span><span class="co">#&gt; [11,]  100  0.054    0.921</span></span>
 <span></span>
 <span><span class="fu"><a href="../reference/maxDose.html">maxDose</a></span><span class="op">(</span><span class="va">revised_increment_rule</span>, <span class="va">no_tox_below_50_data</span><span class="op">)</span></span>
 <span><span class="co">#&gt; [1] 83.5</span></span></code></pre></div>
 <p>Whilst the increments rule allows escalation to 83.5 mg, the toxicity
 estimates provided by the model do not: the current estimate of toxicity
-at 80 mg is 0.804, well above the limit of 0.25 defined in the dose
+at 80 mg is 0.805, well above the limit of 0.25 defined in the dose
 recommendation rule (<code>next_best</code>).</p>
 <p>Again, we have several options. We can introduce intermediate doses,
 thus slowing escalation and allowing the prior model more time to adapt
@@ -1756,7 +1751,7 @@ attempt.</p>
 <span>  nextBest <span class="op">=</span> <span class="va">next_best</span>,</span>
 <span>  stopping <span class="op">=</span> <span class="va">stopping_trial</span>,</span>
 <span>  increments <span class="op">=</span> <span class="va">revised_increment_rule</span>,</span>
-<span>  cohortSize <span class="op">=</span> <span class="va">cohort_size</span>,</span>
+<span>  cohort_size <span class="op">=</span> <span class="va">cohort_size</span>,</span>
 <span>  data <span class="op">=</span> <span class="va">empty_data</span>,</span>
 <span>  startingDose <span class="op">=</span> <span class="fl">3</span></span>
 <span><span class="op">)</span></span>
@@ -1925,6 +1920,40 @@ FALSE
 0
 </td>
 <td style="text-align:right;">
+15
+</td>
+<td style="text-align:left;">
+FALSE
+</td>
+<td style="text-align:right;">
+0
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+15
+</td>
+<td style="text-align:right;">
+1
+</td>
+<td style="text-align:right;">
+10
+</td>
+<td style="text-align:left;">
+FALSE
+</td>
+<td style="text-align:right;">
+-33
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+15
+</td>
+<td style="text-align:right;">
+0
+</td>
+<td style="text-align:right;">
 20
 </td>
 <td style="text-align:left;">
@@ -1949,40 +1978,6 @@ FALSE
 </td>
 <td style="text-align:right;">
 -33
-</td>
-</tr>
-<tr>
-<td style="text-align:right;">
-20
-</td>
-<td style="text-align:right;">
-0
-</td>
-<td style="text-align:right;">
-20
-</td>
-<td style="text-align:left;">
-FALSE
-</td>
-<td style="text-align:right;">
-0
-</td>
-</tr>
-<tr>
-<td style="text-align:right;">
-20
-</td>
-<td style="text-align:right;">
-1
-</td>
-<td style="text-align:right;">
-10
-</td>
-<td style="text-align:left;">
-FALSE
-</td>
-<td style="text-align:right;">
--50
 </td>
 </tr>
 <tr>
@@ -2112,13 +2107,13 @@ FALSE
 1
 </td>
 <td style="text-align:right;">
-25
+20
 </td>
 <td style="text-align:left;">
 FALSE
 </td>
 <td style="text-align:right;">
-0
+-20
 </td>
 </tr>
 <tr>
@@ -2197,74 +2192,6 @@ FALSE
 0
 </td>
 <td style="text-align:right;">
-50
-</td>
-<td style="text-align:left;">
-FALSE
-</td>
-<td style="text-align:right;">
-0
-</td>
-</tr>
-<tr>
-<td style="text-align:right;">
-50
-</td>
-<td style="text-align:right;">
-1
-</td>
-<td style="text-align:right;">
-50
-</td>
-<td style="text-align:left;">
-FALSE
-</td>
-<td style="text-align:right;">
-0
-</td>
-</tr>
-<tr>
-<td style="text-align:right;">
-50
-</td>
-<td style="text-align:right;">
-2
-</td>
-<td style="text-align:right;">
-25
-</td>
-<td style="text-align:left;">
-FALSE
-</td>
-<td style="text-align:right;">
--50
-</td>
-</tr>
-<tr>
-<td style="text-align:right;">
-50
-</td>
-<td style="text-align:right;">
-3
-</td>
-<td style="text-align:right;">
-25
-</td>
-<td style="text-align:left;">
-FALSE
-</td>
-<td style="text-align:right;">
--50
-</td>
-</tr>
-<tr>
-<td style="text-align:right;">
-50
-</td>
-<td style="text-align:right;">
-0
-</td>
-<td style="text-align:right;">
 80
 </td>
 <td style="text-align:left;">
@@ -2299,13 +2226,13 @@ FALSE
 2
 </td>
 <td style="text-align:right;">
-50
+40
 </td>
 <td style="text-align:left;">
 FALSE
 </td>
 <td style="text-align:right;">
-0
+-20
 </td>
 </tr>
 <tr>
@@ -2316,13 +2243,13 @@ FALSE
 3
 </td>
 <td style="text-align:right;">
-40
+25
 </td>
 <td style="text-align:left;">
-TRUE
+FALSE
 </td>
 <td style="text-align:right;">
--20
+-50
 </td>
 </tr>
 <tr>
@@ -2336,7 +2263,7 @@ TRUE
 100
 </td>
 <td style="text-align:left;">
-TRUE
+FALSE
 </td>
 <td style="text-align:right;">
 25
@@ -2350,13 +2277,13 @@ TRUE
 1
 </td>
 <td style="text-align:right;">
-80
+50
 </td>
 <td style="text-align:left;">
-TRUE
+FALSE
 </td>
 <td style="text-align:right;">
-0
+-38
 </td>
 </tr>
 <tr>
@@ -2370,7 +2297,7 @@ TRUE
 50
 </td>
 <td style="text-align:left;">
-TRUE
+FALSE
 </td>
 <td style="text-align:right;">
 -38
@@ -2384,13 +2311,13 @@ TRUE
 3
 </td>
 <td style="text-align:right;">
-50
+40
 </td>
 <td style="text-align:left;">
 TRUE
 </td>
 <td style="text-align:right;">
--38
+-50
 </td>
 </tr>
 </tbody>
@@ -2431,10 +2358,10 @@ any reports of toxicity, and fit the revised model …</p>
 <span><span class="co">#&gt;  [5,]   15  0.000    0.000</span></span>
 <span><span class="co">#&gt;  [6,]   20  0.000    0.000</span></span>
 <span><span class="co">#&gt;  [7,]   25  0.000    0.000</span></span>
-<span><span class="co">#&gt;  [8,]   40  0.001    0.000</span></span>
-<span><span class="co">#&gt;  [9,]   50  0.031    0.000</span></span>
-<span><span class="co">#&gt; [10,]   80  0.139    0.001</span></span>
-<span><span class="co">#&gt; [11,]  100  0.221    0.038</span></span>
+<span><span class="co">#&gt;  [8,]   40  0.000    0.000</span></span>
+<span><span class="co">#&gt;  [9,]   50  0.000    0.000</span></span>
+<span><span class="co">#&gt; [10,]   80  0.054    0.000</span></span>
+<span><span class="co">#&gt; [11,]  100  0.186    0.001</span></span>
 <span></span>
 <span><span class="fu"><a href="../reference/stopTrial.html">stopTrial</a></span><span class="op">(</span><span class="va">stopping_trial</span>, <span class="va">recommended_dose</span><span class="op">$</span><span class="va">value</span>, <span class="va">no_tox_samples</span>, <span class="va">initial_model</span>, <span class="va">no_tox_data</span><span class="op">)</span></span>
 <span><span class="co">#&gt; [1] TRUE</span></span>
@@ -2444,7 +2371,7 @@ any reports of toxicity, and fit the revised model …</p>
 <span><span class="co">#&gt; [1] "Number of cohorts is 11 and thus reached the prespecified minimum number 3"</span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; attr(,"message")[[1]][[2]]</span></span>
-<span><span class="co">#&gt; [1] "Probability for target toxicity is 22 % for dose 100 and thus below the required 50 %"</span></span>
+<span><span class="co">#&gt; [1] "Probability for target toxicity is 19 % for dose 100 and thus below the required 50 %"</span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; attr(,"message")[[2]]</span></span>
@@ -2472,7 +2399,7 @@ participants to 40.</p>
 <span>  nextBest <span class="op">=</span> <span class="va">next_best</span>,</span>
 <span>  stopping <span class="op">=</span> <span class="va">revised_stopping_trial</span>,</span>
 <span>  increments <span class="op">=</span> <span class="va">revised_increment_rule</span>,</span>
-<span>  cohortSize <span class="op">=</span> <span class="va">cohort_size</span>,</span>
+<span>  cohort_size <span class="op">=</span> <span class="va">cohort_size</span>,</span>
 <span>  data <span class="op">=</span> <span class="va">empty_data</span>,</span>
 <span>  startingDose <span class="op">=</span> <span class="fl">3</span></span>
 <span><span class="op">)</span></span></code></pre></div>

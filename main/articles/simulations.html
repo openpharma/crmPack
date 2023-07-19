@@ -63,12 +63,6 @@
 <li class="nav-item">
   <a class="nav-link" href="../news/index.html">Changelog</a>
 </li>
-<!-- start dropdown for versions --> <li class="nav-item dropdown">
-        <a href="#" class="nav-link dropdown-toggle"
-          data-bs-toggle="dropdown" role="button"
-          aria-expanded="false" aria-haspopup="true"
-          id="dropdown-versions">Versions</a> <div class="dropdown-menu" aria-labelledby="dropdown-versions"> <a class="dropdown-item" data-toggle="tooltip" title="" href="https://Roche.github.io/crmPack/main">main</a> </div></li>
-<!-- end dropdown for versions -->
       </ul>
 <form class="form-inline my-2 my-lg-0" role="search">
         <input type="search" class="form-control me-sm-2" aria-label="Toggle navigation" name="search-input" data-search-index="../search.json" id="search-input" placeholder="Search for" autocomplete="off">
@@ -117,20 +111,22 @@ Daniel Sabanes Bove</h4>
 <span><span class="va">refDose</span> <span class="op">&lt;-</span> <span class="fl">56</span></span>
 <span></span>
 <span><span class="co"># True dose-DLT relationship</span></span>
-<span><span class="va">myTruth</span> <span class="op">&lt;-</span> <span class="kw">function</span><span class="op">(</span><span class="va">dose</span><span class="op">)</span><span class="op">{</span></span>
+<span><span class="va">myTruth</span> <span class="op">&lt;-</span> <span class="kw">function</span><span class="op">(</span><span class="va">dose</span><span class="op">)</span> <span class="op">{</span></span>
 <span>  <span class="va">StandLogDose</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/Log.html" class="external-link">log</a></span><span class="op">(</span><span class="va">dose</span> <span class="op">/</span> <span class="va">refDose</span><span class="op">)</span></span>
 <span>  <span class="fu"><a href="https://rdrr.io/r/stats/Logistic.html" class="external-link">plogis</a></span><span class="op">(</span><span class="va">a0</span> <span class="op">+</span> <span class="va">a1</span> <span class="op">*</span> <span class="va">StandLogDose</span><span class="op">)</span></span>
 <span><span class="op">}</span></span>
 <span></span>
 <span><span class="co"># The conditional CDF of the PEM</span></span>
-<span><span class="kw">if</span><span class="op">(</span><span class="va">onset</span><span class="op">==</span><span class="fl">30</span><span class="op">)</span> <span class="op">{</span></span>
-<span>  <span class="va">onset</span><span class="op">=</span><span class="fl">15</span></span>
-<span>  <span class="va">exp_cond.cdf</span><span class="op">&lt;-</span><span class="kw">function</span><span class="op">(</span><span class="va">x</span><span class="op">)</span><span class="op">{</span></span>
-<span>    <span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/stats/Exponential.html" class="external-link">pexp</a></span><span class="op">(</span><span class="fl">42</span><span class="op">-</span><span class="va">x</span>,<span class="fl">1</span><span class="op">/</span><span class="va">onset</span>,lower.tail<span class="op">=</span><span class="cn">FALSE</span><span class="op">)</span><span class="op">-</span><span class="fu"><a href="https://rdrr.io/r/stats/Exponential.html" class="external-link">pexp</a></span><span class="op">(</span><span class="va">Tmax_</span>,<span class="fl">1</span><span class="op">/</span><span class="va">onset</span>,lower.tail<span class="op">=</span><span class="cn">FALSE</span><span class="op">)</span><span class="op">)</span><span class="op">/</span><span class="fu"><a href="https://rdrr.io/r/stats/Exponential.html" class="external-link">pexp</a></span><span class="op">(</span><span class="va">Tmax_</span>,<span class="fl">1</span><span class="op">/</span><span class="va">onset</span><span class="op">)</span></span>
+<span><span class="kw">if</span> <span class="op">(</span><span class="va">onset</span> <span class="op">==</span> <span class="fl">30</span><span class="op">)</span> <span class="op">{</span></span>
+<span>  <span class="va">onset</span> <span class="op">&lt;-</span> <span class="fl">15</span></span>
+<span>  <span class="va">exp_cond.cdf</span> <span class="op">&lt;-</span> <span class="kw">function</span><span class="op">(</span><span class="va">x</span><span class="op">)</span> <span class="op">{</span></span>
+<span>    <span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/stats/Exponential.html" class="external-link">pexp</a></span><span class="op">(</span><span class="fl">42</span> <span class="op">-</span> <span class="va">x</span>, <span class="fl">1</span> <span class="op">/</span> <span class="va">onset</span>, lower.tail <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span> <span class="op">-</span> <span class="fu"><a href="https://rdrr.io/r/stats/Exponential.html" class="external-link">pexp</a></span><span class="op">(</span><span class="va">Tmax_</span>, <span class="fl">1</span> <span class="op">/</span> <span class="va">onset</span>, lower.tail <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span><span class="op">)</span> <span class="op">/</span> <span class="fu"><a href="https://rdrr.io/r/stats/Exponential.html" class="external-link">pexp</a></span><span class="op">(</span><span class="va">Tmax_</span>, <span class="fl">1</span> <span class="op">/</span> <span class="va">onset</span><span class="op">)</span></span>
 <span>  <span class="op">}</span></span>
-<span><span class="op">}</span> <span class="kw">else</span><span class="op">{</span> <span class="va">exp_cond.cdf</span><span class="op">&lt;-</span><span class="kw">function</span><span class="op">(</span><span class="va">x</span><span class="op">)</span><span class="op">{</span></span>
-<span>  <span class="fl">1</span><span class="op">-</span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/stats/Exponential.html" class="external-link">pexp</a></span><span class="op">(</span><span class="va">x</span>,<span class="fl">1</span><span class="op">/</span><span class="va">onset</span>,lower.tail<span class="op">=</span><span class="cn">FALSE</span><span class="op">)</span><span class="op">-</span><span class="fu"><a href="https://rdrr.io/r/stats/Exponential.html" class="external-link">pexp</a></span><span class="op">(</span><span class="va">Tmax_</span>,<span class="fl">1</span><span class="op">/</span><span class="va">onset</span>,lower.tail<span class="op">=</span><span class="cn">FALSE</span><span class="op">)</span><span class="op">)</span><span class="op">/</span><span class="fu"><a href="https://rdrr.io/r/stats/Exponential.html" class="external-link">pexp</a></span><span class="op">(</span><span class="va">Tmax_</span>,<span class="fl">1</span><span class="op">/</span><span class="va">onset</span><span class="op">)</span></span>
-<span><span class="op">}</span><span class="op">}</span></span></code></pre></div>
+<span><span class="op">}</span> <span class="kw">else</span> <span class="op">{</span></span>
+<span>  <span class="va">exp_cond.cdf</span> <span class="op">&lt;-</span> <span class="kw">function</span><span class="op">(</span><span class="va">x</span><span class="op">)</span> <span class="op">{</span></span>
+<span>    <span class="fl">1</span> <span class="op">-</span> <span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/stats/Exponential.html" class="external-link">pexp</a></span><span class="op">(</span><span class="va">x</span>, <span class="fl">1</span> <span class="op">/</span> <span class="va">onset</span>, lower.tail <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span> <span class="op">-</span> <span class="fu"><a href="https://rdrr.io/r/stats/Exponential.html" class="external-link">pexp</a></span><span class="op">(</span><span class="va">Tmax_</span>, <span class="fl">1</span> <span class="op">/</span> <span class="va">onset</span>, lower.tail <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span><span class="op">)</span> <span class="op">/</span> <span class="fu"><a href="https://rdrr.io/r/stats/Exponential.html" class="external-link">pexp</a></span><span class="op">(</span><span class="va">Tmax_</span>, <span class="fl">1</span> <span class="op">/</span> <span class="va">onset</span><span class="op">)</span></span>
+<span>  <span class="op">}</span></span>
+<span><span class="op">}</span></span></code></pre></div>
 </div>
 <div class="section level2">
 <h2 id="design-definition">Design definition<a class="anchor" aria-label="anchor" href="#design-definition"></a>
@@ -150,36 +146,42 @@ rolling-CRM.</p>
 <code class="sourceCode R"><span><span class="va">Tmax_</span> <span class="op">&lt;-</span> <span class="fl">42</span></span>
 <span></span>
 <span><span class="va">model</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/TITELogisticLogNormal-class.html">TITELogisticLogNormal</a></span><span class="op">(</span></span>
-<span>  mean<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">1.33</span>,<span class="fl">1.49</span><span class="op">)</span>,</span>
-<span>  cov<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/base/matrix.html" class="external-link">matrix</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">1.826</span>,<span class="fl">0.0209</span>,<span class="fl">0.0209</span>,<span class="fl">0.0245</span><span class="op">)</span>,nrow<span class="op">=</span><span class="fl">2</span><span class="op">)</span>,</span>
-<span>  ref_dose<span class="op">=</span><span class="va">refDose</span></span>
+<span>  mean <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">1.33</span>, <span class="fl">1.49</span><span class="op">)</span>,</span>
+<span>  cov <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/matrix.html" class="external-link">matrix</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">1.826</span>, <span class="fl">0.0209</span>, <span class="fl">0.0209</span>, <span class="fl">0.0245</span><span class="op">)</span>, nrow <span class="op">=</span> <span class="fl">2</span><span class="op">)</span>,</span>
+<span>  ref_dose <span class="op">=</span> <span class="va">refDose</span></span>
 <span><span class="op">)</span></span>
 <span></span>
-<span><span class="va">myIncrements</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/IncrementsRelative-class.html">IncrementsRelative</a></span><span class="op">(</span>intervals<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">0</span>,<span class="fl">20</span><span class="op">)</span>,</span>
-<span>                                   increments<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">10</span>,<span class="fl">3</span><span class="op">)</span><span class="op">)</span></span>
+<span><span class="va">myIncrements</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/IncrementsRelative-class.html">IncrementsRelative</a></span><span class="op">(</span></span>
+<span>  intervals <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">0</span>, <span class="fl">20</span><span class="op">)</span>,</span>
+<span>  increments <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">10</span>, <span class="fl">3</span><span class="op">)</span></span>
+<span><span class="op">)</span></span>
 <span></span>
-<span><span class="va">myNextBest</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/NextBestMTD-class.html">NextBestMTD</a></span><span class="op">(</span>target<span class="op">=</span><span class="fl">0.3</span>,</span>
-<span>                          derive<span class="op">=</span></span>
-<span>                            <span class="kw">function</span><span class="op">(</span><span class="va">mtd_samples</span><span class="op">)</span><span class="op">{</span></span>
-<span>                              <span class="fu"><a href="https://rdrr.io/r/base/mean.html" class="external-link">mean</a></span><span class="op">(</span><span class="va">mtd_samples</span><span class="op">)</span></span>
-<span>                            <span class="op">}</span><span class="op">)</span></span>
+<span><span class="va">myNextBest</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/NextBestMTD-class.html">NextBestMTD</a></span><span class="op">(</span></span>
+<span>  target <span class="op">=</span> <span class="fl">0.3</span>,</span>
+<span>  derive <span class="op">=</span></span>
+<span>    <span class="kw">function</span><span class="op">(</span><span class="va">mtd_samples</span><span class="op">)</span> <span class="op">{</span></span>
+<span>      <span class="fu"><a href="https://rdrr.io/r/base/mean.html" class="external-link">mean</a></span><span class="op">(</span><span class="va">mtd_samples</span><span class="op">)</span></span>
+<span>    <span class="op">}</span></span>
+<span><span class="op">)</span></span>
 <span></span>
-<span><span class="va">myStopping</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/StoppingMinPatients-class.html">StoppingMinPatients</a></span><span class="op">(</span>nPatients<span class="op">=</span><span class="fl">48</span><span class="op">)</span></span>
+<span><span class="va">myStopping</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/StoppingMinPatients-class.html">StoppingMinPatients</a></span><span class="op">(</span>nPatients <span class="op">=</span> <span class="fl">48</span><span class="op">)</span></span>
 <span></span>
-<span><span class="va">mySize</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/CohortSizeConst-class.html">CohortSizeConst</a></span><span class="op">(</span>size<span class="op">=</span><span class="fl">3</span><span class="op">)</span></span>
+<span><span class="va">mySize</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/CohortSizeConst-class.html">CohortSizeConst</a></span><span class="op">(</span>size <span class="op">=</span> <span class="fl">3</span><span class="op">)</span></span>
 <span></span>
-<span><span class="va">emptydata</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/DataDA-class.html">DataDA</a></span><span class="op">(</span>doseGrid<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/base/seq.html" class="external-link">seq</a></span><span class="op">(</span>from<span class="op">=</span><span class="fl">2</span>, to<span class="op">=</span><span class="fl">50</span>, by<span class="op">=</span><span class="fl">2</span><span class="op">)</span>,Tmax<span class="op">=</span><span class="va">Tmax_</span><span class="op">)</span></span>
+<span><span class="va">emptydata</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/DataDA-class.html">DataDA</a></span><span class="op">(</span>doseGrid <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/seq.html" class="external-link">seq</a></span><span class="op">(</span>from <span class="op">=</span> <span class="fl">2</span>, to <span class="op">=</span> <span class="fl">50</span>, by <span class="op">=</span> <span class="fl">2</span><span class="op">)</span>, Tmax <span class="op">=</span> <span class="va">Tmax_</span><span class="op">)</span></span>
 <span></span>
-<span><span class="va">mysafetywindow</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/SafetyWindowConst-class.html">SafetyWindowConst</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">7</span>,<span class="fl">7</span><span class="op">)</span>,<span class="fl">7</span>,<span class="fl">7</span><span class="op">)</span></span>
+<span><span class="va">mysafetywindow</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/SafetyWindowConst-class.html">SafetyWindowConst</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">7</span>, <span class="fl">7</span><span class="op">)</span>, <span class="fl">7</span>, <span class="fl">7</span><span class="op">)</span></span>
 <span></span>
-<span><span class="va">design</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/DADesign-class.html">DADesign</a></span><span class="op">(</span>model<span class="op">=</span><span class="va">model</span>,</span>
-<span>                   increments<span class="op">=</span><span class="va">myIncrements</span>,</span>
-<span>                   nextBest<span class="op">=</span><span class="va">myNextBest</span>,</span>
-<span>                   stopping<span class="op">=</span><span class="va">myStopping</span>,</span>
-<span>                   cohortSize<span class="op">=</span><span class="va">mySize</span>,</span>
-<span>                   data<span class="op">=</span><span class="va">emptydata</span>,</span>
-<span>                   safetyWindow<span class="op">=</span><span class="va">mysafetywindow</span>,</span>
-<span>                   startingDose<span class="op">=</span><span class="fl">8</span><span class="op">)</span></span></code></pre></div>
+<span><span class="va">design</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/DADesign-class.html">DADesign</a></span><span class="op">(</span></span>
+<span>  model <span class="op">=</span> <span class="va">model</span>,</span>
+<span>  increments <span class="op">=</span> <span class="va">myIncrements</span>,</span>
+<span>  nextBest <span class="op">=</span> <span class="va">myNextBest</span>,</span>
+<span>  stopping <span class="op">=</span> <span class="va">myStopping</span>,</span>
+<span>  cohort_size <span class="op">=</span> <span class="va">mySize</span>,</span>
+<span>  data <span class="op">=</span> <span class="va">emptydata</span>,</span>
+<span>  safetyWindow <span class="op">=</span> <span class="va">mysafetywindow</span>,</span>
+<span>  startingDose <span class="op">=</span> <span class="fl">8</span></span>
+<span><span class="op">)</span></span></code></pre></div>
 </div>
 <div class="section level2">
 <h2 id="simulation-run">Simulation run<a class="anchor" aria-label="anchor" href="#simulation-run"></a>
@@ -187,18 +189,21 @@ rolling-CRM.</p>
 <p>In order to obtain stable results, increase the simulation parameters
 appropriately (step, samples, nsim).</p>
 <div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">options</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/McmcOptions-class.html">McmcOptions</a></span><span class="op">(</span>burnin<span class="op">=</span><span class="fl">20</span>,</span>
-<span>                       step<span class="op">=</span><span class="fl">1</span>,</span>
-<span>                       samples<span class="op">=</span><span class="fl">50</span><span class="op">)</span></span>
+<code class="sourceCode R"><span><span class="va">options</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/McmcOptions-class.html">McmcOptions</a></span><span class="op">(</span></span>
+<span>  burnin <span class="op">=</span> <span class="fl">20</span>,</span>
+<span>  step <span class="op">=</span> <span class="fl">1</span>,</span>
+<span>  samples <span class="op">=</span> <span class="fl">50</span></span>
+<span><span class="op">)</span></span>
 <span><span class="va">mySims</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/stats/simulate.html" class="external-link">simulate</a></span><span class="op">(</span><span class="va">design</span>,</span>
-<span>                   args<span class="op">=</span><span class="cn">NULL</span>,</span>
-<span>                   truthTox<span class="op">=</span><span class="va">myTruth</span>,</span>
-<span>                   truthSurv<span class="op">=</span><span class="va">exp_cond.cdf</span>,</span>
-<span>                   trueTmax<span class="op">=</span><span class="fl">42</span>,</span>
-<span>                   nsim<span class="op">=</span><span class="fl">10</span>,</span>
-<span>                   seed<span class="op">=</span><span class="fl">819</span>,</span>
-<span>                   mcmcOptions<span class="op">=</span><span class="va">options</span>,</span>
-<span>                   parallel<span class="op">=</span><span class="cn">FALSE</span><span class="op">)</span></span>
+<span>  args <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  truthTox <span class="op">=</span> <span class="va">myTruth</span>,</span>
+<span>  truthSurv <span class="op">=</span> <span class="va">exp_cond.cdf</span>,</span>
+<span>  trueTmax <span class="op">=</span> <span class="fl">42</span>,</span>
+<span>  nsim <span class="op">=</span> <span class="fl">10</span>,</span>
+<span>  seed <span class="op">=</span> <span class="fl">819</span>,</span>
+<span>  mcmcOptions <span class="op">=</span> <span class="va">options</span>,</span>
+<span>  parallel <span class="op">=</span> <span class="cn">FALSE</span></span>
+<span><span class="op">)</span></span>
 <span></span>
 <span><span class="co"># nolint end</span></span></code></pre></div>
 </div>

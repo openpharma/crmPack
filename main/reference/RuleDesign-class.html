@@ -45,12 +45,6 @@ model, stopping and increments slots."><meta property="og:image" content="https:
 <li class="nav-item">
   <a class="nav-link" href="../news/index.html">Changelog</a>
 </li>
-<!-- start dropdown for versions --> <li class="nav-item dropdown">
-        <a href="#" class="nav-link dropdown-toggle"
-          data-bs-toggle="dropdown" role="button"
-          aria-expanded="false" aria-haspopup="true"
-          id="dropdown-versions">Versions</a> <div class="dropdown-menu" aria-labelledby="dropdown-versions"> <a class="dropdown-item" data-toggle="tooltip" title="" href="https://Roche.github.io/crmPack/main">main</a> </div></li>
-<!-- end dropdown for versions -->
       </ul><form class="form-inline my-2 my-lg-0" role="search">
         <input type="search" class="form-control me-sm-2" aria-label="Toggle navigation" name="search-input" data-search-index="../search.json" id="search-input" placeholder="Search for" autocomplete="off"></form>
 
@@ -81,7 +75,7 @@ this class and the <code><a href="Design-class.html">Design</a></code> class is 
 
     <div class="section level2">
     <h2 id="ref-usage">Usage<a class="anchor" aria-label="anchor" href="#ref-usage"></a></h2>
-    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">RuleDesign</span><span class="op">(</span><span class="va">nextBest</span>, <span class="va">cohortSize</span>, <span class="va">data</span>, <span class="va">startingDose</span><span class="op">)</span></span>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">RuleDesign</span><span class="op">(</span><span class="va">nextBest</span>, <span class="va">cohort_size</span>, <span class="va">data</span>, <span class="va">startingDose</span><span class="op">)</span></span>
 <span></span>
 <span><span class="fu">ThreePlusThreeDesign</span><span class="op">(</span><span class="va">doseGrid</span><span class="op">)</span></span></code></pre></div>
     </div>
@@ -92,7 +86,7 @@ this class and the <code><a href="Design-class.html">Design</a></code> class is 
 <dd><p>(<code>NextBest</code>)<br> see slot definition.</p></dd>
 
 
-<dt>cohortSize</dt>
+<dt>cohort_size</dt>
 <dd><p>(<code>CohortSize</code>)<br> see slot definition.</p></dd>
 
 
@@ -121,7 +115,7 @@ this class and the <code><a href="Design-class.html">Design</a></code> class is 
 <dd><p>(<code>NextBest</code>)<br> how to find the next best dose.</p></dd>
 
 
-<dt><code>cohortSize</code></dt>
+<dt><code>cohort_size</code></dt>
 <dd><p>(<code>CohortSize</code>)<br> rules for the cohort sizes.</p></dd>
 
 
@@ -144,7 +138,7 @@ grid in <code>data</code>.</p></dd>
 <span class="r-in"><span><span class="co"># Initialing a 3+3 design with constant cohort size of 3 and starting dose equal 5.</span></span></span>
 <span class="r-in"><span><span class="va">my_design</span> <span class="op">&lt;-</span> <span class="fu">RuleDesign</span><span class="op">(</span></span></span>
 <span class="r-in"><span>  nextBest <span class="op">=</span> <span class="fu"><a href="NextBestThreePlusThree-class.html">NextBestThreePlusThree</a></span><span class="op">(</span><span class="op">)</span>,</span></span>
-<span class="r-in"><span>  cohortSize <span class="op">=</span> <span class="fu"><a href="CohortSizeConst-class.html">CohortSizeConst</a></span><span class="op">(</span>size <span class="op">=</span> <span class="fl">3L</span><span class="op">)</span>,</span></span>
+<span class="r-in"><span>  cohort_size <span class="op">=</span> <span class="fu"><a href="CohortSizeConst-class.html">CohortSizeConst</a></span><span class="op">(</span>size <span class="op">=</span> <span class="fl">3L</span><span class="op">)</span>,</span></span>
 <span class="r-in"><span>  data <span class="op">=</span> <span class="fu"><a href="Data-class.html">Data</a></span><span class="op">(</span>doseGrid <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">5</span>, <span class="fl">10</span>, <span class="fl">15</span>, <span class="fl">25</span>, <span class="fl">35</span>, <span class="fl">50</span>, <span class="fl">80</span><span class="op">)</span><span class="op">)</span>,</span></span>
 <span class="r-in"><span>  startingDose <span class="op">=</span> <span class="fl">5</span></span></span>
 <span class="r-in"><span><span class="op">)</span></span></span>

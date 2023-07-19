@@ -65,12 +65,6 @@ the simulated trials
 <li class="nav-item">
   <a class="nav-link" href="../news/index.html">Changelog</a>
 </li>
-<!-- start dropdown for versions --> <li class="nav-item dropdown">
-        <a href="#" class="nav-link dropdown-toggle"
-          data-bs-toggle="dropdown" role="button"
-          aria-expanded="false" aria-haspopup="true"
-          id="dropdown-versions">Versions</a> <div class="dropdown-menu" aria-labelledby="dropdown-versions"> <a class="dropdown-item" data-toggle="tooltip" title="" href="https://Roche.github.io/crmPack/main">main</a> </div></li>
-<!-- end dropdown for versions -->
       </ul><form class="form-inline my-2 my-lg-0" role="search">
         <input type="search" class="form-control me-sm-2" aria-label="Toggle navigation" name="search-input" data-search-index="../search.json" id="search-input" placeholder="Search for" autocomplete="off"></form>
 
@@ -184,12 +178,29 @@ asked for, otherwise a <code>gridExtra{gTree}</code> object.</p>
 <span class="r-in"><span><span class="op">)</span></span></span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co"># Choose the rule for the cohort-size</span></span></span>
+<span class="r-in"><span><span class="va">mySize1</span> <span class="op">&lt;-</span> <span class="fu"><a href="CohortSizeRange-class.html">CohortSizeRange</a></span><span class="op">(</span></span></span>
+<span class="r-in"><span>  intervals <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">0</span>, <span class="fl">30</span><span class="op">)</span>,</span></span>
+<span class="r-in"><span>  cohort_size <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">1</span>, <span class="fl">3</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="va">mySize2</span> <span class="op">&lt;-</span> <span class="fu"><a href="CohortSizeDLT-class.html">CohortSizeDLT</a></span><span class="op">(</span></span></span>
+<span class="r-in"><span>  intervals <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">0</span>, <span class="fl">1</span><span class="op">)</span>,</span></span>
+<span class="r-in"><span>  cohort_size <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">1</span>, <span class="fl">3</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="va">mySize</span> <span class="op">&lt;-</span> <span class="fu"><a href="maxSize.html">maxSize</a></span><span class="op">(</span><span class="va">mySize1</span>, <span class="va">mySize2</span><span class="op">)</span></span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="co"># Choose the rule for stopping</span></span></span>
+<span class="r-in"><span><span class="va">myStopping4</span> <span class="op">&lt;-</span> <span class="fu"><a href="StoppingTargetBiomarker-class.html">StoppingTargetBiomarker</a></span><span class="op">(</span></span></span>
+<span class="r-in"><span>  target <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">0.9</span>, <span class="fl">1</span><span class="op">)</span>,</span></span>
+<span class="r-in"><span>  prob <span class="op">=</span> <span class="fl">0.5</span></span></span>
+<span class="r-in"><span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="va">myStopping</span> <span class="op">&lt;-</span> <span class="va">myStopping4</span> <span class="op">|</span> <span class="fu"><a href="StoppingMinPatients-class.html">StoppingMinPatients</a></span><span class="op">(</span><span class="fl">40</span><span class="op">)</span></span></span>
+<span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="va">my_size1</span> <span class="op">&lt;-</span> <span class="fu"><a href="CohortSizeRange-class.html">CohortSizeRange</a></span><span class="op">(</span></span></span>
 <span class="r-in"><span>  intervals <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">0</span>, <span class="fl">30</span><span class="op">)</span>,</span></span>
 <span class="r-in"><span>  cohort_size <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">1</span>, <span class="fl">3</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="va">my_size2</span> <span class="op">&lt;-</span> <span class="fu"><a href="CohortSizeDLT-class.html">CohortSizeDLT</a></span><span class="op">(</span></span></span>
-<span class="r-in"><span>  dlt_intervals <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">0</span>, <span class="fl">1</span><span class="op">)</span>,</span></span>
+<span class="r-in"><span>  intervals <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">0</span>, <span class="fl">1</span><span class="op">)</span>,</span></span>
 <span class="r-in"><span>  cohort_size <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">1</span>, <span class="fl">3</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="va">my_size</span> <span class="op">&lt;-</span> <span class="fu"><a href="maxSize.html">maxSize</a></span><span class="op">(</span><span class="va">my_size1</span>, <span class="va">my_size2</span><span class="op">)</span></span></span>
@@ -208,13 +219,14 @@ asked for, otherwise a <code>gridExtra{gTree}</code> object.</p>
 <span class="r-in"><span><span class="op">)</span></span></span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co"># Initialize the design</span></span></span>
+<span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="va">my_design</span> <span class="op">&lt;-</span> <span class="fu"><a href="DualDesign-class.html">DualDesign</a></span><span class="op">(</span></span></span>
 <span class="r-in"><span>  model <span class="op">=</span> <span class="va">my_model</span>,</span></span>
 <span class="r-in"><span>  data <span class="op">=</span> <span class="va">emptydata</span>,</span></span>
 <span class="r-in"><span>  nextBest <span class="op">=</span> <span class="va">my_next_best</span>,</span></span>
 <span class="r-in"><span>  stopping <span class="op">=</span> <span class="va">my_stopping</span>,</span></span>
 <span class="r-in"><span>  increments <span class="op">=</span> <span class="va">my_increments</span>,</span></span>
-<span class="r-in"><span>  cohortSize <span class="op">=</span> <span class="fu"><a href="CohortSizeConst-class.html">CohortSizeConst</a></span><span class="op">(</span><span class="fl">3</span><span class="op">)</span>,</span></span>
+<span class="r-in"><span>  cohort_size <span class="op">=</span> <span class="fu"><a href="CohortSizeConst-class.html">CohortSizeConst</a></span><span class="op">(</span><span class="fl">3</span><span class="op">)</span>,</span></span>
 <span class="r-in"><span>  startingDose <span class="op">=</span> <span class="fl">3</span></span></span>
 <span class="r-in"><span><span class="op">)</span></span></span>
 <span class="r-in"><span></span></span>
@@ -233,11 +245,10 @@ asked for, otherwise a <code>gridExtra{gTree}</code> object.</p>
 <span class="r-in"><span>  <span class="fu"><a href="https://rdrr.io/r/stats/Normal.html" class="external-link">pnorm</a></span><span class="op">(</span><span class="op">(</span><span class="va">dose</span> <span class="op">-</span> <span class="fl">60</span><span class="op">)</span> <span class="op">/</span> <span class="fl">10</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="op">}</span></span></span>
 <span class="r-in"><span></span></span>
-<span class="r-in"><span><span class="co"># Draw the TRUE profiles.</span></span></span>
+<span class="r-in"><span><span class="co"># Draw the TRUE profiles</span></span></span>
 <span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/graphics/par.html" class="external-link">par</a></span><span class="op">(</span>mfrow <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">1</span>, <span class="fl">2</span><span class="op">)</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/graphics/curve.html" class="external-link">curve</a></span><span class="op">(</span><span class="fu">true_tox</span><span class="op">(</span><span class="va">x</span><span class="op">)</span>, from <span class="op">=</span> <span class="fl">0</span>, to <span class="op">=</span> <span class="fl">80</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/graphics/curve.html" class="external-link">curve</a></span><span class="op">(</span><span class="fu">true_biomarker</span><span class="op">(</span><span class="va">x</span><span class="op">)</span>, from <span class="op">=</span> <span class="fl">0</span>, to <span class="op">=</span> <span class="fl">80</span><span class="op">)</span></span></span>
-<span class="r-in"><span></span></span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co"># Run the simulation on the desired design.</span></span></span>
 <span class="r-in"><span><span class="co"># We only generate 1 trial outcome here for illustration, for the actual study.</span></span></span>

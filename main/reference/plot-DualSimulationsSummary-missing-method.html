@@ -61,12 +61,6 @@ You can specify any subset of these in the type argument."><meta property="og:im
 <li class="nav-item">
   <a class="nav-link" href="../news/index.html">Changelog</a>
 </li>
-<!-- start dropdown for versions --> <li class="nav-item dropdown">
-        <a href="#" class="nav-link dropdown-toggle"
-          data-bs-toggle="dropdown" role="button"
-          aria-expanded="false" aria-haspopup="true"
-          id="dropdown-versions">Versions</a> <div class="dropdown-menu" aria-labelledby="dropdown-versions"> <a class="dropdown-item" data-toggle="tooltip" title="" href="https://Roche.github.io/crmPack/main">main</a> </div></li>
-<!-- end dropdown for versions -->
       </ul><form class="form-inline my-2 my-lg-0" role="search">
         <input type="search" class="form-control me-sm-2" aria-label="Toggle navigation" name="search-input" data-search-index="../search.json" id="search-input" placeholder="Search for" autocomplete="off"></form>
 
@@ -146,6 +140,7 @@ asked for, otherwise a <code>gridExtra{gTree}</code> object.</p>
     <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="co"># Define the dose-grid.</span></span></span>
 <span class="r-in"><span><span class="va">emptydata</span> <span class="op">&lt;-</span> <span class="fu"><a href="DataDual-class.html">DataDual</a></span><span class="op">(</span>doseGrid <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">1</span>, <span class="fl">3</span>, <span class="fl">5</span>, <span class="fl">10</span>, <span class="fl">15</span>, <span class="fl">20</span>, <span class="fl">25</span>, <span class="fl">40</span>, <span class="fl">50</span>, <span class="fl">80</span>, <span class="fl">100</span><span class="op">)</span><span class="op">)</span></span></span>
 <span class="r-in"><span></span></span>
+<span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co"># Initialize the CRM model.</span></span></span>
 <span class="r-in"><span><span class="va">my_model</span> <span class="op">&lt;-</span> <span class="fu"><a href="DualEndpointRW-class.html">DualEndpointRW</a></span><span class="op">(</span></span></span>
 <span class="r-in"><span>  mean <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">0</span>, <span class="fl">1</span><span class="op">)</span>,</span></span>
@@ -155,6 +150,7 @@ asked for, otherwise a <code>gridExtra{gTree}</code> object.</p>
 <span class="r-in"><span>  rho <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span>a <span class="op">=</span> <span class="fl">1</span>, b <span class="op">=</span> <span class="fl">1</span><span class="op">)</span>,</span></span>
 <span class="r-in"><span>  rw1 <span class="op">=</span> <span class="cn">TRUE</span></span></span>
 <span class="r-in"><span><span class="op">)</span></span></span>
+<span class="r-in"><span></span></span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co"># Choose the rule for selecting the next dose.</span></span></span>
 <span class="r-in"><span><span class="va">my_next_best</span> <span class="op">&lt;-</span> <span class="fu"><a href="NextBestDualEndpoint-class.html">NextBestDualEndpoint</a></span><span class="op">(</span></span></span>
@@ -169,7 +165,7 @@ asked for, otherwise a <code>gridExtra{gTree}</code> object.</p>
 <span class="r-in"><span>  cohort_size <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">1</span>, <span class="fl">3</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="va">my_size2</span> <span class="op">&lt;-</span> <span class="fu"><a href="CohortSizeDLT-class.html">CohortSizeDLT</a></span><span class="op">(</span></span></span>
-<span class="r-in"><span>  dlt_intervals <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">0</span>, <span class="fl">1</span><span class="op">)</span>,</span></span>
+<span class="r-in"><span>  intervals <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">0</span>, <span class="fl">1</span><span class="op">)</span>,</span></span>
 <span class="r-in"><span>  cohort_size <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">1</span>, <span class="fl">3</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="va">my_size</span> <span class="op">&lt;-</span> <span class="fu"><a href="maxSize.html">maxSize</a></span><span class="op">(</span><span class="va">my_size1</span>, <span class="va">my_size2</span><span class="op">)</span></span></span>
@@ -195,7 +191,7 @@ asked for, otherwise a <code>gridExtra{gTree}</code> object.</p>
 <span class="r-in"><span>  nextBest <span class="op">=</span> <span class="va">my_next_best</span>,</span></span>
 <span class="r-in"><span>  stopping <span class="op">=</span> <span class="va">my_stopping</span>,</span></span>
 <span class="r-in"><span>  increments <span class="op">=</span> <span class="va">my_increments</span>,</span></span>
-<span class="r-in"><span>  cohortSize <span class="op">=</span> <span class="fu"><a href="CohortSizeConst-class.html">CohortSizeConst</a></span><span class="op">(</span><span class="fl">3</span><span class="op">)</span>,</span></span>
+<span class="r-in"><span>  cohort_size <span class="op">=</span> <span class="fu"><a href="CohortSizeConst-class.html">CohortSizeConst</a></span><span class="op">(</span><span class="fl">3</span><span class="op">)</span>,</span></span>
 <span class="r-in"><span>  startingDose <span class="op">=</span> <span class="fl">3</span></span></span>
 <span class="r-in"><span><span class="op">)</span></span></span>
 <span class="r-in"><span></span></span>
@@ -205,6 +201,8 @@ asked for, otherwise a <code>gridExtra{gTree}</code> object.</p>
 <span class="r-in"><span>  <span class="va">dose</span> <span class="op">&lt;-</span> <span class="va">dose</span> <span class="op">/</span> <span class="va">scal</span></span></span>
 <span class="r-in"><span>  <span class="va">e0</span> <span class="op">+</span> <span class="va">eMax</span> <span class="op">/</span> <span class="va">maxDens</span> <span class="op">*</span> <span class="op">(</span><span class="va">dose</span><span class="op">^</span><span class="va">delta1</span><span class="op">)</span> <span class="op">*</span> <span class="op">(</span><span class="fl">1</span> <span class="op">-</span> <span class="va">dose</span><span class="op">)</span><span class="op">^</span><span class="va">delta2</span></span></span>
 <span class="r-in"><span><span class="op">}</span></span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span></span></span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="va">true_biomarker</span> <span class="op">&lt;-</span> <span class="kw">function</span><span class="op">(</span><span class="va">dose</span><span class="op">)</span> <span class="op">{</span></span></span>
 <span class="r-in"><span>  <span class="fu">beta_mod</span><span class="op">(</span><span class="va">dose</span>, e0 <span class="op">=</span> <span class="fl">0.2</span>, eMax <span class="op">=</span> <span class="fl">0.6</span>, delta1 <span class="op">=</span> <span class="fl">5</span>, delta2 <span class="op">=</span> <span class="fl">5</span> <span class="op">*</span> <span class="fl">0.5</span> <span class="op">/</span> <span class="fl">0.5</span>, scal <span class="op">=</span> <span class="fl">100</span><span class="op">)</span></span></span>

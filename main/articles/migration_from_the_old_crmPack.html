@@ -63,12 +63,6 @@
 <li class="nav-item">
   <a class="nav-link" href="../news/index.html">Changelog</a>
 </li>
-<!-- start dropdown for versions --> <li class="nav-item dropdown">
-        <a href="#" class="nav-link dropdown-toggle"
-          data-bs-toggle="dropdown" role="button"
-          aria-expanded="false" aria-haspopup="true"
-          id="dropdown-versions">Versions</a> <div class="dropdown-menu" aria-labelledby="dropdown-versions"> <a class="dropdown-item" data-toggle="tooltip" title="" href="https://Roche.github.io/crmPack/main">main</a> </div></li>
-<!-- end dropdown for versions -->
       </ul>
 <form class="form-inline my-2 my-lg-0" role="search">
         <input type="search" class="form-control me-sm-2" aria-label="Toggle navigation" name="search-input" data-search-index="../search.json" id="search-input" placeholder="Search for" autocomplete="off">
@@ -1275,10 +1269,10 @@ of a fixed model’s parameters values.</p>
 <span><span class="co"># given a particular models and samples.</span></span>
 <span><span class="co"># Every single dose corresponds to one particular sample in `my_samples`.</span></span>
 <span><span class="fu"><a href="../reference/dose.html">dose</a></span><span class="op">(</span><span class="fl">0.3</span>, <span class="va">my_model</span>, <span class="va">my_samples</span><span class="op">)</span></span></code></pre></div>
-<pre><code><span><span class="co">##  [1] 2.229792e+00 1.567457e+00 1.874633e+00 3.623550e-05 1.228816e+01</span></span>
-<span><span class="co">##  [6] 6.711487e-01 1.307115e+00 1.856931e+00 1.426532e+00 2.257447e+00</span></span>
-<span><span class="co">## [11] 1.238182e+00 1.510616e+00 1.703913e+00 1.760254e+00 1.244072e+00</span></span>
-<span><span class="co">## [16] 1.930113e+01 1.255576e+00 1.580362e+00 1.107288e+00 1.148432e+00</span></span></code></pre>
+<pre><code><span><span class="co">##  [1] 1.622699e+00 3.776680e+02 1.419510e+00 1.095003e+00 1.003450e+00</span></span>
+<span><span class="co">##  [6] 3.702689e-01 1.305996e+01 1.685740e-01 6.035526e-01 2.747112e+00</span></span>
+<span><span class="co">## [11] 9.230964e-01 2.013628e-03 5.905728e-01 1.767320e+00 7.202246e-01</span></span>
+<span><span class="co">## [16] 6.799159e-01 1.036291e+00 1.855686e+00 2.249287e+00 1.096329e+00</span></span></code></pre>
 <div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># True dose-DLT relationship.</span></span>
 <span><span class="co"># Say that -0.8 and 1 are the true values for models parameters alpha0 and alpha1 respectively.</span></span>
@@ -1296,9 +1290,9 @@ of a fixed model’s parameters values.</p>
 <code class="sourceCode R"><span><span class="co"># Toxicity probabilities for a given dose (equal to 10), model and samples.</span></span>
 <span><span class="co"># Every single probability value corresponds to one particular sample in `my_samples`.</span></span>
 <span><span class="fu"><a href="../reference/prob.html">prob</a></span><span class="op">(</span><span class="fl">10</span>, <span class="va">my_model</span>, <span class="va">my_samples</span><span class="op">)</span></span></code></pre></div>
-<pre><code><span><span class="co">##  [1] 0.7281891 0.8749477 0.9718424 0.7817294 0.3140195 0.9922956 0.9403238</span></span>
-<span><span class="co">##  [8] 0.7906683 0.7382899 0.8730605 0.9813629 0.8309722 0.9646577 0.8594801</span></span>
-<span><span class="co">## [15] 0.7569192 0.3641783 0.8978985 0.9596256 0.7796887 0.9986300</span></span></code></pre>
+<pre><code><span><span class="co">##  [1] 0.9682450 0.1439962 0.9611884 0.9776609 0.9361507 0.9536647 0.3205293</span></span>
+<span><span class="co">##  [8] 0.8639044 0.8799009 0.6610898 0.9890911 0.4771531 0.7574655 0.5452284</span></span>
+<span><span class="co">## [15] 0.8424240 0.9712206 0.9525694 0.9925216 0.5142550 0.9549607</span></span></code></pre>
 <div class="sourceCode" id="cb12"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># True DLT-dose relationship.</span></span>
 <span><span class="co"># Say that -0.8 and 1 are the true values for models parameters alpha0 and alpha1 respectively.</span></span>
@@ -1391,8 +1385,8 @@ account of any associated <code>doseGrid</code>.</p>
 <span><span class="co">##         y[i] ~ dbern(p[i])</span></span>
 <span><span class="co">##     }</span></span>
 <span><span class="co">## }</span></span>
-<span><span class="co">## &lt;bytecode: 0x55d08a23afc0&gt;</span></span>
-<span><span class="co">## &lt;environment: 0x55d08b3179a8&gt;</span></span>
+<span><span class="co">## &lt;bytecode: 0x55cf6dd92190&gt;</span></span>
+<span><span class="co">## &lt;environment: 0x55cf6ee98b68&gt;</span></span>
 <span><span class="co">## </span></span>
 <span><span class="co">## Slot "priormodel":</span></span>
 <span><span class="co">## function () </span></span>
@@ -1401,8 +1395,8 @@ account of any associated <code>doseGrid</code>.</p>
 <span><span class="co">##     alpha0 &lt;- theta[1]</span></span>
 <span><span class="co">##     alpha1 &lt;- theta[2]</span></span>
 <span><span class="co">## }</span></span>
-<span><span class="co">## &lt;bytecode: 0x55d08a23a0e0&gt;</span></span>
-<span><span class="co">## &lt;environment: 0x55d08b3179a8&gt;</span></span>
+<span><span class="co">## &lt;bytecode: 0x55cf6dd912b0&gt;</span></span>
+<span><span class="co">## &lt;environment: 0x55cf6ee98b68&gt;</span></span>
 <span><span class="co">## </span></span>
 <span><span class="co">## Slot "modelspecs":</span></span>
 <span><span class="co">## function (from_prior) </span></span>
@@ -1413,16 +1407,16 @@ account of any associated <code>doseGrid</code>.</p>
 <span><span class="co">##     }</span></span>
 <span><span class="co">##     ms</span></span>
 <span><span class="co">## }</span></span>
-<span><span class="co">## &lt;bytecode: 0x55d08a23b318&gt;</span></span>
-<span><span class="co">## &lt;environment: 0x55d08b317740&gt;</span></span>
+<span><span class="co">## &lt;bytecode: 0x55cf6dd924e8&gt;</span></span>
+<span><span class="co">## &lt;environment: 0x55cf6ee98900&gt;</span></span>
 <span><span class="co">## </span></span>
 <span><span class="co">## Slot "init":</span></span>
 <span><span class="co">## function () </span></span>
 <span><span class="co">## {</span></span>
 <span><span class="co">##     list(theta = c(0, 1))</span></span>
 <span><span class="co">## }</span></span>
-<span><span class="co">## &lt;bytecode: 0x55d08a23e850&gt;</span></span>
-<span><span class="co">## &lt;environment: 0x55d08b317740&gt;</span></span>
+<span><span class="co">## &lt;bytecode: 0x55cf6dd95a20&gt;</span></span>
+<span><span class="co">## &lt;environment: 0x55cf6ee98900&gt;</span></span>
 <span><span class="co">## </span></span>
 <span><span class="co">## Slot "datanames":</span></span>
 <span><span class="co">## [1] "nObs" "y"    "x"   </span></span>
@@ -1578,6 +1572,265 @@ many model classes)
 </tr>
 <tr>
 <td style="text-align:left;width: 6cm; border-left:1px solid;border-right:1px solid;">
+<span style="     ">CohortSizeDLT</span>
+</td>
+<td style="text-align:left;width: 6cm; border-left:1px solid;border-right:1px solid;">
+</td>
+<td style="text-align:left;width: 6cm; border-left:1px solid;border-right:1px solid;">
+<span style="     ">cohortSize</span>
+</td>
+<td style="text-align:left;width: 6cm; border-left:1px solid;border-right:1px solid;">
+cohort_size
+</td>
+<td style="text-align:left;width: 6cm; border-left:1px solid;border-right:1px solid;">
+</td>
+</tr>
+<tr>
+<td style="text-align:left;width: 6cm; border-left:1px solid;border-right:1px solid;">
+<span style="     ">CohortSizeDLT</span>
+</td>
+<td style="text-align:left;width: 6cm; border-left:1px solid;border-right:1px solid;">
+</td>
+<td style="text-align:left;width: 6cm; border-left:1px solid;border-right:1px solid;">
+<span style="     ">DLTintervals</span>
+</td>
+<td style="text-align:left;width: 6cm; border-left:1px solid;border-right:1px solid;">
+intervals
+</td>
+<td style="text-align:left;width: 6cm; border-left:1px solid;border-right:1px solid;">
+</td>
+</tr>
+<tr>
+<td style="text-align:left;width: 6cm; border-left:1px solid;border-right:1px solid;">
+<span style="     ">CohortSizeMax</span>
+</td>
+<td style="text-align:left;width: 6cm; border-left:1px solid;border-right:1px solid;">
+</td>
+<td style="text-align:left;width: 6cm; border-left:1px solid;border-right:1px solid;">
+<span style="     ">cohortSizeList</span>
+</td>
+<td style="text-align:left;width: 6cm; border-left:1px solid;border-right:1px solid;">
+cohort_sizes
+</td>
+<td style="text-align:left;width: 6cm; border-left:1px solid;border-right:1px solid;">
+</td>
+</tr>
+<tr>
+<td style="text-align:left;width: 6cm; border-left:1px solid;border-right:1px solid;">
+<span style="     ">CohortSizeMin</span>
+</td>
+<td style="text-align:left;width: 6cm; border-left:1px solid;border-right:1px solid;">
+</td>
+<td style="text-align:left;width: 6cm; border-left:1px solid;border-right:1px solid;">
+<span style="     ">cohortSizeList</span>
+</td>
+<td style="text-align:left;width: 6cm; border-left:1px solid;border-right:1px solid;">
+cohort_sizes
+</td>
+<td style="text-align:left;width: 6cm; border-left:1px solid;border-right:1px solid;">
+</td>
+</tr>
+<tr>
+<td style="text-align:left;width: 6cm; border-left:1px solid;border-right:1px solid;">
+<span style="     ">CohortSizeRange</span>
+</td>
+<td style="text-align:left;width: 6cm; border-left:1px solid;border-right:1px solid;">
+</td>
+<td style="text-align:left;width: 6cm; border-left:1px solid;border-right:1px solid;">
+<span style="     ">cohortSize</span>
+</td>
+<td style="text-align:left;width: 6cm; border-left:1px solid;border-right:1px solid;">
+cohort_size
+</td>
+<td style="text-align:left;width: 6cm; border-left:1px solid;border-right:1px solid;">
+</td>
+</tr>
+<tr>
+<td style="text-align:left;width: 6cm; border-left:1px solid;border-right:1px solid;">
+<span style="     ">DALogisticLogNormal</span>
+</td>
+<td style="text-align:left;width: 6cm; border-left:1px solid;border-right:1px solid;">
+</td>
+<td style="text-align:left;width: 6cm; border-left:1px solid;border-right:1px solid;">
+<span style="     ">C_par</span>
+</td>
+<td style="text-align:left;width: 6cm; border-left:1px solid;border-right:1px solid;">
+c_par
+</td>
+<td style="text-align:left;width: 6cm; border-left:1px solid;border-right:1px solid;">
+</td>
+</tr>
+<tr>
+<td style="text-align:left;width: 6cm; border-left:1px solid;border-right:1px solid;">
+<span style="     ">DALogisticLogNormal</span>
+</td>
+<td style="text-align:left;width: 6cm; border-left:1px solid;border-right:1px solid;">
+</td>
+<td style="text-align:left;width: 6cm; border-left:1px solid;border-right:1px solid;">
+<span style="     ">conditionalPEM</span>
+</td>
+<td style="text-align:left;width: 6cm; border-left:1px solid;border-right:1px solid;">
+cond_pem
+</td>
+<td style="text-align:left;width: 6cm; border-left:1px solid;border-right:1px solid;">
+</td>
+</tr>
+<tr>
+<td style="text-align:left;width: 6cm; border-left:1px solid;border-right:1px solid;">
+<span style="     ">Design</span>
+</td>
+<td style="text-align:left;width: 6cm; border-left:1px solid;border-right:1px solid;">
+</td>
+<td style="text-align:left;width: 6cm; border-left:1px solid;border-right:1px solid;">
+<span style="     ">PLcohortSize</span>
+</td>
+<td style="text-align:left;width: 6cm; border-left:1px solid;border-right:1px solid;">
+pl_cohort_size
+</td>
+<td style="text-align:left;width: 6cm; border-left:1px solid;border-right:1px solid;">
+</td>
+</tr>
+<tr>
+<td style="text-align:left;width: 6cm; border-left:1px solid;border-right:1px solid;">
+<span style="     ">DualEndpointBeta</span>
+</td>
+<td style="text-align:left;width: 6cm; border-left:1px solid;border-right:1px solid;">
+</td>
+<td style="text-align:left;width: 6cm; border-left:1px solid;border-right:1px solid;">
+<span style="     ">refDoseBeta</span>
+</td>
+<td style="text-align:left;width: 6cm; border-left:1px solid;border-right:1px solid;">
+ref_dose_beta
+</td>
+<td style="text-align:left;width: 6cm; border-left:1px solid;border-right:1px solid;">
+</td>
+</tr>
+<tr>
+<td style="text-align:left;width: 6cm; border-left:1px solid;border-right:1px solid;">
+<span style="     ">DualEndpointEmax</span>
+</td>
+<td style="text-align:left;width: 6cm; border-left:1px solid;border-right:1px solid;">
+</td>
+<td style="text-align:left;width: 6cm; border-left:1px solid;border-right:1px solid;">
+<span style="     ">refDoseEmax</span>
+</td>
+<td style="text-align:left;width: 6cm; border-left:1px solid;border-right:1px solid;">
+ref_dose_emax
+</td>
+<td style="text-align:left;width: 6cm; border-left:1px solid;border-right:1px solid;">
+</td>
+</tr>
+<tr>
+<td style="text-align:left;width: 6cm; border-left:1px solid;border-right:1px solid;">
+<span style="     ">DualEndpointRW</span>
+</td>
+<td style="text-align:left;width: 6cm; border-left:1px solid;border-right:1px solid;">
+</td>
+<td style="text-align:left;width: 6cm; border-left:1px solid;border-right:1px solid;">
+<span style="     ">useRW1</span>
+</td>
+<td style="text-align:left;width: 6cm; border-left:1px solid;border-right:1px solid;">
+rw1
+</td>
+<td style="text-align:left;width: 6cm; border-left:1px solid;border-right:1px solid;">
+</td>
+</tr>
+<tr>
+<td style="text-align:left;width: 6cm; border-left:1px solid;border-right:1px solid;">
+<span style="     ">DualEndpointRW()</span>
+</td>
+<td style="text-align:left;width: 6cm; border-left:1px solid;border-right:1px solid;">
+</td>
+<td style="text-align:left;width: 6cm; border-left:1px solid;border-right:1px solid;">
+<span style="     "></span>
+</td>
+<td style="text-align:left;width: 6cm; border-left:1px solid;border-right:1px solid;">
+rw1
+</td>
+<td style="text-align:left;width: 6cm; border-left:1px solid;border-right:1px solid;">
+replaces <code>smooth</code> string
+</td>
+</tr>
+<tr>
+<td style="text-align:left;width: 6cm; border-left:1px solid;border-right:1px solid;">
+<span style="     ">DualEndpointRW()</span>
+</td>
+<td style="text-align:left;width: 6cm; border-left:1px solid;border-right:1px solid;">
+</td>
+<td style="text-align:left;width: 6cm; border-left:1px solid;border-right:1px solid;">
+<span style="     text-decoration: line-through;">smooth</span>
+</td>
+<td style="text-align:left;width: 6cm; border-left:1px solid;border-right:1px solid;">
+</td>
+<td style="text-align:left;width: 6cm; border-left:1px solid;border-right:1px solid;">
+replaced by <code>rw1</code> flag
+</td>
+</tr>
+<tr>
+<td style="text-align:left;width: 6cm; border-left:1px solid;border-right:1px solid;">
+<span style="     ">EffFlexi</span>
+</td>
+<td style="text-align:left;width: 6cm; border-left:1px solid;border-right:1px solid;">
+</td>
+<td style="text-align:left;width: 6cm; border-left:1px solid;border-right:1px solid;">
+<span style="     ">several slots</span>
+</td>
+<td style="text-align:left;width: 6cm; border-left:1px solid;border-right:1px solid;">
+several slots
+</td>
+<td style="text-align:left;width: 6cm; border-left:1px solid;border-right:1px solid;">
+several slot changed, see man page
+</td>
+</tr>
+<tr>
+<td style="text-align:left;width: 6cm; border-left:1px solid;border-right:1px solid;">
+<span style="     ">EffFlexi()</span>
+</td>
+<td style="text-align:left;width: 6cm; border-left:1px solid;border-right:1px solid;">
+</td>
+<td style="text-align:left;width: 6cm; border-left:1px solid;border-right:1px solid;">
+<span style="     "></span>
+</td>
+<td style="text-align:left;width: 6cm; border-left:1px solid;border-right:1px solid;">
+rw1
+</td>
+<td style="text-align:left;width: 6cm; border-left:1px solid;border-right:1px solid;">
+replaces <code>smooth</code> string
+</td>
+</tr>
+<tr>
+<td style="text-align:left;width: 6cm; border-left:1px solid;border-right:1px solid;">
+<span style="     ">EffFlexi()</span>
+</td>
+<td style="text-align:left;width: 6cm; border-left:1px solid;border-right:1px solid;">
+</td>
+<td style="text-align:left;width: 6cm; border-left:1px solid;border-right:1px solid;">
+<span style="     text-decoration: line-through;">smooth</span>
+</td>
+<td style="text-align:left;width: 6cm; border-left:1px solid;border-right:1px solid;">
+</td>
+<td style="text-align:left;width: 6cm; border-left:1px solid;border-right:1px solid;">
+replaced by <code>rw1</code> flag
+</td>
+</tr>
+<tr>
+<td style="text-align:left;width: 6cm; border-left:1px solid;border-right:1px solid;">
+<span style="     ">Effloglog</span>
+</td>
+<td style="text-align:left;width: 6cm; border-left:1px solid;border-right:1px solid;">
+</td>
+<td style="text-align:left;width: 6cm; border-left:1px solid;border-right:1px solid;">
+<span style="     ">several slots</span>
+</td>
+<td style="text-align:left;width: 6cm; border-left:1px solid;border-right:1px solid;">
+several slots
+</td>
+<td style="text-align:left;width: 6cm; border-left:1px solid;border-right:1px solid;">
+several slot changed, see man page
+</td>
+</tr>
+<tr>
+<td style="text-align:left;width: 6cm; border-left:1px solid;border-right:1px solid;">
 <span style="     ">GeneralModel</span>
 </td>
 <td style="text-align:left;width: 6cm; border-left:1px solid;border-right:1px solid;">
@@ -1609,6 +1862,162 @@ datanames_prior
 </tr>
 <tr>
 <td style="text-align:left;width: 6cm; border-left:1px solid;border-right:1px solid;">
+<span style="     ">IncrementMin</span>
+</td>
+<td style="text-align:left;width: 6cm; border-left:1px solid;border-right:1px solid;">
+IncrementsMin
+</td>
+<td style="text-align:left;width: 6cm; border-left:1px solid;border-right:1px solid;">
+<span style="     "></span>
+</td>
+<td style="text-align:left;width: 6cm; border-left:1px solid;border-right:1px solid;">
+</td>
+<td style="text-align:left;width: 6cm; border-left:1px solid;border-right:1px solid;">
+</td>
+</tr>
+<tr>
+<td style="text-align:left;width: 6cm; border-left:1px solid;border-right:1px solid;">
+<span style="     ">IncrementsDoseLevels</span>
+</td>
+<td style="text-align:left;width: 6cm; border-left:1px solid;border-right:1px solid;">
+</td>
+<td style="text-align:left;width: 6cm; border-left:1px solid;border-right:1px solid;">
+<span style="     "></span>
+</td>
+<td style="text-align:left;width: 6cm; border-left:1px solid;border-right:1px solid;">
+basis_level
+</td>
+<td style="text-align:left;width: 6cm; border-left:1px solid;border-right:1px solid;">
+</td>
+</tr>
+<tr>
+<td style="text-align:left;width: 6cm; border-left:1px solid;border-right:1px solid;">
+<span style="     ">IncrementsDoseLevels</span>
+</td>
+<td style="text-align:left;width: 6cm; border-left:1px solid;border-right:1px solid;">
+</td>
+<td style="text-align:left;width: 6cm; border-left:1px solid;border-right:1px solid;">
+<span style="     ">maxLevels</span>
+</td>
+<td style="text-align:left;width: 6cm; border-left:1px solid;border-right:1px solid;">
+levels
+</td>
+<td style="text-align:left;width: 6cm; border-left:1px solid;border-right:1px solid;">
+change applied also to other dependent classes
+</td>
+</tr>
+<tr>
+<td style="text-align:left;width: 6cm; border-left:1px solid;border-right:1px solid;">
+<span style="     ">IncrementsMin</span>
+</td>
+<td style="text-align:left;width: 6cm; border-left:1px solid;border-right:1px solid;">
+</td>
+<td style="text-align:left;width: 6cm; border-left:1px solid;border-right:1px solid;">
+<span style="     ">IncrementsList</span>
+</td>
+<td style="text-align:left;width: 6cm; border-left:1px solid;border-right:1px solid;">
+increments_list
+</td>
+<td style="text-align:left;width: 6cm; border-left:1px solid;border-right:1px solid;">
+change applied also to other dependent classes
+</td>
+</tr>
+<tr>
+<td style="text-align:left;width: 6cm; border-left:1px solid;border-right:1px solid;">
+<span style="     ">IncrementsNumDoseLevels</span>
+</td>
+<td style="text-align:left;width: 6cm; border-left:1px solid;border-right:1px solid;">
+IncrementsDoseLevels
+</td>
+<td style="text-align:left;width: 6cm; border-left:1px solid;border-right:1px solid;">
+<span style="     "></span>
+</td>
+<td style="text-align:left;width: 6cm; border-left:1px solid;border-right:1px solid;">
+</td>
+<td style="text-align:left;width: 6cm; border-left:1px solid;border-right:1px solid;">
+</td>
+</tr>
+<tr>
+<td style="text-align:left;width: 6cm; border-left:1px solid;border-right:1px solid;">
+<span style="     ">IncrementsRelativeDLT</span>
+</td>
+<td style="text-align:left;width: 6cm; border-left:1px solid;border-right:1px solid;">
+</td>
+<td style="text-align:left;width: 6cm; border-left:1px solid;border-right:1px solid;">
+<span style="     ">DLTintervals</span>
+</td>
+<td style="text-align:left;width: 6cm; border-left:1px solid;border-right:1px solid;">
+intervals
+</td>
+<td style="text-align:left;width: 6cm; border-left:1px solid;border-right:1px solid;">
+change applied also to other dependent classes
+</td>
+</tr>
+<tr>
+<td style="text-align:left;width: 6cm; border-left:1px solid;border-right:1px solid;">
+<span style="     ">IncrementsRelativeParts</span>
+</td>
+<td style="text-align:left;width: 6cm; border-left:1px solid;border-right:1px solid;">
+</td>
+<td style="text-align:left;width: 6cm; border-left:1px solid;border-right:1px solid;">
+<span style="     ">cleanStart</span>
+</td>
+<td style="text-align:left;width: 6cm; border-left:1px solid;border-right:1px solid;">
+clean_start
+</td>
+<td style="text-align:left;width: 6cm; border-left:1px solid;border-right:1px solid;">
+change applied also to other dependent classes
+</td>
+</tr>
+<tr>
+<td style="text-align:left;width: 6cm; border-left:1px solid;border-right:1px solid;">
+<span style="     ">IncrementsRelativeParts</span>
+</td>
+<td style="text-align:left;width: 6cm; border-left:1px solid;border-right:1px solid;">
+</td>
+<td style="text-align:left;width: 6cm; border-left:1px solid;border-right:1px solid;">
+<span style="     ">dltStart</span>
+</td>
+<td style="text-align:left;width: 6cm; border-left:1px solid;border-right:1px solid;">
+dlt_start
+</td>
+<td style="text-align:left;width: 6cm; border-left:1px solid;border-right:1px solid;">
+</td>
+</tr>
+<tr>
+<td style="text-align:left;width: 6cm; border-left:1px solid;border-right:1px solid;">
+<span style="     ">McmcOptions</span>
+</td>
+<td style="text-align:left;width: 6cm; border-left:1px solid;border-right:1px solid;">
+</td>
+<td style="text-align:left;width: 6cm; border-left:1px solid;border-right:1px solid;">
+<span style="     "></span>
+</td>
+<td style="text-align:left;width: 6cm; border-left:1px solid;border-right:1px solid;">
+rng_kind
+</td>
+<td style="text-align:left;width: 6cm; border-left:1px solid;border-right:1px solid;">
+to be used by Random Number Generator in rJAGS
+</td>
+</tr>
+<tr>
+<td style="text-align:left;width: 6cm; border-left:1px solid;border-right:1px solid;">
+<span style="     ">McmcOptions</span>
+</td>
+<td style="text-align:left;width: 6cm; border-left:1px solid;border-right:1px solid;">
+</td>
+<td style="text-align:left;width: 6cm; border-left:1px solid;border-right:1px solid;">
+<span style="     "></span>
+</td>
+<td style="text-align:left;width: 6cm; border-left:1px solid;border-right:1px solid;">
+rng_seed
+</td>
+<td style="text-align:left;width: 6cm; border-left:1px solid;border-right:1px solid;">
+to be used by Random Number Generator in rJAGS
+</td>
+</tr>
+<tr>
+<td style="text-align:left;width: 6cm; border-left:1px solid;border-right:1px solid;">
 <span style="     text-decoration: line-through;">Model</span>
 </td>
 <td style="text-align:left;width: 6cm; border-left:1px solid;border-right:1px solid;">
@@ -1617,6 +2026,638 @@ datanames_prior
 <span style="     "></span>
 </td>
 <td style="text-align:left;width: 6cm; border-left:1px solid;border-right:1px solid;">
+</td>
+<td style="text-align:left;width: 6cm; border-left:1px solid;border-right:1px solid;">
+</td>
+</tr>
+<tr>
+<td style="text-align:left;width: 6cm; border-left:1px solid;border-right:1px solid;">
+<span style="     ">ModelEff</span>
+</td>
+<td style="text-align:left;width: 6cm; border-left:1px solid;border-right:1px solid;">
+</td>
+<td style="text-align:left;width: 6cm; border-left:1px solid;border-right:1px solid;">
+<span style="     text-decoration: line-through;">dose</span>
+</td>
+<td style="text-align:left;width: 6cm; border-left:1px solid;border-right:1px solid;">
+</td>
+<td style="text-align:left;width: 6cm; border-left:1px solid;border-right:1px solid;">
+moved to model class method
+</td>
+</tr>
+<tr>
+<td style="text-align:left;width: 6cm; border-left:1px solid;border-right:1px solid;">
+<span style="     ">ModelEff</span>
+</td>
+<td style="text-align:left;width: 6cm; border-left:1px solid;border-right:1px solid;">
+</td>
+<td style="text-align:left;width: 6cm; border-left:1px solid;border-right:1px solid;">
+<span style="     text-decoration: line-through;">ExpEff</span>
+</td>
+<td style="text-align:left;width: 6cm; border-left:1px solid;border-right:1px solid;">
+</td>
+<td style="text-align:left;width: 6cm; border-left:1px solid;border-right:1px solid;">
+moved to model class method and renamed to <code>efficacy</code>
+</td>
+</tr>
+<tr>
+<td style="text-align:left;width: 6cm; border-left:1px solid;border-right:1px solid;">
+<span style="     ">NextBestDualEndpoint</span>
+</td>
+<td style="text-align:left;width: 6cm; border-left:1px solid;border-right:1px solid;">
+</td>
+<td style="text-align:left;width: 6cm; border-left:1px solid;border-right:1px solid;">
+<span style="     "></span>
+</td>
+<td style="text-align:left;width: 6cm; border-left:1px solid;border-right:1px solid;">
+target_relative
+</td>
+<td style="text-align:left;width: 6cm; border-left:1px solid;border-right:1px solid;">
+replaces <code>scale</code> string
+</td>
+</tr>
+<tr>
+<td style="text-align:left;width: 6cm; border-left:1px solid;border-right:1px solid;">
+<span style="     ">NextBestDualEndpoint</span>
+</td>
+<td style="text-align:left;width: 6cm; border-left:1px solid;border-right:1px solid;">
+</td>
+<td style="text-align:left;width: 6cm; border-left:1px solid;border-right:1px solid;">
+<span style="     ">maxOverdoseProb</span>
+</td>
+<td style="text-align:left;width: 6cm; border-left:1px solid;border-right:1px solid;">
+max_overdose_prob
+</td>
+<td style="text-align:left;width: 6cm; border-left:1px solid;border-right:1px solid;">
+</td>
+</tr>
+<tr>
+<td style="text-align:left;width: 6cm; border-left:1px solid;border-right:1px solid;">
+<span style="     ">NextBestDualEndpoint</span>
+</td>
+<td style="text-align:left;width: 6cm; border-left:1px solid;border-right:1px solid;">
+</td>
+<td style="text-align:left;width: 6cm; border-left:1px solid;border-right:1px solid;">
+<span style="     text-decoration: line-through;">scale</span>
+</td>
+<td style="text-align:left;width: 6cm; border-left:1px solid;border-right:1px solid;">
+</td>
+<td style="text-align:left;width: 6cm; border-left:1px solid;border-right:1px solid;">
+replaced by <code>target_relative</code> flag
+</td>
+</tr>
+<tr>
+<td style="text-align:left;width: 6cm; border-left:1px solid;border-right:1px solid;">
+<span style="     ">NextBestDualEndpoint</span>
+</td>
+<td style="text-align:left;width: 6cm; border-left:1px solid;border-right:1px solid;">
+</td>
+<td style="text-align:left;width: 6cm; border-left:1px solid;border-right:1px solid;">
+<span style="     ">targetThresh</span>
+</td>
+<td style="text-align:left;width: 6cm; border-left:1px solid;border-right:1px solid;">
+target_thresh
+</td>
+<td style="text-align:left;width: 6cm; border-left:1px solid;border-right:1px solid;">
+</td>
+</tr>
+<tr>
+<td style="text-align:left;width: 6cm; border-left:1px solid;border-right:1px solid;">
+<span style="     ">NextBestMaxGain</span>
+</td>
+<td style="text-align:left;width: 6cm; border-left:1px solid;border-right:1px solid;">
+</td>
+<td style="text-align:left;width: 6cm; border-left:1px solid;border-right:1px solid;">
+<span style="     ">DLEDuringTrialtarget</span>
+</td>
+<td style="text-align:left;width: 6cm; border-left:1px solid;border-right:1px solid;">
+prob_target_drt
+</td>
+<td style="text-align:left;width: 6cm; border-left:1px solid;border-right:1px solid;">
+</td>
+</tr>
+<tr>
+<td style="text-align:left;width: 6cm; border-left:1px solid;border-right:1px solid;">
+<span style="     ">NextBestMaxGain</span>
+</td>
+<td style="text-align:left;width: 6cm; border-left:1px solid;border-right:1px solid;">
+</td>
+<td style="text-align:left;width: 6cm; border-left:1px solid;border-right:1px solid;">
+<span style="     ">DLEEndOfTrialtarget</span>
+</td>
+<td style="text-align:left;width: 6cm; border-left:1px solid;border-right:1px solid;">
+prob_target_eot
+</td>
+<td style="text-align:left;width: 6cm; border-left:1px solid;border-right:1px solid;">
+</td>
+</tr>
+<tr>
+<td style="text-align:left;width: 6cm; border-left:1px solid;border-right:1px solid;">
+<span style="     ">NextBestMaxGainSamples</span>
+</td>
+<td style="text-align:left;width: 6cm; border-left:1px solid;border-right:1px solid;">
+</td>
+<td style="text-align:left;width: 6cm; border-left:1px solid;border-right:1px solid;">
+<span style="     ">DLEDuringTrialtarget</span>
+</td>
+<td style="text-align:left;width: 6cm; border-left:1px solid;border-right:1px solid;">
+prob_target_drt
+</td>
+<td style="text-align:left;width: 6cm; border-left:1px solid;border-right:1px solid;">
+</td>
+</tr>
+<tr>
+<td style="text-align:left;width: 6cm; border-left:1px solid;border-right:1px solid;">
+<span style="     ">NextBestMaxGainSamples</span>
+</td>
+<td style="text-align:left;width: 6cm; border-left:1px solid;border-right:1px solid;">
+</td>
+<td style="text-align:left;width: 6cm; border-left:1px solid;border-right:1px solid;">
+<span style="     ">DLEEndOfTrialtarget</span>
+</td>
+<td style="text-align:left;width: 6cm; border-left:1px solid;border-right:1px solid;">
+prob_target_eot
+</td>
+<td style="text-align:left;width: 6cm; border-left:1px solid;border-right:1px solid;">
+</td>
+</tr>
+<tr>
+<td style="text-align:left;width: 6cm; border-left:1px solid;border-right:1px solid;">
+<span style="     ">NextBestMaxGainSamples</span>
+</td>
+<td style="text-align:left;width: 6cm; border-left:1px solid;border-right:1px solid;">
+</td>
+<td style="text-align:left;width: 6cm; border-left:1px solid;border-right:1px solid;">
+<span style="     ">Gstarderive</span>
+</td>
+<td style="text-align:left;width: 6cm; border-left:1px solid;border-right:1px solid;">
+mg_derive
+</td>
+<td style="text-align:left;width: 6cm; border-left:1px solid;border-right:1px solid;">
+</td>
+</tr>
+<tr>
+<td style="text-align:left;width: 6cm; border-left:1px solid;border-right:1px solid;">
+<span style="     ">NextBestMaxGainSamples</span>
+</td>
+<td style="text-align:left;width: 6cm; border-left:1px solid;border-right:1px solid;">
+</td>
+<td style="text-align:left;width: 6cm; border-left:1px solid;border-right:1px solid;">
+<span style="     ">TDderive</span>
+</td>
+<td style="text-align:left;width: 6cm; border-left:1px solid;border-right:1px solid;">
+derive
+</td>
+<td style="text-align:left;width: 6cm; border-left:1px solid;border-right:1px solid;">
+</td>
+</tr>
+<tr>
+<td style="text-align:left;width: 6cm; border-left:1px solid;border-right:1px solid;">
+<span style="     ">NextBestNCRM</span>
+</td>
+<td style="text-align:left;width: 6cm; border-left:1px solid;border-right:1px solid;">
+</td>
+<td style="text-align:left;width: 6cm; border-left:1px solid;border-right:1px solid;">
+<span style="     ">maxOverdoseProb</span>
+</td>
+<td style="text-align:left;width: 6cm; border-left:1px solid;border-right:1px solid;">
+max_overdose_prob
+</td>
+<td style="text-align:left;width: 6cm; border-left:1px solid;border-right:1px solid;">
+</td>
+</tr>
+<tr>
+<td style="text-align:left;width: 6cm; border-left:1px solid;border-right:1px solid;">
+<span style="     ">NextBestTD</span>
+</td>
+<td style="text-align:left;width: 6cm; border-left:1px solid;border-right:1px solid;">
+</td>
+<td style="text-align:left;width: 6cm; border-left:1px solid;border-right:1px solid;">
+<span style="     ">targetDuringTrial</span>
+</td>
+<td style="text-align:left;width: 6cm; border-left:1px solid;border-right:1px solid;">
+prob_target_drt
+</td>
+<td style="text-align:left;width: 6cm; border-left:1px solid;border-right:1px solid;">
+</td>
+</tr>
+<tr>
+<td style="text-align:left;width: 6cm; border-left:1px solid;border-right:1px solid;">
+<span style="     ">NextBestTD</span>
+</td>
+<td style="text-align:left;width: 6cm; border-left:1px solid;border-right:1px solid;">
+</td>
+<td style="text-align:left;width: 6cm; border-left:1px solid;border-right:1px solid;">
+<span style="     ">targetEndOfTrial</span>
+</td>
+<td style="text-align:left;width: 6cm; border-left:1px solid;border-right:1px solid;">
+prob_target_eot
+</td>
+<td style="text-align:left;width: 6cm; border-left:1px solid;border-right:1px solid;">
+</td>
+</tr>
+<tr>
+<td style="text-align:left;width: 6cm; border-left:1px solid;border-right:1px solid;">
+<span style="     ">NextBestTDsamples</span>
+</td>
+<td style="text-align:left;width: 6cm; border-left:1px solid;border-right:1px solid;">
+</td>
+<td style="text-align:left;width: 6cm; border-left:1px solid;border-right:1px solid;">
+<span style="     ">targetDuringTrial</span>
+</td>
+<td style="text-align:left;width: 6cm; border-left:1px solid;border-right:1px solid;">
+prob_target_drt
+</td>
+<td style="text-align:left;width: 6cm; border-left:1px solid;border-right:1px solid;">
+</td>
+</tr>
+<tr>
+<td style="text-align:left;width: 6cm; border-left:1px solid;border-right:1px solid;">
+<span style="     ">NextBestTDsamples</span>
+</td>
+<td style="text-align:left;width: 6cm; border-left:1px solid;border-right:1px solid;">
+</td>
+<td style="text-align:left;width: 6cm; border-left:1px solid;border-right:1px solid;">
+<span style="     ">targetEndOfTrial</span>
+</td>
+<td style="text-align:left;width: 6cm; border-left:1px solid;border-right:1px solid;">
+prob_target_eot
+</td>
+<td style="text-align:left;width: 6cm; border-left:1px solid;border-right:1px solid;">
+</td>
+</tr>
+<tr>
+<td style="text-align:left;width: 6cm; border-left:1px solid;border-right:1px solid;">
+<span style="     ">OneParExpNormalPrior</span>
+</td>
+<td style="text-align:left;width: 6cm; border-left:1px solid;border-right:1px solid;">
+OneParLogNormalPrior
+</td>
+<td style="text-align:left;width: 6cm; border-left:1px solid;border-right:1px solid;">
+<span style="     "></span>
+</td>
+<td style="text-align:left;width: 6cm; border-left:1px solid;border-right:1px solid;">
+</td>
+<td style="text-align:left;width: 6cm; border-left:1px solid;border-right:1px solid;">
+</td>
+</tr>
+<tr>
+<td style="text-align:left;width: 6cm; border-left:1px solid;border-right:1px solid;">
+<span style="     ">OneParLogNormalPrior</span>
+</td>
+<td style="text-align:left;width: 6cm; border-left:1px solid;border-right:1px solid;">
+</td>
+<td style="text-align:left;width: 6cm; border-left:1px solid;border-right:1px solid;">
+<span style="     "></span>
+</td>
+<td style="text-align:left;width: 6cm; border-left:1px solid;border-right:1px solid;">
+skel_fun_inv
+</td>
+<td style="text-align:left;width: 6cm; border-left:1px solid;border-right:1px solid;">
+</td>
+</tr>
+<tr>
+<td style="text-align:left;width: 6cm; border-left:1px solid;border-right:1px solid;">
+<span style="     ">OneParLogNormalPrior</span>
+</td>
+<td style="text-align:left;width: 6cm; border-left:1px solid;border-right:1px solid;">
+</td>
+<td style="text-align:left;width: 6cm; border-left:1px solid;border-right:1px solid;">
+<span style="     ">skeletonFun</span>
+</td>
+<td style="text-align:left;width: 6cm; border-left:1px solid;border-right:1px solid;">
+skel_fun
+</td>
+<td style="text-align:left;width: 6cm; border-left:1px solid;border-right:1px solid;">
+</td>
+</tr>
+<tr>
+<td style="text-align:left;width: 6cm; border-left:1px solid;border-right:1px solid;">
+<span style="     ">OneParLogNormalPrior</span>
+</td>
+<td style="text-align:left;width: 6cm; border-left:1px solid;border-right:1px solid;">
+</td>
+<td style="text-align:left;width: 6cm; border-left:1px solid;border-right:1px solid;">
+<span style="     ">skeletonProbs</span>
+</td>
+<td style="text-align:left;width: 6cm; border-left:1px solid;border-right:1px solid;">
+skel_probs
+</td>
+<td style="text-align:left;width: 6cm; border-left:1px solid;border-right:1px solid;">
+</td>
+</tr>
+<tr>
+<td style="text-align:left;width: 6cm; border-left:1px solid;border-right:1px solid;">
+<span style="     ">OneParLogNormalPrior()</span>
+</td>
+<td style="text-align:left;width: 6cm; border-left:1px solid;border-right:1px solid;">
+</td>
+<td style="text-align:left;width: 6cm; border-left:1px solid;border-right:1px solid;">
+<span style="     ">doseGrid</span>
+</td>
+<td style="text-align:left;width: 6cm; border-left:1px solid;border-right:1px solid;">
+dose_grid
+</td>
+<td style="text-align:left;width: 6cm; border-left:1px solid;border-right:1px solid;">
+</td>
+</tr>
+<tr>
+<td style="text-align:left;width: 6cm; border-left:1px solid;border-right:1px solid;">
+<span style="     ">SafetyWindowConst</span>
+</td>
+<td style="text-align:left;width: 6cm; border-left:1px solid;border-right:1px solid;">
+</td>
+<td style="text-align:left;width: 6cm; border-left:1px solid;border-right:1px solid;">
+<span style="     ">patientFollow</span>
+</td>
+<td style="text-align:left;width: 6cm; border-left:1px solid;border-right:1px solid;">
+follow
+</td>
+<td style="text-align:left;width: 6cm; border-left:1px solid;border-right:1px solid;">
+</td>
+</tr>
+<tr>
+<td style="text-align:left;width: 6cm; border-left:1px solid;border-right:1px solid;">
+<span style="     ">SafetyWindowConst</span>
+</td>
+<td style="text-align:left;width: 6cm; border-left:1px solid;border-right:1px solid;">
+</td>
+<td style="text-align:left;width: 6cm; border-left:1px solid;border-right:1px solid;">
+<span style="     ">patientFollowMin</span>
+</td>
+<td style="text-align:left;width: 6cm; border-left:1px solid;border-right:1px solid;">
+follow_min
+</td>
+<td style="text-align:left;width: 6cm; border-left:1px solid;border-right:1px solid;">
+</td>
+</tr>
+<tr>
+<td style="text-align:left;width: 6cm; border-left:1px solid;border-right:1px solid;">
+<span style="     ">SafetyWindowConst</span>
+</td>
+<td style="text-align:left;width: 6cm; border-left:1px solid;border-right:1px solid;">
+</td>
+<td style="text-align:left;width: 6cm; border-left:1px solid;border-right:1px solid;">
+<span style="     ">patientGap</span>
+</td>
+<td style="text-align:left;width: 6cm; border-left:1px solid;border-right:1px solid;">
+gap
+</td>
+<td style="text-align:left;width: 6cm; border-left:1px solid;border-right:1px solid;">
+</td>
+</tr>
+<tr>
+<td style="text-align:left;width: 6cm; border-left:1px solid;border-right:1px solid;">
+<span style="     ">SafetyWindowSize</span>
+</td>
+<td style="text-align:left;width: 6cm; border-left:1px solid;border-right:1px solid;">
+</td>
+<td style="text-align:left;width: 6cm; border-left:1px solid;border-right:1px solid;">
+<span style="     ">patientFollow</span>
+</td>
+<td style="text-align:left;width: 6cm; border-left:1px solid;border-right:1px solid;">
+follow
+</td>
+<td style="text-align:left;width: 6cm; border-left:1px solid;border-right:1px solid;">
+</td>
+</tr>
+<tr>
+<td style="text-align:left;width: 6cm; border-left:1px solid;border-right:1px solid;">
+<span style="     ">SafetyWindowSize</span>
+</td>
+<td style="text-align:left;width: 6cm; border-left:1px solid;border-right:1px solid;">
+</td>
+<td style="text-align:left;width: 6cm; border-left:1px solid;border-right:1px solid;">
+<span style="     ">patientFollowMin</span>
+</td>
+<td style="text-align:left;width: 6cm; border-left:1px solid;border-right:1px solid;">
+follow_min
+</td>
+<td style="text-align:left;width: 6cm; border-left:1px solid;border-right:1px solid;">
+</td>
+</tr>
+<tr>
+<td style="text-align:left;width: 6cm; border-left:1px solid;border-right:1px solid;">
+<span style="     ">SafetyWindowSize</span>
+</td>
+<td style="text-align:left;width: 6cm; border-left:1px solid;border-right:1px solid;">
+</td>
+<td style="text-align:left;width: 6cm; border-left:1px solid;border-right:1px solid;">
+<span style="     ">patientGap</span>
+</td>
+<td style="text-align:left;width: 6cm; border-left:1px solid;border-right:1px solid;">
+gap
+</td>
+<td style="text-align:left;width: 6cm; border-left:1px solid;border-right:1px solid;">
+</td>
+</tr>
+<tr>
+<td style="text-align:left;width: 6cm; border-left:1px solid;border-right:1px solid;">
+<span style="     ">SafetyWindowSize</span>
+</td>
+<td style="text-align:left;width: 6cm; border-left:1px solid;border-right:1px solid;">
+</td>
+<td style="text-align:left;width: 6cm; border-left:1px solid;border-right:1px solid;">
+<span style="     ">sizeIntervals</span>
+</td>
+<td style="text-align:left;width: 6cm; border-left:1px solid;border-right:1px solid;">
+size
+</td>
+<td style="text-align:left;width: 6cm; border-left:1px solid;border-right:1px solid;">
+</td>
+</tr>
+<tr>
+<td style="text-align:left;width: 6cm; border-left:1px solid;border-right:1px solid;">
+<span style="     ">StoppingAll</span>
+</td>
+<td style="text-align:left;width: 6cm; border-left:1px solid;border-right:1px solid;">
+</td>
+<td style="text-align:left;width: 6cm; border-left:1px solid;border-right:1px solid;">
+<span style="     ">stopList</span>
+</td>
+<td style="text-align:left;width: 6cm; border-left:1px solid;border-right:1px solid;">
+stop_list
+</td>
+<td style="text-align:left;width: 6cm; border-left:1px solid;border-right:1px solid;">
+</td>
+</tr>
+<tr>
+<td style="text-align:left;width: 6cm; border-left:1px solid;border-right:1px solid;">
+<span style="     ">StoppingAny</span>
+</td>
+<td style="text-align:left;width: 6cm; border-left:1px solid;border-right:1px solid;">
+</td>
+<td style="text-align:left;width: 6cm; border-left:1px solid;border-right:1px solid;">
+<span style="     ">stopList</span>
+</td>
+<td style="text-align:left;width: 6cm; border-left:1px solid;border-right:1px solid;">
+stop_list
+</td>
+<td style="text-align:left;width: 6cm; border-left:1px solid;border-right:1px solid;">
+</td>
+</tr>
+<tr>
+<td style="text-align:left;width: 6cm; border-left:1px solid;border-right:1px solid;">
+<span style="     ">StoppingGstarCIRatio</span>
+</td>
+<td style="text-align:left;width: 6cm; border-left:1px solid;border-right:1px solid;">
+</td>
+<td style="text-align:left;width: 6cm; border-left:1px solid;border-right:1px solid;">
+<span style="     ">targetEndOfTrial</span>
+</td>
+<td style="text-align:left;width: 6cm; border-left:1px solid;border-right:1px solid;">
+prob_target
+</td>
+<td style="text-align:left;width: 6cm; border-left:1px solid;border-right:1px solid;">
+</td>
+</tr>
+<tr>
+<td style="text-align:left;width: 6cm; border-left:1px solid;border-right:1px solid;">
+<span style="     ">StoppingGstarCIRatio</span>
+</td>
+<td style="text-align:left;width: 6cm; border-left:1px solid;border-right:1px solid;">
+</td>
+<td style="text-align:left;width: 6cm; border-left:1px solid;border-right:1px solid;">
+<span style="     ">targetRatio</span>
+</td>
+<td style="text-align:left;width: 6cm; border-left:1px solid;border-right:1px solid;">
+target_ratio
+</td>
+<td style="text-align:left;width: 6cm; border-left:1px solid;border-right:1px solid;">
+</td>
+</tr>
+<tr>
+<td style="text-align:left;width: 6cm; border-left:1px solid;border-right:1px solid;">
+<span style="     ">StoppingGstarCIRatio</span>
+</td>
+<td style="text-align:left;width: 6cm; border-left:1px solid;border-right:1px solid;">
+StoppingMaxGainCIRatio
+</td>
+<td style="text-align:left;width: 6cm; border-left:1px solid;border-right:1px solid;">
+<span style="     "></span>
+</td>
+<td style="text-align:left;width: 6cm; border-left:1px solid;border-right:1px solid;">
+</td>
+<td style="text-align:left;width: 6cm; border-left:1px solid;border-right:1px solid;">
+</td>
+</tr>
+<tr>
+<td style="text-align:left;width: 6cm; border-left:1px solid;border-right:1px solid;">
+<span style="     ">StoppingList</span>
+</td>
+<td style="text-align:left;width: 6cm; border-left:1px solid;border-right:1px solid;">
+</td>
+<td style="text-align:left;width: 6cm; border-left:1px solid;border-right:1px solid;">
+<span style="     ">stopList</span>
+</td>
+<td style="text-align:left;width: 6cm; border-left:1px solid;border-right:1px solid;">
+stop_list
+</td>
+<td style="text-align:left;width: 6cm; border-left:1px solid;border-right:1px solid;">
+</td>
+</tr>
+<tr>
+<td style="text-align:left;width: 6cm; border-left:1px solid;border-right:1px solid;">
+<span style="     ">StoppingTargetBiomarker</span>
+</td>
+<td style="text-align:left;width: 6cm; border-left:1px solid;border-right:1px solid;">
+</td>
+<td style="text-align:left;width: 6cm; border-left:1px solid;border-right:1px solid;">
+<span style="     "></span>
+</td>
+<td style="text-align:left;width: 6cm; border-left:1px solid;border-right:1px solid;">
+is_relative
+</td>
+<td style="text-align:left;width: 6cm; border-left:1px solid;border-right:1px solid;">
+replaces <code>scale</code> string
+</td>
+</tr>
+<tr>
+<td style="text-align:left;width: 6cm; border-left:1px solid;border-right:1px solid;">
+<span style="     ">StoppingTargetBiomarker</span>
+</td>
+<td style="text-align:left;width: 6cm; border-left:1px solid;border-right:1px solid;">
+</td>
+<td style="text-align:left;width: 6cm; border-left:1px solid;border-right:1px solid;">
+<span style="     text-decoration: line-through;">scale</span>
+</td>
+<td style="text-align:left;width: 6cm; border-left:1px solid;border-right:1px solid;">
+</td>
+<td style="text-align:left;width: 6cm; border-left:1px solid;border-right:1px solid;">
+replaced by <code>is_relative</code> flag
+</td>
+</tr>
+<tr>
+<td style="text-align:left;width: 6cm; border-left:1px solid;border-right:1px solid;">
+<span style="     ">StoppingTDCIRatio</span>
+</td>
+<td style="text-align:left;width: 6cm; border-left:1px solid;border-right:1px solid;">
+</td>
+<td style="text-align:left;width: 6cm; border-left:1px solid;border-right:1px solid;">
+<span style="     ">targetEndOfTrial</span>
+</td>
+<td style="text-align:left;width: 6cm; border-left:1px solid;border-right:1px solid;">
+prob_target
+</td>
+<td style="text-align:left;width: 6cm; border-left:1px solid;border-right:1px solid;">
+</td>
+</tr>
+<tr>
+<td style="text-align:left;width: 6cm; border-left:1px solid;border-right:1px solid;">
+<span style="     ">StoppingTDCIRatio</span>
+</td>
+<td style="text-align:left;width: 6cm; border-left:1px solid;border-right:1px solid;">
+</td>
+<td style="text-align:left;width: 6cm; border-left:1px solid;border-right:1px solid;">
+<span style="     ">targetRatio</span>
+</td>
+<td style="text-align:left;width: 6cm; border-left:1px solid;border-right:1px solid;">
+target_ratio
+</td>
+<td style="text-align:left;width: 6cm; border-left:1px solid;border-right:1px solid;">
+</td>
+</tr>
+<tr>
+<td style="text-align:left;width: 6cm; border-left:1px solid;border-right:1px solid;">
+<span style="     ">TDDesign</span>
+</td>
+<td style="text-align:left;width: 6cm; border-left:1px solid;border-right:1px solid;">
+</td>
+<td style="text-align:left;width: 6cm; border-left:1px solid;border-right:1px solid;">
+<span style="     ">PLcohortSize</span>
+</td>
+<td style="text-align:left;width: 6cm; border-left:1px solid;border-right:1px solid;">
+pl_cohort_size
+</td>
+<td style="text-align:left;width: 6cm; border-left:1px solid;border-right:1px solid;">
+</td>
+</tr>
+<tr>
+<td style="text-align:left;width: 6cm; border-left:1px solid;border-right:1px solid;">
+<span style="     ">TDsamplesDesign</span>
+</td>
+<td style="text-align:left;width: 6cm; border-left:1px solid;border-right:1px solid;">
+</td>
+<td style="text-align:left;width: 6cm; border-left:1px solid;border-right:1px solid;">
+<span style="     ">PLcohortSize</span>
+</td>
+<td style="text-align:left;width: 6cm; border-left:1px solid;border-right:1px solid;">
+pl_cohort_size
+</td>
+<td style="text-align:left;width: 6cm; border-left:1px solid;border-right:1px solid;">
+</td>
+</tr>
+<tr>
+<td style="text-align:left;width: 6cm; border-left:1px solid;border-right:1px solid;">
+<span style="     ">TITELogisticLogNormal</span>
+</td>
+<td style="text-align:left;width: 6cm; border-left:1px solid;border-right:1px solid;">
+</td>
+<td style="text-align:left;width: 6cm; border-left:1px solid;border-right:1px solid;">
+<span style="     ">weightMethod</span>
+</td>
+<td style="text-align:left;width: 6cm; border-left:1px solid;border-right:1px solid;">
+weight_method
 </td>
 <td style="text-align:left;width: 6cm; border-left:1px solid;border-right:1px solid;">
 </td>
