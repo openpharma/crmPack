@@ -8,7 +8,12 @@
 \alias{.DefaultStoppingMTDdistribution}
 \title{\code{StoppingMTDdistribution}}
 \usage{
-StoppingMTDdistribution(target, thresh, prob)
+StoppingMTDdistribution(
+  target = 0.33,
+  thresh = 0.5,
+  prob = 0.9,
+  report_label = NA_character_
+)
 
 .DefaultStoppingMTDdistribution()
 }
@@ -18,6 +23,8 @@ StoppingMTDdistribution(target, thresh, prob)
 \item{thresh}{(\code{proportion})\cr see slot definition.}
 
 \item{prob}{(\code{proportion})\cr see slot definition.}
+
+\item{report_label}{(\code{string} or \code{NA})\cr see slot definition.}
 }
 \description{
 \ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#stable}{\figure{lifecycle-stable.svg}{options: alt='[Stable]'}}}{\strong{[Stable]}}
