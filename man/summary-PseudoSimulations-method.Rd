@@ -26,9 +26,6 @@ an object of class \code{\linkS4class{PseudoSimulationsSummary}}
 Summarize the simulations, relative to a given truth
 }
 \examples{
-# Example if only DLE responses are considered in the simulations.
-
-# Create an empty data set.
 emptydata <- Data(doseGrid = seq(25, 300, 25))
 
 # The design incorporate DLE responses and DLE samples.
@@ -62,7 +59,7 @@ my_design <- TDDesign(
   nextBest = td_next_best,
   stopping = my_stopping,
   increments = my_increments,
-  cohortSize = my_size,
+  cohort_size = my_size,
   data = emptydata,
   startingDose = 25
 )
@@ -108,7 +105,7 @@ my_design <- TDsamplesDesign(
   nextBest = td_next_best,
   stopping = my_stopping,
   increments = my_increments,
-  cohortSize = my_size,
+  cohort_size = my_size,
   data = emptydata,
   startingDose = 25
 )

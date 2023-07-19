@@ -46,6 +46,7 @@ my_next_best <- NextBestMaxGain(
 # Allow increase of 200\%.
 my_increments <- IncrementsRelative(intervals = 0, increments = 2)
 
+
 # Cohort size of 3.
 my_size <- CohortSizeConst(size = 3)
 
@@ -59,7 +60,7 @@ my_design <- DualResponsesDesign(
   eff_model = eff_model,
   stopping = my_stopping,
   increments = my_increments,
-  cohortSize = my_size,
+  cohort_size = my_size,
   data = emptydata,
   startingDose = 25
 )
@@ -107,7 +108,7 @@ my_next_best <- NextBestMaxGainSamples(
 # The design of 'DualResponsesSamplesDesign' class.
 my_design <- DualResponsesSamplesDesign(
   nextBest = my_next_best,
-  cohortSize = my_size,
+  cohort_size = my_size,
   startingDose = 25,
   model = dle_model,
   eff_model = eff_model,

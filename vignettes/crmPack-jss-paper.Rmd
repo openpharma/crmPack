@@ -374,7 +374,7 @@ mySizePL <- CohortSizeConst(1)
 design <- Design(
   model = model, nextBest = myNextBest,
   stopping = myStopping, increments = myIncrements,
-  cohortSize = mySize, pl_cohort_size = mySizePL,
+  cohort_size = mySize, pl_cohort_size = mySizePL,
   data = emptydata, startingDose = 25
 )
 ```
@@ -539,7 +539,7 @@ design2 <- DualResponsesDesign(
   eff_model = Effmodel, data = emptydata2,
   stopping = myStoppingDual,
   increments = myIncrements,
-  cohortSize = mySize, startingDose = 25
+  cohort_size = mySize, startingDose = 25
 )
 ```
 Note that an additional slot for the efficacy model is included in this design class. We can then specify the scenario for the simulation, by defining the true DLT and efficacy curves that we will be using:

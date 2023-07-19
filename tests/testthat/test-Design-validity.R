@@ -5,7 +5,7 @@
 test_that("v_rule_design passes for valid object", {
   object <- RuleDesign(
     nextBest = NextBestThreePlusThree(),
-    cohortSize = CohortSizeConst(size = 3L),
+    cohort_size = CohortSizeConst(size = 3L),
     data = Data(doseGrid = 5:20),
     startingDose = 5
   )
@@ -17,7 +17,7 @@ test_that("v_rule_design returns message when startingDose is not a valid scalar
   err_msg2 <- "startingDose must be included in data@doseGrid"
   object <- RuleDesign(
     nextBest = NextBestThreePlusThree(),
-    cohortSize = CohortSizeConst(size = 3L),
+    cohort_size = CohortSizeConst(size = 3L),
     data = Data(doseGrid = 5:20),
     startingDose = 5
   )
@@ -46,7 +46,7 @@ test_that("v_rule_design returns message when startingDose is not on doseGrid", 
   err_msg <- "startingDose must be included in data@doseGrid"
   object <- RuleDesign(
     nextBest = NextBestThreePlusThree(),
-    cohortSize = CohortSizeConst(size = 3L),
+    cohort_size = CohortSizeConst(size = 3L),
     data = Data(doseGrid = 5:20),
     startingDose = 5
   )
