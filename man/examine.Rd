@@ -63,6 +63,7 @@ listed.
 # Define the dose-grid.
 emptydata <- Data(doseGrid = c(1, 3, 5, 10, 15, 20, 25))
 
+
 # Initialize the CRM model.
 my_model <- LogisticLogNormal(
   mean = c(-0.85, 1),
@@ -80,13 +81,13 @@ my_next_best <- NextBestNCRM(
   max_overdose_prob = 0.25
 )
 
-# Choose the rule for the cohort-size.
+
 my_size1 <- CohortSizeRange(
   intervals = c(0, 30),
   cohort_size = c(1, 3)
 )
 my_size2 <- CohortSizeDLT(
-  dlt_intervals = c(0, 1),
+  intervals = c(0, 1),
   cohort_size = c(1, 3)
 )
 my_size <- maxSize(my_size1, my_size2)
@@ -112,14 +113,11 @@ my_design <- Design(
   nextBest = my_next_best,
   stopping = my_stopping,
   increments = my_increments,
-  cohortSize = my_size,
+  cohort_size = my_size,
   data = emptydata,
   startingDose = 3
 )
 
-# Examine the design.
-# MCMC parameters are set to small values only to show this example. They should be
-# increased for a real case.
 my_options <- McmcOptions(
   burnin = 10, step = 1, samples = 20, rng_kind = "Super-Duper",
   rng_seed = 94
@@ -136,7 +134,7 @@ my_design <- Design(
   nextBest = my_next_best,
   stopping = my_stopping,
   increments = my_increments,
-  cohortSize = my_size,
+  cohort_size = my_size,
   data = emptydata,
   startingDose = 3
 )
@@ -158,23 +156,24 @@ design <- Design(
   nextBest = my_next_best,
   stopping = my_stopping,
   increments = my_increments,
-  cohortSize = my_size,
+  cohort_size = my_size,
   data = emptydata,
   startingDose = 3
 )
 
 examine(my_design, mcmcOptions = my_options, maxNoIncrement = 2)
-
 # Define the dose-grid
 emptydata <- Data(doseGrid = c(5, 10, 15, 25, 35, 50, 80))
 
 # inizialing a 3+3 design with constant cohort size of 3 and
 # starting dose equal 5
-myDesign <- RuleDesign(nextBest = NextBestThreePlusThree(),
-                       cohortSize = CohortSizeConst(size=3L),
-                       data = emptydata,
-                       startingDose = 5)
-  
+myDesign <- RuleDesign(
+  nextBest = NextBestThreePlusThree(),
+  cohort_size = CohortSizeConst(size = 3L),
+  data = emptydata,
+  startingDose = 5
+)
+
 # Examine the design
 set.seed(4235)
 examine(myDesign)
@@ -219,7 +218,7 @@ mySize1 <- CohortSizeRange(
   cohort_size = c(1, 3)
 )
 mySize2 <- CohortSizeDLT(
-  dlt_intervals = c(0, 1),
+  intervals = c(0, 1),
   cohort_size = c(1, 3)
 )
 mySize <- maxSize(mySize1, mySize2)
@@ -242,7 +241,7 @@ design <- DADesign(
   increments = myIncrements,
   nextBest = myNextBest,
   stopping = myStopping,
-  cohortSize = mySize,
+  cohort_size = mySize,
   data = emptydata,
   safetyWindow = mysafetywindow,
   startingDose = 3

@@ -336,7 +336,7 @@ test_that("nextBest-NextBestDualEndpoint returns expected elements (absolute tar
   result <- nextBest(nb_de, Inf, samples, model, data)
   expect_identical(result$value, 100)
   expect_snapshot(result$probs)
-  vdiffr::expect_doppelganger("Plot of nextBest-NextBestDualEndpoint_atgt_nodlim", result$plot)
+  vdiffr::expect_doppelganger("nextBest-NextBestDualEndpoint_atgt_nodlim", result$plot)
 })
 
 ## NextBestMinDist ----
@@ -889,7 +889,7 @@ test_that("maxDose-IncrementsRelative throws error when Data is empty", {
 ## IncrementsRelativeDLT ----
 
 test_that("maxDose-IncrementsRelativeDLT works correctly for no of DLTs in 1st interval", {
-  increments <- IncrementsRelativeDLT(dlt_intervals = c(0, 2), increments = c(1, 0.5))
+  increments <- IncrementsRelativeDLT(intervals = c(0, 2), increments = c(1, 0.5))
   data <- Data(
     x = c(5, 100), y = c(0L, 0L), doseGrid = c(5, 100), ID = 1:2, cohort = 1:2
   )
@@ -904,7 +904,7 @@ test_that("maxDose-IncrementsRelativeDLT works correctly for no of DLTs in 1st i
 
 test_that("maxDose-IncrementsRelativeDLT works correctly for no of DLTs in 2nd interval", {
   dgrid <- c(5, 100, 150, 200)
-  increments <- IncrementsRelativeDLT(dlt_intervals = c(0, 2), increments = c(1, 0.5))
+  increments <- IncrementsRelativeDLT(intervals = c(0, 2), increments = c(1, 0.5))
   data <- Data(x = c(5, 100), y = c(1L, 1L), doseGrid = dgrid, ID = 1:2, cohort = 1:2)
   result <- maxDose(increments, data)
   expect_equal(result, 150)
@@ -918,28 +918,28 @@ test_that("maxDose-IncrementsRelativeDLT works correctly for no of DLTs in 2nd i
 })
 
 test_that("maxDose-IncrementsRelativeDLT throws error when no of DLTs is below the first interval", {
-  increments <- IncrementsRelativeDLT(dlt_intervals = c(2, 5), increments = c(1, 0.5))
+  increments <- IncrementsRelativeDLT(intervals = c(2, 5), increments = c(1, 0.5))
   data <- Data(x = c(5, 100), y = c(0L, 1L), doseGrid = c(5, 100), ID = 1:2, cohort = 1:2)
   expect_error(
     maxDose(increments, data),
-    "Assertion on 'dlt_count.*dlt_intervals.*failed: Must be TRUE."
+    "Assertion on 'dlt_count.*intervals.*failed: Must be TRUE."
   )
 })
 
 test_that("maxDose-IncrementsRelativeDLT throws error when IncrementsRelativeDLT is empty", {
-  increments <- IncrementsRelativeDLT(dlt_intervals = numeric(0), increments = numeric(0))
+  increments <- IncrementsRelativeDLT(intervals = numeric(0), increments = numeric(0))
   data <- h_get_data()
   expect_error(
     maxDose(increments, data),
-    "Assertion on 'dlt_count.*dlt_intervals.*failed: Must be TRUE."
+    "Assertion on 'dlt_count.*intervals.*failed: Must be TRUE."
   )
 })
 
 test_that("maxDose-IncrementsRelativeDLT throws error when Data is empty", {
-  increments <- IncrementsRelativeDLT(dlt_intervals = c(1, 4), increments = c(1, 0.5))
+  increments <- IncrementsRelativeDLT(intervals = c(1, 4), increments = c(1, 0.5))
   expect_error(
     maxDose(increments, Data()),
-    "Assertion on 'dlt_count.*dlt_intervals.*failed: Must be TRUE."
+    "Assertion on 'dlt_count.*intervals.*failed: Must be TRUE."
   )
 })
 
@@ -947,7 +947,7 @@ test_that("maxDose-IncrementsRelativeDLT throws error when Data is empty", {
 
 test_that("IncrementsRelativeDLTCurrent works correctly", {
   increments <- IncrementsRelativeDLTCurrent(
-    dlt_intervals = c(0, 1, 3),
+    intervals = c(0, 1, 3),
     increments = c(1, 0.33, 0.2)
   )
   data <- h_get_data_1()
@@ -956,7 +956,7 @@ test_that("IncrementsRelativeDLTCurrent works correctly", {
 })
 
 test_that("maxDose-IncrementsRelativeDLTCurrent works correctly when DLTs in 1st interval, no DLTs in cohorts", {
-  increments <- IncrementsRelativeDLTCurrent(dlt_intervals = c(0, 2), increments = c(1, 0.5))
+  increments <- IncrementsRelativeDLTCurrent(intervals = c(0, 2), increments = c(1, 0.5))
   # no DLTs in 1st interval.
   data <- Data(
     x = c(5, 100, 100), y = c(0L, 0L, 0L), doseGrid = c(5, 100), ID = 1:3, cohort = c(1, 2, 2)
@@ -971,7 +971,7 @@ test_that("maxDose-IncrementsRelativeDLTCurrent works correctly when DLTs in 1st
 })
 
 test_that("maxDose-IncrementsRelativeDLTCurrent works correctly when DLTs in 1st interval, DLTs in cohorts", {
-  increments <- IncrementsRelativeDLTCurrent(dlt_intervals = c(0, 2), increments = c(1, 0.5))
+  increments <- IncrementsRelativeDLTCurrent(intervals = c(0, 2), increments = c(1, 0.5))
   # no DLTs in 1st interval.
   data <- Data(
     x = c(5, 5, 20, 20, 20, 100, 100),
@@ -990,7 +990,7 @@ test_that("maxDose-IncrementsRelativeDLTCurrent works correctly when DLTs in 1st
 })
 
 test_that("maxDose-IncrementsRelativeDLTCurrent works correctly when DLTs in 2nd interval, no DLTs in cohorts", {
-  increments <- IncrementsRelativeDLTCurrent(dlt_intervals = c(0, 2), increments = c(1, 0.5))
+  increments <- IncrementsRelativeDLTCurrent(intervals = c(0, 2), increments = c(1, 0.5))
   # 2 DLTs in 2nd interval.
   data <- Data(
     x = c(5, 100, 100), y = c(0L, 1L, 1L), doseGrid = c(5, 100), ID = 1:3, cohort = c(1, 2, 2)
@@ -1007,7 +1007,7 @@ test_that("maxDose-IncrementsRelativeDLTCurrent works correctly when DLTs in 2nd
 })
 
 test_that("maxDose-IncrementsRelativeDLTCurrent works correctly when DLTs in 2nd interval, DLTs in cohorts", {
-  increments <- IncrementsRelativeDLTCurrent(dlt_intervals = c(0, 2), increments = c(1, 0.5))
+  increments <- IncrementsRelativeDLTCurrent(intervals = c(0, 2), increments = c(1, 0.5))
   # 2 DLTs in 2nd interval.
   data <- Data(
     x = c(5, 5, 20, 20, 20, 100, 100, 100),
@@ -1026,28 +1026,28 @@ test_that("maxDose-IncrementsRelativeDLTCurrent works correctly when DLTs in 2nd
 })
 
 test_that("maxDose-IncrementsRelativeDLTCurrent throws error when no of DLTs below the first interval", {
-  increments <- IncrementsRelativeDLTCurrent(dlt_intervals = c(2, 5), increments = c(1, 0.5))
+  increments <- IncrementsRelativeDLTCurrent(intervals = c(2, 5), increments = c(1, 0.5))
   data <- Data(x = c(5, 100), y = c(0L, 1L), doseGrid = c(5, 100), ID = 1:2, cohort = 1:2)
   expect_error(
     maxDose(increments, data),
-    "Assertion on 'dlt_count_lcohort.*dlt_intervals.*failed: Must be TRUE."
+    "Assertion on 'dlt_count_lcohort.*intervals.*failed: Must be TRUE."
   )
 })
 
 test_that("maxDose-IncrementsRelativeDLTCurrent throws error when IncrementsRelativeDLTCurrent is empty", {
-  increments <- IncrementsRelativeDLTCurrent(dlt_intervals = numeric(0), increments = numeric(0))
+  increments <- IncrementsRelativeDLTCurrent(intervals = numeric(0), increments = numeric(0))
   data <- h_get_data()
   expect_error(
     maxDose(increments, data),
-    "Assertion on 'dlt_count_lcohort.*dlt_intervals.*failed: Must be TRUE."
+    "Assertion on 'dlt_count_lcohort.*intervals.*failed: Must be TRUE."
   )
 })
 
 test_that("maxDose-IncrementsRelativeDLTCurrent throws error when Data is empty", {
-  increments <- IncrementsRelativeDLTCurrent(dlt_intervals = c(1, 4), increments = c(1, 0.5))
+  increments <- IncrementsRelativeDLTCurrent(intervals = c(1, 4), increments = c(1, 0.5))
   expect_error(
     maxDose(increments, Data()),
-    "Assertion on 'dlt_count_lcohort.*dlt_intervals.*failed: Must be TRUE."
+    "Assertion on 'dlt_count_lcohort.*intervals.*failed: Must be TRUE."
   )
 })
 
@@ -1340,7 +1340,7 @@ test_that("IncrementsHSRBeta works correctly if toxcicity probability is above t
 
 test_that("maxDose-IncrementsMin works correctly when incr1 is minimum", {
   incr1 <- IncrementsRelative(intervals = c(0, 20), increments = c(4, 0.1))
-  incr2 <- IncrementsRelativeDLT(dlt_intervals = c(0, 1, 3), increments = c(2, 0.5, 0.4))
+  incr2 <- IncrementsRelativeDLT(intervals = c(0, 1, 3), increments = c(2, 0.5, 0.4))
   increments <- IncrementsMin(increments_list = list(incr1, incr2))
   data <- Data(
     x = c(5, 100), y = c(1L, 0L), doseGrid = c(5, 100), ID = 1:2, cohort = 1:2
@@ -1351,7 +1351,7 @@ test_that("maxDose-IncrementsMin works correctly when incr1 is minimum", {
 
 test_that("maxDose-IncrementsMin works correctly when incr2 is minimum", {
   incr1 <- IncrementsRelative(intervals = c(0, 20), increments = c(4, 0.7))
-  incr2 <- IncrementsRelativeDLT(dlt_intervals = c(0, 1, 3), increments = c(2, 0.5, 0.4))
+  incr2 <- IncrementsRelativeDLT(intervals = c(0, 1, 3), increments = c(2, 0.5, 0.4))
   increments <- IncrementsMin(increments_list = list(incr1, incr2))
   data <- Data(
     x = c(5, 100), y = c(1L, 0L), doseGrid = c(5, 100), ID = 1:2, cohort = 1:2
@@ -3690,7 +3690,7 @@ test_that("stopTrial works correctly for StoppingTDCIRatio when samples are not 
 ## CohortSizeDLT ----
 
 test_that("size works as expected for CohortSizeDLT", {
-  cohortSize <- CohortSizeDLT(dlt_intervals = c(0, 1), cohort_size = c(1, 3))
+  cohortSize <- CohortSizeDLT(intervals = c(0, 1), cohort_size = c(1, 3))
   expect_equal(size(cohortSize, NA, Data(doseGrid = 1:3)), 0)
   for (dose in 1:3) {
     expect_equal(
@@ -3748,9 +3748,9 @@ test_that("size works as expected for CohortSizeRange", {
 test_that("size works as expected for CohortSizeMax", {
   doseGrid <- 1:5
   cohortSize <- CohortSizeMax(
-    cohort_size_list = list(
+    cohort_sizes = list(
       CohortSizeRange(intervals = c(0, 3), cohort_size = 1:2),
-      CohortSizeDLT(dlt_intervals = 0:2, cohort_size = c(1, 3, 6))
+      CohortSizeDLT(intervals = 0:2, cohort_size = c(1, 3, 6))
     )
   )
   emptyData <- Data(doseGrid = doseGrid)
@@ -3768,8 +3768,8 @@ test_that("size works as expected for CohortSizeMax", {
 
 test_that("maxSize works as expected", {
   size1 <- CohortSizeRange(intervals = c(0, 3), cohort_size = 1:2)
-  size2 <- CohortSizeDLT(dlt_intervals = 0:2, cohort_size = c(1, 3, 6))
-  cohortSize <- CohortSizeMax(cohort_size_list = list(size1, size2))
+  size2 <- CohortSizeDLT(intervals = 0:2, cohort_size = c(1, 3, 6))
+  cohortSize <- CohortSizeMax(cohort_sizes = list(size1, size2))
   expect_equal(maxSize(size1, size2), cohortSize)
 })
 
@@ -3778,9 +3778,9 @@ test_that("maxSize works as expected", {
 test_that("size works as expected for CohortSizeMin", {
   doseGrid <- 1:5
   cohortSize <- CohortSizeMin(
-    cohort_size_list = list(
+    cohort_sizes = list(
       CohortSizeRange(intervals = c(0, 3), cohort_size = 1:2),
-      CohortSizeDLT(dlt_intervals = 0:2, cohort_size = c(1, 3, 6))
+      CohortSizeDLT(intervals = 0:2, cohort_size = c(1, 3, 6))
     )
   )
   emptyData <- Data(doseGrid = doseGrid)
@@ -3798,7 +3798,7 @@ test_that("size works as expected for CohortSizeMin", {
 
 test_that("size works as expected for CohortSizeMin", {
   doseGrid <- 1:5
-  cohortSize <- CohortSizeParts(sizes = c(1, 3))
+  cohortSize <- CohortSizeParts(cohort_sizes = c(1, 3))
   expect_equal(size(cohortSize, NA, DataParts(nextPart = 1L)), 0)
   expect_equal(size(cohortSize, NA, DataParts(nextPart = 2L)), 0)
   for (dose in doseGrid) {
@@ -3848,6 +3848,7 @@ test_that("stopTrial works for StoppingTargetBiomarker", {
     rng_seed = 94
   )
 
+  # Set-up some MCMC parameters and generate samples from the posterior
   samples <- mcmc(data, model, options)
 
   # Define the rule for dose increments and calculate the maximum dose allowed
@@ -3940,9 +3941,16 @@ test_that("stopTrial works for StoppingTargetBiomarker", {
 
 test_that("maxSize works as expected", {
   size1 <- CohortSizeRange(intervals = c(0, 3), cohort_size = 1:2)
-  size2 <- CohortSizeDLT(dlt_intervals = 0:2, cohort_size = c(1, 3, 6))
-  cohortSize <- CohortSizeMax(cohort_size_list = list(size1, size2))
+  size2 <- CohortSizeDLT(intervals = 0:2, cohort_size = c(1, 3, 6))
+  cohortSize <- CohortSizeMax(cohort_sizes = list(size1, size2))
   expect_equal(maxSize(size1, size2), cohortSize)
+})
+
+test_that("minSize works as expected", {
+  size1 <- CohortSizeRange(intervals = c(0, 3), cohort_size = 1:2)
+  size2 <- CohortSizeDLT(intervals = 0:2, cohort_size = c(1, 3, 6))
+  cohortSize <- CohortSizeMin(cohort_sizes = list(size1, size2))
+  expect_equal(minSize(size1, size2), cohortSize)
 })
 
 test_that("stopTrial works correctly for StoppingTDCIRatio when samples are provided", {

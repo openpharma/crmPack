@@ -317,14 +317,14 @@ test_that("IncrementsRelativeDLT object can be created with user constructor", {
     IncrementsRelativeDLT(c(0, 2, 3), c(2, 1, 1.5))
   )
   expect_valid(result, "IncrementsRelativeDLT")
-  expect_identical(result@dlt_intervals, c(0L, 2L, 3L))
+  expect_identical(result@intervals, c(0L, 2L, 3L))
   expect_identical(result@increments, c(2, 1, 1.5))
 })
 
 test_that(".DefaultIncrementsRelativeDLT works as expected", {
   expect_equal(
     .DefaultIncrementsRelativeDLT(),
-    IncrementsRelativeDLT(dlt_intervals = c(0, 1, 3), increments = c(1, 0.33, 0.2))
+    IncrementsRelativeDLT(intervals = c(0, 1, 3), increments = c(1, 0.33, 0.2))
   )
 })
 
@@ -340,14 +340,14 @@ test_that("IncrementsRelativeDLTCurrent object can be created with user construc
     IncrementsRelativeDLTCurrent(c(0, 2, 3), c(2, 1, 1.5))
   )
   expect_valid(result, "IncrementsRelativeDLTCurrent")
-  expect_identical(result@dlt_intervals, c(0L, 2L, 3L))
+  expect_identical(result@intervals, c(0L, 2L, 3L))
   expect_identical(result@increments, c(2, 1, 1.5))
 })
 
 test_that(".DefaultIncrementsRelativeDLTCurrent works as expected", {
   expect_equal(
     .DefaultIncrementsRelativeDLTCurrent(),
-    IncrementsRelativeDLTCurrent(dlt_intervals = c(0, 1, 3), increments = c(1, 0.33, 0.2))
+    IncrementsRelativeDLTCurrent(intervals = c(0, 1, 3), increments = c(1, 0.33, 0.2))
   )
 })
 
@@ -420,7 +420,7 @@ test_that(".IncrementsMin works as expected", {
 
 test_that("IncrementsMin object can be created with user constructor", {
   increments_list <- list(
-    IncrementsRelativeDLT(dlt_intervals = c(0L, 1L), increments = c(2, 1)),
+    IncrementsRelativeDLT(intervals = c(0L, 1L), increments = c(2, 1)),
     IncrementsRelative(intervals = c(0, 2), increments = c(2, 1))
   )
   result <- expect_silent(IncrementsMin(increments_list))
@@ -435,7 +435,7 @@ test_that(".DefaultIncrementsMin works as expected", {
     IncrementsMin(
       increments_list = list(
         IncrementsRelativeDLT(
-          dlt_intervals = c(0, 1, 3),
+          intervals = c(0, 1, 3),
           increments = c(1, 0.33, 0.2)
         ),
         IncrementsRelative(
@@ -1066,14 +1066,14 @@ test_that(".CohortSizeDLT works as expected", {
 test_that("CohortSizeDLT object can be created with user constructor", {
   result <- expect_silent(CohortSizeDLT(c(0, 1, 2), c(20, 60, 90)))
   expect_valid(result, "CohortSizeDLT")
-  expect_identical(result@dlt_intervals, c(0L, 1L, 2L))
+  expect_identical(result@intervals, c(0L, 1L, 2L))
   expect_identical(result@cohort_size, c(20L, 60L, 90L))
 })
 
 test_that(".DefaultCohortSizeDLT works as expected", {
   expect_equal(
     .DefaultCohortSizeDLT(),
-    CohortSizeDLT(dlt_intervals = c(0, 1), cohort_size = c(1, 3))
+    CohortSizeDLT(intervals = c(0, 1), cohort_size = c(1, 3))
   )
 })
 
@@ -1107,7 +1107,7 @@ test_that(".CohortSizeParts works as expected", {
 test_that("CohortSizeParts object can be created with user constructor", {
   result <- expect_silent(CohortSizeParts(c(1, 4)))
   expect_valid(result, "CohortSizeParts")
-  expect_identical(result@sizes, c(1L, 4L))
+  expect_identical(result@cohort_sizes, c(1L, 4L))
 })
 
 ## CohortSizeMax ----
@@ -1118,24 +1118,24 @@ test_that(".CohortSizeMax works as expected", {
 })
 
 test_that("CohortSizeMax object can be created with user constructor", {
-  cohort_size_list <- h_cohort_size_list()
-  result <- expect_silent(CohortSizeMax(cohort_size_list = cohort_size_list))
+  cohort_sizes <- h_cohort_sizes()
+  result <- expect_silent(CohortSizeMax(cohort_sizes = cohort_sizes))
   expect_valid(result, "CohortSizeMax")
-  expect_identical(result@cohort_size_list, cohort_size_list)
+  expect_identical(result@cohort_sizes, cohort_sizes)
 
-  cohort_size_list <- h_cohort_size_list(three_rules = TRUE)
-  result <- expect_silent(CohortSizeMax(cohort_size_list = cohort_size_list))
+  cohort_sizes <- h_cohort_sizes(three_rules = TRUE)
+  result <- expect_silent(CohortSizeMax(cohort_sizes = cohort_sizes))
   expect_valid(result, "CohortSizeMax")
-  expect_identical(result@cohort_size_list, cohort_size_list)
+  expect_identical(result@cohort_sizes, cohort_sizes)
 })
 
 test_that(".DefaultCohortSizeMax works as expected", {
   expect_equal(
     .DefaultCohortSizeMax(),
     CohortSizeMax(
-      cohort_size_list = list(
+      cohort_sizes = list(
         CohortSizeRange(intervals = c(0, 10), cohort_size = c(1, 3)),
-        CohortSizeDLT(dlt_intervals = c(0, 1), cohort_size = c(1, 3))
+        CohortSizeDLT(intervals = c(0, 1), cohort_size = c(1, 3))
       )
     )
   )
@@ -1149,24 +1149,24 @@ test_that(".CohortSizeMin works as expected", {
 })
 
 test_that("CohortSizeMin object can be created with user constructor", {
-  cohort_size_list <- h_cohort_size_list()
-  result <- expect_silent(CohortSizeMin(cohort_size_list = cohort_size_list))
+  cohort_sizes <- h_cohort_sizes()
+  result <- expect_silent(CohortSizeMin(cohort_sizes = cohort_sizes))
   expect_valid(result, "CohortSizeMin")
-  expect_identical(result@cohort_size_list, cohort_size_list)
+  expect_identical(result@cohort_sizes, cohort_sizes)
 
-  cohort_size_list <- h_cohort_size_list(three_rules = TRUE)
-  result <- expect_silent(CohortSizeMin(cohort_size_list = cohort_size_list))
+  cohort_sizes <- h_cohort_sizes(three_rules = TRUE)
+  result <- expect_silent(CohortSizeMin(cohort_sizes = cohort_sizes))
   expect_valid(result, "CohortSizeMin")
-  expect_identical(result@cohort_size_list, cohort_size_list)
+  expect_identical(result@cohort_sizes, cohort_sizes)
 })
 
 test_that(".DefaultCohortSizeMain works as expected", {
   expect_equal(
     .DefaultCohortSizeMin(),
     CohortSizeMin(
-      cohort_size_list = list(
+      cohort_sizes = list(
         CohortSizeRange(intervals = c(0, 10), cohort_size = c(1, 3)),
-        CohortSizeDLT(dlt_intervals = c(0, 1), cohort_size = c(1, 3))
+        CohortSizeDLT(intervals = c(0, 1), cohort_size = c(1, 3))
       )
     )
   )

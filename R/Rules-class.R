@@ -1007,15 +1007,15 @@ IncrementsRelative <- function(intervals, increments) {
 #' [`IncrementsRelativeDLT`] is the class for increments control based on
 #' relative differences in terms of DLTs.
 #'
-#' @slot dlt_intervals (`integer`)\cr a vector with the left bounds of the
-#'   relevant DLT intervals. For example, `dlt_intervals  = c(0, 1, 3)` specifies
+#' @slot intervals (`integer`)\cr a vector with the left bounds of the
+#'   relevant DLT intervals. For example, `intervals  = c(0, 1, 3)` specifies
 #'   three intervals (sets of DLTs: first, 0 DLT; second 1 or 2 DLTs; and the third
 #'   one, at least 3 DLTs. That means, the right bound of the intervals are
 #'   exclusive to the interval and the last interval goes from the last value to
 #'   infinity.
 #' @slot increments (`numeric`)\cr a vector of maximum allowable relative
-#'   increments corresponding to `dlt_intervals`. IT must be of the same length
-#'   as the length of `dlt_intervals`.
+#'   increments corresponding to `intervals`. IT must be of the same length
+#'   as the length of `intervals`.
 #'
 #' @note This considers all DLTs across all cohorts observed so far.
 #'
@@ -1028,11 +1028,11 @@ IncrementsRelative <- function(intervals, increments) {
 .IncrementsRelativeDLT <- setClass(
   Class = "IncrementsRelativeDLT",
   slots = representation(
-    dlt_intervals = "integer",
+    intervals = "integer",
     increments = "numeric"
   ),
   prototype = prototype(
-    dlt_intervals = c(0L, 1L),
+    intervals = c(0L, 1L),
     increments = c(2, 1)
   ),
   contains = "Increments",
@@ -1043,17 +1043,17 @@ IncrementsRelative <- function(intervals, increments) {
 
 #' @rdname IncrementsRelativeDLT-class
 #'
-#' @param dlt_intervals (`numeric`)\cr see slot definition.
+#' @param intervals (`numeric`)\cr see slot definition.
 #' @param increments (`numeric`)\cr see slot definition.
 #'
 #' @export
 #' @example examples/Rules-class-IncrementsRelativeDLT.R
 #'
-IncrementsRelativeDLT <- function(dlt_intervals, increments) {
-  assert_integerish(dlt_intervals)
+IncrementsRelativeDLT <- function(intervals, increments) {
+  assert_integerish(intervals)
 
   .IncrementsRelativeDLT(
-    dlt_intervals = safeInteger(dlt_intervals),
+    intervals = safeInteger(intervals),
     increments = increments
   )
 }
@@ -1064,7 +1064,7 @@ IncrementsRelativeDLT <- function(dlt_intervals, increments) {
 #' @note Typically, end users will not use the `.DefaultIncrementsRelativeDLT()` function.
 #' @export
 .DefaultIncrementsRelativeDLT <- function() {
-  IncrementsRelativeDLT(dlt_intervals = c(0L, 1L, 3L), increments = c(1, 0.33, 0.2))
+  IncrementsRelativeDLT(intervals = c(0L, 1L, 3L), increments = c(1, 0.33, 0.2))
 }
 
 # IncrementsRelativeDLTCurrent ----
@@ -1099,10 +1099,10 @@ IncrementsRelativeDLT <- function(dlt_intervals, increments) {
 #' @export
 #' @example examples/Rules-class-IncrementsRelativeDLTCurrent.R
 #'
-IncrementsRelativeDLTCurrent <- function(dlt_intervals = c(0, 1),
+IncrementsRelativeDLTCurrent <- function(intervals = c(0, 1),
                                          increments = c(2, 1)) {
   .IncrementsRelativeDLTCurrent(
-    dlt_intervals = safeInteger(dlt_intervals),
+    intervals = safeInteger(intervals),
     increments = increments
   )
 }
@@ -1113,7 +1113,7 @@ IncrementsRelativeDLTCurrent <- function(dlt_intervals = c(0, 1),
 #' @note Typically, end users will not use the `.DefaultIncrementsRelativeDLTCurrent()` function.
 #' @export
 .DefaultIncrementsRelativeDLTCurrent <- function() { # nolint
-  IncrementsRelativeDLTCurrent(dlt_intervals = c(0L, 1L, 3L), increments = c(1, 0.33, 0.2))
+  IncrementsRelativeDLTCurrent(intervals = c(0L, 1L, 3L), increments = c(1, 0.33, 0.2))
 }
 
 # IncrementsRelativeParts ----
@@ -1366,7 +1366,7 @@ IncrementsHSRBeta <- function(target = 0.3,
   slots = c(increments_list = "list"),
   prototype = prototype(
     increments_list = list(
-      IncrementsRelativeDLT(dlt_intervals = c(0L, 1L), increments = c(2, 1)),
+      IncrementsRelativeDLT(intervals = c(0L, 1L), increments = c(2, 1)),
       IncrementsRelative(intervals = c(0, 2), increments = c(2, 1))
     )
   ),
@@ -1394,7 +1394,7 @@ IncrementsMin <- function(increments_list) {
 .DefaultIncrementsMin <- function() {
   IncrementsMin(
     increments_list = list(
-      IncrementsRelativeDLT(dlt_intervals = c(0, 1, 3), increments = c(1, 0.33, 0.2)),
+      IncrementsRelativeDLT(intervals = c(0, 1, 3), increments = c(1, 0.33, 0.2)),
       IncrementsRelative(intervals = c(0, 20), increments = c(1, 0.33))
     )
   )
@@ -2700,11 +2700,11 @@ CohortSizeRange <- function(intervals, cohort_size) {
 #' @description `r lifecycle::badge("stable")`
 #'
 #' [`CohortSizeDLT`] is the class for cohort size based on number of DLTs.
-#'
-#' @slot dlt_intervals (`integer`)\cr a vector with the left bounds of the
+
+#' @slot intervals (`integer`)\cr a vector with the left bounds of the
 #'   relevant DLT intervals.
 #' @slot cohort_size (`integer`)\cr a vector with the cohort sizes corresponding
-#'   to the elements of `dlt_intervals`.
+#'   to the elements of `intervals`.
 #'
 #' @aliases CohortSizeDLT
 #' @export
@@ -2712,11 +2712,11 @@ CohortSizeRange <- function(intervals, cohort_size) {
 .CohortSizeDLT <- setClass(
   Class = "CohortSizeDLT",
   slots = c(
-    dlt_intervals = "integer",
+    intervals = "integer",
     cohort_size = "integer"
   ),
   prototype = prototype(
-    dlt_intervals = c(0L, 1L),
+    intervals = c(0L, 1L),
     cohort_size = c(1L, 3L)
   ),
   contains = "CohortSize",
@@ -2727,15 +2727,15 @@ CohortSizeRange <- function(intervals, cohort_size) {
 
 #' @rdname CohortSizeDLT-class
 #'
-#' @param dlt_intervals (`numeric`)\cr see slot definition.
+#' @param intervals (`numeric`)\cr see slot definition.
 #' @param cohort_size (`numeric`)\cr see slot definition.
 #'
 #' @export
 #' @example examples/Rules-class-CohortSizeDLT.R
 #'
-CohortSizeDLT <- function(dlt_intervals, cohort_size) {
+CohortSizeDLT <- function(intervals, cohort_size) {
   .CohortSizeDLT(
-    dlt_intervals = safeInteger(dlt_intervals),
+    intervals = safeInteger(intervals),
     cohort_size = safeInteger(cohort_size)
   )
 }
@@ -2746,7 +2746,7 @@ CohortSizeDLT <- function(dlt_intervals, cohort_size) {
 #' @note Typically, end users will not use the `.DefaultCohortSizeDLT()` function.
 #' @export
 .DefaultCohortSizeDLT <- function() {
-  CohortSizeDLT(dlt_intervals = c(0L, 1L), cohort_size = c(1L, 3L))
+  CohortSizeDLT(intervals = c(0L, 1L), cohort_size = c(1L, 3L))
 }
 
 
@@ -2807,7 +2807,7 @@ CohortSizeConst <- function(size) {
 #' part of the dose escalation. It works only in conjunction with [`DataParts`]
 #' objects.
 #'
-#' @slot sizes (`integer`)\cr a vector of length two with two sizes, one for
+#' @slot cohort_sizes (`integer`)\cr a vector of length two with two sizes, one for
 #'   part 1, and one for part 2 respectively.
 #'
 #' @aliases CohortSizeParts
@@ -2815,8 +2815,8 @@ CohortSizeConst <- function(size) {
 #'
 .CohortSizeParts <- setClass(
   Class = "CohortSizeParts",
-  slots = c(sizes = "integer"),
-  prototype = prototype(sizes = c(1L, 3L)),
+  slots = c(cohort_sizes = "integer"),
+  prototype = prototype(cohort_sizes = c(1L, 3L)),
   contains = "CohortSize",
   validity = v_cohort_size_parts
 )
@@ -2825,13 +2825,13 @@ CohortSizeConst <- function(size) {
 
 #' @rdname CohortSizeParts-class
 #'
-#' @param sizes (`numeric`)\cr see slot definition.
+#' @param cohort_sizes (`numeric`)\cr see slot definition.
 #'
 #' @export
 #' @example examples/Rules-class-CohortSizeParts.R
 #'
-CohortSizeParts <- function(sizes) {
-  .CohortSizeParts(sizes = safeInteger(sizes))
+CohortSizeParts <- function(cohort_sizes) {
+  .CohortSizeParts(cohort_sizes = safeInteger(cohort_sizes))
 }
 
 ## default constructor ----
@@ -2840,7 +2840,7 @@ CohortSizeParts <- function(sizes) {
 #' @note Typically, end users will not use the `.DefaultCohortSizeParts()` function.
 #' @export
 .DefaultCohortSizeParts <- function() {
-  CohortSizeParts(sizes = c(1L, 3L))
+  CohortSizeParts(cohort_sizes = c(1L, 3L))
 }
 
 # CohortSizeMax ----
@@ -2852,11 +2852,11 @@ CohortSizeParts <- function(sizes) {
 #' @description `r lifecycle::badge("stable")`
 #'
 #' [`CohortSizeMax`] is the class for cohort size that is based on maximum of
-#' multiple cohort size rules. The `cohort_size_list` slot stores a set of cohort
+#' multiple cohort size rules. The `cohort_sizes` slot stores a set of cohort
 #' size rules, which are again the objects of class [`CohortSize`]. The maximum
 #' of these individual cohort sizes is taken to give the final cohort size.
 #'
-#' @slot cohort_size_list (`list`)\cr a list of cohort size rules, i.e. objects
+#' @slot cohort_sizes (`list`)\cr a list of cohort size rules, i.e. objects
 #' of class [`CohortSize`].
 #'
 #' @aliases CohortSizeMax
@@ -2864,11 +2864,11 @@ CohortSizeParts <- function(sizes) {
 #'
 .CohortSizeMax <- setClass(
   Class = "CohortSizeMax",
-  slots = c(cohort_size_list = "list"),
+  slots = c(cohort_sizes = "list"),
   prototype = prototype(
-    cohort_size_list = list(
+    cohort_sizes = list(
       CohortSizeRange(intervals = c(0, 30), cohort_size = c(1, 3)),
-      CohortSizeDLT(dlt_intervals = c(0, 1), cohort_size = c(1, 3))
+      CohortSizeDLT(intervals = c(0, 1), cohort_size = c(1, 3))
     )
   ),
   contains = "CohortSize",
@@ -2883,9 +2883,9 @@ CohortSizeParts <- function(sizes) {
 #' @export
 .DefaultCohortSizeMax <- function() {
   CohortSizeMax(
-    cohort_size_list = list(
+    cohort_sizes = list(
       CohortSizeRange(intervals = c(0, 10), cohort_size = c(1L, 3L)),
-      CohortSizeDLT(dlt_intervals = c(0L, 1L), cohort_size = c(1L, 3L))
+      CohortSizeDLT(intervals = c(0L, 1L), cohort_size = c(1L, 3L))
     )
   )
 }
@@ -2894,13 +2894,13 @@ CohortSizeParts <- function(sizes) {
 
 #' @rdname CohortSizeMax-class
 #'
-#' @param cohort_size_list (`list`)\cr see slot definition.
+#' @param cohort_sizes (`list`)\cr see slot definition.
 #'
 #' @export
 #' @example examples/Rules-class-CohortSizeMax.R
 #'
-CohortSizeMax <- function(cohort_size_list) {
-  .CohortSizeMax(cohort_size_list = cohort_size_list)
+CohortSizeMax <- function(cohort_sizes) {
+  .CohortSizeMax(cohort_sizes = cohort_sizes)
 }
 
 # CohortSizeMin ----
@@ -2912,11 +2912,11 @@ CohortSizeMax <- function(cohort_size_list) {
 #' @description `r lifecycle::badge("stable")`
 #'
 #' [`CohortSizeMin`] is the class for cohort size that is based on minimum of
-#' multiple cohort size rules. The `cohort_size_list` slot stores a set of cohort
+#' multiple cohort size rules. The `cohort_sizes` slot stores a set of cohort
 #' size rules, which are again the objects of class [`CohortSize`]. The minimum
 #' of these individual cohort sizes is taken to give the final cohort size.
 #'
-#' @slot cohort_size_list (`list`)\cr a list of cohort size rules, i.e. objects
+#' @slot cohort_sizes (`list`)\cr a list of cohort size rules, i.e. objects
 #' of class [`CohortSize`].
 #'
 #' @aliases CohortSizeMin
@@ -2924,12 +2924,12 @@ CohortSizeMax <- function(cohort_size_list) {
 #'
 .CohortSizeMin <- setClass(
   Class = "CohortSizeMin",
-  slots = c(cohort_size_list = "list"),
+  slots = c(cohort_sizes = "list"),
   prototype = prototype(
-    cohort_size_list =
+    cohort_sizes =
       list(
         CohortSizeRange(intervals = c(0, 30), cohort_size = c(1, 3)),
-        CohortSizeDLT(dlt_intervals = c(0, 1), cohort_size = c(1, 3))
+        CohortSizeDLT(intervals = c(0, 1), cohort_size = c(1, 3))
       )
   ),
   contains = "CohortSize",
@@ -2940,13 +2940,13 @@ CohortSizeMax <- function(cohort_size_list) {
 
 #' @rdname CohortSizeMin-class
 #'
-#' @param cohort_size_list (`list`)\cr see slot definition.
+#' @param cohort_sizes (`list`)\cr see slot definition.
 #'
 #' @export
 #' @example examples/Rules-class-CohortSizeMin.R
 #'
-CohortSizeMin <- function(cohort_size_list) {
-  .CohortSizeMin(cohort_size_list = cohort_size_list)
+CohortSizeMin <- function(cohort_sizes) {
+  .CohortSizeMin(cohort_sizes = cohort_sizes)
 }
 
 ## default constructor ----
@@ -2956,9 +2956,9 @@ CohortSizeMin <- function(cohort_size_list) {
 #' @export
 .DefaultCohortSizeMin <- function() {
   CohortSizeMin(
-    cohort_size_list = list(
+    cohort_sizes = list(
       CohortSizeRange(intervals = c(0, 10), cohort_size = c(1L, 3L)),
-      CohortSizeDLT(dlt_intervals = c(0L, 1L), cohort_size = c(1L, 3L))
+      CohortSizeDLT(intervals = c(0L, 1L), cohort_size = c(1L, 3L))
     )
   )
 }
