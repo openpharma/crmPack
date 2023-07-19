@@ -198,7 +198,7 @@ test_that("examine for DADesign works as expected", {
     increments = my_increments,
     nextBest = my_next_best,
     stopping = my_stopping,
-    cohortSize = my_size,
+    cohort_size = my_size,
     data = emptydata,
     safetyWindow = my_safety,
     startingDose = 3
