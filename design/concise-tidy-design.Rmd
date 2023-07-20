@@ -72,7 +72,7 @@ h_slot_to_tibble <- function(obj, slot_name, col = NULL) {
 }
 
 h_tidy_all_slots <- function(obj) {
-  lapply(slotNames(obj), \(x) h_slot_to_tibble(obj, x)) %>% 
+  lapply(slotNames(obj), \(x) h_slot_to_tibble(obj, x)) %>%
     dplyr::bind_cols()
 }
 
@@ -83,17 +83,16 @@ h_tidy_class <- function(d, obj) {
 }
 
 h_range_to_minmax <- function(
-    x, 
-    col, 
-    min_col = "min", 
-    max_col = "max", 
-    range_min = -Inf, 
-    range_max= Inf
-  ) {
+    x,
+    col,
+    min_col = "min",
+    max_col = "max",
+    range_min = -Inf,
+    range_max = Inf) {
   vals <- x %>% dplyr::pull({{ col }})
   tibble(
     {{ min_col }} := c(range_min, vals),
-    {{ max_col  }} := c(vals, range_max)
+    {{ max_col }} := c(vals, range_max)
   )
 }
 ```
@@ -137,8 +136,8 @@ setMethod(
     tibble::tibble(
       part = seq_along(x@cohort_sizes),
       cohort_size = x@cohort_sizes
-    ) %>% 
-    h_tidy_class(x)
+    ) %>%
+      h_tidy_class(x)
   }
 )
 
@@ -160,7 +159,7 @@ setMethod(
   f = "tidy",
   signature = signature(x = "Increments"),
   definition = function(x, ...) {
-    h_tidy_all_slots(x) %>% 
+    h_tidy_all_slots(x) %>%
       h_tidy_class(x)
   }
 )
@@ -175,18 +174,18 @@ setMethod(
   f = "tidy",
   signature = signature(x = "IncrementsRelative"),
   definition = function(x, ...) {
-    callNextMethod() %>% 
-    h_range_to_minmax(intervals) %>% 
-    dplyr::filter(max > 0) %>% 
-    add_column(increment = x@increments)
+    callNextMethod() %>%
+      h_range_to_minmax(intervals) %>%
+      dplyr::filter(max > 0) %>%
+      add_column(increment = x@increments)
   }
 )
 
 x <- IncrementsRelative(
-       intervals = c(0, 20),
-       increments = c(1, 0.33)
-     ) %>%
-     tidy()
+  intervals = c(0, 20),
+  increments = c(1, 0.33)
+) %>%
+  tidy()
 x
 class(x)
 ```
@@ -203,7 +202,7 @@ setMethod(
   f = "tidy",
   signature = signature(x = "NextBest"),
   definition = function(x, ...) {
-    h_tidy_all_slots(x) %>% 
+    h_tidy_all_slots(x) %>%
       h_tidy_class(x)
   }
 )
@@ -218,9 +217,9 @@ setMethod(
   f = "tidy",
   signature = signature(x = "NextBestNCRM"),
   definition = function(x, ...) {
-    callNextMethod() %>% 
-      h_range_to_minmax(target, range_min = 0, range_max = 1) %>% 
-      add_column(max_prob = c(NA, NA, x@max_overdose_prob)) %>% 
+    callNextMethod() %>%
+      h_range_to_minmax(target, range_min = 0, range_max = 1) %>%
+      add_column(max_prob = c(NA, NA, x@max_overdose_prob)) %>%
       add_column(Range = c("Underdose", "Target", "Overdose"), .before = 1)
   }
 )
