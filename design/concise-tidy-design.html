@@ -351,7 +351,7 @@ display: none;
 
 <h1 class="title toc-ignore">Using tidy methods</h1>
 <h4 class="author">John Kirkpatrick</h4>
-<h4 class="date">07Jun2023</h4>
+<h4 class="date">20Jul2023</h4>
 
 </div>
 
@@ -494,7 +494,7 @@ an available namespace and, if not, define the appropriate generic</li>
 }
 
 h_tidy_all_slots &lt;- function(obj) {
-  lapply(slotNames(obj), \(x) h_slot_to_tibble(obj, x)) %&gt;% 
+  lapply(slotNames(obj), \(x) h_slot_to_tibble(obj, x)) %&gt;%
     dplyr::bind_cols()
 }
 
@@ -505,17 +505,16 @@ h_tidy_class &lt;- function(d, obj) {
 }
 
 h_range_to_minmax &lt;- function(
-    x, 
-    col, 
-    min_col = &quot;min&quot;, 
-    max_col = &quot;max&quot;, 
-    range_min = -Inf, 
-    range_max= Inf
-  ) {
+    x,
+    col,
+    min_col = &quot;min&quot;,
+    max_col = &quot;max&quot;,
+    range_min = -Inf,
+    range_max = Inf) {
   vals &lt;- x %&gt;% dplyr::pull({{ col }})
   tibble(
     {{ min_col }} := c(range_min, vals),
-    {{ max_col  }} := c(vals, range_max)
+    {{ max_col }} := c(vals, range_max)
   )
 }</code></pre>
 </div>
@@ -561,8 +560,8 @@ setMethod(
     tibble::tibble(
       part = seq_along(x@cohort_sizes),
       cohort_size = x@cohort_sizes
-    ) %&gt;% 
-    h_tidy_class(x)
+    ) %&gt;%
+      h_tidy_class(x)
   }
 )
 
@@ -588,7 +587,7 @@ setMethod(
   f = &quot;tidy&quot;,
   signature = signature(x = &quot;Increments&quot;),
   definition = function(x, ...) {
-    h_tidy_all_slots(x) %&gt;% 
+    h_tidy_all_slots(x) %&gt;%
       h_tidy_class(x)
   }
 )
@@ -603,18 +602,18 @@ setMethod(
   f = &quot;tidy&quot;,
   signature = signature(x = &quot;IncrementsRelative&quot;),
   definition = function(x, ...) {
-    callNextMethod() %&gt;% 
-    h_range_to_minmax(intervals) %&gt;% 
-    dplyr::filter(max &gt; 0) %&gt;% 
-    add_column(increment = x@increments)
+    callNextMethod() %&gt;%
+      h_range_to_minmax(intervals) %&gt;%
+      dplyr::filter(max &gt; 0) %&gt;%
+      add_column(increment = x@increments)
   }
 )
 
 x &lt;- IncrementsRelative(
-       intervals = c(0, 20),
-       increments = c(1, 0.33)
-     ) %&gt;%
-     tidy()
+  intervals = c(0, 20),
+  increments = c(1, 0.33)
+) %&gt;%
+  tidy()
 x</code></pre>
 <pre><code>## # A tibble: 2 × 3
 ##     min   max increment
@@ -634,7 +633,7 @@ setMethod(
   f = &quot;tidy&quot;,
   signature = signature(x = &quot;NextBest&quot;),
   definition = function(x, ...) {
-    h_tidy_all_slots(x) %&gt;% 
+    h_tidy_all_slots(x) %&gt;%
       h_tidy_class(x)
   }
 )
@@ -649,9 +648,9 @@ setMethod(
   f = &quot;tidy&quot;,
   signature = signature(x = &quot;NextBestNCRM&quot;),
   definition = function(x, ...) {
-    callNextMethod() %&gt;% 
-      h_range_to_minmax(target, range_min = 0, range_max = 1) %&gt;% 
-      add_column(max_prob = c(NA, NA, x@max_overdose_prob)) %&gt;% 
+    callNextMethod() %&gt;%
+      h_range_to_minmax(target, range_min = 0, range_max = 1) %&gt;%
+      add_column(max_prob = c(NA, NA, x@max_overdose_prob)) %&gt;%
       add_column(Range = c(&quot;Underdose&quot;, &quot;Target&quot;, &quot;Overdose&quot;), .before = 1)
   }
 )

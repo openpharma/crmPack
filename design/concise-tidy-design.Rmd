@@ -1,7 +1,7 @@
 ---
 title: "Using tidy methods"
 author: "John Kirkpatrick"
-date: "07Jun2023"
+date: "20Jul2023"
 output: html_document
 ---
 
