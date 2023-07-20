@@ -7,12 +7,14 @@
 \alias{Simulations}
 \title{\code{Simulations}}
 \usage{
-Simulations(fit, stop_reasons, ...)
+Simulations(fit, stop_reasons, stop_report, ...)
 }
 \arguments{
 \item{fit}{(\code{list})\cr see slot definition.}
 
 \item{stop_reasons}{(\code{list})\cr see slot definition.}
+
+\item{stop_report}{see \code{\linkS4class{Simulations}}}
 
 \item{\dots}{additional parameters from \code{\link{GeneralSimulations}}}
 }
@@ -29,6 +31,8 @@ Additional slots \code{fit} and \code{stop_reasons} compared to the general clas
 \item{\code{fit}}{(\code{list})\cr final fits}
 
 \item{\code{stop_reasons}}{(\code{list})\cr stopping reasons for each simulation run}
+
+\item{\code{stop_report}}{matrix of stopping rule outcomes}
 }}
 
 \examples{
@@ -58,7 +62,10 @@ fit <- list(
   c(0.3, 0.4)
 )
 
+stop_report <- matrix(c(TRUE, FALSE), nrow = 2)
+
 stop_reasons <- list("A", "B")
 
-simulations <- Simulations(fit = fit, stop_reasons = stop_reasons, data, doses, seed)
+
+simulations <- Simulations(fit = fit, stop_report = stop_report, stop_reasons = stop_reasons, data, doses, seed)
 }

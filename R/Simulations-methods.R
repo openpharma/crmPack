@@ -548,7 +548,6 @@ setMethod("summary",
           placebo = object@data[[1]]@placebo
         )
 
-
       return(ret)
     }
 )
@@ -634,6 +633,7 @@ setMethod("summary",
       ## for which we then define a print / plot method
       ret <- .SimulationsSummary(
         start,
+        stop_report = object@stop_report,
         fitAtDoseMostSelected = fitAtDoseMostSelected,
         meanFit = meanFit
       )
@@ -950,7 +950,6 @@ setMethod("show",
     }
 )
 
-
 ##' Show the summary of the simulations
 ##'
 ##' @param object the \code{\linkS4class{SimulationsSummary}} object we want
@@ -976,6 +975,20 @@ setMethod("show",
         df = df,
         dfNames = dfNames
       )
+
+      # report stopping rules
+      # Report individual stopping rules with non-<NA> labels.
+      #stop_pct <- colMeans(object@stop_report) * 100
+      #stop_pct_to_print <- stop_pct[!is.na(names(stop_pct))]
+
+      stop_pct_to_print <- h_calc_report_label_percentage(object@stop_report)
+
+      if (length(stop_pct_to_print) > 0) {
+        cat(
+          "Stopping rules:\n \n",
+          paste(names(stop_pct_to_print), ": ", stop_pct_to_print, "%\n \n")
+        )
+      }
 
       ## add one reporting line
       r$report(
