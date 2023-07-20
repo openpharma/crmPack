@@ -390,7 +390,12 @@ different lengths, the results is a list of <code>tibble</code>s. The
 list may be nested to multiple levels. (See, for example,
 <code>LogisticLogNormal</code>.)</li>
 <li>The column names of the tidied <code>tibble</code> correspond to the
-slot names of the parent object.</li>
+slot names of the parent object.
+<ul>
+<li>Exception: where the slot has a plural contains a
+<code>vector</code> or <code>list</code>, the column name will be
+singular. See, for example, <code>CohortSizeParts</code> below.</li>
+</ul></li>
 <li>If an object contains a vector or matrix of values that correspond
 to an “obvious” set of parameters, columns take on the names of those
 parameters and the <code>tibble</code> is augmented by a column named
@@ -414,6 +419,51 @@ tidy <code>tibble</code>.</li>
 the naming convention described above is not followed. Instead, columns
 named <code>min</code> and <code>max</code> define the extent of the
 range and a column named <code>Range</code> labels the range.</li>
+<li>Would, say, <code>left</code> and <code>right</code> be better names
+to avoid potential name clashes with the built-in <code>min</code> and
+<code>max</code> functions?</li>
+</ul>
+<p>Unfortunately, <code>crmPack</code> classes do not inherit from a
+common super class (which need not do anything other than identify the
+class as being part of the package). Consequently, a single
+<code>crpPack</code>-specific default <code>tidy</code> method is not
+possible. A separate, class-specific <code>tidy</code> method will be
+needed for each of the main <code>crmPack</code> super classes
+(<code>Data</code>, <code>GeneralModel</code>, <code>Increments</code>,
+<code>CohortSize</code>, <code>MaxDose</code>, <code>Stopping</code>,
+<code>Design</code>, <code>Samples</code>, <code>Simulations</code>,
+etc). However, the basic functionality is the same regardless of super
+class: iterate over slots that are not functions, converting each to a
+tibble. This common functionality could be propvided by a helper
+function. See below.</p>
+</div>
+<div id="helper-functions" class="section level3">
+<h3>Helper functions</h3>
+<p>It is likely that <code>tidy</code>ing <code>crmPack</code> objects
+of different classes will share common steps. These common steps are
+candidates for being handled by helper functions. Functionality for
+various helper functions include:</p>
+<ul>
+<li>Conversion of a single slot to a tibble
+[<code>h_slot_to_tibble</code> with signature
+<code>c(obj = ANY, slot_name = &quot;character&quot;)</code>]</li>
+<li>Conversion of all slots in an object to tibbles
+[<code>h_tidy_all_slots</code> with signature <code>c(obj = ANY)</code>]
+that simply calls <code>h_slot_to_tibble</code> for all slots in the
+object that are not functions.</li>
+<li>The conversion of scalar attributes to “constant” columns in a
+tibble [<code>h_scalar_attr_to_column</code> with signature
+<code>c(data = &quot;tibble&quot;, obj = ANY)</code>]</li>
+<li>The conversion of ranges (as found in, for example, sub-classes
+<code>Increments</code>) to min/max column pairs
+[<code>h_range_to_minmax</code> with signature
+<code>c(data = &quot;tibble&quot;, obj = ANY)</code> with additional arguments to
+allow users to specify the name of the min and max columns, whether the
+ranges are closed to the left (default) or right and the outer ends of
+the lowest and highest intervals (with defaults <code>-Inf</code> and
+<code>Inf</code> respectively)]</li>
+<li>The class definition of the <code>tidy</code> tibble
+[<code>h_tidy_class</code> with signature `c(data = “tibble”)]</li>
 </ul>
 </div>
 <div id="please-also-read" class="section level3">
@@ -434,9 +484,45 @@ an available namespace and, if not, define the appropriate generic</li>
 </ul>
 <p>After discussion, we take the first approach and make
 <code>crmPack</code> Depend on <code>broom</code>.</p>
+<div id="some-helper-functions" class="section level3">
+<h3>Some helper functions</h3>
+<pre class="r"><code>h_slot_to_tibble &lt;- function(obj, slot_name, col = NULL) {
+  if (is.null(col)) {
+    col &lt;- slot_name
+  }
+  tibble::tibble({{ col }} := slot(obj, slot_name))
+}
+
+h_tidy_all_slots &lt;- function(obj) {
+  lapply(slotNames(obj), \(x) h_slot_to_tibble(obj, x)) %&gt;% 
+    dplyr::bind_cols()
+}
+
+h_tidy_class &lt;- function(d, obj) {
+  cls &lt;- class(obj)
+  class(d) &lt;- c(paste0(&quot;tbl_&quot;, cls[1]), class(d))
+  d
+}
+
+h_range_to_minmax &lt;- function(
+    x, 
+    col, 
+    min_col = &quot;min&quot;, 
+    max_col = &quot;max&quot;, 
+    range_min = -Inf, 
+    range_max= Inf
+  ) {
+  vals &lt;- x %&gt;% dplyr::pull({{ col }})
+  tibble(
+    {{ min_col }} := c(range_min, vals),
+    {{ max_col  }} := c(vals, range_max)
+  )
+}</code></pre>
+</div>
 <div id="simple-examples" class="section level3">
 <h3>Simple examples</h3>
-<p><code>CohortSizeConst</code> is a trivial example.</p>
+<p><code>CohortSizeConst</code> is a trivial example and illustrates the
+default approach for all classes.</p>
 <pre class="r"><code># tidy-CohortSize ----
 
 #&#39; @rdname tidy
@@ -447,13 +533,7 @@ setMethod(
   f = &quot;tidy&quot;,
   signature = signature(x = &quot;CohortSize&quot;),
   definition = function(x, ...) {
-    row_count &lt;- max(sapply(slotNames(x), function(name) length(slot(x, name))))
-    rv &lt;- tibble::tibble(.rows = row_count)
-    for (slot in slotNames(x)) {
-      rv &lt;- rv %&gt;% tibble::add_column(!!slot := slot(x, slot))
-    }
-    class(rv) &lt;- c(paste0(&quot;tbl_&quot;, class(x)), class(rv))
-    return(rv)
+    h_tidy_all_slots(x) %&gt;% h_tidy_class(x)
   }
 )
 x &lt;- CohortSizeConst(size = 3) %&gt;% tidy()
@@ -465,8 +545,9 @@ x</code></pre>
 <pre class="r"><code>class(x)</code></pre>
 <pre><code>## [1] &quot;tbl_CohortSizeConst&quot; &quot;tbl_df&quot;              &quot;tbl&quot;                
 ## [4] &quot;data.frame&quot;</code></pre>
-<p><code>CohortSizeParts</code> is slightly more complex and a slight
-exception to the general principles outlined above.</p>
+<p><code>CohortSizeParts</code> is slightly more complex and requires
+custom handling because the part index is implicit rather than
+explicit.</p>
 <pre class="r"><code># tidy-CohortSizeParts ----
 
 #&#39; @rdname tidy
@@ -477,12 +558,11 @@ setMethod(
   f = &quot;tidy&quot;,
   signature = signature(x = &quot;CohortSizeParts&quot;),
   definition = function(x, ...) {
-    rv &lt;- tibble::tibble(
+    tibble::tibble(
       part = seq_along(x@cohort_sizes),
       cohort_size = x@cohort_sizes
-    )
-    class(rv) &lt;- c(paste0(&quot;tbl_&quot;, class(x)), class(rv))
-    return(rv)
+    ) %&gt;% 
+    h_tidy_class(x)
   }
 )
 
@@ -496,9 +576,70 @@ x</code></pre>
 <pre class="r"><code>class(x)</code></pre>
 <pre><code>## [1] &quot;tbl_CohortSizeParts&quot; &quot;tbl_df&quot;              &quot;tbl&quot;                
 ## [4] &quot;data.frame&quot;</code></pre>
-<p><code>NextBestNCRM</code> demonstrates how ranges are
-represented.</p>
-<pre class="r"><code># tidy-NextBestNCRM ----
+<p><code>IncrementsRelative</code> illustrate how ranges are
+handled.</p>
+<pre class="r"><code># tidy-Increments ----
+
+#&#39; @rdname tidy
+#&#39; @aliases tidy-Increments
+#&#39; @example examples/Increments-method-tidy.R
+#&#39; @export
+setMethod(
+  f = &quot;tidy&quot;,
+  signature = signature(x = &quot;Increments&quot;),
+  definition = function(x, ...) {
+    h_tidy_all_slots(x) %&gt;% 
+      h_tidy_class(x)
+  }
+)
+
+# tidy-IncrementsRelative ----
+
+#&#39; @rdname tidy
+#&#39; @aliases tidy-IncrementsRelative
+#&#39; @example examples/IncrementsRelative-method-tidy.R
+#&#39; @export
+setMethod(
+  f = &quot;tidy&quot;,
+  signature = signature(x = &quot;IncrementsRelative&quot;),
+  definition = function(x, ...) {
+    callNextMethod() %&gt;% 
+    h_range_to_minmax(intervals) %&gt;% 
+    dplyr::filter(max &gt; 0) %&gt;% 
+    add_column(increment = x@increments)
+  }
+)
+
+x &lt;- IncrementsRelative(
+       intervals = c(0, 20),
+       increments = c(1, 0.33)
+     ) %&gt;%
+     tidy()
+x</code></pre>
+<pre><code>## # A tibble: 2 × 3
+##     min   max increment
+##   &lt;dbl&gt; &lt;dbl&gt;     &lt;dbl&gt;
+## 1     0    20      1   
+## 2    20   Inf      0.33</code></pre>
+<pre class="r"><code>class(x)</code></pre>
+<pre><code>## [1] &quot;tbl_df&quot;     &quot;tbl&quot;        &quot;data.frame&quot;</code></pre>
+<p><code>NextBestNCRM</code> requires custom handling.</p>
+<pre class="r"><code># tidy-NextBest ----
+
+#&#39; @rdname tidy
+#&#39; @aliases tidy-NextBest
+#&#39; @example examples/NextBest-method-tidy.R
+#&#39; @export
+setMethod(
+  f = &quot;tidy&quot;,
+  signature = signature(x = &quot;NextBest&quot;),
+  definition = function(x, ...) {
+    h_tidy_all_slots(x) %&gt;% 
+      h_tidy_class(x)
+  }
+)
+
+# tidy-NextBestNCRM ----
 
 #&#39; @rdname tidy
 #&#39; @aliases tidy-NextBestNCRM
@@ -508,14 +649,10 @@ setMethod(
   f = &quot;tidy&quot;,
   signature = signature(x = &quot;NextBestNCRM&quot;),
   definition = function(x, ...) {
-    rv &lt;- tibble::tibble(
-      Range = c(&quot;Underdose&quot;, &quot;Target&quot;, &quot;Overdose&quot;),
-      min = c(0, x@target[1], x@target[2]),
-      max = c(x@target[1], x@overdose[1], 1),
-      max_prob = c(NA, NA, x@max_overdose_prob)
-    )
-    class(rv) &lt;- c(paste0(&quot;tbl_&quot;, class(x)), class(rv))
-    return(rv)
+    callNextMethod() %&gt;% 
+      h_range_to_minmax(target, range_min = 0, range_max = 1) %&gt;% 
+      add_column(max_prob = c(NA, NA, x@max_overdose_prob)) %&gt;% 
+      add_column(Range = c(&quot;Underdose&quot;, &quot;Target&quot;, &quot;Overdose&quot;), .before = 1)
   }
 )
 
@@ -532,7 +669,40 @@ x</code></pre>
 ## 2 Target     0.2   0.35    NA   
 ## 3 Overdose   0.35  1        0.25</code></pre>
 <pre class="r"><code>class(x)</code></pre>
-<pre><code>## [1] &quot;tbl_NextBestNCRM&quot; &quot;tbl_df&quot;           &quot;tbl&quot;              &quot;data.frame&quot;</code></pre>
+<pre><code>## [1] &quot;tbl_df&quot;     &quot;tbl&quot;        &quot;data.frame&quot;</code></pre>
+<p>In addition, consideration of how to handle the case when the lower
+end of <code>overdose</code> is above the upper end of
+<code>target</code> because <code>crmPack</code> does not follow the
+usual convention of classifying p(Tox) into four categories, namely,
+“Underdosing”, “Target”, “Overdosing” and “Toxicity”. The current
+implementation gives incorrect output:</p>
+<pre class="r"><code>NextBestNCRM(
+  target = c(0.2, 0.35),
+  overdose = c(0.6, 1),
+  max_overdose_prob = 0.25
+) %&gt;% tidy()</code></pre>
+<pre><code>## # A tibble: 3 × 4
+##   Range       min   max max_prob
+##   &lt;chr&gt;     &lt;dbl&gt; &lt;dbl&gt;    &lt;dbl&gt;
+## 1 Underdose  0     0.2     NA   
+## 2 Target     0.2   0.35    NA   
+## 3 Overdose   0.35  1        0.25</code></pre>
+<p>Should the output be similar to</p>
+<pre><code>## # A tibble: 3 × 4
+##   Range       min   max max_prob
+##   &lt;chr&gt;     &lt;dbl&gt; &lt;dbl&gt;    &lt;dbl&gt;
+## 1 Underdose   0    0.2     NA   
+## 2 Target      0.2  0.35    NA   
+## 3 Overdose    0.6  1        0.25</code></pre>
+<p>or similar to</p>
+<pre><code>## # A tibble: 4 × 4
+##   Range         min   max max_prob
+##   &lt;chr&gt;       &lt;dbl&gt; &lt;dbl&gt;    &lt;dbl&gt;
+## 1 &quot;Underdose&quot;  0     0.2     NA   
+## 2 &quot;Target&quot;     0.2   0.35    NA   
+## 3 &quot; &quot;          0.35  0.6     NA   
+## 4 &quot;Overdose&quot;   0.6   1        0.25</code></pre>
+<p>?</p>
 </div>
 <div id="a-more-complex-example" class="section level3">
 <h3>A more complex example</h3>
