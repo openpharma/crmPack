@@ -163,6 +163,7 @@ reference:
       - h_covr_helpers
       - h_default_if_empty
       - h_unpack_stopit
+      - h_calc_report_label_percentage
   - title: Internal Validation Functions
     contents:
       - v_general_data
