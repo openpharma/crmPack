@@ -11,6 +11,6 @@ h_calc_report_label_percentage(stop_report)
 }
 \description{
 calculates true column means and converts output into percentages
-before combigning the output with the report label; output is passed
-to \code{\link[=show]{show()}} and ouptut with cat to console
+before combining the output with the report label; output is passed
+to \code{\link[=show]{show()}} and output with cat to console
 }
