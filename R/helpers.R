@@ -1075,7 +1075,7 @@ h_unpack_stopit <- function(stopit_tree) {
 #'
 #' @param stop_report object from summary method
 
-h_calc_report_label_percentage <- function(stop_report){
+h_calc_report_label_percentage <- function(stop_report) {
   stop_pct <- colMeans(stop_report) * 100
   stop_pct_to_print <- stop_pct[!is.na(names(stop_pct))]
   return(stop_pct_to_print)

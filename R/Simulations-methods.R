@@ -978,8 +978,8 @@ setMethod("show",
 
       # report stopping rules
       # Report individual stopping rules with non-<NA> labels.
-      #stop_pct <- colMeans(object@stop_report) * 100
-      #stop_pct_to_print <- stop_pct[!is.na(names(stop_pct))]
+      # stop_pct <- colMeans(object@stop_report) * 100
+      # stop_pct_to_print <- stop_pct[!is.na(names(stop_pct))]
 
       stop_pct_to_print <- h_calc_report_label_percentage(object@stop_report)
 

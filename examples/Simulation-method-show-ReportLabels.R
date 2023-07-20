@@ -8,7 +8,7 @@ model <- LogisticLogNormal(
   mean = c(-0.85, 1),
   cov =
     matrix(c(1, -0.5, -0.5, 1),
-           nrow = 2
+      nrow = 2
     ),
   ref_dose = 56
 )
@@ -39,10 +39,14 @@ myStopping2 <- StoppingTargetProb(
   report_label = character(0)
 )
 myStopping3 <- StoppingMinPatients(nPatients = 20, report_label = character(0))
-myStopping <- StoppingAny(stop_list = c(
-  StoppingAll(stop_list = c(
-    myStopping1, myStopping2), report_label = "StoppingAllLabel"), myStopping3),
-  report_label = "StoppingAnyLabel")
+myStopping <- StoppingAny(
+  stop_list = c(
+    StoppingAll(stop_list = c(
+      myStopping1, myStopping2
+    ), report_label = "StoppingAllLabel"), myStopping3
+  ),
+  report_label = "StoppingAnyLabel"
+)
 
 # Choose the rule for dose increments
 myIncrements <- IncrementsRelative(
@@ -73,12 +77,12 @@ options <- McmcOptions(
   samples = 1000
 )
 time <- system.time(mySims <- simulate(design,
-                                       args = NULL,
-                                       truth = myTruth,
-                                       nsim = 1,
-                                       seed = 819,
-                                       mcmcOptions = options,
-                                       parallel = FALSE
+  args = NULL,
+  truth = myTruth,
+  nsim = 1,
+  seed = 819,
+  mcmcOptions = options,
+  parallel = FALSE
 ))[3]
 
 # Show the Summary of the Simulations

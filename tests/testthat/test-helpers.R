@@ -656,19 +656,21 @@ test_that("calculations for percentages, given report_labels are provided works 
   stop_report <- matrix(c(TRUE, FALSE, TRUE, TRUE, FALSE, TRUE, FALSE, FALSE, TRUE, FALSE, FALSE, TRUE), ncol = 3)
 
   dimnames(stop_report) <- list(
-    c("","","",""),
-    c("≥ 3 cohorts dosed",
+    c("", "", "", ""),
+    c(
+      "≥ 3 cohorts dosed",
       "P(0.2 ≤ prob(DLE | NBD) ≤ 0.35) ≥ 0.5",
-      "≥ 20 patients dosed")
+      "≥ 20 patients dosed"
+    )
   )
 
   result <- h_calc_report_label_percentage(stop_report)
 
-  expect_named(result,c("≥ 3 cohorts dosed", "P(0.2 ≤ prob(DLE | NBD) ≤ 0.35) ≥ 0.5", "≥ 20 patients dosed"))
+  expect_named(result, c("≥ 3 cohorts dosed", "P(0.2 ≤ prob(DLE | NBD) ≤ 0.35) ≥ 0.5", "≥ 20 patients dosed"))
   expect_double(result)
   expected <- c(75, 25, 50)
   names(expected) <- c("≥ 3 cohorts dosed", "P(0.2 ≤ prob(DLE | NBD) ≤ 0.35) ≥ 0.5", "≥ 20 patients dosed")
-  expect_equal(result,expected)
+  expect_equal(result, expected)
 })
 
 test_that("calculations for percentages, given report_labels are not provided works as expected", {
@@ -676,15 +678,17 @@ test_that("calculations for percentages, given report_labels are not provided wo
   stop_report <- matrix(c(TRUE, FALSE, TRUE, TRUE, FALSE, TRUE, FALSE, FALSE, TRUE, FALSE, FALSE, TRUE), ncol = 3)
 
   dimnames(stop_report) <- list(
-    c("","","",""),
-    c(NA,
+    c("", "", "", ""),
+    c(
       NA,
-      NA)
+      NA,
+      NA
+    )
   )
 
   result <- h_calc_report_label_percentage(stop_report)
   expect_numeric(result)
   expected <- numeric(0)
   names(expected) <- character(0)
-  expect_equal(result,expected)
+  expect_equal(result, expected)
 })
