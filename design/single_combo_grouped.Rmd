@@ -17,33 +17,70 @@ knitr::opts_chunk$set(echo = TRUE)
 
 Note that in this design doc we don't include validation functions yet.
 
-# The data: `DataPartsGrouped`
+# The data: `DataGrouped`
 
-The idea is that we start from `DataParts` (because we need the 2 parts feature 
-due to the safety run-in requirement) and add a slot `group` which is a factor 
+The idea is that we start from `Data`. Even thoughwe need the 2 parts feature 
+due to the safety run-in requirement, we can handle that separately in the 
+`DesignGrouped`. We add a slot `group` which is a factor 
 with 2 levels of the same length, similar as we add the biomarker `w` in the 
 class `DataDual`.
 
 ## Definition
 
-```{r DataPartsGrouped-class}
-.DataPartsGrouped <- setClass(
-  Class = "DataPartsGrouped",
+```{r DataGrouped-class}
+.DataGrouped <- setClass(
+  Class = "DataGrouped",
   slots = c(
     group = "factor"
   ),
   prototype = prototype(
     group = factor(levels = c("single", "combo"))
   ),
-  contains = "DataParts"
+  contains = "Data"
 )
 
-DataPartsGrouped <- function(group,
+DataGrouped <- function(group,
                              ...) {
-  d <- DataParts(...)
-  .DataPartsGrouped(
+  d <- Data(...)
+  .DataGrouped(
     d,
     group = group
+  )
+}
+
+groupData <- function(single_data, combo_data) {
+  assert_class(single_data, "Data")
+  assert_class(combo_data, "Data")
+  
+  # We just combine most of the slots logically.
+  df <- data.frame(
+    x = c(single_data@x, combo_data@x),
+    y = c(single_data@y, combo_data@y),
+    ID = c(single_data@ID, combo_data@ID),
+    cohort = c(single_data@cohort, combo_data@cohort),
+    group = factor(
+      rep(c("single", "combo"), c(length(single_data@x), length(combo_data@x))),
+      levels = c("single", "combo")
+    )
+  )
+
+  has_unique_ids <- identical(length(unique(df$ID)), nrow(df))
+  if (!has_unique_ids) {
+    is_combo <- df$group == "combo"
+    combo_offset <- 10^ceiling(log10(max(df$ID[!is_combo])))
+    df$ID[is_combo] <- as.integer(combo_offset + df$ID[is_combo])
+    warning(paste("grouping required changing combo IDs by adding", combo_offset))
+  }
+  df <- df[order(df$cohort), ]
+  
+  DataGrouped(
+    x = df$x,
+    y = df$y,
+    ID = df$ID,
+    cohort = df$cohort,
+    doseGrid = sort(unique(c(single_data@doseGrid, combo_data@doseGrid))),
+    # Here comes the group information.
+    group = df$group
   )
 }
 ```
@@ -54,15 +91,15 @@ Note that for the `plot` method to be able to use the parent method for starting
 the plot, we need to make sure additional arguments are passed inside to the
 `h_plot_data_df()` function initializing the `ggplot2` data set.
 
-```{r DataPartsGrouped-methods}
+```{r DataGrouped-methods}
 setMethod(
   f = "update",
-  signature = signature(object = "DataPartsGrouped"),
+  signature = signature(object = "DataGrouped"),
   definition = function(object, group, ..., check = TRUE) {
     assert_character(group)
     assert_flag(check)
 
-    # Update slots corresponding to `DataParts` class.
+    # Update slots corresponding to `Data` class.
     object <- callNextMethod(object = object, ..., check = FALSE)
 
     # Update the group information.
@@ -79,7 +116,7 @@ setMethod(
 
 setMethod(
   f = "plot",
-  signature = signature(x = "DataPartsGrouped", y = "missing"),
+  signature = signature(x = "DataGrouped", y = "missing"),
   definition = function(x, y, blind = FALSE, ...) {
     assert_flag(blind)
 
@@ -95,22 +132,35 @@ setMethod(
 
 ## Example
 
-```{r DataPartsGrouped-example}
-my_data <- DataPartsGrouped(
+```{r DataGrouped-example}
+my_data <- DataGrouped(
   x = c(0.1, 0.1, 0.5, 0.5, 1.5, 1.5),
   y = c(0, 0, 0, 0, 1, 0),
   group = factor(rep(c("single", "combo"), 3), levels = c("single", "combo")),
   ID = 1:6,
   cohort = rep(1:3, each = 2),
-  doseGrid = c(0.1, 0.5, 1.5, 3, 6, seq(from = 10, to = 80, by = 2)),
-  part = rep(1L, 6),
-  nextPart = 1L,
-  part1Ladder = c(0.1, 0.5, 1.5, 3, 6, 10)
+  doseGrid = c(0.1, 0.5, 1.5, 3, 6, seq(from = 10, to = 80, by = 2))
 )
 
 plot(my_data)
 my_data_2 <- update(my_data, x = 3, y = c(0, 0), group = c("single", "combo"))
 plot(my_data_2)
+
+my_single_data <- Data(
+  x = c(0.1, 0.1, 0.5, 0.5, 1.5, 1.5),
+  y = c(0, 0, 0, 0, 1, 0),
+  ID = 1:6,
+  cohort = rep(1:3, each = 2),
+  doseGrid = c(0.1, 0.5, 1.5, 3, 6, seq(from = 10, to = 80, by = 2))
+)
+my_combo_data <- Data(
+  x = c(0.1, 0.1, 0.5, 0.5, 1.5, 1.5),
+  y = c(0, 0, 0, 0, 1, 0),
+  ID = 1:6,
+  cohort = rep(1:3, each = 2),
+  doseGrid = c(0.1, 0.5, 1.5, 3, 6, seq(from = 10, to = 80, by = 2))
+)
+my_grouped_data <- groupData(my_single_data, my_combo_data)
 ```
 
 # The model: `LogisticLogNormalGrouped`
@@ -249,5 +299,333 @@ fit_combo <- fit(one_sample, my_model, my_data, group = factor("combo", levels =
 matplot(x = fit_single$dose, y = cbind(fit_single$middle, fit_combo$middle), type = "l")
 ```
 
+# The design: `DesignGrouped`
 
+It seems easiest to combine two `Design` objects here in one - so we have one
+for the single agent and one for the combo group, because then we get all the rules
+at once. Note that his implicitly
+handles the randomization ratio as the ratio between the cohort sizes, but
+allows for much more flexibility. If missing in the user constructor, we assume
+that the same rule as for the single agent is followed. Note that for the part 1
+handling with less patients per cohort the design class does not need to know
+about it, because the data and the size rules handle this already.
 
+Here we add the staggering flag. 
+
+Note that we deliberately ignore information in `Design`, including the model
+and the placebo cohort size information in there. This is not super clean,
+but ok at least for this first prototype.
+
+## Definition
+
+```{r DesignGrouped-class}
+.DesignGrouped <- setClass(
+  Class = "DesignGrouped",
+  slots = c(
+    model = "LogisticLogNormalGrouped",
+    single = "Design",
+    combo = "Design",
+    staggered_cohorts = "logical"
+  )
+)
+
+DesignGrouped <- function(model,
+                          single,
+                          combo,
+                          ...) {
+  if (missing(combo)) combo <- single
+  
+  .DesignGrouped(
+    model = model,
+    single = single,
+    combo = combo,
+    staggered_cohorts = staggered_cohorts
+  )
+}
+```
+
+## Methods
+
+Let's for now just look at the simulation method. In production we also
+need the examination method though, but it is going to follow a similar logic.
+
+For simplicity we don't support the `firstSeparate` argument here for now.
+Since we have two groups now, we also have two true dose-toxicity relationships
+now. We therefore add the `combo_truth` argument.
+
+Note that in order for the `nextBest` method to work out of the box, we just need
+to pass again the `...` arguments down to e.g. the `prob` method used inside.
+We do this in this PR already for the `NextBestNCRM` method as illustration.
+
+The same applies for the `stopTrial` methods. We here do it for `StoppingTargetProb`
+as illustration.
+
+TODO: Add tests for this in this PR already.
+
+```{r DesignGrouped-methods}
+setMethod("simulate",
+  signature =
+    signature(
+      object = "DesignGrouped",
+      nsim = "ANY",
+      seed = "ANY"
+    ),
+  def =
+    function(object, 
+             nsim = 1L, 
+             seed = NULL,
+             truth, 
+             combo_truth,
+             args = NULL,
+             mcmcOptions = McmcOptions(),
+             parallel = FALSE, 
+             nCores = min(parallelly::availableCores(), 5),
+             ...) {
+      nsim <- safeInteger(nsim)
+
+      ## checks and extracts
+      stopifnot(
+        is.function(truth),
+        is.function(combo_truth),
+        is.scalar(nsim),
+        nsim > 0,
+        is.bool(parallel),
+        is.scalar(nCores),
+        nCores > 0
+      )
+
+      args <- as.data.frame(args)
+      nArgs <- max(nrow(args), 1L)
+
+      ## seed handling
+      RNGstate <- setSeed(seed)
+
+      ## from this,
+      ## generate the individual seeds for the simulation runs
+      simSeeds <- sample.int(n = 2147483647, size = nsim)
+
+      ## the function to produce the run a single simulation
+      ## with index "iterSim"
+      runSim <- function(iterSim) {
+        ## set the seed for this run
+        set.seed(simSeeds[iterSim])
+
+        ## what is now the argument for the truth?
+        ## (appropriately recycled)
+        thisArgs <- args[(iterSim - 1) %% nArgs + 1, , drop = FALSE]
+
+        ## so this truth for single agent is...
+        this_single_truth <- function(dose) {
+          do.call(truth, c(dose, thisArgs))
+        }
+        
+        ## and for combo similarly:
+        this_combo_truth <- function(dose) {
+          do.call(combo_truth, c(dose, thisArgs))
+        }
+
+        ## start the simulated data with the provided one
+        this_single_data <- object@single@data
+        this_combo_data <- object@combo@data
+
+        ## shall we stop the trial? separately for single and combo.
+        ## First, we want to continue with the starting dose.
+        ## This variable is updated after each cohort in the loop.
+        stop_single <- stop_combo <- FALSE
+        
+        ## are we in the first cohort? This is to support the staggering feature
+        first_cohort <- TRUE
+
+        ## what are the next doses to be used?
+        ## initialize with starting doses
+        this_single_dose <- object@single@startingDose
+        this_combo_dose <- object@combo@startingDose
+        if (this_single_dose < this_combo_dose) {
+          stop("combo dose cannot be higher than single dose to start")
+        }
+
+        ## inside this loop we simulate the whole trial, until stopping
+        while (!(stop_single && stop_combo)) {
+          if (!stop_single) {
+            ## what is the probability for tox. at this dose?
+            this_single_prob <- this_single_truth(this_single_dose)
+            
+            ## what is the single cohort size at this dose?
+            this_single_size <- size(object@single@cohortSize,
+                                     dose = this_single_dose,
+                                     data = this_single_data
+            )
+            ## we can dose the single patients
+            this_single_dlts <- rbinom(
+              n = this_single_size,
+              size = 1,
+              prob = this_single_prob
+            )
+            ## update the single data with this cohort
+            this_single_data <- update(
+              object = this_single_data,
+              x = this_single_dose,
+              y = this_single_dlts
+            )
+            
+            single_dose_limit <- maxDose(
+              object@single@increments,
+              data = this_single_data
+            )
+          }
+          
+          ## Check if we also dose combo patients now
+          if (!stop_combo && (!first_cohort || !object@staggered_cohorts)) {
+            this_combo_prob <- this_combo_truth(this_combo_dose)
+            
+            ## what is the combo cohort size at this dose?
+            this_combo_size <- size(
+              object@combo@cohortSize,
+              dose = this_combo_dose,
+              data = this_combo_data
+            )
+            ## we can dose the combo patients
+            this_combo_dlts <- rbinom(
+              n = this_combo_size,
+              size = 1,
+              prob = this_combo_prob
+            )
+            ## update the data with this cohort
+            this_combo_data <- update(
+              object = this_combo_data,
+              x = this_combo_dose,
+              y = this_combo_dlts
+            )
+            
+            combo_dose_limit <- maxDose(
+              object@combo@increments,
+              data = this_combo_data
+            )
+          }
+          
+          ## join the data together
+          grouped_data <- groupData(
+            this_single_data,
+            this_combo_data
+          )
+          
+          ## generate samples from the joint model
+          thisSamples <- mcmc(
+            data = grouped_data,
+            model = object@model,
+            options = mcmcOptions
+          )
+
+          if (!stop_single) {
+            ## => what is the next best dose for single and combo?
+            this_single_dose <- nextBest(
+              object@single@nextBest,
+              doselimit = single_dose_limit,
+              samples = thisSamples,
+              model = object@model,
+              data = grouped_data,
+              group = factor("single", levels = c("single", "combo"))
+            )$value
+            
+            stop_single <- stopTrial(
+              object@single@stopping,
+              dose = this_single_dose,
+              samples = thisSamples,
+              model = object@model,
+              data = grouped_data,
+              group = factor("single", levels = c("single", "combo"))
+            )
+          }
+          
+          if (!stop_combo) {
+            this_combo_dose <- nextBest(
+              object@combo@nextBest,
+              doselimit = combo_dose_limit,
+              samples = thisSamples,
+              model = object@model,
+              data = grouped_data,
+              group = factor("combo", levels = c("single", "combo"))
+            )$value
+            
+            stop_combo <- stopTrial(
+              object@combo@stopping,
+              dose = this_combo_dose,
+              samples = thisSamples,
+              model = object@model,
+              data = grouped_data,
+              group = factor("combo", levels = c("single", "combo"))
+            )
+          }
+        }
+        
+        # TODO cont here
+
+        ## get the fit
+        thisFit <- fit(
+          object = thisSamples,
+          model = object@model,
+          data = thisData
+        )
+
+        ## return the results
+        thisResult <-
+          list(
+            data = thisData,
+            dose = thisDose,
+            fit =
+              subset(thisFit,
+                select = c(middle, lower, upper)
+              ),
+            stop =
+              attr(
+                stopit,
+                "message"
+              )
+          )
+        return(thisResult)
+      }
+
+      resultList <- getResultList(
+        fun = runSim,
+        nsim = nsim,
+        vars =
+          c(
+            "simSeeds",
+            "args",
+            "nArgs",
+            "truth",
+            "object",
+            "mcmcOptions"
+          ),
+        parallel = if (parallel) nCores else NULL
+      )
+
+      ## put everything in the Simulations format:
+
+      ## setup the list for the simulated data objects
+      dataList <- lapply(resultList, "[[", "data")
+
+      ## the vector of the final dose recommendations
+      recommendedDoses <- as.numeric(sapply(resultList, "[[", "dose"))
+
+      ## setup the list for the final fits
+      fitList <- lapply(resultList, "[[", "fit")
+
+      ## the reasons for stopping
+      stopReasons <- lapply(resultList, "[[", "stop")
+
+      ## return the results in the Simulations class object
+      ret <- Simulations(
+        data = dataList,
+        doses = recommendedDoses,
+        fit = fitList,
+        stop_reasons = stopReasons,
+        seed = RNGstate
+      )
+
+      return(ret)
+    }
+)
+```
+
+## Example

@@ -149,7 +149,7 @@ setMethod(
   ),
   definition = function(nextBest, doselimit = Inf, samples, model, data, ...) {
     # Matrix with samples from the dose-tox curve at the dose grid points.
-    prob_samples <- sapply(data@doseGrid, prob, model = model, samples = samples)
+    prob_samples <- sapply(data@doseGrid, prob, model = model, samples = samples, ...)
 
     # Estimates of posterior probabilities that are based on the prob. samples
     # which are within overdose/target interval.
@@ -2216,8 +2216,8 @@ setMethod(
       is.na(dose),
       0,
       mean(
-        prob(dose = dose, model, samples) >= stopping@target[1] &
-          prob(dose = dose, model, samples) <= stopping@target[2]
+        prob(dose = dose, model, samples, ...) >= stopping@target[1] &
+          prob(dose = dose, model, samples, ...) <= stopping@target[2]
       )
     )
 
