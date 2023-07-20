@@ -1070,8 +1070,8 @@ h_unpack_stopit <- function(stopit_tree) {
 #' @description
 #'
 #' calculates true column means and converts output into percentages
-#' before combigning the output with the report label; output is passed
-#' to [`show()`] and ouptut with cat to console
+#' before combining the output with the report label; output is passed
+#' to [`show()`] and output with cat to console
 #'
 #' @param stop_report object from summary method
 
