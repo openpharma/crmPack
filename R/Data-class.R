@@ -442,8 +442,7 @@ DataOrdinal <- function(
     doseGrid = numeric(),
     placebo = FALSE,
     yCategories = c("No DLT" = 0L, "DLT" = 1L),
-    ...
-) {
+    ...) {
   assert_numeric(x)
   assert_numeric(y)
   assert_numeric(ID)

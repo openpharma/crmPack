@@ -318,21 +318,19 @@ test_that("v_data_ordinal correctly detects bad data", {
   )
 
   object <- h_get_data_ordinal()
-  object@placebo = TRUE
+  object@placebo <- TRUE
   expect_equal(
     v_data_ordinal(object),
     "A cohort with only placebo is not allowed"
   )
 
   object <- h_get_data_ordinal()
-  object@placebo = TRUE
-  object@x <-                 c(10, 20, 30, 40, 50, 80, 10, 60, 60, 60)
-  object@xLevel <- as.integer(c( 1,  2,  3,  4,  5,  8,  1,  6,  6,  6))
-  object@cohort <- as.integer(c( 1,  1,  2,  3,  4,  4,  4,  5,  5,  5))
+  object@placebo <- TRUE
+  object@x <- c(10, 20, 30, 40, 50, 80, 10, 60, 60, 60)
+  object@xLevel <- as.integer(c(1, 2, 3, 4, 5, 8, 1, 6, 6, 6))
+  object@cohort <- as.integer(c(1, 1, 2, 3, 4, 4, 4, 5, 5, 5))
   expect_equal(
     v_data_ordinal(object),
     "There must be only one dose level, other than placebo, per cohort"
   )
-
 })
-

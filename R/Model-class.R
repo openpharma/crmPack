@@ -3152,8 +3152,8 @@ LogisticLogNormalOrdinal <- function(mean, cov, ref_dose) {
     ref_dose = positive_number(ref_dose),
     priormodel = function() {
       alpha[1] ~ dnorm(mean[1], prec[1, 1])
-      for (i in 2:(k-1)) {
-        alpha[i] ~ dnorm(mean[i], prec[i, i]) %_% T( , alpha[i-1])
+      for (i in 2:(k - 1)) {
+        alpha[i] ~ dnorm(mean[i], prec[i, i]) %_% T(, alpha[i - 1])
       }
       gamma ~ dnorm(mean[k], prec[k, k])
       beta <- exp(gamma)
@@ -3161,7 +3161,7 @@ LogisticLogNormalOrdinal <- function(mean, cov, ref_dose) {
     datamodel = function() {
       for (i in 1:nObs) {
         xhat[i] <- log(x[i] / ref_dose)
-        for (j in 1:(k-1)) {
+        for (j in 1:(k - 1)) {
           z[i, j] <- alpha[j] + beta * xhat[i]
           p[i, j] <- exp(z[i, j]) / (1 + exp(z[i, j]))
           tox[i, j] ~ dbern(p[i, j])
@@ -3177,7 +3177,7 @@ LogisticLogNormalOrdinal <- function(mean, cov, ref_dose) {
       )
       if (!from_prior) {
         for (i in 1:length(y)) {
-          for (j in 1:(ms$k-1)) {
+          for (j in 1:(ms$k - 1)) {
             ms$tox[i, j] <- y[i] >= j
           }
         }
@@ -3186,7 +3186,7 @@ LogisticLogNormalOrdinal <- function(mean, cov, ref_dose) {
       ms
     },
     init = function() {
-      list(alpha = sapply(1:(length(mean)-1), function(x) -(x+1)), gamma = 1)
+      list(alpha = sapply(1:(length(mean) - 1), function(x) -(x + 1)), gamma = 1)
     },
     datanames = c("nObs", "y", "x"),
     sample = c(paste0("alpha[", 1:(length(mean) - 1), "]"), "beta")
@@ -3200,8 +3200,8 @@ LogisticLogNormalOrdinal <- function(mean, cov, ref_dose) {
 #' @export
 .DefaultLogisticLogNormalOrdinal <- function() {
   LogisticLogNormalOrdinal(
-    mean=c(-3, -4, 1),
-    cov=diag(c(3, 4, 1)),
+    mean = c(-3, -4, 1),
+    cov = diag(c(3, 4, 1)),
     ref_dose = 50
   )
 }

@@ -937,7 +937,7 @@ test_that("dose-LogisticLogNormalOrdinal works as expected", {
   model <- .DefaultLogisticLogNormalOrdinal()
   samples <- mcmc(data, model, McmcOptions(samples = 1))
   expect_error(
-    dose(0.2 , model, samples, grade = 1L),
+    dose(0.2, model, samples, grade = 1L),
     "The dose method for LogisticLogNormalOrdinal models has not yet been implemented."
   )
 })

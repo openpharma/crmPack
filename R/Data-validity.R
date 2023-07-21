@@ -236,10 +236,9 @@ v_data_ordinal <- function(object) {
   }
 
   v$check(
-    length(unique(names(object@yCategories)))  == length(names(object@yCategories)),
+    length(unique(names(object@yCategories))) == length(names(object@yCategories)),
     "yCategory labels must be unique"
   )
 
   v$result()
 }
-

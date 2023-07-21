@@ -1278,7 +1278,7 @@ setMethod(
     )
     assert_subset(
       names(samples),
-      c(paste0("alpha[", 0:(length(model@params@mean)-1), "]"), "beta")
+      c(paste0("alpha[", 0:(length(model@params@mean) - 1), "]"), "beta")
     )
     assert_length(dose, len = size(samples))
 
@@ -1290,7 +1290,9 @@ setMethod(
         ref_dose <- as.numeric(model@ref_dose)
 
         cumulative_prob <- plogis(alpha + beta * log(dose / ref_dose))
-        if (cumulative | g == as.integer(length(model@params@mean)-1)) return(cumulative_prob)
+        if (cumulative | g == as.integer(length(model@params@mean) - 1)) {
+          return(cumulative_prob)
+        }
 
         # Calculate grade-specific probabilities
         alpha0 <- samples@data[[paste0("alpha[", g + 1, "]")]]
@@ -1298,7 +1300,9 @@ setMethod(
         return(grade_prob)
       }
     )
-    if (length(rv) == 1) return(rv[[1]])
+    if (length(rv) == 1) {
+      return(rv[[1]])
+    }
     names(rv) <- as.character(grade)
     return(rv)
   }

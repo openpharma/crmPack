@@ -240,7 +240,7 @@ test_that("fit-Samples works correctly for dual models", {
 
 ## fit-Samples-LogisticLogNormalOrdinal
 test_that("fit-Samples works correctly for ordinal models", {
-  #TODO: test for numerical correctness
+  # TODO: test for numerical correctness
   data <- h_get_data_ordinal()
   model <- .DefaultLogisticLogNormalOrdinal()
   options <- McmcOptions(rng_kind = "Mersenne-Twister", rng_seed = 1234567)
