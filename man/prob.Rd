@@ -32,6 +32,8 @@
 \alias{prob-OneParLogNormalPrior}
 \alias{prob,numeric,OneParExpPrior,Samples-method}
 \alias{prob-OneParExpPrior}
+\alias{prob,numeric,LogisticLogNormalOrdinal,Samples-method}
+\alias{prob-LogisticLogNormalOrdinal}
 \title{Computing Toxicity Probabilities for a Given Dose, Model and Samples}
 \usage{
 prob(dose, model, samples, ...)
@@ -65,6 +67,8 @@ prob(dose, model, samples, ...)
 \S4method{prob}{numeric,OneParLogNormalPrior,Samples}(dose, model, samples)
 
 \S4method{prob}{numeric,OneParExpPrior,Samples}(dose, model, samples)
+
+\S4method{prob}{numeric,LogisticLogNormalOrdinal,Samples}(dose, model, samples, grade, cumulative = TRUE)
 }
 \arguments{
 \item{dose}{(\code{number} or \code{numeric})\cr the dose which is targeted.
@@ -80,6 +84,11 @@ dose escalation or pseudo DLE (dose-limiting events)/toxicity model.}
 used to compute toxicity probabilities. Can also be missing for some models.}
 
 \item{...}{model specific parameters when \code{samples} are not used.}
+
+\item{cumulative}{(\code{flag})\cr Should the returned probability be cumulative
+(the default) or grade-specific?}
+
+\item{category}{(\code{integer} or \code{integer_vector})\cr The toxicity grade for which probabilities are required}
 }
 \value{
 A \code{proportion} or \code{numeric} vector with the toxicity probabilities.
@@ -138,6 +147,8 @@ All model parameters (except \code{dose}) should be present in the \code{model} 
 \item \code{prob(dose = numeric, model = OneParLogNormalPrior, samples = Samples)}: 
 
 \item \code{prob(dose = numeric, model = OneParExpPrior, samples = Samples)}: 
+
+\item \code{prob(dose = numeric, model = LogisticLogNormalOrdinal, samples = Samples)}: 
 
 }}
 \note{

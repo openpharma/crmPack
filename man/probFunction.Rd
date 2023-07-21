@@ -6,6 +6,8 @@
 \alias{probFunction-GeneralModel}
 \alias{probFunction,ModelTox-method}
 \alias{probFunction-ModelTox}
+\alias{probFunction,LogisticLogNormalOrdinal-method}
+\alias{probFunction-LogisticLogNormalOrdinal}
 \title{Getting the Prob Function for a Given Model Type}
 \usage{
 probFunction(model, ...)
@@ -13,6 +15,8 @@ probFunction(model, ...)
 \S4method{probFunction}{GeneralModel}(model, ...)
 
 \S4method{probFunction}{ModelTox}(model, ...)
+
+\S4method{probFunction}{LogisticLogNormalOrdinal}(model, grade, ...)
 }
 \arguments{
 \item{model}{(\code{GeneralModel} or \code{ModelTox})\cr the model.}
@@ -33,6 +37,8 @@ probabilities for a given dose level, based on the model specific parameters.
 \item \code{probFunction(GeneralModel)}: 
 
 \item \code{probFunction(ModelTox)}: 
+
+\item \code{probFunction(LogisticLogNormalOrdinal)}: 
 
 }}
 \examples{

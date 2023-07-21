@@ -920,6 +920,194 @@ setMethod("fit",
       return(ret)
     }
 )
+
+##' @param points at which dose levels is the fit requested? default is the dose
+##' grid
+##' @param quantiles the quantiles to be calculated (default: 0.025 and
+##' 0.975)
+##' @param middle the function for computing the middle point. Default:
+##' \code{\link{mean}}
+##'
+##' @describeIn fit This method returns a data frame with dose, middle, lower
+##' and upper quantiles for the dose-toxicity curve
+##' @example examples/Sample-methods-fit.R
+##' @export
+setMethod("fit",
+          signature =
+            signature(
+              object = "Samples",
+              model = "GeneralModel",
+              data = "DataOrdinal"
+            ),
+          def =
+            function(object,
+                     model,
+                     data,
+                     points = data@doseGrid,
+                     quantiles = c(0.025, 0.975),
+                     middle = mean,
+                     ...) {
+              ## some checks
+              assert_probability_range(quantiles)
+              assert_numeric(points)
+              assert_function(middle)
+
+              ## first we have to get samples from the dose-tox
+              ## curve at the dose grid points.
+              probSamples <- matrix(
+                nrow = size(object),
+                ncol = length(points)
+              )
+
+              ## evaluate the probs, for all samples.
+              for (i in seq_along(points))
+              {
+                ## Now we want to evaluate for the
+                ## following dose:
+                probSamples[, i] <- prob(
+                  dose = points[i],
+                  model,
+                  object,
+                  ...
+                )
+              }
+
+              ## extract middle curve
+              middleCurve <- apply(probSamples, 2L, FUN = middle)
+
+              ## extract quantiles
+              quantCurve <- apply(probSamples, 2L, quantile,
+                                  prob = quantiles
+              )
+
+              ## now create the data frame
+              ret <- data.frame(
+                dose = points,
+                middle = middleCurve,
+                lower = quantCurve[1, ],
+                upper = quantCurve[2, ]
+              )
+
+              ## return it
+              return(ret)
+            }
+)
+
+## --------------------------------------------------
+## Plot dose-tox fit from a model
+## --------------------------------------------------
+
+
+##' Plotting dose-toxicity model fits
+##'
+##' @param x the \code{\linkS4class{Samples}} object
+##' @param y the \code{\linkS4class{GeneralModel}} object
+##' @param data the \code{\linkS4class{Data}} object
+##' @param xlab the x axis label
+##' @param ylab the y axis label
+##' @param showLegend should the legend be shown? (default)
+##' @param \dots not used
+##' @return This returns the \code{\link[ggplot2]{ggplot}}
+##' object for the dose-toxicity model fit
+##'
+##' @example examples/Sample-methods-plot.R
+##' @export
+##' @importFrom ggplot2 qplot scale_linetype_manual
+setMethod("plot",
+          signature =
+            signature(
+              x = "Samples",
+              y = "LogisticLogNormalOrdinal"
+            ),
+          def =
+            function(x, y, data, ...,
+                     grade,
+                     xlab = "Dose level",
+                     showLegend = TRUE,
+                     cumulative = TRUE,
+                     ylab = ifelse(
+                       !is.null(data),
+                       paste0(
+                         "Probability of ",
+                         names(data@yCategories)[grade + 1] ,
+                         ifelse(cumulative, " or greater", ""),
+                         " [%]"
+                       ),
+                       "probability [%]"
+                     )) {
+              ## check args
+              assert_logical(showLegend)
+              assert_logical(cumulative)
+
+              ## get the fit
+              plotData <- fit(x,
+                              model = y,
+                              data = data,
+                              quantiles = c(0.025, 0.975),
+                              middle = mean,
+                              grade = grade,
+                              cumulative = cumulative
+              )
+
+              ## make the plot
+              gdata <-
+                with(
+                  plotData,
+                  data.frame(
+                    x = rep(dose, 3),
+                    y = c(middle, lower, upper) * 100,
+                    group =
+                      rep(c("mean", "lower", "upper"),
+                          each = nrow(plotData)
+                      ),
+                    Type =
+                      factor(
+                        c(
+                          rep(
+                            "Estimate",
+                            nrow(plotData)
+                          ),
+                          rep(
+                            "95% Credible Interval",
+                            nrow(plotData) * 2
+                          )
+                        ),
+                        levels =
+                          c(
+                            "Estimate",
+                            "95% Credible Interval"
+                          )
+                      )
+                  )
+                )
+
+              ret <- ggplot2::qplot(
+                x = x,
+                y = y,
+                data = gdata,
+                group = group,
+                linetype = Type,
+                colour = I("red"),
+                geom = "line",
+                xlab = xlab,
+                ylab = ylab,
+                ylim = c(0, 100)
+              )
+
+              ret <- ret +
+                ggplot2::scale_linetype_manual(
+                  breaks =
+                    c(
+                      "Estimate",
+                      "95% Credible Interval"
+                    ),
+                  values = c(1, 2), guide = ifelse(showLegend, "legend", "none")
+                )
+
+              return(ret)
+            }
+)
+
 ## ==============================================================
 ## ----------------------------------------------------------------
 ## Get fitted values at all dose levels from gain samples

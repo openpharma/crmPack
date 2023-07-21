@@ -14,6 +14,8 @@
 \alias{mcmc-GeneralData-OneParLogNormalPrior}
 \alias{mcmc,GeneralData,OneParExpPrior,McmcOptions-method}
 \alias{mcmc-GeneralData-OneParExpPrior}
+\alias{mcmc,DataOrdinal,LogisticLogNormalOrdinal,McmcOptions-method}
+\alias{mcmc-DataOrdinal}
 \alias{mcmc,DataMixture,GeneralModel,McmcOptions-method}
 \alias{mcmc,Data,LogisticIndepBeta,McmcOptions-method}
 \alias{mcmc,DataDual,Effloglog,McmcOptions-method}
@@ -33,6 +35,8 @@ mcmc(data, model, options, ...)
 \S4method{mcmc}{GeneralData,OneParLogNormalPrior,McmcOptions}(data, model, options, from_prior = data@nObs == 0L, ...)
 
 \S4method{mcmc}{GeneralData,OneParExpPrior,McmcOptions}(data, model, options, from_prior = data@nObs == 0L, ...)
+
+\S4method{mcmc}{DataOrdinal,LogisticLogNormalOrdinal,McmcOptions}(data, model, options, from_prior = data@nObs == 0L, ...)
 
 \S4method{mcmc}{DataMixture,GeneralModel,McmcOptions}(
   data,
@@ -102,6 +106,12 @@ number of doses.
 \code{\link{OneParExpPrior}} model, it is required that the length of
 skeleton prior probabilities vector should be equal to the length of the
 number of doses.
+
+\item \code{mcmc(
+  data = DataOrdinal,
+  model = LogisticLogNormalOrdinal,
+  options = McmcOptions
+)}: Standard method which uses JAGS.
 
 \item \code{mcmc(data = DataMixture, model = GeneralModel, options = McmcOptions)}: Method for DataMixture with different from_prior default
 
@@ -236,6 +246,17 @@ my_options <- McmcOptions(
 
 samples <- mcmc(data = my_data, model = my_model, options = my_options)
 samples
+data <- DataOrdinal(
+  doseGrid = seq(10, 100, 10),
+  x = c(10, 20, 30, 40, 50, 50, 50),
+  y = c(0L, 0L, 0L, 0L, 0L, 1L, 2L),
+  ID = 1L:7L,
+  cohort = as.integer(c(1:4, 5, 5, 5)),
+  yCategories = c("No Tox" = 0L, "Sub tox AE" = 1L, "DLT" = 2L)
+)
+model <- .DefaultLogisticLogNormalOrdinal()
+options <- McmcOptions(rng_kind = "Mersenne-Twister", rng_seed = 1234567)
+samples <- mcmc(data, model, options)
 ##obtain mcmc DLE samples given the data, LogisticIndepBeta (DLE model) and mcmc simulations options
 ## data must be of 'Data' class
 data<-Data(x=c(25,50,50,75,100,100,225,300),y=c(0,0,0,0,1,1,1,1),
