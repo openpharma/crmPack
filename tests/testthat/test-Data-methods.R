@@ -59,6 +59,29 @@ test_that("Plot works for DataDA object with placebo and blinding", {
   )
 })
 
+# plot-DataOrdinal ----
+
+test_that("Plot works as expected for DataOrdinal object with placebo", {
+  data <- h_get_data_ordinal()
+  result <- plot(data)
+
+  vdiffr::expect_doppelganger("plot-DataOrdinal-placebo", result)
+})
+
+test_that("Plot works as expected for DataOrdinal object with placebo and blinding", {
+  data <- h_get_data_ordinal()
+  result <- plot(data, blind = TRUE)
+
+  vdiffr::expect_doppelganger("plot-DataOrdinal-placebo-blinding", result)
+})
+
+test_that("Plot works for DataOrdinal object with placebo, blinding and no legend", {
+  data <- h_get_data()
+  result <- plot(data, blind = TRUE, legend = FALSE)
+
+  vdiffr::expect_doppelganger("plot-DataOrdinal-placebo-blinding-nolegend", result)
+})
+
 # update-Data ----
 
 test_that("Update of Data works as expected", {
@@ -117,6 +140,71 @@ test_that("Update of Data throws the error for a dose x out of the grid", {
 
 test_that("Update of Data, no error for non-valid update and validation off", {
   object <- h_get_data()
+  expect_silent(
+    update(
+      object,
+      x = 12345, y = c(0L, 1L, 1L), new_cohort = FALSE, check = FALSE
+    )
+  )
+})
+
+# update-DataOrdinal
+test_that("Update of Data works as expected", {
+  object <- h_get_data()
+  result <- update(object, x = 25, y = c(0L, 1L, 1L))
+
+  object@x <- c(object@x, 25, 25, 25)
+  object@y <- c(object@y, 0L, 1L, 1L)
+  object@nObs <- object@nObs + 3L
+  object@ID <- c(object@ID, 13L, 14L, 15L)
+  object@xLevel <- c(object@xLevel, 2L, 2L, 2L)
+  object@cohort <- c(object@cohort, 4L, 4L, 4L)
+
+  expect_valid(result, "Data")
+  expect_identical(result, object)
+})
+
+test_that("Update of empty DataOrdinal works as expected", {
+  object <- DataOrdinal(
+    x = c(25, 25), y = c(0L, 1L), doseGrid = 25, ID = 1:2, cohort = c(1L, 1L)
+  )
+  result <- update(DataOrdinal(doseGrid = 25), x = 25, y = c(0L, 1L))
+
+  expect_valid(result, "DataOrdinal")
+  expect_identical(result, object)
+})
+
+test_that("Update of DataOrdinal works for 'empty' update", {
+  object <- h_get_data_ordinal()
+  result <- update(object, x = numeric(0), y = integer(0))
+  expect_identical(result, object)
+})
+
+test_that("Update of DataOrdinal works when doses are added to the old cohort", {
+  object <- h_get_data_ordinal()
+  result <- update(object, x = 60, y = c(0L, 1L, 2L), new_cohort = FALSE)
+
+  object@x <- c(object@x, 60, 60, 60)
+  object@y <- c(object@y, 0L, 1L, 2L)
+  object@nObs <- object@nObs + 3L
+  object@ID <- c(object@ID, 11L, 12L, 13L)
+  object@xLevel <- c(object@xLevel, 6L, 6L, 6L)
+  object@cohort <- c(object@cohort, 6L, 6L, 6L)
+
+  expect_valid(result, "DataOrdinal")
+  expect_identical(result, object)
+})
+
+test_that("Update of DataOrdinal throws the error for a dose x out of the grid", {
+  object <- h_get_data_ordinal()
+  expect_error(
+    update(object, x = 12345, y = c(0L, 1L, 1L), new_cohort = FALSE),
+    ".*Dose values in x must be from doseGrid.*"
+  )
+})
+
+test_that("Update of DataOrdinal, no error for non-valid update and validation off", {
+  object <- h_get_data_ordinal()
   expect_silent(
     update(
       object,
@@ -476,6 +564,45 @@ test_that("dose_grid_range-Data works as expected without placebo in grid", {
   expect_identical(dose_grid_range(data_2, FALSE), c(10, 10))
 
   data_empty <- Data(placebo = FALSE)
+  expect_identical(dose_grid_range(data_empty), c(-Inf, Inf))
+  expect_identical(dose_grid_range(data_empty, FALSE), c(-Inf, Inf))
+})
+
+## DataOrdinal ----
+
+test_that("dose_grid_range-DataOrdinal works as expected with placebo in grid", {
+  data <- h_get_data_ordinal()
+  expect_identical(dose_grid_range(data), c(10, 100))
+  expect_identical(dose_grid_range(data, FALSE), c(10, 100))
+
+  data_1 <- DataOrdinal(doseGrid = c(0.001, 25), placebo = TRUE)
+  expect_identical(dose_grid_range(data_1), c(25, 25))
+  expect_identical(dose_grid_range(data_1, FALSE), c(0.001, 25))
+
+  data_2 <- DataOrdinal(doseGrid = 0.001, placebo = TRUE)
+  expect_identical(dose_grid_range(data_2), c(-Inf, Inf))
+  expect_identical(dose_grid_range(data_2, FALSE), c(0.001, 0.001))
+
+  data_empty <- DataOrdinal(placebo = TRUE)
+  expect_identical(dose_grid_range(data_empty), c(-Inf, Inf))
+  expect_identical(dose_grid_range(data_empty, FALSE), c(-Inf, Inf))
+})
+
+test_that("dose_grid_range-DataOrdinal works as expected without placebo in grid", {
+  data <- h_get_data_ordinal()
+  data@placebo <- TRUE
+  expect_identical(dose_grid_range(data), c(20, 100))
+  expect_identical(dose_grid_range(data, FALSE), c(10, 100))
+
+  data_1 <- DataOrdinal(doseGrid = c(0.001, 25), placebo = FALSE)
+  expect_identical(dose_grid_range(data_1), c(0.001, 25))
+  expect_identical(dose_grid_range(data_1, FALSE), c(0.001, 25))
+
+  data_2 <- DataOrdinal(doseGrid = 10, placebo = FALSE)
+  expect_identical(dose_grid_range(data_2), c(10, 10))
+  expect_identical(dose_grid_range(data_2, FALSE), c(10, 10))
+
+  data_empty <- DataOrdinal(placebo = FALSE)
   expect_identical(dose_grid_range(data_empty), c(-Inf, Inf))
   expect_identical(dose_grid_range(data_empty, FALSE), c(-Inf, Inf))
 })

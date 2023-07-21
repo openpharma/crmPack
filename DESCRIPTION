@@ -81,6 +81,7 @@ Collate:
     'Data-validity.R'
     'helpers.R'
     'Data-class.R'
+    'helpers_data.R'
     'Data-methods.R'
     'Rules-validity.R'
     'Rules-class.R'

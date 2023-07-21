@@ -4,11 +4,14 @@
 \alias{dose_grid_range}
 \alias{dose_grid_range,Data-method}
 \alias{dose_grid_range-Data}
+\alias{dose_grid_range,DataOrdinal-method}
 \title{Getting the Dose Grid Range}
 \usage{
 dose_grid_range(object, ...)
 
 \S4method{dose_grid_range}{Data}(object, ignore_placebo = TRUE)
+
+\S4method{dose_grid_range}{DataOrdinal}(object, ignore_placebo = TRUE)
 }
 \arguments{
 \item{object}{(\code{Data})\cr object with dose grid.}
@@ -28,6 +31,10 @@ A function that returns a vector of length two with the minimum and maximum
 dose in a grid. It returns \code{c(-Inf, Inf)} if the range cannot be determined,
 which happens when the dose grid is empty. User can choose whether the
 placebo dose (if any) should be counted or not.
+
+\ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#experimental}{\figure{lifecycle-experimental.svg}{options: alt='[Experimental]'}}}{\strong{[Experimental]}}
+
+\ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#experimental}{\figure{lifecycle-experimental.svg}{options: alt='[Experimental]'}}}{\strong{[Experimental]}}
 }
 \examples{
 my_data <- Data(
@@ -40,4 +47,15 @@ my_data <- Data(
 )
 dose_grid_range(my_data)
 dose_grid_range(my_data, ignore_placebo = FALSE)
+data <- DataOrdinal(
+          x = c(10, 20, 30, 40, 50, 50, 50, 60, 60, 60),
+          y = as.integer(c( 0,  0,  0,  0,  0,  1,  0,  0,  1,  2)),
+          ID = 1L:10L,
+          cohort = as.integer(c(1:4, 5, 5, 5, 6, 6, 6)),
+          doseGrid = c(seq(from = 10, to = 100, by = 10)),
+          yCategories = c("No tox" = 0L, "Sub-tox AE" = 1L, "DLT" = 2L),
+         placebo = FALSE
+       )
+
+dose_grid_range(data)
 }

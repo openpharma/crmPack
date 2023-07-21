@@ -1,4 +1,5 @@
 # Version 1.0.9000.9133
+* ordinal toxicity models are now supported
 * `approximate` now returns a `list` containing the fitted model and, optionally,
 a `ggplot` object of the approximated dose/toxicity curve. 
 * Modified the wording of attribute of `stopTrial`'s return value for 
