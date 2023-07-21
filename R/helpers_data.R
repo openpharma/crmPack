@@ -187,7 +187,7 @@ h_plot_data_dataordinal <- function(
     xlab("Patient") +
     ylab("Dose Level")
 
-  p <- p + crmPack:::h_plot_data_cohort_lines(df$cohort, placebo = x@placebo)
+  p <- p + h_plot_data_cohort_lines(df$cohort, placebo = x@placebo)
 
   if (!blind) {
     p <- p +

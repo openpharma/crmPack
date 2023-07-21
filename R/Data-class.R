@@ -471,9 +471,9 @@ DataOrdinal <- function(
 
   .DataOrdinal(
     x = as.numeric(x),
-    y = crmPack:::safeInteger(y),
-    ID = crmPack:::safeInteger(ID),
-    cohort = crmPack:::safeInteger(cohort),
+    y = safeInteger(y),
+    ID = safeInteger(ID),
+    cohort = safeInteger(cohort),
     doseGrid = doseGrid,
     nObs = length(x),
     nGrid = length(doseGrid),

@@ -238,6 +238,19 @@ test_that("fit-Samples works correctly for dual models", {
   expect_snapshot(actual)
 })
 
+## fit-Samples-LogisticLogNormalOrdinal
+test_that("fit-Samples works correctly for ordinal models", {
+  #TODO: test for numerical correctness
+  data <- h_get_data_ordinal()
+  model <- .DefaultLogisticLogNormalOrdinal()
+  options <- McmcOptions(rng_kind = "Mersenne-Twister", rng_seed = 1234567)
+  samples <- mcmc(data, model, options)
+  actual1 <- fit(samples, model, data, grade = 1L)
+  actual2 <- fit(samples, model, data, grade = 2L)
+  expect_snapshot(actual1)
+  expect_snapshot(actual2)
+})
+
 # approximate ----
 
 ## Samples-GeneralModel ----

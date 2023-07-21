@@ -36,6 +36,7 @@
 \alias{dose-OneParLogNormalPrior}
 \alias{dose,numeric,OneParExpPrior,Samples-method}
 \alias{dose-OneParExpPrior}
+\alias{dose,numeric,LogisticLogNormalOrdinal,Samples-method}
 \title{Computing the Doses for a given independent variable, Model and Samples}
 \usage{
 dose(x, model, samples, ...)
@@ -73,6 +74,8 @@ dose(x, model, samples, ...)
 \S4method{dose}{numeric,OneParLogNormalPrior,Samples}(x, model, samples)
 
 \S4method{dose}{numeric,OneParExpPrior,Samples}(x, model, samples)
+
+\S4method{dose}{numeric,LogisticLogNormalOrdinal,Samples}(x, model, samples, grade)
 }
 \arguments{
 \item{x}{(\code{proportion} or \code{numeric})\cr a value of an independent variable
@@ -171,6 +174,9 @@ probability of the occurrence of a DLT (\code{x}).
 
 \item \code{dose(x = numeric, model = OneParExpPrior, samples = Samples)}: compute the dose level reaching a specific target
 probability of the occurrence of a DLT (\code{x}).
+
+\item \code{dose(x = numeric, model = LogisticLogNormalOrdinal, samples = Samples)}: compute the dose level reaching a specific target
+probability of the occurrence of a given grade (\code{x}).
 
 }}
 \note{

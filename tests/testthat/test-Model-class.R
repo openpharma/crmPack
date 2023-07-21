@@ -1481,3 +1481,48 @@ test_that("MCMC throws the error for FractionalCRM model when 'xLevel' does not 
     "Assertion on 'length\\(model@skel_probs\\) == data@nGrid' failed: Must be TRUE."
   )
 })
+
+# ModelLogNormal-class ----
+
+test_that(".LogisiticLogNormalOrdinal works as expected", {
+  # nolint start
+  result <- expect_silent(
+    .LogisticLogNormalOrdinal(
+      params = ModelParamsNormal(mean = c(0, 2), cov = diag(2)),
+      ref_dose = positive_number(1),
+      datamodel = function(x) {},
+      priormodel = function(x) {},
+      modelspecs = function(x) {},
+      init = function(x) {},
+      sample = "param1",
+      datanames = "x",
+      datanames_prior = "x1"
+    )
+  )
+  # nolint end
+  expect_valid(result, "LogisticLogNormalOrdinal")
+})
+
+# LogisiticLogNormalOrdinal-constructor ----
+
+test_that("LogisticLogNormalOrdinal object can be created with user constructor", {
+  result <- expect_silent(
+    LogisticLogNormalOrdinal(
+      mean = c(1, 5),
+      cov = diag(4, ncol = 2, nrow = 2),
+      ref_dose = 2
+    )
+  )
+  expect_valid(result, "LogisticLogNormalOrdinal")
+})
+
+test_that(".DefaultLogisticNormalOrdinal works as expected", {
+  expect_equal(
+    .DefaultLogisticLogNormalOrdinal(),
+    LogisticLogNormalOrdinal(
+      mean=c(-3, -4, 1),
+      cov=diag(c(3, 4, 1)),
+      ref_dose = 50
+    )
+  )
+})

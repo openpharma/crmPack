@@ -56,6 +56,22 @@ setMethod(
   }
 )
 
+## LogisticLogNormalOrdinal ----
+
+#' @describeIn doseFunction
+#' @param grade (`positive_integer`)\cr The grade with which the given probability is associated
+#'
+#' @aliases doseFunction-LogisticLogNormalOrdinal
+#' @export
+#'
+setMethod(
+  f = "doseFunction",
+  signature = "LogisticLogNormalOrdinal",
+  definition = function(model, grade, ...) {
+    stop("The doseFunction function has not been implemented for LogisticlogNormalOrdinal models")
+  }
+)
+
 ## ModelPseudo ----
 
 #' @describeIn doseFunction
@@ -154,6 +170,22 @@ setMethod(
     function(dose) {
       prob(dose = dose, model = model, samples = samples)
     }
+  }
+)
+
+## LogisticLogNormalOrdinal ----
+
+#' @describeIn probFunction
+#' @param grade (`positive_integer`)\cr The grade for which probabilities are required
+#'
+#' @aliases probFunction-LogisticLogNormalOrdinal
+#' @export
+#'
+setMethod(
+  f = "probFunction",
+  signature = "LogisticLogNormalOrdinal",
+  definition = function(model, grade, ...) {
+    stop("The probFunction function has not been implemented for LogisticlogNormalOrdinal models")
   }
 )
 
@@ -739,6 +771,28 @@ setMethod(
   }
 )
 
+## LogisticLogNormalOrdinal ----
+
+#' @describeIn dose compute the dose level reaching a specific target
+#'   probability of the occurrence of a given grade (`x`).
+#' @param grade (`positive_integer`)\cr The grade for which probabilities are required
+#'
+#' @aliases dose-LogisticLogNormal
+#' @export
+#'
+setMethod(
+  f = "dose",
+  signature = signature(
+    x = "numeric",
+    model = "LogisticLogNormalOrdinal",
+    samples = "Samples"
+  ),
+  definition = function(x, model, samples, grade) {
+    stop("The dose method for LogisitcLogNormalOrdinal models has not yet been implemented.")
+  }
+)
+
+
 # prob ----
 
 ## generic ----
@@ -1194,6 +1248,62 @@ setMethod(
     skel_fun(dose)^theta
   }
 )
+
+## LogisticLogNormalOrdinal ----
+
+#' @describeIn prob
+#'
+#' @param category (`integer` or `integer_vector`)\cr The toxicity grade for which probabilities are required
+#' @param grade (`positive_integer`)\cr The grade for which probabilities are required
+#' @param cumulative (`flag`)\cr Should the returned probability be cumulative
+#' (the default) or grade-specific?
+#' @aliases prob-LogisticLogNormalOrdinal
+#' @export
+#'
+setMethod(
+  f = "prob",
+  signature = signature(
+    dose = "numeric",
+    model = "LogisticLogNormalOrdinal",
+    samples = "Samples"
+  ),
+  definition = function(dose, model, samples, grade, cumulative = TRUE) {
+    assert_numeric(dose, lower = 0L, any.missing = FALSE, min.len = 1L)
+    assert_integer(
+      grade,
+      min.len = 1,
+      max.len = length(model@params@mean) - 1,
+      lower = 0,
+      upper = length(model@params@mean) - 1
+    )
+    assert_subset(
+      names(samples),
+      c(paste0("alpha[", 0:(length(model@params@mean)-1), "]"), "beta")
+    )
+    assert_length(dose, len = size(samples))
+
+    rv <- lapply(
+      grade,
+      function(g) {
+        alpha <- samples@data[[paste0("alpha[", g, "]")]]
+        beta <- samples@data$beta
+        ref_dose <- as.numeric(model@ref_dose)
+
+        cumulative_prob <- plogis(alpha + beta * log(dose / ref_dose))
+        if (cumulative | g == as.integer(length(model@params@mean)-1)) return(cumulative_prob)
+
+        # Calculate grade-specific probabilities
+        alpha0 <- samples@data[[paste0("alpha[", g + 1, "]")]]
+        grade_prob <- cumulative_prob - plogis(alpha0 + beta * log(dose / ref_dose))
+        return(grade_prob)
+      }
+    )
+    if (length(rv) == 1) return(rv[[1]])
+    names(rv) <- as.character(grade)
+    return(rv)
+  }
+)
+
 
 # efficacy ----
 

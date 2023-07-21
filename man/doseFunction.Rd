@@ -4,6 +4,8 @@
 \alias{doseFunction}
 \alias{doseFunction,GeneralModel-method}
 \alias{doseFunction-GeneralModel}
+\alias{doseFunction,LogisticLogNormalOrdinal-method}
+\alias{doseFunction-LogisticLogNormalOrdinal}
 \alias{doseFunction,ModelPseudo-method}
 \alias{doseFunction-ModelPseudo}
 \title{Getting the Dose Function for a Given Model Type}
@@ -11,6 +13,8 @@
 doseFunction(model, ...)
 
 \S4method{doseFunction}{GeneralModel}(model, ...)
+
+\S4method{doseFunction}{LogisticLogNormalOrdinal}(model, grade, ...)
 
 \S4method{doseFunction}{ModelPseudo}(model, ...)
 }
@@ -32,6 +36,8 @@ specific parameters.
 \section{Functions}{
 \itemize{
 \item \code{doseFunction(GeneralModel)}: 
+
+\item \code{doseFunction(LogisticLogNormalOrdinal)}: 
 
 \item \code{doseFunction(ModelPseudo)}: 
 

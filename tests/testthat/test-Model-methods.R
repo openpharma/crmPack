@@ -119,6 +119,16 @@ test_that("doseFunction-ModelPseudo throws the error when no params are provided
   )
 })
 
+## LogisticLogNormalOrdinal
+
+test_that("doseFunction-LogisticLogNormalOrdinal works as expected", {
+  model <- .DefaultLogisticLogNormalOrdinal()
+  expect_error(
+    doseFunction(model),
+    "The doseFunction method for LogisticLogNormalOrdinal models has not yet been implemented."
+  )
+})
+
 # probFunction ----
 
 ## GeneralModel ----
@@ -205,6 +215,17 @@ test_that("probFunction-GeneralModel throws the error when valid params are not 
   expect_error(
     probFunction(model, wrong = 1, alpha1 = 2),
     "Assertion on .* failed: Must be a subset of \\{'alpha0','alpha1'\\}, but .* \\{'wrong'\\}.$"
+  )
+})
+
+
+## LogisticLogNormalOrdinal
+
+test_that("probFunction-LogisticLogNormalOrdinal works as expected", {
+  model <- .DefaultLogisticLogNormalOrdinal()
+  expect_error(
+    probFunction(model),
+    "The probFunction method for LogisticLogNormalOrdinal models has not yet been implemented."
   )
 })
 
@@ -908,6 +929,16 @@ test_that("dose-OneParExpPrior throws the error when x is not valid", {
   expect_error(
     dose(-2, model, samples),
     "Assertion on 'x' failed: Probability must be within \\[0, 1\\] bounds but it is not."
+  )
+})
+
+test_that("dose-LogisticLogNormalOrdinal works as expected", {
+  data <- h_get_data_ordinal()
+  model <- .DefaultLogisticLogNormalOrdinal()
+  samples <- mcmc(data, model, McmcOptions(samples = 1))
+  expect_error(
+    dose(0.2 , model, samples, grade = 1L),
+    "The dose method for LogisticLogNormalOrdinal models has not yet been implemented."
   )
 })
 

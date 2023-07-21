@@ -597,10 +597,10 @@ setMethod(
     object@x <- c(object@x, rep(as.numeric(x), n))
 
     # Add DLT data.
-    object@y <- c(object@y, crmPack:::safeInteger(y))
+    object@y <- c(object@y, safeInteger(y))
 
     # Add ID.
-    object@ID <- c(object@ID, crmPack:::safeInteger(ID))
+    object@ID <- c(object@ID, safeInteger(ID))
 
     # Add cohort number.
     new_cohort_id <- if (object@nObs == 0) {
