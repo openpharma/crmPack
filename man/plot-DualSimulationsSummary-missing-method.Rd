@@ -43,6 +43,7 @@ You can specify any subset of these in the \code{type} argument.
 # Define the dose-grid.
 emptydata <- DataDual(doseGrid = c(1, 3, 5, 10, 15, 20, 25, 40, 50, 80, 100))
 
+
 # Initialize the CRM model.
 my_model <- DualEndpointRW(
   mean = c(0, 1),
@@ -52,6 +53,7 @@ my_model <- DualEndpointRW(
   rho = c(a = 1, b = 1),
   rw1 = TRUE
 )
+
 
 # Choose the rule for selecting the next dose.
 my_next_best <- NextBestDualEndpoint(
@@ -66,7 +68,7 @@ my_size1 <- CohortSizeRange(
   cohort_size = c(1, 3)
 )
 my_size2 <- CohortSizeDLT(
-  dlt_intervals = c(0, 1),
+  intervals = c(0, 1),
   cohort_size = c(1, 3)
 )
 my_size <- maxSize(my_size1, my_size2)
@@ -92,7 +94,7 @@ my_design <- DualDesign(
   nextBest = my_next_best,
   stopping = my_stopping,
   increments = my_increments,
-  cohortSize = CohortSizeConst(3),
+  cohort_size = CohortSizeConst(3),
   startingDose = 3
 )
 
@@ -102,6 +104,8 @@ beta_mod <- function(dose, e0, eMax, delta1, delta2, scal) {
   dose <- dose / scal
   e0 + eMax / maxDens * (dose^delta1) * (1 - dose)^delta2
 }
+
+
 
 true_biomarker <- function(dose) {
   beta_mod(dose, e0 = 0.2, eMax = 0.6, delta1 = 5, delta2 = 5 * 0.5 / 0.5, scal = 100)

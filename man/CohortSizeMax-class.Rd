@@ -10,23 +10,23 @@
 \usage{
 .DefaultCohortSizeMax()
 
-CohortSizeMax(cohort_size_list)
+CohortSizeMax(cohort_sizes)
 }
 \arguments{
-\item{cohort_size_list}{(\code{list})\cr see slot definition.}
+\item{cohort_sizes}{(\code{list})\cr see slot definition.}
 }
 \description{
 \ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#stable}{\figure{lifecycle-stable.svg}{options: alt='[Stable]'}}}{\strong{[Stable]}}
 
 \code{\link{CohortSizeMax}} is the class for cohort size that is based on maximum of
-multiple cohort size rules. The \code{cohort_size_list} slot stores a set of cohort
+multiple cohort size rules. The \code{cohort_sizes} slot stores a set of cohort
 size rules, which are again the objects of class \code{\link{CohortSize}}. The maximum
 of these individual cohort sizes is taken to give the final cohort size.
 }
 \section{Slots}{
 
 \describe{
-\item{\code{cohort_size_list}}{(\code{list})\cr a list of cohort size rules, i.e. objects
+\item{\code{cohort_sizes}}{(\code{list})\cr a list of cohort size rules, i.e. objects
 of class \code{\link{CohortSize}}.}
 }}
 
@@ -34,15 +34,14 @@ of class \code{\link{CohortSize}}.}
 Typically, end users will not use the \code{.DefaultCohortSizeMax()} function.
 }
 \examples{
-
 # Rule for cohort of size 1 for doses <30 and cohort of size 3 for doses >=30.
 my_size1 <- CohortSizeRange(intervals = c(0, 10), cohort_size = c(1, 3))
 
 # Rule for cohort of size 1 until no DLT were observed and cohort of size 3
 # as soon as 1 DLT is observed.
-my_size2 <- CohortSizeDLT(dlt_intervals = c(0, 1), cohort_size = c(1, 3))
+my_size2 <- CohortSizeDLT(intervals = c(0, 1), cohort_size = c(1, 3))
 
 # Cohort size rules of class 'CohortSizeMax' which will then be combined with
 # the 'max' operation.
-mySize <- CohortSizeMax(cohort_size_list = list(my_size1, my_size2))
+mySize <- CohortSizeMax(cohort_sizes = list(my_size1, my_size2))
 }
