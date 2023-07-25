@@ -162,7 +162,7 @@ GeneralSimulations <- function(data,
 #'
 #' @param fit (`list`)\cr see slot definition.
 #' @param stop_reasons (`list`)\cr see slot definition.
-#' @param stop_report see \code{\linkS4class{Simulations}}
+#' @param stop_report see [`Simulations`]
 #' @param \dots additional parameters from [`GeneralSimulations`]
 #'
 #' @example examples/Simulations-class-Simulations.R
@@ -179,29 +179,33 @@ Simulations <- function(fit,
   )
 }
 
-# nolint start
-##' Class for the simulations output from dual-endpoint model based designs
-##'
-##' This class captures the trial simulations from dual-endpoint model based
-##' designs. In comparison to the parent class \code{\linkS4class{Simulations}},
-##' it contains additional slots to capture the dose-biomarker fits, and the
-##' sigma2W and rho estimates.
-##'
-##' @slot rhoEst the vector of final posterior median rho estimates
-##' @slot sigma2West the vector of final posterior median sigma2W estimates
-##' @slot fitBiomarker list with the final dose-biomarker curve fits
-##'
-##' @export
-##' @keywords classes
+# DualSimulations ----
+
+## class ----
+
+#' `DualSimulations`
+#'
+#' @description `r lifecycle::badge("stable")`
+#'
+#' This class captures the trial simulations from dual-endpoint model based
+#' designs. In comparison to the parent class [`Simulations`],
+#' it contains additional slots to capture the dose-biomarker fits, and the
+#' sigma2W and rho estimates.
+#'
+#' @slot rho_est (`numeric`)\cr vector of final posterior median rho estimates
+#' @slot sigma2W_est (`numeric`)\cr vector of final posterior median sigma2W estimates
+#' @slot fit_biomarker (`list`)\cr with the final dose-biomarker curve fits
+#' @aliases DualSimulations
+#' @export
 .DualSimulations <-
   setClass(
     Class = "DualSimulations",
-    representation(
-      rhoEst = "numeric",
-      sigma2West = "numeric",
-      fitBiomarker = "list"
+    slots = c(
+      rho_est = "numeric",
+      sigma2W_est = "numeric",
+      fit_biomarker = "list"
     ),
-    prototype(
+    prototype = prototype(
       rhoEst = c(0.2, 0.3),
       sigma2West = c(0.2, 0.3),
       fitBiomarker =
@@ -233,32 +237,32 @@ Simulations <- function(fit,
         o$result()
       }
   )
-validObject(.DualSimulations())
 
 
-##' Initialization function for "DualSimulations"
-##'
-##' @param rhoEst see \code{\linkS4class{DualSimulations}}
-##' @param sigma2West see \code{\linkS4class{DualSimulations}}
-##' @param fitBiomarker see \code{\linkS4class{DualSimulations}}
-##' @param \dots additional parameters from \code{\link{Simulations}}
-##' @return the \code{\linkS4class{DualSimulations}} object
-##'
-##' @export
-##' @keywords methods
-DualSimulations <- function(rhoEst,
-                            sigma2West,
-                            fitBiomarker,
+## constructor ----
+
+#' @rdname DualSimulations-class
+#'
+#' @param rho_est (`numeric`)\cr see [`DualSimulations`]
+#' @param sigma2W_est (`numeric`)\cr [`DualSimulations`]
+#' @param fit_biomarker (`list`)\cr see [`DualSimulations`]
+#' @param \dots additional parameters from [`Simulations`]
+#'
+#' @example examples/Simulations-class-DualSimulations.R
+#' @export
+DualSimulations <- function(rho_est,
+                            sigma2W_est,
+                            fit_biomarker,
                             ...) {
   start <- Simulations(...)
   .DualSimulations(start,
-    rhoEst = rhoEst,
-    sigma2West = sigma2West,
-    fitBiomarker = fitBiomarker
+    rho_est = rho_est,
+    sigma2W_est = sigma2W_est,
+    fit_biomarker = fit_biomarker
   )
 }
 
-
+# nolint start
 ##' Class for the summary of general simulations output
 ##'
 ##' Note that objects should not be created by users, therefore no
