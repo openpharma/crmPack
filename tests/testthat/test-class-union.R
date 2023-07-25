@@ -4,10 +4,10 @@ test_that("CrmPackClass correctly identifies crmPack classes", {
   crmPack_class_list <- setdiff(crmPack_class_list, exclusions)
 
   for (cls in crmPack_class_list) {
-    if(!isClassUnion(cls)) {
+    if (!isClassUnion(cls)) {
       constructor_name <- paste0(".Default", cls)
-      if(exists(constructor_name, mode = "function")) {
-        expect_true(is(do.call(paste0(".Default", !! cls), list()), "CrmPackClass"))
+      if (exists(constructor_name, mode = "function")) {
+        expect_true(is(do.call(paste0(".Default", !!cls), list()), "CrmPackClass"))
       } else {
         # TODO:
         #  1: Create missing default constructors

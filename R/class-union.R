@@ -19,7 +19,7 @@ setClass(
 
 # CrmPackClass-classunion
 
-#CohortSize
+# CohortSize
 setClassUnion(
   "CrmPackCohortSize1",
   c(
@@ -47,7 +47,7 @@ setClassUnion(
 setClassUnion("CrmPackData2", c("Data", "CrmPackData1"))
 setClassUnion("CrmPackData", c("GeneralData", "CrmPackData2"))
 
-#Design
+# Design
 setClassUnion(
   "CrmPackDesign1",
   c(
@@ -68,7 +68,7 @@ setClassUnion(
 )
 setClassUnion("CrmPackDesign", c("RuleDesign", "CrmPackDesign2"))
 
-#Increments
+# Increments
 setClassUnion(
   "CrmPackIncrements1",
   c(
@@ -89,7 +89,7 @@ setClassUnion(
 )
 setClassUnion("CrmPackIncrements", c("Increments", "CrmPackIncrements2"))
 
-#Models
+# Models
 setClassUnion(
   "CrmPackModel1",
   c(
@@ -134,7 +134,7 @@ setClassUnion(
 )
 setClassUnion("CrmPackModel", c("ModelPseudo", "GeneralModel", "CrmPackModel3"))
 
-#NextBest
+# NextBest
 setClassUnion(
   "CrmPackNextBest1",
   c(
@@ -161,16 +161,16 @@ setClassUnion(
   )
 )
 
-#SafetyWindow
+# SafetyWindow
 setClassUnion("CrmPackSafetyWindow1", c("SafetyWindowConst", "SafetyWindowSize"))
-setClassUnion("CrmPackSafetyWindow", c("SafetyWindow",  "CrmPackSafetyWindow1"))
+setClassUnion("CrmPackSafetyWindow", c("SafetyWindow", "CrmPackSafetyWindow1"))
 
-#Simulations
+# Simulations
 setClassUnion("CrmPackSimulations1", c("DualSimulations"))
 setClassUnion("CrmPackSimulations2", c("Simulations", "CrmPackSimulations1"))
 setClassUnion("CrmPackSimulations", c("GeneralSimulations", "CrmPackSimulations2"))
 
-#Stopping
+# Stopping
 setClassUnion(
   "CrmPackStopping1",
   c(
@@ -214,4 +214,3 @@ setClassUnion(
     "CrmPackStopping"
   )
 )
-
