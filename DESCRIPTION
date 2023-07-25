@@ -106,6 +106,7 @@ Collate:
     'Samples-methods.R'
     'Simulations-methods.R'
     'checkmate.R'
+    'class-union.R'
     'crmPack-package.R'
     'helpers_covr.R'
     'helpers_model.R'

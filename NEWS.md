@@ -1,4 +1,6 @@
 # Version 1.0.9000.9133
+* Created the `CrmPackClass` class union to allow identification of crmPack
+classes and simpler definition of generic methods.
 * `approximate` now returns a `list` containing the fitted model and, optionally,
 a `ggplot` object of the approximated dose/toxicity curve. 
 * Modified the wording of attribute of `stopTrial`'s return value for 
