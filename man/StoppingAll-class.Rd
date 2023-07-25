@@ -8,12 +8,14 @@
 \alias{.DefaultStoppingAll}
 \title{\code{StoppingAll}}
 \usage{
-StoppingAll(stop_list)
+StoppingAll(stop_list, report_label = NA_character_)
 
 .DefaultStoppingAll()
 }
 \arguments{
 \item{stop_list}{(\code{list})\cr see slot definition.}
+
+\item{report_label}{(\code{string}) \cr see slot definition.}
 }
 \description{
 \ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#stable}{\figure{lifecycle-stable.svg}{options: alt='[Stable]'}}}{\strong{[Stable]}}
@@ -27,6 +29,8 @@ to be \code{TRUE}.
 
 \describe{
 \item{\code{stop_list}}{(\code{list})\cr list of stopping rules.}
+
+\item{\code{report_label}}{label for reporting}
 }}
 
 \note{

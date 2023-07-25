@@ -92,7 +92,6 @@ GeneralSimulations <- function(data,
   )
 }
 
-
 # Simulations ----
 
 ## class ----
@@ -107,7 +106,7 @@ GeneralSimulations <- function(data,
 #'
 #' @slot fit (`list`)\cr final fits
 #' @slot stop_reasons (`list`)\cr stopping reasons for each simulation run
-#'
+#' @slot stop_report matrix of stopping rule outcomes
 #' @aliases Simulations
 #' @export
 .Simulations <-
@@ -115,6 +114,7 @@ GeneralSimulations <- function(data,
     Class = "Simulations",
     slots = c(
       fit = "list",
+      stop_report = "matrix",
       stop_reasons = "list"
     ),
     prototype = prototype(
@@ -123,6 +123,7 @@ GeneralSimulations <- function(data,
           c(0.1, 0.2),
           c(0.1, 0.2)
         ),
+      stop_report = matrix(TRUE, nrow = 2),
       stop_reasons =
         list("A", "A")
     ),
@@ -142,6 +143,16 @@ GeneralSimulations <- function(data,
           "stop_reasons must have same length as data"
         )
 
+        o$check(
+          checkmate::test_matrix(object@stop_report,
+            mode = "logical",
+            nrows = nSims,
+            min.cols = 1,
+            any.missing = FALSE
+          ),
+          "stop_report must be a matrix of mode logical in which the number of rows equals the number of simulations
+      and which must not contain any missing values"
+        )
         o$result()
       }
   )
@@ -152,16 +163,19 @@ GeneralSimulations <- function(data,
 #'
 #' @param fit (`list`)\cr see slot definition.
 #' @param stop_reasons (`list`)\cr see slot definition.
+#' @param stop_report see \code{\linkS4class{Simulations}}
 #' @param \dots additional parameters from [`GeneralSimulations`]
 #'
 #' @example examples/Simulations-class-Simulations.R
 #' @export
 Simulations <- function(fit,
                         stop_reasons,
+                        stop_report,
                         ...) {
   start <- GeneralSimulations(...)
   .Simulations(start,
     fit = fit,
+    stop_report = stop_report,
     stop_reasons = stop_reasons
   )
 }
@@ -300,6 +314,7 @@ DualSimulations <- function(rhoEst,
 ##' Note that objects should not be created by users, therefore no
 ##' initialization function is provided for this class.
 ##'
+##' @slot stop_report matrix of stopping rule outcomes
 ##' @slot fitAtDoseMostSelected fitted toxicity rate at dose most often selected
 ##' @slot meanFit list with the average, lower (2.5%) and upper (97.5%)
 ##' quantiles of the mean fitted toxicity at each dose level
@@ -310,6 +325,7 @@ DualSimulations <- function(rhoEst,
   setClass(
     Class = "SimulationsSummary",
     representation(
+      stop_report = "matrix",
       fitAtDoseMostSelected = "numeric",
       meanFit = "list"
     ),
