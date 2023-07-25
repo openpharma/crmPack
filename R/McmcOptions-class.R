@@ -1,5 +1,6 @@
 #' @include helpers.R
 #' @include McmcOptions-validity.R
+#' @include CrmPackClass-class.R
 NULL
 
 # McmcOptions ----
@@ -50,6 +51,7 @@ NULL
     rng_kind = NA_character_,
     rng_seed = NA_integer_
   ),
+  contains = "CrmPackClass",
   validity = v_mcmc_options
 )
 

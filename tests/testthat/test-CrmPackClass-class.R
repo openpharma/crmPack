@@ -1,3 +1,5 @@
+# nolint start
+
 test_that("CrmPackClass correctly identifies crmPack classes", {
   crmPack_class_list <- getClasses(asNamespace("crmPack"))
   exclusions <- c("DualEndpoint")
@@ -30,3 +32,5 @@ test_that("CrmPackClass does not identify random non-crmPack classes", {
     expect_false(is(obj, "CrmPackClass"))
   }
 })
+
+#nolint end

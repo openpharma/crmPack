@@ -1,5 +1,6 @@
 #' @include helpers.R
 #' @include Rules-validity.R
+#' @include CrmPackClass-class.R
 NULL
 
 # NextBest ----
@@ -22,7 +23,8 @@ NULL
 #' @export
 #'
 setClass(
-  Class = "NextBest"
+  Class = "NextBest",
+  contains = "CrmPackClass"
 )
 
 # NextBestMTD ----
@@ -930,7 +932,8 @@ NextBestProbMTDMinDist <- function(target) {
 #' @export
 #'
 setClass(
-  Class = "Increments"
+  Class = "Increments",
+  contains = "CrmPackClass"
 )
 
 # IncrementsRelative ----
@@ -1419,7 +1422,8 @@ IncrementsMin <- function(increments_list) {
 #' @export
 #'
 setClass(
-  Class = "Stopping"
+  Class = "Stopping",
+  contains = "CrmPackClass"
 )
 
 # StoppingMissingDose ----
@@ -2445,7 +2449,8 @@ StoppingMaxGainCIRatio <- function(target_ratio, prob_target) {
 #' @export
 #'
 setClass(
-  Class = "CohortSize"
+  Class = "CohortSize",
+  contains = "CrmPackClass"
 )
 
 # CohortSizeRange ----
@@ -2793,7 +2798,8 @@ CohortSizeMin <- function(cohort_sizes) {
 #' @export
 #'
 setClass(
-  Class = "SafetyWindow"
+  Class = "SafetyWindow",
+  contains = "CrmPackClass"
 )
 
 # SafetyWindowSize ----

@@ -2,6 +2,7 @@
 #' @include helpers_jags.R
 #' @include Model-validity.R
 #' @include ModelParams-class.R
+#' @include CrmPackClass-class.R
 NULL
 
 # GeneralModel-class ----
@@ -71,6 +72,7 @@ NULL
       list()
     }
   ),
+  contains = "CrmPackClass",
   validity = v_general_model
 )
 
