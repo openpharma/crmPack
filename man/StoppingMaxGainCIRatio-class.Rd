@@ -8,7 +8,11 @@
 \alias{.DefaultStoppingMaxGainCIRatio}
 \title{\code{StoppingMaxGainCIRatio}}
 \usage{
-StoppingMaxGainCIRatio(target_ratio, prob_target)
+StoppingMaxGainCIRatio(
+  target_ratio = 5,
+  prob_target = 0.3,
+  report_label = NA_character_
+)
 
 .DefaultStoppingMaxGainCIRatio()
 }
@@ -16,6 +20,8 @@ StoppingMaxGainCIRatio(target_ratio, prob_target)
 \item{target_ratio}{(\code{numeric})\cr see slot definition.}
 
 \item{prob_target}{(\code{proportion})\cr see slot definition.}
+
+\item{report_label}{(\code{string} or \code{NA})\cr see slot definition.}
 }
 \description{
 \ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#stable}{\figure{lifecycle-stable.svg}{options: alt='[Stable]'}}}{\strong{[Stable]}}
