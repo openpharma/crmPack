@@ -270,6 +270,10 @@ such that we can pass down the `group` argument.
 
 TODO: Add tests for this in this PR already.
 
+Note that in production we will need to modify the `doseFunction` and `probFunction` method
+definitions accordingly to allow for the passing of the `group` (or other) arguments
+as well.
+
 ## Example
 
 ```{r LogisticLogNormalGrouped-example}
@@ -332,6 +336,7 @@ but ok at least for this first prototype.
 DesignGrouped <- function(model,
                           single,
                           combo,
+                          staggered_cohorts,
                           ...) {
   if (missing(combo)) combo <- single
   
@@ -381,16 +386,18 @@ setMethod("simulate",
              parallel = FALSE, 
              nCores = min(parallelly::availableCores(), 5),
              ...) {
-      nsim <- safeInteger(nsim)
+      browser()
+      
+      nsim <- crmPack:::safeInteger(nsim)
 
       ## checks and extracts
       stopifnot(
         is.function(truth),
         is.function(combo_truth),
-        is.scalar(nsim),
+        crmPack:::is.scalar(nsim),
         nsim > 0,
-        is.bool(parallel),
-        is.scalar(nCores),
+        crmPack:::is.bool(parallel),
+        crmPack:::is.scalar(nCores),
         nCores > 0
       )
 
@@ -407,6 +414,8 @@ setMethod("simulate",
       ## the function to produce the run a single simulation
       ## with index "iterSim"
       runSim <- function(iterSim) {
+        browser()
+        
         ## set the seed for this run
         set.seed(simSeeds[iterSim])
 
@@ -467,11 +476,6 @@ setMethod("simulate",
               x = this_single_dose,
               y = this_single_dlts
             )
-            
-            single_dose_limit <- maxDose(
-              object@single@increments,
-              data = this_single_data
-            )
           }
           
           ## Check if we also dose combo patients now
@@ -496,11 +500,6 @@ setMethod("simulate",
               x = this_combo_dose,
               y = this_combo_dlts
             )
-            
-            combo_dose_limit <- maxDose(
-              object@combo@increments,
-              data = this_combo_data
-            )
           }
           
           ## join the data together
@@ -517,6 +516,11 @@ setMethod("simulate",
           )
 
           if (!stop_single) {
+            single_dose_limit <- maxDose(
+              object@single@increments,
+              data = this_single_data
+            )
+            
             ## => what is the next best dose for single and combo?
             this_single_dose <- nextBest(
               object@single@nextBest,
@@ -538,6 +542,14 @@ setMethod("simulate",
           }
           
           if (!stop_combo) {
+            combo_dose_limit <- min(
+              maxDose(
+                object@combo@increments,
+                data = this_combo_data
+              ),
+              this_single_dose,
+              na.rm = TRUE
+            )
             this_combo_dose <- nextBest(
               object@combo@nextBest,
               doselimit = combo_dose_limit,
@@ -585,7 +597,7 @@ setMethod("simulate",
         return(thisResult)
       }
 
-      resultList <- getResultList(
+      resultList <- crmPack:::getResultList(
         fun = runSim,
         nsim = nsim,
         vars =
@@ -629,3 +641,40 @@ setMethod("simulate",
 ```
 
 ## Example
+
+```{r DesignGrouped-example}
+my_stopping <- StoppingMinPatients(20)
+my_increments <- IncrementsDoseLevels(levels = 3L)
+my_next_best <- NextBestNCRM(
+  target = c(0.2, 0.3),
+  overdose = c(0.3, 1),
+  max_overdose_prob = 0.3
+)
+my_cohort_size <- CohortSizeConst(3)
+empty_data <- Data(doseGrid = c(0.1, 0.5, 1.5, 3, 6, seq(from = 10, to = 80, by = 2)))
+
+my_design <- DesignGrouped(
+  model = my_model,
+  single = Design(
+    model = my_model,
+    stopping = my_stopping,
+    increments = my_increments,
+    nextBest = my_next_best,
+    cohortSize = my_cohort_size,
+    data = empty_data,
+    startingDose = 0.1
+  ),
+  staggered_cohorts = TRUE
+)
+my_truth <- function(x) plogis(x / 100)
+my_combo_truth <- function(x) plogis(x / 50)
+
+my_sims <- simulate(
+  my_design, 
+  nsim = 1, 
+  seed = 123,
+  truth = my_truth,
+  combo_truth = my_combo_truth
+)
+```
+
