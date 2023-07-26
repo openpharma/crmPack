@@ -38,4 +38,3 @@ dual_simulations_obj <- DualSimulations(
   doses = doses,
   seed = seed
 )
-

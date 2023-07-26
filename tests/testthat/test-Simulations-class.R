@@ -143,9 +143,9 @@ test_that("DualSimulations object can be created with the user constructor", {
     c(0.1, 0.2),
     c(0.3, 0.4)
   )
-  
+
   stop_report <- matrix(c(TRUE, FALSE), nrow = 2)
-  
+
   stop_reasons <- list("A", "B")
 
   result <- expect_silent(
