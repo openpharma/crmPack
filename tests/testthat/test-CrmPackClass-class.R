@@ -33,4 +33,4 @@ test_that("CrmPackClass does not identify random non-crmPack classes", {
   }
 })
 
-#nolint end
+# nolint end
