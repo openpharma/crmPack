@@ -2578,6 +2578,9 @@ setMethod(
       x = attr(result, "message"),
       ignore.case = TRUE
     )
+
+    attr(result, "report_label") <- stopping@report_label
+
     result
   }
 )
