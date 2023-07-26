@@ -417,6 +417,17 @@ setMethod("simulate",
           data = thisData
         )
 
+        ####  MedianMTD Trial  ########
+        # get the MTD estimate from the samples
+        medianMTD_est <- dose(mean(object@nextBest@target),
+                              model=object@model,
+                              samples = thisSamples)
+
+        #create a list with the estimates for the MTD and allocation criteria
+        median_MTD <- list(medianMTD=median(medianMTD_est),
+                           CVMTD=mad(medianMTD_est)/median(medianMTD_est))
+
+
         ## return the results
         thisResult <-
           list(
@@ -431,7 +442,8 @@ setMethod("simulate",
                 stopit,
                 "message"
               ),
-            report_results = stopit_results
+            report_results = stopit_results,
+            additional_median= median_MTD
           )
         return(thisResult)
       }
@@ -470,6 +482,9 @@ setMethod("simulate",
       stopResults <- lapply(resultList, "[[", "report_results")
       stop_matrix <- as.matrix(do.call(rbind, stopResults))
 
+      ## for the medianMTD
+      medianMTD_list <- lapply(resultList, "[[", "additional_median")
+
       ## return the results in the Simulations class object
       ret <- Simulations(
         data = dataList,
@@ -477,6 +492,7 @@ setMethod("simulate",
         fit = fitList,
         stop_report = stop_matrix,
         stop_reasons = stopReasons,
+        MTD_median_cv = medianMTD_list,
         seed = RNGstate
       )
 

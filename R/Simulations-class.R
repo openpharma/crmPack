@@ -114,7 +114,8 @@ GeneralSimulations <- function(data,
     slots = c(
       fit = "list",
       stop_report = "matrix",
-      stop_reasons = "list"
+      stop_reasons = "list",
+      MTD_median_cv = "list"
     ),
     prototype = prototype(
       fit =
@@ -122,9 +123,14 @@ GeneralSimulations <- function(data,
           c(0.1, 0.2),
           c(0.1, 0.2)
         ),
+
       stop_report = matrix(TRUE, nrow = 2),
       stop_reasons =
-        list("A", "A")
+        list("A", "A"),
+
+      MTD_median_cv =
+        list(0,1)
+
     ),
     contains = "GeneralSimulations",
     validity =
@@ -170,12 +176,15 @@ GeneralSimulations <- function(data,
 Simulations <- function(fit,
                         stop_reasons,
                         stop_report,
+                        MTD_median_cv,
                         ...) {
   start <- GeneralSimulations(...)
   .Simulations(start,
     fit = fit,
     stop_report = stop_report,
-    stop_reasons = stop_reasons
+    stop_reasons = stop_reasons,
+    MTD_median_cv = MTD_median_cv
+
   )
 }
 
@@ -325,6 +334,7 @@ DualSimulations <- function(rhoEst,
     Class = "SimulationsSummary",
     representation(
       stop_report = "matrix",
+      MTD_median_cv = "list",
       fitAtDoseMostSelected = "numeric",
       meanFit = "list"
     ),
