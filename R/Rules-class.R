@@ -1430,7 +1430,7 @@ IncrementsMin <- function(increments_list) {
 #'
 setClass(
   Class = "Stopping",
-  contains = "CrmPackClass"
+  contains = "CrmPackClass",
   slots = c(report_label = "character"),
   prototype = prototype(report_label = character(0))
 )
