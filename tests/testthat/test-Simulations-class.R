@@ -139,11 +139,23 @@ test_that("DualSimulations object can be created with the user constructor", {
   doses <- c(1, 2)
   seed <- as.integer(123)
 
+  fit <- list(
+    c(0.1, 0.2),
+    c(0.3, 0.4)
+  )
+  
+  stop_report <- matrix(c(TRUE, FALSE), nrow = 2)
+  
+  stop_reasons <- list("A", "B")
+
   result <- expect_silent(
     DualSimulations(
       rho_est = rho_est,
       sigma2W_est = sigma2W_est,
       fit_biomarker = fit_biomarker,
+      fit = fit,
+      stop_report = stop_report,
+      stop_reasons = stop_reasons,
       data = data_list,
       doses = doses,
       seed = seed
