@@ -976,8 +976,7 @@ setMethod("show",
         dfNames = dfNames
       )
 
-      # report stopping rules
-      # Report individual stopping rules with non-<NA> labels.
+
 
 
       ## add one reporting line
@@ -986,11 +985,14 @@ setMethod("show",
         "Fitted toxicity rate at dose most often selected"
       )
 
+
+      # Report individual stopping rules with non-<NA> labels.
+
       stop_pct_to_print <- h_calc_report_label_percentage(object@stop_report)
 
       if (length(stop_pct_to_print) > 0) {
         cat(
-          "Stopping rules:\n",
+          "Stop reason triggered:\n",
           paste(names(stop_pct_to_print), ": ", stop_pct_to_print, "%\n")
         )
       }
