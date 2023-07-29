@@ -193,7 +193,7 @@ Simulations <- function(fit,
 #' sigma2W and rho estimates.
 #'
 #' @slot rho_est (`numeric`)\cr vector of final posterior median rho estimates
-#' @slot sigma2W_est (`numeric`)\cr vector of final posterior median sigma2W estimates
+#' @slot sigma2_west (`numeric`)\cr vector of final posterior median sigma2W estimates
 #' @slot fit_biomarker (`list`)\cr with the final dose-biomarker curve fits
 #' @aliases DualSimulations
 #' @export
@@ -202,13 +202,13 @@ Simulations <- function(fit,
     Class = "DualSimulations",
     slots = c(
       rho_est = "numeric",
-      sigma2W_est = "numeric",
+      sigma2_west = "numeric",
       fit_biomarker = "list"
     ),
     prototype = prototype(
-      rhoEst = c(0.2, 0.3),
-      sigma2West = c(0.2, 0.3),
-      fitBiomarker =
+      rho_est = c(0.2, 0.3),
+      sigma2_west = c(0.2, 0.3),
+      fit_biomarker =
         list(
           c(0.1, 0.2),
           c(0.1, 0.2)
@@ -222,16 +222,16 @@ Simulations <- function(fit,
         nSims <- length(object@data)
 
         o$check(
-          identical(length(object@fitBiomarker), nSims),
-          "fitBiomarker list has to have same length as data"
+          identical(length(object@fit_biomarker), nSims),
+          "fit_biomarker list has to have same length as data"
         )
         o$check(
-          identical(length(object@rhoEst), nSims),
-          "rhoEst vector has to have same length as data"
+          identical(length(object@rho_est), nSims),
+          "rho_est vector has to have same length as data"
         )
         o$check(
-          identical(length(object@sigma2West), nSims),
-          "sigma2West has to have same length as data"
+          identical(length(object@sigma2_west), nSims),
+          "sigma2_west has to have same length as data"
         )
 
         o$result()
@@ -244,20 +244,20 @@ Simulations <- function(fit,
 #' @rdname DualSimulations-class
 #'
 #' @param rho_est (`numeric`)\cr see [`DualSimulations`]
-#' @param sigma2W_est (`numeric`)\cr [`DualSimulations`]
+#' @param sigma2_west (`numeric`)\cr [`DualSimulations`]
 #' @param fit_biomarker (`list`)\cr see [`DualSimulations`]
 #' @param \dots additional parameters from [`Simulations`]
 #'
 #' @example examples/Simulations-class-DualSimulations.R
 #' @export
 DualSimulations <- function(rho_est,
-                            sigma2W_est,
+                            sigma2_west,
                             fit_biomarker,
                             ...) {
   start <- Simulations(...)
   .DualSimulations(start,
     rho_est = rho_est,
-    sigma2W_est = sigma2W_est,
+    sigma2_west = sigma2_west,
     fit_biomarker = fit_biomarker
   )
 }

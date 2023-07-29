@@ -116,7 +116,7 @@ test_that("DualSimulations generator function works as expected", {
 
 test_that("DualSimulations object can be created with the user constructor", {
   rho_est <- c(0.25, 0.35)
-  sigma2W_est <- c(0.15, 0.25)
+  sigma2_west <- c(0.15, 0.25)
   fit_biomarker <- list(c(0.3, 0.4), c(0.4, 0.5))
 
   data_list <- list(
@@ -151,7 +151,7 @@ test_that("DualSimulations object can be created with the user constructor", {
   result <- expect_silent(
     DualSimulations(
       rho_est = rho_est,
-      sigma2W_est = sigma2W_est,
+      sigma2_west = sigma2_west,
       fit_biomarker = fit_biomarker,
       fit = fit,
       stop_report = stop_report,
@@ -164,14 +164,14 @@ test_that("DualSimulations object can be created with the user constructor", {
 
   expect_valid(result, "DualSimulations")
   expect_identical(result@rho_est, rho_est)
-  expect_identical(result@sigma2W_est, sigma2W_est)
+  expect_identical(result@sigma2_west, sigma2_west)
   expect_identical(result@fit_biomarker, fit_biomarker)
 })
 
 test_that("DualSimulations user constructor arguments names are as expected", {
   expect_function(
     DualSimulations,
-    args = c("rho_est", "sigma2W_est", "fit_biomarker", "..."),
+    args = c("rho_est", "sigma2_west", "fit_biomarker", "..."),
     ordered = TRUE
   )
 })

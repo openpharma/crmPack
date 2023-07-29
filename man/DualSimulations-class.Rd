@@ -7,12 +7,12 @@
 \alias{DualSimulations}
 \title{\code{DualSimulations}}
 \usage{
-DualSimulations(rho_est, sigma2W_est, fit_biomarker, ...)
+DualSimulations(rho_est, sigma2_west, fit_biomarker, ...)
 }
 \arguments{
 \item{rho_est}{(\code{numeric})\cr see \code{\link{DualSimulations}}}
 
-\item{sigma2W_est}{(\code{numeric})\cr \code{\link{DualSimulations}}}
+\item{sigma2_west}{(\code{numeric})\cr \code{\link{DualSimulations}}}
 
 \item{fit_biomarker}{(\code{list})\cr see \code{\link{DualSimulations}}}
 
@@ -31,7 +31,7 @@ sigma2W and rho estimates.
 \describe{
 \item{\code{rho_est}}{(\code{numeric})\cr vector of final posterior median rho estimates}
 
-\item{\code{sigma2W_est}}{(\code{numeric})\cr vector of final posterior median sigma2W estimates}
+\item{\code{sigma2_west}}{(\code{numeric})\cr vector of final posterior median sigma2W estimates}
 
 \item{\code{fit_biomarker}}{(\code{list})\cr with the final dose-biomarker curve fits}
 }}
@@ -68,7 +68,7 @@ stop_reasons <- list("A", "B")
 
 dual_simulations_obj <- DualSimulations(
   rho_est = c(0.25, 0.35),
-  sigma2W_est = c(0.15, 0.25),
+  sigma2_west = c(0.15, 0.25),
   fit_biomarker = list(c(0.3, 0.4), c(0.4, 0.5)),
   fit = fit,
   stop_report = stop_report,
@@ -77,5 +77,4 @@ dual_simulations_obj <- DualSimulations(
   doses = doses,
   seed = seed
 )
-
 }
