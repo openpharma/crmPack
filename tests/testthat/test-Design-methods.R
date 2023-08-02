@@ -134,6 +134,7 @@ test_that("stop_reasons can be NA with certain stopping rule settings", {
   expect_identical(result, expected)
 })
 
+
 # examine ----
 
 ## DADesign ----
@@ -218,3 +219,55 @@ test_that("examine for DADesign works as expected", {
   expect_data_frame(result)
   expect_named(result, c("DLTsearly_1", "dose", "DLTs", "nextDose", "stop", "increment"))
 })
+
+##test
+##testcase to check medianMTD values
+test_that("medianMTD and CV values will get in the list", {
+  data <- h_get_data(placebo = FALSE)
+  model <- h_get_logistic_normal()
+  increments <- h_increments_relative()
+  next_best <- h_next_best_ncrm()
+  size <- CohortSizeConst(size = 3)
+
+  # Extreme truth function, which has constant probability 1 in dose grid range.
+  truth <- probFunction(model, alpha0 = 175, alpha1 = 5)
+  stopping <- StoppingMissingDose()
+  design <- Design(
+    model = model,
+    stopping = stopping,
+    increments = increments,
+    nextBest = next_best,
+    cohort_size = size,
+    data = data,
+    startingDose = 25
+  )
+  sim <- simulate(
+    design,
+    nsim = 2,
+    truth = truth,
+    seed = 819,
+    mcmcOptions = h_get_mcmc_options()
+  )
+  result <- sim@MTD_median_cv
+
+  expected <- length(list(1,2),5)
+
+  expect_identical(result, expected)
+})
+
+#OR
+
+# test_that("nextBest-NextBestNCRM returns expected values of the objects for median", {
+#   data <- h_get_data(placebo = FALSE)
+#   model <- h_get_logistic_log_normal()
+#   samples <- h_as_samples(
+#     list(alpha0 = c(-1.8, -3.8, -2.2, -1.6), alpha1 = c(1.7, 3.3, 5.1, 2.2))
+#   )
+#   nb_ncrm <- NextBestNCRM(
+#     target = c(0.2, 0.35), overdose = c(0.35, 1), max_overdose_prob = 0.25
+#   )
+#
+#   result <- nextBest(nb_ncrm, 45, samples, model, data)
+#   expect_identical(result$value, 25)
+#   expect_snapshot(result$MTD_median_cv)
+# })

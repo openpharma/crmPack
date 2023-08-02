@@ -993,11 +993,9 @@ setMethod("show",
         "Median MTD : ",
         round(unlist(object@MTD_median_cv)[1], 2), "\n"
       )
-
-
       cat(
         "CVMTD : ",
-        round(unlist(object@MTD_median_cv)[2],2), "\n"
+        round(unlist(object@MTD_median_cv)[2], 2), "\n"
       )
 
       ## add one reporting line

@@ -106,6 +106,7 @@ GeneralSimulations <- function(data,
 #' @slot fit (`list`)\cr final fits
 #' @slot stop_reasons (`list`)\cr stopping reasons for each simulation run
 #' @slot stop_report matrix of stopping rule outcomes
+#' @slot MTD_median_cv list of medianMTD values
 #' @aliases Simulations
 #' @export
 .Simulations <-
@@ -158,6 +159,12 @@ GeneralSimulations <- function(data,
           "stop_report must be a matrix of mode logical in which the number of rows equals the number of simulations
       and which must not contain any missing values"
         )
+
+        o$check(
+          identical(length(object@MTD_median_cv), 2),
+          "length of data list must be two (median+CV value)"
+        )
+
         o$result()
       }
   )
@@ -169,6 +176,7 @@ GeneralSimulations <- function(data,
 #' @param fit (`list`)\cr see slot definition.
 #' @param stop_reasons (`list`)\cr see slot definition.
 #' @param stop_report see \code{\linkS4class{Simulations}}
+#' @param MTD_median_cv (`list`)\cr see slot definition.
 #' @param \dots additional parameters from [`GeneralSimulations`]
 #'
 #' @example examples/Simulations-class-Simulations.R
