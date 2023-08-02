@@ -1563,7 +1563,7 @@ setMethod("plotGain",
       # if changing the line type is unacceptable, consider
       # https://stackoverflow.com/questions/25632242/filled-and-hollow-shapes-where-the-fill-color-the-line-color
       plot1 <- ggplot(data = gdata, aes(x = x, y = y)) +
-        geom_line(aes(group = group, linetype=group, colour = group), linewidth = 1) +
+        geom_line(aes(group = group, linetype = group, colour = group), linewidth = 1) +
         ggplot2::scale_colour_manual(
           name = "Curves",
           values = c("blue", "green3", "red")
