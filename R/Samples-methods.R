@@ -1432,6 +1432,7 @@ setMethod("plotGain",
   def =
     function(DLEmodel, DLEsamples, Effmodel, Effsamples, data, ...) {
       ## Get fitted values for probabilities of DLE at all dose levels
+
       plotDLEData <- fit(DLEsamples,
         model = DLEmodel,
         data = data,
@@ -1501,6 +1502,11 @@ setMethod("plotGain",
 #' and a given efficacy pseudo model
 #'
 #' @describeIn plotGain Standard method
+#' @param size `integer`\cr a vector of length two defining the sizes of
+#' the shapes used to identify the doses with, respectively, p(DLE = 0.3) and the
+#' maximum gain
+#' @param shape `integer`\cr a vector of length two defining the shapes
+#' used to identify the doses with, respectively, p(DLE = 0.3) and the maximum gain
 #'
 #' @example examples/Samples-method-plotGainNoSamples.R
 #' @export
@@ -1514,7 +1520,9 @@ setMethod("plotGain",
       Effsamples = "missing"
     ),
   def =
-    function(DLEmodel, Effmodel, data, ...) {
+    function(DLEmodel, Effmodel, data, size = c(8L, 8L), shape = c(16L, 17L), ...) {
+      assert_integer(size, length = 2, any.missing = FALSE, lower = 0, upper = 20)
+      assert_integer(shape, length = 2, any.missing = FALSE, unique = TRUE, lower = 0, upper = 25)
       ## Make sure the model estimates are corresponds to the input data
       DLEmodel <- update(object = DLEmodel, data = data)
       Effmodel <- update(object = Effmodel, data = data)
@@ -1547,17 +1555,25 @@ setMethod("plotGain",
             rep("Expected Efficacy", length(data@doseGrid)),
             rep("Gain", length(data@doseGrid))
           ),
+          colour = rep(c("blue", "green3", "red")),
           Type = factor("Estimate", levels = "Estimate")
         )
       )
 
+      # if changing the line type is unacceptable, consider
+      # https://stackoverflow.com/questions/25632242/filled-and-hollow-shapes-where-the-fill-color-the-line-color
       plot1 <- ggplot(data = gdata, aes(x = x, y = y)) +
-        geom_line(aes(group = group, color = group), linewidth = 1.5) +
-        ggplot2::scale_colour_manual(name = "curves", values = c("blue", "green3", "red")) +
+        geom_line(aes(group = group, linetype=group, colour = group), linewidth = 1) +
+        ggplot2::scale_colour_manual(
+          name = "Curves",
+          values = c("blue", "green3", "red")
+        ) +
+        ggplot2::scale_linetype_manual(
+          name = "Curves",
+          values = c("solid", "dotted", "dashed")
+        ) +
         xlab("Dose Level") +
-        xlim(c(0, max(data@doseGrid))) +
-        ylab(paste("Values")) +
-        ylim(c(min(gdata$y), max(gdata$y)))
+        ylab(paste("Values"))
 
       TD30 <- dose(x = 0.3, model = DLEmodel)
 
@@ -1583,49 +1599,74 @@ setMethod("plotGain",
         )$value
       )
 
+      # Add annotated point estimates to graph
+      point_data <- tibble::tibble(
+        Text = NA_character_,
+        X = NA_real_,
+        Y = NA_real_,
+        Shape = NA_real_,
+        Size = NA_real_,
+        Colour = NA_character_,
+        .rows = 0
+      )
+
       if ((TD30 < min(data@doseGrid)) | (TD30 > max(data@doseGrid))) {
-        plot1 <- plot1
         message(paste("TD30", paste(TD30, " not within dose Grid")))
       } else {
-        plot1 <- plot1 +
-          geom_point(
-            data = data.frame(x = TD30, y = 0.3),
-            aes(x = x, y = y),
-            colour = "violet",
-            shape = 16,
-            size = 8
-          ) +
-          annotate(
-            "text",
-            label = "p(DLE=0.3)",
-            x = TD30 + 1,
-            y = 0.2,
-            size = 5,
-            colour = "violet"
+        point_data <- point_data %>%
+          tibble::add_row(
+            X = TD30,
+            Y = 0.3,
+            Shape = shape[1],
+            Size = size[1],
+            Colour = "violet",
+            Text = "p(DLE=0.3)"
+          )
+      }
+      if ((Gstar < min(data@doseGrid)) | (Gstar > max(data@doseGrid))) {
+        print(paste("Gstar=", paste(Gstar, " not within dose Grid")))
+      } else {
+        point_data <- point_data %>%
+          tibble::add_row(
+            X = Gstar,
+            Y = MaxGain,
+            Shape = shape[2],
+            Size = size[2],
+            Colour = "green3",
+            Text = "Max Gain"
           )
       }
 
-      if ((Gstar < min(data@doseGrid)) | (Gstar > max(data@doseGrid))) {
-        plot1 <- plot1
-        print(paste("Gstar=", paste(Gstar, " not within dose Grid")))
-      } else {
-        plot1 <- plot1 +
-          geom_point(
-            data = data.frame(x = Gstar, y = MaxGain),
-            aes(x = x, y = y),
-            colour = "green3",
-            shape = 17,
-            size = 8
-          ) +
-          annotate(
-            "text",
-            label = "Max Gain",
-            x = Gstar,
-            y = MaxGain - 0.1,
-            size = 5,
-            colour = "green3"
-          )
-      }
+      plot1 <- plot1 +
+        ggplot2::geom_point(
+          data = point_data,
+          inherit.aes = FALSE,
+          aes(
+            x = X,
+            y = Y,
+            shape = as.factor(Shape),
+            fill = Colour
+          ),
+          colour = point_data$Colour,
+          size = point_data$Size,
+        ) +
+        scale_fill_manual(
+          name = "Estimates",
+          labels = c("p(DLE = 0.3)", "Max Gain"),
+          values = point_data$Colour
+        ) +
+        scale_shape_discrete(
+          name = "Estimates",
+          labels = c("p(DLE = 0.3)", "Max Gain"),
+          breaks = point_data$Shape
+        ) +
+        guides(
+          shape = guide_legend(override.aes = list(color = c("violet", "green3")))
+        ) +
+        ggplot2::coord_cartesian(
+          xlim = c(0, max(data@doseGrid)),
+          ylim = c(min(gdata$y), max(gdata$y))
+        )
       return(plot1)
     }
 )
