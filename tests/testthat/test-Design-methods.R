@@ -220,6 +220,7 @@ test_that("examine for DADesign works as expected", {
   expect_named(result, c("DLTsearly_1", "dose", "DLTs", "nextDose", "stop", "increment"))
 })
 
+
 ##test
 ##testcase to check medianMTD values
 test_that("medianMTD and CV values will get in the list", {
@@ -231,7 +232,7 @@ test_that("medianMTD and CV values will get in the list", {
 
   # Extreme truth function, which has constant probability 1 in dose grid range.
   truth <- probFunction(model, alpha0 = 175, alpha1 = 5)
-  stopping <- StoppingMissingDose()
+  stop_rule <- StoppingMinPatients(nPatients = 5)
   design <- Design(
     model = model,
     stopping = stopping,
@@ -241,18 +242,31 @@ test_that("medianMTD and CV values will get in the list", {
     data = data,
     startingDose = 25
   )
+
+  my_options <- McmcOptions(burnin = 100, step = 2, samples = 5, rng_kind = "Mersenne-Twister",  rng_seed=3)
+
   sim <- simulate(
     design,
-    nsim = 2,
+    nsim = 1,
     truth = truth,
     seed = 819,
-    mcmcOptions = h_get_mcmc_options()
+    mcmcOptions = my_options
   )
-  result <- sim@MTD_median_cv
 
-  expected <- length(list(1,2),5)
+  my_samples <- mcmc(data = sim@data[[1]], model = model, options = my_options)
+  MTD_estimate <- dose(mean(next_best@target),
+                       model,
+                       my_samples)
+  expected_median <- median(MTD_estimate)
+  expected_cv <- mad(MTD_estimate)/median(MTD_estimate)
 
-  expect_identical(result, expected)
+
+
+  result_median <- unlist(sim@MTD_median_cv)[1]
+  result_cv <- unlist(sim@MTD_median_cv)[2]
+
+  expect_identical(result_median, expected_median)
+  expect_identical(result_cv, expected_cv)
 })
 
 #OR
