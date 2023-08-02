@@ -161,8 +161,8 @@ GeneralSimulations <- function(data,
         )
 
         o$check(
-          identical(length(object@MTD_median_cv), 2),
-          "length of data list must be two (median+CV value)"
+          identical(length(object@MTD_median_cv), nSims),
+          "Median_MTD must have same length as data (median+CV value)"
         )
 
         o$result()

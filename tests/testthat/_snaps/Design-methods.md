@@ -1,3 +1,84 @@
+# Test if simulate generate the expected output.
+
+    Code
+      sim
+    Output
+      An object of class "Simulations"
+      Slot "fit":
+      [[1]]
+            middle     lower     upper
+      1  0.3185617 0.1610002 0.4380715
+      2  0.3115668 0.2305102 0.4260590
+      3  0.3123386 0.2023495 0.4190715
+      4  0.3148504 0.1839781 0.4141332
+      5  0.3177190 0.1706377 0.4250526
+      6  0.3205237 0.1603176 0.4615404
+      7  0.3231301 0.1519912 0.4927203
+      8  0.3255041 0.1450683 0.5197231
+      9  0.3276489 0.1391811 0.5433694
+      10 0.3295813 0.1340857 0.5642717
+      11 0.3313223 0.1296131 0.5828979
+      12 0.3328926 0.1256414 0.5996128
+      
+      
+      Slot "stop_report":
+           <NA>
+      [1,] TRUE
+      
+      Slot "stop_reasons":
+      [[1]]
+      [1] "Number of patients is 15 and thus reached the prespecified minimum number 5"
+      
+      
+      Slot "MTD_median_cv":
+      [[1]]
+      [[1]]$medianMTD
+      [1] 59.48722
+      
+      [[1]]$CVMTD
+      [1] 0.7818648
+      
+      
+      
+      Slot "data":
+      [[1]]
+      An object of class "Data"
+      Slot "x":
+       [1]  25  25  25  25  50  50  50  50 100 100 100 100  25  25  25
+      
+      Slot "y":
+       [1] 0 0 0 0 0 0 0 0 0 0 1 0 1 1 1
+      
+      Slot "doseGrid":
+       [1]  25  50  75 100 125 150 175 200 225 250 275 300
+      
+      Slot "nGrid":
+      [1] 12
+      
+      Slot "xLevel":
+       [1] 1 1 1 1 2 2 2 2 4 4 4 4 1 1 1
+      
+      Slot "placebo":
+      [1] FALSE
+      
+      Slot "ID":
+       [1]  1  2  3  4  5  6  7  8  9 10 11 12 13 14 15
+      
+      Slot "cohort":
+       [1] 1 1 1 1 2 2 2 2 3 3 3 3 4 4 4
+      
+      Slot "nObs":
+      [1] 15
+      
+      
+      
+      Slot "doses":
+      [1] NA
+      
+      Slot "seed":
+      [1] 819
+      
+
 # NextBestInfTheory produces consistent results for empty data
 
     Code
