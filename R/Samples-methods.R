@@ -1521,8 +1521,8 @@ setMethod("plotGain",
     ),
   def =
     function(DLEmodel, Effmodel, data, size = c(8L, 8L), shape = c(16L, 17L), ...) {
-      assert_integer(size, length = 2, any.missing = FALSE, lower = 0, upper = 20)
-      assert_integer(shape, length = 2, any.missing = FALSE, unique = TRUE, lower = 0, upper = 25)
+      assert_integer(size, len = 2, any.missing = FALSE, lower = 0, upper = 20)
+      assert_integer(shape, len = 2, any.missing = FALSE, unique = TRUE, lower = 0, upper = 25)
       ## Make sure the model estimates are corresponds to the input data
       DLEmodel <- update(object = DLEmodel, data = data)
       Effmodel <- update(object = Effmodel, data = data)
@@ -1563,7 +1563,7 @@ setMethod("plotGain",
       # if changing the line type is unacceptable, consider
       # https://stackoverflow.com/questions/25632242/filled-and-hollow-shapes-where-the-fill-color-the-line-color
       plot1 <- ggplot(data = gdata, aes(x = x, y = y)) +
-        geom_line(aes(group = group, linetype=group, colour = group), linewidth = 1) +
+        geom_line(aes(group = group, linetype = group, colour = group), linewidth = 1) +
         ggplot2::scale_colour_manual(
           name = "Curves",
           values = c("blue", "green3", "red")
