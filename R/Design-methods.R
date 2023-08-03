@@ -427,6 +427,21 @@ setMethod("simulate",
         median_MTD <- list(medianMTD=median(medianMTD_est),
                            CVMTD=mad(medianMTD_est)/median(medianMTD_est))
 
+       # browser()
+
+        ######################test_phase############
+
+        #Get the MTD rel. errors estimate from the truth
+        median_true <- thisTruth(thisDose)
+
+        medianMTD <- median(medianMTD_est)
+
+        # Create a absolute value with estimated relative error
+        median_rel_error_est <- abs(median_true - medianMTD) / median_true
+
+
+        # ######################test############
+
 
         ## return the results
         thisResult <-
