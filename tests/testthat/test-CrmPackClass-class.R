@@ -11,9 +11,6 @@ test_that("CrmPackClass correctly identifies crmPack classes", {
       if (exists(constructor_name, mode = "function")) {
         expect_true(is(do.call(paste0(".Default", !!cls), list()), "CrmPackClass"))
       } else {
-        # TODO:
-        #  1: Create missing default constructors
-        #  2: Convert this message to an error
         message(paste0("No default constructor for ", cls))
         expect_true(TRUE)
       }
