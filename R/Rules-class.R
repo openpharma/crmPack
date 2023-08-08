@@ -1410,7 +1410,14 @@ IncrementsMin <- function(increments_list) {
 #'
 #' [`Stopping`] is a class for stopping rules.
 #'
-#' @seealso [`StoppingMissingDose`], [`StoppingList`], [`StoppingCohortsNearDose`], [`StoppingPatientsNearDose`],
+#' @slot report_label (`string`)\cr a label for the stopping report. The meaning
+#'   of this parameter is twofold. If it is equal to `NA_character_` (default),
+#'   the `report_label` will not be used in the report at all. Otherwise, if it
+#'   is specified as an empty character (i.e. `character(0)`) in a user constructor,
+#'   then a default, class-specific label will be created for this slot.
+#'   Finally, for the remaining cases, a user can provide a custom label.
+#'
+#' @seealso [`StoppingList`], [`StoppingCohortsNearDose`], [`StoppingPatientsNearDose`],
 #'   [`StoppingMinCohorts`], [`StoppingMinPatients`], [`StoppingTargetProb`],
 #'   [`StoppingMTDdistribution`], [`StoppingTargetBiomarker`], [`StoppingHighestDose`]
 #'   [`StoppingMTDCV`], [`StoppingLowestDoseHSRBeta`], [`StoppingSpecificDose`].
@@ -1419,8 +1426,11 @@ IncrementsMin <- function(increments_list) {
 #' @export
 #'
 setClass(
-  Class = "Stopping"
+  Class = "Stopping",
+  slots = c(report_label = "character"),
+  prototype = prototype(report_label = character(0))
 )
+
 
 # StoppingMissingDose ----
 
@@ -1444,12 +1454,18 @@ setClass(
 ## constructor ----
 
 #' @rdname StoppingMissingDose-class
-#'
+#' @param report_label (`string` or `NA`)\cr see slot definition.
 #' @example examples/Rules-class-StoppingMissingDose.R
 #' @export
 #'
-StoppingMissingDose <- function() {
-  .StoppingMissingDose()
+StoppingMissingDose <- function(
+    report_label = NA_character_) {
+  report_label <- h_default_if_empty(
+    as.character(report_label),
+    paste("Stopped because of missing dose")
+  )
+
+  .StoppingMissingDose(report_label = report_label)
 }
 
 ## default constructor ----
@@ -1501,15 +1517,24 @@ StoppingMissingDose <- function() {
 #'
 #' @param nCohorts (`number`)\cr see slot definition.
 #' @param percentage (`number`)\cr see slot definition.
+#' @param report_label (`string` or `NA`)\cr see slot definition.
 #'
 #' @example examples/Rules-class-StoppingCohortsNearDose.R
 #' @export
 #'
 StoppingCohortsNearDose <- function(nCohorts = 2L,
-                                    percentage = 50) {
+                                    percentage = 50,
+                                    report_label = NA_character_) {
+  nCohorts <- safeInteger(nCohorts)
+  report_label <- h_default_if_empty(
+    as.character(report_label),
+    paste("\u2265", nCohorts, "cohorts dosed in", percentage, "% dose range around NBD")
+  )
+
   .StoppingCohortsNearDose(
     nCohorts = safeInteger(nCohorts),
-    percentage = percentage
+    percentage = percentage,
+    report_label = report_label
   )
 }
 
@@ -1519,7 +1544,10 @@ StoppingCohortsNearDose <- function(nCohorts = 2L,
 #' @note Typically, end users will not use the `.DefaultStoppingCohortsNearDose()` function.
 #' @export
 .DefaultStoppingCohortsNearDose <- function() { # nolint
-  StoppingCohortsNearDose(nCohorts = 3L, percentage = 0.2)
+  StoppingCohortsNearDose(
+    nCohorts = 3L,
+    percentage = 0.2
+  )
 }
 
 
@@ -1561,15 +1589,24 @@ StoppingCohortsNearDose <- function(nCohorts = 2L,
 #'
 #' @param nPatients (`number`)\cr see slot definition.
 #' @param percentage (`number`)\cr see slot definition.
+#' @param report_label (`string` or `NA`)\cr see slot definition.
 #'
 #' @example examples/Rules-class-StoppingPatientsNearDose.R
 #' @export
 #'
-StoppingPatientsNearDose <- function(nPatients,
-                                     percentage = 50) {
+StoppingPatientsNearDose <- function(nPatients = 10L,
+                                     percentage = 50,
+                                     report_label = NA_character_) {
+  nPatients <- safeInteger(nPatients)
+  report_label <- h_default_if_empty(
+    as.character(report_label),
+    paste("\u2265", nPatients, "patients dosed in", percentage, "% dose range around NBD")
+  )
+
   .StoppingPatientsNearDose(
-    nPatients = safeInteger(nPatients),
-    percentage = percentage
+    nPatients = nPatients,
+    percentage = percentage,
+    report_label = report_label
   )
 }
 
@@ -1579,7 +1616,11 @@ StoppingPatientsNearDose <- function(nPatients,
 #' @note Typically, end users will not use the `.DefaultStoppingPatientsNearDose()` function.
 #' @export
 .DefaultStoppingPatientsNearDose <- function() { # nolint
-  StoppingPatientsNearDose(nPatients = 9L, percentage = 20)
+  StoppingPatientsNearDose(
+    nPatients = 9L,
+    percentage = 20,
+    report_label = NA_character_
+  )
 }
 
 # StoppingMinCohorts ----
@@ -1611,12 +1652,23 @@ StoppingPatientsNearDose <- function(nPatients,
 #' @rdname StoppingMinCohorts-class
 #'
 #' @param nCohorts (`number`)\cr see slot definition.
+#' @param report_label (`string` or `NA`)\cr see slot definition.
 #'
 #' @example examples/Rules-class-StoppingMinCohorts.R
 #' @export
 #'
-StoppingMinCohorts <- function(nCohorts) {
-  .StoppingMinCohorts(nCohorts = safeInteger(nCohorts))
+StoppingMinCohorts <- function(nCohorts = 2L,
+                               report_label = NA_character_) {
+  nCohorts <- safeInteger(nCohorts)
+  report_label <- h_default_if_empty(
+    as.character(report_label),
+    paste("\u2265", nCohorts, "cohorts dosed")
+  )
+
+  .StoppingMinCohorts(
+    nCohorts = safeInteger(nCohorts),
+    report_label = report_label
+  )
 }
 
 ## default constructor ----
@@ -1625,7 +1677,9 @@ StoppingMinCohorts <- function(nCohorts) {
 #' @note Typically, end users will not use the `.DefaultStoppingMinCohorts()` function.
 #' @export
 .DefaultStoppingMinCohorts <- function() {
-  StoppingMinCohorts(nCohorts = 6L)
+  StoppingMinCohorts(
+    nCohorts = 6L
+  )
 }
 
 # StoppingMinPatients ----
@@ -1657,12 +1711,23 @@ StoppingMinCohorts <- function(nCohorts) {
 #' @rdname StoppingMinPatients-class
 #'
 #' @param nPatients (`number`)\cr see slot definition.
+#' @param report_label (`string` or `NA`)\cr see slot definition.
 #'
 #' @example examples/Rules-class-StoppingMinPatients.R
 #' @export
 #'
-StoppingMinPatients <- function(nPatients) {
-  .StoppingMinPatients(nPatients = safeInteger(nPatients))
+StoppingMinPatients <- function(nPatients = 20L,
+                                report_label = NA_character_) {
+  nPatients <- safeInteger(nPatients)
+  report_label <- h_default_if_empty(
+    as.character(report_label),
+    paste("\u2265", nPatients, "patients dosed")
+  )
+
+  .StoppingMinPatients(
+    nPatients = safeInteger(nPatients),
+    report_label = report_label
+  )
 }
 
 ## default constructor ----
@@ -1671,7 +1736,9 @@ StoppingMinPatients <- function(nPatients) {
 #' @note Typically, end users will not use the `.DefaultStoppingMinPatients()` function.
 #' @export
 .DefaultStoppingMinPatients <- function() {
-  StoppingMinPatients(nPatients = 20L)
+  StoppingMinPatients(
+    nPatients = 20L
+  )
 }
 
 # StoppingTargetProb ----
@@ -1712,15 +1779,24 @@ StoppingMinPatients <- function(nPatients) {
 #'
 #' @param target (`number`)\cr see slot definition.
 #' @param prob (`proportion`)\cr see slot definition.
+#' @param report_label (`string` or `NA`)\cr see slot definition.
 #'
 #' @example examples/Rules-class-StoppingTargetProb.R
 #' @export
 #'
-StoppingTargetProb <- function(target,
-                               prob) {
+StoppingTargetProb <- function(target = c(0.2, 0.35),
+                               prob = 0.4,
+                               report_label = NA_character_) {
+  assert_numeric(target, len = 2)
+  report_label <- h_default_if_empty(
+    as.character(report_label),
+    paste0("P(", target[1], " \u2264 prob(DLE | NBD) \u2264 ", target[2], ") \u2265 ", prob)
+  )
+
   .StoppingTargetProb(
     target = target,
-    prob = prob
+    prob = prob,
+    report_label = report_label
   )
 }
 
@@ -1730,7 +1806,10 @@ StoppingTargetProb <- function(target,
 #' @note Typically, end users will not use the `.DefaultStoppingTargetProb()` function.
 #' @export
 .DefaultStoppingTargetProb <- function() {
-  StoppingTargetProb(target = c(0.2, 0.35), prob = 0.5)
+  StoppingTargetProb(
+    target = c(0.2, 0.35),
+    prob = 0.5
+  )
 }
 
 # StoppingMTDdistribution ----
@@ -1780,17 +1859,25 @@ StoppingTargetProb <- function(target,
 #' @param target (`proportion`)\cr see slot definition.
 #' @param thresh (`proportion`)\cr see slot definition.
 #' @param prob (`proportion`)\cr see slot definition.
+#' @param report_label (`string` or `NA`)\cr see slot definition.
 #'
 #' @example examples/Rules-class-StoppingMTDdistribution.R
 #' @export
 #'
-StoppingMTDdistribution <- function(target,
-                                    thresh,
-                                    prob) {
+StoppingMTDdistribution <- function(target = 0.33,
+                                    thresh = 0.5,
+                                    prob = 0.9,
+                                    report_label = NA_character_) {
+  report_label <- h_default_if_empty(
+    as.character(report_label),
+    paste0("P(MTD > ", thresh, " * NBD | P(DLE) = ", target, ") \u2265 ", prob)
+  )
+
   .StoppingMTDdistribution(
     target = target,
     thresh = thresh,
-    prob = prob
+    prob = prob,
+    report_label = report_label
   )
 }
 
@@ -1800,7 +1887,11 @@ StoppingMTDdistribution <- function(target,
 #' @note Typically, end users will not use the `.DefaultStoppingMTDDistribution()` function.
 #' @export
 .DefaultStoppingMTDdistribution <- function() {
-  StoppingMTDdistribution(target = 0.33, thresh = 0.5, prob = 0.9)
+  StoppingMTDdistribution(
+    target = 0.33,
+    thresh = 0.5,
+    prob = 0.9
+  )
 }
 
 # StoppingMTDCV ----
@@ -1838,23 +1929,29 @@ StoppingMTDdistribution <- function(target,
   validity = v_stopping_mtd_cv
 )
 
-
-
 ## constructor ----
 
 #' @rdname StoppingMTDCV-class
 #'
 #' @param target (`proportion`)\cr see slot definition.
 #' @param thresh_cv (`number`)\cr see slot definition.
+#' @param report_label (`string` or `NA`)\cr see slot definition.
 #'
 #' @export
 #' @example examples/Rules-class-StoppingMTDCV.R
 #'
 StoppingMTDCV <- function(target = 0.3,
-                          thresh_cv = 40) {
+                          thresh_cv = 40,
+                          report_label = NA_character_) {
+  report_label <- h_default_if_empty(
+    as.character(report_label),
+    paste("CV(MTD) >", target)
+  )
+
   .StoppingMTDCV(
     target = target,
-    thresh_cv = thresh_cv
+    thresh_cv = thresh_cv,
+    report_label = report_label
   )
 }
 
@@ -1865,7 +1962,10 @@ StoppingMTDCV <- function(target = 0.3,
 #'
 #' @export
 .DefaultStoppingMTDCV <- function() {
-  StoppingMTDCV(target = 0.3, thresh_cv = 40)
+  StoppingMTDCV(
+    target = 0.3,
+    thresh_cv = 40
+  )
 }
 
 # StoppingLowestDoseHSRBeta ----
@@ -1925,6 +2025,7 @@ StoppingMTDCV <- function(target = 0.3,
 #' @param prob (`proportion`)\cr see slot definition.
 #' @param a (`number`)\cr see slot definition.
 #' @param b (`number`)\cr see slot definition.
+#' @param report_label (`string` or `NA`)\cr see slot definition.
 #'
 #' @export
 #' @example examples/Rules-class-StoppingLowestDoseHSRBeta.R
@@ -1932,12 +2033,19 @@ StoppingMTDCV <- function(target = 0.3,
 StoppingLowestDoseHSRBeta <- function(target = 0.3,
                                       prob = 0.95,
                                       a = 1,
-                                      b = 1) {
+                                      b = 1,
+                                      report_label = NA_character_) {
+  report_label <- h_default_if_empty(
+    as.character(report_label),
+    paste0("P\u03B2(lowest dose > P(DLE) = ", target, ") > ", prob)
+  )
+
   .StoppingLowestDoseHSRBeta(
     target = target,
     prob = prob,
     a = a,
-    b = b
+    b = b,
+    report_label = report_label
   )
 }
 
@@ -1947,7 +2055,12 @@ StoppingLowestDoseHSRBeta <- function(target = 0.3,
 #' @note Typically, end users will not use the `.DefaultStoppingLowestDoseHSRBeta()` function.
 #' @export
 .DefaultStoppingLowestDoseHSRBeta <- function() { # nolint
-  StoppingLowestDoseHSRBeta(target = 0.3, prob = 0.95, a = 1, b = 1)
+  StoppingLowestDoseHSRBeta(
+    target = 0.3,
+    prob = 0.95,
+    a = 1,
+    b = 1
+  )
 }
 
 # StoppingTargetBiomarker ----
@@ -1997,17 +2110,31 @@ StoppingLowestDoseHSRBeta <- function(target = 0.3,
 #' @param target (`numeric`)\cr see slot definition.
 #' @param prob (`proportion`)\cr see slot definition.
 #' @param is_relative (`flag`)\cr see slot definition.
+#' @param report_label (`string` or `NA`)\cr see slot definition.
 #'
 #' @export
 #' @example examples/Rules-class-StoppingTargetBiomarker.R
 #'
-StoppingTargetBiomarker <- function(target,
-                                    prob,
-                                    is_relative = TRUE) {
+StoppingTargetBiomarker <- function(target = c(0.9, 1),
+                                    prob = 0.3,
+                                    is_relative = TRUE,
+                                    report_label = NA_character_) {
+  assert_numeric(target, len = 2)
+  assert_flag(is_relative)
+
+  report_label <- h_default_if_empty(
+    as.character(report_label),
+    paste0(
+      "P(", target[1], " \u2264 ", "Biomarker \u2264 ", target[2], ") \u2265 ", prob,
+      ifelse(is_relative, " (relative)", " (absolute)")
+    )
+  )
+
   .StoppingTargetBiomarker(
     target = target,
     is_relative = is_relative,
-    prob = prob
+    prob = prob,
+    report_label = report_label
   )
 }
 
@@ -2017,7 +2144,11 @@ StoppingTargetBiomarker <- function(target,
 #' @note Typically, end users will not use the `.DefaultStoppingTargetBiomarker()` function.
 #' @export
 .DefaultStoppingTargetBiomarker <- function() {
-  StoppingTargetBiomarker(target = c(0.9, 1), prob = 0.5)
+  StoppingTargetBiomarker(
+    target = c(0.9, 1),
+    prob = 0.5,
+    is_relative = TRUE
+  )
 }
 
 # StoppingSpecificDose ----
@@ -2053,14 +2184,23 @@ StoppingTargetBiomarker <- function(target,
 #'
 #' @param rule (`Stopping`)\cr see slot definition.
 #' @param dose (`number`)\cr see slot definition.
+#' @param report_label (`string` or `NA`) \cr see slot definition.
 #'
 #' @export
 #' @example examples/Rules-class-StoppingSpecificDose.R
 #'
-StoppingSpecificDose <- function(rule, dose) {
+StoppingSpecificDose <- function(rule = StoppingTargetProb(target = c(0, 0.3), prob = 0.8),
+                                 dose = 80,
+                                 report_label = NA_character_) {
+  report_label <- h_default_if_empty(
+    as.character(report_label),
+    paste0("Dose ", dose, " used for testing a stopping rule")
+  )
+
   .StoppingSpecificDose(
     rule = rule,
-    dose = positive_number(dose)
+    dose = positive_number(dose),
+    report_label = report_label
   )
 }
 
@@ -2098,12 +2238,18 @@ StoppingSpecificDose <- function(rule, dose) {
 ## constructor ----
 
 #' @rdname StoppingHighestDose-class
+#' @param report_label (`string` or `NA`)\cr see slot definition.
 #'
 #' @export
 #' @example examples/Rules-class-StoppingHighestDose.R
 #'
-StoppingHighestDose <- function() {
-  .StoppingHighestDose()
+StoppingHighestDose <- function(report_label = NA_character_) {
+  report_label <- h_default_if_empty(
+    as.character(report_label),
+    "NBD is the highest dose"
+  )
+
+  .StoppingHighestDose(report_label = report_label)
 }
 
 ## default constructor ----
@@ -2114,6 +2260,161 @@ StoppingHighestDose <- function() {
 .DefaultStoppingHighestDose <- function() {
   StoppingHighestDose()
 }
+
+# StoppingTDCIRatio ----
+
+## class ----
+
+#' `StoppingTDCIRatio`
+#'
+#' @description `r lifecycle::badge("stable")`
+#'
+#' [`StoppingTDCIRatio`] is the class for testing a stopping rule that is based
+#' on a target ratio of the 95% credibility interval. Specifically, this is the
+#' ratio of the upper to the lower bound of the 95% credibility interval's
+#' estimate of the target dose (i.e. a dose that corresponds to a given target
+#' probability of the occurrence of a DLT `prob_target`).
+#'
+#' @slot target_ratio (`numeric`)\cr target for the ratio of the 95% credibility
+#'   interval's estimate, that is required to stop a trial.
+#' @slot prob_target (`proportion`)\cr the target probability of the occurrence
+#'   of a DLT.
+#'
+#' @aliases StoppingTDCIRatio
+#' @export
+#'
+.StoppingTDCIRatio <- setClass(
+  Class = "StoppingTDCIRatio",
+  slots = c(
+    target_ratio = "numeric",
+    prob_target = "numeric"
+  ),
+  prototype = prototype(
+    target_ratio = 5,
+    prob_target = 0.3
+  ),
+  contains = "Stopping",
+  validity = v_stopping_tdci_ratio
+)
+
+## constructor ----
+
+#' @rdname StoppingTDCIRatio-class
+#'
+#' @param target_ratio (`numeric`)\cr see slot definition.
+#' @param prob_target (`proportion`)\cr see slot definition.
+#' @param report_label (`string` or `NA`)\cr see slot definition.
+#'
+#' @export
+#' @example examples/Rules-class-StoppingTDCIRatio.R
+#'
+StoppingTDCIRatio <- function(target_ratio = 5,
+                              prob_target = 0.3,
+                              report_label = NA_character_) {
+  report_label <- h_default_if_empty(
+    as.character(report_label),
+    paste("TD", target_ratio, "for", prob_target, "target prob")
+  )
+
+  .StoppingTDCIRatio(
+    target_ratio = target_ratio,
+    prob_target = prob_target,
+    report_label = report_label
+  )
+}
+
+## default constructor ----
+
+#' @rdname StoppingTDCIRatio-class
+#' @note Typically, end users will not use the `.DefaultStoppingTDCIRatio()` function.
+#' @export
+.DefaultStoppingTDCIRatio <- function() {
+  StoppingTDCIRatio(
+    target_ratio = 5,
+    prob_target = 0.3
+  )
+}
+
+# StoppingMaxGainCIRatio ----
+
+## class ----
+
+#' `StoppingMaxGainCIRatio`
+#'
+#' @description `r lifecycle::badge("stable")`
+#'
+#' [`StoppingMaxGainCIRatio`] is the class for testing a stopping rule that is based
+#' on a target ratio of the 95% credibility interval. Specifically, this is the
+#' ratio of the upper to the lower bound of the 95% credibility interval's
+#' estimate of the:
+#' (1) target dose (i.e. a dose that corresponds to a given target
+#' probability of the occurrence of a DLT `prob_target`), or
+#' (2) max gain dose (i.e. a dose which gives the maximum gain),
+#' depending on which one out of these two is smaller.
+#'
+#' @slot target_ratio (`numeric`)\cr target for the ratio of the 95% credibility
+#'   interval's estimate, that is required to stop a trial.
+#' @slot prob_target (`proportion`)\cr the target probability of the occurrence
+#'   of a DLT.
+#'
+#' @aliases StoppingMaxGainCIRatio
+#' @export
+#'
+.StoppingMaxGainCIRatio <- setClass(
+  Class = "StoppingMaxGainCIRatio",
+  slots = c(
+    target_ratio = "numeric",
+    prob_target = "numeric"
+  ),
+  prototype = prototype(
+    target_ratio = 5,
+    prob_target = 0.3
+  ),
+  contains = "Stopping",
+  validity = v_stopping_tdci_ratio
+)
+
+## constructor ----
+
+#' @rdname StoppingMaxGainCIRatio-class
+#'
+#' @param target_ratio (`numeric`)\cr see slot definition.
+#' @param prob_target (`proportion`)\cr see slot definition.
+#' @param report_label (`string` or `NA`)\cr see slot definition.
+#'
+#' @export
+#' @example examples/Rules-class-StoppingMaxGainCIRatio.R
+#'
+StoppingMaxGainCIRatio <- function(target_ratio = 5,
+                                   prob_target = 0.3,
+                                   report_label = NA_character_) {
+  report_label <- h_default_if_empty(
+    as.character(report_label),
+    paste("GStar", target_ratio, "for", prob_target, "target prob")
+  )
+
+  .StoppingMaxGainCIRatio(
+    target_ratio = target_ratio,
+    prob_target = prob_target,
+    report_label = report_label
+  )
+}
+
+
+## default constructor ----
+
+#' @rdname StoppingMaxGainCIRatio-class
+#' @examples
+#' .DefaultStoppingMaxGainCIRatio()
+#' @export
+.DefaultStoppingMaxGainCIRatio <- function() {
+  StoppingMaxGainCIRatio(
+    target_ratio = 5,
+    prob_target = 0.3
+  )
+}
+
+
 
 # StoppingList ----
 
@@ -2199,13 +2500,15 @@ StoppingList <- function(stop_list, summary) {
 #' to be `TRUE`.
 #'
 #' @slot stop_list (`list`)\cr list of stopping rules.
-#'
+#' @slot report_label label for reporting
 #' @aliases StoppingAll
 #' @export
 #'
 .StoppingAll <- setClass(
   Class = "StoppingAll",
-  slots = c(stop_list = "list"),
+  slots = c(
+    stop_list = "list"
+  ),
   prototype = prototype(
     stop_list = list(
       StoppingMinPatients(50),
@@ -2221,14 +2524,16 @@ StoppingList <- function(stop_list, summary) {
 #' @rdname StoppingAll-class
 #'
 #' @param stop_list (`list`)\cr see slot definition.
-#'
+#' @param report_label (`string`) \cr see slot definition.
 #' @export
 #' @example examples/Rules-class-StoppingAll.R
 #'
-StoppingAll <- function(stop_list) {
-  .StoppingAll(stop_list = stop_list)
+StoppingAll <- function(stop_list, report_label = NA_character_) {
+  .StoppingAll(
+    stop_list = stop_list,
+    report_label = report_label
+  )
 }
-
 ## default constructor ----
 
 #' @rdname StoppingAll-class
@@ -2258,13 +2563,16 @@ StoppingAll <- function(stop_list) {
 #' this rule to be `TRUE`.
 #'
 #' @slot stop_list (`list`)\cr list of stopping rules.
+#' @slot report_label label for reporting
 #'
 #' @aliases StoppingAny
 #' @export
 #'
 .StoppingAny <- setClass(
   Class = "StoppingAny",
-  slots = c(stop_list = "list"),
+  slots = c(
+    stop_list = "list"
+  ),
   prototype = prototype(
     stop_list = list(StoppingMinPatients(50), StoppingMinCohorts(5))
   ),
@@ -2277,12 +2585,16 @@ StoppingAll <- function(stop_list) {
 #' @rdname StoppingAny-class
 #'
 #' @param stop_list (`list`)\cr see slot definition.
+#' @param report_label (`string`)\cr see slot definition.
 #'
 #' @export
 #' @example examples/Rules-class-StoppingAny.R
 #'
-StoppingAny <- function(stop_list) {
-  .StoppingAny(stop_list = stop_list)
+StoppingAny <- function(stop_list, report_label = NA_character_) {
+  .StoppingAny(
+    stop_list = stop_list,
+    report_label = report_label
+  )
 }
 
 ## default constructor ----
@@ -2300,133 +2612,6 @@ StoppingAny <- function(stop_list) {
   )
 }
 
-# StoppingTDCIRatio ----
-
-## class ----
-
-#' `StoppingTDCIRatio`
-#'
-#' @description `r lifecycle::badge("stable")`
-#'
-#' [`StoppingTDCIRatio`] is the class for testing a stopping rule that is based
-#' on a target ratio of the 95% credibility interval. Specifically, this is the
-#' ratio of the upper to the lower bound of the 95% credibility interval's
-#' estimate of the target dose (i.e. a dose that corresponds to a given target
-#' probability of the occurrence of a DLT `prob_target`).
-#'
-#' @slot target_ratio (`numeric`)\cr target for the ratio of the 95% credibility
-#'   interval's estimate, that is required to stop a trial.
-#' @slot prob_target (`proportion`)\cr the target probability of the occurrence
-#'   of a DLT.
-#'
-#' @aliases StoppingTDCIRatio
-#' @export
-#'
-.StoppingTDCIRatio <- setClass(
-  Class = "StoppingTDCIRatio",
-  slots = c(
-    target_ratio = "numeric",
-    prob_target = "numeric"
-  ),
-  prototype = prototype(
-    target_ratio = 5,
-    prob_target = 0.3
-  ),
-  contains = "Stopping",
-  validity = v_stopping_tdci_ratio
-)
-
-## constructor ----
-
-#' @rdname StoppingTDCIRatio-class
-#'
-#' @param target_ratio (`numeric`)\cr see slot definition.
-#' @param prob_target (`proportion`)\cr see slot definition.
-#'
-#' @export
-#' @example examples/Rules-class-StoppingTDCIRatio.R
-#'
-StoppingTDCIRatio <- function(target_ratio, prob_target) {
-  .StoppingTDCIRatio(
-    target_ratio = target_ratio,
-    prob_target = prob_target
-  )
-}
-
-## default constructor ----
-
-#' @rdname StoppingTDCIRatio-class
-#' @note Typically, end users will not use the `.DefaultStoppingTDCIRatio()` function.
-#' @export
-.DefaultStoppingTDCIRatio <- function() {
-  StoppingTDCIRatio(target_ratio = 5, prob_target = 0.3)
-}
-
-# StoppingMaxGainCIRatio ----
-
-## class ----
-
-#' `StoppingMaxGainCIRatio`
-#'
-#' @description `r lifecycle::badge("stable")`
-#'
-#' [`StoppingMaxGainCIRatio`] is the class for testing a stopping rule that is based
-#' on a target ratio of the 95% credibility interval. Specifically, this is the
-#' ratio of the upper to the lower bound of the 95% credibility interval's
-#' estimate of the:
-#' (1) target dose (i.e. a dose that corresponds to a given target
-#' probability of the occurrence of a DLT `prob_target`), or
-#' (2) max gain dose (i.e. a dose which gives the maximum gain),
-#' depending on which one out of these two is smaller.
-#'
-#' @slot target_ratio (`numeric`)\cr target for the ratio of the 95% credibility
-#'   interval's estimate, that is required to stop a trial.
-#' @slot prob_target (`proportion`)\cr the target probability of the occurrence
-#'   of a DLT.
-#'
-#' @aliases StoppingMaxGainCIRatio
-#' @export
-#'
-.StoppingMaxGainCIRatio <- setClass(
-  Class = "StoppingMaxGainCIRatio",
-  slots = c(
-    target_ratio = "numeric",
-    prob_target = "numeric"
-  ),
-  prototype = prototype(
-    target_ratio = 5,
-    prob_target = 0.3
-  ),
-  contains = "Stopping",
-  validity = v_stopping_tdci_ratio
-)
-
-## constructor ----
-
-#' @rdname StoppingMaxGainCIRatio-class
-#'
-#' @param target_ratio (`numeric`)\cr see slot definition.
-#' @param prob_target (`proportion`)\cr see slot definition.
-#'
-#' @export
-#' @example examples/Rules-class-StoppingMaxGainCIRatio.R
-#'
-StoppingMaxGainCIRatio <- function(target_ratio, prob_target) {
-  .StoppingMaxGainCIRatio(
-    target_ratio = target_ratio,
-    prob_target = prob_target
-  )
-}
-
-## default constructor ----
-
-#' @rdname StoppingMaxGainCIRatio-class
-#' @examples
-#' .DefaultStoppingMaxGainCIRatio()
-#' @export
-.DefaultStoppingMaxGainCIRatio <- function() {
-  StoppingMaxGainCIRatio(target_ratio = 5, prob_target = 0.3)
-}
 
 # CohortSize ----
 
@@ -2515,6 +2700,7 @@ CohortSizeRange <- function(intervals, cohort_size) {
 #' @description `r lifecycle::badge("stable")`
 #'
 #' [`CohortSizeDLT`] is the class for cohort size based on number of DLTs.
+
 #' @slot intervals (`integer`)\cr a vector with the left bounds of the
 #'   relevant DLT intervals.
 #' @slot cohort_size (`integer`)\cr a vector with the cohort sizes corresponding
