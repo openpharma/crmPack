@@ -1,7 +1,7 @@
 #' @include helpers.R
 #' @include Data-class.R
+#' @include CrmPackClass-class.R
 NULL
-
 
 # GeneralSimulations ----
 
@@ -52,6 +52,7 @@ NULL
       doses = c(1, 2),
       seed = 1L
     ),
+    contains = "CrmPackClass",
     validity =
       function(object) {
         o <- Validate()

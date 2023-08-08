@@ -1,5 +1,6 @@
 #' @include helpers.R
 #' @include Data-validity.R
+#' @include CrmPackClass-class.R
 NULL
 
 # GeneralData-class ----
@@ -29,6 +30,7 @@ NULL
     cohort = integer(),
     nObs = 0L
   ),
+  contains = "CrmPackClass",
   validity = v_general_data
 )
 

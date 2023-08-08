@@ -1,5 +1,6 @@
 #' @include McmcOptions-class.R
 #' @include Samples-validity.R
+#' @include CrmPackClass-class.R
 NULL
 
 # Samples ----
@@ -33,6 +34,7 @@ NULL
     data = list(),
     options = McmcOptions()
   ),
+  contains = "CrmPackClass",
   validity = v_samples
 )
 
