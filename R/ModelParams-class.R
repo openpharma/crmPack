@@ -1,5 +1,6 @@
 #' @include helpers.R
 #' @include ModelParams-validity.R
+#' @include CrmPackClass-class.R
 NULL
 
 # ModelParamsNormal ----
@@ -31,6 +32,7 @@ NULL
     cov = "matrix",
     prec = "matrix"
   ),
+  contains = "CrmPackClass",
   validity = v_model_params_normal
 )
 
