@@ -533,7 +533,8 @@ setMethod("plot",
         model = y,
         data = data,
         quantiles = c(0.025, 0.975),
-        middle = mean
+        middle = mean,
+        ...
       )
 
       ## make the plot
