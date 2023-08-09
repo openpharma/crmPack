@@ -106,7 +106,7 @@ GeneralSimulations <- function(data,
 #' @slot fit (`list`)\cr final fits
 #' @slot stop_reasons (`list`)\cr stopping reasons for each simulation run
 #' @slot stop_report matrix of stopping rule outcomes
-#' @slot MTD_median_cv list of medianMTD values
+#' @slot additional_stats list of median MTD and CV MTD values
 #' @aliases Simulations
 #' @export
 .Simulations <-
@@ -116,7 +116,7 @@ GeneralSimulations <- function(data,
       fit = "list",
       stop_report = "matrix",
       stop_reasons = "list",
-      MTD_median_cv = "list"
+      additional_stats = "list"
     ),
     prototype = prototype(
       fit =
@@ -129,7 +129,7 @@ GeneralSimulations <- function(data,
       stop_reasons =
         list("A", "A"),
 
-      MTD_median_cv =
+      additional_stats =
         list(0,1)
 
     ),
@@ -161,8 +161,8 @@ GeneralSimulations <- function(data,
         )
 
         o$check(
-          identical(length(object@MTD_median_cv), nSims),
-          "Median_MTD must have same length as data (median+CV value)"
+          identical(length(object@additional_stats), nSims),
+          "additional_stats must have same length as data (median+CV value)"
         )
 
         o$result()
@@ -176,7 +176,7 @@ GeneralSimulations <- function(data,
 #' @param fit (`list`)\cr see slot definition.
 #' @param stop_reasons (`list`)\cr see slot definition.
 #' @param stop_report see \code{\linkS4class{Simulations}}
-#' @param MTD_median_cv (`list`)\cr see slot definition.
+#' @param additional_stats (`list`)\cr see slot definition.
 #' @param \dots additional parameters from [`GeneralSimulations`]
 #'
 #' @example examples/Simulations-class-Simulations.R
@@ -184,14 +184,14 @@ GeneralSimulations <- function(data,
 Simulations <- function(fit,
                         stop_reasons,
                         stop_report,
-                        MTD_median_cv,
+                        additional_stats,
                         ...) {
   start <- GeneralSimulations(...)
   .Simulations(start,
     fit = fit,
     stop_report = stop_report,
     stop_reasons = stop_reasons,
-    MTD_median_cv = MTD_median_cv
+    additional_stats = additional_stats
 
   )
 }
@@ -342,7 +342,7 @@ DualSimulations <- function(rhoEst,
     Class = "SimulationsSummary",
     representation(
       stop_report = "matrix",
-      MTD_median_cv = "list",
+      additional_stats = "list",
       fitAtDoseMostSelected = "numeric",
       meanFit = "list"
     ),

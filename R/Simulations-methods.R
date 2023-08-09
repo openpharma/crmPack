@@ -636,7 +636,7 @@ setMethod("summary",
       ret <- .SimulationsSummary(
         start,
         stop_report = object@stop_report,
-        MTD_median_cv = object@MTD_median_cv,
+        additional_stats = object@additional_stats,
         fitAtDoseMostSelected = fitAtDoseMostSelected,
         meanFit = meanFit
       )
@@ -993,11 +993,11 @@ setMethod("show",
 
       cat(
         "Median MTD : ",
-        round(unlist(object@MTD_median_cv)[1], 2), "\n"
+        round(unlist(object@additional_stats)[1], 2), "\n"
       )
       cat(
-        "CVMTD : ",
-        round(unlist(object@MTD_median_cv)[2], 2), "\n"
+        "CV MTD : ",
+        round(unlist(object@additional_stats)[2], 2), "\n"
       )
 
       ## add one reporting line
