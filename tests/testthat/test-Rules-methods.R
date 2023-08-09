@@ -4099,3 +4099,10 @@ test_that("windowLength works correctly", {
     }
   }
 })
+
+
+test_that("report_label slot available for StoppingSpecificDose", {
+
+
+
+})
