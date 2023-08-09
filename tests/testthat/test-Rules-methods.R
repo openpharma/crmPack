@@ -64,6 +64,7 @@ test_that("nextBest-NextBestNCRM returns expected values of the objects", {
   vdiffr::expect_doppelganger("Plot of nextBest-NextBestNCRM_p2", result$singlePlots$plot2)
 })
 
+
 test_that("nextBest-NextBestNCRM returns expected values of the objects (no doselimit)", {
   data <- h_get_data(placebo = FALSE)
   model <- h_get_logistic_log_normal()

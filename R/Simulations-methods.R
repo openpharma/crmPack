@@ -450,6 +450,7 @@ setMethod("summary",
             mean(trueTox[d@xLevel[d@xLevel != 1]])
           }
         )
+
       } else {
         meanToxRisk <- sapply(
           object@data,
@@ -527,6 +528,7 @@ setMethod("summary",
       toxAtDoses <- truth(doseSelected, ...)
       propAtTarget <- mean((toxAtDoses > target[1]) &
         (toxAtDoses < target[2]))
+
 
       ## give back an object of class GeneralSimulationsSummary,
       ## for which we then define a print / plot method
