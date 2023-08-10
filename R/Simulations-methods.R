@@ -450,6 +450,7 @@ setMethod("summary",
             mean(trueTox[d@xLevel[d@xLevel != 1]])
           }
         )
+
       } else {
         meanToxRisk <- sapply(
           object@data,
@@ -527,6 +528,7 @@ setMethod("summary",
       toxAtDoses <- truth(doseSelected, ...)
       propAtTarget <- mean((toxAtDoses > target[1]) &
         (toxAtDoses < target[2]))
+
 
       ## give back an object of class GeneralSimulationsSummary,
       ## for which we then define a print / plot method
@@ -634,6 +636,7 @@ setMethod("summary",
       ret <- .SimulationsSummary(
         start,
         stop_report = object@stop_report,
+        additional_stats = object@additional_stats,
         fitAtDoseMostSelected = fitAtDoseMostSelected,
         meanFit = meanFit
       )
@@ -987,6 +990,15 @@ setMethod("show",
           paste(names(stop_pct_to_print), ": ", stop_pct_to_print, "%\n \n")
         )
       }
+
+      cat(
+        "Median MTD : ",
+        round(unlist(object@additional_stats)[1], 2), "\n"
+      )
+      cat(
+        "CV MTD : ",
+        round(unlist(object@additional_stats)[2], 2), "\n"
+      )
 
       ## add one reporting line
       r$report(
