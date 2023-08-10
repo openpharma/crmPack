@@ -11,7 +11,7 @@ plotGain(DLEmodel, DLEsamples, Effmodel, Effsamples, data, ...)
 
 \S4method{plotGain}{ModelTox,Samples,ModelEff,Samples}(DLEmodel, DLEsamples, Effmodel, Effsamples, data, ...)
 
-\S4method{plotGain}{ModelTox,missing,ModelEff,missing}(DLEmodel, DLEsamples, Effmodel, Effsamples, data, ...)
+\S4method{plotGain}{ModelTox,missing,ModelEff,missing}(DLEmodel, Effmodel, data, size = c(8, 8), shape = c(16, 17), ...)
 }
 \arguments{
 \item{DLEmodel}{the dose-DLE model of \code{\linkS4class{ModelTox}} class object}
@@ -25,6 +25,13 @@ plotGain(DLEmodel, DLEsamples, Effmodel, Effsamples, data, ...)
 \item{data}{the data input of \code{\linkS4class{DataDual}} class object}
 
 \item{\dots}{not used}
+
+\item{size}{\code{positive_integer}\cr a vector of length two defining the sizes of
+the shapes used to identify the doses with, respectively, p(DLE = 0.3) and the
+maximum gain}
+
+\item{shape}{\code{positive_integer}\cr a vector of length two defining the shapes
+used to identify the doses with, respectively, p(DLE = 0.3) and the maximum gain}
 }
 \value{
 This returns the \code{\link[ggplot2]{ggplot}}

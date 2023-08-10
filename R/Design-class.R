@@ -3,6 +3,7 @@
 #' @include Rules-class.R
 #' @include Data-class.R
 #' @include helpers.R
+#' @include CrmPackClass-class.R
 NULL
 
 # RuleDesign ----
@@ -40,6 +41,7 @@ NULL
     data = Data(doseGrid = 1:3),
     startingDose = 1
   ),
+  contains = "CrmPackClass",
   validity = v_rule_design
 )
 
