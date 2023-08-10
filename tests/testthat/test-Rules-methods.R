@@ -4107,6 +4107,5 @@ test_that("report_label slot available for StoppingSpecificDose", {
     dose = 80,
     report_label = "test label"
   )
-
   expect_equal(my_rule@report_label, "test label")
 })
