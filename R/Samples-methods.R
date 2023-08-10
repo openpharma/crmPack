@@ -392,11 +392,11 @@ setMethod("approximate",
       assert_numeric(refDose)
       ## get the required quantiles at these dose levels:
       quants <- fit(object,
-        model,
-        data,
-        points = points,
-        quantiles = c(0.025, 0.975),
-        middle = median
+                    model,
+                    data,
+                    points = points,
+                    quantiles = c(0.025, 0.975),
+                    middle = median
       )
 
       ## get better starting values if it is already a logistic normal
@@ -462,8 +462,8 @@ setMethod("approximate",
             names_to = "Line",
             values_to = "y"
           ) %>%
-          ggplot2::ggplot(
-            ggplot2::aes(
+          ggplot(
+            aes(
               x = x,
               y = y,
               colour = Type,
@@ -471,22 +471,22 @@ setMethod("approximate",
               linetype = (.data$Line == "median")
             )
           ) +
-          ggplot2::geom_line() +
-          ggplot2::scale_colour_manual(
+          geom_line() +
+          scale_colour_manual(
             name = " ",
             values = c("red", "blue")
           ) +
-          ggplot2::scale_linetype_manual(
+          scale_linetype_manual(
             name = " ",
             values = c("dotted", "solid"),
             labels = c("95% CI", "Median"),
-            guide = ggplot2::guide_legend(reverse = TRUE)
+            guide = guide_legend(reverse = TRUE)
           ) +
-          ggplot2::labs(
+          labs(
             x = "Dose",
             y = "p(Tox)"
           ) +
-          ggplot2::theme_light()
+          theme_light()
       }
 
       ## return the results
@@ -567,9 +567,9 @@ setMethod("plot",
           )
         )
 
-      ret <- gdata %>% ggplot2::ggplot() +
-        ggplot2::geom_line(
-          ggplot2::aes(
+      ret <- gdata %>% ggplot() +
+        geom_line(
+          aes(
             x = x,
             y = y,
             group = group,
@@ -577,14 +577,14 @@ setMethod("plot",
           ),
           colour = I("red"),
         ) +
-        ggplot2::coord_cartesian(ylim = c(0, 100)) +
-        ggplot2::labs(
+        coord_cartesian(ylim = c(0, 100)) +
+        labs(
           x = xlab,
           y = ylab,
         )
 
       ret <- ret +
-        ggplot2::scale_linetype_manual(
+        scale_linetype_manual(
           breaks =
             c(
               "Estimate",
@@ -694,9 +694,9 @@ setMethod("plot",
           )
         )
 
-      plot2 <- gdata %>% ggplot2::ggplot() +
-        ggplot2::geom_line(
-          ggplot2::aes(
+      plot2 <- gdata %>% ggplot() +
+        geom_line(
+          aes(
             x = x,
             y = y,
             group = group,
@@ -704,13 +704,13 @@ setMethod("plot",
           ),
           colour = I("blue")
         ) +
-        ggplot2::labs(
+        labs(
           x = "Dose level",
           y = "Biomarker level"
         )
 
       plot2 <- plot2 +
-        ggplot2::scale_linetype_manual(
+        scale_linetype_manual(
           breaks =
             c(
               "Estimate",
@@ -1099,9 +1099,9 @@ setMethod("plot",
           )
         )
 
-      ret <- gdata %>% ggplot2::ggplot() +
-        ggplot2::geom_line(
-          ggplot2::aes(
+      ret <- gdata %>% ggplot() +
+        geom_line(
+          aes(
             x = x,
             y = y,
             group = group,
@@ -1109,14 +1109,14 @@ setMethod("plot",
           ),
           colour = I("red"),
         ) +
-        ggplot2::coord_cartesian(ylim = c(0, 100)) +
-        ggplot2::labs(
+        coord_cartesian(ylim = c(0, 100)) +
+        labs(
           x = xlab,
           y = ylab
         )
 
       ret <- ret +
-        ggplot2::scale_linetype_manual(
+        scale_linetype_manual(
           breaks =
             c(
               "Estimate",
@@ -1203,9 +1203,9 @@ setMethod("plot",
           )
         )
 
-      ret <- gdata %>% ggplot2::ggplot() +
-        ggplot2::geom_line(
-          ggplot2::aes(
+      ret <- gdata %>% ggplot() +
+        geom_line(
+          aes(
             x = x,
             y = y,
             group = group,
@@ -1213,14 +1213,14 @@ setMethod("plot",
           ),
           colour = I("blue")
         ) +
-        ggplot2::labs(
+        labs(
           x = xlab,
           y = ylab
         ) +
-        ggplot2::coord_cartesian(xlim = c(0, max(data@doseGrid)))
+        coord_cartesian(xlim = c(0, max(data@doseGrid)))
 
       ret <- ret +
-        ggplot2::scale_linetype_manual(
+        scale_linetype_manual(
           breaks =
             c(
               "Estimate",
@@ -1298,9 +1298,9 @@ setMethod("plot",
         )
       )
 
-      plot1 <- gdata %>% ggplot2::ggplot() +
-        ggplot2::geom_line(
-          ggplot2::aes(
+      plot1 <- gdata %>% ggplot() +
+        geom_line(
+          aes(
             x = x,
             y = y,
             group = group,
@@ -1309,12 +1309,12 @@ setMethod("plot",
           colour = I("red"),
           linewidth = 1.5
         ) +
-        ggplot2::labs(
+        labs(
           x = xlab,
           y = ylab
         ) +
-        ggplot2::coord_cartesian(ylim = c(0, 1)) +
-        ggplot2::scale_linetype_manual(
+        coord_cartesian(ylim = c(0, 1)) +
+        scale_linetype_manual(
           breaks = "Estimated DLE",
           values = c(1, 2),
           guide = ifelse(showLegend, "legend", "none")
@@ -1432,6 +1432,7 @@ setMethod("plotGain",
   def =
     function(DLEmodel, DLEsamples, Effmodel, Effsamples, data, ...) {
       ## Get fitted values for probabilities of DLE at all dose levels
+
       plotDLEData <- fit(DLEsamples,
         model = DLEmodel,
         data = data,
@@ -1485,7 +1486,7 @@ setMethod("plotGain",
 
       plot1 <- ggplot(data = gdata, aes(x = x, y = y)) +
         geom_line(aes(group = group, color = group), linewidth = 1.5) +
-        ggplot2::scale_colour_manual(name = "curves", values = c("green3", "blue", "red")) +
+        scale_colour_manual(name = "curves", values = c("green3", "blue", "red")) +
         xlab("Dose Level") +
         xlim(c(0, max(data@doseGrid))) +
         ylab(paste("Values")) +
@@ -1501,6 +1502,11 @@ setMethod("plotGain",
 #' and a given efficacy pseudo model
 #'
 #' @describeIn plotGain Standard method
+#' @param size (`integer`)\cr a vector of length two defining the sizes of
+#' the shapes used to identify the doses with, respectively, p(DLE = 0.3) and the
+#' maximum gain
+#' @param shape (`integer`)\cr a vector of length two defining the shapes
+#' used to identify the doses with, respectively, p(DLE = 0.3) and the maximum gain
 #'
 #' @example examples/Samples-method-plotGainNoSamples.R
 #' @export
@@ -1514,7 +1520,9 @@ setMethod("plotGain",
       Effsamples = "missing"
     ),
   def =
-    function(DLEmodel, Effmodel, data, ...) {
+    function(DLEmodel, Effmodel, data, size = c(8L, 8L), shape = c(16L, 17L), ...) {
+      assert_integer(size, len = 2, any.missing = FALSE, lower = 0, upper = 20)
+      assert_integer(shape, len = 2, any.missing = FALSE, unique = TRUE, lower = 0, upper = 25)
       ## Make sure the model estimates are corresponds to the input data
       DLEmodel <- update(object = DLEmodel, data = data)
       Effmodel <- update(object = Effmodel, data = data)
@@ -1547,17 +1555,25 @@ setMethod("plotGain",
             rep("Expected Efficacy", length(data@doseGrid)),
             rep("Gain", length(data@doseGrid))
           ),
+          colour = rep(c("blue", "green3", "red")),
           Type = factor("Estimate", levels = "Estimate")
         )
       )
 
+      # if changing the line type is unacceptable, consider
+      # https://stackoverflow.com/questions/25632242/filled-and-hollow-shapes-where-the-fill-color-the-line-color
       plot1 <- ggplot(data = gdata, aes(x = x, y = y)) +
-        geom_line(aes(group = group, color = group), linewidth = 1.5) +
-        ggplot2::scale_colour_manual(name = "curves", values = c("blue", "green3", "red")) +
+        geom_line(aes(group = group, linetype = group, colour = group), linewidth = 1) +
+        scale_colour_manual(
+          name = "Curves",
+          values = c("blue", "green3", "red")
+        ) +
+        scale_linetype_manual(
+          name = "Curves",
+          values = c("solid", "dotted", "dashed")
+        ) +
         xlab("Dose Level") +
-        xlim(c(0, max(data@doseGrid))) +
-        ylab(paste("Values")) +
-        ylim(c(min(gdata$y), max(gdata$y)))
+        ylab(paste("Values"))
 
       TD30 <- dose(x = 0.3, model = DLEmodel)
 
@@ -1583,49 +1599,74 @@ setMethod("plotGain",
         )$value
       )
 
+      # Add annotated point estimates to graph
+      point_data <- tibble::tibble(
+        Text = NA_character_,
+        X = NA_real_,
+        Y = NA_real_,
+        Shape = NA_real_,
+        Size = NA_real_,
+        Colour = NA_character_,
+        .rows = 0
+      )
+
       if ((TD30 < min(data@doseGrid)) | (TD30 > max(data@doseGrid))) {
-        plot1 <- plot1
         message(paste("TD30", paste(TD30, " not within dose Grid")))
       } else {
-        plot1 <- plot1 +
-          geom_point(
-            data = data.frame(x = TD30, y = 0.3),
-            aes(x = x, y = y),
-            colour = "violet",
-            shape = 16,
-            size = 8
-          ) +
-          annotate(
-            "text",
-            label = "p(DLE=0.3)",
-            x = TD30 + 1,
-            y = 0.2,
-            size = 5,
-            colour = "violet"
+        point_data <- point_data %>%
+          tibble::add_row(
+            X = TD30,
+            Y = 0.3,
+            Shape = shape[1],
+            Size = size[1],
+            Colour = "violet",
+            Text = "p(DLE=0.3)"
+          )
+      }
+      if ((Gstar < min(data@doseGrid)) | (Gstar > max(data@doseGrid))) {
+        print(paste("Gstar=", paste(Gstar, " not within dose Grid")))
+      } else {
+        point_data <- point_data %>%
+          tibble::add_row(
+            X = Gstar,
+            Y = MaxGain,
+            Shape = shape[2],
+            Size = size[2],
+            Colour = "green3",
+            Text = "Max Gain"
           )
       }
 
-      if ((Gstar < min(data@doseGrid)) | (Gstar > max(data@doseGrid))) {
-        plot1 <- plot1
-        print(paste("Gstar=", paste(Gstar, " not within dose Grid")))
-      } else {
-        plot1 <- plot1 +
-          geom_point(
-            data = data.frame(x = Gstar, y = MaxGain),
-            aes(x = x, y = y),
-            colour = "green3",
-            shape = 17,
-            size = 8
-          ) +
-          annotate(
-            "text",
-            label = "Max Gain",
-            x = Gstar,
-            y = MaxGain - 0.1,
-            size = 5,
-            colour = "green3"
-          )
-      }
+      plot1 <- plot1 +
+        geom_point(
+          data = point_data,
+          inherit.aes = FALSE,
+          aes(
+            x = X,
+            y = Y,
+            shape = as.factor(Shape),
+            fill = Colour
+          ),
+          colour = point_data$Colour,
+          size = point_data$Size,
+        ) +
+        scale_fill_manual(
+          name = "Estimates",
+          labels = c("p(DLE = 0.3)", "Max Gain"),
+          values = point_data$Colour
+        ) +
+        scale_shape_discrete(
+          name = "Estimates",
+          labels = c("p(DLE = 0.3)", "Max Gain"),
+          breaks = point_data$Shape
+        ) +
+        guides(
+          shape = guide_legend(override.aes = list(color = c("violet", "green3")))
+        ) +
+        coord_cartesian(
+          xlim = c(0, max(data@doseGrid)),
+          ylim = c(min(gdata$y), max(gdata$y))
+        )
       return(plot1)
     }
 )
@@ -1720,9 +1761,9 @@ setMethod("plotDualResponses",
           )
         )
 
-      ret1 <- gdata %>% ggplot2::ggplot() +
-        ggplot2::geom_line(
-          ggplot2::aes(
+      ret1 <- gdata %>% ggplot() +
+        geom_line(
+          aes(
             x = x,
             y = y,
             group = group,
@@ -1730,12 +1771,12 @@ setMethod("plotDualResponses",
           ),
           colour = I("red"),
         ) +
-        ggplot2::labs(
+        labs(
           x = "Dose Levels",
           y = "Probability of DLE [%]"
         ) +
-        ggplot2::coord_cartesian(ylim = c(0, 100)) +
-        ggplot2::scale_linetype_manual(
+        coord_cartesian(ylim = c(0, 100)) +
+        scale_linetype_manual(
           breaks = c(
             "Estimate",
             "95% Credible Interval"
@@ -1807,9 +1848,9 @@ setMethod("plotDualResponses",
           )
       ))
 
-      plot2 <- ggdata %>% ggplot2::ggplot() +
-        ggplot2::geom_line(
-          ggplot2::aes(
+      plot2 <- ggdata %>% ggplot() +
+        geom_line(
+          aes(
             x = x,
             y = y,
             group = group,
@@ -1817,11 +1858,11 @@ setMethod("plotDualResponses",
           ),
           colour = I("blue"),
         ) +
-        ggplot2::labs(
+        labs(
           x = "Dose level",
           y = "Expected Efficacy"
         ) +
-        ggplot2::scale_linetype_manual(
+        scale_linetype_manual(
           breaks =
             c(
               "Estimate",
@@ -2186,9 +2227,9 @@ setMethod("plot",
               )
           )
         )
-      plot2 <- plotData %>% ggplot2::ggplot() +
-        ggplot2::geom_step(
-          ggplot2::aes(
+      plot2 <- plotData %>% ggplot() +
+        geom_step(
+          aes(
             x = x,
             y = y,
             group = group,
@@ -2196,11 +2237,11 @@ setMethod("plot",
           ),
           colour = I("blue")
         ) +
-        ggplot2::labs(
+        labs(
           x = "Time",
           y = if (hazard) "Hazard rate*100" else "Probability of DLT [%]"
         ) +
-        ggplot2::coord_cartesian(
+        coord_cartesian(
           ylim = if (hazard) range(plotData$y) else c(0, 100)
         )
 
