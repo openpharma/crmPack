@@ -20,7 +20,7 @@ test_that("Test if simulate generate the expected output.", {
     startingDose = 25
   )
 
-  my_options <- McmcOptions(burnin = 100, step = 2, samples = 5, rng_kind = "Mersenne-Twister",  rng_seed=3)
+  my_options <- McmcOptions(burnin = 100, step = 2, samples = 5, rng_kind = "Mersenne-Twister", rng_seed = 3)
 
   sim <- simulate(
     design,
@@ -31,7 +31,6 @@ test_that("Test if simulate generate the expected output.", {
   )
 
   expect_snapshot(sim)
-
 })
 
 
@@ -255,6 +254,3 @@ test_that("examine for DADesign works as expected", {
   expect_data_frame(result)
   expect_named(result, c("DLTsearly_1", "dose", "DLTs", "nextDose", "stop", "increment"))
 })
-
-
-

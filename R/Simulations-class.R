@@ -125,14 +125,11 @@ GeneralSimulations <- function(data,
           c(0.1, 0.2),
           c(0.1, 0.2)
         ),
-
       stop_report = matrix(TRUE, nrow = 2),
       stop_reasons =
         list("A", "A"),
-
       additional_stats =
-        list(0,1)
-
+        list(0, 1)
     ),
     contains = "GeneralSimulations",
     validity =
@@ -193,7 +190,6 @@ Simulations <- function(fit,
     stop_report = stop_report,
     stop_reasons = stop_reasons,
     additional_stats = additional_stats
-
   )
 }
 

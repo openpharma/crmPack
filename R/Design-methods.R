@@ -418,17 +418,17 @@ setMethod("simulate",
         )
 
         ####  MedianMTD Trial  ########
- # get the MTD estimate from the samples
- median_mtd <- dose(mean(object@nextBest@target),
-   model = object@model,
-   samples = thisSamples
- )
+        # get the MTD estimate from the samples
+        median_mtd <- dose(mean(object@nextBest@target),
+          model = object@model,
+          samples = thisSamples
+        )
 
- # create a list with the estimates for the MTD and allocation criteria
- additional_stats <- list(
-   median_mtd = median(median_mtd),
-   cv_mtd = mad(median_mtd) / median(median_mtd)
- )
+        # create a list with the estimates for the MTD and allocation criteria
+        additional_stats <- list(
+          median_mtd = median(median_mtd),
+          cv_mtd = mad(median_mtd) / median(median_mtd)
+        )
 
 
         ## return the results
@@ -446,7 +446,7 @@ setMethod("simulate",
                 "message"
               ),
             report_results = stopit_results,
-            additional_stats= median_mtd
+            additional_stats = median_mtd
           )
         return(thisResult)
       }

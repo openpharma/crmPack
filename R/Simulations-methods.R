@@ -450,7 +450,6 @@ setMethod("summary",
             mean(trueTox[d@xLevel[d@xLevel != 1]])
           }
         )
-
       } else {
         meanToxRisk <- sapply(
           object@data,
