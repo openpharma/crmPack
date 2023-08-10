@@ -94,14 +94,16 @@ Other helpers.
 h_slot_to_tibble <- function(obj, slot_name, col = NULL, attributes = FALSE) {
   a <- h_handle_attributes(slot(obj, slot_name))
   if (is(slot(obj, slot_name), "CrmPackClass")) {
-     rv <- slot(obj, slot_name) |> tidy() |> dplyr::bind_cols()
+    rv <- slot(obj, slot_name) |>
+      tidy() |>
+      dplyr::bind_cols()
   } else {
     if (is.null(col)) {
       col <- slot_name
     }
-    rv <- tibble::tibble({{ col }} := slot(obj, slot_name)) 
+    rv <- tibble::tibble({{ col }} := slot(obj, slot_name))
   }
-  if(nrow(a) > 0 & attributes) {
+  if (nrow(a) > 0 & attributes) {
     # rv <- rv |> dplyr::bind_cols(a)
     print(slot_name)
     print(a)
@@ -114,10 +116,10 @@ h_tidy_all_slots <- function(obj) {
   rv <- list()
   for (nm in slot_names) {
     if (!is.function(slot(obj, nm))) {
-      rv[[nm]] <- h_slot_to_tibble(obj, nm) |> dplyr::bind_cols() 
+      rv[[nm]] <- h_slot_to_tibble(obj, nm) |> dplyr::bind_cols()
     }
   }
-  rv 
+  rv
 }
 
 h_tidy_class <- function(d, obj) {
@@ -139,7 +141,6 @@ h_range_to_minmax <- function(
     {{ max_col }} := c(vals, range_max)
   )
 }
-
 ```
 
 ### The default `tidy` function
@@ -190,9 +191,9 @@ setMethod(
   definition = function(x, ...) {
     h_tidy_all_slots(x) |>
       dplyr::bind_cols() |>
-      h_range_to_minmax(intervals)|>
-      dplyr::filter(max > 0)|>
-      tibble::add_column(increment = x@increments) |> 
+      h_range_to_minmax(intervals) |>
+      dplyr::filter(max > 0) |>
+      tibble::add_column(increment = x@increments) |>
       h_tidy_class(x)
   }
 )
@@ -201,7 +202,7 @@ x <- IncrementsRelative(
   intervals = c(0, 20),
   increments = c(1, 0.33)
 ) |>
-tidy()
+  tidy()
 
 x
 class(x)
@@ -304,8 +305,8 @@ LogisticLogNormal(
   mean = c(-0.85, 1),
   cov = matrix(c(1, -0.5, -0.5, 1), nrow = 2),
   ref_dose = 50
-) %>% 
-tidy()
+) %>%
+  tidy()
 ```
 
 > The `cov` and `prec` slots of the `ModelParamsLogNormal` class both have an attribute set.  Unfortunately, it's called `dim` in both cases.  As might be expected, the value of `dim` is the same for both slots.  As `dim` is uninteresting, this is easily dealt with: by ignoring it.
@@ -326,15 +327,17 @@ setMethod(
             function(nm) {
               as_tibble(get(x, nm))
             }
-          ) |> 
-          dplyr::bind_rows() |>
-          tidyr::pivot_wider(
-            names_from = Parameter, 
-            values_from = value
           ) |>
-          bind_cols(h_handle_attributes(get(x, names(x@data)[1])))        
+            dplyr::bind_rows() |>
+            tidyr::pivot_wider(
+              names_from = Parameter,
+              values_from = value
+            ) |>
+            bind_cols(h_handle_attributes(get(x, names(x@data)[1])))
         } else {
-          slot(x, nm) |> tidy() |> dplyr::bind_cols()
+          slot(x, nm) |>
+            tidy() |>
+            dplyr::bind_cols()
         }
       }
     )
@@ -374,8 +377,8 @@ Since the `options` tibble is a one row copy of data contained in every row of t
 By introducing the `tidy` method, we have an immediate benefit of greatly improving the presentation of `crmPack` objects in reports.  For example:
 
 ```{r, error = TRUE}
-y[["data"]] |> 
-  head(20) |> 
+y[["data"]] |>
+  head(20) |>
   kable(
     digits = c(0, 0, 4, 4, 0, 0, 0, 0, 0, NA),
     table.attr = "style = 'width: 100%;'"
@@ -389,9 +392,9 @@ NextBestNCRM(
   target = c(0.2, 0.35),
   overdose = c(0.6, 1),
   max_overdose_prob = 0.25
-) |> 
-tidy() |>
-kable(table.attr = "style = 'width: 40%;'")
+) |>
+  tidy() |>
+  kable(table.attr = "style = 'width: 40%;'")
 ```
 
 Though whether we should introduce an additional dependency on `knitr` is moot.

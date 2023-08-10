@@ -309,9 +309,9 @@ test_that("Samples-approximate works correctly", {
     control = list(threshold.stop = 0.1, max.time = 1, maxit = 1)
   )
   for (nm in slotNames(posterior2$model)) {
-     if (!is.function(slot(posterior2$model, nm))) {
-       expect_snapshot(slot(posterior2$model, nm))
-     }
+    if (!is.function(slot(posterior2$model, nm))) {
+      expect_snapshot(slot(posterior2$model, nm))
+    }
   }
   vdiffr::expect_doppelganger("approximate2-samples", posterior2$plot)
 })
@@ -1557,7 +1557,6 @@ test_that("approximate works correctly", {
   )
   expect_equal(length(actual1), 1)
   expect_set_equal(names(actual1), c("model"))
-
 })
 
 test_that("fit-Samples-LogisticIndepBeta works correctly", {
