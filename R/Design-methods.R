@@ -1067,7 +1067,7 @@ setMethod("simulate",
       fitToxList <- lapply(resultList, "[[", "fitTox")
 
       ## setup the list for the final biomarker fits
-      fitBiomarkerList <- lapply(resultList, "[[", "fitBiomarker")
+      fitBiomarkerList <- lapply(resultList, "[[", "fit_biomarker")
 
       ## the reasons for stopping
       stopReasons <- lapply(resultList, "[[", "stop")
@@ -1079,10 +1079,10 @@ setMethod("simulate",
       ret <- DualSimulations(
         data = dataList,
         doses = recommendedDoses,
-        rhoEst = rhoEstimates,
-        sigma2West = sigma2Westimates,
+        rho_est = rhoEstimates,
+        sigma2w_est = sigma2Westimates,
         fit = fitToxList,
-        fitBiomarker = fitBiomarkerList,
+        fit_biomarker = fitBiomarkerList,
         stop_report = stop_report,
         stop_reasons = stopReasons,
         seed = RNGstate

@@ -29,7 +29,7 @@ stop_reasons <- list("A", "B")
 
 dual_simulations_obj <- DualSimulations(
   rho_est = c(0.25, 0.35),
-  sigma2_west = c(0.15, 0.25),
+  sigma2w_est = c(0.15, 0.25),
   fit_biomarker = list(c(0.3, 0.4), c(0.4, 0.5)),
   fit = fit,
   stop_report = stop_report,
