@@ -978,13 +978,11 @@ setMethod("show",
         dfNames = dfNames
       )
 
-
-
-
       cat(
         "Median MTD : ",
         round(unlist(object@additional_stats)[1], 2), "\n"
       )
+
       cat(
         "CV MTD : ",
         round(unlist(object@additional_stats)[2], 2), "\n"

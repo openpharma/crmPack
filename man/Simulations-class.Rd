@@ -7,7 +7,7 @@
 \alias{Simulations}
 \title{\code{Simulations}}
 \usage{
-Simulations(fit, stop_reasons, stop_report, MTD_median_cv, ...)
+Simulations(fit, stop_reasons, stop_report, additional_stats, ...)
 }
 \arguments{
 \item{fit}{(\code{list})\cr see slot definition.}
@@ -16,7 +16,7 @@ Simulations(fit, stop_reasons, stop_report, MTD_median_cv, ...)
 
 \item{stop_report}{see \code{\linkS4class{Simulations}}}
 
-\item{MTD_median_cv}{(\code{list})\cr see slot definition.}
+\item{additional_stats}{(\code{list})\cr see slot definition.}
 
 \item{\dots}{additional parameters from \code{\link{GeneralSimulations}}}
 }
@@ -36,7 +36,7 @@ Additional slots \code{fit} and \code{stop_reasons} compared to the general clas
 
 \item{\code{stop_report}}{matrix of stopping rule outcomes}
 
-\item{\code{MTD_median_cv}}{list of medianMTD values}
+\item{\code{additional_stats}}{list of median MTD and CV MTD values}
 }}
 
 \examples{

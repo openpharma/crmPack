@@ -417,7 +417,7 @@ setMethod("simulate",
           data = thisData
         )
 
-        ####  MedianMTD Trial  ########
+        ####  Median and CV MTD  Trial  ########
         # get the MTD estimate from the samples
         median_mtd <- dose(mean(object@nextBest@target),
           model = object@model,
@@ -485,7 +485,7 @@ setMethod("simulate",
       stopResults <- lapply(resultList, "[[", "report_results")
       stop_matrix <- as.matrix(do.call(rbind, stopResults))
 
-      ## for the medianMTD
+      ## for the Median and CV MTD
       additional_stats <- lapply(resultList, "[[", "additional_stats")
 
       ## return the results in the Simulations class object
