@@ -129,7 +129,7 @@ GeneralSimulations <- function(data,
       stop_reasons =
         list("A", "A"),
       additional_stats =
-        list(0, 1)
+        list(1, 0.4)
     ),
     contains = "GeneralSimulations",
     validity =
@@ -160,7 +160,7 @@ GeneralSimulations <- function(data,
 
         o$check(
           identical(length(object@additional_stats), nSims),
-          "additional_stats must have same length as data (median+CV value)"
+          "additional_stats must have same length as data"
         )
 
         o$result()

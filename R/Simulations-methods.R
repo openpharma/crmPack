@@ -528,7 +528,6 @@ setMethod("summary",
       propAtTarget <- mean((toxAtDoses > target[1]) &
         (toxAtDoses < target[2]))
 
-
       ## give back an object of class GeneralSimulationsSummary,
       ## for which we then define a print / plot method
       ret <-
@@ -978,20 +977,20 @@ setMethod("show",
         dfNames = dfNames
       )
 
-      cat(
-        "Median MTD : ",
-        round(unlist(object@additional_stats)[1], 2), "\n"
-      )
-
-      cat(
-        "CV MTD : ",
-        round(unlist(object@additional_stats)[2], 2), "\n"
-      )
-
       ## add one reporting line
       r$report(
         "fitAtDoseMostSelected",
         "Fitted toxicity rate at dose most often selected"
+      )
+
+      cat(
+        "Median MTD : ",
+        round(unlist(additional_stats)[1], 2), "\n"
+      )
+
+      cat(
+        "Mean CV (MTD) % : ",
+        round(unlist(additional_stats)[2]*100, 2), "\n"
       )
 
 
