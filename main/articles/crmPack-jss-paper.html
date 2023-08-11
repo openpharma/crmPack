@@ -19,7 +19,7 @@
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.12.1/css/v4-shims.min.css" integrity="sha256-wZjR52fzng1pJHwx4aV2AO3yyTOXrcDW7jBpJtTwVxw=" crossorigin="anonymous">
 <!-- bootstrap-toc --><script src="https://cdn.jsdelivr.net/gh/afeld/bootstrap-toc@v1.0.1/dist/bootstrap-toc.min.js" integrity="sha256-4veVQbu7//Lk5TSmc7YV48MxtMy98e26cf5MrgZYnwo=" crossorigin="anonymous"></script><!-- headroom.js --><script src="https://cdnjs.cloudflare.com/ajax/libs/headroom/0.11.0/headroom.min.js" integrity="sha256-AsUX4SJE1+yuDu5+mAVzJbuYNPHj/WroHuZ8Ir/CkE0=" crossorigin="anonymous"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/headroom/0.11.0/jQuery.headroom.min.js" integrity="sha256-ZX/yNShbjqsohH1k95liqY9Gd8uOiE1S4vZc+9KQ1K4=" crossorigin="anonymous"></script><!-- clipboard.js --><script src="https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/2.0.6/clipboard.min.js" integrity="sha256-inc5kl9MA1hkeYUt+EC3BhlIgyp/2jDIyBLS6k3UxPI=" crossorigin="anonymous"></script><!-- search --><script src="https://cdnjs.cloudflare.com/ajax/libs/fuse.js/6.4.6/fuse.js" integrity="sha512-zv6Ywkjyktsohkbp9bb45V6tEMoWhzFzXis+LrMehmJZZSys19Yxf1dopHx7WzIKxr5tK2dVcYmaCk2uqdjF4A==" crossorigin="anonymous"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/autocomplete.js/0.38.0/autocomplete.jquery.min.js" integrity="sha512-GU9ayf+66Xx2TmpxqJpliWbT5PiGYxpaG8rfnBEk1LL8l1KGkRShhngwdXK1UgqhAzWpZHSiYPc09/NwDQIGyg==" crossorigin="anonymous"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/mark.js/8.11.1/mark.min.js" integrity="sha512-5CYOlHXGh6QpOFA/TeTylKLWfB3ftPsde7AnmhuitiTX4K5SqCLBeKro6sPS8ilsz1Q4NRx3v8Ko2IBiszzdww==" crossorigin="anonymous"></script><!-- pkgdown --><script src="../pkgdown.js"></script><meta property="og:title" content="Model-based Dose Escalation Designs in R with crmPack (JSS manuscript)">
 <meta property="og:description" content="crmPack">
-<meta property="og:image" content="https://roche.github.io/crmPack/main/logo.png">
+<meta property="og:image" content="https://roche.github.io/crmPack/logo.png">
 <!-- mathjax --><script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/MathJax.js" integrity="sha256-nvJJv9wWKEm88qvoQl9ekL2J+k/RWIsaSScxxlsrv8k=" crossorigin="anonymous"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/config/TeX-AMS-MML_HTMLorMML.js" integrity="sha256-84DKXVJXs0/F8OTMzX4UR909+jtl4G7SPypPavF+GfA=" crossorigin="anonymous"></script><!--[if lt IE 9]>
 <script src="https://oss.maxcdn.com/html5shiv/3.7.3/html5shiv.min.js"></script>
 <script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
@@ -63,12 +63,6 @@
 <li class="nav-item">
   <a class="nav-link" href="../news/index.html">Changelog</a>
 </li>
-<!-- start dropdown for versions --> <li class="nav-item dropdown">
-        <a href="#" class="nav-link dropdown-toggle"
-          data-bs-toggle="dropdown" role="button"
-          aria-expanded="false" aria-haspopup="true"
-          id="dropdown-versions">Versions</a> <div class="dropdown-menu" aria-labelledby="dropdown-versions"> <a class="dropdown-item" data-toggle="tooltip" title="" href="https://Roche.github.io/crmPack/main">main</a> </div></li>
-<!-- end dropdown for versions -->
       </ul>
 <form class="form-inline my-2 my-lg-0" role="search">
         <input type="search" class="form-control me-sm-2" aria-label="Toggle navigation" name="search-input" data-search-index="../search.json" id="search-input" placeholder="Search for" autocomplete="off">
@@ -397,8 +391,8 @@ computation time:</p>
    0.18 &amp; 0.21
 \end{smallmatrix}\right)\]</span> and will approximately have 5%
 probability each for the DLT rate to exceed 10% (<code>threshmin</code>
-argument) at the 25~mg dose and to be below 20% (<code>threshmax</code>)
-at the 300~mg dose.</p>
+argument) at the 25 mg dose and to be below 20% (<code>threshmax</code>)
+at the 300 mg dose.</p>
 <p><strong>Data object definition and visualization</strong> In this
 simple case of a univariate dose <span class="math inline">\(x\)</span>
 resulting in binary DLT observations <span class="math inline">\(y\)</span>, the <code>S4</code> class
@@ -454,11 +448,11 @@ data to the generic <code>plot</code> function. Similarly we can also
 produce a similar plot without any data, which is then giving the prior,
 see Figure @ref(fig:plot-model-fit):</p>
 <div class="sourceCode" id="cb10"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">samples</span>, <span class="va">model</span>, <span class="va">data</span><span class="op">)</span> <span class="op">+</span> <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/labs.html" class="external-link">ggtitle</a></span><span class="op">(</span><span class="st">"Posterior"</span><span class="op">)</span></span>
+<code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">samples</span>, <span class="va">model</span>, <span class="va">data</span><span class="op">)</span> <span class="op">+</span> <span class="fu">ggtitle</span><span class="op">(</span><span class="st">"Posterior"</span><span class="op">)</span></span>
 <span></span>
 <span><span class="va">emptydata</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/Data-class.html">Data</a></span><span class="op">(</span>doseGrid <span class="op">=</span> <span class="va">data</span><span class="op">@</span><span class="va">doseGrid</span>, placebo <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span>
 <span><span class="va">priorsamples</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/mcmc.html">mcmc</a></span><span class="op">(</span><span class="va">emptydata</span>, <span class="va">model</span>, <span class="va">options</span><span class="op">)</span></span>
-<span><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">priorsamples</span>, <span class="va">model</span>, <span class="va">emptydata</span><span class="op">)</span> <span class="op">+</span> <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/labs.html" class="external-link">ggtitle</a></span><span class="op">(</span><span class="st">"Prior"</span><span class="op">)</span></span></code></pre></div>
+<span><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">priorsamples</span>, <span class="va">model</span>, <span class="va">emptydata</span><span class="op">)</span> <span class="op">+</span> <span class="fu">ggtitle</span><span class="op">(</span><span class="st">"Prior"</span><span class="op">)</span></span></code></pre></div>
 <div class="figure" style="text-align: center">
 <img src="crmPack-jss-paper_files/figure-html/plot-model-fit-1.png" alt="Posterior and prior regression model fits" width=".35\linewidth"><img src="crmPack-jss-paper_files/figure-html/plot-model-fit-2.png" alt="Posterior and prior regression model fits" width=".35\linewidth"><p class="caption">
 Posterior and prior regression model fits
@@ -540,10 +534,49 @@ combining the atomic rules with logical operators as follows:</p>
 <span><span class="co">## </span></span>
 <span><span class="co">## attr(,"message")[[2]]</span></span>
 <span><span class="co">## attr(,"message")[[2]][[1]]</span></span>
-<span><span class="co">## [1] "Probability for target toxicity is 31 % for dose 100 and thus below the required 50 %"</span></span>
+<span><span class="co">## [1] "Probability for target toxicity is 34 % for dose 100 and thus below the required 50 %"</span></span>
 <span><span class="co">## </span></span>
 <span><span class="co">## attr(,"message")[[2]][[2]]</span></span>
-<span><span class="co">## [1] "3 patients lie within 20% of the next best dose 100. This is below the required 9 patients"</span></span></code></pre>
+<span><span class="co">## [1] "3 patients lie within 20% of the next best dose 100. This is below the required 9 patients"</span></span>
+<span><span class="co">## </span></span>
+<span><span class="co">## </span></span>
+<span><span class="co">## attr(,"individual")</span></span>
+<span><span class="co">## attr(,"individual")[[1]]</span></span>
+<span><span class="co">## [1] FALSE</span></span>
+<span><span class="co">## attr(,"message")</span></span>
+<span><span class="co">## [1] "Number of patients is 12 and thus below the prespecified minimum number 30"</span></span>
+<span><span class="co">## attr(,"report_label")</span></span>
+<span><span class="co">## [1] NA</span></span>
+<span><span class="co">## </span></span>
+<span><span class="co">## attr(,"individual")[[2]]</span></span>
+<span><span class="co">## [1] FALSE</span></span>
+<span><span class="co">## attr(,"message")</span></span>
+<span><span class="co">## attr(,"message")[[1]]</span></span>
+<span><span class="co">## [1] "Probability for target toxicity is 34 % for dose 100 and thus below the required 50 %"</span></span>
+<span><span class="co">## </span></span>
+<span><span class="co">## attr(,"message")[[2]]</span></span>
+<span><span class="co">## [1] "3 patients lie within 20% of the next best dose 100. This is below the required 9 patients"</span></span>
+<span><span class="co">## </span></span>
+<span><span class="co">## attr(,"individual")</span></span>
+<span><span class="co">## attr(,"individual")[[1]]</span></span>
+<span><span class="co">## [1] FALSE</span></span>
+<span><span class="co">## attr(,"message")</span></span>
+<span><span class="co">## [1] "Probability for target toxicity is 34 % for dose 100 and thus below the required 50 %"</span></span>
+<span><span class="co">## attr(,"report_label")</span></span>
+<span><span class="co">## [1] NA</span></span>
+<span><span class="co">## </span></span>
+<span><span class="co">## attr(,"individual")[[2]]</span></span>
+<span><span class="co">## [1] FALSE</span></span>
+<span><span class="co">## attr(,"message")</span></span>
+<span><span class="co">## [1] "3 patients lie within 20% of the next best dose 100. This is below the required 9 patients"</span></span>
+<span><span class="co">## attr(,"report_label")</span></span>
+<span><span class="co">## [1] NA</span></span>
+<span><span class="co">## </span></span>
+<span><span class="co">## attr(,"report_label")</span></span>
+<span><span class="co">## [1] NA</span></span>
+<span><span class="co">## </span></span>
+<span><span class="co">## attr(,"report_label")</span></span>
+<span><span class="co">## [1] NA</span></span></code></pre>
 <p>The result <code>FALSE</code> means that we cannot yet stop the
 trial, with the attribute <code>message</code> giving the results from
 the atomic stopping rules.</p>
@@ -573,13 +606,13 @@ characteristics of the dose escalation design with the function
 of several hypothetical trial courses under the design. Assuming no DLTs
 have been seen until a certain dose, then the consequences of different
 number of DLTs being observed at this dose are shown. For example, if we
-observe 3 DLTs at the starting dose of 25~mg, we would need to stop the
+observe 3 DLTs at the starting dose of 25 mg, we would need to stop the
 trial, while we would enroll another cohort at the same dose level in
 case of 2 DLTs. In the last rows of the output we see that if no DLTs
-were observed before the 250~mg cohort, the maximum considered dose of
-300~mg dose can be reached in the next cohort if also no DLTs are
-observed at 250~mg. If 1, 2 or 3 DLTs are observed, the next dose is
-recommended as 225, 175 and 150~mg, respectively.</p>
+were observed before the 250 mg cohort, the maximum considered dose of
+300 mg dose can be reached in the next cohort if also no DLTs are
+observed at 250 mg. If 1, 2 or 3 DLTs are observed, the next dose is
+recommended as 225, 175 and 150 mg, respectively.</p>
 <div class="sourceCode" id="cb21"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/base/Random.html" class="external-link">set.seed</a></span><span class="op">(</span><span class="fl">23</span><span class="op">)</span></span>
 <span><span class="fu"><a href="../reference/examine.html">examine</a></span><span class="op">(</span><span class="va">design</span>, mcmcOptions <span class="op">=</span> <span class="va">options</span><span class="op">)</span></span></code></pre></div>
@@ -600,18 +633,14 @@ recommended as 225, 175 and 150~mg, respectively.</p>
 <span><span class="co">## 14  125    1      125 FALSE         0</span></span>
 <span><span class="co">## 15  125    2      100 FALSE       -20</span></span>
 <span><span class="co">## 16  125    3       75 FALSE       -40</span></span>
-<span><span class="co">## 17  175    0      225 FALSE        29</span></span>
+<span><span class="co">## 17  175    0      250 FALSE        43</span></span>
 <span><span class="co">## 18  175    1      150 FALSE       -14</span></span>
 <span><span class="co">## 19  175    2      125 FALSE       -29</span></span>
 <span><span class="co">## 20  175    3      100 FALSE       -43</span></span>
-<span><span class="co">## 21  225    0      275 FALSE        22</span></span>
-<span><span class="co">## 22  225    1      225 FALSE         0</span></span>
-<span><span class="co">## 23  225    2      175 FALSE       -22</span></span>
-<span><span class="co">## 24  225    3      150 FALSE       -33</span></span>
-<span><span class="co">## 25  275    0      300 FALSE         9</span></span>
-<span><span class="co">## 26  275    1      300 FALSE         9</span></span>
-<span><span class="co">## 27  275    2      225 FALSE       -18</span></span>
-<span><span class="co">## 28  275    3      175 FALSE       -36</span></span></code></pre>
+<span><span class="co">## 21  250    0      300 FALSE        20</span></span>
+<span><span class="co">## 22  250    1      225 FALSE       -10</span></span>
+<span><span class="co">## 23  250    2      175 FALSE       -30</span></span>
+<span><span class="co">## 24  250    3      150 FALSE       -40</span></span></code></pre>
 <p><strong>Simulating operating characteristics</strong> For the many
 trials operating characteristics, we first have to define true
 scenarios, from which the data should arise. In this case, this only
@@ -647,7 +676,7 @@ used:</p>
 the results. The argument <code>parallel</code> can be set to
 <code>TRUE</code> if one wishes to run the iterations in parallel on all
 processors of the computer, which can yield a meaningful speedup. Here
-we needed 147 seconds for 100 simulated trials on an Intel Core i5-6300U
+we needed 184 seconds for 100 simulated trials on an Intel Core i5-6300U
 CPU with 2.4 GHz.</p>
 <p>The result is an object of class <code>Simulations</code> containing
 multiple slots, with e.g., the <code>data</code> slot containing the
@@ -687,11 +716,11 @@ description of the results:</p>
 <span><span class="co">## Number of patients overall : mean 30 (24, 32) </span></span>
 <span><span class="co">## Number of patients treated above target tox interval : mean 3 (0, 3) </span></span>
 <span><span class="co">## Proportions of DLTs in the trials for patients on placebo : mean 0 % (0 %, 0 %) </span></span>
-<span><span class="co">## Proportions of DLTs in the trials for patients on active : mean 28 % (21 %, 33 %) </span></span>
+<span><span class="co">## Proportions of DLTs in the trials for patients on active : mean 28 % (21 %, 38 %) </span></span>
 <span><span class="co">## Mean toxicity risks for the patients on active : mean 27 % (18 %, 33 %) </span></span>
 <span><span class="co">## Doses selected as MTD : mean 46.5 (25, 50) </span></span>
-<span><span class="co">## True toxicity at doses selected : mean 23 % (0 %, 26 %) </span></span>
-<span><span class="co">## Proportion of trials selecting target MTD: 84 %</span></span>
+<span><span class="co">## True toxicity at doses selected : mean 22 % (0 %, 26 %) </span></span>
+<span><span class="co">## Proportion of trials selecting target MTD: 86 %</span></span>
 <span><span class="co">## Dose most often selected as MTD: 50 </span></span>
 <span><span class="co">## Observed toxicity rate at dose most often selected: 26 %</span></span>
 <span><span class="co">## Fitted toxicity rate at dose most often selected : mean 23 % (16 %, 29 %)</span></span></code></pre>
@@ -753,8 +782,8 @@ contains all model classes where the priors are specified in terms of
 pseudo data, with subclasses for safety (<code>ModelTox</code>) and
 efficacy (<code>ModelEff</code>).</p>
 <p>Coming back to our example study, the pseudo data for the safety
-prior assumes that 3 subjects each are treated at the lowest (25~mg) and
-the highest (300~mg) dose level, with 1.05 and 1.8 DLTs being observed
+prior assumes that 3 subjects each are treated at the lowest (25 mg) and
+the highest (300 mg) dose level, with 1.05 and 1.8 DLTs being observed
 at these two dose levels, respectively. This corresponds to prior means
 of 0.35 and 0.6 for the DLT probabilities. We implement model @<span class="math inline">\(\eqref{eq:LogisticLogNormal}\)</span> with this
 pseudo data prior as follows:</p>
@@ -842,7 +871,7 @@ another one relating to the precision of the dose with optimum gain:</p>
 <span><span class="va">myStoppingDual</span> <span class="op">&lt;-</span> <span class="va">myStopping1</span> <span class="op">|</span> <span class="va">myStopping4</span></span></code></pre></div>
 <p>This stops the trial when 30 patients are reached, or when the ratio
 of the upper and lower confidence interval bounds around the dose
-recommendation is less than~5.</p>
+recommendation is less than 5.</p>
 <p><strong>Simulations</strong> To simulate the operating
 characteristics, first a design has to be built:</p>
 <div class="sourceCode" id="cb42"><pre class="downlit sourceCode r">
@@ -1041,7 +1070,7 @@ also be used with other models.</p>
 <span>    nextBest <span class="op">=</span> <span class="st">"NextBestMinDist"</span>,</span>
 <span>    doselimit <span class="op">=</span> <span class="st">"numeric"</span>,</span>
 <span>    samples <span class="op">=</span> <span class="st">"Samples"</span>,</span>
-<span>    model <span class="op">=</span> <span class="st">"GeneralModel"</span>,</span>
+<span>    model <span class="op">=</span> <span class="st">"OneParExp"</span>,</span>
 <span>    data <span class="op">=</span> <span class="st">"Data"</span></span>
 <span>  <span class="op">)</span>,</span>
 <span>  def <span class="op">=</span> <span class="kw">function</span><span class="op">(</span><span class="va">nextBest</span>, <span class="va">doselimit</span>, <span class="va">samples</span>, <span class="va">model</span>, <span class="va">data</span>, <span class="va">...</span><span class="op">)</span> <span class="op">{</span></span>
@@ -1068,13 +1097,11 @@ we can now use this rule in order to obtain the next dose
 recommendation, e.g., after specifying a target dose of 30%:</p>
 <div class="sourceCode" id="cb53"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">newMyNextBest</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/NextBestMinDist-class.html">NextBestMinDist</a></span><span class="op">(</span>target <span class="op">=</span> <span class="fl">0.3</span><span class="op">)</span></span>
-<span><span class="op">(</span><span class="va">newNextDoseVal</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/nextBest.html">nextBest</a></span><span class="op">(</span></span>
-<span>  <span class="va">newMyNextBest</span>, <span class="va">nextMaxDose</span>,</span>
-<span>  <span class="va">newSamples</span>, <span class="va">newModel</span>, <span class="va">data</span></span>
-<span><span class="op">)</span><span class="op">$</span><span class="va">value</span><span class="op">)</span></span></code></pre></div>
+<span><span class="va">newNextDoseVal</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/nextBest.html">nextBest</a></span><span class="op">(</span><span class="va">newMyNextBest</span>, <span class="va">nextMaxDose</span>, <span class="va">newSamples</span>, <span class="va">newModel</span>, <span class="va">data</span><span class="op">)</span><span class="op">$</span><span class="va">value</span></span>
+<span><span class="va">newNextDoseVal</span></span></code></pre></div>
 <pre><code><span><span class="co">## [1] 150</span></span></code></pre>
-<p>So using this CRM, we could escalate to `{r newNextDoseVal}~mg,
-instead of just 100~mg above.</p>
+<p>So using this CRM, we could escalate to 150 mg, instead of just
+100 mg above.</p>
 <p><strong>Using the new functionality</strong> These were the only
 necessary additions of code that we needed to implement the
 one-parameter CRM with a greedy next best dose rule - from now on we can
