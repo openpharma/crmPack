@@ -4100,3 +4100,13 @@ test_that("windowLength works correctly", {
     }
   }
 })
+
+
+test_that("report_label slot available for StoppingSpecificDose", {
+  my_rule <- StoppingSpecificDose(
+    rule = StoppingTargetProb(target = c(0, 0.3), prob = 0.8),
+    dose = 80,
+    report_label = "test label"
+  )
+  expect_equal(my_rule@report_label, "test label")
+})
