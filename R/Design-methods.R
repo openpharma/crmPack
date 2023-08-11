@@ -1011,7 +1011,7 @@ setMethod("simulate",
                 select =
                   c(middle, lower, upper)
               ),
-            fitBiomarker =
+            fit_biomarker =
               subset(thisFit,
                 select =
                   c(
@@ -1019,8 +1019,8 @@ setMethod("simulate",
                     upperBiomarker
                   )
               ),
-            rhoEst = median(thisSamples@data$rho),
-            sigma2West = median(1 / thisSamples@data$precW),
+            rho_est = median(thisSamples@data$rho),
+            sigma2w_est = median(1 / thisSamples@data$precW),
             stop =
               attr(
                 stopit,
@@ -1058,10 +1058,10 @@ setMethod("simulate",
       recommendedDoses <- as.numeric(sapply(resultList, "[[", "dose"))
 
       ## vector of rho estimates
-      rhoEstimates <- as.numeric(sapply(resultList, "[[", "rhoEst"))
+      rhoEstimates <- as.numeric(sapply(resultList, "[[", "rho_est"))
 
       ## vector of sigma2W estimates
-      sigma2Westimates <- as.numeric(sapply(resultList, "[[", "sigma2West"))
+      sigma2Westimates <- as.numeric(sapply(resultList, "[[", "sigma2w_est"))
 
       ## setup the list for the final tox fits
       fitToxList <- lapply(resultList, "[[", "fitTox")
