@@ -80,6 +80,17 @@ test_that("nextBest-NextBestNCRM returns expected values of the objects (no dose
   vdiffr::expect_doppelganger("Plot of nextBest-NextBestNCRM without doselimit", result$plot)
 })
 
+test_that("nextBest-NextBestNCRM can accept additional arguments and pass them to prob inside", {
+  my_data <- h_get_data()
+  my_model <- h_needs_extra_prob_model()
+  my_samples <- mcmc(my_data, my_model, h_get_mcmc_options(samples = 10, burnin = 10))
+  nb_ncrm <- NextBestNCRM(
+    target = c(0.2, 0.35), overdose = c(0.35, 1), max_overdose_prob = 0.25
+  )
+  result <- nextBest(nb_ncrm, Inf, my_samples, my_model, my_data, extra_argument = "foo")
+  expect_identical(result$value, NA_real_)
+})
+
 ## NextBestNCRM-DataParts ----
 
 test_that("nextBest-NextBestNCRM-DataParts returns expected values of the objects", {
@@ -1845,24 +1856,9 @@ test_that("StoppingTargetProb works correctly when above threshold", {
   expect_identical(result, expected)
 })
 
-test_that("StoppingTargetProb can accept additional arguments and pass them to prob inside", {
+test_that("stopTrial-StoppingTargetProb can accept additional arguments and pass them to prob", {
   my_data <- h_get_data()
-  .SpecialModel <- setClass("SpecialModel", contains = "LogisticKadane")
-  setMethod(
-    f = "prob",
-    signature = signature(
-      dose = "numeric",
-      model = "SpecialModel",
-      samples = "Samples"
-    ),
-    definition = function(dose, model, samples, extra_argument) {
-      if (missing(extra_argument)) stop("we need extra_argument")
-      # We don't forward to LogisticKadane method here since that would
-      # not accept the extra argument.
-      1
-    }
-  )
-  my_model <- .SpecialModel(h_get_logistic_kadane())
+  my_model <- h_needs_extra_prob_model()
   my_samples <- mcmc(my_data, my_model, h_get_mcmc_options(samples = 10, burnin = 10))
   stopping <- StoppingTargetProb(target = c(0.1, 0.4), prob = 0.3)
   result <- stopTrial(

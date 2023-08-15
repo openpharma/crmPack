@@ -429,8 +429,6 @@ We do this in this PR already for the `NextBestNCRM` method as illustration.
 The same applies for the `stopTrial` methods. We here do it for `StoppingTargetProb`
 as illustration.
 
-TODO: Add tests for this in this PR already.
-
 ```{r DesignGrouped-methods}
 setMethod("simulate",
   signature =
