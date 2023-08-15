@@ -634,7 +634,7 @@ setMethod("summary",
       ret <- .SimulationsSummary(
         start,
         stop_report = object@stop_report,
-        additional_stats = object@additional_stats,
+        additional_stats = additional_stats,
         fitAtDoseMostSelected = fitAtDoseMostSelected,
         meanFit = meanFit
       )
@@ -642,7 +642,6 @@ setMethod("summary",
       return(ret)
     }
 )
-
 
 ##' Summarize the dual-endpoint design simulations, relative to given true
 ##' dose-toxicity and dose-biomarker curves

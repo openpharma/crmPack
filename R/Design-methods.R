@@ -417,7 +417,7 @@ setMethod("simulate",
           data = thisData
         )
 
-        # get the MTD estimate from the samples
+        # Get the MTD estimate from the samples.
         sample_mtd <- dose(
           mean(object@nextBest@target),
           model = object@model,
@@ -484,7 +484,7 @@ setMethod("simulate",
       stopResults <- lapply(resultList, "[[", "report_results")
       stop_matrix <- as.matrix(do.call(rbind, stopResults))
 
-      # result list of additional stats such as median MTD and mean CV MTD values
+      # Result list of additional stats such as median MTD and mean CV MTD values
       additional_stats <- lapply(resultList, "[[", "additional_stats")
 
       ## return the results in the Simulations class object
@@ -501,8 +501,6 @@ setMethod("simulate",
       return(ret)
     }
 )
-
-
 
 
 ##' Simulate outcomes from a rule-based design
@@ -1093,6 +1091,9 @@ setMethod("simulate",
       ## for dual simulations as it would fail in summary otherwise (for dual simulations reporting is not implemented)
       stop_report <- matrix(TRUE, nrow = nsim)
 
+      ##For dual simulations summary of additional statistics like median MTD and mean CV MTD
+      additional_stats <- lapply(resultList, "[[", "additional_stats")
+
       ## return the results in the DualSimulations class object
       ret <- DualSimulations(
         data = dataList,
@@ -1103,6 +1104,7 @@ setMethod("simulate",
         fitBiomarker = fitBiomarkerList,
         stop_report = stop_report,
         stop_reasons = stopReasons,
+        additional_stats = additional_stats,
         seed = RNGstate
       )
 
