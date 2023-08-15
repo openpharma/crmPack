@@ -48,7 +48,7 @@ arbitrarily assigned to avoid problems with the `Data` validation.
 )
 
 DataGrouped <- function(group,
-                             ...) {
+                        ...) {
   d <- Data(...)
   .DataGrouped(
     d,
@@ -59,8 +59,8 @@ DataGrouped <- function(group,
 groupData <- function(single_data, combo_data) {
   assert_class(single_data, "Data")
   assert_class(combo_data, "Data")
-  
-  # We just combine most of the slots logically, but assign ID and cohort 
+
+  # We just combine most of the slots logically, but assign ID and cohort
   # arbitrarily to avoid Data object validation issues.
   df <- data.frame(
     x = c(single_data@x, combo_data@x),
@@ -72,7 +72,7 @@ groupData <- function(single_data, combo_data) {
   )
 
   df <- df[order(df$x), ]
-  
+
   DataGrouped(
     x = df$x,
     y = df$y,
@@ -193,20 +193,20 @@ LogisticLogNormalGrouped <- function(mean, cov, ref_dose = 1) {
     priormodel = function() {
       theta ~ dmnorm(mean, prec)
       alpha0 <- theta[1]
-      alpha0c <- exp(theta[2]) 
+      alpha0c <- exp(theta[2])
       alpha1 <- exp(theta[3])
       alpha1c <- exp(theta[4])
     },
     datamodel = function() {
       for (i in 1:nObs) {
-        logit(p[i]) <- (alpha0 + is_combo[i] * alpha0c) + 
+        logit(p[i]) <- (alpha0 + is_combo[i] * alpha0c) +
           (alpha1 + is_combo[i] * alpha1c) * log(x[i] / ref_dose)
         y[i] ~ dbern(p[i])
       }
     },
     modelspecs = function(group, from_prior) {
       ms <- list(
-        mean = params@mean, 
+        mean = params@mean,
         prec = params@prec
       )
       if (!from_prior) {
@@ -262,7 +262,7 @@ setMethod(
     assert_subset(c("alpha0", "alpha0c", "alpha1", "alpha1c"), names(samples))
     assert_length(x, len = size(samples))
     assert_factor(group, len = length(x), levels = c("single", "combo"))
-    
+
     alpha0 <- samples@data$alpha0
     alpha0c <- samples@data$alpha0c
     alpha1 <- samples@data$alpha1
@@ -287,8 +287,8 @@ as well.
 
 ```{r LogisticLogNormalGrouped-example}
 my_model <- LogisticLogNormalGrouped(
-  mean = rep(0, 4), 
-  cov = diag(rep(1, 4)), 
+  mean = rep(0, 4),
+  cov = diag(rep(1, 4)),
   ref_dose = my_ref_dose
 )
 
@@ -327,8 +327,8 @@ We have added a unit test for the plot method of the Samples class already as we
 ```{r prior-elicitation}
 # Need to choose the prior parameters here.
 my_model <- LogisticLogNormalGrouped(
-  mean = rep(0, 4), 
-  cov = diag(rep(1, 4)), 
+  mean = rep(0, 4),
+  cov = diag(rep(1, 4)),
   ref_dose = my_ref_dose
 )
 
@@ -345,11 +345,11 @@ str(my_prior_samples)
 
 # Look at fit results.
 plot(
-  my_prior_samples, my_model, my_empty_data, 
+  my_prior_samples, my_model, my_empty_data,
   group = factor("single", levels = c("single", "combo"))
 )
 plot(
-  my_prior_samples, my_model, my_empty_data, 
+  my_prior_samples, my_model, my_empty_data,
   group = factor("combo", levels = c("single", "combo"))
 )
 ```
@@ -362,17 +362,17 @@ Let's therefore modify the parameters.
 ```{r prior-elicitation}
 # Need to choose the prior parameters here.
 my_model <- LogisticLogNormalGrouped(
-  mean = c(-4, -4, -4, -4), 
-  cov = diag(rep(6, 4)), 
+  mean = c(-4, -4, -4, -4),
+  cov = diag(rep(6, 4)),
   ref_dose = my_ref_dose
 )
 my_prior_samples <- mcmc(my_empty_data, my_model, my_options)
 plot(
-  my_prior_samples, my_model, my_empty_data, 
+  my_prior_samples, my_model, my_empty_data,
   group = factor("single", levels = c("single", "combo"))
 )
 plot(
-  my_prior_samples, my_model, my_empty_data, 
+  my_prior_samples, my_model, my_empty_data,
   group = factor("combo", levels = c("single", "combo"))
 )
 ```
@@ -423,7 +423,7 @@ DesignGrouped <- function(model,
                           same_dose,
                           ...) {
   if (missing(combo)) combo <- single
-  
+
   .DesignGrouped(
     model = model,
     single = single,
@@ -461,17 +461,16 @@ setMethod("simulate",
       seed = "ANY"
     ),
   def =
-    function(object, 
-             nsim = 1L, 
+    function(object,
+             nsim = 1L,
              seed = NULL,
-             truth, 
+             truth,
              combo_truth,
              args = NULL,
              mcmcOptions = McmcOptions(),
-             parallel = FALSE, 
+             parallel = FALSE,
              nCores = min(parallelly::availableCores(), 5),
              ...) {
-
       nsim <- crmPack:::safeInteger(nsim)
 
       ## checks and extracts
@@ -509,7 +508,7 @@ setMethod("simulate",
         this_single_truth <- function(dose) {
           do.call(truth, c(dose, thisArgs))
         }
-        
+
         ## and for combo similarly:
         this_combo_truth <- function(dose) {
           do.call(combo_truth, c(dose, thisArgs))
@@ -523,7 +522,7 @@ setMethod("simulate",
         ## First, we want to continue with the starting dose.
         ## This variable is updated after each cohort in the loop.
         stop_single <- stop_combo <- FALSE
-        
+
         ## are we in the first cohort? This is to support the staggering feature
         first_cohort <- TRUE
 
@@ -531,7 +530,7 @@ setMethod("simulate",
         ## initialize with starting doses
         if (object@single@startingDose < object@combo@startingDose) {
           stop("combo starting dose cannot be higher than single starting dose")
-        }        
+        }
         this_single_dose <- if (object@same_dose) object@combo@startingDose else object@single@startingDose
         this_combo_dose <- object@combo@startingDose
 
@@ -540,7 +539,7 @@ setMethod("simulate",
           if (!stop_single) {
             ## what is the probability for tox. at this dose?
             this_single_prob <- this_single_truth(this_single_dose)
-            
+
             ## what is the single cohort size at this dose?
             this_single_size <- size(
               object@single@cohort_size,
@@ -560,11 +559,11 @@ setMethod("simulate",
               y = this_single_dlts
             )
           }
-          
+
           ## Check if we also dose combo patients now
           if (!stop_combo && (!first_cohort || !object@staggered_cohorts)) {
             this_combo_prob <- this_combo_truth(this_combo_dose)
-            
+
             ## what is the combo cohort size at this dose?
             this_combo_size <- size(
               object@combo@cohort_size,
@@ -584,18 +583,18 @@ setMethod("simulate",
               y = this_combo_dlts
             )
           }
-          
+
           ## update first cohort flag
           if (first_cohort) {
             first_cohort <- FALSE
           }
-          
+
           ## join the data together
           grouped_data <- groupData(
             this_single_data,
             this_combo_data
           )
-          
+
           ## generate samples from the joint model
           thisSamples <- mcmc(
             data = grouped_data,
@@ -608,7 +607,7 @@ setMethod("simulate",
               object@single@increments,
               data = this_single_data
             )
-            
+
             ## => what is the next best dose for single?
             this_single_dose <- nextBest(
               object@single@nextBest,
@@ -618,7 +617,7 @@ setMethod("simulate",
               data = grouped_data,
               group = factor("single", levels = c("single", "combo"))
             )$value
-            
+
             stop_single <- stopTrial(
               object@single@stopping,
               dose = this_single_dose,
@@ -627,10 +626,10 @@ setMethod("simulate",
               data = this_single_data,
               group = factor("single", levels = c("single", "combo"))
             )
-            
+
             stop_single_results <- crmPack:::h_unpack_stopit(stop_single)
           }
-          
+
           if (!stop_combo) {
             combo_dose_limit <- if (is.na(this_single_dose)) {
               0
@@ -644,8 +643,8 @@ setMethod("simulate",
                 this_single_dose,
                 na.rm = TRUE
               )
-            } 
-            
+            }
+
             this_combo_dose <- nextBest(
               object@combo@nextBest,
               doselimit = combo_dose_limit,
@@ -654,7 +653,7 @@ setMethod("simulate",
               data = grouped_data,
               group = factor("combo", levels = c("single", "combo"))
             )$value
-            
+
             stop_combo <- stopTrial(
               object@combo@stopping,
               dose = this_combo_dose,
@@ -663,27 +662,27 @@ setMethod("simulate",
               data = this_combo_data,
               group = factor("combo", levels = c("single", "combo"))
             )
-            
+
             stop_combo_results <- crmPack:::h_unpack_stopit(stop_combo)
-            
+
             if (object@same_dose) {
               if (this_single_dose < this_combo_dose) stop("combo dose cannot be higher than single dose")
               this_single_dose <- this_combo_dose
             }
           }
         }
-        
+
         ## get the fit, separately for single and for combo
         fit_single <- fit(
-          object = thisSamples, 
-          model = object@model, 
-          data = grouped_data, 
+          object = thisSamples,
+          model = object@model,
+          data = grouped_data,
           group = factor("single", levels = c("single", "combo"))
         )
         fit_combo <- fit(
-          object = thisSamples, 
-          model = object@model, 
-          data = grouped_data, 
+          object = thisSamples,
+          model = object@model,
+          data = grouped_data,
           group = factor("combo", levels = c("single", "combo"))
         )
 
@@ -704,7 +703,7 @@ setMethod("simulate",
             report_results = stop_combo_results
           )
         )
-          
+
         return(thisResult)
       }
 
@@ -758,7 +757,7 @@ setMethod("simulate",
 ```{r DesignGrouped-example}
 my_stopping <- StoppingTargetProb(target = c(0.2, 0.35), prob = 0.5) |
   StoppingMinPatients(20) |
-  StoppingMissingDose() 
+  StoppingMissingDose()
 my_increments <- IncrementsDoseLevels(levels = 3L)
 my_next_best <- NextBestNCRM(
   target = c(0.2, 0.3),
@@ -796,14 +795,14 @@ my_model@datamodel
 my_truth <- function(x) plogis(-4 + 0.2 * log(x / 0.1))
 my_combo_truth <- function(x) plogis(-4 + 0.5 * log(x / 0.1))
 matplot(
-  x = empty_data@doseGrid, 
-  y = cbind(my_truth(empty_data@doseGrid), my_combo_truth(empty_data@doseGrid)), 
+  x = empty_data@doseGrid,
+  y = cbind(my_truth(empty_data@doseGrid), my_combo_truth(empty_data@doseGrid)),
   type = "l"
 )
 
 my_sims <- simulate(
-  my_design, 
-  nsim = 20, 
+  my_design,
+  nsim = 20,
   seed = 123,
   truth = my_truth,
   combo_truth = my_combo_truth
@@ -851,8 +850,8 @@ my_design2 <- my_design
 my_design@same_dose <- TRUE
 
 my_sims_same_dose <- simulate(
-  my_design2, 
-  nsim = 1, 
+  my_design2,
+  nsim = 1,
   seed = 123,
   truth = my_truth,
   combo_truth = my_combo_truth
