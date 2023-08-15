@@ -1,6 +1,5 @@
 ## nolint start
 
-
 # size ----
 
 ## Samples ----
@@ -275,7 +274,12 @@ test_that("Samples-approximate works correctly", {
     control = list(threshold.stop = 0.1, max.time = 1, maxit = 1),
     verbose = FALSE
   )
-  expect_snapshot_value(posterior, style = "serialize")
+  for (nm in slotNames(posterior$model)) {
+    if (!is.function(slot(posterior$model, nm))) {
+      expect_snapshot(slot(posterior$model, nm))
+    }
+  }
+  vdiffr::expect_doppelganger("approximate282-samples", posterior$plot)
 
   model1 <- LogisticNormal(
     mean = c(-0.85, 1),
@@ -290,7 +294,12 @@ test_that("Samples-approximate works correctly", {
     logNormal = TRUE,
     control = list(threshold.stop = 0.1, max.time = 1, maxit = 1)
   )
-  expect_snapshot_value(posterior1, style = "serialize")
+  for (nm in slotNames(posterior1$model)) {
+    if (!is.function(slot(posterior1$model, nm))) {
+      expect_snapshot(slot(posterior1$model, nm))
+    }
+  }
+  vdiffr::expect_doppelganger("approximate1-samples", posterior1$plot)
 
   posterior2 <- approximate(
     object = samples,
@@ -299,7 +308,12 @@ test_that("Samples-approximate works correctly", {
     logNormal = FALSE,
     control = list(threshold.stop = 0.1, max.time = 1, maxit = 1)
   )
-  expect_snapshot_value(posterior2, style = "serialize")
+  for (nm in slotNames(posterior2$model)) {
+    if (!is.function(slot(posterior2$model, nm))) {
+      expect_snapshot(slot(posterior2$model, nm))
+    }
+  }
+  vdiffr::expect_doppelganger("approximate2-samples", posterior2$plot)
 })
 
 # plot ----

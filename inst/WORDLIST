@@ -66,6 +66,7 @@ covr
 cran
 crm
 CRM
+crmPack
 crmPackExample
 crmPackHelp
 crmPackUpgrade
@@ -169,6 +170,7 @@ IncrementsRelative
 IncrementsRelativeDLT
 IncrementsRelativeDLTs
 IncrementsRelativeParts
+ing
 inputId
 intialization
 Intialization
@@ -340,6 +342,7 @@ songy
 sourceforge
 SREPs
 SRF
+StackOverflow
 Stata
 StoppingAll
 StoppingAny
@@ -401,6 +404,7 @@ TLG
 TLGs
 tm
 tox
+Tox
 toxAtDosesSelected
 traceplot
 transponse
@@ -413,6 +417,7 @@ truthy
 TsuTakawa
 ui
 UI
+Underdosing
 useLogDose
 useRW
 USUBJID
