@@ -7,7 +7,7 @@
 \alias{Simulations}
 \title{\code{Simulations}}
 \usage{
-Simulations(fit, stop_reasons, stop_report, ...)
+Simulations(fit, stop_reasons, stop_report, additional_stats, ...)
 }
 \arguments{
 \item{fit}{(\code{list})\cr see slot definition.}
@@ -15,6 +15,8 @@ Simulations(fit, stop_reasons, stop_report, ...)
 \item{stop_reasons}{(\code{list})\cr see slot definition.}
 
 \item{stop_report}{see \code{\link{Simulations}}}
+
+\item{additional_stats}{(\code{list})\cr see slot definition.}
 
 \item{\dots}{additional parameters from \code{\link{GeneralSimulations}}}
 }
@@ -33,6 +35,8 @@ Additional slots \code{fit} and \code{stop_reasons} compared to the general clas
 \item{\code{stop_reasons}}{(\code{list})\cr stopping reasons for each simulation run}
 
 \item{\code{stop_report}}{matrix of stopping rule outcomes}
+
+\item{\code{additional_stats}}{list of median MTD and CV MTD values}
 }}
 
 \examples{
