@@ -1092,7 +1092,7 @@ setMethod("simulate",
       stop_report <- matrix(TRUE, nrow = nsim)
 
       ## For dual simulations summary of additional statistics like median MTD and mean CV MTD
-      additional_stats <- vector(mode='list', length=nsim)
+      additional_stats <- vector(mode = "list", length = nsim)
 
       ## return the results in the DualSimulations class object
       ret <- DualSimulations(
