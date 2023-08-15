@@ -988,7 +988,7 @@ setMethod("show",
       )
 
       cat(
-        "Mean CV (MTD) % : ",
+        "Mean CV (MTD) [%] : ",
         round(unlist(additional_stats)[2] * 100, 2), "\n"
       )
 

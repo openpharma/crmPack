@@ -424,7 +424,7 @@ setMethod("simulate",
           samples = thisSamples
         )
 
-        # Create list with median MTD and CV
+        # Create list with median MTD and CV.
         additional_stats <- list(
           median_mtd = median(sample_mtd),
           cv_mtd = mad(sample_mtd) / median(sample_mtd)
@@ -1092,7 +1092,7 @@ setMethod("simulate",
       stop_report <- matrix(TRUE, nrow = nsim)
 
       ## For dual simulations summary of additional statistics like median MTD and mean CV MTD
-      additional_stats <- lapply(resultList, "[[", "additional_stats")
+      additional_stats <- vector(mode='list', length=nsim)
 
       ## return the results in the DualSimulations class object
       ret <- DualSimulations(
