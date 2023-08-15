@@ -1091,7 +1091,7 @@ setMethod("simulate",
       ## for dual simulations as it would fail in summary otherwise (for dual simulations reporting is not implemented)
       stop_report <- matrix(TRUE, nrow = nsim)
 
-      ##For dual simulations summary of additional statistics like median MTD and mean CV MTD
+      ## For dual simulations summary of additional statistics like median MTD and mean CV MTD
       additional_stats <- lapply(resultList, "[[", "additional_stats")
 
       ## return the results in the DualSimulations class object
