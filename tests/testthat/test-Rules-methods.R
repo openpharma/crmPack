@@ -1845,6 +1845,37 @@ test_that("StoppingTargetProb works correctly when above threshold", {
   expect_identical(result, expected)
 })
 
+test_that("StoppingTargetProb can accept additional arguments and pass them to prob inside", {
+  my_data <- h_get_data()
+  .SpecialModel <- setClass("SpecialModel", contains = "LogisticKadane")
+  setMethod(
+    f = "prob",
+    signature = signature(
+      dose = "numeric",
+      model = "SpecialModel",
+      samples = "Samples"
+    ),
+    definition = function(dose, model, samples, extra_argument) {
+      if (missing(extra_argument)) stop("we need extra_argument")
+      # We don't forward to LogisticKadane method here since that would
+      # not accept the extra argument.
+      1
+    }
+  )
+  my_model <- .SpecialModel(h_get_logistic_kadane())
+  my_samples <- mcmc(my_data, my_model, h_get_mcmc_options(samples = 10, burnin = 10))
+  stopping <- StoppingTargetProb(target = c(0.1, 0.4), prob = 0.3)
+  result <- stopTrial(
+    stopping = stopping,
+    dose = 100,
+    samples = my_samples,
+    model = my_model,
+    data = my_data,
+    extra_argument = "bla"
+  )
+  expect_false(result)
+})
+
 ## StoppingMTDdistribution ----
 
 test_that("StoppingMTDdistribution can handle when dose is NA", {
