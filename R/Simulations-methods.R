@@ -307,7 +307,7 @@ setMethod("plot",
         ## save the plot
         plotList[[plotIndex <- plotIndex + 1L]] <-
           qplot(factor(0),
-            y = y, data = data.frame(y = x@sigma2West), geom = "boxplot",
+            y = y, data = data.frame(y = x@sigma2w_est), geom = "boxplot",
             xlab = "", ylab = "Biomarker variance estimates"
           ) +
           coord_flip() + scale_x_discrete(breaks = NULL)
@@ -318,7 +318,7 @@ setMethod("plot",
         ## save the plot
         plotList[[plotIndex <- plotIndex + 1L]] <-
           qplot(factor(0),
-            y = y, data = data.frame(y = x@rhoEst), geom = "boxplot",
+            y = y, data = data.frame(y = x@rho_est), geom = "boxplot",
             xlab = "", ylab = "Correlation estimates"
           ) +
           coord_flip() + scale_x_discrete(breaks = NULL)
@@ -689,7 +689,7 @@ setMethod("summary",
       ## fitted biomarker level at dose most often selected
       biomarkerFitAtDoseMostSelected <-
         sapply(
-          object@fitBiomarker,
+          object@fit_biomarker,
           function(f) {
             f$middleBiomarker[xMostSelected]
           }
@@ -699,7 +699,7 @@ setMethod("summary",
       ## at each dose level
       ## (this is required for plotting)
       meanBiomarkerFitMatrix <- sapply(
-        object@fitBiomarker,
+        object@fit_biomarker,
         "[[",
         "middleBiomarker"
       )
@@ -989,7 +989,7 @@ setMethod("show",
 
       cat(
         "Mean CV (MTD) % : ",
-        round(unlist(additional_stats)[2]*100, 2), "\n"
+        round(unlist(additional_stats)[2] * 100, 2), "\n"
       )
 
 

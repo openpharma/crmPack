@@ -14,7 +14,7 @@ Simulations(fit, stop_reasons, stop_report, additional_stats, ...)
 
 \item{stop_reasons}{(\code{list})\cr see slot definition.}
 
-\item{stop_report}{see \code{\linkS4class{Simulations}}}
+\item{stop_report}{see \code{\link{Simulations}}}
 
 \item{additional_stats}{(\code{list})\cr see slot definition.}
 
