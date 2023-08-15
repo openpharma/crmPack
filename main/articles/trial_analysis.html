@@ -63,12 +63,6 @@
 <li class="nav-item">
   <a class="nav-link" href="../news/index.html">Changelog</a>
 </li>
-<!-- start dropdown for versions --> <li class="nav-item dropdown">
-        <a href="#" class="nav-link dropdown-toggle"
-          data-bs-toggle="dropdown" role="button"
-          aria-expanded="false" aria-haspopup="true"
-          id="dropdown-versions">Versions</a> <div class="dropdown-menu" aria-labelledby="dropdown-versions"> <a class="dropdown-item" data-toggle="tooltip" title="" href="https://Roche.github.io/crmPack/main">main</a> </div></li>
-<!-- end dropdown for versions -->
       </ul>
 <form class="form-inline my-2 my-lg-0" role="search">
         <input type="search" class="form-control me-sm-2" aria-label="Toggle navigation" name="search-input" data-search-index="../search.json" id="search-input" placeholder="Search for" autocomplete="off">
@@ -340,10 +334,10 @@ Overdose range
 0
 </td>
 <td style="text-align:right;">
-0.017
+0.040
 </td>
 <td style="text-align:right;">
-0.019
+0.006
 </td>
 </tr>
 <tr>
@@ -360,7 +354,7 @@ Overdose range
 0.064
 </td>
 <td style="text-align:right;">
-0.030
+0.027
 </td>
 </tr>
 <tr>
@@ -374,10 +368,10 @@ Overdose range
 0
 </td>
 <td style="text-align:right;">
-0.191
+0.146
 </td>
 <td style="text-align:right;">
-0.086
+0.084
 </td>
 </tr>
 <tr>
@@ -391,10 +385,10 @@ Overdose range
 1
 </td>
 <td style="text-align:right;">
-0.276
+0.303
 </td>
 <td style="text-align:right;">
-0.258
+0.228
 </td>
 </tr>
 <tr>
@@ -408,10 +402,10 @@ Overdose range
 0
 </td>
 <td style="text-align:right;">
-0.299
+0.308
 </td>
 <td style="text-align:right;">
-0.416
+0.418
 </td>
 </tr>
 <tr>
@@ -425,10 +419,10 @@ Overdose range
 0
 </td>
 <td style="text-align:right;">
-0.255
+0.260
 </td>
 <td style="text-align:right;">
-0.642
+0.655
 </td>
 </tr>
 <tr>
@@ -442,10 +436,10 @@ Overdose range
 0
 </td>
 <td style="text-align:right;">
-0.178
+0.141
 </td>
 <td style="text-align:right;">
-0.799
+0.837
 </td>
 </tr>
 <tr>
@@ -459,10 +453,10 @@ Overdose range
 0
 </td>
 <td style="text-align:right;">
-0.082
+0.061
 </td>
 <td style="text-align:right;">
-0.909
+0.935
 </td>
 </tr>
 <tr>
@@ -476,10 +470,10 @@ Overdose range
 0
 </td>
 <td style="text-align:right;">
-0.030
+0.036
 </td>
 <td style="text-align:right;">
-0.967
+0.961
 </td>
 </tr>
 </tbody>
@@ -513,7 +507,7 @@ confirmed programmatically:</p>
 <span>  data <span class="op">=</span> <span class="va">firstFour</span></span>
 <span><span class="op">)</span></span>
 <span><span class="va">doseRecommendation</span><span class="op">$</span><span class="va">value</span></span>
-<span><span class="co">#&gt; [1] 9</span></span></code></pre></div>
+<span><span class="co">#&gt; [1] 20</span></span></code></pre></div>
 <p>However, given that the probability that <code>20</code> is in the
 overdose range is only just less than the threshold of 0.25 (and because
 the only participant so far treated at <code>20</code> experienced a
@@ -541,7 +535,7 @@ satisfied:</p>
 <span><span class="co">#&gt; [1] "Number of cohorts is 4 and thus reached the prespecified minimum number 3"</span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; attr(,"message")[[1]][[2]]</span></span>
-<span><span class="co">#&gt; [1] "Probability for target toxicity is 19 % for dose 9 and thus below the required 50 %"</span></span>
+<span><span class="co">#&gt; [1] "Probability for target toxicity is 30 % for dose 20 and thus below the required 50 %"</span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; attr(,"message")[[2]]</span></span>
@@ -555,7 +549,7 @@ satisfied:</p>
 <span><span class="co">#&gt; [1] "Number of cohorts is 4 and thus reached the prespecified minimum number 3"</span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; attr(,"message")[[2]]</span></span>
-<span><span class="co">#&gt; [1] "Probability for target toxicity is 19 % for dose 9 and thus below the required 50 %"</span></span>
+<span><span class="co">#&gt; [1] "Probability for target toxicity is 30 % for dose 20 and thus below the required 50 %"</span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; attr(,"individual")</span></span>
 <span><span class="co">#&gt; attr(,"individual")[[1]]</span></span>
@@ -568,7 +562,7 @@ satisfied:</p>
 <span><span class="co">#&gt; attr(,"individual")[[2]]</span></span>
 <span><span class="co">#&gt; [1] FALSE</span></span>
 <span><span class="co">#&gt; attr(,"message")</span></span>
-<span><span class="co">#&gt; [1] "Probability for target toxicity is 19 % for dose 9 and thus below the required 50 %"</span></span>
+<span><span class="co">#&gt; [1] "Probability for target toxicity is 30 % for dose 20 and thus below the required 50 %"</span></span>
 <span><span class="co">#&gt; attr(,"report_label")</span></span>
 <span><span class="co">#&gt; [1] NA</span></span>
 <span><span class="co">#&gt; </span></span>
@@ -654,10 +648,10 @@ Overdose range
 0
 </td>
 <td style="text-align:right;">
-0.007
+0.011
 </td>
 <td style="text-align:right;">
-0.002
+0.001
 </td>
 </tr>
 <tr>
@@ -671,10 +665,10 @@ Overdose range
 0
 </td>
 <td style="text-align:right;">
-0.022
+0.019
 </td>
 <td style="text-align:right;">
-0.003
+0.005
 </td>
 </tr>
 <tr>
@@ -688,10 +682,10 @@ Overdose range
 0
 </td>
 <td style="text-align:right;">
-0.116
+0.077
 </td>
 <td style="text-align:right;">
-0.011
+0.019
 </td>
 </tr>
 <tr>
@@ -705,10 +699,10 @@ Overdose range
 1
 </td>
 <td style="text-align:right;">
-0.207
+0.213
 </td>
 <td style="text-align:right;">
-0.120
+0.103
 </td>
 </tr>
 <tr>
@@ -722,10 +716,10 @@ Overdose range
 0
 </td>
 <td style="text-align:right;">
-0.364
+0.336
 </td>
 <td style="text-align:right;">
-0.230
+0.209
 </td>
 </tr>
 <tr>
@@ -739,10 +733,10 @@ Overdose range
 0
 </td>
 <td style="text-align:right;">
-0.344
+0.366
 </td>
 <td style="text-align:right;">
-0.456
+0.435
 </td>
 </tr>
 <tr>
@@ -756,10 +750,10 @@ Overdose range
 0
 </td>
 <td style="text-align:right;">
-0.229
+0.249
 </td>
 <td style="text-align:right;">
-0.696
+0.677
 </td>
 </tr>
 <tr>
@@ -773,10 +767,10 @@ Overdose range
 0
 </td>
 <td style="text-align:right;">
-0.137
+0.140
 </td>
 <td style="text-align:right;">
-0.841
+0.823
 </td>
 </tr>
 <tr>
@@ -790,10 +784,10 @@ Overdose range
 0
 </td>
 <td style="text-align:right;">
-0.096
+0.089
 </td>
 <td style="text-align:right;">
-0.896
+0.894
 </td>
 </tr>
 </tbody>
@@ -897,7 +891,7 @@ Overdose range
 0
 </td>
 <td style="text-align:right;">
-0.003
+0.002
 </td>
 <td style="text-align:right;">
 0.000
@@ -914,10 +908,10 @@ Overdose range
 0
 </td>
 <td style="text-align:right;">
-0.004
+0.006
 </td>
 <td style="text-align:right;">
-0.001
+0.000
 </td>
 </tr>
 <tr>
@@ -931,10 +925,10 @@ Overdose range
 0
 </td>
 <td style="text-align:right;">
-0.015
+0.036
 </td>
 <td style="text-align:right;">
-0.004
+0.001
 </td>
 </tr>
 <tr>
@@ -948,10 +942,10 @@ Overdose range
 1
 </td>
 <td style="text-align:right;">
-0.149
+0.102
 </td>
 <td style="text-align:right;">
-0.020
+0.018
 </td>
 </tr>
 <tr>
@@ -965,10 +959,10 @@ Overdose range
 0
 </td>
 <td style="text-align:right;">
-0.282
+0.235
 </td>
 <td style="text-align:right;">
-0.099
+0.068
 </td>
 </tr>
 <tr>
@@ -982,10 +976,10 @@ Overdose range
 0
 </td>
 <td style="text-align:right;">
-0.316
+0.415
 </td>
 <td style="text-align:right;">
-0.371
+0.253
 </td>
 </tr>
 <tr>
@@ -999,10 +993,10 @@ Overdose range
 0
 </td>
 <td style="text-align:right;">
-0.336
+0.367
 </td>
 <td style="text-align:right;">
-0.559
+0.516
 </td>
 </tr>
 <tr>
@@ -1016,10 +1010,10 @@ Overdose range
 0
 </td>
 <td style="text-align:right;">
-0.165
+0.196
 </td>
 <td style="text-align:right;">
-0.790
+0.774
 </td>
 </tr>
 <tr>
@@ -1033,10 +1027,10 @@ Overdose range
 0
 </td>
 <td style="text-align:right;">
-0.120
+0.112
 </td>
 <td style="text-align:right;">
-0.858
+0.877
 </td>
 </tr>
 </tbody>
@@ -1141,7 +1135,7 @@ Overdose range
 0
 </td>
 <td style="text-align:right;">
-0.001
+0.000
 </td>
 <td style="text-align:right;">
 0.000
@@ -1158,7 +1152,7 @@ Overdose range
 0
 </td>
 <td style="text-align:right;">
-0.003
+0.000
 </td>
 <td style="text-align:right;">
 0.000
@@ -1175,10 +1169,10 @@ Overdose range
 0
 </td>
 <td style="text-align:right;">
-0.019
+0.011
 </td>
 <td style="text-align:right;">
-0.001
+0.000
 </td>
 </tr>
 <tr>
@@ -1192,10 +1186,10 @@ Overdose range
 1
 </td>
 <td style="text-align:right;">
-0.079
+0.061
 </td>
 <td style="text-align:right;">
-0.012
+0.001
 </td>
 </tr>
 <tr>
@@ -1209,10 +1203,10 @@ Overdose range
 0
 </td>
 <td style="text-align:right;">
-0.228
+0.191
 </td>
 <td style="text-align:right;">
-0.045
+0.019
 </td>
 </tr>
 <tr>
@@ -1226,10 +1220,10 @@ Overdose range
 0
 </td>
 <td style="text-align:right;">
-0.422
+0.400
 </td>
 <td style="text-align:right;">
-0.231
+0.167
 </td>
 </tr>
 <tr>
@@ -1243,10 +1237,10 @@ Overdose range
 0
 </td>
 <td style="text-align:right;">
-0.368
+0.386
 </td>
 <td style="text-align:right;">
-0.526
+0.429
 </td>
 </tr>
 <tr>
@@ -1260,10 +1254,10 @@ Overdose range
 0
 </td>
 <td style="text-align:right;">
-0.153
+0.226
 </td>
 <td style="text-align:right;">
-0.823
+0.714
 </td>
 </tr>
 <tr>
@@ -1277,10 +1271,10 @@ Overdose range
 0
 </td>
 <td style="text-align:right;">
-0.090
+0.153
 </td>
 <td style="text-align:right;">
-0.892
+0.823
 </td>
 </tr>
 </tbody>
@@ -1385,7 +1379,7 @@ Overdose range
 0
 </td>
 <td style="text-align:right;">
-0.001
+0.000
 </td>
 <td style="text-align:right;">
 0.000
@@ -1402,7 +1396,7 @@ Overdose range
 0
 </td>
 <td style="text-align:right;">
-0.001
+0.002
 </td>
 <td style="text-align:right;">
 0.000
@@ -1419,7 +1413,7 @@ Overdose range
 0
 </td>
 <td style="text-align:right;">
-0.003
+0.009
 </td>
 <td style="text-align:right;">
 0.000
@@ -1436,10 +1430,10 @@ Overdose range
 1
 </td>
 <td style="text-align:right;">
-0.028
+0.049
 </td>
 <td style="text-align:right;">
-0.000
+0.003
 </td>
 </tr>
 <tr>
@@ -1453,10 +1447,10 @@ Overdose range
 0
 </td>
 <td style="text-align:right;">
-0.114
+0.132
 </td>
 <td style="text-align:right;">
-0.003
+0.012
 </td>
 </tr>
 <tr>
@@ -1470,10 +1464,10 @@ Overdose range
 0
 </td>
 <td style="text-align:right;">
-0.311
+0.384
 </td>
 <td style="text-align:right;">
-0.069
+0.085
 </td>
 </tr>
 <tr>
@@ -1487,10 +1481,10 @@ Overdose range
 0
 </td>
 <td style="text-align:right;">
-0.483
+0.434
 </td>
 <td style="text-align:right;">
-0.310
+0.359
 </td>
 </tr>
 <tr>
@@ -1504,10 +1498,10 @@ Overdose range
 0
 </td>
 <td style="text-align:right;">
-0.302
+0.298
 </td>
 <td style="text-align:right;">
-0.622
+0.623
 </td>
 </tr>
 <tr>
@@ -1521,10 +1515,10 @@ Overdose range
 0
 </td>
 <td style="text-align:right;">
-0.164
+0.177
 </td>
 <td style="text-align:right;">
-0.797
+0.788
 </td>
 </tr>
 </tbody>
@@ -1646,7 +1640,7 @@ Overdose range
 0
 </td>
 <td style="text-align:right;">
-0.000
+0.002
 </td>
 <td style="text-align:right;">
 0.000
@@ -1663,7 +1657,7 @@ Overdose range
 0
 </td>
 <td style="text-align:right;">
-0.008
+0.011
 </td>
 <td style="text-align:right;">
 0.000
@@ -1680,10 +1674,10 @@ Overdose range
 1
 </td>
 <td style="text-align:right;">
-0.084
+0.074
 </td>
 <td style="text-align:right;">
-0.000
+0.004
 </td>
 </tr>
 <tr>
@@ -1697,10 +1691,10 @@ Overdose range
 0
 </td>
 <td style="text-align:right;">
-0.249
+0.229
 </td>
 <td style="text-align:right;">
-0.012
+0.028
 </td>
 </tr>
 <tr>
@@ -1714,10 +1708,10 @@ Overdose range
 2
 </td>
 <td style="text-align:right;">
-0.544
+0.553
 </td>
 <td style="text-align:right;">
-0.231
+0.217
 </td>
 </tr>
 <tr>
@@ -1731,7 +1725,7 @@ Overdose range
 0
 </td>
 <td style="text-align:right;">
-0.310
+0.316
 </td>
 <td style="text-align:right;">
 0.631
@@ -1748,10 +1742,10 @@ Overdose range
 0
 </td>
 <td style="text-align:right;">
-0.127
+0.110
 </td>
 <td style="text-align:right;">
-0.858
+0.871
 </td>
 </tr>
 <tr>
@@ -1765,10 +1759,10 @@ Overdose range
 0
 </td>
 <td style="text-align:right;">
-0.081
+0.067
 </td>
 <td style="text-align:right;">
-0.911
+0.928
 </td>
 </tr>
 </tbody>
@@ -1809,7 +1803,7 @@ should stop and conclude that <code>45</code> is the MTD:</p>
 <span><span class="co">#&gt; [1] "Number of cohorts is 9 and thus reached the prespecified minimum number 3"</span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; attr(,"message")[[1]][[2]]</span></span>
-<span><span class="co">#&gt; [1] "Probability for target toxicity is 54 % for dose 45 and thus above the required 50 %"</span></span>
+<span><span class="co">#&gt; [1] "Probability for target toxicity is 55 % for dose 45 and thus above the required 50 %"</span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; attr(,"message")[[2]]</span></span>
@@ -1823,7 +1817,7 @@ should stop and conclude that <code>45</code> is the MTD:</p>
 <span><span class="co">#&gt; [1] "Number of cohorts is 9 and thus reached the prespecified minimum number 3"</span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; attr(,"message")[[2]]</span></span>
-<span><span class="co">#&gt; [1] "Probability for target toxicity is 54 % for dose 45 and thus above the required 50 %"</span></span>
+<span><span class="co">#&gt; [1] "Probability for target toxicity is 55 % for dose 45 and thus above the required 50 %"</span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; attr(,"individual")</span></span>
 <span><span class="co">#&gt; attr(,"individual")[[1]]</span></span>
@@ -1836,7 +1830,7 @@ should stop and conclude that <code>45</code> is the MTD:</p>
 <span><span class="co">#&gt; attr(,"individual")[[2]]</span></span>
 <span><span class="co">#&gt; [1] TRUE</span></span>
 <span><span class="co">#&gt; attr(,"message")</span></span>
-<span><span class="co">#&gt; [1] "Probability for target toxicity is 54 % for dose 45 and thus above the required 50 %"</span></span>
+<span><span class="co">#&gt; [1] "Probability for target toxicity is 55 % for dose 45 and thus above the required 50 %"</span></span>
 <span><span class="co">#&gt; attr(,"report_label")</span></span>
 <span><span class="co">#&gt; [1] NA</span></span>
 <span><span class="co">#&gt; </span></span>
@@ -1969,7 +1963,7 @@ Median
 1
 </td>
 <td style="text-align:right;">
-0.006
+0.007
 </td>
 <td style="text-align:right;">
 0.000
@@ -1984,13 +1978,13 @@ Median
 0.000
 </td>
 <td style="text-align:right;">
-0.005
+0.004
 </td>
 <td style="text-align:right;">
-0.019
+0.020
 </td>
 <td style="text-align:right;">
-0.031
+0.037
 </td>
 </tr>
 <tr>
@@ -1998,13 +1992,10 @@ Median
 3
 </td>
 <td style="text-align:right;">
-0.014
+0.015
 </td>
 <td style="text-align:right;">
-0.003
-</td>
-<td style="text-align:right;">
-0.000
+0.002
 </td>
 <td style="text-align:right;">
 0.000
@@ -2013,13 +2004,16 @@ Median
 0.000
 </td>
 <td style="text-align:right;">
-0.017
+0.000
 </td>
 <td style="text-align:right;">
-0.047
+0.016
 </td>
 <td style="text-align:right;">
-0.062
+0.044
+</td>
+<td style="text-align:right;">
+0.070
 </td>
 </tr>
 <tr>
@@ -2027,28 +2021,28 @@ Median
 9
 </td>
 <td style="text-align:right;">
-0.039
+0.040
 </td>
 <td style="text-align:right;">
-0.020
+0.016
+</td>
+<td style="text-align:right;">
+0.000
 </td>
 <td style="text-align:right;">
 0.001
 </td>
 <td style="text-align:right;">
-0.002
+0.004
 </td>
 <td style="text-align:right;">
-0.006
+0.061
 </td>
 <td style="text-align:right;">
-0.054
+0.108
 </td>
 <td style="text-align:right;">
-0.106
-</td>
-<td style="text-align:right;">
-0.133
+0.154
 </td>
 </tr>
 <tr>
@@ -2059,25 +2053,25 @@ Median
 0.096
 </td>
 <td style="text-align:right;">
-0.079
+0.074
 </td>
 <td style="text-align:right;">
-0.013
+0.007
 </td>
 <td style="text-align:right;">
-0.020
+0.012
 </td>
 <td style="text-align:right;">
-0.039
+0.034
 </td>
 <td style="text-align:right;">
-0.135
+0.143
 </td>
 <td style="text-align:right;">
-0.207
+0.215
 </td>
 <td style="text-align:right;">
-0.242
+0.255
 </td>
 </tr>
 <tr>
@@ -2088,25 +2082,25 @@ Median
 0.162
 </td>
 <td style="text-align:right;">
-0.149
+0.150
 </td>
 <td style="text-align:right;">
-0.043
+0.036
 </td>
 <td style="text-align:right;">
-0.064
+0.048
 </td>
 <td style="text-align:right;">
-0.096
+0.088
 </td>
 <td style="text-align:right;">
-0.220
+0.221
 </td>
 <td style="text-align:right;">
-0.284
+0.302
 </td>
 <td style="text-align:right;">
-0.319
+0.348
 </td>
 </tr>
 <tr>
@@ -2114,28 +2108,28 @@ Median
 45
 </td>
 <td style="text-align:right;">
-0.279
+0.284
 </td>
 <td style="text-align:right;">
-0.275
+0.265
 </td>
 <td style="text-align:right;">
-0.114
+0.117
 </td>
 <td style="text-align:right;">
-0.147
+0.139
 </td>
 <td style="text-align:right;">
-0.199
+0.196
 </td>
 <td style="text-align:right;">
-0.355
+0.367
 </td>
 <td style="text-align:right;">
-0.414
+0.453
 </td>
 <td style="text-align:right;">
-0.446
+0.494
 </td>
 </tr>
 <tr>
@@ -2143,28 +2137,28 @@ Median
 60
 </td>
 <td style="text-align:right;">
-0.395
+0.409
 </td>
 <td style="text-align:right;">
-0.383
+0.390
 </td>
 <td style="text-align:right;">
-0.181
+0.180
 </td>
 <td style="text-align:right;">
-0.213
+0.227
 </td>
 <td style="text-align:right;">
-0.289
+0.306
 </td>
 <td style="text-align:right;">
-0.495
+0.508
 </td>
 <td style="text-align:right;">
-0.571
+0.611
 </td>
 <td style="text-align:right;">
-0.632
+0.656
 </td>
 </tr>
 <tr>
@@ -2172,28 +2166,28 @@ Median
 80
 </td>
 <td style="text-align:right;">
-0.517
+0.540
 </td>
 <td style="text-align:right;">
-0.513
+0.538
 </td>
 <td style="text-align:right;">
-0.250
+0.248
 </td>
 <td style="text-align:right;">
-0.287
+0.312
 </td>
 <td style="text-align:right;">
-0.389
+0.411
 </td>
 <td style="text-align:right;">
-0.652
+0.666
 </td>
 <td style="text-align:right;">
-0.751
+0.772
 </td>
 <td style="text-align:right;">
-0.806
+0.847
 </td>
 </tr>
 <tr>
@@ -2201,28 +2195,28 @@ Median
 100
 </td>
 <td style="text-align:right;">
-0.602
+0.629
 </td>
 <td style="text-align:right;">
-0.604
+0.650
 </td>
 <td style="text-align:right;">
-0.288
+0.286
 </td>
 <td style="text-align:right;">
-0.341
+0.367
 </td>
 <td style="text-align:right;">
-0.458
+0.488
 </td>
 <td style="text-align:right;">
-0.760
+0.770
 </td>
 <td style="text-align:right;">
-0.850
+0.872
 </td>
 <td style="text-align:right;">
-0.900
+0.926
 </td>
 </tr>
 </tbody>
