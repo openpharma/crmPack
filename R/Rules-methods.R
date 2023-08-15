@@ -2486,8 +2486,10 @@ setMethod(
           biom_level_samples, 1L,
           function(x) {
             rnx <- range(x)
-            min(which((x >= stopping@target[1] * diff(rnx) + rnx[1]) &
-              (x <= stopping@target[2] * diff(rnx) + rnx[1] + 1e-10)))
+            min(which(
+              (x >= stopping@target[1] * diff(rnx) + rnx[1]) &
+                (x <= stopping@target[2] * diff(rnx) + rnx[1] + 1e-10)
+            ))
           }
         )
         prob_target <- numeric(ncol(biom_level_samples))
@@ -2504,8 +2506,7 @@ setMethod(
       prob_target <- sapply(
         seq(1, ncol(biom_level_samples)),
         function(x) {
-          sum(biom_level_samples[, x] >= stopping@target[1] &
-            biom_level_samples[, x] <= stopping@target[2]) /
+          sum(biom_level_samples[, x] >= stopping@target[1] & biom_level_samples[, x] <= stopping@target[2]) /
             nrow(biom_level_samples)
         }
       )
