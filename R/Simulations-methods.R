@@ -634,7 +634,7 @@ setMethod("summary",
       ret <- .SimulationsSummary(
         start,
         stop_report = object@stop_report,
-        additional_stats = additional_stats,
+        additional_stats = object@additional_stats,
         fitAtDoseMostSelected = fitAtDoseMostSelected,
         meanFit = meanFit
       )
