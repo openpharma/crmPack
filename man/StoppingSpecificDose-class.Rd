@@ -8,7 +8,11 @@
 \alias{.DefaultStoppingSpecificDose}
 \title{\code{StoppingSpecificDose}}
 \usage{
-StoppingSpecificDose(rule, dose)
+StoppingSpecificDose(
+  rule = StoppingTargetProb(target = c(0, 0.3), prob = 0.8),
+  dose = 80,
+  report_label = NA_character_
+)
 
 .DefaultStoppingSpecificDose()
 }
@@ -16,6 +20,8 @@ StoppingSpecificDose(rule, dose)
 \item{rule}{(\code{Stopping})\cr see slot definition.}
 
 \item{dose}{(\code{number})\cr see slot definition.}
+
+\item{report_label}{(\code{string} or \code{NA}) \cr see slot definition.}
 }
 \description{
 \ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#experimental}{\figure{lifecycle-experimental.svg}{options: alt='[Experimental]'}}}{\strong{[Experimental]}}

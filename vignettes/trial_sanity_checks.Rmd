@@ -62,6 +62,7 @@ The first step is to define the trial design in `crmPack`...
 ```{r example, message = FALSE}
 library(crmPack)
 
+
 # Define the dose grid and an empty data object
 dose_grid <- c(1, 3, 5, 10, 15, 20, 25, 40, 50, 80, 100)
 empty_data <- Data(doseGrid = dose_grid)
@@ -86,7 +87,7 @@ cohort_size1 <- CohortSizeRange(
   cohort_size = c(1, 3)
 )
 cohort_size2 <- CohortSizeDLT(
-  dlt_intervals = c(0, 1),
+  intervals = c(0, 1),
   cohort_size = c(1, 3)
 )
 cohort_size <- maxSize(cohort_size1, cohort_size2)
@@ -112,7 +113,7 @@ design <- Design(
   nextBest = next_best,
   stopping = stopping_trial,
   increments = increment_rule,
-  cohortSize = cohort_size,
+  cohort_size = cohort_size,
   data = empty_data,
   startingDose = 3
 )
@@ -187,7 +188,7 @@ revised_design <- Design(
   nextBest = next_best,
   stopping = stopping_trial,
   increments = revised_increment_rule,
-  cohortSize = cohort_size,
+  cohort_size = cohort_size,
   data = empty_data,
   startingDose = 3
 )
@@ -276,7 +277,7 @@ revised_design1 <- Design(
   nextBest = next_best,
   stopping = stopping_trial,
   increments = revised_increment_rule,
-  cohortSize = cohort_size,
+  cohort_size = cohort_size,
   data = empty_data,
   startingDose = 3
 )
@@ -325,7 +326,7 @@ revised_design2 <- Design(
   nextBest = next_best,
   stopping = revised_stopping_trial,
   increments = revised_increment_rule,
-  cohortSize = cohort_size,
+  cohort_size = cohort_size,
   data = empty_data,
   startingDose = 3
 )

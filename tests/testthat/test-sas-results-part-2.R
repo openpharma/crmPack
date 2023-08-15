@@ -33,7 +33,7 @@ test_that("Posterior summaries for probabilities of
   )
 
   increment2 <- IncrementsRelativeDLT(
-    dlt_intervals = c(0, 1),
+    intervals = c(0, 1),
     increments = c(1, 0.50)
   )
 
@@ -148,7 +148,7 @@ test_that("Posterior summaries for probabilities of
   )
 
   increment2 <- IncrementsRelativeDLT(
-    dlt_intervals = c(0, 1),
+    intervals = c(0, 1),
     increments = c(1, 0.50)
   )
 
@@ -263,7 +263,7 @@ test_that("Posterior summaries for probabilities of
   )
 
   increment2 <- IncrementsRelativeDLT(
-    dlt_intervals = c(0, 1),
+    intervals = c(0, 1),
     increments = c(1, 0.50)
   )
 
@@ -378,7 +378,7 @@ test_that("Posterior summaries for probabilities of
   )
 
   increment2 <- IncrementsRelativeDLT(
-    dlt_intervals = c(0, 1),
+    intervals = c(0, 1),
     increments = c(1, 0.50)
   )
 

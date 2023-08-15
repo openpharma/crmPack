@@ -39,7 +39,7 @@ mySize1 <- CohortSizeRange(
   cohort_size = c(1, 3)
 )
 mySize2 <- CohortSizeDLT(
-  dlt_intervals = c(0, 1),
+  intervals = c(0, 1),
   cohort_size = c(1, 3)
 )
 mySize <- maxSize(mySize1, mySize2)
@@ -62,7 +62,7 @@ design <- DADesign(
   increments = myIncrements,
   nextBest = myNextBest,
   stopping = myStopping,
-  cohortSize = mySize,
+  cohort_size = mySize,
   data = emptydata,
   safetyWindow = mysafetywindow,
   startingDose = 3

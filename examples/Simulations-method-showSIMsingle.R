@@ -35,7 +35,7 @@ my_design <- TDDesign(
   nextBest = td_next_best,
   stopping = my_stopping,
   increments = my_increments,
-  cohortSize = my_size,
+  cohort_size = my_size,
   data = emptydata,
   startingDose = 25
 )
@@ -79,7 +79,7 @@ my_design <- TDsamplesDesign(
   nextBest = td_next_best,
   stopping = my_stopping,
   increments = my_increments,
-  cohortSize = my_size,
+  cohort_size = my_size,
   data = emptydata,
   startingDose = 25
 )

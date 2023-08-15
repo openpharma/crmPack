@@ -8,12 +8,12 @@
 \alias{.DefaultIncrementsRelativeDLT}
 \title{\code{IncrementsRelativeDLT}}
 \usage{
-IncrementsRelativeDLT(dlt_intervals, increments)
+IncrementsRelativeDLT(intervals, increments)
 
 .DefaultIncrementsRelativeDLT()
 }
 \arguments{
-\item{dlt_intervals}{(\code{numeric})\cr see slot definition.}
+\item{intervals}{(\code{numeric})\cr see slot definition.}
 
 \item{increments}{(\code{numeric})\cr see slot definition.}
 }
@@ -26,16 +26,16 @@ relative differences in terms of DLTs.
 \section{Slots}{
 
 \describe{
-\item{\code{dlt_intervals}}{(\code{integer})\cr a vector with the left bounds of the
-relevant DLT intervals. For example, \code{dlt_intervals  = c(0, 1, 3)} specifies
+\item{\code{intervals}}{(\code{integer})\cr a vector with the left bounds of the
+relevant DLT intervals. For example, \code{intervals  = c(0, 1, 3)} specifies
 three intervals (sets of DLTs: first, 0 DLT; second 1 or 2 DLTs; and the third
 one, at least 3 DLTs. That means, the right bound of the intervals are
 exclusive to the interval and the last interval goes from the last value to
 infinity.}
 
 \item{\code{increments}}{(\code{numeric})\cr a vector of maximum allowable relative
-increments corresponding to \code{dlt_intervals}. IT must be of the same length
-as the length of \code{dlt_intervals}.}
+increments corresponding to \code{intervals}. IT must be of the same length
+as the length of \code{intervals}.}
 }}
 
 \note{
@@ -44,13 +44,12 @@ This considers all DLTs across all cohorts observed so far.
 Typically, end users will not use the \code{.DefaultIncrementsRelativeDLT()} function.
 }
 \examples{
-
 # This is the example of a rule for:
 # maximum doubling the dose if no DLTs were observed in the whole study so far
 # or maximum increasing the dose by 1.33 if 1 or 2 DLTs were observed so far
 # or maximum increasing the dose by 1.22 if 3 or more DLTs were observed so far.
 my_increments <- IncrementsRelativeDLT(
-  dlt_intervals = c(0, 1, 3),
+  intervals = c(0, 1, 3),
   increments = c(1, 0.33, 0.2)
 )
 }

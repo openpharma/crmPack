@@ -22,7 +22,7 @@ test_that("NextBestInfTheory produces consistent results for empty data", {
     stopping = stop_rule,
     increments = increments,
     nextBest = new_my_next_best,
-    cohortSize = cohort,
+    cohort_size = cohort,
     data = emptydata,
     startingDose = 40
   )
@@ -68,7 +68,7 @@ test_that("NextBestInfTheory produces consistent results with a dataset", {
     stopping = stop_rule,
     increments = increments,
     nextBest = new_my_next_best,
-    cohortSize = cohort,
+    cohort_size = cohort,
     data = my_data,
     startingDose = 25
   )
@@ -109,7 +109,7 @@ test_that("stop_reasons can be NA with certain stopping rule settings", {
     stopping = stopping,
     increments = increments,
     nextBest = next_best,
-    cohortSize = size,
+    cohort_size = size,
     data = data,
     startingDose = 25
   )
@@ -181,7 +181,7 @@ test_that("examine for DADesign works as expected", {
     cohort_size = c(1, 3)
   )
   my_size_2 <- CohortSizeDLT(
-    dlt_intervals = c(0, 1),
+    intervals = c(0, 1),
     cohort_size = c(1, 3)
   )
   my_size <- maxSize(my_size_1, my_size_2)
@@ -198,7 +198,7 @@ test_that("examine for DADesign works as expected", {
     increments = my_increments,
     nextBest = my_next_best,
     stopping = my_stopping,
-    cohortSize = my_size,
+    cohort_size = my_size,
     data = emptydata,
     safetyWindow = my_safety,
     startingDose = 3

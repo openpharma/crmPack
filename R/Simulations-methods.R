@@ -308,7 +308,7 @@ setMethod("plot",
         ## save the plot
         plotList[[plotIndex <- plotIndex + 1L]] <-
           qplot(factor(0),
-            y = y, data = data.frame(y = x@sigma2West), geom = "boxplot",
+            y = y, data = data.frame(y = x@sigma2w_est), geom = "boxplot",
             xlab = "", ylab = "Biomarker variance estimates"
           ) +
           coord_flip() + scale_x_discrete(breaks = NULL)
@@ -319,7 +319,7 @@ setMethod("plot",
         ## save the plot
         plotList[[plotIndex <- plotIndex + 1L]] <-
           qplot(factor(0),
-            y = y, data = data.frame(y = x@rhoEst), geom = "boxplot",
+            y = y, data = data.frame(y = x@rho_est), geom = "boxplot",
             xlab = "", ylab = "Correlation estimates"
           ) +
           coord_flip() + scale_x_discrete(breaks = NULL)
@@ -549,7 +549,6 @@ setMethod("summary",
           placebo = object@data[[1]]@placebo
         )
 
-
       return(ret)
     }
 )
@@ -635,6 +634,7 @@ setMethod("summary",
       ## for which we then define a print / plot method
       ret <- .SimulationsSummary(
         start,
+        stop_report = object@stop_report,
         fitAtDoseMostSelected = fitAtDoseMostSelected,
         meanFit = meanFit
       )
@@ -690,7 +690,7 @@ setMethod("summary",
       ## fitted biomarker level at dose most often selected
       biomarkerFitAtDoseMostSelected <-
         sapply(
-          object@fitBiomarker,
+          object@fit_biomarker,
           function(f) {
             f$middleBiomarker[xMostSelected]
           }
@@ -700,7 +700,7 @@ setMethod("summary",
       ## at each dose level
       ## (this is required for plotting)
       meanBiomarkerFitMatrix <- sapply(
-        object@fitBiomarker,
+        object@fit_biomarker,
         "[[",
         "middleBiomarker"
       )
@@ -951,7 +951,6 @@ setMethod("show",
     }
 )
 
-
 ##' Show the summary of the simulations
 ##'
 ##' @param object the \code{\linkS4class{SimulationsSummary}} object we want
@@ -978,11 +977,26 @@ setMethod("show",
         dfNames = dfNames
       )
 
+
+
+
       ## add one reporting line
       r$report(
         "fitAtDoseMostSelected",
         "Fitted toxicity rate at dose most often selected"
       )
+
+
+      # Report individual stopping rules with non-<NA> labels.
+
+      stop_pct_to_print <- h_calc_report_label_percentage(object@stop_report)
+
+      if (length(stop_pct_to_print) > 0) {
+        cat(
+          "Stop reason triggered:\n",
+          paste(names(stop_pct_to_print), ": ", stop_pct_to_print, "%\n")
+        )
+      }
 
       ## and return the updated information
       names(r$df) <- r$dfNames
