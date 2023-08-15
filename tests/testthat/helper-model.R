@@ -388,7 +388,6 @@ h_get_fractional_crm <- function() {
 }
 
 .NeedsExtraProbModel <- setClass("NeedsExtraProbModel", contains = "LogisticKadane")
-.DefaultNeedsExtraProbModel <- function() .NeedsExtraProbModel(.DefaultLogisticKadane())
 setMethod(
   f = "prob",
   signature = signature(
