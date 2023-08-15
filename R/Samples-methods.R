@@ -1644,10 +1644,10 @@ setMethod("plotGain",
           data = point_data,
           inherit.aes = FALSE,
           aes(
-            x = X,
-            y = Y,
-            shape = as.factor(Shape),
-            fill = Colour
+            x = .data$X,
+            y = .data$Y,
+            shape = as.factor(.data$Shape),
+            fill = .data$Colour
           ),
           colour = point_data$Colour,
           size = point_data$Size,
