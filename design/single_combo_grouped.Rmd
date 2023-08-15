@@ -137,6 +137,7 @@ my_data <- DataGrouped(
   cohort = rep(1:3, each = 2),
   doseGrid = c(0.1, 0.5, 1.5, 3, 6, seq(from = 10, to = 80, by = 2))
 )
+my_ref_dose <- 0.1 # Lowest dose in dose grid, see comment below.
 
 plot(my_data)
 my_data_2 <- update(my_data, x = 3, y = c(0, 0), group = c("single", "combo"))
@@ -162,8 +163,12 @@ my_grouped_data <- groupData(my_single_data, my_combo_data)
 # The model: `LogisticLogNormalGrouped`
 
 We can inherit from `ModelLogNormal`. Compared to `LogisticLogNormal` etc.
-we have an additional parameter `theta[3]` which is then also exponentiated to 
-obtain `alpha2`.
+we have two additional parameters in `theta` which are then also exponentiated to 
+obtain the corresponding `alpha` parameters.
+
+We note that here `refDose` should be chosen below or equal to the lowest dose, such that the 
+term `log(dose / ref_dose)` is never negative and hence the probability of DLT
+at any given dose will be higher for the combination than for the single agent.
 
 ## Definition
 
@@ -184,32 +189,33 @@ LogisticLogNormalGrouped <- function(mean, cov, ref_dose = 1) {
     priormodel = function() {
       theta ~ dmnorm(mean, prec)
       alpha0 <- theta[1]
-      alpha1 <- exp(theta[2])
-      alpha2 <- exp(theta[3])
+      alpha0c <- exp(theta[2]) 
+      alpha1 <- exp(theta[3])
+      alpha1c <- exp(theta[4])
     },
     datamodel = function() {
       for (i in 1:nObs) {
-        # TODO: Can add intercept is_combo[i] * alpha02
-        logit(p[i]) <- alpha0 + (alpha1 + is_combo[i] * alpha2) * log(x[i] / ref_dose)
+        logit(p[i]) <- (alpha0 + is_combo[i] * alpha0c) + 
+          (alpha1 + is_combo[i] * alpha1c) * log(x[i] / ref_dose)
         y[i] ~ dbern(p[i])
       }
     },
     modelspecs = function(group, from_prior) {
       ms <- list(
         mean = params@mean, 
-        prec = params@prec,
-        is_combo = as.integer(group == "combo")
+        prec = params@prec
       )
       if (!from_prior) {
         ms$ref_dose <- ref_dose
+        ms$is_combo <- as.integer(group == "combo")
       }
       ms
     },
     init = function() {
-      list(theta = c(0, 1, 1))
+      list(theta = c(0, 1, 1, 1))
     },
     datanames = c("nObs", "y", "x"),
-    sample = c("alpha0", "alpha1", "alpha2")
+    sample = c("alpha0", "alpha0c", "alpha1", "alpha1c")
   )
 }
 ```
@@ -226,16 +232,17 @@ setMethod(
   ),
   definition = function(dose, model, samples, group) {
     assert_numeric(dose, lower = 0L, any.missing = FALSE, min.len = 1L)
-    assert_subset(c("alpha0", "alpha1", "alpha2"), names(samples))
+    assert_subset(c("alpha0", "alpha0c", "alpha1", "alpha1c"), names(samples))
     assert_length(dose, len = size(samples))
     assert_factor(group, len = length(dose), levels = c("single", "combo"))
 
     alpha0 <- samples@data$alpha0
+    alpha0c <- samples@data$alpha0c
     alpha1 <- samples@data$alpha1
-    alpha2 <- samples@data$alpha2
+    alpha1c <- samples@data$alpha1c
     ref_dose <- as.numeric(model@ref_dose)
     is_combo <- as.integer(group == "combo")
-    plogis(alpha0 + (alpha1 + is_combo * alpha2) * log(dose / ref_dose))
+    plogis((alpha0 + is_combo * alpha0c) + (alpha1 + is_combo * alpha1c) * log(dose / ref_dose))
   }
 )
 
@@ -248,16 +255,17 @@ setMethod(
   ),
   definition = function(x, model, samples, group) {
     assert_probabilities(x)
-    assert_subset(c("alpha0", "alpha1", "alpha2"), names(samples))
+    assert_subset(c("alpha0", "alpha0c", "alpha1", "alpha1c"), names(samples))
     assert_length(x, len = size(samples))
     assert_factor(group, len = length(x), levels = c("single", "combo"))
     
     alpha0 <- samples@data$alpha0
+    alpha0c <- samples@data$alpha0c
     alpha1 <- samples@data$alpha1
-    alpha2 <- samples@data$alpha2
+    alpha1c <- samples@data$alpha1c
     ref_dose <- as.numeric(model@ref_dose)
     is_combo <- as.integer(group == "combo")
-    exp((logit(x) - alpha0) / (alpha1 + is_combo * alpha2)) * ref_dose
+    exp((logit(x) - (alpha0 + is_combo * alpha0c)) / (alpha1 + is_combo * alpha1c)) * ref_dose
   }
 )
 ```
@@ -275,21 +283,22 @@ as well.
 
 ```{r LogisticLogNormalGrouped-example}
 my_model <- LogisticLogNormalGrouped(
-  mean = rep(0, 3), 
-  cov = diag(rep(1, 3)), 
-  ref_dose = 1
+  mean = rep(0, 4), 
+  cov = diag(rep(1, 4)), 
+  ref_dose = my_ref_dose
 )
 
 my_options <- McmcOptions()
 my_samples <- mcmc(my_data, my_model, my_options)
 str(my_samples)
 
-mean(my_samples@data$alpha2)
+mean(my_samples@data$alpha0c)
+mean(my_samples@data$alpha1c)
 mean(prob(dose = 5, my_model, my_samples, factor("single", levels = c("single", "combo"))))
 mean(prob(dose = 5, my_model, my_samples, factor("combo", levels = c("single", "combo"))))
 
 one_sample <- Samples(
-  data = list(alpha0 = -0.5, alpha1 = 0.3, alpha2 = 0.5),
+  data = list(alpha0 = -0.5, alpha0c = 0.1, alpha1 = 0.3, alpha1c = 0.5),
   options = McmcOptions(samples = 1L)
 )
 
@@ -314,9 +323,9 @@ We have added a unit test for the plot method of the Samples class already as we
 ```{r prior-elicitation}
 # Need to choose the prior parameters here.
 my_model <- LogisticLogNormalGrouped(
-  mean = rep(0, 3), 
-  cov = diag(rep(1, 3)), 
-  ref_dose = 1
+  mean = rep(0, 4), 
+  cov = diag(rep(1, 4)), 
+  ref_dose = my_ref_dose
 )
 
 # Create empty data.
@@ -329,7 +338,6 @@ my_empty_data <- DataGrouped(
 my_options <- McmcOptions()
 my_prior_samples <- mcmc(my_empty_data, my_model, my_options)
 str(my_prior_samples)
-# TODO: Fix warning about unused is_combo variable.
 
 # Look at fit results.
 plot(
@@ -350,9 +358,9 @@ Let's therefore modify the parameters.
 ```{r prior-elicitation}
 # Need to choose the prior parameters here.
 my_model <- LogisticLogNormalGrouped(
-  mean = c(-2, -1, 0), 
-  cov = diag(rep(3, 3)), 
-  ref_dose = 1
+  mean = c(-2, -1, 0, 0), 
+  cov = diag(rep(3, 4)), 
+  ref_dose = my_ref_dose
 )
 my_prior_samples <- mcmc(my_empty_data, my_model, my_options)
 plot(
