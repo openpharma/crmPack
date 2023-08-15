@@ -15,11 +15,15 @@ library(ggplot2)
 knitr::opts_chunk$set(echo = TRUE)
 ```
 
+This design introduces prototypes for a design where a monotherapy dose escalation
+is directly combined with a combination dose escalation (i.e. the same molecule with
+different doses but on top of another fixed dose molecule). 
+
 Note that in this design doc we don't include validation functions yet.
 
 # The data: `DataGrouped`
 
-The idea is that we start from `Data`. Even thoughwe need the 2 parts feature 
+The idea is that we start from `Data`. Even though we need the 2 parts feature 
 due to the safety run-in requirement, we can handle that separately in the 
 `DesignGrouped`. We add a slot `group` which is a factor 
 with 2 levels of the same length, similar as we add the biomarker `w` in the 
@@ -358,8 +362,8 @@ Let's therefore modify the parameters.
 ```{r prior-elicitation}
 # Need to choose the prior parameters here.
 my_model <- LogisticLogNormalGrouped(
-  mean = c(-2, -1, 0, 0), 
-  cov = diag(rep(3, 4)), 
+  mean = c(-4, -4, -4, -4), 
+  cov = diag(rep(6, 4)), 
   ref_dose = my_ref_dose
 )
 my_prior_samples <- mcmc(my_empty_data, my_model, my_options)
@@ -386,7 +390,13 @@ that the same rule as for the single agent is followed. Note that for the part 1
 handling with less patients per cohort the design class does not need to know
 about it, because the data and the size rules handle this already.
 
-Here we add the staggering flag. 
+Here we add the staggering flag `staggered_cohorts`. When turned on, this means
+that we first test one single agent cohort. Once that DLT data has been collected, we proceed
+from the second cohort onwards with concurrent mono and combo cohorts.
+
+We also add a flag `same_dose` to specify whether the lower dose, i.e. the combo dose, 
+should be used as the next dose for both mono and combo. This might or might
+not be desired in the given situation.
 
 Note that we deliberately ignore information in `Design`, including the model
 and the placebo cohort size information in there. This is not super clean,
@@ -401,7 +411,8 @@ but ok at least for this first prototype.
     model = "LogisticLogNormalGrouped",
     single = "Design",
     combo = "Design",
-    staggered_cohorts = "logical"
+    staggered_cohorts = "logical",
+    same_dose = "logical"
   )
 )
 
@@ -409,6 +420,7 @@ DesignGrouped <- function(model,
                           single,
                           combo,
                           staggered_cohorts,
+                          same_dose,
                           ...) {
   if (missing(combo)) combo <- single
   
@@ -416,7 +428,8 @@ DesignGrouped <- function(model,
     model = model,
     single = single,
     combo = combo,
-    staggered_cohorts = staggered_cohorts
+    staggered_cohorts = staggered_cohorts,
+    same_dose = same_dose
   )
 }
 ```
@@ -485,7 +498,6 @@ setMethod("simulate",
       ## the function to produce the run a single simulation
       ## with index "iterSim"
       runSim <- function(iterSim) {
-
         ## set the seed for this run
         set.seed(simSeeds[iterSim])
 
@@ -517,11 +529,11 @@ setMethod("simulate",
 
         ## what are the next doses to be used?
         ## initialize with starting doses
-        this_single_dose <- object@single@startingDose
+        if (object@single@startingDose < object@combo@startingDose) {
+          stop("combo starting dose cannot be higher than single starting dose")
+        }        
+        this_single_dose <- if (object@same_dose) object@combo@startingDose else object@single@startingDose
         this_combo_dose <- object@combo@startingDose
-        if (this_single_dose < this_combo_dose) {
-          stop("combo dose cannot be higher than single dose to start")
-        }
 
         ## inside this loop we simulate the whole trial, until stopping
         while (!(stop_single && stop_combo)) {
@@ -530,9 +542,10 @@ setMethod("simulate",
             this_single_prob <- this_single_truth(this_single_dose)
             
             ## what is the single cohort size at this dose?
-            this_single_size <- size(object@single@cohortSize,
-                                     dose = this_single_dose,
-                                     data = this_single_data
+            this_single_size <- size(
+              object@single@cohort_size,
+              dose = this_single_dose,
+              data = this_single_data
             )
             ## we can dose the single patients
             this_single_dlts <- rbinom(
@@ -554,7 +567,7 @@ setMethod("simulate",
             
             ## what is the combo cohort size at this dose?
             this_combo_size <- size(
-              object@combo@cohortSize,
+              object@combo@cohort_size,
               dose = this_combo_dose,
               data = this_combo_data
             )
@@ -596,7 +609,7 @@ setMethod("simulate",
               data = this_single_data
             )
             
-            ## => what is the next best dose for single and combo?
+            ## => what is the next best dose for single?
             this_single_dose <- nextBest(
               object@single@nextBest,
               doselimit = single_dose_limit,
@@ -614,6 +627,8 @@ setMethod("simulate",
               data = this_single_data,
               group = factor("single", levels = c("single", "combo"))
             )
+            
+            stop_single_results <- crmPack:::h_unpack_stopit(stop_single)
           }
           
           if (!stop_combo) {
@@ -648,6 +663,13 @@ setMethod("simulate",
               data = this_combo_data,
               group = factor("combo", levels = c("single", "combo"))
             )
+            
+            stop_combo_results <- crmPack:::h_unpack_stopit(stop_combo)
+            
+            if (object@same_dose) {
+              if (this_single_dose < this_combo_dose) stop("combo dose cannot be higher than single dose")
+              this_single_dose <- this_combo_dose
+            }
           }
         }
         
@@ -671,13 +693,15 @@ setMethod("simulate",
             data = this_single_data,
             dose = this_single_dose,
             fit = subset(fit_single, select = -dose),
-            stop = attr(stop_single, "message")
+            stop = attr(stop_single, "message"),
+            report_results = stop_single_results
           ),
           combo = list(
             data = this_combo_data,
             dose = this_combo_dose,
             fit = subset(fit_combo, select = -dose),
-            stop = attr(stop_combo, "message")
+            stop = attr(stop_combo, "message"),
+            report_results = stop_combo_results
           )
         )
           
@@ -713,21 +737,21 @@ setMethod("simulate",
         recommended_doses <- as.numeric(sapply(this_list, "[[", "dose"))
         fit_list <- lapply(this_list, "[[", "fit")
         stop_reasons <- lapply(this_list, "[[", "stop")
+        report_results <- lapply(this_list, "[[", "report_results")
+        stop_report <- as.matrix(do.call(rbind, report_results))
 
         Simulations(
           data = data_list,
           doses = recommended_doses,
           fit = fit_list,
           stop_reasons = stop_reasons,
+          stop_report = stop_report,
           seed = RNGstate
         )
       })
     }
 )
 ```
-
-TODO: Need the option to choose the combo dose as next dose for both mono and
-combo.
 
 ## Example
 
@@ -751,7 +775,7 @@ my_design <- DesignGrouped(
     stopping = my_stopping,
     increments = my_increments,
     nextBest = my_next_best,
-    cohortSize = my_cohort_size,
+    cohort_size = my_cohort_size,
     data = empty_data,
     startingDose = 0.1
   ),
@@ -760,16 +784,17 @@ my_design <- DesignGrouped(
     stopping = my_stopping,
     increments = my_increments,
     nextBest = my_next_best,
-    cohortSize = my_cohort_size,
+    cohort_size = my_cohort_size,
     data = empty_data,
     startingDose = 0.1
   ),
-  staggered_cohorts = TRUE
+  staggered_cohorts = TRUE,
+  same_dose = FALSE
 )
 
 my_model@datamodel
-my_truth <- function(x) plogis(-2 + 0.2 * log(x / 0.1))
-my_combo_truth <- function(x) plogis(-2 + 0.5 * log(x / 0.1))
+my_truth <- function(x) plogis(-4 + 0.2 * log(x / 0.1))
+my_combo_truth <- function(x) plogis(-4 + 0.5 * log(x / 0.1))
 matplot(
   x = empty_data@doseGrid, 
   y = cbind(my_truth(empty_data@doseGrid), my_combo_truth(empty_data@doseGrid)), 
@@ -814,11 +839,32 @@ cbind(
   combo = my_sims$combo@doses
 )
 
-my_sims$single@data[[2]]
-my_sims$combo@data[[2]]
+plot(my_sims$single@data[[1]])
+plot(my_sims$combo@data[[1]])
 ```
 
-So we see that in simulations 2, 5, 6 and 14 no dose could be found (all were
-too toxic). Simulation 2 is an example where the first single dose cohort lead
-to 2 out of 3 DLTs and therefore stopped already before one combo dose patient
-could be included.
+So here we have allowed the single and combo doses to be different for each cohort.
+And we can now also try out forcing the same dose for the single and combo cohorts:
+
+```{r try-same-dose}
+my_design2 <- my_design
+my_design@same_dose <- TRUE
+
+my_sims_same_dose <- simulate(
+  my_design2, 
+  nsim = 1, 
+  seed = 123,
+  truth = my_truth,
+  combo_truth = my_combo_truth
+)
+
+plot(my_sims_same_dose$single)
+plot(my_sims_same_dose$combo)
+
+plot(my_sims_same_dose$single@data[[1]])
+plot(my_sims_same_dose$combo@data[[1]])
+```
+
+This looks ok. Note that when we have staggered the first cohort as here and limit
+the sample size for single and combo at the same maximum then we might stop single
+earlier than combo. 
