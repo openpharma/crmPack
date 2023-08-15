@@ -189,7 +189,7 @@ LogisticLogNormalGrouped <- function(mean, cov, ref_dose = 1) {
     },
     datamodel = function() {
       for (i in 1:nObs) {
-        # Comment: Can add intercept is_combo[i] * alpha02
+        # TODO: Can add intercept is_combo[i] * alpha02
         logit(p[i]) <- alpha0 + (alpha1 + is_combo[i] * alpha2) * log(x[i] / ref_dose)
         y[i] ~ dbern(p[i])
       }
@@ -718,7 +718,7 @@ setMethod("simulate",
 )
 ```
 
-Comment: Need the option to choose the combo dose as next dose for both mono and
+TODO: Need the option to choose the combo dose as next dose for both mono and
 combo.
 
 ## Example
