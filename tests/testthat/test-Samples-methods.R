@@ -363,6 +363,16 @@ test_that("plot-Samples works correctly", {
   vdiffr::expect_doppelganger("plot-Samples_showLegend-FALSE", actual1)
 })
 
+test_that("plot-Samples forwards additional arguments to prob inside", {
+  mcmcOptions <- McmcOptions(samples = 3)
+  samples <- Samples(data = list(alpha0 = 1:3, alpha1 = 4:6), options = mcmcOptions)
+  model <- h_needs_extra_prob_model()
+  emptyData <- Data(doseGrid = seq(10, 80, 10))
+
+  result <- plot(samples, model, emptyData, extra_argument = "yes")
+  expect_list(result)
+})
+
 test_that("plot-Samples-DualEndpoint fails gracefully with bad input", {
   data <- DataDual(
     x = c(0.1, 0.5, 1.5, 3, 6, 10, 10, 10, 20, 20, 20, 40, 40, 40, 50, 50, 50),

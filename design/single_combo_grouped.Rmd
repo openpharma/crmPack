@@ -309,7 +309,7 @@ matplot(x = fit_single$dose, y = cbind(fit_single$middle, fit_combo$middle), typ
 As usual we can sample from the prior and look at the fit results.
 For this to work well we also need to pass additional arguments in the plot method.
 
-TODO: Add unit tests for the plot methods of Samples class.
+We have added a unit test for the plot method of the Samples class already as well.
 
 ```{r prior-elicitation}
 # Need to choose the prior parameters here.
