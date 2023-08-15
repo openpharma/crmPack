@@ -189,6 +189,7 @@ LogisticLogNormalGrouped <- function(mean, cov, ref_dose = 1) {
     },
     datamodel = function() {
       for (i in 1:nObs) {
+        # Comment: Can add intercept is_combo[i] * alpha02
         logit(p[i]) <- alpha0 + (alpha1 + is_combo[i] * alpha2) * log(x[i] / ref_dose)
         y[i] ~ dbern(p[i])
       }
@@ -717,6 +718,9 @@ setMethod("simulate",
 )
 ```
 
+Comment: Need the option to choose the combo dose as next dose for both mono and
+combo.
+
 ## Example
 
 ```{r DesignGrouped-example}
@@ -735,7 +739,16 @@ empty_data <- Data(doseGrid = c(0.1, 0.5, 1.5, 3, 6, seq(from = 10, to = 80, by 
 my_design <- DesignGrouped(
   model = my_model,
   single = Design(
-    model = my_model,
+    model = .ModelLogNormal(), # is not used
+    stopping = my_stopping,
+    increments = my_increments,
+    nextBest = my_next_best,
+    cohortSize = my_cohort_size,
+    data = empty_data,
+    startingDose = 0.1
+  ),
+  combo = Design(
+    model = .ModelLogNormal(), # is not used
     stopping = my_stopping,
     increments = my_increments,
     nextBest = my_next_best,
