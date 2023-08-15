@@ -417,6 +417,19 @@ setMethod("simulate",
           data = thisData
         )
 
+        # Get the MTD estimate from the samples.
+        sample_mtd <- dose(
+          mean(object@nextBest@target),
+          model = object@model,
+          samples = thisSamples
+        )
+
+        # Create list with median MTD and CV.
+        additional_stats <- list(
+          median_mtd = median(sample_mtd),
+          cv_mtd = mad(sample_mtd) / median(sample_mtd)
+        )
+
         ## return the results
         thisResult <-
           list(
@@ -431,7 +444,8 @@ setMethod("simulate",
                 stopit,
                 "message"
               ),
-            report_results = stopit_results
+            report_results = stopit_results,
+            additional_stats = additional_stats
           )
         return(thisResult)
       }
@@ -470,6 +484,9 @@ setMethod("simulate",
       stopResults <- lapply(resultList, "[[", "report_results")
       stop_matrix <- as.matrix(do.call(rbind, stopResults))
 
+      # Result list of additional stats such as median MTD and mean CV MTD values
+      additional_stats <- lapply(resultList, "[[", "additional_stats")
+
       ## return the results in the Simulations class object
       ret <- Simulations(
         data = dataList,
@@ -477,14 +494,13 @@ setMethod("simulate",
         fit = fitList,
         stop_report = stop_matrix,
         stop_reasons = stopReasons,
+        additional_stats = additional_stats,
         seed = RNGstate
       )
 
       return(ret)
     }
 )
-
-
 
 
 ##' Simulate outcomes from a rule-based design
@@ -1075,6 +1091,9 @@ setMethod("simulate",
       ## for dual simulations as it would fail in summary otherwise (for dual simulations reporting is not implemented)
       stop_report <- matrix(TRUE, nrow = nsim)
 
+      ## For dual simulations summary of additional statistics like median MTD and mean CV MTD
+      additional_stats <- vector(mode='list', length=nsim)
+
       ## return the results in the DualSimulations class object
       ret <- DualSimulations(
         data = dataList,
@@ -1085,6 +1104,7 @@ setMethod("simulate",
         fit_biomarker = fitBiomarkerList,
         stop_report = stop_report,
         stop_reasons = stopReasons,
+        additional_stats = additional_stats,
         seed = RNGstate
       )
 
