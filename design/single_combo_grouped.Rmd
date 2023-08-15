@@ -265,7 +265,7 @@ setMethod(
 Note that for the `fit` method we need to make sure that the `...` are passed down to `prob`,
 such that we can pass down the `group` argument.
 
-TODO: Add tests for this in this PR already.
+We have added a corresponding unit test already in this PR.
 
 Note that in production we will need to modify the `doseFunction` and `probFunction` method
 definitions accordingly to allow for the passing of the `group` (or other) arguments
@@ -428,6 +428,8 @@ We do this in this PR already for the `NextBestNCRM` method as illustration.
 
 The same applies for the `stopTrial` methods. We here do it for `StoppingTargetProb`
 as illustration.
+
+For both methods updates we have unit tests in this PR already.
 
 ```{r DesignGrouped-methods}
 setMethod("simulate",
