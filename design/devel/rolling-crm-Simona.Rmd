@@ -207,13 +207,14 @@ plot(samples_TCBS, model_TCBS, data_TCBS)
 ```
 
 ```{R inf_mod}
+
 # informative component
 rv <- (approximate(samples_TCBS, model_TCBS, data_TCBS,
   points = c(1, 20, 50, 100, 200, 400),
   refDose = myrefDose, logNormal = TRUE, verbose = TRUE
-)
-rv$model
+))$model
 
+rv$model
 
 ## creating an empty dataset, provide only the dose grid:
 emptydata_inm <- Data(doseGrid = mydoseGrid)
@@ -386,8 +387,7 @@ priorsamples_post <- mcmc(emptydata, posterior_hist, options)
 plot_priorsam <- plot(priorsamples_post, posterior_hist, emptydata)
 multiplot(p2, plot_priorsam)
 
-
-rv <- approximate(priorsamples_2575, mixmodel_2575, emptydata, #refDose=mixmodel_2575@refDose, logNormal = FALSE)
+rv <- approximate(priorsamples_2575, mixmodel_2575, emptydata), #refDose=mixmodel_2575@refDose, logNormal = FALSE)
 prior_hist2 <- rv$model
 
 # posterior_hist2@mean
