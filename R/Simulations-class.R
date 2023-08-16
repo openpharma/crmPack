@@ -159,8 +159,8 @@ GeneralSimulations <- function(data,
         )
 
         o$check(
-        identical(length(object@additional_stats), nSims),
-        "additional_stats must have same length as data"
+          identical(length(object@additional_stats), nSims),
+          "additional_stats must have same length as data"
         )
 
         o$result()

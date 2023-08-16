@@ -989,13 +989,13 @@ setMethod("show",
       # Report results of additional statistics such as median MTD and mean CV MTD
 
       cat(
-      "Median MTD : ",
-      round(unlist(additional_stats)[1], 2), "\n"
+        "Median MTD : ",
+        round(unlist(additional_stats)[1], 2), "\n"
       )
 
       cat(
-      "Mean CV (MTD) [%] : ",
-      round(unlist(additional_stats)[2] * 100, 2), "\n"
+        "Mean CV (MTD) [%] : ",
+        round(unlist(additional_stats)[2] * 100, 2), "\n"
       )
 
       # Report individual stopping rules with non-<NA> labels.
