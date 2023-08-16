@@ -170,9 +170,20 @@ We can inherit from `ModelLogNormal`. Compared to `LogisticLogNormal` etc.
 we have two additional parameters in `theta` which are then also exponentiated to 
 obtain the corresponding `alpha` parameters.
 
-We note that here `refDose` should be chosen below or equal to the lowest dose, such that the 
-term `log(dose / ref_dose)` is never negative and hence the probability of DLT
-at any given dose will be higher for the combination than for the single agent.
+We note that here `refDose` should be chosen carefully.
+- In a scenario where the toxicity can reasonably be assumed to be
+higher for the combination than for the single agent: Then the `refDose` should be
+(below or) equal to the lowest dose, such that the term `log(dose / ref_dose)` 
+is never negative and hence the probability of DLT will be higher for combo than
+for single agent.
+- In a scenario where it is the other way around, e.g. the combination with 
+a concomitant medication is compared with the single agent, then `refDose`
+should be (above or) equal to the highest dose.
+- Otherwise it can be chosen in between.
+
+Also variants of the proposed model might not restrict `delta0` and `delta1` to be
+positive giving more flexibility of the model and then the `refDose` choice is less
+critical.
 
 ## Definition
 
@@ -193,14 +204,14 @@ LogisticLogNormalGrouped <- function(mean, cov, ref_dose = 1) {
     priormodel = function() {
       theta ~ dmnorm(mean, prec)
       alpha0 <- theta[1]
-      alpha0c <- exp(theta[2])
+      delta0 <- exp(theta[2])
       alpha1 <- exp(theta[3])
-      alpha1c <- exp(theta[4])
+      delta1 <- exp(theta[4])
     },
     datamodel = function() {
       for (i in 1:nObs) {
-        logit(p[i]) <- (alpha0 + is_combo[i] * alpha0c) +
-          (alpha1 + is_combo[i] * alpha1c) * log(x[i] / ref_dose)
+        logit(p[i]) <- (alpha0 + is_combo[i] * delta0) +
+          (alpha1 + is_combo[i] * delta1) * log(x[i] / ref_dose)
         y[i] ~ dbern(p[i])
       }
     },
@@ -219,7 +230,7 @@ LogisticLogNormalGrouped <- function(mean, cov, ref_dose = 1) {
       list(theta = c(0, 1, 1, 1))
     },
     datanames = c("nObs", "y", "x"),
-    sample = c("alpha0", "alpha0c", "alpha1", "alpha1c")
+    sample = c("alpha0", "delta0", "alpha1", "delta1")
   )
 }
 ```
@@ -236,17 +247,17 @@ setMethod(
   ),
   definition = function(dose, model, samples, group) {
     assert_numeric(dose, lower = 0L, any.missing = FALSE, min.len = 1L)
-    assert_subset(c("alpha0", "alpha0c", "alpha1", "alpha1c"), names(samples))
+    assert_subset(c("alpha0", "delta0", "alpha1", "delta1"), names(samples))
     assert_length(dose, len = size(samples))
     assert_factor(group, len = length(dose), levels = c("single", "combo"))
 
     alpha0 <- samples@data$alpha0
-    alpha0c <- samples@data$alpha0c
+    delta0 <- samples@data$delta0
     alpha1 <- samples@data$alpha1
-    alpha1c <- samples@data$alpha1c
+    delta1 <- samples@data$delta1
     ref_dose <- as.numeric(model@ref_dose)
     is_combo <- as.integer(group == "combo")
-    plogis((alpha0 + is_combo * alpha0c) + (alpha1 + is_combo * alpha1c) * log(dose / ref_dose))
+    plogis((alpha0 + is_combo * delta0) + (alpha1 + is_combo * delta1) * log(dose / ref_dose))
   }
 )
 
@@ -259,17 +270,17 @@ setMethod(
   ),
   definition = function(x, model, samples, group) {
     assert_probabilities(x)
-    assert_subset(c("alpha0", "alpha0c", "alpha1", "alpha1c"), names(samples))
+    assert_subset(c("alpha0", "delta0", "alpha1", "delta1"), names(samples))
     assert_length(x, len = size(samples))
     assert_factor(group, len = length(x), levels = c("single", "combo"))
 
     alpha0 <- samples@data$alpha0
-    alpha0c <- samples@data$alpha0c
+    delta0 <- samples@data$delta0
     alpha1 <- samples@data$alpha1
-    alpha1c <- samples@data$alpha1c
+    delta1 <- samples@data$delta1
     ref_dose <- as.numeric(model@ref_dose)
     is_combo <- as.integer(group == "combo")
-    exp((logit(x) - (alpha0 + is_combo * alpha0c)) / (alpha1 + is_combo * alpha1c)) * ref_dose
+    exp((logit(x) - (alpha0 + is_combo * delta0)) / (alpha1 + is_combo * delta1)) * ref_dose
   }
 )
 ```
@@ -296,13 +307,13 @@ my_options <- McmcOptions()
 my_samples <- mcmc(my_data, my_model, my_options)
 str(my_samples)
 
-mean(my_samples@data$alpha0c)
-mean(my_samples@data$alpha1c)
+mean(my_samples@data$delta0)
+mean(my_samples@data$delta1)
 mean(prob(dose = 5, my_model, my_samples, factor("single", levels = c("single", "combo"))))
 mean(prob(dose = 5, my_model, my_samples, factor("combo", levels = c("single", "combo"))))
 
 one_sample <- Samples(
-  data = list(alpha0 = -0.5, alpha0c = 0.1, alpha1 = 0.3, alpha1c = 0.5),
+  data = list(alpha0 = -0.5, delta0 = 0.1, alpha1 = 0.3, delta1 = 0.5),
   options = McmcOptions(samples = 1L)
 )
 
