@@ -634,6 +634,7 @@ setMethod("summary",
       ret <- .SimulationsSummary(
         start,
         stop_report = object@stop_report,
+        additional_stats = object@additional_stats,
         fitAtDoseMostSelected = fitAtDoseMostSelected,
         meanFit = meanFit
       )
@@ -985,6 +986,17 @@ setMethod("show",
         "Fitted toxicity rate at dose most often selected"
       )
 
+      # Report results of additional statistics such as median MTD and mean CV MTD
+
+      cat(
+      "Median MTD : ",
+      round(unlist(additional_stats)[1], 2), "\n"
+      )
+
+      cat(
+      "Mean CV (MTD) [%] : ",
+      round(unlist(additional_stats)[2] * 100, 2), "\n"
+      )
 
       # Report individual stopping rules with non-<NA> labels.
 
