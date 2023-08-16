@@ -324,7 +324,7 @@ For this to work well we also need to pass additional arguments in the plot meth
 
 We have added a unit test for the plot method of the Samples class already as well.
 
-```{r prior-elicitation}
+```{r initial-pars}
 # Need to choose the prior parameters here.
 my_model <- LogisticLogNormalGrouped(
   mean = rep(0, 4),
