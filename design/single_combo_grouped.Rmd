@@ -446,7 +446,7 @@ DesignGrouped <- function(model,
 ## Methods
 
 Let's for now just look at the simulation method. In production we also
-need the examination method though, but it is going to follow a similar logic.
+need the `examine` method though, but it is going to follow a similar logic.
 
 For simplicity we don't support the `firstSeparate` argument here for now.
 Since we have two groups now, we also have two true dose-toxicity relationships
@@ -814,9 +814,15 @@ my_truth <- function(x) plogis(-4 + 0.2 * log(x / 0.1))
 my_combo_truth <- function(x) plogis(-4 + 0.5 * log(x / 0.1))
 matplot(
   x = empty_data@doseGrid,
-  y = cbind(my_truth(empty_data@doseGrid), my_combo_truth(empty_data@doseGrid)),
-  type = "l"
+  y = cbind(
+    mono = my_truth(empty_data@doseGrid), 
+    combo = my_combo_truth(empty_data@doseGrid)
+  ),
+  type = "l",
+  ylab = "true DLT prob",
+  xlab = "dose"
 )
+legend("topright", c("mono", "combo"), lty = c(1, 2), col = c(1, 2))
 
 my_sims <- simulate(
   my_design,

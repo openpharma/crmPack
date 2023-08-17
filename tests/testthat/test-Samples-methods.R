@@ -213,6 +213,8 @@ test_that("fit-Samples forwards additional arguments to prob inside", {
 
   result <- fit(samples, model, emptyData, extra_argument = "yes")
   expect_data_frame(result)
+  expect_equal(nrow(result), length(emptyData@doseGrid))
+  expect_named(result, c("dose", "middle", "lower", "upper"))
 })
 
 ## Samples-DataModel ----

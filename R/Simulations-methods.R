@@ -181,7 +181,7 @@ setMethod("plot",
           sapply(
             simDoses,
             function(s) {
-              if (length(s)) {
+              if (length(s) > 0) {
                 prop.table(table(factor(s, levels = x@data[[1]]@doseGrid)))
               } else {
                 rep(0, length(x@data[[1]]@doseGrid))
