@@ -35,7 +35,7 @@ setMethod(
       return()
     }
 
-    df <- h_plot_data_df(x, blind)
+    df <- h_plot_data_df(x, blind, ...)
 
     p <- ggplot(df, aes(x = patient, y = dose)) +
       geom_point(aes(shape = toxicity, colour = toxicity), size = 3) +
