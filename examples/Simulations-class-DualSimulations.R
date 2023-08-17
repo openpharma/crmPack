@@ -34,6 +34,7 @@ dual_simulations_obj <- DualSimulations(
   fit = fit,
   stop_report = stop_report,
   stop_reasons = stop_reasons,
+  additional_stats = additional_stats,
   data = data_list,
   doses = doses,
   seed = seed

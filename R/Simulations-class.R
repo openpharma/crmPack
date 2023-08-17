@@ -332,6 +332,7 @@ DualSimulations <- function(rho_est,
 ##' initialization function is provided for this class.
 ##'
 ##' @slot stop_report matrix of stopping rule outcomes
+##' @slot additional_stats list of median MTD and mean CV MTD values
 ##' @slot fitAtDoseMostSelected fitted toxicity rate at dose most often selected
 ##' @slot meanFit list with the average, lower (2.5%) and upper (97.5%)
 ##' quantiles of the mean fitted toxicity at each dose level
