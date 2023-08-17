@@ -1017,6 +1017,17 @@ setMethod("simulate",
           data = thisData
         )
 
+        sample_mtd <- dose(
+          mean(object@nextBest@target),
+          model = object@model,
+          samples = thisSamples
+        )
+
+        additional_stats <- list(
+          median_mtd = median(sample_mtd),
+          cv_mtd = mad(sample_mtd) / median(sample_mtd)
+        )
+
         ## return the results
         thisResult <-
           list(
@@ -1041,7 +1052,8 @@ setMethod("simulate",
               attr(
                 stopit,
                 "message"
-              )
+              ),
+            additional_stats = additional_stats
           )
 
         return(thisResult)
@@ -1092,7 +1104,7 @@ setMethod("simulate",
       stop_report <- matrix(TRUE, nrow = nsim)
 
       ## For dual simulations summary of additional statistics like median MTD and mean CV MTD
-      additional_stats <- vector(mode = "list", length = nsim)
+      additional_stats <- lapply(resultList, "[[", "additional_stats")
 
       ## return the results in the DualSimulations class object
       ret <- DualSimulations(
@@ -4656,6 +4668,17 @@ setMethod("simulate",
           data = thisData
         )
 
+        sample_mtd <- dose(
+          mean(object@nextBest@target),
+          model = object@model,
+          samples = thisSamples
+        )
+
+        additional_stats <- list(
+          median_mtd = median(sample_mtd),
+          cv_mtd = mad(sample_mtd) / median(sample_mtd)
+        )
+
         ## return the results
         thisResult <-
           list(
@@ -4670,7 +4693,8 @@ setMethod("simulate",
               attr(
                 stopit,
                 "message"
-              )
+              ),
+            additional_stats = additional_stats
           )
         return(thisResult)
       }
@@ -4713,6 +4737,9 @@ setMethod("simulate",
       stopReasons <- lapply(resultList, "[[", "stop")
 
       stop_report <- matrix(TRUE, nrow = nsim)
+
+      additional_stats <- lapply(resultList, "[[", "additional_stats")
+
       ## return the results in the Simulations class object
       ret <- DASimulations(
         data = dataList,
@@ -4720,6 +4747,7 @@ setMethod("simulate",
         fit = fitList,
         trialduration = trialduration,
         stop_report = stop_report,
+        additional_stats = additional_stats,
         stop_reasons = stopReasons,
         seed = RNGstate
       )
