@@ -1019,6 +1019,19 @@ setMethod("simulate",
           data = thisData
         )
 
+        # Get the MTD estimate from the samples.
+        sample_mtd <- dose(
+          mean(object@nextBest@target),
+          model = object@model,
+          samples = thisSamples
+        )
+
+        # Create list with median MTD and CV.
+        additional_stats <- list(
+          median_mtd = median(sample_mtd),
+          cv_mtd = mad(sample_mtd) / median(sample_mtd)
+        )
+
         ## return the results
         thisResult <-
           list(
