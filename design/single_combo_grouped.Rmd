@@ -815,7 +815,7 @@ my_combo_truth <- function(x) plogis(-4 + 0.5 * log(x / 0.1))
 matplot(
   x = empty_data@doseGrid,
   y = cbind(
-    mono = my_truth(empty_data@doseGrid), 
+    mono = my_truth(empty_data@doseGrid),
     combo = my_combo_truth(empty_data@doseGrid)
   ),
   type = "l",
