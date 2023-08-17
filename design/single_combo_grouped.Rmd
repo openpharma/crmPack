@@ -405,9 +405,7 @@ Here we add the flag `first_cohort_mono_only`. When turned on, this means
 that we first test one mono agent cohort. Once that DLT data has been collected, we proceed
 from the second cohort onwards with concurrent mono and combo cohorts.
 
-We also add a flag `same_dose` to specify whether the lower dose, i.e. the combo dose, 
-should be used as the next dose for both mono and combo. This might or might
-not be desired in the given situation.
+We also add a flag `same_dose` to specify whether the lower dose of the separately determined mono and combo doses should be used as the next dose for both mono and combo. This might or might not be desired in the given situation.
 
 Note that we deliberately ignore information in `Design`, including the model
 and the placebo cohort size information in there. This is not super clean,
@@ -540,10 +538,17 @@ setMethod("simulate",
         ## what are the next doses to be used?
         ## initialize with starting doses
         if (object@mono@startingDose < object@combo@startingDose) {
-          stop("combo starting dose cannot be higher than mono starting dose")
+          warning("combo starting dose usually not higher than mono starting dose")
         }
-        this_mono_dose <- if (object@same_dose) object@combo@startingDose else object@mono@startingDose
-        this_combo_dose <- object@combo@startingDose
+        if (object@same_dose) {
+          this_mono_dose <- this_combo_dose <- min(
+            object@mono@startingDose,
+            object@combo@startingDose
+          )
+        } else {
+          this_mono_dose <- object@mono@startingDose
+          this_combo_dose <- object@combo@startingDose
+        }
 
         ## inside this loop we simulate the whole trial, until stopping
         while (!(stop_mono && stop_combo)) {
@@ -677,8 +682,10 @@ setMethod("simulate",
             stop_combo_results <- crmPack:::h_unpack_stopit(stop_combo)
 
             if (object@same_dose) {
-              if (this_mono_dose < this_combo_dose) stop("combo dose cannot be higher than mono dose")
-              this_mono_dose <- this_combo_dose
+              this_mono_dose <- this_combo_dose <- min(
+                this_mono_dose,
+                this_combo_dose
+              )
             }
           }
         }
