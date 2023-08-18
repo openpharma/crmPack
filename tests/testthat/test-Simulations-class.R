@@ -89,6 +89,7 @@ test_that("Simulations object can be created with the user constructor", {
       fit = fit,
       stop_reasons = stop_reasons,
       stop_report = stop_report,
+      additional_stats = additional_stats,
       data,
       doses,
       seed
@@ -156,6 +157,7 @@ test_that("DualSimulations object can be created with the user constructor", {
       fit = fit,
       stop_report = stop_report,
       stop_reasons = stop_reasons,
+      additional_stats = additional_stats,
       data = data_list,
       doses = doses,
       seed = seed
