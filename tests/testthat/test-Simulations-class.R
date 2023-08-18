@@ -63,6 +63,8 @@ test_that("Simulations object can be created with the user constructor", {
 
   stop_report <- matrix(c(TRUE, FALSE), nrow = 2)
 
+  additional_stats <- list(1, 0.4)
+
   data <- list(
     Data(
       x = 1:2,
@@ -104,7 +106,7 @@ test_that("Simulations object can be created with the user constructor", {
 test_that("Simulations user constructor arguments names are as expected", {
   expect_function(
     Simulations,
-    args = c("fit", "stop_reasons", "stop_report", "..."),
+    args = c("fit", "stop_reasons", "stop_report", "additional_stats", "..."),
     ordered = TRUE
   )
 })
@@ -148,6 +150,8 @@ test_that("DualSimulations object can be created with the user constructor", {
   stop_report <- matrix(c(TRUE, FALSE), nrow = 2)
 
   stop_reasons <- list("A", "B")
+
+  additional_stats <- list(1, 0.4)
 
   result <- expect_silent(
     DualSimulations(
