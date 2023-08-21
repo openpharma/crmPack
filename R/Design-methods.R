@@ -418,7 +418,7 @@ setMethod("simulate",
         )
 
         # Get the MTD estimate from the samples.
-        sample_mtd <- dose(
+        target_dose_samples <- dose(
           mean(object@nextBest@target),
           model = object@model,
           samples = thisSamples
@@ -426,8 +426,8 @@ setMethod("simulate",
 
         # Create list with median MTD and CV.
         additional_stats <- list(
-          median_mtd = median(sample_mtd),
-          cv_mtd = mad(sample_mtd) / median(sample_mtd)
+          median_mtd = median(target_dose_samples),
+          cv_mtd = mad(target_dose_samples) / median(target_dose_samples)
         )
 
         ## return the results
@@ -1020,7 +1020,7 @@ setMethod("simulate",
         )
 
         # Get the MTD estimate from the samples.
-        sample_mtd <- dose(
+        target_dose_samples <- dose(
           mean(object@nextBest@target),
           model = object@model,
           samples = thisSamples
@@ -1028,8 +1028,8 @@ setMethod("simulate",
 
         # Create list with median MTD and CV.
         additional_stats <- list(
-          median_mtd = median(sample_mtd),
-          cv_mtd = mad(sample_mtd) / median(sample_mtd)
+          median_mtd = median(target_dose_samples),
+          cv_mtd = mad(target_dose_samples) / median(target_dose_samples)
         )
 
         ## return the results
@@ -4672,15 +4672,15 @@ setMethod("simulate",
           data = thisData
         )
 
-        sample_mtd <- dose(
+        target_dose_samples <- dose(
           mean(object@nextBest@target),
           model = object@model,
           samples = thisSamples
         )
 
         additional_stats <- list(
-          median_mtd = median(sample_mtd),
-          cv_mtd = mad(sample_mtd) / median(sample_mtd)
+          median_mtd = median(target_dose_samples),
+          cv_mtd = mad(target_dose_samples) / median(target_dose_samples)
         )
 
         ## return the results

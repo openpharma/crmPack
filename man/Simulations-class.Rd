@@ -70,6 +70,15 @@ stop_report <- matrix(c(TRUE, FALSE), nrow = 2)
 
 stop_reasons <- list("A", "B")
 
+additional_stats <- list(1, 0.4)
 
-simulations <- Simulations(fit = fit, stop_report = stop_report, stop_reasons = stop_reasons, data, doses, seed)
+simulations <- Simulations(
+  fit = fit,
+  stop_report = stop_report,
+  stop_reasons = stop_reasons,
+  additional_stats = additional_stats,
+  data,
+  doses,
+  seed
+)
 }
