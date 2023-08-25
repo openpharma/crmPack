@@ -185,3 +185,31 @@ test_that("DataDA object can be created with custom values", {
   )
   expect_valid(result, "DataDA")
 })
+
+# DataGrouped-class ----
+
+test_that(".DataGrouped works as expected", {
+  result <- expect_silent(.DataGrouped())
+  expect_valid(result, "DataGrouped")
+})
+
+# DataGrouped-constructor ----
+
+test_that("DataGrouped object can be created with user constructor DataGrouped", {
+  result <- expect_silent(DataGrouped())
+  expect_valid(result, "DataGrouped")
+})
+
+test_that("DataGrouped object can be created with custom values", {
+  result <- expect_silent(
+    DataGrouped(
+      group = c("mono", "combo", "mono"),
+      x = c(0.1, 0.5, 1.5),
+      y = c(0, 0, 0),
+      ID = 1:3,
+      cohort = 1:3,
+      doseGrid = c(0.1, 0.5, 1.5, 3, 6, seq(from = 10, to = 80, by = 2))
+    )
+  )
+  expect_valid(result, "DataGrouped")
+})

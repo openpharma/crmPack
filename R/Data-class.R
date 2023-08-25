@@ -379,3 +379,57 @@ DataDA <- function(u = numeric(),
     Tmax = as.numeric(Tmax)
   )
 }
+
+# DataGrouped ----
+
+## class ----
+
+#' `DataGrouped`
+#'
+#' @description `r lifecycle::badge("stable")`
+#'
+#' [`DataGrouped`] is a class for a two groups dose escalation data set,
+#' comprised of a monotherapy (`mono`) and a combination therapy (`combo`)
+#' arm. It inherits from [`Data`] and it contains the additional group information.
+#'
+#' @slot group (`factor`)\cr whether `mono` or `combo` was used.
+#'
+#' @aliases DataGrouped
+#' @export
+.DataGrouped <- setClass(
+  Class = "DataGrouped",
+  slots = c(
+    group = "factor"
+  ),
+  prototype = prototype(
+    group = factor(levels = c("mono", "combo"))
+  ),
+  contains = "Data",
+  validity = v_data_grouped
+)
+
+## constructor ----
+
+#' @rdname DataGrouped-class
+#'
+#' @param group (`factor` or `character`)\cr whether `mono` or `combo` was used.
+#'   If `character` then will be coerced to `factor` with the correct levels
+#'   internally.
+#' @param ... parameters passed to [Data()].
+#'
+#' @export
+#' @example examples/Data-class-DataGrouped.R
+#'
+DataGrouped <- function(group = character(),
+                        ...) {
+  d <- Data(...)
+  if (!is.factor(group)) {
+    assert_character(group)
+    assert_subset(group, choices = c("mono", "combo"))
+    group <- factor(group, levels = c("mono", "combo"))
+  }
+  .DataGrouped(
+    d,
+    group = group
+  )
+}
