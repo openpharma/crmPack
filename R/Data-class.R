@@ -433,3 +433,12 @@ DataGrouped <- function(group = character(),
     group = group
   )
 }
+
+## default constructor ----
+
+#' @rdname DataGrouped-class
+#' @note Typically, end users will not use the `.DefaultDataGrouped()` function.
+#' @export
+.DefaultDataGrouped <- function() {
+  DataGrouped()
+}

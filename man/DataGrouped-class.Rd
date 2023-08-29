@@ -5,9 +5,12 @@
 \alias{DataGrouped-class}
 \alias{.DataGrouped}
 \alias{DataGrouped}
+\alias{.DefaultDataGrouped}
 \title{\code{DataGrouped}}
 \usage{
 DataGrouped(group = character(), ...)
+
+.DefaultDataGrouped()
 }
 \arguments{
 \item{group}{(\code{factor} or \code{character})\cr whether \code{mono} or \code{combo} was used.
@@ -29,6 +32,9 @@ arm. It inherits from \code{\link{Data}} and it contains the additional group in
 \item{\code{group}}{(\code{factor})\cr whether \code{mono} or \code{combo} was used.}
 }}
 
+\note{
+Typically, end users will not use the \code{.DefaultDataGrouped()} function.
+}
 \examples{
 my_data <- DataGrouped(
   x = c(0.1, 0.5, 1.5, 3, 6, 10, 10, 10),

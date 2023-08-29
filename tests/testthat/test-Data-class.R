@@ -213,3 +213,8 @@ test_that("DataGrouped object can be created with custom values", {
   )
   expect_valid(result, "DataGrouped")
 })
+
+test_that("DataGrouped default constructor works as expected", {
+  result <- expect_silent(.DefaultDataGrouped())
+  expect_valid(result, "DataGrouped")
+})
