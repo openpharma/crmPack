@@ -107,7 +107,7 @@ GeneralSimulations <- function(data,
 #' @slot fit (`list`)\cr final fits
 #' @slot stop_reasons (`list`)\cr stopping reasons for each simulation run
 #' @slot stop_report matrix of stopping rule outcomes
-#' @slot additional_stats list of median MTD and mean CV MTD values
+#' @slot additional_stats list of addtional statistical summary
 #' @aliases Simulations
 #' @export
 .Simulations <-
@@ -129,7 +129,7 @@ GeneralSimulations <- function(data,
       stop_reasons =
         list("A", "A"),
       additional_stats =
-        list(1, 0.4)
+        list(1, 1)
     ),
     contains = "GeneralSimulations",
     validity =
@@ -160,7 +160,7 @@ GeneralSimulations <- function(data,
 
         o$check(
           identical(length(object@additional_stats), nSims),
-          "additional_stats must have same length as data"
+          "additional_stats must have same length as the number of simulations"
         )
 
         o$result()
@@ -332,7 +332,7 @@ DualSimulations <- function(rho_est,
 ##' initialization function is provided for this class.
 ##'
 ##' @slot stop_report matrix of stopping rule outcomes
-##' @slot additional_stats list of median MTD and mean CV MTD values
+##' @slot additional_stats list of additional statistical summary
 ##' @slot fitAtDoseMostSelected fitted toxicity rate at dose most often selected
 ##' @slot meanFit list with the average, lower (2.5%) and upper (97.5%)
 ##' quantiles of the mean fitted toxicity at each dose level

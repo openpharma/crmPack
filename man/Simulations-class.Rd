@@ -36,7 +36,7 @@ Additional slots \code{fit} and \code{stop_reasons} compared to the general clas
 
 \item{\code{stop_report}}{matrix of stopping rule outcomes}
 
-\item{\code{additional_stats}}{list of median MTD and mean CV MTD values}
+\item{\code{additional_stats}}{list of addtional statistical summary}
 }}
 
 \examples{
@@ -70,7 +70,7 @@ stop_report <- matrix(c(TRUE, FALSE), nrow = 2)
 
 stop_reasons <- list("A", "B")
 
-additional_stats <- list(1, 0.4)
+additional_stats <- list(1, 1)
 
 simulations <- Simulations(
   fit = fit,

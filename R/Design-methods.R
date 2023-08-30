@@ -209,7 +209,7 @@ setMethod("simulate",
              truth, args = NULL, firstSeparate = FALSE,
              mcmcOptions = McmcOptions(),
              parallel = FALSE, nCores =
-               min(parallel::detectCores(), 5),
+               min(parallel::detectCores(), 5), derive = NULL,
              ...) {
       nsim <- safeInteger(nsim)
 
@@ -418,17 +418,20 @@ setMethod("simulate",
         )
 
         # Get the MTD estimate from the samples.
+
         target_dose_samples <- dose(
           mean(object@nextBest@target),
           model = object@model,
           samples = thisSamples
         )
 
-        # Create list with median MTD and CV.
-        additional_stats <- list(
-          median_mtd = median(target_dose_samples),
-          cv_mtd = mad(target_dose_samples) / median(target_dose_samples)
-        )
+        # Create a function for additional statistical summary.
+        if (is.null(derive)) {
+          additional_stats <- list()
+        } else {
+          additional_stats <- lapply(derive, function(f) f(target_dose_samples))
+        }
+
 
         ## return the results
         thisResult <-
@@ -484,7 +487,7 @@ setMethod("simulate",
       stopResults <- lapply(resultList, "[[", "report_results")
       stop_matrix <- as.matrix(do.call(rbind, stopResults))
 
-      # Result list of additional stats such as median MTD and mean CV MTD values.
+      # Result list of additional statistical summary.
       additional_stats <- lapply(resultList, "[[", "additional_stats")
 
       ## return the results in the Simulations class object
@@ -1020,17 +1023,19 @@ setMethod("simulate",
         )
 
         # Get the MTD estimate from the samples.
+
         target_dose_samples <- dose(
           mean(object@nextBest@target),
           model = object@model,
           samples = thisSamples
         )
 
-        # Create list with median MTD and CV.
-        additional_stats <- list(
-          median_mtd = median(target_dose_samples),
-          cv_mtd = mad(target_dose_samples) / median(target_dose_samples)
-        )
+        # Create a function for additional statistical summary.
+        if (is.null(derive)) {
+          additional_stats <- list()
+        } else {
+          additional_stats <- lapply(derive, function(f) f(target_dose_samples))
+        }
 
         ## return the results
         thisResult <-
@@ -4672,16 +4677,20 @@ setMethod("simulate",
           data = thisData
         )
 
+        # Get the MTD estimate from the samples.
+
         target_dose_samples <- dose(
           mean(object@nextBest@target),
           model = object@model,
           samples = thisSamples
         )
 
-        additional_stats <- list(
-          median_mtd = median(target_dose_samples),
-          cv_mtd = mad(target_dose_samples) / median(target_dose_samples)
-        )
+        # Create a function for additional statistical summary.
+        if (is.null(derive)) {
+          additional_stats <- list()
+        } else {
+          additional_stats <- lapply(derive, function(f) f(target_dose_samples))
+        }
 
         ## return the results
         thisResult <-

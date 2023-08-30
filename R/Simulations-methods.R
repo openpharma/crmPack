@@ -643,7 +643,6 @@ setMethod("summary",
     }
 )
 
-
 ##' Summarize the dual-endpoint design simulations, relative to given true
 ##' dose-toxicity and dose-biomarker curves
 ##'
@@ -978,25 +977,23 @@ setMethod("show",
       )
 
 
-
-
       ## add one reporting line
       r$report(
         "fitAtDoseMostSelected",
         "Fitted toxicity rate at dose most often selected"
       )
 
-      # Report results of additional statistics such as median MTD and mean CV MTD
+      # Report results of additional statistics summary
 
-      cat(
-        "Median MTD : ",
-        round(unlist(object@additional_stats)[1], 2), "\n"
-      )
+      if (length(list()) > 0) {
+        summary_stat_op <- unlist(object@additional_stats)
 
-      cat(
-        "Mean CV (MTD) [%] : ",
-        round(unlist(object@additional_stats)[2] * 100, 2), "\n"
-      )
+        cat(
+          "Results of Additional Statistical Calculation : \n",
+          paste(names(summary_stat_op), ":", round(summary_stat_op), "\n")
+        )
+      }
+
 
       # Report individual stopping rules with non-<NA> labels.
 

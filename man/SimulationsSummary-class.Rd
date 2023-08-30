@@ -19,7 +19,7 @@ initialization function is provided for this class.
 \describe{
 \item{\code{stop_report}}{matrix of stopping rule outcomes}
 
-\item{\code{additional_stats}}{list of median MTD and mean CV MTD values}
+\item{\code{additional_stats}}{list of additional statistical summary}
 
 \item{\code{fitAtDoseMostSelected}}{fitted toxicity rate at dose most often selected}
 

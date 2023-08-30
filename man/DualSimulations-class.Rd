@@ -66,7 +66,7 @@ stop_report <- matrix(c(TRUE, FALSE), nrow = 2)
 
 stop_reasons <- list("A", "B")
 
-additional_stats <- list(1, 0.4)
+additional_stats <- list(1, 1)
 
 dual_simulations_obj <- DualSimulations(
   rho_est = c(0.25, 0.35),

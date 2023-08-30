@@ -63,7 +63,7 @@ test_that("Simulations object can be created with the user constructor", {
 
   stop_report <- matrix(c(TRUE, FALSE), nrow = 2)
 
-  additional_stats <- list(1, 0.4)
+  additional_stats <- list(1, 1)
 
   data <- list(
     Data(
@@ -151,7 +151,7 @@ test_that("DualSimulations object can be created with the user constructor", {
 
   stop_reasons <- list("A", "B")
 
-  additional_stats <- list(1, 0.4)
+  additional_stats <- list(1, 1)
 
   result <- expect_silent(
     DualSimulations(
