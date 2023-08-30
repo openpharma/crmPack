@@ -42,6 +42,7 @@ reference:
       - DataParts
       - DataMixture
       - DataDA
+      - DataGrouped
       - McmcOptions
       - ModelParamsNormal
       - GeneralModel
