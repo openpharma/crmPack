@@ -1,3 +1,5 @@
+#' @include helpers_data.R
+
 # plot ----
 
 ## Data ----
@@ -21,6 +23,7 @@
 #' @return The [`ggplot2`] object.
 #'
 #' @aliases plot-Data
+#' @rdname plot-Data
 #' @export
 #' @example examples/Data-method-plot.R
 #'
@@ -30,48 +33,74 @@ setMethod(
   definition = function(x, y, blind = FALSE, legend = TRUE, ...) {
     assert_flag(blind)
     assert_flag(legend)
+    h_plot_data_dataordinal(x, blind, legend, ...)
+  }
+)
 
-    if (x@nObs == 0L) {
-      return()
+#' Plot Method for the [`DataOrdinal`] Class
+#'
+#' @description `r lifecycle::badge("experimental")`
+#'
+#' A method that creates a plot for [`DataOrdinal`] object.
+#'
+#' @param x (`DataOrdinal`)\cr object we want to plot.
+#' @param y (`missing`)\cr missing object, for compatibility with the generic
+#'   function.
+#' @param blind (`flag`)\cr indicates whether to blind the data.
+#'   If `TRUE`, then placebo subjects are reported at the same level
+#'   as the active dose level in the corresponding cohort,
+#'   and DLTs are always assigned to the first subjects in a cohort.
+#' @param legend (`flag`)\cr whether the legend should be added.
+#' @param tox_labels (`named list of character`)\cr The labels of the toxicity
+#' categories
+#' @param tox_shapes (`names list of integers`)\cr The symbols used to identify
+#' the toxicity categories
+#' @param ... not used.
+#'
+#' @note With more than 9 toxicity categories, toxicity symbols must be
+#' specified manually.\cr With more than 5 toxicity categories, toxicity labels
+#' must be specified manually.
+#'
+#' @return The [`ggplot2`] object.
+#'
+#' @rdname plot-Data
+#' @export
+#' @example examples/DataOrdinal-method-plot.R
+setMethod(
+  f = "plot",
+  signature = signature(x = "DataOrdinal", y = "missing"),
+  definition = function(
+      x,
+      y,
+      blind = FALSE,
+      legend = TRUE,
+      tox_labels = NULL,
+      tox_shapes = NULL,
+      ...) {
+    if (is.null(tox_shapes)) {
+      assert_true(length(x@yCategories) <= 9)
+      tox_shapes <- c(17L, 16L, 15L, 18L, 0L:2L, 5L, 6L)[seq_along(x@yCategories)]
+      names(tox_shapes) <- names(x@yCategories)
     }
-
-    df <- h_plot_data_df(x, blind, ...)
-
-    p <- ggplot(df, aes(x = patient, y = dose)) +
-      geom_point(aes(shape = toxicity, colour = toxicity), size = 3) +
-      scale_colour_manual(
-        name = "Toxicity", values = c(Yes = "red", No = "black")
-      ) +
-      scale_shape_manual(name = "Toxicity", values = c(Yes = 17, No = 16)) +
-      scale_x_continuous(breaks = df$patient, minor_breaks = NULL) +
-      scale_y_continuous(
-        breaks = sort(unique(c(0, df$dose))),
-        minor_breaks = NULL,
-        limits = c(0, max(df$dose) * 1.1)
-      ) +
-      xlab("Patient") +
-      ylab("Dose Level")
-
-    p <- p + h_plot_data_cohort_lines(df$cohort, placebo = x@placebo)
-
-    if (!blind) {
-      p <- p +
-        geom_text(
-          aes(label = ID, size = 2),
-          data = df,
-          hjust = 0,
-          vjust = 0.5,
-          angle = 90,
-          colour = "black",
-          show.legend = FALSE
-        )
+    if (is.null(tox_labels)) {
+      assert_true(length(x@yCategories) <= 5)
+      tox_labels <- switch(length(x@yCategories),
+        c("black"),
+        c("black", "red"),
+        c("black", "orange", "red"),
+        c("black", "green", "orange", "red"),
+        c("black", "green", "yellow", "orange", "red")
+      )
+      names(tox_labels) <- names(x@yCategories)
     }
-
-    if (!legend) {
-      p <- p + theme(legend.position = "none")
-    }
-
-    p
+    h_plot_data_dataordinal(
+      x,
+      blind,
+      legend,
+      tox_labels = tox_labels,
+      tox_shapes = tox_shapes,
+      ...
+    )
   }
 )
 
@@ -279,6 +308,95 @@ setMethod(
                         ...) {
     assert_numeric(x, min.len = 0, max.len = 1)
     assert_numeric(y, lower = 0, upper = 1)
+    assert_numeric(ID, len = length(y))
+    assert_disjunct(object@ID, ID)
+    assert_flag(new_cohort)
+    assert_flag(check)
+
+    # How many additional patients, ie. the length of the update.
+    n <- length(y)
+
+    # Which grid level is the dose?
+    gridLevel <- matchTolerance(x, object@doseGrid)
+    object@xLevel <- c(object@xLevel, rep(gridLevel, n))
+
+    # Add dose.
+    object@x <- c(object@x, rep(as.numeric(x), n))
+
+    # Add DLT data.
+    object@y <- c(object@y, safeInteger(y))
+
+    # Add ID.
+    object@ID <- c(object@ID, safeInteger(ID))
+
+    # Add cohort number.
+    new_cohort_id <- if (object@nObs == 0) {
+      1L
+    } else {
+      tail(object@cohort, 1L) + ifelse(new_cohort, 1L, 0L)
+    }
+    object@cohort <- c(object@cohort, rep(new_cohort_id, n))
+
+    # Increment sample size.
+    object@nObs <- object@nObs + n
+
+    if (check) {
+      validObject(object)
+    }
+
+    object
+  }
+)
+
+## DataOrdinal ----
+
+#' Updating `DataOrdinal` Objects
+#'
+#' @description `r lifecycle::badge("experimental")`
+#'
+#' A method that updates existing [`DataOrdinal`] object with new data.
+#'
+#' @param object (`DataOrdinal`)\cr object you want to update.
+#' @param x (`number`)\cr the dose level (one level only!).
+#' @param y (`integer`)\cr the DLT vector for all patients in this
+#'   cohort. You can also supply `numeric` vectors, but these will then be
+#'   converted to `integer` internally.
+#' @param ID (`integer`)\cr the patient IDs.
+#'   You can also supply `numeric` vectors, but these will then be converted to
+#'   `integer` internally.
+#' @param new_cohort (`flag`)\cr if `TRUE` (default) the new data are assigned
+#'   to a new cohort.
+#' @param check (`flag`)\cr whether the validation of the updated object should
+#'   be conducted. Current implementation of this `update` method allows for
+#'   updating the `DataOrdinal` class object by adding a single dose level `x` only.
+#'   However, there might be some use cases where the new cohort to be added
+#'   contains a placebo and active dose. Hence, such update would need to be
+#'   performed iteratively by calling the `update` method twice. For example,
+#'   in the first call a user can add a placebo, and then in the second call,
+#'   an active dose. Since having a cohort with placebo only is not allowed,
+#'   the `update` method would normally throw the error when attempting to add
+#'   a placebo in the first call. To allow for such updates, the `check`
+#'   parameter should be then set to `FALSE` for that first call.
+#' @param ... not used.
+#'
+#' @return The new, updated [`DataOrdinal`] object.
+#'
+#' @rdname update-DataOrdinal
+#' @export
+#' @example examples/DataOrdinal-method-update.R
+#'
+setMethod(
+  f = "update",
+  signature = signature(object = "DataOrdinal"),
+  definition = function(object,
+                        x,
+                        y,
+                        ID = length(object@ID) + seq_along(y),
+                        new_cohort = TRUE,
+                        check = TRUE,
+                        ...) {
+    assert_numeric(x, min.len = 0, max.len = 1)
+    assert_numeric(y, lower = 0, upper = length(object@yCategories) - 1)
     assert_numeric(ID, len = length(y))
     assert_disjunct(object@ID, ID)
     assert_flag(new_cohort)
@@ -646,6 +764,38 @@ setGeneric(
 setMethod(
   f = "dose_grid_range",
   signature = signature(object = "Data"),
+  definition = function(object, ignore_placebo = TRUE) {
+    assert_flag(ignore_placebo)
+
+    dose_grid <- if (ignore_placebo && object@placebo && object@nGrid >= 1) {
+      object@doseGrid[-1]
+    } else {
+      object@doseGrid
+    }
+
+    if (length(dose_grid) == 0L) {
+      c(-Inf, Inf)
+    } else {
+      range(dose_grid)
+    }
+  }
+)
+
+
+## DataOrdinal ----
+
+#' @include Data-methods.R
+#' @rdname dose_grid_range
+#' @description `r lifecycle::badge("experimental")`
+#'
+#' @param ignore_placebo (`flag`)\cr should placebo dose (if any) not be counted?
+#'
+#' @aliases dose_grid_range-Data
+#' @example examples/DataOrdinal-method-dose_grid_range.R
+#'
+setMethod(
+  f = "dose_grid_range",
+  signature = signature(object = "DataOrdinal"),
   definition = function(object, ignore_placebo = TRUE) {
     assert_flag(ignore_placebo)
 
