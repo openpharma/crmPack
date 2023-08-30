@@ -1080,3 +1080,39 @@ h_calc_report_label_percentage <- function(stop_report) {
   stop_pct_to_print <- stop_pct[!is.na(names(stop_pct))]
   return(stop_pct_to_print)
 }
+
+#' Group Together Mono and Combo Data
+#'
+#' This is only used in the simulation method for `DesignGrouped` to combine
+#' the separately generated data sets from mono and combo arms and to fit the
+#' combined logistic regression model.
+#' Hence the ID and cohort information is not relevant and will be
+#' arbitrarily assigned to avoid problems with the [`DataGrouped`] validation.
+#'
+#' @param mono_data (`Data`)\cr mono data.
+#' @param combo_data (`Data`)\cr combo data.
+#'
+#' @return A [`DataGrouped`] object containing both `mono_data` and `combo_data`,
+#'   but with arbitrary ID and cohort slots.
+#'
+#' @keywords internal
+h_group_data <- function(mono_data, combo_data) {
+  assert_class(mono_data, "Data")
+  assert_class(combo_data, "Data")
+
+  df <- data.frame(
+    x = c(mono_data@x, combo_data@x),
+    y = c(mono_data@y, combo_data@y),
+    group = rep(c("mono", "combo"), c(length(mono_data@x), length(combo_data@x)))
+  )
+  df <- df[order(df$x), ]
+
+  DataGrouped(
+    x = df$x,
+    y = df$y,
+    ID = seq_along(df$x),
+    cohort = as.integer(factor(df$x)),
+    doseGrid = sort(unique(c(mono_data@doseGrid, combo_data@doseGrid))),
+    group = df$group
+  )
+}
