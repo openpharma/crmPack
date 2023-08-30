@@ -192,7 +192,7 @@ v_data_ordinal <- function(object) {
   )
   v$check(
     test_integer(object@y, lower = 0, upper = length(object@yCategories) - 1, len = object@nObs, any.missing = FALSE),
-    "DLT vector y must be nObs long and contain integers between 0 and k-1 only, where k is the length of the vector in the yCategories slot"  # nolint
+    "DLT vector y must be nObs long and contain integers between 0 and k-1 only, where k is the length of the vector in the yCategories slot" # nolint
   )
   v$check(
     test_double(object@doseGrid, len = object@nGrid, any.missing = FALSE, unique = TRUE, sorted = TRUE),
