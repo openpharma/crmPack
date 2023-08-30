@@ -28,7 +28,7 @@ v_data_mixture(object)
 v_data_da(object)
 
 v_data_ordinal(object)
-  
+
 v_data_grouped(object)
 }
 \arguments{

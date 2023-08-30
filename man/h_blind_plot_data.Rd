@@ -13,7 +13,7 @@ h_blind_plot_data(df, blind, has_placebo, pbo_dose)
 
 \item{has_placebo}{(\code{flag})\cr Does the data contain a placebo dose?}
 
-\item{placebo}{(\code{positive_number})\cr The dose to be taken as placebo.
+\item{pbo_dose}{(\code{positive_number})\cr The dose to be taken as placebo.
 Ignored if \code{has_placebo} is \code{FALSE}}
 }
 \value{

@@ -332,6 +332,8 @@ test_that("v_data_ordinal correctly detects bad data", {
   expect_equal(
     v_data_ordinal(object),
     "There must be only one dose level, other than placebo, per cohort"
+  )
+})
 
 # v_data_grouped ----
 

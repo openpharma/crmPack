@@ -482,6 +482,7 @@ DataOrdinal <- function(
     placebo = placebo,
     yCategories = yCategories
   )
+}
 
 # DataGrouped ----
 
@@ -509,6 +510,7 @@ DataOrdinal <- function(
   ),
   contains = "Data",
   validity = v_data_grouped
+)
 
 #' @rdname DataGrouped-class
 #'

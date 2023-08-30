@@ -239,6 +239,8 @@ v_data_ordinal <- function(object) {
     length(unique(names(object@yCategories))) == length(names(object@yCategories)),
     "yCategory labels must be unique"
   )
+  v$result()
+}
 
 #' @describeIn v_data_objects validates that the [`DataGrouped`] object
 #'   contains valid group information.
