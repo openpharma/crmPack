@@ -70,13 +70,13 @@ setMethod(
   f = "plot",
   signature = signature(x = "DataOrdinal", y = "missing"),
   definition = function(
-    x,
-    y,
-    blind = FALSE,
-    legend = TRUE,
-    tox_labels = NULL,
-    tox_shapes = NULL,
-    ...) {
+      x,
+      y,
+      blind = FALSE,
+      legend = TRUE,
+      tox_labels = NULL,
+      tox_shapes = NULL,
+      ...) {
     if (is.null(tox_shapes)) {
       assert_true(length(x@yCategories) <= 9)
       tox_shapes <- c(17L, 16L, 15L, 18L, 0L:2L, 5L, 6L)[seq_along(x@yCategories)]
@@ -85,11 +85,11 @@ setMethod(
     if (is.null(tox_labels)) {
       assert_true(length(x@yCategories) <= 5)
       tox_labels <- switch(length(x@yCategories),
-                           c("black"),
-                           c("black", "red"),
-                           c("black", "orange", "red"),
-                           c("black", "green", "orange", "red"),
-                           c("black", "green", "yellow", "orange", "red")
+        c("black"),
+        c("black", "red"),
+        c("black", "orange", "red"),
+        c("black", "green", "orange", "red"),
+        c("black", "green", "yellow", "orange", "red")
       )
       names(tox_labels) <- names(x@yCategories)
     }
