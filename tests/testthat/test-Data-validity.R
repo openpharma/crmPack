@@ -296,7 +296,7 @@ test_that("v_data_ordinal correctly detects bad data", {
   object@y[3] <- 3L
   expect_equal(
     v_data_ordinal(object),
-    "DLT vector y must be nObs long and contain integers between 0 and k-1 only, where k is the length of the vector in the yCategories slot"
+    "DLT vector y must be nObs long and contain integers between 0 and k-1 only, where k is the length of the vector in the yCategories slot" # nolint
   )
 
   object <- h_get_data_ordinal()
