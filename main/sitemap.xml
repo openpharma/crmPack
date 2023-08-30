@@ -97,6 +97,9 @@
     <loc>https://roche.github.io/crmPack/reference/DataDual-class.html</loc>
   </url>
   <url>
+    <loc>https://roche.github.io/crmPack/reference/DataGrouped-class.html</loc>
+  </url>
+  <url>
     <loc>https://roche.github.io/crmPack/reference/DataMixture-class.html</loc>
   </url>
   <url>
@@ -509,6 +512,9 @@
   </url>
   <url>
     <loc>https://roche.github.io/crmPack/reference/h_format_number.html</loc>
+  </url>
+  <url>
+    <loc>https://roche.github.io/crmPack/reference/h_group_data.html</loc>
   </url>
   <url>
     <loc>https://roche.github.io/crmPack/reference/h_in_range.html</loc>
