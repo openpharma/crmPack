@@ -9,6 +9,7 @@
 \alias{v_data_parts}
 \alias{v_data_mixture}
 \alias{v_data_da}
+\alias{v_data_grouped}
 \title{Internal Helper Functions for Validation of \code{\link{GeneralData}} Objects}
 \usage{
 v_general_data(object)
@@ -24,6 +25,8 @@ v_data_parts(object)
 v_data_mixture(object)
 
 v_data_da(object)
+
+v_data_grouped(object)
 }
 \arguments{
 \item{object}{(\code{GeneralData})\cr object to validate.}
@@ -67,5 +70,8 @@ contains valid elements with respect to their types, dependency and length.
 
 \item \code{v_data_da()}: validates that the \code{\link{DataDA}} object
 contains valid elements with respect to their types, dependency and length.
+
+\item \code{v_data_grouped()}: validates that the \code{\link{DataGrouped}} object
+contains valid group information.
 
 }}
