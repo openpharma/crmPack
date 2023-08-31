@@ -177,7 +177,7 @@ test_that("DualSimulations object can be created with the user constructor", {
 test_that("DualSimulations user constructor arguments names are as expected", {
   expect_function(
     DualSimulations,
-    args = c("rho_est", "sigma2w_est", "fit_biomarker", "additional_stats", "..."),
+    args = c("rho_est", "sigma2w_est", "fit_biomarker", "..."),
     ordered = TRUE
   )
 })
