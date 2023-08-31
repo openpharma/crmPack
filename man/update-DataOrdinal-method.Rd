@@ -2,6 +2,7 @@
 % Please edit documentation in R/Data-methods.R
 \name{update,DataOrdinal-method}
 \alias{update,DataOrdinal-method}
+\alias{update-DataOrdinal}
 \title{Updating \code{DataOrdinal} Objects}
 \usage{
 \S4method{update}{DataOrdinal}(

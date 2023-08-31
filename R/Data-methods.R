@@ -380,7 +380,7 @@ setMethod(
 #'
 #' @return The new, updated [`DataOrdinal`] object.
 #'
-#' @rdname update-DataOrdinal
+#' @aliases update-DataOrdinal
 #' @export
 #' @example examples/DataOrdinal-method-update.R
 #'
