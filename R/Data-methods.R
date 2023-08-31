@@ -378,8 +378,6 @@ setMethod(
 #'   parameter should be then set to `FALSE` for that first call.
 #' @param ... not used.
 #'
-#' @keywords internal
-#'
 #' @return The new, updated [`DataOrdinal`] object.
 #'
 #' @aliases update-DataOrdinal

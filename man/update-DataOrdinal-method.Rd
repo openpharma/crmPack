@@ -66,4 +66,3 @@ data <- DataOrdinal(
 
 update(data, x = 70, y = c(1L, 2L, 1L))
 }
-\keyword{internal}
