@@ -261,7 +261,6 @@ reference:
       - update-DataParts
       - update-DataDual
       - update-DataDA
-      - update-DataOrdinal
       - getEff
       - getEff-DataDual
       - ngrid
