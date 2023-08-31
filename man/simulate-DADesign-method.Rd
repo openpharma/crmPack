@@ -18,6 +18,7 @@
   DA = TRUE,
   parallel = FALSE,
   nCores = min(parallel::detectCores(), 5),
+  derive = list(),
   ...
 )
 }

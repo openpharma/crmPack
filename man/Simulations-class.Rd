@@ -36,7 +36,7 @@ Additional slots \code{fit} and \code{stop_reasons} compared to the general clas
 
 \item{\code{stop_report}}{matrix of stopping rule outcomes}
 
-\item{\code{additional_stats}}{list of addtional statistical summary}
+\item{\code{additional_stats}}{list of additional statistical summary}
 }}
 
 \examples{

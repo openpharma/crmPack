@@ -107,7 +107,7 @@ GeneralSimulations <- function(data,
 #' @slot fit (`list`)\cr final fits
 #' @slot stop_reasons (`list`)\cr stopping reasons for each simulation run
 #' @slot stop_report matrix of stopping rule outcomes
-#' @slot additional_stats list of addtional statistical summary
+#' @slot additional_stats list of additional statistical summary
 #' @aliases Simulations
 #' @export
 .Simulations <-

@@ -209,7 +209,7 @@ setMethod("simulate",
              truth, args = NULL, firstSeparate = FALSE,
              mcmcOptions = McmcOptions(),
              parallel = FALSE, nCores =
-               min(parallel::detectCores(), 5), derive = NULL,
+               min(parallel::detectCores(), 5), derive = list(),
              ...) {
       nsim <- safeInteger(nsim)
 
@@ -426,12 +426,8 @@ setMethod("simulate",
         )
 
         # Create a function for additional statistical summary.
-        if (is.null(derive)) {
-          additional_stats <- list()
-        } else {
-          additional_stats <- lapply(derive, function(f) f(target_dose_samples))
-        }
 
+        additional_stats <- lapply(derive, function(f) f(target_dose_samples))
 
         ## return the results
         thisResult <-
@@ -727,7 +723,7 @@ setMethod("simulate",
              mcmcOptions = McmcOptions(),
              parallel = FALSE,
              nCores =
-               min(parallel::detectCores(), 5),
+               min(parallel::detectCores(), 5), derive = list(),
              ...) {
       nsim <- safeInteger(nsim)
 
@@ -1031,11 +1027,9 @@ setMethod("simulate",
         )
 
         # Create a function for additional statistical summary.
-        if (is.null(derive)) {
-          additional_stats <- list()
-        } else {
-          additional_stats <- lapply(derive, function(f) f(target_dose_samples))
-        }
+
+        additional_stats <- lapply(derive, function(f) f(target_dose_samples))
+
 
         ## return the results
         thisResult <-
@@ -1112,7 +1106,7 @@ setMethod("simulate",
       ## for dual simulations as it would fail in summary otherwise (for dual simulations reporting is not implemented)
       stop_report <- matrix(TRUE, nrow = nsim)
 
-      ## For dual simulations summary of additional statistics like median MTD and mean CV MTD
+      ## For dual simulations summary of additional statistics.
       additional_stats <- lapply(resultList, "[[", "additional_stats")
 
       ## return the results in the DualSimulations class object
@@ -4203,6 +4197,7 @@ setMethod("simulate",
              mcmcOptions = McmcOptions(),
              DA = TRUE,
              parallel = FALSE, nCores = min(parallel::detectCores(), 5),
+             derive = list(),
              ...) {
       nsim <- safeInteger(nsim) ## remove  in the future
 
@@ -4686,11 +4681,9 @@ setMethod("simulate",
         )
 
         # Create a function for additional statistical summary.
-        if (is.null(derive)) {
-          additional_stats <- list()
-        } else {
-          additional_stats <- lapply(derive, function(f) f(target_dose_samples))
-        }
+
+        additional_stats <- lapply(derive, function(f) f(target_dose_samples))
+
 
         ## return the results
         thisResult <-
