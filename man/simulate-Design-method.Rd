@@ -52,6 +52,8 @@ clusters of the computer? (not default)}
 \item{nCores}{how many cores should be used for parallel computing?
 Defaults to the number of cores on the machine, maximum 5.}
 
+\item{derive}{A list of functions that derive statistics from the target dose samples.}
+
 \item{\dots}{not used}
 }
 \value{

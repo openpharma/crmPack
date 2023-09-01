@@ -190,6 +190,7 @@ getResultList <- function(fun,
 ##' @param nCores how many cores should be used for parallel computing?
 ##' Defaults to the number of cores on the machine, maximum 5.
 ##' @param \dots not used
+##' @param derive A list of functions that derive statistics from the target dose samples.
 ##'
 ##' @return an object of class \code{\linkS4class{Simulations}}
 ##'
@@ -705,6 +706,7 @@ setMethod("simulate",
 ##' @param nCores how many cores should be used for parallel computing?
 ##' Defaults to the number of cores on the machine, maximum 5.
 ##' @param \dots not used
+##' @param derive A list of functions that derive statistics from the target dose samples.
 ##'
 ##' @return an object of class \code{\linkS4class{DualSimulations}}
 ##'
@@ -4177,6 +4179,7 @@ setMethod("simulate",
 ##' @param nCores how many cores should be used for parallel computing?
 ##' Defaults to the number of cores on the machine (maximum 5)
 ##' @param \dots not used
+##' @param derive A list of functions that derive statistics from the target dose samples.
 ##'
 ##' @return an object of class \code{\linkS4class{Simulations}}
 ##'
