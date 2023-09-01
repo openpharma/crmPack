@@ -50,6 +50,7 @@ h_doses_unique_per_cohort <- function(dose, cohort) {
 
 #' Helper Function performing validation Common to Data and DataOrdinal
 #'
+#' @rdname h_validate_common_data_slots
 #' @param object (`Data` or `DataOrdinal`)\cr the object to be validated
 #' @returns a `Validate` object containing the result of the validation
 h_validate_common_data_slots <- function(object) {

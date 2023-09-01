@@ -164,10 +164,12 @@ reference:
       - h_next_best_td_plot
       - h_next_best_mg_plot
       - h_next_best_mgsamples_plot
+      - h_obtain_dose_grid_range
       - h_covr_helpers
       - h_default_if_empty
       - h_unpack_stopit
       - h_calc_report_label_percentage
+      - h_validate_common_data_slots
   - title: Internal Validation Functions
     contents:
       - v_general_data
