@@ -20,9 +20,9 @@
 
 \item{x}{(\code{number})\cr the dose level (one level only!).}
 
-\item{y}{(\code{integer})\cr the DLT vector for all patients in this
-cohort. You can also supply \code{numeric} vectors, but these will then be
-converted to \code{integer} internally.}
+\item{y}{(\code{integer})\cr the vector of toxicity grades (0, 1, 2, ...) for all
+patients in this cohort. You can also supply \code{numeric} vectors, but these
+will then be converted to \code{integer} internally.}
 
 \item{ID}{(\code{integer})\cr the patient IDs.
 You can also supply \code{numeric} vectors, but these will then be converted to

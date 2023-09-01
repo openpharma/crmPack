@@ -357,9 +357,9 @@ setMethod(
 #'
 #' @param object (`DataOrdinal`)\cr object you want to update.
 #' @param x (`number`)\cr the dose level (one level only!).
-#' @param y (`integer`)\cr the DLT vector for all patients in this
-#'   cohort. You can also supply `numeric` vectors, but these will then be
-#'   converted to `integer` internally.
+#' @param y (`integer`)\cr the vector of toxicity grades (0, 1, 2, ...) for all
+#' patients in this cohort. You can also supply `numeric` vectors, but these
+#' will then be converted to `integer` internally.
 #' @param ID (`integer`)\cr the patient IDs.
 #'   You can also supply `numeric` vectors, but these will then be converted to
 #'   `integer` internally.
@@ -764,19 +764,7 @@ setMethod(
   f = "dose_grid_range",
   signature = signature(object = "Data"),
   definition = function(object, ignore_placebo = TRUE) {
-    assert_flag(ignore_placebo)
-
-    dose_grid <- if (ignore_placebo && object@placebo && object@nGrid >= 1) {
-      object@doseGrid[-1]
-    } else {
-      object@doseGrid
-    }
-
-    if (length(dose_grid) == 0L) {
-      c(-Inf, Inf)
-    } else {
-      range(dose_grid)
-    }
+    h_obtain_dose_grid_range(object, ignore_placebo)
   }
 )
 
@@ -796,18 +784,6 @@ setMethod(
   f = "dose_grid_range",
   signature = signature(object = "DataOrdinal"),
   definition = function(object, ignore_placebo = TRUE) {
-    assert_flag(ignore_placebo)
-
-    dose_grid <- if (ignore_placebo && object@placebo && object@nGrid >= 1) {
-      object@doseGrid[-1]
-    } else {
-      object@doseGrid
-    }
-
-    if (length(dose_grid) == 0L) {
-      c(-Inf, Inf)
-    } else {
-      range(dose_grid)
-    }
+    h_obtain_dose_grid_range(object, ignore_placebo)
   }
 )

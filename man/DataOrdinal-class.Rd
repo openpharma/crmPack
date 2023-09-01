@@ -38,17 +38,17 @@ You can also supply \code{numeric} vectors, but these will then be converted to
 \item{placebo}{(\code{flag})\cr if \code{TRUE} the first dose level
 in the \code{doseGrid} is considered as placebo.}
 
-\item{yCategories}{(\verb{named integer vector})\cr the names and codes for the
+\item{yCategories}{(named \code{integer})\cr the names and codes for the
 toxicity categories used in the data.  Category labels are taken from the
 names of the vector.  The names of the vector must be unique and its values
-must be sorted and take the values 0, 1, 2, ...##'}
+must be sorted and take the values 0, 1, 2, ...'}
 
 \item{...}{not used.}
 }
 \description{
 \ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#experimental}{\figure{lifecycle-experimental.svg}{options: alt='[Experimental]'}}}{\strong{[Experimental]}}
 
-\code{\link{DataOrdinal}} is a class ordinal toxicity data.
+\code{\link{DataOrdinal}} is a class for ordinal toxicity data.
 It inherits from \code{\link{GeneralData}} and it describes toxicity responses on an
 ordinal rather than binary scale.
 }

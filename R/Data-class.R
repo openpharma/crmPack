@@ -388,7 +388,7 @@ DataDA <- function(u = numeric(),
 #'
 #' @description `r lifecycle::badge("experimental")`
 #'
-#' [`DataOrdinal`] is a class ordinal toxicity data.
+#' [`DataOrdinal`] is a class for ordinal toxicity data.
 #' It inherits from [`GeneralData`] and it describes toxicity responses on an
 #' ordinal rather than binary scale.
 #'
@@ -396,10 +396,9 @@ DataDA <- function(u = numeric(),
 #' (rather than as a parent or child) to minimise the risk of unintended side
 #' effects on existing classes and methods.
 #'
-#' @note The default setting for the `yCategories` slot replicates the behaviour
+#' The default setting for the `yCategories` slot replicates the behaviour
 #' of the existing `Data` class.
 #'
-#' @inheritParams Data
 #' @aliases DataOrdinal
 #' @export
 .DataOrdinal <- setClass(
@@ -429,26 +428,22 @@ DataDA <- function(u = numeric(),
 ## constructor ----
 
 #' @rdname DataOrdinal-class
-#' @param yCategories (`named integer vector`)\cr the names and codes for the
+#' @param yCategories (named `integer`)\cr the names and codes for the
 #' toxicity categories used in the data.  Category labels are taken from the
 #' names of the vector.  The names of the vector must be unique and its values
-#' must be sorted and take the values 0, 1, 2, ...##'
+#' must be sorted and take the values 0, 1, 2, ...'
+#' @inheritParams Data
 #' @inherit Data details note params
 #' @example examples/Data-class-DataOrdinal.R
 #' @export
-DataOrdinal <- function(
-    x = numeric(),
-    y = integer(),
-    ID = integer(),
-    cohort = integer(),
-    doseGrid = numeric(),
-    placebo = FALSE,
-    yCategories = c("No DLT" = 0L, "DLT" = 1L),
-    ...) {
-  assert_numeric(x)
-  assert_numeric(y)
-  assert_numeric(ID)
-  assert_numeric(cohort)
+DataOrdinal <- function(x = numeric(),
+                        y = integer(),
+                        ID = integer(),
+                        cohort = integer(),
+                        doseGrid = numeric(),
+                        placebo = FALSE,
+                        yCategories = c("No DLT" = 0L, "DLT" = 1L),
+                        ...) {
   assert_numeric(doseGrid, any.missing = FALSE, unique = TRUE)
   assert_numeric(yCategories, any.missing = FALSE, unique = TRUE)
   assert_character(names(yCategories), any.missing = FALSE, unique = TRUE)

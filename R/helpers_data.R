@@ -208,3 +208,28 @@ h_plot_data_dataordinal <- function(
 
   p
 }
+
+#' Helper Function Containing Common Functionality
+#'
+#' Used by `dose_grid_range-Data` and `dose_grid_range-DataOrdinal`
+#' @rdname h_obtain_dose_grid_range
+#'
+#' @param object (`Data` or `DataOrdinal`)\cr the object for which the dose grid
+#' range is required
+#' @param ignore_placebo (`flag`)\cr should placebo dose (if any) not be counted?
+#'
+h_obtain_dose_grid_range <- function(object, ignore_placebo) {
+  assert_flag(ignore_placebo)
+
+  dose_grid <- if (ignore_placebo && object@placebo && object@nGrid >= 1) {
+    object@doseGrid[-1]
+  } else {
+    object@doseGrid
+  }
+
+  if (length(dose_grid) == 0L) {
+    c(-Inf, Inf)
+  } else {
+    range(dose_grid)
+  }
+}
