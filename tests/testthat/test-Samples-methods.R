@@ -205,6 +205,18 @@ test_that("fit-Samples works correctly for tox-only models", {
   checkIt(seed = 789, lowerQuantile = 0.25, upperQuantile = 0.75)
 })
 
+test_that("fit-Samples forwards additional arguments to prob inside", {
+  mcmcOptions <- McmcOptions(samples = 3)
+  samples <- Samples(data = list(alpha0 = 1:3, alpha1 = 4:6), options = mcmcOptions)
+  model <- h_needs_extra_prob_model()
+  emptyData <- Data(doseGrid = seq(10, 80, 10))
+
+  result <- fit(samples, model, emptyData, extra_argument = "yes")
+  expect_data_frame(result)
+  expect_equal(nrow(result), length(emptyData@doseGrid))
+  expect_named(result, c("dose", "middle", "lower", "upper"))
+})
+
 ## Samples-DataModel ----
 
 test_that("fit-Samples works correctly for dual models", {
@@ -365,6 +377,16 @@ test_that("plot-Samples works correctly", {
 
   actual1 <- plot(x = samples, y = model, data = data, showLegend = FALSE)
   vdiffr::expect_doppelganger("plot-Samples_showLegend-FALSE", actual1)
+})
+
+test_that("plot-Samples forwards additional arguments to prob inside", {
+  mcmcOptions <- McmcOptions(samples = 3)
+  samples <- Samples(data = list(alpha0 = 1:3, alpha1 = 4:6), options = mcmcOptions)
+  model <- h_needs_extra_prob_model()
+  emptyData <- Data(doseGrid = seq(10, 80, 10))
+
+  result <- plot(samples, model, emptyData, extra_argument = "yes")
+  expect_list(result)
 })
 
 test_that("plot-Samples-DualEndpoint fails gracefully with bad input", {

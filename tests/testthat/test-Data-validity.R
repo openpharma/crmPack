@@ -258,3 +258,32 @@ test_that("v_data_da: error for t0 of wrong length, negative values", {
     "t0 must be of type double, nObs length, sorted non-negative"
   )
 })
+
+# v_data_grouped ----
+
+test_that("v_data_grouped passes for valid object", {
+  object <- h_get_data_grouped()
+  expect_true(v_data_grouped(object))
+})
+
+test_that("v_data_grouped fails for wrong length", {
+  object <- h_get_data_grouped()
+
+  object@group <- object@group[1:5]
+
+  expect_identical(
+    v_data_grouped(object),
+    "group must be factor with levels mono and combo of length nObs without missings"
+  )
+})
+
+test_that("v_data_grouped fails for wrong factor levels", {
+  object <- h_get_data_grouped()
+
+  object@group <- factor(object@group, levels = c("mono", "combo", "foo"))
+
+  expect_identical(
+    v_data_grouped(object),
+    "group must be factor with levels mono and combo of length nObs without missings"
+  )
+})

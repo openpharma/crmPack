@@ -80,6 +80,17 @@ test_that("nextBest-NextBestNCRM returns expected values of the objects (no dose
   vdiffr::expect_doppelganger("Plot of nextBest-NextBestNCRM without doselimit", result$plot)
 })
 
+test_that("nextBest-NextBestNCRM can accept additional arguments and pass them to prob inside", {
+  my_data <- h_get_data()
+  my_model <- h_needs_extra_prob_model()
+  my_samples <- mcmc(my_data, my_model, h_get_mcmc_options(samples = 10, burnin = 10))
+  nb_ncrm <- NextBestNCRM(
+    target = c(0.2, 0.35), overdose = c(0.35, 1), max_overdose_prob = 0.25
+  )
+  result <- nextBest(nb_ncrm, Inf, my_samples, my_model, my_data, extra_argument = "foo")
+  expect_identical(result$value, NA_real_)
+})
+
 ## NextBestNCRM-DataParts ----
 
 test_that("nextBest-NextBestNCRM-DataParts returns expected values of the objects", {
@@ -1843,6 +1854,22 @@ test_that("StoppingTargetProb works correctly when above threshold", {
     report_label = NA_character_
   )
   expect_identical(result, expected)
+})
+
+test_that("stopTrial-StoppingTargetProb can accept additional arguments and pass them to prob", {
+  my_data <- h_get_data()
+  my_model <- h_needs_extra_prob_model()
+  my_samples <- mcmc(my_data, my_model, h_get_mcmc_options(samples = 10, burnin = 10))
+  stopping <- StoppingTargetProb(target = c(0.1, 0.4), prob = 0.3)
+  result <- stopTrial(
+    stopping = stopping,
+    dose = 100,
+    samples = my_samples,
+    model = my_model,
+    data = my_data,
+    extra_argument = "bla"
+  )
+  expect_false(result)
 })
 
 ## StoppingMTDdistribution ----

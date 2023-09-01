@@ -180,3 +180,19 @@ v_data_da <- function(object) {
   )
   v$result()
 }
+
+#' @describeIn v_data_objects validates that the [`DataGrouped`] object
+#'   contains valid group information.
+v_data_grouped <- function(object) {
+  v <- Validate()
+  v$check(
+    test_factor(
+      object@group,
+      levels = c("mono", "combo"),
+      len = object@nObs,
+      any.missing = FALSE
+    ),
+    "group must be factor with levels mono and combo of length nObs without missings"
+  )
+  v$result()
+}
