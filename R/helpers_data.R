@@ -66,7 +66,7 @@ setGeneric(
 #'   which does not appear in `Data`.
 #' @return A `data.frame` object with columns patient, ID, cohort, dose and
 #' toxicity.
-#' @describeIn h_plot_data_df Class specific method for [`Data`]
+#' @describeIn h_plot_data_df method for [`Data`].
 setMethod(
   f = "h_plot_data_df",
   signature = signature(data = "Data"),
