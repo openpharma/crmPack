@@ -59,6 +59,20 @@ test_that("h_covr_detrace removes all covr traces", {
     expr
   )
 
+  # case when an argument is missing, as in `x[i, ]`
+  expr <- quote(if (TRUE) {
+    covr:::count("file.R:1:2:3:4:5:6:7:8")
+    1 + 2 + if (TRUE) {
+      covr:::count("file.R:11:12:13:14:15:16:17:18")
+      x[i, ]
+    }
+  })
+
+  expect_equal(
+    withr::with_envvar(c(R_COVR = "true"), h_covr_detrace(expr)),
+    quote(1 + 2 + x[i, ])
+  )
+
   expr <- quote(function(x) {
     if (TRUE) {
       covr:::count("file.R:1:2:3:4:5:6:7:8")
