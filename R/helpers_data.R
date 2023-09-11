@@ -64,9 +64,9 @@ setGeneric(
 #'   It can be e.g. an extra `column_name = value` pair based on a slot
 #'   from `x` (which in this case might be a subclass of `Data`)
 #'   which does not appear in `Data`.
-#' @return A [`data.frame`] object with columns patient, ID, cohort, dose and
+#' @return A `data.frame` object with columns patient, ID, cohort, dose and
 #' toxicity.
-#' @describeIn h_plot_data_df Class specific method for [`Data`]
+#' @describeIn h_plot_data_df method for [`Data`].
 setMethod(
   f = "h_plot_data_df",
   signature = signature(data = "Data"),

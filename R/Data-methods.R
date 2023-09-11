@@ -51,10 +51,10 @@ setMethod(
 #'   as the active dose level in the corresponding cohort,
 #'   and DLTs are always assigned to the first subjects in a cohort.
 #' @param legend (`flag`)\cr whether the legend should be added.
-#' @param tox_labels (`named list of character`)\cr The labels of the toxicity
-#' categories
-#' @param tox_shapes (`names list of integers`)\cr The symbols used to identify
-#' the toxicity categories
+#' @param tox_labels (`named list of character`)\cr the labels of the toxicity
+#' categories.
+#' @param tox_shapes (`names list of integers`)\cr the symbols used to identify
+#' the toxicity categories.
 #' @param ... not used.
 #'
 #' @note With more than 9 toxicity categories, toxicity symbols must be
@@ -277,7 +277,12 @@ setMethod(
 #' @param new_cohort (`flag`)\cr if `TRUE` (default) the new data are assigned
 #'   to a new cohort.
 #' @param check (`flag`)\cr whether the validation of the updated object should
-#'   be conducted. Current implementation of this `update` method allows for
+#'   be conducted. See details below.
+#' @param ... not used.
+#'
+#' @return The new, updated [`Data`] object.
+#'
+#' @details The current implementation of this `update` method allows for
 #'   updating the `Data` class object by adding a single dose level `x` only.
 #'   However, there might be some use cases where the new cohort to be added
 #'   contains a placebo and active dose. Hence, such update would need to be
@@ -287,9 +292,6 @@ setMethod(
 #'   the `update` method would normally throw the error when attempting to add
 #'   a placebo in the first call. To allow for such updates, the `check`
 #'   parameter should be then set to `FALSE` for that first call.
-#' @param ... not used.
-#'
-#' @return The new, updated [`Data`] object.
 #'
 #' @aliases update-Data
 #' @export
@@ -366,7 +368,12 @@ setMethod(
 #' @param new_cohort (`flag`)\cr if `TRUE` (default) the new data are assigned
 #'   to a new cohort.
 #' @param check (`flag`)\cr whether the validation of the updated object should
-#'   be conducted. Current implementation of this `update` method allows for
+#'   be conducted. See Details below.
+#' @param ... not used.
+#'
+#' @return The new, updated [`DataOrdinal`] object.
+#'
+#' @details The current implementation of this `update` method allows for
 #'   updating the `DataOrdinal` class object by adding a single dose level `x` only.
 #'   However, there might be some use cases where the new cohort to be added
 #'   contains a placebo and active dose. Hence, such update would need to be
@@ -376,9 +383,6 @@ setMethod(
 #'   the `update` method would normally throw the error when attempting to add
 #'   a placebo in the first call. To allow for such updates, the `check`
 #'   parameter should be then set to `FALSE` for that first call.
-#' @param ... not used.
-#'
-#' @return The new, updated [`DataOrdinal`] object.
 #'
 #' @aliases update-DataOrdinal
 #' @export
