@@ -431,7 +431,7 @@ DataDA <- function(u = numeric(),
 #' @param yCategories (named `integer`)\cr the names and codes for the
 #' toxicity categories used in the data.  Category labels are taken from the
 #' names of the vector.  The names of the vector must be unique and its values
-#' must be sorted and take the values 0, 1, 2, ...'
+#' must be sorted and take the values 0, 1, 2, ...
 #' @inheritParams Data
 #' @inherit Data details note params
 #' @example examples/Data-class-DataOrdinal.R
