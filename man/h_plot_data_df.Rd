@@ -15,7 +15,7 @@ h_plot_data_df(data, ...)
 \S4method{h_plot_data_df}{DataOrdinal}(data, blind = FALSE, legend = TRUE, ...)
 }
 \arguments{
-\item{data}{(\code{DataOrdinal})\cr object from which data is extracted and converted
+\item{data}{(\code{Data})\cr object from which data is extracted and converted
 into a data frame.}
 
 \item{...}{further arguments passed to \code{data.frame} constructor.
@@ -37,8 +37,6 @@ A \code{\link{data.frame}} object with values to plot.
 
 A \code{data.frame} object with columns patient, ID, cohort, dose and
 toxicity.
-
-A \code{\link{data.frame}} object with values to plot.
 }
 \description{
 \ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#experimental}{\figure{lifecycle-experimental.svg}{options: alt='[Experimental]'}}}{\strong{[Experimental]}}

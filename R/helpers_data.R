@@ -88,17 +88,6 @@ setMethod(
 
 #' Helper Function for the Plot Method of [`DataOrdinal`]
 #'
-#' @param data (`DataOrdinal`)\cr object from which data is extracted and converted
-#'   into a data frame.
-#' @param blind (`flag`)\cr should data be blinded?
-#'   If `TRUE`, then for each cohort, all DLTs are assigned to the first
-#'   subjects in the cohort. In addition, the placebo (if any) is set to the
-#'   active dose level for that cohort.
-#' @param ... further arguments passed to `data.frame` constructor.
-#'   It can be e.g. an extra `column_name = value` pair based on a slot
-#'   from `x` (which in this case might be a subclass of `Data`)
-#'   which does not appear in `Data`.
-#' @return A [`data.frame`] object with values to plot.
 #' @describeIn h_plot_data_df Class specific method for [`DataOrdinal`]
 setMethod(
   f = "h_plot_data_df",
@@ -127,19 +116,6 @@ setMethod(
 #' @description `r lifecycle::badge("stable")`
 #'
 #' A method that creates a plot for [`Data`]  and [`DataOrdinal`] objects.
-#'
-#' @param x (`Data`)\cr object we want to plot.
-#' @param y (`missing`)\cr missing object, for compatibility with the generic
-#'   function.
-#' @param blind (`flag`)\cr indicates whether to blind the data.
-#'   If `TRUE`, then placebo subjects are reported at the same level
-#'   as the active dose level in the corresponding cohort,
-#'   and DLTs are always assigned to the first subjects in a cohort.
-#' @param tox_labels (`character`)\cr the toxicity category labels
-#' @param tox_shapes (`integer`)\cr the shapes used to plot the various toxicity
-#' categories
-#' @param legend (`flag`)\cr whether the legend should be added.
-#' @param ... not used.
 #'
 #' @note The default values of `tox_shapes` and `tox_labels` result in DLTs
 #' being displayed as red triangles and other responses as black circles.
@@ -212,8 +188,6 @@ h_plot_data_dataordinal <- function(
 #' Helper Function Containing Common Functionality
 #'
 #' Used by `dose_grid_range-Data` and `dose_grid_range-DataOrdinal`
-#' @rdname h_obtain_dose_grid_range
-#'
 #' @param object (`Data` or `DataOrdinal`)\cr the object for which the dose grid
 #' range is required
 #' @param ignore_placebo (`flag`)\cr should placebo dose (if any) not be counted?

@@ -10,16 +10,6 @@
 #'
 #' A method that creates a plot for [`Data`] object.
 #'
-#' @param x (`Data`)\cr object we want to plot.
-#' @param y (`missing`)\cr missing object, for compatibility with the generic
-#'   function.
-#' @param blind (`flag`)\cr indicates whether to blind the data.
-#'   If `TRUE`, then placebo subjects are reported at the same level
-#'   as the active dose level in the corresponding cohort,
-#'   and DLTs are always assigned to the first subjects in a cohort.
-#' @param legend (`flag`)\cr whether the legend should be added.
-#' @param ... not used.
-#'
 #' @return The [`ggplot2`] object.
 #'
 #' @aliases plot-Data
