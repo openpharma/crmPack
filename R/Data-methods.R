@@ -51,10 +51,10 @@ setMethod(
 #'   as the active dose level in the corresponding cohort,
 #'   and DLTs are always assigned to the first subjects in a cohort.
 #' @param legend (`flag`)\cr whether the legend should be added.
-#' @param tox_labels (`named list of character`)\cr The labels of the toxicity
-#' categories
-#' @param tox_shapes (`names list of integers`)\cr The symbols used to identify
-#' the toxicity categories
+#' @param tox_labels (`named list of character`)\cr the labels of the toxicity
+#' categories.
+#' @param tox_shapes (`names list of integers`)\cr the symbols used to identify
+#' the toxicity categories.
 #' @param ... not used.
 #'
 #' @note With more than 9 toxicity categories, toxicity symbols must be
