@@ -32,16 +32,7 @@ You can also supply \code{numeric} vectors, but these will then be converted to
 to a new cohort.}
 
 \item{check}{(\code{flag})\cr whether the validation of the updated object should
-be conducted. Current implementation of this \code{update} method allows for
-updating the \code{DataOrdinal} class object by adding a single dose level \code{x} only.
-However, there might be some use cases where the new cohort to be added
-contains a placebo and active dose. Hence, such update would need to be
-performed iteratively by calling the \code{update} method twice. For example,
-in the first call a user can add a placebo, and then in the second call,
-an active dose. Since having a cohort with placebo only is not allowed,
-the \code{update} method would normally throw the error when attempting to add
-a placebo in the first call. To allow for such updates, the \code{check}
-parameter should be then set to \code{FALSE} for that first call.}
+be conducted. See Details below.}
 
 \item{...}{not used.}
 }
@@ -52,6 +43,18 @@ The new, updated \code{\link{DataOrdinal}} object.
 \ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#experimental}{\figure{lifecycle-experimental.svg}{options: alt='[Experimental]'}}}{\strong{[Experimental]}}
 
 A method that updates existing \code{\link{DataOrdinal}} object with new data.
+}
+\details{
+The current implementation of this \code{update} method allows for
+updating the \code{DataOrdinal} class object by adding a single dose level \code{x} only.
+However, there might be some use cases where the new cohort to be added
+contains a placebo and active dose. Hence, such update would need to be
+performed iteratively by calling the \code{update} method twice. For example,
+in the first call a user can add a placebo, and then in the second call,
+an active dose. Since having a cohort with placebo only is not allowed,
+the \code{update} method would normally throw the error when attempting to add
+a placebo in the first call. To allow for such updates, the \code{check}
+parameter should be then set to \code{FALSE} for that first call.
 }
 \examples{
 data <- DataOrdinal(

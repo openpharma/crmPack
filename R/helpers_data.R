@@ -151,7 +151,7 @@ h_plot_data_dataordinal <- function(
     blind = FALSE,
     legend = TRUE,
     tox_labels = c(Yes = "red", No = "black"),
-    tox_shapes = c(Yes = 17L, No = 16L)
+    tox_shapes = c(Yes = 17L, No = 16L),
     ...) {
   assert_flag(blind)
   assert_flag(legend)

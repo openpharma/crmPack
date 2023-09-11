@@ -35,7 +35,7 @@ A \code{\link{data.frame}} object with values to plot.
 
 \code{data.frame} containing columns for patient, cohort, dose and toxicity grade
 
-A \code{\link{data.frame}} object with columns patient, ID, cohort, dose and
+A \code{data.frame} object with columns patient, ID, cohort, dose and
 toxicity.
 
 A \code{\link{data.frame}} object with values to plot.
@@ -54,7 +54,7 @@ plotting with \code{ggplot2} methods
 }
 \section{Methods (by class)}{
 \itemize{
-\item \code{h_plot_data_df(Data)}: Class specific method for \code{\link{Data}}
+\item \code{h_plot_data_df(Data)}: method for \code{\link{Data}}.
 
 \item \code{h_plot_data_df(DataOrdinal)}: Class specific method for \code{\link{DataOrdinal}}
 

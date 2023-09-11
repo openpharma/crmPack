@@ -38,11 +38,11 @@ and DLTs are always assigned to the first subjects in a cohort.}
 
 \item{legend}{(\code{flag})\cr whether the legend should be added.}
 
-\item{tox_labels}{(\verb{named list of character})\cr The labels of the toxicity
-categories}
+\item{tox_labels}{(\verb{named list of character})\cr the labels of the toxicity
+categories.}
 
-\item{tox_shapes}{(\verb{names list of integers})\cr The symbols used to identify
-the toxicity categories}
+\item{tox_shapes}{(\verb{names list of integers})\cr the symbols used to identify
+the toxicity categories.}
 
 \item{...}{not used.}
 
