@@ -55,7 +55,9 @@ h_covr_detrace <- function(expr) {
 
   detrace <- function(x) {
     # returns "missing" expression to avoid errors with calls
-    if (x == bquote()) return(x)
+    if (x == bquote()) {
+      return(x)
+    }
     x <- h_covr_detrace_call(x)
     if (is.call(x)) x[-1] <- lapply(x[-1], h_covr_detrace)
     x
