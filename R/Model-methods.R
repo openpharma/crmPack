@@ -403,6 +403,41 @@ setMethod(
   }
 )
 
+## LogisticLogNormalGrouped ----
+
+#' @describeIn dose method for [`LogisticLogNormalGrouped`] which needs `group`
+#'   argument in addition.
+#' @param group (`character` or `factor`)\cr for [`LogisticLogNormalGrouped`],
+#'   indicating whether to calculate the dose for the `mono` or for
+#'   the `combo` arm.
+#' @aliases dose-LogisticLogNormalGrouped
+#' @export
+#'
+setMethod(
+  f = "dose",
+  signature = signature(
+    x = "numeric",
+    model = "LogisticLogNormalGrouped",
+    samples = "Samples"
+  ),
+  definition = function(x, model, samples, group) {
+    assert_probabilities(x)
+    assert_subset(c("alpha0", "delta0", "alpha1", "delta1"), names(samples))
+    assert_length(x, len = size(samples))
+    assert_multi_class(group, c("character", "factor"))
+    assert_subset(as.character(group), choices = c("mono", "combo"))
+    assert_length(group, len = size(samples))
+
+    alpha0 <- samples@data$alpha0
+    delta0 <- samples@data$delta0
+    alpha1 <- samples@data$alpha1
+    delta1 <- samples@data$delta1
+    ref_dose <- as.numeric(model@ref_dose)
+    is_combo <- as.integer(group == "combo")
+    exp((logit(x) - (alpha0 + is_combo * delta0)) / (alpha1 + is_combo * delta1)) * ref_dose
+  }
+)
+
 ## LogisticKadane ----
 
 #' @describeIn dose compute the dose level reaching a specific target

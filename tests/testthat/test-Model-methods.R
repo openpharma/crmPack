@@ -504,6 +504,45 @@ test_that("dose-ProbitLogNormalRel throws the error when x is not valid", {
   )
 })
 
+## LogisticLogNormalGrouped ----
+
+test_that("dose-LogisticLogNormalGrouped works as expected", {
+  model <- .DefaultLogisticLogNormalGrouped()
+  samples <- h_as_samples(list(
+    alpha0 = c(0.1, -1, 1, 2),
+    delta0 = c(0, 1, -1, 0),
+    alpha1 = c(0, 0.5, 1, -1),
+    delta1 = c(1, 0, -0.9, 2)
+  ))
+
+  result_mono <- dose(0.5, model, samples, group = "mono")
+  result_combo <- dose(0.5, model, samples, group = "combo")
+
+  expect_equal(result_mono, c(0, 7.3891, 0.3679, 7.3891), tolerance = 1e-4)
+  expect_equal(result_combo, c(0.9048, 1, 1, 0.1353), tolerance = 1e-4)
+})
+
+test_that("dose-LogisticLogNormalGrouped works as expected for scalar samples", {
+  model <- .DefaultLogisticLogNormalGrouped()
+  samples <- h_as_samples(list(alpha0 = 1, delta0 = -1, alpha1 = 1, delta1 = -0.5))
+
+  result <- dose(c(1, 30), model, samples, group = "combo")
+  expect_equal(result, c(0.5, 0.8456), tolerance = 1e-4)
+})
+
+test_that("dose-LogisticLogNormalGrouped works as expected for vectors", {
+  model <- .DefaultLogisticLogNormalGrouped()
+  samples <- h_as_samples(list(
+    alpha0 = c(1, 2),
+    delta0 = c(0.5, -0.5),
+    alpha1 = c(0, 1),
+    delta1 = c(1, 0.2)
+  ))
+
+  result <- dose(c(1, 30), model, samples, group = c("mono", "combo"))
+  expect_equal(result, c(0.7311, 0.9962), tolerance = 1e-4)
+})
+
 ## LogisticKadane ----
 
 test_that("dose-LogisticKadane works as expected", {
