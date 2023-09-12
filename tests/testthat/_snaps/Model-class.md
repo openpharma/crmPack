@@ -118,6 +118,42 @@
       [1] 2.6848927 0.5973656 0.5178854 4.1900261
       
 
+# MCMC computes correct values for LogisticLogNormalGrouped model
+
+    Code
+      result@data
+    Output
+      $alpha0
+      [1] -1.848124 -1.848124 -2.195992 -2.195992
+      
+      $alpha1
+      [1] 0.08165851 0.08165851 0.31496464 0.31496464
+      
+      $delta0
+      [1] 0.1263061 0.1263061 0.1112928 0.1112928
+      
+      $delta1
+      [1] 0.06280840 0.06280840 0.09082656 0.09082656
+      
+
+# MCMC computes correct values for LogisticLogNormalGrouped model and empty data
+
+    Code
+      result@data
+    Output
+      $alpha0
+      [1] -0.7258644 -2.3268647  1.2196258  0.9135351
+      
+      $alpha1
+      [1] 1.3236188 0.2700508 1.8853673 0.2820018
+      
+      $delta0
+      [1] 3.4298468 2.0426447 0.7105671 0.2355593
+      
+      $delta1
+      [1] 0.3087583 0.2956680 3.1296169 1.7350122
+      
+
 # MCMC computes correct values for LogisticKadane model
 
     Code
