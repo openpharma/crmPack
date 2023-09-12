@@ -923,6 +923,41 @@ setMethod(
   }
 )
 
+## LogisticLogNormalGrouped ----
+
+#' @describeIn prob method for [`LogisticLogNormalGrouped`] which needs `group`
+#'   argument in addition.
+#' @param group (`character` or `factor`)\cr for [`LogisticLogNormalGrouped`],
+#'   indicating whether to calculate the probability for the `mono` or for
+#'   the `combo` arm.
+#' @aliases prob-LogisticLogNormalGrouped
+#' @export
+#'
+setMethod(
+  f = "prob",
+  signature = signature(
+    dose = "numeric",
+    model = "LogisticLogNormalGrouped",
+    samples = "Samples"
+  ),
+  definition = function(dose, model, samples, group) {
+    assert_numeric(dose, lower = 0L, any.missing = FALSE, min.len = 1L)
+    assert_subset(c("alpha0", "delta0", "alpha1", "delta1"), names(samples))
+    assert_length(dose, len = size(samples))
+    assert_multi_class(group, c("character", "factor"))
+    assert_subset(as.character(group), choices = c("mono", "combo"))
+    assert_length(group, len = size(samples))
+
+    alpha0 <- samples@data$alpha0
+    delta0 <- samples@data$delta0
+    alpha1 <- samples@data$alpha1
+    delta1 <- samples@data$delta1
+    ref_dose <- as.numeric(model@ref_dose)
+    is_combo <- as.integer(group == "combo")
+    plogis((alpha0 + is_combo * delta0) + (alpha1 + is_combo * delta1) * log(dose / ref_dose))
+  }
+)
+
 ## LogisticKadane ----
 
 #' @describeIn prob

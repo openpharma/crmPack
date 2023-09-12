@@ -1113,6 +1113,42 @@ test_that("prob-ProbitLogNormalRel throws the error when dose is not valid", {
   )
 })
 
+## LogisticLogNormalGrouped ----
+
+test_that("prob-LogisticLogNormalGrouped works as expected", {
+  model <- .DefaultLogisticLogNormalGrouped()
+  samples <- h_as_samples(list(
+    alpha0 = c(0, -1, 1, 2),
+    delta0 = c(0, 1, -1, 0),
+    alpha1 = c(0, 0.5, 1, -1),
+    delta1 = c(1, 0, -1, 2)
+  ))
+
+  result <- prob(10, model, samples, group = "mono")
+  expect_equal(result, c(0.5, 0.5378, 0.9645, 0.4249), tolerance = 1e-4)
+})
+
+test_that("prob-LogisticLogNormalGrouped works as expected for scalar samples", {
+  model <- .DefaultLogisticLogNormalGrouped()
+  samples <- h_as_samples(list(alpha0 = 1, delta0 = -1, alpha1 = 1, delta1 = -0.5))
+
+  result <- prob(c(1, 30), model, samples, group = "combo")
+  expect_equal(result, c(0.5, 0.8456), tolerance = 1e-4)
+})
+
+test_that("prob-LogisticLogNormalGrouped works as expected for vectors", {
+  model <- .DefaultLogisticLogNormalGrouped()
+  samples <- h_as_samples(list(
+    alpha0 = c(1, 2),
+    delta0 = c(0.5, -0.5),
+    alpha1 = c(0, 1),
+    delta1 = c(1, 0.2)
+  ))
+
+  result <- prob(c(1, 30), model, samples, group = c("mono", "combo"))
+  expect_equal(result, c(0.7311, 0.9962), tolerance = 1e-4)
+})
+
 ## LogisticKadane ----
 
 test_that("prob-LogisticKadane works as expected", {
