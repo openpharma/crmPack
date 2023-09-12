@@ -516,6 +516,97 @@ ProbitLogNormalRel <- function(mean, cov, ref_dose = 1) {
   ProbitLogNormalRel(mean = c(-0.85, 1), cov = matrix(c(1, -0.5, -0.5, 1), nrow = 2))
 }
 
+# LogisticLogNormalGrouped ----
+
+## class ----
+
+#' `LogisticLogNormalGrouped`
+#'
+#' @description `r lifecycle::badge("experimental")`
+#'
+#' [`LogisticLogNormalGrouped`] is the class for a logistic regression model
+#'  for both the mono and the combo arms of the simultaneous dose escalation
+#'  design.
+#'
+#' @details The continuous covariate is the natural logarithm of the dose \eqn{x} divided by
+#'   the reference dose \eqn{x*} as in [`LogisticLogNormal`]. In addition,
+#'   \eqn{I_c} is a binary indicator covariate which is 1 for the combo arm and 0 for the mono arm.
+#'   The model is then defined as:
+#'   \deqn{logit[p(x)] = (alpha0 + I_c * delta0) + (alpha1 + I_c * delta1) * log(x / x*),}
+#'   where \eqn{p(x)} is the probability of observing a DLT for a given dose \eqn{x},
+#'   and `delta0` and `delta1` are the differences in the combo arm compared to the mono intercept
+#'   and slope parameters `alpha0` and `alpha1`.
+#'   The prior is defined as \deqn{(alpha0, log(delta0), log(alpha1), log(delta1)) ~ Normal(mean, cov).}
+#'
+#' @seealso [`ModelLogNormal`], [`LogisticLogNormal`].
+#'
+#' @aliases LogisticLogNormalGrouped
+#' @export
+#'
+.LogisticLogNormalGrouped <- setClass(
+  Class = "LogisticLogNormalGrouped",
+  contains = "ModelLogNormal"
+)
+
+## constructor ----
+
+#' @rdname LogisticLogNormalGrouped-class
+#'
+#' @inheritParams ModelLogNormal
+#'
+#' @export
+#' @example examples/Model-class-LogisticLogNormalGrouped.R
+#'
+LogisticLogNormalGrouped <- function(mean, cov, ref_dose = 1) {
+  params <- ModelParamsNormal(mean, cov)
+  .LogisticLogNormalGrouped(
+    params = params,
+    ref_dose = positive_number(ref_dose),
+    priormodel = function() {
+      theta ~ dmnorm(mean, prec)
+      alpha0 <- theta[1]
+      delta0 <- exp(theta[2])
+      alpha1 <- exp(theta[3])
+      delta1 <- exp(theta[4])
+    },
+    datamodel = function() {
+      for (i in 1:nObs) {
+        logit(p[i]) <- (alpha0 + is_combo[i] * delta0) +
+          (alpha1 + is_combo[i] * delta1) * log(x[i] / ref_dose)
+        y[i] ~ dbern(p[i])
+      }
+    },
+    modelspecs = function(group, from_prior) {
+      ms <- list(
+        mean = params@mean,
+        prec = params@prec
+      )
+      if (!from_prior) {
+        ms$ref_dose <- ref_dose
+        ms$is_combo <- as.integer(group == "combo")
+      }
+      ms
+    },
+    init = function() {
+      list(theta = c(0, 1, 1, 1))
+    },
+    datanames = c("nObs", "y", "x"),
+    sample = c("alpha0", "delta0", "alpha1", "delta1")
+  )
+}
+
+## default constructor ----
+
+#' @rdname LogisticLogNormalGrouped-class
+#' @note Typically, end users will not use the `.DefaultLogisticLogNormalGrouped()` function.
+#' @export
+.DefaultLogisticLogNormalGrouped <- function() {
+  LogisticLogNormalGrouped(
+    mean = rep(0, 4),
+    cov = diag(rep(1, 4)),
+  )
+}
+
 # LogisticKadane ----
 
 ## class ----
