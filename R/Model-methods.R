@@ -50,8 +50,8 @@ setMethod(
       data = model_params,
       options = McmcOptions(samples = NROW(model_params[[1]]))
     )
-    function(x) {
-      dose(x = x, model = model, samples = samples)
+    function(x, ...) {
+      dose(x = x, model = model, samples = samples, ...)
     }
   }
 )
@@ -127,8 +127,8 @@ setMethod(
       data = model_params,
       options = McmcOptions(samples = NROW(model_params[[1]]))
     )
-    function(dose) {
-      prob(dose = dose, model = model, samples = samples)
+    function(dose, ...) {
+      prob(dose = dose, model = model, samples = samples, ...)
     }
   }
 )

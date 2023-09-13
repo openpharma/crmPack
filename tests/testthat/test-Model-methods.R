@@ -11,7 +11,7 @@ test_that("doseFunction-GeneralModel returns correct dose function", {
   dose_fun_env <- environment(dose_fun)
 
   expect_function(doseFunction, args = c("model", "..."), null.ok = FALSE)
-  expect_function(dose_fun, args = "x", nargs = 1, null.ok = FALSE)
+  expect_function(dose_fun, args = c("x", "..."), null.ok = FALSE)
 
   # Body of `dose_fun` must be a `dose` method with `x`, `model` and `samples` args.
   dose_fun_body <- as.list(body(dose_fun)[[2]])
@@ -52,7 +52,7 @@ test_that("doseFunction-GeneralModel returns correct dose function for matrix pa
   dose_fun_env <- environment(dose_fun)
 
   expect_function(doseFunction, args = c("model", "..."), null.ok = FALSE)
-  expect_function(dose_fun, args = "x", nargs = 1, null.ok = FALSE)
+  expect_function(dose_fun, args = c("x", "..."), null.ok = FALSE)
 
   # Body of `dose_fun` must be a `dose` method with `x`, `model` and `samples` args.
   dose_fun_body <- as.list(body(dose_fun))[[2]]
@@ -119,6 +119,22 @@ test_that("doseFunction-ModelPseudo throws the error when no params are provided
   )
 })
 
+## LogisticLogNormalGrouped ----
+
+test_that("doseFunction-LogisticLogNormalGrouped works as expected", {
+  model <- .DefaultLogisticLogNormalGrouped()
+
+  dose_fun <- expect_silent(doseFunction(
+    model, alpha0 = 1, delta0 = 0.5, alpha1 = 0.5, delta1 = -0.2
+  ))
+  dose_fun <- h_covr_detrace(dose_fun)
+
+  expect_function(dose_fun, args = c("x", "..."), null.ok = FALSE)
+  expect_error(dose_fun(1), "argument \"group\" is missing, with no default")
+  result <- expect_silent(dose_fun(0.5, group = "mono"))
+  expect_equal(result, 0.13534, tolerance = 1e-4)
+})
+
 # probFunction ----
 
 ## GeneralModel ----
@@ -132,7 +148,7 @@ test_that("probFunction-GeneralModel returns correct prob function", {
   prob_fun_env <- environment(prob_fun)
 
   expect_function(probFunction, args = c("model", "..."), null.ok = FALSE)
-  expect_function(prob_fun, args = "dose", nargs = 1, null.ok = FALSE)
+  expect_function(prob_fun, args = c("dose", "..."), null.ok = FALSE)
 
   # Body of `prob_fun` must be a `prob` method with `dose`, `model` and `samples` args.
   prob_fun_body <- as.list(body(prob_fun)[[2]])
@@ -173,7 +189,7 @@ test_that("probFunction-GeneralModel returns correct prob function for matrix pa
   prob_fun_env <- environment(prob_fun)
 
   expect_function(probFunction, args = c("model", "..."), null.ok = FALSE)
-  expect_function(prob_fun, args = "dose", nargs = 1, null.ok = FALSE)
+  expect_function(prob_fun, args = c("dose", "..."), null.ok = FALSE)
 
   # Body of `prob_fun` must be a `prob` method with `dose`, `model` and `samples` args.
   prob_fun_body <- as.list(body(prob_fun)[[2]])
@@ -237,6 +253,22 @@ test_that("probFunction-ModelTox throws the error when no params are provided", 
     probFunction(model),
     "Assertion on .* failed: Must be of type 'character', not 'NULL'.$"
   )
+})
+
+## LogisticLogNormalGrouped ----
+
+test_that("probFunction-LogisticLogNormalGrouped works as expected", {
+  model <- .DefaultLogisticLogNormalGrouped()
+
+  prob_fun <- expect_silent(probFunction(
+    model, alpha0 = 1, delta0 = 0.5, alpha1 = 0.5, delta1 = -0.2
+  ))
+  prob_fun <- h_covr_detrace(prob_fun)
+
+  expect_function(prob_fun, args = c("dose", "..."), null.ok = FALSE)
+  expect_error(prob_fun(1), "argument \"group\" is missing, with no default")
+  result <- expect_silent(prob_fun(10, group = "mono"))
+  expect_equal(result, 0.8958, tolerance = 1e-4)
 })
 
 # efficacyFunction ----
