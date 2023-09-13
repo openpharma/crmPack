@@ -217,6 +217,23 @@ test_that("fit-Samples forwards additional arguments to prob inside", {
   expect_named(result, c("dose", "middle", "lower", "upper"))
 })
 
+## Samples-LogisticLogNormalGrouped ----
+
+test_that("fit-Samples works specifically also for LogisticLogNormalGrouped", {
+  mcmcOptions <- McmcOptions(samples = 3)
+  samples <- Samples(
+    data = list(alpha0 = -1:1, delta0 = c(0, 1, -1), alpha1 = -1:1, delta1 = c(-1, 0, 2)),
+    options = mcmcOptions
+  )
+  model <- .DefaultLogisticLogNormalGrouped()
+  emptyData <- Data(doseGrid = seq(10, 80, 10))
+
+  result <- expect_silent(fit(samples, model, emptyData, group = "combo"))
+  expect_data_frame(result)
+  expect_equal(nrow(result), length(emptyData@doseGrid))
+  expect_named(result, c("dose", "middle", "lower", "upper"))
+})
+
 ## Samples-DataModel ----
 
 test_that("fit-Samples works correctly for dual models", {
@@ -867,6 +884,21 @@ test_that("Check that plot-Samples-ModelTox works correctly", {
 
   actual1 <- plot(x = samples, y = model, data = data, showLegend = FALSE)
   vdiffr::expect_doppelganger("plot-Samples-ModelTox_showlegend-FALSE", actual1)
+})
+
+## Samples-LogisticLogNormalGrouped ----
+
+test_that("plot-Samples works specifically also for LogisticLogNormalGrouped", {
+  mcmcOptions <- McmcOptions(samples = 3)
+  samples <- Samples(
+    data = list(alpha0 = -1:1, delta0 = c(0, 1, -1), alpha1 = -1:1, delta1 = c(-1, 0, 2)),
+    options = mcmcOptions
+  )
+  model <- .DefaultLogisticLogNormalGrouped()
+  emptyData <- Data(doseGrid = seq(0.5, 10, by = 0.1))
+
+  result <- expect_silent(plot(samples, model, emptyData, group = "combo"))
+  vdiffr::expect_doppelganger("plot-Samples-LogisticLogNormalGrouped", result)
 })
 
 ## Samples-DataDual ----
