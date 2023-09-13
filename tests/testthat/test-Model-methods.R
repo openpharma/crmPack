@@ -560,8 +560,8 @@ test_that("dose-LogisticLogNormalGrouped works as expected for scalar samples", 
   model <- .DefaultLogisticLogNormalGrouped()
   samples <- h_as_samples(list(alpha0 = 1, delta0 = -1, alpha1 = 1, delta1 = -0.5))
 
-  result <- dose(c(1, 30), model, samples, group = "combo")
-  expect_equal(result, c(0.5, 0.8456), tolerance = 1e-4)
+  result <- dose(c(0.2, 0.8), model, samples, group = "combo")
+  expect_equal(result, c(0.0625, 16), tolerance = 1e-4)
 })
 
 test_that("dose-LogisticLogNormalGrouped works as expected for vectors", {
@@ -569,12 +569,12 @@ test_that("dose-LogisticLogNormalGrouped works as expected for vectors", {
   samples <- h_as_samples(list(
     alpha0 = c(1, 2),
     delta0 = c(0.5, -0.5),
-    alpha1 = c(0, 1),
+    alpha1 = c(0.5, 1),
     delta1 = c(1, 0.2)
   ))
 
-  result <- dose(c(1, 30), model, samples, group = c("mono", "combo"))
-  expect_equal(result, c(0.7311, 0.9962), tolerance = 1e-4)
+  result <- dose(c(0.4, 0.8), model, samples, group = c("mono", "combo"))
+  expect_equal(result, c(0.0601, 0.9096), tolerance = 1e-4)
 })
 
 ## LogisticKadane ----
