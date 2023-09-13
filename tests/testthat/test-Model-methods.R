@@ -125,7 +125,8 @@ test_that("doseFunction-LogisticLogNormalGrouped works as expected", {
   model <- .DefaultLogisticLogNormalGrouped()
 
   dose_fun <- expect_silent(doseFunction(
-    model, alpha0 = 1, delta0 = 0.5, alpha1 = 0.5, delta1 = -0.2
+    model,
+    alpha0 = 1, delta0 = 0.5, alpha1 = 0.5, delta1 = -0.2
   ))
   dose_fun <- h_covr_detrace(dose_fun)
 
@@ -261,7 +262,8 @@ test_that("probFunction-LogisticLogNormalGrouped works as expected", {
   model <- .DefaultLogisticLogNormalGrouped()
 
   prob_fun <- expect_silent(probFunction(
-    model, alpha0 = 1, delta0 = 0.5, alpha1 = 0.5, delta1 = -0.2
+    model,
+    alpha0 = 1, delta0 = 0.5, alpha1 = 0.5, delta1 = -0.2
   ))
   prob_fun <- h_covr_detrace(prob_fun)
 
