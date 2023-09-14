@@ -4777,6 +4777,7 @@ setMethod(
         is.function(combo_truth),
         is.scalar(nsim),
         nsim > 0,
+        is.bool(firstSeparate),
         is.bool(parallel),
         is.scalar(nCores),
         nCores > 0
