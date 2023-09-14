@@ -51,6 +51,7 @@ reference:
       - LogisticLogNormalSub
       - ProbitLogNormal
       - ProbitLogNormalRel
+      - LogisticLogNormalGrouped
       - LogisticKadane
       - LogisticKadaneBetaGamma
       - LogisticNormalMixture

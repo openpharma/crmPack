@@ -81,7 +81,9 @@ globalVariables(c(
   "logit<-",
   "rho0",
   "alpha0",
+  "delta0",
   "alpha1",
+  "delta1",
   "inverse",
   "priorCov",
   "theta",
@@ -135,7 +137,8 @@ globalVariables(c(
   "ref_dose",
   "comp",
   "X",
-  "skel_probs"
+  "skel_probs",
+  "is_combo"
 ))
 
 # nolint end

@@ -12,6 +12,8 @@
 \alias{dose-ProbitLogNormal}
 \alias{dose,numeric,ProbitLogNormalRel,Samples-method}
 \alias{dose-ProbitLogNormalRel}
+\alias{dose,numeric,LogisticLogNormalGrouped,Samples-method}
+\alias{dose-LogisticLogNormalGrouped}
 \alias{dose,numeric,LogisticKadane,Samples-method}
 \alias{dose-LogisticKadane}
 \alias{dose,numeric,LogisticKadaneBetaGamma,Samples-method}
@@ -49,6 +51,8 @@ dose(x, model, samples, ...)
 \S4method{dose}{numeric,ProbitLogNormal,Samples}(x, model, samples)
 
 \S4method{dose}{numeric,ProbitLogNormalRel,Samples}(x, model, samples)
+
+\S4method{dose}{numeric,LogisticLogNormalGrouped,Samples}(x, model, samples, group)
 
 \S4method{dose}{numeric,LogisticKadane,Samples}(x, model, samples)
 
@@ -88,6 +92,10 @@ as the sample.}
 used to compute the resulting doses. Can also be missing for some models.}
 
 \item{...}{model specific parameters when \code{samples} are not used.}
+
+\item{group}{(\code{character} or \code{factor})\cr for \code{\link{LogisticLogNormalGrouped}},
+indicating whether to calculate the dose for the \code{mono} or for
+the \code{combo} arm.}
 }
 \value{
 A \code{number} or \code{numeric} vector with the doses.
@@ -132,6 +140,9 @@ probability of the occurrence of a DLE (\code{x}).
 
 \item \code{dose(x = numeric, model = ProbitLogNormalRel, samples = Samples)}: compute the dose level reaching a specific target
 probability of the occurrence of a DLE (\code{x}).
+
+\item \code{dose(x = numeric, model = LogisticLogNormalGrouped, samples = Samples)}: method for \code{\link{LogisticLogNormalGrouped}} which needs \code{group}
+argument in addition.
 
 \item \code{dose(x = numeric, model = LogisticKadane, samples = Samples)}: compute the dose level reaching a specific target
 probability of the occurrence of a DLE (\code{x}).

@@ -11,7 +11,7 @@ test_that("doseFunction-GeneralModel returns correct dose function", {
   dose_fun_env <- environment(dose_fun)
 
   expect_function(doseFunction, args = c("model", "..."), null.ok = FALSE)
-  expect_function(dose_fun, args = "x", nargs = 1, null.ok = FALSE)
+  expect_function(dose_fun, args = c("x", "..."), null.ok = FALSE)
 
   # Body of `dose_fun` must be a `dose` method with `x`, `model` and `samples` args.
   dose_fun_body <- as.list(body(dose_fun)[[2]])
@@ -52,7 +52,7 @@ test_that("doseFunction-GeneralModel returns correct dose function for matrix pa
   dose_fun_env <- environment(dose_fun)
 
   expect_function(doseFunction, args = c("model", "..."), null.ok = FALSE)
-  expect_function(dose_fun, args = "x", nargs = 1, null.ok = FALSE)
+  expect_function(dose_fun, args = c("x", "..."), null.ok = FALSE)
 
   # Body of `dose_fun` must be a `dose` method with `x`, `model` and `samples` args.
   dose_fun_body <- as.list(body(dose_fun))[[2]]
@@ -119,6 +119,23 @@ test_that("doseFunction-ModelPseudo throws the error when no params are provided
   )
 })
 
+## LogisticLogNormalGrouped ----
+
+test_that("doseFunction-LogisticLogNormalGrouped works as expected", {
+  model <- .DefaultLogisticLogNormalGrouped()
+
+  dose_fun <- expect_silent(doseFunction(
+    model,
+    alpha0 = 1, delta0 = 0.5, alpha1 = 0.5, delta1 = -0.2
+  ))
+  dose_fun <- h_covr_detrace(dose_fun)
+
+  expect_function(dose_fun, args = c("x", "..."), null.ok = FALSE)
+  expect_error(dose_fun(1), "argument \"group\" is missing, with no default")
+  result <- expect_silent(dose_fun(0.5, group = "mono"))
+  expect_equal(result, 0.13534, tolerance = 1e-4)
+})
+
 # probFunction ----
 
 ## GeneralModel ----
@@ -132,7 +149,7 @@ test_that("probFunction-GeneralModel returns correct prob function", {
   prob_fun_env <- environment(prob_fun)
 
   expect_function(probFunction, args = c("model", "..."), null.ok = FALSE)
-  expect_function(prob_fun, args = "dose", nargs = 1, null.ok = FALSE)
+  expect_function(prob_fun, args = c("dose", "..."), null.ok = FALSE)
 
   # Body of `prob_fun` must be a `prob` method with `dose`, `model` and `samples` args.
   prob_fun_body <- as.list(body(prob_fun)[[2]])
@@ -173,7 +190,7 @@ test_that("probFunction-GeneralModel returns correct prob function for matrix pa
   prob_fun_env <- environment(prob_fun)
 
   expect_function(probFunction, args = c("model", "..."), null.ok = FALSE)
-  expect_function(prob_fun, args = "dose", nargs = 1, null.ok = FALSE)
+  expect_function(prob_fun, args = c("dose", "..."), null.ok = FALSE)
 
   # Body of `prob_fun` must be a `prob` method with `dose`, `model` and `samples` args.
   prob_fun_body <- as.list(body(prob_fun)[[2]])
@@ -237,6 +254,23 @@ test_that("probFunction-ModelTox throws the error when no params are provided", 
     probFunction(model),
     "Assertion on .* failed: Must be of type 'character', not 'NULL'.$"
   )
+})
+
+## LogisticLogNormalGrouped ----
+
+test_that("probFunction-LogisticLogNormalGrouped works as expected", {
+  model <- .DefaultLogisticLogNormalGrouped()
+
+  prob_fun <- expect_silent(probFunction(
+    model,
+    alpha0 = 1, delta0 = 0.5, alpha1 = 0.5, delta1 = -0.2
+  ))
+  prob_fun <- h_covr_detrace(prob_fun)
+
+  expect_function(prob_fun, args = c("dose", "..."), null.ok = FALSE)
+  expect_error(prob_fun(1), "argument \"group\" is missing, with no default")
+  result <- expect_silent(prob_fun(10, group = "mono"))
+  expect_equal(result, 0.8958, tolerance = 1e-4)
 })
 
 # efficacyFunction ----
@@ -502,6 +536,45 @@ test_that("dose-ProbitLogNormalRel throws the error when x is not valid", {
     dose(-2, model, samples),
     "Assertion on 'x' failed: Probability must be within \\[0, 1\\] bounds but it is not."
   )
+})
+
+## LogisticLogNormalGrouped ----
+
+test_that("dose-LogisticLogNormalGrouped works as expected", {
+  model <- .DefaultLogisticLogNormalGrouped()
+  samples <- h_as_samples(list(
+    alpha0 = c(0.1, -1, 1, 2),
+    delta0 = c(0, 1, -1, 0),
+    alpha1 = c(0, 0.5, 1, -1),
+    delta1 = c(1, 0, -0.9, 2)
+  ))
+
+  result_mono <- dose(0.5, model, samples, group = "mono")
+  result_combo <- dose(0.5, model, samples, group = "combo")
+
+  expect_equal(result_mono, c(0, 7.3891, 0.3679, 7.3891), tolerance = 1e-4)
+  expect_equal(result_combo, c(0.9048, 1, 1, 0.1353), tolerance = 1e-4)
+})
+
+test_that("dose-LogisticLogNormalGrouped works as expected for scalar samples", {
+  model <- .DefaultLogisticLogNormalGrouped()
+  samples <- h_as_samples(list(alpha0 = 1, delta0 = -1, alpha1 = 1, delta1 = -0.5))
+
+  result <- dose(c(0.2, 0.8), model, samples, group = "combo")
+  expect_equal(result, c(0.0625, 16), tolerance = 1e-4)
+})
+
+test_that("dose-LogisticLogNormalGrouped works as expected for vectors", {
+  model <- .DefaultLogisticLogNormalGrouped()
+  samples <- h_as_samples(list(
+    alpha0 = c(1, 2),
+    delta0 = c(0.5, -0.5),
+    alpha1 = c(0.5, 1),
+    delta1 = c(1, 0.2)
+  ))
+
+  result <- dose(c(0.4, 0.8), model, samples, group = c("mono", "combo"))
+  expect_equal(result, c(0.0601, 0.9096), tolerance = 1e-4)
 })
 
 ## LogisticKadane ----
@@ -1111,6 +1184,42 @@ test_that("prob-ProbitLogNormalRel throws the error when dose is not valid", {
     prob(-3, model, samples),
     "Assertion on 'dose' failed: Element 1 is not >= 0."
   )
+})
+
+## LogisticLogNormalGrouped ----
+
+test_that("prob-LogisticLogNormalGrouped works as expected", {
+  model <- .DefaultLogisticLogNormalGrouped()
+  samples <- h_as_samples(list(
+    alpha0 = c(0, -1, 1, 2),
+    delta0 = c(0, 1, -1, 0),
+    alpha1 = c(0, 0.5, 1, -1),
+    delta1 = c(1, 0, -1, 2)
+  ))
+
+  result <- prob(10, model, samples, group = "mono")
+  expect_equal(result, c(0.5, 0.5378, 0.9645, 0.4249), tolerance = 1e-4)
+})
+
+test_that("prob-LogisticLogNormalGrouped works as expected for scalar samples", {
+  model <- .DefaultLogisticLogNormalGrouped()
+  samples <- h_as_samples(list(alpha0 = 1, delta0 = -1, alpha1 = 1, delta1 = -0.5))
+
+  result <- prob(c(1, 30), model, samples, group = "combo")
+  expect_equal(result, c(0.5, 0.8456), tolerance = 1e-4)
+})
+
+test_that("prob-LogisticLogNormalGrouped works as expected for vectors", {
+  model <- .DefaultLogisticLogNormalGrouped()
+  samples <- h_as_samples(list(
+    alpha0 = c(1, 2),
+    delta0 = c(0.5, -0.5),
+    alpha1 = c(0, 1),
+    delta1 = c(1, 0.2)
+  ))
+
+  result <- prob(c(1, 30), model, samples, group = c("mono", "combo"))
+  expect_equal(result, c(0.7311, 0.9962), tolerance = 1e-4)
 })
 
 ## LogisticKadane ----
