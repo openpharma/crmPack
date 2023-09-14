@@ -39,12 +39,6 @@
 <li class="nav-item">
   <a class="nav-link" href="../news/index.html">Changelog</a>
 </li>
-<!-- start dropdown for versions --> <li class="nav-item dropdown">
-        <a href="#" class="nav-link dropdown-toggle"
-          data-bs-toggle="dropdown" role="button"
-          aria-expanded="false" aria-haspopup="true"
-          id="dropdown-versions">Versions</a> <div class="dropdown-menu" aria-labelledby="dropdown-versions"> <a class="dropdown-item" data-toggle="tooltip" title="" href="https://Roche.github.io/crmPack/main">main</a> </div></li>
-<!-- end dropdown for versions -->
       </ul><form class="form-inline my-2 my-lg-0" role="search">
         <input type="search" class="form-control me-sm-2" aria-label="Toggle navigation" name="search-input" data-search-index="../search.json" id="search-input" placeholder="Search for" autocomplete="off"></form>
 
@@ -123,6 +117,11 @@
         <dd><code>DataDual</code></dd>
       </dl><dl><dt>
           
+          <code><a href="DataOrdinal-class.html">DataOrdinal()</a></code> 
+        </dt>
+        <dd><code>DataOrdinal</code></dd>
+      </dl><dl><dt>
+          
           <code><a href="DataParts-class.html">DataParts()</a></code> 
         </dt>
         <dd><code>DataParts</code></dd>
@@ -186,6 +185,11 @@
           <code><a href="ProbitLogNormalRel-class.html">ProbitLogNormalRel()</a></code> <code><a href="ProbitLogNormalRel-class.html">.DefaultProbitLogNormalRel()</a></code> 
         </dt>
         <dd><code>ProbitLogNormalRel</code></dd>
+      </dl><dl><dt>
+          
+          <code><a href="LogisticLogNormalGrouped-class.html">LogisticLogNormalGrouped()</a></code> <code><a href="LogisticLogNormalGrouped-class.html">.DefaultLogisticLogNormalGrouped()</a></code> 
+        </dt>
+        <dd><code>LogisticLogNormalGrouped</code></dd>
       </dl><dl><dt>
           
           <code><a href="LogisticKadane-class.html">LogisticKadane()</a></code> <code><a href="LogisticKadane-class.html">.DefaultLogisticKadane()</a></code> 
@@ -579,7 +583,12 @@
 
       <dl><dt>
           
-          <code><a href="v_data_objects.html">v_general_data()</a></code> <code><a href="v_data_objects.html">h_doses_unique_per_cohort()</a></code> <code><a href="v_data_objects.html">v_data()</a></code> <code><a href="v_data_objects.html">v_data_dual()</a></code> <code><a href="v_data_objects.html">v_data_parts()</a></code> <code><a href="v_data_objects.html">v_data_mixture()</a></code> <code><a href="v_data_objects.html">v_data_da()</a></code> <code><a href="v_data_objects.html">v_data_grouped()</a></code> 
+          <code><a href="h_blind_plot_data.html">h_blind_plot_data()</a></code> 
+        </dt>
+        <dd>Helper Function to Blind Plot Data</dd>
+      </dl><dl><dt>
+          
+          <code><a href="v_data_objects.html">v_general_data()</a></code> <code><a href="v_data_objects.html">h_doses_unique_per_cohort()</a></code> <code><a href="v_data_objects.html">v_data()</a></code> <code><a href="v_data_objects.html">v_data_dual()</a></code> <code><a href="v_data_objects.html">v_data_parts()</a></code> <code><a href="v_data_objects.html">v_data_mixture()</a></code> <code><a href="v_data_objects.html">v_data_da()</a></code> <code><a href="v_data_objects.html">v_data_ordinal()</a></code> <code><a href="v_data_objects.html">v_data_grouped()</a></code> 
         </dt>
         <dd>Internal Helper Functions for Validation of <code>GeneralData</code> Objects</dd>
       </dl><dl><dt>
@@ -589,7 +598,7 @@
         <dd>Comparison with Numerical Tolerance and Without Name Comparison</dd>
       </dl><dl><dt>
           
-          <code><a href="h_plot_data_df.html">h_plot_data_df()</a></code> 
+          <code><a href="h_plot_data_df.html">h_plot_data_df()</a></code> <code><a href="h_plot_data_df.html">h_plot_data_df()</a></code> 
         </dt>
         <dd>Preparing Data for Plotting</dd>
       </dl><dl><dt>
@@ -749,6 +758,11 @@ of the function that models dose-biomarker relationship defined in the
         <dd>Building the Plot for <code>nextBest-NextBestMaxGainSamples</code> Method.</dd>
       </dl><dl><dt>
           
+          <code><a href="h_obtain_dose_grid_range.html">h_obtain_dose_grid_range()</a></code> 
+        </dt>
+        <dd>Helper Function Containing Common Functionality</dd>
+      </dl><dl><dt>
+          
           <code><a href="h_covr_helpers.html">h_covr_active()</a></code> <code><a href="h_covr_helpers.html">h_covr_detrace()</a></code> <code><a href="h_covr_helpers.html">h_is_covr_trace()</a></code> <code><a href="h_covr_helpers.html">h_covr_detrace_call()</a></code> 
         </dt>
         <dd>Helpers for stripping expressions of <code>covr</code>-inserted trace code</dd>
@@ -767,6 +781,11 @@ of the function that models dose-biomarker relationship defined in the
           <code><a href="h_calc_report_label_percentage.html">h_calc_report_label_percentage()</a></code> 
         </dt>
         <dd>calculate percentage of true stopping rules for report label output</dd>
+      </dl><dl><dt>
+          
+          <code><a href="h_validate_common_data_slots.html">h_validate_common_data_slots()</a></code> 
+        </dt>
+        <dd>Helper Function performing validation Common to Data and DataOrdinal</dd>
       </dl></div><div class="section level2">
       <h2 id="internal-validation-functions">Internal Validation Functions<a class="anchor" aria-label="anchor" href="#internal-validation-functions"></a></h2>
       
@@ -780,7 +799,7 @@ of the function that models dose-biomarker relationship defined in the
 
       <dl><dt>
           
-          <code><a href="v_data_objects.html">v_general_data()</a></code> <code><a href="v_data_objects.html">h_doses_unique_per_cohort()</a></code> <code><a href="v_data_objects.html">v_data()</a></code> <code><a href="v_data_objects.html">v_data_dual()</a></code> <code><a href="v_data_objects.html">v_data_parts()</a></code> <code><a href="v_data_objects.html">v_data_mixture()</a></code> <code><a href="v_data_objects.html">v_data_da()</a></code> <code><a href="v_data_objects.html">v_data_grouped()</a></code> 
+          <code><a href="v_data_objects.html">v_general_data()</a></code> <code><a href="v_data_objects.html">h_doses_unique_per_cohort()</a></code> <code><a href="v_data_objects.html">v_data()</a></code> <code><a href="v_data_objects.html">v_data_dual()</a></code> <code><a href="v_data_objects.html">v_data_parts()</a></code> <code><a href="v_data_objects.html">v_data_mixture()</a></code> <code><a href="v_data_objects.html">v_data_da()</a></code> <code><a href="v_data_objects.html">v_data_ordinal()</a></code> <code><a href="v_data_objects.html">v_data_grouped()</a></code> 
         </dt>
         <dd>Internal Helper Functions for Validation of <code>GeneralData</code> Objects</dd>
       </dl><dl><dt>
@@ -882,9 +901,9 @@ of the function that models dose-biomarker relationship defined in the
 
       <dl><dt>
           
-          <code><a href="plot-Data-missing-method.html">plot(<i>&lt;Data&gt;</i>,<i>&lt;missing&gt;</i>)</a></code> 
+          <code><a href="plot-Data.html">h_plot_data_dataordinal()</a></code> <code><a href="plot-Data.html">plot(<i>&lt;Data&gt;</i>,<i>&lt;missing&gt;</i>)</a></code> <code><a href="plot-Data.html">plot(<i>&lt;DataOrdinal&gt;</i>,<i>&lt;missing&gt;</i>)</a></code> 
         </dt>
-        <dd>Plot Method for the <code>Data</code> Class</dd>
+        <dd>Helper Function for the Plot Method of the Data and DataOrdinal Classes</dd>
       </dl><dl><dt>
           
           <code><a href="plot-DataDual-missing-method.html">plot(<i>&lt;DataDual&gt;</i>,<i>&lt;missing&gt;</i>)</a></code> 
@@ -915,6 +934,11 @@ of the function that models dose-biomarker relationship defined in the
           <code><a href="update-DataDA-method.html">update(<i>&lt;DataDA&gt;</i>)</a></code> 
         </dt>
         <dd>Updating <code>DataDA</code> Objects</dd>
+      </dl><dl><dt>
+          
+          <code><a href="update-DataOrdinal-method.html">update(<i>&lt;DataOrdinal&gt;</i>)</a></code> 
+        </dt>
+        <dd>Updating <code>DataOrdinal</code> Objects</dd>
       </dl><dl><dt>
           
           <code><a href="getEff.html">getEff()</a></code> 

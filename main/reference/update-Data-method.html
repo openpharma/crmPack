@@ -41,12 +41,6 @@ A method that updates existing Data object with new data."><meta property="og:im
 <li class="nav-item">
   <a class="nav-link" href="../news/index.html">Changelog</a>
 </li>
-<!-- start dropdown for versions --> <li class="nav-item dropdown">
-        <a href="#" class="nav-link dropdown-toggle"
-          data-bs-toggle="dropdown" role="button"
-          aria-expanded="false" aria-haspopup="true"
-          id="dropdown-versions">Versions</a> <div class="dropdown-menu" aria-labelledby="dropdown-versions"> <a class="dropdown-item" data-toggle="tooltip" title="" href="https://Roche.github.io/crmPack/main">main</a> </div></li>
-<!-- end dropdown for versions -->
       </ul><form class="form-inline my-2 my-lg-0" role="search">
         <input type="search" class="form-control me-sm-2" aria-label="Toggle navigation" name="search-input" data-search-index="../search.json" id="search-input" placeholder="Search for" autocomplete="off"></form>
 
@@ -116,16 +110,7 @@ to a new cohort.</p></dd>
 
 <dt>check</dt>
 <dd><p>(<code>flag</code>)<br> whether the validation of the updated object should
-be conducted. Current implementation of this <code>update</code> method allows for
-updating the <code>Data</code> class object by adding a single dose level <code>x</code> only.
-However, there might be some use cases where the new cohort to be added
-contains a placebo and active dose. Hence, such update would need to be
-performed iteratively by calling the <code>update</code> method twice. For example,
-in the first call a user can add a placebo, and then in the second call,
-an active dose. Since having a cohort with placebo only is not allowed,
-the <code>update</code> method would normally throw the error when attempting to add
-a placebo in the first call. To allow for such updates, the <code>check</code>
-parameter should be then set to <code>FALSE</code> for that first call.</p></dd>
+be conducted. See details below.</p></dd>
 
 
 <dt>...</dt>
@@ -137,6 +122,19 @@ parameter should be then set to <code>FALSE</code> for that first call.</p></dd>
     
 
 <p>The new, updated <code><a href="Data-class.html">Data</a></code> object.</p>
+    </div>
+    <div class="section level2">
+    <h2 id="details">Details<a class="anchor" aria-label="anchor" href="#details"></a></h2>
+    <p>The current implementation of this <code>update</code> method allows for
+updating the <code>Data</code> class object by adding a single dose level <code>x</code> only.
+However, there might be some use cases where the new cohort to be added
+contains a placebo and active dose. Hence, such update would need to be
+performed iteratively by calling the <code>update</code> method twice. For example,
+in the first call a user can add a placebo, and then in the second call,
+an active dose. Since having a cohort with placebo only is not allowed,
+the <code>update</code> method would normally throw the error when attempting to add
+a placebo in the first call. To allow for such updates, the <code>check</code>
+parameter should be then set to <code>FALSE</code> for that first call.</p>
     </div>
 
     <div class="section level2">

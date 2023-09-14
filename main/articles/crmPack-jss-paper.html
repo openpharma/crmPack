@@ -63,12 +63,6 @@
 <li class="nav-item">
   <a class="nav-link" href="../news/index.html">Changelog</a>
 </li>
-<!-- start dropdown for versions --> <li class="nav-item dropdown">
-        <a href="#" class="nav-link dropdown-toggle"
-          data-bs-toggle="dropdown" role="button"
-          aria-expanded="false" aria-haspopup="true"
-          id="dropdown-versions">Versions</a> <div class="dropdown-menu" aria-labelledby="dropdown-versions"> <a class="dropdown-item" data-toggle="tooltip" title="" href="https://Roche.github.io/crmPack/main">main</a> </div></li>
-<!-- end dropdown for versions -->
       </ul>
 <form class="form-inline my-2 my-lg-0" role="search">
         <input type="search" class="form-control me-sm-2" aria-label="Toggle navigation" name="search-input" data-search-index="../search.json" id="search-input" placeholder="Search for" autocomplete="off">
@@ -639,18 +633,14 @@ recommended as 225, 175 and 150 mg, respectively.</p>
 <span><span class="co">## 14  125    1      125 FALSE         0</span></span>
 <span><span class="co">## 15  125    2      100 FALSE       -20</span></span>
 <span><span class="co">## 16  125    3       75 FALSE       -40</span></span>
-<span><span class="co">## 17  175    0      225 FALSE        29</span></span>
-<span><span class="co">## 18  175    1      150 FALSE       -14</span></span>
+<span><span class="co">## 17  175    0      250 FALSE        43</span></span>
+<span><span class="co">## 18  175    1      175 FALSE         0</span></span>
 <span><span class="co">## 19  175    2      125 FALSE       -29</span></span>
 <span><span class="co">## 20  175    3      100 FALSE       -43</span></span>
-<span><span class="co">## 21  225    0      275 FALSE        22</span></span>
-<span><span class="co">## 22  225    1      225 FALSE         0</span></span>
-<span><span class="co">## 23  225    2      175 FALSE       -22</span></span>
-<span><span class="co">## 24  225    3      150 FALSE       -33</span></span>
-<span><span class="co">## 25  275    0      300 FALSE         9</span></span>
-<span><span class="co">## 26  275    1      275 FALSE         0</span></span>
-<span><span class="co">## 27  275    2      225 FALSE       -18</span></span>
-<span><span class="co">## 28  275    3      175 FALSE       -36</span></span></code></pre>
+<span><span class="co">## 21  250    0      300 FALSE        20</span></span>
+<span><span class="co">## 22  250    1      225 FALSE       -10</span></span>
+<span><span class="co">## 23  250    2      175 FALSE       -30</span></span>
+<span><span class="co">## 24  250    3      150 FALSE       -40</span></span></code></pre>
 <p><strong>Simulating operating characteristics</strong> For the many
 trials operating characteristics, we first have to define true
 scenarios, from which the data should arise. In this case, this only
@@ -686,7 +676,7 @@ used:</p>
 the results. The argument <code>parallel</code> can be set to
 <code>TRUE</code> if one wishes to run the iterations in parallel on all
 processors of the computer, which can yield a meaningful speedup. Here
-we needed 183 seconds for 100 simulated trials on an Intel Core i5-6300U
+we needed 156 seconds for 100 simulated trials on an Intel Core i5-6300U
 CPU with 2.4 GHz.</p>
 <p>The result is an object of class <code>Simulations</code> containing
 multiple slots, with e.g., the <code>data</code> slot containing the
@@ -721,19 +711,19 @@ description of the results:</p>
 <span><span class="co">## Target dose interval corresponding to this was 47.9, 52.7 </span></span>
 <span><span class="co">## Intervals are corresponding to 10 and 90 % quantiles</span></span>
 <span><span class="co">## </span></span>
-<span><span class="co">## Number of patients on placebo : mean 7 (6, 8) </span></span>
+<span><span class="co">## Number of patients on placebo : mean 8 (6, 8) </span></span>
 <span><span class="co">## Number of patients on active : mean 22 (18, 24) </span></span>
 <span><span class="co">## Number of patients overall : mean 30 (24, 32) </span></span>
 <span><span class="co">## Number of patients treated above target tox interval : mean 3 (0, 3) </span></span>
 <span><span class="co">## Proportions of DLTs in the trials for patients on placebo : mean 0 % (0 %, 0 %) </span></span>
 <span><span class="co">## Proportions of DLTs in the trials for patients on active : mean 28 % (21 %, 33 %) </span></span>
 <span><span class="co">## Mean toxicity risks for the patients on active : mean 27 % (18 %, 33 %) </span></span>
-<span><span class="co">## Doses selected as MTD : mean 46 (25, 50) </span></span>
+<span><span class="co">## Doses selected as MTD : mean 46.2 (25, 50) </span></span>
 <span><span class="co">## True toxicity at doses selected : mean 22 % (0 %, 26 %) </span></span>
-<span><span class="co">## Proportion of trials selecting target MTD: 84 %</span></span>
+<span><span class="co">## Proportion of trials selecting target MTD: 85 %</span></span>
 <span><span class="co">## Dose most often selected as MTD: 50 </span></span>
-<span><span class="co">## Observed toxicity rate at dose most often selected: 27 %</span></span>
-<span><span class="co">## Fitted toxicity rate at dose most often selected : mean 24 % (17 %, 30 %)</span></span></code></pre>
+<span><span class="co">## Observed toxicity rate at dose most often selected: 26 %</span></span>
+<span><span class="co">## Fitted toxicity rate at dose most often selected : mean 23 % (16 %, 30 %)</span></span></code></pre>
 A plot of the summary results can also be produced, see Figure
 @ref(fig:sim-summary-plot).
 <div class="figure" style="text-align: center">

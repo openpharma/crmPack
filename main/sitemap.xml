@@ -103,6 +103,9 @@
     <loc>https://roche.github.io/crmPack/reference/DataMixture-class.html</loc>
   </url>
   <url>
+    <loc>https://roche.github.io/crmPack/reference/DataOrdinal-class.html</loc>
+  </url>
+  <url>
     <loc>https://roche.github.io/crmPack/reference/DataParts-class.html</loc>
   </url>
   <url>
@@ -191,6 +194,9 @@
   </url>
   <url>
     <loc>https://roche.github.io/crmPack/reference/LogisticLogNormal-class.html</loc>
+  </url>
+  <url>
+    <loc>https://roche.github.io/crmPack/reference/LogisticLogNormalGrouped-class.html</loc>
   </url>
   <url>
     <loc>https://roche.github.io/crmPack/reference/LogisticLogNormalMixture-class.html</loc>
@@ -496,6 +502,9 @@
     <loc>https://roche.github.io/crmPack/reference/h_all_equivalent.html</loc>
   </url>
   <url>
+    <loc>https://roche.github.io/crmPack/reference/h_blind_plot_data.html</loc>
+  </url>
+  <url>
     <loc>https://roche.github.io/crmPack/reference/h_calc_report_label_percentage.html</loc>
   </url>
   <url>
@@ -583,6 +592,9 @@
     <loc>https://roche.github.io/crmPack/reference/h_null_if_na.html</loc>
   </url>
   <url>
+    <loc>https://roche.github.io/crmPack/reference/h_obtain_dose_grid_range.html</loc>
+  </url>
+  <url>
     <loc>https://roche.github.io/crmPack/reference/h_plot_data_cohort_lines.html</loc>
   </url>
   <url>
@@ -602,6 +614,9 @@
   </url>
   <url>
     <loc>https://roche.github.io/crmPack/reference/h_validate_combine_results.html</loc>
+  </url>
+  <url>
+    <loc>https://roche.github.io/crmPack/reference/h_validate_common_data_slots.html</loc>
   </url>
   <url>
     <loc>https://roche.github.io/crmPack/reference/index.html</loc>
@@ -682,7 +697,7 @@
     <loc>https://roche.github.io/crmPack/reference/plot-Data-ModelTox-method.html</loc>
   </url>
   <url>
-    <loc>https://roche.github.io/crmPack/reference/plot-Data-missing-method.html</loc>
+    <loc>https://roche.github.io/crmPack/reference/plot-Data.html</loc>
   </url>
   <url>
     <loc>https://roche.github.io/crmPack/reference/plot-DataDA-missing-method.html</loc>
@@ -845,6 +860,9 @@
   </url>
   <url>
     <loc>https://roche.github.io/crmPack/reference/update-DataDual-method.html</loc>
+  </url>
+  <url>
+    <loc>https://roche.github.io/crmPack/reference/update-DataOrdinal-method.html</loc>
   </url>
   <url>
     <loc>https://roche.github.io/crmPack/reference/update-DataParts-method.html</loc>

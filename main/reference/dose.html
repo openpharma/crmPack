@@ -53,12 +53,6 @@ The doses are computed based on the samples of the model parameters (samples).">
 <li class="nav-item">
   <a class="nav-link" href="../news/index.html">Changelog</a>
 </li>
-<!-- start dropdown for versions --> <li class="nav-item dropdown">
-        <a href="#" class="nav-link dropdown-toggle"
-          data-bs-toggle="dropdown" role="button"
-          aria-expanded="false" aria-haspopup="true"
-          id="dropdown-versions">Versions</a> <div class="dropdown-menu" aria-labelledby="dropdown-versions"> <a class="dropdown-item" data-toggle="tooltip" title="" href="https://Roche.github.io/crmPack/main">main</a> </div></li>
-<!-- end dropdown for versions -->
       </ul><form class="form-inline my-2 my-lg-0" role="search">
         <input type="search" class="form-control me-sm-2" aria-label="Toggle navigation" name="search-input" data-search-index="../search.json" id="search-input" placeholder="Search for" autocomplete="off"></form>
 
@@ -109,6 +103,9 @@ The doses are computed based on the samples of the model parameters (samples).</
 <span></span>
 <span><span class="co"># S4 method for numeric,ProbitLogNormalRel,Samples</span></span>
 <span><span class="fu">dose</span><span class="op">(</span><span class="va">x</span>, <span class="va">model</span>, <span class="va">samples</span><span class="op">)</span></span>
+<span></span>
+<span><span class="co"># S4 method for numeric,LogisticLogNormalGrouped,Samples</span></span>
+<span><span class="fu">dose</span><span class="op">(</span><span class="va">x</span>, <span class="va">model</span>, <span class="va">samples</span>, <span class="va">group</span><span class="op">)</span></span>
 <span></span>
 <span><span class="co"># S4 method for numeric,LogisticKadane,Samples</span></span>
 <span><span class="fu">dose</span><span class="op">(</span><span class="va">x</span>, <span class="va">model</span>, <span class="va">samples</span><span class="op">)</span></span>
@@ -170,6 +167,12 @@ used to compute the resulting doses. Can also be missing for some models.</p></d
 <dt>...</dt>
 <dd><p>model specific parameters when <code>samples</code> are not used.</p></dd>
 
+
+<dt>group</dt>
+<dd><p>(<code>character</code> or <code>factor</code>)<br> for <code><a href="LogisticLogNormalGrouped-class.html">LogisticLogNormalGrouped</a></code>,
+indicating whether to calculate the dose for the <code>mono</code> or for
+the <code>combo</code> arm.</p></dd>
+
 </dl></div>
     <div class="section level2">
     <h2 id="value">Value<a class="anchor" aria-label="anchor" href="#value"></a></h2>
@@ -204,6 +207,8 @@ probability of the occurrence of a DLE (<code>x</code>).</p></li>
 probability of the occurrence of a DLE (<code>x</code>).</p></li>
 <li><p><code>dose(x = numeric, model = ProbitLogNormalRel, samples = Samples)</code>: compute the dose level reaching a specific target
 probability of the occurrence of a DLE (<code>x</code>).</p></li>
+<li><p><code>dose(x = numeric, model = LogisticLogNormalGrouped, samples = Samples)</code>: method for <code><a href="LogisticLogNormalGrouped-class.html">LogisticLogNormalGrouped</a></code> which needs <code>group</code>
+argument in addition.</p></li>
 <li><p><code>dose(x = numeric, model = LogisticKadane, samples = Samples)</code>: compute the dose level reaching a specific target
 probability of the occurrence of a DLE (<code>x</code>).</p></li>
 <li><p><code>dose(x = numeric, model = LogisticKadaneBetaGamma, samples = Samples)</code>: compute the dose level reaching a specific target
@@ -267,9 +272,9 @@ variable that dose depends on, represents toxicity probability.</p>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co"># Posterior for the dose achieving Prob(DLT) = 0.45.</span></span></span>
 <span class="r-in"><span><span class="fu">dose</span><span class="op">(</span>x <span class="op">=</span> <span class="fl">0.45</span>, model <span class="op">=</span> <span class="va">my_model</span>, samples <span class="op">=</span> <span class="va">my_samples</span><span class="op">)</span></span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  [1]  62.40342  62.40342  62.40342  62.40342  62.40342  12.83805  23.54773</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  [8]  23.54773  98.86249  98.86249  98.86249  73.48790  59.02040  59.02040</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [15]  59.02040  59.02040  60.62065 436.44142 436.44142 384.80530</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  [1]  39.80479  55.45767  55.45767  55.45767  79.01865  79.01865  79.01865</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  [8]  79.01865  60.83633 162.18812 143.32570 143.32570 143.32570 119.43196</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [15] 119.43196  80.45510  80.45510  80.45510  80.45510  11.12827</span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co"># Create data from the 'Data' (or 'DataDual') class.</span></span></span>
 <span class="r-in"><span><span class="va">dlt_data</span> <span class="op">&lt;-</span> <span class="fu"><a href="Data-class.html">Data</a></span><span class="op">(</span></span></span>
