@@ -8,8 +8,8 @@ set_seed(seed = NULL)
 }
 \arguments{
 \item{seed}{an object specifying if and how the random number generator
-should be initialized (\dQuote{seeded}). Either \code{NULL} (default) or an
-integer that will be used in a call to \code{\link{set.seed}} before
+should be initialized ("seeded"). Either \code{NULL} (default) or an
+integer that will be used in a call to \code{\link[=set.seed]{set.seed()}} before
 simulating the response vectors. If set, the value is saved as the
 \code{seed} slot of the returned object. The default, \code{NULL} will
 not change the random generator state.}
