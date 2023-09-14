@@ -205,13 +205,18 @@ test_that("fit-Samples works correctly for tox-only models", {
   checkIt(seed = 789, lowerQuantile = 0.25, upperQuantile = 0.75)
 })
 
-test_that("fit-Samples forwards additional arguments to prob inside", {
+## Samples-LogisticLogNormalGrouped ----
+
+test_that("fit-Samples works specifically also for LogisticLogNormalGrouped", {
   mcmcOptions <- McmcOptions(samples = 3)
-  samples <- Samples(data = list(alpha0 = 1:3, alpha1 = 4:6), options = mcmcOptions)
-  model <- h_needs_extra_prob_model()
+  samples <- Samples(
+    data = list(alpha0 = -1:1, delta0 = c(0, 1, -1), alpha1 = -1:1, delta1 = c(-1, 0, 2)),
+    options = mcmcOptions
+  )
+  model <- .DefaultLogisticLogNormalGrouped()
   emptyData <- Data(doseGrid = seq(10, 80, 10))
 
-  result <- fit(samples, model, emptyData, extra_argument = "yes")
+  result <- expect_silent(fit(samples, model, emptyData, group = "combo"))
   expect_data_frame(result)
   expect_equal(nrow(result), length(emptyData@doseGrid))
   expect_named(result, c("dose", "middle", "lower", "upper"))
@@ -377,16 +382,6 @@ test_that("plot-Samples works correctly", {
 
   actual1 <- plot(x = samples, y = model, data = data, showLegend = FALSE)
   vdiffr::expect_doppelganger("plot-Samples_showLegend-FALSE", actual1)
-})
-
-test_that("plot-Samples forwards additional arguments to prob inside", {
-  mcmcOptions <- McmcOptions(samples = 3)
-  samples <- Samples(data = list(alpha0 = 1:3, alpha1 = 4:6), options = mcmcOptions)
-  model <- h_needs_extra_prob_model()
-  emptyData <- Data(doseGrid = seq(10, 80, 10))
-
-  result <- plot(samples, model, emptyData, extra_argument = "yes")
-  expect_list(result)
 })
 
 test_that("plot-Samples-DualEndpoint fails gracefully with bad input", {
@@ -867,6 +862,21 @@ test_that("Check that plot-Samples-ModelTox works correctly", {
 
   actual1 <- plot(x = samples, y = model, data = data, showLegend = FALSE)
   vdiffr::expect_doppelganger("plot-Samples-ModelTox_showlegend-FALSE", actual1)
+})
+
+## Samples-LogisticLogNormalGrouped ----
+
+test_that("plot-Samples works specifically also for LogisticLogNormalGrouped", {
+  mcmcOptions <- McmcOptions(samples = 3)
+  samples <- Samples(
+    data = list(alpha0 = -1:1, delta0 = c(0, 1, -1), alpha1 = -1:1, delta1 = c(-1, 0, 2)),
+    options = mcmcOptions
+  )
+  model <- .DefaultLogisticLogNormalGrouped()
+  emptyData <- Data(doseGrid = seq(0.5, 10, by = 0.1))
+
+  result <- expect_silent(plot(samples, model, emptyData, group = "combo"))
+  vdiffr::expect_doppelganger("plot-Samples-LogisticLogNormalGrouped", result)
 })
 
 ## Samples-DataDual ----

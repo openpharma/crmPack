@@ -279,6 +279,48 @@ test_that("MCMC computes correct values for ProbitLogNormalRel model and empty d
   expect_snapshot(result@data)
 })
 
+# LogisticLogNormalGrouped ----
+
+## constructor ----
+
+test_that("LogisticLogNormalGrouped object can be created with user constructor", {
+  result <- expect_silent(
+    LogisticLogNormalGrouped(
+      mean = 1:4,
+      cov = diag(1:4, 4),
+      ref_dose = 2
+    )
+  )
+  expect_valid(result, "LogisticLogNormalGrouped")
+})
+
+test_that(".DefaultLogisticLogNormalGrouped works as expected", {
+  expect_valid(
+    .DefaultLogisticLogNormalGrouped(),
+    "LogisticLogNormalGrouped"
+  )
+})
+
+## mcmc ----
+
+test_that("MCMC computes correct values for LogisticLogNormalGrouped model", {
+  data <- h_get_data_grouped()
+  model <- .DefaultLogisticLogNormalGrouped()
+  options <- h_get_mcmc_options()
+
+  result <- mcmc(data = data, model = model, options = options)
+  expect_snapshot(result@data)
+})
+
+test_that("MCMC computes correct values for LogisticLogNormalGrouped model and empty data", {
+  data <- h_get_data_grouped(empty = TRUE)
+  model <- .DefaultLogisticLogNormalGrouped()
+  options <- h_get_mcmc_options()
+
+  result <- mcmc(data = data, model = model, options = options)
+  expect_snapshot(result@data)
+})
+
 # LogisticKadane ----
 
 ## constructor ----
