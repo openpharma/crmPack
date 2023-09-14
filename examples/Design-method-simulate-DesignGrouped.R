@@ -52,7 +52,7 @@ legend("topright", c("mono", "combo"), lty = c(1, 2), col = c(1, 2))
 set.seed(123)
 my_sims <- simulate(
   my_design,
-  nsim = 4,  # This should be at least 100 in actual applications.
+  nsim = 4, # This should be at least 100 in actual applications.
   seed = 123,
   truth = my_truth,
   combo_truth = my_combo_truth
