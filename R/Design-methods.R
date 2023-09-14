@@ -190,7 +190,7 @@ getResultList <- function(fun,
 ##' @param nCores how many cores should be used for parallel computing?
 ##' Defaults to the number of cores on the machine, maximum 5.
 ##' @param \dots not used
-##' @param derive a list of functions which derives statistics, based on the
+##' @param derive a named list of functions which derives statistics, based on the
 ##' vector of posterior MTD samples. Each list element must therefore accept
 ##' one and only one argument, which is a numeric vector, and return a number.
 ##'
@@ -708,7 +708,7 @@ setMethod("simulate",
 ##' @param nCores how many cores should be used for parallel computing?
 ##' Defaults to the number of cores on the machine, maximum 5.
 ##' @param \dots not used
-##' @param derive a list of functions which derives statistics, based on the
+##' @param derive a named list of functions which derives statistics, based on the
 ##' vector of posterior MTD samples. Each list element must therefore accept
 ##' one and only one argument, which is a numeric vector, and return a number.
 ##'
@@ -4183,7 +4183,7 @@ setMethod("simulate",
 ##' @param nCores how many cores should be used for parallel computing?
 ##' Defaults to the number of cores on the machine (maximum 5)
 ##' @param \dots not used
-##' @param derive a list of functions which derives statistics, based on the
+##' @param derive a named list of functions which derives statistics, based on the
 ##' vector of posterior MTD samples. Each list element must therefore accept
 ##' one and only one argument, which is a numeric vector, and return a number.
 ##'

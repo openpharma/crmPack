@@ -24,8 +24,8 @@ Simulations(fit, stop_reasons, stop_report, additional_stats, ...)
 \ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#stable}{\figure{lifecycle-stable.svg}{options: alt='[Stable]'}}}{\strong{[Stable]}}
 
 This class captures the trial simulations from model based designs.
-Additional slots \code{fit} and \code{stop_reasons} compared to the general class
-\code{\link{GeneralSimulations}}.
+Additional slots \code{fit}, \code{stop_reasons}, \code{stop_report},\code{additional_stats} compared to
+the general class \code{\link{GeneralSimulations}}.
 }
 \section{Slots}{
 
@@ -70,7 +70,7 @@ stop_report <- matrix(c(TRUE, FALSE), nrow = 2)
 
 stop_reasons <- list("A", "B")
 
-additional_stats <- list(1, 1)
+additional_stats <- list(a = 1, b = 1)
 
 simulations <- Simulations(
   fit = fit,

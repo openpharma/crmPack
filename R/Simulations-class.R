@@ -1,5 +1,6 @@
 #' @include helpers.R
 #' @include Data-class.R
+#' @include Simulations-validity.R
 #' @include CrmPackClass-class.R
 NULL
 
@@ -53,23 +54,7 @@ NULL
       seed = 1L
     ),
     contains = "CrmPackClass",
-    validity =
-      function(object) {
-        o <- Validate()
-
-        nSims <- length(object@data)
-
-        o$check(
-          all(sapply(object@data, is, "Data")),
-          "all data elements must be Data objects"
-        )
-        o$check(
-          identical(length(object@doses), nSims),
-          "doses must have same length as the data list"
-        )
-
-        o$result()
-      }
+    validity = v_general_simulations
   )
 
 ## constructor ----
@@ -101,8 +86,8 @@ GeneralSimulations <- function(data,
 #' @description `r lifecycle::badge("stable")`
 #'
 #' This class captures the trial simulations from model based designs.
-#' Additional slots `fit` and `stop_reasons` compared to the general class
-#' [`GeneralSimulations`].
+#' Additional slots `fit`, `stop_reasons`, `stop_report`,`additional_stats` compared to
+#' the general class [`GeneralSimulations`].
 #'
 #' @slot fit (`list`)\cr final fits
 #' @slot stop_reasons (`list`)\cr stopping reasons for each simulation run
@@ -129,42 +114,10 @@ GeneralSimulations <- function(data,
       stop_reasons =
         list("A", "A"),
       additional_stats =
-        list(1, 1)
+        list(a = 1, b = 1)
     ),
     contains = "GeneralSimulations",
-    validity =
-      function(object) {
-        o <- Validate()
-
-        nSims <- length(object@data)
-
-        o$check(
-          identical(length(object@fit), nSims),
-          "fit must have same length as data"
-        )
-        o$check(
-          identical(length(object@stop_reasons), nSims),
-          "stop_reasons must have same length as data"
-        )
-
-        o$check(
-          checkmate::test_matrix(object@stop_report,
-            mode = "logical",
-            nrows = nSims,
-            min.cols = 1,
-            any.missing = FALSE
-          ),
-          "stop_report must be a matrix of mode logical in which the number of rows equals the number of simulations
-      and which must not contain any missing values"
-        )
-
-        o$check(
-          identical(length(object@additional_stats), nSims),
-          "additional_stats must have same length as the number of simulations"
-        )
-
-        o$result()
-      }
+    validity = v_simulations
   )
 
 ## constructor ----
@@ -229,27 +182,7 @@ Simulations <- function(fit,
         )
     ),
     contains = "Simulations",
-    validity =
-      function(object) {
-        o <- Validate()
-
-        nSims <- length(object@data)
-
-        o$check(
-          identical(length(object@fit_biomarker), nSims),
-          "fit_biomarker list has to have same length as data"
-        )
-        o$check(
-          identical(length(object@rho_est), nSims),
-          "rho_est vector has to have same length as data"
-        )
-        o$check(
-          identical(length(object@sigma2w_est), nSims),
-          "sigma2w_est has to have same length as data"
-        )
-
-        o$result()
-      }
+    validity = v_dual_simulations
   )
 
 
@@ -441,18 +374,7 @@ DualSimulations <- function(rho_est,
         list("A", "A")
     ),
     contains = "GeneralSimulations",
-    validity =
-      function(object) {
-        o <- Validate()
-
-        nSims <- length(object@data)
-        o$check(
-          identical(length(object@stopReasons), nSims),
-          "stopReasons must have same length as data"
-        )
-
-        o$result()
-      }
+    validity = v_pseudo_simulations
   )
 validObject(.PseudoSimulations())
 
@@ -555,16 +477,7 @@ PseudoSimulations <- function(fit,
       sigma2est = c(0.001, 0.002)
     ),
     contains = "PseudoSimulations",
-    validity =
-      function(object) {
-        o <- Validate()
-        nSims <- length(object@data)
-        o$check(
-          identical(length(object@sigma2est), nSims),
-          "sigma2est has to have same length as data"
-        )
-        o$result()
-      }
+    validity = v_pseudo_dual_simulations
   )
 
 validObject(.PseudoDualSimulations())
@@ -626,16 +539,7 @@ PseudoDualSimulations <- function(fitEff,
     representation(sigma2betaWest = "numeric"),
     prototype(sigma2betaWest = c(0.001, 0.002)),
     contains = "PseudoDualSimulations",
-    validity =
-      function(object) {
-        o <- Validate()
-        nSims <- length(object@data)
-        o$check(
-          identical(length(object@sigma2betaWest), nSims),
-          "sigma2betaWest has to have same length as data"
-        )
-        o$result()
-      }
+    validity = v_pseudo_dual_flex_simulations
   )
 
 validObject(.PseudoDualFlexiSimulations())
@@ -801,19 +705,7 @@ PseudoDualFlexiSimulations <- function(sigma2betaWest,
     representation(trialduration = "numeric"),
     prototype(trialduration = rep(0, 2)),
     contains = "Simulations",
-    validity =
-      function(object) {
-        o <- Validate()
-
-        nSims <- length(object@data)
-
-        o$check(
-          identical(length(object@trialduration), nSims),
-          "trialduration vector has to have same length as data"
-        )
-
-        o$result()
-      }
+    validity = v_da_simulations
   )
 validObject(.DASimulations())
 
