@@ -48,17 +48,16 @@ h_doses_unique_per_cohort <- function(dose, cohort) {
   all(num_doses_per_cohort == 1L)
 }
 
-#' @describeIn v_data_objects validates that the [`Data`] object contains
-#'   valid elements with respect to their types, dependency and length.
-v_data <- function(object) {
+#' Helper Function performing validation Common to Data and DataOrdinal
+#'
+#' @rdname h_validate_common_data_slots
+#' @param object (`Data` or `DataOrdinal`)\cr the object to be validated
+#' @returns a `Validate` object containing the result of the validation
+h_validate_common_data_slots <- function(object) {
   v <- Validate()
   v$check(
     test_double(object@x, len = object@nObs, any.missing = FALSE),
     "Doses vector x must be of type double and length nObs"
-  )
-  v$check(
-    test_integer(object@y, lower = 0, upper = 1, len = object@nObs, any.missing = FALSE),
-    "DLT vector y must be nObs long and contain 0 or 1 integers only"
   )
   v$check(
     test_double(object@doseGrid, len = object@nGrid, any.missing = FALSE, unique = TRUE, sorted = TRUE),
@@ -97,9 +96,21 @@ v_data <- function(object) {
   } else {
     v$check(
       h_doses_unique_per_cohort(dose = object@x, cohort = object@cohort),
-      "There must be only one dose level, per cohort"
+      "There must be only one dose level per cohort"
     )
   }
+  v
+}
+
+#' @describeIn v_data_objects validates that the [`Data`] object contains
+#'   valid elements with respect to their types, dependency and length.
+v_data <- function(object) {
+  v <- h_validate_common_data_slots(object)
+  v$check(
+    test_integer(object@y, lower = 0, upper = 1, len = object@nObs, any.missing = FALSE),
+    "DLT vector y must be nObs long and contain 0 or 1 integers only"
+  )
+
   v$result()
 }
 
@@ -177,6 +188,21 @@ v_data_da <- function(object) {
   v$check(
     test_numeric(object@t0, lower = 0, len = object@nObs, any.missing = FALSE, sorted = TRUE),
     "t0 must be of type double, nObs length, sorted non-negative"
+  )
+  v$result()
+}
+
+#' @describeIn v_data_objects validates that the [`DataOrdinal`] object
+#' contains valid elements with respect to their types, dependency and length.
+v_data_ordinal <- function(object) {
+  v <- h_validate_common_data_slots(object)
+  v$check(
+    test_integer(object@y, lower = 0, upper = length(object@yCategories) - 1, len = object@nObs, any.missing = FALSE),
+    "DLT vector y must be nObs long and contain integers between 0 and k-1 only, where k is the length of the vector in the yCategories slot" # nolint
+  )
+  v$check(
+    length(unique(names(object@yCategories))) == length(names(object@yCategories)),
+    "yCategory labels must be unique"
   )
   v$result()
 }
