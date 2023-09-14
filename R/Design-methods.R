@@ -69,7 +69,7 @@ set_seed <- function(seed = NULL) {
 #' @return The list with all simulation results (one iteration corresponds
 #' to one list element).
 #'
-#' @importFrom parallel makeCluster 
+#' @importFrom parallel makeCluster
 #' @importFrom parallelly availableCores
 #' @keywords internal programming
 get_result_list <- function(
