@@ -79,7 +79,6 @@ get_result_list <- function(
     vars,
     parallel,
     n_cores) {
-
   assert_flag(parallel)
   assert_integerish(n_cores, lower = 1)
 
