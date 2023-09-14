@@ -29,6 +29,8 @@ NULL
 #' @export
 #' @keywords programming
 set_seed <- function(seed = NULL) {
+  assert_number(seed, null.ok = TRUE)
+
   if (!exists(".Random.seed", envir = .GlobalEnv, inherits = FALSE)) {
     runif(1)
   }
@@ -36,6 +38,7 @@ set_seed <- function(seed = NULL) {
   rng_state <- if (is.null(seed)) {
     get(".Random.seed", envir = .GlobalEnv)
   } else {
+    seed <- as.integer(seed)
     r_seed <- get(".Random.seed", envir = .GlobalEnv)
     # Make sure r_seed exists in parent frame.
     assign(".r_seed", r_seed, envir = parent.frame())
