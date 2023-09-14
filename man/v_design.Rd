@@ -3,9 +3,12 @@
 \name{v_design}
 \alias{v_design}
 \alias{v_rule_design}
+\alias{v_design_grouped}
 \title{Internal Helper Functions for Validation of \code{\link{RuleDesign}} Objects}
 \usage{
 v_rule_design(object)
+
+v_design_grouped(object)
 }
 \arguments{
 \item{object}{(\code{RuleDesign})\cr object to validate.}
@@ -24,5 +27,8 @@ These functions are only used internally to validate the format of an input
 \itemize{
 \item \code{v_rule_design()}: validates that the \code{\link{RuleDesign}} object
 contains valid \code{startingDose}.
+
+\item \code{v_design_grouped()}: validates that the \code{\link{DesignGrouped}} object
+contains valid flags.
 
 }}
