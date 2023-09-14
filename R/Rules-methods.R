@@ -777,7 +777,7 @@ setMethod(
     model = "LogisticIndepBeta",
     data = "Data"
   ),
-  definition = function(nextBest, doselimit = Inf, samples, model, data, ...) {
+  definition = function(nextBest, doselimit = Inf, samples, model, data, in_sim, ...) {
     # Generate target dose samples, i.e. the doses with probability of the
     # occurrence of a DLT that equals to the nextBest@prob_target_drt
     # (or nextBest@prob_target_eot, respectively).
