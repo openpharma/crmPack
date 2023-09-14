@@ -7,7 +7,7 @@
 get_result_list(fun, nsim, vars, parallel, n_cores)
 }
 \arguments{
-\item{fun}{the simulation function for a single iteration, which takes as
+\item{fun}{(\code{function})\cr the simulation function for a single iteration, which takes as
 single parameter the iteration index.}
 
 \item{nsim}{number of simulations to be conducted.}
@@ -27,7 +27,7 @@ to one list element).
 \ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#stable}{\figure{lifecycle-stable.svg}{options: alt='[Stable]'}}}{\strong{[Stable]}}
 
 The function \code{fun} can use variables that are visible to itself.
-The names of these variables have to given in the vector \code{vars}.
+The names of these variables have to be given in the vector \code{vars}.
 }
 \keyword{internal}
 \keyword{programming}
