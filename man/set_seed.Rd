@@ -15,8 +15,9 @@ simulating the response vectors. If set, the value is saved as the
 not change the random generator state.}
 }
 \value{
-The integer vector containing the random number generate state will be returned, in order to call this function
-with this input to reproduce the obtained simulation results.
+The integer vector containing the random number generate state will
+be returned, in order to call this function with this input to reproduce
+the obtained simulation results.
 }
 \description{
 \ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#stable}{\figure{lifecycle-stable.svg}{options: alt='[Stable]'}}}{\strong{[Stable]}}
