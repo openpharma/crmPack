@@ -433,7 +433,7 @@ reference:
       - plotDualResponses
       - plotGain
       - probit
-      - setSeed
+      - set_seed
       - show,DualSimulationsSummary-method
       - show,GeneralSimulationsSummary-method
       - show,PseudoDualSimulationsSummary-method

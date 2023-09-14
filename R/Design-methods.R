@@ -33,22 +33,21 @@ set_seed <- function(seed = NULL) {
     runif(1)
   }
 
-  if (is.null(seed)) {
-    rng_state <- get(".Random.seed", envir = .GlobalEnv)
+  rng_state <- if (is.null(seed)) {
+    get(".Random.seed", envir = .GlobalEnv)
   } else {
     r_seed <- get(".Random.seed", envir = .GlobalEnv)
     # Make sure r_seed exists in parent frame.
-    assign("r_seed", r_seed, envir = parent.frame())
+    assign(".r_seed", r_seed, envir = parent.frame())
     set.seed(seed)
-    rng_state <- structure(seed, kind = as.list(RNGkind()))
-    do.call("on.exit",
-      list(quote(assign(".Random.seed", r_seed, envir = .GlobalEnv))),
+    # Here we need the r_seed in the parent.frame!
+    do.call(
+      "on.exit",
+      list(quote(assign(".Random.seed", .r_seed, envir = .GlobalEnv))),
       envir = parent.frame()
     )
-    # Here we need the r_seed in the parent.frame!
+    structure(seed, kind = as.list(RNGkind()))
   }
-
-  return(rng_state)
 }
 
 ## get_result_list ----
