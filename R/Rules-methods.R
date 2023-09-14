@@ -2284,7 +2284,8 @@ setMethod("stopTrial",
       mtdSamples <- dose(
         x = stopping@target,
         model,
-        samples
+        samples,
+        ...
       )
 
       ## what is the absolute threshold?
@@ -2354,7 +2355,8 @@ setMethod(
     mtd_samples <- dose(
       x = stopping@target,
       model,
-      samples
+      samples,
+      ...
     )
     # CV of MTD expressed as percentage, derived based on MTD posterior samples.
     mtd_cv <- (mad(mtd_samples) / median(mtd_samples)) * 100
@@ -2459,7 +2461,7 @@ setMethod(
   definition = function(stopping, dose, samples, model, data, ...) {
     # Compute the target biomarker prob at this dose.
     # Get the biomarker level samples at the dose grid points.
-    biom_level_samples <- biomarker(xLevel = seq_len(data@nGrid), model, samples)
+    biom_level_samples <- biomarker(xLevel = seq_len(data@nGrid), model, samples, ...)
 
     # If target is relative to maximum.
     if (stopping@is_relative) {
@@ -2910,7 +2912,8 @@ setMethod(
     dose_target_samples <- dose(
       x = stopping@prob_target,
       model = model,
-      samples = samples
+      samples = samples,
+      ...
     )
     # 95% credibility interval.
     dose_target_ci <- quantile(dose_target_samples, probs = c(0.025, 0.975))
@@ -2955,7 +2958,7 @@ setMethod("stopTrial",
       assert_probability(stopping@prob_target)
 
       prob_target <- stopping@prob_target
-      dose_target_samples <- dose(x = prob_target, model = model)
+      dose_target_samples <- dose(x = prob_target, model = model, ...)
       ## Find the variance of the log of the dose_target_samples(eta)
       M1 <- matrix(c(-1 / (model@phi2), -(log(prob_target / (1 - prob_target)) - model@phi1) / (model@phi2)^2), 1, 2)
       M2 <- model@Pcov
@@ -3024,7 +3027,8 @@ setMethod("stopTrial",
       TDtargetEndOfTrialSamples <- dose(
         x = prob_target,
         model = model,
-        samples = samples
+        samples = samples,
+        ...
       )
       ## Find the TDtarget End of trial estimate
       TDtargetEndOfTrialEstimate <- TDderive(TDtargetEndOfTrialSamples)
@@ -3047,7 +3051,8 @@ setMethod("stopTrial",
           model,
           samples,
           Effmodel,
-          Effsamples
+          Effsamples,
+          ...
         )
       }
 
@@ -3137,12 +3142,13 @@ setMethod("stopTrial",
       ## find the TDtarget End of Trial
       TDtargetEndOfTrial <- dose(
         x = prob_target,
-        model = model
+        model = model,
+        ...
       )
 
       ## Find the dose with maximum gain value
       Gainfun <- function(DOSE) {
-        -gain(DOSE, model_dle = model, model_eff = Effmodel)
+        -gain(DOSE, model_dle = model, model_eff = Effmodel, ...)
       }
 
       # if(data@placebo) {
