@@ -59,7 +59,7 @@ set_seed <- function(seed = NULL) {
 #' The function `fun` can use variables that are visible to itself.
 #' The names of these variables have to be given in the vector `vars`.
 #'
-#' @param fun the simulation function for a single iteration, which takes as
+#' @param fun (`function`)\cr the simulation function for a single iteration, which takes as
 #' single parameter the iteration index.
 #' @param nsim number of simulations to be conducted.
 #' @param vars names of the variables.
