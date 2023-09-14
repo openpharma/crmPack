@@ -4858,7 +4858,7 @@ setMethod(
             first_cohort <- FALSE
           }
 
-          grouped_data <- groupData(
+          grouped_data <- h_group_data(
             this_mono_data,
             this_combo_data
           )
