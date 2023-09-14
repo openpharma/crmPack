@@ -61,3 +61,24 @@ test_that("v_rule_design returns message when startingDose is not on doseGrid", 
   object@startingDose <- 6.5
   expect_equal(v_rule_design(object), err_msg)
 })
+
+## v_design_grouped ----
+
+test_that("v_design_grouped passes for valid object", {
+  object <- .DesignGrouped()
+  expect_true(v_design_grouped(object))
+})
+
+test_that("v_design_grouped messages wrong flag slots as expected", {
+  object <- .DesignGrouped()
+
+  object@same_dose <- c(NA, TRUE)
+  object@first_cohort_mono_only <- logical()
+
+  result <- v_design_grouped(object)
+  expected <- c(
+    "first_cohort_mono_only must be a flag",
+    "same_dose must be a flag"
+  )
+  expect_identical(result, expected)
+})
