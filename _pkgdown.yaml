@@ -454,6 +454,7 @@ reference:
       - simulate,RuleDesign-method
       - simulate,TDDesign-method
       - simulate,TDsamplesDesign-method
+      - simulate-DesignGrouped
       - summary,DualSimulations-method
       - summary,GeneralSimulations-method
       - summary,PseudoDualFlexiSimulations-method
