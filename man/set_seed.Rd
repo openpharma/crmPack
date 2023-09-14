@@ -15,7 +15,7 @@ simulating the response vectors. If set, the value is saved as the
 not change the random generator state.}
 }
 \value{
-The RNGstate will be returned, in order to call this function
+The integer vector containing the random number generate state will be returned, in order to call this function
 with this input to reproduce the obtained simulation results.
 }
 \description{
