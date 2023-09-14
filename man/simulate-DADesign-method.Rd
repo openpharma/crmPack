@@ -27,7 +27,7 @@ data from}
 
 \item{nsim}{the number of simulations (default: 1)}
 
-\item{seed}{see \code{\link{setSeed}}}
+\item{seed}{see \code{\link{set_seed}}}
 
 \item{truthTox}{a function which takes as input a dose (vector) and returns the
 true probability (vector) for toxicity and the time DLT occurs. Additional

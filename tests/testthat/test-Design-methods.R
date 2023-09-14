@@ -1,3 +1,44 @@
+# helper functions ----
+
+## set_seed ----
+
+test_that("set_seed returns correct value if seed is a value", {
+  seed <- 1.909
+  RNGkind("default")
+  rng_state <- set_seed(seed)
+  attr(seed, "kind") <- list("Mersenne-Twister", "Inversion", "Rejection")
+  expect_equal(rng_state, seed)
+
+  RNGkind("Super-Duper")
+  rng_state <- set_seed(seed)
+  attr(seed, "kind") <- list("Super-Duper", "Inversion", "Rejection")
+  expect_equal(rng_state, seed)
+})
+
+test_that("set_seed returns correct value if seed is NULL", {
+  seed <- NULL
+  RNGkind("default")
+  rng_state <- set_seed(seed)
+  expect_equal(rng_state, .Random.seed)
+
+  RNGkind("Super-Duper")
+  rng_state <- set_seed(seed)
+  expect_equal(rng_state, .Random.seed)
+})
+
+## get_result_list ----
+
+test_that("get_result_list returns correct value", {
+  res <- get_result_list(mean, 2, NULL, FALSE, 5)
+  expect_equal(res, list(1, 2))
+
+  res <- get_result_list(length, 2, NULL, FALSE, 5)
+  expect_equal(res, list(1, 1))
+
+  expect_error(get_result_list(length, 2, NULL, 5, 5))
+  expect_error(get_result_list(length, 2, NULL, FALSE, 0))
+})
+
 # simulate ----
 
 ## NextBestInfTheory ----
