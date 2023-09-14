@@ -67,7 +67,7 @@ setMethod(
   ),
   definition = function(nextBest, doselimit = Inf, samples, model, data, ...) {
     # Generate the MTD samples and derive the next best dose.
-    dose_target_samples <- dose(x = nextBest@target, model, samples)
+    dose_target_samples <- dose(x = nextBest@target, model, samples, ...)
     dose_target <- nextBest@derive(dose_target_samples)
 
     # Round to the next possible grid point.
@@ -292,7 +292,7 @@ setMethod("nextBest",
   ),
   definition = function(nextBest, doselimit = Inf, samples, model, data, ...) {
     # Matrix with samples from the dose-tox curve at the dose grid points.
-    prob_samples <- sapply(data@doseGrid, prob, model = model, samples = samples)
+    prob_samples <- sapply(data@doseGrid, prob, model = model, samples = samples, ...)
     # Compute probabilities to be in target and overdose tox interval.
     prob_underdosing <- colMeans(prob_samples < nextBest@target[1])
     prob_target <- colMeans(h_in_range(prob_samples, nextBest@target))
@@ -553,7 +553,7 @@ setMethod(
   ),
   definition = function(nextBest, doselimit = Inf, samples, model, data, ...) {
     # Matrix with samples from the dose-tox curve at the dose grid points.
-    prob_samples <- sapply(data@doseGrid, prob, model = model, samples = samples)
+    prob_samples <- sapply(data@doseGrid, prob, model = model, samples = samples, ...)
     dlt_prob <- colMeans(prob_samples)
 
     # Determine the dose with the closest distance.
@@ -651,7 +651,7 @@ setMethod(
   ),
   definition = function(nextBest, doselimit = Inf, samples, model, data, ...) {
     # Matrix with samples from the dose-tox curve at the dose grid points.
-    prob_samples <- sapply(data@doseGrid, prob, model = model, samples = samples)
+    prob_samples <- sapply(data@doseGrid, prob, model = model, samples = samples, ...)
 
     criterion <- colMeans(h_info_theory_dist(prob_samples, nextBest@target, nextBest@asymmetry))
 
@@ -697,8 +697,8 @@ setMethod(
 
     # Target dose estimates, i.e. the dose with probability of the occurrence of
     # a DLT that equals to the prob_target_drt or prob_target_eot.
-    dose_target_drt <- dose(x = prob_target_drt, model)
-    dose_target_eot <- dose(x = prob_target_eot, model)
+    dose_target_drt <- dose(x = prob_target_drt, model, ...)
+    dose_target_eot <- dose(x = prob_target_eot, model, ...)
 
     # Find the next best doses in the doseGrid. The next best dose is the dose
     # at level closest and below the target dose estimate.
@@ -732,7 +732,7 @@ setMethod(
       prob_target_eot = prob_target_eot,
       dose_target_eot = dose_target_eot,
       data = data,
-      prob_dlt = prob(dose = data@doseGrid, model = model),
+      prob_dlt = prob(dose = data@doseGrid, model = model, ...),
       doselimit = doselimit,
       next_dose = next_dose_drt
     )
@@ -781,8 +781,8 @@ setMethod(
     # Generate target dose samples, i.e. the doses with probability of the
     # occurrence of a DLT that equals to the nextBest@prob_target_drt
     # (or nextBest@prob_target_eot, respectively).
-    dose_target_drt_samples <- dose(x = nextBest@prob_target_drt, model, samples)
-    dose_target_eot_samples <- dose(x = nextBest@prob_target_eot, model, samples)
+    dose_target_drt_samples <- dose(x = nextBest@prob_target_drt, model, samples, ...)
+    dose_target_eot_samples <- dose(x = nextBest@prob_target_eot, model, samples, ...)
 
     # Derive the prior/posterior estimates based on two above samples.
     dose_target_drt <- nextBest@derive(dose_target_drt_samples)
@@ -865,15 +865,15 @@ setMethod(
 
     # Target dose estimates, i.e. the dose with probability of the occurrence of
     # a DLT that equals to the prob_target_drt or prob_target_eot.
-    dose_target_drt <- dose(x = prob_target_drt, model)
-    dose_target_eot <- dose(x = prob_target_eot, model)
+    dose_target_drt <- dose(x = prob_target_drt, model, ...)
+    dose_target_eot <- dose(x = prob_target_eot, model, ...)
 
     # Find the dose which gives the maximum gain.
     dosegrid_range <- dose_grid_range(data)
     opt <- optim(
       par = dosegrid_range[1],
       fn = function(DOSE) {
-        -gain(DOSE, model_dle = model, model_eff = model_eff)
+        -gain(DOSE, model_dle = model, model_eff = model_eff, ...)
       },
       method = "L-BFGS-B",
       lower = dosegrid_range[1],
@@ -986,15 +986,15 @@ setMethod(
 
     # Generate target dose samples, i.e. the doses with probability of the
     # occurrence of a DLT that equals to the prob_target_drt or prob_target_eot.
-    dose_target_drt_samples <- dose(x = prob_target_drt, model, samples = samples)
-    dose_target_eot_samples <- dose(x = prob_target_eot, model, samples = samples)
+    dose_target_drt_samples <- dose(x = prob_target_drt, model, samples = samples, ...)
+    dose_target_eot_samples <- dose(x = prob_target_eot, model, samples = samples, ...)
 
     # Derive the prior/posterior estimates based on two above samples.
     dose_target_drt <- nextBest@derive(dose_target_drt_samples)
     dose_target_eot <- nextBest@derive(dose_target_eot_samples)
 
     # Gain samples.
-    gain_samples <- sapply(data@doseGrid, gain, model, samples, model_eff, samples_eff)
+    gain_samples <- sapply(data@doseGrid, gain, model, samples, model_eff, samples_eff, ...)
     # For every sample, get the dose (from the dose grid) that gives the maximum gain value.
     dose_lev_mg_samples <- apply(gain_samples, 1, which.max)
     dose_mg_samples <- data@doseGrid[dose_lev_mg_samples]
@@ -1085,7 +1085,7 @@ setMethod(
   ),
   definition = function(nextBest, doselimit, samples, model, data, ...) {
     # Matrix with samples from the dose-tox curve at the dose grid points.
-    prob_samples <- sapply(data@doseGrid, prob, model = model, samples = samples)
+    prob_samples <- sapply(data@doseGrid, prob, model = model, samples = samples, ...)
 
     # Determine the maximum dose level with a toxicity probability below or
     # equal to the target and calculate how often a dose is selected as MTD
@@ -1237,7 +1237,7 @@ setMethod(
   ),
   definition = function(nextBest, doselimit, samples, model, data, ...) {
     # Matrix with samples from the dose-tox curve at the dose grid points.
-    prob_samples <- sapply(data@doseGrid, prob, model = model, samples = samples)
+    prob_samples <- sapply(data@doseGrid, prob, model = model, samples = samples, ...)
 
     # Determine which dose level has the minimum distance to target.
     dose_min_mtd_dist <- apply(
