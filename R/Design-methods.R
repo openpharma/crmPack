@@ -18,7 +18,7 @@ NULL
 #' This code is basically copied from `stats:::simulate.lm`.
 #'
 #' @param seed an object specifying if and how the random number generator
-#' should be initialized (\dQuote{seeded}). Either `NULL` (default) or an
+#' should be initialized ("seeded"). Either `NULL` (default) or an
 #' integer that will be used in a call to [`set.seed`] before
 #' simulating the response vectors. If set, the value is saved as the
 #' `seed` slot of the returned object. The default, `NULL` will
