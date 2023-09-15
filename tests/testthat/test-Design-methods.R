@@ -15,6 +15,8 @@ test_that("set_seed returns correct value if seed is a value", {
   rng_state <- set_seed(seed)
   attr(seed_int, "kind") <- list("Super-Duper", "Inversion", "Rejection")
   expect_equal(rng_state, seed_int)
+
+  RNGkind("default")
 })
 
 test_that("set_seed returns correct value if seed is NULL", {
@@ -27,6 +29,8 @@ test_that("set_seed returns correct value if seed is NULL", {
   RNGkind("Super-Duper")
   rng_state <- set_seed(seed)
   expect_equal(rng_state, .Random.seed)
+
+  RNGkind("default")
 })
 
 ## get_result_list ----
