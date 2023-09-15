@@ -7,147 +7,6 @@
 #' @include mcmc.R
 NULL
 
-# helper functions ----
-
-## set_seed ----
-
-#' Helper function to set and save the RNG seed
-#'
-#' @description `r lifecycle::badge("stable")`
-#'
-#' This code is basically copied from `stats:::simulate.lm`.
-#'
-#' @param seed an object specifying if and how the random number generator
-#' should be initialized ("seeded"). Either `NULL` (default) or an
-#' integer that will be used in a call to [set.seed()] before
-#' simulating the response vectors. If set, the value is saved as the
-#' `seed` slot of the returned object. The default, `NULL` will
-#' not change the random generator state.
-#' @return The integer vector containing the random number generate state will
-#' be returned, in order to call this function with this input to reproduce
-#' the obtained simulation results.
-#'
-#' @export
-#' @keywords programming
-set_seed <- function(seed = NULL) {
-  assert_number(seed, null.ok = TRUE)
-
-  if (!exists(".Random.seed", envir = .GlobalEnv, inherits = FALSE)) {
-    runif(1)
-  }
-
-  if (is.null(seed)) {
-    get(".Random.seed", envir = .GlobalEnv)
-  } else {
-    seed <- as.integer(seed)
-    r_seed <- get(".Random.seed", envir = .GlobalEnv)
-    # Make sure r_seed exists in parent frame.
-    assign(".r_seed", r_seed, envir = parent.frame())
-    set.seed(seed)
-    # Here we need the r_seed in the parent.frame!
-    do.call(
-      "on.exit",
-      list(quote(assign(".Random.seed", .r_seed, envir = .GlobalEnv))),
-      envir = parent.frame()
-    )
-    structure(seed, kind = as.list(RNGkind()))
-  }
-}
-
-## get_result_list ----
-
-#' Helper function to obtain simulation results list
-#'
-#' @description `r lifecycle::badge("stable")`
-#'
-#' The function `fun` can use variables that are visible to itself.
-#' The names of these variables have to be given in the vector `vars`.
-#'
-#' @param fun (`function`)\cr the simulation function for a single iteration, which takes as
-#' single parameter the iteration index.
-#' @param nsim number of simulations to be conducted.
-#' @param vars names of the variables.
-#' @param parallel should the simulation runs be parallelized across the
-#' clusters of the computer?
-#' @param n_cores how many cores should be used for parallel computing?
-#' @return The list with all simulation results (one iteration corresponds
-#' to one list element).
-#'
-#' @importFrom parallel makeCluster
-#' @importFrom parallelly availableCores
-#' @keywords internal programming
-get_result_list <- function(
-    fun,
-    nsim,
-    vars,
-    parallel,
-    n_cores) {
-  assert_flag(parallel)
-  assert_integerish(n_cores, lower = 1)
-
-  if (!parallel) {
-    lapply(
-      X = seq_len(nsim),
-      FUN = fun
-    )
-  } else {
-    # Process all simulations.
-    cores <- min(
-      safeInteger(n_cores),
-      parallelly::availableCores()
-    )
-
-    # Start the cluster.
-    cl <- parallel::makeCluster(cores)
-
-    # Load the required R package.
-    parallel::clusterEvalQ(cl, {
-      library(crmPack)
-      NULL
-    })
-
-    # Export local variables from the caller environment.
-    # Note: parent.frame() is different from parent.env() which returns
-    # the environment where this function has been defined!
-    parallel::clusterExport(
-      cl = cl,
-      varlist = vars,
-      envir = parent.frame()
-    )
-
-    # Export all global variables.
-    parallel::clusterExport(
-      cl = cl,
-      varlist = ls(.GlobalEnv)
-    )
-
-    # Load user extensions from global options.
-    crmpack_extensions <- getOption("crmpack_extensions")
-    if (is.null(crmpack_extensions) != TRUE) {
-      tryCatch(
-        {
-          parallel::clusterCall(cl, crmpack_extensions)
-        },
-        error = function(e) {
-          stop("Failed to export crmpack_extensions: ", e$message)
-        }
-      )
-    }
-
-    # Do the computations in parallel.
-    res <- parallel::parLapply(
-      cl = cl,
-      X = seq_len(nsim),
-      fun = fun
-    )
-
-    # Stop the cluster.
-    parallel::stopCluster(cl)
-
-    res
-  }
-}
-
 # nolint start
 
 ## ============================================================
@@ -4775,7 +4634,7 @@ setMethod(
       assert_count(nCores, positive = TRUE)
 
       n_args <- max(nrow(args), 1L)
-      rng_state <- setSeed(seed)
+      rng_state <- set_seed(seed)
       sim_seeds <- sample.int(n = 2147483647, size = nsim)
 
       run_sim <- function(iter_sim) {
@@ -4846,8 +4705,7 @@ setMethod(
         )
       }
       vars_needed <- c("simSeeds", "args", "nArgs", "truth", "combo_truth", "firstSeparate", "object", "mcmcOptions")
-      parallel_cores <- if (parallel) nCores else NULL
-      result_list <- getResultList(fun = run_sim, nsim = nsim, vars = vars_needed, parallel = parallel_cores)
+      result_list <- get_result_list(fun = run_sim, nsim = nsim, vars = vars_needed, parallel = parallel, n_cores = nCores)
       # Now we have a list with each element containing mono and combo. Reorder this a bit:
       result_list <- list(
         mono = lapply(result_list, "[[", "mono"),
