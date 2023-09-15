@@ -4701,11 +4701,14 @@ setMethod(
         current$combo$fit <- fit(current$samples, object@model, current$grouped, group = "combo")
         lapply(
           X = current[c("mono", "combo")], FUN = with,
-          list(data = data, dose = dose, fit = subset(fit, select = -dose), stop = attr(stop, "message"), report_results = results)
+          list(
+            data = data, dose = dose, fit = subset(fit, select = -dose),
+            stop = attr(stop, "message"), results = results
+          )
         )
       }
       vars_needed <- c("simSeeds", "args", "nArgs", "truth", "combo_truth", "firstSeparate", "object", "mcmcOptions")
-      result_list <- get_result_list(fun = run_sim, nsim = nsim, vars = vars_needed, parallel = parallel, n_cores = nCores)
+      result_list <- get_result_list(run_sim, nsim, vars_needed, parallel, nCores)
       # Now we have a list with each element containing mono and combo. Reorder this a bit:
       result_list <- list(
         mono = lapply(result_list, "[[", "mono"),
