@@ -543,15 +543,20 @@ DADesign <- function(model, data,
 #'
 #' @slot model (`LogisticLogNormalGrouped`)\cr the model to be used, currently only one
 #'   class is allowed.
-#' @slot mono (`Design`)\cr including the rules to be followed for the mono arm, the
-#'   `model` slot will be ignored since the joint model is used instead.
-#' @slot combo (`Design`)\cr including the rules to be followed for the combo arm, the
-#'   `model` slot will be ignored since the joint model is used instead.
+#' @slot mono (`Design`)\cr defines the dose escalation rules for the mono arm, see
+#'   details.
+#' @slot combo (`Design`)\cr defines the dose escalation rules for the combo arm, see
+#'   details.
 #' @slot first_cohort_mono_only (`flag`)\cr whether first test one mono agent cohort, and then
 #'   once its DLT data has been collected, we proceed from the second cohort onwards with
 #'   concurrent mono and combo cohorts.
 #' @slot same_dose (`flag`)\cr whether the lower dose of the separately determined mono and combo
 #'   doses should be used as the next dose for both mono and combo.
+#'
+#' @details Note that the model slots inside the `mono` and `combo` parameters
+#'   are ignored (because we don't fit separate regression models for the mono and
+#'   combo arms). Instead, the `model` parameter is used to fit a joint regression
+#'   model for the mono and combo arms together.
 #'
 #' @aliases DesignGrouped
 #' @export

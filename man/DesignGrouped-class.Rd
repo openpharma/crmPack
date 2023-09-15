@@ -36,17 +36,23 @@ DesignGrouped(
 \code{\link{DesignGrouped}} combines two \code{\link{Design}} objects: one for the mono and one
 for the combo arm of a joint dose escalation design.
 }
+\details{
+Note that the model slots inside the \code{mono} and \code{combo} parameters
+are ignored (because we don't fit separate regression models for the mono and
+combo arms). Instead, the \code{model} parameter is used to fit a joint regression
+model for the mono and combo arms together.
+}
 \section{Slots}{
 
 \describe{
 \item{\code{model}}{(\code{LogisticLogNormalGrouped})\cr the model to be used, currently only one
 class is allowed.}
 
-\item{\code{mono}}{(\code{Design})\cr including the rules to be followed for the mono arm, the
-\code{model} slot will be ignored since the joint model is used instead.}
+\item{\code{mono}}{(\code{Design})\cr defines the dose escalation rules for the mono arm, see
+details.}
 
-\item{\code{combo}}{(\code{Design})\cr including the rules to be followed for the combo arm, the
-\code{model} slot will be ignored since the joint model is used instead.}
+\item{\code{combo}}{(\code{Design})\cr defines the dose escalation rules for the combo arm, see
+details.}
 
 \item{\code{first_cohort_mono_only}}{(\code{flag})\cr whether first test one mono agent cohort, and then
 once its DLT data has been collected, we proceed from the second cohort onwards with

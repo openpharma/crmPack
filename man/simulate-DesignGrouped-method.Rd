@@ -11,7 +11,7 @@
   seed = NULL,
   truth,
   combo_truth,
-  args = NULL,
+  args = data.frame(),
   firstSeparate = FALSE,
   mcmcOptions = McmcOptions(),
   parallel = FALSE,
@@ -32,13 +32,10 @@ Additional arguments can be supplied in \code{args}.}
 
 \item{combo_truth}{(\code{function})\cr same as \code{truth} but for the combo arm.}
 
-\item{args}{(\code{data.frame} or \code{NULL})\cr optional \code{data.frame} with arguments that work
-for the \code{truth} and \code{combo_truth} functions. The column names correspond to the argument names, the rows to
-the values of the arguments. The rows are appropriately recycled in the \code{nsim}
-simulations. In order to produce outcomes from the posterior predictive
-distribution, e.g, pass an \code{object}that contains the data observed so
-far, \code{truth} contains the \code{prob} function from the model in
-\code{object}, and \code{args} contains posterior samples from the model.}
+\item{args}{(\code{data.frame})\cr optional \code{data.frame} with arguments that work
+for both the \code{truth} and \code{combo_truth} functions. The column names correspond to
+the argument names, the rows to the values of the arguments. The rows are
+appropriately recycled in the \code{nsim} simulations.}
 
 \item{firstSeparate}{(\code{flag})\cr whether to enroll the first patient separately
 from the rest of the cohort and close the cohort in case a DLT occurs in this

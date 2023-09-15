@@ -110,6 +110,7 @@ Collate:
     'checkmate.R'
     'crmPack-package.R'
     'helpers_covr.R'
+    'helpers_design.R'
     'helpers_model.R'
     'logger.R'
     'utils-pipe.R'

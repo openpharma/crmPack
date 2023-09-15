@@ -4728,13 +4728,10 @@ setMethod("simulate",
 #'   returns the true probability (vector) for toxicity for the mono arm.
 #'   Additional arguments can be supplied in `args`.
 #' @param combo_truth (`function`)\cr same as `truth` but for the combo arm.
-#' @param args (`data.frame` or `NULL`)\cr optional `data.frame` with arguments that work
-#'   for the `truth` and `combo_truth` functions. The column names correspond to the argument names, the rows to
-#'   the values of the arguments. The rows are appropriately recycled in the `nsim`
-#'   simulations. In order to produce outcomes from the posterior predictive
-#'   distribution, e.g, pass an `object`that contains the data observed so
-#'   far, `truth` contains the `prob` function from the model in
-#'   `object`, and `args` contains posterior samples from the model.
+#' @param args (`data.frame`)\cr optional `data.frame` with arguments that work
+#'   for both the `truth` and `combo_truth` functions. The column names correspond to
+#'   the argument names, the rows to the values of the arguments. The rows are
+#'   appropriately recycled in the `nsim` simulations.
 #' @param firstSeparate (`flag`)\cr whether to enroll the first patient separately
 #'   from the rest of the cohort and close the cohort in case a DLT occurs in this
 #'   first patient.
@@ -4764,240 +4761,100 @@ setMethod(
              seed = NULL,
              truth,
              combo_truth,
-             args = NULL,
+             args = data.frame(),
              firstSeparate = FALSE,
              mcmcOptions = McmcOptions(),
              parallel = FALSE,
              nCores = min(parallelly::availableCores(), 5),
              ...) {
       nsim <- safeInteger(nsim)
+      assert_function(truth)
+      assert_function(combo_truth)
+      assert_data_frame(args)
+      assert_count(nsim, positive = TRUE)
+      assert_flag(firstSeparate)
+      assert_flag(parallel)
+      assert_count(nCores, positive = TRUE)
 
-      stopifnot(
-        is.function(truth),
-        is.function(combo_truth),
-        is.scalar(nsim),
-        nsim > 0,
-        is.bool(firstSeparate),
-        is.bool(parallel),
-        is.scalar(nCores),
-        nCores > 0
-      )
-
-      args <- as.data.frame(args)
       n_args <- max(nrow(args), 1L)
       rng_state <- setSeed(seed)
       sim_seeds <- sample.int(n = 2147483647, size = nsim)
 
       run_sim <- function(iter_sim) {
         set.seed(sim_seeds[iter_sim])
-
-        this_args <- args[(iter_sim - 1) %% n_args + 1, , drop = FALSE]
-        this_mono_truth <- function(dose) {
-          do.call(truth, c(dose, this_args))
-        }
-        this_combo_truth <- function(dose) {
-          do.call(combo_truth, c(dose, this_args))
-        }
-
+        current <- list(mono = list(), combo = list())
+        # Define true toxicity functions.
+        current$args <- args[(iter_sim - 1) %% n_args + 1, , drop = FALSE]
+        current$mono$truth <- function(dose) do.call(truth, c(dose, current$args))
+        current$combo$truth <- function(dose) do.call(combo_truth, c(dose, current$args))
         # Start the simulated data with the provided one.
-        this_mono_data <- object@mono@data
-        this_combo_data <- object@combo@data
-
-        # Shall we stop the trial? Separately for mono and combo.
-        stop_mono <- stop_combo <- FALSE
-
-        # Are we in the first cohort? This is to support the staggering feature.
-        first_cohort <- TRUE
-
+        current$mono$data <- object@mono@data
+        current$combo$data <- object@combo@data
+        # We are in the first cohort and continue for mono and combo.
+        current$first <- TRUE
+        current$mono$stop <- current$combo$stop <- FALSE
         # What are the next doses to be used? Initialize with starting doses.
-        if (object@mono@startingDose < object@combo@startingDose) {
-          warning("combo starting dose usually not higher than mono starting dose")
-        }
         if (object@same_dose) {
-          this_mono_dose <-
-            this_combo_dose <- min(object@mono@startingDose, object@combo@startingDose)
+          current$mono$dose <- current$combo$dose <- min(object@mono@startingDose, object@combo@startingDose)
         } else {
-          this_mono_dose <- object@mono@startingDose
-          this_combo_dose <- object@combo@startingDose
+          current$mono$dose <- object@mono@startingDose
+          current$combo$dose <- object@combo@startingDose
         }
-
         # Inside this loop we simulate the whole trial, until stopping.
-        while (!(stop_mono && stop_combo)) {
+        while (!(current$mono$stop && current$combo$stop)) {
+          if (!current$mono$stop) {
+            current$mono$data <- current$mono$data |>
+              h_add_dlts(current$mono$dose, current$mono$truth, object@mono@cohort_size, firstSeparate)
+          }
+          if (!current$combo$stop && (!current$first || !object@first_cohort_mono_only)) {
+            current$combo$data <- current$combo$data |>
+              h_add_dlts(current$combo$dose, current$combo$truth, object@combo@cohort_size, firstSeparate)
+          }
+          if (current$first) current$first <- FALSE
+          current$grouped <- h_group_data(current$mono$data, current$combo$data)
+          current$samples <- mcmc(current$grouped, object@model, mcmcOptions)
           if (!stop_mono) {
-            this_mono_prob <- this_mono_truth(this_mono_dose)
-            this_mono_size <- size(object@mono@cohort_size, dose = this_mono_dose, data = this_mono_data)
-            this_mono_dlts <- if (firstSeparate && this_mono_size > 1) {
-              first_mono_dlts <- rbinom(n = 1, size = 1, prob = this_mono_prob)
-              if (first_mono_dlts == 0) {
-                c(first_mono_dlts, rbinom(n = this_mono_size - 1, size = 1, prob = this_mono_prob))
-              } else {
-                first_mono_dlts
-              }
-            } else {
-              rbinom(n = this_mono_size, size = 1, prob = this_mono_prob)
-            }
-            this_mono_data <- update(object = this_mono_data, x = this_mono_dose, y = this_mono_dlts)
+            current$mono$limit <- maxDose(object@mono@increments, data = current$mono$data)
+            current$mono$dose <- object@mono@nextBest |>
+              nextBest(current$mono$limit, current$samples, object@model, current$grouped, group = "mono") |>
+              {\(x) x$value}()
+            current$mono$stop <- object@mono@stopping |>
+              stopTrial(current$mono$dose, current$samples, object@model, current$mono$data, group = "mono")
+            current$mono$results <- h_unpack_stopit(current$mono$stop)
           }
-
-          if (!stop_combo && (!first_cohort || !object@first_cohort_mono_only)) {
-            this_combo_prob <- this_combo_truth(this_combo_dose)
-            this_combo_size <- size(object@combo@cohort_size, dose = this_combo_dose, data = this_combo_data)
-            this_combo_dlts <- if (firstSeparate && this_combo_size > 1) {
-              first_combo_dlts <- rbinom(n = 1, size = 1, prob = this_combo_prob)
-              if (first_combo_dlts == 0) {
-                c(first_combo_dlts, rbinom(n = this_combo_size - 1, size = 1, prob = this_combo_prob))
-              } else {
-                first_combo_dlts
-              }
-            } else {
-              rbinom(n = this_combo_size, size = 1, prob = this_combo_prob)
-            }
-            this_combo_data <- update(object = this_combo_data, x = this_combo_dose, y = this_combo_dlts)
-          }
-
-          if (first_cohort) {
-            first_cohort <- FALSE
-          }
-
-          grouped_data <- h_group_data(
-            this_mono_data,
-            this_combo_data
-          )
-          this_samples <- mcmc(
-            data = grouped_data,
-            model = object@model,
-            options = mcmcOptions
-          )
-
-          if (!stop_mono) {
-            mono_dose_limit <- maxDose(
-              object@mono@increments,
-              data = this_mono_data
-            )
-
-            this_mono_dose <- nextBest(
-              object@mono@nextBest,
-              doselimit = mono_dose_limit,
-              samples = this_samples,
-              model = object@model,
-              data = grouped_data,
-              group = factor("mono", levels = c("mono", "combo"))
-            )$value
-
-            stop_mono <- stopTrial(
-              object@mono@stopping,
-              dose = this_mono_dose,
-              samples = this_samples,
-              model = object@model,
-              data = this_mono_data,
-              group = factor("mono", levels = c("mono", "combo"))
-            )
-
-            stop_mono_results <- h_unpack_stopit(stop_mono)
-          }
-
           if (!stop_combo) {
-            combo_dose_limit <- if (is.na(this_mono_dose)) {
+            current$combo$limit <- if (is.na(current$mono$dose)) {
               0
             } else {
-              combo_max_dose <- maxDose(
-                object@combo@increments,
-                data = this_combo_data
-              )
-              min(
-                combo_max_dose,
-                this_mono_dose,
-                na.rm = TRUE
-              )
+              maxDose(object@combo@increments, current$combo$data) |>
+                min(current$mono$dose, na.rm = TRUE)
             }
-
-            this_combo_dose <- nextBest(
-              object@combo@nextBest,
-              doselimit = combo_dose_limit,
-              samples = this_samples,
-              model = object@model,
-              data = grouped_data,
-              group = factor("combo", levels = c("mono", "combo"))
-            )$value
-
-            stop_combo <- stopTrial(
-              object@combo@stopping,
-              dose = this_combo_dose,
-              samples = this_samples,
-              model = object@model,
-              data = this_combo_data,
-              group = factor("combo", levels = c("mono", "combo"))
-            )
-
-            stop_combo_results <- h_unpack_stopit(stop_combo)
-
-            if (object@same_dose) {
-              this_mono_dose <- this_combo_dose <- min(
-                this_mono_dose,
-                this_combo_dose
-              )
-            }
+            current$combo$dose <- object@combo@nextBest |>
+              nextBest(current$combo$limit, current$samples, object@model, current$grouped, group = "combo") |>
+              {\(x) x$value}()
+            current$combo$stop <- object@combo@stopping |>
+              stopTrial(current$combo$dose, current$samples, object@model, current$combo$data, group = "combo")
+            current$combo$results <- h_unpack_stopit(current$combo$stop)
+          }
+          if (object@same_dose && !stop_mono && !stop_combo) {
+            current$mono$dose <- current$combo$dose <- min(current$mono$dose, current$combo$dose)
           }
         }
-
-        fit_mono <- fit(
-          object = this_samples,
-          model = object@model,
-          data = grouped_data,
-          group = factor("mono", levels = c("mono", "combo"))
+        current$mono$fit <- fit(current$samples, object@model, current$grouped, group = "mono")
+        current$combo$fit <- fit(current$samples, object@model, current$grouped, group = "combo")
+        lapply(
+          X = current[c("mono", "combo")], FUN = with,
+          data = data, dose = dose, fit = subset(fit, select = -dose), stop = attr(stop, "message"), report_results = results
         )
-        fit_combo <- fit(
-          object = this_samples,
-          model = object@model,
-          data = grouped_data,
-          group = factor("combo", levels = c("mono", "combo"))
-        )
-
-        this_result <- list(
-          mono = list(
-            data = this_mono_data,
-            dose = this_mono_dose,
-            fit = subset(fit_mono, select = -dose),
-            stop = attr(stop_mono, "message"),
-            report_results = stop_mono_results
-          ),
-          combo = list(
-            data = this_combo_data,
-            dose = this_combo_dose,
-            fit = subset(fit_combo, select = -dose),
-            stop = attr(stop_combo, "message"),
-            report_results = stop_combo_results
-          )
-        )
-
-        return(this_result)
       }
-
-      result_list <- getResultList(
-        fun = run_sim,
-        nsim = nsim,
-        vars =
-          c(
-            "simSeeds",
-            "args",
-            "nArgs",
-            "truth",
-            "combo_truth",
-            "firstSeparate",
-            "object",
-            "mcmcOptions"
-          ),
-        parallel = if (parallel) nCores else NULL
-      )
-
-      # Now we have a list with each element containing mono and combo,
-      # but we want it now the other way around, i.e. a list with 2 elements
-      # mono and combo and the iterations inside.
+      vars_needed <- c("simSeeds", "args", "nArgs", "truth", "combo_truth", "firstSeparate", "object", "mcmcOptions")
+      parallel_cores <- if (parallel) nCores else NULL
+      result_list <- getResultList(fun = run_sim, nsim = nsim, vars = vars_needed, parallel = parallel_cores)
+      # Now we have a list with each element containing mono and combo. Reorder this a bit:
       result_list <- list(
         mono = lapply(result_list, "[[", "mono"),
         combo = lapply(result_list, "[[", "combo")
       )
-
       # Put everything in a list with both mono and combo Simulations:
       lapply(result_list, function(this_list) {
         data_list <- lapply(this_list, "[[", "data")
