@@ -4813,18 +4813,16 @@ setMethod(
           if (current$first) current$first <- FALSE
           current$grouped <- h_group_data(current$mono$data, current$combo$data)
           current$samples <- mcmc(current$grouped, object@model, mcmcOptions)
-          if (!stop_mono) {
+          if (!current$mono$stop) {
             current$mono$limit <- maxDose(object@mono@increments, data = current$mono$data)
             current$mono$dose <- object@mono@nextBest |>
-              nextBest(current$mono$limit, current$samples, object@model, current$grouped, group = "mono") |>
-              {
-                \(x) x$value
-              }()
+              nextBest(current$mono$limit, current$samples, object@model, current$grouped, group = "mono")
+            current$mono$dose <- current$mono$dose$value
             current$mono$stop <- object@mono@stopping |>
               stopTrial(current$mono$dose, current$samples, object@model, current$mono$data, group = "mono")
             current$mono$results <- h_unpack_stopit(current$mono$stop)
           }
-          if (!stop_combo) {
+          if (!current$combo$stop) {
             current$combo$limit <- if (is.na(current$mono$dose)) {
               0
             } else {
@@ -4832,15 +4830,13 @@ setMethod(
                 min(current$mono$dose, na.rm = TRUE)
             }
             current$combo$dose <- object@combo@nextBest |>
-              nextBest(current$combo$limit, current$samples, object@model, current$grouped, group = "combo") |>
-              {
-                \(x) x$value
-              }()
+              nextBest(current$combo$limit, current$samples, object@model, current$grouped, group = "combo")
+            current$combo$dose <- current$combo$dose$value
             current$combo$stop <- object@combo@stopping |>
               stopTrial(current$combo$dose, current$samples, object@model, current$combo$data, group = "combo")
             current$combo$results <- h_unpack_stopit(current$combo$stop)
           }
-          if (object@same_dose && !stop_mono && !stop_combo) {
+          if (object@same_dose && !current$mono$stop && !current$combo$stop) {
             current$mono$dose <- current$combo$dose <- min(current$mono$dose, current$combo$dose)
           }
         }
@@ -4848,7 +4844,7 @@ setMethod(
         current$combo$fit <- fit(current$samples, object@model, current$grouped, group = "combo")
         lapply(
           X = current[c("mono", "combo")], FUN = with,
-          data = data, dose = dose, fit = subset(fit, select = -dose), stop = attr(stop, "message"), report_results = results
+          list(data = data, dose = dose, fit = subset(fit, select = -dose), stop = attr(stop, "message"), report_results = results)
         )
       }
       vars_needed <- c("simSeeds", "args", "nArgs", "truth", "combo_truth", "firstSeparate", "object", "mcmcOptions")
