@@ -93,7 +93,7 @@ get_result_list <- function(
   } else {
     # Process all simulations.
     cores <- min(
-      safeInteger(parallel),
+      safeInteger(n_cores),
       parallelly::availableCores()
     )
 
@@ -144,7 +144,7 @@ get_result_list <- function(
     # Stop the cluster.
     parallel::stopCluster(cl)
 
-    return(res)
+    res
   }
 }
 
