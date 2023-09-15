@@ -1,165 +1,154 @@
-# nolint start
-#####################################################################################
-## Author: Daniel Sabanes Bove [sabanesd *a*t* roche *.* com]
-##         Wai Yin Yeung [w*.* yeung1 *a*t* lancaster *.* ac *.* uk]
-## Project: Object-oriented implementation of CRM designs
-##
-## Time-stamp: <[Design-methods.R] by DSB Son 03/05/2015 20:35>
-##
-## Description:
-## Simulate outcomes from a CRM trial, assuming a true dose-toxicity
-## relationship.
-##
-## History:
-## 12/02/2014   file creation
-## 07/04/2014   start with parallelization on cores
-## 02/01/2015   rename: simulate.R --> Design-methods.R
-## 10/07/2015   added simulate methods
-#####################################################################################
+#' @include Data-methods.R
+#' @include Design-class.R
+#' @include McmcOptions-class.R
+#' @include Rules-methods.R
+#' @include Simulations-class.R
+#' @include helpers.R
+#' @include mcmc.R
+NULL
 
-##' @include Data-methods.R
-##' @include Design-class.R
-##' @include McmcOptions-class.R
-##' @include Rules-methods.R
-##' @include Simulations-class.R
-##' @include helpers.R
-##' @include mcmc.R
-{}
+# helper functions ----
 
-##' Helper function to set and save the RNG seed
-##'
-##' This is basically copied from simulate.lm
-##'
-##' @param seed an object specifying if and how the random number generator
-##' should be initialized (\dQuote{seeded}). Either \code{NULL} (default) or an
-##' integer that will be used in a call to \code{\link{set.seed}} before
-##' simulating the response vectors. If set, the value is saved as the
-##' \code{seed} slot of the returned object. The default, \code{NULL} will
-##' not change the random generator state.
-##' @return The RNGstate will be returned, in order to call this function
-##' with this input to reproduce the obtained simulation results
-##'
-##' @export
-##' @keywords programming
-##' @author Daniel Sabanes Bove \email{sabanesd@@roche.com}
-setSeed <- function(seed = NULL) {
+## set_seed ----
+
+#' Helper function to set and save the RNG seed
+#'
+#' @description `r lifecycle::badge("stable")`
+#'
+#' This code is basically copied from `stats:::simulate.lm`.
+#'
+#' @param seed an object specifying if and how the random number generator
+#' should be initialized ("seeded"). Either `NULL` (default) or an
+#' integer that will be used in a call to [set.seed()] before
+#' simulating the response vectors. If set, the value is saved as the
+#' `seed` slot of the returned object. The default, `NULL` will
+#' not change the random generator state.
+#' @return The integer vector containing the random number generate state will
+#' be returned, in order to call this function with this input to reproduce
+#' the obtained simulation results.
+#'
+#' @export
+#' @keywords programming
+set_seed <- function(seed = NULL) {
+  assert_number(seed, null.ok = TRUE)
+
   if (!exists(".Random.seed", envir = .GlobalEnv, inherits = FALSE)) {
     runif(1)
   }
 
   if (is.null(seed)) {
-    RNGstate <- get(".Random.seed", envir = .GlobalEnv)
+    get(".Random.seed", envir = .GlobalEnv)
   } else {
-    R.seed <- get(".Random.seed", envir = .GlobalEnv)
-    ## make sure R.seed exists in parent frame:
-    assign("R.seed", R.seed, envir = parent.frame())
+    seed <- as.integer(seed)
+    r_seed <- get(".Random.seed", envir = .GlobalEnv)
+    # Make sure r_seed exists in parent frame.
+    assign(".r_seed", r_seed, envir = parent.frame())
     set.seed(seed)
-    RNGstate <- structure(seed, kind = as.list(RNGkind()))
-    do.call("on.exit",
-      list(quote(assign(".Random.seed", R.seed, envir = .GlobalEnv))),
+    # Here we need the r_seed in the parent.frame!
+    do.call(
+      "on.exit",
+      list(quote(assign(".Random.seed", .r_seed, envir = .GlobalEnv))),
       envir = parent.frame()
     )
-    ## here we need the R.seed in the parent.frame!
+    structure(seed, kind = as.list(RNGkind()))
   }
-
-  return(RNGstate)
 }
 
+## get_result_list ----
 
-##' Helper function to obtain simulation results list
-##'
-##' The function \code{fun} can use variables that are visible to itself.
-##' The names of these variables have to given in the vector \code{vars}.
-##'
-##' @param fun the simulation function for a single iteration, which takes as
-##' single parameter the iteration index
-##' @param nsim number of simulations to be conducted
-##' @param vars names of the variables
-##' @param parallel shall the iterations be parallelized across the cores?
-##' if NULL, then no parallelization will be done. If scalar positive number,
-##' then so many cores will be used.
-##' @return the list with all simulation results (one iteration corresponds
-##' to one list element)
-##'
-##' @importFrom parallel detectCores makeCluster clusterApply stopCluster
-##' @importFrom parallelly availableCores
-##' @keywords internal programming
-##' @author Daniel Sabanes Bove \email{sabanesd@@roche.com}
-getResultList <- function(fun,
-                          nsim,
-                          vars,
-                          parallel = NULL) {
-  ret <-
-    if (is.null(parallel)) {
-      lapply(
-        X = seq_len(nsim),
-        FUN = fun
+#' Helper function to obtain simulation results list
+#'
+#' @description `r lifecycle::badge("stable")`
+#'
+#' The function `fun` can use variables that are visible to itself.
+#' The names of these variables have to be given in the vector `vars`.
+#'
+#' @param fun (`function`)\cr the simulation function for a single iteration, which takes as
+#' single parameter the iteration index.
+#' @param nsim number of simulations to be conducted.
+#' @param vars names of the variables.
+#' @param parallel should the simulation runs be parallelized across the
+#' clusters of the computer?
+#' @param n_cores how many cores should be used for parallel computing?
+#' @return The list with all simulation results (one iteration corresponds
+#' to one list element).
+#'
+#' @importFrom parallel makeCluster
+#' @importFrom parallelly availableCores
+#' @keywords internal programming
+get_result_list <- function(
+    fun,
+    nsim,
+    vars,
+    parallel,
+    n_cores) {
+  assert_flag(parallel)
+  assert_integerish(n_cores, lower = 1)
+
+  if (!parallel) {
+    lapply(
+      X = seq_len(nsim),
+      FUN = fun
+    )
+  } else {
+    # Process all simulations.
+    cores <- min(
+      safeInteger(n_cores),
+      parallelly::availableCores()
+    )
+
+    # Start the cluster.
+    cl <- parallel::makeCluster(cores)
+
+    # Load the required R package.
+    parallel::clusterEvalQ(cl, {
+      library(crmPack)
+      NULL
+    })
+
+    # Export local variables from the caller environment.
+    # Note: parent.frame() is different from parent.env() which returns
+    # the environment where this function has been defined!
+    parallel::clusterExport(
+      cl = cl,
+      varlist = vars,
+      envir = parent.frame()
+    )
+
+    # Export all global variables.
+    parallel::clusterExport(
+      cl = cl,
+      varlist = ls(.GlobalEnv)
+    )
+
+    # Load user extensions from global options.
+    crmpack_extensions <- getOption("crmpack_extensions")
+    if (is.null(crmpack_extensions) != TRUE) {
+      tryCatch(
+        {
+          parallel::clusterCall(cl, crmpack_extensions)
+        },
+        error = function(e) {
+          stop("Failed to export crmpack_extensions: ", e$message)
+        }
       )
-    } else {
-      ## check that parallel parameter makes sense
-      stopifnot(is.scalar(parallel), parallel > 0)
-
-      ## now process all simulations
-      cores <- min(
-        safeInteger(parallel),
-        parallelly::availableCores()
-      )
-
-      ## start the cluster
-      cl <- parallel::makeCluster(cores)
-
-      ## load the required R package
-      parallel::clusterEvalQ(cl, {
-        library(crmPack)
-        NULL
-      })
-
-      ## export local variables
-      parallel::clusterExport(
-        cl = cl,
-        varlist = vars,
-        envir = parent.frame()
-      )
-      ## parent.frame() gives back the caller environment
-      ## (different from parent.env() which returns
-      ## the environment where this function has been
-      ## defined!)
-
-      ## export all global variables
-      parallel::clusterExport(
-        cl = cl,
-        varlist = ls(.GlobalEnv)
-      )
-
-      # load user extensions from global options
-      crmpack_extensions <- getOption("crmpack_extensions")
-      if (is.null(crmpack_extensions) != TRUE) {
-        tryCatch(
-          {
-            parallel::clusterCall(cl, crmpack_extensions)
-          },
-          error = function(e) {
-            stop("Failed to export crmpack_extensions: ", e$message)
-          }
-        )
-      }
-
-      ## now do the computations
-      res <- parallel::parLapply(
-        cl = cl,
-        X = seq_len(nsim),
-        fun = fun
-      )
-
-      ## stop the cluster
-      parallel::stopCluster(cl)
-
-      res
     }
 
-  return(ret)
+    # Do the computations in parallel.
+    res <- parallel::parLapply(
+      cl = cl,
+      X = seq_len(nsim),
+      fun = fun
+    )
+
+    # Stop the cluster.
+    parallel::stopCluster(cl)
+
+    res
+  }
 }
 
+# nolint start
 
 ## ============================================================
 
@@ -168,7 +157,7 @@ getResultList <- function(fun,
 ##' @param object the \code{\linkS4class{Design}} object we want to simulate
 ##' data from
 ##' @param nsim the number of simulations (default: 1)
-##' @param seed see \code{\link{setSeed}}
+##' @param seed see \code{\link{set_seed}}
 ##' @param truth a function which takes as input a dose (vector) and returns the
 ##' true probability (vector) for toxicity. Additional arguments can be supplied
 ##' in \code{args}.
@@ -228,7 +217,7 @@ setMethod("simulate",
       nArgs <- max(nrow(args), 1L)
 
       ## seed handling
-      RNGstate <- setSeed(seed)
+      RNGstate <- set_seed(seed)
 
       ## from this,
       ## generate the individual seeds for the simulation runs
@@ -436,7 +425,7 @@ setMethod("simulate",
         return(thisResult)
       }
 
-      resultList <- getResultList(
+      resultList <- get_result_list(
         fun = runSim,
         nsim = nsim,
         vars =
@@ -449,7 +438,8 @@ setMethod("simulate",
             "object",
             "mcmcOptions"
           ),
-        parallel = if (parallel) nCores else NULL
+        parallel = parallel,
+        n_cores = nCores
       )
 
       ## put everything in the Simulations format:
@@ -492,7 +482,7 @@ setMethod("simulate",
 ##' @param object the \code{\linkS4class{RuleDesign}} object we want to simulate
 ##' data from
 ##' @param nsim the number of simulations (default: 1)
-##' @param seed see \code{\link{setSeed}}
+##' @param seed see \code{\link{set_seed}}
 ##' @param truth a function which takes as input a dose (vector) and returns the
 ##' true probability (vector) for toxicity. Additional arguments can be supplied
 ##' in \code{args}.
@@ -539,7 +529,7 @@ setMethod("simulate",
       nArgs <- max(nrow(args), 1L)
 
       ## seed handling
-      RNGstate <- setSeed(seed)
+      RNGstate <- set_seed(seed)
 
       ## from this,
       ## generate the individual seeds for the simulation runs
@@ -624,7 +614,7 @@ setMethod("simulate",
         return(thisResult)
       }
 
-      resultList <- getResultList(
+      resultList <- get_result_list(
         fun = runSim,
         nsim = nsim,
         vars =
@@ -635,7 +625,8 @@ setMethod("simulate",
             "truth",
             "object"
           ),
-        parallel = if (parallel) nCores else NULL
+        parallel = parallel,
+        n_cores = nCores
       )
 
       ## put everything in the GeneralSimulations format:
@@ -663,7 +654,7 @@ setMethod("simulate",
 ##' @param object the \code{\linkS4class{DualDesign}} object we want to simulate
 ##' data from
 ##' @param nsim the number of simulations (default: 1)
-##' @param seed see \code{\link{setSeed}}
+##' @param seed see \code{\link{set_seed}}
 ##' @param trueTox a function which takes as input a dose (vector) and returns the
 ##' true probability (vector) for toxicity. Additional arguments can be supplied
 ##' in \code{args}.
@@ -739,7 +730,7 @@ setMethod("simulate",
       )
 
       ## seed handling
-      RNGstate <- setSeed(seed)
+      RNGstate <- set_seed(seed)
 
       ## from this,
       ## generate the individual seeds for the simulation runs
@@ -1031,7 +1022,7 @@ setMethod("simulate",
         return(thisResult)
       }
 
-      resultList <- getResultList(
+      resultList <- get_result_list(
         fun = runSim,
         nsim = nsim,
         vars =
@@ -1046,7 +1037,8 @@ setMethod("simulate",
             "object",
             "mcmcOptions"
           ),
-        parallel = if (parallel) nCores else NULL
+        parallel = parallel,
+        n_cores = nCores
       )
 
       ## put everything in the Simulations format:
@@ -1863,7 +1855,7 @@ setMethod("examine",
 ##'
 ##' @param object the \code{\linkS4class{TDsamplesDesign}} object we want to simulate the data from
 ##' @param nsim the number of simulations (default :1)
-##' @param seed see \code{\link{setSeed}}
+##' @param seed see \code{\link{set_seed}}
 ##' @param truth a function which takes as input a dose (vector) and returns the true probability
 ##' (vector) of the occurrence of a DLE. Additional arguments can be supplied in \code{args}.
 ##' @param args data frame with arguments for the \code{truth} function. The
@@ -1921,7 +1913,7 @@ setMethod("simulate",
 
 
       ## seed handling
-      RNGstate <- setSeed(seed)
+      RNGstate <- set_seed(seed)
 
       ## from this,
       ## generate the individual seeds for the simulation runs
@@ -2147,7 +2139,7 @@ setMethod("simulate",
         return(thisResult)
       }
 
-      resultList <- getResultList(
+      resultList <- get_result_list(
         fun = runSim,
         nsim = nsim,
         vars =
@@ -2160,7 +2152,8 @@ setMethod("simulate",
             "object",
             "mcmcOptions"
           ),
-        parallel = if (parallel) nCores else NULL
+        parallel = parallel,
+        n_cores = nCores
       )
 
       ## put everything in the Simulations format:
@@ -2232,7 +2225,7 @@ setMethod("simulate",
 ##'
 ##' @param object the \code{\linkS4class{TDDesign}} object we want to simulate the data from
 ##' @param nsim the number of simulations (default :1)
-##' @param seed see \code{\link{setSeed}}
+##' @param seed see \code{\link{set_seed}}
 ##' @param truth a function which takes as input a dose (vector) and returns the true probability
 ##' (vector) of the occurrence of a DLE. Additional arguments can be supplied in \code{args}.
 ##' @param args data frame with arguments for the \code{truth} function. The
@@ -2285,7 +2278,7 @@ setMethod("simulate",
       nArgs <- max(nrow(args), 1L)
 
       ## seed handling
-      RNGstate <- setSeed(seed)
+      RNGstate <- set_seed(seed)
 
       ## from this,
       ## generate the individual seeds for the simulation runs
@@ -2494,7 +2487,7 @@ setMethod("simulate",
       }
 
 
-      resultList <- getResultList(
+      resultList <- get_result_list(
         fun = runSim,
         nsim = nsim,
         vars =
@@ -2506,7 +2499,8 @@ setMethod("simulate",
             "truth",
             "object"
           ),
-        parallel = if (parallel) nCores else NULL
+        parallel = parallel,
+        n_cores = nCores
       )
 
       ## put everything in the Simulations format:
@@ -2581,7 +2575,7 @@ setMethod("simulate",
 ##'
 ##' @param object the \code{\linkS4class{DualResponsesDesign}} object we want to simulate the data from
 ##' @param nsim the number of simulations (default :1)
-##' @param seed see \code{\link{setSeed}}
+##' @param seed see \code{\link{set_seed}}
 ##' @param trueDLE a function which takes as input a dose (vector) and returns the true probability
 ##' (vector) of the occurrence of a DLE. Additional arguments can be supplied in \code{args}.
 ##' @param trueEff a function which takes as input a dose (vector) and returns the expected efficacy
@@ -2644,7 +2638,7 @@ setMethod("simulate",
 
 
       ## seed handling
-      RNGstate <- setSeed(seed)
+      RNGstate <- set_seed(seed)
 
       ## from this,
       ## generate the individual seeds for the simulation runs
@@ -2984,7 +2978,7 @@ setMethod("simulate",
       }
 
 
-      resultList <- getResultList(
+      resultList <- get_result_list(
         fun = runSim,
         nsim = nsim,
         vars =
@@ -2998,7 +2992,8 @@ setMethod("simulate",
             "trueNu",
             "object"
           ),
-        parallel = if (parallel) nCores else NULL
+        parallel = parallel,
+        n_cores = nCores
       )
 
 
@@ -3111,7 +3106,7 @@ setMethod("simulate",
 ##' @param object the \code{\linkS4class{DualResponsesSamplesDesign}} object we want to
 ##' simulate the data from
 ##' @param nsim the number of simulations (default :1)
-##' @param seed see \code{\link{setSeed}}
+##' @param seed see \code{\link{set_seed}}
 ##' @param trueDLE a function which takes as input a dose (vector) and returns the true probability
 ##' (vector) of the occurrence of a DLE. Additional arguments can be supplied in \code{args}.
 ##' @param trueEff a function which takes as input a dose (vector) and returns the expected
@@ -3192,7 +3187,7 @@ setMethod("simulate",
         trueDLEArgnames <- names(formals(trueDLE))[-1]
 
         ## seed handling
-        RNGstate <- setSeed(seed)
+        RNGstate <- set_seed(seed)
 
         ## from this,
         ## generate the individual seeds for the simulation runs
@@ -3530,7 +3525,7 @@ setMethod("simulate",
           return(thisResult)
         }
 
-        resultList <- getResultList(
+        resultList <- get_result_list(
           fun = runSim,
           nsim = nsim,
           vars =
@@ -3546,7 +3541,8 @@ setMethod("simulate",
               "object",
               "mcmcOptions"
             ),
-          parallel = if (parallel) nCores else NULL
+          parallel = parallel,
+          n_cores = nCores
         )
 
         ## put everything in the Simulations format:
@@ -3657,7 +3653,7 @@ setMethod("simulate",
 
 
         ## seed handling
-        RNGstate <- setSeed(seed)
+        RNGstate <- set_seed(seed)
 
         ## from this,
         ## generate the individual seeds for the simulation runs
@@ -4000,7 +3996,7 @@ setMethod("simulate",
         }
 
 
-        resultList <- getResultList(
+        resultList <- get_result_list(
           fun = runSim,
           nsim = nsim,
           vars =
@@ -4014,7 +4010,8 @@ setMethod("simulate",
               "trueNu",
               "object"
             ),
-          parallel = if (parallel) nCores else NULL
+          parallel = parallel,
+          n_cores = nCores
         )
 
 
@@ -4113,7 +4110,7 @@ setMethod("simulate",
 ##' @param object the \code{\linkS4class{DADesign}} object we want to simulate
 ##'   data from
 ##' @param nsim the number of simulations (default: 1)
-##' @param seed see \code{\link{setSeed}}
+##' @param seed see \code{\link{set_seed}}
 ##' @param truthTox a function which takes as input a dose (vector) and returns the
 ##'   true probability (vector) for toxicity and the time DLT occurs. Additional
 ##'   arguments can be supplied in \code{args}.
@@ -4181,7 +4178,7 @@ setMethod("simulate",
       nArgs <- max(nrow(args), 1L)
 
       ## seed handling
-      RNGstate <- setSeed(seed)
+      RNGstate <- set_seed(seed)
 
       ## from this,
       ## generate the individual seeds for the simulation runs
@@ -4655,7 +4652,7 @@ setMethod("simulate",
         return(thisResult)
       }
 
-      resultList <- getResultList(
+      resultList <- get_result_list(
         fun = runSim, ## remove
         nsim = nsim,
         vars =
@@ -4671,7 +4668,8 @@ setMethod("simulate",
             "nextOpen",
             "ready_to_open"
           ),
-        parallel = if (parallel) nCores else NULL
+        parallel = parallel,
+        n_cores = nCores
       )
 
       ## put everything in the Simulations format:
