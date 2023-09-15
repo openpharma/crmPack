@@ -4817,7 +4817,9 @@ setMethod(
             current$mono$limit <- maxDose(object@mono@increments, data = current$mono$data)
             current$mono$dose <- object@mono@nextBest |>
               nextBest(current$mono$limit, current$samples, object@model, current$grouped, group = "mono") |>
-              {\(x) x$value}()
+              {
+                \(x) x$value
+              }()
             current$mono$stop <- object@mono@stopping |>
               stopTrial(current$mono$dose, current$samples, object@model, current$mono$data, group = "mono")
             current$mono$results <- h_unpack_stopit(current$mono$stop)
@@ -4831,7 +4833,9 @@ setMethod(
             }
             current$combo$dose <- object@combo@nextBest |>
               nextBest(current$combo$limit, current$samples, object@model, current$grouped, group = "combo") |>
-              {\(x) x$value}()
+              {
+                \(x) x$value
+              }()
             current$combo$stop <- object@combo@stopping |>
               stopTrial(current$combo$dose, current$samples, object@model, current$combo$data, group = "combo")
             current$combo$results <- h_unpack_stopit(current$combo$stop)
