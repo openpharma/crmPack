@@ -234,8 +234,8 @@ setMethod("simulate",
       ## generate the individual seeds for the simulation runs
       simSeeds <- sample.int(n = 2147483647, size = nsim)
 
-      ## the function to produce the run a single simulation
-      ## with index "iterSim"
+      # ## the function to produce the run a single simulation
+      # ## with index "iterSim"
       runSim <- function(iterSim) {
         ## set the seed for this run
         set.seed(simSeeds[iterSim])
@@ -244,18 +244,19 @@ setMethod("simulate",
         ## (appropriately recycled)
         thisArgs <- args[(iterSim - 1) %% nArgs + 1, , drop = FALSE]
 
-        ## so this truth is...
-        thisTruth <- function(dose) {
-          do.call(
-            truth,
-            ## First argument: the dose
-            c(
-              dose,
-              ## Following arguments
-              thisArgs
-            )
-          )
-        }
+        # ## exported to helpers_simulation.R by Clara
+        # ## so this truth is...
+        # thisTruth <- function(dose) {
+        #   do.call(
+        #     truth,
+        #     ## First argument: the dose
+        #     c(
+        #       dose,
+        #       ## Following arguments
+        #       thisArgs
+        #     )
+        #   )
+        # }
 
         ## start the simulated data with the provided one
         thisData <- object@data
@@ -263,7 +264,7 @@ setMethod("simulate",
         # In case there are placebo
         if (thisData@placebo) {
           ## what is the probability for tox. at placebo?
-          thisProb.PL <- thisTruth(object@data@doseGrid[1])
+          thisProb.PL <- h_this_truth(object@data@doseGrid[1], thisArgs, truth)
         }
 
         ## shall we stop the trial?
@@ -278,7 +279,7 @@ setMethod("simulate",
         ## inside this loop we simulate the whole trial, until stopping
         while (!stopit) {
           ## what is the probability for tox. at this dose?
-          thisProb <- thisTruth(thisDose)
+          thisProb <- h_this_truth(thisDose, thisArgs, truth)
 
           ## what is the cohort size at this dose?
           thisSize <- size(object@cohort_size,
@@ -452,31 +453,34 @@ setMethod("simulate",
         parallel = if (parallel) nCores else NULL
       )
 
-      ## put everything in the Simulations format:
+      # ## exported to helpers_simulation.R by Clara
+      # ## put everything in the Simulations format:
+      #
+      # ## setup the list for the simulated data objects
+      # dataList <- lapply(resultList, "[[", "data")
+      #
+      # ## the vector of the final dose recommendations
+      # recommendedDoses <- as.numeric(sapply(resultList, "[[", "dose"))
+      #
+      # ## setup the list for the final fits
+      # fitList <- lapply(resultList, "[[", "fit")
+      #
+      # ## the reasons for stopping
+      # stopReasons <- lapply(resultList, "[[", "stop")
+      #
+      # # individual stopping rule results as matrix, labels as column names
+      # stopResults <- lapply(resultList, "[[", "report_results")
+      # stop_matrix <- as.matrix(do.call(rbind, stopResults))
 
-      ## setup the list for the simulated data objects
-      dataList <- lapply(resultList, "[[", "data")
-
-      ## the vector of the final dose recommendations
-      recommendedDoses <- as.numeric(sapply(resultList, "[[", "dose"))
-
-      ## setup the list for the final fits
-      fitList <- lapply(resultList, "[[", "fit")
-
-      ## the reasons for stopping
-      stopReasons <- lapply(resultList, "[[", "stop")
-
-      # individual stopping rule results as matrix, labels as column names
-      stopResults <- lapply(resultList, "[[", "report_results")
-      stop_matrix <- as.matrix(do.call(rbind, stopResults))
+      simulations_output <- h_simulations_ouptput_format(resultList)
 
       ## return the results in the Simulations class object
       ret <- Simulations(
-        data = dataList,
-        doses = recommendedDoses,
-        fit = fitList,
-        stop_report = stop_matrix,
-        stop_reasons = stopReasons,
+        data = simulations_output$dataList,
+        doses = simulations_output$recommendedDoses,
+        fit = simulations_output$fitList,
+        stop_report = simulations_output$stop_matrix,
+        stop_reasons = simulations_output$stopReasons,
         seed = RNGstate
       )
 
