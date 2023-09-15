@@ -36,7 +36,7 @@ set_seed <- function(seed = NULL) {
     runif(1)
   }
 
-  rng_state <- if (is.null(seed)) {
+  if (is.null(seed)) {
     get(".Random.seed", envir = .GlobalEnv)
   } else {
     seed <- as.integer(seed)
