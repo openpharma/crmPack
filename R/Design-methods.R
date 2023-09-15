@@ -4710,3 +4710,168 @@ setMethod("simulate",
 
 ## --------------------------------------------------------------------------
 # nolint end
+
+# simulate ----
+
+## DesignGrouped ----
+
+#' Simulate Method for the [`DesignGrouped`] Class
+#'
+#' @description `r lifecycle::badge("experimental")`
+#'
+#' A simulate method for [`DesignGrouped`] designs.
+#'
+#' @param object (`DesignGrouped`)\cr the design we want to simulate trials from.
+#' @param nsim (`number`)\cr how many trials should be simulated.
+#' @param seed (`RNGstate`)\cr generated with [setSeed()].
+#' @param truth (`function`)\cr a function which takes as input a dose (vector) and
+#'   returns the true probability (vector) for toxicity for the mono arm.
+#'   Additional arguments can be supplied in `args`.
+#' @param combo_truth (`function`)\cr same as `truth` but for the combo arm.
+#' @param args (`data.frame`)\cr optional `data.frame` with arguments that work
+#'   for both the `truth` and `combo_truth` functions. The column names correspond to
+#'   the argument names, the rows to the values of the arguments. The rows are
+#'   appropriately recycled in the `nsim` simulations.
+#' @param firstSeparate (`flag`)\cr whether to enroll the first patient separately
+#'   from the rest of the cohort and close the cohort in case a DLT occurs in this
+#'   first patient.
+#' @param mcmcOptions (`McmcOptions`)\cr MCMC options for each evaluation in the trial.
+#' @param parallel (`flag`)\cr whether the simulation runs are parallelized across the
+#'   cores of the computer.
+#' @param nCores (`number`)\cr how many cores should be used for parallel computing.
+#' @param ... not used.
+#'
+#' @return A list of `mono` and `combo` simulation results as [`Simulations`] objects.
+#'
+#' @aliases simulate-DesignGrouped
+#' @export
+#' @example examples/Design-method-simulate-DesignGrouped.R
+#'
+setMethod(
+  "simulate",
+  signature =
+    signature(
+      object = "DesignGrouped",
+      nsim = "ANY",
+      seed = "ANY"
+    ),
+  def =
+    function(object,
+             nsim = 1L,
+             seed = NULL,
+             truth,
+             combo_truth,
+             args = data.frame(),
+             firstSeparate = FALSE,
+             mcmcOptions = McmcOptions(),
+             parallel = FALSE,
+             nCores = min(parallelly::availableCores(), 5),
+             ...) {
+      nsim <- safeInteger(nsim)
+      assert_function(truth)
+      assert_function(combo_truth)
+      assert_data_frame(args)
+      assert_count(nsim, positive = TRUE)
+      assert_flag(firstSeparate)
+      assert_flag(parallel)
+      assert_count(nCores, positive = TRUE)
+
+      n_args <- max(nrow(args), 1L)
+      rng_state <- setSeed(seed)
+      sim_seeds <- sample.int(n = 2147483647, size = nsim)
+
+      run_sim <- function(iter_sim) {
+        set.seed(sim_seeds[iter_sim])
+        current <- list(mono = list(), combo = list())
+        # Define true toxicity functions.
+        current$args <- args[(iter_sim - 1) %% n_args + 1, , drop = FALSE]
+        current$mono$truth <- function(dose) do.call(truth, c(dose, current$args))
+        current$combo$truth <- function(dose) do.call(combo_truth, c(dose, current$args))
+        # Start the simulated data with the provided one.
+        current$mono$data <- object@mono@data
+        current$combo$data <- object@combo@data
+        # We are in the first cohort and continue for mono and combo.
+        current$first <- TRUE
+        current$mono$stop <- current$combo$stop <- FALSE
+        # What are the next doses to be used? Initialize with starting doses.
+        if (object@same_dose) {
+          current$mono$dose <- current$combo$dose <- min(object@mono@startingDose, object@combo@startingDose)
+        } else {
+          current$mono$dose <- object@mono@startingDose
+          current$combo$dose <- object@combo@startingDose
+        }
+        # Inside this loop we simulate the whole trial, until stopping.
+        while (!(current$mono$stop && current$combo$stop)) {
+          if (!current$mono$stop) {
+            current$mono$data <- current$mono$data |>
+              h_add_dlts(current$mono$dose, current$mono$truth, object@mono@cohort_size, firstSeparate)
+          }
+          if (!current$combo$stop && (!current$first || !object@first_cohort_mono_only)) {
+            current$combo$data <- current$combo$data |>
+              h_add_dlts(current$combo$dose, current$combo$truth, object@combo@cohort_size, firstSeparate)
+          }
+          if (current$first) current$first <- FALSE
+          current$grouped <- h_group_data(current$mono$data, current$combo$data)
+          current$samples <- mcmc(current$grouped, object@model, mcmcOptions)
+          if (!stop_mono) {
+            current$mono$limit <- maxDose(object@mono@increments, data = current$mono$data)
+            current$mono$dose <- object@mono@nextBest |>
+              nextBest(current$mono$limit, current$samples, object@model, current$grouped, group = "mono") |>
+              {\(x) x$value}()
+            current$mono$stop <- object@mono@stopping |>
+              stopTrial(current$mono$dose, current$samples, object@model, current$mono$data, group = "mono")
+            current$mono$results <- h_unpack_stopit(current$mono$stop)
+          }
+          if (!stop_combo) {
+            current$combo$limit <- if (is.na(current$mono$dose)) {
+              0
+            } else {
+              maxDose(object@combo@increments, current$combo$data) |>
+                min(current$mono$dose, na.rm = TRUE)
+            }
+            current$combo$dose <- object@combo@nextBest |>
+              nextBest(current$combo$limit, current$samples, object@model, current$grouped, group = "combo") |>
+              {\(x) x$value}()
+            current$combo$stop <- object@combo@stopping |>
+              stopTrial(current$combo$dose, current$samples, object@model, current$combo$data, group = "combo")
+            current$combo$results <- h_unpack_stopit(current$combo$stop)
+          }
+          if (object@same_dose && !stop_mono && !stop_combo) {
+            current$mono$dose <- current$combo$dose <- min(current$mono$dose, current$combo$dose)
+          }
+        }
+        current$mono$fit <- fit(current$samples, object@model, current$grouped, group = "mono")
+        current$combo$fit <- fit(current$samples, object@model, current$grouped, group = "combo")
+        lapply(
+          X = current[c("mono", "combo")], FUN = with,
+          data = data, dose = dose, fit = subset(fit, select = -dose), stop = attr(stop, "message"), report_results = results
+        )
+      }
+      vars_needed <- c("simSeeds", "args", "nArgs", "truth", "combo_truth", "firstSeparate", "object", "mcmcOptions")
+      parallel_cores <- if (parallel) nCores else NULL
+      result_list <- getResultList(fun = run_sim, nsim = nsim, vars = vars_needed, parallel = parallel_cores)
+      # Now we have a list with each element containing mono and combo. Reorder this a bit:
+      result_list <- list(
+        mono = lapply(result_list, "[[", "mono"),
+        combo = lapply(result_list, "[[", "combo")
+      )
+      # Put everything in a list with both mono and combo Simulations:
+      lapply(result_list, function(this_list) {
+        data_list <- lapply(this_list, "[[", "data")
+        recommended_doses <- as.numeric(sapply(this_list, "[[", "dose"))
+        fit_list <- lapply(this_list, "[[", "fit")
+        stop_reasons <- lapply(this_list, "[[", "stop")
+        report_results <- lapply(this_list, "[[", "report_results")
+        stop_report <- as.matrix(do.call(rbind, report_results))
+
+        Simulations(
+          data = data_list,
+          doses = recommended_doses,
+          fit = fit_list,
+          stop_reasons = stop_reasons,
+          stop_report = stop_report,
+          seed = rng_state
+        )
+      })
+    }
+)

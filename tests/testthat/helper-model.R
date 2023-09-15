@@ -386,22 +386,3 @@ h_get_fractional_crm <- function() {
     sigma2 = 2
   )
 }
-
-.NeedsExtraProbModel <- setClass("NeedsExtraProbModel", contains = "LogisticKadane")
-setMethod(
-  f = "prob",
-  signature = signature(
-    dose = "numeric",
-    model = "NeedsExtraProbModel",
-    samples = "Samples"
-  ),
-  definition = function(dose, model, samples, extra_argument) {
-    if (missing(extra_argument)) stop("we need extra_argument")
-    # We don't forward to LogisticKadane method here since that would
-    # not accept the extra argument.
-    rep(0.5, size(samples))
-  }
-)
-h_needs_extra_prob_model <- function() {
-  .NeedsExtraProbModel(h_get_logistic_kadane())
-}
