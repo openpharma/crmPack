@@ -4720,7 +4720,7 @@ setMethod(
         recommended_doses <- as.numeric(sapply(this_list, "[[", "dose"))
         fit_list <- lapply(this_list, "[[", "fit")
         stop_reasons <- lapply(this_list, "[[", "stop")
-        report_results <- lapply(this_list, "[[", "report_results")
+        report_results <- lapply(this_list, "[[", "results")
         stop_report <- as.matrix(do.call(rbind, report_results))
 
         Simulations(
