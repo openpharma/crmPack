@@ -4580,7 +4580,7 @@ setMethod("simulate",
 #'
 #' @param object (`DesignGrouped`)\cr the design we want to simulate trials from.
 #' @param nsim (`number`)\cr how many trials should be simulated.
-#' @param seed (`RNGstate`)\cr generated with [setSeed()].
+#' @param seed (`RNGstate`)\cr generated with [set_seed()].
 #' @param truth (`function`)\cr a function which takes as input a dose (vector) and
 #'   returns the true probability (vector) for toxicity for the mono arm.
 #'   Additional arguments can be supplied in `args`.

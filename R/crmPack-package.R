@@ -138,7 +138,8 @@ globalVariables(c(
   "comp",
   "X",
   "skel_probs",
-  "is_combo"
+  "is_combo",
+  "results"
 ))
 
 # nolint end

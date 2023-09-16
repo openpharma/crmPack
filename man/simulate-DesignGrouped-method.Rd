@@ -24,7 +24,7 @@
 
 \item{nsim}{(\code{number})\cr how many trials should be simulated.}
 
-\item{seed}{(\code{RNGstate})\cr generated with \code{\link[=setSeed]{setSeed()}}.}
+\item{seed}{(\code{RNGstate})\cr generated with \code{\link[=set_seed]{set_seed()}}.}
 
 \item{truth}{(\code{function})\cr a function which takes as input a dose (vector) and
 returns the true probability (vector) for toxicity for the mono arm.
