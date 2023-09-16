@@ -39,12 +39,6 @@
 <li class="nav-item">
   <a class="nav-link" href="../news/index.html">Changelog</a>
 </li>
-<!-- start dropdown for versions --> <li class="nav-item dropdown">
-        <a href="#" class="nav-link dropdown-toggle"
-          data-bs-toggle="dropdown" role="button"
-          aria-expanded="false" aria-haspopup="true"
-          id="dropdown-versions">Versions</a> <div class="dropdown-menu" aria-labelledby="dropdown-versions"> <a class="dropdown-item" data-toggle="tooltip" title="" href="https://Roche.github.io/crmPack/main">main</a> </div></li>
-<!-- end dropdown for versions -->
       </ul><form class="form-inline my-2 my-lg-0" role="search">
         <input type="search" class="form-control me-sm-2" aria-label="Toggle navigation" name="search-input" data-search-index="../search.json" id="search-input" placeholder="Search for" autocomplete="off"></form>
 
@@ -576,6 +570,11 @@
           <code><a href="TDDesign-class.html">TDDesign()</a></code> 
         </dt>
         <dd><code>TDDesign</code></dd>
+      </dl><dl><dt>
+          
+          <code><a href="DesignGrouped-class.html">DesignGrouped()</a></code> 
+        </dt>
+        <dd><code>DesignGrouped</code></dd>
       </dl></div><div class="section level2">
       <h2 id="internal-helper-functions">Internal Helper Functions<a class="anchor" aria-label="anchor" href="#internal-helper-functions"></a></h2>
       
@@ -855,7 +854,7 @@ of the function that models dose-biomarker relationship defined in the
         <dd>Internal Helper Functions for Validation of <code>SafetyWindow</code> Objects</dd>
       </dl><dl><dt>
           
-          <code><a href="v_design.html">v_rule_design()</a></code> 
+          <code><a href="v_design.html">v_rule_design()</a></code> <code><a href="v_design.html">v_design_grouped()</a></code> 
         </dt>
         <dd>Internal Helper Functions for Validation of <code>RuleDesign</code> Objects</dd>
       </dl></div><div class="section level2">
@@ -1411,9 +1410,9 @@ a DLE sample, a given efficacy pseudo model and an efficacy sample</dd>
         <dd>Shorthand for probit function</dd>
       </dl><dl><dt>
           
-          <code><a href="setSeed.html">setSeed()</a></code> 
+          <code><a href="set_seed.html">set_seed()</a></code> 
         </dt>
-        <dd>Helper function to set and save the RNG seed</dd>
+        <dd>Helper Function to Set and Save the RNG Seed</dd>
       </dl><dl><dt>
           
           <code><a href="show-DualSimulationsSummary-method.html">show(<i>&lt;DualSimulationsSummary&gt;</i>)</a></code> 
@@ -1494,6 +1493,11 @@ This is a method based on the <code>TDDesign</code> where model used are of
         <dd>This is a methods to simulate dose escalation procedure only using the DLE responses.
 This is a method based on the <code>TDsamplesDesign</code> where model used are of
 <code>ModelTox</code> class object DLE samples are also used</dd>
+      </dl><dl><dt>
+          
+          <code><a href="simulate-DesignGrouped-method.html">simulate(<i>&lt;DesignGrouped&gt;</i>)</a></code> 
+        </dt>
+        <dd>Simulate Method for the <code>DesignGrouped</code> Class</dd>
       </dl><dl><dt>
           
           <code><a href="summary-DualSimulations-method.html">summary(<i>&lt;DualSimulations&gt;</i>)</a></code> 

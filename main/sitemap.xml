@@ -112,6 +112,9 @@
     <loc>https://roche.github.io/crmPack/reference/Design-class.html</loc>
   </url>
   <url>
+    <loc>https://roche.github.io/crmPack/reference/DesignGrouped-class.html</loc>
+  </url>
+  <url>
     <loc>https://roche.github.io/crmPack/reference/DualDesign-class.html</loc>
   </url>
   <url>
@@ -496,7 +499,10 @@
     <loc>https://roche.github.io/crmPack/reference/getMinInfBeta.html</loc>
   </url>
   <url>
-    <loc>https://roche.github.io/crmPack/reference/getResultList.html</loc>
+    <loc>https://roche.github.io/crmPack/reference/get_result_list.html</loc>
+  </url>
+  <url>
+    <loc>https://roche.github.io/crmPack/reference/h_add_dlts.html</loc>
   </url>
   <url>
     <loc>https://roche.github.io/crmPack/reference/h_all_equivalent.html</loc>
@@ -787,7 +793,7 @@
     <loc>https://roche.github.io/crmPack/reference/saveSample.html</loc>
   </url>
   <url>
-    <loc>https://roche.github.io/crmPack/reference/setSeed.html</loc>
+    <loc>https://roche.github.io/crmPack/reference/set_seed.html</loc>
   </url>
   <url>
     <loc>https://roche.github.io/crmPack/reference/show-DualSimulationsSummary-method.html</loc>
@@ -809,6 +815,9 @@
   </url>
   <url>
     <loc>https://roche.github.io/crmPack/reference/simulate-Design-method.html</loc>
+  </url>
+  <url>
+    <loc>https://roche.github.io/crmPack/reference/simulate-DesignGrouped-method.html</loc>
   </url>
   <url>
     <loc>https://roche.github.io/crmPack/reference/simulate-DualDesign-method.html</loc>
