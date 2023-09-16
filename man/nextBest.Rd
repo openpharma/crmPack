@@ -52,7 +52,7 @@ nextBest(nextBest, doselimit, samples, model, data, ...)
 
 \S4method{nextBest}{NextBestTD,numeric,missing,LogisticIndepBeta,Data}(nextBest, doselimit = Inf, model, data, in_sim = FALSE, ...)
 
-\S4method{nextBest}{NextBestTDsamples,numeric,Samples,LogisticIndepBeta,Data}(nextBest, doselimit = Inf, samples, model, data, ...)
+\S4method{nextBest}{NextBestTDsamples,numeric,Samples,LogisticIndepBeta,Data}(nextBest, doselimit = Inf, samples, model, data, in_sim, ...)
 
 \S4method{nextBest}{NextBestMaxGain,numeric,missing,ModelTox,DataDual}(
   nextBest,

@@ -529,3 +529,90 @@ DADesign <- function(model, data,
     safetyWindow = safetyWindow
   )
 }
+
+# DesignGrouped ----
+
+## class ----
+
+#' `DesignGrouped`
+#'
+#' @description `r lifecycle::badge("experimental")`
+#'
+#' [`DesignGrouped`] combines two [`Design`] objects: one for the mono and one
+#' for the combo arm of a joint dose escalation design.
+#'
+#' @slot model (`LogisticLogNormalGrouped`)\cr the model to be used, currently only one
+#'   class is allowed.
+#' @slot mono (`Design`)\cr defines the dose escalation rules for the mono arm, see
+#'   details.
+#' @slot combo (`Design`)\cr defines the dose escalation rules for the combo arm, see
+#'   details.
+#' @slot first_cohort_mono_only (`flag`)\cr whether first test one mono agent cohort, and then
+#'   once its DLT data has been collected, we proceed from the second cohort onwards with
+#'   concurrent mono and combo cohorts.
+#' @slot same_dose (`flag`)\cr whether the lower dose of the separately determined mono and combo
+#'   doses should be used as the next dose for both mono and combo.
+#'
+#' @details Note that the model slots inside the `mono` and `combo` parameters
+#'   are ignored (because we don't fit separate regression models for the mono and
+#'   combo arms). Instead, the `model` parameter is used to fit a joint regression
+#'   model for the mono and combo arms together.
+#'
+#' @aliases DesignGrouped
+#' @export
+#'
+.DesignGrouped <- setClass(
+  Class = "DesignGrouped",
+  slots = c(
+    model = "LogisticLogNormalGrouped",
+    mono = "Design",
+    combo = "Design",
+    first_cohort_mono_only = "logical",
+    same_dose = "logical"
+  ),
+  prototype = prototype(
+    model = .DefaultLogisticLogNormalGrouped(),
+    mono = .Design(),
+    combo = .Design(),
+    first_cohort_mono_only = TRUE,
+    same_dose = TRUE
+  ),
+  validity = v_design_grouped,
+  contains = "CrmPackClass"
+)
+
+## constructor ----
+
+#' @rdname DesignGrouped-class
+#'
+#' @param model (`LogisticLogNormalGrouped`)\cr see slot definition.
+#' @param mono (`Design`)\cr see slot definition.
+#' @param combo (`Design`)\cr see slot definition.
+#' @param first_cohort_mono_only (`flag`)\cr see slot definition.
+#' @param same_dose (`flag`)\cr see slot definition.
+#' @param ... not used.
+#'
+#' @export
+#' @example examples/Design-class-DesignGrouped.R
+#'
+DesignGrouped <- function(model,
+                          mono,
+                          combo = mono,
+                          first_cohort_mono_only = TRUE,
+                          same_dose = TRUE,
+                          ...) {
+  .DesignGrouped(
+    model = model,
+    mono = mono,
+    combo = combo,
+    first_cohort_mono_only = first_cohort_mono_only,
+    same_dose = same_dose
+  )
+}
+
+## default constructor ----
+
+#' @rdname DesignGrouped-class
+#' @note Typically, end-users will not use the `.DefaultDesignGrouped()` function.
+#' @export
+.DefaultDesignGrouped <- .DesignGrouped
