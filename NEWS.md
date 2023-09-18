@@ -1,5 +1,5 @@
 # Version 1.0.9000.9133
-* Added new `DataGrouped` class to support simultaneous dose escalation with monotherapy and combination therapy.
+* Added new `DataGrouped` and `DesignGrouped` classes with corresponding model `LogisticLogNormalGrouped` to support simultaneous dose escalation with monotherapy and combination therapy arms.
 * Created the `CrmPackClass` class as the ultimate ancestor of all other 
 `crmPack` classes to allow identification of crmPack classes and simpler 
 definition of generic methods.

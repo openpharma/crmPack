@@ -473,7 +473,7 @@ test_that("h_find_interval works as expected for custom replacement", {
 test_that("default constructors exist for all subclasses of GeneralModel", {
   allModelSubclasses <- names(getClassDef("GeneralModel")@subclasses)
   # Exceptions.
-  classesNotToTest <- c("DualEndpoint", "NeedsExtraProbModel")
+  classesNotToTest <- "DualEndpoint"
   classesToTest <- setdiff(allModelSubclasses, classesNotToTest)
   lapply(
     classesToTest,
