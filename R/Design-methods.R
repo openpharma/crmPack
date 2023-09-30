@@ -4667,7 +4667,6 @@ setMethod(
             current$combo$data <- current$combo$data |>
               h_add_dlts(current$combo$dose, current$combo$truth, object@combo@cohort_size, firstSeparate)
           }
-          if (current$first) current$first <- FALSE
           current$grouped <- h_group_data(current$mono$data, current$combo$data)
           current$samples <- mcmc(current$grouped, object@model, mcmcOptions)
           if (!current$mono$stop) {
@@ -4679,7 +4678,7 @@ setMethod(
               stopTrial(current$mono$dose, current$samples, object@model, current$mono$data, group = "mono")
             current$mono$results <- h_unpack_stopit(current$mono$stop)
           }
-          if (!current$combo$stop) {
+          if (!current$combo$stop && (!current$first || !object@first_cohort_mono_only)) {
             current$combo$limit <- if (is.na(current$mono$dose)) {
               0
             } else {
@@ -4696,6 +4695,7 @@ setMethod(
           if (object@same_dose && !current$mono$stop && !current$combo$stop) {
             current$mono$dose <- current$combo$dose <- min(current$mono$dose, current$combo$dose)
           }
+          if (current$first) current$first <- FALSE
         }
         current$mono$fit <- fit(current$samples, object@model, current$grouped, group = "mono")
         current$combo$fit <- fit(current$samples, object@model, current$grouped, group = "combo")
