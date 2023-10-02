@@ -1388,8 +1388,11 @@ DualEndpoint <- function(mean,
   assert_numeric(sigma2W, min.len = 1, max.len = 2)
   assert_numeric(rho, min.len = 1, max.len = 2)
 
-  use_fixed <- c(sigma2W = is.scalar(sigma2W), rho = is.scalar(rho))
-  betaZ_params <- ModelParamsNormal(mean, cov) # nolintr
+  use_fixed <- c(
+    sigma2W = test_numeric(sigma2W, len = 1),
+    rho = test_numeric(rho, len = 1)
+  )
+  betaZ_params <- ModelParamsNormal(mean, cov)
 
   datamodel <- function() {
     for (i in 1:nObs) {
@@ -2582,7 +2585,10 @@ EffFlexi <- function(eff,
   assert_flag(rw1)
   assert_class(data, "DataDual")
 
-  use_fixed <- c(sigma2W = is.scalar(sigma2W), sigma2betaW = is.scalar(sigma2betaW))
+  use_fixed <- c(
+    sigma2W = test_numeric(sigma2W, len = 1),
+    sigma2betaW = test_numeric(sigma2betaW, len = 1)
+  )
 
   x <- c(eff_dose, getEff(data, no_dlt = TRUE)$x_no_dlt)
   x_level <- matchTolerance(x, data@doseGrid)
