@@ -173,23 +173,6 @@ safeInteger <- function(x) {
   as.integer(x)
 }
 
-##' Predicate checking for a probability
-##'
-##' @param x the object being checked
-##' @param bounds whether to include the bounds 0 and 1 (default)
-##' @return Returns \code{TRUE} if \code{x} is a probability
-##'
-##' @keywords internal
-is.probability <- function(x,
-                           bounds = TRUE) {
-  return(is.scalar(x) &&
-    if (bounds) {
-      0 <= x && 1 >= x
-    } else {
-      0 < x && 1 > x
-    })
-}
-
 ##' Predicate checking for a numeric range
 ##'
 ##' @param x the object being checked
@@ -211,7 +194,7 @@ is.range <- function(x) {
 is.probRange <- function(x,
                          bounds = TRUE) {
   return(is.range(x) &&
-    all(sapply(x, is.probability, bounds = bounds)))
+    all(sapply(x, test_probability, bounds = bounds)))
 }
 
 
