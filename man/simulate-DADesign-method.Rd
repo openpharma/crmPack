@@ -17,7 +17,7 @@
   mcmcOptions = McmcOptions(),
   DA = TRUE,
   parallel = FALSE,
-  nCores = min(parallel::detectCores(), 5),
+  nCores = min(parallel::detectCores(), 5L),
   ...
 )
 }

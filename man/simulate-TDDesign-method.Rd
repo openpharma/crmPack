@@ -14,7 +14,7 @@ This is a method based on the \code{\linkS4class{TDDesign}} where model used are
   args = NULL,
   firstSeparate = FALSE,
   parallel = FALSE,
-  nCores = min(parallel::detectCores(), 5),
+  nCores = min(parallel::detectCores(), 5L),
   ...
 )
 }
