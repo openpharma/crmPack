@@ -1392,7 +1392,7 @@ DualEndpoint <- function(mean,
     sigma2W = test_number(sigma2W),
     rho = test_number(rho)
   )
-  betaZ_params <- ModelParamsNormal(mean, cov)
+  beta_z_params <- ModelParamsNormal(mean, cov)
 
   datamodel <- function() {
     for (i in 1:nObs) {
@@ -1419,8 +1419,8 @@ DualEndpoint <- function(mean,
     condPrecW <- precW / (1 - pow(rho, 2))
   }
   modelspecs_prior <- list(
-    betaZ_mean = betaZ_params@mean,
-    betaZ_prec = betaZ_params@prec
+    betaZ_mean = beta_z_params@mean,
+    betaZ_prec = beta_z_params@prec
   )
 
   comp <- list(
@@ -1445,7 +1445,7 @@ DualEndpoint <- function(mean,
   )
 
   .DualEndpoint(
-    betaZ_params = betaZ_params,
+    betaZ_params = beta_z_params,
     ref_dose = positive_number(ref_dose),
     use_log_dose = use_log_dose,
     sigma2W = sigma2W,
