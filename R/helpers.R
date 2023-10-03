@@ -158,11 +158,11 @@ safeInteger <- function(x) {
 ##' @keywords internal
 is.probability <- function(x,
                            bounds = TRUE) {
-    if (bounds) {
-      return(test_numeric(x, lower = 0, upper = 1, any.missing = FALSE))
-    } else {
-      return(test_numeric(x, lower = 0, upper = 1, any.missing = FALSE) && x != 0 && x != 1)
-    }
+  if (bounds) {
+    return(test_numeric(x, lower = 0, upper = 1, any.missing = FALSE))
+  } else {
+    return(test_numeric(x, lower = 0, upper = 1, any.missing = FALSE) && x != 0 && x != 1)
+  }
 }
 
 ##' Predicate checking for a numeric range
