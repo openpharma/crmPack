@@ -1389,8 +1389,8 @@ DualEndpoint <- function(mean,
   assert_numeric(rho, min.len = 1, max.len = 2)
 
   use_fixed <- c(
-    sigma2W = test_numeric(sigma2W, len = 1),
-    rho = test_numeric(rho, len = 1)
+    sigma2W = test_number(sigma2W),
+    rho = test_number(rho)
   )
   betaZ_params <- ModelParamsNormal(mean, cov)
 
@@ -2586,8 +2586,8 @@ EffFlexi <- function(eff,
   assert_class(data, "DataDual")
 
   use_fixed <- c(
-    sigma2W = test_numeric(sigma2W, len = 1),
-    sigma2betaW = test_numeric(sigma2betaW, len = 1)
+    sigma2W = test_number(sigma2W),
+    sigma2betaW = test_number(sigma2betaW)
   )
 
   x <- c(eff_dose, getEff(data, no_dlt = TRUE)$x_no_dlt)

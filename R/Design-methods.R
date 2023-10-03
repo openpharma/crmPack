@@ -66,7 +66,7 @@ setMethod("simulate",
       assert_flag(firstSeparate)
       assert_count(nsim, positive = TRUE)
       assert_flag(parallel)
-      assert_integer(nCores, lower = 1L, len = 1, any.missing = FALSE)
+      assert_count(nCores, positive = TRUE)
 
       args <- as.data.frame(args)
       nArgs <- max(nrow(args), 1L)
@@ -376,7 +376,7 @@ setMethod("simulate",
       assert_function(truth)
       assert_count(nsim, positive = TRUE)
       assert_flag(parallel)
-      assert_integer(nCores, lower = 1L, len = 1, any.missing = FALSE)
+      assert_count(nCores, positive = TRUE)
 
       args <- as.data.frame(args)
       nArgs <- max(nrow(args), 1L)
@@ -557,12 +557,12 @@ setMethod("simulate",
       ## checks and extracts
       assert_function(trueTox)
       assert_function(trueBiomarker)
-      assert_numeric(sigma2W, lower = 0, len = 1, any.mising = FALSE)
-      assert_numeric(rho, lower = -1, upper = 1, len = 1, any.mising = FALSE)
+      assert_number(sigma2W, lower = 0)
+      assert_number(rho, lower = -1, upper = 1)
       assert_flag(firstSeparate)
       assert_count(nsim, positive = TRUE)
       assert_flag(parallel)
-      assert_integer(nCores, lower = 1L, len = 1, any.missing = FALSE)
+      assert_count(nCores, positive = TRUE)
 
       args <- as.data.frame(args)
       nArgs <- max(nrow(args), 1L)
@@ -970,7 +970,7 @@ setGeneric("examine",
   def =
     function(object, ..., maxNoIncrement = 100L) {
       ## check maxNoIncrement argument
-      assert_integer(maxNoIncrement, lower = 1, len = 1, any.missing = FALSE)
+      assert_count(maxNoIncrement, positive = TRUE)
 
       ## there should be no default method,
       ## therefore just forward to next method!
@@ -1755,7 +1755,7 @@ setMethod("simulate",
       assert_flag(firstSeparate)
       assert_count(nsim, positive = TRUE)
       assert_flag(parallel)
-      assert_integer(nCores, lower = 1L, len = 1, any.missing = FALSE)
+      assert_count(nCores, positive = TRUE)
 
       args <- as.data.frame(args)
       nArgs <- max(nrow(args), 1L)
@@ -2119,7 +2119,7 @@ setMethod("simulate",
       assert_flag(firstSeparate)
       assert_count(nsim, positive = TRUE)
       assert_flag(parallel)
-      assert_integer(nCores, lower = 1L, len = 1, any.missing = FALSE)
+      assert_count(nCores, positive = TRUE)
 
       args <- as.data.frame(args)
       nArgs <- max(nrow(args), 1L)
@@ -2471,7 +2471,7 @@ setMethod("simulate",
       assert_flag(firstSeparate)
       assert_count(nsim, positive = TRUE)
       assert_flag(parallel)
-      assert_integer(nCores, lower = 1L, len = 1, any.missing = FALSE)
+      assert_count(nCores, positive = TRUE)
 
       args <- as.data.frame(args)
       nArgs <- max(nrow(args), 1L)
@@ -3008,7 +3008,7 @@ setMethod("simulate",
       assert_flag(firstSeparate)
       assert_count(nsim, positive = TRUE)
       assert_flag(parallel)
-      assert_integer(nCores, lower = 1L, len = 1, any.missing = FALSE)
+      assert_count(nCores, positive = TRUE)
 
       ## check if special case applies
       isFlexi <- is(object@eff_model, "EffFlexi")
@@ -4011,7 +4011,7 @@ setMethod("simulate",
       assert_flag(firstSeparate)
       assert_count(nsim, positive = TRUE)
       assert_flag(parallel)
-      assert_integer(nCores, lower = 1L, len = 1, any.missing = FALSE)
+      assert_count(nCores, positive = TRUE)
 
       args <- as.data.frame(args)
       nArgs <- max(nrow(args), 1L)
