@@ -85,7 +85,7 @@ Quantiles2LogisticNormal <- function(dosegrid,
     identical(length(upper), nDoses),
     all(lower < median),
     all(upper > median),
-    is.probability(level, bounds = FALSE),
+    test_probability(level, bounds = FALSE),
     is.bool(logNormal),
     is.bool(verbose),
     identical(length(parlower), 5L),
@@ -235,8 +235,8 @@ Quantiles2LogisticNormal <- function(dosegrid,
 ##' @keywords programming
 getMinInfBeta <- function(p, q) {
   stopifnot(
-    is.probability(p, bounds = FALSE),
-    is.probability(q, bounds = FALSE)
+    test_probability(p, bounds = FALSE),
+    test_probability(q, bounds = FALSE)
   )
 
   ret <-
@@ -311,10 +311,10 @@ MinimalInformative <- function(dosegrid,
   nDoses <- length(dosegrid)
   stopifnot(
     !is.unsorted(dosegrid, strictly = TRUE),
-    is.probability(threshmin, bounds = FALSE),
-    is.probability(threshmax, bounds = FALSE),
-    is.probability(probmin, bounds = FALSE),
-    is.probability(probmax, bounds = FALSE)
+    test_probability(threshmin, bounds = FALSE),
+    test_probability(threshmax, bounds = FALSE),
+    test_probability(probmin, bounds = FALSE),
+    test_probability(probmax, bounds = FALSE)
   )
   xmin <- dosegrid[1]
   xmax <- dosegrid[nDoses]
