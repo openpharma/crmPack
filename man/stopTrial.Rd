@@ -288,10 +288,10 @@ incorporate DLE and efficacy responses without DLE and efficacy samples involved
 
 ## Example of combining stopping rules with '&' and/or '|' operators
 
-myStopping1 <- StoppingMinCohorts(nCohorts=3)
+myStopping1 <- StoppingMinCohorts(nCohorts=3L)
 myStopping2 <- StoppingTargetProb(target=c(0.2, 0.35),
                                   prob=0.5)
-myStopping3 <- StoppingMinPatients(nPatients=20)
+myStopping3 <- StoppingMinPatients(nPatients = 20L)
 
 myStopping <- (myStopping1 & myStopping2) | myStopping3
 
@@ -362,7 +362,7 @@ dose_recommendation <- nextBest(
 my_stopping <- StoppingMissingDose()
 my_stopping <- StoppingAny(
   stop_list = c(
-    StoppingMinPatients(nPatients = 16),
+    StoppingMinPatients(nPatients = 16L),
     StoppingMissingDose()
   )
 )
@@ -416,10 +416,10 @@ doseRecommendation <- nextBest(myNextBest,
                                samples=samples, model=model, data=data)
 
 # Define the stopping rules
-myStopping1 <- StoppingMinCohorts(nCohorts=3)
-myStopping2 <- StoppingTargetProb(target=c(0.2, 0.35),
-                                  prob=0.5)
-myStopping3 <- StoppingMinPatients(nPatients=20)
+myStopping1 <- StoppingMinCohorts(nCohorts = 3L)
+myStopping2 <- StoppingTargetProb(target = c(0.2, 0.35),
+                                  prob = 0.5)
+myStopping3 <- StoppingMinPatients(nPatients = 20L)
 
 # Create a list of stopping rules (of class 'StoppingList') which will then be
 # summarized (in this specific example) with the 'any' function, meaning that the study
@@ -474,10 +474,10 @@ doseRecommendation <- nextBest(myNextBest,
                                samples=samples, model=model, data=data)
 
 # Define the stopping rules
-myStopping1 <- StoppingMinCohorts(nCohorts=3)
+myStopping1 <- StoppingMinCohorts(nCohorts = 3L)
 myStopping2 <- StoppingTargetProb(target=c(0.2, 0.35),
                                   prob=0.5)
-myStopping3 <- StoppingMinPatients(nPatients=20)
+myStopping3 <- StoppingMinPatients(nPatients = 20L)
 
 # Combine the stopping rules, obtaining (in this specific example) a list of stopping
 # rules of class 'StoppingAll'
@@ -530,10 +530,10 @@ doseRecommendation <- nextBest(myNextBest,
                                samples=samples, model=model, data=data)
 
 # Define the stopping rules
-myStopping1 <- StoppingMinCohorts(nCohorts=3)
+myStopping1 <- StoppingMinCohorts(nCohorts = 3L)
 myStopping2 <- StoppingTargetProb(target=c(0.2, 0.35),
                                   prob=0.5)
-myStopping3 <- StoppingMinPatients(nPatients=20)
+myStopping3 <- StoppingMinPatients(nPatients = 20L)
 
 # Combine the stopping rules, obtaining (in this specific example) a list of stopping
 # rules of class 'StoppingAny'
@@ -587,7 +587,7 @@ doseRecommendation <- nextBest(myNextBest,
 
 # Define the stopping rule such that the study would be stopped if at least 3
 # cohorts were already dosed within 1 +/- 0.2 of the next best dose
-myStopping <- StoppingCohortsNearDose(nCohorts = 3,
+myStopping <- StoppingCohortsNearDose(nCohorts = 3L,
                                       percentage = 0.2)
 
 # Evaluate if to stop the trial
@@ -639,7 +639,7 @@ doseRecommendation <- nextBest(myNextBest,
 
 # Define the stopping rule such that the study would be stopped if at least 9
 # patients were already dosed within 1 +/- 0.2 of the next best dose
-myStopping <- StoppingPatientsNearDose(nPatients = 9,
+myStopping <- StoppingPatientsNearDose(nPatients = 9L,
                                        percentage = 0.2)
 
 # Evaluate if to stop the trial
@@ -691,7 +691,7 @@ doseRecommendation <- nextBest(myNextBest,
 
 # Define the stopping rule such that the study would be stopped if at least 6
 # cohorts were already dosed
-myStopping <- StoppingMinCohorts(nCohorts = 6)
+myStopping <- StoppingMinCohorts(nCohorts = 6L)
 
 # Evaluate if to stop the trial
 stopTrial(stopping=myStopping,
@@ -742,7 +742,7 @@ doseRecommendation <- nextBest(myNextBest,
 
 # Define the stopping rule such that the study would be stopped if at least 20
 # patients were already dosed
-myStopping <- StoppingMinPatients(nPatients = 20)
+myStopping <- StoppingMinPatients(nPatients = 20L)
 
 # Evaluate if to stop the trial
 stopTrial(stopping=myStopping,
@@ -863,8 +863,8 @@ stopTrial(stopping=myStopping,
 # Create the data.
 my_data <- Data(
   x = c(0.1, 0.5, 1.5, 3, 6, 10, 10, 10),
-  y = c(0, 0, 0, 0, 0, 0, 1, 0),
-  cohort = c(0, 1, 2, 3, 4, 5, 5, 5),
+  y = as.integer(c(0, 0, 0, 0, 0, 0, 1, 0)),
+  cohort = as.integer(c(0, 1, 2, 3, 4, 5, 5, 5)),
   doseGrid = c(0.1, 0.5, 1.5, 3, 6, seq(from = 10, to = 80, by = 2))
 )
 
@@ -1047,9 +1047,9 @@ stopTrial(stopping=myStopping,
 # Create some data.
 my_data <- Data(
   x = c(0.1, 0.5, 1.5, 3, 6, 10, 10, 10),
-  y = c(0, 0, 0, 0, 0, 0, 1, 0),
-  ID = 1:8,
-  cohort = c(0, 1, 2, 3, 4, 5, 5, 5),
+  y = as.integer(c(0, 0, 0, 0, 0, 0, 1, 0)),
+  ID = 1L:8L,
+  cohort = as.integer(c(0, 1, 2, 3, 4, 5, 5, 5)),
   doseGrid = c(0.1, 0.5, 1.5, 3, 6, seq(from = 10, to = 80, by = 2))
 )
 
@@ -1086,7 +1086,7 @@ highest_dose_safe <- StoppingSpecificDose(
   rule = StoppingTargetProb(target = c(0, 0.3), prob = 0.8),
   dose = 80
 )
-max_patients <- StoppingMinPatients(nPatients = 20)
+max_patients <- StoppingMinPatients(nPatients = 20L)
 patients_near_dose <- StoppingPatientsNearDose(nPatients = 3, percentage = 0)
 
 # Create a list of stopping rules (of class 'StoppingList') which will then be

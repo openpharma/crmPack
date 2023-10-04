@@ -255,9 +255,9 @@ h_get_logistic_indep_beta <- function(emptydata = FALSE) {
   } else {
     Data(
       x = c(25, 50, 50, 75, 100, 100, 225, 300),
-      y = c(0, 0, 0, 0, 1, 1, 1, 1),
-      ID = 1:8,
-      cohort = c(1L, 2L, 2L, 3L, 4L, 4L, 5L, 6L),
+      y = as.integer(c(0, 0, 0, 0, 1, 1, 1, 1)),
+      ID = 1L:8L,
+      cohort = as.integer(c(1L, 2L, 2L, 3L, 4L, 4L, 5L, 6L)),
       doseGrid = dose_grid
     )
   }
@@ -265,7 +265,7 @@ h_get_logistic_indep_beta <- function(emptydata = FALSE) {
   LogisticIndepBeta(
     binDLE = c(1.05, 1.8),
     DLEdose = c(25, 300),
-    DLEweights = c(3, 3),
+    DLEweights = c(3L, 3L),
     data = data
   )
 }
@@ -285,7 +285,7 @@ h_get_eff_log_log <- function(emptydata = FALSE,
     y <- if (dlt_observed_only) {
       rep(1L, 8)
     } else {
-      c(0, 0, 0, 0, 1, 1, 1, 1)
+      as.integer(c(0, 0, 0, 0, 1, 1, 1, 1))
     }
     DataDual(
       x = c(25, 50, 50, 75, 100, 100, 225, 300),
@@ -321,13 +321,13 @@ h_get_eff_flexi <- function(emptydata = FALSE,
     y <- if (dlt_observed_only) {
       rep(1L, 8)
     } else {
-      c(0, 0, 0, 0, 1, 1, 1, 1)
+      as.integer(c(0, 0, 0, 0, 1, 1, 1, 1))
     }
     DataDual(
       x = c(25, 50, 50, 75, 100, 100, 225, 300),
       y = y,
-      ID = 1:8,
-      cohort = c(1L, 2L, 2L, 3L, 4L, 4L, 5L, 6L),
+      ID = 1L:8L,
+      cohort = as.integer(c(1L, 2L, 2L, 3L, 4L, 4L, 5L, 6L)),
       w = c(0.31, 0.42, 0.59, 0.45, 0.6, 0.7, 0.6, 0.52),
       doseGrid = dose_grid
     )
@@ -348,7 +348,7 @@ h_get_da_logistic_log_normal <- function() {
     mean = c(0, 1),
     cov = diag(2),
     ref_dose = 1,
-    npiece = 3,
+    npiece = 3L,
     l = c(0.5, 0.5, 0.5),
     c_par = 2
   )

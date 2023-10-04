@@ -96,7 +96,7 @@ $$
 It is easy to obtain a visual representation of the prior:
 
 ```{r, fig.width=5}
-vignetteMcmcOptions <- McmcOptions(burnin = 100, step = 2, samples = 1000)
+vignetteMcmcOptions <- McmcOptions(burnin = 100L, step = 2L, samples = 1000L)
 prior_samples <- mcmc(
   data = empty_data,
   model = model,
@@ -160,11 +160,11 @@ We elect to define the cohort size using a compound rule.  Both the dose to be u
 # Choose the rule for the cohort size.
 my_size_1 <- CohortSizeRange(
   intervals = c(0, 30),
-  cohort_size = c(1, 3)
+  cohort_size = c(1L, 3L)
 )
 my_size_2 <- CohortSizeDLT(
-  intervals = c(0, 1),
-  cohort_size = c(1, 3)
+  intervals = c(0L, 1L),
+  cohort_size = c(1L, 3L)
 )
 my_size <- maxSize(my_size_1, my_size_2)
 ```
@@ -183,7 +183,7 @@ The trial will stop of either the futility rule or *both* components of the succ
 
 ```{r}
 # Choose the rule for stopping.
-my_stopping_1 <- StoppingMinCohorts(nCohorts = 3)
+my_stopping_1 <- StoppingMinCohorts(nCohorts = 3L)
 my_stopping_2 <- StoppingTargetProb(
   target = c(0.2, 0.35),
   prob = 0.5

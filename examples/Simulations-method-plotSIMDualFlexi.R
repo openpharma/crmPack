@@ -33,14 +33,14 @@ my_next_best <- NextBestMaxGainSamples(
 )
 
 # The cohort size, size of 3 subjects.
-my_size <- CohortSizeConst(size = 3)
+my_size <- CohortSizeConst(size = 3L)
 
 # Allow increase of 200%.
 my_increments <- IncrementsRelative(intervals = 0, increments = 2)
 
 # Define the stopping rule. Stop when the maximum sample size of 36 patients has
 # been reached or when the next dose is NA.
-my_stopping <- StoppingMinPatients(nPatients = 36) | StoppingMissingDose()
+my_stopping <- StoppingMinPatients(nPatients = 36L) | StoppingMissingDose()
 
 # Specify the design.
 design <- DualResponsesSamplesDesign(

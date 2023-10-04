@@ -1,3 +1,3 @@
 
 # Cohort of size 3, constant along the study.
-my_size <- CohortSizeConst(size = 3)
+my_size <- CohortSizeConst(size = 3L)

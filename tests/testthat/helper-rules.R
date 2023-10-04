@@ -122,9 +122,9 @@ h_stopping_target_prob <- function(prob = 0.5) {
 h_stopping_list <- function() {
   StoppingList(
     stop_list = list(
-      StoppingMinCohorts(nCohorts = 3),
+      StoppingMinCohorts(nCohorts = 3L),
       StoppingTargetProb(target = c(0.2, 0.35), prob = 0.5),
-      StoppingMinPatients(nPatients = 20)
+      StoppingMinPatients(nPatients = 20L)
     ),
     summary = any
   )
@@ -133,8 +133,8 @@ h_stopping_list <- function() {
 # CohortSize ----
 
 h_cohort_sizes <- function(three_rules = FALSE) {
-  size1 <- CohortSizeRange(intervals = c(0, 30), cohort_size = c(2, 6))
-  size2 <- CohortSizeDLT(intervals = c(0, 1), cohort_size = c(3, 9))
+  size1 <- CohortSizeRange(intervals = c(0, 30), cohort_size = c(2L, 6L))
+  size2 <- CohortSizeDLT(intervals = c(0L, 1L), cohort_size = c(3L, 9L))
   if (!three_rules) {
     list(size1, size2)
   } else {
@@ -147,11 +147,11 @@ h_cohort_sizes <- function(three_rules = FALSE) {
 
 h_safety_window_size <- function(three_cohorts = FALSE) {
   if (!three_cohorts) {
-    gap <- list(c(7, 3), c(9, 0))
-    size <- c(1, 4)
+    gap <- list(c(7L, 3L), c(9L, 0L))
+    size <- c(1L, 4L)
   } else {
-    gap <- list(c(6, 3), c(0, 7), c(6, 2))
-    size <- c(1, 2, 7)
+    gap <- list(c(6L, 3L), c(0L, 7L), c(6L, 2L))
+    size <- c(1L, 2L, 7L)
   }
-  SafetyWindowSize(gap = gap, size = size, follow = 7, follow_min = 14)
+  SafetyWindowSize(gap = gap, size = size, follow = 7L, follow_min = 14L)
 }

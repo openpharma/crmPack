@@ -117,11 +117,11 @@ Data <- function(x = numeric(),
                  placebo = FALSE,
                  ...) {
   assert_numeric(x)
-  assert_numeric(y)
-  assert_numeric(ID)
-  assert_numeric(cohort)
   assert_numeric(doseGrid, any.missing = FALSE, unique = TRUE)
   assert_flag(placebo)
+  assert_integer(y, any.missing = FALSE)
+  assert_integer(ID, any.missing = FALSE)
+  assert_integer(cohort, any.missing = FALSE)
 
   doseGrid <- as.numeric(sort(doseGrid))
 
@@ -139,11 +139,17 @@ Data <- function(x = numeric(),
     cohort <- as.integer(c(1, 1 + cumsum(diff(x) != 0)))
   }
 
+
+  if (is(x, "integer")) {
+    print(x)
+    x <- as.numeric(x)
+  }
+
   .Data(
-    x = as.numeric(x),
-    y = safeInteger(y),
-    ID = safeInteger(ID),
-    cohort = safeInteger(cohort),
+    x = x,
+    y = y,
+    ID = ID,
+    cohort = cohort,
     doseGrid = doseGrid,
     nObs = length(x),
     nGrid = length(doseGrid),
@@ -306,11 +312,13 @@ DataParts <- function(part = integer(),
 DataMixture <- function(xshare = numeric(),
                         yshare = integer(),
                         ...) {
+  assert_integer(yshare)
+  assert_numeric(xshare)
   d <- Data(...)
   .DataMixture(
     d,
-    xshare = as.numeric(xshare),
-    yshare = safeInteger(yshare),
+    xshare = xshare,
+    yshare = yshare,
     nObsshare = length(xshare)
   )
 }
@@ -448,6 +456,9 @@ DataOrdinal <- function(x = numeric(),
   assert_numeric(yCategories, any.missing = FALSE, unique = TRUE)
   assert_character(names(yCategories), any.missing = FALSE, unique = TRUE)
   assert_flag(placebo)
+  assert_integer(y, any.missing = FALSE)
+  assert_integer(ID, any.missing = FALSE)
+  assert_integer(cohort, any.missing = FALSE)
 
   doseGrid <- as.numeric(sort(doseGrid))
 
@@ -466,10 +477,10 @@ DataOrdinal <- function(x = numeric(),
   }
 
   .DataOrdinal(
-    x = as.numeric(x),
-    y = safeInteger(y),
-    ID = safeInteger(ID),
-    cohort = safeInteger(cohort),
+    x = x,
+    y = y,
+    ID = ID,
+    cohort = cohort,
     doseGrid = doseGrid,
     nObs = length(x),
     nGrid = length(doseGrid),

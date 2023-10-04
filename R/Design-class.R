@@ -37,7 +37,7 @@ NULL
   ),
   prototype = prototype(
     nextBest = .NextBestThreePlusThree(),
-    cohort_size = CohortSizeConst(3),
+    cohort_size = CohortSizeConst(3L),
     data = Data(doseGrid = 1:3),
     startingDose = 1
   ),

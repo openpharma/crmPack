@@ -1,7 +1,7 @@
 # h_jags_add_dummy ----
 
 test_that("h_jags_add_dummy works as expected for single observation", {
-  data <- Data(x = 0.1, y = 0, doseGrid = c(0.1, 0.5), ID = 1, cohort = 1)
+  data <- Data(x = 0.1, y = 0L, doseGrid = c(0.1, 0.5), ID = 1L, cohort = 1L)
   result <- h_jags_add_dummy(data, where = c("x", "y"))
   slot(data, "x") <- c(0.1, 0)
   slot(data, "y") <- c(0L, 0L)
@@ -10,7 +10,7 @@ test_that("h_jags_add_dummy works as expected for single observation", {
 })
 
 test_that("h_jags_add_dummy works as expected for single observation (dummy)", {
-  data <- Data(x = 0.1, y = 0, doseGrid = c(0.1, 0.5), ID = 1, cohort = 1)
+  data <- Data(x = 0.1, y = 0L, doseGrid = c(0.1, 0.5), ID = 1L, cohort = 1L)
   result <- h_jags_add_dummy(data, where = "x", dummy = 5)
   slot(data, "x") <- c(0.1, 5)
 
@@ -20,10 +20,10 @@ test_that("h_jags_add_dummy works as expected for single observation (dummy)", {
 test_that("h_jags_add_dummy works as expected for non-single observation", {
   data <- Data(
     x = c(0.1, 0.5),
-    y = c(0, 1),
+    y = c(0L, 1L),
     doseGrid = c(0.1, 0.5),
-    ID = 1:2,
-    cohort = 1:2
+    ID = 1L:2L,
+    cohort = 1L:2L
   )
 
   result <- h_jags_add_dummy(data, where = c("x", "y"))
@@ -33,15 +33,15 @@ test_that("h_jags_add_dummy works as expected for non-single observation", {
 test_that("h_jags_add_dummy works for GeneralData too", {
   gen_data <- .GeneralData(
     nObs = 2L,
-    ID = 1:2,
-    cohort = 1:2
+    ID = 1L:2L,
+    cohort = 1L:2L
   )
   result <- h_jags_add_dummy(gen_data, where = "ID")
   expect_identical(result, gen_data)
 })
 
 test_that("h_jags_add_dummy throws the error for wrong slot name", {
-  data <- Data(x = 0.1, y = 0, doseGrid = c(0.1, 0.5), ID = 1, cohort = 1)
+  data <- Data(x = 0.1, y = 0L, doseGrid = c(0.1, 0.5), ID = 1L, cohort = 1L)
   expect_error(
     h_jags_add_dummy(data, where = "wrong_slot_name"),
     "Assertion on 'where' failed: Must be a subset of.*"

@@ -65,10 +65,10 @@ my_next_best <- NextBestMaxGain(
 my_increments <- IncrementsRelative(intervals = 0, increments = 2)
 
 # Cohort size of 3.
-my_size <- CohortSizeConst(size = 3)
+my_size <- CohortSizeConst(size = 3L)
 
 # Stop only when 36 subjects are treated or next dose is NA.
-my_stopping <- StoppingMinPatients(nPatients = 36) | StoppingMissingDose()
+my_stopping <- StoppingMinPatients(nPatients = 36L) | StoppingMissingDose()
 
 # Now specify the design with all the above information and starting with a
 # dose of 25 (for details please refer to the 'DualResponsesDesign' example).

@@ -72,18 +72,18 @@ my_next_best <- NextBestTDsamples(
   }
 )
 
-my_size <- CohortSizeConst(size = 3)
+my_size <- CohortSizeConst(size = 3L)
 
 # The increments for the dose-escalation process:
 #  the maximum increase of 200\% for doses up to the maximum dose in grid,
 #  the maximum increase of 200\% for dose above the maximum dose in grid.
 my_increments <- IncrementsRelative(
   intervals = range(empty_data@doseGrid),
-  increments = c(2, 2)
+  increments = c(2L, 2L)
 )
 
 # Stop when the maximum sample size of 36 patients is reached.
-my_stopping <- StoppingMinPatients(nPatients = 36)
+my_stopping <- StoppingMinPatients(nPatients = 36L)
 
 # The design with all the above information and starting with a dose of 25.
 design <- TDsamplesDesign(

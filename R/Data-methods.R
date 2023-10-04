@@ -298,8 +298,8 @@ setMethod(
                         check = TRUE,
                         ...) {
     assert_numeric(x, min.len = 0, max.len = 1)
-    assert_numeric(y, lower = 0, upper = 1)
-    assert_numeric(ID, len = length(y))
+    assert_integer(y, lower = 0, upper = 1)
+    assert_integer(ID, len = length(y))
     assert_disjunct(object@ID, ID)
     assert_flag(new_cohort)
     assert_flag(check)
@@ -315,10 +315,10 @@ setMethod(
     object@x <- c(object@x, rep(as.numeric(x), n))
 
     # Add DLT data.
-    object@y <- c(object@y, safeInteger(y))
+    object@y <- c(object@y, y)
 
     # Add ID.
-    object@ID <- c(object@ID, safeInteger(ID))
+    object@ID <- c(object@ID, ID)
 
     # Add cohort number.
     new_cohort_id <- if (object@nObs == 0) {
@@ -389,8 +389,8 @@ setMethod(
                         check = TRUE,
                         ...) {
     assert_numeric(x, min.len = 0, max.len = 1)
-    assert_numeric(y, lower = 0, upper = length(object@yCategories) - 1)
-    assert_numeric(ID, len = length(y))
+    assert_integer(y, lower = 0, upper = length(object@yCategories) - 1)
+    assert_integer(ID, len = length(y))
     assert_disjunct(object@ID, ID)
     assert_flag(new_cohort)
     assert_flag(check)
@@ -406,10 +406,10 @@ setMethod(
     object@x <- c(object@x, rep(as.numeric(x), n))
 
     # Add DLT data.
-    object@y <- c(object@y, safeInteger(y))
+    object@y <- c(object@y, y)
 
     # Add ID.
-    object@ID <- c(object@ID, safeInteger(ID))
+    object@ID <- c(object@ID, ID)
 
     # Add cohort number.
     new_cohort_id <- if (object@nObs == 0) {
@@ -572,7 +572,7 @@ setMethod(
                         ...,
                         check = TRUE) {
     assert_flag(check)
-    assert_numeric(y, lower = 0, upper = 1)
+    assert_integer(y, lower = 0, upper = 1)
     assert_true(length(y) == 0 || length(y) >= object@nObs)
     assert_numeric(u, lower = 0, len = length(y))
     assert_numeric(t0, lower = 0, len = length(y))
@@ -593,7 +593,9 @@ setMethod(
 
     # DLT will be observed once the followup time >= the time to DLT
     # and y = 1 at the same time.
-    object@y <- safeInteger(y * (trialtime >= t0 + u))
+    y_new <- y * (trialtime >= t0 + u)
+    assert_integer(y_new)
+    object@y <- y_new
 
     # Update DLT free survival time.
     object@u <- apply(rbind(u, trialtime - t0), 2, min)

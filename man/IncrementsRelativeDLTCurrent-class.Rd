@@ -8,7 +8,7 @@
 \alias{.DefaultIncrementsRelativeDLTCurrent}
 \title{\code{IncrementsRelativeDLTCurrent}}
 \usage{
-IncrementsRelativeDLTCurrent(intervals = c(0, 1), increments = c(2, 1))
+IncrementsRelativeDLTCurrent(intervals = c(0L, 1L), increments = c(2, 1))
 
 .DefaultIncrementsRelativeDLTCurrent()
 }
@@ -35,7 +35,7 @@ Typically, end users will not use the \code{.DefaultIncrementsRelativeDLTCurrent
 # or maximum increasing the dose by 1.22 if 3 or more DLTs were observed.
 
 my_increments <- IncrementsRelativeDLTCurrent(
-  intervals = c(0, 1, 3),
+  intervals = c(0L, 1L, 3L),
   increments = c(1, 0.33, 0.2)
 )
 }

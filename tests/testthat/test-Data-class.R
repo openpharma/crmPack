@@ -117,9 +117,9 @@ test_that("DataParts object can be created with custom values", {
       nextPart = 1L,
       part1Ladder = c(0.1, 0.5, 1.5, 3, 6, 10),
       x = c(0.1, 0.5, 1.5),
-      y = c(0, 0, 0),
-      ID = 1:3,
-      cohort = 1:3,
+      y = c(0L, 0L, 0L),
+      ID = 1L:3L,
+      cohort = 1L:3L,
       doseGrid = c(0.1, 0.5, 1.5, 3, 6, seq(from = 10, to = 80, by = 2))
     )
   )
@@ -147,9 +147,9 @@ test_that("DataMixture object can be created with custom values", {
       yshare = c(0L, 1L, 1L, 1L),
       nObsshare = 4L,
       x = c(0.1, 0.5, 1.5),
-      y = c(0, 0, 0),
-      ID = 1:3,
-      cohort = 1:3,
+      y = c(0L, 0L, 0L),
+      ID = 1L:3L,
+      cohort = 1L:3L,
       doseGrid = c(0.1, 0.5, 1.5, 3, 6, seq(from = 10, to = 80, by = 2))
     )
   )
@@ -177,9 +177,9 @@ test_that("DataDA object can be created with custom values", {
       t0 = c(0, 15, 30),
       Tmax = 60,
       x = c(0.1, 0.5, 1.5),
-      y = c(0, 0, 0),
-      ID = 1:3,
-      cohort = 1:3,
+      y = c(0L, 0L, 0L),
+      ID = 1L:3L,
+      cohort = 1L:3L,
       doseGrid = c(0.1, 0.5, 1.5, 3, 6, seq(from = 10, to = 80, by = 2))
     )
   )
@@ -207,9 +207,9 @@ test_that("DataOrdinal object can be created with custom values", {
       t0 = c(0, 15, 30),
       Tmax = 60,
       x = c(0.1, 0.5, 1.5),
-      y = c(0, 0, 0),
-      ID = 1:3,
-      cohort = 1:3,
+      y = c(0L, 0L, 0L),
+      ID = 1L:3L,
+      cohort = 1L:3L,
       doseGrid = c(0.1, 0.5, 1.5, 3, 6, seq(from = 10, to = 80, by = 2)),
       yCategories = c("Cat 0" = 0L, "Cat 1" = 1L, "Cat 2" = 2L)
     )
@@ -236,9 +236,9 @@ test_that("DataGrouped object can be created with custom values", {
     DataGrouped(
       group = c("mono", "combo", "mono"),
       x = c(0.1, 0.5, 1.5),
-      y = c(0, 0, 0),
-      ID = 1:3,
-      cohort = 1:3,
+      y = as.integer(c(0, 0, 0)),
+      ID = 1L:3L,
+      cohort = 1L:3L,
       doseGrid = c(0.1, 0.5, 1.5, 3, 6, seq(from = 10, to = 80, by = 2))
     )
   )

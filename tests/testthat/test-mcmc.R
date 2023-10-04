@@ -75,9 +75,11 @@ test_that("mcmc-GeneralData works as expected", {
 test_that("mcmc-GeneralData gets random results", {
   data <- h_get_data()
   model <- h_get_logistic_log_normal()
-  options <- h_get_mcmc_options(fixed = FALSE)
 
+  options <- h_get_mcmc_options(fixed = FALSE)
   result_1 <- mcmc(data = data, model = model, options = options)
+
+  options <- h_get_mcmc_options(fixed = FALSE)
   result_2 <- mcmc(data = data, model = model, options = options)
 
   # Should differ due to randomness.

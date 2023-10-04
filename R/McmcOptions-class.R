@@ -78,9 +78,9 @@ McmcOptions <- function(burnin = 1e4L,
                         samples = 1e4L,
                         rng_kind = NA_character_,
                         rng_seed = NA_integer_) {
-  assert_number(burnin)
-  assert_number(step)
-  assert_number(samples)
+  assert_number(burnin, lower = 1, na.ok = FALSE)
+  assert_number(step, lower = 1, na.ok = FALSE)
+  assert_number(samples, lower = 1, na.ok = FALSE)
   assert_string(rng_kind, na.ok = TRUE)
   assert_number(rng_seed, na.ok = TRUE)
 
@@ -89,16 +89,14 @@ McmcOptions <- function(burnin = 1e4L,
   } else {
     rng_kind <- NA_character_
   }
-  if (!is.na(rng_seed)) {
-    rng_seed <- safeInteger(rng_seed)
-  } else {
+  if (is.na(rng_seed)) {
     rng_seed <- NA_integer_
   }
 
   .McmcOptions(
-    iterations = safeInteger(burnin + (step * samples)),
-    burnin = safeInteger(burnin),
-    step = safeInteger(step),
+    iterations = as.integer(burnin + (step * samples)),
+    burnin = burnin,
+    step = step,
     rng_kind = rng_kind,
     rng_seed = rng_seed
   )

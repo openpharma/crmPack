@@ -61,7 +61,7 @@ A simulate method for \code{\link{DesignGrouped}} designs.
 \examples{
 # Assemble ingredients for our group design.
 my_stopping <- StoppingTargetProb(target = c(0.2, 0.35), prob = 0.5) |
-  StoppingMinPatients(20) |
+  StoppingMinPatients(20L) |
   StoppingMissingDose()
 my_increments <- IncrementsDoseLevels(levels = 3L)
 my_next_best <- NextBestNCRM(
@@ -69,7 +69,7 @@ my_next_best <- NextBestNCRM(
   overdose = c(0.3, 1),
   max_overdose_prob = 0.3
 )
-my_cohort_size <- CohortSizeConst(3)
+my_cohort_size <- CohortSizeConst(3L)
 empty_data <- Data(doseGrid = c(0.1, 0.5, 1.5, 3, 6, seq(from = 10, to = 80, by = 2)))
 my_model <- LogisticLogNormalGrouped(
   mean = c(-4, -4, -4, -4),

@@ -40,7 +40,7 @@ doseRecommendation <- nextBest(myNextBest,
                                samples=samples, model=model, data=data)
 
 # Rule for having cohorts with constant cohort size of 3
-mySize <- CohortSizeConst(size=3)
+mySize <- CohortSizeConst(size = 3L)
 
 # Determine the cohort size for the next cohort
 size(mySize, dose=doseRecommendation$value)

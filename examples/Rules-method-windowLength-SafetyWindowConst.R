@@ -49,13 +49,13 @@ doseRecommendation <- nextBest(myNextBest,
 
 # Define the rule which will be used to select the next cohort size
 # based on the class 'CohortSizeConst'
-mySize <- CohortSizeConst(size=3)
+mySize <- CohortSizeConst(size = 3L)
 
 # Determine the cohort size for the next cohort
 sizeRecommendation <- size(mySize, dose=doseRecommendation$value, data = data)
 
 # Rule for having safety window length with constant safety window parameters
-myWindowLength <- SafetyWindowConst(gap = c(7,3),
+myWindowLength <- SafetyWindowConst(gap = c(7, 3),
                                     follow = 7,
                                     follow_min = 14)
 

@@ -533,7 +533,7 @@ function. Below is the example shape of <span class="math inline">\(f_{\alpha_2}
       1 / (sd1 * sd2) * phi((x2 - mu2) / sd2) * intgrl$value
     }
     f &lt;- Vectorize(f)
-    
+
     ggplot() +
       geom_function(fun = dnorm, colour = &quot;black&quot;, args = list(mean = 5, sd = 2)) +
       geom_function(fun = f, colour = &quot;red&quot;) +
@@ -545,7 +545,7 @@ function. Below is the example shape of <span class="math inline">\(f_{\alpha_2}
 <pre class="r"><code>    optimize(f, interval = c(1, 7), maximum = TRUE)</code></pre>
 <pre><code>## $maximum
 ## [1] 4.600697
-## 
+##
 ## $objective
 ## [1] 0.2189738</code></pre>
 <ol start="3" style="list-style-type: decimal">
@@ -758,9 +758,9 @@ DataOrdinal &lt;- function(
 
   .DataOrdinal(
     x = as.numeric(x),
-    y = crmPack:::safeInteger(y),
-    ID = crmPack:::safeInteger(ID),
-    cohort = crmPack:::safeInteger(cohort),
+    y = y,
+    ID = ID,
+    cohort = cohort,
     doseGrid = doseGrid,
     nObs = length(x),
     nGrid = length(doseGrid),
@@ -783,32 +783,32 @@ ordinal_data</code></pre>
 <pre><code>## An object of class &quot;DataOrdinal&quot;
 ## Slot &quot;x&quot;:
 ## [1] 10 20 30 40 50 50 50
-## 
+##
 ## Slot &quot;y&quot;:
 ## [1] 0 0 0 0 0 1 2
-## 
+##
 ## Slot &quot;doseGrid&quot;:
 ##  [1]  10  20  30  40  50  60  70  80  90 100
-## 
+##
 ## Slot &quot;nGrid&quot;:
 ## [1] 10
-## 
+##
 ## Slot &quot;xLevel&quot;:
 ## [1] 1 2 3 4 5 5 5
-## 
+##
 ## Slot &quot;yCategories&quot;:
-##     No Tox Sub tox AE        DLT 
-##          0          1          2 
-## 
+##     No Tox Sub tox AE        DLT
+##          0          1          2
+##
 ## Slot &quot;placebo&quot;:
 ## [1] FALSE
-## 
+##
 ## Slot &quot;ID&quot;:
 ## [1] 1 2 3 4 5 6 7
-## 
+##
 ## Slot &quot;cohort&quot;:
 ## [1] 1 2 3 4 5 5 5
-## 
+##
 ## Slot &quot;nObs&quot;:
 ## [1] 7</code></pre>
 <div id="update-dataordinal" class="section level3" number="2.0.1">
@@ -880,10 +880,10 @@ setMethod(
     object@x &lt;- c(object@x, rep(as.numeric(x), n))
 
     # Add DLT data.
-    object@y &lt;- c(object@y, crmPack:::safeInteger(y))
+    object@y &lt;- c(object@y, y)
 
     # Add ID.
-    object@ID &lt;- c(object@ID, crmPack:::safeInteger(ID))
+    object@ID &lt;- c(object@ID, ID)
 
     # Add cohort number.
     new_cohort_id &lt;- if (object@nObs == 0) {
@@ -908,32 +908,32 @@ update(ordinal_data, x = 60, y = c(0L, 1L, 0L))</code></pre>
 <pre><code>## An object of class &quot;DataOrdinal&quot;
 ## Slot &quot;x&quot;:
 ##  [1] 10 20 30 40 50 50 50 60 60 60
-## 
+##
 ## Slot &quot;y&quot;:
 ##  [1] 0 0 0 0 0 1 2 0 1 0
-## 
+##
 ## Slot &quot;doseGrid&quot;:
 ##  [1]  10  20  30  40  50  60  70  80  90 100
-## 
+##
 ## Slot &quot;nGrid&quot;:
 ## [1] 10
-## 
+##
 ## Slot &quot;xLevel&quot;:
 ##  [1] 1 2 3 4 5 5 5 6 6 6
-## 
+##
 ## Slot &quot;yCategories&quot;:
-##     No Tox Sub tox AE        DLT 
-##          0          1          2 
-## 
+##     No Tox Sub tox AE        DLT
+##          0          1          2
+##
 ## Slot &quot;placebo&quot;:
 ## [1] FALSE
-## 
+##
 ## Slot &quot;ID&quot;:
 ##  [1]  1  2  3  4  5  6  7  8  9 10
-## 
+##
 ## Slot &quot;cohort&quot;:
 ##  [1] 1 2 3 4 5 5 5 6 6 6
-## 
+##
 ## Slot &quot;nObs&quot;:
 ## [1] 10</code></pre>
 </div>
@@ -1377,7 +1377,7 @@ LogisticLogNormalOrdinal &lt;- function(mean, cov, ref_dose) {
     },
     modelspecs = function(y, from_prior) {
       ms &lt;- list(
-        mean = params@mean, 
+        mean = params@mean,
         prec = params@prec,
         k = length(mean),
         tox = array(dim = c(length(y), length(mean) - 1))
@@ -1702,9 +1702,9 @@ setMethod(&quot;plot&quot;,
              showLegend = TRUE,
              cumulative = TRUE,
              ylab = ifelse(
-               !is.null(data), 
+               !is.null(data),
                paste0(
-                 &quot;Probability of &quot;, 
+                 &quot;Probability of &quot;,
                  names(data@yCategories)[grade + 1] ,
                  ifelse(cumulative, &quot; or greater&quot;, &quot;&quot;),
                  &quot; [%]&quot;
@@ -1779,7 +1779,7 @@ setMethod(&quot;plot&quot;,
             ),
           values = c(1, 2), guide = ifelse(showLegend, &quot;legend&quot;, &quot;none&quot;)
         )
-      
+
       return(ret)
     }
 )
@@ -2129,24 +2129,24 @@ approximate(samples, ordinal_model, ordinal_data, grade = 1L)</code></pre>
 ## Slot &quot;params&quot;:
 ## An object of class &quot;ModelParamsNormal&quot;
 ## Slot &quot;mean&quot;:
-##             meanAlpha.(Intercept) meanBeta.I(log(dosegrid/refDose)) 
-##                        -0.2047079                         4.8711605 
-## 
+##             meanAlpha.(Intercept) meanBeta.I(log(dosegrid/refDose))
+##                        -0.2047079                         4.8711605
+##
 ## Slot &quot;cov&quot;:
 ##          [,1]     [,2]
 ## [1,] 1.499442 1.139122
 ## [2,] 1.139122 4.488856
-## 
+##
 ## Slot &quot;prec&quot;:
 ##            [,1]       [,2]
 ## [1,]  0.8261934 -0.2096604
 ## [2,] -0.2096604  0.2759788
-## 
-## 
+##
+##
 ## Slot &quot;ref_dose&quot;:
 ## An object of class &quot;positive_number&quot;
 ## [1] 55
-## 
+##
 ## Slot &quot;datamodel&quot;:
 ## function() {
 ##       for (i in 1:nObs) {
@@ -2156,7 +2156,7 @@ approximate(samples, ordinal_model, ordinal_data, grade = 1L)</code></pre>
 ##     }
 ## &lt;bytecode: 0x558b5a69a420&gt;
 ## &lt;environment: 0x558b5a63a890&gt;
-## 
+##
 ## Slot &quot;priormodel&quot;:
 ## function() {
 ##       theta ~ dmnorm(mean, prec)
@@ -2165,7 +2165,7 @@ approximate(samples, ordinal_model, ordinal_data, grade = 1L)</code></pre>
 ##     }
 ## &lt;bytecode: 0x558b5a691c50&gt;
 ## &lt;environment: 0x558b5a63a890&gt;
-## 
+##
 ## Slot &quot;modelspecs&quot;:
 ## function(from_prior) {
 ##       ms &lt;- list(mean = params@mean, prec = params@prec)
@@ -2176,20 +2176,20 @@ approximate(samples, ordinal_model, ordinal_data, grade = 1L)</code></pre>
 ##     }
 ## &lt;bytecode: 0x558b5a54fa60&gt;
 ## &lt;environment: 0x558b5a531218&gt;
-## 
+##
 ## Slot &quot;init&quot;:
 ## function() {
 ##       list(theta = c(0, 1))
 ##     }
 ## &lt;bytecode: 0x558b5a533d18&gt;
 ## &lt;environment: 0x558b5a531218&gt;
-## 
+##
 ## Slot &quot;datanames&quot;:
-## [1] &quot;nObs&quot; &quot;y&quot;    &quot;x&quot;   
-## 
+## [1] &quot;nObs&quot; &quot;y&quot;    &quot;x&quot;
+##
 ## Slot &quot;datanames_prior&quot;:
 ## character(0)
-## 
+##
 ## Slot &quot;sample&quot;:
 ## [1] &quot;alpha0&quot; &quot;alpha1&quot;</code></pre>
 </div>

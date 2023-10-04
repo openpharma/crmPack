@@ -388,14 +388,14 @@ myIncrements <- IncrementsRelative(
 ## DLT rule says to have size 1 if no DLT has happened,
 ## and size 3 if at least 1 DLT has happened
 mySize <- CohortSizeDLT(
-  intervals = c(0, 1),
-  cohort_size = c(1, 3)
+  intervals = c(0L, 1L),
+  cohort_size = c(1L, 3L)
 )
 
 ## Range rule says to have size 1 until 30 mg, then size 3.
 mySize2 <- CohortSizeRange(
   intervals = c(0, 30),
-  cohort_size = c(1, 3)
+  cohort_size = c(1L, 3L)
 )
 
 ## these two rules are now combined by taking the maximum

@@ -5,21 +5,21 @@ test_that("Posterior summaries for probabilities of
 
   set.seed(0504201914)
   mcmc_options <- McmcOptions(
-    burnin = 5000,
-    step = 2,
-    samples = 200000,
+    burnin = 5000L,
+    step = 2L,
+    samples = 200000L,
     rng_kind = "Wichmann-Hill",
-    rng_seed = 1
+    rng_seed = 1L
   )
 
   dose_grid_sc1 <- c(10, 20, 35, 50, 65, 80, 90, 100)
 
   data <- Data(
     x = c(rep(10, 3)),
-    y = c(rep(0, 3)),
-    cohort = c(rep(1, 3)),
+    y = as.integer(c(rep(0, 3))),
+    cohort = c(rep(1L, 3)),
     doseGrid = dose_grid_sc1,
-    ID = 1:3
+    ID = 1L:3L
   )
 
   model_bcrm_sc1 <- LogisticLogNormal(
@@ -96,21 +96,21 @@ test_that("Posterior summaries for probabilities of
 
   set.seed(0504201914)
   mcmc_options <- McmcOptions(
-    burnin = 5000,
-    step = 2,
-    samples = 600000,
+    burnin = 5000L,
+    step = 2L,
+    samples = 600000L,
     rng_kind = "Wichmann-Hill",
-    rng_seed = 1
+    rng_seed = 1L
   )
 
   dose_grid_sc1 <- c(10, 20, 35, 50, 65, 80, 90, 100)
 
   data <- Data(
     x = c(rep(10, 3), rep(20, 3)),
-    y = c(rep(0, 3), rep(0, 2), 1),
-    cohort = c(rep(1, 3), rep(2, 3)),
+    y = as.integer(c(rep(0, 3), rep(0, 2), 1)),
+    cohort = as.integer(c(rep(1, 3), rep(2, 3))),
     doseGrid = dose_grid_sc1,
-    ID = 1:6
+    ID = 1L:6L
   )
 
   model_bcrm_sc1 <- LogisticLogNormal(
@@ -187,11 +187,11 @@ test_that("Posterior summaries for probabilities of
 
   set.seed(0504201914)
   mcmc_options <- McmcOptions(
-    burnin = 5000,
-    step = 2,
-    samples = 200000,
+    burnin = 5000L,
+    step = 2L,
+    samples = 200000L,
     rng_kind = "Wichmann-Hill",
-    rng_seed = 1
+    rng_seed = 1L
   )
 
   dose_grid_sc1 <- c(10, 20, 35, 50, 65, 80, 90, 100)
@@ -201,13 +201,13 @@ test_that("Posterior summaries for probabilities of
       rep(10, 3), rep(20, 3),
       rep(35, 3), rep(50, 3)
     ),
-    y = c(rep(0, 3 * 4)),
+    y = c(rep(0L, 3 * 4)),
     cohort = c(
-      rep(1, 3), rep(2, 3),
-      rep(3, 3), rep(4, 3)
+      rep(1L, 3), rep(2L, 3),
+      rep(3L, 3), rep(4L, 3)
     ),
     doseGrid = dose_grid_sc1,
-    ID = 1:12
+    ID = 1L:12L
   )
 
   model_bcrm_sc1 <- LogisticLogNormal(
@@ -284,11 +284,11 @@ test_that("Posterior summaries for probabilities of
 
   set.seed(0504201914)
   mcmc_options <- McmcOptions(
-    burnin = 5000,
-    step = 2,
-    samples = 200000,
+    burnin = 5000L,
+    step = 2L,
+    samples = 200000L,
     rng_kind = "Wichmann-Hill",
-    rng_seed = 1
+    rng_seed = 1L
   )
 
   dose_grid_sc1 <- c(10, 20, 35, 50, 65, 80, 90, 100)
@@ -298,13 +298,13 @@ test_that("Posterior summaries for probabilities of
       rep(10, 3), rep(20, 3),
       rep(35, 3), rep(50, 3)
     ),
-    y = c(rep(0, 3 * 3), rep(0, 2), 1),
+    y = c(rep(0L, 3 * 3), rep(0L, 2), 1L),
     cohort = c(
-      rep(1, 3), rep(2, 3),
-      rep(3, 3), rep(4, 3)
+      rep(1L, 3), rep(2L, 3),
+      rep(3L, 3), rep(4L, 3)
     ),
     doseGrid = dose_grid_sc1,
-    ID = 1:12
+    ID = 1L:12L
   )
 
   model_bcrm_sc1 <- LogisticLogNormal(

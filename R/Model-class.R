@@ -2202,7 +2202,7 @@ LogisticIndepBeta <- function(binDLE,
                               data) {
   assert_numeric(binDLE)
   assert_numeric(DLEdose)
-  assert_numeric(DLEweights)
+  assert_integer(DLEweights, lower = 0, any.missing = FALSE)
   assert_class(data, "Data")
 
   # Combine pseudo and observed data. It can also happen that data@nObs == 0.
@@ -2220,7 +2220,7 @@ LogisticIndepBeta <- function(binDLE,
   .LogisticIndepBeta(
     binDLE = binDLE,
     DLEdose = DLEdose,
-    DLEweights = safeInteger(DLEweights),
+    DLEweights = DLEweights,
     phi1 = phi1,
     phi2 = phi2,
     Pcov = Pcov,
@@ -2680,11 +2680,16 @@ EffFlexi <- function(eff,
 #' @export
 #' @example examples/Model-class-DALogisticLogNormal.R
 #'
-DALogisticLogNormal <- function(npiece = 3,
+DALogisticLogNormal <- function(npiece = 3L,
                                 l,
                                 c_par = 2,
                                 cond_pem = TRUE,
                                 ...) {
+  #Validation
+  assert_integer(npiece, lower = 2L, len = 1, any.missing = FALSE)
+  assert_flag(cond_pem)
+
+  #Begin
   start <- LogisticLogNormal(...)
 
   datamodel <- function() {
@@ -2755,7 +2760,7 @@ DALogisticLogNormal <- function(npiece = 3,
       l = l,
       c_par = c_par,
       h = seq(from = 0L, to = Tmax, length = npiece + 1),
-      cond = safeInteger(cond_pem)
+      cond = cond_pem
     )
     if (!from_prior) {
       ms <- c(list(ref_dose = start@ref_dose, zeros = rep(0, nObs), eps = 1e-10, cadj = 1e10), ms)
@@ -2765,7 +2770,7 @@ DALogisticLogNormal <- function(npiece = 3,
 
   .DALogisticLogNormal(
     start,
-    npiece = safeInteger(npiece),
+    npiece = npiece,
     l = l,
     c_par = c_par,
     cond_pem = cond_pem,
@@ -2783,7 +2788,7 @@ DALogisticLogNormal <- function(npiece = 3,
 #' @note Typically, end users will not use the `.DefaultDALogisticLogNormal()` function.
 #' @export
 .DefaultDALogisticLogNormal <- function() {
-  npiece <- 10
+  npiece <- 10L
   Tmax <- 60
 
   lambda_prior <- function(k) {

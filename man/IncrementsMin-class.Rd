@@ -40,7 +40,7 @@ Typically, end users will not use the \code{.DefaultIncrementsMin()} function.
 # or maximum increasing the dose by 1.33 if 1 or 2 DLTs were observed at the current dose
 # or maximum increasing the dose by 1.22 if 3 or more DLTs were observed.
 my_increments_1 <- IncrementsRelativeDLT(
-  intervals = c(0, 1, 3),
+  intervals = c(0L, 1L, 3L),
   increments = c(1, 0.33, 0.2)
 )
 

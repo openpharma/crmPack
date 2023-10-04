@@ -29,7 +29,7 @@ doseRecommendation <- nextBest(tdNextBest,
 ## Then the starting data, an empty data set
 emptydata <- Data(doseGrid = seq(25, 300, 25))
 ## The cohort size, size of 3 subjects
-mySize <- CohortSizeConst(size = 3)
+mySize <- CohortSizeConst(size = 3L)
 ## Deifne the increments for the dose-escalation process
 ## The maximum increase of 200% for doses up to the maximum of the dose specified in the doseGrid
 ## The maximum increase of 200% for dose above the maximum of the dose specified in the doseGrid
@@ -39,7 +39,7 @@ myIncrements <- IncrementsRelative(
   increments = c(2, 2)
 )
 ## Specified the stopping rule e.g stop when the maximum sample size of 36 patients has been reached
-myStopping <- StoppingMinPatients(nPatients = 36)
+myStopping <- StoppingMinPatients(nPatients = 36L)
 
 
 ## Specified the design(for details please refer to the 'TDDesign' example)

@@ -1,10 +1,10 @@
 test_that("OneParLogNormalPrior reproduces same numbers as in paper by Neuenschwander et al.", {
   mcmc_options <- McmcOptions(
-    burnin = 50000,
-    step = 2,
-    samples = 10000,
+    burnin = 50000L,
+    step = 2L,
+    samples = 10000L,
     rng_kind = "Wichmann-Hill",
-    rng_seed = 1
+    rng_seed = 1L
   )
 
   # One-parameter model
@@ -23,17 +23,15 @@ test_that("OneParLogNormalPrior reproduces same numbers as in paper by Neuenschw
       )
     ),
     y = c(
-      rep(c(0, 1),
+      rep(c(0L, 1L),
         times = c(16, 2)
       )
     ),
-    cohort = c(
-      rep(c(1, 2, 3, 4, 7),
-        times = c(3, 4, 5, 4, 2)
-      )
+    cohort = as.integer(
+      c(rep(c(1, 2, 3, 4, 7), times = c(3, 4, 5, 4, 2)))
     ),
     doseGrid = dose_grid,
-    ID = 1:18
+    ID = 1L:18L
   )
 
   model_power_a <- OneParLogNormalPrior(
@@ -63,7 +61,7 @@ test_that("OneParLogNormalPrior reproduces same numbers as in paper by Neuenschw
 
   increments_no <- IncrementsRelative(
     intervals = c(0, 250),
-    increments = c(2, 2)
+    increments = c(2L, 2L)
   )
 
   post_samples_a <- mcmc(data_obs_a, model_power_a, mcmc_options)

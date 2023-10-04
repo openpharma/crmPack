@@ -72,9 +72,9 @@ myNextBest <- NextBestMTD(
     }
 )
 
-myStopping <- StoppingMinPatients(nPatients = 48)
+myStopping <- StoppingMinPatients(nPatients = 48L)
 
-mySize <- CohortSizeConst(size = 3)
+mySize <- CohortSizeConst(size = 3L)
 
 emptydata <- DataDA(doseGrid = seq(from = 2, to = 50, by = 2), Tmax = Tmax_)
 

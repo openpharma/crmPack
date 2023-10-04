@@ -71,10 +71,10 @@ my_next_best <- NextBestMaxGainSamples(
 
 my_increments <- IncrementsRelative(
   intervals = c(25, 300),
-  increments = c(2, 2)
+  increments = c(2L, 2L)
 )
-my_size <- CohortSizeConst(size = 3)
-my_stopping <- StoppingMinPatients(nPatients = 36)
+my_size <- CohortSizeConst(size = 3L)
+my_stopping <- StoppingMinPatients(nPatients = 36L)
 
 design <- DualResponsesSamplesDesign(
   nextBest = my_next_best,

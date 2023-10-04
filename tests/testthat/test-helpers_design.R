@@ -48,7 +48,7 @@ test_that("get_result_list returns correct value", {
 
 test_that("h_add_dlts works as expected", {
   data <- h_get_data()
-  cohort_size <- CohortSizeConst(3)
+  cohort_size <- CohortSizeConst(3L)
 
   set.seed(123)
   result <- expect_silent(h_add_dlts(
@@ -65,7 +65,7 @@ test_that("h_add_dlts works as expected", {
 
 test_that("h_add_dlts works as expected when first separate patient has a DLT", {
   data <- h_get_data()
-  cohort_size <- CohortSizeConst(3)
+  cohort_size <- CohortSizeConst(3L)
 
   set.seed(123)
   result <- expect_silent(h_add_dlts(
@@ -83,7 +83,7 @@ test_that("h_add_dlts works as expected when first separate patient has a DLT", 
 
 test_that("h_add_dlts works as expected when first separate patient does not have a DLT", {
   data <- h_get_data()
-  cohort_size <- CohortSizeConst(3)
+  cohort_size <- CohortSizeConst(3L)
 
   set.seed(123)
   result <- expect_silent(h_add_dlts(

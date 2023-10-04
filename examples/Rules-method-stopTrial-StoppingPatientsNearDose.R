@@ -41,7 +41,7 @@ doseRecommendation <- nextBest(myNextBest,
 
 # Define the stopping rule such that the study would be stopped if at least 9
 # patients were already dosed within 1 +/- 0.2 of the next best dose
-myStopping <- StoppingPatientsNearDose(nPatients = 9,
+myStopping <- StoppingPatientsNearDose(nPatients = 9L,
                                        percentage = 0.2)
 
 # Evaluate if to stop the trial

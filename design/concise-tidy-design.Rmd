@@ -171,7 +171,7 @@ setMethod(
 `CohortSizeConst` is a trivial example and illustrates the default approach for all classes.
 
 ```{r, error = TRUE}
-x <- CohortSizeConst(size = 3) |> tidy()
+x <- CohortSizeConst(size = 3L) |> tidy()
 x
 class(x)
 ```
@@ -229,7 +229,7 @@ setMethod(
   }
 )
 
-x <- CohortSizeParts(cohort_sizes = c(1, 3)) |> tidy()
+x <- CohortSizeParts(cohort_sizes = c(1L, 3L)) |> tidy()
 x
 class(x)
 ```

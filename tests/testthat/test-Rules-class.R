@@ -284,7 +284,7 @@ test_that(".IncrementsRelativeParts works as expected", {
 
 test_that("IncrementsRelativeParts object can be created with user constructor", {
   result <- expect_silent(
-    IncrementsRelativeParts(-1, 3)
+    IncrementsRelativeParts(-1L, 3L)
   )
   expect_valid(result, "IncrementsRelativeParts")
   expect_identical(result@dlt_start, -1L)
@@ -294,14 +294,7 @@ test_that("IncrementsRelativeParts object can be created with user constructor",
 test_that(".DefaultIncrementsRelativeParts works as expected", {
   expect_equal(
     .DefaultIncrementsRelativeParts(),
-    IncrementsRelativeParts(dlt_start = 0, clean_start = 1)
-  )
-})
-
-test_that(".DefaultIncrementsRelativeParts works as expected", {
-  expect_equal(
-    .DefaultIncrementsRelativeParts(),
-    IncrementsRelativeParts(dlt_start = 0, clean_start = 1)
+    IncrementsRelativeParts(dlt_start = 0L, clean_start = 1L)
   )
 })
 
@@ -314,7 +307,7 @@ test_that(".IncrementsRelativeDLT works as expected", {
 
 test_that("IncrementsRelativeDLT object can be created with user constructor", {
   result <- expect_silent(
-    IncrementsRelativeDLT(c(0, 2, 3), c(2, 1, 1.5))
+    IncrementsRelativeDLT(c(0L, 2L, 3L), c(2, 1, 1.5))
   )
   expect_valid(result, "IncrementsRelativeDLT")
   expect_identical(result@intervals, c(0L, 2L, 3L))
@@ -324,7 +317,7 @@ test_that("IncrementsRelativeDLT object can be created with user constructor", {
 test_that(".DefaultIncrementsRelativeDLT works as expected", {
   expect_equal(
     .DefaultIncrementsRelativeDLT(),
-    IncrementsRelativeDLT(intervals = c(0, 1, 3), increments = c(1, 0.33, 0.2))
+    IncrementsRelativeDLT(intervals = c(0L, 1L, 3L), increments = c(1, 0.33, 0.2))
   )
 })
 
@@ -337,7 +330,7 @@ test_that("IncrementsRelativeDLTCurrent works as expected", {
 
 test_that("IncrementsRelativeDLTCurrent object can be created with user constructor", {
   result <- expect_silent(
-    IncrementsRelativeDLTCurrent(c(0, 2, 3), c(2, 1, 1.5))
+    IncrementsRelativeDLTCurrent(c(0L, 2L, 3L), c(2, 1, 1.5))
   )
   expect_valid(result, "IncrementsRelativeDLTCurrent")
   expect_identical(result@intervals, c(0L, 2L, 3L))
@@ -347,7 +340,7 @@ test_that("IncrementsRelativeDLTCurrent object can be created with user construc
 test_that(".DefaultIncrementsRelativeDLTCurrent works as expected", {
   expect_equal(
     .DefaultIncrementsRelativeDLTCurrent(),
-    IncrementsRelativeDLTCurrent(intervals = c(0, 1, 3), increments = c(1, 0.33, 0.2))
+    IncrementsRelativeDLTCurrent(intervals = c(0L, 1L, 3L), increments = c(1, 0.33, 0.2))
   )
 })
 
@@ -375,7 +368,7 @@ test_that("IncrementsDoseLevels object can be created with user constructor", {
 test_that(".DefaultIncrementsDoseLevels works as expected", {
   expect_equal(
     .DefaultIncrementsDoseLevels(),
-    IncrementsDoseLevels(levels = 2, basis_level = "last")
+    IncrementsDoseLevels(levels = 2L, basis_level = "last")
   )
 })
 
@@ -435,7 +428,7 @@ test_that(".DefaultIncrementsMin works as expected", {
     IncrementsMin(
       increments_list = list(
         IncrementsRelativeDLT(
-          intervals = c(0, 1, 3),
+          intervals = c(0L, 1L, 3L),
           increments = c(1, 0.33, 0.2)
         ),
         IncrementsRelative(
@@ -494,7 +487,7 @@ test_that("StoppingCohortsNearDose replaces empty label with correct default lab
 test_that(".DefaultStoppingCohortsNearDose works as expected", {
   expect_equal(
     .DefaultStoppingCohortsNearDose(),
-    StoppingCohortsNearDose(nCohorts = 3, percentage = 0.2, report_label = NA_character_)
+    StoppingCohortsNearDose(nCohorts = 3L, percentage = 0.2, report_label = NA_character_)
   )
 })
 
@@ -529,7 +522,7 @@ test_that("StoppingPatientsNearDose replaces empty label with correct default la
 test_that(".DefaultStoppingPatientsNearDose works as expected", {
   expect_equal(
     .DefaultStoppingPatientsNearDose(),
-    StoppingPatientsNearDose(nPatients = 9, percentage = 20, report_label = NA_character_)
+    StoppingPatientsNearDose(nPatients = 9L, percentage = 20, report_label = NA_character_)
   )
 })
 
@@ -563,7 +556,7 @@ test_that(".DefaultStoppingMinCohorts works as expected", {
   expect_equal(
     .DefaultStoppingMinCohorts(),
     StoppingMinCohorts(
-      nCohorts = 6,
+      nCohorts = 6L,
       report_label = NA_character_
     )
   )
@@ -598,7 +591,7 @@ test_that("StoppingMinPatients replaces empty label with correct default label",
 test_that(".DefaultStoppingMinPatients works as expected", {
   expect_equal(
     .DefaultStoppingMinPatients(),
-    StoppingMinPatients(nPatients = 20, report_label = NA_character_)
+    StoppingMinPatients(nPatients = 20L, report_label = NA_character_)
   )
 })
 
@@ -895,9 +888,9 @@ test_that(".StoppingList works as expected", {
 
 test_that("StoppingList object can be created with user constructor", {
   stop_list <- list(
-    StoppingMinCohorts(nCohorts = 5),
+    StoppingMinCohorts(nCohorts = 5L),
     StoppingTargetProb(target = c(0.2, 0.45), prob = 0.6),
-    StoppingMinPatients(nPatients = 30)
+    StoppingMinPatients(nPatients = 30L)
   )
   result <- expect_silent(
     StoppingList(stop_list = stop_list, summary = all)
@@ -912,9 +905,9 @@ test_that(".DefaultStoppingList works as expected", {
     .DefaultStoppingList(),
     StoppingList(
       stop_list = c(
-        StoppingMinCohorts(nCohorts = 3),
+        StoppingMinCohorts(nCohorts = 3L),
         StoppingTargetProb(target = c(0.2, 0.35), prob = 0.5),
-        StoppingMinPatients(nPatients = 20)
+        StoppingMinPatients(nPatients = 20L)
       ),
       summary = any
     )
@@ -930,9 +923,9 @@ test_that(".StoppingAll works as expected", {
 
 test_that("StoppingAll object can be created with user constructor", {
   stop_list <- list(
-    StoppingMinCohorts(nCohorts = 5),
+    StoppingMinCohorts(nCohorts = 5L),
     StoppingTargetProb(target = c(0.2, 0.45), prob = 0.6),
-    StoppingMinPatients(nPatients = 30)
+    StoppingMinPatients(nPatients = 30L)
   )
   result <- expect_silent(
     StoppingAll(stop_list = stop_list, report_label = "custom label")
@@ -951,9 +944,9 @@ test_that(".StoppingAny works as expected", {
 
 test_that("StoppingAny object can be created with user constructor", {
   stop_list <- list(
-    StoppingMinCohorts(nCohorts = 5),
+    StoppingMinCohorts(nCohorts = 5L),
     StoppingTargetProb(target = c(0.2, 0.45), prob = 0.6),
-    StoppingMinPatients(nPatients = 30)
+    StoppingMinPatients(nPatients = 30L)
   )
   result <- expect_silent(
     StoppingAny(stop_list = stop_list, report_label = "custom label")
@@ -1043,7 +1036,7 @@ test_that(".CohortSizeRange works as expected", {
 })
 
 test_that("CohortSizeRange object can be created with user constructor", {
-  result <- expect_silent(CohortSizeRange(c(0, 30, 50), c(20, 60, 90)))
+  result <- expect_silent(CohortSizeRange(c(0, 30, 50), c(20L, 60L, 90L)))
   expect_valid(result, "CohortSizeRange")
   expect_identical(result@intervals, c(0, 30, 50))
   expect_identical(result@cohort_size, c(20L, 60L, 90L))
@@ -1052,7 +1045,7 @@ test_that("CohortSizeRange object can be created with user constructor", {
 test_that(".DefaultCohortSizeRange works as expected", {
   expect_equal(
     .DefaultCohortSizeRange(),
-    CohortSizeRange(intervals = c(0, 30), cohort_size = c(1, 3))
+    CohortSizeRange(intervals = c(0, 30), cohort_size = c(1L, 3L))
   )
 })
 
@@ -1064,7 +1057,7 @@ test_that(".CohortSizeDLT works as expected", {
 })
 
 test_that("CohortSizeDLT object can be created with user constructor", {
-  result <- expect_silent(CohortSizeDLT(c(0, 1, 2), c(20, 60, 90)))
+  result <- expect_silent(CohortSizeDLT(c(0L, 1L, 2L), c(20L, 60L, 90L)))
   expect_valid(result, "CohortSizeDLT")
   expect_identical(result@intervals, c(0L, 1L, 2L))
   expect_identical(result@cohort_size, c(20L, 60L, 90L))
@@ -1073,7 +1066,7 @@ test_that("CohortSizeDLT object can be created with user constructor", {
 test_that(".DefaultCohortSizeDLT works as expected", {
   expect_equal(
     .DefaultCohortSizeDLT(),
-    CohortSizeDLT(intervals = c(0, 1), cohort_size = c(1, 3))
+    CohortSizeDLT(intervals = c(0L, 1L), cohort_size = c(1L, 3L))
   )
 })
 
@@ -1085,7 +1078,7 @@ test_that(".CohortSizeConst works as expected", {
 })
 
 test_that("CohortSizeConst object can be created with user constructor", {
-  result <- expect_silent(CohortSizeConst(5))
+  result <- expect_silent(CohortSizeConst(5L))
   expect_valid(result, "CohortSizeConst")
   expect_identical(result@size, 5L)
 })
@@ -1093,7 +1086,7 @@ test_that("CohortSizeConst object can be created with user constructor", {
 test_that(".DefaultCohortSizeConst works as expected", {
   expect_equal(
     .DefaultCohortSizeConst(),
-    CohortSizeConst(size = 3)
+    CohortSizeConst(size = 3L)
   )
 })
 
@@ -1105,7 +1098,7 @@ test_that(".CohortSizeParts works as expected", {
 })
 
 test_that("CohortSizeParts object can be created with user constructor", {
-  result <- expect_silent(CohortSizeParts(c(1, 4)))
+  result <- expect_silent(CohortSizeParts(c(1L, 4L)))
   expect_valid(result, "CohortSizeParts")
   expect_identical(result@cohort_sizes, c(1L, 4L))
 })
@@ -1134,8 +1127,8 @@ test_that(".DefaultCohortSizeMax works as expected", {
     .DefaultCohortSizeMax(),
     CohortSizeMax(
       cohort_sizes = list(
-        CohortSizeRange(intervals = c(0, 10), cohort_size = c(1, 3)),
-        CohortSizeDLT(intervals = c(0, 1), cohort_size = c(1, 3))
+        CohortSizeRange(intervals = c(0, 10), cohort_size = c(1L, 3L)),
+        CohortSizeDLT(intervals = c(0L, 1L), cohort_size = c(1L, 3L))
       )
     )
   )
@@ -1165,8 +1158,8 @@ test_that(".DefaultCohortSizeMain works as expected", {
     .DefaultCohortSizeMin(),
     CohortSizeMin(
       cohort_sizes = list(
-        CohortSizeRange(intervals = c(0, 10), cohort_size = c(1, 3)),
-        CohortSizeDLT(intervals = c(0, 1), cohort_size = c(1, 3))
+        CohortSizeRange(intervals = c(0, 10), cohort_size = c(1L, 3L)),
+        CohortSizeDLT(intervals = c(0L, 1L), cohort_size = c(1L, 3L))
       )
     )
   )
@@ -1183,7 +1176,7 @@ test_that(".SafetyWindowSize works as expected", {
 
 test_that("SafetyWindowSize object can be created with user constructor", {
   result <- expect_silent(
-    SafetyWindowSize(list(c(8, 3), c(9, 4)), c(1, 5), 8, 15)
+    SafetyWindowSize(list(c(8L, 3L), c(9L, 4L)), c(1L, 5L), 8L, 15L)
   )
   expect_valid(result, "SafetyWindowSize")
   expect_identical(result@gap, list(c(8L, 3L), c(9L, 4L)))
@@ -1200,7 +1193,7 @@ test_that(".SafetyWindowConst works as expected", {
 })
 
 test_that("SafetyWindowConst object can be created with user constructor", {
-  result <- expect_silent(SafetyWindowConst(8, 2, 18))
+  result <- expect_silent(SafetyWindowConst(8L, 2L, 18L))
   expect_valid(result, "SafetyWindowConst")
   expect_identical(result@gap, 8L)
   expect_identical(result@follow, 2L)

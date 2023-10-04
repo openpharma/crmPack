@@ -296,7 +296,7 @@ test_that("Update of DataDA works as expected", {
   object <- h_get_data_da()
   result <- update(
     object = object,
-    y = c(object@y, 0),
+    y = c(object@y, 0L),
     u = c(object@u, 20),
     t0 = c(object@t0, 135),
     x = 25,
@@ -350,7 +350,7 @@ test_that("Update of DataDA throws the error for empty trialtime", {
   expect_error(
     update(
       object = object,
-      y = c(object@y, 0),
+      y = c(object@y, 0L),
       u = c(object@u, 20),
       t0 = c(object@t0, 135),
       x = 25,
@@ -389,9 +389,9 @@ test_that("getEff-DataDual works as expected, no_dlt", {
 test_that("getEff-DataDual works as expected (no DLT)", {
   data <- DataDual(
     x = c(25, 50),
-    y = c(0, 0),
-    ID = 1:2,
-    cohort = 1:2,
+    y = c(0L, 0L),
+    ID = 1L:2L,
+    cohort = 1L:2L,
     w = c(0.31, 0.42),
     doseGrid = c(25, 50)
   )
@@ -409,9 +409,9 @@ test_that("getEff-DataDual works as expected (no DLT)", {
 test_that("getEff-DataDual works as expected (no DLT), no_dlt", {
   data <- DataDual(
     x = c(25, 50),
-    y = c(0, 0),
-    ID = 1:2,
-    cohort = 1:2,
+    y = c(0L, 0L),
+    ID = 1L:2L,
+    cohort = 1L:2L,
     w = c(0.31, 0.42),
     doseGrid = c(25, 50)
   )
@@ -427,9 +427,9 @@ test_that("getEff-DataDual works as expected (no DLT), no_dlt", {
 test_that("getEff-DataDual works as expected (DLT only)", {
   data <- DataDual(
     x = c(25, 50),
-    y = c(1, 1),
-    ID = 1:2,
-    cohort = 1:2,
+    y = c(1L, 1L),
+    ID = 1L:2L,
+    cohort = 1L:2L,
     w = c(0.31, 0.42),
     doseGrid = c(25, 50)
   )
@@ -447,9 +447,9 @@ test_that("getEff-DataDual works as expected (DLT only)", {
 test_that("getEff-DataDual works as expected (DLT only), no_dlt", {
   data <- DataDual(
     x = c(25, 50),
-    y = c(1, 1),
-    ID = 1:2,
-    cohort = 1:2,
+    y = c(1L, 1L),
+    ID = 1L:2L,
+    cohort = 1L:2L,
     w = c(0.31, 0.42),
     doseGrid = c(25, 50)
   )

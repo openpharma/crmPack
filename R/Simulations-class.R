@@ -35,15 +35,15 @@ NULL
       data =
         list(
           Data(
-            x = 1:2,
-            y = 0:1,
+            x = as.numeric(1:2),
+            y = 0L:1L,
             doseGrid = 1:2,
             ID = 1L:2L,
             cohort = 1L:2L
           ),
           Data(
-            x = 3:4,
-            y = 0:1,
+            x = as.numeric(3:4),
+            y = 0L:1L,
             doseGrid = 3:4,
             ID = 1L:2L,
             cohort = 1L:2L
@@ -85,10 +85,12 @@ NULL
 GeneralSimulations <- function(data,
                                doses,
                                seed) {
+  # seed is actually a vector of seeds
+  assert_integer(seed)
   .GeneralSimulations(
     data = data,
     doses = doses,
-    seed = safeInteger(seed)
+    seed = seed
   )
 }
 

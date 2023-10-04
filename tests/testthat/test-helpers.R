@@ -557,9 +557,9 @@ test_that("stopping rule unpacking works", {
     samples = samples, model = model, data = data
   )
 
-  myStopping1 <- StoppingMinCohorts(nCohorts = 4, report_label = "stop_rule_1")
+  myStopping1 <- StoppingMinCohorts(nCohorts = 4L, report_label = "stop_rule_1")
   myStopping2 <- StoppingMissingDose(report_label = "stop_rule_2")
-  myStopping3 <- StoppingMinPatients(nPatients = 1, report_label = "stop_rule_3")
+  myStopping3 <- StoppingMinPatients(nPatients = 1L, report_label = "stop_rule_3")
   myStopping <- StoppingAny(
     stop_list =
       c(
@@ -609,9 +609,9 @@ test_that("conditions in stopping rule unpacking helpers work as expected", {
     samples = samples, model = model, data = data
   )
 
-  myStopping1 <- StoppingMinCohorts(nCohorts = 4, report_label = "stop_rule_1")
+  myStopping1 <- StoppingMinCohorts(nCohorts = 4L, report_label = "stop_rule_1")
   myStopping2 <- StoppingMissingDose(report_label = "stop_rule_2")
-  myStopping3 <- StoppingMinPatients(nPatients = 1, report_label = "stop_rule_3")
+  myStopping3 <- StoppingMinPatients(nPatients = 1L, report_label = "stop_rule_3")
   myStopping <- StoppingAny(
     stop_list =
       c(

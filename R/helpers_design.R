@@ -65,7 +65,7 @@ get_result_list <- function(
     parallel,
     n_cores) {
   assert_flag(parallel)
-  assert_integerish(n_cores, lower = 1)
+  assert_count(n_cores, positive = TRUE)
 
   if (!parallel) {
     lapply(
@@ -75,7 +75,7 @@ get_result_list <- function(
   } else {
     # Process all simulations.
     cores <- min(
-      safeInteger(n_cores),
+      n_cores,
       parallelly::availableCores()
     )
 

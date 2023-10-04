@@ -84,21 +84,21 @@ next_best <- NextBestNCRM(
 # Choose the rule for the cohort size.
 cohort_size1 <- CohortSizeRange(
   intervals = c(0, 30),
-  cohort_size = c(1, 3)
+  cohort_size = c(1L, 3L)
 )
 cohort_size2 <- CohortSizeDLT(
-  intervals = c(0, 1),
-  cohort_size = c(1, 3)
+  intervals = c(0L, 1L),
+  cohort_size = c(1L, 3L)
 )
 cohort_size <- maxSize(cohort_size1, cohort_size2)
 
 # Choose the rule for stopping.
-stopping_success1 <- StoppingMinCohorts(nCohorts = 3)
+stopping_success1 <- StoppingMinCohorts(nCohorts = 3L)
 stopping_success2 <- StoppingTargetProb(
   target = c(0.2, 0.35),
   prob = 0.5
 )
-stopping_futility <- StoppingMinPatients(nPatients = 20)
+stopping_futility <- StoppingMinPatients(nPatients = 20L)
 stopping_trial <- (stopping_success1 & stopping_success2) | stopping_futility
 
 # Choose the rule for dose increments.

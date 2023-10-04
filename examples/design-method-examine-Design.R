@@ -22,21 +22,21 @@ my_next_best <- NextBestNCRM(
 
 my_size1 <- CohortSizeRange(
   intervals = c(0, 30),
-  cohort_size = c(1, 3)
+  cohort_size = c(1L, 3L)
 )
 my_size2 <- CohortSizeDLT(
-  intervals = c(0, 1),
-  cohort_size = c(1, 3)
+  intervals = c(0L, 1L),
+  cohort_size = c(1L, 3L)
 )
 my_size <- maxSize(my_size1, my_size2)
 
 # Choose the rule for stopping.
-my_stopping1 <- StoppingMinCohorts(nCohorts = 3)
+my_stopping1 <- StoppingMinCohorts(nCohorts = 3L)
 my_stopping2 <- StoppingTargetProb(
   target = c(0.2, 0.35),
   prob = 0.5
 )
-my_stopping3 <- StoppingMinPatients(nPatients = 20)
+my_stopping3 <- StoppingMinPatients(nPatients = 20L)
 my_stopping <- (my_stopping1 & my_stopping2) | my_stopping3
 
 # Choose the rule for dose increments.
@@ -64,7 +64,7 @@ my_options <- McmcOptions(
 examine(my_design, my_options)
 
 # Example where examine stops because stopping rule already fulfilled.
-my_stopping4 <- StoppingMinPatients(nPatients = 3)
+my_stopping4 <- StoppingMinPatients(nPatients = 3L)
 my_stopping <- (my_stopping1 & my_stopping2) | my_stopping4
 
 my_design <- Design(

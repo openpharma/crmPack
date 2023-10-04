@@ -553,15 +553,15 @@ myNextBest <- NextBestNCRM(
   maxOverdoseProb = 0.25
 )
 
-mySize <- CohortSizeConst(size = 3)
+mySize <- CohortSizeConst(size = 3L)
 
 myStopping1 <- StoppingTargetProb(
   target = c(0.2, 0.35),
   prob = 0.4
 )
-myStopping2 <- StoppingMinPatients(nPatients = 60) # should this be 60 instead??
+myStopping2 <- StoppingMinPatients(nPatients = 60L) 
 
-myStopping3 <- StoppingPatientsNearDose(nPatients = 6, percentage = 20)
+myStopping3 <- StoppingPatientsNearDose(nPatients = 6L, percentage = 20)
 
 myStopping <- (myStopping1 | myStopping2 | myStopping3)
 

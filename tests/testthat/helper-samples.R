@@ -1,4 +1,4 @@
-h_as_samples <- function(x, burnin = 50, fixed = TRUE) {
+h_as_samples <- function(x, burnin = 50L, fixed = TRUE) {
   dim_x <- dim(x[[1]])
   n_samples <- if (is.null(dim_x)) {
     length(x[[1]])
@@ -7,7 +7,7 @@ h_as_samples <- function(x, burnin = 50, fixed = TRUE) {
   }
 
   mcmc_options <- h_get_mcmc_options(
-    samples = n_samples,
+    samples = as.integer(n_samples),
     burnin = burnin,
     fixed = fixed
   )

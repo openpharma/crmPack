@@ -41,7 +41,7 @@ doseRecommendation <- nextBest(myNextBest,
 
 # Define the stopping rule such that the study would be stopped if at least 20
 # patients were already dosed
-myStopping <- StoppingMinPatients(nPatients = 20)
+myStopping <- StoppingMinPatients(nPatients = 20L)
 
 # Evaluate if to stop the trial
 stopTrial(stopping=myStopping,

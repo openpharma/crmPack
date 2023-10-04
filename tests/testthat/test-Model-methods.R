@@ -91,7 +91,7 @@ test_that("doseFunction-GeneralModel throws the error when valid params are not 
 
 test_that("doseFunction-ModelPseudo returns correct dose function", {
   model <- h_get_logistic_indep_beta()
-  samples <- h_as_samples(list(phi1 = 35, phi2 = 5), burnin = 10000, fixed = FALSE)
+  samples <- h_as_samples(list(phi1 = 35, phi2 = 5), burnin = 10000L, fixed = FALSE)
   dose_args <- c("x", "model", "samples")
 
   dose_fun <- doseFunction(model, phi1 = 35, phi2 = 5)
@@ -229,7 +229,7 @@ test_that("probFunction-GeneralModel throws the error when valid params are not 
 
 test_that("probFunction-ModelTox returns correct prob function", {
   model <- h_get_logistic_indep_beta()
-  samples <- h_as_samples(list(phi1 = 35, phi2 = 5), burnin = 10000, fixed = FALSE)
+  samples <- h_as_samples(list(phi1 = 35, phi2 = 5), burnin = 10000L, fixed = FALSE)
   prob_args <- c("dose", "model", "samples")
 
   prob_fun <- probFunction(model, phi1 = 35, phi2 = 5)

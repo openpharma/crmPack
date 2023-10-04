@@ -1099,7 +1099,7 @@ test_that("DALogisticLogNormal object can be created with user constructor", {
       mean = c(0, 1),
       cov = diag(2),
       ref_dose = 1,
-      npiece = 3,
+      npiece = 3L,
       l = c(0.5, 0.5, 0.5),
       c_par = 2
     )
@@ -1108,7 +1108,7 @@ test_that("DALogisticLogNormal object can be created with user constructor", {
 })
 
 test_that(".DefaultDALogisticLogNormal works as expected", {
-  npiece <- 10
+  npiece <- 10L
   Tmax <- 60
 
   lambda_prior <- function(k) {

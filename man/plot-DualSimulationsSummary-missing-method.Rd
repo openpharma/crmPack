@@ -65,11 +65,11 @@ my_next_best <- NextBestDualEndpoint(
 # Choose the rule for the cohort-size.
 my_size1 <- CohortSizeRange(
   intervals = c(0, 30),
-  cohort_size = c(1, 3)
+  cohort_size = c(1L, 3L)
 )
 my_size2 <- CohortSizeDLT(
-  intervals = c(0, 1),
-  cohort_size = c(1, 3)
+  intervals = c(0L, 1L),
+  cohort_size = c(1L, 3L)
 )
 my_size <- maxSize(my_size1, my_size2)
 
@@ -79,7 +79,7 @@ my_stopping4 <- StoppingTargetBiomarker(
   prob = 0.5
 )
 # Only 10 patients here for illustration!
-my_stopping <- my_stopping4 | StoppingMinPatients(10) | StoppingMissingDose()
+my_stopping <- my_stopping4 | StoppingMinPatients(10L) | StoppingMissingDose()
 
 # Choose the rule for dose increments.
 my_increments <- IncrementsRelative(
@@ -94,7 +94,7 @@ my_design <- DualDesign(
   nextBest = my_next_best,
   stopping = my_stopping,
   increments = my_increments,
-  cohort_size = CohortSizeConst(3),
+  cohort_size = CohortSizeConst(3L),
   startingDose = 3
 )
 

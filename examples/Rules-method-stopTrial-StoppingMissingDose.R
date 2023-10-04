@@ -62,7 +62,7 @@ dose_recommendation <- nextBest(
 my_stopping <- StoppingMissingDose()
 my_stopping <- StoppingAny(
   stop_list = c(
-    StoppingMinPatients(nPatients = 16),
+    StoppingMinPatients(nPatients = 16L),
     StoppingMissingDose()
   )
 )

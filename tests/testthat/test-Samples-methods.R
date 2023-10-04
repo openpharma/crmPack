@@ -31,7 +31,7 @@ test_that("names-Samples returns correct names of the parameters", {
 ## Samples ----
 
 test_that("get-Samples fails gracefully with bad input", {
-  samples <- Samples(data = list(good = 1:3), options = McmcOptions(samples = 3))
+  samples <- Samples(data = list(good = 1:3), options = McmcOptions(samples = 3L))
   expect_error(
     get(samples, "bad"),
     "Assertion on 'pos' failed: Must be element of set \\{'good'\\}, but is 'bad'."
@@ -41,7 +41,7 @@ test_that("get-Samples fails gracefully with bad input", {
     "Assertion on 'pos' failed: Must have length 1."
   )
 
-  dualSamples <- Samples(data = list(good = matrix(1:6, ncol = 2)), options = McmcOptions(samples = 3))
+  dualSamples <- Samples(data = list(good = matrix(1:6, ncol = 2)), options = McmcOptions(samples = 3L))
   expect_error(
     get(dualSamples, "good", envir = "NotNumeric"),
     "Assertion on 'envir' failed: Must be of type 'integer', not 'character'."
@@ -57,7 +57,7 @@ test_that("get-Samples fails gracefully with bad input", {
 })
 
 test_that("get-Samples returns correct values", {
-  mcmcOptions <- McmcOptions(samples = 3)
+  mcmcOptions <- McmcOptions(samples = 3L)
   samples <- Samples(data = list(alpha0 = 1:3, alpha1 = 4:6), options = mcmcOptions)
 
   for (param in names(samples@data)) {
@@ -88,7 +88,7 @@ test_that("get-Samples returns correct values", {
     rho = c(a = 1, b = 1),
     rw1 = TRUE
   )
-  mcmcOptions <- McmcOptions(burnin = 5, step = 2, samples = 2)
+  mcmcOptions <- McmcOptions(burnin = 5L, step = 2L, samples = 2L)
   set.seed(94)
   dualSamples <- mcmc(dualData, dualModel, mcmcOptions)
   param <- "betaZ"
@@ -228,9 +228,9 @@ test_that("fit-Samples works correctly for dual models", {
   # TODO: Check for numerical correctness
   dualData <- DataDual(
     ID = 1L:12L,
-    cohort = c(6, 6, 6, 7, 7, 7, 8, 8, 8, 9, 9, 9),
+    cohort = as.integer(c(6, 6, 6, 7, 7, 7, 8, 8, 8, 9, 9, 9)),
     x = c(10, 10, 10, 20, 20, 20, 40, 40, 40, 50, 50, 50),
-    y = c(0, 1, 0, 0, 1, 1, 0, 0, 1, 0, 1, 1),
+    y = as.integer(c(0, 1, 0, 0, 1, 1, 0, 0, 1, 0, 1, 1)),
     w = c(0.7, 0.55, 0.6, 0.52, 0.54, 0.56, 0.43, 0.41, 0.39, 0.34, 0.38, 0.21),
     doseGrid = c(seq(from = 10, to = 80, by = 10))
   )
@@ -244,7 +244,7 @@ test_that("fit-Samples works correctly for dual models", {
     rw1 = TRUE
   )
 
-  options <- McmcOptions(rng_kind = "Mersenne-Twister", rng_seed = 1234567)
+  options <- McmcOptions(rng_kind = "Mersenne-Twister", rng_seed = 1234567L)
   samples <- mcmc(dualData, model, options)
 
   actual <- fit(samples, model, dualData)
@@ -261,9 +261,9 @@ test_that("fit-Samples works correctly for dual models", {
 test_that("Samples-approximate works correctly", {
   data <- Data(
     x = c(3, 6, 10, 10, 10),
-    y = c(0, 0, 0, 1, 0),
+    y = as.integer(c(0, 0, 0, 1, 0)),
     ID = 1L:5L,
-    cohort = c(3, 4, 5, 5, 5),
+    cohort = as.integer(c(3, 4, 5, 5, 5)),
     doseGrid = c(0.1, 0.5, 1.5, 3, 6, seq(from = 10, to = 80, by = 2))
   )
 
@@ -274,11 +274,11 @@ test_that("Samples-approximate works correctly", {
   )
 
   options <- McmcOptions(
-    burnin = 100,
-    step = 2,
-    samples = 2000,
+    burnin = 100L,
+    step = 2L,
+    samples = 2000L,
     rng_kind = "Mersenne-Twister",
-    rng_seed = 303010
+    rng_seed = 303010L
   )
 
   samples <- mcmc(data, model, options)
@@ -341,9 +341,9 @@ test_that("Samples-approximate works correctly", {
 test_that("Approximate fails gracefully with bad input", {
   data <- Data(
     x = c(0.1, 0.5, 1.5, 3, 6, 10, 10, 10),
-    y = c(0, 0, 0, 0, 0, 0, 1, 0),
+    y = as.integer(c(0, 0, 0, 0, 0, 0, 1, 0)),
     ID = 1L:8L,
-    cohort = c(0, 1, 2, 3, 4, 5, 5, 5),
+    cohort = as.integer(c(0, 1, 2, 3, 4, 5, 5, 5)),
     doseGrid = c(0.1, 0.5, 1.5, 3, 6, seq(from = 10, to = 80, by = 2))
   )
   model <- LogisticLogNormal(
@@ -351,7 +351,12 @@ test_that("Approximate fails gracefully with bad input", {
     cov = matrix(c(1, -0.5, -0.5, 1), nrow = 2),
     ref_dose = 56
   )
-  options <- McmcOptions(burnin = 100, step = 2, samples = 2000, rng_kind = "Mersenne-Twister", rng_seed = 303010)
+  options <- McmcOptions(
+    burnin = 100L,
+    step = 2L, samples = 2000L,
+    rng_kind = "Mersenne-Twister",
+    rng_seed = 303010L
+  )
   samples <- mcmc(data, model, options)
   expect_error(
     plot(x = samples, y = model, data = data, showLegend = "NotLogical"),
@@ -362,9 +367,9 @@ test_that("Approximate fails gracefully with bad input", {
 test_that("plot-Samples works correctly", {
   data <- Data(
     x = c(0.1, 0.5, 1.5, 3, 6, 10, 10, 10),
-    y = c(0, 0, 0, 0, 0, 0, 1, 0),
+    y = as.integer(c(0, 0, 0, 0, 0, 0, 1, 0)),
     ID = 1L:8L,
-    cohort = c(0, 1, 2, 3, 4, 5, 5, 5),
+    cohort = as.integer(c(0, 1, 2, 3, 4, 5, 5, 5)),
     doseGrid = c(0.1, 0.5, 1.5, 3, 6, seq(from = 10, to = 80, by = 2))
   )
 
@@ -374,7 +379,13 @@ test_that("plot-Samples works correctly", {
     ref_dose = 56
   )
 
-  options <- McmcOptions(burnin = 100, step = 2, samples = 2000, rng_kind = "Mersenne-Twister", rng_seed = 303010)
+  options <- McmcOptions(
+    burnin = 100L,
+    step = 2L,
+    samples = 2000L,
+    rng_kind = "Mersenne-Twister",
+    rng_seed = 303010L
+  )
   samples <- mcmc(data, model, options)
 
   actual <- plot(x = samples, y = model, data = data)
@@ -387,7 +398,7 @@ test_that("plot-Samples works correctly", {
 test_that("plot-Samples-DualEndpoint fails gracefully with bad input", {
   data <- DataDual(
     x = c(0.1, 0.5, 1.5, 3, 6, 10, 10, 10, 20, 20, 20, 40, 40, 40, 50, 50, 50),
-    y = c(0, 0, 0, 0, 0, 0, 1, 0, 0, 1, 1, 0, 0, 1, 0, 1, 1),
+    y = as.integer(c(0, 0, 0, 0, 0, 0, 1, 0, 0, 1, 1, 0, 0, 1, 0, 1, 1)),
     w = c(0.31, 0.42, 0.59, 0.45, 0.6, 0.7, 0.55, 0.6, 0.52, 0.54, 0.56, 0.43, 0.41, 0.39, 0.34, 0.38, 0.21),
     doseGrid = c(0.1, 0.5, 1.5, 3, 6, seq(from = 10, to = 80, by = 2)),
     ID = 1L:17L,
@@ -401,7 +412,13 @@ test_that("plot-Samples-DualEndpoint fails gracefully with bad input", {
     rho = c(a = 1, b = 1),
     rw1 = TRUE
   )
-  options <- McmcOptions(burnin = 100, step = 2, samples = 2000, rng_kind = "Mersenne-Twister", rng_seed = 393015)
+  options <- McmcOptions(
+    burnin = 100L,
+    step = 2L,
+    samples = 2000L,
+    rng_kind = "Mersenne-Twister",
+    rng_seed = 393015L
+  )
   samples <- mcmc(data, model, options)
 
   expect_error(
@@ -415,7 +432,7 @@ test_that("plot-Samples-DualEndpoint fails gracefully with bad input", {
 test_that("plot-Samples-DualEndpoint works correctly", {
   data <- DataDual(
     x = c(0.1, 0.5, 1.5, 3, 6, 10, 10, 10, 20, 20, 20, 40, 40, 40, 50, 50, 50),
-    y = c(0, 0, 0, 0, 0, 0, 1, 0, 0, 1, 1, 0, 0, 1, 0, 1, 1),
+    y = as.integer(c(0, 0, 0, 0, 0, 0, 1, 0, 0, 1, 1, 0, 0, 1, 0, 1, 1)),
     w = c(0.31, 0.42, 0.59, 0.45, 0.6, 0.7, 0.55, 0.6, 0.52, 0.54, 0.56, 0.43, 0.41, 0.39, 0.34, 0.38, 0.21),
     doseGrid = c(0.1, 0.5, 1.5, 3, 6, seq(from = 10, to = 80, by = 2)),
     ID = 1L:17L,
@@ -429,7 +446,13 @@ test_that("plot-Samples-DualEndpoint works correctly", {
     rho = c(a = 1, b = 1),
     rw1 = TRUE
   )
-  options <- McmcOptions(burnin = 100, step = 2, samples = 2000, rng_kind = "Mersenne-Twister", rng_seed = 393015)
+  options <- McmcOptions(
+    burnin = 100L,
+    step = 2L,
+    samples = 2000L,
+    rng_kind = "Mersenne-Twister",
+    rng_seed = 393015L
+  )
   samples <- mcmc(data, model, options)
 
   actual <- plot(x = samples, y = model, data = data)
@@ -449,11 +472,17 @@ test_that("fit-Samples-LogisticIndepBeta fails gracefully with bad input", {
     ID = 1L:8L,
     cohort = as.integer(c(1, 2, 2, 3, 4, 5, 6, 7)),
     x = c(25, 50, 50, 75, 150, 200, 225, 300),
-    y = c(0, 0, 0, 0, 1, 1, 1, 1),
+    y = as.integer(c(0, 0, 0, 0, 1, 1, 1, 1)),
     doseGrid = seq(from = 25, to = 300, by = 25)
   )
-  model <- LogisticIndepBeta(binDLE = c(1.05, 1.8), DLEweights = c(3, 3), DLEdose = c(25, 300), data = data)
-  options <- McmcOptions(burnin = 500, step = 2, samples = 2000, rng_kind = "Mersenne-Twister", rng_seed = 405017)
+  model <- LogisticIndepBeta(binDLE = c(1.05, 1.8), DLEweights = c(3L, 3L), DLEdose = c(25, 300), data = data)
+  options <- McmcOptions(
+    burnin = 500L,
+    step = 2L,
+    samples = 2000L,
+    rng_kind = "Mersenne-Twister",
+    rng_seed = 405017L
+  )
   samples <- mcmc(data, model, options)
   expect_error(
     fit(object = samples, model = model, data = data, points = "NotNumeric"),
@@ -478,11 +507,17 @@ test_that("fit-Samples-LogisticIndepBeta works", {
     ID = 1L:8L,
     cohort = as.integer(c(1, 2, 2, 3, 4, 5, 6, 7)),
     x = c(25, 50, 50, 75, 150, 200, 225, 300),
-    y = c(0, 0, 0, 0, 1, 1, 1, 1),
+    y = as.integer(c(0, 0, 0, 0, 1, 1, 1, 1)),
     doseGrid = seq(from = 25, to = 300, by = 25)
   )
-  model <- LogisticIndepBeta(binDLE = c(1.05, 1.8), DLEweights = c(3, 3), DLEdose = c(25, 300), data = data)
-  options <- McmcOptions(burnin = 500, step = 2, samples = 2000, rng_kind = "Mersenne-Twister", rng_seed = 405017)
+  model <- LogisticIndepBeta(binDLE = c(1.05, 1.8), DLEweights = c(3L, 3L), DLEdose = c(25, 300), data = data)
+  options <- McmcOptions(
+    burnin = 500L,
+    step = 2L,
+    samples = 2000L,
+    rng_kind = "Mersenne-Twister",
+    rng_seed = 405017L
+  )
   samples <- mcmc(data, model, options)
 
   actual <- fit(object = samples, model = model, data = data, quantiles = c(0.1, 0.9))
@@ -494,7 +529,7 @@ test_that("fit-Samples-LogisticIndepBeta works", {
 test_that("fit-Samples-Effloglog works correctly", {
   data <- DataDual(
     x = c(25, 50, 25, 50, 75, 300, 250, 150),
-    y = c(0, 0, 0, 0, 0, 1, 1, 0),
+    y = as.integer(c(0, 0, 0, 0, 0, 1, 1, 0)),
     w = c(0.31, 0.42, 0.59, 0.45, 0.6, 0.7, 0.6, 0.52),
     doseGrid = seq(25, 300, 25),
     placebo = FALSE,
@@ -502,7 +537,7 @@ test_that("fit-Samples-Effloglog works correctly", {
     cohort = 1L:8L
   )
   model <- Effloglog(c(1.223, 2.513), c(25, 300), nu = c(a = 1, b = 0.025), data = data, c = 0)
-  options <- McmcOptions(burnin = 100, step = 2, samples = 200)
+  options <- McmcOptions(burnin = 100L, step = 2L, samples = 200L)
   samples <- mcmc(
     data = data,
     model = model,
@@ -520,7 +555,7 @@ test_that("fit-Samples-Effloglog works correctly", {
 test_that("fit-Samples-Effloglog fails gracefully with bad input", {
   data <- DataDual(
     x = c(25, 50, 25, 50, 75, 300, 250, 150),
-    y = c(0, 0, 0, 0, 0, 1, 1, 0),
+    y = as.integer(c(0, 0, 0, 0, 0, 1, 1, 0)),
     w = c(0.31, 0.42, 0.59, 0.45, 0.6, 0.7, 0.6, 0.52),
     doseGrid = seq(25, 300, 25),
     placebo = FALSE,
@@ -528,7 +563,7 @@ test_that("fit-Samples-Effloglog fails gracefully with bad input", {
     cohort = 1L:8L
   )
   model <- Effloglog(c(1.223, 2.513), c(25, 300), nu = c(a = 1, b = 0.025), data = data, c = 0)
-  options <- McmcOptions(burnin = 100, step = 2, samples = 200)
+  options <- McmcOptions(burnin = 100L, step = 2L, samples = 200L)
   samples <- mcmc(
     data = data,
     model = model,
@@ -555,7 +590,7 @@ test_that("fit-Samples-Effloglog fails gracefully with bad input", {
 test_that("fit-Samples-EffFlexi works correctly", {
   data <- DataDual(
     x = c(25, 50, 25, 50, 75, 300, 250, 150),
-    y = c(0, 0, 0, 0, 0, 1, 1, 0),
+    y = as.integer(c(0, 0, 0, 0, 0, 1, 1, 0)),
     w = c(0.31, 0.42, 0.59, 0.45, 0.6, 0.7, 0.6, 0.52),
     doseGrid = seq(25, 300, 25),
     placebo = FALSE,
@@ -567,11 +602,11 @@ test_that("fit-Samples-EffFlexi works correctly", {
     sigma2W = c(a = 0.1, b = 0.1), sigma2betaW = c(a = 20, b = 50), rw1 = FALSE, data = data
   )
   options <- McmcOptions(
-    burnin = 1000,
-    step = 2,
-    samples = 10000,
+    burnin = 1000L,
+    step = 2L,
+    samples = 10000L,
     rng_kind = "Mersenne-Twister",
-    rng_seed = 574712
+    rng_seed = 574712L
   )
   samples <- mcmc(data = data, model = model, options = options)
 
@@ -585,7 +620,7 @@ test_that("fit-Samples-EffFlexi works correctly", {
 test_that("fit-Samples-EffFlexi fails gracefully with bad input", {
   data <- DataDual(
     x = c(25, 50, 25, 50, 75, 300, 250, 150),
-    y = c(0, 0, 0, 0, 0, 1, 1, 0),
+    y = as.integer(c(0, 0, 0, 0, 0, 1, 1, 0)),
     w = c(0.31, 0.42, 0.59, 0.45, 0.6, 0.7, 0.6, 0.52),
     doseGrid = seq(25, 300, 25),
     placebo = FALSE,
@@ -596,13 +631,12 @@ test_that("fit-Samples-EffFlexi fails gracefully with bad input", {
     eff = c(1.223, 2.513), eff_dose = c(25, 300),
     sigma2W = c(a = 0.1, b = 0.1), sigma2betaW = c(a = 20, b = 50), rw1 = FALSE, data = data
   )
-  options <- McmcOptions(burnin = 100, step = 2, samples = 200)
   options <- McmcOptions(
-    burnin = 100,
-    step = 2,
-    samples = 200,
+    burnin = 100L,
+    step = 2L,
+    samples = 200L,
     rng_kind = "Mersenne-Twister",
-    rng_seed = 574712
+    rng_seed = 574712L
   )
   samples <- mcmc(data = data, model = model, options = options)
 
@@ -627,22 +661,22 @@ test_that("fit-Samples-EffFlexi fails gracefully with bad input", {
 test_that("fitGain-Samples works correctly", {
   data <- DataDual(
     x = c(25, 50, 25, 50, 75, 300, 250, 150),
-    y = c(0, 0, 0, 0, 0, 1, 1, 0),
+    y = as.integer(c(0, 0, 0, 0, 0, 1, 1, 0)),
     w = c(0.31, 0.42, 0.59, 0.45, 0.6, 0.7, 0.6, 0.52),
     doseGrid = seq(25, 300, 25),
     placebo = FALSE,
     ID = 1L:8L,
     cohort = 1L:8L
   )
-  DLEmodel <- LogisticIndepBeta(binDLE = c(1.05, 1.8), DLEweights = c(3, 3), DLEdose = c(25, 300), data = data)
+  DLEmodel <- LogisticIndepBeta(binDLE = c(1.05, 1.8), DLEweights = c(3L, 3L), DLEdose = c(25, 300), data = data)
 
   Effmodel <- Effloglog(c(1.223, 2.513), c(25, 300), nu = c(a = 1, b = 0.025), data = data, c = 0)
   options <- McmcOptions(
-    burnin = 500,
-    step = 2,
-    samples = 5000,
+    burnin = 500L,
+    step = 2L,
+    samples = 5000L,
     rng_kind = "Mersenne-Twister",
-    rng_seed = 195612
+    rng_seed = 195612L
   )
 
   data1 <- Data(
@@ -666,22 +700,22 @@ test_that("fitGain-Samples works correctly", {
 test_that("fitGain-Samples fails gracefully with bad input", {
   data <- DataDual(
     x = c(25, 50, 25, 50, 75, 300, 250, 150),
-    y = c(0, 0, 0, 0, 0, 1, 1, 0),
+    y = as.integer(c(0, 0, 0, 0, 0, 1, 1, 0)),
     w = c(0.31, 0.42, 0.59, 0.45, 0.6, 0.7, 0.6, 0.52),
     doseGrid = seq(25, 300, 25),
     placebo = FALSE,
     ID = 1L:8L,
     cohort = 1L:8L
   )
-  DLEmodel <- LogisticIndepBeta(binDLE = c(1.05, 1.8), DLEweights = c(3, 3), DLEdose = c(25, 300), data = data)
+  DLEmodel <- LogisticIndepBeta(binDLE = c(1.05, 1.8), DLEweights = c(3L, 3L), DLEdose = c(25, 300), data = data)
 
   Effmodel <- Effloglog(c(1.223, 2.513), c(25, 300), nu = c(a = 1, b = 0.025), data = data, c = 0)
   options <- McmcOptions(
-    burnin = 500,
-    step = 2,
-    samples = 5000,
+    burnin = 500L,
+    step = 2L,
+    samples = 5000L,
     rng_kind = "Mersenne-Twister",
-    rng_seed = 195612
+    rng_seed = 195612L
   )
 
   data1 <- Data(
@@ -722,22 +756,22 @@ test_that("fitGain-Samples fails gracefully with bad input", {
 test_that("fitGain-Samples-ModelEff works correctly", {
   data <- DataDual(
     x = c(25, 50, 25, 50, 75, 300, 250, 150),
-    y = c(0, 0, 0, 0, 0, 1, 1, 0),
+    y = as.integer(c(0, 0, 0, 0, 0, 1, 1, 0)),
     w = c(0.31, 0.42, 0.59, 0.45, 0.6, 0.7, 0.6, 0.52),
     doseGrid = seq(25, 300, 25),
     placebo = FALSE,
     ID = 1L:8L,
     cohort = 1L:8L
   )
-  DLEmodel <- LogisticIndepBeta(binDLE = c(1.05, 1.8), DLEweights = c(3, 3), DLEdose = c(25, 300), data = data)
+  DLEmodel <- LogisticIndepBeta(binDLE = c(1.05, 1.8), DLEweights = c(3L, 3L), DLEdose = c(25, 300), data = data)
 
   Effmodel <- Effloglog(c(1.223, 2.513), c(25, 300), nu = c(a = 1, b = 0.025), data = data, c = 0)
   options <- McmcOptions(
-    burnin = 500,
-    step = 2,
-    samples = 5000,
+    burnin = 500L,
+    step = 2L,
+    samples = 5000L,
     rng_kind = "Mersenne-Twister",
-    rng_seed = 431609
+    rng_seed = 431609L
   )
   data1 <- Data(
     x = data@x,
@@ -761,22 +795,22 @@ test_that("fitGain-Samples-ModelEff works correctly", {
 test_that("fitGain-Samples-ModelEff fails gracefully with bad input", {
   data <- DataDual(
     x = c(25, 50, 25, 50, 75, 300, 250, 150),
-    y = c(0, 0, 0, 0, 0, 1, 1, 0),
+    y = as.integer(c(0, 0, 0, 0, 0, 1, 1, 0)),
     w = c(0.31, 0.42, 0.59, 0.45, 0.6, 0.7, 0.6, 0.52),
     doseGrid = seq(25, 300, 25),
     placebo = FALSE,
     ID = 1L:8L,
     cohort = 1L:8L
   )
-  DLEmodel <- LogisticIndepBeta(binDLE = c(1.05, 1.8), DLEweights = c(3, 3), DLEdose = c(25, 300), data = data)
+  DLEmodel <- LogisticIndepBeta(binDLE = c(1.05, 1.8), DLEweights = c(3L, 3L), DLEdose = c(25, 300), data = data)
 
   Effmodel <- Effloglog(c(1.223, 2.513), c(25, 300), nu = c(a = 1, b = 0.025), data = data, c = 0)
   options <- McmcOptions(
-    burnin = 500,
-    step = 2,
-    samples = 5000,
+    burnin = 500L,
+    step = 2L,
+    samples = 5000L,
     rng_kind = "Mersenne-Twister",
-    rng_seed = 431609
+    rng_seed = 431609L
   )
   data1 <- Data(
     x = data@x,
@@ -819,13 +853,13 @@ test_that("fitGain-Samples-ModelEff fails gracefully with bad input", {
 test_that("Check that plot-Samples-ModelTox fails gracefully with bad input", {
   data <- Data(
     x = c(25, 50, 50, 75, 150, 200, 225, 300),
-    y = c(0, 0, 0, 0, 1, 1, 1, 1),
+    y = as.integer(c(0, 0, 0, 0, 1, 1, 1, 1)),
     doseGrid = seq(from = 25, to = 300, by = 25),
     ID = 1L:8L,
     cohort = as.integer(c(1, 2, 2, 3:7))
   )
-  model <- LogisticIndepBeta(binDLE = c(1.05, 1.8), DLEweights = c(3, 3), DLEdose = c(25, 300), data = data)
-  options <- McmcOptions(burnin = 100, step = 2, samples = 200)
+  model <- LogisticIndepBeta(binDLE = c(1.05, 1.8), DLEweights = c(3L, 3L), DLEdose = c(25, 300), data = data)
+  options <- McmcOptions(burnin = 100L, step = 2L, samples = 200L)
   samples <- mcmc(data = data, model = model, options = options)
 
   expect_error(
@@ -837,23 +871,23 @@ test_that("Check that plot-Samples-ModelTox fails gracefully with bad input", {
 test_that("Check that plot-Samples-ModelTox works correctly", {
   data <- Data(
     x = c(25, 50, 50, 75, 150, 200, 225, 300),
-    y = c(0, 0, 0, 0, 1, 1, 1, 1),
+    y = as.integer(c(0, 0, 0, 0, 1, 1, 1, 1)),
     doseGrid = seq(from = 25, to = 300, by = 25),
     ID = 1L:8L,
     cohort = as.integer(c(1, 2, 2, 3:7))
   )
   model <- LogisticIndepBeta(
     binDLE = c(1.05, 1.8),
-    DLEweights = c(3, 3),
+    DLEweights = c(3L, 3L),
     DLEdose = c(25, 300),
     data = data
   )
   options <- McmcOptions(
-    burnin = 500,
-    step = 2,
-    samples = 5000,
+    burnin = 500L,
+    step = 2L,
+    samples = 5000L,
     rng_kind = "Mersenne-Twister",
-    rng_seed = 565409
+    rng_seed = 565409L
   )
   samples <- mcmc(data = data, model = model, options = options)
 
@@ -867,7 +901,7 @@ test_that("Check that plot-Samples-ModelTox works correctly", {
 ## Samples-LogisticLogNormalGrouped ----
 
 test_that("plot-Samples works specifically also for LogisticLogNormalGrouped", {
-  mcmcOptions <- McmcOptions(samples = 3)
+  mcmcOptions <- McmcOptions(samples = 3L)
   samples <- Samples(
     data = list(alpha0 = -1:1, delta0 = c(0, 1, -1), alpha1 = -1:1, delta1 = c(-1, 0, 2)),
     options = mcmcOptions
@@ -884,7 +918,7 @@ test_that("plot-Samples works specifically also for LogisticLogNormalGrouped", {
 test_that("Check that plot-Samples-ModelEff fails gracefully with bad input", {
   data <- DataDual(
     x = c(25, 50, 25, 50, 75, 300, 250, 150),
-    y = c(0, 0, 0, 0, 0, 1, 1, 0),
+    y = as.integer(c(0, 0, 0, 0, 0, 1, 1, 0)),
     w = c(0.31, 0.42, 0.59, 0.45, 0.6, 0.7, 0.6, 0.52),
     doseGrid = seq(25, 300, 25),
     placebo = FALSE,
@@ -893,10 +927,11 @@ test_that("Check that plot-Samples-ModelEff fails gracefully with bad input", {
   )
   model <- Effloglog(eff = c(1.223, 2.513), eff_dose = c(25, 300), nu = c(a = 1, b = 0.025), data = data)
   options <- McmcOptions(
-    burnin = 100, step = 2,
-    samples = 200,
+    burnin = 100L,
+    step = 2L,
+    samples = 200L,
     rng_kind = "Mersenne-Twister",
-    rng_seed = 565409
+    rng_seed = 565409L
   )
   samples <- mcmc(data = data, model = model, options = options)
 
@@ -909,7 +944,7 @@ test_that("Check that plot-Samples-ModelEff fails gracefully with bad input", {
 test_that("Check that plot-Samples-ModelEff works correctly", {
   data <- DataDual(
     x = c(25, 50, 25, 50, 75, 300, 250, 150),
-    y = c(0, 0, 0, 0, 0, 1, 1, 0),
+    y = as.integer(c(0, 0, 0, 0, 0, 1, 1, 0)),
     w = c(0.31, 0.42, 0.59, 0.45, 0.6, 0.7, 0.6, 0.52),
     doseGrid = seq(25, 300, 25),
     placebo = FALSE,
@@ -918,10 +953,11 @@ test_that("Check that plot-Samples-ModelEff works correctly", {
   )
   model <- Effloglog(eff = c(1.223, 2.513), eff_dose = c(25, 300), nu = c(a = 1, b = 0.025), data = data)
   options <- McmcOptions(
-    burnin = 100, step = 2,
-    samples = 200,
+    burnin = 100L,
+    step = 2L,
+    samples = 200L,
     rng_kind = "Mersenne-Twister",
-    rng_seed = 565409
+    rng_seed = 565409L
   )
   samples <- mcmc(data = data, model = model, options = options)
 
@@ -937,7 +973,7 @@ test_that("Check that plot-Samples-ModelEff works correctly", {
 test_that("Check that plot-Samples-ModelEffloglog fails gracefully with bad input", {
   data <- DataDual(
     x = c(25, 50, 25, 50, 75, 300, 250, 150),
-    y = c(0, 0, 0, 0, 0, 1, 1, 0),
+    y = as.integer(c(0, 0, 0, 0, 0, 1, 1, 0)),
     w = c(0.31, 0.42, 0.59, 0.45, 0.6, 0.7, 0.6, 0.52),
     doseGrid = seq(25, 300, 25),
     placebo = FALSE,
@@ -946,10 +982,11 @@ test_that("Check that plot-Samples-ModelEffloglog fails gracefully with bad inpu
   )
   model <- Effloglog(eff = c(1.223, 2.513), eff_dose = c(25, 300), nu = c(a = 1, b = 0.025), data = data)
   options <- McmcOptions(
-    burnin = 100, step = 2,
-    samples = 200,
+    burnin = 100L,
+    step = 2L,
+    samples = 200L,
     rng_kind = "Mersenne-Twister",
-    rng_seed = 565409
+    rng_seed = 565409L
   )
   samples <- mcmc(data = data, model = model, options = options)
 
@@ -962,7 +999,7 @@ test_that("Check that plot-Samples-ModelEffloglog fails gracefully with bad inpu
 test_that("Check that plot-Samples-ModelEffloglog works correctly", {
   data <- DataDual(
     x = c(25, 50, 25, 50, 75, 300, 250, 150),
-    y = c(0, 0, 0, 0, 0, 1, 1, 0),
+    y = as.integer(c(0, 0, 0, 0, 0, 1, 1, 0)),
     w = c(0.31, 0.42, 0.59, 0.45, 0.6, 0.7, 0.6, 0.52),
     doseGrid = seq(25, 300, 25),
     placebo = FALSE,
@@ -971,10 +1008,11 @@ test_that("Check that plot-Samples-ModelEffloglog works correctly", {
   )
   model <- Effloglog(eff = c(1.223, 2.513), eff_dose = c(25, 300), nu = c(a = 1, b = 0.025), data = data)
   options <- McmcOptions(
-    burnin = 100, step = 2,
-    samples = 200,
+    burnin = 100L,
+    step = 2L,
+    samples = 200L,
     rng_kind = "Mersenne-Twister",
-    rng_seed = 565409
+    rng_seed = 565409L
   )
   samples <- mcmc(data = data, model = model, options = options)
 
@@ -992,12 +1030,12 @@ test_that("Check that plot-Samples-ModelEffloglog works correctly", {
 test_that("Check that plot-Samples-ModelEffNoSamples fails gracefully with bad input", {
   data <- Data(
     x = c(25, 50, 50, 75, 100, 100, 225, 300),
-    y = c(0, 0, 0, 0, 1, 1, 1, 1),
+    y = as.integer(c(0, 0, 0, 0, 1, 1, 1, 1)),
     doseGrid = seq(25, 300, 25),
     ID = 1L:8L,
     cohort = 1L:8L
   )
-  model <- LogisticIndepBeta(binDLE = c(1.05, 1.8), DLEweights = c(3, 3), DLEdose = c(25, 300), data = data)
+  model <- LogisticIndepBeta(binDLE = c(1.05, 1.8), DLEweights = c(3L, 3L), DLEdose = c(25, 300), data = data)
 
   expect_error(
     plot(y = model, x = data, showLegend = "NotLogical"),
@@ -1008,12 +1046,12 @@ test_that("Check that plot-Samples-ModelEffNoSamples fails gracefully with bad i
 test_that("Check that plot-Samples-ModelEffNoSamples works correctly", {
   data <- Data(
     x = c(25, 50, 50, 75, 100, 100, 225, 300),
-    y = c(0, 0, 0, 0, 1, 1, 1, 1),
+    y = as.integer(c(0, 0, 0, 0, 1, 1, 1, 1)),
     doseGrid = seq(25, 300, 25),
     ID = 1L:8L,
     cohort = 1L:8L
   )
-  model <- LogisticIndepBeta(binDLE = c(1.05, 1.8), DLEweights = c(3, 3), DLEdose = c(25, 300), data = data)
+  model <- LogisticIndepBeta(binDLE = c(1.05, 1.8), DLEweights = c(3L, 3L), DLEdose = c(25, 300), data = data)
 
   actual <- plot(y = model, x = data)
   vdiffr::expect_doppelganger("plot-Samples-ModelEffNoSamples", actual)
@@ -1029,14 +1067,14 @@ test_that("Check that plot-Samples-ModelEffNoSamples works correctly", {
 test_that("plotGain-ModelTox-Samples-ModelEff-Samples works correctly", {
   data <- DataDual(
     x = c(25, 50, 25, 50, 75, 300, 250, 150),
-    y = c(0, 0, 0, 0, 0, 1, 1, 0),
+    y = as.integer(c(0, 0, 0, 0, 0, 1, 1, 0)),
     w = c(0.31, 0.42, 0.59, 0.45, 0.6, 0.7, 0.6, 0.52),
     doseGrid = seq(25, 300, 25),
     placebo = FALSE,
     ID = 1L:8L,
     cohort = 1L:8L
   )
-  DLEmodel <- LogisticIndepBeta(binDLE = c(1.05, 1.8), DLEweights = c(3, 3), DLEdose = c(25, 300), data = data)
+  DLEmodel <- LogisticIndepBeta(binDLE = c(1.05, 1.8), DLEweights = c(3L, 3L), DLEdose = c(25, 300), data = data)
   Effmodel <- Effloglog(eff = c(1.223, 2.513), eff_dose = c(25, 300), nu = c(a = 1, b = 0.025), data = data, const = 0)
   data1 <- Data(
     x = data@x,
@@ -1046,18 +1084,18 @@ test_that("plotGain-ModelTox-Samples-ModelEff-Samples works correctly", {
     cohort = 1L:8L
   )
   optionsDLE <- McmcOptions(
-    burnin = 1000,
-    step = 2,
-    samples = 10000,
+    burnin = 1000L,
+    step = 2L,
+    samples = 10000L,
     rng_kind = "Mersenne-Twister",
-    rng_seed = 114810
+    rng_seed = 114810L
   )
   optionsTox <- McmcOptions(
-    burnin = 1000,
-    step = 2,
-    samples = 10000,
+    burnin = 1000L,
+    step = 2L,
+    samples = 10000L,
     rng_kind = "Mersenne-Twister",
-    rng_seed = 265310
+    rng_seed = 265310L
   )
   DLEsamples <- mcmc(data = data1, model = DLEmodel, options = optionsDLE)
   Effsamples <- mcmc(data = data, model = Effmodel, options = optionsTox)
@@ -1074,14 +1112,14 @@ test_that("plotGain-ModelTox-Samples-ModelEff-Samples works correctly", {
 test_that("plotGain-ModelTox-Missing-ModelEff-Missing works correctly", {
   data <- DataDual(
     x = c(25, 50, 25, 50, 75, 300, 250, 150),
-    y = c(0, 0, 0, 0, 0, 1, 1, 0),
+    y = as.integer(c(0, 0, 0, 0, 0, 1, 1, 0)),
     w = c(0.31, 0.42, 0.59, 0.45, 0.6, 0.7, 0.6, 0.52),
     doseGrid = seq(25, 300, 25),
     placebo = FALSE,
     ID = 1L:8L,
     cohort = 1L:8L
   )
-  DLEmodel <- LogisticIndepBeta(binDLE = c(1.05, 1.8), DLEweights = c(3, 3), DLEdose = c(25, 300), data = data)
+  DLEmodel <- LogisticIndepBeta(binDLE = c(1.05, 1.8), DLEweights = c(3L, 3L), DLEdose = c(25, 300), data = data)
   Effmodel <- Effloglog(eff = c(1.223, 2.513), eff_dose = c(25, 300), nu = c(a = 1, b = 0.025), data = data)
   actual <- plotGain(
     DLEmodel = DLEmodel,
@@ -1098,14 +1136,14 @@ test_that("plotGain-ModelTox-Missing-ModelEff-Missing works correctly", {
 test_that("plotDualResponses fails gracefully with bad arguments", {
   data <- DataDual(
     x = c(25, 50, 25, 50, 75, 300, 250, 150),
-    y = c(0, 0, 0, 0, 0, 1, 1, 0),
+    y = as.integer(c(0, 0, 0, 0, 0, 1, 1, 0)),
     w = c(0.31, 0.42, 0.59, 0.45, 0.6, 0.7, 0.6, 0.52),
     doseGrid = seq(25, 300, 25),
     placebo = FALSE,
     ID = 1L:8L,
     cohort = 1L:8L
   )
-  DLEmodel <- LogisticIndepBeta(binDLE = c(1.05, 1.8), DLEweights = c(3, 3), DLEdose = c(25, 300), data = data)
+  DLEmodel <- LogisticIndepBeta(binDLE = c(1.05, 1.8), DLEweights = c(3L, 3L), DLEdose = c(25, 300), data = data)
   Effmodel <- Effloglog(eff = c(1.223, 2.513), eff_dose = c(25, 300), nu = c(a = 1, b = 0.025), data = data)
   data1 <- Data(
     x = data@x, y = data@y,
@@ -1114,18 +1152,18 @@ test_that("plotDualResponses fails gracefully with bad arguments", {
     cohort = 1L:8L
   )
   optionsDLE <- McmcOptions(
-    burnin = 1000,
-    step = 2,
-    samples = 10000,
+    burnin = 1000L,
+    step = 2L,
+    samples = 10000L,
     rng_kind = "Mersenne-Twister",
-    rng_seed = 284211
+    rng_seed = 284211L
   )
   optionsEff <- McmcOptions(
-    burnin = 1000,
-    step = 2,
-    samples = 10000,
+    burnin = 1000L,
+    step = 2L,
+    samples = 10000L,
     rng_kind = "Mersenne-Twister",
-    rng_seed = 374211
+    rng_seed = 374211L
   )
   DLEsamples <- mcmc(data = data1, model = DLEmodel, options = optionsDLE)
   Effsamples <- mcmc(data = data, model = Effmodel, options = optionsEff)
@@ -1156,7 +1194,7 @@ test_that("plotDualResponses fails gracefully with bad arguments", {
 test_that("plotDualResponses works correctly", {
   data <- DataDual(
     x = c(25, 50, 25, 50, 75, 300, 250, 150),
-    y = c(0, 0, 0, 0, 0, 1, 1, 0),
+    y = as.integer(c(0, 0, 0, 0, 0, 1, 1, 0)),
     w = c(0.31, 0.42, 0.59, 0.45, 0.6, 0.7, 0.6, 0.52),
     doseGrid = seq(25, 300, 25),
     placebo = FALSE,
@@ -1165,7 +1203,7 @@ test_that("plotDualResponses works correctly", {
   )
   DLEmodel <- LogisticIndepBeta(
     binDLE = c(1.05, 1.8),
-    DLEweights = c(3, 3),
+    DLEweights = c(3L, 3L),
     DLEdose = c(25, 300),
     data = data
   )
@@ -1182,18 +1220,18 @@ test_that("plotDualResponses works correctly", {
     cohort = 1L:8L
   )
   optionsDLE <- McmcOptions(
-    burnin = 1000,
-    step = 2,
-    samples = 10000,
+    burnin = 1000L,
+    step = 2L,
+    samples = 10000L,
     rng_kind = "Mersenne-Twister",
-    rng_seed = 284211
+    rng_seed = 284211L
   )
   optionsEff <- McmcOptions(
-    burnin = 1000,
-    step = 2,
-    samples = 10000,
+    burnin = 1000L,
+    step = 2L,
+    samples = 10000L,
     rng_kind = "Mersenne-Twister",
-    rng_seed = 374211
+    rng_seed = 374211L
   )
   DLEsamples <- mcmc(data = data1, model = DLEmodel, options = optionsDLE)
   Effsamples <- mcmc(data = data, model = Effmodel, options = optionsEff)
@@ -1242,14 +1280,14 @@ test_that("plotDualResponses works correctly", {
 test_that("plotDualResponses-ModelTox-Missing-ModelEff-Missing works as expected", {
   data <- DataDual(
     x = c(25, 50, 25, 50, 75, 300, 250, 150),
-    y = c(0, 0, 0, 0, 0, 1, 1, 0),
+    y = as.integer(c(0, 0, 0, 0, 0, 1, 1, 0)),
     w = c(0.31, 0.42, 0.59, 0.45, 0.6, 0.7, 0.6, 0.52),
     doseGrid = seq(25, 300, 25),
     placebo = FALSE,
     ID = 1L:8L,
     cohort = 1L:8L
   )
-  DLEmodel <- LogisticIndepBeta(binDLE = c(1.05, 1.8), DLEweights = c(3, 3), DLEdose = c(25, 300), data = data)
+  DLEmodel <- LogisticIndepBeta(binDLE = c(1.05, 1.8), DLEweights = c(3L, 3L), DLEdose = c(25, 300), data = data)
   Effmodel <- Effloglog(eff = c(1.223, 2.513), eff_dose = c(25, 300), nu = c(a = 1, b = 0.025), data = data)
   actual <- plotDualResponses(
     DLEmodel = DLEmodel,
@@ -1266,7 +1304,7 @@ test_that("plotDualResponses-ModelTox-Missing-ModelEff-Missing works as expected
 test_that("fitPEM-Samples-DALogisticLogNormal-DataDA fails gracefully with bad input", {
   data <- DataDA(
     x = c(0.1, 0.5, 1.5, 3, 6, 10, 10, 10),
-    y = c(0, 0, 1, 1, 0, 0, 1, 0),
+    y = as.integer(c(0, 0, 1, 1, 0, 0, 1, 0)),
     doseGrid = c(0.1, 0.5, 1.5, 3, 6, seq(from = 10, to = 80, by = 2)),
     u = c(42, 30, 15, 5, 20, 25, 30, 60),
     t0 = c(0, 15, 30, 40, 55, 70, 75, 85),
@@ -1274,7 +1312,7 @@ test_that("fitPEM-Samples-DALogisticLogNormal-DataDA fails gracefully with bad i
     ID = 1L:8L,
     cohort = as.integer(c(1:5, 6, 6, 6))
   )
-  npiece_ <- 10
+  npiece_ <- 10L
   lambda_prior <- function(k) {
     npiece_ / (data@Tmax * (npiece_ - k + 0.5))
   }
@@ -1287,11 +1325,11 @@ test_that("fitPEM-Samples-DALogisticLogNormal-DataDA fails gracefully with bad i
     c_par = 2
   )
   options <- McmcOptions(
-    burnin = 500,
-    step = 2,
-    samples = 5000,
+    burnin = 500L,
+    step = 2L,
+    samples = 5000L,
     rng_kind = "Mersenne-Twister",
-    rng_seed = 225013
+    rng_seed = 225013L
   )
   samples <- mcmc(data, model, options)
 
@@ -1318,7 +1356,7 @@ test_that("fitPEM-Samples-DALogisticLogNormal-DataDA fails gracefully with bad i
 test_that("fitPEM-Samples-DALogisticLogNormal-DataDA works correctly", {
   data <- DataDA(
     x = c(0.1, 0.5, 1.5, 3, 6, 10, 10, 10),
-    y = c(0, 0, 1, 1, 0, 0, 1, 0),
+    y = as.integer(c(0, 0, 1, 1, 0, 0, 1, 0)),
     doseGrid = c(0.1, 0.5, 1.5, 3, 6, seq(from = 10, to = 80, by = 2)),
     u = c(42, 30, 15, 5, 20, 25, 30, 60),
     t0 = c(0, 15, 30, 40, 55, 70, 75, 85),
@@ -1326,7 +1364,7 @@ test_that("fitPEM-Samples-DALogisticLogNormal-DataDA works correctly", {
     ID = 1L:8L,
     cohort = as.integer(c(1:5, 6, 6, 6))
   )
-  npiece_ <- 10
+  npiece_ <- 10L
   lambda_prior <- function(k) {
     npiece_ / (data@Tmax * (npiece_ - k + 0.5))
   }
@@ -1339,11 +1377,11 @@ test_that("fitPEM-Samples-DALogisticLogNormal-DataDA works correctly", {
     c_par = 2
   )
   options <- McmcOptions(
-    burnin = 500,
-    step = 2,
-    samples = 5000,
+    burnin = 500L,
+    step = 2L,
+    samples = 5000L,
     rng_kind = "Mersenne-Twister",
-    rng_seed = 225013
+    rng_seed = 225013L
   )
   samples <- mcmc(data, model, options)
 
@@ -1363,7 +1401,7 @@ test_that("fitPEM-Samples-DALogisticLogNormal-DataDA works correctly", {
 test_that("plot-Samples-DALogisticNormal fails gracefully with bad input", {
   data <- DataDA(
     x = c(0.1, 0.5, 1.5, 3, 6, 10, 10, 10),
-    y = c(0, 0, 1, 1, 0, 0, 1, 0),
+    y = as.integer(c(0, 0, 1, 1, 0, 0, 1, 0)),
     doseGrid = c(0.1, 0.5, 1.5, 3, 6, seq(from = 10, to = 80, by = 2)),
     u = c(42, 30, 15, 5, 20, 25, 30, 60),
     t0 = c(0, 15, 30, 40, 55, 70, 75, 85),
@@ -1371,7 +1409,7 @@ test_that("plot-Samples-DALogisticNormal fails gracefully with bad input", {
     ID = 1L:8L,
     cohort = 1L:8L
   )
-  npiece_ <- 10
+  npiece_ <- 10L
   lambda_prior <- function(k) {
     npiece_ / (data@Tmax * (npiece_ - k + 0.5))
   }
@@ -1385,11 +1423,11 @@ test_that("plot-Samples-DALogisticNormal fails gracefully with bad input", {
     c_par = 2
   )
   options <- McmcOptions(
-    burnin = 100,
-    step = 2,
-    samples = 1000,
+    burnin = 100L,
+    step = 2L,
+    samples = 1000L,
     rng_kind = "Mersenne-Twister",
-    rng_seed = 552914
+    rng_seed = 552914L
   )
   samples <- mcmc(data, model, options)
 
@@ -1410,7 +1448,7 @@ test_that("plot-Samples-DALogisticNormal fails gracefully with bad input", {
 test_that("plot-Samples-DALogisticNormal works correctly", {
   data <- DataDA(
     x = c(0.1, 0.5, 1.5, 3, 6, 10, 10, 10),
-    y = c(0, 0, 1, 1, 0, 0, 1, 0),
+    y = as.integer(c(0, 0, 1, 1, 0, 0, 1, 0)),
     doseGrid = c(0.1, 0.5, 1.5, 3, 6, seq(from = 10, to = 80, by = 2)),
     u = c(42, 30, 15, 5, 20, 25, 30, 60),
     t0 = c(0, 15, 30, 40, 55, 70, 75, 85),
@@ -1418,7 +1456,7 @@ test_that("plot-Samples-DALogisticNormal works correctly", {
     ID = 1L:8L,
     cohort = 1L:8L
   )
-  npiece_ <- 10
+  npiece_ <- 10L
   lambda_prior <- function(k) {
     npiece_ / (data@Tmax * (npiece_ - k + 0.5))
   }
@@ -1433,11 +1471,11 @@ test_that("plot-Samples-DALogisticNormal works correctly", {
   )
 
   options <- McmcOptions(
-    burnin = 100,
-    step = 2,
-    samples = 1000,
+    burnin = 100L,
+    step = 2L,
+    samples = 1000L,
     rng_kind = "Mersenne-Twister",
-    rng_seed = 552914
+    rng_seed = 552914L
   )
   samples <- mcmc(data, model, options)
 
@@ -1457,7 +1495,7 @@ test_that("plot-Samples-DALogisticNormal works correctly", {
 test_that("Approximate fails gracefully with bad input", {
   data <- DataDA(
     x = c(0.1, 0.5, 1.5, 3, 6, 10, 10, 10),
-    y = c(0, 0, 1, 1, 0, 0, 1, 0),
+    y = as.integer(c(0, 0, 1, 1, 0, 0, 1, 0)),
     doseGrid = c(0.1, 0.5, 1.5, 3, 6, seq(from = 10, to = 80, by = 2)),
     u = c(42, 30, 15, 5, 20, 25, 30, 60),
     t0 = c(0, 15, 30, 40, 55, 70, 75, 85),
@@ -1465,7 +1503,7 @@ test_that("Approximate fails gracefully with bad input", {
     ID = 1L:8L,
     cohort = 1L:8L
   )
-  npiece_ <- 10
+  npiece_ <- 10L
   lambda_prior <- function(k) {
     npiece_ / (data@Tmax * (npiece_ - k + 0.5))
   }
@@ -1479,11 +1517,11 @@ test_that("Approximate fails gracefully with bad input", {
     c_par = 2
   )
   options <- McmcOptions(
-    burnin = 100,
-    step = 2,
-    samples = 1000,
+    burnin = 100L,
+    step = 2L,
+    samples = 1000L,
     rng_kind = "Mersenne-Twister",
-    rng_seed = 552914
+    rng_seed = 552914L
   )
   samples <- mcmc(data, model, options)
 
@@ -1542,9 +1580,9 @@ test_that("Approximate fails gracefully with bad input", {
 test_that("approximate works correctly", {
   data <- Data(
     x = c(0.1, 0.5, 1.5, 3, 6, 10, 10, 10),
-    y = c(0, 0, 0, 0, 0, 0, 1, 0),
+    y = as.integer(c(0, 0, 0, 0, 0, 0, 1, 0)),
     ID = 1L:8L,
-    cohort = c(0, 1, 2, 3, 4, 5, 5, 5),
+    cohort = as.integer(c(0, 1, 2, 3, 4, 5, 5, 5)),
     doseGrid = c(0.1, 0.5, 1.5, 3, 6, seq(from = 10, to = 80, by = 2))
   )
 
@@ -1555,10 +1593,10 @@ test_that("approximate works correctly", {
   )
 
   options <- McmcOptions(
-    burnin = 100,
-    step = 2,
-    samples = 2000,
-    rng_seed = 544914,
+    burnin = 100L,
+    step = 2L,
+    samples = 2000L,
+    rng_seed = 544914L,
     rng_kind = "Mersenne-Twister"
   )
 
@@ -1594,22 +1632,22 @@ test_that("approximate works correctly", {
 test_that("fit-Samples-LogisticIndepBeta works correctly", {
   data <- Data(
     x = c(25, 50, 50, 75, 150, 200, 225, 300),
-    y = c(0, 0, 0, 0, 1, 1, 1, 1),
-    ID = 1:8,
-    cohort = c(1, 2, 2, 3, 4, 5, 6, 7),
+    y = as.integer(c(0, 0, 0, 0, 1, 1, 1, 1)),
+    ID = 1L:8L,
+    cohort = as.integer(c(1, 2, 2, 3, 4, 5, 6, 7)),
     doseGrid = seq(from = 25, to = 300, by = 25)
   )
   model <- LogisticIndepBeta(
     binDLE = c(1.05, 1.8),
-    DLEweights = c(3, 3),
+    DLEweights = c(3L, 3L),
     DLEdose = c(25, 300),
     data = data
   )
   options <- McmcOptions(
-    burnin = 100,
-    step = 2,
-    samples = 200,
-    rng_seed = 52513,
+    burnin = 100L,
+    step = 2L,
+    samples = 200L,
+    rng_seed = 52513L,
     rng_kind = "Mersenne-Twister"
   )
   samples <- mcmc(data, model, options)
@@ -1621,16 +1659,16 @@ test_that("fit-Samples-LogisticIndepBeta works correctly", {
 test_that("fitGain-Samples-LogisticIndepBeta works correctly", {
   data <- DataDual(
     x = c(25, 50, 25, 50, 75, 300, 250, 150),
-    y = c(0, 0, 0, 0, 0, 1, 1, 0),
+    y = as.integer(c(0, 0, 0, 0, 0, 1, 1, 0)),
     w = c(0.31, 0.42, 0.59, 0.45, 0.6, 0.7, 0.6, 0.52),
-    ID = 1:8,
-    cohort = 1:8,
+    ID = 1L:8L,
+    cohort = 1L:8L,
     doseGrid = seq(25, 300, 25),
     placebo = FALSE
   )
   DLEmodel <- LogisticIndepBeta(
     binDLE = c(1.05, 1.8),
-    DLEweights = c(3, 3),
+    DLEweights = c(3L, 3L),
     DLEdose = c(25, 300),
     data = data
   )
@@ -1642,10 +1680,10 @@ test_that("fitGain-Samples-LogisticIndepBeta works correctly", {
     c = 0
   )
   options <- McmcOptions(
-    burnin = 100,
-    step = 2,
-    samples = 200,
-    rng_seed = 52513,
+    burnin = 100L,
+    step = 2L,
+    samples = 200L,
+    rng_seed = 52513L,
     rng_kind = "Mersenne-Twister"
   )
   data1 <- Data(

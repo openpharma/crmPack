@@ -59,7 +59,7 @@ my_stopping1 <- StoppingTargetBiomarker(
 )
 
 # For illustration stop with 6 subjects.
-my_stopping <- my_stopping1 | StoppingMinPatients(6) | StoppingMissingDose()
+my_stopping <- my_stopping1 | StoppingMinPatients(6L) | StoppingMissingDose()
 
 # Choose the rule for dose increments.
 my_increments <- IncrementsRelative(
@@ -74,7 +74,7 @@ design <- DualDesign(
   nextBest = my_next_best,
   stopping = my_stopping,
   increments = my_increments,
-  cohort_size = CohortSizeConst(3),
+  cohort_size = CohortSizeConst(3L),
   startingDose = 3
 )
 

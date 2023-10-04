@@ -23,22 +23,22 @@ myNextBest <- NextBestNCRM(
 # Choose the rule for the cohort-size
 mySize1 <- CohortSizeRange(
   intervals = c(0, 30),
-  cohort_size = c(1, 3)
+  cohort_size = c(1L, 3L)
 )
 mySize2 <- CohortSizeDLT(
-  intervals = c(0, 1),
-  cohort_size = c(1, 3)
+  intervals = c(0L, 1L),
+  cohort_size = c(1L, 3L)
 )
 mySize <- maxSize(mySize1, mySize2)
 
 # Choose the rule for stopping
-myStopping1 <- StoppingMinCohorts(nCohorts = 3, report_label = character(0))
+myStopping1 <- StoppingMinCohorts(nCohorts = 3L, report_label = character(0))
 myStopping2 <- StoppingTargetProb(
   target = c(0.2, 0.35),
   prob = 0.5,
   report_label = character(0)
 )
-myStopping3 <- StoppingMinPatients(nPatients = 20, report_label = character(0))
+myStopping3 <- StoppingMinPatients(nPatients = 20L, report_label = character(0))
 myStopping <- StoppingAny(
   stop_list = c(
     StoppingAll(stop_list = c(

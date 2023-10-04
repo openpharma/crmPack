@@ -127,10 +127,10 @@ myIncrements <- IncrementsRelative(
   increments = c(2, 2)
 )
 ## cohort size of 3
-mySize <- CohortSizeConst(size = 3)
+mySize <- CohortSizeConst(size = 3L)
 ## Stop only when 10 subjects are treated (only for illustration such a low
 ## sample size)
-myStopping <- StoppingMinPatients(nPatients = 10)
+myStopping <- StoppingMinPatients(nPatients = 10L)
 ## Now specified the design with all the above information and starting with
 ## a dose of 25
 

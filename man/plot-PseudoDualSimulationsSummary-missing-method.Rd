@@ -70,10 +70,10 @@ my_next_best <- NextBestMaxGain(
 my_increments <- IncrementsRelative(intervals = 0, increments = 2)
 
 # Cohort size of 3.
-my_size <- CohortSizeConst(size = 3)
+my_size <- CohortSizeConst(size = 3L)
 
 # Stop when 10 subjects are treated (for illustration only).
-my_stopping <- StoppingMinPatients(nPatients = 10)
+my_stopping <- StoppingMinPatients(nPatients = 10L)
 
 ## Now specified the design with all the above information and starting with a dose of 25
 

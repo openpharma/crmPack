@@ -600,13 +600,13 @@ test_that("v_increments_relative_parts returns message for non-valid clean_start
 ## v_increments_relative_dlt ----
 
 test_that("v_increments_relative_dlt passes for valid object", {
-  object <- IncrementsRelativeDLT(intervals = c(0, 2), increments = c(2, 1))
+  object <- IncrementsRelativeDLT(intervals = c(0L, 2L), increments = c(2, 1))
   expect_true(v_increments_relative_dlt(object))
 })
 
 test_that("v_increments_relative_dlt returns message for non-valid intervals", {
   err_msg <- "intervals has to be an integer vector with unique, finite, non-negative and sorted non-missing values"
-  object <- IncrementsRelativeDLT(intervals = c(0, 2, 3), increments = c(2, 1, 1.5))
+  object <- IncrementsRelativeDLT(intervals = c(0L, 2L, 3L), increments = c(2, 1, 1.5))
 
   # Changing `intervals` so that it contains non-unique values.
   object@intervals <- c(1L, 2L, 2L)
@@ -623,7 +623,7 @@ test_that("v_increments_relative_dlt returns message for non-valid intervals", {
 
 test_that("v_increments_relative_dlt returns message for non-valid increments", {
   err_msg <- "increments has to be a numerical vector of the same length as `intervals` with finite values"
-  object <- IncrementsRelativeDLT(intervals = c(0, 2, 3), increments = c(2, 1, 1.5))
+  object <- IncrementsRelativeDLT(intervals = c(0L, 2L, 3L), increments = c(2, 1, 1.5))
 
   # Changing `increments` so that it is of a length different than the length of `intervals`.
   object@increments <- c(1, 2, 3, 4)
@@ -640,10 +640,10 @@ test_that("v_increments_dose_levels passes for valid object", {
   object <- IncrementsDoseLevels()
   expect_true(v_increments_dose_levels(object))
 
-  object <- IncrementsDoseLevels(levels = 1, basis_level = "last")
+  object <- IncrementsDoseLevels(levels = 1L, basis_level = "last")
   expect_true(v_increments_dose_levels(object))
 
-  object <- IncrementsDoseLevels(levels = 2, basis_level = "max")
+  object <- IncrementsDoseLevels(levels = 2L, basis_level = "max")
   expect_true(v_increments_dose_levels(object))
 })
 
@@ -1204,9 +1204,9 @@ test_that("v_stopping_list returns expected messages for non-valid summary (outp
 test_that("v_stopping_all passes for valid object", {
   object <- StoppingAll(
     stop_list = list(
-      StoppingMinCohorts(nCohorts = 3),
+      StoppingMinCohorts(nCohorts = 3L),
       StoppingTargetProb(target = c(0.2, 0.35), prob = 0.5),
-      StoppingMinPatients(nPatients = 20)
+      StoppingMinPatients(nPatients = 20L)
     )
   )
   expect_true(v_stopping_all(object))
@@ -1216,9 +1216,9 @@ test_that("v_stopping_all returns expected messages for non-valid stop_list", {
   err_msg <- "every stop_list element must be of class 'Stopping'"
   object <- StoppingAll(
     stop_list = list(
-      StoppingMinCohorts(nCohorts = 3),
+      StoppingMinCohorts(nCohorts = 3L),
       StoppingTargetProb(target = c(0.2, 0.35), prob = 0.5),
-      StoppingMinPatients(nPatients = 20)
+      StoppingMinPatients(nPatients = 20L)
     )
   )
 
@@ -1277,19 +1277,19 @@ test_that("v_stopping_tdci_ratio returns message for non-valid prob_target", {
 ## v_cohort_size_range ----
 
 test_that("v_cohort_size_range passes for valid object", {
-  object <- CohortSizeRange(0, 20)
+  object <- CohortSizeRange(0, 20L)
   expect_true(v_cohort_size_range(object))
 
-  object <- CohortSizeRange(c(0, 30), c(20, 60))
+  object <- CohortSizeRange(c(0, 30), c(20L, 60L))
   expect_true(v_cohort_size_range(object))
 
-  object <- CohortSizeRange(c(20, 40, 90), c(50, 160, 400))
+  object <- CohortSizeRange(c(20, 40, 90), c(50L, 160L, 400L))
   expect_true(v_cohort_size_range(object))
 })
 
 test_that("v_cohort_size_range returns message for non-valid intervals", {
   err_msg <- "intervals must be a numeric vector with non-negative, sorted (asc.) and unique values"
-  object <- CohortSizeRange(c(0, 30), c(20, 60))
+  object <- CohortSizeRange(c(0, 30), c(20L, 60L))
 
   # Changing `intervals` so that it contains a non-unique values
   object@intervals <- c(10, 10)
@@ -1314,7 +1314,7 @@ test_that("v_cohort_size_range returns message for non-valid intervals", {
 
 test_that("v_cohort_size_range returns message for non-valid cohort_size", {
   errmsg <- "cohort_size must be an integer vector of the same length as intervals, containing non-negative values only"
-  object <- CohortSizeRange(c(0, 30), c(20, 60))
+  object <- CohortSizeRange(c(0, 30), c(20L, 60L))
 
   # Changing `cohort_size` so that its length is not equal to the length of `intervals`.
   object@cohort_size <- c(20L, 60L, 90L)
@@ -1333,19 +1333,19 @@ test_that("v_cohort_size_range returns message for non-valid cohort_size", {
 ## v_cohort_size_dlt ----
 
 test_that("v_cohort_size_dlt passes for valid object", {
-  object <- CohortSizeDLT(0, 20)
+  object <- CohortSizeDLT(0L, 20L)
   expect_true(v_cohort_size_dlt(object))
 
-  object <- CohortSizeDLT(c(0, 1), c(20, 60))
+  object <- CohortSizeDLT(c(0L, 1L), c(20L, 60L))
   expect_true(v_cohort_size_dlt(object))
 
-  object <- CohortSizeDLT(c(0, 1, 3), c(50, 160, 400))
+  object <- CohortSizeDLT(c(0L, 1L, 3L), c(50L, 160L, 400L))
   expect_true(v_cohort_size_dlt(object))
 })
 
 test_that("v_cohort_size_dlt returns message for non-valid intervals", {
   err_msg <- "intervals must be an integer vector with non-negative, sorted (asc.) and unique values"
-  object <- CohortSizeDLT(c(0, 1), c(20, 60))
+  object <- CohortSizeDLT(c(0L, 1L), c(20L, 60L))
 
   # Changing `intervals` so that it contains a non-unique values
   object@intervals <- c(10L, 10L)
@@ -1369,7 +1369,7 @@ test_that("v_cohort_size_dlt returns message for non-valid intervals", {
 test_that("v_cohort_size_dlt returns message for non-valid cohort_size", {
   errmsg <-
     "cohort_size must be an integer vector of the same length as intervals, containing non-negative values only"
-  object <- CohortSizeDLT(c(0, 1), c(20, 60))
+  object <- CohortSizeDLT(c(0L, 1L), c(20L, 60L))
 
   # Changing `cohort_size` so that its length is not equal to the length of `intervals`.
   object@cohort_size <- c(20L, 60L, 90L)
@@ -1388,16 +1388,16 @@ test_that("v_cohort_size_dlt returns message for non-valid cohort_size", {
 ## v_cohort_size_const ----
 
 test_that("v_cohort_size_const passes for valid object", {
-  object <- CohortSizeConst(0)
+  object <- CohortSizeConst(0L)
   expect_true(v_cohort_size_const(object))
 
-  object <- CohortSizeConst(5)
+  object <- CohortSizeConst(5L)
   expect_true(v_cohort_size_const(object))
 })
 
 test_that("v_cohort_size_const returns message for non-valid size", {
   err_msg <- "size needs to be a non-negative scalar"
-  object <- CohortSizeConst(5)
+  object <- CohortSizeConst(5L)
 
   # Changing `size` so that it is not allowed value.
   object@size <- -(5L)
@@ -1413,10 +1413,10 @@ test_that("v_cohort_size_const returns message for non-valid size", {
 ## v_cohort_size_parts ----
 
 test_that("v_cohort_size_parts passes for valid object", {
-  object <- CohortSizeParts(c(1, 4))
+  object <- CohortSizeParts(c(1L, 4L))
   expect_true(v_cohort_size_parts(object))
 
-  object <- CohortSizeParts(c(9, 4))
+  object <- CohortSizeParts(c(9L, 4L))
   expect_true(v_cohort_size_parts(object))
 })
 
@@ -1568,19 +1568,19 @@ test_that("v_safety_window_size returns message for non-valid follow_min", {
 ## v_safety_window_const ----
 
 test_that("v_safety_window_const passes for valid object", {
-  object <- SafetyWindowConst(8, 2, 18)
+  object <- SafetyWindowConst(8L, 2L, 18L)
   expect_true(v_safety_window_const(object))
 
-  object <- SafetyWindowConst(0, 2, 18)
+  object <- SafetyWindowConst(0L, 2L, 18L)
   expect_true(v_safety_window_const(object))
 
-  object <- SafetyWindowConst(c(2, 5), 2, 18)
+  object <- SafetyWindowConst(c(2L, 5L), 2L, 18L)
   expect_true(v_safety_window_const(object))
 })
 
 test_that("v_safety_window_const returns message for non-valid gap", {
   err_msg <- "gap has to be an integer vector with non-negative and non-missing elements"
-  object <- SafetyWindowConst(8, 2, 18)
+  object <- SafetyWindowConst(8L, 2L, 18L)
 
   # Changing `gap` so that it is not a valid integer scalar.
   object@gap <- -1L
@@ -1595,7 +1595,7 @@ test_that("v_safety_window_const returns message for non-valid gap", {
 
 test_that("v_safety_window_const returns message for non-valid follow", {
   err_msg <- "follow has to be a positive integer number"
-  object <- SafetyWindowConst(8, 2, 18)
+  object <- SafetyWindowConst(8L, 2L, 18L)
 
   # Changing `follow` so that it is not a valid integer scalar.
   object@follow <- 0L
@@ -1610,7 +1610,7 @@ test_that("v_safety_window_const returns message for non-valid follow", {
 
 test_that("v_safety_window_const returns message for non-valid follow_min", {
   err_msg <- "follow_min has to be a positive integer number"
-  object <- SafetyWindowConst(8, 2, 18)
+  object <- SafetyWindowConst(8L, 2L, 18L)
 
   # Changing `follow_min` so that it is not a valid integer scalar.
   object@follow_min <- 0L

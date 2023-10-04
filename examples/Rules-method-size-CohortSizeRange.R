@@ -42,7 +42,7 @@ doseRecommendation <- nextBest(myNextBest,
 # Rule for the cohort size:
 #   - having cohort of size 1 for doses <10
 #   - and having cohort of size 3 for doses >=10
-mySize <- CohortSizeRange(intervals = c(0, 10), cohort_size = c(1, 3))
+mySize <- CohortSizeRange(intervals = c(0, 10), cohort_size = c(1L, 3L))
 
 # Determine the cohort size for the next cohort
 size(mySize, dose=doseRecommendation$value, data = data)

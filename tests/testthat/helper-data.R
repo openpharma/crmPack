@@ -22,7 +22,7 @@ h_get_data <- function(empty = FALSE, placebo = TRUE) {
       y = c(0L, 0L, 0L, 0L, 0L, 0L, 0L, 0L, 0L, 0L, 1L, 0L),
       doseGrid = dose_grid,
       placebo = placebo,
-      ID = 1:12,
+      ID = 1L:12L,
       cohort = c(1L, 1L, 1L, 1L, 2L, 2L, 2L, 2L, 3L, 3L, 3L, 3L)
     )
   }
@@ -32,9 +32,9 @@ h_get_data <- function(empty = FALSE, placebo = TRUE) {
 h_get_data_1 <- function() {
   Data(
     x = c(0.1, 0.5, 1.5, 3, 6, 8, 8, 8, 12, 12, 12, 16, 16, 16, 10, 10, 10),
-    y = c(0, 0, 0, 0, 0, 0, 1, 0, 0, 1, 0, 0, 1, 1, 0, 1, 0),
-    ID = 1:17,
-    cohort = c(0, 1, 2, 3, 4, 5, 5, 5, 6, 6, 6, 7, 7, 7, 8, 8, 8),
+    y = as.integer(c(0, 0, 0, 0, 0, 0, 1, 0, 0, 1, 0, 0, 1, 1, 0, 1, 0)),
+    ID = 1L:17L,
+    cohort = as.integer(c(0, 1, 2, 3, 4, 5, 5, 5, 6, 6, 6, 7, 7, 7, 8, 8, 8)),
     doseGrid = c(0.1, 0.5, 1.5, 3, 6, 8, seq(from = 10, to = 80, by = 2))
   )
 }
@@ -43,9 +43,9 @@ h_get_data_1 <- function() {
 h_get_data_2 <- function() {
   Data(
     x = c(1.5, 1.5, 1.5, 2.5, 2.5, 2.5, 3.5, 3.5, 3.5),
-    y = c(0, 0, 0, 0, 0, 0, 0, 1, 0),
-    ID = 1:9,
-    cohort = c(1, 1, 1, 2, 2, 2, 3, 3, 3),
+    y = as.integer(c(0, 0, 0, 0, 0, 0, 0, 1, 0)),
+    ID = 1L:9L,
+    cohort = as.integer(c(1, 1, 1, 2, 2, 2, 3, 3, 3)),
     doseGrid = c(1.5, 2.5, 3.5, 4.5, 6, 7),
     placebo = FALSE
   )
@@ -133,8 +133,8 @@ h_get_data_da_2 <- function() {
     t0 = c(0, 15, 30, 40, 55, 70, 75, 85),
     Tmax = 60,
     x = c(0.1, 0.5, 1.5, 3, 6, 10, 10, 10),
-    y = c(1, 0, 1, 0, 0, 0, 1, 0),
-    ID = 1:8,
+    y = as.integer(c(1, 0, 1, 0, 0, 0, 1, 0)),
+    ID = 1L:8L,
     cohort = c(1L, 2L, 3L, 4L, 5L, 6L, 6L, 6L),
     doseGrid = c(0.1, 0.5, 1.5, 3, 6, seq(from = 10, to = 80, by = 2))
   )
@@ -144,9 +144,9 @@ h_get_data_da_2 <- function() {
 h_get_data_sr_1 <- function() {
   Data(
     x = c(0.1, 0.5, 1.5, 3, 6, 10, 10, 10),
-    y = c(0, 0, 0, 0, 0, 0, 1, 0),
-    ID = 1:8,
-    cohort = c(0, 1, 2, 3, 4, 5, 5, 5),
+    y = as.integer(c(0, 0, 0, 0, 0, 0, 1, 0)),
+    ID = 1L:8L,
+    cohort = as.integer(c(0, 1, 2, 3, 4, 5, 5, 5)),
     doseGrid = c(0.1, 0.5, 1.5, 3, 6, seq(from = 10, to = 80, by = 2))
   )
 }
@@ -155,9 +155,9 @@ h_get_data_sr_1 <- function() {
 h_get_data_sr_2 <- function() {
   Data(
     x = c(0.1, 0.5, 1.5, 3, 6, 10, 10, 10, 50, 50, 50, 80, 80, 80, 80, 80, 80, 80, 80, 80, 80, 80, 80),
-    y = c(0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0),
-    ID = 1:23,
-    cohort = c(0, 1, 2, 3, 4, 5, 5, 5, 6, 6, 6, 7, 7, 7, 8, 8, 8, 9, 9, 9, 10, 10, 10),
+    y = as.integer(c(0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0)),
+    ID = 1L:23L,
+    cohort = as.integer(c(0, 1, 2, 3, 4, 5, 5, 5, 6, 6, 6, 7, 7, 7, 8, 8, 8, 9, 9, 9, 10, 10, 10)),
     doseGrid = c(0.1, 0.5, 1.5, 3, 6, seq(from = 10, to = 80, by = 2))
   )
 }

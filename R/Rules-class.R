@@ -1053,10 +1053,11 @@ IncrementsRelative <- function(intervals, increments) {
 #' @example examples/Rules-class-IncrementsRelativeDLT.R
 #'
 IncrementsRelativeDLT <- function(intervals, increments) {
-  assert_integerish(intervals)
+  assert_integer(intervals, lower = 0, any.missing = FALSE)
+  assert_numeric(increments, lower = 0, any.missing = FALSE)
 
   .IncrementsRelativeDLT(
-    intervals = safeInteger(intervals),
+    intervals = intervals,
     increments = increments
   )
 }
@@ -1102,10 +1103,13 @@ IncrementsRelativeDLT <- function(intervals, increments) {
 #' @export
 #' @example examples/Rules-class-IncrementsRelativeDLTCurrent.R
 #'
-IncrementsRelativeDLTCurrent <- function(intervals = c(0, 1),
+IncrementsRelativeDLTCurrent <- function(intervals = c(0L, 1L),
                                          increments = c(2, 1)) {
+  assert_integer(intervals, lower = 0L, any.missing = FALSE)
+  assert_numeric(increments, lower = 0, any.missing = FALSE)
+
   .IncrementsRelativeDLTCurrent(
-    intervals = safeInteger(intervals),
+    intervals = intervals,
     increments = increments
   )
 }
@@ -1184,9 +1188,12 @@ IncrementsRelativeDLTCurrent <- function(intervals = c(0, 1),
 #' @example examples/Rules-class-IncrementsRelative-DataParts.R
 #'
 IncrementsRelativeParts <- function(dlt_start, clean_start, ...) {
+  assert_integer(dlt_start, len = 1, any.missing = FALSE)
+  assert_integer(clean_start, len = 1, any.missing = FALSE)
+
   .IncrementsRelativeParts(
-    dlt_start = safeInteger(dlt_start),
-    clean_start = safeInteger(clean_start),
+    dlt_start = dlt_start,
+    clean_start = clean_start,
     ...
   )
 }
@@ -1250,8 +1257,10 @@ IncrementsRelativeParts <- function(dlt_start, clean_start, ...) {
 #' @example examples/Rules-class-IncrementsDoseLevels.R
 #'
 IncrementsDoseLevels <- function(levels = 1L, basis_level = "last") {
+  assert_count(levels, positive = TRUE)
+
   .IncrementsDoseLevels(
-    levels = safeInteger(levels),
+    levels = levels,
     basis_level = basis_level
   )
 }
@@ -1397,7 +1406,7 @@ IncrementsMin <- function(increments_list) {
 .DefaultIncrementsMin <- function() {
   IncrementsMin(
     increments_list = list(
-      IncrementsRelativeDLT(intervals = c(0, 1, 3), increments = c(1, 0.33, 0.2)),
+      IncrementsRelativeDLT(intervals = c(0L, 1L, 3L), increments = c(1, 0.33, 0.2)),
       IncrementsRelative(intervals = c(0, 20), increments = c(1, 0.33))
     )
   )
@@ -1529,14 +1538,14 @@ StoppingMissingDose <- function(
 StoppingCohortsNearDose <- function(nCohorts = 2L,
                                     percentage = 50,
                                     report_label = NA_character_) {
-  nCohorts <- safeInteger(nCohorts)
+  assert_count(nCohorts, positive = TRUE)
   report_label <- h_default_if_empty(
     as.character(report_label),
     paste("\u2265", nCohorts, "cohorts dosed in", percentage, "% dose range around NBD")
   )
 
   .StoppingCohortsNearDose(
-    nCohorts = safeInteger(nCohorts),
+    nCohorts = nCohorts,
     percentage = percentage,
     report_label = report_label
   )
@@ -1601,7 +1610,8 @@ StoppingCohortsNearDose <- function(nCohorts = 2L,
 StoppingPatientsNearDose <- function(nPatients = 10L,
                                      percentage = 50,
                                      report_label = NA_character_) {
-  nPatients <- safeInteger(nPatients)
+  assert_count(nPatients, positive = TRUE)
+
   report_label <- h_default_if_empty(
     as.character(report_label),
     paste("\u2265", nPatients, "patients dosed in", percentage, "% dose range around NBD")
@@ -1663,14 +1673,15 @@ StoppingPatientsNearDose <- function(nPatients = 10L,
 #'
 StoppingMinCohorts <- function(nCohorts = 2L,
                                report_label = NA_character_) {
-  nCohorts <- safeInteger(nCohorts)
+  nCohorts <- assert_count(nCohorts, positive = TRUE)
+
   report_label <- h_default_if_empty(
     as.character(report_label),
     paste("\u2265", nCohorts, "cohorts dosed")
   )
 
   .StoppingMinCohorts(
-    nCohorts = safeInteger(nCohorts),
+    nCohorts = nCohorts,
     report_label = report_label
   )
 }
@@ -1722,14 +1733,15 @@ StoppingMinCohorts <- function(nCohorts = 2L,
 #'
 StoppingMinPatients <- function(nPatients = 20L,
                                 report_label = NA_character_) {
-  nPatients <- safeInteger(nPatients)
+  assert_count(nPatients, positive = TRUE)
+
   report_label <- h_default_if_empty(
     as.character(report_label),
     paste("\u2265", nPatients, "patients dosed")
   )
 
   .StoppingMinPatients(
-    nPatients = safeInteger(nPatients),
+    nPatients = nPatients,
     report_label = report_label
   )
 }
@@ -2450,7 +2462,7 @@ StoppingMaxGainCIRatio <- function(target_ratio = 5,
     summary = "function"
   ),
   prototype = prototype(
-    stop_list = list(StoppingMinPatients(50), StoppingMinCohorts(5)),
+    stop_list = list(StoppingMinPatients(50L), StoppingMinCohorts(5L)),
     summary = all
   ),
   contains = "Stopping",
@@ -2515,8 +2527,8 @@ StoppingList <- function(stop_list, summary) {
   ),
   prototype = prototype(
     stop_list = list(
-      StoppingMinPatients(50),
-      StoppingMinCohorts(5)
+      StoppingMinPatients(50L),
+      StoppingMinCohorts(5L)
     )
   ),
   contains = "Stopping",
@@ -2578,7 +2590,7 @@ StoppingAll <- function(stop_list, report_label = NA_character_) {
     stop_list = "list"
   ),
   prototype = prototype(
-    stop_list = list(StoppingMinPatients(50), StoppingMinCohorts(5))
+    stop_list = list(StoppingMinPatients(50L), StoppingMinCohorts(5L))
   ),
   contains = "Stopping",
   validity = v_stopping_all
@@ -2681,9 +2693,12 @@ setClass(
 #' @example examples/Rules-class-CohortSizeRange.R
 #'
 CohortSizeRange <- function(intervals, cohort_size) {
-  .CohortSizeRange(
+  assert_numeric(intervals, lower = 0, any.missing = FALSE)
+  assert_integer(cohort_size, lower = 1, any.missing = FALSE)
+
+    .CohortSizeRange(
     intervals = intervals,
-    cohort_size = safeInteger(cohort_size)
+    cohort_size = cohort_size
   )
 }
 
@@ -2693,7 +2708,7 @@ CohortSizeRange <- function(intervals, cohort_size) {
 #' @note Typically, end users will not use the `.DefaultCohortSizeRange()` function.
 #' @export
 .DefaultCohortSizeRange <- function() {
-  CohortSizeRange(intervals = c(0L, 30L), cohort_size = c(1L, 3L))
+  CohortSizeRange(intervals = c(0, 30), cohort_size = c(1L, 3L))
 }
 
 # CohortSizeDLT ----
@@ -2739,9 +2754,12 @@ CohortSizeRange <- function(intervals, cohort_size) {
 #' @example examples/Rules-class-CohortSizeDLT.R
 #'
 CohortSizeDLT <- function(intervals, cohort_size) {
+  assert_integer(intervals, lower = 0, any.missing = FALSE)
+  assert_integer(cohort_size, lower = 1, any.missing = FALSE)
+
   .CohortSizeDLT(
-    intervals = safeInteger(intervals),
-    cohort_size = safeInteger(cohort_size)
+    intervals = intervals,
+    cohort_size = cohort_size
   )
 }
 
@@ -2788,7 +2806,8 @@ CohortSizeDLT <- function(intervals, cohort_size) {
 #' @example examples/Rules-class-CohortSizeConst.R
 #'
 CohortSizeConst <- function(size) {
-  .CohortSizeConst(size = safeInteger(size))
+  assert_count(size)
+  .CohortSizeConst(size = size)
 }
 
 ## default constructor ----
@@ -2836,7 +2855,8 @@ CohortSizeConst <- function(size) {
 #' @example examples/Rules-class-CohortSizeParts.R
 #'
 CohortSizeParts <- function(cohort_sizes) {
-  .CohortSizeParts(cohort_sizes = safeInteger(cohort_sizes))
+  assert_integer(cohort_sizes, lower = 1, any.missing = FALSE)
+  .CohortSizeParts(cohort_sizes = cohort_sizes)
 }
 
 ## default constructor ----
@@ -2872,8 +2892,8 @@ CohortSizeParts <- function(cohort_sizes) {
   slots = c(cohort_sizes = "list"),
   prototype = prototype(
     cohort_sizes = list(
-      CohortSizeRange(intervals = c(0, 30), cohort_size = c(1, 3)),
-      CohortSizeDLT(intervals = c(0, 1), cohort_size = c(1, 3))
+      CohortSizeRange(intervals = c(0, 30), cohort_size = c(1L, 3L)),
+      CohortSizeDLT(intervals = c(0L, 1L), cohort_size = c(1L, 3L))
     )
   ),
   contains = "CohortSize",
@@ -2933,8 +2953,8 @@ CohortSizeMax <- function(cohort_sizes) {
   prototype = prototype(
     cohort_sizes =
       list(
-        CohortSizeRange(intervals = c(0, 30), cohort_size = c(1, 3)),
-        CohortSizeDLT(intervals = c(0, 1), cohort_size = c(1, 3))
+        CohortSizeRange(intervals = c(0, 30), cohort_size = c(1L, 3L)),
+        CohortSizeDLT(intervals = c(0L, 1L), cohort_size = c(1L, 3L))
       )
   ),
   contains = "CohortSize",
@@ -3067,11 +3087,18 @@ SafetyWindowSize <- function(gap,
   if (follow > follow_min) {
     warning("The value of follow_min is typically larger than the value of follow")
   }
+  for (g in gap) {
+    assert_integer(g, lower = 0, any.missing = FALSE)
+  }
+  assert_integer(size, lower = 1, any.missing = FALSE)
+  assert_count(follow, positive = TRUE)
+  assert_count(follow_min, positive = TRUE)
+
   .SafetyWindowSize(
-    gap = lapply(gap, safeInteger),
-    size = safeInteger(size),
-    follow = safeInteger(follow),
-    follow_min = safeInteger(follow_min)
+    gap = gap,
+    size = size,
+    follow = follow,
+    follow_min = follow_min
   )
 }
 
@@ -3129,9 +3156,13 @@ SafetyWindowConst <- function(gap,
   if (follow > follow_min) {
     warning("the value of follow_min is typically larger than the value of follow")
   }
+  assert_integer(gap, any.missing = FALSE, lower = 0)
+  assert_count(follow, positive = TRUE)
+  assert_count(follow_min, positive = TRUE)
+
   .SafetyWindowConst(
-    gap = safeInteger(gap),
-    follow = safeInteger(follow),
-    follow_min = safeInteger(follow_min)
+    gap = gap,
+    follow = follow,
+    follow_min = follow_min
   )
 }

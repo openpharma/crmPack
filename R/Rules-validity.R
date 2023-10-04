@@ -391,7 +391,7 @@ v_stopping_min_cohorts <- function(object) {
 v_stopping_min_patients <- function(object) {
   v <- Validate()
   v$check(
-    test_int(object@nPatients, lower = .Machine$double.xmin),
+    test_count(object@nPatients),
     "nPatients must be positive integer scalar"
   )
   v$result()

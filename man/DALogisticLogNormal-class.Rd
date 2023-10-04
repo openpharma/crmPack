@@ -8,7 +8,7 @@
 \alias{.DefaultDALogisticLogNormal}
 \title{\code{DALogisticLogNormal}}
 \usage{
-DALogisticLogNormal(npiece = 3, l, c_par = 2, cond_pem = TRUE, ...)
+DALogisticLogNormal(npiece = 3L, l, c_par = 2, cond_pem = TRUE, ...)
 
 .DefaultDALogisticLogNormal()
 }

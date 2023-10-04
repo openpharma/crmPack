@@ -25,11 +25,11 @@ myNextBest <- NextBestDualEndpoint(
 # Choose the rule for the cohort-size
 mySize1 <- CohortSizeRange(
   intervals = c(0, 30),
-  cohort_size = c(1, 3)
+  cohort_size = c(1L, 3L)
 )
 mySize2 <- CohortSizeDLT(
-  intervals = c(0, 1),
-  cohort_size = c(1, 3)
+  intervals = c(0L, 1L),
+  cohort_size = c(1L, 3L)
 )
 mySize <- maxSize(mySize1, mySize2)
 
@@ -38,7 +38,7 @@ myStopping4 <- StoppingTargetBiomarker(
   target = c(0.9, 1),
   prob = 0.5
 )
-myStopping <- myStopping4 | StoppingMinPatients(10)
+myStopping <- myStopping4 | StoppingMinPatients(10L)
 
 # Choose the rule for dose increments
 myIncrements <- IncrementsRelative(

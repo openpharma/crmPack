@@ -59,9 +59,8 @@ setMethod("simulate",
              parallel = FALSE, nCores =
                min(parallel::detectCores(), 5L),
              ...) {
-      nsim <- safeInteger(nsim)
-
       ## checks and extracts
+      assert_number(nsim, lower = 1, na.ok = FALSE)
       assert_function(truth)
       assert_flag(firstSeparate)
       assert_count(nsim, positive = TRUE)
@@ -370,9 +369,8 @@ setMethod("simulate",
              nCores =
                min(parallel::detectCores(), 5L),
              ...) {
-      nsim <- safeInteger(nsim)
-
       ## checks and extracts
+      assert_number(nsim, lower = 1, na.ok = FALSE)
       assert_function(truth)
       assert_count(nsim, positive = TRUE)
       assert_flag(parallel)
@@ -552,9 +550,8 @@ setMethod("simulate",
              nCores =
                min(parallel::detectCores(), 5L),
              ...) {
-      nsim <- safeInteger(nsim)
-
       ## checks and extracts
+      assert_number(nsim, lower = 1, na.ok = FALSE)
       assert_function(trueTox)
       assert_function(trueBiomarker)
       assert_number(sigma2W, lower = 0)
@@ -1035,14 +1032,14 @@ setMethod("examine",
         }
 
         ## for all possible number of DLTs:
-        for (numDLTs in 0:thisSize)
+        for (numDLTs in 0L:thisSize)
         {
           ## update data with corresponding DLT vector
           if (baseData@placebo && (thisSize.PL > 0L)) {
             thisData <- update(
               object = baseData,
               x = baseData@doseGrid[1],
-              y = rep(0, thisSize.PL),
+              y = rep(0L, thisSize.PL),
               check = FALSE
             )
 
@@ -1052,7 +1049,7 @@ setMethod("examine",
                 x = thisDose,
                 y =
                   rep(
-                    x = c(0, 1),
+                    x = c(0L, 1L),
                     times =
                       c(
                         thisSize - numDLTs,
@@ -1068,7 +1065,7 @@ setMethod("examine",
                 x = thisDose,
                 y =
                   rep(
-                    x = c(0, 1),
+                    x = c(0L, 1L),
                     times =
                       c(
                         thisSize - numDLTs,
@@ -1129,7 +1126,7 @@ setMethod("examine",
             update(
               object = baseData,
               x = baseData@doseGrid[1],
-              y = rep(0, thisSize.PL),
+              y = rep(0L, thisSize.PL),
               check = FALSE
             )
 
@@ -1137,7 +1134,7 @@ setMethod("examine",
             update(
               object = baseData,
               x = thisDose,
-              y = rep(0, thisSize),
+              y = rep(0L, thisSize),
               new_cohort = FALSE
             )
         } else {
@@ -1145,7 +1142,7 @@ setMethod("examine",
             update(
               object = baseData,
               x = thisDose,
-              y = rep(0, thisSize)
+              y = rep(0L, thisSize)
             )
         }
 
@@ -1249,7 +1246,7 @@ setMethod("examine",
               x = thisDose,
               y =
                 rep(
-                  x = c(0, 1),
+                  x = c(0L, 1L),
                   times =
                     c(
                       thisSize - numDLTs,
@@ -1291,7 +1288,7 @@ setMethod("examine",
           update(
             object = baseData,
             x = thisDose,
-            y = rep(0, thisSize)
+            y = rep(0L, thisSize)
           )
 
         ## what are the results if 0 DLTs?
@@ -1448,7 +1445,7 @@ setMethod("examine",
         # initial parameters
         thisT0 <- trialtime + cumsum(thisSafetywindow$patientGap)
 
-        factDLTs <- c(factDLTs, rep(0, thisSize))
+        factDLTs <- as.integer(c(factDLTs, rep(0L, thisSize)))
 
         factSurv <- c(factSurv, rep(Tmax, thisSize))
 
@@ -1473,9 +1470,9 @@ setMethod("examine",
 
 
         ## for all possible number of DLTs:
-        for (numDLTs in 0:nFollow)
+        for (numDLTs in 0L:as.integer(nFollow))
         {
-          ## If numDLTs>0, two extreme cases will be examinated;
+          ## If numDLTs>0, two extreme cases will be examined;
           ## (1) DLTs occur on patients with the longer follow ups;
           ## (2) DLTs occur on patients with the shorter follow ups;
 
@@ -1484,10 +1481,10 @@ setMethod("examine",
 
 
 
-          if (numDLTs == 0) {
+          if (numDLTs == 0L) {
             baseData <- update(
               object = baseData,
-              y = factDLTs, #### the x will be constantly updated according to u
+              y = as.integer(factDLTs), #### the x will be constantly updated according to u
               u = factSurv,
               t0 = factT0,
               x = thisDose,
@@ -1562,7 +1559,7 @@ setMethod("examine",
 
                 thisData <- update(
                   object = baseData,
-                  y = thisDLTs, #### the y will be updated according to u
+                  y = as.integer(thisDLTs), #### the y will be updated according to u
                   u = thisSurv,
                   t0 = factT0,
                   x = thisDose,
@@ -1583,7 +1580,7 @@ setMethod("examine",
 
                 thisData <- update(
                   object = baseData,
-                  y = thisDLTs, #### the y will be updated according to u
+                  y = as.integer(thisDLTs), #### the y will be updated according to u
                   u = thisSurv,
                   t0 = factT0,
                   x = thisDose,
@@ -1748,9 +1745,8 @@ setMethod("simulate",
              parallel = FALSE, nCores =
                min(parallel::detectCores(), 5L),
              ...) {
-      nsim <- safeInteger(nsim)
-
       ## checks and extracts
+      assert_number(nsim, lower = 1, na.ok = FALSE)
       assert_function(truth)
       assert_flag(firstSeparate)
       assert_count(nsim, positive = TRUE)
@@ -1894,14 +1890,14 @@ setMethod("simulate",
             thisData <- update(
               object = thisData,
               x = object@data@doseGrid[1],
-              y = thisDLTs.PL
+              y = as.integer(thisDLTs.PL)
             )
 
             ## update the data with active dose
             thisData <- update(
               object = thisData,
               x = thisDose,
-              y = thisDLTs,
+              y = as.integer(thisDLTs),
               new_cohort = FALSE
             )
           } else {
@@ -1909,7 +1905,7 @@ setMethod("simulate",
             thisData <- update(
               object = thisData,
               x = thisDose,
-              y = thisDLTs
+              y = as.integer(thisDLTs)
             )
           }
 
@@ -2112,9 +2108,8 @@ setMethod("simulate",
              parallel = FALSE, nCores =
                min(parallel::detectCores(), 5L),
              ...) {
-      nsim <- safeInteger(nsim)
-
       ## checks and extracts
+      assert_number(nsim, lower = 1, na.ok = FALSE)
       assert_function(truth)
       assert_flag(firstSeparate)
       assert_count(nsim, positive = TRUE)
@@ -2254,14 +2249,14 @@ setMethod("simulate",
             thisData <- update(
               object = thisData,
               x = object@data@doseGrid[1],
-              y = thisDLTs.PL
+              y = as.integer(thisDLTs.PL)
             )
 
             ## update the data with active dose
             thisData <- update(
               object = thisData,
               x = thisDose,
-              y = thisDLTs,
+              y = as.integer(thisDLTs),
               new_cohort = FALSE
             )
           } else {
@@ -2269,7 +2264,7 @@ setMethod("simulate",
             thisData <- update(
               object = thisData,
               x = thisDose,
-              y = thisDLTs
+              y = as.integer(thisDLTs)
             )
           }
 
@@ -2462,9 +2457,8 @@ setMethod("simulate",
              parallel = FALSE, nCores =
                min(parallel::detectCores(), 5L),
              ...) {
-      nsim <- safeInteger(nsim)
-
       ## checks and extracts
+      assert_number(nsim, lower = 1, na.ok = FALSE)
       assert_function(trueDLE)
       assert_function(trueEff)
       assert_true(trueNu > 0)
@@ -2682,7 +2676,7 @@ setMethod("simulate",
             thisData <- update(
               object = thisData,
               x = object@data@doseGrid[1],
-              y = thisDLTs.PL,
+              y = as.integer(thisDLTs.PL),
               w = thisEff.PL,
               check = FALSE
             )
@@ -2691,7 +2685,7 @@ setMethod("simulate",
             thisData <- update(
               object = thisData,
               x = thisDose,
-              y = thisDLTs,
+              y = as.integer(thisDLTs),
               w = thisEff,
               new_cohort = FALSE
             )
@@ -2700,7 +2694,7 @@ setMethod("simulate",
             thisData <- update(
               object = thisData,
               x = thisDose,
-              y = thisDLTs,
+              y = as.integer(thisDLTs),
               w = thisEff
             )
           }
@@ -3001,9 +2995,8 @@ setMethod("simulate",
              parallel = FALSE, nCores =
                min(parallel::detectCores(), 5L),
              ...) {
-      nsim <- safeInteger(nsim)
-
       ## common checks and extracts
+      assert_number(nsim, lower = 1, na.ok = FALSE)
       assert_function(trueDLE)
       assert_flag(firstSeparate)
       assert_count(nsim, positive = TRUE)
@@ -3203,7 +3196,7 @@ setMethod("simulate",
               thisData <- update(
                 object = thisData,
                 x = object@data@doseGrid[1],
-                y = thisDLTs.PL,
+                y = as.integer(thisDLTs.PL),
                 w = thisEff.PL,
                 check = FALSE
               )
@@ -3212,7 +3205,7 @@ setMethod("simulate",
               thisData <- update(
                 object = thisData,
                 x = thisDose,
-                y = thisDLTs,
+                y = as.integer(thisDLTs),
                 w = thisEff,
                 new_cohort = FALSE
               )
@@ -3221,7 +3214,7 @@ setMethod("simulate",
               thisData <- update(
                 object = thisData,
                 x = thisDose,
-                y = thisDLTs,
+                y = as.integer(thisDLTs),
                 w = thisEff
               )
             }
@@ -3675,7 +3668,7 @@ setMethod("simulate",
               thisData <- update(
                 object = thisData,
                 x = object@data@doseGrid[1],
-                y = thisDLTs.PL,
+                y = as.integer(thisDLTs.PL),
                 w = thisEff.PL,
                 check = FALSE
               )
@@ -3693,7 +3686,7 @@ setMethod("simulate",
               thisData <- update(
                 object = thisData,
                 x = thisDose,
-                y = thisDLTs,
+                y = as.integer(thisDLTs),
                 w = thisEff
               )
             }
@@ -4003,9 +3996,8 @@ setMethod("simulate",
              DA = TRUE,
              parallel = FALSE, nCores = min(parallel::detectCores(), 5L),
              ...) {
-      nsim <- safeInteger(nsim) ## remove  in the future
-
       ## checks and extracts
+      assert_number(nsim, lower = 1, na.ok = FALSE)
       assert_function(truthTox)
       assert_function(truthSurv)
       assert_flag(firstSeparate)
@@ -4218,7 +4210,7 @@ setMethod("simulate",
             # need to update the DataDA object
             tempData <- update(
               object = thisData,
-              y = c(factDLTs, thisDLTs), #### the y will be updated according to u
+              y = as.integer(c(factDLTs, thisDLTs)), #### the y will be updated according to u
               u = c(factSurv, thisSurv),
               t0 = c(factT0, thisT0),
               x = thisDose,
@@ -4309,14 +4301,14 @@ setMethod("simulate",
             thisData <- update(
               object = thisData,
               x = object@data@doseGrid[1],
-              y = thisDLTs.PL
+              y = as.integer(thisDLTs.PL)
             )
 
             ## update the data with active dose
             thisData <- update(
               object = thisData,
               x = thisDose,
-              y = thisDLTs,
+              y = as.integer(thisDLTs),
               new_cohort = FALSE
             )
 
@@ -4397,7 +4389,7 @@ setMethod("simulate",
 
             thisData <- update(
               object = thisData,
-              y = factDLTs, #### the y will be updated according to u
+              y = as.integer(factDLTs), #### the y will be updated according to u
               u = factSurv,
               t0 = factT0,
               x = thisDose,
@@ -4604,7 +4596,7 @@ setMethod(
              parallel = FALSE,
              nCores = min(parallelly::availableCores(), 5),
              ...) {
-      nsim <- safeInteger(nsim)
+      assert_number(nsim, lower = 1, na.ok = FALSE)
       assert_function(truth)
       assert_function(combo_truth)
       assert_data_frame(args)

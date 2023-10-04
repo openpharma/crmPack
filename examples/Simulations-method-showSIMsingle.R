@@ -20,14 +20,14 @@ td_next_best <- NextBestTD(
 )
 
 # The cohort size is 3 subjects.
-my_size <- CohortSizeConst(size = 3)
+my_size <- CohortSizeConst(size = 3L)
 
 # Allow increase of 200%.
 my_increments <- IncrementsRelative(intervals = 0, increments = 2)
 
 # Specify the stopping rule with maximum sample size of 36 patients or when the
 # next dose is NA.
-my_stopping <- StoppingMinPatients(nPatients = 36) | StoppingMissingDose()
+my_stopping <- StoppingMinPatients(nPatients = 36L) | StoppingMissingDose()
 
 # Specify the design. (For details please refer to the 'TDDesign' example.)
 my_design <- TDDesign(

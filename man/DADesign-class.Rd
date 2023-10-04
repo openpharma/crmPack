@@ -47,7 +47,7 @@ empty_data <- DataDA(doseGrid = c(
   seq(from = 10, to = 80, by = 2)
 ), Tmax = 60)
 
-npiece <- 10
+npiece <- 10L
 t_max <- 60
 
 lambda_prior <- function(k) {
@@ -76,12 +76,12 @@ my_next_best <- NextBestNCRM(
 
 my_size1 <- CohortSizeRange(
   intervals = c(0, 30),
-  cohort_size = c(1, 3)
+  cohort_size = c(1L, 3L)
 )
 
 my_size2 <- CohortSizeDLT(
-  intervals = c(0, 1),
-  cohort_size = c(1, 3)
+  intervals = c(0L, 1L),
+  cohort_size = c(1L, 3L)
 )
 
 my_size <- maxSize(my_size1, my_size2)
@@ -91,11 +91,11 @@ my_stopping1 <- StoppingTargetProb(
   prob = 0.5
 )
 
-my_stopping2 <- StoppingMinPatients(nPatients = 50)
+my_stopping2 <- StoppingMinPatients(nPatients = 50L)
 
 my_stopping <- (my_stopping1 | my_stopping2)
 
-my_safety_window <- SafetyWindowConst(c(6, 2), 7, 7)
+my_safety_window <- SafetyWindowConst(c(6L, 2L), 7L, 7L)
 
 design <- DADesign(
   model = model,
@@ -107,4 +107,5 @@ design <- DADesign(
   safetyWindow = my_safety_window,
   startingDose = 3
 )
+
 }

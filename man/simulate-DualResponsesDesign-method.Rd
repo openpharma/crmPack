@@ -97,12 +97,12 @@ mynextbest <- NextBestMaxGain(
 ## 200\% allowable increase for dose below 300 and 200\% increase for dose above 300
 myIncrements <- IncrementsRelative(
   intervals = c(25, 300),
-  increments = c(2, 2)
+  increments = c(2L, 2L)
 )
 ## cohort size of 3
-mySize <- CohortSizeConst(size = 3)
+mySize <- CohortSizeConst(size = 3L)
 ## Stop only when 36 subjects are treated
-myStopping <- StoppingMinPatients(nPatients = 36)
+myStopping <- StoppingMinPatients(nPatients = 36L)
 ## Now specified the design with all the above information and starting with a dose of 25
 
 ## Specified the design(for details please refer to the 'DualResponsesDesign' example)

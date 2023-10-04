@@ -3,8 +3,8 @@
 # Create the data
 data <- Data(
   x = c(0.1, 0.5, 1.5, 3, 6, 10, 10, 10),
-  y = c(0, 0, 0, 0, 0, 0, 1, 0),
-  cohort = c(0, 1, 2, 3, 4, 5, 5, 5),
+  y = as.integer(c(0, 0, 0, 0, 0, 0, 1, 0)),
+  cohort = as.integer(c(0, 1, 2, 3, 4, 5, 5, 5)),
   doseGrid =
     c(
       0.1, 0.5, 1.5, 3, 6,
@@ -58,14 +58,14 @@ doseRecommendation <- nextBest(myNextBest,
 #      and having cohort of size 3 for doses >=30
 mySize1 <- CohortSizeRange(
   intervals = c(0, 10),
-  cohort_size = c(1, 3)
+  cohort_size = c(1L, 3L)
 )
 
 # Rule for having cohort of size 1 until no DLT were observed
 #      and having cohort of size 3 as soon as 1 DLT is observed
 mySize2 <- CohortSizeDLT(
-  intervals = c(0, 1),
-  cohort_size = c(1, 3)
+  intervals = c(0L, 1L),
+  cohort_size = c(1L, 3L)
 )
 
 # Combining the two rules for cohort size by taking the maximum of the sample sizes

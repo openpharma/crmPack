@@ -62,7 +62,7 @@ test_that("Design object can be created with user constructor", {
   increments <- h_increments_relative()
   placebo_cohort_size <- CohortSizeConst(0L)
   next_best <- h_next_best_ncrm()
-  cohort_size <- CohortSizeRange(intervals = c(0, 30), cohort_size = c(1, 3))
+  cohort_size <- CohortSizeRange(intervals = c(0, 30), cohort_size = c(1L, 3L))
 
   result <- expect_silent(
     Design(
@@ -121,7 +121,7 @@ test_that("DualDesign object can be created with user constructor", {
   stopping <- h_stopping_target_prob()
   increments <- h_increments_relative()
   next_best <- h_next_best_dual_endpoint()
-  cohort_size <- CohortSizeRange(intervals = c(0, 30), cohort_size = c(1, 3))
+  cohort_size <- CohortSizeRange(intervals = c(0, 30), cohort_size = c(1L, 3L))
 
   result <- expect_silent(
     DualDesign(
@@ -162,10 +162,10 @@ test_that(".TDsamplesDesign works as expected", {
 test_that("TDsamplesDesign object can be created with user constructor", {
   empty_data <- DataDual(doseGrid = 2:50)
   model <- h_get_logistic_indep_beta(emptydata = TRUE)
-  stopping <- StoppingMinPatients(nPatients = 30)
+  stopping <- StoppingMinPatients(nPatients = 30L)
   increments <- h_increments_relative()
   next_best <- h_next_best_tdsamples()
-  cohort_size <- CohortSizeConst(size = 3)
+  cohort_size <- CohortSizeConst(size = 3L)
 
   result <- expect_silent(
     TDsamplesDesign(
@@ -182,7 +182,7 @@ test_that("TDsamplesDesign object can be created with user constructor", {
   expect_identical(result@model, model)
   expect_identical(result@stopping, stopping)
   expect_identical(result@increments, increments)
-  expect_identical(result@pl_cohort_size, CohortSizeConst(0))
+  expect_identical(result@pl_cohort_size, CohortSizeConst(0L))
   expect_identical(result@nextBest, next_best)
   expect_identical(result@cohort_size, cohort_size)
   expect_identical(result@data, empty_data)
@@ -221,10 +221,10 @@ test_that(".TDDesign works as expected", {
 test_that("TDDesign object can be created with user constructor", {
   empty_data <- DataDual(doseGrid = 2:50)
   model <- h_get_logistic_indep_beta(emptydata = TRUE)
-  stopping <- StoppingMinPatients(nPatients = 30)
+  stopping <- StoppingMinPatients(nPatients = 30L)
   increments <- h_increments_relative()
   next_best <- NextBestTD(prob_target_drt = 0.35, prob_target_eot = 0.3)
-  cohort_size <- CohortSizeConst(size = 3)
+  cohort_size <- CohortSizeConst(size = 3L)
 
   result <- expect_silent(
     TDDesign(
@@ -241,7 +241,7 @@ test_that("TDDesign object can be created with user constructor", {
   expect_identical(result@model, model)
   expect_identical(result@stopping, stopping)
   expect_identical(result@increments, increments)
-  expect_identical(result@pl_cohort_size, CohortSizeConst(0))
+  expect_identical(result@pl_cohort_size, CohortSizeConst(0L))
   expect_identical(result@nextBest, next_best)
   expect_identical(result@cohort_size, cohort_size)
   expect_identical(result@data, empty_data)
@@ -281,10 +281,10 @@ test_that("DualResponsesSamplesDesign object can be created with user constructo
   empty_data <- DataDual(doseGrid = 2:50)
   model <- h_get_logistic_indep_beta(emptydata = TRUE)
   eff_model <- h_get_eff_log_log(emptydata = TRUE)
-  stopping <- StoppingMinPatients(nPatients = 30)
+  stopping <- StoppingMinPatients(nPatients = 30L)
   increments <- h_increments_relative()
   next_best <- h_next_best_tdsamples()
-  cohort_size <- CohortSizeConst(size = 3)
+  cohort_size <- CohortSizeConst(size = 3L)
 
   result <- expect_silent(
     DualResponsesSamplesDesign(
@@ -303,7 +303,7 @@ test_that("DualResponsesSamplesDesign object can be created with user constructo
   expect_identical(result@eff_model, eff_model)
   expect_identical(result@stopping, stopping)
   expect_identical(result@increments, increments)
-  expect_identical(result@pl_cohort_size, CohortSizeConst(0))
+  expect_identical(result@pl_cohort_size, CohortSizeConst(0L))
   expect_identical(result@nextBest, next_best)
   expect_identical(result@cohort_size, cohort_size)
   expect_identical(result@data, empty_data)
@@ -329,10 +329,10 @@ test_that("DualResponsesDesign object can be created with user constructor", {
   empty_data <- DataDual(doseGrid = 2:50)
   model <- h_get_logistic_indep_beta(emptydata = TRUE)
   eff_model <- h_get_eff_log_log(emptydata = TRUE)
-  stopping <- StoppingMinPatients(nPatients = 30)
+  stopping <- StoppingMinPatients(nPatients = 30L)
   increments <- h_increments_relative()
   next_best <- h_next_best_tdsamples()
-  cohort_size <- CohortSizeConst(size = 3)
+  cohort_size <- CohortSizeConst(size = 3L)
 
   result <- expect_silent(
     DualResponsesDesign(
@@ -351,7 +351,7 @@ test_that("DualResponsesDesign object can be created with user constructor", {
   expect_identical(result@eff_model, eff_model)
   expect_identical(result@stopping, stopping)
   expect_identical(result@increments, increments)
-  expect_identical(result@pl_cohort_size, CohortSizeConst(0))
+  expect_identical(result@pl_cohort_size, CohortSizeConst(0L))
   expect_identical(result@nextBest, next_best)
   expect_identical(result@cohort_size, cohort_size)
   expect_identical(result@data, empty_data)
@@ -385,7 +385,7 @@ test_that("DADesign constructor works as expected", {
   data <- DataDA(doseGrid = 1:10)
   safety_window <- .SafetyWindowConst()
   next_best <- .NextBestNCRM()
-  cohort_size <- CohortSizeRange(intervals = c(0, 30), cohort_size = c(1, 3))
+  cohort_size <- CohortSizeRange(intervals = c(0, 30), cohort_size = c(1L, 3L))
   starting_dose <- 3
   stopping <- h_stopping_target_prob()
   increments <- h_increments_relative()
@@ -441,7 +441,7 @@ test_that("DesignGrouped works as expected", {
   increments <- h_increments_relative()
   placebo_cohort_size <- CohortSizeConst(0L)
   next_best <- h_next_best_ncrm()
-  cohort_size <- CohortSizeRange(intervals = c(0, 30), cohort_size = c(1, 3))
+  cohort_size <- CohortSizeRange(intervals = c(0, 30), cohort_size = c(1L, 3L))
 
   result <- expect_silent(
     DesignGrouped(

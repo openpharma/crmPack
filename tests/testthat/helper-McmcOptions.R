@@ -1,10 +1,9 @@
-h_get_mcmc_options <- function(samples = 4, burnin = 50, fixed = TRUE) {
+h_get_mcmc_options <- function(samples = 4L, burnin = 50L, fixed = TRUE) {
+  rng_kind <- "Mersenne-Twister"
   if (fixed) {
-    rng_kind <- "Mersenne-Twister"
-    rng_seed <- 1
+    rng_seed <- 1L
   } else {
-    rng_kind <- NA
-    rng_seed <- NA
+    rng_seed <- as.integer(floor(runif(1, max = .Machine$integer.max)))
   }
 
   McmcOptions(

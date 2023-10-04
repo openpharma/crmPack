@@ -224,7 +224,7 @@ my_model <- LogisticNormal(
   mean = c(-0.85, 1),
   cov = matrix(c(1, -0.5, -0.5, 1), nrow = 2)
 )
-my_options <- McmcOptions(burnin = 2, step = 2, samples = 20)
+my_options <- McmcOptions(burnin = 2L, step = 2L, samples = 20L)
 my_samples <- mcmc(empty_data, my_model, my_options)
 ```
 

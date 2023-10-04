@@ -261,10 +261,10 @@ name (which is a general convention in `crmPack`):
 PL <- 0.001
 data <- Data(
   x = c(PL, 25, 25, 25, PL, 50, 50, 50, PL, 100, 100, 100),
-  y = c(0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0),
-  cohort = c(1, 1, 1, 1, 2, 2, 2, 2, 3, 3, 3, 3),
+  y = as.integer(c(0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0)),
+  cohort = as.integer(c(1, 1, 1, 1, 2, 2, 2, 2, 3, 3, 3, 3)),
   doseGrid = c(PL, seq(25, 300, 25)),
-  ID = 1:12,
+  ID = 1L:12L,
   placebo = TRUE
 )
 ```
@@ -293,7 +293,7 @@ then provided to the `mcmc` function, together with the `data` and the
 `model` objects:
 
 ```{r mcmc-sampling}
-options <- McmcOptions(burnin = 1000, step = 2, samples = 10000)
+options <- McmcOptions(burnin = 1000L, step = 2L, samples = 10000L)
 set.seed(94)
 samples <- mcmc(data, model, options)
 ```
@@ -353,9 +353,9 @@ nextDoseRes$plot
 **Adaptive stopping of the trial** We would like to stop the dose escalation adaptively if the maximum sample size of $n=30$ patients
 has been reached already, or if we have sufficient precision for the MTD estimate. We can specify the latter condition as follows: The probability that the next dose $x_{N+1}$ is in the target toxicity range is above 50%, and at least 9 patients were already dosed within +/- 20% range of $x_{N+1}$. The corresponding `Stopping` class object is constructed by combining the atomic rules with logical operators as follows:
 ```{r stop-rules-def}
-myStopping1 <- StoppingMinPatients(nPatients = 30)
+myStopping1 <- StoppingMinPatients(nPatients = 30L)
 myStopping2 <- StoppingTargetProb(target = c(0.2, 0.35), prob = 0.5)
-myStopping3 <- StoppingPatientsNearDose(nPatients = 9, percentage = 20)
+myStopping3 <- StoppingPatientsNearDose(nPatients = 9L, percentage = 20)
 myStopping <- myStopping1 | (myStopping2 & myStopping3)
 ```
 Again, this specific rule can be evaluated by a function, here called `stopTrial`, for a specific situation:
@@ -368,8 +368,8 @@ The result `FALSE` means that we cannot yet stop the trial, with the attribute `
 **Examine the dose escalation design** In the last topic of this section, we want to show how to assess the performance of a given CRM design. We first need to specify our design by creating an object of class `Design`. It contains our model, our rules for dose escalation (`Increments`, `NextBest`, `Stopping` and `CohortSize`), the dose grid (in the example below through the object `emptydata`) and our starting dose (see also Figure \@ref(fig:schematic).
 In this case we will use a fixed cohort size of 3 patients on active and 1 patient on placebo (``3+1'') throughout the study:
 ```{r size-rules}
-mySize <- CohortSizeConst(3)
-mySizePL <- CohortSizeConst(1)
+mySize <- CohortSizeConst(3L)
+mySizePL <- CohortSizeConst(1L)
 
 design <- Design(
   model = model, nextBest = myNextBest,

@@ -11,10 +11,10 @@ test_that("NextBestInfTheory produces consistent results for empty data", {
     cov = matrix(c(1.056373, 0.847935, 0.847935, 2.722500), nrow = 2)
   )
 
-  stop_rule <- StoppingMinPatients(nPatients = 30)
+  stop_rule <- StoppingMinPatients(nPatients = 30L)
   increments <- IncrementsRelative(interval = 0, increments = 1)
   new_my_next_best <- NextBestInfTheory(target = 0.25, asymmetry = 0.1)
-  cohort <- CohortSizeConst(size = 3)
+  cohort <- CohortSizeConst(size = 3L)
   my_truth <- probFunction(model, alpha0 = 175, alpha1 = 5)
 
   design <- Design(
@@ -29,7 +29,7 @@ test_that("NextBestInfTheory produces consistent results for empty data", {
 
   sim <- simulate(
     design,
-    nsim = 5,
+    nsim = 5L,
     truth = my_truth,
     mcmcOptions = h_get_mcmc_options()
   )
@@ -57,10 +57,10 @@ test_that("NextBestInfTheory produces consistent results with a dataset", {
     cov = matrix(c(1.056373, 0.847935, 0.847935, 2.722500), nrow = 2)
   )
 
-  stop_rule <- StoppingMinPatients(nPatients = 5)
+  stop_rule <- StoppingMinPatients(nPatients = 5L)
   increments <- IncrementsRelative(interval = 0, increments = 1)
   new_my_next_best <- NextBestInfTheory(target = 0.25, asymmetry = 0.1)
-  cohort <- CohortSizeConst(size = 3)
+  cohort <- CohortSizeConst(size = 3L)
   my_truth <- probFunction(model, alpha0 = 175, alpha1 = 5)
 
   design <- Design(
@@ -75,7 +75,7 @@ test_that("NextBestInfTheory produces consistent results with a dataset", {
 
   sim <- simulate(
     design,
-    nsim = 5,
+    nsim = 5L,
     truth = my_truth,
     mcmcOptions = h_get_mcmc_options()
   )
@@ -100,7 +100,7 @@ test_that("stop_reasons can be NA with certain stopping rule settings", {
   model <- h_get_logistic_normal()
   increments <- h_increments_relative()
   next_best <- h_next_best_ncrm()
-  size <- CohortSizeConst(size = 3)
+  size <- CohortSizeConst(size = 3L)
   # Extreme truth function, which has constant probability 1 in dose grid range.
   truth <- probFunction(model, alpha0 = 175, alpha1 = 5)
   stopping <- StoppingMissingDose()
@@ -142,9 +142,9 @@ test_that("simulate for DesignGrouped works as expected", {
     mono = Design(
       model = .LogisticNormal(),
       nextBest = NextBestNCRM(target = c(0.3, 0.6), overdose = c(0.6, 1), max_overdose_prob = 0.7),
-      stopping = StoppingMinPatients(nPatients = 9),
-      increments = IncrementsDoseLevels(levels = 5),
-      cohort_size = CohortSizeConst(3),
+      stopping = StoppingMinPatients(nPatients = 9L),
+      increments = IncrementsDoseLevels(levels = 5L),
+      cohort_size = CohortSizeConst(3L),
       data = Data(doseGrid = 1:100),
       startingDose = 1
     ),
@@ -185,9 +185,9 @@ test_that("simulate for DesignGrouped works as expected with different doses, pa
     mono = Design(
       model = .LogisticNormal(),
       nextBest = NextBestNCRM(target = c(0.3, 0.6), overdose = c(0.6, 1), max_overdose_prob = 0.7),
-      stopping = StoppingMinPatients(nPatients = 20),
-      increments = IncrementsDoseLevels(levels = 5),
-      cohort_size = CohortSizeConst(3),
+      stopping = StoppingMinPatients(nPatients = 20L),
+      increments = IncrementsDoseLevels(levels = 5L),
+      cohort_size = CohortSizeConst(3L),
       data = Data(doseGrid = 1:100),
       startingDose = 1
     ),
@@ -227,18 +227,18 @@ test_that("simulate for DesignGrouped works when first patient is dosed separate
     mono = Design(
       model = .LogisticNormal(),
       nextBest = NextBestNCRM(target = c(0.3, 0.6), overdose = c(0.6, 1), max_overdose_prob = 0.7),
-      stopping = StoppingMinPatients(nPatients = 10),
-      increments = IncrementsDoseLevels(levels = 3),
-      cohort_size = CohortSizeConst(2),
+      stopping = StoppingMinPatients(nPatients = 10L),
+      increments = IncrementsDoseLevels(levels = 3L),
+      cohort_size = CohortSizeConst(2L),
       data = Data(doseGrid = 1:100),
       startingDose = 10
     ),
     combo = Design(
       model = .LogisticNormal(),
       nextBest = NextBestNCRM(target = c(0.3, 0.6), overdose = c(0.6, 1), max_overdose_prob = 0.7),
-      stopping = StoppingMinPatients(nPatients = 20),
-      increments = IncrementsDoseLevels(levels = 5),
-      cohort_size = CohortSizeConst(3),
+      stopping = StoppingMinPatients(nPatients = 20L),
+      increments = IncrementsDoseLevels(levels = 5L),
+      cohort_size = CohortSizeConst(3L),
       data = Data(doseGrid = 1:100),
       startingDose = 1
     ),
@@ -285,18 +285,18 @@ test_that("simulate for DesignGrouped works with different starting doses and fi
     mono = Design(
       model = .LogisticNormal(),
       nextBest = NextBestNCRM(target = c(0.3, 0.6), overdose = c(0.6, 1), max_overdose_prob = 0.7),
-      stopping = StoppingMinPatients(nPatients = 9),
-      increments = IncrementsDoseLevels(levels = 5),
-      cohort_size = CohortSizeConst(3),
+      stopping = StoppingMinPatients(nPatients = 9L),
+      increments = IncrementsDoseLevels(levels = 5L),
+      cohort_size = CohortSizeConst(3L),
       data = Data(doseGrid = 1:100),
       startingDose = 10
     ),
     combo = Design(
       model = .LogisticNormal(),
       nextBest = NextBestNCRM(target = c(0.3, 0.6), overdose = c(0.6, 1), max_overdose_prob = 0.7),
-      stopping = StoppingMinPatients(nPatients = 9),
+      stopping = StoppingMinPatients(nPatients = 9L),
       increments = IncrementsRelative(c(0, 100), c(2, 1)),
-      cohort_size = CohortSizeConst(3),
+      cohort_size = CohortSizeConst(3L),
       data = Data(doseGrid = 1:100),
       startingDose = 5
     ),
@@ -345,7 +345,7 @@ test_that("examine for DADesign works as expected", {
     Tmax = t_max
   )
 
-  n_pieces <- 10
+  n_pieces <- 10L
   lambda_prior <- function(k) {
     n_pieces / (t_max * (n_pieces - k + 0.5))
   }
@@ -374,20 +374,20 @@ test_that("examine for DADesign works as expected", {
   )
   my_size_1 <- CohortSizeRange(
     intervals = c(0, 30),
-    cohort_size = c(1, 3)
+    cohort_size = c(1L, 3L)
   )
   my_size_2 <- CohortSizeDLT(
-    intervals = c(0, 1),
-    cohort_size = c(1, 3)
+    intervals = c(0L, 1L),
+    cohort_size = c(1L, 3L)
   )
   my_size <- maxSize(my_size_1, my_size_2)
   my_stopping_1 <- StoppingTargetProb(
     target = c(0.2, 0.35),
     prob = 0.5
   )
-  my_stopping_2 <- StoppingMinPatients(nPatients = 50)
+  my_stopping_2 <- StoppingMinPatients(nPatients = 50L)
   my_stopping <- (my_stopping_1 | my_stopping_2)
-  my_safety <- SafetyWindowConst(c(6, 2), 7, 7)
+  my_safety <- SafetyWindowConst(c(6L, 2L), 7L, 7L)
 
   design <- DADesign(
     model = model,
@@ -401,11 +401,11 @@ test_that("examine for DADesign works as expected", {
   )
 
   options <- McmcOptions(
-    burnin = 10,
-    step = 1,
-    samples = 100,
+    burnin = 10L,
+    step = 1L,
+    samples = 100L,
     rng_kind = "Mersenne-Twister",
-    rng_seed = 12
+    rng_seed = 12L
   )
   expect_warning(
     result <- examine(design, mcmcOptions = options, maxNoIncrement = 2L),

@@ -68,7 +68,7 @@ my_next_best <- NextBestTD(
   prob_target_eot = 0.3
 )
 
-my_size <- CohortSizeConst(size = 3)
+my_size <- CohortSizeConst(size = 3L)
 
 # The increments for the dose-escalation process:
 #  the maximum increase of 200\% for doses up to the maximum dose in grid,
@@ -79,7 +79,7 @@ my_increments <- IncrementsRelative(
 )
 
 # Stop when the maximum sample size of 36 patients is reached.
-my_stopping <- StoppingMinPatients(nPatients = 36)
+my_stopping <- StoppingMinPatients(nPatients = 36L)
 
 # The design with all the above information and starting with a dose of 25.
 # This design incorporates only DLT responses and no DLT samples are involved

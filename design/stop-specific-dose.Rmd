@@ -116,8 +116,8 @@ highest_dose_safe <- StopSpecificDose(
   rule = StoppingTargetProb(target=c(0, 0.3), prob=0.8),
   dose = 80
 )
-max_patients <- StoppingMinPatients(nPatients = 20)
-patients_near_dose <- StoppingPatientsNearDose(nPatients = 3, percentage = 0)
+max_patients <- StoppingMinPatients(nPatients = 20L)
+patients_near_dose <- StoppingPatientsNearDose(nPatients = 3L, percentage = 0)
 my_stopping <- highest_dose_safe | max_patients | patients_near_dose
 ```
 
@@ -126,8 +126,8 @@ Then we create some data and model with MCMC samples.
 ```{r}
 data <- Data(
   x = c(0.1, 0.5, 1.5, 3, 6, 10, 10, 10),
-  y = c(0, 0, 0, 0, 0, 0, 1, 0),
-  cohort = c(0, 1, 2, 3, 4, 5, 5, 5),
+  y = as.integer(c(0, 0, 0, 0, 0, 0, 1, 0)),
+  cohort = as.integer(c(0, 1, 2, 3, 4, 5, 5, 5)),
   doseGrid =
     c(
       0.1, 0.5, 1.5, 3, 6,

@@ -41,7 +41,7 @@ doseRecommendation <- nextBest(myNextBest,
 
 # Define the stopping rule such that the study would be stopped if at least 6
 # cohorts were already dosed
-myStopping <- StoppingMinCohorts(nCohorts = 6)
+myStopping <- StoppingMinCohorts(nCohorts = 6L)
 
 # Evaluate if to stop the trial
 stopTrial(stopping=myStopping,

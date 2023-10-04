@@ -260,9 +260,9 @@ target toxicity level.
 # Create the data.
 my_data <- Data(
   x = c(0.1, 0.5, 1.5, 3, 6, 10, 10, 10),
-  y = c(0, 0, 0, 0, 0, 0, 1, 0),
-  ID = 1:8,
-  cohort = c(0, 1, 2, 3, 4, 5, 5, 5),
+  y = as.integer(c(0, 0, 0, 0, 0, 0, 1, 0)),
+  ID = 1L:8L,
+  cohort = as.integer(c(0, 1, 2, 3, 4, 5, 5, 5)),
   doseGrid = c(0.1, 0.5, 1.5, 3, 6, seq(from = 10, to = 80, by = 2))
 )
 
@@ -307,9 +307,9 @@ dose_recommendation <- nextBest(
 # Create the data.
 my_data <- Data(
   x = c(0.1, 0.5, 1.5, 3, 6, 10, 10, 10),
-  y = c(0, 0, 0, 0, 0, 0, 1, 0),
-  ID = 1:8,
-  cohort = c(0, 1, 2, 3, 4, 5, 5, 5),
+  y = as.integer(c(0, 0, 0, 0, 0, 0, 1, 0)),
+  ID = 1L:8L,
+  cohort = as.integer(c(0, 1, 2, 3, 4, 5, 5, 5)),
   doseGrid = c(0.1, 0.5, 1.5, 3, 6, seq(from = 10, to = 80, by = 2))
 )
 
@@ -407,9 +407,9 @@ dose_recommendation
 # Create the data.
 my_data <- Data(
   x = c(0.1, 0.5, 1.5, 3, 6, 10, 10, 10),
-  y = c(0, 0, 0, 0, 0, 0, 1, 0),
-  ID = 1:8,
-  cohort = c(0, 1, 2, 3, 4, 5, 5, 5),
+  y = as.integer(c(0, 0, 0, 0, 0, 0, 1, 0)),
+  ID = 1L:8L,
+  cohort = as.integer(c(0, 1, 2, 3, 4, 5, 5, 5)),
   doseGrid = c(0.1, 0.5, 1.5, 3, 6, seq(from = 10, to = 80, by = 2))
 )
 
@@ -775,9 +775,9 @@ dose_recommendation$plot
 # Create the data.
 my_data <- Data(
   x = c(0.1, 0.5, 1.5, 3, 6, 10, 10, 10),
-  y = c(0, 0, 0, 0, 0, 0, 1, 0),
-  ID = 1:8,
-  cohort = c(0, 1, 2, 3, 4, 5, 5, 5),
+  y = as.integer(c(0, 0, 0, 0, 0, 0, 1, 0)),
+  ID = 1L:8L,
+  cohort = as.integer(c(0, 1, 2, 3, 4, 5, 5, 5)),
   doseGrid = c(0.1, 0.5, 1.5, 3, 6, seq(from = 10, to = 80, by = 2))
 )
 
