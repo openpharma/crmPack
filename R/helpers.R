@@ -97,12 +97,6 @@ matchTolerance <- function(x, table) {
   }))
 }
 
-##' @describeIn matchTolerance Helper function for checking inclusion in a table with tolerance
-##' @export
-`%~%` <- function(x, table) {
-  !is.na(matchTolerance(x = x, table = table))
-}
-
 ##' Check overlap of two character vectors
 ##'
 ##' @param a first character vector
