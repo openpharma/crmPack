@@ -408,7 +408,7 @@ test_that("examine for DADesign works as expected", {
     rng_seed = 12
   )
   expect_warning(
-    result <- examine(design, mcmcOptions = options, maxNoIncrement = 2),
+    result <- examine(design, mcmcOptions = options, maxNoIncrement = 2L),
     "Stopping because 2 times no increment"
   )
   expect_data_frame(result)
