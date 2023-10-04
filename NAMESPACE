@@ -3,7 +3,6 @@
 S3method(plot,gtable)
 S3method(print,gtable)
 export("%>%")
-export("%~%")
 export(.CohortSizeConst)
 export(.CohortSizeDLT)
 export(.CohortSizeMax)
