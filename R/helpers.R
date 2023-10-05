@@ -149,31 +149,6 @@ safeInteger <- function(x) {
   as.integer(x)
 }
 
-##' Predicate checking for a numeric range
-##'
-##' @param x the object being checked
-##' @return Returns \code{TRUE} if \code{x} is a numeric range
-##'
-##' @keywords internal
-is.range <- function(x) {
-  return(identical(length(x), 2L) &&
-    x[1] < x[2])
-}
-
-##' Predicate checking for a probability range
-##'
-##' @param x the object being checked
-##' @param bounds whether to include the bounds 0 and 1 (default)
-##' @return Returns \code{TRUE} if \code{x} is a probability range
-##'
-##' @keywords internal
-is.probRange <- function(x,
-                         bounds = TRUE) {
-  return(is.range(x) &&
-    all(sapply(x, test_probability, bounds = bounds)))
-}
-
-
 ##' Shorthand for logit function
 ##'
 ##' @param x the function argument
