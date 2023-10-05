@@ -76,6 +76,8 @@ Quantiles2LogisticNormal <- function(dosegrid,
                                        )) {
   ## extracts and checks
   nDoses <- length(dosegrid)
+  assert_flag(logNormal)
+  assert_flag(verbose)
   stopifnot(
     !is.unsorted(dosegrid, strictly = TRUE),
     ## the medians must be monotonically increasing:
@@ -86,8 +88,6 @@ Quantiles2LogisticNormal <- function(dosegrid,
     all(lower < median),
     all(upper > median),
     test_probability(level, bounds = FALSE),
-    is.bool(logNormal),
-    is.bool(verbose),
     identical(length(parlower), 5L),
     identical(length(parupper), 5L),
     all(parlower < parstart),

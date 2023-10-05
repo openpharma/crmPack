@@ -12,7 +12,7 @@ library(crmPack)
 library(checkmate)
 library(ggplot2)
 
-knitr::opts_chunk$set(echo = TRUE)
+knitr::opts_chunk$set(echo = TRUE, error = TRUE)
 ```
 
 This design introduces prototypes for a design where a monotherapy dose escalation
@@ -296,7 +296,7 @@ as well.
 
 ## Example
 
-```{r LogisticLogNormalGrouped-example}
+```{r LogisticLogNormalGrouped-example, error = TRUE}
 my_model <- LogisticLogNormalGrouped(
   mean = rep(0, 4),
   cov = diag(rep(1, 4)),
@@ -335,7 +335,7 @@ For this to work well we also need to pass additional arguments in the plot meth
 
 We have added a unit test for the plot method of the Samples class already as well.
 
-```{r initial-pars}
+```{r initial-pars, error = TRUE}
 # Need to choose the prior parameters here.
 my_model <- LogisticLogNormalGrouped(
   mean = rep(0, 4),
@@ -370,7 +370,7 @@ intervals are pretty narrow. We also expect a high toxicity already at low dose
 levels.
 Let's therefore modify the parameters.
 
-```{r prior-elicitation}
+```{r prior-elicitation, error = TRUE}
 # Need to choose the prior parameters here.
 my_model <- LogisticLogNormalGrouped(
   mean = c(-4, -4, -4, -4),
@@ -483,15 +483,11 @@ setMethod("simulate",
       nsim <- crmPack:::safeInteger(nsim)
 
       ## checks and extracts
-      stopifnot(
-        is.function(truth),
-        is.function(combo_truth),
-        crmPack:::is.scalar(nsim),
-        nsim > 0,
-        crmPack:::is.bool(parallel),
-        crmPack:::is.scalar(nCores),
-        nCores > 0
-      )
+      assert_function(truth)
+      assert_function(combo_truth)
+      assert_count(nsim, positive = TRUE)
+      assert_flag(parallel)
+      assert_count(nCores, positive = TRUE)
 
       args <- as.data.frame(args)
       nArgs <- max(nrow(args), 1L)
