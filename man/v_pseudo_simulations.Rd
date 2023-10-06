@@ -2,9 +2,24 @@
 % Please edit documentation in R/Simulations-validity.R, R/Simulation-validity.R
 \name{v_pseudo_simulations}
 \alias{v_pseudo_simulations}
+\alias{v_pseudo_dual_simulations}
+\alias{v_pseudo_dual_flex_simulations}
+\alias{v_da_simulations}
 \title{Internal Helper Functions for Validation of \code{\link{PseudoSimulations}} Objects}
 \usage{
 v_pseudo_simulations(object)
+
+v_pseudo_dual_simulations(object)
+
+v_pseudo_dual_flex_simulations(object)
+
+v_pseudo_simulations(object)
+
+v_pseudo_dual_simulations(object)
+
+v_pseudo_dual_flex_simulations(object)
+
+v_da_simulations(object)
 }
 \arguments{
 \item{object}{(\code{PseudoSimulations})\cr object to validate.}
@@ -33,5 +48,31 @@ These functions are only used internally to validate the format of an input
 contains valid \code{fit}, \code{FinalTDtargetEndOfTrialEstimates} , \code{FinalTDtargetDuringTrialAtDoseGrid},
 \code{FinalTDtargetEndOfTrialAtDoseGrid} , \code{FinalTDEOTCIs}, \code{FinalTDEOTRatios}, \code{FinalCIs}, \code{FinalRatios},
 object and valid \code{stopReasons} simulations.
+
+\item \code{v_pseudo_dual_simulations()}: validates that the \code{\link{PseudoDualSimulations}} object
+contains valid \code{fitEff}, \code{FinalGstarEstimates} , \code{FinalGstarAtDoseGrid},
+\code{FinalGstarCIs} , \code{FinalGstarRatios}, \code{FinalOptimalDose}, \code{FinalOptimalDoseAtDoseGrid}
+object and valid \code{sigma2est} simulations.
+
+\item \code{v_pseudo_dual_flex_simulations()}: validates that the \code{\link{PseudoDualFlexiSimulations}}
+object contains valid \code{sigma2betaWest} vector of the final posterior mean
+sigma2betaW estimates.\code{FinalGstarEstimates} , \code{FinalGstarAtDoseGrid},
+
+\item \code{v_pseudo_simulations()}: validates that the \code{\link{PseudoSimulations}} object
+contains valid \code{fit}, \code{FinalTDtargetEndOfTrialEstimates} , \code{FinalTDtargetDuringTrialAtDoseGrid},
+\code{FinalTDtargetEndOfTrialAtDoseGrid} , \code{FinalTDEOTCIs}, \code{FinalTDEOTRatios}, \code{FinalCIs}, \code{FinalRatios},
+object and valid \code{stopReasons} simulations.
+
+\item \code{v_pseudo_dual_simulations()}: validates that the \code{\link{PseudoDualSimulations}} object
+contains valid \code{fitEff}, \code{FinalGstarEstimates} , \code{FinalGstarAtDoseGrid},
+\code{FinalGstarCIs} , \code{FinalGstarRatios}, \code{FinalOptimalDose}, \code{FinalOptimalDoseAtDoseGrid}
+object and valid \code{sigma2est} simulations.
+
+\item \code{v_pseudo_dual_flex_simulations()}: validates that the \code{\link{PseudoDualFlexiSimulations}}
+object contains valid \code{sigma2betaWest} vector of the final posterior mean sigma2betaW
+estimates.\code{FinalGstarEstimates} , \code{FinalGstarAtDoseGrid},
+
+\item \code{v_da_simulations()}: validates that the \code{\link{DASimulations}} object
+contains valid \code{trialduration} the vector of trial duration values for all simulations.
 
 }}

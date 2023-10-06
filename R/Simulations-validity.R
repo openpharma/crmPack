@@ -33,7 +33,7 @@ v_general_simulations <- function(object) {
   v$result()
 }
 
-#' @describeIn v_simulations validates that the [`Simulations`] object
+#' @describeIn v_general_simulations validates that the [`Simulations`] object
 #'   contains valid object `fit`, `stop_reasons`, `stop_report`, and `additional_stats` compared to
 #'   the general class [`GeneralSimulations`].
 #'
@@ -62,31 +62,11 @@ v_simulations <- function(object) {
       and which must not contain any missing values"
   )
 
-  # o$check(
-  #   checkmate::test_list(object@additional_stats,
-  #                        len = nSims
-  #                        #is.character(f),
-  #                        # names = is_true(additional_stats)
-  #
-  #   ),
-  #
-  #   #identical(length(object@additional_stats), nSims),
-  #   "additional_stats must have same length as the number of simulations and specific
-  #         names for the functions must be given"
-  # )
-  #
-  # o$check(unlist(object@additional_stats),
-  #
-  #         checkmate::check_named(unlist(object@additional_stats), type = "named")
-  #
-  # )
-
-
   v$result()
 }
 
-#' @describeIn v_dual_simulations validates that the [`DualSimulations`] object and capture the dose-biomarker `fits`, and the
-#' `sigma2W` and `rho` estimates.
+#' @describeIn v_general_simulations validates that the [`DualSimulations`] object and
+#' capture the dose-biomarker `fits`, and the `sigma2W` and `rho` estimates.
 #'
 v_dual_simulations <- function(object) {
   v <- Validate()
@@ -141,11 +121,11 @@ v_pseudo_simulations <- function(object) {
   v$result()
 }
 
-#' @describeIn v_pseudo_dual_simulations validates that the [`PseudoDualSimulations`] object
+#' @describeIn v_pseudo_simulations validates that the [`PseudoDualSimulations`] object
 #'   contains valid `fitEff`, `FinalGstarEstimates` , `FinalGstarAtDoseGrid`,
 #'    `FinalGstarCIs` , `FinalGstarRatios`, `FinalOptimalDose`, `FinalOptimalDoseAtDoseGrid`
 #'     object and valid `sigma2est` simulations.
-#'
+
 v_pseudo_dual_simulations <- function(object) {
   v <- Validate()
   nSims <- length(object@data)
@@ -156,8 +136,9 @@ v_pseudo_dual_simulations <- function(object) {
   v$result()
 }
 
-#' @describeIn v_pseudo_dual_flex_simulations validates that the [`PseudoDualFlexiSimulations`] object
-#'   contains valid `sigma2betaWest` vector of the final posterior mean sigma2betaW estimates.`FinalGstarEstimates` , `FinalGstarAtDoseGrid`,
+#' @describeIn v_pseudo_simulations validates that the [`PseudoDualFlexiSimulations`]
+#' object contains valid `sigma2betaWest` vector of the final posterior mean
+#' sigma2betaW estimates.`FinalGstarEstimates` , `FinalGstarAtDoseGrid`,
 #'
 v_pseudo_dual_flex_simulations <- function(object) {
   v <- Validate()
@@ -169,9 +150,9 @@ v_pseudo_dual_flex_simulations <- function(object) {
   v$result()
 }
 
-#' @describeIn v_da_simulations validates that the [`DASimulations`] object
+#' @describeIn v_general_simulations validates that the [`DASimulations`] object
 #'   contains valid `trialduration` the vector of trial duration values for all simulations.
-#
+
 v_da_simulations <- function(object) {
   v <- Validate()
 

@@ -4786,6 +4786,7 @@ setMethod(
         stop_reasons <- lapply(this_list, "[[", "stop")
         report_results <- lapply(this_list, "[[", "results")
         stop_report <- as.matrix(do.call(rbind, report_results))
+        additional_stats <- lapply(this_list, "[[", "additional_stats")
 
         Simulations(
           data = data_list,
@@ -4793,6 +4794,7 @@ setMethod(
           fit = fit_list,
           stop_reasons = stop_reasons,
           stop_report = stop_report,
+          additional_stats = additional_stats,
           seed = rng_state
         )
       })
