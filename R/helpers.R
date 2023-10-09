@@ -118,37 +118,6 @@ noOverlap <- function(a, b) {
   )
 }
 
-##' checks for whole numbers (integers)
-##'
-##' @param x the numeric vector
-##' @param tol the tolerance
-##' @return TRUE or FALSE for each element of x
-##'
-##' @keywords internal
-is.wholenumber <- function(x, tol = .Machine$double.eps^0.5) {
-  abs(x - round(x)) < tol
-}
-
-
-##' Safe conversion to integer vector
-##'
-##' @param x the numeric vector
-##' @return the integer vector
-##'
-##' @keywords internal
-safeInteger <- function(x) {
-  testres <- is.wholenumber(x)
-  if (!all(testres)) {
-    notInt <- which(!testres)
-    stop(paste(
-      "elements",
-      paste(notInt, sep = ", "),
-      "of vector are not integers!"
-    ))
-  }
-  as.integer(x)
-}
-
 ##' Predicate checking for a probability
 ##'
 ##' @param x the object being checked

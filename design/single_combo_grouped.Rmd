@@ -480,8 +480,6 @@ setMethod("simulate",
              parallel = FALSE,
              nCores = min(parallelly::availableCores(), 5),
              ...) {
-      nsim <- crmPack:::safeInteger(nsim)
-
       ## checks and extracts
       assert_function(truth)
       assert_function(combo_truth)
