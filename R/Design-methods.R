@@ -60,7 +60,7 @@ setMethod("simulate",
              truth, args = NULL, firstSeparate = FALSE,
              mcmcOptions = McmcOptions(),
              parallel = FALSE, nCores =
-              min(parallel::detectCores(), 5), derive = list(),
+               min(parallel::detectCores(), 5), derive = list(),
              ...) {
       nsim <- safeInteger(nsim)
 

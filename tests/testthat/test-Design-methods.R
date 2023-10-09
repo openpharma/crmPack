@@ -290,7 +290,6 @@ test_that("simulate for DesignGrouped works when first patient is dosed separate
     firstSeparate = TRUE,
     combo_truth = my_combo_truth,
     mcmcOptions = h_get_mcmc_options(),
-
   ))
 
   expect_list(result)
