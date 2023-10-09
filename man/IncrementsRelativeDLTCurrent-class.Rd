@@ -8,7 +8,7 @@
 \alias{.DefaultIncrementsRelativeDLTCurrent}
 \title{\code{IncrementsRelativeDLTCurrent}}
 \usage{
-IncrementsRelativeDLTCurrent(intervals = c(0, 1), increments = c(2, 1))
+IncrementsRelativeDLTCurrent(intervals = c(0L, 1L), increments = c(2L, 1L))
 
 .DefaultIncrementsRelativeDLTCurrent()
 }

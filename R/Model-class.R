@@ -2202,7 +2202,7 @@ LogisticIndepBeta <- function(binDLE,
                               data) {
   assert_numeric(binDLE)
   assert_numeric(DLEdose)
-  assert_numeric(DLEweights)
+  assert_integerish(DLEweights, lower = 0, any.missing = FALSE)
   assert_class(data, "Data")
 
   # Combine pseudo and observed data. It can also happen that data@nObs == 0.
@@ -2220,7 +2220,7 @@ LogisticIndepBeta <- function(binDLE,
   .LogisticIndepBeta(
     binDLE = binDLE,
     DLEdose = DLEdose,
-    DLEweights = safeInteger(DLEweights),
+    DLEweights = as.integer(DLEweights),
     phi1 = phi1,
     phi2 = phi2,
     Pcov = Pcov,
@@ -2685,6 +2685,8 @@ DALogisticLogNormal <- function(npiece = 3,
                                 c_par = 2,
                                 cond_pem = TRUE,
                                 ...) {
+  assert_flag(cond_pem)
+
   start <- LogisticLogNormal(...)
 
   datamodel <- function() {
@@ -2755,7 +2757,7 @@ DALogisticLogNormal <- function(npiece = 3,
       l = l,
       c_par = c_par,
       h = seq(from = 0L, to = Tmax, length = npiece + 1),
-      cond = safeInteger(cond_pem)
+      cond = as.integer(cond_pem)
     )
     if (!from_prior) {
       ms <- c(list(ref_dose = start@ref_dose, zeros = rep(0, nObs), eps = 1e-10, cadj = 1e10), ms)
@@ -2763,9 +2765,11 @@ DALogisticLogNormal <- function(npiece = 3,
     ms
   }
 
+  assert_integerish(npiece, lower = 1)
+
   .DALogisticLogNormal(
     start,
-    npiece = safeInteger(npiece),
+    npiece = as.integer(npiece),
     l = l,
     c_par = c_par,
     cond_pem = cond_pem,
