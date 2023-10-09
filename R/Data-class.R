@@ -139,7 +139,7 @@ Data <- function(x = numeric(),
     # have the same dose. Note that this could be wrong,
     # if two subsequent cohorts are at the same dose.
     cohort <- as.integer(c(1, 1 + cumsum(diff(x) != 0)))
-  }  else {
+  } else {
     assert_integerish(cohort)
   }
 
