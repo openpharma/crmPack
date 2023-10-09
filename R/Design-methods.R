@@ -65,15 +65,11 @@ setMethod("simulate",
       nsim <- safeInteger(nsim)
 
       ## checks and extracts
-      stopifnot(
-        is.function(truth),
-        is.bool(firstSeparate),
-        is.scalar(nsim),
-        nsim > 0,
-        is.bool(parallel),
-        is.scalar(nCores),
-        nCores > 0
-      )
+      assert_function(truth)
+      assert_flag(firstSeparate)
+      assert_count(nsim, positive = TRUE)
+      assert_flag(parallel)
+      assert_count(nCores, positive = TRUE)
 
       args <- as.data.frame(args)
       nArgs <- max(nrow(args), 1L)
@@ -392,17 +388,15 @@ setMethod("simulate",
              truth, args = NULL,
              parallel = FALSE,
              nCores =
-               min(parallel::detectCores(), 5),
+               min(parallel::detectCores(), 5L),
              ...) {
       nsim <- safeInteger(nsim)
 
       ## checks and extracts
-      stopifnot(
-        is.function(truth),
-        is.scalar(nsim),
-        nsim > 0,
-        is.bool(parallel)
-      )
+      assert_function(truth)
+      assert_count(nsim, positive = TRUE)
+      assert_flag(parallel)
+      assert_count(nCores, positive = TRUE)
 
       args <- as.data.frame(args)
       nArgs <- max(nrow(args), 1L)
@@ -584,16 +578,14 @@ setMethod("simulate",
       nsim <- safeInteger(nsim)
 
       ## checks and extracts
-      stopifnot(
-        is.function(trueTox),
-        is.function(trueBiomarker),
-        is.scalar(sigma2W), sigma2W > 0,
-        is.scalar(rho), rho < 1, rho > -1,
-        is.bool(firstSeparate),
-        is.scalar(nsim),
-        nsim > 0,
-        is.bool(parallel)
-      )
+      assert_function(trueTox)
+      assert_function(trueBiomarker)
+      assert_number(sigma2W, lower = 0)
+      assert_number(rho, lower = -1, upper = 1)
+      assert_flag(firstSeparate)
+      assert_count(nsim, positive = TRUE)
+      assert_flag(parallel)
+      assert_count(nCores, positive = TRUE)
 
       args <- as.data.frame(args)
       nArgs <- max(nrow(args), 1L)
@@ -1019,7 +1011,7 @@ setGeneric("examine",
   def =
     function(object, ..., maxNoIncrement = 100L) {
       ## check maxNoIncrement argument
-      stopifnot(is.scalar(maxNoIncrement) && maxNoIncrement > 0)
+      assert_count(maxNoIncrement, positive = TRUE)
 
       ## there should be no default method,
       ## therefore just forward to next method!
@@ -1795,18 +1787,16 @@ setMethod("simulate",
              truth, args = NULL, firstSeparate = FALSE,
              mcmcOptions = McmcOptions(),
              parallel = FALSE, nCores =
-               min(parallel::detectCores(), 5),
+               min(parallel::detectCores(), 5L),
              ...) {
       nsim <- safeInteger(nsim)
 
       ## checks and extracts
-      stopifnot(
-        is.function(truth),
-        is.bool(firstSeparate),
-        is.scalar(nsim),
-        nsim > 0,
-        is.bool(parallel)
-      )
+      assert_function(truth)
+      assert_flag(firstSeparate)
+      assert_count(nsim, positive = TRUE)
+      assert_flag(parallel)
+      assert_count(nCores, positive = TRUE)
 
       args <- as.data.frame(args)
       nArgs <- max(nrow(args), 1L)
@@ -2161,18 +2151,16 @@ setMethod("simulate",
     function(object, nsim = 1L, seed = NULL,
              truth, args = NULL, firstSeparate = FALSE,
              parallel = FALSE, nCores =
-               min(parallel::detectCores(), 5),
+               min(parallel::detectCores(), 5L),
              ...) {
       nsim <- safeInteger(nsim)
 
       ## checks and extracts
-      stopifnot(
-        is.function(truth),
-        is.bool(firstSeparate),
-        is.scalar(nsim),
-        nsim > 0,
-        is.bool(parallel)
-      )
+      assert_function(truth)
+      assert_flag(firstSeparate)
+      assert_count(nsim, positive = TRUE)
+      assert_flag(parallel)
+      assert_count(nCores, positive = TRUE)
 
       args <- as.data.frame(args)
       nArgs <- max(nrow(args), 1L)
@@ -2513,20 +2501,18 @@ setMethod("simulate",
              trueDLE, trueEff, trueNu,
              args = NULL, firstSeparate = FALSE,
              parallel = FALSE, nCores =
-               min(parallel::detectCores(), 5),
+               min(parallel::detectCores(), 5L),
              ...) {
       nsim <- safeInteger(nsim)
 
       ## checks and extracts
-      stopifnot(
-        is.function(trueDLE),
-        is.function(trueEff),
-        trueNu > 0,
-        is.bool(firstSeparate),
-        is.scalar(nsim),
-        nsim > 0,
-        is.bool(parallel)
-      )
+      assert_function(trueDLE)
+      assert_function(trueEff)
+      assert_true(trueNu > 0)
+      assert_flag(firstSeparate)
+      assert_count(nsim, positive = TRUE)
+      assert_flag(parallel)
+      assert_count(nCores, positive = TRUE)
 
       args <- as.data.frame(args)
       nArgs <- max(nrow(args), 1L)
@@ -3054,18 +3040,16 @@ setMethod("simulate",
              args = NULL, firstSeparate = FALSE,
              mcmcOptions = McmcOptions(),
              parallel = FALSE, nCores =
-               min(parallel::detectCores(), 5),
+               min(parallel::detectCores(), 5L),
              ...) {
       nsim <- safeInteger(nsim)
 
       ## common checks and extracts
-      stopifnot(
-        is.function(trueDLE),
-        is.bool(firstSeparate),
-        is.scalar(nsim),
-        nsim > 0,
-        is.bool(parallel)
-      )
+      assert_function(trueDLE)
+      assert_flag(firstSeparate)
+      assert_count(nsim, positive = TRUE)
+      assert_flag(parallel)
+      assert_count(nCores, positive = TRUE)
 
       ## check if special case applies
       isFlexi <- is(object@eff_model, "EffFlexi")
@@ -4067,16 +4051,12 @@ setMethod("simulate",
       nsim <- safeInteger(nsim) ## remove  in the future
 
       ## checks and extracts
-      stopifnot(
-        is.function(truthTox),
-        is.function(truthSurv),
-        is.bool(firstSeparate), ## remove  in the future
-        is.scalar(nsim), ## remove  in the future
-        nsim > 0,
-        is.bool(parallel),
-        is.scalar(nCores),
-        nCores > 0
-      )
+      assert_function(truthTox)
+      assert_function(truthSurv)
+      assert_flag(firstSeparate)
+      assert_count(nsim, positive = TRUE)
+      assert_flag(parallel)
+      assert_count(nCores, positive = TRUE)
 
       args <- as.data.frame(args)
       nArgs <- max(nrow(args), 1L)
@@ -4731,7 +4711,6 @@ setMethod(
             current$combo$data <- current$combo$data |>
               h_add_dlts(current$combo$dose, current$combo$truth, object@combo@cohort_size, firstSeparate)
           }
-          if (current$first) current$first <- FALSE
           current$grouped <- h_group_data(current$mono$data, current$combo$data)
           current$samples <- mcmc(current$grouped, object@model, mcmcOptions)
           if (!current$mono$stop) {
@@ -4743,7 +4722,7 @@ setMethod(
               stopTrial(current$mono$dose, current$samples, object@model, current$mono$data, group = "mono")
             current$mono$results <- h_unpack_stopit(current$mono$stop)
           }
-          if (!current$combo$stop) {
+          if (!current$combo$stop && (!current$first || !object@first_cohort_mono_only)) {
             current$combo$limit <- if (is.na(current$mono$dose)) {
               0
             } else {
@@ -4760,6 +4739,7 @@ setMethod(
           if (object@same_dose && !current$mono$stop && !current$combo$stop) {
             current$mono$dose <- current$combo$dose <- min(current$mono$dose, current$combo$dose)
           }
+          if (current$first) current$first <- FALSE
         }
         current$mono$fit <- fit(current$samples, object@model, current$grouped, group = "mono")
         current$combo$fit <- fit(current$samples, object@model, current$grouped, group = "combo")
