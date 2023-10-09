@@ -1,5 +1,39 @@
 # simulate ----
 
+test_that("Test if simulate generate the expected output.", {
+  data <- h_get_data(placebo = FALSE)
+  model <- h_get_logistic_normal()
+  increments <- h_increments_relative()
+  next_best <- h_next_best_ncrm()
+  size <- CohortSizeConst(size = 3)
+
+  # Extreme truth function, which has constant probability 1 in dose grid range.
+  truth <- probFunction(model, alpha0 = 175, alpha1 = 5)
+  stop_rule <- StoppingMinPatients(nPatients = 5)
+  design <- Design(
+    model = model,
+    stopping = stop_rule,
+    increments = increments,
+    nextBest = next_best,
+    cohort_size = size,
+    data = data,
+    startingDose = 25
+  )
+
+  my_options <- McmcOptions(burnin = 100, step = 2, samples = 5, rng_kind = "Mersenne-Twister", rng_seed = 3)
+
+  sim <- simulate(
+    design,
+    nsim = 1,
+    truth = truth,
+    seed = 819,
+    mcmcOptions = my_options
+  )
+
+  expect_snapshot(sim)
+})
+
+
 ## NextBestInfTheory ----
 
 test_that("NextBestInfTheory produces consistent results for empty data", {
@@ -255,7 +289,8 @@ test_that("simulate for DesignGrouped works when first patient is dosed separate
     truth = my_truth,
     firstSeparate = TRUE,
     combo_truth = my_combo_truth,
-    mcmcOptions = h_get_mcmc_options()
+    mcmcOptions = h_get_mcmc_options(),
+
   ))
 
   expect_list(result)

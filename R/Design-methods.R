@@ -38,6 +38,9 @@ NULL
 ##' @param nCores how many cores should be used for parallel computing?
 ##' Defaults to the number of cores on the machine, maximum 5.
 ##' @param \dots not used
+##' @param derive a named list of functions which derives statistics, based on the
+##' vector of posterior MTD samples. Each list element must therefore accept
+##' one and only one argument, which is a numeric vector, and return a number.
 ##'
 ##' @return an object of class \code{\linkS4class{Simulations}}
 ##'
@@ -57,7 +60,7 @@ setMethod("simulate",
              truth, args = NULL, firstSeparate = FALSE,
              mcmcOptions = McmcOptions(),
              parallel = FALSE, nCores =
-               min(parallel::detectCores(), 5L),
+              min(parallel::detectCores(), 5), derive = list(),
              ...) {
       nsim <- safeInteger(nsim)
 
@@ -261,6 +264,18 @@ setMethod("simulate",
           data = thisData
         )
 
+        # Get the MTD estimate from the samples.
+
+        target_dose_samples <- dose(
+          mean(object@nextBest@target),
+          model = object@model,
+          samples = thisSamples
+        )
+
+        # Create a function for additional statistical summary.
+
+        additional_stats <- lapply(derive, function(f) f(target_dose_samples))
+
         ## return the results
         thisResult <-
           list(
@@ -275,7 +290,8 @@ setMethod("simulate",
                 stopit,
                 "message"
               ),
-            report_results = stopit_results
+            report_results = stopit_results,
+            additional_stats = additional_stats
           )
         return(thisResult)
       }
@@ -315,6 +331,9 @@ setMethod("simulate",
       stopResults <- lapply(resultList, "[[", "report_results")
       stop_matrix <- as.matrix(do.call(rbind, stopResults))
 
+      # Result list of additional statistical summary.
+      additional_stats <- lapply(resultList, "[[", "additional_stats")
+
       ## return the results in the Simulations class object
       ret <- Simulations(
         data = dataList,
@@ -322,6 +341,7 @@ setMethod("simulate",
         fit = fitList,
         stop_report = stop_matrix,
         stop_reasons = stopReasons,
+        additional_stats = additional_stats,
         seed = RNGstate
       )
 
@@ -532,6 +552,9 @@ setMethod("simulate",
 ##' @param nCores how many cores should be used for parallel computing?
 ##' Defaults to the number of cores on the machine, maximum 5.
 ##' @param \dots not used
+##' @param derive a named list of functions which derives statistics, based on the
+##' vector of posterior MTD samples. Each list element must therefore accept
+##' one and only one argument, which is a numeric vector, and return a number.
 ##'
 ##' @return an object of class \code{\linkS4class{DualSimulations}}
 ##'
@@ -550,7 +573,7 @@ setMethod("simulate",
              mcmcOptions = McmcOptions(),
              parallel = FALSE,
              nCores =
-               min(parallel::detectCores(), 5L),
+               min(parallel::detectCores(), 5), derive = list(),
              ...) {
       nsim <- safeInteger(nsim)
 
@@ -843,6 +866,19 @@ setMethod("simulate",
           data = thisData
         )
 
+        # Get the MTD estimate from the samples.
+
+        target_dose_samples <- dose(
+          mean(object@nextBest@target),
+          model = object@model,
+          samples = thisSamples
+        )
+
+        # Create a function for additional statistical summary.
+
+        additional_stats <- lapply(derive, function(f) f(target_dose_samples))
+
+
         ## return the results
         thisResult <-
           list(
@@ -867,7 +903,8 @@ setMethod("simulate",
               attr(
                 stopit,
                 "message"
-              )
+              ),
+            additional_stats = additional_stats
           )
 
         return(thisResult)
@@ -918,6 +955,9 @@ setMethod("simulate",
       ## for dual simulations as it would fail in summary otherwise (for dual simulations reporting is not implemented)
       stop_report <- matrix(TRUE, nrow = nsim)
 
+      ## For dual simulations summary of additional statistics.
+      additional_stats <- lapply(resultList, "[[", "additional_stats")
+
       ## return the results in the DualSimulations class object
       ret <- DualSimulations(
         data = dataList,
@@ -928,6 +968,7 @@ setMethod("simulate",
         fit_biomarker = fitBiomarkerList,
         stop_report = stop_report,
         stop_reasons = stopReasons,
+        additional_stats = additional_stats,
         seed = RNGstate
       )
 
@@ -3982,6 +4023,9 @@ setMethod("simulate",
 ##' @param nCores how many cores should be used for parallel computing?
 ##' Defaults to the number of cores on the machine (maximum 5)
 ##' @param \dots not used
+##' @param derive a named list of functions which derives statistics, based on the
+##' vector of posterior MTD samples. Each list element must therefore accept
+##' one and only one argument, which is a numeric vector, and return a number.
 ##'
 ##' @return an object of class \code{\linkS4class{Simulations}}
 ##'
@@ -4001,7 +4045,8 @@ setMethod("simulate",
              deescalate = TRUE,
              mcmcOptions = McmcOptions(),
              DA = TRUE,
-             parallel = FALSE, nCores = min(parallel::detectCores(), 5L),
+             parallel = FALSE, nCores = min(parallel::detectCores(), 5),
+             derive = list(),
              ...) {
       nsim <- safeInteger(nsim) ## remove  in the future
 
@@ -4472,6 +4517,19 @@ setMethod("simulate",
           data = thisData
         )
 
+        # Get the MTD estimate from the samples.
+
+        target_dose_samples <- dose(
+          mean(object@nextBest@target),
+          model = object@model,
+          samples = thisSamples
+        )
+
+        # Create a function for additional statistical summary.
+
+        additional_stats <- lapply(derive, function(f) f(target_dose_samples))
+
+
         ## return the results
         thisResult <-
           list(
@@ -4486,7 +4544,8 @@ setMethod("simulate",
               attr(
                 stopit,
                 "message"
-              )
+              ),
+            additional_stats = additional_stats
           )
         return(thisResult)
       }
@@ -4530,6 +4589,9 @@ setMethod("simulate",
       stopReasons <- lapply(resultList, "[[", "stop")
 
       stop_report <- matrix(TRUE, nrow = nsim)
+
+      additional_stats <- lapply(resultList, "[[", "additional_stats")
+
       ## return the results in the Simulations class object
       ret <- DASimulations(
         data = dataList,
@@ -4537,9 +4599,11 @@ setMethod("simulate",
         fit = fitList,
         trialduration = trialduration,
         stop_report = stop_report,
+        additional_stats = additional_stats,
         stop_reasons = stopReasons,
         seed = RNGstate
       )
+
 
       return(ret)
     }
@@ -4702,6 +4766,7 @@ setMethod(
         stop_reasons <- lapply(this_list, "[[", "stop")
         report_results <- lapply(this_list, "[[", "results")
         stop_report <- as.matrix(do.call(rbind, report_results))
+        additional_stats <- lapply(this_list, "[[", "additional_stats")
 
         Simulations(
           data = data_list,
@@ -4709,6 +4774,7 @@ setMethod(
           fit = fit_list,
           stop_reasons = stop_reasons,
           stop_report = stop_report,
+          additional_stats = additional_stats,
           seed = rng_state
         )
       })
