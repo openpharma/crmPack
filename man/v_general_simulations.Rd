@@ -48,14 +48,15 @@ These functions are only used internally to validate the format of an input
 contains valid \code{data} object and valid \code{dose} simulations.
 
 \item \code{v_simulations()}: validates that the \code{\link{Simulations}} object
-contains valid object \code{fit}, \code{stop_reasons}, \code{stop_report}, and \code{additional_stats} compared to
-the general class \code{\link{GeneralSimulations}}.
+contains valid object \code{fit}, \code{stop_reasons}, \code{stop_report}, and
+\code{additional_stats} compared to the general class \code{\link{GeneralSimulations}}.
 
 \item \code{v_dual_simulations()}: validates that the \code{\link{DualSimulations}} object and
 capture the dose-biomarker \code{fits}, and the \code{sigma2W} and \code{rho} estimates.
 
 \item \code{v_da_simulations()}: validates that the \code{\link{DASimulations}} object
-contains valid \code{trialduration} the vector of trial duration values for all simulations.
+contains valid \code{trialduration} the vector of trial duration values for all
+simulations.
 
 \item \code{v_general_simulations()}: validates that the \code{\link{GeneralSimulations}} object
 contains valid \code{data} object and valid \code{dose} simulations.

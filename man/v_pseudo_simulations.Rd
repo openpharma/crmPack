@@ -45,8 +45,9 @@ These functions are only used internally to validate the format of an input
 \section{Functions}{
 \itemize{
 \item \code{v_pseudo_simulations()}: validates that the \code{\link{PseudoSimulations}} object
-contains valid \code{fit}, \code{FinalTDtargetEndOfTrialEstimates} , \code{FinalTDtargetDuringTrialAtDoseGrid},
-\code{FinalTDtargetEndOfTrialAtDoseGrid} , \code{FinalTDEOTCIs}, \code{FinalTDEOTRatios}, \code{FinalCIs}, \code{FinalRatios},
+contains valid \code{fit}, \code{FinalTDtargetEndOfTrialEstimates} ,
+\code{FinalTDtargetDuringTrialAtDoseGrid},\code{FinalTDtargetEndOfTrialAtDoseGrid} ,
+\code{FinalTDEOTCIs}, \code{FinalTDEOTRatios}, \code{FinalCIs}, \code{FinalRatios},
 object and valid \code{stopReasons} simulations.
 
 \item \code{v_pseudo_dual_simulations()}: validates that the \code{\link{PseudoDualSimulations}} object

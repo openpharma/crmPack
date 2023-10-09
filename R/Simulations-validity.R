@@ -34,8 +34,8 @@ v_general_simulations <- function(object) {
 }
 
 #' @describeIn v_general_simulations validates that the [`Simulations`] object
-#'   contains valid object `fit`, `stop_reasons`, `stop_report`, and `additional_stats` compared to
-#'   the general class [`GeneralSimulations`].
+#'   contains valid object `fit`, `stop_reasons`, `stop_report`, and
+#'   `additional_stats` compared to the general class [`GeneralSimulations`].
 #'
 v_simulations <- function(object) {
   v <- Validate()
@@ -58,8 +58,8 @@ v_simulations <- function(object) {
       min.cols = 1,
       any.missing = FALSE
     ),
-    "stop_report must be a matrix of mode logical in which the number of rows equals the number of simulations
-      and which must not contain any missing values"
+    "stop_report must be a matrix of mode logical in which the number of rows
+    equals the number of simulations and which must not contain any missing values"
   )
 
   v$result()
@@ -105,8 +105,9 @@ v_dual_simulations <- function(object) {
 NULL
 
 #' @describeIn v_pseudo_simulations validates that the [`PseudoSimulations`] object
-#'   contains valid `fit`, `FinalTDtargetEndOfTrialEstimates` , `FinalTDtargetDuringTrialAtDoseGrid`,
-#'    `FinalTDtargetEndOfTrialAtDoseGrid` , `FinalTDEOTCIs`, `FinalTDEOTRatios`, `FinalCIs`, `FinalRatios`,
+#'   contains valid `fit`, `FinalTDtargetEndOfTrialEstimates` ,
+#'   `FinalTDtargetDuringTrialAtDoseGrid`,`FinalTDtargetEndOfTrialAtDoseGrid` ,
+#'   `FinalTDEOTCIs`, `FinalTDEOTRatios`, `FinalCIs`, `FinalRatios`,
 #'     object and valid `stopReasons` simulations.
 
 v_pseudo_simulations <- function(object) {
@@ -151,7 +152,8 @@ v_pseudo_dual_flex_simulations <- function(object) {
 }
 
 #' @describeIn v_general_simulations validates that the [`DASimulations`] object
-#'   contains valid `trialduration` the vector of trial duration values for all simulations.
+#'   contains valid `trialduration` the vector of trial duration values for all
+#'   simulations.
 
 v_da_simulations <- function(object) {
   v <- Validate()
