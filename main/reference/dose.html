@@ -53,12 +53,6 @@ The doses are computed based on the samples of the model parameters (samples).">
 <li class="nav-item">
   <a class="nav-link" href="../news/index.html">Changelog</a>
 </li>
-<!-- start dropdown for versions --> <li class="nav-item dropdown">
-        <a href="#" class="nav-link dropdown-toggle"
-          data-bs-toggle="dropdown" role="button"
-          aria-expanded="false" aria-haspopup="true"
-          id="dropdown-versions">Versions</a> <div class="dropdown-menu" aria-labelledby="dropdown-versions"> <a class="dropdown-item" data-toggle="tooltip" title="" href="https://Roche.github.io/crmPack/main">main</a> </div></li>
-<!-- end dropdown for versions -->
       </ul><form class="form-inline my-2 my-lg-0" role="search">
         <input type="search" class="form-control me-sm-2" aria-label="Toggle navigation" name="search-input" data-search-index="../search.json" id="search-input" placeholder="Search for" autocomplete="off"></form>
 
@@ -278,9 +272,9 @@ variable that dose depends on, represents toxicity probability.</p>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co"># Posterior for the dose achieving Prob(DLT) = 0.45.</span></span></span>
 <span class="r-in"><span><span class="fu">dose</span><span class="op">(</span>x <span class="op">=</span> <span class="fl">0.45</span>, model <span class="op">=</span> <span class="va">my_model</span>, samples <span class="op">=</span> <span class="va">my_samples</span><span class="op">)</span></span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  [1] 214.72117 214.72117  35.93048  35.93048  35.93048  29.67819  29.67819</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  [8]  29.67819  29.67819  29.67819  86.82267  15.27843  15.27843  25.98050</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [15]  20.16980  76.49526  76.49526  76.49526  76.49526  76.49526</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  [1]  41.05373  41.05373  41.05373  41.05373  41.05373  74.35420  74.35420</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  [8]  74.35420  74.35420  74.35420 231.28954 231.28954  21.20880  22.51316</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [15]  22.51316  49.13157  49.13157  31.87594  31.87594  32.56875</span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co"># Create data from the 'Data' (or 'DataDual') class.</span></span></span>
 <span class="r-in"><span><span class="va">dlt_data</span> <span class="op">&lt;-</span> <span class="fu"><a href="Data-class.html">Data</a></span><span class="op">(</span></span></span>

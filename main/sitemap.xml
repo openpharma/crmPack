@@ -637,9 +637,6 @@
     <loc>https://roche.github.io/crmPack/reference/is.range.html</loc>
   </url>
   <url>
-    <loc>https://roche.github.io/crmPack/reference/is.wholenumber.html</loc>
-  </url>
-  <url>
     <loc>https://roche.github.io/crmPack/reference/logit.html</loc>
   </url>
   <url>
@@ -674,9 +671,6 @@
   </url>
   <url>
     <loc>https://roche.github.io/crmPack/reference/ngrid.html</loc>
-  </url>
-  <url>
-    <loc>https://roche.github.io/crmPack/reference/noOverlap.html</loc>
   </url>
   <url>
     <loc>https://roche.github.io/crmPack/reference/or-Stopping-Stopping.html</loc>
@@ -776,9 +770,6 @@
   </url>
   <url>
     <loc>https://roche.github.io/crmPack/reference/rinvGamma.html</loc>
-  </url>
-  <url>
-    <loc>https://roche.github.io/crmPack/reference/safeInteger.html</loc>
   </url>
   <url>
     <loc>https://roche.github.io/crmPack/reference/saveSample.html</loc>
