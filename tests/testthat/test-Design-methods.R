@@ -1,4 +1,155 @@
+options(testthat.progress.max_fails = 0)
+
+#' @include("helper-design.R")
+
 # simulate ----
+
+## Data
+
+test_that("simulate produces consistent results with placebo data", {
+  design <- h_get_design_data(TRUE)
+  myTruth <- probFunction(design@model, alpha0 = 7, alpha1 = 8)
+  options <- h_get_mcmc_options()
+
+  result <- simulate(
+    design,
+    args = NULL,
+    truth = myTruth,
+    nsim = 1,
+    seed = 819,
+    mcmcOptions = options,
+    parallel = FALSE
+  )
+
+  expect_snapshot(result)
+})
+
+test_that("simulate produces consistent results with sentinel patients", {
+  design <- h_get_design_data()
+  myTruth <- probFunction(design@model, alpha0 = 7, alpha1 = 8)
+  options <- h_get_mcmc_options()
+
+  result <- simulate(
+    design,
+    args = NULL,
+    truth = myTruth,
+    nsim = 1,
+    seed = 819,
+    mcmcOptions = options,
+    parallel = FALSE,
+    firstSeparate = TRUE
+  )
+
+  expect_snapshot(result)
+})
+
+## RuleDesign
+
+test_that("simulate-RuleDesign produces consistent results", {
+  design <- ThreePlusThreeDesign(doseGrid = c(1, 3, 5, 10, 15, 20, 25, 40, 50, 80, 100))
+  myTruth <- function(x) seq(0.05, 0.55, length.out = length(design@data@doseGrid))
+  options <- h_get_mcmc_options()
+
+  result <- simulate(
+    design,
+    args = NULL,
+    truth = myTruth,
+    nsim = 1,
+    seed = 819,
+    mcmcOptions = options,
+    parallel = FALSE,
+    firstSeparate = TRUE
+  )
+
+  expect_snapshot(result)
+})
+
+## DualDesign
+test_that("simulate-DualDesign produces consistent results", {
+  design <- h_get_design_dualdata()
+
+  # define scenarios for the TRUE toxicity and efficacy profiles
+  betaMod <- function(dose, e0, eMax, delta1, delta2, scal) {
+    maxDens <- (delta1^delta1) * (delta2^delta2) / ((delta1 + delta2)^(delta1 + delta2))
+    dose <- dose / scal
+    e0 + eMax / maxDens * (dose^delta1) * (1 - dose)^delta2
+  }
+
+  trueBiomarker <- function(dose) {
+    betaMod(dose, e0 = 0.2, eMax = 0.6, delta1 = 5, delta2 = 5 * 0.5 / 0.5, scal = 100)
+  }
+
+  trueTox <- function(dose) {
+    pnorm((dose - 60) / 10)
+  }
+
+  result <- simulate(
+    design,
+    trueTox = trueTox,
+    trueBiomarker = trueBiomarker,
+    sigma2W = 0.01,
+    rho = 0,
+    nsim = 1,
+    parallel = FALSE,
+    seed = 3,
+    startingDose = 6,
+    # mcmcOptions = h_get_mcmc_options()
+    mcmcOptions = McmcOptions(
+      burnin = 100,
+      step = 1,
+      samples = 300,
+      rng_kind = "Mersenne-Twister",
+      rng_seed = 1234
+    )
+  )
+
+  expect_snapshot(result)
+})
+
+## DualDesign
+test_that("simulate-DualDesign produces consistent results wih placebo data", {
+  design <- h_get_design_dualdata(placebo = TRUE)
+
+  # define scenarios for the TRUE toxicity and efficacy profiles
+  betaMod <- function(dose, e0, eMax, delta1, delta2, scal) {
+    maxDens <- (delta1^delta1) * (delta2^delta2) / ((delta1 + delta2)^(delta1 + delta2))
+    dose <- dose / scal
+    e0 + eMax / maxDens * (dose^delta1) * (1 - dose)^delta2
+  }
+
+  trueBiomarker <- function(dose) {
+    betaMod(dose, e0 = 0.2, eMax = 0.6, delta1 = 5, delta2 = 5 * 0.5 / 0.5, scal = 100)
+  }
+
+  trueTox <- function(dose) {
+    pnorm((dose - 60) / 10)
+  }
+
+  # Error ('test-Design-methods.R:130'): simulate-DualDesign produces consistent results with placebo data ──
+  # Error in `matrix(rnorm(n * ncol(sigma)), nrow = n, byrow = !pre0.9_9994) %*%
+  #   R`: non-conformable arguments  # result <- simulate(
+  #   design,
+  #   trueTox = trueTox,
+  #   trueBiomarker = trueBiomarker,
+  #   sigma2W = 0.01,
+  #   rho = 0,
+  #   nsim = 1,
+  #   parallel = FALSE,
+  #   seed = 3,
+  #   startingDose = 6,
+  #   # mcmcOptions = h_get_mcmc_options()
+  #   mcmcOptions = McmcOptions(
+  #     burnin = 100,
+  #     step = 1,
+  #     samples = 300,
+  #     rng_kind = "Mersenne-Twister",
+  #     rng_seed = 1234
+  #   )
+  # )
+  #
+  # expect_snapshot(result)
+})
+
 
 ## NextBestInfTheory ----
 
@@ -413,4 +564,35 @@ test_that("examine for DADesign works as expected", {
   )
   expect_data_frame(result)
   expect_named(result, c("DLTsearly_1", "dose", "DLTs", "nextDose", "stop", "increment"))
+})
+
+## Data
+
+test_that("examine produces consistent results", {
+  design <- h_get_design_data()
+  options <- h_get_mcmc_options()
+
+  result <- examine(design, mcmcOptions = options)
+
+  expect_snapshot(result)
+})
+
+test_that("examine produces consistent results with placebo data", {
+  design <- h_get_design_data(TRUE)
+  options <- h_get_mcmc_options()
+
+  result <- examine(design, mcmcOptions = options)
+
+  expect_snapshot(result)
+})
+
+## RuleDesign
+
+test_that("simulate-RuleDesign produces consistent results", {
+  design <- ThreePlusThreeDesign(doseGrid = c(1, 3, 5, 10, 15, 20, 25, 40, 50, 80, 100))
+  options <- h_get_mcmc_options()
+
+  result <- examine(design, mcmcOptions = options)
+
+  expect_snapshot(result)
 })
