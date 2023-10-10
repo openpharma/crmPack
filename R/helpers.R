@@ -103,19 +103,35 @@ matchTolerance <- function(x, table) {
   !is.na(matchTolerance(x = x, table = table))
 }
 
-##' Check overlap of two character vectors
+##' checks for whole numbers (integers)
 ##'
-##' @param a first character vector
-##' @param b second character vector
-##' @return returns TRUE if there is no overlap between the two character
-##' vectors, otherwise FALSE
+##' @param x the numeric vector
+##' @param tol the tolerance
+##' @return TRUE or FALSE for each element of x
 ##'
 ##' @keywords internal
-noOverlap <- function(a, b) {
-  identical(
-    intersect(a, b),
-    character(0)
-  )
+is.wholenumber <- function(x, tol = .Machine$double.eps^0.5) {
+  abs(x - round(x)) < tol
+}
+
+
+##' Safe conversion to integer vector
+##'
+##' @param x the numeric vector
+##' @return the integer vector
+##'
+##' @keywords internal
+safeInteger <- function(x) {
+  testres <- is.wholenumber(x)
+  if (!all(testres)) {
+    notInt <- which(!testres)
+    stop(paste(
+      "elements",
+      paste(notInt, sep = ", "),
+      "of vector are not integers!"
+    ))
+  }
+  as.integer(x)
 }
 
 ##' Predicate checking for a probability
