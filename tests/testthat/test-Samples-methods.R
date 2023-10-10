@@ -1442,16 +1442,16 @@ test_that("plot-Samples-DALogisticNormal works correctly", {
   samples <- mcmc(data, model, options)
 
   actual <- plot(samples, model, data)
-  vdiffr::expect_doppelganger("plot-Samples-DALogisticLogNormal", actual)
+  vdiffr::expect_doppelganger("plot-samples-dalogisticlognormal", actual)
 
   actual1 <- plot(samples, model, data, hazard = TRUE)
-  vdiffr::expect_doppelganger("plot-Samples-DALogisticLogNormal_hazard-TRUE", actual1)
+  vdiffr::expect_doppelganger("plot-samples-dalogisticlognormal-hazard-true", actual1)
 
   actual2 <- plot(samples, model, data, showLegend = FALSE)
-  vdiffr::expect_doppelganger("plot-Samples-DALogisticLogNormal_showLegend-FALSE", actual2)
+  vdiffr::expect_doppelganger("plot-samples-dalogisticlognormal-showlegend-false", actual2)
 
   actual3 <- plot(samples, model, data, showLegend = FALSE, hazard = TRUE)
-  vdiffr::expect_doppelganger("plot-Samples-DALogisticLogNormal_TRUE_FALSE", actual3)
+  vdiffr::expect_doppelganger("plot-samples-dalogisticlognormal-true-false", actual3)
 })
 
 test_that("Approximate fails gracefully with bad input", {

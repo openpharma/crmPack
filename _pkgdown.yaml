@@ -438,7 +438,6 @@ reference:
       - plot,Samples,ModelEff-method
       - plot,Samples,ModelTox-method
       - plot,SimulationsSummary,missing-method
-      - plot.gtable
       - plotDualResponses
       - plotGain
       - probit

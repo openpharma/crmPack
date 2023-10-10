@@ -42,7 +42,7 @@ setMethod(
     if (iterations_relative <= 0) {
       return(0L)
     }
-    safeInteger(floor(iterations_relative / object@step))
+    as.integer(floor(iterations_relative / object@step))
   }
 )
 

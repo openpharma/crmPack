@@ -103,21 +103,6 @@ matchTolerance <- function(x, table) {
   !is.na(matchTolerance(x = x, table = table))
 }
 
-##' Check overlap of two character vectors
-##'
-##' @param a first character vector
-##' @param b second character vector
-##' @return returns TRUE if there is no overlap between the two character
-##' vectors, otherwise FALSE
-##'
-##' @keywords internal
-noOverlap <- function(a, b) {
-  identical(
-    intersect(a, b),
-    character(0)
-  )
-}
-
 ##' checks for whole numbers (integers)
 ##'
 ##' @param x the numeric vector
@@ -240,26 +225,6 @@ crmPackExample <- function() {
 crmPackHelp <- function() {
   utils::help(package = "crmPack", help_type = "html")
 }
-
-
-## this is the new version, working on the gtable objects:
-##' Plots gtable objects
-##'
-##' @method plot gtable
-##' @param x the gtable object
-##' @param \dots additional parameters for \code{\link[grid]{grid.draw}}
-##'
-##' @importFrom grid grid.draw
-##' @export
-plot.gtable <- function(x, ...) {
-  grid::grid.draw(x, ...)
-}
-
-##' @export
-print.gtable <- function(x, ...) {
-  plot.gtable(x, ...)
-}
-
 
 #' Multiple plot function
 #'
