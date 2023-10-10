@@ -117,9 +117,9 @@ Data <- function(x = numeric(),
                  placebo = FALSE,
                  ...) {
   assert_numeric(x)
-  assert_numeric(y)
-  assert_numeric(ID)
-  assert_numeric(cohort)
+  assert_integerish(y, lower = 0, upper = 1, any.missing = FALSE)
+  assert_integerish(ID, unique = TRUE, any.missing = FALSE)
+  assert_integerish(cohort)
   assert_numeric(doseGrid, any.missing = FALSE, unique = TRUE)
   assert_flag(placebo)
 
@@ -128,6 +128,8 @@ Data <- function(x = numeric(),
   if (length(ID) == 0 && length(x) > 0) {
     message("Used default patient IDs!")
     ID <- seq_along(x)
+  } else {
+    assert_integerish(ID, unique = TRUE)
   }
 
   if (!placebo && length(cohort) == 0 && length(x) > 0) {
@@ -137,13 +139,15 @@ Data <- function(x = numeric(),
     # have the same dose. Note that this could be wrong,
     # if two subsequent cohorts are at the same dose.
     cohort <- as.integer(c(1, 1 + cumsum(diff(x) != 0)))
+  } else {
+    assert_integerish(cohort)
   }
 
   .Data(
     x = as.numeric(x),
-    y = safeInteger(y),
-    ID = safeInteger(ID),
-    cohort = safeInteger(cohort),
+    y = as.integer(y),
+    ID = as.integer(ID),
+    cohort = as.integer(cohort),
     doseGrid = doseGrid,
     nObs = length(x),
     nGrid = length(doseGrid),
@@ -307,10 +311,12 @@ DataMixture <- function(xshare = numeric(),
                         yshare = integer(),
                         ...) {
   d <- Data(...)
+  assert_integerish(yshare)
+  assert_numeric(xshare)
   .DataMixture(
     d,
     xshare = as.numeric(xshare),
-    yshare = safeInteger(yshare),
+    yshare = as.integer(yshare),
     nObsshare = length(xshare)
   )
 }
@@ -445,8 +451,13 @@ DataOrdinal <- function(x = numeric(),
                         yCategories = c("No DLT" = 0L, "DLT" = 1L),
                         ...) {
   assert_numeric(doseGrid, any.missing = FALSE, unique = TRUE)
-  assert_numeric(yCategories, any.missing = FALSE, unique = TRUE)
-  assert_character(names(yCategories), any.missing = FALSE, unique = TRUE)
+  assert_integerish(
+    yCategories,
+    any.missing = FALSE,
+    unique = TRUE,
+    names = "unique",
+    min.len = 2
+  )
   assert_flag(placebo)
 
   doseGrid <- as.numeric(sort(doseGrid))
@@ -454,6 +465,8 @@ DataOrdinal <- function(x = numeric(),
   if (length(ID) == 0 && length(x) > 0) {
     message("Used default patient IDs!")
     ID <- seq_along(x)
+  } else {
+    assert_integerish(ID, unique = TRUE)
   }
 
   if (!placebo && length(cohort) == 0 && length(x) > 0) {
@@ -463,13 +476,15 @@ DataOrdinal <- function(x = numeric(),
     # have the same dose. Note that this could be wrong,
     # if two subsequent cohorts are at the same dose.
     cohort <- as.integer(c(1, 1 + cumsum(diff(x) != 0)))
+  } else {
+    assert_integerish(cohort)
   }
 
   .DataOrdinal(
     x = as.numeric(x),
-    y = safeInteger(y),
-    ID = safeInteger(ID),
-    cohort = safeInteger(cohort),
+    y = as.integer(y),
+    ID = as.integer(ID),
+    cohort = as.integer(cohort),
     doseGrid = doseGrid,
     nObs = length(x),
     nGrid = length(doseGrid),

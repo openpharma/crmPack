@@ -85,10 +85,11 @@ NULL
 GeneralSimulations <- function(data,
                                doses,
                                seed) {
+  assert_integerish(seed)
   .GeneralSimulations(
     data = data,
     doses = doses,
-    seed = safeInteger(seed)
+    seed = as.integer(seed)
   )
 }
 

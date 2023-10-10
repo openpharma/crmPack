@@ -96,21 +96,6 @@ matchTolerance <- function(x, table) {
   }))
 }
 
-##' Check overlap of two character vectors
-##'
-##' @param a first character vector
-##' @param b second character vector
-##' @return returns TRUE if there is no overlap between the two character
-##' vectors, otherwise FALSE
-##'
-##' @keywords internal
-noOverlap <- function(a, b) {
-  identical(
-    intersect(a, b),
-    character(0)
-  )
-}
-
 ##' checks for whole numbers (integers)
 ##'
 ##' @param x the numeric vector
