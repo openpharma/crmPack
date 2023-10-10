@@ -59,8 +59,6 @@ setMethod("simulate",
              parallel = FALSE, nCores =
                min(parallel::detectCores(), 5L),
              ...) {
-      nsim <- safeInteger(nsim)
-
       ## checks and extracts
       assert_function(truth)
       assert_flag(firstSeparate)
@@ -76,7 +74,7 @@ setMethod("simulate",
 
       ## from this,
       ## generate the individual seeds for the simulation runs
-      simSeeds <- sample.int(n = 2147483647, size = nsim)
+      simSeeds <- sample.int(n = 2147483647, size = as.integer(nsim))
 
       ## the function to produce the run a single simulation
       ## with index "iterSim"
@@ -370,8 +368,6 @@ setMethod("simulate",
              nCores =
                min(parallel::detectCores(), 5L),
              ...) {
-      nsim <- safeInteger(nsim)
-
       ## checks and extracts
       assert_function(truth)
       assert_count(nsim, positive = TRUE)
@@ -386,7 +382,7 @@ setMethod("simulate",
 
       ## from this,
       ## generate the individual seeds for the simulation runs
-      simSeeds <- sample(x = seq_len(1e5), size = nsim)
+      simSeeds <- sample(x = seq_len(1e5), size = as.integer(nsim))
 
       ## the function to produce the run a single simulation
       ## with index "iterSim"
@@ -552,8 +548,6 @@ setMethod("simulate",
              nCores =
                min(parallel::detectCores(), 5L),
              ...) {
-      nsim <- safeInteger(nsim)
-
       ## checks and extracts
       assert_function(trueTox)
       assert_function(trueBiomarker)
@@ -585,7 +579,7 @@ setMethod("simulate",
 
       ## from this,
       ## generate the individual seeds for the simulation runs
-      simSeeds <- sample(x = seq_len(1e5), size = nsim)
+      simSeeds <- sample(x = seq_len(1e5), size = as.integer(nsim))
 
       ## the function to produce the run a single simulation
       ## with index "iterSim"
@@ -1748,8 +1742,6 @@ setMethod("simulate",
              parallel = FALSE, nCores =
                min(parallel::detectCores(), 5L),
              ...) {
-      nsim <- safeInteger(nsim)
-
       ## checks and extracts
       assert_function(truth)
       assert_flag(firstSeparate)
@@ -1766,7 +1758,7 @@ setMethod("simulate",
 
       ## from this,
       ## generate the individual seeds for the simulation runs
-      simSeeds <- sample(x = seq_len(1e5), size = nsim)
+      simSeeds <- sample(x = seq_len(1e5), size = as.integer(nsim))
 
       ## the function to produce the run a single simulation
       ## with index "iterSim"
@@ -2112,8 +2104,6 @@ setMethod("simulate",
              parallel = FALSE, nCores =
                min(parallel::detectCores(), 5L),
              ...) {
-      nsim <- safeInteger(nsim)
-
       ## checks and extracts
       assert_function(truth)
       assert_flag(firstSeparate)
@@ -2129,7 +2119,7 @@ setMethod("simulate",
 
       ## from this,
       ## generate the individual seeds for the simulation runs
-      simSeeds <- sample(x = seq_len(1e5), size = nsim)
+      simSeeds <- sample(x = seq_len(1e5), size = as.integer(nsim))
 
       ## the function to produce the run a single simulation
       ## with index "iterSim"
@@ -2462,8 +2452,6 @@ setMethod("simulate",
              parallel = FALSE, nCores =
                min(parallel::detectCores(), 5L),
              ...) {
-      nsim <- safeInteger(nsim)
-
       ## checks and extracts
       assert_function(trueDLE)
       assert_function(trueEff)
@@ -2487,7 +2475,7 @@ setMethod("simulate",
 
       ## from this,
       ## generate the individual seeds for the simulation runs
-      simSeeds <- sample(x = seq_len(1e5), size = nsim)
+      simSeeds <- sample(x = seq_len(1e5), size = as.integer(nsim))
 
       ## the function to produce the run a single simulation
       ## with index "iterSim"
@@ -3001,8 +2989,6 @@ setMethod("simulate",
              parallel = FALSE, nCores =
                min(parallel::detectCores(), 5L),
              ...) {
-      nsim <- safeInteger(nsim)
-
       ## common checks and extracts
       assert_function(trueDLE)
       assert_flag(firstSeparate)
@@ -3034,7 +3020,7 @@ setMethod("simulate",
 
         ## from this,
         ## generate the individual seeds for the simulation runs
-        simSeeds <- sample(x = seq_len(1e5), size = nsim)
+        simSeeds <- sample(x = seq_len(1e5), size = as.integer(nsim))
 
         ## the function to produce the run a single simulation
         ## with index "iterSim"
@@ -4003,8 +3989,6 @@ setMethod("simulate",
              DA = TRUE,
              parallel = FALSE, nCores = min(parallel::detectCores(), 5L),
              ...) {
-      nsim <- safeInteger(nsim) ## remove  in the future
-
       ## checks and extracts
       assert_function(truthTox)
       assert_function(truthSurv)
@@ -4021,7 +4005,7 @@ setMethod("simulate",
 
       ## from this,
       ## generate the individual seeds for the simulation runs
-      simSeeds <- sample(x = seq_len(1e5), size = nsim)
+      simSeeds <- sample(x = seq_len(1e5), size = as.integer(nsim))
 
       ## Define functions which are useful in DLT Surv generation
       inverse <- function(f, lower = -100, upper = 100) {
@@ -4604,7 +4588,7 @@ setMethod(
              parallel = FALSE,
              nCores = min(parallelly::availableCores(), 5),
              ...) {
-      nsim <- safeInteger(nsim)
+      nsim <- as.integer(nsim)
       assert_function(truth)
       assert_function(combo_truth)
       assert_data_frame(args)
