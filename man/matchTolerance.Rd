@@ -2,12 +2,9 @@
 % Please edit documentation in R/helpers.R
 \name{matchTolerance}
 \alias{matchTolerance}
-\alias{\%~\%}
 \title{Helper function for value matching with tolerance}
 \usage{
 matchTolerance(x, table)
-
-x \%~\% table
 }
 \arguments{
 \item{x}{the values to be matched}
@@ -20,21 +17,5 @@ empty vector if \code{table} is empty.
 }
 \description{
 This is a modified version of \code{match} that supports tolerance.
-}
-\section{Functions}{
-\itemize{
-\item \code{x \%~\% table}: Helper function for checking inclusion in a table with tolerance
-
-}}
-\examples{
-myDose <- c(rep(0.030, 6), rep(0.050, 3), rep(0.075, 4), rep(0.1, 9), rep(0.15, 7))
-doseGrid <- seq(from = .025, to = .15, by = .005)
-
-myDose \%in\% doseGrid
-matchTolerance(myDose, doseGrid)
-myDose \%~\% doseGrid
-
-matchTolerance(c(myDose, 500), doseGrid)
-c(myDose, 500) \%~\% doseGrid
 }
 \keyword{programming}

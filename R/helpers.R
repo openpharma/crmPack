@@ -80,7 +80,6 @@ positive_number <- setClass(
 ##'
 ##' @export
 ##' @keywords programming
-##' @example examples/matching-tolerance.R
 matchTolerance <- function(x, table) {
   if (length(table) == 0) {
     return(integer())
@@ -95,12 +94,6 @@ matchTolerance <- function(x, table) {
       ))
     }))[1]
   }))
-}
-
-##' @describeIn matchTolerance Helper function for checking inclusion in a table with tolerance
-##' @export
-`%~%` <- function(x, table) {
-  !is.na(matchTolerance(x = x, table = table))
 }
 
 ##' checks for whole numbers (integers)
