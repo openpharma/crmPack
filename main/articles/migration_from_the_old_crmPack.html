@@ -63,12 +63,6 @@
 <li class="nav-item">
   <a class="nav-link" href="../news/index.html">Changelog</a>
 </li>
-<!-- start dropdown for versions --> <li class="nav-item dropdown">
-        <a href="#" class="nav-link dropdown-toggle"
-          data-bs-toggle="dropdown" role="button"
-          aria-expanded="false" aria-haspopup="true"
-          id="dropdown-versions">Versions</a> <div class="dropdown-menu" aria-labelledby="dropdown-versions"> <a class="dropdown-item" data-toggle="tooltip" title="" href="https://Roche.github.io/crmPack/main">main</a> </div></li>
-<!-- end dropdown for versions -->
       </ul>
 <form class="form-inline my-2 my-lg-0" role="search">
         <input type="search" class="form-control me-sm-2" aria-label="Toggle navigation" name="search-input" data-search-index="../search.json" id="search-input" placeholder="Search for" autocomplete="off">
@@ -1250,12 +1244,9 @@ relationship.</p>
 <div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://github.com/roche/crmPack" class="external-link">crmPack</a></span><span class="op">)</span></span></code></pre></div>
 <pre><code><span><span class="co">## Loading required package: ggplot2</span></span></code></pre>
-<pre><code><span><span class="co">## Registered S3 method overwritten by 'crmPack':</span></span>
-<span><span class="co">##   method       from  </span></span>
-<span><span class="co">##   print.gtable gtable</span></span></code></pre>
 <pre><code><span><span class="co">## Type crmPackHelp() to open help browser</span></span>
 <span><span class="co">## Type crmPackExample() to open example</span></span></code></pre>
-<div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">empty_data</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/Data-class.html">Data</a></span><span class="op">(</span>doseGrid <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">1</span>, <span class="fl">3</span>, <span class="fl">5</span>, <span class="fl">10</span>, <span class="fl">15</span>, <span class="fl">20</span>, <span class="fl">25</span>, <span class="fl">40</span>, <span class="fl">50</span>, <span class="fl">80</span>, <span class="fl">100</span><span class="op">)</span><span class="op">)</span></span>
 <span><span class="va">my_model</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/LogisticNormal-class.html">LogisticNormal</a></span><span class="op">(</span></span>
 <span>  mean <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="op">-</span><span class="fl">0.85</span>, <span class="fl">1</span><span class="op">)</span>,</span>
@@ -1270,16 +1261,16 @@ relationship.</p>
 <p>Here is the example on how the <code>dose</code> function can be used
 in case of different inputs, i.e. model’s parameters samples or in case
 of a fixed model’s parameters values.</p>
-<div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># Doses reaching a specific target probability of the occurrence of a DLT (equal to 0.3),</span></span>
 <span><span class="co"># given a particular models and samples.</span></span>
 <span><span class="co"># Every single dose corresponds to one particular sample in `my_samples`.</span></span>
 <span><span class="fu"><a href="../reference/dose.html">dose</a></span><span class="op">(</span><span class="fl">0.3</span>, <span class="va">my_model</span>, <span class="va">my_samples</span><span class="op">)</span></span></code></pre></div>
-<pre><code><span><span class="co">##  [1] 1.236877e+00 8.552986e+04 3.368493e-01 3.112401e-03 4.459287e-01</span></span>
-<span><span class="co">##  [6] 1.541480e+00 2.056006e+12 3.323740e-01 1.801215e+00 9.294257e-01</span></span>
-<span><span class="co">## [11] 9.654757e+05 1.718063e+00 2.036357e+00 3.422832e+01 1.026743e+00</span></span>
-<span><span class="co">## [16] 3.004914e+00 1.535105e+00 8.402449e-01 1.582034e-02 7.907852e-01</span></span></code></pre>
-<div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
+<pre><code><span><span class="co">##  [1] 4.724606e-01 1.956802e+00 8.851488e+00 1.133798e+00 6.335464e-01</span></span>
+<span><span class="co">##  [6] 9.042533e-01 3.824739e-01 7.921325e-01 7.781231e+00 4.529046e+42</span></span>
+<span><span class="co">## [11] 3.059415e+00 2.755218e+00 1.793844e+00 1.824367e+00 1.120311e+00</span></span>
+<span><span class="co">## [16] 5.044132e+00 1.216509e+00 2.632360e-03 1.793343e+00 1.378803e+00</span></span></code></pre>
+<div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># True dose-DLT relationship.</span></span>
 <span><span class="co"># Say that -0.8 and 1 are the true values for models parameters alpha0 and alpha1 respectively.</span></span>
 <span><span class="co"># The `true_dose_fun` takes one argument (target probability of the occurrence of a DLT)</span></span>
@@ -1292,15 +1283,14 @@ of a fixed model’s parameters values.</p>
 <div class="section level3">
 <h3 id="prob">Prob<a class="anchor" aria-label="anchor" href="#prob"></a>
 </h3>
-<div class="sourceCode" id="cb10"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb9"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># Toxicity probabilities for a given dose (equal to 10), model and samples.</span></span>
 <span><span class="co"># Every single probability value corresponds to one particular sample in `my_samples`.</span></span>
 <span><span class="fu"><a href="../reference/prob.html">prob</a></span><span class="op">(</span><span class="fl">10</span>, <span class="va">my_model</span>, <span class="va">my_samples</span><span class="op">)</span></span></code></pre></div>
-<pre><code><span><span class="co">##  [1] 0.84282900 0.91450478 0.97918135 0.65114110 0.86630382 0.93930988</span></span>
-<span><span class="co">##  [7] 0.57858553 0.60631147 0.90911048 0.71045128 0.42934195 0.94133700</span></span>
-<span><span class="co">## [13] 0.91255261 0.49094600 0.93994403 0.42086139 0.97596913 0.01027035</span></span>
-<span><span class="co">## [19] 0.78930873 0.18447754</span></span></code></pre>
-<div class="sourceCode" id="cb12"><pre class="downlit sourceCode r">
+<pre><code><span><span class="co">##  [1] 0.7705735 0.8639122 0.2979967 0.7481095 0.9816077 0.5229773 0.8988928</span></span>
+<span><span class="co">##  [8] 0.9895959 0.3235067 0.5007482 0.7402620 0.6619843 0.7735992 0.8254357</span></span>
+<span><span class="co">## [15] 0.9563000 0.4607823 0.9958332 0.1912956 0.1589202 0.7267093</span></span></code></pre>
+<div class="sourceCode" id="cb11"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># True DLT-dose relationship.</span></span>
 <span><span class="co"># Say that -0.8 and 1 are the true values for models parameters alpha0 and alpha1 respectively.</span></span>
 <span><span class="co"># The `true_prob_fun` takes one argument (the dose) and computes the corresponding</span></span>
@@ -1337,7 +1327,7 @@ sensible, objects of the required class. One reason the objects returned
 may not be contextually sensible is that the constructors take no
 account of any associated <code>doseGrid</code>.</p>
 <p>Here are some examples of their use:</p>
-<div class="sourceCode" id="cb14"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb13"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="../reference/StoppingAll-class.html">.DefaultStoppingAll</a></span><span class="op">(</span><span class="op">)</span></span></code></pre></div>
 <pre><code><span><span class="co">## An object of class "StoppingAll"</span></span>
 <span><span class="co">## Slot "stop_list":</span></span>
@@ -1374,7 +1364,7 @@ account of any associated <code>doseGrid</code>.</p>
 <span><span class="co">## </span></span>
 <span><span class="co">## Slot "report_label":</span></span>
 <span><span class="co">## [1] NA</span></span></code></pre>
-<div class="sourceCode" id="cb16"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb15"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">class_name</span> <span class="op">&lt;-</span> <span class="st">"LogisticNormal"</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/eval.html" class="external-link">eval</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/parse.html" class="external-link">parse</a></span><span class="op">(</span>text <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/paste.html" class="external-link">paste0</a></span><span class="op">(</span><span class="st">".Default"</span>, <span class="va">class_name</span>, <span class="st">"()"</span><span class="op">)</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
 <pre><code><span><span class="co">## An object of class "LogisticNormal"</span></span>
@@ -1406,8 +1396,8 @@ account of any associated <code>doseGrid</code>.</p>
 <span><span class="co">##         y[i] ~ dbern(p[i])</span></span>
 <span><span class="co">##     }</span></span>
 <span><span class="co">## }</span></span>
-<span><span class="co">## &lt;bytecode: 0x5572912a9090&gt;</span></span>
-<span><span class="co">## &lt;environment: 0x5572924627d8&gt;</span></span>
+<span><span class="co">## &lt;bytecode: 0x562f6e4c8738&gt;</span></span>
+<span><span class="co">## &lt;environment: 0x562f6f66e760&gt;</span></span>
 <span><span class="co">## </span></span>
 <span><span class="co">## Slot "priormodel":</span></span>
 <span><span class="co">## function () </span></span>
@@ -1416,8 +1406,8 @@ account of any associated <code>doseGrid</code>.</p>
 <span><span class="co">##     alpha0 &lt;- theta[1]</span></span>
 <span><span class="co">##     alpha1 &lt;- theta[2]</span></span>
 <span><span class="co">## }</span></span>
-<span><span class="co">## &lt;bytecode: 0x5572912a8220&gt;</span></span>
-<span><span class="co">## &lt;environment: 0x5572924627d8&gt;</span></span>
+<span><span class="co">## &lt;bytecode: 0x562f6e4cb6f8&gt;</span></span>
+<span><span class="co">## &lt;environment: 0x562f6f66e760&gt;</span></span>
 <span><span class="co">## </span></span>
 <span><span class="co">## Slot "modelspecs":</span></span>
 <span><span class="co">## function (from_prior) </span></span>
@@ -1428,16 +1418,16 @@ account of any associated <code>doseGrid</code>.</p>
 <span><span class="co">##     }</span></span>
 <span><span class="co">##     ms</span></span>
 <span><span class="co">## }</span></span>
-<span><span class="co">## &lt;bytecode: 0x5572912ad2f8&gt;</span></span>
-<span><span class="co">## &lt;environment: 0x557292462570&gt;</span></span>
+<span><span class="co">## &lt;bytecode: 0x562f6e4cc9a0&gt;</span></span>
+<span><span class="co">## &lt;environment: 0x562f6f672328&gt;</span></span>
 <span><span class="co">## </span></span>
 <span><span class="co">## Slot "init":</span></span>
 <span><span class="co">## function () </span></span>
 <span><span class="co">## {</span></span>
 <span><span class="co">##     list(theta = c(0, 1))</span></span>
 <span><span class="co">## }</span></span>
-<span><span class="co">## &lt;bytecode: 0x5572912aca00&gt;</span></span>
-<span><span class="co">## &lt;environment: 0x557292462570&gt;</span></span>
+<span><span class="co">## &lt;bytecode: 0x562f6e4cc0a8&gt;</span></span>
+<span><span class="co">## &lt;environment: 0x562f6f672328&gt;</span></span>
 <span><span class="co">## </span></span>
 <span><span class="co">## Slot "datanames":</span></span>
 <span><span class="co">## [1] "nObs" "y"    "x"   </span></span>

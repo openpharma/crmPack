@@ -628,9 +628,6 @@
     <loc>https://roche.github.io/crmPack/reference/index.html</loc>
   </url>
   <url>
-    <loc>https://roche.github.io/crmPack/reference/is.bool.html</loc>
-  </url>
-  <url>
     <loc>https://roche.github.io/crmPack/reference/is.probRange.html</loc>
   </url>
   <url>
@@ -638,9 +635,6 @@
   </url>
   <url>
     <loc>https://roche.github.io/crmPack/reference/is.range.html</loc>
-  </url>
-  <url>
-    <loc>https://roche.github.io/crmPack/reference/is.scalar.html</loc>
   </url>
   <url>
     <loc>https://roche.github.io/crmPack/reference/is.wholenumber.html</loc>
@@ -755,9 +749,6 @@
   </url>
   <url>
     <loc>https://roche.github.io/crmPack/reference/plot-SimulationsSummary-missing-method.html</loc>
-  </url>
-  <url>
-    <loc>https://roche.github.io/crmPack/reference/plot.gtable.html</loc>
   </url>
   <url>
     <loc>https://roche.github.io/crmPack/reference/plotDualResponses.html</loc>
