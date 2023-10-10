@@ -2810,7 +2810,7 @@ CohortSizeDLT <- function(intervals, cohort_size) {
 #' @example examples/Rules-class-CohortSizeConst.R
 #'
 CohortSizeConst <- function(size) {
-  assert_integerish(size, min = 1)
+  assert_integerish(size, lower = 1)
   .CohortSizeConst(size = as.integer(size))
 }
 
@@ -2859,7 +2859,7 @@ CohortSizeConst <- function(size) {
 #' @example examples/Rules-class-CohortSizeParts.R
 #'
 CohortSizeParts <- function(cohort_sizes) {
-  assert_integerish(cohort_sizes, min = 1, any.missing = FALSE)
+  assert_integerish(cohort_sizes, lower = 1, any.missing = FALSE)
   .CohortSizeParts(cohort_sizes = as.integer(cohort_sizes))
 }
 
