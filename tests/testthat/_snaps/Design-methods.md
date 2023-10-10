@@ -358,6 +358,368 @@
       [1] 3
       
 
+# simulate-DualDesign produces consistent results with firstSeparate
+
+    Code
+      result
+    Output
+      An object of class "DualSimulations"
+      Slot "rho_est":
+      [1] 0.07991541
+      
+      Slot "sigma2w_est":
+      [1] 0.03177778
+      
+      Slot "fit_biomarker":
+      [[1]]
+         middleBiomarker lowerBiomarker upperBiomarker
+      1        0.2434966     0.13294431      0.3701356
+      2        0.2325369     0.07576239      0.3763400
+      3        0.2284404    -0.07077652      0.5703187
+      4        0.2522588    -0.36780215      0.7826113
+      5        0.2364434    -0.49574988      0.9677055
+      6        0.2198298    -0.58828157      0.9583787
+      7        0.2185295    -0.71740079      1.1194549
+      8        0.2034642    -0.98358012      1.3289780
+      9        0.2058875    -1.12465077      1.4500549
+      10       0.1976203    -1.48546712      1.7065673
+      11       0.1905852    -1.80896626      2.0767703
+      
+      
+      Slot "fit":
+      [[1]]
+             middle        lower      upper
+      1  0.01093716 0.0009962211 0.04095732
+      2  0.22473302 0.0526930358 0.68081948
+      3  0.43571994 0.0935359919 0.97409485
+      4  0.67981427 0.1808020000 0.99996023
+      5  0.77864284 0.2500773718 0.99999984
+      6  0.82773116 0.3066616729 1.00000000
+      7  0.85641581 0.3540839546 1.00000000
+      8  0.89924516 0.4608241419 1.00000000
+      9  0.91428153 0.5130270841 1.00000000
+      10 0.93939515 0.6211946840 1.00000000
+      11 0.94903699 0.6699001621 1.00000000
+      
+      
+      Slot "stop_report":
+           [,1]
+      [1,] TRUE
+      
+      Slot "stop_reasons":
+      [[1]]
+      [[1]][[1]]
+      [1] "Probability for target biomarker is 21 % for dose 1 and thus below the required 50 %"
+      
+      [[1]][[2]]
+      [1] "Number of patients is 12 and thus reached the prespecified minimum number 10"
+      
+      
+      
+      Slot "data":
+      [[1]]
+      An object of class "DataDual"
+      Slot "w":
+       [1] 0.2557299 0.1150998 0.3181927 0.2531184 0.1632822 0.3616207 0.2672235
+       [8] 0.1000139 0.1305151 0.2393188 0.3006751 0.2951640
+      
+      Slot "x":
+       [1] 3 3 3 1 1 1 1 1 1 1 1 1
+      
+      Slot "y":
+       [1] 0 0 0 0 0 0 0 0 0 0 0 0
+      
+      Slot "doseGrid":
+       [1]   1   3   5  10  15  20  25  40  50  80 100
+      
+      Slot "nGrid":
+      [1] 11
+      
+      Slot "xLevel":
+       [1] 2 2 2 1 1 1 1 1 1 1 1 1
+      
+      Slot "placebo":
+      [1] FALSE
+      
+      Slot "ID":
+       [1]  1  2  3  4  5  6  7  8  9 10 11 12
+      
+      Slot "cohort":
+       [1] 1 1 1 2 2 2 3 3 3 4 4 4
+      
+      Slot "nObs":
+      [1] 12
+      
+      
+      
+      Slot "doses":
+      [1] 1
+      
+      Slot "seed":
+      [1] 3
+      
+
+# simulate-TDDesign produces consistent results
+
+    Code
+      result
+    Output
+      An object of class "PseudoSimulations"
+      Slot "fit":
+      [[1]]
+      [[1]]$phi1
+      [1] -9.791609
+      
+      [[1]]$phi2
+      [1] 1.826935
+      
+      [[1]]$probDLE
+       [1] 0.01962880 0.06632269 0.12967442 0.20128792 0.27476182 0.34581054
+       [7] 0.41195661 0.47204678 0.52579017 0.57340058 0.61535170 0.65222382
+      
+      
+      
+      Slot "FinalTDtargetDuringTrialEstimates":
+      [1] 151.5239
+      
+      Slot "FinalTDtargetEndOfTrialEstimates":
+      [1] 133.7273
+      
+      Slot "FinalTDtargetDuringTrialAtDoseGrid":
+      [1] 150
+      
+      Slot "FinalTDtargetEndOfTrialAtDoseGrid":
+      [1] 125
+      
+      Slot "FinalTDEOTCIs":
+      [[1]]
+      [[1]]$lower
+      [1] 90.1733
+      
+      [[1]]$upper
+      [1] 198.318
+      
+      
+      
+      Slot "FinalTDEOTRatios":
+      [1] 2.199298
+      
+      Slot "FinalCIs":
+      [[1]]
+      [[1]]$lower
+      [1] 90.1733
+      
+      [[1]]$upper
+      [1] 198.318
+      
+      
+      
+      Slot "FinalRatios":
+      [1] 2.199298
+      
+      Slot "stopReasons":
+      [[1]]
+      [1] "Number of patients is 36 and thus reached the prespecified minimum number 36"
+      
+      
+      Slot "data":
+      [[1]]
+      An object of class "Data"
+      Slot "x":
+       [1]  50  50  50 100 100 100 200 200 200  75  75  75 100 100 100 125 125 125 150
+      [20] 150 150 150 150 150 125 125 125 150 150 150 150 150 150 125 125 125
+      
+      Slot "y":
+       [1] 0 0 0 0 0 0 1 1 1 0 0 0 0 0 0 0 0 0 0 0 1 1 0 1 0 0 0 0 0 0 1 1 1 0 0 0
+      
+      Slot "doseGrid":
+       [1]  25  50  75 100 125 150 175 200 225 250 275 300
+      
+      Slot "nGrid":
+      [1] 12
+      
+      Slot "xLevel":
+       [1] 2 2 2 4 4 4 8 8 8 3 3 3 4 4 4 5 5 5 6 6 6 6 6 6 5 5 5 6 6 6 6 6 6 5 5 5
+      
+      Slot "placebo":
+      [1] FALSE
+      
+      Slot "ID":
+       [1]  1  2  3  4  5  6  7  8  9 10 11 12 13 14 15 16 17 18 19 20 21 22 23 24 25
+      [26] 26 27 28 29 30 31 32 33 34 35 36
+      
+      Slot "cohort":
+       [1]  1  1  1  2  2  2  3  3  3  4  4  4  5  5  5  6  6  6  7  7  7  8  8  8  9
+      [26]  9  9 10 10 10 11 11 11 12 12 12
+      
+      Slot "nObs":
+      [1] 36
+      
+      
+      
+      Slot "doses":
+      [1] 125
+      
+      Slot "seed":
+      [1] 819
+      
+
+# simulate-DualResponsesDesign produces consistent results
+
+    Code
+      result
+    Output
+      An object of class "PseudoDualSimulations"
+      Slot "fitEff":
+      [[1]]
+      [[1]]$theta1
+      [1] -4.20662
+      
+      [[1]]$theta2
+      [1] 3.302767
+      
+      [[1]]$ExpEff
+       [1] -0.3455793  0.2985344  0.6242505  0.8372982  0.9935774  1.1159959
+       [7]  1.2160729  1.3003781  1.3729953  1.4366277  1.4931529  1.5439249
+      
+      
+      
+      Slot "FinalGstarEstimates":
+      [1] 146.2479
+      
+      Slot "FinalGstarAtDoseGrid":
+      [1] 125
+      
+      Slot "FinalGstarCIs":
+      [[1]]
+      [[1]]$lower
+      [1] 75.03531
+      
+      [[1]]$upper
+      [1] 285.0453
+      
+      
+      
+      Slot "FinalGstarRatios":
+      [1] 3.798815
+      
+      Slot "FinalOptimalDose":
+      [1] 137.5996
+      
+      Slot "FinalOptimalDoseAtDoseGrid":
+      [1] 125
+      
+      Slot "sigma2est":
+      [1] 0.1616952
+      
+      Slot "fit":
+      [[1]]
+      [[1]]$phi1
+      [1] -9.998377
+      
+      [[1]]$phi2
+      [1] 1.858333
+      
+      [[1]]$probDLE
+       [1] 0.01769477 0.06131043 0.12184797 0.19147776 0.26390666 0.33471252
+       [7] 0.40119608 0.46198895 0.51662937 0.56521068 0.60812916 0.64591963
+      
+      
+      
+      Slot "FinalTDtargetDuringTrialEstimates":
+      [1] 155.5827
+      
+      Slot "FinalTDtargetEndOfTrialEstimates":
+      [1] 137.5996
+      
+      Slot "FinalTDtargetDuringTrialAtDoseGrid":
+      [1] 150
+      
+      Slot "FinalTDtargetEndOfTrialAtDoseGrid":
+      [1] 125
+      
+      Slot "FinalTDEOTCIs":
+      [[1]]
+      [[1]]$lower
+      [1] 92.64601
+      
+      [[1]]$upper
+      [1] 204.3655
+      
+      
+      
+      Slot "FinalTDEOTRatios":
+      [1] 2.205875
+      
+      Slot "FinalCIs":
+      [[1]]
+      [[1]]$lower
+      [1] 92.64601
+      
+      [[1]]$upper
+      [1] 204.3655
+      
+      
+      
+      Slot "FinalRatios":
+      [1] 2.205875
+      
+      Slot "stopReasons":
+      [[1]]
+      [1] "Number of patients is 36 and thus reached the prespecified minimum number 36"
+      
+      
+      Slot "data":
+      [[1]]
+      An object of class "DataDual"
+      Slot "w":
+       [1] -0.6588212 -0.6574900 -0.6767438  0.4201327  0.1657673  0.6398290
+       [7]  1.0794245  1.0493776  0.9825006  1.6985308  1.7758098  1.5194703
+      [13]  1.1747540  0.7687320  0.5822763  0.8930588  1.0287153  0.9338591
+      [19]  1.1158580  1.0035394  1.0517295  1.5133967  1.2179947  1.0877295
+      [25]  1.6171994  1.2565239  1.0710927  0.9289380  0.8863580  0.8356701
+      [31]  0.7950787  0.6793477  0.7302074  0.7626097  0.8732485  0.8272182
+      
+      Slot "x":
+       [1]  25  25  25  75  75  75 125 125 125 250 250 250 100 100 100 125 125 125 150
+      [20] 150 150 150 150 150 175 175 175 125 125 125 125 125 125 125 125 125
+      
+      Slot "y":
+       [1] 0 0 0 0 0 0 0 0 0 1 1 1 0 0 0 0 0 0 0 1 0 0 0 0 1 1 1 1 0 0 1 0 0 0 0 0
+      
+      Slot "doseGrid":
+       [1]  25  50  75 100 125 150 175 200 225 250 275 300
+      
+      Slot "nGrid":
+      [1] 12
+      
+      Slot "xLevel":
+       [1]  1  1  1  3  3  3  5  5  5 10 10 10  4  4  4  5  5  5  6  6  6  6  6  6  7
+      [26]  7  7  5  5  5  5  5  5  5  5  5
+      
+      Slot "placebo":
+      [1] FALSE
+      
+      Slot "ID":
+       [1]  1  2  3  4  5  6  7  8  9 10 11 12 13 14 15 16 17 18 19 20 21 22 23 24 25
+      [26] 26 27 28 29 30 31 32 33 34 35 36
+      
+      Slot "cohort":
+       [1]  1  1  1  2  2  2  3  3  3  4  4  4  5  5  5  6  6  6  7  7  7  8  8  8  9
+      [26]  9  9 10 10 10 11 11 11 12 12 12
+      
+      Slot "nObs":
+      [1] 36
+      
+      
+      
+      Slot "doses":
+      [1] 125
+      
+      Slot "seed":
+      [1] 819
+      
+
 # NextBestInfTheory produces consistent results for empty data
 
     Code

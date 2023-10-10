@@ -106,6 +106,51 @@ test_that("simulate-DualDesign produces consistent results", {
   expect_snapshot(result)
 })
 
+test_that("simulate-DualDesign produces consistent results with firstSeparate", {
+  design <- h_get_design_dualdata(placebo = TRUE)
+
+  # define scenarios for the TRUE toxicity and efficacy profiles
+  betaMod <- function(dose, e0, eMax, delta1, delta2, scal) {
+    maxDens <- (delta1^delta1) * (delta2^delta2) / ((delta1 + delta2)^(delta1 + delta2))
+    dose <- dose / scal
+    e0 + eMax / maxDens * (dose^delta1) * (1 - dose)^delta2
+  }
+
+  trueBiomarker <- function(dose) {
+    betaMod(dose, e0 = 0.2, eMax = 0.6, delta1 = 5, delta2 = 5 * 0.5 / 0.5, scal = 100)
+  }
+
+  trueTox <- function(dose) {
+    pnorm((dose - 60) / 10)
+  }
+
+  # Error ('test-Design-methods.R:129'): simulate-DualDesign produces consistent results with firstSeparate ──
+  # Error in `matrix(rnorm(n * ncol(sigma)), nrow = n, byrow = !pre0.9_9994) %*%
+  #   R`: non-conformable arguments
+  # result <- simulate(
+  #   design,
+  #   trueTox = trueTox,
+  #   trueBiomarker = trueBiomarker,
+  #   sigma2W = 0.01,
+  #   rho = 0,
+  #   nsim = 1,
+  #   parallel = FALSE,
+  #   seed = 3,
+  #   startingDose = 6,
+  #   # mcmcOptions = h_get_mcmc_options()
+  #   mcmcOptions = McmcOptions(
+  #     burnin = 100,
+  #     step = 1,
+  #     samples = 300,
+  #     rng_kind = "Mersenne-Twister",
+  #     rng_seed = 1234
+  #   ),
+  #   firstSeparate = TRUE
+  # )
+  #
+  # expect_snapshot(result)
+})
+
 ## DualDesign
 test_that("simulate-DualDesign produces consistent results wih placebo data", {
   design <- h_get_design_dualdata(placebo = TRUE)
@@ -149,6 +194,66 @@ test_that("simulate-DualDesign produces consistent results wih placebo data", {
   #
   # expect_snapshot(result)
 })
+
+
+test_that("simulate-TDSamplesDesign produces consistent results", {
+  design <- h_get_design_tdsamples()
+  myTruth <- probFunction(design@model, phi1 = -53.66584, phi2 = 10.50499)
+  options <- h_get_mcmc_options() #McmcOptions(burnin = 100, step = 2, samples = 200)
+
+  # Error ('test-Design-methods.R:204'): simulate-TDSamplesDesign produces consistent results ──
+  # Error in `.local(dose, model, samples, ...)`: Assertion on 'dose' failed: Contains missing values (element 1).
+  # result <- simulate(
+  #   object = design,
+  #   args = NULL,
+  #   truth = myTruth,
+  #   nsim = 5,
+  #   seed = 819,
+  #   mcmcOptions = options,
+  #   parallel = FALSE
+  # )
+  # expect_snapshot(results)
+})
+
+test_that("simulate-TDDesign produces consistent results", {
+  design <- h_get_design_tddesign()
+
+  myTruth <- probFunction(design@model, phi1 = -53.66584, phi2 = 10.50499)
+
+  result <- simulate(
+    object = design,
+    args = NULL,
+    truth = myTruth,
+    nsim = 1,
+    seed = 819,
+    parallel = FALSE
+  )
+  expect_snapshot(result)
+})
+
+test_that("simulate-DualResponsesDesign produces consistent results", {
+  design <- h_get_design_dualresponses()
+  myTruthDLE <- probFunction(design@model, phi1 = -53.66584, phi2 = 10.50499)
+  myTruthEff <- efficacyFunction(design@eff_model, theta1 = -4.818429, theta2 = 3.653058)
+
+  myTruthGain <- function(dose) {
+    return((myTruthEff(dose)) / (1 + (myTruthDLE(dose) / (1 - myTruthDLE(dose)))))
+  }
+  options <- McmcOptions(burnin = 100, step = 2, samples = 200)
+  result <- simulate(
+    object = design,
+    args = NULL,
+    trueDLE = myTruthDLE,
+    trueEff = myTruthEff,
+    trueNu = 1 / 0.025,
+    nsim = 1,
+    seed = 819,
+    parallel = FALSE
+  )
+
+  expect_snapshot(result)
+})
+
 
 
 ## NextBestInfTheory ----

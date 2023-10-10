@@ -1,8 +1,113 @@
+h_get_design_dualresponses <- function() {
+  data <- DataDual(doseGrid = seq(25, 300, 25), placebo = FALSE)
+  DLEmodel <- LogisticIndepBeta(
+    binDLE = c(1.05, 1.8),
+    DLEweights = c(3, 3),
+    DLEdose = c(25, 300),
+    data = data
+  )
+  Effmodel <- Effloglog(
+    eff = c(1.223, 2.513), eff_dose = c(25, 300),
+    nu = c(a = 1, b = 0.025), data = data
+  )
+  design <- DualResponsesDesign(
+    nextBest = NextBestMaxGain(
+      prob_target_drt = 0.35,
+      prob_target_eot = 0.3
+    ),
+    model = DLEmodel,
+    eff_model = Effmodel,
+    stopping = StoppingMinPatients(nPatients = 36),
+    increments =IncrementsRelative(
+      intervals = c(25, 300),
+      increments = c(2, 2)
+    ),
+    cohort_size = CohortSizeConst(size = 3),
+    data = data,
+    startingDose = 25
+  )
+  design
+}
+
+h_get_design_tddesign <- function() {
+  data <- Data(doseGrid = seq(25, 300, 25))
+
+  model <- LogisticIndepBeta(
+    binDLE = c(1.05, 1.8),
+    DLEweights = c(3, 3),
+    DLEdose = c(25, 300),
+    data = data
+  )
+  tdNextBest <- NextBestTD(
+    prob_target_drt = 0.35,
+    prob_target_eot = 0.3
+  )
+  doseRecommendation <- nextBest(
+    tdNextBest,
+    doselimit = max(data@doseGrid),
+    model = model,
+    data = data
+  )
+  emptydata <- Data(doseGrid = seq(25, 300, 25))
+
+  design <- TDDesign(
+    model = model,
+    nextBest = tdNextBest,
+    stopping = StoppingMinPatients(nPatients = 36),
+    increments = IncrementsRelative(
+      intervals = c(min(data@doseGrid), max(data@doseGrid)),
+      increments = c(2, 2)
+    ),
+    cohort_size = CohortSizeConst(size = 3),
+    data = data,
+    startingDose = 50
+  )
+  design
+}
+
+h_get_design_tdsamples <- function(placebo = FALSE) {
+  data <- Data(doseGrid = seq(25, 300, 25), placebo = placebo)
+
+  model <- LogisticIndepBeta(
+    binDLE = c(1.05, 1.8),
+    DLEweights = c(3, 3),
+    DLEdose = c(25, 300),
+    data = data
+  )
+
+  tdNextBest <- NextBestTDsamples(
+    prob_target_drt = 0.35,
+    prob_target_eot = 0.3,
+    derive = function(samples) {
+      as.numeric(quantile(samples, probs = 0.3))
+    }
+  )
+
+  design <- TDsamplesDesign(
+    model = model,
+    nextBest = tdNextBest,
+    stopping = StoppingMinPatients(nPatients = 36),
+    increments = IncrementsRelative(
+      intervals = c(min(data@doseGrid), max(data@doseGrid)),
+      increments = c(2, 2)
+    ),
+    cohort_size = CohortSizeConst(size = 3),
+    data = data,
+    startingDose = 50
+  )
+
+  if (placebo) {
+    design@pl_cohort_size <- CohortSizeConst(1)
+  }
+  design
+}
+
+
 h_get_design_dualdata <- function(placebo = FALSE) {
   # Define the dose-grid
   emptydata <- DataDual(
     doseGrid = c(1, 3, 5, 10, 15, 20, 25, 40, 50, 80, 100),
-    placebo= placebo
+    placebo = placebo
   )
 
   # Initialize the CRM model
