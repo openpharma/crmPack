@@ -2698,7 +2698,8 @@ setClass(
 #' @example examples/Rules-class-CohortSizeRange.R
 #'
 CohortSizeRange <- function(intervals, cohort_size) {
-  assert_integerish(cohort_size, lower = 1, any.missing = FALSE)
+  # Cohort size 0 is needed to allow for no-placebo designs
+  assert_integerish(cohort_size, lower = 0, any.missing = FALSE)
 
   .CohortSizeRange(
     intervals = intervals,
@@ -2759,7 +2760,8 @@ CohortSizeRange <- function(intervals, cohort_size) {
 #'
 CohortSizeDLT <- function(intervals, cohort_size) {
   assert_integerish(intervals, lower = 0, any.missing = FALSE)
-  assert_integerish(cohort_size, lower = 1, any.missing = FALSE)
+  # Cohort size 0 is needed to allow for no-placebo designs
+  assert_integerish(cohort_size, lower = 0, any.missing = FALSE)
 
   .CohortSizeDLT(
     intervals = as.integer(intervals),
@@ -2810,7 +2812,8 @@ CohortSizeDLT <- function(intervals, cohort_size) {
 #' @example examples/Rules-class-CohortSizeConst.R
 #'
 CohortSizeConst <- function(size) {
-  assert_integerish(size, lower = 1)
+  # Cohort size 0 is needed to allow for no-placebo designs
+  assert_integerish(size, lower = 0)
   .CohortSizeConst(size = as.integer(size))
 }
 
@@ -2859,7 +2862,8 @@ CohortSizeConst <- function(size) {
 #' @example examples/Rules-class-CohortSizeParts.R
 #'
 CohortSizeParts <- function(cohort_sizes) {
-  assert_integerish(cohort_sizes, lower = 1, any.missing = FALSE)
+  # Cohort size 0 is needed to allow for no-placebo designs
+  assert_integerish(cohort_sizes, lower = 0, any.missing = FALSE)
   .CohortSizeParts(cohort_sizes = as.integer(cohort_sizes))
 }
 
