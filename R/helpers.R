@@ -219,63 +219,6 @@ crmPackHelp <- function() {
   utils::help(package = "crmPack", help_type = "html")
 }
 
-#' Multiple plot function
-#'
-#' ggplot objects can be passed in ..., or to plotlist (as a list of ggplot objects).
-#' If the layout is something like matrix(c(1,2,3,3), nrow=2, byrow=TRUE),
-#' then plot 1 will go in the upper left, 2 will go in the upper right, and
-#' 3 will go all the way across the bottom.
-#'
-#' @param \dots Objects to be passed
-#' @param plotlist a list of additional objects
-#' @param rows Number of rows in layout
-#' @param layout A matrix specifying the layout. If present, \code{rows}
-#' is ignored.
-#'
-#' @return Used for the side effect of plotting
-#' @importFrom grid grid.newpage pushViewport viewport
-#' @export
-multiplot <- function(..., plotlist = NULL, rows = 1, layout = NULL) {
-  # Make a list from the ... arguments and plotlist
-  plots <- c(list(...), plotlist)
-
-  numPlots <- length(plots)
-
-  # If layout is NULL, then use 'cols' to determine layout
-  if (is.null(layout)) {
-    # Make the panel
-    # ncol: Number of columns of plots
-    # nrow: Number of rows needed, calculated from # of cols
-    layout <- matrix(seq(1, rows * ceiling(numPlots / rows)),
-      nrow = rows, ncol = ceiling(numPlots / rows),
-      byrow = TRUE
-    )
-  }
-
-  if (numPlots == 1) {
-    print(plots[[1]])
-  } else {
-    # Set up the page
-    grid::grid.newpage()
-    grid::pushViewport(grid::viewport(layout = grid::grid.layout(
-      nrow(layout),
-      ncol(layout)
-    )))
-
-    # Make each plot, in the correct location
-    for (i in seq_len(numPlots))
-    {
-      # Get the i,j matrix positions of the regions that contain this subplot
-      matchidx <- as.data.frame(which(layout == i, arr.ind = TRUE))
-
-      print(plots[[i]], vp = grid::viewport(
-        layout.pos.row = matchidx$row,
-        layout.pos.col = matchidx$col
-      ))
-    }
-  }
-}
-
 ##' Taken from utils package (print.vignette)
 ##'
 ##' @importFrom tools file_ext

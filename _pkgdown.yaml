@@ -418,7 +418,6 @@ reference:
       - matchTolerance
       - maxSize
       - minSize
-      - multiplot
       - or-Stopping-Stopping
       - or-Stopping-StoppingAny
       - or-StoppingAny-Stopping
