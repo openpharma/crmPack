@@ -107,45 +107,85 @@ test_that("simulate-DualDesign produces consistent results", {
 })
 
 test_that("simulate-DualDesign produces consistent results with firstSeparate", {
-  design <- h_get_design_dualdata(placebo = TRUE)
-
-  # define scenarios for the TRUE toxicity and efficacy profiles
-  betaMod <- function(dose, e0, eMax, delta1, delta2, scal) {
-    maxDens <- (delta1^delta1) * (delta2^delta2) / ((delta1 + delta2)^(delta1 + delta2))
-    dose <- dose / scal
-    e0 + eMax / maxDens * (dose^delta1) * (1 - dose)^delta2
-  }
-
-  trueBiomarker <- function(dose) {
-    betaMod(dose, e0 = 0.2, eMax = 0.6, delta1 = 5, delta2 = 5 * 0.5 / 0.5, scal = 100)
-  }
-
-  trueTox <- function(dose) {
-    pnorm((dose - 60) / 10)
-  }
-
-  # Error ('test-Design-methods.R:129'): simulate-DualDesign produces consistent results with firstSeparate ──
-  # Error in `matrix(rnorm(n * ncol(sigma)), nrow = n, byrow = !pre0.9_9994) %*%
-  #   R`: non-conformable arguments
+  # emptydata <- DataDual(doseGrid = c(1, 3, 5, 10, 15, 20, 25, 40, 50, 80, 100))
+  #
+  # model <- DualEndpointRW(
+  #   mean = c(0, 1),
+  #   cov = matrix(c(1, 0, 0, 1), nrow = 2),
+  #   sigma2betaW = 0.01,
+  #   sigma2W = c(a = 0.1, b = 0.1),
+  #   use_log_dose = TRUE,
+  #   ref_dose = 2,
+  #   rho = c(a = 1, b = 1),
+  #   rw1 = TRUE
+  # )
+  #
+  # myNextBest <- NextBestDualEndpoint(
+  #   target = c(0.9, 1),
+  #   overdose = c(0.35, 1),
+  #   max_overdose_prob = 0.25
+  # )
+  #
+  # mySize1 <- CohortSizeRange(
+  #   intervals = c(0, 30),
+  #   cohort_size = c(1, 3)
+  # )
+  # mySize2 <- CohortSizeDLT(
+  #   intervals = c(0, 1),
+  #   cohort_size = c(1, 3)
+  # )
+  # mySize <- maxSize(mySize1, mySize2)
+  #
+  # myStopping4 <- StoppingTargetBiomarker(
+  #   target = c(0.9, 1),
+  #   prob = 0.5
+  # )
+  # myStopping <- myStopping4 | StoppingMinPatients(10)
+  #
+  # myIncrements <- IncrementsRelative(
+  #   intervals = c(0, 20),
+  #   increments = c(1, 0.33)
+  # )
+  #
+  # design <- DualDesign(
+  #   model = model,
+  #   data = emptydata,
+  #   nextBest = myNextBest,
+  #   stopping = myStopping,
+  #   increments = myIncrements,
+  #   cohort_size = mySize,
+  #   startingDose = 3
+  # )
+  #
+  # betaMod <- function(dose, e0, eMax, delta1, delta2, scal) {
+  #   maxDens <- (delta1^delta1) * (delta2^delta2) / ((delta1 + delta2)^(delta1 + delta2))
+  #   dose <- dose / scal
+  #   e0 + eMax / maxDens * (dose^delta1) * (1 - dose)^delta2
+  # }
+  #
+  # trueBiomarker <- function(dose) {
+  #   betaMod(dose, e0 = 0.2, eMax = 0.6, delta1 = 5, delta2 = 5 * 0.5 / 0.5, scal = 100)
+  # }
+  #
+  # trueTox <- function(dose) {
+  #   pnorm((dose - 60) / 10)
+  # }
+  #
   # result <- simulate(
   #   design,
   #   trueTox = trueTox,
   #   trueBiomarker = trueBiomarker,
   #   sigma2W = 0.01,
   #   rho = 0,
-  #   nsim = 1,
+  #   nsim = 3,
   #   parallel = FALSE,
   #   seed = 3,
   #   startingDose = 6,
-  #   # mcmcOptions = h_get_mcmc_options()
   #   mcmcOptions = McmcOptions(
   #     burnin = 100,
   #     step = 1,
-  #     samples = 300,
-  #     rng_kind = "Mersenne-Twister",
-  #     rng_seed = 1234
-  #   ),
-  #   firstSeparate = TRUE
+  #     samples = 300
+  #   )
   # )
   #
   # expect_snapshot(result)
@@ -153,9 +193,56 @@ test_that("simulate-DualDesign produces consistent results with firstSeparate", 
 
 ## DualDesign
 test_that("simulate-DualDesign produces consistent results wih placebo data", {
-  design <- h_get_design_dualdata(placebo = TRUE)
+  emptydata <- DataDual(doseGrid = c(1, 3, 5, 10, 15, 20, 25, 40, 50, 80, 100))
 
-  # define scenarios for the TRUE toxicity and efficacy profiles
+  model <- DualEndpointRW(
+    mean = c(0, 1),
+    cov = matrix(c(1, 0, 0, 1), nrow = 2),
+    sigma2betaW = 0.01,
+    sigma2W = c(a = 0.1, b = 0.1),
+    use_log_dose = TRUE,
+    ref_dose = 2,
+    rho = c(a = 1, b = 1),
+    rw1 = TRUE
+  )
+
+  myNextBest <- NextBestDualEndpoint(
+    target = c(0.9, 1),
+    overdose = c(0.35, 1),
+    max_overdose_prob = 0.25
+  )
+
+  mySize1 <- CohortSizeRange(
+    intervals = c(0, 30),
+    cohort_size = c(1, 3)
+  )
+  mySize2 <- CohortSizeDLT(
+    intervals = c(0, 1),
+    cohort_size = c(1, 3)
+  )
+  mySize <- maxSize(mySize1, mySize2)
+
+  myStopping4 <- StoppingTargetBiomarker(
+    target = c(0.9, 1),
+    prob = 0.5
+  )
+  myStopping <- myStopping4 | StoppingMinPatients(10)
+
+  myIncrements <- IncrementsRelative(
+    intervals = c(0, 20),
+    increments = c(1, 0.33)
+  )
+
+  design <- DualDesign(
+    model = model,
+    data = emptydata,
+    nextBest = myNextBest,
+    stopping = myStopping,
+    increments = myIncrements,
+    cohort_size = mySize,
+    startingDose = 3
+  )
+
   betaMod <- function(dose, e0, eMax, delta1, delta2, scal) {
     maxDens <- (delta1^delta1) * (delta2^delta2) / ((delta1 + delta2)^(delta1 + delta2))
     dose <- dose / scal
@@ -169,6 +256,42 @@ test_that("simulate-DualDesign produces consistent results wih placebo data", {
   trueTox <- function(dose) {
     pnorm((dose - 60) / 10)
   }
+
+  result <- simulate(
+    design,
+    trueTox = trueTox,
+    trueBiomarker = trueBiomarker,
+    sigma2W = 0.01,
+    rho = 0,
+    nsim = 1,
+    parallel = FALSE,
+    seed = 3,
+    startingDose = 6,
+    mcmcOptions = McmcOptions(
+      burnin = 100,
+      step = 1,
+      samples = 300
+    )
+  )
+
+  expect_snapshot(result)
+
+  # design <- h_get_design_dualdata(placebo = TRUE)
+  #
+  # # define scenarios for the TRUE toxicity and efficacy profiles
+  # betaMod <- function(dose, e0, eMax, delta1, delta2, scal) {
+  #   maxDens <- (delta1^delta1) * (delta2^delta2) / ((delta1 + delta2)^(delta1 + delta2))
+  #   dose <- dose / scal
+  #   e0 + eMax / maxDens * (dose^delta1) * (1 - dose)^delta2
+  # }
+  #
+  # trueBiomarker <- function(dose) {
+  #   betaMod(dose, e0 = 0.2, eMax = 0.6, delta1 = 5, delta2 = 5 * 0.5 / 0.5, scal = 100)
+  # }
+  #
+  # trueTox <- function(dose) {
+  #   pnorm((dose - 60) / 10)
+  # }
 
   # Error ('test-Design-methods.R:130'): simulate-DualDesign produces consistent results with placebo data ──
   # Error in `matrix(rnorm(n * ncol(sigma)), nrow = n, byrow = !pre0.9_9994) %*%
@@ -254,7 +377,100 @@ test_that("simulate-DualResponsesDesign produces consistent results", {
   expect_snapshot(result)
 })
 
+test_that("simulate-DualResponsesSamplesDesign produces consistent results", {
+  data <- DataDual(doseGrid = seq(25, 300, 25), placebo = FALSE)
+  DLEmodel <- LogisticIndepBeta(
+    binDLE = c(1.05, 1.8),
+    DLEweights = c(3, 3),
+    DLEdose = c(25, 300),
+    data = data
+  )
 
+  Effmodel <- Effloglog(
+    eff = c(1.223, 2.513), eff_dose = c(25, 300),
+    nu = c(a = 1, b = 0.025), data = data
+  )
+
+  mynextbest <- NextBestMaxGainSamples(
+    prob_target_drt = 0.35,
+    prob_target_eot = 0.3,
+    derive = function(samples) {
+      as.numeric(quantile(samples, prob = 0.3))
+    },
+    mg_derive = function(mg_samples) {
+      as.numeric(quantile(mg_samples, prob = 0.5))
+    }
+  )
+
+  myIncrements <- IncrementsRelative(
+    intervals = c(25, 300),
+    increments = c(2, 2)
+  )
+  mySize <- CohortSizeConst(size = 3)
+  myStopping <- StoppingMinPatients(nPatients = 10)
+
+  ## Specified the design
+  design <- DualResponsesSamplesDesign(
+    nextBest = mynextbest,
+    cohort_size = mySize,
+    startingDose = 25,
+    model = DLEmodel,
+    eff_model = Effmodel,
+    data = data,
+    stopping = myStopping,
+    increments = myIncrements
+  )
+
+  myTruthDLE <- probFunction(design@model, phi1 = -53.66584, phi2 = 10.50499)
+  myTruthEff <- efficacyFunction(design@eff_model, theta1 = -4.818429, theta2 = 3.653058)
+
+  myTruthGain <- function(dose) {
+    return((myTruthEff(dose)) / (1 + (myTruthDLE(dose) / (1 - myTruthDLE(dose)))))
+  }
+
+  options <- McmcOptions(burnin = 10, step = 1, samples = 50)
+  result <- simulate(design,
+                    args = NULL,
+                    trueDLE = myTruthDLE,
+                    trueEff = myTruthEff,
+                    trueNu = 1 / 0.025,
+                    nsim = 1,
+                    mcmcOptions = options,
+                    seed = 819,
+                    parallel = FALSE
+  )
+
+  expect_snapshot(result)
+})
+
+test_that("simulate-DADesign producs consistent results", {
+  # design <- h_get_design_datada()
+  # myTruth <- probFunction(design@model, alpha0 = 2, alpha1 = 3)
+  # exp_cond.cdf <- function(x, onset = 15) {
+  #   a <- pexp(28, 1 / onset, lower.tail = FALSE)
+  #   1 - (pexp(x, 1 / onset, lower.tail = FALSE) - a) / (1 - a)
+  # }
+  #
+  # result <- simulate(
+  #   design,
+  #   args = NULL,
+  #   truthTox = myTruth,
+  #   truthSurv = exp_cond.cdf,
+  #   trueTmax = 80,
+  #   nsim = 2,
+  #   seed = 819,
+  #   mcmcOptions = McmcOptions(
+  #     burnin = 10,
+  #     step = 1,
+  #     samples = 200
+  #   ),
+  #   firstSeparate = TRUE,
+  #   deescalate = FALSE,
+  #   parallel = FALSE
+  # )
+  #
+  # expect_snapshot(resulth
+})
 
 ## NextBestInfTheory ----
 
