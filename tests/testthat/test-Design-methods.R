@@ -330,6 +330,62 @@ test_that("simulate for DesignGrouped works with different starting doses and fi
   expect_true(all(combo_trial@xLevel[1:3] == 5))
 })
 
+test_that("simulate for DesignGrouped allows to stop mono when combo stops", {
+  mono_arm <- Design(
+    model = .LogisticNormal(),
+    nextBest = NextBestNCRM(target = c(0.3, 0.6), overdose = c(0.6, 1), max_overdose_prob = 0.7),
+    stopping = StoppingMinPatients(nPatients = 20),
+    increments = IncrementsDoseLevels(levels = 5),
+    cohort_size = CohortSizeConst(3),
+    data = Data(doseGrid = 1:100),
+    startingDose = 10
+  )
+  combo_arm <- .Design(
+    mono_arm,
+    stopping = StoppingMinPatients(nPatients = 1) # Such that we stop after the first cohort.
+  )
+  object <- DesignGrouped(
+    model = LogisticLogNormalGrouped(mean = rep(-1, 4), cov = diag(5, 4), ref_dose = 1),
+    mono = mono_arm,
+    combo = combo_arm,
+    same_dose = FALSE,
+    first_cohort_mono_only = FALSE,
+    stop_mono_with_combo = TRUE
+  )
+  my_truth <- function(x) plogis(-4 + 0.2 * log(x / 0.1))
+  my_combo_truth <- function(x) plogis(-4 + 0.5 * log(x / 0.1))
+
+  result <- expect_silent(simulate(
+    object,
+    nsim = 2,
+    seed = 123,
+    truth = my_truth,
+    combo_truth = my_combo_truth,
+    mcmcOptions = h_get_mcmc_options()
+  ))
+
+  expect_list(result)
+  expect_names(names(result), identical.to = c("mono", "combo"))
+  expect_valid(result$mono, "Simulations")
+  expect_valid(result$combo, "Simulations")
+
+  # We see the expected stop reasons.
+  expect_identical(
+    result$mono@stop_reasons,
+    rep(list("mono stopped because combo stopped"), 2)
+  )
+  expect_identical(
+    result$combo@stop_reasons,
+    rep(list("Number of patients is 3 and thus reached the prespecified minimum number 1"), 2)
+  )
+
+  # But mono still had the initial 3 patients in both simulations.
+  expect_identical(
+    lapply(result$mono@data, slot, "nObs"),
+    rep(list(3L), 2)
+  )
+})
+
 # examine ----
 
 ## DADesign ----

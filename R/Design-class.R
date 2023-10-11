@@ -552,6 +552,8 @@ DADesign <- function(model, data,
 #'   concurrent mono and combo cohorts.
 #' @slot same_dose (`flag`)\cr whether the lower dose of the separately determined mono and combo
 #'   doses should be used as the next dose for both mono and combo.
+#' @slot stop_mono_with_combo (`flag`)\cr whether the mono arm should be stopped when the combo
+#'   arm is stopped (this makes sense when the only real trial objective is the recommended combo dose).
 #'
 #' @details Note that the model slots inside the `mono` and `combo` parameters
 #'   are ignored (because we don't fit separate regression models for the mono and
@@ -568,14 +570,16 @@ DADesign <- function(model, data,
     mono = "Design",
     combo = "Design",
     first_cohort_mono_only = "logical",
-    same_dose = "logical"
+    same_dose = "logical",
+    stop_mono_with_combo = "logical"
   ),
   prototype = prototype(
     model = .DefaultLogisticLogNormalGrouped(),
     mono = .Design(),
     combo = .Design(),
     first_cohort_mono_only = TRUE,
-    same_dose = TRUE
+    same_dose = TRUE,
+    stop_mono_with_combo = FALSE
   ),
   validity = v_design_grouped,
   contains = "CrmPackClass"
@@ -590,6 +594,7 @@ DADesign <- function(model, data,
 #' @param combo (`Design`)\cr see slot definition.
 #' @param first_cohort_mono_only (`flag`)\cr see slot definition.
 #' @param same_dose (`flag`)\cr see slot definition.
+#' @param stop_mono_with_combo (`flag`)\cr see slot definition.
 #' @param ... not used.
 #'
 #' @export
@@ -600,13 +605,15 @@ DesignGrouped <- function(model,
                           combo = mono,
                           first_cohort_mono_only = TRUE,
                           same_dose = TRUE,
+                          stop_mono_with_combo = FALSE,
                           ...) {
   .DesignGrouped(
     model = model,
     mono = mono,
     combo = combo,
     first_cohort_mono_only = first_cohort_mono_only,
-    same_dose = same_dose
+    same_dose = same_dose,
+    stop_mono_with_combo = stop_mono_with_combo
   )
 }
 

@@ -40,16 +40,30 @@ my_increments <- IncrementsRelative(
   increments = c(1, 0.33)
 )
 
+# Rules to be used for both arms.
+one_arm <- Design(
+  model = .DefaultModelLogNormal(), # Ignored.
+  nextBest = my_next_best,
+  stopping = my_stopping,
+  increments = my_increments,
+  cohort_size = my_size,
+  data = empty_data,
+  startingDose = 3
+)
+
 # Initialize the design.
 design <- DesignGrouped(
   model = my_model,
-  mono = Design(
-    model = .DefaultModelLogNormal(), # Ignored.
-    nextBest = my_next_best,
-    stopping = my_stopping,
-    increments = my_increments,
-    cohort_size = my_size,
-    data = empty_data,
-    startingDose = 3
-  )
+  mono = one_arm
+)
+
+# Alternative options: Here e.g. use both mono and combo from the start,
+# but allow different dose levels for the cohorts. Stop mono arm too, when combo
+# arm is stopped.
+design2 <- DesignGrouped(
+  model = my_model,
+  mono = one_arm,
+  first_cohort_mono_only = FALSE,
+  same_dose = FALSE,
+  stop_mono_with_combo = TRUE,
 )
