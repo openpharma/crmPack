@@ -4659,13 +4659,21 @@ setMethod(
           if (object@same_dose && !current$mono$stop && !current$combo$stop) {
             current$mono$dose <- current$combo$dose <- min(current$mono$dose, current$combo$dose)
           }
-          if (current$combo$stop && !current$mono$stop && object@stop_mono_with_combo) {
-            current$mono$stop <- structure(
-              TRUE,
-              message = "mono stopped because combo stopped",
-              report_label = "mono stopped because combo stopped"
+          if (object@stop_mono_with_combo) {
+            if (current$combo$stop && !current$mono$stop) {
+              current$mono$stop <- structure(
+                TRUE,
+                message = "mono stopped because combo stopped",
+                report_label = "mono stopped because combo stopped"
+              )
+              new_result <- TRUE
+            } else {
+              new_result <- FALSE
+            }
+            current$mono$results <- c(
+              current$mono$results,
+              "mono stopped because combo stopped" = new_result
             )
-            current$mono$results <- h_unpack_stopit(current$mono$stop)
           }
           if (current$first) current$first <- FALSE
         }

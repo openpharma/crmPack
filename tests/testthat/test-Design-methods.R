@@ -334,7 +334,8 @@ test_that("simulate for DesignGrouped allows to stop mono when combo stops", {
   mono_arm <- Design(
     model = .LogisticNormal(),
     nextBest = NextBestNCRM(target = c(0.3, 0.6), overdose = c(0.6, 1), max_overdose_prob = 0.7),
-    stopping = StoppingMinPatients(nPatients = 20),
+    # With a custom label that we can check below.
+    stopping = StoppingMinPatients(nPatients = 20, report_label = "my label"),
     increments = IncrementsDoseLevels(levels = 5),
     cohort_size = CohortSizeConst(3),
     data = Data(doseGrid = 1:100),
@@ -342,7 +343,8 @@ test_that("simulate for DesignGrouped allows to stop mono when combo stops", {
   )
   combo_arm <- .Design(
     mono_arm,
-    stopping = StoppingMinPatients(nPatients = 1) # Such that we stop after the first cohort.
+    # Such that we stop after the first cohort.
+    stopping = StoppingMinPatients(nPatients = 1)
   )
   object <- DesignGrouped(
     model = LogisticLogNormalGrouped(mean = rep(-1, 4), cov = diag(5, 4), ref_dose = 1),
@@ -383,6 +385,61 @@ test_that("simulate for DesignGrouped allows to stop mono when combo stops", {
   expect_identical(
     lapply(result$mono@data, slot, "nObs"),
     rep(list(3L), 2)
+  )
+
+  # And we see the stop report includes the previous stopping rule too.
+  expect_identical(
+    colnames(result$mono@stop_report),
+    c("my label", "mono stopped because combo stopped")
+  )
+})
+
+test_that("simulate for DesignGrouped reports correctly when mono is not stopped because of combo", {
+  mono_arm <- Design(
+    model = .LogisticNormal(),
+    nextBest = NextBestNCRM(target = c(0.2, 0.4), overdose = c(0.4, 1), max_overdose_prob = 0.7),
+    # With a custom label that we can check below.
+    stopping = StoppingTargetProb(report_label = "my label"),
+    increments = IncrementsDoseLevels(levels = 5),
+    cohort_size = CohortSizeConst(3),
+    data = Data(doseGrid = 1:100),
+    startingDose = 10
+  )
+  object <- DesignGrouped(
+    model = LogisticLogNormalGrouped(mean = rep(-1, 4), cov = diag(5, 4), ref_dose = 1),
+    mono = mono_arm,
+    combo = mono_arm,
+    same_dose = FALSE,
+    first_cohort_mono_only = FALSE,
+    stop_mono_with_combo = TRUE
+  )
+  my_truth <- function(x) plogis(-4 + 0.2 * log(x / 0.1))
+  my_combo_truth <- function(x) plogis(-4 + 0.5 * log(x / 0.1))
+
+  set.seed(123)
+  result <- expect_silent(simulate(
+    object,
+    nsim = 2,
+    seed = 123,
+    truth = my_truth,
+    combo_truth = my_combo_truth,
+    mcmcOptions = h_get_mcmc_options()
+  ))
+
+  expect_list(result)
+  expect_names(names(result), identical.to = c("mono", "combo"))
+  expect_valid(result$mono, "Simulations")
+  expect_valid(result$combo, "Simulations")
+
+  # We see the stop report includes the previous stopping rule and the mono because combo thing too.
+  expect_identical(
+    colnames(result$mono@stop_report),
+    c("my label", "mono stopped because combo stopped")
+  )
+  # But not for the combo.
+  expect_identical(
+    colnames(result$combo@stop_report),
+    "my label"
   )
 })
 
