@@ -235,6 +235,8 @@ reference:
       - v_safety_window_size
       - v_safety_window_const
       - v_rule_design
+      - v_general_simulations
+      - v_pseudo_simulations
   - title: Custom Checkmate Assertions
     contents:
       - assert_probabilities
@@ -416,7 +418,6 @@ reference:
       - matchTolerance
       - maxSize
       - minSize
-      - multiplot
       - or-Stopping-Stopping
       - or-Stopping-StoppingAny
       - or-StoppingAny-Stopping
