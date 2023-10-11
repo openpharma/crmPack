@@ -331,14 +331,14 @@ test_that("simulate-DualResponsesSamplesDesign produces consistent results", {
 
   options <- McmcOptions(burnin = 10, step = 1, samples = 50)
   result <- simulate(design,
-                    args = NULL,
-                    trueDLE = myTruthDLE,
-                    trueEff = myTruthEff,
-                    trueNu = 1 / 0.025,
-                    nsim = 1,
-                    mcmcOptions = options,
-                    seed = 819,
-                    parallel = FALSE
+    args = NULL,
+    trueDLE = myTruthDLE,
+    trueEff = myTruthEff,
+    trueNu = 1 / 0.025,
+    nsim = 1,
+    mcmcOptions = options,
+    seed = 819,
+    parallel = FALSE
   )
 
   expect_snapshot(result)
