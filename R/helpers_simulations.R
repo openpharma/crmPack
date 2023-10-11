@@ -19,10 +19,10 @@ barplot_percentages <- function(x, description, xaxisround = 0) {
   dat <- data.frame(x = as.numeric(names(tabx)), perc = as.numeric(tabx) * 100)
   ggplot() +
     geom_bar(aes(x = x, y = perc),
-             data = dat,
-             stat = "identity",
-             position = "identity",
-             width = ifelse(nrow(dat) > 1, min(diff(dat$x)) / 2, 1)
+      data = dat,
+      stat = "identity",
+      position = "identity",
+      width = ifelse(nrow(dat) > 1, min(diff(dat$x)) / 2, 1)
     ) +
     xlab(description) +
     ylab("Percent") +
