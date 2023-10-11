@@ -1,58 +1,58 @@
-h_get_design_datada <- function() {
-  npiece_ <- 10
-  Tmax_ <- 60
-
-  lambda_prior <- function(k) {
-    npiece_ / (Tmax_ * (npiece_ - k + 0.5))
-  }
-
-  model <- DALogisticLogNormal(
-    mean = c(-0.85, 1),
-    cov = matrix(c(1, -0.5, -0.5, 1), nrow = 2),
-    ref_dose = 56,
-    npiece = npiece_,
-    l = as.numeric(t(apply(as.matrix(c(1:npiece_), 1, npiece_), 2, lambda_prior))),
-    c_par = 2
-  )
-  # Choose the rule for dose increments
-  myIncrements <- IncrementsRelative(
-    intervals = c(0, 20),
-    increments = c(1, 0.33)
-  )
-
-  myNextBest <- NextBestNCRM(
-    target = c(0.2, 0.35),
-    overdose = c(0.35, 1),
-    max_overdose_prob = 0.25
-  )
-
-  # Initialize the design
-  design <- DADesign(
-    model = model,
-    increments = myIncrements,
-    nextBest = myNextBest,
-    stopping = (
-      StoppingTargetProb(
-        target = c(0.2, 0.35),
-        prob = 0.5
-      ) |
-        StoppingMinPatients(nPatients = 50)
-    ),
-    cohort_size = maxSize(
-      CohortSizeRange(intervals = c(0, 30), cohort_size = c(1L, 3L)),
-      CohortSizeDLT(intervals = c(0, 1), cohort_size = c(1, 3))
-    ),
-    data = DataDA(
-      doseGrid = c(0.1, 0.5, 1, 1.5, 3, 6, seq(from = 10, to = 80, by = 2)),
-      Tmax = 60
-    ),
-    safetyWindow = SafetyWindowConst(c(6, 2), 7, 7),
-    startingDose = 3
-  )
-  design
-}
-
-
+# h_get_design_datada <- function() {
+#   npiece_ <- 10
+#   Tmax_ <- 60
+#
+#   lambda_prior <- function(k) {
+#     npiece_ / (Tmax_ * (npiece_ - k + 0.5))
+#   }
+#
+#   model <- DALogisticLogNormal(
+#     mean = c(-0.85, 1),
+#     cov = matrix(c(1, -0.5, -0.5, 1), nrow = 2),
+#     ref_dose = 56,
+#     npiece = npiece_,
+#     l = as.numeric(t(apply(as.matrix(c(1:npiece_), 1, npiece_), 2, lambda_prior))),
+#     c_par = 2
+#   )
+#   # Choose the rule for dose increments
+#   myIncrements <- IncrementsRelative(
+#     intervals = c(0, 20),
+#     increments = c(1, 0.33)
+#   )
+#
+#   myNextBest <- NextBestNCRM(
+#     target = c(0.2, 0.35),
+#     overdose = c(0.35, 1),
+#     max_overdose_prob = 0.25
+#   )
+#
+#   # Initialize the design
+#   design <- DADesign(
+#     model = model,
+#     increments = myIncrements,
+#     nextBest = myNextBest,
+#     stopping = (
+#       StoppingTargetProb(
+#         target = c(0.2, 0.35),
+#         prob = 0.5
+#       ) |
+#         StoppingMinPatients(nPatients = 50)
+#     ),
+#     cohort_size = maxSize(
+#       CohortSizeRange(intervals = c(0, 30), cohort_size = c(1L, 3L)),
+#       CohortSizeDLT(intervals = c(0, 1), cohort_size = c(1, 3))
+#     ),
+#     data = DataDA(
+#       doseGrid = c(0.1, 0.5, 1, 1.5, 3, 6, seq(from = 10, to = 80, by = 2)),
+#       Tmax = 60
+#     ),
+#     safetyWindow = SafetyWindowConst(c(6, 2), 7, 7),
+#     startingDose = 3
+#   )
+#   design
+# }
+#
+#
 h_get_design_dualresponses <- function() {
   data <- DataDual(doseGrid = seq(25, 300, 25), placebo = FALSE)
   DLEmodel <- LogisticIndepBeta(
@@ -119,45 +119,45 @@ h_get_design_tddesign <- function() {
   )
   design
 }
-
-h_get_design_tdsamples <- function(placebo = FALSE) {
-  data <- Data(doseGrid = seq(25, 300, 25), placebo = placebo)
-
-  model <- LogisticIndepBeta(
-    binDLE = c(1.05, 1.8),
-    DLEweights = c(3, 3),
-    DLEdose = c(25, 300),
-    data = data
-  )
-
-  tdNextBest <- NextBestTDsamples(
-    prob_target_drt = 0.35,
-    prob_target_eot = 0.3,
-    derive = function(samples) {
-      as.numeric(quantile(samples, probs = 0.3))
-    }
-  )
-
-  design <- TDsamplesDesign(
-    model = model,
-    nextBest = tdNextBest,
-    stopping = StoppingMinPatients(nPatients = 36),
-    increments = IncrementsRelative(
-      intervals = c(min(data@doseGrid), max(data@doseGrid)),
-      increments = c(2, 2)
-    ),
-    cohort_size = CohortSizeConst(size = 3),
-    data = data,
-    startingDose = 50
-  )
-
-  if (placebo) {
-    design@pl_cohort_size <- CohortSizeConst(1)
-  }
-  design
-}
-
-
+#
+# h_get_design_tdsamples <- function(placebo = FALSE) {
+#   data <- Data(doseGrid = seq(25, 300, 25), placebo = placebo)
+#
+#   model <- LogisticIndepBeta(
+#     binDLE = c(1.05, 1.8),
+#     DLEweights = c(3, 3),
+#     DLEdose = c(25, 300),
+#     data = data
+#   )
+#
+#   tdNextBest <- NextBestTDsamples(
+#     prob_target_drt = 0.35,
+#     prob_target_eot = 0.3,
+#     derive = function(samples) {
+#       as.numeric(quantile(samples, probs = 0.3))
+#     }
+#   )
+#
+#   design <- TDsamplesDesign(
+#     model = model,
+#     nextBest = tdNextBest,
+#     stopping = StoppingMinPatients(nPatients = 36),
+#     increments = IncrementsRelative(
+#       intervals = c(min(data@doseGrid), max(data@doseGrid)),
+#       increments = c(2, 2)
+#     ),
+#     cohort_size = CohortSizeConst(size = 3),
+#     data = data,
+#     startingDose = 50
+#   )
+#
+#   if (placebo) {
+#     design@pl_cohort_size <- CohortSizeConst(1)
+#   }
+#   design
+# }
+#
+#
 h_get_design_dualdata <- function(placebo = FALSE) {
   # Define the dose-grid
   emptydata <- DataDual(
@@ -212,7 +212,6 @@ h_get_design_dualdata <- function(placebo = FALSE) {
   }
   design
 }
-
 
 h_get_design_data <- function(placebo = FALSE) {
   # Define the dose-grid
