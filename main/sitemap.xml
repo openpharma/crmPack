@@ -637,6 +637,9 @@
     <loc>https://roche.github.io/crmPack/reference/is.range.html</loc>
   </url>
   <url>
+    <loc>https://roche.github.io/crmPack/reference/is.wholenumber.html</loc>
+  </url>
+  <url>
     <loc>https://roche.github.io/crmPack/reference/logit.html</loc>
   </url>
   <url>
@@ -653,9 +656,6 @@
   </url>
   <url>
     <loc>https://roche.github.io/crmPack/reference/minSize.html</loc>
-  </url>
-  <url>
-    <loc>https://roche.github.io/crmPack/reference/multiplot.html</loc>
   </url>
   <url>
     <loc>https://roche.github.io/crmPack/reference/myBarplot.html</loc>
@@ -770,6 +770,9 @@
   </url>
   <url>
     <loc>https://roche.github.io/crmPack/reference/rinvGamma.html</loc>
+  </url>
+  <url>
+    <loc>https://roche.github.io/crmPack/reference/safeInteger.html</loc>
   </url>
   <url>
     <loc>https://roche.github.io/crmPack/reference/saveSample.html</loc>
