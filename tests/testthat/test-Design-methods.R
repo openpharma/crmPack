@@ -244,18 +244,52 @@ test_that("simulate-DualResponsesSamplesDesign produces consistent results", {
 
   options <- McmcOptions(burnin = 10, step = 1, samples = 50)
   result <- simulate(design,
-                    args = NULL,
-                    trueDLE = myTruthDLE,
-                    trueEff = myTruthEff,
-                    trueNu = 1 / 0.025,
-                    nsim = 1,
-                    mcmcOptions = options,
-                    seed = 819,
-                    parallel = FALSE
+    args = NULL,
+    trueDLE = myTruthDLE,
+    trueEff = myTruthEff,
+    trueNu = 1 / 0.025,
+    nsim = 1,
+    mcmcOptions = options,
+    seed = 819,
+    parallel = FALSE
   )
 
   expect_snapshot(result)
 })
+
+test_that("Test if simulate generate the expected output.", {
+  data <- h_get_data(placebo = FALSE)
+  model <- h_get_logistic_normal()
+  increments <- h_increments_relative()
+  next_best <- h_next_best_ncrm()
+  size <- CohortSizeConst(size = 3)
+
+  # Extreme truth function, which has constant probability 1 in dose grid range.
+  truth <- probFunction(model, alpha0 = 175, alpha1 = 5)
+  stop_rule <- StoppingMinPatients(nPatients = 5)
+  design <- Design(
+    model = model,
+    stopping = stop_rule,
+    increments = increments,
+    nextBest = next_best,
+    cohort_size = size,
+    data = data,
+    startingDose = 25
+  )
+
+  my_options <- McmcOptions(burnin = 100, step = 2, samples = 5, rng_kind = "Mersenne-Twister", rng_seed = 3)
+
+  sim <- simulate(
+    design,
+    nsim = 1,
+    truth = truth,
+    seed = 819,
+    mcmcOptions = my_options
+  )
+
+  expect_snapshot(sim)
+})
+
 
 ## NextBestInfTheory ----
 
@@ -512,7 +546,7 @@ test_that("simulate for DesignGrouped works when first patient is dosed separate
     truth = my_truth,
     firstSeparate = TRUE,
     combo_truth = my_combo_truth,
-    mcmcOptions = h_get_mcmc_options()
+    mcmcOptions = h_get_mcmc_options(),
   ))
 
   expect_list(result)

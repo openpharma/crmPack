@@ -80,7 +80,6 @@ positive_number <- setClass(
 ##'
 ##' @export
 ##' @keywords programming
-##' @example examples/matching-tolerance.R
 matchTolerance <- function(x, table) {
   if (length(table) == 0) {
     return(integer())
@@ -97,25 +96,35 @@ matchTolerance <- function(x, table) {
   }))
 }
 
-##' @describeIn matchTolerance Helper function for checking inclusion in a table with tolerance
-##' @export
-`%~%` <- function(x, table) {
-  !is.na(matchTolerance(x = x, table = table))
-}
-
-##' Check overlap of two character vectors
+##' checks for whole numbers (integers)
 ##'
-##' @param a first character vector
-##' @param b second character vector
-##' @return returns TRUE if there is no overlap between the two character
-##' vectors, otherwise FALSE
+##' @param x the numeric vector
+##' @param tol the tolerance
+##' @return TRUE or FALSE for each element of x
 ##'
 ##' @keywords internal
-noOverlap <- function(a, b) {
-  identical(
-    intersect(a, b),
-    character(0)
-  )
+is.wholenumber <- function(x, tol = .Machine$double.eps^0.5) {
+  abs(x - round(x)) < tol
+}
+
+
+##' Safe conversion to integer vector
+##'
+##' @param x the numeric vector
+##' @return the integer vector
+##'
+##' @keywords internal
+safeInteger <- function(x) {
+  testres <- is.wholenumber(x)
+  if (!all(testres)) {
+    notInt <- which(!testres)
+    stop(paste(
+      "elements",
+      paste(notInt, sep = ", "),
+      "of vector are not integers!"
+    ))
+  }
+  as.integer(x)
 }
 
 ##' Predicate checking for a probability
@@ -208,63 +217,6 @@ crmPackExample <- function() {
 ##' @author Daniel Sabanes Bove \email{sabanesd@@roche.com}
 crmPackHelp <- function() {
   utils::help(package = "crmPack", help_type = "html")
-}
-
-#' Multiple plot function
-#'
-#' ggplot objects can be passed in ..., or to plotlist (as a list of ggplot objects).
-#' If the layout is something like matrix(c(1,2,3,3), nrow=2, byrow=TRUE),
-#' then plot 1 will go in the upper left, 2 will go in the upper right, and
-#' 3 will go all the way across the bottom.
-#'
-#' @param \dots Objects to be passed
-#' @param plotlist a list of additional objects
-#' @param rows Number of rows in layout
-#' @param layout A matrix specifying the layout. If present, \code{rows}
-#' is ignored.
-#'
-#' @return Used for the side effect of plotting
-#' @importFrom grid grid.newpage pushViewport viewport
-#' @export
-multiplot <- function(..., plotlist = NULL, rows = 1, layout = NULL) {
-  # Make a list from the ... arguments and plotlist
-  plots <- c(list(...), plotlist)
-
-  numPlots <- length(plots)
-
-  # If layout is NULL, then use 'cols' to determine layout
-  if (is.null(layout)) {
-    # Make the panel
-    # ncol: Number of columns of plots
-    # nrow: Number of rows needed, calculated from # of cols
-    layout <- matrix(seq(1, rows * ceiling(numPlots / rows)),
-      nrow = rows, ncol = ceiling(numPlots / rows),
-      byrow = TRUE
-    )
-  }
-
-  if (numPlots == 1) {
-    print(plots[[1]])
-  } else {
-    # Set up the page
-    grid::grid.newpage()
-    grid::pushViewport(grid::viewport(layout = grid::grid.layout(
-      nrow(layout),
-      ncol(layout)
-    )))
-
-    # Make each plot, in the correct location
-    for (i in seq_len(numPlots))
-    {
-      # Get the i,j matrix positions of the regions that contain this subplot
-      matchidx <- as.data.frame(which(layout == i, arr.ind = TRUE))
-
-      print(plots[[i]], vp = grid::viewport(
-        layout.pos.row = matchidx$row,
-        layout.pos.col = matchidx$col
-      ))
-    }
-  }
 }
 
 ##' Taken from utils package (print.vignette)

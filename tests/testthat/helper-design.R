@@ -73,7 +73,7 @@ h_get_design_dualresponses <- function() {
     model = DLEmodel,
     eff_model = Effmodel,
     stopping = StoppingMinPatients(nPatients = 36),
-    increments =IncrementsRelative(
+    increments = IncrementsRelative(
       intervals = c(25, 300),
       increments = c(2, 2)
     ),
@@ -217,14 +217,15 @@ h_get_design_data <- function(placebo = FALSE) {
   # Define the dose-grid
   emptydata <- Data(
     doseGrid = c(0.1, 1, 3, 5, 10, 15, 20, 25, 40, 50, 80, 100),
-    placebo = placebo)
+    placebo = placebo
+  )
 
   # Initialize the CRM model
   model <- LogisticLogNormal(
     mean = c(-0.85, 1),
     cov =
       matrix(c(1, -0.5, -0.5, 1),
-             nrow = 2
+        nrow = 2
       ),
     ref_dose = 56
   )
