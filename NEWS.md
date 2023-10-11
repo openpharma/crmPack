@@ -59,6 +59,8 @@ usable instances of all concrete subclasses of `Increments`, `Model`, `NextBest`
 * Include rolling CRM design, which was previously only available in a separate
   GitHub branch.
 * Additional authors and change of maintainer.
+* Included 'additional_stats' to add reporting of additional parameters to method simulate to summarize MTD.
+* 'report_label' can be added to stopping rules for individual or combined stopping rule reporting.
 
 # Version 1.0.0
 
