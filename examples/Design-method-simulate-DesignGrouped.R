@@ -1,6 +1,6 @@
 # Assemble ingredients for our group design.
 my_stopping <- StoppingTargetProb(target = c(0.2, 0.35), prob = 0.5) |
-  StoppingMinPatients(20) |
+  StoppingMinPatients(10) |
   StoppingMissingDose()
 my_increments <- IncrementsDoseLevels(levels = 3L)
 my_next_best <- NextBestNCRM(
@@ -52,7 +52,7 @@ legend("topright", c("mono", "combo"), lty = c(1, 2), col = c(1, 2))
 set.seed(123)
 my_sims <- simulate(
   my_design,
-  nsim = 4, # This should be at least 100 in actual applications.
+  nsim = 1, # This should be at least 100 in actual applications.
   seed = 123,
   truth = my_truth,
   combo_truth = my_combo_truth
