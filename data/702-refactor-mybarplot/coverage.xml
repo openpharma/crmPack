@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE coverage SYSTEM "https://raw.githubusercontent.com/cobertura/cobertura/master/cobertura/src/site/htdocs/xml/coverage-04.dtd">
-<coverage line-rate="0.619924018573238" branch-rate="0" lines-covered="7343" lines-valid="11845" branches-covered="0" branches-valid="0" complexity="0" version="3.6.2" timestamp="2023-10-11 12:13:52.763172">
+<coverage line-rate="0.619924018573238" branch-rate="0" lines-covered="7343" lines-valid="11845" branches-covered="0" branches-valid="0" complexity="0" version="3.6.3" timestamp="2023-10-12 08:44:32.70095">
   <sources>
     <source>/__w/crmPack/crmPack/crmPack</source>
   </sources>
@@ -12238,11 +12238,12 @@
         </class>
         <class name="helpers_simulations.R" filename="R/helpers_simulations.R" line-rate="1" branch-rate="0" complexity="0">
           <methods>
-            <method name="barplot_percentages" signature="" line-rate="1" branch-rate="0" complexity="0">
+            <method name="h_barplot_percentages" signature="" line-rate="1" branch-rate="0" complexity="0">
               <lines>
-                <line number="14" hits="6" branch="false"/>
-                <line number="15" hits="4" branch="false"/>
-                <line number="16" hits="2" branch="false"/>
+                <line number="13" hits="6" branch="false"/>
+                <line number="14" hits="4" branch="false"/>
+                <line number="15" hits="2" branch="false"/>
+                <line number="17" hits="1" branch="false"/>
                 <line number="18" hits="1" branch="false"/>
                 <line number="19" hits="1" branch="false"/>
                 <line number="20" hits="1" branch="false"/>
@@ -12257,14 +12258,14 @@
                 <line number="29" hits="1" branch="false"/>
                 <line number="30" hits="1" branch="false"/>
                 <line number="31" hits="1" branch="false"/>
-                <line number="32" hits="1" branch="false"/>
               </lines>
             </method>
           </methods>
           <lines>
-            <line number="14" hits="6" branch="false"/>
-            <line number="15" hits="4" branch="false"/>
-            <line number="16" hits="2" branch="false"/>
+            <line number="13" hits="6" branch="false"/>
+            <line number="14" hits="4" branch="false"/>
+            <line number="15" hits="2" branch="false"/>
+            <line number="17" hits="1" branch="false"/>
             <line number="18" hits="1" branch="false"/>
             <line number="19" hits="1" branch="false"/>
             <line number="20" hits="1" branch="false"/>
@@ -12279,7 +12280,6 @@
             <line number="29" hits="1" branch="false"/>
             <line number="30" hits="1" branch="false"/>
             <line number="31" hits="1" branch="false"/>
-            <line number="32" hits="1" branch="false"/>
           </lines>
         </class>
         <class name="helpers.R" filename="R/helpers.R" line-rate="0.716157205240175" branch-rate="0" complexity="0">
