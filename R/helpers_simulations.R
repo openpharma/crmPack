@@ -9,8 +9,7 @@
 #'
 #' @keywords internal
 #' @importFrom ggplot2 ggplot geom_histogram aes xlab ylab xlim
-#' @example examples/barplot_percentages.R
-barplot_percentages <- function(x, description, xaxisround = 0) {
+h_barplot_percentages <- function(x, description, xaxisround = 0) {
   assert_number(xaxisround, lower = 0)
   assert_character(description, len = 1, any.missing = FALSE)
   assert_numeric(x)
