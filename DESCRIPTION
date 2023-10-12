@@ -99,6 +99,7 @@ Collate:
     'Samples-validity.R'
     'Samples-class.R'
     'mcmc.R'
+    'Simulations-validity.R'
     'Simulations-class.R'
     'helpers_rules.R'
     'Model-methods.R'
