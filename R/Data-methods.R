@@ -308,7 +308,7 @@ setMethod(
     n <- length(y)
 
     # Which grid level is the dose?
-    gridLevel <- matchTolerance(x, object@doseGrid)
+    gridLevel <- match_within_tolerance(x, object@doseGrid)
     object@xLevel <- c(object@xLevel, rep(gridLevel, n))
 
     # Add dose.
@@ -399,7 +399,7 @@ setMethod(
     n <- length(y)
 
     # Which grid level is the dose?
-    gridLevel <- matchTolerance(x, object@doseGrid)
+    gridLevel <- match_within_tolerance(x, object@doseGrid)
     object@xLevel <- c(object@xLevel, rep(gridLevel, n))
 
     # Add dose.

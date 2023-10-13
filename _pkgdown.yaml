@@ -415,7 +415,7 @@ reference:
       - get,Samples,character-method
       - getMinInfBeta
       - logit
-      - matchTolerance
+      - match_within_tolerance
       - maxSize
       - minSize
       - or-Stopping-Stopping
