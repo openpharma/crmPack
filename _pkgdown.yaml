@@ -406,6 +406,8 @@ reference:
       - SimulationsSummary-class
       - approximate
       - assertions
+      - assert_equal
+      - check_equal
       - crmPackExample
       - crmPackHelp
       - examine
