@@ -54,26 +54,37 @@ NULL
 #' check_equal(0.01, 0.02, tol = 0.05) # TRUE
 #' check_equal(1, c(1, 1)) # "Not all equal"
 check_equal <- function(..., tol = sqrt(.Machine$double.eps)) {
-  dot_args = list(...)
+  dot_args <- list(...)
 
   sapply(dot_args, assert_numeric)
 
   tmp <- sapply(dot_args, length)
-  if (min(tmp) != max(tmp)) return("Not all of same length")
-  if (any(sapply(dot_args, is.na))) return("Some entries NA")
-  if (any(sapply(dot_args, is.infinite))) return("Not all entries finite")
-  if (!all(sapply(dot_args, test_numeric))) return("Not all numeric")
+  if (min(tmp) != max(tmp)) {
+    return("Not all of same length")
+  }
+  if (any(sapply(dot_args, is.na))) {
+    return("Some entries NA")
+  }
+  if (any(sapply(dot_args, is.infinite))) {
+    return("Not all entries finite")
+  }
+  if (!all(sapply(dot_args, test_numeric))) {
+    return("Not all numeric")
+  }
 
   rv <- test_true(
-      all(
-        sapply(
-          2:length(dot_args),
-          function(z) abs(dot_args[[1]] - dot_args[[z]]) < tol
-        )
+    all(
+      sapply(
+        2:length(dot_args),
+        function(z) abs(dot_args[[1]] - dot_args[[z]]) < tol
       )
     )
-  if (rv) return(TRUE)
-  else return("Not all equal")
+  )
+  if (rv) {
+    return(TRUE)
+  } else {
+    return("Not all equal")
+  }
 }
 
 #  assert equality
@@ -104,8 +115,8 @@ check_equal <- function(..., tol = sqrt(.Machine$double.eps)) {
 #' @examples
 #' assert_equal(1:2, 1:2) # no error
 #' assert_equal(0.01, 0.02, tol = 0.05) # no error
-assert_equal = function(..., tol = sqrt(.Machine$double.eps), .var.name = vname(x), add = NULL) {
-  res = check_equal(..., tol = tol)
+assert_equal <- function(..., tol = sqrt(.Machine$double.eps), .var.name = vname(x), add = NULL) {
+  res <- check_equal(..., tol = tol)
   makeAssertion(list(...), res, .var.name, add)
 }
 

@@ -112,6 +112,7 @@ Collate:
     'helpers_covr.R'
     'helpers_design.R'
     'helpers_model.R'
+    'helpers_simulations.R'
     'logger.R'
     'utils-pipe.R'
     'utils.R'
