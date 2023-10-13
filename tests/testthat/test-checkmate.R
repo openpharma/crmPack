@@ -1,3 +1,25 @@
+# check_equal ----
+test_that("check_equal works correctly", {
+  expect_true(check_equal(1:2, 1:2))
+  expect_equal(check_equal(1:2, 2:3), "Not all equal")
+  expect_equal(check_equal(Inf, Inf), "Not all entries finite")
+  expect_equal(check_equal(NA, 1), "Some entries NA")
+  expect_equal(check_equal(0.01, 0.02), "Not all equal")
+  expect_true(check_equal(0.01, 0.02, tol = 0.05))
+  expect_equal(check_equal(1, c(1, 1)), "Not all of same length")
+})
+
+# assert_equal
+test_that("assert_equal works correctly", {
+  expect_invisible(assert_equal(1:2, 1:2))
+  expect_error(assert_equal(1:2, 2:3), "Assertion on 'x' failed: Not all equal.")
+  expect_error(assert_equal(Inf, Inf), "Assertion on 'x' failed: Not all entries finite.")
+  expect_error(assert_equal(NA, 1), "Assertion on 'x' failed: Some entries NA")
+  expect_error(assert_equal(0.01, 0.02), "Assertion on 'x' failed: Not all equal.")
+  expect_invisible(assert_equal(0.01, 0.02, tol = 0.05))
+  expect_error(assert_equal(1, c(1, 1)), "Assertion on 'x' failed: Not all of same length.")
+})
+
 # check_probabilities ----
 
 test_that("check_probabilities returns TRUE as expected", {

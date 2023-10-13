@@ -123,7 +123,8 @@ Data <- function(x = numeric(),
   assert_numeric(doseGrid, any.missing = FALSE, unique = TRUE)
   assert_flag(placebo)
 
-  doseGrid <- as.numeric(sort(doseGrid))
+  doseGrid <- sort(doseGrid)
+  assert_subset(x, doseGrid)
 
   if (length(ID) == 0 && length(x) > 0) {
     message("Used default patient IDs!")
@@ -148,10 +149,10 @@ Data <- function(x = numeric(),
     y = as.integer(y),
     ID = as.integer(ID),
     cohort = as.integer(cohort),
-    doseGrid = doseGrid,
+    doseGrid = as.numeric(doseGrid),
     nObs = length(x),
     nGrid = length(doseGrid),
-    xLevel = matchTolerance(x = x, table = doseGrid),
+    xLevel = match_within_tolerance(x, doseGrid),
     placebo = placebo
   )
 }
@@ -488,7 +489,7 @@ DataOrdinal <- function(x = numeric(),
     doseGrid = doseGrid,
     nObs = length(x),
     nGrid = length(doseGrid),
-    xLevel = matchTolerance(x = x, table = doseGrid),
+    xLevel = match_within_tolerance(x = x, table = doseGrid),
     placebo = placebo,
     yCategories = yCategories
   )

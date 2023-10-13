@@ -80,7 +80,7 @@ positive_number <- setClass(
 ##'
 ##' @export
 ##' @keywords programming
-matchTolerance <- function(x, table) {
+match_within_tolerance <- function(x, table) {
   if (length(table) == 0) {
     return(integer())
   }

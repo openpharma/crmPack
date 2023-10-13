@@ -42,7 +42,6 @@ Imports:
     checkmate (>= 2.2.0),
     futile.logger,
     GenSA,
-    grid,
     magrittr,
     gridExtra,
     lifecycle,

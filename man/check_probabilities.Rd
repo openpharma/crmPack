@@ -87,7 +87,7 @@ probability, that is a number within (0, 1) interval, that can optionally be
 closed at any side.
 }
 \note{
-If there are any missing or non-finite values in \code{x}, this functions
+If there are any missing or non-finite values in \code{x}, this function
 returns \code{FALSE}, regardless of the values of other elements in \code{x}.
 }
 \examples{
