@@ -115,10 +115,12 @@ check_equal <- function(..., tol = sqrt(.Machine$double.eps)) {
 #' @examples
 #' assert_equal(1:2, 1:2) # no error
 #' assert_equal(0.01, 0.02, tol = 0.05) # no error
+# nolint start
 assert_equal <- function(..., tol = sqrt(.Machine$double.eps), .var.name = vname(x), add = NULL) {
   res <- check_equal(..., tol = tol)
   makeAssertion(list(...), res, .var.name, add)
 }
+# nolint end
 
 # assert_probabilities ----
 
