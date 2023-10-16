@@ -15,7 +15,7 @@ This is a method based on the \code{\linkS4class{TDsamplesDesign}} where model u
   firstSeparate = FALSE,
   mcmcOptions = McmcOptions(),
   parallel = FALSE,
-  nCores = min(parallel::detectCores(), 5),
+  nCores = min(parallel::detectCores(), 5L),
   ...
 )
 }
@@ -24,7 +24,7 @@ This is a method based on the \code{\linkS4class{TDsamplesDesign}} where model u
 
 \item{nsim}{the number of simulations (default :1)}
 
-\item{seed}{see \code{\link{setSeed}}}
+\item{seed}{see \code{\link{set_seed}}}
 
 \item{truth}{a function which takes as input a dose (vector) and returns the true probability
 (vector) of the occurrence of a DLE. Additional arguments can be supplied in \code{args}.}

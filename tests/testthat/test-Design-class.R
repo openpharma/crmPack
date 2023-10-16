@@ -424,3 +424,47 @@ test_that("DADesign user constructor arguments names are as expected", {
     ordered = TRUE
   )
 })
+
+# DesignGrouped ----
+
+test_that(".DesignGrouped works as expected", {
+  result <- .DesignGrouped()
+
+  expect_true(inherits(result, "CrmPackClass"))
+  expect_valid(result, "DesignGrouped")
+})
+
+test_that("DesignGrouped works as expected", {
+  empty_data <- Data(doseGrid = 2:50)
+  model <- .DefaultLogisticLogNormalGrouped()
+  stopping <- h_stopping_target_prob()
+  increments <- h_increments_relative()
+  placebo_cohort_size <- CohortSizeConst(0L)
+  next_best <- h_next_best_ncrm()
+  cohort_size <- CohortSizeRange(intervals = c(0, 30), cohort_size = c(1, 3))
+
+  result <- expect_silent(
+    DesignGrouped(
+      model = model,
+      mono = Design(
+        model,
+        stopping,
+        increments,
+        nextBest = next_best,
+        cohort_size = cohort_size,
+        data = empty_data,
+        startingDose = 3
+      )
+    )
+  )
+
+  expect_valid(result, "DesignGrouped")
+  expect_identical(result@mono, result@combo)
+  expect_true(result@first_cohort_mono_only)
+  expect_true(result@same_dose)
+})
+
+test_that(".DefaultDesignGrouped works as expected", {
+  result <- .DefaultDesignGrouped()
+  expect_valid(result, "DesignGrouped")
+})

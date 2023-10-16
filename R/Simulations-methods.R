@@ -635,6 +635,7 @@ setMethod("summary",
       ret <- .SimulationsSummary(
         start,
         stop_report = object@stop_report,
+        additional_stats = object@additional_stats,
         fitAtDoseMostSelected = fitAtDoseMostSelected,
         meanFit = meanFit
       )
@@ -642,7 +643,6 @@ setMethod("summary",
       return(ret)
     }
 )
-
 
 ##' Summarize the dual-endpoint design simulations, relative to given true
 ##' dose-toxicity and dose-biomarker curves
@@ -978,13 +978,22 @@ setMethod("show",
       )
 
 
-
-
       ## add one reporting line
       r$report(
         "fitAtDoseMostSelected",
         "Fitted toxicity rate at dose most often selected"
       )
+
+      # Report results of additional statistics summary
+
+      if (length(list()) > 0) {
+        summary_stat_op <- unlist(object@additional_stats)
+
+        cat(
+          "Results of Additional Statistical Calculation : \n",
+          paste(names(summary_stat_op), ":", round(summary_stat_op), "\n")
+        )
+      }
 
 
       # Report individual stopping rules with non-<NA> labels.
@@ -1109,7 +1118,7 @@ setMethod("plot",
       if (x@placebo) {
         if ("nObs" %in% type) {
           plotList[[plotIndex <- plotIndex + 1L]] <-
-            myBarplot(
+            h_barplot_percentages(
               x = x@nObs[2, ],
               description = "Number of patients on active in total"
             )
@@ -1117,7 +1126,7 @@ setMethod("plot",
       } else {
         if ("nObs" %in% type) {
           plotList[[plotIndex <- plotIndex + 1L]] <-
-            myBarplot(
+            h_barplot_percentages(
               x = x@nObs,
               description = "Number of patients in total"
             )
@@ -1127,7 +1136,7 @@ setMethod("plot",
       ## distribution of final MTD estimate
       if ("doseSelected" %in% type) {
         plotList[[plotIndex <- plotIndex + 1L]] <-
-          myBarplot(
+          h_barplot_percentages(
             x = x@doseSelected,
             description = "MTD estimate"
           )
@@ -1137,7 +1146,7 @@ setMethod("plot",
       if (x@placebo) {
         if ("propDLTs" %in% type) {
           plotList[[plotIndex <- plotIndex + 1L]] <-
-            myBarplot(
+            h_barplot_percentages(
               x = x@propDLTs[1, ] * 100,
               description = "Proportion of DLTs [%] on active",
               xaxisround = 1
@@ -1146,7 +1155,7 @@ setMethod("plot",
       } else {
         if ("propDLTs" %in% type) {
           plotList[[plotIndex <- plotIndex + 1L]] <-
-            myBarplot(
+            h_barplot_percentages(
               x = x@propDLTs * 100,
               description = "Proportion of DLTs [%]",
               xaxisround = 1
@@ -1157,7 +1166,7 @@ setMethod("plot",
       ## distribution of number of patients treated at too much tox
       if ("nAboveTarget" %in% type) {
         plotList[[plotIndex <- plotIndex + 1L]] <-
-          myBarplot(
+          h_barplot_percentages(
             x = x@nAboveTarget,
             description = "Number of patients above target"
           )
@@ -2026,7 +2035,7 @@ setMethod("plot",
       ## distribution of overall sample size
       if ("nObs" %in% type) {
         plotList[[plotIndex <- plotIndex + 1L]] <-
-          myBarplot(
+          h_barplot_percentages(
             x = x@nObs,
             description = "Number of patients in total"
           )
@@ -2035,7 +2044,7 @@ setMethod("plot",
       ## distribution of final MTD estimate
       if ("doseSelected" %in% type) {
         plotList[[plotIndex <- plotIndex + 1L]] <-
-          myBarplot(
+          h_barplot_percentages(
             x = x@doseSelected,
             description = "MTD estimate"
           )
@@ -2044,7 +2053,7 @@ setMethod("plot",
       ## distribution of proportion of DLTs
       if ("propDLE" %in% type) {
         plotList[[plotIndex <- plotIndex + 1L]] <-
-          myBarplot(
+          h_barplot_percentages(
             x = x@propDLE * 100,
             description = "Proportion of DLE [%]",
             xaxisround = 1
@@ -2054,7 +2063,7 @@ setMethod("plot",
       ## distribution of number of patients treated at too much tox
       if ("nAboveTargetEndOfTrial" %in% type) {
         plotList[[plotIndex <- plotIndex + 1L]] <-
-          myBarplot(
+          h_barplot_percentages(
             x = x@nAboveTargetEndOfTrial,
             description = "Number of patients above target"
           )

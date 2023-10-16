@@ -1388,8 +1388,11 @@ DualEndpoint <- function(mean,
   assert_numeric(sigma2W, min.len = 1, max.len = 2)
   assert_numeric(rho, min.len = 1, max.len = 2)
 
-  use_fixed <- c(sigma2W = is.scalar(sigma2W), rho = is.scalar(rho))
-  betaZ_params <- ModelParamsNormal(mean, cov) # nolintr
+  use_fixed <- c(
+    sigma2W = test_number(sigma2W),
+    rho = test_number(rho)
+  )
+  beta_z_params <- ModelParamsNormal(mean, cov)
 
   datamodel <- function() {
     for (i in 1:nObs) {
@@ -1416,8 +1419,8 @@ DualEndpoint <- function(mean,
     condPrecW <- precW / (1 - pow(rho, 2))
   }
   modelspecs_prior <- list(
-    betaZ_mean = betaZ_params@mean,
-    betaZ_prec = betaZ_params@prec
+    betaZ_mean = beta_z_params@mean,
+    betaZ_prec = beta_z_params@prec
   )
 
   comp <- list(
@@ -1442,7 +1445,7 @@ DualEndpoint <- function(mean,
   )
 
   .DualEndpoint(
-    betaZ_params = betaZ_params,
+    betaZ_params = beta_z_params,
     ref_dose = positive_number(ref_dose),
     use_log_dose = use_log_dose,
     sigma2W = sigma2W,
@@ -2199,7 +2202,7 @@ LogisticIndepBeta <- function(binDLE,
                               data) {
   assert_numeric(binDLE)
   assert_numeric(DLEdose)
-  assert_numeric(DLEweights)
+  assert_integerish(DLEweights, lower = 0, any.missing = FALSE)
   assert_class(data, "Data")
 
   # Combine pseudo and observed data. It can also happen that data@nObs == 0.
@@ -2217,7 +2220,7 @@ LogisticIndepBeta <- function(binDLE,
   .LogisticIndepBeta(
     binDLE = binDLE,
     DLEdose = DLEdose,
-    DLEweights = safeInteger(DLEweights),
+    DLEweights = as.integer(DLEweights),
     phi1 = phi1,
     phi2 = phi2,
     Pcov = Pcov,
@@ -2582,7 +2585,10 @@ EffFlexi <- function(eff,
   assert_flag(rw1)
   assert_class(data, "DataDual")
 
-  use_fixed <- c(sigma2W = is.scalar(sigma2W), sigma2betaW = is.scalar(sigma2betaW))
+  use_fixed <- c(
+    sigma2W = test_number(sigma2W),
+    sigma2betaW = test_number(sigma2betaW)
+  )
 
   x <- c(eff_dose, getEff(data, no_dlt = TRUE)$x_no_dlt)
   x_level <- matchTolerance(x, data@doseGrid)
@@ -2679,6 +2685,8 @@ DALogisticLogNormal <- function(npiece = 3,
                                 c_par = 2,
                                 cond_pem = TRUE,
                                 ...) {
+  assert_flag(cond_pem)
+
   start <- LogisticLogNormal(...)
 
   datamodel <- function() {
@@ -2749,7 +2757,7 @@ DALogisticLogNormal <- function(npiece = 3,
       l = l,
       c_par = c_par,
       h = seq(from = 0L, to = Tmax, length = npiece + 1),
-      cond = safeInteger(cond_pem)
+      cond = as.integer(cond_pem)
     )
     if (!from_prior) {
       ms <- c(list(ref_dose = start@ref_dose, zeros = rep(0, nObs), eps = 1e-10, cadj = 1e10), ms)
@@ -2757,9 +2765,11 @@ DALogisticLogNormal <- function(npiece = 3,
     ms
   }
 
+  assert_integerish(npiece, lower = 1)
+
   .DALogisticLogNormal(
     start,
-    npiece = safeInteger(npiece),
+    npiece = as.integer(npiece),
     l = l,
     c_par = c_par,
     cond_pem = cond_pem,

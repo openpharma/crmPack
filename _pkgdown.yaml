@@ -129,6 +129,7 @@ reference:
       - DualDesign
       - TDsamplesDesign
       - TDDesign
+      - DesignGrouped
   - title: Internal Helper Functions
     contents:
       - h_blind_plot_data
@@ -234,6 +235,8 @@ reference:
       - v_safety_window_size
       - v_safety_window_const
       - v_rule_design
+      - v_general_simulations
+      - v_pseudo_simulations
   - title: Custom Checkmate Assertions
     contents:
       - assert_probabilities
@@ -415,7 +418,6 @@ reference:
       - matchTolerance
       - maxSize
       - minSize
-      - multiplot
       - or-Stopping-Stopping
       - or-Stopping-StoppingAny
       - or-StoppingAny-Stopping
@@ -435,11 +437,10 @@ reference:
       - plot,Samples,ModelEff-method
       - plot,Samples,ModelTox-method
       - plot,SimulationsSummary,missing-method
-      - plot.gtable
       - plotDualResponses
       - plotGain
       - probit
-      - setSeed
+      - set_seed
       - show,DualSimulationsSummary-method
       - show,GeneralSimulationsSummary-method
       - show,PseudoDualSimulationsSummary-method
@@ -453,6 +454,7 @@ reference:
       - simulate,RuleDesign-method
       - simulate,TDDesign-method
       - simulate,TDsamplesDesign-method
+      - simulate-DesignGrouped
       - summary,DualSimulations-method
       - summary,GeneralSimulations-method
       - summary,PseudoDualFlexiSimulations-method
