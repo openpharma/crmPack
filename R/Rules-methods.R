@@ -1500,7 +1500,7 @@ setMethod(
     if (is.null(incrmnt)) {
       callNextMethod(increments, data, ...)
     } else {
-      max_dose_lev_part1 <- matchTolerance(max(data@x), data@part1Ladder)
+      max_dose_lev_part1 <- match_within_tolerance(max(data@x), data@part1Ladder)
       new_max_dose_level <- max_dose_lev_part1 + incrmnt
       assert_true(new_max_dose_level >= 0L)
       assert_true(new_max_dose_level <= length(data@part1Ladder))
