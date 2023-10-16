@@ -9,7 +9,7 @@ test_that("check_equal works correctly", {
   expect_equal(check_equal(1, c(1, 1)), "Not all of same length")
 })
 
-# assert_equal
+# assert_equal ----
 test_that("assert_equal works correctly", {
   expect_invisible(assert_equal(1:2, 1:2))
   expect_error(assert_equal(1:2, 2:3), "Assertion on 'x' failed: Not all equal.")

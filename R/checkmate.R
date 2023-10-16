@@ -32,16 +32,16 @@ NULL
 #' provided in `...` with every other object in `...` and returns `TRUE` if all
 #' comparisons are equal within a given tolerance and `FALSE` otherwise.
 #'
-#' @param ... (`numeric`)\cr vectors to be compared
+#' @param ... (`numeric`)\cr vectors to be compared.
 #' @param tol (`numeric`)\cr the maximum difference to be tolerated when
-#' judging equality
+#' judging equality.
 #'
 #' @note If there are any missing or infinite values in `...`, this function
 #'   returns `FALSE`, regardless of the values of other elements in `...`.
 #'
 #' @note If elements in `...` are not all of the same length, `FALSE` is returned.
 #'
-#' @return TRUE if all element-by-element differences are less than `tolerance`
+#' @return `TRUE` if all element-by-element differences are less than `tolerance`
 #' in magnitude, `FALSE` otherwise.
 #' @seealso [`assertions`] for more details.
 #'
@@ -72,7 +72,7 @@ check_equal <- function(..., tol = sqrt(.Machine$double.eps)) {
     return("Not all numeric")
   }
 
-  rv <- test_true(
+  all_ok <- test_true(
     all(
       sapply(
         2:length(dot_args),
@@ -80,14 +80,11 @@ check_equal <- function(..., tol = sqrt(.Machine$double.eps)) {
       )
     )
   )
-  if (rv) {
+  if (all_ok) {
     return(TRUE)
-  } else {
-    return("Not all equal")
   }
+  "Not all equal"
 }
-
-#  assert equality
 
 #' Assert That All Arguments Are Equal
 #'
@@ -112,11 +109,15 @@ check_equal <- function(..., tol = sqrt(.Machine$double.eps)) {
 #' @inheritParams checkmate::assert_numeric
 #'
 #' @export
+#' @rdname check_equal
 #' @examples
 #' assert_equal(1:2, 1:2) # no error
 #' assert_equal(0.01, 0.02, tol = 0.05) # no error
 # nolint start
 assert_equal <- function(..., tol = sqrt(.Machine$double.eps), .var.name = vname(x), add = NULL) {
+  # assert_equal <- makeAssertionFunction(check_equal) fails with error "Error
+  # in `checkmate::makeAssertion(..., res, .var.name, add)`: unused argument
+  # (add)", possibly because of the use of ... in check_equal.
   res <- check_equal(..., tol = tol)
   makeAssertion(list(...), res, .var.name, add)
 }
