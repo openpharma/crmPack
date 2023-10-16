@@ -470,7 +470,7 @@ setMethod("summary",
       doseMostSelected <-
         as.numeric(names(which.max(table(doseSelected))))
       xMostSelected <-
-        matchTolerance(doseMostSelected,
+        match_within_tolerance(doseMostSelected,
           table = doseGrid
         )
 
@@ -588,7 +588,7 @@ setMethod("summary",
 
       ## dose level most often selected as MTD
       xMostSelected <-
-        matchTolerance(start@doseMostSelected,
+        match_within_tolerance(start@doseMostSelected,
           table = doseGrid
         )
 
@@ -683,7 +683,7 @@ setMethod("summary",
 
       ## dose level most often selected as MTD
       xMostSelected <-
-        matchTolerance(start@doseMostSelected,
+        match_within_tolerance(start@doseMostSelected,
           table = doseGrid
         )
 
@@ -1584,7 +1584,7 @@ setMethod("summary",
       # doseRec <- doseMostSelected
 
       xMostSelected <-
-        matchTolerance(doseMostSelected,
+        match_within_tolerance(doseMostSelected,
           table = doseGrid
         )
 
@@ -2467,7 +2467,7 @@ setMethod("summary",
 
       ## ## dose level most often selected as MTD (TDtargetEnd of Trial)
       xMostSelected <-
-        matchTolerance(start@doseMostSelected,
+        match_within_tolerance(start@doseMostSelected,
           table = doseGrid
         )
 

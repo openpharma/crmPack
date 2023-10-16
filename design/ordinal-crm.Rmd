@@ -357,7 +357,7 @@ DataOrdinal <- function(
     doseGrid = doseGrid,
     nObs = length(x),
     nGrid = length(doseGrid),
-    xLevel = matchTolerance(x = x, table = doseGrid),
+    xLevel = match_within_tolerance(x = x, table = doseGrid),
     placebo = placebo,
     yCategories = yCategories
   )
@@ -441,7 +441,7 @@ setMethod(
     n <- length(y)
 
     # Which grid level is the dose?
-    gridLevel <- matchTolerance(x, object@doseGrid)
+    gridLevel <- match_within_tolerance(x, object@doseGrid)
     object@xLevel <- c(object@xLevel, rep(gridLevel, n))
 
     # Add dose.
