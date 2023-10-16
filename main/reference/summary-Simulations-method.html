@@ -39,12 +39,6 @@
 <li class="nav-item">
   <a class="nav-link" href="../news/index.html">Changelog</a>
 </li>
-<!-- start dropdown for versions --> <li class="nav-item dropdown">
-        <a href="#" class="nav-link dropdown-toggle"
-          data-bs-toggle="dropdown" role="button"
-          aria-expanded="false" aria-haspopup="true"
-          id="dropdown-versions">Versions</a> <div class="dropdown-menu" aria-labelledby="dropdown-versions"> <a class="dropdown-item" data-toggle="tooltip" title="" href="https://Roche.github.io/crmPack/main">main</a> </div></li>
-<!-- end dropdown for versions -->
       </ul><form class="form-inline my-2 my-lg-0" role="search">
         <input type="search" class="form-control me-sm-2" aria-label="Toggle navigation" name="search-input" data-search-index="../search.json" id="search-input" placeholder="Search for" autocomplete="off"></form>
 
@@ -184,7 +178,12 @@ computations</p></dd>
 <span class="r-in"><span>  nsim <span class="op">=</span> <span class="fl">1</span>,</span></span>
 <span class="r-in"><span>  seed <span class="op">=</span> <span class="fl">819</span>,</span></span>
 <span class="r-in"><span>  mcmcOptions <span class="op">=</span> <span class="va">options</span>,</span></span>
-<span class="r-in"><span>  parallel <span class="op">=</span> <span class="cn">FALSE</span></span></span>
+<span class="r-in"><span>  parallel <span class="op">=</span> <span class="cn">FALSE</span>,</span></span>
+<span class="r-in"><span>  derive <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span></span></span>
+<span class="r-in"><span>    max_mtd <span class="op">=</span> <span class="va">max</span>,</span></span>
+<span class="r-in"><span>    mean_mtd <span class="op">=</span> <span class="va">mean</span>,</span></span>
+<span class="r-in"><span>    median_mtd <span class="op">=</span> <span class="va">median</span></span></span>
+<span class="r-in"><span>  <span class="op">)</span>,</span></span>
 <span class="r-in"><span><span class="op">)</span><span class="op">)</span><span class="op">[</span><span class="fl">3</span><span class="op">]</span></span></span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co"># Summarize the Results of the Simulations</span></span></span>
@@ -195,16 +194,16 @@ computations</p></dd>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Target dose interval corresponding to this was 19.6, 21.6 </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Intervals are corresponding to 10 and 90 % quantiles</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Number of patients overall : mean 20 (20, 20) </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Number of patients treated above target tox interval : mean 7 (7, 7) </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Proportions of DLTs in the trials : mean 30 % (30 %, 30 %) </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Mean toxicity risks for the patients on active : mean 29 % (29 %, 29 %) </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Doses selected as MTD : mean 20 (20, 20) </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> True toxicity at doses selected : mean 22 % (22 %, 22 %) </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Proportion of trials selecting target MTD: 100 %</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Dose most often selected as MTD: 20 </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Observed toxicity rate at dose most often selected: 17 %</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Fitted toxicity rate at dose most often selected : mean 28 % (28 %, 28 %) </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Number of patients overall : mean 13 (13, 13) </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Number of patients treated above target tox interval : mean 6 (6, 6) </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Proportions of DLTs in the trials : mean 23 % (23 %, 23 %) </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Mean toxicity risks for the patients on active : mean 36 % (36 %, 36 %) </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Doses selected as MTD : mean 25 (25, 25) </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> True toxicity at doses selected : mean 63 % (63 %, 63 %) </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Proportion of trials selecting target MTD: 0 %</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Dose most often selected as MTD: 25 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Observed toxicity rate at dose most often selected: 33 %</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Fitted toxicity rate at dose most often selected : mean 25 % (25 %, 25 %) </span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co"># nolint end</span></span></span>
 </code></pre></div>

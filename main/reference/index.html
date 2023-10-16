@@ -39,12 +39,6 @@
 <li class="nav-item">
   <a class="nav-link" href="../news/index.html">Changelog</a>
 </li>
-<!-- start dropdown for versions --> <li class="nav-item dropdown">
-        <a href="#" class="nav-link dropdown-toggle"
-          data-bs-toggle="dropdown" role="button"
-          aria-expanded="false" aria-haspopup="true"
-          id="dropdown-versions">Versions</a> <div class="dropdown-menu" aria-labelledby="dropdown-versions"> <a class="dropdown-item" data-toggle="tooltip" title="" href="https://Roche.github.io/crmPack/main">main</a> </div></li>
-<!-- end dropdown for versions -->
       </ul><form class="form-inline my-2 my-lg-0" role="search">
         <input type="search" class="form-control me-sm-2" aria-label="Toggle navigation" name="search-input" data-search-index="../search.json" id="search-input" placeholder="Search for" autocomplete="off"></form>
 
@@ -863,6 +857,16 @@ of the function that models dose-biomarker relationship defined in the
           <code><a href="v_design.html">v_rule_design()</a></code> <code><a href="v_design.html">v_design_grouped()</a></code> 
         </dt>
         <dd>Internal Helper Functions for Validation of <code>RuleDesign</code> Objects</dd>
+      </dl><dl><dt>
+          
+          <code><a href="v_general_simulations.html">v_general_simulations()</a></code> <code><a href="v_general_simulations.html">v_simulations()</a></code> <code><a href="v_general_simulations.html">v_dual_simulations()</a></code> <code><a href="v_general_simulations.html">v_da_simulations()</a></code> 
+        </dt>
+        <dd>Internal Helper Functions for Validation of <code>GeneralSimulations</code> Objects</dd>
+      </dl><dl><dt>
+          
+          <code><a href="v_pseudo_simulations.html">v_pseudo_simulations()</a></code> <code><a href="v_pseudo_simulations.html">v_pseudo_dual_simulations()</a></code> <code><a href="v_pseudo_simulations.html">v_pseudo_dual_flex_simulations()</a></code> 
+        </dt>
+        <dd>Internal Helper Functions for Validation of <code>PseudoSimulations</code> Objects</dd>
       </dl></div><div class="section level2">
       <h2 id="custom-checkmate-assertions">Custom Checkmate Assertions<a class="anchor" aria-label="anchor" href="#custom-checkmate-assertions"></a></h2>
       
@@ -1212,6 +1216,16 @@ normal model</dd>
         <dd>Additional Assertions for <code>checkmate</code></dd>
       </dl><dl><dt>
           
+          <code><a href="assert_equal.html">assert_equal()</a></code> 
+        </dt>
+        <dd>Assert That All Arguments Are Equal</dd>
+      </dl><dl><dt>
+          
+          <code><a href="check_equal.html">check_equal()</a></code> 
+        </dt>
+        <dd>Check if All Arguments Are Equal</dd>
+      </dl><dl><dt>
+          
           <code><a href="crmPackExample.html">crmPackExample()</a></code> 
         </dt>
         <dd>Open the example pdf for crmPack</dd>
@@ -1262,7 +1276,7 @@ quantiles for the <code>PEM</code> curve. If hazard=TRUE,</dd>
         <dd>Shorthand for logit function</dd>
       </dl><dl><dt>
           
-          <code><a href="matchTolerance.html">matchTolerance()</a></code> 
+          <code><a href="match_within_tolerance.html">match_within_tolerance()</a></code> 
         </dt>
         <dd>Helper function for value matching with tolerance</dd>
       </dl><dl><dt>

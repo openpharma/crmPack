@@ -421,10 +421,16 @@
     <loc>https://roche.github.io/crmPack/reference/approximate.html</loc>
   </url>
   <url>
+    <loc>https://roche.github.io/crmPack/reference/assert_equal.html</loc>
+  </url>
+  <url>
     <loc>https://roche.github.io/crmPack/reference/assertions.html</loc>
   </url>
   <url>
     <loc>https://roche.github.io/crmPack/reference/biomarker.html</loc>
+  </url>
+  <url>
+    <loc>https://roche.github.io/crmPack/reference/check_equal.html</loc>
   </url>
   <url>
     <loc>https://roche.github.io/crmPack/reference/check_length.html</loc>
@@ -506,6 +512,9 @@
   </url>
   <url>
     <loc>https://roche.github.io/crmPack/reference/h_all_equivalent.html</loc>
+  </url>
+  <url>
+    <loc>https://roche.github.io/crmPack/reference/h_barplot_percentages.html</loc>
   </url>
   <url>
     <loc>https://roche.github.io/crmPack/reference/h_blind_plot_data.html</loc>
@@ -643,7 +652,7 @@
     <loc>https://roche.github.io/crmPack/reference/logit.html</loc>
   </url>
   <url>
-    <loc>https://roche.github.io/crmPack/reference/matchTolerance.html</loc>
+    <loc>https://roche.github.io/crmPack/reference/match_within_tolerance.html</loc>
   </url>
   <url>
     <loc>https://roche.github.io/crmPack/reference/maxDose.html</loc>
@@ -656,9 +665,6 @@
   </url>
   <url>
     <loc>https://roche.github.io/crmPack/reference/minSize.html</loc>
-  </url>
-  <url>
-    <loc>https://roche.github.io/crmPack/reference/myBarplot.html</loc>
   </url>
   <url>
     <loc>https://roche.github.io/crmPack/reference/myBayesLogit.html</loc>
@@ -874,6 +880,9 @@
     <loc>https://roche.github.io/crmPack/reference/v_design.html</loc>
   </url>
   <url>
+    <loc>https://roche.github.io/crmPack/reference/v_general_simulations.html</loc>
+  </url>
+  <url>
     <loc>https://roche.github.io/crmPack/reference/v_increments.html</loc>
   </url>
   <url>
@@ -887,6 +896,9 @@
   </url>
   <url>
     <loc>https://roche.github.io/crmPack/reference/v_next_best.html</loc>
+  </url>
+  <url>
+    <loc>https://roche.github.io/crmPack/reference/v_pseudo_simulations.html</loc>
   </url>
   <url>
     <loc>https://roche.github.io/crmPack/reference/v_safety_window.html</loc>

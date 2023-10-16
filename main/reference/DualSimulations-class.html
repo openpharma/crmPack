@@ -47,12 +47,6 @@ sigma2W and rho estimates."><meta property="og:image" content="https://roche.git
 <li class="nav-item">
   <a class="nav-link" href="../news/index.html">Changelog</a>
 </li>
-<!-- start dropdown for versions --> <li class="nav-item dropdown">
-        <a href="#" class="nav-link dropdown-toggle"
-          data-bs-toggle="dropdown" role="button"
-          aria-expanded="false" aria-haspopup="true"
-          id="dropdown-versions">Versions</a> <div class="dropdown-menu" aria-labelledby="dropdown-versions"> <a class="dropdown-item" data-toggle="tooltip" title="" href="https://Roche.github.io/crmPack/main">main</a> </div></li>
-<!-- end dropdown for versions -->
       </ul><form class="form-inline my-2 my-lg-0" role="search">
         <input type="search" class="form-control me-sm-2" aria-label="Toggle navigation" name="search-input" data-search-index="../search.json" id="search-input" placeholder="Search for" autocomplete="off"></form>
 
@@ -154,6 +148,8 @@ it contains additional slots to capture the dose-biomarker <code>fits</code>, an
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="va">stop_reasons</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span><span class="st">"A"</span>, <span class="st">"B"</span><span class="op">)</span></span></span>
 <span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="va">additional_stats</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>a <span class="op">=</span> <span class="fl">1</span>, b <span class="op">=</span> <span class="fl">1</span><span class="op">)</span></span></span>
+<span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="va">dual_simulations_obj</span> <span class="op">&lt;-</span> <span class="fu">DualSimulations</span><span class="op">(</span></span></span>
 <span class="r-in"><span>  rho_est <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">0.25</span>, <span class="fl">0.35</span><span class="op">)</span>,</span></span>
 <span class="r-in"><span>  sigma2w_est <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">0.15</span>, <span class="fl">0.25</span><span class="op">)</span>,</span></span>
@@ -161,6 +157,7 @@ it contains additional slots to capture the dose-biomarker <code>fits</code>, an
 <span class="r-in"><span>  fit <span class="op">=</span> <span class="va">fit</span>,</span></span>
 <span class="r-in"><span>  stop_report <span class="op">=</span> <span class="va">stop_report</span>,</span></span>
 <span class="r-in"><span>  stop_reasons <span class="op">=</span> <span class="va">stop_reasons</span>,</span></span>
+<span class="r-in"><span>  additional_stats <span class="op">=</span> <span class="va">additional_stats</span>,</span></span>
 <span class="r-in"><span>  data <span class="op">=</span> <span class="va">data_list</span>,</span></span>
 <span class="r-in"><span>  doses <span class="op">=</span> <span class="va">doses</span>,</span></span>
 <span class="r-in"><span>  seed <span class="op">=</span> <span class="va">seed</span></span></span>
