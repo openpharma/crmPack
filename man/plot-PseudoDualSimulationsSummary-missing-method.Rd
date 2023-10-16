@@ -75,6 +75,8 @@ my_size <- CohortSizeConst(size = 3)
 # Stop when 10 subjects are treated (for illustration only).
 my_stopping <- StoppingMinPatients(nPatients = 10)
 
+## Now specified the design with all the above information and starting with a dose of 25
+
 # Specify the design. (For details please refer to the 'DualResponsesDesign' example.)
 my_design <- DualResponsesDesign(
   nextBest = my_next_best,
@@ -82,7 +84,7 @@ my_design <- DualResponsesDesign(
   eff_model = eff_model,
   stopping = my_stopping,
   increments = my_increments,
-  cohortSize = my_size,
+  cohort_size = my_size,
   data = emptydata,
   startingDose = 25
 )
@@ -132,7 +134,7 @@ my_next_best <- NextBestMaxGainSamples(
 # Specify the design.
 my_design <- DualResponsesSamplesDesign(
   nextBest = my_next_best,
-  cohortSize = my_size,
+  cohort_size = my_size,
   startingDose = 25,
   model = dle_model,
   eff_model = eff_model,
@@ -157,6 +159,7 @@ my_sim <- simulate(
   parallel = FALSE
 )
 
+
 # Generate a summary of the simulations.
 my_sum <- summary(
   my_sim,
@@ -180,7 +183,7 @@ eff_model <- EffFlexi(
 # Specify the design.
 my_design <- DualResponsesSamplesDesign(
   nextBest = my_next_best,
-  cohortSize = my_size,
+  cohort_size = my_size,
   startingDose = 25,
   model = dle_model,
   eff_model = eff_model,

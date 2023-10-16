@@ -1,7 +1,8 @@
 #' @include helpers.R
 #' @include Data-class.R
+#' @include Simulations-validity.R
+#' @include CrmPackClass-class.R
 NULL
-
 
 # GeneralSimulations ----
 
@@ -52,23 +53,8 @@ NULL
       doses = c(1, 2),
       seed = 1L
     ),
-    validity =
-      function(object) {
-        o <- Validate()
-
-        nSims <- length(object@data)
-
-        o$check(
-          all(sapply(object@data, is, "Data")),
-          "all data elements must be Data objects"
-        )
-        o$check(
-          identical(length(object@doses), nSims),
-          "doses must have same length as the data list"
-        )
-
-        o$result()
-      }
+    contains = "CrmPackClass",
+    validity = v_general_simulations
   )
 
 ## constructor ----
@@ -84,164 +70,147 @@ NULL
 GeneralSimulations <- function(data,
                                doses,
                                seed) {
+  assert_integerish(seed)
   .GeneralSimulations(
     data = data,
     doses = doses,
-    seed = safeInteger(seed)
+    seed = as.integer(seed)
   )
 }
 
-# nolint start
-##' Class for the simulations output from model based designs
-##'
-##' This class captures the trial simulations from model based designs.
-##' Additional slots fit and stopReasons compared to the general class
-##' \code{\linkS4class{GeneralSimulations}}.
-##'
-##' @slot fit list with the final fits
-##' @slot stopReasons list of stopping reasons for each simulation run
-##'
-##' @export
-##' @keywords classes
+# Simulations ----
+
+## class ----
+
+#' `Simulations`
+#'
+#' @description `r lifecycle::badge("stable")`
+#'
+#' This class captures the trial simulations from model based designs.
+#' Additional slots `fit`, `stop_reasons`, `stop_report`,`additional_stats` compared to
+#' the general class [`GeneralSimulations`].
+#'
+#' @slot fit (`list`)\cr final fits
+#' @slot stop_reasons (`list`)\cr stopping reasons for each simulation run
+#' @slot stop_report matrix of stopping rule outcomes
+#' @slot additional_stats list of additional statistical summary
+#' @aliases Simulations
+#' @export
 .Simulations <-
   setClass(
     Class = "Simulations",
-    representation(
+    slots = c(
       fit = "list",
-      stopReasons = "list"
+      stop_report = "matrix",
+      stop_reasons = "list",
+      additional_stats = "list"
     ),
-    ## note: this prototype is put together with the prototype
-    ## for GeneralSimulations
-    prototype(
+    prototype = prototype(
       fit =
         list(
           c(0.1, 0.2),
           c(0.1, 0.2)
         ),
-      stopReasons =
-        list("A", "A")
+      stop_report = matrix(TRUE, nrow = 2),
+      stop_reasons =
+        list("A", "A"),
+      additional_stats =
+        list(a = 1, b = 1)
     ),
     contains = "GeneralSimulations",
-    validity =
-      function(object) {
-        o <- Validate()
-
-        nSims <- length(object@data)
-
-        o$check(
-          identical(length(object@fit), nSims),
-          "fit must have same length as data"
-        )
-        o$check(
-          identical(length(object@stopReasons), nSims),
-          "stopReasons must have same length as data"
-        )
-
-        o$result()
-      }
+    validity = v_simulations
   )
-validObject(.Simulations())
 
+## constructor ----
 
-##' Initialization function for the "Simulations" class
-##'
-##' @param fit see \code{\linkS4class{Simulations}}
-##' @param stopReasons see \code{\linkS4class{Simulations}}
-##' @param \dots additional parameters from \code{\link{GeneralSimulations}}
-##' @return the \code{\linkS4class{Simulations}} object
-##' @export
-##'
-##' @keywords methods
+#' @rdname Simulations-class
+#'
+#' @param fit (`list`)\cr see slot definition.
+#' @param stop_reasons (`list`)\cr see slot definition.
+#' @param stop_report see [`Simulations`]
+#' @param additional_stats (`list`)\cr see slot definition.
+#' @param \dots additional parameters from [`GeneralSimulations`]
+#'
+#' @example examples/Simulations-class-Simulations.R
+#' @export
 Simulations <- function(fit,
-                        stopReasons,
+                        stop_reasons,
+                        stop_report,
+                        additional_stats,
                         ...) {
   start <- GeneralSimulations(...)
   .Simulations(start,
     fit = fit,
-    stopReasons = stopReasons
+    stop_report = stop_report,
+    stop_reasons = stop_reasons,
+    additional_stats = additional_stats
   )
 }
 
+# DualSimulations ----
 
-##' Class for the simulations output from dual-endpoint model based designs
-##'
-##' This class captures the trial simulations from dual-endpoint model based
-##' designs. In comparison to the parent class \code{\linkS4class{Simulations}},
-##' it contains additional slots to capture the dose-biomarker fits, and the
-##' sigma2W and rho estimates.
-##'
-##' @slot rhoEst the vector of final posterior median rho estimates
-##' @slot sigma2West the vector of final posterior median sigma2W estimates
-##' @slot fitBiomarker list with the final dose-biomarker curve fits
-##'
-##' @export
-##' @keywords classes
+## class ----
+
+#' `DualSimulations`
+#'
+#' @description `r lifecycle::badge("stable")`
+#'
+#' This class captures the trial simulations from dual-endpoint model based
+#' designs. In comparison to the parent class [`Simulations`],
+#' it contains additional slots to capture the dose-biomarker `fits`, and the
+#' `sigma2W` and `rho` estimates.
+#'
+#' @slot rho_est (`numeric`)\cr vector of final posterior median rho estimates
+#' @slot sigma2w_est (`numeric`)\cr vector of final posterior median sigma2W estimates
+#' @slot fit_biomarker (`list`)\cr with the final dose-biomarker curve fits
+#' @aliases DualSimulations
+#' @export
 .DualSimulations <-
   setClass(
     Class = "DualSimulations",
-    representation(
-      rhoEst = "numeric",
-      sigma2West = "numeric",
-      fitBiomarker = "list"
+    slots = c(
+      rho_est = "numeric",
+      sigma2w_est = "numeric",
+      fit_biomarker = "list"
     ),
-    prototype(
-      rhoEst = c(0.2, 0.3),
-      sigma2West = c(0.2, 0.3),
-      fitBiomarker =
+    prototype = prototype(
+      rho_est = c(0.2, 0.3),
+      sigma2w_est = c(0.2, 0.3),
+      fit_biomarker =
         list(
           c(0.1, 0.2),
           c(0.1, 0.2)
         )
     ),
     contains = "Simulations",
-    validity =
-      function(object) {
-        o <- Validate()
-
-        nSims <- length(object@data)
-
-        o$check(
-          identical(length(object@fitBiomarker), nSims),
-          "fitBiomarker list has to have same length as data"
-        )
-        o$check(
-          identical(length(object@rhoEst), nSims),
-          "rhoEst vector has to have same length as data"
-        )
-        o$check(
-          identical(length(object@sigma2West), nSims),
-          "sigma2West has to have same length as data"
-        )
-
-        o$result()
-      }
+    validity = v_dual_simulations
   )
-validObject(.DualSimulations())
 
 
-##' Initialization function for "DualSimulations"
-##'
-##' @param rhoEst see \code{\linkS4class{DualSimulations}}
-##' @param sigma2West see \code{\linkS4class{DualSimulations}}
-##' @param fitBiomarker see \code{\linkS4class{DualSimulations}}
-##' @param \dots additional parameters from \code{\link{Simulations}}
-##' @return the \code{\linkS4class{DualSimulations}} object
-##'
-##' @export
-##' @keywords methods
-DualSimulations <- function(rhoEst,
-                            sigma2West,
-                            fitBiomarker,
+## constructor ----
+
+#' @rdname DualSimulations-class
+#'
+#' @param rho_est (`numeric`)\cr see [`DualSimulations`]
+#' @param sigma2w_est (`numeric`)\cr [`DualSimulations`]
+#' @param fit_biomarker (`list`)\cr see [`DualSimulations`]
+#' @param \dots additional parameters from [`Simulations`]
+#'
+#' @example examples/Simulations-class-DualSimulations.R
+#' @export
+DualSimulations <- function(rho_est,
+                            sigma2w_est,
+                            fit_biomarker,
                             ...) {
   start <- Simulations(...)
   .DualSimulations(start,
-    rhoEst = rhoEst,
-    sigma2West = sigma2West,
-    fitBiomarker = fitBiomarker
+    rho_est = rho_est,
+    sigma2w_est = sigma2w_est,
+    fit_biomarker = fit_biomarker
   )
 }
 
-
+# nolint start
 ##' Class for the summary of general simulations output
 ##'
 ##' Note that objects should not be created by users, therefore no
@@ -296,6 +265,8 @@ DualSimulations <- function(rhoEst,
 ##' Note that objects should not be created by users, therefore no
 ##' initialization function is provided for this class.
 ##'
+##' @slot stop_report matrix of stopping rule outcomes
+##' @slot additional_stats list of additional statistical summary
 ##' @slot fitAtDoseMostSelected fitted toxicity rate at dose most often selected
 ##' @slot meanFit list with the average, lower (2.5%) and upper (97.5%)
 ##' quantiles of the mean fitted toxicity at each dose level
@@ -306,7 +277,9 @@ DualSimulations <- function(rhoEst,
   setClass(
     Class = "SimulationsSummary",
     representation(
+      stop_report = "matrix",
       fitAtDoseMostSelected = "numeric",
+      additional_stats = "list",
       meanFit = "list"
     ),
     contains = "GeneralSimulationsSummary"
@@ -402,18 +375,7 @@ DualSimulations <- function(rhoEst,
         list("A", "A")
     ),
     contains = "GeneralSimulations",
-    validity =
-      function(object) {
-        o <- Validate()
-
-        nSims <- length(object@data)
-        o$check(
-          identical(length(object@stopReasons), nSims),
-          "stopReasons must have same length as data"
-        )
-
-        o$result()
-      }
+    validity = v_pseudo_simulations
   )
 validObject(.PseudoSimulations())
 
@@ -516,16 +478,7 @@ PseudoSimulations <- function(fit,
       sigma2est = c(0.001, 0.002)
     ),
     contains = "PseudoSimulations",
-    validity =
-      function(object) {
-        o <- Validate()
-        nSims <- length(object@data)
-        o$check(
-          identical(length(object@sigma2est), nSims),
-          "sigma2est has to have same length as data"
-        )
-        o$result()
-      }
+    validity = v_pseudo_dual_simulations
   )
 
 validObject(.PseudoDualSimulations())
@@ -587,16 +540,7 @@ PseudoDualSimulations <- function(fitEff,
     representation(sigma2betaWest = "numeric"),
     prototype(sigma2betaWest = c(0.001, 0.002)),
     contains = "PseudoDualSimulations",
-    validity =
-      function(object) {
-        o <- Validate()
-        nSims <- length(object@data)
-        o$check(
-          identical(length(object@sigma2betaWest), nSims),
-          "sigma2betaWest has to have same length as data"
-        )
-        o$result()
-      }
+    validity = v_pseudo_dual_flex_simulations
   )
 
 validObject(.PseudoDualFlexiSimulations())
@@ -762,19 +706,7 @@ PseudoDualFlexiSimulations <- function(sigma2betaWest,
     representation(trialduration = "numeric"),
     prototype(trialduration = rep(0, 2)),
     contains = "Simulations",
-    validity =
-      function(object) {
-        o <- Validate()
-
-        nSims <- length(object@data)
-
-        o$check(
-          identical(length(object@trialduration), nSims),
-          "trialduration vector has to have same length as data"
-        )
-
-        o$result()
-      }
+    validity = v_da_simulations
   )
 validObject(.DASimulations())
 

@@ -33,7 +33,6 @@ individual increments is taken to give the final maximum increment.
 Typically, end users will not use the \code{.DefaultIncrementsMin()} function.
 }
 \examples{
-
 # As example, here we are combining 2 different increment rules.
 
 # The first rule is the following:
@@ -41,7 +40,7 @@ Typically, end users will not use the \code{.DefaultIncrementsMin()} function.
 # or maximum increasing the dose by 1.33 if 1 or 2 DLTs were observed at the current dose
 # or maximum increasing the dose by 1.22 if 3 or more DLTs were observed.
 my_increments_1 <- IncrementsRelativeDLT(
-  dlt_intervals = c(0, 1, 3),
+  intervals = c(0, 1, 3),
   increments = c(1, 0.33, 0.2)
 )
 

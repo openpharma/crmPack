@@ -8,9 +8,12 @@
 \alias{.DefaultStoppingHighestDose}
 \title{\code{StoppingHighestDose}}
 \usage{
-StoppingHighestDose()
+StoppingHighestDose(report_label = NA_character_)
 
 .DefaultStoppingHighestDose()
+}
+\arguments{
+\item{report_label}{(\code{string} or \code{NA})\cr see slot definition.}
 }
 \description{
 \ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#experimental}{\figure{lifecycle-experimental.svg}{options: alt='[Experimental]'}}}{\strong{[Experimental]}}

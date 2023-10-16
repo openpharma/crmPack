@@ -41,12 +41,29 @@ my_next_best <- NextBestDualEndpoint(
 )
 
 # Choose the rule for the cohort-size
+mySize1 <- CohortSizeRange(
+  intervals = c(0, 30),
+  cohort_size = c(1, 3)
+)
+mySize2 <- CohortSizeDLT(
+  intervals = c(0, 1),
+  cohort_size = c(1, 3)
+)
+mySize <- maxSize(mySize1, mySize2)
+
+# Choose the rule for stopping
+myStopping4 <- StoppingTargetBiomarker(
+  target = c(0.9, 1),
+  prob = 0.5
+)
+myStopping <- myStopping4 | StoppingMinPatients(40)
+
 my_size1 <- CohortSizeRange(
   intervals = c(0, 30),
   cohort_size = c(1, 3)
 )
 my_size2 <- CohortSizeDLT(
-  dlt_intervals = c(0, 1),
+  intervals = c(0, 1),
   cohort_size = c(1, 3)
 )
 my_size <- maxSize(my_size1, my_size2)
@@ -65,13 +82,14 @@ my_increments <- IncrementsRelative(
 )
 
 # Initialize the design
+
 my_design <- DualDesign(
   model = my_model,
   data = emptydata,
   nextBest = my_next_best,
   stopping = my_stopping,
   increments = my_increments,
-  cohortSize = CohortSizeConst(3),
+  cohort_size = CohortSizeConst(3),
   startingDose = 3
 )
 
@@ -90,11 +108,10 @@ true_tox <- function(dose) {
   pnorm((dose - 60) / 10)
 }
 
-# Draw the TRUE profiles.
+# Draw the TRUE profiles
 par(mfrow = c(1, 2))
 curve(true_tox(x), from = 0, to = 80)
 curve(true_biomarker(x), from = 0, to = 80)
-
 
 # Run the simulation on the desired design.
 # We only generate 1 trial outcome here for illustration, for the actual study.

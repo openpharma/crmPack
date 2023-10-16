@@ -14,7 +14,7 @@ my_data <- Data(
 #  - only increasing the dose by 33% if 1 or 2 DLTs were observed in current cohort,
 #  - only increasing the dose by 20% if at least 3 DLTs were observed in current cohort.
 my_increments <- IncrementsRelativeDLTCurrent(
-  dlt_intervals = c(0, 1, 3),
+  intervals = c(0, 1, 3),
   increments = c(1, 0.33, 0.2)
 )
 

@@ -37,7 +37,7 @@ BugReports: https://github.com/roche/crmPack/issues
 Depends:
     ggplot2 (>= 2.0.0),
     graphics,
-    R (>= 3.0.0)
+    R (>= 3.5.0)
 Imports:
     checkmate (>= 2.2.0),
     futile.logger,
@@ -58,6 +58,7 @@ Imports:
     kableExtra
 Suggests:
     bookdown,
+    broom,
     covr,
     data.tree,
     dplyr,
@@ -77,9 +78,11 @@ LazyLoad: yes
 Roxygen: list(markdown = TRUE)
 RoxygenNote: 7.2.3
 Collate:
+    'CrmPackClass-class.R'
     'Data-validity.R'
     'helpers.R'
     'Data-class.R'
+    'helpers_data.R'
     'Data-methods.R'
     'Rules-validity.R'
     'Rules-class.R'
@@ -96,6 +99,7 @@ Collate:
     'Samples-validity.R'
     'Samples-class.R'
     'mcmc.R'
+    'Simulations-validity.R'
     'Simulations-class.R'
     'helpers_rules.R'
     'Model-methods.R'
@@ -107,7 +111,9 @@ Collate:
     'checkmate.R'
     'crmPack-package.R'
     'helpers_covr.R'
+    'helpers_design.R'
     'helpers_model.R'
+    'helpers_simulations.R'
     'logger.R'
     'utils-pipe.R'
     'utils.R'

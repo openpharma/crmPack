@@ -8,12 +8,12 @@
 \alias{.DefaultCohortSizeParts}
 \title{\code{CohortSizeParts}}
 \usage{
-CohortSizeParts(sizes)
+CohortSizeParts(cohort_sizes)
 
 .DefaultCohortSizeParts()
 }
 \arguments{
-\item{sizes}{(\code{numeric})\cr see slot definition.}
+\item{cohort_sizes}{(\code{numeric})\cr see slot definition.}
 }
 \description{
 \ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#stable}{\figure{lifecycle-stable.svg}{options: alt='[Stable]'}}}{\strong{[Stable]}}
@@ -25,7 +25,7 @@ objects.
 \section{Slots}{
 
 \describe{
-\item{\code{sizes}}{(\code{integer})\cr a vector of length two with two sizes, one for
+\item{\code{cohort_sizes}}{(\code{integer})\cr a vector of length two with two sizes, one for
 part 1, and one for part 2 respectively.}
 }}
 
@@ -33,7 +33,6 @@ part 1, and one for part 2 respectively.}
 Typically, end users will not use the \code{.DefaultCohortSizeParts()} function.
 }
 \examples{
-
 # Part 1 cohort size = 1, Part 2 cohort size = 3.
-my_size <- CohortSizeParts(sizes = c(1, 3))
+my_size <- CohortSizeParts(cohort_sizes = c(1, 3))
 }

@@ -249,8 +249,8 @@ $$\Sigma=
    `r round(model@params@cov[2, 1], 2)` & `r round(model@params@cov[2, 2], 2)`
  \end{smallmatrix}\right)$$
 and will approximately have 5% probability each for the DLT
-rate to exceed 10% (`threshmin` argument) at the 25~mg dose and to be below 20%
-(`threshmax`) at the 300~mg dose.
+rate to exceed 10% (`threshmin` argument) at the 25&nbsp;mg dose and to be below 20%
+(`threshmax`) at the 300&nbsp;mg dose.
 
 **Data object definition and visualization** In this simple case of a univariate dose $x$ resulting in binary DLT
 observations $y$, the `S4` class `Data` can be used. Objects of this class
@@ -374,12 +374,12 @@ mySizePL <- CohortSizeConst(1)
 design <- Design(
   model = model, nextBest = myNextBest,
   stopping = myStopping, increments = myIncrements,
-  cohortSize = mySize, pl_cohort_size = mySizePL,
+  cohort_size = mySize, pl_cohort_size = mySizePL,
   data = emptydata, startingDose = 25
 )
 ```
-We can then start by looking at the single trial operating characteristics of the dose escalation design with the function `examine`, which generates a data frame showing the beginning of several hypothetical trial courses under the design. Assuming no DLTs have been seen until a certain dose, then the consequences of different number of DLTs being observed at this dose are shown. For example, if we observe 3 DLTs at the starting dose of 25~mg, we would
-need to stop the trial, while we would enroll another cohort at the same dose level in case of 2 DLTs. In the last rows of the output we see that if no DLTs were observed before the 250~mg cohort, the maximum considered dose of 300~mg dose can be reached in the next cohort if also no DLTs are observed at 250~mg. If 1, 2 or 3 DLTs are observed, the next dose is recommended as 225, 175 and 150~mg, respectively.
+We can then start by looking at the single trial operating characteristics of the dose escalation design with the function `examine`, which generates a data frame showing the beginning of several hypothetical trial courses under the design. Assuming no DLTs have been seen until a certain dose, then the consequences of different number of DLTs being observed at this dose are shown. For example, if we observe 3 DLTs at the starting dose of 25&nbsp;mg, we would
+need to stop the trial, while we would enroll another cohort at the same dose level in case of 2 DLTs. In the last rows of the output we see that if no DLTs were observed before the 250&nbsp;mg cohort, the maximum considered dose of 300&nbsp;mg dose can be reached in the next cohort if also no DLTs are observed at 250&nbsp;mg. If 1, 2 or 3 DLTs are observed, the next dose is recommended as 225, 175 and 150&nbsp;mg, respectively.
 ```{r design-examine, abbreviate=5}
 set.seed(23)
 examine(design, mcmcOptions = options)
@@ -457,7 +457,7 @@ For both the safety and efficacy models, the prior will be expressed in form of 
 
 **Model classes** The `ModelPseudo` class contains all model classes where the priors are specified in terms of pseudo data, with subclasses for safety (`ModelTox`) and efficacy (`ModelEff`).
 
-Coming back to our example study, the pseudo data for the safety prior assumes that 3 subjects each are treated at the lowest (25~mg) and the highest (300~mg) dose level, with 1.05 and 1.8
+Coming back to our example study, the pseudo data for the safety prior assumes that 3 subjects each are treated at the lowest (25&nbsp;mg) and the highest (300&nbsp;mg) dose level, with 1.05 and 1.8
 DLTs being observed at these two dose levels, respectively. This corresponds to prior
 means of 0.35 and 0.6 for the DLT probabilities. We implement
 model @\eqref{eq:LogisticLogNormal} with this pseudo data prior as follows:
@@ -530,7 +530,7 @@ myStopping4 <- StoppingMaxGainCIRatio(
 myStoppingDual <- myStopping1 | myStopping4
 ```
 This stops the trial when 30 patients are reached, or when the ratio of the upper and lower confidence interval bounds around the dose recommendation is less
-than~`r myStopping4@target_ratio`.
+than&nbsp;`r myStopping4@target_ratio`.
 
 **Simulations** To simulate the operating characteristics, first a design has to be built:
 ```{r design}
@@ -539,7 +539,7 @@ design2 <- DualResponsesDesign(
   eff_model = Effmodel, data = emptydata2,
   stopping = myStoppingDual,
   increments = myIncrements,
-  cohortSize = mySize, startingDose = 25
+  cohort_size = mySize, startingDose = 25
 )
 ```
 Note that an additional slot for the efficacy model is included in this design class. We can then specify the scenario for the simulation, by defining the true DLT and efficacy curves that we will be using:
@@ -718,7 +718,7 @@ setMethod(
     nextBest = "NextBestMinDist",
     doselimit = "numeric",
     samples = "Samples",
-    model = "GeneralModel",
+    model = "OneParExp",
     data = "Data"
   ),
   def = function(nextBest, doselimit, samples, model, data, ...) {
@@ -745,13 +745,11 @@ value. Immediately we can now use this rule in order to obtain the next dose
 recommendation, e.g., after specifying a target dose of 30%:
 ```{r newNextBest-try}
 newMyNextBest <- NextBestMinDist(target = 0.3)
-(newNextDoseVal <- nextBest(
-  newMyNextBest, nextMaxDose,
-  newSamples, newModel, data
-)$value)
+newNextDoseVal <- nextBest(newMyNextBest, nextMaxDose, newSamples, newModel, data)$value
+newNextDoseVal
 ```
-So using this CRM, we could escalate to `{r newNextDoseVal}~mg, instead
-of just 100~mg above.
+So using this CRM, we could escalate to `r newNextDoseVal`&nbsp;mg, instead
+of just 100&nbsp;mg above.
 
 **Using the new functionality** These were the only necessary additions
 of code that we needed to implement the one-parameter CRM with a greedy next

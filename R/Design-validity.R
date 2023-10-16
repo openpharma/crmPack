@@ -27,3 +27,19 @@ v_rule_design <- function(object) {
   )
   v$result()
 }
+
+
+#' @describeIn v_design validates that the [`DesignGrouped`] object
+#'   contains valid flags.
+v_design_grouped <- function(object) {
+  v <- Validate()
+  v$check(
+    test_flag(object@first_cohort_mono_only),
+    "first_cohort_mono_only must be a flag"
+  )
+  v$check(
+    test_flag(object@same_dose),
+    "same_dose must be a flag"
+  )
+  v$result()
+}
