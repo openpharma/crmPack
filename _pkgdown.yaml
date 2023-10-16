@@ -406,6 +406,8 @@ reference:
       - SimulationsSummary-class
       - approximate
       - assertions
+      - assert_equal
+      - check_equal
       - crmPackExample
       - crmPackHelp
       - examine
@@ -415,7 +417,7 @@ reference:
       - get,Samples,character-method
       - getMinInfBeta
       - logit
-      - matchTolerance
+      - match_within_tolerance
       - maxSize
       - minSize
       - or-Stopping-Stopping

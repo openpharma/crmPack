@@ -2591,7 +2591,7 @@ EffFlexi <- function(eff,
   )
 
   x <- c(eff_dose, getEff(data, no_dlt = TRUE)$x_no_dlt)
-  x_level <- matchTolerance(x, data@doseGrid)
+  x_level <- match_within_tolerance(x, data@doseGrid)
   X <- model.matrix(~ -1L + factor(x_level, levels = seq_len(data@nGrid)))
   X <- matrix(as.integer(X), ncol = ncol(X)) # To remove some obsolete attributes.
 
