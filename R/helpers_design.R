@@ -75,7 +75,7 @@ get_result_list <- function(
   } else {
     # Process all simulations.
     cores <- min(
-      safeInteger(n_cores),
+      as.integer(n_cores),
       parallelly::availableCores()
     )
 

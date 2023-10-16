@@ -1,4 +1,5 @@
 # Version 1.0.9000.9133
+* Removed `multiplot` function.  Use Please use equivalent functionality in other packages, such as `cowplot` or `ggpubr`.
 * Added new `DataGrouped` and `DesignGrouped` classes with corresponding model `LogisticLogNormalGrouped` to support simultaneous dose escalation with monotherapy and combination therapy arms.
 * Created the `CrmPackClass` class as the ultimate ancestor of all other 
 `crmPack` classes to allow identification of crmPack classes and simpler 
@@ -58,6 +59,8 @@ usable instances of all concrete subclasses of `Increments`, `Model`, `NextBest`
 * Include rolling CRM design, which was previously only available in a separate
   GitHub branch.
 * Additional authors and change of maintainer.
+* Included 'additional_stats' to add reporting of additional parameters to method simulate to summarize MTD.
+* 'report_label' can be added to stopping rules for individual or combined stopping rule reporting.
 
 # Version 1.0.0
 

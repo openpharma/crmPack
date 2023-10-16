@@ -27,6 +27,8 @@ stop_report <- matrix(c(TRUE, FALSE), nrow = 2)
 
 stop_reasons <- list("A", "B")
 
+additional_stats <- list(a = 1, b = 1)
+
 dual_simulations_obj <- DualSimulations(
   rho_est = c(0.25, 0.35),
   sigma2w_est = c(0.15, 0.25),
@@ -34,6 +36,7 @@ dual_simulations_obj <- DualSimulations(
   fit = fit,
   stop_report = stop_report,
   stop_reasons = stop_reasons,
+  additional_stats = additional_stats,
   data = data_list,
   doses = doses,
   seed = seed

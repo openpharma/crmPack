@@ -38,6 +38,9 @@ NULL
 ##' @param nCores how many cores should be used for parallel computing?
 ##' Defaults to the number of cores on the machine, maximum 5.
 ##' @param \dots not used
+##' @param derive a named list of functions which derives statistics, based on the
+##' vector of posterior MTD samples. Each list element must therefore accept
+##' one and only one argument, which is a numeric vector, and return a number.
 ##'
 ##' @return an object of class \code{\linkS4class{Simulations}}
 ##'
@@ -57,10 +60,8 @@ setMethod("simulate",
              truth, args = NULL, firstSeparate = FALSE,
              mcmcOptions = McmcOptions(),
              parallel = FALSE, nCores =
-               min(parallel::detectCores(), 5L),
+               min(parallel::detectCores(), 5), derive = list(),
              ...) {
-      nsim <- safeInteger(nsim)
-
       ## checks and extracts
       assert_function(truth)
       assert_flag(firstSeparate)
@@ -76,7 +77,7 @@ setMethod("simulate",
 
       ## from this,
       ## generate the individual seeds for the simulation runs
-      simSeeds <- sample.int(n = 2147483647, size = nsim)
+      simSeeds <- sample.int(n = 2147483647, size = as.integer(nsim))
 
       ## the function to produce the run a single simulation
       ## with index "iterSim"
@@ -261,6 +262,18 @@ setMethod("simulate",
           data = thisData
         )
 
+        # Get the MTD estimate from the samples.
+
+        target_dose_samples <- dose(
+          mean(object@nextBest@target),
+          model = object@model,
+          samples = thisSamples
+        )
+
+        # Create a function for additional statistical summary.
+
+        additional_stats <- lapply(derive, function(f) f(target_dose_samples))
+
         ## return the results
         thisResult <-
           list(
@@ -275,7 +288,8 @@ setMethod("simulate",
                 stopit,
                 "message"
               ),
-            report_results = stopit_results
+            report_results = stopit_results,
+            additional_stats = additional_stats
           )
         return(thisResult)
       }
@@ -315,6 +329,9 @@ setMethod("simulate",
       stopResults <- lapply(resultList, "[[", "report_results")
       stop_matrix <- as.matrix(do.call(rbind, stopResults))
 
+      # Result list of additional statistical summary.
+      additional_stats <- lapply(resultList, "[[", "additional_stats")
+
       ## return the results in the Simulations class object
       ret <- Simulations(
         data = dataList,
@@ -322,6 +339,7 @@ setMethod("simulate",
         fit = fitList,
         stop_report = stop_matrix,
         stop_reasons = stopReasons,
+        additional_stats = additional_stats,
         seed = RNGstate
       )
 
@@ -370,8 +388,6 @@ setMethod("simulate",
              nCores =
                min(parallel::detectCores(), 5L),
              ...) {
-      nsim <- safeInteger(nsim)
-
       ## checks and extracts
       assert_function(truth)
       assert_count(nsim, positive = TRUE)
@@ -386,7 +402,7 @@ setMethod("simulate",
 
       ## from this,
       ## generate the individual seeds for the simulation runs
-      simSeeds <- sample(x = seq_len(1e5), size = nsim)
+      simSeeds <- sample(x = seq_len(1e5), size = as.integer(nsim))
 
       ## the function to produce the run a single simulation
       ## with index "iterSim"
@@ -532,6 +548,9 @@ setMethod("simulate",
 ##' @param nCores how many cores should be used for parallel computing?
 ##' Defaults to the number of cores on the machine, maximum 5.
 ##' @param \dots not used
+##' @param derive a named list of functions which derives statistics, based on the
+##' vector of posterior MTD samples. Each list element must therefore accept
+##' one and only one argument, which is a numeric vector, and return a number.
 ##'
 ##' @return an object of class \code{\linkS4class{DualSimulations}}
 ##'
@@ -550,10 +569,8 @@ setMethod("simulate",
              mcmcOptions = McmcOptions(),
              parallel = FALSE,
              nCores =
-               min(parallel::detectCores(), 5L),
+               min(parallel::detectCores(), 5), derive = list(),
              ...) {
-      nsim <- safeInteger(nsim)
-
       ## checks and extracts
       assert_function(trueTox)
       assert_function(trueBiomarker)
@@ -585,7 +602,7 @@ setMethod("simulate",
 
       ## from this,
       ## generate the individual seeds for the simulation runs
-      simSeeds <- sample(x = seq_len(1e5), size = nsim)
+      simSeeds <- sample(x = seq_len(1e5), size = as.integer(nsim))
 
       ## the function to produce the run a single simulation
       ## with index "iterSim"
@@ -843,6 +860,19 @@ setMethod("simulate",
           data = thisData
         )
 
+        # Get the MTD estimate from the samples.
+
+        target_dose_samples <- dose(
+          mean(object@nextBest@target),
+          model = object@model,
+          samples = thisSamples
+        )
+
+        # Create a function for additional statistical summary.
+
+        additional_stats <- lapply(derive, function(f) f(target_dose_samples))
+
+
         ## return the results
         thisResult <-
           list(
@@ -867,7 +897,8 @@ setMethod("simulate",
               attr(
                 stopit,
                 "message"
-              )
+              ),
+            additional_stats = additional_stats
           )
 
         return(thisResult)
@@ -918,6 +949,9 @@ setMethod("simulate",
       ## for dual simulations as it would fail in summary otherwise (for dual simulations reporting is not implemented)
       stop_report <- matrix(TRUE, nrow = nsim)
 
+      ## For dual simulations summary of additional statistics.
+      additional_stats <- lapply(resultList, "[[", "additional_stats")
+
       ## return the results in the DualSimulations class object
       ret <- DualSimulations(
         data = dataList,
@@ -928,6 +962,7 @@ setMethod("simulate",
         fit_biomarker = fitBiomarkerList,
         stop_report = stop_report,
         stop_reasons = stopReasons,
+        additional_stats = additional_stats,
         seed = RNGstate
       )
 
@@ -1748,8 +1783,6 @@ setMethod("simulate",
              parallel = FALSE, nCores =
                min(parallel::detectCores(), 5L),
              ...) {
-      nsim <- safeInteger(nsim)
-
       ## checks and extracts
       assert_function(truth)
       assert_flag(firstSeparate)
@@ -1766,7 +1799,7 @@ setMethod("simulate",
 
       ## from this,
       ## generate the individual seeds for the simulation runs
-      simSeeds <- sample(x = seq_len(1e5), size = nsim)
+      simSeeds <- sample(x = seq_len(1e5), size = as.integer(nsim))
 
       ## the function to produce the run a single simulation
       ## with index "iterSim"
@@ -2112,8 +2145,6 @@ setMethod("simulate",
              parallel = FALSE, nCores =
                min(parallel::detectCores(), 5L),
              ...) {
-      nsim <- safeInteger(nsim)
-
       ## checks and extracts
       assert_function(truth)
       assert_flag(firstSeparate)
@@ -2129,7 +2160,7 @@ setMethod("simulate",
 
       ## from this,
       ## generate the individual seeds for the simulation runs
-      simSeeds <- sample(x = seq_len(1e5), size = nsim)
+      simSeeds <- sample(x = seq_len(1e5), size = as.integer(nsim))
 
       ## the function to produce the run a single simulation
       ## with index "iterSim"
@@ -2462,8 +2493,6 @@ setMethod("simulate",
              parallel = FALSE, nCores =
                min(parallel::detectCores(), 5L),
              ...) {
-      nsim <- safeInteger(nsim)
-
       ## checks and extracts
       assert_function(trueDLE)
       assert_function(trueEff)
@@ -2487,7 +2516,7 @@ setMethod("simulate",
 
       ## from this,
       ## generate the individual seeds for the simulation runs
-      simSeeds <- sample(x = seq_len(1e5), size = nsim)
+      simSeeds <- sample(x = seq_len(1e5), size = as.integer(nsim))
 
       ## the function to produce the run a single simulation
       ## with index "iterSim"
@@ -3001,8 +3030,6 @@ setMethod("simulate",
              parallel = FALSE, nCores =
                min(parallel::detectCores(), 5L),
              ...) {
-      nsim <- safeInteger(nsim)
-
       ## common checks and extracts
       assert_function(trueDLE)
       assert_flag(firstSeparate)
@@ -3034,7 +3061,7 @@ setMethod("simulate",
 
         ## from this,
         ## generate the individual seeds for the simulation runs
-        simSeeds <- sample(x = seq_len(1e5), size = nsim)
+        simSeeds <- sample(x = seq_len(1e5), size = as.integer(nsim))
 
         ## the function to produce the run a single simulation
         ## with index "iterSim"
@@ -3982,6 +4009,9 @@ setMethod("simulate",
 ##' @param nCores how many cores should be used for parallel computing?
 ##' Defaults to the number of cores on the machine (maximum 5)
 ##' @param \dots not used
+##' @param derive a named list of functions which derives statistics, based on the
+##' vector of posterior MTD samples. Each list element must therefore accept
+##' one and only one argument, which is a numeric vector, and return a number.
 ##'
 ##' @return an object of class \code{\linkS4class{Simulations}}
 ##'
@@ -4001,10 +4031,9 @@ setMethod("simulate",
              deescalate = TRUE,
              mcmcOptions = McmcOptions(),
              DA = TRUE,
-             parallel = FALSE, nCores = min(parallel::detectCores(), 5L),
+             parallel = FALSE, nCores = min(parallel::detectCores(), 5),
+             derive = list(),
              ...) {
-      nsim <- safeInteger(nsim) ## remove  in the future
-
       ## checks and extracts
       assert_function(truthTox)
       assert_function(truthSurv)
@@ -4021,7 +4050,7 @@ setMethod("simulate",
 
       ## from this,
       ## generate the individual seeds for the simulation runs
-      simSeeds <- sample(x = seq_len(1e5), size = nsim)
+      simSeeds <- sample(x = seq_len(1e5), size = as.integer(nsim))
 
       ## Define functions which are useful in DLT Surv generation
       inverse <- function(f, lower = -100, upper = 100) {
@@ -4472,6 +4501,19 @@ setMethod("simulate",
           data = thisData
         )
 
+        # Get the MTD estimate from the samples.
+
+        target_dose_samples <- dose(
+          mean(object@nextBest@target),
+          model = object@model,
+          samples = thisSamples
+        )
+
+        # Create a function for additional statistical summary.
+
+        additional_stats <- lapply(derive, function(f) f(target_dose_samples))
+
+
         ## return the results
         thisResult <-
           list(
@@ -4486,7 +4528,8 @@ setMethod("simulate",
               attr(
                 stopit,
                 "message"
-              )
+              ),
+            additional_stats = additional_stats
           )
         return(thisResult)
       }
@@ -4530,6 +4573,9 @@ setMethod("simulate",
       stopReasons <- lapply(resultList, "[[", "stop")
 
       stop_report <- matrix(TRUE, nrow = nsim)
+
+      additional_stats <- lapply(resultList, "[[", "additional_stats")
+
       ## return the results in the Simulations class object
       ret <- DASimulations(
         data = dataList,
@@ -4537,9 +4583,11 @@ setMethod("simulate",
         fit = fitList,
         trialduration = trialduration,
         stop_report = stop_report,
+        additional_stats = additional_stats,
         stop_reasons = stopReasons,
         seed = RNGstate
       )
+
 
       return(ret)
     }
@@ -4604,7 +4652,7 @@ setMethod(
              parallel = FALSE,
              nCores = min(parallelly::availableCores(), 5),
              ...) {
-      nsim <- safeInteger(nsim)
+      nsim <- as.integer(nsim)
       assert_function(truth)
       assert_function(combo_truth)
       assert_data_frame(args)
@@ -4702,6 +4750,7 @@ setMethod(
         stop_reasons <- lapply(this_list, "[[", "stop")
         report_results <- lapply(this_list, "[[", "results")
         stop_report <- as.matrix(do.call(rbind, report_results))
+        additional_stats <- lapply(this_list, "[[", "additional_stats")
 
         Simulations(
           data = data_list,
@@ -4709,6 +4758,7 @@ setMethod(
           fit = fit_list,
           stop_reasons = stop_reasons,
           stop_report = stop_report,
+          additional_stats = additional_stats,
           seed = rng_state
         )
       })
