@@ -12,6 +12,8 @@
 \alias{prob-ProbitLogNormal}
 \alias{prob,numeric,ProbitLogNormalRel,Samples-method}
 \alias{prob-ProbitLogNormalRel}
+\alias{prob,numeric,LogisticLogNormalGrouped,Samples-method}
+\alias{prob-LogisticLogNormalGrouped}
 \alias{prob,numeric,LogisticKadane,Samples-method}
 \alias{prob-LogisticKadane}
 \alias{prob,numeric,LogisticKadaneBetaGamma,Samples-method}
@@ -45,6 +47,8 @@ prob(dose, model, samples, ...)
 \S4method{prob}{numeric,ProbitLogNormal,Samples}(dose, model, samples)
 
 \S4method{prob}{numeric,ProbitLogNormalRel,Samples}(dose, model, samples)
+
+\S4method{prob}{numeric,LogisticLogNormalGrouped,Samples}(dose, model, samples, group)
 
 \S4method{prob}{numeric,LogisticKadane,Samples}(dose, model, samples)
 
@@ -80,6 +84,10 @@ dose escalation or pseudo DLE (dose-limiting events)/toxicity model.}
 used to compute toxicity probabilities. Can also be missing for some models.}
 
 \item{...}{model specific parameters when \code{samples} are not used.}
+
+\item{group}{(\code{character} or \code{factor})\cr for \code{\link{LogisticLogNormalGrouped}},
+indicating whether to calculate the probability for the \code{mono} or for
+the \code{combo} arm.}
 }
 \value{
 A \code{proportion} or \code{numeric} vector with the toxicity probabilities.
@@ -114,6 +122,9 @@ correspond to the sampling index, i.e. the layout is then
 \item \code{prob(dose = numeric, model = ProbitLogNormal, samples = Samples)}: 
 
 \item \code{prob(dose = numeric, model = ProbitLogNormalRel, samples = Samples)}: 
+
+\item \code{prob(dose = numeric, model = LogisticLogNormalGrouped, samples = Samples)}: method for \code{\link{LogisticLogNormalGrouped}} which needs \code{group}
+argument in addition.
 
 \item \code{prob(dose = numeric, model = LogisticKadane, samples = Samples)}: 
 

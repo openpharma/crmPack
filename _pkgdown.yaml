@@ -34,12 +34,15 @@ reference:
     contents:
       - Validate
       - positive_number
+      - CrmPackClass
       - GeneralData
       - Data
       - DataDual
+      - DataOrdinal
       - DataParts
       - DataMixture
       - DataDA
+      - DataGrouped
       - McmcOptions
       - ModelParamsNormal
       - GeneralModel
@@ -49,6 +52,7 @@ reference:
       - LogisticLogNormalSub
       - ProbitLogNormal
       - ProbitLogNormalRel
+      - LogisticLogNormalGrouped
       - LogisticKadane
       - LogisticKadaneBetaGamma
       - LogisticNormalMixture
@@ -125,8 +129,10 @@ reference:
       - DualDesign
       - TDsamplesDesign
       - TDDesign
+      - DesignGrouped
   - title: Internal Helper Functions
     contents:
+      - h_blind_plot_data
       - h_doses_unique_per_cohort
       - h_all_equivalent
       - h_plot_data_df
@@ -160,7 +166,12 @@ reference:
       - h_next_best_td_plot
       - h_next_best_mg_plot
       - h_next_best_mgsamples_plot
+      - h_obtain_dose_grid_range
       - h_covr_helpers
+      - h_default_if_empty
+      - h_unpack_stopit
+      - h_calc_report_label_percentage
+      - h_validate_common_data_slots
   - title: Internal Validation Functions
     contents:
       - v_general_data
@@ -224,6 +235,8 @@ reference:
       - v_safety_window_size
       - v_safety_window_const
       - v_rule_design
+      - v_general_simulations
+      - v_pseudo_simulations
   - title: Custom Checkmate Assertions
     contents:
       - assert_probabilities
@@ -254,6 +267,7 @@ reference:
       - update-DataParts
       - update-DataDual
       - update-DataDA
+      - update-DataOrdinal
       - getEff
       - getEff-DataDual
       - ngrid
@@ -404,7 +418,6 @@ reference:
       - matchTolerance
       - maxSize
       - minSize
-      - multiplot
       - or-Stopping-Stopping
       - or-Stopping-StoppingAny
       - or-StoppingAny-Stopping
@@ -424,11 +437,10 @@ reference:
       - plot,Samples,ModelEff-method
       - plot,Samples,ModelTox-method
       - plot,SimulationsSummary,missing-method
-      - plot.gtable
       - plotDualResponses
       - plotGain
       - probit
-      - setSeed
+      - set_seed
       - show,DualSimulationsSummary-method
       - show,GeneralSimulationsSummary-method
       - show,PseudoDualSimulationsSummary-method
@@ -442,6 +454,7 @@ reference:
       - simulate,RuleDesign-method
       - simulate,TDDesign-method
       - simulate,TDsamplesDesign-method
+      - simulate-DesignGrouped
       - summary,DualSimulations-method
       - summary,GeneralSimulations-method
       - summary,PseudoDualFlexiSimulations-method

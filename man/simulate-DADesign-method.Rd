@@ -18,6 +18,7 @@
   DA = TRUE,
   parallel = FALSE,
   nCores = min(parallel::detectCores(), 5),
+  derive = list(),
   ...
 )
 }
@@ -27,7 +28,7 @@ data from}
 
 \item{nsim}{the number of simulations (default: 1)}
 
-\item{seed}{see \code{\link{setSeed}}}
+\item{seed}{see \code{\link{set_seed}}}
 
 \item{truthTox}{a function which takes as input a dose (vector) and returns the
 true probability (vector) for toxicity and the time DLT occurs. Additional
@@ -65,6 +66,10 @@ clusters of the computer? (not default)}
 
 \item{nCores}{how many cores should be used for parallel computing?
 Defaults to the number of cores on the machine (maximum 5)}
+
+\item{derive}{a named list of functions which derives statistics, based on the
+vector of posterior MTD samples. Each list element must therefore accept
+one and only one argument, which is a numeric vector, and return a number.}
 
 \item{\dots}{not used}
 }
@@ -117,7 +122,7 @@ mySize1 <- CohortSizeRange(
   cohort_size = c(1, 3)
 )
 mySize2 <- CohortSizeDLT(
-  dlt_intervals = c(0, 1),
+  intervals = c(0, 1),
   cohort_size = c(1, 3)
 )
 mySize <- maxSize(mySize1, mySize2)
@@ -140,7 +145,7 @@ design <- DADesign(
   increments = myIncrements,
   nextBest = myNextBest,
   stopping = myStopping,
-  cohortSize = mySize,
+  cohort_size = mySize,
   data = emptydata,
   safetyWindow = mysafetywindow,
   startingDose = 3

@@ -8,9 +8,12 @@
 \alias{.DefaultStoppingMissingDose}
 \title{\code{StoppingMissingDose}}
 \usage{
-StoppingMissingDose()
+StoppingMissingDose(report_label = NA_character_)
 
 .DefaultStoppingMissingDose()
+}
+\arguments{
+\item{report_label}{(\code{string} or \code{NA})\cr see slot definition.}
 }
 \description{
 \ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#experimental}{\figure{lifecycle-experimental.svg}{options: alt='[Experimental]'}}}{\strong{[Experimental]}}

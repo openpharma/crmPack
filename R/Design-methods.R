@@ -1,165 +1,13 @@
+#' @include Data-methods.R
+#' @include Design-class.R
+#' @include McmcOptions-class.R
+#' @include Rules-methods.R
+#' @include Simulations-class.R
+#' @include helpers.R
+#' @include mcmc.R
+NULL
+
 # nolint start
-#####################################################################################
-## Author: Daniel Sabanes Bove [sabanesd *a*t* roche *.* com]
-##         Wai Yin Yeung [w*.* yeung1 *a*t* lancaster *.* ac *.* uk]
-## Project: Object-oriented implementation of CRM designs
-##
-## Time-stamp: <[Design-methods.R] by DSB Son 03/05/2015 20:35>
-##
-## Description:
-## Simulate outcomes from a CRM trial, assuming a true dose-toxicity
-## relationship.
-##
-## History:
-## 12/02/2014   file creation
-## 07/04/2014   start with parallelization on cores
-## 02/01/2015   rename: simulate.R --> Design-methods.R
-## 10/07/2015   added simulate methods
-#####################################################################################
-
-##' @include Data-methods.R
-##' @include Design-class.R
-##' @include McmcOptions-class.R
-##' @include Rules-methods.R
-##' @include Simulations-class.R
-##' @include helpers.R
-##' @include mcmc.R
-{}
-
-##' Helper function to set and save the RNG seed
-##'
-##' This is basically copied from simulate.lm
-##'
-##' @param seed an object specifying if and how the random number generator
-##' should be initialized (\dQuote{seeded}). Either \code{NULL} (default) or an
-##' integer that will be used in a call to \code{\link{set.seed}} before
-##' simulating the response vectors. If set, the value is saved as the
-##' \code{seed} slot of the returned object. The default, \code{NULL} will
-##' not change the random generator state.
-##' @return The RNGstate will be returned, in order to call this function
-##' with this input to reproduce the obtained simulation results
-##'
-##' @export
-##' @keywords programming
-##' @author Daniel Sabanes Bove \email{sabanesd@@roche.com}
-setSeed <- function(seed = NULL) {
-  if (!exists(".Random.seed", envir = .GlobalEnv, inherits = FALSE)) {
-    runif(1)
-  }
-
-  if (is.null(seed)) {
-    RNGstate <- get(".Random.seed", envir = .GlobalEnv)
-  } else {
-    R.seed <- get(".Random.seed", envir = .GlobalEnv)
-    ## make sure R.seed exists in parent frame:
-    assign("R.seed", R.seed, envir = parent.frame())
-    set.seed(seed)
-    RNGstate <- structure(seed, kind = as.list(RNGkind()))
-    do.call("on.exit",
-      list(quote(assign(".Random.seed", R.seed, envir = .GlobalEnv))),
-      envir = parent.frame()
-    )
-    ## here we need the R.seed in the parent.frame!
-  }
-
-  return(RNGstate)
-}
-
-
-##' Helper function to obtain simulation results list
-##'
-##' The function \code{fun} can use variables that are visible to itself.
-##' The names of these variables have to given in the vector \code{vars}.
-##'
-##' @param fun the simulation function for a single iteration, which takes as
-##' single parameter the iteration index
-##' @param nsim number of simulations to be conducted
-##' @param vars names of the variables
-##' @param parallel shall the iterations be parallelized across the cores?
-##' if NULL, then no parallelization will be done. If scalar positive number,
-##' then so many cores will be used.
-##' @return the list with all simulation results (one iteration corresponds
-##' to one list element)
-##'
-##' @importFrom parallel detectCores makeCluster clusterApply stopCluster
-##' @importFrom parallelly availableCores
-##' @keywords internal programming
-##' @author Daniel Sabanes Bove \email{sabanesd@@roche.com}
-getResultList <- function(fun,
-                          nsim,
-                          vars,
-                          parallel = NULL) {
-  ret <-
-    if (is.null(parallel)) {
-      lapply(
-        X = seq_len(nsim),
-        FUN = fun
-      )
-    } else {
-      ## check that parallel parameter makes sense
-      stopifnot(is.scalar(parallel), parallel > 0)
-
-      ## now process all simulations
-      cores <- min(
-        safeInteger(parallel),
-        parallelly::availableCores()
-      )
-
-      ## start the cluster
-      cl <- parallel::makeCluster(cores)
-
-      ## load the required R package
-      parallel::clusterEvalQ(cl, {
-        library(crmPack)
-        NULL
-      })
-
-      ## export local variables
-      parallel::clusterExport(
-        cl = cl,
-        varlist = vars,
-        envir = parent.frame()
-      )
-      ## parent.frame() gives back the caller environment
-      ## (different from parent.env() which returns
-      ## the environment where this function has been
-      ## defined!)
-
-      ## export all global variables
-      parallel::clusterExport(
-        cl = cl,
-        varlist = ls(.GlobalEnv)
-      )
-
-      # load user extensions from global options
-      crmpack_extensions <- getOption("crmpack_extensions")
-      if (is.null(crmpack_extensions) != TRUE) {
-        tryCatch(
-          {
-            parallel::clusterCall(cl, crmpack_extensions)
-          },
-          error = function(e) {
-            stop("Failed to export crmpack_extensions: ", e$message)
-          }
-        )
-      }
-
-      ## now do the computations
-      res <- parallel::parLapply(
-        cl = cl,
-        X = seq_len(nsim),
-        fun = fun
-      )
-
-      ## stop the cluster
-      parallel::stopCluster(cl)
-
-      res
-    }
-
-  return(ret)
-}
-
 
 ## ============================================================
 
@@ -168,7 +16,7 @@ getResultList <- function(fun,
 ##' @param object the \code{\linkS4class{Design}} object we want to simulate
 ##' data from
 ##' @param nsim the number of simulations (default: 1)
-##' @param seed see \code{\link{setSeed}}
+##' @param seed see \code{\link{set_seed}}
 ##' @param truth a function which takes as input a dose (vector) and returns the
 ##' true probability (vector) for toxicity. Additional arguments can be supplied
 ##' in \code{args}.
@@ -190,6 +38,9 @@ getResultList <- function(fun,
 ##' @param nCores how many cores should be used for parallel computing?
 ##' Defaults to the number of cores on the machine, maximum 5.
 ##' @param \dots not used
+##' @param derive a named list of functions which derives statistics, based on the
+##' vector of posterior MTD samples. Each list element must therefore accept
+##' one and only one argument, which is a numeric vector, and return a number.
 ##'
 ##' @return an object of class \code{\linkS4class{Simulations}}
 ##'
@@ -209,30 +60,24 @@ setMethod("simulate",
              truth, args = NULL, firstSeparate = FALSE,
              mcmcOptions = McmcOptions(),
              parallel = FALSE, nCores =
-               min(parallel::detectCores(), 5),
+               min(parallel::detectCores(), 5), derive = list(),
              ...) {
-      nsim <- safeInteger(nsim)
-
       ## checks and extracts
-      stopifnot(
-        is.function(truth),
-        is.bool(firstSeparate),
-        is.scalar(nsim),
-        nsim > 0,
-        is.bool(parallel),
-        is.scalar(nCores),
-        nCores > 0
-      )
+      assert_function(truth)
+      assert_flag(firstSeparate)
+      assert_count(nsim, positive = TRUE)
+      assert_flag(parallel)
+      assert_count(nCores, positive = TRUE)
 
       args <- as.data.frame(args)
       nArgs <- max(nrow(args), 1L)
 
       ## seed handling
-      RNGstate <- setSeed(seed)
+      RNGstate <- set_seed(seed)
 
       ## from this,
       ## generate the individual seeds for the simulation runs
-      simSeeds <- sample.int(n = 2147483647, size = nsim)
+      simSeeds <- sample.int(n = 2147483647, size = as.integer(nsim))
 
       ## the function to produce the run a single simulation
       ## with index "iterSim"
@@ -281,7 +126,7 @@ setMethod("simulate",
           thisProb <- thisTruth(thisDose)
 
           ## what is the cohort size at this dose?
-          thisSize <- size(object@cohortSize,
+          thisSize <- size(object@cohort_size,
             dose = thisDose,
             data = thisData
           )
@@ -398,6 +243,7 @@ setMethod("simulate",
             data = thisData
           )$value
 
+
           ## evaluate stopping rules
           stopit <- stopTrial(object@stopping,
             dose = thisDose,
@@ -405,6 +251,8 @@ setMethod("simulate",
             model = object@model,
             data = thisData
           )
+
+          stopit_results <- h_unpack_stopit(stopit)
         }
 
         ## get the fit
@@ -413,6 +261,18 @@ setMethod("simulate",
           model = object@model,
           data = thisData
         )
+
+        # Get the MTD estimate from the samples.
+
+        target_dose_samples <- dose(
+          mean(object@nextBest@target),
+          model = object@model,
+          samples = thisSamples
+        )
+
+        # Create a function for additional statistical summary.
+
+        additional_stats <- lapply(derive, function(f) f(target_dose_samples))
 
         ## return the results
         thisResult <-
@@ -427,12 +287,14 @@ setMethod("simulate",
               attr(
                 stopit,
                 "message"
-              )
+              ),
+            report_results = stopit_results,
+            additional_stats = additional_stats
           )
         return(thisResult)
       }
 
-      resultList <- getResultList(
+      resultList <- get_result_list(
         fun = runSim,
         nsim = nsim,
         vars =
@@ -445,7 +307,8 @@ setMethod("simulate",
             "object",
             "mcmcOptions"
           ),
-        parallel = if (parallel) nCores else NULL
+        parallel = parallel,
+        n_cores = nCores
       )
 
       ## put everything in the Simulations format:
@@ -462,12 +325,21 @@ setMethod("simulate",
       ## the reasons for stopping
       stopReasons <- lapply(resultList, "[[", "stop")
 
+      # individual stopping rule results as matrix, labels as column names
+      stopResults <- lapply(resultList, "[[", "report_results")
+      stop_matrix <- as.matrix(do.call(rbind, stopResults))
+
+      # Result list of additional statistical summary.
+      additional_stats <- lapply(resultList, "[[", "additional_stats")
+
       ## return the results in the Simulations class object
       ret <- Simulations(
         data = dataList,
         doses = recommendedDoses,
         fit = fitList,
-        stopReasons = stopReasons,
+        stop_report = stop_matrix,
+        stop_reasons = stopReasons,
+        additional_stats = additional_stats,
         seed = RNGstate
       )
 
@@ -483,7 +355,7 @@ setMethod("simulate",
 ##' @param object the \code{\linkS4class{RuleDesign}} object we want to simulate
 ##' data from
 ##' @param nsim the number of simulations (default: 1)
-##' @param seed see \code{\link{setSeed}}
+##' @param seed see \code{\link{set_seed}}
 ##' @param truth a function which takes as input a dose (vector) and returns the
 ##' true probability (vector) for toxicity. Additional arguments can be supplied
 ##' in \code{args}.
@@ -514,27 +386,23 @@ setMethod("simulate",
              truth, args = NULL,
              parallel = FALSE,
              nCores =
-               min(parallel::detectCores(), 5),
+               min(parallel::detectCores(), 5L),
              ...) {
-      nsim <- safeInteger(nsim)
-
       ## checks and extracts
-      stopifnot(
-        is.function(truth),
-        is.scalar(nsim),
-        nsim > 0,
-        is.bool(parallel)
-      )
+      assert_function(truth)
+      assert_count(nsim, positive = TRUE)
+      assert_flag(parallel)
+      assert_count(nCores, positive = TRUE)
 
       args <- as.data.frame(args)
       nArgs <- max(nrow(args), 1L)
 
       ## seed handling
-      RNGstate <- setSeed(seed)
+      RNGstate <- set_seed(seed)
 
       ## from this,
       ## generate the individual seeds for the simulation runs
-      simSeeds <- sample(x = seq_len(1e5), size = nsim)
+      simSeeds <- sample(x = seq_len(1e5), size = as.integer(nsim))
 
       ## the function to produce the run a single simulation
       ## with index "iterSim"
@@ -577,7 +445,7 @@ setMethod("simulate",
           thisProb <- thisTruth(thisDose)
 
           ## what is the cohort size at this dose?
-          thisSize <- size(object@cohortSize,
+          thisSize <- size(object@cohort_size,
             dose = thisDose,
             data = thisData
           )
@@ -615,7 +483,7 @@ setMethod("simulate",
         return(thisResult)
       }
 
-      resultList <- getResultList(
+      resultList <- get_result_list(
         fun = runSim,
         nsim = nsim,
         vars =
@@ -626,7 +494,8 @@ setMethod("simulate",
             "truth",
             "object"
           ),
-        parallel = if (parallel) nCores else NULL
+        parallel = parallel,
+        n_cores = nCores
       )
 
       ## put everything in the GeneralSimulations format:
@@ -654,7 +523,7 @@ setMethod("simulate",
 ##' @param object the \code{\linkS4class{DualDesign}} object we want to simulate
 ##' data from
 ##' @param nsim the number of simulations (default: 1)
-##' @param seed see \code{\link{setSeed}}
+##' @param seed see \code{\link{set_seed}}
 ##' @param trueTox a function which takes as input a dose (vector) and returns the
 ##' true probability (vector) for toxicity. Additional arguments can be supplied
 ##' in \code{args}.
@@ -679,6 +548,9 @@ setMethod("simulate",
 ##' @param nCores how many cores should be used for parallel computing?
 ##' Defaults to the number of cores on the machine, maximum 5.
 ##' @param \dots not used
+##' @param derive a named list of functions which derives statistics, based on the
+##' vector of posterior MTD samples. Each list element must therefore accept
+##' one and only one argument, which is a numeric vector, and return a number.
 ##'
 ##' @return an object of class \code{\linkS4class{DualSimulations}}
 ##'
@@ -697,21 +569,17 @@ setMethod("simulate",
              mcmcOptions = McmcOptions(),
              parallel = FALSE,
              nCores =
-               min(parallel::detectCores(), 5),
+               min(parallel::detectCores(), 5), derive = list(),
              ...) {
-      nsim <- safeInteger(nsim)
-
       ## checks and extracts
-      stopifnot(
-        is.function(trueTox),
-        is.function(trueBiomarker),
-        is.scalar(sigma2W), sigma2W > 0,
-        is.scalar(rho), rho < 1, rho > -1,
-        is.bool(firstSeparate),
-        is.scalar(nsim),
-        nsim > 0,
-        is.bool(parallel)
-      )
+      assert_function(trueTox)
+      assert_function(trueBiomarker)
+      assert_number(sigma2W, lower = 0)
+      assert_number(rho, lower = -1, upper = 1)
+      assert_flag(firstSeparate)
+      assert_count(nsim, positive = TRUE)
+      assert_flag(parallel)
+      assert_count(nCores, positive = TRUE)
 
       args <- as.data.frame(args)
       nArgs <- max(nrow(args), 1L)
@@ -730,11 +598,11 @@ setMethod("simulate",
       )
 
       ## seed handling
-      RNGstate <- setSeed(seed)
+      RNGstate <- set_seed(seed)
 
       ## from this,
       ## generate the individual seeds for the simulation runs
-      simSeeds <- sample(x = seq_len(1e5), size = nsim)
+      simSeeds <- sample(x = seq_len(1e5), size = as.integer(nsim))
 
       ## the function to produce the run a single simulation
       ## with index "iterSim"
@@ -808,7 +676,7 @@ setMethod("simulate",
           thisMeanBiomarker <- thisTrueBiomarker(thisDose)
 
           ## what is the cohort size at this dose?
-          thisSize <- size(object@cohortSize,
+          thisSize <- size(object@cohort_size,
             dose = thisDose,
             data = thisData
           )
@@ -992,6 +860,19 @@ setMethod("simulate",
           data = thisData
         )
 
+        # Get the MTD estimate from the samples.
+
+        target_dose_samples <- dose(
+          mean(object@nextBest@target),
+          model = object@model,
+          samples = thisSamples
+        )
+
+        # Create a function for additional statistical summary.
+
+        additional_stats <- lapply(derive, function(f) f(target_dose_samples))
+
+
         ## return the results
         thisResult <-
           list(
@@ -1002,7 +883,7 @@ setMethod("simulate",
                 select =
                   c(middle, lower, upper)
               ),
-            fitBiomarker =
+            fit_biomarker =
               subset(thisFit,
                 select =
                   c(
@@ -1010,19 +891,20 @@ setMethod("simulate",
                     upperBiomarker
                   )
               ),
-            rhoEst = median(thisSamples@data$rho),
-            sigma2West = median(1 / thisSamples@data$precW),
+            rho_est = median(thisSamples@data$rho),
+            sigma2w_est = median(1 / thisSamples@data$precW),
             stop =
               attr(
                 stopit,
                 "message"
-              )
+              ),
+            additional_stats = additional_stats
           )
 
         return(thisResult)
       }
 
-      resultList <- getResultList(
+      resultList <- get_result_list(
         fun = runSim,
         nsim = nsim,
         vars =
@@ -1037,7 +919,8 @@ setMethod("simulate",
             "object",
             "mcmcOptions"
           ),
-        parallel = if (parallel) nCores else NULL
+        parallel = parallel,
+        n_cores = nCores
       )
 
       ## put everything in the Simulations format:
@@ -1049,29 +932,37 @@ setMethod("simulate",
       recommendedDoses <- as.numeric(sapply(resultList, "[[", "dose"))
 
       ## vector of rho estimates
-      rhoEstimates <- as.numeric(sapply(resultList, "[[", "rhoEst"))
+      rhoEstimates <- as.numeric(sapply(resultList, "[[", "rho_est"))
 
       ## vector of sigma2W estimates
-      sigma2Westimates <- as.numeric(sapply(resultList, "[[", "sigma2West"))
+      sigma2Westimates <- as.numeric(sapply(resultList, "[[", "sigma2w_est"))
 
       ## setup the list for the final tox fits
       fitToxList <- lapply(resultList, "[[", "fitTox")
 
       ## setup the list for the final biomarker fits
-      fitBiomarkerList <- lapply(resultList, "[[", "fitBiomarker")
+      fitBiomarkerList <- lapply(resultList, "[[", "fit_biomarker")
 
       ## the reasons for stopping
       stopReasons <- lapply(resultList, "[[", "stop")
+
+      ## for dual simulations as it would fail in summary otherwise (for dual simulations reporting is not implemented)
+      stop_report <- matrix(TRUE, nrow = nsim)
+
+      ## For dual simulations summary of additional statistics.
+      additional_stats <- lapply(resultList, "[[", "additional_stats")
 
       ## return the results in the DualSimulations class object
       ret <- DualSimulations(
         data = dataList,
         doses = recommendedDoses,
-        rhoEst = rhoEstimates,
-        sigma2West = sigma2Westimates,
+        rho_est = rhoEstimates,
+        sigma2w_est = sigma2Westimates,
         fit = fitToxList,
-        fitBiomarker = fitBiomarkerList,
-        stopReasons = stopReasons,
+        fit_biomarker = fitBiomarkerList,
+        stop_report = stop_report,
+        stop_reasons = stopReasons,
+        additional_stats = additional_stats,
         seed = RNGstate
       )
 
@@ -1114,7 +1005,7 @@ setGeneric("examine",
   def =
     function(object, ..., maxNoIncrement = 100L) {
       ## check maxNoIncrement argument
-      stopifnot(is.scalar(maxNoIncrement) && maxNoIncrement > 0)
+      assert_count(maxNoIncrement, positive = TRUE)
 
       ## there should be no default method,
       ## therefore just forward to next method!
@@ -1166,7 +1057,7 @@ setMethod("examine",
       ## stopping
       while (!stopit) {
         ## what is the cohort size at this dose?
-        thisSize <- size(object@cohortSize,
+        thisSize <- size(object@cohort_size,
           dose = thisDose,
           data = baseData
         )
@@ -1378,7 +1269,7 @@ setMethod("examine",
       ## stopping
       while (!stopit) {
         ## what is the cohort size at this dose?
-        thisSize <- size(object@cohortSize,
+        thisSize <- size(object@cohort_size,
           dose = thisDose,
           data = baseData
         )
@@ -1580,7 +1471,7 @@ setMethod("examine",
       ## stopping
       while (!stopit) {
         ## what is the cohort size at this dose?
-        thisSize <- size(object@cohortSize,
+        thisSize <- size(object@cohort_size,
           dose = thisDose,
           data = baseData
         )
@@ -1691,7 +1582,7 @@ setMethod("examine",
             ### comment here to show only no DLTs;
             #                                            }
           } else {
-            for (DLTsearly in 1:2) {
+            for (DLTsearly in 1:numDLTs) {
               # Update current {fact} variables
               thisDLTs <- factDLTs
               thisSurv <- factSurv
@@ -1803,21 +1694,20 @@ setMethod("examine",
         doseDiff <- newDose - thisDose
 
         ## would stopping rule be fulfilled already?
-        stopAlready <- resultsNoDLTs$stop
+        stopAlready <- any(resultsNoDLTs$stop)
 
         ## update dose
-        thisDose <- newDose
+        thisDose <- max(newDose)
 
         ## number of patients with un-completed DLT window;
         preSize <- sum(baseData@u[baseData@y == 0] < baseData@Tmax)
 
         ## update the counter for no increments of the dose
-        if (doseDiff == 0) {
+        if (all(doseDiff == 0)) {
           noIncrementCounter <- noIncrementCounter + 1L
         } else {
           noIncrementCounter <- 0L
         }
-
 
         ## too many times no increment?
         stopNoIncrement <- (noIncrementCounter >= maxNoIncrement)
@@ -1851,7 +1741,7 @@ setMethod("examine",
 ##'
 ##' @param object the \code{\linkS4class{TDsamplesDesign}} object we want to simulate the data from
 ##' @param nsim the number of simulations (default :1)
-##' @param seed see \code{\link{setSeed}}
+##' @param seed see \code{\link{set_seed}}
 ##' @param truth a function which takes as input a dose (vector) and returns the true probability
 ##' (vector) of the occurrence of a DLE. Additional arguments can be supplied in \code{args}.
 ##' @param args data frame with arguments for the \code{truth} function. The
@@ -1891,29 +1781,25 @@ setMethod("simulate",
              truth, args = NULL, firstSeparate = FALSE,
              mcmcOptions = McmcOptions(),
              parallel = FALSE, nCores =
-               min(parallel::detectCores(), 5),
+               min(parallel::detectCores(), 5L),
              ...) {
-      nsim <- safeInteger(nsim)
-
       ## checks and extracts
-      stopifnot(
-        is.function(truth),
-        is.bool(firstSeparate),
-        is.scalar(nsim),
-        nsim > 0,
-        is.bool(parallel)
-      )
+      assert_function(truth)
+      assert_flag(firstSeparate)
+      assert_count(nsim, positive = TRUE)
+      assert_flag(parallel)
+      assert_count(nCores, positive = TRUE)
 
       args <- as.data.frame(args)
       nArgs <- max(nrow(args), 1L)
 
 
       ## seed handling
-      RNGstate <- setSeed(seed)
+      RNGstate <- set_seed(seed)
 
       ## from this,
       ## generate the individual seeds for the simulation runs
-      simSeeds <- sample(x = seq_len(1e5), size = nsim)
+      simSeeds <- sample(x = seq_len(1e5), size = as.integer(nsim))
 
       ## the function to produce the run a single simulation
       ## with index "iterSim"
@@ -1964,7 +1850,7 @@ setMethod("simulate",
 
 
           ## what is the cohort size at this dose?
-          thisSize <- size(object@cohortSize,
+          thisSize <- size(object@cohort_size,
             dose = thisDose,
             data = thisData
           )
@@ -2135,7 +2021,7 @@ setMethod("simulate",
         return(thisResult)
       }
 
-      resultList <- getResultList(
+      resultList <- get_result_list(
         fun = runSim,
         nsim = nsim,
         vars =
@@ -2148,7 +2034,8 @@ setMethod("simulate",
             "object",
             "mcmcOptions"
           ),
-        parallel = if (parallel) nCores else NULL
+        parallel = parallel,
+        n_cores = nCores
       )
 
       ## put everything in the Simulations format:
@@ -2220,7 +2107,7 @@ setMethod("simulate",
 ##'
 ##' @param object the \code{\linkS4class{TDDesign}} object we want to simulate the data from
 ##' @param nsim the number of simulations (default :1)
-##' @param seed see \code{\link{setSeed}}
+##' @param seed see \code{\link{set_seed}}
 ##' @param truth a function which takes as input a dose (vector) and returns the true probability
 ##' (vector) of the occurrence of a DLE. Additional arguments can be supplied in \code{args}.
 ##' @param args data frame with arguments for the \code{truth} function. The
@@ -2256,28 +2143,24 @@ setMethod("simulate",
     function(object, nsim = 1L, seed = NULL,
              truth, args = NULL, firstSeparate = FALSE,
              parallel = FALSE, nCores =
-               min(parallel::detectCores(), 5),
+               min(parallel::detectCores(), 5L),
              ...) {
-      nsim <- safeInteger(nsim)
-
       ## checks and extracts
-      stopifnot(
-        is.function(truth),
-        is.bool(firstSeparate),
-        is.scalar(nsim),
-        nsim > 0,
-        is.bool(parallel)
-      )
+      assert_function(truth)
+      assert_flag(firstSeparate)
+      assert_count(nsim, positive = TRUE)
+      assert_flag(parallel)
+      assert_count(nCores, positive = TRUE)
 
       args <- as.data.frame(args)
       nArgs <- max(nrow(args), 1L)
 
       ## seed handling
-      RNGstate <- setSeed(seed)
+      RNGstate <- set_seed(seed)
 
       ## from this,
       ## generate the individual seeds for the simulation runs
-      simSeeds <- sample(x = seq_len(1e5), size = nsim)
+      simSeeds <- sample(x = seq_len(1e5), size = as.integer(nsim))
 
       ## the function to produce the run a single simulation
       ## with index "iterSim"
@@ -2326,7 +2209,7 @@ setMethod("simulate",
           thisProb <- thisTruth(thisDose)
 
           ## what is the cohort size at this dose?
-          thisSize <- size(object@cohortSize,
+          thisSize <- size(object@cohort_size,
             dose = thisDose,
             data = thisData
           )
@@ -2482,7 +2365,7 @@ setMethod("simulate",
       }
 
 
-      resultList <- getResultList(
+      resultList <- get_result_list(
         fun = runSim,
         nsim = nsim,
         vars =
@@ -2494,7 +2377,8 @@ setMethod("simulate",
             "truth",
             "object"
           ),
-        parallel = if (parallel) nCores else NULL
+        parallel = parallel,
+        n_cores = nCores
       )
 
       ## put everything in the Simulations format:
@@ -2569,7 +2453,7 @@ setMethod("simulate",
 ##'
 ##' @param object the \code{\linkS4class{DualResponsesDesign}} object we want to simulate the data from
 ##' @param nsim the number of simulations (default :1)
-##' @param seed see \code{\link{setSeed}}
+##' @param seed see \code{\link{set_seed}}
 ##' @param trueDLE a function which takes as input a dose (vector) and returns the true probability
 ##' (vector) of the occurrence of a DLE. Additional arguments can be supplied in \code{args}.
 ##' @param trueEff a function which takes as input a dose (vector) and returns the expected efficacy
@@ -2607,20 +2491,16 @@ setMethod("simulate",
              trueDLE, trueEff, trueNu,
              args = NULL, firstSeparate = FALSE,
              parallel = FALSE, nCores =
-               min(parallel::detectCores(), 5),
+               min(parallel::detectCores(), 5L),
              ...) {
-      nsim <- safeInteger(nsim)
-
       ## checks and extracts
-      stopifnot(
-        is.function(trueDLE),
-        is.function(trueEff),
-        trueNu > 0,
-        is.bool(firstSeparate),
-        is.scalar(nsim),
-        nsim > 0,
-        is.bool(parallel)
-      )
+      assert_function(trueDLE)
+      assert_function(trueEff)
+      assert_true(trueNu > 0)
+      assert_flag(firstSeparate)
+      assert_count(nsim, positive = TRUE)
+      assert_flag(parallel)
+      assert_count(nCores, positive = TRUE)
 
       args <- as.data.frame(args)
       nArgs <- max(nrow(args), 1L)
@@ -2632,11 +2512,11 @@ setMethod("simulate",
 
 
       ## seed handling
-      RNGstate <- setSeed(seed)
+      RNGstate <- set_seed(seed)
 
       ## from this,
       ## generate the individual seeds for the simulation runs
-      simSeeds <- sample(x = seq_len(1e5), size = nsim)
+      simSeeds <- sample(x = seq_len(1e5), size = as.integer(nsim))
 
       ## the function to produce the run a single simulation
       ## with index "iterSim"
@@ -2710,7 +2590,7 @@ setMethod("simulate",
           thisMeanEff <- thisTruthEff(thisDose)
 
           ## what is the cohort size at this dose?
-          thisSize <- size(object@cohortSize,
+          thisSize <- size(object@cohort_size,
             dose = thisDose,
             data = thisData
           )
@@ -2972,7 +2852,7 @@ setMethod("simulate",
       }
 
 
-      resultList <- getResultList(
+      resultList <- get_result_list(
         fun = runSim,
         nsim = nsim,
         vars =
@@ -2986,7 +2866,8 @@ setMethod("simulate",
             "trueNu",
             "object"
           ),
-        parallel = if (parallel) nCores else NULL
+        parallel = parallel,
+        n_cores = nCores
       )
 
 
@@ -3099,7 +2980,7 @@ setMethod("simulate",
 ##' @param object the \code{\linkS4class{DualResponsesSamplesDesign}} object we want to
 ##' simulate the data from
 ##' @param nsim the number of simulations (default :1)
-##' @param seed see \code{\link{setSeed}}
+##' @param seed see \code{\link{set_seed}}
 ##' @param trueDLE a function which takes as input a dose (vector) and returns the true probability
 ##' (vector) of the occurrence of a DLE. Additional arguments can be supplied in \code{args}.
 ##' @param trueEff a function which takes as input a dose (vector) and returns the expected
@@ -3147,18 +3028,14 @@ setMethod("simulate",
              args = NULL, firstSeparate = FALSE,
              mcmcOptions = McmcOptions(),
              parallel = FALSE, nCores =
-               min(parallel::detectCores(), 5),
+               min(parallel::detectCores(), 5L),
              ...) {
-      nsim <- safeInteger(nsim)
-
       ## common checks and extracts
-      stopifnot(
-        is.function(trueDLE),
-        is.bool(firstSeparate),
-        is.scalar(nsim),
-        nsim > 0,
-        is.bool(parallel)
-      )
+      assert_function(trueDLE)
+      assert_flag(firstSeparate)
+      assert_count(nsim, positive = TRUE)
+      assert_flag(parallel)
+      assert_count(nCores, positive = TRUE)
 
       ## check if special case applies
       isFlexi <- is(object@eff_model, "EffFlexi")
@@ -3180,11 +3057,11 @@ setMethod("simulate",
         trueDLEArgnames <- names(formals(trueDLE))[-1]
 
         ## seed handling
-        RNGstate <- setSeed(seed)
+        RNGstate <- set_seed(seed)
 
         ## from this,
         ## generate the individual seeds for the simulation runs
-        simSeeds <- sample(x = seq_len(1e5), size = nsim)
+        simSeeds <- sample(x = seq_len(1e5), size = as.integer(nsim))
 
         ## the function to produce the run a single simulation
         ## with index "iterSim"
@@ -3239,7 +3116,7 @@ setMethod("simulate",
 
 
             ## what is the cohort size at this dose?
-            thisSize <- size(object@cohortSize,
+            thisSize <- size(object@cohort_size,
               dose = thisDose,
               data = thisData
             )
@@ -3518,7 +3395,7 @@ setMethod("simulate",
           return(thisResult)
         }
 
-        resultList <- getResultList(
+        resultList <- get_result_list(
           fun = runSim,
           nsim = nsim,
           vars =
@@ -3534,7 +3411,8 @@ setMethod("simulate",
               "object",
               "mcmcOptions"
             ),
-          parallel = if (parallel) nCores else NULL
+          parallel = parallel,
+          n_cores = nCores
         )
 
         ## put everything in the Simulations format:
@@ -3645,7 +3523,7 @@ setMethod("simulate",
 
 
         ## seed handling
-        RNGstate <- setSeed(seed)
+        RNGstate <- set_seed(seed)
 
         ## from this,
         ## generate the individual seeds for the simulation runs
@@ -3713,7 +3591,7 @@ setMethod("simulate",
             thisMeanEff <- thisTruthEff(thisDose)
 
             ## what is the cohort size at this dose?
-            thisSize <- size(object@cohortSize,
+            thisSize <- size(object@cohort_size,
               dose = thisDose,
               data = thisData
             )
@@ -3988,7 +3866,7 @@ setMethod("simulate",
         }
 
 
-        resultList <- getResultList(
+        resultList <- get_result_list(
           fun = runSim,
           nsim = nsim,
           vars =
@@ -4002,7 +3880,8 @@ setMethod("simulate",
               "trueNu",
               "object"
             ),
-          parallel = if (parallel) nCores else NULL
+          parallel = parallel,
+          n_cores = nCores
         )
 
 
@@ -4101,7 +3980,7 @@ setMethod("simulate",
 ##' @param object the \code{\linkS4class{DADesign}} object we want to simulate
 ##'   data from
 ##' @param nsim the number of simulations (default: 1)
-##' @param seed see \code{\link{setSeed}}
+##' @param seed see \code{\link{set_seed}}
 ##' @param truthTox a function which takes as input a dose (vector) and returns the
 ##'   true probability (vector) for toxicity and the time DLT occurs. Additional
 ##'   arguments can be supplied in \code{args}.
@@ -4130,6 +4009,9 @@ setMethod("simulate",
 ##' @param nCores how many cores should be used for parallel computing?
 ##' Defaults to the number of cores on the machine (maximum 5)
 ##' @param \dots not used
+##' @param derive a named list of functions which derives statistics, based on the
+##' vector of posterior MTD samples. Each list element must therefore accept
+##' one and only one argument, which is a numeric vector, and return a number.
 ##'
 ##' @return an object of class \code{\linkS4class{Simulations}}
 ##'
@@ -4150,30 +4032,25 @@ setMethod("simulate",
              mcmcOptions = McmcOptions(),
              DA = TRUE,
              parallel = FALSE, nCores = min(parallel::detectCores(), 5),
+             derive = list(),
              ...) {
-      nsim <- safeInteger(nsim) ## remove  in the future
-
       ## checks and extracts
-      stopifnot(
-        is.function(truthTox),
-        is.function(truthSurv),
-        is.bool(firstSeparate), ## remove  in the future
-        is.scalar(nsim), ## remove  in the future
-        nsim > 0,
-        is.bool(parallel),
-        is.scalar(nCores),
-        nCores > 0
-      )
+      assert_function(truthTox)
+      assert_function(truthSurv)
+      assert_flag(firstSeparate)
+      assert_count(nsim, positive = TRUE)
+      assert_flag(parallel)
+      assert_count(nCores, positive = TRUE)
 
       args <- as.data.frame(args)
       nArgs <- max(nrow(args), 1L)
 
       ## seed handling
-      RNGstate <- setSeed(seed)
+      RNGstate <- set_seed(seed)
 
       ## from this,
       ## generate the individual seeds for the simulation runs
-      simSeeds <- sample(x = seq_len(1e5), size = nsim)
+      simSeeds <- sample(x = seq_len(1e5), size = as.integer(nsim))
 
       ## Define functions which are useful in DLT Surv generation
       inverse <- function(f, lower = -100, upper = 100) {
@@ -4314,7 +4191,7 @@ setMethod("simulate",
           thisProb <- thisTruth(thisDose)
 
           ## what is the cohort size at this dose?
-          thisSize <- size(object@cohortSize,
+          thisSize <- size(object@cohort_size,
             dose = thisDose,
             data = thisData
           )
@@ -4624,6 +4501,19 @@ setMethod("simulate",
           data = thisData
         )
 
+        # Get the MTD estimate from the samples.
+
+        target_dose_samples <- dose(
+          mean(object@nextBest@target),
+          model = object@model,
+          samples = thisSamples
+        )
+
+        # Create a function for additional statistical summary.
+
+        additional_stats <- lapply(derive, function(f) f(target_dose_samples))
+
+
         ## return the results
         thisResult <-
           list(
@@ -4638,12 +4528,13 @@ setMethod("simulate",
               attr(
                 stopit,
                 "message"
-              )
+              ),
+            additional_stats = additional_stats
           )
         return(thisResult)
       }
 
-      resultList <- getResultList(
+      resultList <- get_result_list(
         fun = runSim, ## remove
         nsim = nsim,
         vars =
@@ -4659,7 +4550,8 @@ setMethod("simulate",
             "nextOpen",
             "ready_to_open"
           ),
-        parallel = if (parallel) nCores else NULL
+        parallel = parallel,
+        n_cores = nCores
       )
 
       ## put everything in the Simulations format:
@@ -4680,15 +4572,22 @@ setMethod("simulate",
       ## the reasons for stopping
       stopReasons <- lapply(resultList, "[[", "stop")
 
+      stop_report <- matrix(TRUE, nrow = nsim)
+
+      additional_stats <- lapply(resultList, "[[", "additional_stats")
+
       ## return the results in the Simulations class object
       ret <- DASimulations(
         data = dataList,
         doses = recommendedDoses,
         fit = fitList,
         trialduration = trialduration,
-        stopReasons = stopReasons,
+        stop_report = stop_report,
+        additional_stats = additional_stats,
+        stop_reasons = stopReasons,
         seed = RNGstate
       )
+
 
       return(ret)
     }
@@ -4696,3 +4595,172 @@ setMethod("simulate",
 
 ## --------------------------------------------------------------------------
 # nolint end
+
+# simulate ----
+
+## DesignGrouped ----
+
+#' Simulate Method for the [`DesignGrouped`] Class
+#'
+#' @description `r lifecycle::badge("experimental")`
+#'
+#' A simulate method for [`DesignGrouped`] designs.
+#'
+#' @param object (`DesignGrouped`)\cr the design we want to simulate trials from.
+#' @param nsim (`number`)\cr how many trials should be simulated.
+#' @param seed (`RNGstate`)\cr generated with [set_seed()].
+#' @param truth (`function`)\cr a function which takes as input a dose (vector) and
+#'   returns the true probability (vector) for toxicity for the mono arm.
+#'   Additional arguments can be supplied in `args`.
+#' @param combo_truth (`function`)\cr same as `truth` but for the combo arm.
+#' @param args (`data.frame`)\cr optional `data.frame` with arguments that work
+#'   for both the `truth` and `combo_truth` functions. The column names correspond to
+#'   the argument names, the rows to the values of the arguments. The rows are
+#'   appropriately recycled in the `nsim` simulations.
+#' @param firstSeparate (`flag`)\cr whether to enroll the first patient separately
+#'   from the rest of the cohort and close the cohort in case a DLT occurs in this
+#'   first patient.
+#' @param mcmcOptions (`McmcOptions`)\cr MCMC options for each evaluation in the trial.
+#' @param parallel (`flag`)\cr whether the simulation runs are parallelized across the
+#'   cores of the computer.
+#' @param nCores (`number`)\cr how many cores should be used for parallel computing.
+#' @param ... not used.
+#'
+#' @return A list of `mono` and `combo` simulation results as [`Simulations`] objects.
+#'
+#' @aliases simulate-DesignGrouped
+#' @export
+#' @example examples/Design-method-simulate-DesignGrouped.R
+#'
+setMethod(
+  "simulate",
+  signature =
+    signature(
+      object = "DesignGrouped",
+      nsim = "ANY",
+      seed = "ANY"
+    ),
+  def =
+    function(object,
+             nsim = 1L,
+             seed = NULL,
+             truth,
+             combo_truth,
+             args = data.frame(),
+             firstSeparate = FALSE,
+             mcmcOptions = McmcOptions(),
+             parallel = FALSE,
+             nCores = min(parallelly::availableCores(), 5),
+             ...) {
+      nsim <- as.integer(nsim)
+      assert_function(truth)
+      assert_function(combo_truth)
+      assert_data_frame(args)
+      assert_count(nsim, positive = TRUE)
+      assert_flag(firstSeparate)
+      assert_flag(parallel)
+      assert_count(nCores, positive = TRUE)
+
+      n_args <- max(nrow(args), 1L)
+      rng_state <- set_seed(seed)
+      sim_seeds <- sample.int(n = 2147483647, size = nsim)
+
+      run_sim <- function(iter_sim) {
+        set.seed(sim_seeds[iter_sim])
+        current <- list(mono = list(), combo = list())
+        # Define true toxicity functions.
+        current$args <- args[(iter_sim - 1) %% n_args + 1, , drop = FALSE]
+        current$mono$truth <- function(dose) do.call(truth, c(dose, current$args))
+        current$combo$truth <- function(dose) do.call(combo_truth, c(dose, current$args))
+        # Start the simulated data with the provided one.
+        current$mono$data <- object@mono@data
+        current$combo$data <- object@combo@data
+        # We are in the first cohort and continue for mono and combo.
+        current$first <- TRUE
+        current$mono$stop <- current$combo$stop <- FALSE
+        # What are the next doses to be used? Initialize with starting doses.
+        if (object@same_dose) {
+          current$mono$dose <- current$combo$dose <- min(object@mono@startingDose, object@combo@startingDose)
+        } else {
+          current$mono$dose <- object@mono@startingDose
+          current$combo$dose <- object@combo@startingDose
+        }
+        # Inside this loop we simulate the whole trial, until stopping.
+        while (!(current$mono$stop && current$combo$stop)) {
+          if (!current$mono$stop) {
+            current$mono$data <- current$mono$data |>
+              h_add_dlts(current$mono$dose, current$mono$truth, object@mono@cohort_size, firstSeparate)
+          }
+          if (!current$combo$stop && (!current$first || !object@first_cohort_mono_only)) {
+            current$combo$data <- current$combo$data |>
+              h_add_dlts(current$combo$dose, current$combo$truth, object@combo@cohort_size, firstSeparate)
+          }
+          current$grouped <- h_group_data(current$mono$data, current$combo$data)
+          current$samples <- mcmc(current$grouped, object@model, mcmcOptions)
+          if (!current$mono$stop) {
+            current$mono$limit <- maxDose(object@mono@increments, data = current$mono$data)
+            current$mono$dose <- object@mono@nextBest |>
+              nextBest(current$mono$limit, current$samples, object@model, current$grouped, group = "mono")
+            current$mono$dose <- current$mono$dose$value
+            current$mono$stop <- object@mono@stopping |>
+              stopTrial(current$mono$dose, current$samples, object@model, current$mono$data, group = "mono")
+            current$mono$results <- h_unpack_stopit(current$mono$stop)
+          }
+          if (!current$combo$stop && (!current$first || !object@first_cohort_mono_only)) {
+            current$combo$limit <- if (is.na(current$mono$dose)) {
+              0
+            } else {
+              maxDose(object@combo@increments, current$combo$data) |>
+                min(current$mono$dose, na.rm = TRUE)
+            }
+            current$combo$dose <- object@combo@nextBest |>
+              nextBest(current$combo$limit, current$samples, object@model, current$grouped, group = "combo")
+            current$combo$dose <- current$combo$dose$value
+            current$combo$stop <- object@combo@stopping |>
+              stopTrial(current$combo$dose, current$samples, object@model, current$combo$data, group = "combo")
+            current$combo$results <- h_unpack_stopit(current$combo$stop)
+          }
+          if (object@same_dose && !current$mono$stop && !current$combo$stop) {
+            current$mono$dose <- current$combo$dose <- min(current$mono$dose, current$combo$dose)
+          }
+          if (current$first) current$first <- FALSE
+        }
+        current$mono$fit <- fit(current$samples, object@model, current$grouped, group = "mono")
+        current$combo$fit <- fit(current$samples, object@model, current$grouped, group = "combo")
+        lapply(
+          X = current[c("mono", "combo")], FUN = with,
+          list(
+            data = data, dose = dose, fit = subset(fit, select = -dose),
+            stop = attr(stop, "message"), results = results
+          )
+        )
+      }
+      vars_needed <- c("simSeeds", "args", "nArgs", "truth", "combo_truth", "firstSeparate", "object", "mcmcOptions")
+      result_list <- get_result_list(run_sim, nsim, vars_needed, parallel, nCores)
+      # Now we have a list with each element containing mono and combo. Reorder this a bit:
+      result_list <- list(
+        mono = lapply(result_list, "[[", "mono"),
+        combo = lapply(result_list, "[[", "combo")
+      )
+      # Put everything in a list with both mono and combo Simulations:
+      lapply(result_list, function(this_list) {
+        data_list <- lapply(this_list, "[[", "data")
+        recommended_doses <- as.numeric(sapply(this_list, "[[", "dose"))
+        fit_list <- lapply(this_list, "[[", "fit")
+        stop_reasons <- lapply(this_list, "[[", "stop")
+        report_results <- lapply(this_list, "[[", "results")
+        stop_report <- as.matrix(do.call(rbind, report_results))
+        additional_stats <- lapply(this_list, "[[", "additional_stats")
+
+        Simulations(
+          data = data_list,
+          doses = recommended_doses,
+          fit = fit_list,
+          stop_reasons = stop_reasons,
+          stop_report = stop_report,
+          additional_stats = additional_stats,
+          seed = rng_state
+        )
+      })
+    }
+)

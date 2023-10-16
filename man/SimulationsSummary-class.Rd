@@ -17,6 +17,10 @@ initialization function is provided for this class.
 \section{Slots}{
 
 \describe{
+\item{\code{stop_report}}{matrix of stopping rule outcomes}
+
+\item{\code{additional_stats}}{list of additional statistical summary}
+
 \item{\code{fitAtDoseMostSelected}}{fitted toxicity rate at dose most often selected}
 
 \item{\code{meanFit}}{list with the average, lower (2.5\%) and upper (97.5\%)

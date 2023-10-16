@@ -80,7 +80,6 @@ positive_number <- setClass(
 ##'
 ##' @export
 ##' @keywords programming
-##' @example examples/matching-tolerance.R
 matchTolerance <- function(x, table) {
   if (length(table) == 0) {
     return(integer())
@@ -96,51 +95,6 @@ matchTolerance <- function(x, table) {
     }))[1]
   }))
 }
-
-##' @describeIn matchTolerance Helper function for checking inclusion in a table with tolerance
-##' @export
-`%~%` <- function(x, table) {
-  !is.na(matchTolerance(x = x, table = table))
-}
-
-##' Check overlap of two character vectors
-##'
-##' @param a first character vector
-##' @param b second character vector
-##' @return returns TRUE if there is no overlap between the two character
-##' vectors, otherwise FALSE
-##'
-##' @keywords internal
-noOverlap <- function(a, b) {
-  identical(
-    intersect(a, b),
-    character(0)
-  )
-}
-
-##' Checking for scalar
-##'
-##' @param x the input
-##' @return Returns \code{TRUE} if \code{x} is a length one vector
-##' (i.e., a scalar)
-##'
-##' @keywords internal
-is.scalar <- function(x) {
-  return(identical(length(x), 1L))
-}
-
-##' Predicate checking for a boolean option
-##'
-##' @param x the object being checked
-##' @return Returns \code{TRUE} if \code{x} is a length one logical vector (i.e., a
-##' scalar)
-##'
-##' @keywords internal
-is.bool <- function(x) {
-  return(is.scalar(x) &&
-    is.logical(x))
-}
-
 
 ##' checks for whole numbers (integers)
 ##'
@@ -182,12 +136,11 @@ safeInteger <- function(x) {
 ##' @keywords internal
 is.probability <- function(x,
                            bounds = TRUE) {
-  return(is.scalar(x) &&
-    if (bounds) {
-      0 <= x && 1 >= x
-    } else {
-      0 < x && 1 > x
-    })
+  if (bounds) {
+    return(test_numeric(x, lower = 0, upper = 1, any.missing = FALSE))
+  } else {
+    return(test_numeric(x, lower = 0, upper = 1, any.missing = FALSE) && x != 0 && x != 1)
+  }
 }
 
 ##' Predicate checking for a numeric range
@@ -264,83 +217,6 @@ crmPackExample <- function() {
 ##' @author Daniel Sabanes Bove \email{sabanesd@@roche.com}
 crmPackHelp <- function() {
   utils::help(package = "crmPack", help_type = "html")
-}
-
-
-## this is the new version, working on the gtable objects:
-##' Plots gtable objects
-##'
-##' @method plot gtable
-##' @param x the gtable object
-##' @param \dots additional parameters for \code{\link[grid]{grid.draw}}
-##'
-##' @importFrom grid grid.draw
-##' @export
-plot.gtable <- function(x, ...) {
-  grid::grid.draw(x, ...)
-}
-
-##' @export
-print.gtable <- function(x, ...) {
-  plot.gtable(x, ...)
-}
-
-
-#' Multiple plot function
-#'
-#' ggplot objects can be passed in ..., or to plotlist (as a list of ggplot objects).
-#' If the layout is something like matrix(c(1,2,3,3), nrow=2, byrow=TRUE),
-#' then plot 1 will go in the upper left, 2 will go in the upper right, and
-#' 3 will go all the way across the bottom.
-#'
-#' @param \dots Objects to be passed
-#' @param plotlist a list of additional objects
-#' @param rows Number of rows in layout
-#' @param layout A matrix specifying the layout. If present, \code{rows}
-#' is ignored.
-#'
-#' @return Used for the side effect of plotting
-#' @importFrom grid grid.newpage pushViewport viewport
-#' @export
-multiplot <- function(..., plotlist = NULL, rows = 1, layout = NULL) {
-  # Make a list from the ... arguments and plotlist
-  plots <- c(list(...), plotlist)
-
-  numPlots <- length(plots)
-
-  # If layout is NULL, then use 'cols' to determine layout
-  if (is.null(layout)) {
-    # Make the panel
-    # ncol: Number of columns of plots
-    # nrow: Number of rows needed, calculated from # of cols
-    layout <- matrix(seq(1, rows * ceiling(numPlots / rows)),
-      nrow = rows, ncol = ceiling(numPlots / rows),
-      byrow = TRUE
-    )
-  }
-
-  if (numPlots == 1) {
-    print(plots[[1]])
-  } else {
-    # Set up the page
-    grid::grid.newpage()
-    grid::pushViewport(grid::viewport(layout = grid::grid.layout(
-      nrow(layout),
-      ncol(layout)
-    )))
-
-    # Make each plot, in the correct location
-    for (i in seq_len(numPlots))
-    {
-      # Get the i,j matrix positions of the regions that contain this subplot
-      matchidx <- as.data.frame(which(layout == i, arr.ind = TRUE))
-
-      print(plots[[i]], vp = grid::viewport(
-        layout.pos.row = matchidx$row,
-        layout.pos.col = matchidx$col
-      ))
-    }
-  }
 }
 
 ##' Taken from utils package (print.vignette)
@@ -459,36 +335,6 @@ rinvGamma <- function(n,
     shape = a,
     rate = b
   )
-}
-
-#' Convenience function to make barplots of percentages
-#'
-#' @param x vector of samples
-#' @param description xlab string
-#' @param xaxisround rounding for xaxis labels (default: 0, i.e. integers will
-#' be used)
-#'
-#' @return the ggplot2 object
-#'
-#' @keywords internal
-#' @importFrom ggplot2 ggplot geom_histogram aes xlab ylab xlim
-#' @example examples/myBarplot.R
-myBarplot <- function(x, description, xaxisround = 0) {
-  tabx <- table(x) / length(x)
-  dat <- data.frame(x = as.numeric(names(tabx)), perc = as.numeric(tabx) * 100)
-  ggplot() +
-    geom_bar(aes(x = x, y = perc),
-      data = dat,
-      stat = "identity",
-      position = "identity",
-      width = ifelse(nrow(dat) > 1, min(diff(dat$x)) / 2, 1)
-    ) +
-    xlab(description) +
-    ylab("Percent") +
-    scale_x_continuous(
-      breaks =
-        round(dat$x, xaxisround)
-    )
 }
 
 # nolint end
@@ -849,6 +695,29 @@ h_null_if_na <- function(x) {
   }
 }
 
+#' Getting the default value for an empty object
+#'
+#' @description `r lifecycle::badge("stable")`
+#'
+#' A simple helper function that sets a default value for an empty object,
+#' that is an object for which [length()] function returns `0L`.
+#'
+#' @param x (`any`) \cr an object to handle. It can be any object for which
+#'   [length()] function is defined.
+#' @param default (`any`) \cr a default value for `x` object.
+#'
+#' @export
+#' @examples
+#' h_default_if_empty(character(0), default = "default label")
+#' h_default_if_empty("custom label", default = "default label")
+#' h_default_if_empty(NA, default = "default label")
+h_default_if_empty <- function(x, default) {
+  if (length(x) == 0L) {
+    default
+  } else {
+    x
+  }
+}
 #' Testing Matrix for Positive Definiteness
 #'
 #' @description `r lifecycle::badge("experimental")`
@@ -1020,4 +889,76 @@ h_find_interval <- function(..., replacement = -Inf) {
 
   x <- findInterval(...)
   ifelse(x == 0, yes = replacement, no = x)
+}
+
+#' unpack stopping rules and return list
+#'
+#' @description
+#'
+#' recursively unpack nested stopping rules logical value and label given
+#'
+#' @param stopit_tree object from simulate method
+
+h_unpack_stopit <- function(stopit_tree) {
+  label <- attr(stopit_tree, "report_label")
+  value <- stopit_tree[1]
+  names(value) <- label
+  value
+  if (is.null(attr(stopit_tree, "individual"))) {
+    return(value)
+  } else {
+    return(unlist(c(value, lapply(attr(stopit_tree, "individual"), h_unpack_stopit))))
+  }
+}
+
+#' calculate percentage of true stopping rules for report label output
+#'
+#' @description
+#'
+#' calculates true column means and converts output into percentages
+#' before combining the output with the report label; output is passed
+#' to [`show()`] and output with cat to console
+#'
+#' @param stop_report object from summary method
+
+h_calc_report_label_percentage <- function(stop_report) {
+  stop_pct <- colMeans(stop_report) * 100
+  stop_pct_to_print <- stop_pct[!is.na(names(stop_pct))]
+  return(stop_pct_to_print)
+}
+
+#' Group Together Mono and Combo Data
+#'
+#' This is only used in the simulation method for `DesignGrouped` to combine
+#' the separately generated data sets from mono and combo arms and to fit the
+#' combined logistic regression model.
+#' Hence the ID and cohort information is not relevant and will be
+#' arbitrarily assigned to avoid problems with the [`DataGrouped`] validation.
+#'
+#' @param mono_data (`Data`)\cr mono data.
+#' @param combo_data (`Data`)\cr combo data.
+#'
+#' @return A [`DataGrouped`] object containing both `mono_data` and `combo_data`,
+#'   but with arbitrary ID and cohort slots.
+#'
+#' @keywords internal
+h_group_data <- function(mono_data, combo_data) {
+  assert_class(mono_data, "Data")
+  assert_class(combo_data, "Data")
+
+  df <- data.frame(
+    x = c(mono_data@x, combo_data@x),
+    y = c(mono_data@y, combo_data@y),
+    group = rep(c("mono", "combo"), c(length(mono_data@x), length(combo_data@x)))
+  )
+  df <- df[order(df$x), ]
+
+  DataGrouped(
+    x = df$x,
+    y = df$y,
+    ID = seq_along(df$x),
+    cohort = as.integer(factor(df$x)),
+    doseGrid = sort(unique(c(mono_data@doseGrid, combo_data@doseGrid))),
+    group = df$group
+  )
 }

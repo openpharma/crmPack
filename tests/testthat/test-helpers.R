@@ -274,6 +274,16 @@ test_that("h_null_if_na throws an error for non-scalar, atomic argument", {
   )
 })
 
+# h_default_if_empty ----
+
+test_that("h_default_if_empty works as expected", {
+  default <- "default label"
+  expect_identical(h_default_if_empty(character(0), default), default)
+  expect_identical(h_default_if_empty("custom label", default), "custom label")
+  expect_identical(h_default_if_empty(NA, default), NA)
+  expect_identical(h_default_if_empty(NULL, default), default)
+})
+
 # h_is_positive_definite ----
 
 test_that("h_is_positive_definite returns TRUE for 2x2 positive-definite matrix", {
@@ -461,20 +471,23 @@ test_that("h_find_interval works as expected for custom replacement", {
 })
 
 test_that("default constructors exist for all subclasses of GeneralModel", {
-  classesToTest <- names(getClassDef("GeneralModel")@subclasses)
-  # Virtual class: throws exception
-  classesToTest <- classesToTest[which(!(classesToTest %in% c("DualEndpoint")))]
+  allModelSubclasses <- names(getClassDef("GeneralModel")@subclasses)
+  # Exceptions.
+  classesNotToTest <- "DualEndpoint"
+  classesToTest <- setdiff(allModelSubclasses, classesNotToTest)
   lapply(
     classesToTest,
     function(cls) {
       # Function exists
-      expect_true(length(findFunction(paste0(".Default", cls), where = asNamespace("crmPack"))) > 1)
+      expect_true(
+        length(findFunction(paste0(".Default", cls), where = asNamespace("crmPack"))) > 1,
+        label = cls
+      )
       # Return value is of the correct class
       test_obj <- eval(parse(text = paste0(".Default", cls, "()")))
       expect_class(test_obj, cls)
     }
   )
-  expect_error(eval(parse(text = ".DefaultDualEndpoint()")))
 })
 
 test_that("default constructors exist for all subclasses of Increments", {
@@ -520,4 +533,194 @@ test_that("default constructors exist for all subclasses of Stopping", {
     }
   )
   expect_error(eval(parse(text = ".DefaultDualEndpoint()")))
+})
+
+
+test_that("stopping rule unpacking works", {
+  data <- h_get_data(placebo = FALSE)
+  model <- h_get_logistic_normal()
+  options <- McmcOptions(
+    burnin = 100,
+    step = 2,
+    samples = 2000
+  )
+  samples <- mcmc(data, model, options)
+  increments <- h_increments_relative()
+  next_max_dose <- maxDose(increments,
+    data = data
+  )
+
+  next_best <- h_next_best_ncrm()
+
+  doseRecommendation <- nextBest(next_best,
+    doselimit = next_max_dose,
+    samples = samples, model = model, data = data
+  )
+
+  myStopping1 <- StoppingMinCohorts(nCohorts = 4, report_label = "stop_rule_1")
+  myStopping2 <- StoppingMissingDose(report_label = "stop_rule_2")
+  myStopping3 <- StoppingMinPatients(nPatients = 1, report_label = "stop_rule_3")
+  myStopping <- StoppingAny(
+    stop_list =
+      c(
+        StoppingAll(
+          stop_list =
+            c(myStopping1, myStopping2),
+          report_label = "StoppingAll"
+        ),
+        myStopping3
+      ), report_label = "StoppingAny"
+  )
+
+
+  my_stopit <- stopTrial(
+    stopping = myStopping,
+    dose = doseRecommendation$value,
+    model = model,
+    data = data
+  )
+
+  result <- h_unpack_stopit(my_stopit)
+
+  expected <- c(TRUE, FALSE, FALSE, FALSE, TRUE)
+  names(expected) <- c("StoppingAny", "StoppingAll", "stop_rule_1", "stop_rule_2", "stop_rule_3")
+
+  expect_equal(result, expected)
+})
+
+test_that("conditions in stopping rule unpacking helpers work as expected", {
+  data <- h_get_data(placebo = FALSE)
+  model <- h_get_logistic_normal()
+  options <- McmcOptions(
+    burnin = 100,
+    step = 2,
+    samples = 2000
+  )
+  samples <- mcmc(data, model, options)
+  increments <- h_increments_relative()
+  next_max_dose <- maxDose(increments,
+    data = data
+  )
+
+  next_best <- h_next_best_ncrm()
+
+  doseRecommendation <- nextBest(next_best,
+    doselimit = next_max_dose,
+    samples = samples, model = model, data = data
+  )
+
+  myStopping1 <- StoppingMinCohorts(nCohorts = 4, report_label = "stop_rule_1")
+  myStopping2 <- StoppingMissingDose(report_label = "stop_rule_2")
+  myStopping3 <- StoppingMinPatients(nPatients = 1, report_label = "stop_rule_3")
+  myStopping <- StoppingAny(
+    stop_list =
+      c(
+        StoppingAll(
+          stop_list =
+            c(myStopping1, myStopping2),
+          report_label = "StoppingAll"
+        ),
+        myStopping3
+      ), report_label = "StoppingAny"
+  )
+
+  # enters only "if is.null condition" since atomic
+  my_stopit <- stopTrial(
+    stopping = myStopping1,
+    dose = doseRecommendation$value,
+    model = model,
+    data = data
+  )
+
+  result <- h_unpack_stopit(my_stopit)
+
+  expected <- c(FALSE)
+  names(expected) <- c("stop_rule_1")
+  expect_equal(result, expected)
+
+  # enters both "if is.null condition" and "else" branches since complex stopping rule
+  # "else branch" of h_unpack_stopit cannot be entered alone due to recursion
+  my_stopit <- stopTrial(
+    stopping = myStopping,
+    dose = doseRecommendation$value,
+    model = model,
+    data = data
+  )
+
+  result <- h_unpack_stopit(my_stopit)
+
+  expected <- c(TRUE, FALSE, FALSE, FALSE, TRUE)
+  names(expected) <- c("StoppingAny", "StoppingAll", "stop_rule_1", "stop_rule_2", "stop_rule_3")
+  expect_equal(result, expected)
+})
+
+test_that("calculations for percentages, given report_labels are provided works as expected", {
+  # Define the stop_report matrix
+  stop_report <- matrix(c(TRUE, FALSE, TRUE, TRUE, FALSE, TRUE, FALSE, FALSE, TRUE, FALSE, FALSE, TRUE), ncol = 3)
+
+  dimnames(stop_report) <- list(
+    c("", "", "", ""),
+    c(
+      "≥ 3 cohorts dosed",
+      "P(0.2 ≤ prob(DLE | NBD) ≤ 0.35) ≥ 0.5",
+      "≥ 20 patients dosed"
+    )
+  )
+
+  result <- h_calc_report_label_percentage(stop_report)
+
+  expect_named(result, c("≥ 3 cohorts dosed", "P(0.2 ≤ prob(DLE | NBD) ≤ 0.35) ≥ 0.5", "≥ 20 patients dosed"))
+  expect_double(result)
+  expected <- c(75, 25, 50)
+  names(expected) <- c("≥ 3 cohorts dosed", "P(0.2 ≤ prob(DLE | NBD) ≤ 0.35) ≥ 0.5", "≥ 20 patients dosed")
+  expect_equal(result, expected)
+})
+
+test_that("calculations for percentages, given report_labels are not provided works as expected", {
+  # Define the stop_report matrix
+  stop_report <- matrix(c(TRUE, FALSE, TRUE, TRUE, FALSE, TRUE, FALSE, FALSE, TRUE, FALSE, FALSE, TRUE), ncol = 3)
+
+  dimnames(stop_report) <- list(
+    c("", "", "", ""),
+    c(
+      NA,
+      NA,
+      NA
+    )
+  )
+
+  result <- h_calc_report_label_percentage(stop_report)
+  expect_numeric(result)
+  expected <- numeric(0)
+  names(expected) <- character(0)
+  expect_equal(result, expected)
+})
+
+# h_group_data ----
+
+test_that("h_group_data works as expected", {
+  mono_data <- h_get_data_1()
+  combo_data <- h_get_data_2()
+  group_data <- expect_silent(h_group_data(mono_data, combo_data))
+  expect_valid(group_data, "DataGrouped")
+  expect_identical(mono_data@nObs + combo_data@nObs, group_data@nObs)
+  expect_identical(sort(union(mono_data@doseGrid, combo_data@doseGrid)), group_data@doseGrid)
+  mono_data_from_group <- cbind(
+    x = group_data@x[group_data@group == "mono"],
+    y = group_data@y[group_data@group == "mono"]
+  )
+  mono_data_from_start <- cbind(
+    x = mono_data@x,
+    y = mono_data@y
+  )
+  expect_setequal(mono_data_from_group, mono_data_from_start)
+  combo_data_from_group <- cbind(
+    x = group_data@x[group_data@group == "combo"],
+    y = group_data@y[group_data@group == "combo"]
+  )
+  combo_data_from_start <- cbind(
+    x = combo_data@x,
+    y = combo_data@y
+  )
+  expect_setequal(combo_data_from_group, combo_data_from_start)
 })

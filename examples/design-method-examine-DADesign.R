@@ -39,7 +39,7 @@ mySize1 <- CohortSizeRange(
   cohort_size = c(1, 3)
 )
 mySize2 <- CohortSizeDLT(
-  dlt_intervals = c(0, 1),
+  intervals = c(0, 1),
   cohort_size = c(1, 3)
 )
 mySize <- maxSize(mySize1, mySize2)
@@ -62,7 +62,7 @@ design <- DADesign(
   increments = myIncrements,
   nextBest = myNextBest,
   stopping = myStopping,
-  cohortSize = mySize,
+  cohort_size = mySize,
   data = emptydata,
   safetyWindow = mysafetywindow,
   startingDose = 3
@@ -72,7 +72,16 @@ set.seed(4235)
 # MCMC parameters are set to small values only to show this example. They should be
 # increased for a real case.
 # This procedure will take a while.
-options <- McmcOptions(burnin = 10, step = 1, samples = 100)
-# examine(design, mcmcOptions=options)
+options <- McmcOptions(
+  burnin = 10,
+  step = 1,
+  samples = 100,
+  rng_kind = "Mersenne-Twister",
+  rng_seed = 12
+)
+testthat::expect_warning(
+  result <- examine(design, mcmcOptions = options, maxNoIncrement = 2),
+  "Stopping because 2 times no increment"
+)
 
 # nolint end

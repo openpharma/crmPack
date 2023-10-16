@@ -258,3 +258,108 @@ test_that("v_data_da: error for t0 of wrong length, negative values", {
     "t0 must be of type double, nObs length, sorted non-negative"
   )
 })
+
+# v_data_ordinal ----
+
+test_that("v_data_ordinal passes for valid object", {
+  object <- h_get_data_ordinal()
+  expect_true(v_data_ordinal(object))
+})
+
+test_that("v_data_ordinal correctly detects bad data", {
+  object <- h_get_data_ordinal()
+  object@x[2] <- NA
+  expect_equal(
+    v_data_ordinal(object),
+    c(
+      "Doses vector x must be of type double and length nObs",
+      "Dose values in x must be from doseGrid",
+      "x must be equivalent to doseGrid[xLevel] (up to numerical tolerance)"
+    )
+  )
+
+  object <- h_get_data_ordinal()
+  object@x[2] <- 5
+  expect_equal(
+    v_data_ordinal(object),
+    c(
+      "Dose values in x must be from doseGrid",
+      "x must be equivalent to doseGrid[xLevel] (up to numerical tolerance)"
+    )
+  )
+
+  expect_error(
+    object@yCategories <- c("No tox" = 0, "AE" = 1, "DLT" = 2),
+    "assignment of an object of class \"numeric\" is not valid for @'yCategories' in an object of class \"DataOrdinal\""
+  )
+
+  object <- h_get_data_ordinal()
+  object@y[3] <- 3L
+  expect_equal(
+    v_data_ordinal(object),
+    "DLT vector y must be nObs long and contain integers between 0 and k-1 only, where k is the length of the vector in the yCategories slot" # nolint
+  )
+
+  object <- h_get_data_ordinal()
+  object@yCategories <- c("Good" = 0L, "Bad" = 1L, "Bad" = 2L)
+  expect_equal(
+    v_data_ordinal(object),
+    "yCategory labels must be unique"
+  )
+
+  object <- h_get_data_ordinal()
+  object@x <- c(10, 20, 30, 40, 50, 80, 50, 60, 60, 60)
+  expect_equal(
+    v_data_ordinal(object),
+    c(
+      "x must be equivalent to doseGrid[xLevel] (up to numerical tolerance)",
+      "There must be only one dose level per cohort"
+    )
+  )
+
+  object <- h_get_data_ordinal()
+  object@placebo <- TRUE
+  expect_equal(
+    v_data_ordinal(object),
+    "A cohort with only placebo is not allowed"
+  )
+
+  object <- h_get_data_ordinal()
+  object@placebo <- TRUE
+  object@x <- c(10, 20, 30, 40, 50, 80, 10, 60, 60, 60)
+  object@xLevel <- as.integer(c(1, 2, 3, 4, 5, 8, 1, 6, 6, 6))
+  object@cohort <- as.integer(c(1, 1, 2, 3, 4, 4, 4, 5, 5, 5))
+  expect_equal(
+    v_data_ordinal(object),
+    "There must be only one dose level, other than placebo, per cohort"
+  )
+})
+
+# v_data_grouped ----
+
+test_that("v_data_grouped passes for valid object", {
+  object <- h_get_data_grouped()
+  expect_true(v_data_grouped(object))
+})
+
+test_that("v_data_grouped fails for wrong length", {
+  object <- h_get_data_grouped()
+
+  object@group <- object@group[1:5]
+
+  expect_identical(
+    v_data_grouped(object),
+    "group must be factor with levels mono and combo of length nObs without missings"
+  )
+})
+
+test_that("v_data_grouped fails for wrong factor levels", {
+  object <- h_get_data_grouped()
+
+  object@group <- factor(object@group, levels = c("mono", "combo", "foo"))
+
+  expect_identical(
+    v_data_grouped(object),
+    "group must be factor with levels mono and combo of length nObs without missings"
+  )
+})

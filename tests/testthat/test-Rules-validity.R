@@ -600,32 +600,32 @@ test_that("v_increments_relative_parts returns message for non-valid clean_start
 ## v_increments_relative_dlt ----
 
 test_that("v_increments_relative_dlt passes for valid object", {
-  object <- IncrementsRelativeDLT(dlt_intervals = c(0, 2), increments = c(2, 1))
+  object <- IncrementsRelativeDLT(intervals = c(0, 2), increments = c(2, 1))
   expect_true(v_increments_relative_dlt(object))
 })
 
 test_that("v_increments_relative_dlt returns message for non-valid intervals", {
-  err_msg <- "dlt_intervals has to be an integer vector with unique, finite, non-negative and sorted non-missing values"
-  object <- IncrementsRelativeDLT(dlt_intervals = c(0, 2, 3), increments = c(2, 1, 1.5))
+  err_msg <- "intervals has to be an integer vector with unique, finite, non-negative and sorted non-missing values"
+  object <- IncrementsRelativeDLT(intervals = c(0, 2, 3), increments = c(2, 1, 1.5))
 
-  # Changing `dlt_intervals` so that it contains non-unique values.
-  object@dlt_intervals <- c(1L, 2L, 2L)
+  # Changing `intervals` so that it contains non-unique values.
+  object@intervals <- c(1L, 2L, 2L)
   expect_equal(v_increments_relative_dlt(object), err_msg)
 
-  # Changing `dlt_intervals` so that it contains non-sorted values.
-  object@dlt_intervals <- c(1L, 3L, 2L)
+  # Changing `intervals` so that it contains non-sorted values.
+  object@intervals <- c(1L, 3L, 2L)
   expect_equal(v_increments_relative_dlt(object), err_msg)
 
-  # Changing `dlt_intervals` so that it contains missing, or negative values.
-  object@dlt_intervals <- c(-1L, NA_integer_, 2L)
+  # Changing `intervals` so that it contains missing, or negative values.
+  object@intervals <- c(-1L, NA_integer_, 2L)
   expect_equal(v_increments_relative_dlt(object), err_msg)
 })
 
 test_that("v_increments_relative_dlt returns message for non-valid increments", {
-  err_msg <- "increments has to be a numerical vector of the same length as `dlt_intervals` with finite values"
-  object <- IncrementsRelativeDLT(dlt_intervals = c(0, 2, 3), increments = c(2, 1, 1.5))
+  err_msg <- "increments has to be a numerical vector of the same length as `intervals` with finite values"
+  object <- IncrementsRelativeDLT(intervals = c(0, 2, 3), increments = c(2, 1, 1.5))
 
-  # Changing `increments` so that it is of a length different than the length of `dlt_intervals`.
+  # Changing `increments` so that it is of a length different than the length of `intervals`.
   object@increments <- c(1, 2, 3, 4)
   expect_equal(v_increments_relative_dlt(object), err_msg)
 
@@ -743,7 +743,7 @@ test_that("v_increments_hsr_beta returns expected messages for non-valid beta pa
 test_that("v_increments_min passes for valid object", {
   object <- IncrementsMin(
     increments_list = list(
-      IncrementsRelativeDLT(dlt_intervals = c(0L, 1L), increments = c(2, 1)),
+      IncrementsRelativeDLT(intervals = c(0L, 1L), increments = c(2, 1)),
       IncrementsRelative(intervals = c(0, 2), increments = c(2, 1))
     )
   )
@@ -754,14 +754,14 @@ test_that("v_increments_min returns expected messages for non-valid object", {
   err_msg <- "all elements in increments_list must be of Increments class"
   object <- IncrementsMin(
     increments_list = list(
-      IncrementsRelativeDLT(dlt_intervals = c(0L, 1L), increments = c(2, 1)),
+      IncrementsRelativeDLT(intervals = c(0L, 1L), increments = c(2, 1)),
       IncrementsRelative(intervals = c(0, 2), increments = c(2, 1))
     )
   )
 
   # Changing `increments_list` so that is contains objects other than `Increments`.
   object@increments_list <- list(
-    IncrementsRelativeDLT(dlt_intervals = c(0L, 1L), increments = c(2, 1)),
+    IncrementsRelativeDLT(intervals = c(0L, 1L), increments = c(2, 1)),
     intervals = c(0, 2),
     increments = c(2, 1)
   )
@@ -1343,35 +1343,35 @@ test_that("v_cohort_size_dlt passes for valid object", {
   expect_true(v_cohort_size_dlt(object))
 })
 
-test_that("v_cohort_size_dlt returns message for non-valid dlt_intervals", {
-  err_msg <- "dlt_intervals must be an integer vector with non-negative, sorted (asc.) and unique values"
+test_that("v_cohort_size_dlt returns message for non-valid intervals", {
+  err_msg <- "intervals must be an integer vector with non-negative, sorted (asc.) and unique values"
   object <- CohortSizeDLT(c(0, 1), c(20, 60))
 
-  # Changing `dlt_intervals` so that it contains a non-unique values
-  object@dlt_intervals <- c(10L, 10L)
+  # Changing `intervals` so that it contains a non-unique values
+  object@intervals <- c(10L, 10L)
   expect_equal(v_cohort_size_dlt(object), err_msg)
 
-  # Changing `dlt_intervals` so that it contains not allowed elements or it is not sorted.
-  object@dlt_intervals <- c(0L, -30L)
+  # Changing `intervals` so that it contains not allowed elements or it is not sorted.
+  object@intervals <- c(0L, -30L)
   expect_equal(v_cohort_size_dlt(object), err_msg)
-  object@dlt_intervals <- c(NA, 30L)
+  object@intervals <- c(NA, 30L)
   expect_equal(v_cohort_size_dlt(object), err_msg)
-  object@dlt_intervals <- -5L
+  object@intervals <- -5L
   object@cohort_size <- 20L
   expect_equal(v_cohort_size_dlt(object), err_msg)
 
-  # Changing `dlt_intervals` so that its length is not >= 1.
-  object@dlt_intervals <- integer(0)
+  # Changing `intervals` so that its length is not >= 1.
+  object@intervals <- integer(0)
   object@cohort_size <- integer(0)
   expect_equal(v_cohort_size_dlt(object), err_msg)
 })
 
 test_that("v_cohort_size_dlt returns message for non-valid cohort_size", {
   errmsg <-
-    "cohort_size must be an integer vector of the same length as dlt_intervals, containing non-negative values only"
+    "cohort_size must be an integer vector of the same length as intervals, containing non-negative values only"
   object <- CohortSizeDLT(c(0, 1), c(20, 60))
 
-  # Changing `cohort_size` so that its length is not equal to the length of `dlt_intervals`.
+  # Changing `cohort_size` so that its length is not equal to the length of `intervals`.
   object@cohort_size <- c(20L, 60L, 90L)
   expect_equal(v_cohort_size_dlt(object), errmsg)
 
@@ -1381,7 +1381,7 @@ test_that("v_cohort_size_dlt returns message for non-valid cohort_size", {
   object@cohort_size <- c(NA, 30L)
   expect_equal(v_cohort_size_dlt(object), errmsg)
   object@cohort_size <- -20L
-  object@dlt_intervals <- 0L
+  object@intervals <- 0L
   expect_equal(v_cohort_size_dlt(object), errmsg)
 })
 
@@ -1420,60 +1420,60 @@ test_that("v_cohort_size_parts passes for valid object", {
   expect_true(v_cohort_size_parts(object))
 })
 
-test_that("v_cohort_size_parts returns message for non-valid sizes", {
-  err_msg <- "sizes needs to be an integer vector of length 2 with all elements positive"
-  object <- CohortSizeParts(c(1, 4))
+test_that("v_cohort_size_parts returns message for non-valid cohort_sizes", {
+  err_msg <- "cohort_sizes needs to be an integer vector of length 2 with all elements positive"
+  object <- CohortSizeParts(c(1L, 4L))
 
-  # Changing `sizes` so that it is not of length 2.
-  object@sizes <- c(1L, 4L, 7L)
+  # Changing `cohort_sizes` so that it is not of length 2.
+  object@cohort_sizes <- c(1L, 4L, 7L)
   expect_equal(v_cohort_size_parts(object), err_msg)
-  object@sizes <- 2L
+  object@cohort_sizes <- 2L
   expect_equal(v_cohort_size_parts(object), err_msg)
-  object@sizes <- integer(0)
+  object@cohort_sizes <- integer(0)
   expect_equal(v_cohort_size_parts(object), err_msg)
 
-  # Changing `sizes` so that it contains not allowed elements.
-  object@sizes <- c(0L, 4L)
+  # Changing `cohort_sizes` so that it contains not allowed elements.
+  object@cohort_sizes <- c(0L, 4L)
   expect_equal(v_cohort_size_parts(object), err_msg)
-  object@sizes <- c(1L, -30L)
+  object@cohort_sizes <- c(1L, -30L)
   expect_equal(v_cohort_size_parts(object), err_msg)
-  object@sizes <- c(NA, 30L)
+  object@cohort_sizes <- c(NA, 30L)
   expect_equal(v_cohort_size_parts(object), err_msg)
-  object@sizes <- -20L
+  object@cohort_sizes <- -20L
   expect_equal(v_cohort_size_parts(object), err_msg)
 })
 
 ## v_cohort_size_max ----
 
 test_that("v_cohort_size_max passes for valid object", {
-  object <- CohortSizeMax(h_cohort_size_list())
+  object <- CohortSizeMax(h_cohort_sizes())
   expect_true(v_cohort_size_max(object))
 
-  object <- CohortSizeMax(h_cohort_size_list(three_rules = TRUE))
+  object <- CohortSizeMax(h_cohort_sizes(three_rules = TRUE))
   expect_true(v_cohort_size_max(object))
 })
 
 test_that("v_cohort_size_parts returns message for non-valid sizes", {
-  err_msg <- "cohort_size_list must be a list of CohortSize (unique) objects only and be of length >= 2"
-  cohort_size_list <- h_cohort_size_list()
-  object <- CohortSizeMax(cohort_size_list)
+  err_msg <- "cohort_sizes must be a list of CohortSize (unique) objects only and be of length >= 2"
+  cohort_sizes <- h_cohort_sizes()
+  object <- CohortSizeMax(cohort_sizes)
 
-  # Changing `cohort_size_list` so that it does not contain `CohortSize` objects only.
-  object@cohort_size_list <- list(3, 5)
+  # Changing `cohort_sizes` so that it does not contain `CohortSize` objects only.
+  object@cohort_sizes <- list(3, 5)
   expect_equal(v_cohort_size_max(object), err_msg)
-  object@cohort_size_list <- list(cohort_size_list[[1]], 5L)
+  object@cohort_sizes <- list(cohort_sizes[[1]], 5L)
   expect_equal(v_cohort_size_max(object), err_msg)
-  object@cohort_size_list <- list(cohort_size_list[[1]], NA)
+  object@cohort_sizes <- list(cohort_sizes[[1]], NA)
   expect_equal(v_cohort_size_max(object), err_msg)
-  object@cohort_size_list <- list()
-  expect_equal(v_cohort_size_max(object), err_msg)
-
-  # Changing `cohort_size_list` so that it contains non-unique `CohortSize` objects.
-  object@cohort_size_list <- list(cohort_size_list[[1]], cohort_size_list[[1]])
+  object@cohort_sizes <- list()
   expect_equal(v_cohort_size_max(object), err_msg)
 
-  # Changing `cohort_size_list` so that it is not of length >=2.
-  object@cohort_size_list <- list(cohort_size_list[[1]])
+  # Changing `cohort_sizes` so that it contains non-unique `CohortSize` objects.
+  object@cohort_sizes <- list(cohort_sizes[[1]], cohort_sizes[[1]])
+  expect_equal(v_cohort_size_max(object), err_msg)
+
+  # Changing `cohort_sizes` so that it is not of length >=2.
+  object@cohort_sizes <- list(cohort_sizes[[1]])
   expect_equal(v_cohort_size_max(object), err_msg)
 })
 
