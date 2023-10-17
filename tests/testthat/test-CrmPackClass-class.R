@@ -2,7 +2,10 @@
 
 test_that("CrmPackClass correctly identifies crmPack classes", {
   crmPack_class_list <- getClasses(asNamespace("crmPack"))
-  exclusions <- c("DualEndpoint")
+  exclusions <- c(
+    "CohortSize", "CrmPackClass", "DualEndpoint", "GeneralData", "GeneralModel", "ModelEff", "ModelPseudo", "ModelTox", "NextBest", "positive_number", "Report", "SafetyWindow",
+    "Stopping", "Increments", "Validate"
+  )
   crmPack_class_list <- setdiff(crmPack_class_list, exclusions)
 
   for (cls in crmPack_class_list) {
@@ -11,13 +14,11 @@ test_that("CrmPackClass correctly identifies crmPack classes", {
       if (exists(constructor_name, mode = "function")) {
         expect_true(is(do.call(paste0(".Default", !!cls), list()), "CrmPackClass"))
       } else {
-        message(paste0("No default constructor for ", cls))
-        expect_true(TRUE)
+        fail(paste0("No default constructor for ", cls))
       }
     }
   }
 })
-
 
 test_that("CrmPackClass does not identify random non-crmPack classes", {
   non_crmPack_object_list <- list(
@@ -27,6 +28,17 @@ test_that("CrmPackClass does not identify random non-crmPack classes", {
 
   for (obj in non_crmPack_object_list) {
     expect_false(is(obj, "CrmPackClass"))
+  }
+})
+
+test_that("virtual CrmPackClass classes throw expcted error when default constructor called", {
+  exception_class_list <- c(
+    "CohortSize", "CrmPackClass", "DualEndpoint", "GeneralData", "GeneralModel", "ModelEff", "ModelPseudo", "ModelTox", "NextBest", "Report", "SafetyWindow",
+    "Stopping", "Increments", "Validate"
+  )
+  for (cls in exception_class_list) {
+    constructor_name <- paste0(".Default", cls)
+    expect_error(do.call(paste0(".Default", !!cls), list()))
   }
 })
 
