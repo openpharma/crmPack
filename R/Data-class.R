@@ -598,7 +598,7 @@ DataOrdinal <- function(x = numeric(),
 #' @rdname DataOrdinal-class
 #' @note Typically, end users will not use the `.DefaultDataOrdinal()` function.
 #' @export
-.DefaultDataOrdinal <- function () {
+.DefaultDataOrdinal <- function() {
   DataOrdinal(
     x = c(10, 20, 30, 40, 50, 50, 50, 60, 60, 60),
     y = as.integer(c(0, 0, 0, 0, 0, 1, 0, 0, 1, 2)),

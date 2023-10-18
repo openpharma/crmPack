@@ -286,41 +286,6 @@ DualDesign <- function(model,
 #' @note Typically, end users will not use the `.DefaultDualDesign()` function.
 #' @export
 .DefaultDualDesign <- function() {
-  # my_size1 <- CohortSizeRange(
-  #   intervals = c(0, 30),
-  #   cohort_size = c(1, 3)
-  # )
-  # my_size2 <- CohortSizeDLT(
-  #   intervals = c(0, 1),
-  #   cohort_size = c(1, 3)
-  # )
-  # my_size <- maxSize(my_size1, my_size2)
-  #
-  # my_stopping1 <- StoppingTargetBiomarker(
-  #   target = c(0.9, 1),
-  #   prob = 0.5
-  # )
-  # my_stopping <- my_stopping1 | StoppingMinPatients(40)
-  #
-  # my_increments <- IncrementsRelative(
-  #   intervals = c(0, 20),
-  #   increments = c(1, 0.33)
-  # )
-  #
-  # DualDesign(
-  #   model = .DefaultDualEndpointRW(),
-  #   data = DataDual(doseGrid = c(1, 3, 5, 10, 15, 20, 25, 40, 50, 80, 100)),
-  #   nextBest = NextBestDualEndpoint(
-  #     target = c(0.9, 1),
-  #     overdose = c(0.35, 1),
-  #     max_overdose_prob = 0.25
-  #   ),
-  #   stopping = my_stopping,
-  #   increments = my_increments,
-  #   cohort_size = my_size,
-  #   startingDose = 3
-  # )
-
   my_model <- DualEndpointRW(
     mean = c(0, 1),
     cov = matrix(c(1, 0, 0, 1), nrow = 2),
@@ -851,10 +816,10 @@ DADesign <- function(model, data,
   )
 
   npiece_ <- 10
-  Tmax_ <- 60
+  t_max_ <- 60
 
 lambda_prior <- function(k) {
-  npiece_ / (Tmax_ * (npiece_ - k + 0.5))
+  npiece_ / (t_max_ * (npiece_ - k + 0.5))
 }
 
   model <- DALogisticLogNormal(
