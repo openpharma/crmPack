@@ -5,9 +5,12 @@
 \alias{DualSimulations-class}
 \alias{.DualSimulations}
 \alias{DualSimulations}
+\alias{.DefaultDualSimulations}
 \title{\code{DualSimulations}}
 \usage{
 DualSimulations(rho_est, sigma2w_est, fit_biomarker, ...)
+
+.DefaultDualSimulations()
 }
 \arguments{
 \item{rho_est}{(\code{numeric})\cr see \code{\link{DualSimulations}}}
@@ -36,6 +39,9 @@ it contains additional slots to capture the dose-biomarker \code{fits}, and the
 \item{\code{fit_biomarker}}{(\code{list})\cr with the final dose-biomarker curve fits}
 }}
 
+\note{
+Typically, end users will not use the \code{.DefaultDualSimulations()} function.
+}
 \examples{
 data_list <- list(
   Data(

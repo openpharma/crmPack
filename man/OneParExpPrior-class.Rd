@@ -44,7 +44,7 @@ for theta.}
 \note{
 Typically, end users will not use the \code{.DefaultOneparExpPrior()} function.
 
-Typically, end users will not use the \code{DefaultOneParLogNormalPrior()} function.
+Typically, end users will not use the \code{.DefaultOneParLogNormalPrior()} function.
 }
 \examples{
 my_model <- OneParExpPrior(
