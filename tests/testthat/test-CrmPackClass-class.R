@@ -36,7 +36,7 @@ test_that("CrmPackClass does not identify random non-crmPack classes", {
   }
 })
 
-test_that("virtual CrmPackClass classes throw expcted error when default constructor called", {
+test_that("virtual CrmPackClass classes throw expected error when default constructor called", {
   exception_class_list <- c(
     "CohortSize", "CrmPackClass", "DualEndpoint", "GeneralData", "GeneralModel",
     "GeneralSimulationsSummary", "Increments", "ModelEff", "ModelPseudo",
