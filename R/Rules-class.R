@@ -1469,11 +1469,11 @@ setClass(
 
 ## default constructor ----
 
-#' @rdname Stopping-class
-#' @note Typically, end users will not use the `DefaultStopping()` function.
+#' @rdname CohortSize-class
+#' @note Typically, end users will not use the `DefaultCohortSize()` function.
 #' @export
 .DefaultCohortSize <- function() {
-  stop(paste0("Class Stopping should not be instantiated directly.  Please use one of its subclasses instead."))
+  stop(paste0("Class CohortSize should not be instantiated directly.  Please use one of its subclasses instead."))
 }
 
 # StoppingMissingDose ----
