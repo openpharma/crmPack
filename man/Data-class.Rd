@@ -5,6 +5,7 @@
 \alias{Data-class}
 \alias{.Data}
 \alias{Data}
+\alias{.DefaultData}
 \title{\code{Data}}
 \usage{
 Data(
@@ -16,6 +17,8 @@ Data(
   placebo = FALSE,
   ...
 )
+
+.DefaultData()
 }
 \arguments{
 \item{x}{(\code{numeric})\cr the doses for the patients.}
@@ -72,6 +75,8 @@ in the \code{doseGrid}is considered as PLACEBO.}
 \code{ID} and \code{cohort} can be missing. Then a message will be issued
 and the variables will be filled with default IDs and best guesses cohort,
 i.e. a sorted (in ascending order) sequence of values from \verb{\{1, 2, ...\}}.
+
+Typically, end users will not use the \code{.DefaultData()} function.
 }
 \examples{
 my_data <- Data(

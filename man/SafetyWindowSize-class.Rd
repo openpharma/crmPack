@@ -5,9 +5,12 @@
 \alias{SafetyWindowSize-class}
 \alias{.SafetyWindowSize}
 \alias{SafetyWindowSize}
+\alias{.DefaultSafetyWindowSize}
 \title{\code{SafetyWindowSize}}
 \usage{
 SafetyWindowSize(gap, size, follow, follow_min)
+
+.DefaultSafetyWindowSize()
 }
 \arguments{
 \item{gap}{see slot definition.}
@@ -59,6 +62,9 @@ cohort needs to be followed before the next cohort opens.}
 to be followed at the minimal follow up time.}
 }}
 
+\note{
+Typically, end users will not use the \code{.DefaultSafetyWindowSize()} function.
+}
 \examples{
 # Rule for having patient gap (7,3,3,3,...) for cohort size < 4, and
 # patient gap (9,5,5,5...) for cohort size >= 4.

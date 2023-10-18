@@ -4,7 +4,11 @@
 \name{DASimulations-class}
 \alias{DASimulations-class}
 \alias{.DASimulations}
+\alias{.DefaultDASimulations}
 \title{Class for the simulations output from DA based designs}
+\usage{
+.DefaultDASimulations()
+}
 \description{
 This class captures the trial simulations from DA based
 designs. In comparison to the parent class \code{\linkS4class{Simulations}},
@@ -17,4 +21,7 @@ parameters and the trial duration.
 \item{\code{trialduration}}{the vector of trial duration values for all simulations.}
 }}
 
+\note{
+Typically, end users will not use the \code{.DASimulations()} function.
+}
 \keyword{classes}

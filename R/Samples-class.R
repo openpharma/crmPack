@@ -51,3 +51,15 @@ NULL
 Samples <- function(data, options) {
   new("Samples", data = data, options = options)
 }
+
+## default constructor ----
+
+#' @rdname Samples-class
+#' @note Typically, end users will not use the `.DefaultSamples()` function.
+#' @export
+.DefaultSamples <- function() {
+  mcmc(
+    data = .DefaultData(),
+    model = .DefaultLogisticLogNormal(),
+    options = .DefaultMcmcOptions())
+}

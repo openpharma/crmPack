@@ -34,6 +34,15 @@ NULL
   validity = v_general_data
 )
 
+## default constructor ----
+
+#' @rdname DataGeneral-class
+#' @note Typically, end users will not use the `.DefaultDataGeneral()` function.
+#' @export
+.DefaultDataGeneral <- function() {
+  stop(paste0("Class DataGeneral cannot be instantiated directly.  Please use one of its subclasses instead."))
+}
+
 # Data ----
 
 ## class ----
@@ -157,6 +166,21 @@ Data <- function(x = numeric(),
   )
 }
 
+## default constructor ----
+
+#' @rdname Data-class
+#' @note Typically, end users will not use the `.DefaultData()` function.
+#' @export
+.DefaultData <- function() {
+  Data(
+    doseGrid = c(1, 3, 5, 10, 15, 20, 25, 40, 50, 80, 100),
+    ID = 1L:3L,
+    cohort = 1L:3L,
+    x = c(1, 3, 5),
+    y = rep(0L, 3)
+  )
+}
+
 # DataDual ----
 
 ## class ----
@@ -195,6 +219,23 @@ DataDual <- function(w = numeric(),
                      ...) {
   d <- Data(...)
   .DataDual(d, w = w)
+}
+
+
+## default constructor ----
+
+#' @rdname DataDual-class
+#' @note Typically, end users will not use the `.DefaultDataDual()` function.
+#' @export
+.DefaultDataDual <- function() {
+  DataDual(
+    x = c(0.1, 0.5, 1.5, 3, 6, 10, 10, 10),
+    y = c(0, 0, 0, 0, 0, 0, 1, 0),
+    w = rnorm(8),
+    doseGrid = c(0.1, 0.5, 1.5, 3, 6, seq(from = 10, to = 80, by = 2)),
+    ID = 1L:8L,
+    cohort = as.integer(c(1, 2, 3, 4, 5, 6, 6, 6))
+  )
 }
 
 # DataParts ----
@@ -259,6 +300,25 @@ DataParts <- function(part = integer(),
   )
 }
 
+## default constructor ----
+
+#' @rdname DataParts-class
+#' @note Typically, end users will not use the `.DefaultDataParts()` function.
+#' @export
+.DefaultDataParts <- function() {
+  DataParts(
+    x = c(0.1, 0.5, 1.5),
+    y = c(0, 0, 0),
+    ID = 1:3,
+    cohort = 1:3,
+    doseGrid = c(0.1, 0.5, 1.5, 3, 6, seq(from = 10, to = 80, by = 2)),
+    part = c(1L, 1L, 1L),
+    nextPart = 1L,
+    part1Ladder = c(0.1, 0.5, 1.5, 3, 6, 10)
+  )
+}
+
+
 # DataMixture ----
 
 ## class ----
@@ -322,6 +382,25 @@ DataMixture <- function(xshare = numeric(),
   )
 }
 
+## default constructor ----
+
+#' @rdname DataMixture-class
+#' @note Typically, end users will not use the `.DefaultDataMixture()` function.
+#' @export
+.DefaultDataMixture <- function() {
+  DataMixture(
+    xshare = c(12, 14, 16, 18.0),
+    yshare = c(0L, 1L, 1L, 1L),
+    nObsshare = 4L,
+    x = c(0.1, 0.5, 1.5),
+    y = c(0, 0, 0),
+    ID = 1L:3L,
+    cohort = 1L:3L,
+    doseGrid = c(0.1, 0.5, 1.5, 3, 6, seq(from = 10, to = 80, by = 2))
+  )
+}
+
+
 # DataDA ----
 
 ## class ----
@@ -384,6 +463,24 @@ DataDA <- function(u = numeric(),
     u = as.numeric(u),
     t0 = as.numeric(t0),
     Tmax = as.numeric(Tmax)
+  )
+}
+
+## default constructor ----
+
+#' @rdname DataDA-class
+#' @note Typically, end users will not use the `.DefaultDataDA()` function.
+#' @export
+.DefaultDataDA <- function() {
+  DataDA(
+    u = c(42, 30, 15, 5, 20, 25, 30, 60),
+    t0 = c(0, 15, 30, 40, 55, 70, 75, 85),
+    Tmax = 60,
+    x = c(0.1, 0.5, 1.5, 3, 6, 10, 10, 10),
+    y = c(0, 0, 1, 1, 0, 0, 1, 0),
+    doseGrid = c(0.1, 0.5, 1.5, 3, 6, seq(from = 10, to = 80, by = 2)),
+    ID = 1L:8L,
+    cohort = as.integer(c(1, 2, 3, 4, 5, 6, 6, 6))
   )
 }
 
@@ -492,6 +589,24 @@ DataOrdinal <- function(x = numeric(),
     xLevel = match_within_tolerance(x = x, table = doseGrid),
     placebo = placebo,
     yCategories = yCategories
+  )
+}
+
+
+## default constructor ----
+
+#' @rdname DataOrdinal-class
+#' @note Typically, end users will not use the `.DefaultDataOrdinal()` function.
+#' @export
+.DefaultDataOrdinal <- function() {
+  DataOrdinal(
+    x = c(10, 20, 30, 40, 50, 50, 50, 60, 60, 60),
+    y = as.integer(c(0, 0, 0, 0, 0, 1, 0, 0, 1, 2)),
+    ID = 1L:10L,
+   cohort = as.integer(c(1:4, 5, 5, 5, 6, 6, 6)),
+    doseGrid = c(seq(from = 10, to = 100, by = 10)),
+    yCategories = c("No tox" = 0L, "Sub-tox AE" = 1L, "DLT" = 2L),
+    placebo = FALSE
   )
 }
 

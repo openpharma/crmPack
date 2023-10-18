@@ -5,6 +5,7 @@
 \alias{McmcOptions-class}
 \alias{.McmcOptions}
 \alias{McmcOptions}
+\alias{.DefaultMcmcOptions}
 \title{\code{McmcOptions}}
 \usage{
 McmcOptions(
@@ -14,6 +15,8 @@ McmcOptions(
   rng_kind = NA_character_,
   rng_seed = NA_integer_
 )
+
+.DefaultMcmcOptions()
 }
 \arguments{
 \item{burnin}{(\code{count})\cr number of burn-in iterations which are not saved.}
@@ -63,6 +66,9 @@ used by \code{\link{rjags}} for a chosen \code{rng_kind}. It must be an integer 
 \code{NA_integer_}, which means that the seed will be chosen by \code{\link{rjags}}.}
 }}
 
+\note{
+Typically, end users will not use the \code{.DefaultMcmcOptions()} function.
+}
 \examples{
 # Set up MCMC option in order to have a burn-in of 10000 iterations and
 # then take every other iteration up to a collection of 10000 samples.
