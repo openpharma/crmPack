@@ -84,8 +84,14 @@ GeneralSimulations <- function(data,
 #' @rdname GeneralSimulations-class
 #' @note Typically, end users will not use the `.DefaultGeneralSimulations()` function.
 #' @export
-.DefaultGneeralSimulations <- function() {
-  GeneralSimulations(seed = 123)
+.DefaultGeneralSimulations <- function() {
+  GeneralSimulations(
+    data = list(
+      Data(x = 1:3, y = c(0, 1, 0), doseGrid = 1:3, ID = 1L:3L, cohort = 1L:3L),
+      Data(x = 4:6, y = c(0, 1, 0), doseGrid = 4:6, ID = 1L:3L, cohort = 1L:3L)
+    ),
+    doses = c(1, 2),
+    seed = 123)
 }
 
 
@@ -166,7 +172,6 @@ Simulations <- function(fit,
 .DefaultSimulations <- function() {
   design <- .DefaultDesign()
   myTruth <- probFunction(design@model, alpha0 = 7, alpha1 = 8)
-  options <-.DefaultMcmcOptions()
 
   simulate(
     design,
@@ -174,7 +179,7 @@ Simulations <- function(fit,
     truth = myTruth,
     nsim = 1,
     seed = 819,
-    mcmcOptions = options,
+    mcmcOptions = .DefaultMcmcOptions(),
     parallel = FALSE
   )
 }
@@ -242,6 +247,46 @@ DualSimulations <- function(rho_est,
   )
 }
 
+## default constructor ----
+
+#' @rdname DualSimulations-class
+#' @note Typically, end users will not use the `.DefaultDualSimulations()` function.
+#' @export
+.DefaultDualSimulations <- function() {
+  DualSimulations(
+    rho_est = c(0.25, 0.35),
+    sigma2w_est = c(0.15, 0.25),
+    fit_biomarker = list(c(0.3, 0.4), c(0.4, 0.5)),
+    fit = list(
+      c(0.1, 0.2),
+      c(0.3, 0.4)
+    ),
+    stop_report = matrix(c(TRUE, FALSE), nrow = 2),
+    stop_reasons = list("A", "B"),
+    additional_stats = list(a = 1, b = 1),
+    data = list(
+      Data(
+        x = 1:2,
+        y = 0:1,
+        doseGrid = 1:2,
+        ID = 1L:2L,
+        cohort = 1L:2L
+      ),
+      Data(
+        x = 3:4,
+        y = 0:1,
+        doseGrid = 3:4,
+        ID = 1L:2L,
+        cohort = 1L:2L
+      )
+    ),
+    doses = c(1, 2),
+    seed = 123L
+  )
+}
+
+# GeneralSimulationsSummary ----
+
 # nolint start
 ##' Class for the summary of general simulations output
 ##'
@@ -287,6 +332,15 @@ DualSimulations <- function(rho_est,
     )
   )
 
+## default constructor ----
+
+#' @rdname GeneralSimulationsSummary-class
+#' @note Typically, end users will not use the `.DefaultGeneralSimulationsSummary()` function.
+#' @export
+.DefaultGeneralSimulationsSummary <- function() {
+  stop(paste0("Class GeneralSimulationsSummary cannot be instantiated directly.  Please use one of its subclasses instead."))
+}
+
 
 ##' Class for the summary of model-based simulations output
 ##'
@@ -317,6 +371,16 @@ DualSimulations <- function(rho_est,
     contains = "GeneralSimulationsSummary"
   )
 
+## default constructor ----
+
+#' @rdname SimulationsSummary-class
+#' @note Typically, end users will not use the `.DefaultSimulationsSummary()` function.
+#' @export
+.DefaultSimulationsSummary <- function() {
+  stop(paste0("Class SimulationsSummary cannot be instantiated directly.  Please use one of its subclasses instead."))
+}
+
+# DualSimulationsSummary ----
 
 ##' Class for the summary of dual-endpoint simulations output
 ##'
@@ -424,7 +488,7 @@ DualSimulations <- function(rho_est,
   # Run the simulation on the desired design.
   # For illustration purposes only 1 trial outcome is generated and 5 burn-ins
   # to generate 20 samples are used here.
-  my_sims <- simulate(
+  simulate(
     object = my_design,
     trueTox = true_tox,
     trueBiomarker = true_biomarker,
@@ -434,11 +498,7 @@ DualSimulations <- function(rho_est,
     parallel = FALSE,
     seed = 3,
     startingDose = 6,
-    mcmcOptions = McmcOptions(
-      burnin = 5,
-      step = 1,
-      samples = 20
-    )
+    mcmcOptions = .DefaultMcmcOptions()
   )
 }
 
@@ -552,6 +612,15 @@ PseudoSimulations <- function(fit,
   )
 }
 
+## default constructor ----
+
+#' @rdname PseudoSimulations-class
+#' @note Typically, end users will not use the `.DefaultPseudoSimulations()` function.
+#' @export
+.DefaultPseudoSimulations <- function() {
+  stop(paste0("Class PseudoSimulations cannot be instantiated directly.  Please use one of its subclasses instead."))
+}
+
 ## ===============================================================================
 ## -------------------------------------------------------------------------------
 ## Class for Pseudo simulation using DLE and efficacy responses (Pseudo models except 'EffFlexi' model)
@@ -649,6 +718,20 @@ PseudoDualSimulations <- function(fitEff,
 }
 
 
+## default constructor ----
+
+#' @rdname PseudoDualSimulations-class
+#' @note Typically, end users will not use the `.DefaultPseudoDualSimulations()` function.
+#' @export
+.DefaultPseudoDualSimulations <- function() {
+  stop(paste0("Class PseudoDualSimulations cannot be instantiated directly.  Please use one of its subclasses instead."))
+}
+
+
+# PseudoDualFlexiSimulations ----
+
+## class ----
+
 ## -------------------------------------------------------------------------------
 ## Class for Pseudo simulation using DLE and efficacy responses using 'EffFlex' efficacy model
 ## -----------------------------------------------------------------------------------
@@ -687,6 +770,15 @@ PseudoDualFlexiSimulations <- function(sigma2betaWest,
   .PseudoDualFlexiSimulations(start,
     sigma2betaWest = sigma2betaWest
   )
+}
+
+## default constructor ----
+
+#' @rdname PseudoFlexiSimulations-class
+#' @note Typically, end users will not use the `.DefaultPseudoFlexiSimulations()` function.
+#' @export
+.DefaultPseudoFlexiSimulations <- function() {
+  stop(paste0("Class PseudoFlexiSimulations cannot be instantiated directly.  Please use one of its subclasses instead."))
 }
 
 ## -------------------------------------------------------------------------------------------------------
@@ -781,6 +873,16 @@ PseudoDualFlexiSimulations <- function(sigma2betaWest,
       meanFit = "list"
     )
   )
+
+## default constructor ----
+
+#' @rdname GeneralSimulationsSummary-class
+#' @note Typically, end users will not use the `.DefaultPseudoSimulationsSummary()` function.
+#' @export
+.DefaultPseudoSimulationsSummary <- function() {
+  stop(paste0("Class PseudoSimulationsSummary cannot be instantiated directly.  Please use one of its subclasses instead."))
+}
+
 ## ---------------------------------------------------------------------------------------------
 ##' Class for the summary of the dual responses simulations using pseudo models
 ##'
@@ -818,6 +920,15 @@ PseudoDualFlexiSimulations <- function(sigma2betaWest,
         meanEffFit = "list"
       )
   )
+
+## default constructor ----
+
+#' @rdname PseudoDualSimulationsSummary-class
+#' @note Typically, end users will not use the `.DefaultPseudoDualSimulationsSummary()` function.
+#' @export
+.DefaultPseudoDualSimulationsSummary <- function() {
+  stop(paste0("Class PseudoDualSimulationsSummary cannot be instantiated directly.  Please use one of its subclasses instead."))
+}
 
 ## ---------------------------------------------------------------------------------------------
 

@@ -111,7 +111,7 @@ McmcOptions <- function(burnin = 1e4L,
 #' @export
 .DefaultMcmcOptions <- function() {
   McmcOptions(
-    burnin = 500,
-    samples = 2000
+    burnin = 250,
+    samples = 1000
   )
 }

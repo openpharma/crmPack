@@ -441,6 +441,41 @@ TDsamplesDesign <- function(model,
   )
 }
 
+## default constructor ----
+
+#' @rdname TDsamplesDesign-class
+#' @note Typically, end users will not use the `.DefaultTDsamplesDesign()` function.
+#' @export
+.DefaultTDsamplesDesign <- function() {
+  empty_data <- Data(doseGrid = seq(25, 300, 25))
+
+  my_model <- LogisticIndepBeta(
+    binDLE = c(1.05, 1.8),
+    DLEweights = c(3, 3),
+    DLEdose = c(25, 300),
+    data = empty_data
+  )
+
+  TDsamplesDesign(
+    model = my_model,
+    stopping = StoppingMinPatients(nPatients = 36),
+    increments = IncrementsRelative(
+      intervals = range(empty_data@doseGrid),
+      increments = c(2, 2)
+    ),
+    nextBest = NextBestTDsamples(
+      prob_target_drt = 0.35,
+      prob_target_eot = 0.3,
+      derive = function(samples) {
+        as.numeric(quantile(samples, probs = 0.3))
+      }
+    ),
+    cohort_size = CohortSizeConst(size = 3),
+    data = empty_data,
+    startingDose = 25
+  )
+}
+
 # TDDesign ----
 
 ## class ----
