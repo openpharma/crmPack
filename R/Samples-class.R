@@ -61,5 +61,6 @@ Samples <- function(data, options) {
   mcmc(
     data = .DefaultData(),
     model = .DefaultLogisticLogNormal(),
-    options = .DefaultMcmcOptions())
+    options = .DefaultMcmcOptions()
+  )
 }

@@ -38,13 +38,13 @@ test_that("CrmPackClass does not identify random non-crmPack classes", {
 
 test_that("virtual CrmPackClass classes throw expcted error when default constructor called", {
   exception_class_list <- c(
-      "CohortSize", "CrmPackClass", "DualEndpoint", "GeneralData", "GeneralModel",
-      "GeneralSimulationsSummary", "Increments", "ModelEff", "ModelPseudo",
-      "ModelTox", "NextBest", "positive_number", "PseudoSimulations",
-      "PseudoDualSimulations", "PseudoDualSimulationsSummary",
-      "PseudoDualFlexiSimulations", "PseudoFlexiSimulations",
-      "PseudoSimulationsSummary", "SimulationsSummary", "Report", "SafetyWindow",
-      "Stopping", "Validate"
+    "CohortSize", "CrmPackClass", "DualEndpoint", "GeneralData", "GeneralModel",
+    "GeneralSimulationsSummary", "Increments", "ModelEff", "ModelPseudo",
+    "ModelTox", "NextBest", "positive_number", "PseudoSimulations",
+    "PseudoDualSimulations", "PseudoDualSimulationsSummary",
+    "PseudoDualFlexiSimulations", "PseudoFlexiSimulations",
+    "PseudoSimulationsSummary", "SimulationsSummary", "Report", "SafetyWindow",
+    "Stopping", "Validate"
   )
   for (cls in exception_class_list) {
     constructor_name <- paste0(".Default", cls)

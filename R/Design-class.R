@@ -74,7 +74,7 @@ RuleDesign <- function(nextBest,
 #' @note Typically, end users will not use the `.DefaultRuleDesign()` function.
 #' @export
 
-.DefaultRuleDesign  <- function() {
+.DefaultRuleDesign <- function() {
   RuleDesign(
     nextBest = NextBestThreePlusThree(),
     cohort_size = CohortSizeConst(size = 3L),
@@ -218,7 +218,6 @@ Design <- function(model,
     data = Data(doseGrid = c(1, 3, 5, 10, 15, 20, 25, 40, 50, 80, 100)),
     startingDose = 3
   )
-
 }
 
 # DualDesign ----
@@ -603,7 +602,7 @@ DualResponsesSamplesDesign <- function(eff_model,
 #' @note Typically, end users will not use the `.DefaultDualResponsesSamplesDesign()` function.
 #' @export
 .DefaultDualResponsesSamplesDesign <- function() {
-    empty_data <- DataDual(doseGrid = seq(25, 300, 25))
+  empty_data <- DataDual(doseGrid = seq(25, 300, 25))
 
   tox_model <- LogisticIndepBeta(
     binDLE = c(1.05, 1.8),
@@ -713,7 +712,7 @@ DualResponsesDesign <- function(eff_model,
 .DefaultDualResponsesDesign <- function() {
   empty_data <- DataDual(doseGrid = seq(25, 300, 25))
 
-    DualResponsesDesign(
+  DualResponsesDesign(
     nextBest = NextBestMaxGain(
       prob_target_drt = 0.35,
       prob_target_eot = 0.3
@@ -818,9 +817,9 @@ DADesign <- function(model, data,
   npiece_ <- 10
   t_max_ <- 60
 
-lambda_prior <- function(k) {
-  npiece_ / (t_max_ * (npiece_ - k + 0.5))
-}
+  lambda_prior <- function(k) {
+    npiece_ / (t_max_ * (npiece_ - k + 0.5))
+  }
 
   model <- DALogisticLogNormal(
     mean = c(-0.85, 1),

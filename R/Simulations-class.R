@@ -91,7 +91,8 @@ GeneralSimulations <- function(data,
       Data(x = 4:6, y = c(0, 1, 0), doseGrid = 4:6, ID = 1L:3L, cohort = 1L:3L)
     ),
     doses = c(1, 2),
-    seed = 123)
+    seed = 123
+  )
 }
 
 
