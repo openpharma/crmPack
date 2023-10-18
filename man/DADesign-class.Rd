@@ -5,9 +5,12 @@
 \alias{DADesign-class}
 \alias{.DADesign}
 \alias{DADesign}
+\alias{.DefaultDADesign}
 \title{\code{DADesign}}
 \usage{
 DADesign(model, data, safetyWindow, ...)
+
+.DefaultDADesign()
 }
 \arguments{
 \item{model}{(\code{GeneralModel})\cr see slot definition.}
@@ -41,6 +44,9 @@ slots in comparison to the parent class \code{\link{Design}}:
 \item{\code{safetyWindow}}{(\code{SafetyWindow})\cr the safety window to apply between cohorts.}
 }}
 
+\note{
+Typically, end users will not use the \code{.DefaultDADesign()} function.
+}
 \examples{
 empty_data <- DataDA(doseGrid = c(
   0.1, 0.5, 1, 1.5, 3, 6,

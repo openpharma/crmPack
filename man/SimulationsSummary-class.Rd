@@ -4,7 +4,11 @@
 \name{SimulationsSummary-class}
 \alias{SimulationsSummary-class}
 \alias{.SimulationsSummary}
+\alias{.DefaultSimulationsSummary}
 \title{Class for the summary of model-based simulations output}
+\usage{
+.DefaultSimulationsSummary()
+}
 \description{
 In addition to the slots in the parent class
 \code{\linkS4class{GeneralSimulationsSummary}}, it contains two slots with
@@ -27,4 +31,7 @@ initialization function is provided for this class.
 quantiles of the mean fitted toxicity at each dose level}
 }}
 
+\note{
+Typically, end users will not use the \code{.DefaultSimulationsSummary()} function.
+}
 \keyword{classes}

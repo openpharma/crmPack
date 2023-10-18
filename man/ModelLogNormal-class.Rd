@@ -44,6 +44,9 @@ All ("normal") model specific classes inherit from this class.
 \item{\code{ref_dose}}{(\code{positive_number})\cr the reference dose.}
 }}
 
+\note{
+Typically, end users will not use the \code{.DefaultModelLogNormal()} function.
+}
 \seealso{
 \code{\link{ModelParamsNormal}}, \code{\link{LogisticNormal}}, \code{\link{LogisticLogNormal}},
 \code{\link{LogisticLogNormalSub}}, \code{\link{ProbitLogNormal}}, \code{\link{ProbitLogNormalRel}}.

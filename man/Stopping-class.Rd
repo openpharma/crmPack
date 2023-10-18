@@ -4,7 +4,11 @@
 \name{Stopping-class}
 \alias{Stopping-class}
 \alias{Stopping}
+\alias{.DefaultCohortSize}
 \title{\code{Stopping}}
+\usage{
+.DefaultCohortSize()
+}
 \description{
 \ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#stable}{\figure{lifecycle-stable.svg}{options: alt='[Stable]'}}}{\strong{[Stable]}}
 
@@ -21,6 +25,9 @@ then a default, class-specific label will be created for this slot.
 Finally, for the remaining cases, a user can provide a custom label.}
 }}
 
+\note{
+Typically, end users will not use the \code{DefaultStopping()} function.
+}
 \seealso{
 \code{\link{StoppingList}}, \code{\link{StoppingCohortsNearDose}}, \code{\link{StoppingPatientsNearDose}},
 \code{\link{StoppingMinCohorts}}, \code{\link{StoppingMinPatients}}, \code{\link{StoppingTargetProb}},

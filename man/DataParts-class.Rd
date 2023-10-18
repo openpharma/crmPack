@@ -5,9 +5,12 @@
 \alias{DataParts-class}
 \alias{.DataParts}
 \alias{DataParts}
+\alias{.DefaultDataParts}
 \title{\code{DataParts}}
 \usage{
 DataParts(part = integer(), nextPart = 1L, part1Ladder = numeric(), ...)
+
+.DefaultDataParts()
 }
 \arguments{
 \item{part}{(\code{integer})\cr which part does each of the patients belong to?}
@@ -37,6 +40,9 @@ on the two study parts.
 part 1? This shall be an ordered subset of the \code{doseGrid}.}
 }}
 
+\note{
+Typically, end users will not use the \code{.DefaultDataParts()} function.
+}
 \examples{
 my_data <- DataParts(
   x = c(0.1, 0.5, 1.5),

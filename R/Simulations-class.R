@@ -980,8 +980,8 @@ DASimulations <- function(trialduration,
   design <- .DefaultDADesign()
   myTruth <- probFunction(design@model, alpha0 = 2, alpha1 = 3)
   exp_cond.cdf <- function(x, onset = 15) {
-    a <- pexp(28, 1 / onset, lower.tail = FALSE)
-    1 - (pexp(x, 1 / onset, lower.tail = FALSE) - a) / (1 - a)
+    a <- stats::pexp(28, 1 / onset, lower.tail = FALSE)
+    1 - (stats::pexp(x, 1 / onset, lower.tail = FALSE) - a) / (1 - a)
   }
 
   simulate(

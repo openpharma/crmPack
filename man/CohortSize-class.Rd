@@ -4,11 +4,18 @@
 \name{CohortSize-class}
 \alias{CohortSize-class}
 \alias{CohortSize}
+\alias{.DefaultCohortSize}
 \title{\code{CohortSize}}
+\usage{
+.DefaultCohortSize()
+}
 \description{
 \ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#stable}{\figure{lifecycle-stable.svg}{options: alt='[Stable]'}}}{\strong{[Stable]}}
 
 \code{\link{CohortSize}} is a class for cohort sizes.
+}
+\note{
+Typically, end users will not use the \code{DefaultCohortSize()} function.
 }
 \seealso{
 \code{\link{CohortSizeRange}}, \code{\link{CohortSizeDLT}}, \code{\link{CohortSizeConst}},
