@@ -100,7 +100,7 @@ needed for internal purposes and must not be touched by the user.}
 }}
 
 \note{
-Typically, end users will not use the \code{DefaultDualEndpoint()} function.
+Typically, end users will not use the \code{.DefaultDualEndpoint()} function.
 }
 \seealso{
 \code{\link{DualEndpointRW}}, \code{\link{DualEndpointBeta}}, \code{\link{DualEndpointEmax}}.

@@ -5,6 +5,7 @@
 \alias{TDDesign-class}
 \alias{.TDDesign}
 \alias{TDDesign}
+\alias{.DefaultTDDesign}
 \title{\code{TDDesign}}
 \usage{
 TDDesign(
@@ -14,6 +15,8 @@ TDDesign(
   pl_cohort_size = CohortSizeConst(0L),
   ...
 )
+
+.DefaultTDDesign()
 }
 \arguments{
 \item{model}{(\code{ModelTox})\cr see slot definition.}
@@ -52,6 +55,9 @@ TDDesign(
 if any planned (defaults to constant 0 placebo patients).}
 }}
 
+\note{
+Typically, end users will not use the \code{.DefaultTDDesign()} function.
+}
 \examples{
 empty_data <- Data(doseGrid = seq(25, 300, 25))
 

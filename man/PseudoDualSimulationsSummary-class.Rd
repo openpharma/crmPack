@@ -4,7 +4,11 @@
 \name{PseudoDualSimulationsSummary-class}
 \alias{PseudoDualSimulationsSummary-class}
 \alias{.PseudoDualSimulationsSummary}
+\alias{.DefaultPseudoDualSimulationsSummary}
 \title{Class for the summary of the dual responses simulations using pseudo models}
+\usage{
+.DefaultPseudoDualSimulationsSummary()
+}
 \description{
 It contains all slots from \code{\linkS4class{PseudoSimulationsSummary}} object. In addition to
 the slots in the parent class \code{\linkS4class{PseudoSimulationsSummary}}, it contains four
@@ -34,4 +38,7 @@ selected}
 efficacy value at each dose level.}
 }}
 
+\note{
+Typically, end users will not use the \code{.DefaultPseudoDualSimulationsSummary()} function.
+}
 \keyword{class}

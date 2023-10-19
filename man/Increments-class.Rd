@@ -4,12 +4,19 @@
 \name{Increments-class}
 \alias{Increments-class}
 \alias{Increments}
+\alias{.DefaultIncrements}
 \title{\code{Increments}}
+\usage{
+.DefaultIncrements()
+}
 \description{
 \ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#stable}{\figure{lifecycle-stable.svg}{options: alt='[Stable]'}}}{\strong{[Stable]}}
 
 \code{\link{Increments}} is a virtual class for controlling increments, from which all
 other specific increments classes inherit.
+}
+\note{
+Typically, end users will not use the \code{.DefaultIncrements()} function.
 }
 \seealso{
 \code{\link{IncrementsRelative}}, \code{\link{IncrementsRelativeDLT}},
