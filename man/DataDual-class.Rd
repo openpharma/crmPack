@@ -5,9 +5,12 @@
 \alias{DataDual-class}
 \alias{.DataDual}
 \alias{DataDual}
+\alias{.DefaultDataDual}
 \title{\code{DataDual}}
 \usage{
 DataDual(w = numeric(), ...)
+
+.DefaultDataDual()
 }
 \arguments{
 \item{w}{(\code{numeric})\cr the continuous vector of biomarker values.}
@@ -26,6 +29,9 @@ It inherits from \code{\link{Data}} and it contains additional biomarker informa
 \item{\code{w}}{(\code{numeric})\cr the continuous vector of biomarker values.}
 }}
 
+\note{
+Typically, end users will not use the \code{.DefaultDataDual()} function.
+}
 \examples{
 my_data <- DataDual(
   w = rnorm(8),

@@ -5,7 +5,11 @@
 \alias{ModelEff-class}
 \alias{.ModelEff}
 \alias{ModelEff}
+\alias{.DefaultModelEff}
 \title{\code{ModelEff}}
+\usage{
+.DefaultModelEff()
+}
 \description{
 \ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#stable}{\figure{lifecycle-stable.svg}{options: alt='[Stable]'}}}{\strong{[Stable]}}
 
@@ -30,6 +34,9 @@ model parameters based on the specified pseudo data.
 parameters estimates or samples (see details above).}
 }}
 
+\note{
+Typically, end users will not use the \code{.DefaultModelEff()} function.
+}
 \seealso{
 \code{\link{ModelTox}}.
 }

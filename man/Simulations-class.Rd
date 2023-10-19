@@ -5,9 +5,12 @@
 \alias{Simulations-class}
 \alias{.Simulations}
 \alias{Simulations}
+\alias{.DefaultSimulations}
 \title{\code{Simulations}}
 \usage{
 Simulations(fit, stop_reasons, stop_report, additional_stats, ...)
+
+.DefaultSimulations()
 }
 \arguments{
 \item{fit}{(\code{list})\cr see slot definition.}
@@ -39,6 +42,9 @@ the general class \code{\link{GeneralSimulations}}.
 \item{\code{additional_stats}}{list of additional statistical summary}
 }}
 
+\note{
+Typically, end users will not use the \code{.DefaultSimulations()} function.
+}
 \examples{
 data <- list(
   Data(
