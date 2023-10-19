@@ -43,12 +43,6 @@ It inherits from GeneralData."><meta property="og:image" content="https://roche.
 <li class="nav-item">
   <a class="nav-link" href="../news/index.html">Changelog</a>
 </li>
-<!-- start dropdown for versions --> <li class="nav-item dropdown">
-        <a href="#" class="nav-link dropdown-toggle"
-          data-bs-toggle="dropdown" role="button"
-          aria-expanded="false" aria-haspopup="true"
-          id="dropdown-versions">Versions</a> <div class="dropdown-menu" aria-labelledby="dropdown-versions"> <a class="dropdown-item" data-toggle="tooltip" title="" href="https://Roche.github.io/crmPack/main">main</a> </div></li>
-<!-- end dropdown for versions -->
       </ul><form class="form-inline my-2 my-lg-0" role="search">
         <input type="search" class="form-control me-sm-2" aria-label="Toggle navigation" name="search-input" data-search-index="../search.json" id="search-input" placeholder="Search for" autocomplete="off"></form>
 
@@ -86,7 +80,9 @@ It inherits from <code><a href="GeneralData-class.html">GeneralData</a></code>.<
 <span>  doseGrid <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/numeric.html" class="external-link">numeric</a></span><span class="op">(</span><span class="op">)</span>,</span>
 <span>  placebo <span class="op">=</span> <span class="cn">FALSE</span>,</span>
 <span>  <span class="va">...</span></span>
-<span><span class="op">)</span></span></code></pre></div>
+<span><span class="op">)</span></span>
+<span></span>
+<span><span class="fu">.DefaultData</span><span class="op">(</span><span class="op">)</span></span></code></pre></div>
     </div>
 
     <div class="section level2">
@@ -168,6 +164,7 @@ in the <code>doseGrid</code>is considered as PLACEBO.</p></dd>
     <p><code>ID</code> and <code>cohort</code> can be missing. Then a message will be issued
 and the variables will be filled with default IDs and best guesses cohort,
 i.e. a sorted (in ascending order) sequence of values from <code>{1, 2, ...}</code>.</p>
+<p>Typically, end users will not use the <code>.DefaultData()</code> function.</p>
     </div>
 
     <div class="section level2">

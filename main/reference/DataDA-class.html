@@ -43,12 +43,6 @@ It inherits from Data and it contains additional DLT free survival times."><meta
 <li class="nav-item">
   <a class="nav-link" href="../news/index.html">Changelog</a>
 </li>
-<!-- start dropdown for versions --> <li class="nav-item dropdown">
-        <a href="#" class="nav-link dropdown-toggle"
-          data-bs-toggle="dropdown" role="button"
-          aria-expanded="false" aria-haspopup="true"
-          id="dropdown-versions">Versions</a> <div class="dropdown-menu" aria-labelledby="dropdown-versions"> <a class="dropdown-item" data-toggle="tooltip" title="" href="https://Roche.github.io/crmPack/main">main</a> </div></li>
-<!-- end dropdown for versions -->
       </ul><form class="form-inline my-2 my-lg-0" role="search">
         <input type="search" class="form-control me-sm-2" aria-label="Toggle navigation" name="search-input" data-search-index="../search.json" id="search-input" placeholder="Search for" autocomplete="off"></form>
 
@@ -83,7 +77,9 @@ It inherits from <code><a href="Data-class.html">Data</a></code> and it contains
 <span>  t0 <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/numeric.html" class="external-link">numeric</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/length.html" class="external-link">length</a></span><span class="op">(</span><span class="va">u</span><span class="op">)</span><span class="op">)</span>,</span>
 <span>  Tmax <span class="op">=</span> <span class="fl">0</span> <span class="op">+</span> <span class="va">.Machine</span><span class="op">$</span><span class="va">double.xmin</span>,</span>
 <span>  <span class="va">...</span></span>
-<span><span class="op">)</span></span></code></pre></div>
+<span><span class="op">)</span></span>
+<span></span>
+<span><span class="fu">.DefaultDataDA</span><span class="op">(</span><span class="op">)</span></span></code></pre></div>
     </div>
 
     <div class="section level2">
@@ -128,6 +124,7 @@ Non-negative values sorted in ascending order.</p></dd>
     <h2 id="note">Note<a class="anchor" aria-label="anchor" href="#note"></a></h2>
     <p><code>survival time</code> here refers to the time period for which the subject
 did not experience any DLT, and is not referring to deaths.</p>
+<p>Typically, end users will not use the <code>.DefaultDataDA()</code> function.</p>
     </div>
 
     <div class="section level2">

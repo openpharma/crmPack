@@ -43,12 +43,6 @@ model-like classes inherit."><meta property="og:image" content="https://roche.gi
 <li class="nav-item">
   <a class="nav-link" href="../news/index.html">Changelog</a>
 </li>
-<!-- start dropdown for versions --> <li class="nav-item dropdown">
-        <a href="#" class="nav-link dropdown-toggle"
-          data-bs-toggle="dropdown" role="button"
-          aria-expanded="false" aria-haspopup="true"
-          id="dropdown-versions">Versions</a> <div class="dropdown-menu" aria-labelledby="dropdown-versions"> <a class="dropdown-item" data-toggle="tooltip" title="" href="https://Roche.github.io/crmPack/main">main</a> </div></li>
-<!-- end dropdown for versions -->
       </ul><form class="form-inline my-2 my-lg-0" role="search">
         <input type="search" class="form-control me-sm-2" aria-label="Toggle navigation" name="search-input" data-search-index="../search.json" id="search-input" placeholder="Search for" autocomplete="off"></form>
 
@@ -76,6 +70,10 @@ model-like classes inherit."><meta property="og:image" content="https://roche.gi
 model-like classes inherit.</p>
     </div>
 
+    <div class="section level2">
+    <h2 id="ref-usage">Usage<a class="anchor" aria-label="anchor" href="#ref-usage"></a></h2>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">.DefaultGeneralModel</span><span class="op">(</span><span class="op">)</span></span></code></pre></div>
+    </div>
 
     <div class="section level2">
     <h2 id="slots">Slots<a class="anchor" aria-label="anchor" href="#slots"></a></h2>
@@ -138,6 +136,7 @@ called exactly in the same way as in the corresponding data class.
 All prior distributions for parameters should be contained in the
 model function <code>priormodel</code>. The background is that this can
 be used to simulate from the prior distribution, before obtaining any data.</p>
+<p>Typically, end users will not use the <code>.DefaultGeneralModel()</code> function.</p>
     </div>
     <div class="section level2">
     <h2 id="see-also">See also<a class="anchor" aria-label="anchor" href="#see-also"></a></h2>

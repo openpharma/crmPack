@@ -63,12 +63,6 @@
 <li class="nav-item">
   <a class="nav-link" href="../news/index.html">Changelog</a>
 </li>
-<!-- start dropdown for versions --> <li class="nav-item dropdown">
-        <a href="#" class="nav-link dropdown-toggle"
-          data-bs-toggle="dropdown" role="button"
-          aria-expanded="false" aria-haspopup="true"
-          id="dropdown-versions">Versions</a> <div class="dropdown-menu" aria-labelledby="dropdown-versions"> <a class="dropdown-item" data-toggle="tooltip" title="" href="https://Roche.github.io/crmPack/main">main</a> </div></li>
-<!-- end dropdown for versions -->
       </ul>
 <form class="form-inline my-2 my-lg-0" role="search">
         <input type="search" class="form-control me-sm-2" aria-label="Toggle navigation" name="search-input" data-search-index="../search.json" id="search-input" placeholder="Search for" autocomplete="off">
@@ -678,7 +672,7 @@ used:</p>
 the results. The argument <code>parallel</code> can be set to
 <code>TRUE</code> if one wishes to run the iterations in parallel on all
 processors of the computer, which can yield a meaningful speedup. Here
-we needed 188 seconds for 100 simulated trials on an Intel Core i5-6300U
+we needed 183 seconds for 100 simulated trials on an Intel Core i5-6300U
 CPU with 2.4 GHz.</p>
 <p>The result is an object of class <code>Simulations</code> containing
 multiple slots, with e.g., the <code>data</code> slot containing the
@@ -712,19 +706,19 @@ description of the results:</p>
 <span><span class="co">## Target dose interval corresponding to this was 47.9, 52.7 </span></span>
 <span><span class="co">## Intervals are corresponding to 10 and 90 % quantiles</span></span>
 <span><span class="co">## </span></span>
-<span><span class="co">## Number of patients on placebo : mean 8 (6, 8) </span></span>
-<span><span class="co">## Number of patients on active : mean 23 (18, 24) </span></span>
+<span><span class="co">## Number of patients on placebo : mean 7 (6, 8) </span></span>
+<span><span class="co">## Number of patients on active : mean 22 (18, 24) </span></span>
 <span><span class="co">## Number of patients overall : mean 30 (24, 32) </span></span>
 <span><span class="co">## Number of patients treated above target tox interval : mean 3 (0, 3) </span></span>
 <span><span class="co">## Proportions of DLTs in the trials for patients on placebo : mean 0 % (0 %, 0 %) </span></span>
-<span><span class="co">## Proportions of DLTs in the trials for patients on active : mean 28 % (21 %, 33 %) </span></span>
-<span><span class="co">## Mean toxicity risks for the patients on active : mean 27 % (19 %, 33 %) </span></span>
-<span><span class="co">## Doses selected as MTD : mean 46 (25, 50) </span></span>
+<span><span class="co">## Proportions of DLTs in the trials for patients on active : mean 28 % (21 %, 34 %) </span></span>
+<span><span class="co">## Mean toxicity risks for the patients on active : mean 27 % (21 %, 33 %) </span></span>
+<span><span class="co">## Doses selected as MTD : mean 46.2 (25, 50) </span></span>
 <span><span class="co">## True toxicity at doses selected : mean 22 % (0 %, 26 %) </span></span>
-<span><span class="co">## Proportion of trials selecting target MTD: 84 %</span></span>
+<span><span class="co">## Proportion of trials selecting target MTD: 85 %</span></span>
 <span><span class="co">## Dose most often selected as MTD: 50 </span></span>
-<span><span class="co">## Observed toxicity rate at dose most often selected: 26 %</span></span>
-<span><span class="co">## Fitted toxicity rate at dose most often selected : mean 23 % (16 %, 29 %)</span></span></code></pre>
+<span><span class="co">## Observed toxicity rate at dose most often selected: 27 %</span></span>
+<span><span class="co">## Fitted toxicity rate at dose most often selected : mean 23 % (16 %, 30 %)</span></span></code></pre>
 <p>A plot of the summary results can also be produced, see Figure
 @ref(fig:sim-summary-plot).</p>
 <pre><code><span><span class="co">## TableGrob (2 x 1) "arrange": 2 grobs</span></span>

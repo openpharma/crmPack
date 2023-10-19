@@ -45,12 +45,6 @@ ordinal rather than binary scale."><meta property="og:image" content="https://ro
 <li class="nav-item">
   <a class="nav-link" href="../news/index.html">Changelog</a>
 </li>
-<!-- start dropdown for versions --> <li class="nav-item dropdown">
-        <a href="#" class="nav-link dropdown-toggle"
-          data-bs-toggle="dropdown" role="button"
-          aria-expanded="false" aria-haspopup="true"
-          id="dropdown-versions">Versions</a> <div class="dropdown-menu" aria-labelledby="dropdown-versions"> <a class="dropdown-item" data-toggle="tooltip" title="" href="https://Roche.github.io/crmPack/main">main</a> </div></li>
-<!-- end dropdown for versions -->
       </ul><form class="form-inline my-2 my-lg-0" role="search">
         <input type="search" class="form-control me-sm-2" aria-label="Toggle navigation" name="search-input" data-search-index="../search.json" id="search-input" placeholder="Search for" autocomplete="off"></form>
 
@@ -90,7 +84,9 @@ ordinal rather than binary scale.</p>
 <span>  placebo <span class="op">=</span> <span class="cn">FALSE</span>,</span>
 <span>  yCategories <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span>`No DLT` <span class="op">=</span> <span class="fl">0L</span>, DLT <span class="op">=</span> <span class="fl">1L</span><span class="op">)</span>,</span>
 <span>  <span class="va">...</span></span>
-<span><span class="op">)</span></span></code></pre></div>
+<span><span class="op">)</span></span>
+<span></span>
+<span><span class="fu">.DefaultDataOrdinal</span><span class="op">(</span><span class="op">)</span></span></code></pre></div>
     </div>
 
     <div class="section level2">
@@ -149,6 +145,7 @@ must be sorted and take the values 0, 1, 2, ...</p></dd>
 effects on existing classes and methods.</p>
 <p>The default setting for the <code>yCategories</code> slot replicates the behaviour
 of the existing <code>Data</code> class.</p>
+<p>Typically, end users will not use the <code>.DefaultDataOrdinal()</code> function.</p>
     </div>
 
     <div class="section level2">
