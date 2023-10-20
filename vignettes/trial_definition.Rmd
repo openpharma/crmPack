@@ -60,7 +60,7 @@ model <- LogisticLogNormal(
 
 In `crmPack`, the `LogisticLogNormal` class fits a model of the following form:
 
-$$log(\frac{p_i}{1 - p_i}) = \alpha + \beta (d_i - d^*)$$
+$$log(\frac{p_i}{1 - p_i}) = \alpha + \beta log(d_i / d^*)$$
 
 where $d^*$ is a reference dose (specified by the `ref_dose` argument to the `LogisticLogNormal` function above) and the prior joint distribution of $\alpha$ and $\beta$ is 
 

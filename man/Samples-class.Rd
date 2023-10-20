@@ -5,9 +5,12 @@
 \alias{Samples-class}
 \alias{.Samples}
 \alias{Samples}
+\alias{.DefaultSamples}
 \title{\code{Samples}}
 \usage{
 Samples(data, options)
+
+.DefaultSamples()
 }
 \arguments{
 \item{data}{see slot definition.}
@@ -32,6 +35,9 @@ to the dimension of the parameter.}
 samples.}
 }}
 
+\note{
+Typically, end users will not use the \code{.DefaultSamples()} function.
+}
 \examples{
 # The MCMC options that were used to generate the samples.
 my_options <- McmcOptions(

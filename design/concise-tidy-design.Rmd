@@ -30,6 +30,7 @@ The general principles I propose for tidying `crmPack` objects are as follows:
 * All slots that are not functions are converted to `tibble`s or a list of `tibble`s.
 * If the slot's value is scalar, the slot is converted to a 1x1 `tibble`.  This will ease downstream operations such as `row_bind`ing.
 * If the slot's value is a `list`, these rules are aplied to each element of the list in turn.
+* If the slot is scalar, the slot is converted to a 1x1 `tibble`.  This will ease downstream operations such as `row_bind`ing.
 * If the object being tidied contains multiple slots of (potentially) different lengths, the results is a list of `tibble`s.  The list may be nested to multiple levels.  (See, for example, `LogisticLogNormal`.)
 * The column names of the tidied `tibble` correspond to the slot names of the parent object.
   * Exception: where the slot has name in the plural and contains a `vector` or `list`, the column name will be singular.  See, for example, `CohortSizeParts` below.
@@ -98,6 +99,7 @@ h_tidy_slot <- function(obj, slot_name, col = NULL, attributes = FALSE) {
   if (is.list(slot(obj, slot_name))) {
     return(lapply(slot(obj, slot_name), tidy))
   }
+
   a <- h_handle_attributes(slot(obj, slot_name))
   if (is(slot(obj, slot_name), "CrmPackClass")) {
     rv <- slot(obj, slot_name) |>
@@ -129,6 +131,9 @@ h_tidy_all_slots <- function(obj) {
   if (length(rv) > 1 & length(unique(sapply(rv, nrow))) == 1) {
     rv <- rv |> dplyr::bind_cols()
   } 
+      rv[[nm]] <- h_slot_to_tibble(obj, nm) |> dplyr::bind_cols()
+    }
+  }
   rv
 }
 
@@ -444,3 +449,4 @@ for (cls in crmPack_class_list) {
   }
 }
 ```
+

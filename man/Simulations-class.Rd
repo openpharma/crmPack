@@ -5,16 +5,21 @@
 \alias{Simulations-class}
 \alias{.Simulations}
 \alias{Simulations}
+\alias{.DefaultSimulations}
 \title{\code{Simulations}}
 \usage{
-Simulations(fit, stop_reasons, stop_report, ...)
+Simulations(fit, stop_reasons, stop_report, additional_stats, ...)
+
+.DefaultSimulations()
 }
 \arguments{
 \item{fit}{(\code{list})\cr see slot definition.}
 
 \item{stop_reasons}{(\code{list})\cr see slot definition.}
 
-\item{stop_report}{see \code{\linkS4class{Simulations}}}
+\item{stop_report}{see \code{\link{Simulations}}}
+
+\item{additional_stats}{(\code{list})\cr see slot definition.}
 
 \item{\dots}{additional parameters from \code{\link{GeneralSimulations}}}
 }
@@ -22,8 +27,8 @@ Simulations(fit, stop_reasons, stop_report, ...)
 \ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#stable}{\figure{lifecycle-stable.svg}{options: alt='[Stable]'}}}{\strong{[Stable]}}
 
 This class captures the trial simulations from model based designs.
-Additional slots \code{fit} and \code{stop_reasons} compared to the general class
-\code{\link{GeneralSimulations}}.
+Additional slots \code{fit}, \code{stop_reasons}, \code{stop_report},\code{additional_stats} compared to
+the general class \code{\link{GeneralSimulations}}.
 }
 \section{Slots}{
 
@@ -33,8 +38,13 @@ Additional slots \code{fit} and \code{stop_reasons} compared to the general clas
 \item{\code{stop_reasons}}{(\code{list})\cr stopping reasons for each simulation run}
 
 \item{\code{stop_report}}{matrix of stopping rule outcomes}
+
+\item{\code{additional_stats}}{list of additional statistical summary}
 }}
 
+\note{
+Typically, end users will not use the \code{.DefaultSimulations()} function.
+}
 \examples{
 data <- list(
   Data(
@@ -66,6 +76,15 @@ stop_report <- matrix(c(TRUE, FALSE), nrow = 2)
 
 stop_reasons <- list("A", "B")
 
+additional_stats <- list(a = 1, b = 1)
 
-simulations <- Simulations(fit = fit, stop_report = stop_report, stop_reasons = stop_reasons, data, doses, seed)
+simulations <- Simulations(
+  fit = fit,
+  stop_report = stop_report,
+  stop_reasons = stop_reasons,
+  additional_stats = additional_stats,
+  data,
+  doses,
+  seed
+)
 }

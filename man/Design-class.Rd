@@ -5,9 +5,12 @@
 \alias{Design-class}
 \alias{.Design}
 \alias{Design}
+\alias{.DefaultDesign}
 \title{\code{Design}}
 \usage{
 Design(model, stopping, increments, pl_cohort_size = CohortSizeConst(0L), ...)
+
+.DefaultDesign()
 }
 \arguments{
 \item{model}{(\code{GeneralModel})\cr see slot definition.}
@@ -47,6 +50,9 @@ contains additional \code{model}, \code{stopping} and \code{increments} slots.
 if any planned (defaults to constant 0 placebo patients).}
 }}
 
+\note{
+Typically, end users will not use the \code{.DefaultDesign()} function.
+}
 \examples{
 empty_data <- Data(doseGrid = c(1, 3, 5, 10, 15, 20, 25, 40, 50, 80, 100))
 

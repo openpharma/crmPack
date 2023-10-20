@@ -18,7 +18,7 @@ process}
   args = NULL,
   firstSeparate = FALSE,
   parallel = FALSE,
-  nCores = min(parallel::detectCores(), 5),
+  nCores = min(parallel::detectCores(), 5L),
   ...
 )
 }
@@ -27,7 +27,7 @@ process}
 
 \item{nsim}{the number of simulations (default :1)}
 
-\item{seed}{see \code{\link{setSeed}}}
+\item{seed}{see \code{\link{set_seed}}}
 
 \item{trueDLE}{a function which takes as input a dose (vector) and returns the true probability
 (vector) of the occurrence of a DLE. Additional arguments can be supplied in \code{args}.}

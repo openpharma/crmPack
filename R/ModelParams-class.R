@@ -64,3 +64,15 @@ ModelParamsNormal <- function(mean, cov) {
     prec = solve(cov)
   )
 }
+
+## default constructor ----
+
+#' @rdname ModelParamsNormal-class
+#' @note Typically, end users will not use the `.ModelPAramsNormal()` function.
+#' @export
+.DefaultModelParamsNormal <- function() {
+  ModelParamsNormal(
+    mean = c(1, 0),
+    cov = matrix(c(1, 0, 0, 1), nrow = 2)
+  )
+}

@@ -27,6 +27,16 @@ setClass(
   contains = "CrmPackClass"
 )
 
+## default constructor ----
+
+#' @rdname NextBest-class
+#' @note Typically, end users will not use the `DefaultNextBest()` function.
+#' @export
+.DefaultNextBest <- function() {
+  stop(paste0("Class NextBest should not be instantiated directly.  Please use one of its subclasses instead."))
+}
+
+
 # NextBestMTD ----
 
 ## class ----
@@ -936,6 +946,16 @@ setClass(
   contains = "CrmPackClass"
 )
 
+## default constructor ----
+
+#' @rdname Increments-class
+#' @note Typically, end users will not use the `.DefaultIncrements()` function.
+#' @export
+.DefaultIncrements <- function() {
+  stop(paste0("Class Increments cannot be instantiated directly.  Please use one of its subclasses instead."))
+}
+
+
 # IncrementsRelative ----
 
 ## class ----
@@ -1053,10 +1073,11 @@ IncrementsRelative <- function(intervals, increments) {
 #' @example examples/Rules-class-IncrementsRelativeDLT.R
 #'
 IncrementsRelativeDLT <- function(intervals, increments) {
-  assert_integerish(intervals)
+  assert_integerish(intervals, lower = 0, any.missing = FALSE)
+  assert_numeric(increments, any.missing = FALSE, lower = 0)
 
   .IncrementsRelativeDLT(
-    intervals = safeInteger(intervals),
+    intervals = as.integer(intervals),
     increments = increments
   )
 }
@@ -1102,10 +1123,13 @@ IncrementsRelativeDLT <- function(intervals, increments) {
 #' @export
 #' @example examples/Rules-class-IncrementsRelativeDLTCurrent.R
 #'
-IncrementsRelativeDLTCurrent <- function(intervals = c(0, 1),
-                                         increments = c(2, 1)) {
+IncrementsRelativeDLTCurrent <- function(intervals = c(0L, 1L),
+                                         increments = c(2L, 1L)) {
+  assert_integerish(intervals, lower = 0, any.missing = FALSE)
+  assert_numeric(increments, any.missing = FALSE, lower = 0)
+
   .IncrementsRelativeDLTCurrent(
-    intervals = safeInteger(intervals),
+    intervals = as.integer(intervals),
     increments = increments
   )
 }
@@ -1184,9 +1208,12 @@ IncrementsRelativeDLTCurrent <- function(intervals = c(0, 1),
 #' @example examples/Rules-class-IncrementsRelative-DataParts.R
 #'
 IncrementsRelativeParts <- function(dlt_start, clean_start, ...) {
+  assert_integerish(dlt_start)
+  assert_integerish(clean_start)
+
   .IncrementsRelativeParts(
-    dlt_start = safeInteger(dlt_start),
-    clean_start = safeInteger(clean_start),
+    dlt_start = as.integer(dlt_start),
+    clean_start = as.integer(clean_start),
     ...
   )
 }
@@ -1250,8 +1277,12 @@ IncrementsRelativeParts <- function(dlt_start, clean_start, ...) {
 #' @example examples/Rules-class-IncrementsDoseLevels.R
 #'
 IncrementsDoseLevels <- function(levels = 1L, basis_level = "last") {
+  assert_count(levels, positive = TRUE)
+  assert_string(basis_level)
+  assert_subset(basis_level, c("last", "max"))
+
   .IncrementsDoseLevels(
-    levels = safeInteger(levels),
+    levels = as.integer(levels),
     basis_level = basis_level
   )
 }
@@ -1436,6 +1467,15 @@ setClass(
 )
 
 
+## default constructor ----
+
+#' @rdname CohortSize-class
+#' @note Typically, end users will not use the `DefaultCohortSize()` function.
+#' @export
+.DefaultCohortSize <- function() {
+  stop(paste0("Class CohortSize should not be instantiated directly.  Please use one of its subclasses instead."))
+}
+
 # StoppingMissingDose ----
 
 ## class ----
@@ -1529,14 +1569,16 @@ StoppingMissingDose <- function(
 StoppingCohortsNearDose <- function(nCohorts = 2L,
                                     percentage = 50,
                                     report_label = NA_character_) {
-  nCohorts <- safeInteger(nCohorts)
+  assert_count(nCohorts, positive = TRUE)
+  assert_numeric(percentage, lower = 0)
+
   report_label <- h_default_if_empty(
     as.character(report_label),
     paste("\u2265", nCohorts, "cohorts dosed in", percentage, "% dose range around NBD")
   )
 
   .StoppingCohortsNearDose(
-    nCohorts = safeInteger(nCohorts),
+    nCohorts = as.integer(nCohorts),
     percentage = percentage,
     report_label = report_label
   )
@@ -1601,14 +1643,16 @@ StoppingCohortsNearDose <- function(nCohorts = 2L,
 StoppingPatientsNearDose <- function(nPatients = 10L,
                                      percentage = 50,
                                      report_label = NA_character_) {
-  nPatients <- safeInteger(nPatients)
+  assert_count(nPatients, positive = TRUE)
+  assert_number(percentage, lower = 0, upper = 100)
+
   report_label <- h_default_if_empty(
     as.character(report_label),
     paste("\u2265", nPatients, "patients dosed in", percentage, "% dose range around NBD")
   )
 
   .StoppingPatientsNearDose(
-    nPatients = nPatients,
+    nPatients = as.integer(nPatients),
     percentage = percentage,
     report_label = report_label
   )
@@ -1663,14 +1707,15 @@ StoppingPatientsNearDose <- function(nPatients = 10L,
 #'
 StoppingMinCohorts <- function(nCohorts = 2L,
                                report_label = NA_character_) {
-  nCohorts <- safeInteger(nCohorts)
+  assert_count(nCohorts, positive = TRUE)
+
   report_label <- h_default_if_empty(
     as.character(report_label),
     paste("\u2265", nCohorts, "cohorts dosed")
   )
 
   .StoppingMinCohorts(
-    nCohorts = safeInteger(nCohorts),
+    nCohorts = as.integer(nCohorts),
     report_label = report_label
   )
 }
@@ -1722,14 +1767,15 @@ StoppingMinCohorts <- function(nCohorts = 2L,
 #'
 StoppingMinPatients <- function(nPatients = 20L,
                                 report_label = NA_character_) {
-  nPatients <- safeInteger(nPatients)
+  assert_count(nPatients, positive = TRUE)
+
   report_label <- h_default_if_empty(
     as.character(report_label),
     paste("\u2265", nPatients, "patients dosed")
   )
 
   .StoppingMinPatients(
-    nPatients = safeInteger(nPatients),
+    nPatients = as.integer(nPatients),
     report_label = report_label
   )
 }
@@ -2638,6 +2684,15 @@ setClass(
   contains = "CrmPackClass"
 )
 
+## default constructor
+
+#' @rdname CohortSize-class
+#' @note Typically, end users will not use the `DefaultCohortSize()` function.
+#' @export
+.DefaultCohortSize <- function() {
+  stop(paste0("Class CohortSize should not be instantiated directly.  Please use one of its subclasses instead."))
+}
+
 # CohortSizeRange ----
 
 ## class ----
@@ -2681,9 +2736,12 @@ setClass(
 #' @example examples/Rules-class-CohortSizeRange.R
 #'
 CohortSizeRange <- function(intervals, cohort_size) {
+  # Cohort size 0 is needed to allow for no-placebo designs
+  assert_integerish(cohort_size, lower = 0, any.missing = FALSE)
+
   .CohortSizeRange(
     intervals = intervals,
-    cohort_size = safeInteger(cohort_size)
+    cohort_size = as.integer(cohort_size)
   )
 }
 
@@ -2739,9 +2797,13 @@ CohortSizeRange <- function(intervals, cohort_size) {
 #' @example examples/Rules-class-CohortSizeDLT.R
 #'
 CohortSizeDLT <- function(intervals, cohort_size) {
+  assert_integerish(intervals, lower = 0, any.missing = FALSE)
+  # Cohort size 0 is needed to allow for no-placebo designs
+  assert_integerish(cohort_size, lower = 0, any.missing = FALSE)
+
   .CohortSizeDLT(
-    intervals = safeInteger(intervals),
-    cohort_size = safeInteger(cohort_size)
+    intervals = as.integer(intervals),
+    cohort_size = as.integer(cohort_size)
   )
 }
 
@@ -2788,7 +2850,9 @@ CohortSizeDLT <- function(intervals, cohort_size) {
 #' @example examples/Rules-class-CohortSizeConst.R
 #'
 CohortSizeConst <- function(size) {
-  .CohortSizeConst(size = safeInteger(size))
+  # Cohort size 0 is needed to allow for no-placebo designs
+  assert_integerish(size, lower = 0)
+  .CohortSizeConst(size = as.integer(size))
 }
 
 ## default constructor ----
@@ -2836,7 +2900,9 @@ CohortSizeConst <- function(size) {
 #' @example examples/Rules-class-CohortSizeParts.R
 #'
 CohortSizeParts <- function(cohort_sizes) {
-  .CohortSizeParts(cohort_sizes = safeInteger(cohort_sizes))
+  # Cohort size 0 is needed to allow for no-placebo designs
+  assert_integerish(cohort_sizes, lower = 0, any.missing = FALSE)
+  .CohortSizeParts(cohort_sizes = as.integer(cohort_sizes))
 }
 
 ## default constructor ----
@@ -2988,6 +3054,16 @@ setClass(
   contains = "CrmPackClass"
 )
 
+## default constructor ----
+
+#' @rdname SafetyWindow-class
+#' @note Typically, end users will not use the `.DefaultSafetyWindow()` function.
+#' @export
+.DefaultSafetyWindow <- function() {
+  stop(paste0("Class SafetyWindow cannot be instantiated directly.  Please use one of its subclasses instead."))
+}
+
+
 # SafetyWindowSize ----
 
 ## class ----
@@ -3064,14 +3140,35 @@ SafetyWindowSize <- function(gap,
                              size,
                              follow,
                              follow_min) {
+  assert_integerish(follow, lower = 0)
+  assert_integerish(follow_min, lower = 0)
+  for (g in gap) {
+    assert_integerish(g, lower = 0)
+  }
+  assert_integerish(size, lower = 0)
   if (follow > follow_min) {
     warning("The value of follow_min is typically larger than the value of follow")
   }
+  gap <- lapply(gap, as.integer)
   .SafetyWindowSize(
-    gap = lapply(gap, safeInteger),
-    size = safeInteger(size),
-    follow = safeInteger(follow),
-    follow_min = safeInteger(follow_min)
+    gap = gap,
+    size = as.integer(size),
+    follow = as.integer(follow),
+    follow_min = as.integer(follow_min)
+  )
+}
+
+## default constructor ----
+
+#' @rdname SafetyWindowSize-class
+#' @note Typically, end users will not use the `.DefaultSafetyWindowSize()` function.
+#' @export
+.DefaultSafetyWindowSize <- function() {
+  SafetyWindowSize(
+    gap = list(c(7, 3), c(9, 5)),
+    size = c(1, 4),
+    follow = 7,
+    follow_min = 14
   )
 }
 
@@ -3126,12 +3223,29 @@ SafetyWindowSize <- function(gap,
 SafetyWindowConst <- function(gap,
                               follow,
                               follow_min) {
+  assert_integerish(follow, lower = 0)
+  assert_integerish(follow_min, lower = 0)
+  assert_integerish(gap, lower = 0)
+
   if (follow > follow_min) {
     warning("the value of follow_min is typically larger than the value of follow")
   }
   .SafetyWindowConst(
-    gap = safeInteger(gap),
-    follow = safeInteger(follow),
-    follow_min = safeInteger(follow_min)
+    gap = as.integer(gap),
+    follow = as.integer(follow),
+    follow_min = as.integer(follow_min)
+  )
+}
+
+## default constructor ----
+
+#' @rdname SafetyWindowConst-class
+#' @note Typically, end users will not use the `.DefaultSafetyWindowConst()` function.
+#' @export
+.DefaultSafetyWindowConst <- function() {
+  SafetyWindowConst(
+    gap = c(7, 5, 3),
+    follow = 7,
+    follow_min = 14
   )
 }

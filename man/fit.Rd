@@ -60,7 +60,7 @@ fit(object, model, data, ...)
 
 \item{data}{the \code{\linkS4class{Data}} object}
 
-\item{\dots}{unused}
+\item{\dots}{passed down to the \code{\link[=prob]{prob()}} method.}
 
 \item{points}{at which dose levels is the fit requested? default is the dose
 grid}

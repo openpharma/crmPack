@@ -14,6 +14,7 @@
   mcmcOptions = McmcOptions(),
   parallel = FALSE,
   nCores = min(parallel::detectCores(), 5),
+  derive = list(),
   ...
 )
 }
@@ -23,7 +24,7 @@ data from}
 
 \item{nsim}{the number of simulations (default: 1)}
 
-\item{seed}{see \code{\link{setSeed}}}
+\item{seed}{see \code{\link{set_seed}}}
 
 \item{truth}{a function which takes as input a dose (vector) and returns the
 true probability (vector) for toxicity. Additional arguments can be supplied
@@ -50,6 +51,10 @@ clusters of the computer? (not default)}
 
 \item{nCores}{how many cores should be used for parallel computing?
 Defaults to the number of cores on the machine, maximum 5.}
+
+\item{derive}{a named list of functions which derives statistics, based on the
+vector of posterior MTD samples. Each list element must therefore accept
+one and only one argument, which is a numeric vector, and return a number.}
 
 \item{\dots}{not used}
 }

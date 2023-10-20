@@ -42,7 +42,6 @@ Imports:
     checkmate (>= 2.2.0),
     futile.logger,
     GenSA,
-    grid,
     magrittr,
     gridExtra,
     lifecycle,
@@ -82,6 +81,7 @@ Collate:
     'Data-validity.R'
     'helpers.R'
     'Data-class.R'
+    'helpers_data.R'
     'Data-methods.R'
     'Rules-validity.R'
     'Rules-class.R'
@@ -98,6 +98,7 @@ Collate:
     'Samples-validity.R'
     'Samples-class.R'
     'mcmc.R'
+    'Simulations-validity.R'
     'Simulations-class.R'
     'helpers_rules.R'
     'Model-methods.R'
@@ -109,7 +110,9 @@ Collate:
     'checkmate.R'
     'crmPack-package.R'
     'helpers_covr.R'
+    'helpers_design.R'
     'helpers_model.R'
+    'helpers_simulations.R'
     'logger.R'
     'utils-pipe.R'
     'utils.R'
