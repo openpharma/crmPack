@@ -16,6 +16,8 @@ devtools::load_all()
 ## Introduction
 Here is a first draft implementation of broom-like methods for `crmPack, as suggested in [issue 323](https://github.com/Roche/crmPack/issues/323).
 
+> The original version of this specification did not account for slots whose values were lists.  This update corrects that omission.
+
 Whilst variants of "How do I convert an S4 object to a `data.frame`/`tibble`?" are commonly asked questions on StackOverflow [see, for example, [here](https://stackoverflow.com/questions/57317958/general-way-to-transform-s4-object-to-dataframe-r) and [here](https://stackoverflow.com/questions/14604269/how-to-create-a-dataframe-of-user-defined-s4-classes-in-r)], there appears to be no existing package to do this.  However, the approach generally suggested in answers to these questions is essentially the same as suggested here: 
 
 *  Deal with the object slot by slot  
@@ -26,7 +28,8 @@ Whilst variants of "How do I convert an S4 object to a `data.frame`/`tibble`?" a
 The general principles I propose for tidying `crmPack` objects are as follows:
 
 * All slots that are not functions are converted to `tibble`s or a list of `tibble`s.
-* If the slot is scalar, the slot is converted to a 1x1 `tibble`.  This will ease downstream operations such as `row_bind`ing.
+* If the slot's value is scalar, the slot is converted to a 1x1 `tibble`.  This will ease downstream operations such as `row_bind`ing.
+* If the slot's value is a `list`, these rules are aplied to each element of the list in turn.
 * If the object being tidied contains multiple slots of (potentially) different lengths, the results is a list of `tibble`s.  The list may be nested to multiple levels.  (See, for example, `LogisticLogNormal`.)
 * The column names of the tidied `tibble` correspond to the slot names of the parent object.
   * Exception: where the slot has name in the plural and contains a `vector` or `list`, the column name will be singular.  See, for example, `CohortSizeParts` below.
@@ -45,8 +48,8 @@ The general principles I propose for tidying `crmPack` objects are as follows:
 ### Helper functions
 It is likely that `tidy`ing `crmPack` objects of different classes will share common steps.  These common steps are candidates for being handled by helper functions.  Functionality for various helper functions include:
 
-* Conversion of a single slot to a tibble [`h_slot_to_tibble` with signature `c(obj = ANY, slot_name = "character")`]
-* Conversion of all slots in an object to tibbles [`h_tidy_all_slots` with signature `c(obj = ANY)`] that simply calls `h_slot_to_tibble` for all slots in the object that are not functions.
+* Conversion of a single slot to a tibble [`h_tidy_slot` with signature `c(obj = ANY, slot_name = "character")`]
+* Conversion of all slots in an object to tibbles [`h_tidy_all_slots` with signature `c(obj = ANY)`] that simply calls `h_tidy_slot` for all slots in the object that are not functions.
 * The conversion of scalar attributes to "constant" columns in a tibble [`h_scalar_attr_to_column` with signature `c(data = "tibble", obj = ANY)`]
 * The conversion of ranges (as found in, for example, sub-classes `Increments`) to min/max column pairs [`h_range_to_minmax` with signature `c(data = "tibble", obj = ANY)` with additional arguments to allow users to specify the name of the min and max columns, whether the ranges are closed to the left (default) or right and the outer ends of the lowest and highest intervals (with defaults `-Inf` and `Inf` respectively)]
 * The handling of class attributes
@@ -91,7 +94,10 @@ h_handle_attributes <- function(x, .ignore = c("names", "class", "description", 
 Other helpers.
 
 ```{r define-helper-functions}
-h_slot_to_tibble <- function(obj, slot_name, col = NULL, attributes = FALSE) {
+h_tidy_slot <- function(obj, slot_name, col = NULL, attributes = FALSE) {
+  if (is.list(slot(obj, slot_name))) {
+    return(lapply(slot(obj, slot_name), tidy))
+  }
   a <- h_handle_attributes(slot(obj, slot_name))
   if (is(slot(obj, slot_name), "CrmPackClass")) {
     rv <- slot(obj, slot_name) |>
@@ -116,9 +122,13 @@ h_tidy_all_slots <- function(obj) {
   rv <- list()
   for (nm in slot_names) {
     if (!is.function(slot(obj, nm))) {
-      rv[[nm]] <- h_slot_to_tibble(obj, nm) |> dplyr::bind_cols()
+      rv[[nm]] <- h_tidy_slot(obj, nm)
     }
   }
+  # Column bind of all list elements have the same number of rows
+  if (length(rv) > 1 & length(unique(sapply(rv, nrow))) == 1) {
+    rv <- rv |> dplyr::bind_cols()
+  } 
   rv
 }
 
@@ -206,6 +216,16 @@ x <- IncrementsRelative(
 
 x
 class(x)
+```
+
+`CohortSizeMax` contains a slot whose value is a list.
+
+```{r, error = TRUE}
+cs_max <- maxSize(
+  CohortSizeConst(3), 
+  CohortSizeDLT(intervals = 0:1, cohort_size = c(1, 3))
+)
+cs_max |> tidy()
 ```
 
 `CohortSizeParts` is slightly more complex and requires custom handling because the part index is implicit rather than explicit.
@@ -301,15 +321,16 @@ tibble(
 Various sub-classes of `GeneralModel` demonstrate how `tidy()` handles both slots of different classes and nesting.  Here is `LogisticLogNormal` as an example.
 
 ```{r, error=TRUE}
-LogisticLogNormal(
+x <- LogisticLogNormal(
   mean = c(-0.85, 1),
   cov = matrix(c(1, -0.5, -0.5, 1), nrow = 2),
   ref_dose = 50
-) %>%
-  tidy()
+) 
+
+x |> tidy()
 ```
 
-> The `cov` and `prec` slots of the `ModelParamsLogNormal` class both have an attribute set.  Unfortunately, it's called `dim` in both cases.  As might be expected, the value of `dim` is the same for both slots.  As `dim` is uninteresting, this is easily dealt with: by ignoring it.
+> The `cov` and `prec` slots of the `ModelParamsLogNormal` class both have an attribute set.  Unfortunately, it's called `dim` in both cases.  As might be expected, the value of `dim` is the same for both slots.  As `dim` is uninteresting, this can be easily dealt with: by ignoring it.
 
 The `McmcOptions` used to create a `Samples` object are added as attributes to each member of the `data` slot.  So this would also benefit from custom handling.
 
@@ -372,7 +393,7 @@ class(y)
 
 Since the `options` tibble is a one row copy of data contained in every row of the `data` tibble, it's value is questionable.  There is a case for returning only the `data` element of the default list.
 
-## An unexpected benefit
+## A useful side effect
 
 By introducing the `tidy` method, we have an immediate benefit of greatly improving the presentation of `crmPack` objects in reports.  For example:
 
@@ -398,3 +419,28 @@ NextBestNCRM(
 ```
 
 Though whether we should introduce an additional dependency on `knitr` is moot.
+
+## Default tidying for all crmPack classes
+
+Errors indicate classes that will require custom processing, or for which tidying is inappropriate.
+
+```{r, error = TRUE}
+crmPack_class_list <- getClasses(asNamespace("crmPack"))
+
+for (cls in crmPack_class_list) {
+  if (!isClassUnion(cls)) {
+    constructor_name <- paste0(".Default", cls)
+    if (exists(constructor_name, mode = "function")) {
+      print(cls)
+      tryCatch({
+        x <- do.call(paste0(".Default", cls), list())
+        print(x |> tidy())
+      },
+      error = function(e) print(paste0("Unable to tidy ", cls, " objects."))
+      )
+    } else {
+      print(paste0("No default constructor for ", cls))
+    }
+  }
+}
+```
