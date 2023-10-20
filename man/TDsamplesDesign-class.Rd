@@ -5,6 +5,7 @@
 \alias{TDsamplesDesign-class}
 \alias{.TDsamplesDesign}
 \alias{TDsamplesDesign}
+\alias{.DefaultTDsamplesDesign}
 \title{\code{TDsamplesDesign}}
 \usage{
 TDsamplesDesign(
@@ -14,6 +15,8 @@ TDsamplesDesign(
   pl_cohort_size = CohortSizeConst(0L),
   ...
 )
+
+.DefaultTDsamplesDesign()
 }
 \arguments{
 \item{model}{(\code{ModelTox})\cr see slot definition.}
@@ -53,6 +56,9 @@ obtained for this model.
 if any planned (defaults to constant 0 placebo patients).}
 }}
 
+\note{
+Typically, end users will not use the \code{.DefaultTDsamplesDesign()} function.
+}
 \examples{
 empty_data <- Data(doseGrid = seq(25, 300, 25))
 

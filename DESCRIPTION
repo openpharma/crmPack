@@ -42,7 +42,6 @@ Imports:
     checkmate (>= 2.2.0),
     futile.logger,
     GenSA,
-    grid,
     magrittr,
     gridExtra,
     lifecycle,
@@ -113,6 +112,7 @@ Collate:
     'helpers_covr.R'
     'helpers_design.R'
     'helpers_model.R'
+    'helpers_simulations.R'
     'logger.R'
     'utils-pipe.R'
     'utils.R'

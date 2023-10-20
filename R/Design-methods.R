@@ -4411,8 +4411,8 @@ setMethod("simulate",
 
 
             ## JZ: future work: additional part for DADesign--when to start the next cohort
-            ## nextOpen can be modified to incoporate different patient enrollment rate;
-            ## currently assume we have surfficient patients;
+            ## nextOpen can be modified to incorporate different patient enrollment rate;
+            ## currently assume we have sufficient patients;
             ## If there is a gap between cohorts for cohort manager meeting, it can be
             ## added to here;
 

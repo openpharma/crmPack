@@ -449,7 +449,9 @@ test_that("nextBest-NextBestTDsamples returns expected values of the objects", {
     ci_ratio_dose_target_eot = 10.88891
   )
   expect_identical(result[names(expected)], expected, tolerance = 10e-7)
-  vdiffr::expect_doppelganger("Plot of nextBest-NextBestTDsamples", result$plot)
+  suppressWarnings({
+    vdiffr::expect_doppelganger("Plot of nextBest-NextBestTDsamples", result$plot)
+  })
 })
 
 test_that("nextBest-NextBestTDsamples returns expected values of the objects (no doselimit)", {
@@ -475,7 +477,9 @@ test_that("nextBest-NextBestTDsamples returns expected values of the objects (no
     ci_ratio_dose_target_eot = 10.88891
   )
   expect_identical(result[names(expected)], expected, tolerance = 10e-7)
-  vdiffr::expect_doppelganger("Plot of nextBest-NextBestTDsamples_nodoselim", result$plot)
+  suppressWarnings({
+    vdiffr::expect_doppelganger("Plot of nextBest-NextBestTDsamples_nodoselim", result$plot)
+  })
 })
 
 test_that("nextBest-NextBestTDsamples returns expected values of the objects (other targets)", {

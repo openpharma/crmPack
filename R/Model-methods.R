@@ -1395,7 +1395,7 @@ setMethod(
     assert_length(dose, len = n_samples)
 
     dose_grid <- model@data@doseGrid
-    dose_level <- matchTolerance(dose, dose_grid)
+    dose_level <- match_within_tolerance(dose, dose_grid)
     dose[which(!is.na(dose_level))] <- dose_grid[stats::na.omit(dose_level)]
 
     # linear interpolation, NA for doses that are outside of the dose_grid range.

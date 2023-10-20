@@ -4,7 +4,11 @@
 \name{DualSimulationsSummary-class}
 \alias{DualSimulationsSummary-class}
 \alias{.DualSimulationsSummary}
+\alias{.DefaultDualSimulationsSummary}
 \title{Class for the summary of dual-endpoint simulations output}
+\usage{
+.DefaultDualSimulationsSummary()
+}
 \description{
 In addition to the slots in the parent class
 \code{\linkS4class{SimulationsSummary}}, it contains two slots for the
@@ -23,4 +27,7 @@ initialization function is provided for this class.
 quantiles of the mean fitted biomarker level at each dose level}
 }}
 
+\note{
+Typically, end users will not use the \code{.DefaultDualSimulationsSummary()} function.
+}
 \keyword{classes}

@@ -4,7 +4,14 @@
 \name{GeneralSimulationsSummary-class}
 \alias{GeneralSimulationsSummary-class}
 \alias{.GeneralSimulationsSummary}
+\alias{.DefaultGeneralSimulationsSummary}
+\alias{.DefaultPseudoSimulationsSummary}
 \title{Class for the summary of general simulations output}
+\usage{
+.DefaultGeneralSimulationsSummary()
+
+.DefaultPseudoSimulationsSummary()
+}
 \description{
 Note that objects should not be created by users, therefore no
 initialization function is provided for this class.
@@ -42,4 +49,9 @@ selected}
 \item{\code{placebo}}{set to TRUE (default is FALSE) for a design with placebo}
 }}
 
+\note{
+Typically, end users will not use the \code{.DefaultGeneralSimulationsSummary()} function.
+
+Typically, end users will not use the \code{.DefaultPseudoSimulationsSummary()} function.
+}
 \keyword{classes}
