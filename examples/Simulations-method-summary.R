@@ -74,7 +74,12 @@ time <- system.time(mySims <- simulate(design,
   nsim = 1,
   seed = 819,
   mcmcOptions = options,
-  parallel = FALSE
+  parallel = FALSE,
+  derive = list(
+    max_mtd = max,
+    mean_mtd = mean,
+    median_mtd = median
+  ),
 ))[3]
 
 # Summarize the Results of the Simulations

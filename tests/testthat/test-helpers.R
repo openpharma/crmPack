@@ -471,20 +471,23 @@ test_that("h_find_interval works as expected for custom replacement", {
 })
 
 test_that("default constructors exist for all subclasses of GeneralModel", {
-  classesToTest <- names(getClassDef("GeneralModel")@subclasses)
-  # Virtual class: throws exception
-  classesToTest <- classesToTest[which(!(classesToTest %in% c("DualEndpoint")))]
+  allModelSubclasses <- names(getClassDef("GeneralModel")@subclasses)
+  # Exceptions.
+  classesNotToTest <- "DualEndpoint"
+  classesToTest <- setdiff(allModelSubclasses, classesNotToTest)
   lapply(
     classesToTest,
     function(cls) {
       # Function exists
-      expect_true(length(findFunction(paste0(".Default", cls), where = asNamespace("crmPack"))) > 1)
+      expect_true(
+        length(findFunction(paste0(".Default", cls), where = asNamespace("crmPack"))) > 1,
+        label = cls
+      )
       # Return value is of the correct class
       test_obj <- eval(parse(text = paste0(".Default", cls, "()")))
       expect_class(test_obj, cls)
     }
   )
-  expect_error(eval(parse(text = ".DefaultDualEndpoint()")))
 })
 
 test_that("default constructors exist for all subclasses of Increments", {
@@ -691,4 +694,33 @@ test_that("calculations for percentages, given report_labels are not provided wo
   expected <- numeric(0)
   names(expected) <- character(0)
   expect_equal(result, expected)
+})
+
+# h_group_data ----
+
+test_that("h_group_data works as expected", {
+  mono_data <- h_get_data_1()
+  combo_data <- h_get_data_2()
+  group_data <- expect_silent(h_group_data(mono_data, combo_data))
+  expect_valid(group_data, "DataGrouped")
+  expect_identical(mono_data@nObs + combo_data@nObs, group_data@nObs)
+  expect_identical(sort(union(mono_data@doseGrid, combo_data@doseGrid)), group_data@doseGrid)
+  mono_data_from_group <- cbind(
+    x = group_data@x[group_data@group == "mono"],
+    y = group_data@y[group_data@group == "mono"]
+  )
+  mono_data_from_start <- cbind(
+    x = mono_data@x,
+    y = mono_data@y
+  )
+  expect_setequal(mono_data_from_group, mono_data_from_start)
+  combo_data_from_group <- cbind(
+    x = group_data@x[group_data@group == "combo"],
+    y = group_data@y[group_data@group == "combo"]
+  )
+  combo_data_from_start <- cbind(
+    x = combo_data@x,
+    y = combo_data@y
+  )
+  expect_setequal(combo_data_from_group, combo_data_from_start)
 })

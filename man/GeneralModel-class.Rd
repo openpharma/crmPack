@@ -5,7 +5,11 @@
 \alias{GeneralModel-class}
 \alias{.GeneralModel}
 \alias{GeneralModel}
+\alias{.DefaultGeneralModel}
 \title{\code{GeneralModel}}
+\usage{
+.DefaultGeneralModel()
+}
 \description{
 \ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#stable}{\figure{lifecycle-stable.svg}{options: alt='[Stable]'}}}{\strong{[Stable]}}
 
@@ -57,6 +61,8 @@ called exactly in the same way as in the corresponding data class.
 All prior distributions for parameters should be contained in the
 model function \code{priormodel}. The background is that this can
 be used to simulate from the prior distribution, before obtaining any data.
+
+Typically, end users will not use the \code{.DefaultGeneralModel()} function.
 }
 \seealso{
 \code{\link{ModelPseudo}}.

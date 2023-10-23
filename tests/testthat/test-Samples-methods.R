@@ -205,6 +205,23 @@ test_that("fit-Samples works correctly for tox-only models", {
   checkIt(seed = 789, lowerQuantile = 0.25, upperQuantile = 0.75)
 })
 
+## Samples-LogisticLogNormalGrouped ----
+
+test_that("fit-Samples works specifically also for LogisticLogNormalGrouped", {
+  mcmcOptions <- McmcOptions(samples = 3)
+  samples <- Samples(
+    data = list(alpha0 = -1:1, delta0 = c(0, 1, -1), alpha1 = -1:1, delta1 = c(-1, 0, 2)),
+    options = mcmcOptions
+  )
+  model <- .DefaultLogisticLogNormalGrouped()
+  emptyData <- Data(doseGrid = seq(10, 80, 10))
+
+  result <- expect_silent(fit(samples, model, emptyData, group = "combo"))
+  expect_data_frame(result)
+  expect_equal(nrow(result), length(emptyData@doseGrid))
+  expect_named(result, c("dose", "middle", "lower", "upper"))
+})
+
 ## Samples-DataModel ----
 
 test_that("fit-Samples works correctly for dual models", {
@@ -847,6 +864,21 @@ test_that("Check that plot-Samples-ModelTox works correctly", {
   vdiffr::expect_doppelganger("plot-Samples-ModelTox_showlegend-FALSE", actual1)
 })
 
+## Samples-LogisticLogNormalGrouped ----
+
+test_that("plot-Samples works specifically also for LogisticLogNormalGrouped", {
+  mcmcOptions <- McmcOptions(samples = 3)
+  samples <- Samples(
+    data = list(alpha0 = -1:1, delta0 = c(0, 1, -1), alpha1 = -1:1, delta1 = c(-1, 0, 2)),
+    options = mcmcOptions
+  )
+  model <- .DefaultLogisticLogNormalGrouped()
+  emptyData <- Data(doseGrid = seq(0.5, 10, by = 0.1))
+
+  result <- expect_silent(plot(samples, model, emptyData, group = "combo"))
+  vdiffr::expect_doppelganger("plot-Samples-LogisticLogNormalGrouped", result)
+})
+
 ## Samples-DataDual ----
 
 test_that("Check that plot-Samples-ModelEff fails gracefully with bad input", {
@@ -1410,16 +1442,16 @@ test_that("plot-Samples-DALogisticNormal works correctly", {
   samples <- mcmc(data, model, options)
 
   actual <- plot(samples, model, data)
-  vdiffr::expect_doppelganger("plot-Samples-DALogisticLogNormal", actual)
+  vdiffr::expect_doppelganger("plot-samples-dalogisticlognormal", actual)
 
   actual1 <- plot(samples, model, data, hazard = TRUE)
-  vdiffr::expect_doppelganger("plot-Samples-DALogisticLogNormal_hazard-TRUE", actual1)
+  vdiffr::expect_doppelganger("plot-samples-dalogisticlognormal-hazard-true", actual1)
 
   actual2 <- plot(samples, model, data, showLegend = FALSE)
-  vdiffr::expect_doppelganger("plot-Samples-DALogisticLogNormal_showLegend-FALSE", actual2)
+  vdiffr::expect_doppelganger("plot-samples-dalogisticlognormal-showlegend-false", actual2)
 
   actual3 <- plot(samples, model, data, showLegend = FALSE, hazard = TRUE)
-  vdiffr::expect_doppelganger("plot-Samples-DALogisticLogNormal_TRUE_FALSE", actual3)
+  vdiffr::expect_doppelganger("plot-samples-dalogisticlognormal-true-false", actual3)
 })
 
 test_that("Approximate fails gracefully with bad input", {

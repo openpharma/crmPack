@@ -244,14 +244,18 @@ test_that("h_next_best_tdsamples_plot works as expected", {
   result <- h_next_best_tdsamples_plot(
     1:100, 50:150, 100, 120, c(25, 300), h_next_best_tdsamples(), 75, 60
   )
-  vdiffr::expect_doppelganger("h_next_best_tdsamples_plot", result)
+  suppressWarnings({
+    vdiffr::expect_doppelganger("h_next_best_tdsamples_plot", result)
+  })
 })
 
 test_that("h_next_best_tdsamples_plot works as expected (no doselimit)", {
   result <- h_next_best_tdsamples_plot(
     1:100, 50:150, 100, 120, c(25, 300), h_next_best_tdsamples(), Inf, 60
   )
-  vdiffr::expect_doppelganger("h_next_best_tdsamples_plot_nodoselim", result)
+  suppressWarnings({
+    vdiffr::expect_doppelganger("h_next_best_tdsamples_plot_nodoselim", result)
+  })
 })
 
 ### h_next_best_td_plot ----

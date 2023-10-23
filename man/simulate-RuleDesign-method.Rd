@@ -11,7 +11,7 @@
   truth,
   args = NULL,
   parallel = FALSE,
-  nCores = min(parallel::detectCores(), 5),
+  nCores = min(parallel::detectCores(), 5L),
   ...
 )
 }
@@ -21,7 +21,7 @@ data from}
 
 \item{nsim}{the number of simulations (default: 1)}
 
-\item{seed}{see \code{\link{setSeed}}}
+\item{seed}{see \code{\link{set_seed}}}
 
 \item{truth}{a function which takes as input a dose (vector) and returns the
 true probability (vector) for toxicity. Additional arguments can be supplied

@@ -4,7 +4,11 @@
 \name{SimulationsSummary-class}
 \alias{SimulationsSummary-class}
 \alias{.SimulationsSummary}
+\alias{.DefaultSimulationsSummary}
 \title{Class for the summary of model-based simulations output}
+\usage{
+.DefaultSimulationsSummary()
+}
 \description{
 In addition to the slots in the parent class
 \code{\linkS4class{GeneralSimulationsSummary}}, it contains two slots with
@@ -19,10 +23,15 @@ initialization function is provided for this class.
 \describe{
 \item{\code{stop_report}}{matrix of stopping rule outcomes}
 
+\item{\code{additional_stats}}{list of additional statistical summary}
+
 \item{\code{fitAtDoseMostSelected}}{fitted toxicity rate at dose most often selected}
 
 \item{\code{meanFit}}{list with the average, lower (2.5\%) and upper (97.5\%)
 quantiles of the mean fitted toxicity at each dose level}
 }}
 
+\note{
+Typically, end users will not use the \code{.DefaultSimulationsSummary()} function.
+}
 \keyword{classes}

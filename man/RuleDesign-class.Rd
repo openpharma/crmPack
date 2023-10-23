@@ -5,10 +5,13 @@
 \alias{RuleDesign-class}
 \alias{.RuleDesign}
 \alias{RuleDesign}
+\alias{.DefaultRuleDesign}
 \alias{ThreePlusThreeDesign}
 \title{\code{RuleDesign}}
 \usage{
 RuleDesign(nextBest, cohort_size, data, startingDose)
+
+.DefaultRuleDesign()
 
 ThreePlusThreeDesign(doseGrid)
 }
@@ -48,6 +51,9 @@ this class and the \code{\link{Design}} class is that \code{\link{RuleDesign}} d
 grid in \code{data}.}
 }}
 
+\note{
+Typically, end users will not use the \code{.DefaultRuleDesign()} function.
+}
 \examples{
 # Specify the design to run simulations. The design comprises a model,
 # the escalation rule, starting data, a cohort size and a starting dose.

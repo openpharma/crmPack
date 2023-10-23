@@ -78,11 +78,11 @@ McmcOptions <- function(burnin = 1e4L,
                         samples = 1e4L,
                         rng_kind = NA_character_,
                         rng_seed = NA_integer_) {
-  assert_number(burnin)
-  assert_number(step)
-  assert_number(samples)
+  assert_count(burnin, positive = TRUE)
+  assert_count(step, positive = TRUE)
+  assert_count(samples, positive = TRUE)
   assert_string(rng_kind, na.ok = TRUE)
-  assert_number(rng_seed, na.ok = TRUE)
+  assert_count(rng_seed, na.ok = TRUE)
 
   if (!is.na(rng_kind)) {
     rng_kind <- paste0("base::", rng_kind)
@@ -90,16 +90,28 @@ McmcOptions <- function(burnin = 1e4L,
     rng_kind <- NA_character_
   }
   if (!is.na(rng_seed)) {
-    rng_seed <- safeInteger(rng_seed)
+    rng_seed <- as.integer(rng_seed)
   } else {
     rng_seed <- NA_integer_
   }
 
   .McmcOptions(
-    iterations = safeInteger(burnin + (step * samples)),
-    burnin = safeInteger(burnin),
-    step = safeInteger(step),
+    iterations = as.integer(burnin + (step * samples)),
+    burnin = as.integer(burnin),
+    step = as.integer(step),
     rng_kind = rng_kind,
-    rng_seed = rng_seed
+    rng_seed = as.integer(rng_seed)
+  )
+}
+
+## default constructor ----
+
+#' @rdname McmcOptions-class
+#' @note Typically, end users will not use the `.DefaultMcmcOptions()` function.
+#' @export
+.DefaultMcmcOptions <- function() {
+  McmcOptions(
+    burnin = 250,
+    samples = 1000
   )
 }

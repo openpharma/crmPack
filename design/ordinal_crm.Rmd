@@ -352,13 +352,13 @@ DataOrdinal <- function(
 
   .DataOrdinal(
     x = as.numeric(x),
-    y = crmPack:::safeInteger(y),
-    ID = crmPack:::safeInteger(ID),
-    cohort = crmPack:::safeInteger(cohort),
+    y = y,
+    ID = ID,
+    cohort = cohort,
     doseGrid = doseGrid,
     nObs = length(x),
     nGrid = length(doseGrid),
-    xLevel = matchTolerance(x = x, table = doseGrid),
+    xLevel = match_within_tolerance(x = x, table = doseGrid),
     placebo = placebo,
     yCategories = yCategories
   )
@@ -443,17 +443,17 @@ setMethod(
     n <- length(y)
 
     # Which grid level is the dose?
-    gridLevel <- matchTolerance(x, object@doseGrid)
+    gridLevel <- match_within_tolerance(x, object@doseGrid)
     object@xLevel <- c(object@xLevel, rep(gridLevel, n))
 
     # Add dose.
     object@x <- c(object@x, rep(as.numeric(x), n))
 
     # Add DLT data.
-    object@y <- c(object@y, crmPack:::safeInteger(y))
+    object@y <- c(object@y, y)
 
     # Add ID.
-    object@ID <- c(object@ID, crmPack:::safeInteger(ID))
+    object@ID <- c(object@ID, ID)
 
     # Add cohort number.
     new_cohort_id <- if (object@nObs == 0) {

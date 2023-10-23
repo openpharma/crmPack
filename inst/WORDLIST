@@ -76,6 +76,7 @@ customised
 DataCombo
 DataDual
 DataMixture
+DataOrdinal
 dataname
 datanames
 DataParts
@@ -221,12 +222,14 @@ md
 mDA
 Michielin
 MinimalInformative
+minimise
 minInfModel
 ModelEff
 modelled
 modelling
 ModelPseudo
 ModelTox
+monotherapy
 MTD
 multisessions
 multithreaded

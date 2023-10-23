@@ -1,5 +1,39 @@
 # simulate ----
 
+test_that("Test if simulate generate the expected output.", {
+  data <- h_get_data(placebo = FALSE)
+  model <- h_get_logistic_normal()
+  increments <- h_increments_relative()
+  next_best <- h_next_best_ncrm()
+  size <- CohortSizeConst(size = 3)
+
+  # Extreme truth function, which has constant probability 1 in dose grid range.
+  truth <- probFunction(model, alpha0 = 175, alpha1 = 5)
+  stop_rule <- StoppingMinPatients(nPatients = 5)
+  design <- Design(
+    model = model,
+    stopping = stop_rule,
+    increments = increments,
+    nextBest = next_best,
+    cohort_size = size,
+    data = data,
+    startingDose = 25
+  )
+
+  my_options <- McmcOptions(burnin = 100, step = 2, samples = 5, rng_kind = "Mersenne-Twister", rng_seed = 3)
+
+  sim <- simulate(
+    design,
+    nsim = 1,
+    truth = truth,
+    seed = 819,
+    mcmcOptions = my_options
+  )
+
+  expect_snapshot(sim)
+})
+
+
 ## NextBestInfTheory ----
 
 test_that("NextBestInfTheory produces consistent results for empty data", {
@@ -134,6 +168,202 @@ test_that("stop_reasons can be NA with certain stopping rule settings", {
   expect_identical(result, expected)
 })
 
+## DesignGrouped ----
+
+test_that("simulate for DesignGrouped works as expected", {
+  object <- DesignGrouped(
+    model = LogisticLogNormalGrouped(mean = rep(-1, 4), cov = diag(5, 4), ref_dose = 1),
+    mono = Design(
+      model = .LogisticNormal(),
+      nextBest = NextBestNCRM(target = c(0.3, 0.6), overdose = c(0.6, 1), max_overdose_prob = 0.7),
+      stopping = StoppingMinPatients(nPatients = 9),
+      increments = IncrementsDoseLevels(levels = 5),
+      cohort_size = CohortSizeConst(3),
+      data = Data(doseGrid = 1:100),
+      startingDose = 1
+    ),
+    same_dose = TRUE,
+    first_cohort_mono_only = TRUE
+  )
+  my_truth <- function(x) plogis(-4 + 0.2 * log(x / 0.1))
+  my_combo_truth <- function(x) plogis(-4 + 0.5 * log(x / 0.1))
+
+  result <- expect_silent(simulate(
+    object,
+    nsim = 2,
+    seed = 123,
+    truth = my_truth,
+    combo_truth = my_combo_truth,
+    mcmcOptions = h_get_mcmc_options()
+  ))
+
+  expect_list(result)
+  expect_names(names(result), identical.to = c("mono", "combo"))
+  expect_valid(result$mono, "Simulations")
+  expect_valid(result$combo, "Simulations")
+
+  mono_trial <- result$mono@data[[2L]]
+  combo_trial <- result$combo@data[[2L]]
+
+  # First cohort is only mono at the starting dose (lowest in dose grid).
+  expect_true(all(mono_trial@xLevel[1:3] == 1))
+
+  # We have the same dose for subsequent cohorts.
+  expect_true(all(mono_trial@xLevel[4:6] == combo_trial@xLevel[1:3]))
+  expect_true(all(mono_trial@xLevel[7:9] == combo_trial@xLevel[4:6]))
+})
+
+test_that("simulate for DesignGrouped works as expected with different doses, parallel first cohort", {
+  object <- DesignGrouped(
+    model = LogisticLogNormalGrouped(mean = rep(-1, 4), cov = diag(5, 4), ref_dose = 1),
+    mono = Design(
+      model = .LogisticNormal(),
+      nextBest = NextBestNCRM(target = c(0.3, 0.6), overdose = c(0.6, 1), max_overdose_prob = 0.7),
+      stopping = StoppingMinPatients(nPatients = 20),
+      increments = IncrementsDoseLevels(levels = 5),
+      cohort_size = CohortSizeConst(3),
+      data = Data(doseGrid = 1:100),
+      startingDose = 1
+    ),
+    same_dose = FALSE,
+    first_cohort_mono_only = FALSE
+  )
+  my_truth <- function(x) plogis(-4 + 0.2 * log(x / 0.1))
+  my_combo_truth <- function(x) plogis(-4 + 0.9 * log(x / 0.1))
+
+  result <- expect_silent(simulate(
+    object,
+    nsim = 1,
+    seed = 123,
+    truth = my_truth,
+    combo_truth = my_combo_truth,
+    mcmcOptions = h_get_mcmc_options()
+  ))
+
+  expect_list(result)
+  expect_names(names(result), identical.to = c("mono", "combo"))
+  expect_valid(result$mono, "Simulations")
+  expect_valid(result$combo, "Simulations")
+
+  mono_trial <- result$mono@data[[1L]]
+  combo_trial <- result$combo@data[[1L]]
+
+  # First cohort is joint at starting dose.
+  expect_true(all(mono_trial@xLevel[1:3] == combo_trial@xLevel[1:3]))
+
+  # We have different doses in subsequent cohorts.
+  expect_false(all(mono_trial@xLevel[4:20] == combo_trial@xLevel[4:20]))
+})
+
+test_that("simulate for DesignGrouped works when first patient is dosed separately, different combo design", {
+  object <- DesignGrouped(
+    model = LogisticLogNormalGrouped(mean = rep(-1, 4), cov = diag(5, 4), ref_dose = 1),
+    mono = Design(
+      model = .LogisticNormal(),
+      nextBest = NextBestNCRM(target = c(0.3, 0.6), overdose = c(0.6, 1), max_overdose_prob = 0.7),
+      stopping = StoppingMinPatients(nPatients = 10),
+      increments = IncrementsDoseLevels(levels = 3),
+      cohort_size = CohortSizeConst(2),
+      data = Data(doseGrid = 1:100),
+      startingDose = 10
+    ),
+    combo = Design(
+      model = .LogisticNormal(),
+      nextBest = NextBestNCRM(target = c(0.3, 0.6), overdose = c(0.6, 1), max_overdose_prob = 0.7),
+      stopping = StoppingMinPatients(nPatients = 20),
+      increments = IncrementsDoseLevels(levels = 5),
+      cohort_size = CohortSizeConst(3),
+      data = Data(doseGrid = 1:100),
+      startingDose = 1
+    ),
+    same_dose = FALSE,
+    first_cohort_mono_only = FALSE
+  )
+  my_truth <- function(x) plogis(-4 + 0.2 * log(x / 0.1))
+  my_combo_truth <- function(x) plogis(-2 + 0.9 * log(x / 0.1))
+
+  result <- expect_silent(simulate(
+    object,
+    nsim = 1,
+    seed = 123,
+    truth = my_truth,
+    firstSeparate = TRUE,
+    combo_truth = my_combo_truth,
+    mcmcOptions = h_get_mcmc_options(),
+  ))
+
+  expect_list(result)
+  expect_names(names(result), identical.to = c("mono", "combo"))
+  expect_valid(result$mono, "Simulations")
+  expect_valid(result$combo, "Simulations")
+
+  mono_trial <- result$mono@data[[1L]]
+  combo_trial <- result$combo@data[[1L]]
+
+  # We expect at least one cohort with just one patient in the combo arm here
+  # because of the high toxicity.
+  expect_true(any(table(combo_trial@cohort) == 1))
+
+  # Check that we had the different cohort sizes between the two arms.
+  expect_true(max(table(mono_trial@cohort)) == 2)
+  expect_true(max(table(combo_trial@cohort)) == 3)
+
+  # Check that we had different starting doses in the two arms.
+  expect_true(mono_trial@x[1] == 10)
+  expect_true(combo_trial@x[1] == 1)
+})
+
+test_that("simulate for DesignGrouped works with different starting doses and first mono", {
+  object <- DesignGrouped(
+    model = LogisticLogNormalGrouped(mean = rep(-1, 4), cov = diag(5, 4), ref_dose = 1),
+    mono = Design(
+      model = .LogisticNormal(),
+      nextBest = NextBestNCRM(target = c(0.3, 0.6), overdose = c(0.6, 1), max_overdose_prob = 0.7),
+      stopping = StoppingMinPatients(nPatients = 9),
+      increments = IncrementsDoseLevels(levels = 5),
+      cohort_size = CohortSizeConst(3),
+      data = Data(doseGrid = 1:100),
+      startingDose = 10
+    ),
+    combo = Design(
+      model = .LogisticNormal(),
+      nextBest = NextBestNCRM(target = c(0.3, 0.6), overdose = c(0.6, 1), max_overdose_prob = 0.7),
+      stopping = StoppingMinPatients(nPatients = 9),
+      increments = IncrementsRelative(c(0, 100), c(2, 1)),
+      cohort_size = CohortSizeConst(3),
+      data = Data(doseGrid = 1:100),
+      startingDose = 5
+    ),
+    same_dose = FALSE,
+    first_cohort_mono_only = TRUE
+  )
+  my_truth <- function(x) plogis(-4 + 0.2 * log(x / 0.1))
+  my_combo_truth <- function(x) plogis(-4 + 0.5 * log(x / 0.1))
+
+  result <- expect_silent(simulate(
+    object,
+    nsim = 2,
+    seed = 123,
+    truth = my_truth,
+    combo_truth = my_combo_truth,
+    mcmcOptions = h_get_mcmc_options()
+  ))
+
+  expect_list(result)
+  expect_names(names(result), identical.to = c("mono", "combo"))
+  expect_valid(result$mono, "Simulations")
+  expect_valid(result$combo, "Simulations")
+
+  mono_trial <- result$mono@data[[2L]]
+  combo_trial <- result$combo@data[[2L]]
+
+  # First cohort is only mono at the starting dose.
+  expect_true(all(mono_trial@xLevel[1:3] == 10))
+
+  # In first combo cohort we have the expected starting dose.
+  expect_true(all(combo_trial@xLevel[1:3] == 5))
+})
+
 # examine ----
 
 ## DADesign ----
@@ -212,7 +442,7 @@ test_that("examine for DADesign works as expected", {
     rng_seed = 12
   )
   expect_warning(
-    result <- examine(design, mcmcOptions = options, maxNoIncrement = 2),
+    result <- examine(design, mcmcOptions = options, maxNoIncrement = 2L),
     "Stopping because 2 times no increment"
   )
   expect_data_frame(result)
