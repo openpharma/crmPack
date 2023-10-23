@@ -986,6 +986,13 @@ test_that("dose-OneParExpPrior throws the error when x is not valid", {
 
 # prob ----
 
+## LogisticLogNormalOrdinal
+test_that("prob-LogisticNormal works as expected", {
+  model <- .DefaultLogisticLogNormalOrdinal()
+  dt <- .DefaultDataOrdinal()
+  result <- samples
+})
+
 ## LogisticNormal ----
 
 test_that("prob-LogisticNormal works as expected", {
