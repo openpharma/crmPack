@@ -5,9 +5,12 @@
 \alias{ModelParamsNormal-class}
 \alias{.ModelParamsNormal}
 \alias{ModelParamsNormal}
+\alias{.DefaultModelParamsNormal}
 \title{\code{ModelParamsNormal}}
 \usage{
 ModelParamsNormal(mean, cov)
+
+.DefaultModelParamsNormal()
 }
 \arguments{
 \item{mean}{(\code{numeric})\cr the prior mean vector.}
@@ -33,6 +36,9 @@ The precision matrix is an inverse of the covariance matrix in the
 \item{\code{prec}}{(\code{matrix})\cr the precision matrix, which is an inverse matrix of the \code{cov}.}
 }}
 
+\note{
+Typically, end users will not use the \code{.ModelPAramsNormal()} function.
+}
 \examples{
 ModelParamsNormal(mean = c(1, 6), cov = diag(2))
 }

@@ -5,9 +5,12 @@
 \alias{DualDesign-class}
 \alias{.DualDesign}
 \alias{DualDesign}
+\alias{.DefaultDualDesign}
 \title{\code{DualDesign}}
 \usage{
 DualDesign(model, data, ...)
+
+.DefaultDualDesign()
 }
 \arguments{
 \item{model}{(\code{DualEndpoint})\cr see slot definition.}
@@ -40,6 +43,8 @@ parent class \code{\link{Design}}.
 \note{
 the \code{nextBest} slot can be of any class, this allows for easy comparison
 with recommendation methods that don't use the biomarker information.
+
+Typically, end users will not use the \code{.DefaultDualDesign()} function.
 }
 \examples{
 empty_data <- DataDual(doseGrid = c(1, 3, 5, 10, 15, 20, 25, 40, 50, 80, 100))
