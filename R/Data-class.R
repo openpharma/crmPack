@@ -5,7 +5,7 @@ NULL
 
 # GeneralData-class ----
 
-#' `GeneralData`
+#' `GeneralData` A Class for General Data Input
 #'
 #' @description `r lifecycle::badge("stable")`
 #'

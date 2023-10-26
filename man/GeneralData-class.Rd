@@ -5,7 +5,7 @@
 \alias{GeneralData-class}
 \alias{.GeneralData}
 \alias{GeneralData}
-\title{\code{GeneralData}}
+\title{\code{GeneralData} A Class for General Data Input}
 \description{
 \ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#stable}{\figure{lifecycle-stable.svg}{options: alt='[Stable]'}}}{\strong{[Stable]}}
 
