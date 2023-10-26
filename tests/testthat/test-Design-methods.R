@@ -477,6 +477,114 @@ test_that("simulate for DesignGrouped reports correctly when mono is not stopped
   )
 })
 
+test_that("simulate for DesignGrouped works with parallel start when first cohort mono only", {
+  object <- DesignGrouped(
+    model = LogisticLogNormalGrouped(mean = rep(-1, 4), cov = diag(5, 4), ref_dose = 1),
+    mono = Design(
+      model = .LogisticNormal(),
+      nextBest = NextBestNCRM(target = c(0.3, 0.6), overdose = c(0.6, 1), max_overdose_prob = 0.7),
+      stopping = StoppingMinPatients(nPatients = 9),
+      increments = IncrementsDoseLevels(levels = 5),
+      cohort_size = CohortSizeConst(3),
+      data = Data(doseGrid = 1:100),
+      startingDose = 1
+    ),
+    combo = Design(
+      model = .LogisticNormal(),
+      nextBest = NextBestNCRM(target = c(0.3, 0.6), overdose = c(0.6, 1), max_overdose_prob = 0.7),
+      stopping = StoppingMinPatients(nPatients = 9),
+      increments = IncrementsRelative(c(0, 100), c(2, 1)),
+      cohort_size = CohortSizeConst(3),
+      data = Data(doseGrid = 1:100),
+      startingDose = 1
+    ),
+    same_dose = FALSE,
+    first_cohort_mono_only = TRUE,
+    parallel_start = TRUE
+  )
+  my_truth <- function(x) plogis(-4 + 0.2 * log(x / 0.1))
+  my_combo_truth <- function(x) plogis(-4 + 0.5 * log(x / 0.1))
+
+  result <- expect_silent(simulate(
+    object,
+    nsim = 2,
+    seed = 123,
+    truth = my_truth,
+    combo_truth = my_combo_truth,
+    mcmcOptions = h_get_mcmc_options()
+  ))
+
+  expect_list(result)
+  expect_names(names(result), identical.to = c("mono", "combo"))
+  expect_valid(result$mono, "Simulations")
+  expect_valid(result$combo, "Simulations")
+
+  mono_trial <- result$mono@data[[1L]]
+  combo_trial <- result$combo@data[[1L]]
+
+  # First cohort is only mono at the starting dose.
+  expect_true(all(mono_trial@x[1:3] == 1))
+
+  # Second cohort in mono is again the starting dose because of parallel start.
+  expect_true(all(mono_trial@x[4:6] == 1))
+
+  # In first combo cohort we have the expected starting dose.
+  expect_true(all(combo_trial@x[1:3] == 1))
+})
+
+test_that("simulate for DesignGrouped works with parallel start when first cohort mono and combo", {
+  object <- DesignGrouped(
+    model = LogisticLogNormalGrouped(mean = rep(-1, 4), cov = diag(5, 4), ref_dose = 1),
+    mono = Design(
+      model = .LogisticNormal(),
+      nextBest = NextBestNCRM(target = c(0.3, 0.6), overdose = c(0.6, 1), max_overdose_prob = 0.7),
+      stopping = StoppingMinPatients(nPatients = 9),
+      increments = IncrementsDoseLevels(levels = 5),
+      cohort_size = CohortSizeConst(3),
+      data = Data(doseGrid = 1:100),
+      startingDose = 1
+    ),
+    combo = Design(
+      model = .LogisticNormal(),
+      nextBest = NextBestNCRM(target = c(0.3, 0.6), overdose = c(0.6, 1), max_overdose_prob = 0.7),
+      stopping = StoppingMinPatients(nPatients = 9),
+      increments = IncrementsRelative(c(0, 100), c(2, 1)),
+      cohort_size = CohortSizeConst(3),
+      data = Data(doseGrid = 1:100),
+      startingDose = 3
+    ),
+    same_dose = FALSE,
+    first_cohort_mono_only = FALSE,
+    parallel_start = TRUE
+  )
+  my_truth <- function(x) plogis(-4 + 0.2 * log(x / 0.1))
+  my_combo_truth <- function(x) plogis(-4 + 0.5 * log(x / 0.1))
+
+  result <- expect_silent(simulate(
+    object,
+    nsim = 2,
+    seed = 123,
+    truth = my_truth,
+    combo_truth = my_combo_truth,
+    mcmcOptions = h_get_mcmc_options()
+  ))
+
+  expect_list(result)
+  expect_names(names(result), identical.to = c("mono", "combo"))
+  expect_valid(result$mono, "Simulations")
+  expect_valid(result$combo, "Simulations")
+
+  mono_trial <- result$mono@data[[1L]]
+  combo_trial <- result$combo@data[[1L]]
+
+  # First cohort is only mono at the starting dose.
+  expect_true(all(mono_trial@x[1:3] == 1))
+
+  # In first combo cohort we have the lower, mono starting dose too, because
+  # of parallel start.
+  expect_true(all(combo_trial@x[1:3] == 1))
+})
+
 # examine ----
 
 ## DADesign ----

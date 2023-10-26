@@ -42,6 +42,10 @@ v_design_grouped <- function(object) {
     "same_dose must be a flag"
   )
   v$check(
+    test_flag(object@same_dose),
+    "parallel_start must be a flag"
+  )
+  v$check(
     test_flag(object@stop_mono_with_combo),
     "stop_mono_with_combo must be a flag"
   )

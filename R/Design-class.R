@@ -887,6 +887,11 @@ DADesign <- function(model, data,
 #'   concurrent mono and combo cohorts.
 #' @slot same_dose (`flag`)\cr whether the lower dose of the separately determined mono and combo
 #'   doses should be used as the next dose for both mono and combo.
+#' @slot parallel_start (`flag`)\cr whether for the time when mono and combo are the first time together,
+#'   the same dose should be used. Note that this is different from `same_dose` which will always force
+#'   them to be the same. This is useful as an option when we want to use `first_cohort_mono_only = TRUE`
+#'   combined with `same_dose = FALSE`. The parallel start will further mitigate bias as long as possible
+#'   between the mono and combo arms.
 #' @slot stop_mono_with_combo (`flag`)\cr whether the mono arm should be stopped when the combo
 #'   arm is stopped (this makes sense when the only real trial objective is the recommended combo dose).
 #'
@@ -906,6 +911,7 @@ DADesign <- function(model, data,
     combo = "Design",
     first_cohort_mono_only = "logical",
     same_dose = "logical",
+    parallel_start = "logical",
     stop_mono_with_combo = "logical"
   ),
   prototype = prototype(
@@ -914,6 +920,7 @@ DADesign <- function(model, data,
     combo = .Design(),
     first_cohort_mono_only = TRUE,
     same_dose = TRUE,
+    parallel_start = FALSE,
     stop_mono_with_combo = FALSE
   ),
   validity = v_design_grouped,
@@ -929,6 +936,7 @@ DADesign <- function(model, data,
 #' @param combo (`Design`)\cr see slot definition.
 #' @param first_cohort_mono_only (`flag`)\cr see slot definition.
 #' @param same_dose (`flag`)\cr see slot definition.
+#' @param parallel_start (`flag`)\cr see slot definition.
 #' @param stop_mono_with_combo (`flag`)\cr see slot definition.
 #' @param ... not used.
 #'
@@ -940,6 +948,7 @@ DesignGrouped <- function(model,
                           combo = mono,
                           first_cohort_mono_only = TRUE,
                           same_dose = TRUE,
+                          parallel_start = FALSE,
                           stop_mono_with_combo = FALSE,
                           ...) {
   .DesignGrouped(
@@ -948,6 +957,7 @@ DesignGrouped <- function(model,
     combo = combo,
     first_cohort_mono_only = first_cohort_mono_only,
     same_dose = same_dose,
+    parallel_start = parallel_start,
     stop_mono_with_combo = stop_mono_with_combo
   )
 }

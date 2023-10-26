@@ -4679,7 +4679,7 @@ setMethod(
         current$first <- TRUE
         current$mono$stop <- current$combo$stop <- FALSE
         # What are the next doses to be used? Initialize with starting doses.
-        if (object@same_dose) {
+        if (object@same_dose || (!object@first_cohort_mono_only && object@parallel_start)) {
           current$mono$dose <- current$combo$dose <- min(object@mono@startingDose, object@combo@startingDose)
         } else {
           current$mono$dose <- object@mono@startingDose
@@ -4739,7 +4739,12 @@ setMethod(
               "mono stopped because combo stopped" = new_result
             )
           }
-          if (current$first) current$first <- FALSE
+          if (current$first) {
+            current$first <- FALSE
+            if (object@first_cohort_mono_only && object@parallel_start) {
+              current$mono$dose <- current$combo$dose <- min(current$mono$dose, current$combo$dose)
+            }
+          }
         }
         current$mono$fit <- fit(current$samples, object@model, current$grouped, group = "mono")
         current$combo$fit <- fit(current$samples, object@model, current$grouped, group = "combo")

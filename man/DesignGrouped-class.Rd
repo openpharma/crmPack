@@ -14,6 +14,7 @@ DesignGrouped(
   combo = mono,
   first_cohort_mono_only = TRUE,
   same_dose = TRUE,
+  parallel_start = FALSE,
   stop_mono_with_combo = FALSE,
   ...
 )
@@ -28,6 +29,8 @@ DesignGrouped(
 \item{first_cohort_mono_only}{(\code{flag})\cr see slot definition.}
 
 \item{same_dose}{(\code{flag})\cr see slot definition.}
+
+\item{parallel_start}{(\code{flag})\cr see slot definition.}
 
 \item{stop_mono_with_combo}{(\code{flag})\cr see slot definition.}
 
@@ -63,6 +66,12 @@ concurrent mono and combo cohorts.}
 
 \item{\code{same_dose}}{(\code{flag})\cr whether the lower dose of the separately determined mono and combo
 doses should be used as the next dose for both mono and combo.}
+
+\item{\code{parallel_start}}{(\code{flag})\cr whether for the time when mono and combo are the first time together,
+the same dose should be used. Note that this is different from \code{same_dose} which will always force
+them to be the same. This is useful as an option when we want to use \code{first_cohort_mono_only = TRUE}
+combined with \code{same_dose = FALSE}. The parallel start will further mitigate bias as long as possible
+between the mono and combo arms.}
 
 \item{\code{stop_mono_with_combo}}{(\code{flag})\cr whether the mono arm should be stopped when the combo
 arm is stopped (this makes sense when the only real trial objective is the recommended combo dose).}
@@ -131,14 +140,18 @@ design <- DesignGrouped(
   mono = one_arm
 )
 
-# Alternative options: Here e.g. use both mono and combo from the start,
-# but allow different dose levels for the cohorts. Stop mono arm too, when combo
-# arm is stopped.
+# Alternative options: Here e.g.
+# - use both mono in first cohort and afterwards have mono and combo in parallel,
+# - but allow different dose levels for the cohorts.
+# - Stop mono arm too, when combo arm is stopped.
+# - Start parallel though, i.e. for the second cohort where mono and combo start together,
+#   use the same dose
 design2 <- DesignGrouped(
   model = my_model,
   mono = one_arm,
-  first_cohort_mono_only = FALSE,
+  first_cohort_mono_only = TRUE,
   same_dose = FALSE,
   stop_mono_with_combo = TRUE,
+  parallel_start = TRUE
 )
 }
