@@ -4723,6 +4723,22 @@ setMethod(
           if (object@same_dose && !current$mono$stop && !current$combo$stop) {
             current$mono$dose <- current$combo$dose <- min(current$mono$dose, current$combo$dose)
           }
+          if (object@stop_mono_with_combo) {
+            if (current$combo$stop && !current$mono$stop) {
+              current$mono$stop <- structure(
+                TRUE,
+                message = "mono stopped because combo stopped",
+                report_label = "mono stopped because combo stopped"
+              )
+              new_result <- TRUE
+            } else {
+              new_result <- FALSE
+            }
+            current$mono$results <- c(
+              current$mono$results,
+              "mono stopped because combo stopped" = new_result
+            )
+          }
           if (current$first) current$first <- FALSE
         }
         current$mono$fit <- fit(current$samples, object@model, current$grouped, group = "mono")
