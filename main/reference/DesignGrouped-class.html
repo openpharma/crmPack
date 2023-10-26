@@ -43,12 +43,6 @@ for the combo arm of a joint dose escalation design."><meta property="og:image" 
 <li class="nav-item">
   <a class="nav-link" href="../news/index.html">Changelog</a>
 </li>
-<!-- start dropdown for versions --> <li class="nav-item dropdown">
-        <a href="#" class="nav-link dropdown-toggle"
-          data-bs-toggle="dropdown" role="button"
-          aria-expanded="false" aria-haspopup="true"
-          id="dropdown-versions">Versions</a> <div class="dropdown-menu" aria-labelledby="dropdown-versions"> <a class="dropdown-item" data-toggle="tooltip" title="" href="https://Roche.github.io/crmPack/main">main</a> </div></li>
-<!-- end dropdown for versions -->
 <li class="nav-item dropdown">
   <a href="#" class="nav-link dropdown-toggle" data-bs-toggle="dropdown" role="button" aria-expanded="false" aria-haspopup="true" id="dropdown-reports">Reports</a>
   <div class="dropdown-menu" aria-labelledby="dropdown-reports">
@@ -91,6 +85,7 @@ for the combo arm of a joint dose escalation design.</p>
 <span>  combo <span class="op">=</span> <span class="va">mono</span>,</span>
 <span>  first_cohort_mono_only <span class="op">=</span> <span class="cn">TRUE</span>,</span>
 <span>  same_dose <span class="op">=</span> <span class="cn">TRUE</span>,</span>
+<span>  stop_mono_with_combo <span class="op">=</span> <span class="cn">FALSE</span>,</span>
 <span>  <span class="va">...</span></span>
 <span><span class="op">)</span></span></code></pre></div>
     </div>
@@ -114,6 +109,10 @@ for the combo arm of a joint dose escalation design.</p>
 
 
 <dt>same_dose</dt>
+<dd><p>(<code>flag</code>)<br> see slot definition.</p></dd>
+
+
+<dt>stop_mono_with_combo</dt>
 <dd><p>(<code>flag</code>)<br> see slot definition.</p></dd>
 
 
@@ -156,6 +155,11 @@ concurrent mono and combo cohorts.</p></dd>
 <dt><code>same_dose</code></dt>
 <dd><p>(<code>flag</code>)<br> whether the lower dose of the separately determined mono and combo
 doses should be used as the next dose for both mono and combo.</p></dd>
+
+
+<dt><code>stop_mono_with_combo</code></dt>
+<dd><p>(<code>flag</code>)<br> whether the mono arm should be stopped when the combo
+arm is stopped (this makes sense when the only real trial objective is the recommended combo dose).</p></dd>
 
 
 </dl></div>
@@ -208,18 +212,32 @@ doses should be used as the next dose for both mono and combo.</p></dd>
 <span class="r-in"><span>  increments <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">1</span>, <span class="fl">0.33</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="op">)</span></span></span>
 <span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="co"># Rules to be used for both arms.</span></span></span>
+<span class="r-in"><span><span class="va">one_arm</span> <span class="op">&lt;-</span> <span class="fu"><a href="Design-class.html">Design</a></span><span class="op">(</span></span></span>
+<span class="r-in"><span>  model <span class="op">=</span> <span class="fu"><a href="ModelLogNormal-class.html">.DefaultModelLogNormal</a></span><span class="op">(</span><span class="op">)</span>, <span class="co"># Ignored.</span></span></span>
+<span class="r-in"><span>  nextBest <span class="op">=</span> <span class="va">my_next_best</span>,</span></span>
+<span class="r-in"><span>  stopping <span class="op">=</span> <span class="va">my_stopping</span>,</span></span>
+<span class="r-in"><span>  increments <span class="op">=</span> <span class="va">my_increments</span>,</span></span>
+<span class="r-in"><span>  cohort_size <span class="op">=</span> <span class="va">my_size</span>,</span></span>
+<span class="r-in"><span>  data <span class="op">=</span> <span class="va">empty_data</span>,</span></span>
+<span class="r-in"><span>  startingDose <span class="op">=</span> <span class="fl">3</span></span></span>
+<span class="r-in"><span><span class="op">)</span></span></span>
+<span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co"># Initialize the design.</span></span></span>
 <span class="r-in"><span><span class="va">design</span> <span class="op">&lt;-</span> <span class="fu">DesignGrouped</span><span class="op">(</span></span></span>
 <span class="r-in"><span>  model <span class="op">=</span> <span class="va">my_model</span>,</span></span>
-<span class="r-in"><span>  mono <span class="op">=</span> <span class="fu"><a href="Design-class.html">Design</a></span><span class="op">(</span></span></span>
-<span class="r-in"><span>    model <span class="op">=</span> <span class="fu"><a href="ModelLogNormal-class.html">.DefaultModelLogNormal</a></span><span class="op">(</span><span class="op">)</span>, <span class="co"># Ignored.</span></span></span>
-<span class="r-in"><span>    nextBest <span class="op">=</span> <span class="va">my_next_best</span>,</span></span>
-<span class="r-in"><span>    stopping <span class="op">=</span> <span class="va">my_stopping</span>,</span></span>
-<span class="r-in"><span>    increments <span class="op">=</span> <span class="va">my_increments</span>,</span></span>
-<span class="r-in"><span>    cohort_size <span class="op">=</span> <span class="va">my_size</span>,</span></span>
-<span class="r-in"><span>    data <span class="op">=</span> <span class="va">empty_data</span>,</span></span>
-<span class="r-in"><span>    startingDose <span class="op">=</span> <span class="fl">3</span></span></span>
-<span class="r-in"><span>  <span class="op">)</span></span></span>
+<span class="r-in"><span>  mono <span class="op">=</span> <span class="va">one_arm</span></span></span>
+<span class="r-in"><span><span class="op">)</span></span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="co"># Alternative options: Here e.g. use both mono and combo from the start,</span></span></span>
+<span class="r-in"><span><span class="co"># but allow different dose levels for the cohorts. Stop mono arm too, when combo</span></span></span>
+<span class="r-in"><span><span class="co"># arm is stopped.</span></span></span>
+<span class="r-in"><span><span class="va">design2</span> <span class="op">&lt;-</span> <span class="fu">DesignGrouped</span><span class="op">(</span></span></span>
+<span class="r-in"><span>  model <span class="op">=</span> <span class="va">my_model</span>,</span></span>
+<span class="r-in"><span>  mono <span class="op">=</span> <span class="va">one_arm</span>,</span></span>
+<span class="r-in"><span>  first_cohort_mono_only <span class="op">=</span> <span class="cn">FALSE</span>,</span></span>
+<span class="r-in"><span>  same_dose <span class="op">=</span> <span class="cn">FALSE</span>,</span></span>
+<span class="r-in"><span>  stop_mono_with_combo <span class="op">=</span> <span class="cn">TRUE</span>,</span></span>
 <span class="r-in"><span><span class="op">)</span></span></span>
 </code></pre></div>
     </div>
