@@ -223,9 +223,11 @@ setMethod("plot",
         return(plotList[[1L]])
       } else {
         ## otherwise arrange them
-        ret <- do.call(
-          gridExtra::arrangeGrob,
-          plotList
+        ret <- grid::grid.draw(
+          do.call(
+            gridExtra::arrangeGrob,
+            plotList
+          )
         )
         return(ret)
       }
@@ -337,9 +339,11 @@ setMethod("plot",
       )) {
         ret <- plotList[[1L]]
       } else {
-        ret <- do.call(
-          gridExtra::arrangeGrob,
-          plotList
+        ret <- grid::grid.draw(
+          do.call(
+            gridExtra::arrangeGrob,
+            plotList
+          )
         )
       }
 
@@ -1192,7 +1196,7 @@ setMethod("plot",
       }
 
       ## then return
-      ret
+      grid.draw(ret)
     }
 )
 
@@ -1331,14 +1335,14 @@ setMethod("plot",
         ## add this plot to the bottom
         ret <-
           if (moreFromGeneral) {
-            gridExtra::arrangeGrob(ret, thisPlot)
+            grid::grid.draw(gridExtra::arrangeGrob(ret, thisPlot))
           } else {
             thisPlot
           }
       }
 
       ## then finally plot everything
-      ret
+      grid.draw(ret)
     }
 )
 
@@ -1476,7 +1480,13 @@ setMethod("plot",
         ## add this plot to the bottom
         ret <-
           if (moreFromGeneral) {
-            gridExtra::arrangeGrob(ret, thisPlot, heights = c(2 / 3, 1 / 3))
+            grid::grid.draw(
+              gridExtra::arrangeGrob(
+                ret,
+                thisPlot,
+                heights = c(2 / 3, 1 / 3)
+              )
+            )
           } else {
             thisPlot
           }
@@ -2213,7 +2223,7 @@ setMethod("plot",
 
 
       ## then add this plot at the bottom
-      ret <- gridExtra::arrangeGrob(ret, thisPlot)
+      ret <- grid::grid.draw(gridExtra::arrangeGrob(ret, thisPlot))
       ret
     }
 )
@@ -2319,7 +2329,13 @@ setMethod("plot",
       }
 
       if (moreFromGeneral) {
-        ret <- gridExtra::arrangeGrob(genPlot, ret, heights = c(2 / 3, 1 / 3))
+        ret <- grid::grid.draw(
+          gridExtra::arrangeGrob(
+            genPlot,
+            ret,
+            heights = c(2 / 3, 1 / 3)
+          )
+        )
       }
 
       return(ret)
@@ -2422,7 +2438,13 @@ setMethod("plot",
       }
 
       if (moreFromGeneral) {
-        ret <- gridExtra::arrangeGrob(genPlot, ret, heights = c(2 / 3, 1 / 3))
+        ret <- grid::grid.draw(
+          gridExtra::arrangeGrob(
+            genPlot,
+            ret,
+            heights = c(2 / 3, 1 / 3)
+          )
+        )
       }
 
       return(ret)
@@ -2934,7 +2956,13 @@ setMethod("plot",
         ## add this plot to the bottom
         ret <-
           if (moreFromGeneral) {
-            gridExtra::arrangeGrob(ret, thisPlot, heights = c(2 / 3, 1 / 3))
+            grid::grid.draw(
+              gridExtra::arrangeGrob(
+                ret,
+                thisPlot,
+                heights = c(2 / 3, 1 / 3)
+              )
+            )
           } else {
             thisPlot
           }

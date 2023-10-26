@@ -327,7 +327,7 @@ h_next_best_ncrm_loss_plot <- function(prob_mat,
 
     # Combine it all together.
     plots_single <- list(plot1 = p1, plot2 = p2, plot_loss = p_loss)
-    plot_joint <- gridExtra::arrangeGrob(p1, p2, p_loss, nrow = 3)
+    plot_joint <- grid::grid.draw(gridExtra::arrangeGrob(p1, p2, p_loss, nrow = 3))
   } else {
     # Plot in case of 4 toxicity intervals. Second, for the overdosing probability.
     p2 <- ggplot() +
@@ -358,7 +358,7 @@ h_next_best_ncrm_loss_plot <- function(prob_mat,
 
     # Combine it all together.
     plots_single <- list(plot1 = p1, plot2 = p2, plot3 = p3, plot_loss = p_loss)
-    plot_joint <- gridExtra::arrangeGrob(p1, p2, p3, p_loss, nrow = 4)
+    plot_joint <-grid::grid.draw( gridExtra::arrangeGrob(p1, p2, p3, p_loss, nrow = 4))
   }
 
   list(plots_single = plots_single, plot_joint = plot_joint)

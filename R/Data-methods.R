@@ -155,7 +155,7 @@ setMethod(
     }
 
     # Arrange both plots side by side.
-    gridExtra::arrangeGrob(plot1, plot2, ncol = 2)
+    grid::grid.draw(gridExtra::arrangeGrob(plot1, plot2, ncol = 2))
   }
 )
 
@@ -242,7 +242,7 @@ setMethod(
     }
 
     # Arrange both plots side by side.
-    gridExtra::arrangeGrob(plot1, plot2, ncol = 1)
+    grid::grid.draw(gridExtra::arrangeGrob(plot1, plot2, ncol = 1))
   }
 )
 

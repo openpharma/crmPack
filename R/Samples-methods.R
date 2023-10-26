@@ -723,7 +723,7 @@ setMethod("plot",
         )
 
       ## arrange both plots side by side
-      ret <- gridExtra::arrangeGrob(plot1, plot2, ncol = 2)
+      ret <- grid::grid.draw(gridExtra::arrangeGrob(plot1, plot2, ncol = 2))
       return(ret)
     }
 )
@@ -1875,7 +1875,7 @@ setMethod("plotDualResponses",
         )
 
       ## arrange both plots side by side
-      ret <- gridExtra::arrangeGrob(ret1, plot2, ncol = 2)
+      ret <- grid::grid.draw(gridExtra::arrangeGrob(ret1, plot2, ncol = 2))
       return(ret)
     }
 )
@@ -1974,7 +1974,7 @@ setMethod("plotDualResponses",
         geom_line(linewidth = 1.5, colour = "blue")
 
       ## arrange both plots side by side
-      ret <- gridExtra::arrangeGrob(plot1, plot2, ncol = 2)
+      ret <- grid::grid.draw(gridExtra::arrangeGrob(plot1, plot2, ncol = 2))
       return(ret)
     }
 )
@@ -2247,7 +2247,7 @@ setMethod("plot",
           ylim = if (hazard) range(plotData$y) else c(0, 100)
         )
 
-      ret <- gridExtra::arrangeGrob(plot1, plot2, ncol = 2)
+      ret <- grid::grid.draw(gridExtra::arrangeGrob(plot1, plot2, ncol = 2))
       return(ret)
     }
 )

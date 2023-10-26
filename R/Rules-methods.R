@@ -222,7 +222,7 @@ setMethod(
       ylab("Overdose probability [%]")
 
     # Place them below each other.
-    plot_joint <- gridExtra::arrangeGrob(p1, p2, nrow = 2)
+    plot_joint <- grid::grid.draw(gridExtra::arrangeGrob(p1, p2, nrow = 2))
 
     list(
       value = next_dose,
@@ -522,7 +522,7 @@ setMethod(
       ylab("Overdose probability [%]")
 
     # Place them below each other.
-    plot_joint <- gridExtra::arrangeGrob(p1, p2, nrow = 2)
+    plot_joint <- grid::grid.draw(gridExtra::arrangeGrob(p1, p2, nrow = 2))
 
     list(
       value = next_dose,
