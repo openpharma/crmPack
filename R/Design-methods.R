@@ -4679,7 +4679,7 @@ setMethod(
         current$first <- TRUE
         current$mono$stop <- current$combo$stop <- FALSE
         # What are the next doses to be used? Initialize with starting doses.
-        if (object@same_dose || (!object@first_cohort_mono_only && object@parallel_start)) {
+        if (object@same_dose_for_all || (!object@first_cohort_mono_only && object@same_dose_for_start)) {
           current$mono$dose <- current$combo$dose <- min(object@mono@startingDose, object@combo@startingDose)
         } else {
           current$mono$dose <- object@mono@startingDose
@@ -4720,7 +4720,7 @@ setMethod(
               stopTrial(current$combo$dose, current$samples, object@model, current$combo$data, group = "combo")
             current$combo$results <- h_unpack_stopit(current$combo$stop)
           }
-          if (object@same_dose && !current$mono$stop && !current$combo$stop) {
+          if (object@same_dose_for_all && !current$mono$stop && !current$combo$stop) {
             current$mono$dose <- current$combo$dose <- min(current$mono$dose, current$combo$dose)
           }
           if (object@stop_mono_with_combo) {
@@ -4741,7 +4741,7 @@ setMethod(
           }
           if (current$first) {
             current$first <- FALSE
-            if (object@first_cohort_mono_only && object@parallel_start) {
+            if (object@first_cohort_mono_only && object@same_dose_for_start) {
               current$mono$dose <- current$combo$dose <- min(current$mono$dose, current$combo$dose)
             }
           }

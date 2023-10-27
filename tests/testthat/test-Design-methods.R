@@ -182,7 +182,7 @@ test_that("simulate for DesignGrouped works as expected", {
       data = Data(doseGrid = 1:100),
       startingDose = 1
     ),
-    same_dose = TRUE,
+    same_dose_for_all = TRUE,
     first_cohort_mono_only = TRUE
   )
   my_truth <- function(x) plogis(-4 + 0.2 * log(x / 0.1))
@@ -225,7 +225,7 @@ test_that("simulate for DesignGrouped works as expected with different doses, pa
       data = Data(doseGrid = 1:100),
       startingDose = 1
     ),
-    same_dose = FALSE,
+    same_dose_for_all = FALSE,
     first_cohort_mono_only = FALSE
   )
   my_truth <- function(x) plogis(-4 + 0.2 * log(x / 0.1))
@@ -276,7 +276,7 @@ test_that("simulate for DesignGrouped works when first patient is dosed separate
       data = Data(doseGrid = 1:100),
       startingDose = 1
     ),
-    same_dose = FALSE,
+    same_dose_for_all = FALSE,
     first_cohort_mono_only = FALSE
   )
   my_truth <- function(x) plogis(-4 + 0.2 * log(x / 0.1))
@@ -334,7 +334,7 @@ test_that("simulate for DesignGrouped works with different starting doses and fi
       data = Data(doseGrid = 1:100),
       startingDose = 5
     ),
-    same_dose = FALSE,
+    same_dose_for_all = FALSE,
     first_cohort_mono_only = TRUE
   )
   my_truth <- function(x) plogis(-4 + 0.2 * log(x / 0.1))
@@ -384,7 +384,7 @@ test_that("simulate for DesignGrouped allows to stop mono when combo stops", {
     model = LogisticLogNormalGrouped(mean = rep(-1, 4), cov = diag(5, 4), ref_dose = 1),
     mono = mono_arm,
     combo = combo_arm,
-    same_dose = FALSE,
+    same_dose_for_all = FALSE,
     first_cohort_mono_only = FALSE,
     stop_mono_with_combo = TRUE
   )
@@ -443,7 +443,7 @@ test_that("simulate for DesignGrouped reports correctly when mono is not stopped
     model = LogisticLogNormalGrouped(mean = rep(-1, 4), cov = diag(5, 4), ref_dose = 1),
     mono = mono_arm,
     combo = mono_arm,
-    same_dose = FALSE,
+    same_dose_for_all = FALSE,
     first_cohort_mono_only = FALSE,
     stop_mono_with_combo = TRUE
   )
@@ -498,9 +498,9 @@ test_that("simulate for DesignGrouped works with parallel start when first cohor
       data = Data(doseGrid = 1:100),
       startingDose = 1
     ),
-    same_dose = FALSE,
+    same_dose_for_all = FALSE,
     first_cohort_mono_only = TRUE,
-    parallel_start = TRUE
+    same_dose_for_start = TRUE
   )
   my_truth <- function(x) plogis(-4 + 0.2 * log(x / 0.1))
   my_combo_truth <- function(x) plogis(-4 + 0.5 * log(x / 0.1))
@@ -553,9 +553,9 @@ test_that("simulate for DesignGrouped works with parallel start when first cohor
       data = Data(doseGrid = 1:100),
       startingDose = 3
     ),
-    same_dose = FALSE,
+    same_dose_for_all = FALSE,
     first_cohort_mono_only = FALSE,
-    parallel_start = TRUE
+    same_dose_for_start = TRUE
   )
   my_truth <- function(x) plogis(-4 + 0.2 * log(x / 0.1))
   my_combo_truth <- function(x) plogis(-4 + 0.5 * log(x / 0.1))

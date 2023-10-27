@@ -38,12 +38,12 @@ v_design_grouped <- function(object) {
     "first_cohort_mono_only must be a flag"
   )
   v$check(
-    test_flag(object@same_dose),
-    "same_dose must be a flag"
+    test_flag(object@same_dose_for_all),
+    "same_dose_for_all must be a flag"
   )
   v$check(
-    test_flag(object@same_dose),
-    "parallel_start must be a flag"
+    test_flag(object@same_dose_for_all),
+    "same_dose_for_start must be a flag"
   )
   v$check(
     test_flag(object@stop_mono_with_combo),

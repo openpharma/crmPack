@@ -72,16 +72,16 @@ test_that("v_design_grouped passes for valid object", {
 test_that("v_design_grouped messages wrong flag slots as expected", {
   object <- .DesignGrouped()
 
-  object@same_dose <- c(NA, TRUE)
+  object@same_dose_for_all <- c(NA, TRUE)
   object@first_cohort_mono_only <- logical()
-  object@parallel_start <- logical()
+  object@same_dose_for_start <- logical()
   object@stop_mono_with_combo <- c(FALSE, FALSE)
 
   result <- v_design_grouped(object)
   expected <- c(
     "first_cohort_mono_only must be a flag",
-    "same_dose must be a flag",
-    "parallel_start must be a flag",
+    "same_dose_for_all must be a flag",
+    "same_dose_for_start must be a flag",
     "stop_mono_with_combo must be a flag"
   )
   expect_identical(result, expected)
