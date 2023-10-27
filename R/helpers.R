@@ -219,7 +219,6 @@ crmPackHelp <- function() {
   utils::help(package = "crmPack", help_type = "html")
 }
 
-## this is the new version, working on the gtable objects:
 ##' Plots gtable objects
 ##'
 ##' @method plot gtable
