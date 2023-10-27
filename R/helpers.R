@@ -219,6 +219,24 @@ crmPackHelp <- function() {
   utils::help(package = "crmPack", help_type = "html")
 }
 
+## this is the new version, working on the gtable objects:
+##' Plots gtable objects
+##'
+##' @method plot gtable
+##' @param x the gtable object
+##' @param \dots additional parameters for \code{\link[grid]{grid.draw}}
+##'
+##' @importFrom grid grid.draw
+##' @export
+plot.gtable <- function(x, ...) {
+  grid::grid.draw(x, ...)
+}
+
+##' @export
+print.gtable <- function(x, ...) {
+  plot.gtable(x, ...)
+}
+
 ##' Taken from utils package (print.vignette)
 ##'
 ##' @importFrom tools file_ext
