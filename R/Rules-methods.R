@@ -1,8 +1,10 @@
+#' @include checkmate.R
 #' @include Model-methods.R
 #' @include Samples-class.R
 #' @include Rules-class.R
 #' @include helpers.R
 #' @include helpers_rules.R
+#' @include helpers_broom.R
 NULL
 
 # nextBest ----
@@ -3369,3 +3371,123 @@ setMethod("windowLength",
 )
 
 # nolint end
+
+# tidy
+
+## tidy-IncrementsRelative ----
+
+#' @rdname tidy
+#' @aliases tidy-IncrementsRelative
+#' @example examples/Rules-method-tidyIncrementsRelative.R
+#' @export
+setMethod(
+  f = "tidy",
+  signature = signature(x = "IncrementsRelative"),
+  definition = function(x, ...) {
+    h_tidy_all_slots(x) |>
+      dplyr::bind_cols() |>
+      h_range_to_minmax(intervals) |>
+      dplyr::filter(max > 0) |>
+      tibble::add_column(increment = x@increments) |>
+      h_tidy_class(x)
+  }
+)
+
+## tidy-CohortSizeRange ----
+
+#' @rdname tidy
+#' @aliases tidy-CohortSizeDLT
+#' @example examples/Rules-method-tidyCohortSizeDLT.R
+#' @export
+setMethod(
+  f = "tidy",
+  signature = signature(x = "CohortSizeDLT"),
+  definition = function(x, ...) {
+    h_tidy_all_slots(x) |>
+      dplyr::bind_cols() |>
+      h_range_to_minmax(intervals) |>
+      dplyr::filter(max > 0) |>
+      tibble::add_column(cohort_size = x@cohort_size) |>
+      h_tidy_class(x)
+  }
+)
+## tidy-CohortSizeRange ----
+
+#' @rdname tidy
+#' @aliases tidy-CohortSizeRange
+#' @example examples/Rules-method-tidyCohortSizeRange.R
+#' @export
+setMethod(
+  f = "tidy",
+  signature = signature(x = "CohortSizeRange"),
+  definition = function(x, ...) {
+    h_tidy_all_slots(x) |>
+      dplyr::bind_cols() |>
+      h_range_to_minmax(intervals) |>
+      dplyr::filter(max > 0) |>
+      tibble::add_column(cohort_size = x@cohort_size) |>
+      h_tidy_class(x)
+  }
+)
+
+## tidy-CohortSizeParts ----
+
+#' @rdname tidy
+#' @aliases tidy-CohortSizeParts
+#' @example examples/Rules-method-tidyCohortSizeParts.R
+#' @export
+setMethod(
+  f = "tidy",
+  signature = signature(x = "CohortSizeParts"),
+  definition = function(x, ...) {
+    tibble::tibble(
+      part = seq_along(x@cohort_sizes),
+      cohort_size = x@cohort_sizes
+    ) |>
+      h_tidy_class(x)
+  }
+)
+
+## tidy-IncrementsRelative ----
+
+#' @rdname tidy
+#' @aliases tidy-IncrementsRelative
+#' @example examples/Rules-method-tidyIncrementsRelative.R
+#' @export
+setMethod(
+  f = "tidy",
+  signature = signature(x = "IncrementsRelative"),
+  definition = function(x, ...) {
+    h_tidy_all_slots(x) |>
+      dplyr::bind_cols() |>
+      h_range_to_minmax(intervals) |>
+      dplyr::filter(max > 0) |>
+      tibble::add_column(increment = x@increments) |>
+      h_tidy_class(x)
+  }
+)
+
+## tidy-NextBestNCRM ----
+
+#' @rdname tidy
+#' @aliases tidy-NextBestNCRM
+#' @example examples/Rules-method-tidyNextBestNCRM.R
+#' @export
+setMethod(
+  f = "tidy",
+  signature = signature(x = "NextBestNCRM"),
+  definition = function(x, ...) {
+    rv <- h_tidy_all_slots(x) |>
+      dplyr::bind_cols() |>
+      h_range_to_minmax(target, range_min = 0, range_max = 1) |>
+      add_column(max_prob = c(NA, NA, x@max_overdose_prob)) |>
+      add_column(Range = c("Underdose", "Target", "Overdose"), .before = 1)
+  }
+)
+
+x <- NextBestNCRM(
+  target = c(0.2, 0.35),
+  overdose = c(0.35, 1),
+  max_overdose_prob = 0.25
+)
+

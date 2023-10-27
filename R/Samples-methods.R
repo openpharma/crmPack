@@ -2254,3 +2254,47 @@ setMethod("plot",
 
 
 ## =======================================================================================================
+
+# tidy ----
+
+## Samples
+
+## tidy-Samples ----
+
+#' @rdname tidy
+#' @aliases tidy-Samples
+#' @example examples/Rules-method-tidy.R
+#' @export
+setMethod(
+  f = "tidy",
+  signature = signature(x = "Samples"),
+  definition = function(x, ...) {
+    rv <- lapply(
+      slotNames(x),
+      function(nm) {
+        if (nm == "data") {
+          lapply(
+            names(x@data),
+            function(nm) {
+              as_tibble(get(x, nm))
+            }
+          ) |>
+            dplyr::bind_rows() |>
+            tidyr::pivot_wider(
+              names_from = Parameter,
+              values_from = value
+            ) |>
+            dplyr::bind_cols(h_handle_attributes(get(x, names(x@data)[1])))
+        } else {
+          slot(x, nm) |>
+            tidy() |>
+            dplyr::bind_cols()
+        }
+      }
+    )
+    names(rv) <- c("data", "options")
+    rv <- rv |> h_tidy_class(x)
+    rv
+  }
+)
+
