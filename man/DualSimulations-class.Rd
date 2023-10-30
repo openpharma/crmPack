@@ -7,7 +7,7 @@
 \alias{DualSimulations}
 \title{\code{DualSimulations}}
 \usage{
-DualSimulations(rho_est, sigma2w_est, fit_biomarker, ...)
+DualSimulations(rho_est, sigma2w_est, fit_biomarker, stop_report, ...)
 }
 \arguments{
 \item{rho_est}{(\code{numeric})\cr see \code{\link{DualSimulations}}}
@@ -15,6 +15,8 @@ DualSimulations(rho_est, sigma2w_est, fit_biomarker, ...)
 \item{sigma2w_est}{(\code{numeric})\cr \code{\link{DualSimulations}}}
 
 \item{fit_biomarker}{(\code{list})\cr see \code{\link{DualSimulations}}}
+
+\item{stop_report}{see \code{\link{Simulations}}}
 
 \item{\dots}{additional parameters from \code{\link{Simulations}}}
 }
@@ -34,6 +36,8 @@ it contains additional slots to capture the dose-biomarker \code{fits}, and the
 \item{\code{sigma2w_est}}{(\code{numeric})\cr vector of final posterior median sigma2W estimates}
 
 \item{\code{fit_biomarker}}{(\code{list})\cr with the final dose-biomarker curve fits}
+
+\item{\code{stop_report}}{matrix of stopping rule outcomes}
 }}
 
 \examples{

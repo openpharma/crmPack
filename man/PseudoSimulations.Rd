@@ -15,6 +15,7 @@ PseudoSimulations(
   FinalCIs,
   FinalRatios,
   stopReasons,
+  stop_report,
   ...
 )
 }

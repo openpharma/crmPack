@@ -39,5 +39,7 @@ estimates}
 and Gstar estimates at dose Grid}
 
 \item{\code{sigma2est}}{the vector of the final posterior mean sigma2 estimates}
+
+\item{\code{stop_report}}{matrix of stopping rule outcomes}
 }}
 

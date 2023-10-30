@@ -196,6 +196,7 @@ Simulations <- function(fit,
 #' @slot rho_est (`numeric`)\cr vector of final posterior median rho estimates
 #' @slot sigma2w_est (`numeric`)\cr vector of final posterior median sigma2W estimates
 #' @slot fit_biomarker (`list`)\cr with the final dose-biomarker curve fits
+#' @slot stop_report matrix of stopping rule outcomes
 #' @aliases DualSimulations
 #' @export
 .DualSimulations <-
@@ -204,7 +205,8 @@ Simulations <- function(fit,
     slots = c(
       rho_est = "numeric",
       sigma2w_est = "numeric",
-      fit_biomarker = "list"
+      fit_biomarker = "list",
+      stop_report = "matrix"
     ),
     prototype = prototype(
       rho_est = c(0.2, 0.3),
@@ -213,7 +215,8 @@ Simulations <- function(fit,
         list(
           c(0.1, 0.2),
           c(0.1, 0.2)
-        )
+        ),
+      stop_report = matrix(TRUE, nrow = 2)
     ),
     contains = "Simulations",
     validity =
@@ -248,18 +251,22 @@ Simulations <- function(fit,
 #' @param sigma2w_est (`numeric`)\cr [`DualSimulations`]
 #' @param fit_biomarker (`list`)\cr see [`DualSimulations`]
 #' @param \dots additional parameters from [`Simulations`]
+#' @param stop_report see [`Simulations`]
 #'
 #' @example examples/Simulations-class-DualSimulations.R
 #' @export
 DualSimulations <- function(rho_est,
                             sigma2w_est,
                             fit_biomarker,
+                            stop_report,
                             ...) {
   start <- Simulations(...)
   .DualSimulations(start,
     rho_est = rho_est,
     sigma2w_est = sigma2w_est,
-    fit_biomarker = fit_biomarker
+    fit_biomarker = fit_biomarker,
+    stop_report = stop_report
+
   )
 }
 
@@ -359,7 +366,8 @@ DualSimulations <- function(rho_est,
     representation =
       representation(
         biomarkerFitAtDoseMostSelected = "numeric",
-        meanBiomarkerFit = "list"
+        meanBiomarkerFit = "list",
+        stop_report = "matrix"
       )
   )
 ## ==============================================================================
@@ -394,6 +402,7 @@ DualSimulations <- function(rho_est,
 ##' final estimates of the TDtargetEndOfTrial or of the final optimal dose estimates (when DLE and efficacy responses are
 ##' incorporated) after each simulations
 ##' @slot stopReasons add slot description
+##' @slot stop_report matrix of stopping rule outcomes
 ##'
 ##' @export
 .PseudoSimulations <-
@@ -409,6 +418,7 @@ DualSimulations <- function(rho_est,
       FinalTDEOTRatios = "numeric",
       FinalCIs = "list",
       FinalRatios = "numeric",
+      stop_report = "matrix",
       stopReasons = "list"
     ),
     ## note: this prototype is put together with the prototype
@@ -422,6 +432,7 @@ DualSimulations <- function(rho_est,
       FinalTDEOTRatios = c(0.1, 0.1),
       FinalCIs = list(c(0.1, 0.2), c(0.1, 0.2)),
       FinalRatios = c(0.1, 0.1),
+      stop_report = matrix(TRUE, nrow = 2),
       stopReasons =
         list("A", "A")
     ),
@@ -466,6 +477,7 @@ PseudoSimulations <- function(fit,
                               FinalCIs,
                               FinalRatios,
                               stopReasons,
+                              stop_report,
                               ...) {
   start <- GeneralSimulations(...)
   .PseudoSimulations(start,
@@ -478,6 +490,7 @@ PseudoSimulations <- function(fit,
     FinalTDEOTRatios = FinalTDEOTRatios,
     FinalCIs = FinalCIs,
     FinalRatios = FinalRatios,
+    stop_report = stop_report,
     stopReasons = stopReasons
   )
 }
@@ -512,6 +525,7 @@ PseudoSimulations <- function(fit,
 ##' @slot FinalOptimalDoseAtDoseGrid is the vector of the final optimal dose, the minimum of the final TDtargetEndOfTrial estimates
 ##' and Gstar estimates at dose Grid
 ##' @slot sigma2est the vector of the final posterior mean sigma2 estimates
+##' @slot stop_report matrix of stopping rule outcomes
 ##'
 ##' @export
 .PseudoDualSimulations <-
@@ -525,7 +539,8 @@ PseudoSimulations <- function(fit,
       FinalGstarRatios = "numeric",
       FinalOptimalDose = "numeric",
       FinalOptimalDoseAtDoseGrid = "numeric",
-      sigma2est = "numeric"
+      sigma2est = "numeric",
+      stop_report = "matrix"
     ),
     prototype(
       FinalGstarEstimates = c(0.1, 0.1),
@@ -534,6 +549,7 @@ PseudoSimulations <- function(fit,
         c(0.1, 0.2),
         c(0.1, 0.2)
       ),
+      stop_report = matrix(TRUE, nrow = 2),
       FinalGstarRatios = c(0.01, 0.01),
       FinalOptimalDose = c(0.01, 0.01),
       FinalOptimalDoseAtDoseGrid = c(0.01, 0.01),
@@ -548,6 +564,7 @@ PseudoSimulations <- function(fit,
           identical(length(object@sigma2est), nSims),
           "sigma2est has to have same length as data"
         )
+
         o$result()
       }
   )
@@ -573,6 +590,7 @@ PseudoDualSimulations <- function(fitEff,
                                   FinalOptimalDose,
                                   FinalOptimalDoseAtDoseGrid,
                                   sigma2est,
+                                  stop_report,
                                   ...) {
   start <- PseudoSimulations(...)
   .PseudoDualSimulations(start,
@@ -583,7 +601,9 @@ PseudoDualSimulations <- function(fitEff,
     FinalGstarRatios = FinalGstarRatios,
     FinalOptimalDose = FinalOptimalDose,
     FinalOptimalDoseAtDoseGrid = FinalOptimalDoseAtDoseGrid,
-    sigma2est = sigma2est
+    sigma2est = sigma2est,
+    stop_report = stop_report
+
   )
 }
 
@@ -608,8 +628,11 @@ PseudoDualSimulations <- function(fitEff,
 .PseudoDualFlexiSimulations <-
   setClass(
     Class = "PseudoDualFlexiSimulations",
-    representation(sigma2betaWest = "numeric"),
-    prototype(sigma2betaWest = c(0.001, 0.002)),
+    representation(sigma2betaWest = "numeric",
+                   stop_report = "matrix"),
+
+    prototype(sigma2betaWest = c(0.001, 0.002),
+              stop_report = matrix(TRUE, nrow = 2)),
     contains = "PseudoDualSimulations",
     validity =
       function(object) {
@@ -619,6 +642,18 @@ PseudoDualSimulations <- function(fitEff,
           identical(length(object@sigma2betaWest), nSims),
           "sigma2betaWest has to have same length as data"
         )
+
+        o$check(
+          checkmate::test_matrix(object@stop_report,
+                                 mode = "logical",
+                                 nrows = nSims,
+                                 min.cols = 1,
+                                 any.missing = FALSE
+          ),
+          "stop_report must be a matrix of mode logical in which the number of rows equals the number of simulations
+      and which must not contain any missing values"
+        )
+
         o$result()
       }
   )
@@ -630,10 +665,12 @@ validObject(.PseudoDualFlexiSimulations())
 ##' @param \dots additional parameters from \code{\linkS4class{PseudoDualSimulations}}
 ##' @return the \code{\linkS4class{PseudoDualFlexiSimulations}} object
 PseudoDualFlexiSimulations <- function(sigma2betaWest,
+                                       stop_report,
                                        ...) {
   start <- PseudoDualSimulations(...)
   .PseudoDualFlexiSimulations(start,
-    sigma2betaWest = sigma2betaWest
+    sigma2betaWest = sigma2betaWest,
+    stop_report = stop_report
   )
 }
 
@@ -726,7 +763,9 @@ PseudoDualFlexiSimulations <- function(sigma2betaWest,
       nAboveTargetDuringTrial = "integer",
       doseGrid = "numeric",
       fitAtDoseMostSelected = "numeric",
-      meanFit = "list"
+      meanFit = "list",
+      stop_report = "matrix"
+
     )
   )
 ## ---------------------------------------------------------------------------------------------
@@ -756,14 +795,15 @@ PseudoDualFlexiSimulations <- function(sigma2betaWest,
   setClass(
     Class = "PseudoDualSimulationsSummary",
     contains = "PseudoSimulationsSummary",
-    representation =
+   representation =
       representation(
         targetGstar = "numeric",
         targetGstarAtDoseGrid = "numeric",
         GstarSummary = "table",
         ratioGstarSummary = "table",
         EffFitAtDoseMostSelected = "numeric",
-        meanEffFit = "list"
+        meanEffFit = "list",
+        stop_report = "matrix"
       )
   )
 
@@ -783,8 +823,10 @@ PseudoDualFlexiSimulations <- function(sigma2betaWest,
 .DASimulations <-
   setClass(
     Class = "DASimulations",
-    representation(trialduration = "numeric"),
-    prototype(trialduration = rep(0, 2)),
+    representation(trialduration = "numeric",
+                   stop_report = "matrix"),
+    prototype(trialduration = rep(0, 2),
+              stop_report = matrix(TRUE, nrow = 2)),
     contains = "Simulations",
     validity =
       function(object) {
@@ -795,6 +837,17 @@ PseudoDualFlexiSimulations <- function(sigma2betaWest,
         o$check(
           identical(length(object@trialduration), nSims),
           "trialduration vector has to have same length as data"
+        )
+
+        o$check(
+          checkmate::test_matrix(object@stop_report,
+                                 mode = "logical",
+                                 nrows = nSims,
+                                 min.cols = 1,
+                                 any.missing = FALSE
+          ),
+          "stop_report must be a matrix of mode logical in which the number of rows equals the number of simulations
+      and which must not contain any missing values"
         )
 
         o$result()
@@ -812,10 +865,12 @@ validObject(.DASimulations())
 ##' @export
 ##' @keywords methods
 DASimulations <- function(trialduration,
+                          stop_report,
                           ...) {
   start <- Simulations(...)
   .DASimulations(start,
-    trialduration = trialduration
+    trialduration = trialduration,
+    stop_report = stop_report
   )
 }
 

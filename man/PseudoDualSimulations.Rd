@@ -13,6 +13,7 @@ PseudoDualSimulations(
   FinalOptimalDose,
   FinalOptimalDoseAtDoseGrid,
   sigma2est,
+  stop_report,
   ...
 )
 }

@@ -433,6 +433,7 @@ setMethod("simulate",
               ),
             report_results = stopit_results
           )
+
         return(thisResult)
       }
 
@@ -992,6 +993,8 @@ setMethod("simulate",
             model = object@model,
             data = thisData
           )
+          stopit_results <- h_unpack_stopit(stopit)
+
         }
 
         ## get the fit
@@ -1025,7 +1028,8 @@ setMethod("simulate",
               attr(
                 stopit,
                 "message"
-              )
+              ),
+            report_results = stopit_results
           )
 
         return(thisResult)
@@ -1072,8 +1076,10 @@ setMethod("simulate",
       ## the reasons for stopping
       stopReasons <- lapply(resultList, "[[", "stop")
 
-      ## for dual simulations as it would fail in summary otherwise (for dual simulations reporting is not implemented)
-      stop_report <- matrix(TRUE, nrow = nsim)
+      # individual stopping rule results as matrix, labels as column names
+      stopResults <- lapply(resultList, "[[", "report_results")
+      stop_matrix <- as.matrix(do.call(rbind, stopResults))
+
 
       ## return the results in the DualSimulations class object
       ret <- DualSimulations(
@@ -1083,7 +1089,7 @@ setMethod("simulate",
         sigma2w_est = sigma2Westimates,
         fit = fitToxList,
         fit_biomarker = fitBiomarkerList,
-        stop_report = stop_report,
+        stop_report = stop_matrix,
         stop_reasons = stopReasons,
         seed = RNGstate
       )
@@ -1352,7 +1358,6 @@ setMethod("examine",
       return(ret)
     }
 )
-
 
 
 ##' @describeIn examine Examine a rule-based design
@@ -2113,6 +2118,8 @@ setMethod("simulate",
             model = thisModel,
             data = thisData
           )
+
+          stopit_results <- h_unpack_stopit(stopit)
         }
 
         ## get the fit
@@ -2142,7 +2149,8 @@ setMethod("simulate",
               attr(
                 stopit,
                 "message"
-              )
+              ),
+              report_results = stopit_results
           )
         return(thisResult)
       }
@@ -2202,6 +2210,10 @@ setMethod("simulate",
       ## the reasons for stopping
       stopReasons <- lapply(resultList, "[[", "stop")
 
+      # individual stopping rule results as matrix, labels as column names
+      stopResults <- lapply(resultList, "[[", "report_results")
+      stop_matrix <- as.matrix(do.call(rbind, stopResults))
+
       ## return the results in the Simulations class object
       ret <- PseudoSimulations(
         data = dataList,
@@ -2216,6 +2228,7 @@ setMethod("simulate",
         FinalTDEOTCIs = CITDEOTList,
         FinalTDEOTRatios = ratioTDEOTList,
         stopReasons = stopReasons,
+        stop_report = stop_matrix,
         seed = RNGstate
       )
 
@@ -2463,6 +2476,8 @@ setMethod("simulate",
             model = thisModel,
             data = thisData
           )
+          stopit_results <- h_unpack_stopit(stopit)
+
         }
         ## get the fit
         prob_fun <- probFunction(thisModel, phi1 = thisModel@phi1, phi2 = thisModel@phi2)
@@ -2488,7 +2503,9 @@ setMethod("simulate",
               attr(
                 stopit,
                 "message"
-              )
+              ),
+            report_results = stopit_results
+
           )
         return(thisResult)
       }
@@ -2549,6 +2566,10 @@ setMethod("simulate",
       ## the reasons for stopping
       stopReasons <- lapply(resultList, "[[", "stop")
 
+      # individual stopping rule results as matrix, labels as column names
+      stopResults <- lapply(resultList, "[[", "report_results")
+      stop_matrix <- as.matrix(do.call(rbind, stopResults))
+
       ## return the results in the Simulations class object
       ret <- PseudoSimulations(
         data = dataList,
@@ -2563,6 +2584,7 @@ setMethod("simulate",
         FinalTDEOTCIs = CITDEOTList,
         FinalTDEOTRatios = ratioTDEOTList,
         stopReasons = stopReasons,
+        stop_report = stop_matrix,
         seed = RNGstate
       )
 
@@ -2935,6 +2957,7 @@ setMethod("simulate",
             data = thisData,
             Effmodel = thisEffModel
           )
+          stopit_results <- h_unpack_stopit(stopit)
         }
 
         ## get the fits
@@ -2977,7 +3000,8 @@ setMethod("simulate",
           stop = attr(
             stopit,
             "message"
-          )
+          ),
+          report_results = stopit_results
         )
 
         return(thisResult)
@@ -3066,6 +3090,10 @@ setMethod("simulate",
       ## the reasons for stopping
       stopReasons <- lapply(resultList, "[[", "stop")
 
+      # individual stopping rule results as matrix, labels as column names
+      stopResults <- lapply(resultList, "[[", "report_results")
+      stop_matrix <- as.matrix(do.call(rbind, stopResults))
+
       ## return the results in the Simulations class object
       ret <- PseudoDualSimulations(
         data = dataList,
@@ -3088,6 +3116,7 @@ setMethod("simulate",
         fitEff = fitEffList,
         sigma2est = sigma2Estimates,
         stopReasons = stopReasons,
+        stop_report = stop_matrix,
         seed = RNGstate
       )
       return(ret)
@@ -3473,6 +3502,7 @@ setMethod("simulate",
               Effsamples = thisEffsamples,
               Gstarderive = object@nextBest@mg_derive
             )
+            stopit_results <- h_unpack_stopit(stopit)
           }
 
           ## get the fits
@@ -3524,7 +3554,8 @@ setMethod("simulate",
                 attr(
                   stopit,
                   "message"
-                )
+                ),
+              report_results = stopit_results
             )
 
           return(thisResult)
@@ -3613,6 +3644,10 @@ setMethod("simulate",
         ## the reasons for stopping
         stopReasons <- lapply(resultList, "[[", "stop")
 
+        # individual stopping rule results as matrix, labels as column names
+        stopResults <- lapply(resultList, "[[", "report_results")
+        stop_matrix <- as.matrix(do.call(rbind, stopResults))
+
         ## return the results in the Simulations class object
         ret <- PseudoDualFlexiSimulations(
           data = dataList,
@@ -3636,6 +3671,7 @@ setMethod("simulate",
           sigma2est = sigma2Estimates,
           sigma2betaWest = sigma2betaWEstimates,
           stopReasons = stopReasons,
+          stop_report = stop_matrix,
           seed = RNGstate
         )
 
@@ -3947,6 +3983,8 @@ setMethod("simulate",
               Effsamples = thisEffsamples,
               Gstarderive = object@nextBest@mg_derive
             )
+
+            stopit_results <- h_unpack_stopit(stopit)
           }
           ## get the fit
           thisDLEFit <- fit(
@@ -3993,7 +4031,8 @@ setMethod("simulate",
             stop = attr(
               stopit,
               "message"
-            )
+            ),
+            report_results = stopit_results
           )
 
           return(thisResult)
@@ -4077,6 +4116,10 @@ setMethod("simulate",
         ## the reasons for stopping
         stopReasons <- lapply(resultList, "[[", "stop")
 
+        # individual stopping rule results as matrix, labels as column names
+        stopResults <- lapply(resultList, "[[", "report_results")
+        stop_matrix <- as.matrix(do.call(rbind, stopResults))
+
         ## return the results in the Simulations class object
         ret <- PseudoDualSimulations(
           data = dataList,
@@ -4099,6 +4142,7 @@ setMethod("simulate",
           fitEff = fitEffList,
           sigma2est = sigma2Estimates,
           stopReasons = stopReasons,
+          stop_report = stop_matrix,
           seed = RNGstate
         )
         return(ret)
@@ -4627,6 +4671,7 @@ setMethod("simulate",
             model = object@model,
             data = thisData
           )
+          stopit_results <- h_unpack_stopit(stopit)
         }
 
         ## get the fit
@@ -4650,7 +4695,8 @@ setMethod("simulate",
               attr(
                 stopit,
                 "message"
-              )
+              ),
+            report_results = stopit_results
           )
         return(thisResult)
       }
@@ -4699,7 +4745,7 @@ setMethod("simulate",
         doses = recommendedDoses,
         fit = fitList,
         trialduration = trialduration,
-        stop_report = stop_report,
+        stop_report = stop_matrix,
         stop_reasons = stopReasons,
         seed = RNGstate
       )

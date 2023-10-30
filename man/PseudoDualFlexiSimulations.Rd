@@ -4,7 +4,7 @@
 \alias{PseudoDualFlexiSimulations}
 \title{Initialization function for 'PseudoDualFlexiSimulations' class}
 \usage{
-PseudoDualFlexiSimulations(sigma2betaWest, ...)
+PseudoDualFlexiSimulations(sigma2betaWest, stop_report, ...)
 }
 \arguments{
 \item{sigma2betaWest}{please refer to \code{\linkS4class{PseudoDualFlexiSimulations}} class object}
