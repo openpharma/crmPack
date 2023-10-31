@@ -146,5 +146,6 @@ plot(summary(my_sims,
   trueTox = true_tox,
   trueBiomarker = true_biomarker
 ))
+
 }
 \keyword{methods}

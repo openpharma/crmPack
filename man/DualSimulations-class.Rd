@@ -7,7 +7,7 @@
 \alias{DualSimulations}
 \title{\code{DualSimulations}}
 \usage{
-DualSimulations(rho_est, sigma2w_est, fit_biomarker, stop_report, ...)
+DualSimulations(rho_est, sigma2w_est, fit_biomarker, ...)
 }
 \arguments{
 \item{rho_est}{(\code{numeric})\cr see \code{\link{DualSimulations}}}
@@ -16,9 +16,9 @@ DualSimulations(rho_est, sigma2w_est, fit_biomarker, stop_report, ...)
 
 \item{fit_biomarker}{(\code{list})\cr see \code{\link{DualSimulations}}}
 
-\item{stop_report}{see \code{\link{Simulations}}}
-
 \item{\dots}{additional parameters from \code{\link{Simulations}}}
+
+\item{stop_report}{see \code{\link{Simulations}}}
 }
 \description{
 \ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#stable}{\figure{lifecycle-stable.svg}{options: alt='[Stable]'}}}{\strong{[Stable]}}

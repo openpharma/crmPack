@@ -3985,6 +3985,7 @@ setMethod("simulate",
             )
 
             stopit_results <- h_unpack_stopit(stopit)
+            browser()
           }
           ## get the fit
           thisDLEFit <- fit(
@@ -4118,6 +4119,8 @@ setMethod("simulate",
 
         # individual stopping rule results as matrix, labels as column names
         stopResults <- lapply(resultList, "[[", "report_results")
+
+        browser()
         stop_matrix <- as.matrix(do.call(rbind, stopResults))
 
         ## return the results in the Simulations class object
@@ -4738,7 +4741,10 @@ setMethod("simulate",
       ## the reasons for stopping
       stopReasons <- lapply(resultList, "[[", "stop")
 
-      stop_report <- matrix(TRUE, nrow = nsim)
+      # individual stopping rule results as matrix, labels as column names
+      stopResults <- lapply(resultList, "[[", "report_results")
+      stop_matrix <- as.matrix(do.call(rbind, stopResults))
+
       ## return the results in the Simulations class object
       ret <- DASimulations(
         data = dataList,
