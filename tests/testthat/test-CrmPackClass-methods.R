@@ -19,12 +19,13 @@ test_that("tidy methods exist for all relevant classes", {
     if (!isClassUnion(cls)) {
       constructor_name <- paste0(".Default", cls)
       if (exists(constructor_name, mode = "function")) {
-        tryCatch({
-          x <- do.call(paste0(".Default", cls), list())
-          result <- x |> tidy()
-          expect_equal(class(result)[1], paste0("tbl_", cls))
-        },
-        error = function(e) fail(paste0("Unable to tidy ", cls, " objects: ", e))
+        tryCatch(
+          {
+            x <- do.call(paste0(".Default", cls), list())
+            result <- x |> tidy()
+            expect_equal(class(result)[1], paste0("tbl_", cls))
+          },
+          error = function(e) fail(paste0("Unable to tidy ", cls, " objects: ", e))
         )
       } else {
         print(paste0("No default constructor for ", cls))

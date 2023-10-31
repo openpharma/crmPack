@@ -46,7 +46,7 @@ h_handle_attributes <- function(x, .ignore = c("names", "class", "description", 
       rv
     }
   ) |>
-  dplyr::bind_cols()
+    dplyr::bind_cols()
 }
 
 #' Tidy a Single Slot of a CrmPackObject
@@ -80,7 +80,7 @@ h_tidy_slot <- function(obj, slot_name, col = NULL, attributes = FALSE) {
             return(x)
           } else if (is.numeric(x) | is.character(x)) {
             # tidy.numeric & tidy.character are deprecated
-            return(tibble::tibble(!!{{ slot_name}} := x))
+            return(tibble::tibble(!!{{ slot_name }} := x))
           } else {
             return(x |> tidy())
           }
