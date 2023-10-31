@@ -4780,3 +4780,26 @@ setMethod(
       })
     }
 )
+
+# tidy ----
+
+## tidy-DualDesign ----
+
+#' @rdname tidy
+#' @aliases tidy-DualDesign
+#' @example examples/Rules-method-tidyDualDesign.R
+#'
+#' Some `Design` objects have complex attributes whose structure is not supported.
+#' @export
+setMethod(
+  f = "tidy",
+  signature = signature(x = "DualDesign"),
+  definition = function(x, ...) {
+    rv <- h_tidy_all_slots(x, attributes = FALSE) |> h_tidy_class(x)
+    if (length(rv) == 1) {
+      rv[[names(rv)[1]]] |> h_tidy_class(x)
+    } else {
+      rv
+    }
+  }
+)
