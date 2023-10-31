@@ -12,7 +12,7 @@
 #' @param x (`CrmPackClass`)\cr the object to be tidied.
 #' @param ... \cr Used by class-specific methods
 #'
-#' @return A (list of) tibble(s) represnting the object in tidy form.
+#' @return A (list of) tibble(s) representing the object in tidy form.
 #'
 #' @export
 #'
@@ -44,7 +44,7 @@ setMethod(
   definition = function(x, ...) {
     rv <- h_tidy_all_slots(x) |> h_tidy_class(x)
     if (length(rv) == 1) {
-      rv[[names(rv)[1]]]
+      rv[[names(rv)[1]]] |> h_tidy_class(x)
     } else {
       rv
     }

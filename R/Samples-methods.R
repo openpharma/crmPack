@@ -2263,7 +2263,7 @@ setMethod("plot",
 
 #' @rdname tidy
 #' @aliases tidy-Samples
-#' @example examples/Rules-method-tidy.R
+#' @example examples/Samples-method-tidy.R
 #' @export
 setMethod(
   f = "tidy",

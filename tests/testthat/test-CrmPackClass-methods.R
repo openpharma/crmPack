@@ -1,3 +1,5 @@
+#' @include "logger.R"
+
 test_that("tidy methods exist for all relevant classes", {
   crmPack_class_list <- getClasses(asNamespace("crmPack"))
   exclusions <- c(
@@ -7,7 +9,9 @@ test_that("tidy methods exist for all relevant classes", {
     "PseudoDualSimulations", "PseudoDualSimulationsSummary",
     "PseudoDualFlexiSimulations", "PseudoFlexiSimulations",
     "PseudoSimulationsSummary", "SimulationsSummary", "Report", "SafetyWindow",
-    "Stopping", "Validate"
+    "Stopping", "Validate",
+    # The following classes have no constructors
+    "DualSimulationsSummary"
   )
   crmPack_class_list <- setdiff(crmPack_class_list, exclusions)
 
@@ -18,9 +22,9 @@ test_that("tidy methods exist for all relevant classes", {
         tryCatch({
           x <- do.call(paste0(".Default", cls), list())
           result <- x |> tidy()
-          expect_class(result, c(paste0("tbl_", cls), "tbl_df", "tbl", "data.frame"))
+          expect_equal(class(result)[1], paste0("tbl_", cls))
         },
-        error = function(e) fail(paste0("Unable to tidy ", cls, " objects:", geterrmessage()))
+        error = function(e) fail(paste0("Unable to tidy ", cls, " objects: ", e))
         )
       } else {
         print(paste0("No default constructor for ", cls))

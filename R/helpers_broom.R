@@ -22,16 +22,31 @@ h_handle_attributes <- function(x, .ignore = c("names", "class", "description", 
     valid_names,
     function(n) {
       z <- attr(x, n)
-      if (length(z) == 1) {
-        rv <- tibble::tibble(X = z)
-      } else {
-        rv <- tibble::tibble(X = list(z))
+      rv <- NULL
+      # Some Design classes have attributes that are functions or CrmPackClass objects
+      if (!is.function(z)) {
+        if (length(z) == 1) {
+          if (is(z, "CrmPackClass")) {
+            z <- z |> tidy()
+          }
+          rv <- tibble::tibble(X = z)
+        } else {
+          if (length(z) == 0) {
+            rv <- tibble::tibble(X = NA)
+          } else {
+            if (is(z, "CrmPackClass")) {
+              rv <- z |> tidy()
+            } else {
+              rv <- tibble::tibble(X = list(z))
+            }
+          }
+        }
+        names(rv) <- n
       }
-      names(rv) <- n
       rv
     }
   ) |>
-    dplyr::bind_cols()
+  dplyr::bind_cols()
 }
 
 #' Tidy a Single Slot of a CrmPackObject
@@ -60,7 +75,11 @@ h_tidy_slot <- function(obj, slot_name, col = NULL, attributes = FALSE) {
         function(x) {
           if (is.data.frame(x)) {
             return(x)
+          } else if (is.list(x) && stringr::str_detect(class(x)[1], stringr::fixed("tbl_"))) {
+            # Already tidied to a list
+            return(x)
           } else if (is.numeric(x) | is.character(x)) {
+            # tidy.numeric & tidy.character are deprecated
             return(tibble::tibble(!!{{ slot_name}} := x))
           } else {
             return(x |> tidy())
@@ -69,21 +88,21 @@ h_tidy_slot <- function(obj, slot_name, col = NULL, attributes = FALSE) {
       )
     )
   }
-  a <- h_handle_attributes(slot(obj, slot_name))
   if (is(slot(obj, slot_name), "CrmPackClass")) {
     rv <- slot(obj, slot_name) |>
-      tidy() |>
-      dplyr::bind_cols()
+      tidy() # |>
+      # dplyr::bind_cols()
   } else {
     if (is.null(col)) {
       col <- slot_name
     }
     rv <- tibble::tibble({{ col }} := slot(obj, slot_name))
   }
-  if (nrow(a) > 0 & attributes) {
-    # rv <- rv |> dplyr::bind_cols(a)
-    print(slot_name)
-    print(a)
+  if (attributes) {
+    a <- h_handle_attributes(slot(obj, slot_name))
+    if (nrow(a) > 0) {
+      rv <- rv |> dplyr::bind_cols(a)
+    }
   }
   rv
 }
@@ -96,17 +115,18 @@ h_tidy_slot <- function(obj, slot_name, col = NULL, attributes = FALSE) {
 #' (list of) tibble(s).
 #'
 #' @param obj (`CrmPackObject`)\cr object to be tidied.
+#' @param ... passed to h_tidy_slot
 #'
 #' @return A (list of) [`tibble`](s)
 #'
 #' @keywords internal
 #' @noRd
-h_tidy_all_slots <- function(obj) {
+h_tidy_all_slots <- function(obj, ...) {
   slot_names <- slotNames(obj)
   rv <- list()
   for (nm in slot_names) {
     if (!is.function(slot(obj, nm))) {
-      rv[[nm]] <- h_tidy_slot(obj, nm)
+      rv[[nm]] <- h_tidy_slot(obj, nm, ...)
     }
   }
   # Column bind of all list elements have the same number of rows

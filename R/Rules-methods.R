@@ -3393,7 +3393,7 @@ setMethod(
   }
 )
 
-## tidy-CohortSizeRange ----
+## tidy-CohortSizeDLT ----
 
 #' @rdname tidy
 #' @aliases tidy-CohortSizeDLT
@@ -3411,6 +3411,35 @@ setMethod(
       h_tidy_class(x)
   }
 )
+
+## tidy-CohortSizeMin ----
+
+#' @rdname tidy
+#' @aliases tidy-CohortSizeMin
+#' @example examples/Rules-method-tidyCohortSizeMin.R
+#' @export
+setMethod(
+  f = "tidy",
+  signature = signature(x = "CohortSizeMin"),
+  definition = function(x, ...) {
+    callNextMethod() |> h_tidy_class(x)
+  }
+)
+
+## tidy-CohortSizeMax ----
+
+#' @rdname tidy
+#' @aliases tidy-CohortSizeMax
+#' @example examples/Rules-method-tidyCohortSizeMax.R
+#' @export
+setMethod(
+  f = "tidy",
+  signature = signature(x = "CohortSizeMax"),
+  definition = function(x, ...) {
+    callNextMethod() |> h_tidy_class(x)
+  }
+)
+
 ## tidy-CohortSizeRange ----
 
 #' @rdname tidy
@@ -3448,6 +3477,20 @@ setMethod(
   }
 )
 
+## tidy-IncrementsMin ----
+
+#' @rdname tidy
+#' @aliases tidy-IncrementsMin
+#' @example examples/Rules-method-tidyIncrementsMin.R
+#' @export
+setMethod(
+  f = "tidy",
+  signature = signature(x = "IncrementsMin"),
+  definition = function(x, ...) {
+    callNextMethod() |> h_tidy_class(x)
+  }
+)
+
 ## tidy-IncrementsRelative ----
 
 #' @rdname tidy
@@ -3459,11 +3502,41 @@ setMethod(
   signature = signature(x = "IncrementsRelative"),
   definition = function(x, ...) {
     h_tidy_all_slots(x) |>
-      dplyr::bind_cols() |>
+      # dplyr::bind_cols() |>
       h_range_to_minmax(intervals) |>
-      dplyr::filter(max > 0) |>
+      dplyr::filter(dplyr::row_number() > 1) |>
       tibble::add_column(increment = x@increments) |>
       h_tidy_class(x)
+  }
+)
+
+## tidy-IncrementsRelative ----
+
+#' @rdname tidy
+#' @aliases tidy-IncrementsRelativeParts
+#' @example examples/Rules-method-tidyIncrementsRelativeParts.R
+#' @export
+setMethod(
+  f = "tidy",
+  signature = signature(x = "IncrementsRelativeParts"),
+  definition = function(x, ...) {
+    slot_names <- slotNames(x)
+    rv <- list()
+    for (nm in slot_names) {
+      if (!is.function(slot(x, nm))) {
+        rv[[nm]] <- h_tidy_slot(x, nm, ...)
+      }
+    }
+    # Column bind of all list elements have the same number of rows
+    if (length(rv) > 1 & length(unique(sapply(rv, nrow))) == 1) {
+      rv <- rv |> dplyr::bind_cols()
+    }
+    rv <- rv |> h_tidy_class(x)
+    if (length(rv) == 1) {
+      rv[[names(rv)[1]]] |> h_tidy_class(x)
+    } else {
+      rv
+    }
   }
 )
 
@@ -3481,13 +3554,37 @@ setMethod(
       dplyr::bind_cols() |>
       h_range_to_minmax(target, range_min = 0, range_max = 1) |>
       add_column(max_prob = c(NA, NA, x@max_overdose_prob)) |>
-      add_column(Range = c("Underdose", "Target", "Overdose"), .before = 1)
+      add_column(Range = c("Underdose", "Target", "Overdose"), .before = 1) |>
+      h_tidy_class(x)
   }
 )
 
-x <- NextBestNCRM(
-  target = c(0.2, 0.35),
-  overdose = c(0.35, 1),
-  max_overdose_prob = 0.25
-)
+## tidy-NextBestNCRMLoss ----
 
+#' @rdname tidy
+#' @aliases tidy-NextBestNCRMLoss
+#' @example examples/Rules-method-tidyNextBestNCRMLoss.R
+#' @export
+setMethod(
+  f = "tidy",
+  signature = signature(x = "NextBestNCRMLoss"),
+  definition = function(x, ...) {
+    slot_names <- slotNames(x)
+    rv <- list()
+    for (nm in slot_names) {
+      if (!is.function(slot(x, nm))) {
+        rv[[nm]] <- h_tidy_slot(x, nm, ...)
+      }
+    }
+    # Column bind of all list elements have the same number of rows
+    if (length(rv) > 1 & length(unique(sapply(rv, nrow))) == 1) {
+      rv <- rv |> dplyr::bind_cols()
+    }
+    rv <- rv |> h_tidy_class(x)
+    if (length(rv) == 1) {
+      rv[[names(rv)[1]]] |> h_tidy_class(x)
+    } else {
+      rv
+    }
+  }
+)
