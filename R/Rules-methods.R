@@ -3386,7 +3386,7 @@ setMethod(
   definition = function(x, ...) {
     h_tidy_all_slots(x) |>
       dplyr::bind_cols() |>
-      h_range_to_minmax(intervals) |>
+      h_range_to_minmax(.data$intervals) |>
       dplyr::filter(max > 0) |>
       tibble::add_column(increment = x@increments) |>
       h_tidy_class(x)
@@ -3405,7 +3405,7 @@ setMethod(
   definition = function(x, ...) {
     h_tidy_all_slots(x) |>
       dplyr::bind_cols() |>
-      h_range_to_minmax(intervals) |>
+      h_range_to_minmax(.data$intervals) |>
       dplyr::filter(max > 0) |>
       tibble::add_column(cohort_size = x@cohort_size) |>
       h_tidy_class(x)
@@ -3452,7 +3452,7 @@ setMethod(
   definition = function(x, ...) {
     h_tidy_all_slots(x) |>
       dplyr::bind_cols() |>
-      h_range_to_minmax(intervals) |>
+      h_range_to_minmax(.data$intervals) |>
       dplyr::filter(max > 0) |>
       tibble::add_column(cohort_size = x@cohort_size) |>
       h_tidy_class(x)
@@ -3502,7 +3502,7 @@ setMethod(
   signature = signature(x = "IncrementsRelative"),
   definition = function(x, ...) {
     h_tidy_all_slots(x) |>
-      h_range_to_minmax(intervals) |>
+      h_range_to_minmax(.data$intervals) |>
       dplyr::filter(dplyr::row_number() > 1) |>
       tibble::add_column(increment = x@increments) |>
       h_tidy_class(x)
@@ -3551,7 +3551,7 @@ setMethod(
   definition = function(x, ...) {
     rv <- h_tidy_all_slots(x) |>
       dplyr::bind_cols() |>
-      h_range_to_minmax(target, range_min = 0, range_max = 1) |>
+      h_range_to_minmax(.data$target, range_min = 0, range_max = 1) |>
       add_column(max_prob = c(NA, NA, x@max_overdose_prob)) |>
       add_column(Range = c("Underdose", "Target", "Overdose"), .before = 1) |>
       h_tidy_class(x)

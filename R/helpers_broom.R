@@ -66,6 +66,7 @@ h_handle_attributes <- function(x, .ignore = c("names", "class", "description", 
 #' @return A [`tibble`]
 #'
 #' @keywords internal
+#' @importFrom rlang :=
 #' @noRd
 h_tidy_slot <- function(obj, slot_name, col = NULL, attributes = FALSE) {
   if (is.list(slot(obj, slot_name))) {
@@ -185,6 +186,7 @@ h_tidy_class <- function(d, obj) {
 #'
 #' @return A `tibble` in min-max format, with one row more than the input tibble.
 #'
+#' @importFrom rlang :=
 #' @keywords internal
 #' @noRd
 h_range_to_minmax <- function(

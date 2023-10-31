@@ -2281,8 +2281,8 @@ setMethod(
           ) |>
             dplyr::bind_rows() |>
             tidyr::pivot_wider(
-              names_from = Parameter,
-              values_from = value
+              names_from = .data$Parameter,
+              values_from = .data$value
             ) |>
             dplyr::bind_cols(h_handle_attributes(get(x, names(x@data)[1])))
         } else {
