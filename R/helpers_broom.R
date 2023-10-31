@@ -90,8 +90,7 @@ h_tidy_slot <- function(obj, slot_name, col = NULL, attributes = FALSE) {
   }
   if (is(slot(obj, slot_name), "CrmPackClass")) {
     rv <- slot(obj, slot_name) |>
-      tidy() # |>
-      # dplyr::bind_cols()
+      tidy()
   } else {
     if (is.null(col)) {
       col <- slot_name
@@ -130,8 +129,8 @@ h_tidy_all_slots <- function(obj, ...) {
     }
   }
   # Column bind of all list elements have the same number of rows
-  if (length(rv) > 1 & length(unique(sapply(rv, nrow))) == 1) {
-    rv <- rv |> dplyr::bind_cols()
+  if (length(rv) > 1 && length(unique(sapply(rv, nrow))) == 1) {
+    rv <- rv |> dplyr::bind_cols() # nolint
   }
   rv
 }

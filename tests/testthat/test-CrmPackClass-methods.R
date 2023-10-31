@@ -1,7 +1,7 @@
 #' @include "logger.R"
 
 test_that("tidy methods exist for all relevant classes", {
-  crmPack_class_list <- getClasses(asNamespace("crmPack"))
+  crmpack_class_list <- getClasses(asNamespace("crmPack"))
   exclusions <- c(
     "CohortSize", "CrmPackClass", "DualEndpoint", "GeneralData", "GeneralModel",
     "GeneralSimulationsSummary", "Increments", "ModelEff", "ModelPseudo",
@@ -13,9 +13,9 @@ test_that("tidy methods exist for all relevant classes", {
     # The following classes have no constructors
     "DualSimulationsSummary"
   )
-  crmPack_class_list <- setdiff(crmPack_class_list, exclusions)
+  crmpack_class_list <- setdiff(crmPack_class_list, exclusions)
 
-  for (cls in crmPack_class_list) {
+  for (cls in crmpack_class_list) {
     if (!isClassUnion(cls)) {
       constructor_name <- paste0(".Default", cls)
       if (exists(constructor_name, mode = "function")) {
