@@ -205,8 +205,8 @@ Simulations <- function(fit,
     slots = c(
       rho_est = "numeric",
       sigma2w_est = "numeric",
-      fit_biomarker = "list",
-      stop_report = "matrix"
+      fit_biomarker = "list"#,
+   #   stop_report = "matrix"
     ),
     prototype = prototype(
       rho_est = c(0.2, 0.3),
@@ -215,8 +215,8 @@ Simulations <- function(fit,
         list(
           c(0.1, 0.2),
           c(0.1, 0.2)
-        ),
-      stop_report = matrix(TRUE, nrow = 2)
+        )#,
+    #  stop_report = matrix(TRUE, nrow = 2)
     ),
     contains = "Simulations",
     validity =
@@ -258,14 +258,14 @@ Simulations <- function(fit,
 DualSimulations <- function(rho_est,
                             sigma2w_est,
                             fit_biomarker,
-                            stop_report,
+                            #stop_report,
                             ...) {
   start <- Simulations(...)
   .DualSimulations(start,
     rho_est = rho_est,
     sigma2w_est = sigma2w_est,
-    fit_biomarker = fit_biomarker,
-    stop_report = stop_report
+    fit_biomarker = fit_biomarker#,
+ #   stop_report = stop_report
 
   )
 }
@@ -539,8 +539,8 @@ PseudoSimulations <- function(fit,
       FinalGstarRatios = "numeric",
       FinalOptimalDose = "numeric",
       FinalOptimalDoseAtDoseGrid = "numeric",
-      sigma2est = "numeric",
-      stop_report = "matrix"
+      sigma2est = "numeric"#,
+   #   stop_report = "matrix"
     ),
     prototype(
       FinalGstarEstimates = c(0.1, 0.1),
@@ -549,7 +549,7 @@ PseudoSimulations <- function(fit,
         c(0.1, 0.2),
         c(0.1, 0.2)
       ),
-      stop_report = matrix(TRUE, nrow = 2),
+   #   stop_report = matrix(TRUE, nrow = 2),
       FinalGstarRatios = c(0.01, 0.01),
       FinalOptimalDose = c(0.01, 0.01),
       FinalOptimalDoseAtDoseGrid = c(0.01, 0.01),
@@ -590,7 +590,7 @@ PseudoDualSimulations <- function(fitEff,
                                   FinalOptimalDose,
                                   FinalOptimalDoseAtDoseGrid,
                                   sigma2est,
-                                  stop_report,
+       #                           stop_report,
                                   ...) {
   start <- PseudoSimulations(...)
   .PseudoDualSimulations(start,
@@ -601,8 +601,8 @@ PseudoDualSimulations <- function(fitEff,
     FinalGstarRatios = FinalGstarRatios,
     FinalOptimalDose = FinalOptimalDose,
     FinalOptimalDoseAtDoseGrid = FinalOptimalDoseAtDoseGrid,
-    sigma2est = sigma2est,
-    stop_report = stop_report
+    sigma2est = sigma2est#,
+  #  stop_report = stop_report
 
   )
 }
@@ -628,11 +628,13 @@ PseudoDualSimulations <- function(fitEff,
 .PseudoDualFlexiSimulations <-
   setClass(
     Class = "PseudoDualFlexiSimulations",
-    representation(sigma2betaWest = "numeric",
-                   stop_report = "matrix"),
+    representation(sigma2betaWest = "numeric"#,
+                  # stop_report = "matrix"
+                   ),
 
-    prototype(sigma2betaWest = c(0.001, 0.002),
-              stop_report = matrix(TRUE, nrow = 2)),
+    prototype(sigma2betaWest = c(0.001, 0.002)#,
+            #  stop_report = matrix(TRUE, nrow = 2)
+              ),
     contains = "PseudoDualSimulations",
     validity =
       function(object) {
@@ -643,16 +645,16 @@ PseudoDualSimulations <- function(fitEff,
           "sigma2betaWest has to have same length as data"
         )
 
-        o$check(
-          checkmate::test_matrix(object@stop_report,
-                                 mode = "logical",
-                                 nrows = nSims,
-                                 min.cols = 1,
-                                 any.missing = FALSE
-          ),
-          "stop_report must be a matrix of mode logical in which the number of rows equals the number of simulations
-      and which must not contain any missing values"
-        )
+    #    o$check(
+    #      checkmate::test_matrix(object@stop_report,
+    #                             mode = "logical",
+    #                             nrows = nSims,
+     #                            min.cols = 1,
+    #                             any.missing = FALSE
+     #     ),
+      #    "stop_report must be a matrix of mode logical in which the number of rows equals the number of simulations
+   #   and which must not contain any missing values"
+    #    )
 
         o$result()
       }
@@ -665,12 +667,12 @@ validObject(.PseudoDualFlexiSimulations())
 ##' @param \dots additional parameters from \code{\linkS4class{PseudoDualSimulations}}
 ##' @return the \code{\linkS4class{PseudoDualFlexiSimulations}} object
 PseudoDualFlexiSimulations <- function(sigma2betaWest,
-                                       stop_report,
+                                      # stop_report,
                                        ...) {
   start <- PseudoDualSimulations(...)
   .PseudoDualFlexiSimulations(start,
-    sigma2betaWest = sigma2betaWest,
-    stop_report = stop_report
+    sigma2betaWest = sigma2betaWest
+  #  stop_report = stop_report
   )
 }
 
@@ -823,8 +825,9 @@ PseudoDualFlexiSimulations <- function(sigma2betaWest,
 .DASimulations <-
   setClass(
     Class = "DASimulations",
-    representation(trialduration = "numeric",
-                   stop_report = "matrix"),
+    representation(trialduration = "numeric"#,
+                 #  stop_report = "matrix"
+                 ),
     prototype(trialduration = rep(0, 2),
               stop_report = matrix(TRUE, nrow = 2)),
     contains = "Simulations",
@@ -839,16 +842,16 @@ PseudoDualFlexiSimulations <- function(sigma2betaWest,
           "trialduration vector has to have same length as data"
         )
 
-        o$check(
-          checkmate::test_matrix(object@stop_report,
-                                 mode = "logical",
-                                 nrows = nSims,
-                                 min.cols = 1,
-                                 any.missing = FALSE
-          ),
-          "stop_report must be a matrix of mode logical in which the number of rows equals the number of simulations
-      and which must not contain any missing values"
-        )
+      #  o$check(
+      #    checkmate::test_matrix(object@stop_report,
+      #                           mode = "logical",
+      #                           nrows = nSims,
+      #                           min.cols = 1,
+      #                           any.missing = FALSE
+      #    ),
+      #    "stop_report must be a matrix of mode logical in which the number of rows equals the number of simulations
+      #and which must not contain any missing values"
+      #  )
 
         o$result()
       }
@@ -865,12 +868,12 @@ validObject(.DASimulations())
 ##' @export
 ##' @keywords methods
 DASimulations <- function(trialduration,
-                          stop_report,
+                          #stop_report,
                           ...) {
   start <- Simulations(...)
   .DASimulations(start,
-    trialduration = trialduration,
-    stop_report = stop_report
+    trialduration = trialduration#,
+  #  stop_report = stop_report
   )
 }
 
