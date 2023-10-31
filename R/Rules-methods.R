@@ -40,7 +40,15 @@ setGeneric(
   name = "nextBest",
   def = function(nextBest, doselimit, samples, model, data, ...) {
     if (!missing(doselimit)) {
-      assert_number(doselimit, lower = 0, finite = FALSE)
+      if (data@placebo) {
+        min_dose <- min(data@doseGrid[data@doseGrid > sort(data@doseGrid)[1]])
+      } else if (!data@placebo) {
+        min_dose <- min(data@doseGrid)
+      }
+      assert_number(doselimit, lower = min_dose, finite = FALSE)
+      if (doselimit == min_dose) {
+        return(min_dose)
+      }
     }
     standardGeneric("nextBest")
   },
