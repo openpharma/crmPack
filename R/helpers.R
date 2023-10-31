@@ -219,21 +219,27 @@ crmPackHelp <- function() {
   utils::help(package = "crmPack", help_type = "html")
 }
 
-##' Plots gtable objects
-##'
-##' @method plot gtable
-##' @param x the gtable object
-##' @param \dots additional parameters for \code{\link[grid]{grid.draw}}
-##'
-##' @importFrom grid grid.draw
-##' @export
+#' Plot `gtable` Ojects
+#'
+#' This is needed because `crmPack` uses [gridExtra::arrangeGrob()] to combine
+#' `ggplot2` plots, and the resulting `gtable` object is not plotted otherwise
+#' when implicitly printing it in the console, e.g.
+#'
+#' @method plot gtable
+#' @param x (`gtable`)\cr object to plot.
+#' @param ... additional parameters for [grid::grid.draw()].
+#'
+#' @rdname plot-gtable
+#' @export
 plot.gtable <- function(x, ...) {
   grid::grid.draw(x, ...)
 }
 
-##' @export
+#' @method print gtable
+#' @rdname plot-gtable
+#' @export
 print.gtable <- function(x, ...) {
-  plot.gtable(x, ...)
+  plot(x, ...)
 }
 
 ##' Taken from utils package (print.vignette)
