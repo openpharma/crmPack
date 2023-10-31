@@ -54,13 +54,13 @@ Imports:
     tibble,
     tools,
     utils,
-    kableExtra
+    kableExtra,
+    dplyr
 Suggests:
     bookdown,
     broom,
     covr,
     data.tree,
-    dplyr,
     ggmcmc,
     knitr,
     rmarkdown,

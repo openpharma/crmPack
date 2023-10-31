@@ -3502,7 +3502,6 @@ setMethod(
   signature = signature(x = "IncrementsRelative"),
   definition = function(x, ...) {
     h_tidy_all_slots(x) |>
-      # dplyr::bind_cols() |>
       h_range_to_minmax(intervals) |>
       dplyr::filter(dplyr::row_number() > 1) |>
       tibble::add_column(increment = x@increments) |>

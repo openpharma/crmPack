@@ -79,7 +79,7 @@ A (list of) tibble(s) representing the object in tidy form.
 In the spirit of the \code{broom} package, provide a method to convert a
 \code{CrmPackClass} object to a (list of) tibble9s).
 
-Following the pronciples of the \code{broom} package, convert a \code{CrmPackClass}
+Following the principles of the \code{broom} package, convert a \code{CrmPackClass}
 object to a (list of) tibbles.  This is a basic, default representation
 }
 \examples{
