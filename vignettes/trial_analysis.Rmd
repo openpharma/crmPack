@@ -58,7 +58,7 @@ The trial will use a dose grid consisting of the following doses: 1, 3, 9, 20, 3
 #### The dose-toxicity model
 The trial uses a logistic log Normal dose toxicity model
 
-$$ log(\frac{p_i}{1 - p_i}) = \alpha + \beta (d_i - d^*) $$
+$$ log(\frac{p_i}{1 - p_i}) = \alpha + \beta log(d_i / d^*) $$
 
 where the prior joint distribution of $\alpha$ and $\beta$ is
 

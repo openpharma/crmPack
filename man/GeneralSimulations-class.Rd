@@ -5,9 +5,12 @@
 \alias{GeneralSimulations-class}
 \alias{.GeneralSimulations}
 \alias{GeneralSimulations}
+\alias{.DefaultGeneralSimulations}
 \title{\code{GeneralSimulations}}
 \usage{
 GeneralSimulations(data, doses, seed)
+
+.DefaultGeneralSimulations()
 }
 \arguments{
 \item{data}{(\code{list})\cr see slot definition.}
@@ -35,6 +38,9 @@ saved, in order to be able to reproduce the outcome. For this just use
 \item{\code{seed}}{(\code{integer})\cr random generator state before starting the simulation.}
 }}
 
+\note{
+Typically, end users will not use the \code{.DefaultGeneralSimulations()} function.
+}
 \examples{
 data <- list(
   Data(x = 1:3, y = c(0, 1, 0), doseGrid = 1:3, ID = 1L:3L, cohort = 1L:3L),

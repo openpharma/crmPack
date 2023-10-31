@@ -5,9 +5,12 @@
 \alias{EffFlexi-class}
 \alias{.EffFlexi}
 \alias{EffFlexi}
+\alias{.DefaultEffFlexi}
 \title{\code{EffFlexi}}
 \usage{
 EffFlexi(eff, eff_dose, sigma2W, sigma2betaW, rw1 = TRUE, data)
+
+.DefaultEffFlexi()
 }
 \arguments{
 \item{eff}{(\code{numeric})\cr the pseudo efficacy responses.
@@ -111,6 +114,9 @@ slot is needed for internal purposes and must not be used by the user.}
 slot is needed for internal purposes and must not be used by the user.}
 }}
 
+\note{
+Typically, end users will not use the \code{.DefaultEffFlexi()} function.
+}
 \examples{
 # Obtain prior estimates for the efficacy model in flexible form, given the pseudo data.
 # First define an empty data set by defining the dose levels used in the study.

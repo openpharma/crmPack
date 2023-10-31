@@ -14,6 +14,7 @@ DesignGrouped(
   combo = mono,
   first_cohort_mono_only = TRUE,
   same_dose = TRUE,
+  stop_mono_with_combo = FALSE,
   ...
 )
 }
@@ -27,6 +28,8 @@ DesignGrouped(
 \item{first_cohort_mono_only}{(\code{flag})\cr see slot definition.}
 
 \item{same_dose}{(\code{flag})\cr see slot definition.}
+
+\item{stop_mono_with_combo}{(\code{flag})\cr see slot definition.}
 
 \item{...}{not used.}
 }
@@ -60,6 +63,9 @@ concurrent mono and combo cohorts.}
 
 \item{\code{same_dose}}{(\code{flag})\cr whether the lower dose of the separately determined mono and combo
 doses should be used as the next dose for both mono and combo.}
+
+\item{\code{stop_mono_with_combo}}{(\code{flag})\cr whether the mono arm should be stopped when the combo
+arm is stopped (this makes sense when the only real trial objective is the recommended combo dose).}
 }}
 
 \note{
@@ -108,17 +114,31 @@ my_increments <- IncrementsRelative(
   increments = c(1, 0.33)
 )
 
+# Rules to be used for both arms.
+one_arm <- Design(
+  model = .DefaultModelLogNormal(), # Ignored.
+  nextBest = my_next_best,
+  stopping = my_stopping,
+  increments = my_increments,
+  cohort_size = my_size,
+  data = empty_data,
+  startingDose = 3
+)
+
 # Initialize the design.
 design <- DesignGrouped(
   model = my_model,
-  mono = Design(
-    model = .DefaultModelLogNormal(), # Ignored.
-    nextBest = my_next_best,
-    stopping = my_stopping,
-    increments = my_increments,
-    cohort_size = my_size,
-    data = empty_data,
-    startingDose = 3
-  )
+  mono = one_arm
+)
+
+# Alternative options: Here e.g. use both mono and combo from the start,
+# but allow different dose levels for the cohorts. Stop mono arm too, when combo
+# arm is stopped.
+design2 <- DesignGrouped(
+  model = my_model,
+  mono = one_arm,
+  first_cohort_mono_only = FALSE,
+  same_dose = FALSE,
+  stop_mono_with_combo = TRUE,
 )
 }

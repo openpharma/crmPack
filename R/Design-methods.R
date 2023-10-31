@@ -4411,8 +4411,8 @@ setMethod("simulate",
 
 
             ## JZ: future work: additional part for DADesign--when to start the next cohort
-            ## nextOpen can be modified to incoporate different patient enrollment rate;
-            ## currently assume we have surfficient patients;
+            ## nextOpen can be modified to incorporate different patient enrollment rate;
+            ## currently assume we have sufficient patients;
             ## If there is a gap between cohorts for cohort manager meeting, it can be
             ## added to here;
 
@@ -4722,6 +4722,22 @@ setMethod(
           }
           if (object@same_dose && !current$mono$stop && !current$combo$stop) {
             current$mono$dose <- current$combo$dose <- min(current$mono$dose, current$combo$dose)
+          }
+          if (object@stop_mono_with_combo) {
+            if (current$combo$stop && !current$mono$stop) {
+              current$mono$stop <- structure(
+                TRUE,
+                message = "mono stopped because combo stopped",
+                report_label = "mono stopped because combo stopped"
+              )
+              new_result <- TRUE
+            } else {
+              new_result <- FALSE
+            }
+            current$mono$results <- c(
+              current$mono$results,
+              "mono stopped because combo stopped" = new_result
+            )
           }
           if (current$first) current$first <- FALSE
         }

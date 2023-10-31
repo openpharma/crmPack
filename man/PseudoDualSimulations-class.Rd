@@ -4,7 +4,11 @@
 \name{PseudoDualSimulations-class}
 \alias{PseudoDualSimulations-class}
 \alias{.PseudoDualSimulations}
+\alias{.DefaultPseudoDualSimulations}
 \title{Class \code{PseudoDualSimulations}}
+\usage{
+.DefaultPseudoDualSimulations()
+}
 \description{
 This is a class which captures the trial simulations design using both the
 DLE and efficacy responses. The design of model from \code{\linkS4class{ModelTox}}
@@ -41,3 +45,6 @@ and Gstar estimates at dose Grid}
 \item{\code{sigma2est}}{the vector of the final posterior mean sigma2 estimates}
 }}
 
+\note{
+Typically, end users will not use the \code{.DefaultPseudoDualSimulations()} function.
+}

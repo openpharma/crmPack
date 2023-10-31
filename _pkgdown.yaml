@@ -7,8 +7,19 @@ template:
 
 navbar:
   type: default
-  right:
-    - icon: fa-github fa-lg
+  structure:
+    left: [intro, reference, articles, tutorials, news, reports]
+    right: [search, github]
+  components:
+    reports:
+      text: Reports
+      menu:
+        - text: Coverage report
+          href: coverage-report/
+        - text: Unit test report
+          href: unit-test-report/
+    github:
+      icon: fa-github
       href: https://github.com/roche/crmPack
 
 articles:
@@ -406,6 +417,8 @@ reference:
       - SimulationsSummary-class
       - approximate
       - assertions
+      - assert_equal
+      - check_equal
       - crmPackExample
       - crmPackHelp
       - examine
@@ -415,7 +428,7 @@ reference:
       - get,Samples,character-method
       - getMinInfBeta
       - logit
-      - matchTolerance
+      - match_within_tolerance
       - maxSize
       - minSize
       - or-Stopping-Stopping
