@@ -13,7 +13,7 @@ test_that("tidy methods exist for all relevant classes", {
     # The following classes have no constructors
     "DualSimulationsSummary"
   )
-  crmpack_class_list <- setdiff(crmPack_class_list, exclusions)
+  crmpack_class_list <- setdiff(crmpack_class_list, exclusions)
 
   for (cls in crmpack_class_list) {
     if (!isClassUnion(cls)) {
