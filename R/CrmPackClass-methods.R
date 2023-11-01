@@ -30,7 +30,7 @@ setGeneric(
 #' Following the principles of the `broom` package, convert a `CrmPackClass`
 #' object to a (list of) tibbles.  This is a basic, default representation.
 #'
-#' @param x (`CrmPackClass`)\cr The object to be tidied
+#' @param x (`CrmPackClass`)\cr the object to be tidied.
 #' @param ... \cr Not used at present
 #' @rdname tidy
 #' @aliases tidy-CrmPackClass
