@@ -7,7 +7,7 @@
 #' @description `r lifecycle::badge("experimental")`
 #'
 #' In the spirit of the `broom` package, provide a method to convert a
-#' `CrmPackClass` object to a (list of) tibble9s).
+#' `CrmPackClass` object to a (list of) tibbles.
 #'
 #' @param x (`CrmPackClass`)\cr the object to be tidied.
 #' @param ... \cr Used by class-specific methods
