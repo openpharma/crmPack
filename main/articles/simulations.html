@@ -63,12 +63,6 @@
 <li class="nav-item">
   <a class="nav-link" href="../news/index.html">Changelog</a>
 </li>
-<!-- start dropdown for versions --> <li class="nav-item dropdown">
-        <a href="#" class="nav-link dropdown-toggle"
-          data-bs-toggle="dropdown" role="button"
-          aria-expanded="false" aria-haspopup="true"
-          id="dropdown-versions">Versions</a> <div class="dropdown-menu" aria-labelledby="dropdown-versions"> <a class="dropdown-item" data-toggle="tooltip" title="" href="https://Roche.github.io/crmPack/main">main</a> </div></li>
-<!-- end dropdown for versions -->
 <li class="nav-item dropdown">
   <a href="#" class="nav-link dropdown-toggle" data-bs-toggle="dropdown" role="button" aria-expanded="false" aria-haspopup="true" id="dropdown-reports">Reports</a>
   <div class="dropdown-menu" aria-labelledby="dropdown-reports">
@@ -150,9 +144,12 @@ rolling-CRM.</p>
 <div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://github.com/roche/crmPack" class="external-link">crmPack</a></span><span class="op">)</span></span></code></pre></div>
 <pre><code><span><span class="co">## Loading required package: ggplot2</span></span></code></pre>
+<pre><code><span><span class="co">## Registered S3 method overwritten by 'crmPack':</span></span>
+<span><span class="co">##   method       from  </span></span>
+<span><span class="co">##   print.gtable gtable</span></span></code></pre>
 <pre><code><span><span class="co">## Type crmPackHelp() to open help browser</span></span>
 <span><span class="co">## Type crmPackExample() to open example</span></span></code></pre>
-<div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">Tmax_</span> <span class="op">&lt;-</span> <span class="fl">42</span></span>
 <span></span>
 <span><span class="va">model</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/TITELogisticLogNormal-class.html">TITELogisticLogNormal</a></span><span class="op">(</span></span>
@@ -198,7 +195,7 @@ rolling-CRM.</p>
 </h2>
 <p>In order to obtain stable results, increase the simulation parameters
 appropriately (step, samples, nsim).</p>
-<div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">options</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/McmcOptions-class.html">McmcOptions</a></span><span class="op">(</span></span>
 <span>  burnin <span class="op">=</span> <span class="fl">20</span>,</span>
 <span>  step <span class="op">=</span> <span class="fl">1</span>,</span>
