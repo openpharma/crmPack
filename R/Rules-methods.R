@@ -3025,7 +3025,7 @@ setMethod("stopTrial",
       prob_target <- stopping@prob_target
 
       ## checks
-      stopifnot(is.probability(prob_target))
+      assert_probability(prob_target)
       stopifnot(is(Effmodel, "ModelEff"))
       stopifnot(is(Effsamples, "Samples"))
       stopifnot(is.function(TDderive))
@@ -3143,7 +3143,7 @@ setMethod("stopTrial",
       prob_target <- stopping@prob_target
 
       ## checks
-      stopifnot(is.probability(prob_target))
+      assert_probability(prob_target)
       stopifnot(is(Effmodel, "ModelEff"))
 
 
