@@ -77,7 +77,7 @@ h_tidy_slot <- function(obj, slot_name, col = NULL, attributes = FALSE) {
           if (is.data.frame(x)) {
             return(x)
           } else if (is.list(x) && stringr::str_detect(class(x)[1], stringr::fixed("tbl_"))) {
-            # Already tidied to a list
+            # Already tidied to a list.
             return(x)
           } else if (is.numeric(x) | is.character(x)) {
             # tidy.numeric & tidy.character are deprecated
