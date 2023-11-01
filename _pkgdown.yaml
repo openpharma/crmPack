@@ -452,7 +452,7 @@ reference:
       - plot,SimulationsSummary,missing-method
       - plotDualResponses
       - plotGain
-      - plot-gtable
+      - plot.gtable
       - probit
       - set_seed
       - show,DualSimulationsSummary-method

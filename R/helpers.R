@@ -219,7 +219,7 @@ crmPackHelp <- function() {
   utils::help(package = "crmPack", help_type = "html")
 }
 
-#' Plot `gtable` Ojects
+#' Plot `gtable` Objects
 #'
 #' This is needed because `crmPack` uses [gridExtra::arrangeGrob()] to combine
 #' `ggplot2` plots, and the resulting `gtable` object is not plotted otherwise
@@ -229,14 +229,13 @@ crmPackHelp <- function() {
 #' @param x (`gtable`)\cr object to plot.
 #' @param ... additional parameters for [grid::grid.draw()].
 #'
-#' @rdname plot-gtable
 #' @export
 plot.gtable <- function(x, ...) {
   grid::grid.draw(x, ...)
 }
 
 #' @method print gtable
-#' @rdname plot-gtable
+#' @rdname plot.gtable
 #' @export
 print.gtable <- function(x, ...) {
   plot(x, ...)

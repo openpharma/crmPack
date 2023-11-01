@@ -3,7 +3,7 @@
 \name{plot.gtable}
 \alias{plot.gtable}
 \alias{print.gtable}
-\title{Plot \code{gtable} Ojects}
+\title{Plot \code{gtable} Objects}
 \usage{
 \method{plot}{gtable}(x, ...)
 
