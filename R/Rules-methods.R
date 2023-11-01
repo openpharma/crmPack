@@ -3526,7 +3526,7 @@ setMethod(
         rv[[nm]] <- h_tidy_slot(x, nm, ...)
       }
     }
-    # Column bind of all list elements have the same number of rows
+    # Column bind of all list elements have the same number of rows.
     if (length(rv) > 1 & length(unique(sapply(rv, nrow))) == 1) {
       rv <- rv |> dplyr::bind_cols()
     }
