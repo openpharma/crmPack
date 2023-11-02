@@ -30,6 +30,7 @@
 #' @import ggplot2
 #' @import methods
 #' @import tibble
+#' @importFrom grid grid.draw
 #' @importFrom gridExtra arrangeGrob
 #' @importFrom graphics plot hist legend lines matlines matplot
 #' @importFrom stats binomial coef cov2cor gaussian glm lm median model.matrix
