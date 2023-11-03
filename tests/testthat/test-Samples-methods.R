@@ -1670,3 +1670,20 @@ test_that("fitGain-Samples-LogisticIndepBeta works correctly", {
   expect_snapshot(actual)
 })
 ## nolint end
+
+# tidy ----
+
+test_that("tidy-Samples works correctly", {
+  obj <- mcmc(
+    data = .DefaultData(),
+    model = .DefaultLogisticLogNormal(),
+    options = McmcOptions(
+      burnin = 250,
+      samples = 1000,
+      rng_seed = 353209,
+      rng_kind = "Mersenne-Twister"
+    )
+  )
+  result <- tidy(obj)
+  expect_snapshot(result)
+})
