@@ -4207,4 +4207,3 @@ test_that("tidy-NextBestNCRMLoss works correctly", {
   result <- tidy(obj)
   expect_snapshot(result)
 })
-
