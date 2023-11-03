@@ -18,6 +18,7 @@ my_next_best <- NextBestDualEndpoint(
   max_overdose_prob = 0.25
 )
 
+
 # Choose the rule for the cohort-size.
 my_size1 <- CohortSizeRange(
   intervals = c(0, 30),

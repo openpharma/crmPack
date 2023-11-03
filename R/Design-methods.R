@@ -3985,7 +3985,7 @@ setMethod("simulate",
             )
 
             stopit_results <- h_unpack_stopit(stopit)
-            browser()
+
           }
           ## get the fit
           thisDLEFit <- fit(
@@ -4120,7 +4120,7 @@ setMethod("simulate",
         # individual stopping rule results as matrix, labels as column names
         stopResults <- lapply(resultList, "[[", "report_results")
 
-        browser()
+
         stop_matrix <- as.matrix(do.call(rbind, stopResults))
 
         ## return the results in the Simulations class object

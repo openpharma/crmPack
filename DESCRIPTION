@@ -106,6 +106,7 @@ Collate:
     'fromQuantiles.R'
     'Samples-methods.R'
     'Simulations-methods.R'
+    'Simulations-validity.R'
     'checkmate.R'
     'crmPack-package.R'
     'helpers_covr.R'
