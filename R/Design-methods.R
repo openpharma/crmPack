@@ -4789,8 +4789,8 @@ setMethod(
 #' @aliases tidy-DualDesign
 #' @examples examples/Rules-method-tidyDualDesign.R
 #'
-#' Some Design objects have complex attributes whose structure is not supported.
 #' @export
+# Some Design objects have complex attributes whose structure is not supported.
 setMethod(
   f = "tidy",
   signature = signature(x = "DualDesign"),

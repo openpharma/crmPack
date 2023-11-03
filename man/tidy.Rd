@@ -102,7 +102,6 @@ NextBestNCRM(
 .DefaultNextBestNCRMLoss() |> tidy()
 examples/Rules-method-tidyDualDesign.R
 
-Some `Design` objects have complex attributes whose structure is not supported.
 .DefaultSamples() |> tidy()
 }
 \keyword{methods}
