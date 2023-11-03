@@ -4787,7 +4787,7 @@ setMethod(
 
 #' @rdname tidy
 #' @aliases tidy-DualDesign
-#' @examples examples/Rules-method-tidyDualDesign.R
+#' @examples examples / Rules - method - tidyDualDesign.R
 #'
 #' @export
 # Some Design objects have complex attributes whose structure is not supported.
