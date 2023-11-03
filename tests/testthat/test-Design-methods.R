@@ -561,3 +561,12 @@ test_that("examine for DADesign works as expected", {
   expect_data_frame(result)
   expect_named(result, c("DLTsearly_1", "dose", "DLTs", "nextDose", "stop", "increment"))
 })
+
+# tidy ----
+
+## DualDesign ----
+test_that("tidy-DualDesign works correctly", {
+  obj <- .DefaultDualDesign()
+  result <- tidy(obj)
+  expect_snapshot(result)
+})

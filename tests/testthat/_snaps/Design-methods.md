@@ -119,3 +119,277 @@
        [8] 0.3283720 0.3384141 0.3475067 0.3558159 0.3634667
       
 
+# tidy-DualDesign works correctly
+
+    Code
+      result
+    Output
+      $model
+      $sigma2betaW
+      # A tibble: 1 x 1
+        sigma2betaW
+              <dbl>
+      1        0.01
+      
+      $rw1
+      # A tibble: 1 x 1
+        rw1  
+        <lgl>
+      1 TRUE 
+      
+      $betaZ_params
+      # A tibble: 2 x 3
+         mean cov[,1]  [,2] prec[,1]  [,2]
+        <dbl>   <dbl> <dbl>    <dbl> <dbl>
+      1     0       1     0        1     0
+      2     1       0     1        0     1
+      
+      $ref_dose
+      # A tibble: 1 x 1
+        ref_dose  
+        <pstv_nmb>
+      1 1         
+      
+      $use_log_dose
+      # A tibble: 1 x 1
+        use_log_dose
+        <lgl>       
+      1 FALSE       
+      
+      $sigma2W
+      # A tibble: 2 x 1
+        sigma2W
+          <dbl>
+      1     0.1
+      2     0.1
+      
+      $rho
+      # A tibble: 2 x 1
+          rho
+        <dbl>
+      1     1
+      2     1
+      
+      $use_fixed
+      # A tibble: 3 x 1
+        use_fixed
+        <lgl>    
+      1 FALSE    
+      2 FALSE    
+      3 TRUE     
+      
+      $datanames
+      # A tibble: 5 x 1
+        datanames
+        <chr>    
+      1 nObs     
+      2 w        
+      3 x        
+      4 xLevel   
+      5 y        
+      
+      $datanames_prior
+      # A tibble: 2 x 1
+        datanames_prior
+        <chr>          
+      1 nGrid          
+      2 doseGrid       
+      
+      $sample
+      # A tibble: 5 x 1
+        sample
+        <chr> 
+      1 betaZ 
+      2 precW 
+      3 rho   
+      4 betaW 
+      5 delta 
+      
+      attr(,"class")
+      [1] "tbl_DualEndpointRW" "list"              
+      
+      $data
+      $w
+      # A tibble: 0 x 1
+      # ... with 1 variable: w <dbl>
+      
+      $x
+      # A tibble: 0 x 1
+      # ... with 1 variable: x <dbl>
+      
+      $y
+      # A tibble: 0 x 1
+      # ... with 1 variable: y <int>
+      
+      $doseGrid
+      # A tibble: 11 x 1
+         doseGrid
+            <dbl>
+       1        1
+       2        3
+       3        5
+       4       10
+       5       15
+       6       20
+       7       25
+       8       40
+       9       50
+      10       80
+      11      100
+      
+      $nGrid
+      # A tibble: 1 x 1
+        nGrid
+        <int>
+      1    11
+      
+      $xLevel
+      # A tibble: 0 x 1
+      # ... with 1 variable: xLevel <int>
+      
+      $placebo
+      # A tibble: 1 x 1
+        placebo
+        <lgl>  
+      1 FALSE  
+      
+      $ID
+      # A tibble: 0 x 1
+      # ... with 1 variable: ID <int>
+      
+      $cohort
+      # A tibble: 0 x 1
+      # ... with 1 variable: cohort <int>
+      
+      $nObs
+      # A tibble: 1 x 1
+         nObs
+        <int>
+      1     0
+      
+      attr(,"class")
+      [1] "tbl_DataDual" "list"        
+      
+      $stopping
+      $stop_list
+      $stop_list[[1]]
+      $target
+      # A tibble: 2 x 1
+        target
+         <dbl>
+      1    0.9
+      2    1  
+      
+      $is_relative
+      # A tibble: 1 x 1
+        is_relative
+        <lgl>      
+      1 TRUE       
+      
+      $prob
+      # A tibble: 1 x 1
+         prob
+        <dbl>
+      1   0.5
+      
+      $report_label
+      # A tibble: 1 x 1
+        report_label
+        <chr>       
+      1 <NA>        
+      
+      attr(,"class")
+      [1] "tbl_StoppingTargetBiomarker" "list"                       
+      
+      $stop_list[[2]]
+      # A tibble: 1 x 2
+        nPatients report_label
+            <int> <chr>       
+      1        40 <NA>        
+      
+      
+      $report_label
+      # A tibble: 1 x 1
+        report_label
+        <chr>       
+      1 <NA>        
+      
+      attr(,"class")
+      [1] "tbl_StoppingAny" "list"           
+      
+      $increments
+      # A tibble: 2 x 3
+          min   max increment
+        <dbl> <dbl>     <dbl>
+      1     0    20      1   
+      2    20   Inf      0.33
+      
+      $pl_cohort_size
+      # A tibble: 1 x 1
+         size
+        <int>
+      1     0
+      
+      $nextBest
+      $target
+      # A tibble: 2 x 1
+        target
+         <dbl>
+      1    0.9
+      2    1  
+      
+      $overdose
+      # A tibble: 2 x 1
+        overdose
+           <dbl>
+      1     0.35
+      2     1   
+      
+      $max_overdose_prob
+      # A tibble: 1 x 1
+        max_overdose_prob
+                    <dbl>
+      1              0.25
+      
+      $target_relative
+      # A tibble: 1 x 1
+        target_relative
+        <lgl>          
+      1 TRUE           
+      
+      $target_thresh
+      # A tibble: 1 x 1
+        target_thresh
+                <dbl>
+      1          0.01
+      
+      attr(,"class")
+      [1] "tbl_NextBestDualEndpoint" "list"                    
+      
+      $cohort_size
+      [[1]]
+      # A tibble: 2 x 3
+          min   max cohort_size
+        <dbl> <dbl>       <int>
+      1     0    30           1
+      2    30   Inf           3
+      
+      [[2]]
+      # A tibble: 2 x 3
+          min   max cohort_size
+        <dbl> <dbl>       <int>
+      1     0     1           1
+      2     1   Inf           3
+      
+      attr(,"class")
+      [1] "tbl_CohortSizeMax" "tbl_CohortSizeMax" "list"             
+      
+      $startingDose
+      # A tibble: 1 x 1
+        startingDose
+               <dbl>
+      1            3
+      
+      attr(,"class")
+      [1] "tbl_DualDesign" "list"          
+
