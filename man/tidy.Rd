@@ -100,8 +100,7 @@ NextBestNCRM(
   max_overdose_prob = 0.25
 ) |> tidy()
 .DefaultNextBestNCRMLoss() |> tidy()
-examples/Rules-method-tidyDualDesign.R
-
+.DefaultDualDesign() |> tidy()
 .DefaultSamples() |> tidy()
 }
 \keyword{methods}
