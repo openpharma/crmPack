@@ -32,6 +32,7 @@ articles:
       - trial_simulation
       - rolling-crm
       - simulations
+      - tidy_method
       - migration_from_the_old_crmPack
       - parallel_computing_with_extensions
       - crmPack-jss-paper
