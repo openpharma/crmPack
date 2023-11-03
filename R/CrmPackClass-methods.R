@@ -10,7 +10,7 @@
 #' `CrmPackClass` object to a (list of) tibbles.
 #'
 #' @param x (`CrmPackClass`)\cr the object to be tidied.
-#' @param ... \cr Used by class-specific methods
+#' @param ... Potentially used by class-specific methods
 #'
 #' @return A (list of) tibble(s) representing the object in tidy form.
 #'
@@ -31,7 +31,7 @@ setGeneric(
 #' object to a (list of) tibbles.  This is a basic, default representation.
 #'
 #' @param x (`CrmPackClass`)\cr the object to be tidied.
-#' @param ... \cr Not used at present
+#' @param ... \cr Potentially used by class-specific methods.
 #' @rdname tidy
 #' @aliases tidy-CrmPackClass
 #' @keywords methods

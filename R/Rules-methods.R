@@ -3372,7 +3372,7 @@ setMethod("windowLength",
 
 # nolint end
 
-# tidy
+# tidy ----
 
 ## tidy-IncrementsRelative ----
 
