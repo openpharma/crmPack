@@ -19,7 +19,9 @@ suppressPackageStartupMessages({
   library(crmPack)
   library(knitr)
   library(kableExtra)
-  library(tidyverse)
+  library(tidyr)
+  library(magrittr)
+  library(dplyr)
 })
 ```
 
