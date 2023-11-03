@@ -4787,9 +4787,9 @@ setMethod(
 
 #' @rdname tidy
 #' @aliases tidy-DualDesign
-#' @example examples/Rules-method-tidyDualDesign.R
+#' @examples examples/Rules-method-tidyDualDesign.R
 #'
-#' Some `Design` objects have complex attributes whose structure is not supported.
+#' Some Design objects have complex attributes whose structure is not supported.
 #' @export
 setMethod(
   f = "tidy",

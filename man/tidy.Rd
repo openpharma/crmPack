@@ -66,9 +66,9 @@ tidy(x, ...)
 \S4method{tidy}{Samples}(x, ...)
 }
 \arguments{
-\item{x}{(\code{CrmPackClass})\cr The object to be tidied}
+\item{x}{(\code{CrmPackClass})\cr the object to be tidied.}
 
-\item{...}{\cr Not used at present}
+\item{...}{\cr Potentially used by class-specific methods.}
 }
 \value{
 A (list of) tibble(s) representing the object in tidy form.
@@ -77,22 +77,22 @@ A (list of) tibble(s) representing the object in tidy form.
 \ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#experimental}{\figure{lifecycle-experimental.svg}{options: alt='[Experimental]'}}}{\strong{[Experimental]}}
 
 In the spirit of the \code{broom} package, provide a method to convert a
-\code{CrmPackClass} object to a (list of) tibble9s).
+\code{CrmPackClass} object to a (list of) tibbles.
 
 Following the principles of the \code{broom} package, convert a \code{CrmPackClass}
-object to a (list of) tibbles.  This is a basic, default representation
+object to a (list of) tibbles.  This is a basic, default representation.
 }
 \examples{
 CohortSizeConst(3) |> tidy()
 .DefaultSimulations() |> tidy()
-CohortSizeRange(intervals=c(0, 20), cohort_size =c(1,3)) |> tidy()
+CohortSizeRange(intervals = c(0, 20), cohort_size = c(1, 3)) |> tidy()
 .DefaultCohortSizeDLT() |> tidy()
 .DefaultCohortSizeMin() |> tidy()
 .DefaultCohortSizeMax() |> tidy()
 .DefaultCohortSizeRange() |> tidy()
 CohortSizeParts(cohort_sizes = c(1, 3)) |> tidy()
 .DefaultIncrementsMin() |> tidy()
-CohortSizeRange(intervals=c(0, 20), cohort_size =c(1,3)) |> tidy()
+CohortSizeRange(intervals = c(0, 20), cohort_size = c(1, 3)) |> tidy()
 .DefaultIncrementsRelativeParts() |> tidy()
 NextBestNCRM(
   target = c(0.2, 0.35),
@@ -100,6 +100,9 @@ NextBestNCRM(
   max_overdose_prob = 0.25
 ) |> tidy()
 .DefaultNextBestNCRMLoss() |> tidy()
+examples/Rules-method-tidyDualDesign.R
+
+Some `Design` objects have complex attributes whose structure is not supported.
 .DefaultSamples() |> tidy()
 }
 \keyword{methods}

@@ -775,10 +775,10 @@ PseudoDualFlexiSimulations <- function(sigma2betaWest,
 
 ## default constructor ----
 
-#' @rdname PseudoFlexiSimulations-class
+#' @rdname PseudoDualFlexiSimulations-class
 #' @note Typically, end users will not use the `.DefaultPseudoFlexiSimulations()` function.
 #' @export
-.DefaultPseudoFlexiSimulations <- function() {
+.DefaultPseudoDualFlexiSimulations <- function() {
   stop(paste0("Class PseudoFlexiSimulations cannot be instantiated directly.  Please use one of its subclasses instead."))
 }
 
