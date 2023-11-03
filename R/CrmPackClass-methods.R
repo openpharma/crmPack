@@ -10,7 +10,7 @@
 #' `CrmPackClass` object to a (list of) tibbles.
 #'
 #' @param x (`CrmPackClass`)\cr the object to be tidied.
-#' @param ... Potentially used by class-specific methods
+#' @param ... potentially used by class-specific methods
 #'
 #' @return A (list of) tibble(s) representing the object in tidy form.
 #'
