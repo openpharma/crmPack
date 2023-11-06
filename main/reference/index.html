@@ -30,6 +30,7 @@
     <a class="dropdown-item" href="../articles/trial_simulation.html">Trial Simulation</a>
     <a class="dropdown-item" href="../articles/rolling-crm.html">Rolling CRM Example</a>
     <a class="dropdown-item" href="../articles/simulations.html">Simulation study example</a>
+    <a class="dropdown-item" href="../articles/tidy_method.html">Using tidy</a>
     <a class="dropdown-item" href="../articles/migration_from_the_old_crmPack.html">Migrating from crmPack version 1.0.3</a>
     <a class="dropdown-item" href="../articles/parallel_computing_with_extensions.html">Parallel computing with extensions</a>
     <a class="dropdown-item" href="../articles/crmPack-jss-paper.html">Model-based Dose Escalation Designs in R with crmPack (JSS manuscript)</a>
@@ -39,12 +40,6 @@
 <li class="nav-item">
   <a class="nav-link" href="../news/index.html">Changelog</a>
 </li>
-<!-- start dropdown for versions --> <li class="nav-item dropdown">
-        <a href="#" class="nav-link dropdown-toggle"
-          data-bs-toggle="dropdown" role="button"
-          aria-expanded="false" aria-haspopup="true"
-          id="dropdown-versions">Versions</a> <div class="dropdown-menu" aria-labelledby="dropdown-versions"> <a class="dropdown-item" data-toggle="tooltip" title="" href="https://Roche.github.io/crmPack/main">main</a> </div></li>
-<!-- end dropdown for versions -->
 <li class="nav-item dropdown">
   <a href="#" class="nav-link dropdown-toggle" data-bs-toggle="dropdown" role="button" aria-expanded="false" aria-haspopup="true" id="dropdown-reports">Reports</a>
   <div class="dropdown-menu" aria-labelledby="dropdown-reports">
@@ -115,7 +110,7 @@
         <dd><code>CrmPackClass</code></dd>
       </dl><dl><dt>
           
-          <code><a href="GeneralData-class.html">GeneralData-class</a></code> <code><a href="GeneralData-class.html">.GeneralData</a></code> <code><a href="GeneralData-class.html">GeneralData</a></code> 
+          <code><a href="GeneralData-class.html">.DefaultDataGeneral()</a></code> 
         </dt>
         <dd><code>GeneralData</code></dd>
       </dl><dl><dt>
@@ -270,7 +265,7 @@
         <dd><code>LogisticIndepBeta</code></dd>
       </dl><dl><dt>
           
-          <code><a href="Effloglog-class.html">Effloglog()</a></code> 
+          <code><a href="Effloglog-class.html">Effloglog()</a></code> <code><a href="Effloglog-class.html">.DefaultEffloglog()</a></code> 
         </dt>
         <dd><code>Effloglog</code></dd>
       </dl><dl><dt>
@@ -1150,7 +1145,7 @@ mostly used to obtain new modal estimates for pseudo model parameters.</dd>
         <dd>Construct a minimally informative prior</dd>
       </dl><dl><dt>
           
-          <code><a href="PseudoDualFlexiSimulations-class.html">PseudoDualFlexiSimulations-class</a></code> <code><a href="PseudoDualFlexiSimulations-class.html">.PseudoDualFlexiSimulations</a></code> 
+          <code><a href="PseudoDualFlexiSimulations-class.html">.DefaultPseudoDualFlexiSimulations()</a></code> 
         </dt>
         <dd>This is a class which captures the trial simulations design using both the
 DLE and efficacy responses. The design of model from <code>ModelTox</code>
@@ -1553,6 +1548,11 @@ dose-toxicity and dose-biomarker curves</dd>
           <code><a href="summary-PseudoSimulations-method.html">summary(<i>&lt;PseudoSimulations&gt;</i>)</a></code> 
         </dt>
         <dd>Summarize the simulations, relative to a given truth</dd>
+      </dl><dl><dt>
+          
+          <code><a href="tidy.html">tidy()</a></code> 
+        </dt>
+        <dd>Tidying <code>CrmPackClass</code> objects</dd>
       </dl><dl><dt>
           
           <code><a href="windowLength.html">windowLength()</a></code> 

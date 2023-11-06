@@ -25,6 +25,9 @@
     <loc>https://roche.github.io/crmPack/articles/simulations.html</loc>
   </url>
   <url>
+    <loc>https://roche.github.io/crmPack/articles/tidy_method.html</loc>
+  </url>
+  <url>
     <loc>https://roche.github.io/crmPack/articles/trial_analysis.html</loc>
   </url>
   <url>
@@ -842,6 +845,9 @@
   </url>
   <url>
     <loc>https://roche.github.io/crmPack/reference/summary-Simulations-method.html</loc>
+  </url>
+  <url>
+    <loc>https://roche.github.io/crmPack/reference/tidy.html</loc>
   </url>
   <url>
     <loc>https://roche.github.io/crmPack/reference/update-Data-method.html</loc>

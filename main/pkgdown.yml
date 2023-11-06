@@ -8,11 +8,12 @@ articles:
   parallel_computing_with_extensions: parallel_computing_with_extensions.html
   rolling-crm: rolling-crm.html
   simulations: simulations.html
+  tidy_method: tidy_method.html
   trial_analysis: trial_analysis.html
   trial_definition: trial_definition.html
   trial_sanity_checks: trial_sanity_checks.html
   trial_simulation: trial_simulation.html
-last_built: 2023-11-01T14:23Z
+last_built: 2023-11-06T10:01Z
 urls:
   reference: https://roche.github.io/crmPack/reference
   article: https://roche.github.io/crmPack/articles
