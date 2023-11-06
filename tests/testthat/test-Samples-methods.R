@@ -1451,7 +1451,7 @@ test_that("plot-Samples-DALogisticNormal works correctly", {
   vdiffr::expect_doppelganger("plot-samples-dalogisticlognormal-showlegend-false", actual2)
 
   actual3 <- plot(samples, model, data, showLegend = FALSE, hazard = TRUE)
-  vdiffr::expect_doppelganger("plot-samples-dalogisticlognormal-true-false", actual3)
+  vdiffr::expect_doppelganger("plot-samples-dalogisticlognormal-false-true", actual3)
 })
 
 test_that("Approximate fails gracefully with bad input", {

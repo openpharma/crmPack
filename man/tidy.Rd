@@ -68,7 +68,7 @@ tidy(x, ...)
 \arguments{
 \item{x}{(\code{CrmPackClass})\cr the object to be tidied.}
 
-\item{...}{\cr Potentially used by class-specific methods.}
+\item{...}{potentially used by class-specific methods.}
 }
 \value{
 A (list of) tibble(s) representing the object in tidy form.
