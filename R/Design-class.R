@@ -762,7 +762,7 @@ DualResponsesDesign <- function(eff_model,
 #'
 #' To specify a constant safety window, use the `SafetyWindowConst` constructor. For example:
 #'
-#' \code{mysafetywindow <- SafetyWindowConst(c(6, 2), 10, 20)} 
+#' \code{mysafetywindow <- SafetyWindowConst(c(6, 2), 10, 20)}
 #'
 #' @seealso [`SafetyWindowConst`] for creating a constant safety window.
 #'
