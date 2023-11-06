@@ -2505,7 +2505,7 @@ Effloglog <- function(eff,
 
 ## default constructor ----
 
-#' @rdname Efflog-log-class
+#' @rdname Effloglog-class
 #' @note Typically, end users will not use the `.DefaultEffloglog()` function.
 #' @export
 .DefaultEffloglog <- function() {
