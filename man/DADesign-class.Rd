@@ -33,6 +33,13 @@ DADesign(model, data, safetyWindow, ...)
 This class has special requirements for the \code{model} and \code{data}
 slots in comparison to the parent class \code{\link{Design}}:
 }
+\details{
+The \code{safetyWindow} slot should be an instance of the \code{SafetyWindow} class, which can be customized to specify the duration of the safety window for your trial. The safety window represents the time period during which the toxicity data is collected and analyzed to make dose escalation decisions.
+
+To specify a constant safety window, use the \code{SafetyWindowConst} constructor. For example:
+
+\code{mysafetywindow <- SafetyWindowConst(c(6, 2), 10, 20)}
+}
 \section{Slots}{
 
 \describe{
@@ -113,4 +120,7 @@ design <- DADesign(
   safetyWindow = my_safety_window,
   startingDose = 3
 )
+}
+\seealso{
+\code{\link{SafetyWindowConst}} for creating a constant safety window.
 }
