@@ -760,9 +760,9 @@ DualResponsesDesign <- function(eff_model,
 #' @details
 #' The `safetyWindow` slot should be an instance of the `SafetyWindow` class.
 #' It can be customized to specify the duration of the safety window for your trial.
-#' The safety window represents the time period required to observe toxicity data 
-#' from the ongoing cohort before opening the next cohort. 
-#' Note that even after opening the next cohort, 
+#' The safety window represents the time period required to observe toxicity data
+#' from the ongoing cohort before opening the next cohort.
+#' Note that even after opening the next cohort,
 #' further toxicity data will be collected and analyzed to make dose escalation decisions.
 #'
 #'
