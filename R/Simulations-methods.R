@@ -1735,6 +1735,7 @@ setMethod("summary",
         propAtTargetDuringTrial = propAtTargetDuringTrial,
         doseGrid = doseGrid,
         fitAtDoseMostSelected = fitAtDoseMostSelected,
+        stop_report = object@stop_report,
         meanFit = meanFit
       )
 
@@ -1971,6 +1972,17 @@ setMethod("show",
         capture.output(FinalratioSum)[1], "\n",
         capture.output(FinalratioSum)[2], "\n\n"
       )
+
+      # Report individual stopping rules with non-<NA> labels.
+
+      stop_pct_to_print <- h_calc_report_label_percentage(object@stop_report)
+
+      if (length(stop_pct_to_print) > 0) {
+        cat(
+          "Stop reason triggered:\n",
+          paste(names(stop_pct_to_print), ": ", stop_pct_to_print, "%\n")
+        )
+      }
 
       ## finally assign names to the df
       ## and return it invisibly
@@ -2581,7 +2593,8 @@ setMethod("summary",
         FinalDoseRecSummary = FinalDoseRecSummary,
         FinalRatioSummary = FinalRatioSummary,
         EffFitAtDoseMostSelected = EffFitAtDoseMostSelected,
-        meanEffFit = meanEffFit
+        meanEffFit = meanEffFit,
+        stop_report = object@stop_report
       )
 
       return(ret)
@@ -2624,7 +2637,8 @@ setMethod("summary",
 
       ## give back an object of class PseudoDualSimulationsSummary,
       ## for which we then define a print / plot method
-      ret <- .PseudoDualSimulationsSummary(start)
+      ret <- .PseudoDualSimulationsSummary(start,
+                                           stop_report = object@stop_report)
 
       return(ret)
     }
@@ -2739,6 +2753,17 @@ setMethod("show",
         percent = FALSE,
         digits = 1
       )
+
+      # Report individual stopping rules with non-<NA> labels.
+
+      stop_pct_to_print <- h_calc_report_label_percentage(object@stop_report)
+
+      if (length(stop_pct_to_print) > 0) {
+        cat(
+          "Stop reason triggered:\n",
+          paste(names(stop_pct_to_print), ": ", stop_pct_to_print, "%\n")
+        )
+      }
       ## and return the updated information
       names(r$df) <- r$dfNames
       invisible(r$df)
