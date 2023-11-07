@@ -536,6 +536,7 @@ DualSimulations <- function(rho_est,
 ##' final estimates of the TDtargetEndOfTrial or of the final optimal dose estimates (when DLE and efficacy responses are
 ##' incorporated) after each simulations
 ##' @slot stopReasons add slot description
+##' @slot stop_report matrix of stopping rule outcomes
 ##'
 ##' @export
 .PseudoSimulations <-
@@ -551,7 +552,9 @@ DualSimulations <- function(rho_est,
       FinalTDEOTRatios = "numeric",
       FinalCIs = "list",
       FinalRatios = "numeric",
+      stop_report = "matrix",
       stopReasons = "list"
+
     ),
     ## note: this prototype is put together with the prototype
     ## for GeneralSimulations
@@ -564,6 +567,7 @@ DualSimulations <- function(rho_est,
       FinalTDEOTRatios = c(0.1, 0.1),
       FinalCIs = list(c(0.1, 0.2), c(0.1, 0.2)),
       FinalRatios = c(0.1, 0.1),
+      stop_report = matrix(TRUE, nrow = 2),
       stopReasons =
         list("A", "A")
     ),
@@ -596,6 +600,7 @@ PseudoSimulations <- function(fit,
                               FinalTDEOTRatios,
                               FinalCIs,
                               FinalRatios,
+                              stop_report,
                               stopReasons,
                               ...) {
   start <- GeneralSimulations(...)
@@ -609,6 +614,7 @@ PseudoSimulations <- function(fit,
     FinalTDEOTRatios = FinalTDEOTRatios,
     FinalCIs = FinalCIs,
     FinalRatios = FinalRatios,
+    stop_report = stop_report,
     stopReasons = stopReasons
   )
 }
@@ -871,7 +877,9 @@ PseudoDualFlexiSimulations <- function(sigma2betaWest,
       nAboveTargetDuringTrial = "integer",
       doseGrid = "numeric",
       fitAtDoseMostSelected = "numeric",
-      meanFit = "list"
+      meanFit = "list",
+      stop_report = "matrix"
+
     )
   )
 
