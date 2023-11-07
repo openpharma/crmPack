@@ -44,12 +44,6 @@ slots in comparison to the parent class Design:"><meta property="og:image" conte
 <li class="nav-item">
   <a class="nav-link" href="../news/index.html">Changelog</a>
 </li>
-<!-- start dropdown for versions --> <li class="nav-item dropdown">
-        <a href="#" class="nav-link dropdown-toggle"
-          data-bs-toggle="dropdown" role="button"
-          aria-expanded="false" aria-haspopup="true"
-          id="dropdown-versions">Versions</a> <div class="dropdown-menu" aria-labelledby="dropdown-versions"> <a class="dropdown-item" data-toggle="tooltip" title="" href="https://Roche.github.io/crmPack/main">main</a> </div></li>
-<!-- end dropdown for versions -->
 <li class="nav-item dropdown">
   <a href="#" class="nav-link dropdown-toggle" data-bs-toggle="dropdown" role="button" aria-expanded="false" aria-haspopup="true" id="dropdown-reports">Reports</a>
   <div class="dropdown-menu" aria-labelledby="dropdown-reports">
@@ -120,6 +114,12 @@ slots in comparison to the parent class <code><a href="Design-class.html">Design
 
 </dl></div>
     <div class="section level2">
+    <h2 id="details">Details<a class="anchor" aria-label="anchor" href="#details"></a></h2>
+    <p>The <code>safetyWindow</code> slot should be an instance of the <code>SafetyWindow</code> class, which can be customized to specify the duration of the safety window for your trial. The safety window represents the time period during which the toxicity data is collected and analyzed to make dose escalation decisions.</p>
+<p>To specify a constant safety window, use the <code>SafetyWindowConst</code> constructor. For example:</p>
+<p><code>mysafetywindow &lt;- SafetyWindowConst(c(6, 2), 10, 20)</code></p>
+    </div>
+    <div class="section level2">
     <h2 id="slots">Slots<a class="anchor" aria-label="anchor" href="#slots"></a></h2>
     
 
@@ -140,6 +140,10 @@ slots in comparison to the parent class <code><a href="Design-class.html">Design
     <div class="section level2">
     <h2 id="note">Note<a class="anchor" aria-label="anchor" href="#note"></a></h2>
     <p>Typically, end users will not use the <code>.DefaultDADesign()</code> function.</p>
+    </div>
+    <div class="section level2">
+    <h2 id="see-also">See also<a class="anchor" aria-label="anchor" href="#see-also"></a></h2>
+    <div class="dont-index"><p><code><a href="SafetyWindowConst-class.html">SafetyWindowConst</a></code> for creating a constant safety window.</p></div>
     </div>
 
     <div class="section level2">

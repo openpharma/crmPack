@@ -64,12 +64,6 @@
 <li class="nav-item">
   <a class="nav-link" href="../news/index.html">Changelog</a>
 </li>
-<!-- start dropdown for versions --> <li class="nav-item dropdown">
-        <a href="#" class="nav-link dropdown-toggle"
-          data-bs-toggle="dropdown" role="button"
-          aria-expanded="false" aria-haspopup="true"
-          id="dropdown-versions">Versions</a> <div class="dropdown-menu" aria-labelledby="dropdown-versions"> <a class="dropdown-item" data-toggle="tooltip" title="" href="https://Roche.github.io/crmPack/main">main</a> </div></li>
-<!-- end dropdown for versions -->
 <li class="nav-item dropdown">
   <a href="#" class="nav-link dropdown-toggle" data-bs-toggle="dropdown" role="button" aria-expanded="false" aria-haspopup="true" id="dropdown-reports">Reports</a>
   <div class="dropdown-menu" aria-labelledby="dropdown-reports">
@@ -648,7 +642,7 @@ recommended as 225, 175 and 150 mg, respectively.</p>
 <span><span class="co">## 15  125    2      100 FALSE       -20</span></span>
 <span><span class="co">## 16  125    3       75 FALSE       -40</span></span>
 <span><span class="co">## 17  175    0      250 FALSE        43</span></span>
-<span><span class="co">## 18  175    1      150 FALSE       -14</span></span>
+<span><span class="co">## 18  175    1      175 FALSE         0</span></span>
 <span><span class="co">## 19  175    2      125 FALSE       -29</span></span>
 <span><span class="co">## 20  175    3      100 FALSE       -43</span></span>
 <span><span class="co">## 21  250    0      300 FALSE        20</span></span>
@@ -690,7 +684,7 @@ used:</p>
 the results. The argument <code>parallel</code> can be set to
 <code>TRUE</code> if one wishes to run the iterations in parallel on all
 processors of the computer, which can yield a meaningful speedup. Here
-we needed 164 seconds for 100 simulated trials on an Intel Core i5-6300U
+we needed 150 seconds for 100 simulated trials on an Intel Core i5-6300U
 CPU with 2.4 GHz.</p>
 <p>The result is an object of class <code>Simulations</code> containing
 multiple slots, with e.g., the <code>data</code> slot containing the
@@ -737,7 +731,7 @@ description of the results:</p>
 <span><span class="co">## Proportion of trials selecting target MTD: 86 %</span></span>
 <span><span class="co">## Dose most often selected as MTD: 50 </span></span>
 <span><span class="co">## Observed toxicity rate at dose most often selected: 26 %</span></span>
-<span><span class="co">## Fitted toxicity rate at dose most often selected : mean 23 % (17 %, 30 %)</span></span></code></pre>
+<span><span class="co">## Fitted toxicity rate at dose most often selected : mean 23 % (17 %, 29 %)</span></span></code></pre>
 A plot of the summary results can also be produced, see Figure
 @ref(fig:sim-summary-plot).
 <div class="figure" style="text-align: center">
