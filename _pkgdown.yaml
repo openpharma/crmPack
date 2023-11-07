@@ -7,8 +7,19 @@ template:
 
 navbar:
   type: default
-  right:
-    - icon: fa-github fa-lg
+  structure:
+    left: [intro, reference, articles, tutorials, news, reports]
+    right: [search, github]
+  components:
+    reports:
+      text: Reports
+      menu:
+        - text: Coverage report
+          href: coverage-report/
+        - text: Unit test report
+          href: unit-test-report/
+    github:
+      icon: fa-github
       href: https://github.com/roche/crmPack
 
 articles:
@@ -21,6 +32,7 @@ articles:
       - trial_simulation
       - rolling-crm
       - simulations
+      - tidy_method
       - migration_from_the_old_crmPack
       - parallel_computing_with_extensions
       - crmPack-jss-paper
@@ -441,6 +453,7 @@ reference:
       - plot,SimulationsSummary,missing-method
       - plotDualResponses
       - plotGain
+      - plot.gtable
       - probit
       - set_seed
       - show,DualSimulationsSummary-method
@@ -463,6 +476,7 @@ reference:
       - summary,PseudoDualSimulations-method
       - summary,Simulations-method
       - summary,PseudoSimulations-method
+      - tidy
       - windowLength
       - "&,Stopping,Stopping-method"
       - "&,Stopping,StoppingAll-method"

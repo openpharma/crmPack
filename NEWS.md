@@ -1,4 +1,5 @@
 # Version 1.0.9000.9133
+* Implemented `broom`-like `tidy` methods for all concrete `crmPack` classes.
 * Removed `multiplot` function.  Use Please use equivalent functionality in other packages, such as `cowplot` or `ggpubr`.
 * Added new `DataGrouped` and `DesignGrouped` classes with corresponding model `LogisticLogNormalGrouped` to support simultaneous dose escalation with monotherapy and combination therapy arms.
 * Created the `CrmPackClass` class as the ultimate ancestor of all other 

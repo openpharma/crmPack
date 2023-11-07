@@ -44,6 +44,30 @@ test_that("nextBest-NextBestMTD returns correct next dose and plot (no doselimit
   vdiffr::expect_doppelganger("Plot of nextBest-NextBestMTD without doselimit", result$plot)
 })
 
+test_that("nextBest-NextBestMTD returns correct next dose and plot when doselimit=0", {
+  data <- h_get_data(placebo = FALSE)
+  model <- h_get_logistic_log_normal()
+  samples <- h_as_samples(
+    list(alpha0 = c(-2.38, -2.13, -1.43, -2.57), alpha1 = c(1.67, 1.3, 1.77, 2.51))
+  )
+  nb_mtd <- NextBestMTD(
+    target = 0.33,
+    derive = function(mtd_samples) {
+      quantile(mtd_samples, probs = 0.25)
+    }
+  )
+
+  result <- nextBest(
+    nextBest = nb_mtd,
+    doselimit = 0,
+    samples = samples,
+    model = model,
+    data = data
+  )
+  expect_identical(result$value, numeric(0))
+  vdiffr::expect_doppelganger("Plot of nextBest-NextBestMTD-doselimit-zero", result$plot)
+})
+
 ## NextBestNCRM ----
 
 test_that("nextBest-NextBestNCRM returns expected values of the objects", {
@@ -4131,7 +4155,6 @@ test_that("windowLength works correctly", {
   }
 })
 
-
 test_that("report_label slot available for StoppingSpecificDose", {
   my_rule <- StoppingSpecificDose(
     rule = StoppingTargetProb(target = c(0, 0.3), prob = 0.8),
@@ -4139,4 +4162,72 @@ test_that("report_label slot available for StoppingSpecificDose", {
     report_label = "test label"
   )
   expect_equal(my_rule@report_label, "test label")
+})
+
+## tidy ----
+
+test_that("tidy-IncrementsRelative works correctly", {
+  obj <- .DefaultIncrementsRelative()
+  result <- tidy(obj)
+  expect_snapshot(result)
+})
+
+test_that("tidy-CohortSizeDLT works correctly", {
+  obj <- .DefaultCohortSizeDLT()
+  result <- tidy(obj)
+  expect_snapshot(result)
+})
+
+test_that("tidy-CohortSizeMin works correctly", {
+  obj <- .DefaultCohortSizeMin()
+  result <- tidy(obj)
+  expect_snapshot(result)
+})
+
+test_that("tidy-CohortSizeMax works correctly", {
+  obj <- .DefaultCohortSizeMax()
+  result <- tidy(obj)
+  expect_snapshot(result)
+})
+
+test_that("tidy-CohortSizeRange works correctly", {
+  obj <- .DefaultCohortSizeRange()
+  result <- tidy(obj)
+  expect_snapshot(result)
+})
+
+test_that("tidy-CohortSizeParts works correctly", {
+  obj <- .DefaultCohortSizeParts()
+  result <- tidy(obj)
+  expect_snapshot(result)
+})
+
+test_that("tidy-IncrementsMin works correctly", {
+  obj <- .DefaultIncrementsMin()
+  result <- tidy(obj)
+  expect_snapshot(result)
+})
+
+test_that("tidy-IncrementsRelative works correctly", {
+  obj <- .DefaultIncrementsRelative()
+  result <- tidy(obj)
+  expect_snapshot(result)
+})
+
+test_that("tidy-IncrementsRelativeParts works correctly", {
+  obj <- .DefaultIncrementsRelativeParts()
+  result <- tidy(obj)
+  expect_snapshot(result)
+})
+
+test_that("tidy-NextBestNCRM works correctly", {
+  obj <- .DefaultNextBestNCRM()
+  result <- tidy(obj)
+  expect_snapshot(result)
+})
+
+test_that("tidy-NextBestNCRMLoss works correctly", {
+  obj <- .DefaultNextBestNCRMLoss()
+  result <- tidy(obj)
+  expect_snapshot(result)
 })

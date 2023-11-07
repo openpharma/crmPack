@@ -1,4 +1,6 @@
 #' @include helpers.R
+#' @include helpers_covr.R
+#' @include logger.R
 #' @include Samples-class.R
 NULL
 

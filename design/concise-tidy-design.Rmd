@@ -359,7 +359,7 @@ setMethod(
               names_from = Parameter,
               values_from = value
             ) |>
-            bind_cols(h_handle_attributes(get(x, names(x@data)[1])))
+            dplyr::bind_cols(h_handle_attributes(get(x, names(x@data)[1])))
         } else {
           slot(x, nm) |>
             tidy() |>

@@ -1451,7 +1451,7 @@ test_that("plot-Samples-DALogisticNormal works correctly", {
   vdiffr::expect_doppelganger("plot-samples-dalogisticlognormal-showlegend-false", actual2)
 
   actual3 <- plot(samples, model, data, showLegend = FALSE, hazard = TRUE)
-  vdiffr::expect_doppelganger("plot-samples-dalogisticlognormal-true-false", actual3)
+  vdiffr::expect_doppelganger("plot-samples-dalogisticlognormal-false-true", actual3)
 })
 
 test_that("Approximate fails gracefully with bad input", {
@@ -1670,3 +1670,20 @@ test_that("fitGain-Samples-LogisticIndepBeta works correctly", {
   expect_snapshot(actual)
 })
 ## nolint end
+
+# tidy ----
+
+test_that("tidy-Samples works correctly", {
+  obj <- mcmc(
+    data = .DefaultData(),
+    model = .DefaultLogisticLogNormal(),
+    options = McmcOptions(
+      burnin = 250,
+      samples = 1000,
+      rng_seed = 353209,
+      rng_kind = "Mersenne-Twister"
+    )
+  )
+  result <- tidy(obj)
+  expect_snapshot(result)
+})
