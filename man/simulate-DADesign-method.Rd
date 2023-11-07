@@ -38,7 +38,11 @@ arguments can be supplied in \code{args}.}
 the true cumulative probability (vector) that the DLT would occur conditioning on the patient
 has DLTs.}
 
-\item{trueTmax}{add documentation here}
+\item{trueTmax}{the true maximum time at which the DLT occurs.
+If not provided, it defaults to the maximum time in the trial data.
+If \code{trueTmax} is less than the trial's maximum time,
+it issues a warning and sets \code{trueTmax} to the trial's maximum time.
+Use this parameter to specify the maximum time for toxicity events.}
 
 \item{args}{data frame with arguments for the \code{truth} function. The
 column names correspond to the argument names, the rows to the values of the
