@@ -1688,7 +1688,7 @@ test_that("tidy-Samples works correctly", {
   # style = "deparse" fails with could not find function ":"
   # style = "serialize" fails with Error in base64 decode
   # style = "json2" fails with Error: lexical error: invalid char in json text.
-  # expect_snapshot_value(result, style = "json")
+  # style = "json" aslso fails
 
   expectedOptions <- tibble::tibble(
     iterations = 2250L,
