@@ -38,6 +38,8 @@ PseudoSimulations(
 
 \item{FinalRatios}{please refer to \code{\linkS4class{PseudoSimulations}} class object}
 
+\item{stop_report}{see \code{\link{PseudoSimulations}}}
+
 \item{stopReasons}{please refer to \code{\linkS4class{PseudoSimulations}} class object}
 
 \item{\dots}{additional parameters from \code{\linkS4class{GeneralSimulations}}}

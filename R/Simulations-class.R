@@ -587,6 +587,7 @@ validObject(.PseudoSimulations())
 ##' @param FinalCIs please refer to \code{\linkS4class{PseudoSimulations}} class object
 ##' @param FinalRatios please refer to \code{\linkS4class{PseudoSimulations}} class object
 ##' @param stopReasons please refer to \code{\linkS4class{PseudoSimulations}} class object
+##' @param stop_report see [`PseudoSimulations`]
 ##' @param \dots additional parameters from \code{\linkS4class{GeneralSimulations}}
 ##' @return the \code{\linkS4class{PseudoSimulations}} object
 ##'
