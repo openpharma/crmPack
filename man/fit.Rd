@@ -4,7 +4,6 @@
 \alias{fit}
 \alias{fit,Samples,GeneralModel,Data-method}
 \alias{fit,Samples,DualEndpoint,DataDual-method}
-\alias{fit,Samples,GeneralModel,DataOrdinal-method}
 \alias{fit,Samples,LogisticIndepBeta,Data-method}
 \alias{fit,Samples,Effloglog,DataDual-method}
 \alias{fit,Samples,EffFlexi,DataDual-method}
@@ -23,16 +22,6 @@ fit(object, model, data, ...)
 )
 
 \S4method{fit}{Samples,DualEndpoint,DataDual}(object, model, data, quantiles = c(0.025, 0.975), middle = mean, ...)
-
-\S4method{fit}{Samples,GeneralModel,DataOrdinal}(
-  object,
-  model,
-  data,
-  points = data@doseGrid,
-  quantiles = c(0.025, 0.975),
-  middle = mean,
-  ...
-)
 
 \S4method{fit}{Samples,LogisticIndepBeta,Data}(
   object,
@@ -99,9 +88,6 @@ and upper quantiles for the dose-toxicity curve
 lower and upper quantiles, for both the dose-tox and dose-biomarker (suffix
 "Biomarker") curves, for all grid points (Note that currently only the grid
 points can be used, because the DualEndpointRW models only allow that)
-
-\item \code{fit(object = Samples, model = GeneralModel, data = DataOrdinal)}: This method returns a data frame with dose, middle, lower
-and upper quantiles for the dose-toxicity curve
 
 \item \code{fit(object = Samples, model = LogisticIndepBeta, data = Data)}: This method return a data frame with dose, middle lower and upper quantiles
 for the dose-DLE curve using DLE samples for \dQuote{LogisticIndepBeta} model class
@@ -203,22 +189,6 @@ fitted <- fit(object = samples,
               middle=mean)
 
 # nolint end
-ordinal_model <- .DefaultLogisticLogNormalOrdinal()
-
-ordinal_data <- DataOrdinal(
-  doseGrid = seq(10, 100, 10),
-  x = c(10, 20, 30, 40, 50, 50, 50),
-  y = c(0L, 0L, 0L, 0L, 0L, 1L, 2L),
-  ID = 1L:7L,
-  cohort = as.integer(c(1:4, 5, 5, 5)),
-  yCategories = c("No Tox" = 0L, "Sub tox AE" = 1L, "DLT" = 2L)
-)
-
-mcmc_options <- McmcOptions()
-
-samples <- mcmc(ordinal_data, ordinal_model, mcmc_options)
-
-fit(samples, ordinal_model, ordinal_data, grade = 2L)
 ##Obtain the 'fit' the middle, uppper and lower quantiles for the dose-DLE curve
 ## at all dose levels using a DLE sample, a DLE model and the data
 ## samples must be from 'Samples' class (object slot)
