@@ -465,34 +465,3 @@
       11  275 0.6924711  0.20917825 1.4747218
       12  300 0.6860496  0.19833725 1.5031020
 
-# tidy-Samples works correctly
-
-    Code
-      result
-    Output
-      $data
-      # A tibble: 1,000 x 10
-         Iteration Chain alpha0 alpha1 nChains nParame~1 nIter~2 nBurnin nThin paral~3
-             <int> <int>  <dbl>  <dbl>   <int>     <int>   <int>   <int> <int> <lgl>  
-       1         1     1 -1.63    4.04       1         1    2250     250     2 FALSE  
-       2         2     1 -1.63    4.04       1         1    2250     250     2 FALSE  
-       3         3     1 -1.63    4.04       1         1    2250     250     2 FALSE  
-       4         4     1 -1.34    2.84       1         1    2250     250     2 FALSE  
-       5         5     1 -1.95   11.6        1         1    2250     250     2 FALSE  
-       6         6     1 -1.95   11.6        1         1    2250     250     2 FALSE  
-       7         7     1 -0.844   3.20       1         1    2250     250     2 FALSE  
-       8         8     1 -0.844   3.20       1         1    2250     250     2 FALSE  
-       9         9     1 -1.02    4.35       1         1    2250     250     2 FALSE  
-      10        10     1 -0.101   2.22       1         1    2250     250     2 FALSE  
-      # ... with 990 more rows, and abbreviated variable names 1: nParameters,
-      #   2: nIterations, 3: parallel
-      
-      $options
-      # A tibble: 1 x 5
-        iterations burnin  step rng_kind               rng_seed
-             <int>  <int> <int> <chr>                     <int>
-      1       2250    250     2 base::Mersenne-Twister   353209
-      
-      attr(,"class")
-      [1] "tbl_Samples" "list"       
-
