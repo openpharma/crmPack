@@ -922,6 +922,72 @@ setMethod("fit",
       return(ret)
     }
 )
+
+##' @param points at which dose levels is the fit requested? default is the dose
+##' grid
+##' @param quantiles the quantiles to be calculated (default: 0.025 and
+##' 0.975)
+##' @param middle the function for computing the middle point. Default:
+##' \code{\link{mean}}
+##'
+##' @describeIn fit This method returns a data frame with dose, middle, lower
+##' and upper quantiles for the dose-toxicity curve
+##' @example examples/Sample-methods-fit-LogisticLogNormalOrdinal.R
+##'
+setMethod(
+  "fit",
+  signature = signature(
+    object = "Samples",
+    model = "GeneralModel",
+    data = "DataOrdinal"
+  ),
+  def = function(
+    object,
+    model,
+    data,
+    points = data@doseGrid,
+    quantiles = c(0.025, 0.975),
+    middle = mean,
+    ...
+  ) {
+    # Validation
+    assert_probability_range(quantiles)
+    assert_numeric(points)
+    assert_function(middle)
+
+    # Begin
+    # Get samples from the dose-tox curve at the dose grid points.
+    probSamples <- matrix(
+      nrow = size(object),
+      ncol = length(points)
+    )
+    # Evaluate the probs, for all samples.
+    for (i in seq_along(points)) {
+      # Now we want to evaluate for the following dose:
+      probSamples[, i] <- prob(
+        dose = points[i],
+        model,
+        object,
+        ...
+      )
+    }
+    # Extract middle curve
+    middleCurve <- apply(probSamples, 2L, FUN = middle)
+    # Extract quantiles
+    quantCurve <- apply(probSamples, 2L, quantile,prob = quantiles)
+
+    # Create the data frame...
+    ret <- data.frame(
+      dose = points,
+      middle = middleCurve,
+      lower = quantCurve[1, ],
+      upper = quantCurve[2, ]
+    )
+
+    # ...and return it
+    return(ret)
+  }
+)
 ## ==============================================================
 ## ----------------------------------------------------------------
 ## Get fitted values at all dose levels from gain samples
