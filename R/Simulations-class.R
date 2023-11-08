@@ -554,7 +554,6 @@ DualSimulations <- function(rho_est,
       FinalRatios = "numeric",
       stop_report = "matrix",
       stopReasons = "list"
-
     ),
     ## note: this prototype is put together with the prototype
     ## for GeneralSimulations
@@ -880,7 +879,6 @@ PseudoDualFlexiSimulations <- function(sigma2betaWest,
       fitAtDoseMostSelected = "numeric",
       meanFit = "list",
       stop_report = "matrix"
-
     )
   )
 

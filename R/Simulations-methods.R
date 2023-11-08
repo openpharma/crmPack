@@ -2638,7 +2638,8 @@ setMethod("summary",
       ## give back an object of class PseudoDualSimulationsSummary,
       ## for which we then define a print / plot method
       ret <- .PseudoDualSimulationsSummary(start,
-                                           stop_report = object@stop_report)
+        stop_report = object@stop_report
+      )
 
       return(ret)
     }
