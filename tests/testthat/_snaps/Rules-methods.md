@@ -394,213 +394,94 @@
 
 # tidy-IncrementsRelative works correctly
 
-    Code
-      result
-    Output
-      # A tibble: 2 x 3
-          min   max increment
-        <dbl> <dbl>     <dbl>
-      1     0    20      1   
-      2    20   Inf      0.33
+    structure(list(min = c(0, 20), max = c(20, Inf), increment = c(1, 
+    0.33)), row.names = c(NA, -2L), class = c("tbl_IncrementsRelative", 
+    "tbl_df", "tbl", "data.frame"))
 
 ---
 
-    Code
-      result
-    Output
-      # A tibble: 2 x 3
-          min   max increment
-        <dbl> <dbl>     <dbl>
-      1     0    20      1   
-      2    20   Inf      0.33
+    structure(list(min = c(0, 20), max = c(20, Inf), increment = c(1, 
+    0.33)), row.names = c(NA, -2L), class = c("tbl_IncrementsRelative", 
+    "tbl_df", "tbl", "data.frame"))
 
 # tidy-CohortSizeDLT works correctly
 
-    Code
-      result
-    Output
-      # A tibble: 2 x 3
-          min   max cohort_size
-        <dbl> <dbl>       <int>
-      1     0     1           1
-      2     1   Inf           3
+    structure(list(min = c(0, 1), max = c(1, Inf), cohort_size = c(1L, 
+    3L)), row.names = c(NA, -2L), class = c("tbl_CohortSizeDLT", 
+    "tbl_df", "tbl", "data.frame"))
 
 # tidy-CohortSizeMin works correctly
 
-    Code
-      result
-    Output
-      [[1]]
-      # A tibble: 2 x 3
-          min   max cohort_size
-        <dbl> <dbl>       <int>
-      1     0    10           1
-      2    10   Inf           3
-      
-      [[2]]
-      # A tibble: 2 x 3
-          min   max cohort_size
-        <dbl> <dbl>       <int>
-      1     0     1           1
-      2     1   Inf           3
-      
-      attr(,"class")
-      [1] "tbl_CohortSizeMin" "tbl_CohortSizeMin" "list"             
+    structure(list(structure(list(min = c(0, 10), max = c(10, Inf
+    ), cohort_size = c(1L, 3L)), row.names = c(NA, -2L), class = c("tbl_CohortSizeRange", 
+    "tbl_df", "tbl", "data.frame")), structure(list(min = c(0, 1), 
+        max = c(1, Inf), cohort_size = c(1L, 3L)), row.names = c(NA, 
+    -2L), class = c("tbl_CohortSizeDLT", "tbl_df", "tbl", "data.frame"
+    ))), class = c("tbl_CohortSizeMin", "tbl_CohortSizeMin", "list"
+    ))
 
 # tidy-CohortSizeMax works correctly
 
-    Code
-      result
-    Output
-      [[1]]
-      # A tibble: 2 x 3
-          min   max cohort_size
-        <dbl> <dbl>       <int>
-      1     0    10           1
-      2    10   Inf           3
-      
-      [[2]]
-      # A tibble: 2 x 3
-          min   max cohort_size
-        <dbl> <dbl>       <int>
-      1     0     1           1
-      2     1   Inf           3
-      
-      attr(,"class")
-      [1] "tbl_CohortSizeMax" "tbl_CohortSizeMax" "list"             
+    structure(list(structure(list(min = c(0, 10), max = c(10, Inf
+    ), cohort_size = c(1L, 3L)), row.names = c(NA, -2L), class = c("tbl_CohortSizeRange", 
+    "tbl_df", "tbl", "data.frame")), structure(list(min = c(0, 1), 
+        max = c(1, Inf), cohort_size = c(1L, 3L)), row.names = c(NA, 
+    -2L), class = c("tbl_CohortSizeDLT", "tbl_df", "tbl", "data.frame"
+    ))), class = c("tbl_CohortSizeMax", "tbl_CohortSizeMax", "list"
+    ))
 
 # tidy-CohortSizeRange works correctly
 
-    Code
-      result
-    Output
-      # A tibble: 2 x 3
-          min   max cohort_size
-        <dbl> <dbl>       <int>
-      1     0    30           1
-      2    30   Inf           3
+    structure(list(min = c(0, 30), max = c(30, Inf), cohort_size = c(1L, 
+    3L)), row.names = c(NA, -2L), class = c("tbl_CohortSizeRange", 
+    "tbl_df", "tbl", "data.frame"))
 
 # tidy-CohortSizeParts works correctly
 
-    Code
-      result
-    Output
-      # A tibble: 2 x 2
-         part cohort_size
-        <int>       <int>
-      1     1           1
-      2     2           3
+    WAoAAAACAAQDAQACAwAAAAMTAAAAAgAAAA0AAAACAAAAAQAAAAIAAAANAAAAAgAAAAEAAAAD
+    AAAEAgAAAAEABAAJAAAABWNsYXNzAAAAEAAAAAQABAAJAAAAE3RibF9Db2hvcnRTaXplUGFy
+    dHMABAAJAAAABnRibF9kZgAEAAkAAAADdGJsAAQACQAAAApkYXRhLmZyYW1lAAAEAgAAAAEA
+    BAAJAAAACXJvdy5uYW1lcwAAAA0AAAACgAAAAP////4AAAQCAAAAAQAEAAkAAAAFbmFtZXMA
+    AAAQAAAAAgAEAAkAAAAEcGFydAAEAAkAAAALY29ob3J0X3NpemUAAAD+
 
 # tidy-IncrementsMin works correctly
 
-    Code
-      result
-    Output
-      [[1]]
-      # A tibble: 3 x 2
-        intervals increments
-            <int>      <dbl>
-      1         0       1   
-      2         1       0.33
-      3         3       0.2 
-      
-      [[2]]
-      # A tibble: 2 x 3
-          min   max increment
-        <dbl> <dbl>     <dbl>
-      1     0    20      1   
-      2    20   Inf      0.33
-      
-      attr(,"class")
-      [1] "tbl_IncrementsMin" "tbl_IncrementsMin" "list"             
+    structure(list(structure(list(intervals = c(0L, 1L, 3L), increments = c(1, 
+    0.33, 0.2)), class = c("tbl_IncrementsRelativeDLT", "tbl_df", 
+    "tbl", "data.frame"), row.names = c(NA, -3L)), structure(list(
+        min = c(0, 20), max = c(20, Inf), increment = c(1, 0.33)), row.names = c(NA, 
+    -2L), class = c("tbl_IncrementsRelative", "tbl_df", "tbl", "data.frame"
+    ))), class = c("tbl_IncrementsMin", "tbl_IncrementsMin", "list"
+    ))
 
 # tidy-IncrementsRelativeParts works correctly
 
-    Code
-      result
-    Output
-      $dlt_start
-      # A tibble: 1 x 1
-        dlt_start
-            <int>
-      1         0
-      
-      $clean_start
-      # A tibble: 1 x 1
-        clean_start
-              <int>
-      1           1
-      
-      $intervals
-      # A tibble: 2 x 1
-        intervals
-            <dbl>
-      1         0
-      2         2
-      
-      $increments
-      # A tibble: 2 x 1
-        increments
-             <dbl>
-      1          2
-      2          1
-      
-      attr(,"class")
-      [1] "tbl_IncrementsRelativeParts" "list"                       
+    structure(list(dlt_start = structure(list(dlt_start = 0L), class = c("tbl_df", 
+    "tbl", "data.frame"), row.names = c(NA, -1L)), clean_start = structure(list(
+        clean_start = 1L), class = c("tbl_df", "tbl", "data.frame"
+    ), row.names = c(NA, -1L)), intervals = structure(list(intervals = c(0, 
+    2)), class = c("tbl_df", "tbl", "data.frame"), row.names = c(NA, 
+    -2L)), increments = structure(list(increments = c(2, 1)), class = c("tbl_df", 
+    "tbl", "data.frame"), row.names = c(NA, -2L))), class = c("tbl_IncrementsRelativeParts", 
+    "list"))
 
 # tidy-NextBestNCRM works correctly
 
-    Code
-      result
-    Output
-      # A tibble: 3 x 4
-        Range       min   max max_prob
-        <chr>     <dbl> <dbl>    <dbl>
-      1 Underdose  0     0.2     NA   
-      2 Target     0.2   0.35    NA   
-      3 Overdose   0.35  1        0.25
+    structure(list(Range = c("Underdose", "Target", "Overdose"), 
+        min = c(0, 0.2, 0.35), max = c(0.2, 0.35, 1), max_prob = c(NA, 
+        NA, 0.25)), row.names = c(NA, -3L), class = c("tbl_NextBestNCRM", 
+    "tbl_df", "tbl", "data.frame"))
 
 # tidy-NextBestNCRMLoss works correctly
 
-    Code
-      result
-    Output
-      $unacceptable
-      # A tibble: 2 x 1
-        unacceptable
-               <dbl>
-      1          0.6
-      2          1  
-      
-      $losses
-      # A tibble: 4 x 1
-        losses
-         <dbl>
-      1      1
-      2      0
-      3      1
-      4      2
-      
-      $target
-      # A tibble: 2 x 1
-        target
-         <dbl>
-      1   0.2 
-      2   0.35
-      
-      $overdose
-      # A tibble: 2 x 1
-        overdose
-           <dbl>
-      1     0.35
-      2     0.6 
-      
-      $max_overdose_prob
-      # A tibble: 1 x 1
-        max_overdose_prob
-                    <dbl>
-      1              0.25
-      
-      attr(,"class")
-      [1] "tbl_NextBestNCRMLoss" "list"                
+    structure(list(unacceptable = structure(list(unacceptable = c(0.6, 
+    1)), class = c("tbl_df", "tbl", "data.frame"), row.names = c(NA, 
+    -2L)), losses = structure(list(losses = c(1, 0, 1, 2)), class = c("tbl_df", 
+    "tbl", "data.frame"), row.names = c(NA, -4L)), target = structure(list(
+        target = c(0.2, 0.35)), class = c("tbl_df", "tbl", "data.frame"
+    ), row.names = c(NA, -2L)), overdose = structure(list(overdose = c(0.35, 
+    0.6)), class = c("tbl_df", "tbl", "data.frame"), row.names = c(NA, 
+    -2L)), max_overdose_prob = structure(list(max_overdose_prob = 0.25), class = c("tbl_df", 
+    "tbl", "data.frame"), row.names = c(NA, -1L))), class = c("tbl_NextBestNCRMLoss", 
+    "list"))
 
