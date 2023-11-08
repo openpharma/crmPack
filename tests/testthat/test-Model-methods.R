@@ -984,13 +984,74 @@ test_that("dose-OneParExpPrior throws the error when x is not valid", {
   )
 })
 
-# prob ----
+# prob ---
 
-## LogisticLogNormalOrdinal
+## LogisticLogNormalOrdinal ----
+
 test_that("prob-LogisticNormal works as expected", {
   model <- .DefaultLogisticLogNormalOrdinal()
-  dt <- .DefaultDataOrdinal()
-  result <- samples
+  ordinal_data <- .DefaultDataOrdinal()
+
+  opts <- McmcOptions(
+    rng_seed = 374610,
+    rng_kind = "Mersenne-Twister",
+    samples = 5,
+    step = 2
+  )
+  # It would be good to remove this warning at some time in the future
+  expect_warning(
+    samples <- mcmc(ordinal_data, model, opts),
+    "Unused variable \"y\" in data"
+  )
+  for (dose in ordinal_data@doseGrid) {
+    expected <- lapply(
+      1:max(ordinal_data@yCategories),
+      function(g) {
+        # Manually construct toxicity probabilities
+        alpha <- samples@data[[paste0("alpha[", g, "]")]]
+        beta <-  samples@data[["beta"]]
+        z <- exp(alpha + beta * log(dose / model@ref_dose))
+        expected <- z / (1 + z)
+      }
+    )
+    # Compare actual with expected probabilities: cumulative
+    for (g in 1L:max(ordinal_data@yCategories)) {
+      expect_equal(prob(!!dose, model, samples, grade = !! g), expected[[g]])
+    }
+    # Compare actual with expected probabilities: grade-specific
+    for (g in 1L:(max(ordinal_data@yCategories))) {
+      if (g == max(ordinal_data@yCategories)) {
+        expect_equal(prob(!!dose, model, samples, grade = !! g, cumulative = FALSE), expected[[g]])
+      } else {
+        expect_equal(
+          prob(!!dose, model, samples, grade = !! g, cumulative = FALSE),
+          expected[[g]] - expected[[g+1]]
+        )
+      }
+    }
+    # Multiple grades
+    names(expected) <- as.character(1:max(ordinal_data@yCategories))
+    expect_equal(prob(!!dose, model, samples, grade = 1L:2L), expected)
+  }
+})
+
+test_that("prob-numeric-LogisticLogNormalOrdinal fails gracefully with bad input", {
+  model <- .DefaultLogisticLogNormalOrdinal()
+  ordinal_data <- .DefaultDataOrdinal()
+
+  opts <- McmcOptions(
+    rng_seed = 374610,
+    rng_kind = "Mersenne-Twister",
+    samples = 5,
+    step = 2
+  )
+  suppressWarnings({ samples <- mcmc(ordinal_data, model, opts) })
+
+  expect_error(prob(-3, model, samples, 1), "Element 1 is not >= 0.")
+  expect_error(prob(1, model, samples, 1), "Assertion on 'grade' failed: Must be of type 'integer', not 'double'.")
+  expect_error(prob(1, model, samples, -1L), "Assertion on 'grade' failed: Element 1 is not >= 0.")
+  expect_error(prob(1, model, samples, grade = 1L, cumulative = "bad"), "Assertion on 'cumulative' failed: Must be of type 'logical flag', not 'character'.")
+  expect_error(prob(1, model, samples, grade = 1L, cumulative = c(TRUE, FALSE)), "Assertion on 'cumulative' failed: Must have length 1.")
 })
 
 ## LogisticNormal ----

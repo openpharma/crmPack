@@ -34,6 +34,8 @@
 \alias{prob-OneParLogNormalPrior}
 \alias{prob,numeric,OneParExpPrior,Samples-method}
 \alias{prob-OneParExpPrior}
+\alias{prob,numeric,LogisticLogNormalOrdinal,Samples-method}
+\alias{prob-LogisticLogNormalOrdinal}
 \title{Computing Toxicity Probabilities for a Given Dose, Model and Samples}
 \usage{
 prob(dose, model, samples, ...)
@@ -69,6 +71,8 @@ prob(dose, model, samples, ...)
 \S4method{prob}{numeric,OneParLogNormalPrior,Samples}(dose, model, samples)
 
 \S4method{prob}{numeric,OneParExpPrior,Samples}(dose, model, samples)
+
+\S4method{prob}{numeric,LogisticLogNormalOrdinal,Samples}(dose, model, samples, grade, cumulative = TRUE)
 }
 \arguments{
 \item{dose}{(\code{number} or \code{numeric})\cr the dose which is targeted.
@@ -88,6 +92,11 @@ used to compute toxicity probabilities. Can also be missing for some models.}
 \item{group}{(\code{character} or \code{factor})\cr for \code{\link{LogisticLogNormalGrouped}},
 indicating whether to calculate the probability for the \code{mono} or for
 the \code{combo} arm.}
+
+\item{cumulative}{(\code{flag})\cr Should the returned probability be cumulative
+(the default) or grade-specific?}
+
+\item{category}{(\code{integer} or \code{integer_vector})\cr The toxicity grade for which probabilities are required}
 }
 \value{
 A \code{proportion} or \code{numeric} vector with the toxicity probabilities.
@@ -95,7 +104,9 @@ If non-scalar \code{samples} were used, then every element in the returned vecto
 corresponds to one element of a sample. Hence, in this case, the output
 vector is of the same length as the sample vector. If scalar \code{samples} were
 used or no \code{samples} were used, e.g. for pseudo DLE/toxicity \code{model},
-then the output is of the same length as the length of the \code{dose}.
+then the output is of the same length as the length of the \code{dose}.  In the
+case of \code{LogisticLogNormalOrdinal}, the probabilities relate to toxicities
+of  grade given by \code{grade}.
 }
 \description{
 \ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#stable}{\figure{lifecycle-stable.svg}{options: alt='[Stable]'}}}{\strong{[Stable]}}
@@ -149,6 +160,8 @@ All model parameters (except \code{dose}) should be present in the \code{model} 
 \item \code{prob(dose = numeric, model = OneParLogNormalPrior, samples = Samples)}: 
 
 \item \code{prob(dose = numeric, model = OneParExpPrior, samples = Samples)}: 
+
+\item \code{prob(dose = numeric, model = LogisticLogNormalOrdinal, samples = Samples)}: 
 
 }}
 \note{

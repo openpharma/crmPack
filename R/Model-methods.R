@@ -1269,11 +1269,12 @@ setMethod(
 
 ## LogisticLogNormal ----
 
+#' Calculate a grade-specific probability of toxicity for a given dose.
 #' @describeIn prob
+#'
 #' @param category (`integer` or `integer_vector`)\cr The toxicity grade for which probabilities are required
 #' @param cumulative (`flag`)\cr Should the returned probability be cumulative
 #' (the default) or grade-specific?
-#' @note
 #' @aliases prob-LogisticLogNormalOrdinal
 #' @export
 #'
@@ -1285,7 +1286,6 @@ setMethod(
     samples = "Samples"
   ),
   definition = function(dose, model, samples, grade, cumulative = TRUE) {
-    print("Here!")
     assert_numeric(dose, lower = 0L, any.missing = FALSE, min.len = 1L)
     assert_integer(
       grade,
@@ -1299,6 +1299,7 @@ setMethod(
       c(paste0("alpha[", 0:(length(model@params@mean) - 1), "]"), "beta")
     )
     assert_length(dose, len = size(samples))
+    assert_flag(cumulative)
 
     rv <- lapply(
       grade,
