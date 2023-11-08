@@ -1688,7 +1688,7 @@ test_that("tidy-Samples works correctly", {
   # style = "deparse" fails with could not find function ":"
   # style = "serialize" fails with Error in base64 decode
   # style = "json2" fails with Error: lexical error: invalid char in json text.
-  #expect_snapshot_value(result, style = "json")
+  # expect_snapshot_value(result, style = "json")
 
   expectedOptions <- tibble::tibble(
     iterations = 2250L,
@@ -1710,7 +1710,7 @@ test_that("tidy-Samples works correctly", {
     ),
     alpha1 = c(
       4.03636332974297, 4.03636332974297, 4.03636332974297, 2.83690384878544,
-      11.6182748891346, 11.6182748891346,  3.19781065120341, 3.19781065120341,
+      11.6182748891346, 11.6182748891346, 3.19781065120341, 3.19781065120341,
       4.34551768607469, 2.21681163774227
     ),
     nChains = c(1L, 1L, 1L, 1L, 1L, 1L, 1L, 1L, 1L, 1L),
@@ -1718,9 +1718,9 @@ test_that("tidy-Samples works correctly", {
     nIterations = c(
       2250L, 2250L, 2250L, 2250L, 2250L, 2250L, 2250L, 2250L, 2250L, 2250L
     ),
-    nBurnin = c(250L,  250L, 250L, 250L, 250L, 250L, 250L, 250L, 250L, 250L),
+    nBurnin = c(250L, 250L, 250L, 250L, 250L, 250L, 250L, 250L, 250L, 250L),
     nThin = c(2L, 2L, 2L, 2L, 2L, 2L, 2L, 2L, 2L, 2L),
-    parallel = c(FALSE, FALSE,FALSE, FALSE, FALSE, FALSE, FALSE, FALSE, FALSE, FALSE)
+    parallel = c(FALSE, FALSE, FALSE, FALSE, FALSE, FALSE, FALSE, FALSE, FALSE, FALSE)
   )
   expect_equal(head(result$data, 10), expectedDataFirstTenRows)
 })
