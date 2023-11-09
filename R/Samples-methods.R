@@ -941,14 +941,13 @@ setMethod(
     data = "DataOrdinal"
   ),
   def = function(
-    object,
-    model,
-    data,
-    points = data@doseGrid,
-    quantiles = c(0.025, 0.975),
-    middle = mean,
-    ...
-  ) {
+      object,
+      model,
+      data,
+      points = data@doseGrid,
+      quantiles = c(0.025, 0.975),
+      middle = mean,
+      ...) {
     # Validation
     assert_probability_range(quantiles)
     assert_numeric(points)
@@ -973,7 +972,7 @@ setMethod(
     # Extract middle curve
     middleCurve <- apply(probSamples, 2L, FUN = middle)
     # Extract quantiles
-    quantCurve <- apply(probSamples, 2L, quantile,prob = quantiles)
+    quantCurve <- apply(probSamples, 2L, quantile, prob = quantiles)
 
     # Create the data frame...
     ret <- data.frame(

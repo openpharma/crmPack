@@ -1008,13 +1008,13 @@ test_that("dose-LogisticLogNormalOrdinal works correctly", {
       function(g) {
         # Manually construct dose estimates
         alpha <- samples@data[[paste0("alpha[", g, "]")]]
-        beta <-  samples@data[["beta"]]
+        beta <- samples@data[["beta"]]
         ref_dose <- as.numeric(model@ref_dose)
         exp((logit(prob) - alpha) / beta) * ref_dose
       }
     )
     for (g in 1L:max(ordinal_data@yCategories)) {
-      expect_equal(dose(!!prob, model, samples, grade = !! g), expected[[g]])
+      expect_equal(dose(!!prob, model, samples, grade = !!g), expected[[g]])
     }
   }
 })
@@ -1078,22 +1078,22 @@ test_that("prob-LogisticNormal works as expected", {
       function(g) {
         # Manually construct toxicity probabilities
         alpha <- samples@data[[paste0("alpha[", g, "]")]]
-        beta <-  samples@data[["beta"]]
+        beta <- samples@data[["beta"]]
         z <- exp(alpha + beta * log(dose / model@ref_dose))
         expected <- z / (1 + z)
       }
     )
     # Compare actual with expected probabilities: cumulative
     for (g in 1L:max(ordinal_data@yCategories)) {
-      expect_equal(prob(!!dose, model, samples, grade = !! g), expected[[g]])
+      expect_equal(prob(!!dose, model, samples, grade = !!g), expected[[g]])
     }
     # Compare actual with expected probabilities: grade-specific
     for (g in 1L:(max(ordinal_data@yCategories))) {
       if (g == max(ordinal_data@yCategories)) {
-        expect_equal(prob(!!dose, model, samples, grade = !! g, cumulative = FALSE), expected[[g]])
+        expect_equal(prob(!!dose, model, samples, grade = !!g, cumulative = FALSE), expected[[g]])
       } else {
         expect_equal(
-          prob(!!dose, model, samples, grade = !! g, cumulative = FALSE),
+          prob(!!dose, model, samples, grade = !!g, cumulative = FALSE),
           expected[[g]] - expected[[g + 1]]
         )
       }

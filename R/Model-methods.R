@@ -344,7 +344,7 @@ setMethod(
   definition = function(x, model, samples, grade) {
     assert_probabilities(x)
     assert_length(x, len = size(samples))
-    assert_integer(grade, len = 1, lower = 1, upper = (length(names(samples@data))-1))
+    assert_integer(grade, len = 1, lower = 1, upper = (length(names(samples@data)) - 1))
     a <- paste0("alpha[", grade, "]")
     assert_subset(c(a, "beta"), names(samples))
 

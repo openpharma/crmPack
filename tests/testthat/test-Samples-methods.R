@@ -273,7 +273,9 @@ test_that("fit-Samples-LogisticLogNormalOrdinal works correctly", {
     rng_seed = 195114
   )
 
-  expect_warning({ samples <- mcmc(ordinal_data, ordinal_model, mcmc_options) })
+  expect_warning({
+    samples <- mcmc(ordinal_data, ordinal_model, mcmc_options)
+  })
 
   actual1 <- fit(samples, ordinal_model, ordinal_data, grade = 1L)
   expected1 <- data.frame(
@@ -335,7 +337,9 @@ test_that("fit-Samples-LogisticLogNormalOrdinal fails gracefully with bad input"
     rng_seed = 195114
   )
 
-  expect_warning({ samples <- mcmc(ordinal_data, ordinal_model, mcmc_options) })
+  expect_warning({
+    samples <- mcmc(ordinal_data, ordinal_model, mcmc_options)
+  })
   # assert_probability_range(quantiles)
   expect_error(
     fit(samples, ordinal_model, ordinal_data, grade = 1L, points = "bad"),
@@ -1790,7 +1794,7 @@ test_that("tidy-Samples works correctly", {
     )
   )
   result <- tidy(obj)
-  
+
   expectedOptions <- tibble::tibble(
     iterations = 2250L,
     burnin = 250L,
