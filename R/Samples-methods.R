@@ -50,6 +50,8 @@ setMethod(
 ## plots with "ggmcmc" package
 ## --------------------------------------------------
 
+setGeneric("get")
+
 #' Get specific parameter samples and produce a data.frame
 #'
 #' Here you have to specify with \code{pos} which
