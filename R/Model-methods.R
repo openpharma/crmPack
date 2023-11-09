@@ -322,6 +322,39 @@ setMethod(
   }
 )
 
+## LogisticLogNormalOrdinal ----
+
+#' @describeIn dose compute the dose level reaching a specific target
+#'   probability of the occurrence of a DLE (`x`).
+#'
+#' In the case of a `LogisticLogNormalOrdinal` model, `dose` returns only the
+#' probability of toxicity at the given grade or higher
+#'
+#' @aliases dose-LogisticLogNormalOrdinal
+#' @example examples/Model-method-doseLogisticLogNormalOrdinal.R
+#' @export
+#'
+setMethod(
+  f = "dose",
+  signature = signature(
+    x = "numeric",
+    model = "LogisticLogNormalOrdinal",
+    samples = "Samples"
+  ),
+  definition = function(x, model, samples, grade) {
+    assert_probabilities(x)
+    assert_length(x, len = size(samples))
+    assert_integer(grade, len = 1, lower = 1, upper = (length(names(samples@data))-1))
+    a <- paste0("alpha[", grade, "]")
+    assert_subset(c(a, "beta"), names(samples))
+
+    alpha <- samples@data[[a]]
+    beta <- samples@data$beta
+    ref_dose <- as.numeric(model@ref_dose)
+    exp((logit(x) - alpha) / beta) * ref_dose
+  }
+)
+
 ## LogisticLogNormalSub ----
 
 #' @describeIn dose compute the dose level reaching a specific target

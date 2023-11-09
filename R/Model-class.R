@@ -3338,14 +3338,14 @@ FractionalCRM <- function(...) {
 
 ## class ----
 
-#' `OrdinalLogisticLogNormal`
+#' `LogisticLogNormalOrdinal`
 #'
 #' @description `r lifecycle::badge("experimental")`
 #'
-#' [`OrdinalLogisticLogNormal`] is the class for a logistic lognormal CRM model
+#' [`LogisticLogNormalOrdinal`] is the class for a logistic lognormal CRM model
 #' using an ordinal toxicity scale.
 #'
-#' @aliases OrdinalLogisticLogNormal
+#' @aliases LogisticLogNormalOrdinal
 #' @export
 .LogisticLogNormalOrdinal <- setClass(
   Class = "LogisticLogNormalOrdinal",
