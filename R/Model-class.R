@@ -3335,3 +3335,98 @@ FractionalCRM <- function(...) {
     sigma2 = 2
   )
 }
+
+## class ----
+
+#' `LogisticLogNormalOrdinal`
+#'
+#' @description `r lifecycle::badge("experimental")`
+#'
+#' [`LogisticLogNormalOrdinal`] is the class for a logistic lognormal CRM model
+#' using an ordinal toxicity scale.
+#'
+#' @aliases LogisticLogNormalOrdinal
+#' @export
+.LogisticLogNormalOrdinal <- setClass(
+  Class = "LogisticLogNormalOrdinal",
+  contains = "ModelLogNormal",
+  slots = c(datablock = "function")
+  # ,
+  # validity = v_model_ordinal_logistic_log_normal
+)
+
+## constructor ----
+
+#' @rdname LogisticLogNormalOrdinal-class
+#' @inheritParams ModelLogNormal
+#' @export
+#' @example examples/Model-class-LogisticLogNormalOrdinal.R
+LogisticLogNormalOrdinal <- function(mean, cov, ref_dose) {
+  params <- ModelParamsNormal(mean, cov)
+  .LogisticLogNormalOrdinal(
+    params = params,
+    ref_dose = crmPack:::positive_number(ref_dose),
+    priormodel = function() {
+      alpha[1] ~ dnorm(mean[1], prec[1, 1])
+      for (i in 2:(k - 1)) {
+        alpha[i] ~ dnorm(mean[i], prec[i, i]) %_% T(, alpha[i - 1])
+      }
+      gamma ~ dnorm(mean[k], prec[k, k])
+      beta <- exp(gamma)
+    },
+    datamodel = function() {
+      for (i in 1:nObs) {
+        xhat[i] <- log(x[i] / ref_dose)
+        for (j in 1:(k - 1)) {
+          z[i, j] <- alpha[j] + beta * xhat[i]
+          p[i, j] <- exp(z[i, j]) / (1 + exp(z[i, j]))
+          tox[i, j] ~ dbern(p[i, j])
+        }
+      }
+    },
+    modelspecs = function(y, from_prior) {
+      ms <- list(
+        mean = params@mean,
+        prec = params@prec,
+        k = length(mean),
+        tox = array(dim = c(length(y), length(mean) - 1))
+      )
+      if (!from_prior) {
+        for (i in 1:length(y)) {
+          for (j in 1:(ms$k - 1)) {
+            ms$tox[i, j] <- y[i] >= j
+          }
+        }
+        ms$ref_dose <- ref_dose
+      }
+      ms
+    },
+    init = function() {
+      list(alpha = sapply(1:(length(mean) - 1), function(x) -(x + 1)), gamma = 1)
+    },
+    datanames = c("nObs", "y", "x"),
+    sample = c(paste0("alpha[", 1:(length(mean) - 1), "]"), "beta")
+  )
+}
+
+## default constructor ----
+
+#' @rdname LogisticLogNormalOrdinal-class
+#' @note Typically, end users will not use the `.DefaultLogisticLogNormalOrdinal()` function.
+#' @export
+.DefaultLogisticLogNormalOrdinal <- function() {
+  LogisticLogNormalOrdinal(
+    mean = c(-3, -4, 1),
+    cov = diag(c(3, 4, 1)),
+    ref_dose = 50
+  )
+}
+
+ordinal_data <- DataOrdinal(
+  doseGrid = seq(10, 100, 10),
+  x = c(10, 20, 30, 40, 50, 50, 50),
+  y = c(0L, 0L, 0L, 0L, 0L, 1L, 2L),
+  ID = 1L:7L,
+  cohort = as.integer(c(1:4, 5, 5, 5)),
+  yCategories = c("No Tox" = 0L, "Sub tox AE" = 1L, "DLT" = 2L)
+)
