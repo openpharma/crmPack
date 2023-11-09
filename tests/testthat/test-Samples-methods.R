@@ -319,7 +319,44 @@ test_that("fit-Samples-LogisticLogNormalOrdinal works correctly", {
 })
 
 test_that("fit-Samples-LogisticLogNormalOrdinal fails gracefully with bad input", {
+  ordinal_data <- DataOrdinal(
+    doseGrid = seq(10, 100, 10),
+    x = c(10, 20, 30, 40, 50, 50, 50),
+    y = c(0L, 0L, 0L, 0L, 0L, 1L, 2L),
+    ID = 1L:7L,
+    cohort = as.integer(c(1:4, 5, 5, 5)),
+    yCategories = c("No Tox" = 0L, "Sub tox AE" = 1L, "DLT" = 2L)
+  )
 
+  ordinal_model <- .DefaultLogisticLogNormalOrdinal()
+
+  mcmc_options <- McmcOptions(
+    rng_kind = "Mersenne-Twister",
+    rng_seed = 195114
+  )
+
+  expect_warning({ samples <- mcmc(ordinal_data, ordinal_model, mcmc_options) })
+  # assert_probability_range(quantiles)
+  expect_error(
+    fit(samples, ordinal_model, ordinal_data, grade = 1L, points = "bad"),
+    "Assertion on 'points' failed: Must be of type 'numeric', not 'character'."
+  )
+  expect_error(
+    fit(samples, ordinal_model, ordinal_data, grade = 1L, middle = "bad"),
+    "Assertion on 'middle' failed: Must be a function, not 'character'."
+  )
+  expect_error(
+    fit(samples, ordinal_model, ordinal_data, grade = 1L, quantiles = "bad"),
+    "Assertion on 'x' failed: Must be of type 'numeric', not 'character'."
+  )
+  expect_error(
+    fit(samples, ordinal_model, ordinal_data, grade = 1L, quantiles = c(-1, 0.75)),
+    "Assertion on 'quantiles' failed: Probability must be within \\[0, 1\\] bounds but it is not."
+  )
+  expect_error(
+    fit(samples, ordinal_model, ordinal_data, grade = 1L, quantiles = c(0.25, 2)),
+    "Assertion on 'quantiles' failed: Probability must be within \\[0, 1\\] bounds but it is not."
+  )
 })
 
 # approximate ----
