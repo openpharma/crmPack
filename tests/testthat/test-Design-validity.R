@@ -69,7 +69,7 @@ test_that("v_design_grouped passes for valid object", {
   expect_true(v_design_grouped(object))
 })
 
-test_that("v_design_grouped messages wrong flag slots as expected", {
+test_that("v_design_grouped identifies wrong flag slots as expected", {
   object <- .DesignGrouped()
 
   object@same_dose_for_all <- c(NA, TRUE)

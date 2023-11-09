@@ -886,11 +886,11 @@ DADesign <- function(model, data,
 #'   once its DLT data has been collected, we proceed from the second cohort onwards with
 #'   concurrent mono and combo cohorts.
 #' @slot same_dose_for_all (`flag`)\cr whether the lower dose of the separately determined mono and combo
-#'   doses should be used as the next dose for both mono and combo.
+#'   doses should be used as the next dose for both mono and combo in all cohorts.
 #' @slot same_dose_for_start (`flag`)\cr indicates whether, when mono and combo are
 #'   used in the same cohort for the first time, the same dose should be used for both.
 #'   Note that this is different from `same_dose_for_all` which will always force
-#'   them to be the same. If `same_dose_for_all = TRUE`, this is therefore ignored. See details.
+#'   them to be the same. If `same_dose_for_all = TRUE`, this is therefore ignored. See Details.
 #' @slot stop_mono_with_combo (`flag`)\cr whether the mono arm should be stopped when the combo
 #'   arm is stopped (this makes sense when the only real trial objective is the recommended combo dose).
 #'
