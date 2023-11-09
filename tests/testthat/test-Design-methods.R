@@ -568,5 +568,6 @@ test_that("examine for DADesign works as expected", {
 test_that("tidy-DualDesign works correctly", {
   obj <- .DefaultDualDesign()
   result <- tidy(obj)
-  expect_snapshot(result)
+  # style = "deparse" fails with Could not find function numeric
+  expect_snapshot_value(result, style = "serialize")
 })
