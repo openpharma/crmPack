@@ -3349,10 +3349,7 @@ FractionalCRM <- function(...) {
 #' @export
 .LogisticLogNormalOrdinal <- setClass(
   Class = "LogisticLogNormalOrdinal",
-  contains = "ModelLogNormal",
-  slots = c(datablock = "function")
-  # ,
-  # validity = v_model_ordinal_logistic_log_normal
+  contains = "ModelLogNormal"
 )
 
 ## constructor ----
@@ -3392,7 +3389,7 @@ LogisticLogNormalOrdinal <- function(mean, cov, ref_dose) {
         tox = array(dim = c(length(y), length(mean) - 1))
       )
       if (!from_prior) {
-        for (i in 1:length(y)) {
+        for (i in seq_along(y)) {
           for (j in 1:(ms$k - 1)) {
             ms$tox[i, j] <- y[i] >= j
           }
