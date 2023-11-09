@@ -489,7 +489,7 @@ DualSimulations <- function(rho_est,
   # Run the simulation on the desired design.
   # For illustration purposes only 1 trial outcome is generated and 5 burn-ins
   # to generate 20 samples are used here.
-  simulate(
+  x <- simulate(
     object = my_design,
     trueTox = true_tox,
     trueBiomarker = true_biomarker,
@@ -775,10 +775,10 @@ PseudoDualFlexiSimulations <- function(sigma2betaWest,
 
 ## default constructor ----
 
-#' @rdname PseudoFlexiSimulations-class
+#' @rdname PseudoDualFlexiSimulations-class
 #' @note Typically, end users will not use the `.DefaultPseudoFlexiSimulations()` function.
 #' @export
-.DefaultPseudoFlexiSimulations <- function() {
+.DefaultPseudoDualFlexiSimulations <- function() {
   stop(paste0("Class PseudoFlexiSimulations cannot be instantiated directly.  Please use one of its subclasses instead."))
 }
 
@@ -1000,3 +1000,33 @@ DASimulations <- function(trialduration,
   )
 }
 # nolint end
+
+# tidy
+
+## tidy-Simulations ----
+
+#' @rdname tidy
+#' @aliases tidy-Simulations
+#' @example examples/Simulations-method-tidy.R
+#' @export
+setMethod(
+  f = "tidy",
+  signature = signature(x = "Simulations"),
+  definition = function(x, ...) {
+    slot_names <- slotNames(x)
+    rv <- list()
+    for (nm in slot_names) {
+      if (!is.function(slot(x, nm))) {
+        if (nm %in% c("stop_reasons", "additional_stats")) {
+        } else {
+          rv[[nm]] <- h_tidy_slot(x, nm)
+        }
+      }
+    }
+    # Column bind of all list elements have the same number of rows
+    if (length(rv) > 1 & length(unique(sapply(rv, nrow))) == 1) {
+      rv <- rv |> dplyr::bind_cols()
+    }
+    rv |> h_tidy_class(x)
+  }
+)

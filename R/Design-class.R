@@ -757,6 +757,21 @@ DualResponsesDesign <- function(eff_model,
 #' @slot data (`DataDA`)\cr what is the dose grid, any previous data, etc.
 #' @slot safetyWindow (`SafetyWindow`)\cr the safety window to apply between cohorts.
 #'
+#' @details
+#' The `safetyWindow` slot should be an instance of the `SafetyWindow` class.
+#' It can be customized to specify the duration of the safety window for your trial.
+#' The safety window represents the time period required to observe toxicity data
+#' from the ongoing cohort before opening the next cohort.
+#' Note that even after opening the next cohort,
+#' further toxicity data will be collected and analyzed to make dose escalation decisions.
+#'
+#'
+#' To specify a constant safety window, use the `SafetyWindowConst` constructor. For example:
+#'
+#' \code{mysafetywindow <- SafetyWindowConst(c(6, 2), 10, 20)}
+#'
+#' @seealso [`SafetyWindowConst`] for creating a constant safety window.
+#'
 #' @aliases DADesign
 #' @export
 #'
