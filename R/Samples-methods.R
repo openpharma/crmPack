@@ -322,7 +322,6 @@ setMethod("fit",
     }
 )
 
-
 ## --------------------------------------------------
 ## Approximate posterior with (log) normal distribution
 ## --------------------------------------------------
