@@ -44,12 +44,6 @@ for the combo arm of a joint dose escalation design."><meta property="og:image" 
 <li class="nav-item">
   <a class="nav-link" href="../news/index.html">Changelog</a>
 </li>
-<!-- start dropdown for versions --> <li class="nav-item dropdown">
-        <a href="#" class="nav-link dropdown-toggle"
-          data-bs-toggle="dropdown" role="button"
-          aria-expanded="false" aria-haspopup="true"
-          id="dropdown-versions">Versions</a> <div class="dropdown-menu" aria-labelledby="dropdown-versions"> <a class="dropdown-item" data-toggle="tooltip" title="" href="https://Roche.github.io/crmPack/main">main</a> </div></li>
-<!-- end dropdown for versions -->
 <li class="nav-item dropdown">
   <a href="#" class="nav-link dropdown-toggle" data-bs-toggle="dropdown" role="button" aria-expanded="false" aria-haspopup="true" id="dropdown-reports">Reports</a>
   <div class="dropdown-menu" aria-labelledby="dropdown-reports">
@@ -91,7 +85,8 @@ for the combo arm of a joint dose escalation design.</p>
 <span>  <span class="va">mono</span>,</span>
 <span>  combo <span class="op">=</span> <span class="va">mono</span>,</span>
 <span>  first_cohort_mono_only <span class="op">=</span> <span class="cn">TRUE</span>,</span>
-<span>  same_dose <span class="op">=</span> <span class="cn">TRUE</span>,</span>
+<span>  same_dose_for_all <span class="op">=</span> <span class="op">!</span><span class="va">same_dose_for_start</span>,</span>
+<span>  same_dose_for_start <span class="op">=</span> <span class="cn">FALSE</span>,</span>
 <span>  stop_mono_with_combo <span class="op">=</span> <span class="cn">FALSE</span>,</span>
 <span>  <span class="va">...</span></span>
 <span><span class="op">)</span></span></code></pre></div>
@@ -115,7 +110,11 @@ for the combo arm of a joint dose escalation design.</p>
 <dd><p>(<code>flag</code>)<br> see slot definition.</p></dd>
 
 
-<dt>same_dose</dt>
+<dt>same_dose_for_all</dt>
+<dd><p>(<code>flag</code>)<br> see slot definition.</p></dd>
+
+
+<dt>same_dose_for_start</dt>
 <dd><p>(<code>flag</code>)<br> see slot definition.</p></dd>
 
 
@@ -129,11 +128,17 @@ for the combo arm of a joint dose escalation design.</p>
 </dl></div>
     <div class="section level2">
     <h2 id="details">Details<a class="anchor" aria-label="anchor" href="#details"></a></h2>
-    <p>Note that the model slots inside the <code>mono</code> and <code>combo</code> parameters
+    
+<ul><li><p>Note that the model slots inside the <code>mono</code> and <code>combo</code> parameters
 are ignored (because we don't fit separate regression models for the mono and
 combo arms). Instead, the <code>model</code> parameter is used to fit a joint regression
-model for the mono and combo arms together.</p>
-    </div>
+model for the mono and combo arms together.</p></li>
+<li><p><code>same_dose_for_start = TRUE</code> is useful as an option when we want to use <code>same_dose_for_all = FALSE</code>
+combined with <code>first_cohort_mono_only = TRUE</code>.
+This will allow to randomize patients to the mono and combo arms at the same dose
+as long as the selected dose for the cohorts stay the same. This can therefore
+further mitigate bias as long as possible between the mono and combo arms.</p></li>
+</ul></div>
     <div class="section level2">
     <h2 id="slots">Slots<a class="anchor" aria-label="anchor" href="#slots"></a></h2>
     
@@ -159,9 +164,16 @@ once its DLT data has been collected, we proceed from the second cohort onwards 
 concurrent mono and combo cohorts.</p></dd>
 
 
-<dt><code>same_dose</code></dt>
+<dt><code>same_dose_for_all</code></dt>
 <dd><p>(<code>flag</code>)<br> whether the lower dose of the separately determined mono and combo
-doses should be used as the next dose for both mono and combo.</p></dd>
+doses should be used as the next dose for both mono and combo in all cohorts.</p></dd>
+
+
+<dt><code>same_dose_for_start</code></dt>
+<dd><p>(<code>flag</code>)<br> indicates whether, when mono and combo are
+used in the same cohort for the first time, the same dose should be used for both.
+Note that this is different from <code>same_dose_for_all</code> which will always force
+them to be the same. If <code>same_dose_for_all = TRUE</code>, this is therefore ignored. See Details.</p></dd>
 
 
 <dt><code>stop_mono_with_combo</code></dt>
@@ -236,15 +248,19 @@ arm is stopped (this makes sense when the only real trial objective is the recom
 <span class="r-in"><span>  mono <span class="op">=</span> <span class="va">one_arm</span></span></span>
 <span class="r-in"><span><span class="op">)</span></span></span>
 <span class="r-in"><span></span></span>
-<span class="r-in"><span><span class="co"># Alternative options: Here e.g. use both mono and combo from the start,</span></span></span>
-<span class="r-in"><span><span class="co"># but allow different dose levels for the cohorts. Stop mono arm too, when combo</span></span></span>
-<span class="r-in"><span><span class="co"># arm is stopped.</span></span></span>
+<span class="r-in"><span><span class="co"># Alternative options: Here e.g.</span></span></span>
+<span class="r-in"><span><span class="co"># - use both mono in first cohort and afterwards have mono and combo in parallel,</span></span></span>
+<span class="r-in"><span><span class="co"># - in general allow different dose levels for the cohorts,</span></span></span>
+<span class="r-in"><span><span class="co"># - but for the start (i.e. second cohort) have the same dose for mono and combo.</span></span></span>
+<span class="r-in"><span><span class="co"># - Stop mono arm too, when combo arm is stopped.</span></span></span>
+<span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="va">design2</span> <span class="op">&lt;-</span> <span class="fu">DesignGrouped</span><span class="op">(</span></span></span>
 <span class="r-in"><span>  model <span class="op">=</span> <span class="va">my_model</span>,</span></span>
 <span class="r-in"><span>  mono <span class="op">=</span> <span class="va">one_arm</span>,</span></span>
-<span class="r-in"><span>  first_cohort_mono_only <span class="op">=</span> <span class="cn">FALSE</span>,</span></span>
-<span class="r-in"><span>  same_dose <span class="op">=</span> <span class="cn">FALSE</span>,</span></span>
-<span class="r-in"><span>  stop_mono_with_combo <span class="op">=</span> <span class="cn">TRUE</span>,</span></span>
+<span class="r-in"><span>  first_cohort_mono_only <span class="op">=</span> <span class="cn">TRUE</span>,</span></span>
+<span class="r-in"><span>  same_dose_for_all <span class="op">=</span> <span class="cn">FALSE</span>,</span></span>
+<span class="r-in"><span>  same_dose_for_start <span class="op">=</span> <span class="cn">TRUE</span>,</span></span>
+<span class="r-in"><span>  stop_mono_with_combo <span class="op">=</span> <span class="cn">TRUE</span></span></span>
 <span class="r-in"><span><span class="op">)</span></span></span>
 </code></pre></div>
     </div>

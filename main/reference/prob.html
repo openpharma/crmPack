@@ -44,12 +44,6 @@ specified dose level, based on the model parameters (samples)."><meta property="
 <li class="nav-item">
   <a class="nav-link" href="../news/index.html">Changelog</a>
 </li>
-<!-- start dropdown for versions --> <li class="nav-item dropdown">
-        <a href="#" class="nav-link dropdown-toggle"
-          data-bs-toggle="dropdown" role="button"
-          aria-expanded="false" aria-haspopup="true"
-          id="dropdown-versions">Versions</a> <div class="dropdown-menu" aria-labelledby="dropdown-versions"> <a class="dropdown-item" data-toggle="tooltip" title="" href="https://Roche.github.io/crmPack/main">main</a> </div></li>
-<!-- end dropdown for versions -->
 <li class="nav-item dropdown">
   <a href="#" class="nav-link dropdown-toggle" data-bs-toggle="dropdown" role="button" aria-expanded="false" aria-haspopup="true" id="dropdown-reports">Reports</a>
   <div class="dropdown-menu" aria-labelledby="dropdown-reports">
@@ -248,9 +242,9 @@ probability.</p>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co"># Posterior for Prob(DLT | dose = 50).</span></span></span>
 <span class="r-in"><span><span class="fu">prob</span><span class="op">(</span>dose <span class="op">=</span> <span class="fl">50</span>, model <span class="op">=</span> <span class="va">my_model</span>, samples <span class="op">=</span> <span class="va">my_samples</span><span class="op">)</span></span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  [1] 0.6189596 0.5648320 0.5648320 0.5648320 0.5648320 0.5648320 0.5647498</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  [8] 0.5647498 0.5647498 0.5647498 0.5647498 0.5647498 0.5647498 0.5647498</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [15] 0.5153765 0.5153765 0.5153765 0.5153765 0.5153765 0.4517457</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  [1] 0.5953699 0.5953699 0.4087392 0.3314906 0.3314906 0.3314906 0.3314906</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  [8] 0.3314906 0.7443834 0.7443834 0.8535880 0.6869882 0.6869882 0.6869882</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [15] 0.6736187 0.6736187 0.6736187 0.7130651 0.6544047 0.3229456</span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co"># Create data from the 'DataDual' class.</span></span></span>
 <span class="r-in"><span><span class="va">data_dual</span> <span class="op">&lt;-</span> <span class="fu"><a href="DataDual-class.html">DataDual</a></span><span class="op">(</span></span></span>
