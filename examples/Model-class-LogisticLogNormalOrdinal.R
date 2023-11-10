@@ -1,4 +1,4 @@
-LogisticLogNormOrdinal(
+LogisticLogNormalOrdinal(
   meanAlpha = c(3, 4),
   varAlpha = c(4, 3),
   meanBeta = 0,

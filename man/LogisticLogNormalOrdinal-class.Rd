@@ -31,7 +31,7 @@ using an ordinal toxicity scale.
 Typically, end users will not use the \code{.DefaultLogisticLogNormalOrdinal()} function.
 }
 \examples{
-LogisticLogNormOrdinal(
+LogisticLogNormalOrdinal(
   meanAlpha = c(3, 4),
   varAlpha = c(4, 3),
   meanBeta = 0,
