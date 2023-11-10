@@ -127,6 +127,17 @@ signature. But we need also other arguments in the signature.</p>
 <span>  quantiles <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">0.025</span>, <span class="fl">0.975</span><span class="op">)</span>,</span>
 <span>  middle <span class="op">=</span> <span class="va">mean</span>,</span>
 <span>  <span class="va">...</span></span>
+<span><span class="op">)</span></span>
+<span></span>
+<span><span class="co"># S4 method for Samples,LogisticLogNormalOrdinal,DataOrdinal</span></span>
+<span><span class="fu">fit</span><span class="op">(</span></span>
+<span>  <span class="va">object</span>,</span>
+<span>  <span class="va">model</span>,</span>
+<span>  <span class="va">data</span>,</span>
+<span>  points <span class="op">=</span> <span class="va">data</span><span class="op">@</span><span class="va">doseGrid</span>,</span>
+<span>  quantiles <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">0.025</span>, <span class="fl">0.975</span><span class="op">)</span>,</span>
+<span>  middle <span class="op">=</span> <span class="va">mean</span>,</span>
+<span>  <span class="va">...</span></span>
 <span><span class="op">)</span></span></code></pre></div>
     </div>
 
@@ -185,6 +196,9 @@ the dose-efficacy curve using efficacy samples for “Effloglog” model class</
 <li><p><code>fit(object = Samples, model = EffFlexi, data = DataDual)</code>: This method returns a data frame with dose, middle, lower and upper
 quantiles for the dose-efficacy curve using efficacy samples for “EffFlexi”
 model class</p></li>
+<li><p><code>fit(object = Samples, model = LogisticLogNormalOrdinal, data = DataOrdinal)</code>: This method returns a data frame with dose, middle, lower
+and upper quantiles for the dose-efficacy curve using efficacy samples
+for the “LogisticLogNormalOrdinal” model class</p></li>
 </ul></div>
 
     <div class="section level2">
@@ -376,6 +390,14 @@ model class</p></li>
 <span class="r-out co"><span class="r-pr">#&gt;</span> 12  300 2.5119573  2.5075891 2.5129950</span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co"># nolint end</span></span></span>
+<span class="r-in"><span><span class="va">model</span> <span class="op">&lt;-</span> <span class="fu"><a href="LogisticLogNormalOrdinal-class.html">.DefaultLogisticLogNormalOrdinal</a></span><span class="op">(</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="va">ordinal_data</span> <span class="op">&lt;-</span> <span class="fu"><a href="DataOrdinal-class.html">.DefaultDataOrdinal</a></span><span class="op">(</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="va">options</span> <span class="op">&lt;-</span> <span class="fu"><a href="McmcOptions-class.html">.DefaultMcmcOptions</a></span><span class="op">(</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="va">samples</span> <span class="op">&lt;-</span> <span class="fu"><a href="mcmc.html">mcmc</a></span><span class="op">(</span><span class="va">ordinal_data</span>, <span class="va">model</span>, <span class="va">options</span><span class="op">)</span></span></span>
+<span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>Unused variable "y" in data</span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="va">grade1_fit</span> <span class="op">&lt;-</span> <span class="fu">fit</span><span class="op">(</span><span class="va">samples</span>, <span class="va">model</span>, <span class="va">ordinal_data</span>, grade <span class="op">=</span> <span class="fl">1L</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="va">grade2_fit</span> <span class="op">&lt;-</span> <span class="fu">fit</span><span class="op">(</span><span class="va">samples</span>, <span class="va">model</span>, <span class="va">ordinal_data</span>, grade <span class="op">=</span> <span class="fl">2L</span><span class="op">)</span></span></span>
 </code></pre></div>
     </div>
   </main><aside class="col-md-3"><nav id="toc"><h2>On this page</h2>

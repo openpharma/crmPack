@@ -128,7 +128,10 @@ specified dose level, based on the model parameters (samples).</p>
 <span><span class="fu">prob</span><span class="op">(</span><span class="va">dose</span>, <span class="va">model</span>, <span class="va">samples</span><span class="op">)</span></span>
 <span></span>
 <span><span class="co"># S4 method for numeric,OneParExpPrior,Samples</span></span>
-<span><span class="fu">prob</span><span class="op">(</span><span class="va">dose</span>, <span class="va">model</span>, <span class="va">samples</span><span class="op">)</span></span></code></pre></div>
+<span><span class="fu">prob</span><span class="op">(</span><span class="va">dose</span>, <span class="va">model</span>, <span class="va">samples</span><span class="op">)</span></span>
+<span></span>
+<span><span class="co"># S4 method for numeric,LogisticLogNormalOrdinal,Samples</span></span>
+<span><span class="fu">prob</span><span class="op">(</span><span class="va">dose</span>, <span class="va">model</span>, <span class="va">samples</span>, <span class="va">grade</span>, cumulative <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span></code></pre></div>
     </div>
 
     <div class="section level2">
@@ -160,6 +163,15 @@ used to compute toxicity probabilities. Can also be missing for some models.</p>
 indicating whether to calculate the probability for the <code>mono</code> or for
 the <code>combo</code> arm.</p></dd>
 
+
+<dt>grade</dt>
+<dd><p>(<code>integer</code> or <code>integer_vector</code>)<br> The toxicity grade for which probabilities are required</p></dd>
+
+
+<dt>cumulative</dt>
+<dd><p>(<code>flag</code>)<br> Should the returned probability be cumulative
+(the default) or grade-specific?</p></dd>
+
 </dl></div>
     <div class="section level2">
     <h2 id="value">Value<a class="anchor" aria-label="anchor" href="#value"></a></h2>
@@ -170,7 +182,9 @@ If non-scalar <code>samples</code> were used, then every element in the returned
 corresponds to one element of a sample. Hence, in this case, the output
 vector is of the same length as the sample vector. If scalar <code>samples</code> were
 used or no <code>samples</code> were used, e.g. for pseudo DLE/toxicity <code>model</code>,
-then the output is of the same length as the length of the <code>dose</code>.</p>
+then the output is of the same length as the length of the <code>dose</code>.  In the
+case of <code>LogisticLogNormalOrdinal</code>, the probabilities relate to toxicities
+of  grade given by <code>grade</code>.</p>
     </div>
     <div class="section level2">
     <h2 id="details">Details<a class="anchor" aria-label="anchor" href="#details"></a></h2>
@@ -205,6 +219,7 @@ a specified dose level, based on the <code><a href="LogisticIndepBeta-class.html
 All model parameters (except <code>dose</code>) should be present in the <code>model</code> object.</p></li>
 <li><p><code>prob(dose = numeric, model = OneParLogNormalPrior, samples = Samples)</code>:</p></li>
 <li><p><code>prob(dose = numeric, model = OneParExpPrior, samples = Samples)</code>:</p></li>
+<li><p><code>prob(dose = numeric, model = LogisticLogNormalOrdinal, samples = Samples)</code>:</p></li>
 </ul></div>
     <div class="section level2">
     <h2 id="note">Note<a class="anchor" aria-label="anchor" href="#note"></a></h2>
@@ -242,9 +257,9 @@ probability.</p>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co"># Posterior for Prob(DLT | dose = 50).</span></span></span>
 <span class="r-in"><span><span class="fu">prob</span><span class="op">(</span>dose <span class="op">=</span> <span class="fl">50</span>, model <span class="op">=</span> <span class="va">my_model</span>, samples <span class="op">=</span> <span class="va">my_samples</span><span class="op">)</span></span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  [1] 0.5953699 0.5953699 0.4087392 0.3314906 0.3314906 0.3314906 0.3314906</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  [8] 0.3314906 0.7443834 0.7443834 0.8535880 0.6869882 0.6869882 0.6869882</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [15] 0.6736187 0.6736187 0.6736187 0.7130651 0.6544047 0.3229456</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  [1] 0.6533192 0.6533192 0.7075307 0.4443420 0.4443420 0.2551985 0.2551985</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  [8] 0.7002217 0.7002217 0.5401745 0.5401745 0.5401745 0.5401745 0.5401745</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [15] 0.5401745 0.5401745 0.5892062 0.5892062 0.5892062 0.5892062</span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co"># Create data from the 'DataDual' class.</span></span></span>
 <span class="r-in"><span><span class="va">data_dual</span> <span class="op">&lt;-</span> <span class="fu"><a href="DataDual-class.html">DataDual</a></span><span class="op">(</span></span></span>
