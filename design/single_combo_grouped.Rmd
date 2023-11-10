@@ -405,7 +405,7 @@ Here we add the flag `first_cohort_mono_only`. When turned on, this means
 that we first test one mono agent cohort. Once that DLT data has been collected, we proceed
 from the second cohort onwards with concurrent mono and combo cohorts.
 
-We also add a flag `same_dose` to specify whether the lower dose of the separately determined mono and combo doses should be used as the next dose for both mono and combo. This might or might not be desired in the given situation.
+We also add a flag `same_dose_for_all` to specify whether the lower dose of the separately determined mono and combo doses should be used as the next dose for both mono and combo. This might or might not be desired in the given situation.
 
 Note that we deliberately ignore information in `Design`, including the model
 and the placebo cohort size information in there. This is not super clean,
@@ -421,7 +421,7 @@ but ok at least for this first prototype.
     mono = "Design",
     combo = "Design",
     first_cohort_mono_only = "logical",
-    same_dose = "logical"
+    same_dose_for_all = "logical"
   )
 )
 
@@ -429,7 +429,7 @@ DesignGrouped <- function(model,
                           mono,
                           combo,
                           first_cohort_mono_only,
-                          same_dose,
+                          same_dose_for_all,
                           ...) {
   if (missing(combo)) combo <- mono
 
@@ -438,7 +438,7 @@ DesignGrouped <- function(model,
     mono = mono,
     combo = combo,
     first_cohort_mono_only = first_cohort_mono_only,
-    same_dose = same_dose
+    same_dose_for_all = same_dose_for_all
   )
 }
 ```
@@ -534,7 +534,7 @@ setMethod("simulate",
         if (object@mono@startingDose < object@combo@startingDose) {
           warning("combo starting dose usually not higher than mono starting dose")
         }
-        if (object@same_dose) {
+        if (object@same_dose_for_all) {
           this_mono_dose <- this_combo_dose <- min(
             object@mono@startingDose,
             object@combo@startingDose
@@ -675,7 +675,7 @@ setMethod("simulate",
 
             stop_combo_results <- crmPack:::h_unpack_stopit(stop_combo)
 
-            if (object@same_dose) {
+            if (object@same_dose_for_all) {
               this_mono_dose <- this_combo_dose <- min(
                 this_mono_dose,
                 this_combo_dose
@@ -800,7 +800,7 @@ my_design <- DesignGrouped(
     startingDose = 0.1
   ),
   first_cohort_mono_only = TRUE,
-  same_dose = FALSE
+  same_dose_for_all = FALSE
 )
 
 my_model@datamodel
@@ -865,7 +865,7 @@ And we can now also try out forcing the same dose for the mono and combo cohorts
 
 ```{r try-same-dose}
 my_design2 <- my_design
-my_design@same_dose <- TRUE
+my_design@same_dose_for_all <- TRUE
 
 my_sims_same_dose <- simulate(
   my_design2,

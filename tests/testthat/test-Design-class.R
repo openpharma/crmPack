@@ -461,7 +461,7 @@ test_that("DesignGrouped works as expected", {
   expect_valid(result, "DesignGrouped")
   expect_identical(result@mono, result@combo)
   expect_true(result@first_cohort_mono_only)
-  expect_true(result@same_dose)
+  expect_true(result@same_dose_for_all)
 })
 
 test_that(".DefaultDesignGrouped works as expected", {
