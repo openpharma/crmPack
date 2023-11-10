@@ -32,10 +32,8 @@ Typically, end users will not use the \code{.DefaultLogisticLogNormalOrdinal()} 
 }
 \examples{
 LogisticLogNormalOrdinal(
-  meanAlpha = c(3, 4),
-  varAlpha = c(4, 3),
-  meanBeta = 0,
-  varBeta = 1,
+  mean = c(3, 4, 0),
+  cov = diag(c(4, 3, 1)),
   ref_dose = 1
 )
 }
