@@ -57,13 +57,17 @@ design <- DesignGrouped(
   mono = one_arm
 )
 
-# Alternative options: Here e.g. use both mono and combo from the start,
-# but allow different dose levels for the cohorts. Stop mono arm too, when combo
-# arm is stopped.
+# Alternative options: Here e.g.
+# - use both mono in first cohort and afterwards have mono and combo in parallel,
+# - in general allow different dose levels for the cohorts,
+# - but for the start (i.e. second cohort) have the same dose for mono and combo.
+# - Stop mono arm too, when combo arm is stopped.
+
 design2 <- DesignGrouped(
   model = my_model,
   mono = one_arm,
-  first_cohort_mono_only = FALSE,
-  same_dose = FALSE,
-  stop_mono_with_combo = TRUE,
+  first_cohort_mono_only = TRUE,
+  same_dose_for_all = FALSE,
+  same_dose_for_start = TRUE,
+  stop_mono_with_combo = TRUE
 )
