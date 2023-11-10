@@ -4,10 +4,9 @@
 \name{LogisticLogNormalOrdinal-class}
 \alias{LogisticLogNormalOrdinal-class}
 \alias{.LogisticLogNormalOrdinal}
-\alias{OrdinalLogisticLogNormal}
 \alias{LogisticLogNormalOrdinal}
 \alias{.DefaultLogisticLogNormalOrdinal}
-\title{\code{OrdinalLogisticLogNormal}}
+\title{\code{LogisticLogNormalOrdinal}}
 \usage{
 LogisticLogNormalOrdinal(mean, cov, ref_dose)
 
@@ -25,7 +24,7 @@ number).}
 \description{
 \ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#experimental}{\figure{lifecycle-experimental.svg}{options: alt='[Experimental]'}}}{\strong{[Experimental]}}
 
-\code{\link{OrdinalLogisticLogNormal}} is the class for a logistic lognormal CRM model
+\code{\link{LogisticLogNormalOrdinal}} is the class for a logistic lognormal CRM model
 using an ordinal toxicity scale.
 }
 \note{

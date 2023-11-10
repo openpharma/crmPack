@@ -922,22 +922,15 @@ setMethod("fit",
     }
 )
 
-##' @param points at which dose levels is the fit requested? default is the dose
-##' grid
-##' @param quantiles the quantiles to be calculated (default: 0.025 and
-##' 0.975)
-##' @param middle the function for computing the middle point. Default:
-##' \code{\link{mean}}
-##'
-##' @describeIn fit This method returns a data frame with dose, middle, lower
-##' and upper quantiles for the dose-toxicity curve
-##' @example examples/Sample-methods-fit-LogisticLogNormalOrdinal.R
-##'
+#' @describeIn fit This method returns a data frame with dose, middle, lower
+#' and upper quantiles for the dose-efficacy curve using efficacy samples
+#' for the \dQuote{LogisticLogNormalOrdinal} model class
+#' @example examples/Sample-methods-fit-LogisticLogNormalOrdinal.R
 setMethod(
   "fit",
   signature = signature(
     object = "Samples",
-    model = "GeneralModel",
+    model = "LogisticLogNormalOrdinal",
     data = "DataOrdinal"
   ),
   def = function(object,
