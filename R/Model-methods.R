@@ -330,6 +330,8 @@ setMethod(
 #' In the case of a `LogisticLogNormalOrdinal` model, `dose` returns only the
 #' probability of toxicity at the given grade or higher
 #'
+#' @param grade (`integer` or `integer_vector`)\cr The toxicity grade for which probabilities are required
+#'
 #' @aliases dose-LogisticLogNormalOrdinal
 #' @example examples/Model-method-doseLogisticLogNormalOrdinal.R
 #' @export
@@ -1305,7 +1307,7 @@ setMethod(
 #' Calculate a grade-specific probability of toxicity for a given dose.
 #' @describeIn prob
 #'
-#' @param category (`integer` or `integer_vector`)\cr The toxicity grade for which probabilities are required
+#' @param grade (`integer` or `integer_vector`)\cr The toxicity grade for which probabilities are required
 #' @param cumulative (`flag`)\cr Should the returned probability be cumulative
 #' (the default) or grade-specific?
 #' @aliases prob-LogisticLogNormalOrdinal

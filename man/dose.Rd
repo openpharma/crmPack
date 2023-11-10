@@ -97,6 +97,8 @@ used to compute the resulting doses. Can also be missing for some models.}
 
 \item{...}{model specific parameters when \code{samples} are not used.}
 
+\item{grade}{(\code{integer} or \code{integer_vector})\cr The toxicity grade for which probabilities are required}
+
 \item{group}{(\code{character} or \code{factor})\cr for \code{\link{LogisticLogNormalGrouped}},
 indicating whether to calculate the dose for the \code{mono} or for
 the \code{combo} arm.}

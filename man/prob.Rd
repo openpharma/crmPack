@@ -93,10 +93,10 @@ used to compute toxicity probabilities. Can also be missing for some models.}
 indicating whether to calculate the probability for the \code{mono} or for
 the \code{combo} arm.}
 
+\item{grade}{(\code{integer} or \code{integer_vector})\cr The toxicity grade for which probabilities are required}
+
 \item{cumulative}{(\code{flag})\cr Should the returned probability be cumulative
 (the default) or grade-specific?}
-
-\item{category}{(\code{integer} or \code{integer_vector})\cr The toxicity grade for which probabilities are required}
 }
 \value{
 A \code{proportion} or \code{numeric} vector with the toxicity probabilities.
