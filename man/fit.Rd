@@ -7,6 +7,7 @@
 \alias{fit,Samples,LogisticIndepBeta,Data-method}
 \alias{fit,Samples,Effloglog,DataDual-method}
 \alias{fit,Samples,EffFlexi,DataDual-method}
+\alias{fit,Samples,LogisticLogNormalOrdinal,DataOrdinal-method}
 \title{Fit method for the Samples class}
 \usage{
 fit(object, model, data, ...)
@@ -44,6 +45,16 @@ fit(object, model, data, ...)
 )
 
 \S4method{fit}{Samples,EffFlexi,DataDual}(
+  object,
+  model,
+  data,
+  points = data@doseGrid,
+  quantiles = c(0.025, 0.975),
+  middle = mean,
+  ...
+)
+
+\S4method{fit}{Samples,LogisticLogNormalOrdinal,DataOrdinal}(
   object,
   model,
   data,
@@ -98,6 +109,10 @@ the dose-efficacy curve using efficacy samples for \dQuote{Effloglog} model clas
 \item \code{fit(object = Samples, model = EffFlexi, data = DataDual)}: This method returns a data frame with dose, middle, lower and upper
 quantiles for the dose-efficacy curve using efficacy samples for \dQuote{EffFlexi}
 model class
+
+\item \code{fit(object = Samples, model = LogisticLogNormalOrdinal, data = DataOrdinal)}: This method returns a data frame with dose, middle, lower
+and upper quantiles for the dose-efficacy curve using efficacy samples
+for the \dQuote{LogisticLogNormalOrdinal} model class
 
 }}
 \examples{
@@ -238,5 +253,12 @@ Effsamples <- mcmc(data=data,model=Effmodel,options=options)
 fit(object=Effsamples, model=Effmodel,data=data)
 
 # nolint end
+model <- .DefaultLogisticLogNormalOrdinal()
+ordinal_data <- .DefaultDataOrdinal()
+options <- .DefaultMcmcOptions()
+samples <- mcmc(ordinal_data, model, options)
+
+grade1_fit <- fit(samples, model, ordinal_data, grade = 1L)
+grade2_fit <- fit(samples, model, ordinal_data, grade = 2L)
 }
 \keyword{methods}

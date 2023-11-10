@@ -402,6 +402,7 @@ reference:
       - GeneralSimulations-class
       - GeneralSimulations
       - GeneralSimulationsSummary-class
+      - LogisticLogNormalOrdinal-class
       - MinimalInformative
       - PseudoDualFlexiSimulations-class
       - PseudoDualFlexiSimulations

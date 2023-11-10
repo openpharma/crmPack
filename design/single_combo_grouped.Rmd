@@ -200,7 +200,7 @@ LogisticLogNormalGrouped <- function(mean, cov, ref_dose = 1) {
   params <- ModelParamsNormal(mean, cov)
   .LogisticLogNormalGrouped(
     params = params,
-    ref_dose = crmPack:::positive_number(ref_dose),
+    ref_dose = positive_number(ref_dose),
     priormodel = function() {
       theta ~ dmnorm(mean, prec)
       alpha0 <- theta[1]
