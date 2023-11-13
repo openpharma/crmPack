@@ -924,6 +924,61 @@ NextBestProbMTDMinDist <- function(target) {
   NextBestProbMTDMinDist(target = 0.3)
 }
 
+# NextBestOrdinal ----
+
+## class ----
+
+#' `NextBestOrdinal`
+#'
+#' @description `r lifecycle::badge("experimental")`
+#'
+#' [`NextBestOrdinal`] is the class for applying a standard `NextBest` rule to
+#' the results of an ordinal CRM trial.
+#'
+#' @slot grade (`integer`)\cr the toxicity grade to which the `rule` should be
+#' applied.
+#' @slot rule (`NextBest`)\cr the standard `NextBest` rule to be applied
+#'
+#' @aliases NextBestOrdinal
+#' @export
+#'
+.NextBestOrdinal <- setClass(
+  Class = "NextBestOrdinal",
+  slots = c(grade = "numeric", rule = "NextBest"),
+  contains = "NextBest",
+  validity = v_next_best_ordinal
+)
+
+## constructor ----
+
+#' @rdname NextBestOrdinal-class
+#'
+#' @param grade (`numeric`)\cr see slot definition.
+#' @param rule (`NextBest`)\cr see slot definition.
+#' @export
+#' @example examples/Rules-class-NextBestOrdinal.R
+#'
+NextBestOrdinal <- function(grade, rule) {
+  .NextBestOrdinal(grade = grade, rule = rule)
+}
+
+## default constructor ----
+
+#' @rdname NextBestOrdinal-class
+#' @note Typically, end users will not use the `.DefaultNextBestOrdinal()` function.
+#' @export
+.DefaultNextBestOrdinal <- function() {
+  NextBestOrdinal(
+    target = 1L,
+    rule = NextBestMTD(
+      0.25,
+      function(mtd_samples) {
+        quantile(mtd_samples, probs = 0.25)
+      }
+    )
+  )
+}
+
 # Increments ----
 
 ## class ----
@@ -1431,6 +1486,58 @@ IncrementsMin <- function(increments_list) {
       IncrementsRelativeDLT(intervals = c(0, 1, 3), increments = c(1, 0.33, 0.2)),
       IncrementsRelative(intervals = c(0, 20), increments = c(1, 0.33))
     )
+  )
+}
+
+# JK 13-Nov-2023 Start
+
+# IncrementsOrdinal ----
+
+## class ----
+
+#' `IncrementsOrdinal`
+#'
+#' @description `r lifecycle::badge("experimental")`
+#'
+#' [`IncrementsOrdinal`] is the class for applying a standard `Increments` rule to
+#' the results of an ordinal CRM trial.
+#'
+#' @slot grade (`integer`)\cr the toxicity grade to which the `rule` should be
+#' applied.
+#' @slot rule (`Increments`)\cr the standard `Increments` rule to be applied
+#'
+#' @aliases IncrementsOrdinal
+#' @export
+#'
+.IncrementsOrdinal <- setClass(
+  Class = "IncrementsOrdinal",
+  slots = c(grade = "numeric", rule = "Increments"),
+  contains = "Increments",
+  validity = v_increments_ordinal
+)
+
+## constructor ----
+
+#' @rdname NextBestOrdinal-class
+#'
+#' @param grade (`numeric`)\cr see slot definition.
+#' @param rule (`Increments`)\cr see slot definition.
+#' @export
+#' @example examples/Rules-class-IncrementsOrdinal.R
+#'
+IncrementsOrdinal <- function(grade, rule) {
+  .IncrementsOrdinal(grade = grade, rule = rule)
+}
+
+## default constructor ----
+
+#' @rdname IncrementsOrdinal-class
+#' @note Typically, end users will not use the `.DefaultIncrementsOrdinal()` function.
+#' @export
+.DefaultIncrementsOrdinal <- function() {
+  IncrementsOrdinal(
+    grade = 1L,
+    rule = IncrementsRelative(intervals = c(0, 20), increments = c(1, 0.33))
   )
 }
 
@@ -2662,6 +2769,53 @@ StoppingAny <- function(stop_list, report_label = NA_character_) {
   )
 }
 
+# StoppingOrdinal ----
+
+## class ----
+
+#' `StoppingOrdinal`
+#'
+#' @description `r lifecycle::badge("experimental")`
+#'
+#' [`StoppingOrdinal`] is the class for stopping based on a Stopping rule applied
+#' to a specific toxicity garde in an ordinal CRM trial
+#'
+#' @slot grade (`integer`)\cr the grade to which the rule should be applied
+#' @slot rule (`Stopping`)\cr the rule to apply
+#'
+#' @aliases StoppingOrdinal
+#' @export
+#'
+.StoppingOrdinal <- setClass(
+  Class = "StoppingOrdinal",
+  slots = c(grade = "integer", rule = "Stopping"),
+  contains = "Stopping"
+)
+
+## constructor ----
+
+#' @rdname StoppingOrdinal-class
+#' @param grade (`integer`)\cr see slot definition.
+#' @param rule (`Stopping`)\cr see slot definition.
+#' @example examples/Rules-class-StoppingOrdinal.R
+#' @export
+#'
+StoppingOrdinal <- function(grade, rule) {
+   .StoppingOrdinal(grade = grade, rule = rule)
+}
+
+## default constructor ----
+
+#' @rdname StoppingOrdinal-class
+#' @note Typically, end users will not use the `.DefaultStoppingOrdinal()` function.
+#' @export
+#'
+.DefaultStoppingOrdinal <- function() {
+  StoppingOrdinal(
+    1L,
+    StoppingTargetProb(target = c(0.2, 0.35), prob = 0.6)
+  )
+}
 
 # CohortSize ----
 
@@ -3033,6 +3187,67 @@ CohortSizeMin <- function(cohort_sizes) {
     )
   )
 }
+
+# CohortSizeOrdinal ----
+
+## class ----
+
+#' `CohortSizeOrdinal`
+#'
+#' @description `r lifecycle::badge("experimental")`
+#'
+#' [`CohortSizeOrdinal`] is the class for cohort size for an ordinal CRM trial.
+#'
+#' @slot grade (`integer`)\cr the grade at which the rule should be applied
+#' @slot rule (`CohortSize`)\cr the `CohortSize` rule to apply.
+#'
+#' @aliases CohortSizeOrdinal
+#' @export
+#'
+.CohortSizeOrdinal <- setClass(
+  Class = "CohortSizeOrdinal",
+  slots = c(
+    grade = "integer",
+    rule = "CohortSize"
+  ),
+  prototype = prototype(
+    grade = 1L,
+    rule = CohortSizeRange(intervals = c(0, 30), cohort_size = c(1L, 3L))
+  ),
+  contains = "CohortSize",
+  validity = v_cohort_size_ordinal
+)
+
+## constructor ----
+
+#' @rdname CohortSizeOrdinal-class
+#'
+#' @param grade (`integer`)\cr see slot definition.
+#' @param rule (`CohortSize`)\cr see slot definition.
+#'
+#' @export
+#' @example examples/Rules-class-CohortSizeOrdinal.R
+#'
+CohortSizeOrdinal <- function(grade, rule) {
+  # Cohort size 0 is needed to allow for no-placebo designs
+  assert_integer(grade, lower = 1, len = 1)
+  assert_class(rule, "CohortSize")
+
+  .CohortSizeOrdinal( grade = grade, rule = rule)
+}
+
+## default constructor ----
+
+#' @rdname CohortSizeOrdinal-class
+#' @note Typically, end users will not use the `.DefaultCohortSizeOrdinal()` function.
+#' @export
+.DefaultCohortSizeOrdinal <- function() {
+  CohortSizeOrdinal(
+    grade = 1L,
+    rule = CohortSizeRange(intervals = c(0L, 30L), cohort_size = c(1L, 3L))
+  )
+}
+
 
 # SafetyWindow ----
 

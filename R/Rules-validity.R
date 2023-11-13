@@ -677,3 +677,49 @@ v_safety_window_const <- function(object) {
   )
   v$result()
 }
+
+#' @describeIn v_next_best validates that the [`NextBestOrdinal`] object
+#'   contains valid `grade` and standard `NextBest` rule.
+v_next_best_ordinal <- function(object) {
+  v <- Validate()
+  v$check(
+    test_integer(object@grade, lower = 1),
+    "grade must be a positive integer"
+  )
+  v$check(
+    test_class(object@rule, "NextBest"),
+    "rule must be a NextBest object"
+  )
+  v$result()
+}
+
+#' @describeIn v_increments validates that the [`IncrementsOrdinal`] object
+#'   contains valid `grade` and standard `Increments` rule.
+v_increments_ordinal <- function(object) {
+  v <- Validate()
+  v$check(
+    test_integer(object@grade, lower = 1),
+    "grade must be a positive integer"
+  )
+  v$check(
+    test_class(object@rule, "Increments"),
+    "rule must be a Increments object"
+  )
+  v$result()
+}
+
+#' @describeIn v_increments validates that the [`CohortSizeOrdinal`] object
+#'   contains valid `grade` and standard `CohortSize` rule.
+v_cohort_size_ordinal <- function(object) {
+  v <- Validate()
+  v$check(
+    test_integer(object@grade, lower = 1),
+    "grade must be a positive integer"
+  )
+  v$check(
+    test_class(object@rule, "CohortSize"),
+    "rule must be a CohortSize object"
+  )
+  v$result()
+}
+

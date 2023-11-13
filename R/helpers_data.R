@@ -207,3 +207,35 @@ h_obtain_dose_grid_range <- function(object, ignore_placebo) {
     range(dose_grid)
   }
 }
+
+#' Convert a Ordinal Data to the Equivalent Binary Data for a Specific
+#' Grade
+#'
+#' @description `r lifecycle::badge("experimental")`
+#'
+#' A simple helper function that takes a [`DataOrdinal`] object and an
+#' integer grade and converts them to the equivalent `Data` object.
+#'
+#' @param d (`DataOrdinal`)\cr the `DataOrdinal` object to covert
+#' @param grade (`integer`)\cr the toxicity grade for which the equivalent data
+#' is required.
+#' @return A [`Data`] object.
+#'
+#' @export
+h_convert_ordinal_data <- function(d, grade) {
+  # Validate
+  assert_integer(grade, len = 1, lower = 1)
+  assert_class(d, "DataOrdinal")
+  # Execute
+  Data(
+    ID = d@ID,
+    cohort = d@cohort,
+    x = d@x,
+    y = as.integer(d@y >= grade),
+    doseGrid = d@doseGrid,
+    nGrid = d@nGrid,
+    xLevel = d@xLevel,
+    placebo = d@placebo
+  )
+}
+

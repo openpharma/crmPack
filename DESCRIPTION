@@ -117,6 +117,7 @@ Collate:
     'crmPack-package.R'
     'helpers_design.R'
     'helpers_model.R'
+    'helpers_samples.R'
     'helpers_simulations.R'
     'utils-pipe.R'
     'utils.R'
