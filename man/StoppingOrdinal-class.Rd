@@ -21,7 +21,7 @@ StoppingOrdinal(grade, rule)
 \ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#experimental}{\figure{lifecycle-experimental.svg}{options: alt='[Experimental]'}}}{\strong{[Experimental]}}
 
 \code{\link{StoppingOrdinal}} is the class for stopping based on a Stopping rule applied
-to a specific toxicity garde in an ordinal CRM trial
+to a specific toxicity grade in an ordinal CRM trial
 }
 \section{Slots}{
 

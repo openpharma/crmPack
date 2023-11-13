@@ -2778,7 +2778,7 @@ StoppingAny <- function(stop_list, report_label = NA_character_) {
 #' @description `r lifecycle::badge("experimental")`
 #'
 #' [`StoppingOrdinal`] is the class for stopping based on a Stopping rule applied
-#' to a specific toxicity garde in an ordinal CRM trial
+#' to a specific toxicity grade in an ordinal CRM trial
 #'
 #' @slot grade (`integer`)\cr the grade to which the rule should be applied
 #' @slot rule (`Stopping`)\cr the rule to apply
@@ -3233,7 +3233,7 @@ CohortSizeOrdinal <- function(grade, rule) {
   assert_integer(grade, lower = 1, len = 1)
   assert_class(rule, "CohortSize")
 
-  .CohortSizeOrdinal( grade = grade, rule = rule)
+  .CohortSizeOrdinal(grade = grade, rule = rule)
 }
 
 ## default constructor ----

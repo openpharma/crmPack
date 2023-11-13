@@ -238,4 +238,3 @@ h_convert_ordinal_data <- function(d, grade) {
     placebo = d@placebo
   )
 }
-

@@ -5,7 +5,7 @@
 #'
 #' A simple helper function that converts a [`Samples`] object from the fit of an
 #' ordinal CRM model to that which would have been obtained from fitting a binary
-#' CRM model for toxicities of a specified garde to the same observed data.
+#' CRM model for toxicities of a specified grade to the same observed data.
 #'
 #' @param d (`DataOrdinal`)\cr the `DataOrdinal` object to covert
 #' @param grade (`integer`)\cr the toxicity grade for which the equivalent data

@@ -722,4 +722,3 @@ v_cohort_size_ordinal <- function(object) {
   )
   v$result()
 }
-
