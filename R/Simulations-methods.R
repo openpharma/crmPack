@@ -986,7 +986,7 @@ setMethod("show",
 
       # Report results of additional statistics summary
 
-      if (length(list()) > 0) {
+      if (length(unlist(object@additional_stats)) > 0) {
         summary_stat_op <- unlist(object@additional_stats)
 
         cat(

@@ -34,7 +34,12 @@ This class has special requirements for the \code{model} and \code{data}
 slots in comparison to the parent class \code{\link{Design}}:
 }
 \details{
-The \code{safetyWindow} slot should be an instance of the \code{SafetyWindow} class, which can be customized to specify the duration of the safety window for your trial. The safety window represents the time period during which the toxicity data is collected and analyzed to make dose escalation decisions.
+The \code{safetyWindow} slot should be an instance of the \code{SafetyWindow} class.
+It can be customized to specify the duration of the safety window for your trial.
+The safety window represents the time period required to observe toxicity data
+from the ongoing cohort before opening the next cohort.
+Note that even after opening the next cohort,
+further toxicity data will be collected and analyzed to make dose escalation decisions.
 
 To specify a constant safety window, use the \code{SafetyWindowConst} constructor. For example:
 

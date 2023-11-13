@@ -843,7 +843,7 @@ PseudoDualFlexiSimulations <- function(sigma2betaWest,
 ##' @slot fitAtDoseMostSelected fitted toxicity rate at dose most often selected
 ##' @slot meanFit list with the average, lower (2.5%) and upper (97.5%)
 ##' quantiles of the mean fitted toxicity at each dose level
-##'
+##' @slot stop_report matrix of stopping rule outcomes
 ##'
 ##' @export
 ##' @keywords classes
