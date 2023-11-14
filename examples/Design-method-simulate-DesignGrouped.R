@@ -30,7 +30,7 @@ my_design <- DesignGrouped(
     startingDose = 0.1
   ),
   first_cohort_mono_only = TRUE,
-  same_dose = TRUE
+  same_dose_for_all = TRUE
 )
 
 # Set up a realistic simulation scenario.

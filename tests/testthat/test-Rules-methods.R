@@ -68,6 +68,7 @@ test_that("nextBest-NextBestMTD returns correct next dose and plot when doselimi
   vdiffr::expect_doppelganger("Plot of nextBest-NextBestMTD-doselimit-zero", result$plot)
 })
 
+
 ## NextBestNCRM ----
 
 test_that("nextBest-NextBestNCRM returns expected values of the objects", {
@@ -4169,65 +4170,66 @@ test_that("report_label slot available for StoppingSpecificDose", {
 test_that("tidy-IncrementsRelative works correctly", {
   obj <- .DefaultIncrementsRelative()
   result <- tidy(obj)
-  expect_snapshot(result)
+  expect_snapshot_value(result, style = "deparse")
 })
 
 test_that("tidy-CohortSizeDLT works correctly", {
   obj <- .DefaultCohortSizeDLT()
   result <- tidy(obj)
-  expect_snapshot(result)
+  expect_snapshot_value(result, style = "deparse")
 })
 
 test_that("tidy-CohortSizeMin works correctly", {
   obj <- .DefaultCohortSizeMin()
   result <- tidy(obj)
-  expect_snapshot(result)
+  expect_snapshot_value(result, style = "deparse")
 })
 
 test_that("tidy-CohortSizeMax works correctly", {
   obj <- .DefaultCohortSizeMax()
   result <- tidy(obj)
-  expect_snapshot(result)
+  expect_snapshot_value(result, style = "deparse")
 })
 
 test_that("tidy-CohortSizeRange works correctly", {
   obj <- .DefaultCohortSizeRange()
   result <- tidy(obj)
-  expect_snapshot(result)
+  expect_snapshot_value(result, style = "deparse")
 })
 
 test_that("tidy-CohortSizeParts works correctly", {
   obj <- .DefaultCohortSizeParts()
   result <- tidy(obj)
-  expect_snapshot(result)
+  # style = "deparse" fails with Error in `1:2`: could not find function ":"
+  expect_snapshot_value(result, style = "serialize")
 })
 
 test_that("tidy-IncrementsMin works correctly", {
   obj <- .DefaultIncrementsMin()
   result <- tidy(obj)
-  expect_snapshot(result)
+  expect_snapshot_value(result, style = "deparse")
 })
 
 test_that("tidy-IncrementsRelative works correctly", {
   obj <- .DefaultIncrementsRelative()
   result <- tidy(obj)
-  expect_snapshot(result)
+  expect_snapshot_value(result, style = "deparse")
 })
 
 test_that("tidy-IncrementsRelativeParts works correctly", {
   obj <- .DefaultIncrementsRelativeParts()
   result <- tidy(obj)
-  expect_snapshot(result)
+  expect_snapshot_value(result, style = "deparse")
 })
 
 test_that("tidy-NextBestNCRM works correctly", {
   obj <- .DefaultNextBestNCRM()
   result <- tidy(obj)
-  expect_snapshot(result)
+  expect_snapshot_value(result, style = "deparse")
 })
 
 test_that("tidy-NextBestNCRMLoss works correctly", {
   obj <- .DefaultNextBestNCRMLoss()
   result <- tidy(obj)
-  expect_snapshot(result)
+  expect_snapshot_value(result, style = "deparse")
 })

@@ -900,15 +900,26 @@ DADesign <- function(model, data,
 #' @slot first_cohort_mono_only (`flag`)\cr whether first test one mono agent cohort, and then
 #'   once its DLT data has been collected, we proceed from the second cohort onwards with
 #'   concurrent mono and combo cohorts.
-#' @slot same_dose (`flag`)\cr whether the lower dose of the separately determined mono and combo
-#'   doses should be used as the next dose for both mono and combo.
+#' @slot same_dose_for_all (`flag`)\cr whether the lower dose of the separately determined mono and combo
+#'   doses should be used as the next dose for both mono and combo in all cohorts.
+#' @slot same_dose_for_start (`flag`)\cr indicates whether, when mono and combo are
+#'   used in the same cohort for the first time, the same dose should be used for both.
+#'   Note that this is different from `same_dose_for_all` which will always force
+#'   them to be the same. If `same_dose_for_all = TRUE`, this is therefore ignored. See Details.
 #' @slot stop_mono_with_combo (`flag`)\cr whether the mono arm should be stopped when the combo
 #'   arm is stopped (this makes sense when the only real trial objective is the recommended combo dose).
 #'
-#' @details Note that the model slots inside the `mono` and `combo` parameters
-#'   are ignored (because we don't fit separate regression models for the mono and
-#'   combo arms). Instead, the `model` parameter is used to fit a joint regression
-#'   model for the mono and combo arms together.
+#' @details
+#'
+#'   - Note that the model slots inside the `mono` and `combo` parameters
+#'     are ignored (because we don't fit separate regression models for the mono and
+#'     combo arms). Instead, the `model` parameter is used to fit a joint regression
+#'     model for the mono and combo arms together.
+#'   - `same_dose_for_start = TRUE` is useful as an option when we want to use `same_dose_for_all = FALSE`
+#'     combined with `first_cohort_mono_only = TRUE`.
+#'     This will allow to randomize patients to the mono and combo arms at the same dose
+#'     as long as the selected dose for the cohorts stay the same. This can therefore
+#'     further mitigate bias as long as possible between the mono and combo arms.
 #'
 #' @aliases DesignGrouped
 #' @export
@@ -920,7 +931,8 @@ DADesign <- function(model, data,
     mono = "Design",
     combo = "Design",
     first_cohort_mono_only = "logical",
-    same_dose = "logical",
+    same_dose_for_all = "logical",
+    same_dose_for_start = "logical",
     stop_mono_with_combo = "logical"
   ),
   prototype = prototype(
@@ -928,7 +940,8 @@ DADesign <- function(model, data,
     mono = .Design(),
     combo = .Design(),
     first_cohort_mono_only = TRUE,
-    same_dose = TRUE,
+    same_dose_for_all = TRUE,
+    same_dose_for_start = FALSE,
     stop_mono_with_combo = FALSE
   ),
   validity = v_design_grouped,
@@ -943,7 +956,8 @@ DADesign <- function(model, data,
 #' @param mono (`Design`)\cr see slot definition.
 #' @param combo (`Design`)\cr see slot definition.
 #' @param first_cohort_mono_only (`flag`)\cr see slot definition.
-#' @param same_dose (`flag`)\cr see slot definition.
+#' @param same_dose_for_all (`flag`)\cr see slot definition.
+#' @param same_dose_for_start (`flag`)\cr see slot definition.
 #' @param stop_mono_with_combo (`flag`)\cr see slot definition.
 #' @param ... not used.
 #'
@@ -954,7 +968,8 @@ DesignGrouped <- function(model,
                           mono,
                           combo = mono,
                           first_cohort_mono_only = TRUE,
-                          same_dose = TRUE,
+                          same_dose_for_all = !same_dose_for_start,
+                          same_dose_for_start = FALSE,
                           stop_mono_with_combo = FALSE,
                           ...) {
   .DesignGrouped(
@@ -962,7 +977,8 @@ DesignGrouped <- function(model,
     mono = mono,
     combo = combo,
     first_cohort_mono_only = first_cohort_mono_only,
-    same_dose = same_dose,
+    same_dose_for_all = same_dose_for_all,
+    same_dose_for_start = same_dose_for_start,
     stop_mono_with_combo = stop_mono_with_combo
   )
 }
