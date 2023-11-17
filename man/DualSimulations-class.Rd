@@ -4,21 +4,86 @@
 \name{DualSimulations-class}
 \alias{DualSimulations-class}
 \alias{.DualSimulations}
-\title{Class for the simulations output from dual-endpoint model based designs}
+\alias{DualSimulations}
+\alias{.DefaultDualSimulations}
+\title{\code{DualSimulations}}
+\usage{
+DualSimulations(rho_est, sigma2w_est, fit_biomarker, ...)
+
+.DefaultDualSimulations()
+}
+\arguments{
+\item{rho_est}{(\code{numeric})\cr see \code{\link{DualSimulations}}}
+
+\item{sigma2w_est}{(\code{numeric})\cr \code{\link{DualSimulations}}}
+
+\item{fit_biomarker}{(\code{list})\cr see \code{\link{DualSimulations}}}
+
+\item{\dots}{additional parameters from \code{\link{Simulations}}}
+}
 \description{
+\ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#stable}{\figure{lifecycle-stable.svg}{options: alt='[Stable]'}}}{\strong{[Stable]}}
+
 This class captures the trial simulations from dual-endpoint model based
-designs. In comparison to the parent class \code{\linkS4class{Simulations}},
-it contains additional slots to capture the dose-biomarker fits, and the
-sigma2W and rho estimates.
+designs. In comparison to the parent class \code{\link{Simulations}},
+it contains additional slots to capture the dose-biomarker \code{fits}, and the
+\code{sigma2W} and \code{rho} estimates.
 }
 \section{Slots}{
 
 \describe{
-\item{\code{rhoEst}}{the vector of final posterior median rho estimates}
+\item{\code{rho_est}}{(\code{numeric})\cr vector of final posterior median rho estimates}
 
-\item{\code{sigma2West}}{the vector of final posterior median sigma2W estimates}
+\item{\code{sigma2w_est}}{(\code{numeric})\cr vector of final posterior median sigma2W estimates}
 
-\item{\code{fitBiomarker}}{list with the final dose-biomarker curve fits}
+\item{\code{fit_biomarker}}{(\code{list})\cr with the final dose-biomarker curve fits}
 }}
 
-\keyword{classes}
+\note{
+Typically, end users will not use the \code{.DefaultDualSimulations()} function.
+}
+\examples{
+data_list <- list(
+  Data(
+    x = 1:2,
+    y = 0:1,
+    doseGrid = 1:2,
+    ID = 1L:2L,
+    cohort = 1L:2L
+  ),
+  Data(
+    x = 3:4,
+    y = 0:1,
+    doseGrid = 3:4,
+    ID = 1L:2L,
+    cohort = 1L:2L
+  )
+)
+
+doses <- c(1, 2)
+seed <- as.integer(123)
+
+fit <- list(
+  c(0.1, 0.2),
+  c(0.3, 0.4)
+)
+
+stop_report <- matrix(c(TRUE, FALSE), nrow = 2)
+
+stop_reasons <- list("A", "B")
+
+additional_stats <- list(a = 1, b = 1)
+
+dual_simulations_obj <- DualSimulations(
+  rho_est = c(0.25, 0.35),
+  sigma2w_est = c(0.15, 0.25),
+  fit_biomarker = list(c(0.3, 0.4), c(0.4, 0.5)),
+  fit = fit,
+  stop_report = stop_report,
+  stop_reasons = stop_reasons,
+  additional_stats = additional_stats,
+  data = data_list,
+  doses = doses,
+  seed = seed
+)
+}

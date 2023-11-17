@@ -16,7 +16,7 @@ my_data <- Data(
 #  - increasing the dose by 33% if 1 or 2 DLTs were observed at the current dose,
 #  - increasing the dose by 22% if 3 or more DLTs were observed.
 my_increments_1 <- IncrementsRelativeDLT(
-  dlt_intervals = c(0, 1, 3),
+  intervals = c(0, 1, 3),
   increments = c(1, 0.33, 0.2)
 )
 

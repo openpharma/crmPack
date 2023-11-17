@@ -1,5 +1,6 @@
 #' @include helpers.R
 #' @include ModelParams-validity.R
+#' @include CrmPackClass-class.R
 NULL
 
 # ModelParamsNormal ----
@@ -31,6 +32,7 @@ NULL
     cov = "matrix",
     prec = "matrix"
   ),
+  contains = "CrmPackClass",
   validity = v_model_params_normal
 )
 
@@ -60,5 +62,17 @@ ModelParamsNormal <- function(mean, cov) {
     mean = mean,
     cov = cov,
     prec = solve(cov)
+  )
+}
+
+## default constructor ----
+
+#' @rdname ModelParamsNormal-class
+#' @note Typically, end users will not use the `.ModelPAramsNormal()` function.
+#' @export
+.DefaultModelParamsNormal <- function() {
+  ModelParamsNormal(
+    mean = c(1, 0),
+    cov = matrix(c(1, 0, 0, 1), nrow = 2)
   )
 }

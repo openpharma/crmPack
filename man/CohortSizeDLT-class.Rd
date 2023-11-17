@@ -8,12 +8,12 @@
 \alias{.DefaultCohortSizeDLT}
 \title{\code{CohortSizeDLT}}
 \usage{
-CohortSizeDLT(dlt_intervals, cohort_size)
+CohortSizeDLT(intervals, cohort_size)
 
 .DefaultCohortSizeDLT()
 }
 \arguments{
-\item{dlt_intervals}{(\code{numeric})\cr see slot definition.}
+\item{intervals}{(\code{numeric})\cr see slot definition.}
 
 \item{cohort_size}{(\code{numeric})\cr see slot definition.}
 }
@@ -25,19 +25,18 @@ CohortSizeDLT(dlt_intervals, cohort_size)
 \section{Slots}{
 
 \describe{
-\item{\code{dlt_intervals}}{(\code{integer})\cr a vector with the left bounds of the
+\item{\code{intervals}}{(\code{integer})\cr a vector with the left bounds of the
 relevant DLT intervals.}
 
 \item{\code{cohort_size}}{(\code{integer})\cr a vector with the cohort sizes corresponding
-to the elements of \code{dlt_intervals}.}
+to the elements of \code{intervals}.}
 }}
 
 \note{
 Typically, end users will not use the \code{.DefaultCohortSizeDLT()} function.
 }
 \examples{
-
 # Rule for having cohort of size 1 until no DLT is observed and having cohort
 # of size 3 as soon as 1 DLT is observed.
-my_size <- CohortSizeDLT(dlt_intervals = c(0, 1), cohort_size = c(1, 3))
+my_size <- CohortSizeDLT(intervals = c(0, 1), cohort_size = c(1, 3))
 }

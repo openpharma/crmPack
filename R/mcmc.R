@@ -1,4 +1,6 @@
 #' @include helpers.R
+#' @include helpers_covr.R
+#' @include logger.R
 #' @include Samples-class.R
 NULL
 
@@ -658,7 +660,7 @@ setMethod("mcmc",
         w1 <- c(thismodel@eff, eff_obsrv$w_no_dlt)
         x1 <- c(thismodel@eff_dose, eff_obsrv$x_no_dlt)
       }
-      x1Level <- matchTolerance(x1, data@doseGrid)
+      x1Level <- match_within_tolerance(x1, data@doseGrid)
       ## betaW is constant, the average of the efficacy values
       betaW <- rep(mean(w1), data@nGrid)
       ## sigma2betaW use fixed value or prior mean

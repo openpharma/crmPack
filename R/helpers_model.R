@@ -196,7 +196,7 @@ h_model_dual_endpoint_beta <- function(param,
   assert_string(param_name)
   assert_class(de, "DualEndpoint")
 
-  use_fixed <- setNames(is.scalar(param), param_name)
+  use_fixed <- setNames(test_number(param), param_name)
   modelspecs <- de@modelspecs
   init <- de@init
 

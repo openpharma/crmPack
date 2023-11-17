@@ -34,6 +34,7 @@ dose-toxicity and dose-biomarker curves
 # Define the dose-grid.
 emptydata <- DataDual(doseGrid = c(1, 3, 5, 10, 15, 20, 25, 40, 50, 80, 100))
 
+
 # Initialize the CRM model.
 my_model <- DualEndpointRW(
   mean = c(0, 1),
@@ -73,7 +74,7 @@ design <- DualDesign(
   nextBest = my_next_best,
   stopping = my_stopping,
   increments = my_increments,
-  cohortSize = CohortSizeConst(3),
+  cohort_size = CohortSizeConst(3),
   startingDose = 3
 )
 

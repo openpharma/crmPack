@@ -30,6 +30,7 @@
 #' @import ggplot2
 #' @import methods
 #' @import tibble
+#' @importFrom grid grid.draw
 #' @importFrom gridExtra arrangeGrob
 #' @importFrom graphics plot hist legend lines matlines matplot
 #' @importFrom stats binomial coef cov2cor gaussian glm lm median model.matrix
@@ -81,7 +82,9 @@ globalVariables(c(
   "logit<-",
   "rho0",
   "alpha0",
+  "delta0",
   "alpha1",
+  "delta1",
   "inverse",
   "priorCov",
   "theta",
@@ -135,7 +138,12 @@ globalVariables(c(
   "ref_dose",
   "comp",
   "X",
-  "skel_probs"
+  "skel_probs",
+  "is_combo",
+  "results",
+  "k",
+  "value",
+  "Parameter"
 ))
 
 # nolint end

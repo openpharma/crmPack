@@ -3,6 +3,7 @@
 #' @include Rules-class.R
 #' @include Data-class.R
 #' @include helpers.R
+#' @include CrmPackClass-class.R
 NULL
 
 # RuleDesign ----
@@ -18,7 +19,7 @@ NULL
 #' `model`, `stopping` and `increments` slots.
 #'
 #' @slot nextBest (`NextBest`)\cr how to find the next best dose.
-#' @slot cohortSize (`CohortSize`)\cr rules for the cohort sizes.
+#' @slot cohort_size (`CohortSize`)\cr rules for the cohort sizes.
 #' @slot data (`Data`)\cr specifies dose grid, any previous data, etc.
 #' @slot startingDose (`number`)\cr the starting dose, it must lie on the dose
 #'   grid in `data`.
@@ -30,16 +31,17 @@ NULL
   Class = "RuleDesign",
   slots = c(
     nextBest = "NextBest",
-    cohortSize = "CohortSize",
+    cohort_size = "CohortSize",
     data = "Data",
     startingDose = "numeric"
   ),
   prototype = prototype(
     nextBest = .NextBestThreePlusThree(),
-    cohortSize = CohortSizeConst(3),
+    cohort_size = CohortSizeConst(3),
     data = Data(doseGrid = 1:3),
     startingDose = 1
   ),
+  contains = "CrmPackClass",
   validity = v_rule_design
 )
 
@@ -48,7 +50,7 @@ NULL
 #' @rdname RuleDesign-class
 #'
 #' @param nextBest (`NextBest`)\cr see slot definition.
-#' @param cohortSize (`CohortSize`)\cr see slot definition.
+#' @param cohort_size (`CohortSize`)\cr see slot definition.
 #' @param data (`Data`)\cr see slot definition.
 #' @param startingDose (`number`)\cr see slot definition.
 #'
@@ -56,15 +58,28 @@ NULL
 #' @example examples/Design-class-RuleDesign.R
 #'
 RuleDesign <- function(nextBest,
-                       cohortSize,
+                       cohort_size,
                        data,
                        startingDose) {
   new(
     "RuleDesign",
     nextBest = nextBest,
-    cohortSize = cohortSize,
+    cohort_size = cohort_size,
     data = data,
     startingDose = as.numeric(startingDose)
+  )
+}
+
+#' @rdname RuleDesign-class
+#' @note Typically, end users will not use the `.DefaultRuleDesign()` function.
+#' @export
+
+.DefaultRuleDesign <- function() {
+  RuleDesign(
+    nextBest = NextBestThreePlusThree(),
+    cohort_size = CohortSizeConst(size = 3L),
+    data = Data(doseGrid = c(5, 10, 15, 25, 35, 50, 80)),
+    startingDose = 5
   )
 }
 
@@ -84,7 +99,7 @@ ThreePlusThreeDesign <- function(doseGrid) {
   RuleDesign(
     nextBest = NextBestThreePlusThree(),
     data = empty_data,
-    cohortSize = CohortSizeConst(size = 3L),
+    cohort_size = CohortSizeConst(size = 3L),
     startingDose = doseGrid[1]
   )
 }
@@ -158,6 +173,53 @@ Design <- function(model,
   )
 }
 
+## default constructor ----
+
+#' @rdname Design-class
+#' @note Typically, end users will not use the `.DefaultDesign()` function.
+#' @export
+.DefaultDesign <- function() {
+  my_size1 <- CohortSizeRange(
+    intervals = c(0, 30),
+    cohort_size = c(1, 3)
+  )
+  my_size2 <- CohortSizeDLT(
+    intervals = c(0, 1),
+    cohort_size = c(1, 3)
+  )
+  my_size <- maxSize(my_size1, my_size2)
+
+  my_stopping1 <- StoppingMinCohorts(nCohorts = 3)
+  my_stopping2 <- StoppingTargetProb(
+    target = c(0.2, 0.35),
+    prob = 0.5
+  )
+  my_stopping3 <- StoppingMinPatients(nPatients = 20)
+  my_stopping <- (my_stopping1 & my_stopping2) | my_stopping3
+
+  # Initialize the design.
+  design <- Design(
+    model = LogisticLogNormal(
+      mean = c(-0.85, 1),
+      cov = matrix(c(1, -0.5, -0.5, 1), nrow = 2),
+      ref_dose = 56
+    ),
+    nextBest = NextBestNCRM(
+      target = c(0.2, 0.35),
+      overdose = c(0.35, 1),
+      max_overdose_prob = 0.25
+    ),
+    stopping = my_stopping,
+    increments = IncrementsRelative(
+      intervals = c(0, 20),
+      increments = c(1, 0.33)
+    ),
+    cohort_size = my_size,
+    data = Data(doseGrid = c(1, 3, 5, 10, 15, 20, 25, 40, 50, 80, 100)),
+    startingDose = 3
+  )
+}
+
 # DualDesign ----
 
 ## class ----
@@ -214,6 +276,64 @@ DualDesign <- function(model,
     start,
     model = model,
     data = data
+  )
+}
+
+## default constructor ----
+
+#' @rdname DualDesign-class
+#' @note Typically, end users will not use the `.DefaultDualDesign()` function.
+#' @export
+.DefaultDualDesign <- function() {
+  my_model <- DualEndpointRW(
+    mean = c(0, 1),
+    cov = matrix(c(1, 0, 0, 1), nrow = 2),
+    sigma2betaW = 0.01,
+    sigma2W = c(a = 0.1, b = 0.1),
+    rho = c(a = 1, b = 1),
+    rw1 = TRUE
+  )
+
+  # Choose the rule for selecting the next dose.
+  my_next_best <- NextBestDualEndpoint(
+    target = c(0.9, 1),
+    overdose = c(0.35, 1),
+    max_overdose_prob = 0.25
+  )
+
+  # Choose the rule for the cohort-size.
+  my_size1 <- CohortSizeRange(
+    intervals = c(0, 30),
+    cohort_size = c(1, 3)
+  )
+  my_size2 <- CohortSizeDLT(
+    intervals = c(0, 1),
+    cohort_size = c(1, 3)
+  )
+  my_size <- maxSize(my_size1, my_size2)
+
+  # Choose the rule for stopping.
+  my_stopping1 <- StoppingTargetBiomarker(
+    target = c(0.9, 1),
+    prob = 0.5
+  )
+  my_stopping <- my_stopping1 | StoppingMinPatients(40)
+
+  # Choose the rule for dose increments.
+  my_increments <- IncrementsRelative(
+    intervals = c(0, 20),
+    increments = c(1, 0.33)
+  )
+
+  # Initialize the design.
+  DualDesign(
+    model = my_model,
+    data = DataDual(doseGrid = c(1, 3, 5, 10, 15, 20, 25, 40, 50, 80, 100)),
+    nextBest = my_next_best,
+    stopping = my_stopping,
+    increments = my_increments,
+    cohort_size = my_size,
+    startingDose = 3
   )
 }
 
@@ -285,6 +405,41 @@ TDsamplesDesign <- function(model,
   )
 }
 
+## default constructor ----
+
+#' @rdname TDsamplesDesign-class
+#' @note Typically, end users will not use the `.DefaultTDsamplesDesign()` function.
+#' @export
+.DefaultTDsamplesDesign <- function() {
+  empty_data <- Data(doseGrid = seq(25, 300, 25))
+
+  my_model <- LogisticIndepBeta(
+    binDLE = c(1.05, 1.8),
+    DLEweights = c(3, 3),
+    DLEdose = c(25, 300),
+    data = empty_data
+  )
+
+  TDsamplesDesign(
+    model = my_model,
+    stopping = StoppingMinPatients(nPatients = 36),
+    increments = IncrementsRelative(
+      intervals = range(empty_data@doseGrid),
+      increments = c(2, 2)
+    ),
+    nextBest = NextBestTDsamples(
+      prob_target_drt = 0.35,
+      prob_target_eot = 0.3,
+      derive = function(samples) {
+        as.numeric(quantile(samples, probs = 0.3))
+      }
+    ),
+    cohort_size = CohortSizeConst(size = 3),
+    data = empty_data,
+    startingDose = 25
+  )
+}
+
 # TDDesign ----
 
 ## class ----
@@ -352,6 +507,38 @@ TDDesign <- function(model,
   )
 }
 
+## default constructor ----
+
+#' @rdname TDDesign-class
+#' @note Typically, end users will not use the `.DefaultTDDesign()` function.
+#' @export
+.DefaultTDDesign <- function() {
+  empty_data <- Data(doseGrid = seq(25, 300, 25))
+
+  my_model <- LogisticIndepBeta(
+    binDLE = c(1.05, 1.8),
+    DLEweights = c(3, 3),
+    DLEdose = c(25, 300),
+    data = empty_data
+  )
+
+  TDDesign(
+    model = my_model,
+    stopping = StoppingMinPatients(nPatients = 36),
+    increments = IncrementsRelative(
+      intervals = range(empty_data@doseGrid),
+      increments = c(2, 2)
+    ),
+    nextBest = NextBestTD(
+      prob_target_drt = 0.35,
+      prob_target_eot = 0.3
+    ),
+    cohort_size = CohortSizeConst(size = 3),
+    data = empty_data,
+    startingDose = 25
+  )
+}
+
 # DualResponsesSamplesDesign ----
 
 ## class ----
@@ -406,6 +593,57 @@ DualResponsesSamplesDesign <- function(eff_model,
     start,
     eff_model = eff_model,
     data = data
+  )
+}
+
+## default constructor ----
+
+#' @rdname DualResponsesSamplesDesign-class
+#' @note Typically, end users will not use the `.DefaultDualResponsesSamplesDesign()` function.
+#' @export
+.DefaultDualResponsesSamplesDesign <- function() {
+  empty_data <- DataDual(doseGrid = seq(25, 300, 25))
+
+  tox_model <- LogisticIndepBeta(
+    binDLE = c(1.05, 1.8),
+    DLEweights = c(3, 3),
+    DLEdose = c(25, 300),
+    data = empty_data
+  )
+  options <- McmcOptions(burnin = 100, step = 2, samples = 200)
+  tox_samples <- mcmc(empty_data, tox_model, options)
+
+  eff_model <- Effloglog(
+    eff = c(1.223, 2.513),
+    eff_dose = c(25, 300),
+    nu = c(a = 1, b = 0.025),
+    data = empty_data
+  )
+  eff_samples <- mcmc(empty_data, eff_model, options)
+
+  my_next_best <- NextBestMaxGainSamples(
+    prob_target_drt = 0.35,
+    prob_target_eot = 0.3,
+    derive = function(samples) {
+      as.numeric(quantile(samples, prob = 0.3))
+    },
+    mg_derive = function(mg_samples) {
+      as.numeric(quantile(mg_samples, prob = 0.5))
+    }
+  )
+
+  DualResponsesSamplesDesign(
+    nextBest = my_next_best,
+    cohort_size = CohortSizeConst(size = 3),
+    startingDose = 25,
+    model = tox_model,
+    eff_model = eff_model,
+    data = empty_data,
+    stopping = StoppingMinPatients(nPatients = 36),
+    increments = IncrementsRelative(
+      intervals = c(25, 300),
+      increments = c(2, 2)
+    )
   )
 }
 
@@ -466,6 +704,43 @@ DualResponsesDesign <- function(eff_model,
   )
 }
 
+## default constructor ----
+
+#' @rdname DualResponsesDesign-class
+#' @note Typically, end users will not use the `.DefaultDualResponsesDesign()` function.
+#' @export
+.DefaultDualResponsesDesign <- function() {
+  empty_data <- DataDual(doseGrid = seq(25, 300, 25))
+
+  DualResponsesDesign(
+    nextBest = NextBestMaxGain(
+      prob_target_drt = 0.35,
+      prob_target_eot = 0.3
+    ),
+    cohort_size = CohortSizeConst(size = 3),
+    startingDose = 25,
+    model = LogisticIndepBeta(
+      binDLE = c(1.05, 1.8),
+      DLEweights = c(3, 3),
+      DLEdose = c(25, 300),
+      data = empty_data
+    ),
+    eff_model = Effloglog(
+      eff = c(1.223, 2.513),
+      eff_dose = c(25, 300),
+      nu = c(a = 1, b = 0.025),
+      data = empty_data
+    ),
+    data = empty_data,
+    stopping = StoppingMinPatients(nPatients = 36),
+    increments = IncrementsRelative(
+      intervals = c(25, 300),
+      increments = c(2, 2)
+    )
+  )
+}
+
+
 # DADesign ----
 
 ## class ----
@@ -481,6 +756,21 @@ DualResponsesDesign <- function(eff_model,
 #' [`TITELogisticLogNormal`] which make use of the time-to-DLT data.
 #' @slot data (`DataDA`)\cr what is the dose grid, any previous data, etc.
 #' @slot safetyWindow (`SafetyWindow`)\cr the safety window to apply between cohorts.
+#'
+#' @details
+#' The `safetyWindow` slot should be an instance of the `SafetyWindow` class.
+#' It can be customized to specify the duration of the safety window for your trial.
+#' The safety window represents the time period required to observe toxicity data
+#' from the ongoing cohort before opening the next cohort.
+#' Note that even after opening the next cohort,
+#' further toxicity data will be collected and analyzed to make dose escalation decisions.
+#'
+#'
+#' To specify a constant safety window, use the `SafetyWindowConst` constructor. For example:
+#'
+#' \code{mysafetywindow <- SafetyWindowConst(c(6, 2), 10, 20)}
+#'
+#' @seealso [`SafetyWindowConst`] for creating a constant safety window.
 #'
 #' @aliases DADesign
 #' @export
@@ -527,3 +817,175 @@ DADesign <- function(model, data,
     safetyWindow = safetyWindow
   )
 }
+
+## default constructor ----
+
+#' @rdname DADesign-class
+#' @note Typically, end users will not use the `.DefaultDADesign()` function.
+#' @export
+.DefaultDADesign <- function() {
+  emptydata <- DataDA(
+    doseGrid = c(0.1, 0.5, 1, 1.5, 3, 6, seq(from = 10, to = 80, by = 2)),
+    Tmax = 60
+  )
+
+  npiece_ <- 10
+  t_max_ <- 60
+
+  lambda_prior <- function(k) {
+    npiece_ / (t_max_ * (npiece_ - k + 0.5))
+  }
+
+  model <- DALogisticLogNormal(
+    mean = c(-0.85, 1),
+    cov = matrix(c(1, -0.5, -0.5, 1), nrow = 2),
+    ref_dose = 56,
+    npiece = npiece_,
+    l = as.numeric(t(apply(as.matrix(c(1:npiece_), 1, npiece_), 2, lambda_prior))),
+    c_par = 2
+  )
+
+  mySize1 <- CohortSizeRange(
+    intervals = c(0, 30),
+    cohort_size = c(1, 3)
+  )
+  mySize2 <- CohortSizeDLT(
+    intervals = c(0, 1),
+    cohort_size = c(1, 3)
+  )
+  mySize <- maxSize(mySize1, mySize2)
+
+  myStopping1 <- StoppingTargetProb(
+    target = c(0.2, 0.35),
+    prob = 0.5
+  )
+  myStopping2 <- StoppingMinPatients(nPatients = 50)
+  myStopping <- (myStopping1 | myStopping2)
+
+  DADesign(
+    model = model,
+    increments = IncrementsRelative(
+      intervals = c(0, 20),
+      increments = c(1, 0.33)
+    ),
+    nextBest = NextBestNCRM(
+      target = c(0.2, 0.35),
+      overdose = c(0.35, 1),
+      max_overdose_prob = 0.25
+    ),
+    stopping = myStopping,
+    cohort_size = mySize,
+    data = emptydata,
+    safetyWindow = SafetyWindowConst(c(6, 2), 7, 7),
+    startingDose = 3
+  )
+}
+# DesignGrouped ----
+
+## class ----
+
+#' `DesignGrouped`
+#'
+#' @description `r lifecycle::badge("experimental")`
+#'
+#' [`DesignGrouped`] combines two [`Design`] objects: one for the mono and one
+#' for the combo arm of a joint dose escalation design.
+#'
+#' @slot model (`LogisticLogNormalGrouped`)\cr the model to be used, currently only one
+#'   class is allowed.
+#' @slot mono (`Design`)\cr defines the dose escalation rules for the mono arm, see
+#'   details.
+#' @slot combo (`Design`)\cr defines the dose escalation rules for the combo arm, see
+#'   details.
+#' @slot first_cohort_mono_only (`flag`)\cr whether first test one mono agent cohort, and then
+#'   once its DLT data has been collected, we proceed from the second cohort onwards with
+#'   concurrent mono and combo cohorts.
+#' @slot same_dose_for_all (`flag`)\cr whether the lower dose of the separately determined mono and combo
+#'   doses should be used as the next dose for both mono and combo in all cohorts.
+#' @slot same_dose_for_start (`flag`)\cr indicates whether, when mono and combo are
+#'   used in the same cohort for the first time, the same dose should be used for both.
+#'   Note that this is different from `same_dose_for_all` which will always force
+#'   them to be the same. If `same_dose_for_all = TRUE`, this is therefore ignored. See Details.
+#' @slot stop_mono_with_combo (`flag`)\cr whether the mono arm should be stopped when the combo
+#'   arm is stopped (this makes sense when the only real trial objective is the recommended combo dose).
+#'
+#' @details
+#'
+#'   - Note that the model slots inside the `mono` and `combo` parameters
+#'     are ignored (because we don't fit separate regression models for the mono and
+#'     combo arms). Instead, the `model` parameter is used to fit a joint regression
+#'     model for the mono and combo arms together.
+#'   - `same_dose_for_start = TRUE` is useful as an option when we want to use `same_dose_for_all = FALSE`
+#'     combined with `first_cohort_mono_only = TRUE`.
+#'     This will allow to randomize patients to the mono and combo arms at the same dose
+#'     as long as the selected dose for the cohorts stay the same. This can therefore
+#'     further mitigate bias as long as possible between the mono and combo arms.
+#'
+#' @aliases DesignGrouped
+#' @export
+#'
+.DesignGrouped <- setClass(
+  Class = "DesignGrouped",
+  slots = c(
+    model = "LogisticLogNormalGrouped",
+    mono = "Design",
+    combo = "Design",
+    first_cohort_mono_only = "logical",
+    same_dose_for_all = "logical",
+    same_dose_for_start = "logical",
+    stop_mono_with_combo = "logical"
+  ),
+  prototype = prototype(
+    model = .DefaultLogisticLogNormalGrouped(),
+    mono = .Design(),
+    combo = .Design(),
+    first_cohort_mono_only = TRUE,
+    same_dose_for_all = TRUE,
+    same_dose_for_start = FALSE,
+    stop_mono_with_combo = FALSE
+  ),
+  validity = v_design_grouped,
+  contains = "CrmPackClass"
+)
+
+## constructor ----
+
+#' @rdname DesignGrouped-class
+#'
+#' @param model (`LogisticLogNormalGrouped`)\cr see slot definition.
+#' @param mono (`Design`)\cr see slot definition.
+#' @param combo (`Design`)\cr see slot definition.
+#' @param first_cohort_mono_only (`flag`)\cr see slot definition.
+#' @param same_dose_for_all (`flag`)\cr see slot definition.
+#' @param same_dose_for_start (`flag`)\cr see slot definition.
+#' @param stop_mono_with_combo (`flag`)\cr see slot definition.
+#' @param ... not used.
+#'
+#' @export
+#' @example examples/Design-class-DesignGrouped.R
+#'
+DesignGrouped <- function(model,
+                          mono,
+                          combo = mono,
+                          first_cohort_mono_only = TRUE,
+                          same_dose_for_all = !same_dose_for_start,
+                          same_dose_for_start = FALSE,
+                          stop_mono_with_combo = FALSE,
+                          ...) {
+  .DesignGrouped(
+    model = model,
+    mono = mono,
+    combo = combo,
+    first_cohort_mono_only = first_cohort_mono_only,
+    same_dose_for_all = same_dose_for_all,
+    same_dose_for_start = same_dose_for_start,
+    stop_mono_with_combo = stop_mono_with_combo
+  )
+}
+
+## default constructor ----
+
+#' @rdname DesignGrouped-class
+#' @note Typically, end-users will not use the `.DefaultDesignGrouped()` function.
+#' @export
+.DefaultDesignGrouped <- .DesignGrouped

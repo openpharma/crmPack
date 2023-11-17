@@ -5,9 +5,12 @@
 \alias{DualResponsesSamplesDesign-class}
 \alias{.DualResponsesSamplesDesign}
 \alias{DualResponsesSamplesDesign}
+\alias{.DefaultDualResponsesSamplesDesign}
 \title{\code{DualResponsesSamplesDesign}}
 \usage{
 DualResponsesSamplesDesign(eff_model, data, ...)
+
+.DefaultDualResponsesSamplesDesign()
 }
 \arguments{
 \item{eff_model}{(\code{ModelEff})\cr see slot definition.}
@@ -38,6 +41,9 @@ with DLE and efficacy samples. It contain all slots in
 \item{\code{eff_model}}{(\code{ModelEff})\cr the pseudo efficacy model to be used.}
 }}
 
+\note{
+Typically, end users will not use the \code{.DefaultDualResponsesSamplesDesign()} function.
+}
 \examples{
 empty_data <- DataDual(doseGrid = seq(25, 300, 25))
 
@@ -78,7 +84,7 @@ my_stopping <- StoppingMinPatients(nPatients = 36)
 
 design <- DualResponsesSamplesDesign(
   nextBest = my_next_best,
-  cohortSize = my_size,
+  cohort_size = my_size,
   startingDose = 25,
   model = tox_model,
   eff_model = eff_model,

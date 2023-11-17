@@ -66,6 +66,7 @@ covr
 cran
 crm
 CRM
+crmPack
 crmPackExample
 crmPackHelp
 crmPackUpgrade
@@ -75,6 +76,7 @@ customised
 DataCombo
 DataDual
 DataMixture
+DataOrdinal
 dataname
 datanames
 DataParts
@@ -169,6 +171,7 @@ IncrementsRelative
 IncrementsRelativeDLT
 IncrementsRelativeDLTs
 IncrementsRelativeParts
+ing
 inputId
 intialization
 Intialization
@@ -200,6 +203,7 @@ LogisticIndepBeta'Model
 LogisticKadane
 LogisticLogNormal
 LogisticLogNormalMixture
+LogisticLogNormalOrdinal
 LogisticLogNormalSub
 LogisticNormal
 LogisticNormalFixedMixture
@@ -219,12 +223,14 @@ md
 mDA
 Michielin
 MinimalInformative
+minimise
 minInfModel
 ModelEff
 modelled
 modelling
 ModelPseudo
 ModelTox
+monotherapy
 MTD
 multisessions
 multithreaded
@@ -340,6 +346,7 @@ songy
 sourceforge
 SREPs
 SRF
+StackOverflow
 Stata
 StoppingAll
 StoppingAny
@@ -401,6 +408,7 @@ TLG
 TLGs
 tm
 tox
+Tox
 toxAtDosesSelected
 traceplot
 transponse
@@ -413,6 +421,7 @@ truthy
 TsuTakawa
 ui
 UI
+Underdosing
 useLogDose
 useRW
 USUBJID

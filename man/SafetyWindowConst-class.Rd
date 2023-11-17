@@ -5,9 +5,12 @@
 \alias{SafetyWindowConst-class}
 \alias{.SafetyWindowConst}
 \alias{SafetyWindowConst}
+\alias{.DefaultSafetyWindowConst}
 \title{\code{SafetyWindowConst}}
 \usage{
 SafetyWindowConst(gap, follow, follow_min)
+
+.DefaultSafetyWindowConst()
 }
 \arguments{
 \item{gap}{see slot definition.}
@@ -35,6 +38,9 @@ opens.}
 cohort needs to be followed at the minimal follow up time.}
 }}
 
+\note{
+Typically, end users will not use the \code{.DefaultSafetyWindowConst()} function.
+}
 \examples{
 # This is to have along the study constant parameters settings of safety window
 # length, regardless of the cohort size.

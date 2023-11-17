@@ -185,3 +185,67 @@ test_that("DataDA object can be created with custom values", {
   )
   expect_valid(result, "DataDA")
 })
+
+# DataOrdinal-class ----
+
+test_that(".DataOrdinal works as expected", {
+  result <- expect_silent(.DataOrdinal())
+  expect_valid(result, "DataOrdinal")
+})
+
+# DataOrdinal-constructor ----
+
+test_that("DataOrdinal object can be created with user constructor DataOrdinal", {
+  result <- expect_silent(DataOrdinal())
+  expect_valid(result, "DataOrdinal")
+})
+
+test_that("DataOrdinal object can be created with custom values", {
+  result <- expect_silent(
+    DataOrdinal(
+      u = c(42, 30, 15),
+      t0 = c(0, 15, 30),
+      Tmax = 60,
+      x = c(0.1, 0.5, 1.5),
+      y = c(0, 0, 0),
+      ID = 1:3,
+      cohort = 1:3,
+      doseGrid = c(0.1, 0.5, 1.5, 3, 6, seq(from = 10, to = 80, by = 2)),
+      yCategories = c("Cat 0" = 0L, "Cat 1" = 1L, "Cat 2" = 2L)
+    )
+  )
+  expect_valid(result, "DataOrdinal")
+})
+
+# DataGrouped-class ----
+
+test_that(".DataGrouped works as expected", {
+  result <- expect_silent(.DataGrouped())
+  expect_valid(result, "DataGrouped")
+})
+
+# DataGrouped-constructor ----
+
+test_that("DataGrouped object can be created with user constructor DataGrouped", {
+  result <- expect_silent(DataGrouped())
+  expect_valid(result, "DataGrouped")
+})
+
+test_that("DataGrouped object can be created with custom values", {
+  result <- expect_silent(
+    DataGrouped(
+      group = c("mono", "combo", "mono"),
+      x = c(0.1, 0.5, 1.5),
+      y = c(0, 0, 0),
+      ID = 1:3,
+      cohort = 1:3,
+      doseGrid = c(0.1, 0.5, 1.5, 3, 6, seq(from = 10, to = 80, by = 2))
+    )
+  )
+  expect_valid(result, "DataGrouped")
+})
+
+test_that("DataGrouped default constructor works as expected", {
+  result <- expect_silent(.DefaultDataGrouped())
+  expect_valid(result, "DataGrouped")
+})

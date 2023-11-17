@@ -37,12 +37,11 @@ BugReports: https://github.com/roche/crmPack/issues
 Depends:
     ggplot2 (>= 2.0.0),
     graphics,
-    R (>= 3.0.0)
+    R (>= 3.5.0)
 Imports:
     checkmate (>= 2.2.0),
     futile.logger,
     GenSA,
-    grid,
     magrittr,
     gridExtra,
     lifecycle,
@@ -55,13 +54,14 @@ Imports:
     tibble,
     tools,
     utils,
-    kableExtra
+    kableExtra,
+    dplyr,
+    rlang
 Suggests:
     bookdown,
     broom,
     covr,
     data.tree,
-    dplyr,
     ggmcmc,
     knitr,
     rmarkdown,
@@ -78,9 +78,12 @@ LazyLoad: yes
 Roxygen: list(markdown = TRUE)
 RoxygenNote: 7.2.3
 Collate:
+    'CrmPackClass-class.R'
+    'CrmPackClass-methods.R'
     'Data-validity.R'
     'helpers.R'
     'Data-class.R'
+    'helpers_data.R'
     'Data-methods.R'
     'Rules-validity.R'
     'Rules-class.R'
@@ -96,19 +99,24 @@ Collate:
     'McmcOptions-methods.R'
     'Samples-validity.R'
     'Samples-class.R'
+    'logger.R'
+    'helpers_covr.R'
     'mcmc.R'
+    'Simulations-validity.R'
     'Simulations-class.R'
+    'helpers_broom.R'
     'helpers_rules.R'
     'Model-methods.R'
+    'checkmate.R'
     'Rules-methods.R'
     'Design-methods.R'
+    'Samples-method-tidy.R'
     'fromQuantiles.R'
     'Samples-methods.R'
     'Simulations-methods.R'
-    'checkmate.R'
     'crmPack-package.R'
-    'helpers_covr.R'
+    'helpers_design.R'
     'helpers_model.R'
-    'logger.R'
+    'helpers_simulations.R'
     'utils-pipe.R'
     'utils.R'

@@ -5,17 +5,20 @@
 \alias{RuleDesign-class}
 \alias{.RuleDesign}
 \alias{RuleDesign}
+\alias{.DefaultRuleDesign}
 \alias{ThreePlusThreeDesign}
 \title{\code{RuleDesign}}
 \usage{
-RuleDesign(nextBest, cohortSize, data, startingDose)
+RuleDesign(nextBest, cohort_size, data, startingDose)
+
+.DefaultRuleDesign()
 
 ThreePlusThreeDesign(doseGrid)
 }
 \arguments{
 \item{nextBest}{(\code{NextBest})\cr see slot definition.}
 
-\item{cohortSize}{(\code{CohortSize})\cr see slot definition.}
+\item{cohort_size}{(\code{CohortSize})\cr see slot definition.}
 
 \item{data}{(\code{Data})\cr see slot definition.}
 
@@ -40,7 +43,7 @@ this class and the \code{\link{Design}} class is that \code{\link{RuleDesign}} d
 \describe{
 \item{\code{nextBest}}{(\code{NextBest})\cr how to find the next best dose.}
 
-\item{\code{cohortSize}}{(\code{CohortSize})\cr rules for the cohort sizes.}
+\item{\code{cohort_size}}{(\code{CohortSize})\cr rules for the cohort sizes.}
 
 \item{\code{data}}{(\code{Data})\cr specifies dose grid, any previous data, etc.}
 
@@ -48,6 +51,9 @@ this class and the \code{\link{Design}} class is that \code{\link{RuleDesign}} d
 grid in \code{data}.}
 }}
 
+\note{
+Typically, end users will not use the \code{.DefaultRuleDesign()} function.
+}
 \examples{
 # Specify the design to run simulations. The design comprises a model,
 # the escalation rule, starting data, a cohort size and a starting dose.
@@ -55,7 +61,7 @@ grid in \code{data}.}
 # Initialing a 3+3 design with constant cohort size of 3 and starting dose equal 5.
 my_design <- RuleDesign(
   nextBest = NextBestThreePlusThree(),
-  cohortSize = CohortSizeConst(size = 3L),
+  cohort_size = CohortSizeConst(size = 3L),
   data = Data(doseGrid = c(5, 10, 15, 25, 35, 50, 80)),
   startingDose = 5
 )

@@ -1,5 +1,6 @@
 #' @include helpers.R
 #' @include Rules-validity.R
+#' @include CrmPackClass-class.R
 NULL
 
 # NextBest ----
@@ -22,8 +23,19 @@ NULL
 #' @export
 #'
 setClass(
-  Class = "NextBest"
+  Class = "NextBest",
+  contains = "CrmPackClass"
 )
+
+## default constructor ----
+
+#' @rdname NextBest-class
+#' @note Typically, end users will not use the `DefaultNextBest()` function.
+#' @export
+.DefaultNextBest <- function() {
+  stop(paste0("Class NextBest should not be instantiated directly.  Please use one of its subclasses instead."))
+}
+
 
 # NextBestMTD ----
 
@@ -930,8 +942,19 @@ NextBestProbMTDMinDist <- function(target) {
 #' @export
 #'
 setClass(
-  Class = "Increments"
+  Class = "Increments",
+  contains = "CrmPackClass"
 )
+
+## default constructor ----
+
+#' @rdname Increments-class
+#' @note Typically, end users will not use the `.DefaultIncrements()` function.
+#' @export
+.DefaultIncrements <- function() {
+  stop(paste0("Class Increments cannot be instantiated directly.  Please use one of its subclasses instead."))
+}
+
 
 # IncrementsRelative ----
 
@@ -1007,15 +1030,15 @@ IncrementsRelative <- function(intervals, increments) {
 #' [`IncrementsRelativeDLT`] is the class for increments control based on
 #' relative differences in terms of DLTs.
 #'
-#' @slot dlt_intervals (`integer`)\cr a vector with the left bounds of the
-#'   relevant DLT intervals. For example, `dlt_intervals  = c(0, 1, 3)` specifies
+#' @slot intervals (`integer`)\cr a vector with the left bounds of the
+#'   relevant DLT intervals. For example, `intervals  = c(0, 1, 3)` specifies
 #'   three intervals (sets of DLTs: first, 0 DLT; second 1 or 2 DLTs; and the third
 #'   one, at least 3 DLTs. That means, the right bound of the intervals are
 #'   exclusive to the interval and the last interval goes from the last value to
 #'   infinity.
 #' @slot increments (`numeric`)\cr a vector of maximum allowable relative
-#'   increments corresponding to `dlt_intervals`. IT must be of the same length
-#'   as the length of `dlt_intervals`.
+#'   increments corresponding to `intervals`. IT must be of the same length
+#'   as the length of `intervals`.
 #'
 #' @note This considers all DLTs across all cohorts observed so far.
 #'
@@ -1028,11 +1051,11 @@ IncrementsRelative <- function(intervals, increments) {
 .IncrementsRelativeDLT <- setClass(
   Class = "IncrementsRelativeDLT",
   slots = representation(
-    dlt_intervals = "integer",
+    intervals = "integer",
     increments = "numeric"
   ),
   prototype = prototype(
-    dlt_intervals = c(0L, 1L),
+    intervals = c(0L, 1L),
     increments = c(2, 1)
   ),
   contains = "Increments",
@@ -1043,17 +1066,18 @@ IncrementsRelative <- function(intervals, increments) {
 
 #' @rdname IncrementsRelativeDLT-class
 #'
-#' @param dlt_intervals (`numeric`)\cr see slot definition.
+#' @param intervals (`numeric`)\cr see slot definition.
 #' @param increments (`numeric`)\cr see slot definition.
 #'
 #' @export
 #' @example examples/Rules-class-IncrementsRelativeDLT.R
 #'
-IncrementsRelativeDLT <- function(dlt_intervals, increments) {
-  assert_integerish(dlt_intervals)
+IncrementsRelativeDLT <- function(intervals, increments) {
+  assert_integerish(intervals, lower = 0, any.missing = FALSE)
+  assert_numeric(increments, any.missing = FALSE, lower = 0)
 
   .IncrementsRelativeDLT(
-    dlt_intervals = safeInteger(dlt_intervals),
+    intervals = as.integer(intervals),
     increments = increments
   )
 }
@@ -1064,7 +1088,7 @@ IncrementsRelativeDLT <- function(dlt_intervals, increments) {
 #' @note Typically, end users will not use the `.DefaultIncrementsRelativeDLT()` function.
 #' @export
 .DefaultIncrementsRelativeDLT <- function() {
-  IncrementsRelativeDLT(dlt_intervals = c(0L, 1L, 3L), increments = c(1, 0.33, 0.2))
+  IncrementsRelativeDLT(intervals = c(0L, 1L, 3L), increments = c(1, 0.33, 0.2))
 }
 
 # IncrementsRelativeDLTCurrent ----
@@ -1099,10 +1123,13 @@ IncrementsRelativeDLT <- function(dlt_intervals, increments) {
 #' @export
 #' @example examples/Rules-class-IncrementsRelativeDLTCurrent.R
 #'
-IncrementsRelativeDLTCurrent <- function(dlt_intervals = c(0, 1),
-                                         increments = c(2, 1)) {
+IncrementsRelativeDLTCurrent <- function(intervals = c(0L, 1L),
+                                         increments = c(2L, 1L)) {
+  assert_integerish(intervals, lower = 0, any.missing = FALSE)
+  assert_numeric(increments, any.missing = FALSE, lower = 0)
+
   .IncrementsRelativeDLTCurrent(
-    dlt_intervals = safeInteger(dlt_intervals),
+    intervals = as.integer(intervals),
     increments = increments
   )
 }
@@ -1113,7 +1140,7 @@ IncrementsRelativeDLTCurrent <- function(dlt_intervals = c(0, 1),
 #' @note Typically, end users will not use the `.DefaultIncrementsRelativeDLTCurrent()` function.
 #' @export
 .DefaultIncrementsRelativeDLTCurrent <- function() { # nolint
-  IncrementsRelativeDLTCurrent(dlt_intervals = c(0L, 1L, 3L), increments = c(1, 0.33, 0.2))
+  IncrementsRelativeDLTCurrent(intervals = c(0L, 1L, 3L), increments = c(1, 0.33, 0.2))
 }
 
 # IncrementsRelativeParts ----
@@ -1181,9 +1208,12 @@ IncrementsRelativeDLTCurrent <- function(dlt_intervals = c(0, 1),
 #' @example examples/Rules-class-IncrementsRelative-DataParts.R
 #'
 IncrementsRelativeParts <- function(dlt_start, clean_start, ...) {
+  assert_integerish(dlt_start)
+  assert_integerish(clean_start)
+
   .IncrementsRelativeParts(
-    dlt_start = safeInteger(dlt_start),
-    clean_start = safeInteger(clean_start),
+    dlt_start = as.integer(dlt_start),
+    clean_start = as.integer(clean_start),
     ...
   )
 }
@@ -1247,8 +1277,12 @@ IncrementsRelativeParts <- function(dlt_start, clean_start, ...) {
 #' @example examples/Rules-class-IncrementsDoseLevels.R
 #'
 IncrementsDoseLevels <- function(levels = 1L, basis_level = "last") {
+  assert_count(levels, positive = TRUE)
+  assert_string(basis_level)
+  assert_subset(basis_level, c("last", "max"))
+
   .IncrementsDoseLevels(
-    levels = safeInteger(levels),
+    levels = as.integer(levels),
     basis_level = basis_level
   )
 }
@@ -1366,7 +1400,7 @@ IncrementsHSRBeta <- function(target = 0.3,
   slots = c(increments_list = "list"),
   prototype = prototype(
     increments_list = list(
-      IncrementsRelativeDLT(dlt_intervals = c(0L, 1L), increments = c(2, 1)),
+      IncrementsRelativeDLT(intervals = c(0L, 1L), increments = c(2, 1)),
       IncrementsRelative(intervals = c(0, 2), increments = c(2, 1))
     )
   ),
@@ -1394,7 +1428,7 @@ IncrementsMin <- function(increments_list) {
 .DefaultIncrementsMin <- function() {
   IncrementsMin(
     increments_list = list(
-      IncrementsRelativeDLT(dlt_intervals = c(0, 1, 3), increments = c(1, 0.33, 0.2)),
+      IncrementsRelativeDLT(intervals = c(0, 1, 3), increments = c(1, 0.33, 0.2)),
       IncrementsRelative(intervals = c(0, 20), increments = c(1, 0.33))
     )
   )
@@ -1410,7 +1444,14 @@ IncrementsMin <- function(increments_list) {
 #'
 #' [`Stopping`] is a class for stopping rules.
 #'
-#' @seealso [`StoppingMissingDose`], [`StoppingList`], [`StoppingCohortsNearDose`], [`StoppingPatientsNearDose`],
+#' @slot report_label (`string`)\cr a label for the stopping report. The meaning
+#'   of this parameter is twofold. If it is equal to `NA_character_` (default),
+#'   the `report_label` will not be used in the report at all. Otherwise, if it
+#'   is specified as an empty character (i.e. `character(0)`) in a user constructor,
+#'   then a default, class-specific label will be created for this slot.
+#'   Finally, for the remaining cases, a user can provide a custom label.
+#'
+#' @seealso [`StoppingList`], [`StoppingCohortsNearDose`], [`StoppingPatientsNearDose`],
 #'   [`StoppingMinCohorts`], [`StoppingMinPatients`], [`StoppingTargetProb`],
 #'   [`StoppingMTDdistribution`], [`StoppingTargetBiomarker`], [`StoppingHighestDose`]
 #'   [`StoppingMTDCV`], [`StoppingLowestDoseHSRBeta`], [`StoppingSpecificDose`].
@@ -1419,8 +1460,21 @@ IncrementsMin <- function(increments_list) {
 #' @export
 #'
 setClass(
-  Class = "Stopping"
+  Class = "Stopping",
+  contains = "CrmPackClass",
+  slots = c(report_label = "character"),
+  prototype = prototype(report_label = character(0))
 )
+
+
+## default constructor ----
+
+#' @rdname CohortSize-class
+#' @note Typically, end users will not use the `DefaultCohortSize()` function.
+#' @export
+.DefaultCohortSize <- function() {
+  stop(paste0("Class CohortSize should not be instantiated directly.  Please use one of its subclasses instead."))
+}
 
 # StoppingMissingDose ----
 
@@ -1444,12 +1498,18 @@ setClass(
 ## constructor ----
 
 #' @rdname StoppingMissingDose-class
-#'
+#' @param report_label (`string` or `NA`)\cr see slot definition.
 #' @example examples/Rules-class-StoppingMissingDose.R
 #' @export
 #'
-StoppingMissingDose <- function() {
-  .StoppingMissingDose()
+StoppingMissingDose <- function(
+    report_label = NA_character_) {
+  report_label <- h_default_if_empty(
+    as.character(report_label),
+    paste("Stopped because of missing dose")
+  )
+
+  .StoppingMissingDose(report_label = report_label)
 }
 
 ## default constructor ----
@@ -1501,15 +1561,26 @@ StoppingMissingDose <- function() {
 #'
 #' @param nCohorts (`number`)\cr see slot definition.
 #' @param percentage (`number`)\cr see slot definition.
+#' @param report_label (`string` or `NA`)\cr see slot definition.
 #'
 #' @example examples/Rules-class-StoppingCohortsNearDose.R
 #' @export
 #'
 StoppingCohortsNearDose <- function(nCohorts = 2L,
-                                    percentage = 50) {
+                                    percentage = 50,
+                                    report_label = NA_character_) {
+  assert_count(nCohorts, positive = TRUE)
+  assert_numeric(percentage, lower = 0)
+
+  report_label <- h_default_if_empty(
+    as.character(report_label),
+    paste("\u2265", nCohorts, "cohorts dosed in", percentage, "% dose range around NBD")
+  )
+
   .StoppingCohortsNearDose(
-    nCohorts = safeInteger(nCohorts),
-    percentage = percentage
+    nCohorts = as.integer(nCohorts),
+    percentage = percentage,
+    report_label = report_label
   )
 }
 
@@ -1519,7 +1590,10 @@ StoppingCohortsNearDose <- function(nCohorts = 2L,
 #' @note Typically, end users will not use the `.DefaultStoppingCohortsNearDose()` function.
 #' @export
 .DefaultStoppingCohortsNearDose <- function() { # nolint
-  StoppingCohortsNearDose(nCohorts = 3L, percentage = 0.2)
+  StoppingCohortsNearDose(
+    nCohorts = 3L,
+    percentage = 0.2
+  )
 }
 
 
@@ -1561,15 +1635,26 @@ StoppingCohortsNearDose <- function(nCohorts = 2L,
 #'
 #' @param nPatients (`number`)\cr see slot definition.
 #' @param percentage (`number`)\cr see slot definition.
+#' @param report_label (`string` or `NA`)\cr see slot definition.
 #'
 #' @example examples/Rules-class-StoppingPatientsNearDose.R
 #' @export
 #'
-StoppingPatientsNearDose <- function(nPatients,
-                                     percentage = 50) {
+StoppingPatientsNearDose <- function(nPatients = 10L,
+                                     percentage = 50,
+                                     report_label = NA_character_) {
+  assert_count(nPatients, positive = TRUE)
+  assert_number(percentage, lower = 0, upper = 100)
+
+  report_label <- h_default_if_empty(
+    as.character(report_label),
+    paste("\u2265", nPatients, "patients dosed in", percentage, "% dose range around NBD")
+  )
+
   .StoppingPatientsNearDose(
-    nPatients = safeInteger(nPatients),
-    percentage = percentage
+    nPatients = as.integer(nPatients),
+    percentage = percentage,
+    report_label = report_label
   )
 }
 
@@ -1579,7 +1664,11 @@ StoppingPatientsNearDose <- function(nPatients,
 #' @note Typically, end users will not use the `.DefaultStoppingPatientsNearDose()` function.
 #' @export
 .DefaultStoppingPatientsNearDose <- function() { # nolint
-  StoppingPatientsNearDose(nPatients = 9L, percentage = 20)
+  StoppingPatientsNearDose(
+    nPatients = 9L,
+    percentage = 20,
+    report_label = NA_character_
+  )
 }
 
 # StoppingMinCohorts ----
@@ -1611,12 +1700,24 @@ StoppingPatientsNearDose <- function(nPatients,
 #' @rdname StoppingMinCohorts-class
 #'
 #' @param nCohorts (`number`)\cr see slot definition.
+#' @param report_label (`string` or `NA`)\cr see slot definition.
 #'
 #' @example examples/Rules-class-StoppingMinCohorts.R
 #' @export
 #'
-StoppingMinCohorts <- function(nCohorts) {
-  .StoppingMinCohorts(nCohorts = safeInteger(nCohorts))
+StoppingMinCohorts <- function(nCohorts = 2L,
+                               report_label = NA_character_) {
+  assert_count(nCohorts, positive = TRUE)
+
+  report_label <- h_default_if_empty(
+    as.character(report_label),
+    paste("\u2265", nCohorts, "cohorts dosed")
+  )
+
+  .StoppingMinCohorts(
+    nCohorts = as.integer(nCohorts),
+    report_label = report_label
+  )
 }
 
 ## default constructor ----
@@ -1625,7 +1726,9 @@ StoppingMinCohorts <- function(nCohorts) {
 #' @note Typically, end users will not use the `.DefaultStoppingMinCohorts()` function.
 #' @export
 .DefaultStoppingMinCohorts <- function() {
-  StoppingMinCohorts(nCohorts = 6L)
+  StoppingMinCohorts(
+    nCohorts = 6L
+  )
 }
 
 # StoppingMinPatients ----
@@ -1657,12 +1760,24 @@ StoppingMinCohorts <- function(nCohorts) {
 #' @rdname StoppingMinPatients-class
 #'
 #' @param nPatients (`number`)\cr see slot definition.
+#' @param report_label (`string` or `NA`)\cr see slot definition.
 #'
 #' @example examples/Rules-class-StoppingMinPatients.R
 #' @export
 #'
-StoppingMinPatients <- function(nPatients) {
-  .StoppingMinPatients(nPatients = safeInteger(nPatients))
+StoppingMinPatients <- function(nPatients = 20L,
+                                report_label = NA_character_) {
+  assert_count(nPatients, positive = TRUE)
+
+  report_label <- h_default_if_empty(
+    as.character(report_label),
+    paste("\u2265", nPatients, "patients dosed")
+  )
+
+  .StoppingMinPatients(
+    nPatients = as.integer(nPatients),
+    report_label = report_label
+  )
 }
 
 ## default constructor ----
@@ -1671,7 +1786,9 @@ StoppingMinPatients <- function(nPatients) {
 #' @note Typically, end users will not use the `.DefaultStoppingMinPatients()` function.
 #' @export
 .DefaultStoppingMinPatients <- function() {
-  StoppingMinPatients(nPatients = 20L)
+  StoppingMinPatients(
+    nPatients = 20L
+  )
 }
 
 # StoppingTargetProb ----
@@ -1712,15 +1829,24 @@ StoppingMinPatients <- function(nPatients) {
 #'
 #' @param target (`number`)\cr see slot definition.
 #' @param prob (`proportion`)\cr see slot definition.
+#' @param report_label (`string` or `NA`)\cr see slot definition.
 #'
 #' @example examples/Rules-class-StoppingTargetProb.R
 #' @export
 #'
-StoppingTargetProb <- function(target,
-                               prob) {
+StoppingTargetProb <- function(target = c(0.2, 0.35),
+                               prob = 0.4,
+                               report_label = NA_character_) {
+  assert_numeric(target, len = 2)
+  report_label <- h_default_if_empty(
+    as.character(report_label),
+    paste0("P(", target[1], " \u2264 prob(DLE | NBD) \u2264 ", target[2], ") \u2265 ", prob)
+  )
+
   .StoppingTargetProb(
     target = target,
-    prob = prob
+    prob = prob,
+    report_label = report_label
   )
 }
 
@@ -1730,7 +1856,10 @@ StoppingTargetProb <- function(target,
 #' @note Typically, end users will not use the `.DefaultStoppingTargetProb()` function.
 #' @export
 .DefaultStoppingTargetProb <- function() {
-  StoppingTargetProb(target = c(0.2, 0.35), prob = 0.5)
+  StoppingTargetProb(
+    target = c(0.2, 0.35),
+    prob = 0.5
+  )
 }
 
 # StoppingMTDdistribution ----
@@ -1780,17 +1909,25 @@ StoppingTargetProb <- function(target,
 #' @param target (`proportion`)\cr see slot definition.
 #' @param thresh (`proportion`)\cr see slot definition.
 #' @param prob (`proportion`)\cr see slot definition.
+#' @param report_label (`string` or `NA`)\cr see slot definition.
 #'
 #' @example examples/Rules-class-StoppingMTDdistribution.R
 #' @export
 #'
-StoppingMTDdistribution <- function(target,
-                                    thresh,
-                                    prob) {
+StoppingMTDdistribution <- function(target = 0.33,
+                                    thresh = 0.5,
+                                    prob = 0.9,
+                                    report_label = NA_character_) {
+  report_label <- h_default_if_empty(
+    as.character(report_label),
+    paste0("P(MTD > ", thresh, " * NBD | P(DLE) = ", target, ") \u2265 ", prob)
+  )
+
   .StoppingMTDdistribution(
     target = target,
     thresh = thresh,
-    prob = prob
+    prob = prob,
+    report_label = report_label
   )
 }
 
@@ -1800,7 +1937,11 @@ StoppingMTDdistribution <- function(target,
 #' @note Typically, end users will not use the `.DefaultStoppingMTDDistribution()` function.
 #' @export
 .DefaultStoppingMTDdistribution <- function() {
-  StoppingMTDdistribution(target = 0.33, thresh = 0.5, prob = 0.9)
+  StoppingMTDdistribution(
+    target = 0.33,
+    thresh = 0.5,
+    prob = 0.9
+  )
 }
 
 # StoppingMTDCV ----
@@ -1838,23 +1979,29 @@ StoppingMTDdistribution <- function(target,
   validity = v_stopping_mtd_cv
 )
 
-
-
 ## constructor ----
 
 #' @rdname StoppingMTDCV-class
 #'
 #' @param target (`proportion`)\cr see slot definition.
 #' @param thresh_cv (`number`)\cr see slot definition.
+#' @param report_label (`string` or `NA`)\cr see slot definition.
 #'
 #' @export
 #' @example examples/Rules-class-StoppingMTDCV.R
 #'
 StoppingMTDCV <- function(target = 0.3,
-                          thresh_cv = 40) {
+                          thresh_cv = 40,
+                          report_label = NA_character_) {
+  report_label <- h_default_if_empty(
+    as.character(report_label),
+    paste("CV(MTD) >", target)
+  )
+
   .StoppingMTDCV(
     target = target,
-    thresh_cv = thresh_cv
+    thresh_cv = thresh_cv,
+    report_label = report_label
   )
 }
 
@@ -1865,7 +2012,10 @@ StoppingMTDCV <- function(target = 0.3,
 #'
 #' @export
 .DefaultStoppingMTDCV <- function() {
-  StoppingMTDCV(target = 0.3, thresh_cv = 40)
+  StoppingMTDCV(
+    target = 0.3,
+    thresh_cv = 40
+  )
 }
 
 # StoppingLowestDoseHSRBeta ----
@@ -1925,6 +2075,7 @@ StoppingMTDCV <- function(target = 0.3,
 #' @param prob (`proportion`)\cr see slot definition.
 #' @param a (`number`)\cr see slot definition.
 #' @param b (`number`)\cr see slot definition.
+#' @param report_label (`string` or `NA`)\cr see slot definition.
 #'
 #' @export
 #' @example examples/Rules-class-StoppingLowestDoseHSRBeta.R
@@ -1932,12 +2083,19 @@ StoppingMTDCV <- function(target = 0.3,
 StoppingLowestDoseHSRBeta <- function(target = 0.3,
                                       prob = 0.95,
                                       a = 1,
-                                      b = 1) {
+                                      b = 1,
+                                      report_label = NA_character_) {
+  report_label <- h_default_if_empty(
+    as.character(report_label),
+    paste0("P\u03B2(lowest dose > P(DLE) = ", target, ") > ", prob)
+  )
+
   .StoppingLowestDoseHSRBeta(
     target = target,
     prob = prob,
     a = a,
-    b = b
+    b = b,
+    report_label = report_label
   )
 }
 
@@ -1947,7 +2105,12 @@ StoppingLowestDoseHSRBeta <- function(target = 0.3,
 #' @note Typically, end users will not use the `.DefaultStoppingLowestDoseHSRBeta()` function.
 #' @export
 .DefaultStoppingLowestDoseHSRBeta <- function() { # nolint
-  StoppingLowestDoseHSRBeta(target = 0.3, prob = 0.95, a = 1, b = 1)
+  StoppingLowestDoseHSRBeta(
+    target = 0.3,
+    prob = 0.95,
+    a = 1,
+    b = 1
+  )
 }
 
 # StoppingTargetBiomarker ----
@@ -1997,17 +2160,31 @@ StoppingLowestDoseHSRBeta <- function(target = 0.3,
 #' @param target (`numeric`)\cr see slot definition.
 #' @param prob (`proportion`)\cr see slot definition.
 #' @param is_relative (`flag`)\cr see slot definition.
+#' @param report_label (`string` or `NA`)\cr see slot definition.
 #'
 #' @export
 #' @example examples/Rules-class-StoppingTargetBiomarker.R
 #'
-StoppingTargetBiomarker <- function(target,
-                                    prob,
-                                    is_relative = TRUE) {
+StoppingTargetBiomarker <- function(target = c(0.9, 1),
+                                    prob = 0.3,
+                                    is_relative = TRUE,
+                                    report_label = NA_character_) {
+  assert_numeric(target, len = 2)
+  assert_flag(is_relative)
+
+  report_label <- h_default_if_empty(
+    as.character(report_label),
+    paste0(
+      "P(", target[1], " \u2264 ", "Biomarker \u2264 ", target[2], ") \u2265 ", prob,
+      ifelse(is_relative, " (relative)", " (absolute)")
+    )
+  )
+
   .StoppingTargetBiomarker(
     target = target,
     is_relative = is_relative,
-    prob = prob
+    prob = prob,
+    report_label = report_label
   )
 }
 
@@ -2017,7 +2194,11 @@ StoppingTargetBiomarker <- function(target,
 #' @note Typically, end users will not use the `.DefaultStoppingTargetBiomarker()` function.
 #' @export
 .DefaultStoppingTargetBiomarker <- function() {
-  StoppingTargetBiomarker(target = c(0.9, 1), prob = 0.5)
+  StoppingTargetBiomarker(
+    target = c(0.9, 1),
+    prob = 0.5,
+    is_relative = TRUE
+  )
 }
 
 # StoppingSpecificDose ----
@@ -2053,14 +2234,23 @@ StoppingTargetBiomarker <- function(target,
 #'
 #' @param rule (`Stopping`)\cr see slot definition.
 #' @param dose (`number`)\cr see slot definition.
+#' @param report_label (`string` or `NA`) \cr see slot definition.
 #'
 #' @export
 #' @example examples/Rules-class-StoppingSpecificDose.R
 #'
-StoppingSpecificDose <- function(rule, dose) {
+StoppingSpecificDose <- function(rule = StoppingTargetProb(target = c(0, 0.3), prob = 0.8),
+                                 dose = 80,
+                                 report_label = NA_character_) {
+  report_label <- h_default_if_empty(
+    as.character(report_label),
+    paste0("Dose ", dose, " used for testing a stopping rule")
+  )
+
   .StoppingSpecificDose(
     rule = rule,
-    dose = positive_number(dose)
+    dose = positive_number(dose),
+    report_label = report_label
   )
 }
 
@@ -2098,12 +2288,18 @@ StoppingSpecificDose <- function(rule, dose) {
 ## constructor ----
 
 #' @rdname StoppingHighestDose-class
+#' @param report_label (`string` or `NA`)\cr see slot definition.
 #'
 #' @export
 #' @example examples/Rules-class-StoppingHighestDose.R
 #'
-StoppingHighestDose <- function() {
-  .StoppingHighestDose()
+StoppingHighestDose <- function(report_label = NA_character_) {
+  report_label <- h_default_if_empty(
+    as.character(report_label),
+    "NBD is the highest dose"
+  )
+
+  .StoppingHighestDose(report_label = report_label)
 }
 
 ## default constructor ----
@@ -2114,6 +2310,161 @@ StoppingHighestDose <- function() {
 .DefaultStoppingHighestDose <- function() {
   StoppingHighestDose()
 }
+
+# StoppingTDCIRatio ----
+
+## class ----
+
+#' `StoppingTDCIRatio`
+#'
+#' @description `r lifecycle::badge("stable")`
+#'
+#' [`StoppingTDCIRatio`] is the class for testing a stopping rule that is based
+#' on a target ratio of the 95% credibility interval. Specifically, this is the
+#' ratio of the upper to the lower bound of the 95% credibility interval's
+#' estimate of the target dose (i.e. a dose that corresponds to a given target
+#' probability of the occurrence of a DLT `prob_target`).
+#'
+#' @slot target_ratio (`numeric`)\cr target for the ratio of the 95% credibility
+#'   interval's estimate, that is required to stop a trial.
+#' @slot prob_target (`proportion`)\cr the target probability of the occurrence
+#'   of a DLT.
+#'
+#' @aliases StoppingTDCIRatio
+#' @export
+#'
+.StoppingTDCIRatio <- setClass(
+  Class = "StoppingTDCIRatio",
+  slots = c(
+    target_ratio = "numeric",
+    prob_target = "numeric"
+  ),
+  prototype = prototype(
+    target_ratio = 5,
+    prob_target = 0.3
+  ),
+  contains = "Stopping",
+  validity = v_stopping_tdci_ratio
+)
+
+## constructor ----
+
+#' @rdname StoppingTDCIRatio-class
+#'
+#' @param target_ratio (`numeric`)\cr see slot definition.
+#' @param prob_target (`proportion`)\cr see slot definition.
+#' @param report_label (`string` or `NA`)\cr see slot definition.
+#'
+#' @export
+#' @example examples/Rules-class-StoppingTDCIRatio.R
+#'
+StoppingTDCIRatio <- function(target_ratio = 5,
+                              prob_target = 0.3,
+                              report_label = NA_character_) {
+  report_label <- h_default_if_empty(
+    as.character(report_label),
+    paste("TD", target_ratio, "for", prob_target, "target prob")
+  )
+
+  .StoppingTDCIRatio(
+    target_ratio = target_ratio,
+    prob_target = prob_target,
+    report_label = report_label
+  )
+}
+
+## default constructor ----
+
+#' @rdname StoppingTDCIRatio-class
+#' @note Typically, end users will not use the `.DefaultStoppingTDCIRatio()` function.
+#' @export
+.DefaultStoppingTDCIRatio <- function() {
+  StoppingTDCIRatio(
+    target_ratio = 5,
+    prob_target = 0.3
+  )
+}
+
+# StoppingMaxGainCIRatio ----
+
+## class ----
+
+#' `StoppingMaxGainCIRatio`
+#'
+#' @description `r lifecycle::badge("stable")`
+#'
+#' [`StoppingMaxGainCIRatio`] is the class for testing a stopping rule that is based
+#' on a target ratio of the 95% credibility interval. Specifically, this is the
+#' ratio of the upper to the lower bound of the 95% credibility interval's
+#' estimate of the:
+#' (1) target dose (i.e. a dose that corresponds to a given target
+#' probability of the occurrence of a DLT `prob_target`), or
+#' (2) max gain dose (i.e. a dose which gives the maximum gain),
+#' depending on which one out of these two is smaller.
+#'
+#' @slot target_ratio (`numeric`)\cr target for the ratio of the 95% credibility
+#'   interval's estimate, that is required to stop a trial.
+#' @slot prob_target (`proportion`)\cr the target probability of the occurrence
+#'   of a DLT.
+#'
+#' @aliases StoppingMaxGainCIRatio
+#' @export
+#'
+.StoppingMaxGainCIRatio <- setClass(
+  Class = "StoppingMaxGainCIRatio",
+  slots = c(
+    target_ratio = "numeric",
+    prob_target = "numeric"
+  ),
+  prototype = prototype(
+    target_ratio = 5,
+    prob_target = 0.3
+  ),
+  contains = "Stopping",
+  validity = v_stopping_tdci_ratio
+)
+
+## constructor ----
+
+#' @rdname StoppingMaxGainCIRatio-class
+#'
+#' @param target_ratio (`numeric`)\cr see slot definition.
+#' @param prob_target (`proportion`)\cr see slot definition.
+#' @param report_label (`string` or `NA`)\cr see slot definition.
+#'
+#' @export
+#' @example examples/Rules-class-StoppingMaxGainCIRatio.R
+#'
+StoppingMaxGainCIRatio <- function(target_ratio = 5,
+                                   prob_target = 0.3,
+                                   report_label = NA_character_) {
+  report_label <- h_default_if_empty(
+    as.character(report_label),
+    paste("GStar", target_ratio, "for", prob_target, "target prob")
+  )
+
+  .StoppingMaxGainCIRatio(
+    target_ratio = target_ratio,
+    prob_target = prob_target,
+    report_label = report_label
+  )
+}
+
+
+## default constructor ----
+
+#' @rdname StoppingMaxGainCIRatio-class
+#' @examples
+#' .DefaultStoppingMaxGainCIRatio()
+#' @export
+.DefaultStoppingMaxGainCIRatio <- function() {
+  StoppingMaxGainCIRatio(
+    target_ratio = 5,
+    prob_target = 0.3
+  )
+}
+
+
 
 # StoppingList ----
 
@@ -2199,13 +2550,15 @@ StoppingList <- function(stop_list, summary) {
 #' to be `TRUE`.
 #'
 #' @slot stop_list (`list`)\cr list of stopping rules.
-#'
+#' @slot report_label label for reporting
 #' @aliases StoppingAll
 #' @export
 #'
 .StoppingAll <- setClass(
   Class = "StoppingAll",
-  slots = c(stop_list = "list"),
+  slots = c(
+    stop_list = "list"
+  ),
   prototype = prototype(
     stop_list = list(
       StoppingMinPatients(50),
@@ -2221,14 +2574,16 @@ StoppingList <- function(stop_list, summary) {
 #' @rdname StoppingAll-class
 #'
 #' @param stop_list (`list`)\cr see slot definition.
-#'
+#' @param report_label (`string`) \cr see slot definition.
 #' @export
 #' @example examples/Rules-class-StoppingAll.R
 #'
-StoppingAll <- function(stop_list) {
-  .StoppingAll(stop_list = stop_list)
+StoppingAll <- function(stop_list, report_label = NA_character_) {
+  .StoppingAll(
+    stop_list = stop_list,
+    report_label = report_label
+  )
 }
-
 ## default constructor ----
 
 #' @rdname StoppingAll-class
@@ -2258,13 +2613,16 @@ StoppingAll <- function(stop_list) {
 #' this rule to be `TRUE`.
 #'
 #' @slot stop_list (`list`)\cr list of stopping rules.
+#' @slot report_label label for reporting
 #'
 #' @aliases StoppingAny
 #' @export
 #'
 .StoppingAny <- setClass(
   Class = "StoppingAny",
-  slots = c(stop_list = "list"),
+  slots = c(
+    stop_list = "list"
+  ),
   prototype = prototype(
     stop_list = list(StoppingMinPatients(50), StoppingMinCohorts(5))
   ),
@@ -2277,12 +2635,16 @@ StoppingAll <- function(stop_list) {
 #' @rdname StoppingAny-class
 #'
 #' @param stop_list (`list`)\cr see slot definition.
+#' @param report_label (`string`)\cr see slot definition.
 #'
 #' @export
 #' @example examples/Rules-class-StoppingAny.R
 #'
-StoppingAny <- function(stop_list) {
-  .StoppingAny(stop_list = stop_list)
+StoppingAny <- function(stop_list, report_label = NA_character_) {
+  .StoppingAny(
+    stop_list = stop_list,
+    report_label = report_label
+  )
 }
 
 ## default constructor ----
@@ -2300,133 +2662,6 @@ StoppingAny <- function(stop_list) {
   )
 }
 
-# StoppingTDCIRatio ----
-
-## class ----
-
-#' `StoppingTDCIRatio`
-#'
-#' @description `r lifecycle::badge("stable")`
-#'
-#' [`StoppingTDCIRatio`] is the class for testing a stopping rule that is based
-#' on a target ratio of the 95% credibility interval. Specifically, this is the
-#' ratio of the upper to the lower bound of the 95% credibility interval's
-#' estimate of the target dose (i.e. a dose that corresponds to a given target
-#' probability of the occurrence of a DLT `prob_target`).
-#'
-#' @slot target_ratio (`numeric`)\cr target for the ratio of the 95% credibility
-#'   interval's estimate, that is required to stop a trial.
-#' @slot prob_target (`proportion`)\cr the target probability of the occurrence
-#'   of a DLT.
-#'
-#' @aliases StoppingTDCIRatio
-#' @export
-#'
-.StoppingTDCIRatio <- setClass(
-  Class = "StoppingTDCIRatio",
-  slots = c(
-    target_ratio = "numeric",
-    prob_target = "numeric"
-  ),
-  prototype = prototype(
-    target_ratio = 5,
-    prob_target = 0.3
-  ),
-  contains = "Stopping",
-  validity = v_stopping_tdci_ratio
-)
-
-## constructor ----
-
-#' @rdname StoppingTDCIRatio-class
-#'
-#' @param target_ratio (`numeric`)\cr see slot definition.
-#' @param prob_target (`proportion`)\cr see slot definition.
-#'
-#' @export
-#' @example examples/Rules-class-StoppingTDCIRatio.R
-#'
-StoppingTDCIRatio <- function(target_ratio, prob_target) {
-  .StoppingTDCIRatio(
-    target_ratio = target_ratio,
-    prob_target = prob_target
-  )
-}
-
-## default constructor ----
-
-#' @rdname StoppingTDCIRatio-class
-#' @note Typically, end users will not use the `.DefaultStoppingTDCIRatio()` function.
-#' @export
-.DefaultStoppingTDCIRatio <- function() {
-  StoppingTDCIRatio(target_ratio = 5, prob_target = 0.3)
-}
-
-# StoppingMaxGainCIRatio ----
-
-## class ----
-
-#' `StoppingMaxGainCIRatio`
-#'
-#' @description `r lifecycle::badge("stable")`
-#'
-#' [`StoppingMaxGainCIRatio`] is the class for testing a stopping rule that is based
-#' on a target ratio of the 95% credibility interval. Specifically, this is the
-#' ratio of the upper to the lower bound of the 95% credibility interval's
-#' estimate of the:
-#' (1) target dose (i.e. a dose that corresponds to a given target
-#' probability of the occurrence of a DLT `prob_target`), or
-#' (2) max gain dose (i.e. a dose which gives the maximum gain),
-#' depending on which one out of these two is smaller.
-#'
-#' @slot target_ratio (`numeric`)\cr target for the ratio of the 95% credibility
-#'   interval's estimate, that is required to stop a trial.
-#' @slot prob_target (`proportion`)\cr the target probability of the occurrence
-#'   of a DLT.
-#'
-#' @aliases StoppingMaxGainCIRatio
-#' @export
-#'
-.StoppingMaxGainCIRatio <- setClass(
-  Class = "StoppingMaxGainCIRatio",
-  slots = c(
-    target_ratio = "numeric",
-    prob_target = "numeric"
-  ),
-  prototype = prototype(
-    target_ratio = 5,
-    prob_target = 0.3
-  ),
-  contains = "Stopping",
-  validity = v_stopping_tdci_ratio
-)
-
-## constructor ----
-
-#' @rdname StoppingMaxGainCIRatio-class
-#'
-#' @param target_ratio (`numeric`)\cr see slot definition.
-#' @param prob_target (`proportion`)\cr see slot definition.
-#'
-#' @export
-#' @example examples/Rules-class-StoppingMaxGainCIRatio.R
-#'
-StoppingMaxGainCIRatio <- function(target_ratio, prob_target) {
-  .StoppingMaxGainCIRatio(
-    target_ratio = target_ratio,
-    prob_target = prob_target
-  )
-}
-
-## default constructor ----
-
-#' @rdname StoppingMaxGainCIRatio-class
-#' @examples
-#' .DefaultStoppingMaxGainCIRatio()
-#' @export
-.DefaultStoppingMaxGainCIRatio <- function() {
-  StoppingMaxGainCIRatio(target_ratio = 5, prob_target = 0.3)
-}
 
 # CohortSize ----
 
@@ -2445,8 +2680,18 @@ StoppingMaxGainCIRatio <- function(target_ratio, prob_target) {
 #' @export
 #'
 setClass(
-  Class = "CohortSize"
+  Class = "CohortSize",
+  contains = "CrmPackClass"
 )
+
+## default constructor
+
+#' @rdname CohortSize-class
+#' @note Typically, end users will not use the `DefaultCohortSize()` function.
+#' @export
+.DefaultCohortSize <- function() {
+  stop(paste0("Class CohortSize should not be instantiated directly.  Please use one of its subclasses instead."))
+}
 
 # CohortSizeRange ----
 
@@ -2491,9 +2736,12 @@ setClass(
 #' @example examples/Rules-class-CohortSizeRange.R
 #'
 CohortSizeRange <- function(intervals, cohort_size) {
+  # Cohort size 0 is needed to allow for no-placebo designs
+  assert_integerish(cohort_size, lower = 0, any.missing = FALSE)
+
   .CohortSizeRange(
     intervals = intervals,
-    cohort_size = safeInteger(cohort_size)
+    cohort_size = as.integer(cohort_size)
   )
 }
 
@@ -2515,10 +2763,11 @@ CohortSizeRange <- function(intervals, cohort_size) {
 #' @description `r lifecycle::badge("stable")`
 #'
 #' [`CohortSizeDLT`] is the class for cohort size based on number of DLTs.
-#' @slot dlt_intervals (`integer`)\cr a vector with the left bounds of the
+
+#' @slot intervals (`integer`)\cr a vector with the left bounds of the
 #'   relevant DLT intervals.
 #' @slot cohort_size (`integer`)\cr a vector with the cohort sizes corresponding
-#'   to the elements of `dlt_intervals`.
+#'   to the elements of `intervals`.
 #'
 #' @aliases CohortSizeDLT
 #' @export
@@ -2526,11 +2775,11 @@ CohortSizeRange <- function(intervals, cohort_size) {
 .CohortSizeDLT <- setClass(
   Class = "CohortSizeDLT",
   slots = c(
-    dlt_intervals = "integer",
+    intervals = "integer",
     cohort_size = "integer"
   ),
   prototype = prototype(
-    dlt_intervals = c(0L, 1L),
+    intervals = c(0L, 1L),
     cohort_size = c(1L, 3L)
   ),
   contains = "CohortSize",
@@ -2541,16 +2790,20 @@ CohortSizeRange <- function(intervals, cohort_size) {
 
 #' @rdname CohortSizeDLT-class
 #'
-#' @param dlt_intervals (`numeric`)\cr see slot definition.
+#' @param intervals (`numeric`)\cr see slot definition.
 #' @param cohort_size (`numeric`)\cr see slot definition.
 #'
 #' @export
 #' @example examples/Rules-class-CohortSizeDLT.R
 #'
-CohortSizeDLT <- function(dlt_intervals, cohort_size) {
+CohortSizeDLT <- function(intervals, cohort_size) {
+  assert_integerish(intervals, lower = 0, any.missing = FALSE)
+  # Cohort size 0 is needed to allow for no-placebo designs
+  assert_integerish(cohort_size, lower = 0, any.missing = FALSE)
+
   .CohortSizeDLT(
-    dlt_intervals = safeInteger(dlt_intervals),
-    cohort_size = safeInteger(cohort_size)
+    intervals = as.integer(intervals),
+    cohort_size = as.integer(cohort_size)
   )
 }
 
@@ -2560,7 +2813,7 @@ CohortSizeDLT <- function(dlt_intervals, cohort_size) {
 #' @note Typically, end users will not use the `.DefaultCohortSizeDLT()` function.
 #' @export
 .DefaultCohortSizeDLT <- function() {
-  CohortSizeDLT(dlt_intervals = c(0L, 1L), cohort_size = c(1L, 3L))
+  CohortSizeDLT(intervals = c(0L, 1L), cohort_size = c(1L, 3L))
 }
 
 
@@ -2597,7 +2850,9 @@ CohortSizeDLT <- function(dlt_intervals, cohort_size) {
 #' @example examples/Rules-class-CohortSizeConst.R
 #'
 CohortSizeConst <- function(size) {
-  .CohortSizeConst(size = safeInteger(size))
+  # Cohort size 0 is needed to allow for no-placebo designs
+  assert_integerish(size, lower = 0)
+  .CohortSizeConst(size = as.integer(size))
 }
 
 ## default constructor ----
@@ -2621,7 +2876,7 @@ CohortSizeConst <- function(size) {
 #' part of the dose escalation. It works only in conjunction with [`DataParts`]
 #' objects.
 #'
-#' @slot sizes (`integer`)\cr a vector of length two with two sizes, one for
+#' @slot cohort_sizes (`integer`)\cr a vector of length two with two sizes, one for
 #'   part 1, and one for part 2 respectively.
 #'
 #' @aliases CohortSizeParts
@@ -2629,8 +2884,8 @@ CohortSizeConst <- function(size) {
 #'
 .CohortSizeParts <- setClass(
   Class = "CohortSizeParts",
-  slots = c(sizes = "integer"),
-  prototype = prototype(sizes = c(1L, 3L)),
+  slots = c(cohort_sizes = "integer"),
+  prototype = prototype(cohort_sizes = c(1L, 3L)),
   contains = "CohortSize",
   validity = v_cohort_size_parts
 )
@@ -2639,13 +2894,15 @@ CohortSizeConst <- function(size) {
 
 #' @rdname CohortSizeParts-class
 #'
-#' @param sizes (`numeric`)\cr see slot definition.
+#' @param cohort_sizes (`numeric`)\cr see slot definition.
 #'
 #' @export
 #' @example examples/Rules-class-CohortSizeParts.R
 #'
-CohortSizeParts <- function(sizes) {
-  .CohortSizeParts(sizes = safeInteger(sizes))
+CohortSizeParts <- function(cohort_sizes) {
+  # Cohort size 0 is needed to allow for no-placebo designs
+  assert_integerish(cohort_sizes, lower = 0, any.missing = FALSE)
+  .CohortSizeParts(cohort_sizes = as.integer(cohort_sizes))
 }
 
 ## default constructor ----
@@ -2654,7 +2911,7 @@ CohortSizeParts <- function(sizes) {
 #' @note Typically, end users will not use the `.DefaultCohortSizeParts()` function.
 #' @export
 .DefaultCohortSizeParts <- function() {
-  CohortSizeParts(sizes = c(1L, 3L))
+  CohortSizeParts(cohort_sizes = c(1L, 3L))
 }
 
 # CohortSizeMax ----
@@ -2666,11 +2923,11 @@ CohortSizeParts <- function(sizes) {
 #' @description `r lifecycle::badge("stable")`
 #'
 #' [`CohortSizeMax`] is the class for cohort size that is based on maximum of
-#' multiple cohort size rules. The `cohort_size_list` slot stores a set of cohort
+#' multiple cohort size rules. The `cohort_sizes` slot stores a set of cohort
 #' size rules, which are again the objects of class [`CohortSize`]. The maximum
 #' of these individual cohort sizes is taken to give the final cohort size.
 #'
-#' @slot cohort_size_list (`list`)\cr a list of cohort size rules, i.e. objects
+#' @slot cohort_sizes (`list`)\cr a list of cohort size rules, i.e. objects
 #' of class [`CohortSize`].
 #'
 #' @aliases CohortSizeMax
@@ -2678,11 +2935,11 @@ CohortSizeParts <- function(sizes) {
 #'
 .CohortSizeMax <- setClass(
   Class = "CohortSizeMax",
-  slots = c(cohort_size_list = "list"),
+  slots = c(cohort_sizes = "list"),
   prototype = prototype(
-    cohort_size_list = list(
+    cohort_sizes = list(
       CohortSizeRange(intervals = c(0, 30), cohort_size = c(1, 3)),
-      CohortSizeDLT(dlt_intervals = c(0, 1), cohort_size = c(1, 3))
+      CohortSizeDLT(intervals = c(0, 1), cohort_size = c(1, 3))
     )
   ),
   contains = "CohortSize",
@@ -2697,9 +2954,9 @@ CohortSizeParts <- function(sizes) {
 #' @export
 .DefaultCohortSizeMax <- function() {
   CohortSizeMax(
-    cohort_size_list = list(
+    cohort_sizes = list(
       CohortSizeRange(intervals = c(0, 10), cohort_size = c(1L, 3L)),
-      CohortSizeDLT(dlt_intervals = c(0L, 1L), cohort_size = c(1L, 3L))
+      CohortSizeDLT(intervals = c(0L, 1L), cohort_size = c(1L, 3L))
     )
   )
 }
@@ -2708,13 +2965,13 @@ CohortSizeParts <- function(sizes) {
 
 #' @rdname CohortSizeMax-class
 #'
-#' @param cohort_size_list (`list`)\cr see slot definition.
+#' @param cohort_sizes (`list`)\cr see slot definition.
 #'
 #' @export
 #' @example examples/Rules-class-CohortSizeMax.R
 #'
-CohortSizeMax <- function(cohort_size_list) {
-  .CohortSizeMax(cohort_size_list = cohort_size_list)
+CohortSizeMax <- function(cohort_sizes) {
+  .CohortSizeMax(cohort_sizes = cohort_sizes)
 }
 
 # CohortSizeMin ----
@@ -2726,11 +2983,11 @@ CohortSizeMax <- function(cohort_size_list) {
 #' @description `r lifecycle::badge("stable")`
 #'
 #' [`CohortSizeMin`] is the class for cohort size that is based on minimum of
-#' multiple cohort size rules. The `cohort_size_list` slot stores a set of cohort
+#' multiple cohort size rules. The `cohort_sizes` slot stores a set of cohort
 #' size rules, which are again the objects of class [`CohortSize`]. The minimum
 #' of these individual cohort sizes is taken to give the final cohort size.
 #'
-#' @slot cohort_size_list (`list`)\cr a list of cohort size rules, i.e. objects
+#' @slot cohort_sizes (`list`)\cr a list of cohort size rules, i.e. objects
 #' of class [`CohortSize`].
 #'
 #' @aliases CohortSizeMin
@@ -2738,12 +2995,12 @@ CohortSizeMax <- function(cohort_size_list) {
 #'
 .CohortSizeMin <- setClass(
   Class = "CohortSizeMin",
-  slots = c(cohort_size_list = "list"),
+  slots = c(cohort_sizes = "list"),
   prototype = prototype(
-    cohort_size_list =
+    cohort_sizes =
       list(
         CohortSizeRange(intervals = c(0, 30), cohort_size = c(1, 3)),
-        CohortSizeDLT(dlt_intervals = c(0, 1), cohort_size = c(1, 3))
+        CohortSizeDLT(intervals = c(0, 1), cohort_size = c(1, 3))
       )
   ),
   contains = "CohortSize",
@@ -2754,13 +3011,13 @@ CohortSizeMax <- function(cohort_size_list) {
 
 #' @rdname CohortSizeMin-class
 #'
-#' @param cohort_size_list (`list`)\cr see slot definition.
+#' @param cohort_sizes (`list`)\cr see slot definition.
 #'
 #' @export
 #' @example examples/Rules-class-CohortSizeMin.R
 #'
-CohortSizeMin <- function(cohort_size_list) {
-  .CohortSizeMin(cohort_size_list = cohort_size_list)
+CohortSizeMin <- function(cohort_sizes) {
+  .CohortSizeMin(cohort_sizes = cohort_sizes)
 }
 
 ## default constructor ----
@@ -2770,9 +3027,9 @@ CohortSizeMin <- function(cohort_size_list) {
 #' @export
 .DefaultCohortSizeMin <- function() {
   CohortSizeMin(
-    cohort_size_list = list(
+    cohort_sizes = list(
       CohortSizeRange(intervals = c(0, 10), cohort_size = c(1L, 3L)),
-      CohortSizeDLT(dlt_intervals = c(0L, 1L), cohort_size = c(1L, 3L))
+      CohortSizeDLT(intervals = c(0L, 1L), cohort_size = c(1L, 3L))
     )
   )
 }
@@ -2793,8 +3050,19 @@ CohortSizeMin <- function(cohort_size_list) {
 #' @export
 #'
 setClass(
-  Class = "SafetyWindow"
+  Class = "SafetyWindow",
+  contains = "CrmPackClass"
 )
+
+## default constructor ----
+
+#' @rdname SafetyWindow-class
+#' @note Typically, end users will not use the `.DefaultSafetyWindow()` function.
+#' @export
+.DefaultSafetyWindow <- function() {
+  stop(paste0("Class SafetyWindow cannot be instantiated directly.  Please use one of its subclasses instead."))
+}
+
 
 # SafetyWindowSize ----
 
@@ -2872,14 +3140,35 @@ SafetyWindowSize <- function(gap,
                              size,
                              follow,
                              follow_min) {
+  assert_integerish(follow, lower = 0)
+  assert_integerish(follow_min, lower = 0)
+  for (g in gap) {
+    assert_integerish(g, lower = 0)
+  }
+  assert_integerish(size, lower = 0)
   if (follow > follow_min) {
     warning("The value of follow_min is typically larger than the value of follow")
   }
+  gap <- lapply(gap, as.integer)
   .SafetyWindowSize(
-    gap = lapply(gap, safeInteger),
-    size = safeInteger(size),
-    follow = safeInteger(follow),
-    follow_min = safeInteger(follow_min)
+    gap = gap,
+    size = as.integer(size),
+    follow = as.integer(follow),
+    follow_min = as.integer(follow_min)
+  )
+}
+
+## default constructor ----
+
+#' @rdname SafetyWindowSize-class
+#' @note Typically, end users will not use the `.DefaultSafetyWindowSize()` function.
+#' @export
+.DefaultSafetyWindowSize <- function() {
+  SafetyWindowSize(
+    gap = list(c(7, 3), c(9, 5)),
+    size = c(1, 4),
+    follow = 7,
+    follow_min = 14
   )
 }
 
@@ -2934,12 +3223,29 @@ SafetyWindowSize <- function(gap,
 SafetyWindowConst <- function(gap,
                               follow,
                               follow_min) {
+  assert_integerish(follow, lower = 0)
+  assert_integerish(follow_min, lower = 0)
+  assert_integerish(gap, lower = 0)
+
   if (follow > follow_min) {
     warning("the value of follow_min is typically larger than the value of follow")
   }
   .SafetyWindowConst(
-    gap = safeInteger(gap),
-    follow = safeInteger(follow),
-    follow_min = safeInteger(follow_min)
+    gap = as.integer(gap),
+    follow = as.integer(follow),
+    follow_min = as.integer(follow_min)
+  )
+}
+
+## default constructor ----
+
+#' @rdname SafetyWindowConst-class
+#' @note Typically, end users will not use the `.DefaultSafetyWindowConst()` function.
+#' @export
+.DefaultSafetyWindowConst <- function() {
+  SafetyWindowConst(
+    gap = c(7, 5, 3),
+    follow = 7,
+    follow_min = 14
   )
 }
