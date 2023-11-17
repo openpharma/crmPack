@@ -694,7 +694,6 @@ setMethod("plot",
               )
           )
         )
-
       plot2 <- gdata %>% ggplot() +
         geom_line(
           aes(
@@ -1657,6 +1656,28 @@ setMethod("plotGain",
         )$value
       )
 
+      if ((TD30 < min(data@doseGrid)) | (TD30 > max(data@doseGrid))) {
+        plot1 <- plot1
+        message(paste("TD30", paste(TD30, " not within dose Grid")))
+      } else {
+        plot1 <- plot1 +
+          geom_point(
+            data = data.frame(x = TD30, y = 0.3),
+            aes(x = x, y = y),
+            colour = "violet",
+            shape = 16,
+            size = 8
+          ) +
+          annotate(
+            "text",
+            label = "p(DLE=0.3)",
+            x = TD30 + 1,
+            y = 0.2,
+            size = 5,
+            colour = "violet"
+          )
+      }
+
       # Add annotated point estimates to graph
       point_data <- tibble::tibble(
         Text = NA_character_,
@@ -1684,6 +1705,23 @@ setMethod("plotGain",
       if ((Gstar < min(data@doseGrid)) | (Gstar > max(data@doseGrid))) {
         print(paste("Gstar=", paste(Gstar, " not within dose Grid")))
       } else {
+        plot1 <- plot1 +
+          geom_point(
+            data = data.frame(x = Gstar, y = MaxGain),
+            aes(x = x, y = y),
+            colour = "green3",
+            shape = 17,
+            size = 8
+          ) +
+          annotate(
+            "text",
+            label = "Max Gain",
+            x = Gstar,
+            y = MaxGain - 0.1,
+            size = 5,
+            colour = "green3"
+          )
+      }
         point_data <- point_data %>%
           tibble::add_row(
             X = Gstar,
@@ -1693,7 +1731,7 @@ setMethod("plotGain",
             Colour = "green3",
             Text = "Max Gain"
           )
-      }
+
 
       plot1 <- plot1 +
         geom_point(

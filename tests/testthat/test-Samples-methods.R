@@ -1,5 +1,9 @@
 ## nolint start
 
+<<<<<<< HEAD
+
+=======
+>>>>>>> origin/main
 # size ----
 
 ## Samples ----
@@ -205,6 +209,8 @@ test_that("fit-Samples works correctly for tox-only models", {
   checkIt(seed = 789, lowerQuantile = 0.25, upperQuantile = 0.75)
 })
 
+<<<<<<< HEAD
+=======
 ## Samples-LogisticLogNormalGrouped ----
 
 test_that("fit-Samples works specifically also for LogisticLogNormalGrouped", {
@@ -222,6 +228,7 @@ test_that("fit-Samples works specifically also for LogisticLogNormalGrouped", {
   expect_named(result, c("dose", "middle", "lower", "upper"))
 })
 
+>>>>>>> origin/main
 ## Samples-DataModel ----
 
 test_that("fit-Samples works correctly for dual models", {
@@ -254,6 +261,8 @@ test_that("fit-Samples works correctly for dual models", {
   expect_snapshot(actual)
 })
 
+<<<<<<< HEAD
+=======
 ## Samples-LogisticLogNormalOrdinal
 
 test_that("fit-Samples-LogisticLogNormalOrdinal works correctly", {
@@ -363,6 +372,7 @@ test_that("fit-Samples-LogisticLogNormalOrdinal fails gracefully with bad input"
   )
 })
 
+>>>>>>> origin/main
 # approximate ----
 
 ## Samples-GeneralModel ----
@@ -400,12 +410,16 @@ test_that("Samples-approximate works correctly", {
     control = list(threshold.stop = 0.1, max.time = 1, maxit = 1),
     verbose = FALSE
   )
+<<<<<<< HEAD
+  expect_snapshot_value(posterior, style = "serialize")
+=======
   for (nm in slotNames(posterior$model)) {
     if (!is.function(slot(posterior$model, nm))) {
       expect_snapshot(slot(posterior$model, nm))
     }
   }
   vdiffr::expect_doppelganger("approximate282-samples", posterior$plot)
+>>>>>>> origin/main
 
   model1 <- LogisticNormal(
     mean = c(-0.85, 1),
@@ -420,12 +434,16 @@ test_that("Samples-approximate works correctly", {
     logNormal = TRUE,
     control = list(threshold.stop = 0.1, max.time = 1, maxit = 1)
   )
+<<<<<<< HEAD
+  expect_snapshot_value(posterior1, style = "serialize")
+=======
   for (nm in slotNames(posterior1$model)) {
     if (!is.function(slot(posterior1$model, nm))) {
       expect_snapshot(slot(posterior1$model, nm))
     }
   }
   vdiffr::expect_doppelganger("approximate1-samples", posterior1$plot)
+>>>>>>> origin/main
 
   posterior2 <- approximate(
     object = samples,
@@ -434,12 +452,16 @@ test_that("Samples-approximate works correctly", {
     logNormal = FALSE,
     control = list(threshold.stop = 0.1, max.time = 1, maxit = 1)
   )
+<<<<<<< HEAD
+  expect_snapshot_value(posterior2, style = "serialize")
+=======
   for (nm in slotNames(posterior2$model)) {
     if (!is.function(slot(posterior2$model, nm))) {
       expect_snapshot(slot(posterior2$model, nm))
     }
   }
   vdiffr::expect_doppelganger("approximate2-samples", posterior2$plot)
+>>>>>>> origin/main
 })
 
 # plot ----
@@ -973,6 +995,8 @@ test_that("Check that plot-Samples-ModelTox works correctly", {
   vdiffr::expect_doppelganger("plot-Samples-ModelTox_showlegend-FALSE", actual1)
 })
 
+<<<<<<< HEAD
+=======
 ## Samples-LogisticLogNormalGrouped ----
 
 test_that("plot-Samples works specifically also for LogisticLogNormalGrouped", {
@@ -988,6 +1012,7 @@ test_that("plot-Samples works specifically also for LogisticLogNormalGrouped", {
   vdiffr::expect_doppelganger("plot-Samples-LogisticLogNormalGrouped", result)
 })
 
+>>>>>>> origin/main
 ## Samples-DataDual ----
 
 test_that("Check that plot-Samples-ModelEff fails gracefully with bad input", {
@@ -1551,6 +1576,18 @@ test_that("plot-Samples-DALogisticNormal works correctly", {
   samples <- mcmc(data, model, options)
 
   actual <- plot(samples, model, data)
+<<<<<<< HEAD
+  vdiffr::expect_doppelganger("plot-Samples-DALogisticLogNormal", actual)
+
+  actual1 <- plot(samples, model, data, hazard = TRUE)
+  vdiffr::expect_doppelganger("plot-Samples-DALogisticLogNormal_hazard-TRUE", actual1)
+
+  actual2 <- plot(samples, model, data, showLegend = FALSE)
+  vdiffr::expect_doppelganger("plot-Samples-DALogisticLogNormal_showLegend-FALSE", actual2)
+
+  actual3 <- plot(samples, model, data, showLegend = FALSE, hazard = TRUE)
+  vdiffr::expect_doppelganger("plot-Samples-DALogisticLogNormal_TRUE_FALSE", actual3)
+=======
   vdiffr::expect_doppelganger("plot-samples-dalogisticlognormal", actual)
 
   actual1 <- plot(samples, model, data, hazard = TRUE)
@@ -1561,6 +1598,7 @@ test_that("plot-Samples-DALogisticNormal works correctly", {
 
   actual3 <- plot(samples, model, data, showLegend = FALSE, hazard = TRUE)
   vdiffr::expect_doppelganger("plot-samples-dalogisticlognormal-false-true", actual3)
+>>>>>>> origin/main
 })
 
 test_that("Approximate fails gracefully with bad input", {
@@ -1779,6 +1817,8 @@ test_that("fitGain-Samples-LogisticIndepBeta works correctly", {
   expect_snapshot(actual)
 })
 ## nolint end
+<<<<<<< HEAD
+=======
 
 # tidy ----
 
@@ -1829,3 +1869,4 @@ test_that("tidy-Samples works correctly", {
   )
   expect_equal(head(result$data, 10), expectedDataFirstTenRows)
 })
+>>>>>>> origin/main

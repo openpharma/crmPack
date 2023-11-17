@@ -30,6 +30,8 @@ test_that("Test if simulate generate the expected output.", {
     mcmcOptions = my_options
   )
 
+  # expect_snapshot_value doesn't work here, either in toto or slot-by-slot,
+  # regardless of style
   expect_snapshot(sim)
 })
 
@@ -79,6 +81,7 @@ test_that("NextBestInfTheory produces consistent results for empty data", {
   expect_equal(result@meanToxRisk, rep(1L, 5))
   expect_equal(result@doseSelected, rep(40, 5))
   expect_equal(result@toxAtDosesSelected, rep(1L, 5))
+  # expect_snapshot_value doesn't work here regardless of style
   expect_snapshot(result@meanFit)
 })
 
@@ -124,6 +127,7 @@ test_that("NextBestInfTheory produces consistent results with a dataset", {
   expect_equal(result@meanToxRisk, rep(1L, 5))
   expect_equal(result@doseSelected, rep(50, 5))
   expect_equal(result@toxAtDosesSelected, rep(1L, 5))
+  # expect_snapshot_value doesn't work here, regardless of style
   expect_snapshot(result@meanFit)
 })
 
