@@ -3904,6 +3904,7 @@ test_that("stopTrial works for StoppingTargetBiomarker", {
     rng_seed = 94
   )
 
+
   # Set-up some MCMC parameters and generate samples from the posterior
   samples <- mcmc(data, model, options)
 
@@ -4059,6 +4060,7 @@ test_that("stopTrial works correctly for StoppingTDCIRatio when samples are prov
           " than target_ratio = ",
           targetRatio
         )
+
         attr(expected, "report_label") <- NA_character_
         if (expected != as.logical(result)) {
           print(
