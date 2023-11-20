@@ -1722,15 +1722,15 @@ setMethod("plotGain",
             colour = "green3"
           )
       }
-        point_data <- point_data %>%
-          tibble::add_row(
-            X = Gstar,
-            Y = MaxGain,
-            Shape = shape[2],
-            Size = size[2],
-            Colour = "green3",
-            Text = "Max Gain"
-          )
+      point_data <- point_data %>%
+        tibble::add_row(
+          X = Gstar,
+          Y = MaxGain,
+          Shape = shape[2],
+          Size = size[2],
+          Colour = "green3",
+          Text = "Max Gain"
+        )
 
 
       plot1 <- plot1 +
