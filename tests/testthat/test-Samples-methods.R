@@ -1,5 +1,3 @@
-## nolint start
-
 # size ----
 
 ## Samples ----
@@ -106,7 +104,7 @@ test_that("get-Samples returns correct values", {
         param,
         "[",
         rep(
-          1:ncol(dualSamples@data[[param]]),
+          seq_len(ncol(dualSamples@data[[param]])),
           each = (mcmcOptions@iterations - mcmcOptions@burnin) / mcmcOptions@step
         ),
         "]"
@@ -117,7 +115,7 @@ test_that("get-Samples returns correct values", {
   attr(expected, "description") <- paste0(
     param,
     "[",
-    1:ncol(dualSamples@data[[param]]),
+    seq_len(ncol(dualSamples@data[[param]])),
     "]"
   )
   attr(expected, "nBurnin") <- mcmcOptions@burnin
@@ -250,7 +248,13 @@ test_that("fit-Samples works correctly for dual models", {
   actual <- fit(samples, model, dualData)
 
   expect_equal(class(actual), "data.frame")
-  expect_setequal(names(actual), c("dose", "middle", "lower", "upper", "middleBiomarker", "lowerBiomarker", "upperBiomarker"))
+  expect_setequal(
+    names(actual),
+    c(
+      "dose", "middle", "lower", "upper", "middleBiomarker",
+      "lowerBiomarker", "upperBiomarker"
+    )
+  )
   expect_snapshot(actual)
 })
 
@@ -340,7 +344,6 @@ test_that("fit-Samples-LogisticLogNormalOrdinal fails gracefully with bad input"
   expect_warning({
     samples <- mcmc(ordinal_data, ordinal_model, mcmc_options)
   })
-  # assert_probability_range(quantiles)
   expect_error(
     fit(samples, ordinal_model, ordinal_data, grade = 1L, points = "bad"),
     "Assertion on 'points' failed: Must be of type 'numeric', not 'character'."
