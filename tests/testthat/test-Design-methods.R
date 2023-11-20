@@ -4,7 +4,7 @@ options(testthat.progress.max_fails = 0)
 
 # simulate ----
 
-## Data
+## Design
 
 test_that("simulate produces consistent results with placebo data", {
   design <- h_get_design_data(TRUE)
