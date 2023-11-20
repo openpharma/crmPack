@@ -36,7 +36,7 @@ NULL
 
 ## default constructor ----
 
-#' @rdname DataGeneral-class
+#' @rdname GeneralData-class
 #' @note Typically, end users will not use the `.DefaultDataGeneral()` function.
 #' @export
 .DefaultDataGeneral <- function() {

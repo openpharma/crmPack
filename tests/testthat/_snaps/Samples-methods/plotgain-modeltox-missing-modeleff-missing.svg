@@ -31,6 +31,10 @@
 <polyline points='105.01,424.27 148.61,339.23 192.22,316.55 235.83,313.20 279.43,317.59 323.04,325.26 366.64,334.23 410.25,343.55 453.86,352.74 497.46,361.59 541.07,369.97 584.67,377.85 ' style='stroke-width: 2.13; stroke: #00CD00; stroke-dasharray: 2.85,8.54; stroke-linecap: butt;' />
 <polyline points='105.01,521.37 148.61,488.61 192.22,460.59 235.83,436.90 279.43,416.82 323.04,399.69 366.64,384.98 410.25,372.25 453.86,361.14 497.46,351.38 541.07,342.75 584.67,335.08 ' style='stroke-width: 2.13; stroke: #FF0000; stroke-dasharray: 11.38,11.38; stroke-linecap: butt;' />
 <circle cx='203.54' cy='454.05' r='8.89' style='stroke-width: 0.71; stroke: none; fill: #EE82EE;' />
+<text x='205.29' y='492.89' text-anchor='middle' style='font-size: 14.23px; fill: #EE82EE; font-family: sans;' textLength='73.16px' lengthAdjust='spacingAndGlyphs'>p(DLE=0.3)</text>
+<polygon points='227.00,299.21 238.98,319.95 215.03,319.95 ' style='stroke-width: 0.71; stroke: none; fill: #00CD00;' />
+<text x='227.00' y='351.88' text-anchor='middle' style='font-size: 14.23px; fill: #00CD00; font-family: sans;' textLength='60.89px' lengthAdjust='spacingAndGlyphs'>Max Gain</text>
+<circle cx='203.54' cy='454.05' r='8.89' style='stroke-width: 0.71; stroke: none; fill: #EE82EE;' />
 <polygon points='227.00,299.21 238.98,319.95 215.03,319.95 ' style='stroke-width: 0.71; stroke: none; fill: #00CD00;' />
 <rect x='35.24' y='22.78' width='575.60' height='522.33' style='stroke-width: 1.07; stroke: #333333;' />
 </g>
