@@ -4,7 +4,7 @@ options(testthat.progress.max_fails = 0)
 
 # simulate ----
 
-## Design
+## Design ----
 
 test_that("simulate produces consistent results with placebo data", {
   design <- h_get_design_data(TRUE)
@@ -43,7 +43,7 @@ test_that("simulate produces consistent results with sentinel patients", {
   expect_snapshot(result)
 })
 
-## RuleDesign
+## RuleDesign ----
 
 test_that("simulate-RuleDesign produces consistent results", {
   design <- ThreePlusThreeDesign(doseGrid = c(1, 3, 5, 10, 15, 20, 25, 40, 50, 80, 100))
@@ -64,7 +64,8 @@ test_that("simulate-RuleDesign produces consistent results", {
   expect_snapshot(result)
 })
 
-## DualDesign
+## DualDesign ----
+
 test_that("simulate-DualDesign produces consistent results", {
   design <- h_get_design_dualdata()
 
@@ -223,7 +224,7 @@ test_that("simulate-DualResponsesSamplesDesign produces consistent results", {
   mySize <- CohortSizeConst(size = 3)
   myStopping <- StoppingMinPatients(nPatients = 10)
 
-  ## Specified the design
+  # Specified the design
   design <- DualResponsesSamplesDesign(
     nextBest = mynextbest,
     cohort_size = mySize,
@@ -927,7 +928,7 @@ test_that("examine for DADesign works as expected", {
   expect_named(result, c("DLTsearly_1", "dose", "DLTs", "nextDose", "stop", "increment"))
 })
 
-## Data
+## Design ----
 
 test_that("examine produces consistent results", {
   design <- h_get_design_data()
@@ -947,7 +948,7 @@ test_that("examine produces consistent results with placebo data", {
   expect_snapshot(result)
 })
 
-## RuleDesign
+## RuleDesign ----
 
 test_that("simulate-RuleDesign produces consistent results", {
   design <- ThreePlusThreeDesign(doseGrid = c(1, 3, 5, 10, 15, 20, 25, 40, 50, 80, 100))
