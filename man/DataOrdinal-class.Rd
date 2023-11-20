@@ -5,6 +5,7 @@
 \alias{DataOrdinal-class}
 \alias{.DataOrdinal}
 \alias{DataOrdinal}
+\alias{.DefaultDataOrdinal}
 \title{\code{DataOrdinal}}
 \usage{
 DataOrdinal(
@@ -17,6 +18,8 @@ DataOrdinal(
   yCategories = c(`No DLT` = 0L, DLT = 1L),
   ...
 )
+
+.DefaultDataOrdinal()
 }
 \arguments{
 \item{x}{(\code{numeric})\cr the doses for the patients.}
@@ -63,6 +66,8 @@ effects on existing classes and methods.
 
 The default setting for the \code{yCategories} slot replicates the behaviour
 of the existing \code{Data} class.
+
+Typically, end users will not use the \code{.DefaultDataOrdinal()} function.
 }
 \examples{
 DataOrdinal(

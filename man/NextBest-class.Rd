@@ -4,12 +4,19 @@
 \name{NextBest-class}
 \alias{NextBest-class}
 \alias{NextBest}
+\alias{.DefaultNextBest}
 \title{\code{NextBest}}
+\usage{
+.DefaultNextBest()
+}
 \description{
 \ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#stable}{\figure{lifecycle-stable.svg}{options: alt='[Stable]'}}}{\strong{[Stable]}}
 
 \code{\link{NextBest}} is a virtual class for finding next best dose, from which all
 other specific next best dose classes inherit.
+}
+\note{
+Typically, end users will not use the \code{DefaultNextBest()} function.
 }
 \seealso{
 \code{\link{NextBestMTD}}, \code{\link{NextBestNCRM}}, \code{\link{NextBestDualEndpoint}},

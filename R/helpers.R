@@ -80,7 +80,7 @@ positive_number <- setClass(
 ##'
 ##' @export
 ##' @keywords programming
-matchTolerance <- function(x, table) {
+match_within_tolerance <- function(x, table) {
   if (length(table) == 0) {
     return(integer())
   }
@@ -126,47 +126,6 @@ safeInteger <- function(x) {
   }
   as.integer(x)
 }
-
-##' Predicate checking for a probability
-##'
-##' @param x the object being checked
-##' @param bounds whether to include the bounds 0 and 1 (default)
-##' @return Returns \code{TRUE} if \code{x} is a probability
-##'
-##' @keywords internal
-is.probability <- function(x,
-                           bounds = TRUE) {
-  if (bounds) {
-    return(test_numeric(x, lower = 0, upper = 1, any.missing = FALSE))
-  } else {
-    return(test_numeric(x, lower = 0, upper = 1, any.missing = FALSE) && x != 0 && x != 1)
-  }
-}
-
-##' Predicate checking for a numeric range
-##'
-##' @param x the object being checked
-##' @return Returns \code{TRUE} if \code{x} is a numeric range
-##'
-##' @keywords internal
-is.range <- function(x) {
-  return(identical(length(x), 2L) &&
-    x[1] < x[2])
-}
-
-##' Predicate checking for a probability range
-##'
-##' @param x the object being checked
-##' @param bounds whether to include the bounds 0 and 1 (default)
-##' @return Returns \code{TRUE} if \code{x} is a probability range
-##'
-##' @keywords internal
-is.probRange <- function(x,
-                         bounds = TRUE) {
-  return(is.range(x) &&
-    all(sapply(x, is.probability, bounds = bounds)))
-}
-
 
 ##' Shorthand for logit function
 ##'
@@ -217,6 +176,28 @@ crmPackExample <- function() {
 ##' @author Daniel Sabanes Bove \email{sabanesd@@roche.com}
 crmPackHelp <- function() {
   utils::help(package = "crmPack", help_type = "html")
+}
+
+#' Plot `gtable` Objects
+#'
+#' This is needed because `crmPack` uses [gridExtra::arrangeGrob()] to combine
+#' `ggplot2` plots, and the resulting `gtable` object is not plotted otherwise
+#' when implicitly printing it in the console, e.g.
+#'
+#' @method plot gtable
+#' @param x (`gtable`)\cr object to plot.
+#' @param ... additional parameters for [grid::grid.draw()].
+#'
+#' @export
+plot.gtable <- function(x, ...) {
+  grid::grid.draw(x, ...)
+}
+
+#' @method print gtable
+#' @rdname plot.gtable
+#' @export
+print.gtable <- function(x, ...) {
+  plot(x, ...)
 }
 
 ##' Taken from utils package (print.vignette)
@@ -335,36 +316,6 @@ rinvGamma <- function(n,
     shape = a,
     rate = b
   )
-}
-
-#' Convenience function to make barplots of percentages
-#'
-#' @param x vector of samples
-#' @param description xlab string
-#' @param xaxisround rounding for xaxis labels (default: 0, i.e. integers will
-#' be used)
-#'
-#' @return the ggplot2 object
-#'
-#' @keywords internal
-#' @importFrom ggplot2 ggplot geom_histogram aes xlab ylab xlim
-#' @example examples/myBarplot.R
-myBarplot <- function(x, description, xaxisround = 0) {
-  tabx <- table(x) / length(x)
-  dat <- data.frame(x = as.numeric(names(tabx)), perc = as.numeric(tabx) * 100)
-  ggplot() +
-    geom_bar(aes(x = x, y = perc),
-      data = dat,
-      stat = "identity",
-      position = "identity",
-      width = ifelse(nrow(dat) > 1, min(diff(dat$x)) / 2, 1)
-    ) +
-    xlab(description) +
-    ylab("Percent") +
-    scale_x_continuous(
-      breaks =
-        round(dat$x, xaxisround)
-    )
 }
 
 # nolint end

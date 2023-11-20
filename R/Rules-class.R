@@ -27,6 +27,16 @@ setClass(
   contains = "CrmPackClass"
 )
 
+## default constructor ----
+
+#' @rdname NextBest-class
+#' @note Typically, end users will not use the `DefaultNextBest()` function.
+#' @export
+.DefaultNextBest <- function() {
+  stop(paste0("Class NextBest should not be instantiated directly.  Please use one of its subclasses instead."))
+}
+
+
 # NextBestMTD ----
 
 ## class ----
@@ -936,6 +946,16 @@ setClass(
   contains = "CrmPackClass"
 )
 
+## default constructor ----
+
+#' @rdname Increments-class
+#' @note Typically, end users will not use the `.DefaultIncrements()` function.
+#' @export
+.DefaultIncrements <- function() {
+  stop(paste0("Class Increments cannot be instantiated directly.  Please use one of its subclasses instead."))
+}
+
+
 # IncrementsRelative ----
 
 ## class ----
@@ -1446,6 +1466,15 @@ setClass(
   prototype = prototype(report_label = character(0))
 )
 
+
+## default constructor ----
+
+#' @rdname CohortSize-class
+#' @note Typically, end users will not use the `DefaultCohortSize()` function.
+#' @export
+.DefaultCohortSize <- function() {
+  stop(paste0("Class CohortSize should not be instantiated directly.  Please use one of its subclasses instead."))
+}
 
 # StoppingMissingDose ----
 
@@ -2655,6 +2684,15 @@ setClass(
   contains = "CrmPackClass"
 )
 
+## default constructor
+
+#' @rdname CohortSize-class
+#' @note Typically, end users will not use the `DefaultCohortSize()` function.
+#' @export
+.DefaultCohortSize <- function() {
+  stop(paste0("Class CohortSize should not be instantiated directly.  Please use one of its subclasses instead."))
+}
+
 # CohortSizeRange ----
 
 ## class ----
@@ -3016,6 +3054,16 @@ setClass(
   contains = "CrmPackClass"
 )
 
+## default constructor ----
+
+#' @rdname SafetyWindow-class
+#' @note Typically, end users will not use the `.DefaultSafetyWindow()` function.
+#' @export
+.DefaultSafetyWindow <- function() {
+  stop(paste0("Class SafetyWindow cannot be instantiated directly.  Please use one of its subclasses instead."))
+}
+
+
 # SafetyWindowSize ----
 
 ## class ----
@@ -3110,6 +3158,20 @@ SafetyWindowSize <- function(gap,
   )
 }
 
+## default constructor ----
+
+#' @rdname SafetyWindowSize-class
+#' @note Typically, end users will not use the `.DefaultSafetyWindowSize()` function.
+#' @export
+.DefaultSafetyWindowSize <- function() {
+  SafetyWindowSize(
+    gap = list(c(7, 3), c(9, 5)),
+    size = c(1, 4),
+    follow = 7,
+    follow_min = 14
+  )
+}
+
 # SafetyWindowConst ----
 
 ## class ----
@@ -3172,5 +3234,18 @@ SafetyWindowConst <- function(gap,
     gap = as.integer(gap),
     follow = as.integer(follow),
     follow_min = as.integer(follow_min)
+  )
+}
+
+## default constructor ----
+
+#' @rdname SafetyWindowConst-class
+#' @note Typically, end users will not use the `.DefaultSafetyWindowConst()` function.
+#' @export
+.DefaultSafetyWindowConst <- function() {
+  SafetyWindowConst(
+    gap = c(7, 5, 3),
+    follow = 7,
+    follow_min = 14
   )
 }

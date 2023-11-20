@@ -358,7 +358,7 @@ DataOrdinal <- function(
     doseGrid = doseGrid,
     nObs = length(x),
     nGrid = length(doseGrid),
-    xLevel = matchTolerance(x = x, table = doseGrid),
+    xLevel = match_within_tolerance(x = x, table = doseGrid),
     placebo = placebo,
     yCategories = yCategories
   )
@@ -443,7 +443,7 @@ setMethod(
     n <- length(y)
 
     # Which grid level is the dose?
-    gridLevel <- matchTolerance(x, object@doseGrid)
+    gridLevel <- match_within_tolerance(x, object@doseGrid)
     object@xLevel <- c(object@xLevel, rep(gridLevel, n))
 
     # Add dose.
@@ -897,7 +897,7 @@ LogisticLogNormalOrdinal <- function(mean, cov, ref_dose) {
   params <- ModelParamsNormal(mean, cov)
   .LogisticLogNormalOrdinal(
     params = params,
-    ref_dose = crmPack:::positive_number(ref_dose),
+    ref_dose = positive_number(ref_dose),
     priormodel = function() {
       alpha[1] ~ dnorm(mean[1], prec[1, 1])
       for (i in 2:(k - 1)) {

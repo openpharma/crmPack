@@ -4411,8 +4411,8 @@ setMethod("simulate",
 
 
             ## JZ: future work: additional part for DADesign--when to start the next cohort
-            ## nextOpen can be modified to incoporate different patient enrollment rate;
-            ## currently assume we have surfficient patients;
+            ## nextOpen can be modified to incorporate different patient enrollment rate;
+            ## currently assume we have sufficient patients;
             ## If there is a gap between cohorts for cohort manager meeting, it can be
             ## added to here;
 
@@ -4679,7 +4679,7 @@ setMethod(
         current$first <- TRUE
         current$mono$stop <- current$combo$stop <- FALSE
         # What are the next doses to be used? Initialize with starting doses.
-        if (object@same_dose) {
+        if (object@same_dose_for_all || (!object@first_cohort_mono_only && object@same_dose_for_start)) {
           current$mono$dose <- current$combo$dose <- min(object@mono@startingDose, object@combo@startingDose)
         } else {
           current$mono$dose <- object@mono@startingDose
@@ -4720,10 +4720,31 @@ setMethod(
               stopTrial(current$combo$dose, current$samples, object@model, current$combo$data, group = "combo")
             current$combo$results <- h_unpack_stopit(current$combo$stop)
           }
-          if (object@same_dose && !current$mono$stop && !current$combo$stop) {
+          if (object@same_dose_for_all && !current$mono$stop && !current$combo$stop) {
             current$mono$dose <- current$combo$dose <- min(current$mono$dose, current$combo$dose)
           }
-          if (current$first) current$first <- FALSE
+          if (object@stop_mono_with_combo) {
+            if (current$combo$stop && !current$mono$stop) {
+              current$mono$stop <- structure(
+                TRUE,
+                message = "mono stopped because combo stopped",
+                report_label = "mono stopped because combo stopped"
+              )
+              new_result <- TRUE
+            } else {
+              new_result <- FALSE
+            }
+            current$mono$results <- c(
+              current$mono$results,
+              "mono stopped because combo stopped" = new_result
+            )
+          }
+          if (current$first) {
+            current$first <- FALSE
+            if (object@first_cohort_mono_only && object@same_dose_for_start) {
+              current$mono$dose <- current$combo$dose <- min(current$mono$dose, current$combo$dose)
+            }
+          }
         }
         current$mono$fit <- fit(current$samples, object@model, current$grouped, group = "mono")
         current$combo$fit <- fit(current$samples, object@model, current$grouped, group = "combo")
@@ -4763,4 +4784,27 @@ setMethod(
         )
       })
     }
+)
+
+# tidy ----
+
+## tidy-DualDesign ----
+
+#' @rdname tidy
+#' @aliases tidy-DualDesign
+#' @example examples/Design-method-tidyDualDesign.R
+#'
+#' @export
+setMethod(
+  f = "tidy",
+  signature = signature(x = "DualDesign"),
+  definition = function(x, ...) {
+    # Some Design objects have complex attributes whose structure is not supported.
+    rv <- h_tidy_all_slots(x, attributes = FALSE) |> h_tidy_class(x)
+    if (length(rv) == 1) {
+      rv[[names(rv)[1]]] |> h_tidy_class(x)
+    } else {
+      rv
+    }
+  }
 )

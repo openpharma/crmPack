@@ -103,3 +103,15 @@ McmcOptions <- function(burnin = 1e4L,
     rng_seed = as.integer(rng_seed)
   )
 }
+
+## default constructor ----
+
+#' @rdname McmcOptions-class
+#' @note Typically, end users will not use the `.DefaultMcmcOptions()` function.
+#' @export
+.DefaultMcmcOptions <- function() {
+  McmcOptions(
+    burnin = 250,
+    samples = 1000
+  )
+}

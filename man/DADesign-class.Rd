@@ -5,9 +5,12 @@
 \alias{DADesign-class}
 \alias{.DADesign}
 \alias{DADesign}
+\alias{.DefaultDADesign}
 \title{\code{DADesign}}
 \usage{
 DADesign(model, data, safetyWindow, ...)
+
+.DefaultDADesign()
 }
 \arguments{
 \item{model}{(\code{GeneralModel})\cr see slot definition.}
@@ -30,6 +33,18 @@ DADesign(model, data, safetyWindow, ...)
 This class has special requirements for the \code{model} and \code{data}
 slots in comparison to the parent class \code{\link{Design}}:
 }
+\details{
+The \code{safetyWindow} slot should be an instance of the \code{SafetyWindow} class.
+It can be customized to specify the duration of the safety window for your trial.
+The safety window represents the time period required to observe toxicity data
+from the ongoing cohort before opening the next cohort.
+Note that even after opening the next cohort,
+further toxicity data will be collected and analyzed to make dose escalation decisions.
+
+To specify a constant safety window, use the \code{SafetyWindowConst} constructor. For example:
+
+\code{mysafetywindow <- SafetyWindowConst(c(6, 2), 10, 20)}
+}
 \section{Slots}{
 
 \describe{
@@ -41,6 +56,9 @@ slots in comparison to the parent class \code{\link{Design}}:
 \item{\code{safetyWindow}}{(\code{SafetyWindow})\cr the safety window to apply between cohorts.}
 }}
 
+\note{
+Typically, end users will not use the \code{.DefaultDADesign()} function.
+}
 \examples{
 empty_data <- DataDA(doseGrid = c(
   0.1, 0.5, 1, 1.5, 3, 6,
@@ -107,4 +125,7 @@ design <- DADesign(
   safetyWindow = my_safety_window,
   startingDose = 3
 )
+}
+\seealso{
+\code{\link{SafetyWindowConst}} for creating a constant safety window.
 }

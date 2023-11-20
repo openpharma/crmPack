@@ -203,6 +203,7 @@ LogisticIndepBeta'Model
 LogisticKadane
 LogisticLogNormal
 LogisticLogNormalMixture
+LogisticLogNormalOrdinal
 LogisticLogNormalSub
 LogisticNormal
 LogisticNormalFixedMixture

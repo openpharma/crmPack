@@ -254,6 +254,115 @@ test_that("fit-Samples works correctly for dual models", {
   expect_snapshot(actual)
 })
 
+## Samples-LogisticLogNormalOrdinal
+
+test_that("fit-Samples-LogisticLogNormalOrdinal works correctly", {
+  ordinal_data <- DataOrdinal(
+    doseGrid = seq(10, 100, 10),
+    x = c(10, 20, 30, 40, 50, 50, 50),
+    y = c(0L, 0L, 0L, 0L, 0L, 1L, 2L),
+    ID = 1L:7L,
+    cohort = as.integer(c(1:4, 5, 5, 5)),
+    yCategories = c("No Tox" = 0L, "Sub tox AE" = 1L, "DLT" = 2L)
+  )
+
+  ordinal_model <- .DefaultLogisticLogNormalOrdinal()
+
+  mcmc_options <- McmcOptions(
+    rng_kind = "Mersenne-Twister",
+    rng_seed = 195114
+  )
+
+  expect_warning({
+    samples <- mcmc(ordinal_data, ordinal_model, mcmc_options)
+  })
+
+  actual1 <- fit(samples, ordinal_model, ordinal_data, grade = 1L)
+  expected1 <- data.frame(
+    dose = c(10, 20, 30, 40, 50, 60, 70, 80, 90, 100),
+    middle = c(
+      0.0169965517186557, 0.0418726454696971, 0.0869943233175112,
+      0.174379363772168, 0.359424190650142, 0.560985893979806, 0.668311672015201,
+      0.732558239199989, 0.775012208860522, 0.805040850181433
+    ),
+    lower = c(
+      1.12241894021745e-18, 5.09339249618987e-11, 1.32740806967643e-06,
+      0.00184902676368667, 0.0799018700417597, 0.123958099214465,
+      0.158036129471917, 0.185704747928315, 0.208501211387604, 0.229567912809172
+    ),
+    upper = c(
+      0.143583665639255, 0.245303026802453, 0.360085435656429, 0.516600663765781,
+      0.747845722027622, 0.98955487547912, 0.999751268420253, 0.999991170082152,
+      0.999999572019785, 0.999999969284896
+    )
+  )
+  expect_equal(actual1, expected1)
+
+  actual2 <- fit(samples, ordinal_model, ordinal_data, grade = 2L)
+  expected2 <- data.frame(
+    dose = c(10, 20, 30, 40, 50, 60, 70, 80, 90, 100),
+    middle = c(
+      0.00412476400620383, 0.0101382111236988, 0.0214079947233582,
+      0.0451117565616679, 0.109763299010817, 0.263997969766757, 0.3896835368931,
+      0.478636878941926, 0.543355876084825, 0.592187112686184
+    ),
+    lower = c(
+      1.6913644976653e-19, 5.88616083263532e-12, 1.68625234045794e-07,
+      0.000186336971589603, 0.00581795834705745, 0.0111783920222547,
+      0.0158564916220977, 0.0205520383385422, 0.0259223988178678, 0.0302442703337331
+    ),
+    upper = c(
+      0.0379068820973744, 0.0732476025866372, 0.116354375951665, 0.192820409730396,
+      0.367021982729187, 0.931198853611034, 0.998334079601115, 0.999938863108555,
+      0.999996783314025, 0.999999770151808
+    )
+  )
+  expect_equal(actual2, expected2)
+})
+
+test_that("fit-Samples-LogisticLogNormalOrdinal fails gracefully with bad input", {
+  ordinal_data <- DataOrdinal(
+    doseGrid = seq(10, 100, 10),
+    x = c(10, 20, 30, 40, 50, 50, 50),
+    y = c(0L, 0L, 0L, 0L, 0L, 1L, 2L),
+    ID = 1L:7L,
+    cohort = as.integer(c(1:4, 5, 5, 5)),
+    yCategories = c("No Tox" = 0L, "Sub tox AE" = 1L, "DLT" = 2L)
+  )
+
+  ordinal_model <- .DefaultLogisticLogNormalOrdinal()
+
+  mcmc_options <- McmcOptions(
+    rng_kind = "Mersenne-Twister",
+    rng_seed = 195114
+  )
+
+  expect_warning({
+    samples <- mcmc(ordinal_data, ordinal_model, mcmc_options)
+  })
+  # assert_probability_range(quantiles)
+  expect_error(
+    fit(samples, ordinal_model, ordinal_data, grade = 1L, points = "bad"),
+    "Assertion on 'points' failed: Must be of type 'numeric', not 'character'."
+  )
+  expect_error(
+    fit(samples, ordinal_model, ordinal_data, grade = 1L, middle = "bad"),
+    "Assertion on 'middle' failed: Must be a function, not 'character'."
+  )
+  expect_error(
+    fit(samples, ordinal_model, ordinal_data, grade = 1L, quantiles = "bad"),
+    "Assertion on 'x' failed: Must be of type 'numeric', not 'character'."
+  )
+  expect_error(
+    fit(samples, ordinal_model, ordinal_data, grade = 1L, quantiles = c(-1, 0.75)),
+    "Assertion on 'quantiles' failed: Probability must be within \\[0, 1\\] bounds but it is not."
+  )
+  expect_error(
+    fit(samples, ordinal_model, ordinal_data, grade = 1L, quantiles = c(0.25, 2)),
+    "Assertion on 'quantiles' failed: Probability must be within \\[0, 1\\] bounds but it is not."
+  )
+})
+
 # approximate ----
 
 ## Samples-GeneralModel ----
@@ -1451,7 +1560,7 @@ test_that("plot-Samples-DALogisticNormal works correctly", {
   vdiffr::expect_doppelganger("plot-samples-dalogisticlognormal-showlegend-false", actual2)
 
   actual3 <- plot(samples, model, data, showLegend = FALSE, hazard = TRUE)
-  vdiffr::expect_doppelganger("plot-samples-dalogisticlognormal-true-false", actual3)
+  vdiffr::expect_doppelganger("plot-samples-dalogisticlognormal-false-true", actual3)
 })
 
 test_that("Approximate fails gracefully with bad input", {
@@ -1670,3 +1779,53 @@ test_that("fitGain-Samples-LogisticIndepBeta works correctly", {
   expect_snapshot(actual)
 })
 ## nolint end
+
+# tidy ----
+
+test_that("tidy-Samples works correctly", {
+  obj <- mcmc(
+    data = .DefaultData(),
+    model = .DefaultLogisticLogNormal(),
+    options = McmcOptions(
+      burnin = 250,
+      samples = 1000,
+      rng_seed = 353209,
+      rng_kind = "Mersenne-Twister"
+    )
+  )
+  result <- tidy(obj)
+
+  expectedOptions <- tibble::tibble(
+    iterations = 2250L,
+    burnin = 250L,
+    step = 2L,
+    rng_kind = "base::Mersenne-Twister",
+    rng_seed = 353209L
+  )
+  class(expectedOptions) <- c("tbl_McmcOptions", "tbl_df", "tbl", "data.frame")
+  expect_equal(result$options, expectedOptions)
+
+  expectedDataFirstTenRows <- tibble::tibble(
+    Iteration = 1:10,
+    Chain = c(1L, 1L, 1L, 1L, 1L, 1L, 1L, 1L, 1L, 1L),
+    alpha0 = c(
+      -1.63262086055041, -1.63262086055041, -1.63262086055041, -1.33549384878429,
+      -1.95427604510981, -1.95427604510981, -0.843663679067708, -0.843663679067708,
+      -1.01654812581579, -0.101423370381754
+    ),
+    alpha1 = c(
+      4.03636332974297, 4.03636332974297, 4.03636332974297, 2.83690384878544,
+      11.6182748891346, 11.6182748891346, 3.19781065120341, 3.19781065120341,
+      4.34551768607469, 2.21681163774227
+    ),
+    nChains = c(1L, 1L, 1L, 1L, 1L, 1L, 1L, 1L, 1L, 1L),
+    nParameters = c(1L, 1L, 1L, 1L, 1L, 1L, 1L, 1L, 1L, 1L),
+    nIterations = c(
+      2250L, 2250L, 2250L, 2250L, 2250L, 2250L, 2250L, 2250L, 2250L, 2250L
+    ),
+    nBurnin = c(250L, 250L, 250L, 250L, 250L, 250L, 250L, 250L, 250L, 250L),
+    nThin = c(2L, 2L, 2L, 2L, 2L, 2L, 2L, 2L, 2L, 2L),
+    parallel = c(FALSE, FALSE, FALSE, FALSE, FALSE, FALSE, FALSE, FALSE, FALSE, FALSE)
+  )
+  expect_equal(head(result$data, 10), expectedDataFirstTenRows)
+})

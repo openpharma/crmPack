@@ -724,3 +724,19 @@ test_that("h_group_data works as expected", {
   )
   expect_setequal(combo_data_from_group, combo_data_from_start)
 })
+
+# print.gtable ----
+
+test_that("print for gtable works", {
+  result <- gridExtra::arrangeGrob(grid::rectGrob(), grid::rectGrob())
+  assert_class(result, "gtable")
+  vdiffr::expect_doppelganger("print-gtable", result)
+})
+
+# plot.gtable ----
+
+test_that("plot for gtable works", {
+  result <- gridExtra::arrangeGrob(grid::rectGrob(), grid::rectGrob())
+  assert_class(result, "gtable")
+  vdiffr::expect_doppelganger("plot-gtable", plot(result))
+})

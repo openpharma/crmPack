@@ -5,9 +5,12 @@
 \alias{LogisticIndepBeta-class}
 \alias{.LogisticIndepBeta}
 \alias{LogisticIndepBeta}
+\alias{.DefaultLogisticIndepBeta}
 \title{\code{LogisticIndepBeta}}
 \usage{
 LogisticIndepBeta(binDLE, DLEdose, DLEweights, data)
+
+.DefaultLogisticIndepBeta()
 }
 \arguments{
 \item{binDLE}{(\code{numeric})\cr the number of subjects observed with a DLE, the
@@ -107,6 +110,9 @@ pseudo data and (if any) the observed data and responses. This slot is
 needed for internal purposes.}
 }}
 
+\note{
+Typically, end users will not use the \code{.DefaultLogisticIndepBeta()} function.
+}
 \examples{
 # Obtain prior modal estimates given the pseudo data.
 # First we used an empty data set such that only the dose levels under

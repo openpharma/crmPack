@@ -5,9 +5,12 @@
 \alias{DataMixture-class}
 \alias{.DataMixture}
 \alias{DataMixture}
+\alias{.DefaultDataMixture}
 \title{\code{DataMixture}}
 \usage{
 DataMixture(xshare = numeric(), yshare = integer(), ...)
+
+.DefaultDataMixture()
 }
 \arguments{
 \item{xshare}{(\code{numeric})\cr the doses for the share patients.}
@@ -36,6 +39,9 @@ for the share patients.}
 \item{\code{nObsshare}}{(\code{count})\cr number of share patients.}
 }}
 
+\note{
+Typically, end users will not use the \code{.DefaultDataMixture()} function.
+}
 \examples{
 my_data <- DataMixture(
   xshare = c(12, 14, 16, 18.0),

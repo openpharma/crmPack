@@ -76,6 +76,16 @@ NULL
   validity = v_general_model
 )
 
+## default constructor ----
+
+#' @rdname GeneralModel-class
+#' @note Typically, end users will not use the `.DefaultGeneralModel()` function.
+#' @export
+.DefaultGeneralModel <- function() {
+  stop(paste0("Class GeneralModel should not be instantiated directly.  Please use one of its subclasses instead."))
+}
+
+
 # ModelLogNormal ----
 
 ## class ----
@@ -154,6 +164,7 @@ ModelLogNormal <- function(mean, cov, ref_dose = 1) {
 ## default constructor ----
 
 #' @rdname ModelLogNormal-class
+#' @note Typically, end users will not use the `.DefaultModelLogNormal()` function.
 #' @export
 .DefaultModelLogNormal <- function() {
   ModelLogNormal(mean = c(-0.85, 1), cov = matrix(c(1, -0.5, -0.5, 1), nrow = 2))
@@ -1471,7 +1482,7 @@ DualEndpoint <- function(mean,
 ## default constructor ----
 
 #' @rdname DualEndpoint-class
-#' @note Typically, end users will not use the `DefaultDualEndpoint()` function.
+#' @note Typically, end users will not use the `.DefaultDualEndpoint()` function.
 #' @export
 .DefaultDualEndpoint <- function() {
   stop(paste0("Class DualEndpoint cannot be instantiated directly.  Please use one of its subclasses instead."))
@@ -1998,8 +2009,18 @@ DualEndpointEmax <- function(E0,
 #' @export
 #'
 .ModelPseudo <- setClass(
-  Class = "ModelPseudo"
+  Class = "ModelPseudo",
+  contains = "CrmPackClass"
 )
+
+## default constructor ----
+
+#' @rdname ModelPseudo-class
+#' @note Typically, end users will not use the `.DefaultModelPseudo()` function.
+#' @export
+.DefaultModelPseudo <- function() {
+  stop(paste0("Class ModelPseudo should not be instantiated directly.  Please use one of its subclasses instead."))
+}
 
 # ModelTox ----
 
@@ -2040,6 +2061,15 @@ DualEndpointEmax <- function(E0,
   contains = "ModelPseudo"
 )
 
+## default constructor ----
+
+#' @rdname ModelTox-class
+#' @note Typically, end users will not use the `.DefaultModelTox()` function.
+#' @export
+.DefaultModelTox <- function() {
+  stop(paste0("Class ModelTox should not be instantiated directly.  Please use one of its subclasses instead."))
+}
+
 # ModelEff ----
 
 ## class ----
@@ -2077,6 +2107,15 @@ DualEndpointEmax <- function(E0,
   ),
   contains = "ModelPseudo"
 )
+
+## default constructor ----
+
+#' @rdname ModelEff-class
+#' @note Typically, end users will not use the `.DefaultModelEff()` function.
+#' @export
+.DefaultModelEff <- function() {
+  stop(paste0("Class ModelEff should not be instantiated directly.  Please use one of its subclasses instead."))
+}
 
 # LogisticIndepBeta ----
 
@@ -2227,6 +2266,21 @@ LogisticIndepBeta <- function(binDLE,
     data = data
   )
 }
+
+## default constructor ----
+
+#' @rdname LogisticIndepBeta-class
+#' @note Typically, end users will not use the `.DefaultLogisticIndepBeta()` function.
+#' @export
+.DefaultLogisticIndepBeta <- function() {
+  my_model <- LogisticIndepBeta(
+    binDLE = c(1.05, 1.8),
+    DLEweights = c(3L, 3L),
+    DLEdose = c(25, 300),
+    data = Data(doseGrid = seq(25, 300, 25))
+  )
+}
+
 
 # Effloglog ----
 
@@ -2449,6 +2503,31 @@ Effloglog <- function(eff,
   )
 }
 
+## default constructor ----
+
+#' @rdname Effloglog-class
+#' @note Typically, end users will not use the `.DefaultEffloglog()` function.
+#' @export
+.DefaultEffloglog <- function() {
+  emptydata <- DataDual(doseGrid = seq(25, 300, 25), placebo = FALSE)
+
+  my_data <- DataDual(
+    x = c(25, 50, 50, 75, 100, 100, 225, 300),
+    y = c(0, 0, 0, 0, 1, 1, 1, 1),
+    w = c(0.31, 0.42, 0.59, 0.45, 0.6, 0.7, 0.6, 0.52),
+    doseGrid = emptydata@doseGrid,
+    ID = 1L:8L,
+    cohort = as.integer(c(1, 2, 2, 3, 4, 4, 5, 6))
+  )
+
+  Effloglog(
+    eff = c(1.223, 2.513),
+    eff_dose = c(25, 300),
+    nu = c(a = 1, b = 0.025),
+    data = my_data
+  )
+}
+
 # EffFlexi ----
 
 ## class ----
@@ -2591,7 +2670,7 @@ EffFlexi <- function(eff,
   )
 
   x <- c(eff_dose, getEff(data, no_dlt = TRUE)$x_no_dlt)
-  x_level <- matchTolerance(x, data@doseGrid)
+  x_level <- match_within_tolerance(x, data@doseGrid)
   X <- model.matrix(~ -1L + factor(x_level, levels = seq_len(data@nGrid)))
   X <- matrix(as.integer(X), ncol = ncol(X)) # To remove some obsolete attributes.
 
@@ -2617,6 +2696,41 @@ EffFlexi <- function(eff,
     X = X,
     RW = RW,
     RW_rank = RW_rank,
+    data = data
+  )
+}
+
+## default constructor ----
+
+#' @rdname EffFlexi-class
+#' @note Typically, end users will not use the `.DefaultEffFlexi()` function.
+#' @export
+.DefaultEffFlexi <- function() {
+  empty_data <- DataDual(doseGrid = seq(25, 300, 25))
+  EffFlexi(
+    eff = c(1.223, 2.513),
+    eff_dose = c(25, 300),
+    sigma2W = c(a = 0.1, b = 0.1),
+    sigma2betaW = c(a = 20, b = 50),
+    rw1 = FALSE,
+    data = empty_data
+  )
+
+  data <- DataDual(
+    x = c(25, 50, 50, 75, 100, 100, 225, 300),
+    y = c(0, 0, 0, 0, 1, 1, 1, 1),
+    w = c(0.31, 0.42, 0.59, 0.45, 0.6, 0.7, 0.6, 0.52),
+    doseGrid = empty_data@doseGrid,
+    ID = 1L:8L,
+    cohort = as.integer(c(1, 2, 2, 3, 4, 4, 5, 6))
+  )
+
+  EffFlexi(
+    eff = c(1.223, 2.513),
+    eff_dose = c(25, 300),
+    sigma2W = c(a = 0.1, b = 0.1),
+    sigma2betaW = c(a = 20, b = 50),
+    rw1 = FALSE,
     data = data
   )
 }
@@ -3112,7 +3226,7 @@ OneParExpPrior <- function(skel_probs,
 ## default constructor ----
 
 #' @rdname OneParExpPrior-class
-#' @note Typically, end users will not use the `DefaultOneParLogNormalPrior()` function.
+#' @note Typically, end users will not use the `.DefaultOneParLogNormalPrior()` function.
 #' @export
 .DefaultOneParExpPrior <- function() {
   OneParExpPrior(
@@ -3219,5 +3333,88 @@ FractionalCRM <- function(...) {
     skel_probs = c(0.1, 0.2, 0.3, 0.4),
     dose_grid = c(10, 30, 50, 100),
     sigma2 = 2
+  )
+}
+
+## class ----
+
+#' `LogisticLogNormalOrdinal`
+#'
+#' @description `r lifecycle::badge("experimental")`
+#'
+#' [`LogisticLogNormalOrdinal`] is the class for a logistic lognormal CRM model
+#' using an ordinal toxicity scale.
+#'
+#' @aliases LogisticLogNormalOrdinal
+#' @export
+.LogisticLogNormalOrdinal <- setClass(
+  Class = "LogisticLogNormalOrdinal",
+  contains = "ModelLogNormal"
+)
+
+## constructor ----
+
+#' @rdname LogisticLogNormalOrdinal-class
+#' @inheritParams ModelLogNormal
+#' @export
+#' @example examples/Model-class-LogisticLogNormalOrdinal.R
+LogisticLogNormalOrdinal <- function(mean, cov, ref_dose) {
+  params <- ModelParamsNormal(mean, cov)
+  .LogisticLogNormalOrdinal(
+    params = params,
+    ref_dose = positive_number(ref_dose),
+    priormodel = function() {
+      alpha[1] ~ dnorm(mean[1], prec[1, 1])
+      for (i in 2:(k - 1)) {
+        alpha[i] ~ dnorm(mean[i], prec[i, i]) %_% T(, alpha[i - 1])
+      }
+      gamma ~ dnorm(mean[k], prec[k, k])
+      beta <- exp(gamma)
+    },
+    datamodel = function() {
+      for (i in 1:nObs) {
+        xhat[i] <- log(x[i] / ref_dose)
+        for (j in 1:(k - 1)) {
+          z[i, j] <- alpha[j] + beta * xhat[i]
+          p[i, j] <- exp(z[i, j]) / (1 + exp(z[i, j]))
+          tox[i, j] ~ dbern(p[i, j])
+        }
+      }
+    },
+    modelspecs = function(y, from_prior) {
+      ms <- list(
+        mean = params@mean,
+        prec = params@prec,
+        k = length(mean),
+        tox = array(dim = c(length(y), length(mean) - 1))
+      )
+      if (!from_prior) {
+        for (i in seq_along(y)) {
+          for (j in 1:(ms$k - 1)) {
+            ms$tox[i, j] <- y[i] >= j
+          }
+        }
+        ms$ref_dose <- ref_dose
+      }
+      ms
+    },
+    init = function() {
+      list(alpha = sapply(1:(length(mean) - 1), function(x) -(x + 1)), gamma = 1)
+    },
+    datanames = c("nObs", "y", "x"),
+    sample = c(paste0("alpha[", 1:(length(mean) - 1), "]"), "beta")
+  )
+}
+
+## default constructor ----
+
+#' @rdname LogisticLogNormalOrdinal-class
+#' @note Typically, end users will not use the `.DefaultLogisticLogNormalOrdinal()` function.
+#' @export
+.DefaultLogisticLogNormalOrdinal <- function() {
+  LogisticLogNormalOrdinal(
+    mean = c(-3, -4, 1),
+    cov = diag(c(3, 4, 1)),
+    ref_dose = 50
   )
 }

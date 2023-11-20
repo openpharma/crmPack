@@ -21,6 +21,108 @@
 #' @name assertions
 NULL
 
+# check equality ----
+
+#' Check if All Arguments Are Equal
+#'
+#' @description `r lifecycle::badge("experimental")`
+#' Elements of `...` must be numeric vectors or scalars.
+#'
+#' This function performs an element-by-element comparison of the first object
+#' provided in `...` with every other object in `...` and returns `TRUE` if all
+#' comparisons are equal within a given tolerance and `FALSE` otherwise.
+#'
+#' @param ... (`numeric`)\cr vectors to be compared.
+#' @param tol (`numeric`)\cr the maximum difference to be tolerated when
+#' judging equality.
+#'
+#' @note If there are any missing or infinite values in `...`, this function
+#'   returns `FALSE`, regardless of the values of other elements in `...`.
+#'
+#' @note If elements in `...` are not all of the same length, `FALSE` is returned.
+#'
+#' @return `TRUE` if all element-by-element differences are less than `tolerance`
+#' in magnitude, `FALSE` otherwise.
+#' @seealso [`assertions`] for more details.
+#'
+#' @export
+#' @examples
+#' check_equal(1:2, 1:2) # TRUE
+#' check_equal(1:2, 2:3) # "Not all equal"
+#' check_equal(Inf, Inf) # "Not all equal"
+#' check_equal(0.01, 0.02) # "Not all equal"
+#' check_equal(0.01, 0.02, tol = 0.05) # TRUE
+#' check_equal(1, c(1, 1)) # "Not all equal"
+check_equal <- function(..., tol = sqrt(.Machine$double.eps)) {
+  dot_args <- list(...)
+
+  sapply(dot_args, assert_numeric)
+
+  tmp <- sapply(dot_args, length)
+  if (min(tmp) != max(tmp)) {
+    return("Not all of same length")
+  }
+  if (any(sapply(dot_args, is.na))) {
+    return("Some entries NA")
+  }
+  if (any(sapply(dot_args, is.infinite))) {
+    return("Not all entries finite")
+  }
+  if (!all(sapply(dot_args, test_numeric))) {
+    return("Not all numeric")
+  }
+
+  all_ok <- test_true(
+    all(
+      sapply(
+        2:length(dot_args),
+        function(z) abs(dot_args[[1]] - dot_args[[z]]) < tol
+      )
+    )
+  )
+  if (all_ok) {
+    return(TRUE)
+  }
+  "Not all equal"
+}
+
+#' Assert That All Arguments Are Equal
+#'
+#' @description `r lifecycle::badge("experimental")`
+#' Elements of `...` must be numeric vectors or scalars.
+#'
+#' This function performs an element-by-element comparison of the first object
+#' provided in `...` with every other object in `...` and throws an error if they
+#' are not.
+#'
+#' @param ... (`numeric`)\cr vectors to be compared
+#' @param tol (`numeric`)\cr the maximum difference to be tolerated when
+#' judging equality
+#'
+#' @note If there are any missing or infinite values in `...`, this function
+#'   throws an error, regardless of the values of other elements in `...`.
+#'
+#' @note If elements in `...` are not all of the same length, an error is thrown.
+#'
+#' @return `list(...)`, invisibly.
+#' @seealso [`assertions`] for more details.
+#' @inheritParams checkmate::assert_numeric
+#'
+#' @export
+#' @rdname check_equal
+#' @examples
+#' assert_equal(1:2, 1:2) # no error
+#' assert_equal(0.01, 0.02, tol = 0.05) # no error
+# nolint start
+assert_equal <- function(..., tol = sqrt(.Machine$double.eps), .var.name = vname(x), add = NULL) {
+  # assert_equal <- makeAssertionFunction(check_equal) fails with error "Error
+  # in `checkmate::makeAssertion(..., res, .var.name, add)`: unused argument
+  # (add)", possibly because of the use of ... in check_equal.
+  res <- check_equal(..., tol = tol)
+  makeAssertion(list(...), res, .var.name, add)
+}
+# nolint end
+
 # assert_probabilities ----
 
 #' Check if an argument is a probability vector
@@ -31,7 +133,7 @@ NULL
 #' probability, that is a number within (0, 1) interval, that can optionally be
 #' closed at any side.
 #'
-#' @note If there are any missing or non-finite values in `x`, this functions
+#' @note If there are any missing or non-finite values in `x`, this function
 #'   returns `FALSE`, regardless of the values of other elements in `x`.
 #'
 #' @param x (`numeric`)\cr vector or matrix with numerical values to check.
