@@ -27,21 +27,15 @@
 </defs>
 <g clip-path='url(#cpMzUuMjR8NjEwLjg0fDIyLjc4fDU0NS4xMQ==)'>
 <rect x='35.24' y='22.78' width='575.60' height='522.33' style='stroke-width: 1.07; stroke: none; fill: #FFFFFF;' />
-<<<<<<< HEAD
-<polyline points='105.01,409.37 148.61,285.68 192.22,223.13 235.83,182.22 279.43,152.21 323.04,128.70 366.64,109.48 410.25,93.29 453.86,79.35 497.46,67.13 541.07,56.28 584.67,46.53 ' style='stroke-width: 3.20; stroke: #0000FF; stroke-linecap: butt;' />
-<polyline points='105.01,424.27 148.61,339.23 192.22,316.55 235.83,313.20 279.43,317.59 323.04,325.26 366.64,334.23 410.25,343.55 453.86,352.74 497.46,361.59 541.07,369.97 584.67,377.85 ' style='stroke-width: 3.20; stroke: #00CD00; stroke-linecap: butt;' />
-<polyline points='105.01,521.37 148.61,488.61 192.22,460.59 235.83,436.90 279.43,416.82 323.04,399.69 366.64,384.98 410.25,372.25 453.86,361.14 497.46,351.38 541.07,342.75 584.67,335.08 ' style='stroke-width: 3.20; stroke: #FF0000; stroke-linecap: butt;' />
-<circle cx='203.54' cy='454.05' r='8.89' style='stroke-width: 0.71; stroke: none; fill: #EE82EE;' />
-<text x='205.29' y='492.89' text-anchor='middle' style='font-size: 14.23px; fill: #EE82EE; font-family: sans;' textLength='73.16px' lengthAdjust='spacingAndGlyphs'>p(DLE=0.3)</text>
-<polygon points='227.00,299.21 238.98,319.95 215.03,319.95 ' style='stroke-width: 0.71; stroke: none; fill: #00CD00;' />
-<text x='227.00' y='351.88' text-anchor='middle' style='font-size: 14.23px; fill: #00CD00; font-family: sans;' textLength='60.89px' lengthAdjust='spacingAndGlyphs'>Max Gain</text>
-=======
 <polyline points='105.01,409.37 148.61,285.68 192.22,223.13 235.83,182.22 279.43,152.21 323.04,128.70 366.64,109.48 410.25,93.29 453.86,79.35 497.46,67.13 541.07,56.28 584.67,46.53 ' style='stroke-width: 2.13; stroke: #0000FF; stroke-linecap: butt;' />
 <polyline points='105.01,424.27 148.61,339.23 192.22,316.55 235.83,313.20 279.43,317.59 323.04,325.26 366.64,334.23 410.25,343.55 453.86,352.74 497.46,361.59 541.07,369.97 584.67,377.85 ' style='stroke-width: 2.13; stroke: #00CD00; stroke-dasharray: 2.85,8.54; stroke-linecap: butt;' />
 <polyline points='105.01,521.37 148.61,488.61 192.22,460.59 235.83,436.90 279.43,416.82 323.04,399.69 366.64,384.98 410.25,372.25 453.86,361.14 497.46,351.38 541.07,342.75 584.67,335.08 ' style='stroke-width: 2.13; stroke: #FF0000; stroke-dasharray: 11.38,11.38; stroke-linecap: butt;' />
 <circle cx='203.54' cy='454.05' r='8.89' style='stroke-width: 0.71; stroke: none; fill: #EE82EE;' />
+<text x='205.29' y='492.89' text-anchor='middle' style='font-size: 14.23px; fill: #EE82EE; font-family: sans;' textLength='73.16px' lengthAdjust='spacingAndGlyphs'>p(DLE=0.3)</text>
 <polygon points='227.00,299.21 238.98,319.95 215.03,319.95 ' style='stroke-width: 0.71; stroke: none; fill: #00CD00;' />
->>>>>>> origin/main
+<text x='227.00' y='351.88' text-anchor='middle' style='font-size: 14.23px; fill: #00CD00; font-family: sans;' textLength='60.89px' lengthAdjust='spacingAndGlyphs'>Max Gain</text>
+<circle cx='203.54' cy='454.05' r='8.89' style='stroke-width: 0.71; stroke: none; fill: #EE82EE;' />
+<polygon points='227.00,299.21 238.98,319.95 215.03,319.95 ' style='stroke-width: 0.71; stroke: none; fill: #00CD00;' />
 <rect x='35.24' y='22.78' width='575.60' height='522.33' style='stroke-width: 1.07; stroke: #333333;' />
 </g>
 <g clip-path='url(#cpMC4wMHw3MjAuMDB8MC4wMHw1NzYuMDA=)'>
@@ -61,19 +55,6 @@
 <text x='584.67' y='556.10' text-anchor='middle' style='font-size: 8.80px; fill: #4D4D4D; font-family: sans;' textLength='14.68px' lengthAdjust='spacingAndGlyphs'>300</text>
 <text x='323.04' y='568.24' text-anchor='middle' style='font-size: 11.00px; font-family: sans;' textLength='55.04px' lengthAdjust='spacingAndGlyphs'>Dose Level</text>
 <text transform='translate(13.05,283.95) rotate(-90)' text-anchor='middle' style='font-size: 11.00px; font-family: sans;' textLength='33.64px' lengthAdjust='spacingAndGlyphs'>Values</text>
-<<<<<<< HEAD
-<rect x='621.80' y='250.36' width='92.72' height='67.17' style='stroke-width: 1.07; stroke: none; fill: #FFFFFF;' />
-<text x='621.80' y='259.07' style='font-size: 11.00px; font-family: sans;' textLength='32.41px' lengthAdjust='spacingAndGlyphs'>curves</text>
-<rect x='621.80' y='265.69' width='17.28' height='17.28' style='stroke-width: 1.07; stroke: none; fill: #FFFFFF;' />
-<line x1='623.52' y1='274.33' x2='637.35' y2='274.33' style='stroke-width: 3.20; stroke: #0000FF; stroke-linecap: butt;' />
-<rect x='621.80' y='282.97' width='17.28' height='17.28' style='stroke-width: 1.07; stroke: none; fill: #FFFFFF;' />
-<line x1='623.52' y1='291.61' x2='637.35' y2='291.61' style='stroke-width: 3.20; stroke: #00CD00; stroke-linecap: butt;' />
-<rect x='621.80' y='300.25' width='17.28' height='17.28' style='stroke-width: 1.07; stroke: none; fill: #FFFFFF;' />
-<line x1='623.52' y1='308.89' x2='637.35' y2='308.89' style='stroke-width: 3.20; stroke: #FF0000; stroke-linecap: butt;' />
-<text x='644.56' y='277.36' style='font-size: 8.80px; font-family: sans;' textLength='69.97px' lengthAdjust='spacingAndGlyphs'>Expected Efficacy</text>
-<text x='644.56' y='294.64' style='font-size: 8.80px; font-family: sans;' textLength='18.59px' lengthAdjust='spacingAndGlyphs'>Gain</text>
-<text x='644.56' y='311.92' style='font-size: 8.80px; font-family: sans;' textLength='27.88px' lengthAdjust='spacingAndGlyphs'>p(DLE)</text>
-=======
 <rect x='621.80' y='219.94' width='92.72' height='67.17' style='stroke-width: 1.07; stroke: none; fill: #FFFFFF;' />
 <text x='621.80' y='228.65' style='font-size: 11.00px; font-family: sans;' textLength='34.85px' lengthAdjust='spacingAndGlyphs'>Curves</text>
 <rect x='621.80' y='235.27' width='17.28' height='17.28' style='stroke-width: 1.07; stroke: none; fill: #FFFFFF;' />
@@ -93,7 +74,6 @@
 <polygon points='630.44,336.28 633.07,340.84 627.80,340.84 ' style='stroke-width: 0.71; stroke: none; fill: #00CD00;' />
 <text x='644.56' y='325.07' style='font-size: 8.80px; font-family: sans;' textLength='50.14px' lengthAdjust='spacingAndGlyphs'>p(DLE = 0.3)</text>
 <text x='644.56' y='342.35' style='font-size: 8.80px; font-family: sans;' textLength='37.67px' lengthAdjust='spacingAndGlyphs'>Max Gain</text>
->>>>>>> origin/main
 <text x='35.24' y='14.56' style='font-size: 13.20px; font-family: sans;' textLength='266.33px' lengthAdjust='spacingAndGlyphs'>plotGain-ModelTox-Missing-ModelEff-Missing</text>
 </g>
 </svg>
