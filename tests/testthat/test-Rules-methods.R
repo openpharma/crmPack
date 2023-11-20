@@ -3904,10 +3904,8 @@ test_that("stopTrial works for StoppingTargetBiomarker", {
     rng_seed = 94
   )
 
-<<<<<<< HEAD
-=======
+
   # Set-up some MCMC parameters and generate samples from the posterior
->>>>>>> origin/main
   samples <- mcmc(data, model, options)
 
   # Define the rule for dose increments and calculate the maximum dose allowed
@@ -3992,22 +3990,13 @@ test_that("stopTrial works for StoppingTargetBiomarker", {
       )
       expected <- FALSE
       attr(expected, "message") <- expectedAttributes[[as.character(d)]]
-<<<<<<< HEAD
-=======
       attr(expected, "report_label") <- NA_character_
->>>>>>> origin/main
       expect_equal(actual, expected)
     }
   )
 })
 
 test_that("maxSize works as expected", {
-<<<<<<< HEAD
-  size1 <- CohortSizeRange(intervals = c(0, 3), cohort_size = 1:2)
-  size2 <- CohortSizeDLT(dlt_intervals = 0:2, cohort_size = c(1, 3, 6))
-  cohortSize <- CohortSizeMax(cohort_size_list = list(size1, size2))
-  expect_equal(maxSize(size1, size2), cohortSize)
-=======
   size1 <- CohortSizeRange(intervals = c(0, 3), cohort_size = 1:2)
   size2 <- CohortSizeDLT(intervals = 0:2, cohort_size = c(1, 3, 6))
   cohortSize <- CohortSizeMax(cohort_sizes = list(size1, size2))
@@ -4019,7 +4008,6 @@ test_that("minSize works as expected", {
   size2 <- CohortSizeDLT(intervals = 0:2, cohort_size = c(1, 3, 6))
   cohortSize <- CohortSizeMin(cohort_sizes = list(size1, size2))
   expect_equal(minSize(size1, size2), cohortSize)
->>>>>>> origin/main
 })
 
 test_that("stopTrial works correctly for StoppingTDCIRatio when samples are provided", {
@@ -4072,10 +4060,8 @@ test_that("stopTrial works correctly for StoppingTDCIRatio when samples are prov
           " than target_ratio = ",
           targetRatio
         )
-<<<<<<< HEAD
-=======
+
         attr(expected, "report_label") <- NA_character_
->>>>>>> origin/main
         if (expected != as.logical(result)) {
           print(
             paste0(
