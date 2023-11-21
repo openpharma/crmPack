@@ -863,7 +863,7 @@ setMethod("simulate",
 
         # Get the MTD estimate from the samples.
 
-          target_dose_samples <- dose(
+        target_dose_samples <- dose(
           mean(object@nextBest@target),
           model = object@model,
           samples = thisSamples
@@ -2002,7 +2002,7 @@ setMethod("simulate",
 
         # Get the MTD estimate from the samples.
 
-          target_dose_samples <- dose(
+        target_dose_samples <- dose(
           mean(object@nextBest@target),
           model = object@model,
           samples = thisSamples
@@ -2375,7 +2375,7 @@ setMethod("simulate",
 
         # Get the MTD estimate from the samples.
 
-          target_dose_samples <- dose(
+        target_dose_samples <- dose(
           mean(object@nextBest@target),
           model = object@model,
           samples = thisSamples
@@ -2876,7 +2876,7 @@ setMethod("simulate",
 
         # Get the MTD estimate from the samples.
 
-          target_dose_samples <- dose(
+        target_dose_samples <- dose(
           mean(object@nextBest@target),
           model = object@model,
           samples = thisSamples
@@ -3436,7 +3436,7 @@ setMethod("simulate",
 
           # Get the MTD estimate from the samples.
 
-            target_dose_samples <- dose(
+          target_dose_samples <- dose(
             mean(object@nextBest@target),
             model = object@model,
             samples = thisSamples
@@ -3932,7 +3932,7 @@ setMethod("simulate",
 
           # Get the MTD estimate from the samples.
 
-            target_dose_samples <- dose(
+          target_dose_samples <- dose(
             mean(object@nextBest@target),
             model = object@model,
             samples = thisSamples

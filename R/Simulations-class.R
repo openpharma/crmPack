@@ -887,7 +887,6 @@ PseudoDualFlexiSimulations <- function(sigma2betaWest,
       meanFit = "list",
       stop_report = "matrix",
       additional_stats = "list"
-
     )
   )
 
