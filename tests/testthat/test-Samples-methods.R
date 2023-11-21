@@ -1,5 +1,3 @@
-## nolint start
-
 # size ----
 
 ## Samples ----
@@ -106,7 +104,7 @@ test_that("get-Samples returns correct values", {
         param,
         "[",
         rep(
-          1:ncol(dualSamples@data[[param]]),
+          seq_len(ncol(dualSamples@data[[param]])),
           each = (mcmcOptions@iterations - mcmcOptions@burnin) / mcmcOptions@step
         ),
         "]"
@@ -117,7 +115,7 @@ test_that("get-Samples returns correct values", {
   attr(expected, "description") <- paste0(
     param,
     "[",
-    1:ncol(dualSamples@data[[param]]),
+    seq_len(ncol(dualSamples@data[[param]])),
     "]"
   )
   attr(expected, "nBurnin") <- mcmcOptions@burnin
@@ -250,7 +248,13 @@ test_that("fit-Samples works correctly for dual models", {
   actual <- fit(samples, model, dualData)
 
   expect_equal(class(actual), "data.frame")
-  expect_setequal(names(actual), c("dose", "middle", "lower", "upper", "middleBiomarker", "lowerBiomarker", "upperBiomarker"))
+  expect_setequal(
+    names(actual),
+    c(
+      "dose", "middle", "lower", "upper", "middleBiomarker",
+      "lowerBiomarker", "upperBiomarker"
+    )
+  )
   expect_snapshot(actual)
 })
 
@@ -340,7 +344,6 @@ test_that("fit-Samples-LogisticLogNormalOrdinal fails gracefully with bad input"
   expect_warning({
     samples <- mcmc(ordinal_data, ordinal_model, mcmc_options)
   })
-  # assert_probability_range(quantiles)
   expect_error(
     fit(samples, ordinal_model, ordinal_data, grade = 1L, points = "bad"),
     "Assertion on 'points' failed: Must be of type 'numeric', not 'character'."
@@ -434,6 +437,7 @@ test_that("Samples-approximate works correctly", {
     logNormal = FALSE,
     control = list(threshold.stop = 0.1, max.time = 1, maxit = 1)
   )
+  expect_snapshot_value(posterior2, style = "serialize")
   for (nm in slotNames(posterior2$model)) {
     if (!is.function(slot(posterior2$model, nm))) {
       expect_snapshot(slot(posterior2$model, nm))
@@ -1551,6 +1555,16 @@ test_that("plot-Samples-DALogisticNormal works correctly", {
   samples <- mcmc(data, model, options)
 
   actual <- plot(samples, model, data)
+  vdiffr::expect_doppelganger("plot-Samples-DALogisticLogNormal", actual)
+
+  actual1 <- plot(samples, model, data, hazard = TRUE)
+  vdiffr::expect_doppelganger("plot-Samples-DALogisticLogNormal_hazard-TRUE", actual1)
+
+  actual2 <- plot(samples, model, data, showLegend = FALSE)
+  vdiffr::expect_doppelganger("plot-Samples-DALogisticLogNormal_showLegend-FALSE", actual2)
+
+  actual3 <- plot(samples, model, data, showLegend = FALSE, hazard = TRUE)
+  vdiffr::expect_doppelganger("plot-Samples-DALogisticLogNormal_TRUE_FALSE", actual3)
   vdiffr::expect_doppelganger("plot-samples-dalogisticlognormal", actual)
 
   actual1 <- plot(samples, model, data, hazard = TRUE)
@@ -1778,7 +1792,6 @@ test_that("fitGain-Samples-LogisticIndepBeta works correctly", {
 
   expect_snapshot(actual)
 })
-## nolint end
 
 # tidy ----
 
