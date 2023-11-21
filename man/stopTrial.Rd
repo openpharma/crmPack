@@ -1206,10 +1206,10 @@ myNextBest <- .DefaultNextBestOrdinal()
 
 doseRecommendation <- nextBest(
   myNextBest,
-  doselimit=nextMaxDose,
-  samples=samples,
-  model=model,
-  data=data
+  doselimit = nextMaxDose,
+  samples = samples,
+  model = model,
+  data = data
 )
 
 myStopping <- .DefaultStoppingOrdinal()
@@ -1233,10 +1233,10 @@ myNextBest <- .DefaultNextBestOrdinal()
 
 doseRecommendation <- nextBest(
   myNextBest,
-  doselimit=nextMaxDose,
-  samples=samples,
-  model=model,
-  data=data
+  doselimit = nextMaxDose,
+  samples = samples,
+  model = model,
+  data = data
 )
 
 myStopping <- .DefaultStoppingOrdinal()

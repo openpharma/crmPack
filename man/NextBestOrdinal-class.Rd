@@ -6,19 +6,16 @@
 \alias{.NextBestOrdinal}
 \alias{NextBestOrdinal}
 \alias{.DefaultNextBestOrdinal}
-\alias{IncrementsOrdinal}
 \title{\code{NextBestOrdinal}}
 \usage{
 NextBestOrdinal(grade, rule)
 
 .DefaultNextBestOrdinal()
-
-IncrementsOrdinal(grade, rule)
 }
 \arguments{
 \item{grade}{(\code{numeric})\cr see slot definition.}
 
-\item{rule}{(\code{Increments})\cr see slot definition.}
+\item{rule}{(\code{NextBest})\cr see slot definition.}
 }
 \description{
 \ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#experimental}{\figure{lifecycle-experimental.svg}{options: alt='[Experimental]'}}}{\strong{[Experimental]}}
@@ -46,14 +43,6 @@ NextBestOrdinal(
     function(mtd_samples) {
       quantile(mtd_samples, probs = 0.25)
     }
-  )
-)
-
-IncrementsOrdinal(
-  grade = 1L,
-  rule = IncrementsRelative(
-    intervals = c(0, 20),
-    increments = c(1, 0.33)
   )
 )
 }

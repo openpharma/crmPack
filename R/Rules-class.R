@@ -1516,7 +1516,7 @@ IncrementsMin <- function(increments_list) {
 
 ## constructor ----
 
-#' @rdname NextBestOrdinal-class
+#' @rdname IncrementsOrdinal-class
 #'
 #' @param grade (`numeric`)\cr see slot definition.
 #' @param rule (`Increments`)\cr see slot definition.

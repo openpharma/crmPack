@@ -5,13 +5,13 @@
 \title{Convert a Samples Object from an ordinal Model to the Equivalent Samples Object
 from a Binary Model}
 \usage{
-h_convert_ordinal_samples(x, grade)
+h_convert_ordinal_samples(obj, grade)
 }
 \arguments{
+\item{obj}{(\code{DataOrdinal})\cr the \code{DataOrdinal} object to covert}
+
 \item{grade}{(\code{integer})\cr the toxicity grade for which the equivalent data
 is required.}
-
-\item{d}{(\code{DataOrdinal})\cr the \code{DataOrdinal} object to covert}
 }
 \value{
 A \code{\link{Samples}} object.

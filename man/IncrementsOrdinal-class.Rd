@@ -8,7 +8,14 @@
 \alias{.DefaultIncrementsOrdinal}
 \title{\code{IncrementsOrdinal}}
 \usage{
+IncrementsOrdinal(grade, rule)
+
 .DefaultIncrementsOrdinal()
+}
+\arguments{
+\item{grade}{(\code{numeric})\cr see slot definition.}
+
+\item{rule}{(\code{Increments})\cr see slot definition.}
 }
 \description{
 \ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#experimental}{\figure{lifecycle-experimental.svg}{options: alt='[Experimental]'}}}{\strong{[Experimental]}}
@@ -27,4 +34,13 @@ applied.}
 
 \note{
 Typically, end users will not use the \code{.DefaultIncrementsOrdinal()} function.
+}
+\examples{
+IncrementsOrdinal(
+  grade = 1L,
+  rule = IncrementsRelative(
+    intervals = c(0, 20),
+    increments = c(1, 0.33)
+  )
+)
 }
