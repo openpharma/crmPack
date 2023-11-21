@@ -3059,7 +3059,7 @@ setMethod(
     size(
       object@rule,
       dose = dose,
-      data = h_convert_ordinal_data(ta, object@grade),
+      data = h_convert_ordinal_data(data, object@grade),
       ...
     )
   }

@@ -5,10 +5,10 @@
 \title{Convert a Ordinal Data to the Equivalent Binary Data for a Specific
 Grade}
 \usage{
-h_convert_ordinal_data(d, grade)
+h_convert_ordinal_data(data_ord, grade)
 }
 \arguments{
-\item{d}{(\code{DataOrdinal})\cr the \code{DataOrdinal} object to covert}
+\item{data_ord}{(\code{DataOrdinal})\cr the \code{DataOrdinal} object to covert}
 
 \item{grade}{(\code{integer})\cr the toxicity grade for which the equivalent data
 is required.}

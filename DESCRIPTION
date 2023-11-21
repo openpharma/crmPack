@@ -112,7 +112,6 @@ Collate:
     'checkmate.R'
     'Rules-methods.R'
     'Design-methods.R'
-    'Samples-method-tidy.R'
     'fromQuantiles.R'
     'Samples-methods.R'
     'Simulations-methods.R'

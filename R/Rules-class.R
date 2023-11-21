@@ -1549,8 +1549,7 @@ IncrementsOrdinal <- function(grade, rule) {
 #'
 #' [`Stopping`] is a class for stopping rules.
 #'
-#' @slot
-#'  (`string`)\cr a label for the stopping report. The meaning
+#' @slot report_label (`string`)\cr a label for the stopping report. The meaning
 #'   of this parameter is twofold. If it is equal to `NA_character_` (default),
 #'   the `report_label` will not be used in the report at all. Otherwise, if it
 #'   is specified as an empty character (i.e. `character(0)`) in a user constructor,

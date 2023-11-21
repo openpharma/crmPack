@@ -216,25 +216,25 @@ h_obtain_dose_grid_range <- function(object, ignore_placebo) {
 #' A simple helper function that takes a [`DataOrdinal`] object and an
 #' integer grade and converts them to the equivalent `Data` object.
 #'
-#' @param d (`DataOrdinal`)\cr the `DataOrdinal` object to covert
+#' @param data_ord (`DataOrdinal`)\cr the `DataOrdinal` object to covert
 #' @param grade (`integer`)\cr the toxicity grade for which the equivalent data
 #' is required.
 #' @return A [`Data`] object.
 #'
 #' @export
-h_convert_ordinal_data <- function(d, grade) {
+h_convert_ordinal_data <- function(data_ord, grade) {
   # Validate
   assert_integer(grade, len = 1, lower = 1)
-  assert_class(d, "DataOrdinal")
+  assert_class(data_ord, "DataOrdinal")
   # Execute
   Data(
-    ID = d@ID,
-    cohort = d@cohort,
-    x = d@x,
-    y = as.integer(d@y >= grade),
-    doseGrid = d@doseGrid,
-    nGrid = d@nGrid,
-    xLevel = d@xLevel,
-    placebo = d@placebo
+    ID = data_ord@ID,
+    cohort = data_ord@cohort,
+    x = data_ord@x,
+    y = as.integer(data_ord@y >= grade),
+    doseGrid = data_ord@doseGrid,
+    nGrid = data_ord@nGrid,
+    xLevel = data_ord@xLevel,
+    placebo = data_ord@placebo
   )
 }
