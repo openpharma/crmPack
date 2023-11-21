@@ -16,6 +16,7 @@ This is a method based on the \code{\linkS4class{TDsamplesDesign}} where model u
   mcmcOptions = McmcOptions(),
   parallel = FALSE,
   nCores = min(parallel::detectCores(), 5L),
+  derive = list(),
   ...
 )
 }

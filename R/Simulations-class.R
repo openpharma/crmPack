@@ -537,6 +537,7 @@ DualSimulations <- function(rho_est,
 ##' incorporated) after each simulations
 ##' @slot stopReasons add slot description
 ##' @slot stop_report matrix of stopping rule outcomes
+##' @slot additional_stats list of additional statistical summary
 ##'
 ##' @export
 .PseudoSimulations <-
@@ -553,7 +554,8 @@ DualSimulations <- function(rho_est,
       FinalCIs = "list",
       FinalRatios = "numeric",
       stop_report = "matrix",
-      stopReasons = "list"
+      stopReasons = "list",
+      additional_stats = "list"
     ),
     ## note: this prototype is put together with the prototype
     ## for GeneralSimulations
@@ -567,6 +569,7 @@ DualSimulations <- function(rho_est,
       FinalCIs = list(c(0.1, 0.2), c(0.1, 0.2)),
       FinalRatios = c(0.1, 0.1),
       stop_report = matrix(TRUE, nrow = 2),
+      additional_stats = list(a = 1, b = 1),
       stopReasons =
         list("A", "A")
     ),
@@ -587,6 +590,7 @@ validObject(.PseudoSimulations())
 ##' @param FinalRatios please refer to \code{\linkS4class{PseudoSimulations}} class object
 ##' @param stopReasons please refer to \code{\linkS4class{PseudoSimulations}} class object
 ##' @param stop_report see [`PseudoSimulations`]
+##' @param additional_stats (`list`)\cr see slot definition.
 ##' @param \dots additional parameters from \code{\linkS4class{GeneralSimulations}}
 ##' @return the \code{\linkS4class{PseudoSimulations}} object
 ##'
@@ -601,6 +605,7 @@ PseudoSimulations <- function(fit,
                               FinalCIs,
                               FinalRatios,
                               stop_report,
+                              additional_stats,
                               stopReasons,
                               ...) {
   start <- GeneralSimulations(...)
@@ -615,6 +620,7 @@ PseudoSimulations <- function(fit,
     FinalCIs = FinalCIs,
     FinalRatios = FinalRatios,
     stop_report = stop_report,
+    additional_stats = additional_stats,
     stopReasons = stopReasons
   )
 }
@@ -844,6 +850,7 @@ PseudoDualFlexiSimulations <- function(sigma2betaWest,
 ##' @slot meanFit list with the average, lower (2.5%) and upper (97.5%)
 ##' quantiles of the mean fitted toxicity at each dose level
 ##' @slot stop_report matrix of stopping rule outcomes
+##' @slot additional_stats list of additional statistical summary
 ##'
 ##' @export
 ##' @keywords classes
@@ -878,7 +885,9 @@ PseudoDualFlexiSimulations <- function(sigma2betaWest,
       doseGrid = "numeric",
       fitAtDoseMostSelected = "numeric",
       meanFit = "list",
-      stop_report = "matrix"
+      stop_report = "matrix",
+      additional_stats = "list"
+
     )
   )
 

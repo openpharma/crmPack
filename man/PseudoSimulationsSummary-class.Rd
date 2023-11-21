@@ -86,6 +86,8 @@ selected}
 quantiles of the mean fitted toxicity at each dose level}
 
 \item{\code{stop_report}}{matrix of stopping rule outcomes}
+
+\item{\code{additional_stats}}{list of additional statistical summary}
 }}
 
 \keyword{classes}
