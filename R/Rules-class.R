@@ -2799,7 +2799,7 @@ StoppingAny <- function(stop_list, report_label = NA_character_) {
 #' @export
 #'
 StoppingOrdinal <- function(grade, rule) {
-   .StoppingOrdinal(grade = grade, rule = rule)
+  .StoppingOrdinal(grade = grade, rule = rule)
 }
 
 ## default constructor ----

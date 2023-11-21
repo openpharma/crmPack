@@ -2735,14 +2735,14 @@ setMethod(
     data = "DataOrdinal"
   ),
   definition = function(stopping, dose, samples, model, data, ...) {
-     stopTrial(
-       stopping = stopping@rule,
-       dose = dose,
-       samples = h_convert_ordinal_samples(samples, stopping@grade),
-       model = h_convert_ordinal_model(model, stopping@grade),
-       data = h_convert_ordinal_data(data, stopping@grade),
-       ...
-     )
+    stopTrial(
+      stopping = stopping@rule,
+      dose = dose,
+      samples = h_convert_ordinal_samples(samples, stopping@grade),
+      model = h_convert_ordinal_model(model, stopping@grade),
+      data = h_convert_ordinal_data(data, stopping@grade),
+      ...
+    )
   }
 )
 
