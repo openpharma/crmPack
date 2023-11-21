@@ -1679,8 +1679,6 @@ setMethod(
   }
 )
 
-# JK 13-Nov-2023
-
 ## IncrementsOrdinal ----
 
 #' @describeIn maxDose determine the maximum possible next dose in an ordinal
@@ -1708,8 +1706,6 @@ setMethod(
     )
   }
 )
-
-# JK 13-Nov-2023
 
 # nolint start
 
@@ -3059,6 +3055,7 @@ setMethod(
     assert_numeric(dose, len = 1, lower = 0)
     assert_class(data, "DataOrdinal")
     # Execute
+
     size(
       object@rule,
       dose = dose,

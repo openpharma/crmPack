@@ -969,7 +969,7 @@ NextBestOrdinal <- function(grade, rule) {
 #' @export
 .DefaultNextBestOrdinal <- function() {
   NextBestOrdinal(
-    target = 1L,
+    grade = 1L,
     rule = NextBestMTD(
       0.25,
       function(mtd_samples) {
@@ -1489,8 +1489,6 @@ IncrementsMin <- function(increments_list) {
   )
 }
 
-# JK 13-Nov-2023 Start
-
 # IncrementsOrdinal ----
 
 ## class ----
@@ -1551,7 +1549,8 @@ IncrementsOrdinal <- function(grade, rule) {
 #'
 #' [`Stopping`] is a class for stopping rules.
 #'
-#' @slot report_label (`string`)\cr a label for the stopping report. The meaning
+#' @slot
+#'  (`string`)\cr a label for the stopping report. The meaning
 #'   of this parameter is twofold. If it is equal to `NA_character_` (default),
 #'   the `report_label` will not be used in the report at all. Otherwise, if it
 #'   is specified as an empty character (i.e. `character(0)`) in a user constructor,
@@ -3443,7 +3442,7 @@ SafetyWindowConst <- function(gap,
   assert_integerish(gap, lower = 0)
 
   if (follow > follow_min) {
-    warning("the value of follow_min is typically larger than the value of follow")
+    warning("The value of follow_min is typically larger than the value of follow")
   }
   .SafetyWindowConst(
     gap = as.integer(gap),

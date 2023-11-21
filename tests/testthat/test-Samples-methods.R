@@ -450,7 +450,6 @@ test_that("Samples-approximate works correctly", {
 
 ## Samples-GeneralModel ----
 
-
 test_that("Approximate fails gracefully with bad input", {
   data <- Data(
     x = c(0.1, 0.5, 1.5, 3, 6, 10, 10, 10),
@@ -580,6 +579,28 @@ test_that("fit-Samples-LogisticIndepBeta fails gracefully with bad input", {
     fit(object = samples, model = model, data = data, quantiles = c(0.1, 0.2, 0.3)),
     "Assertion on 'quantiles' failed: Must have length 2, but has length 3."
   )
+})
+
+## plot-ModelEffNoSamples ----
+
+test_that("plot-ModelEffNoSamples works correctly", {
+  data <- DataDual(
+    x = c(25, 50, 50, 75, 100, 100, 225, 300),
+    y = c( 0,  0,  0,  0,   1,   1,   1,   1),
+    w = c(0.31, 0.42, 0.59, 0.45, 0.6 ,0.7, 0.6, 0.52),
+    doseGrid = seq(25, 300, 25),
+    placebo = FALSE,
+    ID = 1L:8L,
+    cohort = as.integer(c(1, 2, 2, 3, 4, 4, 5, 6))
+  )
+  Effmodel <- Effloglog(
+    eff = c(1.223, 2.513),
+    eff_dose = c(25, 300),
+    nu = c(a = 1,b = 0.025),
+    data = data
+  )
+  result <- plot(x=data,y=Effmodel)
+  vdiffr::expect_doppelganger("samples-plot-modeleff-nosamples", result)
 })
 
 # fit ----
