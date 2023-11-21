@@ -1358,6 +1358,65 @@ setMethod(
   }
 )
 
+## NextBestOrdinal ----
+
+#' @describeIn nextBest find the next best dose for ordinal CRM models.
+#'
+#' @aliases nextBest-NextBestOrdinal
+#'
+#' @export
+#' @example examples/Rules-method-nextBest-NextBestOrdinal.R
+#'
+setMethod(
+  f = "nextBest",
+  signature = signature(
+    nextBest = "NextBestOrdinal",
+    doselimit = "numeric",
+    samples = "Samples",
+    model = "GeneralModel",
+    data = "Data"
+  ),
+  definition = function(nextBest, doselimit = Inf, samples, model, data, ...) {
+    stop(
+      paste0(
+        "NextBestOrdinal objects can only be used with LogisticLogNormalOrdinal ",
+        "models and DataOrdinal data objects. In this case, the model is a '",
+        class(model),
+        "' object and the data is in a ",
+        class(data),
+        " object."
+      )
+    )
+  }
+)
+
+#' @describeIn nextBest find the next best dose for ordinal CRM models.
+#'
+#' @aliases nextBest-NextBestOrdinal
+#'
+#' @export
+#' @example examples/Rules-method-nextBest-NextBestOrdinal.R
+#'
+setMethod(
+  f = "nextBest",
+  signature = signature(
+    nextBest = "NextBestOrdinal",
+    doselimit = "numeric",
+    samples = "Samples",
+    model = "LogisticLogNormalOrdinal",
+    data = "DataOrdinal"
+  ),
+  definition = function(nextBest, doselimit = Inf, samples, model, data, ...) {
+    nextBest(
+      nextBest = nextBest@rule,
+      doselimit = doselimit,
+      samples = h_convert_ordinal_samples(samples, nextBest@grade),
+      model = h_convert_ordinal_model(model, nextBest@grade),
+      data = h_convert_ordinal_data(data, nextBest@grade),
+      ...
+    )
+  }
+)
 
 # maxDose ----
 
@@ -1617,6 +1676,34 @@ setMethod(
   definition = function(increments, data, ...) {
     individual_results <- sapply(increments@increments_list, maxDose, data = data, ...)
     min(individual_results)
+  }
+)
+
+## IncrementsOrdinal ----
+
+#' @describeIn maxDose determine the maximum possible next dose in an ordinal
+#' CRM trial
+#'
+#' @aliases maxDose-IncrementsOrdinal
+#'
+#' @export
+#' @example examples/Rules-method-maxDose-IncrementsOrdinal.R
+#'
+setMethod(
+  f = "maxDose",
+  signature = signature(
+    increments = "IncrementsOrdinal",
+    data = "DataOrdinal"
+  ),
+  definition = function(increments, data, ...) {
+    maxDose(
+      increments = increments@rule,
+      data = h_convert_ordinal_data(
+        data,
+        increments@grade,
+        ...
+      )
+    )
   }
 )
 
@@ -2629,6 +2716,67 @@ setMethod("stopTrial",
     }
 )
 
+## StoppingOrdinal ----
+
+#' @describeIn stopTrial Stop based on value returned by next best dose.
+#'
+#' @description `r lifecycle::badge("experimental")`
+#'
+#' @aliases stopTrial-StoppingOrdinal
+#' @example examples/Rules-method-stopTrial-StoppingOrdinal.R
+#'
+setMethod(
+  f = "stopTrial",
+  signature = signature(
+    stopping = "StoppingOrdinal",
+    dose = "numeric",
+    samples = "ANY",
+    model = "LogisticLogNormalOrdinal",
+    data = "DataOrdinal"
+  ),
+  definition = function(stopping, dose, samples, model, data, ...) {
+    stopTrial(
+      stopping = stopping@rule,
+      dose = dose,
+      samples = h_convert_ordinal_samples(samples, stopping@grade),
+      model = h_convert_ordinal_model(model, stopping@grade),
+      data = h_convert_ordinal_data(data, stopping@grade),
+      ...
+    )
+  }
+)
+
+#' @describeIn stopTrial Stop based on value returned by next best dose.
+#'
+#' @description `r lifecycle::badge("experimental")`
+#'
+#' @aliases stopTrial-StoppingOrdinal
+#' @example examples/Rules-method-stopTrial-StoppingOrdinal.R
+#'
+setMethod(
+  f = "stopTrial",
+  signature = signature(
+    stopping = "StoppingOrdinal",
+    dose = "numeric",
+    samples = "ANY",
+    model = "ANY",
+    data = "ANY"
+  ),
+  definition = function(stopping, dose, samples, model, data, ...) {
+    stop(
+      paste0(
+        "StoppingOrdinal objects can only be used with LogisticLogNormalOrdinal ",
+        "models and DataOrdinal data objects. In this case, the model is a '",
+        class(model),
+        "' object and the data is in a ",
+        class(data),
+        " object."
+      )
+    )
+  }
+)
+
+
 ## ============================================================
 
 ## --------------------------------------------------
@@ -2884,6 +3032,36 @@ setMethod(
       assert_class(data, "DataParts")
       object@cohort_sizes[data@nextPart]
     }
+  }
+)
+
+## CohortSizeOrdinal ----
+
+#' @describeIn size Determines the size of the next cohort in a ordinal CRM trial.
+#'
+#' @param  dose (`numeric`) the next dose.
+#' @param data the data input, an object of class [`DataOrdinal`].
+#'
+#' @aliases size-CohortSizeOrdinal
+#' @example examples/Rules-method-size-CohortSizeOrdinal.R
+#'
+setMethod(
+  f = "size",
+  signature = signature(
+    object = "CohortSizeOrdinal"
+  ),
+  definition = function(object, dose, data, ...) {
+    # Validate
+    assert_numeric(dose, len = 1, lower = 0)
+    assert_class(data, "DataOrdinal")
+    # Execute
+
+    size(
+      object@rule,
+      dose = dose,
+      data = h_convert_ordinal_data(data, object@grade),
+      ...
+    )
   }
 )
 

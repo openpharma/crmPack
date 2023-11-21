@@ -1,6 +1,6 @@
 Package: crmPack
 Title: Object-Oriented Implementation of CRM Designs
-Version: 1.0.9000.9134
+Version: 1.0.9000.9133
 Authors@R: c(
     person("Daniel", "Sabanes Bove", , "daniel.sabanesbove@gmx.net", role = c("aut", "cre")),
     person("Wai", "Yin Yeung", , "winnie.yeung@roche.com", role = "aut"),
@@ -112,13 +112,13 @@ Collate:
     'checkmate.R'
     'Rules-methods.R'
     'Design-methods.R'
-    'Samples-method-tidy.R'
     'fromQuantiles.R'
     'Samples-methods.R'
     'Simulations-methods.R'
     'crmPack-package.R'
     'helpers_design.R'
     'helpers_model.R'
+    'helpers_samples.R'
     'helpers_simulations.R'
     'utils-pipe.R'
     'utils.R'

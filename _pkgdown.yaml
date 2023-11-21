@@ -145,6 +145,9 @@ reference:
   - title: Internal Helper Functions
     contents:
       - h_blind_plot_data
+      - h_convert_ordinal_data
+      - h_convert_ordinal_model
+      - h_convert_ordinal_samples
       - h_doses_unique_per_cohort
       - h_all_equivalent
       - h_plot_data_df
@@ -388,6 +391,8 @@ reference:
       - dapply
   - title: Classes
     contents:
+      - CohortSizeOrdinal-class
+      - IncrementsOrdinal-class
       - DADesign-class
       - DADesign
       - DASimulations-class
@@ -404,6 +409,7 @@ reference:
       - GeneralSimulationsSummary-class
       - LogisticLogNormalOrdinal-class
       - MinimalInformative
+      - NextBestOrdinal-class
       - PseudoDualFlexiSimulations-class
       - PseudoDualFlexiSimulations
       - PseudoDualSimulations-class
@@ -417,6 +423,7 @@ reference:
       - Simulations-class
       - Simulations
       - SimulationsSummary-class
+      - StoppingOrdinal-class
       - approximate
       - assertions
       - assert_equal
