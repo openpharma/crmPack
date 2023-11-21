@@ -40,12 +40,6 @@
 <li class="nav-item">
   <a class="nav-link" href="../news/index.html">Changelog</a>
 </li>
-<!-- start dropdown for versions --> <li class="nav-item dropdown">
-        <a href="#" class="nav-link dropdown-toggle"
-          data-bs-toggle="dropdown" role="button"
-          aria-expanded="false" aria-haspopup="true"
-          id="dropdown-versions">Versions</a> <div class="dropdown-menu" aria-labelledby="dropdown-versions"> <a class="dropdown-item" data-toggle="tooltip" title="" href="https://Roche.github.io/crmPack/main">main</a> </div></li>
-<!-- end dropdown for versions -->
 <li class="nav-item dropdown">
   <a href="#" class="nav-link dropdown-toggle" data-bs-toggle="dropdown" role="button" aria-expanded="false" aria-haspopup="true" id="dropdown-reports">Reports</a>
   <div class="dropdown-menu" aria-labelledby="dropdown-reports">
@@ -607,6 +601,24 @@
         <dd>Helper Function to Blind Plot Data</dd>
       </dl><dl><dt>
           
+          <code><a href="h_convert_ordinal_data.html">h_convert_ordinal_data()</a></code> 
+        </dt>
+        <dd>Convert a Ordinal Data to the Equivalent Binary Data for a Specific
+Grade</dd>
+      </dl><dl><dt>
+          
+          <code><a href="h_convert_ordinal_model.html">h_convert_ordinal_model()</a></code> 
+        </dt>
+        <dd>Convert an ordinal CRM model to the Equivalent Binary CRM Model for a Specific
+Grade</dd>
+      </dl><dl><dt>
+          
+          <code><a href="h_convert_ordinal_samples.html">h_convert_ordinal_samples()</a></code> 
+        </dt>
+        <dd>Convert a Samples Object from an ordinal Model to the Equivalent Samples Object
+from a Binary Model</dd>
+      </dl><dl><dt>
+          
           <code><a href="v_data_objects.html">v_general_data()</a></code> <code><a href="v_data_objects.html">h_doses_unique_per_cohort()</a></code> <code><a href="v_data_objects.html">v_data()</a></code> <code><a href="v_data_objects.html">v_data_dual()</a></code> <code><a href="v_data_objects.html">v_data_parts()</a></code> <code><a href="v_data_objects.html">v_data_mixture()</a></code> <code><a href="v_data_objects.html">v_data_da()</a></code> <code><a href="v_data_objects.html">v_data_ordinal()</a></code> <code><a href="v_data_objects.html">v_data_grouped()</a></code> 
         </dt>
         <dd>Internal Helper Functions for Validation of <code>GeneralData</code> Objects</dd>
@@ -843,12 +855,12 @@ of the function that models dose-biomarker relationship defined in the
         <dd>Internal Helper Functions for Validation of <code>Samples</code> Objects</dd>
       </dl><dl><dt>
           
-          <code><a href="v_next_best.html">v_next_best_mtd()</a></code> <code><a href="v_next_best.html">v_next_best_ncrm()</a></code> <code><a href="v_next_best.html">v_next_best_ncrm_loss()</a></code> <code><a href="v_next_best.html">v_next_best_dual_endpoint()</a></code> <code><a href="v_next_best.html">v_next_best_min_dist()</a></code> <code><a href="v_next_best.html">v_next_best_inf_theory()</a></code> <code><a href="v_next_best.html">v_next_best_td()</a></code> <code><a href="v_next_best.html">v_next_best_td_samples()</a></code> <code><a href="v_next_best.html">v_next_best_max_gain_samples()</a></code> <code><a href="v_next_best.html">v_next_best_prob_mtd_lte()</a></code> <code><a href="v_next_best.html">v_next_best_prob_mtd_min_dist()</a></code> 
+          <code><a href="v_next_best.html">v_next_best_mtd()</a></code> <code><a href="v_next_best.html">v_next_best_ncrm()</a></code> <code><a href="v_next_best.html">v_next_best_ncrm_loss()</a></code> <code><a href="v_next_best.html">v_next_best_dual_endpoint()</a></code> <code><a href="v_next_best.html">v_next_best_min_dist()</a></code> <code><a href="v_next_best.html">v_next_best_inf_theory()</a></code> <code><a href="v_next_best.html">v_next_best_td()</a></code> <code><a href="v_next_best.html">v_next_best_td_samples()</a></code> <code><a href="v_next_best.html">v_next_best_max_gain_samples()</a></code> <code><a href="v_next_best.html">v_next_best_prob_mtd_lte()</a></code> <code><a href="v_next_best.html">v_next_best_prob_mtd_min_dist()</a></code> <code><a href="v_next_best.html">v_next_best_ordinal()</a></code> 
         </dt>
         <dd>Internal Helper Functions for Validation of <code>NextBest</code> Objects</dd>
       </dl><dl><dt>
           
-          <code><a href="v_increments.html">v_increments_relative()</a></code> <code><a href="v_increments.html">v_increments_relative_parts()</a></code> <code><a href="v_increments.html">v_increments_relative_dlt()</a></code> <code><a href="v_increments.html">v_increments_dose_levels()</a></code> <code><a href="v_increments.html">v_increments_hsr_beta()</a></code> <code><a href="v_increments.html">v_increments_min()</a></code> 
+          <code><a href="v_increments.html">v_increments_relative()</a></code> <code><a href="v_increments.html">v_increments_relative_parts()</a></code> <code><a href="v_increments.html">v_increments_relative_dlt()</a></code> <code><a href="v_increments.html">v_increments_dose_levels()</a></code> <code><a href="v_increments.html">v_increments_hsr_beta()</a></code> <code><a href="v_increments.html">v_increments_min()</a></code> <code><a href="v_increments.html">v_increments_ordinal()</a></code> <code><a href="v_increments.html">v_cohort_size_ordinal()</a></code> 
         </dt>
         <dd>Internal Helper Functions for Validation of <code>Increments</code> Objects</dd>
       </dl><dl><dt>
@@ -1101,6 +1113,16 @@ mostly used to obtain new modal estimates for pseudo model parameters.</dd>
 
       <dl><dt>
           
+          <code><a href="CohortSizeOrdinal-class.html">CohortSizeOrdinal()</a></code> <code><a href="CohortSizeOrdinal-class.html">.DefaultCohortSizeOrdinal()</a></code> 
+        </dt>
+        <dd><code>CohortSizeOrdinal</code></dd>
+      </dl><dl><dt>
+          
+          <code><a href="IncrementsOrdinal-class.html">IncrementsOrdinal()</a></code> <code><a href="IncrementsOrdinal-class.html">.DefaultIncrementsOrdinal()</a></code> 
+        </dt>
+        <dd><code>IncrementsOrdinal</code></dd>
+      </dl><dl><dt>
+          
           <code><a href="DADesign-class.html">DADesign()</a></code> <code><a href="DADesign-class.html">.DefaultDADesign()</a></code> 
         </dt>
         <dd><code>DADesign</code></dd>
@@ -1154,6 +1176,11 @@ mostly used to obtain new modal estimates for pseudo model parameters.</dd>
           <code><a href="MinimalInformative.html">MinimalInformative()</a></code> 
         </dt>
         <dd>Construct a minimally informative prior</dd>
+      </dl><dl><dt>
+          
+          <code><a href="NextBestOrdinal-class.html">NextBestOrdinal()</a></code> <code><a href="NextBestOrdinal-class.html">.DefaultNextBestOrdinal()</a></code> 
+        </dt>
+        <dd><code>NextBestOrdinal</code></dd>
       </dl><dl><dt>
           
           <code><a href="PseudoDualFlexiSimulations-class.html">.DefaultPseudoDualFlexiSimulations()</a></code> 
@@ -1223,6 +1250,11 @@ normal model</dd>
           <code><a href="SimulationsSummary-class.html">.DefaultSimulationsSummary()</a></code> 
         </dt>
         <dd>Class for the summary of model-based simulations output</dd>
+      </dl><dl><dt>
+          
+          <code><a href="StoppingOrdinal-class.html">StoppingOrdinal()</a></code> <code><a href="StoppingOrdinal-class.html">.DefaultStoppingOrdinal()</a></code> 
+        </dt>
+        <dd><code>StoppingOrdinal</code></dd>
       </dl><dl><dt>
           
           <code><a href="approximate.html">approximate()</a></code> 

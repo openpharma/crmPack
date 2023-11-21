@@ -67,6 +67,9 @@
     <loc>https://roche.github.io/crmPack/reference/CohortSizeMin-class.html</loc>
   </url>
   <url>
+    <loc>https://roche.github.io/crmPack/reference/CohortSizeOrdinal-class.html</loc>
+  </url>
+  <url>
     <loc>https://roche.github.io/crmPack/reference/CohortSizeParts-class.html</loc>
   </url>
   <url>
@@ -178,6 +181,9 @@
     <loc>https://roche.github.io/crmPack/reference/IncrementsMin-class.html</loc>
   </url>
   <url>
+    <loc>https://roche.github.io/crmPack/reference/IncrementsOrdinal-class.html</loc>
+  </url>
+  <url>
     <loc>https://roche.github.io/crmPack/reference/IncrementsRelative-class.html</loc>
   </url>
   <url>
@@ -269,6 +275,9 @@
   </url>
   <url>
     <loc>https://roche.github.io/crmPack/reference/NextBestNCRMLoss-class.html</loc>
+  </url>
+  <url>
+    <loc>https://roche.github.io/crmPack/reference/NextBestOrdinal-class.html</loc>
   </url>
   <url>
     <loc>https://roche.github.io/crmPack/reference/NextBestProbMTDLTE-class.html</loc>
@@ -386,6 +395,9 @@
   </url>
   <url>
     <loc>https://roche.github.io/crmPack/reference/StoppingMissingDose-class.html</loc>
+  </url>
+  <url>
+    <loc>https://roche.github.io/crmPack/reference/StoppingOrdinal-class.html</loc>
   </url>
   <url>
     <loc>https://roche.github.io/crmPack/reference/StoppingPatientsNearDose-class.html</loc>
@@ -527,6 +539,15 @@
   </url>
   <url>
     <loc>https://roche.github.io/crmPack/reference/h_check_fun_formals.html</loc>
+  </url>
+  <url>
+    <loc>https://roche.github.io/crmPack/reference/h_convert_ordinal_data.html</loc>
+  </url>
+  <url>
+    <loc>https://roche.github.io/crmPack/reference/h_convert_ordinal_model.html</loc>
+  </url>
+  <url>
+    <loc>https://roche.github.io/crmPack/reference/h_convert_ordinal_samples.html</loc>
   </url>
   <url>
     <loc>https://roche.github.io/crmPack/reference/h_covr_helpers.html</loc>

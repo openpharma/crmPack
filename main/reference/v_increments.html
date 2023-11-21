@@ -44,12 +44,6 @@ Increments or inherited classes and therefore not exported."><meta property="og:
 <li class="nav-item">
   <a class="nav-link" href="../news/index.html">Changelog</a>
 </li>
-<!-- start dropdown for versions --> <li class="nav-item dropdown">
-        <a href="#" class="nav-link dropdown-toggle"
-          data-bs-toggle="dropdown" role="button"
-          aria-expanded="false" aria-haspopup="true"
-          id="dropdown-versions">Versions</a> <div class="dropdown-menu" aria-labelledby="dropdown-versions"> <a class="dropdown-item" data-toggle="tooltip" title="" href="https://Roche.github.io/crmPack/main">main</a> </div></li>
-<!-- end dropdown for versions -->
 <li class="nav-item dropdown">
   <a href="#" class="nav-link dropdown-toggle" data-bs-toggle="dropdown" role="button" aria-expanded="false" aria-haspopup="true" id="dropdown-reports">Reports</a>
   <div class="dropdown-menu" aria-labelledby="dropdown-reports">
@@ -96,7 +90,11 @@ Increments or inherited classes and therefore not exported."><meta property="og:
 <span></span>
 <span><span class="fu">v_increments_hsr_beta</span><span class="op">(</span><span class="va">object</span><span class="op">)</span></span>
 <span></span>
-<span><span class="fu">v_increments_min</span><span class="op">(</span><span class="va">object</span><span class="op">)</span></span></code></pre></div>
+<span><span class="fu">v_increments_min</span><span class="op">(</span><span class="va">object</span><span class="op">)</span></span>
+<span></span>
+<span><span class="fu">v_increments_ordinal</span><span class="op">(</span><span class="va">object</span><span class="op">)</span></span>
+<span></span>
+<span><span class="fu">v_cohort_size_ordinal</span><span class="op">(</span><span class="va">object</span><span class="op">)</span></span></code></pre></div>
     </div>
 
     <div class="section level2">
@@ -127,6 +125,10 @@ contains valid <code>levels</code> and <code>basis_level</code> option.</p></li>
 object contains valid probability target, threshold and shape parameters.</p></li>
 <li><p><code>v_increments_min()</code>: validates that the <code><a href="IncrementsMin-class.html">IncrementsMin</a></code>
 object contains a list with <code>Increments</code> objects.</p></li>
+<li><p><code>v_increments_ordinal()</code>: validates that the <code><a href="IncrementsOrdinal-class.html">IncrementsOrdinal</a></code> object
+contains valid <code>grade</code> and standard <code>Increments</code> rule.</p></li>
+<li><p><code>v_cohort_size_ordinal()</code>: validates that the <code><a href="CohortSizeOrdinal-class.html">CohortSizeOrdinal</a></code> object
+contains valid <code>grade</code> and standard <code>CohortSize</code> rule.</p></li>
 </ul></div>
 
   </main><aside class="col-md-3"><nav id="toc"><h2>On this page</h2>

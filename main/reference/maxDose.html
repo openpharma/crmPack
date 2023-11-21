@@ -44,12 +44,6 @@ incrementsand the data."><meta property="og:image" content="https://roche.github
 <li class="nav-item">
   <a class="nav-link" href="../news/index.html">Changelog</a>
 </li>
-<!-- start dropdown for versions --> <li class="nav-item dropdown">
-        <a href="#" class="nav-link dropdown-toggle"
-          data-bs-toggle="dropdown" role="button"
-          aria-expanded="false" aria-haspopup="true"
-          id="dropdown-versions">Versions</a> <div class="dropdown-menu" aria-labelledby="dropdown-versions"> <a class="dropdown-item" data-toggle="tooltip" title="" href="https://Roche.github.io/crmPack/main">main</a> </div></li>
-<!-- end dropdown for versions -->
 <li class="nav-item dropdown">
   <a href="#" class="nav-link dropdown-toggle" data-bs-toggle="dropdown" role="button" aria-expanded="false" aria-haspopup="true" id="dropdown-reports">Reports</a>
   <div class="dropdown-menu" aria-labelledby="dropdown-reports">
@@ -107,6 +101,9 @@ incrementsand the data."><meta property="og:image" content="https://roche.github
 <span><span class="fu">maxDose</span><span class="op">(</span><span class="va">increments</span>, <span class="va">data</span>, <span class="va">...</span><span class="op">)</span></span>
 <span></span>
 <span><span class="co"># S4 method for IncrementsMin,Data</span></span>
+<span><span class="fu">maxDose</span><span class="op">(</span><span class="va">increments</span>, <span class="va">data</span>, <span class="va">...</span><span class="op">)</span></span>
+<span></span>
+<span><span class="co"># S4 method for IncrementsOrdinal,DataOrdinal</span></span>
 <span><span class="fu">maxDose</span><span class="op">(</span><span class="va">increments</span>, <span class="va">data</span>, <span class="va">...</span><span class="op">)</span></span></code></pre></div>
     </div>
 
@@ -150,6 +147,8 @@ Find out more in <code><a href="IncrementsDoseLevels-class.html">IncrementsDoseL
 <li><p><code>maxDose(increments = IncrementsHSRBeta, data = Data)</code>: determine the maximum possible next dose for escalation.</p></li>
 <li><p><code>maxDose(increments = IncrementsMin, data = Data)</code>: determine the maximum possible next dose based on
 multiple increment rules, taking the minimum across individual increments.</p></li>
+<li><p><code>maxDose(increments = IncrementsOrdinal, data = DataOrdinal)</code>: determine the maximum possible next dose in an ordinal
+CRM trial</p></li>
 </ul></div>
 
     <div class="section level2">
@@ -321,6 +320,11 @@ multiple increment rules, taking the minimum across individual increments.</p></
 <span class="r-in"><span>  increments_list <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span><span class="va">my_increments_1</span>, <span class="va">my_increments_2</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="va">max_dose</span> <span class="op">&lt;-</span> <span class="fu">maxDose</span><span class="op">(</span><span class="va">my_increments</span>, <span class="va">my_data</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="fu">maxDose</span><span class="op">(</span></span></span>
+<span class="r-in"><span>  increments <span class="op">=</span> <span class="fu"><a href="IncrementsOrdinal-class.html">IncrementsOrdinal</a></span><span class="op">(</span><span class="fl">2L</span>, <span class="fu"><a href="IncrementsRelative-class.html">.DefaultIncrementsRelative</a></span><span class="op">(</span><span class="op">)</span><span class="op">)</span>,</span></span>
+<span class="r-in"><span>  data <span class="op">=</span> <span class="fu"><a href="DataOrdinal-class.html">.DefaultDataOrdinal</a></span><span class="op">(</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="op">)</span></span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] 79.8</span>
 </code></pre></div>
     </div>
   </main><aside class="col-md-3"><nav id="toc"><h2>On this page</h2>
