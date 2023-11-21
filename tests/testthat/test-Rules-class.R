@@ -1136,10 +1136,9 @@ test_that(".DefaultStoppingMaxGainCIRatio works as expected", {
 
 test_that(".StoppingOrdinal works as expected", {
   result <- expect_silent(.StoppingOrdinal(
-      grade = 3L,
-      rule = StoppingMinCohorts(3L)
-    )
-  )
+    grade = 3L,
+    rule = StoppingMinCohorts(3L)
+  ))
   expect_valid(result, "StoppingOrdinal")
 })
 
@@ -1150,10 +1149,9 @@ test_that(".DefaultStoppingOrdinal works as expected", {
 
 test_that("StoppingOrdinal object can be created with user constructor", {
   result <- expect_silent(.StoppingOrdinal(
-      grade = 2L,
-      rule = StoppingMinCohorts(3L)
-    )
-  )
+    grade = 2L,
+    rule = StoppingMinCohorts(3L)
+  ))
 
   expect_valid(result, "StoppingOrdinal")
   expect_identical(result@grade, 2L)
@@ -1311,8 +1309,7 @@ test_that(".CohortSizeOrdinal works as expected", {
   result <- expect_silent(.CohortSizeOrdinal(
     grade = 3L,
     rule = CohortSizeConst(3L)
-  )
-  )
+  ))
   expect_valid(result, "CohortSizeOrdinal")
 })
 
@@ -1323,10 +1320,9 @@ test_that(".DefaultCohortSizeOrdinal works as expected", {
 
 test_that("CohortSizeOrdinal object can be created with user constructor", {
   result <- expect_silent(.CohortSizeOrdinal(
-      grade = 2L,
-      rule = .DefaultCohortSizeRange()
-    )
-  )
+    grade = 2L,
+    rule = .DefaultCohortSizeRange()
+  ))
 
   expect_valid(result, "CohortSizeOrdinal")
   expect_identical(result@grade, 2L)
@@ -1429,4 +1425,3 @@ test_that("Use of .DefaultCohortSize throws an exception", {
     "Class CohortSize should not be instantiated directly.  Please use one of its subclasses instead."
   )
 })
-

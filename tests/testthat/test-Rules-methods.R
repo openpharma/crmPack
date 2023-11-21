@@ -4159,7 +4159,9 @@ test_that("stopTrial-StoppingOrdinal works correctly", {
     rng_kind = "Mersenne-Twister",
     rng_seed = 215614
   )
-  suppressWarnings({ samples <- mcmc(data, model, options) }) # nolint
+  suppressWarnings({
+    samples <- mcmc(data, model, options)
+  }) # nolint
 
   myIncrements <- .DefaultIncrementsOrdinal()
   nextMaxDose <- maxDose(myIncrements, data = data)
@@ -4181,7 +4183,7 @@ test_that("stopTrial-StoppingOrdinal works correctly", {
           data = data
         )
       ),
-      !! d == data@doseGrid[5]
+      !!d == data@doseGrid[5]
     )
   }
 
@@ -4200,7 +4202,7 @@ test_that("stopTrial-StoppingOrdinal works correctly", {
           data = data
         )
       ),
-      !! d == data@doseGrid[6]
+      !!d == data@doseGrid[6]
     )
   }
 })
