@@ -766,3 +766,24 @@ setMethod("mcmc",
     }
 )
 # nolint end
+
+## -----------------------------------------------------------------------------------
+## obtain the posterior samples for ordinal models
+## ----------------------------------------------------------------------------
+##
+##' @describeIn mcmc Obtain the posterior samples for the model parameters in the
+##' `LogisticLogNormalOrdinal`.
+##' @example examples/mcmc-LogisticLogNormalOrdinal.R
+setMethod(
+  f = "mcmc",
+  signature = signature(
+    data = "DataOrdinal",
+    model = "LogisticLogNormalOrdinal",
+    options = "McmcOptions"
+  ),
+  definition = function(data, model, options, ...) {
+    return_value <- callNextMethod()
+    names(return_value@data) <- gsub("\\[(\\d+)\\]", "\\1", names(return_value@data))
+    return_value
+  }
+)
