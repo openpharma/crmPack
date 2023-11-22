@@ -97,3 +97,14 @@ test_that("mcmc-GeneralData respects fixed RNG settings", {
   expect_true(all(result_1@data$alpha0 == result_2@data$alpha0))
   expect_true(all(result_1@data$alpha1 == result_2@data$alpha1))
 })
+
+test_that("mcmc-DataOrdinal returns a correctly named samples@data list", {
+  ordinal_data <- .DefaultDataOrdinal()
+  ordinal_model <- .DefaultLogisticLogNormalOrdinal()
+  mcmc_options <- .DefaultMcmcOptions()
+
+  suppressWarnings({
+    samples <- mcmc(ordinal_data, ordinal_model, mcmc_options)
+  })
+  expect_equal(names(samples@data), c("alpha1", "alpha2", "beta"))
+})
