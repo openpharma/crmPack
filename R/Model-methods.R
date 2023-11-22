@@ -208,7 +208,7 @@ setMethod(
 
 ## LogisticLogNormalOrdinal ----
 
-#' @describeIn doseFunction
+#' @describeIn probFunction
 #'
 #' @param grade (`integer`)\cr the toxicity grade for which the dose function is
 #' required

@@ -144,6 +144,13 @@ first updated and then samples of sigma2 and sigma2betaW will be generated using
 )}: Obtain the posterior samples for the model parameters in the
 \code{LogisticLogNormalOrdinal}.
 
+The generic \code{mcmc} method returns a \code{Samples} object with elements of the
+\code{data} slot named \code{alpha[1]}, \code{alpha[2]}, ..., \code{alpha[k]} and \code{beta} when
+passed a \code{LogisticLogNormalOrdinal} object.  This makes the "alpha elements"
+awkward to access and is inconsistent with other \code{Model} objects.  So rename
+the alpha elements to \code{alpha1}, \code{alpha2}, ..., \verb{alpha<k>} for ease and
+consistency.
+
 }}
 \note{
 The type of Random Number Generator (RNG) and its initial seed used by

@@ -8,8 +8,6 @@
 \alias{doseFunction-ModelPseudo}
 \alias{doseFunction,LogisticLogNormalOrdinal-method}
 \alias{doseFunction-LogisticLogNormalOrdinal}
-\alias{probFunction,LogisticLogNormalOrdinal-method}
-\alias{probFunction-LogisticLogNormalOrdinal}
 \title{Getting the Dose Function for a Given Model Type}
 \usage{
 doseFunction(model, ...)
@@ -19,8 +17,6 @@ doseFunction(model, ...)
 \S4method{doseFunction}{ModelPseudo}(model, ...)
 
 \S4method{doseFunction}{LogisticLogNormalOrdinal}(model, grade, ...)
-
-\S4method{probFunction}{LogisticLogNormalOrdinal}(model, grade, ...)
 }
 \arguments{
 \item{model}{(\code{GeneralModel} or \code{ModelPseudo})\cr the model.}
@@ -48,8 +44,6 @@ specific parameters.
 
 \item \code{doseFunction(LogisticLogNormalOrdinal)}: 
 
-\item \code{probFunction(LogisticLogNormalOrdinal)}: 
-
 }}
 \examples{
 my_model <- LogisticLogNormal(
@@ -67,17 +61,6 @@ suppressWarnings({ samples <- mcmc(data_ordinal, model, options) })
 
 doseFunction(model, alpha1 = samples@data$alpha2, beta = samples@data$beta, grade = 1L)(x = 0.75)
 doseFunction(model, alpha2 = samples@data$alpha2, beta = samples@data$beta, grade = 2L)(x = 0.25)
-ordinal_data <- .DefaultDataOrdinal()
-ordinal_model <- .DefaultLogisticLogNormalOrdinal()
-opts <- .DefaultMcmcOptions()
-samples <- mcmc(ordinal_data, ordinal_model, opts)
-
-probFunction(
-  ordinal_model,
-  grade = 2L,
-  alpha2 = samples@data$alpha1,
-  beta = samples@data$beta
-)(50)
 }
 \seealso{
 \code{\link[=dose]{dose()}}, \code{\link[=probFunction]{probFunction()}}.
