@@ -40,10 +40,7 @@ h_simulations_ouptput_format <- function(resultList) {
   ))
 }
 
-h_simulate_dlts(data,
-               dose_grid = object@data@doseGrid[1])
-
-h_simulate_dlts <- function(data,
+h_determine_dlts <- function(data,
                        dose,
                        prob,
                        prob_placebo,
@@ -53,32 +50,27 @@ h_simulate_dlts <- function(data,
                        first_separate) {
   assert_class(data, "Data")
   assert_number(dose)
-  assert_function(truth)
-  assert_class(cohort_size, "CohortSize")
+  assert_number(prob)
+  assert_number(cohort_size)
   assert_flag(first_separate)
 
-  #prob <- truth(dose)
-  #size <- size(cohort_size, dose = dose, data = data)
-  dlts <- if (first_separate && cohort_size > 1) {
-    first_dlts <- rbinom(n = 1, size = 1, prob = prob)
+  if (first_separate && cohort_size > 1) {
+    dlts <- rbinom(n = 1, size = 1, prob = prob)
     if ((data@placebo) && cohort_size_placebo > 0) {
-      first_dlts_placebo <- rbinom(n = 1, size = 1, prob = prob_placebo)
+      dlts_placebo <- rbinom(n = 1, size = 1, prob = prob_placebo)
     }
-    if (first_dlts == 0) {
-      dlts <- c(first_dlts, rbinom(n = size - 1, size = 1, prob = prob))
+    if (dlts == 0) {
+      dlts <- c(dlts, rbinom(n = cohort_size, size = 1, prob = prob))
       if ((data@placebo) && cohort_size_placebo > 0) {
-        dlts_placebo <- c(first_dlts_placebo, rbimon(n = cohort_size_placebo, #cohort_size_placebo - 1?
+        dlts_placebo <- c(dlts_placebo, rbimon(n = cohort_size_placebo, #cohort_size_placebo - 1?
                                      size = 1,
                                      prob = prob_placebo))
       }
     }
-    # } else {
-    #   first_dlts
-    # }
   } else {
-    dlts <- rbinom(n = size, size = 1, prob = prob)
+    dlts <- rbinom(n = cohort_size, size = 1, prob = prob)
     if ((data@placebo) && cohort_size_placebo > 0) {
-      dlts_placebo <- rbinom(n = cohort_size, size = 1, prob = prob_placebo)
+      dlts_placebo <- rbinom(n = cohort_size_placebo, size = 1, prob = prob_placebo)
     }
   }
   #update(data, x = dose, y = dlts)
