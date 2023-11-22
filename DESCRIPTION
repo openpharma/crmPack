@@ -1,6 +1,6 @@
 Package: crmPack
 Title: Object-Oriented Implementation of CRM Designs
-Version: 1.0.9000.9133
+Version: 1.0.9000.9134
 Authors@R: c(
     person("Daniel", "Sabanes Bove", , "daniel.sabanesbove@gmx.net", role = c("aut", "cre")),
     person("Wai", "Yin Yeung", , "winnie.yeung@roche.com", role = "aut"),
@@ -11,7 +11,8 @@ Authors@R: c(
     person("Ziwei", "Liao", , "ziwei.liao.fdu@gmail.com", role = "aut"),
     person("Dimitris", "Kontos", , "dimitris.kontos@bayer.com", role = "aut"),
     person("Marlene", "Schulte-Goebel", , "marlene.schulte-goebel@merckgroup.com", role = "aut"),
-    person("Doug", "Kelkhoff", , "doug.kelkhoff@roche.com", role = "aut", comment = c(ORCID = "0009-0003-7845-4061")),
+    person("Doug", "Kelkhoff", , "doug.kelkhoff@roche.com", role = "aut",
+           comment = c(ORCID = "0009-0003-7845-4061")),
     person("Oliver", "Boix", , "oliver.boix@bayer.com", role = "aut"),
     person("Robert", "Adams", , "robert.adams@bayer.com", role = "aut"),
     person("Clara", "Beck", , "clara.beck@bayer.com", role = "aut"),
@@ -29,8 +30,8 @@ Description: Implements a wide range of model-based dose escalation
     possible to implement 3+3 designs for comparison or models with
     non-Bayesian estimation. The whole package is written in a modular
     form in the S4 class system, making it very flexible for adaptation to
-    new models, escalation or stopping rules. Further details are presented in 
-    Sabanes Bove et al. (2019) <doi:10.18637/jss.v089.i10>.
+    new models, escalation or stopping rules. Further details are
+    presented in Sabanes Bove et al. (2019) <doi:10.18637/jss.v089.i10>.
 License: GPL (>= 2)
 URL: https://github.com/roche/crmPack
 BugReports: https://github.com/roche/crmPack/issues
@@ -40,23 +41,23 @@ Depends:
     R (>= 3.5.0)
 Imports:
     checkmate (>= 2.2.0),
+    dplyr,
     futile.logger,
     GenSA,
-    magrittr,
     gridExtra,
+    kableExtra,
     lifecycle,
+    magrittr,
     methods,
     mvtnorm,
     parallel,
     parallelly,
     rjags,
+    rlang,
     survival,
     tibble,
     tools,
-    utils,
-    kableExtra,
-    dplyr,
-    rlang
+    utils
 Suggests:
     bookdown,
     broom,
@@ -70,7 +71,8 @@ Suggests:
     tidyr,
     vdiffr,
     withr
-VignetteBuilder: knitr
+VignetteBuilder: 
+    knitr
 Config/testthat/edition: 3
 Encoding: UTF-8
 Language: en-US
@@ -110,13 +112,13 @@ Collate:
     'checkmate.R'
     'Rules-methods.R'
     'Design-methods.R'
-    'Samples-method-tidy.R'
     'fromQuantiles.R'
     'Samples-methods.R'
     'Simulations-methods.R'
     'crmPack-package.R'
     'helpers_design.R'
     'helpers_model.R'
+    'helpers_samples.R'
     'helpers_simulations.R'
     'utils-pipe.R'
     'utils.R'
