@@ -8,7 +8,7 @@ from a Binary Model}
 h_convert_ordinal_samples(obj, grade)
 }
 \arguments{
-\item{obj}{(\code{DataOrdinal})\cr the \code{DataOrdinal} object to covert}
+\item{obj}{(\code{Samples})\cr the \code{Samples} object to covert}
 
 \item{grade}{(\code{integer})\cr the toxicity grade for which the equivalent data
 is required.}

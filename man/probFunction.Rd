@@ -6,6 +6,8 @@
 \alias{probFunction-GeneralModel}
 \alias{probFunction,ModelTox-method}
 \alias{probFunction-ModelTox}
+\alias{probFunction,LogisticLogNormalOrdinal-method}
+\alias{probFunction-LogisticLogNormalOrdinal}
 \title{Getting the Prob Function for a Given Model Type}
 \usage{
 probFunction(model, ...)
@@ -13,11 +15,16 @@ probFunction(model, ...)
 \S4method{probFunction}{GeneralModel}(model, ...)
 
 \S4method{probFunction}{ModelTox}(model, ...)
+
+\S4method{probFunction}{LogisticLogNormalOrdinal}(model, grade, ...)
 }
 \arguments{
 \item{model}{(\code{GeneralModel} or \code{ModelTox})\cr the model.}
 
 \item{...}{model specific parameters.}
+
+\item{grade}{(\code{integer})\cr the toxicity grade for which the dose function is
+required}
 }
 \value{
 A \code{\link[=prob]{prob()}} function that computes toxicity probabilities.
@@ -34,6 +41,8 @@ probabilities for a given dose level, based on the model specific parameters.
 
 \item \code{probFunction(ModelTox)}: 
 
+\item \code{probFunction(LogisticLogNormalOrdinal)}: 
+
 }}
 \examples{
 my_model <- LogisticLogNormal(
@@ -44,6 +53,17 @@ my_model <- LogisticLogNormal(
 
 prob_fun <- probFunction(my_model, alpha0 = 2, alpha1 = 3)
 prob_fun(30)
+ordinal_data <- .DefaultDataOrdinal()
+ordinal_model <- .DefaultLogisticLogNormalOrdinal()
+opts <- .DefaultMcmcOptions()
+samples <- mcmc(ordinal_data, ordinal_model, opts)
+
+probFunction(
+  ordinal_model,
+  grade = 2L,
+  alpha2 = samples@data$alpha1,
+  beta = samples@data$beta
+)(50)
 }
 \seealso{
 \code{\link[=prob]{prob()}}, \code{\link[=doseFunction]{doseFunction()}}.
