@@ -2022,7 +2022,7 @@ setMethod("simulate",
                 "message"
               ),
             report_results = stopit_results
-            )
+          )
         return(thisResult)
       }
 
@@ -3851,7 +3851,6 @@ setMethod("simulate",
               Gstarderive = object@nextBest@mg_derive
             )
             stopit_results <- h_unpack_stopit(stopit)
-
           }
           ## get the fit
           thisDLEFit <- fit(
