@@ -19,7 +19,6 @@ process}
   firstSeparate = FALSE,
   parallel = FALSE,
   nCores = min(parallel::detectCores(), 5L),
-  derive = list(),
   ...
 )
 }

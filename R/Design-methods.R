@@ -1784,7 +1784,7 @@ setMethod("simulate",
              truth, args = NULL, firstSeparate = FALSE,
              mcmcOptions = McmcOptions(),
              parallel = FALSE, nCores =
-               min(parallel::detectCores(), 5L), derive = list(),
+               min(parallel::detectCores(), 5L),
              ...) {
       ## checks and extracts
       assert_function(truth)
@@ -2000,18 +2000,6 @@ setMethod("simulate",
           data = thisData
         )
 
-        # Get the MTD estimate from the samples.
-
-        target_dose_samples <- dose(
-          mean(object@nextBest@target),
-          model = object@model,
-          samples = thisSamples
-        )
-
-        # Create a function for additional statistical summary.
-
-        additional_stats <- lapply(derive, function(f) f(target_dose_samples))
-
 
         ## return the results
         thisResult <-
@@ -2033,9 +2021,8 @@ setMethod("simulate",
                 stopit,
                 "message"
               ),
-            report_results = stopit_results,
-            additional_stats = additional_stats
-          )
+            report_results = stopit_results
+            )
         return(thisResult)
       }
 
@@ -2099,7 +2086,6 @@ setMethod("simulate",
       stop_results <- lapply(resultList, "[[", "report_results")
       stop_report <- as.matrix(do.call(rbind, stop_results))
 
-      additional_stats <- lapply(resultList, "[[", "additional_stats")
 
       ## return the results in the Simulations class object
       ret <- PseudoSimulations(
@@ -2116,7 +2102,6 @@ setMethod("simulate",
         FinalTDEOTRatios = ratioTDEOTList,
         stopReasons = stopReasons,
         stop_report = stop_report,
-        additional_stats = additional_stats,
         seed = RNGstate
       )
 
@@ -2151,9 +2136,6 @@ setMethod("simulate",
 ##' @param nCores how many cores should be used for parallel computing?
 ##' Defaults to the number of cores on the machine, maximum 5.
 ##' @param \dots not used
-##' @param derive a named list of functions which derives statistics, based on the
-##' vector of posterior MTD samples. Each list element must therefore accept
-##' one and only one argument, which is a numeric vector, and return a number.
 ##'
 ##' @example examples/design-method-simulateTDDesign.R
 ##'
@@ -2172,7 +2154,7 @@ setMethod("simulate",
     function(object, nsim = 1L, seed = NULL,
              truth, args = NULL, firstSeparate = FALSE,
              parallel = FALSE, nCores =
-               min(parallel::detectCores(), 5L), derive = list(),
+               min(parallel::detectCores(), 5L),
              ...) {
       ## checks and extracts
       assert_function(truth)
@@ -2373,17 +2355,6 @@ setMethod("simulate",
           probDLE = prob_fun(object@data@doseGrid)
         )
 
-        # Get the MTD estimate from the samples.
-
-        target_dose_samples <- dose(
-          mean(object@nextBest@target),
-          model = object@model,
-          samples = thisSamples
-        )
-
-        # Create a function for additional statistical summary.
-
-        additional_stats <- lapply(derive, function(f) f(target_dose_samples))
 
 
         ## return the results
@@ -2403,8 +2374,7 @@ setMethod("simulate",
                 stopit,
                 "message"
               ),
-            report_results = stopit_results,
-            additional_stats = additional_stats
+            report_results = stopit_results
           )
         return(thisResult)
       }
@@ -2470,7 +2440,6 @@ setMethod("simulate",
       stop_results <- lapply(resultList, "[[", "report_results")
       stop_report <- as.matrix(do.call(rbind, stop_results))
 
-      additional_stats <- lapply(resultList, "[[", "additional_stats")
 
       ## return the results in the Simulations class object
       ret <- PseudoSimulations(
@@ -2487,7 +2456,6 @@ setMethod("simulate",
         FinalTDEOTRatios = ratioTDEOTList,
         stopReasons = stopReasons,
         stop_report = stop_report,
-        additional_stats = additional_stats,
         seed = RNGstate
       )
 
@@ -2544,7 +2512,7 @@ setMethod("simulate",
              trueDLE, trueEff, trueNu,
              args = NULL, firstSeparate = FALSE,
              parallel = FALSE, nCores =
-               min(parallel::detectCores(), 5L), derive = list(),
+               min(parallel::detectCores(), 5L),
              ...) {
       ## checks and extracts
       assert_function(trueDLE)
@@ -2874,17 +2842,6 @@ setMethod("simulate",
           ExpEff = eff_fun(object@data@doseGrid)
         )
 
-        # Get the MTD estimate from the samples.
-
-        target_dose_samples <- dose(
-          mean(object@nextBest@target),
-          model = object@model,
-          samples = thisSamples
-        )
-
-        # Create a function for additional statistical summary.
-
-        additional_stats <- lapply(derive, function(f) f(target_dose_samples))
 
         ## return the results
         thisResult <- list(
@@ -2912,8 +2869,7 @@ setMethod("simulate",
             stopit,
             "message"
           ),
-          report_results = stopit_results,
-          additional_stats = additional_stats
+          report_results = stopit_results
         )
 
         return(thisResult)
@@ -3007,7 +2963,6 @@ setMethod("simulate",
       stop_results <- lapply(resultList, "[[", "report_results")
       stop_report <- as.matrix(do.call(rbind, stop_results))
 
-      additional_stats <- lapply(resultList, "[[", "additional_stats")
 
       ## return the results in the Simulations class object
       ret <- PseudoDualSimulations(
@@ -3032,7 +2987,6 @@ setMethod("simulate",
         sigma2est = sigma2Estimates,
         stopReasons = stopReasons,
         stop_report = stop_report,
-        additional_stats = additional_stats,
         seed = RNGstate
       )
       return(ret)
@@ -3081,10 +3035,6 @@ setMethod("simulate",
 ##' clusters of the computer? (not default)
 ##' @param nCores how many cores should be used for parallel computing?
 ##' Defaults to the number of cores on the machine, maximum 5.
-##' @param derive a named list of functions which derives statistics, based on the
-##' vector of posterior MTD samples. Each list element must therefore accept
-##' one and only one argument, which is a numeric vector, and return a number.
-##' @param \dots not used
 ##'
 ##' @example examples/design-method-simulateDualResponsesSamplesDesign.R
 ##'
@@ -3107,7 +3057,7 @@ setMethod("simulate",
              args = NULL, firstSeparate = FALSE,
              mcmcOptions = McmcOptions(),
              parallel = FALSE, nCores =
-               min(parallel::detectCores(), 5L), derive = list(),
+               min(parallel::detectCores(), 5L),
              ...) {
       ## common checks and extracts
       assert_function(trueDLE)
@@ -3434,18 +3384,6 @@ setMethod("simulate",
             data = thisData
           )
 
-          # Get the MTD estimate from the samples.
-
-          target_dose_samples <- dose(
-            mean(object@nextBest@target),
-            model = object@model,
-            samples = thisSamples
-          )
-
-          # Create a function for additional statistical summary.
-
-          additional_stats <- lapply(derive, function(f) f(target_dose_samples))
-
 
           ## return the results
           thisResult <-
@@ -3482,8 +3420,7 @@ setMethod("simulate",
                   stopit,
                   "message"
                 ),
-              report_results = stopit_results,
-              additional_stats = additional_stats
+              report_results = stopit_results
             )
 
           return(thisResult)
@@ -3577,7 +3514,6 @@ setMethod("simulate",
         stop_results <- lapply(resultList, "[[", "report_results")
         stop_report <- as.matrix(do.call(rbind, stop_results))
 
-        additional_stats <- lapply(resultList, "[[", "additional_stats")
 
         ## return the results in the Simulations class object
         ret <- PseudoDualFlexiSimulations(
@@ -3603,7 +3539,6 @@ setMethod("simulate",
           sigma2betaWest = sigma2betaWEstimates,
           stopReasons = stopReasons,
           stop_report = stop_report,
-          additional_stats = additional_stats,
           seed = RNGstate
         )
 
@@ -3916,6 +3851,7 @@ setMethod("simulate",
               Gstarderive = object@nextBest@mg_derive
             )
             stopit_results <- h_unpack_stopit(stopit)
+
           }
           ## get the fit
           thisDLEFit <- fit(
@@ -3929,18 +3865,6 @@ setMethod("simulate",
             model = thisEffModel,
             data = thisData
           )
-
-          # Get the MTD estimate from the samples.
-
-          target_dose_samples <- dose(
-            mean(object@nextBest@target),
-            model = object@model,
-            samples = thisSamples
-          )
-
-          # Create a function for additional statistical summary.
-
-          additional_stats <- lapply(derive, function(f) f(target_dose_samples))
 
 
           ## return the results
@@ -3975,8 +3899,7 @@ setMethod("simulate",
               stopit,
               "message"
             ),
-            report_results = stopit_results,
-            additional_stats = additional_stats
+            report_results = stopit_results
           )
 
           return(thisResult)
@@ -4065,7 +3988,6 @@ setMethod("simulate",
         stop_results <- lapply(resultList, "[[", "report_results")
         stop_report <- as.matrix(do.call(rbind, stop_results))
 
-        additional_stats <- lapply(resultList, "[[", "additional_stats")
 
         ## return the results in the Simulations class object
         ret <- PseudoDualSimulations(
@@ -4090,7 +4012,6 @@ setMethod("simulate",
           sigma2est = sigma2Estimates,
           stopReasons = stopReasons,
           stop_report = stop_report,
-          additional_stats = additional_stats,
           seed = RNGstate
         )
         return(ret)

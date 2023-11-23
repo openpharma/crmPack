@@ -15,7 +15,6 @@ PseudoSimulations(
   FinalCIs,
   FinalRatios,
   stop_report,
-  additional_stats,
   stopReasons,
   ...
 )
@@ -40,8 +39,6 @@ PseudoSimulations(
 \item{FinalRatios}{please refer to \code{\linkS4class{PseudoSimulations}} class object}
 
 \item{stop_report}{see \code{\link{PseudoSimulations}}}
-
-\item{additional_stats}{(\code{list})\cr see slot definition.}
 
 \item{stopReasons}{please refer to \code{\linkS4class{PseudoSimulations}} class object}
 
