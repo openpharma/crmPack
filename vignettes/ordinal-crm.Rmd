@@ -154,12 +154,12 @@ Thus, the rule based on sub-toxic AEs allows a maximum increment of 0.67 because
 
 ```{r, rules-2}
 ordinal_rule_1 <- IncrementsOrdinal(
-  grade = 1L, 
+  grade = 1L,
   rule = IncrementsRelativeDLT(intervals = 0:2, increments = c(3, 1.5, 0.67))
 )
 maxDose(ordinal_rule_1, ordinal_data)
 ordinal_rule_2 <- IncrementsOrdinal(
-  grade = 2L, 
+  grade = 2L,
   rule = IncrementsRelativeDLT(intervals = 0:1, increments = c(3, 0.5))
 )
 maxDose(ordinal_rule_2, ordinal_data)
