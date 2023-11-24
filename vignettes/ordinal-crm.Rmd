@@ -1,0 +1,185 @@
+---
+title: "Ordinal CRM"
+bibliography: vignettes.bib
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Ordinal CRM}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>",
+  fig.width = 6
+)
+```
+
+```{r setup}
+library(crmPack)
+```
+
+# Introduction
+The original CRM model introduced by [@oquigley1990] dichotomises toxicity events as either "Not toxic" or "DLT".  The ordinal CRM generalises this model by classifying toxicities on an ordinal scale with an arbitrary number of categories (though use of more than three or four would be unusual).
+
+This approach is particularly useful in non-oncology settings, where there is a greater interest in adverse events that are not dose limiting but are nonetheless undesirable.
+
+# Implementation
+
+## Ordinal data
+`crmPack` uses the `DataOrdinal` class to record data observed during an ordinal CRM trial.  The `OrdinalData` class differs from the `Data` class only in that it contains an extra slot, `yCategories`, that defines both the number of toxicity grades and their labels.For example:
+
+```{r, data-ordinal-1}
+empty_ordinal_data <- DataOrdinal(
+  doseGrid = c(seq(from = 10, to = 100, by = 10)),
+  yCategories = c("No tox" = 0L, "Sub-tox AE" = 1L, "DLT" = 2L),
+  placebo = FALSE
+)
+```
+
+defines a `DataOrdinal` object with three toxicity grades, labelled "No tox`", "Sub-tox AE" and "DLT".
+
+> Note that the `yCategories` slot must be an integer vector with values ordered from `0` to `length(yCategories) - 1`.  It's labels must be unique.  The first entry, which must have value `0`, is always regarded as the "no event" category.  See [The LogisticLogNormalOrdinal class] below.
+
+The `update`, `plot` and `dose_grid_range` methods work exactly as they do for `Data` objects:
+
+```{r, data-ordinal-2}
+dose_grid_range(empty_ordinal_data)
+
+ordinal_data <- update(empty_ordinal_data, x = 10, y = 0)
+ordinal_data <- update(ordinal_data, x = 20, y = 0)
+ordinal_data <- update(ordinal_data, x = 30, y = 0)
+ordinal_data <- update(ordinal_data, x = 40, y = 0)
+ordinal_data <- update(ordinal_data, x = 50, y = c(0, 1, 0))
+ordinal_data <- update(ordinal_data, x = 60, y = c(0, 1, 2))
+
+plot(ordinal_data)
+```
+
+## The `LogisticLogNormalOrdinal` class
+`crmPack` fits a constrained logistic log normal model to ordinal data.  The logit of the probability of toxicity at each grade for a given dose is modelled in the log odds space as a linear regression with common slope and a different intercept for each toxicity grade. 
+
+> Note, unlike other model classes, `LogisticLogNormalOrdinal` requires a diagonal covariance matrix.  This is because the constraints on the $alpha;s - the intercept parameters - imposes a correlation on the model's parameters.  Thus, any covariance structure requested by the end user could not be honoured by the model.
+
+Let p~k~(d) be the probability that the response of a patient treated at dose d is in category k *_or higher_*, k=0, ..., K; d=1, ..., D.
+
+Then
+
+$$ \log \left( \frac{p}{1-p}\right) = \alpha_k + \beta \cdot \log \left( \frac{d}{d_{ref}} \right)  $$
+for k=1, ..., K [p~0~(d) = 1 by definition] where d~ref~ is a reference dose.  
+
+The &alpha;s are constrained such that &alpha;~1~ > &alpha;~2~ > ... > &alpha;~K~.
+
+The priors for the model's parameters are:
+
+$$ \alpha_k \sim N(\mu_{\alpha_k}, \sigma_{\alpha_k}^2) $$
+
+and
+
+$$ \log(\beta) \sim N(\mu_\beta, \sigma_\beta^2) $$
+
+A `LogisticLogOrdinal` is initialised in exactly the same way as a `LogisticLogNormal` object:
+
+```{r, logisticlogordinal}
+ordinal_model <- LogisticLogNormalOrdinal(
+  mean = c(3, 4, 0),
+  cov = diag(c(4, 3, 1)),
+  ref_dose = 55
+)
+```
+
+The entries in the `mean` and `cov` parameters define the hyper priors for &alpha;~1~ to &alpha;~K-1~ and &beta; in that order. 
+
+## Model fitting
+
+`mcmc` works as expected with ordinal models:
+
+```{r}
+opts <- .DefaultMcmcOptions()
+
+samples <- mcmc(ordinal_data, ordinal_model, opts)
+```
+
+> The warning message is expected and can be ignored.  It will be suppressed in a future version of `crmPack`.  See [https://github.com/Roche/crmPack/issues/748].
+
+The `Samples` object returned by `mcmc` is a standard `Samples object`.  The names of the entries in its `data` slot are
+
+```{r, samples-slot-names}
+names(samples@data)
+```
+
+It can be passed to the `fit` method, using the `grade` parameter to specify the toxicity grade for which cumulative probabilities of toxicity are required:
+
+```{r, fit-1}
+fit(samples, ordinal_model, ordinal_data, grade = 1L)
+fit(samples, ordinal_model, ordinal_data, grade = 2L)
+```
+
+The `cumulative` flag can be used to request grade-specific probabilities.
+
+```{r, fit-2}
+fit(samples, ordinal_model, ordinal_data, grade = 1L, cumulative = FALSE)
+fit(samples, ordinal_model, ordinal_data, grade = 2L, cumulative = FALSE)
+```
+
+> Note that, for `grade == K - 1`, the cumulative and grade-specific probabilities of toxicities are identical.
+
+The `plot` method also takes `grade` and `cumulative` parameters.
+
+```{r, plot}
+plot(samples, ordinal_model, ordinal_data, grade = 2L)
+plot(samples, ordinal_model, ordinal_data, grade = 1L)
+plot(samples, ordinal_model, ordinal_data, grade = 1L, cumulative = FALSE)
+```
+
+## `Rules` classes for ordinal models
+For each class of `Rule` (that is, `CohortSize`, `Increments`, `NextBest` and `Stopping`), `crmPack` provides a single wrapper class that allows the `Rule` to be applied in trials using ordinal CRM models.  The wrapper class has the name `<Rule>Ordinal` and takes two parameters, `rule` and `grade`.  `rule` defines the standard `crmPck` `Rule` and `grade` the toxicity grade at which the rule should be applied. 
+
+For example
+```{r, rules-1}
+dlt_rule <- CohortSizeDLT(intervals = 0:2, cohort_size = c(1, 3, 5))
+ordinal_rule_1 <- CohortSizeOrdinal(grade = 1L, rule = dlt_rule)
+ordinal_rule_2 <- CohortSizeOrdinal(grade = 2L, rule = dlt_rule)
+
+size(ordinal_rule_1, 50, empty_ordinal_data)
+size(ordinal_rule_2, 50, empty_ordinal_data)
+size(ordinal_rule_1, 50, ordinal_data)
+size(ordinal_rule_2, 50, ordinal_data)
+```
+
+`Rules` based on different toxicity grades can be combined to produce complex rules.  Here we define two `Increments` rules, one based on toxicity grade 1, the other on toxicity grade 2.  Recall two sub toxic AEs and one DLT have been reported in the example data set.  
+
+Thus, the rule based on sub-toxic AEs allows a maximum increment of 0.67 because three events have been reported, giving a maximum permitted dose of 100.2.  As only one DLT has been reported, the second rule allows an increment of 0.5, giving a maximum permitted dose of 90. 
+
+```{r, rules-2}
+ordinal_rule_1 <- IncrementsOrdinal(
+  grade = 1L, 
+  rule = IncrementsRelativeDLT(intervals = 0:2, increments = c(3, 1.5, 0.67))
+)
+maxDose(ordinal_rule_1, ordinal_data)
+ordinal_rule_2 <- IncrementsOrdinal(
+  grade = 2L, 
+  rule = IncrementsRelativeDLT(intervals = 0:1, increments = c(3, 0.5))
+)
+maxDose(ordinal_rule_2, ordinal_data)
+```
+
+The two grade-specific rules can be combined into a single rule using `IncrementsMin`:
+
+```{r, rules-3, error = TRUE}
+trial_rule <- IncrementsMin(list(ordinal_rule_1, ordinal_rule_2))
+maxDose(trial_rule, ordinal_data)
+```
+
+# Some observations
+- We are currently considering the need for making grade-specific functionality available across more `crmPack` methods.  If you have a specific use case that is not currently supported, please contact us.
+- If you have a need for ordinal CRM in dual endpoint models, please let us know.
+- Had `crmPack` supported ordinal CRM from the outset, the classes that support standard, binary, CRM models would have been sub-classes of the more general ordinal implementations.  We did consider taking this approach when adding support for ordinal CRM models to the existing code.  We decided against doing so for purely defensive and conservative reasons. Had we introduced the ordinal classes as parents of the existing classes, changes to the code base would have been much more substantial and we were concerned that we might miss some implicit assumptions about the dimensionality of the existing models.  We therefore chose to implement ordinal classes as siblings, rather than parents, of the existing  classes. This approach minimises the risk of breaking existing end-user code at the risk of slightly greater complexity in using the new classes. 
+
+# Environment
+
+```{r environment, echo = FALSE}
+sessionInfo()
+```
+# References
