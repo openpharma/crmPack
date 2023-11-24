@@ -1,0 +1,139 @@
+---
+title: "Ordinal CRM"
+bibliography: vignettes.bib
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Ordinal CRM}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>",
+  fig.width = 6
+)
+```
+
+```{r setup}
+library(crmPack)
+```
+
+# Introduction
+The original CRM model introduced by [@oquigley1990] dichotomises toxicity events as either "Not toxic" or "DLT".  The ordinal CRM generalises this model by classifying toxicities on an ordinal scale with an arbitrary number of categories (though use of more than three or four would be unusual).
+
+This approach is particularly useful in non-oncology settings, where there is a greater interest in adverse events that are not dose limiting but are nonetheless undesirable.
+
+# Implementation
+
+## Ordinal data
+`crmPack` uses the `DataOrdinal` class to record data observed during an ordinal CRM trial.  The `OrdinalData` class differs from the `Data` class only in that it contains an extra slot, `yCategories`, that defines both the number of toxicity grades and their labels.For example:
+
+```{r, data-ordinal-1}
+empty_ordinal_data <- DataOrdinal(
+  doseGrid = c(seq(from = 10, to = 100, by = 10)),
+  yCategories = c("No tox" = 0L, "Sub-tox AE" = 1L, "DLT" = 2L),
+  placebo = FALSE
+)
+```
+
+defines a `DataOrdinal` object with three toxicity grades, labelled "No tox`", "Sub-tox AE" and "DLT".
+
+> Note that the `yCategories` slot must be an integer vector with values ordered from `0` to `length(yCategories) - 1`.  It's labels must be unique.  The first entry, which must have value `0`, is always regarded as the "no event" category.  See [The LogisticLogNormalOrdinal class] below.
+
+The `update`, `plot` and `dose_grid_range` methods work exactly as they do for `Data` objects:
+
+```{r, data-ordinal-2}
+dose_grid_range(empty_ordinal_data)
+
+ordinal_data <- update(empty_ordinal_data, x = 10, y = 0)
+ordinal_data <- update(ordinal_data, x = 20, y = 0)
+ordinal_data <- update(ordinal_data, x = 30, y = 0)
+ordinal_data <- update(ordinal_data, x = 40, y = 0)
+ordinal_data <- update(ordinal_data, x = 50, y = c(0, 1, 0))
+ordinal_data <- update(ordinal_data, x = 60, y = c(0, 1, 2))
+
+plot(ordinal_data)
+```
+
+## The `LogisticLogNormalOrdinal` class
+`crmPack` fits a constrained logistic log normal model to ordinal data.  The logit of the probability of toxicity at each grade for a given dose is modelled in the log odds space as a linear regression with common slope and a different intercept for each toxicity grade. 
+
+> Note, unlike other model classes, `LogisticLogNormalOrdinal` requires a diagonal covariance matrix.  This is because the constraints on the $alpha;s - the intercept parameters - imposes a correlation on the model's parameters.  Thus, any covariance structure requested by the end user could not be honoured by the model.
+
+Let p~k~(d) be the probability that the response of a patient treated at dose d is in category k *_or higher_*, k=0, ..., K; d=1, ..., D.
+
+Then
+
+$$ \log \left( \frac{p}{1-p}\right) = \alpha_k + \beta \cdot \log \left( \frac{d}{d_{ref}} \right)  $$
+for k=1, ..., K [p~0~(d) = 1 by definition] where d~ref~ is a reference dose.  
+
+The &alpha;s are constrained such that &alpha;~1~ > &alpha;~2~ > ... > &alpha;~K~.
+
+The priors for the model's parameters are:
+
+$$ \alpha_k \sim N(\mu_{\alpha_k}, \sigma_{\alpha_k}^2) $$
+
+and
+
+$$ \log(\beta) \sim N(\mu_\beta, \sigma_\beta^2) $$
+
+A `LogisticLogOrdinal` is initialised in exactly the same way as a `LogisticLogNormal` object:
+
+```{r, logisticlogordinal}
+ordinal_model <- LogisticLogNormalOrdinal(
+  mean = c(3, 4, 0),
+  cov = diag(c(4, 3, 1)),
+  ref_dose = 55
+)
+```
+
+The entries in the `mean` and `cov` parameters define the hyper priors for &alpha;~1~ to &alpha;~K-1~ and &beta; in that order. 
+
+## Model fitting
+
+`mcmc` works as expected with ordinal models:
+
+```{r}
+opts <- .DefaultMcmcOptions()
+
+samples <- mcmc(ordinal_data, ordinal_model, opts)
+```
+
+> The warning message is expected and can be ignored.  It will be suppressed in a future version of `crmPack`.  See [https://github.com/Roche/crmPack/issues/748].
+
+The `Samples` object returned by `mcmc` is a standard `Samples object`.  The names of the entries in its `data` slot are
+
+```{r, samples-slot-names}
+names(samples@data)
+```
+
+It can be passed to the `fit` method, using the `grade` parameter to specify the toxicity grade for which cumulative probabilities of toxicity are required:
+
+```{r, fit-1}
+fit(samples, ordinal_model, ordinal_data, grade = 1L)
+fit(samples, ordinal_model, ordinal_data, grade = 2L)
+```
+
+The `cumulative` flag can be used to request grade-specific probabilities.
+
+```{r, fit-2}
+fit(samples, ordinal_model, ordinal_data, grade = 1L, cumulative = FALSE)
+fit(samples, ordinal_model, ordinal_data, grade = 2L, cumulative = FALSE)
+```
+
+> Note that, for `grade == K - 1`, the cumlative and grade-specific probabilities of toxicities are identical.
+
+
+
+## `Rules` class for ordinal models
+
+# Some observations
+
+# Environment
+
+```{r environment, echo = FALSE}
+sessionInfo()
+```
+# References
