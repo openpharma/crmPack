@@ -98,3 +98,30 @@ test_that("h_add_dlts works as expected when first separate patient does not hav
   expect_equal(tail(result@x, 3), rep(data@doseGrid[3], 3))
   expect_true(data@nObs + 3 == result@nObs)
 })
+
+test_that("h_this_truth returns correct results for given dose", {
+  args = NULL
+  args <- as.data.frame(args)
+  nArgs <- max(nrow(args), 1L)
+  iterSim <- 5
+  this_args <- args[(iterSim - 1) %% nArgs + 1, , drop = FALSE]
+
+  model <- LogisticLogNormal(
+    mean = c(-0.85, 1),
+    cov =
+      matrix(c(1, -0.5, -0.5, 1),
+             nrow = 2
+      ),
+    ref_dose = 56
+  )
+
+  my_truth <- probFunction(model, alpha0 = 7, alpha1 = 8)
+
+  result <- h_this_truth(30, this_args, my_truth)
+  expect_equal(result, 0.8815056)
+})
+
+
+
+
+

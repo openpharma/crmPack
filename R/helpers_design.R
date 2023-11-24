@@ -166,3 +166,20 @@ h_add_dlts <- function(data,
   }
   update(data, x = dose, y = dlts)
 }
+
+
+#' Helper Function to call truth calculation
+#'
+#' @param dose (`number`)\cr current dose.
+#' @param truth (`function`)\cr defines the true probability for a DLT at a dose.
+#' @param this_args (`data.frame`)\cr list of arguments for the truth.
+#' @return The updated `this_truth`.
+#'
+h_this_truth <- function(dose, this_args, truth) {
+  do.call(truth,
+          ## First argument: the dose
+          c(dose,
+            ## Following arguments
+            this_args))
+}
+

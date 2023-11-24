@@ -135,10 +135,12 @@ options <- McmcOptions(
   step = 1,
   samples = 2000
 )
+
 time <- system.time(mySims <- simulate(design,
   args = NULL,
+  firstSeparate = T,
   truth = myTruth,
-  nsim = 1,
+  nsim = 10,
   seed = 819,
   mcmcOptions = options,
   parallel = FALSE
