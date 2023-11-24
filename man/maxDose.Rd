@@ -16,6 +16,7 @@
 \alias{maxDose-IncrementsHSRBeta}
 \alias{maxDose,IncrementsMin,Data-method}
 \alias{maxDose-IncrementsMin}
+\alias{maxDose,IncrementsMin,DataOrdinal-method}
 \alias{maxDose,IncrementsOrdinal,DataOrdinal-method}
 \alias{maxDose-IncrementsOrdinal}
 \title{Determine the Maximum Possible Next Dose}
@@ -35,6 +36,8 @@ maxDose(increments, data, ...)
 \S4method{maxDose}{IncrementsHSRBeta,Data}(increments, data, ...)
 
 \S4method{maxDose}{IncrementsMin,Data}(increments, data, ...)
+
+\S4method{maxDose}{IncrementsMin,DataOrdinal}(increments, data, ...)
 
 \S4method{maxDose}{IncrementsOrdinal,DataOrdinal}(increments, data, ...)
 }
@@ -78,6 +81,9 @@ Find out more in \code{\link{IncrementsDoseLevels}}.
 \item \code{maxDose(increments = IncrementsHSRBeta, data = Data)}: determine the maximum possible next dose for escalation.
 
 \item \code{maxDose(increments = IncrementsMin, data = Data)}: determine the maximum possible next dose based on
+multiple increment rules, taking the minimum across individual increments.
+
+\item \code{maxDose(increments = IncrementsMin, data = DataOrdinal)}: determine the maximum possible next dose based on
 multiple increment rules, taking the minimum across individual increments.
 
 \item \code{maxDose(increments = IncrementsOrdinal, data = DataOrdinal)}: determine the maximum possible next dose in an ordinal

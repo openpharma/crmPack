@@ -123,13 +123,59 @@ fit(samples, ordinal_model, ordinal_data, grade = 1L, cumulative = FALSE)
 fit(samples, ordinal_model, ordinal_data, grade = 2L, cumulative = FALSE)
 ```
 
-> Note that, for `grade == K - 1`, the cumlative and grade-specific probabilities of toxicities are identical.
+> Note that, for `grade == K - 1`, the cumulative and grade-specific probabilities of toxicities are identical.
 
+The `plot` method also takes `grade` and `cumulative` parameters.
 
+```{r, plot}
+plot(samples, ordinal_model, ordinal_data, grade = 2L)
+plot(samples, ordinal_model, ordinal_data, grade = 1L)
+plot(samples, ordinal_model, ordinal_data, grade = 1L, cumulative = FALSE)
+```
 
-## `Rules` class for ordinal models
+## `Rules` classes for ordinal models
+For each class of `Rule` (that is, `CohortSize`, `Increments`, `NextBest` and `Stopping`), `crmPack` provides a single wrapper class that allows the `Rule` to be applied in trials using ordinal CRM models.  The wrapper class has the name `<Rule>Ordinal` and takes two parameters, `rule` and `grade`.  `rule` defines the standard `crmPck` `Rule` and `grade` the toxicity grade at which the rule should be applied. 
+
+For example
+```{r, rules-1}
+dlt_rule <- CohortSizeDLT(intervals = 0:2, cohort_size = c(1, 3, 5))
+ordinal_rule_1 <- CohortSizeOrdinal(grade = 1L, rule = dlt_rule)
+ordinal_rule_2 <- CohortSizeOrdinal(grade = 2L, rule = dlt_rule)
+
+size(ordinal_rule_1, 50, empty_ordinal_data)
+size(ordinal_rule_2, 50, empty_ordinal_data)
+size(ordinal_rule_1, 50, ordinal_data)
+size(ordinal_rule_2, 50, ordinal_data)
+```
+
+`Rules` based on different toxicity grades can be combined to produce complex rules.  Here we define two `Increments` rules, one based on toxicity grade 1, the other on toxicity grade 2.  Recall two sub toxic AEs and one DLT have been reported in the example data set.  
+
+Thus, the rule based on sub-toxic AEs allows a maximum increment of 0.67 because three events have been reported, giving a maximum permitted dose of 100.2.  As only one DLT has been reported, the second rule allows an increment of 0.5, giving a maximum permitted dose of 90. 
+
+```{r, rules-2}
+ordinal_rule_1 <- IncrementsOrdinal(
+  grade = 1L, 
+  rule = IncrementsRelativeDLT(intervals = 0:2, increments = c(3, 1.5, 0.67))
+)
+maxDose(ordinal_rule_1, ordinal_data)
+ordinal_rule_2 <- IncrementsOrdinal(
+  grade = 2L, 
+  rule = IncrementsRelativeDLT(intervals = 0:1, increments = c(3, 0.5))
+)
+maxDose(ordinal_rule_2, ordinal_data)
+```
+
+The two grade-specific rules can be combined into a single rule using `IncrementsMin`:
+
+```{r, rules-3, error = TRUE}
+trial_rule <- IncrementsMin(list(ordinal_rule_1, ordinal_rule_2))
+maxDose(trial_rule, ordinal_data)
+```
 
 # Some observations
+- We are currently considering the need for making grade-specific functionality available across more `crmPack` methods.  If you have a specific use case that is not currently supported, please contact us.
+- If you have a need for ordinal CRM in dual endpoint models, please let us know.
+- Had `crmPack` supported ordinal CRM from the outset, the classes that support standard, binary, CRM models would have been sub-classes of the more general ordinal implementations.  We did consider taking this approach when adding support for ordinal CRM models to the existing code.  We decided against doing so for purely defensive and conservative reasons. Had we introduced the ordinal classes as parents of the existing classes, changes to the code base would have been much more substantial and we were concerned that we might miss some implicit assumptions about the dimensionality of the existing models.  We therefore chose to implement ordinal classes as siblings, rather than parents, of the existing  classes. This approach minimises the risk of breaking existing end-user code at the risk of slightly greater complexity in using the new classes. 
 
 # Environment
 

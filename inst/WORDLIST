@@ -13,6 +13,8 @@ ADRS
 ADSL
 ADTTE
 ADVS
+AE
+AEs
 al
 AllModels
 amongst
@@ -85,7 +87,7 @@ df
 dfcrm
 dfpk
 Diack
-dicotomises
+dichotomises
 dimParameter
 DLE
 DLEat
@@ -162,6 +164,7 @@ Guosheng
 gz
 Hmmm
 Hoffmann
+honoured
 http
 https
 httr
@@ -175,6 +178,7 @@ IncrementsRelativeDLTs
 IncrementsRelativeParts
 ing
 inputId
+initialised
 intialization
 Intialization
 Intitialization
@@ -190,6 +194,7 @@ JSS
 Kadane
 Kaplan
 Kerman
+labelled
 lexicographically
 liaoc
 lifecycle
@@ -443,6 +448,9 @@ xlab
 Yeung
 YJ
 yml
+α
+αs
+β
 θ
 φ
 ### LaTeX keywords below here.
@@ -452,3 +460,4 @@ frac
 pmatrix
 rr
 smallmatrix
+cdot
