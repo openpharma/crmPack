@@ -136,6 +136,75 @@ test_that("doseFunction-LogisticLogNormalGrouped works as expected", {
   expect_equal(result, 0.13534, tolerance = 1e-4)
 })
 
+# LogisticLogNormalOrdinal
+
+test_that("doseFunction-LogisticLogNormalOrdinal works correctly", {
+  raw <- list(alpha1 = 2, alpha2 = 1, beta = 0.5)
+  samples <- h_as_samples(raw)
+  model <- .DefaultLogisticLogNormalOrdinal()
+
+  func <- doseFunction(
+    model,
+    alpha1 = samples@data$alpha1,
+    beta = samples@data$beta,
+    grade = 1L
+  )
+  for (p in seq(0.05, 0.95, 0.05)) {
+    actual <- positive_number(func(p))
+    expected <- exp((logit(p) - raw$alpha1) / raw$beta) * model@ref_dose
+    expect_equal(actual, expected)
+  }
+
+  func <- doseFunction(
+    model,
+    alpha2 = samples@data$alpha2,
+    beta = samples@data$beta,
+    grade = 2L
+  )
+  for (p in seq(0.05, 0.95, 0.05)) {
+    actual <- positive_number(func(p))
+    expected <- exp((logit(p) - raw$alpha2) / raw$beta) * model@ref_dose
+    expect_equal(actual, expected)
+  }
+})
+
+test_that("doseFunction-LogisticLogNormalOrdinal fails gracefully with bad input", {
+  ordinal_model <- .DefaultLogisticLogNormalOrdinal()
+  ordinal_data <- .DefaultDataOrdinal()
+  opts <- McmcOptions(
+    rng_seed = 202515,
+    rng_kind = "Mersenne-Twister",
+    samples = 5,
+    step = 2
+  )
+  suppressWarnings({
+    samples <- mcmc(ordinal_data, ordinal_model, opts)
+  })
+
+  expect_error(
+    doseFunction(ordinal_model, grade = 1L),
+    "Assertion on 'names\\(model_params\\)' failed: Must be of type 'character', not 'NULL'"
+  )
+  expect_error(
+    doseFunction(
+      ordinal_model,
+      grade = .6,
+      alpha1 = samples@data$alpha1,
+      beta = samples@data$beta
+    ),
+    "Assertion on 'grade' failed: Must be of type 'integer', not 'double'"
+  )
+  expect_error(
+    doseFunction(
+      ordinal_model,
+      grade = 2L,
+      alpha1 = samples@data$alpha1,
+      beta = samples@data$beta
+    ),
+    ".*Since grade = 2, a parameter named 'alpha2' must appear the call.*"
+  )
+})
+
 # probFunction ----
 
 ## GeneralModel ----
@@ -272,6 +341,76 @@ test_that("probFunction-LogisticLogNormalGrouped works as expected", {
   result <- expect_silent(prob_fun(10, group = "mono"))
   expect_equal(result, 0.8958, tolerance = 1e-4)
 })
+
+# LogisticLogNormalOrdinal ----
+
+test_that("probFunction-LogisticLogNormalOrdinal works correctly", {
+  raw <- list(alpha1 = 2, alpha2 = 1, beta = 0.5)
+  samples <- h_as_samples(raw)
+  model <- .DefaultLogisticLogNormalOrdinal()
+
+  func <- probFunction(
+    model,
+    alpha1 = samples@data$alpha1,
+    beta = samples@data$beta,
+    grade = 1L
+  )
+  for (d in .DefaultDataOrdinal()@doseGrid) {
+    actual <- positive_number(func(d))
+    expected <- plogis(raw$alpha1 + raw$beta * log(d / model@ref_dose))
+    expect_equal(actual, expected)
+  }
+
+  func <- probFunction(
+    model,
+    alpha2 = samples@data$alpha2,
+    beta = samples@data$beta,
+    grade = 2L
+  )
+  for (d in .DefaultDataOrdinal()@doseGrid) {
+    actual <- positive_number(func(d))
+    expected <- plogis(raw$alpha2 + raw$beta * log(d / model@ref_dose))
+    expect_equal(actual, expected)
+  }
+})
+
+test_that("doseFunction-LogisticLogNormalOrdinal fails gracefully with bad input", {
+  ordinal_model <- .DefaultLogisticLogNormalOrdinal()
+  ordinal_data <- .DefaultDataOrdinal()
+  opts <- McmcOptions(
+    rng_seed = 202515,
+    rng_kind = "Mersenne-Twister",
+    samples = 5,
+    step = 2
+  )
+  suppressWarnings({
+    samples <- mcmc(ordinal_data, ordinal_model, opts)
+  })
+
+  expect_error(
+    doseFunction(ordinal_model, grade = 1L),
+    "Assertion on 'names\\(model_params\\)' failed: Must be of type 'character', not 'NULL'"
+  )
+  expect_error(
+    doseFunction(
+      ordinal_model,
+      grade = .6,
+      alpha1 = samples@data$alpha1,
+      beta = samples@data$beta
+    ),
+    "Assertion on 'grade' failed: Must be of type 'integer', not 'double'"
+  )
+  expect_error(
+    doseFunction(
+      ordinal_model,
+      grade = 2L,
+      alpha1 = samples@data$alpha1,
+      beta = samples@data$beta
+    ),
+    ".*Since grade = 2, a parameter named 'alpha2' must appear the call.*"
+  )
+})
+
 
 # efficacyFunction ----
 
@@ -984,7 +1123,7 @@ test_that("dose-OneParExpPrior throws the error when x is not valid", {
   )
 })
 
-## LogisticLogNormalOrdinal
+## LogisticLogNormalOrdinal ----
 
 test_that("dose-LogisticLogNormalOrdinal works correctly", {
   model <- .DefaultLogisticLogNormalOrdinal()
@@ -1007,7 +1146,7 @@ test_that("dose-LogisticLogNormalOrdinal works correctly", {
       1:max(ordinal_data@yCategories),
       function(g) {
         # Manually construct dose estimates
-        alpha <- samples@data[[paste0("alpha[", g, "]")]]
+        alpha <- samples@data[[paste0("alpha", g)]]
         beta <- samples@data[["beta"]]
         ref_dose <- as.numeric(model@ref_dose)
         exp((logit(prob) - alpha) / beta) * ref_dose
@@ -1077,7 +1216,7 @@ test_that("prob-LogisticNormal works as expected", {
       1:max(ordinal_data@yCategories),
       function(g) {
         # Manually construct toxicity probabilities
-        alpha <- samples@data[[paste0("alpha[", g, "]")]]
+        alpha <- samples@data[[paste0("alpha", g)]]
         beta <- samples@data[["beta"]]
         z <- exp(alpha + beta * log(dose / model@ref_dose))
         expected <- z / (1 + z)

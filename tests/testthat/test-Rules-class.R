@@ -7,6 +7,11 @@ test_that(".NextBestMTD works as expected", {
   expect_valid(result, "NextBestMTD")
 })
 
+test_that(".DefaultNextBestMTD works as expected", {
+  result <- expect_silent(.DefaultNextBestMTD())
+  expect_valid(result, "NextBestMTD")
+})
+
 test_that("NextBestMTD object can be created with user constructor", {
   result <- expect_silent(
     NextBestMTD(0.4, function(mtd_samples) mean(mtd_samples))
@@ -20,6 +25,11 @@ test_that("NextBestMTD object can be created with user constructor", {
 
 test_that(".NextBestNCRM works as expected", {
   result <- expect_silent(.NextBestNCRM())
+  expect_valid(result, "NextBestNCRM")
+})
+
+test_that(".DefaultNextBestNCRM works as expected", {
+  result <- expect_silent(.DefaultNextBestNCRM())
   expect_valid(result, "NextBestNCRM")
 })
 
@@ -40,6 +50,11 @@ test_that(".NextBestNCRMLoss works as expected", {
   expect_valid(result, "NextBestNCRMLoss")
 })
 
+test_that(".DefaultNextBestNCRMLoss works as expected", {
+  result <- expect_silent(.DefaultNextBestNCRMLoss())
+  expect_valid(result, "NextBestNCRMLoss")
+})
+
 test_that("NextBestNCRMLoss object can be created with user constructor", {
   result <- expect_silent(
     NextBestNCRMLoss(c(0.2, 0.35), c(0.35, 0.6), c(0.6, 1), 0.25, c(1, 0, 1, 2))
@@ -56,6 +71,11 @@ test_that("NextBestNCRMLoss object can be created with user constructor", {
 
 test_that(".NextBestThreePlusThree works as expected", {
   result <- expect_silent(.NextBestThreePlusThree())
+  expect_valid(result, "NextBestThreePlusThree")
+})
+
+test_that(".DefaultNextBestThreePlusThree works as expected", {
+  result <- expect_silent(.DefaultNextBestThreePlusThree())
   expect_valid(result, "NextBestThreePlusThree")
 })
 
@@ -107,8 +127,13 @@ test_that(".DefaultNextBestDualEndpoint works as expected", {
 
 ## NextBestMinDist ----
 
-test_that("NextBestMinDist works as expected", {
+test_that(".NextBestMinDist works as expected", {
   result <- expect_silent(.NextBestMinDist())
+  expect_valid(result, "NextBestMinDist")
+})
+
+test_that(".DefaultNextBestMinDist works as expected", {
+  result <- expect_silent(.DefaultNextBestMinDist())
   expect_valid(result, "NextBestMinDist")
 })
 
@@ -124,6 +149,11 @@ test_that("NextBestMinDist object can be created with user constructor", {
 
 test_that(".NextBestInfTheory works as expected", {
   result <- expect_silent(.NextBestInfTheory())
+  expect_valid(result, "NextBestInfTheory")
+})
+
+test_that(".DefaultNextBestInfTheory works as expected", {
+  result <- expect_silent(.DefaultNextBestInfTheory())
   expect_valid(result, "NextBestInfTheory")
 })
 
@@ -143,6 +173,11 @@ test_that(".NextBestTD works as expected", {
   expect_valid(result, "NextBestTD")
 })
 
+test_that(".DefaultNextBestTD works as expected", {
+  result <- expect_silent(.DefaultNextBestTD())
+  expect_valid(result, "NextBestTD")
+})
+
 test_that("NextBestTD object can be created with user constructor", {
   result <- expect_silent(
     NextBestTD(0.4, 0.35)
@@ -156,6 +191,11 @@ test_that("NextBestTD object can be created with user constructor", {
 
 test_that(".NextBestTDsamples works as expected", {
   result <- expect_silent(.NextBestTDsamples())
+  expect_valid(result, "NextBestTDsamples")
+})
+
+test_that(".DefaultNextBestTDsamples works as expected", {
+  result <- expect_silent(.DefaultNextBestTDsamples())
   expect_valid(result, "NextBestTDsamples")
 })
 
@@ -173,6 +213,11 @@ test_that("NextBestTDsamples object can be created with user constructor", {
 
 test_that(".NextBestMaxGain works as expected", {
   result <- expect_silent(.NextBestMaxGain())
+  expect_valid(result, "NextBestMaxGain")
+})
+
+test_that(".DefaultNextBestMaxGain works as expected", {
+  result <- expect_silent(.DefaultNextBestMaxGain())
   expect_valid(result, "NextBestMaxGain")
 })
 
@@ -248,6 +293,17 @@ test_that("NextBestProbMTDMinDist object can be created with user constructor", 
 test_that(".DefaultNextBestProbMTDMinDist works as expected", {
   result <- expect_silent(.DefaultNextBestProbMTDMinDist())
   expect_valid(result, "NextBestProbMTDMinDist")
+})
+
+## NextBestOrdinal ----
+test_that(".NextBestOrdinal works as expected", {
+  result <- expect_silent(.NextBestOrdinal(grade = 1L, rule = NextBestMinDist(target = 0.25)))
+  expect_valid(result, "NextBestOrdinal")
+})
+
+test_that(".DefaultNextBestOrdinal works as expected", {
+  result <- expect_silent(.DefaultNextBestOrdinal())
+  expect_valid(result, "NextBestOrdinal")
 })
 
 # Increments ----
@@ -443,6 +499,39 @@ test_that(".DefaultIncrementsMin works as expected", {
           increments = c(1, 0.33)
         )
       )
+    )
+  )
+})
+
+## IncrementsOrdinal
+
+test_that("IncrementsOrdinal works as expected", {
+  result <- expect_silent(.IncrementsOrdinal())
+  expect_valid(result, "IncrementsOrdinal")
+})
+
+test_that("IncrementsOrdinal object can be created with user constructor", {
+  result <- expect_silent(
+    IncrementsOrdinal(
+      grade = 2L,
+      rule = IncrementsRelative(
+        intervals = c(0, 3.0, 10.0),
+        increments = c(2, 1.67, 1.33)
+      )
+    )
+  )
+  expect_valid(result, "IncrementsOrdinal")
+  expect_equal(result@grade, 2L)
+  expect_identical(result@rule@intervals, c(0, 3.0, 10.0))
+  expect_identical(result@rule@increments, c(2, 1.67, 1.33))
+})
+
+test_that(".DefaultIncrementsOrdinal works as expected", {
+  expect_equal(
+    .DefaultIncrementsOrdinal(),
+    IncrementsOrdinal(
+      grade = 1L,
+      rule = IncrementsRelative(intervals = c(0, 20), increments = c(1, 0.33))
     )
   )
 })
@@ -928,6 +1017,11 @@ test_that(".StoppingAll works as expected", {
   expect_valid(result, "StoppingAll")
 })
 
+test_that(".DefaultStoppingAll works as expected", {
+  result <- expect_silent(.DefaultStoppingAll())
+  expect_valid(result, "StoppingAll")
+})
+
 test_that("StoppingAll object can be created with user constructor", {
   stop_list <- list(
     StoppingMinCohorts(nCohorts = 5),
@@ -946,6 +1040,11 @@ test_that("StoppingAll object can be created with user constructor", {
 
 test_that(".StoppingAny works as expected", {
   result <- expect_silent(.StoppingAny())
+  expect_valid(result, "StoppingAny")
+})
+
+test_that(".DefaultStoppingAny works as expected", {
+  result <- expect_silent(.DefaultStoppingAny())
   expect_valid(result, "StoppingAny")
 })
 
@@ -1033,6 +1132,33 @@ test_that(".DefaultStoppingMaxGainCIRatio works as expected", {
   )
 })
 
+## StoppingOrdinal ----
+
+test_that(".StoppingOrdinal works as expected", {
+  result <- expect_silent(.StoppingOrdinal(
+    grade = 3L,
+    rule = StoppingMinCohorts(3L)
+  ))
+  expect_valid(result, "StoppingOrdinal")
+})
+
+test_that(".DefaultStoppingOrdinal works as expected", {
+  result <- expect_silent(.DefaultStoppingOrdinal())
+  expect_valid(result, "StoppingOrdinal")
+})
+
+test_that("StoppingOrdinal object can be created with user constructor", {
+  result <- expect_silent(.StoppingOrdinal(
+    grade = 2L,
+    rule = StoppingMinCohorts(3L)
+  ))
+
+  expect_valid(result, "StoppingOrdinal")
+  expect_identical(result@grade, 2L)
+  expect_identical(result@rule, StoppingMinCohorts(3L))
+  expect_identical(result@report_label, character(0))
+})
+
 # CohortSize ----
 
 ## CohortSizeRange ----
@@ -1104,6 +1230,11 @@ test_that(".CohortSizeParts works as expected", {
   expect_valid(result, "CohortSizeParts")
 })
 
+test_that(".DefaultCohortSizeParts works as expected", {
+  result <- expect_silent(.DefaultCohortSizeParts())
+  expect_valid(result, "CohortSizeParts")
+})
+
 test_that("CohortSizeParts object can be created with user constructor", {
   result <- expect_silent(CohortSizeParts(c(1, 4)))
   expect_valid(result, "CohortSizeParts")
@@ -1172,12 +1303,43 @@ test_that(".DefaultCohortSizeMain works as expected", {
   )
 })
 
+## CohortSizeOrdinal ----
+
+test_that(".CohortSizeOrdinal works as expected", {
+  result <- expect_silent(.CohortSizeOrdinal(
+    grade = 3L,
+    rule = CohortSizeConst(3L)
+  ))
+  expect_valid(result, "CohortSizeOrdinal")
+})
+
+test_that(".DefaultCohortSizeOrdinal works as expected", {
+  result <- expect_silent(.DefaultCohortSizeOrdinal())
+  expect_valid(result, "CohortSizeOrdinal")
+})
+
+test_that("CohortSizeOrdinal object can be created with user constructor", {
+  result <- expect_silent(.CohortSizeOrdinal(
+    grade = 2L,
+    rule = .DefaultCohortSizeRange()
+  ))
+
+  expect_valid(result, "CohortSizeOrdinal")
+  expect_identical(result@grade, 2L)
+  expect_identical(result@rule, .DefaultCohortSizeRange())
+})
+
 # SafetyWindow ----
 
 ## SafetyWindowSize ----
 
 test_that(".SafetyWindowSize works as expected", {
   result <- expect_silent(.SafetyWindowSize())
+  expect_valid(result, "SafetyWindowSize")
+})
+
+test_that(".DefaultSafetyWindowSize works as expected", {
+  result <- expect_silent(.DefaultSafetyWindowSize())
   expect_valid(result, "SafetyWindowSize")
 })
 
@@ -1192,10 +1354,22 @@ test_that("SafetyWindowSize object can be created with user constructor", {
   expect_identical(result@follow_min, 15L)
 })
 
+test_that("SafetyWindowSize warns when follow > follow_min", {
+  expect_warning(
+    SafetyWindowSize(list(1:2, 1:2), c(1L, 3L), follow = 2L, follow_min = 1L),
+    "The value of follow_min is typically larger than the value of follow"
+  )
+})
+
 ## SafetyWindowConst ----
 
 test_that(".SafetyWindowConst works as expected", {
   result <- expect_silent(.SafetyWindowConst())
+  expect_valid(result, "SafetyWindowConst")
+})
+
+test_that(".DefaultSafetyWindowConst works as expected", {
+  result <- expect_silent(.DefaultSafetyWindowConst())
   expect_valid(result, "SafetyWindowConst")
 })
 
@@ -1205,4 +1379,49 @@ test_that("SafetyWindowConst object can be created with user constructor", {
   expect_identical(result@gap, 8L)
   expect_identical(result@follow, 2L)
   expect_identical(result@follow_min, 18L)
+})
+
+test_that("SafetyWindowConst warns when follow > follow_min", {
+  expect_warning(
+    SafetyWindowConst(c(1L, 3L, 7L), follow = 2L, follow_min = 1L),
+    "The value of follow_min is typically larger than the value of follow"
+  )
+})
+
+#  Illegal default constructors ----
+
+## NextBest ----
+
+test_that("Use of .DefaultNextBest throws an exception", {
+  expect_error(
+    .DefaultNextBest(),
+    "Class NextBest should not be instantiated directly.  Please use one of its subclasses instead."
+  )
+})
+
+## Increments ----
+
+test_that("Use of .DefaultIncrements throws an exception", {
+  expect_error(
+    .DefaultIncrements(),
+    "Class Increments cannot be instantiated directly.  Please use one of its subclasses instead."
+  )
+})
+
+## SafetyWindow ----
+
+test_that("Use of .DefaultSafetyWindow throws an exception", {
+  expect_error(
+    .DefaultSafetyWindow(),
+    "Class SafetyWindow cannot be instantiated directly.  Please use one of its subclasses instead."
+  )
+})
+
+## CohortSize ----
+
+test_that("Use of .DefaultCohortSize throws an exception", {
+  expect_error(
+    .DefaultCohortSize(),
+    "Class CohortSize should not be instantiated directly.  Please use one of its subclasses instead."
+  )
 })

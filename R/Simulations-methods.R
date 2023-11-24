@@ -1996,6 +1996,7 @@ setMethod("show",
         )
       }
 
+
       # Report results of additional statistics summary
 
       if (length(unlist(object@additional_stats)) > 0) {
@@ -2617,8 +2618,7 @@ setMethod("summary",
         FinalRatioSummary = FinalRatioSummary,
         EffFitAtDoseMostSelected = EffFitAtDoseMostSelected,
         meanEffFit = meanEffFit,
-        stop_report = object@stop_report,
-        additional_stats = object@additional_stats,
+        stop_report = object@stop_report
       )
 
       return(ret)
@@ -2662,8 +2662,7 @@ setMethod("summary",
       ## give back an object of class PseudoDualSimulationsSummary,
       ## for which we then define a print / plot method
       ret <- .PseudoDualSimulationsSummary(start,
-        stop_report = object@stop_report,
-        additional_stats = object@additional_stats
+        stop_report = object@stop_report
       )
 
       return(ret)
@@ -2791,16 +2790,6 @@ setMethod("show",
         )
       }
 
-      # Report results of additional statistics summary
-
-      if (length(unlist(object@additional_stats)) > 0) {
-        summary_stat_op <- unlist(object@additional_stats)
-
-        cat(
-          "Results of Additional Statistical Calculation : \n",
-          paste(names(summary_stat_op), ":", round(summary_stat_op), "\n")
-        )
-      }
 
       ## and return the updated information
       names(r$df) <- r$dfNames

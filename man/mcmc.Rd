@@ -18,6 +18,7 @@
 \alias{mcmc,Data,LogisticIndepBeta,McmcOptions-method}
 \alias{mcmc,DataDual,Effloglog,McmcOptions-method}
 \alias{mcmc,DataDual,EffFlexi,McmcOptions-method}
+\alias{mcmc,DataOrdinal,LogisticLogNormalOrdinal,McmcOptions-method}
 \title{Obtaining Posterior Samples for all Model Parameters}
 \usage{
 mcmc(data, model, options, ...)
@@ -47,6 +48,8 @@ mcmc(data, model, options, ...)
 \S4method{mcmc}{DataDual,Effloglog,McmcOptions}(data, model, options, ...)
 
 \S4method{mcmc}{DataDual,EffFlexi,McmcOptions}(data, model, options, ...)
+
+\S4method{mcmc}{DataOrdinal,LogisticLogNormalOrdinal,McmcOptions}(data, model, options, ...)
 }
 \arguments{
 \item{data}{(\code{GeneralData})\cr an input data.}
@@ -133,6 +136,20 @@ the joint prior and posterior probability density for the mean efficacy response
 both sigma2 and sigma2betaW can be fixed or having an inverse-gamma prior and posterior distribution.
 Therefore, if the inverse gamma distribution(s) are used, the parameters in the distribution will be
 first updated and then samples of sigma2 and sigma2betaW will be generated using the updated parameters.
+
+\item \code{mcmc(
+  data = DataOrdinal,
+  model = LogisticLogNormalOrdinal,
+  options = McmcOptions
+)}: Obtain the posterior samples for the model parameters in the
+\code{LogisticLogNormalOrdinal}.
+
+The generic \code{mcmc} method returns a \code{Samples} object with elements of the
+\code{data} slot named \code{alpha[1]}, \code{alpha[2]}, ..., \code{alpha[k]} and \code{beta} when
+passed a \code{LogisticLogNormalOrdinal} object.  This makes the "alpha elements"
+awkward to access and is inconsistent with other \code{Model} objects.  So rename
+the alpha elements to \code{alpha1}, \code{alpha2}, ..., \verb{alpha<k>} for ease and
+consistency.
 
 }}
 \note{
@@ -281,4 +298,10 @@ effmodel <- EffFlexi(
 options <- McmcOptions(burnin = 100, step = 2, samples = 200)
 set.seed(94)
 samples <- mcmc(data = data, model = effmodel, options = options)
+ordinal_data <- .DefaultDataOrdinal()
+ordinal_model <- .DefaultLogisticLogNormalOrdinal()
+mcmc_options <- .DefaultMcmcOptions()
+
+samples <- mcmc(ordinal_data, ordinal_model, mcmc_options)
+
 }

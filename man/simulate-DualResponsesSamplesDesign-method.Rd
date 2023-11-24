@@ -25,7 +25,6 @@ process}
   mcmcOptions = McmcOptions(),
   parallel = FALSE,
   nCores = min(parallel::detectCores(), 5L),
-  derive = list(),
   ...
 )
 }
@@ -70,12 +69,6 @@ clusters of the computer? (not default)}
 
 \item{nCores}{how many cores should be used for parallel computing?
 Defaults to the number of cores on the machine, maximum 5.}
-
-\item{derive}{a named list of functions which derives statistics, based on the
-vector of posterior MTD samples. Each list element must therefore accept
-one and only one argument, which is a numeric vector, and return a number.}
-
-\item{\dots}{not used}
 }
 \value{
 an object of class \code{\linkS4class{PseudoDualSimulations}} or

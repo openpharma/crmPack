@@ -6,6 +6,8 @@
 \alias{doseFunction-GeneralModel}
 \alias{doseFunction,ModelPseudo-method}
 \alias{doseFunction-ModelPseudo}
+\alias{doseFunction,LogisticLogNormalOrdinal-method}
+\alias{doseFunction-LogisticLogNormalOrdinal}
 \title{Getting the Dose Function for a Given Model Type}
 \usage{
 doseFunction(model, ...)
@@ -13,11 +15,16 @@ doseFunction(model, ...)
 \S4method{doseFunction}{GeneralModel}(model, ...)
 
 \S4method{doseFunction}{ModelPseudo}(model, ...)
+
+\S4method{doseFunction}{LogisticLogNormalOrdinal}(model, grade, ...)
 }
 \arguments{
 \item{model}{(\code{GeneralModel} or \code{ModelPseudo})\cr the model.}
 
 \item{...}{model specific parameters.}
+
+\item{grade}{(\code{integer})\cr the toxicity grade for which the dose function is
+required}
 }
 \value{
 A \code{\link[=dose]{dose()}} method that computes doses.
@@ -35,6 +42,8 @@ specific parameters.
 
 \item \code{doseFunction(ModelPseudo)}: 
 
+\item \code{doseFunction(LogisticLogNormalOrdinal)}: 
+
 }}
 \examples{
 my_model <- LogisticLogNormal(
@@ -45,6 +54,13 @@ my_model <- LogisticLogNormal(
 
 dose_fun <- doseFunction(my_model, alpha0 = 2, alpha1 = 3)
 dose_fun(0.6)
+data_ordinal <- .DefaultDataOrdinal()
+model <- .DefaultLogisticLogNormalOrdinal()
+options <- .DefaultMcmcOptions()
+suppressWarnings({ samples <- mcmc(data_ordinal, model, options) })
+
+doseFunction(model, alpha1 = samples@data$alpha2, beta = samples@data$beta, grade = 1L)(x = 0.75)
+doseFunction(model, alpha2 = samples@data$alpha2, beta = samples@data$beta, grade = 2L)(x = 0.25)
 }
 \seealso{
 \code{\link[=dose]{dose()}}, \code{\link[=probFunction]{probFunction()}}.
