@@ -100,7 +100,7 @@ test_that("h_add_dlts works as expected when first separate patient does not hav
 })
 
 test_that("h_this_truth returns correct results for given dose", {
-  args = NULL
+  args <- NULL
   args <- as.data.frame(args)
   nArgs <- max(nrow(args), 1L)
   iterSim <- 5
