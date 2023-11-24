@@ -987,12 +987,23 @@ setMethod("show",
       # Report results of additional statistics summary
 
       if (length(unlist(object@additional_stats)) > 0) {
-        summary_stat_op <- unlist(object@additional_stats)
 
-        cat(
-          "Results of Additional Statistical Calculation : \n",
-          paste(names(summary_stat_op), ":", round(summary_stat_op), "\n")
-        )
+        # Access the nested list of values
+        stats_list <- object@additional_stats
+
+        # Extract the parameter names
+        param_names <- names(stats_list[[1]])
+
+        # Calculate the average for each parameter
+        averages <- lapply(param_names, function(param) {
+          values <- sapply(stats_list, function(x) x[[param]])
+          mean(values)
+        })
+
+      for (i in seq_along(param_names)) {
+        cat(param_names[i], ":", round(averages[[i]], 2), "\n")
+      }
+
       }
 
 
@@ -1003,7 +1014,7 @@ setMethod("show",
       if (length(stop_pct_to_print) > 0) {
         cat(
           "Stop reason triggered:\n",
-          paste(names(stop_pct_to_print), ": ", stop_pct_to_print, "%\n")
+          paste(names(stop_pct_to_print), ": ", round(stop_pct_to_print, 2), "%\n")
         )
       }
 
