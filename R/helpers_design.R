@@ -175,6 +175,7 @@ h_add_dlts <- function(data,
 #' @param this_args (`data.frame`)\cr list of arguments for the truth.
 #' @return The updated `this_truth`.
 #'
+#' @keywords internal
 h_this_truth <- function(dose, this_args, truth) {
   do.call(truth,
           ## First argument: the dose
