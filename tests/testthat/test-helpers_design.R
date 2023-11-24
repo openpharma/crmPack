@@ -100,7 +100,7 @@ test_that("h_add_dlts works as expected when first separate patient does not hav
 })
 
 test_that("h_this_truth returns correct results for given dose", {
-  args = NULL
+  args <- NULL
   args <- as.data.frame(args)
   nArgs <- max(nrow(args), 1L)
   iterSim <- 5
@@ -110,7 +110,7 @@ test_that("h_this_truth returns correct results for given dose", {
     mean = c(-0.85, 1),
     cov =
       matrix(c(1, -0.5, -0.5, 1),
-             nrow = 2
+        nrow = 2
       ),
     ref_dose = 56
   )
@@ -120,8 +120,3 @@ test_that("h_this_truth returns correct results for given dose", {
   result <- h_this_truth(30, this_args, my_truth)
   expect_equal(result, 0.8815056)
 })
-
-
-
-
-

@@ -176,10 +176,13 @@ h_add_dlts <- function(data,
 #' @return The updated `this_truth`.
 #'
 h_this_truth <- function(dose, this_args, truth) {
-  do.call(truth,
-          ## First argument: the dose
-          c(dose,
-            ## Following arguments
-            this_args))
+  do.call(
+    truth,
+    ## First argument: the dose
+    c(
+      dose,
+      ## Following arguments
+      this_args
+    )
+  )
 }
-
