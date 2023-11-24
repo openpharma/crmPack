@@ -138,7 +138,6 @@ options <- McmcOptions(
 
 time <- system.time(mySims <- simulate(design,
   args = NULL,
-  firstSeparate = T,
   truth = myTruth,
   nsim = 10,
   seed = 819,

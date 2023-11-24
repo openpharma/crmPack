@@ -19,3 +19,4 @@ The updated \code{this_truth}.
 \description{
 Helper Function to call truth calculation
 }
+\keyword{internal}
