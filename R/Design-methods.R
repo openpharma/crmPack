@@ -95,9 +95,11 @@ setMethod("simulate",
         # In case there are placebo
         if (thisData@placebo) {
           ## what is the probability for tox. at placebo?
-          thisProb.PL <- h_this_truth(object@data@doseGrid[1],
-                                      thisArgs,
-                                      truth)
+          thisProb.PL <- h_this_truth(
+            object@data@doseGrid[1],
+            thisArgs,
+            truth
+          )
         }
 
         ## shall we stop the trial?
@@ -112,9 +114,11 @@ setMethod("simulate",
         ## inside this loop we simulate the whole trial, until stopping
         while (!stopit) {
           ## what is the probability for tox. at this dose?
-          thisProb <- h_this_truth(thisDose,
-                                   thisArgs,
-                                   truth)
+          thisProb <- h_this_truth(
+            thisDose,
+            thisArgs,
+            truth
+          )
 
           ## what is the cohort size at this dose?
           thisSize <- size(object@cohort_size,
