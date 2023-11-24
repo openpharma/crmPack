@@ -987,7 +987,6 @@ setMethod("show",
       # Report results of additional statistics summary
 
       if (length(unlist(object@additional_stats)) > 0) {
-
         # Access the nested list of values
         stats_list <- object@additional_stats
 
@@ -1000,10 +999,9 @@ setMethod("show",
           mean(values)
         })
 
-      for (i in seq_along(param_names)) {
-        cat(param_names[i], ":", round(averages[[i]], 2), "\n")
-      }
-
+        for (i in seq_along(param_names)) {
+          cat(param_names[i], ":", round(averages[[i]], 2), "\n")
+        }
       }
 
 
