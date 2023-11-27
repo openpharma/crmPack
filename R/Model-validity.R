@@ -590,3 +590,17 @@ v_model_one_par_exp_prior <- function(object) {
 
   v$result()
 }
+
+#' @describeIn v_model_objects confirms that cov is diagonal
+v_logisticlognormalordinal <- function(object) {
+  v <- Validate()
+  # diag(x) returns a vector, not a matrix, so cannot use identical(x, diag(x)
+  x <- object@params@cov
+  diag(x) <- rep(0, ncol(x))
+  v$check(
+    all(x == 0),
+    "covariance matrix must be diagonal"
+  )
+  v$result()
+}
+

@@ -1156,3 +1156,24 @@ test_that("v_model_one_par_exp_prior returns message for wrong lambda", {
   object@lambda <- 1:2
   expect_equal(v_model_one_par_exp_prior(object), err_msg)
 })
+
+# v_logisticlognormalordinal ----
+test_that("LogisticLogNormalOrdinal accepts only diagonal covariance matrices", {
+  expect_no_error(
+    LogisticLogNormalOrdinal(
+      mean = c(3, 4, 0),
+      cov = diag(c(4, 3, 1)),
+      ref_dose = 1
+    )
+  )
+
+  expect_error(
+    LogisticLogNormalOrdinal(
+      mean = c(3, 4, 0),
+      cov = matrix(c(4, -0.1, -0.1, -0.1, 3, -0.1, -0.1, -0.1, 1), ncol = 3),
+      ref_dose = 1
+    ),
+    "invalid class \"LogisticLogNormalOrdinal\" object\\: covariance matrix must be diagonal"
+  )
+
+})
