@@ -1175,5 +1175,4 @@ test_that("LogisticLogNormalOrdinal accepts only diagonal covariance matrices", 
     ),
     "invalid class \"LogisticLogNormalOrdinal\" object\\: covariance matrix must be diagonal"
   )
-
 })

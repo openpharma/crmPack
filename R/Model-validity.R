@@ -603,4 +603,3 @@ v_logisticlognormalordinal <- function(object) {
   )
   v$result()
 }
-
