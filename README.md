@@ -49,7 +49,7 @@ trial design, implementation, simulation and analysis:
 - [Simulation of operating
   characteristics](https://roche.github.io/crmPack/main/articles/trial_simulation.html)
 - [Ordinal CRM
-  models](https://roche.github.io/crmPack/main/articles/ordinal-crm.html)
+  models](https://roche.github.io/crmPack/main/articles/ordinal_crm.html)
 - [Extending
   crmPack](https://roche.github.io/crmPack/main/articles/parallel_computing_with_extensions.html)
 - [Tidy crmPack
