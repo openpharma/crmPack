@@ -3349,7 +3349,8 @@ FractionalCRM <- function(...) {
 #' @export
 .LogisticLogNormalOrdinal <- setClass(
   Class = "LogisticLogNormalOrdinal",
-  contains = "ModelLogNormal"
+  contains = "ModelLogNormal",
+  validity = v_logisticlognormalordinal
 )
 
 ## constructor ----
