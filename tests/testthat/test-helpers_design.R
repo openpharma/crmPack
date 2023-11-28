@@ -98,3 +98,31 @@ test_that("h_add_dlts works as expected when first separate patient does not hav
   expect_equal(tail(result@x, 3), rep(data@doseGrid[3], 3))
   expect_true(data@nObs + 3 == result@nObs)
 })
+
+test_that("h_simulations_ouptput_format returns object as expected", {
+
+  data_test <- new("Data", nGrid = 11L)
+
+  dose <- 20
+
+  fit <- data.frame(middle = c(0.2, 0.7), lower = c(0.1, 0.5), upper = c(0.3,0.4))
+
+  stop <- list(list("Number of cohorts is 10 and thus reached the prespecified minimum number 3"))
+
+  report_results <- c(TRUE, TRUE, TRUE, TRUE, TRUE)
+  names(report_results) <- c(NA, NA, NA, NA, NA)
+
+  additional_stats <- list()
+
+  resultList_test <- list(data = data_test,
+                          dose,
+                          fit,
+                          stop,
+                          report_results,
+                          additional_stats)
+
+  simulations_output <- h_simulations_ouptput_format(resultList)
+
+  expect_equal()
+
+})
