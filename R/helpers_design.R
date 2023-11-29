@@ -134,11 +134,11 @@ get_result_list <- function(
 #'
 #' @param data (`Data`)\cr what data to start from.
 #' @param dose (`number`)\cr current dose.
-#' @param truth (`function`)\cr defines the true probability of DLT.
+#' @param truth (`function`)\cr defines the true probability for a DLT at a dose.
 #' @param cohort_size (`CohortSize`)\cr the cohort size rule to use.
 #' @param first_separate (`flag`)\cr whether the first patient is enrolled separately.
 #'
-#' @return The updated `data`.
+#' @return True probability of DLT.
 #'
 #' @keywords internal
 h_add_dlts <- function(data,
