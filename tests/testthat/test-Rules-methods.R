@@ -1439,6 +1439,40 @@ test_that("maxDose-IncrementsMin works correctly when incr2 is minimum", {
   expect_equal(result, 150)
 })
 
+test_that("maxDose-IncrementsMin-DataOrdinal works correctly when incr1 is minimum", {
+  incr1 <- IncrementsOrdinal(
+    1L,
+    IncrementsRelative(intervals = c(0, 20), increments = c(4, 0.7))
+  )
+  incr2 <- IncrementsOrdinal(
+    1L,
+    IncrementsRelativeDLT(intervals = c(0, 1, 3), increments = c(2, 0.5, 0.4))
+  )
+  increments <- IncrementsMin(increments_list = list(incr1, incr2))
+  data <- DataOrdinal(
+    x = c(5, 100), y = c(1L, 0L), doseGrid = c(5, 100), ID = 1:2, cohort = 1:2
+  )
+  result <- maxDose(increments, data)
+  expect_equal(result, 150)
+})
+
+test_that("maxDose-IncrementsMinOrdinal works correctly when incr2 is minimum", {
+  incr1 <- IncrementsOrdinal(
+    1L,
+    IncrementsRelative(intervals = c(0, 20), increments = c(4, 0.7))
+  )
+  incr2 <- IncrementsOrdinal(
+    1L,
+    IncrementsRelativeDLT(intervals = c(0, 1, 3), increments = c(2, 0.5, 0.4))
+  )
+  increments <- IncrementsMin(increments_list = list(incr1, incr2))
+  data <- DataOrdinal(
+    x = c(5, 100), y = c(1L, 0L), doseGrid = c(5, 100), ID = 1:2, cohort = 1:2
+  )
+  result <- maxDose(increments, data)
+  expect_equal(result, 150)
+})
+
 ## IncrementsOrdinal
 
 test_that("maxDose-IncrementsOrdinal works correctly", {

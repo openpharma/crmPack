@@ -5,7 +5,17 @@ output: github_document
 <!-- markdownlint-disable-file -->
 <!-- README.md is generated from README.Rmd. Please edit that file -->
 
-# crmPack <p align="center"> <img src='man/figures/logo.png' align="right" height="131.5" alt="crmPack-logo"/> </p>
+# crmPack 
+
+<!-- badges: start -->
+[![CRAN status](https://www.r-pkg.org/badges/version/crmPack)](https://CRAN.R-project.org/package=crmPack)
+[![Project Status: Active - The project has reached a stable, usable state and is being actively developed.](https://www.repostatus.org/badges/latest/active.svg)](https://www.repostatus.org/#active)
+[![License](https://img.shields.io/badge/License-Apache_2.0-blue.svg)](https://opensource.org/licenses/Apache-2.0)
+[![Check 🛠](https://github.com/Roche/crmPack/actions/workflows/check.yaml/badge.svg)](https://github.com/Roche/crmPack/actions/workflows/check.yaml)
+[![Test Coverage](https://raw.githubusercontent.com/Roche/crmPack/_xml_coverage_reports/data/main/badge.svg)](https://raw.githubusercontent.com/Roche/crmPack/_xml_coverage_reports/data/main/badge.svg)
+<!-- badges: end -->
+
+<p align="center"> <img src='man/figures/logo.png' align="right" height="131.5" alt="crmPack-logo"/> </p>
 
 ```{r, echo = FALSE}
 knitr::opts_chunk$set(
@@ -14,9 +24,6 @@ knitr::opts_chunk$set(
   fig.path = "README-"
 )
 ```
-
-[![Project Status: Active - The project has reached a stable, usable state and is being actively developed.](https://www.repostatus.org/badges/latest/active.svg)](https://www.repostatus.org/#active)
-\
 
 The goal of crmPack is to implement a wide range of model-based dose
 escalation designs, ranging from classical and modern continual
@@ -50,6 +57,7 @@ The package vignettes provide information on various aspects of CRM trial design
 * [Trial analysis](https://roche.github.io/crmPack/main/articles/trial_analysis.html)
 * [Sanity checking](https://roche.github.io/crmPack/main/articles/trial_sanity_checks.html)
 * [Simulation of operating characteristics](https://roche.github.io/crmPack/main/articles/trial_simulation.html)
+* [Ordinal CRM models](https://roche.github.io/crmPack/main/articles/ordinal-crm.html)
 * [Extending crmPack](https://roche.github.io/crmPack/main/articles/parallel_computing_with_extensions.html)
 * [Tidy crmPack data](https://roche.github.io/crmPack/main/articles/tidy_method.html)
 * [Migration from the old crmPack](https://roche.github.io/crmPack/main/articles/migration_from_the_old_crmPack.html)

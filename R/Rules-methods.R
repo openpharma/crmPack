@@ -1679,6 +1679,24 @@ setMethod(
   }
 )
 
+#' @describeIn maxDose determine the maximum possible next dose based on
+#'   multiple increment rules, taking the minimum across individual increments.
+#'
+#' @aliases maxDose-IncrementsMin
+#'
+#' @export
+setMethod(
+  f = "maxDose",
+  signature = signature(
+    increments = "IncrementsMin",
+    data = "DataOrdinal"
+  ),
+  definition = function(increments, data, ...) {
+    individual_results <- sapply(increments@increments_list, maxDose, data = data, ...)
+    min(individual_results)
+  }
+)
+
 ## IncrementsOrdinal ----
 
 #' @describeIn maxDose determine the maximum possible next dose in an ordinal
