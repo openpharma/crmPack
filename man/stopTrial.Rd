@@ -23,6 +23,9 @@
 \alias{stopTrial,StoppingSpecificDose,numeric,ANY,ANY,Data-method}
 \alias{stopTrial-StoppingSpecificDose}
 \alias{stopTrial,StoppingHighestDose,numeric,ANY,ANY,Data-method}
+\alias{stopTrial,StoppingOrdinal,numeric,ANY,LogisticLogNormalOrdinal,DataOrdinal-method}
+\alias{stopTrial-StoppingOrdinal}
+\alias{stopTrial,StoppingOrdinal,numeric,ANY,ANY,ANY-method}
 \alias{stopTrial,StoppingTDCIRatio,ANY,Samples,ModelTox,ANY-method}
 \alias{stopTrial,StoppingTDCIRatio,ANY,missing,ModelTox,ANY-method}
 \alias{stopTrial,StoppingMaxGainCIRatio,ANY,Samples,ModelTox,DataDual-method}
@@ -60,6 +63,10 @@ stopTrial(stopping, dose, samples, model, data, ...)
 \S4method{stopTrial}{StoppingSpecificDose,numeric,ANY,ANY,Data}(stopping, dose, samples, model, data, ...)
 
 \S4method{stopTrial}{StoppingHighestDose,numeric,ANY,ANY,Data}(stopping, dose, samples, model, data, ...)
+
+\S4method{stopTrial}{StoppingOrdinal,numeric,ANY,LogisticLogNormalOrdinal,DataOrdinal}(stopping, dose, samples, model, data, ...)
+
+\S4method{stopTrial}{StoppingOrdinal,numeric,ANY,ANY,ANY}(stopping, dose, samples, model, data, ...)
 
 \S4method{stopTrial}{StoppingTDCIRatio,ANY,Samples,ModelTox,ANY}(stopping, dose, samples, model, data, ...)
 
@@ -131,6 +138,10 @@ stopped when the lowest non placebo dose meets the Hard
 Safety Rule, i.e. it is deemed to be overly toxic. Stopping is based on the
 observed data at the lowest dose level using a Bin-Beta model
 based on DLT probability.
+
+\ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#experimental}{\figure{lifecycle-experimental.svg}{options: alt='[Experimental]'}}}{\strong{[Experimental]}}
+
+\ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#experimental}{\figure{lifecycle-experimental.svg}{options: alt='[Experimental]'}}}{\strong{[Experimental]}}
 }
 \section{Functions}{
 \itemize{
@@ -240,6 +251,22 @@ dose grid and not just for the default next best dose.
   model = ANY,
   data = Data
 )}: Stop when the highest dose is reached
+
+\item \code{stopTrial(
+  stopping = StoppingOrdinal,
+  dose = numeric,
+  samples = ANY,
+  model = LogisticLogNormalOrdinal,
+  data = DataOrdinal
+)}: Stop based on value returned by next best dose.
+
+\item \code{stopTrial(
+  stopping = StoppingOrdinal,
+  dose = numeric,
+  samples = ANY,
+  model = ANY,
+  data = ANY
+)}: Stop based on value returned by next best dose.
 
 \item \code{stopTrial(
   stopping = StoppingTDCIRatio,
@@ -1167,6 +1194,60 @@ stopTrial(stopping=myStopping,
           data=data)
 
 # nolint end
+data <- .DefaultDataOrdinal()
+model <- .DefaultLogisticLogNormalOrdinal()
+options <- .DefaultMcmcOptions()
+samples <- mcmc(data, model, options)
+
+myIncrements <- .DefaultIncrementsOrdinal()
+nextMaxDose <- maxDose(myIncrements, data = data)
+
+myNextBest <- .DefaultNextBestOrdinal()
+
+doseRecommendation <- nextBest(
+  myNextBest,
+  doselimit = nextMaxDose,
+  samples = samples,
+  model = model,
+  data = data
+)
+
+myStopping <- .DefaultStoppingOrdinal()
+
+stopTrial(
+  stopping = myStopping,
+  dose = doseRecommendation$value,
+  samples = samples,
+  model = model,
+  data = data
+)
+data <- .DefaultDataOrdinal()
+model <- .DefaultLogisticLogNormalOrdinal()
+options <- .DefaultMcmcOptions()
+samples <- mcmc(data, model, options)
+
+myIncrements <- .DefaultIncrementsOrdinal()
+nextMaxDose <- maxDose(myIncrements, data = data)
+
+myNextBest <- .DefaultNextBestOrdinal()
+
+doseRecommendation <- nextBest(
+  myNextBest,
+  doselimit = nextMaxDose,
+  samples = samples,
+  model = model,
+  data = data
+)
+
+myStopping <- .DefaultStoppingOrdinal()
+
+stopTrial(
+  stopping = myStopping,
+  dose = doseRecommendation$value,
+  samples = samples,
+  model = model,
+  data = data
+)
 # nolint start
 
 ##define the stopping rules based on the 'StoppingTDCIRatio' class
