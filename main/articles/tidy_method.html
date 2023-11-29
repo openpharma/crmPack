@@ -33,7 +33,7 @@
     
     <a class="navbar-brand me-2" href="../index.html">crmPack</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">1.0.9000.9133</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">1.0.9000.9135</small>
 
     
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -52,6 +52,7 @@
     <a class="dropdown-item" href="../articles/trial_analysis.html">Trial Analysis</a>
     <a class="dropdown-item" href="../articles/trial_sanity_checks.html">Trial Design: basic sanity checks</a>
     <a class="dropdown-item" href="../articles/trial_simulation.html">Trial Simulation</a>
+    <a class="dropdown-item" href="../articles/ordinal-crm.html">Ordinal CRM</a>
     <a class="dropdown-item" href="../articles/rolling-crm.html">Rolling CRM Example</a>
     <a class="dropdown-item" href="../articles/simulations.html">Simulation study example</a>
     <a class="dropdown-item" href="../articles/tidy_method.html">Using tidy</a>
@@ -64,12 +65,6 @@
 <li class="nav-item">
   <a class="nav-link" href="../news/index.html">Changelog</a>
 </li>
-<!-- start dropdown for versions --> <li class="nav-item dropdown">
-        <a href="#" class="nav-link dropdown-toggle"
-          data-bs-toggle="dropdown" role="button"
-          aria-expanded="false" aria-haspopup="true"
-          id="dropdown-versions">Versions</a> <div class="dropdown-menu" aria-labelledby="dropdown-versions"> <a class="dropdown-item" data-toggle="tooltip" title="" href="https://Roche.github.io/crmPack/main">main</a> </div></li>
-<!-- end dropdown for versions -->
 <li class="nav-item dropdown">
   <a href="#" class="nav-link dropdown-toggle" data-bs-toggle="dropdown" role="button" aria-expanded="false" aria-haspopup="true" id="dropdown-reports">Reports</a>
   <div class="dropdown-menu" aria-labelledby="dropdown-reports">
@@ -249,18 +244,18 @@ presentations not yet supported by <code>crmPack</code> directly.</p>
 <span><span class="va">tidySamples</span> <span class="op">|&gt;</span> <span class="fu"><a href="https://rdrr.io/r/utils/head.html" class="external-link">head</a></span><span class="op">(</span><span class="op">)</span></span>
 <span><span class="co">#&gt; $data</span></span>
 <span><span class="co">#&gt; <span style="color: #949494;"># A tibble: 2,000 × 10</span></span></span>
-<span><span class="co">#&gt;    Iteration Chain alpha0 alpha1 nChains nParameters nIterations nBurnin nThin</span></span>
-<span><span class="co">#&gt;        <span style="color: #949494; font-style: italic;">&lt;int&gt;</span> <span style="color: #949494; font-style: italic;">&lt;int&gt;</span>  <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>  <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>   <span style="color: #949494; font-style: italic;">&lt;int&gt;</span>       <span style="color: #949494; font-style: italic;">&lt;int&gt;</span>       <span style="color: #949494; font-style: italic;">&lt;int&gt;</span>   <span style="color: #949494; font-style: italic;">&lt;int&gt;</span> <span style="color: #949494; font-style: italic;">&lt;int&gt;</span></span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 1</span>         1     1 -<span style="color: #BB0000;">0.388</span>  0.926       1           1        <span style="text-decoration: underline;">2</span>100     100     1</span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 2</span>         2     1 -<span style="color: #BB0000;">0.510</span>  1.29        1           1        <span style="text-decoration: underline;">2</span>100     100     1</span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 3</span>         3     1  0.494  0.975       1           1        <span style="text-decoration: underline;">2</span>100     100     1</span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 4</span>         4     1 -<span style="color: #BB0000;">1.20</span>   6.84        1           1        <span style="text-decoration: underline;">2</span>100     100     1</span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 5</span>         5     1  0.499  4.04        1           1        <span style="text-decoration: underline;">2</span>100     100     1</span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 6</span>         6     1 -<span style="color: #BB0000;">1.48</span>   0.453       1           1        <span style="text-decoration: underline;">2</span>100     100     1</span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 7</span>         7     1 -<span style="color: #BB0000;">1.06</span>   5.65        1           1        <span style="text-decoration: underline;">2</span>100     100     1</span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 8</span>         8     1 -<span style="color: #BB0000;">2.70</span>  35.3         1           1        <span style="text-decoration: underline;">2</span>100     100     1</span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 9</span>         9     1 -<span style="color: #BB0000;">0.449</span>  7.28        1           1        <span style="text-decoration: underline;">2</span>100     100     1</span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;">10</span>        10     1 -<span style="color: #BB0000;">0.175</span>  1.66        1           1        <span style="text-decoration: underline;">2</span>100     100     1</span></span>
+<span><span class="co">#&gt;    Iteration Chain   alpha0 alpha1 nChains nParameters nIterations nBurnin nThin</span></span>
+<span><span class="co">#&gt;        <span style="color: #949494; font-style: italic;">&lt;int&gt;</span> <span style="color: #949494; font-style: italic;">&lt;int&gt;</span>    <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>  <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>   <span style="color: #949494; font-style: italic;">&lt;int&gt;</span>       <span style="color: #949494; font-style: italic;">&lt;int&gt;</span>       <span style="color: #949494; font-style: italic;">&lt;int&gt;</span>   <span style="color: #949494; font-style: italic;">&lt;int&gt;</span> <span style="color: #949494; font-style: italic;">&lt;int&gt;</span></span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 1</span>         1     1 -<span style="color: #BB0000;">0.898</span>    1.44        1           1        <span style="text-decoration: underline;">2</span>100     100     1</span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 2</span>         2     1  0.264    0.979       1           1        <span style="text-decoration: underline;">2</span>100     100     1</span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 3</span>         3     1  0.009<span style="text-decoration: underline;">29</span>  5.32        1           1        <span style="text-decoration: underline;">2</span>100     100     1</span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 4</span>         4     1 -<span style="color: #BB0000;">0.376</span>    0.923       1           1        <span style="text-decoration: underline;">2</span>100     100     1</span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 5</span>         5     1 -<span style="color: #BB0000;">0.544</span>    0.942       1           1        <span style="text-decoration: underline;">2</span>100     100     1</span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 6</span>         6     1 -<span style="color: #BB0000;">2.10</span>     3.30        1           1        <span style="text-decoration: underline;">2</span>100     100     1</span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 7</span>         7     1  0.511    0.373       1           1        <span style="text-decoration: underline;">2</span>100     100     1</span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 8</span>         8     1 -<span style="color: #BB0000;">1.10</span>     9.16        1           1        <span style="text-decoration: underline;">2</span>100     100     1</span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 9</span>         9     1 -<span style="color: #BB0000;">1.10</span>     0.532       1           1        <span style="text-decoration: underline;">2</span>100     100     1</span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;">10</span>        10     1 -<span style="color: #BB0000;">2.16</span>     5.58        1           1        <span style="text-decoration: underline;">2</span>100     100     1</span></span>
 <span><span class="co">#&gt; <span style="color: #949494;"># ℹ 1,990 more rows</span></span></span>
 <span><span class="co">#&gt; <span style="color: #949494;"># ℹ 1 more variable: parallel &lt;lgl&gt;</span></span></span>
 <span><span class="co">#&gt; </span></span>
@@ -438,7 +433,7 @@ fictional trial.</p>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; other attached packages:</span></span>
 <span><span class="co">#&gt; [1] dplyr_1.1.3           magrittr_2.0.3        tidyr_1.3.0          </span></span>
-<span><span class="co">#&gt; [4] kableExtra_1.3.4      knitr_1.45            crmPack_1.0.9000.9133</span></span>
+<span><span class="co">#&gt; [4] kableExtra_1.3.4      knitr_1.45            crmPack_1.0.9000.9135</span></span>
 <span><span class="co">#&gt; [7] ggplot2_3.4.4        </span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; loaded via a namespace (and not attached):</span></span>

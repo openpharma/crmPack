@@ -33,7 +33,7 @@
     
     <a class="navbar-brand me-2" href="../index.html">crmPack</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">1.0.9000.9133</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">1.0.9000.9135</small>
 
     
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -52,6 +52,7 @@
     <a class="dropdown-item" href="../articles/trial_analysis.html">Trial Analysis</a>
     <a class="dropdown-item" href="../articles/trial_sanity_checks.html">Trial Design: basic sanity checks</a>
     <a class="dropdown-item" href="../articles/trial_simulation.html">Trial Simulation</a>
+    <a class="dropdown-item" href="../articles/ordinal-crm.html">Ordinal CRM</a>
     <a class="dropdown-item" href="../articles/rolling-crm.html">Rolling CRM Example</a>
     <a class="dropdown-item" href="../articles/simulations.html">Simulation study example</a>
     <a class="dropdown-item" href="../articles/tidy_method.html">Using tidy</a>
@@ -64,12 +65,6 @@
 <li class="nav-item">
   <a class="nav-link" href="../news/index.html">Changelog</a>
 </li>
-<!-- start dropdown for versions --> <li class="nav-item dropdown">
-        <a href="#" class="nav-link dropdown-toggle"
-          data-bs-toggle="dropdown" role="button"
-          aria-expanded="false" aria-haspopup="true"
-          id="dropdown-versions">Versions</a> <div class="dropdown-menu" aria-labelledby="dropdown-versions"> <a class="dropdown-item" data-toggle="tooltip" title="" href="https://Roche.github.io/crmPack/main">main</a> </div></li>
-<!-- end dropdown for versions -->
 <li class="nav-item dropdown">
   <a href="#" class="nav-link dropdown-toggle" data-bs-toggle="dropdown" role="button" aria-expanded="false" aria-haspopup="true" id="dropdown-reports">Reports</a>
   <div class="dropdown-menu" aria-labelledby="dropdown-reports">
@@ -167,8 +162,8 @@ classes and corresponding methods) of CRM designs with
 <span><span class="fu"><a href="https://rdrr.io/pkg/data.tree/man/ToDiagrammeRGraph.html" class="external-link">SetNodeStyle</a></span><span class="op">(</span><span class="va">tree</span>, shape <span class="op">=</span> <span class="st">"box"</span><span class="op">)</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">tree</span><span class="op">)</span></span></code></pre></div>
 <div class="figure">
-<div class="grViz html-widget html-fill-item-overflow-hidden html-fill-item" id="htmlwidget-976ff3a2636e8246c725" style="width:576px;height:432.632880098888px;"></div>
-<script type="application/json" data-for="htmlwidget-976ff3a2636e8246c725">{"x":{"diagram":"digraph {\n\n\n\n\n  \"1\" [label = \"GeneralData\", shape = \"box\", fillcolor = \"#FFFFFF\", fontcolor = \"#000000\"] \n  \"2\" [label = \"Data\", shape = \"box\", fillcolor = \"#FFFFFF\", fontcolor = \"#000000\"] \n  \"3\" [label = \"DataDual\", shape = \"box\", fillcolor = \"#FFFFFF\", fontcolor = \"#000000\"] \n  \"1\"->\"2\" \n  \"2\"->\"3\" \n}","config":{"engine":"dot","options":null}},"evals":[],"jsHooks":[]}</script><p class="caption">
+<div class="grViz html-widget html-fill-item-overflow-hidden html-fill-item" id="htmlwidget-93705c2c8033aa43a52c" style="width:576px;height:432.632880098888px;"></div>
+<script type="application/json" data-for="htmlwidget-93705c2c8033aa43a52c">{"x":{"diagram":"digraph {\n\n\n\n\n  \"1\" [label = \"GeneralData\", shape = \"box\", fillcolor = \"#FFFFFF\", fontcolor = \"#000000\"] \n  \"2\" [label = \"Data\", shape = \"box\", fillcolor = \"#FFFFFF\", fontcolor = \"#000000\"] \n  \"3\" [label = \"DataDual\", shape = \"box\", fillcolor = \"#FFFFFF\", fontcolor = \"#000000\"] \n  \"1\"->\"2\" \n  \"2\"->\"3\" \n}","config":{"engine":"dot","options":null}},"evals":[],"jsHooks":[]}</script><p class="caption">
 Data classes structure
 </p>
 </div>
@@ -263,8 +258,8 @@ which are the <code>ModelTox</code> class include all DLT (the
 occurrence of a dose-limiting toxicity) class models, and class
 <code>ModelEff</code> which includes all efficacy class models.</p>
 <div class="figure">
-<div class="grViz html-widget html-fill-item-overflow-hidden html-fill-item" id="htmlwidget-88a72d08bc56b0e0f86a" style="width:576px;height:432.632880098888px;"></div>
-<script type="application/json" data-for="htmlwidget-88a72d08bc56b0e0f86a">{"x":{"diagram":"digraph {\n\n\n\n\n  \"1\" [label = \"AllModels\", shape = \"box\", fillcolor = \"#FFFFFF\", fontcolor = \"#000000\"] \n  \"2\" [label = \"GeneralModel\", shape = \"box\", fillcolor = \"#FFFFFF\", fontcolor = \"#000000\"] \n  \"3\" [label = \"Model\", shape = \"box\", fillcolor = \"#FFFFFF\", fontcolor = \"#000000\"] \n  \"4\" [label = \"LogisiticNormal\", shape = \"box\", fillcolor = \"#FFFFFF\", fontcolor = \"#000000\"] \n  \"5\" [label = \"LogisticLogNormalSub\", shape = \"box\", fillcolor = \"#FFFFFF\", fontcolor = \"#000000\"] \n  \"6\" [label = \"LogisiticKadane\", shape = \"box\", fillcolor = \"#FFFFFF\", fontcolor = \"#000000\"] \n  \"7\" [label = \"ModelPseudo\", shape = \"box\", fillcolor = \"#FFFFFF\", fontcolor = \"#000000\"] \n  \"8\" [label = \"ModelEff\", shape = \"box\", fillcolor = \"#FFFFFF\", fontcolor = \"#000000\"] \n  \"9\" [label = \"Effloglog\", shape = \"box\", fillcolor = \"#FFFFFF\", fontcolor = \"#000000\"] \n  \"10\" [label = \"EffFlexi\", shape = \"box\", fillcolor = \"#FFFFFF\", fontcolor = \"#000000\"] \n  \"11\" [label = \"ModelTox\", shape = \"box\", fillcolor = \"#FFFFFF\", fontcolor = \"#000000\"] \n  \"12\" [label = \"LogisticIndepBeta\", shape = \"box\", fillcolor = \"#FFFFFF\", fontcolor = \"#000000\"] \n  \"1\"->\"2\" \n  \"1\"->\"7\" \n  \"2\"->\"3\" \n  \"7\"->\"8\" \n  \"7\"->\"11\" \n  \"3\"->\"4\" \n  \"3\"->\"5\" \n  \"3\"->\"6\" \n  \"8\"->\"9\" \n  \"8\"->\"10\" \n  \"11\"->\"12\" \n}","config":{"engine":"dot","options":null}},"evals":[],"jsHooks":[]}</script><p class="caption">
+<div class="grViz html-widget html-fill-item-overflow-hidden html-fill-item" id="htmlwidget-9a1f299d4bde8c0133b9" style="width:576px;height:432.632880098888px;"></div>
+<script type="application/json" data-for="htmlwidget-9a1f299d4bde8c0133b9">{"x":{"diagram":"digraph {\n\n\n\n\n  \"1\" [label = \"AllModels\", shape = \"box\", fillcolor = \"#FFFFFF\", fontcolor = \"#000000\"] \n  \"2\" [label = \"GeneralModel\", shape = \"box\", fillcolor = \"#FFFFFF\", fontcolor = \"#000000\"] \n  \"3\" [label = \"Model\", shape = \"box\", fillcolor = \"#FFFFFF\", fontcolor = \"#000000\"] \n  \"4\" [label = \"LogisiticNormal\", shape = \"box\", fillcolor = \"#FFFFFF\", fontcolor = \"#000000\"] \n  \"5\" [label = \"LogisticLogNormalSub\", shape = \"box\", fillcolor = \"#FFFFFF\", fontcolor = \"#000000\"] \n  \"6\" [label = \"LogisiticKadane\", shape = \"box\", fillcolor = \"#FFFFFF\", fontcolor = \"#000000\"] \n  \"7\" [label = \"ModelPseudo\", shape = \"box\", fillcolor = \"#FFFFFF\", fontcolor = \"#000000\"] \n  \"8\" [label = \"ModelEff\", shape = \"box\", fillcolor = \"#FFFFFF\", fontcolor = \"#000000\"] \n  \"9\" [label = \"Effloglog\", shape = \"box\", fillcolor = \"#FFFFFF\", fontcolor = \"#000000\"] \n  \"10\" [label = \"EffFlexi\", shape = \"box\", fillcolor = \"#FFFFFF\", fontcolor = \"#000000\"] \n  \"11\" [label = \"ModelTox\", shape = \"box\", fillcolor = \"#FFFFFF\", fontcolor = \"#000000\"] \n  \"12\" [label = \"LogisticIndepBeta\", shape = \"box\", fillcolor = \"#FFFFFF\", fontcolor = \"#000000\"] \n  \"1\"->\"2\" \n  \"1\"->\"7\" \n  \"2\"->\"3\" \n  \"7\"->\"8\" \n  \"7\"->\"11\" \n  \"3\"->\"4\" \n  \"3\"->\"5\" \n  \"3\"->\"6\" \n  \"8\"->\"9\" \n  \"8\"->\"10\" \n  \"11\"->\"12\" \n}","config":{"engine":"dot","options":null}},"evals":[],"jsHooks":[]}</script><p class="caption">
 Model classes structure
 </p>
 </div>
@@ -612,8 +607,8 @@ the interpretation of the parameters)</p>
 <span><span class="fu"><a href="https://rdrr.io/r/utils/str.html" class="external-link">str</a></span><span class="op">(</span><span class="va">samples</span><span class="op">)</span></span></code></pre></div>
 <pre><code><span><span class="co">## Formal class 'Samples' [package "crmPack"] with 2 slots</span></span>
 <span><span class="co">##   ..@ data   :List of 2</span></span>
-<span><span class="co">##   .. ..$ alpha0: num [1:2000] -0.442 -0.442 -1.246 -1.85 -1.191 ...</span></span>
-<span><span class="co">##   .. ..$ alpha1: num [1:2000] 1.38 1.38 0.49 2.74 1.41 ...</span></span>
+<span><span class="co">##   .. ..$ alpha0: num [1:2000] -0.0887 0.897 0.897 0.897 0.9132 ...</span></span>
+<span><span class="co">##   .. ..$ alpha1: num [1:2000] 2.216 1.127 1.127 1.127 0.843 ...</span></span>
 <span><span class="co">##   ..@ options:Formal class 'McmcOptions' [package "crmPack"] with 5 slots</span></span>
 <span><span class="co">##   .. .. ..@ iterations: int 4100</span></span>
 <span><span class="co">##   .. .. ..@ burnin    : int 100</span></span>
@@ -779,8 +774,8 @@ help pages <code>Increments-class</code>, <code>NextBest-class</code>,
 <p>Figure @ref(fig:increments) shows the structure of the
 <code>Increments</code> classes:</p>
 <div class="figure">
-<div class="grViz html-widget html-fill-item-overflow-hidden html-fill-item" id="htmlwidget-c50b4ebea14c69f643ee" style="width:576px;height:432.632880098888px;"></div>
-<script type="application/json" data-for="htmlwidget-c50b4ebea14c69f643ee">{"x":{"diagram":"digraph {\n\n\n\n\n  \"1\" [label = \"Increments\", shape = \"box\", fillcolor = \"#FFFFFF\", fontcolor = \"#000000\"] \n  \"2\" [label = \"IncrementsRelative\", shape = \"box\", fillcolor = \"#FFFFFF\", fontcolor = \"#000000\"] \n  \"3\" [label = \"IncrementsRelativeParts\", shape = \"box\", fillcolor = \"#FFFFFF\", fontcolor = \"#000000\"] \n  \"4\" [label = \"IncrementsRelativeDLT\", shape = \"box\", fillcolor = \"#FFFFFF\", fontcolor = \"#000000\"] \n  \"1\"->\"2\" \n  \"1\"->\"4\" \n  \"2\"->\"3\" \n}","config":{"engine":"dot","options":null}},"evals":[],"jsHooks":[]}</script><p class="caption">
+<div class="grViz html-widget html-fill-item-overflow-hidden html-fill-item" id="htmlwidget-60603bef9a9e40c4999b" style="width:576px;height:432.632880098888px;"></div>
+<script type="application/json" data-for="htmlwidget-60603bef9a9e40c4999b">{"x":{"diagram":"digraph {\n\n\n\n\n  \"1\" [label = \"Increments\", shape = \"box\", fillcolor = \"#FFFFFF\", fontcolor = \"#000000\"] \n  \"2\" [label = \"IncrementsRelative\", shape = \"box\", fillcolor = \"#FFFFFF\", fontcolor = \"#000000\"] \n  \"3\" [label = \"IncrementsRelativeParts\", shape = \"box\", fillcolor = \"#FFFFFF\", fontcolor = \"#000000\"] \n  \"4\" [label = \"IncrementsRelativeDLT\", shape = \"box\", fillcolor = \"#FFFFFF\", fontcolor = \"#000000\"] \n  \"1\"->\"2\" \n  \"1\"->\"4\" \n  \"2\"->\"3\" \n}","config":{"engine":"dot","options":null}},"evals":[],"jsHooks":[]}</script><p class="caption">
 Increments classes structure
 </p>
 </div>
@@ -835,8 +830,8 @@ maximum increments instead of the last dose.</p>
 <p>Figure @ref(fig:rules) show the structure of the next best dose
 recommendation rules currently implemented in <code>crmPack</code>.</p>
 <div class="figure">
-<div class="grViz html-widget html-fill-item-overflow-hidden html-fill-item" id="htmlwidget-f1dddfcc272097db0906" style="width:576px;height:432.632880098888px;"></div>
-<script type="application/json" data-for="htmlwidget-f1dddfcc272097db0906">{"x":{"diagram":"digraph {\n\n\n\n\n  \"1\" [label = \"NextBest\", shape = \"box\", fillcolor = \"#FFFFFF\", fontcolor = \"#000000\"] \n  \"2\" [label = \"NextBestMTD\", shape = \"box\", fillcolor = \"#FFFFFF\", fontcolor = \"#000000\"] \n  \"3\" [label = \"NextBestNCRM\", shape = \"box\", fillcolor = \"#FFFFFF\", fontcolor = \"#000000\"] \n  \"4\" [label = \"NextBestThreePlusThree\", shape = \"box\", fillcolor = \"#FFFFFF\", fontcolor = \"#000000\"] \n  \"5\" [label = \"NextBestDualEndpoint\", shape = \"box\", fillcolor = \"#FFFFFF\", fontcolor = \"#000000\"] \n  \"6\" [label = \"NextBestTD\", shape = \"box\", fillcolor = \"#FFFFFF\", fontcolor = \"#000000\"] \n  \"7\" [label = \"NextBestTDSamples\", shape = \"box\", fillcolor = \"#FFFFFF\", fontcolor = \"#000000\"] \n  \"8\" [label = \"NextBestMaxGain\", shape = \"box\", fillcolor = \"#FFFFFF\", fontcolor = \"#000000\"] \n  \"9\" [label = \"NextBestMaxGainSamples\", shape = \"box\", fillcolor = \"#FFFFFF\", fontcolor = \"#000000\"] \n  \"1\"->\"2\" \n  \"1\"->\"3\" \n  \"1\"->\"4\" \n  \"1\"->\"5\" \n  \"1\"->\"6\" \n  \"1\"->\"7\" \n  \"1\"->\"8\" \n  \"1\"->\"9\" \n}","config":{"engine":"dot","options":null}},"evals":[],"jsHooks":[]}</script><p class="caption">
+<div class="grViz html-widget html-fill-item-overflow-hidden html-fill-item" id="htmlwidget-fc329e0609da29faeeef" style="width:576px;height:432.632880098888px;"></div>
+<script type="application/json" data-for="htmlwidget-fc329e0609da29faeeef">{"x":{"diagram":"digraph {\n\n\n\n\n  \"1\" [label = \"NextBest\", shape = \"box\", fillcolor = \"#FFFFFF\", fontcolor = \"#000000\"] \n  \"2\" [label = \"NextBestMTD\", shape = \"box\", fillcolor = \"#FFFFFF\", fontcolor = \"#000000\"] \n  \"3\" [label = \"NextBestNCRM\", shape = \"box\", fillcolor = \"#FFFFFF\", fontcolor = \"#000000\"] \n  \"4\" [label = \"NextBestThreePlusThree\", shape = \"box\", fillcolor = \"#FFFFFF\", fontcolor = \"#000000\"] \n  \"5\" [label = \"NextBestDualEndpoint\", shape = \"box\", fillcolor = \"#FFFFFF\", fontcolor = \"#000000\"] \n  \"6\" [label = \"NextBestTD\", shape = \"box\", fillcolor = \"#FFFFFF\", fontcolor = \"#000000\"] \n  \"7\" [label = \"NextBestTDSamples\", shape = \"box\", fillcolor = \"#FFFFFF\", fontcolor = \"#000000\"] \n  \"8\" [label = \"NextBestMaxGain\", shape = \"box\", fillcolor = \"#FFFFFF\", fontcolor = \"#000000\"] \n  \"9\" [label = \"NextBestMaxGainSamples\", shape = \"box\", fillcolor = \"#FFFFFF\", fontcolor = \"#000000\"] \n  \"1\"->\"2\" \n  \"1\"->\"3\" \n  \"1\"->\"4\" \n  \"1\"->\"5\" \n  \"1\"->\"6\" \n  \"1\"->\"7\" \n  \"1\"->\"8\" \n  \"1\"->\"9\" \n}","config":{"engine":"dot","options":null}},"evals":[],"jsHooks":[]}</script><p class="caption">
 Escalation classes structure
 </p>
 </div>
@@ -938,7 +933,7 @@ the safety bar of 25%, the maximum dose and the final recommendation
 (the red triangle):</p>
 <div class="sourceCode" id="cb68"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">doseRecommendation</span><span class="op">$</span><span class="va">value</span></span></code></pre></div>
-<pre><code><span><span class="co">## [1] 18</span></span></code></pre>
+<pre><code><span><span class="co">## [1] 20</span></span></code></pre>
 <div class="sourceCode" id="cb70"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/base/print.html" class="external-link">print</a></span><span class="op">(</span><span class="va">doseRecommendation</span><span class="op">$</span><span class="va">plot</span><span class="op">)</span></span></code></pre></div>
 <p><img src="example_files/figure-html/next-best-results-1.png" width="576"></p>
@@ -1047,8 +1042,8 @@ curves of the TD30 (pink) and the TD35 (grey) are plotted.</p>
 <span><span class="fu"><a href="https://rdrr.io/pkg/data.tree/man/ToDiagrammeRGraph.html" class="external-link">SetNodeStyle</a></span><span class="op">(</span><span class="va">tree</span>, shape <span class="op">=</span> <span class="st">"box"</span><span class="op">)</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">tree</span><span class="op">)</span></span></code></pre></div>
 <div class="figure">
-<div class="grViz html-widget html-fill-item-overflow-hidden html-fill-item" id="htmlwidget-45ccba88bb9756c6b81a" style="width:576px;height:432.632880098888px;"></div>
-<script type="application/json" data-for="htmlwidget-45ccba88bb9756c6b81a">{"x":{"diagram":"digraph {\n\n\n\n\n  \"1\" [label = \"CohortSize\", shape = \"box\", fillcolor = \"#FFFFFF\", fontcolor = \"#000000\"] \n  \"2\" [label = \"CohortSizeRange\", shape = \"box\", fillcolor = \"#FFFFFF\", fontcolor = \"#000000\"] \n  \"3\" [label = \"CohortSizeDLT\", shape = \"box\", fillcolor = \"#FFFFFF\", fontcolor = \"#000000\"] \n  \"4\" [label = \"CohortSizeConst\", shape = \"box\", fillcolor = \"#FFFFFF\", fontcolor = \"#000000\"] \n  \"5\" [label = \"CohortSizeParts\", shape = \"box\", fillcolor = \"#FFFFFF\", fontcolor = \"#000000\"] \n  \"6\" [label = \"CohortSizeMax\", shape = \"box\", fillcolor = \"#FFFFFF\", fontcolor = \"#000000\"] \n  \"7\" [label = \"CohortSizeMin\", shape = \"box\", fillcolor = \"#FFFFFF\", fontcolor = \"#000000\"] \n  \"1\"->\"2\" \n  \"1\"->\"3\" \n  \"1\"->\"4\" \n  \"1\"->\"5\" \n  \"1\"->\"6\" \n  \"1\"->\"7\" \n}","config":{"engine":"dot","options":null}},"evals":[],"jsHooks":[]}</script><p class="caption">
+<div class="grViz html-widget html-fill-item-overflow-hidden html-fill-item" id="htmlwidget-2c90f318ed95dc9939c0" style="width:576px;height:432.632880098888px;"></div>
+<script type="application/json" data-for="htmlwidget-2c90f318ed95dc9939c0">{"x":{"diagram":"digraph {\n\n\n\n\n  \"1\" [label = \"CohortSize\", shape = \"box\", fillcolor = \"#FFFFFF\", fontcolor = \"#000000\"] \n  \"2\" [label = \"CohortSizeRange\", shape = \"box\", fillcolor = \"#FFFFFF\", fontcolor = \"#000000\"] \n  \"3\" [label = \"CohortSizeDLT\", shape = \"box\", fillcolor = \"#FFFFFF\", fontcolor = \"#000000\"] \n  \"4\" [label = \"CohortSizeConst\", shape = \"box\", fillcolor = \"#FFFFFF\", fontcolor = \"#000000\"] \n  \"5\" [label = \"CohortSizeParts\", shape = \"box\", fillcolor = \"#FFFFFF\", fontcolor = \"#000000\"] \n  \"6\" [label = \"CohortSizeMax\", shape = \"box\", fillcolor = \"#FFFFFF\", fontcolor = \"#000000\"] \n  \"7\" [label = \"CohortSizeMin\", shape = \"box\", fillcolor = \"#FFFFFF\", fontcolor = \"#000000\"] \n  \"1\"->\"2\" \n  \"1\"->\"3\" \n  \"1\"->\"4\" \n  \"1\"->\"5\" \n  \"1\"->\"6\" \n  \"1\"->\"7\" \n}","config":{"engine":"dot","options":null}},"evals":[],"jsHooks":[]}</script><p class="caption">
 CohortSize classes structure
 </p>
 </div>
@@ -1182,7 +1177,7 @@ the rule has already been fulfilled. For example in our case:</p>
 <span><span class="co">## [1] "Number of cohorts is 6 and thus reached the prespecified minimum number 3"</span></span>
 <span><span class="co">## </span></span>
 <span><span class="co">## attr(,"message")[[1]][[2]]</span></span>
-<span><span class="co">## [1] "Probability for target toxicity is 30 % for dose 18 and thus below the required 50 %"</span></span>
+<span><span class="co">## [1] "Probability for target toxicity is 35 % for dose 20 and thus below the required 50 %"</span></span>
 <span><span class="co">## </span></span>
 <span><span class="co">## </span></span>
 <span><span class="co">## attr(,"message")[[2]]</span></span>
@@ -1196,7 +1191,7 @@ the rule has already been fulfilled. For example in our case:</p>
 <span><span class="co">## [1] "Number of cohorts is 6 and thus reached the prespecified minimum number 3"</span></span>
 <span><span class="co">## </span></span>
 <span><span class="co">## attr(,"message")[[2]]</span></span>
-<span><span class="co">## [1] "Probability for target toxicity is 30 % for dose 18 and thus below the required 50 %"</span></span>
+<span><span class="co">## [1] "Probability for target toxicity is 35 % for dose 20 and thus below the required 50 %"</span></span>
 <span><span class="co">## </span></span>
 <span><span class="co">## attr(,"individual")</span></span>
 <span><span class="co">## attr(,"individual")[[1]]</span></span>
@@ -1209,7 +1204,7 @@ the rule has already been fulfilled. For example in our case:</p>
 <span><span class="co">## attr(,"individual")[[2]]</span></span>
 <span><span class="co">## [1] FALSE</span></span>
 <span><span class="co">## attr(,"message")</span></span>
-<span><span class="co">## [1] "Probability for target toxicity is 30 % for dose 18 and thus below the required 50 %"</span></span>
+<span><span class="co">## [1] "Probability for target toxicity is 35 % for dose 20 and thus below the required 50 %"</span></span>
 <span><span class="co">## attr(,"report_label")</span></span>
 <span><span class="co">## [1] NA</span></span>
 <span><span class="co">## </span></span>
@@ -1272,8 +1267,8 @@ cohort size and a starting dose.</p>
 The structure of the design classes in this package is shown in figure
 @ref(fig:Design).
 <div class="figure">
-<div class="grViz html-widget html-fill-item-overflow-hidden html-fill-item" id="htmlwidget-8a4c8120b84106b9660d" style="width:576px;height:432.632880098888px;"></div>
-<script type="application/json" data-for="htmlwidget-8a4c8120b84106b9660d">{"x":{"diagram":"digraph {\n\n\n\n\n  \"1\" [label = \"RuleDesign\", shape = \"box\", fillcolor = \"#FFFFFF\", fontcolor = \"#000000\"] \n  \"2\" [label = \"Design\", shape = \"box\", fillcolor = \"#FFFFFF\", fontcolor = \"#000000\"] \n  \"3\" [label = \"DualDesign\", shape = \"box\", fillcolor = \"#FFFFFF\", fontcolor = \"#000000\"] \n  \"4\" [label = \"TDDesign\", shape = \"box\", fillcolor = \"#FFFFFF\", fontcolor = \"#000000\"] \n  \"5\" [label = \"DualResponsesDesign\", shape = \"box\", fillcolor = \"#FFFFFF\", fontcolor = \"#000000\"] \n  \"6\" [label = \"TDSamplesDesign\", shape = \"box\", fillcolor = \"#FFFFFF\", fontcolor = \"#000000\"] \n  \"7\" [label = \"DualResponsesTDSamplesDesign\", shape = \"box\", fillcolor = \"#FFFFFF\", fontcolor = \"#000000\"] \n  \"1\"->\"2\" \n  \"1\"->\"4\" \n  \"1\"->\"6\" \n  \"2\"->\"3\" \n  \"4\"->\"5\" \n  \"6\"->\"7\" \n}","config":{"engine":"dot","options":null}},"evals":[],"jsHooks":[]}</script><p class="caption">
+<div class="grViz html-widget html-fill-item-overflow-hidden html-fill-item" id="htmlwidget-3a5cb4139717bbc85edd" style="width:576px;height:432.632880098888px;"></div>
+<script type="application/json" data-for="htmlwidget-3a5cb4139717bbc85edd">{"x":{"diagram":"digraph {\n\n\n\n\n  \"1\" [label = \"RuleDesign\", shape = \"box\", fillcolor = \"#FFFFFF\", fontcolor = \"#000000\"] \n  \"2\" [label = \"Design\", shape = \"box\", fillcolor = \"#FFFFFF\", fontcolor = \"#000000\"] \n  \"3\" [label = \"DualDesign\", shape = \"box\", fillcolor = \"#FFFFFF\", fontcolor = \"#000000\"] \n  \"4\" [label = \"TDDesign\", shape = \"box\", fillcolor = \"#FFFFFF\", fontcolor = \"#000000\"] \n  \"5\" [label = \"DualResponsesDesign\", shape = \"box\", fillcolor = \"#FFFFFF\", fontcolor = \"#000000\"] \n  \"6\" [label = \"TDSamplesDesign\", shape = \"box\", fillcolor = \"#FFFFFF\", fontcolor = \"#000000\"] \n  \"7\" [label = \"DualResponsesTDSamplesDesign\", shape = \"box\", fillcolor = \"#FFFFFF\", fontcolor = \"#000000\"] \n  \"1\"->\"2\" \n  \"1\"->\"4\" \n  \"1\"->\"6\" \n  \"2\"->\"3\" \n  \"4\"->\"5\" \n  \"6\"->\"7\" \n}","config":{"engine":"dot","options":null}},"evals":[],"jsHooks":[]}</script><p class="caption">
 Design classes structure
 </p>
 </div>
@@ -1360,8 +1355,8 @@ shown. In the current example we have</p>
 <span><span class="co">## 4     3    3       NA FALSE        NA</span></span>
 <span><span class="co">## 5     6    0     12.0 FALSE       100</span></span>
 <span><span class="co">## 6     6    1     12.0 FALSE       100</span></span>
-<span><span class="co">## 7     6    2      3.0 FALSE       -50</span></span>
-<span><span class="co">## 8     6    3      0.5 FALSE       -92</span></span>
+<span><span class="co">## 7     6    2      6.0 FALSE         0</span></span>
+<span><span class="co">## 8     6    3      1.5 FALSE       -75</span></span>
 <span><span class="co">## 9    12    0     24.0 FALSE       100</span></span>
 <span><span class="co">## 10   12    1     24.0 FALSE       100</span></span>
 <span><span class="co">## 11   12    2     14.0 FALSE        17</span></span>
@@ -1373,13 +1368,13 @@ shown. In the current example we have</p>
 <span><span class="co">## 17   30    0     38.0 FALSE        27</span></span>
 <span><span class="co">## 18   30    1     38.0 FALSE        27</span></span>
 <span><span class="co">## 19   30    2     34.0 FALSE        13</span></span>
-<span><span class="co">## 20   30    3     26.0 FALSE       -13</span></span>
+<span><span class="co">## 20   30    3     28.0 FALSE        -7</span></span>
 <span><span class="co">## 21   38    0     50.0 FALSE        32</span></span>
 <span><span class="co">## 22   38    1     50.0 FALSE        32</span></span>
 <span><span class="co">## 23   38    2     42.0 FALSE        11</span></span>
 <span><span class="co">## 24   38    3     36.0 FALSE        -5</span></span>
 <span><span class="co">## 25   50    0     58.0  TRUE        16</span></span>
-<span><span class="co">## 26   50    1     54.0  TRUE         8</span></span>
+<span><span class="co">## 26   50    1     56.0  TRUE        12</span></span>
 <span><span class="co">## 27   50    2     50.0  TRUE         0</span></span>
 <span><span class="co">## 28   50    3     44.0  TRUE       -12</span></span></code></pre>
 <p>Note that it is important to set a seed, since minor changes might
@@ -1439,10 +1434,10 @@ increased of course to at least 500:</p>
 <span><span class="op">)</span><span class="op">)</span><span class="op">[</span><span class="fl">3</span><span class="op">]</span></span>
 <span><span class="va">time</span></span></code></pre></div>
 <pre><code><span><span class="co">## elapsed </span></span>
-<span><span class="co">##  80.621</span></span></code></pre>
+<span><span class="co">##  79.409</span></span></code></pre>
 <p>We have wrapped the call to <code>simulate</code> in a
 <code>system.time</code> to obtain the required time for the simulations
-(about 81 seconds in this case). The argument <code>args</code> could
+(about 79 seconds in this case). The argument <code>args</code> could
 contain additional arguments for the <code>truth</code> function, which
 we did not require here and therefore let it at the default
 <code>NULL</code>. We specify the number of simulations with
@@ -1478,7 +1473,7 @@ trial as follows:</p>
 <p>The final dose for this trial was</p>
 <div class="sourceCode" id="cb112"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">mySims</span><span class="op">@</span><span class="va">doses</span><span class="op">[</span><span class="fl">3</span><span class="op">]</span></span></code></pre></div>
-<pre><code><span><span class="co">## [1] 22</span></span></code></pre>
+<pre><code><span><span class="co">## [1] 20</span></span></code></pre>
 <p>and the stopping reason was</p>
 <div class="sourceCode" id="cb114"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">mySims</span><span class="op">@</span><span class="va">stop_reasons</span><span class="op">[[</span><span class="fl">3</span><span class="op">]</span><span class="op">]</span></span></code></pre></div>
@@ -1487,7 +1482,7 @@ trial as follows:</p>
 <span><span class="co">## [1] "Number of cohorts is 7 and thus reached the prespecified minimum number 3"</span></span>
 <span><span class="co">## </span></span>
 <span><span class="co">## [[1]][[2]]</span></span>
-<span><span class="co">## [1] "Probability for target toxicity is 60 % for dose 22 and thus above the required 50 %"</span></span>
+<span><span class="co">## [1] "Probability for target toxicity is 57 % for dose 20 and thus above the required 50 %"</span></span>
 <span><span class="co">## </span></span>
 <span><span class="co">## </span></span>
 <span><span class="co">## [[2]]</span></span>
@@ -1515,16 +1510,16 @@ to supply a true dose-toxicity function. We take the same
 <span><span class="co">## Target dose interval corresponding to this was 19.6, 21.6 </span></span>
 <span><span class="co">## Intervals are corresponding to 10 and 90 % quantiles</span></span>
 <span><span class="co">## </span></span>
-<span><span class="co">## Number of patients overall : mean 19 (18, 21) </span></span>
+<span><span class="co">## Number of patients overall : mean 19 (15, 21) </span></span>
 <span><span class="co">## Number of patients treated above target tox interval : mean 7 (6, 9) </span></span>
-<span><span class="co">## Proportions of DLTs in the trials : mean 26 % (22 %, 33 %) </span></span>
-<span><span class="co">## Mean toxicity risks for the patients on active : mean 26 % (16 %, 36 %) </span></span>
-<span><span class="co">## Doses selected as MTD : mean 20.9 (17.8, 26) </span></span>
-<span><span class="co">## True toxicity at doses selected : mean 32 % (10 %, 70 %) </span></span>
-<span><span class="co">## Proportion of trials selecting target MTD: 24 %</span></span>
+<span><span class="co">## Proportions of DLTs in the trials : mean 27 % (22 %, 33 %) </span></span>
+<span><span class="co">## Mean toxicity risks for the patients on active : mean 25 % (18 %, 36 %) </span></span>
+<span><span class="co">## Doses selected as MTD : mean 20.5 (16, 26) </span></span>
+<span><span class="co">## True toxicity at doses selected : mean 30 % (5 %, 70 %) </span></span>
+<span><span class="co">## Proportion of trials selecting target MTD: 22 %</span></span>
 <span><span class="co">## Dose most often selected as MTD: 18 </span></span>
-<span><span class="co">## Observed toxicity rate at dose most often selected: 15 %</span></span>
-<span><span class="co">## Fitted toxicity rate at dose most often selected : mean 24 % (18 %, 28 %)</span></span></code></pre>
+<span><span class="co">## Observed toxicity rate at dose most often selected: 16 %</span></span>
+<span><span class="co">## Fitted toxicity rate at dose most often selected : mean 24 % (19 %, 30 %)</span></span></code></pre>
 <p>Note that sometimes the observed toxicity rate at the dose most often
 selected (here 20 mg) is not available, because it can happen that no
 patients were actually treated that dose during the simulations. (Here
@@ -1565,7 +1560,7 @@ the plots)</p>
 <span><span class="co">## Adding another scale for <span style="color: #00BB00;">x</span>, which will replace the existing scale.</span></span></code></pre>
 <div class="sourceCode" id="cb122"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/base/print.html" class="external-link">print</a></span><span class="op">(</span><span class="va">dosePlot</span><span class="op">)</span></span></code></pre></div>
-<pre><code><span><span class="co">## Warning: Removed 3 rows containing missing values (`geom_bar()`).</span></span></code></pre>
+<pre><code><span><span class="co">## Warning: Removed 2 rows containing missing values (`geom_bar()`).</span></span></code></pre>
 <p><img src="example_files/figure-html/sim-sum-plot2-1.png" width="576"></p>
 <p>Some further examples will be given for simulations using the
 <code>TDDesign</code> and the <code>TDsamplesDesign</code> classes. For
@@ -1739,27 +1734,27 @@ reduce the runtime for this example:</p>
 <div class="sourceCode" id="cb138"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">postSamples</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/as.data.frame.html" class="external-link">as.data.frame</a></span><span class="op">(</span><span class="va">samples</span><span class="op">@</span><span class="va">data</span><span class="op">)</span><span class="op">[</span><span class="op">(</span><span class="fl">1</span><span class="op">:</span><span class="fl">20</span><span class="op">)</span> <span class="op">*</span> <span class="fl">50</span>, <span class="op">]</span></span>
 <span><span class="va">postSamples</span></span></code></pre></div>
-<pre><code><span><span class="co">##            alpha0    alpha1</span></span>
-<span><span class="co">## 50    1.960049987 0.9168414</span></span>
-<span><span class="co">## 100   0.718534369 1.1448200</span></span>
-<span><span class="co">## 150   0.804932778 0.3510162</span></span>
-<span><span class="co">## 200  -0.247038089 0.6488871</span></span>
-<span><span class="co">## 250  -0.120904183 0.8468439</span></span>
-<span><span class="co">## 300  -0.989804482 1.0374596</span></span>
-<span><span class="co">## 350   0.656581880 0.4424097</span></span>
-<span><span class="co">## 400   0.746193044 0.8101769</span></span>
-<span><span class="co">## 450   0.349876284 1.1949310</span></span>
-<span><span class="co">## 500   0.001735827 0.7346139</span></span>
-<span><span class="co">## 550  -1.530401841 0.7528405</span></span>
-<span><span class="co">## 600  -0.052709258 0.5735759</span></span>
-<span><span class="co">## 650   0.903924298 2.2370307</span></span>
-<span><span class="co">## 700   0.057668760 1.2768851</span></span>
-<span><span class="co">## 750  -0.865400984 1.0017390</span></span>
-<span><span class="co">## 800  -0.683397562 0.8165282</span></span>
-<span><span class="co">## 850   0.177108665 1.4902160</span></span>
-<span><span class="co">## 900  -0.454943602 0.4603080</span></span>
-<span><span class="co">## 950  -0.271641173 0.4265685</span></span>
-<span><span class="co">## 1000 -1.804234204 1.4135644</span></span></code></pre>
+<pre><code><span><span class="co">##           alpha0    alpha1</span></span>
+<span><span class="co">## 50   -1.21429353 2.7233338</span></span>
+<span><span class="co">## 100  -0.81382581 0.7414391</span></span>
+<span><span class="co">## 150   0.17067950 0.6050875</span></span>
+<span><span class="co">## 200   0.88474006 0.8654664</span></span>
+<span><span class="co">## 250   0.30815526 1.2558926</span></span>
+<span><span class="co">## 300  -0.04484728 1.0649986</span></span>
+<span><span class="co">## 350  -0.07488724 0.9976924</span></span>
+<span><span class="co">## 400  -0.85998814 0.4139883</span></span>
+<span><span class="co">## 450   0.35283826 0.9144848</span></span>
+<span><span class="co">## 500   0.38427254 1.6706769</span></span>
+<span><span class="co">## 550  -0.52990097 1.3628305</span></span>
+<span><span class="co">## 600  -0.31982834 0.3487050</span></span>
+<span><span class="co">## 650   0.04410265 2.2999485</span></span>
+<span><span class="co">## 700  -1.03069689 0.6136435</span></span>
+<span><span class="co">## 750  -0.12669882 1.8718849</span></span>
+<span><span class="co">## 800   0.45705608 1.5122798</span></span>
+<span><span class="co">## 850  -0.09544344 1.3343240</span></span>
+<span><span class="co">## 900  -1.30893127 1.2470895</span></span>
+<span><span class="co">## 950   0.01593904 0.2662288</span></span>
+<span><span class="co">## 1000 -0.74501827 0.8133352</span></span></code></pre>
 <p>Therefore, each simulated trial will come from a posterior sample of
 our estimated model, given all data so far.</p>
 <p>Furthermore we have to make a new <code>Design</code> object that
@@ -1803,7 +1798,7 @@ dose as the starting dose:</p>
 <span><span class="op">)</span><span class="op">)</span><span class="op">[</span><span class="fl">3</span><span class="op">]</span></span>
 <span><span class="va">time</span></span></code></pre></div>
 <pre><code><span><span class="co">## elapsed </span></span>
-<span><span class="co">##   8.661</span></span></code></pre>
+<span><span class="co">##   9.752</span></span></code></pre>
 <p>And now, exactly in the same way as above for the operating
 characteristics simulations, we can summarize the resulting predictive
 simulations, for example show the predicted trajectories of doses:</p>
@@ -1824,16 +1819,16 @@ truth:</p>
 <span><span class="co">## Target dose interval corresponding to this was 19.6, 21.6 </span></span>
 <span><span class="co">## Intervals are corresponding to 10 and 90 % quantiles</span></span>
 <span><span class="co">## </span></span>
-<span><span class="co">## Number of patients overall : mean 18 (17, 20) </span></span>
-<span><span class="co">## Number of patients treated above target tox interval : mean 3 (0, 9) </span></span>
-<span><span class="co">## Proportions of DLTs in the trials : mean 24 % (10 %, 36 %) </span></span>
-<span><span class="co">## Mean toxicity risks for the patients on active : mean 16 % (2 %, 42 %) </span></span>
-<span><span class="co">## Doses selected as MTD : mean 19.8 (5.7, 42.2) </span></span>
-<span><span class="co">## True toxicity at doses selected : mean 32 % (0 %, 99 %) </span></span>
-<span><span class="co">## Proportion of trials selecting target MTD: 5 %</span></span>
+<span><span class="co">## Number of patients overall : mean 19 (17, 20) </span></span>
+<span><span class="co">## Number of patients treated above target tox interval : mean 4 (0, 9) </span></span>
+<span><span class="co">## Proportions of DLTs in the trials : mean 21 % (10 %, 31 %) </span></span>
+<span><span class="co">## Mean toxicity risks for the patients on active : mean 23 % (4 %, 41 %) </span></span>
+<span><span class="co">## Doses selected as MTD : mean 24.4 (9.6, 42.2) </span></span>
+<span><span class="co">## True toxicity at doses selected : mean 52 % (0 %, 99 %) </span></span>
+<span><span class="co">## Proportion of trials selecting target MTD: 0 %</span></span>
 <span><span class="co">## Dose most often selected as MTD: 14 </span></span>
-<span><span class="co">## Observed toxicity rate at dose most often selected: 33 %</span></span>
-<span><span class="co">## Fitted toxicity rate at dose most often selected : mean 24 % (9 %, 39 %)</span></span></code></pre>
+<span><span class="co">## Observed toxicity rate at dose most often selected: 17 %</span></span>
+<span><span class="co">## Fitted toxicity rate at dose most often selected : mean 20 % (9 %, 32 %)</span></span></code></pre>
 <p>We see here e.g. that the estimated number of patients overall is 19,
 so 11 more than the current 8 patients are expected to be needed before
 finishing the trial.</p>
@@ -2046,7 +2041,7 @@ follows:</p>
 <span>  data <span class="op">=</span> <span class="va">data</span></span>
 <span><span class="op">)</span></span>
 <span><span class="va">nextDose</span><span class="op">$</span><span class="va">value</span></span></code></pre></div>
-<pre><code><span><span class="co">## [1] 12</span></span></code></pre>
+<pre><code><span><span class="co">## [1] 10</span></span></code></pre>
 <p>A corresponding plot can be produced by printing the
 <code>plot</code> element of the returned list:</p>
 <div class="sourceCode" id="cb165"><pre class="downlit sourceCode r">
@@ -2079,7 +2074,7 @@ here:</p>
 <span><span class="op">)</span></span></code></pre></div>
 <pre><code><span><span class="co">## [1] FALSE</span></span>
 <span><span class="co">## attr(,"message")</span></span>
-<span><span class="co">## [1] "Probability for target biomarker is 11 % for dose 12 and thus below the required 50 %"</span></span>
+<span><span class="co">## [1] "Probability for target biomarker is 11 % for dose 10 and thus below the required 50 %"</span></span>
 <span><span class="co">## attr(,"report_label")</span></span>
 <span><span class="co">## [1] NA</span></span></code></pre>
 <p>Again, this dual-endpoint specific rule can be combined as required

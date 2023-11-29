@@ -5,6 +5,7 @@ articles:
   crmPack-jss-paper: crmPack-jss-paper.html
   example: example.html
   migration_from_the_old_crmPack: migration_from_the_old_crmPack.html
+  ordinal-crm: ordinal-crm.html
   parallel_computing_with_extensions: parallel_computing_with_extensions.html
   rolling-crm: rolling-crm.html
   simulations: simulations.html
@@ -13,7 +14,7 @@ articles:
   trial_definition: trial_definition.html
   trial_sanity_checks: trial_sanity_checks.html
   trial_simulation: trial_simulation.html
-last_built: 2023-11-21T20:19Z
+last_built: 2023-11-29T10:11Z
 urls:
   reference: https://roche.github.io/crmPack/reference
   article: https://roche.github.io/crmPack/articles
