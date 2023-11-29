@@ -12,6 +12,8 @@ status](https://www.r-pkg.org/badges/version/crmPack)](https://CRAN.R-project.or
 state and is being actively
 developed.](https://www.repostatus.org/badges/latest/active.svg)](https://www.repostatus.org/#active)
 [![License](https://img.shields.io/badge/License-Apache_2.0-blue.svg)](https://opensource.org/licenses/Apache-2.0)
+[![Check
+🛠](https://github.com/Roche/crmPack/actions/workflows/check.yaml/badge.svg)](https://github.com/Roche/crmPack/actions/workflows/check.yaml)
 [![Test
 Coverage](https://raw.githubusercontent.com/Roche/crmPack/_xml_coverage_reports/data/main/badge.svg)](https://raw.githubusercontent.com/Roche/crmPack/_xml_coverage_reports/data/main/badge.svg)
 <!-- badges: end -->
