@@ -3402,6 +3402,7 @@ LogisticLogNormalOrdinal <- function(mean, cov, ref_dose) {
       list(alpha = sapply(1:(length(mean) - 1), function(x) -(x + 1)), gamma = 1)
     },
     datanames = c("nObs", "y", "x"),
+    # Need to provide JAGS column names here
     sample = c(paste0("alpha[", 1:(length(mean) - 1), "]"), "beta")
   )
 }

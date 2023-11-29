@@ -223,3 +223,30 @@ h_model_dual_endpoint_beta <- function(param,
   de@use_fixed <- c(de@use_fixed, use_fixed)
   de
 }
+
+#' Convert an ordinal CRM model to the Equivalent Binary CRM Model for a Specific
+#' Grade
+#'
+#' @description `r lifecycle::badge("experimental")`
+#'
+#' A simple helper function that takes a [`LogisticLogNormalOrdinal`] and an
+#' integer grade and converts them to the equivalent `LogisticLogNormal` model.
+#'
+#' @param x (`LogisticLogNormalOrdinal`)\cr the `LogisticLogNormalOrdinal`
+#'   model to covert
+#' @param grade (`integer`)\cr the toxicity grade for which the equivalent model
+#' is required.
+#' @return A [`LogisticLogNormal`] model.
+#'
+#' @export
+h_convert_ordinal_model <- function(x, grade) {
+  # Validate
+  assert_integer(grade, len = 1, lower = 1)
+  assert_class(x, "LogisticLogNormalOrdinal")
+  # Execute
+  LogisticLogNormal(
+    mean = x@params@mean[-grade],
+    cov = x@params@cov[-grade, -grade],
+    ref_dose = x@ref_dose
+  )
+}
