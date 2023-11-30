@@ -191,8 +191,8 @@ We can estimate the prior using an empty `Data` object...
 ```{r, logisticlognormal-samples}
 data <- Data(doseGrid = seq(10, 100, 10))
 options <- McmcOptions(
-  samples = 30000, 
-  rng_kind = "Mersenne-Twister", 
+  samples = 30000,
+  rng_kind = "Mersenne-Twister",
   rng_seed = 8191316
 )
 samples <- mcmc(data, model, options)
@@ -233,8 +233,8 @@ ordinalData <- DataOrdinal(doseGrid = seq(10, 100, 10))
 ordinalSamples <- mcmc(ordinalData, ordinalModel, options)
 ordinalD <- as.matrix(
   cbind(
-    ordinalSamples@data$alpha1, 
-    ordinalSamples@data$alpha2, 
+    ordinalSamples@data$alpha1,
+    ordinalSamples@data$alpha2,
     log(ordinalSamples@data$beta)
   )
 )
