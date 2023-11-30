@@ -1745,7 +1745,6 @@ setMethod("summary",
         doseGrid = doseGrid,
         fitAtDoseMostSelected = fitAtDoseMostSelected,
         stop_report = object@stop_report,
-        additional_stats = object@additional_stats,
         meanFit = meanFit
       )
 
@@ -1998,12 +1997,21 @@ setMethod("show",
       # Report results of additional statistics summary
 
       if (length(unlist(object@additional_stats)) > 0) {
-        summary_stat_op <- unlist(object@additional_stats)
+        # Access the nested list of values
+        stats_list <- object@additional_stats
 
-        cat(
-          "Results of Additional Statistical Calculation : \n",
-          paste(names(summary_stat_op), ":", round(summary_stat_op), "\n")
-        )
+        # Extract the parameter names
+        param_names <- names(stats_list[[1]])
+
+        # Calculate the average for each parameter
+        averages <- lapply(param_names, function(param) {
+          values <- sapply(stats_list, function(x) x[[param]])
+          mean(values)
+        })
+
+        for (i in seq_along(param_names)) {
+          cat(param_names[i], ":", round(averages[[i]], 2), "\n")
+        }
       }
 
       ## finally assign names to the df
