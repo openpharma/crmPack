@@ -40,7 +40,7 @@ empty_ordinal_data <- DataOrdinal(
 
 defines a `DataOrdinal` object with three toxicity grades, labelled "No tox`", "Sub-tox AE" and "DLT".
 
-> Note that the `yCategories` slot must be an integer vector with values ordered from `0` to `length(yCategories) - 1`.  It's labels must be unique.  The first entry, which must have value `0`, is always regarded as the "no event" category.  See [The LogisticLogNormalOrdinal class] below.
+> Note that the `yCategories` slot must be an integer vector with values ordered from `0` to `length(yCategories) - 1`.  Its labels must be unique.  The first entry, which must have value `0`, is always regarded as the "no event" category.  See [The LogisticLogNormalOrdinal class] below.
 
 The `update`, `plot` and `dose_grid_range` methods work exactly as they do for `Data` objects:
 
@@ -101,7 +101,7 @@ opts <- .DefaultMcmcOptions()
 samples <- mcmc(ordinal_data, ordinal_model, opts)
 ```
 
-> The warning message is expected and can be ignored.  It will be suppressed in a future version of `crmPack`.  See [https://github.com/Roche/crmPack/issues/748].
+> The warning message is expected and can be ignored.  It will be suppressed in a future version of `crmPack`.  See issue 748.
 
 The `Samples` object returned by `mcmc` is a standard `Samples object`.  The names of the entries in its `data` slot are
 
@@ -167,10 +167,84 @@ maxDose(ordinal_rule_2, ordinal_data)
 
 The two grade-specific rules can be combined into a single rule using `IncrementsMin`:
 
-```{r, rules-3, error = TRUE}
+```{r, rules-3}
 trial_rule <- IncrementsMin(list(ordinal_rule_1, ordinal_rule_2))
 maxDose(trial_rule, ordinal_data)
 ```
+
+# On the need for a diagonal covariance matrix
+
+Consider a standard logistic log Normal CRM model:
+
+```{r, logisticlognormal}
+model <- LogisticLogNormal(
+  mean = c(-3, 1),
+  cov = matrix(c(4, -0.5, -0.5, 3), ncol = 2),
+  ref_dose = 45
+)
+
+model@params@cov
+```
+
+We can estimate the prior using an empty `Data` object...
+
+```{r, logisticlognormal-samples}
+data <- Data(doseGrid = seq(10, 100, 10))
+options <- McmcOptions(
+  samples = 30000, 
+  rng_kind = "Mersenne-Twister", 
+  rng_seed = 8191316
+)
+samples <- mcmc(data, model, options)
+```
+
+and then obtain the correlation between the model's parameters [recalling that the prior is defined in terms of log(alpha1)]...
+
+```{r, logisticlognormal-covariance}
+d <- as.matrix(cbind(samples@data$alpha0, log(samples@data$alpha1)))
+sigmaHat <- cov(d)
+sigmaHat
+```
+
+So we requested a covariance of `r model@params@cov[1, 2]` and got `r sprintf("%f5.2", sigmaHat[1, 2])`. Pretty good!
+
+Now look an ordinal CRM model with non-zero correlation between its parameters. 
+
+To begin, we need to hack the validity checking so that correlations are permitted. 
+
+Once we've done that, we can look at the correlations.  Again, we should look at correlations with log(beta) rather than beta.
+
+```{r, ordinal-with-covariance}
+v_logisticlognormalordinal <- function(object) {
+  v <- Validate()
+  v$result()
+}
+
+ordinalModel <- LogisticLogNormalOrdinal(
+  mean = c(-3, -2, 1),
+  cov = matrix(c(4, -0.5, -0.5, -0.5, 3, -0.5, -0.5, -0.5, 1), ncol = 3),
+  ref_dose = 45
+)
+
+ordinalModel@params@cov
+
+ordinalData <- DataOrdinal(doseGrid = seq(10, 100, 10))
+
+ordinalSamples <- mcmc(ordinalData, ordinalModel, options)
+ordinalD <- as.matrix(
+  cbind(
+    ordinalSamples@data$alpha1, 
+    ordinalSamples@data$alpha2, 
+    log(ordinalSamples@data$beta)
+  )
+)
+sigmaHat <- cov(ordinalD)
+sigmaHat
+```
+
+The correlations are nothing like what we requested. This is due to the constraints imposed on the intercepts by the model. The situation will most likely worsen as the number of toxicity categories increases.
+
+We have an open issue - #755 -to examine options for allowing end users to specify correlation structures for ordinal CRM models.  If you would like to contribute, please do so.
 
 # Some observations
 - We are currently considering the need for making grade-specific functionality available across more `crmPack` methods.  If you have a specific use case that is not currently supported, please contact us.
