@@ -210,32 +210,32 @@ So we requested a covariance of `r model@params@cov[1, 2]` and got `r sprintf("%
 
 Now look an ordinal CRM model with non-zero correlation between its parameters. 
 
-To begin, we need to hack the validity checking so that correlations are permitted. 
+To begin, take a copy of the current `LogisticLogNormalOrdinal` model and give it a non-diagonal covariance matrix by accessing its `params@cov` slot directly, deliberately avoiding object validation.
 
-Once we've done that, we can look at the correlations.  Again, we should look at correlations with log(beta) rather than beta.
+> NB This is poor practice and not recommended.  It is done here purely for illustration.
 
-```{r, ordinal-with-covariance}
-v_logisticlognormalordinal <- function(object) {
-  v <- Validate()
-  v$result()
-}
+```{r, ordinal-with-covariance-2}
+ordinal_model_temp <- ordinal_model
+ordinal_model_temp@params@cov <- matrix(c(4, -0.5, -0.5, -0.5, 3, -0.5, -0.5, -0.5, 1), ncol = 3)
 
-ordinalModel <- LogisticLogNormalOrdinal(
-  mean = c(-3, -2, 1),
-  cov = matrix(c(4, -0.5, -0.5, -0.5, 3, -0.5, -0.5, -0.5, 1), ncol = 3),
-  ref_dose = 45
-)
+ordinal_model_temp@params@cov
+```
 
-ordinalModel@params@cov
+Fit the revised model to obtain the prior.  
 
-ordinalData <- DataOrdinal(doseGrid = seq(10, 100, 10))
+```{r, ordinal-with-covariance-3}
+ordinal_data <- DataOrdinal(doseGrid = seq(10, 100, 10))
+ordinal_samples <- mcmc(ordinal_data, ordinal_model_temp, options)
+```
 
-ordinalSamples <- mcmc(ordinalData, ordinalModel, options)
+Finally, look at the covariance matrix, remembering to use `log(beta)` rather than `beta`...
+
+```{r, ordinal-with-covariance-4}
 ordinalD <- as.matrix(
   cbind(
-    ordinalSamples@data$alpha1,
-    ordinalSamples@data$alpha2,
-    log(ordinalSamples@data$beta)
+    ordinal_samples@data$alpha1,
+    ordinal_samples@data$alpha2,
+    log(ordinal_samples@data$beta)
   )
 )
 sigmaHat <- cov(ordinalD)
