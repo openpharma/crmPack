@@ -1,14 +1,26 @@
 
 <!-- markdownlint-disable-file -->
 <!-- README.md is generated from README.Rmd. Please edit that file -->
-\# crmPack
+
+# crmPack
+
+<!-- badges: start -->
+
+[![CRAN
+status](https://www.r-pkg.org/badges/version/crmPack)](https://CRAN.R-project.org/package=crmPack)
+[![Project Status: Active - The project has reached a stable, usable
+state and is being actively
+developed.](https://www.repostatus.org/badges/latest/active.svg)](https://www.repostatus.org/#active)
+[![License](https://img.shields.io/badge/License-Apache_2.0-blue.svg)](https://opensource.org/licenses/Apache-2.0)
+[![Check
+🛠](https://github.com/Roche/crmPack/actions/workflows/check.yaml/badge.svg)](https://github.com/Roche/crmPack/actions/workflows/check.yaml)
+[![Test
+Coverage](https://raw.githubusercontent.com/Roche/crmPack/_xml_coverage_reports/data/main/badge.svg)](https://raw.githubusercontent.com/Roche/crmPack/_xml_coverage_reports/data/main/badge.svg)
+<!-- badges: end -->
+
 <p align="center">
 <img src='man/figures/logo.png' align="right" height="131.5" alt="crmPack-logo"/>
 </p>
-
-[![Project Status: Active - The project has reached a stable, usable
-state and is being actively
-developed.](https://www.repostatus.org/badges/latest/active.svg)](https://www.repostatus.org/#active)  
 
 The goal of crmPack is to implement a wide range of model-based dose
 escalation designs, ranging from classical and modern continual

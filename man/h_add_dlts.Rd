@@ -18,7 +18,7 @@ h_add_dlts(data, dose, truth, cohort_size, first_separate)
 \item{first_separate}{(\code{flag})\cr whether the first patient is enrolled separately.}
 }
 \value{
-The updated \code{data}.
+True probability of DLT.
 }
 \description{
 Helper Function to Add Randomly Generated DLTs During Simulations

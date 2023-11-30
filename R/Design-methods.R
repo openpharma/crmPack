@@ -89,26 +89,17 @@ setMethod("simulate",
         ## (appropriately recycled)
         thisArgs <- args[(iterSim - 1) %% nArgs + 1, , drop = FALSE]
 
-        ## so this truth is...
-        thisTruth <- function(dose) {
-          do.call(
-            truth,
-            ## First argument: the dose
-            c(
-              dose,
-              ## Following arguments
-              thisArgs
-            )
-          )
-        }
-
         ## start the simulated data with the provided one
         thisData <- object@data
 
         # In case there are placebo
         if (thisData@placebo) {
           ## what is the probability for tox. at placebo?
-          thisProb.PL <- thisTruth(object@data@doseGrid[1])
+          thisProb.PL <- h_this_truth(
+            object@data@doseGrid[1],
+            thisArgs,
+            truth
+          )
         }
 
         ## shall we stop the trial?
@@ -123,7 +114,11 @@ setMethod("simulate",
         ## inside this loop we simulate the whole trial, until stopping
         while (!stopit) {
           ## what is the probability for tox. at this dose?
-          thisProb <- thisTruth(thisDose)
+          thisProb <- h_this_truth(
+            thisDose,
+            thisArgs,
+            truth
+          )
 
           ## what is the cohort size at this dose?
           thisSize <- size(object@cohort_size,
