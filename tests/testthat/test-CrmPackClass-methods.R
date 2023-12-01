@@ -79,4 +79,3 @@ test_that("tidy methods return non-empty value for all classes", {
     }
   }
 })
-
