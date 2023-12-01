@@ -1291,6 +1291,26 @@ test_that("maxDose-IncrementsRelativeParts throws error when part1Ladder is exce
   )
 })
 
+test_that("maxDose-IncrementsRelativeParts throws error when part1Ladder is exceeded (in p1, p2, DLT, cstart <= 0)", {
+  increments <- IncrementsRelativeParts(
+    dlt_start = 10, clean_start = 20, intervals = c(0, 1), increments = c(4, 3)
+  )
+  data <- DataParts(
+    x = c(0.1, 1.5, 0.5),
+    y = c(0, 0, 1L),
+    ID = 1:3,
+    cohort = 1:3,
+    doseGrid = c(0.1, 0.4, 0.5, 1.5, 3, 6, 10, 15, 20, 30),
+    part = c(1L, 1L, 1L),
+    nextPart = 2L,
+    part1Ladder = c(0.1, 0.5, 1.5, 3, 6, 10, 20)
+  )
+  expect_error(
+    maxDose(increments, data),
+    "Assertion on 'new_max_dose_level <= length(data@part1Ladder)' failed: Must be TRUE.", fixed = TRUE
+  )
+})
+
 ## IncrementsDoseLevels ----
 
 test_that("maxDose-IncrementsDoseLevels works correctly for 'last' basis_level and 1 level increase", {
