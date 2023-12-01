@@ -30,3 +30,20 @@ h_barplot_percentages <- function(x, description, xaxisround = 0) {
         round(dat$x, xaxisround)
     )
 }
+
+
+h_summarize_add_stats <- function(stats_list){
+
+ # stats_list <- object@additional_stats
+
+  # Extract the parameter names
+  param_names <- names(stats_list[[1]])
+
+  # Calculate the average for each parameter
+  averages <- lapply(param_names, function(param) {
+    values <- sapply(stats_list, function(x) x[[param]])
+    mean(values)
+  })
+
+  return(list(param_names, averages))
+}
