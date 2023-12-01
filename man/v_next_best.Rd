@@ -13,6 +13,7 @@
 \alias{v_next_best_max_gain_samples}
 \alias{v_next_best_prob_mtd_lte}
 \alias{v_next_best_prob_mtd_min_dist}
+\alias{v_next_best_ordinal}
 \title{Internal Helper Functions for Validation of \code{\link{NextBest}} Objects}
 \usage{
 v_next_best_mtd(object)
@@ -36,6 +37,8 @@ v_next_best_max_gain_samples(object)
 v_next_best_prob_mtd_lte(object)
 
 v_next_best_prob_mtd_min_dist(object)
+
+v_next_best_ordinal(object)
 }
 \arguments{
 \item{object}{(\code{NextBest})\cr object to validate.}
@@ -85,5 +88,8 @@ contains valid \code{target} probability and \code{method} string value.
 
 \item \code{v_next_best_prob_mtd_min_dist()}: validates that the \code{\link{NextBestProbMTDMinDist}} object
 contains valid \code{target} probability and \code{method} string value.
+
+\item \code{v_next_best_ordinal()}: validates that the \code{\link{NextBestOrdinal}} object
+contains valid \code{grade} and standard \code{NextBest} rule.
 
 }}

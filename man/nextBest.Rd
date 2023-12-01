@@ -30,6 +30,9 @@
 \alias{nextBest-NextBestProbMTDLTE}
 \alias{nextBest,NextBestProbMTDMinDist,numeric,Samples,GeneralModel,Data-method}
 \alias{nextBest-NextBestProbMTDMinDist}
+\alias{nextBest,NextBestOrdinal,numeric,Samples,GeneralModel,Data-method}
+\alias{nextBest-NextBestOrdinal}
+\alias{nextBest,NextBestOrdinal,numeric,Samples,LogisticLogNormalOrdinal,DataOrdinal-method}
 \title{Finding the Next Best Dose}
 \usage{
 nextBest(nextBest, doselimit, samples, model, data, ...)
@@ -79,6 +82,10 @@ nextBest(nextBest, doselimit, samples, model, data, ...)
 \S4method{nextBest}{NextBestProbMTDLTE,numeric,Samples,GeneralModel,Data}(nextBest, doselimit, samples, model, data, ...)
 
 \S4method{nextBest}{NextBestProbMTDMinDist,numeric,Samples,GeneralModel,Data}(nextBest, doselimit, samples, model, data, ...)
+
+\S4method{nextBest}{NextBestOrdinal,numeric,Samples,GeneralModel,Data}(nextBest, doselimit = Inf, samples, model, data, ...)
+
+\S4method{nextBest}{NextBestOrdinal,numeric,Samples,LogisticLogNormalOrdinal,DataOrdinal}(nextBest, doselimit = Inf, samples, model, data, ...)
 }
 \arguments{
 \item{nextBest}{(\code{NextBest})\cr the rule for the next best dose.}
@@ -252,6 +259,22 @@ level.
 )}: find the next best dose based with the highest
 probability of having a toxicity rate with minimum distance to the
 target toxicity level.
+
+\item \code{nextBest(
+  nextBest = NextBestOrdinal,
+  doselimit = numeric,
+  samples = Samples,
+  model = GeneralModel,
+  data = Data
+)}: find the next best dose for ordinal CRM models.
+
+\item \code{nextBest(
+  nextBest = NextBestOrdinal,
+  doselimit = numeric,
+  samples = Samples,
+  model = LogisticLogNormalOrdinal,
+  data = DataOrdinal
+)}: find the next best dose for ordinal CRM models.
 
 }}
 \examples{
@@ -853,5 +876,29 @@ dose_recommendation <- nextBest(
   samples = my_samples,
   model = my_model,
   data = my_data
+)
+ordinal_data <- .DefaultDataOrdinal()
+ordinal_model <- .DefaultLogisticLogNormalOrdinal()
+options <- .DefaultMcmcOptions()
+ordinal_samples <- mcmc(ordinal_data, ordinal_model, options)
+
+nextBest(
+  nextBest = NextBestOrdinal(2L, .DefaultNextBestNCRM()),
+  samples = ordinal_samples,
+  doselimit = Inf,
+  model = ordinal_model,
+  data = ordinal_data
+)
+ordinal_data <- .DefaultDataOrdinal()
+ordinal_model <- .DefaultLogisticLogNormalOrdinal()
+options <- .DefaultMcmcOptions()
+ordinal_samples <- mcmc(ordinal_data, ordinal_model, options)
+
+nextBest(
+  nextBest = NextBestOrdinal(2L, .DefaultNextBestNCRM()),
+  samples = ordinal_samples,
+  doselimit = Inf,
+  model = ordinal_model,
+  data = ordinal_data
 )
 }

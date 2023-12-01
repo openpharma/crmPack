@@ -68,6 +68,7 @@ options <- McmcOptions(
   step = 1,
   samples = 2000
 )
+
 time <- system.time(mySims <- simulate(design,
   args = NULL,
   truth = myTruth,

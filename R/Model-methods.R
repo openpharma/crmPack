@@ -80,6 +80,55 @@ setMethod(
   }
 )
 
+## LogisticLogNormalOrdinal ----
+
+#' @describeIn doseFunction
+#'
+#' @param grade (`integer`)\cr the toxicity grade for which the dose function is
+#' required
+#'
+#' @aliases doseFunction-LogisticLogNormalOrdinal
+#' @example examples/Model-method-doseFunctionLogisticLogNormalOrdinal.R
+#' @export
+setMethod(
+  f = "doseFunction",
+  signature = "LogisticLogNormalOrdinal",
+  definition = function(model, grade, ...) {
+    model_params <- list(...)
+    assert_character(
+      names(model_params),
+      len = length(model_params),
+      any.missing = FALSE,
+      unique = TRUE
+    )
+    assert_integer(grade, lower = 1, len = 1)
+    coll <- makeAssertCollection()
+    if (!(paste0("alpha", grade) %in% names(model_params))) {
+      coll$push(
+        paste0(
+          "Since grade = ", grade, ", a parameter named 'alpha", grade,
+          "' must appear the call"
+        )
+      )
+    }
+    reportAssertions(coll)
+    # Create dummy intercept columns if necessary
+    for (g in seq_along(grade)) {
+      if (!(paste0("alpha", g) %in% names(model_params))) {
+        model_params[[paste0("alpha", g)]] <- rep(0, length(model_params[[1]]))
+      }
+    }
+
+    samples <- Samples(
+      data = model_params,
+      options = McmcOptions(samples = length(model_params[[1]]))
+    )
+    function(x) {
+      dose(x = x, model = model, samples = samples, grade = grade)
+    }
+  }
+)
+
 # probFunction ----
 
 ## generic ----
@@ -156,6 +205,56 @@ setMethod(
     }
   }
 )
+
+## LogisticLogNormalOrdinal ----
+
+#' @describeIn probFunction
+#'
+#' @param grade (`integer`)\cr the toxicity grade for which the dose function is
+#' required
+#'
+#' @aliases probFunction-LogisticLogNormalOrdinal
+#' @example examples/Model-method-probFunctionLogisticLogNormalOrdinal.R
+#' @export
+setMethod(
+  f = "probFunction",
+  signature = "LogisticLogNormalOrdinal",
+  definition = function(model, grade, ...) {
+    model_params <- list(...)
+    assert_character(
+      names(model_params),
+      len = length(model_params),
+      any.missing = FALSE,
+      unique = TRUE
+    )
+    assert_integer(grade, lower = 1, len = 1)
+    coll <- makeAssertCollection()
+    if (!(paste0("alpha", grade) %in% names(model_params))) {
+      coll$push(
+        paste0(
+          "Since grade = ", grade, ", a parameter named 'alpha", grade,
+          "' must appear the call"
+        )
+      )
+    }
+    reportAssertions(coll)
+    # Create dummy intercept columns if necessary
+    for (g in seq_along(grade)) {
+      if (!(paste0("alpha", g) %in% names(model_params))) {
+        model_params[[paste0("alpha", g)]] <- rep(0, length(model_params[[1]]))
+      }
+    }
+
+    samples <- Samples(
+      data = model_params,
+      options = McmcOptions(samples = length(model_params[[1]]))
+    )
+    function(dose) {
+      prob(dose = dose, model = model, samples = samples, grade = grade)
+    }
+  }
+)
+
 
 # efficacyFunction ----
 
@@ -319,6 +418,41 @@ setMethod(
     alpha1 <- samples@data$alpha1
     ref_dose <- as.numeric(model@ref_dose)
     exp((logit(x) - alpha0) / alpha1) * ref_dose
+  }
+)
+
+## LogisticLogNormalOrdinal ----
+
+#' @describeIn dose compute the dose level reaching a specific target
+#'   probability of the occurrence of a DLE (`x`).
+#'
+#' In the case of a `LogisticLogNormalOrdinal` model, `dose` returns only the
+#' probability of toxicity at the given grade or higher
+#'
+#' @param grade (`integer`)\cr The toxicity grade for which probabilities are required
+#'
+#' @aliases dose-LogisticLogNormalOrdinal
+#' @example examples/Model-method-doseLogisticLogNormalOrdinal.R
+#' @export
+#'
+setMethod(
+  f = "dose",
+  signature = signature(
+    x = "numeric",
+    model = "LogisticLogNormalOrdinal",
+    samples = "Samples"
+  ),
+  definition = function(x, model, samples, grade) {
+    assert_probabilities(x)
+    assert_length(x, len = size(samples))
+    assert_integer(grade, len = 1, lower = 1, upper = (length(names(samples@data)) - 1))
+    a <- paste0("alpha", grade)
+    assert_subset(c(a, "beta"), names(samples))
+
+    alpha <- samples@data[[a]]
+    beta <- samples@data$beta
+    ref_dose <- as.numeric(model@ref_dose)
+    exp((logit(x) - alpha) / beta) * ref_dose
   }
 )
 
@@ -813,7 +947,9 @@ setMethod(
 #'   corresponds to one element of a sample. Hence, in this case, the output
 #'   vector is of the same length as the sample vector. If scalar `samples` were
 #'   used or no `samples` were used, e.g. for pseudo DLE/toxicity `model`,
-#'   then the output is of the same length as the length of the `dose`.
+#'   then the output is of the same length as the length of the `dose`.  In the
+#'   case of `LogisticLogNormalOrdinal`, the probabilities relate to toxicities
+#'   of  grade given by `grade`.
 #'
 #' @seealso [probFunction()], [dose()], [efficacy()].
 #'
@@ -825,7 +961,7 @@ setGeneric(
   def = function(dose, model, samples, ...) {
     standardGeneric("prob")
   },
-  valueClass = "numeric"
+  valueClass = c("numeric", "list")
 )
 
 ## LogisticNormal ----
@@ -1262,6 +1398,66 @@ setMethod(
     theta <- samples@data$theta
     skel_fun <- model@skel_fun
     skel_fun(dose)^theta
+  }
+)
+
+## LogisticLogNormalOrdinal ----
+
+#' Calculate a grade-specific probability of toxicity for a given dose.
+#' @describeIn prob
+#'
+#' @param grade (`integer` or `integer_vector`)\cr The toxicity grade for which probabilities are required
+#' @param cumulative (`flag`)\cr Should the returned probability be cumulative
+#' (the default) or grade-specific?
+#' @aliases prob-LogisticLogNormalOrdinal
+#' @export
+#'
+setMethod(
+  f = "prob",
+  signature = signature(
+    dose = "numeric",
+    model = "LogisticLogNormalOrdinal",
+    samples = "Samples"
+  ),
+  definition = function(dose, model, samples, grade, cumulative = TRUE) {
+    assert_numeric(dose, lower = 0L, any.missing = FALSE, min.len = 1L)
+    assert_integer(
+      grade,
+      min.len = 1,
+      max.len = length(model@params@mean) - 1,
+      lower = 0,
+      upper = length(model@params@mean) - 1
+    )
+    assert_subset(
+      names(samples),
+      c(paste0("alpha", 0:(length(model@params@mean) - 1)), "beta")
+    )
+    assert_length(dose, len = size(samples))
+    assert_flag(cumulative)
+
+    rv <- lapply(
+      grade,
+      function(g) {
+        alpha <- samples@data[[paste0("alpha", g)]]
+        beta <- samples@data$beta
+        ref_dose <- as.numeric(model@ref_dose)
+
+        cumulative_prob <- plogis(alpha + beta * log(dose / ref_dose))
+        if (cumulative | g == as.integer(length(model@params@mean) - 1)) {
+          return(cumulative_prob)
+        }
+
+        # Calculate grade-specific probabilities
+        alpha0 <- samples@data[[paste0("alpha", g + 1)]]
+        grade_prob <- cumulative_prob - plogis(alpha0 + beta * log(dose / ref_dose))
+        return(grade_prob)
+      }
+    )
+    if (length(rv) == 1) {
+      return(rv[[1]])
+    }
+    names(rv) <- as.character(grade)
+    return(rv)
   }
 )
 
