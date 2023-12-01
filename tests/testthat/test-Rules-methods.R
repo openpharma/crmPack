@@ -1307,7 +1307,8 @@ test_that("maxDose-IncrementsRelativeParts throws error when part1Ladder is exce
   )
   expect_error(
     maxDose(increments, data),
-    "Assertion on 'new_max_dose_level <= length(data@part1Ladder)' failed: Must be TRUE.", fixed = TRUE
+    "Assertion on 'new_max_dose_level <= length(data@part1Ladder)' failed: Must be TRUE.",
+    fixed = TRUE
   )
 })
 
