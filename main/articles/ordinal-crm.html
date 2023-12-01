@@ -33,7 +33,7 @@
     
     <a class="navbar-brand me-2" href="../index.html">crmPack</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">1.0.9000.9136</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">1.0.9000.9137</small>
 
     
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -65,12 +65,6 @@
 <li class="nav-item">
   <a class="nav-link" href="../news/index.html">Changelog</a>
 </li>
-<!-- start dropdown for versions --> <li class="nav-item dropdown">
-        <a href="#" class="nav-link dropdown-toggle"
-          data-bs-toggle="dropdown" role="button"
-          aria-expanded="false" aria-haspopup="true"
-          id="dropdown-versions">Versions</a> <div class="dropdown-menu" aria-labelledby="dropdown-versions"> <a class="dropdown-item" data-toggle="tooltip" title="" href="https://Roche.github.io/crmPack/main">main</a> </div></li>
-<!-- end dropdown for versions -->
 <li class="nav-item dropdown">
   <a href="#" class="nav-link dropdown-toggle" data-bs-toggle="dropdown" role="button" aria-expanded="false" aria-haspopup="true" id="dropdown-reports">Reports</a>
   <div class="dropdown-menu" aria-labelledby="dropdown-reports">
@@ -154,7 +148,7 @@ labelled “No tox`”, “Sub-tox AE” and “DLT”.</p>
 <blockquote>
 <p>Note that the <code>yCategories</code> slot must be an integer vector
 with values ordered from <code>0</code> to
-<code>length(yCategories) - 1</code>. It’s labels must be unique. The
+<code>length(yCategories) - 1</code>. Its labels must be unique. The
 first entry, which must have value <code>0</code>, is always regarded as
 the “no event” category. See [The LogisticLogNormalOrdinal class]
 below.</p>
@@ -231,7 +225,8 @@ that order.</p>
 <span><span class="co">#&gt; c(model_inits, : Unused variable "y" in data</span></span></code></pre></div>
 <blockquote>
 <p>The warning message is expected and can be ignored. It will be
-suppressed in a future version of <code>crmPack</code>. See [<a href="https://github.com/Roche/crmPack/issues/748" class="external-link uri">https://github.com/Roche/crmPack/issues/748</a>].</p>
+suppressed in a future version of <code>crmPack</code>. See issue
+748.</p>
 </blockquote>
 <p>The <code>Samples</code> object returned by <code>mcmc</code> is a
 standard <code>Samples object</code>. The names of the entries in its
@@ -245,55 +240,55 @@ cumulative probabilities of toxicity are required:</p>
 <div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="../reference/fit.html">fit</a></span><span class="op">(</span><span class="va">samples</span>, <span class="va">ordinal_model</span>, <span class="va">ordinal_data</span>, grade <span class="op">=</span> <span class="fl">1L</span><span class="op">)</span></span>
 <span><span class="co">#&gt;    dose     middle        lower     upper</span></span>
-<span><span class="co">#&gt; 1    10 0.03354945 5.594776e-10 0.2341937</span></span>
-<span><span class="co">#&gt; 2    20 0.07068380 2.386461e-06 0.3531982</span></span>
-<span><span class="co">#&gt; 3    30 0.12798048 3.341658e-04 0.4440026</span></span>
-<span><span class="co">#&gt; 4    40 0.22064099 1.129778e-02 0.5554207</span></span>
-<span><span class="co">#&gt; 5    50 0.36417099 1.131554e-01 0.6709529</span></span>
-<span><span class="co">#&gt; 6    60 0.52978991 2.069100e-01 0.8563098</span></span>
-<span><span class="co">#&gt; 7    70 0.64587747 2.602113e-01 0.9686288</span></span>
-<span><span class="co">#&gt; 8    80 0.71578788 2.869238e-01 0.9918189</span></span>
-<span><span class="co">#&gt; 9    90 0.76111309 3.045457e-01 0.9978711</span></span>
-<span><span class="co">#&gt; 10  100 0.79277358 3.235477e-01 0.9993361</span></span>
+<span><span class="co">#&gt; 1    10 0.03689216 2.205445e-09 0.2761050</span></span>
+<span><span class="co">#&gt; 2    20 0.07372277 6.228514e-06 0.3472293</span></span>
+<span><span class="co">#&gt; 3    30 0.12988676 7.321288e-04 0.4349048</span></span>
+<span><span class="co">#&gt; 4    40 0.22017829 1.852804e-02 0.5239309</span></span>
+<span><span class="co">#&gt; 5    50 0.36054835 1.227480e-01 0.6534924</span></span>
+<span><span class="co">#&gt; 6    60 0.52105890 2.078973e-01 0.8376531</span></span>
+<span><span class="co">#&gt; 7    70 0.63560342 2.367611e-01 0.9561364</span></span>
+<span><span class="co">#&gt; 8    80 0.70670140 2.706808e-01 0.9892973</span></span>
+<span><span class="co">#&gt; 9    90 0.75327230 2.904358e-01 0.9974545</span></span>
+<span><span class="co">#&gt; 10  100 0.78583785 3.100622e-01 0.9992946</span></span>
 <span><span class="fu"><a href="../reference/fit.html">fit</a></span><span class="op">(</span><span class="va">samples</span>, <span class="va">ordinal_model</span>, <span class="va">ordinal_data</span>, grade <span class="op">=</span> <span class="fl">2L</span><span class="op">)</span></span>
 <span><span class="co">#&gt;    dose     middle        lower     upper</span></span>
-<span><span class="co">#&gt; 1    10 0.01680818 2.088294e-10 0.1338752</span></span>
-<span><span class="co">#&gt; 2    20 0.03561759 1.277692e-06 0.1901925</span></span>
-<span><span class="co">#&gt; 3    30 0.06617214 1.799123e-04 0.2471306</span></span>
-<span><span class="co">#&gt; 4    40 0.11863301 5.633832e-03 0.3397702</span></span>
-<span><span class="co">#&gt; 5    50 0.21137858 4.898936e-02 0.4610212</span></span>
-<span><span class="co">#&gt; 6    60 0.35304189 1.004056e-01 0.6768476</span></span>
-<span><span class="co">#&gt; 7    70 0.48550695 1.262013e-01 0.9039559</span></span>
-<span><span class="co">#&gt; 8    80 0.57596428 1.413167e-01 0.9775990</span></span>
-<span><span class="co">#&gt; 9    90 0.63756994 1.490952e-01 0.9947892</span></span>
-<span><span class="co">#&gt; 10  100 0.68181557 1.560712e-01 0.9985225</span></span></code></pre></div>
+<span><span class="co">#&gt; 1    10 0.02035715 8.501725e-10 0.1481018</span></span>
+<span><span class="co">#&gt; 2    20 0.04055390 3.062268e-06 0.2171752</span></span>
+<span><span class="co">#&gt; 3    30 0.07180521 3.066417e-04 0.2801610</span></span>
+<span><span class="co">#&gt; 4    40 0.12359165 6.672921e-03 0.3419619</span></span>
+<span><span class="co">#&gt; 5    50 0.21339077 5.318054e-02 0.4415168</span></span>
+<span><span class="co">#&gt; 6    60 0.34874495 1.068808e-01 0.6773734</span></span>
+<span><span class="co">#&gt; 7    70 0.47744195 1.307362e-01 0.8988641</span></span>
+<span><span class="co">#&gt; 8    80 0.56931870 1.496308e-01 0.9755678</span></span>
+<span><span class="co">#&gt; 9    90 0.63291489 1.621517e-01 0.9939455</span></span>
+<span><span class="co">#&gt; 10  100 0.67869320 1.678446e-01 0.9981696</span></span></code></pre></div>
 <p>The <code>cumulative</code> flag can be used to request
 grade-specific probabilities.</p>
 <div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="../reference/fit.html">fit</a></span><span class="op">(</span><span class="va">samples</span>, <span class="va">ordinal_model</span>, <span class="va">ordinal_data</span>, grade <span class="op">=</span> <span class="fl">1L</span>, cumulative <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></span>
 <span><span class="co">#&gt;    dose     middle        lower     upper</span></span>
-<span><span class="co">#&gt; 1    10 0.01674127 1.796245e-10 0.1487768</span></span>
-<span><span class="co">#&gt; 2    20 0.03506620 8.509756e-07 0.2099250</span></span>
-<span><span class="co">#&gt; 3    30 0.06180834 9.456419e-05 0.2841385</span></span>
-<span><span class="co">#&gt; 4    40 0.10200797 1.831630e-03 0.3682167</span></span>
-<span><span class="co">#&gt; 5    50 0.15279241 5.657825e-03 0.4606795</span></span>
-<span><span class="co">#&gt; 6    60 0.17674802 8.191588e-03 0.5016014</span></span>
-<span><span class="co">#&gt; 7    70 0.16037052 6.423852e-03 0.4957653</span></span>
-<span><span class="co">#&gt; 8    80 0.13982359 3.227702e-03 0.4669487</span></span>
-<span><span class="co">#&gt; 9    90 0.12354315 1.267535e-03 0.4494289</span></span>
-<span><span class="co">#&gt; 10  100 0.11095801 4.049558e-04 0.4382635</span></span>
+<span><span class="co">#&gt; 1    10 0.01653501 8.390489e-10 0.1330857</span></span>
+<span><span class="co">#&gt; 2    20 0.03316887 2.869640e-06 0.2087738</span></span>
+<span><span class="co">#&gt; 3    30 0.05808156 2.260971e-04 0.2733367</span></span>
+<span><span class="co">#&gt; 4    40 0.09658663 1.988168e-03 0.3338000</span></span>
+<span><span class="co">#&gt; 5    50 0.14715759 4.117373e-03 0.4340983</span></span>
+<span><span class="co">#&gt; 6    60 0.17231395 6.113781e-03 0.4914692</span></span>
+<span><span class="co">#&gt; 7    70 0.15816147 4.610461e-03 0.4710606</span></span>
+<span><span class="co">#&gt; 8    80 0.13738270 2.742938e-03 0.4608548</span></span>
+<span><span class="co">#&gt; 9    90 0.12035741 1.265413e-03 0.4513920</span></span>
+<span><span class="co">#&gt; 10  100 0.10714465 4.969069e-04 0.4267332</span></span>
 <span><span class="fu"><a href="../reference/fit.html">fit</a></span><span class="op">(</span><span class="va">samples</span>, <span class="va">ordinal_model</span>, <span class="va">ordinal_data</span>, grade <span class="op">=</span> <span class="fl">2L</span>, cumulative <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></span>
 <span><span class="co">#&gt;    dose     middle        lower     upper</span></span>
-<span><span class="co">#&gt; 1    10 0.01680818 2.088294e-10 0.1338752</span></span>
-<span><span class="co">#&gt; 2    20 0.03561759 1.277692e-06 0.1901925</span></span>
-<span><span class="co">#&gt; 3    30 0.06617214 1.799123e-04 0.2471306</span></span>
-<span><span class="co">#&gt; 4    40 0.11863301 5.633832e-03 0.3397702</span></span>
-<span><span class="co">#&gt; 5    50 0.21137858 4.898936e-02 0.4610212</span></span>
-<span><span class="co">#&gt; 6    60 0.35304189 1.004056e-01 0.6768476</span></span>
-<span><span class="co">#&gt; 7    70 0.48550695 1.262013e-01 0.9039559</span></span>
-<span><span class="co">#&gt; 8    80 0.57596428 1.413167e-01 0.9775990</span></span>
-<span><span class="co">#&gt; 9    90 0.63756994 1.490952e-01 0.9947892</span></span>
-<span><span class="co">#&gt; 10  100 0.68181557 1.560712e-01 0.9985225</span></span></code></pre></div>
+<span><span class="co">#&gt; 1    10 0.02035715 8.501725e-10 0.1481018</span></span>
+<span><span class="co">#&gt; 2    20 0.04055390 3.062268e-06 0.2171752</span></span>
+<span><span class="co">#&gt; 3    30 0.07180521 3.066417e-04 0.2801610</span></span>
+<span><span class="co">#&gt; 4    40 0.12359165 6.672921e-03 0.3419619</span></span>
+<span><span class="co">#&gt; 5    50 0.21339077 5.318054e-02 0.4415168</span></span>
+<span><span class="co">#&gt; 6    60 0.34874495 1.068808e-01 0.6773734</span></span>
+<span><span class="co">#&gt; 7    70 0.47744195 1.307362e-01 0.8988641</span></span>
+<span><span class="co">#&gt; 8    80 0.56931870 1.496308e-01 0.9755678</span></span>
+<span><span class="co">#&gt; 9    90 0.63291489 1.621517e-01 0.9939455</span></span>
+<span><span class="co">#&gt; 10  100 0.67869320 1.678446e-01 0.9981696</span></span></code></pre></div>
 <blockquote>
 <p>Note that, for <code>grade == K - 1</code>, the cumulative and
 grade-specific probabilities of toxicities are identical.</p>
@@ -368,6 +363,91 @@ an increment of 0.5, giving a maximum permitted dose of 90.</p>
 </div>
 </div>
 <div class="section level2">
+<h2 id="on-the-need-for-a-diagonal-covariance-matrix">On the need for a diagonal covariance matrix<a class="anchor" aria-label="anchor" href="#on-the-need-for-a-diagonal-covariance-matrix"></a>
+</h2>
+<p>Consider a standard logistic log Normal CRM model:</p>
+<div class="sourceCode" id="cb15"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">model</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/LogisticLogNormal-class.html">LogisticLogNormal</a></span><span class="op">(</span></span>
+<span>  mean <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="op">-</span><span class="fl">3</span>, <span class="fl">1</span><span class="op">)</span>,</span>
+<span>  cov <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/matrix.html" class="external-link">matrix</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">4</span>, <span class="op">-</span><span class="fl">0.5</span>, <span class="op">-</span><span class="fl">0.5</span>, <span class="fl">3</span><span class="op">)</span>, ncol <span class="op">=</span> <span class="fl">2</span><span class="op">)</span>,</span>
+<span>  ref_dose <span class="op">=</span> <span class="fl">45</span></span>
+<span><span class="op">)</span></span>
+<span></span>
+<span><span class="va">model</span><span class="op">@</span><span class="va">params</span><span class="op">@</span><span class="va">cov</span></span>
+<span><span class="co">#&gt;      [,1] [,2]</span></span>
+<span><span class="co">#&gt; [1,]  4.0 -0.5</span></span>
+<span><span class="co">#&gt; [2,] -0.5  3.0</span></span></code></pre></div>
+<p>We can estimate the prior using an empty <code>Data</code>
+object…</p>
+<div class="sourceCode" id="cb16"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">data</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/Data-class.html">Data</a></span><span class="op">(</span>doseGrid <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/seq.html" class="external-link">seq</a></span><span class="op">(</span><span class="fl">10</span>, <span class="fl">100</span>, <span class="fl">10</span><span class="op">)</span><span class="op">)</span></span>
+<span><span class="va">options</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/McmcOptions-class.html">McmcOptions</a></span><span class="op">(</span></span>
+<span>  samples <span class="op">=</span> <span class="fl">30000</span>,</span>
+<span>  rng_kind <span class="op">=</span> <span class="st">"Mersenne-Twister"</span>,</span>
+<span>  rng_seed <span class="op">=</span> <span class="fl">8191316</span></span>
+<span><span class="op">)</span></span>
+<span><span class="va">samples</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/mcmc.html">mcmc</a></span><span class="op">(</span><span class="va">data</span>, <span class="va">model</span>, <span class="va">options</span><span class="op">)</span></span></code></pre></div>
+<p>and then obtain the correlation between the model’s parameters
+[recalling that the prior is defined in terms of log(alpha1)]…</p>
+<div class="sourceCode" id="cb17"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">d</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/matrix.html" class="external-link">as.matrix</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/cbind.html" class="external-link">cbind</a></span><span class="op">(</span><span class="va">samples</span><span class="op">@</span><span class="va">data</span><span class="op">$</span><span class="va">alpha0</span>, <span class="fu"><a href="https://rdrr.io/r/base/Log.html" class="external-link">log</a></span><span class="op">(</span><span class="va">samples</span><span class="op">@</span><span class="va">data</span><span class="op">$</span><span class="va">alpha1</span><span class="op">)</span><span class="op">)</span><span class="op">)</span></span>
+<span><span class="va">sigmaHat</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/stats/cor.html" class="external-link">cov</a></span><span class="op">(</span><span class="va">d</span><span class="op">)</span></span>
+<span><span class="va">sigmaHat</span></span>
+<span><span class="co">#&gt;            [,1]       [,2]</span></span>
+<span><span class="co">#&gt; [1,]  4.0094331 -0.5416752</span></span>
+<span><span class="co">#&gt; [2,] -0.5416752  3.0363958</span></span></code></pre></div>
+<p>So we requested a covariance of -0.5 and got -0.5416755.2. Pretty
+good!</p>
+<p>Now look an ordinal CRM model with non-zero correlation between its
+parameters.</p>
+<p>To begin, take a copy of the current
+<code>LogisticLogNormalOrdinal</code> model and give it a non-diagonal
+covariance matrix by accessing its <code>params@cov</code> slot
+directly, deliberately avoiding object validation.</p>
+<blockquote>
+<p>NB This is poor practice and not recommended. It is done here purely
+for illustration.</p>
+</blockquote>
+<div class="sourceCode" id="cb18"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">ordinal_model_temp</span> <span class="op">&lt;-</span> <span class="va">ordinal_model</span></span>
+<span><span class="va">ordinal_model_temp</span><span class="op">@</span><span class="va">params</span><span class="op">@</span><span class="va">cov</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/matrix.html" class="external-link">matrix</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">4</span>, <span class="op">-</span><span class="fl">0.5</span>, <span class="op">-</span><span class="fl">0.5</span>, <span class="op">-</span><span class="fl">0.5</span>, <span class="fl">3</span>, <span class="op">-</span><span class="fl">0.5</span>, <span class="op">-</span><span class="fl">0.5</span>, <span class="op">-</span><span class="fl">0.5</span>, <span class="fl">1</span><span class="op">)</span>, ncol <span class="op">=</span> <span class="fl">3</span><span class="op">)</span></span>
+<span></span>
+<span><span class="va">ordinal_model_temp</span><span class="op">@</span><span class="va">params</span><span class="op">@</span><span class="va">cov</span></span>
+<span><span class="co">#&gt;      [,1] [,2] [,3]</span></span>
+<span><span class="co">#&gt; [1,]  4.0 -0.5 -0.5</span></span>
+<span><span class="co">#&gt; [2,] -0.5  3.0 -0.5</span></span>
+<span><span class="co">#&gt; [3,] -0.5 -0.5  1.0</span></span></code></pre></div>
+<p>Fit the revised model to obtain the prior.</p>
+<div class="sourceCode" id="cb19"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">ordinal_data</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/DataOrdinal-class.html">DataOrdinal</a></span><span class="op">(</span>doseGrid <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/seq.html" class="external-link">seq</a></span><span class="op">(</span><span class="fl">10</span>, <span class="fl">100</span>, <span class="fl">10</span><span class="op">)</span><span class="op">)</span></span>
+<span><span class="va">ordinal_samples</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/mcmc.html">mcmc</a></span><span class="op">(</span><span class="va">ordinal_data</span>, <span class="va">ordinal_model_temp</span>, <span class="va">options</span><span class="op">)</span></span>
+<span><span class="co">#&gt; Warning in rjags::jags.model(file = model_file, data = model_data, inits =</span></span>
+<span><span class="co">#&gt; c(model_inits, : Unused variable "tox" in data</span></span></code></pre></div>
+<p>Finally, look at the covariance matrix, remembering to use
+<code>log(beta)</code> rather than <code>beta</code>…</p>
+<div class="sourceCode" id="cb20"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">ordinalD</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/matrix.html" class="external-link">as.matrix</a></span><span class="op">(</span></span>
+<span>  <span class="fu"><a href="https://rdrr.io/r/base/cbind.html" class="external-link">cbind</a></span><span class="op">(</span></span>
+<span>    <span class="va">ordinal_samples</span><span class="op">@</span><span class="va">data</span><span class="op">$</span><span class="va">alpha1</span>,</span>
+<span>    <span class="va">ordinal_samples</span><span class="op">@</span><span class="va">data</span><span class="op">$</span><span class="va">alpha2</span>,</span>
+<span>    <span class="fu"><a href="https://rdrr.io/r/base/Log.html" class="external-link">log</a></span><span class="op">(</span><span class="va">ordinal_samples</span><span class="op">@</span><span class="va">data</span><span class="op">$</span><span class="va">beta</span><span class="op">)</span></span>
+<span>  <span class="op">)</span></span>
+<span><span class="op">)</span></span>
+<span><span class="va">sigmaHat</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/stats/cor.html" class="external-link">cov</a></span><span class="op">(</span><span class="va">ordinalD</span><span class="op">)</span></span>
+<span><span class="va">sigmaHat</span></span>
+<span><span class="co">#&gt;             [,1]        [,2]         [,3]</span></span>
+<span><span class="co">#&gt; [1,]  4.00158899 2.768345336 -0.001112980</span></span>
+<span><span class="co">#&gt; [2,]  2.76834534 2.924696828  0.008697924</span></span>
+<span><span class="co">#&gt; [3,] -0.00111298 0.008697924  1.012033823</span></span></code></pre></div>
+<p>The correlations are nothing like what we requested. This is due to
+the constraints imposed on the intercepts by the model. The situation
+will most likely worsen as the number of toxicity categories
+increases.</p>
+<p>We have an open issue - #755 -to examine options for allowing end
+users to specify correlation structures for ordinal CRM models. If you
+would like to contribute, please do so.</p>
+</div>
+<div class="section level2">
 <h2 id="some-observations">Some observations<a class="anchor" aria-label="anchor" href="#some-observations"></a>
 </h2>
 <ul>
@@ -418,7 +498,7 @@ complexity in using the new classes.</li>
 <span><span class="co">#&gt; [1] stats     graphics  grDevices utils     datasets  methods   base     </span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; other attached packages:</span></span>
-<span><span class="co">#&gt; [1] crmPack_1.0.9000.9136 ggplot2_3.4.4        </span></span>
+<span><span class="co">#&gt; [1] crmPack_1.0.9000.9137 ggplot2_3.4.4        </span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; loaded via a namespace (and not attached):</span></span>
 <span><span class="co">#&gt;  [1] gtable_0.3.4         xfun_0.41            bslib_0.5.1         </span></span>
