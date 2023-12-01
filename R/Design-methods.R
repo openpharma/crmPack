@@ -3982,7 +3982,7 @@ setMethod("simulate",
 ##' @param truthSurv a CDF which takes as input a time (vector) and returns
 ##'   the true cumulative probability (vector) that the DLT would occur conditioning on the patient
 ##'   has DLTs.
-##' @param trueTmax add documentation here
+##' @param trueTmax (`number` or `NULL`)\cr the true maximum time at which DLTs can occur. Note that this must be larger thank `Tmax` from the `object`'s base data, which is the length of the DLT window, i.e. until which time DLTs are officially declared as such and used in the trial.
 ##' @param args data frame with arguments for the \code{truth} function. The
 ##'   column names correspond to the argument names, the rows to the values of the
 ##'   arguments. The rows are appropriately recycled in the \code{nsim}
