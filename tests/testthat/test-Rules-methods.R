@@ -1305,10 +1305,9 @@ test_that("maxDose-IncrementsRelativeParts throws error when part1Ladder is exce
     nextPart = 2L,
     part1Ladder = c(0.1, 0.5, 1.5, 3, 6, 10, 20)
   )
-
   expect_error(
     maxDose(increments, data),
-    regexp = "Assertion on 'new_max_dose_level <= length"
+    "Assertion on 'new_max_dose_level <= length(data@part1Ladder)' failed: Must be TRUE.", fixed = TRUE
   )
 })
 
