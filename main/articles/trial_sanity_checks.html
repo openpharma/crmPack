@@ -33,7 +33,7 @@
     
     <a class="navbar-brand me-2" href="../index.html">crmPack</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">1.0.9000.9137</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">2.0.0.9138</small>
 
     
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -65,12 +65,6 @@
 <li class="nav-item">
   <a class="nav-link" href="../news/index.html">Changelog</a>
 </li>
-<!-- start dropdown for versions --> <li class="nav-item dropdown">
-        <a href="#" class="nav-link dropdown-toggle"
-          data-bs-toggle="dropdown" role="button"
-          aria-expanded="false" aria-haspopup="true"
-          id="dropdown-versions">Versions</a> <div class="dropdown-menu" aria-labelledby="dropdown-versions"> <a class="dropdown-item" data-toggle="tooltip" title="" href="https://Roche.github.io/crmPack/main">main</a> </div></li>
-<!-- end dropdown for versions -->
 <li class="nav-item dropdown">
   <a href="#" class="nav-link dropdown-toggle" data-bs-toggle="dropdown" role="button" aria-expanded="false" aria-haspopup="true" id="dropdown-reports">Reports</a>
   <div class="dropdown-menu" aria-labelledby="dropdown-reports">
@@ -247,13 +241,13 @@ FALSE
 1
 </td>
 <td style="text-align:right;">
-NA
+1
 </td>
 <td style="text-align:left;">
 FALSE
 </td>
 <td style="text-align:right;">
-NA
+-67
 </td>
 </tr>
 <tr>
@@ -1686,20 +1680,20 @@ the state of the model after escalation to 50 mg without toxicity…</p>
 <span><span class="co">#&gt;  [1,]    1  0.000    0.000</span></span>
 <span><span class="co">#&gt;  [2,]    3  0.000    0.000</span></span>
 <span><span class="co">#&gt;  [3,]    5  0.000    0.000</span></span>
-<span><span class="co">#&gt;  [4,]   10  0.003    0.000</span></span>
-<span><span class="co">#&gt;  [5,]   15  0.008    0.000</span></span>
-<span><span class="co">#&gt;  [6,]   20  0.007    0.003</span></span>
-<span><span class="co">#&gt;  [7,]   25  0.012    0.003</span></span>
-<span><span class="co">#&gt;  [8,]   40  0.033    0.006</span></span>
-<span><span class="co">#&gt;  [9,]   50  0.125    0.035</span></span>
-<span><span class="co">#&gt; [10,]   80  0.133    0.813</span></span>
-<span><span class="co">#&gt; [11,]  100  0.060    0.921</span></span>
+<span><span class="co">#&gt;  [4,]   10  0.000    0.000</span></span>
+<span><span class="co">#&gt;  [5,]   15  0.001    0.000</span></span>
+<span><span class="co">#&gt;  [6,]   20  0.005    0.000</span></span>
+<span><span class="co">#&gt;  [7,]   25  0.009    0.000</span></span>
+<span><span class="co">#&gt;  [8,]   40  0.050    0.000</span></span>
+<span><span class="co">#&gt;  [9,]   50  0.128    0.023</span></span>
+<span><span class="co">#&gt; [10,]   80  0.123    0.830</span></span>
+<span><span class="co">#&gt; [11,]  100  0.062    0.922</span></span>
 <span></span>
 <span><span class="fu"><a href="../reference/maxDose.html">maxDose</a></span><span class="op">(</span><span class="va">revised_increment_rule</span>, <span class="va">no_tox_below_50_data</span><span class="op">)</span></span>
 <span><span class="co">#&gt; [1] 83.5</span></span></code></pre></div>
 <p>Whilst the increments rule allows escalation to 83.5 mg, the toxicity
 estimates provided by the model do not: the current estimate of toxicity
-at 80 mg is 0.813, well above the limit of 0.25 defined in the dose
+at 80 mg is 0.83, well above the limit of 0.25 defined in the dose
 recommendation rule (<code>next_best</code>).</p>
 <p>Again, we have several options. We can introduce intermediate doses,
 thus slowing escalation and allowing the prior model more time to adapt
@@ -1935,6 +1929,40 @@ FALSE
 0
 </td>
 <td style="text-align:right;">
+15
+</td>
+<td style="text-align:left;">
+FALSE
+</td>
+<td style="text-align:right;">
+0
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+15
+</td>
+<td style="text-align:right;">
+1
+</td>
+<td style="text-align:right;">
+10
+</td>
+<td style="text-align:left;">
+FALSE
+</td>
+<td style="text-align:right;">
+-33
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+15
+</td>
+<td style="text-align:right;">
+0
+</td>
+<td style="text-align:right;">
 20
 </td>
 <td style="text-align:left;">
@@ -1959,40 +1987,6 @@ FALSE
 </td>
 <td style="text-align:right;">
 -33
-</td>
-</tr>
-<tr>
-<td style="text-align:right;">
-20
-</td>
-<td style="text-align:right;">
-0
-</td>
-<td style="text-align:right;">
-20
-</td>
-<td style="text-align:left;">
-FALSE
-</td>
-<td style="text-align:right;">
-0
-</td>
-</tr>
-<tr>
-<td style="text-align:right;">
-20
-</td>
-<td style="text-align:right;">
-1
-</td>
-<td style="text-align:right;">
-10
-</td>
-<td style="text-align:left;">
-FALSE
-</td>
-<td style="text-align:right;">
--50
 </td>
 </tr>
 <tr>
@@ -2122,13 +2116,13 @@ FALSE
 1
 </td>
 <td style="text-align:right;">
-25
+20
 </td>
 <td style="text-align:left;">
 FALSE
 </td>
 <td style="text-align:right;">
-0
+-20
 </td>
 </tr>
 <tr>
@@ -2241,13 +2235,13 @@ FALSE
 2
 </td>
 <td style="text-align:right;">
-40
+25
 </td>
 <td style="text-align:left;">
 FALSE
 </td>
 <td style="text-align:right;">
--20
+-50
 </td>
 </tr>
 <tr>
@@ -2441,10 +2435,10 @@ any reports of toxicity, and fit the revised model …</p>
 <span><span class="co">#&gt;  [5,]   15  0.000    0.000</span></span>
 <span><span class="co">#&gt;  [6,]   20  0.000    0.000</span></span>
 <span><span class="co">#&gt;  [7,]   25  0.000    0.000</span></span>
-<span><span class="co">#&gt;  [8,]   40  0.187    0.000</span></span>
-<span><span class="co">#&gt;  [9,]   50  0.344    0.003</span></span>
-<span><span class="co">#&gt; [10,]   80  0.263    0.259</span></span>
-<span><span class="co">#&gt; [11,]  100  0.160    0.409</span></span>
+<span><span class="co">#&gt;  [8,]   40  0.022    0.000</span></span>
+<span><span class="co">#&gt;  [9,]   50  0.056    0.003</span></span>
+<span><span class="co">#&gt; [10,]   80  0.302    0.027</span></span>
+<span><span class="co">#&gt; [11,]  100  0.413    0.097</span></span>
 <span></span>
 <span><span class="fu"><a href="../reference/stopTrial.html">stopTrial</a></span><span class="op">(</span><span class="va">stopping_trial</span>, <span class="va">recommended_dose</span><span class="op">$</span><span class="va">value</span>, <span class="va">no_tox_samples</span>, <span class="va">initial_model</span>, <span class="va">no_tox_data</span><span class="op">)</span></span>
 <span><span class="co">#&gt; [1] TRUE</span></span>
@@ -2454,7 +2448,7 @@ any reports of toxicity, and fit the revised model …</p>
 <span><span class="co">#&gt; [1] "Number of cohorts is 11 and thus reached the prespecified minimum number 3"</span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; attr(,"message")[[1]][[2]]</span></span>
-<span><span class="co">#&gt; [1] "Probability for target toxicity is 34 % for dose 50 and thus below the required 50 %"</span></span>
+<span><span class="co">#&gt; [1] "Probability for target toxicity is 41 % for dose 100 and thus below the required 50 %"</span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; attr(,"message")[[2]]</span></span>
@@ -2468,7 +2462,7 @@ any reports of toxicity, and fit the revised model …</p>
 <span><span class="co">#&gt; [1] "Number of cohorts is 11 and thus reached the prespecified minimum number 3"</span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; attr(,"message")[[2]]</span></span>
-<span><span class="co">#&gt; [1] "Probability for target toxicity is 34 % for dose 50 and thus below the required 50 %"</span></span>
+<span><span class="co">#&gt; [1] "Probability for target toxicity is 41 % for dose 100 and thus below the required 50 %"</span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; attr(,"individual")</span></span>
 <span><span class="co">#&gt; attr(,"individual")[[1]]</span></span>
@@ -2481,7 +2475,7 @@ any reports of toxicity, and fit the revised model …</p>
 <span><span class="co">#&gt; attr(,"individual")[[2]]</span></span>
 <span><span class="co">#&gt; [1] FALSE</span></span>
 <span><span class="co">#&gt; attr(,"message")</span></span>
-<span><span class="co">#&gt; [1] "Probability for target toxicity is 34 % for dose 50 and thus below the required 50 %"</span></span>
+<span><span class="co">#&gt; [1] "Probability for target toxicity is 41 % for dose 100 and thus below the required 50 %"</span></span>
 <span><span class="co">#&gt; attr(,"report_label")</span></span>
 <span><span class="co">#&gt; [1] NA</span></span>
 <span><span class="co">#&gt; </span></span>
