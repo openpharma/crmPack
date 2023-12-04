@@ -32,7 +32,39 @@ h_barplot_percentages <- function(x, description, xaxisround = 0) {
 }
 
 
-h_summarize_add_stats <- function(stats_list) {
+
+#' calculate percentage of true stopping rules for report label output
+#'
+#' @description
+#'
+#' calculates true column means and converts output into percentages
+#' before combining the output with the report label; output is passed
+#' to [`show()`] and output with cat to console
+#'
+#' @param stop_report object from summary method
+
+
+h_calc_report_label_percentage <- function(stop_report) {
+  stop_pct <- colMeans(stop_report) * 100
+  stop_pct_to_print <- stop_pct[!is.na(names(stop_pct))]
+  return(stop_pct_to_print)
+}
+
+
+
+#' calculate average across iterations for each additional reporting parameter
+#'
+#' @description
+#'
+#' extracts parameter names as specified by user and averaged the values
+#' for each specified parameter to [`show()`] and output with cat to console
+#'
+#' @param stats_list object from simulation with nested parameter values
+#' (sublist for each parameter)
+
+
+h_summarize_add_stats <- function(stats_list){
+
   # stats_list <- object@additional_stats
 
   # Extract the parameter names
@@ -46,3 +78,4 @@ h_summarize_add_stats <- function(stats_list) {
 
   return(list(param_names, averages))
 }
+
