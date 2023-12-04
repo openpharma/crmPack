@@ -2000,18 +2000,8 @@ setMethod("show",
       # Report results of additional statistics summary
 
       if (length(unlist(object@additional_stats)) > 0) {
-        # Access the nested list of values
-        # stats_list <- object@additional_stats
-
-        # Extract the parameter names
-        # param_names <- names(stats_list[[1]])
         param_names <- h_summarize_add_stats(object@additional_statistics)[1]
         averages <- h_summarize_add_stats(object@additional_statistics)[2]
-        # Calculate the average for each parameter
-        #  averages <- lapply(param_names, function(param) {
-        #    values <- sapply(stats_list, function(x) x[[param]])
-        #    mean(values)
-        #  })
 
         for (i in seq_along(param_names)) {
           cat(param_names[i], ":", round(averages[[i]], 2), "\n")
