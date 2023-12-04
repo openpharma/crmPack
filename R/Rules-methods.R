@@ -3745,7 +3745,7 @@ setMethod(
   f = "tidy",
   signature = signature(x = "NextBestNCRM"),
   definition = function(x, ...) {
-    rv <- h_tidy_all_slots(x) |>
+    h_tidy_all_slots(x) |>
       dplyr::bind_cols() |>
       h_range_to_minmax(.data$target, range_min = 0, range_max = 1) |>
       add_column(max_prob = c(NA, NA, x@max_overdose_prob)) |>

@@ -4382,10 +4382,18 @@ test_that("tidy-IncrementsRelativeParts works correctly", {
   expect_snapshot_value(result, style = "deparse")
 })
 
+# Relevant:https://github.com/Roche/crmPack/issues/759
 test_that("tidy-NextBestNCRM works correctly", {
   obj <- .DefaultNextBestNCRM()
   result <- tidy(obj)
-  expect_snapshot_value(result, style = "deparse")
+  expected <- tibble::tibble(
+    Range = c("Underdose", "Target", "Overdose"),
+    min = c(0.00, 0.20, 0.35),
+    max = c(0.20, 0.35, 1.00),
+    max_prob = c(NA, NA, 0.25)
+  )
+  class(expected) <- c("tbl_NextBestNCRM", class(expected))
+  expect_identical(result, expected)
 })
 
 test_that("tidy-NextBestNCRMLoss works correctly", {
