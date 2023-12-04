@@ -872,41 +872,7 @@ h_find_interval <- function(..., replacement = -Inf) {
   ifelse(x == 0, yes = replacement, no = x)
 }
 
-#' unpack stopping rules and return list
-#'
-#' @description
-#'
-#' recursively unpack nested stopping rules logical value and label given
-#'
-#' @param stopit_tree object from simulate method
 
-h_unpack_stopit <- function(stopit_tree) {
-  label <- attr(stopit_tree, "report_label")
-  value <- stopit_tree[1]
-  names(value) <- label
-  value
-  if (is.null(attr(stopit_tree, "individual"))) {
-    return(value)
-  } else {
-    return(unlist(c(value, lapply(attr(stopit_tree, "individual"), h_unpack_stopit))))
-  }
-}
-
-#' calculate percentage of true stopping rules for report label output
-#'
-#' @description
-#'
-#' calculates true column means and converts output into percentages
-#' before combining the output with the report label; output is passed
-#' to [`show()`] and output with cat to console
-#'
-#' @param stop_report object from summary method
-
-h_calc_report_label_percentage <- function(stop_report) {
-  stop_pct <- colMeans(stop_report) * 100
-  stop_pct_to_print <- stop_pct[!is.na(names(stop_pct))]
-  return(stop_pct_to_print)
-}
 
 #' Group Together Mono and Combo Data
 #'

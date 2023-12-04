@@ -986,13 +986,13 @@ setMethod("show",
 
       # Report results of additional statistics summary
 
-      if (length(list()) > 0) {
-        summary_stat_op <- unlist(object@additional_stats)
+      if (length(unlist(object@additional_stats)) > 0) {
+        param_names <- h_summarize_add_stats(stats_list = object@additional_stats)[[1]]
+        averages <- h_summarize_add_stats(stats_list = object@additional_stats)[[2]]
 
-        cat(
-          "Results of Additional Statistical Calculation : \n",
-          paste(names(summary_stat_op), ":", round(summary_stat_op), "\n")
-        )
+        for (i in seq_along(param_names)) {
+          cat(param_names[i], ":", round(averages[[i]], 2), "\n")
+        }
       }
 
 
@@ -1003,7 +1003,7 @@ setMethod("show",
       if (length(stop_pct_to_print) > 0) {
         cat(
           "Stop reason triggered:\n",
-          paste(names(stop_pct_to_print), ": ", stop_pct_to_print, "%\n")
+          paste(names(stop_pct_to_print), ": ", round(stop_pct_to_print, 2), "%\n")
         )
       }
 
@@ -1735,6 +1735,7 @@ setMethod("summary",
         propAtTargetDuringTrial = propAtTargetDuringTrial,
         doseGrid = doseGrid,
         fitAtDoseMostSelected = fitAtDoseMostSelected,
+        stop_report = object@stop_report,
         meanFit = meanFit
       )
 
@@ -1971,6 +1972,29 @@ setMethod("show",
         capture.output(FinalratioSum)[1], "\n",
         capture.output(FinalratioSum)[2], "\n\n"
       )
+
+      # Report individual stopping rules with non-<NA> labels.
+
+      stop_pct_to_print <- h_calc_report_label_percentage(object@stop_report)
+
+      if (length(stop_pct_to_print) > 0) {
+        cat(
+          "Stop reason triggered:\n",
+          paste(names(stop_pct_to_print), ": ", stop_pct_to_print, "%\n")
+        )
+      }
+
+
+      # Report results of additional statistics summary
+
+   #   if (length(unlist(object@additional_stats)) > 0) {
+  #      param_names <- h_summarize_add_stats(object@additional_statistics)[1]
+  #      averages <- h_summarize_add_stats(object@additional_statistics)[2]##
+
+    #    for (i in seq_along(param_names)) {
+    #      cat(param_names[i], ":", round(averages[[i]], 2), "\n")
+    #    }
+    #  }
 
       ## finally assign names to the df
       ## and return it invisibly
@@ -2581,7 +2605,8 @@ setMethod("summary",
         FinalDoseRecSummary = FinalDoseRecSummary,
         FinalRatioSummary = FinalRatioSummary,
         EffFitAtDoseMostSelected = EffFitAtDoseMostSelected,
-        meanEffFit = meanEffFit
+        meanEffFit = meanEffFit,
+        stop_report = object@stop_report
       )
 
       return(ret)
@@ -2624,7 +2649,9 @@ setMethod("summary",
 
       ## give back an object of class PseudoDualSimulationsSummary,
       ## for which we then define a print / plot method
-      ret <- .PseudoDualSimulationsSummary(start)
+      ret <- .PseudoDualSimulationsSummary(start,
+        stop_report = object@stop_report
+      )
 
       return(ret)
     }
@@ -2739,6 +2766,19 @@ setMethod("show",
         percent = FALSE,
         digits = 1
       )
+
+      # Report individual stopping rules with non-<NA> labels.
+
+      stop_pct_to_print <- h_calc_report_label_percentage(object@stop_report)
+
+      if (length(stop_pct_to_print) > 0) {
+        cat(
+          "Stop reason triggered:\n",
+          paste(names(stop_pct_to_print), ": ", stop_pct_to_print, "%\n")
+        )
+      }
+
+
       ## and return the updated information
       names(r$df) <- r$dfNames
       invisible(r$df)
