@@ -1987,14 +1987,14 @@ setMethod("show",
 
       # Report results of additional statistics summary
 
-   #   if (length(unlist(object@additional_stats)) > 0) {
-  #      param_names <- h_summarize_add_stats(object@additional_statistics)[1]
-  #      averages <- h_summarize_add_stats(object@additional_statistics)[2]##
+      #   if (length(unlist(object@additional_stats)) > 0) {
+      #      param_names <- h_summarize_add_stats(object@additional_statistics)[1]
+      #      averages <- h_summarize_add_stats(object@additional_statistics)[2]##
 
-    #    for (i in seq_along(param_names)) {
-    #      cat(param_names[i], ":", round(averages[[i]], 2), "\n")
-    #    }
-    #  }
+      #    for (i in seq_along(param_names)) {
+      #      cat(param_names[i], ":", round(averages[[i]], 2), "\n")
+      #    }
+      #  }
 
       ## finally assign names to the df
       ## and return it invisibly
