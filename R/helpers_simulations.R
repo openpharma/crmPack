@@ -63,8 +63,7 @@ h_calc_report_label_percentage <- function(stop_report) {
 #' (sublist for each parameter)
 
 
-h_summarize_add_stats <- function(stats_list){
-
+h_summarize_add_stats <- function(stats_list) {
   # stats_list <- object@additional_stats
 
   # Extract the parameter names
@@ -78,4 +77,3 @@ h_summarize_add_stats <- function(stats_list){
 
   return(list(param_names, averages))
 }
-
