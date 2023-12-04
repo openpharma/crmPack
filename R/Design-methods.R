@@ -3031,6 +3031,8 @@ setMethod("simulate",
 ##' @param nCores how many cores should be used for parallel computing?
 ##' Defaults to the number of cores on the machine, maximum 5.
 ##'
+##' @param ... not used.
+##'
 ##' @example examples/design-method-simulateDualResponsesSamplesDesign.R
 ##'
 ##' @return an object of class \code{\linkS4class{PseudoDualSimulations}} or
