@@ -123,7 +123,7 @@ test_that("h_simulations_ouptput_format returns object as expected", {
   expect_equal(simulations_output$dataList[[1]], data_test)
   expect_equal(simulations_output$recommendedDoses, dose)
   expect_equal(simulations_output$fitList[[1]], fit)
-  expect_equal(simulations_output$stop_matrix, do.call(rbind, lapply(resultList_test, "[[", "report_results")))
+  expect_equal(simulations_output$stop_matrix, do.call(rbind, lapply(result_list_test, "[[", "report_results")))
 })
 
 
