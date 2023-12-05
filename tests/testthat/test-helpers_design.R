@@ -102,28 +102,23 @@ test_that("h_add_dlts works as expected when first separate patient does not hav
 
 test_that("h_simulations_ouptput_format returns object as expected", {
   data_test <- new("Data", nGrid = 3L, doseGrid = c(1, 3, 5))
-
   dose <- 20
-
   fit <- data.frame(middle = c(0.2, 0.7), lower = c(0.1, 0.5), upper = c(0.3, 0.4))
-
   stop <- list(list("Number of cohorts is 10 and thus reached the prespecified minimum number 3"))
-
   report_results <- c(TRUE, TRUE, TRUE, TRUE, TRUE)
   names(report_results) <- c(NA, NA, NA, NA, NA)
-
   additional_stats <- list()
 
-  resultList_test <- list(list(
-    data = data_test,
-    dose = dose,
-    fit = fit,
-    stop = stop,
-    report_results = report_results,
+  result_list_test <- list(list(
+    data = data_test, 
+    dose = dose, 
+    fit = fit, 
+    stop = stop, 
+    report_results = report_results, 
     additional_stats = additional_stats
   ))
 
-  simulations_output <- h_simulations_ouptput_format(resultList_test)
+  simulations_output <- h_simulations_ouptput_format(result_list_test)
 
   expect_equal(simulations_output$dataList[[1]], data_test)
   expect_equal(simulations_output$recommendedDoses, dose)
@@ -140,9 +135,9 @@ test_that("h_this_truth returns correct results for given dose", {
   this_args <- args[(iterSim - 1) %% nArgs + 1, , drop = FALSE]
 
   model <- LogisticLogNormal(
-    mean = c(-0.85, 1),
+    mean = c(-0.85, 1), 
     cov =
-      matrix(c(1, -0.5, -0.5, 1),
+      matrix(c(1, -0.5, -0.5, 1), 
         nrow = 2
       ),
     ref_dose = 56
