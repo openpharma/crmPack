@@ -110,11 +110,11 @@ test_that("h_simulations_ouptput_format returns object as expected", {
   additional_stats <- list()
 
   result_list_test <- list(list(
-    data = data_test, 
-    dose = dose, 
-    fit = fit, 
-    stop = stop, 
-    report_results = report_results, 
+    data = data_test,
+    dose = dose,
+    fit = fit,
+    stop = stop,
+    report_results = report_results,
     additional_stats = additional_stats
   ))
 
@@ -135,9 +135,9 @@ test_that("h_this_truth returns correct results for given dose", {
   this_args <- args[(iterSim - 1) %% nArgs + 1, , drop = FALSE]
 
   model <- LogisticLogNormal(
-    mean = c(-0.85, 1), 
+    mean = c(-0.85, 1),
     cov =
-      matrix(c(1, -0.5, -0.5, 1), 
+      matrix(c(1, -0.5, -0.5, 1),
         nrow = 2
       ),
     ref_dose = 56
