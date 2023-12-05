@@ -99,6 +99,39 @@ test_that("h_add_dlts works as expected when first separate patient does not hav
   expect_true(data@nObs + 3 == result@nObs)
 })
 
+
+test_that("h_simulations_ouptput_format returns object as expected", {
+
+  data_test <- new("Data", nGrid = 3L, doseGrid = c(1,3,5))
+
+  dose <- 20
+
+  fit <- data.frame(middle = c(0.2, 0.7), lower = c(0.1, 0.5), upper = c(0.3,0.4))
+
+  stop <- list(list("Number of cohorts is 10 and thus reached the prespecified minimum number 3"))
+
+  report_results <- c(TRUE, TRUE, TRUE, TRUE, TRUE)
+  names(report_results) <- c(NA, NA, NA, NA, NA)
+
+  additional_stats <- list()
+
+  resultList_test <- list(list(
+                          data = data_test,
+                          dose = dose,
+                          fit = fit,
+                          stop = stop,
+                          report_results = report_results,
+                          additional_stats = additional_stats))
+
+  simulations_output <- h_simulations_ouptput_format(resultList_test)
+
+  expect_equal(simulations_output$dataList[[1]], data_test)
+  expect_equal(simulations_output$recommendedDoses, dose)
+  expect_equal(simulations_output$fitList[[1]], fit)
+  expect_equal(simulations_output$stop_matrix, do.call(rbind,lapply(resultList_test, "[[", "report_results")))
+  })
+
+
 test_that("h_this_truth returns correct results for given dose", {
   args <- NULL
   args <- as.data.frame(args)
