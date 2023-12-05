@@ -30,6 +30,7 @@ articles:
       - trial_analysis
       - trial_sanity_checks
       - trial_simulation
+      - ordinal-crm
       - rolling-crm
       - simulations
       - tidy_method

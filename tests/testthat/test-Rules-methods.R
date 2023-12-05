@@ -1291,6 +1291,27 @@ test_that("maxDose-IncrementsRelativeParts throws error when part1Ladder is exce
   )
 })
 
+test_that("maxDose-IncrementsRelativeParts throws error when part1Ladder is exceeded (in p1, p2, DLT, cstart <= 0)", {
+  increments <- IncrementsRelativeParts(
+    dlt_start = 10, clean_start = 20, intervals = c(0, 1), increments = c(4, 3)
+  )
+  data <- DataParts(
+    x = c(0.1, 1.5, 0.5),
+    y = c(0, 0, 1L),
+    ID = 1:3,
+    cohort = 1:3,
+    doseGrid = c(0.1, 0.4, 0.5, 1.5, 3, 6, 10, 15, 20, 30),
+    part = c(1L, 1L, 1L),
+    nextPart = 2L,
+    part1Ladder = c(0.1, 0.5, 1.5, 3, 6, 10, 20)
+  )
+  expect_error(
+    maxDose(increments, data),
+    "Assertion on 'new_max_dose_level <= length(data@part1Ladder)' failed: Must be TRUE.",
+    fixed = TRUE
+  )
+})
+
 ## IncrementsDoseLevels ----
 
 test_that("maxDose-IncrementsDoseLevels works correctly for 'last' basis_level and 1 level increase", {
@@ -1433,6 +1454,40 @@ test_that("maxDose-IncrementsMin works correctly when incr2 is minimum", {
   incr2 <- IncrementsRelativeDLT(intervals = c(0, 1, 3), increments = c(2, 0.5, 0.4))
   increments <- IncrementsMin(increments_list = list(incr1, incr2))
   data <- Data(
+    x = c(5, 100), y = c(1L, 0L), doseGrid = c(5, 100), ID = 1:2, cohort = 1:2
+  )
+  result <- maxDose(increments, data)
+  expect_equal(result, 150)
+})
+
+test_that("maxDose-IncrementsMin-DataOrdinal works correctly when incr1 is minimum", {
+  incr1 <- IncrementsOrdinal(
+    1L,
+    IncrementsRelative(intervals = c(0, 20), increments = c(4, 0.7))
+  )
+  incr2 <- IncrementsOrdinal(
+    1L,
+    IncrementsRelativeDLT(intervals = c(0, 1, 3), increments = c(2, 0.5, 0.4))
+  )
+  increments <- IncrementsMin(increments_list = list(incr1, incr2))
+  data <- DataOrdinal(
+    x = c(5, 100), y = c(1L, 0L), doseGrid = c(5, 100), ID = 1:2, cohort = 1:2
+  )
+  result <- maxDose(increments, data)
+  expect_equal(result, 150)
+})
+
+test_that("maxDose-IncrementsMinOrdinal works correctly when incr2 is minimum", {
+  incr1 <- IncrementsOrdinal(
+    1L,
+    IncrementsRelative(intervals = c(0, 20), increments = c(4, 0.7))
+  )
+  incr2 <- IncrementsOrdinal(
+    1L,
+    IncrementsRelativeDLT(intervals = c(0, 1, 3), increments = c(2, 0.5, 0.4))
+  )
+  increments <- IncrementsMin(increments_list = list(incr1, incr2))
+  data <- DataOrdinal(
     x = c(5, 100), y = c(1L, 0L), doseGrid = c(5, 100), ID = 1:2, cohort = 1:2
   )
   result <- maxDose(increments, data)
@@ -4327,10 +4382,18 @@ test_that("tidy-IncrementsRelativeParts works correctly", {
   expect_snapshot_value(result, style = "deparse")
 })
 
+# Relevant:https://github.com/Roche/crmPack/issues/759
 test_that("tidy-NextBestNCRM works correctly", {
   obj <- .DefaultNextBestNCRM()
   result <- tidy(obj)
-  expect_snapshot_value(result, style = "deparse")
+  expected <- tibble::tibble(
+    Range = c("Underdose", "Target", "Overdose"),
+    min = c(0.00, 0.20, 0.35),
+    max = c(0.20, 0.35, 1.00),
+    max_prob = c(NA, NA, 0.25)
+  )
+  class(expected) <- c("tbl_NextBestNCRM", class(expected))
+  expect_identical(result, expected)
 })
 
 test_that("tidy-NextBestNCRMLoss works correctly", {

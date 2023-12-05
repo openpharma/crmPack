@@ -138,7 +138,7 @@ get_result_list <- function(
 #' @param cohort_size (`CohortSize`)\cr the cohort size rule to use.
 #' @param first_separate (`flag`)\cr whether the first patient is enrolled separately.
 #'
-#' @return The updated `data`.
+#' @return True probability of DLT.
 #'
 #' @keywords internal
 h_add_dlts <- function(data,
@@ -165,6 +165,28 @@ h_add_dlts <- function(data,
     rbinom(n = size, size = 1, prob = prob)
   }
   update(data, x = dose, y = dlts)
+}
+
+
+
+#' Helper Function to call truth calculation
+#'
+#' @param dose (`number`)\cr current dose.
+#' @param truth (`function`)\cr defines the true probability for a DLT at a dose.
+#' @param this_args (`data.frame`)\cr list of arguments for the truth.
+#' @return The updated `this_truth`.
+#'
+#' @keywords internal
+h_this_truth <- function(dose, this_args, truth) {
+  do.call(
+    truth,
+    ## First argument: the dose
+    c(
+      dose,
+      ## Following arguments
+      this_args
+    )
+  )
 }
 
 #' Helper Function to create return list for Simulations output
@@ -205,4 +227,3 @@ h_simulations_ouptput_format <- function(resultList) {
     additional_stats = additional_stats,
     stop_matrix = stop_matrix
   ))
-}

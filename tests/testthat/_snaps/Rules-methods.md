@@ -465,13 +465,6 @@
     "tbl", "data.frame"), row.names = c(NA, -2L))), class = c("tbl_IncrementsRelativeParts", 
     "list"))
 
-# tidy-NextBestNCRM works correctly
-
-    structure(list(Range = c("Underdose", "Target", "Overdose"), 
-        min = c(0, 0.2, 0.35), max = c(0.2, 0.35, 1), max_prob = c(NA, 
-        NA, 0.25)), row.names = c(NA, -3L), class = c("tbl_NextBestNCRM", 
-    "tbl_df", "tbl", "data.frame"))
-
 # tidy-NextBestNCRMLoss works correctly
 
     structure(list(unacceptable = structure(list(unacceptable = c(0.6, 
