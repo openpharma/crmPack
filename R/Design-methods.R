@@ -331,7 +331,6 @@ setMethod("simulate",
 
       # # Result list of additional statistical summary.
       # additional_stats <- lapply(resultList, "[[", "additional_stats")
-      browser()
       simulations_output <- h_simulations_ouptput_format(resultList)
 
       ## return the results in the Simulations class object

@@ -101,7 +101,7 @@ test_that("h_add_dlts works as expected when first separate patient does not hav
 
 test_that("h_simulations_ouptput_format returns object as expected", {
 
-  data_test <- new("Data", nGrid = 11L)
+  data_test <- new("Data", nGrid = 3L, doseGrid = c(1,3,5))
 
   dose <- 20
 
@@ -114,15 +114,20 @@ test_that("h_simulations_ouptput_format returns object as expected", {
 
   additional_stats <- list()
 
-  resultList_test <- list(data = data_test,
-                          dose,
-                          fit,
-                          stop,
-                          report_results,
-                          additional_stats)
+  resultList_test <- list(list(
+                          data = data_test,
+                          dose = dose,
+                          fit = fit,
+                          stop = stop,
+                          report_results = report_results,
+                          additional_stats = additional_stats))
 
-  simulations_output <- h_simulations_ouptput_format(resultList)
+  simulations_output <- h_simulations_ouptput_format(resultList_test)
 
-  expect_equal()
+  expect_equal(simulations_output$dataList[[1]], data_test)
+  expect_equal(simulations_output$recommendedDoses, dose)
+  expect_equal(simulations_output$fitList[[1]], fit)
+  expect_equal(simulations_output$stop_matrix, do.call(rbind,lapply(resultList_test, "[[", "report_results")))
+
 
 })
