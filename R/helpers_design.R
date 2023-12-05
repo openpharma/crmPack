@@ -227,3 +227,4 @@ h_simulations_ouptput_format <- function(resultList) {
     additional_stats = additional_stats,
     stop_matrix = stop_matrix
   ))
+}
