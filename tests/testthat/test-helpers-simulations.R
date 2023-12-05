@@ -38,11 +38,11 @@ test_that("barplot_percentages fails gracefully with bad input", {
 
 
 test_that("aggreagtion of additional stats works correctly", {
-  
-   stats_list <- list(list(test1 = 1, test2 = 2), 
-                      list(test1 = 3, test2 = 4), 
-                      list(test1 = 5, test2 = 6))
+  stats_list <- list(
+    list(test1 = 1, test2 = 2),
+    list(test1 = 3, test2 = 4),
+    list(test1 = 5, test2 = 6)
+  )
   expect_equal(h_summarize_add_stats(stats_list)[[1]], c("test1", "test2"))
-  expect_equal(h_summarize_add_stats(stats_list)[[2]], list(3,4))
-  
+  expect_equal(h_summarize_add_stats(stats_list)[[2]], list(3, 4))
 })
