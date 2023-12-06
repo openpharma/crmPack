@@ -196,7 +196,7 @@ h_this_truth <- function(dose, this_args, truth) {
 #' @return aggregated output for simulation object `list`.
 #'
 #' @keywords internal
-h_simulations_ouptput_format <- function(resultList) {
+h_simulations_output_format <- function(resultList) {
   ## put everything in the Simulations format:
 
   ## setup the list for the simulated data objects
