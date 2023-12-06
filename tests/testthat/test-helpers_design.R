@@ -118,7 +118,7 @@ test_that("h_simulations_output_format returns object as expected", {
     additional_stats = additional_stats
   ))
 
-  simulations_output <- h_simulations_ouptput_format(result_list_test)
+  simulations_output <- h_simulations_output_format(result_list_test)
 
   expect_equal(simulations_output$dataList[[1]], data_test)
   expect_equal(simulations_output$recommendedDoses, dose)
