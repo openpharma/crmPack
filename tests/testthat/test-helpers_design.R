@@ -100,7 +100,7 @@ test_that("h_add_dlts works as expected when first separate patient does not hav
 })
 
 
-test_that("h_simulations_ouptput_format returns object as expected", {
+test_that("h_simulations_output_format returns object as expected", {
   data_test <- new("Data", nGrid = 3L, doseGrid = c(1, 3, 5))
   dose <- 20
   fit <- data.frame(middle = c(0.2, 0.7), lower = c(0.1, 0.5), upper = c(0.3, 0.4))
