@@ -83,5 +83,3 @@ time <- system.time(my_sims <- simulate(design,
 
 # Show the Summary of the Simulations
 show(summary(my_sims, truth = my_truth))
-
-

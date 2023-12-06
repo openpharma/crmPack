@@ -4570,8 +4570,10 @@ setMethod("simulate",
                 stopit,
                 "message"
               ),
+
             report_results = stopit_results,
             additional_stats = additional_stats
+
           )
         return(thisResult)
       }
@@ -4815,7 +4817,7 @@ setMethod(
         stop_reasons <- lapply(this_list, "[[", "stop")
         report_results <- lapply(this_list, "[[", "results")
         stop_report <- as.matrix(do.call(rbind, report_results))
-    
+
 
         Simulations(
           data = data_list,
