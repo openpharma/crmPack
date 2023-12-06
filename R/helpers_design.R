@@ -187,3 +187,23 @@ h_this_truth <- function(dose, this_args, truth) {
     )
   )
 }
+
+
+
+#' Helper function to recursively unpack stopping rules and return lists with 
+#' logical value and label given
+#'
+#' @param stopit_tree object from simulate method
+#' @return named list
+
+h_unpack_stopit <- function(stopit_tree) {
+  label <- attr(stopit_tree, "report_label")
+  value <- stopit_tree[1]
+  names(value) <- label
+  value
+  if (is.null(attr(stopit_tree, "individual"))) {
+    return(value)
+  } else {
+    return(unlist(c(value, lapply(attr(stopit_tree, "individual"), h_unpack_stopit))))
+  }
+}
