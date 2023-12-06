@@ -190,7 +190,7 @@ h_this_truth <- function(dose, this_args, truth) {
 
 
 
-#' Helper function to recursively unpack stopping rules and return lists with 
+#' Helper function to recursively unpack stopping rules and return lists with
 #' logical value and label given
 #'
 #' @param stopit_tree object from simulate method

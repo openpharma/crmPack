@@ -33,7 +33,7 @@ h_barplot_percentages <- function(x, description, xaxisround = 0) {
 
 
 
-#' Helper function to calculate percentage of true stopping rules for 
+#' Helper function to calculate percentage of true stopping rules for
 #' report label output
 #' calculates true column means and converts output into percentages
 #' before combining the output with the report label; output is passed
@@ -51,7 +51,7 @@ h_calc_report_label_percentage <- function(stop_report) {
 
 
 
-#' Helper function to calculate average across iterations for each additional 
+#' Helper function to calculate average across iterations for each additional
 #' reporting parameter
 #' extracts parameter names as specified by user and averaged the values
 #' for each specified parameter to [`show()`] and output with cat to console
