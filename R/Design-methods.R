@@ -4554,7 +4554,7 @@ setMethod("simulate",
 
         # Create a function for additional statistical summary.
         additional_stats <- lapply(derive, function(f) f(target_dose_samples))
-        
+
         ## return the results
         thisResult <-
           list(
@@ -4570,10 +4570,8 @@ setMethod("simulate",
                 stopit,
                 "message"
               ),
-
             report_results = stopit_results,
             additional_stats = additional_stats
-
           )
         return(thisResult)
       }
@@ -4619,7 +4617,7 @@ setMethod("simulate",
       # individual stopping rule results as matrix, labels as column names
       stop_results <- lapply(resultList, "[[", "report_results")
       stop_report <- as.matrix(do.call(rbind, stop_results))
-      
+
       additional_stats <- lapply(resultList, "[[", "additional_stats")
 
       ## return the results in the Simulations class object
