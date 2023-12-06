@@ -190,13 +190,11 @@ h_this_truth <- function(dose, this_args, truth) {
 
 
 
-#' unpack stopping rules and return list
-#'
-#' @description
-#'
-#' recursively unpack nested stopping rules logical value and label given
+#' Helper function to recursively unpack stopping rules and return lists with 
+#' logical value and label given
 #'
 #' @param stopit_tree object from simulate method
+#' @return named list
 
 h_unpack_stopit <- function(stopit_tree) {
   label <- attr(stopit_tree, "report_label")

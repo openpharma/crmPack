@@ -4552,10 +4552,6 @@ setMethod("simulate",
           samples = thisSamples
         )
 
-        # Create a function for additional statistical summary.
-
-        additional_stats <- lapply(derive, function(f) f(target_dose_samples))
-
 
         ## return the results
         thisResult <-
@@ -4572,7 +4568,7 @@ setMethod("simulate",
                 stopit,
                 "message"
               ),
-            additional_stats = additional_stats,
+           
             report_results = stopit_results
           )
         return(thisResult)
@@ -4620,7 +4616,6 @@ setMethod("simulate",
       stop_results <- lapply(resultList, "[[", "report_results")
       stop_report <- as.matrix(do.call(rbind, stop_results))
 
-      additional_stats <- lapply(resultList, "[[", "additional_stats")
 
       ## return the results in the Simulations class object
       ret <- DASimulations(
@@ -4629,7 +4624,6 @@ setMethod("simulate",
         fit = fitList,
         trialduration = trialduration,
         stop_report = stop_report,
-        additional_stats = additional_stats,
         stop_reasons = stopReasons,
         seed = RNGstate
       )
@@ -4817,7 +4811,7 @@ setMethod(
         stop_reasons <- lapply(this_list, "[[", "stop")
         report_results <- lapply(this_list, "[[", "results")
         stop_report <- as.matrix(do.call(rbind, report_results))
-        additional_stats <- lapply(this_list, "[[", "additional_stats")
+    
 
         Simulations(
           data = data_list,
@@ -4825,7 +4819,6 @@ setMethod(
           fit = fit_list,
           stop_reasons = stop_reasons,
           stop_report = stop_report,
-          additional_stats = additional_stats,
           seed = rng_state
         )
       })

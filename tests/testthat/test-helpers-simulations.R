@@ -37,7 +37,7 @@ test_that("barplot_percentages fails gracefully with bad input", {
 
 
 
-test_that("aggreagtion of additional stats works correctly", {
+test_that("aggregation of additional stats works correctly", {
   stats_list <- list(
     list(test1 = 1, test2 = 2),
     list(test1 = 3, test2 = 4),

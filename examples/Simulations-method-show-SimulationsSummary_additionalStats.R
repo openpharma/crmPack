@@ -1,5 +1,3 @@
-# nolint start
-
 # Define the dose-grid
 emptydata <- Data(doseGrid = c(1, 3, 5, 10, 15, 20, 25, 40, 50, 80, 100))
 
@@ -14,34 +12,34 @@ model <- LogisticLogNormal(
 )
 
 # Choose the rule for selecting the next dose
-myNextBest <- NextBestNCRM(
+my_next_best <- NextBestNCRM(
   target = c(0.2, 0.35),
   overdose = c(0.35, 1),
   max_overdose_prob = 0.25
 )
 
 # Choose the rule for the cohort-size
-mySize1 <- CohortSizeRange(
+my_size1 <- CohortSizeRange(
   intervals = c(0, 30),
   cohort_size = c(1, 3)
 )
-mySize2 <- CohortSizeDLT(
+my_size2 <- CohortSizeDLT(
   intervals = c(0, 1),
   cohort_size = c(1, 3)
 )
-mySize <- maxSize(mySize1, mySize2)
+my_size <- maxSize(my_size1, my_size2)
 
 # Choose the rule for stopping
-myStopping1 <- StoppingMinCohorts(nCohorts = 3)
-myStopping2 <- StoppingTargetProb(
+my_stopping1 <- StoppingMinCohorts(nCohorts = 3)
+my_stopping2 <- StoppingTargetProb(
   target = c(0.2, 0.35),
   prob = 0.5
 )
-myStopping3 <- StoppingMinPatients(nPatients = 20)
-myStopping <- (myStopping1 & myStopping2) | myStopping3
+my_stopping3 <- StoppingMinPatients(nPatients = 20)
+my_stopping <- (my_stopping1 & my_stopping2) | my_stopping3
 
 # Choose the rule for dose increments
-myIncrements <- IncrementsRelative(
+my_increments <- IncrementsRelative(
   intervals = c(0, 20),
   increments = c(1, 0.33)
 )
@@ -49,16 +47,16 @@ myIncrements <- IncrementsRelative(
 # Initialize the design
 design <- Design(
   model = model,
-  nextBest = myNextBest,
-  stopping = myStopping,
-  increments = myIncrements,
-  cohort_size = mySize,
+  nextBest = my_next_best,
+  stopping = my_stopping,
+  increments = my_increments,
+  cohort_size = my_size,
   data = emptydata,
   startingDose = 3
 )
 
 ## define the true function
-myTruth <- probFunction(model, alpha0 = 7, alpha1 = 8)
+my_truth <- probFunction(model, alpha0 = 7, alpha1 = 8)
 
 # Run the simulation on the desired design
 # We only generate 1 trial outcome here for illustration, for the actual study
@@ -68,9 +66,9 @@ options <- McmcOptions(
   step = 2,
   samples = 1000
 )
-time <- system.time(mySims <- simulate(design,
+time <- system.time(my_sims <- simulate(design,
   args = NULL,
-  truth = myTruth,
+  truth = my_truth,
   nsim = 1,
   seed = 819,
   mcmcOptions = options,
@@ -84,6 +82,6 @@ time <- system.time(mySims <- simulate(design,
 ))[3]
 
 # Show the Summary of the Simulations
-show(summary(mySims, truth = myTruth))
+show(summary(my_sims, truth = my_truth))
 
-# nolint end
+
