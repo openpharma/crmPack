@@ -48,8 +48,6 @@ incorporated) after each simulations}
 \item{\code{stopReasons}}{add slot description}
 
 \item{\code{stop_report}}{matrix of stopping rule outcomes}
-
-\item{\code{additional_stats}}{list of additional statistical summary}
 }}
 
 \note{

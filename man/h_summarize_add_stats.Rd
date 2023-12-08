@@ -2,7 +2,10 @@
 % Please edit documentation in R/helpers_simulations.R
 \name{h_summarize_add_stats}
 \alias{h_summarize_add_stats}
-\title{calculate average across iterations for each additional reporting parameter}
+\title{Helper function to calculate average across iterations for each additional
+reporting parameter
+extracts parameter names as specified by user and averaged the values
+for each specified parameter to \code{\link[=show]{show()}} and output with cat to console}
 \usage{
 h_summarize_add_stats(stats_list)
 }
@@ -10,7 +13,12 @@ h_summarize_add_stats(stats_list)
 \item{stats_list}{object from simulation with nested parameter values
 (sublist for each parameter)}
 }
+\value{
+list of parameter names and averaged values for console output
+}
 \description{
+Helper function to calculate average across iterations for each additional
+reporting parameter
 extracts parameter names as specified by user and averaged the values
 for each specified parameter to \code{\link[=show]{show()}} and output with cat to console
 }

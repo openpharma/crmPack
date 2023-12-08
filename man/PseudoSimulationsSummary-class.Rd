@@ -85,8 +85,7 @@ selected}
 \item{\code{meanFit}}{list with the average, lower (2.5\%) and upper (97.5\%)
 quantiles of the mean fitted toxicity at each dose level}
 
-\item{\code{stop_report}}{matrix of stopping rule outcomes
-@slot additional_stats list of additional statistical summary}
+\item{\code{stop_report}}{matrix of stopping rule outcomes}
 }}
 
 \keyword{classes}

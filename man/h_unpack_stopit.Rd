@@ -2,13 +2,18 @@
 % Please edit documentation in R/helpers_design.R
 \name{h_unpack_stopit}
 \alias{h_unpack_stopit}
-\title{unpack stopping rules and return list}
+\title{Helper function to recursively unpack stopping rules and return lists with
+logical value and label given}
 \usage{
 h_unpack_stopit(stopit_tree)
 }
 \arguments{
 \item{stopit_tree}{object from simulate method}
 }
+\value{
+named list
+}
 \description{
-recursively unpack nested stopping rules logical value and label given
+Helper function to recursively unpack stopping rules and return lists with
+logical value and label given
 }
