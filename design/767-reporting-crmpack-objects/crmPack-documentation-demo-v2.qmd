@@ -47,8 +47,8 @@ trialData <- Data(doseGrid = doses)
 
 # Cohort size
 cohortSizeDose <- CohortSizeRange(
-  intervals =  c(0, 30, 60),
-  cohort_size = c(1,  2,  4)
+  intervals = c(0, 30, 60),
+  cohort_size = c(1, 2, 4)
 )
 cohortSizeTox <- CohortSizeDLT(
   intervals = 0:2,
@@ -69,23 +69,23 @@ trialNextBest <- NextBestNCRM(
 # Stopping
 stopFutility <- StoppingMinPatients(40L, report_label = "Futility")
 stopEfficacy1 <- StoppingTargetProb(
-  target = c(0.2, 0.35), prob = 0.5, 
+  target = c(0.2, 0.35), prob = 0.5,
   report_label = "Target probability"
 )
 stopEfficacy2 <- StoppingPatientsNearDose(
-  nPatients = 10, percentage = 0, 
+  nPatients = 10, percentage = 0,
   report_label = "At MTD"
 )
 stopEfficacy3 <- StoppingPatientsNearDose(
-  nPatients = 20, percentage = 33, 
+  nPatients = 20, percentage = 33,
   report_label = "Near MTD"
 )
 stopEfficacy <- StoppingAll(
-  list(stopEfficacy1, stopEfficacy2, stopEfficacy3), 
+  list(stopEfficacy1, stopEfficacy2, stopEfficacy3),
   report_label = "Success"
 )
 trialStopping <- StoppingAny(
-  list(stopFutility, stopEfficacy), 
+  list(stopFutility, stopEfficacy),
   report_label = "Trial"
 )
 
@@ -104,7 +104,7 @@ trialDesign <- Design(
   increments = trialIncrement,
   cohort_size = trialCohortSize,
   data = trialData,
-  startingDose = 1  
+  startingDose = 1
 )
 ```
 
@@ -133,13 +133,13 @@ The key is to define a `knit_print` S3 method for every class that we need to pr
 knit_print.IncrementsDoseLevels <- function(object, ...) {
   asis_output(
     paste0(
-      "The maximum increment between cohorts is ", 
-      object@levels, 
-      ifelse (object@levels == 1, " level", " levels"),
+      "The maximum increment between cohorts is ",
+      object@levels,
+      ifelse(object@levels == 1, " level", " levels"),
       " relative to the ",
       ifelse(
-        object@basis_level == "last", 
-        "dose used in the previous cohort.", 
+        object@basis_level == "last",
+        "dose used in the previous cohort.",
         "highest dose used so far."
       )
     )
@@ -162,8 +162,8 @@ knit_print(toxModel, use_values = FALSE)
 ```
 
 ```{r}
-#trialStopping
-#trialNextBest
+# trialStopping
+# trialNextBest
 
 cohortSizeDose
 cohortSizeTox

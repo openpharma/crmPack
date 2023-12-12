@@ -1,21 +1,21 @@
-knit_print.Data <-  function(object, ...) {
+knit_print.Data <- function(object, ...) {
   ifelse(
     length(object@x > 0),
     tibble(
       Dose = object@x,
       DLT = object@y
     ) |>
-    group_by(Dose) |>
-    summarise(
-      N = n(),
-      DLT = sum(DLT),
-      .groups = "drop"
-    ) |>
-    complete(
-      Dose = object@doseGrid,
-      fill = list(N = 0, DLT = 0)
-    ) |>
-    kable(),
+      group_by(Dose) |>
+      summarise(
+        N = n(),
+        DLT = sum(DLT),
+        .groups = "drop"
+      ) |>
+      complete(
+        Dose = object@doseGrid,
+        fill = list(N = 0, DLT = 0)
+      ) |>
+      kable(),
     "No participants are yet evaluable."
   )
 }
@@ -24,7 +24,7 @@ knit_print.IncrementsDoseLevels <- function(object, ...) {
   paste0(
     "The maximum increment between cohorts is ",
     object@levels,
-    ifelse (object@levels == 1, " level", " levels"),
+    ifelse(object@levels == 1, " level", " levels"),
     " relative to the ",
     ifelse(object@basis_level == "last", "dose used in the previous cohort.", "highest dose used so far.")
   )
@@ -96,12 +96,13 @@ knit_print.StoppingAll <- function(object, indent = 0L, ...) {
       paste0(
         items,
         collapse = "\n",
-       "")
+        ""
+      )
     )
   )
 }
 
-knit_print.StoppingAny <-  function(object, indent = 0L, ...) {
+knit_print.StoppingAny <- function(object, indent = 0L, ...) {
   items <- lapply(
     object@stop_list,
     function(x, indent) {
@@ -185,7 +186,7 @@ knit_print.GeneralModel <- function(object, ...) {
   asis_output(result)
 }
 
-knit_print.NextBestNCRM <- function(object,  ...) {
+knit_print.NextBestNCRM <- function(object, ...) {
   asis_output(
     object |>
       tidy() |>
@@ -247,15 +248,15 @@ knit_print.Design <- function(object, level = 1, caption = "Trial design", ...) 
       paste0(str_dup("#", level + 1), " Observed data"),
       knit_print(object@data, ...),
       paste0(str_dup("#", level + 1), " Model"),
-      knit_print(object@model , ...),
+      knit_print(object@model, ...),
       paste0(str_dup("#", level + 1), " Maximum permitted increment"),
-      knit_print(object@increments , ...),
+      knit_print(object@increments, ...),
       paste0(str_dup("#", level + 1), " Recommended dose"),
-      knit_print(object@nextBest , ...),
+      knit_print(object@nextBest, ...),
       paste0(str_dup("#", level + 1), " Cohort size"),
-      knit_print(object@cohort_size , ...),
+      knit_print(object@cohort_size, ...),
       paste0(str_dup("#", level + 1), " Stopping rules"),
-      knit_print(object@stopping , ...),
+      knit_print(object@stopping, ...),
       paste0(str_dup("#", level + 1), " Starting dose"),
       paste0("The dose used in the first cohort will be ", object@startingDose, "."),
       sep = "\n\n"
