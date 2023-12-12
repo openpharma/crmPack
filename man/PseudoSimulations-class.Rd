@@ -46,6 +46,8 @@ final estimates of the TDtargetEndOfTrial or of the final optimal dose estimates
 incorporated) after each simulations}
 
 \item{\code{stopReasons}}{add slot description}
+
+\item{\code{stop_report}}{matrix of stopping rule outcomes}
 }}
 
 \note{

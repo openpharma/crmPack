@@ -14,6 +14,7 @@ PseudoSimulations(
   FinalTDEOTRatios,
   FinalCIs,
   FinalRatios,
+  stop_report,
   stopReasons,
   ...
 )
@@ -36,6 +37,8 @@ PseudoSimulations(
 \item{FinalCIs}{please refer to \code{\linkS4class{PseudoSimulations}} class object}
 
 \item{FinalRatios}{please refer to \code{\linkS4class{PseudoSimulations}} class object}
+
+\item{stop_report}{see \code{\link{PseudoSimulations}}}
 
 \item{stopReasons}{please refer to \code{\linkS4class{PseudoSimulations}} class object}
 
