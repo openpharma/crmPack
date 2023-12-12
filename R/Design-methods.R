@@ -137,86 +137,95 @@ setMethod("simulate",
 
           ## simulate DLTs: depends on whether we
           ## separate the first patient or not.
-          if (firstSeparate && (thisSize > 1L)) {
-            ## dose the first patient
-            thisDLTs <- rbinom(
-              n = 1L,
-              size = 1L,
-              prob = thisProb
-            )
+          # if (firstSeparate && (thisSize > 1L)) {
+          #   ## dose the first patient
+          #   thisDLTs <- rbinom(
+          #     n = 1L,
+          #     size = 1L,
+          #     prob = thisProb
+          #   )
+          #
+          #   if (thisData@placebo && (thisSize.PL > 0L)) {
+          #     thisDLTs.PL <- rbinom(
+          #       n = 1L,
+          #       size = 1L,
+          #       prob = thisProb.PL
+          #     )
+          #   }
+          #
+          #   ## if there is no DLT:
+          #   if (thisDLTs == 0) {
+          #     ## enroll the remaining patients
+          #     thisDLTs <- c(
+          #       thisDLTs,
+          #       rbinom(
+          #         n = thisSize - 1L,
+          #         size = 1L,
+          #         prob = thisProb
+          #       )
+          #     )
+          #
+          #     if (thisData@placebo && (thisSize.PL > 0L)) {
+          #       thisDLTs.PL <- c(
+          #         thisDLTs.PL,
+          #         rbinom(
+          #           n = thisSize.PL,
+          #           size = 1L,
+          #           prob = thisProb.PL
+          #         )
+          #       )
+          #     }
+          #   }
+          # } else {
+          #   ## we can directly dose all patients
+          #   thisDLTs <- rbinom(
+          #     n = thisSize,
+          #     size = 1L,
+          #     prob = thisProb
+          #   )
+          #
+          #   if (thisData@placebo && (thisSize.PL > 0L)) {
+          #     thisDLTs.PL <- rbinom(
+          #       n = thisSize.PL,
+          #       size = 1L,
+          #       prob = thisProb.PL
+          #     )
+          #   }
+          # }
+          #
+          # ## update the data with this placebo (if any) cohort and then with active dose
+          # if (thisData@placebo && (thisSize.PL > 0L)) {
+          #   thisData <- update(
+          #     object = thisData,
+          #     x = object@data@doseGrid[1],
+          #     y = thisDLTs.PL,
+          #     check = FALSE
+          #   )
+          #
+          #   ## update the data with active dose
+          #   thisData <- update(
+          #     object = thisData,
+          #     x = thisDose,
+          #     y = thisDLTs,
+          #     new_cohort = FALSE
+          #   )
+          # } else {
+          #   ## update the data with this cohort
+          #   thisData <- update(
+          #     object = thisData,
+          #     x = thisDose,
+          #     y = thisDLTs
+          #   )
+          # }
 
-            if (thisData@placebo && (thisSize.PL > 0L)) {
-              thisDLTs.PL <- rbinom(
-                n = 1L,
-                size = 1L,
-                prob = thisProb.PL
-              )
-            }
-
-            ## if there is no DLT:
-            if (thisDLTs == 0) {
-              ## enroll the remaining patients
-              thisDLTs <- c(
-                thisDLTs,
-                rbinom(
-                  n = thisSize - 1L,
-                  size = 1L,
-                  prob = thisProb
-                )
-              )
-
-              if (thisData@placebo && (thisSize.PL > 0L)) {
-                thisDLTs.PL <- c(
-                  thisDLTs.PL,
-                  rbinom(
-                    n = thisSize.PL,
-                    size = 1L,
-                    prob = thisProb.PL
-                  )
-                )
-              }
-            }
-          } else {
-            ## we can directly dose all patients
-            thisDLTs <- rbinom(
-              n = thisSize,
-              size = 1L,
-              prob = thisProb
-            )
-
-            if (thisData@placebo && (thisSize.PL > 0L)) {
-              thisDLTs.PL <- rbinom(
-                n = thisSize.PL,
-                size = 1L,
-                prob = thisProb.PL
-              )
-            }
-          }
-
-          ## update the data with this placebo (if any) cohort and then with active dose
-          if (thisData@placebo && (thisSize.PL > 0L)) {
-            thisData <- update(
-              object = thisData,
-              x = object@data@doseGrid[1],
-              y = thisDLTs.PL,
-              check = FALSE
-            )
-
-            ## update the data with active dose
-            thisData <- update(
-              object = thisData,
-              x = thisDose,
-              y = thisDLTs,
-              new_cohort = FALSE
-            )
-          } else {
-            ## update the data with this cohort
-            thisData <- update(
-              object = thisData,
-              x = thisDose,
-              y = thisDLTs
-            )
-          }
+          thisData <- h_determine_dlts(data = thisData,
+                                       dose = thisDose,
+                                       prob = thisProb ,
+                                       prob_placebo = thisProb.PL,
+                                       cohort_size = thisSize,
+                                       cohort_size_pl = thisSize.PL,
+                                       dose_grid = object@data@doseGrid[1],
+                                       first_separate = firstSeparate)
 
           ## what is the dose limit?
           doselimit <- maxDose(object@increments,

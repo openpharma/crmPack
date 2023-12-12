@@ -120,3 +120,49 @@ test_that("h_this_truth returns correct results for given dose", {
   result <- h_this_truth(30, this_args, my_truth)
   expect_equal(result, 0.8815056)
 })
+
+
+test_that("h_determine_dlts returns correctly updated data object", {
+
+data <- new("Data", nGrid = 3L, doseGrid = c(2,3,5))
+dose <- 3
+prob <- 5^-10
+size <- 1
+
+
+result <- h_determine_dlts(data = data,
+                 dose = dose,
+                 prob = prob ,
+                 cohort_size = size,
+                 first_separate = FALSE)
+
+expected_result <- data <- new("Data", x = 3, y = 0L, nGrid = 3L, doseGrid = c(2,3,5),
+                               xLevel = 2L, placebo = FALSE, ID = 1L, cohort = 1L,
+                               nObs = 1L)
+
+expect_equal(result, expected_result)
+
+})
+
+
+test_that("h_determine_dlts returns correctly updated data object for first_separated", {
+
+  data <- new("Data", nGrid = 3L, doseGrid = c(2,3,5))
+  dose <- 3
+  prob <- 5^-10
+  size <- 1
+
+
+  result <- h_determine_dlts(data = data,
+                             dose = dose,
+                             prob = prob ,
+                             cohort_size = size,
+                             first_separate = TRUE)
+
+  expected_result <- data <- new("Data", x = 3, y = 0L, nGrid = 3L, doseGrid = c(2,3,5),
+                                 xLevel = 2L, placebo = FALSE, ID = 1L, cohort = 1L,
+                                 nObs = 1L)
+
+  expect_equal(result, expected_result)
+
+})
