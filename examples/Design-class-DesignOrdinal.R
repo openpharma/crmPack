@@ -42,7 +42,7 @@ design <- DesignOrdinal(
   cohort_size = my_size,
   data = DataOrdinal(
     doseGrid = c(1, 3, 5, 10, 15, 20, 25, 40, 50, 80, 100),
-    yCategories = c("No tox" = 0, "Sub-tox AE" = 1, "DLT" = 2)
+    yCategories = c("No tox" = 0L, "Sub-tox AE" = 1L, "DLT" = 2L)
   ),
   starting_dose = 3
 )
