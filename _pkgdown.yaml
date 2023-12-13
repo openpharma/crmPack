@@ -139,6 +139,8 @@ reference:
       - SafetyWindowConst
       - RuleDesign
       - Design
+      - DesignOrdinal
+      - RuleDesignOrdinal
       - DualDesign
       - TDsamplesDesign
       - TDDesign
