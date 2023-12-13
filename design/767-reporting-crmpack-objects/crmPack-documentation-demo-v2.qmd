@@ -1,0 +1,245 @@
+---
+title: "Reporting in `crmPack`: Demonstration and design concepts"
+format: 
+  html:
+    embed-resources: TRUE
+editor: visual
+---
+
+```{r}
+#| label: libraries-and-utilities
+#| echo: false
+suppressPackageStartupMessages({
+  library(crmPack)
+  library(tidyverse)
+  library(knitr)
+  library(kableExtra)
+  library(stringr)
+  library(checkmate)
+  library(pander)
+})
+```
+
+```{r, echo = FALSE}
+source("knit_print.R", echo = FALSE)
+```
+
+# Background
+
+Given the recent interest in reporting within `crmPack` - see
+[this](https://github.com/Roche/crmPack/issues/670),
+[this](https://github.com/Roche/crmPack/issues/608) and
+[this](https://github.com/Roche/crmPack/issues/480), I thought it would be useful to create a
+demonstration of how I think the process could build on exiting tools - and those currently under
+development ([this](https://github.com/Roche/crmPack/issues/587), and [Oliver & Clara's
+`report_label` initiative](https://github.com/Roche/crmPack/issues/124) for example...).
+
+# Motivation
+
+Define a CRM design. The specifics are not that relevant. The important thing to note is that the
+definition is both long and technical.
+
+```{r}
+#| label: trial-definition
+#| echo: TRUE
+doses <- c(1, 3, 9, 15, 30, 45, 60, 70, 80, 90, 100)
+trialData <- Data(doseGrid = doses)
+
+# Cohort size
+cohortSizeDose <- CohortSizeRange(
+  intervals = c(0, 30, 60),
+  cohort_size = c(1, 2, 4)
+)
+cohortSizeTox <- CohortSizeDLT(
+  intervals = 0:2,
+  cohort_size = c(1, 3, 5)
+)
+trialCohortSize <- CohortSizeMax(list(cohortSizeDose, cohortSizeTox))
+
+# Increment
+trialIncrement <- IncrementsDoseLevels(1)
+
+# Dose recommendation
+trialNextBest <- NextBestNCRM(
+  target = c(0.2, 0.35),
+  overdose = c(0.75, 1.00),
+  max_overdose_prob = 0.1
+)
+
+# Stopping
+stopFutility <- StoppingMinPatients(40L, report_label = "Futility")
+stopEfficacy1 <- StoppingTargetProb(
+  target = c(0.2, 0.35), prob = 0.5,
+  report_label = "Target probability"
+)
+stopEfficacy2 <- StoppingPatientsNearDose(
+  nPatients = 10, percentage = 0,
+  report_label = "At MTD"
+)
+stopEfficacy3 <- StoppingPatientsNearDose(
+  nPatients = 20, percentage = 33,
+  report_label = "Near MTD"
+)
+stopEfficacy <- StoppingAll(
+  list(stopEfficacy1, stopEfficacy2, stopEfficacy3),
+  report_label = "Success"
+)
+trialStopping <- StoppingAny(
+  list(stopFutility, stopEfficacy),
+  report_label = "Trial"
+)
+
+# The dose-toxicity model
+toxModel <- LogisticLogNormal(
+  mean = c(-3, 1),
+  cov = matrix(c(2.5, -0.1, -0.1, 1), ncol = 2),
+  ref_dose = 25
+)
+
+# Overall design
+trialDesign <- Design(
+  model = toxModel,
+  nextBest = trialNextBest,
+  stopping = trialStopping,
+  increments = trialIncrement,
+  cohort_size = trialCohortSize,
+  data = trialData,
+  startingDose = 1
+)
+```
+
+Those that are familiar with `crmPack` can interpret the code and come to an understanding of the
+design. Those that aren't will find it difficult. Wouldn't it be good to if we could produce a
+human-friendly version of the code to allow non technical readers to see what we are doing? Ideally,
+this shouldn't impose a burden on the code writer.
+
+Fortunately, we can!
+
+```{r}
+#| label: trial-report
+#| echo: TRUE
+#| output: asis
+
+trialDesign
+```
+
+> The formatting of the `stopping` slot (and any slot that contains a list) needs some work.
+
+# How is this done?
+
+The key is to define a `knit_print` S3 method for every class that we need to print. For example:
+
+```{r}
+knit_print.IncrementsDoseLevels <- function(object, ...) {
+  asis_output(
+    paste0(
+      "The maximum increment between cohorts is ",
+      object@levels,
+      ifelse(object@levels == 1, " level", " levels"),
+      " relative to the ",
+      ifelse(
+        object@basis_level == "last",
+        "dose used in the previous cohort.",
+        "highest dose used so far."
+      )
+    )
+  )
+}
+registerS3method("knit_print", "IncrementsDoseLevels", knit_print.IncrementsDoseLevels)
+
+trialIncrement
+```
+
+> Here, the call to `knit_print` is implicit because of the unadorned reference to `trialIncrement`
+> within a code chunk. Behaviour at the command line is unaffected.
+
+Other `knit_print` methods are defined in `knit_print.R`, in the same folder as this qmd file. Some
+might benefit from additional parameters:
+
+```{r}
+toxModel
+knit_print(toxModel, use_values = FALSE)
+```
+
+```{r}
+cohortSizeDose
+cohortSizeTox
+trialCohortSize
+```
+
+> The layout of tables describing the cohort sizes is not as expected.
+
+Read the `knit_print` vignette in the `knitr` package for more details.
+
+```{r, eval = FALSE}
+vignette("knit_print", package = "knitr")
+```
+
+# Questions
+
+-   How to handle Greek and other special characters across output formats? Perhaps some form of
+    SAS-like destination approach? For example, rather than `&alpha;` or `\\alpha`, write
+    `destination@symbol("alpha")` etc.
+    -   This document renders correctly when the HTML file it produces is saved as a PDF, but fails
+        when knitted directly to PDF.
+-   To what degree is user-customization required, or can anything non-standard be handled by
+    markdown/quarto templates? Potential enhancements might include the ability to
+    -   Define a section header for each object
+    -   Control the level of the header
+    -   Include a prologue to the rendition of each object
+    -   Include an epilogue to the rendition of each object
+    -   Create a wrapper method, `render` perhaps, that applies a function (which is `knit_print` by
+        default) to allow total flexibility for end-users. This would be my preferred solution
+        because it keeps the use of `knit_print` closer to its use in other packages.
+-   To what extent do we need to provide (parameterized) template files to support this
+    functionality?
+-   Do we need to support tabulation by packages other than `knitr` (eg `officer`)
+
+# A potential `render` method
+
+```{r, error = TRUE}
+render.CrmPackClass <- function(
+    obj, 
+    header = "This is a CrmPackClass object", 
+    level = 2, 
+    prologue = "This is the default prologue.", 
+    epilogue = function(obj, ...) "This is the default epilogue.", 
+    ...) {
+  value <- ""
+  if (!is.null(header)) {
+    value <- paste0(str_dup("#", level), " ", header, "\n")
+  }
+  if ( !is.null(prologue)) {
+    value <- paste0(
+      value,
+      ifelse(
+        is.function(prologue),
+        prologue(obj, ...),
+        prologue
+      ),
+      "\n"
+    )
+  }
+  value <- paste0(value, knit_print(obj, ...), "\n")
+  if (!is.null(prologue)) {
+    value <- paste0(
+      value,
+      ifelse(
+        is.function(epilogue),
+        epilogue(obj, ...),
+        epilogue
+      ),
+      "\n"
+    )
+  }
+  asis_output(value)
+}
+
+render.CrmPackClass(trialNextBest)
+```
+
+# Environment
+
+```{r}
+sessionInfo()
+```
