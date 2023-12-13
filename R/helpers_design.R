@@ -228,7 +228,7 @@ h_simulations_output_format <- function(resultList) {
     additional_stats = additional_stats,
     stop_matrix = stop_matrix
   ))
-
+}
 
 
 #' Helper function to recursively unpack stopping rules and return lists with
