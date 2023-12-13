@@ -1,5 +1,5 @@
 RuleDesignOrdinal(
-  next_best =NextBestOrdinal(
+  next_best = NextBestOrdinal(
     1L,
     NextBestMTD(
       target = 0.25,
