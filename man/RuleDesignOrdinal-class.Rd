@@ -31,11 +31,11 @@ does not contain \code{model}, \code{stopping} and \code{increments} slots.
 \section{Slots}{
 
 \describe{
-\item{\code{next_best}}{(\code{NextBest})\cr how to find the next best dose.}
+\item{\code{next_best}}{(\code{NextBestOrdinal})\cr how to find the next best dose.}
 
-\item{\code{cohort_size}}{(\code{CohortSize})\cr rules for the cohort sizes.}
+\item{\code{cohort_size}}{(\code{CohortSizeOrdinal})\cr rules for the cohort sizes.}
 
-\item{\code{data}}{(\code{Data})\cr specifies dose grid, any previous data, etc.}
+\item{\code{data}}{(\code{DataOrdinal})\cr specifies dose grid, any previous data, etc.}
 
 \item{\code{starting_dose}}{(\code{number})\cr the starting dose, it must lie on the dose
 grid in \code{data}.}

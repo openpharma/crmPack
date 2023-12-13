@@ -1002,9 +1002,9 @@ DesignGrouped <- function(model,
 #' this class and the [`DesignOrdinal`] class is that [`RuleDesignOrdinal`]
 #' does not contain `model`, `stopping` and `increments` slots.
 #'
-#' @slot next_best (`NextBest`)\cr how to find the next best dose.
-#' @slot cohort_size (`CohortSize`)\cr rules for the cohort sizes.
-#' @slot data (`Data`)\cr specifies dose grid, any previous data, etc.
+#' @slot next_best (`NextBestOrdinal`)\cr how to find the next best dose.
+#' @slot cohort_size (`CohortSizeOrdinal`)\cr rules for the cohort sizes.
+#' @slot data (`DataOrdinal`)\cr specifies dose grid, any previous data, etc.
 #' @slot starting_dose (`number`)\cr the starting dose, it must lie on the dose
 #'   grid in `data`.
 #'
@@ -1061,7 +1061,10 @@ RuleDesignOrdinal <- function(
 
 .DefaultRuleDesignOrdinal <- function() {
   RuleDesignOrdinal(
-    next_best = CohortSizeOrdinal(1L, NextBestMTD(target = 0.25)),
+    next_best = NextBestOrdinal(
+      1L,
+      NextBestMTD(target = 0.25, derive = function(x) mean(x, na.rm = TRUE))
+    ),
     cohort_size = CohortSizeOrdinal(1L, CohortSizeConst(size = 3L)),
     data = DataOrdinal(doseGrid = c(5, 10, 15, 25, 35, 50, 80)),
     starting_dose = 5
@@ -1078,8 +1081,8 @@ RuleDesignOrdinal <- function(
 #'
 #' [`DesignOrdinal`] is the class for rule-based ordinal designs. The difference
 #' between this class and its parent [`RuleDesignOrdinal`] class is that the
-#'  [`DesignOrdinal`] class contains additional `model`, `stopping` and
-#'  `increments` slots.
+#'  [`DesignOrdinal`] class contains additional `model`, `stopping`,
+#'  `increments` and `pl_cohort_size` slots.
 #'
 #' @slot model (`LogisticLogNormalOrdinal`)\cr the model to be used.
 #' @slot stopping (`StoppingOrdinal`)\cr stopping rule(s) for the trial.
@@ -1166,9 +1169,9 @@ DesignOrdinal <- function(
   # Initialize the design.
   design <- DesignOrdinal(
     model = LogisticLogNormalOrdinal(
-      mean = c(-0.85, 1),
-      cov = matrix(c(1, -0.5, -0.5, 1), nrow = 2),
-      ref_dose = 56
+      mean = c(-3, -4, 1),
+      cov = diag(c(3, 4, 1)),
+      ref_dose = 50
     ),
     next_best = NextBestOrdinal(
       1L,
