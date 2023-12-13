@@ -188,6 +188,7 @@ reference:
       - h_unpack_stopit
       - h_calc_report_label_percentage
       - h_validate_common_data_slots
+      - h_summarize_add_stats
   - title: Internal Validation Functions
     contents:
       - v_general_data
