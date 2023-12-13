@@ -162,9 +162,6 @@ knit_print(toxModel, use_values = FALSE)
 ```
 
 ```{r}
-# trialStopping
-# trialNextBest
-
 cohortSizeDose
 cohortSizeTox
 trialCohortSize
@@ -174,7 +171,7 @@ trialCohortSize
 
 Read the `knit_print` vignette in the `knitr` package for more details.
 
-```         
+```{r, eval = FALSE}
 vignette("knit_print", package = "knitr")
 ```
 
@@ -200,17 +197,17 @@ vignette("knit_print", package = "knitr")
 
 # A potential `render` method
 
-```{r}
+```{r, error = TRUE}
 render.CrmPackClass <- function(
     obj, 
     header = "This is a CrmPackClass object", 
     level = 2, 
-    prologue = "This is the default prologue", 
-    epilogue = function(obj, ...) "This is the default epilogue", 
+    prologue = "This is the default prologue.", 
+    epilogue = function(obj, ...) "This is the default epilogue.", 
     ...) {
   value <- ""
   if (!is.null(header)) {
-    value <- paste0(rep("~", level), " ", header, "\n")
+    value <- paste0(str_dup("#", level), " ", header, "\n")
   }
   if ( !is.null(prologue)) {
     value <- paste0(
@@ -224,7 +221,7 @@ render.CrmPackClass <- function(
     )
   }
   value <- paste0(value, knit_print(obj, ...), "\n")
-  if ( !is.null(prologue)) {
+  if (!is.null(prologue)) {
     value <- paste0(
       value,
       ifelse(
@@ -237,10 +234,8 @@ render.CrmPackClass <- function(
   }
   asis_output(value)
 }
-registerS3method("render", "CrmPackClass", render.CrmPackClass)
 
-
-render(trialNextBest)
+render.CrmPackClass(trialNextBest)
 ```
 
 # Environment
