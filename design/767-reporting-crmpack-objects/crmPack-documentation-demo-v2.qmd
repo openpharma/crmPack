@@ -199,17 +199,17 @@ vignette("knit_print", package = "knitr")
 
 ```{r, error = TRUE}
 render.CrmPackClass <- function(
-    obj, 
-    header = "This is a CrmPackClass object", 
-    level = 2, 
-    prologue = "This is the default prologue.", 
-    epilogue = function(obj, ...) "This is the default epilogue.", 
+    obj,
+    header = "This is a CrmPackClass object",
+    level = 2,
+    prologue = "This is the default prologue.",
+    epilogue = function(obj, ...) "This is the default epilogue.",
     ...) {
   value <- ""
   if (!is.null(header)) {
     value <- paste0(str_dup("#", level), " ", header, "\n")
   }
-  if ( !is.null(prologue)) {
+  if (!is.null(prologue)) {
     value <- paste0(
       value,
       ifelse(
