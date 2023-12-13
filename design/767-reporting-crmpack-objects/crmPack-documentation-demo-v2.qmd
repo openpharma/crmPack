@@ -172,6 +172,12 @@ trialCohortSize
 
 > The layout of tables describing the cohort sizes is not as expected.
 
+Read the `knit_print` vignette in the `knitr` package for more details.
+
+```         
+vignette("knit_print", package = "knitr")
+```
+
 # Questions
 
 -   How to handle Greek and other special characters across output formats? Perhaps some form of
