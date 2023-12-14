@@ -130,42 +130,6 @@ get_result_list <- function(
   }
 }
 
-#' Helper Function to Add Randomly Generated DLTs During Simulations
-#'
-#' @param data (`Data`)\cr what data to start from.
-#' @param dose (`number`)\cr current dose.
-#' @param truth (`function`)\cr defines the true probability for a DLT at a dose.
-#' @param cohort_size (`CohortSize`)\cr the cohort size rule to use.
-#' @param first_separate (`flag`)\cr whether the first patient is enrolled separately.
-#'
-#' @return True probability of DLT.
-#'
-#' @keywords internal
-# h_add_dlts <- function(data,
-#                        dose,
-#                        truth,
-#                        cohort_size,
-#                        first_separate) {
-#   assert_class(data, "Data")
-#   assert_number(dose)
-#   assert_function(truth)
-#   assert_class(cohort_size, "CohortSize")
-#   assert_flag(first_separate)
-# 
-#   prob <- truth(dose)
-#   size <- size(cohort_size, dose = dose, data = data)
-#   dlts <- if (first_separate && size > 1) {
-#     first_dlts <- rbinom(n = 1, size = 1, prob = prob)
-#     if (first_dlts == 0) {
-#       c(first_dlts, rbinom(n = size - 1, size = 1, prob = prob))
-#     } else {
-#       first_dlts
-#     }
-#   } else {
-#     rbinom(n = size, size = 1, prob = prob)
-#   }
-#   update(data, x = dose, y = dlts)
-# }
 
 
 #' Helper Function to call truth calculation
@@ -269,7 +233,7 @@ h_determine_dlts <- function(data,
 
     ## update the data with active dose
     this_data <- update(
-      object = data,
+      object = this_data,
       x = dose,
       y = dlts,
       new_cohort = FALSE
