@@ -127,7 +127,18 @@ trialDesign
 
 # How is this done?
 
-The key is to define a `knit_print` S3 method for every class that we need to print. For example:
+The key is to define a `knit_print` S3 method for every class that we need to print. 
+
+Without one, we see:
+
+```{r, eval = FALSE}
+trialIncrement
+```
+```{r, echo = FALSE}
+print(trialIncrement)
+```
+
+But with one:
 
 ```{r}
 knit_print.IncrementsDoseLevels <- function(object, ...) {
@@ -160,6 +171,8 @@ might benefit from additional parameters:
 toxModel
 knit_print(toxModel, use_values = FALSE)
 ```
+
+The behaviour with nested objects is not as I would have expected, and more work is needed.
 
 ```{r}
 cohortSizeDose
@@ -204,12 +217,13 @@ render.CrmPackClass <- function(
     level = 2, 
     prologue = "This is the default prologue.", 
     epilogue = function(obj, ...) "This is the default epilogue.", 
+    render_func = knit_print,
     ...) {
   value <- ""
   if (!is.null(header)) {
     value <- paste0(str_dup("#", level), " ", header, "\n")
   }
-  if ( !is.null(prologue)) {
+  if (!is.null(prologue)) {
     value <- paste0(
       value,
       ifelse(
@@ -220,7 +234,7 @@ render.CrmPackClass <- function(
       "\n"
     )
   }
-  value <- paste0(value, knit_print(obj, ...), "\n")
+  value <- paste0(value, render_func(obj, ...), "\n")
   if (!is.null(prologue)) {
     value <- paste0(
       value,
