@@ -141,31 +141,31 @@ get_result_list <- function(
 #' @return True probability of DLT.
 #'
 #' @keywords internal
-h_add_dlts <- function(data,
-                       dose,
-                       truth,
-                       cohort_size,
-                       first_separate) {
-  assert_class(data, "Data")
-  assert_number(dose)
-  assert_function(truth)
-  assert_class(cohort_size, "CohortSize")
-  assert_flag(first_separate)
-
-  prob <- truth(dose)
-  size <- size(cohort_size, dose = dose, data = data)
-  dlts <- if (first_separate && size > 1) {
-    first_dlts <- rbinom(n = 1, size = 1, prob = prob)
-    if (first_dlts == 0) {
-      c(first_dlts, rbinom(n = size - 1, size = 1, prob = prob))
-    } else {
-      first_dlts
-    }
-  } else {
-    rbinom(n = size, size = 1, prob = prob)
-  }
-  update(data, x = dose, y = dlts)
-}
+# h_add_dlts <- function(data,
+#                        dose,
+#                        truth,
+#                        cohort_size,
+#                        first_separate) {
+#   assert_class(data, "Data")
+#   assert_number(dose)
+#   assert_function(truth)
+#   assert_class(cohort_size, "CohortSize")
+#   assert_flag(first_separate)
+# 
+#   prob <- truth(dose)
+#   size <- size(cohort_size, dose = dose, data = data)
+#   dlts <- if (first_separate && size > 1) {
+#     first_dlts <- rbinom(n = 1, size = 1, prob = prob)
+#     if (first_dlts == 0) {
+#       c(first_dlts, rbinom(n = size - 1, size = 1, prob = prob))
+#     } else {
+#       first_dlts
+#     }
+#   } else {
+#     rbinom(n = size, size = 1, prob = prob)
+#   }
+#   update(data, x = dose, y = dlts)
+# }
 
 
 #' Helper Function to call truth calculation
@@ -244,9 +244,9 @@ h_determine_dlts <- function(data,
       dlts_placebo <- rbinom(n = 1, size = 1, prob = prob_placebo)
     }
     if (dlts == 0) {
-      dlts <- c(dlts, rbinom(n = cohort_size, size = 1, prob = prob))
+      dlts <- c(dlts, rbinom(n = cohort_size - 1L, size = 1, prob = prob))
       if ((data@placebo) && cohort_size_placebo > 0) {
-        dlts_placebo <- c(dlts_placebo, rbimon(n = cohort_size_placebo, #cohort_size_placebo - 1?
+        dlts_placebo <- c(dlts_placebo, rbinom(n = cohort_size_placebo, #cohort_size_placebo - 1?
                                                size = 1,
                                                prob = prob_placebo))
       }
@@ -257,7 +257,8 @@ h_determine_dlts <- function(data,
       dlts_placebo <- rbinom(n = cohort_size_placebo, size = 1, prob = prob_placebo)
     }
   }
-  #update(data, x = dose, y = dlts)
+ 
+ 
   if ((data@placebo) && cohort_size_placebo > 0) {
     this_data <- update(
       object = data,
