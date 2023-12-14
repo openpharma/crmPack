@@ -211,9 +211,11 @@ h_determine_dlts <- function(data,
     if (dlts == 0) {
       dlts <- c(dlts, rbinom(n = cohort_size - 1L, size = 1, prob = prob))
       if ((data@placebo) && cohort_size_placebo > 0) {
-        dlts_placebo <- c(dlts_placebo, rbinom(n = cohort_size_placebo, #cohort_size_placebo - 1?
-                                               size = 1,
-                                               prob = prob_placebo))
+        dlts_placebo <- c(dlts_placebo, rbinom(
+          n = cohort_size_placebo, # cohort_size_placebo - 1?
+          size = 1,
+          prob = prob_placebo
+        ))
       }
     }
   } else {
@@ -222,8 +224,8 @@ h_determine_dlts <- function(data,
       dlts_placebo <- rbinom(n = cohort_size_placebo, size = 1, prob = prob_placebo)
     }
   }
- 
- 
+
+
   if ((data@placebo) && cohort_size_placebo > 0) {
     this_data <- update(
       object = data,
@@ -249,6 +251,3 @@ h_determine_dlts <- function(data,
   }
   return(this_data)
 }
-
-
-
