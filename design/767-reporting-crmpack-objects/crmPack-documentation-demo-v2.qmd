@@ -212,11 +212,11 @@ vignette("knit_print", package = "knitr")
 
 ```{r, error = TRUE}
 render.CrmPackClass <- function(
-    obj, 
-    header = "This is a CrmPackClass object", 
-    level = 2, 
-    prologue = "This is the default prologue.", 
-    epilogue = function(obj, ...) "This is the default epilogue.", 
+    obj,
+    header = "This is a CrmPackClass object",
+    level = 2,
+    prologue = "This is the default prologue.",
+    epilogue = function(obj, ...) "This is the default epilogue.",
     render_func = knit_print,
     ...) {
   value <- ""
