@@ -69,103 +69,111 @@ test_that("h_this_truth returns correct results for given dose", {
 
 
 test_that("h_determine_dlts returns correctly updated data object for default condition", {
-  
-  data <- new("Data", nGrid = 3L, doseGrid = c(2,3,5))
+  data <- new("Data", nGrid = 3L, doseGrid = c(2, 3, 5))
   dose <- 3
   prob <- 0
   size <- 1
-  
-  
-  result <- h_determine_dlts(data = data,
-                             dose = dose,
-                             prob = prob ,
-                             cohort_size = size,
-                             first_separate = FALSE)
-  
-  expected_result <- data <- new("Data", x = 3, y = 0L, nGrid = 3L, doseGrid = c(2,3,5),
-                                 xLevel = 2L, placebo = FALSE, ID = 1L, cohort = 1L,
-                                 nObs = 1L)
-  
+
+
+  result <- h_determine_dlts(
+    data = data,
+    dose = dose,
+    prob = prob,
+    cohort_size = size,
+    first_separate = FALSE
+  )
+
+  expected_result <- data <- new("Data",
+    x = 3, y = 0L, nGrid = 3L, doseGrid = c(2, 3, 5),
+    xLevel = 2L, placebo = FALSE, ID = 1L, cohort = 1L,
+    nObs = 1L
+  )
+
   expect_valid(result, "Data")
   expect_equal(result, expected_result)
-  
 })
 
 
-test_that("h_determine_dlts returns correctly updated data object for 
+test_that("h_determine_dlts returns correctly updated data object for
           first_separate = TRUE & DLT for first patient", {
-
-  data <- new("Data", nGrid = 3L, doseGrid = c(2,3,5))
+  data <- new("Data", nGrid = 3L, doseGrid = c(2, 3, 5))
   dose <- 3
   prob <- 1
   size <- 2
 
 
-  result <- h_determine_dlts(data = data,
-                             dose = dose,
-                             prob = prob ,
-                             cohort_size = size,
-                             first_separate = TRUE)
+  result <- h_determine_dlts(
+    data = data,
+    dose = dose,
+    prob = prob,
+    cohort_size = size,
+    first_separate = TRUE
+  )
 
-  expected_result <- data <- new("Data", x = 3, y = 1L, nGrid = 3L, doseGrid = c(2,3,5),
-                                 xLevel = 2L, placebo = FALSE, ID = 1L, cohort = 1L,
-                                 nObs = 1L)
-  
+  expected_result <- data <- new("Data",
+    x = 3, y = 1L, nGrid = 3L, doseGrid = c(2, 3, 5),
+    xLevel = 2L, placebo = FALSE, ID = 1L, cohort = 1L,
+    nObs = 1L
+  )
+
   expect_s4_class(result, "Data")
   expect_equal(result, expected_result)
-
 })
 
 
-test_that("h_determine_dlts returns correctly updated data object for first_separate = TRUE 
+test_that("h_determine_dlts returns correctly updated data object for first_separate = TRUE
           for no DLT for first patient", {
-  
-  data <- new("Data", nGrid = 3L, doseGrid = c(2,3,5))
+  data <- new("Data", nGrid = 3L, doseGrid = c(2, 3, 5))
   dose <- 3
   prob <- 0
   size <- 2
-  
-  
-  result <- h_determine_dlts(data = data,
-                             dose = dose,
-                             prob = prob ,
-                             cohort_size = size,
-                             first_separate = TRUE)
-  
-  expected_result <- data <- new("Data", x = c(3, 3), y = c(0L, 0L), nGrid = 3L, doseGrid = c(2,3,5),
-                                 xLevel = c(2L, 2L), placebo = FALSE, ID = c(1L, 2L), cohort = c(1L, 1L),
-                                 nObs = 2L)
-  
+
+
+  result <- h_determine_dlts(
+    data = data,
+    dose = dose,
+    prob = prob,
+    cohort_size = size,
+    first_separate = TRUE
+  )
+
+  expected_result <- data <- new("Data",
+    x = c(3, 3), y = c(0L, 0L), nGrid = 3L, doseGrid = c(2, 3, 5),
+    xLevel = c(2L, 2L), placebo = FALSE, ID = c(1L, 2L), cohort = c(1L, 1L),
+    nObs = 2L
+  )
+
   expect_s4_class(result, "Data")
   expect_equal(result, expected_result)
-  
 })
 
 
 test_that("h_determine_dlts returns correctly updated data object for placebo = TRUE", {
-            
-            data <- new("Data", nGrid = 3L, doseGrid = c(0.0001, 2,3), placebo = TRUE)
-            dose <- 3
-            prob <- 0
-            size <- 1
-            size_pl <- 1
-            prob_pl <- 0
-            
-            
-            result <- h_determine_dlts(data = data,
-                                       dose = dose,
-                                       prob = prob ,
-                                       prob_placebo = prob_pl,
-                                       cohort_size = size,
-                                       cohort_size_placebo = size_pl, 
-                                       dose_grid = data@doseGrid[1], 
-                                       first_separate = FALSE)
-            
-            expected_result <- data <- new("Data", x = c(0.0001, 3), y = c(0L, 0L), nGrid = 3L, doseGrid = c(0.0001, 2,3),
-                                           xLevel = c(1L, 3L), placebo = TRUE, ID = c(1L, 2L), cohort = c(1L, 1L),
-                                           nObs = 2L)
-            
-            expect_s4_class(result, "Data")
-            expect_equal(result, expected_result)
-            
-          })
+  data <- new("Data", nGrid = 3L, doseGrid = c(0.0001, 2, 3), placebo = TRUE)
+  dose <- 3
+  prob <- 0
+  size <- 1
+  size_pl <- 1
+  prob_pl <- 0
+
+
+  result <- h_determine_dlts(
+    data = data,
+    dose = dose,
+    prob = prob,
+    prob_placebo = prob_pl,
+    cohort_size = size,
+    cohort_size_placebo = size_pl,
+    dose_grid = data@doseGrid[1],
+    first_separate = FALSE
+  )
+
+  expected_result <- data <- new("Data",
+    x = c(0.0001, 3), y = c(0L, 0L), nGrid = 3L, doseGrid = c(0.0001, 2, 3),
+    xLevel = c(1L, 3L), placebo = TRUE, ID = c(1L, 2L), cohort = c(1L, 1L),
+    nObs = 2L
+  )
+
+  expect_s4_class(result, "Data")
+  expect_equal(result, expected_result)
+})
