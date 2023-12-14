@@ -168,6 +168,7 @@ h_add_dlts <- function(data,
 }
 
 
+
 #' Helper Function to call truth calculation
 #'
 #' @param dose (`number`)\cr current dose.
@@ -188,6 +189,46 @@ h_this_truth <- function(dose, this_args, truth) {
   )
 }
 
+
+#' Helper Function to create return list for Simulations output
+#'
+#' @param resultList (`list`)\cr raw iteration output.
+#'
+#' @return aggregated output for simulation object `list`.
+#'
+#' @keywords internal
+h_simulations_output_format <- function(resultList) {
+  ## put everything in the Simulations format:
+
+  ## setup the list for the simulated data objects
+  dataList <- lapply(resultList, "[[", "data")
+
+  ## the vector of the final dose recommendations
+  recommendedDoses <- as.numeric(sapply(resultList, "[[", "dose"))
+
+  ## setup the list for the final fits
+  fitList <- lapply(resultList, "[[", "fit")
+
+  ## the reasons for stopping
+  stopReasons <- lapply(resultList, "[[", "stop")
+
+  # individual stopping rule results as matrix, labels as column names
+  stopResults <- lapply(resultList, "[[", "report_results")
+  stop_matrix <- as.matrix(do.call(rbind, stopResults))
+
+  # Result list of additional statistical summary.
+  additional_stats <- lapply(resultList, "[[", "additional_stats")
+
+  return(list(
+    dataList = dataList,
+    recommendedDoses = recommendedDoses,
+    fitList = fitList,
+    stopReasons = stopReasons,
+    stopResults = stopResults,
+    additional_stats = additional_stats,
+    stop_matrix = stop_matrix
+  ))
+}
 
 
 #' Helper function to recursively unpack stopping rules and return lists with
