@@ -40,3 +40,4 @@ updated data object
 Helper function to determine the dlts including first separate and placebo
 condition
 }
+\keyword{internal}

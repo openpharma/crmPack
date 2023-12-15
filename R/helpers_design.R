@@ -227,7 +227,7 @@ h_unpack_stopit <- function(stopit_tree) {
 #' @param dose_grid (`numeric`)\cr the dose_grid as specified by the user.
 #' @param first_separate (`flag`)\cr whether the first patient is enrolled separately.
 #' @return updated data object
-#' @keywords internal programming
+#' @keywords internal
 
 
 h_determine_dlts <- function(data,
