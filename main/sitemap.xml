@@ -526,9 +526,6 @@
     <loc>https://roche.github.io/crmPack/reference/get_result_list.html</loc>
   </url>
   <url>
-    <loc>https://roche.github.io/crmPack/reference/h_add_dlts.html</loc>
-  </url>
-  <url>
     <loc>https://roche.github.io/crmPack/reference/h_all_equivalent.html</loc>
   </url>
   <url>
@@ -557,6 +554,9 @@
   </url>
   <url>
     <loc>https://roche.github.io/crmPack/reference/h_default_if_empty.html</loc>
+  </url>
+  <url>
+    <loc>https://roche.github.io/crmPack/reference/h_determine_dlts.html</loc>
   </url>
   <url>
     <loc>https://roche.github.io/crmPack/reference/h_find_interval.html</loc>
@@ -646,7 +646,13 @@
     <loc>https://roche.github.io/crmPack/reference/h_rapply.html</loc>
   </url>
   <url>
+    <loc>https://roche.github.io/crmPack/reference/h_simulations_output_format.html</loc>
+  </url>
+  <url>
     <loc>https://roche.github.io/crmPack/reference/h_slots.html</loc>
+  </url>
+  <url>
+    <loc>https://roche.github.io/crmPack/reference/h_summarize_add_stats.html</loc>
   </url>
   <url>
     <loc>https://roche.github.io/crmPack/reference/h_test_named_numeric.html</loc>

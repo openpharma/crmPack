@@ -14,8 +14,8 @@
 <link rel="apple-touch-icon" type="image/png" sizes="76x76" href="../apple-touch-icon-76x76.png">
 <link rel="apple-touch-icon" type="image/png" sizes="60x60" href="../apple-touch-icon-60x60.png">
 <script src="../deps/jquery-3.6.0/jquery-3.6.0.min.js"></script><meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-<link href="../deps/bootstrap-5.2.2/bootstrap.min.css" rel="stylesheet">
-<script src="../deps/bootstrap-5.2.2/bootstrap.bundle.min.js"></script><!-- Font Awesome icons --><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.12.1/css/all.min.css" integrity="sha256-mmgLkCYLUQbXn0B1SRqzHar6dCnv9oZFPEC1g1cwlkk=" crossorigin="anonymous">
+<link href="../deps/bootstrap-5.3.1/bootstrap.min.css" rel="stylesheet">
+<script src="../deps/bootstrap-5.3.1/bootstrap.bundle.min.js"></script><!-- Font Awesome icons --><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.12.1/css/all.min.css" integrity="sha256-mmgLkCYLUQbXn0B1SRqzHar6dCnv9oZFPEC1g1cwlkk=" crossorigin="anonymous">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.12.1/css/v4-shims.min.css" integrity="sha256-wZjR52fzng1pJHwx4aV2AO3yyTOXrcDW7jBpJtTwVxw=" crossorigin="anonymous">
 <!-- bootstrap-toc --><script src="https://cdn.jsdelivr.net/gh/afeld/bootstrap-toc@v1.0.1/dist/bootstrap-toc.min.js" integrity="sha256-4veVQbu7//Lk5TSmc7YV48MxtMy98e26cf5MrgZYnwo=" crossorigin="anonymous"></script><!-- headroom.js --><script src="https://cdnjs.cloudflare.com/ajax/libs/headroom/0.11.0/headroom.min.js" integrity="sha256-AsUX4SJE1+yuDu5+mAVzJbuYNPHj/WroHuZ8Ir/CkE0=" crossorigin="anonymous"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/headroom/0.11.0/jQuery.headroom.min.js" integrity="sha256-ZX/yNShbjqsohH1k95liqY9Gd8uOiE1S4vZc+9KQ1K4=" crossorigin="anonymous"></script><!-- clipboard.js --><script src="https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/2.0.6/clipboard.min.js" integrity="sha256-inc5kl9MA1hkeYUt+EC3BhlIgyp/2jDIyBLS6k3UxPI=" crossorigin="anonymous"></script><!-- search --><script src="https://cdnjs.cloudflare.com/ajax/libs/fuse.js/6.4.6/fuse.js" integrity="sha512-zv6Ywkjyktsohkbp9bb45V6tEMoWhzFzXis+LrMehmJZZSys19Yxf1dopHx7WzIKxr5tK2dVcYmaCk2uqdjF4A==" crossorigin="anonymous"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/autocomplete.js/0.38.0/autocomplete.jquery.min.js" integrity="sha512-GU9ayf+66Xx2TmpxqJpliWbT5PiGYxpaG8rfnBEk1LL8l1KGkRShhngwdXK1UgqhAzWpZHSiYPc09/NwDQIGyg==" crossorigin="anonymous"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/mark.js/8.11.1/mark.min.js" integrity="sha512-5CYOlHXGh6QpOFA/TeTylKLWfB3ftPsde7AnmhuitiTX4K5SqCLBeKro6sPS8ilsz1Q4NRx3v8Ko2IBiszzdww==" crossorigin="anonymous"></script><!-- pkgdown --><script src="../pkgdown.js"></script><meta property="og:title" content="Migrating from crmPack version 1.0.3">
 <meta property="og:description" content="crmPack">
@@ -33,7 +33,7 @@
     
     <a class="navbar-brand me-2" href="../index.html">crmPack</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">2.0.0.9138</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">2.0.0.9140</small>
 
     
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -65,12 +65,6 @@
 <li class="nav-item">
   <a class="nav-link" href="../news/index.html">Changelog</a>
 </li>
-<!-- start dropdown for versions --> <li class="nav-item dropdown">
-        <a href="#" class="nav-link dropdown-toggle"
-          data-bs-toggle="dropdown" role="button"
-          aria-expanded="false" aria-haspopup="true"
-          id="dropdown-versions">Versions</a> <div class="dropdown-menu" aria-labelledby="dropdown-versions"> <a class="dropdown-item" data-toggle="tooltip" title="" href="https://Roche.github.io/crmPack/main">main</a> </div></li>
-<!-- end dropdown for versions -->
 <li class="nav-item dropdown">
   <a href="#" class="nav-link dropdown-toggle" data-bs-toggle="dropdown" role="button" aria-expanded="false" aria-haspopup="true" id="dropdown-reports">Reports</a>
   <div class="dropdown-menu" aria-labelledby="dropdown-reports">
@@ -1284,10 +1278,10 @@ of a fixed model’s parameters values.</p>
 <span><span class="co"># given a particular models and samples.</span></span>
 <span><span class="co"># Every single dose corresponds to one particular sample in `my_samples`.</span></span>
 <span><span class="fu"><a href="../reference/dose.html">dose</a></span><span class="op">(</span><span class="fl">0.3</span>, <span class="va">my_model</span>, <span class="va">my_samples</span><span class="op">)</span></span></code></pre></div>
-<pre><code><span><span class="co">##  [1] 1.733789e+00 1.963513e+00 3.187872e+00 6.218609e-01 1.524234e+00</span></span>
-<span><span class="co">##  [6] 4.820087e+07 1.213350e+00 1.080645e+00 1.488965e+00 5.521048e-01</span></span>
-<span><span class="co">## [11] 1.711024e+00 1.807246e+02 1.367519e+00 8.178847e-01 9.249559e-01</span></span>
-<span><span class="co">## [16] 2.699219e-01 8.444343e-01 1.797001e+00 4.647667e-01 3.742513e-05</span></span></code></pre>
+<pre><code><span><span class="co">##  [1] 3.512966e+00 7.713039e-01 9.513146e-01 3.780366e+00 1.289157e+00</span></span>
+<span><span class="co">##  [6] 1.959288e+00 6.746875e-01 5.802620e+26 1.118229e+00 4.139372e-01</span></span>
+<span><span class="co">## [11] 3.851694e+00 5.194388e-01 1.612163e+00 5.231757e+00 1.697405e+00</span></span>
+<span><span class="co">## [16] 4.476573e+00 1.600379e+00 2.963605e+01 1.563451e+00 3.037925e+08</span></span></code></pre>
 <div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># True dose-DLT relationship.</span></span>
 <span><span class="co"># Say that -0.8 and 1 are the true values for models parameters alpha0 and alpha1 respectively.</span></span>
@@ -1305,9 +1299,10 @@ of a fixed model’s parameters values.</p>
 <code class="sourceCode R"><span><span class="co"># Toxicity probabilities for a given dose (equal to 10), model and samples.</span></span>
 <span><span class="co"># Every single probability value corresponds to one particular sample in `my_samples`.</span></span>
 <span><span class="fu"><a href="../reference/prob.html">prob</a></span><span class="op">(</span><span class="fl">10</span>, <span class="va">my_model</span>, <span class="va">my_samples</span><span class="op">)</span></span></code></pre></div>
-<pre><code><span><span class="co">##  [1] 0.9925664 0.5584912 0.5105616 0.9546672 0.9409630 0.6224589 0.1924950</span></span>
-<span><span class="co">##  [8] 0.6115742 0.9927970 0.9983747 0.8386461 0.5134624 0.7611396 0.5844826</span></span>
-<span><span class="co">## [15] 0.9067159 0.7852050 0.8941203 0.8754013 0.8533411 0.6722418</span></span></code></pre>
+<pre><code><span><span class="co">##  [1] 0.55582340 0.99447134 0.99856056 0.61990259 0.80356388 0.94351801</span></span>
+<span><span class="co">##  [7] 0.86597459 0.42749049 0.98949888 0.06462205 0.22163921 0.99009197</span></span>
+<span><span class="co">## [13] 0.96643158 0.34852454 0.95021191 0.18177347 0.93226356 0.48989220</span></span>
+<span><span class="co">## [19] 0.95504744 0.65536762</span></span></code></pre>
 <div class="sourceCode" id="cb12"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># True DLT-dose relationship.</span></span>
 <span><span class="co"># Say that -0.8 and 1 are the true values for models parameters alpha0 and alpha1 respectively.</span></span>
@@ -1414,8 +1409,8 @@ account of any associated <code>doseGrid</code>.</p>
 <span><span class="co">##         y[i] ~ dbern(p[i])</span></span>
 <span><span class="co">##     }</span></span>
 <span><span class="co">## }</span></span>
-<span><span class="co">## &lt;bytecode: 0x564d8092c6b0&gt;</span></span>
-<span><span class="co">## &lt;environment: 0x564d81c5ef08&gt;</span></span>
+<span><span class="co">## &lt;bytecode: 0x55e7f573e148&gt;</span></span>
+<span><span class="co">## &lt;environment: 0x55e7f6a1c920&gt;</span></span>
 <span><span class="co">## </span></span>
 <span><span class="co">## Slot "priormodel":</span></span>
 <span><span class="co">## function () </span></span>
@@ -1424,8 +1419,8 @@ account of any associated <code>doseGrid</code>.</p>
 <span><span class="co">##     alpha0 &lt;- theta[1]</span></span>
 <span><span class="co">##     alpha1 &lt;- theta[2]</span></span>
 <span><span class="co">## }</span></span>
-<span><span class="co">## &lt;bytecode: 0x564d8092b840&gt;</span></span>
-<span><span class="co">## &lt;environment: 0x564d81c5ef08&gt;</span></span>
+<span><span class="co">## &lt;bytecode: 0x55e7f5741108&gt;</span></span>
+<span><span class="co">## &lt;environment: 0x55e7f6a1c920&gt;</span></span>
 <span><span class="co">## </span></span>
 <span><span class="co">## Slot "modelspecs":</span></span>
 <span><span class="co">## function (from_prior) </span></span>
@@ -1436,16 +1431,16 @@ account of any associated <code>doseGrid</code>.</p>
 <span><span class="co">##     }</span></span>
 <span><span class="co">##     ms</span></span>
 <span><span class="co">## }</span></span>
-<span><span class="co">## &lt;bytecode: 0x564d80930918&gt;</span></span>
-<span><span class="co">## &lt;environment: 0x564d81c5eca0&gt;</span></span>
+<span><span class="co">## &lt;bytecode: 0x55e7f57458d0&gt;</span></span>
+<span><span class="co">## &lt;environment: 0x55e7f6a1c6b8&gt;</span></span>
 <span><span class="co">## </span></span>
 <span><span class="co">## Slot "init":</span></span>
 <span><span class="co">## function () </span></span>
 <span><span class="co">## {</span></span>
 <span><span class="co">##     list(theta = c(0, 1))</span></span>
 <span><span class="co">## }</span></span>
-<span><span class="co">## &lt;bytecode: 0x564d80930020&gt;</span></span>
-<span><span class="co">## &lt;environment: 0x564d81c5eca0&gt;</span></span>
+<span><span class="co">## &lt;bytecode: 0x55e7f5744fd8&gt;</span></span>
+<span><span class="co">## &lt;environment: 0x55e7f6a1c6b8&gt;</span></span>
 <span><span class="co">## </span></span>
 <span><span class="co">## Slot "datanames":</span></span>
 <span><span class="co">## [1] "nObs" "y"    "x"   </span></span>
