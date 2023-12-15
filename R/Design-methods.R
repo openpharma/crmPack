@@ -134,89 +134,16 @@ setMethod("simulate",
             )
           }
 
-
-          ## simulate DLTs: depends on whether we
-          ## separate the first patient or not.
-          if (firstSeparate && (thisSize > 1L)) {
-            ## dose the first patient
-            thisDLTs <- rbinom(
-              n = 1L,
-              size = 1L,
-              prob = thisProb
-            )
-
-            if (thisData@placebo && (thisSize.PL > 0L)) {
-              thisDLTs.PL <- rbinom(
-                n = 1L,
-                size = 1L,
-                prob = thisProb.PL
-              )
-            }
-
-            ## if there is no DLT:
-            if (thisDLTs == 0) {
-              ## enroll the remaining patients
-              thisDLTs <- c(
-                thisDLTs,
-                rbinom(
-                  n = thisSize - 1L,
-                  size = 1L,
-                  prob = thisProb
-                )
-              )
-
-              if (thisData@placebo && (thisSize.PL > 0L)) {
-                thisDLTs.PL <- c(
-                  thisDLTs.PL,
-                  rbinom(
-                    n = thisSize.PL,
-                    size = 1L,
-                    prob = thisProb.PL
-                  )
-                )
-              }
-            }
-          } else {
-            ## we can directly dose all patients
-            thisDLTs <- rbinom(
-              n = thisSize,
-              size = 1L,
-              prob = thisProb
-            )
-
-            if (thisData@placebo && (thisSize.PL > 0L)) {
-              thisDLTs.PL <- rbinom(
-                n = thisSize.PL,
-                size = 1L,
-                prob = thisProb.PL
-              )
-            }
-          }
-
-          ## update the data with this placebo (if any) cohort and then with active dose
-          if (thisData@placebo && (thisSize.PL > 0L)) {
-            thisData <- update(
-              object = thisData,
-              x = object@data@doseGrid[1],
-              y = thisDLTs.PL,
-              check = FALSE
-            )
-
-            ## update the data with active dose
-            thisData <- update(
-              object = thisData,
-              x = thisDose,
-              y = thisDLTs,
-              new_cohort = FALSE
-            )
-          } else {
-            ## update the data with this cohort
-            thisData <- update(
-              object = thisData,
-              x = thisDose,
-              y = thisDLTs
-            )
-          }
+          thisData <- h_determine_dlts(
+            data = thisData,
+            dose = thisDose,
+            prob = thisProb,
+            prob_placebo = thisProb.PL,
+            cohort_size = thisSize,
+            cohort_size_pl = thisSize.PL,
+            dose_grid = object@data@doseGrid[1],
+            first_separate = firstSeparate
+          )
 
           ## what is the dose limit?
           doselimit <- maxDose(object@increments,
@@ -4704,6 +4631,9 @@ setMethod(
         # We are in the first cohort and continue for mono and combo.
         current$first <- TRUE
         current$mono$stop <- current$combo$stop <- FALSE
+
+
+
         # What are the next doses to be used? Initialize with starting doses.
         if (object@same_dose_for_all || (!object@first_cohort_mono_only && object@same_dose_for_start)) {
           current$mono$dose <- current$combo$dose <- min(object@mono@startingDose, object@combo@startingDose)
@@ -4711,16 +4641,46 @@ setMethod(
           current$mono$dose <- object@mono@startingDose
           current$combo$dose <- object@combo@startingDose
         }
+
+
+        cohort_size_mono <- size(object@mono@cohort_size,
+          dose = current$mono$dose,
+          data = current$mono$data
+        )
+
+        cohort_size_combo <- size(object@combo@cohort_size,
+          dose = current$combo$dose,
+          data = current$combo$data
+        )
+
+
+        this_prob_mono <- current$mono$truth(current$mono$dose)
+        this_prob_combo <- current$combo$truth(current$combo$dose)
+
+
+
         # Inside this loop we simulate the whole trial, until stopping.
         while (!(current$mono$stop && current$combo$stop)) {
           if (!current$mono$stop) {
             current$mono$data <- current$mono$data |>
-              h_add_dlts(current$mono$dose, current$mono$truth, object@mono@cohort_size, firstSeparate)
+              h_determine_dlts(
+                dose = current$mono$dose,
+                prob = this_prob_mono,
+                cohort_size = cohort_size_mono,
+                first_separate = firstSeparate
+              )
           }
           if (!current$combo$stop && (!current$first || !object@first_cohort_mono_only)) {
             current$combo$data <- current$combo$data |>
-              h_add_dlts(current$combo$dose, current$combo$truth, object@combo@cohort_size, firstSeparate)
+              h_determine_dlts(
+                dose = current$combo$dose,
+                prob = this_prob_combo,
+                cohort_size = cohort_size_combo,
+                first_separate = firstSeparate
+              )
           }
+
+
           current$grouped <- h_group_data(current$mono$data, current$combo$data)
           current$samples <- mcmc(current$grouped, object@model, mcmcOptions)
           if (!current$mono$stop) {

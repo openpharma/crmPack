@@ -130,42 +130,6 @@ get_result_list <- function(
   }
 }
 
-#' Helper Function to Add Randomly Generated DLTs During Simulations
-#'
-#' @param data (`Data`)\cr what data to start from.
-#' @param dose (`number`)\cr current dose.
-#' @param truth (`function`)\cr defines the true probability for a DLT at a dose.
-#' @param cohort_size (`CohortSize`)\cr the cohort size rule to use.
-#' @param first_separate (`flag`)\cr whether the first patient is enrolled separately.
-#'
-#' @return True probability of DLT.
-#'
-#' @keywords internal
-h_add_dlts <- function(data,
-                       dose,
-                       truth,
-                       cohort_size,
-                       first_separate) {
-  assert_class(data, "Data")
-  assert_number(dose)
-  assert_function(truth)
-  assert_class(cohort_size, "CohortSize")
-  assert_flag(first_separate)
-
-  prob <- truth(dose)
-  size <- size(cohort_size, dose = dose, data = data)
-  dlts <- if (first_separate && size > 1) {
-    first_dlts <- rbinom(n = 1, size = 1, prob = prob)
-    if (first_dlts == 0) {
-      c(first_dlts, rbinom(n = size - 1, size = 1, prob = prob))
-    } else {
-      first_dlts
-    }
-  } else {
-    rbinom(n = size, size = 1, prob = prob)
-  }
-  update(data, x = dose, y = dlts)
-}
 
 
 
@@ -247,4 +211,84 @@ h_unpack_stopit <- function(stopit_tree) {
   } else {
     return(unlist(c(value, lapply(attr(stopit_tree, "individual"), h_unpack_stopit))))
   }
+}
+
+
+
+#' Helper function to determine the dlts including first separate and placebo
+#' condition
+#'
+#' @param data (`Data`)\cr what data to start from.
+#' @param dose (`number`)\cr current dose.
+#' @param prob (`function`)\cr defines the true probability for a DLT at a dose.
+#' @param prob_placebo (`function`)\cr defines the true probability for a DLT at a placebo condition.
+#' @param cohort_size (`number`)\cr the cohort size to use.
+#' @param cohort_size_placebo (`number`)\cr the cohort size to use for placebo condition.
+#' @param dose_grid (`numeric`)\cr the dose_grid as specified by the user.
+#' @param first_separate (`flag`)\cr whether the first patient is enrolled separately.
+#' @return updated data object
+#' @keywords internal
+
+
+h_determine_dlts <- function(data,
+                             dose,
+                             prob,
+                             prob_placebo,
+                             cohort_size,
+                             cohort_size_placebo,
+                             dose_grid,
+                             first_separate) {
+  assert_class(data, "Data")
+  assert_number(dose)
+  assert_number(prob)
+  assert_number(cohort_size)
+  assert_flag(first_separate)
+
+  if (first_separate && cohort_size > 1) {
+    dlts <- rbinom(n = 1, size = 1, prob = prob)
+    if ((data@placebo) && cohort_size_placebo > 0) {
+      dlts_placebo <- rbinom(n = 1, size = 1, prob = prob_placebo)
+    }
+    if (dlts == 0) {
+      dlts <- c(dlts, rbinom(n = cohort_size - 1L, size = 1, prob = prob))
+      if ((data@placebo) && cohort_size_placebo > 0) {
+        dlts_placebo <- c(dlts_placebo, rbinom(
+          n = cohort_size_placebo, # cohort_size_placebo - 1?
+          size = 1,
+          prob = prob_placebo
+        ))
+      }
+    }
+  } else {
+    dlts <- rbinom(n = cohort_size, size = 1, prob = prob)
+    if ((data@placebo) && cohort_size_placebo > 0) {
+      dlts_placebo <- rbinom(n = cohort_size_placebo, size = 1, prob = prob_placebo)
+    }
+  }
+
+
+  if ((data@placebo) && cohort_size_placebo > 0) {
+    this_data <- update(
+      object = data,
+      x = dose_grid,
+      y = dlts_placebo,
+      check = FALSE
+    )
+
+    ## update the data with active dose
+    this_data <- update(
+      object = this_data,
+      x = dose,
+      y = dlts,
+      new_cohort = FALSE
+    )
+  } else {
+    ## update the data with this cohort
+    this_data <- update(
+      object = data,
+      x = dose,
+      y = dlts
+    )
+  }
+  return(this_data)
 }
