@@ -306,35 +306,17 @@ setMethod("simulate",
         n_cores = nCores
       )
 
-      ## put everything in the Simulations format:
-
-      ## setup the list for the simulated data objects
-      dataList <- lapply(resultList, "[[", "data")
-
-      ## the vector of the final dose recommendations
-      recommendedDoses <- as.numeric(sapply(resultList, "[[", "dose"))
-
-      ## setup the list for the final fits
-      fitList <- lapply(resultList, "[[", "fit")
-
-      ## the reasons for stopping
-      stopReasons <- lapply(resultList, "[[", "stop")
-
-      # individual stopping rule results as matrix, labels as column names
-      stopResults <- lapply(resultList, "[[", "report_results")
-      stop_matrix <- as.matrix(do.call(rbind, stopResults))
-
-      # Result list of additional statistical summary.
-      additional_stats <- lapply(resultList, "[[", "additional_stats")
+      # format simulation output
+      simulations_output <- h_simulations_output_format(resultList)
 
       ## return the results in the Simulations class object
       ret <- Simulations(
-        data = dataList,
-        doses = recommendedDoses,
-        fit = fitList,
-        stop_report = stop_matrix,
-        stop_reasons = stopReasons,
-        additional_stats = additional_stats,
+        data = simulations_output$dataList,
+        doses = simulations_output$recommendedDoses,
+        fit = simulations_output$fitList,
+        stop_report = simulations_output$stop_matrix,
+        stop_reasons = simulations_output$stopReasons,
+        additional_stats = simulations_output$additional_stats,
         seed = RNGstate
       )
 
