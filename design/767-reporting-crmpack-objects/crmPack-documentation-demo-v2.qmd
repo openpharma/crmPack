@@ -127,13 +127,14 @@ trialDesign
 
 # How is this done?
 
-The key is to define a `knit_print` S3 method for every class that we need to print. 
+The key is to define a `knit_print` S3 method for every class that we need to print.
 
 Without one, we see:
 
 ```{r, eval = FALSE}
 trialIncrement
 ```
+
 ```{r, echo = FALSE}
 print(trialIncrement)
 ```
@@ -211,6 +212,10 @@ vignette("knit_print", package = "knitr")
 # A potential `render` method
 
 ```{r, error = TRUE}
+render <- function(obj, ...) {
+  UseMethod("render")
+}
+
 render.CrmPackClass <- function(
     obj, 
     header = "This is a CrmPackClass object", 
@@ -248,8 +253,10 @@ render.CrmPackClass <- function(
   }
   asis_output(value)
 }
+registerS3method("render", "CrmPackClass", render.CrmPackClass)
 
-render.CrmPackClass(trialNextBest)
+
+render(trialNextBest)
 ```
 
 # Environment
