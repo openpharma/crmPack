@@ -10,7 +10,7 @@
     
     <a class="navbar-brand me-2" href="../index.html">crmPack</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">2.0.0.9140</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">2.0.0.9141</small>
 
     
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -41,12 +41,6 @@
 <li class="nav-item">
   <a class="nav-link" href="../news/index.html">Changelog</a>
 </li>
-<!-- start dropdown for versions --> <li class="nav-item dropdown">
-        <a href="#" class="nav-link dropdown-toggle"
-          data-bs-toggle="dropdown" role="button"
-          aria-expanded="false" aria-haspopup="true"
-          id="dropdown-versions">Versions</a> <div class="dropdown-menu" aria-labelledby="dropdown-versions"> <a class="dropdown-item" data-toggle="tooltip" title="" href="https://Roche.github.io/crmPack/main">main</a> </div></li>
-<!-- end dropdown for versions -->
 <li class="nav-item dropdown">
   <a href="#" class="nav-link dropdown-toggle" data-bs-toggle="dropdown" role="button" aria-expanded="false" aria-haspopup="true" id="dropdown-reports">Reports</a>
   <div class="dropdown-menu" aria-labelledby="dropdown-reports">
@@ -572,6 +566,16 @@
         <dd><code>Design</code></dd>
       </dl><dl><dt>
           
+          <code><a href="DesignOrdinal-class.html">DesignOrdinal()</a></code> <code><a href="DesignOrdinal-class.html">.DefaultDesignOrdinal()</a></code> 
+        </dt>
+        <dd><code>DesignOrdinal</code></dd>
+      </dl><dl><dt>
+          
+          <code><a href="RuleDesignOrdinal-class.html">RuleDesignOrdinal()</a></code> <code><a href="RuleDesignOrdinal-class.html">.DefaultRuleDesignOrdinal()</a></code> 
+        </dt>
+        <dd><code>RuleDesignOrdinal</code></dd>
+      </dl><dl><dt>
+          
           <code><a href="DualDesign-class.html">DualDesign()</a></code> <code><a href="DualDesign-class.html">.DefaultDualDesign()</a></code> 
         </dt>
         <dd><code>DualDesign</code></dd>
@@ -871,7 +875,7 @@ condition</dd>
         <dd>Internal Helper Functions for Validation of Model Parameters Objects</dd>
       </dl><dl><dt>
           
-          <code><a href="v_model_objects.html">v_general_model()</a></code> <code><a href="v_model_objects.html">v_model_logistic_kadane()</a></code> <code><a href="v_model_objects.html">v_model_logistic_kadane_beta_gamma()</a></code> <code><a href="v_model_objects.html">v_model_logistic_normal_mix()</a></code> <code><a href="v_model_objects.html">v_model_logistic_normal_fixed_mix()</a></code> <code><a href="v_model_objects.html">v_model_logistic_log_normal_mix()</a></code> <code><a href="v_model_objects.html">v_model_dual_endpoint()</a></code> <code><a href="v_model_objects.html">v_model_dual_endpoint_rw()</a></code> <code><a href="v_model_objects.html">v_model_dual_endpoint_beta()</a></code> <code><a href="v_model_objects.html">v_model_dual_endpoint_emax()</a></code> <code><a href="v_model_objects.html">v_model_logistic_indep_beta()</a></code> <code><a href="v_model_objects.html">v_model_eff_log_log()</a></code> <code><a href="v_model_objects.html">v_model_eff_flexi()</a></code> <code><a href="v_model_objects.html">v_model_da_logistic_log_normal()</a></code> <code><a href="v_model_objects.html">v_model_tite_logistic_log_normal()</a></code> <code><a href="v_model_objects.html">v_model_one_par_exp_normal_prior()</a></code> <code><a href="v_model_objects.html">v_model_one_par_exp_prior()</a></code> 
+          <code><a href="v_model_objects.html">v_general_model()</a></code> <code><a href="v_model_objects.html">v_model_logistic_kadane()</a></code> <code><a href="v_model_objects.html">v_model_logistic_kadane_beta_gamma()</a></code> <code><a href="v_model_objects.html">v_model_logistic_normal_mix()</a></code> <code><a href="v_model_objects.html">v_model_logistic_normal_fixed_mix()</a></code> <code><a href="v_model_objects.html">v_model_logistic_log_normal_mix()</a></code> <code><a href="v_model_objects.html">v_model_dual_endpoint()</a></code> <code><a href="v_model_objects.html">v_model_dual_endpoint_rw()</a></code> <code><a href="v_model_objects.html">v_model_dual_endpoint_beta()</a></code> <code><a href="v_model_objects.html">v_model_dual_endpoint_emax()</a></code> <code><a href="v_model_objects.html">v_model_logistic_indep_beta()</a></code> <code><a href="v_model_objects.html">v_model_eff_log_log()</a></code> <code><a href="v_model_objects.html">v_model_eff_flexi()</a></code> <code><a href="v_model_objects.html">v_model_da_logistic_log_normal()</a></code> <code><a href="v_model_objects.html">v_model_tite_logistic_log_normal()</a></code> <code><a href="v_model_objects.html">v_model_one_par_exp_normal_prior()</a></code> <code><a href="v_model_objects.html">v_model_one_par_exp_prior()</a></code> <code><a href="v_model_objects.html">v_logisticlognormalordinal()</a></code> 
         </dt>
         <dd>Internal Helper Functions for Validation of <code>GeneralModel</code> and <code>ModelPseudo</code> Objects</dd>
       </dl><dl><dt>
@@ -906,7 +910,7 @@ condition</dd>
         <dd>Internal Helper Functions for Validation of <code>SafetyWindow</code> Objects</dd>
       </dl><dl><dt>
           
-          <code><a href="v_design.html">v_rule_design()</a></code> <code><a href="v_design.html">v_design_grouped()</a></code> 
+          <code><a href="v_design.html">v_rule_design()</a></code> <code><a href="v_design.html">v_rule_design_ordinal()</a></code> <code><a href="v_design.html">v_design_grouped()</a></code> 
         </dt>
         <dd>Internal Helper Functions for Validation of <code>RuleDesign</code> Objects</dd>
       </dl><dl><dt>

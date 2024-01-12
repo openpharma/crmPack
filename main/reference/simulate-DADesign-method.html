@@ -10,7 +10,7 @@
     
     <a class="navbar-brand me-2" href="../index.html">crmPack</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">2.0.0.9140</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">2.0.0.9141</small>
 
     
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -41,12 +41,6 @@
 <li class="nav-item">
   <a class="nav-link" href="../news/index.html">Changelog</a>
 </li>
-<!-- start dropdown for versions --> <li class="nav-item dropdown">
-        <a href="#" class="nav-link dropdown-toggle"
-          data-bs-toggle="dropdown" role="button"
-          aria-expanded="false" aria-haspopup="true"
-          id="dropdown-versions">Versions</a> <div class="dropdown-menu" aria-labelledby="dropdown-versions"> <a class="dropdown-item" data-toggle="tooltip" title="" href="https://Roche.github.io/crmPack/main">main</a> </div></li>
-<!-- end dropdown for versions -->
 <li class="nav-item dropdown">
   <a href="#" class="nav-link dropdown-toggle" data-bs-toggle="dropdown" role="button" aria-expanded="false" aria-haspopup="true" id="dropdown-reports">Reports</a>
   <div class="dropdown-menu" aria-labelledby="dropdown-reports">
@@ -129,11 +123,7 @@ has DLTs.</p></dd>
 
 
 <dt>trueTmax</dt>
-<dd><p>the true maximum time at which the DLT occurs.
-If not provided, it defaults to the maximum time in the trial data.
-If <code>trueTmax</code> is less than the trial's maximum time,
-it issues a warning and sets <code>trueTmax</code> to the trial's maximum time.
-Use this parameter to specify the maximum time for toxicity events.</p></dd>
+<dd><p>(<code>number</code> or <code>NULL</code>)<br> the true maximum time at which DLTs can occur. Note that this must be larger thank <code>Tmax</code> from the <code>object</code>'s base data, which is the length of the DLT window, i.e. until which time DLTs are officially declared as such and used in the trial.</p></dd>
 
 
 <dt>args</dt>

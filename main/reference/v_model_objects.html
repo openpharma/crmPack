@@ -16,7 +16,7 @@ not exported."><meta property="og:image" content="https://roche.github.io/crmPac
     
     <a class="navbar-brand me-2" href="../index.html">crmPack</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">2.0.0.9140</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">2.0.0.9141</small>
 
     
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -47,12 +47,6 @@ not exported."><meta property="og:image" content="https://roche.github.io/crmPac
 <li class="nav-item">
   <a class="nav-link" href="../news/index.html">Changelog</a>
 </li>
-<!-- start dropdown for versions --> <li class="nav-item dropdown">
-        <a href="#" class="nav-link dropdown-toggle"
-          data-bs-toggle="dropdown" role="button"
-          aria-expanded="false" aria-haspopup="true"
-          id="dropdown-versions">Versions</a> <div class="dropdown-menu" aria-labelledby="dropdown-versions"> <a class="dropdown-item" data-toggle="tooltip" title="" href="https://Roche.github.io/crmPack/main">main</a> </div></li>
-<!-- end dropdown for versions -->
 <li class="nav-item dropdown">
   <a href="#" class="nav-link dropdown-toggle" data-bs-toggle="dropdown" role="button" aria-expanded="false" aria-haspopup="true" id="dropdown-reports">Reports</a>
   <div class="dropdown-menu" aria-labelledby="dropdown-reports">
@@ -122,7 +116,9 @@ not exported.</p>
 <span></span>
 <span><span class="fu">v_model_one_par_exp_normal_prior</span><span class="op">(</span><span class="va">object</span><span class="op">)</span></span>
 <span></span>
-<span><span class="fu">v_model_one_par_exp_prior</span><span class="op">(</span><span class="va">object</span><span class="op">)</span></span></code></pre></div>
+<span><span class="fu">v_model_one_par_exp_prior</span><span class="op">(</span><span class="va">object</span><span class="op">)</span></span>
+<span></span>
+<span><span class="fu">v_logisticlognormalordinal</span><span class="op">(</span><span class="va">object</span><span class="op">)</span></span></code></pre></div>
     </div>
 
     <div class="section level2">
@@ -163,6 +159,7 @@ valid <code>ModelParamsNormal</code> objects as well as <code>weights</code> are
 <li><p><code>v_model_tite_logistic_log_normal()</code>: validates that <code><a href="TITELogisticLogNormal-class.html">TITELogisticLogNormal</a></code> class slots are valid.</p></li>
 <li><p><code>v_model_one_par_exp_normal_prior()</code>: validates that <code><a href="OneParLogNormalPrior-class.html">OneParLogNormalPrior</a></code> class slots are valid.</p></li>
 <li><p><code>v_model_one_par_exp_prior()</code>: validates that <code><a href="OneParExpPrior-class.html">OneParExpPrior</a></code> class slots are valid.</p></li>
+<li><p><code>v_logisticlognormalordinal()</code>: confirms that cov is diagonal</p></li>
 </ul></div>
 
   </main><aside class="col-md-3"><nav id="toc"><h2>On this page</h2>

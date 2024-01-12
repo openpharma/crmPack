@@ -33,7 +33,7 @@
     
     <a class="navbar-brand me-2" href="../index.html">crmPack</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">2.0.0.9140</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">2.0.0.9141</small>
 
     
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -65,12 +65,6 @@
 <li class="nav-item">
   <a class="nav-link" href="../news/index.html">Changelog</a>
 </li>
-<!-- start dropdown for versions --> <li class="nav-item dropdown">
-        <a href="#" class="nav-link dropdown-toggle"
-          data-bs-toggle="dropdown" role="button"
-          aria-expanded="false" aria-haspopup="true"
-          id="dropdown-versions">Versions</a> <div class="dropdown-menu" aria-labelledby="dropdown-versions"> <a class="dropdown-item" data-toggle="tooltip" title="" href="https://Roche.github.io/crmPack/main">main</a> </div></li>
-<!-- end dropdown for versions -->
 <li class="nav-item dropdown">
   <a href="#" class="nav-link dropdown-toggle" data-bs-toggle="dropdown" role="button" aria-expanded="false" aria-haspopup="true" id="dropdown-reports">Reports</a>
   <div class="dropdown-menu" aria-labelledby="dropdown-reports">
@@ -246,55 +240,55 @@ cumulative probabilities of toxicity are required:</p>
 <div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="../reference/fit.html">fit</a></span><span class="op">(</span><span class="va">samples</span>, <span class="va">ordinal_model</span>, <span class="va">ordinal_data</span>, grade <span class="op">=</span> <span class="fl">1L</span><span class="op">)</span></span>
 <span><span class="co">#&gt;    dose     middle        lower     upper</span></span>
-<span><span class="co">#&gt; 1    10 0.03648797 6.192454e-10 0.2139745</span></span>
-<span><span class="co">#&gt; 2    20 0.07505285 3.241591e-06 0.3168434</span></span>
-<span><span class="co">#&gt; 3    30 0.13220075 4.118186e-04 0.4123292</span></span>
-<span><span class="co">#&gt; 4    40 0.21901795 1.477206e-02 0.5045143</span></span>
-<span><span class="co">#&gt; 5    50 0.34878446 1.030877e-01 0.6456978</span></span>
-<span><span class="co">#&gt; 6    60 0.49830706 1.739886e-01 0.8395653</span></span>
-<span><span class="co">#&gt; 7    70 0.60719836 2.125832e-01 0.9588740</span></span>
-<span><span class="co">#&gt; 8    80 0.67683356 2.250825e-01 0.9921394</span></span>
-<span><span class="co">#&gt; 9    90 0.72354076 2.351458e-01 0.9980848</span></span>
-<span><span class="co">#&gt; 10  100 0.75687453 2.610817e-01 0.9994708</span></span>
+<span><span class="co">#&gt; 1    10 0.03722466 2.821292e-09 0.2382190</span></span>
+<span><span class="co">#&gt; 2    20 0.07786695 7.697853e-06 0.3218586</span></span>
+<span><span class="co">#&gt; 3    30 0.13776648 6.065008e-04 0.4117463</span></span>
+<span><span class="co">#&gt; 4    40 0.22799886 1.866137e-02 0.5086450</span></span>
+<span><span class="co">#&gt; 5    50 0.35965577 1.146272e-01 0.6538317</span></span>
+<span><span class="co">#&gt; 6    60 0.50871398 1.816600e-01 0.8387960</span></span>
+<span><span class="co">#&gt; 7    70 0.61530832 2.065379e-01 0.9591442</span></span>
+<span><span class="co">#&gt; 8    80 0.68241672 2.216908e-01 0.9897964</span></span>
+<span><span class="co">#&gt; 9    90 0.72744365 2.375021e-01 0.9971092</span></span>
+<span><span class="co">#&gt; 10  100 0.75966494 2.525018e-01 0.9991810</span></span>
 <span><span class="fu"><a href="../reference/fit.html">fit</a></span><span class="op">(</span><span class="va">samples</span>, <span class="va">ordinal_model</span>, <span class="va">ordinal_data</span>, grade <span class="op">=</span> <span class="fl">2L</span><span class="op">)</span></span>
 <span><span class="co">#&gt;    dose     middle        lower     upper</span></span>
-<span><span class="co">#&gt; 1    10 0.01888205 4.762856e-10 0.1216334</span></span>
-<span><span class="co">#&gt; 2    20 0.03907116 1.405749e-06 0.1752535</span></span>
-<span><span class="co">#&gt; 3    30 0.06943097 1.860779e-04 0.2393075</span></span>
-<span><span class="co">#&gt; 4    40 0.11822161 5.384433e-03 0.3215768</span></span>
-<span><span class="co">#&gt; 5    50 0.20060457 4.925634e-02 0.4273781</span></span>
-<span><span class="co">#&gt; 6    60 0.32399665 8.604889e-02 0.6649037</span></span>
-<span><span class="co">#&gt; 7    70 0.44246887 1.064044e-01 0.9054867</span></span>
-<span><span class="co">#&gt; 8    80 0.52916992 1.202271e-01 0.9786766</span></span>
-<span><span class="co">#&gt; 9    90 0.59121451 1.278010e-01 0.9942831</span></span>
-<span><span class="co">#&gt; 10  100 0.63711324 1.343887e-01 0.9983878</span></span></code></pre></div>
+<span><span class="co">#&gt; 1    10 0.02019066 1.229667e-09 0.1290452</span></span>
+<span><span class="co">#&gt; 2    20 0.04178293 3.504439e-06 0.1968249</span></span>
+<span><span class="co">#&gt; 3    30 0.07402209 3.109153e-04 0.2539130</span></span>
+<span><span class="co">#&gt; 4    40 0.12527925 7.291476e-03 0.3300603</span></span>
+<span><span class="co">#&gt; 5    50 0.21024219 4.429338e-02 0.4499908</span></span>
+<span><span class="co">#&gt; 6    60 0.33491700 8.138326e-02 0.6697161</span></span>
+<span><span class="co">#&gt; 7    70 0.45448605 1.009465e-01 0.8976394</span></span>
+<span><span class="co">#&gt; 8    80 0.53984194 1.147162e-01 0.9769019</span></span>
+<span><span class="co">#&gt; 9    90 0.59996155 1.321572e-01 0.9936012</span></span>
+<span><span class="co">#&gt; 10  100 0.64416775 1.472356e-01 0.9982357</span></span></code></pre></div>
 <p>The <code>cumulative</code> flag can be used to request
 grade-specific probabilities.</p>
 <div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="../reference/fit.html">fit</a></span><span class="op">(</span><span class="va">samples</span>, <span class="va">ordinal_model</span>, <span class="va">ordinal_data</span>, grade <span class="op">=</span> <span class="fl">1L</span>, cumulative <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></span>
 <span><span class="co">#&gt;    dose     middle        lower     upper</span></span>
-<span><span class="co">#&gt; 1    10 0.01760592 3.448687e-10 0.1207658</span></span>
-<span><span class="co">#&gt; 2    20 0.03598170 1.185653e-06 0.1929129</span></span>
-<span><span class="co">#&gt; 3    30 0.06276978 1.097961e-04 0.2771871</span></span>
-<span><span class="co">#&gt; 4    40 0.10079634 1.868923e-03 0.3580031</span></span>
-<span><span class="co">#&gt; 5    50 0.14817990 4.128435e-03 0.4394360</span></span>
-<span><span class="co">#&gt; 6    60 0.17431041 4.773055e-03 0.4819222</span></span>
-<span><span class="co">#&gt; 7    70 0.16472949 4.066066e-03 0.4820252</span></span>
-<span><span class="co">#&gt; 8    80 0.14766364 2.274534e-03 0.4694204</span></span>
-<span><span class="co">#&gt; 9    90 0.13232624 8.754400e-04 0.4491040</span></span>
-<span><span class="co">#&gt; 10  100 0.11976128 3.651753e-04 0.4376520</span></span>
+<span><span class="co">#&gt; 1    10 0.01703400 9.726278e-10 0.1296201</span></span>
+<span><span class="co">#&gt; 2    20 0.03608402 2.069841e-06 0.1822315</span></span>
+<span><span class="co">#&gt; 3    30 0.06374439 1.372483e-04 0.2741621</span></span>
+<span><span class="co">#&gt; 4    40 0.10271960 2.262643e-03 0.3552005</span></span>
+<span><span class="co">#&gt; 5    50 0.14941358 5.277764e-03 0.4610464</span></span>
+<span><span class="co">#&gt; 6    60 0.17379699 6.448626e-03 0.5075695</span></span>
+<span><span class="co">#&gt; 7    70 0.16082227 6.105924e-03 0.4782956</span></span>
+<span><span class="co">#&gt; 8    80 0.14257478 3.565373e-03 0.4636195</span></span>
+<span><span class="co">#&gt; 9    90 0.12748210 1.619311e-03 0.4630403</span></span>
+<span><span class="co">#&gt; 10  100 0.11549719 5.325239e-04 0.4538694</span></span>
 <span><span class="fu"><a href="../reference/fit.html">fit</a></span><span class="op">(</span><span class="va">samples</span>, <span class="va">ordinal_model</span>, <span class="va">ordinal_data</span>, grade <span class="op">=</span> <span class="fl">2L</span>, cumulative <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></span>
 <span><span class="co">#&gt;    dose     middle        lower     upper</span></span>
-<span><span class="co">#&gt; 1    10 0.01888205 4.762856e-10 0.1216334</span></span>
-<span><span class="co">#&gt; 2    20 0.03907116 1.405749e-06 0.1752535</span></span>
-<span><span class="co">#&gt; 3    30 0.06943097 1.860779e-04 0.2393075</span></span>
-<span><span class="co">#&gt; 4    40 0.11822161 5.384433e-03 0.3215768</span></span>
-<span><span class="co">#&gt; 5    50 0.20060457 4.925634e-02 0.4273781</span></span>
-<span><span class="co">#&gt; 6    60 0.32399665 8.604889e-02 0.6649037</span></span>
-<span><span class="co">#&gt; 7    70 0.44246887 1.064044e-01 0.9054867</span></span>
-<span><span class="co">#&gt; 8    80 0.52916992 1.202271e-01 0.9786766</span></span>
-<span><span class="co">#&gt; 9    90 0.59121451 1.278010e-01 0.9942831</span></span>
-<span><span class="co">#&gt; 10  100 0.63711324 1.343887e-01 0.9983878</span></span></code></pre></div>
+<span><span class="co">#&gt; 1    10 0.02019066 1.229667e-09 0.1290452</span></span>
+<span><span class="co">#&gt; 2    20 0.04178293 3.504439e-06 0.1968249</span></span>
+<span><span class="co">#&gt; 3    30 0.07402209 3.109153e-04 0.2539130</span></span>
+<span><span class="co">#&gt; 4    40 0.12527925 7.291476e-03 0.3300603</span></span>
+<span><span class="co">#&gt; 5    50 0.21024219 4.429338e-02 0.4499908</span></span>
+<span><span class="co">#&gt; 6    60 0.33491700 8.138326e-02 0.6697161</span></span>
+<span><span class="co">#&gt; 7    70 0.45448605 1.009465e-01 0.8976394</span></span>
+<span><span class="co">#&gt; 8    80 0.53984194 1.147162e-01 0.9769019</span></span>
+<span><span class="co">#&gt; 9    90 0.59996155 1.321572e-01 0.9936012</span></span>
+<span><span class="co">#&gt; 10  100 0.64416775 1.472356e-01 0.9982357</span></span></code></pre></div>
 <blockquote>
 <p>Note that, for <code>grade == K - 1</code>, the cumulative and
 grade-specific probabilities of toxicities are identical.</p>
@@ -504,7 +498,7 @@ complexity in using the new classes.</li>
 <span><span class="co">#&gt; [1] stats     graphics  grDevices utils     datasets  methods   base     </span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; other attached packages:</span></span>
-<span><span class="co">#&gt; [1] crmPack_2.0.0.9140 ggplot2_3.4.4     </span></span>
+<span><span class="co">#&gt; [1] crmPack_2.0.0.9141 ggplot2_3.4.4     </span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; loaded via a namespace (and not attached):</span></span>
 <span><span class="co">#&gt;  [1] gtable_0.3.4         xfun_0.41            bslib_0.6.1         </span></span>
@@ -514,14 +508,14 @@ complexity in using the new classes.</li>
 <span><span class="co">#&gt; [13] checkmate_2.3.1      desc_1.4.3           webshot_0.5.5       </span></span>
 <span><span class="co">#&gt; [16] lifecycle_1.0.4      farver_2.1.1         compiler_4.3.2      </span></span>
 <span><span class="co">#&gt; [19] stringr_1.5.1        textshaping_0.3.7    munsell_0.5.0       </span></span>
-<span><span class="co">#&gt; [22] htmltools_0.5.7      sass_0.4.8           yaml_2.3.7          </span></span>
+<span><span class="co">#&gt; [22] htmltools_0.5.7      sass_0.4.8           yaml_2.3.8          </span></span>
 <span><span class="co">#&gt; [25] pillar_1.9.0         pkgdown_2.0.7        jquerylib_0.1.4     </span></span>
 <span><span class="co">#&gt; [28] cachem_1.0.8         parallelly_1.36.0    tidyselect_1.2.0    </span></span>
 <span><span class="co">#&gt; [31] rvest_1.0.3          digest_0.6.33        mvtnorm_1.2-4       </span></span>
-<span><span class="co">#&gt; [34] stringi_1.8.2        dplyr_1.1.4          purrr_1.0.2         </span></span>
+<span><span class="co">#&gt; [34] stringi_1.8.3        dplyr_1.1.4          purrr_1.0.2         </span></span>
 <span><span class="co">#&gt; [37] labeling_0.4.3       fastmap_1.1.1        grid_4.3.2          </span></span>
 <span><span class="co">#&gt; [40] colorspace_2.1-0     cli_3.6.2            magrittr_2.0.3      </span></span>
-<span><span class="co">#&gt; [43] utf8_1.2.4           GenSA_1.1.10.1       withr_2.5.2         </span></span>
+<span><span class="co">#&gt; [43] utf8_1.2.4           GenSA_1.1.12         withr_2.5.2         </span></span>
 <span><span class="co">#&gt; [46] scales_1.3.0         backports_1.4.1      rmarkdown_2.25      </span></span>
 <span><span class="co">#&gt; [49] lambda.r_1.2.4       httr_1.4.7           gridExtra_2.3       </span></span>
 <span><span class="co">#&gt; [52] futile.logger_1.4.3  rjags_4-15           ragg_1.2.7          </span></span>

@@ -124,6 +124,9 @@
     <loc>https://roche.github.io/crmPack/reference/DesignGrouped-class.html</loc>
   </url>
   <url>
+    <loc>https://roche.github.io/crmPack/reference/DesignOrdinal-class.html</loc>
+  </url>
+  <url>
     <loc>https://roche.github.io/crmPack/reference/DualDesign-class.html</loc>
   </url>
   <url>
@@ -341,6 +344,9 @@
   </url>
   <url>
     <loc>https://roche.github.io/crmPack/reference/RuleDesign-class.html</loc>
+  </url>
+  <url>
+    <loc>https://roche.github.io/crmPack/reference/RuleDesignOrdinal-class.html</loc>
   </url>
   <url>
     <loc>https://roche.github.io/crmPack/reference/SafetyWindow-class.html</loc>
