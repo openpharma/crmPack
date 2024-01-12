@@ -3,17 +3,23 @@
 \name{v_design}
 \alias{v_design}
 \alias{v_rule_design}
+\alias{v_rule_design_ordinal}
 \alias{v_design_grouped}
 \title{Internal Helper Functions for Validation of \code{\link{RuleDesign}} Objects}
 \usage{
 v_rule_design(object)
 
+v_rule_design_ordinal(object)
+
 v_design_grouped(object)
 }
 \arguments{
-\item{object}{(\code{RuleDesign})\cr object to validate.}
+\item{object}{(\code{RuleDesignOrdinal})\cr object to validate.}
 }
 \value{
+A \code{character} vector with the validation failure messages,
+or \code{TRUE} in case validation passes.
+
 A \code{character} vector with the validation failure messages,
 or \code{TRUE} in case validation passes.
 }
@@ -22,11 +28,19 @@ or \code{TRUE} in case validation passes.
 
 These functions are only used internally to validate the format of an input
 \code{\link{RuleDesign}} or inherited classes and therefore not exported.
+
+\ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#experimental}{\figure{lifecycle-experimental.svg}{options: alt='[Experimental]'}}}{\strong{[Experimental]}}
+
+These functions are only used internally to validate the format of an input
+\code{\link{RuleDesignOrdinal}} or inherited classes and therefore not exported.
 }
 \section{Functions}{
 \itemize{
 \item \code{v_rule_design()}: validates that the \code{\link{RuleDesign}} object
 contains valid \code{startingDose}.
+
+\item \code{v_rule_design_ordinal()}: validates that the \code{\link{RuleDesignOrdinal}} object
+contains valid \code{starting_dose}.
 
 \item \code{v_design_grouped()}: validates that the \code{\link{DesignGrouped}} object
 contains valid flags.
