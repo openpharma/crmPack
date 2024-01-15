@@ -81,7 +81,7 @@ my_stopping <- StoppingOrdinal(1L, (my_stopping1 & my_stopping2) | my_stopping3)
 
 # Initialize the design.
 design <- DesignOrdinal(
-  model =  LogisticLogNormalOrdinal(
+  model = LogisticLogNormalOrdinal(
     mean = c(-3, -4, 1),
     cov = diag(c(3, 4, 1)),
     ref_dose = 50
