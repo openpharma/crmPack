@@ -1,5 +1,3 @@
-
-
 ##' @include helpers.R
 ##' @include Model-class.R
 {}
