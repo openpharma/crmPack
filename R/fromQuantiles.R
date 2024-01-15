@@ -1,23 +1,10 @@
-# nolint start
 
-#####################################################################################
-## Author: Daniel Sabanes Bove [sabanesd *a*t* roche *.* com]
-## Project: Object-oriented implementation of CRM designs
-##
-## Time-stamp: <[fromQuantiles.R] by DSB Fre 19/06/2015 14:22>
-##
-## Description:
-## Find the best LogisticNormal model for a given set of quantiles at certain
-## dose levels
-##
-## History:
-## 11/02/2014   file creation
-#####################################################################################
 
 ##' @include helpers.R
 ##' @include Model-class.R
 {}
 
+# nolint start
 
 ##' Convert prior quantiles (lower, median, upper) to logistic (log)
 ##' normal model
@@ -221,39 +208,38 @@ Quantiles2LogisticNormal <- function(dosegrid,
   ))
 }
 
-##' Get the minimal informative unimodal beta distribution
-##'
-##' As defined in Neuenschwander et al (2008), this function computes the
-##' parameters of the minimal informative unimodal beta distribution, given the
-##' request that the p-quantile should be q, i.e. X ~ Be(a, b) with Pr(X <= q) =
-##' p.
-##'
-##' @param p the probability (> 0 and < 1)
-##' @param q the quantile (> 0 and < 1)
-##' @return the two resulting beta parameters a and b in a list
-##'
-##' @export
-##' @keywords programming
-getMinInfBeta <- function(p, q) {
+# nolint end
+
+#' Helper for Minimal Informative Unimodal Beta Distribution
+#'
+#' As defined in Neuenschwander et al (2008), this function computes the
+#' parameters of the minimal informative unimodal beta distribution, given the
+#' request that the p-quantile should be q, i.e. `X ~ Be(a, b)` with
+#' `Pr(X <= q) = p`.
+#'
+#' @param p (`number`)\cr the probability.
+#' @param q (`number`)\cr the quantile.
+#' @return A list with the two resulting beta parameters `a` and `b`.
+#'
+#' @keywords internal
+h_get_min_inf_beta <- function(p, q) {
   assert_probability(p, bounds_closed = FALSE)
   assert_probability(q, bounds_closed = FALSE)
 
-  ret <-
-    if (q > p) {
-      list(
-        a = log(p) / log(q),
-        b = 1
-      )
-    } else {
-      list(
-        a = 1,
-        b = log(1 - p) / log(1 - q)
-      )
-    }
-
-  return(ret)
+  if (q > p) {
+    list(
+      a = log(p) / log(q),
+      b = 1
+    )
+  } else {
+    list(
+      a = 1,
+      b = log(1 - p) / log(1 - q)
+    )
+  }
 }
 
+# nolint start
 
 ##' Construct a minimally informative prior
 ##'
@@ -320,11 +306,11 @@ MinimalInformative <- function(dosegrid,
   xmax <- dosegrid[nDoses]
 
   ## derive the beta distributions at the lowest and highest dose
-  betaAtMin <- getMinInfBeta(
+  betaAtMin <- h_get_min_inf_beta(
     q = threshmin,
     p = 1 - probmin
   )
-  betaAtMax <- getMinInfBeta(
+  betaAtMax <- h_get_min_inf_beta(
     q = threshmax,
     p = probmax
   )
@@ -350,7 +336,7 @@ MinimalInformative <- function(dosegrid,
   for (i in seq_along(dosegrid))
   {
     ## get min inf beta distribution
-    thisMinBeta <- getMinInfBeta(
+    thisMinBeta <- h_get_min_inf_beta(
       p = 0.5,
       q = medianDosegrid[i]
     )
