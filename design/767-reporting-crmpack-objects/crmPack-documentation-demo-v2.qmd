@@ -181,7 +181,10 @@ cohortSizeTox
 trialCohortSize
 ```
 
-> The layout of tables describing the cohort sizes is not as expected.
+> The layout of tables describing the cohort sizes is not as expected. Notice how, when individual
+> cohort size rules (`cohortSizeDose` and `cohortSizeTox`) are printed, the tables are full width
+> and striped. When they are printed as elements of the compound cohort size rule
+> (`cohortSizeTrial`), they are neither.
 
 Read the `knit_print` vignette in the `knitr` package for more details.
 

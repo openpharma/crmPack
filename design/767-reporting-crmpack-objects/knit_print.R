@@ -193,7 +193,7 @@ knit_print.NextBestNCRM <- function(object, ...) {
       kable(
         full.width = FALSE,
         col.names = c("Toxicity range", "Lower", "Upper", "Max pct increment"),
-        caption = "Neuenchwander's nCRM rule"
+        caption = "Neuenschwander's nCRM rule"
       ) |>
       kableExtra::add_header_above(c(" " = 1, "Probability range" = 2, " " = 1))
   )
