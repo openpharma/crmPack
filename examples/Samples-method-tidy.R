@@ -16,4 +16,4 @@ model <- LogisticLogNormal(
 )
 
 samples <- mcmc(emptydata, model, options)
-samples |> tidy()
+samples %>% tidy()

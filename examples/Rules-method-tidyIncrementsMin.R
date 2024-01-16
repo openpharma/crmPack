@@ -1,1 +1,1 @@
-.DefaultIncrementsMin() |> tidy()
+.DefaultIncrementsMin() %>% tidy()

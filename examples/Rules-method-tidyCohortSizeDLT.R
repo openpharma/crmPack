@@ -1,1 +1,1 @@
-.DefaultCohortSizeDLT() |> tidy()
+.DefaultCohortSizeDLT() %>% tidy()
