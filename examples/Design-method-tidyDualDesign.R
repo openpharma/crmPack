@@ -1,1 +1,1 @@
-.DefaultDualDesign()  %>%  tidy()
+.DefaultDualDesign() %>% tidy()

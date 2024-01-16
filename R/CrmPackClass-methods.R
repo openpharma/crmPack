@@ -42,9 +42,9 @@ setMethod(
   f = "tidy",
   signature = signature(x = "CrmPackClass"),
   definition = function(x, ...) {
-    rv <- h_tidy_all_slots(x)  %>% h_tidy_class(x)
+    rv <- h_tidy_all_slots(x) %>% h_tidy_class(x)
     if (length(rv) == 1) {
-      rv[[names(rv)[1]]]  %>% h_tidy_class(x)
+      rv[[names(rv)[1]]] %>% h_tidy_class(x)
     } else {
       rv
     }
