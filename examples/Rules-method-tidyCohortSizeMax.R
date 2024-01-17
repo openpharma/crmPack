@@ -1,1 +1,1 @@
-.DefaultCohortSizeMax() |> tidy()
+.DefaultCohortSizeMax() %>% tidy()

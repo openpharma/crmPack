@@ -22,7 +22,7 @@ test_that("tidy methods exist for all relevant classes", {
         tryCatch(
           {
             x <- do.call(paste0(".Default", cls), list())
-            result <- x |> tidy()
+            result <- x %>% tidy()
             expect_equal(class(result)[1], paste0("tbl_", cls))
           },
           error = function(e) fail(paste0("Unable to tidy ", cls, " objects: ", e))
@@ -60,7 +60,7 @@ test_that("tidy methods return non-empty value for all classes", {
         tryCatch(
           {
             x <- do.call(paste0(".Default", cls), list())
-            result <- x |> tidy()
+            result <- x %>% tidy()
             if (is.list(result)) {
               if (cls %in% some_elements_length_zero) {
                 expect_true(length(result) > 0)

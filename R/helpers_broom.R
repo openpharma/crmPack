@@ -27,7 +27,7 @@ h_handle_attributes <- function(x, .ignore = c("names", "class", "description", 
       if (!is.function(z)) {
         if (length(z) == 1) {
           if (is(z, "CrmPackClass")) {
-            z <- z |> tidy()
+            z <- z %>% tidy()
           }
           rv <- tibble::tibble(X = z)
         } else {
@@ -35,7 +35,7 @@ h_handle_attributes <- function(x, .ignore = c("names", "class", "description", 
             rv <- tibble::tibble(X = NA)
           } else {
             if (is(z, "CrmPackClass")) {
-              rv <- z |> tidy()
+              rv <- z %>% tidy()
             } else {
               rv <- tibble::tibble(X = list(z))
             }
@@ -45,7 +45,7 @@ h_handle_attributes <- function(x, .ignore = c("names", "class", "description", 
       }
       rv
     }
-  ) |>
+  ) %>%
     dplyr::bind_cols()
 }
 
@@ -83,14 +83,14 @@ h_tidy_slot <- function(obj, slot_name, col = NULL, attributes = FALSE) {
             # tidy.numeric & tidy.character are deprecated
             return(tibble::tibble(!!{{ slot_name }} := x))
           } else {
-            return(x |> tidy())
+            return(x %>% tidy())
           }
         }
       )
     )
   }
   if (is(slot(obj, slot_name), "CrmPackClass")) {
-    rv <- slot(obj, slot_name) |>
+    rv <- slot(obj, slot_name) %>%
       tidy()
   } else {
     if (is.null(col)) {
@@ -101,7 +101,7 @@ h_tidy_slot <- function(obj, slot_name, col = NULL, attributes = FALSE) {
   if (attributes) {
     a <- h_handle_attributes(slot(obj, slot_name))
     if (nrow(a) > 0) {
-      rv <- rv |> dplyr::bind_cols(a)
+      rv <- rv %>% dplyr::bind_cols(a)
     }
   }
   rv
@@ -131,7 +131,7 @@ h_tidy_all_slots <- function(obj, ...) {
   }
   # Column bind of all list elements have the same number of rows
   if (length(rv) > 1 && length(unique(sapply(rv, nrow))) == 1) {
-    rv <- rv |> dplyr::bind_cols() # nolint
+    rv <- rv %>% dplyr::bind_cols() # nolint
   }
   rv
 }

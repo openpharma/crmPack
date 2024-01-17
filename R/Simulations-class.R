@@ -1032,8 +1032,8 @@ setMethod(
     }
     # Column bind of all list elements have the same number of rows
     if (length(rv) > 1 & length(unique(sapply(rv, nrow))) == 1) {
-      rv <- rv |> dplyr::bind_cols()
+      rv <- rv %>% dplyr::bind_cols()
     }
-    rv |> h_tidy_class(x)
+    rv %>% h_tidy_class(x)
   }
 )
