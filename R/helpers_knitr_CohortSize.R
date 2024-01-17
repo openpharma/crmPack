@@ -13,9 +13,6 @@ NULL
 
 # CohortSize ----
 
-# [1]  "CohortSizeMax"     "CohortSizeMin"
-# [7] "CohortSizeOrdinal"
-
 #' Render a CohortSizeConst Object
 #'
 #' @description `r lifecycle::badge("experimental")`
@@ -43,7 +40,11 @@ knit_print.CohortSizeConst <- function(obj, asis = TRUE, label = c("participant"
   if (length(label) == 1) {
     label[2] <- paste0(label[1], "s")
   }
-  paste0("A constant size of ", obj@size, " ", label[obj@size == 1 ? 1 : 2])
+  rv <- paste0("A constant size of ", obj@size, " ", label[ifelse(obj@size == 1, 1, 2)])
+  if (asis) {
+    rv <- asis_output(rv)
+  }
+  rv
 }
 
 #' Render a CohortSizeRange Object
@@ -58,16 +59,16 @@ knit_print.CohortSizeConst <- function(obj, asis = TRUE, label = c("participant"
 knit_print.CohortSizeRange <- function(object, asis = TRUE, ...) {
   assert_flag(asis)
 
-  dot_params <- list(...)
-  if (!("col.names" %in% names(dot.params))) {
-    dot_params[["col.names"]] <- c("Lower", "Upper", "Cohort size")
+  params <- list(...)
+  if (!("col.names" %in% names(params))) {
+    params[["col.names"]] <- c("Lower", "Upper", "Cohort size")
   }
-  if (!("caption" %in% names(dot.params))) {
-    dot_params[["caption"]] <- "Defined by the dose to be used in the next cohort"
+  if (!("caption" %in% names(params))) {
+    params[["caption"]] <- "Defined by the dose to be used in the next cohort"
   }
-  rv <-  object %>%
-    tidy() %>%
-    do.call(knitr::kable, dot_params) %>%
+  x <- object %>% tidy()
+  params[["x"]] <- x
+  rv <- do.call(knitr::kable, params) %>%
     kableExtra::add_header_above(c("Dose" = 2, " " = 1))
   if (asis) {
     rv <- asis_output(rv)
@@ -81,7 +82,7 @@ knit_print.CohortSizeRange <- function(object, asis = TRUE, ...) {
 #' @inheritParams knit_print.CohortSizeConst
 #' @inheritDotParam knit_print.CohortSizeConst
 #' @inherit knit_print.CohortSizeConst return
-#' @param ... (`numeric`)\cr Passed to `knitr::kable`.
+#' @param ... Passed to `knitr::kable`.
 #'
 #' @section Usage Notes:
 #' The by default, the columns are labelled `Lower`, `Upper` and `Cohort size`.  The table's caption is
@@ -90,19 +91,18 @@ knit_print.CohortSizeRange <- function(object, asis = TRUE, ...) {
 #'
 #' @export
 #' @rdname knit_print
-knit_print.CohortSizeDLT <- function(object, asis = TRUE, ...) {
+knit_print.CohortSizeDLT <- function(obj, asis = TRUE, ...) {
   assert_flag(asis)
 
-  dot_params <- list(...)
-  if (!("col.names" %in% names(dot.params))) {
-    dot_params[["col.names"]] <- c("Lower", "Upper", "Cohort size")
+  params <- list(...)
+  if (!("col.names" %in% names(params))) {
+    params[["col.names"]] <- c("Lower", "Upper", "Cohort size")
   }
-  if (!("caption" %in% names(dot.params))) {
-    dot_params[["caption"]] <- "Defined by the number of DLTs so far observed"
+  if (!("caption" %in% names(params))) {
+    params[["caption"]] <- "Defined by the number of DLTs so far observed"
   }
-  rv <- object %>%
-    tidy() %>%
-    do.call(knitr::kable, dot_params) %>%
+  params[["x"]] <- obj %>% tidy()
+  rv <- do.call(knitr::kable, params) %>%
     kableExtra::add_header_above(c("No of DLTs" = 2, " " = 1))
   if (asis) {
     rv <- asis_output(rv)
@@ -123,6 +123,7 @@ knit_print.CohortSizeDLT <- function(object, asis = TRUE, ...) {
 knit_print.CohortSizeParts <- function(obj, label = "participant", asis = TRUE, ...) {
   assert_character(label, min.len = 1, max.len = 2, any.missing = FALSE)
   assert_flag(asis)
+
   if (length(label) == 1) {
     label[2] <- paste0(label[1], "s")
   }
@@ -141,4 +142,96 @@ knit_print.CohortSizeParts <- function(obj, label = "participant", asis = TRUE, 
     rv <- asis_output(rv)
   }
   rv
+}
+
+#' Render a CohortSizeMax Object
+#'
+#' @description `r lifecycle::badge("experimental")`
+#' @inheritParams knit_print.CohortSizeConst
+#' @inherit knit_print.CohortSizeConst return
+#' @params ... passed through to the `knit_print` methods of the constituent
+#' rules
+#'
+#' @export
+#' @rdname knit_print
+knit_print.CohortSizeMax <- function(obj, asis = TRUE, ...) {
+  assert_flag(asis)
+  rv <- paste0(
+    "The maximum of the cohort sizes defined in the following rules:",
+    paste0(
+      lapply(
+        obj@cohort_sizes,
+        function(x, ...) {
+          knit_print(x, asis = asis, ...)
+        }
+      ),
+      collapse = "\n"
+    ),
+    paste = "\n"
+  )
+
+  if (asis) {
+    rv <- asis_output(rv)
+  }
+  rv
+}
+
+#' Render a CohortSizeMin Object
+#'
+#' @description `r lifecycle::badge("experimental")`
+#' @inheritParams knit_print.CohortSizeConst
+#' @inherit knit_print.CohortSizeConst return
+#' @params ... passed through to the `knit_print` methods of the constituent
+#' rules
+#'
+#' @export
+#' @rdname knit_print
+knit_print.CohortSizeMin <- function(obj, asis = TRUE, ...) {
+  assert_flag(asis)
+  rv <- paste0(
+    "The minimum of the cohort sizes defined in the following rules:",
+    paste0(
+      lapply(
+        obj@cohort_sizes,
+        function(x, ...) {
+          knit_print(x, asis = asis, ...)
+        }
+      ),
+      collapse = "\n"
+    ),
+    paste = "\n"
+  )
+  if (asis) {
+    rv <- asis_output(rv)
+  }
+  rv
+}
+
+#' Render a CohortSizeOrdinal Object
+#'
+#' @description `r lifecycle::badge("experimental")`
+#' @inheritParams knit_print.CohortSizeConst
+#' @inherit knit_print.CohortSizeConst return
+#' @params ... passed through to the `knit_print` method of the standard rule
+#'
+#' @export
+#' @rdname knit_print
+knit_print.CohortSizeMin <- function(obj, asis = TRUE, ...) {
+  asis_output(
+    paste0(
+      "Based on a toxicity garde of ",
+      obg@grade,
+      ": ",
+      paste0(
+        lapply(
+          obj@cohort_sizes,
+          function(x, ...) {
+            knit_print(x, asis = asis, ...)
+          }
+        ),
+        collapse = "\n"
+      ),
+      paste = "\n"
+    )
+  )
 }
