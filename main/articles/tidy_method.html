@@ -33,7 +33,7 @@
     
     <a class="navbar-brand me-2" href="../index.html">crmPack</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">2.0.0.9141</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">2.0.0.9142</small>
 
     
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -65,12 +65,6 @@
 <li class="nav-item">
   <a class="nav-link" href="../news/index.html">Changelog</a>
 </li>
-<!-- start dropdown for versions --> <li class="nav-item dropdown">
-        <a href="#" class="nav-link dropdown-toggle"
-          data-bs-toggle="dropdown" role="button"
-          aria-expanded="false" aria-haspopup="true"
-          id="dropdown-versions">Versions</a> <div class="dropdown-menu" aria-labelledby="dropdown-versions"> <a class="dropdown-item" data-toggle="tooltip" title="" href="https://Roche.github.io/crmPack/main">main</a> </div></li>
-<!-- end dropdown for versions -->
 <li class="nav-item dropdown">
   <a href="#" class="nav-link dropdown-toggle" data-bs-toggle="dropdown" role="button" aria-expanded="false" aria-haspopup="true" id="dropdown-reports">Reports</a>
   <div class="dropdown-menu" aria-labelledby="dropdown-reports">
@@ -186,7 +180,7 @@ range.</li>
 <p><code>CohortSizeConst</code> is a trivial example and illustrates the
 default approach for all classes.</p>
 <div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="fu"><a href="../reference/CohortSizeConst-class.html">CohortSizeConst</a></span><span class="op">(</span>size <span class="op">=</span> <span class="fl">3</span><span class="op">)</span> <span class="op">|&gt;</span> <span class="fu"><a href="../reference/tidy.html">tidy</a></span><span class="op">(</span><span class="op">)</span></span>
+<code class="sourceCode R"><span><span class="fu"><a href="../reference/CohortSizeConst-class.html">CohortSizeConst</a></span><span class="op">(</span>size <span class="op">=</span> <span class="fl">3</span><span class="op">)</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span> <span class="fu"><a href="../reference/tidy.html">tidy</a></span><span class="op">(</span><span class="op">)</span></span>
 <span><span class="co">#&gt; <span style="color: #949494;"># A tibble: 1 × 1</span></span></span>
 <span><span class="co">#&gt;    size</span></span>
 <span><span class="co">#&gt;   <span style="color: #949494; font-style: italic;">&lt;int&gt;</span></span></span>
@@ -197,7 +191,7 @@ handled.</p>
 <code class="sourceCode R"><span><span class="fu"><a href="../reference/IncrementsRelative-class.html">IncrementsRelative</a></span><span class="op">(</span></span>
 <span>  intervals <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">0</span>, <span class="fl">20</span><span class="op">)</span>,</span>
 <span>  increments <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">1</span>, <span class="fl">0.33</span><span class="op">)</span></span>
-<span><span class="op">)</span> <span class="op">|&gt;</span></span>
+<span><span class="op">)</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span></span>
 <span>  <span class="fu"><a href="../reference/tidy.html">tidy</a></span><span class="op">(</span><span class="op">)</span></span>
 <span><span class="co">#&gt; <span style="color: #949494;"># A tibble: 2 × 3</span></span></span>
 <span><span class="co">#&gt;     min   max increment</span></span>
@@ -210,7 +204,7 @@ handled.</p>
 <span>  <span class="fu"><a href="../reference/CohortSizeConst-class.html">CohortSizeConst</a></span><span class="op">(</span><span class="fl">3</span><span class="op">)</span>,</span>
 <span>  <span class="fu"><a href="../reference/CohortSizeDLT-class.html">CohortSizeDLT</a></span><span class="op">(</span>intervals <span class="op">=</span> <span class="fl">0</span><span class="op">:</span><span class="fl">1</span>, cohort_size <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">1</span>, <span class="fl">3</span><span class="op">)</span><span class="op">)</span></span>
 <span><span class="op">)</span></span>
-<span><span class="va">cs_max</span> <span class="op">|&gt;</span> <span class="fu"><a href="../reference/tidy.html">tidy</a></span><span class="op">(</span><span class="op">)</span></span>
+<span><span class="va">cs_max</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span> <span class="fu"><a href="../reference/tidy.html">tidy</a></span><span class="op">(</span><span class="op">)</span></span>
 <span><span class="co">#&gt; [[1]]</span></span>
 <span><span class="co">#&gt; <span style="color: #949494;"># A tibble: 1 × 1</span></span></span>
 <span><span class="co">#&gt;    size</span></span>
@@ -246,22 +240,22 @@ presentations not yet supported by <code>crmPack</code> directly.</p>
 <span>  ref_dose <span class="op">=</span> <span class="fl">56</span></span>
 <span><span class="op">)</span></span>
 <span><span class="va">samples</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/mcmc.html">mcmc</a></span><span class="op">(</span><span class="va">emptydata</span>, <span class="va">model</span>, <span class="va">options</span><span class="op">)</span></span>
-<span><span class="va">tidySamples</span> <span class="op">&lt;-</span> <span class="va">samples</span> <span class="op">|&gt;</span> <span class="fu"><a href="../reference/tidy.html">tidy</a></span><span class="op">(</span><span class="op">)</span></span>
-<span><span class="va">tidySamples</span> <span class="op">|&gt;</span> <span class="fu"><a href="https://rdrr.io/r/utils/head.html" class="external-link">head</a></span><span class="op">(</span><span class="op">)</span></span>
+<span><span class="va">tidySamples</span> <span class="op">&lt;-</span> <span class="va">samples</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span> <span class="fu"><a href="../reference/tidy.html">tidy</a></span><span class="op">(</span><span class="op">)</span></span>
+<span><span class="va">tidySamples</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span> <span class="fu"><a href="https://rdrr.io/r/utils/head.html" class="external-link">head</a></span><span class="op">(</span><span class="op">)</span></span>
 <span><span class="co">#&gt; $data</span></span>
 <span><span class="co">#&gt; <span style="color: #949494;"># A tibble: 2,000 × 10</span></span></span>
-<span><span class="co">#&gt;    Iteration Chain  alpha0 alpha1 nChains nParameters nIterations nBurnin nThin</span></span>
-<span><span class="co">#&gt;        <span style="color: #949494; font-style: italic;">&lt;int&gt;</span> <span style="color: #949494; font-style: italic;">&lt;int&gt;</span>   <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>  <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>   <span style="color: #949494; font-style: italic;">&lt;int&gt;</span>       <span style="color: #949494; font-style: italic;">&lt;int&gt;</span>       <span style="color: #949494; font-style: italic;">&lt;int&gt;</span>   <span style="color: #949494; font-style: italic;">&lt;int&gt;</span> <span style="color: #949494; font-style: italic;">&lt;int&gt;</span></span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 1</span>         1     1  1.53    0.503       1           1        <span style="text-decoration: underline;">2</span>100     100     1</span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 2</span>         2     1  0.089<span style="text-decoration: underline;">4</span>  0.693       1           1        <span style="text-decoration: underline;">2</span>100     100     1</span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 3</span>         3     1 -<span style="color: #BB0000;">1.01</span>   12.7         1           1        <span style="text-decoration: underline;">2</span>100     100     1</span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 4</span>         4     1 -<span style="color: #BB0000;">0.596</span>  12.3         1           1        <span style="text-decoration: underline;">2</span>100     100     1</span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 5</span>         5     1 -<span style="color: #BB0000;">1.84</span>    8.67        1           1        <span style="text-decoration: underline;">2</span>100     100     1</span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 6</span>         6     1 -<span style="color: #BB0000;">0.981</span>   0.420       1           1        <span style="text-decoration: underline;">2</span>100     100     1</span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 7</span>         7     1 -<span style="color: #BB0000;">0.908</span>   2.37        1           1        <span style="text-decoration: underline;">2</span>100     100     1</span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 8</span>         8     1  0.771   0.684       1           1        <span style="text-decoration: underline;">2</span>100     100     1</span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 9</span>         9     1  0.610   1.29        1           1        <span style="text-decoration: underline;">2</span>100     100     1</span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;">10</span>        10     1 -<span style="color: #BB0000;">1.90</span>    3.10        1           1        <span style="text-decoration: underline;">2</span>100     100     1</span></span>
+<span><span class="co">#&gt;    Iteration Chain alpha0 alpha1 nChains nParameters nIterations nBurnin nThin</span></span>
+<span><span class="co">#&gt;        <span style="color: #949494; font-style: italic;">&lt;int&gt;</span> <span style="color: #949494; font-style: italic;">&lt;int&gt;</span>  <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>  <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>   <span style="color: #949494; font-style: italic;">&lt;int&gt;</span>       <span style="color: #949494; font-style: italic;">&lt;int&gt;</span>       <span style="color: #949494; font-style: italic;">&lt;int&gt;</span>   <span style="color: #949494; font-style: italic;">&lt;int&gt;</span> <span style="color: #949494; font-style: italic;">&lt;int&gt;</span></span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 1</span>         1     1 -<span style="color: #BB0000;">2.43</span>   2.80        1           1        <span style="text-decoration: underline;">2</span>100     100     1</span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 2</span>         2     1  0.278  1.95        1           1        <span style="text-decoration: underline;">2</span>100     100     1</span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 3</span>         3     1 -<span style="color: #BB0000;">0.896</span>  3.38        1           1        <span style="text-decoration: underline;">2</span>100     100     1</span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 4</span>         4     1  1.41   0.324       1           1        <span style="text-decoration: underline;">2</span>100     100     1</span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 5</span>         5     1  0.303  0.656       1           1        <span style="text-decoration: underline;">2</span>100     100     1</span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 6</span>         6     1 -<span style="color: #BB0000;">0.510</span> 17.2         1           1        <span style="text-decoration: underline;">2</span>100     100     1</span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 7</span>         7     1 -<span style="color: #BB0000;">0.624</span>  2.47        1           1        <span style="text-decoration: underline;">2</span>100     100     1</span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 8</span>         8     1  0.310  1.29        1           1        <span style="text-decoration: underline;">2</span>100     100     1</span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 9</span>         9     1  2.35   0.431       1           1        <span style="text-decoration: underline;">2</span>100     100     1</span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;">10</span>        10     1 -<span style="color: #BB0000;">2.60</span>  11.3         1           1        <span style="text-decoration: underline;">2</span>100     100     1</span></span>
 <span><span class="co">#&gt; <span style="color: #949494;"># ℹ 1,990 more rows</span></span></span>
 <span><span class="co">#&gt; <span style="color: #949494;"># ℹ 1 more variable: parallel &lt;lgl&gt;</span></span></span>
 <span><span class="co">#&gt; </span></span>
@@ -286,12 +280,12 @@ below:</p>
 <code class="sourceCode R"><span><span class="fu"><a href="../reference/CohortSizeRange-class.html">CohortSizeRange</a></span><span class="op">(</span></span>
 <span>  intervals <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">0</span>, <span class="fl">50</span>, <span class="fl">300</span><span class="op">)</span>,</span>
 <span>  cohort_size <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">1</span>, <span class="fl">3</span>, <span class="fl">5</span><span class="op">)</span></span>
-<span><span class="op">)</span> <span class="op">|&gt;</span></span>
-<span>  <span class="fu"><a href="../reference/tidy.html">tidy</a></span><span class="op">(</span><span class="op">)</span> <span class="op">|&gt;</span></span>
+<span><span class="op">)</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span></span>
+<span>  <span class="fu"><a href="../reference/tidy.html">tidy</a></span><span class="op">(</span><span class="op">)</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span></span>
 <span>  <span class="fu"><a href="https://rdrr.io/pkg/knitr/man/kable.html" class="external-link">kable</a></span><span class="op">(</span></span>
 <span>    col.names <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"Min"</span>, <span class="st">"Max"</span>, <span class="st">"Cohort size"</span><span class="op">)</span>,</span>
 <span>    caption <span class="op">=</span> <span class="st">"Rules for selecting the cohort size"</span></span>
-<span>  <span class="op">)</span> <span class="op">|&gt;</span></span>
+<span>  <span class="op">)</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span></span>
 <span>  <span class="fu"><a href="https://rdrr.io/pkg/kableExtra/man/add_header_above.html" class="external-link">add_header_above</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"Dose"</span> <span class="op">=</span> <span class="fl">2</span>, <span class="st">" "</span> <span class="op">=</span> <span class="fl">1</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
 <table class="table">
 <caption>
@@ -383,15 +377,15 @@ fictional trial.</p>
 <span>  ref_dose <span class="op">=</span> <span class="fl">56</span></span>
 <span><span class="op">)</span></span>
 <span><span class="va">samples</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/mcmc.html">mcmc</a></span><span class="op">(</span><span class="va">data</span>, <span class="va">model</span>, <span class="va">options</span><span class="op">)</span></span>
-<span><span class="va">tidySamples</span> <span class="op">&lt;-</span> <span class="va">samples</span> <span class="op">|&gt;</span> <span class="fu"><a href="../reference/tidy.html">tidy</a></span><span class="op">(</span><span class="op">)</span></span>
+<span><span class="va">tidySamples</span> <span class="op">&lt;-</span> <span class="va">samples</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span> <span class="fu"><a href="../reference/tidy.html">tidy</a></span><span class="op">(</span><span class="op">)</span></span>
 <span></span>
 <span><span class="co"># The magrittr pipe is necessary here</span></span>
 <span><span class="va">tidySamples</span><span class="op">$</span><span class="va">data</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span></span>
 <span>  <span class="fu"><a href="https://tidyr.tidyverse.org/reference/expand.html" class="external-link">expand</a></span><span class="op">(</span></span>
 <span>    <span class="fu"><a href="https://tidyr.tidyverse.org/reference/expand.html" class="external-link">nesting</a></span><span class="op">(</span><span class="op">!</span><span class="op">!</span><span class="op">!</span><span class="va">.</span><span class="op">[</span><span class="fl">1</span><span class="op">:</span><span class="fl">10</span><span class="op">]</span><span class="op">)</span>,</span>
 <span>    Dose <span class="op">=</span> <span class="va">data</span><span class="op">@</span><span class="va">doseGrid</span><span class="op">[</span><span class="fl">2</span><span class="op">:</span><span class="fl">11</span><span class="op">]</span></span>
-<span>  <span class="op">)</span> <span class="op">|&gt;</span></span>
-<span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate.html" class="external-link">mutate</a></span><span class="op">(</span>Prob <span class="op">=</span> <span class="fu"><a href="../reference/probFunction.html">probFunction</a></span><span class="op">(</span><span class="va">model</span>, alpha0 <span class="op">=</span> <span class="va">alpha0</span>, alpha1 <span class="op">=</span> <span class="va">alpha1</span><span class="op">)</span><span class="op">(</span><span class="va">Dose</span><span class="op">)</span><span class="op">)</span> <span class="op">|&gt;</span></span>
+<span>  <span class="op">)</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span></span>
+<span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate.html" class="external-link">mutate</a></span><span class="op">(</span>Prob <span class="op">=</span> <span class="fu"><a href="../reference/probFunction.html">probFunction</a></span><span class="op">(</span><span class="va">model</span>, alpha0 <span class="op">=</span> <span class="va">alpha0</span>, alpha1 <span class="op">=</span> <span class="va">alpha1</span><span class="op">)</span><span class="op">(</span><span class="va">Dose</span><span class="op">)</span><span class="op">)</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span></span>
 <span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggplot.html" class="external-link">ggplot</a></span><span class="op">(</span><span class="op">)</span> <span class="op">+</span></span>
 <span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/geom_density.html" class="external-link">geom_density</a></span><span class="op">(</span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/aes.html" class="external-link">aes</a></span><span class="op">(</span>x <span class="op">=</span> <span class="va">Prob</span>, colour <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/factor.html" class="external-link">as.factor</a></span><span class="op">(</span><span class="va">Dose</span><span class="op">)</span><span class="op">)</span>, adjust <span class="op">=</span> <span class="fl">1.5</span><span class="op">)</span> <span class="op">+</span></span>
 <span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/labs.html" class="external-link">labs</a></span><span class="op">(</span></span>
@@ -439,7 +433,7 @@ fictional trial.</p>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; other attached packages:</span></span>
 <span><span class="co">#&gt; [1] dplyr_1.1.4        magrittr_2.0.3     tidyr_1.3.0        kableExtra_1.3.4  </span></span>
-<span><span class="co">#&gt; [5] knitr_1.45         crmPack_2.0.0.9141 ggplot2_3.4.4     </span></span>
+<span><span class="co">#&gt; [5] knitr_1.45         crmPack_2.0.0.9142 ggplot2_3.4.4     </span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; loaded via a namespace (and not attached):</span></span>
 <span><span class="co">#&gt;  [1] gtable_0.3.4         xfun_0.41            bslib_0.6.1         </span></span>

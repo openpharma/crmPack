@@ -33,7 +33,7 @@
     
     <a class="navbar-brand me-2" href="../index.html">crmPack</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">2.0.0.9141</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">2.0.0.9142</small>
 
     
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -65,12 +65,6 @@
 <li class="nav-item">
   <a class="nav-link" href="../news/index.html">Changelog</a>
 </li>
-<!-- start dropdown for versions --> <li class="nav-item dropdown">
-        <a href="#" class="nav-link dropdown-toggle"
-          data-bs-toggle="dropdown" role="button"
-          aria-expanded="false" aria-haspopup="true"
-          id="dropdown-versions">Versions</a> <div class="dropdown-menu" aria-labelledby="dropdown-versions"> <a class="dropdown-item" data-toggle="tooltip" title="" href="https://Roche.github.io/crmPack/main">main</a> </div></li>
-<!-- end dropdown for versions -->
 <li class="nav-item dropdown">
   <a href="#" class="nav-link dropdown-toggle" data-bs-toggle="dropdown" role="button" aria-expanded="false" aria-haspopup="true" id="dropdown-reports">Reports</a>
   <div class="dropdown-menu" aria-labelledby="dropdown-reports">
@@ -549,7 +543,7 @@ combining the atomic rules with logical operators as follows:</p>
 <span><span class="co">## </span></span>
 <span><span class="co">## attr(,"message")[[2]]</span></span>
 <span><span class="co">## attr(,"message")[[2]][[1]]</span></span>
-<span><span class="co">## [1] "Probability for target toxicity is 32 % for dose 100 and thus below the required 50 %"</span></span>
+<span><span class="co">## [1] "Probability for target toxicity is 33 % for dose 100 and thus below the required 50 %"</span></span>
 <span><span class="co">## </span></span>
 <span><span class="co">## attr(,"message")[[2]][[2]]</span></span>
 <span><span class="co">## [1] "3 patients lie within 20% of the next best dose 100. This is below the required 9 patients"</span></span>
@@ -567,7 +561,7 @@ combining the atomic rules with logical operators as follows:</p>
 <span><span class="co">## [1] FALSE</span></span>
 <span><span class="co">## attr(,"message")</span></span>
 <span><span class="co">## attr(,"message")[[1]]</span></span>
-<span><span class="co">## [1] "Probability for target toxicity is 32 % for dose 100 and thus below the required 50 %"</span></span>
+<span><span class="co">## [1] "Probability for target toxicity is 33 % for dose 100 and thus below the required 50 %"</span></span>
 <span><span class="co">## </span></span>
 <span><span class="co">## attr(,"message")[[2]]</span></span>
 <span><span class="co">## [1] "3 patients lie within 20% of the next best dose 100. This is below the required 9 patients"</span></span>
@@ -576,7 +570,7 @@ combining the atomic rules with logical operators as follows:</p>
 <span><span class="co">## attr(,"individual")[[1]]</span></span>
 <span><span class="co">## [1] FALSE</span></span>
 <span><span class="co">## attr(,"message")</span></span>
-<span><span class="co">## [1] "Probability for target toxicity is 32 % for dose 100 and thus below the required 50 %"</span></span>
+<span><span class="co">## [1] "Probability for target toxicity is 33 % for dose 100 and thus below the required 50 %"</span></span>
 <span><span class="co">## attr(,"report_label")</span></span>
 <span><span class="co">## [1] NA</span></span>
 <span><span class="co">## </span></span>
@@ -649,11 +643,11 @@ recommended as 225, 175 and 150 mg, respectively.</p>
 <span><span class="co">## 15  125    2      100 FALSE       -20</span></span>
 <span><span class="co">## 16  125    3       75 FALSE       -40</span></span>
 <span><span class="co">## 17  175    0      250 FALSE        43</span></span>
-<span><span class="co">## 18  175    1      175 FALSE         0</span></span>
+<span><span class="co">## 18  175    1      150 FALSE       -14</span></span>
 <span><span class="co">## 19  175    2      125 FALSE       -29</span></span>
 <span><span class="co">## 20  175    3      100 FALSE       -43</span></span>
 <span><span class="co">## 21  250    0      300 FALSE        20</span></span>
-<span><span class="co">## 22  250    1      225 FALSE       -10</span></span>
+<span><span class="co">## 22  250    1      250 FALSE         0</span></span>
 <span><span class="co">## 23  250    2      175 FALSE       -30</span></span>
 <span><span class="co">## 24  250    3      150 FALSE       -40</span></span></code></pre>
 <p><strong>Simulating operating characteristics</strong> For the many
@@ -691,7 +685,7 @@ used:</p>
 the results. The argument <code>parallel</code> can be set to
 <code>TRUE</code> if one wishes to run the iterations in parallel on all
 processors of the computer, which can yield a meaningful speedup. Here
-we needed 117 seconds for 100 simulated trials on an Intel Core i5-6300U
+we needed 116 seconds for 100 simulated trials on an Intel Core i5-6300U
 CPU with 2.4 GHz.</p>
 <p>The result is an object of class <code>Simulations</code> containing
 multiple slots, with e.g., the <code>data</code> slot containing the
@@ -726,19 +720,19 @@ description of the results:</p>
 <span><span class="co">## Target dose interval corresponding to this was 47.9, 52.7 </span></span>
 <span><span class="co">## Intervals are corresponding to 10 and 90 % quantiles</span></span>
 <span><span class="co">## </span></span>
-<span><span class="co">## Number of patients on placebo : mean 8 (6, 8) </span></span>
+<span><span class="co">## Number of patients on placebo : mean 7 (6, 8) </span></span>
 <span><span class="co">## Number of patients on active : mean 22 (18, 24) </span></span>
 <span><span class="co">## Number of patients overall : mean 30 (24, 32) </span></span>
 <span><span class="co">## Number of patients treated above target tox interval : mean 3 (0, 3) </span></span>
 <span><span class="co">## Proportions of DLTs in the trials for patients on placebo : mean 0 % (0 %, 0 %) </span></span>
 <span><span class="co">## Proportions of DLTs in the trials for patients on active : mean 28 % (21 %, 33 %) </span></span>
-<span><span class="co">## Mean toxicity risks for the patients on active : mean 27 % (18 %, 33 %) </span></span>
-<span><span class="co">## Doses selected as MTD : mean 45.8 (25, 50) </span></span>
+<span><span class="co">## Mean toxicity risks for the patients on active : mean 27 % (21 %, 33 %) </span></span>
+<span><span class="co">## Doses selected as MTD : mean 46.2 (25, 50) </span></span>
 <span><span class="co">## True toxicity at doses selected : mean 22 % (0 %, 26 %) </span></span>
-<span><span class="co">## Proportion of trials selecting target MTD: 83 %</span></span>
+<span><span class="co">## Proportion of trials selecting target MTD: 85 %</span></span>
 <span><span class="co">## Dose most often selected as MTD: 50 </span></span>
 <span><span class="co">## Observed toxicity rate at dose most often selected: 27 %</span></span>
-<span><span class="co">## Fitted toxicity rate at dose most often selected : mean 24 % (16 %, 30 %)</span></span></code></pre>
+<span><span class="co">## Fitted toxicity rate at dose most often selected : mean 23 % (16 %, 30 %)</span></span></code></pre>
 A plot of the summary results can also be produced, see Figure
 @ref(fig:sim-summary-plot).
 <div class="figure" style="text-align: center">
