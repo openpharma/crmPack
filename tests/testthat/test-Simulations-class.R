@@ -192,25 +192,25 @@ test_that("GeneralSimulationsSummary object can be created", {
 
   result <- expect_silent(
     new("GeneralSimulationsSummary",
-        target = target_value,
-        targetDoseInterval = targetDoseInterval_value,
-        nsim = nsim_value,
-        propDLTs = list(),
-        meanToxRisk = meanToxRisk_value,
-        doseSelected = doseSelected_value,
-        toxAtDosesSelected = 6,
-        propAtTarget = 7,
-        doseMostSelected = 8,
-        obsToxRateAtDoseMostSelected = 9,
-        nObs = list(),
-        nAboveTarget = 10L,
-        doseGrid = 11,
-        placebo = TRUE
+      target = target_value,
+      targetDoseInterval = targetDoseInterval_value,
+      nsim = nsim_value,
+      propDLTs = list(),
+      meanToxRisk = meanToxRisk_value,
+      doseSelected = doseSelected_value,
+      toxAtDosesSelected = 6,
+      propAtTarget = 7,
+      doseMostSelected = 8,
+      obsToxRateAtDoseMostSelected = 9,
+      nObs = list(),
+      nAboveTarget = 10L,
+      doseGrid = 11,
+      placebo = TRUE
     )
   )
 
   expect_valid(result, "GeneralSimulationsSummary")
-  
+
   expect_identical(result@target, target_value)
   expect_identical(result@targetDoseInterval, targetDoseInterval_value)
   expect_identical(result@nsim, nsim_value)
@@ -219,6 +219,8 @@ test_that("GeneralSimulationsSummary object can be created", {
 })
 
 test_that("GeneralSimulationsSummary cannot be instantiated directly", {
-  expect_error(.DefaultGeneralSimulationsSummary(), 
-               "Class GeneralSimulationsSummary cannot be instantiated directly.  Please use one of its subclasses instead.")
+  expect_error(
+    .DefaultGeneralSimulationsSummary(),
+    "Class GeneralSimulationsSummary cannot be instantiated directly.  Please use one of its subclasses instead."
+  )
 })
