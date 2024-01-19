@@ -4,49 +4,52 @@
 \name{GeneralSimulationsSummary-class}
 \alias{GeneralSimulationsSummary-class}
 \alias{.GeneralSimulationsSummary}
+\alias{GeneralSimulationsSummary}
 \alias{.DefaultGeneralSimulationsSummary}
 \alias{.DefaultPseudoSimulationsSummary}
-\title{Class for the summary of general simulations output}
+\title{\code{GeneralSimulationsSummary}}
 \usage{
 .DefaultGeneralSimulationsSummary()
 
 .DefaultPseudoSimulationsSummary()
 }
 \description{
-Note that objects should not be created by users, therefore no
-initialization function is provided for this class.
+\ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#experimental}{\figure{lifecycle-experimental.svg}{options: alt='[Experimental]'}}}{\strong{[Experimental]}}
+
+This class captures the summary of general simulations output. Note that
+objects should not be created by users. Therefore, no initialization
+function is provided for this class.
 }
 \section{Slots}{
 
 \describe{
-\item{\code{target}}{target toxicity interval}
+\item{\code{target}}{(\code{numeric})\cr target toxicity interval}
 
-\item{\code{targetDoseInterval}}{corresponding target dose interval}
+\item{\code{targetDoseInterval}}{(\code{numeric})\cr corresponding target dose interval}
 
-\item{\code{nsim}}{number of simulations}
+\item{\code{nsim}}{(\code{integer})\cr number of simulations}
 
-\item{\code{propDLTs}}{proportions of DLTs in the trials}
+\item{\code{propDLTs}}{(\code{ANY})\cr proportions of DLTs in the trials}
 
-\item{\code{meanToxRisk}}{mean toxicity risks for the patients}
+\item{\code{meanToxRisk}}{(\code{numeric})\cr mean toxicity risks for the patients}
 
-\item{\code{doseSelected}}{doses selected as MTD}
+\item{\code{doseSelected}}{(\code{numeric})\cr doses selected as MTD}
 
-\item{\code{toxAtDosesSelected}}{true toxicity at doses selected}
+\item{\code{toxAtDosesSelected}}{(\code{numeric})\cr true toxicity at doses selected}
 
-\item{\code{propAtTarget}}{Proportion of trials selecting target MTD}
+\item{\code{propAtTarget}}{(\code{numeric})\cr Proportion of trials selecting target MTD}
 
-\item{\code{doseMostSelected}}{dose most often selected as MTD}
+\item{\code{doseMostSelected}}{(\code{numeric})\cr dose most often selected as MTD}
 
-\item{\code{obsToxRateAtDoseMostSelected}}{observed toxicity rate at dose most often
-selected}
+\item{\code{obsToxRateAtDoseMostSelected}}{(\code{numeric})\cr observed toxicity rate at dose most often selected}
 
-\item{\code{nObs}}{number of patients overall}
+\item{\code{nObs}}{(\code{ANY})\cr number of patients overall}
 
-\item{\code{nAboveTarget}}{number of patients treated above target tox interval}
+\item{\code{nAboveTarget}}{(\code{integer})\cr number of patients treated above target tox interval}
 
-\item{\code{doseGrid}}{the dose grid that has been used}
+\item{\code{doseGrid}}{(\code{numeric})\cr the dose grid that has been used}
 
-\item{\code{placebo}}{set to TRUE (default is FALSE) for a design with placebo}
+\item{\code{placebo}}{(\code{logical})\cr set to TRUE (default is FALSE) for a design with placebo}
 }}
 
 \note{
@@ -54,4 +57,3 @@ Typically, end users will not use the \code{.DefaultGeneralSimulationsSummary()}
 
 Typically, end users will not use the \code{.DefaultPseudoSimulationsSummary()} function.
 }
-\keyword{classes}
