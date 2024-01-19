@@ -29,7 +29,7 @@ function is provided for this class.
 
 \item{\code{nsim}}{(\code{integer})\cr number of simulations}
 
-\item{\code{prop_dlts}}{(\code{ANY})\cr proportions of DLTs in the trials}
+\item{\code{prop_dlts}}{(\code{ANY})\cr A numeric array (multi-dimensional) or list representing proportions of DLTs in the trials}
 
 \item{\code{mean_tox_risk}}{(\code{numeric})\cr mean toxicity risks for the patients}
 
@@ -43,7 +43,7 @@ function is provided for this class.
 
 \item{\code{obs_tox_rate_at_dose_most_selected}}{(\code{numeric})\cr observed toxicity rate at dose most often selected}
 
-\item{\code{n_obs}}{(\code{ANY})\cr number of patients overall}
+\item{\code{n_obs}}{(\code{ANY})\cr A numeric array (multi-dimensional) or list representing number of patients overall.}
 
 \item{\code{n_above_target}}{(\code{integer})\cr number of patients treated above target tox interval}
 

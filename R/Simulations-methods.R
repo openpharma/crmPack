@@ -511,7 +511,7 @@ setMethod("summary",
         nObs <- sapply(
           object@data,
           slot,
-          "nObs"
+          "n_obs"
         )
       }
 
@@ -587,7 +587,7 @@ setMethod("summary",
 
       ## dose level most often selected as MTD
       xMostSelected <-
-        match_within_tolerance(start@doseMostSelected,
+        match_within_tolerance(start@dose_most_selected,
           table = doseGrid
         )
 
@@ -682,7 +682,7 @@ setMethod("summary",
 
       ## dose level most often selected as MTD
       xMostSelected <-
-        match_within_tolerance(start@doseMostSelected,
+        match_within_tolerance(start@dose_most_selected,
           table = doseGrid
         )
 
@@ -865,38 +865,38 @@ setMethod("show",
       )
 
       if (object@placebo) {
-        r$report("nObs",
+        r$report("n_obs",
           "Number of patients on placebo",
           percent = FALSE,
           subset = 2
         )
-        r$report("nObs",
+        r$report("n_obs",
           "Number of patients on active",
           percent = FALSE,
           subset = 1
         )
-        r$report("nObs",
+        r$report("n_obs",
           "Number of patients overall",
           percent = FALSE,
           doSum = TRUE
         )
       } else {
-        r$report("nObs",
+        r$report("n_obs",
           "Number of patients overall",
           percent = FALSE
         )
       }
-      r$report("nAboveTarget",
+      r$report("n_above_target",
         "Number of patients treated above target tox interval",
         percent = FALSE
       )
 
       if (object@placebo) {
-        r$report("propDLTs",
+        r$report("prop_dlts",
           "Proportions of DLTs in the trials for patients on placebo",
           subset = 2
         )
-        r$report("propDLTs",
+        r$report("prop_dlts",
           "Proportions of DLTs in the trials for patients on active",
           subset = 1
         )
@@ -910,7 +910,7 @@ setMethod("show",
         "mean_tox_risk",
         "Mean toxicity risks for the patients on active"
       )
-      r$report("doseSelected",
+      r$report("dose_selected",
         "Doses selected as MTD",
         percent = FALSE, digits = 1
       )
@@ -1118,7 +1118,7 @@ setMethod("plot",
         if ("nObs" %in% type) {
           plotList[[plotIndex <- plotIndex + 1L]] <-
             h_barplot_percentages(
-              x = x@nObs[2, ],
+              x = x@n_obs[2, ],
               description = "Number of patients on active in total"
             )
         }
@@ -1126,7 +1126,7 @@ setMethod("plot",
         if ("nObs" %in% type) {
           plotList[[plotIndex <- plotIndex + 1L]] <-
             h_barplot_percentages(
-              x = x@nObs,
+              x = x@n_obs,
               description = "Number of patients in total"
             )
         }
@@ -1136,7 +1136,7 @@ setMethod("plot",
       if ("doseSelected" %in% type) {
         plotList[[plotIndex <- plotIndex + 1L]] <-
           h_barplot_percentages(
-            x = x@doseSelected,
+            x = x@dose_selected,
             description = "MTD estimate"
           )
       }
@@ -1146,7 +1146,7 @@ setMethod("plot",
         if ("propDLTs" %in% type) {
           plotList[[plotIndex <- plotIndex + 1L]] <-
             h_barplot_percentages(
-              x = x@propDLTs[1, ] * 100,
+              x = x@prop_dlts[1, ] * 100,
               description = "Proportion of DLTs [%] on active",
               xaxisround = 1
             )
@@ -1155,7 +1155,7 @@ setMethod("plot",
         if ("propDLTs" %in% type) {
           plotList[[plotIndex <- plotIndex + 1L]] <-
             h_barplot_percentages(
-              x = x@propDLTs * 100,
+              x = x@prop_dlts * 100,
               description = "Proportion of DLTs [%]",
               xaxisround = 1
             )
@@ -1166,7 +1166,7 @@ setMethod("plot",
       if ("nAboveTarget" %in% type) {
         plotList[[plotIndex <- plotIndex + 1L]] <-
           h_barplot_percentages(
-            x = x@nAboveTarget,
+            x = x@n_above_target,
             description = "Number of patients above target"
           )
       }
@@ -1280,13 +1280,13 @@ setMethod("plot",
         ## estimated tox (in percentage) stacked below each other
         dat <- data.frame(
           dose =
-            rep(x@doseGrid, 4L),
+            rep(x@dose_grid, 4L),
           group =
-            rep(1:4, each = length(x@doseGrid)),
+            rep(1:4, each = length(x@dose_grid)),
           linetype =
             factor(
               rep(linetype[c(1, 2, 3, 3)],
-                each = length(x@doseGrid)
+                each = length(x@dose_grid)
               ),
               levels = linetype
             ),
@@ -1425,13 +1425,13 @@ setMethod("plot",
         ## estimated biomarker stacked below each other
         dat <- data.frame(
           dose =
-            rep(x@doseGrid, 4L),
+            rep(x@dose_grid, 4L),
           group =
-            rep(1:4, each = length(x@doseGrid)),
+            rep(1:4, each = length(x@dose_grid)),
           linetype =
             factor(
               rep(linetype[c(1, 2, 3, 3)],
-                each = length(x@doseGrid)
+                each = length(x@dose_grid)
               ),
               levels = linetype
             ),

@@ -297,14 +297,14 @@ DualSimulations <- function(rho_est,
 #' @slot target (`numeric`)\cr target toxicity interval
 #' @slot target_dose_interval (`numeric`)\cr corresponding target dose interval
 #' @slot nsim (`integer`)\cr number of simulations
-#' @slot prop_dlts (`ANY`)\cr proportions of DLTs in the trials
+#' @slot prop_dlts (`ANY`)\cr A numeric array (multi-dimensional) or list representing proportions of DLTs in the trials
 #' @slot mean_tox_risk (`numeric`)\cr mean toxicity risks for the patients
 #' @slot dose_selected (`numeric`)\cr doses selected as MTD
 #' @slot tox_at_doses_selected (`numeric`)\cr true toxicity at doses selected
 #' @slot prop_at_target (`numeric`)\cr Proportion of trials selecting target MTD
 #' @slot dose_most_selected (`numeric`)\cr dose most often selected as MTD
 #' @slot obs_tox_rate_at_dose_most_selected (`numeric`)\cr observed toxicity rate at dose most often selected
-#' @slot n_obs (`ANY`)\cr number of patients overall
+#' @slot n_obs (`ANY`)\cr A numeric array (multi-dimensional) or list representing number of patients overall. 
 #' @slot n_above_target (`integer`)\cr number of patients treated above target tox interval
 #' @slot dose_grid (`numeric`)\cr the dose grid that has been used
 #' @slot placebo (`logical`)\cr set to TRUE (default is FALSE) for a design with placebo
