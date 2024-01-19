@@ -511,7 +511,7 @@ setMethod("summary",
         nObs <- sapply(
           object@data,
           slot,
-          "n_obs"
+          "nObs"
         )
       }
 
