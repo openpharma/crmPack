@@ -210,7 +210,7 @@ test_that("GeneralSimulationsSummary generates object correctly", {
   )
 
   expect_valid(result, "GeneralSimulationsSummary")
-  
+
   expect_identical(result@target, target_value)
   expect_identical(result@target_dose_interval, target_dose_interval_value)
   expect_identical(result@nsim, nsim_value)
