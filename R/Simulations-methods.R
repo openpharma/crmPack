@@ -845,17 +845,17 @@ setMethod("show",
           paste(round(object@target * 100),
             collapse = ", "
           ),
-          "targetToxInterval"
+          "target"
         ),
         "%\n"
       )
       cat(
         "Target dose interval corresponding to this was",
         r$dfSave(
-          paste(round(object@targetDoseInterval, 1),
+          paste(round(object@target_dose_interval, 1),
             collapse = ", "
           ),
-          "targetDoseInterval"
+          "target_dose_interval"
         ),
         "\n"
       )
@@ -902,12 +902,12 @@ setMethod("show",
         )
       } else {
         r$report(
-          "propDLTs",
+          "prop_dlts",
           "Proportions of DLTs in the trials"
         )
       }
       r$report(
-        "meanToxRisk",
+        "mean_tox_risk",
         "Mean toxicity risks for the patients on active"
       )
       r$report("doseSelected",
@@ -915,30 +915,30 @@ setMethod("show",
         percent = FALSE, digits = 1
       )
       r$report(
-        "toxAtDosesSelected",
+        "tox_at_doses_selected",
         "True toxicity at doses selected"
       )
       cat(
         "Proportion of trials selecting target MTD:",
         r$dfSave(
-          object@propAtTarget * 100,
-          "percentAtTarget"
+          object@prop_at_target * 100,
+          "prop_at_target"
         ),
         "%\n"
       )
       cat(
         "Dose most often selected as MTD:",
         r$dfSave(
-          object@doseMostSelected,
-          "doseMostSelected"
+          object@dose_most_selected,
+          "dose_most_selected"
         ),
         "\n"
       )
       cat(
         "Observed toxicity rate at dose most often selected:",
         r$dfSave(
-          round(object@obsToxRateAtDoseMostSelected * 100),
-          "obsToxRateAtDoseMostSelected"
+          round(object@obs_tox_rate_at_dose_most_selected * 100),
+          "obs_tox_rate_at_dose_most_selected"
         ),
         "%\n"
       )
