@@ -83,7 +83,7 @@ Following the principles of the \code{broom} package, convert a \code{CrmPackCla
 object to a (list of) tibbles.  This is a basic, default representation.
 }
 \examples{
-CohortSizeConst(3)  \%>\%  tidy()
+CohortSizeConst(3) \%>\% tidy()
 .DefaultSimulations() \%>\% tidy()
 CohortSizeRange(intervals = c(0, 20), cohort_size = c(1, 3)) \%>\% tidy()
 .DefaultCohortSizeDLT() \%>\% tidy()
@@ -100,7 +100,7 @@ NextBestNCRM(
   max_overdose_prob = 0.25
 ) \%>\% tidy()
 .DefaultNextBestNCRMLoss() \%>\% tidy()
-.DefaultDualDesign()  \%>\%  tidy()
+.DefaultDualDesign() \%>\% tidy()
 options <- McmcOptions(
   burnin = 100,
   step = 1,

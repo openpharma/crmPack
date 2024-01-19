@@ -181,3 +181,45 @@ test_that("DualSimulations user constructor arguments names are as expected", {
     ordered = TRUE
   )
 })
+
+# GeneralSimulationsSummary ----
+test_that("GeneralSimulationsSummary object can be created", {
+  target_value <- 1
+  targetDoseInterval_value <- 2
+  nsim_value <- 3L
+  meanToxRisk_value <- 4
+  doseSelected_value <- 5
+
+  result <- expect_silent(
+    new("GeneralSimulationsSummary",
+      target = target_value,
+      targetDoseInterval = targetDoseInterval_value,
+      nsim = nsim_value,
+      propDLTs = list(),
+      meanToxRisk = meanToxRisk_value,
+      doseSelected = doseSelected_value,
+      toxAtDosesSelected = 6,
+      propAtTarget = 7,
+      doseMostSelected = 8,
+      obsToxRateAtDoseMostSelected = 9,
+      nObs = list(),
+      nAboveTarget = 10L,
+      doseGrid = 11,
+      placebo = TRUE
+    )
+  )
+
+  expect_valid(result, "GeneralSimulationsSummary")
+
+  expect_identical(result@target, target_value)
+  expect_identical(result@targetDoseInterval, targetDoseInterval_value)
+  expect_identical(result@nsim, nsim_value)
+  expect_identical(result@meanToxRisk, meanToxRisk_value)
+  expect_identical(result@doseSelected, doseSelected_value)
+})
+
+test_that("GeneralSimulationsSummary cannot be instantiated directly", {
+  expect_error(.DefaultGeneralSimulationsSummary(), 
+               "Class GeneralSimulationsSummary cannot be instantiated directly", 
+               fixed = FALSE)
+})
