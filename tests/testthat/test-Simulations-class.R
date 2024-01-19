@@ -192,25 +192,25 @@ test_that("GeneralSimulationsSummary generates object correctly", {
 
   result <- expect_silent(
     new("GeneralSimulationsSummary",
-        target = target_value,
-        target_dose_interval = target_dose_interval_value,
-        nsim = nsim_value,
-        prop_dlts = list(),
-        mean_tox_risk = mean_tox_risk_value,
-        dose_selected = dose_selected_value,
-        tox_at_doses_selected = 6,
-        prop_at_target = 7,
-        dose_most_selected = 8,
-        obs_tox_rate_at_dose_most_selected = 9,
-        n_obs = list(),
-        n_above_target = 10L,
-        dose_grid = 11,
-        placebo = TRUE
+      target = target_value,
+      target_dose_interval = target_dose_interval_value,
+      nsim = nsim_value,
+      prop_dlts = list(),
+      mean_tox_risk = mean_tox_risk_value,
+      dose_selected = dose_selected_value,
+      tox_at_doses_selected = 6,
+      prop_at_target = 7,
+      dose_most_selected = 8,
+      obs_tox_rate_at_dose_most_selected = 9,
+      n_obs = list(),
+      n_above_target = 10L,
+      dose_grid = 11,
+      placebo = TRUE
     )
   )
 
   expect_valid(result, "GeneralSimulationsSummary")
-  
+
   expect_identical(result@target, target_value)
   expect_identical(result@target_dose_interval, target_dose_interval_value)
   expect_identical(result@nsim, nsim_value)
