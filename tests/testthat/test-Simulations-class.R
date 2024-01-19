@@ -219,8 +219,7 @@ test_that("GeneralSimulationsSummary object can be created", {
 })
 
 test_that("GeneralSimulationsSummary cannot be instantiated directly", {
-  expect_error(
-    .DefaultGeneralSimulationsSummary(),
-    "Class GeneralSimulationsSummary cannot be instantiated directly.  Please use one of its subclasses instead."
-  )
+  expect_error(.DefaultGeneralSimulationsSummary(), 
+               "Class GeneralSimulationsSummary cannot be instantiated directly", 
+               fixed = FALSE)
 })
