@@ -286,49 +286,47 @@ DualSimulations <- function(rho_est,
   )
 }
 
-# GeneralSimulationsSummary ----
-
-# nolint start
-##' Class for the summary of general simulations output
-##'
-##' Note that objects should not be created by users, therefore no
-##' initialization function is provided for this class.
-##'
-##' @slot target target toxicity interval
-##' @slot targetDoseInterval corresponding target dose interval
-##' @slot nsim number of simulations
-##' @slot propDLTs proportions of DLTs in the trials
-##' @slot meanToxRisk mean toxicity risks for the patients
-##' @slot doseSelected doses selected as MTD
-##' @slot toxAtDosesSelected true toxicity at doses selected
-##' @slot propAtTarget Proportion of trials selecting target MTD
-##' @slot doseMostSelected dose most often selected as MTD
-##' @slot obsToxRateAtDoseMostSelected observed toxicity rate at dose most often
-##' selected
-##' @slot nObs number of patients overall
-##' @slot nAboveTarget number of patients treated above target tox interval
-##' @slot doseGrid the dose grid that has been used
-##' @slot placebo set to TRUE (default is FALSE) for a design with placebo
-##'
-##' @export
-##' @keywords classes
+#' `GeneralSimulationsSummary`
+#'
+#' @description `r lifecycle::badge("stable")`
+#'
+#' This class captures the summary of general simulations output. Note that objects
+#' should not be created by users, therefore no initialization
+#' function is provided for this class.
+#'
+#' @slot target (`numeric`)\cr target toxicity interval
+#' @slot target_dose_interval (`numeric`)\cr corresponding target dose interval
+#' @slot nsim (`integer`)\cr number of simulations
+#' @slot prop_dlts (`ANY`)\cr proportions of DLTs in the trials
+#' @slot mean_tox_risk (`numeric`)\cr mean toxicity risks for the patients
+#' @slot dose_selected (`numeric`)\cr doses selected as MTD
+#' @slot tox_at_doses_selected (`numeric`)\cr true toxicity at doses selected
+#' @slot prop_at_target (`numeric`)\cr Proportion of trials selecting target MTD
+#' @slot dose_most_selected (`numeric`)\cr dose most often selected as MTD
+#' @slot obs_tox_rate_at_dose_most_selected (`numeric`)\cr observed toxicity rate at dose most often selected
+#' @slot n_obs (`ANY`)\cr number of patients overall
+#' @slot n_above_target (`integer`)\cr number of patients treated above target tox interval
+#' @slot dose_grid (`numeric`)\cr the dose grid that has been used
+#' @slot placebo (`logical`)\cr set to TRUE (default is FALSE) for a design with placebo
+#' @aliases GeneralSimulationsSummary
+#' @export
 .GeneralSimulationsSummary <-
   setClass(
     Class = "GeneralSimulationsSummary",
-    representation(
+    slots = c(
       target = "numeric",
-      targetDoseInterval = "numeric",
+      target_dose_interval = "numeric",
       nsim = "integer",
-      propDLTs = "ANY",
-      meanToxRisk = "numeric",
-      doseSelected = "numeric",
-      toxAtDosesSelected = "numeric",
-      propAtTarget = "numeric",
-      doseMostSelected = "numeric",
-      obsToxRateAtDoseMostSelected = "numeric",
-      nObs = "ANY",
-      nAboveTarget = "integer",
-      doseGrid = "numeric",
+      prop_dlts = "ANY",
+      mean_tox_risk = "numeric",
+      dose_selected = "numeric",
+      tox_at_doses_selected = "numeric",
+      prop_at_target = "numeric",
+      dose_most_selected = "numeric",
+      obs_tox_rate_at_dose_most_selected = "numeric",
+      n_obs = "ANY",
+      n_above_target = "integer",
+      dose_grid = "numeric",
       placebo = "logical"
     )
   )
@@ -342,7 +340,7 @@ DualSimulations <- function(rho_est,
   stop(paste0("Class GeneralSimulationsSummary cannot be instantiated directly.  Please use one of its subclasses instead."))
 }
 
-
+# nolint start
 ##' Class for the summary of model-based simulations output
 ##'
 ##' In addition to the slots in the parent class
