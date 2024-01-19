@@ -313,7 +313,7 @@ DualSimulations <- function(rho_est,
 .GeneralSimulationsSummary <-
   setClass(
     Class = "GeneralSimulationsSummary",
-    representation(
+    slots = c(
       target = "numeric",
       targetDoseInterval = "numeric",
       nsim = "integer",
