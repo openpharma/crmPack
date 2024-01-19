@@ -534,21 +534,20 @@ setMethod("summary",
       ret <-
         .GeneralSimulationsSummary(
           target = target,
-          targetDoseInterval = targetDoseInterval,
+          target_dose_interval = targetDoseInterval,
           nsim = length(object@data),
-          propDLTs = propDLTs,
-          meanToxRisk = meanToxRisk,
-          doseSelected = doseSelected,
-          doseMostSelected = doseMostSelected,
-          obsToxRateAtDoseMostSelected = obsToxRateAtDoseMostSelected,
-          nObs = nObs,
-          nAboveTarget = nAboveTarget,
-          toxAtDosesSelected = toxAtDoses,
-          propAtTarget = propAtTarget,
-          doseGrid = doseGrid,
+          prop_dlts = propDLTs,
+          mean_tox_risk = meanToxRisk,
+          dose_selected = doseSelected,
+          dose_most_selected = doseMostSelected,
+          obs_tox_rate_at_dose_most_selected = obsToxRateAtDoseMostSelected,
+          n_obs = nObs,
+          n_above_target = nAboveTarget,
+          tox_at_doses_selected = toxAtDoses,
+          prop_at_target = propAtTarget,
+          dose_grid = doseGrid,
           placebo = object@data[[1]]@placebo
         )
-
       return(ret)
     }
 )
