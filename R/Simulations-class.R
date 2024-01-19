@@ -290,7 +290,7 @@ DualSimulations <- function(rho_est,
 #'
 #' @description `r lifecycle::badge("experimental")`
 #'
-#' This class captures the summary of general simulations output. Note that 
+#' This class captures the summary of general simulations output. Note that
 #' objects should not be created by users. Therefore, no initialization
 #' function is provided for this class.
 #'
