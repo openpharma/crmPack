@@ -14,10 +14,10 @@
 .DefaultPseudoSimulationsSummary()
 }
 \description{
-\ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#experimental}{\figure{lifecycle-experimental.svg}{options: alt='[Experimental]'}}}{\strong{[Experimental]}}
+\ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#stable}{\figure{lifecycle-stable.svg}{options: alt='[Stable]'}}}{\strong{[Stable]}}
 
-This class captures the summary of general simulations output. Note that
-objects should not be created by users. Therefore, no initialization
+This class captures the summary of general simulations output. Note that objects
+should not be created by users, therefore no initialization
 function is provided for this class.
 }
 \section{Slots}{
@@ -25,29 +25,29 @@ function is provided for this class.
 \describe{
 \item{\code{target}}{(\code{numeric})\cr target toxicity interval}
 
-\item{\code{targetDoseInterval}}{(\code{numeric})\cr corresponding target dose interval}
+\item{\code{target_dose_interval}}{(\code{numeric})\cr corresponding target dose interval}
 
 \item{\code{nsim}}{(\code{integer})\cr number of simulations}
 
-\item{\code{propDLTs}}{(\code{ANY})\cr proportions of DLTs in the trials}
+\item{\code{prop_dlts}}{(\code{ANY})\cr proportions of DLTs in the trials}
 
-\item{\code{meanToxRisk}}{(\code{numeric})\cr mean toxicity risks for the patients}
+\item{\code{mean_tox_risk}}{(\code{numeric})\cr mean toxicity risks for the patients}
 
-\item{\code{doseSelected}}{(\code{numeric})\cr doses selected as MTD}
+\item{\code{dose_selected}}{(\code{numeric})\cr doses selected as MTD}
 
-\item{\code{toxAtDosesSelected}}{(\code{numeric})\cr true toxicity at doses selected}
+\item{\code{tox_at_doses_selected}}{(\code{numeric})\cr true toxicity at doses selected}
 
-\item{\code{propAtTarget}}{(\code{numeric})\cr Proportion of trials selecting target MTD}
+\item{\code{prop_at_target}}{(\code{numeric})\cr Proportion of trials selecting target MTD}
 
-\item{\code{doseMostSelected}}{(\code{numeric})\cr dose most often selected as MTD}
+\item{\code{dose_most_selected}}{(\code{numeric})\cr dose most often selected as MTD}
 
-\item{\code{obsToxRateAtDoseMostSelected}}{(\code{numeric})\cr observed toxicity rate at dose most often selected}
+\item{\code{obs_tox_rate_at_dose_most_selected}}{(\code{numeric})\cr observed toxicity rate at dose most often selected}
 
-\item{\code{nObs}}{(\code{ANY})\cr number of patients overall}
+\item{\code{n_obs}}{(\code{ANY})\cr number of patients overall}
 
-\item{\code{nAboveTarget}}{(\code{integer})\cr number of patients treated above target tox interval}
+\item{\code{n_above_target}}{(\code{integer})\cr number of patients treated above target tox interval}
 
-\item{\code{doseGrid}}{(\code{numeric})\cr the dose grid that has been used}
+\item{\code{dose_grid}}{(\code{numeric})\cr the dose grid that has been used}
 
 \item{\code{placebo}}{(\code{logical})\cr set to TRUE (default is FALSE) for a design with placebo}
 }}

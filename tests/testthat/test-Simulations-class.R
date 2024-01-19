@@ -183,39 +183,39 @@ test_that("DualSimulations user constructor arguments names are as expected", {
 })
 
 # GeneralSimulationsSummary ----
-test_that("GeneralSimulationsSummary object can be created", {
+test_that("GeneralSimulationsSummary generates object correctly", {
   target_value <- 1
-  targetDoseInterval_value <- 2
+  target_dose_interval_value <- 2
   nsim_value <- 3L
-  meanToxRisk_value <- 4
-  doseSelected_value <- 5
+  mean_tox_risk_value <- 4
+  dose_selected_value <- 5
 
   result <- expect_silent(
     new("GeneralSimulationsSummary",
-      target = target_value,
-      targetDoseInterval = targetDoseInterval_value,
-      nsim = nsim_value,
-      propDLTs = list(),
-      meanToxRisk = meanToxRisk_value,
-      doseSelected = doseSelected_value,
-      toxAtDosesSelected = 6,
-      propAtTarget = 7,
-      doseMostSelected = 8,
-      obsToxRateAtDoseMostSelected = 9,
-      nObs = list(),
-      nAboveTarget = 10L,
-      doseGrid = 11,
-      placebo = TRUE
+        target = target_value,
+        target_dose_interval = target_dose_interval_value,
+        nsim = nsim_value,
+        prop_dlts = list(),
+        mean_tox_risk = mean_tox_risk_value,
+        dose_selected = dose_selected_value,
+        tox_at_doses_selected = 6,
+        prop_at_target = 7,
+        dose_most_selected = 8,
+        obs_tox_rate_at_dose_most_selected = 9,
+        n_obs = list(),
+        n_above_target = 10L,
+        dose_grid = 11,
+        placebo = TRUE
     )
   )
 
   expect_valid(result, "GeneralSimulationsSummary")
-
+  
   expect_identical(result@target, target_value)
-  expect_identical(result@targetDoseInterval, targetDoseInterval_value)
+  expect_identical(result@target_dose_interval, target_dose_interval_value)
   expect_identical(result@nsim, nsim_value)
-  expect_identical(result@meanToxRisk, meanToxRisk_value)
-  expect_identical(result@doseSelected, doseSelected_value)
+  expect_identical(result@mean_tox_risk, mean_tox_risk_value)
+  expect_identical(result@dose_selected, dose_selected_value)
 })
 
 test_that("GeneralSimulationsSummary cannot be instantiated directly", {
