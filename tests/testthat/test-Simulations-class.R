@@ -191,7 +191,7 @@ test_that("GeneralSimulationsSummary generates object correctly", {
   dose_selected_value <- 5
 
   result <- expect_silent(
-    new("GeneralSimulationsSummary",
+    .GeneralSimulationsSummary(
         target = target_value,
         target_dose_interval = target_dose_interval_value,
         nsim = nsim_value,
