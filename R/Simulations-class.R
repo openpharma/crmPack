@@ -337,7 +337,11 @@ DualSimulations <- function(rho_est,
 #' @note Typically, end users will not use the `.DefaultGeneralSimulationsSummary()` function.
 #' @export
 .DefaultGeneralSimulationsSummary <- function() {
-  stop(paste0("Class GeneralSimulationsSummary cannot be instantiated directly.  Please use one of its subclasses instead."))
+  stop(
+    paste(
+    "Class GeneralSimulationsSummary cannot be instantiated directly.",
+    "Please use one of its subclasses instead."
+    ))
 }
 
 # nolint start
