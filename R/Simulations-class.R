@@ -346,31 +346,33 @@ DualSimulations <- function(rho_est,
 }
 
 # nolint start
-##' Class for the summary of model-based simulations output
-##'
-##' In addition to the slots in the parent class
-##' \code{\linkS4class{GeneralSimulationsSummary}}, it contains two slots with
-##' model fit information.
-##'
-##' Note that objects should not be created by users, therefore no
-##' initialization function is provided for this class.
-##'
-##' @slot stop_report matrix of stopping rule outcomes
-##' @slot additional_stats list of additional statistical summary
-##' @slot fitAtDoseMostSelected fitted toxicity rate at dose most often selected
-##' @slot meanFit list with the average, lower (2.5%) and upper (97.5%)
-##' quantiles of the mean fitted toxicity at each dose level
-##'
-##' @export
-##' @keywords classes
+## SimulationsSummary ----
+
+## class ----
+
+#' `SimulationsSummary`
+#'
+#' @description `r lifecycle::badge("stable")`
+#'
+#' In addition to the slots in the parent class [`GeneralSimulationsSummary`],
+#' it contains two slots with model fit information.
+#'
+#' @slot stop_report (`matrix`)\cr matrix of stopping rule outcomes
+#' @slot fit_at_dose_most_selected (`numeric`)\cr fitted toxicity rate at dose most often selected
+#' @slot additional_stats (`list`)\cr list of additional statistical summary
+#' @slot mean_fit (`list`)\cr list with the average, lower (2.5%) and upper (97.5%)
+#' quantiles of the mean fitted toxicity at each dose level
+#'
+#' @aliases SimulationsSummary
+#' @export
 .SimulationsSummary <-
   setClass(
     Class = "SimulationsSummary",
-    representation(
+    slots = c(
       stop_report = "matrix",
-      fitAtDoseMostSelected = "numeric",
+      fit_at_dose_most_selected = "numeric",
       additional_stats = "list",
-      meanFit = "list"
+      mean_fit = "list"
     ),
     contains = "GeneralSimulationsSummary"
   )
@@ -381,7 +383,8 @@ DualSimulations <- function(rho_est,
 #' @note Typically, end users will not use the `.DefaultSimulationsSummary()` function.
 #' @export
 .DefaultSimulationsSummary <- function() {
-  stop(paste0("Class SimulationsSummary cannot be instantiated directly.  Please use one of its subclasses instead."))
+  stop(paste("Class SimulationsSummary cannot be instantiated directly.",
+    "Please use one of its subclasses instead."))
 }
 
 # DualSimulationsSummary ----
