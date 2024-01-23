@@ -345,7 +345,6 @@ DualSimulations <- function(rho_est,
   )
 }
 
-# nolint start
 ## SimulationsSummary ----
 
 ## class ----
@@ -387,6 +386,7 @@ DualSimulations <- function(rho_est,
     "Please use one of its subclasses instead."))
 }
 
+# nolint start
 # DualSimulationsSummary ----
 
 ##' Class for the summary of dual-endpoint simulations output
