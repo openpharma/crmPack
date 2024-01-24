@@ -635,8 +635,8 @@ setMethod("summary",
         start,
         stop_report = object@stop_report,
         additional_stats = object@additional_stats,
-        fitAtDoseMostSelected = fitAtDoseMostSelected,
-        meanFit = meanFit
+        fit_at_dose_most_selected = fitAtDoseMostSelected,
+        mean_fit = meanFit
       )
 
       return(ret)
@@ -979,7 +979,7 @@ setMethod("show",
 
       ## add one reporting line
       r$report(
-        "fitAtDoseMostSelected",
+        "fit_at_dose_most_selected",
         "Fitted toxicity rate at dose most often selected"
       )
 
@@ -1291,7 +1291,7 @@ setMethod("plot",
               levels = linetype
             ),
           lines =
-            unlist(x@meanFit) * 100
+            unlist(x@mean_fit) * 100
         )
 
         ## linetypes for the plot
