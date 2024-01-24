@@ -224,3 +224,34 @@ test_that("GeneralSimulationsSummary cannot be instantiated directly", {
     fixed = FALSE
   )
 })
+
+# SimulationsSummary ----
+test_that("SimulationsSummary generates object correctly", {
+  stop_report <- matrix(c(TRUE, FALSE), nrow = 2)
+  fit_at_dose_most_selected <- 123
+  additional_stats <- list(a = 1, b = 1)
+  mean_fit <- list(c(0.3, 0.4), c(0.4, 0.5))
+
+  result <- expect_silent(
+    .SimulationsSummary(
+      stop_report = stop_report,
+      fit_at_dose_most_selected = fit_at_dose_most_selected,
+      additional_stats = additional_stats,
+      mean_fit = mean_fit
+    )
+  )
+
+  expect_valid(result, "SimulationsSummary")
+
+  expect_identical(result@stop_report, stop_report)
+  expect_identical(result@fit_at_dose_most_selected, fit_at_dose_most_selected)
+  expect_identical(result@additional_stats, additional_stats)
+  expect_identical(result@mean_fit, mean_fit)
+})
+
+test_that(".DefaultSimulationsSummary cannot be instantiated directly", {
+  expect_error(.DefaultSimulationsSummary(),
+    "Class SimulationsSummary cannot be instantiated directly",
+    fixed = FALSE
+  )
+})
