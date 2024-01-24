@@ -979,7 +979,7 @@ setMethod("show",
 
       ## add one reporting line
       r$report(
-        "fitAtDoseMostSelected",
+        "fit_at_dose_most_selected",
         "Fitted toxicity rate at dose most often selected"
       )
 
