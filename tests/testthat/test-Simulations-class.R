@@ -227,7 +227,6 @@ test_that("GeneralSimulationsSummary cannot be instantiated directly", {
 
 # SimulationsSummary ----
 test_that("SimulationsSummary generates object correctly", {
-
   stop_report <- matrix(c(TRUE, FALSE), nrow = 2)
   fit_at_dose_most_selected <- 123
   additional_stats <- list(a = 1, b = 1)
