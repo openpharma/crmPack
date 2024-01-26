@@ -83,24 +83,24 @@ Following the principles of the \code{broom} package, convert a \code{CrmPackCla
 object to a (list of) tibbles.  This is a basic, default representation.
 }
 \examples{
-CohortSizeConst(3) |> tidy()
-.DefaultSimulations() |> tidy()
-CohortSizeRange(intervals = c(0, 20), cohort_size = c(1, 3)) |> tidy()
-.DefaultCohortSizeDLT() |> tidy()
-.DefaultCohortSizeMin() |> tidy()
-.DefaultCohortSizeMax() |> tidy()
-.DefaultCohortSizeRange() |> tidy()
-CohortSizeParts(cohort_sizes = c(1, 3)) |> tidy()
-.DefaultIncrementsMin() |> tidy()
-CohortSizeRange(intervals = c(0, 20), cohort_size = c(1, 3)) |> tidy()
-.DefaultIncrementsRelativeParts() |> tidy()
+CohortSizeConst(3) \%>\% tidy()
+.DefaultSimulations() \%>\% tidy()
+CohortSizeRange(intervals = c(0, 20), cohort_size = c(1, 3)) \%>\% tidy()
+.DefaultCohortSizeDLT() \%>\% tidy()
+.DefaultCohortSizeMin() \%>\% tidy()
+.DefaultCohortSizeMax() \%>\% tidy()
+.DefaultCohortSizeRange() \%>\% tidy()
+CohortSizeParts(cohort_sizes = c(1, 3)) \%>\% tidy()
+.DefaultIncrementsMin() \%>\% tidy()
+CohortSizeRange(intervals = c(0, 20), cohort_size = c(1, 3)) \%>\% tidy()
+.DefaultIncrementsRelativeParts() \%>\% tidy()
 NextBestNCRM(
   target = c(0.2, 0.35),
   overdose = c(0.35, 1),
   max_overdose_prob = 0.25
-) |> tidy()
-.DefaultNextBestNCRMLoss() |> tidy()
-.DefaultDualDesign() |> tidy()
+) \%>\% tidy()
+.DefaultNextBestNCRMLoss() \%>\% tidy()
+.DefaultDualDesign() \%>\% tidy()
 options <- McmcOptions(
   burnin = 100,
   step = 1,
@@ -119,6 +119,6 @@ model <- LogisticLogNormal(
 )
 
 samples <- mcmc(emptydata, model, options)
-samples |> tidy()
+samples \%>\% tidy()
 }
 \keyword{methods}

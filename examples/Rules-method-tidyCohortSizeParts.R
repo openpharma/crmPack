@@ -1,1 +1,1 @@
-CohortSizeParts(cohort_sizes = c(1, 3)) |> tidy()
+CohortSizeParts(cohort_sizes = c(1, 3)) %>% tidy()

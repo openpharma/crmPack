@@ -1,1 +1,1 @@
-CohortSizeConst(3) |> tidy()
+CohortSizeConst(3) %>% tidy()
