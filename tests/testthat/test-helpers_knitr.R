@@ -1,6 +1,7 @@
 library(knitr)
+devtools::load_all()
 
-test_that("knit_print methods exist for all relevant classes", {
+test_that("knit_print methods exist for all relevant classes and produce consistent output", {
   crmpack_class_list <- getClasses(asNamespace("crmPack"))
   exclusions <- c(
     "CohortSize", "CrmPackClass", "DualEndpoint", "GeneralData", "GeneralModel",
@@ -16,36 +17,43 @@ test_that("knit_print methods exist for all relevant classes", {
   crmpack_class_list <- setdiff(crmpack_class_list, exclusions)
 
   # See https://stackoverflow.com/questions/42738851/r-how-to-find-what-s3-method-will-be-called-on-an-object
-  findMethod <- function(generic, ...) {
+  identifyMethod <- function(generic, ...) {
     ch <- deparse(substitute(generic))
     f <- X <- function(x, ...) UseMethod("X")
     for(m in methods(ch)) assign(sub(ch, "X", m, fixed = TRUE), "body<-"(f, value = m))
     X(...)
   }
 
-  for (cls in crmpack_class_list) {
-    if (!isClassUnion(cls)) {
-      constructor_name <- paste0(".Default", cls)
-      if (exists(constructor_name, mode = "function")) {
-        tryCatch(
-          {
-            x <- do.call(paste0(".Default", cls), list())
-
-            result <- findMethod(knit_print, x)
-            # TODO Remove if (...) { warning() } else { once all methods have been implemented
-            if (result == "knit_print.default") {
-              warning(paste0("No knit_print method for ", cls, " objects"))
-            } else {
-              expect_equal(result, paste0("knit_print.", cls))
-            }
-          },
-          error = function(e) fail(paste0("Error locating knit_print method for ", cls, " objects: ", e))
-        )
-      } else {
-        warning(paste0("No default constructor for ", cls))
+  # For each relevant class...
+  withr::with_dir(
+    # Quarto can't specify location of output file
+    # See https://github.com/quarto-dev/quarto-r/issues/81
+    test_path("fixtures"), {
+      for (cls in crmpack_class_list) {
+        if (!isClassUnion(cls)) {
+          methodName <- identifyMethod(
+            knit_print,
+            do.call(paste0(".Default", cls), list())
+          )
+          if (methodName != "knit_print.default") {
+            outFileName <- paste0("knit_print_", cls, ".html")
+            withr::with_file(
+              outFileName, {
+                quarto::quarto_render(
+                  input = test_path("knit_print_template.qmd"),
+                  execute_params = list("class_name" = cls),
+                  output_file = outFileName
+                )
+                expect_snapshot_file(outFileName)
+              }
+            )
+          }
+        } else {
+          warning(paste0("No default constructor for ", cls))
+        }
       }
     }
-  }
+  )
 })
 
 #  CohortSize ---
@@ -72,8 +80,4 @@ test_that("knit_print.CohortSizeConst works correctly", {
   expect_class(rv, "character")
 })
 
-# CohortSizeRange
-
-test_that("knit_print.CohortSizeConst works correctly", {
-})
 

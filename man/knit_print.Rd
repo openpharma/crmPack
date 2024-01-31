@@ -6,29 +6,37 @@
 \alias{knit_print.CohortSizeRange}
 \alias{knit_print.CohortSizeDLT}
 \alias{knit_print.CohortSizeParts}
-\title{Implement S3 Method \code{knit_print} for all \code{crmPack} Classes}
+\alias{knit_print.CohortSizeMax}
+\alias{knit_print.CohortSizeMin}
+\alias{knit_print.CohortSizeOrdinal}
+\title{Render a CohortSizeConst Object}
 \usage{
-knit_print.CohortSizeConst(
-  obj,
-  asis = TRUE,
-  label = c("participant", "participants"),
-  ...
-)
+\method{knit_print}{CohortSizeConst}(obj, asis = TRUE, label = c("participant", "participants"), ...)
 
-knit_print.CohortSizeRange(object, asis = TRUE, ...)
+\method{knit_print}{CohortSizeRange}(object, asis = TRUE, ...)
 
-knit_print.CohortSizeDLT(object, asis = TRUE, ...)
+\method{knit_print}{CohortSizeDLT}(obj, asis = TRUE, ...)
 
-knit_print.CohortSizeParts(object, asis = TRUE, ...)
+\method{knit_print}{CohortSizeParts}(obj, label = "participant", asis = TRUE, ...)
+
+\method{knit_print}{CohortSizeMax}(obj, asis = TRUE, ...)
+
+\method{knit_print}{CohortSizeMin}(obj, asis = TRUE, ...)
+
+\method{knit_print}{CohortSizeOrdinal}(obj, asis = TRUE, ...)
 }
 \arguments{
-\item{obj}{(\code{numeric})\cr The object to knit_print.}
+\item{obj}{(\code{CohortSize})\cr The object to knit_print.}
 
 \item{asis}{(\code{flag})\cr Should the return value be wrapped in a call to \code{asis_output}?}
 
 \item{label}{(\code{character})\cr The word used to label the participants.  See Usage Notes below.}
 
-\item{...}{(\code{numeric})\cr Passed to \code{knitr::kable}.}
+\item{...}{
+  Arguments passed on to \code{\link[=knit_print.CohortSizeConst]{knit_print.CohortSizeConst}}, \code{\link[=knit_print.CohortSizeConst]{knit_print.CohortSizeConst}}, \code{\link[=knit_print.CohortSizeConst]{knit_print.CohortSizeConst}}
+  \describe{
+    \item{\code{}}{}
+  }}
 }
 \value{
 a character string that represents the object in markdown.
@@ -48,8 +56,27 @@ crmPack objects in Markdown and Quarto files
 \ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#experimental}{\figure{lifecycle-experimental.svg}{options: alt='[Experimental]'}}}{\strong{[Experimental]}}
 
 \ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#experimental}{\figure{lifecycle-experimental.svg}{options: alt='[Experimental]'}}}{\strong{[Experimental]}}
+
+\ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#experimental}{\figure{lifecycle-experimental.svg}{options: alt='[Experimental]'}}}{\strong{[Experimental]}}
+
+\ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#experimental}{\figure{lifecycle-experimental.svg}{options: alt='[Experimental]'}}}{\strong{[Experimental]}}
+
+\ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#experimental}{\figure{lifecycle-experimental.svg}{options: alt='[Experimental]'}}}{\strong{[Experimental]}}
 }
 \section{Usage Notes}{
+
+\code{label} describes the trial's participants.
+
+It should be a character vector of length 1 or 2.  If of length 2, the first
+element describes a \code{cohort_size} of 1 and the second describes all other
+\code{cohort_size}s.  If of length 1, the character \code{s} is appended to the value
+when \code{cohort_size} is not 1.
+
+
+The by default, the columns are labelled \code{Lower}, \code{Upper} and \verb{Cohort size}.  The table's caption is
+\verb{Defined by the number of DLTs so far observed}.  These values can be overridden by passing
+\code{col.names} and \code{caption} in the function call.
+
 
 \code{label} describes the trial's participants.
 

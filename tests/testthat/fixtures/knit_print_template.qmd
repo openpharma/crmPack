@@ -1,0 +1,20 @@
+---
+title: "Test"
+format: html
+editor: visual
+embed-resources: true
+params:
+  class_name: "CohortSizeConst"
+---
+
+```{r}
+#| echo: FALSE
+
+suppressPackageStartupMessages ({
+  devtools::load_all()
+  library(knitr)
+})
+
+print(params$class_name)
+do.call(paste0(".Default", params$class_name), list())
+```

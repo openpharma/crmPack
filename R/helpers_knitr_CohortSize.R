@@ -1,6 +1,8 @@
-# Integration with knitr ----
+#' @importFrom knitr knit_print
+NULL
 
-#' Implement S3 Method `knit_print` for all `crmPack` Classes
+# Integration with knitr ----
+#'
 #'
 #' @description `r lifecycle::badge("experimental")`
 #'
@@ -46,12 +48,13 @@ knit_print.CohortSizeConst <- function(obj, asis = TRUE, label = c("participant"
   }
   rv
 }
+registerS3method("knit_print", "CohortSizeConst", knit_print.CohortSizeConst)
 
 #' Render a CohortSizeRange Object
 #'
 #' @description `r lifecycle::badge("experimental")`
 #' @inheritParams knit_print.CohortSizeConst
-#' @inheritDotParam knit_print.CohortSizeConst
+#' @inheritDotParams knit_print.CohortSizeConst
 #' @inherit knit_print.CohortSizeConst return
 #'
 #' @export
@@ -59,28 +62,29 @@ knit_print.CohortSizeConst <- function(obj, asis = TRUE, label = c("participant"
 knit_print.CohortSizeRange <- function(object, asis = TRUE, ...) {
   assert_flag(asis)
 
-  params <- list(...)
-  if (!("col.names" %in% names(params))) {
-    params[["col.names"]] <- c("Lower", "Upper", "Cohort size")
+  param <- list(...)
+  if (!("col.names" %in% names(param))) {
+    param[["col.names"]] <- c("Lower", "Upper", "Cohort size")
   }
-  if (!("caption" %in% names(params))) {
-    params[["caption"]] <- "Defined by the dose to be used in the next cohort"
+  if (!("caption" %in% names(param))) {
+    param[["caption"]] <- "Defined by the dose to be used in the next cohort"
   }
   x <- object %>% tidy()
-  params[["x"]] <- x
-  rv <- do.call(knitr::kable, params) %>%
+  param[["x"]] <- x
+  rv <- do.call(knitr::kable, param) %>%
     kableExtra::add_header_above(c("Dose" = 2, " " = 1))
   if (asis) {
     rv <- asis_output(rv)
   }
   rv
 }
+registerS3method("knit_print", "CohortSizeRange", knit_print.CohortSizeRange)
 
 #' Render a CohortSizeDLT Object
 #'
 #' @description `r lifecycle::badge("experimental")`
 #' @inheritParams knit_print.CohortSizeConst
-#' @inheritDotParam knit_print.CohortSizeConst
+#' @inheritDotParams knit_print.CohortSizeConst
 #' @inherit knit_print.CohortSizeConst return
 #' @param ... Passed to `knitr::kable`.
 #'
@@ -94,28 +98,29 @@ knit_print.CohortSizeRange <- function(object, asis = TRUE, ...) {
 knit_print.CohortSizeDLT <- function(obj, asis = TRUE, ...) {
   assert_flag(asis)
 
-  params <- list(...)
-  if (!("col.names" %in% names(params))) {
-    params[["col.names"]] <- c("Lower", "Upper", "Cohort size")
+  param <- list(...)
+  if (!("col.names" %in% names(param))) {
+    param[["col.names"]] <- c("Lower", "Upper", "Cohort size")
   }
-  if (!("caption" %in% names(params))) {
-    params[["caption"]] <- "Defined by the number of DLTs so far observed"
+  if (!("caption" %in% names(param))) {
+    param[["caption"]] <- "Defined by the number of DLTs so far observed"
   }
-  params[["x"]] <- obj %>% tidy()
-  rv <- do.call(knitr::kable, params) %>%
+  param[["x"]] <- obj %>% tidy()
+  rv <- do.call(knitr::kable, param) %>%
     kableExtra::add_header_above(c("No of DLTs" = 2, " " = 1))
   if (asis) {
     rv <- asis_output(rv)
   }
   rv
 }
+registerS3method("knit_print", "CohortSizeDLT", knit_print.CohortSizeDLT)
 
 #' Render a CohortSizeParts Object
 #'
 #' @description `r lifecycle::badge("experimental")`
 #' @inheritParams knit_print.CohortSizeConst
 #' @inherit knit_print.CohortSizeConst return
-#' @inheritSection knit_print.CohortSizeConst {Usage Notes}
+#' @inheritSection knit_print.CohortSizeConst Usage Notes
 #' @inheritDotParams knit_print.CohortSizeConst
 #'
 #' @export
@@ -143,13 +148,14 @@ knit_print.CohortSizeParts <- function(obj, label = "participant", asis = TRUE, 
   }
   rv
 }
+registerS3method("knit_print", "CohortSizeParts", knit_print.CohortSizeParts)
 
 #' Render a CohortSizeMax Object
 #'
 #' @description `r lifecycle::badge("experimental")`
 #' @inheritParams knit_print.CohortSizeConst
 #' @inherit knit_print.CohortSizeConst return
-#' @params ... passed through to the `knit_print` methods of the constituent
+#' @param ... passed through to the `knit_print` methods of the constituent
 #' rules
 #'
 #' @export
@@ -175,13 +181,14 @@ knit_print.CohortSizeMax <- function(obj, asis = TRUE, ...) {
   }
   rv
 }
+registerS3method("knit_print", "CohortSizeMax", knit_print.CohortSizeMax)
 
 #' Render a CohortSizeMin Object
 #'
 #' @description `r lifecycle::badge("experimental")`
 #' @inheritParams knit_print.CohortSizeConst
 #' @inherit knit_print.CohortSizeConst return
-#' @params ... passed through to the `knit_print` methods of the constituent
+#' @param ... passed through to the `knit_print` methods of the constituent
 #' rules
 #'
 #' @export
@@ -206,32 +213,26 @@ knit_print.CohortSizeMin <- function(obj, asis = TRUE, ...) {
   }
   rv
 }
+registerS3method("knit_print", "CohortSizeMin", knit_print.CohortSizeMin)
 
 #' Render a CohortSizeOrdinal Object
 #'
 #' @description `r lifecycle::badge("experimental")`
 #' @inheritParams knit_print.CohortSizeConst
 #' @inherit knit_print.CohortSizeConst return
-#' @params ... passed through to the `knit_print` method of the standard rule
+#' @param ... passed through to the `knit_print` method of the standard rule
 #'
 #' @export
 #' @rdname knit_print
-knit_print.CohortSizeMin <- function(obj, asis = TRUE, ...) {
+knit_print.CohortSizeOrdinal <- function(obj, asis = TRUE, ...) {
   asis_output(
     paste0(
       "Based on a toxicity garde of ",
-      obg@grade,
+      obj@grade,
       ": ",
-      paste0(
-        lapply(
-          obj@cohort_sizes,
-          function(x, ...) {
-            knit_print(x, asis = asis, ...)
-          }
-        ),
-        collapse = "\n"
-      ),
+      paste0(knit_print(obj@rule,asis = asis, ...), collapse = "\n"),
       paste = "\n"
     )
   )
 }
+registerS3method("knit_print", "CohortSizeOrdinal", knit_print.CohortSizeOrdinal)
