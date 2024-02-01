@@ -24,17 +24,20 @@ test_that("knit_print methods exist for all relevant classes and produce consist
     X(...)
   }
 
-  # For each relevant class...
+  # Temporarily change the working directory because Quarto can't specify
+  # location of output file
+  # See https://github.com/quarto-dev/quarto-r/issues/81
   withr::with_dir(
-    # Quarto can't specify location of output file
-    # See https://github.com/quarto-dev/quarto-r/issues/81
     test_path("fixtures"), {
+      # For each relevant class...
       for (cls in crmpack_class_list) {
         if (!isClassUnion(cls)) {
+          # Obtain the corresponding knit_print method...
           methodName <- identifyMethod(
             knit_print,
             do.call(paste0(".Default", cls), list())
           )
+          # ... and if the default has been overridden, test it
           if (methodName != "knit_print.default") {
             outFileName <- paste0("knit_print_", cls, ".html")
             withr::with_file(
