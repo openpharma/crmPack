@@ -20,7 +20,7 @@ test_that("knit_print methods exist for all relevant classes and produce consist
   identifyMethod <- function(generic, ...) {
     ch <- deparse(substitute(generic))
     f <- X <- function(x, ...) UseMethod("X")
-    for(m in methods(ch)) assign(sub(ch, "X", m, fixed = TRUE), "body<-"(f, value = m))
+    for (m in methods(ch)) assign(sub(ch, "X", m, fixed = TRUE), "body<-"(f, value = m))
     X(...)
   }
 
@@ -28,7 +28,8 @@ test_that("knit_print methods exist for all relevant classes and produce consist
   # location of output file
   # See https://github.com/quarto-dev/quarto-r/issues/81
   withr::with_dir(
-    test_path("fixtures"), {
+    test_path("fixtures"),
+    {
       # For each relevant class...
       for (cls in crmpack_class_list) {
         if (!isClassUnion(cls)) {
@@ -41,7 +42,8 @@ test_that("knit_print methods exist for all relevant classes and produce consist
           if (methodName != "knit_print.default") {
             outFileName <- paste0("knit_print_", cls, ".html")
             withr::with_file(
-              outFileName, {
+              outFileName,
+              {
                 quarto::quarto_render(
                   input = test_path("knit_print_template.qmd"),
                   execute_params = list("class_name" = cls),
@@ -65,16 +67,16 @@ test_that("knit_print methods exist for all relevant classes and produce consist
 
 test_that("knit_print.CohortSizeConst works correctly", {
   x <- CohortSizeConst(3)
-  rv <-  knit_print(x)
+  rv <- knit_print(x)
   expect_equal(rv, "A constant size of 3 participants", ignore_attr = TRUE)
   expect_class(rv, "knit_asis")
 
   x <- CohortSizeConst(2)
-  rv <-  knit_print(x, label = "subject")
+  rv <- knit_print(x, label = "subject")
   expect_equal(rv, "A constant size of 2 subjects", ignore_attr = TRUE)
 
   x <- CohortSizeConst(1)
-  rv <-  knit_print(x, label = "subject")
+  rv <- knit_print(x, label = "subject")
   expect_equal(rv, "A constant size of 1 subject", ignore_attr = TRUE)
 
   x <- CohortSizeConst(3)
@@ -82,5 +84,3 @@ test_that("knit_print.CohortSizeConst works correctly", {
   expect_equal(rv, "A constant size of 3 participants")
   expect_class(rv, "character")
 })
-
-
