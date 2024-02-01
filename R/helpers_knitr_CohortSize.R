@@ -19,7 +19,7 @@ NULL
 #'
 #' @description `r lifecycle::badge("experimental")`
 #' @param obj (`CohortSize`)\cr The object to knit_print.
-#' @param asis (`flag`)\cr Should the return value be wrapped in a call to `asis_output`?
+#' @param asis (`flag`)\cr Should the return value be wrapped in a call to `knitr::asis_output`?
 #' @param label (`character`)\cr The word used to label the participants.  See Usage Notes below.
 #' @param ... Not used at present
 #'
@@ -35,7 +35,7 @@ NULL
 #'
 #' @export
 #' @rdname knit_print
-knit_print.CohortSizeConst <- function(obj, asis = TRUE, label = c("participant", "participants"), ...) {
+knit_print.CohortSizeConst <- function(obj, asis = TRUE, ..., label = c("participant", "participants")) {
   assert_character(label, min.len = 1, max.len = 2, any.missing = FALSE)
   assert_flag(asis)
 
@@ -44,7 +44,7 @@ knit_print.CohortSizeConst <- function(obj, asis = TRUE, label = c("participant"
   }
   rv <- paste0("A constant size of ", obj@size, " ", label[ifelse(obj@size == 1, 1, 2)])
   if (asis) {
-    rv <- asis_output(rv)
+    rv <- knitr::asis_output(rv)
   }
   rv
 }
@@ -59,7 +59,7 @@ registerS3method("knit_print", "CohortSizeConst", knit_print.CohortSizeConst)
 #'
 #' @export
 #' @rdname knit_print
-knit_print.CohortSizeRange <- function(object, asis = TRUE, ...) {
+knit_print.CohortSizeRange <- function(obj, asis = TRUE, ...) {
   assert_flag(asis)
 
   param <- list(...)
@@ -69,12 +69,12 @@ knit_print.CohortSizeRange <- function(object, asis = TRUE, ...) {
   if (!("caption" %in% names(param))) {
     param[["caption"]] <- "Defined by the dose to be used in the next cohort"
   }
-  x <- object %>% tidy()
+  x <- obj %>% tidy()
   param[["x"]] <- x
   rv <- do.call(knitr::kable, param) %>%
     kableExtra::add_header_above(c("Dose" = 2, " " = 1))
   if (asis) {
-    rv <- asis_output(rv)
+    rv <- knitr::asis_output(rv)
   }
   rv
 }
@@ -109,7 +109,7 @@ knit_print.CohortSizeDLT <- function(obj, asis = TRUE, ...) {
   rv <- do.call(knitr::kable, param) %>%
     kableExtra::add_header_above(c("No of DLTs" = 2, " " = 1))
   if (asis) {
-    rv <- asis_output(rv)
+    rv <- knitr::asis_output(rv)
   }
   rv
 }
@@ -125,7 +125,7 @@ registerS3method("knit_print", "CohortSizeDLT", knit_print.CohortSizeDLT)
 #'
 #' @export
 #' @rdname knit_print
-knit_print.CohortSizeParts <- function(obj, label = "participant", asis = TRUE, ...) {
+knit_print.CohortSizeParts <- function(obj, asis = TRUE, ..., label = c("participant", "participants")) {
   assert_character(label, min.len = 1, max.len = 2, any.missing = FALSE)
   assert_flag(asis)
 
@@ -144,7 +144,7 @@ knit_print.CohortSizeParts <- function(obj, label = "participant", asis = TRUE, 
     " in the second."
   )
   if (asis) {
-    rv <- asis_output(rv)
+    rv <- knitr::asis_output(rv)
   }
   rv
 }
@@ -177,7 +177,7 @@ knit_print.CohortSizeMax <- function(obj, asis = TRUE, ...) {
   )
 
   if (asis) {
-    rv <- asis_output(rv)
+    rv <- knitr::asis_output(rv)
   }
   rv
 }
@@ -209,7 +209,7 @@ knit_print.CohortSizeMin <- function(obj, asis = TRUE, ...) {
     paste = "\n"
   )
   if (asis) {
-    rv <- asis_output(rv)
+    rv <- knitr::asis_output(rv)
   }
   rv
 }
@@ -225,7 +225,7 @@ registerS3method("knit_print", "CohortSizeMin", knit_print.CohortSizeMin)
 #' @export
 #' @rdname knit_print
 knit_print.CohortSizeOrdinal <- function(obj, asis = TRUE, ...) {
-  asis_output(
+  knitr::asis_output(
     paste0(
       "Based on a toxicity garde of ",
       obj@grade,
