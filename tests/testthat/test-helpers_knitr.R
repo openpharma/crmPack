@@ -26,7 +26,6 @@ test_that("knit_print methods exist for all relevant classes and produce consist
     X(...)
   }
 
-  # For each relevant class...
   for (cls in crmpack_class_list) {
     if (!isClassUnion(cls)) {
       # Obtain the corresponding knit_print method...
