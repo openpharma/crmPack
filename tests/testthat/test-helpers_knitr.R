@@ -29,7 +29,7 @@ test_that("knit_print methods exist for all relevant classes and produce consist
   for (cls in crmpack_class_list) {
     if (!isClassUnion(cls)) {
       # Obtain the corresponding knit_print method...
-       methodName <- identifyMethod(
+      methodName <- identifyMethod(
         knit_print,
         do.call(paste0(".Default", cls), list())
       )
@@ -53,7 +53,7 @@ test_that("knit_print methods exist for all relevant classes and produce consist
         )
       }
     } else {
-        warning(paste0("No default constructor for ", cls))
+      warning(paste0("No default constructor for ", cls))
     }
   }
 })
