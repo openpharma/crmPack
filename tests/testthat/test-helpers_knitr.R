@@ -40,6 +40,9 @@ test_that("knit_print methods exist for all relevant classes and produce consist
           # ... and if the default has been overridden, test it
           if (methodName != "knit_print.default") {
             outFileName <- paste0("knit_print_", cls, ".html")
+            # with_file guarantees that the test file will be deleted automatically
+            # once the snapshot has been compared with the previous version, which
+            # can be found in /_snaps/helpers_knitr
             withr::with_file(
               outFileName, {
                 quarto::quarto_render(
