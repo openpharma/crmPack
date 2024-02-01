@@ -42,7 +42,7 @@ knit_print.CohortSizeConst <- function(obj, ..., asis = TRUE, label = c("partici
   if (length(label) == 1) {
     label[2] <- paste0(label[1], "s")
   }
-  rv <- paste0("A constant size of ", obj@size, " ", label[ifelse(obj@size == 1, 1, 2)])
+  rv <- paste0("A constant size of ", obj@size, " ", label[ifelse(obj@size == 1, 1, 2)], ".")
   if (asis) {
     rv <- knitr::asis_output(rv)
   }
@@ -218,7 +218,7 @@ registerS3method("knit_print", "CohortSizeMin", knit_print.CohortSizeMin)
 knit_print.CohortSizeOrdinal <- function(obj, ..., asis = TRUE) {
   knitr::asis_output(
     paste0(
-      "Based on a toxicity garde of ",
+      "Based on a toxicity grade of ",
       obj@grade,
       ": ",
       paste0(knit_print(obj@rule, asis = asis, ...), collapse = "\n"),

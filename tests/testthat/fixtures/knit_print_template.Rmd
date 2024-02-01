@@ -1,15 +1,11 @@
 ---
 title: "Test"
-format: html
-editor: visual
-embed-resources: true
+output: html_document
 params:
   class_name: "CohortSizeConst"
 ---
 
-```{r}
-#| echo: FALSE
-
+```{r, echo=FALSE}
 suppressPackageStartupMessages({
   devtools::load_all()
   library(knitr)
