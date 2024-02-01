@@ -3580,11 +3580,11 @@ setMethod(
   f = "tidy",
   signature = signature(x = "IncrementsRelative"),
   definition = function(x, ...) {
-    h_tidy_all_slots(x) |>
-      dplyr::bind_cols() |>
-      h_range_to_minmax(.data$intervals) |>
-      dplyr::filter(max > 0) |>
-      tibble::add_column(increment = x@increments) |>
+    h_tidy_all_slots(x) %>%
+      dplyr::bind_cols() %>%
+      h_range_to_minmax(.data$intervals) %>%
+      dplyr::filter(max > 0) %>%
+      tibble::add_column(increment = x@increments) %>%
       h_tidy_class(x)
   }
 )
@@ -3599,11 +3599,11 @@ setMethod(
   f = "tidy",
   signature = signature(x = "CohortSizeDLT"),
   definition = function(x, ...) {
-    h_tidy_all_slots(x) |>
-      dplyr::bind_cols() |>
-      h_range_to_minmax(.data$intervals) |>
-      dplyr::filter(max > 0) |>
-      tibble::add_column(cohort_size = x@cohort_size) |>
+    h_tidy_all_slots(x) %>%
+      dplyr::bind_cols() %>%
+      h_range_to_minmax(.data$intervals) %>%
+      dplyr::filter(max > 0) %>%
+      tibble::add_column(cohort_size = x@cohort_size) %>%
       h_tidy_class(x)
   }
 )
@@ -3618,7 +3618,7 @@ setMethod(
   f = "tidy",
   signature = signature(x = "CohortSizeMin"),
   definition = function(x, ...) {
-    callNextMethod() |> h_tidy_class(x)
+    callNextMethod() %>% h_tidy_class(x)
   }
 )
 
@@ -3632,7 +3632,7 @@ setMethod(
   f = "tidy",
   signature = signature(x = "CohortSizeMax"),
   definition = function(x, ...) {
-    callNextMethod() |> h_tidy_class(x)
+    callNextMethod() %>% h_tidy_class(x)
   }
 )
 
@@ -3646,11 +3646,11 @@ setMethod(
   f = "tidy",
   signature = signature(x = "CohortSizeRange"),
   definition = function(x, ...) {
-    h_tidy_all_slots(x) |>
-      dplyr::bind_cols() |>
-      h_range_to_minmax(.data$intervals) |>
-      dplyr::filter(max > 0) |>
-      tibble::add_column(cohort_size = x@cohort_size) |>
+    h_tidy_all_slots(x) %>%
+      dplyr::bind_cols() %>%
+      h_range_to_minmax(.data$intervals) %>%
+      dplyr::filter(max > 0) %>%
+      tibble::add_column(cohort_size = x@cohort_size) %>%
       h_tidy_class(x)
   }
 )
@@ -3668,7 +3668,7 @@ setMethod(
     tibble::tibble(
       part = seq_along(x@cohort_sizes),
       cohort_size = x@cohort_sizes
-    ) |>
+    ) %>%
       h_tidy_class(x)
   }
 )
@@ -3683,7 +3683,7 @@ setMethod(
   f = "tidy",
   signature = signature(x = "IncrementsMin"),
   definition = function(x, ...) {
-    callNextMethod() |> h_tidy_class(x)
+    callNextMethod() %>% h_tidy_class(x)
   }
 )
 
@@ -3697,10 +3697,10 @@ setMethod(
   f = "tidy",
   signature = signature(x = "IncrementsRelative"),
   definition = function(x, ...) {
-    h_tidy_all_slots(x) |>
-      h_range_to_minmax(.data$intervals) |>
-      dplyr::filter(dplyr::row_number() > 1) |>
-      tibble::add_column(increment = x@increments) |>
+    h_tidy_all_slots(x) %>%
+      h_range_to_minmax(.data$intervals) %>%
+      dplyr::filter(dplyr::row_number() > 1) %>%
+      tibble::add_column(increment = x@increments) %>%
       h_tidy_class(x)
   }
 )
@@ -3724,11 +3724,11 @@ setMethod(
     }
     # Column bind of all list elements have the same number of rows.
     if (length(rv) > 1 & length(unique(sapply(rv, nrow))) == 1) {
-      rv <- rv |> dplyr::bind_cols()
+      rv <- rv %>% dplyr::bind_cols()
     }
-    rv <- rv |> h_tidy_class(x)
+    rv <- rv %>% h_tidy_class(x)
     if (length(rv) == 1) {
-      rv[[names(rv)[1]]] |> h_tidy_class(x)
+      rv[[names(rv)[1]]] %>% h_tidy_class(x)
     } else {
       rv
     }
@@ -3745,11 +3745,11 @@ setMethod(
   f = "tidy",
   signature = signature(x = "NextBestNCRM"),
   definition = function(x, ...) {
-    h_tidy_all_slots(x) |>
-      dplyr::bind_cols() |>
-      h_range_to_minmax(.data$target, range_min = 0, range_max = 1) |>
-      add_column(max_prob = c(NA, NA, x@max_overdose_prob)) |>
-      add_column(Range = c("Underdose", "Target", "Overdose"), .before = 1) |>
+    h_tidy_all_slots(x) %>%
+      dplyr::bind_cols() %>%
+      h_range_to_minmax(.data$target, range_min = 0, range_max = 1) %>%
+      add_column(max_prob = c(NA, NA, x@max_overdose_prob)) %>%
+      add_column(Range = c("Underdose", "Target", "Overdose"), .before = 1) %>%
       h_tidy_class(x)
   }
 )
@@ -3773,11 +3773,11 @@ setMethod(
     }
     # Column bind of all list elements have the same number of rows
     if (length(rv) > 1 & length(unique(sapply(rv, nrow))) == 1) {
-      rv <- rv |> dplyr::bind_cols()
+      rv <- rv %>% dplyr::bind_cols()
     }
-    rv <- rv |> h_tidy_class(x)
+    rv <- rv %>% h_tidy_class(x)
     if (length(rv) == 1) {
-      rv[[names(rv)[1]]] |> h_tidy_class(x)
+      rv[[names(rv)[1]]] %>% h_tidy_class(x)
     } else {
       rv
     }

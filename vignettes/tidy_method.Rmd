@@ -50,7 +50,7 @@ The following is the general approach we take to tidying `crmPack` classes:
 `CohortSizeConst` is a trivial example and illustrates the default approach for all classes.
 
 ```{r, error = TRUE}
-CohortSizeConst(size = 3) |> tidy()
+CohortSizeConst(size = 3) %>% tidy()
 ```
 
 `IncrementsRelative` illustrate how ranges are handled.
@@ -59,7 +59,7 @@ CohortSizeConst(size = 3) |> tidy()
 IncrementsRelative(
   intervals = c(0, 20),
   increments = c(1, 0.33)
-) |>
+) %>%
   tidy()
 ```
 
@@ -70,7 +70,7 @@ cs_max <- maxSize(
   CohortSizeConst(3),
   CohortSizeDLT(intervals = 0:1, cohort_size = c(1, 3))
 )
-cs_max |> tidy()
+cs_max %>% tidy()
 ```
 
 The `Samples` class likely to the most useful when making presentations not yet supported by `crmPack` directly.
@@ -93,8 +93,8 @@ model <- LogisticLogNormal(
   ref_dose = 56
 )
 samples <- mcmc(emptydata, model, options)
-tidySamples <- samples |> tidy()
-tidySamples |> head()
+tidySamples <- samples %>% tidy()
+tidySamples %>% head()
 ```
 
 ## Using tidy `crmPack` data
@@ -109,12 +109,12 @@ The cohort size for this trial is determined by the dose to be used in the curre
 CohortSizeRange(
   intervals = c(0, 50, 300),
   cohort_size = c(1, 3, 5)
-) |>
-  tidy() |>
+) %>%
+  tidy() %>%
   kable(
     col.names = c("Min", "Max", "Cohort size"),
     caption = "Rules for selecting the cohort size"
-  ) |>
+  ) %>%
   add_header_above(c("Dose" = 2, " " = 1))
 ```
 
@@ -144,15 +144,15 @@ model <- LogisticLogNormal(
   ref_dose = 56
 )
 samples <- mcmc(data, model, options)
-tidySamples <- samples |> tidy()
+tidySamples <- samples %>% tidy()
 
 # The magrittr pipe is necessary here
 tidySamples$data %>%
   expand(
     nesting(!!!.[1:10]),
     Dose = data@doseGrid[2:11]
-  ) |>
-  mutate(Prob = probFunction(model, alpha0 = alpha0, alpha1 = alpha1)(Dose)) |>
+  ) %>%
+  mutate(Prob = probFunction(model, alpha0 = alpha0, alpha1 = alpha1)(Dose)) %>%
   ggplot() +
   geom_density(aes(x = Prob, colour = as.factor(Dose)), adjust = 1.5) +
   labs(

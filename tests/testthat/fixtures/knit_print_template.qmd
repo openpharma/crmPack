@@ -10,7 +10,7 @@ params:
 ```{r}
 #| echo: FALSE
 
-suppressPackageStartupMessages ({
+suppressPackageStartupMessages({
   devtools::load_all()
   library(knitr)
 })

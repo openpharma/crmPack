@@ -2377,22 +2377,22 @@ setMethod(
             function(nm) {
               as_tibble(get(x, nm))
             }
-          ) |>
-            dplyr::bind_rows() |>
+          ) %>%
+            dplyr::bind_rows() %>%
             tidyr::pivot_wider(
               names_from = Parameter,
               values_from = value
-            ) |>
+            ) %>%
             dplyr::bind_cols(h_handle_attributes(get(x, names(x@data)[1])))
         } else {
-          slot(x, nm) |>
-            tidy() |>
+          slot(x, nm) %>%
+            tidy() %>%
             dplyr::bind_cols()
         }
       }
     )
     names(rv) <- c("data", "options")
-    rv <- rv |> h_tidy_class(x)
+    rv <- rv %>% h_tidy_class(x)
     rv
   }
 )

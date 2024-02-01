@@ -4662,7 +4662,7 @@ setMethod(
         # Inside this loop we simulate the whole trial, until stopping.
         while (!(current$mono$stop && current$combo$stop)) {
           if (!current$mono$stop) {
-            current$mono$data <- current$mono$data |>
+            current$mono$data <- current$mono$data %>%
               h_determine_dlts(
                 dose = current$mono$dose,
                 prob = this_prob_mono,
@@ -4671,7 +4671,7 @@ setMethod(
               )
           }
           if (!current$combo$stop && (!current$first || !object@first_cohort_mono_only)) {
-            current$combo$data <- current$combo$data |>
+            current$combo$data <- current$combo$data %>%
               h_determine_dlts(
                 dose = current$combo$dose,
                 prob = this_prob_combo,
@@ -4685,10 +4685,10 @@ setMethod(
           current$samples <- mcmc(current$grouped, object@model, mcmcOptions)
           if (!current$mono$stop) {
             current$mono$limit <- maxDose(object@mono@increments, data = current$mono$data)
-            current$mono$dose <- object@mono@nextBest |>
+            current$mono$dose <- object@mono@nextBest %>%
               nextBest(current$mono$limit, current$samples, object@model, current$grouped, group = "mono")
             current$mono$dose <- current$mono$dose$value
-            current$mono$stop <- object@mono@stopping |>
+            current$mono$stop <- object@mono@stopping %>%
               stopTrial(current$mono$dose, current$samples, object@model, current$mono$data, group = "mono")
             current$mono$results <- h_unpack_stopit(current$mono$stop)
           }
@@ -4696,13 +4696,13 @@ setMethod(
             current$combo$limit <- if (is.na(current$mono$dose)) {
               0
             } else {
-              maxDose(object@combo@increments, current$combo$data) |>
+              maxDose(object@combo@increments, current$combo$data) %>%
                 min(current$mono$dose, na.rm = TRUE)
             }
-            current$combo$dose <- object@combo@nextBest |>
+            current$combo$dose <- object@combo@nextBest %>%
               nextBest(current$combo$limit, current$samples, object@model, current$grouped, group = "combo")
             current$combo$dose <- current$combo$dose$value
-            current$combo$stop <- object@combo@stopping |>
+            current$combo$stop <- object@combo@stopping %>%
               stopTrial(current$combo$dose, current$samples, object@model, current$combo$data, group = "combo")
             current$combo$results <- h_unpack_stopit(current$combo$stop)
           }
@@ -4787,9 +4787,9 @@ setMethod(
   signature = signature(x = "DualDesign"),
   definition = function(x, ...) {
     # Some Design objects have complex attributes whose structure is not supported.
-    rv <- h_tidy_all_slots(x, attributes = FALSE) |> h_tidy_class(x)
+    rv <- h_tidy_all_slots(x, attributes = FALSE) %>% h_tidy_class(x)
     if (length(rv) == 1) {
-      rv[[names(rv)[1]]] |> h_tidy_class(x)
+      rv[[names(rv)[1]]] %>% h_tidy_class(x)
     } else {
       rv
     }

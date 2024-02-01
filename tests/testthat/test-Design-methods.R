@@ -331,16 +331,16 @@ test_that("NextBestInfTheory produces consistent results for empty data", {
   result <- summary(sim, truth = my_truth, target = new_my_next_best@target)
 
   expect_equal(
-    result@fitAtDoseMostSelected,
+    result@fit_at_dose_most_selected,
     c(0.985602, 0.985602, 0.985602, 0.985602, 0.985602),
     tolerance = 1e-07
   )
-  expect_equal(result@propDLTs, rep(1L, 5))
-  expect_equal(result@meanToxRisk, rep(1L, 5))
-  expect_equal(result@doseSelected, rep(40, 5))
-  expect_equal(result@toxAtDosesSelected, rep(1L, 5))
+  expect_equal(result@prop_dlts, rep(1L, 5))
+  expect_equal(result@mean_tox_risk, rep(1L, 5))
+  expect_equal(result@dose_selected, rep(40, 5))
+  expect_equal(result@tox_at_doses_selected, rep(1L, 5))
   # expect_snapshot_value doesn't work here regardless of style
-  expect_snapshot(result@meanFit)
+  expect_snapshot(result@mean_fit)
 })
 
 test_that("NextBestInfTheory produces consistent results with a dataset", {
@@ -377,16 +377,16 @@ test_that("NextBestInfTheory produces consistent results with a dataset", {
 
   result <- summary(sim, truth = my_truth, target = new_my_next_best@target)
   expect_equal(
-    result@fitAtDoseMostSelected,
+    result@fit_at_dose_most_selected,
     c(0.222, 0.222, 0.222, 0.222, 0.222),
     tolerance = 1e-02
   )
-  expect_equal(result@propDLTs, rep(0.267, 5), tolerance = 1e-02)
-  expect_equal(result@meanToxRisk, rep(1L, 5))
-  expect_equal(result@doseSelected, rep(50, 5))
-  expect_equal(result@toxAtDosesSelected, rep(1L, 5))
+  expect_equal(result@prop_dlts, rep(0.267, 5), tolerance = 1e-02)
+  expect_equal(result@mean_tox_risk, rep(1L, 5))
+  expect_equal(result@dose_selected, rep(50, 5))
+  expect_equal(result@tox_at_doses_selected, rep(1L, 5))
   # expect_snapshot_value doesn't work here, regardless of style
-  expect_snapshot(result@meanFit)
+  expect_snapshot(result@mean_fit)
 })
 
 ## stop_reasons integration test ----

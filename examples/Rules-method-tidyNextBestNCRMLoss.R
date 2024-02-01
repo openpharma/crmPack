@@ -1,1 +1,1 @@
-.DefaultNextBestNCRMLoss() |> tidy()
+.DefaultNextBestNCRMLoss() %>% tidy()

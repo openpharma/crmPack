@@ -230,7 +230,7 @@ knit_print.CohortSizeOrdinal <- function(obj, asis = TRUE, ...) {
       "Based on a toxicity garde of ",
       obj@grade,
       ": ",
-      paste0(knit_print(obj@rule,asis = asis, ...), collapse = "\n"),
+      paste0(knit_print(obj@rule, asis = asis, ...), collapse = "\n"),
       paste = "\n"
     )
   )

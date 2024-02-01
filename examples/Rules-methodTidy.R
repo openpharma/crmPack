@@ -1,1 +1,1 @@
-.DefaultLogisticLogNormal() |> tidy()
+.DefaultLogisticLogNormal() %>% tidy()

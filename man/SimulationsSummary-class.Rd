@@ -4,34 +4,31 @@
 \name{SimulationsSummary-class}
 \alias{SimulationsSummary-class}
 \alias{.SimulationsSummary}
+\alias{SimulationsSummary}
 \alias{.DefaultSimulationsSummary}
-\title{Class for the summary of model-based simulations output}
+\title{\code{SimulationsSummary}}
 \usage{
 .DefaultSimulationsSummary()
 }
 \description{
-In addition to the slots in the parent class
-\code{\linkS4class{GeneralSimulationsSummary}}, it contains two slots with
-model fit information.
-}
-\details{
-Note that objects should not be created by users, therefore no
-initialization function is provided for this class.
+\ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#stable}{\figure{lifecycle-stable.svg}{options: alt='[Stable]'}}}{\strong{[Stable]}}
+
+In addition to the slots in the parent class \code{\link{GeneralSimulationsSummary}},
+it contains two slots with model fit information.
 }
 \section{Slots}{
 
 \describe{
-\item{\code{stop_report}}{matrix of stopping rule outcomes}
+\item{\code{stop_report}}{(\code{matrix})\cr matrix of stopping rule outcomes}
 
-\item{\code{additional_stats}}{list of additional statistical summary}
+\item{\code{fit_at_dose_most_selected}}{(\code{numeric})\cr fitted toxicity rate at dose most often selected}
 
-\item{\code{fitAtDoseMostSelected}}{fitted toxicity rate at dose most often selected}
+\item{\code{additional_stats}}{(\code{list})\cr list of additional statistical summary}
 
-\item{\code{meanFit}}{list with the average, lower (2.5\%) and upper (97.5\%)
+\item{\code{mean_fit}}{(\code{list})\cr list with the average, lower (2.5\%) and upper (97.5\%)
 quantiles of the mean fitted toxicity at each dose level}
 }}
 
 \note{
 Typically, end users will not use the \code{.DefaultSimulationsSummary()} function.
 }
-\keyword{classes}
