@@ -43,7 +43,7 @@ test_that("knit_print methods exist for all relevant classes and produce consist
           outFileName,
           {
             rmarkdown::render(
-              input = test_path(file.path("fixtures", "knit_print_template.qmd")),
+              input = test_path(file.path("fixtures", "knit_print_template.Rmd")),
               params = list("class_name" = cls),
               output_file = outFileName,
               output_dir = test_path("fixtures")
