@@ -1,4 +1,7 @@
 library(knitr)
+if (!testthat::is_checking()) {
+  devtools::load_all()
+}
 
 test_that("knit_print methods exist for all relevant classes and produce consistent output", {
   crmpack_class_list <- getClasses(asNamespace("crmPack"))

@@ -11,32 +11,28 @@
 \alias{knit_print.CohortSizeOrdinal}
 \title{Render a CohortSizeConst Object}
 \usage{
-\method{knit_print}{CohortSizeConst}(obj, asis = TRUE, label = c("participant", "participants"), ...)
+\method{knit_print}{CohortSizeConst}(obj, ..., asis = TRUE, label = c("participant", "participants"))
 
-\method{knit_print}{CohortSizeRange}(object, asis = TRUE, ...)
+\method{knit_print}{CohortSizeRange}(obj, ..., asis = TRUE)
 
-\method{knit_print}{CohortSizeDLT}(obj, asis = TRUE, ...)
+\method{knit_print}{CohortSizeDLT}(obj, ..., asis = TRUE)
 
-\method{knit_print}{CohortSizeParts}(obj, label = "participant", asis = TRUE, ...)
+\method{knit_print}{CohortSizeParts}(obj, ..., asis = TRUE, label = c("participant", "participants"))
 
-\method{knit_print}{CohortSizeMax}(obj, asis = TRUE, ...)
+\method{knit_print}{CohortSizeMax}(obj, ..., asis = TRUE)
 
-\method{knit_print}{CohortSizeMin}(obj, asis = TRUE, ...)
+\method{knit_print}{CohortSizeMin}(obj, ..., asis = TRUE)
 
-\method{knit_print}{CohortSizeOrdinal}(obj, asis = TRUE, ...)
+\method{knit_print}{CohortSizeOrdinal}(obj, ..., asis = TRUE)
 }
 \arguments{
 \item{obj}{(\code{CohortSize})\cr The object to knit_print.}
 
-\item{asis}{(\code{flag})\cr Should the return value be wrapped in a call to \code{asis_output}?}
+\item{...}{passed through to the \code{knit_print} method of the standard rule}
+
+\item{asis}{(\code{flag})\cr Should the return value be wrapped in a call to \code{knitr::asis_output}?}
 
 \item{label}{(\code{character})\cr The word used to label the participants.  See Usage Notes below.}
-
-\item{...}{
-  Arguments passed on to \code{\link[=knit_print.CohortSizeConst]{knit_print.CohortSizeConst}}, \code{\link[=knit_print.CohortSizeConst]{knit_print.CohortSizeConst}}, \code{\link[=knit_print.CohortSizeConst]{knit_print.CohortSizeConst}}
-  \describe{
-    \item{\code{}}{}
-  }}
 }
 \value{
 a character string that represents the object in markdown.
