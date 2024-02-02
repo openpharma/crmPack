@@ -107,4 +107,3 @@ test_that("knit_print.CohortSizeParts works correctly", {
   expect_equal(rv, "A size of 1 participant in the first part and 3 participants in the second.")
   expect_class(rv, "character")
 })
-
