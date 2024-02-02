@@ -11,22 +11,22 @@
 \alias{knit_print.CohortSizeOrdinal}
 \title{Render a CohortSizeConst Object}
 \usage{
-\method{knit_print}{CohortSizeConst}(obj, ..., asis = TRUE, label = c("participant", "participants"))
+\method{knit_print}{CohortSizeConst}(x, ..., asis = TRUE, label = c("participant", "participants"))
 
-\method{knit_print}{CohortSizeRange}(obj, ..., asis = TRUE)
+\method{knit_print}{CohortSizeRange}(x, ..., asis = TRUE)
 
-\method{knit_print}{CohortSizeDLT}(obj, ..., asis = TRUE)
+\method{knit_print}{CohortSizeDLT}(x, ..., asis = TRUE)
 
-\method{knit_print}{CohortSizeParts}(obj, ..., asis = TRUE, label = c("participant", "participants"))
+\method{knit_print}{CohortSizeParts}(x, ..., asis = TRUE, label = c("participant", "participants"))
 
-\method{knit_print}{CohortSizeMax}(obj, ..., asis = TRUE)
+\method{knit_print}{CohortSizeMax}(x, ..., asis = TRUE)
 
-\method{knit_print}{CohortSizeMin}(obj, ..., asis = TRUE)
+\method{knit_print}{CohortSizeMin}(x, ..., asis = TRUE)
 
-\method{knit_print}{CohortSizeOrdinal}(obj, ..., asis = TRUE)
+\method{knit_print}{CohortSizeOrdinal}(x, ..., asis = TRUE)
 }
 \arguments{
-\item{obj}{(\code{CohortSize})\cr The object to knit_print.}
+\item{x}{(\code{CohortSize})\cr The object to knit_print.}
 
 \item{...}{passed through to the \code{knit_print} method of the standard rule}
 
