@@ -43,12 +43,12 @@ test_that("knit_print methods exist for all relevant classes and produce consist
           outFileName,
           {
             rmarkdown::render(
-              input = test_path(file.path("fixtures", "knit_print_template.Rmd")),
+              input = test_path("fixtures", "knit_print_template.Rmd"),
               params = list("class_name" = cls),
               output_file = outFileName,
               output_dir = test_path("fixtures")
             )
-            expect_snapshot_file(test_path(file.path("fixtures", outFileName)))
+            expect_snapshot_file(test_path("fixtures", outFileName))
           }
         )
       }
@@ -81,3 +81,26 @@ test_that("knit_print.CohortSizeConst works correctly", {
   expect_equal(rv, "A constant size of 3 participants.")
   expect_class(rv, "character")
 })
+
+#  CohortSizeParts
+
+test_that("knit_print.CohortSizeParts works correctly", {
+  x <- CohortSizeParts(c(1, 3))
+  rv <- knit_print(x)
+  expect_equal(rv, "A size of 1 participant in the first part and 3 participants in the second.", ignore_attr = TRUE)
+  expect_class(rv, "knit_asis")
+
+  x <- CohortSizeParts(c(1, 3))
+  rv <- knit_print(x, label = "subject")
+  expect_equal(rv, "A size of 1 subject in the first part and 3 subjects in the second.", ignore_attr = TRUE)
+
+  x <- CohortSizeParts(c(1, 3))
+  rv <- knit_print(x, label = "subject")
+  expect_equal(rv, "A size of 1 subject in the first part and 3 subjects in the second.", ignore_attr = TRUE)
+
+  x <- CohortSizeParts(c(1, 3))
+  rv <- knit_print(x, asis = FALSE)
+  expect_equal(rv, "A size of 1 participant in the first part and 3 participants in the second.")
+  expect_class(rv, "character")
+})
+
