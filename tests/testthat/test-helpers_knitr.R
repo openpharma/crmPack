@@ -36,21 +36,25 @@ test_that("knit_print methods exist for all relevant classes and produce consist
       # ... and if the default has been overridden, test it
       if (methodName != "knit_print.default") {
         outFileName <- paste0("knit_print_", cls, ".html")
-        # with_file guarantees that the test file will be deleted automatically
-        # once the snapshot has been compared with the previous version, which
-        # can be found in /_snaps/helpers_knitr
-        withr::with_file(
-          outFileName,
-          {
-            rmarkdown::render(
-              input = test_path("fixtures", "knit_print_template.Rmd"),
-              params = list("class_name" = cls),
-              output_file = outFileName,
-              output_dir = test_path("fixtures")
-            )
-            expect_snapshot_file(test_path("fixtures", outFileName))
-          }
-        )
+        if (is_checking()) {
+          announce_snapshot_file(name = outFileName)
+        } else {
+          # with_file guarantees that the test file will be deleted automatically
+          # once the snapshot has been compared with the previous version, which
+          # can be found in /_snaps/helpers_knitr
+          withr::with_file(
+            outFileName,
+            {
+              rmarkdown::render(
+                input = test_path("fixtures", "knit_print_template.Rmd"),
+                params = list("class_name" = cls),
+                output_file = outFileName,
+                output_dir = test_path("fixtures")
+              )
+              expect_snapshot_file(test_path("fixtures", outFileName))
+            }
+          )
+        }
       }
     } else {
       warning(paste0("No default constructor for ", cls))
