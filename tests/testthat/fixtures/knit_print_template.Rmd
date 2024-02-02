@@ -7,12 +7,12 @@ params:
 
 ```{r, echo=FALSE}
 suppressPackageStartupMessages({
-if (file.exists("DESCRIPTION")) {
-  devtools::load_all(export_all = FALSE)
-} else {
-  library(crmPack)
-}
-library(knitr)
+  if (file.exists("DESCRIPTION")) {
+    devtools::load_all(export_all = FALSE)
+  } else {
+    library(crmPack)
+  }
+  library(knitr)
 })
 
 print(params$class_name)
