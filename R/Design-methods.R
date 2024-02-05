@@ -89,26 +89,17 @@ setMethod("simulate",
         ## (appropriately recycled)
         thisArgs <- args[(iterSim - 1) %% nArgs + 1, , drop = FALSE]
 
-        ## so this truth is...
-        thisTruth <- function(dose) {
-          do.call(
-            truth,
-            ## First argument: the dose
-            c(
-              dose,
-              ## Following arguments
-              thisArgs
-            )
-          )
-        }
-
         ## start the simulated data with the provided one
         thisData <- object@data
 
         # In case there are placebo
         if (thisData@placebo) {
           ## what is the probability for tox. at placebo?
-          thisProb.PL <- thisTruth(object@data@doseGrid[1])
+          thisProb.PL <- h_this_truth(
+            object@data@doseGrid[1],
+            thisArgs,
+            truth
+          )
         }
 
         ## shall we stop the trial?
@@ -123,7 +114,11 @@ setMethod("simulate",
         ## inside this loop we simulate the whole trial, until stopping
         while (!stopit) {
           ## what is the probability for tox. at this dose?
-          thisProb <- thisTruth(thisDose)
+          thisProb <- h_this_truth(
+            thisDose,
+            thisArgs,
+            truth
+          )
 
           ## what is the cohort size at this dose?
           thisSize <- size(object@cohort_size,
@@ -139,89 +134,16 @@ setMethod("simulate",
             )
           }
 
-
-          ## simulate DLTs: depends on whether we
-          ## separate the first patient or not.
-          if (firstSeparate && (thisSize > 1L)) {
-            ## dose the first patient
-            thisDLTs <- rbinom(
-              n = 1L,
-              size = 1L,
-              prob = thisProb
-            )
-
-            if (thisData@placebo && (thisSize.PL > 0L)) {
-              thisDLTs.PL <- rbinom(
-                n = 1L,
-                size = 1L,
-                prob = thisProb.PL
-              )
-            }
-
-            ## if there is no DLT:
-            if (thisDLTs == 0) {
-              ## enroll the remaining patients
-              thisDLTs <- c(
-                thisDLTs,
-                rbinom(
-                  n = thisSize - 1L,
-                  size = 1L,
-                  prob = thisProb
-                )
-              )
-
-              if (thisData@placebo && (thisSize.PL > 0L)) {
-                thisDLTs.PL <- c(
-                  thisDLTs.PL,
-                  rbinom(
-                    n = thisSize.PL,
-                    size = 1L,
-                    prob = thisProb.PL
-                  )
-                )
-              }
-            }
-          } else {
-            ## we can directly dose all patients
-            thisDLTs <- rbinom(
-              n = thisSize,
-              size = 1L,
-              prob = thisProb
-            )
-
-            if (thisData@placebo && (thisSize.PL > 0L)) {
-              thisDLTs.PL <- rbinom(
-                n = thisSize.PL,
-                size = 1L,
-                prob = thisProb.PL
-              )
-            }
-          }
-
-          ## update the data with this placebo (if any) cohort and then with active dose
-          if (thisData@placebo && (thisSize.PL > 0L)) {
-            thisData <- update(
-              object = thisData,
-              x = object@data@doseGrid[1],
-              y = thisDLTs.PL,
-              check = FALSE
-            )
-
-            ## update the data with active dose
-            thisData <- update(
-              object = thisData,
-              x = thisDose,
-              y = thisDLTs,
-              new_cohort = FALSE
-            )
-          } else {
-            ## update the data with this cohort
-            thisData <- update(
-              object = thisData,
-              x = thisDose,
-              y = thisDLTs
-            )
-          }
+          thisData <- h_determine_dlts(
+            data = thisData,
+            dose = thisDose,
+            prob = thisProb,
+            prob_placebo = thisProb.PL,
+            cohort_size = thisSize,
+            cohort_size_placebo = thisSize.PL,
+            dose_grid = object@data@doseGrid[1],
+            first_separate = firstSeparate
+          )
 
           ## what is the dose limit?
           doselimit <- maxDose(object@increments,
@@ -311,35 +233,17 @@ setMethod("simulate",
         n_cores = nCores
       )
 
-      ## put everything in the Simulations format:
-
-      ## setup the list for the simulated data objects
-      dataList <- lapply(resultList, "[[", "data")
-
-      ## the vector of the final dose recommendations
-      recommendedDoses <- as.numeric(sapply(resultList, "[[", "dose"))
-
-      ## setup the list for the final fits
-      fitList <- lapply(resultList, "[[", "fit")
-
-      ## the reasons for stopping
-      stopReasons <- lapply(resultList, "[[", "stop")
-
-      # individual stopping rule results as matrix, labels as column names
-      stopResults <- lapply(resultList, "[[", "report_results")
-      stop_matrix <- as.matrix(do.call(rbind, stopResults))
-
-      # Result list of additional statistical summary.
-      additional_stats <- lapply(resultList, "[[", "additional_stats")
+      # format simulation output
+      simulations_output <- h_simulations_output_format(resultList)
 
       ## return the results in the Simulations class object
       ret <- Simulations(
-        data = dataList,
-        doses = recommendedDoses,
-        fit = fitList,
-        stop_report = stop_matrix,
-        stop_reasons = stopReasons,
-        additional_stats = additional_stats,
+        data = simulations_output$dataList,
+        doses = simulations_output$recommendedDoses,
+        fit = simulations_output$fitList,
+        stop_report = simulations_output$stop_matrix,
+        stop_reasons = simulations_output$stopReasons,
+        additional_stats = simulations_output$additional_stats,
         seed = RNGstate
       )
 
@@ -851,6 +755,7 @@ setMethod("simulate",
             model = object@model,
             data = thisData
           )
+          stopit_results <- h_unpack_stopit(stopit)
         }
 
         ## get the fit
@@ -898,7 +803,8 @@ setMethod("simulate",
                 stopit,
                 "message"
               ),
-            additional_stats = additional_stats
+            additional_stats = additional_stats,
+            report_results = stopit_results
           )
 
         return(thisResult)
@@ -946,8 +852,9 @@ setMethod("simulate",
       ## the reasons for stopping
       stopReasons <- lapply(resultList, "[[", "stop")
 
-      ## for dual simulations as it would fail in summary otherwise (for dual simulations reporting is not implemented)
-      stop_report <- matrix(TRUE, nrow = nsim)
+      # individual stopping rule results as matrix, labels as column names
+      stop_results <- lapply(resultList, "[[", "report_results")
+      stop_report <- as.matrix(do.call(rbind, stop_results))
 
       ## For dual simulations summary of additional statistics.
       additional_stats <- lapply(resultList, "[[", "additional_stats")
@@ -1987,6 +1894,7 @@ setMethod("simulate",
             model = thisModel,
             data = thisData
           )
+          stopit_results <- h_unpack_stopit(stopit)
         }
 
         ## get the fit
@@ -2016,7 +1924,8 @@ setMethod("simulate",
               attr(
                 stopit,
                 "message"
-              )
+              ),
+            report_results = stopit_results
           )
         return(thisResult)
       }
@@ -2077,6 +1986,11 @@ setMethod("simulate",
       ## the reasons for stopping
       stopReasons <- lapply(resultList, "[[", "stop")
 
+      # individual stopping rule results as matrix, labels as column names
+      stop_results <- lapply(resultList, "[[", "report_results")
+      stop_report <- as.matrix(do.call(rbind, stop_results))
+
+
       ## return the results in the Simulations class object
       ret <- PseudoSimulations(
         data = dataList,
@@ -2091,6 +2005,7 @@ setMethod("simulate",
         FinalTDEOTCIs = CITDEOTList,
         FinalTDEOTRatios = ratioTDEOTList,
         stopReasons = stopReasons,
+        stop_report = stop_report,
         seed = RNGstate
       )
 
@@ -2334,6 +2249,7 @@ setMethod("simulate",
             model = thisModel,
             data = thisData
           )
+          stopit_results <- h_unpack_stopit(stopit)
         }
         ## get the fit
         prob_fun <- probFunction(thisModel, phi1 = thisModel@phi1, phi2 = thisModel@phi2)
@@ -2342,6 +2258,8 @@ setMethod("simulate",
           phi2 = thisModel@phi2,
           probDLE = prob_fun(object@data@doseGrid)
         )
+
+
 
         ## return the results
         thisResult <-
@@ -2359,7 +2277,8 @@ setMethod("simulate",
               attr(
                 stopit,
                 "message"
-              )
+              ),
+            report_results = stopit_results
           )
         return(thisResult)
       }
@@ -2421,6 +2340,11 @@ setMethod("simulate",
       ## the reasons for stopping
       stopReasons <- lapply(resultList, "[[", "stop")
 
+      # individual stopping rule results as matrix, labels as column names
+      stop_results <- lapply(resultList, "[[", "report_results")
+      stop_report <- as.matrix(do.call(rbind, stop_results))
+
+
       ## return the results in the Simulations class object
       ret <- PseudoSimulations(
         data = dataList,
@@ -2435,6 +2359,7 @@ setMethod("simulate",
         FinalTDEOTCIs = CITDEOTList,
         FinalTDEOTRatios = ratioTDEOTList,
         stopReasons = stopReasons,
+        stop_report = stop_report,
         seed = RNGstate
       )
 
@@ -2803,6 +2728,7 @@ setMethod("simulate",
             data = thisData,
             Effmodel = thisEffModel
           )
+          stopit_results <- h_unpack_stopit(stopit)
         }
 
         ## get the fits
@@ -2819,6 +2745,7 @@ setMethod("simulate",
           theta2 = thisEffModel@theta2,
           ExpEff = eff_fun(object@data@doseGrid)
         )
+
 
         ## return the results
         thisResult <- list(
@@ -2845,7 +2772,8 @@ setMethod("simulate",
           stop = attr(
             stopit,
             "message"
-          )
+          ),
+          report_results = stopit_results
         )
 
         return(thisResult)
@@ -2935,6 +2863,11 @@ setMethod("simulate",
       ## the reasons for stopping
       stopReasons <- lapply(resultList, "[[", "stop")
 
+      # individual stopping rule results as matrix, labels as column names
+      stop_results <- lapply(resultList, "[[", "report_results")
+      stop_report <- as.matrix(do.call(rbind, stop_results))
+
+
       ## return the results in the Simulations class object
       ret <- PseudoDualSimulations(
         data = dataList,
@@ -2957,6 +2890,7 @@ setMethod("simulate",
         fitEff = fitEffList,
         sigma2est = sigma2Estimates,
         stopReasons = stopReasons,
+        stop_report = stop_report,
         seed = RNGstate
       )
       return(ret)
@@ -3005,7 +2939,8 @@ setMethod("simulate",
 ##' clusters of the computer? (not default)
 ##' @param nCores how many cores should be used for parallel computing?
 ##' Defaults to the number of cores on the machine, maximum 5.
-##' @param \dots not used
+##'
+##' @param ... not used.
 ##'
 ##' @example examples/design-method-simulateDualResponsesSamplesDesign.R
 ##'
@@ -3338,6 +3273,7 @@ setMethod("simulate",
               Effsamples = thisEffsamples,
               Gstarderive = object@nextBest@mg_derive
             )
+            stopit_results <- h_unpack_stopit(stopit)
           }
 
           ## get the fits
@@ -3389,7 +3325,8 @@ setMethod("simulate",
                 attr(
                   stopit,
                   "message"
-                )
+                ),
+              report_results = stopit_results
             )
 
           return(thisResult)
@@ -3479,6 +3416,11 @@ setMethod("simulate",
         ## the reasons for stopping
         stopReasons <- lapply(resultList, "[[", "stop")
 
+        # individual stopping rule results as matrix, labels as column names
+        stop_results <- lapply(resultList, "[[", "report_results")
+        stop_report <- as.matrix(do.call(rbind, stop_results))
+
+
         ## return the results in the Simulations class object
         ret <- PseudoDualFlexiSimulations(
           data = dataList,
@@ -3502,6 +3444,7 @@ setMethod("simulate",
           sigma2est = sigma2Estimates,
           sigma2betaWest = sigma2betaWEstimates,
           stopReasons = stopReasons,
+          stop_report = stop_report,
           seed = RNGstate
         )
 
@@ -3813,6 +3756,7 @@ setMethod("simulate",
               Effsamples = thisEffsamples,
               Gstarderive = object@nextBest@mg_derive
             )
+            stopit_results <- h_unpack_stopit(stopit)
           }
           ## get the fit
           thisDLEFit <- fit(
@@ -3859,7 +3803,8 @@ setMethod("simulate",
             stop = attr(
               stopit,
               "message"
-            )
+            ),
+            report_results = stopit_results
           )
 
           return(thisResult)
@@ -3944,6 +3889,11 @@ setMethod("simulate",
         ## the reasons for stopping
         stopReasons <- lapply(resultList, "[[", "stop")
 
+        # individual stopping rule results as matrix, labels as column names
+        stop_results <- lapply(resultList, "[[", "report_results")
+        stop_report <- as.matrix(do.call(rbind, stop_results))
+
+
         ## return the results in the Simulations class object
         ret <- PseudoDualSimulations(
           data = dataList,
@@ -3966,6 +3916,7 @@ setMethod("simulate",
           fitEff = fitEffList,
           sigma2est = sigma2Estimates,
           stopReasons = stopReasons,
+          stop_report = stop_report,
           seed = RNGstate
         )
         return(ret)
@@ -3987,7 +3938,7 @@ setMethod("simulate",
 ##' @param truthSurv a CDF which takes as input a time (vector) and returns
 ##'   the true cumulative probability (vector) that the DLT would occur conditioning on the patient
 ##'   has DLTs.
-##' @param trueTmax add documentation here
+##' @param trueTmax (`number` or `NULL`)\cr the true maximum time at which DLTs can occur. Note that this must be larger thank `Tmax` from the `object`'s base data, which is the length of the DLT window, i.e. until which time DLTs are officially declared as such and used in the trial.
 ##' @param args data frame with arguments for the \code{truth} function. The
 ##'   column names correspond to the argument names, the rows to the values of the
 ##'   arguments. The rows are appropriately recycled in the \code{nsim}
@@ -4492,6 +4443,7 @@ setMethod("simulate",
             model = object@model,
             data = thisData
           )
+          stopit_results <- h_unpack_stopit(stopit)
         }
 
         ## get the fit
@@ -4510,9 +4462,7 @@ setMethod("simulate",
         )
 
         # Create a function for additional statistical summary.
-
         additional_stats <- lapply(derive, function(f) f(target_dose_samples))
-
 
         ## return the results
         thisResult <-
@@ -4529,6 +4479,7 @@ setMethod("simulate",
                 stopit,
                 "message"
               ),
+            report_results = stopit_results,
             additional_stats = additional_stats
           )
         return(thisResult)
@@ -4572,7 +4523,9 @@ setMethod("simulate",
       ## the reasons for stopping
       stopReasons <- lapply(resultList, "[[", "stop")
 
-      stop_report <- matrix(TRUE, nrow = nsim)
+      # individual stopping rule results as matrix, labels as column names
+      stop_results <- lapply(resultList, "[[", "report_results")
+      stop_report <- as.matrix(do.call(rbind, stop_results))
 
       additional_stats <- lapply(resultList, "[[", "additional_stats")
 
@@ -4583,8 +4536,8 @@ setMethod("simulate",
         fit = fitList,
         trialduration = trialduration,
         stop_report = stop_report,
-        additional_stats = additional_stats,
         stop_reasons = stopReasons,
+        additional_stats = additional_stats,
         seed = RNGstate
       )
 
@@ -4678,31 +4631,64 @@ setMethod(
         # We are in the first cohort and continue for mono and combo.
         current$first <- TRUE
         current$mono$stop <- current$combo$stop <- FALSE
+
+
+
         # What are the next doses to be used? Initialize with starting doses.
-        if (object@same_dose) {
+        if (object@same_dose_for_all || (!object@first_cohort_mono_only && object@same_dose_for_start)) {
           current$mono$dose <- current$combo$dose <- min(object@mono@startingDose, object@combo@startingDose)
         } else {
           current$mono$dose <- object@mono@startingDose
           current$combo$dose <- object@combo@startingDose
         }
+
+
+        cohort_size_mono <- size(object@mono@cohort_size,
+          dose = current$mono$dose,
+          data = current$mono$data
+        )
+
+        cohort_size_combo <- size(object@combo@cohort_size,
+          dose = current$combo$dose,
+          data = current$combo$data
+        )
+
+
+        this_prob_mono <- current$mono$truth(current$mono$dose)
+        this_prob_combo <- current$combo$truth(current$combo$dose)
+
+
+
         # Inside this loop we simulate the whole trial, until stopping.
         while (!(current$mono$stop && current$combo$stop)) {
           if (!current$mono$stop) {
-            current$mono$data <- current$mono$data |>
-              h_add_dlts(current$mono$dose, current$mono$truth, object@mono@cohort_size, firstSeparate)
+            current$mono$data <- current$mono$data %>%
+              h_determine_dlts(
+                dose = current$mono$dose,
+                prob = this_prob_mono,
+                cohort_size = cohort_size_mono,
+                first_separate = firstSeparate
+              )
           }
           if (!current$combo$stop && (!current$first || !object@first_cohort_mono_only)) {
-            current$combo$data <- current$combo$data |>
-              h_add_dlts(current$combo$dose, current$combo$truth, object@combo@cohort_size, firstSeparate)
+            current$combo$data <- current$combo$data %>%
+              h_determine_dlts(
+                dose = current$combo$dose,
+                prob = this_prob_combo,
+                cohort_size = cohort_size_combo,
+                first_separate = firstSeparate
+              )
           }
+
+
           current$grouped <- h_group_data(current$mono$data, current$combo$data)
           current$samples <- mcmc(current$grouped, object@model, mcmcOptions)
           if (!current$mono$stop) {
             current$mono$limit <- maxDose(object@mono@increments, data = current$mono$data)
-            current$mono$dose <- object@mono@nextBest |>
+            current$mono$dose <- object@mono@nextBest %>%
               nextBest(current$mono$limit, current$samples, object@model, current$grouped, group = "mono")
             current$mono$dose <- current$mono$dose$value
-            current$mono$stop <- object@mono@stopping |>
+            current$mono$stop <- object@mono@stopping %>%
               stopTrial(current$mono$dose, current$samples, object@model, current$mono$data, group = "mono")
             current$mono$results <- h_unpack_stopit(current$mono$stop)
           }
@@ -4710,20 +4696,41 @@ setMethod(
             current$combo$limit <- if (is.na(current$mono$dose)) {
               0
             } else {
-              maxDose(object@combo@increments, current$combo$data) |>
+              maxDose(object@combo@increments, current$combo$data) %>%
                 min(current$mono$dose, na.rm = TRUE)
             }
-            current$combo$dose <- object@combo@nextBest |>
+            current$combo$dose <- object@combo@nextBest %>%
               nextBest(current$combo$limit, current$samples, object@model, current$grouped, group = "combo")
             current$combo$dose <- current$combo$dose$value
-            current$combo$stop <- object@combo@stopping |>
+            current$combo$stop <- object@combo@stopping %>%
               stopTrial(current$combo$dose, current$samples, object@model, current$combo$data, group = "combo")
             current$combo$results <- h_unpack_stopit(current$combo$stop)
           }
-          if (object@same_dose && !current$mono$stop && !current$combo$stop) {
+          if (object@same_dose_for_all && !current$mono$stop && !current$combo$stop) {
             current$mono$dose <- current$combo$dose <- min(current$mono$dose, current$combo$dose)
           }
-          if (current$first) current$first <- FALSE
+          if (object@stop_mono_with_combo) {
+            if (current$combo$stop && !current$mono$stop) {
+              current$mono$stop <- structure(
+                TRUE,
+                message = "mono stopped because combo stopped",
+                report_label = "mono stopped because combo stopped"
+              )
+              new_result <- TRUE
+            } else {
+              new_result <- FALSE
+            }
+            current$mono$results <- c(
+              current$mono$results,
+              "mono stopped because combo stopped" = new_result
+            )
+          }
+          if (current$first) {
+            current$first <- FALSE
+            if (object@first_cohort_mono_only && object@same_dose_for_start) {
+              current$mono$dose <- current$combo$dose <- min(current$mono$dose, current$combo$dose)
+            }
+          }
         }
         current$mono$fit <- fit(current$samples, object@model, current$grouped, group = "mono")
         current$combo$fit <- fit(current$samples, object@model, current$grouped, group = "combo")
@@ -4752,6 +4759,7 @@ setMethod(
         stop_report <- as.matrix(do.call(rbind, report_results))
         additional_stats <- lapply(this_list, "[[", "additional_stats")
 
+
         Simulations(
           data = data_list,
           doses = recommended_doses,
@@ -4763,4 +4771,27 @@ setMethod(
         )
       })
     }
+)
+
+# tidy ----
+
+## tidy-DualDesign ----
+
+#' @rdname tidy
+#' @aliases tidy-DualDesign
+#' @example examples/Design-method-tidyDualDesign.R
+#'
+#' @export
+setMethod(
+  f = "tidy",
+  signature = signature(x = "DualDesign"),
+  definition = function(x, ...) {
+    # Some Design objects have complex attributes whose structure is not supported.
+    rv <- h_tidy_all_slots(x, attributes = FALSE) %>% h_tidy_class(x)
+    if (length(rv) == 1) {
+      rv[[names(rv)[1]]] %>% h_tidy_class(x)
+    } else {
+      rv
+    }
+  }
 )

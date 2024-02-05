@@ -286,49 +286,47 @@ DualSimulations <- function(rho_est,
   )
 }
 
-# GeneralSimulationsSummary ----
-
-# nolint start
-##' Class for the summary of general simulations output
-##'
-##' Note that objects should not be created by users, therefore no
-##' initialization function is provided for this class.
-##'
-##' @slot target target toxicity interval
-##' @slot targetDoseInterval corresponding target dose interval
-##' @slot nsim number of simulations
-##' @slot propDLTs proportions of DLTs in the trials
-##' @slot meanToxRisk mean toxicity risks for the patients
-##' @slot doseSelected doses selected as MTD
-##' @slot toxAtDosesSelected true toxicity at doses selected
-##' @slot propAtTarget Proportion of trials selecting target MTD
-##' @slot doseMostSelected dose most often selected as MTD
-##' @slot obsToxRateAtDoseMostSelected observed toxicity rate at dose most often
-##' selected
-##' @slot nObs number of patients overall
-##' @slot nAboveTarget number of patients treated above target tox interval
-##' @slot doseGrid the dose grid that has been used
-##' @slot placebo set to TRUE (default is FALSE) for a design with placebo
-##'
-##' @export
-##' @keywords classes
+#' `GeneralSimulationsSummary`
+#'
+#' @description `r lifecycle::badge("stable")`
+#'
+#' This class captures the summary of general simulations output. Note that objects
+#' should not be created by users, therefore no initialization
+#' function is provided for this class.
+#'
+#' @slot target (`numeric`)\cr target toxicity interval
+#' @slot target_dose_interval (`numeric`)\cr corresponding target dose interval
+#' @slot nsim (`integer`)\cr number of simulations
+#' @slot prop_dlts (`ANY`)\cr A numeric array (multi-dimensional) or list representing proportions of DLTs in the trials
+#' @slot mean_tox_risk (`numeric`)\cr mean toxicity risks for the patients
+#' @slot dose_selected (`numeric`)\cr doses selected as MTD
+#' @slot tox_at_doses_selected (`numeric`)\cr true toxicity at doses selected
+#' @slot prop_at_target (`numeric`)\cr Proportion of trials selecting target MTD
+#' @slot dose_most_selected (`numeric`)\cr dose most often selected as MTD
+#' @slot obs_tox_rate_at_dose_most_selected (`numeric`)\cr observed toxicity rate at dose most often selected
+#' @slot n_obs (`ANY`)\cr A numeric array (multi-dimensional) or list representing number of patients overall.
+#' @slot n_above_target (`integer`)\cr number of patients treated above target tox interval
+#' @slot dose_grid (`numeric`)\cr the dose grid that has been used
+#' @slot placebo (`logical`)\cr set to TRUE (default is FALSE) for a design with placebo
+#' @aliases GeneralSimulationsSummary
+#' @export
 .GeneralSimulationsSummary <-
   setClass(
     Class = "GeneralSimulationsSummary",
-    representation(
+    slots = c(
       target = "numeric",
-      targetDoseInterval = "numeric",
+      target_dose_interval = "numeric",
       nsim = "integer",
-      propDLTs = "ANY",
-      meanToxRisk = "numeric",
-      doseSelected = "numeric",
-      toxAtDosesSelected = "numeric",
-      propAtTarget = "numeric",
-      doseMostSelected = "numeric",
-      obsToxRateAtDoseMostSelected = "numeric",
-      nObs = "ANY",
-      nAboveTarget = "integer",
-      doseGrid = "numeric",
+      prop_dlts = "ANY",
+      mean_tox_risk = "numeric",
+      dose_selected = "numeric",
+      tox_at_doses_selected = "numeric",
+      prop_at_target = "numeric",
+      dose_most_selected = "numeric",
+      obs_tox_rate_at_dose_most_selected = "numeric",
+      n_obs = "ANY",
+      n_above_target = "integer",
+      dose_grid = "numeric",
       placebo = "logical"
     )
   )
@@ -339,35 +337,41 @@ DualSimulations <- function(rho_est,
 #' @note Typically, end users will not use the `.DefaultGeneralSimulationsSummary()` function.
 #' @export
 .DefaultGeneralSimulationsSummary <- function() {
-  stop(paste0("Class GeneralSimulationsSummary cannot be instantiated directly.  Please use one of its subclasses instead."))
+  stop(
+    paste(
+      "Class GeneralSimulationsSummary cannot be instantiated directly.",
+      "Please use one of its subclasses instead."
+    )
+  )
 }
 
+## SimulationsSummary ----
 
-##' Class for the summary of model-based simulations output
-##'
-##' In addition to the slots in the parent class
-##' \code{\linkS4class{GeneralSimulationsSummary}}, it contains two slots with
-##' model fit information.
-##'
-##' Note that objects should not be created by users, therefore no
-##' initialization function is provided for this class.
-##'
-##' @slot stop_report matrix of stopping rule outcomes
-##' @slot additional_stats list of additional statistical summary
-##' @slot fitAtDoseMostSelected fitted toxicity rate at dose most often selected
-##' @slot meanFit list with the average, lower (2.5%) and upper (97.5%)
-##' quantiles of the mean fitted toxicity at each dose level
-##'
-##' @export
-##' @keywords classes
+## class ----
+
+#' `SimulationsSummary`
+#'
+#' @description `r lifecycle::badge("stable")`
+#'
+#' In addition to the slots in the parent class [`GeneralSimulationsSummary`],
+#' it contains two slots with model fit information.
+#'
+#' @slot stop_report (`matrix`)\cr matrix of stopping rule outcomes
+#' @slot fit_at_dose_most_selected (`numeric`)\cr fitted toxicity rate at dose most often selected
+#' @slot additional_stats (`list`)\cr list of additional statistical summary
+#' @slot mean_fit (`list`)\cr list with the average, lower (2.5%) and upper (97.5%)
+#' quantiles of the mean fitted toxicity at each dose level
+#'
+#' @aliases SimulationsSummary
+#' @export
 .SimulationsSummary <-
   setClass(
     Class = "SimulationsSummary",
-    representation(
+    slots = c(
       stop_report = "matrix",
-      fitAtDoseMostSelected = "numeric",
+      fit_at_dose_most_selected = "numeric",
       additional_stats = "list",
-      meanFit = "list"
+      mean_fit = "list"
     ),
     contains = "GeneralSimulationsSummary"
   )
@@ -378,9 +382,13 @@ DualSimulations <- function(rho_est,
 #' @note Typically, end users will not use the `.DefaultSimulationsSummary()` function.
 #' @export
 .DefaultSimulationsSummary <- function() {
-  stop(paste0("Class SimulationsSummary cannot be instantiated directly.  Please use one of its subclasses instead."))
+  stop(paste(
+    "Class SimulationsSummary cannot be instantiated directly.",
+    "Please use one of its subclasses instead."
+  ))
 }
 
+# nolint start
 # DualSimulationsSummary ----
 
 ##' Class for the summary of dual-endpoint simulations output
@@ -489,7 +497,7 @@ DualSimulations <- function(rho_est,
   # Run the simulation on the desired design.
   # For illustration purposes only 1 trial outcome is generated and 5 burn-ins
   # to generate 20 samples are used here.
-  simulate(
+  x <- simulate(
     object = my_design,
     trueTox = true_tox,
     trueBiomarker = true_biomarker,
@@ -536,6 +544,7 @@ DualSimulations <- function(rho_est,
 ##' final estimates of the TDtargetEndOfTrial or of the final optimal dose estimates (when DLE and efficacy responses are
 ##' incorporated) after each simulations
 ##' @slot stopReasons add slot description
+##' @slot stop_report matrix of stopping rule outcomes
 ##'
 ##' @export
 .PseudoSimulations <-
@@ -551,6 +560,7 @@ DualSimulations <- function(rho_est,
       FinalTDEOTRatios = "numeric",
       FinalCIs = "list",
       FinalRatios = "numeric",
+      stop_report = "matrix",
       stopReasons = "list"
     ),
     ## note: this prototype is put together with the prototype
@@ -564,6 +574,7 @@ DualSimulations <- function(rho_est,
       FinalTDEOTRatios = c(0.1, 0.1),
       FinalCIs = list(c(0.1, 0.2), c(0.1, 0.2)),
       FinalRatios = c(0.1, 0.1),
+      stop_report = matrix(TRUE, nrow = 2),
       stopReasons =
         list("A", "A")
     ),
@@ -583,6 +594,7 @@ validObject(.PseudoSimulations())
 ##' @param FinalCIs please refer to \code{\linkS4class{PseudoSimulations}} class object
 ##' @param FinalRatios please refer to \code{\linkS4class{PseudoSimulations}} class object
 ##' @param stopReasons please refer to \code{\linkS4class{PseudoSimulations}} class object
+##' @param stop_report see [`PseudoSimulations`]
 ##' @param \dots additional parameters from \code{\linkS4class{GeneralSimulations}}
 ##' @return the \code{\linkS4class{PseudoSimulations}} object
 ##'
@@ -596,6 +608,7 @@ PseudoSimulations <- function(fit,
                               FinalTDEOTRatios,
                               FinalCIs,
                               FinalRatios,
+                              stop_report,
                               stopReasons,
                               ...) {
   start <- GeneralSimulations(...)
@@ -609,6 +622,7 @@ PseudoSimulations <- function(fit,
     FinalTDEOTRatios = FinalTDEOTRatios,
     FinalCIs = FinalCIs,
     FinalRatios = FinalRatios,
+    stop_report = stop_report,
     stopReasons = stopReasons
   )
 }
@@ -775,10 +789,10 @@ PseudoDualFlexiSimulations <- function(sigma2betaWest,
 
 ## default constructor ----
 
-#' @rdname PseudoFlexiSimulations-class
+#' @rdname PseudoDualFlexiSimulations-class
 #' @note Typically, end users will not use the `.DefaultPseudoFlexiSimulations()` function.
 #' @export
-.DefaultPseudoFlexiSimulations <- function() {
+.DefaultPseudoDualFlexiSimulations <- function() {
   stop(paste0("Class PseudoFlexiSimulations cannot be instantiated directly.  Please use one of its subclasses instead."))
 }
 
@@ -837,7 +851,7 @@ PseudoDualFlexiSimulations <- function(sigma2betaWest,
 ##' @slot fitAtDoseMostSelected fitted toxicity rate at dose most often selected
 ##' @slot meanFit list with the average, lower (2.5%) and upper (97.5%)
 ##' quantiles of the mean fitted toxicity at each dose level
-##'
+##' @slot stop_report matrix of stopping rule outcomes
 ##'
 ##' @export
 ##' @keywords classes
@@ -871,7 +885,8 @@ PseudoDualFlexiSimulations <- function(sigma2betaWest,
       nAboveTargetDuringTrial = "integer",
       doseGrid = "numeric",
       fitAtDoseMostSelected = "numeric",
-      meanFit = "list"
+      meanFit = "list",
+      stop_report = "matrix"
     )
   )
 
@@ -1000,3 +1015,33 @@ DASimulations <- function(trialduration,
   )
 }
 # nolint end
+
+# tidy
+
+## tidy-Simulations ----
+
+#' @rdname tidy
+#' @aliases tidy-Simulations
+#' @example examples/Simulations-method-tidy.R
+#' @export
+setMethod(
+  f = "tidy",
+  signature = signature(x = "Simulations"),
+  definition = function(x, ...) {
+    slot_names <- slotNames(x)
+    rv <- list()
+    for (nm in slot_names) {
+      if (!is.function(slot(x, nm))) {
+        if (nm %in% c("stop_reasons", "additional_stats")) {
+        } else {
+          rv[[nm]] <- h_tidy_slot(x, nm)
+        }
+      }
+    }
+    # Column bind of all list elements have the same number of rows
+    if (length(rv) > 1 & length(unique(sapply(rv, nrow))) == 1) {
+      rv <- rv %>% dplyr::bind_cols()
+    }
+    rv %>% h_tidy_class(x)
+  }
+)

@@ -50,6 +50,11 @@ setMethod(
 ## plots with "ggmcmc" package
 ## --------------------------------------------------
 
+# The next line is required to suppress the message "Creating a generic function
+# for ‘get’ from package ‘base’ in package ‘crmPack’" on package load.
+# See https://github.com/Roche/crmPack/issues/723
+setGeneric("get")
+
 #' Get specific parameter samples and produce a data.frame
 #'
 #' Here you have to specify with \code{pos} which
@@ -321,7 +326,6 @@ setMethod("fit",
       return(cbind(start, biomResults))
     }
 )
-
 
 ## --------------------------------------------------
 ## Approximate posterior with (log) normal distribution
@@ -695,7 +699,6 @@ setMethod("plot",
               )
           )
         )
-
       plot2 <- gdata %>% ggplot() +
         geom_line(
           aes(
@@ -921,6 +924,63 @@ setMethod("fit",
       ## return it
       return(ret)
     }
+)
+
+#' @describeIn fit This method returns a data frame with dose, middle, lower
+#' and upper quantiles for the dose-efficacy curve using efficacy samples
+#' for the \dQuote{LogisticLogNormalOrdinal} model class
+#' @example examples/Sample-methods-fit-LogisticLogNormalOrdinal.R
+setMethod(
+  "fit",
+  signature = signature(
+    object = "Samples",
+    model = "LogisticLogNormalOrdinal",
+    data = "DataOrdinal"
+  ),
+  def = function(object,
+                 model,
+                 data,
+                 points = data@doseGrid,
+                 quantiles = c(0.025, 0.975),
+                 middle = mean,
+                 ...) {
+    # Validation
+    assert_probability_range(quantiles)
+    assert_numeric(points)
+    assert_function(middle)
+
+    # Begin
+    # Get samples from the dose-tox curve at the dose grid points.
+    probSamples <- matrix(
+      nrow = size(object),
+      ncol = length(points)
+    )
+    # Evaluate the probs, for all samples.
+    for (i in seq_along(points)) {
+      # Now we want to evaluate for the following dose:
+      probSamples[, i] <- prob(
+        dose = points[i],
+        model,
+        object,
+        ...
+      )
+    }
+    # Extract middle curve
+    middleCurve <- apply(probSamples, 2L, FUN = middle)
+    # Extract quantiles
+    quantCurve <- apply(probSamples, 2L, quantile, prob = quantiles)
+
+    # Create the data frame...
+    ret <- data.frame(
+      dose = points,
+      middle = middleCurve,
+      lower = quantCurve[1, ],
+      upper = quantCurve[2, ]
+    )
+
+    # ...and return it
+    return(ret)
+  }
 )
 ## ==============================================================
 ## ----------------------------------------------------------------
@@ -1601,6 +1661,28 @@ setMethod("plotGain",
         )$value
       )
 
+      if ((TD30 < min(data@doseGrid)) | (TD30 > max(data@doseGrid))) {
+        plot1 <- plot1
+        message(paste("TD30", paste(TD30, " not within dose Grid")))
+      } else {
+        plot1 <- plot1 +
+          geom_point(
+            data = data.frame(x = TD30, y = 0.3),
+            aes(x = x, y = y),
+            colour = "violet",
+            shape = 16,
+            size = 8
+          ) +
+          annotate(
+            "text",
+            label = "p(DLE=0.3)",
+            x = TD30 + 1,
+            y = 0.2,
+            size = 5,
+            colour = "violet"
+          )
+      }
+
       # Add annotated point estimates to graph
       point_data <- tibble::tibble(
         Text = NA_character_,
@@ -1628,16 +1710,33 @@ setMethod("plotGain",
       if ((Gstar < min(data@doseGrid)) | (Gstar > max(data@doseGrid))) {
         print(paste("Gstar=", paste(Gstar, " not within dose Grid")))
       } else {
-        point_data <- point_data %>%
-          tibble::add_row(
-            X = Gstar,
-            Y = MaxGain,
-            Shape = shape[2],
-            Size = size[2],
-            Colour = "green3",
-            Text = "Max Gain"
+        plot1 <- plot1 +
+          geom_point(
+            data = data.frame(x = Gstar, y = MaxGain),
+            aes(x = x, y = y),
+            colour = "green3",
+            shape = 17,
+            size = 8
+          ) +
+          annotate(
+            "text",
+            label = "Max Gain",
+            x = Gstar,
+            y = MaxGain - 0.1,
+            size = 5,
+            colour = "green3"
           )
       }
+      point_data <- point_data %>%
+        tibble::add_row(
+          X = Gstar,
+          Y = MaxGain,
+          Shape = shape[2],
+          Size = size[2],
+          Colour = "green3",
+          Text = "Max Gain"
+        )
+
 
       plot1 <- plot1 +
         geom_point(
@@ -2254,3 +2353,46 @@ setMethod("plot",
 
 
 ## =======================================================================================================
+
+# tidy ----
+
+## Samples
+
+## tidy-Samples ----
+
+#' @rdname tidy
+#' @aliases tidy-Samples
+#' @example examples/Samples-method-tidy.R
+#' @export
+setMethod(
+  f = "tidy",
+  signature = signature(x = "Samples"),
+  definition = function(x, ...) {
+    rv <- lapply(
+      slotNames(x),
+      function(nm) {
+        if (nm == "data") {
+          lapply(
+            names(x@data),
+            function(nm) {
+              as_tibble(get(x, nm))
+            }
+          ) %>%
+            dplyr::bind_rows() %>%
+            tidyr::pivot_wider(
+              names_from = Parameter,
+              values_from = value
+            ) %>%
+            dplyr::bind_cols(h_handle_attributes(get(x, names(x@data)[1])))
+        } else {
+          slot(x, nm) %>%
+            tidy() %>%
+            dplyr::bind_cols()
+        }
+      }
+    )
+    names(rv) <- c("data", "options")
+    rv <- rv %>% h_tidy_class(x)
+    rv
+  }
+)

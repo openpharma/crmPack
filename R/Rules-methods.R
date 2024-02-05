@@ -1,8 +1,10 @@
+#' @include checkmate.R
 #' @include Model-methods.R
 #' @include Samples-class.R
 #' @include Rules-class.R
 #' @include helpers.R
 #' @include helpers_rules.R
+#' @include helpers_broom.R
 NULL
 
 # nextBest ----
@@ -1356,6 +1358,65 @@ setMethod(
   }
 )
 
+## NextBestOrdinal ----
+
+#' @describeIn nextBest find the next best dose for ordinal CRM models.
+#'
+#' @aliases nextBest-NextBestOrdinal
+#'
+#' @export
+#' @example examples/Rules-method-nextBest-NextBestOrdinal.R
+#'
+setMethod(
+  f = "nextBest",
+  signature = signature(
+    nextBest = "NextBestOrdinal",
+    doselimit = "numeric",
+    samples = "Samples",
+    model = "GeneralModel",
+    data = "Data"
+  ),
+  definition = function(nextBest, doselimit = Inf, samples, model, data, ...) {
+    stop(
+      paste0(
+        "NextBestOrdinal objects can only be used with LogisticLogNormalOrdinal ",
+        "models and DataOrdinal data objects. In this case, the model is a '",
+        class(model),
+        "' object and the data is in a ",
+        class(data),
+        " object."
+      )
+    )
+  }
+)
+
+#' @describeIn nextBest find the next best dose for ordinal CRM models.
+#'
+#' @aliases nextBest-NextBestOrdinal
+#'
+#' @export
+#' @example examples/Rules-method-nextBest-NextBestOrdinal.R
+#'
+setMethod(
+  f = "nextBest",
+  signature = signature(
+    nextBest = "NextBestOrdinal",
+    doselimit = "numeric",
+    samples = "Samples",
+    model = "LogisticLogNormalOrdinal",
+    data = "DataOrdinal"
+  ),
+  definition = function(nextBest, doselimit = Inf, samples, model, data, ...) {
+    nextBest(
+      nextBest = nextBest@rule,
+      doselimit = doselimit,
+      samples = h_convert_ordinal_samples(samples, nextBest@grade),
+      model = h_convert_ordinal_model(model, nextBest@grade),
+      data = h_convert_ordinal_data(data, nextBest@grade),
+      ...
+    )
+  }
+)
 
 # maxDose ----
 
@@ -1615,6 +1676,52 @@ setMethod(
   definition = function(increments, data, ...) {
     individual_results <- sapply(increments@increments_list, maxDose, data = data, ...)
     min(individual_results)
+  }
+)
+
+#' @describeIn maxDose determine the maximum possible next dose based on
+#'   multiple increment rules, taking the minimum across individual increments.
+#'
+#' @aliases maxDose-IncrementsMin
+#'
+#' @export
+setMethod(
+  f = "maxDose",
+  signature = signature(
+    increments = "IncrementsMin",
+    data = "DataOrdinal"
+  ),
+  definition = function(increments, data, ...) {
+    individual_results <- sapply(increments@increments_list, maxDose, data = data, ...)
+    min(individual_results)
+  }
+)
+
+## IncrementsOrdinal ----
+
+#' @describeIn maxDose determine the maximum possible next dose in an ordinal
+#' CRM trial
+#'
+#' @aliases maxDose-IncrementsOrdinal
+#'
+#' @export
+#' @example examples/Rules-method-maxDose-IncrementsOrdinal.R
+#'
+setMethod(
+  f = "maxDose",
+  signature = signature(
+    increments = "IncrementsOrdinal",
+    data = "DataOrdinal"
+  ),
+  definition = function(increments, data, ...) {
+    maxDose(
+      increments = increments@rule,
+      data = h_convert_ordinal_data(
+        data,
+        increments@grade,
+        ...
+      )
+    )
   }
 )
 
@@ -2627,6 +2734,67 @@ setMethod("stopTrial",
     }
 )
 
+## StoppingOrdinal ----
+
+#' @describeIn stopTrial Stop based on value returned by next best dose.
+#'
+#' @description `r lifecycle::badge("experimental")`
+#'
+#' @aliases stopTrial-StoppingOrdinal
+#' @example examples/Rules-method-stopTrial-StoppingOrdinal.R
+#'
+setMethod(
+  f = "stopTrial",
+  signature = signature(
+    stopping = "StoppingOrdinal",
+    dose = "numeric",
+    samples = "ANY",
+    model = "LogisticLogNormalOrdinal",
+    data = "DataOrdinal"
+  ),
+  definition = function(stopping, dose, samples, model, data, ...) {
+    stopTrial(
+      stopping = stopping@rule,
+      dose = dose,
+      samples = h_convert_ordinal_samples(samples, stopping@grade),
+      model = h_convert_ordinal_model(model, stopping@grade),
+      data = h_convert_ordinal_data(data, stopping@grade),
+      ...
+    )
+  }
+)
+
+#' @describeIn stopTrial Stop based on value returned by next best dose.
+#'
+#' @description `r lifecycle::badge("experimental")`
+#'
+#' @aliases stopTrial-StoppingOrdinal
+#' @example examples/Rules-method-stopTrial-StoppingOrdinal.R
+#'
+setMethod(
+  f = "stopTrial",
+  signature = signature(
+    stopping = "StoppingOrdinal",
+    dose = "numeric",
+    samples = "ANY",
+    model = "ANY",
+    data = "ANY"
+  ),
+  definition = function(stopping, dose, samples, model, data, ...) {
+    stop(
+      paste0(
+        "StoppingOrdinal objects can only be used with LogisticLogNormalOrdinal ",
+        "models and DataOrdinal data objects. In this case, the model is a '",
+        class(model),
+        "' object and the data is in a ",
+        class(data),
+        " object."
+      )
+    )
+  }
+)
+
+
 ## ============================================================
 
 ## --------------------------------------------------
@@ -2885,6 +3053,36 @@ setMethod(
   }
 )
 
+## CohortSizeOrdinal ----
+
+#' @describeIn size Determines the size of the next cohort in a ordinal CRM trial.
+#'
+#' @param  dose (`numeric`) the next dose.
+#' @param data the data input, an object of class [`DataOrdinal`].
+#'
+#' @aliases size-CohortSizeOrdinal
+#' @example examples/Rules-method-size-CohortSizeOrdinal.R
+#'
+setMethod(
+  f = "size",
+  signature = signature(
+    object = "CohortSizeOrdinal"
+  ),
+  definition = function(object, dose, data, ...) {
+    # Validate
+    assert_numeric(dose, len = 1, lower = 0)
+    assert_class(data, "DataOrdinal")
+    # Execute
+
+    size(
+      object@rule,
+      dose = dose,
+      data = h_convert_ordinal_data(data, object@grade),
+      ...
+    )
+  }
+)
+
 ## ------------------------------------------------------------------------------------------------
 ## Stopping based on a target ratio of the upper to the lower 95% credibility interval
 ## ------------------------------------------------------------------------------------------------
@@ -3017,7 +3215,7 @@ setMethod("stopTrial",
       prob_target <- stopping@prob_target
 
       ## checks
-      stopifnot(is.probability(prob_target))
+      assert_probability(prob_target)
       stopifnot(is(Effmodel, "ModelEff"))
       stopifnot(is(Effsamples, "Samples"))
       stopifnot(is.function(TDderive))
@@ -3135,7 +3333,7 @@ setMethod("stopTrial",
       prob_target <- stopping@prob_target
 
       ## checks
-      stopifnot(is.probability(prob_target))
+      assert_probability(prob_target)
       stopifnot(is(Effmodel, "ModelEff"))
 
 
@@ -3369,3 +3567,219 @@ setMethod("windowLength",
 )
 
 # nolint end
+
+# tidy ----
+
+## tidy-IncrementsRelative ----
+
+#' @rdname tidy
+#' @aliases tidy-IncrementsRelative
+#' @example examples/Rules-method-tidyIncrementsRelative.R
+#' @export
+setMethod(
+  f = "tidy",
+  signature = signature(x = "IncrementsRelative"),
+  definition = function(x, ...) {
+    h_tidy_all_slots(x) %>%
+      dplyr::bind_cols() %>%
+      h_range_to_minmax(.data$intervals) %>%
+      dplyr::filter(max > 0) %>%
+      tibble::add_column(increment = x@increments) %>%
+      h_tidy_class(x)
+  }
+)
+
+## tidy-CohortSizeDLT ----
+
+#' @rdname tidy
+#' @aliases tidy-CohortSizeDLT
+#' @example examples/Rules-method-tidyCohortSizeDLT.R
+#' @export
+setMethod(
+  f = "tidy",
+  signature = signature(x = "CohortSizeDLT"),
+  definition = function(x, ...) {
+    h_tidy_all_slots(x) %>%
+      dplyr::bind_cols() %>%
+      h_range_to_minmax(.data$intervals) %>%
+      dplyr::filter(max > 0) %>%
+      tibble::add_column(cohort_size = x@cohort_size) %>%
+      h_tidy_class(x)
+  }
+)
+
+## tidy-CohortSizeMin ----
+
+#' @rdname tidy
+#' @aliases tidy-CohortSizeMin
+#' @example examples/Rules-method-tidyCohortSizeMin.R
+#' @export
+setMethod(
+  f = "tidy",
+  signature = signature(x = "CohortSizeMin"),
+  definition = function(x, ...) {
+    callNextMethod() %>% h_tidy_class(x)
+  }
+)
+
+## tidy-CohortSizeMax ----
+
+#' @rdname tidy
+#' @aliases tidy-CohortSizeMax
+#' @example examples/Rules-method-tidyCohortSizeMax.R
+#' @export
+setMethod(
+  f = "tidy",
+  signature = signature(x = "CohortSizeMax"),
+  definition = function(x, ...) {
+    callNextMethod() %>% h_tidy_class(x)
+  }
+)
+
+## tidy-CohortSizeRange ----
+
+#' @rdname tidy
+#' @aliases tidy-CohortSizeRange
+#' @example examples/Rules-method-tidyCohortSizeRange.R
+#' @export
+setMethod(
+  f = "tidy",
+  signature = signature(x = "CohortSizeRange"),
+  definition = function(x, ...) {
+    h_tidy_all_slots(x) %>%
+      dplyr::bind_cols() %>%
+      h_range_to_minmax(.data$intervals) %>%
+      dplyr::filter(max > 0) %>%
+      tibble::add_column(cohort_size = x@cohort_size) %>%
+      h_tidy_class(x)
+  }
+)
+
+## tidy-CohortSizeParts ----
+
+#' @rdname tidy
+#' @aliases tidy-CohortSizeParts
+#' @example examples/Rules-method-tidyCohortSizeParts.R
+#' @export
+setMethod(
+  f = "tidy",
+  signature = signature(x = "CohortSizeParts"),
+  definition = function(x, ...) {
+    tibble::tibble(
+      part = seq_along(x@cohort_sizes),
+      cohort_size = x@cohort_sizes
+    ) %>%
+      h_tidy_class(x)
+  }
+)
+
+## tidy-IncrementsMin ----
+
+#' @rdname tidy
+#' @aliases tidy-IncrementsMin
+#' @example examples/Rules-method-tidyIncrementsMin.R
+#' @export
+setMethod(
+  f = "tidy",
+  signature = signature(x = "IncrementsMin"),
+  definition = function(x, ...) {
+    callNextMethod() %>% h_tidy_class(x)
+  }
+)
+
+## tidy-IncrementsRelative ----
+
+#' @rdname tidy
+#' @aliases tidy-IncrementsRelative
+#' @example examples/Rules-method-tidyIncrementsRelative.R
+#' @export
+setMethod(
+  f = "tidy",
+  signature = signature(x = "IncrementsRelative"),
+  definition = function(x, ...) {
+    h_tidy_all_slots(x) %>%
+      h_range_to_minmax(.data$intervals) %>%
+      dplyr::filter(dplyr::row_number() > 1) %>%
+      tibble::add_column(increment = x@increments) %>%
+      h_tidy_class(x)
+  }
+)
+
+## tidy-IncrementsRelative ----
+
+#' @rdname tidy
+#' @aliases tidy-IncrementsRelativeParts
+#' @example examples/Rules-method-tidyIncrementsRelativeParts.R
+#' @export
+setMethod(
+  f = "tidy",
+  signature = signature(x = "IncrementsRelativeParts"),
+  definition = function(x, ...) {
+    slot_names <- slotNames(x)
+    rv <- list()
+    for (nm in slot_names) {
+      if (!is.function(slot(x, nm))) {
+        rv[[nm]] <- h_tidy_slot(x, nm, ...)
+      }
+    }
+    # Column bind of all list elements have the same number of rows.
+    if (length(rv) > 1 & length(unique(sapply(rv, nrow))) == 1) {
+      rv <- rv %>% dplyr::bind_cols()
+    }
+    rv <- rv %>% h_tidy_class(x)
+    if (length(rv) == 1) {
+      rv[[names(rv)[1]]] %>% h_tidy_class(x)
+    } else {
+      rv
+    }
+  }
+)
+
+## tidy-NextBestNCRM ----
+
+#' @rdname tidy
+#' @aliases tidy-NextBestNCRM
+#' @example examples/Rules-method-tidyNextBestNCRM.R
+#' @export
+setMethod(
+  f = "tidy",
+  signature = signature(x = "NextBestNCRM"),
+  definition = function(x, ...) {
+    h_tidy_all_slots(x) %>%
+      dplyr::bind_cols() %>%
+      h_range_to_minmax(.data$target, range_min = 0, range_max = 1) %>%
+      add_column(max_prob = c(NA, NA, x@max_overdose_prob)) %>%
+      add_column(Range = c("Underdose", "Target", "Overdose"), .before = 1) %>%
+      h_tidy_class(x)
+  }
+)
+
+## tidy-NextBestNCRMLoss ----
+
+#' @rdname tidy
+#' @aliases tidy-NextBestNCRMLoss
+#' @example examples/Rules-method-tidyNextBestNCRMLoss.R
+#' @export
+setMethod(
+  f = "tidy",
+  signature = signature(x = "NextBestNCRMLoss"),
+  definition = function(x, ...) {
+    slot_names <- slotNames(x)
+    rv <- list()
+    for (nm in slot_names) {
+      if (!is.function(slot(x, nm))) {
+        rv[[nm]] <- h_tidy_slot(x, nm, ...)
+      }
+    }
+    # Column bind of all list elements have the same number of rows
+    if (length(rv) > 1 & length(unique(sapply(rv, nrow))) == 1) {
+      rv <- rv %>% dplyr::bind_cols()
+    }
+    rv <- rv %>% h_tidy_class(x)
+    if (length(rv) == 1) {
+      rv[[names(rv)[1]]] %>% h_tidy_class(x)
+    } else {
+      rv
+    }
+  }
+)

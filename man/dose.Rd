@@ -6,6 +6,8 @@
 \alias{dose-LogisticNormal}
 \alias{dose,numeric,LogisticLogNormal,Samples-method}
 \alias{dose-LogisticLogNormal}
+\alias{dose,numeric,LogisticLogNormalOrdinal,Samples-method}
+\alias{dose-LogisticLogNormalOrdinal}
 \alias{dose,numeric,LogisticLogNormalSub,Samples-method}
 \alias{dose-LogisticLogNormalSub}
 \alias{dose,numeric,ProbitLogNormal,Samples-method}
@@ -45,6 +47,8 @@ dose(x, model, samples, ...)
 \S4method{dose}{numeric,LogisticNormal,Samples}(x, model, samples)
 
 \S4method{dose}{numeric,LogisticLogNormal,Samples}(x, model, samples)
+
+\S4method{dose}{numeric,LogisticLogNormalOrdinal,Samples}(x, model, samples, grade)
 
 \S4method{dose}{numeric,LogisticLogNormalSub,Samples}(x, model, samples)
 
@@ -93,6 +97,8 @@ used to compute the resulting doses. Can also be missing for some models.}
 
 \item{...}{model specific parameters when \code{samples} are not used.}
 
+\item{grade}{(\code{integer})\cr The toxicity grade for which probabilities are required}
+
 \item{group}{(\code{character} or \code{factor})\cr for \code{\link{LogisticLogNormalGrouped}},
 indicating whether to calculate the dose for the \code{mono} or for
 the \code{combo} arm.}
@@ -131,6 +137,12 @@ probability of the occurrence of a DLE (\code{x}).
 
 \item \code{dose(x = numeric, model = LogisticLogNormal, samples = Samples)}: compute the dose level reaching a specific target
 probability of the occurrence of a DLE (\code{x}).
+
+\item \code{dose(x = numeric, model = LogisticLogNormalOrdinal, samples = Samples)}: compute the dose level reaching a specific target
+probability of the occurrence of a DLE (\code{x}).
+
+In the case of a \code{LogisticLogNormalOrdinal} model, \code{dose} returns only the
+probability of toxicity at the given grade or higher
 
 \item \code{dose(x = numeric, model = LogisticLogNormalSub, samples = Samples)}: compute the dose level reaching a specific target
 probability of the occurrence of a DLE (\code{x}).
@@ -233,6 +245,12 @@ dlt_sample <- mcmc(data = dlt_data, model = dlt_model, options = my_options)
 # Posterior for the dose achieving Prob(DLT) = 0.45.
 dose(x = 0.45, model = dlt_model, samples = dlt_sample)
 dose(x = c(0.45, 0.6), model = dlt_model)
+data_ordinal <- .DefaultDataOrdinal()
+model <- .DefaultLogisticLogNormalOrdinal()
+options <- .DefaultMcmcOptions()
+samples <- mcmc(data_ordinal, model, options)
+
+dose(0.25, model, samples, grade = 2L)
 }
 \seealso{
 \code{\link[=doseFunction]{doseFunction()}}, \code{\link[=prob]{prob()}}, \code{\link[=efficacy]{efficacy()}}.

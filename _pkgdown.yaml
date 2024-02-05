@@ -7,8 +7,19 @@ template:
 
 navbar:
   type: default
-  right:
-    - icon: fa-github fa-lg
+  structure:
+    left: [intro, reference, articles, tutorials, news, reports]
+    right: [search, github]
+  components:
+    reports:
+      text: Reports
+      menu:
+        - text: Coverage report
+          href: coverage-report/
+        - text: Unit test report
+          href: unit-test-report/
+    github:
+      icon: fa-github
       href: https://github.com/roche/crmPack
 
 articles:
@@ -19,8 +30,10 @@ articles:
       - trial_analysis
       - trial_sanity_checks
       - trial_simulation
+      - ordinal-crm
       - rolling-crm
       - simulations
+      - tidy_method
       - migration_from_the_old_crmPack
       - parallel_computing_with_extensions
       - crmPack-jss-paper
@@ -126,6 +139,8 @@ reference:
       - SafetyWindowConst
       - RuleDesign
       - Design
+      - DesignOrdinal
+      - RuleDesignOrdinal
       - DualDesign
       - TDsamplesDesign
       - TDDesign
@@ -133,6 +148,9 @@ reference:
   - title: Internal Helper Functions
     contents:
       - h_blind_plot_data
+      - h_convert_ordinal_data
+      - h_convert_ordinal_model
+      - h_convert_ordinal_samples
       - h_doses_unique_per_cohort
       - h_all_equivalent
       - h_plot_data_df
@@ -172,6 +190,8 @@ reference:
       - h_unpack_stopit
       - h_calc_report_label_percentage
       - h_validate_common_data_slots
+      - h_summarize_add_stats
+      - h_determine_dlts
   - title: Internal Validation Functions
     contents:
       - v_general_data
@@ -374,8 +394,11 @@ reference:
       - is_logging_enabled
       - log_trace
       - dapply
+      - knit_print
   - title: Classes
     contents:
+      - CohortSizeOrdinal-class
+      - IncrementsOrdinal-class
       - DADesign-class
       - DADesign
       - DASimulations-class
@@ -390,7 +413,9 @@ reference:
       - GeneralSimulations-class
       - GeneralSimulations
       - GeneralSimulationsSummary-class
+      - LogisticLogNormalOrdinal-class
       - MinimalInformative
+      - NextBestOrdinal-class
       - PseudoDualFlexiSimulations-class
       - PseudoDualFlexiSimulations
       - PseudoDualSimulations-class
@@ -404,6 +429,7 @@ reference:
       - Simulations-class
       - Simulations
       - SimulationsSummary-class
+      - StoppingOrdinal-class
       - approximate
       - assertions
       - assert_equal
@@ -441,6 +467,7 @@ reference:
       - plot,SimulationsSummary,missing-method
       - plotDualResponses
       - plotGain
+      - plot.gtable
       - probit
       - set_seed
       - show,DualSimulationsSummary-method
@@ -463,6 +490,7 @@ reference:
       - summary,PseudoDualSimulations-method
       - summary,Simulations-method
       - summary,PseudoSimulations-method
+      - tidy
       - windowLength
       - "&,Stopping,Stopping-method"
       - "&,Stopping,StoppingAll-method"

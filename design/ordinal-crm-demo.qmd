@@ -180,7 +180,7 @@ LogisticLogNormOrd <- function(meanAlpha, varAlpha, meanBeta, varBeta, ref_dose 
   )
   .LogisticLogNormOrd(
     params = model_ln,
-    ref_dose = crmPack:::positive_number(ref_dose),
+    ref_dose = positive_number(ref_dose),
     datamodel = function() {
       for (i in 1:15) {
         x_rel[i] <- log(x[i] / ref_dose)

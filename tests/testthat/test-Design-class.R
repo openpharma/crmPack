@@ -40,6 +40,8 @@ test_that("RuleDesign object can be created with ThreePlusThreeDesign constructo
   expect_identical(result@startingDose, 8)
 })
 
+# ThreePlusThreeDesign ----
+
 test_that("ThreePlusThreeDesign constructor arguments names are as expected", {
   expect_function(
     ThreePlusThreeDesign,
@@ -461,10 +463,112 @@ test_that("DesignGrouped works as expected", {
   expect_valid(result, "DesignGrouped")
   expect_identical(result@mono, result@combo)
   expect_true(result@first_cohort_mono_only)
-  expect_true(result@same_dose)
+  expect_true(result@same_dose_for_all)
 })
 
 test_that(".DefaultDesignGrouped works as expected", {
   result <- .DefaultDesignGrouped()
   expect_valid(result, "DesignGrouped")
+})
+
+# RuleDesignOrdinal ----
+
+test_that(".RuleDesignOrdinal works as expected", {
+  result <- expect_silent(.RuleDesignOrdinal())
+  expect_valid(result, "RuleDesignOrdinal")
+})
+
+test_that("RuleDesign object can be created with user constructor", {
+  next_best <- NextBestOrdinal(
+    1L,
+    NextBestMTD(
+      target = 0.2,
+      derive = function(x) median(x, na.rm = TRUE)
+    )
+  )
+  cohort_size <- CohortSizeOrdinal(1L, CohortSizeConst(size = 5L))
+  data <- DataOrdinal(doseGrid = 2:40)
+
+  result <- expect_silent(
+    RuleDesignOrdinal(next_best, cohort_size, data, 5)
+  )
+  expect_valid(result, "RuleDesignOrdinal")
+  expect_identical(result@next_best, next_best)
+  expect_identical(result@cohort_size, cohort_size)
+  expect_identical(result@data, data)
+  expect_identical(result@starting_dose, 5)
+})
+
+test_that("RuleDesignOrdinal user constructor arguments names are as expected", {
+  expect_function(
+    RuleDesignOrdinal,
+    args = c("next_best", "cohort_size", "data", "starting_dose"),
+    ordered = TRUE
+  )
+})
+
+# DesignOrdinal ----
+
+test_that(".DesignOrdinal works as expected", {
+  result <- expect_silent(.DesignOrdinal())
+  expect_valid(result, "DesignOrdinal")
+})
+
+test_that("DesignOrdinal object can be created with user constructor", {
+  empty_data <- DataOrdinal(doseGrid = 2:50)
+  model <- .DefaultLogisticLogNormalOrdinal()
+  stopping <- .DefaultStoppingOrdinal()
+  increments <- .DefaultIncrementsOrdinal()
+  placebo_cohort_size <- CohortSizeOrdinal(1L, CohortSizeConst(0L))
+  next_best <- .DefaultNextBestOrdinal()
+  cohort_size <- CohortSizeOrdinal(
+    1L,
+    CohortSizeRange(intervals = c(0, 30), cohort_size = c(1, 3))
+  )
+
+  result <- expect_silent(
+    DesignOrdinal(
+      model,
+      stopping,
+      increments,
+      next_best = next_best,
+      cohort_size = cohort_size,
+      data = empty_data,
+      starting_dose = 3
+    )
+  )
+  expect_valid(result, "DesignOrdinal")
+  expect_identical(result@model, model)
+  expect_identical(result@stopping, stopping)
+  expect_identical(result@increments, increments)
+  expect_identical(result@pl_cohort_size, placebo_cohort_size)
+  expect_identical(result@next_best, next_best)
+  expect_identical(result@cohort_size, cohort_size)
+  expect_identical(result@data, empty_data)
+  expect_identical(result@starting_dose, 3)
+
+  result <- expect_silent(
+    DesignOrdinal(
+      model,
+      stopping,
+      increments,
+      CohortSizeOrdinal(2L, CohortSizeConst(2L)),
+      next_best = next_best,
+      cohort_size = cohort_size,
+      data = empty_data,
+      starting_dose = 3
+    )
+  )
+  expect_identical(
+    result@pl_cohort_size,
+    CohortSizeOrdinal(2L, CohortSizeConst(2L))
+  )
+})
+
+test_that("Design user constructor arguments names are as expected", {
+  expect_function(
+    Design,
+    args = c("model", "stopping", "increments", "pl_cohort_size", "..."),
+    ordered = TRUE
+  )
 })

@@ -1,4 +1,6 @@
 #' @include helpers.R
+#' @include helpers_covr.R
+#' @include logger.R
 #' @include Samples-class.R
 NULL
 
@@ -764,3 +766,35 @@ setMethod("mcmc",
     }
 )
 # nolint end
+
+## -----------------------------------------------------------------------------------
+## obtain the posterior samples for ordinal models
+## ----------------------------------------------------------------------------
+##
+##' @describeIn mcmc Obtain the posterior samples for the model parameters in the
+##' `LogisticLogNormalOrdinal`.
+##'
+##' The generic `mcmc` method returns a `Samples` object with elements of the
+##' `data` slot named `alpha[1]`, `alpha[2]`, ..., `alpha[k]` and `beta` when
+##' passed a `LogisticLogNormalOrdinal` object.  This makes the "alpha elements"
+##' awkward to access and is inconsistent with other `Model` objects.  So rename
+##' the alpha elements to `alpha1`, `alpha2`, ..., `alpha<k>` for ease and
+##' consistency.
+##'
+##' @example examples/mcmc-LogisticLogNormalOrdinal.R
+setMethod(
+  f = "mcmc",
+  signature = signature(
+    data = "DataOrdinal",
+    model = "LogisticLogNormalOrdinal",
+    options = "McmcOptions"
+  ),
+  definition = function(data, model, options, ...) {
+    # Obtain samples using the default method, but ...
+    return_value <- callNextMethod()
+    # ... rename the alpha elements from alpha[<k>] to alpha<k>, where <k> is an
+    # integer
+    names(return_value@data) <- gsub("\\[(\\d+)\\]", "\\1", names(return_value@data))
+    return_value
+  }
+)

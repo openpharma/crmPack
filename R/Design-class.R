@@ -757,6 +757,21 @@ DualResponsesDesign <- function(eff_model,
 #' @slot data (`DataDA`)\cr what is the dose grid, any previous data, etc.
 #' @slot safetyWindow (`SafetyWindow`)\cr the safety window to apply between cohorts.
 #'
+#' @details
+#' The `safetyWindow` slot should be an instance of the `SafetyWindow` class.
+#' It can be customized to specify the duration of the safety window for your trial.
+#' The safety window represents the time period required to observe toxicity data
+#' from the ongoing cohort before opening the next cohort.
+#' Note that even after opening the next cohort,
+#' further toxicity data will be collected and analyzed to make dose escalation decisions.
+#'
+#'
+#' To specify a constant safety window, use the `SafetyWindowConst` constructor. For example:
+#'
+#' \code{mysafetywindow <- SafetyWindowConst(c(6, 2), 10, 20)}
+#'
+#' @seealso [`SafetyWindowConst`] for creating a constant safety window.
+#'
 #' @aliases DADesign
 #' @export
 #'
@@ -885,13 +900,26 @@ DADesign <- function(model, data,
 #' @slot first_cohort_mono_only (`flag`)\cr whether first test one mono agent cohort, and then
 #'   once its DLT data has been collected, we proceed from the second cohort onwards with
 #'   concurrent mono and combo cohorts.
-#' @slot same_dose (`flag`)\cr whether the lower dose of the separately determined mono and combo
-#'   doses should be used as the next dose for both mono and combo.
+#' @slot same_dose_for_all (`flag`)\cr whether the lower dose of the separately determined mono and combo
+#'   doses should be used as the next dose for both mono and combo in all cohorts.
+#' @slot same_dose_for_start (`flag`)\cr indicates whether, when mono and combo are
+#'   used in the same cohort for the first time, the same dose should be used for both.
+#'   Note that this is different from `same_dose_for_all` which will always force
+#'   them to be the same. If `same_dose_for_all = TRUE`, this is therefore ignored. See Details.
+#' @slot stop_mono_with_combo (`flag`)\cr whether the mono arm should be stopped when the combo
+#'   arm is stopped (this makes sense when the only real trial objective is the recommended combo dose).
 #'
-#' @details Note that the model slots inside the `mono` and `combo` parameters
-#'   are ignored (because we don't fit separate regression models for the mono and
-#'   combo arms). Instead, the `model` parameter is used to fit a joint regression
-#'   model for the mono and combo arms together.
+#' @details
+#'
+#'   - Note that the model slots inside the `mono` and `combo` parameters
+#'     are ignored (because we don't fit separate regression models for the mono and
+#'     combo arms). Instead, the `model` parameter is used to fit a joint regression
+#'     model for the mono and combo arms together.
+#'   - `same_dose_for_start = TRUE` is useful as an option when we want to use `same_dose_for_all = FALSE`
+#'     combined with `first_cohort_mono_only = TRUE`.
+#'     This will allow to randomize patients to the mono and combo arms at the same dose
+#'     as long as the selected dose for the cohorts stay the same. This can therefore
+#'     further mitigate bias as long as possible between the mono and combo arms.
 #'
 #' @aliases DesignGrouped
 #' @export
@@ -903,14 +931,18 @@ DADesign <- function(model, data,
     mono = "Design",
     combo = "Design",
     first_cohort_mono_only = "logical",
-    same_dose = "logical"
+    same_dose_for_all = "logical",
+    same_dose_for_start = "logical",
+    stop_mono_with_combo = "logical"
   ),
   prototype = prototype(
     model = .DefaultLogisticLogNormalGrouped(),
     mono = .Design(),
     combo = .Design(),
     first_cohort_mono_only = TRUE,
-    same_dose = TRUE
+    same_dose_for_all = TRUE,
+    same_dose_for_start = FALSE,
+    stop_mono_with_combo = FALSE
   ),
   validity = v_design_grouped,
   contains = "CrmPackClass"
@@ -924,7 +956,9 @@ DADesign <- function(model, data,
 #' @param mono (`Design`)\cr see slot definition.
 #' @param combo (`Design`)\cr see slot definition.
 #' @param first_cohort_mono_only (`flag`)\cr see slot definition.
-#' @param same_dose (`flag`)\cr see slot definition.
+#' @param same_dose_for_all (`flag`)\cr see slot definition.
+#' @param same_dose_for_start (`flag`)\cr see slot definition.
+#' @param stop_mono_with_combo (`flag`)\cr see slot definition.
 #' @param ... not used.
 #'
 #' @export
@@ -934,14 +968,18 @@ DesignGrouped <- function(model,
                           mono,
                           combo = mono,
                           first_cohort_mono_only = TRUE,
-                          same_dose = TRUE,
+                          same_dose_for_all = !same_dose_for_start,
+                          same_dose_for_start = FALSE,
+                          stop_mono_with_combo = FALSE,
                           ...) {
   .DesignGrouped(
     model = model,
     mono = mono,
     combo = combo,
     first_cohort_mono_only = first_cohort_mono_only,
-    same_dose = same_dose
+    same_dose_for_all = same_dose_for_all,
+    same_dose_for_start = same_dose_for_start,
+    stop_mono_with_combo = stop_mono_with_combo
   )
 }
 
@@ -951,3 +989,211 @@ DesignGrouped <- function(model,
 #' @note Typically, end-users will not use the `.DefaultDesignGrouped()` function.
 #' @export
 .DefaultDesignGrouped <- .DesignGrouped
+
+# RuleDesignOrdinal ----
+
+## class ----
+
+#' `RuleDesignOrdinal`
+#'
+#' @description `r lifecycle::badge("experimental")`
+#'
+#' [`RuleDesignOrdinal`] is the class for rule-based designs. The difference between
+#' this class and the [`DesignOrdinal`] class is that [`RuleDesignOrdinal`]
+#' does not contain `model`, `stopping` and `increments` slots.
+#'
+#' @slot next_best (`NextBestOrdinal`)\cr how to find the next best dose.
+#' @slot cohort_size (`CohortSizeOrdinal`)\cr rules for the cohort sizes.
+#' @slot data (`DataOrdinal`)\cr specifies dose grid, any previous data, etc.
+#' @slot starting_dose (`number`)\cr the starting dose, it must lie on the dose
+#'   grid in `data`.
+#'
+#' @aliases RuleDesignOrdinal
+#' @export
+#'
+.RuleDesignOrdinal <- setClass(
+  Class = "RuleDesignOrdinal",
+  slots = c(
+    next_best = "NextBestOrdinal",
+    cohort_size = "CohortSizeOrdinal",
+    data = "DataOrdinal",
+    starting_dose = "numeric"
+  ),
+  prototype = prototype(
+    next_best = .NextBestOrdinal(),
+    cohort_size = CohortSizeOrdinal(1L, CohortSizeConst(3L)),
+    data = DataOrdinal(doseGrid = 1:3),
+    starting_dose = 1
+  ),
+  contains = "CrmPackClass",
+  validity = v_rule_design_ordinal
+)
+
+## constructor ----
+
+#' @rdname RuleDesignOrdinal-class
+#'
+#' @param next_best (`NextBestOrdinal`)\cr see slot definition.
+#' @param cohort_size (`CohortSizeOrdinal`)\cr see slot definition.
+#' @param data (`DataOrdinal`)\cr see slot definition.
+#' @param starting_dose (`number`)\cr see slot definition.
+#'
+#' @export
+#' @example examples/Design-class-RuleDesignOrdinal.R
+#'
+RuleDesignOrdinal <- function(
+    next_best,
+    cohort_size,
+    data,
+    starting_dose) {
+  new(
+    "RuleDesignOrdinal",
+    next_best = next_best,
+    cohort_size = cohort_size,
+    data = data,
+    starting_dose = as.numeric(starting_dose)
+  )
+}
+
+#' @rdname RuleDesignOrdinal-class
+#' @note Typically, end users will not use the `.DefaultRuleDesignOrdinal()` function.
+#' @export
+
+.DefaultRuleDesignOrdinal <- function() {
+  RuleDesignOrdinal(
+    next_best = NextBestOrdinal(
+      1L,
+      NextBestMTD(target = 0.25, derive = function(x) mean(x, na.rm = TRUE))
+    ),
+    cohort_size = CohortSizeOrdinal(1L, CohortSizeConst(size = 3L)),
+    data = DataOrdinal(doseGrid = c(5, 10, 15, 25, 35, 50, 80)),
+    starting_dose = 5
+  )
+}
+
+# DesignOrdinal ----
+
+## class ----
+
+#' `DesignOrdinal`
+#'
+#' @description `r lifecycle::badge("experimental")`
+#'
+#' [`DesignOrdinal`] is the class for rule-based ordinal designs. The difference
+#' between this class and its parent [`RuleDesignOrdinal`] class is that the
+#'  [`DesignOrdinal`] class contains additional `model`, `stopping`,
+#'  `increments` and `pl_cohort_size` slots.
+#'
+#' @slot model (`LogisticLogNormalOrdinal`)\cr the model to be used.
+#' @slot stopping (`StoppingOrdinal`)\cr stopping rule(s) for the trial.
+#' @slot increments (`IncrementsOrdinal`)\cr how to control increments between dose levels.
+#' @slot pl_cohort_size (`CohortSizeOrdinal`)\cr rules for the cohort sizes for placebo,
+#'   if any planned (defaults to constant 0 placebo patients).
+#'
+#' @aliases DesignOrdinal
+#' @export
+#'
+.DesignOrdinal <- setClass(
+  Class = "DesignOrdinal",
+  slots = c(
+    model = "LogisticLogNormalOrdinal",
+    stopping = "StoppingOrdinal",
+    increments = "IncrementsOrdinal",
+    pl_cohort_size = "CohortSizeOrdinal"
+  ),
+  prototype = prototype(
+    model = .LogisticLogNormalOrdinal(),
+    next_best = .NextBestOrdinal(),
+    stopping = .StoppingOrdinal(),
+    increments = .IncrementsOrdinal(),
+    pl_cohort_size = CohortSizeOrdinal(1L, CohortSizeConst(3L))
+  ),
+  contains = "RuleDesignOrdinal"
+)
+
+## constructor ----
+
+#' @rdname DesignOrdinal-class
+#'
+#' @param model (`LogisticLogNormalOrdinal`)\cr see slot definition.
+#' @param stopping (`StoppingOrdinal`)\cr see slot definition.
+#' @param increments (`IncrementsOrdinal`)\cr see slot definition.
+#' @param pl_cohort_size (`CohortSizeOrdinal`)\cr see slot definition.
+#' @inheritDotParams RuleDesignOrdinal
+#'
+#' @export
+#' @example examples/Design-class-DesignOrdinal.R
+#'
+#'
+DesignOrdinal <- function(
+    model,
+    stopping,
+    increments,
+    pl_cohort_size = CohortSizeOrdinal(1L, CohortSizeConst(0L)),
+    ...) {
+  start <- RuleDesignOrdinal(...)
+  new(
+    "DesignOrdinal",
+    start,
+    model = model,
+    stopping = stopping,
+    increments = increments,
+    pl_cohort_size = pl_cohort_size
+  )
+}
+
+## default constructor ----
+
+#' @rdname DesignOrdinal-class
+#' @note Typically, end users will not use the `.DefaultDesignOrdinal()` function.
+#' @export
+.DefaultDesignOrdinal <- function() {
+  my_size1 <- CohortSizeRange(
+    intervals = c(0, 30),
+    cohort_size = c(1, 3)
+  )
+  my_size2 <- CohortSizeDLT(
+    intervals = c(0, 1),
+    cohort_size = c(1, 3)
+  )
+  my_size <- CohortSizeOrdinal(1L, maxSize(my_size1, my_size2))
+
+  my_stopping1 <- StoppingMinCohorts(nCohorts = 3)
+  my_stopping2 <- StoppingTargetProb(
+    target = c(0.2, 0.35),
+    prob = 0.5
+  )
+  my_stopping3 <- StoppingMinPatients(nPatients = 20)
+  my_stopping <- StoppingOrdinal(1L, (my_stopping1 & my_stopping2) | my_stopping3)
+
+  # Initialize the design.
+  design <- DesignOrdinal(
+    model = LogisticLogNormalOrdinal(
+      mean = c(-3, -4, 1),
+      cov = diag(c(3, 4, 1)),
+      ref_dose = 50
+    ),
+    next_best = NextBestOrdinal(
+      1L,
+      NextBestNCRM(
+        target = c(0.2, 0.35),
+        overdose = c(0.35, 1),
+        max_overdose_prob = 0.25
+      )
+    ),
+    stopping = my_stopping,
+    increments = IncrementsOrdinal(
+      1L,
+      IncrementsRelative(
+        intervals = c(0, 20),
+        increments = c(1, 0.33)
+      )
+    ),
+    cohort_size = my_size,
+    data = DataOrdinal(
+      doseGrid = c(1, 3, 5, 10, 15, 20, 25, 40, 50, 80, 100),
+      yCategories = c("No tox" = 0L, "Sub-tox AE" = 1L, "DLT" = 2L)
+    ),
+    starting_dose = 3
+  )
+}

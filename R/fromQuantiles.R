@@ -76,8 +76,10 @@ Quantiles2LogisticNormal <- function(dosegrid,
                                        )) {
   ## extracts and checks
   nDoses <- length(dosegrid)
+
   assert_flag(logNormal)
   assert_flag(verbose)
+  assert_probability(level, bounds_closed = FALSE)
   stopifnot(
     !is.unsorted(dosegrid, strictly = TRUE),
     ## the medians must be monotonically increasing:
@@ -87,7 +89,6 @@ Quantiles2LogisticNormal <- function(dosegrid,
     identical(length(upper), nDoses),
     all(lower < median),
     all(upper > median),
-    is.probability(level, bounds = FALSE),
     identical(length(parlower), 5L),
     identical(length(parupper), 5L),
     all(parlower < parstart),
@@ -234,10 +235,8 @@ Quantiles2LogisticNormal <- function(dosegrid,
 ##' @export
 ##' @keywords programming
 getMinInfBeta <- function(p, q) {
-  stopifnot(
-    is.probability(p, bounds = FALSE),
-    is.probability(q, bounds = FALSE)
-  )
+  assert_probability(p, bounds_closed = FALSE)
+  assert_probability(q, bounds_closed = FALSE)
 
   ret <-
     if (q > p) {
@@ -309,12 +308,13 @@ MinimalInformative <- function(dosegrid,
                                ...) {
   ## extracts and checks
   nDoses <- length(dosegrid)
+
+  assert_probability(threshmin, bounds_closed = FALSE)
+  assert_probability(threshmax, bounds_closed = FALSE)
+  assert_probability(probmin, bounds_closed = FALSE)
+  assert_probability(probmax, bounds_closed = FALSE)
   stopifnot(
-    !is.unsorted(dosegrid, strictly = TRUE),
-    is.probability(threshmin, bounds = FALSE),
-    is.probability(threshmax, bounds = FALSE),
-    is.probability(probmin, bounds = FALSE),
-    is.probability(probmax, bounds = FALSE)
+    !is.unsorted(dosegrid, strictly = TRUE)
   )
   xmin <- dosegrid[1]
   xmax <- dosegrid[nDoses]

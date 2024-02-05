@@ -127,47 +127,6 @@ safeInteger <- function(x) {
   as.integer(x)
 }
 
-##' Predicate checking for a probability
-##'
-##' @param x the object being checked
-##' @param bounds whether to include the bounds 0 and 1 (default)
-##' @return Returns \code{TRUE} if \code{x} is a probability
-##'
-##' @keywords internal
-is.probability <- function(x,
-                           bounds = TRUE) {
-  if (bounds) {
-    return(test_numeric(x, lower = 0, upper = 1, any.missing = FALSE))
-  } else {
-    return(test_numeric(x, lower = 0, upper = 1, any.missing = FALSE) && x != 0 && x != 1)
-  }
-}
-
-##' Predicate checking for a numeric range
-##'
-##' @param x the object being checked
-##' @return Returns \code{TRUE} if \code{x} is a numeric range
-##'
-##' @keywords internal
-is.range <- function(x) {
-  return(identical(length(x), 2L) &&
-    x[1] < x[2])
-}
-
-##' Predicate checking for a probability range
-##'
-##' @param x the object being checked
-##' @param bounds whether to include the bounds 0 and 1 (default)
-##' @return Returns \code{TRUE} if \code{x} is a probability range
-##'
-##' @keywords internal
-is.probRange <- function(x,
-                         bounds = TRUE) {
-  return(is.range(x) &&
-    all(sapply(x, is.probability, bounds = bounds)))
-}
-
-
 ##' Shorthand for logit function
 ##'
 ##' @param x the function argument
@@ -217,6 +176,28 @@ crmPackExample <- function() {
 ##' @author Daniel Sabanes Bove \email{sabanesd@@roche.com}
 crmPackHelp <- function() {
   utils::help(package = "crmPack", help_type = "html")
+}
+
+#' Plot `gtable` Objects
+#'
+#' This is needed because `crmPack` uses [gridExtra::arrangeGrob()] to combine
+#' `ggplot2` plots, and the resulting `gtable` object is not plotted otherwise
+#' when implicitly printing it in the console, e.g.
+#'
+#' @method plot gtable
+#' @param x (`gtable`)\cr object to plot.
+#' @param ... additional parameters for [grid::grid.draw()].
+#'
+#' @export
+plot.gtable <- function(x, ...) {
+  grid::grid.draw(x, ...)
+}
+
+#' @method print gtable
+#' @rdname plot.gtable
+#' @export
+print.gtable <- function(x, ...) {
+  plot(x, ...)
 }
 
 ##' Taken from utils package (print.vignette)
@@ -891,41 +872,7 @@ h_find_interval <- function(..., replacement = -Inf) {
   ifelse(x == 0, yes = replacement, no = x)
 }
 
-#' unpack stopping rules and return list
-#'
-#' @description
-#'
-#' recursively unpack nested stopping rules logical value and label given
-#'
-#' @param stopit_tree object from simulate method
 
-h_unpack_stopit <- function(stopit_tree) {
-  label <- attr(stopit_tree, "report_label")
-  value <- stopit_tree[1]
-  names(value) <- label
-  value
-  if (is.null(attr(stopit_tree, "individual"))) {
-    return(value)
-  } else {
-    return(unlist(c(value, lapply(attr(stopit_tree, "individual"), h_unpack_stopit))))
-  }
-}
-
-#' calculate percentage of true stopping rules for report label output
-#'
-#' @description
-#'
-#' calculates true column means and converts output into percentages
-#' before combining the output with the report label; output is passed
-#' to [`show()`] and output with cat to console
-#'
-#' @param stop_report object from summary method
-
-h_calc_report_label_percentage <- function(stop_report) {
-  stop_pct <- colMeans(stop_report) * 100
-  stop_pct_to_print <- stop_pct[!is.na(names(stop_pct))]
-  return(stop_pct_to_print)
-}
 
 #' Group Together Mono and Combo Data
 #'

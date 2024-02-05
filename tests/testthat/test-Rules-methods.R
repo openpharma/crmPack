@@ -44,6 +44,31 @@ test_that("nextBest-NextBestMTD returns correct next dose and plot (no doselimit
   vdiffr::expect_doppelganger("Plot of nextBest-NextBestMTD without doselimit", result$plot)
 })
 
+test_that("nextBest-NextBestMTD returns correct next dose and plot when doselimit=0", {
+  data <- h_get_data(placebo = FALSE)
+  model <- h_get_logistic_log_normal()
+  samples <- h_as_samples(
+    list(alpha0 = c(-2.38, -2.13, -1.43, -2.57), alpha1 = c(1.67, 1.3, 1.77, 2.51))
+  )
+  nb_mtd <- NextBestMTD(
+    target = 0.33,
+    derive = function(mtd_samples) {
+      quantile(mtd_samples, probs = 0.25)
+    }
+  )
+
+  result <- nextBest(
+    nextBest = nb_mtd,
+    doselimit = 0,
+    samples = samples,
+    model = model,
+    data = data
+  )
+  expect_identical(result$value, numeric(0))
+  vdiffr::expect_doppelganger("Plot of nextBest-NextBestMTD-doselimit-zero", result$plot)
+})
+
+
 ## NextBestNCRM ----
 
 test_that("nextBest-NextBestNCRM returns expected values of the objects", {
@@ -845,6 +870,45 @@ test_that("nextBest-NextBestProbMTDMinDist returns correct next dose and plot (n
   vdiffr::expect_doppelganger("Plot nextBest-NextBestProbMTDMinDist w/o doselimit", result$plot)
 })
 
+## NextBestOrdinal ----
+test_that("nextBest-NextBestOrdinal throws exception when passed a GeneralModel object", {
+  ordinal_data <- .DefaultDataOrdinal()
+  ordinal_model <- .DefaultLogisticLogNormalOrdinal()
+  suppressWarnings({
+    samples <- mcmc(ordinal_data, ordinal_model, .DefaultMcmcOptions())
+  })
+  next_best <- .DefaultNextBestOrdinal()
+  bad_data <- .DefaultData()
+  expect_error(
+    nextBest(next_best, Inf, samples, ordinal_model, bad_data),
+    paste0(
+      "NextBestOrdinal objects can only be used with LogisticLogNormalOrdinal ",
+      "models and DataOrdinal data objects. In this case, the model is a ",
+      "'LogisticLogNormalOrdinal' object and the data is in a Data object."
+    )
+  )
+})
+
+test_that("nextBest-NextBestOrdinal works correctly", {
+  ordinal_data <- .DefaultDataOrdinal()
+  ordinal_model <- .DefaultLogisticLogNormalOrdinal()
+  suppressWarnings({
+    samples <- mcmc(
+      ordinal_data,
+      ordinal_model,
+      McmcOptions(
+        rng_kind = "Mersenne-Twister",
+        rng_seed = 215614
+      )
+    )
+  })
+  next_best <- .DefaultNextBestOrdinal()
+  bad_data <- .DefaultData()
+
+  actual <- nextBest(next_best, Inf, samples, ordinal_model, ordinal_data)
+  vdiffr::expect_doppelganger("nextBest-NextBestOrdinal", actual$plot)
+  expect_equal(actual$value, 50)
+})
 
 # maxDose ----
 
@@ -1227,6 +1291,27 @@ test_that("maxDose-IncrementsRelativeParts throws error when part1Ladder is exce
   )
 })
 
+test_that("maxDose-IncrementsRelativeParts throws error when part1Ladder is exceeded (in p1, p2, DLT, cstart <= 0)", {
+  increments <- IncrementsRelativeParts(
+    dlt_start = 10, clean_start = 20, intervals = c(0, 1), increments = c(4, 3)
+  )
+  data <- DataParts(
+    x = c(0.1, 1.5, 0.5),
+    y = c(0, 0, 1L),
+    ID = 1:3,
+    cohort = 1:3,
+    doseGrid = c(0.1, 0.4, 0.5, 1.5, 3, 6, 10, 15, 20, 30),
+    part = c(1L, 1L, 1L),
+    nextPart = 2L,
+    part1Ladder = c(0.1, 0.5, 1.5, 3, 6, 10, 20)
+  )
+  expect_error(
+    maxDose(increments, data),
+    "Assertion on 'new_max_dose_level <= length(data@part1Ladder)' failed: Must be TRUE.",
+    fixed = TRUE
+  )
+})
+
 ## IncrementsDoseLevels ----
 
 test_that("maxDose-IncrementsDoseLevels works correctly for 'last' basis_level and 1 level increase", {
@@ -1373,6 +1458,48 @@ test_that("maxDose-IncrementsMin works correctly when incr2 is minimum", {
   )
   result <- maxDose(increments, data)
   expect_equal(result, 150)
+})
+
+test_that("maxDose-IncrementsMin-DataOrdinal works correctly when incr1 is minimum", {
+  incr1 <- IncrementsOrdinal(
+    1L,
+    IncrementsRelative(intervals = c(0, 20), increments = c(4, 0.7))
+  )
+  incr2 <- IncrementsOrdinal(
+    1L,
+    IncrementsRelativeDLT(intervals = c(0, 1, 3), increments = c(2, 0.5, 0.4))
+  )
+  increments <- IncrementsMin(increments_list = list(incr1, incr2))
+  data <- DataOrdinal(
+    x = c(5, 100), y = c(1L, 0L), doseGrid = c(5, 100), ID = 1:2, cohort = 1:2
+  )
+  result <- maxDose(increments, data)
+  expect_equal(result, 150)
+})
+
+test_that("maxDose-IncrementsMinOrdinal works correctly when incr2 is minimum", {
+  incr1 <- IncrementsOrdinal(
+    1L,
+    IncrementsRelative(intervals = c(0, 20), increments = c(4, 0.7))
+  )
+  incr2 <- IncrementsOrdinal(
+    1L,
+    IncrementsRelativeDLT(intervals = c(0, 1, 3), increments = c(2, 0.5, 0.4))
+  )
+  increments <- IncrementsMin(increments_list = list(incr1, incr2))
+  data <- DataOrdinal(
+    x = c(5, 100), y = c(1L, 0L), doseGrid = c(5, 100), ID = 1:2, cohort = 1:2
+  )
+  result <- maxDose(increments, data)
+  expect_equal(result, 150)
+})
+
+## IncrementsOrdinal
+
+test_that("maxDose-IncrementsOrdinal works correctly", {
+  inc <- .DefaultIncrementsOrdinal()
+  data <- .DefaultDataOrdinal()
+  expect_equal(maxDose(inc, data), 79.8)
 })
 
 # stopTrial ----
@@ -3879,6 +4006,7 @@ test_that("stopTrial works for StoppingTargetBiomarker", {
     rng_seed = 94
   )
 
+
   # Set-up some MCMC parameters and generate samples from the posterior
   samples <- mcmc(data, model, options)
 
@@ -4034,6 +4162,7 @@ test_that("stopTrial works correctly for StoppingTDCIRatio when samples are prov
           " than target_ratio = ",
           targetRatio
         )
+
         attr(expected, "report_label") <- NA_character_
         if (expected != as.logical(result)) {
           print(
@@ -4074,6 +4203,62 @@ test_that("stopTrial works correctly for StoppingTDCIRatio when samples are not 
         expect_false(result, expected)
       }
     }
+  }
+})
+
+## StoppingOrdinal
+test_that("stopTrial-StoppingOrdinal works correctly", {
+  data <- .DefaultDataOrdinal()
+  model <- .DefaultLogisticLogNormalOrdinal()
+  options <- McmcOptions(
+    rng_kind = "Mersenne-Twister",
+    rng_seed = 215614
+  )
+  suppressWarnings({
+    samples <- mcmc(data, model, options)
+  }) # nolint
+
+  myIncrements <- .DefaultIncrementsOrdinal()
+  nextMaxDose <- maxDose(myIncrements, data = data)
+
+  myNextBest <- .DefaultNextBestOrdinal()
+  myStopping <- .DefaultStoppingOrdinal()
+
+  myStopping@grade <- 1L
+  myStopping@rule@prob <- 0.30
+
+  for (d in data@doseGrid) {
+    expect_equal(
+      as.logical(
+        stopTrial(
+          stopping = myStopping,
+          dose = d,
+          samples = samples,
+          model = model,
+          data = data
+        )
+      ),
+      !!d == data@doseGrid[5]
+    )
+  }
+
+  myStopping <- .DefaultStoppingOrdinal()
+  myStopping@rule@prob <- 0.20
+  myStopping@grade <- 2L
+
+  for (d in data@doseGrid) {
+    expect_equal(
+      as.logical(
+        stopTrial(
+          stopping = myStopping,
+          dose = d,
+          samples = samples,
+          model = model,
+          data = data
+        )
+      ),
+      !!d == data@doseGrid[6]
+    )
   }
 })
 
@@ -4131,7 +4316,6 @@ test_that("windowLength works correctly", {
   }
 })
 
-
 test_that("report_label slot available for StoppingSpecificDose", {
   my_rule <- StoppingSpecificDose(
     rule = StoppingTargetProb(target = c(0, 0.3), prob = 0.8),
@@ -4139,4 +4323,81 @@ test_that("report_label slot available for StoppingSpecificDose", {
     report_label = "test label"
   )
   expect_equal(my_rule@report_label, "test label")
+})
+
+## tidy ----
+
+test_that("tidy-IncrementsRelative works correctly", {
+  obj <- .DefaultIncrementsRelative()
+  result <- tidy(obj)
+  expect_snapshot_value(result, style = "deparse")
+})
+
+test_that("tidy-CohortSizeDLT works correctly", {
+  obj <- .DefaultCohortSizeDLT()
+  result <- tidy(obj)
+  expect_snapshot_value(result, style = "deparse")
+})
+
+test_that("tidy-CohortSizeMin works correctly", {
+  obj <- .DefaultCohortSizeMin()
+  result <- tidy(obj)
+  expect_snapshot_value(result, style = "deparse")
+})
+
+test_that("tidy-CohortSizeMax works correctly", {
+  obj <- .DefaultCohortSizeMax()
+  result <- tidy(obj)
+  expect_snapshot_value(result, style = "deparse")
+})
+
+test_that("tidy-CohortSizeRange works correctly", {
+  obj <- .DefaultCohortSizeRange()
+  result <- tidy(obj)
+  expect_snapshot_value(result, style = "deparse")
+})
+
+test_that("tidy-CohortSizeParts works correctly", {
+  obj <- .DefaultCohortSizeParts()
+  result <- tidy(obj)
+  # style = "deparse" fails with Error in `1:2`: could not find function ":"
+  expect_snapshot_value(result, style = "serialize")
+})
+
+test_that("tidy-IncrementsMin works correctly", {
+  obj <- .DefaultIncrementsMin()
+  result <- tidy(obj)
+  expect_snapshot_value(result, style = "deparse")
+})
+
+test_that("tidy-IncrementsRelative works correctly", {
+  obj <- .DefaultIncrementsRelative()
+  result <- tidy(obj)
+  expect_snapshot_value(result, style = "deparse")
+})
+
+test_that("tidy-IncrementsRelativeParts works correctly", {
+  obj <- .DefaultIncrementsRelativeParts()
+  result <- tidy(obj)
+  expect_snapshot_value(result, style = "deparse")
+})
+
+# Relevant:https://github.com/Roche/crmPack/issues/759
+test_that("tidy-NextBestNCRM works correctly", {
+  obj <- .DefaultNextBestNCRM()
+  result <- tidy(obj)
+  expected <- tibble::tibble(
+    Range = c("Underdose", "Target", "Overdose"),
+    min = c(0.00, 0.20, 0.35),
+    max = c(0.20, 0.35, 1.00),
+    max_prob = c(NA, NA, 0.25)
+  )
+  class(expected) <- c("tbl_NextBestNCRM", class(expected))
+  expect_identical(result, expected)
+})
+
+test_that("tidy-NextBestNCRMLoss works correctly", {
+  obj <- .DefaultNextBestNCRMLoss()
+  result <- tidy(obj)
+  expect_snapshot_value(result, style = "deparse")
 })

@@ -17,6 +17,8 @@
 \alias{size-CohortSizeConst}
 \alias{size,CohortSizeParts-method}
 \alias{size-CohortSizeParts}
+\alias{size,CohortSizeOrdinal-method}
+\alias{size-CohortSizeOrdinal}
 \alias{size,Samples-method}
 \alias{size-Samples}
 \title{Size of an Object}
@@ -37,6 +39,8 @@ size(object, ...)
 
 \S4method{size}{CohortSizeParts}(object, dose, data)
 
+\S4method{size}{CohortSizeOrdinal}(object, dose, data, ...)
+
 \S4method{size}{Samples}(object, ...)
 }
 \arguments{
@@ -45,9 +49,9 @@ for which the size is computed.}
 
 \item{...}{not used.}
 
-\item{dose}{the next dose.}
+\item{dose}{(\code{numeric}) the next dose.}
 
-\item{data}{the data input, an object of class \code{\link{Data}}.}
+\item{data}{the data input, an object of class \code{\link{DataOrdinal}}.}
 }
 \value{
 A size of a given object.
@@ -79,6 +83,8 @@ multiple cohort size rules.
 \item \code{size(CohortSizeConst)}: Constant cohort size.
 
 \item \code{size(CohortSizeParts)}: Determines the size of the next cohort based on the parts.
+
+\item \code{size(CohortSizeOrdinal)}: Determines the size of the next cohort in a ordinal CRM trial.
 
 \item \code{size(Samples)}: get the number of MCMC samples from \code{Samples} object.
 
@@ -476,6 +482,10 @@ mySize <- CohortSizeParts(cohort_sizes = c(1, 3))
 size(mySize, dose = doseRecommendation$value, data = data)
 
 # nolint end
+CohortSizeOrdinal(
+  grade = 1L,
+  rule = CohortSizeRange(intervals = c(0L, 30L), cohort_size = c(1L, 3L))
+)
 # Set up the MCMC option in order to have a burn-in of 100 iterations and
 # then take every other iteration up to a collection of 200 samples.
 my_options <- McmcOptions(burnin = 100, step = 2, samples = 200)

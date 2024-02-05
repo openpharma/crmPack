@@ -392,3 +392,89 @@
       275  275       0.00
       300  300       0.00
 
+# tidy-IncrementsRelative works correctly
+
+    structure(list(min = c(0, 20), max = c(20, Inf), increment = c(1, 
+    0.33)), row.names = c(NA, -2L), class = c("tbl_IncrementsRelative", 
+    "tbl_df", "tbl", "data.frame"))
+
+---
+
+    structure(list(min = c(0, 20), max = c(20, Inf), increment = c(1, 
+    0.33)), row.names = c(NA, -2L), class = c("tbl_IncrementsRelative", 
+    "tbl_df", "tbl", "data.frame"))
+
+# tidy-CohortSizeDLT works correctly
+
+    structure(list(min = c(0, 1), max = c(1, Inf), cohort_size = c(1L, 
+    3L)), row.names = c(NA, -2L), class = c("tbl_CohortSizeDLT", 
+    "tbl_df", "tbl", "data.frame"))
+
+# tidy-CohortSizeMin works correctly
+
+    structure(list(structure(list(min = c(0, 10), max = c(10, Inf
+    ), cohort_size = c(1L, 3L)), row.names = c(NA, -2L), class = c("tbl_CohortSizeRange", 
+    "tbl_df", "tbl", "data.frame")), structure(list(min = c(0, 1), 
+        max = c(1, Inf), cohort_size = c(1L, 3L)), row.names = c(NA, 
+    -2L), class = c("tbl_CohortSizeDLT", "tbl_df", "tbl", "data.frame"
+    ))), class = c("tbl_CohortSizeMin", "tbl_CohortSizeMin", "list"
+    ))
+
+# tidy-CohortSizeMax works correctly
+
+    structure(list(structure(list(min = c(0, 10), max = c(10, Inf
+    ), cohort_size = c(1L, 3L)), row.names = c(NA, -2L), class = c("tbl_CohortSizeRange", 
+    "tbl_df", "tbl", "data.frame")), structure(list(min = c(0, 1), 
+        max = c(1, Inf), cohort_size = c(1L, 3L)), row.names = c(NA, 
+    -2L), class = c("tbl_CohortSizeDLT", "tbl_df", "tbl", "data.frame"
+    ))), class = c("tbl_CohortSizeMax", "tbl_CohortSizeMax", "list"
+    ))
+
+# tidy-CohortSizeRange works correctly
+
+    structure(list(min = c(0, 30), max = c(30, Inf), cohort_size = c(1L, 
+    3L)), row.names = c(NA, -2L), class = c("tbl_CohortSizeRange", 
+    "tbl_df", "tbl", "data.frame"))
+
+# tidy-CohortSizeParts works correctly
+
+    WAoAAAACAAQDAQACAwAAAAMTAAAAAgAAAA0AAAACAAAAAQAAAAIAAAANAAAAAgAAAAEAAAAD
+    AAAEAgAAAAEABAAJAAAABWNsYXNzAAAAEAAAAAQABAAJAAAAE3RibF9Db2hvcnRTaXplUGFy
+    dHMABAAJAAAABnRibF9kZgAEAAkAAAADdGJsAAQACQAAAApkYXRhLmZyYW1lAAAEAgAAAAEA
+    BAAJAAAACXJvdy5uYW1lcwAAAA0AAAACgAAAAP////4AAAQCAAAAAQAEAAkAAAAFbmFtZXMA
+    AAAQAAAAAgAEAAkAAAAEcGFydAAEAAkAAAALY29ob3J0X3NpemUAAAD+
+
+# tidy-IncrementsMin works correctly
+
+    structure(list(structure(list(intervals = c(0L, 1L, 3L), increments = c(1, 
+    0.33, 0.2)), class = c("tbl_IncrementsRelativeDLT", "tbl_df", 
+    "tbl", "data.frame"), row.names = c(NA, -3L)), structure(list(
+        min = c(0, 20), max = c(20, Inf), increment = c(1, 0.33)), row.names = c(NA, 
+    -2L), class = c("tbl_IncrementsRelative", "tbl_df", "tbl", "data.frame"
+    ))), class = c("tbl_IncrementsMin", "tbl_IncrementsMin", "list"
+    ))
+
+# tidy-IncrementsRelativeParts works correctly
+
+    structure(list(dlt_start = structure(list(dlt_start = 0L), class = c("tbl_df", 
+    "tbl", "data.frame"), row.names = c(NA, -1L)), clean_start = structure(list(
+        clean_start = 1L), class = c("tbl_df", "tbl", "data.frame"
+    ), row.names = c(NA, -1L)), intervals = structure(list(intervals = c(0, 
+    2)), class = c("tbl_df", "tbl", "data.frame"), row.names = c(NA, 
+    -2L)), increments = structure(list(increments = c(2, 1)), class = c("tbl_df", 
+    "tbl", "data.frame"), row.names = c(NA, -2L))), class = c("tbl_IncrementsRelativeParts", 
+    "list"))
+
+# tidy-NextBestNCRMLoss works correctly
+
+    structure(list(unacceptable = structure(list(unacceptable = c(0.6, 
+    1)), class = c("tbl_df", "tbl", "data.frame"), row.names = c(NA, 
+    -2L)), losses = structure(list(losses = c(1, 0, 1, 2)), class = c("tbl_df", 
+    "tbl", "data.frame"), row.names = c(NA, -4L)), target = structure(list(
+        target = c(0.2, 0.35)), class = c("tbl_df", "tbl", "data.frame"
+    ), row.names = c(NA, -2L)), overdose = structure(list(overdose = c(0.35, 
+    0.6)), class = c("tbl_df", "tbl", "data.frame"), row.names = c(NA, 
+    -2L)), max_overdose_prob = structure(list(max_overdose_prob = 0.25), class = c("tbl_df", 
+    "tbl", "data.frame"), row.names = c(NA, -1L))), class = c("tbl_NextBestNCRMLoss", 
+    "list"))
+
