@@ -1,7 +1,4 @@
 library(knitr)
-# if (!testthat::is_checking()) {
-#   devtools::load_all()
-# }
 
 # h_custom_method_exists could be removed once all necessary knit_print methods
 # have been defined
@@ -20,7 +17,7 @@ h_custom_method_exists <- function(generic, obj) {
   f <- X <- function(x, obj) UseMethod("X")
   for (m in methods(generic_name)) assign(sub(generic_name, "X", m, fixed = TRUE), "body<-"(f, value = m))
   method_name <- X(obj)
-  return (method_name != paste0(generic_name, ".default"))
+  return(method_name != paste0(generic_name, ".default"))
 }
 
 test_that("h_custom_method_exists works correctly", {
@@ -32,8 +29,8 @@ test_that("h_custom_method_exists works correctly", {
       class(bar) <- "bar"
       baz <<- NA
       class(baz) <- "baz"
-      foo.default <<- function(x, ...) "I don't know what to do"
-      foo.bar <<- function(x, ...) "I am bar"
+      foo.default <<- function(x, ...) "I don't know what to do"  #nolint
+      foo.bar <<- function(x, ...) "I am bar"                     #nolint
       withr::defer(rm(foo, bar, baz, foo.default, foo.bar, envir = .GlobalEnv))
 
       expect_true(h_custom_method_exists(foo, bar))

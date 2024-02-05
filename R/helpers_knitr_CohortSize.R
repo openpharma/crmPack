@@ -221,7 +221,7 @@ knit_print.CohortSizeOrdinal <- function(x, ..., asis = TRUE) {
       paste0(knit_print(x@rule, asis = asis, ...), collapse = "\n"),
       paste = "\n"
     )
-  if (asis){
+  if (asis) {
     rv <- knitr::asis_output(rv)
   }
   rv
