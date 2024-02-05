@@ -446,10 +446,10 @@
 
 # tidy-IncrementsMin works correctly
 
-    structure(list(structure(list(intervals = c(0L, 1L, 3L), increments = c(1, 
-    0.33, 0.2)), class = c("tbl_IncrementsRelativeDLT", "tbl_df", 
-    "tbl", "data.frame"), row.names = c(NA, -3L)), structure(list(
-        min = c(0, 20), max = c(20, Inf), increment = c(1, 0.33)), row.names = c(NA, 
+    structure(list(structure(list(min = c(0, 1, 3), max = c(1, 3, 
+    Inf), increment = c(1, 0.33, 0.2)), row.names = c(NA, -3L), class = c("tbl_IncrementsRelativeDLT", 
+    "tbl_df", "tbl", "data.frame")), structure(list(min = c(0, 20
+    ), max = c(20, Inf), increment = c(1, 0.33)), row.names = c(NA, 
     -2L), class = c("tbl_IncrementsRelative", "tbl_df", "tbl", "data.frame"
     ))), class = c("tbl_IncrementsMin", "tbl_IncrementsMin", "list"
     ))
