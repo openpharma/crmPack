@@ -140,7 +140,7 @@ setMethod("simulate",
             prob = thisProb,
             prob_placebo = thisProb.PL,
             cohort_size = thisSize,
-            cohort_size_pl = thisSize.PL,
+            cohort_size_placebo = thisSize.PL,
             dose_grid = object@data@doseGrid[1],
             first_separate = firstSeparate
           )
