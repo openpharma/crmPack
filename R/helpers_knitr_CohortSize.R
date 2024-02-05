@@ -215,12 +215,12 @@ knit_print.CohortSizeMin <- function(x, ..., asis = TRUE) {
 #' @rdname knit_print
 knit_print.CohortSizeOrdinal <- function(x, ..., asis = TRUE) {
   rv <- paste0(
-      "Based on a toxicity grade of ",
-      x@grade,
-      ": ",
-      paste0(knit_print(x@rule, asis = asis, ...), collapse = "\n"),
-      paste = "\n"
-    )
+    "Based on a toxicity grade of ",
+    x@grade,
+    ": ",
+    paste0(knit_print(x@rule, asis = asis, ...), collapse = "\n"),
+    paste = "\n"
+  )
 
   if (asis) {
     rv <- knitr::asis_output(rv)

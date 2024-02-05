@@ -29,8 +29,8 @@ test_that("h_custom_method_exists works correctly", {
       class(bar) <- "bar"
       baz <<- NA
       class(baz) <- "baz"
-      foo.default <<- function(x, ...) "I don't know what to do"  #nolint
-      foo.bar <<- function(x, ...) "I am bar"                     #nolint
+      foo.default <<- function(x, ...) "I don't know what to do" # nolint
+      foo.bar <<- function(x, ...) "I am bar" # nolint
       withr::defer(rm(foo, bar, baz, foo.default, foo.bar, envir = .GlobalEnv))
 
       expect_true(h_custom_method_exists(foo, bar))
