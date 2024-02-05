@@ -46,6 +46,7 @@ Imports:
     GenSA,
     gridExtra,
     kableExtra,
+    knitr,
     lifecycle,
     magrittr,
     methods,
@@ -64,7 +65,6 @@ Suggests:
     covr,
     data.tree,
     ggmcmc,
-    knitr,
     rmarkdown,
     stringr,
     testthat (>= 3.0.0),
@@ -117,6 +117,7 @@ Collate:
     'Simulations-methods.R'
     'crmPack-package.R'
     'helpers_design.R'
+    'helpers_knitr_CohortSize.R'
     'helpers_model.R'
     'helpers_samples.R'
     'helpers_simulations.R'
