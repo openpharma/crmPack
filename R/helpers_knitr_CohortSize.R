@@ -68,7 +68,7 @@ knit_print.CohortSizeRange <- function(x, ..., asis = TRUE) {
   }
   x <- tidy(x)
   param[["x"]] <- x
-  rv <-  kableExtra::add_header_above(
+  rv <- kableExtra::add_header_above(
     do.call(knitr::kable, param),
     c("Dose" = 2, " " = 1)
   )
@@ -221,6 +221,7 @@ knit_print.CohortSizeOrdinal <- function(x, ..., asis = TRUE) {
       paste0(knit_print(x@rule, asis = asis, ...), collapse = "\n"),
       paste = "\n"
     )
+
   if (asis) {
     rv <- knitr::asis_output(rv)
   }
