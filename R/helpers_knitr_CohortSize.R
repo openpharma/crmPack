@@ -48,7 +48,6 @@ knit_print.CohortSizeConst <- function(x, ..., asis = TRUE, label = c("participa
   }
   rv
 }
-registerS3method("knit_print", "CohortSizeConst", knit_print.CohortSizeConst)
 
 #' Render a CohortSizeRange Object
 #'
@@ -67,16 +66,17 @@ knit_print.CohortSizeRange <- function(x, ..., asis = TRUE) {
   if (!("caption" %in% names(param))) {
     param[["caption"]] <- "Defined by the dose to be used in the next cohort"
   }
-  x <- x %>% tidy()
+  x <- tidy(x)
   param[["x"]] <- x
-  rv <- do.call(knitr::kable, param) %>%
-    kableExtra::add_header_above(c("Dose" = 2, " " = 1))
+  rv <-  kableExtra::add_header_above(
+    do.call(knitr::kable, param),
+    c("Dose" = 2, " " = 1)
+  )
   if (asis) {
     rv <- knitr::asis_output(rv)
   }
   rv
 }
-registerS3method("knit_print", "CohortSizeRange", knit_print.CohortSizeRange)
 
 #' Render a CohortSizeDLT Object
 #'
@@ -101,15 +101,16 @@ knit_print.CohortSizeDLT <- function(x, ..., asis = TRUE) {
   if (!("caption" %in% names(param))) {
     param[["caption"]] <- "Defined by the number of DLTs so far observed"
   }
-  param[["x"]] <- x %>% tidy()
-  rv <- do.call(knitr::kable, param) %>%
-    kableExtra::add_header_above(c("No of DLTs" = 2, " " = 1))
+  param[["x"]] <- tidy(x)
+  rv <- kableExtra::add_header_above(
+    do.call(knitr::kable, param),
+    c("No of DLTs" = 2, " " = 1)
+  )
   if (asis) {
     rv <- knitr::asis_output(rv)
   }
   rv
 }
-registerS3method("knit_print", "CohortSizeDLT", knit_print.CohortSizeDLT)
 
 #' Render a CohortSizeParts Object
 #'
@@ -142,7 +143,6 @@ knit_print.CohortSizeParts <- function(x, ..., asis = TRUE, label = c("participa
   }
   rv
 }
-registerS3method("knit_print", "CohortSizeParts", knit_print.CohortSizeParts)
 
 #' Render a CohortSizeMax Object
 #'
@@ -174,7 +174,6 @@ knit_print.CohortSizeMax <- function(x, ..., asis = TRUE) {
   }
   rv
 }
-registerS3method("knit_print", "CohortSizeMax", knit_print.CohortSizeMax)
 
 #' Render a CohortSizeMin Object
 #'
@@ -205,7 +204,6 @@ knit_print.CohortSizeMin <- function(x, ..., asis = TRUE) {
   }
   rv
 }
-registerS3method("knit_print", "CohortSizeMin", knit_print.CohortSizeMin)
 
 #' Render a CohortSizeOrdinal Object
 #'
@@ -216,14 +214,15 @@ registerS3method("knit_print", "CohortSizeMin", knit_print.CohortSizeMin)
 #' @export
 #' @rdname knit_print
 knit_print.CohortSizeOrdinal <- function(x, ..., asis = TRUE) {
-  knitr::asis_output(
-    paste0(
+  rv <- paste0(
       "Based on a toxicity grade of ",
       x@grade,
       ": ",
       paste0(knit_print(x@rule, asis = asis, ...), collapse = "\n"),
       paste = "\n"
     )
-  )
+  if (asis){
+    rv <- knitr::asis_output(rv)
+  }
+  rv
 }
-registerS3method("knit_print", "CohortSizeOrdinal", knit_print.CohortSizeOrdinal)
