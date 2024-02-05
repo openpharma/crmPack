@@ -4402,7 +4402,7 @@ test_that("tidy-NextBestNCRMLoss works correctly", {
   expect_snapshot_value(result, style = "deparse")
 })
 
-# See https://github.com/Roche/crmPack/issues/786
+# Relevant: https://github.com/Roche/crmPack/issues/786
 test_that("tidy-IncrementsRelativeDLT works correctly", {
   obj <- .DefaultIncrementsRelativeDLT()
   actual <- tidy(obj)
