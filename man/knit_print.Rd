@@ -69,6 +69,12 @@ element describes a \code{cohort_size} of 1 and the second describes all other
 when \code{cohort_size} is not 1.
 
 
+The default value of \code{col.names} is \code{c("Lower", "Upper", "Cohort size")} and
+that of \code{caption} is \code{"Defined by the dose to be used in the next cohort"}.
+These values can be overridden by passing \code{col.names} and \code{caption} in the
+function call.
+
+
 The by default, the columns are labelled \code{Lower}, \code{Upper} and \verb{Cohort size}.  The table's caption is
 \verb{Defined by the number of DLTs so far observed}.  These values can be overridden by passing
 \code{col.names} and \code{caption} in the function call.
@@ -80,6 +86,12 @@ It should be a character vector of length 1 or 2.  If of length 2, the first
 element describes a \code{cohort_size} of 1 and the second describes all other
 \code{cohort_size}s.  If of length 1, the character \code{s} is appended to the value
 when \code{cohort_size} is not 1.
+
+
+The default value of \code{col.names} is \code{c("Lower", "Upper", "Cohort size")} and
+that of \code{caption} is \code{"Defined by the dose to be used in the next cohort"}.
+These values can be overridden by passing \code{col.names} and \code{caption} in the
+function call.
 
 
 The by default, the columns are labelled \code{Lower}, \code{Upper} and \verb{Cohort size}.  The table's caption is

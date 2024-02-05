@@ -21,6 +21,8 @@
 \alias{tidy-CohortSizeParts}
 \alias{tidy,IncrementsMin-method}
 \alias{tidy-IncrementsMin}
+\alias{tidy,IncrementsRelativeDLT-method}
+\alias{tidy-IncrementsRelativeDLT}
 \alias{tidy,IncrementsRelativeParts-method}
 \alias{tidy-IncrementsRelativeParts}
 \alias{tidy,NextBestNCRM-method}
@@ -54,6 +56,8 @@ tidy(x, ...)
 \S4method{tidy}{IncrementsMin}(x, ...)
 
 \S4method{tidy}{IncrementsRelative}(x, ...)
+
+\S4method{tidy}{IncrementsRelativeDLT}(x, ...)
 
 \S4method{tidy}{IncrementsRelativeParts}(x, ...)
 
@@ -93,6 +97,8 @@ CohortSizeRange(intervals = c(0, 20), cohort_size = c(1, 3)) \%>\% tidy()
 CohortSizeParts(cohort_sizes = c(1, 3)) \%>\% tidy()
 .DefaultIncrementsMin() \%>\% tidy()
 CohortSizeRange(intervals = c(0, 20), cohort_size = c(1, 3)) \%>\% tidy()
+x <- .DefaultIncrementsRelativeDLT()
+x \%>\% tidy()
 .DefaultIncrementsRelativeParts() \%>\% tidy()
 NextBestNCRM(
   target = c(0.2, 0.35),
