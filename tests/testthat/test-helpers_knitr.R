@@ -151,3 +151,5 @@ test_that("knit_print.CohortSizeParts works correctly", {
   rv <- knit_print(x, asis = FALSE)
   expect_equal(rv, "A size of 1 participant in the first part and 3 participants in the second.")
 })
+
+# Increments ----
