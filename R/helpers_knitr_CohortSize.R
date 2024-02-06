@@ -51,8 +51,13 @@ knit_print.CohortSizeConst <- function(x, ..., asis = TRUE, label = c("participa
 #' Render a CohortSizeRange Object
 #'
 #' @description `r lifecycle::badge("experimental")`
+#' @param ... passed to `knitr::kable`
 #' @inherit knit_print.CohortSizeConst return
-#'
+#' @section Usage Notes:
+#' The default value of `col.names` is `c("Lower", "Upper", "Cohort size")` and
+#' that of `caption` is `"Defined by the dose to be used in the next cohort"`.
+#' These values can be overridden by passing `col.names` and `caption` in the
+#' function call.
 #' @export
 #' @rdname knit_print
 knit_print.CohortSizeRange <- function(x, ..., asis = TRUE) {
