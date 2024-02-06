@@ -213,6 +213,8 @@ knit_print.CohortSizeMin <- function(x, ..., asis = TRUE) {
 #' @export
 #' @rdname knit_print
 knit_print.CohortSizeOrdinal <- function(x, ..., asis = TRUE) {
+  assert_flag(asis)
+
   rv <- paste0(
     "Based on a toxicity grade of ",
     x@grade,

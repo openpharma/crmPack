@@ -353,68 +353,9 @@ display: none;
 </div>
 
 
-<pre><code>## [1] &quot;IncrementsRelativeParts&quot;</code></pre>
-<p>The maximum increment in Part 1 is defined by the
-<code>part1Ladder</code> slot of the associated <code>DataParts</code>
-object.</p>
-<p>If no toxicities are reported in Part 1, the starting dose for Part 2
-will be 1 dose above the highest dose used in Part 1.</p>
-<p>If one or more toxicities are reported in Part 1, the starting dose
-for Part 2 will be the highest dose used in Part 1.</p>
-Once Part 2 has started, the maximum increment in dose levels will be
-based on the number of toxicities reported so far, as described in the
-following table:
-<table>
-<caption>
-Defined by the number of toxicities reported so far
-</caption>
-<thead>
-<tr>
-<th style="border-bottom:hidden;padding-bottom:0; padding-left:3px;padding-right:3px;text-align: center; " colspan="2">
-<div style="border-bottom: 1px solid #ddd; padding-bottom: 5px; ">
-Toxicities
-</div>
-</th>
-<th style="empty-cells: hide;border-bottom:hidden;" colspan="1">
-</th>
-</tr>
-<tr>
-<th style="text-align:right;">
-Lower
-</th>
-<th style="text-align:right;">
-Upper
-</th>
-<th style="text-align:right;">
-Increment
-</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td style="text-align:right;">
-0
-</td>
-<td style="text-align:right;">
-2
-</td>
-<td style="text-align:right;">
-2
-</td>
-</tr>
-<tr>
-<td style="text-align:right;">
-2
-</td>
-<td style="text-align:right;">
-Inf
-</td>
-<td style="text-align:right;">
-1
-</td>
-</tr>
-</tbody>
-</table>
+<pre><code>## [1] &quot;IncrementsDoseLevels&quot;</code></pre>
+<p>The maximum increment between cohorts is 2 levels relative to the
+dose used in the previous cohort.</p>
 
 
 
