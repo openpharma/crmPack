@@ -1,4 +1,7 @@
 library(knitr)
+if (!is_checking()) {
+  devtools::load_all()
+}
 
 # h_custom_method_exists could be removed once all necessary knit_print methods
 # have been defined
@@ -97,7 +100,10 @@ test_that("asis parameter works correctly for all implemented methods", {
       # If the default knit_print method has been overridden, test it
       if (h_custom_method_exists(knit_print, obj)) {
         rv <- knit_print(obj)
+        # Default behaviour
         expect_class(rv, "knit_asis")
+
+        # Explicit behaviours
         rv <- knit_print(obj, asis = TRUE)
         expect_class(rv, "knit_asis")
         rv <- knit_print(obj, asis = FALSE)
@@ -105,6 +111,9 @@ test_that("asis parameter works correctly for all implemented methods", {
         # CohortSizeDLT returns a knitr_table
         if ("knit_asis" %in% class(rv)) print(cls)
         expect_true(!("knit_asis" %in% class(rv)))
+
+        # Invalid value
+        expect_error(knit_print(obj, asis = "badValue"))
       }
     }
   }
