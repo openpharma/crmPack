@@ -62,9 +62,9 @@ knit_print.IncrementsRelativeDLT <- function(x, ..., asis = TRUE) {
   d <- tibble::tibble(
     intervals = x@intervals,
   ) %>%
-  h_range_to_minmax(.data$intervals) %>%
-  dplyr::filter(max > 0) %>%
-  tibble::add_column(increments = x@increments)
+    h_range_to_minmax(.data$intervals) %>%
+    dplyr::filter(max > 0) %>%
+    tibble::add_column(increments = x@increments)
 
   param[["x"]] <- d
   rv <- kableExtra::add_header_above(
@@ -230,7 +230,7 @@ knit_print.IncrementsRelativeParts <- function(x, ..., asis = TRUE, labels = c("
         ifelse(x@dlt_start < 0, "below ", "above "),
         "the highest dose used in Part 1.\n\n",
       )
-    ) ,
+    ),
     "Once Part 2 has started, the maximum increment in dose levels will be based ",
     "on the number of ", labels[2], " reported so far, as described in the ",
     "following table:"
@@ -316,4 +316,3 @@ knit_print.IncrementsRelativeDLTCurrent <- function(x, ..., asis = TRUE, labels 
   rv
 }
 registerS3method("knit_print", "IncrementsRelativeDLTCurrent", knit_print.IncrementsRelativeDLTCurrent)
-
