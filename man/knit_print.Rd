@@ -18,13 +18,13 @@
 \alias{knit_print.CohortSizeMax}
 \alias{knit_print.CohortSizeMin}
 \alias{knit_print.CohortSizeOrdinal}
-\title{Render a IncrementsRelative Object}
+\title{Render a \code{IncrementsRelative} Object}
 \usage{
 \method{knit_print}{IncrementsRelative}(x, ..., asis = TRUE)
 
 \method{knit_print}{IncrementsRelativeDLT}(x, ..., asis = TRUE)
 
-\method{knit_print}{IncrementsDoseLevels}(object, ..., asis = TRUE)
+\method{knit_print}{IncrementsDoseLevels}(x, ..., asis = TRUE)
 
 \method{knit_print}{IncrementsHSRBeta}(x, ..., asis = TRUE)
 

@@ -1,13 +1,10 @@
-#' @importFrom knitr knit_print
-NULL
-
 # Increments ----
 
-#' Render a IncrementsRelative Object
+#' Render a `IncrementsRelative` Object
 #'
 #' @description `r lifecycle::badge("experimental")`
 #' @inherit knit_print.CohortSizeConst return
-#' @param ... passed to `knitr::kable`
+#' @param ... passed to [knitr::kable()]
 #' @section Usage Notes:
 #' The default value of `col.names` is `c("Min", "Max", "Increment")` and that
 #' of `caption` is `"Defined by highest dose administered so far"`.  These
@@ -36,13 +33,12 @@ knit_print.IncrementsRelative <- function(x, ..., asis = TRUE) {
   }
   rv
 }
-registerS3method("knit_print", "IncrementsRelative", knit_print.IncrementsRelative)
 
-#' Render an IncrementsRelativeDLT object
+#' Render an `IncrementsRelativeDLT` object
 #'
 #' @description `r lifecycle::badge("experimental")`
 #' @inherit knit_print.CohortSizeConst return
-#' @param ... passed to `knitr::kable`
+#' @param ... passed to [knitr::kable()]
 #' @section Usage Notes:
 #' The default value of `col.names` is `c("Min", "Max", "Increment")` and that
 #' of `caption` is `"Defined by number of DLTs reported so far"`. These values
@@ -76,23 +72,22 @@ knit_print.IncrementsRelativeDLT <- function(x, ..., asis = TRUE) {
   }
   rv
 }
-registerS3method("knit_print", "IncrementsRelativeDLT", knit_print.IncrementsRelativeDLT)
 
-#' Render an IncrementsDoseLevels object
+#' Render an `IncrementsDoseLevels` object
 #'
 #' @description `r lifecycle::badge("experimental")`
 #' @inherit knit_print.CohortSizeConst return
 #' @export
 #' @rdname knit_print
-knit_print.IncrementsDoseLevels <- function(object, ..., asis = TRUE) {
+knit_print.IncrementsDoseLevels <- function(x, ..., asis = TRUE) {
   assert_flag(asis)
 
   rv <- paste0(
     "The maximum increment between cohorts is ",
-    object@levels,
-    ifelse(object@levels == 1, " level", " levels"),
+    x@levels,
+    ifelse(x@levels == 1, " level", " levels"),
     " relative to the ",
-    ifelse(object@basis_level == "last", "dose used in the previous cohort.", "highest dose used so far."),
+    ifelse(x@basis_level == "last", "dose used in the previous cohort.", "highest dose used so far."),
     "\n"
   )
   if (asis) {
@@ -100,9 +95,8 @@ knit_print.IncrementsDoseLevels <- function(object, ..., asis = TRUE) {
   }
   rv
 }
-registerS3method("knit_print", "IncrementsDoseLevels", knit_print.IncrementsDoseLevels)
 
-#' Render an IncrementsHSRBeta object
+#' Render an `IncrementsHSRBeta` object
 #'
 #' @description `r lifecycle::badge("experimental")`
 #' @inherit knit_print.CohortSizeConst return
@@ -125,9 +119,8 @@ knit_print.IncrementsHSRBeta <- function(x, ..., asis = TRUE) {
   }
   rv
 }
-registerS3method("knit_print", "IncrementsHSRBeta", knit_print.IncrementsHSRBeta)
 
-#' Render an IncrementsMin object
+#' Render an `IncrementsMin` object
 #'
 #' @description `r lifecycle::badge("experimental")`
 #' @inherit knit_print.CohortSizeConst return
@@ -157,9 +150,8 @@ knit_print.IncrementsMin <- function(x, ..., asis = TRUE) {
   }
   rv
 }
-registerS3method("knit_print", "IncrementsMin", knit_print.IncrementsMin)
 
-#' Render an IncrementsOrdinal object
+#' Render an `IncrementsOrdinal` object
 #' @inherit knit_print.CohortSizeConst return
 #' @param ... passed through to the `knit_print` method of the standard rule
 #'
@@ -180,9 +172,8 @@ knit_print.IncrementsOrdinal <- function(x, ..., asis = TRUE) {
   }
   rv
 }
-registerS3method("knit_print", "IncrementsOrdinal", knit_print.IncrementsOrdinal)
 
-#' Render an IncrementsRelativeParts object
+#' Render an `IncrementsRelativeParts` object
 #'
 #' @inherit knit_print.CohortSizeConst return
 #' @param labels (`character`)\cr The word used to describe toxicities.  See
@@ -211,7 +202,7 @@ knit_print.IncrementsRelativeParts <- function(x, ..., asis = TRUE, labels = c("
     "will be ",
     ifelse(
       x@clean_start == 0,
-      " the highest dose used in Part 1.\n\n",
+      "the highest dose used in Part 1.\n\n",
       paste0(
         x@clean_start,
         ifelse(abs(x@clean_start) == 1, " dose ", " doses "),
@@ -225,10 +216,10 @@ knit_print.IncrementsRelativeParts <- function(x, ..., asis = TRUE, labels = c("
       x@dlt_start == 0,
       "the highest dose used in Part 1.\n\n",
       paste0(
-        x@dlt_start,
+        abs(x@dlt_start),
         ifelse(abs(x@dlt_start) == 1, " dose ", " doses "),
         ifelse(x@dlt_start < 0, "below ", "above "),
-        "the highest dose used in Part 1.\n\n",
+        "the highest dose used in Part 1.\n\n"
       )
     ) ,
     "Once Part 2 has started, the maximum increment in dose levels will be based ",
@@ -252,7 +243,9 @@ knit_print.IncrementsRelativeParts <- function(x, ..., asis = TRUE, labels = c("
   }
   param[["x"]] <- d
   header <- c(2, 1)
-  names(header) <- c(stringr::str_to_title(labels[2]), " ")
+  headerLabel <- labels[2]
+  substr(headerLabel, 1, 1) <- toupper(substr(headerLabel, 1, 1))
+  names(header) <- c(headerLabel, " ")
   d_tab <- kableExtra::add_header_above(
     do.call(knitr::kable, param),
     header
@@ -263,15 +256,14 @@ knit_print.IncrementsRelativeParts <- function(x, ..., asis = TRUE, labels = c("
   }
   rv
 }
-registerS3method("knit_print", "IncrementsRelativeParts", knit_print.IncrementsRelativeParts)
 
-#' Render an IncrementsRelativeDLTCurrent object
+#' Render an `IncrementsRelativeDLTCurrent` object
 #'
 #' @description `r lifecycle::badge("experimental")`
 #' @inherit knit_print.CohortSizeConst return
 #' @param labels (`character`)\cr The word used to describe toxicities.  See
 #' Usage Notes below.
-#' @param ... passed to `knitr::kable`
+#' @param ... passed to [knitr::kable()]
 #' @section Usage Notes:
 #' The default value of `col.names` is `c("Min", "Max", "Increment")` and that
 #' of `caption` is `"Defined by number of DLTs in the current cohort"`. These values
@@ -302,7 +294,7 @@ knit_print.IncrementsRelativeDLTCurrent <- function(x, ..., asis = TRUE, labels 
     param[["caption"]] <- "Defined by number of DLTs reported in the current cohort"
   }
   x <- tidy(x) %>%
-    h_range_to_minmax(intervals) %>%
+    h_range_to_minmax(.data$intervals) %>%
     dplyr::filter(max > 0) %>%
     add_column(increments = x@increments)
   param[["x"]] <- x
@@ -315,5 +307,3 @@ knit_print.IncrementsRelativeDLTCurrent <- function(x, ..., asis = TRUE, labels 
   }
   rv
 }
-registerS3method("knit_print", "IncrementsRelativeDLTCurrent", knit_print.IncrementsRelativeDLTCurrent)
-
