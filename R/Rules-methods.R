@@ -3705,6 +3705,24 @@ setMethod(
   }
 )
 
+## tidy-IncrementsRelativeDLT ----
+
+#' @rdname tidy
+#' @aliases tidy-IncrementsRelativeDLT
+#' @example examples/Rules-method-tidyIncrementsRelativeDLT.R
+#' @export
+setMethod(
+  f = "tidy",
+  signature = signature(x = "IncrementsRelativeDLT"),
+  definition = function(x, ...) {
+    h_tidy_all_slots(x) %>%
+      h_range_to_minmax(.data$intervals) %>%
+      dplyr::filter(dplyr::row_number() > 1) %>%
+      tibble::add_column(increment = x@increments) %>%
+      h_tidy_class(x)
+  }
+)
+
 ## tidy-IncrementsRelative ----
 
 #' @rdname tidy
