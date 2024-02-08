@@ -230,14 +230,6 @@ knit_print.IncrementsRelativeParts <- function(x, ..., asis = TRUE, labels = c("
     param[["caption"]] <- paste0("Defined by the number of ", labels[2], " reported so far")
   }
   param[["x"]] <- tidy(x)
-  header <- c(2, 1)
-  headerLabel <- labels[2]
-  substr(headerLabel, 1, 1) <- toupper(substr(headerLabel, 1, 1))
-  names(header) <- c(headerLabel, " ")
-  d_tab <- kableExtra::add_header_above(
-    do.call(knitr::kable, param),
-    header
-  )
   rv <- paste(rv, d_tab)
   if (asis) {
     rv <- knitr::asis_output(rv)
