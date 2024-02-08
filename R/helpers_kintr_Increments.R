@@ -55,14 +55,9 @@ knit_print.IncrementsRelativeDLT <- function(x, ..., asis = TRUE) {
   if (!("caption" %in% names(param))) {
     param[["caption"]] <- "Defined by number of DLTs reported so far"
   }
-  d <- tibble::tibble(
-    intervals = x@intervals,
-  ) %>%
-    h_range_to_minmax(.data$intervals) %>%
-    dplyr::filter(max > 0) %>%
-    tibble::add_column(increments = x@increments)
 
-  param[["x"]] <- d
+
+  param[["x"]] <- tidy(x)
   rv <- kableExtra::add_header_above(
     do.call(knitr::kable, param),
     c("No DLTs" = 2, " " = 1)
@@ -226,13 +221,6 @@ knit_print.IncrementsRelativeParts <- function(x, ..., asis = TRUE, labels = c("
     "on the number of ", labels[2], " reported so far, as described in the ",
     "following table:"
   )
-  d <- tibble::tibble(
-    intervals = x@intervals,
-    increments = x@increments
-  ) %>%
-    h_range_to_minmax(.data$intervals) %>%
-    dplyr::filter(max > 0) %>%
-    tibble::add_column(increments = x@increments)
 
   param <- list(...)
   if (!("col.names" %in% names(param))) {
@@ -241,7 +229,7 @@ knit_print.IncrementsRelativeParts <- function(x, ..., asis = TRUE, labels = c("
   if (!("caption" %in% names(param))) {
     param[["caption"]] <- paste0("Defined by the number of ", labels[2], " reported so far")
   }
-  param[["x"]] <- d
+  param[["x"]] <- tidy(x)
   header <- c(2, 1)
   headerLabel <- labels[2]
   substr(headerLabel, 1, 1) <- toupper(substr(headerLabel, 1, 1))
@@ -293,11 +281,7 @@ knit_print.IncrementsRelativeDLTCurrent <- function(x, ..., asis = TRUE, labels 
   if (!("caption" %in% names(param))) {
     param[["caption"]] <- "Defined by number of DLTs reported in the current cohort"
   }
-  x <- tidy(x) %>%
-    h_range_to_minmax(.data$intervals) %>%
-    dplyr::filter(max > 0) %>%
-    add_column(increments = x@increments)
-  param[["x"]] <- x
+  param[["x"]] <- tidy(x)
   rv <- kableExtra::add_header_above(
     do.call(knitr::kable, param),
     c("No DLTs" = 2, " " = 1)
