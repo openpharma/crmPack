@@ -1,4 +1,7 @@
 library(knitr)
+if (!is_checking()) {
+  devtools::load_all()
+}
 
 # h_custom_method_exists could be removed once all necessary knit_print methods
 # have been defined
@@ -97,7 +100,10 @@ test_that("asis parameter works correctly for all implemented methods", {
       # If the default knit_print method has been overridden, test it
       if (h_custom_method_exists(knit_print, obj)) {
         rv <- knit_print(obj)
+        # Default behaviour
         expect_class(rv, "knit_asis")
+
+        # Explicit behaviours
         rv <- knit_print(obj, asis = TRUE)
         expect_class(rv, "knit_asis")
         rv <- knit_print(obj, asis = FALSE)
@@ -105,6 +111,9 @@ test_that("asis parameter works correctly for all implemented methods", {
         # CohortSizeDLT returns a knitr_table
         if ("knit_asis" %in% class(rv)) print(cls)
         expect_true(!("knit_asis" %in% class(rv)))
+
+        # Invalid value
+        expect_error(knit_print(obj, asis = "badValue"))
       }
     }
   }
@@ -153,3 +162,46 @@ test_that("knit_print.CohortSizeParts works correctly", {
 })
 
 # Increments ----
+
+test_that("knit_print.IncrementsRelativeParts works correctly", {
+  testList <- list(
+    "knit_print_IncrementsRelativeParts1.html" = IncrementsRelativeParts(clean_start = -1, dlt_start = -2),
+    "knit_print_IncrementsRelativeParts2.html" = IncrementsRelativeParts(clean_start = 0, dlt_start = -1),
+    "knit_print_IncrementsRelativeParts3.html" = IncrementsRelativeParts(clean_start = 2, dlt_start = 1),
+    "knit_print_IncrementsRelativeParts4.html" = IncrementsRelativeParts(clean_start = 2, dlt_start = -1),
+    "knit_print_IncrementsRelativeParts5.html" = IncrementsRelativeParts(
+      clean_start = 1,
+      dlt_start = 0,
+      intervals = c(0, 20, 100),
+      increments = c(2, 1.5, 0.33)
+    )
+  )
+
+  for (name in names(testList)) {
+    withr::with_file(
+      test_path("fixtures", name),
+      {
+        rmarkdown::render(
+          input = test_path("fixtures", "knit_print_object_specific_template.Rmd"),
+          params = list("obj" = testList[[name]]),
+          output_file = name,
+          output_dir = test_path("fixtures")
+        )
+        expect_snapshot_file(test_path("fixtures", name))
+      }
+    )
+  }
+
+  # This test checks that the labels parameter is correctly substituted and that
+  # capitalisation in the table header is correctly handled.
+  expect_equal(
+    stringr::str_count(
+      knit_print(
+        .DefaultIncrementsRelativeParts(),
+        labels = "DLT"
+      ),
+      "DLTs"
+    ),
+    5
+  )
+})

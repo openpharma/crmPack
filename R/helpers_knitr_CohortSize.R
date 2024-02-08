@@ -1,6 +1,3 @@
-#' @importFrom knitr knit_print
-NULL
-
 # Integration with knitr ----
 #'
 #' @description `r lifecycle::badge("experimental")`
@@ -14,7 +11,7 @@ NULL
 
 # CohortSize ----
 
-#' Render a CohortSizeConst Object
+#' Render a `CohortSizeConst` Object
 #'
 #' @description `r lifecycle::badge("experimental")`
 #' @param x (`CohortSize`)\cr The object to knit_print.
@@ -48,7 +45,7 @@ knit_print.CohortSizeConst <- function(x, ..., asis = TRUE, label = c("participa
   rv
 }
 
-#' Render a CohortSizeRange Object
+#' Render a `CohortSizeRange` Object
 #'
 #' @description `r lifecycle::badge("experimental")`
 #' @param ... passed to `knitr::kable`
@@ -82,11 +79,11 @@ knit_print.CohortSizeRange <- function(x, ..., asis = TRUE) {
   rv
 }
 
-#' Render a CohortSizeDLT Object
+#' Render a `CohortSizeDLT` Object
 #'
 #' @description `r lifecycle::badge("experimental")`
 #' @inherit knit_print.CohortSizeConst return
-#' @param ... Passed to `knitr::kable`.
+#' @param ... Passed to [knitr::kable()].
 #'
 #' @section Usage Notes:
 #' The by default, the columns are labelled `Lower`, `Upper` and `Cohort size`.  The table's caption is
@@ -116,7 +113,7 @@ knit_print.CohortSizeDLT <- function(x, ..., asis = TRUE) {
   rv
 }
 
-#' Render a CohortSizeParts Object
+#' Render a `CohortSizeParts` Object
 #'
 #' @description `r lifecycle::badge("experimental")`
 #' @inherit knit_print.CohortSizeConst return
@@ -148,7 +145,7 @@ knit_print.CohortSizeParts <- function(x, ..., asis = TRUE, label = c("participa
   rv
 }
 
-#' Render a CohortSizeMax Object
+#' Render a `CohortSizeMax` Object
 #'
 #' @description `r lifecycle::badge("experimental")`
 #' @inherit knit_print.CohortSizeConst return
@@ -179,7 +176,7 @@ knit_print.CohortSizeMax <- function(x, ..., asis = TRUE) {
   rv
 }
 
-#' Render a CohortSizeMin Object
+#' Render a `CohortSizeMin` Object
 #'
 #' @description `r lifecycle::badge("experimental")`
 #' @inherit knit_print.CohortSizeConst return
@@ -209,7 +206,7 @@ knit_print.CohortSizeMin <- function(x, ..., asis = TRUE) {
   rv
 }
 
-#' Render a CohortSizeOrdinal Object
+#' Render a `CohortSizeOrdinal` Object
 #'
 #' @description `r lifecycle::badge("experimental")`
 #' @inherit knit_print.CohortSizeConst return
@@ -218,6 +215,8 @@ knit_print.CohortSizeMin <- function(x, ..., asis = TRUE) {
 #' @export
 #' @rdname knit_print
 knit_print.CohortSizeOrdinal <- function(x, ..., asis = TRUE) {
+  assert_flag(asis)
+
   rv <- paste0(
     "Based on a toxicity grade of ",
     x@grade,
