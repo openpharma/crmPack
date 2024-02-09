@@ -12,6 +12,8 @@
 \alias{prob-ProbitLogNormal}
 \alias{prob,numeric,ProbitLogNormalRel,Samples-method}
 \alias{prob-ProbitLogNormalRel}
+\alias{prob,numeric,LogisticLogNormalGrouped,Samples-method}
+\alias{prob-LogisticLogNormalGrouped}
 \alias{prob,numeric,LogisticKadane,Samples-method}
 \alias{prob-LogisticKadane}
 \alias{prob,numeric,LogisticKadaneBetaGamma,Samples-method}
@@ -32,6 +34,8 @@
 \alias{prob-OneParLogNormalPrior}
 \alias{prob,numeric,OneParExpPrior,Samples-method}
 \alias{prob-OneParExpPrior}
+\alias{prob,numeric,LogisticLogNormalOrdinal,Samples-method}
+\alias{prob-LogisticLogNormalOrdinal}
 \title{Computing Toxicity Probabilities for a Given Dose, Model and Samples}
 \usage{
 prob(dose, model, samples, ...)
@@ -45,6 +49,8 @@ prob(dose, model, samples, ...)
 \S4method{prob}{numeric,ProbitLogNormal,Samples}(dose, model, samples)
 
 \S4method{prob}{numeric,ProbitLogNormalRel,Samples}(dose, model, samples)
+
+\S4method{prob}{numeric,LogisticLogNormalGrouped,Samples}(dose, model, samples, group)
 
 \S4method{prob}{numeric,LogisticKadane,Samples}(dose, model, samples)
 
@@ -65,6 +71,8 @@ prob(dose, model, samples, ...)
 \S4method{prob}{numeric,OneParLogNormalPrior,Samples}(dose, model, samples)
 
 \S4method{prob}{numeric,OneParExpPrior,Samples}(dose, model, samples)
+
+\S4method{prob}{numeric,LogisticLogNormalOrdinal,Samples}(dose, model, samples, grade, cumulative = TRUE)
 }
 \arguments{
 \item{dose}{(\code{number} or \code{numeric})\cr the dose which is targeted.
@@ -80,6 +88,15 @@ dose escalation or pseudo DLE (dose-limiting events)/toxicity model.}
 used to compute toxicity probabilities. Can also be missing for some models.}
 
 \item{...}{model specific parameters when \code{samples} are not used.}
+
+\item{group}{(\code{character} or \code{factor})\cr for \code{\link{LogisticLogNormalGrouped}},
+indicating whether to calculate the probability for the \code{mono} or for
+the \code{combo} arm.}
+
+\item{grade}{(\code{integer} or \code{integer_vector})\cr The toxicity grade for which probabilities are required}
+
+\item{cumulative}{(\code{flag})\cr Should the returned probability be cumulative
+(the default) or grade-specific?}
 }
 \value{
 A \code{proportion} or \code{numeric} vector with the toxicity probabilities.
@@ -87,7 +104,9 @@ If non-scalar \code{samples} were used, then every element in the returned vecto
 corresponds to one element of a sample. Hence, in this case, the output
 vector is of the same length as the sample vector. If scalar \code{samples} were
 used or no \code{samples} were used, e.g. for pseudo DLE/toxicity \code{model},
-then the output is of the same length as the length of the \code{dose}.
+then the output is of the same length as the length of the \code{dose}.  In the
+case of \code{LogisticLogNormalOrdinal}, the probabilities relate to toxicities
+of  grade given by \code{grade}.
 }
 \description{
 \ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#stable}{\figure{lifecycle-stable.svg}{options: alt='[Stable]'}}}{\strong{[Stable]}}
@@ -115,6 +134,9 @@ correspond to the sampling index, i.e. the layout is then
 
 \item \code{prob(dose = numeric, model = ProbitLogNormalRel, samples = Samples)}: 
 
+\item \code{prob(dose = numeric, model = LogisticLogNormalGrouped, samples = Samples)}: method for \code{\link{LogisticLogNormalGrouped}} which needs \code{group}
+argument in addition.
+
 \item \code{prob(dose = numeric, model = LogisticKadane, samples = Samples)}: 
 
 \item \code{prob(dose = numeric, model = LogisticKadaneBetaGamma, samples = Samples)}: 
@@ -138,6 +160,8 @@ All model parameters (except \code{dose}) should be present in the \code{model} 
 \item \code{prob(dose = numeric, model = OneParLogNormalPrior, samples = Samples)}: 
 
 \item \code{prob(dose = numeric, model = OneParExpPrior, samples = Samples)}: 
+
+\item \code{prob(dose = numeric, model = LogisticLogNormalOrdinal, samples = Samples)}: 
 
 }}
 \note{

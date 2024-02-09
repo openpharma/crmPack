@@ -1,3 +1,5 @@
+# Data ----
+
 h_get_data <- function(empty = FALSE, placebo = TRUE) {
   dose_grid <- seq(25, 300, 25)
   if (placebo) {
@@ -49,6 +51,8 @@ h_get_data_2 <- function() {
   )
 }
 
+# DataDual ----
+
 h_get_data_dual <- function(empty = FALSE, placebo = TRUE) {
   d <- h_get_data(empty, placebo)
   if (empty) {
@@ -60,6 +64,8 @@ h_get_data_dual <- function(empty = FALSE, placebo = TRUE) {
     )
   }
 }
+
+# DataParts ----
 
 h_get_data_parts <- function(empty = FALSE, placebo = TRUE) {
   d <- h_get_data(empty, placebo)
@@ -89,6 +95,8 @@ h_get_data_parts_1 <- function(empty = FALSE, placebo = TRUE) {
   }
 }
 
+# DataMixture ----
+
 h_get_data_mixture <- function(empty = FALSE, placebo = TRUE) {
   d <- h_get_data(empty, placebo)
   if (empty) {
@@ -102,6 +110,8 @@ h_get_data_mixture <- function(empty = FALSE, placebo = TRUE) {
     )
   }
 }
+
+# DataDA ----
 
 h_get_data_da <- function(empty = FALSE, placebo = TRUE) {
   d <- h_get_data(empty, placebo)
@@ -150,4 +160,37 @@ h_get_data_sr_2 <- function() {
     cohort = c(0, 1, 2, 3, 4, 5, 5, 5, 6, 6, 6, 7, 7, 7, 8, 8, 8, 9, 9, 9, 10, 10, 10),
     doseGrid = c(0.1, 0.5, 1.5, 3, 6, seq(from = 10, to = 80, by = 2))
   )
+}
+
+# Sample ordinal data ----
+h_get_data_ordinal <- function() {
+  DataOrdinal(
+    x = c(10, 20, 30, 40, 50, 50, 50, 60, 60, 60),
+    y = as.integer(c(0, 0, 0, 0, 0, 1, 0, 0, 1, 2)),
+    ID = 1L:10L,
+    cohort = as.integer(c(1:4, 5, 5, 5, 6, 6, 6)),
+    doseGrid = c(seq(from = 10, to = 100, by = 10)),
+    yCategories = c("No tox" = 0L, "Sub-tox AE" = 1L, "DLT" = 2L),
+    placebo = FALSE
+  )
+}
+
+# DataGrouped ----
+
+h_get_data_grouped <- function(empty = FALSE, placebo = TRUE) {
+  d <- h_get_data(empty, placebo)
+  if (empty) {
+    .DataGrouped(d)
+  } else {
+    .DataGrouped(
+      d,
+      group = factor(
+        c(
+          "mono", "mono", "combo", "combo", "mono", "mono", "combo",
+          "combo", "mono", "mono", "combo", "combo"
+        ),
+        levels = c("mono", "combo")
+      )
+    )
+  }
 }

@@ -5,9 +5,12 @@
 \alias{Effloglog-class}
 \alias{.Effloglog}
 \alias{Effloglog}
+\alias{.DefaultEffloglog}
 \title{\code{Effloglog}}
 \usage{
 Effloglog(eff, eff_dose, nu, data, const = 0)
+
+.DefaultEffloglog()
 }
 \arguments{
 \item{eff}{(\code{numeric})\cr the pseudo efficacy responses.
@@ -145,6 +148,9 @@ dose levels greater than \eqn{1 - const} can be considered as described in
 Yeung et al. (2015).}
 }}
 
+\note{
+Typically, end users will not use the \code{.DefaultEffloglog()} function.
+}
 \examples{
 # Obtain prior modal estimates given the pseudo data.
 # First we use an empty data set such that only the dose levels under

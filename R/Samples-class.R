@@ -1,5 +1,6 @@
 #' @include McmcOptions-class.R
 #' @include Samples-validity.R
+#' @include CrmPackClass-class.R
 NULL
 
 # Samples ----
@@ -33,6 +34,7 @@ NULL
     data = list(),
     options = McmcOptions()
   ),
+  contains = "CrmPackClass",
   validity = v_samples
 )
 
@@ -48,4 +50,17 @@ NULL
 #'
 Samples <- function(data, options) {
   new("Samples", data = data, options = options)
+}
+
+## default constructor ----
+
+#' @rdname Samples-class
+#' @note Typically, end users will not use the `.DefaultSamples()` function.
+#' @export
+.DefaultSamples <- function() {
+  mcmc(
+    data = .DefaultData(),
+    model = .DefaultLogisticLogNormal(),
+    options = .DefaultMcmcOptions()
+  )
 }

@@ -8,6 +8,8 @@
 \alias{v_increments_dose_levels}
 \alias{v_increments_hsr_beta}
 \alias{v_increments_min}
+\alias{v_increments_ordinal}
+\alias{v_cohort_size_ordinal}
 \title{Internal Helper Functions for Validation of \code{\link{Increments}} Objects}
 \usage{
 v_increments_relative(object)
@@ -21,6 +23,10 @@ v_increments_dose_levels(object)
 v_increments_hsr_beta(object)
 
 v_increments_min(object)
+
+v_increments_ordinal(object)
+
+v_cohort_size_ordinal(object)
 }
 \arguments{
 \item{object}{(\code{Increments})\cr object to validate.}
@@ -44,7 +50,7 @@ contains valid \code{intervals} and \code{increments} parameters.
 contains valid \code{dlt_start} and \code{clean_start} parameters.
 
 \item \code{v_increments_relative_dlt()}: validates that the \code{\link{IncrementsRelativeDLT}} object
-contains valid \code{dlt_intervals} and \code{increments} parameters.
+contains valid \code{intervals} and \code{increments} parameters.
 
 \item \code{v_increments_dose_levels()}: validates that the \code{\link{IncrementsDoseLevels}} object
 contains valid \code{levels} and \code{basis_level} option.
@@ -54,5 +60,11 @@ object contains valid probability target, threshold and shape parameters.
 
 \item \code{v_increments_min()}: validates that the \code{\link{IncrementsMin}}
 object contains a list with \code{Increments} objects.
+
+\item \code{v_increments_ordinal()}: validates that the \code{\link{IncrementsOrdinal}} object
+contains valid \code{grade} and standard \code{Increments} rule.
+
+\item \code{v_cohort_size_ordinal()}: validates that the \code{\link{CohortSizeOrdinal}} object
+contains valid \code{grade} and standard \code{CohortSize} rule.
 
 }}

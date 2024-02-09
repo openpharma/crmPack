@@ -1,7 +1,8 @@
 #' @include helpers.R
 #' @include Data-class.R
+#' @include Simulations-validity.R
+#' @include CrmPackClass-class.R
 NULL
-
 
 # GeneralSimulations ----
 
@@ -52,23 +53,8 @@ NULL
       doses = c(1, 2),
       seed = 1L
     ),
-    validity =
-      function(object) {
-        o <- Validate()
-
-        nSims <- length(object@data)
-
-        o$check(
-          all(sapply(object@data, is, "Data")),
-          "all data elements must be Data objects"
-        )
-        o$check(
-          identical(length(object@doses), nSims),
-          "doses must have same length as the data list"
-        )
-
-        o$result()
-      }
+    contains = "CrmPackClass",
+    validity = v_general_simulations
   )
 
 ## constructor ----
@@ -84,234 +70,326 @@ NULL
 GeneralSimulations <- function(data,
                                doses,
                                seed) {
+  assert_integerish(seed)
   .GeneralSimulations(
     data = data,
     doses = doses,
-    seed = safeInteger(seed)
+    seed = as.integer(seed)
   )
 }
 
-# nolint start
-##' Class for the simulations output from model based designs
-##'
-##' This class captures the trial simulations from model based designs.
-##' Additional slots fit and stopReasons compared to the general class
-##' \code{\linkS4class{GeneralSimulations}}.
-##'
-##' @slot fit list with the final fits
-##' @slot stopReasons list of stopping reasons for each simulation run
-##'
-##' @export
-##' @keywords classes
+
+## default constructor
+
+#' @rdname GeneralSimulations-class
+#' @note Typically, end users will not use the `.DefaultGeneralSimulations()` function.
+#' @export
+.DefaultGeneralSimulations <- function() {
+  GeneralSimulations(
+    data = list(
+      Data(x = 1:3, y = c(0, 1, 0), doseGrid = 1:3, ID = 1L:3L, cohort = 1L:3L),
+      Data(x = 4:6, y = c(0, 1, 0), doseGrid = 4:6, ID = 1L:3L, cohort = 1L:3L)
+    ),
+    doses = c(1, 2),
+    seed = 123
+  )
+}
+
+
+# Simulations ----
+
+## class ----
+
+#' `Simulations`
+#'
+#' @description `r lifecycle::badge("stable")`
+#'
+#' This class captures the trial simulations from model based designs.
+#' Additional slots `fit`, `stop_reasons`, `stop_report`,`additional_stats` compared to
+#' the general class [`GeneralSimulations`].
+#'
+#' @slot fit (`list`)\cr final fits
+#' @slot stop_reasons (`list`)\cr stopping reasons for each simulation run
+#' @slot stop_report matrix of stopping rule outcomes
+#' @slot additional_stats list of additional statistical summary
+#' @aliases Simulations
+#' @export
 .Simulations <-
   setClass(
     Class = "Simulations",
-    representation(
+    slots = c(
       fit = "list",
-      stopReasons = "list"
+      stop_report = "matrix",
+      stop_reasons = "list",
+      additional_stats = "list"
     ),
-    ## note: this prototype is put together with the prototype
-    ## for GeneralSimulations
-    prototype(
+    prototype = prototype(
       fit =
         list(
           c(0.1, 0.2),
           c(0.1, 0.2)
         ),
-      stopReasons =
-        list("A", "A")
+      stop_report = matrix(TRUE, nrow = 2),
+      stop_reasons =
+        list("A", "A"),
+      additional_stats =
+        list(a = 1, b = 1)
     ),
     contains = "GeneralSimulations",
-    validity =
-      function(object) {
-        o <- Validate()
-
-        nSims <- length(object@data)
-
-        o$check(
-          identical(length(object@fit), nSims),
-          "fit must have same length as data"
-        )
-        o$check(
-          identical(length(object@stopReasons), nSims),
-          "stopReasons must have same length as data"
-        )
-
-        o$result()
-      }
+    validity = v_simulations
   )
-validObject(.Simulations())
 
+## constructor ----
 
-##' Initialization function for the "Simulations" class
-##'
-##' @param fit see \code{\linkS4class{Simulations}}
-##' @param stopReasons see \code{\linkS4class{Simulations}}
-##' @param \dots additional parameters from \code{\link{GeneralSimulations}}
-##' @return the \code{\linkS4class{Simulations}} object
-##' @export
-##'
-##' @keywords methods
+#' @rdname Simulations-class
+#'
+#' @param fit (`list`)\cr see slot definition.
+#' @param stop_reasons (`list`)\cr see slot definition.
+#' @param stop_report see [`Simulations`]
+#' @param additional_stats (`list`)\cr see slot definition.
+#' @param \dots additional parameters from [`GeneralSimulations`]
+#'
+#' @example examples/Simulations-class-Simulations.R
+#' @export
 Simulations <- function(fit,
-                        stopReasons,
+                        stop_reasons,
+                        stop_report,
+                        additional_stats,
                         ...) {
   start <- GeneralSimulations(...)
   .Simulations(start,
     fit = fit,
-    stopReasons = stopReasons
+    stop_report = stop_report,
+    stop_reasons = stop_reasons,
+    additional_stats = additional_stats
   )
 }
 
+## default constructor ----
 
-##' Class for the simulations output from dual-endpoint model based designs
-##'
-##' This class captures the trial simulations from dual-endpoint model based
-##' designs. In comparison to the parent class \code{\linkS4class{Simulations}},
-##' it contains additional slots to capture the dose-biomarker fits, and the
-##' sigma2W and rho estimates.
-##'
-##' @slot rhoEst the vector of final posterior median rho estimates
-##' @slot sigma2West the vector of final posterior median sigma2W estimates
-##' @slot fitBiomarker list with the final dose-biomarker curve fits
-##'
-##' @export
-##' @keywords classes
+#' @rdname Simulations-class
+#' @note Typically, end users will not use the `.DefaultSimulations()` function.
+#' @export
+.DefaultSimulations <- function() {
+  design <- .DefaultDesign()
+  myTruth <- probFunction(design@model, alpha0 = 7, alpha1 = 8)
+
+  simulate(
+    design,
+    args = NULL,
+    truth = myTruth,
+    nsim = 1,
+    seed = 819,
+    mcmcOptions = .DefaultMcmcOptions(),
+    parallel = FALSE
+  )
+}
+
+# DualSimulations ----
+
+## class ----
+
+#' `DualSimulations`
+#'
+#' @description `r lifecycle::badge("stable")`
+#'
+#' This class captures the trial simulations from dual-endpoint model based
+#' designs. In comparison to the parent class [`Simulations`],
+#' it contains additional slots to capture the dose-biomarker `fits`, and the
+#' `sigma2W` and `rho` estimates.
+#'
+#' @slot rho_est (`numeric`)\cr vector of final posterior median rho estimates
+#' @slot sigma2w_est (`numeric`)\cr vector of final posterior median sigma2W estimates
+#' @slot fit_biomarker (`list`)\cr with the final dose-biomarker curve fits
+#' @aliases DualSimulations
+#' @export
 .DualSimulations <-
   setClass(
     Class = "DualSimulations",
-    representation(
-      rhoEst = "numeric",
-      sigma2West = "numeric",
-      fitBiomarker = "list"
+    slots = c(
+      rho_est = "numeric",
+      sigma2w_est = "numeric",
+      fit_biomarker = "list"
     ),
-    prototype(
-      rhoEst = c(0.2, 0.3),
-      sigma2West = c(0.2, 0.3),
-      fitBiomarker =
+    prototype = prototype(
+      rho_est = c(0.2, 0.3),
+      sigma2w_est = c(0.2, 0.3),
+      fit_biomarker =
         list(
           c(0.1, 0.2),
           c(0.1, 0.2)
         )
     ),
     contains = "Simulations",
-    validity =
-      function(object) {
-        o <- Validate()
-
-        nSims <- length(object@data)
-
-        o$check(
-          identical(length(object@fitBiomarker), nSims),
-          "fitBiomarker list has to have same length as data"
-        )
-        o$check(
-          identical(length(object@rhoEst), nSims),
-          "rhoEst vector has to have same length as data"
-        )
-        o$check(
-          identical(length(object@sigma2West), nSims),
-          "sigma2West has to have same length as data"
-        )
-
-        o$result()
-      }
+    validity = v_dual_simulations
   )
-validObject(.DualSimulations())
 
 
-##' Initialization function for "DualSimulations"
-##'
-##' @param rhoEst see \code{\linkS4class{DualSimulations}}
-##' @param sigma2West see \code{\linkS4class{DualSimulations}}
-##' @param fitBiomarker see \code{\linkS4class{DualSimulations}}
-##' @param \dots additional parameters from \code{\link{Simulations}}
-##' @return the \code{\linkS4class{DualSimulations}} object
-##'
-##' @export
-##' @keywords methods
-DualSimulations <- function(rhoEst,
-                            sigma2West,
-                            fitBiomarker,
+## constructor ----
+
+#' @rdname DualSimulations-class
+#'
+#' @param rho_est (`numeric`)\cr see [`DualSimulations`]
+#' @param sigma2w_est (`numeric`)\cr [`DualSimulations`]
+#' @param fit_biomarker (`list`)\cr see [`DualSimulations`]
+#' @param \dots additional parameters from [`Simulations`]
+#'
+#' @example examples/Simulations-class-DualSimulations.R
+#' @export
+DualSimulations <- function(rho_est,
+                            sigma2w_est,
+                            fit_biomarker,
                             ...) {
   start <- Simulations(...)
   .DualSimulations(start,
-    rhoEst = rhoEst,
-    sigma2West = sigma2West,
-    fitBiomarker = fitBiomarker
+    rho_est = rho_est,
+    sigma2w_est = sigma2w_est,
+    fit_biomarker = fit_biomarker
   )
 }
 
+## default constructor ----
 
-##' Class for the summary of general simulations output
-##'
-##' Note that objects should not be created by users, therefore no
-##' initialization function is provided for this class.
-##'
-##' @slot target target toxicity interval
-##' @slot targetDoseInterval corresponding target dose interval
-##' @slot nsim number of simulations
-##' @slot propDLTs proportions of DLTs in the trials
-##' @slot meanToxRisk mean toxicity risks for the patients
-##' @slot doseSelected doses selected as MTD
-##' @slot toxAtDosesSelected true toxicity at doses selected
-##' @slot propAtTarget Proportion of trials selecting target MTD
-##' @slot doseMostSelected dose most often selected as MTD
-##' @slot obsToxRateAtDoseMostSelected observed toxicity rate at dose most often
-##' selected
-##' @slot nObs number of patients overall
-##' @slot nAboveTarget number of patients treated above target tox interval
-##' @slot doseGrid the dose grid that has been used
-##' @slot placebo set to TRUE (default is FALSE) for a design with placebo
-##'
-##' @export
-##' @keywords classes
+#' @rdname DualSimulations-class
+#' @note Typically, end users will not use the `.DefaultDualSimulations()` function.
+#' @export
+.DefaultDualSimulations <- function() {
+  DualSimulations(
+    rho_est = c(0.25, 0.35),
+    sigma2w_est = c(0.15, 0.25),
+    fit_biomarker = list(c(0.3, 0.4), c(0.4, 0.5)),
+    fit = list(
+      c(0.1, 0.2),
+      c(0.3, 0.4)
+    ),
+    stop_report = matrix(c(TRUE, FALSE), nrow = 2),
+    stop_reasons = list("A", "B"),
+    additional_stats = list(a = 1, b = 1),
+    data = list(
+      Data(
+        x = 1:2,
+        y = 0:1,
+        doseGrid = 1:2,
+        ID = 1L:2L,
+        cohort = 1L:2L
+      ),
+      Data(
+        x = 3:4,
+        y = 0:1,
+        doseGrid = 3:4,
+        ID = 1L:2L,
+        cohort = 1L:2L
+      )
+    ),
+    doses = c(1, 2),
+    seed = 123L
+  )
+}
+
+#' `GeneralSimulationsSummary`
+#'
+#' @description `r lifecycle::badge("stable")`
+#'
+#' This class captures the summary of general simulations output. Note that objects
+#' should not be created by users, therefore no initialization
+#' function is provided for this class.
+#'
+#' @slot target (`numeric`)\cr target toxicity interval
+#' @slot target_dose_interval (`numeric`)\cr corresponding target dose interval
+#' @slot nsim (`integer`)\cr number of simulations
+#' @slot prop_dlts (`ANY`)\cr A numeric array (multi-dimensional) or list representing proportions of DLTs in the trials
+#' @slot mean_tox_risk (`numeric`)\cr mean toxicity risks for the patients
+#' @slot dose_selected (`numeric`)\cr doses selected as MTD
+#' @slot tox_at_doses_selected (`numeric`)\cr true toxicity at doses selected
+#' @slot prop_at_target (`numeric`)\cr Proportion of trials selecting target MTD
+#' @slot dose_most_selected (`numeric`)\cr dose most often selected as MTD
+#' @slot obs_tox_rate_at_dose_most_selected (`numeric`)\cr observed toxicity rate at dose most often selected
+#' @slot n_obs (`ANY`)\cr A numeric array (multi-dimensional) or list representing number of patients overall.
+#' @slot n_above_target (`integer`)\cr number of patients treated above target tox interval
+#' @slot dose_grid (`numeric`)\cr the dose grid that has been used
+#' @slot placebo (`logical`)\cr set to TRUE (default is FALSE) for a design with placebo
+#' @aliases GeneralSimulationsSummary
+#' @export
 .GeneralSimulationsSummary <-
   setClass(
     Class = "GeneralSimulationsSummary",
-    representation(
+    slots = c(
       target = "numeric",
-      targetDoseInterval = "numeric",
+      target_dose_interval = "numeric",
       nsim = "integer",
-      propDLTs = "ANY",
-      meanToxRisk = "numeric",
-      doseSelected = "numeric",
-      toxAtDosesSelected = "numeric",
-      propAtTarget = "numeric",
-      doseMostSelected = "numeric",
-      obsToxRateAtDoseMostSelected = "numeric",
-      nObs = "ANY",
-      nAboveTarget = "integer",
-      doseGrid = "numeric",
+      prop_dlts = "ANY",
+      mean_tox_risk = "numeric",
+      dose_selected = "numeric",
+      tox_at_doses_selected = "numeric",
+      prop_at_target = "numeric",
+      dose_most_selected = "numeric",
+      obs_tox_rate_at_dose_most_selected = "numeric",
+      n_obs = "ANY",
+      n_above_target = "integer",
+      dose_grid = "numeric",
       placebo = "logical"
     )
   )
 
+## default constructor ----
 
-##' Class for the summary of model-based simulations output
-##'
-##' In addition to the slots in the parent class
-##' \code{\linkS4class{GeneralSimulationsSummary}}, it contains two slots with
-##' model fit information.
-##'
-##' Note that objects should not be created by users, therefore no
-##' initialization function is provided for this class.
-##'
-##' @slot fitAtDoseMostSelected fitted toxicity rate at dose most often selected
-##' @slot meanFit list with the average, lower (2.5%) and upper (97.5%)
-##' quantiles of the mean fitted toxicity at each dose level
-##'
-##' @export
-##' @keywords classes
+#' @rdname GeneralSimulationsSummary-class
+#' @note Typically, end users will not use the `.DefaultGeneralSimulationsSummary()` function.
+#' @export
+.DefaultGeneralSimulationsSummary <- function() {
+  stop(
+    paste(
+      "Class GeneralSimulationsSummary cannot be instantiated directly.",
+      "Please use one of its subclasses instead."
+    )
+  )
+}
+
+## SimulationsSummary ----
+
+## class ----
+
+#' `SimulationsSummary`
+#'
+#' @description `r lifecycle::badge("stable")`
+#'
+#' In addition to the slots in the parent class [`GeneralSimulationsSummary`],
+#' it contains two slots with model fit information.
+#'
+#' @slot stop_report (`matrix`)\cr matrix of stopping rule outcomes
+#' @slot fit_at_dose_most_selected (`numeric`)\cr fitted toxicity rate at dose most often selected
+#' @slot additional_stats (`list`)\cr list of additional statistical summary
+#' @slot mean_fit (`list`)\cr list with the average, lower (2.5%) and upper (97.5%)
+#' quantiles of the mean fitted toxicity at each dose level
+#'
+#' @aliases SimulationsSummary
+#' @export
 .SimulationsSummary <-
   setClass(
     Class = "SimulationsSummary",
-    representation(
-      fitAtDoseMostSelected = "numeric",
-      meanFit = "list"
+    slots = c(
+      stop_report = "matrix",
+      fit_at_dose_most_selected = "numeric",
+      additional_stats = "list",
+      mean_fit = "list"
     ),
     contains = "GeneralSimulationsSummary"
   )
 
+## default constructor ----
+
+#' @rdname SimulationsSummary-class
+#' @note Typically, end users will not use the `.DefaultSimulationsSummary()` function.
+#' @export
+.DefaultSimulationsSummary <- function() {
+  stop(paste(
+    "Class SimulationsSummary cannot be instantiated directly.",
+    "Please use one of its subclasses instead."
+  ))
+}
+
+# nolint start
+# DualSimulationsSummary ----
 
 ##' Class for the summary of dual-endpoint simulations output
 ##'
@@ -338,6 +416,102 @@ DualSimulations <- function(rhoEst,
         meanBiomarkerFit = "list"
       )
   )
+
+## default constructor ----
+
+#' @rdname DualSimulationsSummary-class
+#' @note Typically, end users will not use the `.DefaultDualSimulationsSummary()` function.
+#' @export
+.DefaultDualSimulationsSummary <- function() {
+  emptydata <- DataDual(doseGrid = c(1, 3, 5, 10, 15, 20, 25, 30))
+
+  # Initialize the CRM model.
+  my_model <- DualEndpointRW(
+    mean = c(0, 1),
+    cov = matrix(c(1, 0, 0, 1), nrow = 2),
+    sigma2betaW = 0.01,
+    sigma2W = c(a = 0.1, b = 0.1),
+    rho = c(a = 1, b = 1),
+    rw1 = TRUE
+  )
+
+  # Choose the rule for selecting the next dose.
+  my_next_best <- NextBestDualEndpoint(
+    target = c(0.9, 1),
+    overdose = c(0.35, 1),
+    max_overdose_prob = 0.25
+  )
+
+  # Choose the rule for the cohort-size.
+  my_size1 <- CohortSizeRange(
+    intervals = c(0, 30),
+    cohort_size = c(1, 3)
+  )
+  my_size2 <- CohortSizeDLT(
+    intervals = c(0, 1),
+    cohort_size = c(1, 3)
+  )
+  my_size <- maxSize(my_size1, my_size2)
+
+  # Choose the rule for stopping.
+  my_stopping1 <- StoppingTargetBiomarker(
+    target = c(0.9, 1),
+    prob = 0.5
+  )
+
+  # Stop with a small number of patients for illustration.
+  my_stopping <- my_stopping1 | StoppingMinPatients(10) | StoppingMissingDose()
+
+  # Choose the rule for dose increments.
+  my_increments <- IncrementsRelative(
+    intervals = c(0, 20),
+    increments = c(1, 0.33)
+  )
+
+  # Initialize the design.
+  my_design <- DualDesign(
+    model = my_model,
+    data = emptydata,
+    nextBest = my_next_best,
+    stopping = my_stopping,
+    increments = my_increments,
+    cohort_size = CohortSizeConst(3),
+    startingDose = 3
+  )
+
+  # Define scenarios for the TRUE toxicity and efficacy profiles.
+  beta_mod <- function(dose, e0, eMax, delta1, delta2, scal) {
+    maxDens <- (delta1^delta1) * (delta2^delta2) / ((delta1 + delta2)^(delta1 + delta2))
+    dose <- dose / scal
+    e0 + eMax / maxDens * (dose^delta1) * (1 - dose)^delta2
+  }
+
+  true_biomarker <- function(dose) {
+    beta_mod(dose, e0 = 0.2, eMax = 0.6, delta1 = 5, delta2 = 5 * 0.5 / 0.5, scal = 100)
+  }
+
+  true_tox <- function(dose) {
+    pnorm((dose - 60) / 10)
+  }
+
+  # Run the simulation on the desired design.
+  # For illustration purposes only 1 trial outcome is generated and 5 burn-ins
+  # to generate 20 samples are used here.
+  x <- simulate(
+    object = my_design,
+    trueTox = true_tox,
+    trueBiomarker = true_biomarker,
+    sigma2W = 0.01,
+    rho = 0,
+    nsim = 1,
+    parallel = FALSE,
+    seed = 3,
+    startingDose = 6,
+    mcmcOptions = .DefaultMcmcOptions()
+  )
+}
+
+
 ## ==============================================================================
 
 ## -------------------------------------------------------------------------------
@@ -370,6 +544,7 @@ DualSimulations <- function(rhoEst,
 ##' final estimates of the TDtargetEndOfTrial or of the final optimal dose estimates (when DLE and efficacy responses are
 ##' incorporated) after each simulations
 ##' @slot stopReasons add slot description
+##' @slot stop_report matrix of stopping rule outcomes
 ##'
 ##' @export
 .PseudoSimulations <-
@@ -385,6 +560,7 @@ DualSimulations <- function(rhoEst,
       FinalTDEOTRatios = "numeric",
       FinalCIs = "list",
       FinalRatios = "numeric",
+      stop_report = "matrix",
       stopReasons = "list"
     ),
     ## note: this prototype is put together with the prototype
@@ -398,22 +574,12 @@ DualSimulations <- function(rhoEst,
       FinalTDEOTRatios = c(0.1, 0.1),
       FinalCIs = list(c(0.1, 0.2), c(0.1, 0.2)),
       FinalRatios = c(0.1, 0.1),
+      stop_report = matrix(TRUE, nrow = 2),
       stopReasons =
         list("A", "A")
     ),
     contains = "GeneralSimulations",
-    validity =
-      function(object) {
-        o <- Validate()
-
-        nSims <- length(object@data)
-        o$check(
-          identical(length(object@stopReasons), nSims),
-          "stopReasons must have same length as data"
-        )
-
-        o$result()
-      }
+    validity = v_pseudo_simulations
   )
 validObject(.PseudoSimulations())
 
@@ -428,6 +594,7 @@ validObject(.PseudoSimulations())
 ##' @param FinalCIs please refer to \code{\linkS4class{PseudoSimulations}} class object
 ##' @param FinalRatios please refer to \code{\linkS4class{PseudoSimulations}} class object
 ##' @param stopReasons please refer to \code{\linkS4class{PseudoSimulations}} class object
+##' @param stop_report see [`PseudoSimulations`]
 ##' @param \dots additional parameters from \code{\linkS4class{GeneralSimulations}}
 ##' @return the \code{\linkS4class{PseudoSimulations}} object
 ##'
@@ -441,6 +608,7 @@ PseudoSimulations <- function(fit,
                               FinalTDEOTRatios,
                               FinalCIs,
                               FinalRatios,
+                              stop_report,
                               stopReasons,
                               ...) {
   start <- GeneralSimulations(...)
@@ -454,8 +622,18 @@ PseudoSimulations <- function(fit,
     FinalTDEOTRatios = FinalTDEOTRatios,
     FinalCIs = FinalCIs,
     FinalRatios = FinalRatios,
+    stop_report = stop_report,
     stopReasons = stopReasons
   )
+}
+
+## default constructor ----
+
+#' @rdname PseudoSimulations-class
+#' @note Typically, end users will not use the `.DefaultPseudoSimulations()` function.
+#' @export
+.DefaultPseudoSimulations <- function() {
+  stop(paste0("Class PseudoSimulations cannot be instantiated directly.  Please use one of its subclasses instead."))
 }
 
 ## ===============================================================================
@@ -516,16 +694,7 @@ PseudoSimulations <- function(fit,
       sigma2est = c(0.001, 0.002)
     ),
     contains = "PseudoSimulations",
-    validity =
-      function(object) {
-        o <- Validate()
-        nSims <- length(object@data)
-        o$check(
-          identical(length(object@sigma2est), nSims),
-          "sigma2est has to have same length as data"
-        )
-        o$result()
-      }
+    validity = v_pseudo_dual_simulations
   )
 
 validObject(.PseudoDualSimulations())
@@ -564,6 +733,20 @@ PseudoDualSimulations <- function(fitEff,
 }
 
 
+## default constructor ----
+
+#' @rdname PseudoDualSimulations-class
+#' @note Typically, end users will not use the `.DefaultPseudoDualSimulations()` function.
+#' @export
+.DefaultPseudoDualSimulations <- function() {
+  stop(paste0("Class PseudoDualSimulations cannot be instantiated directly.  Please use one of its subclasses instead."))
+}
+
+
+# PseudoDualFlexiSimulations ----
+
+## class ----
+
 ## -------------------------------------------------------------------------------
 ## Class for Pseudo simulation using DLE and efficacy responses using 'EffFlex' efficacy model
 ## -----------------------------------------------------------------------------------
@@ -587,16 +770,7 @@ PseudoDualSimulations <- function(fitEff,
     representation(sigma2betaWest = "numeric"),
     prototype(sigma2betaWest = c(0.001, 0.002)),
     contains = "PseudoDualSimulations",
-    validity =
-      function(object) {
-        o <- Validate()
-        nSims <- length(object@data)
-        o$check(
-          identical(length(object@sigma2betaWest), nSims),
-          "sigma2betaWest has to have same length as data"
-        )
-        o$result()
-      }
+    validity = v_pseudo_dual_flex_simulations
   )
 
 validObject(.PseudoDualFlexiSimulations())
@@ -611,6 +785,15 @@ PseudoDualFlexiSimulations <- function(sigma2betaWest,
   .PseudoDualFlexiSimulations(start,
     sigma2betaWest = sigma2betaWest
   )
+}
+
+## default constructor ----
+
+#' @rdname PseudoDualFlexiSimulations-class
+#' @note Typically, end users will not use the `.DefaultPseudoFlexiSimulations()` function.
+#' @export
+.DefaultPseudoDualFlexiSimulations <- function() {
+  stop(paste0("Class PseudoFlexiSimulations cannot be instantiated directly.  Please use one of its subclasses instead."))
 }
 
 ## -------------------------------------------------------------------------------------------------------
@@ -668,7 +851,7 @@ PseudoDualFlexiSimulations <- function(sigma2betaWest,
 ##' @slot fitAtDoseMostSelected fitted toxicity rate at dose most often selected
 ##' @slot meanFit list with the average, lower (2.5%) and upper (97.5%)
 ##' quantiles of the mean fitted toxicity at each dose level
-##'
+##' @slot stop_report matrix of stopping rule outcomes
 ##'
 ##' @export
 ##' @keywords classes
@@ -702,9 +885,20 @@ PseudoDualFlexiSimulations <- function(sigma2betaWest,
       nAboveTargetDuringTrial = "integer",
       doseGrid = "numeric",
       fitAtDoseMostSelected = "numeric",
-      meanFit = "list"
+      meanFit = "list",
+      stop_report = "matrix"
     )
   )
+
+## default constructor ----
+
+#' @rdname GeneralSimulationsSummary-class
+#' @note Typically, end users will not use the `.DefaultPseudoSimulationsSummary()` function.
+#' @export
+.DefaultPseudoSimulationsSummary <- function() {
+  stop(paste0("Class PseudoSimulationsSummary cannot be instantiated directly.  Please use one of its subclasses instead."))
+}
+
 ## ---------------------------------------------------------------------------------------------
 ##' Class for the summary of the dual responses simulations using pseudo models
 ##'
@@ -743,6 +937,15 @@ PseudoDualFlexiSimulations <- function(sigma2betaWest,
       )
   )
 
+## default constructor ----
+
+#' @rdname PseudoDualSimulationsSummary-class
+#' @note Typically, end users will not use the `.DefaultPseudoDualSimulationsSummary()` function.
+#' @export
+.DefaultPseudoDualSimulationsSummary <- function() {
+  stop(paste0("Class PseudoDualSimulationsSummary cannot be instantiated directly.  Please use one of its subclasses instead."))
+}
+
 ## ---------------------------------------------------------------------------------------------
 
 ##' Class for the simulations output from DA based designs
@@ -762,19 +965,7 @@ PseudoDualFlexiSimulations <- function(sigma2betaWest,
     representation(trialduration = "numeric"),
     prototype(trialduration = rep(0, 2)),
     contains = "Simulations",
-    validity =
-      function(object) {
-        o <- Validate()
-
-        nSims <- length(object@data)
-
-        o$check(
-          identical(length(object@trialduration), nSims),
-          "trialduration vector has to have same length as data"
-        )
-
-        o$result()
-      }
+    validity = v_da_simulations
   )
 validObject(.DASimulations())
 
@@ -795,4 +986,62 @@ DASimulations <- function(trialduration,
   )
 }
 
+
+## default constructor ----
+
+#' @rdname DASimulations-class
+#' @note Typically, end users will not use the `.DASimulations()` function.
+#' @export
+.DefaultDASimulations <- function() {
+  design <- .DefaultDADesign()
+  myTruth <- probFunction(design@model, alpha0 = 2, alpha1 = 3)
+  exp_cond.cdf <- function(x, onset = 15) {
+    a <- stats::pexp(28, 1 / onset, lower.tail = FALSE)
+    1 - (stats::pexp(x, 1 / onset, lower.tail = FALSE) - a) / (1 - a)
+  }
+
+  simulate(
+    design,
+    args = NULL,
+    truthTox = myTruth,
+    truthSurv = exp_cond.cdf,
+    trueTmax = 80,
+    nsim = 2,
+    seed = 819,
+    mcmcOptions = .DefaultMcmcOptions(),
+    firstSeparate = TRUE,
+    deescalate = FALSE,
+    parallel = FALSE
+  )
+}
 # nolint end
+
+# tidy
+
+## tidy-Simulations ----
+
+#' @rdname tidy
+#' @aliases tidy-Simulations
+#' @example examples/Simulations-method-tidy.R
+#' @export
+setMethod(
+  f = "tidy",
+  signature = signature(x = "Simulations"),
+  definition = function(x, ...) {
+    slot_names <- slotNames(x)
+    rv <- list()
+    for (nm in slot_names) {
+      if (!is.function(slot(x, nm))) {
+        if (nm %in% c("stop_reasons", "additional_stats")) {
+        } else {
+          rv[[nm]] <- h_tidy_slot(x, nm)
+        }
+      }
+    }
+    # Column bind of all list elements have the same number of rows
+    if (length(rv) > 1 & length(unique(sapply(rv, nrow))) == 1) {
+      rv <- rv %>% dplyr::bind_cols()
+    }
+    rv %>% h_tidy_class(x)
+  }
+)

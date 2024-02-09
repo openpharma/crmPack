@@ -17,6 +17,8 @@
 \alias{size-CohortSizeConst}
 \alias{size,CohortSizeParts-method}
 \alias{size-CohortSizeParts}
+\alias{size,CohortSizeOrdinal-method}
+\alias{size-CohortSizeOrdinal}
 \alias{size,Samples-method}
 \alias{size-Samples}
 \title{Size of an Object}
@@ -37,6 +39,8 @@ size(object, ...)
 
 \S4method{size}{CohortSizeParts}(object, dose, data)
 
+\S4method{size}{CohortSizeOrdinal}(object, dose, data, ...)
+
 \S4method{size}{Samples}(object, ...)
 }
 \arguments{
@@ -45,9 +49,9 @@ for which the size is computed.}
 
 \item{...}{not used.}
 
-\item{dose}{the next dose.}
+\item{dose}{(\code{numeric}) the next dose.}
 
-\item{data}{the data input, an object of class \code{\link{Data}}.}
+\item{data}{the data input, an object of class \code{\link{DataOrdinal}}.}
 }
 \value{
 A size of a given object.
@@ -79,6 +83,8 @@ multiple cohort size rules.
 \item \code{size(CohortSizeConst)}: Constant cohort size.
 
 \item \code{size(CohortSizeParts)}: Determines the size of the next cohort based on the parts.
+
+\item \code{size(CohortSizeOrdinal)}: Determines the size of the next cohort in a ordinal CRM trial.
 
 \item \code{size(Samples)}: get the number of MCMC samples from \code{Samples} object.
 
@@ -142,170 +148,225 @@ size(mySize, dose=doseRecommendation$value, data = data)
 # nolint start
 
 # Create the data
-data <- Data(x=c(0.1, 0.5, 1.5, 3, 6, 10, 10, 10),
-             y=c(0, 0, 0, 0, 0, 0, 1, 0),
-             cohort=c(0, 1, 2, 3, 4, 5, 5, 5),
-             doseGrid=
-               c(0.1, 0.5, 1.5, 3, 6,
-                 seq(from=10, to=80, by=2)))
+data <- Data(
+  x = c(0.1, 0.5, 1.5, 3, 6, 10, 10, 10),
+  y = c(0, 0, 0, 0, 0, 0, 1, 0),
+  cohort = c(0, 1, 2, 3, 4, 5, 5, 5),
+  doseGrid =
+    c(
+      0.1, 0.5, 1.5, 3, 6,
+      seq(from = 10, to = 80, by = 2)
+    )
+)
 
 # Initialize the CRM model used to model the data
-model <- LogisticLogNormal(mean=c(-0.85, 1),
-                           cov=
-                             matrix(c(1, -0.5, -0.5, 1),
-                                    nrow=2),
-                           ref_dose=56)
+model <- LogisticLogNormal(
+  mean = c(-0.85, 1),
+  cov =
+    matrix(c(1, -0.5, -0.5, 1),
+      nrow = 2
+    ),
+  ref_dose = 56
+)
 
 # Set-up some MCMC parameters and generate samples from the posterior
-options <- McmcOptions(burnin=100,
-                       step=2,
-                       samples=2000)
+options <- McmcOptions(
+  burnin = 100,
+  step = 2,
+  samples = 2000
+)
 set.seed(94)
 samples <- mcmc(data, model, options)
 
 # Define the rule for dose increments and calculate the maximum dose allowed
-myIncrements <- IncrementsRelative(intervals=c(0, 20),
-                                   increments=c(1, 0.33))
+myIncrements <- IncrementsRelative(
+  intervals = c(0, 20),
+  increments = c(1, 0.33)
+)
 nextMaxDose <- maxDose(myIncrements,
-                       data=data)
+  data = data
+)
 
 # Define the rule which will be used to select the next best dose
 # based on the class 'NextBestNCRM'
-myNextBest <- NextBestNCRM(target=c(0.2, 0.35),
-                           overdose=c(0.35, 1),
-                           max_overdose_prob=0.25)
+myNextBest <- NextBestNCRM(
+  target = c(0.2, 0.35),
+  overdose = c(0.35, 1),
+  max_overdose_prob = 0.25
+)
 
 # Calculate the next best dose
 doseRecommendation <- nextBest(myNextBest,
-                               doselimit=nextMaxDose,
-                               samples=samples, model=model, data=data)
+  doselimit = nextMaxDose,
+  samples = samples, model = model, data = data
+)
 
 # Rule for the cohort size:
 #   - having cohort of size 1 if no DLTs were yet observed
 #   - and having cohort of size 3 if at least 1 DLT was already observed
-mySize <- CohortSizeDLT(dlt_intervals = c(0, 1),
-                        cohort_size = c(1, 3))
+mySize <- CohortSizeDLT(
+  intervals = c(0, 1),
+  cohort_size = c(1, 3)
+)
 
 # Determine the cohort size for the next cohort
-size(mySize, dose=doseRecommendation$value, data = data)
+size(mySize, dose = doseRecommendation$value, data = data)
 
 # nolint end
 # nolint start
 
 # Create the data
-data <- Data(x=c(0.1, 0.5, 1.5, 3, 6, 10, 10, 10),
-             y=c(0, 0, 0, 0, 0, 0, 1, 0),
-             cohort=c(0, 1, 2, 3, 4, 5, 5, 5),
-             doseGrid=
-               c(0.1, 0.5, 1.5, 3, 6,
-                 seq(from=10, to=80, by=2)))
+data <- Data(
+  x = c(0.1, 0.5, 1.5, 3, 6, 10, 10, 10),
+  y = c(0, 0, 0, 0, 0, 0, 1, 0),
+  cohort = c(0, 1, 2, 3, 4, 5, 5, 5),
+  doseGrid =
+    c(
+      0.1, 0.5, 1.5, 3, 6,
+      seq(from = 10, to = 80, by = 2)
+    )
+)
 
 # Initialize the CRM model used to model the data
-model <- LogisticLogNormal(mean=c(-0.85, 1),
-                           cov=
-                             matrix(c(1, -0.5, -0.5, 1),
-                                    nrow=2),
-                           ref_dose=56)
+model <- LogisticLogNormal(
+  mean = c(-0.85, 1),
+  cov =
+    matrix(c(1, -0.5, -0.5, 1),
+      nrow = 2
+    ),
+  ref_dose = 56
+)
 
 # Set-up some MCMC parameters and generate samples from the posterior
-options <- McmcOptions(burnin=100,
-                       step=2,
-                       samples=2000)
+options <- McmcOptions(
+  burnin = 100,
+  step = 2,
+  samples = 2000
+)
 set.seed(94)
 samples <- mcmc(data, model, options)
 
 # Define the rule for dose increments and calculate the maximum dose allowed
-myIncrements <- IncrementsRelative(intervals=c(0, 20),
-                                   increments=c(1, 0.33))
+myIncrements <- IncrementsRelative(
+  intervals = c(0, 20),
+  increments = c(1, 0.33)
+)
 nextMaxDose <- maxDose(myIncrements,
-                       data=data)
+  data = data
+)
 
 # Define the rule which will be used to select the next best dose
 # based on the class 'NextBestNCRM'
-myNextBest <- NextBestNCRM(target=c(0.2, 0.35),
-                           overdose=c(0.35, 1),
-                           max_overdose_prob=0.25)
+myNextBest <- NextBestNCRM(
+  target = c(0.2, 0.35),
+  overdose = c(0.35, 1),
+  max_overdose_prob = 0.25
+)
 
 # Calculate the next best dose
 doseRecommendation <- nextBest(myNextBest,
-                               doselimit=nextMaxDose,
-                               samples=samples, model=model, data=data)
+  doselimit = nextMaxDose,
+  samples = samples, model = model, data = data
+)
 
 # Rule for having cohort of size 1 for doses <30
 #      and having cohort of size 3 for doses >=30
-mySize1 <- CohortSizeRange(intervals = c(0, 10),
-                           cohort_size = c(1, 3))
+mySize1 <- CohortSizeRange(
+  intervals = c(0, 10),
+  cohort_size = c(1, 3)
+)
 
 # Rule for having cohort of size 1 until no DLT were observed
 #      and having cohort of size 3 as soon as 1 DLT is observed
-mySize2 <- CohortSizeDLT(dlt_intervals=c(0, 1),
-                         cohort_size=c(1, 3))
+mySize2 <- CohortSizeDLT(
+  intervals = c(0, 1),
+  cohort_size = c(1, 3)
+)
 
 # Combining the two rules for cohort size by taking the maximum of the sample sizes
 # of the single rules
 mySize <- maxSize(mySize1, mySize2)
 
 # Determine the cohort size for the next cohort
-size(mySize, dose=doseRecommendation$value, data = data)
+size(mySize, dose = doseRecommendation$value, data = data)
 
 # nolint end
 # nolint start
 
 # Create the data
-data <- Data(x=c(0.1, 0.5, 1.5, 3, 6, 10, 10, 10),
-             y=c(0, 0, 0, 0, 0, 0, 1, 0),
-             cohort=c(0, 1, 2, 3, 4, 5, 5, 5),
-             doseGrid=
-               c(0.1, 0.5, 1.5, 3, 6,
-                 seq(from=10, to=80, by=2)))
+data <- Data(
+  x = c(0.1, 0.5, 1.5, 3, 6, 10, 10, 10),
+  y = c(0, 0, 0, 0, 0, 0, 1, 0),
+  cohort = c(0, 1, 2, 3, 4, 5, 5, 5),
+  doseGrid =
+    c(
+      0.1, 0.5, 1.5, 3, 6,
+      seq(from = 10, to = 80, by = 2)
+    )
+)
 
 # Initialize the CRM model used to model the data
-model <- LogisticLogNormal(mean=c(-0.85, 1),
-                           cov=
-                             matrix(c(1, -0.5, -0.5, 1),
-                                    nrow=2),
-                           ref_dose=56)
+model <- LogisticLogNormal(
+  mean = c(-0.85, 1),
+  cov =
+    matrix(c(1, -0.5, -0.5, 1),
+      nrow = 2
+    ),
+  ref_dose = 56
+)
 
 # Set-up some MCMC parameters and generate samples from the posterior
-options <- McmcOptions(burnin=100,
-                       step=2,
-                       samples=2000)
+options <- McmcOptions(
+  burnin = 100,
+  step = 2,
+  samples = 2000
+)
 set.seed(94)
 samples <- mcmc(data, model, options)
 
 # Define the rule for dose increments and calculate the maximum dose allowed
-myIncrements <- IncrementsRelative(intervals=c(0, 20),
-                                   increments=c(1, 0.33))
+myIncrements <- IncrementsRelative(
+  intervals = c(0, 20),
+  increments = c(1, 0.33)
+)
 nextMaxDose <- maxDose(myIncrements,
-                       data=data)
+  data = data
+)
 
 # Define the rule which will be used to select the next best dose
 # based on the class 'NextBestNCRM'
-myNextBest <- NextBestNCRM(target=c(0.2, 0.35),
-                           overdose=c(0.35, 1),
-                           max_overdose_prob=0.25)
+myNextBest <- NextBestNCRM(
+  target = c(0.2, 0.35),
+  overdose = c(0.35, 1),
+  max_overdose_prob = 0.25
+)
 
 # Calculate the next best dose
 doseRecommendation <- nextBest(myNextBest,
-                               doselimit=nextMaxDose,
-                               samples=samples, model=model, data=data)
+  doselimit = nextMaxDose,
+  samples = samples, model = model, data = data
+)
 
 # Rule for having cohort of size 1 for doses <30
 #      and having cohort of size 3 for doses >=30
-mySize1 <- CohortSizeRange(intervals = c(0, 30),
-                           cohort_size = c(1, 3))
+mySize1 <- CohortSizeRange(
+  intervals = c(0, 30),
+  cohort_size = c(1, 3)
+)
 
 # Rule for having cohort of size 1 until no DLT were observed
 #      and having cohort of size 3 as soon as 1 DLT is observed
-mySize2 <- CohortSizeDLT(dlt_intervals=c(0, 1),
-                         cohort_size=c(1, 3))
+mySize2 <- CohortSizeDLT(
+  intervals = c(0, 1),
+  cohort_size = c(1, 3)
+)
 
 # Combining the two rules for cohort size by taking the minimum of the sample sizes
 # of the single rules
 mySize <- minSize(mySize1, mySize2)
 
 # Determine the cohort size for the next cohort
-size(mySize, dose=doseRecommendation$value, data = data)
+size(mySize, dose = doseRecommendation$value, data = data)
 
 # nolint end
 # nolint start
@@ -359,53 +420,72 @@ size(mySize, dose=doseRecommendation$value)
 # nolint start
 
 # create an object of class 'DataParts'
-data <- DataParts(x=c(0.1,0.5,1.5),
-                  y=c(0,0,0),
-                  doseGrid=c(0.1,0.5,1.5,3,6,
-                             seq(from=10,to=80,by=2)),
-                  part=c(1L,1L,1L),
-                  nextPart=1L,
-                  part1Ladder=c(0.1,0.5,1.5,3,6,10))
+data <- DataParts(
+  x = c(0.1, 0.5, 1.5),
+  y = c(0, 0, 0),
+  doseGrid = c(
+    0.1, 0.5, 1.5, 3, 6,
+    seq(from = 10, to = 80, by = 2)
+  ),
+  part = c(1L, 1L, 1L),
+  nextPart = 1L,
+  part1Ladder = c(0.1, 0.5, 1.5, 3, 6, 10)
+)
 
 # Initialize the CRM model used to model the data
-model <- LogisticLogNormal(mean=c(-0.85, 1),
-                           cov=
-                             matrix(c(1, -0.5, -0.5, 1),
-                                    nrow=2),
-                           ref_dose=56)
+model <- LogisticLogNormal(
+  mean = c(-0.85, 1),
+  cov =
+    matrix(c(1, -0.5, -0.5, 1),
+      nrow = 2
+    ),
+  ref_dose = 56
+)
 
 # Set-up some MCMC parameters and generate samples from the posterior
-options <- McmcOptions(burnin=100,
-                       step=2,
-                       samples=2000)
+options <- McmcOptions(
+  burnin = 100,
+  step = 2,
+  samples = 2000
+)
 set.seed(94)
 samples <- mcmc(data, model, options)
 
-myIncrements <- IncrementsRelativeParts(dlt_start=0,
-                                        clean_start=1)
+myIncrements <- IncrementsRelativeParts(
+  dlt_start = 0,
+  clean_start = 1
+)
 nextMaxDose <- maxDose(myIncrements,
-                       data=data)
+  data = data
+)
 
 # Define the rule which will be used to select the next best dose
 # based on the class 'NextBestNCRM'
-myNextBest <- NextBestNCRM(target=c(0.2, 0.35),
-                           overdose=c(0.35, 1),
-                           max_overdose_prob=0.25)
+myNextBest <- NextBestNCRM(
+  target = c(0.2, 0.35),
+  overdose = c(0.35, 1),
+  max_overdose_prob = 0.25
+)
 
 # Calculate the next best dose
 doseRecommendation <- nextBest(myNextBest,
-                               doselimit=nextMaxDose,
-                               samples=samples,
-                               model=model,
-                               data=data)
+  doselimit = nextMaxDose,
+  samples = samples,
+  model = model,
+  data = data
+)
 
 # Rule for the cohort size:
-mySize <- CohortSizeParts(sizes=c(1,3))
+mySize <- CohortSizeParts(cohort_sizes = c(1, 3))
 
 # Determine the cohort size for the next cohort
-size(mySize, dose=doseRecommendation$value, data = data)
+size(mySize, dose = doseRecommendation$value, data = data)
 
 # nolint end
+CohortSizeOrdinal(
+  grade = 1L,
+  rule = CohortSizeRange(intervals = c(0L, 30L), cohort_size = c(1L, 3L))
+)
 # Set up the MCMC option in order to have a burn-in of 100 iterations and
 # then take every other iteration up to a collection of 200 samples.
 my_options <- McmcOptions(burnin = 100, step = 2, samples = 200)

@@ -5,6 +5,7 @@
 \alias{TDsamplesDesign-class}
 \alias{.TDsamplesDesign}
 \alias{TDsamplesDesign}
+\alias{.DefaultTDsamplesDesign}
 \title{\code{TDsamplesDesign}}
 \usage{
 TDsamplesDesign(
@@ -14,6 +15,8 @@ TDsamplesDesign(
   pl_cohort_size = CohortSizeConst(0L),
   ...
 )
+
+.DefaultTDsamplesDesign()
 }
 \arguments{
 \item{model}{(\code{ModelTox})\cr see slot definition.}
@@ -28,7 +31,7 @@ TDsamplesDesign(
   Arguments passed on to \code{\link[=RuleDesign]{RuleDesign}}
   \describe{
     \item{\code{nextBest}}{(\code{NextBest})\cr see slot definition.}
-    \item{\code{cohortSize}}{(\code{CohortSize})\cr see slot definition.}
+    \item{\code{cohort_size}}{(\code{CohortSize})\cr see slot definition.}
     \item{\code{data}}{(\code{Data})\cr see slot definition.}
     \item{\code{startingDose}}{(\code{number})\cr see slot definition.}
   }}
@@ -53,6 +56,9 @@ obtained for this model.
 if any planned (defaults to constant 0 placebo patients).}
 }}
 
+\note{
+Typically, end users will not use the \code{.DefaultTDsamplesDesign()} function.
+}
 \examples{
 empty_data <- Data(doseGrid = seq(25, 300, 25))
 
@@ -91,7 +97,7 @@ design <- TDsamplesDesign(
   stopping = my_stopping,
   increments = my_increments,
   nextBest = my_next_best,
-  cohortSize = my_size,
+  cohort_size = my_size,
   data = empty_data,
   startingDose = 25
 )

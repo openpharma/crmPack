@@ -16,6 +16,9 @@
 \alias{maxDose-IncrementsHSRBeta}
 \alias{maxDose,IncrementsMin,Data-method}
 \alias{maxDose-IncrementsMin}
+\alias{maxDose,IncrementsMin,DataOrdinal-method}
+\alias{maxDose,IncrementsOrdinal,DataOrdinal-method}
+\alias{maxDose-IncrementsOrdinal}
 \title{Determine the Maximum Possible Next Dose}
 \usage{
 maxDose(increments, data, ...)
@@ -33,6 +36,10 @@ maxDose(increments, data, ...)
 \S4method{maxDose}{IncrementsHSRBeta,Data}(increments, data, ...)
 
 \S4method{maxDose}{IncrementsMin,Data}(increments, data, ...)
+
+\S4method{maxDose}{IncrementsMin,DataOrdinal}(increments, data, ...)
+
+\S4method{maxDose}{IncrementsOrdinal,DataOrdinal}(increments, data, ...)
 }
 \arguments{
 \item{increments}{(\code{Increments})\cr the rule for the next best dose.}
@@ -76,6 +83,12 @@ Find out more in \code{\link{IncrementsDoseLevels}}.
 \item \code{maxDose(increments = IncrementsMin, data = Data)}: determine the maximum possible next dose based on
 multiple increment rules, taking the minimum across individual increments.
 
+\item \code{maxDose(increments = IncrementsMin, data = DataOrdinal)}: determine the maximum possible next dose based on
+multiple increment rules, taking the minimum across individual increments.
+
+\item \code{maxDose(increments = IncrementsOrdinal, data = DataOrdinal)}: determine the maximum possible next dose in an ordinal
+CRM trial
+
 }}
 \examples{
 # Example of usage for `IncrementsRelative` maxDose class.
@@ -116,7 +129,7 @@ my_data <- Data(
 #  - increasing the dose by 33\% if 1 or 2 DLTs were already observed,
 #  - increasing the dose by 20\% if at least 3 DLTs were already observed.
 my_increments <- IncrementsRelativeDLT(
-  dlt_intervals = c(0, 1, 3),
+  intervals = c(0, 1, 3),
   increments = c(1, 0.33, 0.2)
 )
 
@@ -138,7 +151,7 @@ my_data <- Data(
 #  - only increasing the dose by 33\% if 1 or 2 DLTs were observed in current cohort,
 #  - only increasing the dose by 20\% if at least 3 DLTs were observed in current cohort.
 my_increments <- IncrementsRelativeDLTCurrent(
-  dlt_intervals = c(0, 1, 3),
+  intervals = c(0, 1, 3),
   increments = c(1, 0.33, 0.2)
 )
 
@@ -226,7 +239,7 @@ my_data <- Data(
 #  - increasing the dose by 33\% if 1 or 2 DLTs were observed at the current dose,
 #  - increasing the dose by 22\% if 3 or more DLTs were observed.
 my_increments_1 <- IncrementsRelativeDLT(
-  dlt_intervals = c(0, 1, 3),
+  intervals = c(0, 1, 3),
   increments = c(1, 0.33, 0.2)
 )
 
@@ -244,4 +257,8 @@ my_increments <- IncrementsMin(
   increments_list = list(my_increments_1, my_increments_2)
 )
 max_dose <- maxDose(my_increments, my_data)
+maxDose(
+  increments = IncrementsOrdinal(2L, .DefaultIncrementsRelative()),
+  data = .DefaultDataOrdinal()
+)
 }

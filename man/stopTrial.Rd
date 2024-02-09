@@ -2,6 +2,8 @@
 % Please edit documentation in R/Rules-methods.R
 \name{stopTrial}
 \alias{stopTrial}
+\alias{stopTrial,StoppingMissingDose,numeric,ANY,ANY,Data-method}
+\alias{stopTrial-StoppingMissingDose}
 \alias{stopTrial,StoppingList,ANY,ANY,ANY,ANY-method}
 \alias{stopTrial,StoppingAll,ANY,ANY,ANY,ANY-method}
 \alias{stopTrial,StoppingAny,ANY,ANY,ANY,ANY-method}
@@ -10,15 +12,20 @@
 \alias{stopTrial,StoppingMinCohorts,ANY,ANY,ANY,Data-method}
 \alias{stopTrial,StoppingMinPatients,ANY,ANY,ANY,Data-method}
 \alias{stopTrial,StoppingTargetProb,numeric,Samples,GeneralModel,ANY-method}
+\alias{stopTrial-StoppingTargetProb}
 \alias{stopTrial,StoppingMTDdistribution,numeric,Samples,GeneralModel,ANY-method}
 \alias{stopTrial,StoppingMTDCV,numeric,Samples,GeneralModel,ANY-method}
 \alias{stopTrial-StoppingMTDCV}
 \alias{stopTrial,StoppingLowestDoseHSRBeta,numeric,Samples,ANY,ANY-method}
 \alias{stopTrial-StoppingLowestDoseHSRBeta}
 \alias{stopTrial,StoppingTargetBiomarker,numeric,Samples,DualEndpoint,ANY-method}
+\alias{stopTrial-StoppingTargetBiomarker}
 \alias{stopTrial,StoppingSpecificDose,numeric,ANY,ANY,Data-method}
 \alias{stopTrial-StoppingSpecificDose}
 \alias{stopTrial,StoppingHighestDose,numeric,ANY,ANY,Data-method}
+\alias{stopTrial,StoppingOrdinal,numeric,ANY,LogisticLogNormalOrdinal,DataOrdinal-method}
+\alias{stopTrial-StoppingOrdinal}
+\alias{stopTrial,StoppingOrdinal,numeric,ANY,ANY,ANY-method}
 \alias{stopTrial,StoppingTDCIRatio,ANY,Samples,ModelTox,ANY-method}
 \alias{stopTrial,StoppingTDCIRatio,ANY,missing,ModelTox,ANY-method}
 \alias{stopTrial,StoppingMaxGainCIRatio,ANY,Samples,ModelTox,DataDual-method}
@@ -26,6 +33,8 @@
 \title{Stop the trial?}
 \usage{
 stopTrial(stopping, dose, samples, model, data, ...)
+
+\S4method{stopTrial}{StoppingMissingDose,numeric,ANY,ANY,Data}(stopping, dose, samples, model, data, ...)
 
 \S4method{stopTrial}{StoppingList,ANY,ANY,ANY,ANY}(stopping, dose, samples, model, data, ...)
 
@@ -55,6 +64,10 @@ stopTrial(stopping, dose, samples, model, data, ...)
 
 \S4method{stopTrial}{StoppingHighestDose,numeric,ANY,ANY,Data}(stopping, dose, samples, model, data, ...)
 
+\S4method{stopTrial}{StoppingOrdinal,numeric,ANY,LogisticLogNormalOrdinal,DataOrdinal}(stopping, dose, samples, model, data, ...)
+
+\S4method{stopTrial}{StoppingOrdinal,numeric,ANY,ANY,ANY}(stopping, dose, samples, model, data, ...)
+
 \S4method{stopTrial}{StoppingTDCIRatio,ANY,Samples,ModelTox,ANY}(stopping, dose, samples, model, data, ...)
 
 \S4method{stopTrial}{StoppingTDCIRatio,ANY,missing,ModelTox,ANY}(stopping, dose, samples, model, data, ...)
@@ -75,18 +88,17 @@ stopTrial(stopping, dose, samples, model, data, ...)
 \S4method{stopTrial}{StoppingMaxGainCIRatio,ANY,missing,ModelTox,DataDual}(stopping, dose, model, data, Effmodel, ...)
 }
 \arguments{
-\item{stopping}{The rule, an object of class
-\code{\linkS4class{Stopping}}}
+\item{stopping}{(\code{Stopping})\cr the rule for stopping the trial.}
 
-\item{dose}{the recommended next best dose}
+\item{dose}{the recommended next best dose.}
 
-\item{samples}{the \code{\linkS4class{Samples}} object}
+\item{samples}{(\code{Samples})\cr the mcmc samples.}
 
-\item{model}{The model input, an object of class \code{\linkS4class{GeneralModel}}}
+\item{model}{(\code{GeneralModel})\cr the model.}
 
-\item{data}{The data input, an object of class \code{\linkS4class{Data}}}
+\item{data}{(\code{Data})\cr input data.}
 
-\item{\dots}{additional arguments}
+\item{...}{additional arguments without method dispatch.}
 
 \item{TDderive}{the function which derives from the input, a vector of the posterior samples called
 \code{TDsamples} of the dose
@@ -108,7 +120,11 @@ otherwise. It should have an attribute \code{message} which gives the reason
 for the decision.
 }
 \description{
+\ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#stable}{\figure{lifecycle-stable.svg}{options: alt='[Stable]'}}}{\strong{[Stable]}}
+
 This function returns whether to stop the trial.
+
+\ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#experimental}{\figure{lifecycle-experimental.svg}{options: alt='[Experimental]'}}}{\strong{[Experimental]}}
 
 Stopping rule based precision of the MTD estimation.
 The trial is stopped, when the MTD can be estimated with sufficient precision.
@@ -122,9 +138,21 @@ stopped when the lowest non placebo dose meets the Hard
 Safety Rule, i.e. it is deemed to be overly toxic. Stopping is based on the
 observed data at the lowest dose level using a Bin-Beta model
 based on DLT probability.
+
+\ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#experimental}{\figure{lifecycle-experimental.svg}{options: alt='[Experimental]'}}}{\strong{[Experimental]}}
+
+\ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#experimental}{\figure{lifecycle-experimental.svg}{options: alt='[Experimental]'}}}{\strong{[Experimental]}}
 }
 \section{Functions}{
 \itemize{
+\item \code{stopTrial(
+  stopping = StoppingMissingDose,
+  dose = numeric,
+  samples = ANY,
+  model = ANY,
+  data = Data
+)}: Stop based on value returned by next best dose.
+
 \item \code{stopTrial(
   stopping = StoppingList,
   dose = ANY,
@@ -225,6 +253,22 @@ dose grid and not just for the default next best dose.
 )}: Stop when the highest dose is reached
 
 \item \code{stopTrial(
+  stopping = StoppingOrdinal,
+  dose = numeric,
+  samples = ANY,
+  model = LogisticLogNormalOrdinal,
+  data = DataOrdinal
+)}: Stop based on value returned by next best dose.
+
+\item \code{stopTrial(
+  stopping = StoppingOrdinal,
+  dose = numeric,
+  samples = ANY,
+  model = ANY,
+  data = ANY
+)}: Stop based on value returned by next best dose.
+
+\item \code{stopTrial(
   stopping = StoppingTDCIRatio,
   dose = ANY,
   samples = Samples,
@@ -267,10 +311,6 @@ interval of the estimate (the minimum of Gstar and TDtargetEndOfTrial). This is 
 incorporate DLE and efficacy responses without DLE and efficacy samples involved.
 
 }}
-\note{
-If the recommended next best dose is \code{NA} or the placebo dose, then
-the trial always stops, independent of the concrete \code{stopping} rule used.
-}
 \examples{
 
 ## Example of combining stopping rules with '&' and/or '|' operators
@@ -285,6 +325,82 @@ myStopping <- (myStopping1 & myStopping2) | myStopping3
 
 
 
+# Example of usage for `StoppingMissingDose` StopTrial class.
+
+# Create the data.
+my_data <- Data(
+  x = c(0.01, 0.1, 0.5, 3, 6, 10, 10, 10),
+  y = c(0, 1, 1, 0, 0, 0, 0, 1),
+  cohort = c(1, 1, 2, 3, 4, 5, 5, 5),
+  ID = 1:8,
+  doseGrid = c(
+    0.01, 0.1, 0.5, 1.5, 3, 6,
+    seq(from = 10, to = 80, by = 2)
+  ),
+  placebo = TRUE
+)
+
+# Initialize the CRM model used to model the data.
+my_model <- LogisticLogNormal(
+  mean = c(-0.85, 1),
+  cov =
+    matrix(c(1, -0.5, -0.5, 1),
+      nrow = 2
+    ),
+  ref_dose = 56
+)
+
+# Set-up some MCMC parameters and generate samples from the posterior.
+my_options <- McmcOptions(
+  burnin = 100,
+  step = 2,
+  samples = 2000
+)
+
+my_samples <- mcmc(my_data, my_model, my_options)
+
+# Define the rule for dose increments and calculate the maximum dose allowed.
+my_increments <- IncrementsRelative(
+  intervals = c(0, 20),
+  increments = c(1, 0.33)
+)
+
+next_max_dose <- maxDose(my_increments,
+  data = my_data
+)
+
+# Define the rule which will be used to select the next best dose based
+# on the class 'NextBestNCRM'.
+my_next_best <- NextBestNCRM(
+  target = c(0.1, 0.25),
+  overdose = c(0.2, 1),
+  max_overdose_prob = 0.25
+)
+
+# Calculate the next best dose.
+dose_recommendation <- nextBest(
+  my_next_best,
+  doselimit = next_max_dose,
+  samples = my_samples, model = my_model, data = my_data
+)
+
+# Define the stopping rule such that the study would be stopped if there is
+# no safe active dose returned from dose_recommendation.
+my_stopping <- StoppingMissingDose()
+my_stopping <- StoppingAny(
+  stop_list = c(
+    StoppingMinPatients(nPatients = 16),
+    StoppingMissingDose()
+  )
+)
+
+# Evaluate if to stop the trial.
+stopTrial(
+  stopping = my_stopping,
+  dose = dose_recommendation$value,
+  data = my_data,
+  model = my_model
+)
 # nolint start
 
 # Create some data
@@ -1078,6 +1194,60 @@ stopTrial(stopping=myStopping,
           data=data)
 
 # nolint end
+data <- .DefaultDataOrdinal()
+model <- .DefaultLogisticLogNormalOrdinal()
+options <- .DefaultMcmcOptions()
+samples <- mcmc(data, model, options)
+
+myIncrements <- .DefaultIncrementsOrdinal()
+nextMaxDose <- maxDose(myIncrements, data = data)
+
+myNextBest <- .DefaultNextBestOrdinal()
+
+doseRecommendation <- nextBest(
+  myNextBest,
+  doselimit = nextMaxDose,
+  samples = samples,
+  model = model,
+  data = data
+)
+
+myStopping <- .DefaultStoppingOrdinal()
+
+stopTrial(
+  stopping = myStopping,
+  dose = doseRecommendation$value,
+  samples = samples,
+  model = model,
+  data = data
+)
+data <- .DefaultDataOrdinal()
+model <- .DefaultLogisticLogNormalOrdinal()
+options <- .DefaultMcmcOptions()
+samples <- mcmc(data, model, options)
+
+myIncrements <- .DefaultIncrementsOrdinal()
+nextMaxDose <- maxDose(myIncrements, data = data)
+
+myNextBest <- .DefaultNextBestOrdinal()
+
+doseRecommendation <- nextBest(
+  myNextBest,
+  doselimit = nextMaxDose,
+  samples = samples,
+  model = model,
+  data = data
+)
+
+myStopping <- .DefaultStoppingOrdinal()
+
+stopTrial(
+  stopping = myStopping,
+  dose = doseRecommendation$value,
+  samples = samples,
+  model = model,
+  data = data
+)
 # nolint start
 
 ##define the stopping rules based on the 'StoppingTDCIRatio' class

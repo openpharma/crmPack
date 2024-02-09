@@ -44,6 +44,31 @@ test_that("nextBest-NextBestMTD returns correct next dose and plot (no doselimit
   vdiffr::expect_doppelganger("Plot of nextBest-NextBestMTD without doselimit", result$plot)
 })
 
+test_that("nextBest-NextBestMTD returns correct next dose and plot when doselimit=0", {
+  data <- h_get_data(placebo = FALSE)
+  model <- h_get_logistic_log_normal()
+  samples <- h_as_samples(
+    list(alpha0 = c(-2.38, -2.13, -1.43, -2.57), alpha1 = c(1.67, 1.3, 1.77, 2.51))
+  )
+  nb_mtd <- NextBestMTD(
+    target = 0.33,
+    derive = function(mtd_samples) {
+      quantile(mtd_samples, probs = 0.25)
+    }
+  )
+
+  result <- nextBest(
+    nextBest = nb_mtd,
+    doselimit = 0,
+    samples = samples,
+    model = model,
+    data = data
+  )
+  expect_identical(result$value, numeric(0))
+  vdiffr::expect_doppelganger("Plot of nextBest-NextBestMTD-doselimit-zero", result$plot)
+})
+
+
 ## NextBestNCRM ----
 
 test_that("nextBest-NextBestNCRM returns expected values of the objects", {
@@ -78,6 +103,17 @@ test_that("nextBest-NextBestNCRM returns expected values of the objects (no dose
   expect_identical(result$value, 75)
   expect_snapshot(result$probs)
   vdiffr::expect_doppelganger("Plot of nextBest-NextBestNCRM without doselimit", result$plot)
+})
+
+test_that("nextBest-NextBestNCRM can accept additional arguments and pass them to prob inside", {
+  my_data <- h_get_data_grouped()
+  my_model <- .DefaultLogisticLogNormalGrouped()
+  my_samples <- mcmc(my_data, my_model, h_get_mcmc_options(samples = 10, burnin = 10))
+  nb_ncrm <- NextBestNCRM(
+    target = c(0.2, 0.35), overdose = c(0.35, 1), max_overdose_prob = 0.25
+  )
+  result <- nextBest(nb_ncrm, Inf, my_samples, my_model, my_data, group = "mono")
+  expect_identical(result$value, NA_real_)
 })
 
 ## NextBestNCRM-DataParts ----
@@ -336,7 +372,7 @@ test_that("nextBest-NextBestDualEndpoint returns expected elements (absolute tar
   result <- nextBest(nb_de, Inf, samples, model, data)
   expect_identical(result$value, 100)
   expect_snapshot(result$probs)
-  vdiffr::expect_doppelganger("Plot of nextBest-NextBestDualEndpoint_atgt_nodlim", result$plot)
+  vdiffr::expect_doppelganger("nextBest-NextBestDualEndpoint_atgt_nodlim", result$plot)
 })
 
 ## NextBestMinDist ----
@@ -438,7 +474,9 @@ test_that("nextBest-NextBestTDsamples returns expected values of the objects", {
     ci_ratio_dose_target_eot = 10.88891
   )
   expect_identical(result[names(expected)], expected, tolerance = 10e-7)
-  vdiffr::expect_doppelganger("Plot of nextBest-NextBestTDsamples", result$plot)
+  suppressWarnings({
+    vdiffr::expect_doppelganger("Plot of nextBest-NextBestTDsamples", result$plot)
+  })
 })
 
 test_that("nextBest-NextBestTDsamples returns expected values of the objects (no doselimit)", {
@@ -464,7 +502,9 @@ test_that("nextBest-NextBestTDsamples returns expected values of the objects (no
     ci_ratio_dose_target_eot = 10.88891
   )
   expect_identical(result[names(expected)], expected, tolerance = 10e-7)
-  vdiffr::expect_doppelganger("Plot of nextBest-NextBestTDsamples_nodoselim", result$plot)
+  suppressWarnings({
+    vdiffr::expect_doppelganger("Plot of nextBest-NextBestTDsamples_nodoselim", result$plot)
+  })
 })
 
 test_that("nextBest-NextBestTDsamples returns expected values of the objects (other targets)", {
@@ -830,6 +870,45 @@ test_that("nextBest-NextBestProbMTDMinDist returns correct next dose and plot (n
   vdiffr::expect_doppelganger("Plot nextBest-NextBestProbMTDMinDist w/o doselimit", result$plot)
 })
 
+## NextBestOrdinal ----
+test_that("nextBest-NextBestOrdinal throws exception when passed a GeneralModel object", {
+  ordinal_data <- .DefaultDataOrdinal()
+  ordinal_model <- .DefaultLogisticLogNormalOrdinal()
+  suppressWarnings({
+    samples <- mcmc(ordinal_data, ordinal_model, .DefaultMcmcOptions())
+  })
+  next_best <- .DefaultNextBestOrdinal()
+  bad_data <- .DefaultData()
+  expect_error(
+    nextBest(next_best, Inf, samples, ordinal_model, bad_data),
+    paste0(
+      "NextBestOrdinal objects can only be used with LogisticLogNormalOrdinal ",
+      "models and DataOrdinal data objects. In this case, the model is a ",
+      "'LogisticLogNormalOrdinal' object and the data is in a Data object."
+    )
+  )
+})
+
+test_that("nextBest-NextBestOrdinal works correctly", {
+  ordinal_data <- .DefaultDataOrdinal()
+  ordinal_model <- .DefaultLogisticLogNormalOrdinal()
+  suppressWarnings({
+    samples <- mcmc(
+      ordinal_data,
+      ordinal_model,
+      McmcOptions(
+        rng_kind = "Mersenne-Twister",
+        rng_seed = 215614
+      )
+    )
+  })
+  next_best <- .DefaultNextBestOrdinal()
+  bad_data <- .DefaultData()
+
+  actual <- nextBest(next_best, Inf, samples, ordinal_model, ordinal_data)
+  vdiffr::expect_doppelganger("nextBest-NextBestOrdinal", actual$plot)
+  expect_equal(actual$value, 50)
+})
 
 # maxDose ----
 
@@ -889,7 +968,7 @@ test_that("maxDose-IncrementsRelative throws error when Data is empty", {
 ## IncrementsRelativeDLT ----
 
 test_that("maxDose-IncrementsRelativeDLT works correctly for no of DLTs in 1st interval", {
-  increments <- IncrementsRelativeDLT(dlt_intervals = c(0, 2), increments = c(1, 0.5))
+  increments <- IncrementsRelativeDLT(intervals = c(0, 2), increments = c(1, 0.5))
   data <- Data(
     x = c(5, 100), y = c(0L, 0L), doseGrid = c(5, 100), ID = 1:2, cohort = 1:2
   )
@@ -904,7 +983,7 @@ test_that("maxDose-IncrementsRelativeDLT works correctly for no of DLTs in 1st i
 
 test_that("maxDose-IncrementsRelativeDLT works correctly for no of DLTs in 2nd interval", {
   dgrid <- c(5, 100, 150, 200)
-  increments <- IncrementsRelativeDLT(dlt_intervals = c(0, 2), increments = c(1, 0.5))
+  increments <- IncrementsRelativeDLT(intervals = c(0, 2), increments = c(1, 0.5))
   data <- Data(x = c(5, 100), y = c(1L, 1L), doseGrid = dgrid, ID = 1:2, cohort = 1:2)
   result <- maxDose(increments, data)
   expect_equal(result, 150)
@@ -918,28 +997,28 @@ test_that("maxDose-IncrementsRelativeDLT works correctly for no of DLTs in 2nd i
 })
 
 test_that("maxDose-IncrementsRelativeDLT throws error when no of DLTs is below the first interval", {
-  increments <- IncrementsRelativeDLT(dlt_intervals = c(2, 5), increments = c(1, 0.5))
+  increments <- IncrementsRelativeDLT(intervals = c(2, 5), increments = c(1, 0.5))
   data <- Data(x = c(5, 100), y = c(0L, 1L), doseGrid = c(5, 100), ID = 1:2, cohort = 1:2)
   expect_error(
     maxDose(increments, data),
-    "Assertion on 'dlt_count.*dlt_intervals.*failed: Must be TRUE."
+    "Assertion on 'dlt_count.*intervals.*failed: Must be TRUE."
   )
 })
 
 test_that("maxDose-IncrementsRelativeDLT throws error when IncrementsRelativeDLT is empty", {
-  increments <- IncrementsRelativeDLT(dlt_intervals = numeric(0), increments = numeric(0))
+  increments <- IncrementsRelativeDLT(intervals = numeric(0), increments = numeric(0))
   data <- h_get_data()
   expect_error(
     maxDose(increments, data),
-    "Assertion on 'dlt_count.*dlt_intervals.*failed: Must be TRUE."
+    "Assertion on 'dlt_count.*intervals.*failed: Must be TRUE."
   )
 })
 
 test_that("maxDose-IncrementsRelativeDLT throws error when Data is empty", {
-  increments <- IncrementsRelativeDLT(dlt_intervals = c(1, 4), increments = c(1, 0.5))
+  increments <- IncrementsRelativeDLT(intervals = c(1, 4), increments = c(1, 0.5))
   expect_error(
     maxDose(increments, Data()),
-    "Assertion on 'dlt_count.*dlt_intervals.*failed: Must be TRUE."
+    "Assertion on 'dlt_count.*intervals.*failed: Must be TRUE."
   )
 })
 
@@ -947,7 +1026,7 @@ test_that("maxDose-IncrementsRelativeDLT throws error when Data is empty", {
 
 test_that("IncrementsRelativeDLTCurrent works correctly", {
   increments <- IncrementsRelativeDLTCurrent(
-    dlt_intervals = c(0, 1, 3),
+    intervals = c(0, 1, 3),
     increments = c(1, 0.33, 0.2)
   )
   data <- h_get_data_1()
@@ -956,7 +1035,7 @@ test_that("IncrementsRelativeDLTCurrent works correctly", {
 })
 
 test_that("maxDose-IncrementsRelativeDLTCurrent works correctly when DLTs in 1st interval, no DLTs in cohorts", {
-  increments <- IncrementsRelativeDLTCurrent(dlt_intervals = c(0, 2), increments = c(1, 0.5))
+  increments <- IncrementsRelativeDLTCurrent(intervals = c(0, 2), increments = c(1, 0.5))
   # no DLTs in 1st interval.
   data <- Data(
     x = c(5, 100, 100), y = c(0L, 0L, 0L), doseGrid = c(5, 100), ID = 1:3, cohort = c(1, 2, 2)
@@ -971,7 +1050,7 @@ test_that("maxDose-IncrementsRelativeDLTCurrent works correctly when DLTs in 1st
 })
 
 test_that("maxDose-IncrementsRelativeDLTCurrent works correctly when DLTs in 1st interval, DLTs in cohorts", {
-  increments <- IncrementsRelativeDLTCurrent(dlt_intervals = c(0, 2), increments = c(1, 0.5))
+  increments <- IncrementsRelativeDLTCurrent(intervals = c(0, 2), increments = c(1, 0.5))
   # no DLTs in 1st interval.
   data <- Data(
     x = c(5, 5, 20, 20, 20, 100, 100),
@@ -990,7 +1069,7 @@ test_that("maxDose-IncrementsRelativeDLTCurrent works correctly when DLTs in 1st
 })
 
 test_that("maxDose-IncrementsRelativeDLTCurrent works correctly when DLTs in 2nd interval, no DLTs in cohorts", {
-  increments <- IncrementsRelativeDLTCurrent(dlt_intervals = c(0, 2), increments = c(1, 0.5))
+  increments <- IncrementsRelativeDLTCurrent(intervals = c(0, 2), increments = c(1, 0.5))
   # 2 DLTs in 2nd interval.
   data <- Data(
     x = c(5, 100, 100), y = c(0L, 1L, 1L), doseGrid = c(5, 100), ID = 1:3, cohort = c(1, 2, 2)
@@ -1007,7 +1086,7 @@ test_that("maxDose-IncrementsRelativeDLTCurrent works correctly when DLTs in 2nd
 })
 
 test_that("maxDose-IncrementsRelativeDLTCurrent works correctly when DLTs in 2nd interval, DLTs in cohorts", {
-  increments <- IncrementsRelativeDLTCurrent(dlt_intervals = c(0, 2), increments = c(1, 0.5))
+  increments <- IncrementsRelativeDLTCurrent(intervals = c(0, 2), increments = c(1, 0.5))
   # 2 DLTs in 2nd interval.
   data <- Data(
     x = c(5, 5, 20, 20, 20, 100, 100, 100),
@@ -1026,28 +1105,28 @@ test_that("maxDose-IncrementsRelativeDLTCurrent works correctly when DLTs in 2nd
 })
 
 test_that("maxDose-IncrementsRelativeDLTCurrent throws error when no of DLTs below the first interval", {
-  increments <- IncrementsRelativeDLTCurrent(dlt_intervals = c(2, 5), increments = c(1, 0.5))
+  increments <- IncrementsRelativeDLTCurrent(intervals = c(2, 5), increments = c(1, 0.5))
   data <- Data(x = c(5, 100), y = c(0L, 1L), doseGrid = c(5, 100), ID = 1:2, cohort = 1:2)
   expect_error(
     maxDose(increments, data),
-    "Assertion on 'dlt_count_lcohort.*dlt_intervals.*failed: Must be TRUE."
+    "Assertion on 'dlt_count_lcohort.*intervals.*failed: Must be TRUE."
   )
 })
 
 test_that("maxDose-IncrementsRelativeDLTCurrent throws error when IncrementsRelativeDLTCurrent is empty", {
-  increments <- IncrementsRelativeDLTCurrent(dlt_intervals = numeric(0), increments = numeric(0))
+  increments <- IncrementsRelativeDLTCurrent(intervals = numeric(0), increments = numeric(0))
   data <- h_get_data()
   expect_error(
     maxDose(increments, data),
-    "Assertion on 'dlt_count_lcohort.*dlt_intervals.*failed: Must be TRUE."
+    "Assertion on 'dlt_count_lcohort.*intervals.*failed: Must be TRUE."
   )
 })
 
 test_that("maxDose-IncrementsRelativeDLTCurrent throws error when Data is empty", {
-  increments <- IncrementsRelativeDLTCurrent(dlt_intervals = c(1, 4), increments = c(1, 0.5))
+  increments <- IncrementsRelativeDLTCurrent(intervals = c(1, 4), increments = c(1, 0.5))
   expect_error(
     maxDose(increments, Data()),
-    "Assertion on 'dlt_count_lcohort.*dlt_intervals.*failed: Must be TRUE."
+    "Assertion on 'dlt_count_lcohort.*intervals.*failed: Must be TRUE."
   )
 })
 
@@ -1212,6 +1291,27 @@ test_that("maxDose-IncrementsRelativeParts throws error when part1Ladder is exce
   )
 })
 
+test_that("maxDose-IncrementsRelativeParts throws error when part1Ladder is exceeded (in p1, p2, DLT, cstart <= 0)", {
+  increments <- IncrementsRelativeParts(
+    dlt_start = 10, clean_start = 20, intervals = c(0, 1), increments = c(4, 3)
+  )
+  data <- DataParts(
+    x = c(0.1, 1.5, 0.5),
+    y = c(0, 0, 1L),
+    ID = 1:3,
+    cohort = 1:3,
+    doseGrid = c(0.1, 0.4, 0.5, 1.5, 3, 6, 10, 15, 20, 30),
+    part = c(1L, 1L, 1L),
+    nextPart = 2L,
+    part1Ladder = c(0.1, 0.5, 1.5, 3, 6, 10, 20)
+  )
+  expect_error(
+    maxDose(increments, data),
+    "Assertion on 'new_max_dose_level <= length(data@part1Ladder)' failed: Must be TRUE.",
+    fixed = TRUE
+  )
+})
+
 ## IncrementsDoseLevels ----
 
 test_that("maxDose-IncrementsDoseLevels works correctly for 'last' basis_level and 1 level increase", {
@@ -1340,7 +1440,7 @@ test_that("IncrementsHSRBeta works correctly if toxcicity probability is above t
 
 test_that("maxDose-IncrementsMin works correctly when incr1 is minimum", {
   incr1 <- IncrementsRelative(intervals = c(0, 20), increments = c(4, 0.1))
-  incr2 <- IncrementsRelativeDLT(dlt_intervals = c(0, 1, 3), increments = c(2, 0.5, 0.4))
+  incr2 <- IncrementsRelativeDLT(intervals = c(0, 1, 3), increments = c(2, 0.5, 0.4))
   increments <- IncrementsMin(increments_list = list(incr1, incr2))
   data <- Data(
     x = c(5, 100), y = c(1L, 0L), doseGrid = c(5, 100), ID = 1:2, cohort = 1:2
@@ -1351,7 +1451,7 @@ test_that("maxDose-IncrementsMin works correctly when incr1 is minimum", {
 
 test_that("maxDose-IncrementsMin works correctly when incr2 is minimum", {
   incr1 <- IncrementsRelative(intervals = c(0, 20), increments = c(4, 0.7))
-  incr2 <- IncrementsRelativeDLT(dlt_intervals = c(0, 1, 3), increments = c(2, 0.5, 0.4))
+  incr2 <- IncrementsRelativeDLT(intervals = c(0, 1, 3), increments = c(2, 0.5, 0.4))
   increments <- IncrementsMin(increments_list = list(incr1, incr2))
   data <- Data(
     x = c(5, 100), y = c(1L, 0L), doseGrid = c(5, 100), ID = 1:2, cohort = 1:2
@@ -1360,866 +1460,118 @@ test_that("maxDose-IncrementsMin works correctly when incr2 is minimum", {
   expect_equal(result, 150)
 })
 
+test_that("maxDose-IncrementsMin-DataOrdinal works correctly when incr1 is minimum", {
+  incr1 <- IncrementsOrdinal(
+    1L,
+    IncrementsRelative(intervals = c(0, 20), increments = c(4, 0.7))
+  )
+  incr2 <- IncrementsOrdinal(
+    1L,
+    IncrementsRelativeDLT(intervals = c(0, 1, 3), increments = c(2, 0.5, 0.4))
+  )
+  increments <- IncrementsMin(increments_list = list(incr1, incr2))
+  data <- DataOrdinal(
+    x = c(5, 100), y = c(1L, 0L), doseGrid = c(5, 100), ID = 1:2, cohort = 1:2
+  )
+  result <- maxDose(increments, data)
+  expect_equal(result, 150)
+})
+
+test_that("maxDose-IncrementsMinOrdinal works correctly when incr2 is minimum", {
+  incr1 <- IncrementsOrdinal(
+    1L,
+    IncrementsRelative(intervals = c(0, 20), increments = c(4, 0.7))
+  )
+  incr2 <- IncrementsOrdinal(
+    1L,
+    IncrementsRelativeDLT(intervals = c(0, 1, 3), increments = c(2, 0.5, 0.4))
+  )
+  increments <- IncrementsMin(increments_list = list(incr1, incr2))
+  data <- DataOrdinal(
+    x = c(5, 100), y = c(1L, 0L), doseGrid = c(5, 100), ID = 1:2, cohort = 1:2
+  )
+  result <- maxDose(increments, data)
+  expect_equal(result, 150)
+})
+
+## IncrementsOrdinal
+
+test_that("maxDose-IncrementsOrdinal works correctly", {
+  inc <- .DefaultIncrementsOrdinal()
+  data <- .DefaultDataOrdinal()
+  expect_equal(maxDose(inc, data), 79.8)
+})
+
 # stopTrial ----
 
-## StoppingMTDCV ----
+## StoppingMissingDose ----
 
-test_that("StoppingMTDCV works correctly if CV is below threshold", {
+test_that("StoppingMissingDose works correctly", {
+  stopping <- StoppingMissingDose()
+
+  result <- stopTrial(
+    stopping,
+    dose = NA_real_,
+    data = Data(doseGrid = c(0, 1), placebo = TRUE)
+  )
+  expect_true(result)
+  expect_equal(
+    attributes(result),
+    list(
+      message = "Next dose is NA , i.e., no active dose is safe enough according to the NextBest rule.",
+      report_label = NA_character_
+    )
+  )
+
+  result <- stopTrial(
+    stopping,
+    dose = 0,
+    data = Data(doseGrid = c(0, 1), placebo = TRUE)
+  )
+  expect_true(result)
+  expect_equal(
+    attributes(result),
+    list(
+      message = "Next dose is placebo dose , i.e., no active dose is safe enough according to the NextBest rule.",
+      report_label = NA_character_
+    )
+  )
+
+  result <- stopTrial(
+    stopping,
+    dose = 1,
+    data = Data(doseGrid = c(0, 1), placebo = TRUE)
+  )
+  expect_false(result)
+  expect_equal(
+    attributes(result),
+    list(
+      message = "Next dose is available at the dose grid.",
+      report_label = NA_character_
+    )
+  )
+})
+
+## StoppingCohortsNearDose ----
+
+test_that("StoppingCohortsNearDose can handle when dose is NA", {
   my_data <- h_get_data()
   my_model <- h_get_logistic_kadane()
   my_samples <- mcmc(my_data, my_model, h_get_mcmc_options(samples = 1000, burnin = 1000))
-  stopping <- StoppingMTDCV(target = 0.3, thresh_cv = 50)
+  stopping <- StoppingCohortsNearDose(nCohorts = 2, percentage = 0)
   result <- stopTrial(
     stopping = stopping,
-    dose = 7,
-    samples = my_samples,
-    model = my_model,
-    data = my_data
-  )
-  expected <- structure(
-    TRUE,
-    message = "CV of MTD is 40 % and thus below the required precision threshold of 50 %"
-  )
-  expect_identical(result, expected) # CV is 23% < 30%.
-})
-
-test_that("StoppingMTDCV works correctly if CV is above threshold", {
-  my_data <- h_get_data()
-  my_model <- h_get_logistic_kadane()
-  my_samples <- mcmc(my_data, my_model, h_get_mcmc_options(samples = 1000, burnin = 1000))
-  stopping <- StoppingMTDCV(target = 0.3, thresh_cv = 20)
-  result <- stopTrial(
-    stopping = stopping,
-    dose = 7,
+    dose = NA_real_,
     samples = my_samples,
     model = my_model,
     data = my_data
   )
   expected <- structure(
     FALSE,
-    message = "CV of MTD is 40 % and thus above the required precision threshold of 20 %"
-  )
-  expect_identical(result, expected) # CV is 23% > 20%.
-})
-
-## StoppingLowestDoseHSRBeta ----
-
-test_that("StoppingLowestDoseHSRBeta works correctly if first active dose is not toxic", {
-  my_data <- h_get_data()
-  my_model <- h_get_logistic_kadane()
-  my_samples <- mcmc(my_data, my_model, h_get_mcmc_options(fixed = FALSE))
-  stopping <- StoppingLowestDoseHSRBeta(target = 0.3, prob = 0.9)
-  result <- stopTrial(
-    stopping = stopping,
-    dose = 300,
-    samples = my_samples,
-    model = my_model,
-    data = my_data
-  )
-  expected <- structure(
-    FALSE,
-    message = paste(
-      "Probability that the lowest active dose of 25 being toxic",
-      "based on posterior Beta distribution using a Beta(1,1) prior",
-      "is 24% and thus below the required 90% threshold."
-    )
-  )
-  expect_identical(result, expected) # Prob being toxic is 24% < 90%.
-})
-
-test_that("StoppingLowestDoseHSRBeta works correctly if first active dose is toxic", {
-  my_data <- h_get_data()
-  my_model <- h_get_logistic_kadane()
-  my_samples <- mcmc(my_data, my_model, h_get_mcmc_options(fixed = FALSE))
-  stopping <- StoppingLowestDoseHSRBeta(target = 0.3, prob = 0.1)
-  result <- stopTrial(
-    stopping = stopping,
-    dose = 300,
-    samples = my_samples,
-    model = my_model,
-    data = my_data
-  )
-  expected <- structure(
-    TRUE,
-    message = paste(
-      "Probability that the lowest active dose of 25 being toxic",
-      "based on posterior Beta distribution using a Beta(1,1) prior",
-      "is 24% and thus above the required 10% threshold."
-    )
-  )
-  expect_identical(result, expected) # Prob being toxic is 24% > 10%.
-})
-
-test_that("StoppingLowestDoseHSRBeta works correctly if first active dose is not applied", {
-  my_data <- h_get_data()
-  my_data@x[my_data@cohort == 1] <- c(0.001, 75, 75, 75)
-  my_model <- h_get_logistic_kadane()
-  my_samples <- mcmc(my_data, my_model, h_get_mcmc_options(fixed = FALSE))
-  stopping <- StoppingLowestDoseHSRBeta(target = 0.3, prob = 0.1)
-  result <- stopTrial(
-    stopping = stopping,
-    dose = 300,
-    samples = my_samples,
-    model = my_model,
-    data = my_data
-  )
-  expected <- structure(
-    FALSE,
-    message = "Lowest active dose not tested, stopping rule not applied."
-  )
-  expect_identical(result, expected) # First active dose not applied.
-})
-
-test_that("StoppingLowestDoseHSRBeta works correctly if first active dose is not toxic", {
-  my_data <- h_get_data(placebo = FALSE)
-  my_model <- h_get_logistic_kadane()
-  my_samples <- mcmc(my_data, my_model, h_get_mcmc_options(fixed = FALSE))
-  stopping <- StoppingLowestDoseHSRBeta(target = 0.3, prob = 0.9)
-  result <- stopTrial(
-    stopping = stopping,
-    dose = 300,
-    samples = my_samples,
-    model = my_model,
-    data = my_data
-  )
-  expected <- structure(
-    FALSE,
-    message = paste(
-      "Probability that the lowest active dose of 25 being toxic based on",
-      "posterior Beta distribution using a Beta(1,1) prior is 17% and thus",
-      "below the required 90% threshold."
-    )
-  )
-  expect_identical(result, expected) # Prob being toxic is 24% < 90%.
-})
-
-test_that("StoppingLowestDoseHSRBeta works correctly if first active dose is toxic", {
-  my_data <- h_get_data(placebo = FALSE)
-  my_model <- h_get_logistic_kadane()
-  my_samples <- mcmc(my_data, my_model, h_get_mcmc_options(fixed = FALSE))
-  stopping <- StoppingLowestDoseHSRBeta(target = 0.3, prob = 0.1)
-  result <- stopTrial(
-    stopping = stopping,
-    dose = 300,
-    samples = my_samples,
-    model = my_model,
-    data = my_data
-  )
-  expected <- structure(
-    TRUE,
-    message = paste(
-      "Probability that the lowest active dose of 25 being toxic based on",
-      "posterior Beta distribution using a Beta(1,1) prior is 17% and thus",
-      "above the required 10% threshold."
-    )
-  )
-  expect_identical(result, expected) # Prob being toxic is 24% > 10%.
-})
-
-test_that("StoppingLowestDoseHSRBeta works correctly if first active dose is not applied", {
-  my_data <- h_get_data(placebo = FALSE)
-  my_data@x[my_data@cohort == 1] <- c(75, 75, 75, 75)
-  my_model <- h_get_logistic_kadane()
-  my_samples <- mcmc(my_data, my_model, h_get_mcmc_options(fixed = FALSE))
-  stopping <- StoppingLowestDoseHSRBeta(target = 0.3, prob = 0.1)
-  result <- stopTrial(
-    stopping = stopping,
-    dose = 300,
-    samples = my_samples,
-    model = my_model,
-    data = my_data
-  )
-  expected <- structure(
-    FALSE,
-    message = "Lowest active dose not tested, stopping rule not applied."
-  )
-  expect_identical(result, expected) # First active dose not applied.
-})
-
-## StoppingSpecificDose ----
-
-test_that("StoppingSpecificDose works correctly if dose rec. differs from specific and stop crit. not met", {
-  # StoppingSpecificDose works correctly if dose recommendation is not the same
-  # as the specific dose and stop is not met.
-  my_samples <- h_as_samples(
-    list(alpha0 = c(1.2, 0, -0.4, -0.1, 0.9), alpha1 = c(0.7, 1.7, 1.9, 0.6, 2.8))
-  )
-  result <- stopTrial(
-    stopping = h_stopping_specific_dose(),
-    dose = 20,
-    samples = my_samples,
-    model = h_get_logistic_log_normal(),
-    data = h_get_data_sr_1()
-  )
-  expected <- structure(
-    FALSE,
-    message = "Probability for target toxicity is 0 % for dose 80 and thus below the required 80 %"
+    message = "0 cohorts lie within 0% of the next best dose NA. This is below the required 2 cohorts",
+    report_label = NA_character_
   )
   expect_identical(result, expected)
-})
-
-test_that("StoppingSpecificDose works correctly if dose rec. differs from specific and stop crit. is met", {
-  # StoppingSpecificDose works correctly if dose recommendation is not the same
-  # as the specific dose and stop is met.
-  my_samples <- h_as_samples(
-    list(
-      alpha0 = c(-1.88, -1.58, -2.43, -3.61, -2.15, -2.28, -3.32, -2.16, -2.79, -2.90),
-      alpha1 = c(1.08, 0.86, 0.67, 2.38, 5.99, 2.94, 0.74, 2.39, 1.74, 0.84)
-    )
-  )
-  result <- stopTrial(
-    stopping = h_stopping_specific_dose(),
-    dose = 20,
-    samples = my_samples,
-    model = h_get_logistic_log_normal(),
-    data = h_get_data_sr_1()
-  )
-  expected <- structure(
-    TRUE,
-    message = "Probability for target toxicity is 90 % for dose 80 and thus above the required 80 %"
-  )
-  expect_identical(result, expected)
-})
-
-test_that("StoppingSpecificDose works correctly if dose rec = specific and stop crit. not met", {
-  # StoppingSpecificDose works correctly if dose recommendation is the same
-  # as the specific dose and stop is not met.
-  my_samples <- h_as_samples(
-    list(alpha0 = c(1.2, 0, -0.4, -0.1, 0.9), alpha1 = c(0.7, 1.7, 1.9, 0.6, 2.8))
-  )
-  result <- stopTrial(
-    stopping = h_stopping_specific_dose(),
-    dose = 80,
-    samples = my_samples,
-    model = h_get_logistic_log_normal(),
-    data = h_get_data_sr_1()
-  )
-  expected <- structure(
-    FALSE,
-    message = "Probability for target toxicity is 0 % for dose 80 and thus below the required 80 %"
-  )
-  expect_identical(result, expected)
-})
-
-test_that("StoppingSpecificDose works correctly if dose rec. = specific and stop crit. is met", {
-  # StoppingSpecificDose works correctly if dose recommendation is the same
-  # as the specific dose and stop is met.
-  my_samples <- h_as_samples(
-    list(
-      alpha0 = c(-1.88, -1.58, -2.43, -3.61, -2.15, -2.28, -3.32, -2.16, -2.79, -2.90),
-      alpha1 = c(1.08, 0.86, 0.67, 2.38, 5.99, 2.94, 0.74, 2.39, 1.74, 0.84)
-    )
-  )
-  result <- stopTrial(
-    stopping = h_stopping_specific_dose(),
-    dose = 80,
-    samples = my_samples,
-    model = h_get_logistic_log_normal(),
-    data = h_get_data_sr_1()
-  )
-  expected <- structure(
-    TRUE,
-    message = "Probability for target toxicity is 90 % for dose 80 and thus above the required 80 %"
-  )
-  expect_identical(result, expected)
-})
-
-test_that("StoppingSpecificDose correctly replaces next best string with specific string", {
-  my_stopping <- StoppingSpecificDose(
-    rule = StoppingPatientsNearDose(nPatients = 9, percentage = 5),
-    dose = 80
-  )
-  my_samples <- h_as_samples(
-    list(
-      alpha0 = c(-1.88, -1.58, -2.43, -3.61, -2.15, -2.28, -3.32, -2.16, -2.79, -2.90),
-      alpha1 = c(1.08, 0.86, 0.67, 2.38, 5.99, 2.94, 0.74, 2.39, 1.74, 0.84)
-    )
-  )
-  result <- stopTrial(
-    stopping = my_stopping,
-    dose = 20,
-    samples = my_samples,
-    model = h_get_logistic_log_normal(),
-    data = h_get_data_sr_2()
-  )
-  expected <- structure(
-    TRUE,
-    message = "12 patients lie within 5% of the specific dose 80. This reached the required 9 patients"
-  )
-  expect_identical(result, expected)
-})
-
-test_that("Logical operators for combining Stopping rules work correctly", {
-  s1 <- StoppingMinCohorts(nCohorts = 2)
-  s2 <- StoppingHighestDose()
-  s3 <- StoppingPatientsNearDose(nPatients = 9, percentage = 25)
-  all1 <- StoppingAll(stop_list = list(s1, s2))
-  any1 <- StoppingAny(stop_list = list(s1, s2))
-
-  expect_identical(s1 & s2, StoppingAll(stop_list = list(s1, s2)))
-  expect_identical(s1 | s2, StoppingAny(stop_list = list(s1, s2)))
-
-  expect_identical(all1 & s3, StoppingAll(stop_list = list(s1, s2, s3)))
-  expect_identical(any1 | s3, StoppingAny(stop_list = list(s1, s2, s3)))
-  expect_identical(s3 & all1, StoppingAll(stop_list = list(s3, s1, s2)))
-  expect_identical(s3 | any1, StoppingAny(stop_list = list(s3, s1, s2)))
-})
-
-test_that("stopTrial works correctly in edge cases", {
-  s1 <- StoppingMinCohorts(nCohorts = 2)
-
-  rv <- stopTrial(s1, NA)
-  expect_true(rv)
-  expect_equal(attributes(rv), list(message = "Recommended next best dose is NA"))
-
-  rv <- stopTrial(s1, dose = 0, data = Data(doseGrid = c(0, 1), placebo = TRUE))
-  expect_true(rv)
-  expect_equal(attributes(rv), list(message = "Recommended next best dose is placebo dose"))
-})
-
-test_that("stopTrial works correctly for StoppingList", {
-  s1 <- StoppingMinCohorts(nCohorts = 2)
-  s2 <- StoppingHighestDose()
-  any1 <- StoppingList(stop_list = list(s1, s2), summary = any)
-  all1 <- StoppingList(stop_list = list(s1, s2), summary = all)
-
-  data_none <- Data(x = c(1, 1), y = c(0, 0), cohort = c(1L, 1L), ID = 1:2, doseGrid = 1:3)
-  data_any1 <- Data(x = c(3, 3), y = c(0, 0), cohort = c(1L, 1L), ID = 1:2, doseGrid = 1:3)
-  data_any2 <- Data(x = c(1, 2), y = c(0, 0), cohort = c(1L, 2L), ID = 1:2, doseGrid = 1:3)
-  data_all <- Data(x = c(1, 3), y = c(0, 0), cohort = c(1L, 2L), ID = 1:2, doseGrid = 1:3)
-
-  rv <- stopTrial(
-    stopping = any1,
-    dose = 1,
-    model = LogisticLogNormal(mean = c(0, 1), cov = diag(2)),
-    data = data_none
-  )
-  expect_false(rv)
-  expect_equal(
-    attributes(rv),
-    list(
-      message = list(
-        "Number of cohorts is 1 and thus below the prespecified minimum number 2",
-        "Next best dose is 1 and thus not the highest dose"
-      )
-    )
-  )
-  rv <- stopTrial(
-    stopping = all1,
-    dose = 1,
-    model = LogisticLogNormal(mean = c(0, 1), cov = diag(2)),
-    data = data_none
-  )
-  expect_false(rv)
-  expect_equal(
-    attributes(rv),
-    list(
-      message = list(
-        "Number of cohorts is 1 and thus below the prespecified minimum number 2",
-        "Next best dose is 1 and thus not the highest dose"
-      )
-    )
-  )
-
-  rv <- stopTrial(
-    stopping = any1,
-    dose = 3,
-    model = LogisticLogNormal(mean = c(0, 1), cov = diag(2)),
-    data = data_any1
-  )
-  expect_true(rv)
-  expect_equal(
-    attributes(rv),
-    list(
-      message = list(
-        "Number of cohorts is 1 and thus below the prespecified minimum number 2",
-        "Next best dose is 3 and thus the highest dose"
-      )
-    )
-  )
-  rv <- stopTrial(
-    stopping = all1,
-    dose = 1,
-    model = LogisticLogNormal(mean = c(0, 1), cov = diag(2)),
-    data = data_any1
-  )
-  expect_false(rv)
-  expect_equal(
-    attributes(rv),
-    list(
-      message = list(
-        "Number of cohorts is 1 and thus below the prespecified minimum number 2",
-        "Next best dose is 1 and thus not the highest dose"
-      )
-    )
-  )
-
-  rv <- stopTrial(
-    stopping = any1,
-    dose = 2,
-    model = LogisticLogNormal(mean = c(0, 1), cov = diag(2)),
-    data = data_any2
-  )
-  expect_true(rv)
-  expect_equal(
-    attributes(rv),
-    list(
-      message = list(
-        "Number of cohorts is 2 and thus reached the prespecified minimum number 2",
-        "Next best dose is 2 and thus not the highest dose"
-      )
-    )
-  )
-
-  rv <- stopTrial(
-    stopping = all1,
-    dose = 1,
-    model = LogisticLogNormal(mean = c(0, 1), cov = diag(2)),
-    data = data_any2
-  )
-  expect_false(rv)
-  expect_equal(
-    attributes(rv),
-    list(
-      message = list(
-        "Number of cohorts is 2 and thus reached the prespecified minimum number 2",
-        "Next best dose is 1 and thus not the highest dose"
-      )
-    )
-  )
-
-  rv <- stopTrial(
-    stopping = all1,
-    dose = 3,
-    model = LogisticLogNormal(mean = c(0, 1), cov = diag(2)),
-    data = data_all
-  )
-  expect_true(rv)
-  expect_equal(
-    attributes(rv),
-    list(
-      message = list(
-        "Number of cohorts is 2 and thus reached the prespecified minimum number 2",
-        "Next best dose is 3 and thus the highest dose"
-      )
-    )
-  )
-
-  rv <- stopTrial(
-    stopping = any1,
-    dose = 1,
-    model = LogisticLogNormal(mean = c(0, 1), cov = diag(2)),
-    data = data_none,
-    samples = new("Samples")
-  )
-  expect_false(rv)
-  expect_equal(
-    attributes(rv),
-    list(
-      message = list(
-        "Number of cohorts is 1 and thus below the prespecified minimum number 2",
-        "Next best dose is 1 and thus not the highest dose"
-      )
-    )
-  )
-
-  data_any1 <- Data(x = c(3, 3), y = c(0, 0), cohort = c(1L, 1L), ID = 1:2, doseGrid = 1:3)
-  rv <- stopTrial(
-    stopping = any1,
-    dose = 3,
-    model = LogisticLogNormal(mean = c(0, 1), cov = diag(2)),
-    data = data_any1,
-    samples = new("Samples")
-  )
-  expect_true(rv)
-  expect_equal(
-    attributes(rv),
-    list(
-      message = list(
-        "Number of cohorts is 1 and thus below the prespecified minimum number 2",
-        "Next best dose is 3 and thus the highest dose"
-      )
-    )
-  )
-
-  data_any2 <- Data(x = c(1, 2), y = c(0, 0), cohort = c(1L, 2L), ID = 1:2, doseGrid = 1:3)
-  rv <- stopTrial(
-    stopping = any1,
-    dose = 2,
-    model = LogisticLogNormal(mean = c(0, 1), cov = diag(2)),
-    data = data_any2,
-    samples = new("Samples")
-  )
-  expect_true(rv)
-  expect_equal(
-    attributes(rv),
-    list(
-      message = list(
-        "Number of cohorts is 2 and thus reached the prespecified minimum number 2",
-        "Next best dose is 2 and thus not the highest dose"
-      )
-    )
-  )
-
-  rv <- stopTrial(
-    stopping = all1,
-    dose = 1,
-    model = LogisticLogNormal(mean = c(0, 1), cov = diag(2)),
-    data = data_any2,
-    samples = new("Samples")
-  )
-  expect_false(rv)
-  expect_equal(
-    attributes(rv),
-    list(
-      message = list(
-        "Number of cohorts is 2 and thus reached the prespecified minimum number 2",
-        "Next best dose is 1 and thus not the highest dose"
-      )
-    )
-  )
-
-  rv <- stopTrial(
-    stopping = all1,
-    dose = 3,
-    model = LogisticLogNormal(mean = c(0, 1), cov = diag(2)),
-    data = data_all,
-    samples = new("Samples")
-  )
-  expect_true(rv)
-  expect_equal(
-    attributes(rv),
-    list(
-      message = list(
-        "Number of cohorts is 2 and thus reached the prespecified minimum number 2",
-        "Next best dose is 3 and thus the highest dose"
-      )
-    )
-  )
-})
-
-
-
-
-
-test_that("stopTrial works correctly for StoppingAll", {
-  s1 <- StoppingMinCohorts(nCohorts = 2)
-  s2 <- StoppingHighestDose()
-  all1 <- StoppingAll(stop_list = list(s1, s2))
-
-  data_none <- Data(x = c(1, 1), y = c(0, 0), cohort = c(1L, 1L), ID = 1:2, doseGrid = 1:3)
-  data_any1 <- Data(x = c(3, 3), y = c(0, 0), cohort = c(1L, 1L), ID = 1:2, doseGrid = 1:3)
-  data_any2 <- Data(x = c(1, 2), y = c(0, 0), cohort = c(1L, 2L), ID = 1:2, doseGrid = 1:3)
-  data_all <- Data(x = c(1, 3), y = c(0, 0), cohort = c(1L, 2L), ID = 1:2, doseGrid = 1:3)
-
-  rv <- stopTrial(
-    stopping = all1,
-    dose = 1,
-    model = LogisticLogNormal(mean = c(0, 1), cov = diag(2)),
-    data = data_none
-  )
-  expect_false(rv)
-  expect_equal(
-    attributes(rv),
-    list(
-      message = list(
-        "Number of cohorts is 1 and thus below the prespecified minimum number 2",
-        "Next best dose is 1 and thus not the highest dose"
-      )
-    )
-  )
-
-  rv <- stopTrial(
-    stopping = all1,
-    dose = 3,
-    model = LogisticLogNormal(mean = c(0, 1), cov = diag(2)),
-    data = data_any1
-  )
-  expect_false(rv)
-  expect_equal(
-    attributes(rv),
-    list(
-      message = list(
-        "Number of cohorts is 1 and thus below the prespecified minimum number 2",
-        "Next best dose is 3 and thus the highest dose"
-      )
-    )
-  )
-  rv <- stopTrial(
-    stopping = all1,
-    dose = 1,
-    model = LogisticLogNormal(mean = c(0, 1), cov = diag(2)),
-    data = data_any2
-  )
-  expect_false(rv)
-  expect_equal(
-    attributes(rv),
-    list(
-      message = list(
-        "Number of cohorts is 2 and thus reached the prespecified minimum number 2",
-        "Next best dose is 1 and thus not the highest dose"
-      )
-    )
-  )
-
-  rv <- stopTrial(
-    stopping = all1,
-    dose = 3,
-    model = LogisticLogNormal(mean = c(0, 1), cov = diag(2)),
-    data = data_all
-  )
-  expect_true(rv)
-  expect_equal(
-    attributes(rv),
-    list(
-      message = list(
-        "Number of cohorts is 2 and thus reached the prespecified minimum number 2",
-        "Next best dose is 3 and thus the highest dose"
-      )
-    )
-  )
-
-  rv <- stopTrial(
-    stopping = all1,
-    dose = 1,
-    model = LogisticLogNormal(mean = c(0, 1), cov = diag(2)),
-    data = data_none,
-    samples = new("Samples")
-  )
-  expect_false(rv)
-  expect_equal(
-    attributes(rv),
-    list(
-      message = list(
-        "Number of cohorts is 1 and thus below the prespecified minimum number 2",
-        "Next best dose is 1 and thus not the highest dose"
-      )
-    )
-  )
-
-  rv <- stopTrial(
-    stopping = all1,
-    dose = 3,
-    model = LogisticLogNormal(mean = c(0, 1), cov = diag(2)),
-    data = data_any1,
-    samples = new("Samples")
-  )
-  expect_false(rv)
-  expect_equal(
-    attributes(rv),
-    list(
-      message = list(
-        "Number of cohorts is 1 and thus below the prespecified minimum number 2",
-        "Next best dose is 3 and thus the highest dose"
-      )
-    )
-  )
-
-  data_any2 <- Data(x = c(1, 2), y = c(0, 0), cohort = c(1L, 2L), ID = 1:2, doseGrid = 1:3)
-  rv <- stopTrial(
-    stopping = all1,
-    dose = 2,
-    model = LogisticLogNormal(mean = c(0, 1), cov = diag(2)),
-    data = data_any2,
-    samples = new("Samples")
-  )
-  expect_false(rv)
-  expect_equal(
-    attributes(rv),
-    list(
-      message = list(
-        "Number of cohorts is 2 and thus reached the prespecified minimum number 2",
-        "Next best dose is 2 and thus not the highest dose"
-      )
-    )
-  )
-
-  rv <- stopTrial(
-    stopping = all1,
-    dose = 1,
-    model = LogisticLogNormal(mean = c(0, 1), cov = diag(2)),
-    data = data_any2,
-    samples = new("Samples")
-  )
-  expect_false(rv)
-  expect_equal(
-    attributes(rv),
-    list(
-      message = list(
-        "Number of cohorts is 2 and thus reached the prespecified minimum number 2",
-        "Next best dose is 1 and thus not the highest dose"
-      )
-    )
-  )
-
-  rv <- stopTrial(
-    stopping = all1,
-    dose = 3,
-    model = LogisticLogNormal(mean = c(0, 1), cov = diag(2)),
-    data = data_all,
-    samples = new("Samples")
-  )
-  expect_true(rv)
-  expect_equal(
-    attributes(rv),
-    list(
-      message = list(
-        "Number of cohorts is 2 and thus reached the prespecified minimum number 2",
-        "Next best dose is 3 and thus the highest dose"
-      )
-    )
-  )
-})
-
-test_that("stopTrial works correctly for StoppingAll", {
-  s1 <- StoppingMinCohorts(nCohorts = 2)
-  s2 <- StoppingHighestDose()
-  any1 <- StoppingAny(stop_list = list(s1, s2))
-
-  data_none <- Data(x = c(1, 1), y = c(0, 0), cohort = c(1L, 1L), ID = 1:2, doseGrid = 1:3)
-  data_any1 <- Data(x = c(3, 3), y = c(0, 0), cohort = c(1L, 1L), ID = 1:2, doseGrid = 1:3)
-  data_any2 <- Data(x = c(1, 2), y = c(0, 0), cohort = c(1L, 2L), ID = 1:2, doseGrid = 1:3)
-  data_any3 <- Data(x = c(3, 3), y = c(0, 0), cohort = c(1L, 2L), ID = 1:2, doseGrid = 1:3)
-
-  rv <- stopTrial(
-    stopping = any1,
-    dose = 1,
-    model = LogisticLogNormal(mean = c(0, 1), cov = diag(2)),
-    data = data_none
-  )
-  expect_false(rv)
-  expect_equal(
-    attributes(rv),
-    list(
-      message = list(
-        "Number of cohorts is 1 and thus below the prespecified minimum number 2",
-        "Next best dose is 1 and thus not the highest dose"
-      )
-    )
-  )
-
-  rv <- stopTrial(
-    stopping = any1,
-    dose = 3,
-    model = LogisticLogNormal(mean = c(0, 1), cov = diag(2)),
-    data = data_any1
-  )
-  expect_true(rv)
-  expect_equal(
-    attributes(rv),
-    list(
-      message = list(
-        "Number of cohorts is 1 and thus below the prespecified minimum number 2",
-        "Next best dose is 3 and thus the highest dose"
-      )
-    )
-  )
-
-  rv <- stopTrial(
-    stopping = any1,
-    dose = 1,
-    model = LogisticLogNormal(mean = c(0, 1), cov = diag(2)),
-    data = data_any2
-  )
-  expect_true(rv)
-  expect_equal(
-    attributes(rv),
-    list(
-      message = list(
-        "Number of cohorts is 2 and thus reached the prespecified minimum number 2",
-        "Next best dose is 1 and thus not the highest dose"
-      )
-    )
-  )
-
-  rv <- stopTrial(
-    stopping = any1,
-    dose = 3,
-    model = LogisticLogNormal(mean = c(0, 1), cov = diag(2)),
-    data = data_any2
-  )
-  expect_true(rv)
-  expect_equal(
-    attributes(rv),
-    list(
-      message = list(
-        "Number of cohorts is 2 and thus reached the prespecified minimum number 2",
-        "Next best dose is 3 and thus the highest dose"
-      )
-    )
-  )
-
-  rv <- stopTrial(
-    stopping = any1,
-    dose = 1,
-    model = LogisticLogNormal(mean = c(0, 1), cov = diag(2)),
-    data = data_none,
-    samples = new("Samples")
-  )
-  expect_false(rv)
-  expect_equal(
-    attributes(rv),
-    list(
-      message = list(
-        "Number of cohorts is 1 and thus below the prespecified minimum number 2",
-        "Next best dose is 1 and thus not the highest dose"
-      )
-    )
-  )
-
-  rv <- stopTrial(
-    stopping = any1,
-    dose = 3,
-    model = LogisticLogNormal(mean = c(0, 1), cov = diag(2)),
-    data = data_any1,
-    samples = new("Samples")
-  )
-  expect_true(rv)
-  expect_equal(
-    attributes(rv),
-    list(
-      message = list(
-        "Number of cohorts is 1 and thus below the prespecified minimum number 2",
-        "Next best dose is 3 and thus the highest dose"
-      )
-    )
-  )
-
-  rv <- stopTrial(
-    stopping = any1,
-    dose = 1,
-    model = LogisticLogNormal(mean = c(0, 1), cov = diag(2)),
-    data = data_any2,
-    samples = new("Samples")
-  )
-  expect_true(rv)
-  expect_equal(
-    attributes(rv),
-    list(
-      message = list(
-        "Number of cohorts is 2 and thus reached the prespecified minimum number 2",
-        "Next best dose is 1 and thus not the highest dose"
-      )
-    )
-  )
-
-  rv <- stopTrial(
-    stopping = any1,
-    dose = 3,
-    model = LogisticLogNormal(mean = c(0, 1), cov = diag(2)),
-    data = data_any2,
-    samples = new("Samples")
-  )
-  expect_true(rv)
-  expect_equal(
-    attributes(rv),
-    list(
-      message = list(
-        "Number of cohorts is 2 and thus reached the prespecified minimum number 2",
-        "Next best dose is 3 and thus the highest dose"
-      )
-    )
-  )
 })
 
 test_that("stopTrial works correctly for StoppingCohortsNearDose", {
@@ -2234,7 +1586,10 @@ test_that("stopTrial works correctly for StoppingCohortsNearDose", {
   expect_false(rv)
   expect_equal(
     attributes(rv),
-    list(message = "1 cohorts lie within 0% of the next best dose 2. This is below the required 2 cohorts")
+    list(
+      message = "1 cohorts lie within 0% of the next best dose 2. This is below the required 2 cohorts",
+      report_label = NA_character_
+    )
   )
   rv <- stopTrial(
     stopping = stopRule,
@@ -2246,7 +1601,10 @@ test_that("stopTrial works correctly for StoppingCohortsNearDose", {
   expect_false(rv)
   expect_equal(
     attributes(rv),
-    list(message = "1 cohorts lie within 0% of the next best dose 2. This is below the required 2 cohorts")
+    list(
+      message = "1 cohorts lie within 0% of the next best dose 2. This is below the required 2 cohorts",
+      report_label = NA_character_
+    )
   )
 
   rv <- stopTrial(
@@ -2258,7 +1616,10 @@ test_that("stopTrial works correctly for StoppingCohortsNearDose", {
   expect_true(rv)
   expect_equal(
     attributes(rv),
-    list(message = "2 cohorts lie within 0% of the next best dose 2. This reached the required 2 cohorts")
+    list(
+      message = "2 cohorts lie within 0% of the next best dose 2. This reached the required 2 cohorts",
+      report_label = NA_character_
+    )
   )
 
   rv <- stopTrial(
@@ -2271,7 +1632,10 @@ test_that("stopTrial works correctly for StoppingCohortsNearDose", {
   expect_true(rv)
   expect_equal(
     attributes(rv),
-    list(message = "2 cohorts lie within 0% of the next best dose 2. This reached the required 2 cohorts")
+    list(
+      message = "2 cohorts lie within 0% of the next best dose 2. This reached the required 2 cohorts",
+      report_label = NA_character_
+    )
   )
 
   rv <- stopTrial(
@@ -2283,7 +1647,10 @@ test_that("stopTrial works correctly for StoppingCohortsNearDose", {
   expect_false(rv)
   expect_equal(
     attributes(rv),
-    list(message = "1 cohorts lie within 0% of the next best dose 2. This is below the required 2 cohorts")
+    list(
+      message = "1 cohorts lie within 0% of the next best dose 2. This is below the required 2 cohorts",
+      report_label = NA_character_
+    )
   )
 
   rv <- stopTrial(
@@ -2296,7 +1663,10 @@ test_that("stopTrial works correctly for StoppingCohortsNearDose", {
   expect_false(rv)
   expect_equal(
     attributes(rv),
-    list(message = "1 cohorts lie within 0% of the next best dose 2. This is below the required 2 cohorts")
+    list(
+      message = "1 cohorts lie within 0% of the next best dose 2. This is below the required 2 cohorts",
+      report_label = NA_character_
+    )
   )
 
   rv <- stopTrial(
@@ -2309,7 +1679,10 @@ test_that("stopTrial works correctly for StoppingCohortsNearDose", {
   expect_true(rv)
   expect_equal(
     attributes(rv),
-    list(message = "2 cohorts lie within 0% of the next best dose 2. This reached the required 2 cohorts")
+    list(
+      message = "2 cohorts lie within 0% of the next best dose 2. This reached the required 2 cohorts",
+      report_label = NA_character_
+    )
   )
 
   rv <- stopTrial(
@@ -2321,7 +1694,10 @@ test_that("stopTrial works correctly for StoppingCohortsNearDose", {
   expect_true(rv)
   expect_equal(
     attributes(rv),
-    list(message = "2 cohorts lie within 0% of the next best dose 2. This reached the required 2 cohorts")
+    list(
+      message = "2 cohorts lie within 0% of the next best dose 2. This reached the required 2 cohorts",
+      report_label = NA_character_
+    )
   )
 
   rv <- stopTrial(
@@ -2333,7 +1709,10 @@ test_that("stopTrial works correctly for StoppingCohortsNearDose", {
   expect_false(rv)
   expect_equal(
     attributes(rv),
-    list(message = "1 cohorts lie within 0% of the next best dose 2. This is below the required 2 cohorts")
+    list(
+      message = "1 cohorts lie within 0% of the next best dose 2. This is below the required 2 cohorts",
+      report_label = NA_character_
+    )
   )
 
   rv <- stopTrial(
@@ -2346,7 +1725,10 @@ test_that("stopTrial works correctly for StoppingCohortsNearDose", {
   expect_false(rv)
   expect_equal(
     attributes(rv),
-    list(message = "1 cohorts lie within 0% of the next best dose 2. This is below the required 2 cohorts")
+    list(
+      message = "1 cohorts lie within 0% of the next best dose 2. This is below the required 2 cohorts",
+      report_label = NA_character_
+    )
   )
 
   # n cohorts around dose
@@ -2360,7 +1742,10 @@ test_that("stopTrial works correctly for StoppingCohortsNearDose", {
   expect_false(rv)
   expect_equal(
     attributes(rv),
-    list(message = "1 cohorts lie within 35% of the next best dose 2. This is below the required 2 cohorts")
+    list(
+      message = "1 cohorts lie within 35% of the next best dose 2. This is below the required 2 cohorts",
+      report_label = NA_character_
+    )
   )
 
   rv <- stopTrial(
@@ -2372,7 +1757,10 @@ test_that("stopTrial works correctly for StoppingCohortsNearDose", {
   expect_false(rv)
   expect_equal(
     attributes(rv),
-    list(message = "1 cohorts lie within 35% of the next best dose 3. This is below the required 2 cohorts")
+    list(
+      message = "1 cohorts lie within 35% of the next best dose 3. This is below the required 2 cohorts",
+      report_label = NA_character_
+    )
   )
 
   rv <- stopTrial(
@@ -2384,8 +1772,107 @@ test_that("stopTrial works correctly for StoppingCohortsNearDose", {
   expect_true(rv)
   expect_equal(
     attributes(rv),
-    list(message = "2 cohorts lie within 35% of the next best dose 3. This reached the required 2 cohorts")
+    list(
+      message = "2 cohorts lie within 35% of the next best dose 3. This reached the required 2 cohorts",
+      report_label = NA_character_
+    )
   )
+})
+
+## StoppingPatientsNearDose ----
+
+test_that("StoppingPatientsNearDose can handle when dose is NA", {
+  my_data <- h_get_data()
+  my_model <- h_get_logistic_kadane()
+  my_samples <- mcmc(my_data, my_model, h_get_mcmc_options(samples = 1000, burnin = 1000))
+  stopping <- StoppingPatientsNearDose(nPatients = 9, percentage = 0)
+  result <- stopTrial(
+    stopping = stopping,
+    dose = NA_real_,
+    samples = my_samples,
+    model = my_model,
+    data = my_data
+  )
+  expected <- structure(
+    FALSE,
+    message = "0 patients lie within 0% of the next best dose NA. This is below the required 9 patients",
+    report_label = NA_character_
+  )
+  expect_identical(result, expected)
+})
+
+## StoppingMinCohorts ----
+
+test_that("StoppingMinCohorts works correctly if next dose is NA", {
+  my_data <- h_get_data()
+  my_model <- h_get_logistic_kadane()
+  my_samples <- mcmc(my_data, my_model, h_get_mcmc_options(fixed = FALSE))
+  stopping <- StoppingMinCohorts(nCohorts = 4)
+  result <- stopTrial(
+    stopping = stopping,
+    dose = NA_real_,
+    samples = my_samples,
+    model = my_model,
+    data = my_data
+  )
+  expected <- structure(
+    FALSE,
+    message = paste(
+      "Number of cohorts is 3 and thus below the prespecified minimum number 4"
+    ),
+    report_label = NA_character_
+  )
+  expect_identical(result, expected)
+})
+
+test_that("StoppingMinCohorts works correctly in edge cases", {
+  s1 <- StoppingMinCohorts(nCohorts = 2)
+
+  rv <- stopTrial(s1, dose = 0, data = Data(doseGrid = c(0, 1), placebo = TRUE))
+  expect_false(rv)
+  expect_equal(
+    attributes(rv),
+    list(
+      message = "Number of cohorts is 0 and thus below the prespecified minimum number 2",
+      report_label = NA_character_
+    )
+  )
+
+  s1 <- StoppingMinCohorts(nCohorts = 1)
+
+  rv <- stopTrial(s1, dose = 0.01, data = h_get_data())
+  expect_true(rv)
+  expect_equal(
+    attributes(rv),
+    list(
+      message = "Number of cohorts is 3 and thus reached the prespecified minimum number 1",
+      report_label = NA_character_
+    )
+  )
+})
+
+## StoppingMinPatients ----
+
+test_that("StoppingMinPatients works correctly if next dose is NA", {
+  my_data <- h_get_data()
+  my_model <- h_get_logistic_kadane()
+  my_samples <- mcmc(my_data, my_model, h_get_mcmc_options(fixed = FALSE))
+  stopping <- StoppingMinPatients(nPatients = 18)
+  result <- stopTrial(
+    stopping = stopping,
+    dose = NA_real_,
+    samples = my_samples,
+    model = my_model,
+    data = my_data
+  )
+  expected <- structure(
+    FALSE,
+    message = paste(
+      "Number of patients is 12 and thus below the prespecified minimum number 18"
+    ),
+    report_label = NA_character_
+  )
+  expect_identical(result, expected)
 })
 
 test_that("stopTrial works correctly for StoppingMinPatients", {
@@ -2401,7 +1888,10 @@ test_that("stopTrial works correctly for StoppingMinPatients", {
   expect_false(rv)
   expect_equal(
     attributes(rv),
-    list(message = "Number of patients is 2 and thus below the prespecified minimum number 3")
+    list(
+      message = "Number of patients is 2 and thus below the prespecified minimum number 3",
+      report_label = NA_character_
+    )
   )
 
   rv <- stopTrial(
@@ -2413,7 +1903,10 @@ test_that("stopTrial works correctly for StoppingMinPatients", {
   expect_false(rv)
   expect_equal(
     attributes(rv),
-    list(message = "Number of patients is 2 and thus below the prespecified minimum number 3")
+    list(
+      message = "Number of patients is 2 and thus below the prespecified minimum number 3",
+      report_label = NA_character_
+    )
   )
 
   rv <- stopTrial(
@@ -2425,8 +1918,111 @@ test_that("stopTrial works correctly for StoppingMinPatients", {
   expect_true(rv)
   expect_equal(
     attributes(rv),
-    list(message = "Number of patients is 3 and thus reached the prespecified minimum number 3")
+    list(
+      message = "Number of patients is 3 and thus reached the prespecified minimum number 3",
+      report_label = NA_character_
+    )
   )
+})
+
+## StoppingTargetProb ----
+
+test_that("StoppingTargetProb can handle when dose is NA", {
+  my_data <- h_get_data()
+  my_model <- h_get_logistic_kadane()
+  my_samples <- mcmc(my_data, my_model, h_get_mcmc_options(samples = 1000, burnin = 1000))
+  stopping <- StoppingTargetProb(target = c(0.15, 0.2), prob = 0.3)
+  result <- stopTrial(
+    stopping = stopping,
+    dose = NA_real_,
+    samples = my_samples,
+    model = my_model,
+    data = my_data
+  )
+  expected <- structure(
+    FALSE,
+    message = "Probability for target toxicity is 0 % for dose NA and thus below the required 30 %",
+    report_label = NA_character_
+  )
+  expect_identical(result, expected)
+})
+
+test_that("StoppingTargetProb works correctly when below threshold", {
+  my_data <- h_get_data()
+  my_model <- h_get_logistic_kadane()
+  my_samples <- mcmc(my_data, my_model, h_get_mcmc_options(samples = 1000, burnin = 1000))
+  stopping <- StoppingTargetProb(target = c(0.15, 0.2), prob = 0.3)
+  result <- stopTrial(
+    stopping = stopping,
+    dose = 100,
+    samples = my_samples,
+    model = my_model,
+    data = my_data
+  )
+  expected <- structure(
+    FALSE,
+    message = "Probability for target toxicity is 14 % for dose 100 and thus below the required 30 %",
+    report_label = NA_character_
+  )
+  expect_identical(result, expected)
+})
+
+test_that("StoppingTargetProb works correctly when above threshold", {
+  my_data <- h_get_data()
+  my_model <- h_get_logistic_kadane()
+  my_samples <- mcmc(my_data, my_model, h_get_mcmc_options(samples = 1000, burnin = 1000))
+  stopping <- StoppingTargetProb(target = c(0.1, 0.4), prob = 0.3)
+  result <- stopTrial(
+    stopping = stopping,
+    dose = 100,
+    samples = my_samples,
+    model = my_model,
+    data = my_data
+  )
+  expected <- structure(
+    TRUE,
+    message = "Probability for target toxicity is 82 % for dose 100 and thus above the required 30 %",
+    report_label = NA_character_
+  )
+  expect_identical(result, expected)
+})
+
+test_that("stopTrial-StoppingTargetProb can accept additional arguments and pass them to prob", {
+  my_data <- h_get_data_grouped()
+  my_model <- .DefaultLogisticLogNormalGrouped()
+  my_samples <- mcmc(my_data, my_model, h_get_mcmc_options(samples = 10, burnin = 10))
+  stopping <- StoppingTargetProb(target = c(0.1, 0.4), prob = 0.3)
+  result <- stopTrial(
+    stopping = stopping,
+    dose = 100,
+    samples = my_samples,
+    model = my_model,
+    data = my_data,
+    group = "combo"
+  )
+  expect_false(result)
+})
+
+## StoppingMTDdistribution ----
+
+test_that("StoppingMTDdistribution can handle when dose is NA", {
+  my_data <- h_get_data()
+  my_model <- h_get_logistic_kadane()
+  my_samples <- mcmc(my_data, my_model, h_get_mcmc_options(samples = 1000, burnin = 1000))
+  stopping <- StoppingMTDdistribution(target = 0.25, thresh = 0.3, prob = 0.3)
+  result <- stopTrial(
+    stopping = stopping,
+    dose = NA_real_,
+    samples = my_samples,
+    model = my_model,
+    data = my_data
+  )
+  expected <- structure(
+    FALSE,
+    message = "Probability of MTD above 30 % of current dose NA is 0 % and thus strictly less than the required 30 %",
+    report_label = NA_character_
+  )
+  expect_identical(result, expected) # CV is 23% < 30%.
 })
 
 test_that("stopTrial works correctly for StoppingMTDdistribution", {
@@ -2484,6 +2080,7 @@ test_that("stopTrial works correctly for StoppingMTDdistribution", {
             n_samples * confidence,
             " %"
           )
+          attr(expected, "report_label") <- NA_character_
           expect_equal(result, expected)
         }
       }
@@ -2491,107 +2088,256 @@ test_that("stopTrial works correctly for StoppingMTDdistribution", {
   }
 })
 
-test_that("size works as expected for CohortSizeDLT", {
-  cohortSize <- CohortSizeDLT(dlt_intervals = c(0, 1), cohort_size = c(1, 3))
-  expect_equal(size(cohortSize, NA, Data(doseGrid = 1:3)), 0)
-  for (dose in 1:3) {
-    expect_equal(
-      size(
-        object = cohortSize,
-        dose = dose,
-        data = Data(x = 1:2, y = c(0, 0), ID = 1:2, cohort = 1:2, doseGrid = 1:3)
-      ),
-      1
-    )
-    expect_equal(
-      size(
-        object = cohortSize,
-        dose = dose,
-        data = Data(x = 1:2, y = c(0, 1), ID = 1:2, cohort = 1:2, doseGrid = 1:3)
-      ),
-      3
-    )
-    expect_equal(
-      size(
-        object = cohortSize,
-        dose = dose,
-        data = Data(x = 1:2, y = c(1, 1), ID = 1:2, cohort = 1:2, doseGrid = 1:3)
-      ),
-      3
-    )
-  }
-})
+## StoppingMTDCV ----
 
-test_that("size works as expected for CohortSizeConst", {
-  cohortSize <- CohortSizeConst(size = 4)
-  emptyData <- Data(doseGrid = 1:5)
-  expect_equal(size(cohortSize, NA, Data(doseGrid = 1:5)), 0)
-  for (dose in 1:5) {
-    expect_equal(size(object = cohortSize, dose = dose, data = emptyData), 4)
-  }
-})
-
-test_that("size works as expected for CohortSizeRange", {
-  doseGrid <- 1:10
-  cohortSize <- CohortSizeRange(intervals = c(0, 5), cohort_size = c(1, 2))
-  emptyData <- Data(doseGrid = 1:10)
-  expect_equal(size(cohortSize, NA, Data(doseGrid = doseGrid)), 0)
-  for (dose in doseGrid) {
-    expect_equal(size(object = cohortSize, dose = dose, data = emptyData), ifelse(dose < 5, 1, 2))
-  }
-})
-
-test_that("size works as expected for CohortSizeMax", {
-  doseGrid <- 1:5
-  cohortSize <- CohortSizeMax(
-    cohort_size_list = list(
-      CohortSizeRange(intervals = c(0, 3), cohort_size = 1:2),
-      CohortSizeDLT(dlt_intervals = 0:2, cohort_size = c(1, 3, 6))
-    )
+test_that("StoppingMTDCV can handle when dose is NA", {
+  my_data <- h_get_data()
+  my_model <- h_get_logistic_kadane()
+  my_samples <- mcmc(my_data, my_model, h_get_mcmc_options(samples = 1000, burnin = 1000))
+  stopping <- StoppingMTDCV(target = 0.3, thresh_cv = 30)
+  result <- stopTrial(
+    stopping = stopping,
+    dose = NA_real_,
+    samples = my_samples,
+    model = my_model,
+    data = my_data
   )
-  emptyData <- Data(doseGrid = doseGrid)
-  noDLT <- Data(x = 1, y = 0, ID = 1, cohort = 1, doseGrid = doseGrid)
-  oneDLT <- Data(x = 1, y = 1, ID = 1, cohort = 1, doseGrid = doseGrid)
-  twoDLTs <- Data(x = 1:2, y = c(1, 1), ID = 1:2, cohort = 1:2, doseGrid = doseGrid)
-  expect_equal(size(cohortSize, NA, Data(doseGrid = doseGrid)), 0)
-  for (dose in doseGrid) {
-    expect_equal(size(object = cohortSize, dose = dose, data = emptyData), ifelse(dose < 3, 1, 2))
-    expect_equal(size(object = cohortSize, dose = dose, data = noDLT), ifelse(dose < 3, 1, 2))
-    expect_equal(size(object = cohortSize, dose = dose, data = oneDLT), 3)
-    expect_equal(size(object = cohortSize, dose = dose, data = twoDLTs), 6)
-  }
-})
-
-test_that("size works as expected for CohortSizeMin", {
-  doseGrid <- 1:5
-  cohortSize <- CohortSizeMin(
-    cohort_size_list = list(
-      CohortSizeRange(intervals = c(0, 3), cohort_size = 1:2),
-      CohortSizeDLT(dlt_intervals = 0:2, cohort_size = c(1, 3, 6))
-    )
+  expected <- structure(
+    FALSE,
+    message = "CV of MTD is 40 % and thus above the required precision threshold of 30 %",
+    report_label = NA_character_
   )
-  emptyData <- Data(doseGrid = doseGrid)
-  noDLT <- Data(x = 1, y = 0, ID = 1, cohort = 1, doseGrid = doseGrid)
-  oneDLT <- Data(x = 1, y = 1, ID = 1, cohort = 1, doseGrid = doseGrid)
-  twoDLTs <- Data(x = 1:2, y = c(1, 1), ID = 1:2, cohort = 1:2, doseGrid = doseGrid)
-  expect_equal(size(cohortSize, NA, Data(doseGrid = doseGrid)), 0)
-  for (dose in doseGrid) {
-    expect_equal(size(object = cohortSize, dose = dose, data = emptyData), 1)
-    expect_equal(size(object = cohortSize, dose = dose, data = noDLT), 1)
-    expect_equal(size(object = cohortSize, dose = dose, data = oneDLT), ifelse(dose < 3, 1, 2))
-    expect_equal(size(object = cohortSize, dose = dose, data = twoDLTs), ifelse(dose < 3, 1, 2))
-  }
+  expect_identical(result, expected) # CV is 23% < 30%.
 })
 
-test_that("size works as expected for CohortSizeMin", {
-  doseGrid <- 1:5
-  cohortSize <- CohortSizeParts(sizes = c(1, 3))
-  expect_equal(size(cohortSize, NA, DataParts(nextPart = 1L)), 0)
-  expect_equal(size(cohortSize, NA, DataParts(nextPart = 2L)), 0)
-  for (dose in doseGrid) {
-    expect_equal(size(object = cohortSize, dose = dose, data = DataParts(nextPart = 1L)), 1)
-    expect_equal(size(object = cohortSize, dose = dose, data = DataParts(nextPart = 2L)), 3)
-  }
+test_that("StoppingMTDCV works correctly if CV is below threshold", {
+  my_data <- h_get_data()
+  my_model <- h_get_logistic_kadane()
+  my_samples <- mcmc(my_data, my_model, h_get_mcmc_options(samples = 1000, burnin = 1000))
+  stopping <- StoppingMTDCV(target = 0.3, thresh_cv = 50)
+  result <- stopTrial(
+    stopping = stopping,
+    dose = 7,
+    samples = my_samples,
+    model = my_model,
+    data = my_data
+  )
+  expected <- structure(
+    TRUE,
+    message = "CV of MTD is 40 % and thus below the required precision threshold of 50 %",
+    report_label = NA_character_
+  )
+  expect_identical(result, expected) # CV is 23% < 30%.
+})
+
+test_that("StoppingMTDCV works correctly if CV is above threshold", {
+  my_data <- h_get_data()
+  my_model <- h_get_logistic_kadane()
+  my_samples <- mcmc(my_data, my_model, h_get_mcmc_options(samples = 1000, burnin = 1000))
+  stopping <- StoppingMTDCV(target = 0.3, thresh_cv = 20)
+  result <- stopTrial(
+    stopping = stopping,
+    dose = 7,
+    samples = my_samples,
+    model = my_model,
+    data = my_data
+  )
+  expected <- structure(
+    FALSE,
+    message = "CV of MTD is 40 % and thus above the required precision threshold of 20 %",
+    report_label = NA_character_
+  )
+  expect_identical(result, expected) # CV is 23% > 20%.
+})
+
+## StoppingLowestDoseHSRBeta ----
+
+test_that("StoppingLowestDoseHSRBeta works correctly if next dose is NA", {
+  my_data <- h_get_data()
+  my_model <- h_get_logistic_kadane()
+  my_samples <- mcmc(my_data, my_model, h_get_mcmc_options(fixed = FALSE))
+  stopping <- StoppingLowestDoseHSRBeta(target = 0.3, prob = 0.9)
+  result <- stopTrial(
+    stopping = stopping,
+    dose = NA_real_,
+    samples = my_samples,
+    model = my_model,
+    data = my_data
+  )
+  expected <- structure(
+    FALSE,
+    message = paste(
+      "Probability that the lowest active dose of 25 being toxic",
+      "based on posterior Beta distribution using a Beta(1,1) prior",
+      "is 24% and thus below the required 90% threshold."
+    ),
+    report_label = NA_character_
+  )
+  expect_identical(result, expected) # Prob being toxic is 24% < 90%.
+})
+
+test_that("StoppingLowestDoseHSRBeta works correctly if first active dose is not toxic", {
+  my_data <- h_get_data()
+  my_model <- h_get_logistic_kadane()
+  my_samples <- mcmc(my_data, my_model, h_get_mcmc_options(fixed = FALSE))
+  stopping <- StoppingLowestDoseHSRBeta(target = 0.3, prob = 0.9)
+  result <- stopTrial(
+    stopping = stopping,
+    dose = 300,
+    samples = my_samples,
+    model = my_model,
+    data = my_data
+  )
+  expected <- structure(
+    FALSE,
+    message = paste(
+      "Probability that the lowest active dose of 25 being toxic",
+      "based on posterior Beta distribution using a Beta(1,1) prior",
+      "is 24% and thus below the required 90% threshold."
+    ),
+    report_label = NA_character_
+  )
+  expect_identical(result, expected) # Prob being toxic is 24% < 90%.
+})
+
+test_that("StoppingLowestDoseHSRBeta works correctly if first active dose is toxic", {
+  my_data <- h_get_data()
+  my_model <- h_get_logistic_kadane()
+  my_samples <- mcmc(my_data, my_model, h_get_mcmc_options(fixed = FALSE))
+  stopping <- StoppingLowestDoseHSRBeta(target = 0.3, prob = 0.1)
+  result <- stopTrial(
+    stopping = stopping,
+    dose = 300,
+    samples = my_samples,
+    model = my_model,
+    data = my_data
+  )
+  expected <- structure(
+    TRUE,
+    message = paste(
+      "Probability that the lowest active dose of 25 being toxic",
+      "based on posterior Beta distribution using a Beta(1,1) prior",
+      "is 24% and thus above the required 10% threshold."
+    ),
+    report_label = NA_character_
+  )
+  expect_identical(result, expected) # Prob being toxic is 24% > 10%.
+})
+
+test_that("StoppingLowestDoseHSRBeta works correctly if first active dose is not applied", {
+  my_data <- h_get_data()
+  my_data@x[my_data@cohort == 1] <- c(0.001, 75, 75, 75)
+  my_model <- h_get_logistic_kadane()
+  my_samples <- mcmc(my_data, my_model, h_get_mcmc_options(fixed = FALSE))
+  stopping <- StoppingLowestDoseHSRBeta(target = 0.3, prob = 0.1)
+  result <- stopTrial(
+    stopping = stopping,
+    dose = 300,
+    samples = my_samples,
+    model = my_model,
+    data = my_data
+  )
+  expected <- structure(
+    FALSE,
+    message = "Lowest active dose not tested, stopping rule not applied.",
+    report_label = NA_character_
+  )
+  expect_identical(result, expected) # First active dose not applied.
+})
+
+test_that("StoppingLowestDoseHSRBeta works correctly if first active dose is not toxic", {
+  my_data <- h_get_data(placebo = FALSE)
+  my_model <- h_get_logistic_kadane()
+  my_samples <- mcmc(my_data, my_model, h_get_mcmc_options(fixed = FALSE))
+  stopping <- StoppingLowestDoseHSRBeta(target = 0.3, prob = 0.9)
+  result <- stopTrial(
+    stopping = stopping,
+    dose = 300,
+    samples = my_samples,
+    model = my_model,
+    data = my_data
+  )
+  expected <- structure(
+    FALSE,
+    message = paste(
+      "Probability that the lowest active dose of 25 being toxic based on",
+      "posterior Beta distribution using a Beta(1,1) prior is 17% and thus",
+      "below the required 90% threshold."
+    ),
+    report_label = NA_character_
+  )
+  expect_identical(result, expected) # Prob being toxic is 24% < 90%.
+})
+
+test_that("StoppingLowestDoseHSRBeta works correctly if first active dose is toxic", {
+  my_data <- h_get_data(placebo = FALSE)
+  my_model <- h_get_logistic_kadane()
+  my_samples <- mcmc(my_data, my_model, h_get_mcmc_options(fixed = FALSE))
+  stopping <- StoppingLowestDoseHSRBeta(target = 0.3, prob = 0.1)
+  result <- stopTrial(
+    stopping = stopping,
+    dose = 300,
+    samples = my_samples,
+    model = my_model,
+    data = my_data
+  )
+  expected <- structure(
+    TRUE,
+    message = paste(
+      "Probability that the lowest active dose of 25 being toxic based on",
+      "posterior Beta distribution using a Beta(1,1) prior is 17% and thus",
+      "above the required 10% threshold."
+    ),
+    report_label = NA_character_
+  )
+  expect_identical(result, expected) # Prob being toxic is 24% > 10%.
+})
+
+test_that("StoppingLowestDoseHSRBeta works correctly if first active dose is not applied", {
+  my_data <- h_get_data(placebo = FALSE)
+  my_data@x[my_data@cohort == 1] <- c(75, 75, 75, 75)
+  my_model <- h_get_logistic_kadane()
+  my_samples <- mcmc(my_data, my_model, h_get_mcmc_options(fixed = FALSE))
+  stopping <- StoppingLowestDoseHSRBeta(target = 0.3, prob = 0.1)
+  result <- stopTrial(
+    stopping = stopping,
+    dose = 300,
+    samples = my_samples,
+    model = my_model,
+    data = my_data
+  )
+  expected <- structure(
+    FALSE,
+    message = "Lowest active dose not tested, stopping rule not applied.",
+    report_label = NA_character_
+  )
+  expect_identical(result, expected) # First active dose not applied.
+})
+
+## StoppingTargetBiomarker ----
+
+test_that("StoppingTargetBiomarker can handle when dose is NA", {
+  data <- h_get_data_dual()
+  model <- h_get_dual_endpoint_rw()
+  options <- h_get_mcmc_options()
+  samples <- mcmc(data, model, options)
+  stopping <- StoppingTargetBiomarker(
+    target = c(0.9, 1),
+    prob = 0.5
+  )
+  result <- stopTrial(
+    stopping = stopping,
+    dose = NA_real_,
+    samples = samples,
+    model = model,
+    data = data
+  )
+  expected <- structure(
+    FALSE,
+    message = "Probability for target biomarker is 0 % for dose NA and thus below the required 50 %",
+    report_label = NA_character_
+  )
+  expect_identical(result, expected)
 })
 
 test_that("stopTrial works for StoppingTargetBiomarker", {
@@ -2717,27 +2463,1291 @@ test_that("stopTrial works for StoppingTargetBiomarker", {
         dose = d,
         samples = samples,
         model = model,
-        data = data
+        data = data,
+        report_label = NA_character_
       )
       expected <- FALSE
       attr(expected, "message") <- expectedAttributes[[as.character(d)]]
+      attr(expected, "report_label") <- NA_character_
       expect_equal(actual, expected)
     }
   )
 })
 
-test_that("maxSize works as expected", {
-  size1 <- CohortSizeRange(intervals = c(0, 3), cohort_size = 1:2)
-  size2 <- CohortSizeDLT(dlt_intervals = 0:2, cohort_size = c(1, 3, 6))
-  cohortSize <- CohortSizeMax(cohort_size_list = list(size1, size2))
-  expect_equal(maxSize(size1, size2), cohortSize)
+
+## StoppingSpecificDose ----
+
+test_that("StoppingSpecificDose works correctly if next dose is NA", {
+  my_samples <- h_as_samples(
+    list(alpha0 = c(1.2, 0, -0.4, -0.1, 0.9), alpha1 = c(0.7, 1.7, 1.9, 0.6, 2.8))
+  )
+  result <- stopTrial(
+    stopping = h_stopping_specific_dose(),
+    dose = NA_real_,
+    samples = my_samples,
+    model = h_get_logistic_log_normal(),
+    data = h_get_data_sr_1()
+  )
+  expected <- structure(
+    FALSE,
+    message = "Probability for target toxicity is 0 % for dose 80 and thus below the required 80 %",
+    report_label = NA_character_
+  )
+  expect_identical(result, expected)
 })
 
-test_that("minSize works as expected", {
-  size1 <- CohortSizeRange(intervals = c(0, 3), cohort_size = 1:2)
-  size2 <- CohortSizeDLT(dlt_intervals = 0:2, cohort_size = c(1, 3, 6))
-  cohortSize <- CohortSizeMin(cohort_size_list = list(size1, size2))
-  expect_equal(minSize(size1, size2), cohortSize)
+test_that("StoppingSpecificDose works correctly if dose rec. differs from specific and stop crit. not met", {
+  # StoppingSpecificDose works correctly if dose recommendation is not the same
+  # as the specific dose and stop is not met.
+  my_samples <- h_as_samples(
+    list(alpha0 = c(1.2, 0, -0.4, -0.1, 0.9), alpha1 = c(0.7, 1.7, 1.9, 0.6, 2.8))
+  )
+  result <- stopTrial(
+    stopping = h_stopping_specific_dose(),
+    dose = 20,
+    samples = my_samples,
+    model = h_get_logistic_log_normal(),
+    data = h_get_data_sr_1()
+  )
+  expected <- structure(
+    FALSE,
+    message = "Probability for target toxicity is 0 % for dose 80 and thus below the required 80 %",
+    report_label = NA_character_
+  )
+  expect_identical(result, expected)
+})
+
+test_that("StoppingSpecificDose works correctly if dose rec. differs from specific and stop crit. is met", {
+  # StoppingSpecificDose works correctly if dose recommendation is not the same
+  # as the specific dose and stop is met.
+  my_samples <- h_as_samples(
+    list(
+      alpha0 = c(-1.88, -1.58, -2.43, -3.61, -2.15, -2.28, -3.32, -2.16, -2.79, -2.90),
+      alpha1 = c(1.08, 0.86, 0.67, 2.38, 5.99, 2.94, 0.74, 2.39, 1.74, 0.84)
+    )
+  )
+  result <- stopTrial(
+    stopping = h_stopping_specific_dose(),
+    dose = 20,
+    samples = my_samples,
+    model = h_get_logistic_log_normal(),
+    data = h_get_data_sr_1()
+  )
+  expected <- structure(
+    TRUE,
+    message = "Probability for target toxicity is 90 % for dose 80 and thus above the required 80 %",
+    report_label = NA_character_
+  )
+  expect_identical(result, expected)
+})
+
+test_that("StoppingSpecificDose works correctly if dose rec = specific and stop crit. not met", {
+  # StoppingSpecificDose works correctly if dose recommendation is the same
+  # as the specific dose and stop is not met.
+  my_samples <- h_as_samples(
+    list(alpha0 = c(1.2, 0, -0.4, -0.1, 0.9), alpha1 = c(0.7, 1.7, 1.9, 0.6, 2.8))
+  )
+  result <- stopTrial(
+    stopping = h_stopping_specific_dose(),
+    dose = 80,
+    samples = my_samples,
+    model = h_get_logistic_log_normal(),
+    data = h_get_data_sr_1()
+  )
+  expected <- structure(
+    FALSE,
+    message = "Probability for target toxicity is 0 % for dose 80 and thus below the required 80 %",
+    report_label = NA_character_
+  )
+  expect_identical(result, expected)
+})
+
+test_that("StoppingSpecificDose works correctly if dose rec. = specific and stop crit. is met", {
+  # StoppingSpecificDose works correctly if dose recommendation is the same
+  # as the specific dose and stop is met.
+  my_samples <- h_as_samples(
+    list(
+      alpha0 = c(-1.88, -1.58, -2.43, -3.61, -2.15, -2.28, -3.32, -2.16, -2.79, -2.90),
+      alpha1 = c(1.08, 0.86, 0.67, 2.38, 5.99, 2.94, 0.74, 2.39, 1.74, 0.84)
+    )
+  )
+  result <- stopTrial(
+    stopping = h_stopping_specific_dose(),
+    dose = 80,
+    samples = my_samples,
+    model = h_get_logistic_log_normal(),
+    data = h_get_data_sr_1()
+  )
+  expected <- structure(
+    TRUE,
+    message = "Probability for target toxicity is 90 % for dose 80 and thus above the required 80 %",
+    report_label = NA_character_
+  )
+  expect_identical(result, expected)
+})
+
+test_that("StoppingSpecificDose correctly replaces next best string with specific string", {
+  my_stopping <- StoppingSpecificDose(
+    rule = StoppingPatientsNearDose(nPatients = 9, percentage = 5),
+    dose = 80
+  )
+  my_samples <- h_as_samples(
+    list(
+      alpha0 = c(-1.88, -1.58, -2.43, -3.61, -2.15, -2.28, -3.32, -2.16, -2.79, -2.90),
+      alpha1 = c(1.08, 0.86, 0.67, 2.38, 5.99, 2.94, 0.74, 2.39, 1.74, 0.84)
+    )
+  )
+  result <- stopTrial(
+    stopping = my_stopping,
+    dose = 20,
+    samples = my_samples,
+    model = h_get_logistic_log_normal(),
+    data = h_get_data_sr_2()
+  )
+  expected <- structure(
+    TRUE,
+    message = "12 patients lie within 5% of the specific dose 80. This reached the required 9 patients",
+    report_label = NA_character_
+  )
+  expect_identical(result, expected)
+})
+
+## StoppingHighestDose ----
+
+test_that("StoppingHighestDose works correctly if next dose is NA", {
+  my_data <- h_get_data()
+  my_model <- h_get_logistic_kadane()
+  my_samples <- mcmc(my_data, my_model, h_get_mcmc_options(fixed = FALSE))
+  stopping <- StoppingHighestDose()
+  result <- stopTrial(
+    stopping = stopping,
+    dose = NA_real_,
+    samples = my_samples,
+    model = my_model,
+    data = my_data
+  )
+  expected <- structure(
+    FALSE,
+    message = paste(
+      "Next best dose is NA and thus not the highest dose"
+    ),
+    report_label = NA_character_
+  )
+  expect_identical(result, expected)
+})
+
+## StoppingList ----
+
+test_that("StoppingList with any works correctly if next dose is NA", {
+  my_data <- h_get_data()
+  my_model <- h_get_logistic_kadane()
+  my_samples <- mcmc(my_data, my_model, h_get_mcmc_options(fixed = FALSE))
+  s1 <- StoppingMinCohorts(nCohorts = 2)
+  s2 <- StoppingHighestDose()
+  stopping <- StoppingList(stop_list = list(s1, s2), summary = any)
+  result <- stopTrial(
+    stopping = stopping,
+    dose = NA_real_,
+    samples = my_samples,
+    model = my_model,
+    data = my_data
+  )
+  expected <- structure(
+    TRUE,
+    message = list(
+      "Number of cohorts is 3 and thus reached the prespecified minimum number 2",
+      "Next best dose is NA and thus not the highest dose"
+    ),
+    individual = list(
+      structure(
+        TRUE,
+        message = "Number of cohorts is 3 and thus reached the prespecified minimum number 2",
+        report_label = NA_character_
+      ),
+      structure(
+        FALSE,
+        message = "Next best dose is NA and thus not the highest dose",
+        report_label = NA_character_
+      )
+    )
+  )
+  expect_identical(result, expected)
+})
+
+test_that("StoppingList with all works correctly if next dose is NA", {
+  my_data <- h_get_data()
+  my_model <- h_get_logistic_kadane()
+  my_samples <- mcmc(my_data, my_model, h_get_mcmc_options(fixed = FALSE))
+  s1 <- StoppingMinCohorts(nCohorts = 2)
+  s2 <- StoppingHighestDose()
+  stopping <- StoppingList(stop_list = list(s1, s2), summary = all)
+  result <- stopTrial(
+    stopping = stopping,
+    dose = NA_real_,
+    samples = my_samples,
+    model = my_model,
+    data = my_data
+  )
+  expected <- structure(
+    FALSE,
+    message = list(
+      "Number of cohorts is 3 and thus reached the prespecified minimum number 2",
+      "Next best dose is NA and thus not the highest dose"
+    ),
+    individual = list(
+      structure(
+        TRUE,
+        message = "Number of cohorts is 3 and thus reached the prespecified minimum number 2",
+        report_label = NA_character_
+      ),
+      structure(
+        FALSE,
+        message = "Next best dose is NA and thus not the highest dose",
+        report_label = NA_character_
+      )
+    )
+  )
+  expect_identical(result, expected)
+})
+
+test_that("stopTrial works correctly for StoppingList", {
+  s1 <- StoppingMinCohorts(nCohorts = 2)
+  s2 <- StoppingHighestDose()
+  any1 <- StoppingList(stop_list = list(s1, s2), summary = any)
+  all1 <- StoppingList(stop_list = list(s1, s2), summary = all)
+
+  data_none <- Data(x = c(1, 1), y = c(0, 0), cohort = c(1L, 1L), ID = 1:2, doseGrid = 1:3)
+  data_any1 <- Data(x = c(3, 3), y = c(0, 0), cohort = c(1L, 1L), ID = 1:2, doseGrid = 1:3)
+  data_any2 <- Data(x = c(1, 2), y = c(0, 0), cohort = c(1L, 2L), ID = 1:2, doseGrid = 1:3)
+  data_all <- Data(x = c(1, 3), y = c(0, 0), cohort = c(1L, 2L), ID = 1:2, doseGrid = 1:3)
+
+  rv <- stopTrial(
+    stopping = any1,
+    dose = 1,
+    model = LogisticLogNormal(mean = c(0, 1), cov = diag(2)),
+    data = data_none
+  )
+  expect_false(rv)
+  expect_equal(
+    attributes(rv),
+    list(
+      message = list(
+        "Number of cohorts is 1 and thus below the prespecified minimum number 2",
+        "Next best dose is 1 and thus not the highest dose"
+      ),
+      individual = list(
+        structure(
+          FALSE,
+          message = "Number of cohorts is 1 and thus below the prespecified minimum number 2",
+          report_label = NA_character_
+        ),
+        structure(
+          FALSE,
+          message = "Next best dose is 1 and thus not the highest dose",
+          report_label = NA_character_
+        )
+      )
+    )
+  )
+  rv <- stopTrial(
+    stopping = all1,
+    dose = 1,
+    model = LogisticLogNormal(mean = c(0, 1), cov = diag(2)),
+    data = data_none
+  )
+  expect_false(rv)
+  expect_equal(
+    attributes(rv),
+    list(
+      message = list(
+        "Number of cohorts is 1 and thus below the prespecified minimum number 2",
+        "Next best dose is 1 and thus not the highest dose"
+      ),
+      individual = list(
+        structure(
+          FALSE,
+          message = "Number of cohorts is 1 and thus below the prespecified minimum number 2",
+          report_label = NA_character_
+        ),
+        structure(
+          FALSE,
+          message = "Next best dose is 1 and thus not the highest dose",
+          report_label = NA_character_
+        )
+      )
+    )
+  )
+
+  rv <- stopTrial(
+    stopping = any1,
+    dose = 3,
+    model = LogisticLogNormal(mean = c(0, 1), cov = diag(2)),
+    data = data_any1
+  )
+  expect_true(rv)
+  expect_equal(
+    attributes(rv),
+    list(
+      message = list(
+        "Number of cohorts is 1 and thus below the prespecified minimum number 2",
+        "Next best dose is 3 and thus the highest dose"
+      ),
+      individual = list(
+        structure(
+          FALSE,
+          message = "Number of cohorts is 1 and thus below the prespecified minimum number 2",
+          report_label = NA_character_
+        ),
+        structure(
+          TRUE,
+          message = "Next best dose is 3 and thus the highest dose",
+          report_label = NA_character_
+        )
+      )
+    )
+  )
+  rv <- stopTrial(
+    stopping = all1,
+    dose = 1,
+    model = LogisticLogNormal(mean = c(0, 1), cov = diag(2)),
+    data = data_any1
+  )
+  expect_false(rv)
+  expect_equal(
+    attributes(rv),
+    list(
+      message = list(
+        "Number of cohorts is 1 and thus below the prespecified minimum number 2",
+        "Next best dose is 1 and thus not the highest dose"
+      ),
+      individual = list(
+        structure(
+          FALSE,
+          message = "Number of cohorts is 1 and thus below the prespecified minimum number 2",
+          report_label = NA_character_
+        ),
+        structure(
+          FALSE,
+          message = "Next best dose is 1 and thus not the highest dose",
+          report_label = NA_character_
+        )
+      )
+    )
+  )
+
+  rv <- stopTrial(
+    stopping = any1,
+    dose = 2,
+    model = LogisticLogNormal(mean = c(0, 1), cov = diag(2)),
+    data = data_any2
+  )
+  expect_true(rv)
+  expect_equal(
+    attributes(rv),
+    list(
+      message = list(
+        "Number of cohorts is 2 and thus reached the prespecified minimum number 2",
+        "Next best dose is 2 and thus not the highest dose"
+      ),
+      individual = list(
+        structure(
+          TRUE,
+          message = "Number of cohorts is 2 and thus reached the prespecified minimum number 2",
+          report_label = NA_character_
+        ),
+        structure(
+          FALSE,
+          message = "Next best dose is 2 and thus not the highest dose",
+          report_label = NA_character_
+        )
+      )
+    )
+  )
+
+  rv <- stopTrial(
+    stopping = all1,
+    dose = 1,
+    model = LogisticLogNormal(mean = c(0, 1), cov = diag(2)),
+    data = data_any2
+  )
+  expect_false(rv)
+  expect_equal(
+    attributes(rv),
+    list(
+      message = list(
+        "Number of cohorts is 2 and thus reached the prespecified minimum number 2",
+        "Next best dose is 1 and thus not the highest dose"
+      ),
+      individual = list(
+        structure(
+          TRUE,
+          message = "Number of cohorts is 2 and thus reached the prespecified minimum number 2",
+          report_label = NA_character_
+        ),
+        structure(
+          FALSE,
+          message = "Next best dose is 1 and thus not the highest dose",
+          report_label = NA_character_
+        )
+      )
+    )
+  )
+
+  rv <- stopTrial(
+    stopping = all1,
+    dose = 3,
+    model = LogisticLogNormal(mean = c(0, 1), cov = diag(2)),
+    data = data_all
+  )
+  expect_true(rv)
+  expect_equal(
+    attributes(rv),
+    list(
+      message = list(
+        "Number of cohorts is 2 and thus reached the prespecified minimum number 2",
+        "Next best dose is 3 and thus the highest dose"
+      ),
+      individual = list(
+        structure(
+          TRUE,
+          message = "Number of cohorts is 2 and thus reached the prespecified minimum number 2",
+          report_label = NA_character_
+        ),
+        structure(
+          TRUE,
+          message = "Next best dose is 3 and thus the highest dose",
+          report_label = NA_character_
+        )
+      )
+    )
+  )
+
+  rv <- stopTrial(
+    stopping = any1,
+    dose = 1,
+    model = LogisticLogNormal(mean = c(0, 1), cov = diag(2)),
+    data = data_none,
+    samples = new("Samples")
+  )
+  expect_false(rv)
+  expect_equal(
+    attributes(rv),
+    list(
+      message = list(
+        "Number of cohorts is 1 and thus below the prespecified minimum number 2",
+        "Next best dose is 1 and thus not the highest dose"
+      ),
+      individual = list(
+        structure(
+          FALSE,
+          message = "Number of cohorts is 1 and thus below the prespecified minimum number 2",
+          report_label = NA_character_
+        ),
+        structure(
+          FALSE,
+          message = "Next best dose is 1 and thus not the highest dose",
+          report_label = NA_character_
+        )
+      )
+    )
+  )
+
+  data_any1 <- Data(x = c(3, 3), y = c(0, 0), cohort = c(1L, 1L), ID = 1:2, doseGrid = 1:3)
+  rv <- stopTrial(
+    stopping = any1,
+    dose = 3,
+    model = LogisticLogNormal(mean = c(0, 1), cov = diag(2)),
+    data = data_any1,
+    samples = new("Samples")
+  )
+  expect_true(rv)
+  expect_equal(
+    attributes(rv),
+    list(
+      message = list(
+        "Number of cohorts is 1 and thus below the prespecified minimum number 2",
+        "Next best dose is 3 and thus the highest dose"
+      ),
+      individual = list(
+        structure(
+          FALSE,
+          message = "Number of cohorts is 1 and thus below the prespecified minimum number 2",
+          report_label = NA_character_
+        ),
+        structure(
+          TRUE,
+          message = "Next best dose is 3 and thus the highest dose",
+          report_label = NA_character_
+        )
+      )
+    )
+  )
+
+  data_any2 <- Data(x = c(1, 2), y = c(0, 0), cohort = c(1L, 2L), ID = 1:2, doseGrid = 1:3)
+  rv <- stopTrial(
+    stopping = any1,
+    dose = 2,
+    model = LogisticLogNormal(mean = c(0, 1), cov = diag(2)),
+    data = data_any2,
+    samples = new("Samples")
+  )
+  expect_true(rv)
+  expect_equal(
+    attributes(rv),
+    list(
+      message = list(
+        "Number of cohorts is 2 and thus reached the prespecified minimum number 2",
+        "Next best dose is 2 and thus not the highest dose"
+      ),
+      individual = list(
+        structure(
+          TRUE,
+          message = "Number of cohorts is 2 and thus reached the prespecified minimum number 2",
+          report_label = NA_character_
+        ),
+        structure(
+          FALSE,
+          message = "Next best dose is 2 and thus not the highest dose",
+          report_label = NA_character_
+        )
+      )
+    )
+  )
+
+  rv <- stopTrial(
+    stopping = all1,
+    dose = 1,
+    model = LogisticLogNormal(mean = c(0, 1), cov = diag(2)),
+    data = data_any2,
+    samples = new("Samples")
+  )
+  expect_false(rv)
+  expect_equal(
+    attributes(rv),
+    list(
+      message = list(
+        "Number of cohorts is 2 and thus reached the prespecified minimum number 2",
+        "Next best dose is 1 and thus not the highest dose"
+      ),
+      individual = list(
+        structure(
+          TRUE,
+          message = "Number of cohorts is 2 and thus reached the prespecified minimum number 2",
+          report_label = NA_character_
+        ),
+        structure(
+          FALSE,
+          message = "Next best dose is 1 and thus not the highest dose",
+          report_label = NA_character_
+        )
+      )
+    )
+  )
+
+  rv <- stopTrial(
+    stopping = all1,
+    dose = 3,
+    model = LogisticLogNormal(mean = c(0, 1), cov = diag(2)),
+    data = data_all,
+    samples = new("Samples")
+  )
+  expect_true(rv)
+  expect_equal(
+    attributes(rv),
+    list(
+      message = list(
+        "Number of cohorts is 2 and thus reached the prespecified minimum number 2",
+        "Next best dose is 3 and thus the highest dose"
+      ),
+      individual = list(
+        structure(
+          TRUE,
+          message = "Number of cohorts is 2 and thus reached the prespecified minimum number 2",
+          report_label = NA_character_
+        ),
+        structure(
+          TRUE,
+          message = "Next best dose is 3 and thus the highest dose",
+          report_label = NA_character_
+        )
+      )
+    )
+  )
+})
+
+## StoppingAll ----
+
+test_that("StoppingAll works correctly if next dose is NA", {
+  my_data <- h_get_data()
+  my_model <- h_get_logistic_kadane()
+  my_samples <- mcmc(my_data, my_model, h_get_mcmc_options(fixed = FALSE))
+  s1 <- StoppingMinCohorts(nCohorts = 2)
+  s2 <- StoppingHighestDose()
+  stopping <- StoppingAll(stop_list = list(s1, s2))
+  result <- stopTrial(
+    stopping = stopping,
+    dose = NA_real_,
+    samples = my_samples,
+    model = my_model,
+    data = my_data
+  )
+  expected <- structure(
+    FALSE,
+    message = list(
+      "Number of cohorts is 3 and thus reached the prespecified minimum number 2",
+      "Next best dose is NA and thus not the highest dose"
+    ),
+    individual = list(
+      structure(
+        TRUE,
+        message = "Number of cohorts is 3 and thus reached the prespecified minimum number 2",
+        report_label = NA_character_
+      ),
+      structure(
+        FALSE,
+        message = "Next best dose is NA and thus not the highest dose",
+        report_label = NA_character_
+      )
+    ),
+    report_label = NA_character_
+  )
+  expect_identical(result, expected)
+})
+
+test_that("stopTrial works correctly for StoppingAll", {
+  s1 <- StoppingMinCohorts(nCohorts = 2)
+  s2 <- StoppingHighestDose()
+  all1 <- StoppingAll(stop_list = list(s1, s2))
+
+  data_none <- Data(x = c(1, 1), y = c(0, 0), cohort = c(1L, 1L), ID = 1:2, doseGrid = 1:3)
+  data_any1 <- Data(x = c(3, 3), y = c(0, 0), cohort = c(1L, 1L), ID = 1:2, doseGrid = 1:3)
+  data_any2 <- Data(x = c(1, 2), y = c(0, 0), cohort = c(1L, 2L), ID = 1:2, doseGrid = 1:3)
+  data_all <- Data(x = c(1, 3), y = c(0, 0), cohort = c(1L, 2L), ID = 1:2, doseGrid = 1:3)
+
+  rv <- stopTrial(
+    stopping = all1,
+    dose = 1,
+    model = LogisticLogNormal(mean = c(0, 1), cov = diag(2)),
+    data = data_none
+  )
+  expect_false(rv)
+  expect_equal(
+    attributes(rv),
+    list(
+      message = list(
+        "Number of cohorts is 1 and thus below the prespecified minimum number 2",
+        "Next best dose is 1 and thus not the highest dose"
+      ),
+      individual = list(
+        structure(
+          FALSE,
+          message = "Number of cohorts is 1 and thus below the prespecified minimum number 2",
+          report_label = NA_character_
+        ),
+        structure(
+          FALSE,
+          message = "Next best dose is 1 and thus not the highest dose",
+          report_label = NA_character_
+        )
+      ),
+      report_label = NA_character_
+    )
+  )
+
+  rv <- stopTrial(
+    stopping = all1,
+    dose = 3,
+    model = LogisticLogNormal(mean = c(0, 1), cov = diag(2)),
+    data = data_any1
+  )
+  expect_false(rv)
+  expect_equal(
+    attributes(rv),
+    list(
+      message = list(
+        "Number of cohorts is 1 and thus below the prespecified minimum number 2",
+        "Next best dose is 3 and thus the highest dose"
+      ),
+      individual = list(
+        structure(
+          FALSE,
+          message = "Number of cohorts is 1 and thus below the prespecified minimum number 2",
+          report_label = NA_character_
+        ),
+        structure(
+          TRUE,
+          message = "Next best dose is 3 and thus the highest dose",
+          report_label = NA_character_
+        )
+      ),
+      report_label = NA_character_
+    )
+  )
+  rv <- stopTrial(
+    stopping = all1,
+    dose = 1,
+    model = LogisticLogNormal(mean = c(0, 1), cov = diag(2)),
+    data = data_any2
+  )
+  expect_false(rv)
+  expect_equal(
+    attributes(rv),
+    list(
+      message = list(
+        "Number of cohorts is 2 and thus reached the prespecified minimum number 2",
+        "Next best dose is 1 and thus not the highest dose"
+      ),
+      individual = list(
+        structure(
+          TRUE,
+          message = "Number of cohorts is 2 and thus reached the prespecified minimum number 2",
+          report_label = NA_character_
+        ),
+        structure(
+          FALSE,
+          message = "Next best dose is 1 and thus not the highest dose",
+          report_label = NA_character_
+        )
+      ),
+      report_label = NA_character_
+    )
+  )
+
+  rv <- stopTrial(
+    stopping = all1,
+    dose = 3,
+    model = LogisticLogNormal(mean = c(0, 1), cov = diag(2)),
+    data = data_all
+  )
+  expect_true(rv)
+  expect_equal(
+    attributes(rv),
+    list(
+      message = list(
+        "Number of cohorts is 2 and thus reached the prespecified minimum number 2",
+        "Next best dose is 3 and thus the highest dose"
+      ),
+      individual = list(
+        structure(
+          TRUE,
+          message = "Number of cohorts is 2 and thus reached the prespecified minimum number 2",
+          report_label = NA_character_
+        ),
+        structure(
+          TRUE,
+          message = "Next best dose is 3 and thus the highest dose",
+          report_label = NA_character_
+        )
+      ),
+      report_label = NA_character_
+    )
+  )
+
+  rv <- stopTrial(
+    stopping = all1,
+    dose = 1,
+    model = LogisticLogNormal(mean = c(0, 1), cov = diag(2)),
+    data = data_none,
+    samples = new("Samples")
+  )
+  expect_false(rv)
+  expect_equal(
+    attributes(rv),
+    list(
+      message = list(
+        "Number of cohorts is 1 and thus below the prespecified minimum number 2",
+        "Next best dose is 1 and thus not the highest dose"
+      ),
+      individual = list(
+        structure(
+          FALSE,
+          message = "Number of cohorts is 1 and thus below the prespecified minimum number 2",
+          report_label = NA_character_
+        ),
+        structure(
+          FALSE,
+          message = "Next best dose is 1 and thus not the highest dose",
+          report_label = NA_character_
+        )
+      ),
+      report_label = NA_character_
+    )
+  )
+
+  rv <- stopTrial(
+    stopping = all1,
+    dose = 3,
+    model = LogisticLogNormal(mean = c(0, 1), cov = diag(2)),
+    data = data_any1,
+    samples = new("Samples")
+  )
+  expect_false(rv)
+  expect_equal(
+    attributes(rv),
+    list(
+      message = list(
+        "Number of cohorts is 1 and thus below the prespecified minimum number 2",
+        "Next best dose is 3 and thus the highest dose"
+      ),
+      individual = list(
+        structure(
+          FALSE,
+          message = "Number of cohorts is 1 and thus below the prespecified minimum number 2",
+          report_label = NA_character_
+        ),
+        structure(
+          TRUE,
+          message = "Next best dose is 3 and thus the highest dose",
+          report_label = NA_character_
+        )
+      ),
+      report_label = NA_character_
+    )
+  )
+
+  data_any2 <- Data(x = c(1, 2), y = c(0, 0), cohort = c(1L, 2L), ID = 1:2, doseGrid = 1:3)
+  rv <- stopTrial(
+    stopping = all1,
+    dose = 2,
+    model = LogisticLogNormal(mean = c(0, 1), cov = diag(2)),
+    data = data_any2,
+    samples = new("Samples")
+  )
+  expect_false(rv)
+  expect_equal(
+    attributes(rv),
+    list(
+      message = list(
+        "Number of cohorts is 2 and thus reached the prespecified minimum number 2",
+        "Next best dose is 2 and thus not the highest dose"
+      ),
+      individual = list(
+        structure(
+          TRUE,
+          message = "Number of cohorts is 2 and thus reached the prespecified minimum number 2",
+          report_label = NA_character_
+        ),
+        structure(
+          FALSE,
+          message = "Next best dose is 2 and thus not the highest dose",
+          report_label = NA_character_
+        )
+      ),
+      report_label = NA_character_
+    )
+  )
+
+  rv <- stopTrial(
+    stopping = all1,
+    dose = 1,
+    model = LogisticLogNormal(mean = c(0, 1), cov = diag(2)),
+    data = data_any2,
+    samples = new("Samples")
+  )
+  expect_false(rv)
+  expect_equal(
+    attributes(rv),
+    list(
+      message = list(
+        "Number of cohorts is 2 and thus reached the prespecified minimum number 2",
+        "Next best dose is 1 and thus not the highest dose"
+      ),
+      individual = list(
+        structure(
+          TRUE,
+          message = "Number of cohorts is 2 and thus reached the prespecified minimum number 2",
+          report_label = NA_character_
+        ),
+        structure(
+          FALSE,
+          message = "Next best dose is 1 and thus not the highest dose",
+          report_label = NA_character_
+        )
+      ),
+      report_label = NA_character_
+    )
+  )
+
+  rv <- stopTrial(
+    stopping = all1,
+    dose = 3,
+    model = LogisticLogNormal(mean = c(0, 1), cov = diag(2)),
+    data = data_all,
+    samples = new("Samples")
+  )
+  expect_true(rv)
+  expect_equal(
+    attributes(rv),
+    list(
+      message = list(
+        "Number of cohorts is 2 and thus reached the prespecified minimum number 2",
+        "Next best dose is 3 and thus the highest dose"
+      ),
+      individual = list(
+        structure(
+          TRUE,
+          message = "Number of cohorts is 2 and thus reached the prespecified minimum number 2",
+          report_label = NA_character_
+        ),
+        structure(
+          TRUE,
+          message = "Next best dose is 3 and thus the highest dose",
+          report_label = NA_character_
+        )
+      ),
+      report_label = NA_character_
+    )
+  )
+})
+
+test_that("Logical operators for combining Stopping rules work correctly", {
+  s1 <- StoppingMinCohorts(nCohorts = 2)
+  s2 <- StoppingHighestDose()
+  s3 <- StoppingPatientsNearDose(nPatients = 9, percentage = 25)
+  all1 <- StoppingAll(stop_list = list(s1, s2))
+
+  expect_identical(s1 & s2, StoppingAll(stop_list = list(s1, s2)))
+
+  expect_identical(all1 & s3, StoppingAll(stop_list = list(s1, s2, s3)))
+  expect_identical(s3 & all1, StoppingAll(stop_list = list(s3, s1, s2)))
+})
+
+## StoppingAny ----
+
+test_that("StoppingAny works correctly if next dose is NA", {
+  my_data <- h_get_data()
+  my_model <- h_get_logistic_kadane()
+  my_samples <- mcmc(my_data, my_model, h_get_mcmc_options(fixed = FALSE))
+  s1 <- StoppingMinCohorts(nCohorts = 2)
+  s2 <- StoppingHighestDose()
+  stopping <- StoppingAny(stop_list = list(s1, s2))
+  result <- stopTrial(
+    stopping = stopping,
+    dose = NA_real_,
+    samples = my_samples,
+    model = my_model,
+    data = my_data
+  )
+  expected <- structure(
+    TRUE,
+    message = list(
+      "Number of cohorts is 3 and thus reached the prespecified minimum number 2",
+      "Next best dose is NA and thus not the highest dose"
+    ),
+    individual = list(
+      structure(
+        TRUE,
+        message = "Number of cohorts is 3 and thus reached the prespecified minimum number 2",
+        report_label = NA_character_
+      ),
+      structure(
+        FALSE,
+        message = "Next best dose is NA and thus not the highest dose",
+        report_label = NA_character_
+      )
+    ),
+    report_label = NA_character_
+  )
+  expect_identical(result, expected)
+})
+
+test_that("stopTrial works correctly for StoppingAny", {
+  s1 <- StoppingMinCohorts(nCohorts = 2)
+  s2 <- StoppingHighestDose()
+  any1 <- StoppingAny(stop_list = list(s1, s2))
+
+  data_none <- Data(x = c(1, 1), y = c(0, 0), cohort = c(1L, 1L), ID = 1:2, doseGrid = 1:3)
+  data_any1 <- Data(x = c(3, 3), y = c(0, 0), cohort = c(1L, 1L), ID = 1:2, doseGrid = 1:3)
+  data_any2 <- Data(x = c(1, 2), y = c(0, 0), cohort = c(1L, 2L), ID = 1:2, doseGrid = 1:3)
+  data_any3 <- Data(x = c(3, 3), y = c(0, 0), cohort = c(1L, 2L), ID = 1:2, doseGrid = 1:3)
+
+  rv <- stopTrial(
+    stopping = any1,
+    dose = 1,
+    model = LogisticLogNormal(mean = c(0, 1), cov = diag(2)),
+    data = data_none
+  )
+
+
+  expect_false(rv)
+  expect_equal(
+    attributes(rv),
+    list(
+      message = list(
+        "Number of cohorts is 1 and thus below the prespecified minimum number 2",
+        "Next best dose is 1 and thus not the highest dose"
+      ),
+      individual = list(
+        structure(
+          FALSE,
+          message = "Number of cohorts is 1 and thus below the prespecified minimum number 2",
+          report_label = NA_character_
+        ),
+        structure(
+          FALSE,
+          message = "Next best dose is 1 and thus not the highest dose",
+          report_label = NA_character_
+        )
+      ),
+      report_label = NA_character_
+    )
+  )
+
+  rv <- stopTrial(
+    stopping = any1,
+    dose = 3,
+    model = LogisticLogNormal(mean = c(0, 1), cov = diag(2)),
+    data = data_any1
+  )
+  expect_true(rv)
+  expect_equal(
+    attributes(rv),
+    list(
+      message = list(
+        "Number of cohorts is 1 and thus below the prespecified minimum number 2",
+        "Next best dose is 3 and thus the highest dose"
+      ),
+      individual = list(
+        structure(
+          FALSE,
+          message = "Number of cohorts is 1 and thus below the prespecified minimum number 2",
+          report_label = NA_character_
+        ),
+        structure(
+          TRUE,
+          message = "Next best dose is 3 and thus the highest dose",
+          report_label = NA_character_
+        )
+      ),
+      report_label = NA_character_
+    )
+  )
+
+  rv <- stopTrial(
+    stopping = any1,
+    dose = 1,
+    model = LogisticLogNormal(mean = c(0, 1), cov = diag(2)),
+    data = data_any2
+  )
+  expect_true(rv)
+  expect_equal(
+    attributes(rv),
+    list(
+      message = list(
+        "Number of cohorts is 2 and thus reached the prespecified minimum number 2",
+        "Next best dose is 1 and thus not the highest dose"
+      ),
+      individual = list(
+        structure(
+          TRUE,
+          message = "Number of cohorts is 2 and thus reached the prespecified minimum number 2",
+          report_label = NA_character_
+        ),
+        structure(
+          FALSE,
+          message = "Next best dose is 1 and thus not the highest dose",
+          report_label = NA_character_
+        )
+      ),
+      report_label = NA_character_
+    )
+  )
+
+  rv <- stopTrial(
+    stopping = any1,
+    dose = 3,
+    model = LogisticLogNormal(mean = c(0, 1), cov = diag(2)),
+    data = data_any2
+  )
+  expect_true(rv)
+  expect_equal(
+    attributes(rv),
+    list(
+      message = list(
+        "Number of cohorts is 2 and thus reached the prespecified minimum number 2",
+        "Next best dose is 3 and thus the highest dose"
+      ),
+      individual = list(
+        structure(
+          TRUE,
+          message = "Number of cohorts is 2 and thus reached the prespecified minimum number 2",
+          report_label = NA_character_
+        ),
+        structure(
+          TRUE,
+          message = "Next best dose is 3 and thus the highest dose",
+          report_label = NA_character_
+        )
+      ),
+      report_label = NA_character_
+    )
+  )
+
+  rv <- stopTrial(
+    stopping = any1,
+    dose = 1,
+    model = LogisticLogNormal(mean = c(0, 1), cov = diag(2)),
+    data = data_none,
+    samples = new("Samples")
+  )
+  expect_false(rv)
+  expect_equal(
+    attributes(rv),
+    list(
+      message = list(
+        "Number of cohorts is 1 and thus below the prespecified minimum number 2",
+        "Next best dose is 1 and thus not the highest dose"
+      ),
+      individual = list(
+        structure(
+          FALSE,
+          message = "Number of cohorts is 1 and thus below the prespecified minimum number 2",
+          report_label = NA_character_
+        ),
+        structure(
+          FALSE,
+          message = "Next best dose is 1 and thus not the highest dose",
+          report_label = NA_character_
+        )
+      ),
+      report_label = NA_character_
+    )
+  )
+
+  rv <- stopTrial(
+    stopping = any1,
+    dose = 3,
+    model = LogisticLogNormal(mean = c(0, 1), cov = diag(2)),
+    data = data_any1,
+    samples = new("Samples")
+  )
+  expect_true(rv)
+  expect_equal(
+    attributes(rv),
+    list(
+      message = list(
+        "Number of cohorts is 1 and thus below the prespecified minimum number 2",
+        "Next best dose is 3 and thus the highest dose"
+      ),
+      individual = list(
+        structure(
+          FALSE,
+          message = "Number of cohorts is 1 and thus below the prespecified minimum number 2",
+          report_label = NA_character_
+        ),
+        structure(
+          TRUE,
+          message = "Next best dose is 3 and thus the highest dose",
+          report_label = NA_character_
+        )
+      ),
+      report_label = NA_character_
+    )
+  )
+
+  rv <- stopTrial(
+    stopping = any1,
+    dose = 1,
+    model = LogisticLogNormal(mean = c(0, 1), cov = diag(2)),
+    data = data_any2,
+    samples = new("Samples")
+  )
+  expect_true(rv)
+  expect_equal(
+    attributes(rv),
+    list(
+      message = list(
+        "Number of cohorts is 2 and thus reached the prespecified minimum number 2",
+        "Next best dose is 1 and thus not the highest dose"
+      ),
+      individual = list(
+        structure(
+          TRUE,
+          message = "Number of cohorts is 2 and thus reached the prespecified minimum number 2",
+          report_label = NA_character_
+        ),
+        structure(
+          FALSE,
+          message = "Next best dose is 1 and thus not the highest dose",
+          report_label = NA_character_
+        )
+      ),
+      report_label = NA_character_
+    )
+  )
+
+  rv <- stopTrial(
+    stopping = any1,
+    dose = 3,
+    model = LogisticLogNormal(mean = c(0, 1), cov = diag(2)),
+    data = data_any2,
+    samples = new("Samples")
+  )
+  expect_true(rv)
+  expect_equal(
+    attributes(rv),
+    list(
+      message = list(
+        "Number of cohorts is 2 and thus reached the prespecified minimum number 2",
+        "Next best dose is 3 and thus the highest dose"
+      ),
+      individual = list(
+        structure(
+          TRUE,
+          message = "Number of cohorts is 2 and thus reached the prespecified minimum number 2",
+          report_label = NA_character_
+        ),
+        structure(
+          TRUE,
+          message = "Next best dose is 3 and thus the highest dose",
+          report_label = NA_character_
+        )
+      ),
+      report_label = NA_character_
+    )
+  )
+})
+
+test_that("Logical operators for combining Stopping rules work correctly", {
+  s1 <- StoppingMinCohorts(nCohorts = 2)
+  s2 <- StoppingHighestDose()
+  s3 <- StoppingPatientsNearDose(nPatients = 9, percentage = 25)
+  any1 <- StoppingAny(stop_list = list(s1, s2))
+
+  expect_identical(s1 | s2, StoppingAny(stop_list = list(s1, s2)))
+
+  expect_identical(any1 | s3, StoppingAny(stop_list = list(s1, s2, s3)))
+  expect_identical(s3 | any1, StoppingAny(stop_list = list(s3, s1, s2)))
+})
+
+## StoppingTDCIRatio ----
+
+# Numerically not stable. Need to investigate why.
+test_that("StoppingTDCIRatio works correctly when dose is NA", {
+  data <- h_get_data_dual()
+  model <- h_get_logistic_indep_beta()
+  options <- h_get_mcmc_options()
+  samples <- mcmc(data, model, options)
+  # This is necessary as rng do not work with model
+  samples@data$phi1 <- c(0.04748928, -3.69616243, -7.38656113, 0.04428348)
+  samples@data$phi2 <- c(-0.009012972, 0.737940430, 1.245383234, 0.053978501)
+  stopping <- StoppingTDCIRatio(target_ratio = 5, prob_target = 0.3)
+  result <- stopTrial(
+    stopping,
+    NA_real_,
+    samples,
+    model,
+    data = data
+  )
+  expected <- structure(
+    FALSE,
+    message = paste(
+      "95% CI is (3.56190161486129, 1.20753437767844e+43),",
+      "Ratio = 3.39013961710862e+42 is greater than target_ratio = 5"
+    ),
+    report_label = NA_character_
+  )
+  expect_identical(result, expected)
 })
 
 test_that("stopTrial works correctly for StoppingTDCIRatio when samples are provided", {
@@ -2799,6 +3809,7 @@ test_that("stopTrial works correctly for StoppingTDCIRatio when samples are prov
             )
           )
         }
+        attr(expected, "report_label") <- NA_character_
         expect_equal(result, expected)
       }
     }
@@ -2830,6 +3841,429 @@ test_that("stopTrial works correctly for StoppingTDCIRatio when samples are not 
     }
   }
 })
+
+
+# CohortSize ----
+
+## CohortSizeDLT ----
+
+test_that("size works as expected for CohortSizeDLT", {
+  cohortSize <- CohortSizeDLT(intervals = c(0, 1), cohort_size = c(1, 3))
+  expect_equal(size(cohortSize, NA, Data(doseGrid = 1:3)), 0)
+  for (dose in 1:3) {
+    expect_equal(
+      size(
+        object = cohortSize,
+        dose = dose,
+        data = Data(x = 1:2, y = c(0, 0), ID = 1:2, cohort = 1:2, doseGrid = 1:3)
+      ),
+      1
+    )
+    expect_equal(
+      size(
+        object = cohortSize,
+        dose = dose,
+        data = Data(x = 1:2, y = c(0, 1), ID = 1:2, cohort = 1:2, doseGrid = 1:3)
+      ),
+      3
+    )
+    expect_equal(
+      size(
+        object = cohortSize,
+        dose = dose,
+        data = Data(x = 1:2, y = c(1, 1), ID = 1:2, cohort = 1:2, doseGrid = 1:3)
+      ),
+      3
+    )
+  }
+})
+
+## CohortSizeConst ----
+
+test_that("size works as expected for CohortSizeConst", {
+  cohortSize <- CohortSizeConst(size = 4)
+  emptyData <- Data(doseGrid = 1:5)
+  expect_equal(size(cohortSize, NA, Data(doseGrid = 1:5)), 0)
+  for (dose in 1:5) {
+    expect_equal(size(object = cohortSize, dose = dose, data = emptyData), 4)
+  }
+})
+
+## CohortSizeRange ----
+
+test_that("size works as expected for CohortSizeRange", {
+  doseGrid <- 1:10
+  cohortSize <- CohortSizeRange(intervals = c(0, 5), cohort_size = c(1, 2))
+  emptyData <- Data(doseGrid = 1:10)
+  expect_equal(size(cohortSize, NA, Data(doseGrid = doseGrid)), 0)
+  for (dose in doseGrid) {
+    expect_equal(size(object = cohortSize, dose = dose, data = emptyData), ifelse(dose < 5, 1, 2))
+  }
+})
+
+## CohortSizeMax ----
+
+test_that("size works as expected for CohortSizeMax", {
+  doseGrid <- 1:5
+  cohortSize <- CohortSizeMax(
+    cohort_sizes = list(
+      CohortSizeRange(intervals = c(0, 3), cohort_size = 1:2),
+      CohortSizeDLT(intervals = 0:2, cohort_size = c(1, 3, 6))
+    )
+  )
+  emptyData <- Data(doseGrid = doseGrid)
+  noDLT <- Data(x = 1, y = 0, ID = 1, cohort = 1, doseGrid = doseGrid)
+  oneDLT <- Data(x = 1, y = 1, ID = 1, cohort = 1, doseGrid = doseGrid)
+  twoDLTs <- Data(x = 1:2, y = c(1, 1), ID = 1:2, cohort = 1:2, doseGrid = doseGrid)
+  expect_equal(size(cohortSize, NA, Data(doseGrid = doseGrid)), 0)
+  for (dose in doseGrid) {
+    expect_equal(size(object = cohortSize, dose = dose, data = emptyData), ifelse(dose < 3, 1, 2))
+    expect_equal(size(object = cohortSize, dose = dose, data = noDLT), ifelse(dose < 3, 1, 2))
+    expect_equal(size(object = cohortSize, dose = dose, data = oneDLT), 3)
+    expect_equal(size(object = cohortSize, dose = dose, data = twoDLTs), 6)
+  }
+})
+
+test_that("maxSize works as expected", {
+  size1 <- CohortSizeRange(intervals = c(0, 3), cohort_size = 1:2)
+  size2 <- CohortSizeDLT(intervals = 0:2, cohort_size = c(1, 3, 6))
+  cohortSize <- CohortSizeMax(cohort_sizes = list(size1, size2))
+  expect_equal(maxSize(size1, size2), cohortSize)
+})
+
+## CohortSizeMin ----
+
+test_that("size works as expected for CohortSizeMin", {
+  doseGrid <- 1:5
+  cohortSize <- CohortSizeMin(
+    cohort_sizes = list(
+      CohortSizeRange(intervals = c(0, 3), cohort_size = 1:2),
+      CohortSizeDLT(intervals = 0:2, cohort_size = c(1, 3, 6))
+    )
+  )
+  emptyData <- Data(doseGrid = doseGrid)
+  noDLT <- Data(x = 1, y = 0, ID = 1, cohort = 1, doseGrid = doseGrid)
+  oneDLT <- Data(x = 1, y = 1, ID = 1, cohort = 1, doseGrid = doseGrid)
+  twoDLTs <- Data(x = 1:2, y = c(1, 1), ID = 1:2, cohort = 1:2, doseGrid = doseGrid)
+  expect_equal(size(cohortSize, NA, Data(doseGrid = doseGrid)), 0)
+  for (dose in doseGrid) {
+    expect_equal(size(object = cohortSize, dose = dose, data = emptyData), 1)
+    expect_equal(size(object = cohortSize, dose = dose, data = noDLT), 1)
+    expect_equal(size(object = cohortSize, dose = dose, data = oneDLT), ifelse(dose < 3, 1, 2))
+    expect_equal(size(object = cohortSize, dose = dose, data = twoDLTs), ifelse(dose < 3, 1, 2))
+  }
+})
+
+test_that("size works as expected for CohortSizeMin", {
+  doseGrid <- 1:5
+  cohortSize <- CohortSizeParts(cohort_sizes = c(1, 3))
+  expect_equal(size(cohortSize, NA, DataParts(nextPart = 1L)), 0)
+  expect_equal(size(cohortSize, NA, DataParts(nextPart = 2L)), 0)
+  for (dose in doseGrid) {
+    expect_equal(size(object = cohortSize, dose = dose, data = DataParts(nextPart = 1L)), 1)
+    expect_equal(size(object = cohortSize, dose = dose, data = DataParts(nextPart = 2L)), 3)
+  }
+})
+
+test_that("stopTrial works for StoppingTargetBiomarker", {
+  # Simply copying example code.  probably needs more thoughtful testing
+  data <- DataDual(
+    ID = 1:17,
+    cohort = 1:17,
+    x = c(
+      0.1, 0.5, 1.5, 3, 6, 10, 10, 10,
+      20, 20, 20, 40, 40, 40, 50, 50, 50
+    ),
+    y = c(
+      0, 0, 0, 0, 0, 0, 1, 0,
+      0, 1, 1, 0, 0, 1, 0, 1, 1
+    ),
+    w = c(
+      0.31, 0.42, 0.59, 0.45, 0.6, 0.7, 0.55, 0.6,
+      0.52, 0.54, 0.56, 0.43, 0.41, 0.39, 0.34, 0.38, 0.21
+    ),
+    doseGrid = c(
+      0.1, 0.5, 1.5, 3, 6,
+      seq(from = 10, to = 80, by = 2)
+    )
+  )
+
+  # Initialize the Dual-Endpoint model (in this case RW1)
+  model <- DualEndpointRW(
+    mean = c(0, 1),
+    cov = matrix(c(1, 0, 0, 1), nrow = 2),
+    sigma2betaW = 0.01,
+    sigma2W = c(a = 0.1, b = 0.1),
+    rho = c(a = 1, b = 1),
+    rw1 = TRUE
+  )
+
+  options <- McmcOptions(
+    burnin = 100,
+    step = 2,
+    samples = 500,
+    rng_kind = "Mersenne-Twister",
+    rng_seed = 94
+  )
+
+
+  # Set-up some MCMC parameters and generate samples from the posterior
+  samples <- mcmc(data, model, options)
+
+  # Define the rule for dose increments and calculate the maximum dose allowed
+  myIncrements <- IncrementsRelative(
+    intervals = c(0, 20),
+    increments = c(1, 0.33)
+  )
+  nextMaxDose <- maxDose(myIncrements, data = data)
+
+  # Define the rule which will be used to select the next best dose
+  # In this case target a dose achieving at least 0.9 of maximum biomarker level (efficacy)
+  # and with a probability below 0.25 that prob(DLT)>0.35 (safety)
+
+  myNextBest <- NextBestDualEndpoint(
+    target = c(0.9, 1),
+    overdose = c(0.35, 1),
+    max_overdose_prob = 0.25
+  )
+
+  # Define the stopping rule such that the study would be stopped if if there is at
+  # least 0.5 posterior probability that the biomarker (efficacy) is within the
+  # biomarker target range of [0.9, 1.0] (relative to the maximum for the biomarker).
+
+  myStopping <- StoppingTargetBiomarker(
+    target = c(0.9, 1),
+    prob = 0.5
+  )
+
+  expectedAttributes <- list(
+    "0.1" = "Probability for target biomarker is 2 % for dose 0.1 and thus below the required 50 %",
+    "0.5" = "Probability for target biomarker is 1 % for dose 0.5 and thus below the required 50 %",
+    "1.5" = "Probability for target biomarker is 2 % for dose 1.5 and thus below the required 50 %",
+    "3" = "Probability for target biomarker is 3 % for dose 3 and thus below the required 50 %",
+    "6" = "Probability for target biomarker is 14 % for dose 6 and thus below the required 50 %",
+    "10" = "Probability for target biomarker is 11 % for dose 10 and thus below the required 50 %",
+    "12" = "Probability for target biomarker is 7 % for dose 12 and thus below the required 50 %",
+    "14" = "Probability for target biomarker is 9 % for dose 14 and thus below the required 50 %",
+    "16" = "Probability for target biomarker is 4 % for dose 16 and thus below the required 50 %",
+    "18" = "Probability for target biomarker is 3 % for dose 18 and thus below the required 50 %",
+    "20" = "Probability for target biomarker is 1 % for dose 20 and thus below the required 50 %",
+    "22" = "Probability for target biomarker is 3 % for dose 22 and thus below the required 50 %",
+    "24" = "Probability for target biomarker is 3 % for dose 24 and thus below the required 50 %",
+    "26" = "Probability for target biomarker is 4 % for dose 26 and thus below the required 50 %",
+    "28" = "Probability for target biomarker is 2 % for dose 28 and thus below the required 50 %",
+    "30" = "Probability for target biomarker is 3 % for dose 30 and thus below the required 50 %",
+    "32" = "Probability for target biomarker is 1 % for dose 32 and thus below the required 50 %",
+    "34" = "Probability for target biomarker is 0 % for dose 34 and thus below the required 50 %",
+    "36" = "Probability for target biomarker is 0 % for dose 36 and thus below the required 50 %",
+    "38" = "Probability for target biomarker is 0 % for dose 38 and thus below the required 50 %",
+    "40" = "Probability for target biomarker is 0 % for dose 40 and thus below the required 50 %",
+    "42" = "Probability for target biomarker is 0 % for dose 42 and thus below the required 50 %",
+    "44" = "Probability for target biomarker is 0 % for dose 44 and thus below the required 50 %",
+    "46" = "Probability for target biomarker is 0 % for dose 46 and thus below the required 50 %",
+    "48" = "Probability for target biomarker is 0 % for dose 48 and thus below the required 50 %",
+    "50" = "Probability for target biomarker is 0 % for dose 50 and thus below the required 50 %",
+    "52" = "Probability for target biomarker is 0 % for dose 52 and thus below the required 50 %",
+    "54" = "Probability for target biomarker is 0 % for dose 54 and thus below the required 50 %",
+    "56" = "Probability for target biomarker is 1 % for dose 56 and thus below the required 50 %",
+    "58" = "Probability for target biomarker is 1 % for dose 58 and thus below the required 50 %",
+    "60" = "Probability for target biomarker is 1 % for dose 60 and thus below the required 50 %",
+    "62" = "Probability for target biomarker is 1 % for dose 62 and thus below the required 50 %",
+    "64" = "Probability for target biomarker is 2 % for dose 64 and thus below the required 50 %",
+    "66" = "Probability for target biomarker is 1 % for dose 66 and thus below the required 50 %",
+    "68" = "Probability for target biomarker is 1 % for dose 68 and thus below the required 50 %",
+    "70" = "Probability for target biomarker is 3 % for dose 70 and thus below the required 50 %",
+    "72" = "Probability for target biomarker is 2 % for dose 72 and thus below the required 50 %",
+    "74" = "Probability for target biomarker is 2 % for dose 74 and thus below the required 50 %",
+    "76" = "Probability for target biomarker is 4 % for dose 76 and thus below the required 50 %",
+    "78" = "Probability for target biomarker is 3 % for dose 78 and thus below the required 50 %",
+    "80" = "Probability for target biomarker is 4 % for dose 80 and thus below the required 50 %"
+  )
+
+  sapply(
+    data@doseGrid,
+    function(d) {
+      actual <- stopTrial(
+        stopping = myStopping,
+        dose = d,
+        samples = samples,
+        model = model,
+        data = data
+      )
+      expected <- FALSE
+      attr(expected, "message") <- expectedAttributes[[as.character(d)]]
+      attr(expected, "report_label") <- NA_character_
+      expect_equal(actual, expected)
+    }
+  )
+})
+
+test_that("maxSize works as expected", {
+  size1 <- CohortSizeRange(intervals = c(0, 3), cohort_size = 1:2)
+  size2 <- CohortSizeDLT(intervals = 0:2, cohort_size = c(1, 3, 6))
+  cohortSize <- CohortSizeMax(cohort_sizes = list(size1, size2))
+  expect_equal(maxSize(size1, size2), cohortSize)
+})
+
+test_that("minSize works as expected", {
+  size1 <- CohortSizeRange(intervals = c(0, 3), cohort_size = 1:2)
+  size2 <- CohortSizeDLT(intervals = 0:2, cohort_size = c(1, 3, 6))
+  cohortSize <- CohortSizeMin(cohort_sizes = list(size1, size2))
+  expect_equal(minSize(size1, size2), cohortSize)
+})
+
+test_that("stopTrial works correctly for StoppingTDCIRatio when samples are provided", {
+  # Observed data is irrelevant in this case.  provide an empty Data object
+  emptyData <- Data(doseGrid = seq(25, 300, 25))
+  # Define a model
+  model <- LogisticIndepBeta(
+    binDLE = c(1.05, 1.8),
+    DLEdose = c(25, 300),
+    DLEweights = c(3, 3),
+    data = emptyData
+  )
+  # Generate some samples from the model
+  n_samples <- 100
+  samples <- mcmc(
+    emptyData,
+    model,
+    McmcOptions(
+      samples = n_samples,
+      rng_kind = "Mersenne-Twister",
+      rng_seed = 12911
+    )
+  )
+  for (targetRate in seq(0.05, 0.95, 0.1)) {
+    for (targetRatio in c(3, 6, 10, 20)) {
+      for (d in emptyData@doseGrid) {
+        sampledMTD <- dose(targetRate, model, samples)
+
+        sampledLimits <- quantile(sampledMTD, probs = c(0.025, 0.975))
+        sampledRatio <- sampledLimits[[2]] / sampledLimits[[1]]
+        expected <- sampledRatio < targetRatio
+        result <- stopTrial(
+          StoppingTDCIRatio(targetRatio, targetRate),
+          d,
+          samples,
+          model,
+          data = emptyData
+        )
+        direction <- ifelse(expected, "less", "greater")
+
+        attr(expected, "message") <- paste0(
+          "95% CI is (",
+          sampledLimits[[1]],
+          ", ",
+          sampledLimits[[2]],
+          "), Ratio = ",
+          round(sampledRatio, 4),
+          " is ",
+          direction,
+          " than target_ratio = ",
+          targetRatio
+        )
+
+        attr(expected, "report_label") <- NA_character_
+        if (expected != as.logical(result)) {
+          print(
+            paste0(
+              "targetRate: ", targetRate, "; targetRatio: ", targetRatio,
+              "; d: ", d, "; expected: ",
+              expected, "; actual: ",
+              as.logical(result), " [", attr(result, "message"), "]"
+            )
+          )
+        }
+        expect_equal(result, expected)
+      }
+    }
+  }
+})
+
+test_that("stopTrial works correctly for StoppingTDCIRatio when samples are not provided", {
+  # Observed data is irrelevant in this case.  provide an empty Data object
+  emptyData <- Data(doseGrid = seq(25, 300, 25))
+  # Define a model
+  model <- LogisticIndepBeta(
+    binDLE = c(1.05, 1.8),
+    DLEdose = c(25, 300),
+    DLEweights = c(3, 3),
+    data = emptyData
+  )
+  for (targetRate in seq(0.05, 0.95, 0.1)) {
+    for (targetRatio in c(3, 6, 10, 20)) {
+      for (d in emptyData@doseGrid) {
+        result <- stopTrial(
+          stopping = StoppingTDCIRatio(targetRatio, targetRate),
+          dose = d,
+          model = model,
+          data = emptyData
+        )
+        # TODO: message attribute not checked
+        expect_false(result, expected)
+      }
+    }
+  }
+})
+
+## StoppingOrdinal
+test_that("stopTrial-StoppingOrdinal works correctly", {
+  data <- .DefaultDataOrdinal()
+  model <- .DefaultLogisticLogNormalOrdinal()
+  options <- McmcOptions(
+    rng_kind = "Mersenne-Twister",
+    rng_seed = 215614
+  )
+  suppressWarnings({
+    samples <- mcmc(data, model, options)
+  }) # nolint
+
+  myIncrements <- .DefaultIncrementsOrdinal()
+  nextMaxDose <- maxDose(myIncrements, data = data)
+
+  myNextBest <- .DefaultNextBestOrdinal()
+  myStopping <- .DefaultStoppingOrdinal()
+
+  myStopping@grade <- 1L
+  myStopping@rule@prob <- 0.30
+
+  for (d in data@doseGrid) {
+    expect_equal(
+      as.logical(
+        stopTrial(
+          stopping = myStopping,
+          dose = d,
+          samples = samples,
+          model = model,
+          data = data
+        )
+      ),
+      !!d == data@doseGrid[5]
+    )
+  }
+
+  myStopping <- .DefaultStoppingOrdinal()
+  myStopping@rule@prob <- 0.20
+  myStopping@grade <- 2L
+
+  for (d in data@doseGrid) {
+    expect_equal(
+      as.logical(
+        stopTrial(
+          stopping = myStopping,
+          dose = d,
+          samples = samples,
+          model = model,
+          data = data
+        )
+      ),
+      !!d == data@doseGrid[6]
+    )
+  }
+})
+
+
+# SafetyWindow ----
 
 test_that("windowLength works correctly", {
   # Window length depends only on cohort size, so use an empty Data object and
@@ -2880,4 +4314,103 @@ test_that("windowLength works correctly", {
       expect_equal(actual$patientGap, expectedGaps)
     }
   }
+})
+
+test_that("report_label slot available for StoppingSpecificDose", {
+  my_rule <- StoppingSpecificDose(
+    rule = StoppingTargetProb(target = c(0, 0.3), prob = 0.8),
+    dose = 80,
+    report_label = "test label"
+  )
+  expect_equal(my_rule@report_label, "test label")
+})
+
+## tidy ----
+
+test_that("tidy-IncrementsRelative works correctly", {
+  obj <- .DefaultIncrementsRelative()
+  result <- tidy(obj)
+  expect_snapshot_value(result, style = "deparse")
+})
+
+test_that("tidy-CohortSizeDLT works correctly", {
+  obj <- .DefaultCohortSizeDLT()
+  result <- tidy(obj)
+  expect_snapshot_value(result, style = "deparse")
+})
+
+test_that("tidy-CohortSizeMin works correctly", {
+  obj <- .DefaultCohortSizeMin()
+  result <- tidy(obj)
+  expect_snapshot_value(result, style = "deparse")
+})
+
+test_that("tidy-CohortSizeMax works correctly", {
+  obj <- .DefaultCohortSizeMax()
+  result <- tidy(obj)
+  expect_snapshot_value(result, style = "deparse")
+})
+
+test_that("tidy-CohortSizeRange works correctly", {
+  obj <- .DefaultCohortSizeRange()
+  result <- tidy(obj)
+  expect_snapshot_value(result, style = "deparse")
+})
+
+test_that("tidy-CohortSizeParts works correctly", {
+  obj <- .DefaultCohortSizeParts()
+  result <- tidy(obj)
+  # style = "deparse" fails with Error in `1:2`: could not find function ":"
+  expect_snapshot_value(result, style = "serialize")
+})
+
+test_that("tidy-IncrementsMin works correctly", {
+  obj <- .DefaultIncrementsMin()
+  result <- tidy(obj)
+  expect_snapshot_value(result, style = "deparse")
+})
+
+test_that("tidy-IncrementsRelative works correctly", {
+  obj <- .DefaultIncrementsRelative()
+  result <- tidy(obj)
+  expect_snapshot_value(result, style = "deparse")
+})
+
+test_that("tidy-IncrementsRelativeParts works correctly", {
+  obj <- .DefaultIncrementsRelativeParts()
+  result <- tidy(obj)
+  expect_snapshot_value(result, style = "deparse")
+})
+
+# Relevant:https://github.com/Roche/crmPack/issues/759
+test_that("tidy-NextBestNCRM works correctly", {
+  obj <- .DefaultNextBestNCRM()
+  result <- tidy(obj)
+  expected <- tibble::tibble(
+    Range = c("Underdose", "Target", "Overdose"),
+    min = c(0.00, 0.20, 0.35),
+    max = c(0.20, 0.35, 1.00),
+    max_prob = c(NA, NA, 0.25)
+  )
+  class(expected) <- c("tbl_NextBestNCRM", class(expected))
+  expect_identical(result, expected)
+})
+
+test_that("tidy-NextBestNCRMLoss works correctly", {
+  obj <- .DefaultNextBestNCRMLoss()
+  result <- tidy(obj)
+  expect_snapshot_value(result, style = "deparse")
+})
+
+# Relevant: https://github.com/Roche/crmPack/issues/786
+test_that("tidy-IncrementsRelativeDLT works correctly", {
+  obj <- .DefaultIncrementsRelativeDLT()
+  actual <- tidy(obj)
+  expected <- tibble::tibble(
+    min = c(0, 1, 3),
+    max = c(1, 3, Inf),
+    increment = c(1, 0.33, 0.2)
+  )
+  class(expected) <- c("tbl_IncrementsRelativeDLT", class(expected))
+  expect_identical(actual, expected)
 })

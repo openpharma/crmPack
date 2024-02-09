@@ -4,11 +4,18 @@
 \name{SafetyWindow-class}
 \alias{SafetyWindow-class}
 \alias{SafetyWindow}
+\alias{.DefaultSafetyWindow}
 \title{\code{SafetyWindow}}
+\usage{
+.DefaultSafetyWindow()
+}
 \description{
 \ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#stable}{\figure{lifecycle-stable.svg}{options: alt='[Stable]'}}}{\strong{[Stable]}}
 
 \code{\link{SafetyWindow}} is a class for safety window.
+}
+\note{
+Typically, end users will not use the \code{.DefaultSafetyWindow()} function.
 }
 \seealso{
 \code{\link{SafetyWindowSize}}, \code{\link{SafetyWindowConst}}.

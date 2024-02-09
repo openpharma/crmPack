@@ -6,12 +6,16 @@
 \alias{dose-LogisticNormal}
 \alias{dose,numeric,LogisticLogNormal,Samples-method}
 \alias{dose-LogisticLogNormal}
+\alias{dose,numeric,LogisticLogNormalOrdinal,Samples-method}
+\alias{dose-LogisticLogNormalOrdinal}
 \alias{dose,numeric,LogisticLogNormalSub,Samples-method}
 \alias{dose-LogisticLogNormalSub}
 \alias{dose,numeric,ProbitLogNormal,Samples-method}
 \alias{dose-ProbitLogNormal}
 \alias{dose,numeric,ProbitLogNormalRel,Samples-method}
 \alias{dose-ProbitLogNormalRel}
+\alias{dose,numeric,LogisticLogNormalGrouped,Samples-method}
+\alias{dose-LogisticLogNormalGrouped}
 \alias{dose,numeric,LogisticKadane,Samples-method}
 \alias{dose-LogisticKadane}
 \alias{dose,numeric,LogisticKadaneBetaGamma,Samples-method}
@@ -44,11 +48,15 @@ dose(x, model, samples, ...)
 
 \S4method{dose}{numeric,LogisticLogNormal,Samples}(x, model, samples)
 
+\S4method{dose}{numeric,LogisticLogNormalOrdinal,Samples}(x, model, samples, grade)
+
 \S4method{dose}{numeric,LogisticLogNormalSub,Samples}(x, model, samples)
 
 \S4method{dose}{numeric,ProbitLogNormal,Samples}(x, model, samples)
 
 \S4method{dose}{numeric,ProbitLogNormalRel,Samples}(x, model, samples)
+
+\S4method{dose}{numeric,LogisticLogNormalGrouped,Samples}(x, model, samples, group)
 
 \S4method{dose}{numeric,LogisticKadane,Samples}(x, model, samples)
 
@@ -88,6 +96,12 @@ as the sample.}
 used to compute the resulting doses. Can also be missing for some models.}
 
 \item{...}{model specific parameters when \code{samples} are not used.}
+
+\item{grade}{(\code{integer})\cr The toxicity grade for which probabilities are required}
+
+\item{group}{(\code{character} or \code{factor})\cr for \code{\link{LogisticLogNormalGrouped}},
+indicating whether to calculate the dose for the \code{mono} or for
+the \code{combo} arm.}
 }
 \value{
 A \code{number} or \code{numeric} vector with the doses.
@@ -124,6 +138,12 @@ probability of the occurrence of a DLE (\code{x}).
 \item \code{dose(x = numeric, model = LogisticLogNormal, samples = Samples)}: compute the dose level reaching a specific target
 probability of the occurrence of a DLE (\code{x}).
 
+\item \code{dose(x = numeric, model = LogisticLogNormalOrdinal, samples = Samples)}: compute the dose level reaching a specific target
+probability of the occurrence of a DLE (\code{x}).
+
+In the case of a \code{LogisticLogNormalOrdinal} model, \code{dose} returns only the
+probability of toxicity at the given grade or higher
+
 \item \code{dose(x = numeric, model = LogisticLogNormalSub, samples = Samples)}: compute the dose level reaching a specific target
 probability of the occurrence of a DLE (\code{x}).
 
@@ -132,6 +152,9 @@ probability of the occurrence of a DLE (\code{x}).
 
 \item \code{dose(x = numeric, model = ProbitLogNormalRel, samples = Samples)}: compute the dose level reaching a specific target
 probability of the occurrence of a DLE (\code{x}).
+
+\item \code{dose(x = numeric, model = LogisticLogNormalGrouped, samples = Samples)}: method for \code{\link{LogisticLogNormalGrouped}} which needs \code{group}
+argument in addition.
 
 \item \code{dose(x = numeric, model = LogisticKadane, samples = Samples)}: compute the dose level reaching a specific target
 probability of the occurrence of a DLE (\code{x}).
@@ -222,6 +245,12 @@ dlt_sample <- mcmc(data = dlt_data, model = dlt_model, options = my_options)
 # Posterior for the dose achieving Prob(DLT) = 0.45.
 dose(x = 0.45, model = dlt_model, samples = dlt_sample)
 dose(x = c(0.45, 0.6), model = dlt_model)
+data_ordinal <- .DefaultDataOrdinal()
+model <- .DefaultLogisticLogNormalOrdinal()
+options <- .DefaultMcmcOptions()
+samples <- mcmc(data_ordinal, model, options)
+
+dose(0.25, model, samples, grade = 2L)
 }
 \seealso{
 \code{\link[=doseFunction]{doseFunction()}}, \code{\link[=prob]{prob()}}, \code{\link[=efficacy]{efficacy()}}.

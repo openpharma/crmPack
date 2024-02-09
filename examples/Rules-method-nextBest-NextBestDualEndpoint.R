@@ -1,4 +1,3 @@
-
 # Example of usage for `NextBestDualEndpoint` NextBest class.
 
 # Create the data.

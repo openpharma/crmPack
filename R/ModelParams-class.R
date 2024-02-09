@@ -1,5 +1,6 @@
 #' @include helpers.R
 #' @include ModelParams-validity.R
+#' @include CrmPackClass-class.R
 NULL
 
 # ModelParamsNormal ----
@@ -31,6 +32,7 @@ NULL
     cov = "matrix",
     prec = "matrix"
   ),
+  contains = "CrmPackClass",
   validity = v_model_params_normal
 )
 
@@ -46,12 +48,31 @@ NULL
 #' @examples
 #' ModelParamsNormal(mean = c(1, 6), cov = diag(2))
 ModelParamsNormal <- function(mean, cov) {
-  assert_matrix(cov, mode = "numeric", any.missing = FALSE, nrows = 2, ncols = 2)
-  assert_true(h_is_positive_definite(cov)) # To ensure that `cov` is invertible.
+  assert_matrix(
+    cov,
+    mode = "numeric",
+    any.missing = FALSE,
+    nrows = length(mean),
+    ncols = length(mean)
+  )
+  # To ensure that `cov` is invertible:
+  assert_true(h_is_positive_definite(cov, length(mean)))
 
   .ModelParamsNormal(
     mean = mean,
     cov = cov,
     prec = solve(cov)
+  )
+}
+
+## default constructor ----
+
+#' @rdname ModelParamsNormal-class
+#' @note Typically, end users will not use the `.ModelPAramsNormal()` function.
+#' @export
+.DefaultModelParamsNormal <- function() {
+  ModelParamsNormal(
+    mean = c(1, 0),
+    cov = matrix(c(1, 0, 0, 1), nrow = 2)
   )
 }

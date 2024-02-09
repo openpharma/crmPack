@@ -15,7 +15,7 @@ test_that("RuleDesign object can be created with user constructor", {
   )
   expect_valid(result, "RuleDesign")
   expect_identical(result@nextBest, next_best)
-  expect_identical(result@cohortSize, cohort_size)
+  expect_identical(result@cohort_size, cohort_size)
   expect_identical(result@data, data)
   expect_identical(result@startingDose, 5)
 })
@@ -23,7 +23,7 @@ test_that("RuleDesign object can be created with user constructor", {
 test_that("RuleDesign user constructor arguments names are as expected", {
   expect_function(
     RuleDesign,
-    args = c("nextBest", "cohortSize", "data", "startingDose"),
+    args = c("nextBest", "cohort_size", "data", "startingDose"),
     ordered = TRUE
   )
 })
@@ -35,10 +35,12 @@ test_that("RuleDesign object can be created with ThreePlusThreeDesign constructo
   )
   expect_valid(result, "RuleDesign")
   expect_identical(result@nextBest, NextBestThreePlusThree())
-  expect_identical(result@cohortSize, CohortSizeConst(size = 3L))
+  expect_identical(result@cohort_size, CohortSizeConst(size = 3L))
   expect_identical(result@data, Data(doseGrid = dose_grid))
   expect_identical(result@startingDose, 8)
 })
+
+# ThreePlusThreeDesign ----
 
 test_that("ThreePlusThreeDesign constructor arguments names are as expected", {
   expect_function(
@@ -70,7 +72,7 @@ test_that("Design object can be created with user constructor", {
       stopping,
       increments,
       nextBest = next_best,
-      cohortSize = cohort_size,
+      cohort_size = cohort_size,
       data = empty_data,
       startingDose = 3
     )
@@ -81,7 +83,7 @@ test_that("Design object can be created with user constructor", {
   expect_identical(result@increments, increments)
   expect_identical(result@pl_cohort_size, placebo_cohort_size)
   expect_identical(result@nextBest, next_best)
-  expect_identical(result@cohortSize, cohort_size)
+  expect_identical(result@cohort_size, cohort_size)
   expect_identical(result@data, empty_data)
   expect_identical(result@startingDose, 3)
 
@@ -92,7 +94,7 @@ test_that("Design object can be created with user constructor", {
       increments,
       CohortSizeConst(2L),
       nextBest = next_best,
-      cohortSize = cohort_size,
+      cohort_size = cohort_size,
       data = empty_data,
       startingDose = 3
     )
@@ -130,7 +132,7 @@ test_that("DualDesign object can be created with user constructor", {
       stopping = stopping,
       increments = increments,
       nextBest = next_best,
-      cohortSize = cohort_size,
+      cohort_size = cohort_size,
       startingDose = 3
     )
   )
@@ -140,7 +142,7 @@ test_that("DualDesign object can be created with user constructor", {
   expect_identical(result@stopping, stopping)
   expect_identical(result@increments, increments)
   expect_identical(result@nextBest, next_best)
-  expect_identical(result@cohortSize, cohort_size)
+  expect_identical(result@cohort_size, cohort_size)
   expect_identical(result@startingDose, 3)
 })
 
@@ -173,7 +175,7 @@ test_that("TDsamplesDesign object can be created with user constructor", {
       stopping,
       increments,
       nextBest = next_best,
-      cohortSize = cohort_size,
+      cohort_size = cohort_size,
       data = empty_data,
       startingDose = 3
     )
@@ -184,7 +186,7 @@ test_that("TDsamplesDesign object can be created with user constructor", {
   expect_identical(result@increments, increments)
   expect_identical(result@pl_cohort_size, CohortSizeConst(0))
   expect_identical(result@nextBest, next_best)
-  expect_identical(result@cohortSize, cohort_size)
+  expect_identical(result@cohort_size, cohort_size)
   expect_identical(result@data, empty_data)
   expect_identical(result@startingDose, 3)
 
@@ -195,7 +197,7 @@ test_that("TDsamplesDesign object can be created with user constructor", {
       increments,
       CohortSizeConst(2L),
       nextBest = next_best,
-      cohortSize = cohort_size,
+      cohort_size = cohort_size,
       data = empty_data,
       startingDose = 3
     )
@@ -232,7 +234,7 @@ test_that("TDDesign object can be created with user constructor", {
       stopping,
       increments,
       nextBest = next_best,
-      cohortSize = cohort_size,
+      cohort_size = cohort_size,
       data = empty_data,
       startingDose = 3
     )
@@ -243,7 +245,7 @@ test_that("TDDesign object can be created with user constructor", {
   expect_identical(result@increments, increments)
   expect_identical(result@pl_cohort_size, CohortSizeConst(0))
   expect_identical(result@nextBest, next_best)
-  expect_identical(result@cohortSize, cohort_size)
+  expect_identical(result@cohort_size, cohort_size)
   expect_identical(result@data, empty_data)
   expect_identical(result@startingDose, 3)
 
@@ -254,7 +256,7 @@ test_that("TDDesign object can be created with user constructor", {
       increments,
       CohortSizeConst(2L),
       nextBest = next_best,
-      cohortSize = cohort_size,
+      cohort_size = cohort_size,
       data = empty_data,
       startingDose = 3
     )
@@ -293,7 +295,7 @@ test_that("DualResponsesSamplesDesign object can be created with user constructo
       stopping = stopping,
       increments = increments,
       nextBest = next_best,
-      cohortSize = cohort_size,
+      cohort_size = cohort_size,
       data = empty_data,
       startingDose = 3
     )
@@ -305,7 +307,7 @@ test_that("DualResponsesSamplesDesign object can be created with user constructo
   expect_identical(result@increments, increments)
   expect_identical(result@pl_cohort_size, CohortSizeConst(0))
   expect_identical(result@nextBest, next_best)
-  expect_identical(result@cohortSize, cohort_size)
+  expect_identical(result@cohort_size, cohort_size)
   expect_identical(result@data, empty_data)
   expect_identical(result@startingDose, 3)
 })
@@ -341,7 +343,7 @@ test_that("DualResponsesDesign object can be created with user constructor", {
       stopping = stopping,
       increments = increments,
       nextBest = next_best,
-      cohortSize = cohort_size,
+      cohort_size = cohort_size,
       data = empty_data,
       startingDose = 3
     )
@@ -353,7 +355,7 @@ test_that("DualResponsesDesign object can be created with user constructor", {
   expect_identical(result@increments, increments)
   expect_identical(result@pl_cohort_size, CohortSizeConst(0))
   expect_identical(result@nextBest, next_best)
-  expect_identical(result@cohortSize, cohort_size)
+  expect_identical(result@cohort_size, cohort_size)
   expect_identical(result@data, empty_data)
   expect_identical(result@startingDose, 3)
 })
@@ -396,7 +398,7 @@ test_that("DADesign constructor works as expected", {
       data = data,
       nextBest = next_best,
       safetyWindow = safety_window,
-      cohortSize = cohort_size,
+      cohort_size = cohort_size,
       startingDose = starting_dose,
       stopping = stopping,
       increments = increments
@@ -411,13 +413,159 @@ test_that("DADesign constructor works as expected", {
   expect_true(identical(result@data, data))
   expect_true(identical(result@safetyWindow, safety_window))
   expect_true(identical(result@nextBest, next_best))
-  expect_true(identical(result@cohortSize, cohort_size))
+  expect_true(identical(result@cohort_size, cohort_size))
   expect_true(identical(result@startingDose, starting_dose))
   expect_true(identical(result@stopping, stopping))
   expect_true(identical(result@increments, increments))
 })
 
 test_that("DADesign user constructor arguments names are as expected", {
+  expect_function(
+    Design,
+    args = c("model", "stopping", "increments", "pl_cohort_size", "..."),
+    ordered = TRUE
+  )
+})
+
+# DesignGrouped ----
+
+test_that(".DesignGrouped works as expected", {
+  result <- .DesignGrouped()
+
+  expect_true(inherits(result, "CrmPackClass"))
+  expect_valid(result, "DesignGrouped")
+})
+
+test_that("DesignGrouped works as expected", {
+  empty_data <- Data(doseGrid = 2:50)
+  model <- .DefaultLogisticLogNormalGrouped()
+  stopping <- h_stopping_target_prob()
+  increments <- h_increments_relative()
+  placebo_cohort_size <- CohortSizeConst(0L)
+  next_best <- h_next_best_ncrm()
+  cohort_size <- CohortSizeRange(intervals = c(0, 30), cohort_size = c(1, 3))
+
+  result <- expect_silent(
+    DesignGrouped(
+      model = model,
+      mono = Design(
+        model,
+        stopping,
+        increments,
+        nextBest = next_best,
+        cohort_size = cohort_size,
+        data = empty_data,
+        startingDose = 3
+      )
+    )
+  )
+
+  expect_valid(result, "DesignGrouped")
+  expect_identical(result@mono, result@combo)
+  expect_true(result@first_cohort_mono_only)
+  expect_true(result@same_dose_for_all)
+})
+
+test_that(".DefaultDesignGrouped works as expected", {
+  result <- .DefaultDesignGrouped()
+  expect_valid(result, "DesignGrouped")
+})
+
+# RuleDesignOrdinal ----
+
+test_that(".RuleDesignOrdinal works as expected", {
+  result <- expect_silent(.RuleDesignOrdinal())
+  expect_valid(result, "RuleDesignOrdinal")
+})
+
+test_that("RuleDesign object can be created with user constructor", {
+  next_best <- NextBestOrdinal(
+    1L,
+    NextBestMTD(
+      target = 0.2,
+      derive = function(x) median(x, na.rm = TRUE)
+    )
+  )
+  cohort_size <- CohortSizeOrdinal(1L, CohortSizeConst(size = 5L))
+  data <- DataOrdinal(doseGrid = 2:40)
+
+  result <- expect_silent(
+    RuleDesignOrdinal(next_best, cohort_size, data, 5)
+  )
+  expect_valid(result, "RuleDesignOrdinal")
+  expect_identical(result@next_best, next_best)
+  expect_identical(result@cohort_size, cohort_size)
+  expect_identical(result@data, data)
+  expect_identical(result@starting_dose, 5)
+})
+
+test_that("RuleDesignOrdinal user constructor arguments names are as expected", {
+  expect_function(
+    RuleDesignOrdinal,
+    args = c("next_best", "cohort_size", "data", "starting_dose"),
+    ordered = TRUE
+  )
+})
+
+# DesignOrdinal ----
+
+test_that(".DesignOrdinal works as expected", {
+  result <- expect_silent(.DesignOrdinal())
+  expect_valid(result, "DesignOrdinal")
+})
+
+test_that("DesignOrdinal object can be created with user constructor", {
+  empty_data <- DataOrdinal(doseGrid = 2:50)
+  model <- .DefaultLogisticLogNormalOrdinal()
+  stopping <- .DefaultStoppingOrdinal()
+  increments <- .DefaultIncrementsOrdinal()
+  placebo_cohort_size <- CohortSizeOrdinal(1L, CohortSizeConst(0L))
+  next_best <- .DefaultNextBestOrdinal()
+  cohort_size <- CohortSizeOrdinal(
+    1L,
+    CohortSizeRange(intervals = c(0, 30), cohort_size = c(1, 3))
+  )
+
+  result <- expect_silent(
+    DesignOrdinal(
+      model,
+      stopping,
+      increments,
+      next_best = next_best,
+      cohort_size = cohort_size,
+      data = empty_data,
+      starting_dose = 3
+    )
+  )
+  expect_valid(result, "DesignOrdinal")
+  expect_identical(result@model, model)
+  expect_identical(result@stopping, stopping)
+  expect_identical(result@increments, increments)
+  expect_identical(result@pl_cohort_size, placebo_cohort_size)
+  expect_identical(result@next_best, next_best)
+  expect_identical(result@cohort_size, cohort_size)
+  expect_identical(result@data, empty_data)
+  expect_identical(result@starting_dose, 3)
+
+  result <- expect_silent(
+    DesignOrdinal(
+      model,
+      stopping,
+      increments,
+      CohortSizeOrdinal(2L, CohortSizeConst(2L)),
+      next_best = next_best,
+      cohort_size = cohort_size,
+      data = empty_data,
+      starting_dose = 3
+    )
+  )
+  expect_identical(
+    result@pl_cohort_size,
+    CohortSizeOrdinal(2L, CohortSizeConst(2L))
+  )
+})
+
+test_that("Design user constructor arguments names are as expected", {
   expect_function(
     Design,
     args = c("model", "stopping", "increments", "pl_cohort_size", "..."),

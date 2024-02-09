@@ -8,7 +8,13 @@
 \alias{.DefaultStoppingLowestDoseHSRBeta}
 \title{\code{StoppingLowestDoseHSRBeta}}
 \usage{
-StoppingLowestDoseHSRBeta(target = 0.3, prob = 0.95, a = 1, b = 1)
+StoppingLowestDoseHSRBeta(
+  target = 0.3,
+  prob = 0.95,
+  a = 1,
+  b = 1,
+  report_label = NA_character_
+)
 
 .DefaultStoppingLowestDoseHSRBeta()
 }
@@ -20,6 +26,8 @@ StoppingLowestDoseHSRBeta(target = 0.3, prob = 0.95, a = 1, b = 1)
 \item{a}{(\code{number})\cr see slot definition.}
 
 \item{b}{(\code{number})\cr see slot definition.}
+
+\item{report_label}{(\code{string} or \code{NA})\cr see slot definition.}
 }
 \description{
 \ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#experimental}{\figure{lifecycle-experimental.svg}{options: alt='[Experimental]'}}}{\strong{[Experimental]}}

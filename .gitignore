@@ -19,6 +19,7 @@ docs/
 pkgdown/
 *.log
 .DS_Store
-/doc/
-/Meta/
+doc/
+Meta/
 tests/vdiffr.Rout.fail
+inst/doc

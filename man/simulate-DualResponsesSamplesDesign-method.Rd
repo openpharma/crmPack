@@ -24,7 +24,7 @@ process}
   firstSeparate = FALSE,
   mcmcOptions = McmcOptions(),
   parallel = FALSE,
-  nCores = min(parallel::detectCores(), 5),
+  nCores = min(parallel::detectCores(), 5L),
   ...
 )
 }
@@ -34,7 +34,7 @@ simulate the data from}
 
 \item{nsim}{the number of simulations (default :1)}
 
-\item{seed}{see \code{\link{setSeed}}}
+\item{seed}{see \code{\link{set_seed}}}
 
 \item{trueDLE}{a function which takes as input a dose (vector) and returns the true probability
 (vector) of the occurrence of a DLE. Additional arguments can be supplied in \code{args}.}
@@ -70,7 +70,7 @@ clusters of the computer? (not default)}
 \item{nCores}{how many cores should be used for parallel computing?
 Defaults to the number of cores on the machine, maximum 5.}
 
-\item{\dots}{not used}
+\item{...}{not used.}
 }
 \value{
 an object of class \code{\linkS4class{PseudoDualSimulations}} or
@@ -138,7 +138,7 @@ myStopping <- StoppingMinPatients(nPatients = 10)
 ## Specified the design
 design <- DualResponsesSamplesDesign(
   nextBest = mynextbest,
-  cohortSize = mySize,
+  cohort_size = mySize,
   startingDose = 25,
   model = DLEmodel,
   eff_model = Effmodel,
@@ -184,7 +184,7 @@ Effmodel <- EffFlexi(
 ## Specified the design
 design <- DualResponsesSamplesDesign(
   nextBest = mynextbest,
-  cohortSize = mySize,
+  cohort_size = mySize,
   startingDose = 25,
   model = DLEmodel,
   eff_model = Effmodel,

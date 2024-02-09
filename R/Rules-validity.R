@@ -267,16 +267,16 @@ v_increments_relative_parts <- function(object) {
 }
 
 #' @describeIn v_increments validates that the [`IncrementsRelativeDLT`] object
-#'   contains valid `dlt_intervals` and `increments` parameters.
+#'   contains valid `intervals` and `increments` parameters.
 v_increments_relative_dlt <- function(object) {
   v <- Validate()
   v$check(
-    test_integer(object@dlt_intervals, lower = 0, any.missing = FALSE, unique = TRUE, sorted = TRUE),
-    "dlt_intervals has to be an integer vector with unique, finite, non-negative and sorted non-missing values"
+    test_integer(object@intervals, lower = 0, any.missing = FALSE, unique = TRUE, sorted = TRUE),
+    "intervals has to be an integer vector with unique, finite, non-negative and sorted non-missing values"
   )
   v$check(
-    test_numeric(object@increments, finite = TRUE, any.missing = FALSE, len = length(object@dlt_intervals)),
-    "increments has to be a numerical vector of the same length as `dlt_intervals` with finite values"
+    test_numeric(object@increments, finite = TRUE, any.missing = FALSE, len = length(object@intervals)),
+    "increments has to be a numerical vector of the same length as `intervals` with finite values"
   )
   v$result()
 }
@@ -560,22 +560,22 @@ v_cohort_size_range <- function(object) {
 }
 
 #' @describeIn v_cohort_size validates that the [`CohortSizeDLT`] object
-#'   contains valid `dlt_intervals` and  `cohort_size` slots.
+#'   contains valid `intervals` and  `cohort_size` slots.
 v_cohort_size_dlt <- function(object) {
   v <- Validate()
   v$check(
     test_integer(
-      object@dlt_intervals,
+      object@intervals,
       lower = 0, any.missing = FALSE, min.len = 1, unique = TRUE, sorted = TRUE
     ),
-    "dlt_intervals must be an integer vector with non-negative, sorted (asc.) and unique values"
+    "intervals must be an integer vector with non-negative, sorted (asc.) and unique values"
   )
   v$check(
     test_integer(
       object@cohort_size,
-      lower = 0, any.missing = FALSE, len = length(object@dlt_intervals)
+      lower = 0, any.missing = FALSE, len = length(object@intervals)
     ),
-    "cohort_size must be an integer vector of the same length as dlt_intervals, containing non-negative values only"
+    "cohort_size must be an integer vector of the same length as intervals, containing non-negative values only"
   )
   v$result()
 }
@@ -596,19 +596,19 @@ v_cohort_size_const <- function(object) {
 v_cohort_size_parts <- function(object) {
   v <- Validate()
   v$check(
-    test_integer(object@sizes, lower = .Machine$double.xmin, any.missing = FALSE, len = 2),
-    "sizes needs to be an integer vector of length 2 with all elements positive"
+    test_integer(object@cohort_sizes, lower = .Machine$double.xmin, any.missing = FALSE, len = 2),
+    "cohort_sizes needs to be an integer vector of length 2 with all elements positive"
   )
   v$result()
 }
 
 #' @describeIn v_cohort_size validates that the [`CohortSizeMax`] object
-#'   contains valid `cohort_size_list` slot.
+#'   contains valid `cohort_sizes` slot.
 v_cohort_size_max <- function(object) {
   v <- Validate()
   v$check(
-    test_list(object@cohort_size_list, types = "CohortSize", any.missing = FALSE, min.len = 2, unique = TRUE),
-    "cohort_size_list must be a list of CohortSize (unique) objects only and be of length >= 2"
+    test_list(object@cohort_sizes, types = "CohortSize", any.missing = FALSE, min.len = 2, unique = TRUE),
+    "cohort_sizes must be a list of CohortSize (unique) objects only and be of length >= 2"
   )
   v$result()
 }
@@ -674,6 +674,51 @@ v_safety_window_const <- function(object) {
   v$check(
     test_int(object@follow_min, lower = .Machine$double.xmin),
     "follow_min has to be a positive integer number"
+  )
+  v$result()
+}
+
+#' @describeIn v_next_best validates that the [`NextBestOrdinal`] object
+#'   contains valid `grade` and standard `NextBest` rule.
+v_next_best_ordinal <- function(object) {
+  v <- Validate()
+  v$check(
+    test_integer(object@grade, lower = 1),
+    "grade must be a positive integer"
+  )
+  v$check(
+    test_class(object@rule, "NextBest"),
+    "rule must be a NextBest object"
+  )
+  v$result()
+}
+
+#' @describeIn v_increments validates that the [`IncrementsOrdinal`] object
+#'   contains valid `grade` and standard `Increments` rule.
+v_increments_ordinal <- function(object) {
+  v <- Validate()
+  v$check(
+    test_integer(object@grade, lower = 1),
+    "grade must be a positive integer"
+  )
+  v$check(
+    test_class(object@rule, "Increments"),
+    "rule must be a Increments object"
+  )
+  v$result()
+}
+
+#' @describeIn v_increments validates that the [`CohortSizeOrdinal`] object
+#'   contains valid `grade` and standard `CohortSize` rule.
+v_cohort_size_ordinal <- function(object) {
+  v <- Validate()
+  v$check(
+    test_integer(object@grade, lower = 1),
+    "grade must be a positive integer"
+  )
+  v$check(
+    test_class(object@rule, "CohortSize"),
+    "rule must be a CohortSize object"
   )
   v$result()
 }

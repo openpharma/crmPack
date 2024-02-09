@@ -1,0 +1,176 @@
+---
+title: "Using tidy"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Using tidy}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>"
+)
+```
+
+```{r setup}
+suppressPackageStartupMessages({
+  library(crmPack)
+  library(knitr)
+  library(kableExtra)
+  library(tidyr)
+  library(magrittr)
+  library(dplyr)
+})
+```
+
+# Introducing tidy methods to crmPack
+The latest release of `crmPack` introduces `broom`-like tidy methods for all `crmPack` classes.  These methods convert the underlying S4 classes to (lists of) `tibble`s.  This should facilitate reporting of all aspects of CRM trials as well as making it easier to integrate `crmPack` with other packages such as `ggplot2`.
+
+## Basic approach
+The following is the general approach we take to tidying `crmPack` classes:
+
+* All slots that are not functions are converted to `tibble`s or a list of `tibble`s.
+* If the slot's value is a `list`, these rules are applied to each element of the list in turn.
+* If the slot's value is scalar, the slot is converted to a 1x1 `tibble`.  This will ease downstream operations such as `row_bind`ing.
+* If the object being tidied contains multiple slots of (potentially) different lengths, the result is a list of `tibble`s.  The list may be nested to multiple levels.  (See, for example, `LogisticLogNormal`.)
+* The column names of the tidied `tibble` correspond to the slot names of the parent object.
+  * Exception: where the slot has name in the plural and contains a `vector` or `list`, the column name will be singular.  See, for example, `CohortSizeParts` below.
+* When the value of a slot has not been set, a zero-row `tibble` is returned.
+* When the value of a slot has scalar attributes, these attributes are added as columns of the `tibble`, whose name is the name of the attribute and whose value is the value of the attribute for every row of the tibble.  Vector attributes can be added, by default, as a nested tibble.
+  The nested tibble is 1 row x n column, with column names defined by the name of the attribute and values given by the value of the corresponding attribute.
+* `tbl_<className>` is prepended to the class of the (list of) tidy `tibble`(s).
+
+## Exceptions
+*  Where a vector slot (or series of vector slots) define a range ()for example, the `intervals` slot in various `CohortSize` and `Increments` classes, then the naming convention described above is not followed.  Instead, columns named `min` and `max` define the extent of the range.
+
+## Examples
+
+`CohortSizeConst` is a trivial example and illustrates the default approach for all classes.
+
+```{r, error = TRUE}
+CohortSizeConst(size = 3) %>% tidy()
+```
+
+`IncrementsRelative` illustrate how ranges are handled.
+
+```{r}
+IncrementsRelative(
+  intervals = c(0, 20),
+  increments = c(1, 0.33)
+) %>%
+  tidy()
+```
+
+`CohortSizeMax` contains a slot whose value is a list.
+
+```{r}
+cs_max <- maxSize(
+  CohortSizeConst(3),
+  CohortSizeDLT(intervals = 0:1, cohort_size = c(1, 3))
+)
+cs_max %>% tidy()
+```
+
+The `Samples` class likely to the most useful when making presentations not yet supported by `crmPack` directly.
+
+```{r}
+options <- McmcOptions(
+  burnin = 100,
+  step = 1,
+  samples = 2000
+)
+
+emptydata <- Data(doseGrid = c(1, 3, 5, 10, 15, 20, 25, 40, 50, 80, 100))
+
+model <- LogisticLogNormal(
+  mean = c(-0.85, 1),
+  cov =
+    matrix(c(1, -0.5, -0.5, 1),
+      nrow = 2
+    ),
+  ref_dose = 56
+)
+samples <- mcmc(emptydata, model, options)
+tidySamples <- samples %>% tidy()
+tidySamples %>% head()
+```
+
+## Using tidy `crmPack` data
+
+Tidy `crmPack` data can be easily reported using `knitr` or similar packages in the obvious way.
+
+### Cohort size
+
+The cohort size for this trial is determined by the dose to be used in the current cohort according to the rules described in the table below:
+
+```{r}
+CohortSizeRange(
+  intervals = c(0, 50, 300),
+  cohort_size = c(1, 3, 5)
+) %>%
+  tidy() %>%
+  kable(
+    col.names = c("Min", "Max", "Cohort size"),
+    caption = "Rules for selecting the cohort size"
+  ) %>%
+  add_header_above(c("Dose" = 2, " " = 1))
+```
+
+Or presentations not directly supported by `crmPack` can be easily produced.  Here, we create plots of the dose-specific PDFs for prior probabilities of toxicity after the first DLT is observed in a fictional trial.
+
+```{r, fig.width = 6, fig.height = 4}
+options <- McmcOptions(
+  burnin = 5000,
+  step = 1,
+  samples = 40000
+)
+
+data <- Data(
+  doseGrid = c(1, 3, 5, 10, 15, 20, 25, 40, 50, 80, 100),
+  x = c(1, 3, 5, 10, 15, 15, 15),
+  y = c(0, 0, 0, 0, 0, 1, 0),
+  ID = 1L:7L,
+  cohort = as.integer(c(1:4, 5, 5, 5))
+)
+
+model <- LogisticLogNormal(
+  mean = c(-1, 0),
+  cov =
+    matrix(c(3, -0.1, -0.1, 4),
+      nrow = 2
+    ),
+  ref_dose = 56
+)
+samples <- mcmc(data, model, options)
+tidySamples <- samples %>% tidy()
+
+# The magrittr pipe is necessary here
+tidySamples$data %>%
+  expand(
+    nesting(!!!.[1:10]),
+    Dose = data@doseGrid[2:11]
+  ) %>%
+  mutate(Prob = probFunction(model, alpha0 = alpha0, alpha1 = alpha1)(Dose)) %>%
+  ggplot() +
+  geom_density(aes(x = Prob, colour = as.factor(Dose)), adjust = 1.5) +
+  labs(
+    title = "Posterior dose-specific PDFs for p(Tox)",
+    caption = "Dose 1 omitted as p(Tox) is essentially 0",
+    x = "p(Tox)"
+  ) +
+  scale_colour_discrete("Dose") +
+  theme_light() +
+  theme(
+    axis.ticks.y = element_blank(),
+    axis.text.y = element_blank(),
+    axis.title.y = element_blank()
+  )
+```
+
+# Environment
+
+```{r}
+sessionInfo()
+```

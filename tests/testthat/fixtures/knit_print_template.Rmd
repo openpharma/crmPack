@@ -1,0 +1,20 @@
+---
+title: "Test"
+output: html_document
+params:
+  class_name: "CohortSizeConst"
+---
+
+```{r, echo=FALSE}
+suppressPackageStartupMessages({
+  if (file.exists("DESCRIPTION")) {
+    devtools::load_all(export_all = FALSE)
+  } else {
+    library(crmPack)
+  }
+  library(knitr)
+})
+
+print(params$class_name)
+do.call(paste0(".Default", params$class_name), list())
+```

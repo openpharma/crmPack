@@ -13,7 +13,7 @@
     Code
       v_model_logistic_normal_fixed_mix(object)
     Output
-      [1] "components must be a list with valid ModelParamsNormal S4 class objects, mean must have length 2 and no missing values are allowed, cov must be 2x2 positive-definite matrix without any missing values"
+      [1] "components must be a list with valid ModelParamsNormal S4 class objects, mean must have length of at least 2 and no missing values are allowed, cov must be positive-definite matrix without any missing values"
 
 # v_model_dual_endpoint returns message for wrong use_fixed
 

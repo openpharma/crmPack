@@ -5,6 +5,7 @@
 \alias{TDDesign-class}
 \alias{.TDDesign}
 \alias{TDDesign}
+\alias{.DefaultTDDesign}
 \title{\code{TDDesign}}
 \usage{
 TDDesign(
@@ -14,6 +15,8 @@ TDDesign(
   pl_cohort_size = CohortSizeConst(0L),
   ...
 )
+
+.DefaultTDDesign()
 }
 \arguments{
 \item{model}{(\code{ModelTox})\cr see slot definition.}
@@ -28,7 +31,7 @@ TDDesign(
   Arguments passed on to \code{\link[=RuleDesign]{RuleDesign}}
   \describe{
     \item{\code{nextBest}}{(\code{NextBest})\cr see slot definition.}
-    \item{\code{cohortSize}}{(\code{CohortSize})\cr see slot definition.}
+    \item{\code{cohort_size}}{(\code{CohortSize})\cr see slot definition.}
     \item{\code{data}}{(\code{Data})\cr see slot definition.}
     \item{\code{startingDose}}{(\code{number})\cr see slot definition.}
   }}
@@ -52,6 +55,9 @@ TDDesign(
 if any planned (defaults to constant 0 placebo patients).}
 }}
 
+\note{
+Typically, end users will not use the \code{.DefaultTDDesign()} function.
+}
 \examples{
 empty_data <- Data(doseGrid = seq(25, 300, 25))
 
@@ -89,7 +95,7 @@ design <- TDDesign(
   stopping = my_stopping,
   increments = my_increments,
   nextBest = my_next_best,
-  cohortSize = my_size,
+  cohort_size = my_size,
   data = empty_data,
   startingDose = 25
 )

@@ -5,6 +5,7 @@
 \alias{DataDA-class}
 \alias{.DataDA}
 \alias{DataDA}
+\alias{.DefaultDataDA}
 \title{\code{DataDA}}
 \usage{
 DataDA(
@@ -13,6 +14,8 @@ DataDA(
   Tmax = 0 + .Machine$double.xmin,
   ...
 )
+
+.DefaultDataDA()
 }
 \arguments{
 \item{u}{(\code{numeric})\cr the continuous vector of DLT free survival times.}
@@ -45,6 +48,8 @@ Non-negative values sorted in ascending order.}
 \note{
 \verb{survival time} here refers to the time period for which the subject
 did not experience any DLT, and is not referring to deaths.
+
+Typically, end users will not use the \code{.DefaultDataDA()} function.
 }
 \examples{
 my_data <- DataDA(

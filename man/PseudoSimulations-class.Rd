@@ -4,7 +4,11 @@
 \name{PseudoSimulations-class}
 \alias{PseudoSimulations-class}
 \alias{.PseudoSimulations}
+\alias{.DefaultPseudoSimulations}
 \title{Class \code{PseudoSimulations}}
+\usage{
+.DefaultPseudoSimulations()
+}
 \description{
 This is a class which captures the trial simulations from designs using
 pseudo model. The design for DLE only responses and model from \code{\linkS4class{ModelTox}}
@@ -42,5 +46,10 @@ final estimates of the TDtargetEndOfTrial or of the final optimal dose estimates
 incorporated) after each simulations}
 
 \item{\code{stopReasons}}{add slot description}
+
+\item{\code{stop_report}}{matrix of stopping rule outcomes}
 }}
 
+\note{
+Typically, end users will not use the \code{.DefaultPseudoSimulations()} function.
+}

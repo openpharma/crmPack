@@ -2,15 +2,20 @@
 % Please edit documentation in R/helpers.R
 \name{plot.gtable}
 \alias{plot.gtable}
-\title{Plots gtable objects}
+\alias{print.gtable}
+\title{Plot \code{gtable} Objects}
 \usage{
 \method{plot}{gtable}(x, ...)
+
+\method{print}{gtable}(x, ...)
 }
 \arguments{
-\item{x}{the gtable object}
+\item{x}{(\code{gtable})\cr object to plot.}
 
-\item{\dots}{additional parameters for \code{\link[grid]{grid.draw}}}
+\item{...}{additional parameters for \code{\link[grid:grid.draw]{grid::grid.draw()}}.}
 }
 \description{
-Plots gtable objects
+This is needed because \code{crmPack} uses \code{\link[gridExtra:arrangeGrob]{gridExtra::arrangeGrob()}} to combine
+\code{ggplot2} plots, and the resulting \code{gtable} object is not plotted otherwise
+when implicitly printing it in the console, e.g.
 }
