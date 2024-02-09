@@ -135,15 +135,16 @@ setMethod(
 #' @source This function uses \code{ggplot} function from \code{ggplot2}
 #' R package.
 #' @export
-setGeneric(name = "profiles",
-           def = function(x, xNE, unit, ...) {
-             standardGeneric("profiles")
-           })
+setGeneric(
+  name = "profiles",
+  def = function(x, xNE, unit, ...) {
+    standardGeneric("profiles")
+  }
+)
 setMethod(
   f = "profiles",
   signature = signature(x = "Data", xNE = "data.frame", unit = "character"),
   definition = function(x, xNE, unit, ...) {
-
     ID <- c(x@ID, xNE$IDs)
     dose <- c(x@x, xNE$doses)
     cohort <- c(x@cohort, xNE$cohorts)
@@ -153,19 +154,23 @@ setMethod(
       "ID" = ID,
       "dose" = dose,
       "DLT" = factor(DLT,
-                     levels = c("0", "1", "2"),
-                     labels = c("DLT No", "DLT Yes", "Not evaluable")
+        levels = c("0", "1", "2"),
+        labels = c("DLT No", "DLT Yes", "Not evaluable")
       ),
       "cohort" = paste("Cohort", cohort)
     )
     df <- df[order(df$ID), ]
 
     p <- ggplot(data = df) +
-      geom_point(aes(x = factor(ID, levels = unique(ID[order(cohort, ID)])),
-                     y = dose,
-                     shape = DLT,
-                     color = DLT),
-                 size = 2) +
+      geom_point(
+        aes(
+          x = factor(ID, levels = unique(ID[order(cohort, ID)])),
+          y = dose,
+          shape = DLT,
+          color = DLT
+        ),
+        size = 2
+      ) +
       scale_shape_manual(values = c(
         "DLT No" = 19, "DLT Yes" = 17,
         "Not evaluable" = 0
