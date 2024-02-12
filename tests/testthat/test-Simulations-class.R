@@ -228,7 +228,7 @@ test_that("GeneralSimulationsSummary cannot be instantiated directly", {
 # DualSimulationsSummary ----
 test_that("DualSimulationsSummary object can be created with the user constructor", {
   biomarker_fit_at_dose_most_selected <- 0.3
-  mean_biomarker_fit <- list(c(0.25, 0.5, 0.75))  # This should be a list
+  mean_biomarker_fit <- list(c(0.25, 0.5, 0.75)) # This should be a list
 
   result <- expect_silent(
     .DualSimulationsSummary(
