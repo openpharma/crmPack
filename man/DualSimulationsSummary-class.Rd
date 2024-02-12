@@ -4,30 +4,25 @@
 \name{DualSimulationsSummary-class}
 \alias{DualSimulationsSummary-class}
 \alias{.DualSimulationsSummary}
+\alias{DualSimulationsSummary}
 \alias{.DefaultDualSimulationsSummary}
-\title{Class for the summary of dual-endpoint simulations output}
+\title{\code{DualSimulationsSummary}}
 \usage{
 .DefaultDualSimulationsSummary()
 }
 \description{
-In addition to the slots in the parent class
-\code{\linkS4class{SimulationsSummary}}, it contains two slots for the
-biomarker model fit information.
-}
-\details{
-Note that objects should not be created by users, therefore no
-initialization function is provided for this class.
+\ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#stable}{\figure{lifecycle-stable.svg}{options: alt='[Stable]'}}}{\strong{[Stable]}}
+This class captures the summary of dual-endpoint simulations output.
+In comparison to parent class \code{\link{SimulationsSummary}}, it has additional slots.
 }
 \section{Slots}{
 
 \describe{
-\item{\code{biomarkerFitAtDoseMostSelected}}{fitted biomarker level at dose most often selected}
+\item{\code{biomarker_fit_at_dose_most_selected}}{(\code{numeric})\cr fitted biomarker level at most often selected dose.}
 
-\item{\code{meanBiomarkerFit}}{list with the average, lower (2.5\%) and upper (97.5\%)
-quantiles of the mean fitted biomarker level at each dose level}
+\item{\code{mean_biomarker_fit}}{(\code{list})\cr list with average, lower (2.5\%) and upper (97.5\%) quantiles of mean fitted biomarker level at each dose}
 }}
 
 \note{
 Typically, end users will not use the \code{.DefaultDualSimulationsSummary()} function.
 }
-\keyword{classes}

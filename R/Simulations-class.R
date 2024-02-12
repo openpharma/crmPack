@@ -388,44 +388,39 @@ DualSimulations <- function(rho_est,
   ))
 }
 
-# nolint start
 # DualSimulationsSummary ----
 
-##' Class for the summary of dual-endpoint simulations output
-##'
-##' In addition to the slots in the parent class
-##' \code{\linkS4class{SimulationsSummary}}, it contains two slots for the
-##' biomarker model fit information.
-##'
-##' Note that objects should not be created by users, therefore no
-##' initialization function is provided for this class.
-##'
-##' @slot biomarkerFitAtDoseMostSelected fitted biomarker level at dose most often selected
-##' @slot meanBiomarkerFit list with the average, lower (2.5%) and upper (97.5%)
-##' quantiles of the mean fitted biomarker level at each dose level
-##'
-##' @export
-##' @keywords classes
+# class ----
+
+#' `DualSimulationsSummary`
+#'
+#' @description `r lifecycle::badge("stable")`
+#' This class captures the summary of dual-endpoint simulations output.
+#' In comparison to its parent class [`SimulationsSummary`], it has additional slots.
+#'
+#' @slot biomarker_fit_at_dose_most_selected (`numeric`)\cr fitted biomarker level at most often selected dose.
+#' @slot mean_biomarker_fit (`list`)\cr list with average, lower (2.5%) and upper (97.5%) quantiles of
+#' mean fitted biomarker level at each dose
+#' @aliases DualSimulationsSummary
+#' @export
 .DualSimulationsSummary <-
   setClass(
     Class = "DualSimulationsSummary",
-    contains = "SimulationsSummary",
-    representation =
-      representation(
-        biomarkerFitAtDoseMostSelected = "numeric",
-        meanBiomarkerFit = "list"
-      )
+    slots = c(
+      biomarker_fit_at_dose_most_selected = "numeric",
+      mean_biomarker_fit = "list"
+    ),
+    contains = "SimulationsSummary"
   )
 
-## default constructor ----
+# default constructor
 
 #' @rdname DualSimulationsSummary-class
 #' @note Typically, end users will not use the `.DefaultDualSimulationsSummary()` function.
 #' @export
 .DefaultDualSimulationsSummary <- function() {
-  emptydata <- DataDual(doseGrid = c(1, 3, 5, 10, 15, 20, 25, 30))
+  empty_data <- DataDual(doseGrid = c(1, 3, 5, 10, 15, 20, 25, 30))
 
-  # Initialize the CRM model.
   my_model <- DualEndpointRW(
     mean = c(0, 1),
     cov = matrix(c(1, 0, 0, 1), nrow = 2),
@@ -435,14 +430,12 @@ DualSimulations <- function(rho_est,
     rw1 = TRUE
   )
 
-  # Choose the rule for selecting the next dose.
   my_next_best <- NextBestDualEndpoint(
     target = c(0.9, 1),
     overdose = c(0.35, 1),
     max_overdose_prob = 0.25
   )
 
-  # Choose the rule for the cohort-size.
   my_size1 <- CohortSizeRange(
     intervals = c(0, 30),
     cohort_size = c(1, 3)
@@ -453,25 +446,21 @@ DualSimulations <- function(rho_est,
   )
   my_size <- maxSize(my_size1, my_size2)
 
-  # Choose the rule for stopping.
   my_stopping1 <- StoppingTargetBiomarker(
     target = c(0.9, 1),
     prob = 0.5
   )
 
-  # Stop with a small number of patients for illustration.
   my_stopping <- my_stopping1 | StoppingMinPatients(10) | StoppingMissingDose()
 
-  # Choose the rule for dose increments.
   my_increments <- IncrementsRelative(
     intervals = c(0, 20),
     increments = c(1, 0.33)
   )
 
-  # Initialize the design.
   my_design <- DualDesign(
     model = my_model,
-    data = emptydata,
+    data = empty_data,
     nextBest = my_next_best,
     stopping = my_stopping,
     increments = my_increments,
@@ -479,7 +468,6 @@ DualSimulations <- function(rho_est,
     startingDose = 3
   )
 
-  # Define scenarios for the TRUE toxicity and efficacy profiles.
   beta_mod <- function(dose, e0, eMax, delta1, delta2, scal) {
     maxDens <- (delta1^delta1) * (delta2^delta2) / ((delta1 + delta2)^(delta1 + delta2))
     dose <- dose / scal
@@ -494,9 +482,6 @@ DualSimulations <- function(rho_est,
     pnorm((dose - 60) / 10)
   }
 
-  # Run the simulation on the desired design.
-  # For illustration purposes only 1 trial outcome is generated and 5 burn-ins
-  # to generate 20 samples are used here.
   x <- simulate(
     object = my_design,
     trueTox = true_tox,
@@ -511,7 +496,7 @@ DualSimulations <- function(rho_est,
   )
 }
 
-
+# nolint start
 ## ==============================================================================
 
 ## -------------------------------------------------------------------------------
