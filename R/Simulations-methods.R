@@ -728,8 +728,8 @@ setMethod("summary",
       ## for which we then define a print / plot method
       ret <- .DualSimulationsSummary(
         start,
-        biomarkerFitAtDoseMostSelected = biomarkerFitAtDoseMostSelected,
-        meanBiomarkerFit = meanBiomarkerFit
+        biomarker_fit_at_dose_most_selected = biomarkerFitAtDoseMostSelected,
+        mean_biomarker_fit = meanBiomarkerFit
       )
 
       return(ret)
@@ -1039,7 +1039,7 @@ setMethod("show",
       )
 
       ## add one reporting line
-      r$report("biomarkerFitAtDoseMostSelected",
+      r$report("biomarker_fit_at_dose_most_selected",
         "Fitted biomarker level at dose most often selected",
         percent = FALSE,
         digits = 1
@@ -1436,7 +1436,7 @@ setMethod("plot",
               levels = linetype
             ),
           lines =
-            unlist(x@meanBiomarkerFit)
+            unlist(x@mean_biomarker_fit)
         )
 
         ## linetypes for the plot
