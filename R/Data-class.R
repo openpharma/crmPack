@@ -668,5 +668,13 @@ DataGrouped <- function(group = character(),
 #' @note Typically, end users will not use the `.DefaultDataGrouped()` function.
 #' @export
 .DefaultDataGrouped <- function() {
-  DataGrouped()
+  DataGrouped(
+    group = c("mono", "mono", "combo"),
+    x = c(1, 3, 5),
+    y = c(0, 0, 0),
+    ID = 1L:3L,
+    cohort = 1L:3L,
+    doseGrid = c(1, 3, 5, 10, 15, 20, 25, 40, 50, 80, 100),
+    placebo = FALSE
+  )
 }
