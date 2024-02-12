@@ -399,7 +399,8 @@ DualSimulations <- function(rho_est,
 #' In comparison to its parent class [`SimulationsSummary`], it has additional slots.
 #'
 #' @slot biomarker_fit_at_dose_most_selected (`numeric`)\cr fitted biomarker level at most often selected dose.
-#' @slot mean_biomarker_fit (`list`)\cr list with average, lower (2.5%) and upper (97.5%) quantiles of mean fitted biomarker level at each dose
+#' @slot mean_biomarker_fit (`list`)\cr list with average, lower (2.5%) and upper (97.5%) quantiles of 
+#' mean fitted biomarker level at each dose
 #' @aliases DualSimulationsSummary
 #' @export
 .DualSimulationsSummary <-
