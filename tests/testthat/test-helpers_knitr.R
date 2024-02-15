@@ -237,6 +237,4 @@ test_that("summarise option works correctly for Data classes", {
     rv <- knit_print(testList[[name]], summarise = "cohort")
     expect_snapshot_value(rv, style = "serialize")
   }
-
 })
-
