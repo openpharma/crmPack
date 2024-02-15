@@ -964,3 +964,45 @@ setMethod(
   }
 )
 
+
+## DataOrdinal ----
+
+#' Tidy Method for the [`DataMixture`] Class
+#'
+#' @description `r lifecycle::badge("experimental")`
+#'
+#' A method that tidies a [`DataOrdinal`] object.
+#' @section Usage Notes:
+#' @return The [`tibble`] object.
+#'
+#' @aliases tidy-DataOrdinal
+#' @rdname tidy-DataOrdinal
+#' @export
+#' @example examples/GeneralData-method-tidy.R
+#'
+setMethod(
+  f = "tidy",
+  signature = signature(x = "DataOrdinal"),
+  definition = function(x, ...) {
+    tibble::tibble(
+      ID = x@ID,
+      Cohort = x@cohort,
+      Dose = x@x,
+      Tox = x@y,
+      Placebo = x@placebo,
+      NObs = x@nObs,
+      NGrid = x@nGrid,
+      DoseGrid = list(x@doseGrid),
+      XLevel = x@xLevel
+    ) %>%
+    tidyr::pivot_wider(
+      names_from = Tox,
+      values_from = Tox,
+      names_prefix = "Cat",
+      values_fill = 0
+    ) %>%
+    dplyr::mutate(dplyr::across(tidyselect::matches("Cat\\d+"), \(.) . > 0)) %>%
+    h_tidy_class(x)
+  }
+)
+

@@ -1,11 +1,3 @@
-# DataOrdinal
-# DataDual     Done
-# DataParts    Done
-# DataMixture  Done
-# DataDA       Done
-# DataGrouped  Done
-# Data         Done
-
 #' Format a `doseGrid` for Printing
 #'
 #' @param grid (`double`)\cr the dose grid
@@ -14,7 +6,7 @@
 #' default, `NA`, omits the units.
 #' @return A character string containing the formatted dose grid.  If the grid
 #' is `c(1, 2, 3)` and `units` is `"mg"`, the returned value is `"1 mg, 2 mg and 3 mg"`.
-#' @internal
+#' @keywords Internal
 h_get_formatted_dosegrid <- function(grid, units = NA) {
   assert_numeric(grid, lower = 0, min.len = 2, unique = TRUE, finite = TRUE, sorted = TRUE, any.missing = FALSE)
   assert_character(units, len = 1)
@@ -36,12 +28,22 @@ h_get_formatted_dosegrid <- function(grid, units = NA) {
   )
 }
 
-#' @internal
+#' Set Column Headers in Custom `knit_print` Methods
+#'
+#' This is a helper method used `knit_print` for `crmPack` classes.
+#'
+#' @param x (`ANY`)\cr object that will be printed
+#' @param param (`list`)\cr A list of the `...` parameters passed to `knit_print`
+#' @param summarise (`flag`)\cr Is the object to be summarised (default) or listed?
+#' @return A character vector of column names.
+#' @noRd
 h_knit_print_set_headers <- function(x, param, summarise, ...) {
   UseMethod("h_knit_print_set_headers")
 }
 
-#' @internal
+#' @description `r lifecycle::badge("experimental")`
+#' @rdname knit_print_set_headers
+#' @noRd
 h_knit_print_set_headers.GeneralData <- function(x, param, summarise, ...) {
   if (!("col.names" %in% names(param))) {
     if (summarise == "none") {
@@ -60,7 +62,9 @@ registerS3method(
   h_knit_print_set_headers.GeneralData
 )
 
-#' @internal
+#' @description `r lifecycle::badge("experimental")`
+#' @rdname knit_print_set_headers
+#' @noRd
 h_knit_print_set_headers.DataDA <- function(x, param, summarise, ...) {
   if (!("col.names" %in% names(param))) {
     if (summarise == "none") {
@@ -79,7 +83,9 @@ registerS3method(
   h_knit_print_set_headers.DataDA
 )
 
-#' @internal
+#' @description `r lifecycle::badge("experimental")`
+#' @rdname knit_print_set_headers
+#' @noRd
 h_knit_print_set_headers.DataGrouped <- function(x, param, summarise, ...) {
   if (!("col.names" %in% names(param))) {
     if (summarise == "none") {
@@ -98,7 +104,9 @@ registerS3method(
   h_knit_print_set_headers.DataGrouped
 )
 
-#' @internal
+#' @description `r lifecycle::badge("experimental")`
+#' @rdname knit_print_set_headers
+#' @noRd
 h_knit_print_set_headers.DataParts <- function(x, param, summarise, ...) {
   if (!("col.names" %in% names(param))) {
     if (summarise == "none") {
@@ -117,7 +125,29 @@ registerS3method(
   h_knit_print_set_headers.DataParts
 )
 
-#' @internal
+#' @description `r lifecycle::badge("experimental")`
+#' @noRd
+h_knit_print_set_headers.DataOrdinal <- function(x, param, summarise, ...) {
+  if (!("col.names" %in% names(param))) {
+    if (summarise == "none") {
+      param[["col.names"]] <- c("ID", "Cohort", "Dose", paste0("Cat", 0:(length(x@yCategories) - 1)))
+    } else if (summarise == "dose") {
+      param[["col.names"]] <- c("Dose", "Evaluable", names(x@yCategories))
+    } else {
+      param[["col.names"]] <- c("Cohort", "Evaluable", names(x@yCategories))
+    }
+  }
+  param
+}
+registerS3method(
+  "h_knit_print_set_headers",
+  "DataOrdinal",
+  h_knit_print_set_headers.DataOrdinal
+)
+
+#' @description `r lifecycle::badge("experimental")`
+#' @rdname knit_print_set_headers
+#' @noRd
 h_knit_print_set_headers.DataDual <- function(x, param, summarise, ...) {
   if (!("col.names" %in% names(param))) {
     if (summarise == "none") {
@@ -136,12 +166,21 @@ registerS3method(
   h_knit_print_set_headers.DataDual
 )
 
-#' @internal
+#' Select Columns to Print in Custom `knit_print` Methods
+#'
+#' This is a helper method used `knit_print` for `crmPack` classes.
+#'
+#' @param x (`ANY`)\cr object that will be printed
+#' @param ... Not used at present.
+#' @return A tidied version of `x`, containing only the selected columns.
+#' @noRd
 h_knit_print_select_columns <- function(x, ...) {
   UseMethod("h_knit_print_select_columns")
 }
 
-#' @internal
+#' @description `r lifecycle::badge("experimental")`
+#' @rdname knit_print_select_columns
+#' @noRd
 h_knit_print_select_columns.GeneralData <- function(x, ...) {
   x %>%
     tidy() %>%
@@ -153,7 +192,9 @@ registerS3method(
   h_knit_print_select_columns.GeneralData
 )
 
-#' @internal
+#' @description `r lifecycle::badge("experimental")`
+#' @rdname knit_print_select_columns
+#' @noRd
 h_knit_print_select_columns.Data <- function(x, ...) {
   x %>%
     tidy() %>%
@@ -165,7 +206,9 @@ registerS3method(
   h_knit_print_select_columns.Data
 )
 
-#' @internal
+#' @description `r lifecycle::badge("experimental")`
+#' @rdname knit_print_select_columns
+#' @noRd
 h_knit_print_select_columns.DataParts <- function(x, ...) {
   x %>%
     tidy() %>%
@@ -177,7 +220,23 @@ registerS3method(
   h_knit_print_select_columns.DataParts
 )
 
-#' @internal
+#' @description `r lifecycle::badge("experimental")`
+#' @rdname knit_print_select_columns
+#' @noRd
+h_knit_print_select_columns.DataOrdinal <- function(x, ...) {
+  x %>%
+    tidy() %>%
+    dplyr::select(ID,	Cohort,	Dose, tidyselect::starts_with("Cat"))
+}
+registerS3method(
+  "h_knit_print_select_columns",
+  "DataOrdinal",
+  h_knit_print_select_columns.DataOrdinal
+)
+
+#' @description `r lifecycle::badge("experimental")`
+#' @rdname knit_print_select_columns
+#' @noRd
 h_knit_print_select_columns.DataDA <- function(x, param, summarise, ...) {
   x %>%
     tidy() %>%
@@ -189,7 +248,9 @@ registerS3method(
   h_knit_print_select_columns.DataDA
 )
 
-#' @internal
+#' @description `r lifecycle::badge("experimental")`
+#' @rdname knit_print_select_columns
+#' @noRd
 h_knit_print_select_columns.DataGrouped <- function(x, param, summarise, ...) {
   x %>%
     tidy() %>%
@@ -201,7 +262,9 @@ registerS3method(
   h_knit_print_select_columns.DataGrouped
 )
 
-#' @internal
+#' @description `r lifecycle::badge("experimental")`
+#' @rdname knit_print_select_columns
+#' @noRd
 h_knit_print_select_columns.DataDual <- function(x, param, summarise, ...) {
   x %>%
     tidy() %>%
@@ -213,12 +276,23 @@ registerS3method(
   h_knit_print_select_columns.DataDual
 )
 
-#' @internal
+#' Summarise a `Data` Object by Dose or Cohort for Display in Custom `knit_print` Methods
+#'
+#' This is a helper method used `knit_print` for `crmPack` classes.
+#'
+#' @param x (`ANY`)\cr object that will be printed
+#' @param full_grid (`flag`)\cr Should the full grid be included or only those
+#' doses with at least one evaluable participant?
+#' @param ... Not used at present.
+#' @return A tibble containing the summarised data
+#' @noRd
 h_knit_print_summarise <- function(x, summarise, full_grid, ...) {
   UseMethod("h_knit_print_summarise")
 }
 
-#' @internal
+#' @description `r lifecycle::badge("experimental")`
+#' @rdname knit_print_summarise
+#' @noRd
 h_knit_print_summarise.GeneralData <- function(x, summarise, full_grid, ...) {
   xTidy <- x %>% tidy()
   xTidy <- xTidy %>%
@@ -227,7 +301,7 @@ h_knit_print_summarise.GeneralData <- function(x, summarise, full_grid, ...) {
       N = dplyr::n(),
       ToxCount = sum(Tox)
     )
-  if (full_grid & summarise == "dose") {
+  if (full_grid && summarise == "dose") {
     xTidy <- xTidy %>%
       tidyr::complete(
         Dose = x@doseGrid,
@@ -242,7 +316,44 @@ registerS3method(
   h_knit_print_summarise.GeneralData
 )
 
-#' @internal
+#' @description `r lifecycle::badge("experimental")`
+#' @rdname knit_print_summarise
+#' @noRd
+h_knit_print_summarise.DataOrdinal <- function(x, summarise, full_grid, ...) {
+  xTidy <- x %>% tidy()
+  xTidy <- xTidy %>%
+    dplyr::group_by(Dose) %>%
+    dplyr::summarise(
+      N = dplyr::n(),
+      dplyr::across(tidyselect::starts_with("Cat"), sum)
+    )
+  if (full_grid && summarise == "dose") {
+    replace_list <- as.list(
+      c(
+        "N",
+        names(xTidy)[which(stringr::str_detect(names(xTidy), "Cat\\d+"))]
+      )
+    )
+    # Create a list whose names are the columns in which we need to replace NAs
+    # and whose values are 0
+    names(replace_list) <- sapply(replace_list, \(x) x)
+    replace_list <- lapply(replace_list, \(x) 0)
+    # Expand the tibble and do the replacement
+    xTidy <- tidyr::expand_grid(Dose = x@doseGrid) %>%
+      dplyr::left_join(xTidy, by = "Dose") %>%
+      tidyr::replace_na(replace_list)
+  }
+  xTidy
+}
+registerS3method(
+  "h_knit_print_summarise",
+  "DataOrdinal",
+  h_knit_print_summarise.DataOrdinal
+)
+
+#' @description `r lifecycle::badge("experimental")`
+#' @rdname knit_print_summarise
+#' @noRd
 h_knit_print_summarise.DataGrouped <- function(x, summarise, full_grid, ...) {
   xTidy <- x %>% tidy()
   xTidy <- xTidy %>%
@@ -251,8 +362,8 @@ h_knit_print_summarise.DataGrouped <- function(x, summarise, full_grid, ...) {
       N = dplyr::n(),
       ToxCount = sum(Tox)
     )
-  if (full_grid & summarise == "dose") {
-    xTidy <-tidyr::expand_grid(
+  if (full_grid && summarise == "dose") {
+    xTidy <- tidyr::expand_grid(
       Dose = x@doseGrid,
       Group = c("mono", "combo")
     ) %>%
@@ -267,7 +378,6 @@ registerS3method(
   h_knit_print_summarise.DataGrouped
 )
 
-
 #' Print a `GeneralData` Object in a Markdown or Quarto Chunk
 #'
 #' @param labels (`character`)\cr How to describe the participants in the trial.
@@ -276,7 +386,7 @@ registerS3method(
 #' or simply those doses for whom at least one evaluable participant is available?
 #' Ignored unless `summarise == "dose"`.
 #' @param summarise (`character`)\cr How to summarise the observed data.  The default,
-#' `"none"`, lists observed data at the particpant level.  `"dose"` presents
+#' `"none"`, lists observed data at the participant level.  `"dose"` presents
 #' participant counts by dose and `"cohort"` by cohort.
 #' @param summarize (`character`)\cr Synonym for `summarise`
 #' @param format_func (`function`)\cr The function used to format the participant table.
@@ -313,7 +423,7 @@ knit_print.GeneralData <- function(
   summarise <- match.arg(summarise)
   summarize <- match.arg(summarize)
 
-  if (is.na(summarise) | is.null(summarise)) {
+  if (is.na(summarise) || is.null(summarise)) {
     summarise <- summarize
   }
   assert_choice(summarise, c("none", "dose", "cohort"))
@@ -345,7 +455,7 @@ knit_print.GeneralData <- function(
   rv <- paste0(
     rv,
     paste0(
-      "The dose grid is ",
+      "\n\nThe dose grid is ",
       h_get_formatted_dosegrid(
         grid = x@doseGrid,
         units = units
@@ -388,4 +498,3 @@ knit_print.DataParts <- function(
   rv
 }
 registerS3method("knit_print", "DataParts", knit_print.DataParts)
-
