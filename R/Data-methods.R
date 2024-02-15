@@ -952,7 +952,7 @@ setMethod(
       Cohort = 0,
       Dose = x@xshare,
       Tox = as.logical(x@yshare),
-      ID = sort(1:length(x@xshare)),
+      ID = sort(seq_along(x@xshare)),
       Placebo = x@placebo,
       NObs = x@nObs,
       NGrid = x@nGrid,
@@ -1001,7 +1001,7 @@ setMethod(
         names_prefix = "Cat",
         values_fill = 0
       ) %>%
-      dplyr::mutate(dplyr::across(tidyselect::matches("Cat\\d+"), \(.) . > 0)) %>%
+      dplyr::mutate(dplyr::across(tidyselect::matches("Cat\\d+"), \(x) x > 0)) %>%
       h_tidy_class(x)
   }
 )
