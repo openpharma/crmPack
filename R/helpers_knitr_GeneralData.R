@@ -56,11 +56,6 @@ h_knit_print_set_headers.GeneralData <- function(x, param, summarise, ...) {
   }
   param
 }
-registerS3method(
-  "h_knit_print_set_headers",
-  "GeneralData",
-  h_knit_print_set_headers.GeneralData
-)
 
 #' @description `r lifecycle::badge("experimental")`
 #' @rdname knit_print_set_headers
@@ -184,7 +179,7 @@ h_knit_print_select_columns <- function(x, ...) {
 h_knit_print_select_columns.GeneralData <- function(x, ...) {
   x %>%
     tidy() %>%
-    dplyr::select(ID, Cohort, Dose, Tox)
+    dplyr::select(.data$ID, .data$Cohort, .data$Dose, .data$Tox)
 }
 registerS3method(
   "h_knit_print_select_columns",
@@ -198,7 +193,7 @@ registerS3method(
 h_knit_print_select_columns.Data <- function(x, ...) {
   x %>%
     tidy() %>%
-    dplyr::select(ID, Cohort, Dose, Tox)
+    dplyr::select(.data$ID, .data$Cohort, .data$Dose, .data$Tox)
 }
 registerS3method(
   "h_knit_print_select_columns",
@@ -212,7 +207,7 @@ registerS3method(
 h_knit_print_select_columns.DataParts <- function(x, ...) {
   x %>%
     tidy() %>%
-    dplyr::select(ID, Part, Cohort, Dose, Tox)
+    dplyr::select(.data$ID, .data$Part, .data$Cohort, .data$Dose, .data$Tox)
 }
 registerS3method(
   "h_knit_print_select_columns",
@@ -226,7 +221,7 @@ registerS3method(
 h_knit_print_select_columns.DataOrdinal <- function(x, ...) {
   x %>%
     tidy() %>%
-    dplyr::select(ID, Cohort, Dose, tidyselect::starts_with("Cat"))
+    dplyr::select(.data$ID, .data$Cohort, .data$Dose, tidyselect::starts_with("Cat"))
 }
 registerS3method(
   "h_knit_print_select_columns",
@@ -240,7 +235,7 @@ registerS3method(
 h_knit_print_select_columns.DataDA <- function(x, param, summarise, ...) {
   x %>%
     tidy() %>%
-    dplyr::select(ID, Cohort, Dose, Tox, U, T0, TMax)
+    dplyr::select(.data$ID, .data$Cohort, .data$Dose, .data$Tox, .data$U, .data$T0, .data$TMax)
 }
 registerS3method(
   "h_knit_print_select_columns",
@@ -254,7 +249,7 @@ registerS3method(
 h_knit_print_select_columns.DataGrouped <- function(x, param, summarise, ...) {
   x %>%
     tidy() %>%
-    dplyr::select(ID, Cohort, Dose, Group, Tox)
+    dplyr::select(.data$ID, .data$Cohort, .data$Dose, .data$Group, .data$Tox)
 }
 registerS3method(
   "h_knit_print_select_columns",
@@ -268,7 +263,7 @@ registerS3method(
 h_knit_print_select_columns.DataDual <- function(x, param, summarise, ...) {
   x %>%
     tidy() %>%
-    dplyr::select(ID, Cohort, Dose, Tox, W)
+    dplyr::select(.data$ID, .data$Cohort, .data$Dose, .data$Tox, .data$W)
 }
 registerS3method(
   "h_knit_print_select_columns",
@@ -299,7 +294,7 @@ h_knit_print_summarise.GeneralData <- function(x, summarise, full_grid, ...) {
     dplyr::group_by(.data[[stringr::str_to_title(summarise)]]) %>%
     dplyr::summarise(
       N = dplyr::n(),
-      ToxCount = sum(Tox)
+      ToxCount = sum(.data$Tox)
     )
   if (full_grid && summarise == "dose") {
     xTidy <- xTidy %>%
@@ -322,7 +317,7 @@ registerS3method(
 h_knit_print_summarise.DataOrdinal <- function(x, summarise, full_grid, ...) {
   xTidy <- x %>% tidy()
   xTidy <- xTidy %>%
-    dplyr::group_by(Dose) %>%
+    dplyr::group_by(.data$Dose) %>%
     dplyr::summarise(
       N = dplyr::n(),
       dplyr::across(tidyselect::starts_with("Cat"), sum)
@@ -360,7 +355,7 @@ h_knit_print_summarise.DataGrouped <- function(x, summarise, full_grid, ...) {
     dplyr::group_by(.data[[stringr::str_to_title(summarise)]], Group) %>%
     dplyr::summarise(
       N = dplyr::n(),
-      ToxCount = sum(Tox)
+      ToxCount = sum(.data$Tox)
     )
   if (full_grid && summarise == "dose") {
     xTidy <- tidyr::expand_grid(
