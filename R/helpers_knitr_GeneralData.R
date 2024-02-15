@@ -1,10 +1,10 @@
-# Data
 # DataOrdinal
-# DataDual
-# DataParts
-# DataMixture
-# DataDA
-# DataGrouped
+# DataDual     Done
+# DataParts    Done
+# DataMixture  Done
+# DataDA       Done
+# DataGrouped  Done
+# Data         Done
 
 #' Format a `doseGrid` for Printing
 #'
@@ -33,10 +33,242 @@ h_get_formatted_dosegrid <- function(grid, units = NA) {
     " and ",
     grid[n],
     paste0(units, ".")
-)
+  )
 }
 
-#' Print a `Data` Object in a Markdown or Quarto Chunk
+#' @internal
+h_knit_print_set_headers <- function(x, param, summarise, ...) {
+  UseMethod("h_knit_print_set_headers")
+}
+
+#' @internal
+h_knit_print_set_headers.GeneralData <- function(x, param, summarise, ...) {
+  if (!("col.names" %in% names(param))) {
+    if (summarise == "none") {
+      param[["col.names"]] <- c("ID", "Cohort", "Dose", "DLT?")
+    } else if (summarise == "dose") {
+      param[["col.names"]] <- c("Dose", "Evaluable", "With Toxicities")
+    } else {
+      param[["col.names"]] <- c("Cohort", "Evaluable", "With Toxicities")
+    }
+  }
+  param
+}
+registerS3method(
+  "h_knit_print_set_headers",
+  "GeneralData",
+  h_knit_print_set_headers.GeneralData
+)
+
+#' @internal
+h_knit_print_set_headers.DataDA <- function(x, param, summarise, ...) {
+  if (!("col.names" %in% names(param))) {
+    if (summarise == "none") {
+      param[["col.names"]] <- c("ID", "Cohort", "Dose", "Tox", "U", "T0", "TMax")
+    } else if (summarise == "dose") {
+      param[["col.names"]] <- c("Dose", "Evaluable", "With Toxicities")
+    } else {
+      param[["col.names"]] <- c("Cohort", "Evaluable", "With Toxicities")
+    }
+  }
+  param
+}
+registerS3method(
+  "h_knit_print_set_headers",
+  "DataDA",
+  h_knit_print_set_headers.DataDA
+)
+
+#' @internal
+h_knit_print_set_headers.DataGrouped <- function(x, param, summarise, ...) {
+  if (!("col.names" %in% names(param))) {
+    if (summarise == "none") {
+      param[["col.names"]] <- c("ID", "Cohort", "Dose", "Group", "Tox")
+    } else if (summarise == "dose") {
+      param[["col.names"]] <- c("Dose", "Group", "Evaluable", "With Toxicities")
+    } else {
+      param[["col.names"]] <- c("Cohort", "Group", "Evaluable", "With Toxicities")
+    }
+  }
+  param
+}
+registerS3method(
+  "h_knit_print_set_headers",
+  "DataGrouped",
+  h_knit_print_set_headers.DataGrouped
+)
+
+#' @internal
+h_knit_print_set_headers.DataParts <- function(x, param, summarise, ...) {
+  if (!("col.names" %in% names(param))) {
+    if (summarise == "none") {
+      param[["col.names"]] <- c("ID", "Part", "Cohort", "Dose", "Tox")
+    } else if (summarise == "dose") {
+      param[["col.names"]] <- c("Dose", "Evaluable", "With Toxicities")
+    } else {
+      param[["col.names"]] <- c("Cohort", "Evaluable", "With Toxicities")
+    }
+  }
+  param
+}
+registerS3method(
+  "h_knit_print_set_headers",
+  "DataParts",
+  h_knit_print_set_headers.DataParts
+)
+
+#' @internal
+h_knit_print_set_headers.DataDual <- function(x, param, summarise, ...) {
+  if (!("col.names" %in% names(param))) {
+    if (summarise == "none") {
+      param[["col.names"]] <- c("ID", "Cohort", "Dose", "Tox", "W")
+    } else if (summarise == "dose") {
+      param[["col.names"]] <- c("Dose", "Evaluable", "With Toxicities")
+    } else {
+      param[["col.names"]] <- c("Cohort", "Evaluable", "With Toxicities")
+    }
+  }
+  param
+}
+registerS3method(
+  "h_knit_print_set_headers",
+  "DataDual",
+  h_knit_print_set_headers.DataDual
+)
+
+#' @internal
+h_knit_print_select_columns <- function(x, ...) {
+  UseMethod("h_knit_print_select_columns")
+}
+
+#' @internal
+h_knit_print_select_columns.GeneralData <- function(x, ...) {
+  x %>%
+    tidy() %>%
+    dplyr::select(ID,	Cohort,	Dose, Tox)
+}
+registerS3method(
+  "h_knit_print_select_columns",
+  "GeneralData",
+  h_knit_print_select_columns.GeneralData
+)
+
+#' @internal
+h_knit_print_select_columns.Data <- function(x, ...) {
+  x %>%
+    tidy() %>%
+    dplyr::select(ID,	Cohort,	Dose, Tox)
+}
+registerS3method(
+  "h_knit_print_select_columns",
+  "Data",
+  h_knit_print_select_columns.Data
+)
+
+#' @internal
+h_knit_print_select_columns.DataParts <- function(x, ...) {
+  x %>%
+    tidy() %>%
+    dplyr::select(ID,	Part, Cohort,	Dose, Tox)
+}
+registerS3method(
+  "h_knit_print_select_columns",
+  "DataParts",
+  h_knit_print_select_columns.DataParts
+)
+
+#' @internal
+h_knit_print_select_columns.DataDA <- function(x, param, summarise, ...) {
+  x %>%
+    tidy() %>%
+    dplyr::select(ID,	Cohort,	Dose, Tox, U, T0, TMax)
+}
+registerS3method(
+  "h_knit_print_select_columns",
+  "DataDA",
+  h_knit_print_select_columns.DataDA
+)
+
+#' @internal
+h_knit_print_select_columns.DataGrouped <- function(x, param, summarise, ...) {
+  x %>%
+    tidy() %>%
+    dplyr::select(ID,	Cohort,	Dose, Group, Tox)
+}
+registerS3method(
+  "h_knit_print_select_columns",
+  "DataGrouped",
+  h_knit_print_select_columns.DataGrouped
+)
+
+#' @internal
+h_knit_print_select_columns.DataDual <- function(x, param, summarise, ...) {
+  x %>%
+    tidy() %>%
+    dplyr::select(ID,	Cohort,	Dose, Tox, W)
+}
+registerS3method(
+  "h_knit_print_select_columns",
+  "DataDual",
+  h_knit_print_select_columns.DataDual
+)
+
+#' @internal
+h_knit_print_summarise <- function(x, summarise, full_grid, ...) {
+  UseMethod("h_knit_print_summarise")
+}
+
+#' @internal
+h_knit_print_summarise.GeneralData <- function(x, summarise, full_grid, ...) {
+  xTidy <- x %>% tidy()
+  xTidy <- xTidy %>%
+    dplyr::group_by(.data[[stringr::str_to_title(summarise)]]) %>%
+    dplyr::summarise(
+      N = dplyr::n(),
+      ToxCount = sum(Tox)
+    )
+  if (full_grid & summarise == "dose") {
+    xTidy <- xTidy %>%
+      tidyr::complete(
+        Dose = x@doseGrid,
+        fill = list(ToxCount = 0, N = 0)
+      )
+  }
+  xTidy
+}
+registerS3method(
+  "h_knit_print_summarise",
+  "GeneralData",
+  h_knit_print_summarise.GeneralData
+)
+
+#' @internal
+h_knit_print_summarise.DataGrouped <- function(x, summarise, full_grid, ...) {
+  xTidy <- x %>% tidy()
+  xTidy <- xTidy %>%
+    dplyr::group_by(.data[[stringr::str_to_title(summarise)]], Group) %>%
+    dplyr::summarise(
+      N = dplyr::n(),
+      ToxCount = sum(Tox)
+    )
+  if (full_grid & summarise == "dose") {
+    xTidy <-tidyr::expand_grid(
+      Dose = x@doseGrid,
+      Group = c("mono", "combo")
+    ) %>%
+      dplyr::left_join(xTidy, by = c("Dose", "Group")) %>%
+      tidyr::replace_na(list(N = 0, ToxCount = 0))
+  }
+  xTidy
+}
+registerS3method(
+  "h_knit_print_summarise",
+  "DataGrouped",
+  h_knit_print_summarise.DataGrouped
+)
+
+
+#' Print a `GeneralData` Object in a Markdown or Quarto Chunk
 #'
 #' @param labels (`character`)\cr How to describe the participants in the trial.
 #' See Usage Notes below.
@@ -92,41 +324,17 @@ knit_print.GeneralData <- function(
   param <- list(...)
 
   # Execute
-  xTidy <- tidy(x)
+  param <- h_knit_print_set_headers(x, param, summarise, ...)
   if (summarise == "none") {
-    if (!("col.names" %in% names(param))) {
-      param[["col.names"]] <- c("ID", "Cohort", "Dose", "DLT?")
-    }
     if (!("caption" %in% names(param))) {
       param[["caption"]] <- paste("Evaluable", labels[2], "to-date")
     }
-    xTidy <- xTidy %>%
-      dplyr::select(ID,	Cohort,	Dose, Tox)
+    xTidy <- h_knit_print_select_columns(x)
   } else {
-    xTidy <- xTidy %>%
-      dplyr::group_by(.data[[stringr::str_to_title(summarise)]]) %>%
-      dplyr::summarise(
-        N = dplyr::n(),
-        ToxCount = sum(Tox)
-      )
-    if (full_grid & summarise == "dose") {
-      xTidy <- xTidy %>%
-        tidyr::complete(
-          Dose = x@doseGrid,
-          fill = list(ToxCount = 0, N = 0)
-        )
-    }
-    if (!("col.names" %in% names(param))) {
-      if (summarise == "dose") {
-        param[["col.names"]] <- c("Dose", "Evaluable", "With Toxicities")
-      } else {
-        param[["col.names"]] <- c("Cohort", "Evaluable", "With Toxicities")
-      }
-    }
+    xTidy <- h_knit_print_summarise(x, summarise, full_grid)
     if (!("caption" %in% names(param))) {
       param[["caption"]] <- paste0("Summarised by ", summarise)
     }
-
   }
   param[["x"]] <- xTidy
   rv <- ifelse(
@@ -140,16 +348,44 @@ knit_print.GeneralData <- function(
       "The dose grid is ",
       h_get_formatted_dosegrid(
         grid = x@doseGrid,
-        units = "mg/kg"
+        units = units
       ),
       ""
     ),
     collpase = "<br>"
   )
-
   if (asis) {
     rv <- knitr::asis_output(rv)
   }
   rv
 }
 registerS3method("knit_print", "GeneralData", knit_print.GeneralData)
+
+
+
+
+knit_print.DataParts <- function(
+    x, ..., asis = TRUE,
+    labels = c("participant", "participants"),
+    full_grid = FALSE,
+    summarise = c("none", "dose", "cohort"),
+    summarize = summarise,
+    units = NA,
+    format_func = function(x) x
+) {
+  rv <- NextMethod()
+  rv <- paste0(
+    rv,
+    paste0(
+      "\n\nThe part 1 ladder is ",
+      h_get_formatted_dosegrid(x@part1Ladder, units)
+    ),
+    paste0("\n\nThe next part is Part ", x@nextPart, ".")
+  )
+  if (asis) {
+    rv <- knitr::asis_output(rv)
+  }
+  rv
+}
+registerS3method("knit_print", "DataParts", knit_print.DataParts)
+

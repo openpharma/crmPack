@@ -1,0 +1,49 @@
+---
+title: "Delete me please"
+format: html
+embed-resources: TRUE
+editor: visual
+---
+
+```{r}
+#| error: TRUE
+devtools::load_all()
+
+# Test data
+x <- .DefaultDataDual()
+x
+
+# Empty data
+DataDual(doseGrid = x@doseGrid)
+
+# No change
+knit_print(x, full_grid = FALSE)
+
+# Full grid
+knit_print(x, full_grid = TRUE, summarise = "dose")
+
+
+# Formatted
+knit_print(
+  x,
+  full_grid = FALSE,
+  digits = c(0, 0, 1, NA, 3),
+  format_func = function(x) {
+    kable_styling(x, bootstrap_options = c("striped", "hover", "condensed"))
+  }
+)
+
+# Summarised by dose
+knit_print(x, full_grid = FALSE, summarise = "dose")
+
+# Summarised by cohort and formatted
+knit_print(
+  x,
+  full_grid = FALSE,
+  summarise = "cohort",
+  format_func = function(x) {
+    kable_styling(x, bootstrap_options = c("striped", "hover", "condensed"))
+  }
+)
+
+```

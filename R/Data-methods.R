@@ -926,7 +926,6 @@ setMethod(
   }
 )
 
-
 ## DataMixture ----
 
 #' Tidy Method for the [`DataMixture`] Class
