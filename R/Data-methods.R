@@ -782,3 +782,227 @@ setMethod(
     h_obtain_dose_grid_range(object, ignore_placebo)
   }
 )
+
+# tidy ----
+
+## GeneralData ----
+
+#' Tidy Method for the [`GeneralData`] Class
+#'
+#' @description `r lifecycle::badge("experimental")`
+#'
+#' A method that tidies a [`GeneralData`] object.
+#'
+#' @return The [`tibble`] object.
+#'
+#' @aliases tidy-GeneralData
+#' @rdname tidy-GeneralData
+#' @export
+#' @example examples/GeneralData-method-tidy.R
+#'
+setMethod(
+  f = "tidy",
+  signature = signature(x = "GeneralData"),
+  definition = function(x, ...) {
+    d <- tibble::tibble(
+      ID = x@ID,
+      Cohort = x@cohort,
+      Dose = x@x,
+      XLevel = x@xLevel,
+      Tox = as.logical(x@y),
+      Placebo = x@placebo,
+      NObs = x@nObs,
+      NGrid = x@nGrid,
+      DoseGrid = list(x@doseGrid)
+    ) %>% h_tidy_class(x)
+  }
+)
+
+## DataGrouped ----
+
+#' Tidy Method for the [`DataGrouped`] Class
+#'
+#' @description `r lifecycle::badge("experimental")`
+#'
+#' A method that tidies a [`DataGrouped`] object.
+#'
+#' @return The [`tibble`] object.
+#'
+#' @aliases tidy-DataGrouped
+#' @rdname tidy-GeneralData
+#' @export
+#' @example examples/GeneralData-method-tidy.R
+#'
+setMethod(
+  f = "tidy",
+  signature = signature(x = "DataGrouped"),
+  definition = function(x, ...) {
+    d <- callNextMethod()
+    d %>%
+      tibble::add_column(Group = x@group) %>%
+      h_tidy_class(x)
+  }
+)
+
+## DataDA ----
+
+#' Tidy Method for the [`DataDA`] Class
+#'
+#' @description `r lifecycle::badge("experimental")`
+#'
+#' A method that tidies a [`DataDA`] object.
+#'
+#' @return The [`tibble`] object.
+#'
+#' @aliases tidy-DataDA
+#' @rdname tidy-DataDA
+#' @export
+#' @example examples/GeneralData-method-tidy.R
+#'
+setMethod(
+  f = "tidy",
+  signature = signature(x = "DataDA"),
+  definition = function(x, ...) {
+    d <- callNextMethod()
+    d %>%
+      tibble::add_column(U = x@u) %>%
+      tibble::add_column(T0 = x@t0) %>%
+      tibble::add_column(TMax = x@Tmax) %>%
+      h_tidy_class(x)
+  }
+)
+
+## DataDA ----
+
+#' Tidy Method for the [`DataDual`] Class
+#'
+#' @description `r lifecycle::badge("experimental")`
+#'
+#' A method that tidies a [`DataDual`] object.
+#'
+#' @return The [`tibble`] object.
+#'
+#' @aliases tidy-DataDual
+#' @rdname tidy-DataDual
+#' @export
+#' @example examples/GeneralData-method-tidy.R
+#'
+setMethod(
+  f = "tidy",
+  signature = signature(x = "DataDual"),
+  definition = function(x, ...) {
+    d <- callNextMethod()
+    d %>%
+      tibble::add_column(W = x@w) %>%
+      h_tidy_class(x)
+  }
+)
+
+## DataParts ----
+
+#' Tidy Method for the [`DataParts`] Class
+#'
+#' @description `r lifecycle::badge("experimental")`
+#'
+#' A method that tidies a [`DataParts`] object.
+#'
+#' @return The [`tibble`] object.
+#'
+#' @aliases tidy-DataParts
+#' @rdname tidy-DataParts
+#' @export
+#' @example examples/GeneralData-method-tidy.R
+#'
+setMethod(
+  f = "tidy",
+  signature = signature(x = "DataParts"),
+  definition = function(x, ...) {
+    d <- callNextMethod()
+    d %>%
+      tibble::add_column(Part = x@part) %>%
+      tibble::add_column(NextPart = x@nextPart) %>%
+      tibble::add_column(Part1Ladder = list(x@part1Ladder)) %>%
+      h_tidy_class(x)
+  }
+)
+
+## DataMixture ----
+
+#' Tidy Method for the [`DataMixture`] Class
+#'
+#' @description `r lifecycle::badge("experimental")`
+#'
+#' A method that tidies a [`DataMixture`] object.
+#' @section Usage Notes:
+#' The prior observations are indicated by a `Cohort` value of `0` in the returned
+#' `tibble`.
+#' @return The [`tibble`] object.
+#'
+#' @aliases tidy-DataMixture
+#' @rdname tidy-DataMixture
+#' @export
+#' @example examples/GeneralData-method-tidy.R
+#'
+setMethod(
+  f = "tidy",
+  signature = signature(x = "DataMixture"),
+  definition = function(x, ...) {
+    observed <- callNextMethod()
+    tibble::tibble(
+      Cohort = 0,
+      Dose = x@xshare,
+      Tox = as.logical(x@yshare),
+      ID = sort(1:length(x@xshare)),
+      Placebo = x@placebo,
+      NObs = x@nObs,
+      NGrid = x@nGrid,
+      DoseGrid = list(x@doseGrid),
+      XLevel = which(x@doseGrid %in% x@xshare)
+    ) %>%
+    dplyr::bind_rows(observed) %>%
+    h_tidy_class(x)
+  }
+)
+
+
+## DataOrdinal ----
+
+#' Tidy Method for the [`DataMixture`] Class
+#'
+#' @description `r lifecycle::badge("experimental")`
+#'
+#' A method that tidies a [`DataOrdinal`] object.
+#' @section Usage Notes:
+#' @return The [`tibble`] object.
+#'
+#' @aliases tidy-DataOrdinal
+#' @rdname tidy-DataOrdinal
+#' @export
+#' @example examples/GeneralData-method-tidy.R
+#'
+setMethod(
+  f = "tidy",
+  signature = signature(x = "DataOrdinal"),
+  definition = function(x, ...) {
+    tibble::tibble(
+      ID = x@ID,
+      Cohort = x@cohort,
+      Dose = x@x,
+      Tox = x@y,
+      Placebo = x@placebo,
+      NObs = x@nObs,
+      NGrid = x@nGrid,
+      DoseGrid = list(x@doseGrid),
+      XLevel = x@xLevel
+    ) %>%
+    tidyr::pivot_wider(
+      names_from = Tox,
+      values_from = Tox,
+      names_prefix = "Cat",
+      values_fill = 0
+    ) %>%
+    dplyr::mutate(dplyr::across(tidyselect::matches("Cat\\d+"), \(.) . > 0)) %>%
+    h_tidy_class(x)
+  }
+)
+
