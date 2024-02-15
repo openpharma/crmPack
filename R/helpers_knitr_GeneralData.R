@@ -184,7 +184,7 @@ h_knit_print_select_columns <- function(x, ...) {
 h_knit_print_select_columns.GeneralData <- function(x, ...) {
   x %>%
     tidy() %>%
-    dplyr::select(ID,	Cohort,	Dose, Tox)
+    dplyr::select(ID, Cohort, Dose, Tox)
 }
 registerS3method(
   "h_knit_print_select_columns",
@@ -198,7 +198,7 @@ registerS3method(
 h_knit_print_select_columns.Data <- function(x, ...) {
   x %>%
     tidy() %>%
-    dplyr::select(ID,	Cohort,	Dose, Tox)
+    dplyr::select(ID, Cohort, Dose, Tox)
 }
 registerS3method(
   "h_knit_print_select_columns",
@@ -212,7 +212,7 @@ registerS3method(
 h_knit_print_select_columns.DataParts <- function(x, ...) {
   x %>%
     tidy() %>%
-    dplyr::select(ID,	Part, Cohort,	Dose, Tox)
+    dplyr::select(ID, Part, Cohort, Dose, Tox)
 }
 registerS3method(
   "h_knit_print_select_columns",
@@ -226,7 +226,7 @@ registerS3method(
 h_knit_print_select_columns.DataOrdinal <- function(x, ...) {
   x %>%
     tidy() %>%
-    dplyr::select(ID,	Cohort,	Dose, tidyselect::starts_with("Cat"))
+    dplyr::select(ID, Cohort, Dose, tidyselect::starts_with("Cat"))
 }
 registerS3method(
   "h_knit_print_select_columns",
@@ -240,7 +240,7 @@ registerS3method(
 h_knit_print_select_columns.DataDA <- function(x, param, summarise, ...) {
   x %>%
     tidy() %>%
-    dplyr::select(ID,	Cohort,	Dose, Tox, U, T0, TMax)
+    dplyr::select(ID, Cohort, Dose, Tox, U, T0, TMax)
 }
 registerS3method(
   "h_knit_print_select_columns",
@@ -254,7 +254,7 @@ registerS3method(
 h_knit_print_select_columns.DataGrouped <- function(x, param, summarise, ...) {
   x %>%
     tidy() %>%
-    dplyr::select(ID,	Cohort,	Dose, Group, Tox)
+    dplyr::select(ID, Cohort, Dose, Group, Tox)
 }
 registerS3method(
   "h_knit_print_select_columns",
@@ -268,7 +268,7 @@ registerS3method(
 h_knit_print_select_columns.DataDual <- function(x, param, summarise, ...) {
   x %>%
     tidy() %>%
-    dplyr::select(ID,	Cohort,	Dose, Tox, W)
+    dplyr::select(ID, Cohort, Dose, Tox, W)
 }
 registerS3method(
   "h_knit_print_select_columns",
@@ -413,8 +413,7 @@ knit_print.GeneralData <- function(
     summarise = c("none", "dose", "cohort"),
     summarize = summarise,
     units = NA,
-    format_func = function(x) x
-  ) {
+    format_func = function(x) x) {
   # Validate
   assert_character(labels, max.len = 2, any.missing = FALSE)
   assert_flag(asis)
@@ -481,8 +480,7 @@ knit_print.DataParts <- function(
     summarise = c("none", "dose", "cohort"),
     summarize = summarise,
     units = NA,
-    format_func = function(x) x
-) {
+    format_func = function(x) x) {
   rv <- NextMethod()
   rv <- paste0(
     rv,
