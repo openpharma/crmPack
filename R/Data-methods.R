@@ -959,8 +959,8 @@ setMethod(
       DoseGrid = list(x@doseGrid),
       XLevel = which(x@doseGrid %in% x@xshare)
     ) %>%
-    dplyr::bind_rows(observed) %>%
-    h_tidy_class(x)
+      dplyr::bind_rows(observed) %>%
+      h_tidy_class(x)
   }
 )
 
@@ -995,14 +995,13 @@ setMethod(
       DoseGrid = list(x@doseGrid),
       XLevel = x@xLevel
     ) %>%
-    tidyr::pivot_wider(
-      names_from = Tox,
-      values_from = Tox,
-      names_prefix = "Cat",
-      values_fill = 0
-    ) %>%
-    dplyr::mutate(dplyr::across(tidyselect::matches("Cat\\d+"), \(.) . > 0)) %>%
-    h_tidy_class(x)
+      tidyr::pivot_wider(
+        names_from = Tox,
+        values_from = Tox,
+        names_prefix = "Cat",
+        values_fill = 0
+      ) %>%
+      dplyr::mutate(dplyr::across(tidyselect::matches("Cat\\d+"), \(.) . > 0)) %>%
+      h_tidy_class(x)
   }
 )
-
