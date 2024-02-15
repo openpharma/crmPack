@@ -796,7 +796,7 @@ setMethod(
 #' @return The [`tibble`] object.
 #'
 #' @aliases tidy-GeneralData
-#' @rdname tidy-GeneralData
+#' @rdname tidy
 #' @export
 #' @example examples/GeneralData-method-tidy.R
 #'
@@ -829,7 +829,7 @@ setMethod(
 #' @return The [`tibble`] object.
 #'
 #' @aliases tidy-DataGrouped
-#' @rdname tidy-GeneralData
+#' @rdname tidy
 #' @export
 #' @example examples/GeneralData-method-tidy.R
 #'
@@ -855,7 +855,7 @@ setMethod(
 #' @return The [`tibble`] object.
 #'
 #' @aliases tidy-DataDA
-#' @rdname tidy-DataDA
+#' @rdname tidy
 #' @export
 #' @example examples/GeneralData-method-tidy.R
 #'
@@ -883,7 +883,7 @@ setMethod(
 #' @return The [`tibble`] object.
 #'
 #' @aliases tidy-DataDual
-#' @rdname tidy-DataDual
+#' @rdname tidy
 #' @export
 #' @example examples/GeneralData-method-tidy.R
 #'
@@ -909,7 +909,7 @@ setMethod(
 #' @return The [`tibble`] object.
 #'
 #' @aliases tidy-DataParts
-#' @rdname tidy-DataParts
+#' @rdname tidy
 #' @export
 #' @example examples/GeneralData-method-tidy.R
 #'
@@ -939,7 +939,7 @@ setMethod(
 #' @return The [`tibble`] object.
 #'
 #' @aliases tidy-DataMixture
-#' @rdname tidy-DataMixture
+#' @rdname tidy
 #' @export
 #' @example examples/GeneralData-method-tidy.R
 #'
@@ -976,7 +976,7 @@ setMethod(
 #' @return The [`tibble`] object.
 #'
 #' @aliases tidy-DataOrdinal
-#' @rdname tidy-DataOrdinal
+#' @rdname tidy
 #' @export
 #' @example examples/GeneralData-method-tidy.R
 #'

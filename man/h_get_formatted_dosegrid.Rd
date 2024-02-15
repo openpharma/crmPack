@@ -20,4 +20,4 @@ is \code{c(1, 2, 3)} and \code{units} is \code{"mg"}, the returned value is \cod
 \description{
 Format a \code{doseGrid} for Printing
 }
-\keyword{Internal}
+\keyword{internal}

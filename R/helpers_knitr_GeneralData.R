@@ -6,7 +6,7 @@
 #' default, `NA`, omits the units.
 #' @return A character string containing the formatted dose grid.  If the grid
 #' is `c(1, 2, 3)` and `units` is `"mg"`, the returned value is `"1 mg, 2 mg and 3 mg"`.
-#' @keywords Internal
+#' @keywords internal
 h_get_formatted_dosegrid <- function(grid, units = NA) {
   assert_numeric(grid, lower = 0, min.len = 2, unique = TRUE, finite = TRUE, sorted = TRUE, any.missing = FALSE)
   assert_character(units, len = 1)
