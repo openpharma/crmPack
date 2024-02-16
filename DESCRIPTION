@@ -57,6 +57,7 @@ Imports:
     rlang,
     survival,
     tibble,
+    tidyselect,
     tools,
     utils
 Suggests:
@@ -119,6 +120,7 @@ Collate:
     'helpers_design.R'
     'helpers_kintr_Increments.R'
     'helpers_knitr_CohortSize.R'
+    'helpers_knitr_GeneralData.R'
     'helpers_model.R'
     'helpers_samples.R'
     'helpers_simulations.R'

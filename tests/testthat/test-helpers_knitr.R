@@ -205,3 +205,36 @@ test_that("knit_print.IncrementsRelativeParts works correctly", {
     5
   )
 })
+
+# Data ----
+
+test_that("summarise option works correctly for Data classes", {
+  testList <- list(
+    "knit_print_Data_summarise.html" = .DefaultData(),
+    "knit_print_DataDA_summarise.html" = .DefaultDataDA(),
+    "knit_print_DataGrouped_summarise.html" = .DefaultDataDual(),
+    "knit_print_DataGrouped_summarise.html" = .DefaultDataGrouped(),
+    "knit_print_DataMixture_summarise.html" = .DefaultDataMixture(),
+    "knit_print_DataOrdinal_summarise.html" = .DefaultDataOrdinal()
+  )
+
+  for (name in names(testList)) {
+    withr::with_file(
+      test_path("fixtures", name),
+      {
+        rmarkdown::render(
+          input = test_path("fixtures", "knit_print_data_classes_template.Rmd"),
+          params = list("obj" = testList[[name]]),
+          output_file = name,
+          output_dir = test_path("fixtures")
+        )
+        expect_snapshot_file(test_path("fixtures", name))
+      }
+    )
+    # For test coverage stats
+    rv <- knit_print(testList[[name]], summarise = "dose")
+    expect_snapshot_value(rv, style = "serialize")
+    rv <- knit_print(testList[[name]], summarise = "cohort")
+    expect_snapshot_value(rv, style = "serialize")
+  }
+})

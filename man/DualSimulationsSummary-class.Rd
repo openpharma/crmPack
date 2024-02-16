@@ -13,14 +13,15 @@
 \description{
 \ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#stable}{\figure{lifecycle-stable.svg}{options: alt='[Stable]'}}}{\strong{[Stable]}}
 This class captures the summary of dual-endpoint simulations output.
-In comparison to parent class \code{\link{SimulationsSummary}}, it has additional slots.
+In comparison to its parent class \code{\link{SimulationsSummary}}, it has additional slots.
 }
 \section{Slots}{
 
 \describe{
 \item{\code{biomarker_fit_at_dose_most_selected}}{(\code{numeric})\cr fitted biomarker level at most often selected dose.}
 
-\item{\code{mean_biomarker_fit}}{(\code{list})\cr list with average, lower (2.5\%) and upper (97.5\%) quantiles of mean fitted biomarker level at each dose}
+\item{\code{mean_biomarker_fit}}{(\code{list})\cr list with average, lower (2.5\%) and upper (97.5\%) quantiles of
+mean fitted biomarker level at each dose}
 }}
 
 \note{

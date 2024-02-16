@@ -1,0 +1,39 @@
+---
+title: "Test"
+output: html_document
+params:
+  obj: NA
+---
+
+```{r, echo=FALSE}
+suppressPackageStartupMessages({
+  if (file.exists("DESCRIPTION")) {
+    devtools::load_all(export_all = FALSE)
+  } else {
+    library(crmPack)
+  }
+  library(knitr)
+})
+
+print(class(params$obj))
+params$obj
+```
+
+## Participant level
+
+```{r, echo=FALSE}
+params$obj
+```
+
+## Cohort level
+
+```{r, echo=FALSE}
+knit_print(params$obj, summarise = "cohort")
+```
+
+## Dose level
+
+```{r, echo=FALSE}
+knit_print(params$obj, summarise = "dose")
+```
+
