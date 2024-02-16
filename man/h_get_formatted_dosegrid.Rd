@@ -7,7 +7,7 @@
 h_get_formatted_dosegrid(grid, units = NA)
 }
 \arguments{
-\item{grid}{(\code{double})\cr the dose grid}
+\item{grid}{(\code{numeric})\cr the dose grid}
 
 \item{units}{(\code{character})\cr The units in which the values in \code{doseGrid} are
 measured.  Appended to each value in \code{doseGrid} when \code{knit_print}ed.  The

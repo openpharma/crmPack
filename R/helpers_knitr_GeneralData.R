@@ -282,7 +282,7 @@ h_knit_print_summarise.DataOrdinal <- function(x, summarise, full_grid, ...) {
 h_knit_print_summarise.DataGrouped <- function(x, summarise, full_grid, ...) {
   xTidy <- x %>% tidy()
   xTidy <- xTidy %>%
-    dplyr::group_by(.data[[stringr::str_to_title(summarise)]], Group) %>%
+    dplyr::group_by(.data[[stringr::str_to_title(summarise)]], .data$Group) %>%
     dplyr::summarise(
       N = dplyr::n(),
       ToxCount = sum(.data$Tox)

@@ -144,7 +144,8 @@ globalVariables(c(
   "results",
   "k",
   "value",
-  "Parameter"
+  "Parameter",
+  "intervals"
 ))
 
 # nolint end
