@@ -1,6 +1,6 @@
 #' Format a `doseGrid` for Printing
 #'
-#' @param grid (`double`)\cr the dose grid
+#' @param grid (`numeric`)\cr the dose grid
 #' @param units (`character`)\cr The units in which the values in `doseGrid` are
 #' measured.  Appended to each value in `doseGrid` when `knit_print`ed.  The
 #' default, `NA`, omits the units.
@@ -72,11 +72,6 @@ h_knit_print_set_headers.DataDA <- function(x, param, summarise, ...) {
   }
   param
 }
-registerS3method(
-  "h_knit_print_set_headers",
-  "DataDA",
-  h_knit_print_set_headers.DataDA
-)
 
 #' @description `r lifecycle::badge("experimental")`
 #' @rdname knit_print_set_headers
@@ -93,11 +88,6 @@ h_knit_print_set_headers.DataGrouped <- function(x, param, summarise, ...) {
   }
   param
 }
-registerS3method(
-  "h_knit_print_set_headers",
-  "DataGrouped",
-  h_knit_print_set_headers.DataGrouped
-)
 
 #' @description `r lifecycle::badge("experimental")`
 #' @rdname knit_print_set_headers
@@ -114,11 +104,6 @@ h_knit_print_set_headers.DataParts <- function(x, param, summarise, ...) {
   }
   param
 }
-registerS3method(
-  "h_knit_print_set_headers",
-  "DataParts",
-  h_knit_print_set_headers.DataParts
-)
 
 #' @description `r lifecycle::badge("experimental")`
 #' @noRd
@@ -134,11 +119,6 @@ h_knit_print_set_headers.DataOrdinal <- function(x, param, summarise, ...) {
   }
   param
 }
-registerS3method(
-  "h_knit_print_set_headers",
-  "DataOrdinal",
-  h_knit_print_set_headers.DataOrdinal
-)
 
 #' @description `r lifecycle::badge("experimental")`
 #' @rdname knit_print_set_headers
@@ -155,11 +135,6 @@ h_knit_print_set_headers.DataDual <- function(x, param, summarise, ...) {
   }
   param
 }
-registerS3method(
-  "h_knit_print_set_headers",
-  "DataDual",
-  h_knit_print_set_headers.DataDual
-)
 
 #' Select Columns to Print in Custom `knit_print` Methods
 #'
@@ -181,11 +156,6 @@ h_knit_print_select_columns.GeneralData <- function(x, ...) {
     tidy() %>%
     dplyr::select(.data$ID, .data$Cohort, .data$Dose, .data$Tox)
 }
-registerS3method(
-  "h_knit_print_select_columns",
-  "GeneralData",
-  h_knit_print_select_columns.GeneralData
-)
 
 #' @description `r lifecycle::badge("experimental")`
 #' @rdname knit_print_select_columns
@@ -195,11 +165,6 @@ h_knit_print_select_columns.Data <- function(x, ...) {
     tidy() %>%
     dplyr::select(.data$ID, .data$Cohort, .data$Dose, .data$Tox)
 }
-registerS3method(
-  "h_knit_print_select_columns",
-  "Data",
-  h_knit_print_select_columns.Data
-)
 
 #' @description `r lifecycle::badge("experimental")`
 #' @rdname knit_print_select_columns
@@ -209,11 +174,6 @@ h_knit_print_select_columns.DataParts <- function(x, ...) {
     tidy() %>%
     dplyr::select(.data$ID, .data$Part, .data$Cohort, .data$Dose, .data$Tox)
 }
-registerS3method(
-  "h_knit_print_select_columns",
-  "DataParts",
-  h_knit_print_select_columns.DataParts
-)
 
 #' @description `r lifecycle::badge("experimental")`
 #' @rdname knit_print_select_columns
@@ -223,11 +183,6 @@ h_knit_print_select_columns.DataOrdinal <- function(x, ...) {
     tidy() %>%
     dplyr::select(.data$ID, .data$Cohort, .data$Dose, tidyselect::starts_with("Cat"))
 }
-registerS3method(
-  "h_knit_print_select_columns",
-  "DataOrdinal",
-  h_knit_print_select_columns.DataOrdinal
-)
 
 #' @description `r lifecycle::badge("experimental")`
 #' @rdname knit_print_select_columns
@@ -237,11 +192,6 @@ h_knit_print_select_columns.DataDA <- function(x, param, summarise, ...) {
     tidy() %>%
     dplyr::select(.data$ID, .data$Cohort, .data$Dose, .data$Tox, .data$U, .data$T0, .data$TMax)
 }
-registerS3method(
-  "h_knit_print_select_columns",
-  "DataDA",
-  h_knit_print_select_columns.DataDA
-)
 
 #' @description `r lifecycle::badge("experimental")`
 #' @rdname knit_print_select_columns
@@ -251,11 +201,6 @@ h_knit_print_select_columns.DataGrouped <- function(x, param, summarise, ...) {
     tidy() %>%
     dplyr::select(.data$ID, .data$Cohort, .data$Dose, .data$Group, .data$Tox)
 }
-registerS3method(
-  "h_knit_print_select_columns",
-  "DataGrouped",
-  h_knit_print_select_columns.DataGrouped
-)
 
 #' @description `r lifecycle::badge("experimental")`
 #' @rdname knit_print_select_columns
@@ -265,11 +210,6 @@ h_knit_print_select_columns.DataDual <- function(x, param, summarise, ...) {
     tidy() %>%
     dplyr::select(.data$ID, .data$Cohort, .data$Dose, .data$Tox, .data$W)
 }
-registerS3method(
-  "h_knit_print_select_columns",
-  "DataDual",
-  h_knit_print_select_columns.DataDual
-)
 
 #' Summarise a `Data` Object by Dose or Cohort for Display in Custom `knit_print` Methods
 #'
@@ -305,11 +245,6 @@ h_knit_print_summarise.GeneralData <- function(x, summarise, full_grid, ...) {
   }
   xTidy
 }
-registerS3method(
-  "h_knit_print_summarise",
-  "GeneralData",
-  h_knit_print_summarise.GeneralData
-)
 
 #' @description `r lifecycle::badge("experimental")`
 #' @rdname knit_print_summarise
@@ -340,11 +275,6 @@ h_knit_print_summarise.DataOrdinal <- function(x, summarise, full_grid, ...) {
   }
   xTidy
 }
-registerS3method(
-  "h_knit_print_summarise",
-  "DataOrdinal",
-  h_knit_print_summarise.DataOrdinal
-)
 
 #' @description `r lifecycle::badge("experimental")`
 #' @rdname knit_print_summarise
@@ -367,11 +297,6 @@ h_knit_print_summarise.DataGrouped <- function(x, summarise, full_grid, ...) {
   }
   xTidy
 }
-registerS3method(
-  "h_knit_print_summarise",
-  "DataGrouped",
-  h_knit_print_summarise.DataGrouped
-)
 
 #' Print a `GeneralData` Object in a Markdown or Quarto Chunk
 #'
@@ -463,10 +388,6 @@ knit_print.GeneralData <- function(
   }
   rv
 }
-registerS3method("knit_print", "GeneralData", knit_print.GeneralData)
-
-
-
 
 knit_print.DataParts <- function(
     x, ..., asis = TRUE,
@@ -490,4 +411,3 @@ knit_print.DataParts <- function(
   }
   rv
 }
-registerS3method("knit_print", "DataParts", knit_print.DataParts)
