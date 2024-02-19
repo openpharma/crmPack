@@ -121,6 +121,7 @@ Collate:
     'helpers_kintr_Increments.R'
     'helpers_knitr_CohortSize.R'
     'helpers_knitr_GeneralData.R'
+    'helpers_knitr_GeneralModel.R'
     'helpers_model.R'
     'helpers_samples.R'
     'helpers_simulations.R'
