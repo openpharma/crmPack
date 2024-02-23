@@ -57,11 +57,11 @@ knit_print.ModelParamsNormal <- function(x, ..., asis = TRUE, use_values = TRUE,
   result
 }
 
-registerS3method(
-  "knit_print",
-  "ModelParamsNormal",
-  knit_print.ModelParamsNormal
-)
+# registerS3method(
+#   "knit_print",
+#   "ModelParamsNormal",
+#   knit_print.ModelParamsNormal
+# )
 
 #' @keywords internal
 knit_print.GeneralModel <- function(x, ..., asis = TRUE, use_values = TRUE, fmt = "%5.2f", units = NA) {
@@ -441,18 +441,6 @@ registerS3method(
 
 #' @description `r lifecycle::badge("experimental")`
 #' @noRd
-h_knit_print_render_model.DualEndpoint <- function(x, ...) {
-  "TO DO"
-}
-
-registerS3method(
-  "h_knit_print_render_model",
-  "DualEndpoint",
-  h_knit_print_render_model.DualEndpoint
-)
-
-#' @description `r lifecycle::badge("experimental")`
-#' @noRd
 knit_print.DualEndpointRW <- function(x, ..., asis = TRUE) {
   assert_flag(asis)
   rv <- "TODO"
@@ -583,4 +571,9 @@ registerS3method(
   "knit_print",
   "LogisticLogNormalOrdinal",
   knit_print.LogisticLogNormalOrdinal
+=======
+  "knit_print",
+  "DualEndpoint",
+  knit_print
+>>>>>>> 164cce7d0e613b077a8cbc8b987d52058055cfc8
 )
