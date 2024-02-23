@@ -434,6 +434,9 @@ reference:
       - assertions
       - assert_equal
       - check_equal
+      - check_format
+      - assert_format
+      - test_format
       - crmPackExample
       - crmPackHelp
       - examine

@@ -145,7 +145,16 @@ globalVariables(c(
   "k",
   "value",
   "Parameter",
-  "intervals"
+  "intervals",
+  "ID",
+  "Cohort",
+  "Dose",
+  "Tox",
+  "Part",
+  "U",
+  "T0",
+  "TMax",
+  "W"
 ))
 
 # nolint end

@@ -99,8 +99,8 @@ test_that("asis parameter works correctly for all implemented methods", {
       obj <- do.call(paste0(".Default", cls), list())
       # If the default knit_print method has been overridden, test it
       if (h_custom_method_exists(knit_print, obj)) {
-        rv <- knit_print(obj)
         # Default behaviour
+        rv <- knit_print(obj)
         expect_class(rv, "knit_asis")
 
         # Explicit behaviours
@@ -113,6 +113,13 @@ test_that("asis parameter works correctly for all implemented methods", {
         expect_true(!("knit_asis" %in% class(rv)))
 
         # Invalid value
+        errorThrown <- FALSE
+        tryCatch({
+          knit_print(obj, asis = "badValue")
+        },
+        error = function(e) errorThrown <<- TRUE
+        )
+        if (!errorThrown) print(paste0("No error thrown for ", cls, "."))
         expect_error(knit_print(obj, asis = "badValue"))
       }
     }

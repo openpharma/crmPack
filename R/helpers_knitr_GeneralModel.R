@@ -52,7 +52,7 @@ knit_print.ModelParamsNormal <- function(x, ..., asis = TRUE, use_values = TRUE,
     " $$"
   )
   if (asis) {
-    knitr::asis_output(result)
+    result <- knitr::asis_output(result)
   }
   result
 }
@@ -68,36 +68,13 @@ knit_print.GeneralModel <- function(x, ..., asis = TRUE, use_values = TRUE, fmt 
   # Validate
   assert_flag(asis)
   assert_flag(use_values)
-  assert_character(
-    fmt,
-    len = 1,
-    any.missing = FALSE,
-    # https://stackoverflow.com/questions/446285/validate-sprintf-format-from-input-field-with-regex
-    pattern = "%(?:\\d+\\$)?[+-]?(?:[ 0]|'.{1})?-?\\d*(?:\\.\\d+)?[bcdeEufFgGosxX]",
-  )
-  assert_character(units, len = 1)
-  # Initialise
-  if (is.na(units)) {
-    units <- ""
-  } else {
-    units <- paste0(" ", units)
-  }
+  assert_format(fmt)
   # Execute
-  ref_dose <- ifelse(
-    use_values,
-    paste0(
-      " The reference dose will be ",
-      stringr::str_trim(sprintf(fmt, x@ref_dose)),
-      units,
-      "."
-    )
-  )
   rv <- paste0(
     h_knit_print_render_model(x, use_values = use_values, fmt = fmt),
-    knit_print(x@params, ..., asis = asis, use_vales = use_values, fmt = fmt),
+    knit_print(x@params, ..., asis = asis, use_values = use_values, fmt = fmt),
     "\\n\\n",
-    ref_dose,
-    "\\n\\n"
+    h_knit_print_render_ref_dose(x, use_values = use_values, fmt = fmt, unit = unit)
   )
   if (asis) {
     rv <- knitr::asis_output(rv)
@@ -113,10 +90,9 @@ registerS3method(
 
 # ModelLogNormal
 # LogisticLogNormalSub           Done
-# LogisticKadane
-# LogisticNormalMixture
-# LogisticNormalFixedMixture
-# DualEndpoint
+# LogisticKadane                 Done
+# LogisticNormalFixedMixture     Done
+# DualEndpoint                   Paceholder
 # OneParLogNormalPrior
 # OneParExpPrior
 # LogisticNormal                 Done
@@ -125,14 +101,67 @@ registerS3method(
 # ProbitLogNormalRel
 # LogisticLogNormalGrouped
 # LogisticKadaneBetaGamma
-# DualEndpointRW
-# DualEndpointBeta
-# DualEndpointEmax
+# DualEndpointRW                 Placeholder
+# DualEndpointBeta               Placeholder
+# DualEndpointEmax               Placeholder
 # LogisticLogNormalMixture
 # DALogisticLogNormal
 # TITELogisticLogNormal
 # FractionalCRM
 # LogisticLogNormalOrdinal
+
+#' Obtain a Text Representation of the Reference Dose
+#'
+#' This is a helper method used `knit_print` for `crmPack` classes.
+#'
+#' @param x (`GeneralModel`)\cr the model object that will be printed
+#' @param ...\cr Not used at present
+#' @return A character string containing a LaTeX rendition of the model.
+#' @noRd
+h_knit_print_render_ref_dose <- function(x, ...) {
+  UseMethod("h_knit_print_render_ref_dose")
+}
+
+#' @keywords internal
+h_knit_print_render_ref_dose.GeneralModel <- function(x, ..., use_values = TRUE, fmt = "%5.2f", units = NA) {
+  # Validate
+  assert_character(units, len = 1)
+  # Initialise
+  if (is.na(units)) {
+    units <- ""
+  } else {
+    units <- paste0(" ", units)
+  }
+  # Execute
+  ref_dose <- ifelse(
+    use_values,
+    paste0(
+      " The reference dose will be ",
+      stringr::str_trim(sprintf(fmt, x@ref_dose)),
+      units,
+      ".\n\n"
+    )
+  )
+  ref_dose
+}
+
+registerS3method(
+  "h_knit_print_render_ref_dose",
+  "GeneralModel",
+  h_knit_print_render_ref_dose.GeneralModel
+)
+
+#' @keywords internal
+h_knit_print_render_ref_dose.LogisticKadane <- function(x, ...) {
+  # The LogisticKadane class has no reference dose slot
+  ""
+}
+
+registerS3method(
+  "h_knit_print_render_ref_dose",
+  "LogisticKadane",
+  h_knit_print_render_ref_dose.LogisticKadane
+)
 
 #' Render a Model Function in a `knit_print` Method
 #'
@@ -191,6 +220,7 @@ h_knit_print_render_model.LogisticNormal <- function(x, ...) {
     "where d~ref~ denotes a reference dose.\n\n"
   )
 }
+
 registerS3method(
   "h_knit_print_render_model",
   "LogisticNormal",
@@ -215,6 +245,22 @@ registerS3method(
 
 #' @description `r lifecycle::badge("experimental")`
 #' @noRd
+h_knit_print_render_model.ProbitLogNormalRel <- function(x, ...) {
+  paste0(
+    "A probit log normal model will describe the relationship between dose and toxicity: ",
+    "$$ \\Phi^{-1}(Tox | d) = f(X = 1 | \\theta, d) = \\alpha + \\beta \\cdot d/d_{ref} $$\\n ",
+    "where d~ref~ denotes a reference dose.\n\n"
+  )
+}
+
+registerS3method(
+  "h_knit_print_render_model",
+  "ProbitLogNormalRel",
+  h_knit_print_render_model.ProbitLogNormalRel
+)
+
+#' @description `r lifecycle::badge("experimental")`
+#' @noRd
 h_knit_print_render_model.LogisticNormalMixture <- function(x, ...) {
   z <- "e^{\\alpha + \\beta \\cdot log(d/d_{ref})}"
   paste0(
@@ -235,30 +281,8 @@ knit_print.LogisticNormalMixture <- function(x, ..., asis = TRUE, use_values = T
   # Validate
   assert_flag(asis)
   assert_flag(use_values)
-  assert_character(
-    fmt,
-    len = 1,
-    any.missing = FALSE,
-    # https://stackoverflow.com/questions/446285/validate-sprintf-format-from-input-field-with-regex
-    pattern = "%(?:\\d+\\$)?[+-]?(?:[ 0]|'.{1})?-?\\d*(?:\\.\\d+)?[bcdeEufFgGosxX]",
-  )
-  assert_character(units, len = 1)
-  # Initialise
-  if (is.na(units)) {
-    units <- ""
-  } else {
-    units <- paste0(" ", units)
-  }
+  assert_format(fmt)
   # Execute
-  ref_dose <- ifelse(
-    use_values,
-    paste0(
-      " The reference dose will be ",
-      stringr::str_trim(sprintf(fmt, x@ref_dose)),
-      units,
-      "."
-    )
-  )
   rv <- paste0(
     h_knit_print_render_model(x, use_values = use_values, fmt = fmt),
     "The prior for &theta; is given by\\n",
@@ -271,8 +295,7 @@ knit_print.LogisticNormalMixture <- function(x, ..., asis = TRUE, use_values = T
     " $$\\n\\n",
     " and the prior for w is given by \n\n",
     " $$ w \\sim Beta(", x@weightpar[1], ", ", x@weightpar[2], ") $$\\n\\n",
-    ref_dose,
-    "\\n\\n"
+    h_knit_print_render_ref_dose(x, units = units, fmt = fmt, use_values = use_values, ...)
   )
   if (asis) {
     rv <- knitr::asis_output(rv)
@@ -291,30 +314,8 @@ knit_print.LogisticNormalFixedMixture <- function(x, ..., asis = TRUE, use_value
   # Validate
   assert_flag(asis)
   assert_flag(use_values)
-  assert_character(
-    fmt,
-    len = 1,
-    any.missing = FALSE,
-    # https://stackoverflow.com/questions/446285/validate-sprintf-format-from-input-field-with-regex
-    pattern = "%(?:\\d+\\$)?[+-]?(?:[ 0]|'.{1})?-?\\d*(?:\\.\\d+)?[bcdeEufFgGosxX]",
-  )
-  assert_character(units, len = 1)
-  # Initialise
-  if (is.na(units)) {
-    units <- ""
-  } else {
-    units <- paste0(" ", units)
-  }
+  assert_format(fmt)
   # Execute
-  ref_dose <- ifelse(
-    use_values,
-    paste0(
-      " The reference dose will be ",
-      stringr::str_trim(sprintf(fmt, x@ref_dose)),
-      units,
-      "."
-    )
-  )
   rv <- paste0(
     h_knit_print_render_model(x, use_values = use_values, fmt = fmt),
     " The prior for &theta; is given by\\n\\n",
@@ -338,7 +339,7 @@ knit_print.LogisticNormalFixedMixture <- function(x, ..., asis = TRUE, use_value
       )
     )
   }
-  rv <- paste0(rv, " \\n\\n ", ref_dose, "\\n\\n")
+  rv <- paste0(rv, " \\n\\n ", h_knit_print_render_ref_dose(x, units = units, fmt = fmt, use_values = use_values, ...))
   if (asis) {
     rv <- knitr::asis_output(rv)
   }
@@ -369,4 +370,217 @@ registerS3method(
   "h_knit_print_render_model",
   "LogisticNormalFixedMixture",
   h_knit_print_render_model.LogisticNormalFixedMixture
+)
+
+#' @description `r lifecycle::badge("experimental")`
+#' @noRd
+knit_print.LogisticKadane <- function(x, ..., asis = TRUE, use_values = TRUE, fmt = "%5.2f", units = NA) {
+  # Validate
+  assert_flag(asis)
+  assert_flag(use_values)
+  assert_format(fmt)
+  # Initialise
+  if (is.na(units)) {
+    units <- ""
+  } else {
+    units <- paste0(" ", units)
+  }
+  #Execute
+  rv <- paste0(
+    "A logistic model using the parameterisation of Kadane (1980)  will ",
+    "describe the relationship between dose and toxicity.\n\n ",
+    ifelse(
+      use_values,
+      paste0(
+        "Let the minimum (x~min~) and maximum (x~max~) doses be ",
+        paste0(stringr::str_trim(sprintf(fmt, x@xmin)), units),
+        " and ",
+        paste0(stringr::str_trim(sprintf(fmt, x@xmax)), units),
+        ".\n\n"
+      ),
+      "Let x~min~ and x~max~ denote, respectively, the minimum and maximum doses.\n\n  "
+    ),
+    "Further, let &theta; denote the target toxicity rate and &rho;~0~ = p(DLT | D = x~min~).\n\n",
+    "Let &gamma; be the dose with target toxicity rate &theta;, so that p(DLT | D = &gamma;) = &theta;",
+    ifelse(
+      use_values,
+      paste0(" = ", x@theta,".\n\n"),
+      ".\n\n"
+    ),
+    "Using this parameterisation, standard logistic regression model has slope ",
+    "$$ \\frac{\\gamma \\text{logit}(\\rho_0) - x_{min} \\text{logit}(\\theta)}{\\gamma - x_{min}} $$",
+    " and intercept ",
+    "$$ \\frac{\\text{logit}(\\theta) - logit(\\rho_0)}{\\gamma - x_{min}} $$",
+    " The priors for &Gamma; and &Rho;~0~ are ",
+    # ifelse(
+    #   use_values,
+    #   paste0("$$ \\Gamma \\sim U(", sprintf(fmt, x@xmin), ", ", sprintf(fmt, x@xmax), ") $$"),
+    #   "$$ \\Gamma \\sim U(x_{min}, x_{max}) $$"
+    # ),
+    # " and, independently, ",
+    # ifelse(
+    #   use_values,
+    #   paste0("$$ \\mathrm{P}_0 \\sim U(0, ", x@theta, ") $$"),
+    #   "$$ \\mathrm{P}_0 \\sim U(0, \\theta) $$"
+    # ),
+    "\n\n Note that x~min~ and x~max~ need not be equal to the smallest and ",
+    "largest values in the `doseGrid` slot of the corresponding `Data` object.\n\n"
+  )
+
+  if (asis) {
+    rv <- knitr::asis_output(rv)
+  }
+  rv
+}
+
+registerS3method(
+  "knit_print",
+  "LogisticKadane",
+  knit_print.LogisticKadane
+)
+
+#' @description `r lifecycle::badge("experimental")`
+#' @noRd
+h_knit_print_render_model.DualEndpoint <- function(x, ...) {
+  "TO DO"
+}
+
+registerS3method(
+  "h_knit_print_render_model",
+  "DualEndpoint",
+  h_knit_print_render_model.DualEndpoint
+)
+
+#' @description `r lifecycle::badge("experimental")`
+#' @noRd
+knit_print.DualEndpointRW <- function(x, ..., asis = TRUE) {
+  assert_flag(asis)
+  rv <- "TODO"
+  if (asis) {
+    rv <- knitr::asis_output(rv)
+  }
+  rv
+}
+
+registerS3method(
+  "knit_print",
+  "DualEndpointRW",
+  knit_print.DualEndpointRW
+)
+
+#' @description `r lifecycle::badge("experimental")`
+#' @noRd
+knit_print.DualEndpointBeta <- function(x, ..., asis = TRUE) {
+  assert_flag(asis)
+  rv <- "TODO"
+  if (asis) {
+    rv <- knitr::asis_output(rv)
+  }
+  rv
+}
+
+registerS3method(
+  "knit_print",
+  "DualEndpointBeta",
+  knit_print.DualEndpointBeta
+)
+
+#' @description `r lifecycle::badge("experimental")`
+#' @noRd
+knit_print.DualEndpointEmax <- function(x, ..., asis = TRUE) {
+  assert_flag(asis)
+  rv <- "TODO"
+  if (asis) {
+    rv <- knitr::asis_output(rv)
+  }
+  rv
+}
+
+registerS3method(
+  "knit_print",
+  "DualEndpointEmax",
+  knit_print.DualEndpointEmax
+)
+
+
+
+
+#' @description `r lifecycle::badge("experimental")`
+#' @noRd
+h_knit_print_render_model.ModelLogNormal <- function(x, ...) {
+  "TO DO"
+}
+
+registerS3method(
+  "h_knit_print_render_model",
+  "ModelLogNormal",
+  h_knit_print_render_model.ModelLogNormal
+)
+
+#' @description `r lifecycle::badge("experimental")`
+#' @noRd
+knit_print.OneParLogNormalPrior <- function(x, ..., asis = TRUE) {
+  assert_flag(asis)
+  rv <- "TODO"
+  if (asis) {
+    rv <- knitr::asis_output(rv)
+  }
+  rv
+}
+
+registerS3method(
+  "knit_print",
+  "OneParLogNormalPrior",
+  knit_print.OneParLogNormalPrior
+)
+
+#' @description `r lifecycle::badge("experimental")`
+#' @noRd
+knit_print.OneParExpPrior <- function(x, ..., asis = TRUE) {
+  assert_flag(asis)
+  rv <- "TODO"
+  if (asis) {
+    rv <- knitr::asis_output(rv)
+  }
+  rv
+}
+
+registerS3method(
+  "knit_print",
+  "OneParExpPrior",
+  knit_print.OneParExpPrior
+)
+
+#' @description `r lifecycle::badge("experimental")`
+#' @noRd
+knit_print.LogisticLogNormalGrouped <- function(x, ..., asis = TRUE) {
+  assert_flag(asis)
+  rv <- "TODO"
+  if (asis) {
+    rv <- knitr::asis_output(rv)
+  }
+  rv
+}
+
+registerS3method(
+  "knit_print",
+  "LogisticLogNormalGrouped",
+  knit_print.LogisticLogNormalGrouped
+)
+
+#' @description `r lifecycle::badge("experimental")`
+#' @noRd
+knit_print.LogisticLogNormalOrdinal <- function(x, ..., asis = TRUE) {
+  assert_flag(asis)
+  rv <- "TODO"
+  if (asis) {
+    rv <- knitr::asis_output(rv)
+  }
+  rv
+}
+
+registerS3method(
+  "knit_print",
+  "LogisticLogNormalOrdinal",
+  knit_print.LogisticLogNormalOrdinal
 )

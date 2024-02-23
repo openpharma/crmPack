@@ -353,87 +353,24 @@ display: none;
 </div>
 
 
-<pre><code>## [1] &quot;DataParts&quot;</code></pre>
-<table>
-<caption>
-Evaluable participants to-date
-</caption>
-<thead>
-<tr>
-<th style="text-align:right;">
-ID
-</th>
-<th style="text-align:right;">
-Part
-</th>
-<th style="text-align:right;">
-Cohort
-</th>
-<th style="text-align:right;">
-Dose
-</th>
-<th style="text-align:left;">
-Tox
-</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td style="text-align:right;">
-1
-</td>
-<td style="text-align:right;">
-1
-</td>
-<td style="text-align:right;">
-1
-</td>
-<td style="text-align:right;">
-0.1
-</td>
-<td style="text-align:left;">
-FALSE
-</td>
-</tr>
-<tr>
-<td style="text-align:right;">
-2
-</td>
-<td style="text-align:right;">
-1
-</td>
-<td style="text-align:right;">
-2
-</td>
-<td style="text-align:right;">
-0.5
-</td>
-<td style="text-align:left;">
-FALSE
-</td>
-</tr>
-<tr>
-<td style="text-align:right;">
-3
-</td>
-<td style="text-align:right;">
-1
-</td>
-<td style="text-align:right;">
-3
-</td>
-<td style="text-align:right;">
-1.5
-</td>
-<td style="text-align:left;">
-FALSE
-</td>
-</tr>
-</tbody>
-</table>
-<p>The dose grid is 0.1, 0.5, 1.5, 3, 6, 10, 12, 14, 16, 18, 20, 22, 24,
-26, 28, 30, 32, 34, 36, 38, 40, 42, 44, 46, 48, 50, 52, 54, 56, 58, 60,
-62, 64, 66, 68, 70, 72, 74, 76, 78 and 80.<br></p>
+<pre><code>## [1] &quot;LogisticKadaneBetaGamma&quot;</code></pre>
+<p>A logistic model using the parameterisation of Kadane (1980) will
+describe the relationship between dose and toxicity.</p>
+<p>Let the minimum (x<sub>min</sub>) and maximum (x<sub>max</sub>) doses
+be 0.00 and 7.00.</p>
+<p>Further, let θ denote the target toxicity rate and ρ<sub>0</sub> =
+p(DLT | D = x<sub>min</sub>).</p>
+<p>Let γ be the dose with target toxicity rate θ, so that p(DLT | D = γ)
+= θ = 0.3.</p>
+<p>Using this parameterisation, standard logistic regression model has
+slope <span class="math display">\[ \frac{\gamma \text{logit}(\rho_0) -
+x_{min} \text{logit}(\theta)}{\gamma - x_{min}} \]</span> and intercept
+<span class="math display">\[ \frac{\text{logit}(\theta) -
+logit(\rho_0)}{\gamma - x_{min}} \]</span> The priors for Γ and
+Ρ<sub>0</sub> are</p>
+<p>Note that x<sub>min</sub> and x<sub>max</sub> need not be equal to
+the smallest and largest values in the <code>doseGrid</code> slot of the
+corresponding <code>Data</code> object.</p>
 
 
 
