@@ -394,6 +394,7 @@ reference:
       - is_logging_enabled
       - log_trace
       - dapply
+      - knit_print
   - title: Classes
     contents:
       - CohortSizeOrdinal-class

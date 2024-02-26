@@ -1,0 +1,20 @@
+---
+title: "Test"
+output: html_document
+params:
+  obj: NA
+---
+
+```{r, echo=FALSE}
+suppressPackageStartupMessages({
+  if (file.exists("DESCRIPTION")) {
+    devtools::load_all(export_all = FALSE)
+  } else {
+    library(crmPack)
+  }
+  library(knitr)
+})
+
+print(class(params$obj))
+params$obj
+```

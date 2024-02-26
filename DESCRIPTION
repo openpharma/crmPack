@@ -1,6 +1,6 @@
 Package: crmPack
 Title: Object-Oriented Implementation of CRM Designs
-Version: 2.0.0.9143
+Version: 2.0.0.9145
 Authors@R: c(
     person("Daniel", "Sabanes Bove", , "daniel.sabanesbove@gmx.net", role = c("aut", "cre")),
     person("Wai", "Yin Yeung", , "winnie.yeung@roche.com", role = "aut"),
@@ -46,6 +46,7 @@ Imports:
     GenSA,
     gridExtra,
     kableExtra,
+    knitr,
     lifecycle,
     magrittr,
     methods,
@@ -56,6 +57,7 @@ Imports:
     rlang,
     survival,
     tibble,
+    tidyselect,
     tools,
     utils
 Suggests:
@@ -64,7 +66,6 @@ Suggests:
     covr,
     data.tree,
     ggmcmc,
-    knitr,
     rmarkdown,
     stringr,
     testthat (>= 3.0.0),
@@ -117,6 +118,9 @@ Collate:
     'Simulations-methods.R'
     'crmPack-package.R'
     'helpers_design.R'
+    'helpers_kintr_Increments.R'
+    'helpers_knitr_CohortSize.R'
+    'helpers_knitr_GeneralData.R'
     'helpers_model.R'
     'helpers_samples.R'
     'helpers_simulations.R'
