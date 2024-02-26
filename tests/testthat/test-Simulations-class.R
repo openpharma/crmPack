@@ -248,7 +248,6 @@ test_that("DualSimulationsSummary generator function works as expected", {
 })
 
 # PseudoSimulations-class
-
 test_that("PseudoSimulations generator function works as expected", {
   result <- expect_silent(.PseudoSimulations())
   expect_valid(result, "PseudoSimulations")
