@@ -4,50 +4,84 @@
 \name{PseudoSimulations-class}
 \alias{PseudoSimulations-class}
 \alias{.PseudoSimulations}
+\alias{PseudoSimulations}
 \alias{.DefaultPseudoSimulations}
-\title{Class \code{PseudoSimulations}}
+\title{\code{PseudoSimulations}}
 \usage{
+PseudoSimulations(
+  fit,
+  final_td_target_during_trial_estimates,
+  final_td_target_end_of_trial_estimates,
+  final_td_target_during_trial_at_dose_grid,
+  final_td_target_end_of_trial_at_dose_grid,
+  final_tdeot_cis,
+  final_tdeot_ratios,
+  final_cis,
+  final_ratios,
+  stop_report,
+  stop_reasons,
+  ...
+)
+
 .DefaultPseudoSimulations()
 }
+\arguments{
+\item{fit}{(\code{list})\cr see slot definition.}
+
+\item{final_td_target_during_trial_estimates}{(\code{numeric})\cr see slot definition.}
+
+\item{final_td_target_end_of_trial_estimates}{(\code{numeric})\cr see slot definition.}
+
+\item{final_td_target_during_trial_at_dose_grid}{(\code{numeric})\cr see slot definition.}
+
+\item{final_td_target_end_of_trial_at_dose_grid}{(\code{numeric})\cr see slot definition.}
+
+\item{final_tdeot_cis}{(\code{list})\cr see slot definition.}
+
+\item{final_tdeot_ratios}{(\code{numeric})\cr see slot definition.}
+
+\item{final_cis}{(\code{list})\cr see slot definition.}
+
+\item{final_ratios}{(\code{numeric})\cr see slot definition.}
+
+\item{stop_report}{see \code{\link{PseudoSimulations}}}
+
+\item{stop_reasons}{(\code{list})\cr see slot definition.}
+
+\item{\dots}{additional parameters from \code{\link{GeneralSimulations}}}
+}
 \description{
-This is a class which captures the trial simulations from designs using
-pseudo model. The design for DLE only responses and model from \code{\linkS4class{ModelTox}}
-class object. It contains all slots from \code{\linkS4class{GeneralSimulations}} object.
-Additional slots fit and stopReasons compared to the general class
-\code{\linkS4class{GeneralSimulations}}.
+\ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#stable}{\figure{lifecycle-stable.svg}{options: alt='[Stable]'}}}{\strong{[Stable]}}
+This class captures trial simulations from designs using pseudo model.
+It has additional slots \code{fit} and \code{stop_reasons} compared to the
+general class \code{\link{GeneralSimulations}}.
 }
 \section{Slots}{
 
 \describe{
-\item{\code{fit}}{list of the final values. If samples are involved, these are the final fitted values.
-If no samples are involved, these are included the final modal estimates of the model parameters
-and the posterior estimates of the probabilities of the occurrence of a DLE.}
+\item{\code{fit}}{(\code{list})\cr final fit values.}
 
-\item{\code{FinalTDtargetDuringTrialEstimates}}{the vector of all final estimates (the last estimate of) the TDtargetDuringTrial at the end
-of each simulations/when each trial stops}
+\item{\code{final_td_target_during_trial_estimates}}{(\code{numeric})\cr final estimates of the TDtargetDuringTrial.}
 
-\item{\code{FinalTDtargetEndOfTrialEstimates}}{vector of all final estimates or the last estimate of the TDtargetEndOfTrial when each trial
-stops}
+\item{\code{final_td_target_end_of_trial_estimates}}{(\code{numeric})\cr final estimates of the TDtargetEndOfTrial.}
 
-\item{\code{FinalTDtargetDuringTrialAtDoseGrid}}{vector of the dose levels at dose grid closest below the final TDtargetDuringTrial estimates}
+\item{\code{final_td_target_during_trial_at_dose_grid}}{(\code{numeric})
+\cr dose levels at dose grid closest below the final TDtargetDuringTrial estimates.}
 
-\item{\code{FinalTDtargetEndOfTrialAtDoseGrid}}{vector of  the dose levels at dose grid closest below the final TDtargetEndOfTrial estimates}
+\item{\code{final_td_target_end_of_trial_at_dose_grid}}{(\code{numeric})
+\cr dose levels at dose grid closest below the final TDtargetEndOfTrial estimates.}
 
-\item{\code{FinalTDEOTCIs}}{is the list of all 95\% credibility interval of the final estimates of the TDtargetEndOfTrial}
+\item{\code{final_tdeot_cis}}{(\code{list})\cr 95\% credibility intervals of the final estimates for TDtargetEndOfTrial.}
 
-\item{\code{FinalTDEOTRatios}}{is the vector of the ratios of the CI, the ratio of the upper to the lower 95\% credibility intervals
-of the final estimates of the TDtargetEndOfTrial}
+\item{\code{final_tdeot_ratios}}{(\code{numeric})\cr ratio of the upper to the lower 95\% credibility intervals for TDtargetEndOfTrial.}
 
-\item{\code{FinalCIs}}{list of all the final 95\% credibility intervals of the TDtargetEndofTrial estimates or of the final optimal dose
-estimates when DLE and efficacy responses are incorporated after each simulations}
+\item{\code{final_cis}}{(\code{list})\cr final 95\% credibility intervals for TDtargetEndOfTrial estimates.}
 
-\item{\code{FinalRatios}}{vector of all the final ratios, the ratios of the upper to the lower 95\% credibility interval of the
-final estimates of the TDtargetEndOfTrial or of the final optimal dose estimates (when DLE and efficacy responses are
-incorporated) after each simulations}
+\item{\code{final_ratios}}{(\code{numeric})\cr final ratios of the upper to the lower 95\% credibility interval for TDtargetEndOfTrial.}
 
-\item{\code{stopReasons}}{add slot description}
+\item{\code{stop_report}}{(\code{matrix})\cr outcomes of stopping rules.}
 
-\item{\code{stop_report}}{matrix of stopping rule outcomes}
+\item{\code{stop_reasons}}{(\code{list})\cr reasons for stopping each simulation run.}
 }}
 
 \note{
