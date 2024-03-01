@@ -4,7 +4,7 @@
 #' @keywords internal
 h_knit_print_render_model_params <- function(x, use_values = TRUE, fmt = "%5.2f", ...) {
   assert_class(x, "ModelParamsNormal")
-  assert_true(length(x@mean) == 2)
+  assert_true(length(x@mean) < 4)
 
   muAlpha <- ifelse(
     use_values,
@@ -26,29 +26,95 @@ h_knit_print_render_model_params <- function(x, use_values = TRUE, fmt = "%5.2f"
     sprintf(fmt, x@cov[2, 2]),
     "\\sigma_\\beta\\sigma_\\beta"
   )
-  sigma12 <- ifelse(
-    use_values,
-    sprintf(fmt, x@cov[1, 2]),
-    "\\rho\\sigma_\\alpha\\sigma_\\beta"
-  )
-  sigma21 <- ifelse(
-    use_values,
-    sprintf(fmt, x@cov[2, 1]),
-    "\\rho\\sigma_\\beta\\sigma_\\alpha"
-  )
-  paste0(
-    "N \\left(\\begin{bmatrix}", muAlpha, " \\\\ ", muBeta, "\\end{bmatrix} , ",
-    "\\begin{bmatrix*}[S] ", sigma11, " & ", sigma12, " \\\\ ", sigma21, " & ", sigma22,
-    "\\end{bmatrix*} \\right)"
-  )
+  if (length(x@mean) == 2) {
+    sigma12 <- ifelse(
+      use_values,
+      sprintf(fmt, x@cov[1, 2]),
+      "\\rho\\sigma_\\alpha\\sigma_\\beta"
+    )
+    sigma21 <- ifelse(
+      use_values,
+      sprintf(fmt, x@cov[2, 1]),
+      "\\rho\\sigma_\\beta\\sigma_\\alpha"
+    )
+    rv <- paste0(
+      "N \\left(\\begin{bmatrix}", muAlpha, " \\\\ ", muBeta, "\\end{bmatrix} , ",
+      "\\begin{bmatrix*}[S] ", sigma11, " & ", sigma12, " \\\\ ", sigma21, " & ", sigma22,
+      "\\end{bmatrix*} \\right)"
+    )
+  } else {
+    mu <- c()
+    mu <- sapply(
+      1:(length(x@mean)-1),
+      function(i) {
+        ifelse(
+          use_values,
+          sprintf(fmt, x@mean[i]),
+          paste0("\\mu_{\\alpha_", i, "}")
+        )
+      }
+    )
+    sigma <- sapply(
+      1:(length(x@mean)-1),
+      function(i) {
+        ifelse(
+          use_values,
+          sprintf(fmt, x@cov[i, i]),
+          paste0("\\sigma_{\\alpha_", i, "}^2")
+        )
+      }
+    )
+    mu[length(mu) + 1] <- ifelse(
+      use_values,
+      sprintf(fmt, x@mean[length(x@mean)]),
+      "\\mu_\\beta"
+    )
+    sigma[length(sigma) + 1] <- ifelse(
+      use_values,
+      sprintf(fmt, x@cov[length(x@mean), length(x@mean)]),
+      "\\sigma_{\\beta}^2"
+    )
+
+    rv <- paste0(
+      "N \\left(\\begin{bmatrix}",
+      paste(mu, collapse = " \\\\ "),
+      "\\end{bmatrix} , ",
+      "\\begin{bmatrix*}[S] ",
+      paste(
+        sapply(
+          1:length(x@mean),
+          function(i) {
+            paste(
+              c(
+                rep("0", i-1),
+                sigma[i],
+                rep("0", length(x@mean) - i)
+              ),
+              collapse = " & "
+            )
+          }
+        ),
+        collapse = " \\\\ "
+      ),
+      "\\end{bmatrix*} \\right)"
+    )
+  }
+  rv
 }
 
 knit_print.ModelParamsNormal <- function(x, ..., asis = TRUE, use_values = TRUE, fmt = "%5.2f") {
   result <- paste0(
     "The prior for &theta; is given by\\n",
-    "$$ \\theta = \\begin{bmatrix*}[S] \\alpha \\\\ log(\\beta) \\end{bmatrix*}",
+    "$$ \\theta = \\begin{bmatrix*}[S] ",
+    paste(
+      paste0(
+        c(paste0("\\alpha_", 1:(length(x@mean) -1)), "log(\\beta)"),
+        collapse = " \\\\ "
+      )
+    ),
+    "\\end{bmatrix*}",
     " \\sim ",
-    h_knit_print_render_model_params(x),
+    h_knit_print_render_model_params(x, use_values = use_values),
     " $$"
   )
   if (asis) {
@@ -92,7 +158,7 @@ registerS3method(
 # LogisticLogNormalSub           Done
 # LogisticKadane                 Done
 # LogisticNormalFixedMixture     Done
-# DualEndpoint                   Paceholder
+# DualEndpoint                   Placeholder
 # OneParLogNormalPrior
 # OneParExpPrior
 # LogisticNormal                 Done
@@ -100,7 +166,7 @@ registerS3method(
 # ProbitLogNormal                Done
 # ProbitLogNormalRel
 # LogisticLogNormalGrouped
-# LogisticKadaneBetaGamma
+# LogisticKadaneBetaGamma        Done
 # DualEndpointRW                 Placeholder
 # DualEndpointBeta               Placeholder
 # DualEndpointEmax               Placeholder
@@ -108,7 +174,7 @@ registerS3method(
 # DALogisticLogNormal
 # TITELogisticLogNormal
 # FractionalCRM
-# LogisticLogNormalOrdinal
+# LogisticLogNormalOrdinal       Done
 
 #' Obtain a Text Representation of the Reference Dose
 #'
@@ -140,7 +206,8 @@ h_knit_print_render_ref_dose.GeneralModel <- function(x, ..., use_values = TRUE,
       stringr::str_trim(sprintf(fmt, x@ref_dose)),
       units,
       ".\n\n"
-    )
+    ),
+    ""
   )
   ref_dose
 }
@@ -412,17 +479,17 @@ knit_print.LogisticKadane <- function(x, ..., asis = TRUE, use_values = TRUE, fm
     " and intercept ",
     "$$ \\frac{\\text{logit}(\\theta) - logit(\\rho_0)}{\\gamma - x_{min}} $$",
     " The priors for &Gamma; and &Rho;~0~ are ",
-    # ifelse(
-    #   use_values,
-    #   paste0("$$ \\Gamma \\sim U(", sprintf(fmt, x@xmin), ", ", sprintf(fmt, x@xmax), ") $$"),
-    #   "$$ \\Gamma \\sim U(x_{min}, x_{max}) $$"
-    # ),
-    # " and, independently, ",
-    # ifelse(
-    #   use_values,
-    #   paste0("$$ \\mathrm{P}_0 \\sim U(0, ", x@theta, ") $$"),
-    #   "$$ \\mathrm{P}_0 \\sim U(0, \\theta) $$"
-    # ),
+    ifelse(
+      use_values,
+      paste0("$$ \\Gamma \\sim U(", sprintf(fmt, x@xmin), ", ", sprintf(fmt, x@xmax), ") $$"),
+      "$$ \\Gamma \\sim U(x_{min}, x_{max}) $$"
+    ),
+    " and, independently, ",
+    ifelse(
+      use_values,
+      paste0("$$ \\mathrm{P}_0 \\sim U(0, ", x@theta, ") $$"),
+      "$$ \\mathrm{P}_0 \\sim U(0, \\theta) $$"
+    ),
     "\n\n Note that x~min~ and x~max~ need not be equal to the smallest and ",
     "largest values in the `doseGrid` slot of the corresponding `Data` object.\n\n"
   )
@@ -441,9 +508,61 @@ registerS3method(
 
 #' @description `r lifecycle::badge("experimental")`
 #' @noRd
-knit_print.DualEndpointRW <- function(x, ..., asis = TRUE) {
+knit_print.LogisticKadaneBetaGamma <- function(x, ..., asis = TRUE, use_values = TRUE, fmt = "%5.2f", units = NA) {
+  # Validate
   assert_flag(asis)
-  rv <- "TODO"
+  assert_flag(use_values)
+  assert_format(fmt)
+  # Initialise
+  if (is.na(units)) {
+    units <- ""
+  } else {
+    units <- paste0(" ", units)
+  }
+  #Execute
+  rv <- paste0(
+    "A logistic model using the parameterisation of Kadane (1980)  will ",
+    "describe the relationship between dose and toxicity, using a Beta ",
+    "distribution as the prior for &rho;~0~ and a Gamma distribution as the prior ",
+    "for &gamma;.\n\n ",
+    ifelse(
+      use_values,
+      paste0(
+        "Let the minimum (x~min~) and maximum (x~max~) doses be ",
+        paste0(stringr::str_trim(sprintf(fmt, x@xmin)), units),
+        " and ",
+        paste0(stringr::str_trim(sprintf(fmt, x@xmax)), units),
+        ".\n\n"
+      ),
+      "Let x~min~ and x~max~ denote, respectively, the minimum and maximum doses.\n\n  "
+    ),
+    "Further, let &theta; denote the target toxicity rate and &rho;~0~ = p(DLT | D = x~min~).\n\n",
+    "Let &gamma; be the dose with target toxicity rate &theta;, so that p(DLT | D = &gamma;) = &theta;",
+    ifelse(
+      use_values,
+      paste0(" = ", x@theta,".\n\n"),
+      ".\n\n"
+    ),
+    "Using this parameterisation, standard logistic regression model has slope ",
+    "$$ \\frac{\\gamma \\text{logit}(\\rho_0) - x_{min} \\text{logit}(\\theta)}{\\gamma - x_{min}} $$",
+    " and intercept ",
+    "$$ \\frac{\\text{logit}(\\theta) - logit(\\rho_0)}{\\gamma - x_{min}} $$",
+    " The priors for &Gamma; and &Rho;~0~ are ",
+    ifelse(
+      use_values,
+      paste0("$$ \\Gamma \\sim U(", sprintf(fmt, x@shape), ", ", sprintf(fmt, x@rate), ") $$"),
+      "$$ \\Gamma \\sim Gamma( \\text{shape}, \\text{rate}) $$"
+    ),
+    " and, independently, ",
+    ifelse(
+      use_values,
+      paste0("$$ \\mathrm{P}_0 \\sim Beta(", x@alpha, ", ", x@beta, ") $$"),
+      "$$ \\mathrm{P}_0 \\sim Beta(\\alpha, \\beta) $$"
+    ),
+    "\n\n Note that x~min~ and x~max~ need not be equal to the smallest and ",
+    "largest values in the `doseGrid` slot of the corresponding `Data` object.\n\n"
+  )
+
   if (asis) {
     rv <- knitr::asis_output(rv)
   }
@@ -452,15 +571,39 @@ knit_print.DualEndpointRW <- function(x, ..., asis = TRUE) {
 
 registerS3method(
   "knit_print",
-  "DualEndpointRW",
-  knit_print.DualEndpointRW
+  "LogisticKadaneBetaGamma",
+  knit_print.LogisticKadaneBetaGamma
 )
 
 #' @description `r lifecycle::badge("experimental")`
+#' @param biomarker_name (`character`)\n A description of the biomarker
 #' @noRd
-knit_print.DualEndpointBeta <- function(x, ..., asis = TRUE) {
+knit_print.DualEndpoint <- function(x, ..., asis = TRUE, use_values = TRUE, fmt = "%5.2f", units = NA, biomarker_name= "a PD biomarker") {
   assert_flag(asis)
-  rv <- "TODO"
+  # Validate
+  assert_flag(asis)
+  assert_flag(use_values)
+  assert_format(fmt)
+  assert_character(biomarker_name, len = 1, any.missing = FALSE)
+  # Initialise
+  if (is.na(units)) {
+    units <- ""
+  } else {
+    units <- paste0(" ", units)
+  }
+  #Execute
+  toxModel <- ProbitLogNormal(
+    cov = x@betaZ_params@cov,
+    mean = x@betaZ_params@mean,
+    ref_dose = x@ref_dose
+  )
+  rv <- paste0(
+    "The relationships between dose and toxicity and between dose and ",
+    biomarker_name,
+    " will be modelled simultaneously.\n\n",
+    knit_print(toxModel, asis = asis, use_values = use_values, fmt = fmt, units = units),
+    "\n\n"
+  )
   if (asis) {
     rv <- knitr::asis_output(rv)
   }
@@ -469,29 +612,9 @@ knit_print.DualEndpointBeta <- function(x, ..., asis = TRUE) {
 
 registerS3method(
   "knit_print",
-  "DualEndpointBeta",
-  knit_print.DualEndpointBeta
+  "DualEndpoint",
+  knit_print.DualEndpoint
 )
-
-#' @description `r lifecycle::badge("experimental")`
-#' @noRd
-knit_print.DualEndpointEmax <- function(x, ..., asis = TRUE) {
-  assert_flag(asis)
-  rv <- "TODO"
-  if (asis) {
-    rv <- knitr::asis_output(rv)
-  }
-  rv
-}
-
-registerS3method(
-  "knit_print",
-  "DualEndpointEmax",
-  knit_print.DualEndpointEmax
-)
-
-
-
 
 #' @description `r lifecycle::badge("experimental")`
 #' @noRd
@@ -558,22 +681,20 @@ registerS3method(
 
 #' @description `r lifecycle::badge("experimental")`
 #' @noRd
-knit_print.LogisticLogNormalOrdinal <- function(x, ..., asis = TRUE) {
-  assert_flag(asis)
-  rv <- "TODO"
-  if (asis) {
-    rv <- knitr::asis_output(rv)
-  }
-  rv
+h_knit_print_render_model.LogisticLogNormalOrdinal <- function(x, ...) {
+  z <- "e^{\\alpha_k + \\beta \\cdot log(d/d_{ref})}"
+  paste0(
+    "Let p~k~(d) be the probability that the response of a patient treated at ",
+    "dose d is in category k *_or higher_*, k=0, ..., K; d=1, ..., D.\n\nThen ",
+    "$$ p_k(d) = f(X \\ge k \\; | \\; \\theta, d) = \\begin{dcases} 1 & k = 0 \\\\ ",
+    "\\frac{", z, "}{1 + ", z, "} & k=1, ..., K",
+    "\\end{dcases} $$\n\n",
+    "where d~ref~ denotes a reference dose.\n\nThe &alpha;s are constrained such that &alpha;~1~ > &alpha;~2~ > ... > &alpha;~K~.\n\n"
+  )
 }
 
 registerS3method(
-  "knit_print",
+  "h_knit_print_render_model",
   "LogisticLogNormalOrdinal",
-  knit_print.LogisticLogNormalOrdinal
-=======
-  "knit_print",
-  "DualEndpoint",
-  knit_print
->>>>>>> 164cce7d0e613b077a8cbc8b987d52058055cfc8
+  h_knit_print_render_model.LogisticLogNormalOrdinal
 )

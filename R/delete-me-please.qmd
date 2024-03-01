@@ -1,0 +1,12 @@
+---
+title: "Test"
+format: html
+embed-resources: TRUE
+editor: visual
+---
+
+```{r}
+devtools::load_all()
+
+.DefaultDualEndpointRW()
+```
