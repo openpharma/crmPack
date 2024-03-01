@@ -9,12 +9,12 @@ h_knit_print_render_model_params <- function(x, use_values = TRUE, fmt = "%5.2f"
   muAlpha <- ifelse(
     use_values,
     sprintf(fmt, x@mean[1]),
-    "\\mu~\\alpha~"
+    "\\mu_\\alpha"
   )
   muBeta <- ifelse(
     use_values,
     sprintf(fmt, x@mean[2]),
-    "\\mu;~\\beta~"
+    "\\mu_\\beta"
   )
   sigma11 <- ifelse(
     use_values,
@@ -602,7 +602,12 @@ knit_print.DualEndpoint <- function(x, ..., asis = TRUE, use_values = TRUE, fmt 
     biomarker_name,
     " will be modelled simultaneously.\n\n",
     knit_print(toxModel, asis = asis, use_values = use_values, fmt = fmt, units = units),
-    "\n\n"
+    "\n\n",
+    "The ",
+    biomarker_name,
+    " response `w` at dose `d` is modelled as ",
+    "$$ w(x) \\sim N(f(x), \\sigma_w^2) $$ \n\nwhere ",
+    h_knit_print_render_biomarker_model(x, use_values = use_values)
   )
   if (asis) {
     rv <- knitr::asis_output(rv)
@@ -615,6 +620,81 @@ registerS3method(
   "DualEndpoint",
   knit_print.DualEndpoint
 )
+
+#' Obtain a Text Representation of a Biomarker Model
+#'
+#' This is a helper method used `knit_print` for `DualEndpoint` classes.
+#'
+#' @param x (`DualEndpoint`)\cr the model object containing the biomarker model
+#' @param use_values (`flag`)\cr print the values associated with hyperparameters,
+#' or the symbols used to define the hyper-parameters.  That is, for example, mu or 1.
+#' @param ...\cr Not used at present
+#' @return A character string containing a LaTeX rendition of the model.
+#' @noRd
+h_knit_print_render_biomarker_model <- function(x, use_values = TRUE, ...) {
+  UseMethod("h_knit_print_render_biomarker_model")
+}
+
+#' @description `r lifecycle::badge("experimental")`
+#' @noRd
+h_knit_print_render_biomarker_model.DualEndpoint <- function(x, use_values = TRUE, ...) {
+  "f(d) is a function of dose that is defined elsewhere."
+}
+
+registerS3method(
+  "h_knit_print_render_biomarker_model",
+  "DualEndpoint",
+  h_knit_print_render_biomarker_model.DualEndpoint
+)
+
+#' @description `r lifecycle::badge("experimental")`
+#' @noRd
+h_knit_print_render_biomarker_model.DualEndpointRW <- function(x, use_values = TRUE, ...) {
+  paste0(
+    "f(d) is a ",
+    ifelse(x@rw1, "first", "second"),
+    " order random walk such that\n\n",
+    "$$ f(x) = ",
+    "\\beta_{W_i} - \\beta_{W_{i - ",
+    ifelse(x@rw1, "1", "2"),
+    "}}",
+    "\\sim N(0, ",
+    ifelse(x@rw1, "", "2 \\times "),
+    ifelse(
+      use_values & length(x@sigma2betaW) == 1,
+      x@sigma2betaW,
+      "\\sigma_{\\beta_W}^2"
+    ),
+    " \\times (x_i - x_{i - ",
+    ifelse(x@rw1, "1", "2"),
+    "})",
+    ")" ,
+    " $$\n\n",
+    ifelse(
+      length(x@sigma2betaW) == 1,
+      ifelse(
+        use_values,
+        "",
+        paste0(" and $\\sigma_{\\beta_W}^2$ is fixed at ", x@sigma2betaW)
+      ),
+      paste0(
+        " and the prior for $\\sigma_{\\beta_W}^2$ is an inverse-gamma distribution with parameters ",
+        "a = ",
+        x@sigma2betaW["a"],
+        " and b = ",
+        x@sigma2betaW["b"]
+      )
+    )
+  )
+}
+
+registerS3method(
+  "h_knit_print_render_biomarker_model",
+  "DualEndpointRW",
+  h_knit_print_render_biomarker_model.DualEndpointRW
+)
+
+
 
 #' @description `r lifecycle::badge("experimental")`
 #' @noRd
