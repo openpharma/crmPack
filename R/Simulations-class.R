@@ -504,7 +504,7 @@ DualSimulations <- function(rho_est,
 #'
 #' @description `r lifecycle::badge("stable")`
 #' This class captures trial simulations from designs using pseudo model.
-#' It has additional slots `fit` and `stop_reasons` compared to the 
+#' It has additional slots `fit` and `stop_reasons` compared to the
 #' general class [`GeneralSimulations`].
 #'
 #' @slot fit (`list`)\cr final fit values.
