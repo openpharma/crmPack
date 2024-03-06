@@ -258,7 +258,7 @@ test_that("PseudoSimulations object can be created with the user constructor", {
 
   final_td_target_during_trial_estimates <- c(0.1, 0.2)
   final_td_target_end_of_trial_estimates <- c(0.1, 0.2)
-  
+
   final_td_target_during_trial_at_dose_grid <- c(0.1, 0.2)
   final_td_target_end_of_trial_at_dose_grid <- c(0.1, 0.2)
 
@@ -318,19 +318,19 @@ test_that("PseudoSimulations user constructor argument names are as expected", {
   expect_function(
     PseudoSimulations,
     args = c(
-     "fit",
-     "final_td_target_during_trial_estimates",
-     "final_td_target_end_of_trial_estimates",
-     "final_td_target_during_trial_at_dose_grid",
-     "final_td_target_end_of_trial_at_dose_grid",
-     "final_tdeot_cis",
-     "final_tdeot_ratios",
-     "final_cis",
-     "final_ratios",
-     "stop_report",
-     "stop_reasons",
-     "..."
-      ),
+      "fit",
+      "final_td_target_during_trial_estimates",
+      "final_td_target_end_of_trial_estimates",
+      "final_td_target_during_trial_at_dose_grid",
+      "final_td_target_end_of_trial_at_dose_grid",
+      "final_tdeot_cis",
+      "final_tdeot_ratios",
+      "final_cis",
+      "final_ratios",
+      "stop_report",
+      "stop_reasons",
+      "..."
+    ),
     ordered = TRUE
   )
 })
