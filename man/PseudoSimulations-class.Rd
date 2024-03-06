@@ -61,23 +61,23 @@ general class \code{\link{GeneralSimulations}}.
 \describe{
 \item{\code{fit}}{(\code{list})\cr final fit values.}
 
-\item{\code{final_td_target_during_trial_estimates}}{(\code{numeric})\cr final estimates of the TDtargetDuringTrial.}
+\item{\code{final_td_target_during_trial_estimates}}{(\code{numeric})\cr final estimates of the \code{td_target_during_trial}.}
 
-\item{\code{final_td_target_end_of_trial_estimates}}{(\code{numeric})\cr final estimates of the TDtargetEndOfTrial.}
+\item{\code{final_td_target_end_of_trial_estimates}}{(\code{numeric})\cr final estimates of the \code{td_target_end_of_trial}.}
 
 \item{\code{final_td_target_during_trial_at_dose_grid}}{(\code{numeric})
-\cr dose levels at dose grid closest below the final TDtargetDuringTrial estimates.}
+\cr dose levels at dose grid closest below the final \code{td_target_during_trial} estimates.}
 
 \item{\code{final_td_target_end_of_trial_at_dose_grid}}{(\code{numeric})
-\cr dose levels at dose grid closest below the final TDtargetEndOfTrial estimates.}
+\cr dose levels at dose grid closest below the final \code{td_target_end_of_trial} estimates.}
 
-\item{\code{final_tdeot_cis}}{(\code{list})\cr 95\% credibility intervals of the final estimates for TDtargetEndOfTrial.}
+\item{\code{final_tdeot_cis}}{(\code{list})\cr 95\% credibility intervals of the final estimates for \code{td_target_end_of_trial}.}
 
-\item{\code{final_tdeot_ratios}}{(\code{numeric})\cr ratio of the upper to the lower 95\% credibility intervals for TDtargetEndOfTrial.}
+\item{\code{final_tdeot_ratios}}{(\code{numeric})\cr ratio of the upper to the lower 95\% credibility intervals for \code{td_target_end_of_trial}.}
 
-\item{\code{final_cis}}{(\code{list})\cr final 95\% credibility intervals for TDtargetEndOfTrial estimates.}
+\item{\code{final_cis}}{(\code{list})\cr final 95\% credibility intervals for \code{td_target_end_of_trial} estimates.}
 
-\item{\code{final_ratios}}{(\code{numeric})\cr final ratios of the upper to the lower 95\% credibility interval for TDtargetEndOfTrial.}
+\item{\code{final_ratios}}{(\code{numeric})\cr final ratios of the upper to the lower 95\% credibility interval for \code{td_target_end_of_trial}.}
 
 \item{\code{stop_report}}{(\code{matrix})\cr outcomes of stopping rules.}
 
