@@ -515,9 +515,11 @@ DualSimulations <- function(rho_est,
 #' @slot final_td_target_end_of_trial_at_dose_grid (`numeric`)
 #'        \cr dose levels at dose grid closest below the final `td_target_end_of_trial` estimates.
 #' @slot final_tdeot_cis (`list`)\cr 95% credibility intervals of the final estimates for `td_target_end_of_trial`.
-#' @slot final_tdeot_ratios (`numeric`)\cr ratio of the upper to the lower 95% credibility intervals for `td_target_end_of_trial`.
+#' @slot final_tdeot_ratios (`numeric`)\cr ratio of the upper to the lower 95% 
+#'        credibility intervals for `td_target_end_of_trial`.
 #' @slot final_cis (`list`)\cr final 95% credibility intervals for `td_target_end_of_trial` estimates.
-#' @slot final_ratios (`numeric`)\cr final ratios of the upper to the lower 95% credibility interval for `td_target_end_of_trial`.
+#' @slot final_ratios (`numeric`)\cr final ratios of the upper to the lower 95% 
+#'        credibility interval for `td_target_end_of_trial`.
 #' @slot stop_report (`matrix`)\cr outcomes of stopping rules.
 #' @slot stop_reasons (`list`)\cr reasons for stopping each simulation run.
 #'
