@@ -73,11 +73,13 @@ general class \code{\link{GeneralSimulations}}.
 
 \item{\code{final_tdeot_cis}}{(\code{list})\cr 95\% credibility intervals of the final estimates for \code{td_target_end_of_trial}.}
 
-\item{\code{final_tdeot_ratios}}{(\code{numeric})\cr ratio of the upper to the lower 95\% credibility intervals for \code{td_target_end_of_trial}.}
+\item{\code{final_tdeot_ratios}}{(\code{numeric})\cr ratio of the upper to the lower 95\%
+credibility intervals for \code{td_target_end_of_trial}.}
 
 \item{\code{final_cis}}{(\code{list})\cr final 95\% credibility intervals for \code{td_target_end_of_trial} estimates.}
 
-\item{\code{final_ratios}}{(\code{numeric})\cr final ratios of the upper to the lower 95\% credibility interval for \code{td_target_end_of_trial}.}
+\item{\code{final_ratios}}{(\code{numeric})\cr final ratios of the upper to the lower 95\%
+credibility interval for \code{td_target_end_of_trial}.}
 
 \item{\code{stop_report}}{(\code{matrix})\cr outcomes of stopping rules.}
 
