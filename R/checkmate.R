@@ -413,7 +413,6 @@ expect_range <- makeExpectationFunction(check_range)
 #' @export
 #' @examples
 #' check_format("%5.2f")
-
 check_format <- function(x, len = NULL, min.len = NULL, max.len = NULL) {
   assert_number(len, lower = 1, null.ok = TRUE)
   assert_number(min.len, lower = 1, null.ok = TRUE)
