@@ -2508,7 +2508,7 @@ setMethod("summary",
       ratioGstarSummary <- summary(object@FinalGstarRatios)
 
       FinalDoseRecSummary <- summary(object@FinalOptimalDose)
-      FinalRatioSummary <- summary(object@FinalRatios)
+      FinalRatioSummary <- summary(object@final_ratios)
 
 
 
