@@ -6,7 +6,15 @@ editor: visual
 ---
 
 ```{r}
+#| error: TRUE
+
 devtools::load_all()
 
-.DefaultDualEndpointRW()
+
+x <- .DefaultLogisticLogNormalOrdinal()
+x
+
+knit_print(x, use_values = FALSE)
+
+
 ```

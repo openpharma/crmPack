@@ -154,7 +154,8 @@ globalVariables(c(
   "U",
   "T0",
   "TMax",
-  "W"
+  "W",
+  "Group"
 ))
 
 # nolint end

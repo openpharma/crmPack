@@ -1650,7 +1650,7 @@ DualEndpointRW <- function(sigma2betaW,
 #' @details This class extends the [`DualEndpoint`] class so that the dose-biomarker
 #'   relationship \eqn{f(x)} is modelled by a parametric, rescaled beta density
 #'   function:
-#'   \deqn{f(x) = E0 + (Emax - E0) * Beta(delta1, delta2) * (x/x*)^delta1 * (1 - x/x*)^delta2,}
+#'   \deqn{f(x) = E0 + (Emax - E0) * Beta(delta1, delta2) * (x/x*)^delta1^ * (1 - x/x*)^delta2^,}
 #'   where \eqn{x*} is the maximum dose (end of the dose range to be considered),
 #'   \eqn{delta1} and \eqn{delta2} are the two beta function parameters, and
 #'   \eqn{E0}, \eqn{Emax} are the minimum and maximum levels, respectively.
