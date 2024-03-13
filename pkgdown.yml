@@ -1,0 +1,21 @@
+pandoc: 3.1.1
+pkgdown: 2.0.7
+pkgdown_sha: ~
+articles:
+  crmPack-jss-paper: crmPack-jss-paper.html
+  example: example.html
+  migration_from_the_old_crmPack: migration_from_the_old_crmPack.html
+  ordinal-crm: ordinal-crm.html
+  parallel_computing_with_extensions: parallel_computing_with_extensions.html
+  rolling-crm: rolling-crm.html
+  simulations: simulations.html
+  tidy_method: tidy_method.html
+  trial_analysis: trial_analysis.html
+  trial_definition: trial_definition.html
+  trial_sanity_checks: trial_sanity_checks.html
+  trial_simulation: trial_simulation.html
+last_built: 2024-03-13T18:00Z
+urls:
+  reference: https://roche.github.io/crmPack/main/reference
+  article: https://roche.github.io/crmPack/main/articles
+
