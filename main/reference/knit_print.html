@@ -40,7 +40,7 @@ crmPack objects in Markdown and Quarto files
     
     <a class="navbar-brand me-2" href="../index.html">crmPack</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">2.0.0.9144</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">2.0.0.9146</small>
 
     
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -71,12 +71,6 @@ crmPack objects in Markdown and Quarto files
 <li class="nav-item">
   <a class="nav-link" href="../news/index.html">Changelog</a>
 </li>
-<!-- start dropdown for versions --> <li class="nav-item dropdown">
-        <a href="#" class="nav-link dropdown-toggle"
-          data-bs-toggle="dropdown" role="button"
-          aria-expanded="false" aria-haspopup="true"
-          id="dropdown-versions">Versions</a> <div class="dropdown-menu" aria-labelledby="dropdown-versions"> <a class="dropdown-item" data-toggle="tooltip" title="" href="https://Roche.github.io/crmPack/main">main</a> </div></li>
-<!-- end dropdown for versions -->
 <li class="nav-item dropdown">
   <a href="#" class="nav-link dropdown-toggle" data-bs-toggle="dropdown" role="button" aria-expanded="false" aria-haspopup="true" id="dropdown-reports">Reports</a>
   <div class="dropdown-menu" aria-labelledby="dropdown-reports">
@@ -101,7 +95,7 @@ crmPack objects in Markdown and Quarto files
 <div class="row">
   <main id="main" class="col-md-9"><div class="page-header">
       <img src="../logo.png" class="logo" alt=""><h1>Render a <code>IncrementsRelative</code> Object</h1>
-      <small class="dont-index">Source: <a href="https://github.com/roche/crmPack/blob/HEAD/R/helpers_kintr_Increments.R" class="external-link"><code>R/helpers_kintr_Increments.R</code></a>, <a href="https://github.com/roche/crmPack/blob/HEAD/R/helpers_knitr_CohortSize.R" class="external-link"><code>R/helpers_knitr_CohortSize.R</code></a></small>
+      <small class="dont-index">Source: <a href="https://github.com/roche/crmPack/blob/HEAD/R/helpers_kintr_Increments.R" class="external-link"><code>R/helpers_kintr_Increments.R</code></a>, <a href="https://github.com/roche/crmPack/blob/HEAD/R/helpers_knitr_CohortSize.R" class="external-link"><code>R/helpers_knitr_CohortSize.R</code></a>, <a href="https://github.com/roche/crmPack/blob/HEAD/R/helpers_knitr_GeneralData.R" class="external-link"><code>R/helpers_knitr_GeneralData.R</code></a></small>
       <div class="d-none name"><code>knit_print.Rd</code></div>
     </div>
 
@@ -169,7 +163,20 @@ crmPack objects in Markdown and Quarto files</p>
 <span><span class="fu">knit_print</span><span class="op">(</span><span class="va">x</span>, <span class="va">...</span>, asis <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span>
 <span></span>
 <span><span class="co"># S3 method for CohortSizeOrdinal</span></span>
-<span><span class="fu">knit_print</span><span class="op">(</span><span class="va">x</span>, <span class="va">...</span>, asis <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span></code></pre></div>
+<span><span class="fu">knit_print</span><span class="op">(</span><span class="va">x</span>, <span class="va">...</span>, asis <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span>
+<span></span>
+<span><span class="co"># S3 method for GeneralData</span></span>
+<span><span class="fu">knit_print</span><span class="op">(</span></span>
+<span>  <span class="va">x</span>,</span>
+<span>  <span class="va">...</span>,</span>
+<span>  asis <span class="op">=</span> <span class="cn">TRUE</span>,</span>
+<span>  labels <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"participant"</span>, <span class="st">"participants"</span><span class="op">)</span>,</span>
+<span>  full_grid <span class="op">=</span> <span class="cn">FALSE</span>,</span>
+<span>  summarise <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"none"</span>, <span class="st">"dose"</span>, <span class="st">"cohort"</span><span class="op">)</span>,</span>
+<span>  summarize <span class="op">=</span> <span class="va">summarise</span>,</span>
+<span>  units <span class="op">=</span> <span class="cn">NA</span>,</span>
+<span>  format_func <span class="op">=</span> <span class="kw">function</span><span class="op">(</span><span class="va">x</span><span class="op">)</span> <span class="va">x</span></span>
+<span><span class="op">)</span></span></code></pre></div>
     </div>
 
     <div class="section level2">
@@ -179,7 +186,7 @@ crmPack objects in Markdown and Quarto files</p>
 
 
 <dt>...</dt>
-<dd><p>passed through to the <code>knit_print</code> method of the standard rule</p></dd>
+<dd><p>passed to <code><a href="https://rdrr.io/pkg/knitr/man/kable.html" class="external-link">knitr::kable()</a></code></p></dd>
 
 
 <dt>asis</dt>
@@ -187,12 +194,39 @@ crmPack objects in Markdown and Quarto files</p>
 
 
 <dt>labels</dt>
-<dd><p>(<code>character</code>)<br> The word used to describe toxicities.  See
-Usage Notes below.</p></dd>
+<dd><p>(<code>character</code>)<br> How to describe the participants in the trial.
+See Usage Notes below.</p></dd>
 
 
 <dt>label</dt>
 <dd><p>(<code>character</code>)<br> The word used to label the participants.  See Usage Notes below.</p></dd>
+
+
+<dt>full_grid</dt>
+<dd><p>(<code>flag</code>)<br> Should the full dose grid appear in the output table
+or simply those doses for whom at least one evaluable participant is available?
+Ignored unless <code>summarise == "dose"</code>.</p></dd>
+
+
+<dt>summarise</dt>
+<dd><p>(<code>character</code>)<br> How to summarise the observed data.  The default,
+<code>"none"</code>, lists observed data at the participant level.  <code>"dose"</code> presents
+participant counts by dose and <code>"cohort"</code> by cohort.</p></dd>
+
+
+<dt>summarize</dt>
+<dd><p>(<code>character</code>)<br> Synonym for <code>summarise</code></p></dd>
+
+
+<dt>units</dt>
+<dd><p>(<code>character</code>)<br> The units in which the values in <code>doseGrid</code> are
+measured.  Appended to each value in <code>doseGrid</code> when <code>knit_print</code>ed.  The
+default, <code>NA</code>, omits the units.</p></dd>
+
+
+<dt>format_func</dt>
+<dd><p>(<code>function</code>)<br> The function used to format the participant table.
+The default applies no formatting.  Obvious alternatives include <code><a href="https://rdrr.io/pkg/kableExtra/man/kable_styling.html" class="external-link">kableExtra::kable_styling</a></code>.</p></dd>
 
 </dl></div>
     <div class="section level2">
@@ -247,6 +281,15 @@ function call.</p>
 <code>Defined by the number of DLTs so far observed</code>.  These values can be overridden by passing
 <code>col.names</code> and <code>caption</code> in the function call.</p>
 
+<p><code>labels</code> describes the trial's participants.</p>
+<p>It should be a character vector of length 1 or 2.  If of length 2, the first
+element describes a single participant and the second describes all other
+situations.  If of length 1, the character <code>s</code> is appended to the value
+when the number of participants is not 1.
+The default values of <code>col.names</code> and <code>caption</code> vary depending on the summary
+requested. The default values can be overridden by passing <code>col.names</code> and
+<code>caption</code> in the function call.</p>
+
 <p>The default value of <code>col.names</code> is <code>c("Min", "Max", "Increment")</code> and that
 of <code>caption</code> is <code>"Defined by highest dose administered so far"</code>.  These
 values can be overridden by passing <code>col.names</code> and <code>caption</code> in the function
@@ -285,6 +328,15 @@ function call.</p>
 <p>The by default, the columns are labelled <code>Lower</code>, <code>Upper</code> and <code>Cohort size</code>.  The table's caption is
 <code>Defined by the number of DLTs so far observed</code>.  These values can be overridden by passing
 <code>col.names</code> and <code>caption</code> in the function call.</p>
+
+<p><code>labels</code> describes the trial's participants.</p>
+<p>It should be a character vector of length 1 or 2.  If of length 2, the first
+element describes a single participant and the second describes all other
+situations.  If of length 1, the character <code>s</code> is appended to the value
+when the number of participants is not 1.
+The default values of <code>col.names</code> and <code>caption</code> vary depending on the summary
+requested. The default values can be overridden by passing <code>col.names</code> and
+<code>caption</code> in the function call.</p>
     </div>
     <div class="section level2">
     <h2 id="see-also">See also<a class="anchor" aria-label="anchor" href="#see-also"></a></h2>

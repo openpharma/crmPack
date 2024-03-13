@@ -331,9 +331,6 @@
     <loc>https://roche.github.io/crmPack/reference/PseudoSimulations-class.html</loc>
   </url>
   <url>
-    <loc>https://roche.github.io/crmPack/reference/PseudoSimulations.html</loc>
-  </url>
-  <url>
     <loc>https://roche.github.io/crmPack/reference/PseudoSimulationsSummary-class.html</loc>
   </url>
   <url>
@@ -526,9 +523,6 @@
     <loc>https://roche.github.io/crmPack/reference/getEff.html</loc>
   </url>
   <url>
-    <loc>https://roche.github.io/crmPack/reference/getMinInfBeta.html</loc>
-  </url>
-  <url>
     <loc>https://roche.github.io/crmPack/reference/get_result_list.html</loc>
   </url>
   <url>
@@ -569,6 +563,12 @@
   </url>
   <url>
     <loc>https://roche.github.io/crmPack/reference/h_format_number.html</loc>
+  </url>
+  <url>
+    <loc>https://roche.github.io/crmPack/reference/h_get_formatted_dosegrid.html</loc>
+  </url>
+  <url>
+    <loc>https://roche.github.io/crmPack/reference/h_get_min_inf_beta.html</loc>
   </url>
   <url>
     <loc>https://roche.github.io/crmPack/reference/h_group_data.html</loc>
