@@ -1538,16 +1538,16 @@ setMethod("summary",
       targetDoseDuringTrialAtDoseGrid <- doseGrid[max(which(targetDoseDuringTrial - doseGrid >= 0))]
 
       ## A summary for all TDtargetEndOfTrial dose obtained
-      TDEOTSummary <- summary(object@FinalTDtargetEndOfTrialEstimates)
+      TDEOTSummary <- summary(object@final_td_target_end_of_trial_estimates)
 
       FinalDoseRecSummary <- TDEOTSummary
 
-      ratioTDEOTSummary <- summary(object@FinalTDEOTRatios)
+      ratioTDEOTSummary <- summary(object@final_tdeot_ratios)
       FinalRatioSummary <- ratioTDEOTSummary
 
 
       ## A summary for all TDtargetDuringTrial dose obtained
-      TDDTSummary <- summary(object@FinalTDtargetDuringTrialEstimates)
+      TDDTSummary <- summary(object@final_td_target_during_trial_estimates)
       ## what are the levels above target End of Trial?
       xAboveTargetEndOfTrial <- which(trueDLE > targetEndOfTrial)
 
@@ -2508,7 +2508,7 @@ setMethod("summary",
       ratioGstarSummary <- summary(object@FinalGstarRatios)
 
       FinalDoseRecSummary <- summary(object@FinalOptimalDose)
-      FinalRatioSummary <- summary(object@FinalRatios)
+      FinalRatioSummary <- summary(object@final_ratios)
 
 
 
