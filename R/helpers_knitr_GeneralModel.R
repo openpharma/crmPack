@@ -1,10 +1,3 @@
-# OneParLogNormalPrior           More details needed from online doc
-# OneParExpPrior                 More details needed from online doc
-# DALogisticLogNormal            More details needed from online doc
-# TITELogisticLogNormal          More details needed from online doc
-# FractionalCRM                  More details needed from online doc
-
-
 # Generics ----
 
 #' Obtain a Text Representation of the Reference Dose
@@ -275,7 +268,7 @@ registerS3method(
 #' @param preamble (`character`)\cr The text used to introduce the LaTex representation
 #' of the model
 #' @param asis (`flag`)\cr wrap the return value in a call to `knitr::asis_output`?
-#' @param theta (`character`)\cr the LATex representation of the theta vector
+#' @param theta (`character`)\cr the LaTex representation of the theta vector
 #' @param ...\cr Not used at present
 #' @section Usage Notes:
 #' `params` must be a character vector of length equal to that of `x@mean` (and
