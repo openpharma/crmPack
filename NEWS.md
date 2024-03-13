@@ -1,4 +1,4 @@
-# Version 2.0.0.9146
+# Version 2.0.0.9147
 * **Note: This release (1.0 -> 2.0) signifies a major breaking revamp of the package.** Users are advised to carefully review the release notes and documentation for detailed information on the changes and any necessary updates to their existing code.
 * Implemented `broom`-like `tidy` methods for all concrete `crmPack` classes.
 * Removed `multiplot` function.  Use Please use equivalent functionality in other packages, such as `cowplot` or `ggpubr`.
