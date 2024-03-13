@@ -242,7 +242,7 @@ h_knit_print_render_biomarker_model.DualEndpointRW <- function(x, ..., use_value
 #' @section Usage Notes:
 #' `params` must be a character vector of length equal to that of `x@mean` (and
 #' `x@cov`).  Its values represent the parameters of the model as entries in the
-#' vector &theta;, on the left-hand side of "~" in the definition of the prior.
+#' vector `theta`, on the left-hand side of "~" in the definition of the prior.
 #' If named, names should be valid LaTex, escaped as usual for R character variables.
 #' For example, `"\\alpha"` or `"\\beta_0"`.  If unnamed, names are constructed by
 #' pre-pending an escaped backslash to each value provided.

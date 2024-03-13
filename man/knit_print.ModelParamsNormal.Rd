@@ -32,7 +32,7 @@ of the model}
 
 \item{asis}{(\code{flag})\cr wrap the return value in a call to \code{knitr::asis_output}?}
 
-\item{theta}{(\code{character})\cr the LATex representation of the theta vector}
+\item{theta}{(\code{character})\cr the LaTex representation of the theta vector}
 
 \item{...\cr}{Not used at present}
 }
@@ -46,7 +46,7 @@ A character string containing a LaTeX rendition of the object.
 
 \code{params} must be a character vector of length equal to that of \code{x@mean} (and
 \code{x@cov}).  Its values represent the parameters of the model as entries in the
-vector θ, on the left-hand side of "~" in the definition of the prior.
+vector \code{theta}, on the left-hand side of "~" in the definition of the prior.
 If named, names should be valid LaTex, escaped as usual for R character variables.
 For example, \code{"\\\\alpha"} or \code{"\\\\beta_0"}.  If unnamed, names are constructed by
 pre-pending an escaped backslash to each value provided.
