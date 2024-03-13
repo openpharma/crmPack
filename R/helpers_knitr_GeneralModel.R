@@ -90,24 +90,11 @@ knit_print.DualEndpoint <- function(
   rv
 }
 
-registerS3method(
-  "knit_print",
-  "DualEndpoint",
-  knit_print.DualEndpoint
-)
-
-
 #' @description `r lifecycle::badge("experimental")`
 #' @noRd
 h_knit_print_render_biomarker_model.DualEndpoint <- function(x, ..., use_values = TRUE) {
   "f(d) is a function of dose that is defined elsewhere."
 }
-
-registerS3method(
-  "h_knit_print_render_biomarker_model",
-  "DualEndpoint",
-  h_knit_print_render_biomarker_model.DualEndpoint
-)
 
 # DualEndpointBeta
 
@@ -156,12 +143,6 @@ h_knit_print_render_biomarker_model.DualEndpointBeta <- function(x, ...) {
   )
 }
 
-registerS3method(
-  "h_knit_print_render_biomarker_model",
-  "DualEndpointBeta",
-  h_knit_print_render_biomarker_model.DualEndpointBeta
-)
-
 # DualEndpointEmax ----
 
 #' @description `r lifecycle::badge("experimental")`
@@ -198,12 +179,6 @@ h_knit_print_render_biomarker_model.DualEndpointEmax <- function(x, ...) {
     )
   )
 }
-
-registerS3method(
-  "h_knit_print_render_biomarker_model",
-  "DualEndpointEmax",
-  h_knit_print_render_biomarker_model.DualEndpointEmax
-)
 
 # DualEndpointRW ----
 
@@ -247,12 +222,6 @@ h_knit_print_render_biomarker_model.DualEndpointRW <- function(x, ..., use_value
     )
   )
 }
-
-registerS3method(
-  "h_knit_print_render_biomarker_model",
-  "DualEndpointRW",
-  h_knit_print_render_biomarker_model.DualEndpointRW
-)
 
 # ModelParamsNormal ----
 
@@ -392,12 +361,6 @@ knit_print.GeneralModel <- function(
   rv
 }
 
-registerS3method(
-  "knit_print",
-  "GeneralModel",
-  knit_print.GeneralModel
-)
-
 #' @keywords internal
 h_knit_print_render_ref_dose.GeneralModel <- function(x, ..., use_values = TRUE, fmt = "%5.2f", units = NA) {
   # Validate
@@ -422,12 +385,6 @@ h_knit_print_render_ref_dose.GeneralModel <- function(x, ..., use_values = TRUE,
   ref_dose
 }
 
-registerS3method(
-  "h_knit_print_render_ref_dose",
-  "GeneralModel",
-  h_knit_print_render_ref_dose.GeneralModel
-)
-
 # LogisticKadane ----
 
 #' @keywords internal
@@ -435,12 +392,6 @@ h_knit_print_render_ref_dose.LogisticKadane <- function(x, ...) {
   # The LogisticKadane class has no reference dose slot
   ""
 }
-
-# registerS3method(
-#   "h_knit_print_render_ref_dose",
-#   "LogisticKadane",
-#   h_knit_print_render_ref_dose.LogisticKadane
-# )
 
 #' @description `r lifecycle::badge("experimental")`
 #' @noRd
@@ -502,12 +453,6 @@ knit_print.LogisticKadane <- function(x, ..., asis = TRUE, use_values = TRUE, fm
   }
   rv
 }
-
-registerS3method(
-  "knit_print",
-  "LogisticKadane",
-  knit_print.LogisticKadane
-)
 
 # LogisticKadaneBetaGamma
 
@@ -574,12 +519,6 @@ knit_print.LogisticKadaneBetaGamma <- function(x, ..., asis = TRUE, use_values =
   rv
 }
 
-registerS3method(
-  "knit_print",
-  "LogisticKadaneBetaGamma",
-  knit_print.LogisticKadaneBetaGamma
-)
-
 # LogisticLogNormal ----
 
 #' @description `r lifecycle::badge("experimental")`
@@ -592,12 +531,6 @@ h_knit_print_render_model.LogisticLogNormal <- function(x, ...) {
     "where d~ref~ denotes a reference dose.\n\n"
   )
 }
-
-registerS3method(
-  "h_knit_print_render_model",
-  "LogisticLogNormal",
-  h_knit_print_render_model.LogisticLogNormal
-)
 
 #' @description `r lifecycle::badge("experimental")`
 #' @noRd
@@ -615,13 +548,6 @@ knit_print.LogisticLogNormal <- function(
 ) {
   NextMethod(params = params)
 }
-
-registerS3method(
-  "knit_print",
-  "LogisticLogNormal",
-  knit_print.LogisticLogNormal
-)
-
 
 # LogisticLogNormalMixture ----
 
@@ -650,12 +576,6 @@ h_knit_print_render_model.LogisticLogNormalMixture <- function(x, use_values = T
   )
 }
 
-registerS3method(
-  "h_knit_print_render_model",
-  "LogisticLogormalMixture",
-  h_knit_print_render_model.LogisticLogNormalMixture
-)
-
 #' @keywords internal
 knit_print.LogisticLogNormalMixture <- function(x, ..., asis = TRUE, use_values = TRUE, fmt = "%5.2f", units = NA) {
   # Validate
@@ -682,12 +602,6 @@ knit_print.LogisticLogNormalMixture <- function(x, ..., asis = TRUE, use_values 
   rv
 }
 
-registerS3method(
-  "knit_print",
-  "LogisticLogNormalMixture",
-  knit_print.LogisticLogNormalMixture
-)
-
 # LogisticLogNormalSub ----
 
 #' @description `r lifecycle::badge("experimental")`
@@ -701,12 +615,6 @@ h_knit_print_render_model.LogisticLogNormalSub <- function(x, ...) {
     "where d~ref~ denotes a reference dose.\n\n"
   )
 }
-
-registerS3method(
-  "h_knit_print_render_model",
-  "LogisticLogNormalSub",
-  h_knit_print_render_model.LogisticLogNormalSub
-)
 
 #' @description `r lifecycle::badge("experimental")`
 #' @noRd
@@ -725,12 +633,6 @@ knit_print.LogisticLogNormalSub <- function(
   NextMethod(params = params)
 }
 
-registerS3method(
-  "knit_print",
-  "LogisticLogNormalSub",
-  knit_print.LogisticLogNormalSub
-)
-
 # LogisticNormal ----
 
 #' @description `r lifecycle::badge("experimental")`
@@ -744,12 +646,6 @@ h_knit_print_render_model.LogisticNormal <- function(x, ...) {
   )
 }
 
-registerS3method(
-  "h_knit_print_render_model",
-  "LogisticNormal",
-  h_knit_print_render_model.LogisticNormal
-)
-
 # ProbitLogNormal ----
 
 #' @description `r lifecycle::badge("experimental")`
@@ -761,12 +657,6 @@ h_knit_print_render_model.ProbitLogNormal <- function(x, ...) {
     "where d~ref~ denotes a reference dose.\n\n"
   )
 }
-
-registerS3method(
-  "h_knit_print_render_model",
-  "ProbitLogNormal",
-  h_knit_print_render_model.ProbitLogNormal
-)
 
 # ProbitLogNormalRel ----
 
@@ -780,12 +670,6 @@ h_knit_print_render_model.ProbitLogNormalRel <- function(x, ...) {
   )
 }
 
-registerS3method(
-  "h_knit_print_render_model",
-  "ProbitLogNormalRel",
-  h_knit_print_render_model.ProbitLogNormalRel
-)
-
 # LogisticNormalMixture ----
 
 #' @description `r lifecycle::badge("experimental")`
@@ -798,12 +682,6 @@ h_knit_print_render_model.LogisticNormalMixture <- function(x, ...) {
     "where d~ref~ denotes a reference dose.\n\n"
   )
 }
-
-registerS3method(
-  "h_knit_print_render_model",
-  "LogisticNormalMixture",
-  h_knit_print_render_model.LogisticNormalMixture
-)
 
 #' @keywords internal
 knit_print.LogisticNormalMixture <- function(x, ..., asis = TRUE, use_values = TRUE, fmt = "%5.2f", units = NA) {
@@ -845,12 +723,6 @@ knit_print.LogisticNormalMixture <- function(x, ..., asis = TRUE, use_values = T
   }
   rv
 }
-
-registerS3method(
-  "knit_print",
-  "LogisticNormalMixture",
-  knit_print.LogisticNormalMixture
-)
 
 # LogisticNormalFixedMixture ----
 
@@ -909,12 +781,6 @@ knit_print.LogisticNormalFixedMixture <- function(x, ..., asis = TRUE, use_value
   rv
 }
 
-registerS3method(
-  "knit_print",
-  "LogisticNormalFixedMixture",
-  knit_print.LogisticNormalFixedMixture
-)
-
 #' @description `r lifecycle::badge("experimental")`
 #' @noRd
 h_knit_print_render_model.LogisticNormalFixedMixture <- function(x, ...) {
@@ -929,12 +795,6 @@ h_knit_print_render_model.LogisticNormalFixedMixture <- function(x, ...) {
   )
 }
 
-registerS3method(
-  "h_knit_print_render_model",
-  "LogisticNormalFixedMixture",
-  h_knit_print_render_model.LogisticNormalFixedMixture
-)
-
 # ModelLogNormal ----
 
 #' @description `r lifecycle::badge("experimental")`
@@ -942,12 +802,6 @@ registerS3method(
 h_knit_print_render_model.ModelLogNormal <- function(x, ...) {
   "The model used to characterise the dose toxicity relationship is defined in  subclasses.\n\n"
 }
-
-registerS3method(
-  "h_knit_print_render_model",
-  "ModelLogNormal",
-  h_knit_print_render_model.ModelLogNormal
-)
 
 # OneParLogNormalPrior ----
 
@@ -972,12 +826,6 @@ knit_print.OneParLogNormalPrior <- function(x, ..., asis = TRUE, use_values = TR
   rv
 }
 
-registerS3method(
-  "knit_print",
-  "OneParLogNormalPrior",
-  knit_print.OneParLogNormalPrior
-)
-
 # OneParExpPrior ----
 
 #' @description `r lifecycle::badge("experimental")`
@@ -990,12 +838,6 @@ knit_print.OneParExpPrior <- function(x, ..., asis = TRUE) {
   }
   rv
 }
-
-registerS3method(
-  "knit_print",
-  "OneParExpPrior",
-  knit_print.OneParExpPrior
-)
 
 # LogisticLogNormalGrouped ----
 
@@ -1018,12 +860,6 @@ knit_print.LogisticLogNormalGrouped <- function(
   NextMethod(params = params)
 }
 
-registerS3method(
-  "knit_print",
-  "LogisticLogNormalGrouped",
-  knit_print.LogisticLogNormalGrouped
-)
-
 #' @description `r lifecycle::badge("experimental")`
 #' @noRd
 h_knit_print_render_model.LogisticLogNormalGrouped <- function(x, ...) {
@@ -1035,12 +871,6 @@ h_knit_print_render_model.LogisticLogNormalGrouped <- function(x, ...) {
     "is 1 for the combo arm and 0 for the mono arm.\n\n"
   )
 }
-
-registerS3method(
-  "h_knit_print_render_model",
-  "LogisticLogNormalGrouped",
-  h_knit_print_render_model.LogisticLogNormalGrouped
-)
 
 #LogisticLogNormalOrdinal ----
 
@@ -1058,12 +888,6 @@ h_knit_print_render_model.LogisticLogNormalOrdinal <- function(x, ...) {
     "such that &alpha;~1~ > &alpha;~2~ > ... > &alpha;~K~.\n\n"
   )
 }
-
-registerS3method(
-  "h_knit_print_render_model",
-  "LogisticLogNormalOrdinal",
-  h_knit_print_render_model.LogisticLogNormalOrdinal
-)
 
 #' @description `r lifecycle::badge("experimental")`
 #' @noRd
@@ -1085,9 +909,3 @@ knit_print.LogisticLogNormalOrdinal <- function(
   }
   NextMethod(params = params)
 }
-
-registerS3method(
-  "knit_print",
-  "LogisticLogNormalOrdinal",
-  knit_print.LogisticLogNormalOrdinal
-)
