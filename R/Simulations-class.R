@@ -496,119 +496,110 @@ DualSimulations <- function(rho_est,
   )
 }
 
-# nolint start
-## ==============================================================================
+# PseudoSimulations ----
 
-## -------------------------------------------------------------------------------
-## class for simulation using pseudo models
-## ------------------------------------------------------------------------
+## class ----
 
-##' Class `PseudoSimulations`
-##'
-##' This is a class which captures the trial simulations from designs using
-##' pseudo model. The design for DLE only responses and model from \code{\linkS4class{ModelTox}}
-##' class object. It contains all slots from \code{\linkS4class{GeneralSimulations}} object.
-##' Additional slots fit and stopReasons compared to the general class
-##' \code{\linkS4class{GeneralSimulations}}.
-##'
-##' @slot fit list of the final values. If samples are involved, these are the final fitted values.
-##' If no samples are involved, these are included the final modal estimates of the model parameters
-##' and the posterior estimates of the probabilities of the occurrence of a DLE.
-##' @slot FinalTDtargetDuringTrialEstimates the vector of all final estimates (the last estimate of) the TDtargetDuringTrial at the end
-##' of each simulations/when each trial stops
-##' @slot FinalTDtargetEndOfTrialEstimates vector of all final estimates or the last estimate of the TDtargetEndOfTrial when each trial
-##' stops
-##' @slot FinalTDtargetDuringTrialAtDoseGrid vector of the dose levels at dose grid closest below the final TDtargetDuringTrial estimates
-##' @slot FinalTDtargetEndOfTrialAtDoseGrid vector of  the dose levels at dose grid closest below the final TDtargetEndOfTrial estimates
-##' @slot FinalTDEOTCIs is the list of all 95% credibility interval of the final estimates of the TDtargetEndOfTrial
-##' @slot FinalTDEOTRatios is the vector of the ratios of the CI, the ratio of the upper to the lower 95% credibility intervals
-##' of the final estimates of the TDtargetEndOfTrial
-##' @slot FinalCIs list of all the final 95% credibility intervals of the TDtargetEndofTrial estimates or of the final optimal dose
-##' estimates when DLE and efficacy responses are incorporated after each simulations
-##' @slot FinalRatios vector of all the final ratios, the ratios of the upper to the lower 95% credibility interval of the
-##' final estimates of the TDtargetEndOfTrial or of the final optimal dose estimates (when DLE and efficacy responses are
-##' incorporated) after each simulations
-##' @slot stopReasons add slot description
-##' @slot stop_report matrix of stopping rule outcomes
-##'
-##' @export
+#' `PseudoSimulations`
+#'
+#' @description `r lifecycle::badge("stable")`
+#' This class captures trial simulations from designs using pseudo model.
+#' It has additional slots `fit` and `stop_reasons` compared to the
+#' general class [`GeneralSimulations`].
+#'
+#' @slot fit (`list`)\cr final fit values.
+#' @slot final_td_target_during_trial_estimates (`numeric`)\cr final estimates of the `td_target_during_trial`.
+#' @slot final_td_target_end_of_trial_estimates (`numeric`)\cr final estimates of the `td_target_end_of_trial`.
+#' @slot final_td_target_during_trial_at_dose_grid (`numeric`)
+#'        \cr dose levels at dose grid closest below the final `td_target_during_trial` estimates.
+#' @slot final_td_target_end_of_trial_at_dose_grid (`numeric`)
+#'        \cr dose levels at dose grid closest below the final `td_target_end_of_trial` estimates.
+#' @slot final_tdeot_cis (`list`)\cr 95% credibility intervals of the final estimates for `td_target_end_of_trial`.
+#' @slot final_tdeot_ratios (`numeric`)\cr ratio of the upper to the lower 95%
+#'        credibility intervals for `td_target_end_of_trial`.
+#' @slot final_cis (`list`)\cr final 95% credibility intervals for `td_target_end_of_trial` estimates.
+#' @slot final_ratios (`numeric`)\cr final ratios of the upper to the lower 95%
+#'        credibility interval for `td_target_end_of_trial`.
+#' @slot stop_report (`matrix`)\cr outcomes of stopping rules.
+#' @slot stop_reasons (`list`)\cr reasons for stopping each simulation run.
+#'
+#' @aliases PseudoSimulations
+#' @export
 .PseudoSimulations <-
   setClass(
     Class = "PseudoSimulations",
-    representation(
+    slots = c(
       fit = "list",
-      FinalTDtargetDuringTrialEstimates = "numeric",
-      FinalTDtargetEndOfTrialEstimates = "numeric",
-      FinalTDtargetDuringTrialAtDoseGrid = "numeric",
-      FinalTDtargetEndOfTrialAtDoseGrid = "numeric",
-      FinalTDEOTCIs = "list",
-      FinalTDEOTRatios = "numeric",
-      FinalCIs = "list",
-      FinalRatios = "numeric",
+      final_td_target_during_trial_estimates = "numeric",
+      final_td_target_end_of_trial_estimates = "numeric",
+      final_td_target_during_trial_at_dose_grid = "numeric",
+      final_td_target_end_of_trial_at_dose_grid = "numeric",
+      final_tdeot_cis = "list",
+      final_tdeot_ratios = "numeric",
+      final_cis = "list",
+      final_ratios = "numeric",
       stop_report = "matrix",
-      stopReasons = "list"
+      stop_reasons = "list"
     ),
-    ## note: this prototype is put together with the prototype
-    ## for GeneralSimulations
-    prototype(
-      FinalTDtargetDuringTrialEstimates = c(0.1, 0.1),
-      FinalTDtargetEndOfTrialEstimates = c(0.1, 0.1),
-      FinalTDtargetDuringTrialAtDoseGrid = c(0.1, 0.1),
-      FinalTDtargetEndOfTrialAtDoseGrid = c(0.1, 0.1),
-      FinalTDEOTCIs = list(c(0.1, 0.2), c(0.1, 0.2)),
-      FinalTDEOTRatios = c(0.1, 0.1),
-      FinalCIs = list(c(0.1, 0.2), c(0.1, 0.2)),
-      FinalRatios = c(0.1, 0.1),
+    prototype = prototype(
+      final_td_target_during_trial_estimates = c(0.1, 0.1),
+      final_td_target_end_of_trial_estimates = c(0.1, 0.1),
+      final_td_target_during_trial_at_dose_grid = c(0.1, 0.1),
+      final_td_target_end_of_trial_at_dose_grid = c(0.1, 0.1),
+      final_tdeot_cis = list(c(0.1, 0.2), c(0.1, 0.2)),
+      final_tdeot_ratios = c(0.1, 0.1),
+      final_cis = list(c(0.1, 0.2), c(0.1, 0.2)),
+      final_ratios = c(0.1, 0.1),
       stop_report = matrix(TRUE, nrow = 2),
-      stopReasons =
-        list("A", "A")
+      stop_reasons = list("A", "A")
     ),
     contains = "GeneralSimulations",
     validity = v_pseudo_simulations
   )
-validObject(.PseudoSimulations())
 
-##' Initialization function of the 'PseudoSimulations' class
-##' @param fit please refer to \code{\linkS4class{PseudoSimulations}} class object
-##' @param FinalTDtargetDuringTrialEstimates please refer to \code{\linkS4class{PseudoSimulations}} class object
-##' @param FinalTDtargetEndOfTrialEstimates please refer to \code{\linkS4class{PseudoSimulations}} class object
-##' @param FinalTDtargetDuringTrialAtDoseGrid please refer to \code{\linkS4class{PseudoSimulations}} class object
-##' @param FinalTDtargetEndOfTrialAtDoseGrid please refer to \code{\linkS4class{PseudoSimulations}} class object
-##' @param FinalTDEOTCIs please refer to \code{\linkS4class{PseudoSimulations}} class object
-##' @param FinalTDEOTRatios please refer to \code{\linkS4class{PseudoSimulations}} class object
-##' @param FinalCIs please refer to \code{\linkS4class{PseudoSimulations}} class object
-##' @param FinalRatios please refer to \code{\linkS4class{PseudoSimulations}} class object
-##' @param stopReasons please refer to \code{\linkS4class{PseudoSimulations}} class object
-##' @param stop_report see [`PseudoSimulations`]
-##' @param \dots additional parameters from \code{\linkS4class{GeneralSimulations}}
-##' @return the \code{\linkS4class{PseudoSimulations}} object
-##'
-##' @export
+## constructor ----
+
+#' @rdname PseudoSimulations-class
+#'
+#' @param fit (`list`)\cr see slot definition.
+#' @param final_td_target_during_trial_estimates (`numeric`)\cr see slot definition.
+#' @param final_td_target_end_of_trial_estimates (`numeric`)\cr see slot definition.
+#' @param final_td_target_during_trial_at_dose_grid (`numeric`)\cr see slot definition.
+#' @param final_td_target_end_of_trial_at_dose_grid (`numeric`)\cr see slot definition.
+#' @param final_tdeot_cis (`list`)\cr see slot definition.
+#' @param final_tdeot_ratios (`numeric`)\cr see slot definition.
+#' @param final_cis (`list`)\cr see slot definition.
+#' @param final_ratios (`numeric`)\cr see slot definition.
+#' @param stop_report see [`PseudoSimulations`]
+#' @param stop_reasons (`list`)\cr see slot definition.
+#' @param \dots additional parameters from [`GeneralSimulations`]
+#'
+#' @export
 PseudoSimulations <- function(fit,
-                              FinalTDtargetDuringTrialEstimates,
-                              FinalTDtargetEndOfTrialEstimates,
-                              FinalTDtargetDuringTrialAtDoseGrid,
-                              FinalTDtargetEndOfTrialAtDoseGrid,
-                              FinalTDEOTCIs,
-                              FinalTDEOTRatios,
-                              FinalCIs,
-                              FinalRatios,
+                              final_td_target_during_trial_estimates,
+                              final_td_target_end_of_trial_estimates,
+                              final_td_target_during_trial_at_dose_grid,
+                              final_td_target_end_of_trial_at_dose_grid,
+                              final_tdeot_cis,
+                              final_tdeot_ratios,
+                              final_cis,
+                              final_ratios,
                               stop_report,
-                              stopReasons,
+                              stop_reasons,
                               ...) {
   start <- GeneralSimulations(...)
   .PseudoSimulations(start,
     fit = fit,
-    FinalTDtargetDuringTrialEstimates = FinalTDtargetDuringTrialEstimates,
-    FinalTDtargetEndOfTrialEstimates = FinalTDtargetEndOfTrialEstimates,
-    FinalTDtargetDuringTrialAtDoseGrid = FinalTDtargetDuringTrialAtDoseGrid,
-    FinalTDtargetEndOfTrialAtDoseGrid = FinalTDtargetEndOfTrialAtDoseGrid,
-    FinalTDEOTCIs = FinalTDEOTCIs,
-    FinalTDEOTRatios = FinalTDEOTRatios,
-    FinalCIs = FinalCIs,
-    FinalRatios = FinalRatios,
+    final_td_target_during_trial_estimates = final_td_target_during_trial_estimates,
+    final_td_target_end_of_trial_estimates = final_td_target_end_of_trial_estimates,
+    final_td_target_during_trial_at_dose_grid = final_td_target_during_trial_at_dose_grid,
+    final_td_target_end_of_trial_at_dose_grid = final_td_target_end_of_trial_at_dose_grid,
+    final_tdeot_cis = final_tdeot_cis,
+    final_tdeot_ratios = final_tdeot_ratios,
+    final_cis = final_cis,
+    final_ratios = final_ratios,
     stop_report = stop_report,
-    stopReasons = stopReasons
+    stop_reasons = stop_reasons
   )
 }
 
@@ -618,9 +609,10 @@ PseudoSimulations <- function(fit,
 #' @note Typically, end users will not use the `.DefaultPseudoSimulations()` function.
 #' @export
 .DefaultPseudoSimulations <- function() {
-  stop(paste0("Class PseudoSimulations cannot be instantiated directly.  Please use one of its subclasses instead."))
+  stop("Class PseudoSimulations cannot be instantiated directly. Please use one of its subclasses instead.")
 }
 
+# nolint start
 ## ===============================================================================
 ## -------------------------------------------------------------------------------
 ## Class for Pseudo simulation using DLE and efficacy responses (Pseudo models except 'EffFlexi' model)
@@ -717,7 +709,6 @@ PseudoDualSimulations <- function(fitEff,
   )
 }
 
-
 ## default constructor ----
 
 #' @rdname PseudoDualSimulations-class
@@ -726,7 +717,6 @@ PseudoDualSimulations <- function(fitEff,
 .DefaultPseudoDualSimulations <- function() {
   stop(paste0("Class PseudoDualSimulations cannot be instantiated directly.  Please use one of its subclasses instead."))
 }
-
 
 # PseudoDualFlexiSimulations ----
 

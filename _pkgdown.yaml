@@ -444,7 +444,7 @@ reference:
       - fitGain
       - fitPEM
       - get,Samples,character-method
-      - getMinInfBeta
+      - h_get_min_inf_beta
       - logit
       - match_within_tolerance
       - maxSize
