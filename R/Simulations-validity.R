@@ -115,7 +115,7 @@ v_pseudo_simulations <- function(object) {
 
   nSims <- length(object@data)
   v$check(
-    identical(length(object@stopReasons), nSims),
+    identical(length(object@stop_reasons), nSims),
     "stopReasons must have same length as data"
   )
 
