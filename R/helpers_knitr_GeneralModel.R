@@ -48,25 +48,15 @@ h_knit_print_render_biomarker_model <- function(x, use_values = TRUE, ...) {
 #' @export
 #' @method knit_print DualEndpoint
 knit_print.DualEndpoint <- function(
-<<<<<<< HEAD
-  x,
-  ...,
-  asis = TRUE,
-  use_values = TRUE,
-  fmt = "%5.2f",
-  units = NA,
-  biomarker_name = "a PD biomarker"
-) {
-=======
     x,
     ...,
     asis = TRUE,
     use_values = TRUE,
     fmt = "%5.2f",
     units = NA,
-    biomarker_name = "a PD biomarker") {
+    biomarker_name = "a PD biomarker"
+) {
   assert_flag(asis)
->>>>>>> f77e02b407c59f52799226962d684576a0cc81fd
   # Validate
   assert_flag(asis)
   assert_flag(use_values)
@@ -565,7 +555,6 @@ knit_print.LogisticLogNormal <- function(
       "log(\\beta)" = "beta"
     ),
     preamble = "The prior for &theta; is given by\\n",
-<<<<<<< HEAD
     asis = TRUE
 ) {
   assert_flag(asis)
@@ -579,10 +568,6 @@ knit_print.LogisticLogNormal <- function(
     preamble = preamble,
     asis = asis
   )
-=======
-    asis = TRUE) {
-  NextMethod(params = params)
->>>>>>> f77e02b407c59f52799226962d684576a0cc81fd
 }
 
 registerS3method(
@@ -785,28 +770,12 @@ knit_print.LogisticNormalMixture <- function(x, ..., asis = TRUE, use_values = T
     "w \\cdot ",
     knit_print(
       x@comp1,
-<<<<<<< HEAD
       params = c("\\alpha" = "alpha",  "\\beta" = "beta")
-=======
-      params = ifelse(
-        x@logNormal,
-        c("\\alpha" = "alpha", "log(\\beta)" = "beta"),
-        c("\\alpha" = "alpha", "\\beta" = "beta")
-      )
->>>>>>> f77e02b407c59f52799226962d684576a0cc81fd
     ),
     " + (1 - w) \\cdot ",
     knit_print(
       x@comp2,
-<<<<<<< HEAD
       params = c("\\alpha" = "alpha",  "\\beta" = "beta")
-=======
-      params = ifelse(
-        x@logNormal,
-        c("\\alpha" = "alpha", "log(\\beta)" = "beta"),
-        c("\\alpha" = "alpha", "\\beta" = "beta")
-      )
->>>>>>> f77e02b407c59f52799226962d684576a0cc81fd
     ),
     " $$\\n\\n",
     " and the prior for w is given by \n\n",
