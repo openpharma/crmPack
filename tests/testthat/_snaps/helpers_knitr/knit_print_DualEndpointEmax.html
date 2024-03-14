@@ -354,7 +354,34 @@ display: none;
 
 
 <pre><code>## [1] &quot;DualEndpointEmax&quot;</code></pre>
-<p>TODO</p>
+<p>The relationships between dose and toxicity and between dose and a PD
+biomarker will be modelled simultaneously.</p>
+<p>A probit log normal model will describe the relationship between dose
+and toxicity: <span class="math display">\[ \Phi^{-1}(Tox | d) = f(X = 1
+| \theta, d) = \alpha + \beta \cdot log(d/d_{ref}) \]</span>where
+d<sub>ref</sub> denotes a reference dose.</p>
+<p>The prior for θ is given by<span class="math display">\[
+\boldsymbol\theta = \begin{bmatrix}\alpha \\ \beta\end{bmatrix}\sim N
+\left(\begin{bmatrix} 0.00 \\  1.00\end{bmatrix} , \begin{bmatrix*}[S]
+1.00 &amp;  0.00 \\ 0.00 &amp;  1.00\end{bmatrix*} \right) \]</span>The
+reference dose will be 1.00.</p>
+<p>The a PD biomarker response <code>w</code> at dose <code>d</code> is
+modelled as <span class="math display">\[ w(d) \sim N(f(d), \sigma_w^2)
+\]</span></p>
+<p>where f(d) is a parametric Emax density function such that</p>
+<p><span class="math display">\[ f(d) = E_0 + \frac{(E_{max} - E_0)
+\times \frac{d}{d^*}}{\text{ED}_{50} + \frac{d}{d^*}} \]</span></p>
+<p>where d* is the reference dose, E<sub>0</sub> and E<sub>max</sub>
+are, respectively, the minimum and maximum levels of the biomarker and
+ED<sub>50</sub> is the dose achieving half the maximum effect, 0.5 ×
+E<sub>max</sub>.</p>
+<p>In this case,</p>
+<p><span class="math display">\[ E_0  \sim U(0, 100) \]</span></p>
+<p><span class="math display">\[ E_{max}  \sim U(0, 500) \]</span></p>
+<p><span class="math display">\[ \text{ED}_{50}  \sim U(10, 200)
+\]</span></p>
+<p>and</p>
+<p><span class="math display">\[ d^* = 1000 \]</span></p>
 
 
 

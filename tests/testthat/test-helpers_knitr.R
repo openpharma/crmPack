@@ -1,5 +1,7 @@
 library(knitr)
-
+if(testthat::is_checking()) {
+  devtools::load_all()
+}
 # h_custom_method_exists could be removed once all necessary knit_print methods
 # have been defined
 
@@ -98,12 +100,15 @@ test_that("asis parameter works correctly for all implemented methods", {
       if (h_custom_method_exists(knit_print, obj)) {
         # Default behaviour
         rv <- knit_print(obj)
+        if (is.null(rv)) print(paste0("asis = TRUE [1]: NULL value for class ", cls, "."))
         expect_class(rv, "knit_asis")
 
         # Explicit behaviours
         rv <- knit_print(obj, asis = TRUE)
+        if (is.null(rv)) print(paste0("asis = TRUE [2]: NULL value for class ", cls, "."))
         expect_class(rv, "knit_asis")
         rv <- knit_print(obj, asis = FALSE)
+        if (is.null(rv)) print(paste0("asis = TRUE [3]: NULL value for class ", cls, "."))
         # Most objects return a character, but not all.  For example,
         # CohortSizeDLT returns a knitr_table
         if ("knit_asis" %in% class(rv)) print(cls)

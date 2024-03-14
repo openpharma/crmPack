@@ -354,7 +354,22 @@ display: none;
 
 
 <pre><code>## [1] &quot;LogisticLogNormalGrouped&quot;</code></pre>
-<p>TODO</p>
+<p>A logistic log normal model will describe the relationship between
+dose and toxicity: <span class="math display">\[ p(Tox | d) = f(X = 1 |
+\theta, d) = \frac{e^{(\alpha + I_c \times \delta_0) + (\beta  + I_c
+\times \delta_1) \cdot log(d/d_{ref})}}{1 + e^{(\alpha + I_c \times
+\delta_0) + (\beta  + I_c \times \delta_1) \cdot log(d/d_{ref})}}
+\]</span>where d<sub>ref</sub> denotes a reference dose and
+I<sub>c</sub> is a binary indicator which is 1 for the combo arm and 0
+for the mono arm.</p>
+<p>The prior for θ is given by<span class="math display">\[
+\boldsymbol\theta = \begin{bmatrix}\alpha \\ \beta \\ log(\delta_0) \\
+log(\delta_1)\end{bmatrix}\sim N \left(\begin{bmatrix} 0.00 \\  0.00
+\\  0.00 \\  0.00\end{bmatrix} , \begin{bmatrix*}[S] 1.00 &amp;  0.00
+&amp;  0.00 &amp;  0.00 \\ 0.00 &amp;  1.00 &amp;  0.00 &amp;  0.00 \\
+0.00 &amp;  0.00 &amp;  1.00 &amp;  0.00 \\ 0.00 &amp;  0.00 &amp;  0.00
+&amp;  1.00\end{bmatrix*} \right) \]</span>The reference dose will be
+1.00.</p>
 
 
 

@@ -359,13 +359,24 @@ relationship between dose and toxicity: <span class="math display">\[
 p(Tox | d) = f(X = 1 | \theta, d) = \frac{e^{\alpha + \beta \cdot
 log(d/d_{ref})}}{1 + e^{\alpha + \beta \cdot log(d/d_{ref})}}
 \]</span>where d<sub>ref</sub> denotes a reference dose.</p>
-<p>The prior for θ is given by<span class="math display">\[ \theta =
-\begin{bmatrix*}[S] \alpha \\ log(\beta) \end{bmatrix*} \sim w \cdot N
-\left(\begin{bmatrix}-0.85 \\  1.00\end{bmatrix} ,
-\begin{bmatrix*}[S]  1.00 &amp; -0.50 \\ -0.50 &amp;  1.00\end{bmatrix*}
-\right) + (1 - w) \cdot N \left(\begin{bmatrix} 1.00
-\\  1.50\end{bmatrix} , \begin{bmatrix*}[S]  1.20 &amp; -0.45 \\ -0.45
-&amp;  0.60\end{bmatrix*} \right) \]</span>and the prior for w is given
+The prior for θ is given by<span class="math display">\[ \theta =
+\begin{bmatrix*}[S] \alpha \\ log(\beta) \end{bmatrix*} \sim w \cdot The
+prior for &amp;theta; is given by\n\]</span> =
+<span class="math display">\[\begin{bmatrix}\alpha \\
+\beta\end{bmatrix}\]</span>
+N (
+<span class="math display">\[\begin{bmatrix}-0.85
+\\  1.00\end{bmatrix}\]</span>
+,
+) <span class="math display">\[ + (1 - w) \cdot The prior for
+&amp;theta; is given by\n\]</span> =
+<span class="math display">\[\begin{bmatrix}\alpha \\
+\beta\end{bmatrix}\]</span>
+N (
+<span class="math display">\[\begin{bmatrix} 1.00
+\\  1.50\end{bmatrix}\]</span>
+,
+<p>) <span class="math display">\[ \]</span>and the prior for w is given
 by</p>
 <p><span class="math display">\[ w \sim Beta(1, 1) \]</span>The
 reference dose will be 50.00.</p>

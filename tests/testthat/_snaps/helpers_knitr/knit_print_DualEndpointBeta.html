@@ -354,7 +354,41 @@ display: none;
 
 
 <pre><code>## [1] &quot;DualEndpointBeta&quot;</code></pre>
-<p>TODO</p>
+<p>The relationships between dose and toxicity and between dose and a PD
+biomarker will be modelled simultaneously.</p>
+<p>A probit log normal model will describe the relationship between dose
+and toxicity: <span class="math display">\[ \Phi^{-1}(Tox | d) = f(X = 1
+| \theta, d) = \alpha + \beta \cdot log(d/d_{ref}) \]</span>where
+d<sub>ref</sub> denotes a reference dose.</p>
+<p>The prior for θ is given by<span class="math display">\[
+\boldsymbol\theta = \begin{bmatrix}\alpha \\ \beta\end{bmatrix}\sim N
+\left(\begin{bmatrix} 0.00 \\  1.00\end{bmatrix} , \begin{bmatrix*}[S]
+1.00 &amp;  0.00 \\ 0.00 &amp;  1.00\end{bmatrix*} \right) \]</span>The
+reference dose will be 10.00.</p>
+<p>The a PD biomarker response <code>w</code> at dose <code>d</code> is
+modelled as <span class="math display">\[ w(d) \sim N(f(d), \sigma_w^2)
+\]</span></p>
+<p>where f(d) is a parametric rescaled beta density function such
+that</p>
+<p><span class="math display">\[ f(d) = E_0 + (E_{max} - E_0) \times
+Beta(\delta_1, \delta_2) \times
+\left(\frac{d}{d_{max}}\right)^{\delta_1}  \times \left(1 -
+\frac{d}{d_{max}}\right)^{\delta_2} \]</span></p>
+<p>where d<sub>max</sub> is the maximum dose in the dose grid,
+δ<sub>1</sub> and δ<sub>2</sub> are the parameters of the Beta function
+and E<sub>0</sub> and E<sub>max</sub> are, respectively, the minimum and
+maximum levels of the biomarker. The mode can be written as</p>
+<p><span class="math display">\[ \text{mode} = \frac{\delta_1}{\delta_1
++ \delta_2} \]</span></p>
+<p>and this is the parameterisation used to define the model.</p>
+<p>In this case,</p>
+<p><span class="math display">\[ E_0  \sim U(0, 100) \]</span></p>
+<p><span class="math display">\[ E_{max}  \sim U(0, 500) \]</span></p>
+<p><span class="math display">\[ \delta_1  \sim U(0, 5) \]</span></p>
+<p><span class="math display">\[ \text{mode}  \sim U(1, 15)
+\]</span></p>
+<p>and</p>
+<p><span class="math display">\[ d_{max} = 1000 \]</span></p>
 
 
 

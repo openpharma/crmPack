@@ -367,7 +367,9 @@ slope <span class="math display">\[ \frac{\gamma \text{logit}(\rho_0) -
 x_{min} \text{logit}(\theta)}{\gamma - x_{min}} \]</span> and intercept
 <span class="math display">\[ \frac{\text{logit}(\theta) -
 logit(\rho_0)}{\gamma - x_{min}} \]</span> The priors for Γ and
-Ρ<sub>0</sub> are</p>
+Ρ<sub>0</sub> are <span class="math display">\[ \Gamma \sim U( 1.00,
+200.00) \]</span> and, independently, <span class="math display">\[
+\mathrm{P}_0 \sim U(0, 0.33) \]</span></p>
 <p>Note that x<sub>min</sub> and x<sub>max</sub> need not be equal to
 the smallest and largest values in the <code>doseGrid</code> slot of the
 corresponding <code>Data</code> object.</p>

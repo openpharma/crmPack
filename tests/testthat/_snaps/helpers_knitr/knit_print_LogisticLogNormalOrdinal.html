@@ -354,7 +354,23 @@ display: none;
 
 
 <pre><code>## [1] &quot;LogisticLogNormalOrdinal&quot;</code></pre>
-<p>TODO</p>
+<p>Let p<sub>k</sub>(d) be the probability that the response of a
+patient treated at dose d is in category k <em><em>or higher</em></em>,
+k=0, …, K; d=1, …, D.</p>
+<p>Then <span class="math display">\[ p_k(d) = f(X \ge k \; | \; \theta,
+d) = \begin{dcases} 1 &amp; k = 0 \\ \frac{e^{\alpha_k + \beta \cdot
+log(d/d_{ref})}}{1 + e^{\alpha_k + \beta \cdot log(d/d_{ref})}} &amp;
+k=1, ..., K\end{dcases} \]</span></p>
+<p>where d<sub>ref</sub> denotes a reference dose.</p>
+<p>The αs are constrained such that α<sub>1</sub> &gt; α<sub>2</sub>
+&gt; … &gt; α<sub>K</sub>.</p>
+<p>The prior for θ is given by<span class="math display">\[
+\boldsymbol\theta = \begin{bmatrix}\alpha_1 \\ \alpha_2 \\
+\beta\end{bmatrix}\sim N \left(\begin{bmatrix}-3.00 \\ -4.00
+\\  1.00\end{bmatrix} , \begin{bmatrix*}[S] 3.00 &amp;  0.00 &amp;  0.00
+\\ 0.00 &amp;  4.00 &amp;  0.00 \\ 0.00 &amp;  0.00
+&amp;  1.00\end{bmatrix*} \right) \]</span>The reference dose will be
+50.00.</p>
 
 
 

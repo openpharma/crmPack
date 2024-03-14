@@ -360,15 +360,16 @@ describe the relationship between dose and toxicity: <span class="math display">
 \cdot log(d/d_{ref})}} \]</span>where d<sub>ref</sub> denotes a
 reference dose.</p>
 <p>The prior for θ is given by<span class="math display">\[ \theta =
-\begin{bmatrix*}[S] \alpha \\ log(\beta) \end{bmatrix*} \sim
+\begin{bmatrix*}[S] \alpha \\ \beta \end{bmatrix*} \sim
 \sum_{i=1}^{2}w_i \cdot N \left( \mathbf{\mu}_i ,  \mathbf{\Sigma}_i
 \right) \]</span> with <span class="math display">\[ \sum_{i=1}^{2} w_i
-= 1 \]</span> The individual components of the mixture are <span class="math display">\[ N \left(\begin{bmatrix}-0.85
-\\  1.00\end{bmatrix} , \begin{bmatrix*}[S]  1.00 &amp; -0.50 \\ -0.50
-&amp;  1.00\end{bmatrix*} \right) \text{ with weight 0.3} \]</span> and
-<span class="math display">\[ N \left(\begin{bmatrix} 1.00
-\\  1.50\end{bmatrix} , \begin{bmatrix*}[S]  1.20 &amp; -0.45 \\ -0.45
-&amp;  0.60\end{bmatrix*} \right) \text{ with weight 0.7} \]</span> The
+= 1 \]</span> The individual components of the mixture are <span class="math display">\[ \boldsymbol\theta_1 = \begin{bmatrix}\alpha \\
+\beta\end{bmatrix}\sim N \left(\begin{bmatrix}-0.85
+\\  1.00\end{bmatrix} , \begin{bmatrix*}[S] 1.00 &amp; -0.50 \\ -0.50
+&amp;  1.00\end{bmatrix*} \right) \]</span> with weight 0.3 and <span class="math display">\[ \boldsymbol\theta_2 = \begin{bmatrix}\alpha \\
+\beta\end{bmatrix}\sim N \left(\begin{bmatrix} 1.00
+\\  1.50\end{bmatrix} , \begin{bmatrix*}[S] 1.20 &amp; -0.45 \\ -0.45
+&amp;  0.60\end{bmatrix*} \right) \]</span> with weight 0.7 The
 reference dose will be 50.00.</p>
 
 

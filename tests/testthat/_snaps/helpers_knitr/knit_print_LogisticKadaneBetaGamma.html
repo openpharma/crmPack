@@ -355,7 +355,9 @@ display: none;
 
 <pre><code>## [1] &quot;LogisticKadaneBetaGamma&quot;</code></pre>
 <p>A logistic model using the parameterisation of Kadane (1980) will
-describe the relationship between dose and toxicity.</p>
+describe the relationship between dose and toxicity, using a Beta
+distribution as the prior for ρ<sub>0</sub> and a Gamma distribution as
+the prior for γ.</p>
 <p>Let the minimum (x<sub>min</sub>) and maximum (x<sub>max</sub>) doses
 be 0.00 and 7.00.</p>
 <p>Further, let θ denote the target toxicity rate and ρ<sub>0</sub> =
@@ -367,7 +369,9 @@ slope <span class="math display">\[ \frac{\gamma \text{logit}(\rho_0) -
 x_{min} \text{logit}(\theta)}{\gamma - x_{min}} \]</span> and intercept
 <span class="math display">\[ \frac{\text{logit}(\theta) -
 logit(\rho_0)}{\gamma - x_{min}} \]</span> The priors for Γ and
-Ρ<sub>0</sub> are</p>
+Ρ<sub>0</sub> are <span class="math display">\[ \Gamma \sim U(
+0.56,  0.12) \]</span> and, independently, <span class="math display">\[
+\mathrm{P}_0 \sim Beta(1, 19) \]</span></p>
 <p>Note that x<sub>min</sub> and x<sub>max</sub> need not be equal to
 the smallest and largest values in the <code>doseGrid</code> slot of the
 corresponding <code>Data</code> object.</p>

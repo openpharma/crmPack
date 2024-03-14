@@ -44,7 +44,9 @@ h_knit_print_render_biomarker_model <- function(x, use_values = TRUE, ...) {
 
 #' @description `r lifecycle::badge("experimental")`
 #' @param biomarker_name (`character`)\n A description of the biomarker
-#' @noRd
+#' @rdname knit_print
+#' @export
+#' @method knit_print DualEndpoint
 knit_print.DualEndpoint <- function(
   x,
   ...,
@@ -54,7 +56,6 @@ knit_print.DualEndpoint <- function(
   units = NA,
   biomarker_name = "a PD biomarker"
 ) {
-  assert_flag(asis)
   # Validate
   assert_flag(asis)
   assert_flag(use_values)
@@ -248,7 +249,9 @@ h_knit_print_render_biomarker_model.DualEndpointRW <- function(x, ..., use_value
 #' pre-pending an escaped backslash to each value provided.
 #' @return A character string containing a LaTeX rendition of the object.
 #' @description `r lifecycle::badge("experimental")`
-#' @keywords internal
+#' @export
+#' @rdname knit_print
+#' @method knit_print ModelParamsNormal
 knit_print.ModelParamsNormal <- function(
   x,
   use_values = TRUE,
@@ -264,6 +267,7 @@ knit_print.ModelParamsNormal <- function(
   assert_format(fmt)
   assert_character(preamble, len = 1)
   assert_true(length(x@mean) == length(params))
+  assert_flag(asis)
   # Initialise
   n <- length(params)
   if (is.null(names(params))) {
@@ -334,7 +338,9 @@ knit_print.ModelParamsNormal <- function(
 
 # GeneralModel ----
 
-#' @keywords internal
+#' @export
+#' @rdname knit_print
+#' @method knit_print GeneralModel
 knit_print.GeneralModel <- function(
   x,
   ...,
@@ -394,7 +400,9 @@ h_knit_print_render_ref_dose.LogisticKadane <- function(x, ...) {
 }
 
 #' @description `r lifecycle::badge("experimental")`
-#' @noRd
+#' @rdname knit_print
+#' @export
+#' @method knit_print LogisticKadane
 knit_print.LogisticKadane <- function(x, ..., asis = TRUE, use_values = TRUE, fmt = "%5.2f", units = NA) {
   # Validate
   assert_flag(asis)
@@ -457,7 +465,9 @@ knit_print.LogisticKadane <- function(x, ..., asis = TRUE, use_values = TRUE, fm
 # LogisticKadaneBetaGamma
 
 #' @description `r lifecycle::badge("experimental")`
-#' @noRd
+#' @rdname knit_print
+#' @export
+#' @method knit_print LogisticKadaneBetaGamma
 knit_print.LogisticKadaneBetaGamma <- function(x, ..., asis = TRUE, use_values = TRUE, fmt = "%5.2f", units = NA) {
   # Validate
   assert_flag(asis)
@@ -533,7 +543,9 @@ h_knit_print_render_model.LogisticLogNormal <- function(x, ...) {
 }
 
 #' @description `r lifecycle::badge("experimental")`
-#' @noRd
+#' @rdname knit_print
+#' @export
+#' @method knit_print LogisticLogNormal
 knit_print.LogisticLogNormal <- function(
     x,
     ...,
@@ -546,8 +558,24 @@ knit_print.LogisticLogNormal <- function(
     preamble = "The prior for &theta; is given by\\n",
     asis = TRUE
 ) {
-  NextMethod(params = params)
+  assert_flag(asis)
+  # Can't use NextMethod() on a S4 class
+  knit_print.GeneralModel(
+    x,
+    ...,
+    use_values = use_values,
+    fmt = fmt,
+    params = params,
+    preamble = preamble,
+    asis = asis
+  )
 }
+
+registerS3method(
+  "knit_print",
+  "LogisticLogNormal",
+  knit_print.LogisticLogNormal
+)
 
 # LogisticLogNormalMixture ----
 
@@ -576,7 +604,15 @@ h_knit_print_render_model.LogisticLogNormalMixture <- function(x, use_values = T
   )
 }
 
-#' @keywords internal
+registerS3method(
+  "h_knit_print_render_model",
+  "LogisticLogNormalMixture",
+  h_knit_print_render_model.LogisticLogNormalMixture
+)
+
+#' @export
+#' @rdname knit_print
+#' @method knit_print LogisticLogNormalMixture
 knit_print.LogisticLogNormalMixture <- function(x, ..., asis = TRUE, use_values = TRUE, fmt = "%5.2f", units = NA) {
   # Validate
   assert_flag(asis)
@@ -616,8 +652,16 @@ h_knit_print_render_model.LogisticLogNormalSub <- function(x, ...) {
   )
 }
 
+registerS3method(
+  "h_knit_print_render_model",
+  "LogisticLogNormalSub",
+  h_knit_print_render_model.LogisticLogNormalSub
+)
+
 #' @description `r lifecycle::badge("experimental")`
-#' @noRd
+#' @rdname knit_print
+#' @export
+#' @method knit_print LogisticLogNormalSub
 knit_print.LogisticLogNormalSub <- function(
     x,
     ...,
@@ -632,6 +676,15 @@ knit_print.LogisticLogNormalSub <- function(
 ) {
   NextMethod(params = params)
 }
+
+registerS3method(
+  "knit_print",
+  "LogisticLogNormalSub",
+  knit_print.LogisticLogNormalSub
+)
+
+# setMethod("knit_print", "LogisticLogNormalSub", knit_print.LogisticLogNormalSub)
+
 
 # LogisticNormal ----
 
@@ -658,11 +711,18 @@ h_knit_print_render_model.ProbitLogNormal <- function(x, ...) {
   )
 }
 
+registerS3method(
+  "h_knit_print_render_model",
+  "ProbitLogNormal",
+  h_knit_print_render_model.ProbitLogNormal
+)
+
 # ProbitLogNormalRel ----
 
 #' @description `r lifecycle::badge("experimental")`
 #' @noRd
-h_knit_print_render_model.ProbitLogNormalRel <- function(x, ...) {
+h_knit_print_render_model.ProbitLogNormalRel <- function(x, ..., asis = TRUE) {
+  assert_flag(asis)
   paste0(
     "A probit log normal model will describe the relationship between dose and toxicity: ",
     "$$ \\Phi^{-1}(Tox | d) = f(X = 1 | \\theta, d) = \\alpha + \\beta \\cdot d/d_{ref} $$\\n ",
@@ -670,12 +730,18 @@ h_knit_print_render_model.ProbitLogNormalRel <- function(x, ...) {
   )
 }
 
+registerS3method(
+  "h_knit_print_render_model",
+  "ProbitLogNormalRel",
+  h_knit_print_render_model.ProbitLogNormalRel
+)
+
 # LogisticNormalMixture ----
 
 #' @description `r lifecycle::badge("experimental")`
 #' @noRd
 h_knit_print_render_model.LogisticNormalMixture <- function(x, ...) {
-  z1 <- "e^{\\alpha_1 + \\beta_1 \\cdot log(d/d_{ref})}"
+  z <- "e^{\\alpha + \\beta \\cdot log(d/d_{ref})}"
   paste0(
     "A mixture of two logistic log normal models will describe the relationship between dose and toxicity: ",
     "$$ p(Tox | d) = f(X = 1 | \\theta, d) = \\frac{", z, "}{1 + ", z, "} $$\\n ",
@@ -683,7 +749,15 @@ h_knit_print_render_model.LogisticNormalMixture <- function(x, ...) {
   )
 }
 
-#' @keywords internal
+registerS3method(
+  "h_knit_print_render_model",
+  "LogisticNormalMixture",
+  h_knit_print_render_model.LogisticNormalMixture
+)
+
+#' @export
+#' @rdname knit_print
+#' @method knit_print LogisticNormalMixture
 knit_print.LogisticNormalMixture <- function(x, ..., asis = TRUE, use_values = TRUE, fmt = "%5.2f", units = NA) {
   # Validate
   assert_flag(asis)
@@ -698,20 +772,12 @@ knit_print.LogisticNormalMixture <- function(x, ..., asis = TRUE, use_values = T
     "w \\cdot ",
     knit_print(
       x@comp1,
-      params = ifelse(
-        x@logNormal,
-        c("\\alpha" = "alpha",  "log(\\beta)" = "beta"),
-        c("\\alpha" = "alpha",  "\\beta" = "beta")
-      )
+      params = c("\\alpha" = "alpha",  "\\beta" = "beta")
     ),
     " + (1 - w) \\cdot ",
     knit_print(
       x@comp2,
-      params = ifelse(
-        x@logNormal,
-        c("\\alpha" = "alpha",  "log(\\beta)" = "beta"),
-        c("\\alpha" = "alpha",  "\\beta" = "beta")
-      )
+      params = c("\\alpha" = "alpha",  "\\beta" = "beta")
     ),
     " $$\\n\\n",
     " and the prior for w is given by \n\n",
@@ -724,9 +790,18 @@ knit_print.LogisticNormalMixture <- function(x, ..., asis = TRUE, use_values = T
   rv
 }
 
+registerS3method(
+  "knit_print",
+  "LogisticNormalMixture",
+  knit_print.LogisticNormalMixture
+)
+
+
 # LogisticNormalFixedMixture ----
 
-#' @keywords internal
+#' @export
+#' @rdname knit_print
+#' @method knit_print LogisticNormalFixedMixture
 knit_print.LogisticNormalFixedMixture <- function(x, ..., asis = TRUE, use_values = TRUE, fmt = "%5.2f", units = NA) {
   # Validate
   assert_flag(asis)
@@ -781,6 +856,13 @@ knit_print.LogisticNormalFixedMixture <- function(x, ..., asis = TRUE, use_value
   rv
 }
 
+registerS3method(
+  "knit_print",
+  "LogisticNormalFixedMixture",
+  knit_print.LogisticNormalFixedMixture
+)
+
+
 #' @description `r lifecycle::badge("experimental")`
 #' @noRd
 h_knit_print_render_model.LogisticNormalFixedMixture <- function(x, ...) {
@@ -795,6 +877,13 @@ h_knit_print_render_model.LogisticNormalFixedMixture <- function(x, ...) {
   )
 }
 
+registerS3method(
+  "h_knit_print_render_model",
+  "LogisticNormalFixedMixture",
+  h_knit_print_render_model.LogisticNormalFixedMixture
+)
+
+
 # ModelLogNormal ----
 
 #' @description `r lifecycle::badge("experimental")`
@@ -803,19 +892,34 @@ h_knit_print_render_model.ModelLogNormal <- function(x, ...) {
   "The model used to characterise the dose toxicity relationship is defined in  subclasses.\n\n"
 }
 
+registerS3method(
+  "h_knit_print_render_model",
+  "ModelLogNormal",
+  h_knit_print_render_model.ModelLogNormal
+)
+
+
 # OneParLogNormalPrior ----
 
 #' @description `r lifecycle::badge("experimental")`
-#' @noRd
+#' @rdname knit_print
+#' @export
+#' @method knit_print OneParLogNormalPrior
 knit_print.OneParLogNormalPrior <- function(x, ..., asis = TRUE, use_values = TRUE, fmt = "%5.2f") {
   assert_flag(asis)
+
+  s2text <- ifelse(
+    use_values,
+    stringr::str_trim(sprintf(fmt, x@sigma2)),
+    "\\sigma^2"
+  )
   rv <- paste0(
     "The relationship between dose and toxicity will be modelled using a version ",
     "of the one parameter CRM of O'Quigley et al (1990) with an exponential prior on the ",
     "power parameter for the skeleton prior probabilities, with",
     ifelse(
       use_values,
-      paste0("$$ \\Theta \\sim Exp(", , ") $$"),
+      paste0("$$ \\Theta \\sim Exp(", s2text, ") $$"),
       "$$ \\Theta \\sim Exp(\\lambda) $$"
     ),
     "and skeleton probabilities as in the table below."
@@ -826,10 +930,19 @@ knit_print.OneParLogNormalPrior <- function(x, ..., asis = TRUE, use_values = TR
   rv
 }
 
+registerS3method(
+  "knit_print",
+  "OneParLogNormalPrior",
+  knit_print.OneParLogNormalPrior
+)
+
+
 # OneParExpPrior ----
 
 #' @description `r lifecycle::badge("experimental")`
-#' @noRd
+#' @rdname knit_print
+#' @export
+#' @method knit_print OneParExpPrior
 knit_print.OneParExpPrior <- function(x, ..., asis = TRUE) {
   assert_flag(asis)
   rv <- "TODO"
@@ -839,10 +952,18 @@ knit_print.OneParExpPrior <- function(x, ..., asis = TRUE) {
   rv
 }
 
+registerS3method(
+  "knit_print",
+  "OneParExpPrior",
+  knit_print.OneParExpPrior
+)
+
 # LogisticLogNormalGrouped ----
 
 #' @description `r lifecycle::badge("experimental")`
-#' @noRd
+#' @rdname knit_print
+#' @export
+#' @method knit_print LogisticLogNormalGrouped
 knit_print.LogisticLogNormalGrouped <- function(
     x,
     ...,
@@ -859,6 +980,13 @@ knit_print.LogisticLogNormalGrouped <- function(
 ) {
   NextMethod(params = params)
 }
+
+registerS3method(
+  "knit_print",
+  "LogisticLogNormalGrouped",
+  knit_print.LogisticLogNormalGrouped
+)
+
 
 #' @description `r lifecycle::badge("experimental")`
 #' @noRd
@@ -889,8 +1017,16 @@ h_knit_print_render_model.LogisticLogNormalOrdinal <- function(x, ...) {
   )
 }
 
+registerS3method(
+  "h_knit_print_render_model",
+  "LogisticLogNormalOrdinal",
+  h_knit_print_render_model.LogisticLogNormalOrdinal
+)
+
 #' @description `r lifecycle::badge("experimental")`
-#' @noRd
+#' @rdname knit_print
+#' @export
+#' @method knit_print LogisticLogNormalOrdinal
 knit_print.LogisticLogNormalOrdinal <- function(
     x,
     ...,
@@ -900,6 +1036,7 @@ knit_print.LogisticLogNormalOrdinal <- function(
     preamble = "The prior for &theta; is given by\\n",
     asis = TRUE
 ) {
+  assert_flag(asis)
   if (is.na(params)) {
     params <- c(
       paste0("alpha_", 1:(length(x@params@mean) - 1)),
@@ -909,3 +1046,9 @@ knit_print.LogisticLogNormalOrdinal <- function(
   }
   NextMethod(params = params)
 }
+
+registerS3method(
+  "knit_print",
+  "LogisticLogNormalOrdinal",
+  knit_print.LogisticLogNormalOrdinal
+)
