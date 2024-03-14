@@ -1028,9 +1028,6 @@ h_knit_print_render_model.LogisticLogNormalGrouped <- function(x, ...) {
   )
 }
 
-<<<<<<< HEAD
-#LogisticLogNormalOrdinal ----
-=======
 registerS3method(
   "h_knit_print_render_model",
   "LogisticLogNormalGrouped",
@@ -1038,7 +1035,6 @@ registerS3method(
 )
 
 # LogisticLogNormalOrdinal ----
->>>>>>> f77e02b407c59f52799226962d684576a0cc81fd
 
 #' @description `r lifecycle::badge("experimental")`
 #' @noRd
@@ -1072,13 +1068,9 @@ knit_print.LogisticLogNormalOrdinal <- function(
     fmt = "%5.2f",
     params = NA,
     preamble = "The prior for &theta; is given by\\n",
-<<<<<<< HEAD
     asis = TRUE
 ) {
   assert_flag(asis)
-=======
-    asis = TRUE) {
->>>>>>> f77e02b407c59f52799226962d684576a0cc81fd
   if (is.na(params)) {
     params <- c(
       paste0("alpha_", 1:(length(x@params@mean) - 1)),
