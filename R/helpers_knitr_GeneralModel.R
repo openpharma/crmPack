@@ -48,6 +48,7 @@ h_knit_print_render_biomarker_model <- function(x, use_values = TRUE, ...) {
 #' @export
 #' @method knit_print DualEndpoint
 knit_print.DualEndpoint <- function(
+<<<<<<< HEAD
   x,
   ...,
   asis = TRUE,
@@ -56,6 +57,16 @@ knit_print.DualEndpoint <- function(
   units = NA,
   biomarker_name = "a PD biomarker"
 ) {
+=======
+    x,
+    ...,
+    asis = TRUE,
+    use_values = TRUE,
+    fmt = "%5.2f",
+    units = NA,
+    biomarker_name = "a PD biomarker") {
+  assert_flag(asis)
+>>>>>>> f77e02b407c59f52799226962d684576a0cc81fd
   # Validate
   assert_flag(asis)
   assert_flag(use_values)
@@ -67,7 +78,7 @@ knit_print.DualEndpoint <- function(
   } else {
     units <- paste0(" ", units)
   }
-  #Execute
+  # Execute
   toxModel <- ProbitLogNormal(
     cov = x@betaZ_params@cov,
     mean = x@betaZ_params@mean,
@@ -253,15 +264,14 @@ h_knit_print_render_biomarker_model.DualEndpointRW <- function(x, ..., use_value
 #' @rdname knit_print
 #' @method knit_print ModelParamsNormal
 knit_print.ModelParamsNormal <- function(
-  x,
-  use_values = TRUE,
-  fmt = "%5.2f",
-  params = c("alpha", "beta"),
-  preamble = "The prior for &theta; is given by\\n",
-  asis = TRUE,
-  theta = "\\theta",
-  ...
-) {
+    x,
+    use_values = TRUE,
+    fmt = "%5.2f",
+    params = c("alpha", "beta"),
+    preamble = "The prior for &theta; is given by\\n",
+    asis = TRUE,
+    theta = "\\theta",
+    ...) {
   # Validate
   assert_class(x, "ModelParamsNormal")
   assert_format(fmt)
@@ -342,14 +352,13 @@ knit_print.ModelParamsNormal <- function(
 #' @rdname knit_print
 #' @method knit_print GeneralModel
 knit_print.GeneralModel <- function(
-  x,
-  ...,
-  params = c("alpha", "beta"),
-  asis = TRUE,
-  use_values = TRUE,
-  fmt = "%5.2f",
-  units = NA
-) {
+    x,
+    ...,
+    params = c("alpha", "beta"),
+    asis = TRUE,
+    use_values = TRUE,
+    fmt = "%5.2f",
+    units = NA) {
   # Validate
   assert_flag(asis)
   assert_flag(use_values)
@@ -414,7 +423,7 @@ knit_print.LogisticKadane <- function(x, ..., asis = TRUE, use_values = TRUE, fm
   } else {
     units <- paste0(" ", units)
   }
-  #Execute
+  # Execute
   rv <- paste0(
     "A logistic model using the parameterisation of Kadane (1980)  will ",
     "describe the relationship between dose and toxicity.\n\n ",
@@ -479,7 +488,7 @@ knit_print.LogisticKadaneBetaGamma <- function(x, ..., asis = TRUE, use_values =
   } else {
     units <- paste0(" ", units)
   }
-  #Execute
+  # Execute
   rv <- paste0(
     "A logistic model using the parameterisation of Kadane (1980)  will ",
     "describe the relationship between dose and toxicity, using a Beta ",
@@ -556,6 +565,7 @@ knit_print.LogisticLogNormal <- function(
       "log(\\beta)" = "beta"
     ),
     preamble = "The prior for &theta; is given by\\n",
+<<<<<<< HEAD
     asis = TRUE
 ) {
   assert_flag(asis)
@@ -569,6 +579,10 @@ knit_print.LogisticLogNormal <- function(
     preamble = preamble,
     asis = asis
   )
+=======
+    asis = TRUE) {
+  NextMethod(params = params)
+>>>>>>> f77e02b407c59f52799226962d684576a0cc81fd
 }
 
 registerS3method(
@@ -672,8 +686,7 @@ knit_print.LogisticLogNormalSub <- function(
       "log(\\beta)" = "beta"
     ),
     preamble = "The prior for &theta; is given by\\n",
-    asis = TRUE
-) {
+    asis = TRUE) {
   NextMethod(params = params)
 }
 
@@ -772,12 +785,28 @@ knit_print.LogisticNormalMixture <- function(x, ..., asis = TRUE, use_values = T
     "w \\cdot ",
     knit_print(
       x@comp1,
+<<<<<<< HEAD
       params = c("\\alpha" = "alpha",  "\\beta" = "beta")
+=======
+      params = ifelse(
+        x@logNormal,
+        c("\\alpha" = "alpha", "log(\\beta)" = "beta"),
+        c("\\alpha" = "alpha", "\\beta" = "beta")
+      )
+>>>>>>> f77e02b407c59f52799226962d684576a0cc81fd
     ),
     " + (1 - w) \\cdot ",
     knit_print(
       x@comp2,
+<<<<<<< HEAD
       params = c("\\alpha" = "alpha",  "\\beta" = "beta")
+=======
+      params = ifelse(
+        x@logNormal,
+        c("\\alpha" = "alpha", "log(\\beta)" = "beta"),
+        c("\\alpha" = "alpha", "\\beta" = "beta")
+      )
+>>>>>>> f77e02b407c59f52799226962d684576a0cc81fd
     ),
     " $$\\n\\n",
     " and the prior for w is given by \n\n",
@@ -821,9 +850,9 @@ knit_print.LogisticNormalFixedMixture <- function(x, ..., asis = TRUE, use_value
     " The individual components of the mixture are "
   )
   if (x@log_normal) {
-    params <- c("\\alpha" = "alpha",  "log(\\beta)" = "beta")
+    params <- c("\\alpha" = "alpha", "log(\\beta)" = "beta")
   } else {
-    params <- c("\\alpha" = "alpha",  "\\beta" = "beta")
+    params <- c("\\alpha" = "alpha", "\\beta" = "beta")
   }
   for (i in seq_along(x@components)) {
     comp <- x@components[[i]]
@@ -976,8 +1005,7 @@ knit_print.LogisticLogNormalGrouped <- function(
       "log(\\delta_1)" = "delta_1"
     ),
     preamble = "The prior for &theta; is given by\\n",
-    asis = TRUE
-) {
+    asis = TRUE) {
   NextMethod(params = params)
 }
 
@@ -1000,7 +1028,17 @@ h_knit_print_render_model.LogisticLogNormalGrouped <- function(x, ...) {
   )
 }
 
+<<<<<<< HEAD
 #LogisticLogNormalOrdinal ----
+=======
+registerS3method(
+  "h_knit_print_render_model",
+  "LogisticLogNormalGrouped",
+  h_knit_print_render_model.LogisticLogNormalGrouped
+)
+
+# LogisticLogNormalOrdinal ----
+>>>>>>> f77e02b407c59f52799226962d684576a0cc81fd
 
 #' @description `r lifecycle::badge("experimental")`
 #' @noRd
@@ -1034,9 +1072,13 @@ knit_print.LogisticLogNormalOrdinal <- function(
     fmt = "%5.2f",
     params = NA,
     preamble = "The prior for &theta; is given by\\n",
+<<<<<<< HEAD
     asis = TRUE
 ) {
   assert_flag(asis)
+=======
+    asis = TRUE) {
+>>>>>>> f77e02b407c59f52799226962d684576a0cc81fd
   if (is.na(params)) {
     params <- c(
       paste0("alpha_", 1:(length(x@params@mean) - 1)),
