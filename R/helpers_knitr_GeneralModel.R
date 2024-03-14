@@ -54,8 +54,7 @@ knit_print.DualEndpoint <- function(
     use_values = TRUE,
     fmt = "%5.2f",
     units = NA,
-    biomarker_name = "a PD biomarker"
-) {
+    biomarker_name = "a PD biomarker") {
   assert_flag(asis)
   # Validate
   assert_flag(asis)
@@ -555,8 +554,7 @@ knit_print.LogisticLogNormal <- function(
       "log(\\beta)" = "beta"
     ),
     preamble = "The prior for &theta; is given by\\n",
-    asis = TRUE
-) {
+    asis = TRUE) {
   assert_flag(asis)
   # Can't use NextMethod() on a S4 class
   knit_print.GeneralModel(
@@ -770,12 +768,12 @@ knit_print.LogisticNormalMixture <- function(x, ..., asis = TRUE, use_values = T
     "w \\cdot ",
     knit_print(
       x@comp1,
-      params = c("\\alpha" = "alpha",  "\\beta" = "beta")
+      params = c("\\alpha" = "alpha", "\\beta" = "beta")
     ),
     " + (1 - w) \\cdot ",
     knit_print(
       x@comp2,
-      params = c("\\alpha" = "alpha",  "\\beta" = "beta")
+      params = c("\\alpha" = "alpha", "\\beta" = "beta")
     ),
     " $$\\n\\n",
     " and the prior for w is given by \n\n",
@@ -1037,8 +1035,7 @@ knit_print.LogisticLogNormalOrdinal <- function(
     fmt = "%5.2f",
     params = NA,
     preamble = "The prior for &theta; is given by\\n",
-    asis = TRUE
-) {
+    asis = TRUE) {
   assert_flag(asis)
   if (is.na(params)) {
     params <- c(
