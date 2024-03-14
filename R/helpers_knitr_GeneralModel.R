@@ -681,9 +681,6 @@ registerS3method(
   knit_print.LogisticLogNormalSub
 )
 
-# setMethod("knit_print", "LogisticLogNormalSub", knit_print.LogisticLogNormalSub)
-
-
 # LogisticNormal ----
 
 #' @description `r lifecycle::badge("experimental")`
