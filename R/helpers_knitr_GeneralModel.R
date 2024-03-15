@@ -98,7 +98,7 @@ h_knit_print_render_biomarker_model.DualEndpoint <- function(x, ..., use_values 
   "f(d) is a function of dose that is defined elsewhere."
 }
 
-# DualEndpointBeta
+# DualEndpointBeta ----
 
 #' @description `r lifecycle::badge("experimental")`
 #' @noRd
@@ -461,7 +461,7 @@ knit_print.LogisticKadane <- function(x, ..., asis = TRUE, use_values = TRUE, fm
   rv
 }
 
-# LogisticKadaneBetaGamma
+# LogisticKadaneBetaGamma ----
 
 #' @description `r lifecycle::badge("experimental")`
 #' @rdname knit_print
@@ -878,7 +878,6 @@ registerS3method(
   h_knit_print_render_model.LogisticNormalFixedMixture
 )
 
-
 # ModelLogNormal ----
 
 #' @description `r lifecycle::badge("experimental")`
@@ -892,7 +891,6 @@ registerS3method(
   "ModelLogNormal",
   h_knit_print_render_model.ModelLogNormal
 )
-
 
 # OneParLogNormalPrior ----
 
@@ -930,7 +928,6 @@ registerS3method(
   "OneParLogNormalPrior",
   knit_print.OneParLogNormalPrior
 )
-
 
 # OneParExpPrior ----
 
@@ -980,7 +977,6 @@ registerS3method(
   "LogisticLogNormalGrouped",
   knit_print.LogisticLogNormalGrouped
 )
-
 
 #' @description `r lifecycle::badge("experimental")`
 #' @noRd
