@@ -199,7 +199,7 @@ or the symbols used to define the hyper-parameters.  That is, for example, mu or
 \item{fmt}{(\code{character})\cr the \code{sprintf} format string used to render
 numerical values.  Ignored if \code{use_values} is \code{FALSE}.}
 
-\item{biomarker_name}{(\code{character})\n A description of the biomarker}
+\item{biomarker_name}{(\code{character})\cr A description of the biomarker}
 
 \item{params}{(\code{character})\cr The names of the model parameters.  See Usage
 Notes below.}
@@ -208,6 +208,8 @@ Notes below.}
 of the model}
 
 \item{theta}{(\code{character})\cr the LaTex representation of the theta vector}
+
+\item{...\cr}{passed to \code{\link[knitr:kable]{knitr::kable()}}}
 }
 \value{
 a character string that represents the object in markdown.

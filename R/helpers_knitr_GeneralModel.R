@@ -43,7 +43,7 @@ h_knit_print_render_biomarker_model <- function(x, use_values = TRUE, ...) {
 # DualEndpoint ----
 
 #' @description `r lifecycle::badge("experimental")`
-#' @param biomarker_name (`character`)\n A description of the biomarker
+#' @param biomarker_name (`character`)\cr A description of the biomarker
 #' @rdname knit_print
 #' @export
 #' @method knit_print DualEndpoint
