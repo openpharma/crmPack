@@ -1,3 +1,5 @@
+#' @include helpers_knitr_CohortSize.R
+
 # Increments ----
 
 #' Render a `IncrementsRelative` Object
@@ -5,6 +7,7 @@
 #' @description `r lifecycle::badge("experimental")`
 #' @inherit knit_print.CohortSizeConst return
 #' @param ... passed to [knitr::kable()]
+#' @inheritParams knit_print.CohortSizeConst
 #' @section Usage Notes:
 #' The default value of `col.names` is `c("Min", "Max", "Increment")` and that
 #' of `caption` is `"Defined by highest dose administered so far"`.  These
@@ -39,6 +42,7 @@ knit_print.IncrementsRelative <- function(x, ..., asis = TRUE) {
 #' @description `r lifecycle::badge("experimental")`
 #' @inherit knit_print.CohortSizeConst return
 #' @param ... passed to [knitr::kable()]
+#' @inheritParams knit_print.CohortSizeConst
 #' @section Usage Notes:
 #' The default value of `col.names` is `c("Min", "Max", "Increment")` and that
 #' of `caption` is `"Defined by number of DLTs reported so far"`. These values
@@ -72,6 +76,7 @@ knit_print.IncrementsRelativeDLT <- function(x, ..., asis = TRUE) {
 #'
 #' @description `r lifecycle::badge("experimental")`
 #' @inherit knit_print.CohortSizeConst return
+#' @inheritParams knit_print.CohortSizeConst
 #' @export
 #' @rdname knit_print
 knit_print.IncrementsDoseLevels <- function(x, ..., asis = TRUE) {
@@ -95,6 +100,7 @@ knit_print.IncrementsDoseLevels <- function(x, ..., asis = TRUE) {
 #'
 #' @description `r lifecycle::badge("experimental")`
 #' @inherit knit_print.CohortSizeConst return
+#' @inheritParams knit_print.CohortSizeConst
 #' @export
 #' @rdname knit_print
 knit_print.IncrementsHSRBeta <- function(x, ..., asis = TRUE) {
@@ -121,7 +127,7 @@ knit_print.IncrementsHSRBeta <- function(x, ..., asis = TRUE) {
 #' @inherit knit_print.CohortSizeConst return
 #' @param ... passed through to the `knit_print` methods of the constituent
 #' rules
-#'
+#' @inheritParams knit_print.CohortSizeConst
 #' @export
 #' @rdname knit_print
 knit_print.IncrementsMin <- function(x, ..., asis = TRUE) {
@@ -149,7 +155,7 @@ knit_print.IncrementsMin <- function(x, ..., asis = TRUE) {
 #' Render an `IncrementsOrdinal` object
 #' @inherit knit_print.CohortSizeConst return
 #' @param ... passed through to the `knit_print` method of the standard rule
-#'
+#' @inheritParams knit_print.CohortSizeConst
 #' @export
 #' @rdname knit_print
 knit_print.IncrementsOrdinal <- function(x, ..., asis = TRUE) {
@@ -173,6 +179,7 @@ knit_print.IncrementsOrdinal <- function(x, ..., asis = TRUE) {
 #' @inherit knit_print.CohortSizeConst return
 #' @param labels (`character`)\cr The word used to describe toxicities.  See
 #' Usage Notes below.
+#' @inheritParams knit_print.CohortSizeConst
 #' @section Usage Notes:
 #' `labels` defines how toxicities are described.
 #'
@@ -256,6 +263,7 @@ knit_print.IncrementsRelativeParts <- function(x, ..., asis = TRUE, labels = c("
 #' @param labels (`character`)\cr The word used to describe toxicities.  See
 #' Usage Notes below.
 #' @param ... passed to [knitr::kable()]
+#' @inheritParams knit_print.CohortSizeConst
 #' @section Usage Notes:
 #' The default value of `col.names` is `c("Min", "Max", "Increment")` and that
 #' of `caption` is `"Defined by number of DLTs in the current cohort"`. These values
