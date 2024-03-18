@@ -5,7 +5,7 @@
 #' This is a helper method used `knit_print` for `crmPack` classes.
 #'
 #' @param x (`GeneralModel`)\cr the model object that will be printed
-#' @param ...\cr Not used at present
+#' @param ... Not used at present
 #' @return A character string containing a LaTeX rendition of the model.
 #' @noRd
 h_knit_print_render_ref_dose <- function(x, ...) {
@@ -17,7 +17,7 @@ h_knit_print_render_ref_dose <- function(x, ...) {
 #' This is a helper method used `knit_print` for `crmPack` classes.
 #'
 #' @param x (`GeneralModel`)\cr the model object that will be printed
-#' @param ...\cr Not used at present
+#' @param ... Not used at present
 #' @return A character string containing a LaTeX rendition of the model.
 #' @noRd
 h_knit_print_render_model <- function(x, ...) {
@@ -31,7 +31,7 @@ h_knit_print_render_model <- function(x, ...) {
 #' @param x (`DualEndpoint`)\cr the model object containing the biomarker model
 #' @param use_values (`flag`)\cr print the values associated with hyperparameters,
 #' or the symbols used to define the hyper-parameters.  That is, for example, mu or 1.
-#' @param ...\cr Not used at present
+#' @param ... Not used at present
 #' @return A character string containing a LaTeX rendition of the model.
 #' @noRd
 h_knit_print_render_biomarker_model <- function(x, use_values = TRUE, ...) {
@@ -239,7 +239,7 @@ h_knit_print_render_biomarker_model.DualEndpointRW <- function(x, ..., use_value
 #' of the model
 #' @param asis (`flag`)\cr wrap the return value in a call to `knitr::asis_output`?
 #' @param theta (`character`)\cr the LaTex representation of the theta vector
-#' @param ...\cr Not used at present
+#' @param ... Not used at present
 #' @section Usage Notes:
 #' `params` must be a character vector of length equal to that of `x@mean` (and
 #' `x@cov`).  Its values represent the parameters of the model as entries in the
