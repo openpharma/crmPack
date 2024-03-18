@@ -167,7 +167,7 @@
 \arguments{
 \item{x}{(\code{ModelParamsNormal})\cr the object to be rendered}
 
-\item{...}{passed to \code{\link[knitr:kable]{knitr::kable()}}}
+\item{...}{Not used at present}
 
 \item{asis}{(\code{flag})\cr wrap the return value in a call to \code{knitr::asis_output}?}
 
@@ -208,8 +208,6 @@ Notes below.}
 of the model}
 
 \item{theta}{(\code{character})\cr the LaTex representation of the theta vector}
-
-\item{...\cr}{Not used at present}
 }
 \value{
 a character string that represents the object in markdown.
