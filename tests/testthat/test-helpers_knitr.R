@@ -1,7 +1,5 @@
 library(knitr)
-if (testthat::is_checking()) {
-  devtools::load_all()
-}
+
 # h_custom_method_exists could be removed once all necessary knit_print methods
 # have been defined
 
