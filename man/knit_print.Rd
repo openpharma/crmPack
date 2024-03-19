@@ -208,8 +208,6 @@ Notes below.}
 of the model}
 
 \item{theta}{(\code{character})\cr the LaTex representation of the theta vector}
-
-\item{...\cr}{passed to \code{\link[knitr:kable]{knitr::kable()}}}
 }
 \value{
 a character string that represents the object in markdown.

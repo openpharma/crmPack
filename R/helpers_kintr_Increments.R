@@ -6,7 +6,7 @@
 #'
 #' @description `r lifecycle::badge("experimental")`
 #' @inherit knit_print.CohortSizeConst return
-#' @param ...\cr passed to [knitr::kable()]
+#' @param ... passed to [knitr::kable()]
 #' @inheritParams knit_print.CohortSizeConst
 #' @section Usage Notes:
 #' The default value of `col.names` is `c("Min", "Max", "Increment")` and that
@@ -41,7 +41,7 @@ knit_print.IncrementsRelative <- function(x, ..., asis = TRUE) {
 #'
 #' @description `r lifecycle::badge("experimental")`
 #' @inherit knit_print.CohortSizeConst return
-#' @param ...\cr passed to [knitr::kable()]
+#' @param ... passed to [knitr::kable()]
 #' @inheritParams knit_print.CohortSizeConst
 #' @section Usage Notes:
 #' The default value of `col.names` is `c("Min", "Max", "Increment")` and that
@@ -125,7 +125,7 @@ knit_print.IncrementsHSRBeta <- function(x, ..., asis = TRUE) {
 #'
 #' @description `r lifecycle::badge("experimental")`
 #' @inherit knit_print.CohortSizeConst return
-#' @param ...\cr passed through to the `knit_print` methods of the constituent
+#' @param ... passed through to the `knit_print` methods of the constituent
 #' rules
 #' @inheritParams knit_print.CohortSizeConst
 #' @export
@@ -154,7 +154,7 @@ knit_print.IncrementsMin <- function(x, ..., asis = TRUE) {
 
 #' Render an `IncrementsOrdinal` object
 #' @inherit knit_print.CohortSizeConst return
-#' @param ...\cr passed through to the `knit_print` method of the standard rule
+#' @param ... passed through to the `knit_print` method of the standard rule
 #' @inheritParams knit_print.CohortSizeConst
 #' @export
 #' @rdname knit_print
@@ -262,7 +262,7 @@ knit_print.IncrementsRelativeParts <- function(x, ..., asis = TRUE, labels = c("
 #' @inherit knit_print.CohortSizeConst return
 #' @param labels (`character`)\cr The word used to describe toxicities.  See
 #' Usage Notes below.
-#' @param ...\cr passed to [knitr::kable()]
+#' @param ... passed to [knitr::kable()]
 #' @inheritParams knit_print.CohortSizeConst
 #' @section Usage Notes:
 #' The default value of `col.names` is `c("Min", "Max", "Increment")` and that
