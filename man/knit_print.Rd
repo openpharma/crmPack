@@ -204,10 +204,10 @@ numerical values.  Ignored if \code{use_values} is \code{FALSE}.}
 \item{params}{(\code{character})\cr The names of the model parameters.  See Usage
 Notes below.}
 
-\item{preamble}{(\code{character})\cr The text used to introduce the LaTex representation
+\item{preamble}{(\code{character})\cr The text used to introduce the LaTeX representation
 of the model}
 
-\item{theta}{(\code{character})\cr the LaTex representation of the theta vector}
+\item{theta}{(\code{character})\cr the LaTeX representation of the theta vector}
 }
 \value{
 a character string that represents the object in markdown.
@@ -334,7 +334,7 @@ requested. The default values can be overridden by passing \code{col.names} and
 \code{params} must be a character vector of length equal to that of \code{x@mean} (and
 \code{x@cov}).  Its values represent the parameters of the model as entries in the
 vector \code{theta}, on the left-hand side of "~" in the definition of the prior.
-If named, names should be valid LaTex, escaped as usual for R character variables.
+If named, names should be valid LaTeX, escaped as usual for R character variables.
 For example, \code{"\\\\alpha"} or \code{"\\\\beta_0"}.  If unnamed, names are constructed by
 pre-pending an escaped backslash to each value provided.
 
@@ -403,7 +403,7 @@ requested. The default values can be overridden by passing \code{col.names} and
 \code{params} must be a character vector of length equal to that of \code{x@mean} (and
 \code{x@cov}).  Its values represent the parameters of the model as entries in the
 vector \code{theta}, on the left-hand side of "~" in the definition of the prior.
-If named, names should be valid LaTex, escaped as usual for R character variables.
+If named, names should be valid LaTeX, escaped as usual for R character variables.
 For example, \code{"\\\\alpha"} or \code{"\\\\beta_0"}.  If unnamed, names are constructed by
 pre-pending an escaped backslash to each value provided.
 }

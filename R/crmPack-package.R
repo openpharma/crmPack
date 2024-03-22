@@ -146,15 +146,6 @@ globalVariables(c(
   "value",
   "Parameter",
   "intervals",
-  "ID",
-  "Cohort",
-  "Dose",
-  "Tox",
-  "Part",
-  "U",
-  "T0",
-  "TMax",
-  "W",
   "Group"
 ))
 

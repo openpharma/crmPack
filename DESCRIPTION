@@ -57,7 +57,7 @@ Imports:
     rlang,
     survival,
     tibble,
-    tidyselect,
+    tidyselect (>= 1.2.0),
     tools,
     utils
 Suggests:

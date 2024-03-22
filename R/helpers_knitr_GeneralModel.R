@@ -235,16 +235,16 @@ h_knit_print_render_biomarker_model.DualEndpointRW <- function(x, ..., use_value
 #' numerical values.  Ignored if `use_values` is `FALSE`.
 #' @param params (`character`)\cr The names of the model parameters.  See Usage
 #' Notes below.
-#' @param preamble (`character`)\cr The text used to introduce the LaTex representation
+#' @param preamble (`character`)\cr The text used to introduce the LaTeX representation
 #' of the model
 #' @param asis (`flag`)\cr wrap the return value in a call to `knitr::asis_output`?
-#' @param theta (`character`)\cr the LaTex representation of the theta vector
+#' @param theta (`character`)\cr the LaTeX representation of the theta vector
 #' @param ... Not used at present
 #' @section Usage Notes:
 #' `params` must be a character vector of length equal to that of `x@mean` (and
 #' `x@cov`).  Its values represent the parameters of the model as entries in the
 #' vector `theta`, on the left-hand side of "~" in the definition of the prior.
-#' If named, names should be valid LaTex, escaped as usual for R character variables.
+#' If named, names should be valid LaTeX, escaped as usual for R character variables.
 #' For example, `"\\alpha"` or `"\\beta_0"`.  If unnamed, names are constructed by
 #' pre-pending an escaped backslash to each value provided.
 #' @return A character string containing a LaTeX rendition of the object.
@@ -273,7 +273,7 @@ knit_print.ModelParamsNormal <- function(
     names(params) <- paste0("\\", params)
   }
   # Execute
-  # Construct LaTex representation of mean vector
+  # Construct LaTeX representation of mean vector
   mu <- sapply(
     1:n,
     function(i) {
@@ -284,7 +284,7 @@ knit_print.ModelParamsNormal <- function(
       )
     }
   )
-  # Construct LaTex representation of covariance matrix
+  # Construct LaTeX representation of covariance matrix
   cov <- sapply(
     1:n,
     function(i) {
@@ -304,7 +304,7 @@ knit_print.ModelParamsNormal <- function(
       )
     }
   )
-  # Construct LaTex representation of prior
+  # Construct LaTeX representation of prior
   rv <- paste0(
     preamble,
     "$$ \\boldsymbol",
@@ -315,7 +315,7 @@ knit_print.ModelParamsNormal <- function(
     "\\sim N \\left(\\begin{bmatrix}",
     paste0(mu, collapse = " \\\\ "),
     "\\end{bmatrix} , ",
-    "\\begin{bmatrix*}[S] ",
+    "\\begin{bmatrix} ",
     paste0(
       sapply(
         1:n,
@@ -325,7 +325,7 @@ knit_print.ModelParamsNormal <- function(
       ),
       collapse = " \\\\ "
     ),
-    "\\end{bmatrix*}",
+    "\\end{bmatrix}",
     " \\right)",
     " $$"
   )
