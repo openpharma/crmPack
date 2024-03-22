@@ -396,19 +396,19 @@
       12 0.40848551 0.18254982 0.6300498
       
       
-      Slot "FinalTDtargetDuringTrialEstimates":
+      Slot "final_td_target_during_trial_estimates":
       [1] 169.4013
       
-      Slot "FinalTDtargetEndOfTrialEstimates":
+      Slot "final_td_target_end_of_trial_estimates":
       [1] 131.4969
       
-      Slot "FinalTDtargetDuringTrialAtDoseGrid":
+      Slot "final_td_target_during_trial_at_dose_grid":
       [1] 150
       
-      Slot "FinalTDtargetEndOfTrialAtDoseGrid":
+      Slot "final_td_target_end_of_trial_at_dose_grid":
       [1] 125
       
-      Slot "FinalTDEOTCIs":
+      Slot "final_tdeot_cis":
       [[1]]
       [[1]]$lower
       [1] 81.58873
@@ -418,10 +418,10 @@
       
       
       
-      Slot "FinalTDEOTRatios":
+      Slot "final_tdeot_ratios":
       [1] 17.52644
       
-      Slot "FinalCIs":
+      Slot "final_cis":
       [[1]]
       [[1]]$lower
       [1] 81.58873
@@ -431,14 +431,14 @@
       
       
       
-      Slot "FinalRatios":
+      Slot "final_ratios":
       [1] 17.52644
       
       Slot "stop_report":
            <NA>
       [1,] TRUE
       
-      Slot "stopReasons":
+      Slot "stop_reasons":
       [[1]]
       [1] "Number of patients is 36 and thus reached the prespecified minimum number 36"
       
@@ -506,19 +506,19 @@
       
       
       
-      Slot "FinalTDtargetDuringTrialEstimates":
+      Slot "final_td_target_during_trial_estimates":
       [1] 151.5239
       
-      Slot "FinalTDtargetEndOfTrialEstimates":
+      Slot "final_td_target_end_of_trial_estimates":
       [1] 133.7273
       
-      Slot "FinalTDtargetDuringTrialAtDoseGrid":
+      Slot "final_td_target_during_trial_at_dose_grid":
       [1] 150
       
-      Slot "FinalTDtargetEndOfTrialAtDoseGrid":
+      Slot "final_td_target_end_of_trial_at_dose_grid":
       [1] 125
       
-      Slot "FinalTDEOTCIs":
+      Slot "final_tdeot_cis":
       [[1]]
       [[1]]$lower
       [1] 90.1733
@@ -528,10 +528,10 @@
       
       
       
-      Slot "FinalTDEOTRatios":
+      Slot "final_tdeot_ratios":
       [1] 2.199298
       
-      Slot "FinalCIs":
+      Slot "final_cis":
       [[1]]
       [[1]]$lower
       [1] 90.1733
@@ -541,14 +541,14 @@
       
       
       
-      Slot "FinalRatios":
+      Slot "final_ratios":
       [1] 2.199298
       
       Slot "stop_report":
            <NA>
       [1,] TRUE
       
-      Slot "stopReasons":
+      Slot "stop_reasons":
       [[1]]
       [1] "Number of patients is 36 and thus reached the prespecified minimum number 36"
       
@@ -657,19 +657,19 @@
       
       
       
-      Slot "FinalTDtargetDuringTrialEstimates":
+      Slot "final_td_target_during_trial_estimates":
       [1] 155.5827
       
-      Slot "FinalTDtargetEndOfTrialEstimates":
+      Slot "final_td_target_end_of_trial_estimates":
       [1] 137.5996
       
-      Slot "FinalTDtargetDuringTrialAtDoseGrid":
+      Slot "final_td_target_during_trial_at_dose_grid":
       [1] 150
       
-      Slot "FinalTDtargetEndOfTrialAtDoseGrid":
+      Slot "final_td_target_end_of_trial_at_dose_grid":
       [1] 125
       
-      Slot "FinalTDEOTCIs":
+      Slot "final_tdeot_cis":
       [[1]]
       [[1]]$lower
       [1] 92.64601
@@ -679,10 +679,10 @@
       
       
       
-      Slot "FinalTDEOTRatios":
+      Slot "final_tdeot_ratios":
       [1] 2.205875
       
-      Slot "FinalCIs":
+      Slot "final_cis":
       [[1]]
       [[1]]$lower
       [1] 92.64601
@@ -692,14 +692,14 @@
       
       
       
-      Slot "FinalRatios":
+      Slot "final_ratios":
       [1] 2.205875
       
       Slot "stop_report":
            <NA>
       [1,] TRUE
       
-      Slot "stopReasons":
+      Slot "stop_reasons":
       [[1]]
       [1] "Number of patients is 36 and thus reached the prespecified minimum number 36"
       
@@ -823,19 +823,19 @@
       12 0.3525358 0.13470940 0.4960901
       
       
-      Slot "FinalTDtargetDuringTrialEstimates":
+      Slot "final_td_target_during_trial_estimates":
       [1] 95.95589
       
-      Slot "FinalTDtargetEndOfTrialEstimates":
+      Slot "final_td_target_end_of_trial_estimates":
       [1] 62.78087
       
-      Slot "FinalTDtargetDuringTrialAtDoseGrid":
+      Slot "final_td_target_during_trial_at_dose_grid":
       [1] 75
       
-      Slot "FinalTDtargetEndOfTrialAtDoseGrid":
+      Slot "final_td_target_end_of_trial_at_dose_grid":
       [1] 50
       
-      Slot "FinalTDEOTCIs":
+      Slot "final_tdeot_cis":
       [[1]]
       [[1]]$lower
       [1] 62.78087
@@ -845,10 +845,10 @@
       
       
       
-      Slot "FinalTDEOTRatios":
+      Slot "final_tdeot_ratios":
       [1] 1
       
-      Slot "FinalCIs":
+      Slot "final_cis":
       [[1]]
       [[1]]$lower
       [1] 62.78087
@@ -858,14 +858,14 @@
       
       
       
-      Slot "FinalRatios":
+      Slot "final_ratios":
       [1] 1
       
       Slot "stop_report":
            <NA>
       [1,] TRUE
       
-      Slot "stopReasons":
+      Slot "stop_reasons":
       [[1]]
       [1] "Number of patients is 12 and thus reached the prespecified minimum number 10"
       
