@@ -154,7 +154,9 @@ test_that("simulate-TDSamplesDesign produces consistent results", {
 })
 
 test_that("simulate-TDDesign produces consistent results", {
-  design <- h_get_design_tddesign()
+  suppressWarnings({
+    design <- h_get_design_tddesign()
+  })
 
   myTruth <- probFunction(design@model, phi1 = -53.66584, phi2 = 10.50499)
 

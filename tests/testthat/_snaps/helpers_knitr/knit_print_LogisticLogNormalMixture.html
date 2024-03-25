@@ -357,10 +357,10 @@ display: none;
 <p>A mixture of two logistic log normal models will describe the
 relationship between dose and toxicity: <span class="math display">\[
 p(Tox | d) = f(X = 1 | \theta, d) = 0.1 \times \frac{e^{\alpha_1 +
-\beta_1 \cdot log(d/d_{ref})}}{1 + e^{\alpha_1 + \beta_1 \cdot
-log(d/d_{ref})}} + (1 - 0.1) \times \frac{e^{\alpha_2 + \beta_2 \cdot
-log(d/d_{ref})}}{1 + e^{\alpha_2 + \beta_2 \cdot log(d/d_{ref})}}
-\]</span>where d<sub>ref</sub> denotes a reference dose.</p>
+\beta_1 \cdot log(d/d^*)}}{1 + e^{\alpha_1 + \beta_1 \cdot log(d/d^*)}}
++ (1 - 0.1) \times \frac{e^{\alpha_2 + \beta_2 \cdot log(d/d^*)}}{1 +
+e^{\alpha_2 + \beta_2 \cdot log(d/d^*)}} \]</span>where d* denotes a
+reference dose.</p>
 <p>The priors for both θ<sub>1</sub> and θ<sub>2</sub> are given by<span class="math display">\[ \boldsymbol\theta = \begin{bmatrix}\alpha \\
 \beta\end{bmatrix}\sim N \left(\begin{bmatrix}-0.85
 \\  1.00\end{bmatrix} , \begin{bmatrix} 1.00 &amp; -0.50 \\ -0.50

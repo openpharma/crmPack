@@ -740,10 +740,10 @@ setMethod(
     )
 
     if (!h_in_range(dose_target_drt, range = dose_grid_range(data), bounds_closed = TRUE) && !in_sim) {
-      print(paste("TD", prob_target_drt * 100, "=", dose_target_drt, "not within dose grid"))
+      warning(paste("TD", prob_target_drt * 100, "=", dose_target_drt, "not within dose grid"))
     }
     if (!h_in_range(dose_target_eot, range = dose_grid_range(data), bounds_closed = TRUE) && !in_sim) {
-      print(paste("TD", prob_target_eot * 100, "=", dose_target_eot, "not within dose grid"))
+      warning(paste("TD", prob_target_eot * 100, "=", dose_target_eot, "not within dose grid"))
     }
 
     list(

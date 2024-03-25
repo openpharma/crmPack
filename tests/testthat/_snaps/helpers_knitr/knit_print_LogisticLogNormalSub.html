@@ -357,9 +357,8 @@ display: none;
 <p>A logistic log normal model with subtractive dose normalisation will
 describe the relationship between dose and toxicity:</p>
 <p><span class="math display">\[ p(Tox | d) = f(X = 1 | \theta, d) =
-\frac{e^{\alpha + \beta \cdot (d \, - \, d_{ref})}}{1 + e^{\alpha +
-\beta \cdot (d \, - \, d_{ref})}} \]</span>where d<sub>ref</sub> denotes
-a reference dose.</p>
+\frac{e^{\alpha + \beta \cdot (d \, - \, d^*)}}{1 + e^{\alpha + \beta
+\cdot (d \, - \, d^*)}} \]</span>where d* denotes a reference dose.</p>
 <p>The prior for θ is given by<span class="math display">\[
 \boldsymbol\theta = \begin{bmatrix}\alpha \\ log(\beta)\end{bmatrix}\sim
 N \left(\begin{bmatrix}-0.85 \\  1.00\end{bmatrix} , \begin{bmatrix}

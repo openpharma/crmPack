@@ -356,8 +356,8 @@ display: none;
 <pre><code>## [1] &quot;ProbitLogNormal&quot;</code></pre>
 <p>A probit log normal model will describe the relationship between dose
 and toxicity: <span class="math display">\[ \Phi^{-1}(Tox | d) = f(X = 1
-| \theta, d) = \alpha + \beta \cdot log(d/d_{ref}) \]</span>where
-d<sub>ref</sub> denotes a reference dose.</p>
+| \theta, d) = \alpha + \beta \cdot log(d/d^*) \]</span>where d* denotes
+a reference dose.</p>
 <p>The prior for θ is given by<span class="math display">\[
 \boldsymbol\theta = \begin{bmatrix}\alpha \\ \beta\end{bmatrix}\sim N
 \left(\begin{bmatrix}-0.85 \\  1.00\end{bmatrix} , \begin{bmatrix} 1.00

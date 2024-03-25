@@ -573,8 +573,8 @@ knit_print.LogisticLogNormal <- function(
 #' @description `r lifecycle::badge("experimental")`
 #' @noRd
 h_knit_print_render_model.LogisticLogNormalMixture <- function(x, use_values = TRUE, ...) {
-  z1 <- "e^{\\alpha_1 + \\beta_1 \\cdot log(d/d_{ref})}"
-  z2 <- "e^{\\alpha_2 + \\beta_2 \\cdot log(d/d_{ref})}"
+  z1 <- "e^{\\alpha_1 + \\beta_1 \\cdot log(d/d^*)}"
+  z2 <- "e^{\\alpha_2 + \\beta_2 \\cdot log(d/d^*)}"
   pi_text <- ifelse(
     use_values,
     x@share_weight,
@@ -589,8 +589,8 @@ h_knit_print_render_model.LogisticLogNormalMixture <- function(x, use_values = T
     ") \\times \\frac{", z2, "}{1 + ", z2, "} $$",
     ifelse(
       use_values,
-      "where d~ref~ denotes a reference dose.\n\n",
-      "where d~ref~ denotes a reference dose and &pi; is a fixed value between 0 and 1.\n\n"
+      "where d* denotes a reference dose.\n\n",
+      "where d* denotes a reference dose and &pi; is a fixed value between 0 and 1.\n\n"
     )
   )
 }
@@ -628,12 +628,12 @@ knit_print.LogisticLogNormalMixture <- function(x, ..., asis = TRUE, use_values 
 #' @description `r lifecycle::badge("experimental")`
 #' @noRd
 h_knit_print_render_model.LogisticLogNormalSub <- function(x, ...) {
-  z <- "e^{\\alpha + \\beta \\cdot (d \\, - \\, d_{ref})}"
+  z <- "e^{\\alpha + \\beta \\cdot (d \\, - \\, d^*)}"
   paste0(
     "A logistic log normal model with subtractive dose normalisation will ",
     "describe the relationship between dose and toxicity: \n\n",
     "$$ p(Tox | d) = f(X = 1 | \\theta, d) = \\frac{", z, "}{1 + ", z, "} $$\\n ",
-    "where d~ref~ denotes a reference dose.\n\n"
+    "where d* denotes a reference dose.\n\n"
   )
 }
 
@@ -660,11 +660,11 @@ knit_print.LogisticLogNormalSub <- function(
 #' @description `r lifecycle::badge("experimental")`
 #' @noRd
 h_knit_print_render_model.LogisticNormal <- function(x, ...) {
-  z <- "e^{\\alpha + \\beta \\cdot d/d_{ref}}"
+  z <- "e^{\\alpha + \\beta \\cdot d/d^*}"
   paste0(
     "A logistic log normal model will describe the relationship between dose and toxicity: ",
     "$$ p(Tox | d) = f(X = 1 | \\theta, d) = \\frac{", z, "}{1 + ", z, "} $$\\n ",
-    "where d~ref~ denotes a reference dose.\n\n"
+    "where d* denotes a reference dose.\n\n"
   )
 }
 
@@ -675,8 +675,8 @@ h_knit_print_render_model.LogisticNormal <- function(x, ...) {
 h_knit_print_render_model.ProbitLogNormal <- function(x, ...) {
   paste0(
     "A probit log normal model will describe the relationship between dose and toxicity: ",
-    "$$ \\Phi^{-1}(Tox | d) = f(X = 1 | \\theta, d) = \\alpha + \\beta \\cdot log(d/d_{ref}) $$\\n ",
-    "where d~ref~ denotes a reference dose.\n\n"
+    "$$ \\Phi^{-1}(Tox | d) = f(X = 1 | \\theta, d) = \\alpha + \\beta \\cdot log(d/d^*) $$\\n ",
+    "where d* denotes a reference dose.\n\n"
   )
 }
 
@@ -688,8 +688,8 @@ h_knit_print_render_model.ProbitLogNormalRel <- function(x, ..., asis = TRUE) {
   assert_flag(asis)
   paste0(
     "A probit log normal model will describe the relationship between dose and toxicity: ",
-    "$$ \\Phi^{-1}(Tox | d) = f(X = 1 | \\theta, d) = \\alpha + \\beta \\cdot d/d_{ref} $$\\n ",
-    "where d~ref~ denotes a reference dose.\n\n"
+    "$$ \\Phi^{-1}(Tox | d) = f(X = 1 | \\theta, d) = \\alpha + \\beta \\cdot d/d^* $$\\n ",
+    "where d* denotes a reference dose.\n\n"
   )
 }
 
@@ -698,11 +698,11 @@ h_knit_print_render_model.ProbitLogNormalRel <- function(x, ..., asis = TRUE) {
 #' @description `r lifecycle::badge("experimental")`
 #' @noRd
 h_knit_print_render_model.LogisticNormalMixture <- function(x, ...) {
-  z <- "e^{\\alpha + \\beta \\cdot log(d/d_{ref})}"
+  z <- "e^{\\alpha + \\beta \\cdot log(d/d^*)}"
   paste0(
     "A mixture of two logistic log normal models will describe the relationship between dose and toxicity: ",
     "$$ p(Tox | d) = f(X = 1 | \\theta, d) = \\frac{", z, "}{1 + ", z, "} $$\\n ",
-    "where d~ref~ denotes a reference dose.\n\n"
+    "where d* denotes a reference dose.\n\n"
   )
 }
 
@@ -718,7 +718,7 @@ knit_print.LogisticNormalMixture <- function(x, ..., asis = TRUE, use_values = T
   rv <- paste0(
     h_knit_print_render_model(x, use_values = use_values, fmt = fmt),
     "The prior for &theta; is given by\\n",
-    "$$ \\theta = \\begin{bmatrix*}[S] \\alpha \\\\ log(\\beta) \\end{bmatrix*}",
+    "$$ \\theta = \\begin{bmatrix} \\alpha \\\\ log(\\beta) \\end{bmatrix}",
     " \\sim ",
     "w \\cdot ",
     knit_print(
@@ -756,7 +756,7 @@ knit_print.LogisticNormalFixedMixture <- function(x, ..., asis = TRUE, use_value
   rv <- paste0(
     h_knit_print_render_model(x, use_values = use_values, fmt = fmt),
     " The prior for &theta; is given by\\n\\n",
-    "$$ \\theta = \\begin{bmatrix*}[S] \\alpha \\\\ ", beta, " \\end{bmatrix*}",
+    "$$ \\theta = \\begin{bmatrix} \\alpha \\\\ ", beta, " \\end{bmatrix}",
     " \\sim \\sum_{i=1}^{", length(x@components), "}",
     "w_i \\cdot N \\left( \\mathbf{\\mu}_i ,  \\mathbf{\\Sigma}_i \\right)",
     " $$ \\n\\n",
@@ -803,14 +803,14 @@ knit_print.LogisticNormalFixedMixture <- function(x, ..., asis = TRUE, use_value
 #' @description `r lifecycle::badge("experimental")`
 #' @noRd
 h_knit_print_render_model.LogisticNormalFixedMixture <- function(x, ...) {
-  z <- "e^{\\alpha + \\beta \\cdot log(d/d_{ref})}"
+  z <- "e^{\\alpha + \\beta \\cdot log(d/d^*)}"
   paste0(
     "A mixture of ",
     length(x@components),
     " logistic log normal models with fixed weights will describe the relationship ",
     "between dose and toxicity: ",
     "$$ p(Tox | d) = f(X = 1 | \\theta, d) = \\frac{", z, "}{1 + ", z, "} $$\\n ",
-    "where d~ref~ denotes a reference dose.\n\n"
+    "where d* denotes a reference dose.\n\n"
   )
 }
 
@@ -893,11 +893,11 @@ knit_print.LogisticLogNormalGrouped <- function(
 #' @description `r lifecycle::badge("experimental")`
 #' @noRd
 h_knit_print_render_model.LogisticLogNormalGrouped <- function(x, ...) {
-  z <- "e^{(\\alpha + I_c \\times \\delta_0) + (\\beta  + I_c \\times \\delta_1) \\cdot log(d/d_{ref})}"
+  z <- "e^{(\\alpha + I_c \\times \\delta_0) + (\\beta  + I_c \\times \\delta_1) \\cdot log(d/d^*)}"
   paste0(
     "A logistic log normal model will describe the relationship between dose and toxicity: ",
     "$$ p(Tox | d) = f(X = 1 | \\theta, d) = \\frac{", z, "}{1 + ", z, "} $$\\n ",
-    "where d~ref~ denotes a reference dose and I~c~ is a binary indicator which ",
+    "where d* denotes a reference dose and I~c~ is a binary indicator which ",
     "is 1 for the combo arm and 0 for the mono arm.\n\n"
   )
 }
@@ -907,14 +907,14 @@ h_knit_print_render_model.LogisticLogNormalGrouped <- function(x, ...) {
 #' @description `r lifecycle::badge("experimental")`
 #' @noRd
 h_knit_print_render_model.LogisticLogNormalOrdinal <- function(x, ...) {
-  z <- "e^{\\alpha_k + \\beta \\cdot log(d/d_{ref})}"
+  z <- "e^{\\alpha_k + \\beta \\cdot log(d/d^*)}"
   paste0(
     "Let p~k~(d) be the probability that the response of a patient treated at ",
     "dose d is in category k *_or higher_*, k=0, ..., K; d=1, ..., D.\n\nThen ",
-    "$$ p_k(d) = f(X \\ge k \\; | \\; \\theta, d) = \\begin{dcases} 1 & k = 0 \\\\ ",
+    "$$ p_k(d) = f(X \\ge k \\; | \\; \\theta, d) = \\begin{cases} 1 & k = 0 \\\\ ",
     "\\frac{", z, "}{1 + ", z, "} & k=1, ..., K",
-    "\\end{dcases} $$\n\n",
-    "where d~ref~ denotes a reference dose.\n\nThe &alpha;s are constrained ",
+    "\\end{cases} $$\n\n",
+    "where d* denotes a reference dose.\n\nThe &alpha;s are constrained ",
     "such that &alpha;~1~ > &alpha;~2~ > ... > &alpha;~K~.\n\n"
   )
 }
