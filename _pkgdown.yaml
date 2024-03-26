@@ -434,6 +434,9 @@ reference:
       - assertions
       - assert_equal
       - check_equal
+      - check_format
+      - assert_format
+      - test_format
       - crmPackExample
       - crmPackHelp
       - examine
@@ -441,7 +444,7 @@ reference:
       - fitGain
       - fitPEM
       - get,Samples,character-method
-      - getMinInfBeta
+      - h_get_min_inf_beta
       - logit
       - match_within_tolerance
       - maxSize

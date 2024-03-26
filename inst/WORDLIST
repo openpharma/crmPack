@@ -44,6 +44,7 @@ Bugfix
 Bugfixes
 burnin
 byrow
+capitalisation
 cdf
 cdisc
 CDISC
@@ -138,6 +139,7 @@ Equalness
 equi
 ESS
 et
+evaluable
 firstSeparate
 fromPrior
 funder
@@ -196,6 +198,7 @@ Kadane
 Kaplan
 Kerman
 labelled
+LaTeX
 lexicographically
 liaoc
 lifecycle
@@ -379,6 +382,7 @@ subclasses
 subfolder
 subtractive
 summarised
+summarise
 Summarising
 swimlane
 targetDoseDuringTrial

@@ -41,6 +41,7 @@
 #' @importFrom lifecycle badge
 #' @importFrom rjags jags.model jags.samples
 #' @importFrom futile.logger flog.threshold flog.logger flog.trace TRACE FATAL
+#' @importFrom knitr knit_print
 #' @importFrom kableExtra kbl add_header_above column_spec collapse_rows
 #'   kable_styling add_footnote kable
 #'
@@ -143,7 +144,9 @@ globalVariables(c(
   "results",
   "k",
   "value",
-  "Parameter"
+  "Parameter",
+  "intervals",
+  "Group"
 ))
 
 # nolint end

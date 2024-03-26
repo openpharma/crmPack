@@ -397,3 +397,54 @@ test_range <- makeTestFunction(check_range)
 #' @inheritParams check_range
 #' @export
 expect_range <- makeExpectationFunction(check_range)
+
+# assert_format ----
+
+#' Check that an argument is a valid format specification
+#'
+#' @description `r lifecycle::badge("stable")`
+#'
+#' @inheritParams checkmate::check_numeric
+#'
+#' @return `TRUE` if successful, otherwise a string with the error message.
+#'
+#' @seealso [`assertions`] for more details.
+#'
+#' @export
+#' @examples
+#' check_format("%5.2f")
+check_format <- function(x, len = NULL, min.len = NULL, max.len = NULL) {
+  assert_number(len, lower = 1, null.ok = TRUE)
+  assert_number(min.len, lower = 1, null.ok = TRUE)
+  assert_number(max.len, lower = 1, null.ok = TRUE)
+
+  result <- check_character(
+    x,
+    len = len,
+    min.len = min.len,
+    max.len = max.len,
+    any.missing = FALSE,
+    # https://stackoverflow.com/questions/446285/validate-sprintf-format-from-input-field-with-regex
+    pattern = "%(?:\\d+\\$)?[+-]?(?:[ 0]|'.{1})?-?\\d*(?:\\.\\d+)?[bcdeEufFgGosxX]",
+  )
+
+  if (!isTRUE(result)) {
+    result <- paste("x must be a valid format specifier.", result)
+  }
+  result
+}
+
+#' @rdname check_format
+#' @inheritParams check_format
+#' @export
+assert_format <- makeAssertionFunction(check_format)
+
+#' @rdname check_format
+#' @inheritParams check_format
+#' @export
+test_format <- makeTestFunction(check_format)
+
+#' @rdname check_format
+#' @inheritParams check_format
+#' @export
+expect_format <- makeExpectationFunction(check_format)

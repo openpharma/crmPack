@@ -740,10 +740,10 @@ setMethod(
     )
 
     if (!h_in_range(dose_target_drt, range = dose_grid_range(data), bounds_closed = TRUE) && !in_sim) {
-      print(paste("TD", prob_target_drt * 100, "=", dose_target_drt, "not within dose grid"))
+      warning(paste("TD", prob_target_drt * 100, "=", dose_target_drt, "not within dose grid"))
     }
     if (!h_in_range(dose_target_eot, range = dose_grid_range(data), bounds_closed = TRUE) && !in_sim) {
-      print(paste("TD", prob_target_eot * 100, "=", dose_target_eot, "not within dose grid"))
+      warning(paste("TD", prob_target_eot * 100, "=", dose_target_eot, "not within dose grid"))
     }
 
     list(
@@ -3696,6 +3696,24 @@ setMethod(
 setMethod(
   f = "tidy",
   signature = signature(x = "IncrementsRelative"),
+  definition = function(x, ...) {
+    h_tidy_all_slots(x) %>%
+      h_range_to_minmax(.data$intervals) %>%
+      dplyr::filter(dplyr::row_number() > 1) %>%
+      tibble::add_column(increment = x@increments) %>%
+      h_tidy_class(x)
+  }
+)
+
+## tidy-IncrementsRelativeDLT ----
+
+#' @rdname tidy
+#' @aliases tidy-IncrementsRelativeDLT
+#' @example examples/Rules-method-tidyIncrementsRelativeDLT.R
+#' @export
+setMethod(
+  f = "tidy",
+  signature = signature(x = "IncrementsRelativeDLT"),
   definition = function(x, ...) {
     h_tidy_all_slots(x) %>%
       h_range_to_minmax(.data$intervals) %>%

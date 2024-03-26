@@ -225,33 +225,119 @@ test_that("GeneralSimulationsSummary cannot be instantiated directly", {
   )
 })
 
-# SimulationsSummary ----
-test_that("SimulationsSummary generates object correctly", {
-  stop_report <- matrix(c(TRUE, FALSE), nrow = 2)
-  fit_at_dose_most_selected <- 123
-  additional_stats <- list(a = 1, b = 1)
-  mean_fit <- list(c(0.3, 0.4), c(0.4, 0.5))
+# DualSimulationsSummary ----
+test_that("DualSimulationsSummary object can be created with the user constructor", {
+  biomarker_fit_at_dose_most_selected <- 0.3
+  mean_biomarker_fit <- list(c(0.25, 0.5, 0.75)) # This should be a list
 
   result <- expect_silent(
-    .SimulationsSummary(
-      stop_report = stop_report,
-      fit_at_dose_most_selected = fit_at_dose_most_selected,
-      additional_stats = additional_stats,
-      mean_fit = mean_fit
+    .DualSimulationsSummary(
+      biomarker_fit_at_dose_most_selected = biomarker_fit_at_dose_most_selected,
+      mean_biomarker_fit = mean_biomarker_fit
     )
   )
 
-  expect_valid(result, "SimulationsSummary")
-
-  expect_identical(result@stop_report, stop_report)
-  expect_identical(result@fit_at_dose_most_selected, fit_at_dose_most_selected)
-  expect_identical(result@additional_stats, additional_stats)
-  expect_identical(result@mean_fit, mean_fit)
+  expect_valid(result, "DualSimulationsSummary")
+  expect_identical(result@biomarker_fit_at_dose_most_selected, biomarker_fit_at_dose_most_selected)
+  expect_identical(result@mean_biomarker_fit, mean_biomarker_fit)
 })
 
-test_that(".DefaultSimulationsSummary cannot be instantiated directly", {
-  expect_error(.DefaultSimulationsSummary(),
-    "Class SimulationsSummary cannot be instantiated directly",
+test_that("DualSimulationsSummary generator function works as expected", {
+  result <- expect_silent(.DefaultDualSimulationsSummary())
+  expect_valid(result, "DualSimulations")
+})
+
+# PseudoSimulations-class
+test_that("PseudoSimulations generator function works as expected", {
+  result <- expect_silent(.PseudoSimulations())
+  expect_valid(result, "PseudoSimulations")
+})
+
+test_that("PseudoSimulations object can be created with the user constructor", {
+  fit <- list(c(0.1, 0.2), c(0.3, 0.4))
+
+  final_td_target_during_trial_estimates <- c(0.1, 0.2)
+  final_td_target_end_of_trial_estimates <- c(0.1, 0.2)
+
+  final_td_target_during_trial_at_dose_grid <- c(0.1, 0.2)
+  final_td_target_end_of_trial_at_dose_grid <- c(0.1, 0.2)
+
+  final_tdeot_cis <- list(c(0.1, 0.2), c(0.1, 0.2))
+  final_tdeot_ratios <- c(0.1, 0.2)
+
+  final_cis <- list(c(0.1, 0.2), c(0.1, 0.2))
+  final_ratios <- c(0.1, 0.2)
+
+  stop_report <- matrix(TRUE, nrow = 2)
+  stop_reasons <- list("A", "B")
+
+  doses <- c(100, 200)
+
+  data <- list(
+    Data(
+      x = 1:2,
+      y = 0:1,
+      doseGrid = 1:2,
+      ID = 1L:2L,
+      cohort = 1L:2L
+    ),
+    Data(
+      x = 3:4,
+      y = 0:1,
+      doseGrid = 3:4,
+      ID = 1L:2L,
+      cohort = 1L:2L
+    )
+  )
+
+  result <- expect_silent(
+    PseudoSimulations(
+      fit = fit,
+      data = data,
+      doses = doses,
+      final_td_target_during_trial_estimates = final_td_target_during_trial_estimates,
+      final_td_target_end_of_trial_estimates = final_td_target_end_of_trial_estimates,
+      final_td_target_during_trial_at_dose_grid = final_td_target_during_trial_at_dose_grid,
+      final_td_target_end_of_trial_at_dose_grid = final_td_target_end_of_trial_at_dose_grid,
+      final_tdeot_cis = final_tdeot_cis,
+      final_tdeot_ratios = final_tdeot_ratios,
+      final_cis = final_cis,
+      final_ratios = final_ratios,
+      stop_report = stop_report,
+      stop_reasons = stop_reasons,
+      seed = 123
+    )
+  )
+
+  expect_valid(result, "PseudoSimulations")
+  expect_identical(result@fit, fit)
+  expect_identical(result@stop_reasons, stop_reasons)
+})
+
+test_that("PseudoSimulations user constructor argument names are as expected", {
+  expect_function(
+    PseudoSimulations,
+    args = c(
+      "fit",
+      "final_td_target_during_trial_estimates",
+      "final_td_target_end_of_trial_estimates",
+      "final_td_target_during_trial_at_dose_grid",
+      "final_td_target_end_of_trial_at_dose_grid",
+      "final_tdeot_cis",
+      "final_tdeot_ratios",
+      "final_cis",
+      "final_ratios",
+      "stop_report",
+      "stop_reasons",
+      "..."
+    ),
+    ordered = TRUE
+  )
+})
+
+test_that(".DefaultPseudoSimulations cannot be instantiated directly", {
+  expect_error(.DefaultPseudoSimulations(),
+    "Class PseudoSimulations cannot be instantiated directly. Please use one of its subclasses instead.",
     fixed = FALSE
   )
 })

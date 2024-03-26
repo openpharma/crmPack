@@ -1,6 +1,6 @@
 Package: crmPack
 Title: Object-Oriented Implementation of CRM Designs
-Version: 2.0.0.9143
+Version: 2.0.0.9147
 Authors@R: c(
     person("Daniel", "Sabanes Bove", , "daniel.sabanesbove@gmx.net", role = c("aut", "cre")),
     person("Wai", "Yin Yeung", , "winnie.yeung@roche.com", role = "aut"),
@@ -57,6 +57,7 @@ Imports:
     rlang,
     survival,
     tibble,
+    tidyselect (>= 1.2.0),
     tools,
     utils
 Suggests:
@@ -118,6 +119,9 @@ Collate:
     'crmPack-package.R'
     'helpers_design.R'
     'helpers_knitr_CohortSize.R'
+    'helpers_kintr_Increments.R'
+    'helpers_knitr_GeneralData.R'
+    'helpers_knitr_GeneralModel.R'
     'helpers_model.R'
     'helpers_samples.R'
     'helpers_simulations.R'
