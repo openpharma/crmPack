@@ -154,7 +154,7 @@ h_knit_print_select_columns <- function(x, ...) {
 h_knit_print_select_columns.GeneralData <- function(x, ...) {
   x %>%
     tidy() %>%
-    dplyr::select(.data$ID, .data$Cohort, .data$Dose, .data$Tox)
+    dplyr::select("ID", "Cohort", "Dose", "Tox")
 }
 
 #' @description `r lifecycle::badge("experimental")`
@@ -163,7 +163,7 @@ h_knit_print_select_columns.GeneralData <- function(x, ...) {
 h_knit_print_select_columns.Data <- function(x, ...) {
   x %>%
     tidy() %>%
-    dplyr::select(.data$ID, .data$Cohort, .data$Dose, .data$Tox)
+    dplyr::select("ID", "Cohort", "Dose", "Tox")
 }
 
 #' @description `r lifecycle::badge("experimental")`
@@ -172,7 +172,7 @@ h_knit_print_select_columns.Data <- function(x, ...) {
 h_knit_print_select_columns.DataParts <- function(x, ...) {
   x %>%
     tidy() %>%
-    dplyr::select(.data$ID, .data$Part, .data$Cohort, .data$Dose, .data$Tox)
+    dplyr::select("ID", "Part", "Cohort", "Dose", "Tox")
 }
 
 #' @description `r lifecycle::badge("experimental")`
@@ -181,7 +181,7 @@ h_knit_print_select_columns.DataParts <- function(x, ...) {
 h_knit_print_select_columns.DataOrdinal <- function(x, ...) {
   x %>%
     tidy() %>%
-    dplyr::select(.data$ID, .data$Cohort, .data$Dose, tidyselect::starts_with("Cat"))
+    dplyr::select("ID", "Cohort", "Dose", tidyselect::starts_with("Cat"))
 }
 
 #' @description `r lifecycle::badge("experimental")`
@@ -190,7 +190,7 @@ h_knit_print_select_columns.DataOrdinal <- function(x, ...) {
 h_knit_print_select_columns.DataDA <- function(x, param, summarise, ...) {
   x %>%
     tidy() %>%
-    dplyr::select(.data$ID, .data$Cohort, .data$Dose, .data$Tox, .data$U, .data$T0, .data$TMax)
+    dplyr::select("ID", "Cohort", "Dose", "Tox", "U", "T0", "TMax")
 }
 
 #' @description `r lifecycle::badge("experimental")`
@@ -199,7 +199,7 @@ h_knit_print_select_columns.DataDA <- function(x, param, summarise, ...) {
 h_knit_print_select_columns.DataGrouped <- function(x, param, summarise, ...) {
   x %>%
     tidy() %>%
-    dplyr::select(.data$ID, .data$Cohort, .data$Dose, .data$Group, .data$Tox)
+    dplyr::select("ID", "Cohort", "Dose", "Group", "Tox")
 }
 
 #' @description `r lifecycle::badge("experimental")`
@@ -208,7 +208,7 @@ h_knit_print_select_columns.DataGrouped <- function(x, param, summarise, ...) {
 h_knit_print_select_columns.DataDual <- function(x, param, summarise, ...) {
   x %>%
     tidy() %>%
-    dplyr::select(.data$ID, .data$Cohort, .data$Dose, .data$Tox, .data$W)
+    dplyr::select("ID", "Cohort", "Dose", "Tox", "W")
 }
 
 #' Summarise a `Data` Object by Dose or Cohort for Display in Custom `knit_print` Methods

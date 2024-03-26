@@ -1,7 +1,4 @@
 library(knitr)
-if (!is_checking()) {
-  devtools::load_all()
-}
 
 # h_custom_method_exists could be removed once all necessary knit_print methods
 # have been defined
@@ -99,20 +96,31 @@ test_that("asis parameter works correctly for all implemented methods", {
       obj <- do.call(paste0(".Default", cls), list())
       # If the default knit_print method has been overridden, test it
       if (h_custom_method_exists(knit_print, obj)) {
-        rv <- knit_print(obj)
         # Default behaviour
+        rv <- knit_print(obj)
+        if (is.null(rv)) print(paste0("knit_print(obj) returns NULL for class ", cls, "."))
         expect_class(rv, "knit_asis")
 
         # Explicit behaviours
         rv <- knit_print(obj, asis = TRUE)
+        if (is.null(rv)) print(paste0("knit_print(obj, asis = TRUE) returns NULL for class ", cls, "."))
         expect_class(rv, "knit_asis")
         rv <- knit_print(obj, asis = FALSE)
+        if (is.null(rv)) print(paste0("knit_print(obj, asis = FALSE) returns NULL for class ", cls, "."))
         # Most objects return a character, but not all.  For example,
         # CohortSizeDLT returns a knitr_table
         if ("knit_asis" %in% class(rv)) print(cls)
         expect_true(!("knit_asis" %in% class(rv)))
 
         # Invalid value
+        errorThrown <- FALSE
+        tryCatch(
+          {
+            knit_print(obj, asis = "badValue")
+          },
+          error = function(e) errorThrown <<- TRUE
+        )
+        if (!errorThrown) print(paste0("No error thrown for ", cls, "."))
         expect_error(knit_print(obj, asis = "badValue"))
       }
     }
