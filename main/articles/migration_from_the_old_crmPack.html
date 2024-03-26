@@ -33,7 +33,7 @@
     
     <a class="navbar-brand me-2" href="../index.html">crmPack</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">2.0.0.9146</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">2.0.0.9147</small>
 
     
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -65,12 +65,6 @@
 <li class="nav-item">
   <a class="nav-link" href="../news/index.html">Changelog</a>
 </li>
-<!-- start dropdown for versions --> <li class="nav-item dropdown">
-        <a href="#" class="nav-link dropdown-toggle"
-          data-bs-toggle="dropdown" role="button"
-          aria-expanded="false" aria-haspopup="true"
-          id="dropdown-versions">Versions</a> <div class="dropdown-menu" aria-labelledby="dropdown-versions"> <a class="dropdown-item" data-toggle="tooltip" title="" href="https://Roche.github.io/crmPack/main">main</a> </div></li>
-<!-- end dropdown for versions -->
 <li class="nav-item dropdown">
   <a href="#" class="nav-link dropdown-toggle" data-bs-toggle="dropdown" role="button" aria-expanded="false" aria-haspopup="true" id="dropdown-reports">Reports</a>
   <div class="dropdown-menu" aria-labelledby="dropdown-reports">
@@ -1227,10 +1221,10 @@ of a fixed model’s parameters values.</p>
 <span><span class="co"># given a particular models and samples.</span></span>
 <span><span class="co"># Every single dose corresponds to one particular sample in `my_samples`.</span></span>
 <span><span class="fu"><a href="../reference/dose.html">dose</a></span><span class="op">(</span><span class="fl">0.3</span>, <span class="va">my_model</span>, <span class="va">my_samples</span><span class="op">)</span></span></code></pre></div>
-<pre><code><span><span class="co">##  [1] 5.684633e-01 2.567115e+05 2.006261e+00 8.125888e-02 4.519742e+00</span></span>
-<span><span class="co">##  [6] 2.933900e+82 9.641768e-01 8.820119e-01 5.020790e+00 2.352002e-02</span></span>
-<span><span class="co">## [11] 5.243214e+00 5.303639e-01 1.357944e+00 1.524305e-05 1.038610e+00</span></span>
-<span><span class="co">## [16] 8.789801e-02 3.171323e-01 2.662012e+00 9.431146e-01 2.074151e+00</span></span></code></pre>
+<pre><code><span><span class="co">##  [1]   0.2887825  14.8964378   1.4422511  63.7033308   0.8036375   0.8732237</span></span>
+<span><span class="co">##  [7]   0.8736034   0.2309363   0.1134227   0.8089741   1.1935891   0.1708314</span></span>
+<span><span class="co">## [13]   0.4872427   0.4577578 220.2840041   0.8813716   0.7267491   1.1663214</span></span>
+<span><span class="co">## [19]   2.5923636   1.1554062</span></span></code></pre>
 <div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># True dose-DLT relationship.</span></span>
 <span><span class="co"># Say that -0.8 and 1 are the true values for models parameters alpha0 and alpha1 respectively.</span></span>
@@ -1248,9 +1242,10 @@ of a fixed model’s parameters values.</p>
 <code class="sourceCode R"><span><span class="co"># Toxicity probabilities for a given dose (equal to 10), model and samples.</span></span>
 <span><span class="co"># Every single probability value corresponds to one particular sample in `my_samples`.</span></span>
 <span><span class="fu"><a href="../reference/prob.html">prob</a></span><span class="op">(</span><span class="fl">10</span>, <span class="va">my_model</span>, <span class="va">my_samples</span><span class="op">)</span></span></code></pre></div>
-<pre><code><span><span class="co">##  [1] 0.6200977 0.7414125 0.9038353 0.1709387 0.2897035 0.8208043 0.0486633</span></span>
-<span><span class="co">##  [8] 0.9425700 0.4485402 0.3898059 0.4145200 0.9934458 0.9761343 0.5378635</span></span>
-<span><span class="co">## [15] 0.9798674 0.8233428 0.9920927 0.1740478 0.8714979 0.1070935</span></span></code></pre>
+<pre><code><span><span class="co">##  [1] 0.73755539 0.27531813 0.95828617 0.54210046 0.94729494 0.91355216</span></span>
+<span><span class="co">##  [7] 0.94000311 0.51845932 0.78351847 0.84603190 0.72144667 0.84638784</span></span>
+<span><span class="co">## [13] 0.94822903 0.84477160 0.18431108 0.08032063 0.99507541 0.99367708</span></span>
+<span><span class="co">## [19] 0.86507520 0.99560279</span></span></code></pre>
 <div class="sourceCode" id="cb12"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># True DLT-dose relationship.</span></span>
 <span><span class="co"># Say that -0.8 and 1 are the true values for models parameters alpha0 and alpha1 respectively.</span></span>
@@ -1328,76 +1323,15 @@ account of any associated <code>doseGrid</code>.</p>
 <div class="sourceCode" id="cb16"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">class_name</span> <span class="op">&lt;-</span> <span class="st">"LogisticNormal"</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/eval.html" class="external-link">eval</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/parse.html" class="external-link">parse</a></span><span class="op">(</span>text <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/paste.html" class="external-link">paste0</a></span><span class="op">(</span><span class="st">".Default"</span>, <span class="va">class_name</span>, <span class="st">"()"</span><span class="op">)</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
-<pre><code><span><span class="co">## An object of class "LogisticNormal"</span></span>
-<span><span class="co">## Slot "params":</span></span>
-<span><span class="co">## An object of class "ModelParamsNormal"</span></span>
-<span><span class="co">## Slot "mean":</span></span>
-<span><span class="co">## [1] -0.85  1.00</span></span>
-<span><span class="co">## </span></span>
-<span><span class="co">## Slot "cov":</span></span>
-<span><span class="co">##      [,1] [,2]</span></span>
-<span><span class="co">## [1,]  1.0 -0.5</span></span>
-<span><span class="co">## [2,] -0.5  1.0</span></span>
-<span><span class="co">## </span></span>
-<span><span class="co">## Slot "prec":</span></span>
-<span><span class="co">##           [,1]      [,2]</span></span>
-<span><span class="co">## [1,] 1.3333333 0.6666667</span></span>
-<span><span class="co">## [2,] 0.6666667 1.3333333</span></span>
-<span><span class="co">## </span></span>
-<span><span class="co">## </span></span>
-<span><span class="co">## Slot "ref_dose":</span></span>
-<span><span class="co">## An object of class "positive_number"</span></span>
-<span><span class="co">## [1] 1</span></span>
-<span><span class="co">## </span></span>
-<span><span class="co">## Slot "datamodel":</span></span>
-<span><span class="co">## function () </span></span>
-<span><span class="co">## {</span></span>
-<span><span class="co">##     for (i in 1:nObs) {</span></span>
-<span><span class="co">##         logit(p[i]) &lt;- alpha0 + alpha1 * log(x[i]/ref_dose)</span></span>
-<span><span class="co">##         y[i] ~ dbern(p[i])</span></span>
-<span><span class="co">##     }</span></span>
-<span><span class="co">## }</span></span>
-<span><span class="co">## &lt;bytecode: 0x56489186cd80&gt;</span></span>
-<span><span class="co">## &lt;environment: 0x564892b76728&gt;</span></span>
-<span><span class="co">## </span></span>
-<span><span class="co">## Slot "priormodel":</span></span>
-<span><span class="co">## function () </span></span>
-<span><span class="co">## {</span></span>
-<span><span class="co">##     theta ~ dmnorm(mean, prec)</span></span>
-<span><span class="co">##     alpha0 &lt;- theta[1]</span></span>
-<span><span class="co">##     alpha1 &lt;- theta[2]</span></span>
-<span><span class="co">## }</span></span>
-<span><span class="co">## &lt;bytecode: 0x56489186bf10&gt;</span></span>
-<span><span class="co">## &lt;environment: 0x564892b76728&gt;</span></span>
-<span><span class="co">## </span></span>
-<span><span class="co">## Slot "modelspecs":</span></span>
-<span><span class="co">## function (from_prior) </span></span>
-<span><span class="co">## {</span></span>
-<span><span class="co">##     ms &lt;- list(mean = params@mean, prec = params@prec)</span></span>
-<span><span class="co">##     if (!from_prior) {</span></span>
-<span><span class="co">##         ms$ref_dose &lt;- ref_dose</span></span>
-<span><span class="co">##     }</span></span>
-<span><span class="co">##     ms</span></span>
-<span><span class="co">## }</span></span>
-<span><span class="co">## &lt;bytecode: 0x564891876428&gt;</span></span>
-<span><span class="co">## &lt;environment: 0x564892b764c0&gt;</span></span>
-<span><span class="co">## </span></span>
-<span><span class="co">## Slot "init":</span></span>
-<span><span class="co">## function () </span></span>
-<span><span class="co">## {</span></span>
-<span><span class="co">##     list(theta = c(0, 1))</span></span>
-<span><span class="co">## }</span></span>
-<span><span class="co">## &lt;bytecode: 0x564891875b30&gt;</span></span>
-<span><span class="co">## &lt;environment: 0x564892b764c0&gt;</span></span>
-<span><span class="co">## </span></span>
-<span><span class="co">## Slot "datanames":</span></span>
-<span><span class="co">## [1] "nObs" "y"    "x"   </span></span>
-<span><span class="co">## </span></span>
-<span><span class="co">## Slot "datanames_prior":</span></span>
-<span><span class="co">## character(0)</span></span>
-<span><span class="co">## </span></span>
-<span><span class="co">## Slot "sample":</span></span>
-<span><span class="co">## [1] "alpha0" "alpha1"</span></span></code></pre>
+<p>A logistic log normal model will describe the relationship between
+dose and toxicity: <span class="math display">\[ p(Tox | d) = f(X = 1 |
+\theta, d) = \frac{e^{\alpha + \beta \cdot d/d^*}}{1 + e^{\alpha + \beta
+\cdot d/d^*}} \]</span>where d* denotes a reference dose.</p>
+<p>The prior for θ is given by<span class="math display">\[
+\boldsymbol\theta = \begin{bmatrix}\alpha \\ \beta\end{bmatrix}\sim N
+\left(\begin{bmatrix}-0.85 \\  1.00\end{bmatrix} , \begin{bmatrix} 1.00
+&amp; -0.50 \\ -0.50 &amp;  1.00\end{bmatrix} \right) \]</span>The
+reference dose will be 1.00.</p>
 </div>
 <div class="section level2">
 <h2 id="handling-of-na-or-placebo-returned-as-next-dose">Handling of <code>NA</code> or placebo returned as next dose<a class="anchor" aria-label="anchor" href="#handling-of-na-or-placebo-returned-as-next-dose"></a>

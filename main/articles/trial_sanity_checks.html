@@ -33,7 +33,7 @@
     
     <a class="navbar-brand me-2" href="../index.html">crmPack</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">2.0.0.9146</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">2.0.0.9147</small>
 
     
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -65,12 +65,6 @@
 <li class="nav-item">
   <a class="nav-link" href="../news/index.html">Changelog</a>
 </li>
-<!-- start dropdown for versions --> <li class="nav-item dropdown">
-        <a href="#" class="nav-link dropdown-toggle"
-          data-bs-toggle="dropdown" role="button"
-          aria-expanded="false" aria-haspopup="true"
-          id="dropdown-versions">Versions</a> <div class="dropdown-menu" aria-labelledby="dropdown-versions"> <a class="dropdown-item" data-toggle="tooltip" title="" href="https://Roche.github.io/crmPack/main">main</a> </div></li>
-<!-- end dropdown for versions -->
 <li class="nav-item dropdown">
   <a href="#" class="nav-link dropdown-toggle" data-bs-toggle="dropdown" role="button" aria-expanded="false" aria-haspopup="true" id="dropdown-reports">Reports</a>
   <div class="dropdown-menu" aria-labelledby="dropdown-reports">
@@ -665,9 +659,9 @@ paribus, this permits escalation from every dose:</p>
 <tr class="even">
 <td align="right">3</td>
 <td align="right">1</td>
-<td align="right">1</td>
+<td align="right">NA</td>
 <td align="left">FALSE</td>
-<td align="right">-67</td>
+<td align="right">NA</td>
 </tr>
 <tr class="odd">
 <td align="right">5</td>
@@ -834,7 +828,7 @@ paribus, this permits escalation from every dose:</p>
 <td align="right">50</td>
 <td align="right">3</td>
 <td align="right">50</td>
-<td align="left">FALSE</td>
+<td align="left">TRUE</td>
 <td align="right">0</td>
 </tr>
 <tr class="odd">
@@ -891,23 +885,23 @@ the state of the model after escalation to 50 mg without toxicity…</p>
 <span><span class="co">#&gt; [1] 50</span></span>
 <span><span class="va">recommended_dose</span><span class="op">$</span><span class="va">probs</span></span>
 <span><span class="co">#&gt;       dose target overdose</span></span>
-<span><span class="co">#&gt;  [1,]    1  0.002    0.000</span></span>
-<span><span class="co">#&gt;  [2,]    3  0.005    0.000</span></span>
-<span><span class="co">#&gt;  [3,]    5  0.008    0.002</span></span>
-<span><span class="co">#&gt;  [4,]   10  0.008    0.002</span></span>
-<span><span class="co">#&gt;  [5,]   15  0.014    0.002</span></span>
-<span><span class="co">#&gt;  [6,]   20  0.015    0.002</span></span>
-<span><span class="co">#&gt;  [7,]   25  0.016    0.004</span></span>
-<span><span class="co">#&gt;  [8,]   40  0.058    0.015</span></span>
-<span><span class="co">#&gt;  [9,]   50  0.169    0.036</span></span>
-<span><span class="co">#&gt; [10,]   80  0.106    0.826</span></span>
-<span><span class="co">#&gt; [11,]  100  0.085    0.902</span></span>
+<span><span class="co">#&gt;  [1,]    1  0.000    0.000</span></span>
+<span><span class="co">#&gt;  [2,]    3  0.000    0.000</span></span>
+<span><span class="co">#&gt;  [3,]    5  0.000    0.000</span></span>
+<span><span class="co">#&gt;  [4,]   10  0.000    0.000</span></span>
+<span><span class="co">#&gt;  [5,]   15  0.000    0.000</span></span>
+<span><span class="co">#&gt;  [6,]   20  0.000    0.000</span></span>
+<span><span class="co">#&gt;  [7,]   25  0.001    0.000</span></span>
+<span><span class="co">#&gt;  [8,]   40  0.016    0.002</span></span>
+<span><span class="co">#&gt;  [9,]   50  0.156    0.025</span></span>
+<span><span class="co">#&gt; [10,]   80  0.128    0.802</span></span>
+<span><span class="co">#&gt; [11,]  100  0.080    0.908</span></span>
 <span></span>
 <span><span class="fu"><a href="../reference/maxDose.html">maxDose</a></span><span class="op">(</span><span class="va">revised_increment_rule</span>, <span class="va">no_tox_below_50_data</span><span class="op">)</span></span>
 <span><span class="co">#&gt; [1] 83.5</span></span></code></pre></div>
 <p>Whilst the increments rule allows escalation to 83.5 mg, the toxicity
 estimates provided by the model do not: the current estimate of toxicity
-at 80 mg is 0.826, well above the limit of 0.25 defined in the dose
+at 80 mg is 0.802, well above the limit of 0.25 defined in the dose
 recommendation rule (<code>next_best</code>).</p>
 <p>Again, we have several options. We can introduce intermediate doses,
 thus slowing escalation and allowing the prior model more time to adapt
@@ -945,21 +939,11 @@ attempt.</p>
 <span>  <span class="fu"><a href="https://rdrr.io/r/base/readRDS.html" class="external-link">saveRDS</a></span><span class="op">(</span><span class="va">min_inf_model</span>, <span class="st">"minInfModel.Rds"</span><span class="op">)</span></span>
 <span><span class="op">}</span></span>
 <span></span>
-<span><span class="va">min_inf_model</span><span class="op">$</span><span class="va">model</span><span class="op">@</span><span class="va">params</span></span>
-<span><span class="co">#&gt; An object of class "ModelParamsNormal"</span></span>
-<span><span class="co">#&gt; Slot "mean":</span></span>
-<span><span class="co">#&gt;             meanAlpha.(Intercept) meanBeta.I(log(dosegrid/refDose)) </span></span>
-<span><span class="co">#&gt;                         0.9794332                         1.3478525 </span></span>
-<span><span class="co">#&gt; </span></span>
-<span><span class="co">#&gt; Slot "cov":</span></span>
-<span><span class="co">#&gt;            [,1]        [,2]</span></span>
-<span><span class="co">#&gt; [1,] 1.92349350 0.045004741</span></span>
-<span><span class="co">#&gt; [2,] 0.04500474 0.002019231</span></span>
-<span><span class="co">#&gt; </span></span>
-<span><span class="co">#&gt; Slot "prec":</span></span>
-<span><span class="co">#&gt;            [,1]       [,2]</span></span>
-<span><span class="co">#&gt; [1,]   1.086455  -24.21497</span></span>
-<span><span class="co">#&gt; [2,] -24.214974 1034.94305</span></span></code></pre></div>
+<span><span class="va">min_inf_model</span><span class="op">$</span><span class="va">model</span><span class="op">@</span><span class="va">params</span></span></code></pre></div>
+<p>The prior for θ is given by<span class="math display">\[
+\boldsymbol\theta = \begin{bmatrix}\alpha \\ \beta\end{bmatrix}\sim N
+\left(\begin{bmatrix} 0.98 \\  1.35\end{bmatrix} , \begin{bmatrix} 1.92
+&amp;  0.05 \\ 0.05 &amp;  0.00\end{bmatrix} \right) \]</span></p>
 <p>The minimally informative model has a prior distribution of</p>
 <p><span class="math display">\[\binom{\alpha}{log(\beta)} \sim N \left(
 \left[\begin{array}{rr} 0.979 \\  1.348 \end{array}\right],
@@ -1160,34 +1144,6 @@ attempt.</p>
 <tr class="odd">
 <td align="right">50</td>
 <td align="right">0</td>
-<td align="right">50</td>
-<td align="left">FALSE</td>
-<td align="right">0</td>
-</tr>
-<tr class="even">
-<td align="right">50</td>
-<td align="right">1</td>
-<td align="right">50</td>
-<td align="left">FALSE</td>
-<td align="right">0</td>
-</tr>
-<tr class="odd">
-<td align="right">50</td>
-<td align="right">2</td>
-<td align="right">40</td>
-<td align="left">FALSE</td>
-<td align="right">-20</td>
-</tr>
-<tr class="even">
-<td align="right">50</td>
-<td align="right">3</td>
-<td align="right">25</td>
-<td align="left">FALSE</td>
-<td align="right">-50</td>
-</tr>
-<tr class="odd">
-<td align="right">50</td>
-<td align="right">0</td>
 <td align="right">80</td>
 <td align="left">FALSE</td>
 <td align="right">60</td>
@@ -1202,44 +1158,44 @@ attempt.</p>
 <tr class="odd">
 <td align="right">50</td>
 <td align="right">2</td>
-<td align="right">50</td>
+<td align="right">25</td>
 <td align="left">FALSE</td>
-<td align="right">0</td>
+<td align="right">-50</td>
 </tr>
 <tr class="even">
 <td align="right">50</td>
 <td align="right">3</td>
-<td align="right">40</td>
-<td align="left">TRUE</td>
-<td align="right">-20</td>
+<td align="right">25</td>
+<td align="left">FALSE</td>
+<td align="right">-50</td>
 </tr>
 <tr class="odd">
 <td align="right">80</td>
 <td align="right">0</td>
 <td align="right">100</td>
-<td align="left">TRUE</td>
+<td align="left">FALSE</td>
 <td align="right">25</td>
 </tr>
 <tr class="even">
 <td align="right">80</td>
 <td align="right">1</td>
-<td align="right">80</td>
-<td align="left">TRUE</td>
-<td align="right">0</td>
+<td align="right">50</td>
+<td align="left">FALSE</td>
+<td align="right">-38</td>
 </tr>
 <tr class="odd">
 <td align="right">80</td>
 <td align="right">2</td>
 <td align="right">50</td>
-<td align="left">TRUE</td>
+<td align="left">FALSE</td>
 <td align="right">-38</td>
 </tr>
 <tr class="even">
 <td align="right">80</td>
 <td align="right">3</td>
-<td align="right">50</td>
-<td align="left">TRUE</td>
-<td align="right">-38</td>
+<td align="right">40</td>
+<td align="left">FALSE</td>
+<td align="right">-50</td>
 </tr>
 </tbody>
 </table>
@@ -1280,9 +1236,9 @@ any reports of toxicity, and fit the revised model …</p>
 <span><span class="co">#&gt;  [6,]   20  0.000    0.000</span></span>
 <span><span class="co">#&gt;  [7,]   25  0.000    0.000</span></span>
 <span><span class="co">#&gt;  [8,]   40  0.001    0.000</span></span>
-<span><span class="co">#&gt;  [9,]   50  0.010    0.000</span></span>
-<span><span class="co">#&gt; [10,]   80  0.186    0.002</span></span>
-<span><span class="co">#&gt; [11,]  100  0.316    0.016</span></span>
+<span><span class="co">#&gt;  [9,]   50  0.036    0.000</span></span>
+<span><span class="co">#&gt; [10,]   80  0.187    0.012</span></span>
+<span><span class="co">#&gt; [11,]  100  0.249    0.049</span></span>
 <span></span>
 <span><span class="fu"><a href="../reference/stopTrial.html">stopTrial</a></span><span class="op">(</span><span class="va">stopping_trial</span>, <span class="va">recommended_dose</span><span class="op">$</span><span class="va">value</span>, <span class="va">no_tox_samples</span>, <span class="va">initial_model</span>, <span class="va">no_tox_data</span><span class="op">)</span></span>
 <span><span class="co">#&gt; [1] TRUE</span></span>
@@ -1292,7 +1248,7 @@ any reports of toxicity, and fit the revised model …</p>
 <span><span class="co">#&gt; [1] "Number of cohorts is 11 and thus reached the prespecified minimum number 3"</span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; attr(,"message")[[1]][[2]]</span></span>
-<span><span class="co">#&gt; [1] "Probability for target toxicity is 32 % for dose 100 and thus below the required 50 %"</span></span>
+<span><span class="co">#&gt; [1] "Probability for target toxicity is 25 % for dose 100 and thus below the required 50 %"</span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; attr(,"message")[[2]]</span></span>
@@ -1306,7 +1262,7 @@ any reports of toxicity, and fit the revised model …</p>
 <span><span class="co">#&gt; [1] "Number of cohorts is 11 and thus reached the prespecified minimum number 3"</span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; attr(,"message")[[2]]</span></span>
-<span><span class="co">#&gt; [1] "Probability for target toxicity is 32 % for dose 100 and thus below the required 50 %"</span></span>
+<span><span class="co">#&gt; [1] "Probability for target toxicity is 25 % for dose 100 and thus below the required 50 %"</span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; attr(,"individual")</span></span>
 <span><span class="co">#&gt; attr(,"individual")[[1]]</span></span>
@@ -1319,7 +1275,7 @@ any reports of toxicity, and fit the revised model …</p>
 <span><span class="co">#&gt; attr(,"individual")[[2]]</span></span>
 <span><span class="co">#&gt; [1] FALSE</span></span>
 <span><span class="co">#&gt; attr(,"message")</span></span>
-<span><span class="co">#&gt; [1] "Probability for target toxicity is 32 % for dose 100 and thus below the required 50 %"</span></span>
+<span><span class="co">#&gt; [1] "Probability for target toxicity is 25 % for dose 100 and thus below the required 50 %"</span></span>
 <span><span class="co">#&gt; attr(,"report_label")</span></span>
 <span><span class="co">#&gt; [1] NA</span></span>
 <span><span class="co">#&gt; </span></span>
