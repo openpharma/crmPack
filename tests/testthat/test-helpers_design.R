@@ -205,5 +205,3 @@ test_that("h_determine_dlts returns correctly updated data object for placebo = 
   expect_s4_class(result, "Data")
   expect_equal(result, expected_result)
 })
-
-

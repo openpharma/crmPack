@@ -44,7 +44,6 @@ test_that("simulate produces consistent results with sentinel patients", {
 })
 
 test_that("simulate for the class design returns correct objects", {
-
   design <- h_get_design_data()
   myTruth <- probFunction(design@model, alpha0 = 7, alpha1 = 8)
   options <- h_get_mcmc_options()
@@ -64,17 +63,16 @@ test_that("simulate for the class design returns correct objects", {
     )
   )
 
-  expect_class(mySims, "Simulations") #check for correct class of returned object
+  expect_class(mySims, "Simulations") # check for correct class of returned object
 
-  expect_equal(any(sapply(mySims@fit[[1]], is.numeric)), TRUE) #check if all elements in mySims@fit are numeric
+  expect_equal(any(sapply(mySims@fit[[1]], is.numeric)), TRUE) # check if all elements in mySims@fit are numeric
 
-  expect_equal(length(mySims@stop_report), 5) #check for length
+  expect_equal(length(mySims@stop_report), 5) # check for length
 
-  expect_logical(mySims@stop_report) #check for stop_report to be logical vector
+  expect_logical(mySims@stop_report) # check for stop_report to be logical vector
 })
 
 test_that("simulate for the class design with placebo returns correct objects", {
-
   design <- h_get_design_data(TRUE)
   myTruth <- probFunction(design@model, alpha0 = 7, alpha1 = 8)
   options <- h_get_mcmc_options()
@@ -94,17 +92,16 @@ test_that("simulate for the class design with placebo returns correct objects", 
     )
   )
 
-  expect_class(mySims, "Simulations") #check for correct class of returned object
+  expect_class(mySims, "Simulations") # check for correct class of returned object
 
-  expect_equal(any(sapply(mySims@fit[[1]], is.numeric)), TRUE) #check if all elements in mySims@fit are numeric
+  expect_equal(any(sapply(mySims@fit[[1]], is.numeric)), TRUE) # check if all elements in mySims@fit are numeric
 
-  expect_equal(length(mySims@stop_report), 5) #check for length
+  expect_equal(length(mySims@stop_report), 5) # check for length
 
-  expect_logical(mySims@stop_report) #check for stop_report to be logical vector
+  expect_logical(mySims@stop_report) # check for stop_report to be logical vector
 })
 
 test_that("simulate for the class design with placebo and sentinel patients returns correct objects", {
-
   design <- h_get_design_data(TRUE)
   myTruth <- probFunction(design@model, alpha0 = 7, alpha1 = 8)
   options <- h_get_mcmc_options()
@@ -125,13 +122,13 @@ test_that("simulate for the class design with placebo and sentinel patients retu
     )
   )
 
-  expect_class(mySims, "Simulations") #check for correct class of returned object
+  expect_class(mySims, "Simulations") # check for correct class of returned object
 
-  expect_equal(any(sapply(mySims@fit[[1]], is.numeric)), TRUE) #check if all elements in mySims@fit are numeric
+  expect_equal(any(sapply(mySims@fit[[1]], is.numeric)), TRUE) # check if all elements in mySims@fit are numeric
 
-  expect_equal(length(mySims@stop_report), 5) #check for length
+  expect_equal(length(mySims@stop_report), 5) # check for length
 
-  expect_logical(mySims@stop_report) #check for stop_report to be logical vector
+  expect_logical(mySims@stop_report) # check for stop_report to be logical vector
 })
 
 ## RuleDesign ----
