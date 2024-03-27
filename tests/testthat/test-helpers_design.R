@@ -207,14 +207,13 @@ test_that("h_determine_dlts returns correctly updated data object for placebo = 
 })
 
 test_that("simulate for the class design works end to end", {
-
   emptydata <- Data(doseGrid = c(1, 3, 5, 10, 15, 20, 25, 40, 50, 80, 100))
 
   model <- LogisticLogNormal(
     mean = c(-0.85, 1),
     cov =
       matrix(c(1, -0.5, -0.5, 1),
-             nrow = 2
+        nrow = 2
       ),
     ref_dose = 56
   )
@@ -268,17 +267,17 @@ test_that("simulate for the class design works end to end", {
     rng_seed = 1234
   )
   time <- system.time(mySims <- simulate(design,
-                                         args = NULL,
-                                         truth = myTruth,
-                                         nsim = 1,
-                                         seed = 819,
-                                         mcmcOptions = options,
-                                         parallel = FALSE,
-                                         derive = list(
-                                           max_mtd = max,
-                                           mean_mtd = mean,
-                                           median_mtd = median
-                                         ),
+    args = NULL,
+    truth = myTruth,
+    nsim = 1,
+    seed = 819,
+    mcmcOptions = options,
+    parallel = FALSE,
+    derive = list(
+      max_mtd = max,
+      mean_mtd = mean,
+      median_mtd = median
+    ),
   ))[3]
 
   expected <-
@@ -330,8 +329,10 @@ test_that("simulate for the class design works end to end", {
         class = "data.frame"
       )),
       stop_report = structure(
-        c(TRUE, TRUE,
-          TRUE, TRUE, FALSE),
+        c(
+          TRUE, TRUE,
+          TRUE, TRUE, FALSE
+        ),
         dim = c(1L, 5L),
         dimnames = list(
           NULL,
@@ -363,20 +364,30 @@ test_that("simulate for the class design works end to end", {
       data = list(
         new(
           "Data",
-          x = c(3, 5, 10, 20, 20, 20, 20, 25,
-                25, 25, 25, 25, 25, 25, 25, 25, 15, 15, 15),
-          y = c(0L, 0L,
-                0L, 1L, 0L, 0L, 0L, 0L, 1L, 0L, 0L, 1L, 0L, 1L, 1L, 1L, 0L,
-                0L, 0L),
-          doseGrid = c(1, 3, 5, 10, 15, 20, 25, 40, 50, 80,
-                       100),
+          x = c(
+            3, 5, 10, 20, 20, 20, 20, 25,
+            25, 25, 25, 25, 25, 25, 25, 25, 15, 15, 15
+          ),
+          y = c(
+            0L, 0L,
+            0L, 1L, 0L, 0L, 0L, 0L, 1L, 0L, 0L, 1L, 0L, 1L, 1L, 1L, 0L,
+            0L, 0L
+          ),
+          doseGrid = c(
+            1, 3, 5, 10, 15, 20, 25, 40, 50, 80,
+            100
+          ),
           nGrid = 11L,
-          xLevel = c(2L, 3L, 4L, 6L, 6L, 6L, 6L,
-                     7L, 7L, 7L, 7L, 7L, 7L, 7L, 7L, 7L, 5L, 5L, 5L),
+          xLevel = c(
+            2L, 3L, 4L, 6L, 6L, 6L, 6L,
+            7L, 7L, 7L, 7L, 7L, 7L, 7L, 7L, 7L, 5L, 5L, 5L
+          ),
           placebo = FALSE,
           ID = 1:19,
-          cohort = c(1L, 2L, 3L, 4L, 5L, 5L, 5L, 6L,
-                     6L, 6L, 7L, 7L, 7L, 8L, 8L, 8L, 9L, 9L, 9L),
+          cohort = c(
+            1L, 2L, 3L, 4L, 5L, 5L, 5L, 6L,
+            6L, 6L, 7L, 7L, 7L, 8L, 8L, 8L, 9L, 9L, 9L
+          ),
           nObs = 19L
         )
       ),
@@ -386,12 +397,11 @@ test_that("simulate for the class design works end to end", {
 
   expect_equal(mySims, expected)
 
-  expect_class(mySims,"Simulations")
+  expect_class(mySims, "Simulations")
 
-  expect_equal(any(sapply(mySims@fit[[1]], is.numeric)), TRUE) #check if all elements in mySims@fit are numeric
+  expect_equal(any(sapply(mySims@fit[[1]], is.numeric)), TRUE) # check if all elements in mySims@fit are numeric
 
-  expect_equal(length(mySims@stop_report), 5) #check for length
+  expect_equal(length(mySims@stop_report), 5) # check for length
 
-  expect_logical(mySims@stop_report) #check for stop_report to be logical vector
+  expect_logical(mySims@stop_report) # check for stop_report to be logical vector
 })
-
