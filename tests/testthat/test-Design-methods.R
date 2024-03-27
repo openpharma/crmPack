@@ -71,6 +71,18 @@ test_that("simulate for the class design returns correct objects", {
   expect_equal(length(mySims@stop_report), 5) #check for length
 
   expect_logical(mySims@stop_report) #check for stop_report to be logical vector
+
+  expect_list(mySims@data)
+
+  expect_class(mySims@data[[1]], "Data") #check for data object has correct class
+
+  expect_list(mySims@additional_stats)
+
+  expect_list(mySims@additional_stats[[1]])
+
+  expect_length(mySims@additional_stats[[1]],3)
+
+  expect_equal(mySims@doses,1)
 })
 
 test_that("simulate for the class design with placebo returns correct objects", {
@@ -101,6 +113,18 @@ test_that("simulate for the class design with placebo returns correct objects", 
   expect_equal(length(mySims@stop_report), 5) #check for length
 
   expect_logical(mySims@stop_report) #check for stop_report to be logical vector
+
+  expect_list(mySims@data)
+
+  expect_class(mySims@data[[1]], "Data") #check for data object has correct class
+
+  expect_list(mySims@additional_stats)
+
+  expect_list(mySims@additional_stats[[1]])
+
+  expect_length(mySims@additional_stats[[1]],3)
+
+  expect_equal(mySims@doses,1)
 })
 
 test_that("simulate for the class design with placebo and sentinel patients returns correct objects", {
@@ -132,6 +156,18 @@ test_that("simulate for the class design with placebo and sentinel patients retu
   expect_equal(length(mySims@stop_report), 5) #check for length
 
   expect_logical(mySims@stop_report) #check for stop_report to be logical vector
+
+  expect_list(mySims@data)
+
+  expect_class(mySims@data[[1]], "Data") #check for data object has correct class
+
+  expect_list(mySims@additional_stats)
+
+  expect_list(mySims@additional_stats[[1]])
+
+  expect_length(mySims@additional_stats[[1]],3)
+
+  expect_equal(mySims@doses,1)
 })
 
 ## RuleDesign ----
