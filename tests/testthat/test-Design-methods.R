@@ -233,6 +233,115 @@ test_that("simulate-DualDesign produces consistent results", {
   expect_snapshot(result)
 })
 
+test_that("simulate-DualDesign produces consistent results with sentinel patients", {
+  design <- h_get_design_dualdata()
+
+  # define scenarios for the TRUE toxicity and efficacy profiles
+  betaMod <- function(dose, e0, eMax, delta1, delta2, scal) {
+    maxDens <- (delta1^delta1) * (delta2^delta2) / ((delta1 + delta2)^(delta1 + delta2))
+    dose <- dose / scal
+    e0 + eMax / maxDens * (dose^delta1) * (1 - dose)^delta2
+  }
+
+  trueBiomarker <- function(dose) {
+    betaMod(dose, e0 = 0.2, eMax = 0.6, delta1 = 5, delta2 = 5 * 0.5 / 0.5, scal = 100)
+  }
+
+  trueTox <- function(dose) {
+    pnorm((dose - 60) / 10)
+  }
+
+  result <- simulate(
+    design,
+    trueTox = trueTox,
+    trueBiomarker = trueBiomarker,
+    sigma2W = 0.01,
+    rho = 0,
+    nsim = 1,
+    parallel = FALSE,
+    seed = 3,
+    startingDose = 6,
+    firstSeparate = TRUE,
+    mcmcOptions = McmcOptions(
+      burnin = 100,
+      step = 1,
+      samples = 300,
+      rng_kind = "Mersenne-Twister",
+      rng_seed = 1234
+    )
+  )
+
+  expect_equal(result@rho_est,0.07991541, tolerance=1e-7) #printed result
+
+  expect_equal(result@rho_est,0.079915412) #actual result
+
+  expect_equal(result@sigma2w_est,0.03177778, tolerance = 1e-7) #printed result
+
+  expect_equal(result@sigma2w_est,0.031777778) #actual result
+
+  expect_equal(any(sapply(result@fit_biomarker[[1]], is.numeric)), TRUE) #all elements of fit are numeric
+
+  expect_equal(dim(result@fit_biomarker[[1]])[1],11)
+
+  expect_equal(dim(result@fit_biomarker[[1]])[2],3)
+
+  expect_equal(length(result@stop_report), 3) #check for length
+
+  expect_logical(result@stop_report) #check for stop_report to be logical vector
+
+  expect_list(result@data)
+
+  expect_class(result@data[[1]], "Data") #check for data object has correct class
+
+  expect_list(result@additional_stats)
+
+  expect_list(result@additional_stats[[1]])
+
+  expect_length(result@additional_stats[[1]],0)
+
+  expect_equal(result@doses,1)
+})
+
+test_that("simulate-DualDesign produces consistent results", {
+  design <- h_get_design_dualdata(TRUE)
+
+  # define scenarios for the TRUE toxicity and efficacy profiles
+  betaMod <- function(dose, e0, eMax, delta1, delta2, scal) {
+    maxDens <- (delta1^delta1) * (delta2^delta2) / ((delta1 + delta2)^(delta1 + delta2))
+    dose <- dose / scal
+    e0 + eMax / maxDens * (dose^delta1) * (1 - dose)^delta2
+  }
+
+  trueBiomarker <- function(dose) {
+    betaMod(dose, e0 = 0.2, eMax = 0.6, delta1 = 5, delta2 = 5 * 0.5 / 0.5, scal = 100)
+  }
+
+  trueTox <- function(dose) {
+    pnorm((dose - 60) / 10)
+  }
+
+  result <- simulate(
+    design,
+    trueTox = trueTox,
+    trueBiomarker = trueBiomarker,
+    sigma2W = 0.01,
+    rho = 0,
+    nsim = 1,
+    parallel = FALSE,
+    seed = 3,
+    startingDose = 6,
+    mcmcOptions = McmcOptions(
+      burnin = 100,
+      step = 1,
+      samples = 300,
+      rng_kind = "Mersenne-Twister",
+      rng_seed = 1234
+    )
+  )
+
+  expect_snapshot(result)
+})
+
 
 test_that("simulate-TDSamplesDesign produces consistent results", {
   data <- Data(doseGrid = seq(25, 300, 25))
@@ -372,14 +481,14 @@ test_that("simulate-DualResponsesSamplesDesign produces consistent results", {
 
   options <- McmcOptions(burnin = 10, step = 1, samples = 50)
   result <- simulate(design,
-    args = NULL,
-    trueDLE = myTruthDLE,
-    trueEff = myTruthEff,
-    trueNu = 1 / 0.025,
-    nsim = 1,
-    mcmcOptions = options,
-    seed = 819,
-    parallel = FALSE
+                     args = NULL,
+                     trueDLE = myTruthDLE,
+                     trueEff = myTruthEff,
+                     trueNu = 1 / 0.025,
+                     nsim = 1,
+                     mcmcOptions = options,
+                     seed = 819,
+                     parallel = FALSE
   )
 
   expect_snapshot(result)
