@@ -43,6 +43,97 @@ test_that("simulate produces consistent results with sentinel patients", {
   expect_snapshot(result)
 })
 
+test_that("simulate for the class design returns correct objects", {
+
+  design <- h_get_design_data()
+  myTruth <- probFunction(design@model, alpha0 = 7, alpha1 = 8)
+  options <- h_get_mcmc_options()
+
+  mySims <- simulate(
+    design,
+    args = NULL,
+    truth = myTruth,
+    nsim = 1,
+    seed = 819,
+    mcmcOptions = options,
+    parallel = FALSE,
+    derive = list(
+      max_mtd = max,
+      mean_mtd = mean,
+      median_mtd = median
+    )
+  )
+
+  expect_class(mySims, "Simulations") #check for correct class of returned object
+
+  expect_equal(any(sapply(mySims@fit[[1]], is.numeric)), TRUE) #check if all elements in mySims@fit are numeric
+
+  expect_equal(length(mySims@stop_report), 5) #check for length
+
+  expect_logical(mySims@stop_report) #check for stop_report to be logical vector
+})
+
+test_that("simulate for the class design with placebo returns correct objects", {
+
+  design <- h_get_design_data(TRUE)
+  myTruth <- probFunction(design@model, alpha0 = 7, alpha1 = 8)
+  options <- h_get_mcmc_options()
+
+  mySims <- simulate(
+    design,
+    args = NULL,
+    truth = myTruth,
+    nsim = 1,
+    seed = 819,
+    mcmcOptions = options,
+    parallel = FALSE,
+    derive = list(
+      max_mtd = max,
+      mean_mtd = mean,
+      median_mtd = median
+    )
+  )
+
+  expect_class(mySims, "Simulations") #check for correct class of returned object
+
+  expect_equal(any(sapply(mySims@fit[[1]], is.numeric)), TRUE) #check if all elements in mySims@fit are numeric
+
+  expect_equal(length(mySims@stop_report), 5) #check for length
+
+  expect_logical(mySims@stop_report) #check for stop_report to be logical vector
+})
+
+test_that("simulate for the class design with placebo and sentinel patients returns correct objects", {
+
+  design <- h_get_design_data(TRUE)
+  myTruth <- probFunction(design@model, alpha0 = 7, alpha1 = 8)
+  options <- h_get_mcmc_options()
+
+  mySims <- simulate(
+    design,
+    args = NULL,
+    truth = myTruth,
+    nsim = 1,
+    seed = 819,
+    mcmcOptions = options,
+    parallel = FALSE,
+    firstSeparate = TRUE,
+    derive = list(
+      max_mtd = max,
+      mean_mtd = mean,
+      median_mtd = median
+    )
+  )
+
+  expect_class(mySims, "Simulations") #check for correct class of returned object
+
+  expect_equal(any(sapply(mySims@fit[[1]], is.numeric)), TRUE) #check if all elements in mySims@fit are numeric
+
+  expect_equal(length(mySims@stop_report), 5) #check for length
+
+  expect_logical(mySims@stop_report) #check for stop_report to be logical vector
+})
+
 ## RuleDesign ----
 
 test_that("simulate-RuleDesign produces consistent results", {
