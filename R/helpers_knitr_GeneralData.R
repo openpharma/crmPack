@@ -366,7 +366,7 @@ knit_print.GeneralData <- function(
     }
   }
   param[["x"]] <- xTidy
-  rv <- if(length(x@x) > 0) {
+  rv <- if (length(x@x) > 0) {
     paste((do.call(knitr::kable, param)) %>% format_func(), collapse = "\n")
   } else {
     paste("No", labels[2], "are yet evaluable.\n\n")
