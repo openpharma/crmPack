@@ -971,6 +971,7 @@ DesignGrouped <- function(model,
                           ...) {
   assert_flag(stop_mono_with_combo)
   assert_class(mono, "Design")
+  force(combo)
   if (stop_mono_with_combo) {
     mono@stopping <- mono@stopping |
       StoppingExternal(report_label = "Stop Mono with Combo")

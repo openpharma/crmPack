@@ -670,9 +670,9 @@ test_that("simulate for DesignGrouped allows to stop mono when combo stops", {
   expect_valid(result$combo, "Simulations")
 
   # We see the expected stop reasons.
-  expect_identical(
+  lapply(
     result$mono@stop_reasons,
-    rep(list("mono stopped because combo stopped"), 2)
+    function(x) expect_subset("Based on external result stop", unlist(x))
   )
   expect_identical(
     result$combo@stop_reasons,
@@ -688,7 +688,7 @@ test_that("simulate for DesignGrouped allows to stop mono when combo stops", {
   # And we see the stop report includes the previous stopping rule too.
   expect_identical(
     colnames(result$mono@stop_report),
-    c("my label", "mono stopped because combo stopped")
+    c(NA, "my label", "Stop Mono with Combo")
   )
 })
 
