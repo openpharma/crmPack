@@ -1159,6 +1159,26 @@ test_that("StoppingOrdinal object can be created with user constructor", {
   expect_identical(result@report_label, character(0))
 })
 
+## StoppingExternal ----
+
+test_that(".StoppingExternal works as expected", {
+  result <- expect_silent(.StoppingExternal(report_label = "bla"))
+  expect_valid(result, "StoppingExternal")
+  expect_identical(result@report_label, "bla")
+})
+
+test_that(".DefaultStoppingExternal works as expected", {
+  result <- expect_silent(.DefaultStoppingExternal())
+  expect_valid(result, "StoppingExternal")
+  expect_identical(result@report_label, "Stopped because of external flag")
+})
+
+test_that("StoppingExternal object can be created with user constructor", {
+  result <- expect_silent(StoppingExternal())
+  expect_valid(result, "StoppingExternal")
+  expect_identical(result@report_label, "Stopped because of external flag")
+})
+
 # CohortSize ----
 
 ## CohortSizeRange ----

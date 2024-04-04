@@ -2839,7 +2839,7 @@ StoppingOrdinal <- function(grade, rule) {
 #' @example examples/Rules-class-StoppingExternal.R
 #' @export
 #'
-StoppingExternal <- function(report_label = NA) {
+StoppingExternal <- function(report_label = NA_character_) {
   report_label <- h_default_if_empty(
     as.character(report_label),
     paste("Stopped because of external flag")
