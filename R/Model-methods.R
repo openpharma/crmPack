@@ -978,7 +978,7 @@ setMethod(
     model = "LogisticNormal",
     samples = "Samples"
   ),
-  definition = function(dose, model, samples) {
+  definition = function(dose, model, samples, ...) {
     assert_numeric(dose, lower = 0L, any.missing = FALSE, min.len = 1)
     assert_subset(c("alpha0", "alpha1"), names(samples))
     assert_length(dose, len = size(samples))
@@ -1004,7 +1004,7 @@ setMethod(
     model = "LogisticLogNormal",
     samples = "Samples"
   ),
-  definition = function(dose, model, samples) {
+  definition = function(dose, model, samples, ...) {
     assert_numeric(dose, lower = 0L, any.missing = FALSE, min.len = 1L)
     assert_subset(c("alpha0", "alpha1"), names(samples))
     assert_length(dose, len = size(samples))
@@ -1030,7 +1030,7 @@ setMethod(
     model = "LogisticLogNormalSub",
     samples = "Samples"
   ),
-  definition = function(dose, model, samples) {
+  definition = function(dose, model, samples, ...) {
     assert_numeric(dose, lower = 0L, any.missing = FALSE, min.len = 1L)
     assert_subset(c("alpha0", "alpha1"), names(samples))
     assert_length(dose, len = size(samples))
@@ -1056,7 +1056,7 @@ setMethod(
     model = "ProbitLogNormal",
     samples = "Samples"
   ),
-  definition = function(dose, model, samples) {
+  definition = function(dose, model, samples, ...) {
     assert_numeric(dose, lower = 0L, any.missing = FALSE, min.len = 1L)
     assert_subset(c("alpha0", "alpha1"), names(samples))
     assert_length(dose, len = size(samples))
@@ -1082,7 +1082,7 @@ setMethod(
     model = "ProbitLogNormalRel",
     samples = "Samples"
   ),
-  definition = function(dose, model, samples) {
+  definition = function(dose, model, samples, ...) {
     assert_numeric(dose, lower = 0L, any.missing = FALSE, min.len = 1L)
     assert_subset(c("alpha0", "alpha1"), names(samples))
     assert_length(dose, len = size(samples))
@@ -1111,7 +1111,7 @@ setMethod(
     model = "LogisticLogNormalGrouped",
     samples = "Samples"
   ),
-  definition = function(dose, model, samples, group) {
+  definition = function(dose, model, samples, group, ...) {
     assert_numeric(dose, lower = 0L, any.missing = FALSE, min.len = 1L)
     assert_subset(c("alpha0", "delta0", "alpha1", "delta1"), names(samples))
     assert_length(dose, len = size(samples))
@@ -1143,7 +1143,7 @@ setMethod(
     model = "LogisticKadane",
     samples = "Samples"
   ),
-  definition = function(dose, model, samples) {
+  definition = function(dose, model, samples, ...) {
     assert_numeric(dose, lower = 0L, any.missing = FALSE, min.len = 1L)
     assert_subset(c("rho0", "gamma"), names(samples))
     assert_length(dose, len = size(samples))
@@ -1171,7 +1171,7 @@ setMethod(
     model = "LogisticKadaneBetaGamma",
     samples = "Samples"
   ),
-  definition = function(dose, model, samples) {
+  definition = function(dose, model, samples, ...) {
     assert_numeric(dose, lower = 0L, any.missing = FALSE, min.len = 1L)
     assert_subset(c("rho0", "gamma"), names(samples))
     assert_length(dose, len = size(samples))
@@ -1199,7 +1199,7 @@ setMethod(
     model = "LogisticNormalMixture",
     samples = "Samples"
   ),
-  definition = function(dose, model, samples) {
+  definition = function(dose, model, samples, ...) {
     assert_numeric(dose, lower = 0L, any.missing = FALSE, min.len = 1L)
     assert_subset(c("alpha0", "alpha1"), names(samples))
     assert_length(dose, len = size(samples))
@@ -1225,7 +1225,7 @@ setMethod(
     model = "LogisticNormalFixedMixture",
     samples = "Samples"
   ),
-  definition = function(dose, model, samples) {
+  definition = function(dose, model, samples, ...) {
     assert_numeric(dose, lower = 0L, any.missing = FALSE, min.len = 1L)
     assert_subset(c("alpha0", "alpha1"), names(samples))
     assert_length(dose, len = size(samples))
@@ -1251,7 +1251,7 @@ setMethod(
     model = "LogisticLogNormalMixture",
     samples = "Samples"
   ),
-  definition = function(dose, model, samples) {
+  definition = function(dose, model, samples, ...) {
     assert_numeric(dose, lower = 0L, any.missing = FALSE, min.len = 1L)
     assert_subset(c("alpha0", "alpha1"), names(samples))
     assert_length(dose, len = size(samples))
@@ -1279,7 +1279,7 @@ setMethod(
     model = "DualEndpoint",
     samples = "Samples"
   ),
-  definition = function(dose, model, samples) {
+  definition = function(dose, model, samples, ...) {
     assert_numeric(dose, lower = 0L, any.missing = FALSE, min.len = 1L)
     assert_subset("betaZ", names(samples))
     assert_length(dose, len = size(samples))
@@ -1311,7 +1311,7 @@ setMethod(
     model = "LogisticIndepBeta",
     samples = "Samples"
   ),
-  definition = function(dose, model, samples) {
+  definition = function(dose, model, samples, ...) {
     assert_numeric(dose, lower = 0L, any.missing = FALSE, min.len = 1L)
     assert_subset(c("phi1", "phi2"), names(samples))
     assert_length(dose, len = size(samples))
@@ -1339,7 +1339,7 @@ setMethod(
     model = "LogisticIndepBeta",
     samples = "missing"
   ),
-  definition = function(dose, model) {
+  definition = function(dose, model, ...) {
     model_params <- h_slots(model, c("phi1", "phi2"))
     nsamples <- length(model_params[[1]])
     samples <- Samples(data = model_params, options = McmcOptions(samples = nsamples))
@@ -1365,7 +1365,7 @@ setMethod(
     model = "OneParLogNormalPrior",
     samples = "Samples"
   ),
-  definition = function(dose, model, samples) {
+  definition = function(dose, model, samples, ...) {
     assert_numeric(dose, lower = 0L, any.missing = FALSE, min.len = 1L)
     assert_subset("alpha", names(samples))
     assert_length(dose, len = size(samples))
@@ -1390,7 +1390,7 @@ setMethod(
     model = "OneParExpPrior",
     samples = "Samples"
   ),
-  definition = function(dose, model, samples) {
+  definition = function(dose, model, samples, ...) {
     assert_numeric(dose, lower = 0L, any.missing = FALSE, min.len = 1L)
     assert_subset("theta", names(samples))
     assert_length(dose, len = size(samples))
@@ -1419,7 +1419,7 @@ setMethod(
     model = "LogisticLogNormalOrdinal",
     samples = "Samples"
   ),
-  definition = function(dose, model, samples, grade, cumulative = TRUE) {
+  definition = function(dose, model, samples, grade, cumulative = TRUE, ...) {
     assert_numeric(dose, lower = 0L, any.missing = FALSE, min.len = 1L)
     assert_integer(
       grade,

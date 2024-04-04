@@ -732,7 +732,7 @@ test_that("simulate for DesignGrouped reports correctly when mono is not stopped
   # We see the stop report includes the previous stopping rule and the mono because combo thing too.
   expect_identical(
     colnames(result$mono@stop_report),
-    c("my label", "mono stopped because combo stopped")
+    c(NA, "my label", "Stop Mono with Combo")
   )
   # But not for the combo.
   expect_identical(
