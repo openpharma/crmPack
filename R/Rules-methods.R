@@ -2799,6 +2799,8 @@ setMethod(
 #' @describeIn stopTrial Stop based on an external flag.
 #'
 #' @description `r lifecycle::badge("experimental")`
+#' @param external (`flag`)\cr whether to stop based on the external
+#'   result or not.
 #'
 #' @aliases stopTrial-StoppingExternal
 #' @example examples/Rules-method-stopTrial-StoppingExternal.R

@@ -104,6 +104,9 @@ stopTrial(stopping, dose, samples, model, data, ...)
 
 \item{...}{additional arguments without method dispatch.}
 
+\item{external}{(\code{flag})\cr whether to stop based on the external
+result or not.}
+
 \item{TDderive}{the function which derives from the input, a vector of the posterior samples called
 \code{TDsamples} of the dose
 which has the probability of the occurrence of DLE equals to either the targetDuringTrial or
