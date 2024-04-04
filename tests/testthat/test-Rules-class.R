@@ -564,7 +564,7 @@ test_that("StoppingCohortsNearDose object can be created with user constructor (
   expect_valid(result, "StoppingCohortsNearDose")
   expect_identical(result@nCohorts, 2L)
   expect_identical(result@percentage, 50)
-  expect_identical(result@report_label, NA_character_)
+  expect_identical(result@report_label, "≥ 2 cohorts dosed in 50 % dose range around NBD")
 })
 
 test_that("StoppingCohortsNearDose object can be created with user constructor", {
@@ -599,7 +599,7 @@ test_that("StoppingPatientsNearDose object can be created with user constructor 
   expect_valid(result, "StoppingPatientsNearDose")
   expect_identical(result@nPatients, 10L)
   expect_identical(result@percentage, 50)
-  expect_identical(result@report_label, NA_character_)
+  expect_identical(result@report_label, "≥ 10 patients dosed in 50 % dose range around NBD")
 })
 
 test_that("StoppingPatientsNearDose object can be created with user constructor", {
@@ -633,7 +633,7 @@ test_that("StoppingMinCohorts object can be created with user constructor (defau
   result <- expect_silent(StoppingMinCohorts())
   expect_valid(result, "StoppingMinCohorts")
   expect_identical(result@nCohorts, 2L)
-  expect_identical(result@report_label, NA_character_)
+  expect_identical(result@report_label, "≥ 2 cohorts dosed")
 })
 
 test_that("StoppingMinCohorts object can be created with user constructor", {
@@ -669,7 +669,7 @@ test_that("StoppingMinPatients object can be created with user constructor (defa
   result <- expect_silent(StoppingMinPatients())
   expect_valid(result, "StoppingMinPatients")
   expect_identical(result@nPatients, 20L)
-  expect_identical(result@report_label, NA_character_)
+  expect_identical(result@report_label, "≥ 20 patients dosed")
 })
 
 test_that("StoppingMinPatients object can be created with user constructor", {
@@ -703,7 +703,7 @@ test_that("StoppingTargetProb object can be created with user constructor (defau
   expect_valid(result, "StoppingTargetProb")
   expect_identical(result@target, c(0.2, 0.35))
   expect_identical(result@prob, 0.4)
-  expect_identical(result@report_label, NA_character_)
+  expect_identical(result@report_label, "P(0.2 ≤ prob(DLE | NBD) ≤ 0.35) ≥ 0.4")
 })
 
 test_that("StoppingTargetProb object can be created with user constructor", {
@@ -741,7 +741,7 @@ test_that("StoppingMTDdistribution object can be created with user constructor (
   expect_identical(result@target, 0.33)
   expect_identical(result@thresh, 0.5)
   expect_identical(result@prob, 0.9)
-  expect_identical(result@report_label, NA_character_)
+  expect_identical(result@report_label, "P(MTD > 0.5 * NBD | P(DLE) = 0.33) ≥ 0.9")
 })
 
 test_that("StoppingMTDdistribution object can be created with user constructor", {
@@ -779,7 +779,7 @@ test_that("StoppingMTDCV object can be created with user constructor (default)",
   expect_valid(result, "StoppingMTDCV")
   expect_identical(result@target, 0.3)
   expect_identical(result@thresh_cv, 40)
-  expect_identical(result@report_label, NA_character_)
+  expect_identical(result@report_label, "CV(MTD) > 0.3")
 })
 
 test_that("StoppingMTDCV object can be created with user constructor", {
@@ -817,7 +817,7 @@ test_that("StoppingLowestDoseHSRBeta object can be created with user constructor
   expect_identical(result@prob, 0.95)
   expect_identical(result@a, 1)
   expect_identical(result@b, 1)
-  expect_identical(result@report_label, NA_character_)
+  expect_identical(result@report_label, "Pβ(lowest dose > P(DLE) = 0.3) > 0.95")
 })
 
 test_that("StoppingLowestDoseHSRBeta object can be created with user constructor", {
@@ -904,7 +904,7 @@ test_that("StoppingSpecificDose object can be created with user constructor (def
   expect_identical(result@rule@target, c(0, 0.3))
   expect_identical(result@rule@prob, 0.8)
   expect_identical(result@dose@.Data, 80)
-  expect_identical(result@report_label, NA_character_)
+  expect_identical(result@report_label, "Dose 80 used for testing a stopping rule")
 })
 
 test_that("StoppingSpecificDose object can be created with user constructor", {
@@ -954,7 +954,7 @@ test_that(".StoppingHighestDose works as expected", {
 test_that("StoppingHighestDose object can be created with user constructor (default)", {
   result <- expect_silent(StoppingHighestDose())
   expect_valid(result, "StoppingHighestDose")
-  expect_identical(result@report_label, NA_character_)
+  expect_identical(result@report_label, "NBD is the highest dose")
 })
 
 test_that("StoppingHighestDose object can be created with user constructor", {
@@ -1074,7 +1074,7 @@ test_that("StoppingTDCIRatio object can be created with user constructor (defaul
   expect_valid(result, "StoppingTDCIRatio")
   expect_identical(result@target_ratio, 5)
   expect_identical(result@prob_target, 0.3)
-  expect_identical(result@report_label, NA_character_)
+  expect_identical(result@report_label, "TD 5 for 0.3 target prob")
 })
 
 test_that("StoppingTDCIRatio object can be created with user constructor", {
@@ -1109,7 +1109,7 @@ test_that("StoppingMaxGainCIRatio object can be created with user constructor (d
   expect_valid(result, "StoppingMaxGainCIRatio")
   expect_identical(result@target_ratio, 5)
   expect_identical(result@prob_target, 0.3)
-  expect_identical(result@report_label, NA_character_)
+  expect_identical(result@report_label, "GStar 5 for 0.3 target prob")
 })
 
 test_that("StoppingMaxGainCIRatio object can be created with user constructor", {
