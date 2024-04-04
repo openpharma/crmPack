@@ -32,7 +32,8 @@ DesignGrouped(
 
 \item{same_dose_for_start}{(\code{flag})\cr see slot definition.}
 
-\item{stop_mono_with_combo}{(\code{flag})\cr see slot definition.}
+\item{stop_mono_with_combo}{(\code{flag})\cr whether the mono arm should be stopped when the combo
+arm is stopped (this makes sense when the only real trial objective is the recommended combo dose).}
 
 \item{...}{not used.}
 }
@@ -78,9 +79,6 @@ doses should be used as the next dose for both mono and combo in all cohorts.}
 used in the same cohort for the first time, the same dose should be used for both.
 Note that this is different from \code{same_dose_for_all} which will always force
 them to be the same. If \code{same_dose_for_all = TRUE}, this is therefore ignored. See Details.}
-
-\item{\code{stop_mono_with_combo}}{(\code{flag})\cr whether the mono arm should be stopped when the combo
-arm is stopped (this makes sense when the only real trial objective is the recommended combo dose).}
 }}
 
 \note{

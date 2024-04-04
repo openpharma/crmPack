@@ -15,8 +15,9 @@ h_default_if_empty(x, default)
 \description{
 \ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#stable}{\figure{lifecycle-stable.svg}{options: alt='[Stable]'}}}{\strong{[Stable]}}
 
-A simple helper function that sets a default value for an empty object,
-that is an object for which \code{\link[=length]{length()}} function returns \code{0L}.
+A simple helper function that sets a default value for an empty or missing object,
+that is an object for which \code{\link[=length]{length()}} function returns \code{0L} or it has length 1
+and \code{\link[=is.na]{is.na()}} returns \code{TRUE}.
 }
 \examples{
 h_default_if_empty(character(0), default = "default label")

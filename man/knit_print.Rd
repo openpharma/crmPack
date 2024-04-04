@@ -20,6 +20,7 @@
 \alias{knit_print.IncrementsRelativeParts}
 \alias{knit_print.IncrementsRelativeDLTCurrent}
 \alias{knit_print.GeneralData}
+\alias{knit_print.DataParts}
 \alias{knit_print.DualEndpoint}
 \alias{knit_print.ModelParamsNormal}
 \alias{knit_print.GeneralModel}
@@ -67,6 +68,18 @@
 \method{knit_print}{IncrementsRelativeDLTCurrent}(x, ..., asis = TRUE, labels = c("DLT", "DLTs"))
 
 \method{knit_print}{GeneralData}(
+  x,
+  ...,
+  asis = TRUE,
+  labels = c("participant", "participants"),
+  full_grid = FALSE,
+  summarise = c("none", "dose", "cohort"),
+  summarize = summarise,
+  units = NA,
+  format_func = function(x) x
+)
+
+\method{knit_print}{DataParts}(
   x,
   ...,
   asis = TRUE,

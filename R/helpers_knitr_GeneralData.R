@@ -389,6 +389,8 @@ knit_print.GeneralData <- function(
   rv
 }
 
+#' @export
+#' @rdname knit_print
 knit_print.DataParts <- function(
     x, ..., asis = TRUE,
     labels = c("participant", "participants"),

@@ -26,6 +26,8 @@
 \alias{stopTrial,StoppingOrdinal,numeric,ANY,LogisticLogNormalOrdinal,DataOrdinal-method}
 \alias{stopTrial-StoppingOrdinal}
 \alias{stopTrial,StoppingOrdinal,numeric,ANY,ANY,ANY-method}
+\alias{stopTrial,StoppingExternal,numeric,ANY,ANY,ANY-method}
+\alias{stopTrial-StoppingExternal}
 \alias{stopTrial,StoppingTDCIRatio,ANY,Samples,ModelTox,ANY-method}
 \alias{stopTrial,StoppingTDCIRatio,ANY,missing,ModelTox,ANY-method}
 \alias{stopTrial,StoppingMaxGainCIRatio,ANY,Samples,ModelTox,DataDual-method}
@@ -67,6 +69,8 @@ stopTrial(stopping, dose, samples, model, data, ...)
 \S4method{stopTrial}{StoppingOrdinal,numeric,ANY,LogisticLogNormalOrdinal,DataOrdinal}(stopping, dose, samples, model, data, ...)
 
 \S4method{stopTrial}{StoppingOrdinal,numeric,ANY,ANY,ANY}(stopping, dose, samples, model, data, ...)
+
+\S4method{stopTrial}{StoppingExternal,numeric,ANY,ANY,ANY}(stopping, dose, samples, model, data, external, ...)
 
 \S4method{stopTrial}{StoppingTDCIRatio,ANY,Samples,ModelTox,ANY}(stopping, dose, samples, model, data, ...)
 
@@ -138,6 +142,8 @@ stopped when the lowest non placebo dose meets the Hard
 Safety Rule, i.e. it is deemed to be overly toxic. Stopping is based on the
 observed data at the lowest dose level using a Bin-Beta model
 based on DLT probability.
+
+\ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#experimental}{\figure{lifecycle-experimental.svg}{options: alt='[Experimental]'}}}{\strong{[Experimental]}}
 
 \ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#experimental}{\figure{lifecycle-experimental.svg}{options: alt='[Experimental]'}}}{\strong{[Experimental]}}
 
@@ -267,6 +273,14 @@ dose grid and not just for the default next best dose.
   model = ANY,
   data = ANY
 )}: Stop based on value returned by next best dose.
+
+\item \code{stopTrial(
+  stopping = StoppingExternal,
+  dose = numeric,
+  samples = ANY,
+  model = ANY,
+  data = ANY
+)}: Stop based on an external flag.
 
 \item \code{stopTrial(
   stopping = StoppingTDCIRatio,
@@ -1248,6 +1262,9 @@ stopTrial(
   model = model,
   data = data
 )
+my_rule <- StoppingExternal(report_label = "Based on combo stop")
+
+stopTrial(my_rule, 5, .DefaultSamples(), .DefaultModelLogNormal(), .DefaultData(), external = TRUE)
 # nolint start
 
 ##define the stopping rules based on the 'StoppingTDCIRatio' class
