@@ -4735,6 +4735,7 @@ setMethod(
         )
       }
       vars_needed <- c("simSeeds", "args", "nArgs", "truth", "combo_truth", "firstSeparate", "object", "mcmcOptions")
+
       result_list <- get_result_list(run_sim, nsim, vars_needed, parallel, nCores)
       # Now we have a list with each element containing mono and combo. Reorder this a bit:
       result_list <- list(
