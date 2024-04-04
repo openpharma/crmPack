@@ -3299,7 +3299,7 @@ setMethod("stopTrial",
         round(ratioTDEOT, 4)
       )
       text3 <- paste(
-        ifelse(chooseTD, "TDatrgetEndOfTrial estimate", "Gstar estimate"), "is smaller with ratio =",
+        ifelse(chooseTD, "TDtargetEndOfTrial estimate", "Gstar estimate"), "is smaller with ratio =",
         round(ratio, 4), " which is ", ifelse(doStop, "is less than or equal to", "greater than"),
         "target_ratio =", stopping@target_ratio
       )

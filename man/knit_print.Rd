@@ -34,6 +34,17 @@
 \alias{knit_print.OneParExpPrior}
 \alias{knit_print.LogisticLogNormalGrouped}
 \alias{knit_print.LogisticLogNormalOrdinal}
+\alias{knit_print.StoppingMaxGainCIRatio}
+\alias{knit_print.StoppingTDCIRatio}
+\alias{knit_print.StoppingTargetBiomarker}
+\alias{knit_print.StoppingLowestDoseHSRBeta}
+\alias{knit_print.StoppingMTDCV}
+\alias{knit_print.StoppingMTDdistribution}
+\alias{knit_print.StoppingHighestDose}
+\alias{knit_print.StoppingSpecificDose}
+\alias{knit_print.StoppingTargetProb}
+\alias{knit_print.StoppingMinCohorts}
+\alias{knit_print.StoppingMinPatients}
 \alias{knit_print.StoppingPatientsNearDose}
 \alias{knit_print.StoppingCohortsNearDose}
 \alias{knit_print.StoppingMissingDose}
@@ -167,9 +178,103 @@
   asis = TRUE
 )
 
-\method{knit_print}{StoppingPatientsNearDose}(x, ..., label = "participants", asis = TRUE)
+\method{knit_print}{StoppingMaxGainCIRatio}(
+  x,
+  ...,
+  dose_label = "the next best dose",
+  tox_label = "toxicity",
+  fmt_string =
+    paste0("\%sIf the ratio of the upper and lower limits of the posterior 95\%\% ",
+    "credible interval for the probability of \%s at the smaller of the doses ",
+    "given by the end-of-trial TD estimate and the G* estimate is les than or ",
+    "equal to "),
+  asis = TRUE
+)
 
-\method{knit_print}{StoppingCohortsNearDose}(x, ..., asis = TRUE)
+\method{knit_print}{StoppingTDCIRatio}(
+  x,
+  ...,
+  dose_label = "the next best dose",
+  tox_label = "toxicity",
+  fmt_string =
+    paste0("\%sIf, at \%s, the ratio of the upper and lower limits of the posterior ",
+    "95\%\% credible interval for the probability of \%s is less than or equal to "),
+  asis = TRUE
+)
+
+\method{knit_print}{StoppingTargetBiomarker}(
+  x,
+  ...,
+  dose_label = "the next best dose",
+  biomarker_label = "the target biomarker",
+  fmt_string =
+    paste0("\%sIf, at \%s, the posterior probability that \%s is in the range (\%.2f, \%.2f)\%s is \%.0f\%\% or more."),
+  asis = TRUE
+)
+
+\method{knit_print}{StoppingLowestDoseHSRBeta}(
+  x,
+  ...,
+  tox_label = "toxicity",
+  fmt_string =
+    paste0("\%sIf, using a Hard Stopping Rule with a prior of Beta(\%.0f, \%.0f), the ",
+    "lowest dose in the dose grid has a posterior probability of \%s of ",
+    "\%.0f\%\% or more."),
+  asis = TRUE
+)
+
+\method{knit_print}{StoppingMTDCV}(
+  x,
+  ...,
+  fmt_string =
+    paste0("\%sIf the posterior estimate of the robust coefficient of variation of the MTD, ",
+    "expressed as a percentage, is both greater than zero and less than or ",
+    "equal to \%.0f\%\%."),
+  asis = TRUE
+)
+
+\method{knit_print}{StoppingMTDdistribution}(
+  x,
+  ...,
+  fmt_string =
+    "\%sIf the mean posterior probability of \%s at \%.0f\%\% of \%s is at least \%4.2f.",
+  dose_label = "the next best dose",
+  tox_label = "toxicity",
+  asis = TRUE
+)
+
+\method{knit_print}{StoppingHighestDose}(
+  x,
+  ...,
+  dose_label = "the highest dose in the dose grid",
+  asis = TRUE
+)
+
+\method{knit_print}{StoppingSpecificDose}(x, ..., dose_label = as.character(x@dose), asis = TRUE)
+
+\method{knit_print}{StoppingTargetProb}(
+  x,
+  ...,
+  fmt_string =
+    "\%sIf the probability of \%s at \%s is in the range [\%4.2f, \%4.2f] is at least \%4.2f.",
+  dose_label = "the next best dose",
+  tox_label = "toxicity",
+  asis = TRUE
+)
+
+\method{knit_print}{StoppingMinCohorts}(x, ..., asis = TRUE)
+
+\method{knit_print}{StoppingMinPatients}(x, ..., label = "participants", asis = TRUE)
+
+\method{knit_print}{StoppingPatientsNearDose}(
+  x,
+  ...,
+  dose_label = "the next best dose",
+  label = "participants",
+  asis = TRUE
+)
+
+\method{knit_print}{StoppingCohortsNearDose}(x, ..., dose_label = "the next best dose", asis = TRUE)
 
 \method{knit_print}{StoppingMissingDose}(x, ..., asis = TRUE)
 }
@@ -217,6 +322,13 @@ Notes below.}
 of the model}
 
 \item{theta}{(\code{character})\cr the LaTeX representation of the theta vector}
+
+\item{dose_label}{(\code{character})\cr the term used to describe the target dose}
+
+\item{fmt_string}{(\code{character})\cr the character string that defines the format
+of the output}
+
+\item{biomarker_label}{(\code{character})\cr the term used to describe the biomarker}
 }
 \value{
 a character string that represents the object in markdown.
@@ -230,6 +342,28 @@ A character string containing a LaTeX rendition of the object.
 
 We provide additional utility functions to allow human-friendly rendition of
 crmPack objects in Markdown and Quarto files
+
+\ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#experimental}{\figure{lifecycle-experimental.svg}{options: alt='[Experimental]'}}}{\strong{[Experimental]}}
+
+\ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#experimental}{\figure{lifecycle-experimental.svg}{options: alt='[Experimental]'}}}{\strong{[Experimental]}}
+
+\ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#experimental}{\figure{lifecycle-experimental.svg}{options: alt='[Experimental]'}}}{\strong{[Experimental]}}
+
+\ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#experimental}{\figure{lifecycle-experimental.svg}{options: alt='[Experimental]'}}}{\strong{[Experimental]}}
+
+\ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#experimental}{\figure{lifecycle-experimental.svg}{options: alt='[Experimental]'}}}{\strong{[Experimental]}}
+
+\ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#experimental}{\figure{lifecycle-experimental.svg}{options: alt='[Experimental]'}}}{\strong{[Experimental]}}
+
+\ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#experimental}{\figure{lifecycle-experimental.svg}{options: alt='[Experimental]'}}}{\strong{[Experimental]}}
+
+\ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#experimental}{\figure{lifecycle-experimental.svg}{options: alt='[Experimental]'}}}{\strong{[Experimental]}}
+
+\ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#experimental}{\figure{lifecycle-experimental.svg}{options: alt='[Experimental]'}}}{\strong{[Experimental]}}
+
+\ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#experimental}{\figure{lifecycle-experimental.svg}{options: alt='[Experimental]'}}}{\strong{[Experimental]}}
+
+\ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#experimental}{\figure{lifecycle-experimental.svg}{options: alt='[Experimental]'}}}{\strong{[Experimental]}}
 
 \ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#experimental}{\figure{lifecycle-experimental.svg}{options: alt='[Experimental]'}}}{\strong{[Experimental]}}
 
