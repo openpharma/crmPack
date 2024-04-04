@@ -2,6 +2,7 @@
 % Please edit documentation in R/crmPack-package.R
 \docType{package}
 \name{crmPack-package}
+\alias{-package}
 \alias{crmPack-package}
 \alias{crmPack}
 \title{Object-oriented implementation of CRM designs}
@@ -13,11 +14,5 @@ Sabanes Bove D, Yeung WY, Palermo G, Jaki T (2019).
 "Model-Based Dose Escalation Designs in R with crmPack."
 Journal of Statistical Software, 89(10), 1-22.
 doi:10.18637/jss.v089.i10 (URL: http://doi.org/10.18637/jss.v089.i10).
-}
-\author{
-Daniel Sabanes Bove \email{daniel.sabanesbove@gmx.net}, W
-Wai Yin Yeung \email{winnie.yeung@roche.com}
-Giuseppe Palermo \email{giuseppe.palermo@roche.com},
-Thomas Jaki \email{jaki.thomas@gmail.com}
 }
 \keyword{package}
