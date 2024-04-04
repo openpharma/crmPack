@@ -906,8 +906,6 @@ DADesign <- function(model, data,
 #'   used in the same cohort for the first time, the same dose should be used for both.
 #'   Note that this is different from `same_dose_for_all` which will always force
 #'   them to be the same. If `same_dose_for_all = TRUE`, this is therefore ignored. See Details.
-#' @slot stop_mono_with_combo (`flag`)\cr whether the mono arm should be stopped when the combo
-#'   arm is stopped (this makes sense when the only real trial objective is the recommended combo dose).
 #'
 #' @details
 #'
@@ -932,8 +930,7 @@ DADesign <- function(model, data,
     combo = "Design",
     first_cohort_mono_only = "logical",
     same_dose_for_all = "logical",
-    same_dose_for_start = "logical",
-    stop_mono_with_combo = "logical"
+    same_dose_for_start = "logical"
   ),
   prototype = prototype(
     model = .DefaultLogisticLogNormalGrouped(),
@@ -941,8 +938,7 @@ DADesign <- function(model, data,
     combo = .Design(),
     first_cohort_mono_only = TRUE,
     same_dose_for_all = TRUE,
-    same_dose_for_start = FALSE,
-    stop_mono_with_combo = FALSE
+    same_dose_for_start = FALSE
   ),
   validity = v_design_grouped,
   contains = "CrmPackClass"
@@ -958,7 +954,8 @@ DADesign <- function(model, data,
 #' @param first_cohort_mono_only (`flag`)\cr see slot definition.
 #' @param same_dose_for_all (`flag`)\cr see slot definition.
 #' @param same_dose_for_start (`flag`)\cr see slot definition.
-#' @param stop_mono_with_combo (`flag`)\cr see slot definition.
+#' @param stop_mono_with_combo (`flag`)\cr whether the mono arm should be stopped when the combo
+#'   arm is stopped (this makes sense when the only real trial objective is the recommended combo dose).
 #' @param ... not used.
 #'
 #' @export
@@ -972,14 +969,20 @@ DesignGrouped <- function(model,
                           same_dose_for_start = FALSE,
                           stop_mono_with_combo = FALSE,
                           ...) {
+  assert_flag(stop_mono_with_combo)
+  assert_class(mono, "Design")
+  if (stop_mono_with_combo) {
+    mono@stopping <- mono@stopping |
+      StoppingExternal(report_label = "Stop Mono with Combo")
+  }
+
   .DesignGrouped(
     model = model,
     mono = mono,
     combo = combo,
     first_cohort_mono_only = first_cohort_mono_only,
     same_dose_for_all = same_dose_for_all,
-    same_dose_for_start = same_dose_for_start,
-    stop_mono_with_combo = stop_mono_with_combo
+    same_dose_for_start = same_dose_for_start
   )
 }
 

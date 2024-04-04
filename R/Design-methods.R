@@ -4680,9 +4680,6 @@ setMethod(
             current$mono$dose <- object@mono@nextBest %>%
               nextBest(current$mono$limit, current$samples, object@model, current$grouped, group = "mono")
             current$mono$dose <- current$mono$dose$value
-            current$mono$stop <- object@mono@stopping %>%
-              stopTrial(current$mono$dose, current$samples, object@model, current$mono$data, group = "mono")
-            current$mono$results <- h_unpack_stopit(current$mono$stop)
           }
           if (!current$combo$stop && (!current$first || !object@first_cohort_mono_only)) {
             current$combo$limit <- if (is.na(current$mono$dose)) {
@@ -4698,24 +4695,16 @@ setMethod(
               stopTrial(current$combo$dose, current$samples, object@model, current$combo$data, group = "combo")
             current$combo$results <- h_unpack_stopit(current$combo$stop)
           }
+          if (!current$mono$stop) {
+            current$mono$stop <- object@mono@stopping %>%
+              stopTrial(
+                current$mono$dose, current$samples, object@model, current$mono$data,
+                group = "mono", external = current$combo$stop
+              )
+            current$mono$results <- h_unpack_stopit(current$mono$stop)
+          }
           if (object@same_dose_for_all && !current$mono$stop && !current$combo$stop) {
             current$mono$dose <- current$combo$dose <- min(current$mono$dose, current$combo$dose)
-          }
-          if (object@stop_mono_with_combo) {
-            if (current$combo$stop && !current$mono$stop) {
-              current$mono$stop <- structure(
-                TRUE,
-                message = "mono stopped because combo stopped",
-                report_label = "mono stopped because combo stopped"
-              )
-              new_result <- TRUE
-            } else {
-              new_result <- FALSE
-            }
-            current$mono$results <- c(
-              current$mono$results,
-              "mono stopped because combo stopped" = new_result
-            )
           }
           if (current$first) {
             current$first <- FALSE
