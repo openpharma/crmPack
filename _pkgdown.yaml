@@ -127,6 +127,7 @@ reference:
       - StoppingAny
       - StoppingTDCIRatio
       - StoppingMaxGainCIRatio
+      - StoppingExternal
       - CohortSize
       - CohortSizeRange
       - CohortSizeDLT

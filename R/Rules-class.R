@@ -1607,8 +1607,7 @@ setClass(
 #' @example examples/Rules-class-StoppingMissingDose.R
 #' @export
 #'
-StoppingMissingDose <- function(
-    report_label = NA_character_) {
+StoppingMissingDose <- function(report_label = NA_character_) {
   report_label <- h_default_if_empty(
     as.character(report_label),
     paste("Stopped because of missing dose")
@@ -2812,6 +2811,47 @@ StoppingOrdinal <- function(grade, rule) {
     StoppingTargetProb(target = c(0.2, 0.35), prob = 0.6)
   )
 }
+
+# StoppingExternal ----
+
+## class ----
+
+#' `StoppingExternal`
+#'
+#' @description `r lifecycle::badge("experimental")`
+#'
+#' [`StoppingExternal`] is the class for stopping based on an external flag.
+#'
+#' @aliases StoppingExternal
+#' @export
+#'
+.StoppingExternal <- setClass(
+  Class = "StoppingExternal",
+  contains = "Stopping"
+)
+
+## constructor ----
+
+#' @rdname StoppingExternal-class
+#' @param report_label (`string` or `NA`)\cr see slot definition.
+#' @example examples/Rules-class-StoppingExternal.R
+#' @export
+#'
+StoppingExternal <- function(report_label = NA_character_) {
+  report_label <- h_default_if_empty(
+    as.character(report_label),
+    paste("Stopped because of external flag")
+  )
+  .StoppingExternal(report_label = report_label)
+}
+
+## default constructor ----
+
+#' @rdname StoppingExternal-class
+#' @note Typically, end users will not use the `.DefaultStoppingExternal()` function.
+#' @export
+#'
+.DefaultStoppingExternal <- StoppingExternal
 
 # CohortSize ----
 

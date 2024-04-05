@@ -11,15 +11,8 @@
 \alias{knit_print.CohortSizeMax}
 \alias{knit_print.CohortSizeMin}
 \alias{knit_print.CohortSizeOrdinal}
-\alias{knit_print.IncrementsRelative}
-\alias{knit_print.IncrementsRelativeDLT}
-\alias{knit_print.IncrementsDoseLevels}
-\alias{knit_print.IncrementsHSRBeta}
-\alias{knit_print.IncrementsMin}
-\alias{knit_print.IncrementsOrdinal}
-\alias{knit_print.IncrementsRelativeParts}
-\alias{knit_print.IncrementsRelativeDLTCurrent}
 \alias{knit_print.GeneralData}
+\alias{knit_print.DataParts}
 \alias{knit_print.DualEndpoint}
 \alias{knit_print.ModelParamsNormal}
 \alias{knit_print.GeneralModel}
@@ -52,6 +45,14 @@
 \alias{knit_print.StoppingPatientsNearDose}
 \alias{knit_print.StoppingCohortsNearDose}
 \alias{knit_print.StoppingMissingDose}
+\alias{knit_print.IncrementsRelative}
+\alias{knit_print.IncrementsRelativeDLT}
+\alias{knit_print.IncrementsDoseLevels}
+\alias{knit_print.IncrementsHSRBeta}
+\alias{knit_print.IncrementsMin}
+\alias{knit_print.IncrementsOrdinal}
+\alias{knit_print.IncrementsRelativeParts}
+\alias{knit_print.IncrementsRelativeDLTCurrent}
 \title{Render a \code{CohortSizeConst} Object}
 \usage{
 \method{knit_print}{CohortSizeConst}(x, ..., asis = TRUE, label = c("participant", "participants"))
@@ -68,23 +69,19 @@
 
 \method{knit_print}{CohortSizeOrdinal}(x, ..., asis = TRUE)
 
-\method{knit_print}{IncrementsRelative}(x, ..., asis = TRUE)
-
-\method{knit_print}{IncrementsRelativeDLT}(x, ..., asis = TRUE)
-
-\method{knit_print}{IncrementsDoseLevels}(x, ..., asis = TRUE)
-
-\method{knit_print}{IncrementsHSRBeta}(x, ..., asis = TRUE)
-
-\method{knit_print}{IncrementsMin}(x, ..., asis = TRUE)
-
-\method{knit_print}{IncrementsOrdinal}(x, ..., asis = TRUE)
-
-\method{knit_print}{IncrementsRelativeParts}(x, ..., asis = TRUE, labels = c("toxicity", "toxicities"))
-
-\method{knit_print}{IncrementsRelativeDLTCurrent}(x, ..., asis = TRUE, labels = c("DLT", "DLTs"))
-
 \method{knit_print}{GeneralData}(
+  x,
+  ...,
+  asis = TRUE,
+  labels = c("participant", "participants"),
+  full_grid = FALSE,
+  summarise = c("none", "dose", "cohort"),
+  summarize = summarise,
+  units = NA,
+  format_func = function(x) x
+)
+
+\method{knit_print}{DataParts}(
   x,
   ...,
   asis = TRUE,
@@ -295,18 +292,34 @@
 \method{knit_print}{StoppingCohortsNearDose}(x, ..., dose_label = "the next best dose", asis = TRUE)
 
 \method{knit_print}{StoppingMissingDose}(x, ..., asis = TRUE)
+  
+\method{knit_print}{IncrementsRelative}(x, ..., asis = TRUE)
+
+\method{knit_print}{IncrementsRelativeDLT}(x, ..., asis = TRUE)
+
+\method{knit_print}{IncrementsDoseLevels}(x, ..., asis = TRUE)
+
+\method{knit_print}{IncrementsHSRBeta}(x, ..., asis = TRUE)
+
+\method{knit_print}{IncrementsMin}(x, ..., asis = TRUE)
+
+\method{knit_print}{IncrementsOrdinal}(x, ..., asis = TRUE)
+
+\method{knit_print}{IncrementsRelativeParts}(x, ..., asis = TRUE, labels = c("toxicity", "toxicities"))
+
+\method{knit_print}{IncrementsRelativeDLTCurrent}(x, ..., asis = TRUE, labels = c("DLT", "DLTs"))
 }
 \arguments{
 \item{x}{(\code{ModelParamsNormal})\cr the object to be rendered}
 
-\item{...}{Not used at present}
+\item{...}{passed to \code{\link[knitr:kable]{knitr::kable()}}}
 
 \item{asis}{(\code{flag})\cr Not used at present}
 
 \item{label}{(\code{character})\cr the term used to label participants}
 
-\item{labels}{(\code{character})\cr How to describe the participants in the trial.
-See Usage Notes below.}
+\item{labels}{(\code{character})\cr The word used to describe toxicities.  See
+Usage Notes below.}
 
 \item{full_grid}{(\code{flag})\cr Should the full dose grid appear in the output table
 or simply those doses for whom at least one evaluable participant is available?
@@ -472,6 +485,25 @@ The by default, the columns are labelled \code{Lower}, \code{Upper} and \verb{Co
 \code{col.names} and \code{caption} in the function call.
 
 
+\code{labels} describes the trial's participants.
+
+It should be a character vector of length 1 or 2.  If of length 2, the first
+element describes a single participant and the second describes all other
+situations.  If of length 1, the character \code{s} is appended to the value
+when the number of participants is not 1.
+The default values of \code{col.names} and \code{caption} vary depending on the summary
+requested. The default values can be overridden by passing \code{col.names} and
+\code{caption} in the function call.
+
+
+\code{params} must be a character vector of length equal to that of \code{x@mean} (and
+\code{x@cov}).  Its values represent the parameters of the model as entries in the
+vector \code{theta}, on the left-hand side of "~" in the definition of the prior.
+If named, names should be valid LaTeX, escaped as usual for R character variables.
+For example, \code{"\\\\alpha"} or \code{"\\\\beta_0"}.  If unnamed, names are constructed by
+pre-pending an escaped backslash to each value provided.
+
+
 The default value of \code{col.names} is \code{c("Min", "Max", "Increment")} and that
 of \code{caption} is \code{"Defined by highest dose administered so far"}.  These
 values can be overridden by passing \code{col.names} and \code{caption} in the function
@@ -501,25 +533,6 @@ It should be a character vector of length 1 or 2.  If of length 2, the first
 element describes a single toxicity and the second describes all other
 toxicity counts.  If of length 1, the character \code{s} is appended to the value
 describing a single toxicity.
-
-
-\code{labels} describes the trial's participants.
-
-It should be a character vector of length 1 or 2.  If of length 2, the first
-element describes a single participant and the second describes all other
-situations.  If of length 1, the character \code{s} is appended to the value
-when the number of participants is not 1.
-The default values of \code{col.names} and \code{caption} vary depending on the summary
-requested. The default values can be overridden by passing \code{col.names} and
-\code{caption} in the function call.
-
-
-\code{params} must be a character vector of length equal to that of \code{x@mean} (and
-\code{x@cov}).  Its values represent the parameters of the model as entries in the
-vector \code{theta}, on the left-hand side of "~" in the definition of the prior.
-If named, names should be valid LaTeX, escaped as usual for R character variables.
-For example, \code{"\\\\alpha"} or \code{"\\\\beta_0"}.  If unnamed, names are constructed by
-pre-pending an escaped backslash to each value provided.
 
 
 \code{label} describes the trial's participants.
@@ -541,6 +554,25 @@ The by default, the columns are labelled \code{Lower}, \code{Upper} and \verb{Co
 \code{col.names} and \code{caption} in the function call.
 
 
+\code{labels} describes the trial's participants.
+
+It should be a character vector of length 1 or 2.  If of length 2, the first
+element describes a single participant and the second describes all other
+situations.  If of length 1, the character \code{s} is appended to the value
+when the number of participants is not 1.
+The default values of \code{col.names} and \code{caption} vary depending on the summary
+requested. The default values can be overridden by passing \code{col.names} and
+\code{caption} in the function call.
+
+
+\code{params} must be a character vector of length equal to that of \code{x@mean} (and
+\code{x@cov}).  Its values represent the parameters of the model as entries in the
+vector \code{theta}, on the left-hand side of "~" in the definition of the prior.
+If named, names should be valid LaTeX, escaped as usual for R character variables.
+For example, \code{"\\\\alpha"} or \code{"\\\\beta_0"}.  If unnamed, names are constructed by
+pre-pending an escaped backslash to each value provided.
+
+
 The default value of \code{col.names} is \code{c("Min", "Max", "Increment")} and that
 of \code{caption} is \code{"Defined by highest dose administered so far"}.  These
 values can be overridden by passing \code{col.names} and \code{caption} in the function
@@ -570,25 +602,6 @@ It should be a character vector of length 1 or 2.  If of length 2, the first
 element describes a single toxicity and the second describes all other
 toxicity counts.  If of length 1, the character \code{s} is appended to the value
 describing a single toxicity.
-
-
-\code{labels} describes the trial's participants.
-
-It should be a character vector of length 1 or 2.  If of length 2, the first
-element describes a single participant and the second describes all other
-situations.  If of length 1, the character \code{s} is appended to the value
-when the number of participants is not 1.
-The default values of \code{col.names} and \code{caption} vary depending on the summary
-requested. The default values can be overridden by passing \code{col.names} and
-\code{caption} in the function call.
-
-
-\code{params} must be a character vector of length equal to that of \code{x@mean} (and
-\code{x@cov}).  Its values represent the parameters of the model as entries in the
-vector \code{theta}, on the left-hand side of "~" in the definition of the prior.
-If named, names should be valid LaTeX, escaped as usual for R character variables.
-For example, \code{"\\\\alpha"} or \code{"\\\\beta_0"}.  If unnamed, names are constructed by
-pre-pending an escaped backslash to each value provided.
 }
 
 \seealso{
