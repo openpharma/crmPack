@@ -2,6 +2,104 @@
 # takes place in test-crmPackClass-methods.R.  This file tests only the
 # CORRECTNESS of output.  For simplicity, use asis = FALSE throughout.
 
+test_that("knit_print.StoppingOrdinal works correctly", {
+  x <- .DefaultStoppingOrdinal()
+  x@report_label <- "ORDINAL"
+  expect_equal(
+    knit_print(x, asis = FALSE),
+    paste0(
+      "ORDINAL: Based on a toxicity grade of 1: If the probability of toxicity ",
+      "at the next best dose is in the range [0.20, 0.35] is at least 0.60."
+    )
+  )
+  x@report_label <- NA_character_
+  expect_equal(
+    knit_print(x, asis = FALSE),
+    paste0(
+      "Based on a toxicity grade of 1: If the probability of toxicity ",
+      "at the next best dose is in the range [0.20, 0.35] is at least 0.60."
+    )
+  )
+})
+
+test_that("knit_print.StoppingAll works correctly", {
+  x <- .DefaultStoppingAll()
+  x@report_label <- "LIST_ALL"
+  expect_equal(
+    knit_print(x, asis = FALSE),
+    paste0(
+      "LIST_ALL: If all of the ",
+      "following rules are `TRUE`:\n\n-  If 3 or more cohorts have been treated.",
+      "\n-  If the probability of toxicity at the next best dose is in the ",
+      "range [0.20, 0.35] is at least 0.50.\n-  If 20 or more participants ",
+      "have been treated."
+    )
+  )
+  x@report_label <- NA_character_
+  expect_equal(
+    knit_print(x, asis = FALSE),
+    paste0(
+      "If all of the ",
+      "following rules are `TRUE`:\n\n-  If 3 or more cohorts have been treated.",
+      "\n-  If the probability of toxicity at the next best dose is in the ",
+      "range [0.20, 0.35] is at least 0.50.\n-  If 20 or more participants ",
+      "have been treated."
+    )
+  )
+})
+
+test_that("knit_print.StoppingAny works correctly", {
+  x <- .DefaultStoppingAny()
+  x@report_label <- "LIST_ANY"
+  expect_equal(
+    knit_print(x, asis = FALSE),
+    paste0(
+      "LIST_ANY: If any of the ",
+      "following rules are `TRUE`:\n\n-  If 3 or more cohorts have been treated.",
+      "\n-  If the probability of toxicity at the next best dose is in the ",
+      "range [0.20, 0.35] is at least 0.50.\n-  If 20 or more participants ",
+      "have been treated."
+    )
+  )
+  x@report_label <- NA_character_
+  expect_equal(
+    knit_print(x, asis = FALSE),
+    paste0(
+      "If any of the ",
+      "following rules are `TRUE`:\n\n-  If 3 or more cohorts have been treated.",
+      "\n-  If the probability of toxicity at the next best dose is in the ",
+      "range [0.20, 0.35] is at least 0.50.\n-  If 20 or more participants ",
+      "have been treated."
+    )
+  )
+})
+
+test_that("knit_print.StoppingList works correctly", {
+  x <- .DefaultStoppingList()
+  x@report_label <- "LIST"
+  expect_equal(
+    knit_print(x, asis = FALSE),
+    paste0(
+      "LIST: If the result of applying the summary function to the ",
+      "following rules is `TRUE`:\n\n-  If 3 or more cohorts have been treated.",
+      "\n-  If the probability of toxicity at the next best dose is in the ",
+      "range [0.20, 0.35] is at least 0.50.\n-  If 20 or more participants ",
+      "have been treated."
+    )
+  )
+  x@report_label <- NA_character_
+  expect_equal(
+    knit_print(x, asis = FALSE),
+    paste0(
+      "If the result of applying the summary function to the ",
+      "following rules is `TRUE`:\n\n-  If 3 or more cohorts have been treated.",
+      "\n-  If the probability of toxicity at the next best dose is in the ",
+      "range [0.20, 0.35] is at least 0.50.\n-  If 20 or more participants ",
+      "have been treated."
+    )
+  )
+})
+
 test_that("knit_print.StoppingMaxGainCIRatio works correctly", {
   expect_equal(
     knit_print(

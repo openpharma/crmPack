@@ -34,7 +34,11 @@
 \alias{knit_print.OneParExpPrior}
 \alias{knit_print.LogisticLogNormalGrouped}
 \alias{knit_print.LogisticLogNormalOrdinal}
+\alias{knit_print.StoppingOrdinal}
 \alias{knit_print.StoppingMaxGainCIRatio}
+\alias{knit_print.StoppingList}
+\alias{knit_print.StoppingAny}
+\alias{knit_print.StoppingAll}
 \alias{knit_print.StoppingTDCIRatio}
 \alias{knit_print.StoppingTargetBiomarker}
 \alias{knit_print.StoppingLowestDoseHSRBeta}
@@ -178,16 +182,29 @@
   asis = TRUE
 )
 
-\method{knit_print}{StoppingMaxGainCIRatio}(
+\method{knit_print}{StoppingOrdinal}(x, ..., asis = TRUE)
+
+\method{knit_print}{StoppingMaxGainCIRatio}(x, ..., asis = TRUE)
+
+\method{knit_print}{StoppingList}(
   x,
   ...,
-  dose_label = "the next best dose",
-  tox_label = "toxicity",
-  fmt_string =
-    paste0("\%sIf the ratio of the upper and lower limits of the posterior 95\%\% ",
-    "credible interval for the probability of \%s at the smaller of the doses ",
-    "given by the end-of-trial TD estimate and the G* estimate is les than or ",
-    "equal to "),
+  preamble =
+    "If the result of applying the summary function to the following rules is `TRUE`:\\n",
+  asis = TRUE
+)
+
+\method{knit_print}{StoppingAny}(
+  x,
+  ...,
+  preamble = "If any of the following rules are `TRUE`:\\n",
+  asis = TRUE
+)
+
+\method{knit_print}{StoppingAll}(
+  x,
+  ...,
+  preamble = "If all of the following rules are `TRUE`:\\n",
   asis = TRUE
 )
 
@@ -318,8 +335,7 @@ numerical values.  Ignored if \code{use_values} is \code{FALSE}.}
 \item{params}{(\code{character})\cr The names of the model parameters.  See Usage
 Notes below.}
 
-\item{preamble}{(\code{character})\cr The text used to introduce the LaTeX representation
-of the model}
+\item{preamble}{(\code{character})\cr the text that introduces the list of rules}
 
 \item{theta}{(\code{character})\cr the LaTeX representation of the theta vector}
 
@@ -342,6 +358,14 @@ A character string containing a LaTeX rendition of the object.
 
 We provide additional utility functions to allow human-friendly rendition of
 crmPack objects in Markdown and Quarto files
+
+\ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#experimental}{\figure{lifecycle-experimental.svg}{options: alt='[Experimental]'}}}{\strong{[Experimental]}}
+
+\ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#experimental}{\figure{lifecycle-experimental.svg}{options: alt='[Experimental]'}}}{\strong{[Experimental]}}
+
+\ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#experimental}{\figure{lifecycle-experimental.svg}{options: alt='[Experimental]'}}}{\strong{[Experimental]}}
+
+\ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#experimental}{\figure{lifecycle-experimental.svg}{options: alt='[Experimental]'}}}{\strong{[Experimental]}}
 
 \ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#experimental}{\figure{lifecycle-experimental.svg}{options: alt='[Experimental]'}}}{\strong{[Experimental]}}
 

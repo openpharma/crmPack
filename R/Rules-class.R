@@ -2569,8 +2569,6 @@ StoppingMaxGainCIRatio <- function(target_ratio = 5,
   )
 }
 
-
-
 # StoppingList ----
 
 ## class ----

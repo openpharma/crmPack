@@ -1,23 +1,43 @@
-# StoppingMissingDose         Done
-# StoppingCohortsNearDose     Done
-# StoppingPatientsNearDose    Done
-# StoppingMinCohorts          Done
-# StoppingMinPatients         Done
-# StoppingTargetProb          Done
-# StoppingMTDdistribution     Done
-# StoppingMTDCV               Done
-# StoppingLowestDoseHSRBeta   Done
-# StoppingTargetBiomarker     Done
-# StoppingSpecificDose        Done
-# StoppingHighestDose         Done
-# StoppingTDCIRatio           Done
-# StoppingMaxGainCIRatio
-# StoppingList
-# StoppingAll
-# StoppingAny
-# StoppingOrdinal
+# Integration with knitr ----
+#'
+#' @description `r lifecycle::badge("experimental")`
+#'
+#' We provide additional utility functions to allow human-friendly rendition of
+#' crmPack objects in Markdown and Quarto files
+#'
+#' @return a character string that represents the object in markdown.
+#' @name knit_print
+NULL
 
-# StoppingTDCIRatio ---
+# StoppingStoppingOrdinal ----
+
+#' @description `r lifecycle::badge("experimental")`
+#' @inheritParams knit_print.StoppingTargetProb
+#' @rdname knit_print
+#' @export
+#' @method knit_print StoppingOrdinal
+knit_print.StoppingOrdinal <- function(
+    x,
+    ...,
+    asis = TRUE
+) {
+  assert_flag(asis)
+
+  rv <- paste0(
+    ifelse(is.na(x@report_label), "", paste0(x@report_label, ": ")),
+    "Based on a toxicity grade of ",
+    x@grade,
+    ": ",
+    paste0(knit_print(x@rule, asis = asis, ...), collapse = "\n")
+  )
+
+  if (asis) {
+    rv <- knitr::asis_output(rv)
+  }
+  rv
+}
+
+# StoppingStoppingMaxGainCIRatio ----
 
 #' @description `r lifecycle::badge("experimental")`
 #' @inheritParams knit_print.StoppingTargetProb
@@ -27,26 +47,15 @@
 knit_print.StoppingMaxGainCIRatio <- function(
     x,
     ...,
-    dose_label = "the next best dose",
-    tox_label = "toxicity",
-    fmt_string = paste0(
-      "%sIf the ratio of the upper and lower limits of the posterior 95%% ",
-      "credible interval for the probability of %s at the smaller of the doses ",
-      "given by the end-of-trial TD estimate and the G* estimate is less than or ",
-      "equal to "
-    ),
     asis = TRUE
 ) {
   assert_flag(asis)
-  assert_character(fmt_string, len = 1, any.missing = FALSE)
-  assert_character(tox_label, len = 1, any.missing = FALSE)
 
   rv <- paste0(
-    sprintf(
-      fmt_string,
-      ifelse(is.na(x@report_label), "", paste0(x@report_label, ": ")),
-      tox_label
-    ),
+    ifelse(is.na(x@report_label), "", paste0(x@report_label, ": ")),
+    "If the ratio of the upper and lower limits of the posterior 95% credible ",
+    "interval for the probability of toxicity at the smaller of the doses given ",
+    "by the end-of-trial TD estimate and the G* estimate is less than or equal to ",
     x@target_ratio,
     "."
   )
@@ -57,7 +66,76 @@ knit_print.StoppingMaxGainCIRatio <- function(
   rv
 }
 
-# StoppingTDCIRatio ---
+# StoppingList ----
+
+#' @description `r lifecycle::badge("experimental")`
+#' @inheritParams knit_print.StoppingTargetProb
+#' @param preamble (`character`)\cr the text that introduces the list of rules
+#' @rdname knit_print
+#' @export
+#' @method knit_print StoppingList
+knit_print.StoppingList <- function(
+    x,
+    ...,
+    preamble = "If the result of applying the summary function to the following rules is `TRUE`:\n",
+    asis = TRUE
+) {
+  assert_flag(asis)
+  assert_character(preamble, len = 1, any.missing = FALSE)
+
+  rules_list <- paste0(
+    lapply(
+      x@stop_list,
+      function(z) {
+        paste0("-  ", knit_print(z, asis = FALSE, ...))
+      }
+    ),
+    collapse = "\n"
+  )
+  rv <- paste0(
+    ifelse(is.na(x@report_label), "", paste0(x@report_label, ": ")),
+    preamble,
+    "\n",
+    rules_list
+  )
+
+  if (asis) {
+    rv <- knitr::asis_output(rv)
+  }
+  rv
+}
+
+# StoppingAny ----
+
+#' @description `r lifecycle::badge("experimental")`
+#' @inheritParams knit_print.StoppingList
+#' @rdname knit_print
+#' @export
+#' @method knit_print StoppingAny
+knit_print.StoppingAny <- function(
+    x,
+    ...,
+    preamble = "If any of the following rules are `TRUE`:\n",
+    asis = TRUE
+) {
+  knit_print.StoppingList(x, ..., preamble = preamble, asis = asis)
+}
+
+#' @description `r lifecycle::badge("experimental")`
+#' @inheritParams knit_print.StoppingList
+#' @rdname knit_print
+#' @export
+#' @method knit_print StoppingAll
+knit_print.StoppingAll <- function(
+    x,
+    ...,
+    preamble = "If all of the following rules are `TRUE`:\n",
+    asis = TRUE
+) {
+  knit_print.StoppingList(x, ..., preamble = preamble, asis = asis)
+}
+
+# StoppingTDCIRatio ----
 
 #' @description `r lifecycle::badge("experimental")`
 #' @inheritParams knit_print.StoppingTargetProb
@@ -97,7 +175,7 @@ knit_print.StoppingTDCIRatio <- function(
   rv
 }
 
-# StoppingTargetBiomarker ---
+# StoppingTargetBiomarker ----
 
 #' @description `r lifecycle::badge("experimental")`
 #' @inheritParams knit_print.StoppingTargetProb
@@ -140,7 +218,7 @@ knit_print.StoppingTargetBiomarker <- function(
   rv
 }
 
-# StoppingLowestDoseHSRBeta ---
+# StoppingLowestDoseHSRBeta ----
 
 #' @description `r lifecycle::badge("experimental")`
 #' @inheritParams knit_print.StoppingTargetProb
@@ -176,7 +254,7 @@ knit_print.StoppingLowestDoseHSRBeta <- function(
   rv
 }
 
-# StoppingMTDCV ---
+# StoppingMTDCV ----
 
 #' @description `r lifecycle::badge("experimental")`
 #' @inheritParams knit_print.StoppingTargetProb
@@ -208,7 +286,7 @@ knit_print.StoppingMTDCV <- function(
   rv
 }
 
-# StoppingMTDdistribution ---
+# StoppingMTDdistribution ----
 
 #' @description `r lifecycle::badge("experimental")`
 #' @inheritParams knit_print.StoppingTargetProb
@@ -243,7 +321,7 @@ knit_print.StoppingMTDdistribution <- function(
   rv
 }
 
-# StoppingHighestDose ---
+# StoppingHighestDose ----
 
 #' @description `r lifecycle::badge("experimental")`
 #' @param asis (`flag`)\cr Not used at present
@@ -268,7 +346,7 @@ knit_print.StoppingHighestDose <- function(
   rv
 }
 
-# StoppingSpecificDose ---
+# StoppingSpecificDose ----
 
 #' @description `r lifecycle::badge("experimental")`
 #' @param asis (`flag`)\cr Not used at present
@@ -291,7 +369,7 @@ knit_print.StoppingSpecificDose <- function(
   )
 }
 
-# StoppingTargetProb ---
+# StoppingTargetProb ----
 
 #' @description `r lifecycle::badge("experimental")`
 #' @param asis (`flag`)\cr Not used at present
@@ -330,7 +408,7 @@ knit_print.StoppingTargetProb <- function(
   rv
 }
 
-# StoppingMinCohorts ---
+# StoppingMinCohorts ----
 
 #' @description `r lifecycle::badge("experimental")`
 #' @param asis (`flag`)\cr Not used at present
@@ -356,7 +434,7 @@ knit_print.StoppingMinCohorts <- function(
   rv
 }
 
-# StoppingMinPatients ---
+# StoppingMinPatients ----
 
 #' @description `r lifecycle::badge("experimental")`
 #' @param label (`character`)\cr the term used to label participants
@@ -385,7 +463,7 @@ knit_print.StoppingMinPatients <- function(
   rv
 }
 
-# StoppingPatientsNearDose ---
+# StoppingPatientsNearDose ----
 
 #' @description `r lifecycle::badge("experimental")`
 #' @param label (`character`)\cr the term used to label participants
@@ -424,7 +502,7 @@ knit_print.StoppingPatientsNearDose <- function(
   rv
 }
 
-# StoppingCohortsNearDose ---
+# StoppingCohortsNearDose ----
 
 #' @description `r lifecycle::badge("experimental")`
 #' @param asis (`flag`)\cr Not used at present
@@ -460,7 +538,7 @@ knit_print.StoppingCohortsNearDose <- function(
   rv
 }
 
-# StoppingMissingDose ---
+# StoppingMissingDose ----
 
 #' @description `r lifecycle::badge("experimental")`
 #' @param asis (`flag`)\cr Not used at present
