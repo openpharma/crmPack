@@ -225,7 +225,8 @@
   dose_label = "the next best dose",
   biomarker_label = "the target biomarker",
   fmt_string =
-    paste0("\%sIf, at \%s, the posterior probability that \%s is in the range (\%.2f, \%.2f)\%s is \%.0f\%\% or more."),
+    paste0("\%sIf, at \%s, the posterior probability that \%s is in the range ",
+    "(\%.2f, \%.2f)\%s is \%.0f\%\% or more."),
   asis = TRUE
 )
 
@@ -244,9 +245,9 @@
   x,
   ...,
   fmt_string =
-    paste0("\%sIf the posterior estimate of the robust coefficient of variation of the MTD, ",
-    "expressed as a percentage, is both greater than zero and less than or ",
-    "equal to \%.0f\%\%."),
+    paste0("\%sIf the posterior estimate of the robust coefficient of variation of ",
+    "the MTD, expressed as a percentage, is both greater than zero and less ",
+    "than or equal to \%.0f\%\%."),
   asis = TRUE
 )
 
@@ -341,6 +342,8 @@ Notes below.}
 
 \item{dose_label}{(\code{character})\cr the term used to describe the target dose}
 
+\item{tox_label}{(\code{character})\cr the term used to describe toxicity}
+
 \item{fmt_string}{(\code{character})\cr the character string that defines the format
 of the output}
 
@@ -352,6 +355,8 @@ a character string that represents the object in markdown.
 The markdown representation of the object, as a character string
 
 A character string containing a LaTeX rendition of the object.
+
+a character string that represents the object in markdown.
 }
 \description{
 \ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#experimental}{\figure{lifecycle-experimental.svg}{options: alt='[Experimental]'}}}{\strong{[Experimental]}}
@@ -404,6 +409,11 @@ crmPack objects in Markdown and Quarto files
 \ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#experimental}{\figure{lifecycle-experimental.svg}{options: alt='[Experimental]'}}}{\strong{[Experimental]}}
 
 \ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#experimental}{\figure{lifecycle-experimental.svg}{options: alt='[Experimental]'}}}{\strong{[Experimental]}}
+
+\ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#experimental}{\figure{lifecycle-experimental.svg}{options: alt='[Experimental]'}}}{\strong{[Experimental]}}
+
+We provide additional utility functions to allow human-friendly rendition of
+crmPack objects in Markdown and Quarto files
 
 \ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#experimental}{\figure{lifecycle-experimental.svg}{options: alt='[Experimental]'}}}{\strong{[Experimental]}}
 

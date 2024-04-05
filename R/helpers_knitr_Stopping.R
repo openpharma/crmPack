@@ -189,7 +189,8 @@ knit_print.StoppingTargetBiomarker <- function(
     dose_label = "the next best dose",
     biomarker_label = "the target biomarker",
     fmt_string = paste0(
-      "%sIf, at %s, the posterior probability that %s is in the range (%.2f, %.2f)%s is %.0f%% or more."
+      "%sIf, at %s, the posterior probability that %s is in the range ",
+      "(%.2f, %.2f)%s is %.0f%% or more."
     ),
     asis = TRUE
 ) {
@@ -265,9 +266,9 @@ knit_print.StoppingMTDCV <- function(
     x,
     ...,
     fmt_string = paste0(
-      "%sIf the posterior estimate of the robust coefficient of variation of the MTD, ",
-      "expressed as a percentage, is both greater than zero and less than or ",
-      "equal to %.0f%%."
+      "%sIf the posterior estimate of the robust coefficient of variation of ",
+      "the MTD, expressed as a percentage, is both greater than zero and less ",
+      "than or equal to %.0f%%."
     ),
     asis = TRUE
 ) {
@@ -376,6 +377,7 @@ knit_print.StoppingSpecificDose <- function(
 #' @param fmt_string (`character`)\cr the character string that defines the format
 #' of the output
 #' @param dose_label (`character`)\cr the term used to describe the target dose
+#' @param tox_label (`character`)\cr the term used to describe toxicity
 #' @rdname knit_print
 #' @export
 #' @method knit_print StoppingTargetProb
