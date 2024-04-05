@@ -2,118 +2,119 @@
 ##' @include Model-class.R
 NULL
 
-# nolint start
-
-##' Convert prior quantiles (lower, median, upper) to logistic (log)
-##' normal model
-##'
-##' This function uses generalized simulated annealing to optimize
-##' a \code{\linkS4class{LogisticNormal}} model to be as close as possible
-##' to the given prior quantiles.
-##'
-##' @param dosegrid the dose grid
-##' @param refDose the reference dose
-##' @param lower the lower quantiles
-##' @param median the medians
-##' @param upper the upper quantiles
-##' @param level the credible level of the (lower, upper) intervals (default:
-##' 0.95)
-##' @param logNormal use the log-normal prior? (not default) otherwise, the
-##' normal prior for the logistic regression coefficients is used
-##' @param parstart starting values for the parameters. By default, these
-##' are determined from the medians supplied.
-##' @param parlower lower bounds on the parameters (intercept alpha and the
-##' slope beta, the corresponding standard deviations and the correlation.)
-##' @param parupper upper bounds on the parameters
-##' @param seed seed for random number generation
-##' @param verbose be verbose? (default)
-##' @param control additional options for the optimisation routine, see
-##' \code{\link[GenSA]{GenSA}} for more details
-##' @return a list with the best approximating \code{model}
-##' (\code{\linkS4class{LogisticNormal}} or
-##' \code{\linkS4class{LogisticLogNormal}}), the resulting \code{quantiles}, the
-##' \code{required} quantiles and the \code{distance} to the required quantiles,
-##' as well as the final \code{parameters} (which could be used for running the
-##' algorithm a second time)
-##'
-##' @importFrom GenSA GenSA
-##' @importFrom mvtnorm rmvnorm
-##' @export
-##' @keywords programming
-Quantiles2LogisticNormal <- function(dosegrid,
-                                     refDose,
-                                     lower,
-                                     median,
-                                     upper,
-                                     level = 0.95,
-                                     logNormal = FALSE,
-                                     parstart = NULL,
-                                     parlower = c(-10, -10, 0, 0, -0.95),
-                                     parupper = c(10, 10, 10, 10, 0.95),
-                                     seed = 12345,
-                                     verbose = TRUE,
-                                     control =
-                                       list(
-                                         threshold.stop = 0.01,
-                                         maxit = 50000,
-                                         temperature = 50000,
-                                         max.time = 600
-                                       )) {
-  ## extracts and checks
-  nDoses <- length(dosegrid)
-
-  assert_flag(logNormal)
-  assert_flag(verbose)
+#' Helper to convert prior quantiles (lower, median, upper) to logistic (log)
+#' normal model
+#'
+#' This function uses generalized simulated annealing to optimize
+#' a [`LogisticNormal`] model to be as close as possible
+#' to the given prior quantiles.
+#'
+#' @param dose_grid (`numeric`)\cr the dose grid to be used (sorted).
+#' @param ref_dose (`number`)\cr the reference dose \eqn{x*} (strictly positive
+#'   number).
+#' @param lower (`numeric`)\cr the lower quantiles.
+#' @param median (`numeric`)\cr the medians.
+#' @param upper (`numeric`)\cr the upper quantiles.
+#' @param level (`number`)\cr the credible level of the (lower, upper) intervals
+#'  (default: 0.95).
+#' @param log_normal (`flag`)\cr if FALSE the normal prior for the logistic
+#' regression coefficients is used (default). If TRUE the log-normal prior
+#' is used.
+#' @param par_start (`numeric`)\cr starting values for the parameters. By
+#'  default, these are determined from the medians supplied.
+#' @param par_lower (`numeric`)\cr lower bounds on the parameters (intercept
+#' alpha, slope beta, the corresponding standard deviations
+#' and the correlation).
+#' @param par_upper (`numeric`)\cr upper bounds on the parameters (intercept
+#' alpha, slope beta, the corresponding standard deviations
+#' and the correlation).
+#' @param seed (`number`)\cr seed for random number generation.
+#' @param verbose (`flag`)\cr if TRUE verbose output (default).
+#' @param control (`list`)\cr additional options for the optimization routine,
+#' see [`GenSA`][GenSA] for more details.
+#' @return a list with the best approximating `model` [`LogisticNormal`] or
+#' [`LogisticLogNormal`], the resulting `quantiles`, the required `quantiles`
+#' and the `distance` to the required quantiles,
+#' as well as the final `parameters` (which could be used for running the
+#' algorithm a second time).
+#'
+#' @importFrom GenSA GenSA
+#' @importFrom mvtnorm rmvnorm
+#'
+#' @keywords internal
+h_quantiles_2_logistic_normal <- function(dose_grid,
+                                          ref_dose,
+                                          lower,
+                                          median,
+                                          upper,
+                                          level = 0.95,
+                                          log_normal = FALSE,
+                                          par_start = NULL,
+                                          par_lower = c(-10, -10, 0, 0, -0.95),
+                                          par_upper = c(10, 10, 10, 10, 0.95),
+                                          seed = 12345,
+                                          verbose = TRUE,
+                                          control =
+                                            list(
+                                              threshold.stop = 0.01,
+                                              maxit = 50000,
+                                              temperature = 50000,
+                                              max.time = 600
+                                            )) {
+  # extracts and checks
+  assert_numeric(dosegrid, unique = TRUE, sorted = TRUE)
+  n_doses <- length(dose_grid)
+  # how to check that it is geater 0?
+  assert_number(ref_dose, lower = 0)
+  assert_numeric(lower, len = n_doses)
+  assert_numeric(median, len = n_doses, sorted = TRUE)
+  assert_numeric(upper, len = n_doses)
+  assert(all(lower < median))
+  assert(all(upper > median))
   assert_probability(level, bounds_closed = FALSE)
-  stopifnot(
-    !is.unsorted(dosegrid, strictly = TRUE),
-    ## the medians must be monotonically increasing:
-    !is.unsorted(median),
-    identical(length(lower), nDoses),
-    identical(length(median), nDoses),
-    identical(length(upper), nDoses),
-    all(lower < median),
-    all(upper > median),
-    identical(length(parlower), 5L),
-    identical(length(parupper), 5L),
-    all(parlower < parstart),
-    all(parstart < parupper)
-  )
+  assert_flag(log_normal)
+  assert_numeric(par_start, len = 5L)
+  assert_numeric(par_lower, len = 5L)
+  assert_numeric(par_upper, len = 5L)
+  assert(all(par_lower < par_start))
+  assert(all(par_start < par_upper))
+  assert_flag(verbose)
+  assert_list(control)
 
-  ## put verbose argument in the control list
+  # put verbose argument in the control list
   control$verbose <- verbose
 
   ## parametrize in terms of the means for the intercept alpha and the
   ## (log) slope beta,
   ## the corresponding standard deviations and the correlation.
   ## Define start values for optimisation:
-  startValues <-
-    if (is.null(parstart)) {
-      ## find approximate means for alpha and slope beta
-      ## from fitting logistic model to medians:
-      startAlphaBeta <-
-        coef(lm(I(logit(median)) ~ I(log(dosegrid / refDose))))
+  start_values <-
+    if (is.null(par_start)) {
+      # Find approximate means for alpha and slope beta
+      # from fitting logistic model to medians.
+      start_alpha_beta <-
+        coef(lm(I(logit(median)) ~ I(log(dose_grid / ref_dose))))
 
-      ## overall starting values:
+      # Overall starting values.
       c(
-        meanAlpha =
-          startAlphaBeta[1],
-        meanBeta =
-          if (logNormal) log(startAlphaBeta[2]) else startAlphaBeta[2],
-        sdAlpha =
+        mean_alpha =
+          start_alpha_beta[1],
+        mean_beta =
+          ifelse(log_normal, log(start_alpha_beta[2]), startAlphaBeta[2]),
+        sd_alpha =
           1,
-        sdBeta =
+        sd_beta =
           1,
         correlation =
           0
       )
     } else {
-      parstart
+      par_start
     }
 
-  ## what is the target function which we want to minimize?
+  # Target function to be minimized.
   target <- function(param) {
-    ## form the mean vector and covariance matrix
+    # Form the mean vector and covariance matrix.
     mean <- param[1:2]
     cov <- matrix(
       c(
@@ -125,42 +126,42 @@ Quantiles2LogisticNormal <- function(dosegrid,
       nrow = 2L, ncol = 2L
     )
 
-    ## simulate from the corresponding normal distribution
+    # Simulate from the corresponding normal distribution.
     set.seed(seed)
-    normalSamples <- mvtnorm::rmvnorm(
+    normal_samples <- mvtnorm::rmvnorm(
       n = 1e4L,
       mean = mean,
       sigma = cov
     )
 
-    ## extract separate coefficients
-    alphaSamples <- normalSamples[, 1L]
-    betaSamples <- if (logNormal) exp(normalSamples[, 2L]) else normalSamples[, 2L]
+    # Extract separate coefficients.
+    alpha_samples <- normal_samples[, 1L]
+    beta_samples <- ifelse(log_normal, exp(normalSamples[, 2L]), normalSamples[, 2L])
 
-    ## and compute resulting quantiles
+    # Compute resulting quantiles.
     quants <- matrix(
-      nrow = length(dosegrid),
+      nrow = length(dose_grid),
       ncol = 3L
     )
     colnames(quants) <- c("lower", "median", "upper")
 
-    ## process each dose after another:
-    for (i in seq_along(dosegrid))
+    # Process each dose after another.
+    for (i in seq_along(dose_grid))
     {
-      ## create samples of the probability
-      probSamples <-
-        plogis(alphaSamples + betaSamples * log(dosegrid[i] / refDose))
+      # Create samples of the probability.
+      prob_samples <-
+        plogis(alpha_samples + beta_samples * log(dose_grid[i] / ref_dose))
 
-      ## compute lower, median and upper quantile
+      # Compute lower, median and upper quantile.
       quants[i, ] <-
-        quantile(probSamples,
+        quantile(prob_samples,
           probs = c((1 - level) / 2, 0.5, (1 + level) / 2)
         )
     }
 
-    ## now we can compute the target value
-    ret <- max(abs(quants - c(lower, median, upper)))
-    return(structure(ret,
+    # Compute the target value.
+    return(structure(
+      max(abs(quants - c(lower, median, upper))),
       mean = mean,
       cov = cov,
       quantiles = quants
@@ -168,45 +169,43 @@ Quantiles2LogisticNormal <- function(dosegrid,
   }
 
   set.seed(seed)
-  ## now optimise the target
-  genSAres <- GenSA::GenSA(
-    par = startValues,
+  # Optimize the target.
+  gen_sa_res <- GenSA::GenSA(
+    par = start_values,
     fn = target,
-    lower = parlower,
-    upper = parupper,
+    lower = par_lower,
+    upper = par_upper,
     control = control
   )
-  distance <- genSAres$value
-  pars <- genSAres$par
-  targetRes <- target(pars)
+  distance <- gen_sa_res$value
+  pars <- gen_sa_res$par
+  target_res <- target(pars)
 
-  ## and construct the model
-  ret <-
-    if (logNormal) {
+  # Construct the model.
+  model <-
+    if (log_normal) {
       LogisticLogNormal(
-        mean = attr(targetRes, "mean"),
-        cov = attr(targetRes, "cov"),
-        ref_dose = refDose
+        mean = attr(target_res, "mean"),
+        cov = attr(target_res, "cov"),
+        ref_dose = ref_dose
       )
     } else {
       LogisticNormal(
-        mean = attr(targetRes, "mean"),
-        cov = attr(targetRes, "cov"),
-        ref_dose = refDose
+        mean = attr(target_res, "mean"),
+        cov = attr(target_res, "cov"),
+        ref_dose = ref_dose
       )
     }
 
   ## return it together with the resulting distance and the quantiles
   return(list(
-    model = ret,
+    model = model,
     parameters = pars,
-    quantiles = attr(targetRes, "quantiles"),
+    quantiles = attr(target_res, "quantiles"),
     required = cbind(lower, median, upper),
     distance = distance
   ))
 }
-
-# nolint end
 
 #' Helper for Minimal Informative Unimodal Beta Distribution
 #'
