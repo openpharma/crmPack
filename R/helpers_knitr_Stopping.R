@@ -9,7 +9,7 @@
 #' @name knit_print
 NULL
 
-# StoppingStoppingOrdinal ----
+# StoppingOrdinal ----
 
 #' @description `r lifecycle::badge("experimental")`
 #' @inheritParams knit_print.StoppingTargetProb
@@ -53,9 +53,11 @@ knit_print.StoppingMaxGainCIRatio <- function(
 
   rv <- paste0(
     ifelse(is.na(x@report_label), "", paste0(x@report_label, ": ")),
-    "If the ratio of the upper and lower limits of the posterior 95% credible ",
-    "interval for the probability of toxicity at the smaller of the doses given ",
-    "by the end-of-trial TD estimate and the G* estimate is less than or equal to ",
+    "If the ratio of the upper to the lower limit of the posterior 95% credible ",
+    "interval for the probability of toxicity at the target dose (the smaller ",
+    "of the MTD for ",
+    100 * x@prob_target,
+    "% target and GStar) is less than or equal to ",
     x@target_ratio,
     "."
   )
@@ -148,8 +150,8 @@ knit_print.StoppingTDCIRatio <- function(
     dose_label = "the next best dose",
     tox_label = "toxicity",
     fmt_string = paste0(
-      "%sIf, at %s, the ratio of the upper and lower limits of the posterior ",
-      "95%% credible interval for the probability of %s is less than or equal to "
+      "%sIf, at %s, the ratio of the upper to the lower limit of the posterior ",
+      "95%% credible interval for %s (targetting %2.0f%%) is less than or equal to "
     ),
     asis = TRUE
 ) {
@@ -163,7 +165,8 @@ knit_print.StoppingTDCIRatio <- function(
       fmt_string,
       ifelse(is.na(x@report_label), "", paste0(x@report_label, ": ")),
       dose_label,
-      tox_label
+      tox_label,
+      100 * x@prob_target
     ),
     x@target_ratio,
     "."
@@ -267,8 +270,7 @@ knit_print.StoppingMTDCV <- function(
     ...,
     fmt_string = paste0(
       "%sIf the posterior estimate of the robust coefficient of variation of ",
-      "the MTD, expressed as a percentage, is both greater than zero and less ",
-      "than or equal to %.0f%%."
+      "the MTD (targetting %2.0f%%), is than or equal to %.0f%%."
     ),
     asis = TRUE
 ) {
@@ -278,6 +280,7 @@ knit_print.StoppingMTDCV <- function(
   rv <- sprintf(
     fmt_string,
     ifelse(is.na(x@report_label), "", paste0(x@report_label, ": ")),
+    100 * x@target,
     100 * x@thresh_cv
   )
 

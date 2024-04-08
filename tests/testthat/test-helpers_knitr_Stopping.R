@@ -107,10 +107,10 @@ test_that("knit_print.StoppingMaxGainCIRatio works correctly", {
       asis = FALSE
     ),
     paste0(
-      "MAXGAINCI_RATIO: If the ratio of the upper and lower limits of the ",
+      "MAXGAINCI_RATIO: If the ratio of the upper to the lower limit of the ",
       "posterior 95% credible interval for the probability of toxicity at the ",
-      "smaller of the doses given by the end-of-trial TD estimate and the G* ",
-      "estimate is less than or equal to 4."
+      "target dose (the smaller of the MTD for 30% target and GStar) ",
+      "is less than or equal to 4."
     )
   )
   expect_equal(
@@ -120,10 +120,10 @@ test_that("knit_print.StoppingMaxGainCIRatio works correctly", {
       dose_label = "the MTD"
     ),
     paste0(
-      "If the ratio of the upper and lower limits of the ",
+      "If the ratio of the upper to the lower limit of the ",
       "posterior 95% credible interval for the probability of toxicity at the ",
-      "smaller of the doses given by the end-of-trial TD estimate and the G* ",
-      "estimate is less than or equal to 4."
+      "target dose (the smaller of the MTD for 30% target and GStar) ",
+      "is less than or equal to 4."
     )
   )
 })
@@ -135,9 +135,9 @@ test_that("knit_print.StoppingTDCIRatio works correctly", {
       asis = FALSE
     ),
     paste0(
-      "TDCI_RATIO: If, at the next best dose, the ratio of the upper and lower ",
-      "limits of the posterior 95% credible interval for the probability of ",
-      "toxicity is less than or equal to 4."
+      "TDCI_RATIO: If, at the next best dose, the ratio of the upper to the lower limit of the ",
+      "posterior 95% credible interval for toxicity (targetting 30%) is less ",
+      "than or equal to 4."
     )
   )
   expect_equal(
@@ -147,9 +147,9 @@ test_that("knit_print.StoppingTDCIRatio works correctly", {
       dose_label = "the MTD"
     ),
     paste0(
-      "If, at the MTD, the ratio of the upper and lower ",
-      "limits of the posterior 95% credible interval for the probability of ",
-      "toxicity is less than or equal to 4."
+      "If, at the MTD, the ratio of the upper to the lower limit of the ",
+      "posterior 95% credible interval for toxicity (targetting 30%) is less ",
+      "than or equal to 4."
     )
   )
 })
@@ -212,9 +212,8 @@ test_that("knit_print.StoppingMTDCV works correctly", {
       asis = FALSE
     ),
     paste0(
-      "MTD_CV: If the posterior estimate of the robust coefficient of variation ",
-      "of the MTD, expressed as a percentage, is both greater than zero and less ",
-      "than or equal to 50%."
+      "MTD_CV: If the posterior estimate of the robust coefficient of ",
+      "variation of the MTD (targetting 33%), is than or equal to 50%."
     )
   )
   expect_equal(
@@ -223,9 +222,8 @@ test_that("knit_print.StoppingMTDCV works correctly", {
       asis = FALSE
     ),
     paste0(
-      "If the posterior estimate of the robust coefficient of variation ",
-      "of the MTD, expressed as a percentage, is both greater than zero and less ",
-      "than or equal to 50%."
+      "If the posterior estimate of the robust coefficient of variation of the ",
+      "MTD (targetting 33%), is than or equal to 50%."
     )
   )
 })

@@ -2467,7 +2467,7 @@ setMethod(
     )
     # CV of MTD expressed as percentage, derived based on MTD posterior samples.
     mtd_cv <- (mad(mtd_samples) / median(mtd_samples)) * 100
-    do_stop <- (mtd_cv <= stopping@thresh_cv) && (mtd_cv >= 0)
+    do_stop <- mtd_cv <= stopping@thresh_cv
 
     msg <- paste(
       "CV of MTD is",
