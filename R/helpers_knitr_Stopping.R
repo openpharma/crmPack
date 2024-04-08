@@ -37,7 +37,7 @@ knit_print.StoppingOrdinal <- function(
   rv
 }
 
-# StoppingStoppingMaxGainCIRatio ----
+# StoppingMaxGainCIRatio ----
 
 #' @description `r lifecycle::badge("experimental")`
 #' @inheritParams knit_print.StoppingTargetProb
