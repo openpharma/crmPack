@@ -79,7 +79,7 @@ Encoding: UTF-8
 Language: en-US
 LazyLoad: yes
 Roxygen: list(markdown = TRUE)
-RoxygenNote: 7.2.3
+RoxygenNote: 7.3.1
 Collate:
     'CrmPackClass-class.R'
     'CrmPackClass-methods.R'
@@ -119,10 +119,10 @@ Collate:
     'crmPack-package.R'
     'helpers_design.R'
     'helpers_knitr_CohortSize.R'
-    'helpers_kintr_Increments.R'
     'helpers_knitr_GeneralData.R'
     'helpers_knitr_GeneralModel.R'
     'helpers_knitr_Stopping.R'
+    'helpers_knitr_Increments.R'
     'helpers_model.R'
     'helpers_samples.R'
     'helpers_simulations.R'

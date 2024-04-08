@@ -996,8 +996,8 @@ setMethod(
       XLevel = x@xLevel
     ) %>%
       tidyr::pivot_wider(
-        names_from = Tox,
-        values_from = Tox,
+        names_from = "Tox",
+        values_from = "Tox",
         names_prefix = "Cat",
         values_fill = 0
       ) %>%

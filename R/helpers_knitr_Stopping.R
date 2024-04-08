@@ -19,8 +19,7 @@ NULL
 knit_print.StoppingOrdinal <- function(
     x,
     ...,
-    asis = TRUE
-) {
+    asis = TRUE) {
   assert_flag(asis)
 
   rv <- paste0(
@@ -47,8 +46,7 @@ knit_print.StoppingOrdinal <- function(
 knit_print.StoppingMaxGainCIRatio <- function(
     x,
     ...,
-    asis = TRUE
-) {
+    asis = TRUE) {
   assert_flag(asis)
 
   rv <- paste0(
@@ -80,8 +78,7 @@ knit_print.StoppingList <- function(
     x,
     ...,
     preamble = "If the result of applying the summary function to the following rules is `TRUE`:\n",
-    asis = TRUE
-) {
+    asis = TRUE) {
   assert_flag(asis)
   assert_character(preamble, len = 1, any.missing = FALSE)
 
@@ -118,8 +115,7 @@ knit_print.StoppingAny <- function(
     x,
     ...,
     preamble = "If any of the following rules are `TRUE`:\n",
-    asis = TRUE
-) {
+    asis = TRUE) {
   knit_print.StoppingList(x, ..., preamble = preamble, asis = asis)
 }
 
@@ -132,8 +128,7 @@ knit_print.StoppingAll <- function(
     x,
     ...,
     preamble = "If all of the following rules are `TRUE`:\n",
-    asis = TRUE
-) {
+    asis = TRUE) {
   knit_print.StoppingList(x, ..., preamble = preamble, asis = asis)
 }
 
@@ -153,8 +148,7 @@ knit_print.StoppingTDCIRatio <- function(
       "%sIf, at %s, the ratio of the upper to the lower limit of the posterior ",
       "95%% credible interval for %s (targetting %2.0f%%) is less than or equal to "
     ),
-    asis = TRUE
-) {
+    asis = TRUE) {
   assert_flag(asis)
   assert_character(fmt_string, len = 1, any.missing = FALSE)
   assert_character(tox_label, len = 1, any.missing = FALSE)
@@ -195,8 +189,7 @@ knit_print.StoppingTargetBiomarker <- function(
       "%sIf, at %s, the posterior probability that %s is in the range ",
       "(%.2f, %.2f)%s is %.0f%% or more."
     ),
-    asis = TRUE
-) {
+    asis = TRUE) {
   assert_flag(asis)
   assert_character(fmt_string, len = 1, any.missing = FALSE)
   assert_character(biomarker_label, len = 1, any.missing = FALSE)
@@ -238,8 +231,7 @@ knit_print.StoppingLowestDoseHSRBeta <- function(
       "lowest dose in the dose grid has a posterior probability of %s of ",
       "%.0f%% or more."
     ),
-    asis = TRUE
-) {
+    asis = TRUE) {
   assert_flag(asis)
   assert_character(fmt_string, len = 1, any.missing = FALSE)
 
@@ -272,8 +264,7 @@ knit_print.StoppingMTDCV <- function(
       "%sIf the posterior estimate of the robust coefficient of variation of ",
       "the MTD (targetting %2.0f%%), is than or equal to %.0f%%."
     ),
-    asis = TRUE
-) {
+    asis = TRUE) {
   assert_flag(asis)
   assert_character(fmt_string, len = 1, any.missing = FALSE)
 
@@ -303,8 +294,7 @@ knit_print.StoppingMTDdistribution <- function(
     fmt_string = "%sIf the mean posterior probability of %s at %.0f%% of %s is at least %4.2f.",
     dose_label = "the next best dose",
     tox_label = "toxicity",
-    asis = TRUE
-) {
+    asis = TRUE) {
   assert_flag(asis)
   assert_character(dose_label, len = 1, any.missing = FALSE)
   assert_character(tox_label, len = 1, any.missing = FALSE)
@@ -336,8 +326,7 @@ knit_print.StoppingHighestDose <- function(
     x,
     ...,
     dose_label = "the highest dose in the dose grid",
-    asis = TRUE
-) {
+    asis = TRUE) {
   rv <- paste0(
     ifelse(is.na(x@report_label), "", paste0(x@report_label, ": ")),
     "If the next best dose is ",
@@ -362,8 +351,7 @@ knit_print.StoppingSpecificDose <- function(
     x,
     ...,
     dose_label = as.character(x@dose),
-    asis = TRUE
-) {
+    asis = TRUE) {
   x@rule@report_label <- x@report_label
   knit_print(
     x@rule,
@@ -390,8 +378,7 @@ knit_print.StoppingTargetProb <- function(
     fmt_string = "%sIf the probability of %s at %s is in the range [%4.2f, %4.2f] is at least %4.2f.",
     dose_label = "the next best dose",
     tox_label = "toxicity",
-    asis = TRUE
-) {
+    asis = TRUE) {
   assert_flag(asis)
   assert_character(dose_label, len = 1, any.missing = FALSE)
   assert_character(tox_label, len = 1, any.missing = FALSE)
@@ -423,8 +410,7 @@ knit_print.StoppingTargetProb <- function(
 knit_print.StoppingMinCohorts <- function(
     x,
     ...,
-    asis = TRUE
-) {
+    asis = TRUE) {
   assert_flag(asis)
 
   rv <- paste0(
@@ -451,8 +437,7 @@ knit_print.StoppingMinPatients <- function(
     x,
     ...,
     label = "participants",
-    asis = TRUE
-) {
+    asis = TRUE) {
   assert_flag(asis)
   assert_character(label, len = 1, any.missing = FALSE)
 
@@ -482,8 +467,7 @@ knit_print.StoppingPatientsNearDose <- function(
     ...,
     dose_label = "the next best dose",
     label = "participants",
-    asis = TRUE
-) {
+    asis = TRUE) {
   assert_flag(asis)
   assert_character(label, len = 1, any.missing = FALSE)
   assert_character(dose_label, len = 1, any.missing = FALSE)
@@ -519,8 +503,7 @@ knit_print.StoppingCohortsNearDose <- function(
     x,
     ...,
     dose_label = "the next best dose",
-    asis = TRUE
-) {
+    asis = TRUE) {
   assert_flag(asis)
   assert_character(dose_label, len = 1, any.missing = FALSE)
 
@@ -553,8 +536,7 @@ knit_print.StoppingCohortsNearDose <- function(
 knit_print.StoppingMissingDose <- function(
     x,
     ...,
-    asis = TRUE
-) {
+    asis = TRUE) {
   assert_flag(asis)
 
   rv <- paste0(

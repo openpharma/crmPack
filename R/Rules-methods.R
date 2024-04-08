@@ -2794,6 +2794,42 @@ setMethod(
   }
 )
 
+## StoppingExternal ----
+
+#' @describeIn stopTrial Stop based on an external flag.
+#'
+#' @description `r lifecycle::badge("experimental")`
+#' @param external (`flag`)\cr whether to stop based on the external
+#'   result or not.
+#'
+#' @aliases stopTrial-StoppingExternal
+#' @example examples/Rules-method-stopTrial-StoppingExternal.R
+#'
+setMethod(
+  f = "stopTrial",
+  signature = signature(
+    stopping = "StoppingExternal",
+    dose = "numeric",
+    samples = "ANY",
+    model = "ANY",
+    data = "ANY"
+  ),
+  definition = function(stopping, dose, samples, model, data, external, ...) {
+    assert_flag(external)
+
+    msg <- paste(
+      "Based on external result",
+      ifelse(external, "stop", "continue")
+    )
+
+    structure(
+      external,
+      message = msg,
+      report_label = stopping@report_label
+    )
+  }
+)
+
 
 ## ============================================================
 

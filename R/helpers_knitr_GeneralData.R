@@ -366,11 +366,11 @@ knit_print.GeneralData <- function(
     }
   }
   param[["x"]] <- xTidy
-  rv <- ifelse(
-    length(x@x) > 0,
-    (do.call(knitr::kable, param)) %>% format_func(),
+  rv <- if (length(x@x) > 0) {
+    paste((do.call(knitr::kable, param)) %>% format_func(), collapse = "\n")
+  } else {
     paste("No", labels[2], "are yet evaluable.\n\n")
-  )
+  }
   rv <- paste0(
     rv,
     paste0(
@@ -389,6 +389,8 @@ knit_print.GeneralData <- function(
   rv
 }
 
+#' @export
+#' @rdname knit_print
 knit_print.DataParts <- function(
     x, ..., asis = TRUE,
     labels = c("participant", "participants"),

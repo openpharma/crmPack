@@ -399,13 +399,13 @@ test_that("knit_print.StoppingMissingDose works correctly", {
       StoppingMissingDose(report_label = "MISSING_DOSE"),
       asis = FALSE
     ),
-    "MISSING_DOSE: If the dose returned by <code>nextBest()</code> is <code>NA</code>, or if the trial includes a placebo dose, the placebo dose." #nolint
+    "MISSING_DOSE: If the dose returned by <code>nextBest()</code> is <code>NA</code>, or if the trial includes a placebo dose, the placebo dose." # nolint
   )
   expect_equal(
     knit_print(
       StoppingMissingDose(),
       asis = FALSE
     ),
-    "If the dose returned by <code>nextBest()</code> is <code>NA</code>, or if the trial includes a placebo dose, the placebo dose." #nolint
+    "If the dose returned by <code>nextBest()</code> is <code>NA</code>, or if the trial includes a placebo dose, the placebo dose." # nolint
   )
 })
