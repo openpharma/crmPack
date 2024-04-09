@@ -432,8 +432,8 @@ test_that("knit_print.StoppingMissingDose works correctly", {
       asis = FALSE
     ),
     paste0(
-    "MISSING_DOSE: If the dose returned by <code>nextBest()</code> is ",
-    "<code>NA</code>, or if the trial includes a placebo dose, the placebo dose."
+      "MISSING_DOSE: If the dose returned by <code>nextBest()</code> is ",
+      "<code>NA</code>, or if the trial includes a placebo dose, the placebo dose."
     )
   )
   expect_equal(
