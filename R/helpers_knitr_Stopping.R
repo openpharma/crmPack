@@ -3,7 +3,7 @@
 #' @description `r lifecycle::badge("experimental")`
 #'
 #' We provide additional utility functions to allow human-friendly rendition of
-#' crmPack objects in Markdown and Quarto files
+#' crmPack objects in Markdown and Quarto files.
 #'
 #' @return a character string that represents the object in markdown.
 #' @name knit_print
