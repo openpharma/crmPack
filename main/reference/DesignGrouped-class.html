@@ -45,12 +45,6 @@ for the combo arm of a joint dose escalation design."><meta property="og:image" 
 <li class="nav-item">
   <a class="nav-link" href="../news/index.html">Changelog</a>
 </li>
-<!-- start dropdown for versions --> <li class="nav-item dropdown">
-        <a href="#" class="nav-link dropdown-toggle"
-          data-bs-toggle="dropdown" role="button"
-          aria-expanded="false" aria-haspopup="true"
-          id="dropdown-versions">Versions</a> <div class="dropdown-menu" aria-labelledby="dropdown-versions"> <a class="dropdown-item" data-toggle="tooltip" title="" href="https://Roche.github.io/crmPack/main">main</a> </div></li>
-<!-- end dropdown for versions -->
 <li class="nav-item dropdown">
   <a href="#" class="nav-link dropdown-toggle" data-bs-toggle="dropdown" role="button" aria-expanded="false" aria-haspopup="true" id="dropdown-reports">Reports</a>
   <div class="dropdown-menu" aria-labelledby="dropdown-reports">
@@ -126,7 +120,8 @@ for the combo arm of a joint dose escalation design.</p>
 
 
 <dt>stop_mono_with_combo</dt>
-<dd><p>(<code>flag</code>)<br> see slot definition.</p></dd>
+<dd><p>(<code>flag</code>)<br> whether the mono arm should be stopped when the combo
+arm is stopped (this makes sense when the only real trial objective is the recommended combo dose).</p></dd>
 
 
 <dt>...</dt>
@@ -181,11 +176,6 @@ doses should be used as the next dose for both mono and combo in all cohorts.</p
 used in the same cohort for the first time, the same dose should be used for both.
 Note that this is different from <code>same_dose_for_all</code> which will always force
 them to be the same. If <code>same_dose_for_all = TRUE</code>, this is therefore ignored. See Details.</p></dd>
-
-
-<dt><code>stop_mono_with_combo</code></dt>
-<dd><p>(<code>flag</code>)<br> whether the mono arm should be stopped when the combo
-arm is stopped (this makes sense when the only real trial objective is the recommended combo dose).</p></dd>
 
 
 </dl></div>
