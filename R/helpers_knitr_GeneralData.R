@@ -234,7 +234,7 @@ h_knit_print_summarise.GeneralData <- function(x, summarise, full_grid, ...) {
     dplyr::group_by(.data[[stringr::str_to_title(summarise)]]) %>%
     dplyr::summarise(
       N = dplyr::n(),
-      ToxCount = sum(.data$Tox)
+      ToxCount = sum(Tox)
     )
   if (full_grid && summarise == "dose") {
     xTidy <- xTidy %>%
@@ -285,7 +285,7 @@ h_knit_print_summarise.DataGrouped <- function(x, summarise, full_grid, ...) {
     dplyr::group_by(.data[[stringr::str_to_title(summarise)]], .data$Group) %>%
     dplyr::summarise(
       N = dplyr::n(),
-      ToxCount = sum(.data$Tox)
+      ToxCount = sum(Tox)
     )
   if (full_grid && summarise == "dose") {
     xTidy <- tidyr::expand_grid(
