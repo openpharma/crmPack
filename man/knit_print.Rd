@@ -40,6 +40,13 @@
 \alias{knit_print.NextBestNCRM}
 \alias{knit_print.NextBestThreePlusThree}
 \alias{knit_print.NextBestDualEndpoint}
+\alias{knit_print.NextBestMinDist}
+\alias{knit_print.NextBestInfTheory}
+\alias{knit_print.NextBestTD}
+\alias{knit_print.NextBestMaxGain}
+\alias{knit_print.NextBestProbMTDLTE}
+\alias{knit_print.NextBestProbMTDMinDist}
+\alias{knit_print.NextBestNCRMLoss}
 \alias{knit_print.StoppingOrdinal}
 \alias{knit_print.StoppingMaxGainCIRatio}
 \alias{knit_print.StoppingList}
@@ -227,6 +234,27 @@
   asis = TRUE
 )
 
+\method{knit_print}{NextBestMinDist}(x, ..., tox_label = "toxicity", asis = TRUE)
+
+\method{knit_print}{NextBestInfTheory}(
+  x,
+  ...,
+  tox_label = "toxicity",
+  citation_text = "Mozgunov & Jaki (2019)",
+  citation_link = "https://doi.org/10.1002/sim.8450",
+  asis = TRUE
+)
+
+\method{knit_print}{NextBestTD}(x, ..., tox_label = "toxicity", asis = TRUE)
+
+\method{knit_print}{NextBestMaxGain}(x, ..., tox_label = "toxicity", asis = TRUE)
+
+\method{knit_print}{NextBestProbMTDLTE}(x, ..., tox_label = "toxicity", asis = TRUE)
+
+\method{knit_print}{NextBestProbMTDMinDist}(x, ..., tox_label = "toxicity", asis = TRUE)
+
+\method{knit_print}{NextBestNCRMLoss}(x, ..., tox_label = "toxicity", asis = TRUE)
+
 \method{knit_print}{StoppingOrdinal}(x, ..., asis = TRUE)
 
 \method{knit_print}{StoppingMaxGainCIRatio}(x, ..., asis = TRUE)
@@ -396,6 +424,10 @@ toxicity rate}
 \item{biomarker_units}{(\code{character})\cr the units in which the biomarker is
 measured}
 
+\item{citation_text}{(\code{character})\cr the text used to cite Mozgunov & Jaki}
+
+\item{citation_link}{(\code{character})\cr the link to Mozgunov & Jaki}
+
 \item{dose_label}{(\code{character})\cr the term used to describe the target dose}
 
 \item{fmt_string}{(\code{character})\cr the character string that defines the format
@@ -468,6 +500,20 @@ crmPack objects in Markdown and Quarto files
 
 We provide additional utility functions to allow human-friendly rendition of
 crmPack objects in Markdown and Quarto files.
+
+\ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#experimental}{\figure{lifecycle-experimental.svg}{options: alt='[Experimental]'}}}{\strong{[Experimental]}}
+
+\ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#experimental}{\figure{lifecycle-experimental.svg}{options: alt='[Experimental]'}}}{\strong{[Experimental]}}
+
+\ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#experimental}{\figure{lifecycle-experimental.svg}{options: alt='[Experimental]'}}}{\strong{[Experimental]}}
+
+\ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#experimental}{\figure{lifecycle-experimental.svg}{options: alt='[Experimental]'}}}{\strong{[Experimental]}}
+
+\ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#experimental}{\figure{lifecycle-experimental.svg}{options: alt='[Experimental]'}}}{\strong{[Experimental]}}
+
+\ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#experimental}{\figure{lifecycle-experimental.svg}{options: alt='[Experimental]'}}}{\strong{[Experimental]}}
+
+\ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#experimental}{\figure{lifecycle-experimental.svg}{options: alt='[Experimental]'}}}{\strong{[Experimental]}}
 
 \ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#experimental}{\figure{lifecycle-experimental.svg}{options: alt='[Experimental]'}}}{\strong{[Experimental]}}
 
@@ -598,6 +644,9 @@ first element of the vector is used to describe a count of 1.  The second
 is used in all other cases.
 
 
+To use a BibTek-style citation, specify (for example) \verb{citation_text = "@MOZGUNOV", citation_link = ""}.
+
+
 \code{label} describes the trial's participants.
 
 It should be a character vector of length 1 or 2.  If of length 2, the first
@@ -674,6 +723,9 @@ converted by adding a second element that is equal to the first, suffixed by \co
 For example, \code{tox_label = "DLT"} becomes \code{tox_label = c("DLT", "DLTs")}.  The
 first element of the vector is used to describe a count of 1.  The second
 is used in all other cases.
+
+
+To use a BibTek-style citation, specify (for example) \verb{citation_text = "@MOZGUNOV", citation_link = ""}.
 }
 
 \seealso{
