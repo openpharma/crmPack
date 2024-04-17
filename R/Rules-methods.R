@@ -3822,19 +3822,20 @@ setMethod(
       Range = "Underdose",
       Lower = 0,
       Upper = x@target[1]
-    ) %>% dplyr::bind_rows(
-      lapply(
-        c("target", "overdose", "unacceptable"),
-        function(nm, obj) {
-          tibble::tibble(
-            Range = stringr::str_to_sentence(nm),
-            Lower = slot(obj, nm)[1],
-            Upper = slot(obj, nm)[2]
-          )
-        },
-        obj = x
-      ) %>% dplyr::bind_rows()
     ) %>%
+      dplyr::bind_rows(
+        lapply(
+          c("target", "overdose", "unacceptable"),
+          function(nm, obj) {
+            tibble::tibble(
+              Range = stringr::str_to_sentence(nm),
+              Lower = slot(obj, nm)[1],
+              Upper = slot(obj, nm)[2]
+            )
+          },
+          obj = x
+        ) %>% dplyr::bind_rows()
+      ) %>%
       add_column(LossCoefficient = x@losses) %>%
       add_column(MaxOverdoseProb = x@max_overdose_prob)
   }
