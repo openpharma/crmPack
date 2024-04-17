@@ -3835,7 +3835,7 @@ setMethod(
         obj = x
       ) %>% dplyr::bind_rows()
     ) %>%
-      add_column(LossCoefficient = x@losses) %>%
-      add_column(MaxOverdoseProb = x@max_overdose_prob)
+    add_column(LossCoefficient = x@losses) %>%
+    add_column(MaxOverdoseProb = x@max_overdose_prob)
   }
 )
