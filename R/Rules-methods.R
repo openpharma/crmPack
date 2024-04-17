@@ -3822,7 +3822,8 @@ setMethod(
       Range = "Underdose",
       Lower = 0,
       Upper = x@target[1]
-    ) %>% dplyr::bind_rows(
+    ) %>%
+    dplyr::bind_rows(
       lapply(
         c("target", "overdose", "unacceptable"),
         function(nm, obj) {
