@@ -47,6 +47,9 @@
 \alias{knit_print.NextBestProbMTDLTE}
 \alias{knit_print.NextBestProbMTDMinDist}
 \alias{knit_print.NextBestNCRMLoss}
+\alias{knit_print.NextBestTDsamples}
+\alias{knit_print.NextBestMaxGainSamples}
+\alias{knit_print.NextBestOrdinal}
 \alias{knit_print.StoppingOrdinal}
 \alias{knit_print.StoppingMaxGainCIRatio}
 \alias{knit_print.StoppingList}
@@ -253,7 +256,22 @@
 
 \method{knit_print}{NextBestProbMTDMinDist}(x, ..., tox_label = "toxicity", asis = TRUE)
 
-\method{knit_print}{NextBestNCRMLoss}(x, ..., tox_label = "toxicity", asis = TRUE)
+\method{knit_print}{NextBestNCRMLoss}(
+  x,
+  ...,
+  tox_label = "toxicity",
+  asis = TRUE,
+  format_func = function(x) {
+     kableExtra::kable_styling(x, bootstrap_options =
+    c("striped", "hover", "condensed"))
+ }
+)
+
+\method{knit_print}{NextBestTDsamples}(x, ..., tox_label = "toxicity", asis = TRUE)
+
+\method{knit_print}{NextBestMaxGainSamples}(x, ..., tox_label = "toxicity", asis = TRUE)
+
+\method{knit_print}{NextBestOrdinal}(x, ..., asis = TRUE)
 
 \method{knit_print}{StoppingOrdinal}(x, ..., asis = TRUE)
 
@@ -432,6 +450,8 @@ measured}
 
 \item{fmt_string}{(\code{character})\cr the character string that defines the format
 of the output}
+
+\item{format_fun}{(\code{function})\cr The function used to format the range table.}
 }
 \value{
 a character string that represents the object in markdown.
@@ -500,6 +520,12 @@ crmPack objects in Markdown and Quarto files
 
 We provide additional utility functions to allow human-friendly rendition of
 crmPack objects in Markdown and Quarto files.
+
+\ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#experimental}{\figure{lifecycle-experimental.svg}{options: alt='[Experimental]'}}}{\strong{[Experimental]}}
+
+\ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#experimental}{\figure{lifecycle-experimental.svg}{options: alt='[Experimental]'}}}{\strong{[Experimental]}}
+
+\ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#experimental}{\figure{lifecycle-experimental.svg}{options: alt='[Experimental]'}}}{\strong{[Experimental]}}
 
 \ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#experimental}{\figure{lifecycle-experimental.svg}{options: alt='[Experimental]'}}}{\strong{[Experimental]}}
 

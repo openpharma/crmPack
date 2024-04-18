@@ -22,9 +22,9 @@ NULL
 # NextBestMaxGain                Done
 # NextBestProbMTDLTE             Done
 # NextBestProbMTDMinDist         Done
-# NextBestOrdinal
-# NextBestNCRMLoss
-# NextBestTDsamples
+# NextBestOrdinal                Done
+# NextBestNCRMLoss               Done
+# NextBestTDsamples              Done
 # NextBestMaxGainSamples
 
 # NextBestMTD ----
@@ -469,19 +469,30 @@ knit_print.NextBestProbMTDMinDist <- function(
 
 #' @description `r lifecycle::badge("experimental")`
 #' @inheritParams knit_print.StoppingTargetProb
+#' @param format_fun (`function`)\cr The function used to format the range table.
 #' @rdname knit_print
 #' @export
 #' @method knit_print NextBestNCRMLoss
 knit_print.NextBestNCRMLoss <- function(
-    x,
-    ...,
-    tox_label = "toxicity",
-    asis = TRUE) {
+  x,
+  ...,
+  tox_label = "toxicity",
+  asis = TRUE,
+  format_func = function(x) {
+    kableExtra::kable_styling(
+      x,
+      bootstrap_options = c("striped", "hover", "condensed")
+    )
+  }
+){
   # Validate
   assert_flag(asis)
   assert_character(tox_label, len = 1, any.missing = FALSE)
 
   # Execute
+  param <- list(...)
+  param[["x"]] <- x %>% tidy() %>% dplyr::select(-MaxOverdoseProb)
+  param[["col.names"]] <- c("Range", "Lower", "Upper", "Loss Coefficient")
   rv <- paste0(
     "The dose recommended for the next cohort will be chosen in the following ",
     "way:\n\n-  First, the chance that the probability of ",
@@ -495,11 +506,125 @@ knit_print.NextBestNCRMLoss <- function(
     " dose ranges is calculated for element of the dose grid.\n",
     "-  Next, the loss associated with each dose is calculated by multiplying ",
     "these probabilities by the corresponding loss coefficient and summing the result.\n",
-    "-  Then ineligible doses are discarded\n",
+    "-  Then ineligible doses, and those with a probability of being in the ",
+    ifelse(
+      length(x@losses) == 3,
+      "overdose range",
+      "overdose or unaccaptable ranges"
+    ),
+    " that is greater than ",
+    x@max_overdose_prob,
+    ", are discarded.\n",
     "-  Finally, the dose level with the smallest loss is selected as the ",
     "recommended dose for the next cohort.\n\n",
-    stringr::str_to_sentence(tox_label),
-    " ranges and loss coefficients are given in the following table:"
+    ifelse(
+      toupper(tox_label) == tox_label,
+      tox_label,
+      stringr::str_to_sentence(tox_label)
+    ),
+    " ranges and loss coefficients are given in the following table:\n\n",
+    paste((do.call(knitr::kable, param)) %>% format_func(), collapse = "\n")
+  )
+
+  if (asis) {
+    rv <- knitr::asis_output(rv)
+  }
+  rv
+}
+
+# NextBestTDsamples ----
+
+#' @description `r lifecycle::badge("experimental")`
+#' @inheritParams knit_print.StoppingTargetProb
+#' @rdname knit_print
+#' @export
+#' @method knit_print NextBestTDsamples
+knit_print.NextBestTDsamples <- function(
+    x,
+    ...,
+    tox_label = "toxicity",
+    asis = TRUE) {
+  # Validate
+  assert_flag(asis)
+  assert_character(tox_label, len = 1, any.missing = FALSE)
+
+  # Execute
+  rv <- paste0(
+    "The dose recommended for the next cohort will be the one which is both ",
+    "eligible and which is the highest dose in the dose grid strictly less than ",
+    "the dose (which may not be in the dose grid) that has a full Bayes posterior ",
+    "estimate of the probability of ",
+    tox_label,
+    " exactly equal to the target ",
+    tox_label,
+    " rate, either during [",
+    x@prob_target_drt,
+    "] or at the end of the trial [",
+    x@prob_target_eot,
+    "]."
+  )
+
+  if (asis) {
+    rv <- knitr::asis_output(rv)
+  }
+  rv
+}
+
+
+# NextBestMaxGainSamples ----
+
+#' @description `r lifecycle::badge("experimental")`
+#' @inheritParams knit_print.StoppingTargetProb
+#' @rdname knit_print
+#' @export
+#' @method knit_print NextBestMaxGainSamples
+knit_print.NextBestMaxGainSamples <- function(
+    x,
+    ...,
+    tox_label = "toxicity",
+    asis = TRUE) {
+  # Validate
+  assert_flag(asis)
+  assert_character(tox_label, len = 1, any.missing = FALSE)
+
+  # Execute
+  rv <- paste0(
+    "The dose recommended for the next cohort will be the one which is closest to ",
+    "Gstar, the dose for which the full Bayes posterior estimate of the probability of ",
+    tox_label,
+    " maximises the gain relative to the target ",
+    tox_label,
+    " rate, either during [",
+    x@prob_target_drt,
+    "] or at the end of the trial [",
+    x@prob_target_eot,
+    "]."
+  )
+
+  if (asis) {
+    rv <- knitr::asis_output(rv)
+  }
+  rv
+}
+
+# NextBestOrdinal ----
+
+#' @description `r lifecycle::badge("experimental")`
+#' @inheritParams knit_print.StoppingTargetProb
+#' @rdname knit_print
+#' @export
+#' @method knit_print NextBestOrdinal
+knit_print.NextBestOrdinal <- function(
+    x,
+    ...,
+    asis = TRUE) {
+  assert_flag(asis)
+
+  rv <- paste0(
+    "Based on a toxicity grade of ",
+    x@grade,
+    ": ",
+    paste0(knit_print(x@rule, asis = asis, ...), collapse = "\n")
   )
 
   if (asis) {
