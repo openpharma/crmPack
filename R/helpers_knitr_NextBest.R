@@ -47,7 +47,7 @@ knit_print.NextBestMTD <- function(
   assert_character(tox_label, len = 1, any.missing = FALSE)
   assert_character(target_label, len = 1, any.missing = FALSE)
 
-  #Execute
+  # Execute
   rv <- paste0(
     "The dose level recommended for the next cohort will be selected as follows:\n\n",
     "-  First, ",
@@ -474,24 +474,25 @@ knit_print.NextBestProbMTDMinDist <- function(
 #' @export
 #' @method knit_print NextBestNCRMLoss
 knit_print.NextBestNCRMLoss <- function(
-  x,
-  ...,
-  tox_label = "toxicity",
-  asis = TRUE,
-  format_func = function(x) {
-    kableExtra::kable_styling(
-      x,
-      bootstrap_options = c("striped", "hover", "condensed")
-    )
-  }
-){
+    x,
+    ...,
+    tox_label = "toxicity",
+    asis = TRUE,
+    format_func = function(x) {
+      kableExtra::kable_styling(
+        x,
+        bootstrap_options = c("striped", "hover", "condensed")
+      )
+    }) {
   # Validate
   assert_flag(asis)
   assert_character(tox_label, len = 1, any.missing = FALSE)
 
   # Execute
   param <- list(...)
-  param[["x"]] <- x %>% tidy() %>% dplyr::select(-MaxOverdoseProb)
+  param[["x"]] <- x %>%
+    tidy() %>%
+    dplyr::select(-MaxOverdoseProb)
   param[["col.names"]] <- c("Range", "Lower", "Upper", "Loss Coefficient")
   rv <- paste0(
     "The dose recommended for the next cohort will be chosen in the following ",
