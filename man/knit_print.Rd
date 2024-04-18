@@ -670,7 +670,7 @@ first element of the vector is used to describe a count of 1.  The second
 is used in all other cases.
 
 
-To use a BibTek-style citation, specify (for example) \verb{citation_text = "@MOZGUNOV", citation_link = ""}.
+To use a BibTeX-style citation, specify (for example) \verb{citation_text = "@MOZGUNOV", citation_link = ""}.
 
 
 \code{label} describes the trial's participants.
@@ -751,7 +751,7 @@ first element of the vector is used to describe a count of 1.  The second
 is used in all other cases.
 
 
-To use a BibTek-style citation, specify (for example) \verb{citation_text = "@MOZGUNOV", citation_link = ""}.
+To use a BibTeX-style citation, specify (for example) \verb{citation_text = "@MOZGUNOV", citation_link = ""}.
 }
 
 \seealso{
