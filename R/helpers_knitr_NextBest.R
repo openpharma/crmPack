@@ -279,7 +279,7 @@ knit_print.NextBestMinDist <- function(
 #' @param citation_text (`character`)\cr the text used to cite Mozgunov & Jaki
 #' @param citation_link (`character`)\cr the link to Mozgunov & Jaki
 #' @section Usage Notes:
-#' To use a BibTek-style citation, specify (for example) `citation_text =
+#' To use a BibTeX-style citation, specify (for example) `citation_text =
 #' "@MOZGUNOV", citation_link = ""`.
 #' @rdname knit_print
 #' @export
