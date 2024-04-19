@@ -12,21 +12,6 @@ NULL
 # These functions will need to be amended to support the report_label slot if
 # and when it is added to NextBest classes
 
-# NextBestMTD                    Done
-# NextBestNCRM                   Done
-# NextBestThreePlusThree         Done
-# NextBestDualEndpoint           Done
-# NextBestMinDist                Done
-# NextBestInfTheory              Done
-# NextBestTD                     Done
-# NextBestMaxGain                Done
-# NextBestProbMTDLTE             Done
-# NextBestProbMTDMinDist         Done
-# NextBestOrdinal                Done
-# NextBestNCRMLoss               Done
-# NextBestTDsamples              Done
-# NextBestMaxGainSamples
-
 # NextBestMTD ----
 
 #' @description `r lifecycle::badge("experimental")`
