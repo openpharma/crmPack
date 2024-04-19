@@ -469,7 +469,8 @@ knit_print.NextBestProbMTDMinDist <- function(
 
 #' @description `r lifecycle::badge("experimental")`
 #' @inheritParams knit_print.StoppingTargetProb
-#' @param format_fun (`function`)\cr The function used to format the range table.
+#' @param format_func (`function`)\cr The function used to format the range table.
+#' @importFrom rlang .data
 #' @rdname knit_print
 #' @export
 #' @method knit_print NextBestNCRMLoss
@@ -492,7 +493,7 @@ knit_print.NextBestNCRMLoss <- function(
   param <- list(...)
   param[["x"]] <- x %>%
     tidy() %>%
-    dplyr::select(-MaxOverdoseProb)
+    dplyr::select(-.data$MaxOverdoseProb)
   param[["col.names"]] <- c("Range", "Lower", "Upper", "Loss Coefficient")
   rv <- paste0(
     "The dose recommended for the next cohort will be chosen in the following ",

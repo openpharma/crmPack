@@ -412,8 +412,7 @@ participant counts by dose and \code{"cohort"} by cohort.}
 measured.  Appended to each value in \code{doseGrid} when \code{knit_print}ed.  The
 default, \code{NA}, omits the units.}
 
-\item{format_func}{(\code{function})\cr The function used to format the participant table.
-The default applies no formatting.  Obvious alternatives include \code{kableExtra::kable_styling}.}
+\item{format_func}{(\code{function})\cr The function used to format the range table.}
 
 \item{use_values}{(\code{flag})\cr print the values associated with hyperparameters,
 or the symbols used to define the hyper-parameters.  That is, for example, mu or 1.}
@@ -450,8 +449,6 @@ measured}
 
 \item{fmt_string}{(\code{character})\cr the character string that defines the format
 of the output}
-
-\item{format_fun}{(\code{function})\cr The function used to format the range table.}
 }
 \value{
 a character string that represents the object in markdown.
