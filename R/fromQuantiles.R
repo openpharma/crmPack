@@ -11,17 +11,17 @@ NULL
 #'
 #' @param dose_grid (`numeric`)\cr the dose grid to be used (sorted).
 #' @param ref_dose (`number`)\cr the reference dose \eqn{x*} (strictly positive
-#'   number).
+#'  number).
 #' @param lower (`numeric`)\cr the lower quantiles.
 #' @param median (`numeric`)\cr the medians.
 #' @param upper (`numeric`)\cr the upper quantiles.
 #' @param level (`number`)\cr the credible level of the (lower, upper) intervals
-#'  (default: 0.95).
+#' (default: 0.95).
 #' @param log_normal (`flag`)\cr if FALSE the normal prior for the logistic
 #' regression coefficients is used (default). If TRUE the log-normal prior
 #' is used.
 #' @param par_start (`numeric`)\cr starting values for the parameters. By
-#'  default, these are determined from the medians supplied.
+#' default, these are determined from the medians supplied.
 #' @param par_lower (`numeric`)\cr lower bounds on the parameters (intercept
 #' alpha, slope beta, the corresponding standard deviations
 #' and the correlation).
@@ -61,10 +61,10 @@ h_quantiles_2_logistic_normal <- function(dose_grid,
                                               temperature = 50000,
                                               max.time = 600
                                             )) {
-  # extracts and checks
-  assert_numeric(dosegrid, unique = TRUE, sorted = TRUE)
+
+  # Extracts and checks.
+  assert_numeric(dose_grid, unique = TRUE, sorted = TRUE, min.len = 2)
   n_doses <- length(dose_grid)
-  # how to check that it is geater 0?
   assert_number(ref_dose, lower = 0)
   assert_numeric(lower, len = n_doses)
   assert_numeric(median, len = n_doses, sorted = TRUE)
@@ -73,7 +73,7 @@ h_quantiles_2_logistic_normal <- function(dose_grid,
   assert(all(upper > median))
   assert_probability(level, bounds_closed = FALSE)
   assert_flag(log_normal)
-  assert_numeric(par_start, len = 5L)
+  assert_numeric(par_start, len = 5L, null.ok = TRUE)
   assert_numeric(par_lower, len = 5L)
   assert_numeric(par_upper, len = 5L)
   assert(all(par_lower < par_start))
@@ -81,13 +81,12 @@ h_quantiles_2_logistic_normal <- function(dose_grid,
   assert_flag(verbose)
   assert_list(control)
 
-  # put verbose argument in the control list
+  # Put verbose argument in the control list.
   control$verbose <- verbose
 
-  ## parametrize in terms of the means for the intercept alpha and the
-  ## (log) slope beta,
-  ## the corresponding standard deviations and the correlation.
-  ## Define start values for optimisation:
+  # Parametrize in terms of the means for the intercept alpha, the
+  # (log) slope beta, the corresponding standard deviations and the correlation.
+  # Define start values for optimisation.
   start_values <-
     if (is.null(par_start)) {
       # Find approximate means for alpha and slope beta
@@ -100,7 +99,7 @@ h_quantiles_2_logistic_normal <- function(dose_grid,
         mean_alpha =
           start_alpha_beta[1],
         mean_beta =
-          ifelse(log_normal, log(start_alpha_beta[2]), startAlphaBeta[2]),
+          ifelse(log_normal, log(start_alpha_beta[2]), start_alpha_beta[2]),
         sd_alpha =
           1,
         sd_beta =
@@ -136,7 +135,7 @@ h_quantiles_2_logistic_normal <- function(dose_grid,
 
     # Extract separate coefficients.
     alpha_samples <- normal_samples[, 1L]
-    beta_samples <- ifelse(log_normal, exp(normalSamples[, 2L]), normalSamples[, 2L])
+    beta_samples <- ifelse(log_normal, exp(normal_samples[, 2L]), normal_samples[, 2L])
 
     # Compute resulting quantiles.
     quants <- matrix(
@@ -146,8 +145,7 @@ h_quantiles_2_logistic_normal <- function(dose_grid,
     colnames(quants) <- c("lower", "median", "upper")
 
     # Process each dose after another.
-    for (i in seq_along(dose_grid))
-    {
+    for (i in seq_along(dose_grid)) {
       # Create samples of the probability.
       prob_samples <-
         plogis(alpha_samples + beta_samples * log(dose_grid[i] / ref_dose))
@@ -197,7 +195,7 @@ h_quantiles_2_logistic_normal <- function(dose_grid,
       )
     }
 
-  ## return it together with the resulting distance and the quantiles
+  # Return model together with the resulting distance and the quantiles.
   return(list(
     model = model,
     parameters = pars,
