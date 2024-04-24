@@ -182,7 +182,6 @@ knit_print.NextBestDualEndpoint <- function(
   assert_character(biomarker_label, len = 1, any.missing = FALSE)
   assert_character(biomarker_units, len = 1, any.missing = FALSE)
 
-  # Execute
   rv <- paste0(
     "The dose recommended for the next cohort will be chosen in the following ",
     "way.  First, doses that are ineligible according to the increments rule ",
