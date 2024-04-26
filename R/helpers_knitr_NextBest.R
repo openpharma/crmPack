@@ -1,5 +1,3 @@
-# Integration with knitr ----
-#'
 #' @description `r lifecycle::badge("experimental")`
 #'
 #' We provide additional utility functions to allow human-friendly rendition of

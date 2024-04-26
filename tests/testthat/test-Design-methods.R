@@ -106,6 +106,7 @@ test_that("simulate-DualDesign produces consistent results", {
   expect_snapshot(result)
 })
 
+# TDSamplesDesign ----
 
 test_that("simulate-TDSamplesDesign produces consistent results", {
   data <- Data(doseGrid = seq(25, 300, 25))
@@ -153,6 +154,8 @@ test_that("simulate-TDSamplesDesign produces consistent results", {
   expect_snapshot(result)
 })
 
+# TDDEsign ----
+
 test_that("simulate-TDDesign produces consistent results", {
   suppressWarnings({
     design <- h_get_design_tddesign()
@@ -193,6 +196,8 @@ test_that("simulate-DualResponsesDesign produces consistent results", {
 
   expect_snapshot(result)
 })
+
+# DualResponsesSamplesDesign ----
 
 test_that("simulate-DualResponsesSamplesDesign produces consistent results", {
   data <- DataDual(doseGrid = seq(25, 300, 25), placebo = FALSE)
@@ -260,6 +265,8 @@ test_that("simulate-DualResponsesSamplesDesign produces consistent results", {
   expect_snapshot(result)
 })
 
+# Design ----
+
 test_that("Test if simulate generate the expected output.", {
   data <- h_get_data(placebo = FALSE)
   model <- h_get_logistic_normal()
@@ -295,6 +302,31 @@ test_that("Test if simulate generate the expected output.", {
   expect_snapshot(sim)
 })
 
+# DADesign ----
+
+test_that("simulate-DADesign produces consistent results", {
+  opts <- McmcOptions(
+    burnin = 100L,
+    step = 2L,
+    samples = 200L,
+    rng_kind = "Mersenne-Twister",
+    rng_seed = 311714
+  )
+  design <- .DefaultDADesign()
+
+  actual <- simulate(
+    design,
+    nsim = 2,
+    seed = 311714,
+    mcmcOptions = opts,
+    truthTox = probFunction(design@model, alpha0 = 2, alpha1 = 3),
+    truthSurv = function(x, onset = 15) {
+      a <- pexp(28, 1 / onset, lower.tail = FALSE)
+      1 - (pexp(x, 1 / onset, lower.tail = FALSE) - a) / (1 - a)
+    }
+  )
+  expect_snapshot(actual)
+})
 
 ## NextBestInfTheory ----
 
