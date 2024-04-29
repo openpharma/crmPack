@@ -154,7 +154,7 @@ test_that("simulate-TDSamplesDesign produces consistent results", {
   expect_snapshot(result)
 })
 
-# TDDEsign ----
+# TDDesign ----
 
 test_that("simulate-TDDesign produces consistent results", {
   suppressWarnings({
