@@ -1,5 +1,5 @@
 pandoc: 3.1.1
-pkgdown: 2.0.7
+pkgdown: 2.0.9
 pkgdown_sha: ~
 articles:
   crmPack-jss-paper: crmPack-jss-paper.html
@@ -14,7 +14,7 @@ articles:
   trial_definition: trial_definition.html
   trial_sanity_checks: trial_sanity_checks.html
   trial_simulation: trial_simulation.html
-last_built: 2024-04-17T14:38Z
+last_built: 2024-04-30T16:56Z
 urls:
   reference: https://roche.github.io/crmPack/main/reference
   article: https://roche.github.io/crmPack/main/articles
