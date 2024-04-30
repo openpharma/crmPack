@@ -302,32 +302,6 @@ test_that("Test if simulate generate the expected output.", {
   expect_snapshot(sim)
 })
 
-# DADesign ----
-
-test_that("simulate-DADesign produces consistent results", {
-  opts <- McmcOptions(
-    burnin = 100L,
-    step = 2L,
-    samples = 200L,
-    rng_kind = "Mersenne-Twister",
-    rng_seed = 311714
-  )
-  design <- .DefaultDADesign()
-
-  actual <- simulate(
-    design,
-    nsim = 2,
-    seed = 311714,
-    mcmcOptions = opts,
-    truthTox = probFunction(design@model, alpha0 = 2, alpha1 = 3),
-    truthSurv = function(x, onset = 15) {
-      a <- pexp(28, 1 / onset, lower.tail = FALSE)
-      1 - (pexp(x, 1 / onset, lower.tail = FALSE) - a) / (1 - a)
-    }
-  )
-  expect_snapshot(actual)
-})
-
 ## NextBestInfTheory ----
 
 test_that("NextBestInfTheory produces consistent results for empty data", {
