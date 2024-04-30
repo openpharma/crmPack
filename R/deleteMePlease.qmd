@@ -1,0 +1,11 @@
+---
+title: "Untitled"
+format: html
+editor: visual
+---
+
+```{r}
+devtools::load_all()
+
+.DefaultRuleDesign()
+```
