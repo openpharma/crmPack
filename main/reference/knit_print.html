@@ -27,7 +27,24 @@ crmPack objects in Markdown and Quarto files
 
 
 We provide additional utility functions to allow human-friendly rendition of
-crmPack objects in Markdown and Quarto files
+crmPack objects in Markdown and Quarto files.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+We provide additional utility functions to allow human-friendly rendition of
+crmPack objects in Markdown and Quarto files.
 
 
 
@@ -45,7 +62,7 @@ crmPack objects in Markdown and Quarto files
 
 
 
-"><title>Render a CohortSizeConst Object — knit_print • crmPack</title><!-- favicons --><link rel="icon" type="image/png" sizes="16x16" href="../favicon-16x16.png"><link rel="icon" type="image/png" sizes="32x32" href="../favicon-32x32.png"><link rel="apple-touch-icon" type="image/png" sizes="180x180" href="../apple-touch-icon.png"><link rel="apple-touch-icon" type="image/png" sizes="120x120" href="../apple-touch-icon-120x120.png"><link rel="apple-touch-icon" type="image/png" sizes="76x76" href="../apple-touch-icon-76x76.png"><link rel="apple-touch-icon" type="image/png" sizes="60x60" href="../apple-touch-icon-60x60.png"><script src="../deps/jquery-3.6.0/jquery-3.6.0.min.js"></script><meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no"><link href="../deps/bootstrap-5.3.1/bootstrap.min.css" rel="stylesheet"><script src="../deps/bootstrap-5.3.1/bootstrap.bundle.min.js"></script><!-- Font Awesome icons --><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.12.1/css/all.min.css" integrity="sha256-mmgLkCYLUQbXn0B1SRqzHar6dCnv9oZFPEC1g1cwlkk=" crossorigin="anonymous"><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.12.1/css/v4-shims.min.css" integrity="sha256-wZjR52fzng1pJHwx4aV2AO3yyTOXrcDW7jBpJtTwVxw=" crossorigin="anonymous"><!-- bootstrap-toc --><script src="https://cdn.jsdelivr.net/gh/afeld/bootstrap-toc@v1.0.1/dist/bootstrap-toc.min.js" integrity="sha256-4veVQbu7//Lk5TSmc7YV48MxtMy98e26cf5MrgZYnwo=" crossorigin="anonymous"></script><!-- headroom.js --><script src="https://cdnjs.cloudflare.com/ajax/libs/headroom/0.11.0/headroom.min.js" integrity="sha256-AsUX4SJE1+yuDu5+mAVzJbuYNPHj/WroHuZ8Ir/CkE0=" crossorigin="anonymous"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/headroom/0.11.0/jQuery.headroom.min.js" integrity="sha256-ZX/yNShbjqsohH1k95liqY9Gd8uOiE1S4vZc+9KQ1K4=" crossorigin="anonymous"></script><!-- clipboard.js --><script src="https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/2.0.6/clipboard.min.js" integrity="sha256-inc5kl9MA1hkeYUt+EC3BhlIgyp/2jDIyBLS6k3UxPI=" crossorigin="anonymous"></script><!-- search --><script src="https://cdnjs.cloudflare.com/ajax/libs/fuse.js/6.4.6/fuse.js" integrity="sha512-zv6Ywkjyktsohkbp9bb45V6tEMoWhzFzXis+LrMehmJZZSys19Yxf1dopHx7WzIKxr5tK2dVcYmaCk2uqdjF4A==" crossorigin="anonymous"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/autocomplete.js/0.38.0/autocomplete.jquery.min.js" integrity="sha512-GU9ayf+66Xx2TmpxqJpliWbT5PiGYxpaG8rfnBEk1LL8l1KGkRShhngwdXK1UgqhAzWpZHSiYPc09/NwDQIGyg==" crossorigin="anonymous"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/mark.js/8.11.1/mark.min.js" integrity="sha512-5CYOlHXGh6QpOFA/TeTylKLWfB3ftPsde7AnmhuitiTX4K5SqCLBeKro6sPS8ilsz1Q4NRx3v8Ko2IBiszzdww==" crossorigin="anonymous"></script><!-- pkgdown --><script src="../pkgdown.js"></script><meta property="og:title" content="Render a CohortSizeConst Object — knit_print"><meta property="og:description" content="
+"><title>Render a CohortSizeConst Object — knit_print • crmPack</title><!-- favicons --><link rel="icon" type="image/png" sizes="16x16" href="../favicon-16x16.png"><link rel="icon" type="image/png" sizes="32x32" href="../favicon-32x32.png"><link rel="apple-touch-icon" type="image/png" sizes="180x180" href="../apple-touch-icon.png"><link rel="apple-touch-icon" type="image/png" sizes="120x120" href="../apple-touch-icon-120x120.png"><link rel="apple-touch-icon" type="image/png" sizes="76x76" href="../apple-touch-icon-76x76.png"><link rel="apple-touch-icon" type="image/png" sizes="60x60" href="../apple-touch-icon-60x60.png"><script src="../deps/jquery-3.6.0/jquery-3.6.0.min.js"></script><meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no"><link href="../deps/bootstrap-5.3.1/bootstrap.min.css" rel="stylesheet"><script src="../deps/bootstrap-5.3.1/bootstrap.bundle.min.js"></script><!-- Font Awesome icons --><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.12.1/css/all.min.css" integrity="sha256-mmgLkCYLUQbXn0B1SRqzHar6dCnv9oZFPEC1g1cwlkk=" crossorigin="anonymous"><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.12.1/css/v4-shims.min.css" integrity="sha256-wZjR52fzng1pJHwx4aV2AO3yyTOXrcDW7jBpJtTwVxw=" crossorigin="anonymous"><!-- bootstrap-toc --><script src="https://cdn.jsdelivr.net/gh/afeld/bootstrap-toc@v1.0.1/dist/bootstrap-toc.min.js" integrity="sha256-4veVQbu7//Lk5TSmc7YV48MxtMy98e26cf5MrgZYnwo=" crossorigin="anonymous"></script><!-- headroom.js --><script src="https://cdnjs.cloudflare.com/ajax/libs/headroom/0.11.0/headroom.min.js" integrity="sha256-AsUX4SJE1+yuDu5+mAVzJbuYNPHj/WroHuZ8Ir/CkE0=" crossorigin="anonymous"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/headroom/0.11.0/jQuery.headroom.min.js" integrity="sha256-ZX/yNShbjqsohH1k95liqY9Gd8uOiE1S4vZc+9KQ1K4=" crossorigin="anonymous"></script><!-- clipboard.js --><script src="https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/2.0.11/clipboard.min.js" integrity="sha512-7O5pXpc0oCRrxk8RUfDYFgn0nO1t+jLuIOQdOMRp4APB7uZ4vSjspzp5y6YDtDs4VzUSTbWzBFZ/LKJhnyFOKw==" crossorigin="anonymous" referrerpolicy="no-referrer"></script><!-- search --><script src="https://cdnjs.cloudflare.com/ajax/libs/fuse.js/6.4.6/fuse.js" integrity="sha512-zv6Ywkjyktsohkbp9bb45V6tEMoWhzFzXis+LrMehmJZZSys19Yxf1dopHx7WzIKxr5tK2dVcYmaCk2uqdjF4A==" crossorigin="anonymous"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/autocomplete.js/0.38.0/autocomplete.jquery.min.js" integrity="sha512-GU9ayf+66Xx2TmpxqJpliWbT5PiGYxpaG8rfnBEk1LL8l1KGkRShhngwdXK1UgqhAzWpZHSiYPc09/NwDQIGyg==" crossorigin="anonymous"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/mark.js/8.11.1/mark.min.js" integrity="sha512-5CYOlHXGh6QpOFA/TeTylKLWfB3ftPsde7AnmhuitiTX4K5SqCLBeKro6sPS8ilsz1Q4NRx3v8Ko2IBiszzdww==" crossorigin="anonymous"></script><!-- pkgdown --><script src="../pkgdown.js"></script><meta property="og:title" content="Render a CohortSizeConst Object — knit_print"><meta property="og:description" content="
 We provide additional utility functions to allow human-friendly rendition of
 crmPack objects in Markdown and Quarto files
 
@@ -73,7 +90,24 @@ crmPack objects in Markdown and Quarto files
 
 
 We provide additional utility functions to allow human-friendly rendition of
-crmPack objects in Markdown and Quarto files
+crmPack objects in Markdown and Quarto files.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+We provide additional utility functions to allow human-friendly rendition of
+crmPack objects in Markdown and Quarto files.
 
 
 
@@ -98,7 +132,7 @@ crmPack objects in Markdown and Quarto files
     <a href="#main" class="visually-hidden-focusable">Skip to contents</a>
     
 
-    <nav class="navbar fixed-top navbar-default navbar-expand-lg bg-primary"><div class="container">
+    <nav class="navbar fixed-top navbar-default navbar-expand-lg bg-primary" data-bs-theme="default"><div class="container">
     
     <a class="navbar-brand me-2" href="../index.html">crmPack</a>
 
@@ -133,12 +167,6 @@ crmPack objects in Markdown and Quarto files
 <li class="nav-item">
   <a class="nav-link" href="../news/index.html">Changelog</a>
 </li>
-<!-- start dropdown for versions --> <li class="nav-item dropdown">
-        <a href="#" class="nav-link dropdown-toggle"
-          data-bs-toggle="dropdown" role="button"
-          aria-expanded="false" aria-haspopup="true"
-          id="dropdown-versions">Versions</a> <div class="dropdown-menu" aria-labelledby="dropdown-versions"> <a class="dropdown-item" data-toggle="tooltip" title="" href="https://Roche.github.io/crmPack/main">main</a> </div></li>
-<!-- end dropdown for versions -->
 <li class="nav-item dropdown">
   <a href="#" class="nav-link dropdown-toggle" data-bs-toggle="dropdown" role="button" aria-expanded="false" aria-haspopup="true" id="dropdown-reports">Reports</a>
   <div class="dropdown-menu" aria-labelledby="dropdown-reports">
@@ -163,7 +191,7 @@ crmPack objects in Markdown and Quarto files
 <div class="row">
   <main id="main" class="col-md-9"><div class="page-header">
       <img src="../logo.png" class="logo" alt=""><h1>Render a <code>CohortSizeConst</code> Object</h1>
-      <small class="dont-index">Source: <a href="https://github.com/roche/crmPack/blob/HEAD/R/helpers_knitr_CohortSize.R" class="external-link"><code>R/helpers_knitr_CohortSize.R</code></a>, <a href="https://github.com/roche/crmPack/blob/HEAD/R/helpers_knitr_GeneralData.R" class="external-link"><code>R/helpers_knitr_GeneralData.R</code></a>, <a href="https://github.com/roche/crmPack/blob/HEAD/R/helpers_knitr_GeneralModel.R" class="external-link"><code>R/helpers_knitr_GeneralModel.R</code></a>, and 2 more</small>
+      <small class="dont-index">Source: <a href="https://github.com/roche/crmPack/blob/HEAD/R/helpers_knitr_CohortSize.R" class="external-link"><code>R/helpers_knitr_CohortSize.R</code></a>, <a href="https://github.com/roche/crmPack/blob/HEAD/R/helpers_knitr_GeneralData.R" class="external-link"><code>R/helpers_knitr_GeneralData.R</code></a>, <a href="https://github.com/roche/crmPack/blob/HEAD/R/helpers_knitr_GeneralModel.R" class="external-link"><code>R/helpers_knitr_GeneralModel.R</code></a>, and 3 more</small>
       <div class="d-none name"><code>knit_print.Rd</code></div>
     </div>
 
@@ -196,7 +224,24 @@ crmPack objects in Markdown and Quarto files</p>
 <p><a href="https://lifecycle.r-lib.org/articles/stages.html#experimental" class="external-link"><img src="figures/lifecycle-experimental.svg" alt="[Experimental]"></a></p>
 <p><a href="https://lifecycle.r-lib.org/articles/stages.html#experimental" class="external-link"><img src="figures/lifecycle-experimental.svg" alt="[Experimental]"></a></p>
 <p>We provide additional utility functions to allow human-friendly rendition of
-crmPack objects in Markdown and Quarto files</p>
+crmPack objects in Markdown and Quarto files.</p>
+<p><a href="https://lifecycle.r-lib.org/articles/stages.html#experimental" class="external-link"><img src="figures/lifecycle-experimental.svg" alt="[Experimental]"></a></p>
+<p><a href="https://lifecycle.r-lib.org/articles/stages.html#experimental" class="external-link"><img src="figures/lifecycle-experimental.svg" alt="[Experimental]"></a></p>
+<p><a href="https://lifecycle.r-lib.org/articles/stages.html#experimental" class="external-link"><img src="figures/lifecycle-experimental.svg" alt="[Experimental]"></a></p>
+<p><a href="https://lifecycle.r-lib.org/articles/stages.html#experimental" class="external-link"><img src="figures/lifecycle-experimental.svg" alt="[Experimental]"></a></p>
+<p><a href="https://lifecycle.r-lib.org/articles/stages.html#experimental" class="external-link"><img src="figures/lifecycle-experimental.svg" alt="[Experimental]"></a></p>
+<p><a href="https://lifecycle.r-lib.org/articles/stages.html#experimental" class="external-link"><img src="figures/lifecycle-experimental.svg" alt="[Experimental]"></a></p>
+<p><a href="https://lifecycle.r-lib.org/articles/stages.html#experimental" class="external-link"><img src="figures/lifecycle-experimental.svg" alt="[Experimental]"></a></p>
+<p><a href="https://lifecycle.r-lib.org/articles/stages.html#experimental" class="external-link"><img src="figures/lifecycle-experimental.svg" alt="[Experimental]"></a></p>
+<p><a href="https://lifecycle.r-lib.org/articles/stages.html#experimental" class="external-link"><img src="figures/lifecycle-experimental.svg" alt="[Experimental]"></a></p>
+<p><a href="https://lifecycle.r-lib.org/articles/stages.html#experimental" class="external-link"><img src="figures/lifecycle-experimental.svg" alt="[Experimental]"></a></p>
+<p><a href="https://lifecycle.r-lib.org/articles/stages.html#experimental" class="external-link"><img src="figures/lifecycle-experimental.svg" alt="[Experimental]"></a></p>
+<p><a href="https://lifecycle.r-lib.org/articles/stages.html#experimental" class="external-link"><img src="figures/lifecycle-experimental.svg" alt="[Experimental]"></a></p>
+<p><a href="https://lifecycle.r-lib.org/articles/stages.html#experimental" class="external-link"><img src="figures/lifecycle-experimental.svg" alt="[Experimental]"></a></p>
+<p><a href="https://lifecycle.r-lib.org/articles/stages.html#experimental" class="external-link"><img src="figures/lifecycle-experimental.svg" alt="[Experimental]"></a></p>
+<p><a href="https://lifecycle.r-lib.org/articles/stages.html#experimental" class="external-link"><img src="figures/lifecycle-experimental.svg" alt="[Experimental]"></a></p>
+<p>We provide additional utility functions to allow human-friendly rendition of
+crmPack objects in Markdown and Quarto files.</p>
 <p><a href="https://lifecycle.r-lib.org/articles/stages.html#experimental" class="external-link"><img src="figures/lifecycle-experimental.svg" alt="[Experimental]"></a></p>
 <p><a href="https://lifecycle.r-lib.org/articles/stages.html#experimental" class="external-link"><img src="figures/lifecycle-experimental.svg" alt="[Experimental]"></a></p>
 <p><a href="https://lifecycle.r-lib.org/articles/stages.html#experimental" class="external-link"><img src="figures/lifecycle-experimental.svg" alt="[Experimental]"></a></p>
@@ -390,6 +435,83 @@ crmPack objects in Markdown and Quarto files</p>
 <span><span class="co"># S3 method for IncrementsRelativeDLTCurrent</span></span>
 <span><span class="fu">knit_print</span><span class="op">(</span><span class="va">x</span>, <span class="va">...</span>, asis <span class="op">=</span> <span class="cn">TRUE</span>, labels <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"DLT"</span>, <span class="st">"DLTs"</span><span class="op">)</span><span class="op">)</span></span>
 <span></span>
+<span><span class="co"># S3 method for NextBestMTD</span></span>
+<span><span class="fu">knit_print</span><span class="op">(</span></span>
+<span>  <span class="va">x</span>,</span>
+<span>  <span class="va">...</span>,</span>
+<span>  target_label <span class="op">=</span> <span class="st">"the 25th centile"</span>,</span>
+<span>  tox_label <span class="op">=</span> <span class="st">"toxicity"</span>,</span>
+<span>  asis <span class="op">=</span> <span class="cn">TRUE</span></span>
+<span><span class="op">)</span></span>
+<span></span>
+<span><span class="co"># S3 method for NextBestNCRM</span></span>
+<span><span class="fu">knit_print</span><span class="op">(</span><span class="va">x</span>, <span class="va">...</span>, tox_label <span class="op">=</span> <span class="st">"toxicity"</span>, asis <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span>
+<span></span>
+<span><span class="co"># S3 method for NextBestThreePlusThree</span></span>
+<span><span class="fu">knit_print</span><span class="op">(</span></span>
+<span>  <span class="va">x</span>,</span>
+<span>  <span class="va">...</span>,</span>
+<span>  tox_label <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"toxicity"</span>, <span class="st">"toxicities"</span><span class="op">)</span>,</span>
+<span>  participant_label <span class="op">=</span> <span class="st">"participant"</span>,</span>
+<span>  asis <span class="op">=</span> <span class="cn">TRUE</span></span>
+<span><span class="op">)</span></span>
+<span></span>
+<span><span class="co"># S3 method for NextBestDualEndpoint</span></span>
+<span><span class="fu">knit_print</span><span class="op">(</span></span>
+<span>  <span class="va">x</span>,</span>
+<span>  <span class="va">...</span>,</span>
+<span>  tox_label <span class="op">=</span> <span class="st">"toxicity"</span>,</span>
+<span>  biomarker_label <span class="op">=</span> <span class="st">"the biomarker"</span>,</span>
+<span>  biomarker_units <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/ifelse.html" class="external-link">ifelse</a></span><span class="op">(</span><span class="va">x</span><span class="op">@</span><span class="va">target_relative</span>, <span class="st">"%"</span>, <span class="st">""</span><span class="op">)</span>,</span>
+<span>  asis <span class="op">=</span> <span class="cn">TRUE</span></span>
+<span><span class="op">)</span></span>
+<span></span>
+<span><span class="co"># S3 method for NextBestMinDist</span></span>
+<span><span class="fu">knit_print</span><span class="op">(</span><span class="va">x</span>, <span class="va">...</span>, tox_label <span class="op">=</span> <span class="st">"toxicity"</span>, asis <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span>
+<span></span>
+<span><span class="co"># S3 method for NextBestInfTheory</span></span>
+<span><span class="fu">knit_print</span><span class="op">(</span></span>
+<span>  <span class="va">x</span>,</span>
+<span>  <span class="va">...</span>,</span>
+<span>  tox_label <span class="op">=</span> <span class="st">"toxicity"</span>,</span>
+<span>  citation_text <span class="op">=</span> <span class="st">"Mozgunov &amp; Jaki (2019)"</span>,</span>
+<span>  citation_link <span class="op">=</span> <span class="st">"https://doi.org/10.1002/sim.8450"</span>,</span>
+<span>  asis <span class="op">=</span> <span class="cn">TRUE</span></span>
+<span><span class="op">)</span></span>
+<span></span>
+<span><span class="co"># S3 method for NextBestTD</span></span>
+<span><span class="fu">knit_print</span><span class="op">(</span><span class="va">x</span>, <span class="va">...</span>, tox_label <span class="op">=</span> <span class="st">"toxicity"</span>, asis <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span>
+<span></span>
+<span><span class="co"># S3 method for NextBestMaxGain</span></span>
+<span><span class="fu">knit_print</span><span class="op">(</span><span class="va">x</span>, <span class="va">...</span>, tox_label <span class="op">=</span> <span class="st">"toxicity"</span>, asis <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span>
+<span></span>
+<span><span class="co"># S3 method for NextBestProbMTDLTE</span></span>
+<span><span class="fu">knit_print</span><span class="op">(</span><span class="va">x</span>, <span class="va">...</span>, tox_label <span class="op">=</span> <span class="st">"toxicity"</span>, asis <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span>
+<span></span>
+<span><span class="co"># S3 method for NextBestProbMTDMinDist</span></span>
+<span><span class="fu">knit_print</span><span class="op">(</span><span class="va">x</span>, <span class="va">...</span>, tox_label <span class="op">=</span> <span class="st">"toxicity"</span>, asis <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span>
+<span></span>
+<span><span class="co"># S3 method for NextBestNCRMLoss</span></span>
+<span><span class="fu">knit_print</span><span class="op">(</span></span>
+<span>  <span class="va">x</span>,</span>
+<span>  <span class="va">...</span>,</span>
+<span>  tox_label <span class="op">=</span> <span class="st">"toxicity"</span>,</span>
+<span>  asis <span class="op">=</span> <span class="cn">TRUE</span>,</span>
+<span>  format_func <span class="op">=</span> <span class="kw">function</span><span class="op">(</span><span class="va">x</span><span class="op">)</span> <span class="op">{</span></span>
+<span>     <span class="fu">kableExtra</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/kableExtra/man/kable_styling.html" class="external-link">kable_styling</a></span><span class="op">(</span><span class="va">x</span>, bootstrap_options <span class="op">=</span></span>
+<span>    <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"striped"</span>, <span class="st">"hover"</span>, <span class="st">"condensed"</span><span class="op">)</span><span class="op">)</span></span>
+<span> <span class="op">}</span></span>
+<span><span class="op">)</span></span>
+<span></span>
+<span><span class="co"># S3 method for NextBestTDsamples</span></span>
+<span><span class="fu">knit_print</span><span class="op">(</span><span class="va">x</span>, <span class="va">...</span>, tox_label <span class="op">=</span> <span class="st">"toxicity"</span>, asis <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span>
+<span></span>
+<span><span class="co"># S3 method for NextBestMaxGainSamples</span></span>
+<span><span class="fu">knit_print</span><span class="op">(</span><span class="va">x</span>, <span class="va">...</span>, tox_label <span class="op">=</span> <span class="st">"toxicity"</span>, asis <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span>
+<span></span>
+<span><span class="co"># S3 method for NextBestOrdinal</span></span>
+<span><span class="fu">knit_print</span><span class="op">(</span><span class="va">x</span>, <span class="va">...</span>, asis <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span>
+<span></span>
 <span><span class="co"># S3 method for StoppingOrdinal</span></span>
 <span><span class="fu">knit_print</span><span class="op">(</span><span class="va">x</span>, <span class="va">...</span>, asis <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span>
 <span></span>
@@ -568,8 +690,7 @@ default, <code>NA</code>, omits the units.</p></dd>
 
 
 <dt>format_func</dt>
-<dd><p>(<code>function</code>)<br> The function used to format the participant table.
-The default applies no formatting.  Obvious alternatives include <code><a href="https://rdrr.io/pkg/kableExtra/man/kable_styling.html" class="external-link">kableExtra::kable_styling</a></code>.</p></dd>
+<dd><p>(<code>function</code>)<br> The function used to format the range table.</p></dd>
 
 
 <dt>use_values</dt>
@@ -599,21 +720,43 @@ Notes below.</p></dd>
 <dd><p>(<code>character</code>)<br> the LaTeX representation of the theta vector</p></dd>
 
 
-<dt>dose_label</dt>
-<dd><p>(<code>character</code>)<br> the term used to describe the target dose</p></dd>
+<dt>target_label</dt>
+<dd><p>(<code>character</code>)<br> the term used to describe the target
+toxicity rate</p></dd>
 
 
 <dt>tox_label</dt>
 <dd><p>(<code>character</code>)<br> the term used to describe toxicity</p></dd>
 
 
-<dt>fmt_string</dt>
-<dd><p>(<code>character</code>)<br> the character string that defines the format
-of the output</p></dd>
+<dt>participant_label</dt>
+<dd><p>(<code>character</code>)<br> The term used to label the participants.</p></dd>
 
 
 <dt>biomarker_label</dt>
 <dd><p>(<code>character</code>)<br> the term used to describe the biomarker</p></dd>
+
+
+<dt>biomarker_units</dt>
+<dd><p>(<code>character</code>)<br> the units in which the biomarker is
+measured</p></dd>
+
+
+<dt>citation_text</dt>
+<dd><p>(<code>character</code>)<br> the text used to cite Mozgunov &amp; Jaki</p></dd>
+
+
+<dt>citation_link</dt>
+<dd><p>(<code>character</code>)<br> the link to Mozgunov &amp; Jaki</p></dd>
+
+
+<dt>dose_label</dt>
+<dd><p>(<code>character</code>)<br> the term used to describe the target dose</p></dd>
+
+
+<dt>fmt_string</dt>
+<dd><p>(<code>character</code>)<br> the character string that defines the format
+of the output</p></dd>
 
 </dl></div>
     <div class="section level2">
@@ -627,6 +770,9 @@ of the output</p></dd>
 
 
 <p>A character string containing a LaTeX rendition of the object.</p>
+
+
+<p>a character string that represents the object in markdown.</p>
 
 
 <p>a character string that represents the object in markdown.</p>
@@ -690,6 +836,16 @@ element describes a single toxicity and the second describes all other
 toxicity counts.  If of length 1, the character <code>s</code> is appended to the value
 describing a single toxicity.</p>
 
+<p>This section describes the use of <code>participant_label</code> and <code>tox_label</code>, collectively
+referred to as <code>label</code>s.
+A <code>label</code> should be a scalar or a vector of length 2.  If a scalar, it is
+converted by adding a second element that is equal to the first, suffixed by <code>s</code>.
+For example, <code>tox_label = "DLT"</code> becomes <code>tox_label = c("DLT", "DLTs")</code>.  The
+first element of the vector is used to describe a count of 1.  The second
+is used in all other cases.</p>
+
+<p>To use a BibTeX-style citation, specify (for example) <code>citation_text = "@MOZGUNOV", citation_link = ""</code>.</p>
+
 <p><code>label</code> describes the trial's participants.</p>
 <p>It should be a character vector of length 1 or 2.  If of length 2, the first
 element describes a <code>cohort_size</code> of 1 and the second describes all other
@@ -744,6 +900,16 @@ can be overridden by passing <code>col.names</code> and <code>caption</code> in 
 element describes a single toxicity and the second describes all other
 toxicity counts.  If of length 1, the character <code>s</code> is appended to the value
 describing a single toxicity.</p>
+
+<p>This section describes the use of <code>participant_label</code> and <code>tox_label</code>, collectively
+referred to as <code>label</code>s.
+A <code>label</code> should be a scalar or a vector of length 2.  If a scalar, it is
+converted by adding a second element that is equal to the first, suffixed by <code>s</code>.
+For example, <code>tox_label = "DLT"</code> becomes <code>tox_label = c("DLT", "DLTs")</code>.  The
+first element of the vector is used to describe a count of 1.  The second
+is used in all other cases.</p>
+
+<p>To use a BibTeX-style citation, specify (for example) <code>citation_text = "@MOZGUNOV", citation_link = ""</code>.</p>
     </div>
     <div class="section level2">
     <h2 id="see-also">See also<a class="anchor" aria-label="anchor" href="#see-also"></a></h2>
@@ -755,11 +921,11 @@ describing a single toxicity.</p>
 
 
     <footer><div class="pkgdown-footer-left">
-  <p></p><p>Developed by Daniel Sabanes Bove, Wai Yin Yeung, Burak Kuersad Guenhan, Giuseppe Palermo, Thomas Jaki, Jiawen Zhu, Ziwei Liao, Dimitris Kontos, Marlene Schulte-Goebel, Doug Kelkhoff, Oliver Boix, Robert Adams, Clara Beck, John Kirkpatrick, F. Hoffmann-La Roche AG, Merck Healthcare KGaA, Bayer AG.</p>
+  <p>Developed by Daniel Sabanes Bove, Wai Yin Yeung, Burak Kuersad Guenhan, Giuseppe Palermo, Thomas Jaki, Jiawen Zhu, Ziwei Liao, Dimitris Kontos, Marlene Schulte-Goebel, Doug Kelkhoff, Oliver Boix, Robert Adams, Clara Beck, John Kirkpatrick, F. Hoffmann-La Roche AG, Merck Healthcare KGaA, Bayer AG.</p>
 </div>
 
 <div class="pkgdown-footer-right">
-  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.7.</p>
+  <p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.9.</p>
 </div>
 
     </footer></div>
