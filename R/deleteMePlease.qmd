@@ -5,7 +5,9 @@ editor: visual
 ---
 
 ```{r}
+#| error: TRUE
+
 devtools::load_all()
 
-.DefaultRuleDesign()
+knit_print(.DefaultDualResponsesDesign(), units = "mg/kg")
 ```

@@ -107,25 +107,89 @@ Registered S3 method overwritten by 'crmPack':
 Type crmPackHelp() to open help browser
 Type crmPackExample() to open example</code></pre>
 </div>
-<div class="sourceCode cell-code" id="cb3"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="fu">.DefaultRuleDesign</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb3"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="fu">knit_print</span>(<span class="fu">.DefaultDualResponsesDesign</span>(), <span class="at">units =</span> <span class="st">"mg/kg"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
-<pre><code>An object of class "NextBestThreePlusThree"
-&lt;S4 Type Object&gt;</code></pre>
+<pre><code>An object of class "Effloglog"
+Slot "eff":
+[1] 1.223 2.513
+
+Slot "eff_dose":
+[1]  25 300
+
+Slot "nu":
+    a     b 
+1.000 0.025 
+
+Slot "use_fixed":
+[1] FALSE
+
+Slot "theta1":
+[1] -1.413005
+
+Slot "theta2":
+[1] 2.254861
+
+Slot "Pcov":
+            (Intercept) log(log(x))
+(Intercept)         NaN         NaN
+log(log(x))         NaN         NaN
+
+Slot "X":
+  (Intercept) log(log(x))
+1           1    1.169032
+2           1    1.741130
+attr(,"assign")
+[1] 0 1
+
+Slot "Y":
+[1] 1.223 2.513
+
+Slot "mu":
+[1] -1.413005  2.254861
+
+Slot "Q":
+            (Intercept) log(log(x))
+(Intercept)    2.000000    2.910162
+log(log(x))    2.910162    4.398168
+
+Slot "const":
+[1] 0
+
+Slot "data":
+An object of class "DataDual"
+Slot "w":
+numeric(0)
+
+Slot "x":
+numeric(0)
+
+Slot "y":
+integer(0)
+
+Slot "doseGrid":
+ [1]  25  50  75 100 125 150 175 200 225 250 275 300
+
+Slot "nGrid":
+[1] 12
+
+Slot "xLevel":
+integer(0)
+
+Slot "placebo":
+[1] FALSE
+
+Slot "ID":
+integer(0)
+
+Slot "cohort":
+integer(0)
+
+Slot "nObs":
+[1] 0</code></pre>
 </div>
-<section id="design" class="level2 cell-output-display">
-<h2 class="anchored" data-anchor-id="design">Design</h2>
-<p>The elements of the design are as follows:</p>
-<section id="nextbest-rule" class="level3">
-<h3 class="anchored" data-anchor-id="nextbest-rule">NextBest rule</h3>
-</section>
-<section id="cohort-size" class="level3">
-<h3 class="anchored" data-anchor-id="cohort-size">Cohort size</h3>
-<p>A constant size of 3 participants. ### Observed data</p>
-<p>No participants are yet evaluable.</p>
-<p>The dose grid is 5, 10, 15, 25, 35, 50 and 80.<br> ### Starting dose</p>
-<p>The starting dose is 5.</p>
-</section>
-</section>
+<div class="cell-output cell-output-error">
+<pre><code>Error in h_markdown_header(section_labels[nm], level + 1L): Assertion on 'text' failed: Contains missing values (element 1).</code></pre>
+</div>
 </div>
 
 </main>

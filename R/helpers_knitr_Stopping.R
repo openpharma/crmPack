@@ -57,7 +57,7 @@ knit_print.StoppingMaxGainCIRatio <- function(
     100 * x@prob_target,
     "% target and GStar) is less than or equal to ",
     x@target_ratio,
-    "."
+    ".\n\n"
   )
 
   if (asis) {
@@ -95,7 +95,8 @@ knit_print.StoppingList <- function(
     ifelse(is.na(x@report_label), "", paste0(x@report_label, ": ")),
     preamble,
     "\n",
-    rules_list
+    rules_list,
+    "\n\n"
   )
 
   if (asis) {
@@ -163,7 +164,7 @@ knit_print.StoppingTDCIRatio <- function(
       100 * x@prob_target
     ),
     x@target_ratio,
-    "."
+    ".\n\n"
   )
 
   if (asis) {
@@ -187,7 +188,7 @@ knit_print.StoppingTargetBiomarker <- function(
     biomarker_label = "the target biomarker",
     fmt_string = paste0(
       "%sIf, at %s, the posterior probability that %s is in the range ",
-      "(%.2f, %.2f)%s is %.0f%% or more."
+      "(%.2f, %.2f)%s is %.0f%% or more.\n\n"
     ),
     asis = TRUE) {
   assert_flag(asis)
@@ -229,7 +230,7 @@ knit_print.StoppingLowestDoseHSRBeta <- function(
     fmt_string = paste0(
       "%sIf, using a Hard Stopping Rule with a prior of Beta(%.0f, %.0f), the ",
       "lowest dose in the dose grid has a posterior probability of %s of ",
-      "%.0f%% or more."
+      "%.0f%% or more.\n\n"
     ),
     asis = TRUE) {
   assert_flag(asis)
@@ -262,7 +263,7 @@ knit_print.StoppingMTDCV <- function(
     ...,
     fmt_string = paste0(
       "%sIf the posterior estimate of the robust coefficient of variation of ",
-      "the MTD (targetting %2.0f%%), is than or equal to %.0f%%."
+      "the MTD (targetting %2.0f%%), is than or equal to %.0f%%.\n\n"
     ),
     asis = TRUE) {
   assert_flag(asis)
@@ -291,7 +292,7 @@ knit_print.StoppingMTDCV <- function(
 knit_print.StoppingMTDdistribution <- function(
     x,
     ...,
-    fmt_string = "%sIf the mean posterior probability of %s at %.0f%% of %s is at least %4.2f.",
+    fmt_string = "%sIf the mean posterior probability of %s at %.0f%% of %s is at least %4.2f.\n\n",
     dose_label = "the next best dose",
     tox_label = "toxicity",
     asis = TRUE) {
@@ -330,7 +331,8 @@ knit_print.StoppingHighestDose <- function(
   rv <- paste0(
     ifelse(is.na(x@report_label), "", paste0(x@report_label, ": ")),
     "If the next best dose is ",
-    dose_label, "."
+    dose_label,
+    ".\n\n"
   )
 
   if (asis) {
@@ -375,7 +377,7 @@ knit_print.StoppingSpecificDose <- function(
 knit_print.StoppingTargetProb <- function(
     x,
     ...,
-    fmt_string = "%sIf the probability of %s at %s is in the range [%4.2f, %4.2f] is at least %4.2f.",
+    fmt_string = "%sIf the probability of %s at %s is in the range [%4.2f, %4.2f] is at least %4.2f.\n\n",
     dose_label = "the next best dose",
     tox_label = "toxicity",
     asis = TRUE) {
@@ -417,7 +419,7 @@ knit_print.StoppingMinCohorts <- function(
     ifelse(is.na(x@report_label), "", paste0(x@report_label, ": ")),
     "If ",
     x@nCohorts,
-    " or more cohorts have been treated."
+    " or more cohorts have been treated.\n\n"
   )
   if (asis) {
     rv <- knitr::asis_output(rv)
@@ -445,7 +447,8 @@ knit_print.StoppingMinPatients <- function(
     ifelse(is.na(x@report_label), "", paste0(x@report_label, ": ")),
     "If ",
     x@nPatients,
-    paste0(" or more ", label, " have been treated.")
+    paste0(" or more ", label, " have been treated."),
+    "\n\n"
   )
   if (asis) {
     rv <- knitr::asis_output(rv)
@@ -483,7 +486,7 @@ knit_print.StoppingPatientsNearDose <- function(
       paste0("within ", x@percentage, "% of ")
     ),
     dose_label,
-    "."
+    ".\n\n"
   )
   if (asis) {
     rv <- knitr::asis_output(rv)
@@ -518,7 +521,7 @@ knit_print.StoppingCohortsNearDose <- function(
       paste0("within ", x@percentage, "% of ")
     ),
     dose_label,
-    "."
+    ".\n\n"
   )
   if (asis) {
     rv <- knitr::asis_output(rv)
@@ -542,7 +545,7 @@ knit_print.StoppingMissingDose <- function(
   rv <- paste0(
     ifelse(is.na(x@report_label), "", paste0(x@report_label, ": ")),
     "If the dose returned by <code>nextBest()</code> is ",
-    "<code>NA</code>, or if the trial includes a placebo dose, the placebo dose."
+    "<code>NA</code>, or if the trial includes a placebo dose, the placebo dose.\n\n"
   )
   if (asis) {
     rv <- knitr::asis_output(rv)

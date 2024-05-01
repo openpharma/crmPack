@@ -24,7 +24,7 @@ h_get_formatted_dosegrid <- function(grid, units = NA) {
     ),
     " and ",
     grid[n],
-    paste0(units, ".")
+    paste0(units, ".\n\n")
   )
 }
 
@@ -381,7 +381,7 @@ knit_print.GeneralData <- function(
       ),
       ""
     ),
-    collpase = "<br>"
+    collpase = "\n"
   )
   if (asis) {
     rv <- knitr::asis_output(rv)

@@ -2,7 +2,7 @@
 % Please edit documentation in R/helpers_knitr_CohortSize.R,
 %   R/helpers_knitr_Design.R, R/helpers_knitr_GeneralData.R,
 %   R/helpers_knitr_GeneralModel.R, R/helpers_knitr_Increments.R,
-%   R/helpers_knitr_Stopping.R
+%   R/helpers_knitr_NextBest.R, R/helpers_knitr_Stopping.R
 \name{knit_print}
 \alias{knit_print}
 \alias{knit_print.CohortSizeConst}
@@ -13,6 +13,10 @@
 \alias{knit_print.CohortSizeMin}
 \alias{knit_print.CohortSizeOrdinal}
 \alias{knit_print.RuleDesign}
+\alias{knit_print.Design}
+\alias{knit_print.DualDesign}
+\alias{knit_print.DADesign}
+\alias{knit_print.TDDesign}
 \alias{knit_print.GeneralData}
 \alias{knit_print.DataParts}
 \alias{knit_print.DualEndpoint}
@@ -37,6 +41,20 @@
 \alias{knit_print.IncrementsOrdinal}
 \alias{knit_print.IncrementsRelativeParts}
 \alias{knit_print.IncrementsRelativeDLTCurrent}
+\alias{knit_print.NextBestMTD}
+\alias{knit_print.NextBestNCRM}
+\alias{knit_print.NextBestThreePlusThree}
+\alias{knit_print.NextBestDualEndpoint}
+\alias{knit_print.NextBestMinDist}
+\alias{knit_print.NextBestInfTheory}
+\alias{knit_print.NextBestTD}
+\alias{knit_print.NextBestMaxGain}
+\alias{knit_print.NextBestProbMTDLTE}
+\alias{knit_print.NextBestProbMTDMinDist}
+\alias{knit_print.NextBestNCRMLoss}
+\alias{knit_print.NextBestTDsamples}
+\alias{knit_print.NextBestMaxGainSamples}
+\alias{knit_print.NextBestOrdinal}
 \alias{knit_print.StoppingOrdinal}
 \alias{knit_print.StoppingMaxGainCIRatio}
 \alias{knit_print.StoppingList}
@@ -71,7 +89,15 @@
 
 \method{knit_print}{CohortSizeOrdinal}(x, ..., asis = TRUE)
 
-\method{knit_print}{RuleDesign}(x, ..., level = 2, asis = TRUE)
+\method{knit_print}{RuleDesign}(x, ..., level = 2L, title = "Design", sections = NA, asis = TRUE)
+
+\method{knit_print}{Design}(x, ..., level = 2L, title = "Design", sections = NA, asis = TRUE)
+
+\method{knit_print}{DualDesign}(x, ..., level = 2L, title = "Design", sections = NA, asis = TRUE)
+
+\method{knit_print}{DADesign}(x, ..., level = 2L, title = "Design", sections = NA, asis = TRUE)
+
+\method{knit_print}{TDDesign}(x, ..., level = 2L, title = "Design", sections = NA, asis = TRUE)
 
 \method{knit_print}{GeneralData}(
   x,
@@ -199,6 +225,69 @@
 
 \method{knit_print}{IncrementsRelativeDLTCurrent}(x, ..., asis = TRUE, labels = c("DLT", "DLTs"))
 
+\method{knit_print}{NextBestMTD}(
+  x,
+  ...,
+  target_label = "the 25th centile",
+  tox_label = "toxicity",
+  asis = TRUE
+)
+
+\method{knit_print}{NextBestNCRM}(x, ..., tox_label = "toxicity", asis = TRUE)
+
+\method{knit_print}{NextBestThreePlusThree}(
+  x,
+  ...,
+  tox_label = c("toxicity", "toxicities"),
+  participant_label = "participant",
+  asis = TRUE
+)
+
+\method{knit_print}{NextBestDualEndpoint}(
+  x,
+  ...,
+  tox_label = "toxicity",
+  biomarker_label = "the biomarker",
+  biomarker_units = ifelse(x@target_relative, "\%", ""),
+  asis = TRUE
+)
+
+\method{knit_print}{NextBestMinDist}(x, ..., tox_label = "toxicity", asis = TRUE)
+
+\method{knit_print}{NextBestInfTheory}(
+  x,
+  ...,
+  tox_label = "toxicity",
+  citation_text = "Mozgunov & Jaki (2019)",
+  citation_link = "https://doi.org/10.1002/sim.8450",
+  asis = TRUE
+)
+
+\method{knit_print}{NextBestTD}(x, ..., tox_label = "toxicity", asis = TRUE)
+
+\method{knit_print}{NextBestMaxGain}(x, ..., tox_label = "toxicity", asis = TRUE)
+
+\method{knit_print}{NextBestProbMTDLTE}(x, ..., tox_label = "toxicity", asis = TRUE)
+
+\method{knit_print}{NextBestProbMTDMinDist}(x, ..., tox_label = "toxicity", asis = TRUE)
+
+\method{knit_print}{NextBestNCRMLoss}(
+  x,
+  ...,
+  tox_label = "toxicity",
+  asis = TRUE,
+  format_func = function(x) {
+     kableExtra::kable_styling(x, bootstrap_options =
+    c("striped", "hover", "condensed"))
+ }
+)
+
+\method{knit_print}{NextBestTDsamples}(x, ..., tox_label = "toxicity", asis = TRUE)
+
+\method{knit_print}{NextBestMaxGainSamples}(x, ..., tox_label = "toxicity", asis = TRUE)
+
+\method{knit_print}{NextBestOrdinal}(x, ..., asis = TRUE)
+
 \method{knit_print}{StoppingOrdinal}(x, ..., asis = TRUE)
 
 \method{knit_print}{StoppingMaxGainCIRatio}(x, ..., asis = TRUE)
@@ -243,7 +332,7 @@
   biomarker_label = "the target biomarker",
   fmt_string =
     paste0("\%sIf, at \%s, the posterior probability that \%s is in the range ",
-    "(\%.2f, \%.2f)\%s is \%.0f\%\% or more."),
+    "(\%.2f, \%.2f)\%s is \%.0f\%\% or more.\\n\\n"),
   asis = TRUE
 )
 
@@ -254,7 +343,7 @@
   fmt_string =
     paste0("\%sIf, using a Hard Stopping Rule with a prior of Beta(\%.0f, \%.0f), the ",
     "lowest dose in the dose grid has a posterior probability of \%s of ",
-    "\%.0f\%\% or more."),
+    "\%.0f\%\% or more.\\n\\n"),
   asis = TRUE
 )
 
@@ -263,7 +352,7 @@
   ...,
   fmt_string =
     paste0("\%sIf the posterior estimate of the robust coefficient of variation of ",
-    "the MTD (targetting \%2.0f\%\%), is than or equal to \%.0f\%\%."),
+    "the MTD (targetting \%2.0f\%\%), is than or equal to \%.0f\%\%.\\n\\n"),
   asis = TRUE
 )
 
@@ -271,7 +360,7 @@
   x,
   ...,
   fmt_string =
-    "\%sIf the mean posterior probability of \%s at \%.0f\%\% of \%s is at least \%4.2f.",
+    "\%sIf the mean posterior probability of \%s at \%.0f\%\% of \%s is at least \%4.2f.\\n\\n",
   dose_label = "the next best dose",
   tox_label = "toxicity",
   asis = TRUE
@@ -290,7 +379,7 @@
   x,
   ...,
   fmt_string =
-    "\%sIf the probability of \%s at \%s is in the range [\%4.2f, \%4.2f] is at least \%4.2f.",
+    "\%sIf the probability of \%s at \%s is in the range [\%4.2f, \%4.2f] is at least \%4.2f.\\n\\n",
   dose_label = "the next best dose",
   tox_label = "toxicity",
   asis = TRUE
@@ -324,6 +413,13 @@
 \item{level}{(\code{positive_integer}) The level of the headings used to separate
 slots.  Must be between 1 and 6.}
 
+\item{title}{(\code{character}) The text of the heading of the section describing
+the design}
+
+\item{sections}{(\code{character}) a named vector of length at least 4 defining
+the headings used to define the sections corresponding to the design's slots.
+The element names must match the Design's slot names.}
+
 \item{labels}{(\code{character})\cr The word used to describe toxicities.  See
 Usage Notes below.}
 
@@ -341,8 +437,7 @@ participant counts by dose and \code{"cohort"} by cohort.}
 measured.  Appended to each value in \code{doseGrid} when \code{knit_print}ed.  The
 default, \code{NA}, omits the units.}
 
-\item{format_func}{(\code{function})\cr The function used to format the participant table.
-The default applies no formatting.  Obvious alternatives include \code{kableExtra::kable_styling}.}
+\item{format_func}{(\code{function})\cr The function used to format the range table.}
 
 \item{use_values}{(\code{flag})\cr print the values associated with hyperparameters,
 or the symbols used to define the hyper-parameters.  That is, for example, mu or 1.}
@@ -359,14 +454,26 @@ Notes below.}
 
 \item{theta}{(\code{character})\cr the LaTeX representation of the theta vector}
 
-\item{dose_label}{(\code{character})\cr the term used to describe the target dose}
+\item{target_label}{(\code{character})\cr the term used to describe the target
+toxicity rate}
 
 \item{tox_label}{(\code{character})\cr the term used to describe toxicity}
 
-\item{fmt_string}{(\code{character})\cr the character string that defines the format
-of the output}
+\item{participant_label}{(\code{character})\cr The term used to label the participants.}
 
 \item{biomarker_label}{(\code{character})\cr the term used to describe the biomarker}
+
+\item{biomarker_units}{(\code{character})\cr the units in which the biomarker is
+measured}
+
+\item{citation_text}{(\code{character})\cr the text used to cite Mozgunov & Jaki}
+
+\item{citation_link}{(\code{character})\cr the link to Mozgunov & Jaki}
+
+\item{dose_label}{(\code{character})\cr the term used to describe the target dose}
+
+\item{fmt_string}{(\code{character})\cr the character string that defines the format
+of the output}
 }
 \value{
 a character string that represents the object in markdown.
@@ -404,6 +511,42 @@ crmPack objects in Markdown and Quarto files
 We provide additional utility functions to allow human-friendly rendition of
 crmPack objects in Markdown and Quarto files.  This file contains methods for
 all design classes, not just those that are direct descendants of \code{Design}.
+
+\ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#experimental}{\figure{lifecycle-experimental.svg}{options: alt='[Experimental]'}}}{\strong{[Experimental]}}
+
+\ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#experimental}{\figure{lifecycle-experimental.svg}{options: alt='[Experimental]'}}}{\strong{[Experimental]}}
+
+\ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#experimental}{\figure{lifecycle-experimental.svg}{options: alt='[Experimental]'}}}{\strong{[Experimental]}}
+
+\ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#experimental}{\figure{lifecycle-experimental.svg}{options: alt='[Experimental]'}}}{\strong{[Experimental]}}
+
+\ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#experimental}{\figure{lifecycle-experimental.svg}{options: alt='[Experimental]'}}}{\strong{[Experimental]}}
+
+\ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#experimental}{\figure{lifecycle-experimental.svg}{options: alt='[Experimental]'}}}{\strong{[Experimental]}}
+
+\ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#experimental}{\figure{lifecycle-experimental.svg}{options: alt='[Experimental]'}}}{\strong{[Experimental]}}
+
+\ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#experimental}{\figure{lifecycle-experimental.svg}{options: alt='[Experimental]'}}}{\strong{[Experimental]}}
+
+\ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#experimental}{\figure{lifecycle-experimental.svg}{options: alt='[Experimental]'}}}{\strong{[Experimental]}}
+
+\ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#experimental}{\figure{lifecycle-experimental.svg}{options: alt='[Experimental]'}}}{\strong{[Experimental]}}
+
+\ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#experimental}{\figure{lifecycle-experimental.svg}{options: alt='[Experimental]'}}}{\strong{[Experimental]}}
+
+\ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#experimental}{\figure{lifecycle-experimental.svg}{options: alt='[Experimental]'}}}{\strong{[Experimental]}}
+
+\ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#experimental}{\figure{lifecycle-experimental.svg}{options: alt='[Experimental]'}}}{\strong{[Experimental]}}
+
+\ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#experimental}{\figure{lifecycle-experimental.svg}{options: alt='[Experimental]'}}}{\strong{[Experimental]}}
+
+\ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#experimental}{\figure{lifecycle-experimental.svg}{options: alt='[Experimental]'}}}{\strong{[Experimental]}}
+
+\ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#experimental}{\figure{lifecycle-experimental.svg}{options: alt='[Experimental]'}}}{\strong{[Experimental]}}
+
+\ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#experimental}{\figure{lifecycle-experimental.svg}{options: alt='[Experimental]'}}}{\strong{[Experimental]}}
+
+\ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#experimental}{\figure{lifecycle-experimental.svg}{options: alt='[Experimental]'}}}{\strong{[Experimental]}}
 
 \ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#experimental}{\figure{lifecycle-experimental.svg}{options: alt='[Experimental]'}}}{\strong{[Experimental]}}
 
@@ -551,6 +694,18 @@ toxicity counts.  If of length 1, the character \code{s} is appended to the valu
 describing a single toxicity.
 
 
+This section describes the use of \code{participant_label} and \code{tox_label}, collectively
+referred to as \code{label}s.
+A \code{label} should be a scalar or a vector of length 2.  If a scalar, it is
+converted by adding a second element that is equal to the first, suffixed by \code{s}.
+For example, \code{tox_label = "DLT"} becomes \code{tox_label = c("DLT", "DLTs")}.  The
+first element of the vector is used to describe a count of 1.  The second
+is used in all other cases.
+
+
+To use a BibTeX-style citation, specify (for example) \verb{citation_text = "@MOZGUNOV", citation_link = ""}.
+
+
 \code{label} describes the trial's participants.
 
 It should be a character vector of length 1 or 2.  If of length 2, the first
@@ -618,6 +773,18 @@ It should be a character vector of length 1 or 2.  If of length 2, the first
 element describes a single toxicity and the second describes all other
 toxicity counts.  If of length 1, the character \code{s} is appended to the value
 describing a single toxicity.
+
+
+This section describes the use of \code{participant_label} and \code{tox_label}, collectively
+referred to as \code{label}s.
+A \code{label} should be a scalar or a vector of length 2.  If a scalar, it is
+converted by adding a second element that is equal to the first, suffixed by \code{s}.
+For example, \code{tox_label = "DLT"} becomes \code{tox_label = c("DLT", "DLTs")}.  The
+first element of the vector is used to describe a count of 1.  The second
+is used in all other cases.
+
+
+To use a BibTeX-style citation, specify (for example) \verb{citation_text = "@MOZGUNOV", citation_link = ""}.
 }
 
 \seealso{

@@ -38,7 +38,7 @@ knit_print.CohortSizeConst <- function(x, ..., asis = TRUE, label = c("participa
   if (length(label) == 1) {
     label[2] <- paste0(label[1], "s")
   }
-  rv <- paste0("A constant size of ", x@size, " ", label[ifelse(x@size == 1, 1, 2)], ".")
+  rv <- paste0("A constant size of ", x@size, " ", label[ifelse(x@size == 1, 1, 2)], ".\n\n")
   if (asis) {
     rv <- knitr::asis_output(rv)
   }
