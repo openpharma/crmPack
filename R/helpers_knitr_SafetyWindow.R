@@ -209,7 +209,7 @@ knit_print.SafetyWindowSize <- function(
     time_unit[2] <- paste0(time_unit[1], "s")
   }
 
-  if (length(x@size) == )) {
+  if (length(x@size) == 1) {
 
   } else {
 

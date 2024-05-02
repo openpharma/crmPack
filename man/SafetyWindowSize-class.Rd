@@ -51,9 +51,10 @@ interval between the 1st and 2nd patient = 9 units of time and the rest
 time intervals are of 5 units of time when the cohort size is equal to or
 larger than 4. And the time interval between the 1st and 2nd patient = 7 units
 of time and the rest time intervals are 3 units of time when the cohort size
-is smaller than 4, then we specify \code{size = c(0L, 4L)}. This means,
-the right bound of the intervals are exclusive to the interval, and the
-last interval goes from the last value until infinity.}
+is smaller than 4, then we specify both \code{gap = list(c(7, 3), c(9, 5))} and
+\code{size = c(0L, 4L)}. This means, the right bounds of the intervals are
+excluded from the interval, and the last interval goes from the last value
+to infinity.}
 
 \item{\code{follow}}{(\code{count})\cr the period of time that each patient in the
 cohort needs to be followed before the next cohort opens.}

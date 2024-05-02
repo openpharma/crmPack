@@ -3346,9 +3346,10 @@ setClass(
 #'   time intervals are of 5 units of time when the cohort size is equal to or
 #'   larger than 4. And the time interval between the 1st and 2nd patient = 7 units
 #'   of time and the rest time intervals are 3 units of time when the cohort size
-#'   is smaller than 4, then we specify `size = c(0L, 4L)`. This means,
-#'   the right bound of the intervals are exclusive to the interval, and the
-#'   last interval goes from the last value until infinity.
+#'   is smaller than 4, then we specify both `gap = list(c(7, 3), c(9, 5))` and
+#'   `size = c(0L, 4L)`. This means, the right bounds of the intervals are
+#'   excluded from the interval, and the last interval goes from the last value
+#'   to infinity.
 #' @slot follow (`count`)\cr the period of time that each patient in the
 #'   cohort needs to be followed before the next cohort opens.
 #' @slot follow_min (`count`)\cr at least one patient in the cohort needs
@@ -3432,7 +3433,8 @@ SafetyWindowSize <- function(gap,
 #' @description `r lifecycle::badge("stable")`
 #'
 #' [`SafetyWindowConst`] is the class for safety window length and it is used
-#' when the `gap` should be kept constant.
+#' when the `gap` should be kept constant across cohorts (though it may vary
+#' within a cohort).
 #'
 #' @slot gap (`integer`)\cr a vector, the constant gap between patients.
 #' @slot follow (`count`)\cr how long to follow each patient. The period of time

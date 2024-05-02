@@ -52,6 +52,7 @@
 \alias{knit_print.NextBestOrdinal}
 \alias{knit_print.SafetyWindow}
 \alias{knit_print.SafetyWindowConst}
+\alias{knit_print.SafetyWindowSize}
 \alias{knit_print.StoppingOrdinal}
 \alias{knit_print.StoppingMaxGainCIRatio}
 \alias{knit_print.StoppingList}
@@ -275,9 +276,28 @@
 
 \method{knit_print}{NextBestOrdinal}(x, ..., asis = TRUE)
 
-\method{knit_print}{SafetyWindow}(x, ..., asis = TRUE, label = "participant")
+\method{knit_print}{SafetyWindow}(x, ..., asis = TRUE, time_unit = "day", label = "participant")
 
-\method{knit_print}{SafetyWindowConst}(x, ..., asis = TRUE, label = "participant", time_unit = "day")
+\method{knit_print}{SafetyWindowConst}(
+  x,
+  ...,
+  asis = TRUE,
+  label = "participant",
+  ordinals = c("first", "second", "third", "fourth", "fifth", "sixth", "seventh",
+    "eighth", "ninth", "tenth"),
+  time_unit = "day"
+)
+
+\method{knit_print}{SafetyWindowSize}(
+  x,
+  ...,
+  asis = TRUE,
+  ordinals = c("first", "second", "third", "fourth", "fifth", "sixth", "seventh",
+    "eighth", "ninth", "tenth"),
+  label = "participant",
+  time_unit = "day",
+  level = 2
+)
 
 \method{knit_print}{StoppingOrdinal}(x, ..., asis = TRUE)
 
@@ -451,8 +471,14 @@ measured}
 
 \item{citation_link}{(\code{character})\cr the link to Mozgunov & Jaki}
 
-\item{time_unit}{(\code{character})\cr The word used to describe units of time.
+\item{time_unit}{(\code{character})\cr the word used to describe units of time.
 See Usage Notes below.}
+
+\item{ordinals}{(\code{character})\cr a character vector whose nth defines the
+word used as the written representation of the nth ordinal number.}
+
+\item{level}{(\code{count})\cr the markdown level at which the headings for cohort size
+will be printed.  An integer between 1 and 6}
 
 \item{dose_label}{(\code{character})\cr the term used to describe the target dose}
 
@@ -552,6 +578,8 @@ crmPack objects in Markdown and Quarto files
 
 We provide additional utility functions to allow human-friendly rendition of
 crmPack objects in Markdown and Quarto files
+
+\ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#experimental}{\figure{lifecycle-experimental.svg}{options: alt='[Experimental]'}}}{\strong{[Experimental]}}
 
 \ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#experimental}{\figure{lifecycle-experimental.svg}{options: alt='[Experimental]'}}}{\strong{[Experimental]}}
 
