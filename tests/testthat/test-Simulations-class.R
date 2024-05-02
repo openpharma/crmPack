@@ -350,12 +350,12 @@ test_that("PseudoDualSimulations generator does not throw error and validates", 
 
 test_that("PseudoDualSimulations object can be created with the user constructor", {
   fit <- list(c(0.1, 0.2), c(0.3, 0.4))
-  
+
   fit_eff <- list(
     c(0.1, 0.2),
     c(0.3, 0.4)
   )
-  
+
   final_gstar_estimates <- c(0.05, 0.06)
   final_gstar_at_dose_grid <- c(0.07, 0.08)
   final_gstar_cis <- list(
@@ -402,7 +402,7 @@ test_that("PseudoDualSimulations object can be created with the user constructor
   doses <- c(1, 2)
 
   seed <- as.integer(123)
-  
+
   result <- expect_silent(
     PseudoDualSimulations(
       fit = fit,
@@ -429,7 +429,7 @@ test_that("PseudoDualSimulations object can be created with the user constructor
       seed = seed
     )
   )
-  
+
   expect_valid(result, "PseudoDualSimulations")
   expect_identical(result@fit_eff, fit_eff)
   expect_identical(result@final_gstar_estimates, final_gstar_estimates)
@@ -444,9 +444,11 @@ test_that("PseudoDualSimulations object can be created with the user constructor
 test_that("PseudoDualSimulations user constructor argument names are as expected", {
   expect_function(
     PseudoDualSimulations,
-    args = c("fit_eff", "final_gstar_estimates", "final_gstar_at_dose_grid", "final_gstar_cis", 
-             "final_gstar_ratios", "final_optimal_dose", "final_optimal_dose_at_dose_grid", 
-             "sigma2_est", "..."),
+    args = c(
+      "fit_eff", "final_gstar_estimates", "final_gstar_at_dose_grid", "final_gstar_cis",
+      "final_gstar_ratios", "final_optimal_dose", "final_optimal_dose_at_dose_grid",
+      "sigma2_est", "..."
+    ),
     ordered = TRUE
   )
 })

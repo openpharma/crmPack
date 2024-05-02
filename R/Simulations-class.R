@@ -617,7 +617,7 @@ PseudoSimulations <- function(fit,
 #'
 #' @description `r lifecycle::badge("stable")`
 #' This class conducts trial simulations for designs using both the
-#' DLE and efficacy responses. It defines final values for 
+#' DLE and efficacy responses. It defines final values for
 #' efficacy fit and DLE, estimates of Gstar, optimal dose and sigma2.
 #'
 #' @slot fit_eff (`list`)\cr final values of efficacy fit.
@@ -682,14 +682,15 @@ PseudoDualSimulations <- function(fit_eff,
                                   ...) {
   start <- PseudoSimulations(...)
   .PseudoDualSimulations(start,
-                         fit_eff = fit_eff,
-                         final_gstar_estimates = final_gstar_estimates,
-                         final_gstar_at_dose_grid = final_gstar_at_dose_grid,
-                         final_gstar_cis = final_gstar_cis,
-                         final_gstar_ratios = final_gstar_ratios,
-                         final_optimal_dose = final_optimal_dose,
-                         final_optimal_dose_at_dose_grid = final_optimal_dose_at_dose_grid,
-                         sigma2_est = sigma2_est)
+    fit_eff = fit_eff,
+    final_gstar_estimates = final_gstar_estimates,
+    final_gstar_at_dose_grid = final_gstar_at_dose_grid,
+    final_gstar_cis = final_gstar_cis,
+    final_gstar_ratios = final_gstar_ratios,
+    final_optimal_dose = final_optimal_dose,
+    final_optimal_dose_at_dose_grid = final_optimal_dose_at_dose_grid,
+    sigma2_est = sigma2_est
+  )
 }
 
 ## default constructor ----
