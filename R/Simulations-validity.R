@@ -131,7 +131,7 @@ v_pseudo_dual_simulations <- function(object) {
   v <- Validate()
   nSims <- length(object@data)
   v$check(
-    identical(length(object@sigma2est), nSims),
+    identical(length(object@sigma2_est), nSims),
     "sigma2est has to have same length as data"
   )
   v$result()

@@ -612,112 +612,100 @@ PseudoSimulations <- function(fit,
   stop("Class PseudoSimulations cannot be instantiated directly. Please use one of its subclasses instead.")
 }
 
-# nolint start
-## ===============================================================================
-## -------------------------------------------------------------------------------
-## Class for Pseudo simulation using DLE and efficacy responses (Pseudo models except 'EffFlexi' model)
-## -----------------------------------------------------------------------------------
+# PseudoDualSimulations ----
 
-##' Class `PseudoDualSimulations`
-##'
-##' This is a class which captures the trial simulations design using both the
-##' DLE and efficacy responses. The design of model from \code{\linkS4class{ModelTox}}
-##' class and the efficacy model from \code{\linkS4class{ModelEff}} class
-##' (except \code{\linkS4class{EffFlexi}} class). It contains all slots from
-##' \code{\linkS4class{GeneralSimulations}} and \code{\linkS4class{PseudoSimulations}} object.
-##' In comparison to the parent class \code{\linkS4class{PseudoSimulations}},
-##' it contains additional slots to
-##' capture the dose-efficacy curve and the sigma2 estimates.
-##'
-##' @slot fitEff list of the final values. If DLE and efficacy samples are generated, it contains the
-##' final fitted values. If no DLE and efficacy samples are used, it contains the modal estimates of the
-##' parameters in the two models and the posterior estimates of the probabilities of the occurrence of a
-##' DLE and the expected efficacy responses.
-##' @slot FinalGstarEstimates a vector of the final estimates of Gstar at the end of each simulations.
-##' @slot FinalGstarAtDoseGrid is a vector of the final estimates of Gstar at dose Grid at the end of each simulations
-##' @slot FinalGstarCIs is the list of all 95% credibility interval of the final estimates of Gstar
-##' @slot FinalGstarRatios is the vector of the ratios of the CI, the ratio of the upper to the lower 95% credibility interval
-##' of the final estimates of Gstar
-##' @slot FinalOptimalDose is the vector of the final optimal dose, the minimum of the final TDtargetEndOfTrial estimates and Gstar
-##' estimates
-##' @slot FinalOptimalDoseAtDoseGrid is the vector of the final optimal dose, the minimum of the final TDtargetEndOfTrial estimates
-##' and Gstar estimates at dose Grid
-##' @slot sigma2est the vector of the final posterior mean sigma2 estimates
-##'
-##' @export
+## class ----
+
+#' `PseudoDualSimulations`
+#'
+#' @description `r lifecycle::badge("stable")`
+#' This class conducts trial simulations for designs using both the
+#' DLE and efficacy responses. It defines final values for 
+#' efficacy fit and DLE, estimates of Gstar, optimal dose and sigma2.
+#'
+#' @slot fit_eff (`list`)\cr final values of efficacy fit.
+#' @slot final_gstar_estimates (`numeric`)\cr final Gstar estimates.
+#' @slot final_gstar_at_dose_grid (`numeric`)\cr final Gstar estimates at dose grid.
+#' @slot final_gstar_cis (`list`)\cr list of 95% confidence interval for Gstar estimates.
+#' @slot final_gstar_ratios (`numeric`)\cr ratios of confidence intervals for Gstar estimates.
+#' @slot final_optimal_dose (`numeric`)\cr final optimal dose.
+#' @slot final_optimal_dose_at_dose_grid (`numeric`)\cr final optimal dose at dose grid.
+#' @slot sigma2_est (`numeric`)\cr final sigma2 estimates.
+#'
+#' @aliases PseudoDualSimulations
+#' @export
 .PseudoDualSimulations <-
   setClass(
     Class = "PseudoDualSimulations",
-    representation(
-      fitEff = "list",
-      FinalGstarEstimates = "numeric",
-      FinalGstarAtDoseGrid = "numeric",
-      FinalGstarCIs = "list",
-      FinalGstarRatios = "numeric",
-      FinalOptimalDose = "numeric",
-      FinalOptimalDoseAtDoseGrid = "numeric",
-      sigma2est = "numeric"
+    slots = c(
+      fit_eff = "list",
+      final_gstar_estimates = "numeric",
+      final_gstar_at_dose_grid = "numeric",
+      final_gstar_cis = "list",
+      final_gstar_ratios = "numeric",
+      final_optimal_dose = "numeric",
+      final_optimal_dose_at_dose_grid = "numeric",
+      sigma2_est = "numeric"
     ),
-    prototype(
-      FinalGstarEstimates = c(0.1, 0.1),
-      FinalGstarAtDoseGrid = c(0.1, 0.1),
-      FinalGstarCIs = list(
-        c(0.1, 0.2),
-        c(0.1, 0.2)
-      ),
-      FinalGstarRatios = c(0.01, 0.01),
-      FinalOptimalDose = c(0.01, 0.01),
-      FinalOptimalDoseAtDoseGrid = c(0.01, 0.01),
-      sigma2est = c(0.001, 0.002)
+    prototype = prototype(
+      final_gstar_estimates = c(0.1, 0.1),
+      final_gstar_at_dose_grid = c(0.1, 0.1),
+      final_gstar_cis = list(c(0.1, 0.2), c(0.1, 0.2)),
+      final_gstar_ratios = c(0.01, 0.01),
+      final_optimal_dose = c(0.01, 0.01),
+      final_optimal_dose_at_dose_grid = c(0.01, 0.01),
+      sigma2_est = c(0.001, 0.002)
     ),
     contains = "PseudoSimulations",
     validity = v_pseudo_dual_simulations
   )
 
-validObject(.PseudoDualSimulations())
+## constructor ----
 
-##' Initialization function for 'DualPseudoSimulations' class
-##' @param fitEff please refer to \code{\linkS4class{PseudoDualSimulations}} class object
-##' @param  FinalGstarEstimates please refer to \code{\linkS4class{PseudoDualSimulations}} class object
-##' @param FinalGstarAtDoseGrid please refer to \code{\linkS4class{PseudoDualSimulations}} class object
-##' @param FinalGstarCIs please refer to \code{\linkS4class{PseudoDualSimulations}} class object
-##' @param FinalGstarRatios please refer to \code{\linkS4class{PseudoDualSimulations}} class object
-##' @param FinalOptimalDose please refer to \code{\linkS4class{PseudoDualSimulations}} class object
-##' @param FinalOptimalDoseAtDoseGrid please refer to \code{\linkS4class{PseudoDualSimulations}} class object
-##' @param sigma2est please refer to \code{\linkS4class{PseudoDualSimulations}} class object
-##' @param \dots additional parameters from \code{\linkS4class{PseudoSimulations}}
-##' @return the \code{\linkS4class{PseudoDualSimulations}} object
-PseudoDualSimulations <- function(fitEff,
-                                  FinalGstarEstimates,
-                                  FinalGstarAtDoseGrid,
-                                  FinalGstarCIs,
-                                  FinalGstarRatios,
-                                  FinalOptimalDose,
-                                  FinalOptimalDoseAtDoseGrid,
-                                  sigma2est,
+#' @rdname PseudoDualSimulations-class
+#'
+#' @param fit_eff (`list`)\cr see slot definition.
+#' @param final_gstar_estimates (`numeric`)\cr see slot definition.
+#' @param final_gstar_at_dose_grid (`numeric`)\cr see slot definition.
+#' @param final_gstar_cis (`list`)\cr see slot definition.
+#' @param final_gstar_ratios (`numeric`)\cr see slot definition.
+#' @param final_optimal_dose (`numeric`)\cr see slot definition.
+#' @param final_optimal_dose_at_dose_grid (`numeric`)\cr see slot definition.
+#' @param sigma2_est (`numeric`)\cr see slot definition.
+#' @param \dots additional parameters from [`PseudoSimulations`]
+#' @example examples/Simulations-class-PseudoDualSimulations.R
+#' @export
+PseudoDualSimulations <- function(fit_eff,
+                                  final_gstar_estimates,
+                                  final_gstar_at_dose_grid,
+                                  final_gstar_cis,
+                                  final_gstar_ratios,
+                                  final_optimal_dose,
+                                  final_optimal_dose_at_dose_grid,
+                                  sigma2_est,
                                   ...) {
   start <- PseudoSimulations(...)
   .PseudoDualSimulations(start,
-    fitEff = fitEff,
-    FinalGstarEstimates = FinalGstarEstimates,
-    FinalGstarAtDoseGrid = FinalGstarAtDoseGrid,
-    FinalGstarCIs = FinalGstarCIs,
-    FinalGstarRatios = FinalGstarRatios,
-    FinalOptimalDose = FinalOptimalDose,
-    FinalOptimalDoseAtDoseGrid = FinalOptimalDoseAtDoseGrid,
-    sigma2est = sigma2est
-  )
+                         fit_eff = fit_eff,
+                         final_gstar_estimates = final_gstar_estimates,
+                         final_gstar_at_dose_grid = final_gstar_at_dose_grid,
+                         final_gstar_cis = final_gstar_cis,
+                         final_gstar_ratios = final_gstar_ratios,
+                         final_optimal_dose = final_optimal_dose,
+                         final_optimal_dose_at_dose_grid = final_optimal_dose_at_dose_grid,
+                         sigma2_est = sigma2_est)
 }
 
 ## default constructor ----
 
 #' @rdname PseudoDualSimulations-class
-#' @note Typically, end users will not use the `.DefaultPseudoDualSimulations()` function.
+#' @note Do not use the `.DefaultPseudoDualSimulations()` function.
 #' @export
 .DefaultPseudoDualSimulations <- function() {
-  stop(paste0("Class PseudoDualSimulations cannot be instantiated directly.  Please use one of its subclasses instead."))
+  stop("Class PseudoDualSimulations cannot be instantiated directly. Please use a subclass.")
 }
 
+# nolint start
 # PseudoDualFlexiSimulations ----
 
 ## class ----
