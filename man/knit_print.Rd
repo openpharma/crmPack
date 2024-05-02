@@ -2,7 +2,7 @@
 % Please edit documentation in R/helpers_knitr_CohortSize.R,
 %   R/helpers_knitr_GeneralData.R, R/helpers_knitr_GeneralModel.R,
 %   R/helpers_knitr_Increments.R, R/helpers_knitr_NextBest.R,
-%   R/helpers_knitr_Stopping.R
+%   R/helpers_knitr_SafetyWindow.R, R/helpers_knitr_Stopping.R
 \name{knit_print}
 \alias{knit_print}
 \alias{knit_print.CohortSizeConst}
@@ -50,6 +50,8 @@
 \alias{knit_print.NextBestTDsamples}
 \alias{knit_print.NextBestMaxGainSamples}
 \alias{knit_print.NextBestOrdinal}
+\alias{knit_print.SafetyWindow}
+\alias{knit_print.SafetyWindowConst}
 \alias{knit_print.StoppingOrdinal}
 \alias{knit_print.StoppingMaxGainCIRatio}
 \alias{knit_print.StoppingList}
@@ -273,6 +275,10 @@
 
 \method{knit_print}{NextBestOrdinal}(x, ..., asis = TRUE)
 
+\method{knit_print}{SafetyWindow}(x, ..., asis = TRUE, label = "participant")
+
+\method{knit_print}{SafetyWindowConst}(x, ..., asis = TRUE, label = "participant", time_unit = "day")
+
 \method{knit_print}{StoppingOrdinal}(x, ..., asis = TRUE)
 
 \method{knit_print}{StoppingMaxGainCIRatio}(x, ..., asis = TRUE)
@@ -317,7 +323,7 @@
   biomarker_label = "the target biomarker",
   fmt_string =
     paste0("\%sIf, at \%s, the posterior probability that \%s is in the range ",
-    "(\%.2f, \%.2f)\%s is \%.0f\%\% or more."),
+    "(\%.2f, \%.2f)\%s is \%.0f\%\% or more.\\n\\n"),
   asis = TRUE
 )
 
@@ -328,7 +334,7 @@
   fmt_string =
     paste0("\%sIf, using a Hard Stopping Rule with a prior of Beta(\%.0f, \%.0f), the ",
     "lowest dose in the dose grid has a posterior probability of \%s of ",
-    "\%.0f\%\% or more."),
+    "\%.0f\%\% or more.\\n\\n"),
   asis = TRUE
 )
 
@@ -337,7 +343,7 @@
   ...,
   fmt_string =
     paste0("\%sIf the posterior estimate of the robust coefficient of variation of ",
-    "the MTD (targetting \%2.0f\%\%), is than or equal to \%.0f\%\%."),
+    "the MTD (targetting \%2.0f\%\%), is than or equal to \%.0f\%\%.\\n\\n"),
   asis = TRUE
 )
 
@@ -345,7 +351,7 @@
   x,
   ...,
   fmt_string =
-    "\%sIf the mean posterior probability of \%s at \%.0f\%\% of \%s is at least \%4.2f.",
+    "\%sIf the mean posterior probability of \%s at \%.0f\%\% of \%s is at least \%4.2f.\\n\\n",
   dose_label = "the next best dose",
   tox_label = "toxicity",
   asis = TRUE
@@ -364,7 +370,7 @@
   x,
   ...,
   fmt_string =
-    "\%sIf the probability of \%s at \%s is in the range [\%4.2f, \%4.2f] is at least \%4.2f.",
+    "\%sIf the probability of \%s at \%s is in the range [\%4.2f, \%4.2f] is at least \%4.2f.\\n\\n",
   dose_label = "the next best dose",
   tox_label = "toxicity",
   asis = TRUE
@@ -445,6 +451,9 @@ measured}
 
 \item{citation_link}{(\code{character})\cr the link to Mozgunov & Jaki}
 
+\item{time_unit}{(\code{character})\cr The word used to describe units of time.
+See Usage Notes below.}
+
 \item{dose_label}{(\code{character})\cr the term used to describe the target dose}
 
 \item{fmt_string}{(\code{character})\cr the character string that defines the format
@@ -456,8 +465,6 @@ a character string that represents the object in markdown.
 The markdown representation of the object, as a character string
 
 A character string containing a LaTeX rendition of the object.
-
-a character string that represents the object in markdown.
 
 a character string that represents the object in markdown.
 }
@@ -515,11 +522,6 @@ crmPack objects in Markdown and Quarto files
 
 \ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#experimental}{\figure{lifecycle-experimental.svg}{options: alt='[Experimental]'}}}{\strong{[Experimental]}}
 
-We provide additional utility functions to allow human-friendly rendition of
-crmPack objects in Markdown and Quarto files.
-
-\ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#experimental}{\figure{lifecycle-experimental.svg}{options: alt='[Experimental]'}}}{\strong{[Experimental]}}
-
 \ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#experimental}{\figure{lifecycle-experimental.svg}{options: alt='[Experimental]'}}}{\strong{[Experimental]}}
 
 \ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#experimental}{\figure{lifecycle-experimental.svg}{options: alt='[Experimental]'}}}{\strong{[Experimental]}}
@@ -549,7 +551,11 @@ crmPack objects in Markdown and Quarto files.
 \ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#experimental}{\figure{lifecycle-experimental.svg}{options: alt='[Experimental]'}}}{\strong{[Experimental]}}
 
 We provide additional utility functions to allow human-friendly rendition of
-crmPack objects in Markdown and Quarto files.
+crmPack objects in Markdown and Quarto files
+
+\ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#experimental}{\figure{lifecycle-experimental.svg}{options: alt='[Experimental]'}}}{\strong{[Experimental]}}
+
+\ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#experimental}{\figure{lifecycle-experimental.svg}{options: alt='[Experimental]'}}}{\strong{[Experimental]}}
 
 \ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#experimental}{\figure{lifecycle-experimental.svg}{options: alt='[Experimental]'}}}{\strong{[Experimental]}}
 
@@ -670,6 +676,18 @@ is used in all other cases.
 To use a BibTeX-style citation, specify (for example) \verb{citation_text = "@MOZGUNOV", citation_link = ""}.
 
 
+\code{label} should be a character vector of length 1 or 2.  If of length 2, the first
+element describes a count of 1 and the second describes all other counts.
+If of length 1, the character \code{s} is appended to the value when the count is not 1.
+
+
+\code{label} and \code{time_unit} are, collectively, labels.
+
+A label should be a character vector of length 1 or 2.  If of length 2, the first
+element describes a count of 1 and the second describes all other counts.
+If of length 1, the character \code{s} is appended to the value when the count is not 1.
+
+
 \code{label} describes the trial's participants.
 
 It should be a character vector of length 1 or 2.  If of length 2, the first
@@ -749,6 +767,18 @@ is used in all other cases.
 
 
 To use a BibTeX-style citation, specify (for example) \verb{citation_text = "@MOZGUNOV", citation_link = ""}.
+
+
+\code{label} should be a character vector of length 1 or 2.  If of length 2, the first
+element describes a count of 1 and the second describes all other counts.
+If of length 1, the character \code{s} is appended to the value when the count is not 1.
+
+
+\code{label} and \code{time_unit} are, collectively, labels.
+
+A label should be a character vector of length 1 or 2.  If of length 2, the first
+element describes a count of 1 and the second describes all other counts.
+If of length 1, the character \code{s} is appended to the value when the count is not 1.
 }
 
 \seealso{

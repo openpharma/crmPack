@@ -127,6 +127,24 @@ test_that("asis parameter works correctly for all implemented methods", {
   }
 })
 
+test_that("knit_print output is suffixed by two newlines for all implemented methods", {
+  for (cls in crmpack_class_list) {
+    if (!isClassUnion(cls)) {
+      obj <- do.call(paste0(".Default", cls), list())
+      # If the default knit_print method has been overridden, test it
+      if (h_custom_method_exists(knit_print, obj)) {
+        rv <- knit_print(obj, asis = FALSE)
+        if (is.null(rv)) print(paste0("knit_print(obj, asis = TRUE) returns NULL for class ", cls, "."))
+        ok <- identical(stringr::str_sub(rv, -2), "\n\n")
+        if (!ok) {
+          print(paste0("Double newline missing for ", cls))
+        }
+        expect_true(ok)
+      }
+    }
+  }
+})
+
 #  CohortSize ---
 
 #  CohortSizeConst

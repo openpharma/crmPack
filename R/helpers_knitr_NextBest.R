@@ -82,7 +82,7 @@ knit_print.NextBestNCRM <- function(
     x@target[1],
     " to ",
     x@target[2],
-    " (inclusive) will be selected."
+    " (inclusive) will be selected.\n\n"
   )
 
   if (asis) {
@@ -140,7 +140,7 @@ knit_print.NextBestThreePlusThree <- function(
     " treated at the current dose level are evaluable, remain at the current ",
     "dose level.\n",
     "- Otherwise, recommend that the trial stops and identify the MTD as dose ",
-    "level immediately below the current one."
+    "level immediately below the current one.\n\n"
   )
 
   if (asis) {
@@ -200,7 +200,7 @@ knit_print.NextBestDualEndpoint <- function(
     " will be selected, provided that this probability exceeds ",
     x@target_thresh,
     ".  If no dose meets this threshold, then the highest eligible dose will ",
-    "be selected."
+    "be selected.\n\n"
   )
 
   if (asis) {
@@ -235,7 +235,7 @@ knit_print.NextBestMinDist <- function(
     tox_label,
     " rate [",
     x@target,
-    "]."
+    "].\n\n"
   )
 
   if (asis) {
@@ -288,7 +288,7 @@ knit_print.NextBestInfTheory <- function(
     tox_label,
     " at dose level d.\n\n",
     "The recommended dose for the next cohort will be ",
-    "the value of d that minimises $\\delta(\\hat{p}_d, \\gamma)$."
+    "the value of d that minimises $\\delta(\\hat{p}_d, \\gamma)$.\n\n"
   )
 
   if (asis) {
@@ -326,7 +326,7 @@ knit_print.NextBestTD <- function(
     x@prob_target_drt,
     "] or at the end of the trial [",
     x@prob_target_eot,
-    "]."
+    "].\n\n"
   )
 
   if (asis) {
@@ -362,7 +362,7 @@ knit_print.NextBestMaxGain <- function(
     x@prob_target_drt,
     "] or at the end of the trial [",
     x@prob_target_eot,
-    "]."
+    "].\n\n"
   )
 
   if (asis) {
@@ -395,7 +395,7 @@ knit_print.NextBestProbMTDLTE <- function(
     tox_label,
     " less than or equal to ",
     x@target,
-    "."
+    ".\n\n"
   )
 
   if (asis) {
@@ -428,7 +428,7 @@ knit_print.NextBestProbMTDMinDist <- function(
     tox_label,
     " closest to ",
     x@target,
-    "."
+    ".\n\n"
   )
 
   if (asis) {
@@ -497,7 +497,8 @@ knit_print.NextBestNCRMLoss <- function(
       stringr::str_to_sentence(tox_label)
     ),
     " ranges and loss coefficients are given in the following table:\n\n",
-    paste((do.call(knitr::kable, param)) %>% format_func(), collapse = "\n")
+    paste((do.call(knitr::kable, param)) %>% format_func(), collapse = "\n"),
+    "\n\n"
   )
 
   if (asis) {
@@ -535,7 +536,7 @@ knit_print.NextBestTDsamples <- function(
     x@prob_target_drt,
     "] or at the end of the trial [",
     x@prob_target_eot,
-    "]."
+    "].\n\n"
   )
 
   if (asis) {
@@ -572,7 +573,7 @@ knit_print.NextBestMaxGainSamples <- function(
     x@prob_target_drt,
     "] or at the end of the trial [",
     x@prob_target_eot,
-    "]."
+    "].\n\n"
   )
 
   if (asis) {

@@ -10,7 +10,7 @@ test_that("knit_print.NextBestMinDist works correctly", {
       "The dose recommended for the next cohort will be the one which is both ",
       "eligible and which has the smallest absolute difference between its ",
       "mean posterior estimate of the probability of ",
-      "toxicity and the target toxicity rate [0.3]."
+      "toxicity and the target toxicity rate [0.3].\n\n"
     )
   )
   x1 <- NextBestMinDist(target = 0.25)
@@ -20,7 +20,7 @@ test_that("knit_print.NextBestMinDist works correctly", {
       "The dose recommended for the next cohort will be the one which is both ",
       "eligible and which has the smallest absolute difference between its ",
       "mean posterior estimate of the probability of DLT and the target DLT ",
-      "rate [0.25]."
+      "rate [0.25].\n\n"
     )
   )
 })
@@ -75,7 +75,7 @@ test_that("knit_print.NextBestNCRM works correctly", {
       "(0.35, 1] - is 0.25 or more will also be discarded.  Finally, the dose ",
       "amongst those remaining which has the highest chance that the mean ",
       "posterior probability of toxicity is in the target toxicity range of ",
-      "0.2 to 0.35 (inclusive) will be selected."
+      "0.2 to 0.35 (inclusive) will be selected.\n\n"
     )
   )
   expect_equal(
@@ -88,7 +88,7 @@ test_that("knit_print.NextBestNCRM works correctly", {
       "(0.35, 1] - is 0.25 or more will also be discarded.  Finally, the dose ",
       "amongst those remaining which has the highest chance that the mean ",
       "posterior probability of DLT is in the target DLT range of ",
-      "0.2 to 0.35 (inclusive) will be selected."
+      "0.2 to 0.35 (inclusive) will be selected.\n\n"
     )
   )
 })
@@ -105,7 +105,7 @@ test_that("knit_print.NextBestThreePlusThree works correctly", {
       "three participants treated at the current dose level are evaluable, ",
       "remain at the current dose level.\n- Otherwise, recommend that the ",
       "trial stops and identify the MTD as dose level immediately below the ",
-      "current one."
+      "current one.\n\n"
     )
   )
   expect_equal(
@@ -118,7 +118,7 @@ test_that("knit_print.NextBestThreePlusThree works correctly", {
       "three subjects treated at the current dose level are evaluable, ",
       "remain at the current dose level.\n- Otherwise, recommend that the ",
       "trial stops and identify the MTD as dose level immediately below the ",
-      "current one."
+      "current one.\n\n"
     )
   )
 })
@@ -137,7 +137,7 @@ test_that("knit_print.NextBestDualEndpoint works correctly", {
       "posterior probability that the biomarker is in the target range for ",
       "the biomarker, which is 200 to 300 (inclusive), will be selected, provided ",
       "that this probability exceeds 0.01.  If no dose meets this threshold, ",
-      "then the highest eligible dose will be selected."
+      "then the highest eligible dose will be selected.\n\n"
     )
   )
   expect_equal(
@@ -158,7 +158,7 @@ test_that("knit_print.NextBestDualEndpoint works correctly", {
       "posterior probability that the custom label is in the target range for ",
       "the custom label, which is 200IU/mL to 300IU/mL (inclusive), will be selected, provided ",
       "that this probability exceeds 0.01.  If no dose meets this threshold, ",
-      "then the highest eligible dose will be selected."
+      "then the highest eligible dose will be selected.\n\n"
     )
   )
 })
@@ -177,7 +177,7 @@ test_that("knit_print.NextBestInfTheory works correctly", {
       "target toxicity rate with a value of 0.33 and $\\hat{p}_d$ is the mean ",
       "posterior estimate of the probability of toxicity at dose level d.",
       "\n\nThe recommended dose for the next cohort will be the value of d ",
-      "that minimises $\\delta(\\hat{p}_d, \\gamma)$."
+      "that minimises $\\delta(\\hat{p}_d, \\gamma)$.\n\n"
     )
   )
   expect_equal(
@@ -198,7 +198,7 @@ test_that("knit_print.NextBestInfTheory works correctly", {
       "target DLT rate with a value of 0.33 and $\\hat{p}_d$ is the mean ",
       "posterior estimate of the probability of DLT at dose level d.",
       "\n\nThe recommended dose for the next cohort will be the value of d ",
-      "that minimises $\\delta(\\hat{p}_d, \\gamma)$."
+      "that minimises $\\delta(\\hat{p}_d, \\gamma)$.\n\n"
     )
   )
 })
@@ -213,7 +213,7 @@ test_that("knit_print.NextBestTD works correctly", {
       "than the dose (which may not be in the dose grid) that has a posterior ",
       "plug-in estimate of the probability of toxicity exactly equal to the ",
       "target toxicity rate, either during [0.35] or at the end of the trial ",
-      "[0.3]."
+      "[0.3].\n\n"
     )
   )
   expect_equal(
@@ -229,7 +229,7 @@ test_that("knit_print.NextBestTD works correctly", {
         "than the dose (which may not be in the dose grid) that has a posterior ",
         "plug-in estimate of the probability of DLT exactly equal to the ",
         "target DLT rate, either during [0.35] or at the end of the trial ",
-        "[0.3]."
+        "[0.3].\n\n"
       )
     )
   )
@@ -243,7 +243,7 @@ test_that("knit_print.NextBestMaxGain works correctly", {
       "The dose recommended for the next cohort will be the one which is ",
       "closest to Gstar, the dose that maximises the gain for probability of ",
       "toxicity exactly equal to the target toxicity rate, either during ",
-      "[0.35] or at the end of the trial [0.3]."
+      "[0.35] or at the end of the trial [0.3].\n\n"
     )
   )
   expect_equal(
@@ -257,7 +257,7 @@ test_that("knit_print.NextBestMaxGain works correctly", {
         "The dose recommended for the next cohort will be the one which is ",
         "closest to Gstar, the dose that maximises the gain for probability of ",
         "DLT exactly equal to the target DLT rate, either during ",
-        "[0.35] or at the end of the trial [0.3]."
+        "[0.35] or at the end of the trial [0.3].\n\n"
       )
     )
   )
@@ -270,7 +270,7 @@ test_that("knit_print.NextBestProbMTDLTE works correctly", {
     paste0(
       "The dose recommended for the next cohort will be the dose level with ",
       "the highest probability of being the highest dose with an estimated ",
-      "probability of toxicity less than or equal to 0.3."
+      "probability of toxicity less than or equal to 0.3.\n\n"
     )
   )
   expect_equal(
@@ -283,7 +283,7 @@ test_that("knit_print.NextBestProbMTDLTE works correctly", {
       paste0(
         "The dose recommended for the next cohort will be the dose level with ",
         "the highest probability of being the highest dose with an estimated ",
-        "probability of DLT less than or equal to 0.3."
+        "probability of DLT less than or equal to 0.3.\n\n"
       )
     )
   )
@@ -296,7 +296,7 @@ test_that("knit_print.NextBestProbMTDMinDist works correctly", {
     paste0(
       "The dose recommended for the next cohort will be the dose level with ",
       "the highest probability of being the highest dose with an estimated ",
-      "probability of toxicity closest to 0.3."
+      "probability of toxicity closest to 0.3.\n\n"
     )
   )
   expect_equal(
@@ -309,7 +309,7 @@ test_that("knit_print.NextBestProbMTDMinDist works correctly", {
       paste0(
         "The dose recommended for the next cohort will be the dose level with ",
         "the highest probability of being the highest dose with an estimated ",
-        "probability of DLT closest to 0.3."
+        "probability of DLT closest to 0.3.\n\n"
       )
     )
   )
@@ -353,7 +353,7 @@ test_that("knit_print.NextBestNCRMLoss works correctly", {
       "<td style=\"text-align:left;\"> Unacceptable </td>\n   ",
       "<td style=\"text-align:right;\"> 0.60 </td>\n   ",
       "<td style=\"text-align:right;\"> 1.00 </td>\n   ",
-      "<td style=\"text-align:right;\"> 2 </td>\n  </tr>\n</tbody>\n</table>"
+      "<td style=\"text-align:right;\"> 2 </td>\n  </tr>\n</tbody>\n</table>\n\n"
     )
   )
   expect_equal(
@@ -399,7 +399,7 @@ test_that("knit_print.NextBestNCRMLoss works correctly", {
       "<td style=\"text-align:right;\"> 0.60 </td>\n   ",
       "<td style=\"text-align:right;\"> 1.00 </td>\n   ",
       "<td style=\"text-align:right;\"> 2 </td>\n  ",
-      "</tr>\n</tbody>\n</table>"
+      "</tr>\n</tbody>\n</table>\n\n"
     )
   )
 })
@@ -414,7 +414,7 @@ test_that("knit_print.NextBestTD works correctly", {
       "than the dose (which may not be in the dose grid) that has a full Bayes ",
       "posterior estimate of the probability of toxicity exactly equal to the ",
       "target toxicity rate, either during [0.35] or at the end of the trial ",
-      "[0.3]."
+      "[0.3].\n\n"
     )
   )
   expect_equal(
@@ -430,7 +430,7 @@ test_that("knit_print.NextBestTD works correctly", {
         "than the dose (which may not be in the dose grid) that has a full Bayes ",
         "posterior estimate of the probability of DLT exactly equal to the ",
         "target DLT rate, either during [0.35] or at the end of the trial ",
-        "[0.3]."
+        "[0.3].\n\n"
       )
     )
   )
@@ -444,7 +444,7 @@ test_that("knit_print.NextBestMaxGainSamples works correctly", {
       "The dose recommended for the next cohort will be the one which is ",
       "closest to Gstar, the dose for which the full Bayes posterior estimate ",
       "of the probability of toxicity maximises the gain relative to the ",
-      "target toxicity rate, either during [0.35] or at the end of the trial [0.3]."
+      "target toxicity rate, either during [0.35] or at the end of the trial [0.3].\n\n"
     )
   )
   expect_equal(
@@ -458,7 +458,7 @@ test_that("knit_print.NextBestMaxGainSamples works correctly", {
         "The dose recommended for the next cohort will be the one which is ",
         "closest to Gstar, the dose for which the full Bayes posterior estimate ",
         "of the probability of DLT maximises the gain relative to the target ",
-        "DLT rate, either during [0.35] or at the end of the trial [0.3]."
+        "DLT rate, either during [0.35] or at the end of the trial [0.3].\n\n"
       )
     )
   )

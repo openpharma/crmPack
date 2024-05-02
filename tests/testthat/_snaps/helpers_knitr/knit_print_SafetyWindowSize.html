@@ -353,17 +353,9 @@ display: none;
 </div>
 
 
-<pre><code>## [1] &quot;DALogisticLogNormal&quot;</code></pre>
-<p>A logistic log normal model will describe the relationship between
-dose and toxicity: <span class="math display">\[ p(Tox | d) = f(X = 1 |
-\theta, d) = \frac{e^{\alpha + \beta \cdot log(d/d_{ref})}}{1 +
-e^{\alpha + \beta \cdot log(d/d_{ref})}} \]</span>where d<sub>ref</sub>
-denotes a reference dose.</p>
-<p>The prior for θ is given by<span class="math display">\[
-\boldsymbol\theta = \begin{bmatrix}\alpha \\ log(\beta)\end{bmatrix}\sim
-N \left(\begin{bmatrix}-0.85 \\  1.00\end{bmatrix} , \begin{bmatrix}
-1.00 &amp; -0.50 \\ -0.50 &amp;  1.00\end{bmatrix} \right) \]</span></p>
-<p>The reference dose will be 56.00.</p>
+<pre><code>## [1] &quot;SafetyWindowSize&quot;</code></pre>
+<p>To protect the welfare of individual participants, the rate of
+enrolment within each cohort will be restricted.</p>
 
 
 

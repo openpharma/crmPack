@@ -3495,7 +3495,7 @@ SafetyWindowConst <- function(gap,
 #' @export
 .DefaultSafetyWindowConst <- function() {
   SafetyWindowConst(
-    gap = c(7, 5, 3),
+    gap = 7,
     follow = 7,
     follow_min = 14
   )
