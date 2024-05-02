@@ -8,10 +8,7 @@ NULL
 
 ## class ----
 
-#' `GeneralSimulations`
-#'
-#' @description `r lifecycle::badge("stable")`
-#'
+#' `GeneralSimulations` @description `r lifecycle::badge("stable")`
 #' This class captures trial simulations.
 #' Here also the random generator state before starting the simulation is
 #' saved, in order to be able to reproduce the outcome. For this just use
@@ -673,7 +670,6 @@ PseudoSimulations <- function(fit,
 #' @param final_optimal_dose_at_dose_grid (`numeric`)\cr see slot definition.
 #' @param sigma2_est (`numeric`)\cr see slot definition.
 #' @param \dots additional parameters from [`PseudoSimulations`]
-#' @example examples/Simulations-class-PseudoDualSimulations.R
 #' @export
 PseudoDualSimulations <- function(fit_eff,
                                   final_gstar_estimates,

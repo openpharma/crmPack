@@ -2,7 +2,6 @@
 % Please edit documentation in R/crmPack-package.R
 \docType{package}
 \name{crmPack-package}
-\alias{-package}
 \alias{crmPack-package}
 \alias{crmPack}
 \title{Object-oriented implementation of CRM designs}
