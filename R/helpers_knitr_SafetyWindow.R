@@ -19,6 +19,8 @@ NULL
 #' @noRd
 #' @keywords internal
 h_describe_safety_gap <- function(gap, ordinals, label, time_unit) {
+  assert_character(ordinals, min.len = length(gap) - 1, any.missing = FALSE, unique = TRUE)
+
   if (length(gap) == 1) {
     paste0(
       "- The gap between consecutive enrolments should always be at least ",
@@ -194,13 +196,12 @@ knit_print.SafetyWindowSize <- function(
     ),
     label = "participant",
     time_unit = "day",
-    level = 2
+    level = 2L
 ) {
   assert_character(label, min.len = 1, max.len = 2, any.missing = FALSE)
   assert_character(time_unit, min.len = 1, max.len = 2, any.missing = FALSE)
-  assert_character(ordinals, min.len = length(x@gap) - 1, any.missing = FALSE, unique = TRUE)
   assert_flag(asis)
-  assert_count(level, min = 1, max = 6)
+  assert_integer(level, min = 1, max = 6, any.missing = FALSE)
 
   if (length(label) == 1) {
     label[2] <- paste0(label[1], "s")
@@ -209,11 +210,43 @@ knit_print.SafetyWindowSize <- function(
     time_unit[2] <- paste0(time_unit[1], "s")
   }
 
-  if (length(x@size) == 1) {
+  rv <- paste0(
+    knit_print.SafetyWindow(x, asis = FALSE, label = label, ...),
+    paste0(
+      lapply(
+        seq_along(1:length(x@size)),
+        function(i) {
+          paste0(
+            dplyr::case_when(
+              i == 1 ~ paste0(stringr::str_dup("#", level), " For cohort sizes of less than ", x@size[2]),
+              i == length(x@size) ~ paste0(stringr::str_dup("#", level), " For cohort sizes of ", x@size[i], " or more"),
+              TRUE ~ paste0(stringr::str_dup("#", level), " For cohort sizes greater than or equal to ", x@size[i], " and strictly less than ", x@size[i+1])
+            ),
+            "\n\n",
+            h_describe_safety_gap(x@gap[[i]], ordinals, label, time_unit)
+          )
+        }
+      ),
+      collapse = "\n"
+    )
+  )
 
-  } else {
-
-  }
+  rv <- paste0(
+    rv,
+    "For all cohorts, before the next cohort can open, all ",
+    label[2],
+    " in the current cohort must have been followed up for at least ",
+    x@follow,
+    " ",
+    ifelse(x@follow == 1, time_unit[1], time_unit[2]),
+    " and at least one ",
+    label[1],
+    " must have been followed up for at least ",
+    x@follow_min,
+    " ",
+    ifelse(x@follow_min == 1, time_unit[1], time_unit[2]),
+    ".\n\n"
+  )
 
   if (asis) {
     rv <- knitr::asis_output(rv)
