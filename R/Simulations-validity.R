@@ -123,16 +123,16 @@ v_pseudo_simulations <- function(object) {
 }
 
 #' @describeIn v_pseudo_simulations validates that the [`PseudoDualSimulations`] object
-#'   contains valid `fitEff`, `FinalGstarEstimates` , `FinalGstarAtDoseGrid`,
-#'    `FinalGstarCIs` , `FinalGstarRatios`, `FinalOptimalDose`, `FinalOptimalDoseAtDoseGrid`
-#'     object and valid `sigma2est` simulations.
+#'   contains valid `fit_eff`, `final_gstar_estimates` , `final_gstar_at_dose_grid`,
+#'    `final_gstar_cis` , `final_gstar_ratios`, `final_optimal_dose`, `final_optimal_dose_at_dose_grid`
+#'     object and valid `sigma2_est` simulations.
 
 v_pseudo_dual_simulations <- function(object) {
   v <- Validate()
   nSims <- length(object@data)
   v$check(
     identical(length(object@sigma2_est), nSims),
-    "sigma2est has to have same length as data"
+    "sigma2_est has to have same length as data"
   )
   v$result()
 }
