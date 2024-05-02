@@ -132,4 +132,12 @@ test_that("knit_print.SafetyWindowSize fails gracefully with bad input", {
     knit_print(x, ordinals = c("tooShort")),
     "Assertion on 'ordinals' failed: Must have length >= 2, but has length 1."
   )
+  expect_error(
+    knit_print(x, level = -1),
+    "Assertion on 'level' failed: Must be of type 'integer', not 'double'."
+  )
+  expect_error(
+    knit_print(x, level = -1L),
+    "Assertion on 'level' failed: Element 1 is not >= 1."
+  )
 })

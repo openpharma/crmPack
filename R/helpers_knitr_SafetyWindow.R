@@ -39,7 +39,7 @@ h_describe_safety_gap <- function(gap, ordinals, label, time_unit) {
               "-  The gap between the enrolment of the ",
               ordinals[n],
               " and the ",
-              ordinals[n+1],
+              ordinals[n + 1],
               " ",
               label[2],
               " in the cohort should be at least ",
@@ -178,7 +178,7 @@ knit_print.SafetyWindowConst <- function(
 
 #' @description `r lifecycle::badge("experimental")`
 #' @inheritParams knit_print.SafetyWindowConst
-#' @inheritSection SafetyWindowConst Usage Notes
+#' @inherit SafetyWindowConst sections
 #' @param level (`count`)\cr the markdown level at which the headings for cohort size
 #' will be printed.  An integer between 1 and 6
 #' @rdname knit_print
@@ -201,7 +201,7 @@ knit_print.SafetyWindowSize <- function(
   assert_character(label, min.len = 1, max.len = 2, any.missing = FALSE)
   assert_character(time_unit, min.len = 1, max.len = 2, any.missing = FALSE)
   assert_flag(asis)
-  assert_integer(level, min = 1, max = 6, any.missing = FALSE)
+  assert_integer(level, lower = 1, upper = 6, any.missing = FALSE)
 
   if (length(label) == 1) {
     label[2] <- paste0(label[1], "s")
@@ -214,13 +214,28 @@ knit_print.SafetyWindowSize <- function(
     knit_print.SafetyWindow(x, asis = FALSE, label = label, ...),
     paste0(
       lapply(
-        seq_along(1:length(x@size)),
+        seq_along(x@size),
         function(i) {
           paste0(
             dplyr::case_when(
-              i == 1 ~ paste0(stringr::str_dup("#", level), " For cohort sizes of less than ", x@size[2]),
-              i == length(x@size) ~ paste0(stringr::str_dup("#", level), " For cohort sizes of ", x@size[i], " or more"),
-              TRUE ~ paste0(stringr::str_dup("#", level), " For cohort sizes greater than or equal to ", x@size[i], " and strictly less than ", x@size[i+1])
+              i == 1 ~ paste0(
+                stringr::str_dup("#", level),
+                " For cohort sizes of less than ",
+                x@size[2]
+              ),
+              i == length(x@size) ~ paste0(
+                stringr::str_dup("#", level),
+                " For cohort sizes of ",
+                x@size[i],
+                " or more"
+              ),
+              TRUE ~ paste0(
+                stringr::str_dup("#", level),
+                " For cohort sizes greater than or equal to ",
+                x@size[i],
+                " and strictly less than ",
+                x@size[i + 1]
+              )
             ),
             "\n\n",
             h_describe_safety_gap(x@gap[[i]], ordinals, label, time_unit)

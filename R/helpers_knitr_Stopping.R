@@ -364,7 +364,10 @@ knit_print.StoppingSpecificDose <- function(
 knit_print.StoppingTargetProb <- function(
     x,
     ...,
-    fmt_string = "%sIf the probability of %s at %s is in the range [%4.2f, %4.2f] is at least %4.2f.\n\n",
+    fmt_string = paste0(
+      "%sIf the probability of %s at %s is in the range [%4.2f, %4.2f] ",
+      "is at least %4.2f.\n\n"
+    ),
     dose_label = "the next best dose",
     tox_label = "toxicity",
     asis = TRUE) {
