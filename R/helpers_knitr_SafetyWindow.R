@@ -84,8 +84,7 @@ knit_print.SafetyWindow <- function(
     ...,
     asis = TRUE,
     time_unit = "day",
-    label = "participant"
-) {
+    label = "participant") {
   assert_character(label, min.len = 1, max.len = 2, any.missing = FALSE)
   assert_character(time_unit, min.len = 1, max.len = 2, any.missing = FALSE)
   assert_flag(asis)
@@ -107,7 +106,6 @@ knit_print.SafetyWindow <- function(
     rv <- knitr::asis_output(rv)
   }
   rv
-
 }
 
 # SafetyWindowConst ----
@@ -133,10 +131,11 @@ knit_print.SafetyWindowConst <- function(
     ...,
     asis = TRUE,
     label = "participant",
-    ordinals = c("first", "second", "third", "fourth", "fifth", "sixth",
-                 "seventh", "eighth", "ninth", "tenth"),
-    time_unit = "day"
-) {
+    ordinals = c(
+      "first", "second", "third", "fourth", "fifth", "sixth",
+      "seventh", "eighth", "ninth", "tenth"
+    ),
+    time_unit = "day") {
   assert_character(label, min.len = 1, max.len = 2, any.missing = FALSE)
   assert_character(time_unit, min.len = 1, max.len = 2, any.missing = FALSE)
   assert_character(ordinals, min.len = length(x@gap) - 1, any.missing = FALSE, unique = TRUE)
@@ -196,8 +195,7 @@ knit_print.SafetyWindowSize <- function(
     ),
     label = "participant",
     time_unit = "day",
-    level = 2L
-) {
+    level = 2L) {
   assert_character(label, min.len = 1, max.len = 2, any.missing = FALSE)
   assert_character(time_unit, min.len = 1, max.len = 2, any.missing = FALSE)
   assert_flag(asis)
@@ -267,5 +265,4 @@ knit_print.SafetyWindowSize <- function(
     rv <- knitr::asis_output(rv)
   }
   rv
-
 }
