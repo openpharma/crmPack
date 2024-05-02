@@ -172,19 +172,34 @@ test_that("knit_print.CohortSizeConst works correctly", {
 test_that("knit_print.CohortSizeParts works correctly", {
   x <- CohortSizeParts(c(1, 3))
   rv <- knit_print(x)
-  expect_equal(rv, "A size of 1 participant in the first part and 3 participants in the second.\n\n", ignore_attr = TRUE)
+  expect_equal(
+    rv,
+    "A size of 1 participant in the first part and 3 participants in the second.\n\n",
+    ignore_attr = TRUE
+  )
 
   x <- CohortSizeParts(c(1, 3))
   rv <- knit_print(x, label = "subject")
-  expect_equal(rv, "A size of 1 subject in the first part and 3 subjects in the second.\n\n", ignore_attr = TRUE)
+  expect_equal(
+    rv,
+    "A size of 1 subject in the first part and 3 subjects in the second.\n\n",
+    ignore_attr = TRUE
+  )
 
   x <- CohortSizeParts(c(1, 3))
   rv <- knit_print(x, label = "subject")
-  expect_equal(rv, "A size of 1 subject in the first part and 3 subjects in the second.\n\n", ignore_attr = TRUE)
+  expect_equal(
+    rv,
+    "A size of 1 subject in the first part and 3 subjects in the second.\n\n",
+    ignore_attr = TRUE
+  )
 
   x <- CohortSizeParts(c(1, 3))
   rv <- knit_print(x, asis = FALSE)
-  expect_equal(rv, "A size of 1 participant in the first part and 3 participants in the second.\n\n")
+  expect_equal(
+    rv,
+    "A size of 1 participant in the first part and 3 participants in the second.\n\n"
+  )
 })
 
 # Increments ----
