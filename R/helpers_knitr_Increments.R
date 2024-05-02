@@ -70,7 +70,7 @@ knit_print.IncrementsRelativeDLT <- function(x, ..., asis = TRUE) {
   )
   rv <- paste0(rv, "\n\n")
 
-    if (asis) {
+  if (asis) {
     rv <- knitr::asis_output(rv)
   }
   rv

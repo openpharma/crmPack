@@ -11,7 +11,7 @@ test_that("knit_print.SafetyWindowConst works correctly", {
       "To protect the welfare of individual participants, the rate of enrolment ",
       "within each cohort will be restricted.\n\nFor all cohorts:\n\n- The gap ",
       "between consecutive enrolments should always be at least 7 days.\n\n",
-     "Before the next cohort can open, all participants in the current cohort ",
+      "Before the next cohort can open, all participants in the current cohort ",
       "must have been followed up for at least 7 days and at least one ",
       "participant must have been followed up for at least 14 days.\n\n"
     )
