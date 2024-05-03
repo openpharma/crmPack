@@ -2,7 +2,8 @@
 % Please edit documentation in R/helpers_knitr_CohortSize.R,
 %   R/helpers_knitr_Design.R, R/helpers_knitr_GeneralData.R,
 %   R/helpers_knitr_GeneralModel.R, R/helpers_knitr_Increments.R,
-%   R/helpers_knitr_NextBest.R, R/helpers_knitr_Stopping.R
+%   R/helpers_knitr_NextBest.R, R/helpers_knitr_SafetyWindow.R,
+%   R/helpers_knitr_Stopping.R
 \name{knit_print}
 \alias{knit_print}
 \alias{knit_print.CohortSizeConst}
@@ -17,6 +18,9 @@
 \alias{knit_print.DualDesign}
 \alias{knit_print.DADesign}
 \alias{knit_print.TDDesign}
+\alias{knit_print.DualResponsesDesign}
+\alias{knit_print.DesignOrdinal}
+\alias{knit_print.DesignGrouped}
 \alias{knit_print.GeneralData}
 \alias{knit_print.DataParts}
 \alias{knit_print.DualEndpoint}
@@ -55,6 +59,9 @@
 \alias{knit_print.NextBestTDsamples}
 \alias{knit_print.NextBestMaxGainSamples}
 \alias{knit_print.NextBestOrdinal}
+\alias{knit_print.SafetyWindow}
+\alias{knit_print.SafetyWindowConst}
+\alias{knit_print.SafetyWindowSize}
 \alias{knit_print.StoppingOrdinal}
 \alias{knit_print.StoppingMaxGainCIRatio}
 \alias{knit_print.StoppingList}
@@ -99,6 +106,12 @@
 
 \method{knit_print}{TDDesign}(x, ..., level = 2L, title = "Design", sections = NA, asis = TRUE)
 
+\method{knit_print}{DualResponsesDesign}(x, ..., level = 2L, title = "Design", sections = NA, asis = TRUE)
+
+\method{knit_print}{DesignOrdinal}(x, ..., level = 2L, title = "Design", sections = NA, asis = TRUE)
+
+\method{knit_print}{DesignGrouped}(x, ..., level = 2L, title = "Design", sections = NA, asis = TRUE)
+
 \method{knit_print}{GeneralData}(
   x,
   ...,
@@ -130,7 +143,8 @@
   use_values = TRUE,
   fmt = "\%5.2f",
   units = NA,
-  biomarker_name = "a PD biomarker"
+  tox_label = "toxicity",
+  biomarker_name = "PD biomarker"
 )
 
 \method{knit_print}{ModelParamsNormal}(
@@ -288,6 +302,29 @@
 
 \method{knit_print}{NextBestOrdinal}(x, ..., asis = TRUE)
 
+\method{knit_print}{SafetyWindow}(x, ..., asis = TRUE, time_unit = "day", label = "participant")
+
+\method{knit_print}{SafetyWindowConst}(
+  x,
+  ...,
+  asis = TRUE,
+  label = "participant",
+  ordinals = c("first", "second", "third", "fourth", "fifth", "sixth", "seventh",
+    "eighth", "ninth", "tenth"),
+  time_unit = "day"
+)
+
+\method{knit_print}{SafetyWindowSize}(
+  x,
+  ...,
+  asis = TRUE,
+  ordinals = c("first", "second", "third", "fourth", "fifth", "sixth", "seventh",
+    "eighth", "ninth", "tenth"),
+  label = "participant",
+  time_unit = "day",
+  level = 2L
+)
+
 \method{knit_print}{StoppingOrdinal}(x, ..., asis = TRUE)
 
 \method{knit_print}{StoppingMaxGainCIRatio}(x, ..., asis = TRUE)
@@ -379,7 +416,8 @@
   x,
   ...,
   fmt_string =
-    "\%sIf the probability of \%s at \%s is in the range [\%4.2f, \%4.2f] is at least \%4.2f.\\n\\n",
+    paste0("\%sIf the probability of \%s at \%s is in the range [\%4.2f, \%4.2f] ",
+    "is at least \%4.2f.\\n\\n"),
   dose_label = "the next best dose",
   tox_label = "toxicity",
   asis = TRUE
@@ -410,8 +448,8 @@
 
 \item{label}{(\code{character})\cr the term used to label participants}
 
-\item{level}{(\code{positive_integer}) The level of the headings used to separate
-slots.  Must be between 1 and 6.}
+\item{level}{(\code{count})\cr the markdown level at which the headings for cohort size
+will be printed.  An integer between 1 and 6}
 
 \item{title}{(\code{character}) The text of the heading of the section describing
 the design}
@@ -445,6 +483,8 @@ or the symbols used to define the hyper-parameters.  That is, for example, mu or
 \item{fmt}{(\code{character})\cr the \code{sprintf} format string used to render
 numerical values.  Ignored if \code{use_values} is \code{FALSE}.}
 
+\item{tox_label}{(\code{character})\cr the term used to describe toxicity}
+
 \item{biomarker_name}{(\code{character})\cr A description of the biomarker}
 
 \item{params}{(\code{character})\cr The names of the model parameters.  See Usage
@@ -457,8 +497,6 @@ Notes below.}
 \item{target_label}{(\code{character})\cr the term used to describe the target
 toxicity rate}
 
-\item{tox_label}{(\code{character})\cr the term used to describe toxicity}
-
 \item{participant_label}{(\code{character})\cr The term used to label the participants.}
 
 \item{biomarker_label}{(\code{character})\cr the term used to describe the biomarker}
@@ -469,6 +507,12 @@ measured}
 \item{citation_text}{(\code{character})\cr the text used to cite Mozgunov & Jaki}
 
 \item{citation_link}{(\code{character})\cr the link to Mozgunov & Jaki}
+
+\item{time_unit}{(\code{character})\cr the word used to describe units of time.
+See Usage Notes below.}
+
+\item{ordinals}{(\code{character})\cr a character vector whose nth defines the
+word used as the written representation of the nth ordinal number.}
 
 \item{dose_label}{(\code{character})\cr the term used to describe the target dose}
 
@@ -584,8 +628,20 @@ all design classes, not just those that are direct descendants of \code{Design}.
 
 \ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#experimental}{\figure{lifecycle-experimental.svg}{options: alt='[Experimental]'}}}{\strong{[Experimental]}}
 
+\ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#experimental}{\figure{lifecycle-experimental.svg}{options: alt='[Experimental]'}}}{\strong{[Experimental]}}
+
+\ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#experimental}{\figure{lifecycle-experimental.svg}{options: alt='[Experimental]'}}}{\strong{[Experimental]}}
+
+\ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#experimental}{\figure{lifecycle-experimental.svg}{options: alt='[Experimental]'}}}{\strong{[Experimental]}}
+
 We provide additional utility functions to allow human-friendly rendition of
-crmPack objects in Markdown and Quarto files.
+crmPack objects in Markdown and Quarto files
+
+\ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#experimental}{\figure{lifecycle-experimental.svg}{options: alt='[Experimental]'}}}{\strong{[Experimental]}}
+
+\ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#experimental}{\figure{lifecycle-experimental.svg}{options: alt='[Experimental]'}}}{\strong{[Experimental]}}
+
+\ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#experimental}{\figure{lifecycle-experimental.svg}{options: alt='[Experimental]'}}}{\strong{[Experimental]}}
 
 \ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#experimental}{\figure{lifecycle-experimental.svg}{options: alt='[Experimental]'}}}{\strong{[Experimental]}}
 
@@ -706,6 +762,18 @@ is used in all other cases.
 To use a BibTeX-style citation, specify (for example) \verb{citation_text = "@MOZGUNOV", citation_link = ""}.
 
 
+\code{label} should be a character vector of length 1 or 2.  If of length 2, the first
+element describes a count of 1 and the second describes all other counts.
+If of length 1, the character \code{s} is appended to the value when the count is not 1.
+
+
+\code{label} and \code{time_unit} are, collectively, labels.
+
+A label should be a character vector of length 1 or 2.  If of length 2, the first
+element describes a count of 1 and the second describes all other counts.
+If of length 1, the character \code{s} is appended to the value when the count is not 1.
+
+
 \code{label} describes the trial's participants.
 
 It should be a character vector of length 1 or 2.  If of length 2, the first
@@ -785,6 +853,18 @@ is used in all other cases.
 
 
 To use a BibTeX-style citation, specify (for example) \verb{citation_text = "@MOZGUNOV", citation_link = ""}.
+
+
+\code{label} should be a character vector of length 1 or 2.  If of length 2, the first
+element describes a count of 1 and the second describes all other counts.
+If of length 1, the character \code{s} is appended to the value when the count is not 1.
+
+
+\code{label} and \code{time_unit} are, collectively, labels.
+
+A label should be a character vector of length 1 or 2.  If of length 2, the first
+element describes a count of 1 and the second describes all other counts.
+If of length 1, the character \code{s} is appended to the value when the count is not 1.
 }
 
 \seealso{

@@ -43,6 +43,7 @@ h_knit_print_render_biomarker_model <- function(x, use_values = TRUE, ...) {
 # DualEndpoint ----
 
 #' @description `r lifecycle::badge("experimental")`
+#' @inheritParams knit_print.StoppingTargetProb
 #' @param biomarker_name (`character`)\cr A description of the biomarker
 #' @rdname knit_print
 #' @export
@@ -54,7 +55,8 @@ knit_print.DualEndpoint <- function(
     use_values = TRUE,
     fmt = "%5.2f",
     units = NA,
-    biomarker_name = "a PD biomarker") {
+    tox_label = "toxicity",
+    biomarker_name = "PD biomarker") {
   assert_flag(asis)
   # Validate
   assert_flag(asis)
@@ -73,11 +75,23 @@ knit_print.DualEndpoint <- function(
     mean = x@betaZ_params@mean,
     ref_dose = x@ref_dose
   )
+
+  print(paste0("Here: h_knit_print_render_model.DualEndpoint ", tox_label))
+
   rv <- paste0(
-    "The relationships between dose and toxicity and between dose and ",
+    "The relationships between dose and ",
+    tox_label,
+    " and between dose and ",
     biomarker_name,
     " will be modelled simultaneously.\n\n",
-    knit_print(toxModel, asis = asis, use_values = use_values, fmt = fmt, units = units),
+    knit_print(
+      toxModel,
+      asis = asis,
+      tox_label = tox_label,
+      use_values = use_values,
+      fmt = fmt,
+      units = units
+    ),
     "\n\n",
     "The ",
     biomarker_name,
@@ -327,7 +341,7 @@ knit_print.ModelParamsNormal <- function(
     ),
     "\\end{bmatrix}",
     " \\right)",
-    " $$"
+    " $$\n\n"
   )
   if (asis) {
     rv <- knitr::asis_output(rv)
@@ -672,9 +686,18 @@ h_knit_print_render_model.LogisticNormal <- function(x, ...) {
 
 #' @description `r lifecycle::badge("experimental")`
 #' @noRd
-h_knit_print_render_model.ProbitLogNormal <- function(x, ...) {
+h_knit_print_render_model.ProbitLogNormal <- function(x, ..., tox_label = "toxicity") {
+
+  print(paste0("Here: h_knit_print_render_model.ProbitLogNormal ", tox_label))
+  withCallingHandlers(
+    {x <- 1 / 0},
+    error = function(e) print(sys.calls())
+  )
+
   paste0(
-    "A probit log normal model will describe the relationship between dose and toxicity: ",
+    "A probit log normal model will describe the relationship between dose and ",
+    tox_label,
+    ": ",
     "$$ \\Phi^{-1}(Tox | d) = f(X = 1 | \\theta, d) = \\alpha + \\beta \\cdot log(d/d^*) $$\\n ",
     "where d* denotes a reference dose.\n\n"
   )
@@ -684,10 +707,17 @@ h_knit_print_render_model.ProbitLogNormal <- function(x, ...) {
 
 #' @description `r lifecycle::badge("experimental")`
 #' @noRd
-h_knit_print_render_model.ProbitLogNormalRel <- function(x, ..., asis = TRUE) {
+h_knit_print_render_model.ProbitLogNormalRel <- function(
+    x,
+    ...,
+    tox_label = "toxicity",
+    asis = TRUE
+) {
   assert_flag(asis)
   paste0(
-    "A probit log normal model will describe the relationship between dose and toxicity: ",
+    "A probit log normal model will describe the relationship between dose and ",
+    tox_label,
+    ": ",
     "$$ \\Phi^{-1}(Tox | d) = f(X = 1 | \\theta, d) = \\alpha + \\beta \\cdot d/d^* $$\\n ",
     "where d* denotes a reference dose.\n\n"
   )
@@ -845,7 +875,7 @@ knit_print.OneParLogNormalPrior <- function(x, ..., asis = TRUE, use_values = TR
       paste0("$$ \\Theta \\sim Exp(", s2text, ") $$"),
       "$$ \\Theta \\sim Exp(\\lambda) $$"
     ),
-    "and skeleton probabilities as in the table below."
+    "and skeleton probabilities as in the table below.\n\n"
   )
   if (asis) {
     rv <- knitr::asis_output(rv)
@@ -861,7 +891,7 @@ knit_print.OneParLogNormalPrior <- function(x, ..., asis = TRUE, use_values = TR
 #' @method knit_print OneParExpPrior
 knit_print.OneParExpPrior <- function(x, ..., asis = TRUE) {
   assert_flag(asis)
-  rv <- "TODO"
+  rv <- "TODO\n\n"
   if (asis) {
     rv <- knitr::asis_output(rv)
   }
@@ -887,6 +917,10 @@ knit_print.LogisticLogNormalGrouped <- function(
     ),
     preamble = "The prior for &theta; is given by\\n",
     asis = TRUE) {
+
+  print("Here! knit_print.LogisticLogNormalGrouped")
+  print(params)
+  print(x@params@mean)
   NextMethod(params = params)
 }
 

@@ -12,7 +12,7 @@ NULL
 
 # RuleDesign                     Done
 # DesignGrouped
-# RuleDesignOrdinal
+# RuleDesignOrdinal              Done
 # Design                         Done
 # TDsamplesDesign
 # TDDesign
@@ -96,9 +96,58 @@ v_starting_dose <- function(object) {
   v$result()
 }
 
-
-
 # Helper functions ----
+
+h_knit_print_design <- function(
+    x,
+    ...,
+    level = 2L,
+    title = "Design",
+    default_sections = NA,
+    user_sections = NA,
+    asis = TRUE
+) {
+  assert_flag(asis)
+  assert_integer(level, min = 1L, max = 6L, any.missing = FALSE, len = 1L)
+  assert_character(title, any.missing = FALSE, len = 1L)
+
+  args <- list(...)
+  units <- ifelse("units" %in% names(args), paste0(" ", args[["units"]]), "")
+  section_labels <- h_prepare_section_labels(
+    x,
+    default_sections,
+    user_sections
+  )
+
+  rv <- paste0(
+    paste0(
+      lapply(
+        slotNames(x),
+        function(nm) {
+          tmp <- switch(
+            nm,
+            starting_dose = knit_print(StartingDose(x@starting_dose), asis = FALSE, ...),
+            startingDose = knit_print(StartingDose(x@startingDose), asis = FALSE, ...),
+            pl_cohort_size = ifelse (
+              identical(slot(x, "pl_cohort_size"), CohortSizeConst(0)),
+              "Placebo will not be administered in the trial.\n\n",
+              knit_print(slot(x, "pl_cohort_size"), asis = FALSE, ...)
+            ),
+            knit_print(slot(x, nm), asis = FALSE, ...)
+          )
+          paste0(h_markdown_header(section_labels[nm], level + 1L), tmp)
+        }
+      ),
+      collapse = "\n\n"
+    ),
+    "\n\n"
+  )
+
+  if (asis) {
+    rv <- knitr::asis_output(rv)
+  }
+  rv
+}
 
 #' @description A Helper Function to create Markdown Headers
 #'
@@ -193,55 +242,64 @@ knit_print.RuleDesign <- function(
     sections = NA,
     asis = TRUE
 ) {
-  assert_flag(asis)
-  assert_integer(level, min = 1L, max = 6L, any.missing = FALSE, len = 1L)
-  assert_character(title, any.missing = FALSE, len = 1L)
-
-  args <- list(...)
-  units <- ifelse("units" %in% names(args), paste0(" ", args[["units"]]), "")
-  section_labels <- h_prepare_section_labels(
+  h_knit_print_design(
     x,
-    c(
+    ...,
+    level = 2L,
+    title = "Design",
+    default_sections = c(
       "nextBest"     = "Dose recommendation",
       "cohort_size"  = "Cohort size",
       "data"         = "Observed data",
       "startingDose" = "Starting dose"
     ),
-    sections
+    user_sections = sections,
+    asis = TRUE
   )
-
-  rv <- paste0(
-    paste0(
-      lapply(
-        slotNames(x),
-        function(nm) {
-          tmp <- switch(
-            nm,
-            startingDose = knit_print(StartingDose(x@startingDose), asis = FALSE, ...),
-            pl_cohort_size = ifelse (
-              identical(slot(x, "pl_cohort_size"), CohortSizeConst(0)),
-              "Placebo will not be administered in the trial.\n\n",
-              knit_print(slot(x, "pl_cohort_size"), asis = FALSE, ...)
-            ),
-            knit_print(slot(x, nm), asis = FALSE, ...)
-          )
-          # if (nm == "startingDose") {
-          #   tmp <- knit_print(StartingDose(x@startingDose), asis = FALSE, ...)
-          # } else {
-          #   tmp <- knit_print(slot(x, nm), asis = FALSE, ...)
-          # }
-          paste0(h_markdown_header(section_labels[nm], level + 1L), tmp)
-        }
-      ),
-      collapse = "\n\n"
-    ),
-    "\n\n"
-  )
-
-  if (asis) {
-    rv <- knitr::asis_output(rv)
-  }
-  rv
+  # assert_flag(asis)
+  # assert_integer(level, min = 1L, max = 6L, any.missing = FALSE, len = 1L)
+  # assert_character(title, any.missing = FALSE, len = 1L)
+  #
+  # args <- list(...)
+  # units <- ifelse("units" %in% names(args), paste0(" ", args[["units"]]), "")
+  # section_labels <- h_prepare_section_labels(
+  #   x,
+  #   c(
+  #     "nextBest"     = "Dose recommendation",
+  #     "cohort_size"  = "Cohort size",
+  #     "data"         = "Observed data",
+  #     "startingDose" = "Starting dose"
+  #   ),
+  #   sections
+  # )
+  #
+  # rv <- paste0(
+  #   paste0(
+  #     lapply(
+  #       slotNames(x),
+  #       function(nm) {
+  #         tmp <- switch(
+  #           nm,
+  #           startingDose = knit_print(StartingDose(x@startingDose), asis = FALSE, ...),
+  #           pl_cohort_size = ifelse (
+  #             identical(slot(x, "pl_cohort_size"), CohortSizeConst(0)),
+  #             "Placebo will not be administered in the trial.\n\n",
+  #             knit_print(slot(x, "pl_cohort_size"), asis = FALSE, ...)
+  #           ),
+  #           knit_print(slot(x, nm), asis = FALSE, ...)
+  #         )
+  #         paste0(h_markdown_header(section_labels[nm], level + 1L), tmp)
+  #       }
+  #     ),
+  #     collapse = "\n\n"
+  #   ),
+  #   "\n\n"
+  # )
+  #
+  # if (asis) {
+  #   rv <- knitr::asis_output(rv)
+  # }
+  # rv
 }
 
 # Design ----
@@ -259,22 +317,40 @@ knit_print.Design <- function(
     sections = NA,
     asis = TRUE
 ) {
-  section_labels <- h_prepare_section_labels(
+  h_knit_print_design(
     x,
-    c(
+    ...,
+    level = 2L,
+    title = "Design",
+    default_sections = c(
+      "nextBest"     = "Dose recommendation",
+      "cohort_size"  = "Cohort size",
+      "data"         = "Observed data",
+      "startingDose" = "Starting dose",
       "increments"     = "Escalation rule",
       "stopping"       = "Stopping rule",
       "model"          = "Dose toxicity model",
       "pl_cohort_size" = "Use of placebo"
     ),
-    sections
+    user_sections = sections,
+    asis = TRUE
   )
-  knit_print.RuleDesign(
-    x,
-    level = level,
-    title = title,
-    sections = section_labels,
-    ...)
+  # section_labels <- h_prepare_section_labels(
+  #   x,
+  #   c(
+  #     "increments"     = "Escalation rule",
+  #     "stopping"       = "Stopping rule",
+  #     "model"          = "Dose toxicity model",
+  #     "pl_cohort_size" = "Use of placebo"
+  #   ),
+  #   sections
+  # )
+  # knit_print.RuleDesign(
+  #   x,
+  #   level = level,
+  #   title = title,
+  #   sections = section_labels,
+  #   ...)
 }
 
 # DualDesign ----
@@ -292,12 +368,33 @@ knit_print.DualDesign <- function(
     sections = NA,
     asis = TRUE
 ) {
+  args <- list(...)
+  bLabel <- ifelse(
+    "biomarker_name" %in% names(args),
+    args[["biomarker_name"]],
+    "biomarker"
+  )
+  tLabel <- ifelse(
+    "tox_label" %in% names(args),
+    args[["tox_label"]],
+    "toxicity"
+  )
+
+  if (is.na(sections)) {
+    sections <- c("model" = paste0("Dose-", tLabel, " and dose-", bLabel, " models"))
+  } else {
+    if (!("model" %in% names(sections))) {
+      sections["model"] <- paste0("Dose-", tLabel, " and dose-", bLabel, " models")
+    }
+  }
+
   knit_print.Design(
     x,
     level = level,
     title = title,
     sections = sections,
-    ...)
+    ...
+  )
 }
 
 # DADesign ----
@@ -315,21 +412,41 @@ knit_print.DADesign <- function(
     sections = NA,
     asis = TRUE
 ) {
-  section_labels <- h_prepare_section_labels(
+  h_knit_print_design(
     x,
-    c(
-      "data"          = "Observed data",
+    ...,
+    level = 2L,
+    title = "Design",
+    default_sections = c(
+      "nextBest"     = "Dose recommendation",
+      "cohort_size"  = "Cohort size",
+      "data"         = "Observed data",
+      "startingDose" = "Starting dose",
+      "increments"     = "Escalation rule",
+      "stopping"       = "Stopping rule",
+      "model"          = "Dose toxicity model",
+      "pl_cohort_size" = "Use of placebo",
       "safetyWindow"  = "Safety window"
     ),
-    sections
-  )
-  knit_print.Design(
-    x,
-    level = level,
-    title = title,
-    sections = section_labels,
+    user_sections = sections,
+    asis = TRUE,
     ...
   )
+  # section_labels <- h_prepare_section_labels(
+  #   x,
+  #   c(
+  #     "data"          = "Observed data",
+  #     "safetyWindow"  = "Safety window"
+  #   ),
+  #   sections
+  # )
+  # knit_print.Design(
+  #   x,
+  #   level = level,
+  #   title = title,
+  #   sections = section_labels,
+  #   ...
+  # )
 }
 
 # TDDesign ----
@@ -377,5 +494,76 @@ knit_print.DualResponsesDesign <- function(
     title = title,
     sections = sections,
     ...
+  )
+}
+
+# DesignOrdinal ----
+
+#' @description `r lifecycle::badge("experimental")`
+#' @inheritParams knit_print.RuleDesign
+#' @rdname knit_print
+#' @export
+#' @method knit_print DesignOrdinal
+knit_print.DesignOrdinal <- function(
+    x,
+    ...,
+    level = 2L,
+    title = "Design",
+    sections = NA,
+    asis = TRUE
+) {
+  h_knit_print_design(
+    x,
+    ...,
+    level = 2L,
+    title = "Design",
+    default_sections = c(
+      "next_best"     = "Dose recommendation",
+      "cohort_size"  = "Cohort size",
+      "data"         = "Observed data",
+      "starting_dose" = "Starting dose",
+      "increments"     = "Escalation rule",
+      "stopping"       = "Stopping rule",
+      "model"          = "Dose toxicity model",
+      "pl_cohort_size" = "Use of placebo"
+    ),
+    user_sections = sections,
+    asis = TRUE
+  )
+}
+
+# DesignGrouped ----
+
+#' @description `r lifecycle::badge("experimental")`
+#' @inheritParams knit_print.RuleDesign
+#' @rdname knit_print
+#' @export
+#' @method knit_print DesignGrouped
+knit_print.DesignGrouped <- function(
+    x,
+    ...,
+    level = 2L,
+    title = "Design",
+    sections = NA,
+    asis = TRUE
+) {
+  h_knit_print_design(
+    x,
+    ...,
+    level = 2L,
+    title = "Design",
+    default_sections = c(
+      # "next_best"     = "Dose recommendation",
+      # "cohort_size"  = "Cohort size",
+      # "data"         = "Observed data",
+      # "starting_dose" = "Starting dose",
+      # "increments"     = "Escalation rule",
+      # "stopping"       = "Stopping rule",
+      "model"          = "Dose toxicity model"
+      # ,
+      # "pl_cohort_size" = "Use of placebo"
+    ),
+    user_sections = sections,
+    asis = TRUE
   )
 }

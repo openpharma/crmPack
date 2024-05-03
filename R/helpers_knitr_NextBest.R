@@ -82,7 +82,7 @@ knit_print.NextBestNCRM <- function(
     x@target[1],
     " to ",
     x@target[2],
-    " (inclusive) will be selected."
+    " (inclusive) will be selected.\n\n"
   )
 
   if (asis) {

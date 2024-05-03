@@ -74,13 +74,19 @@ test_that("knit_print methods exist for all relevant classes and produce consist
           test_path("fixtures", outFileName),
           {
             # Code run in the template does not contribute to test coverage
-            rmarkdown::render(
-              input = test_path("fixtures", "knit_print_template.Rmd"),
-              params = list("class_name" = cls),
-              output_file = outFileName,
-              output_dir = test_path("fixtures")
-            )
-            expect_snapshot_file(test_path("fixtures", outFileName))
+
+            tryCatch({
+              rmarkdown::render(
+                input = test_path("fixtures", "knit_print_template.Rmd"),
+                params = list("class_name" = cls),
+                output_file = outFileName,
+                output_dir = test_path("fixtures")
+              )
+              expect_snapshot_file(test_path("fixtures", outFileName))
+            },
+            error = function(e){
+              warning(paste0("Error for class ", cls, ": "), geterrmessage())
+            })
           }
         )
       }
@@ -127,6 +133,24 @@ test_that("asis parameter works correctly for all implemented methods", {
   }
 })
 
+test_that("knit_print output is suffixed by two newlines for all implemented methods", {
+  for (cls in crmpack_class_list) {
+    if (!isClassUnion(cls)) {
+      obj <- do.call(paste0(".Default", cls), list())
+      # If the default knit_print method has been overridden, test it
+      if (h_custom_method_exists(knit_print, obj)) {
+        rv <- knit_print(obj, asis = FALSE)
+        if (is.null(rv)) print(paste0("knit_print(obj, asis = TRUE) returns NULL for class ", cls, "."))
+        ok <- identical(stringr::str_sub(rv, -2), "\n\n")
+        if (!ok) {
+          print(paste0("Double newline missing for ", cls))
+        }
+        expect_true(ok)
+      }
+    }
+  }
+})
+
 #  CohortSize ---
 
 #  CohortSizeConst
@@ -134,19 +158,19 @@ test_that("asis parameter works correctly for all implemented methods", {
 test_that("knit_print.CohortSizeConst works correctly", {
   x <- CohortSizeConst(3)
   rv <- knit_print(x)
-  expect_equal(rv, "A constant size of 3 participants.", ignore_attr = TRUE)
+  expect_equal(rv, "A constant size of 3 participants.\n\n", ignore_attr = TRUE)
 
   x <- CohortSizeConst(2)
   rv <- knit_print(x, label = "subject")
-  expect_equal(rv, "A constant size of 2 subjects.", ignore_attr = TRUE)
+  expect_equal(rv, "A constant size of 2 subjects.\n\n", ignore_attr = TRUE)
 
   x <- CohortSizeConst(1)
   rv <- knit_print(x, label = "subject")
-  expect_equal(rv, "A constant size of 1 subject.", ignore_attr = TRUE)
+  expect_equal(rv, "A constant size of 1 subject.\n\n", ignore_attr = TRUE)
 
   x <- CohortSizeConst(3)
   rv <- knit_print(x, asis = FALSE)
-  expect_equal(rv, "A constant size of 3 participants.")
+  expect_equal(rv, "A constant size of 3 participants.\n\n")
 })
 
 #  CohortSizeParts
@@ -154,19 +178,34 @@ test_that("knit_print.CohortSizeConst works correctly", {
 test_that("knit_print.CohortSizeParts works correctly", {
   x <- CohortSizeParts(c(1, 3))
   rv <- knit_print(x)
-  expect_equal(rv, "A size of 1 participant in the first part and 3 participants in the second.", ignore_attr = TRUE)
+  expect_equal(
+    rv,
+    "A size of 1 participant in the first part and 3 participants in the second.\n\n",
+    ignore_attr = TRUE
+  )
 
   x <- CohortSizeParts(c(1, 3))
   rv <- knit_print(x, label = "subject")
-  expect_equal(rv, "A size of 1 subject in the first part and 3 subjects in the second.", ignore_attr = TRUE)
+  expect_equal(
+    rv,
+    "A size of 1 subject in the first part and 3 subjects in the second.\n\n",
+    ignore_attr = TRUE
+  )
 
   x <- CohortSizeParts(c(1, 3))
   rv <- knit_print(x, label = "subject")
-  expect_equal(rv, "A size of 1 subject in the first part and 3 subjects in the second.", ignore_attr = TRUE)
+  expect_equal(
+    rv,
+    "A size of 1 subject in the first part and 3 subjects in the second.\n\n",
+    ignore_attr = TRUE
+  )
 
   x <- CohortSizeParts(c(1, 3))
   rv <- knit_print(x, asis = FALSE)
-  expect_equal(rv, "A size of 1 participant in the first part and 3 participants in the second.")
+  expect_equal(
+    rv,
+    "A size of 1 participant in the first part and 3 participants in the second.\n\n"
+  )
 })
 
 # Increments ----

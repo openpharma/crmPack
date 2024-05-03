@@ -1,14 +1,3 @@
-# Integration with knitr ----
-#'
-#' @description `r lifecycle::badge("experimental")`
-#'
-#' We provide additional utility functions to allow human-friendly rendition of
-#' crmPack objects in Markdown and Quarto files.
-#'
-#' @return a character string that represents the object in markdown.
-#' @name knit_print
-NULL
-
 # StoppingOrdinal ----
 
 #' @description `r lifecycle::badge("experimental")`
@@ -377,7 +366,10 @@ knit_print.StoppingSpecificDose <- function(
 knit_print.StoppingTargetProb <- function(
     x,
     ...,
-    fmt_string = "%sIf the probability of %s at %s is in the range [%4.2f, %4.2f] is at least %4.2f.\n\n",
+    fmt_string = paste0(
+      "%sIf the probability of %s at %s is in the range [%4.2f, %4.2f] ",
+      "is at least %4.2f.\n\n"
+    ),
     dose_label = "the next best dose",
     tox_label = "toxicity",
     asis = TRUE) {
@@ -523,6 +515,7 @@ knit_print.StoppingCohortsNearDose <- function(
     dose_label,
     ".\n\n"
   )
+
   if (asis) {
     rv <- knitr::asis_output(rv)
   }
@@ -547,6 +540,7 @@ knit_print.StoppingMissingDose <- function(
     "If the dose returned by <code>nextBest()</code> is ",
     "<code>NA</code>, or if the trial includes a placebo dose, the placebo dose.\n\n"
   )
+
   if (asis) {
     rv <- knitr::asis_output(rv)
   }

@@ -397,11 +397,11 @@ setMethod("approximate",
       assert_numeric(refDose)
       ## get the required quantiles at these dose levels:
       quants <- fit(object,
-        model,
-        data,
-        points = points,
-        quantiles = c(0.025, 0.975),
-        middle = median
+                    model,
+                    data,
+                    points = points,
+                    quantiles = c(0.025, 0.975),
+                    middle = median
       )
 
       ## get better starting values if it is already a logistic normal
