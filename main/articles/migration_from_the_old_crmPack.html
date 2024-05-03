@@ -33,7 +33,7 @@
     
     <a class="navbar-brand me-2" href="../index.html">crmPack</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">2.0.0.9149</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">2.0.0.9150</small>
 
     
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -65,12 +65,6 @@
 <li class="nav-item">
   <a class="nav-link" href="../news/index.html">Changelog</a>
 </li>
-<!-- start dropdown for versions --> <li class="nav-item dropdown">
-        <a href="#" class="nav-link dropdown-toggle"
-          data-bs-toggle="dropdown" role="button"
-          aria-expanded="false" aria-haspopup="true"
-          id="dropdown-versions">Versions</a> <div class="dropdown-menu" aria-labelledby="dropdown-versions"> <a class="dropdown-item" data-toggle="tooltip" title="" href="https://Roche.github.io/crmPack/main">main</a> </div></li>
-<!-- end dropdown for versions -->
 <li class="nav-item dropdown">
   <a href="#" class="nav-link dropdown-toggle" data-bs-toggle="dropdown" role="button" aria-expanded="false" aria-haspopup="true" id="dropdown-reports">Reports</a>
   <div class="dropdown-menu" aria-labelledby="dropdown-reports">
@@ -1227,10 +1221,10 @@ of a fixed model’s parameters values.</p>
 <span><span class="co"># given a particular models and samples.</span></span>
 <span><span class="co"># Every single dose corresponds to one particular sample in `my_samples`.</span></span>
 <span><span class="fu"><a href="../reference/dose.html">dose</a></span><span class="op">(</span><span class="fl">0.3</span>, <span class="va">my_model</span>, <span class="va">my_samples</span><span class="op">)</span></span></code></pre></div>
-<pre><code><span><span class="co">##  [1] 1.687887e+00 2.951874e+00 1.586567e+00 5.289758e+02 2.199732e-02</span></span>
-<span><span class="co">##  [6] 2.080081e+02 1.580921e+00 9.293858e-03 1.208356e+00 9.687823e-01</span></span>
-<span><span class="co">## [11] 1.087165e+00 3.079551e+00 1.276945e+00 2.779813e+00 1.458219e+00</span></span>
-<span><span class="co">## [16] 1.665112e+00 1.162442e+00 5.425748e+00 3.462493e-04 1.581585e+00</span></span></code></pre>
+<pre><code><span><span class="co">##  [1]   1.20696466   0.12288630   0.71317074   0.48854890   2.32412597</span></span>
+<span><span class="co">##  [6]   1.56549902   8.27658516   1.41902558   0.05290494   0.98890947</span></span>
+<span><span class="co">## [11]   3.74812880   1.14484057   0.98835076   0.99463720   0.72259111</span></span>
+<span><span class="co">## [16]   0.98466801 282.19993357   4.29523866   0.37607011   1.05895845</span></span></code></pre>
 <div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># True dose-DLT relationship.</span></span>
 <span><span class="co"># Say that -0.8 and 1 are the true values for models parameters alpha0 and alpha1 respectively.</span></span>
@@ -1248,10 +1242,10 @@ of a fixed model’s parameters values.</p>
 <code class="sourceCode R"><span><span class="co"># Toxicity probabilities for a given dose (equal to 10), model and samples.</span></span>
 <span><span class="co"># Every single probability value corresponds to one particular sample in `my_samples`.</span></span>
 <span><span class="fu"><a href="../reference/prob.html">prob</a></span><span class="op">(</span><span class="fl">10</span>, <span class="va">my_model</span>, <span class="va">my_samples</span><span class="op">)</span></span></code></pre></div>
-<pre><code><span><span class="co">##  [1] 0.88311461 0.53343333 0.92087982 0.45085719 0.61791017 0.20491606</span></span>
-<span><span class="co">##  [7] 0.03288844 0.82071468 0.99625970 0.02620913 0.60177186 0.56494780</span></span>
-<span><span class="co">## [13] 0.82480856 0.52530833 0.83957804 0.67824939 0.98047695 0.28236198</span></span>
-<span><span class="co">## [19] 0.58788547 0.82054924</span></span></code></pre>
+<pre><code><span><span class="co">##  [1] 0.71368721 0.58014384 0.91761917 0.96122379 0.73140662 0.06236285</span></span>
+<span><span class="co">##  [7] 0.32680354 0.88466187 0.70624093 0.90790361 0.44745338 0.99227881</span></span>
+<span><span class="co">## [13] 0.86010247 0.98358271 0.94588106 0.99324916 0.48338532 0.52561255</span></span>
+<span><span class="co">## [19] 0.68648601 0.97233937</span></span></code></pre>
 <div class="sourceCode" id="cb12"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># True DLT-dose relationship.</span></span>
 <span><span class="co"># Say that -0.8 and 1 are the true values for models parameters alpha0 and alpha1 respectively.</span></span>
@@ -1293,12 +1287,13 @@ account of any associated <code>doseGrid</code>.</p>
 <code class="sourceCode R"><span><span class="fu"><a href="../reference/StoppingAll-class.html">.DefaultStoppingAll</a></span><span class="op">(</span><span class="op">)</span></span></code></pre></div>
 <p>If all of the following rules are <code>TRUE</code>:</p>
 <ul>
-<li>≥ 3 cohorts dosed: If 3 or more cohorts have been treated.</li>
-<li>P(0.2 ≤ prob(DLE | NBD) ≤ 0.35) ≥ 0.5: If the probability of
+<li><p>≥ 3 cohorts dosed: If 3 or more cohorts have been
+treated.</p></li>
+<li><p>P(0.2 ≤ prob(DLE | NBD) ≤ 0.35) ≥ 0.5: If the probability of
 toxicity at the next best dose is in the range [0.20, 0.35] is at least
-0.50.</li>
-<li>≥ 20 patients dosed: If 20 or more participants have been
-treated.</li>
+0.50.</p></li>
+<li><p>≥ 20 patients dosed: If 20 or more participants have been
+treated.</p></li>
 </ul>
 <div class="sourceCode" id="cb15"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">class_name</span> <span class="op">&lt;-</span> <span class="st">"LogisticNormal"</span></span>
@@ -1310,8 +1305,8 @@ dose and toxicity: <span class="math display">\[ p(Tox | d) = f(X = 1 |
 <p>The prior for θ is given by<span class="math display">\[
 \boldsymbol\theta = \begin{bmatrix}\alpha \\ \beta\end{bmatrix}\sim N
 \left(\begin{bmatrix}-0.85 \\  1.00\end{bmatrix} , \begin{bmatrix} 1.00
-&amp; -0.50 \\ -0.50 &amp;  1.00\end{bmatrix} \right) \]</span>The
-reference dose will be 1.00.</p>
+&amp; -0.50 \\ -0.50 &amp;  1.00\end{bmatrix} \right) \]</span></p>
+<p>The reference dose will be 1.00.</p>
 </div>
 <div class="section level2">
 <h2 id="handling-of-na-or-placebo-returned-as-next-dose">Handling of <code>NA</code> or placebo returned as next dose<a class="anchor" aria-label="anchor" href="#handling-of-na-or-placebo-returned-as-next-dose"></a>

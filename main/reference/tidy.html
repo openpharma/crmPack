@@ -46,7 +46,7 @@ A method that tidies a DataOrdinal object."><meta property="og:image" content="h
     
     <a class="navbar-brand me-2" href="../index.html">crmPack</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">2.0.0.9149</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">2.0.0.9150</small>
 
     
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -77,12 +77,6 @@ A method that tidies a DataOrdinal object."><meta property="og:image" content="h
 <li class="nav-item">
   <a class="nav-link" href="../news/index.html">Changelog</a>
 </li>
-<!-- start dropdown for versions --> <li class="nav-item dropdown">
-        <a href="#" class="nav-link dropdown-toggle"
-          data-bs-toggle="dropdown" role="button"
-          aria-expanded="false" aria-haspopup="true"
-          id="dropdown-versions">Versions</a> <div class="dropdown-menu" aria-labelledby="dropdown-versions"> <a class="dropdown-item" data-toggle="tooltip" title="" href="https://Roche.github.io/crmPack/main">main</a> </div></li>
-<!-- end dropdown for versions -->
 <li class="nav-item dropdown">
   <a href="#" class="nav-link dropdown-toggle" data-bs-toggle="dropdown" role="button" aria-expanded="false" aria-haspopup="true" id="dropdown-reports">Reports</a>
   <div class="dropdown-menu" aria-labelledby="dropdown-reports">
@@ -502,18 +496,18 @@ object to a (list of) tibbles.  This is a basic, default representation.</p>
 <span class="r-in"><span><span class="fu"><a href="Simulations-class.html">.DefaultSimulations</a></span><span class="op">(</span><span class="op">)</span> <span class="op"><a href="pipe.html">%&gt;%</a></span> <span class="fu">tidy</span><span class="op">(</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> $fit</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> $fit[[1]]</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>        middle        lower     upper</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 1  0.01870880 8.921932e-05 0.0994365</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 2  0.04465921 1.671313e-03 0.1708873</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 3  0.06996940 5.601874e-03 0.2107993</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 4  0.13442863 2.780364e-02 0.2984532</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 5  0.19962293 5.966083e-02 0.3754230</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 6  0.26303870 9.738497e-02 0.4502278</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 7  0.32258502 1.413680e-01 0.5136527</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 8  0.46912774 2.499773e-01 0.7243622</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 9  0.54065799 2.969516e-01 0.8163787</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 10 0.67382745 3.769455e-01 0.9309616</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 11 0.72525196 4.174077e-01 0.9631112</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>        middle        lower      upper</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 1  0.01887575 0.0001193348 0.09675264</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 2  0.04507575 0.0015056681 0.15912747</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 3  0.07049454 0.0046295997 0.20853090</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 4  0.13447297 0.0238613716 0.29866770</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 5  0.19814212 0.0534771537 0.38708074</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 6  0.25933311 0.0942723956 0.46018312</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 7  0.31634564 0.1280002722 0.53712561</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 8  0.45575018 0.2177224191 0.70977550</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 9  0.52397101 0.2550584651 0.79536591</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 10 0.65353869 0.3344488409 0.91310570</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 11 0.70496930 0.3646526312 0.94361617</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> $stop_report</span>
@@ -929,16 +923,16 @@ object to a (list of) tibbles.  This is a basic, default representation.</p>
 <span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># A tibble: 2,000 × 10</span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>    Iteration Chain  alpha0 alpha1 nChains nParameters nIterations nBurnin nThin</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>        <span style="color: #949494; font-style: italic;">&lt;int&gt;</span> <span style="color: #949494; font-style: italic;">&lt;int&gt;</span>   <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>  <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>   <span style="color: #949494; font-style: italic;">&lt;int&gt;</span>       <span style="color: #949494; font-style: italic;">&lt;int&gt;</span>       <span style="color: #949494; font-style: italic;">&lt;int&gt;</span>   <span style="color: #949494; font-style: italic;">&lt;int&gt;</span> <span style="color: #949494; font-style: italic;">&lt;int&gt;</span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 1</span>         1     1 -<span style="color: #BB0000;">1.54</span>    1.01        1           1        <span style="text-decoration: underline;">2</span>100     100     1</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 2</span>         2     1 -<span style="color: #BB0000;">1.76</span>    3.00        1           1        <span style="text-decoration: underline;">2</span>100     100     1</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 3</span>         3     1  0.775   0.181       1           1        <span style="text-decoration: underline;">2</span>100     100     1</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 4</span>         4     1 -<span style="color: #BB0000;">1.49</span>    2.02        1           1        <span style="text-decoration: underline;">2</span>100     100     1</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 5</span>         5     1 -<span style="color: #BB0000;">0.039</span><span style="color: #BB0000; text-decoration: underline;">5</span>  1.07        1           1        <span style="text-decoration: underline;">2</span>100     100     1</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 6</span>         6     1  0.065<span style="text-decoration: underline;">3</span>  3.39        1           1        <span style="text-decoration: underline;">2</span>100     100     1</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 7</span>         7     1 -<span style="color: #BB0000;">0.987</span>   1.61        1           1        <span style="text-decoration: underline;">2</span>100     100     1</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 8</span>         8     1 -<span style="color: #BB0000;">1.64</span>    4.02        1           1        <span style="text-decoration: underline;">2</span>100     100     1</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 9</span>         9     1 -<span style="color: #BB0000;">0.595</span>   2.11        1           1        <span style="text-decoration: underline;">2</span>100     100     1</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">10</span>        10     1  0.256   4.68        1           1        <span style="text-decoration: underline;">2</span>100     100     1</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 1</span>         1     1  0.032<span style="text-decoration: underline;">3</span>  2.40        1           1        <span style="text-decoration: underline;">2</span>100     100     1</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 2</span>         2     1 -<span style="color: #BB0000;">0.957</span>   1.25        1           1        <span style="text-decoration: underline;">2</span>100     100     1</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 3</span>         3     1 -<span style="color: #BB0000;">1.21</span>   23.8         1           1        <span style="text-decoration: underline;">2</span>100     100     1</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 4</span>         4     1 -<span style="color: #BB0000;">0.994</span>   1.16        1           1        <span style="text-decoration: underline;">2</span>100     100     1</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 5</span>         5     1  0.362   0.636       1           1        <span style="text-decoration: underline;">2</span>100     100     1</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 6</span>         6     1 -<span style="color: #BB0000;">0.258</span>   3.43        1           1        <span style="text-decoration: underline;">2</span>100     100     1</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 7</span>         7     1 -<span style="color: #BB0000;">1.24</span>    6.34        1           1        <span style="text-decoration: underline;">2</span>100     100     1</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 8</span>         8     1 -<span style="color: #BB0000;">1.26</span>    7.58        1           1        <span style="text-decoration: underline;">2</span>100     100     1</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 9</span>         9     1 -<span style="color: #BB0000;">1.75</span>    8.91        1           1        <span style="text-decoration: underline;">2</span>100     100     1</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">10</span>        10     1 -<span style="color: #BB0000;">1.06</span>    0.904       1           1        <span style="text-decoration: underline;">2</span>100     100     1</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># ℹ 1,990 more rows</span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># ℹ 1 more variable: parallel &lt;lgl&gt;</span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
