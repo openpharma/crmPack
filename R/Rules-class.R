@@ -1607,8 +1607,7 @@ setClass(
 #' @example examples/Rules-class-StoppingMissingDose.R
 #' @export
 #'
-StoppingMissingDose <- function(
-    report_label = NA_character_) {
+StoppingMissingDose <- function(report_label = NA_character_) {
   report_label <- h_default_if_empty(
     as.character(report_label),
     paste("Stopped because of missing dose")
@@ -2569,8 +2568,6 @@ StoppingMaxGainCIRatio <- function(target_ratio = 5,
   )
 }
 
-
-
 # StoppingList ----
 
 ## class ----
@@ -2814,6 +2811,47 @@ StoppingOrdinal <- function(grade, rule) {
     StoppingTargetProb(target = c(0.2, 0.35), prob = 0.6)
   )
 }
+
+# StoppingExternal ----
+
+## class ----
+
+#' `StoppingExternal`
+#'
+#' @description `r lifecycle::badge("experimental")`
+#'
+#' [`StoppingExternal`] is the class for stopping based on an external flag.
+#'
+#' @aliases StoppingExternal
+#' @export
+#'
+.StoppingExternal <- setClass(
+  Class = "StoppingExternal",
+  contains = "Stopping"
+)
+
+## constructor ----
+
+#' @rdname StoppingExternal-class
+#' @param report_label (`string` or `NA`)\cr see slot definition.
+#' @example examples/Rules-class-StoppingExternal.R
+#' @export
+#'
+StoppingExternal <- function(report_label = NA_character_) {
+  report_label <- h_default_if_empty(
+    as.character(report_label),
+    paste("Stopped because of external flag")
+  )
+  .StoppingExternal(report_label = report_label)
+}
+
+## default constructor ----
+
+#' @rdname StoppingExternal-class
+#' @note Typically, end users will not use the `.DefaultStoppingExternal()` function.
+#' @export
+#'
+.DefaultStoppingExternal <- StoppingExternal
 
 # CohortSize ----
 
@@ -3308,9 +3346,10 @@ setClass(
 #'   time intervals are of 5 units of time when the cohort size is equal to or
 #'   larger than 4. And the time interval between the 1st and 2nd patient = 7 units
 #'   of time and the rest time intervals are 3 units of time when the cohort size
-#'   is smaller than 4, then we specify `size = c(0L, 4L)`. This means,
-#'   the right bound of the intervals are exclusive to the interval, and the
-#'   last interval goes from the last value until infinity.
+#'   is smaller than 4, then we specify both `gap = list(c(7, 3), c(9, 5))` and
+#'   `size = c(0L, 4L)`. This means, the right bounds of the intervals are
+#'   excluded from the interval, and the last interval goes from the last value
+#'   to infinity.
 #' @slot follow (`count`)\cr the period of time that each patient in the
 #'   cohort needs to be followed before the next cohort opens.
 #' @slot follow_min (`count`)\cr at least one patient in the cohort needs
@@ -3394,7 +3433,8 @@ SafetyWindowSize <- function(gap,
 #' @description `r lifecycle::badge("stable")`
 #'
 #' [`SafetyWindowConst`] is the class for safety window length and it is used
-#' when the `gap` should be kept constant.
+#' when the `gap` should be kept constant across cohorts (though it may vary
+#' within a cohort).
 #'
 #' @slot gap (`integer`)\cr a vector, the constant gap between patients.
 #' @slot follow (`count`)\cr how long to follow each patient. The period of time
@@ -3457,7 +3497,7 @@ SafetyWindowConst <- function(gap,
 #' @export
 .DefaultSafetyWindowConst <- function() {
   SafetyWindowConst(
-    gap = c(7, 5, 3),
+    gap = 7,
     follow = 7,
     follow_min = 14
   )

@@ -2467,7 +2467,7 @@ setMethod(
     )
     # CV of MTD expressed as percentage, derived based on MTD posterior samples.
     mtd_cv <- (mad(mtd_samples) / median(mtd_samples)) * 100
-    do_stop <- (mtd_cv <= stopping@thresh_cv) && (mtd_cv >= 0)
+    do_stop <- mtd_cv <= stopping@thresh_cv
 
     msg <- paste(
       "CV of MTD is",
@@ -2790,6 +2790,42 @@ setMethod(
         class(data),
         " object."
       )
+    )
+  }
+)
+
+## StoppingExternal ----
+
+#' @describeIn stopTrial Stop based on an external flag.
+#'
+#' @description `r lifecycle::badge("experimental")`
+#' @param external (`flag`)\cr whether to stop based on the external
+#'   result or not.
+#'
+#' @aliases stopTrial-StoppingExternal
+#' @example examples/Rules-method-stopTrial-StoppingExternal.R
+#'
+setMethod(
+  f = "stopTrial",
+  signature = signature(
+    stopping = "StoppingExternal",
+    dose = "numeric",
+    samples = "ANY",
+    model = "ANY",
+    data = "ANY"
+  ),
+  definition = function(stopping, dose, samples, model, data, external, ...) {
+    assert_flag(external)
+
+    msg <- paste(
+      "Based on external result",
+      ifelse(external, "stop", "continue")
+    )
+
+    structure(
+      external,
+      message = msg,
+      report_label = stopping@report_label
     )
   }
 )
@@ -3299,7 +3335,7 @@ setMethod("stopTrial",
         round(ratioTDEOT, 4)
       )
       text3 <- paste(
-        ifelse(chooseTD, "TDatrgetEndOfTrial estimate", "Gstar estimate"), "is smaller with ratio =",
+        ifelse(chooseTD, "TDtargetEndOfTrial estimate", "Gstar estimate"), "is smaller with ratio =",
         round(ratio, 4), " which is ", ifelse(doStop, "is less than or equal to", "greater than"),
         "target_ratio =", stopping@target_ratio
       )
@@ -3782,22 +3818,26 @@ setMethod(
   f = "tidy",
   signature = signature(x = "NextBestNCRMLoss"),
   definition = function(x, ...) {
-    slot_names <- slotNames(x)
-    rv <- list()
-    for (nm in slot_names) {
-      if (!is.function(slot(x, nm))) {
-        rv[[nm]] <- h_tidy_slot(x, nm, ...)
-      }
-    }
-    # Column bind of all list elements have the same number of rows
-    if (length(rv) > 1 & length(unique(sapply(rv, nrow))) == 1) {
-      rv <- rv %>% dplyr::bind_cols()
-    }
-    rv <- rv %>% h_tidy_class(x)
-    if (length(rv) == 1) {
-      rv[[names(rv)[1]]] %>% h_tidy_class(x)
-    } else {
-      rv
-    }
+    tibble(
+      Range = "Underdose",
+      Lower = 0,
+      Upper = x@target[1]
+    ) %>%
+      dplyr::bind_rows(
+        lapply(
+          c("target", "overdose", "unacceptable"),
+          function(nm, obj) {
+            tibble::tibble(
+              Range = stringr::str_to_sentence(nm),
+              Lower = slot(obj, nm)[1],
+              Upper = slot(obj, nm)[2]
+            )
+          },
+          obj = x
+        ) %>% dplyr::bind_rows()
+      ) %>%
+      add_column(LossCoefficient = x@losses) %>%
+      add_column(MaxOverdoseProb = x@max_overdose_prob) %>%
+      h_tidy_class(x)
   }
 )

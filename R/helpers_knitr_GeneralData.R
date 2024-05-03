@@ -234,7 +234,7 @@ h_knit_print_summarise.GeneralData <- function(x, summarise, full_grid, ...) {
     dplyr::group_by(.data[[stringr::str_to_title(summarise)]]) %>%
     dplyr::summarise(
       N = dplyr::n(),
-      ToxCount = sum(.data$Tox)
+      ToxCount = sum(Tox)
     )
   if (full_grid && summarise == "dose") {
     xTidy <- xTidy %>%
@@ -285,7 +285,7 @@ h_knit_print_summarise.DataGrouped <- function(x, summarise, full_grid, ...) {
     dplyr::group_by(.data[[stringr::str_to_title(summarise)]], .data$Group) %>%
     dplyr::summarise(
       N = dplyr::n(),
-      ToxCount = sum(.data$Tox)
+      ToxCount = sum(Tox)
     )
   if (full_grid && summarise == "dose") {
     xTidy <- tidyr::expand_grid(
@@ -366,11 +366,11 @@ knit_print.GeneralData <- function(
     }
   }
   param[["x"]] <- xTidy
-  rv <- ifelse(
-    length(x@x) > 0,
-    (do.call(knitr::kable, param)) %>% format_func(),
+  rv <- if (length(x@x) > 0) {
+    paste((do.call(knitr::kable, param)) %>% format_func(), collapse = "\n")
+  } else {
     paste("No", labels[2], "are yet evaluable.\n\n")
-  )
+  }
   rv <- paste0(
     rv,
     paste0(
@@ -381,7 +381,8 @@ knit_print.GeneralData <- function(
       ),
       ""
     ),
-    collpase = "<br>"
+    "\n\n",
+    collpase = "\n"
   )
   if (asis) {
     rv <- knitr::asis_output(rv)
@@ -389,6 +390,8 @@ knit_print.GeneralData <- function(
   rv
 }
 
+#' @export
+#' @rdname knit_print
 knit_print.DataParts <- function(
     x, ..., asis = TRUE,
     labels = c("participant", "participants"),
@@ -404,7 +407,7 @@ knit_print.DataParts <- function(
       "\n\nThe part 1 ladder is ",
       h_get_formatted_dosegrid(x@part1Ladder, units)
     ),
-    paste0("\n\nThe next part is Part ", x@nextPart, ".")
+    paste0("\n\nThe next part is Part ", x@nextPart, ".\n\n")
   )
   if (asis) {
     rv <- knitr::asis_output(rv)

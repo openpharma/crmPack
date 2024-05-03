@@ -21,3 +21,4 @@ TODO
 ^doc$
 ^Meta$
 Rplots.pdf
+^pkgdown$

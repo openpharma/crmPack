@@ -280,7 +280,7 @@ test_that("h_default_if_empty works as expected", {
   default <- "default label"
   expect_identical(h_default_if_empty(character(0), default), default)
   expect_identical(h_default_if_empty("custom label", default), "custom label")
-  expect_identical(h_default_if_empty(NA, default), NA)
+  expect_identical(h_default_if_empty(NA, default), "default label")
   expect_identical(h_default_if_empty(NULL, default), default)
 })
 

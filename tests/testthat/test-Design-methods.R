@@ -106,6 +106,7 @@ test_that("simulate-DualDesign produces consistent results", {
   expect_snapshot(result)
 })
 
+# TDSamplesDesign ----
 
 test_that("simulate-TDSamplesDesign produces consistent results", {
   data <- Data(doseGrid = seq(25, 300, 25))
@@ -153,6 +154,8 @@ test_that("simulate-TDSamplesDesign produces consistent results", {
   expect_snapshot(result)
 })
 
+# TDDesign ----
+
 test_that("simulate-TDDesign produces consistent results", {
   suppressWarnings({
     design <- h_get_design_tddesign()
@@ -193,6 +196,8 @@ test_that("simulate-DualResponsesDesign produces consistent results", {
 
   expect_snapshot(result)
 })
+
+# DualResponsesSamplesDesign ----
 
 test_that("simulate-DualResponsesSamplesDesign produces consistent results", {
   data <- DataDual(doseGrid = seq(25, 300, 25), placebo = FALSE)
@@ -260,6 +265,8 @@ test_that("simulate-DualResponsesSamplesDesign produces consistent results", {
   expect_snapshot(result)
 })
 
+# Design ----
+
 test_that("Test if simulate generate the expected output.", {
   data <- h_get_data(placebo = FALSE)
   model <- h_get_logistic_normal()
@@ -294,7 +301,6 @@ test_that("Test if simulate generate the expected output.", {
   # regardless of style
   expect_snapshot(sim)
 })
-
 
 ## NextBestInfTheory ----
 
@@ -670,9 +676,9 @@ test_that("simulate for DesignGrouped allows to stop mono when combo stops", {
   expect_valid(result$combo, "Simulations")
 
   # We see the expected stop reasons.
-  expect_identical(
+  lapply(
     result$mono@stop_reasons,
-    rep(list("mono stopped because combo stopped"), 2)
+    function(x) expect_subset("Based on external result stop", unlist(x))
   )
   expect_identical(
     result$combo@stop_reasons,
@@ -688,7 +694,7 @@ test_that("simulate for DesignGrouped allows to stop mono when combo stops", {
   # And we see the stop report includes the previous stopping rule too.
   expect_identical(
     colnames(result$mono@stop_report),
-    c("my label", "mono stopped because combo stopped")
+    c(NA, "my label", "Stop Mono with Combo")
   )
 })
 
@@ -732,7 +738,7 @@ test_that("simulate for DesignGrouped reports correctly when mono is not stopped
   # We see the stop report includes the previous stopping rule and the mono because combo thing too.
   expect_identical(
     colnames(result$mono@stop_report),
-    c("my label", "mono stopped because combo stopped")
+    c(NA, "my label", "Stop Mono with Combo")
   )
   # But not for the combo.
   expect_identical(
@@ -847,6 +853,56 @@ test_that("simulate for DesignGrouped works with parallel start when first cohor
   # In first combo cohort we have the lower, mono starting dose too, because
   # of parallel start.
   expect_true(all(combo_trial@x[1:3] == 1))
+})
+
+test_that("simulate for DesignGrouped uses DLT probabilities and cohort sizes correctly", {
+  object <- DesignGrouped(
+    model = LogisticLogNormalGrouped(mean = rep(-1, 4), cov = diag(5, 4), ref_dose = 1),
+    mono = Design(
+      model = .LogisticNormal(),
+      nextBest = NextBestNCRM(target = c(0.3, 0.6), overdose = c(0.6, 1), max_overdose_prob = 0.7),
+      stopping = StoppingMinPatients(nPatients = 9),
+      increments = IncrementsDoseLevels(levels = 5),
+      # Make sure that cohort size changes across doses.
+      cohort_size = CohortSizeRange(intervals = c(0, 5, 10), cohort_size = c(1, 2, 3)),
+      data = Data(doseGrid = 1:100),
+      startingDose = 1
+    ),
+    same_dose_for_all = TRUE,
+    first_cohort_mono_only = TRUE
+  )
+  # Make sure that the true DLT probabilities change heavily across doses.
+  my_truth <- stats::stepfun(x = c(0, 5, 10), y = c(0, 0, 0.5, 0.99))
+  my_combo_truth <- my_truth
+
+  result <- expect_silent(simulate(
+    object,
+    nsim = 2,
+    seed = 123,
+    truth = my_truth,
+    combo_truth = my_combo_truth,
+    mcmcOptions = h_get_mcmc_options()
+  ))
+
+  expect_list(result)
+  expect_names(names(result), identical.to = c("mono", "combo"))
+  expect_valid(result$mono, "Simulations")
+  expect_valid(result$combo, "Simulations")
+
+  mono_trial <- result$mono@data[[2L]]
+  combo_trial <- result$combo@data[[2L]]
+
+  # We have seen doses of 5 or larger.
+  expect_true(any(mono_trial@x >= 5))
+  expect_true(any(combo_trial@x >= 5))
+
+  # And therefore we must have seen DLTs.
+  expect_true(any(mono_trial@y > 0))
+  expect_true(any(combo_trial@y > 0))
+
+  # And therefore we must also have had cohort sizes larger than 1.
+  expect_true(any(table(mono_trial@cohort) > 1))
+  expect_true(any(table(combo_trial@cohort) > 1))
 })
 
 # examine ----

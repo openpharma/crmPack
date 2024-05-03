@@ -680,8 +680,9 @@ h_null_if_na <- function(x) {
 #'
 #' @description `r lifecycle::badge("stable")`
 #'
-#' A simple helper function that sets a default value for an empty object,
-#' that is an object for which [length()] function returns `0L`.
+#' A simple helper function that sets a default value for an empty or missing object,
+#' that is an object for which [length()] function returns `0L` or it has length 1
+#' and [is.na()] returns `TRUE`.
 #'
 #' @param x (`any`) \cr an object to handle. It can be any object for which
 #'   [length()] function is defined.
@@ -693,7 +694,7 @@ h_null_if_na <- function(x) {
 #' h_default_if_empty("custom label", default = "default label")
 #' h_default_if_empty(NA, default = "default label")
 h_default_if_empty <- function(x, default) {
-  if (length(x) == 0L) {
+  if (length(x) == 0L || (length(x) == 1L && is.na(x))) {
     default
   } else {
     x
