@@ -23,7 +23,8 @@ SafetyWindowConst(gap, follow, follow_min)
 \ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#stable}{\figure{lifecycle-stable.svg}{options: alt='[Stable]'}}}{\strong{[Stable]}}
 
 \code{\link{SafetyWindowConst}} is the class for safety window length and it is used
-when the \code{gap} should be kept constant.
+when the \code{gap} should be kept constant across cohorts (though it may vary
+within a cohort).
 }
 \section{Slots}{
 

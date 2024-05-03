@@ -381,7 +381,8 @@ knit_print.GeneralData <- function(
       ),
       ""
     ),
-    collpase = "<br>"
+    "\n\n",
+    collpase = "\n"
   )
   if (asis) {
     rv <- knitr::asis_output(rv)
@@ -406,7 +407,7 @@ knit_print.DataParts <- function(
       "\n\nThe part 1 ladder is ",
       h_get_formatted_dosegrid(x@part1Ladder, units)
     ),
-    paste0("\n\nThe next part is Part ", x@nextPart, ".")
+    paste0("\n\nThe next part is Part ", x@nextPart, ".\n\n")
   )
   if (asis) {
     rv <- knitr::asis_output(rv)
