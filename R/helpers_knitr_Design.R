@@ -85,7 +85,7 @@ NULL
 
 #' @describeIn v_starting_dose validates that the [`StartingDose`] object
 #'   contains valid `starting_dose`.
-#'  @noRd
+#' @noRd
 #' @keywords internal
 v_starting_dose <- function(object) {
   v <- Validate()
@@ -132,7 +132,7 @@ h_knit_print_design <- function(
             nm,
             starting_dose = knit_print(StartingDose(x@starting_dose), asis = FALSE, ...),
             startingDose = knit_print(StartingDose(x@startingDose), asis = FALSE, ...),
-            pl_cohort_size = ifelse (
+            pl_cohort_size = ifelse(
               identical(slot(x, "pl_cohort_size"), CohortSizeConst(0)),
               "Placebo will not be administered in the trial.\n\n",
               knit_print(slot(x, "pl_cohort_size"), asis = FALSE, ...)

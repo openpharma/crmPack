@@ -84,7 +84,7 @@ test_that("knit_print methods exist for all relevant classes and produce consist
               )
               expect_snapshot_file(test_path("fixtures", outFileName))
             },
-            error = function(e){
+            error = function(e) {
               warning(paste0("Error for class ", cls, ": "), geterrmessage())
             })
           }

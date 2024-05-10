@@ -3,9 +3,6 @@
 \name{v_starting_dose}
 \alias{v_starting_dose}
 \title{Internal Helper Functions for Validation of \code{\link{StartingDose}} Objects}
-\usage{
-v_starting_dose(object)
-}
 \arguments{
 \item{object}{(\code{StartingDose})\cr object to validate.}
 }
@@ -19,11 +16,3 @@ or \code{TRUE} in case validation passes.
 These functions are only used internally to validate the format of an input
 \code{\link{RuleDesign}} or inherited classes and therefore not exported.
 }
-\section{Functions}{
-\itemize{
-\item \code{v_starting_dose()}: validates that the \code{\link{StartingDose}} object
-contains valid \code{starting_dose}.
-@noRd
-
-}}
-\keyword{internal}
