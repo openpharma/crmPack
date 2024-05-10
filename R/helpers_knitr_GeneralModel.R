@@ -75,9 +75,6 @@ knit_print.DualEndpoint <- function(
     mean = x@betaZ_params@mean,
     ref_dose = x@ref_dose
   )
-
-  print(paste0("Here: h_knit_print_render_model.DualEndpoint ", tox_label))
-
   rv <- paste0(
     "The relationships between dose and ",
     tox_label,
@@ -687,13 +684,6 @@ h_knit_print_render_model.LogisticNormal <- function(x, ...) {
 #' @description `r lifecycle::badge("experimental")`
 #' @noRd
 h_knit_print_render_model.ProbitLogNormal <- function(x, ..., tox_label = "toxicity") {
-
-  print(paste0("Here: h_knit_print_render_model.ProbitLogNormal ", tox_label))
-  withCallingHandlers(
-    {x <- 1 / 0},
-    error = function(e) print(sys.calls())
-  )
-
   paste0(
     "A probit log normal model will describe the relationship between dose and ",
     tox_label,
@@ -918,9 +908,6 @@ knit_print.LogisticLogNormalGrouped <- function(
     preamble = "The prior for &theta; is given by\\n",
     asis = TRUE) {
 
-  print("Here! knit_print.LogisticLogNormalGrouped")
-  print(params)
-  print(x@params@mean)
   NextMethod(params = params)
 }
 
@@ -953,6 +940,8 @@ h_knit_print_render_model.LogisticLogNormalOrdinal <- function(x, ...) {
   )
 }
 
+# LogisticLogNormalOrdinal ----
+
 #' @description `r lifecycle::badge("experimental")`
 #' @rdname knit_print
 #' @export
@@ -975,3 +964,191 @@ knit_print.LogisticLogNormalOrdinal <- function(
   }
   NextMethod(params = params)
 }
+
+# LogisticIndepBeta ----
+
+#' @description `r lifecycle::badge("experimental")`
+#' @rdname knit_print
+#' @export
+#' @method knit_print LogisticIndepBeta
+knit_print.LogisticIndepBeta <- function(
+    x,
+    ...,
+    use_values = TRUE,
+    fmt = "%5.2f",
+    params = NA,
+    tox_label = "DLAEs",
+    preamble = "The prior for &theta; is given by\\n",
+    asis = TRUE) {
+  assert_flag(asis)
+
+  y <- tidy(x)
+  z <- "e^{\\phi_1 + \\phi_2 \\cdot log(d)}"
+  posterior <- ModelParamsNormal(mean = c(x@phi1, x@phi2), cov = x@Pcov)
+  # knit_print.ModelParamsNormal expects no row or column names
+  rownames(posterior@cov) <- NULL
+  colnames(posterior@cov) <- NULL
+
+  rv <- paste0(
+    "A logistic log normal model will describe the relationship between dose and toxicity: ",
+    "$$ p(Tox | d) = f(X = 1 | \\theta, d) = \\frac{", z, "}{1 + ", z, "} $$\\n ",
+
+    "The prior is expressed in terms of pseudo data and, consequently, the number ",
+    " of cases and of ",
+    tox_label,
+    " need not be whole numbers.\n\nThe pseudo data are ",
+    "defined in the following table:\n\n",
+    paste0(
+      do.call(
+        function(x) {
+          kableExtra::kable_styling(
+            knitr::kable(x, col.names = c("Dose", "N", tox_label)),
+            bootstrap_options = c("striped", "hover", "condensed")
+          )
+        },
+        list(x = y$pseudoData)
+      ),
+      collapse = "\n"
+    ),
+    ifelse(
+      nrow(y$data) == 0,
+      "\n\nNo observed data has yet been recorded.\n",
+      paste(
+        "\n\nThe observed data are given in the following table:\n\n",
+        paste((do.call(knitr::kable, list(x = y$data))), collapse = "\n")
+      )
+    ),
+    knit_print(
+      posterior,
+      preamble = paste0(
+        "\n\nTogether, the pseudo and observed data give rise to ",
+        "the following posterior for the model parameters:\n\n"
+      ),
+      params = c("\\phi_1" = "phi1", "\\phi_2" = "phi2"),
+      theta = "\\phi",
+      asis = FALSE,
+      ...
+    ),
+    "\n\n"
+  )
+
+  if (asis) {
+    rv <- knitr::asis_output(rv)
+  }
+  rv
+}
+
+
+# Effloglog ----
+
+#' @description `r lifecycle::badge("experimental")`
+#' @rdname knit_print
+#' @export
+#' @method knit_print Effloglog
+knit_print.Effloglog <- function(
+    x,
+    ...,
+    use_values = TRUE,
+    fmt = "%5.2f",
+    params = NA,
+    tox_label = "DLAEs",
+    eff_label = "efficacy",
+    label = "participant",
+    preamble = "The prior for &theta; is given by\\n",
+    asis = TRUE
+) {
+  assert_flag(asis)
+  assert_character(eff_label, len = 1, any.missing = FALSE)
+
+  y <- tidy(x)
+  # knit_print.ModelParamsNormal expects no row or column names
+  posterior <- ModelParamsNormal(mean = c(x@theta1, x@theta2), cov = x@Q)
+  rownames(posterior@cov) <- NULL
+  colnames(posterior@cov) <- NULL
+
+  rv <- paste0(
+    "A linear log-log model with a pseudo data prior will describe the ",
+    "relationship between dose and ",
+    eff_label,
+    ".  The model is given by\n ",
+    "$$ y_i = \\theta_1 + \\theta_2 \\cdot \\log(\\log(d_i + k)) + \\epsilon_i $$\\n ",
+    "where k is a constant (equal to ",
+    x@const,
+    "), y~i~ is the ",
+    eff_label,
+    " response for ",
+    label[1],
+    " i, treated at dose d~i~ and &epsilon;~i~ is an error term.  ",
+    "The &epsilon;s are iid N(0, &nu;^-1^).\n\n  ",
+    "The ",
+    ifelse(
+      length(x@nu) == 1,
+      paste0(
+        ifelse(nrow(y$data) == 0, "prior", "posterior"),
+        " value of &nu; is ",
+        x@nu,
+        "."
+      ),
+      paste0(
+        ifelse(nrow(y$data) == 0, "prior", "posterior"),
+        " distribution of &nu; is currently &Gamma;(",
+        sprintf(fmt, x@nu[1]),
+        ", ",
+        sprintf(fmt, x@nu[2]),
+        ")."
+      )
+    ),
+    "\n\nThe joint distribution of ",
+    "&theta;~1~ and &theta;~2~ is given by\n\n",
+    "$$ \\boldsymbol\\theta = \\begin{bmatrix}\\theta_1 \\\\ \\theta_2\\end{bmatrix} ",
+    "\\sim N\\left(\\mu, \\nu \\boldsymbol{Q}^\\intercal \\right) $$ \nwhere ",
+    "$\\boldsymbol{Q} = \\boldsymbol{X_0}^\\intercal\\boldsymbol{X_0} + ",
+    "\\boldsymbol{X}^\\intercal\\boldsymbol{X}$ and **X~0~** is a design matrix ",
+    "based on the dose levels in the pseudo data and **X** is a design matrix ",
+    "based on the dose levels of ",
+    label[2],
+    " no-",
+    tox_label,
+    " ",
+    eff_label,
+    " responses in the observed data, if any.\n\n",
+    ifelse(
+      nrow(y$data) == 0,
+      "\n\nNo observed data has yet been recorded.\n",
+      paste(
+        "\n\nThe data observed to date are given in the following table:\n\n",
+        paste(
+          (do.call(
+            function(z) {
+              z %>%
+                dplyr::select(-c(NObs, NGrid, DoseGrid, XLevel)) %>%
+                knitr::kable() %>%
+                kableExtra::kable_styling(
+                  bootstrap_options = c("striped", "hover", "condensed")
+                )
+            },
+            list(z = y$data)
+          )),
+          collapse = "\n"
+        )
+      )
+    ),
+    knit_print(
+      posterior,
+      preamble = paste0(
+        "\n\nTogether, the pseudo and observed data give rise to ",
+        "the following posterior for the model parameters:\n\n"
+      ),
+      params = c("\\theta_1" = "theta1", "\\theta_2" = "theta2"),
+      asis = FALSE,
+      ...
+    ),
+    "\n\n"
+  )
+
+  if (asis) {
+    rv <- knitr::asis_output(rv)
+  }
+  rv
+}
+

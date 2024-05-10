@@ -1800,3 +1800,83 @@ setMethod(
     )
   }
 )
+
+# tidy ----
+
+# LogisticIndepBeta
+
+#' Tidy Method for the [`LogisticIndepBeta`] Class
+#'
+#' @description `r lifecycle::badge("experimental")`
+#'
+#' A method that tidies a [`LogisticIndepBeta`] object.
+#'
+#' @return The [`list`] of [`tibble`] objects.
+#'
+#' @aliases tidy-LogisticIndepBeta
+#' @rdname tidy
+#' @method tidy LogisticIndepBeta
+#' @export
+#' @example examples/LogisticIndepBeta-method-tidy.R
+#'
+setMethod(
+  f = "tidy",
+  signature = signature(x = "LogisticIndepBeta"),
+  definition = function(x, ...) {
+    start <- callNextMethod()
+    # N$DLEweights Dose$DLEdose Tox$binDLE
+    pseudoData <- tibble::tibble(
+      Dose = dplyr::pull(start$DLEdose),
+      N = dplyr::pull(start$DLEweights),
+      Tox = dplyr::pull(start$binDLE)
+    )
+    params <- tibble::tibble(
+      Param = c("Phi1", "Phi2"),
+      mean = c(dplyr::pull(start$phi1), dplyr::pull(start$phi2)),
+      cov = as.list(start$Pcov)
+    )
+    list(
+      pseudoData = pseudoData,
+      data = start$data,
+      params = params
+    )
+  }
+)
+
+# Effloglog
+
+#' Tidy Method for the [`Effloglog`] Class
+#'
+#' @description `r lifecycle::badge("experimental")`
+#'
+#' A method that tidies a [`Effloglog`] object.
+#'
+#' @return The [`list`] of [`tibble`] objects.
+#'
+#' @aliases tidy-Effloglog
+#' @rdname tidy
+#' @method tidy Edffloglog
+#' @export
+#' @example examples/Effloglog-method-tidy.R
+#'
+setMethod(
+  f = "tidy",
+  signature = signature(x = "Effloglog"),
+  definition = function(x, ...) {
+    start <- callNextMethod()
+    pseudoData <- tibble::tibble(
+      Dose = dplyr::pull(start$eff_dose),
+      Response = dplyr::pull(start$eff)
+    )
+    params <- tibble::tibble(
+      Param = c("theta1", "theta2"),
+      mean = c(dplyr::pull(start$theta1), dplyr::pull(start$theta2)),
+      cov = as.list(start$Pcov)
+    )
+    list(
+      pseudoData = pseudoData,
+      data = start$data,
+      params = params
+    )
+  }
+)

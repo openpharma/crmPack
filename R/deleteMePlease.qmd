@@ -6,8 +6,10 @@ editor: visual
 
 ```{r}
 #| error: TRUE
-
+library(knitr)
 devtools::load_all()
 
-knit_print(.DefaultDualResponsesDesign(), units = "mg/kg")
+# x <- .DefaultDualResponsesDesign()
+x <- .DefaultRuleDesignOrdinal()
+x
 ```

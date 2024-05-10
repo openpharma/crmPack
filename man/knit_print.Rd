@@ -21,6 +21,9 @@
 \alias{knit_print.DualResponsesDesign}
 \alias{knit_print.DesignOrdinal}
 \alias{knit_print.DesignGrouped}
+\alias{knit_print.TDsamplesDesign}
+\alias{knit_print.DualResponsesSamplesDesign}
+\alias{knit_print.RuleDesignOrdinal}
 \alias{knit_print.GeneralData}
 \alias{knit_print.DataParts}
 \alias{knit_print.DualEndpoint}
@@ -37,6 +40,8 @@
 \alias{knit_print.OneParExpPrior}
 \alias{knit_print.LogisticLogNormalGrouped}
 \alias{knit_print.LogisticLogNormalOrdinal}
+\alias{knit_print.LogisticIndepBeta}
+\alias{knit_print.Effloglog}
 \alias{knit_print.IncrementsRelative}
 \alias{knit_print.IncrementsRelativeDLT}
 \alias{knit_print.IncrementsDoseLevels}
@@ -110,7 +115,23 @@
 
 \method{knit_print}{DesignOrdinal}(x, ..., level = 2L, title = "Design", sections = NA, asis = TRUE)
 
-\method{knit_print}{DesignGrouped}(x, ..., level = 2L, title = "Design", sections = NA, asis = TRUE)
+\method{knit_print}{DesignGrouped}(
+  x,
+  ...,
+  level = 2L,
+  title = "Design",
+  sections = c(model = "Dose toxicity model", mono = "Monotherapy rules", combo =
+    "Combination therapy rules", other = "Other details"),
+  asis = TRUE
+)
+
+\method{knit_print}{TDsamplesDesign}(x, ..., level = 2L, title = "Design", sections = NA, asis = TRUE)
+
+\method{knit_print}{DualResponsesDesign}(x, ..., level = 2L, title = "Design", sections = NA, asis = TRUE)
+
+\method{knit_print}{DualResponsesSamplesDesign}(x, ..., level = 2L, title = "Design", sections = NA, asis = TRUE)
+
+\method{knit_print}{RuleDesignOrdinal}(x, ..., level = 2L, title = "Design", sections = NA, asis = TRUE)
 
 \method{knit_print}{GeneralData}(
   x,
@@ -219,6 +240,30 @@
   use_values = TRUE,
   fmt = "\%5.2f",
   params = NA,
+  preamble = "The prior for &theta; is given by\\\\n",
+  asis = TRUE
+)
+
+\method{knit_print}{LogisticIndepBeta}(
+  x,
+  ...,
+  use_values = TRUE,
+  fmt = "\%5.2f",
+  params = NA,
+  tox_label = "DLAEs",
+  preamble = "The prior for &theta; is given by\\\\n",
+  asis = TRUE
+)
+
+\method{knit_print}{Effloglog}(
+  x,
+  ...,
+  use_values = TRUE,
+  fmt = "\%5.2f",
+  params = NA,
+  tox_label = "DLAEs",
+  eff_label = "efficacy",
+  label = "participant",
   preamble = "The prior for &theta; is given by\\\\n",
   asis = TRUE
 )
@@ -555,6 +600,18 @@ crmPack objects in Markdown and Quarto files
 We provide additional utility functions to allow human-friendly rendition of
 crmPack objects in Markdown and Quarto files.  This file contains methods for
 all design classes, not just those that are direct descendants of \code{Design}.
+
+\ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#experimental}{\figure{lifecycle-experimental.svg}{options: alt='[Experimental]'}}}{\strong{[Experimental]}}
+
+\ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#experimental}{\figure{lifecycle-experimental.svg}{options: alt='[Experimental]'}}}{\strong{[Experimental]}}
+
+\ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#experimental}{\figure{lifecycle-experimental.svg}{options: alt='[Experimental]'}}}{\strong{[Experimental]}}
+
+\ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#experimental}{\figure{lifecycle-experimental.svg}{options: alt='[Experimental]'}}}{\strong{[Experimental]}}
+
+\ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#experimental}{\figure{lifecycle-experimental.svg}{options: alt='[Experimental]'}}}{\strong{[Experimental]}}
+
+\ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#experimental}{\figure{lifecycle-experimental.svg}{options: alt='[Experimental]'}}}{\strong{[Experimental]}}
 
 \ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#experimental}{\figure{lifecycle-experimental.svg}{options: alt='[Experimental]'}}}{\strong{[Experimental]}}
 

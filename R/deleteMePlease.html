@@ -95,7 +95,8 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </header>
 
 <div class="cell">
-<div class="sourceCode cell-code" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a>devtools<span class="sc">::</span><span class="fu">load_all</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(knitr)</span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a>devtools<span class="sc">::</span><span class="fu">load_all</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stderr">
 <pre><code>ℹ Loading crmPack
 Loading required package: ggplot2
@@ -107,88 +108,32 @@ Registered S3 method overwritten by 'crmPack':
 Type crmPackHelp() to open help browser
 Type crmPackExample() to open example</code></pre>
 </div>
-<div class="sourceCode cell-code" id="cb3"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="fu">knit_print</span>(<span class="fu">.DefaultDualResponsesDesign</span>(), <span class="at">units =</span> <span class="st">"mg/kg"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<div class="cell-output cell-output-stdout">
-<pre><code>An object of class "Effloglog"
-Slot "eff":
-[1] 1.223 2.513
-
-Slot "eff_dose":
-[1]  25 300
-
-Slot "nu":
-    a     b 
-1.000 0.025 
-
-Slot "use_fixed":
-[1] FALSE
-
-Slot "theta1":
-[1] -1.413005
-
-Slot "theta2":
-[1] 2.254861
-
-Slot "Pcov":
-            (Intercept) log(log(x))
-(Intercept)         NaN         NaN
-log(log(x))         NaN         NaN
-
-Slot "X":
-  (Intercept) log(log(x))
-1           1    1.169032
-2           1    1.741130
-attr(,"assign")
-[1] 0 1
-
-Slot "Y":
-[1] 1.223 2.513
-
-Slot "mu":
-[1] -1.413005  2.254861
-
-Slot "Q":
-            (Intercept) log(log(x))
-(Intercept)    2.000000    2.910162
-log(log(x))    2.910162    4.398168
-
-Slot "const":
-[1] 0
-
-Slot "data":
-An object of class "DataDual"
-Slot "w":
-numeric(0)
-
-Slot "x":
-numeric(0)
-
-Slot "y":
-integer(0)
-
-Slot "doseGrid":
- [1]  25  50  75 100 125 150 175 200 225 250 275 300
-
-Slot "nGrid":
-[1] 12
-
-Slot "xLevel":
-integer(0)
-
-Slot "placebo":
-[1] FALSE
-
-Slot "ID":
-integer(0)
-
-Slot "cohort":
-integer(0)
-
-Slot "nObs":
-[1] 0</code></pre>
-</div>
-<div class="cell-output cell-output-error">
-<pre><code>Error in h_markdown_header(section_labels[nm], level + 1L): Assertion on 'text' failed: Contains missing values (element 1).</code></pre>
+<div class="sourceCode cell-code" id="cb3"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="co"># x &lt;- .DefaultDualResponsesDesign()</span></span>
+<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a>x <span class="ot">&lt;-</span> <span class="fu">.DefaultRuleDesignOrdinal</span>()</span>
+<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a>x</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<section id="dose-recommendation" class="level3">
+<h3 class="anchored" data-anchor-id="dose-recommendation">Dose recommendation</h3>
+<p>Based on a toxicity grade of 1: The dose level recommended for the next cohort will be selected as follows:</p>
+<ul>
+<li>First, the 25th centile of the posterior distribution of toxicity will be calculated for all dose levels that are eligible according to the Increments rule.</li>
+<li>Next, the “target dose” (which may not be part of the dose grid) for which the 25th centile of the posterior distribution of toxicity is exactly equal to the target rate of 0.25 will be determined.</li>
+<li>Finally, the dose level whose absolute distance from the target dose is smallest will be selected as the recommended dose for the next cohort</li>
+</ul>
+</section>
+<section id="cohort-size" class="level3">
+<h3 class="anchored" data-anchor-id="cohort-size">Cohort size</h3>
+<p>Based on a toxicity grade of 1: A constant size of 3 participants.</p>
+</section>
+<section id="observed-data" class="level3">
+<h3 class="anchored" data-anchor-id="observed-data">Observed data</h3>
+<p>No participants are yet evaluable.</p>
+<p>The dose grid is 5, 10, 15, 25, 35, 50 and 80.</p>
+</section>
+<section id="starting-dose" class="level3">
+<h3 class="anchored" data-anchor-id="starting-dose">Starting dose</h3>
+<p>The starting dose is 5.</p>
+</section>
 </div>
 </div>
 
