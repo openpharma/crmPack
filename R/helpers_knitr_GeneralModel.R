@@ -1042,6 +1042,7 @@ knit_print.LogisticIndepBeta <- function(
 # Effloglog ----
 
 #' @description `r lifecycle::badge("experimental")`
+#' @param eff_label (`character`)\cr the term used to describe efficacy
 #' @rdname knit_print
 #' @export
 #' @method knit_print Effloglog
@@ -1051,7 +1052,7 @@ knit_print.Effloglog <- function(
     use_values = TRUE,
     fmt = "%5.2f",
     params = NA,
-    tox_label = "DLAEs",
+    tox_label = "DLAE",
     eff_label = "efficacy",
     label = "participant",
     preamble = "The prior for &theta; is given by\\n",
@@ -1059,6 +1060,18 @@ knit_print.Effloglog <- function(
 ) {
   assert_flag(asis)
   assert_character(eff_label, len = 1, any.missing = FALSE)
+
+  # Prepare
+  if (length(tox_label == 1)) {
+    tox_label <- c(tox_label, paste0(tox_label, "s"))
+  }
+  if (length(eff_label == 1)) {
+    eff_label <- c(eff_label, paste0(eff_label, "s"))
+  }
+  if (length(label == 1)) {
+    label <- c(label, paste0(label, "s"))
+  }
+
 
   y <- tidy(x)
   # knit_print.ModelParamsNormal expects no row or column names
@@ -1069,13 +1082,13 @@ knit_print.Effloglog <- function(
   rv <- paste0(
     "A linear log-log model with a pseudo data prior will describe the ",
     "relationship between dose and ",
-    eff_label,
+    eff_label[1],
     ".  The model is given by\n ",
     "$$ y_i = \\theta_1 + \\theta_2 \\cdot \\log(\\log(d_i + k)) + \\epsilon_i $$\\n ",
     "where k is a constant (equal to ",
     x@const,
     "), y~i~ is the ",
-    eff_label,
+    eff_label[1],
     " response for ",
     label[1],
     " i, treated at dose d~i~ and &epsilon;~i~ is an error term.  ",
@@ -1108,9 +1121,9 @@ knit_print.Effloglog <- function(
     "based on the dose levels of ",
     label[2],
     " no-",
-    tox_label,
+    tox_label[1],
     " ",
-    eff_label,
+    eff_label[1],
     " responses in the observed data, if any.\n\n",
     ifelse(
       nrow(y$data) == 0,

@@ -261,7 +261,7 @@
   use_values = TRUE,
   fmt = "\%5.2f",
   params = NA,
-  tox_label = "DLAEs",
+  tox_label = "DLAE",
   eff_label = "efficacy",
   label = "participant",
   preamble = "The prior for &theta; is given by\\\\n",
@@ -538,6 +538,8 @@ Notes below.}
 \item{preamble}{(\code{character})\cr the text that introduces the list of rules}
 
 \item{theta}{(\code{character})\cr the LaTeX representation of the theta vector}
+
+\item{eff_label}{(\code{character})\cr the term used to describe efficacy}
 
 \item{target_label}{(\code{character})\cr the term used to describe the target
 toxicity rate}

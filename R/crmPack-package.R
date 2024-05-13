@@ -141,7 +141,11 @@ globalVariables(c(
   "intervals",
   "Group",
   "Tox",
-  "MaxOverdoseProb"
+  "MaxOverdoseProb",
+  "DoseGrid",
+  "NGrid",
+  "NObs",
+  "XLevel"
 ))
 
 # nolint end

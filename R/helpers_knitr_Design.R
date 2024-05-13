@@ -83,14 +83,14 @@ StartingDose <- function(starting_dose) {
 #'   or `TRUE` in case validation passes.
 NULL
 
-#' @describeIn v_starting_dose validates that the [`StartingDose`] object
+#' @describeIn v_starting_dose validates that the `StartingDose` object
 #'   contains valid `starting_dose`.
 #' @noRd
 #' @keywords internal
 v_starting_dose <- function(object) {
   v <- Validate()
   v$check(
-    test_number(object@starting_dose, finite = TRUE, min = 0),
+    test_number(object@starting_dose, finite = TRUE, lower = 0),
     "starting_dose must be a non-negative number"
   )
   v$result()
