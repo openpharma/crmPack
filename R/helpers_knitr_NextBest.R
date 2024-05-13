@@ -465,7 +465,7 @@ knit_print.NextBestNCRMLoss <- function(
   param <- list(...)
   param[["x"]] <- x %>%
     tidy() %>%
-    dplyr::select(-.data$MaxOverdoseProb)
+    dplyr::select(-MaxOverdoseProb)
   param[["col.names"]] <- c("Range", "Lower", "Upper", "Loss Coefficient")
   rv <- paste0(
     "The dose recommended for the next cohort will be chosen in the following ",

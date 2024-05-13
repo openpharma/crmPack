@@ -1839,7 +1839,8 @@ setMethod(
       pseudoData = pseudoData,
       data = start$data,
       params = params
-    )
+    ) %>%
+    h_tidy_class(x)
   }
 )
 
@@ -1877,6 +1878,7 @@ setMethod(
       pseudoData = pseudoData,
       data = start$data,
       params = params
-    )
+    ) %>%
+    h_tidy_class(x)
   }
 )

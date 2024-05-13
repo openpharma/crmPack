@@ -206,9 +206,11 @@ h_prepare_section_labels <- function(x, default_labels, user_labels = NA) {
 
 #' @description `r lifecycle::badge("experimental")`
 #' @noRd
-#' @keywords internal
+#' @export
 #' @method knit_print StartingDose
 knit_print.StartingDose <- function(x, ..., asis = TRUE) {
+  assert_flag(asis)
+
   args <- list(...)
   units <- ifelse("units" %in% names(args), paste0(" ", args[["units"]]), "")
   rv <- paste0(
@@ -258,7 +260,7 @@ knit_print.RuleDesign <- function(
       "startingDose" = "Starting dose"
     ),
     user_sections = sections,
-    asis = TRUE
+    asis = asis
   )
 }
 
@@ -277,7 +279,6 @@ knit_print.Design <- function(
     sections = NA,
     asis = TRUE
 ) {
-  print("knit_print.Design")
   h_knit_print_design(
     x,
     ...,
@@ -294,7 +295,7 @@ knit_print.Design <- function(
       "pl_cohort_size" = "Use of placebo"
     ),
     user_sections = sections,
-    asis = TRUE
+    asis = asis
   )
 }
 
@@ -313,7 +314,11 @@ knit_print.DualDesign <- function(
     sections = NA,
     asis = TRUE
 ) {
-  args <- list(...)
+  assert_flag(asis)
+  assert_character(title, len = 1, any.missing = FALSE)
+  assert_integer(level, len =1, lower = 1, upper = 6)
+
+    args <- list(...)
   bLabel <- ifelse(
     "biomarker_name" %in% names(args),
     args[["biomarker_name"]],
@@ -338,6 +343,7 @@ knit_print.DualDesign <- function(
     level = level,
     title = title,
     sections = sections,
+    asis = asis,
     ...
   )
 }
@@ -374,7 +380,7 @@ knit_print.DADesign <- function(
       "safetyWindow"  = "Safety window"
     ),
     user_sections = sections,
-    asis = TRUE,
+    asis = asis,
     ...
   )
 }
@@ -394,12 +400,12 @@ knit_print.TDDesign <- function(
     sections = NA,
     asis = TRUE
 ) {
-  print("knit_print.TDDesign")
   knit_print.Design(
     x,
     level = level,
     title = title,
     sections = sections,
+    asis = asis,
     ...
   )
 }
@@ -424,6 +430,7 @@ knit_print.DualResponsesDesign <- function(
     level = level,
     title = title,
     sections = sections,
+    asis = asis,
     ...
   )
 }
@@ -459,7 +466,7 @@ knit_print.DesignOrdinal <- function(
       "pl_cohort_size" = "Use of placebo"
     ),
     user_sections = sections,
-    asis = TRUE
+    asis = asis
   )
 }
 
@@ -487,6 +494,10 @@ knit_print.DesignGrouped <- function(
     ),
     asis = TRUE
 ) {
+  assert_flag(asis)
+  assert_character(title, len = 1, any.missing = FALSE)
+  assert_integer(level, len =1, lower = 1, upper = 6)
+
   rv <- paste0(
     h_markdown_header(sections["model"], level = level),
     knit_print(x@model, asis = FALSE, ...),
@@ -700,6 +711,6 @@ knit_print.RuleDesignOrdinal <- function(
       "starting_dose" = "Starting dose"
     ),
     user_sections = sections,
-    asis = TRUE
+    asis = asis
   )
 }
