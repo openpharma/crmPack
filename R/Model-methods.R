@@ -1840,7 +1840,7 @@ setMethod(
       data = start$data,
       params = params
     ) %>%
-    h_tidy_class(x)
+      h_tidy_class(x)
   }
 )
 
@@ -1879,6 +1879,6 @@ setMethod(
       data = start$data,
       params = params
     ) %>%
-    h_tidy_class(x)
+      h_tidy_class(x)
   }
 )

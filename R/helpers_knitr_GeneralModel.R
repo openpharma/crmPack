@@ -701,8 +701,7 @@ h_knit_print_render_model.ProbitLogNormalRel <- function(
     x,
     ...,
     tox_label = "toxicity",
-    asis = TRUE
-) {
+    asis = TRUE) {
   assert_flag(asis)
   paste0(
     "A probit log normal model will describe the relationship between dose and ",
@@ -907,7 +906,6 @@ knit_print.LogisticLogNormalGrouped <- function(
     ),
     preamble = "The prior for &theta; is given by\\n",
     asis = TRUE) {
-
   NextMethod(params = params)
 }
 
@@ -992,7 +990,6 @@ knit_print.LogisticIndepBeta <- function(
   rv <- paste0(
     "A logistic log normal model will describe the relationship between dose and toxicity: ",
     "$$ p(Tox | d) = f(X = 1 | \\theta, d) = \\frac{", z, "}{1 + ", z, "} $$\\n ",
-
     "The prior is expressed in terms of pseudo data and, consequently, the number ",
     " of cases and of ",
     tox_label,
@@ -1056,8 +1053,7 @@ knit_print.Effloglog <- function(
     eff_label = "efficacy",
     label = "participant",
     preamble = "The prior for &theta; is given by\\n",
-    asis = TRUE
-) {
+    asis = TRUE) {
   assert_flag(asis)
   assert_character(eff_label, len = 1, any.missing = FALSE)
 
@@ -1164,4 +1160,3 @@ knit_print.Effloglog <- function(
   }
   rv
 }
-

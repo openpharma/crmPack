@@ -1733,7 +1733,6 @@ test_that("approximate works correctly", {
   )
   expect_equal(length(actual1), 1)
   expect_set_equal(names(actual1), c("model"))
-
 })
 
 test_that("fit-Samples-LogisticIndepBeta works correctly", {

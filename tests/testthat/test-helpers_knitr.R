@@ -75,19 +75,21 @@ test_that("knit_print methods exist for all relevant classes and produce consist
           {
             # Code run in the template does not contribute to test coverage
 
-            tryCatch({
-              rmarkdown::render(
-                input = test_path("fixtures", "knit_print_template.Rmd"),
-                params = list("class_name" = cls),
-                output_file = outFileName,
-                output_dir = test_path("fixtures"),
-                quiet = TRUE
-              )
-              expect_snapshot_file(test_path("fixtures", outFileName))
-            },
-            error = function(e) {
-              warning(paste0("Error for class ", cls, ": "), geterrmessage())
-            })
+            tryCatch(
+              {
+                rmarkdown::render(
+                  input = test_path("fixtures", "knit_print_template.Rmd"),
+                  params = list("class_name" = cls),
+                  output_file = outFileName,
+                  output_dir = test_path("fixtures"),
+                  quiet = TRUE
+                )
+                expect_snapshot_file(test_path("fixtures", outFileName))
+              },
+              error = function(e) {
+                warning(paste0("Error for class ", cls, ": "), geterrmessage())
+              }
+            )
           }
         )
       }
@@ -100,7 +102,6 @@ test_that("knit_print methods exist for all relevant classes and produce consist
 test_that("asis parameter works correctly for all implemented methods", {
   for (cls in crmpack_class_list) {
     if (!isClassUnion(cls)) {
-
       startTime <- Sys.time()
 
       obj <- do.call(paste0(".Default", cls), list())
