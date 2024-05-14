@@ -59,7 +59,7 @@ v_starting_dose <- function(object) {
 #' design classes. It is used internally by `knit_print` methods
 #'
 #' @slot starting_dose (`numeric`)\cr the starting dose
-#' @noRd
+#' @rdname StartingDose-class
 #' @keywords internal
 .StartingDose <- setClass(
   Class = "StartingDose",
@@ -76,10 +76,7 @@ v_starting_dose <- function(object) {
 ## constructor ----
 
 #' @rdname StartingDose-class
-#'
 #' @param starting_dose (`positive_number`)\cr see slot definition.
-#' @keywords internal
-#'
 StartingDose <- function(starting_dose) {
   new(
     "StartingDose",
@@ -89,9 +86,6 @@ StartingDose <- function(starting_dose) {
 
 #' @rdname StartingDose-class
 #' @note Typically, end users will not use the `.DefaultStartingDose()` function.
-#' @noRd
-#' @keywords internal
-
 .DefaultStartingDose <- function() {
   StartingDose(starting_dose = 5)
 }
