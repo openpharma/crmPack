@@ -394,7 +394,7 @@ knit_print.GeneralData <- function(
 #' @rdname knit_print
 knit_print.DataParts <- function(
     x, ..., asis = TRUE,
-    labels = c("participant", "participants"),
+    label = c("participant", "participants"),
     full_grid = FALSE,
     summarise = c("none", "dose", "cohort"),
     summarize = summarise,

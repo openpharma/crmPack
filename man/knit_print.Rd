@@ -152,7 +152,7 @@
   x,
   ...,
   asis = TRUE,
-  labels = c("participant", "participants"),
+  label = c("participant", "participants"),
   full_grid = FALSE,
   summarise = c("none", "dose", "cohort"),
   summarize = summarise,
