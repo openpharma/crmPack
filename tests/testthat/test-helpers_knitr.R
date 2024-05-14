@@ -256,7 +256,7 @@ test_that("knit_print.IncrementsRelativeParts works correctly", {
     stringr::str_count(
       knit_print(
         .DefaultIncrementsRelativeParts(),
-        labels = "DLT"
+        tox_label = "DLT"
       ),
       "DLTs"
     ),

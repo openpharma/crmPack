@@ -137,7 +137,7 @@
   x,
   ...,
   asis = TRUE,
-  labels = c("participant", "participants"),
+  label = c("participant", "participants"),
   full_grid = FALSE,
   summarise = c("none", "dose", "cohort"),
   summarize = summarise,
@@ -280,9 +280,9 @@
 
 \method{knit_print}{IncrementsOrdinal}(x, ..., asis = TRUE)
 
-\method{knit_print}{IncrementsRelativeParts}(x, ..., asis = TRUE, labels = c("toxicity", "toxicities"))
+\method{knit_print}{IncrementsRelativeParts}(x, ..., asis = TRUE, tox_label = c("toxicity", "toxicities"))
 
-\method{knit_print}{IncrementsRelativeDLTCurrent}(x, ..., asis = TRUE, labels = c("DLT", "DLTs"))
+\method{knit_print}{IncrementsRelativeDLTCurrent}(x, ..., asis = TRUE, tox_label = c("DLT", "DLTs"))
 
 \method{knit_print}{NextBestMTD}(
   x,
@@ -298,7 +298,7 @@
   x,
   ...,
   tox_label = c("toxicity", "toxicities"),
-  participant_label = "participant",
+  label = "participant",
   asis = TRUE
 )
 
@@ -503,9 +503,6 @@ the design}
 the headings used to define the sections corresponding to the design's slots.
 The element names must match the Design's slot names.}
 
-\item{labels}{(\code{character})\cr The word used to describe toxicities.  See
-Usage Notes below.}
-
 \item{full_grid}{(\code{flag})\cr Should the full dose grid appear in the output table
 or simply those doses for whom at least one evaluable participant is available?
 Ignored unless \code{summarise == "dose"}.}
@@ -543,8 +540,6 @@ Notes below.}
 
 \item{target_label}{(\code{character})\cr the term used to describe the target
 toxicity rate}
-
-\item{participant_label}{(\code{character})\cr The term used to label the participants.}
 
 \item{biomarker_label}{(\code{character})\cr the term used to describe the biomarker}
 
@@ -759,7 +754,7 @@ The by default, the columns are labelled \code{Lower}, \code{Upper} and \verb{Co
 \code{col.names} and \code{caption} in the function call.
 
 
-\code{labels} describes the trial's participants.
+\code{label} describes the trial's participants.
 
 It should be a character vector of length 1 or 2.  If of length 2, the first
 element describes a single participant and the second describes all other
@@ -789,7 +784,7 @@ of \code{caption} is \code{"Defined by number of DLTs reported so far"}. These v
 can be overridden by passing \code{col.names} and \code{caption} in the function call.
 
 
-\code{labels} defines how toxicities are described.
+\code{label} defines how toxicities are described.
 
 It should be a character vector of length 1 or 2.  If of length 2, the first
 element describes a single toxicity and the second describes all other
@@ -801,7 +796,7 @@ The default value of \code{col.names} is \code{c("Min", "Max", "Increment")} and
 of \code{caption} is \code{"Defined by number of DLTs in the current cohort"}. These values
 can be overridden by passing \code{col.names} and \code{caption} in the function call.
 
-\code{labels} defines how toxicities are described.
+\code{tox_label} defines how toxicities are described.
 
 It should be a character vector of length 1 or 2.  If of length 2, the first
 element describes a single toxicity and the second describes all other
@@ -809,7 +804,7 @@ toxicity counts.  If of length 1, the character \code{s} is appended to the valu
 describing a single toxicity.
 
 
-This section describes the use of \code{participant_label} and \code{tox_label}, collectively
+This section describes the use of \code{label} and \code{tox_label}, collectively
 referred to as \code{label}s.
 A \code{label} should be a scalar or a vector of length 2.  If a scalar, it is
 converted by adding a second element that is equal to the first, suffixed by \code{s}.
@@ -852,7 +847,7 @@ The by default, the columns are labelled \code{Lower}, \code{Upper} and \verb{Co
 \code{col.names} and \code{caption} in the function call.
 
 
-\code{labels} describes the trial's participants.
+\code{label} describes the trial's participants.
 
 It should be a character vector of length 1 or 2.  If of length 2, the first
 element describes a single participant and the second describes all other
@@ -882,7 +877,7 @@ of \code{caption} is \code{"Defined by number of DLTs reported so far"}. These v
 can be overridden by passing \code{col.names} and \code{caption} in the function call.
 
 
-\code{labels} defines how toxicities are described.
+\code{label} defines how toxicities are described.
 
 It should be a character vector of length 1 or 2.  If of length 2, the first
 element describes a single toxicity and the second describes all other
@@ -894,7 +889,7 @@ The default value of \code{col.names} is \code{c("Min", "Max", "Increment")} and
 of \code{caption} is \code{"Defined by number of DLTs in the current cohort"}. These values
 can be overridden by passing \code{col.names} and \code{caption} in the function call.
 
-\code{labels} defines how toxicities are described.
+\code{tox_label} defines how toxicities are described.
 
 It should be a character vector of length 1 or 2.  If of length 2, the first
 element describes a single toxicity and the second describes all other
@@ -902,7 +897,7 @@ toxicity counts.  If of length 1, the character \code{s} is appended to the valu
 describing a single toxicity.
 
 
-This section describes the use of \code{participant_label} and \code{tox_label}, collectively
+This section describes the use of \code{label} and \code{tox_label}, collectively
 referred to as \code{label}s.
 A \code{label} should be a scalar or a vector of length 2.  If a scalar, it is
 converted by adding a second element that is equal to the first, suffixed by \code{s}.

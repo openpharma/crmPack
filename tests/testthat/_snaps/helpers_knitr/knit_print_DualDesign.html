@@ -354,9 +354,9 @@ display: none;
 
 
 <pre><code>## [1] &quot;DualDesign&quot;</code></pre>
-<div id="dose-toxicity-model" class="section level3">
-<h3>Dose toxicity model</h3>
-<p>The relationships between dose and toxicity and between dose and a PD
+<div id="dose-toxicity-and-dose-biomarker-models" class="section level3">
+<h3>Dose-toxicity and dose-biomarker models</h3>
+<p>The relationships between dose and toxicity and between dose and PD
 biomarker will be modelled simultaneously.</p>
 <p>A probit log normal model will describe the relationship between dose
 and toxicity: <span class="math display">\[ \Phi^{-1}(Tox | d) = f(X = 1
@@ -367,7 +367,7 @@ a reference dose.</p>
 \left(\begin{bmatrix} 0.00 \\  1.00\end{bmatrix} , \begin{bmatrix} 1.00
 &amp;  0.00 \\ 0.00 &amp;  1.00\end{bmatrix} \right) \]</span></p>
 <p>The reference dose will be 1.00.</p>
-<p>The a PD biomarker response <code>w</code> at dose <code>d</code> is
+<p>The PD biomarker response <code>w</code> at dose <code>d</code> is
 modelled as <span class="math display">\[ w(d) \sim N(f(d), \sigma_w^2)
 \]</span></p>
 <p>where f(d) is a first order random walk such that</p>

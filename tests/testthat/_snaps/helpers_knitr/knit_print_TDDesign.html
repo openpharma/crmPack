@@ -354,57 +354,61 @@ display: none;
 
 
 <pre><code>## [1] &quot;TDDesign&quot;</code></pre>
-<pre><code>## An object of class &quot;LogisticIndepBeta&quot;
-## Slot &quot;binDLE&quot;:
-## [1] 1.05 1.80
-## 
-## Slot &quot;DLEdose&quot;:
-## [1]  25 300
-## 
-## Slot &quot;DLEweights&quot;:
-## [1] 3 3
-## 
-## Slot &quot;phi1&quot;:
-## [1] -1.946152
-## 
-## Slot &quot;phi2&quot;:
-## [1] 0.4122909
-## 
-## Slot &quot;Pcov&quot;:
-##             (Intercept)     log(x)
-## (Intercept)   10.050280 -2.0774646
-## log(x)        -2.077465  0.4622186
-## 
-## Slot &quot;data&quot;:
-## An object of class &quot;Data&quot;
-## Slot &quot;x&quot;:
-## numeric(0)
-## 
-## Slot &quot;y&quot;:
-## integer(0)
-## 
-## Slot &quot;doseGrid&quot;:
-##  [1]  25  50  75 100 125 150 175 200 225 250 275 300
-## 
-## Slot &quot;nGrid&quot;:
-## [1] 12
-## 
-## Slot &quot;xLevel&quot;:
-## integer(0)
-## 
-## Slot &quot;placebo&quot;:
-## [1] FALSE
-## 
-## Slot &quot;ID&quot;:
-## integer(0)
-## 
-## Slot &quot;cohort&quot;:
-## integer(0)
-## 
-## Slot &quot;nObs&quot;:
-## [1] 0</code></pre>
 <div id="dose-toxicity-model" class="section level3">
 <h3>Dose toxicity model</h3>
+<p>A logistic log normal model will describe the relationship between
+dose and toxicity: <span class="math display">\[ p(Tox | d) = f(X = 1 |
+\theta, d) = \frac{e^{\phi_1 + \phi_2 \cdot log(d)}}{1 + e^{\phi_1 +
+\phi_2 \cdot log(d)}} \]</span>The prior is expressed in terms of pseudo
+data and, consequently, the number of cases and of DLAEs need not be
+whole numbers.</p>
+<p>The pseudo data are defined in the following table:</p>
+<table class="table table-striped table-hover table-condensed" style="margin-left: auto; margin-right: auto;">
+<thead>
+<tr>
+<th style="text-align:right;">
+Dose
+</th>
+<th style="text-align:right;">
+N
+</th>
+<th style="text-align:right;">
+DLAEs
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:right;">
+25
+</td>
+<td style="text-align:right;">
+3
+</td>
+<td style="text-align:right;">
+1.05
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+300
+</td>
+<td style="text-align:right;">
+3
+</td>
+<td style="text-align:right;">
+1.80
+</td>
+</tr>
+</tbody>
+</table>
+<p>No observed data has yet been recorded.</p>
+<p>Together, the pseudo and observed data give rise to the following
+posterior for the model parameters:</p>
+<p><span class="math display">\[ \boldsymbol\phi = \begin{bmatrix}\phi_1
+\\ \phi_2\end{bmatrix}\sim N \left(\begin{bmatrix}-1.95
+\\  0.41\end{bmatrix} , \begin{bmatrix} 10.05 &amp; -2.08 \\ -2.08
+&amp;  0.46\end{bmatrix} \right) \]</span></p>
 </div>
 <div id="stopping-rule" class="section level3">
 <h3>Stopping rule</h3>

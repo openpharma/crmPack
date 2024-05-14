@@ -22,6 +22,33 @@ NULL
 # DualResponsesDesign            Done
 # DADesign                       Done
 
+
+#' Internal Helper Functions for Validation of [`StartingDose`] Objects
+#'
+#' @description `r lifecycle::badge("experimental")`
+#'
+#' These functions are only used internally to validate the format of an input
+#' [`RuleDesign`] or inherited classes and therefore not exported.
+#'
+#' @name v_starting_dose
+#' @param object (`StartingDose`)\cr object to validate.
+#' @return A `character` vector with the validation failure messages,
+#'   or `TRUE` in case validation passes.
+NULL
+
+#' @describeIn v_starting_dose validates that the `StartingDose` object
+#'   contains valid `starting_dose`.
+#' @noRd
+#' @keywords internal
+v_starting_dose <- function(object) {
+  v <- Validate()
+  v$check(
+    test_number(object@starting_dose, finite = TRUE, lower = 0),
+    "starting_dose must be a non-negative, finite number"
+  )
+  v$result()
+}
+
 # Helper class
 
 #' `StartingDose`
@@ -42,6 +69,7 @@ NULL
   prototype = prototype(
     starting_dose = 1
   ),
+  validity = v_starting_dose,
   contains = "CrmPackClass"
 )
 
@@ -70,32 +98,6 @@ StartingDose <- function(starting_dose) {
   StartingDose(starting_dose = 5)
 }
 
-#' Internal Helper Functions for Validation of [`StartingDose`] Objects
-#'
-#' @description `r lifecycle::badge("experimental")`
-#'
-#' These functions are only used internally to validate the format of an input
-#' [`RuleDesign`] or inherited classes and therefore not exported.
-#'
-#' @name v_starting_dose
-#' @param object (`StartingDose`)\cr object to validate.
-#' @return A `character` vector with the validation failure messages,
-#'   or `TRUE` in case validation passes.
-NULL
-
-#' @describeIn v_starting_dose validates that the `StartingDose` object
-#'   contains valid `starting_dose`.
-#' @noRd
-#' @keywords internal
-v_starting_dose <- function(object) {
-  v <- Validate()
-  v$check(
-    test_number(object@starting_dose, finite = TRUE, lower = 0),
-    "starting_dose must be a non-negative number"
-  )
-  v$result()
-}
-
 # Helper functions ----
 
 h_knit_print_design <- function(
@@ -109,7 +111,7 @@ h_knit_print_design <- function(
     asis = TRUE
 ) {
   assert_flag(asis)
-  assert_integer(level, min = 1L, max = 6L, any.missing = FALSE, len = 1L)
+  assert_integer(level, lower = 1L, upper = 6L, any.missing = FALSE, len = 1L)
   assert_character(title, any.missing = FALSE, len = 1L)
 
   slots_to_process <- setdiff(slotNames(x), ignore_slots)
@@ -163,7 +165,7 @@ h_knit_print_design <- function(
 #' @noRd
 h_markdown_header <- function(text, level = 2L) {
   assert_character(text, any.missing = FALSE, len = 1L, min.chars = 2L)
-  assert_integer(level, min = 1L, max = 6L, any.missing = FALSE, len = 1L)
+  assert_integer(level, lower = 1L, upper = 6L, any.missing = FALSE, len = 1L)
 
   paste0(
     "\n",

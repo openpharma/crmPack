@@ -94,12 +94,12 @@ knit_print.NextBestNCRM <- function(
 # NextBestThreePlusThree ----
 
 #' @description `r lifecycle::badge("experimental")`
-#' @param participant_label (`character`)\cr The term used to label the participants.
+#' @param label (`character`)\cr The term used to label the participants.
 #' @param tox_label (`character`)\cr the term used to describe toxicity.  See
 #' Usage Notes below.
 #' See Usage Notes below.
 #' @section Usage Notes:
-#' This section describes the use of `participant_label` and `tox_label`, collectively
+#' This section describes the use of `label` and `tox_label`, collectively
 #' referred to as `label`s.
 #' A `label` should be a scalar or a vector of length 2.  If a scalar, it is
 #' converted by adding a second element that is equal to the first, suffixed by `s`.
@@ -113,7 +113,7 @@ knit_print.NextBestThreePlusThree <- function(
     x,
     ...,
     tox_label = c("toxicity", "toxicities"),
-    participant_label = "participant",
+    label = "participant",
     asis = TRUE) {
   # Validate
   assert_flag(asis)
@@ -123,8 +123,8 @@ knit_print.NextBestThreePlusThree <- function(
   if (length(tox_label == 1)) {
     tox_label <- c(tox_label, paste0(tox_label, "s"))
   }
-  if (length(participant_label == 1)) {
-    participant_label <- c(participant_label, paste0(participant_label, "s"))
+  if (length(label == 1)) {
+    label <- c(label, paste0(label, "s"))
   }
 
   # Execute
@@ -136,7 +136,7 @@ knit_print.NextBestThreePlusThree <- function(
     "- If the observed ",
     tox_label[1],
     " rate at the current dose level is exactly 1/3 and no more than three ",
-    participant_label[2],
+    label[2],
     " treated at the current dose level are evaluable, remain at the current ",
     "dose level.\n",
     "- Otherwise, recommend that the trial stops and identify the MTD as dose ",

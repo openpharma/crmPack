@@ -109,7 +109,7 @@ test_that("knit_print.NextBestThreePlusThree works correctly", {
     )
   )
   expect_equal(
-    knit_print(x, asis = FALSE, tox_label = "DLT", participant_label = "subject"),
+    knit_print(x, asis = FALSE, tox_label = "DLT", label = "subject"),
     paste0(
       "The dose recommended for the next cohort will be chosen using the ",
       "\"Three Plus Three\" rule.\n\n- If no DLTs have been reported at ",
