@@ -13,6 +13,7 @@
 \alias{knit_print.CohortSizeMax}
 \alias{knit_print.CohortSizeMin}
 \alias{knit_print.CohortSizeOrdinal}
+\alias{knit_print.StartingDose}
 \alias{knit_print.RuleDesign}
 \alias{knit_print.Design}
 \alias{knit_print.DualDesign}
@@ -100,6 +101,8 @@
 \method{knit_print}{CohortSizeMin}(x, ..., asis = TRUE)
 
 \method{knit_print}{CohortSizeOrdinal}(x, ..., asis = TRUE)
+
+\method{knit_print}{StartingDose}(x, ..., asis = TRUE)
 
 \method{knit_print}{RuleDesign}(x, ..., level = 2L, title = "Design", sections = NA, asis = TRUE)
 
@@ -597,6 +600,8 @@ crmPack objects in Markdown and Quarto files
 We provide additional utility functions to allow human-friendly rendition of
 crmPack objects in Markdown and Quarto files.  This file contains methods for
 all design classes, not just those that are direct descendants of \code{Design}.
+
+\ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#experimental}{\figure{lifecycle-experimental.svg}{options: alt='[Experimental]'}}}{\strong{[Experimental]}}
 
 \ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#experimental}{\figure{lifecycle-experimental.svg}{options: alt='[Experimental]'}}}{\strong{[Experimental]}}
 

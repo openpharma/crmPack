@@ -78,8 +78,6 @@ v_starting_dose <- function(object) {
 #' @rdname StartingDose-class
 #'
 #' @param starting_dose (`positive_number`)\cr see slot definition.
-#'
-#' @noRd
 #' @keywords internal
 #'
 StartingDose <- function(starting_dose) {
@@ -205,7 +203,7 @@ h_prepare_section_labels <- function(x, default_labels, user_labels = NA) {
 # StartingDose ----
 
 #' @description `r lifecycle::badge("experimental")`
-#' @noRd
+#' @rdname knit_print
 #' @export
 #' @method knit_print StartingDose
 knit_print.StartingDose <- function(x, ..., asis = TRUE) {
