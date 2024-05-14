@@ -129,4 +129,3 @@ test_that("knit_print-RuleDesign works correctly", {
     all(stringr::str_detect(x, paste0("### ", expectedSections)))
   )
 })
-

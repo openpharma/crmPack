@@ -292,8 +292,7 @@ knit_print.IncrementsRelativeDLTCurrent <- function(
     x,
     ...,
     asis = TRUE,
-    tox_label = c("DLT", "DLTs")
-) {
+    tox_label = c("DLT", "DLTs")) {
   assert_flag(asis)
   assert_character(tox_label, min.len = 1, max.len = 2, any.missing = FALSE)
 
