@@ -106,6 +106,7 @@ test_that("simulate-DualDesign produces consistent results", {
   expect_snapshot(result)
 })
 
+# TDSamplesDesign ----
 
 test_that("simulate-TDSamplesDesign produces consistent results", {
   data <- Data(doseGrid = seq(25, 300, 25))
@@ -153,6 +154,8 @@ test_that("simulate-TDSamplesDesign produces consistent results", {
   expect_snapshot(result)
 })
 
+# TDDesign ----
+
 test_that("simulate-TDDesign produces consistent results", {
   suppressWarnings({
     design <- h_get_design_tddesign()
@@ -193,6 +196,8 @@ test_that("simulate-DualResponsesDesign produces consistent results", {
 
   expect_snapshot(result)
 })
+
+# DualResponsesSamplesDesign ----
 
 test_that("simulate-DualResponsesSamplesDesign produces consistent results", {
   data <- DataDual(doseGrid = seq(25, 300, 25), placebo = FALSE)
@@ -260,6 +265,8 @@ test_that("simulate-DualResponsesSamplesDesign produces consistent results", {
   expect_snapshot(result)
 })
 
+# Design ----
+
 test_that("Test if simulate generate the expected output.", {
   data <- h_get_data(placebo = FALSE)
   model <- h_get_logistic_normal()
@@ -294,7 +301,6 @@ test_that("Test if simulate generate the expected output.", {
   # regardless of style
   expect_snapshot(sim)
 })
-
 
 ## NextBestInfTheory ----
 
