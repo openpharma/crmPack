@@ -2504,26 +2504,26 @@ setMethod("summary",
       }
 
       ## A summary for all final Gstar obtained
-      GstarSummary <- summary(object@FinalGstarEstimates)
-      ratioGstarSummary <- summary(object@FinalGstarRatios)
+      GstarSummary <- summary(object@final_gstar_estimates)
+      ratioGstarSummary <- summary(object@final_gstar_ratios)
 
-      FinalDoseRecSummary <- summary(object@FinalOptimalDose)
+      FinalDoseRecSummary <- summary(object@final_optimal_dose)
       FinalRatioSummary <- summary(object@final_ratios)
 
 
 
       ## find names in the fit efficacy list (check it is with or without samples)
-      FitNames <- sapply(object@fitEff, names)
+      FitNames <- sapply(object@fit_eff, names)
       if ("ExpEff" %in% FitNames) {
         ## fitted efficacy level at dose most often selected
         EffFitAtDoseMostSelected <- sapply(
-          object@fitEff,
+          object@fit_eff,
           function(f) {
             f$ExpEff[xMostSelected]
           }
         )
         meanEffFitMatrix <- sapply(
-          object@fitEff,
+          object@fit_eff,
           "[[",
           "ExpEff"
         )
@@ -2536,7 +2536,7 @@ setMethod("summary",
       } else { ## fitted efficacy level at dose most often selected
         EffFitAtDoseMostSelected <-
           sapply(
-            object@fitEff,
+            object@fit_eff,
             function(f) {
               f$middle[xMostSelected]
             }
@@ -2546,7 +2546,7 @@ setMethod("summary",
         ## at each dose level
         ## (this is required for plotting)
         meanEffFitMatrix <- sapply(
-          object@fitEff,
+          object@fit_eff,
           "[[",
           "middle"
         )
