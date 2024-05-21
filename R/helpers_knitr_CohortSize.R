@@ -38,7 +38,7 @@ knit_print.CohortSizeConst <- function(x, ..., asis = TRUE, label = c("participa
   if (length(label) == 1) {
     label[2] <- paste0(label[1], "s")
   }
-  rv <- paste0("A constant size of ", x@size, " ", label[ifelse(x@size == 1, 1, 2)], ".")
+  rv <- paste0("A constant size of ", x@size, " ", label[ifelse(x@size == 1, 1, 2)], ".\n\n")
   if (asis) {
     rv <- knitr::asis_output(rv)
   }
@@ -73,6 +73,8 @@ knit_print.CohortSizeRange <- function(x, ..., asis = TRUE) {
     do.call(knitr::kable, param),
     c("Dose" = 2, " " = 1)
   )
+  rv <- paste0(rv, "\n\n")
+
   if (asis) {
     rv <- knitr::asis_output(rv)
   }
@@ -107,6 +109,8 @@ knit_print.CohortSizeDLT <- function(x, ..., asis = TRUE) {
     do.call(knitr::kable, param),
     c("No of DLTs" = 2, " " = 1)
   )
+  rv <- paste0(rv, "\n\n")
+
   if (asis) {
     rv <- knitr::asis_output(rv)
   }
@@ -137,7 +141,7 @@ knit_print.CohortSizeParts <- function(x, ..., asis = TRUE, label = c("participa
     x@cohort_sizes[2],
     " ",
     label[ifelse(x@cohort_sizes[2] == 1, 1, 2)],
-    " in the second."
+    " in the second.\n\n"
   )
   if (asis) {
     rv <- knitr::asis_output(rv)
@@ -167,6 +171,7 @@ knit_print.CohortSizeMax <- function(x, ..., asis = TRUE) {
       ),
       collapse = "\n"
     ),
+    "\n\n",
     paste = "\n"
   )
 
@@ -198,7 +203,8 @@ knit_print.CohortSizeMin <- function(x, ..., asis = TRUE) {
       ),
       collapse = "\n"
     ),
-    paste = "\n"
+    "\n\n",
+    sep = "\n"
   )
   if (asis) {
     rv <- knitr::asis_output(rv)
@@ -222,7 +228,8 @@ knit_print.CohortSizeOrdinal <- function(x, ..., asis = TRUE) {
     x@grade,
     ": ",
     paste0(knit_print(x@rule, asis = asis, ...), collapse = "\n"),
-    paste = "\n"
+    "\n\n",
+    sep = "\n"
   )
 
   if (asis) {

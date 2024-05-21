@@ -31,6 +31,8 @@ knit_print.IncrementsRelative <- function(x, ..., asis = TRUE) {
     do.call(knitr::kable, param),
     c("Dose" = 2, " " = 1)
   )
+  rv <- paste0(rv, "\n\n")
+
   if (asis) {
     rv <- knitr::asis_output(rv)
   }
@@ -66,6 +68,8 @@ knit_print.IncrementsRelativeDLT <- function(x, ..., asis = TRUE) {
     do.call(knitr::kable, param),
     c("No DLTs" = 2, " " = 1)
   )
+  rv <- paste0(rv, "\n\n")
+
   if (asis) {
     rv <- knitr::asis_output(rv)
   }
@@ -88,8 +92,9 @@ knit_print.IncrementsDoseLevels <- function(x, ..., asis = TRUE) {
     ifelse(x@levels == 1, " level", " levels"),
     " relative to the ",
     ifelse(x@basis_level == "last", "dose used in the previous cohort.", "highest dose used so far."),
-    "\n"
+    "\n\n"
   )
+
   if (asis) {
     rv <- knitr::asis_output(rv)
   }
@@ -113,8 +118,9 @@ knit_print.IncrementsHSRBeta <- function(x, ..., asis = TRUE) {
     x@target,
     " and a probability threshold of ",
     x@prob,
-    ".\n"
+    ".\n\n"
   )
+
   if (asis) {
     rv <- knitr::asis_output(rv)
   }
@@ -144,8 +150,10 @@ knit_print.IncrementsMin <- function(x, ..., asis = TRUE) {
       ),
       collapse = "\n"
     ),
+    "\n\n",
     paste = "\n"
   )
+
   if (asis) {
     rv <- knitr::asis_output(rv)
   }
@@ -166,8 +174,10 @@ knit_print.IncrementsOrdinal <- function(x, ..., asis = TRUE) {
     x@grade,
     ": ",
     paste0(knit_print(x@rule, asis = asis, ...), collapse = "\n"),
+    "\n\n",
     paste = "\n"
   )
+
   if (asis) {
     rv <- knitr::asis_output(rv)
   }
@@ -249,7 +259,7 @@ knit_print.IncrementsRelativeParts <- function(x, ..., asis = TRUE, labels = c("
     do.call(knitr::kable, param),
     header
   )
-  rv <- paste(rv, d_tab)
+  rv <- paste(rv, d_tab, "\n\n")
   if (asis) {
     rv <- knitr::asis_output(rv)
   }
@@ -298,6 +308,8 @@ knit_print.IncrementsRelativeDLTCurrent <- function(x, ..., asis = TRUE, labels 
     do.call(knitr::kable, param),
     c("No DLTs" = 2, " " = 1)
   )
+  rv <- paste0(rv, "\n\n")
+
   if (asis) {
     rv <- knitr::asis_output(rv)
   }

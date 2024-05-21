@@ -327,7 +327,7 @@ knit_print.ModelParamsNormal <- function(
     ),
     "\\end{bmatrix}",
     " \\right)",
-    " $$"
+    " $$\n\n"
   )
   if (asis) {
     rv <- knitr::asis_output(rv)
@@ -845,7 +845,7 @@ knit_print.OneParLogNormalPrior <- function(x, ..., asis = TRUE, use_values = TR
       paste0("$$ \\Theta \\sim Exp(", s2text, ") $$"),
       "$$ \\Theta \\sim Exp(\\lambda) $$"
     ),
-    "and skeleton probabilities as in the table below."
+    "and skeleton probabilities as in the table below.\n\n"
   )
   if (asis) {
     rv <- knitr::asis_output(rv)
@@ -861,7 +861,7 @@ knit_print.OneParLogNormalPrior <- function(x, ..., asis = TRUE, use_values = TR
 #' @method knit_print OneParExpPrior
 knit_print.OneParExpPrior <- function(x, ..., asis = TRUE) {
   assert_flag(asis)
-  rv <- "TODO"
+  rv <- "TODO\n\n"
   if (asis) {
     rv <- knitr::asis_output(rv)
   }

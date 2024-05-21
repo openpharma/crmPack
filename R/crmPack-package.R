@@ -139,7 +139,8 @@ globalVariables(c(
   "value",
   "Parameter",
   "intervals",
-  "Group"
+  "Group",
+  "Tox"
 ))
 
 # nolint end
