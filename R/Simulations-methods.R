@@ -2304,7 +2304,7 @@ setMethod("plot",
         ## save the plot
         plotList[[plotIndex <- plotIndex + 1L]] <-
           qplot(factor(0),
-            y = y, data = data.frame(y = x@sigma2est), geom = "boxplot",
+            y = y, data = data.frame(y = x@sigma2_est), geom = "boxplot",
             xlab = "", ylab = "Efficacy variance estimates"
           ) +
           coord_flip() + scale_x_discrete(breaks = NULL)

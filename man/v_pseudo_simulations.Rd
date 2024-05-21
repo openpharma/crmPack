@@ -34,9 +34,9 @@ contains valid \code{fit}, \code{FinalTDtargetEndOfTrialEstimates} ,
 object and valid \code{stopReasons} simulations.
 
 \item \code{v_pseudo_dual_simulations()}: validates that the \code{\link{PseudoDualSimulations}} object
-contains valid \code{fitEff}, \code{FinalGstarEstimates} , \code{FinalGstarAtDoseGrid},
-\code{FinalGstarCIs} , \code{FinalGstarRatios}, \code{FinalOptimalDose}, \code{FinalOptimalDoseAtDoseGrid}
-object and valid \code{sigma2est} simulations.
+contains valid \code{fit_eff}, \code{final_gstar_estimates} , \code{final_gstar_at_dose_grid},
+\code{final_gstar_cis} , \code{final_gstar_ratios}, \code{final_optimal_dose}, \code{final_optimal_dose_at_dose_grid}
+object and valid \code{sigma2_est} simulations.
 
 \item \code{v_pseudo_dual_flex_simulations()}: validates that the \code{\link{PseudoDualFlexiSimulations}}
 object contains valid \code{sigma2betaWest} vector of the final posterior mean
