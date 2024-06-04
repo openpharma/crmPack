@@ -489,7 +489,7 @@ test_that("knit_print.NextBestOrdinal works correctly", {
       target_label = "a custom measure"
     ),
     paste0(
-      "Based on a toxicity grade of 2: The dose level recommended for the ",
+      "Based on a DLT grade of 2: The dose level recommended for the ",
       "next cohort will be selected as follows:\n\n-  First, a custom ",
       "measure of the posterior distribution of DLT will be calculated for all ",
       "dose levels that are eligible according to the  Increments rule.\n",

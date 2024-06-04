@@ -61,7 +61,7 @@ knit_print.NextBestNCRM <- function(
     asis = TRUE) {
   # Validate
   assert_flag(asis)
-  assert_character(tox_label, len = 1, any.missing = FALSE)
+  assert_character(tox_label, max.len = 2, any.missing = FALSE)
 
   # Execute
   rv <- paste0(
