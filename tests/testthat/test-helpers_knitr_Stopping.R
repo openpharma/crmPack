@@ -350,7 +350,7 @@ test_that("knit_print.StoppingMinPatients works correctly", {
     knit_print(
       StoppingMinPatients(nPatients = 10),
       asis = FALSE,
-      label = "subjects"
+      label = "subject"
     ),
     "≥ 10 patients dosed: If 10 or more subjects have been treated.\n\n"
   )

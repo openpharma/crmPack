@@ -374,7 +374,7 @@ by</p>
 \boldsymbol{X}^\intercal\boldsymbol{X}\)</span> and
 <strong>X<sub>0</sub></strong> is a design matrix based on the dose
 levels in the pseudo data and <strong>X</strong> is a design matrix
-based on the dose levels of participants no-DLAE efficacy responses in
+based on the dose levels of participants’ no-DLAE efficacy responses in
 the observed data, if any.</p>
 <p>No observed data has yet been recorded.</p>
 <p>Together, the pseudo and observed data give rise to the following
@@ -393,7 +393,7 @@ and 300.</p>
 <div id="dose-toxicity-model" class="section level3">
 <h3>Dose-toxicity model</h3>
 <p>A logistic log normal model will describe the relationship between
-dose and toxicity: <span class="math display">\[ p(Tox | d) = f(X = 1 |
+dose and DLAE: <span class="math display">\[ p(Tox | d) = f(X = 1 |
 \theta, d) = \frac{e^{\phi_1 + \phi_2 \cdot log(d)}}{1 + e^{\phi_1 +
 \phi_2 \cdot log(d)}} \]</span>The prior is expressed in terms of pseudo
 data and, consequently, the number of cases and of DLAEs need not be

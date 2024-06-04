@@ -479,6 +479,7 @@ knit_print.LogisticKadane <- function(
 knit_print.LogisticKadaneBetaGamma <- function(
     x,
     ...,
+    tox_label = "toxicity",
     asis = TRUE,
     use_values = TRUE,
     fmt = "%5.2f",
