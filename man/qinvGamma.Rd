@@ -16,8 +16,7 @@ qinvGamma(p, a, b, lower.tail = TRUE, log.p = FALSE)
 \item{lower.tail}{logical; if TRUE (default), probabilities are \code{P(X  > x)},
 otherwise, \code{P(X <= x)}.}
 
-\item{logical}{FALSE (default) if TRUE, probabilities/densities p are
-returned as \code{log(p)}}
+\item{log.p}{FALSE if TRUE, probabilities/densities p are returned as \code{log(p)}}
 }
 \description{
 Compute the quantile function of Inverse gamma distribution

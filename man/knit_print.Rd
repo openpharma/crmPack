@@ -100,7 +100,7 @@
 
 \method{knit_print}{CohortSizeMin}(x, ..., asis = TRUE)
 
-\method{knit_print}{CohortSizeOrdinal}(x, ..., asis = TRUE)
+\method{knit_print}{CohortSizeOrdinal}(x, ..., tox_label = "toxicity", asis = TRUE)
 
 \method{knit_print}{StartingDose}(x, ..., asis = TRUE)
 

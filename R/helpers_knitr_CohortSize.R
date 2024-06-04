@@ -221,11 +221,14 @@ knit_print.CohortSizeMin <- function(x, ..., asis = TRUE) {
 #'
 #' @export
 #' @rdname knit_print
-knit_print.CohortSizeOrdinal <- function(x, ..., asis = TRUE) {
+knit_print.CohortSizeOrdinal <- function(x, ..., tox_label = "toxicity", asis = TRUE) {
   assert_flag(asis)
+  tox_label <- h_prepare_labels(tox_label)
 
   rv <- paste0(
-    "Based on a toxicity grade of ",
+    "Based on a ",
+    tox_label[1],
+    " grade of ",
     x@grade,
     ": ",
     paste0(knit_print(x@rule, asis = asis, ...), collapse = "\n"),

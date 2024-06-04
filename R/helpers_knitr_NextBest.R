@@ -21,7 +21,6 @@ knit_print.NextBestMTD <- function(
   assert_character(target_label, len = 1, any.missing = FALSE)
 
   tox_label <- h_prepare_labels(tox_label)
-
   # Execute
   rv <- paste0(
     "The dose level recommended for the next cohort will be selected as follows:\n\n",
@@ -600,7 +599,7 @@ knit_print.NextBestOrdinal <- function(
     " grade of ",
     x@grade,
     ": ",
-    paste0(knit_print(x@rule, asis = asis, ...), collapse = "\n"),
+    paste0(knit_print(x@rule, asis = asis, tox_label = tox_label, ...), collapse = "\n"),
     "\n\n"
   )
 

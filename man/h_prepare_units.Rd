@@ -14,6 +14,6 @@ if \code{units} is \code{NA}, then \code{NA}.  Otherwise, \code{units}, ensuring
 one space precedes the first non-whitespace character
 }
 \description{
-\code{d} may be a vector
+Append Units to a Numeric Dose
 }
 \keyword{internal}

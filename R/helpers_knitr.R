@@ -1,5 +1,3 @@
-# Helper functions for use with knitr::knit_print
-
 #' Check That Labels Are Valid and Useful
 #'
 #' A vector of labels is valid and useful if it is of length 2, of type character
@@ -26,7 +24,6 @@ h_prepare_labels <- function(x) {
 
 #' Append Units to a Numeric Dose
 #'
-#' `d` may be a vector
 #' @param units (`character`)\cr the units to be displayed
 #' @keywords internal
 #' @return if `units` is `NA`, then `NA`.  Otherwise, `units`, ensuring that exactly

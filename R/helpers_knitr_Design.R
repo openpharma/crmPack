@@ -21,8 +21,6 @@ NULL
 #' @param object (`StartingDose`)\cr object to validate.
 #' @return A `character` vector with the validation failure messages,
 #'   or `TRUE` in case validation passes.
-NULL
-
 #' @describeIn v_starting_dose validates that the `StartingDose` object
 #'   contains valid `starting_dose`.
 #' @noRd
@@ -90,7 +88,7 @@ h_knit_print_design <- function(
     asis = TRUE) {
   assert_flag(asis)
   # Because subsections use level + 1 and 6 is the lowest markdown header level
-  assert_integer(level, lower = 1L, upper = 5L, any.missing = FALSE, len = 1L)
+  assert_int(level, lower = 1, upper = 5)
   assert_character(title, any.missing = FALSE, len = 1L)
 
   slots_to_process <- setdiff(slotNames(x), ignore_slots)
@@ -161,7 +159,7 @@ h_knit_print_design <- function(
 #' @noRd
 h_markdown_header <- function(text, level = 2L) {
   assert_character(text, any.missing = FALSE, len = 1L, min.chars = 2L)
-  assert_integer(level, lower = 1L, upper = 6L, any.missing = FALSE, len = 1L)
+  assert_int(level, lower = 1, upper = 6)
 
   paste0(
     "\n",
@@ -683,7 +681,8 @@ knit_print.RuleDesignOrdinal <- function(
     level = 2L,
     title = "Design",
     sections = NA,
-    asis = TRUE) {
+    asis = TRUE
+) {
   h_knit_print_design(
     x,
     ...,

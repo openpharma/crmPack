@@ -44,10 +44,6 @@ test_that("h_markdown_header fails gracefully with bad input", {
     "Assertion on 'text' failed\\: Must have length 1, but has length 2\\."
   )
   expect_error(
-    h_markdown_header("Title", 3),
-    "Assertion on 'level' failed\\: Must be of type 'integer', not 'double'\\."
-  )
-  expect_error(
     h_markdown_header("Title", 999L),
     "Assertion on 'level' failed\\: Element 1 is not <= 6\\."
   )
@@ -57,7 +53,7 @@ test_that("h_markdown_header fails gracefully with bad input", {
   )
   expect_error(
     h_markdown_header("Title", 1L:3L),
-    "Assertion on 'level' failed\\: Must have length 1, but has length 3\\."
+    "Assertion on 'level' failed\\: Must have length 1."
   )
 })
 
