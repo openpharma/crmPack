@@ -19,7 +19,7 @@
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.12.1/css/v4-shims.min.css" integrity="sha256-wZjR52fzng1pJHwx4aV2AO3yyTOXrcDW7jBpJtTwVxw=" crossorigin="anonymous">
 <!-- bootstrap-toc --><script src="https://cdn.jsdelivr.net/gh/afeld/bootstrap-toc@v1.0.1/dist/bootstrap-toc.min.js" integrity="sha256-4veVQbu7//Lk5TSmc7YV48MxtMy98e26cf5MrgZYnwo=" crossorigin="anonymous"></script><!-- headroom.js --><script src="https://cdnjs.cloudflare.com/ajax/libs/headroom/0.11.0/headroom.min.js" integrity="sha256-AsUX4SJE1+yuDu5+mAVzJbuYNPHj/WroHuZ8Ir/CkE0=" crossorigin="anonymous"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/headroom/0.11.0/jQuery.headroom.min.js" integrity="sha256-ZX/yNShbjqsohH1k95liqY9Gd8uOiE1S4vZc+9KQ1K4=" crossorigin="anonymous"></script><!-- clipboard.js --><script src="https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/2.0.11/clipboard.min.js" integrity="sha512-7O5pXpc0oCRrxk8RUfDYFgn0nO1t+jLuIOQdOMRp4APB7uZ4vSjspzp5y6YDtDs4VzUSTbWzBFZ/LKJhnyFOKw==" crossorigin="anonymous" referrerpolicy="no-referrer"></script><!-- search --><script src="https://cdnjs.cloudflare.com/ajax/libs/fuse.js/6.4.6/fuse.js" integrity="sha512-zv6Ywkjyktsohkbp9bb45V6tEMoWhzFzXis+LrMehmJZZSys19Yxf1dopHx7WzIKxr5tK2dVcYmaCk2uqdjF4A==" crossorigin="anonymous"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/autocomplete.js/0.38.0/autocomplete.jquery.min.js" integrity="sha512-GU9ayf+66Xx2TmpxqJpliWbT5PiGYxpaG8rfnBEk1LL8l1KGkRShhngwdXK1UgqhAzWpZHSiYPc09/NwDQIGyg==" crossorigin="anonymous"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/mark.js/8.11.1/mark.min.js" integrity="sha512-5CYOlHXGh6QpOFA/TeTylKLWfB3ftPsde7AnmhuitiTX4K5SqCLBeKro6sPS8ilsz1Q4NRx3v8Ko2IBiszzdww==" crossorigin="anonymous"></script><!-- pkgdown --><script src="../pkgdown.js"></script><meta property="og:title" content="Trial Design: basic sanity checks">
 <meta property="og:description" content="crmPack">
-<meta property="og:image" content="https://roche.github.io/crmPack/logo.png">
+<meta property="og:image" content="https://openpharma.github.io/crmPack/logo.png">
 <!-- mathjax --><script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/MathJax.js" integrity="sha256-nvJJv9wWKEm88qvoQl9ekL2J+k/RWIsaSScxxlsrv8k=" crossorigin="anonymous"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/config/TeX-AMS-MML_HTMLorMML.js" integrity="sha256-84DKXVJXs0/F8OTMzX4UR909+jtl4G7SPypPavF+GfA=" crossorigin="anonymous"></script><!--[if lt IE 9]>
 <script src="https://oss.maxcdn.com/html5shiv/3.7.3/html5shiv.min.js"></script>
 <script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
@@ -33,7 +33,7 @@
     
     <a class="navbar-brand me-2" href="../index.html">crmPack</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">2.0.0.9150</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">2.0.0.9151</small>
 
     
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -65,12 +65,6 @@
 <li class="nav-item">
   <a class="nav-link" href="../news/index.html">Changelog</a>
 </li>
-<!-- start dropdown for versions --> <li class="nav-item dropdown">
-        <a href="#" class="nav-link dropdown-toggle"
-          data-bs-toggle="dropdown" role="button"
-          aria-expanded="false" aria-haspopup="true"
-          id="dropdown-versions">Versions</a> <div class="dropdown-menu" aria-labelledby="dropdown-versions"> <a class="dropdown-item" data-toggle="tooltip" title="" href="https://Roche.github.io/crmPack/main">main</a> </div></li>
-<!-- end dropdown for versions -->
 <li class="nav-item dropdown">
   <a href="#" class="nav-link dropdown-toggle" data-bs-toggle="dropdown" role="button" aria-expanded="false" aria-haspopup="true" id="dropdown-reports">Reports</a>
   <div class="dropdown-menu" aria-labelledby="dropdown-reports">
@@ -85,7 +79,7 @@
 
       <ul class="navbar-nav">
 <li class="nav-item">
-  <a class="external-link nav-link" href="https://github.com/roche/crmPack">
+  <a class="external-link nav-link" href="https://github.com/openpharma/crmPack">
     <span class="fa fa-github"></span>
      
   </a>
@@ -105,7 +99,7 @@
       <img src="../logo.png" class="logo" alt=""><h1>Trial Design: basic sanity checks</h1>
             
       
-      <small class="dont-index">Source: <a href="https://github.com/roche/crmPack/blob/HEAD/vignettes/trial_sanity_checks.Rmd" class="external-link"><code>vignettes/trial_sanity_checks.Rmd</code></a></small>
+      <small class="dont-index">Source: <a href="https://github.com/openpharma/crmPack/blob/HEAD/vignettes/trial_sanity_checks.Rmd" class="external-link"><code>vignettes/trial_sanity_checks.Rmd</code></a></small>
       <div class="d-none name"><code>trial_sanity_checks.Rmd</code></div>
     </div>
 
@@ -135,7 +129,7 @@ permitted increment and selecting the dose for the nest study.</p>
 <h2 id="study-definition">Study definition<a class="anchor" aria-label="anchor" href="#study-definition"></a>
 </h2>
 <div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://github.com/roche/crmPack" class="external-link">crmPack</a></span><span class="op">)</span></span>
+<code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://github.com/openpharma/crmPack" class="external-link">crmPack</a></span><span class="op">)</span></span>
 <span></span>
 <span></span>
 <span><span class="co"># Define the dose grid and an empty data object</span></span>
@@ -222,9 +216,9 @@ earlier DLTs were reported at lower doses.</p>
 <tr class="even">
 <td align="right">3</td>
 <td align="right">1</td>
-<td align="right">1</td>
+<td align="right">NA</td>
 <td align="left">FALSE</td>
-<td align="right">-67</td>
+<td align="right">NA</td>
 </tr>
 <tr class="odd">
 <td align="right">5</td>
@@ -888,26 +882,28 @@ the state of the model after escalation to 50 mg without toxicity…</p>
 <span>  data <span class="op">=</span> <span class="va">no_tox_below_50_data</span></span>
 <span><span class="op">)</span></span>
 <span><span class="va">recommended_dose</span><span class="op">$</span><span class="va">value</span></span>
-<span><span class="co">#&gt; [1] 50</span></span>
-<span><span class="va">recommended_dose</span><span class="op">$</span><span class="va">probs</span></span>
+<span><span class="co">#&gt; [1] 50</span></span></code></pre></div>
+<div class="sourceCode" id="cb9"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">recommended_dose</span><span class="op">$</span><span class="va">probs</span></span>
 <span><span class="co">#&gt;       dose target overdose</span></span>
-<span><span class="co">#&gt;  [1,]    1  0.001    0.000</span></span>
-<span><span class="co">#&gt;  [2,]    3  0.001    0.000</span></span>
-<span><span class="co">#&gt;  [3,]    5  0.001    0.000</span></span>
-<span><span class="co">#&gt;  [4,]   10  0.001    0.000</span></span>
-<span><span class="co">#&gt;  [5,]   15  0.001    0.000</span></span>
-<span><span class="co">#&gt;  [6,]   20  0.002    0.000</span></span>
-<span><span class="co">#&gt;  [7,]   25  0.006    0.000</span></span>
-<span><span class="co">#&gt;  [8,]   40  0.051    0.002</span></span>
-<span><span class="co">#&gt;  [9,]   50  0.136    0.027</span></span>
-<span><span class="co">#&gt; [10,]   80  0.150    0.785</span></span>
-<span><span class="co">#&gt; [11,]  100  0.075    0.910</span></span>
-<span></span>
+<span><span class="co">#&gt;  [1,]    1  0.000    0.000</span></span>
+<span><span class="co">#&gt;  [2,]    3  0.000    0.000</span></span>
+<span><span class="co">#&gt;  [3,]    5  0.000    0.000</span></span>
+<span><span class="co">#&gt;  [4,]   10  0.000    0.000</span></span>
+<span><span class="co">#&gt;  [5,]   15  0.000    0.000</span></span>
+<span><span class="co">#&gt;  [6,]   20  0.000    0.000</span></span>
+<span><span class="co">#&gt;  [7,]   25  0.007    0.000</span></span>
+<span><span class="co">#&gt;  [8,]   40  0.024    0.002</span></span>
+<span><span class="co">#&gt;  [9,]   50  0.103    0.008</span></span>
+<span><span class="co">#&gt; [10,]   80  0.180    0.758</span></span>
+<span><span class="co">#&gt; [11,]  100  0.103    0.885</span></span></code></pre></div>
+<div class="sourceCode" id="cb10"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span></span>
 <span><span class="fu"><a href="../reference/maxDose.html">maxDose</a></span><span class="op">(</span><span class="va">revised_increment_rule</span>, <span class="va">no_tox_below_50_data</span><span class="op">)</span></span>
 <span><span class="co">#&gt; [1] 83.5</span></span></code></pre></div>
 <p>Whilst the increments rule allows escalation to 83.5 mg, the toxicity
 estimates provided by the model do not: the current estimate of toxicity
-at 80 mg is 0.785, well above the limit of 0.25 defined in the dose
+at 80 mg is 0.758, well above the limit of 0.25 defined in the dose
 recommendation rule (<code>next_best</code>).</p>
 <p>Again, we have several options. We can introduce intermediate doses,
 thus slowing escalation and allowing the prior model more time to adapt
@@ -915,7 +911,7 @@ thus slowing escalation and allowing the prior model more time to adapt
 that it allows faster, but still reasonable, escalation. Let’s try
 creating a minimally informative prior that is consistent with our first
 attempt.</p>
-<div class="sourceCode" id="cb9"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb11"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># Fitting the min_inf_model is slow.</span></span>
 <span><span class="kw">if</span> <span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/files.html" class="external-link">file.exists</a></span><span class="op">(</span><span class="st">"minInfModel.Rds"</span><span class="op">)</span><span class="op">)</span> <span class="op">{</span></span>
 <span>  <span class="va">min_inf_model</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/readRDS.html" class="external-link">readRDS</a></span><span class="op">(</span><span class="st">"minInfModel.Rds"</span><span class="op">)</span></span>
@@ -956,7 +952,7 @@ attempt.</p>
 \left[\begin{array}{rr}  1.923 &amp;  0.045 \\  0.045
 &amp;  0.002\end{array}\right]\right)\]</span></p>
 <p>Does this fix the rigidity problem?</p>
-<div class="sourceCode" id="cb10"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb12"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">revised_model</span> <span class="op">&lt;-</span> <span class="va">min_inf_model</span><span class="op">$</span><span class="va">model</span></span>
 <span></span>
 <span><span class="va">revised_design1</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/Design-class.html">Design</a></span><span class="op">(</span></span>
@@ -1129,9 +1125,9 @@ attempt.</p>
 <tr class="even">
 <td align="right">40</td>
 <td align="right">1</td>
-<td align="right">25</td>
+<td align="right">40</td>
 <td align="left">FALSE</td>
-<td align="right">-38</td>
+<td align="right">0</td>
 </tr>
 <tr class="odd">
 <td align="right">40</td>
@@ -1164,9 +1160,9 @@ attempt.</p>
 <tr class="odd">
 <td align="right">50</td>
 <td align="right">2</td>
-<td align="right">25</td>
+<td align="right">40</td>
 <td align="left">FALSE</td>
-<td align="right">-50</td>
+<td align="right">-20</td>
 </tr>
 <tr class="even">
 <td align="right">50</td>
@@ -1214,7 +1210,7 @@ be reduced, but for the purposes of this vignette, we do not explore
 this possibility.</p>
 <p>Now create some data that represent a trial that escalates without
 any reports of toxicity, and fit the revised model …</p>
-<div class="sourceCode" id="cb11"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb13"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">no_tox_data</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/Data-class.html">Data</a></span><span class="op">(</span></span>
 <span>  doseGrid <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">1</span>, <span class="fl">3</span>, <span class="fl">5</span>, <span class="fl">10</span>, <span class="fl">15</span>, <span class="fl">20</span>, <span class="fl">25</span>, <span class="fl">40</span>, <span class="fl">50</span>, <span class="fl">80</span>, <span class="fl">100</span><span class="op">)</span>,</span>
 <span>  x <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">1</span>, <span class="fl">3</span>, <span class="fl">5</span>, <span class="fl">10</span>, <span class="fl">15</span>, <span class="fl">20</span><span class="op">)</span>, <span class="fu"><a href="https://rdrr.io/r/base/rep.html" class="external-link">rep</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">25</span>, <span class="fl">40</span>, <span class="fl">50</span>, <span class="fl">80</span>, <span class="fl">100</span><span class="op">)</span>, each <span class="op">=</span> <span class="fl">3</span><span class="op">)</span><span class="op">)</span>,</span>
@@ -1239,13 +1235,14 @@ any reports of toxicity, and fit the revised model …</p>
 <span><span class="co">#&gt;  [3,]    5  0.000    0.000</span></span>
 <span><span class="co">#&gt;  [4,]   10  0.000    0.000</span></span>
 <span><span class="co">#&gt;  [5,]   15  0.000    0.000</span></span>
-<span><span class="co">#&gt;  [6,]   20  0.000    0.000</span></span>
-<span><span class="co">#&gt;  [7,]   25  0.000    0.000</span></span>
-<span><span class="co">#&gt;  [8,]   40  0.000    0.000</span></span>
-<span><span class="co">#&gt;  [9,]   50  0.004    0.000</span></span>
-<span><span class="co">#&gt; [10,]   80  0.232    0.002</span></span>
-<span><span class="co">#&gt; [11,]  100  0.319    0.033</span></span>
-<span></span>
+<span><span class="co">#&gt;  [6,]   20  0.001    0.000</span></span>
+<span><span class="co">#&gt;  [7,]   25  0.007    0.000</span></span>
+<span><span class="co">#&gt;  [8,]   40  0.067    0.001</span></span>
+<span><span class="co">#&gt;  [9,]   50  0.071    0.016</span></span>
+<span><span class="co">#&gt; [10,]   80  0.219    0.078</span></span>
+<span><span class="co">#&gt; [11,]  100  0.373    0.104</span></span></code></pre></div>
+<div class="sourceCode" id="cb14"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span></span>
 <span><span class="fu"><a href="../reference/stopTrial.html">stopTrial</a></span><span class="op">(</span><span class="va">stopping_trial</span>, <span class="va">recommended_dose</span><span class="op">$</span><span class="va">value</span>, <span class="va">no_tox_samples</span>, <span class="va">initial_model</span>, <span class="va">no_tox_data</span><span class="op">)</span></span>
 <span><span class="co">#&gt; [1] TRUE</span></span>
 <span><span class="co">#&gt; attr(,"message")</span></span>
@@ -1254,7 +1251,7 @@ any reports of toxicity, and fit the revised model …</p>
 <span><span class="co">#&gt; [1] "Number of cohorts is 11 and thus reached the prespecified minimum number 3"</span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; attr(,"message")[[1]][[2]]</span></span>
-<span><span class="co">#&gt; [1] "Probability for target toxicity is 32 % for dose 100 and thus below the required 50 %"</span></span>
+<span><span class="co">#&gt; [1] "Probability for target toxicity is 37 % for dose 100 and thus below the required 50 %"</span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; attr(,"message")[[2]]</span></span>
@@ -1268,7 +1265,7 @@ any reports of toxicity, and fit the revised model …</p>
 <span><span class="co">#&gt; [1] "Number of cohorts is 11 and thus reached the prespecified minimum number 3"</span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; attr(,"message")[[2]]</span></span>
-<span><span class="co">#&gt; [1] "Probability for target toxicity is 32 % for dose 100 and thus below the required 50 %"</span></span>
+<span><span class="co">#&gt; [1] "Probability for target toxicity is 37 % for dose 100 and thus below the required 50 %"</span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; attr(,"individual")</span></span>
 <span><span class="co">#&gt; attr(,"individual")[[1]]</span></span>
@@ -1281,7 +1278,7 @@ any reports of toxicity, and fit the revised model …</p>
 <span><span class="co">#&gt; attr(,"individual")[[2]]</span></span>
 <span><span class="co">#&gt; [1] FALSE</span></span>
 <span><span class="co">#&gt; attr(,"message")</span></span>
-<span><span class="co">#&gt; [1] "Probability for target toxicity is 32 % for dose 100 and thus below the required 50 %"</span></span>
+<span><span class="co">#&gt; [1] "Probability for target toxicity is 37 % for dose 100 and thus below the required 50 %"</span></span>
 <span><span class="co">#&gt; attr(,"report_label")</span></span>
 <span><span class="co">#&gt; [1] "P(0.2 ≤ prob(DLE | NBD) ≤ 0.35) ≥ 0.5"</span></span>
 <span><span class="co">#&gt; </span></span>
@@ -1311,7 +1308,7 @@ escalation over the dose grid, even if no DLTs are reported. That’s
 simply not realistic.</p>
 <p>So our final alteration is to increase the futility rule from 20
 participants to 40.</p>
-<div class="sourceCode" id="cb12"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb15"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">revised_stopping_futility</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/StoppingMinPatients-class.html">StoppingMinPatients</a></span><span class="op">(</span>nPatients <span class="op">=</span> <span class="fl">40</span><span class="op">)</span></span>
 <span><span class="va">revised_stopping_trial</span> <span class="op">&lt;-</span> <span class="op">(</span><span class="va">stopping_success1</span> <span class="op">&amp;</span> <span class="va">stopping_success2</span><span class="op">)</span> <span class="op">|</span> <span class="va">revised_stopping_futility</span></span>
 <span></span>
@@ -1346,7 +1343,7 @@ required.</p>
 <div class="section level2 unnumbered">
 <h2 class="unnumbered" id="references">References<a class="anchor" aria-label="anchor" href="#references"></a>
 </h2>
-<div id="refs" class="references csl-bib-body hanging-indent">
+<div id="refs" class="references csl-bib-body hanging-indent" entry-spacing="0">
 <div id="ref-dfcrm2013" class="csl-entry">
 Cheung, Ken. 2013. <em>: Dose-Finding by the Continual Reassessment
 Method</em>. <a href="https://www.routledge.com/Dose-Finding-by-the-Continual-Reassessment-Method/Cheung/p/book/9781420091519" class="external-link">https://www.routledge.com/Dose-Finding-by-the-Continual-Reassessment-Method/Cheung/p/book/9781420091519</a>.
