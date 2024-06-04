@@ -1,5 +1,5 @@
 ---
-url: https://roche.github.io/crmPack
+url: https://openpharma.github.io/crmPack
 
 template:
   bootstrap: 5
@@ -20,7 +20,7 @@ navbar:
           href: unit-test-report/
     github:
       icon: fa-github
-      href: https://github.com/roche/crmPack
+      href: https://github.com/openpharma/crmPack
 
 articles:
   - title: Articles

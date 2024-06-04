@@ -4198,7 +4198,7 @@ test_that("tidy-IncrementsRelativeParts works correctly", {
   expect_snapshot_value(result, style = "deparse")
 })
 
-# Relevant:https://github.com/Roche/crmPack/issues/759
+# Relevant:https://github.com/openpharma/crmPack/issues/759
 test_that("tidy-NextBestNCRM works correctly", {
   obj <- .DefaultNextBestNCRM()
   result <- tidy(obj)
@@ -4218,7 +4218,7 @@ test_that("tidy-NextBestNCRMLoss works correctly", {
   expect_snapshot_value(result, style = "deparse")
 })
 
-# Relevant: https://github.com/Roche/crmPack/issues/786
+# Relevant: https://github.com/openpharma/crmPack/issues/786
 test_that("tidy-IncrementsRelativeDLT works correctly", {
   obj <- .DefaultIncrementsRelativeDLT()
   actual <- tidy(obj)
