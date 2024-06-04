@@ -178,19 +178,18 @@ knit_print.SafetyWindowConst <- function(
 #' @export
 #' @method knit_print SafetyWindowSize
 knit_print.SafetyWindowSize <- function(
-  x,
-  ...,
-  asis = TRUE,
-  # We could use package english here and avoid the need for `ordinals`, but
-  # is an extra dependency for very limited benefit
-  ordinals = c(
-    "first", "second", "third", "fourth", "fifth", "sixth", "seventh",
-    "eighth", "ninth", "tenth"
-  ),
-  label = "participant",
-  time_unit = "day",
-  level = 2L
-) {
+    x,
+    ...,
+    asis = TRUE,
+    # We could use package english here and avoid the need for `ordinals`, but
+    # is an extra dependency for very limited benefit
+    ordinals = c(
+      "first", "second", "third", "fourth", "fifth", "sixth", "seventh",
+      "eighth", "ninth", "tenth"
+    ),
+    label = "participant",
+    time_unit = "day",
+    level = 2L) {
   assert_character(time_unit, min.len = 1, max.len = 2, any.missing = FALSE)
   assert_flag(asis)
   assert_integer(level, lower = 1, upper = 6, any.missing = FALSE)

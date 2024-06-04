@@ -56,8 +56,7 @@ knit_print.DualEndpoint <- function(
     fmt = "%5.2f",
     units = NA,
     tox_label = "toxicity",
-    biomarker_label = "PD biomarker"
-) {
+    biomarker_label = "PD biomarker") {
   # Validate
   assert_flag(asis)
   assert_flag(use_values)
@@ -407,14 +406,13 @@ h_knit_print_render_ref_dose.LogisticKadane <- function(x, ...) {
 #' @export
 #' @method knit_print LogisticKadane
 knit_print.LogisticKadane <- function(
-  x,
-  ...,
-  asis = TRUE,
-  use_values = TRUE,
-  fmt = "%5.2f",
-  units = NA,
-  tox_label = "toxicity"
-) {
+    x,
+    ...,
+    asis = TRUE,
+    use_values = TRUE,
+    fmt = "%5.2f",
+    units = NA,
+    tox_label = "toxicity") {
   # Validate
   assert_flag(asis)
   assert_flag(use_values)
@@ -479,13 +477,12 @@ knit_print.LogisticKadane <- function(
 #' @export
 #' @method knit_print LogisticKadaneBetaGamma
 knit_print.LogisticKadaneBetaGamma <- function(
-  x,
-  ...,
-  asis = TRUE,
-  use_values = TRUE,
-  fmt = "%5.2f",
-  units = NA
-) {
+    x,
+    ...,
+    asis = TRUE,
+    use_values = TRUE,
+    fmt = "%5.2f",
+    units = NA) {
   # Validate
   assert_flag(asis)
   assert_flag(use_values)
@@ -594,11 +591,10 @@ knit_print.LogisticLogNormal <- function(
 #' @description `r lifecycle::badge("experimental")`
 #' @noRd
 h_knit_print_render_model.LogisticLogNormalMixture <- function(
-  x,
-  use_values = TRUE,
-  tox_label = "toxicity",
-  ...
-) {
+    x,
+    use_values = TRUE,
+    tox_label = "toxicity",
+    ...) {
   tox_label <- h_prepare_labels(tox_label)
   z1 <- "e^{\\alpha_1 + \\beta_1 \\cdot log(d/d^*)}"
   z2 <- "e^{\\alpha_2 + \\beta_2 \\cdot log(d/d^*)}"
@@ -880,13 +876,12 @@ h_knit_print_render_model.ModelLogNormal <- function(x, ...) {
 #' @export
 #' @method knit_print OneParLogNormalPrior
 knit_print.OneParLogNormalPrior <- function(
-  x,
-  ...,
-  tox_label = "toxicity",
-  asis = TRUE,
-  use_values = TRUE,
-  fmt = "%5.2f"
-) {
+    x,
+    ...,
+    tox_label = "toxicity",
+    asis = TRUE,
+    use_values = TRUE,
+    fmt = "%5.2f") {
   assert_flag(asis)
 
   tox_label <- h_prepare_labels(tox_label)
