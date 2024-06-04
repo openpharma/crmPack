@@ -681,8 +681,7 @@ knit_print.RuleDesignOrdinal <- function(
     level = 2L,
     title = "Design",
     sections = NA,
-    asis = TRUE
-) {
+    asis = TRUE) {
   h_knit_print_design(
     x,
     ...,
