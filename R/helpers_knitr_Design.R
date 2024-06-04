@@ -21,6 +21,8 @@ NULL
 #' @param object (`StartingDose`)\cr object to validate.
 #' @return A `character` vector with the validation failure messages,
 #'   or `TRUE` in case validation passes.
+NULL
+
 #' @describeIn v_starting_dose validates that the `StartingDose` object
 #'   contains valid `starting_dose`.
 #' @noRd
