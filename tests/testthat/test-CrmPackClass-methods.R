@@ -34,7 +34,7 @@ test_that("tidy methods exist for all relevant classes", {
   }
 })
 
-# Related: https://github.com/Roche/crmPack/issues/759
+# Related: https://github.com/openpharma/crmPack/issues/759
 test_that("tidy methods return non-empty value for all classes", {
   crmpack_class_list <- getClasses(asNamespace("crmPack"))
   # The default constructors of the following classes correctly return a list
