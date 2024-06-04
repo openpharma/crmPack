@@ -38,7 +38,7 @@ options(continue = "  ") # use two blanks instead of "+" for
 
 # Installation
 
-Many models in `crmPack` rely on [JAGS](http://mcmc-jags.sourceforge.net/)
+Many models in `crmPack` rely on [JAGS](https://mcmc-jags.sourceforge.io/)
 (please click on the link for going to the webpage of the project) for the
 internal MCMC computations. WinBUGS is not required or supported anymore.
 
