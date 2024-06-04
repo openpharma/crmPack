@@ -430,16 +430,16 @@ knit_print.StoppingMinCohorts <- function(
 knit_print.StoppingMinPatients <- function(
     x,
     ...,
-    label = "participants",
+    label = "participant",
     asis = TRUE) {
   assert_flag(asis)
-  assert_character(label, len = 1, any.missing = FALSE)
+  label <- h_prepare_labels(label)
 
   rv <- paste0(
     ifelse(is.na(x@report_label), "", paste0(x@report_label, ": ")),
     "If ",
     x@nPatients,
-    paste0(" or more ", label, " have been treated."),
+    paste0(" or more ", label[2], " have been treated."),
     "\n\n"
   )
   if (asis) {

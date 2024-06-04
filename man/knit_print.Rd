@@ -92,7 +92,7 @@
 
 \method{knit_print}{CohortSizeRange}(x, ..., asis = TRUE)
 
-\method{knit_print}{CohortSizeDLT}(x, ..., asis = TRUE)
+\method{knit_print}{CohortSizeDLT}(x, ..., tox_label = "toxicity", asis = TRUE)
 
 \method{knit_print}{CohortSizeParts}(x, ..., asis = TRUE, label = c("participant", "participants"))
 
@@ -168,7 +168,7 @@
   fmt = "\%5.2f",
   units = NA,
   tox_label = "toxicity",
-  biomarker_name = "PD biomarker"
+  biomarker_label = "PD biomarker"
 )
 
 \method{knit_print}{ModelParamsNormal}(
@@ -192,7 +192,15 @@
   units = NA
 )
 
-\method{knit_print}{LogisticKadane}(x, ..., asis = TRUE, use_values = TRUE, fmt = "\%5.2f", units = NA)
+\method{knit_print}{LogisticKadane}(
+  x,
+  ...,
+  asis = TRUE,
+  use_values = TRUE,
+  fmt = "\%5.2f",
+  units = NA,
+  tox_label = "toxicity"
+)
 
 \method{knit_print}{LogisticKadaneBetaGamma}(x, ..., asis = TRUE, use_values = TRUE, fmt = "\%5.2f", units = NA)
 
@@ -222,7 +230,14 @@
 
 \method{knit_print}{LogisticNormalFixedMixture}(x, ..., asis = TRUE, use_values = TRUE, fmt = "\%5.2f", units = NA)
 
-\method{knit_print}{OneParLogNormalPrior}(x, ..., asis = TRUE, use_values = TRUE, fmt = "\%5.2f")
+\method{knit_print}{OneParLogNormalPrior}(
+  x,
+  ...,
+  tox_label = "toxicity",
+  asis = TRUE,
+  use_values = TRUE,
+  fmt = "\%5.2f"
+)
 
 \method{knit_print}{OneParExpPrior}(x, ..., asis = TRUE)
 
@@ -253,7 +268,7 @@
   use_values = TRUE,
   fmt = "\%5.2f",
   params = NA,
-  tox_label = "DLAEs",
+  tox_label = "DLAE",
   preamble = "The prior for &theta; is given by\\\\n",
   asis = TRUE
 )
@@ -348,7 +363,7 @@
 
 \method{knit_print}{NextBestMaxGainSamples}(x, ..., tox_label = "toxicity", asis = TRUE)
 
-\method{knit_print}{NextBestOrdinal}(x, ..., asis = TRUE)
+\method{knit_print}{NextBestOrdinal}(x, ..., tox_label = "toxicity", asis = TRUE)
 
 \method{knit_print}{SafetyWindow}(x, ..., asis = TRUE, time_unit = "day", label = "participant")
 
@@ -473,7 +488,7 @@
 
 \method{knit_print}{StoppingMinCohorts}(x, ..., asis = TRUE)
 
-\method{knit_print}{StoppingMinPatients}(x, ..., label = "participants", asis = TRUE)
+\method{knit_print}{StoppingMinPatients}(x, ..., label = "participant", asis = TRUE)
 
 \method{knit_print}{StoppingPatientsNearDose}(
   x,
@@ -495,6 +510,8 @@
 \item{asis}{(\code{flag})\cr Not used at present}
 
 \item{label}{(\code{character})\cr the term used to label participants}
+
+\item{tox_label}{(\code{character})\cr the term used to describe toxicity}
 
 \item{level}{(\code{count})\cr the markdown level at which the headings for cohort size
 will be printed.  An integer between 1 and 6}
@@ -528,9 +545,7 @@ or the symbols used to define the hyper-parameters.  That is, for example, mu or
 \item{fmt}{(\code{character})\cr the \code{sprintf} format string used to render
 numerical values.  Ignored if \code{use_values} is \code{FALSE}.}
 
-\item{tox_label}{(\code{character})\cr the term used to describe toxicity}
-
-\item{biomarker_name}{(\code{character})\cr A description of the biomarker}
+\item{biomarker_label}{(\code{character})\cr the term used to describe the biomarker}
 
 \item{params}{(\code{character})\cr The names of the model parameters.  See Usage
 Notes below.}
@@ -543,8 +558,6 @@ Notes below.}
 
 \item{target_label}{(\code{character})\cr the term used to describe the target
 toxicity rate}
-
-\item{biomarker_label}{(\code{character})\cr the term used to describe the biomarker}
 
 \item{biomarker_units}{(\code{character})\cr the units in which the biomarker is
 measured}
@@ -754,9 +767,10 @@ These values can be overridden by passing \code{col.names} and \code{caption} in
 function call.
 
 
-The by default, the columns are labelled \code{Lower}, \code{Upper} and \verb{Cohort size}.  The table's caption is
-\verb{Defined by the number of DLTs so far observed}.  These values can be overridden by passing
-\code{col.names} and \code{caption} in the function call.
+The by default, the columns are labelled \code{Lower}, \code{Upper} and \verb{Cohort size}.
+The table's caption is \verb{Defined by the number of <tox_label[2]> so far observed}.
+These values can be overridden by passing \code{col.names} and \code{caption} in the
+function call.
 
 
 \code{label} describes the trial's participants.
@@ -847,9 +861,10 @@ These values can be overridden by passing \code{col.names} and \code{caption} in
 function call.
 
 
-The by default, the columns are labelled \code{Lower}, \code{Upper} and \verb{Cohort size}.  The table's caption is
-\verb{Defined by the number of DLTs so far observed}.  These values can be overridden by passing
-\code{col.names} and \code{caption} in the function call.
+The by default, the columns are labelled \code{Lower}, \code{Upper} and \verb{Cohort size}.
+The table's caption is \verb{Defined by the number of <tox_label[2]> so far observed}.
+These values can be overridden by passing \code{col.names} and \code{caption} in the
+function call.
 
 
 \code{label} describes the trial's participants.

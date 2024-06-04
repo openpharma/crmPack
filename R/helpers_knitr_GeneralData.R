@@ -12,11 +12,7 @@ h_get_formatted_dosegrid <- function(grid, units = NA) {
   assert_character(units, len = 1)
 
   n <- length(grid)
-  if (is.na(units)) {
-    units <- ""
-  } else {
-    units <- paste0(" ", units)
-  }
+  units <- h_prepare_units(units)
   paste0(
     paste(
       lapply(grid[1:(n - 1)], paste0, sep = units),
@@ -335,7 +331,6 @@ knit_print.GeneralData <- function(
     units = NA,
     format_func = function(x) x) {
   # Validate
-  assert_character(label, max.len = 2, any.missing = FALSE)
   assert_flag(asis)
   assert_flag(full_grid)
   assert_function(format_func)
@@ -347,9 +342,7 @@ knit_print.GeneralData <- function(
   }
   assert_choice(summarise, c("none", "dose", "cohort"))
   # Initialise
-  if (length(label) == 1) {
-    label[2] <- paste0(label[1], "s")
-  }
+  label <- h_prepare_labels(label)
   param <- list(...)
 
   # Execute

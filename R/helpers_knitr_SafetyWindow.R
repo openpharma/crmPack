@@ -85,13 +85,10 @@ knit_print.SafetyWindow <- function(
     asis = TRUE,
     time_unit = "day",
     label = "participant") {
-  assert_character(label, min.len = 1, max.len = 2, any.missing = FALSE)
   assert_character(time_unit, min.len = 1, max.len = 2, any.missing = FALSE)
   assert_flag(asis)
 
-  if (length(label) == 1) {
-    label[2] <- paste0(label[1], "s")
-  }
+  label <- h_prepare_labels(label)
   if (length(time_unit) == 1) {
     time_unit[2] <- paste0(time_unit[1], "s")
   }
@@ -136,14 +133,11 @@ knit_print.SafetyWindowConst <- function(
       "seventh", "eighth", "ninth", "tenth"
     ),
     time_unit = "day") {
-  assert_character(label, min.len = 1, max.len = 2, any.missing = FALSE)
   assert_character(time_unit, min.len = 1, max.len = 2, any.missing = FALSE)
   assert_character(ordinals, min.len = length(x@gap) - 1, any.missing = FALSE, unique = TRUE)
   assert_flag(asis)
 
-  if (length(label) == 1) {
-    label[2] <- paste0(label[1], "s")
-  }
+  label <- h_prepare_labels(label)
   if (length(time_unit) == 1) {
     time_unit[2] <- paste0(time_unit[1], "s")
   }
@@ -184,26 +178,24 @@ knit_print.SafetyWindowConst <- function(
 #' @export
 #' @method knit_print SafetyWindowSize
 knit_print.SafetyWindowSize <- function(
-    x,
-    ...,
-    asis = TRUE,
-    # We could use package english here and avoid the need for `ordinals`, but
-    # is an extra dependency for very limited benefit
-    ordinals = c(
-      "first", "second", "third", "fourth", "fifth", "sixth", "seventh",
-      "eighth", "ninth", "tenth"
-    ),
-    label = "participant",
-    time_unit = "day",
-    level = 2L) {
-  assert_character(label, min.len = 1, max.len = 2, any.missing = FALSE)
+  x,
+  ...,
+  asis = TRUE,
+  # We could use package english here and avoid the need for `ordinals`, but
+  # is an extra dependency for very limited benefit
+  ordinals = c(
+    "first", "second", "third", "fourth", "fifth", "sixth", "seventh",
+    "eighth", "ninth", "tenth"
+  ),
+  label = "participant",
+  time_unit = "day",
+  level = 2L
+) {
   assert_character(time_unit, min.len = 1, max.len = 2, any.missing = FALSE)
   assert_flag(asis)
   assert_integer(level, lower = 1, upper = 6, any.missing = FALSE)
 
-  if (length(label) == 1) {
-    label[2] <- paste0(label[1], "s")
-  }
+  label <- h_prepare_labels(label)
   if (length(time_unit) == 1) {
     time_unit[2] <- paste0(time_unit[1], "s")
   }

@@ -116,7 +116,7 @@ test_that("knit_print-StartingDose works correctly", {
 })
 
 test_that("knit_print-RuleDesign works correctly", {
-  x <- knit_print(.DefaultRuleDesign(), asis = TRUE)
+  x <- knit_print(.DefaultRuleDesign(), asis = FALSE)
   expectedSections <- c(
     "Dose recommendation",
     "Cohort size",
@@ -125,7 +125,423 @@ test_that("knit_print-RuleDesign works correctly", {
   )
 
   # Section headers exist
+  expect_true(stringr::str_detect(x, "## Design"))
   expect_true(
     all(stringr::str_detect(x, paste0("### ", expectedSections)))
   )
+  # Initial label counts
+  expect_equal(
+    stringr::str_count(x, c("toxicities", "toxicity", "participants")),
+    c(1, 1, 3)
+  )
+  # Custom label counts
+  expect_equal(
+    stringr::str_count(
+      knit_print(.DefaultRuleDesign(), asis = FALSE, label = "subject", tox_label = "DLAE"),
+      # Account for word boundaries
+      c("DLAEs\\b", "DLAE\\b", "subjects\\b")
+    ),
+    c(1, 1, 3)
+  )
 })
+
+test_that("knit_print-Design works correctly", {
+  x <- knit_print(.DefaultDesign(), asis = FALSE)
+  expectedSections <- c(
+    "nextBest" = "Dose recommendation",
+    "cohort_size" = "Cohort size",
+    "data" = "Observed data",
+    "startingDose" = "Starting dose",
+    "increments" = "Escalation rule",
+    "stopping" = "Stopping rule",
+    "model" = "Dose toxicity model",
+    "pl_cohort_size" = "Use of placebo"
+  )
+
+  # Section headers exist
+  expect_true(stringr::str_detect(x, "## Design"))
+  expect_true(all(stringr::str_detect(x, paste0("### ", expectedSections))))
+  # Initial label counts
+  expected <- c(
+    "toxicities" = 2,
+    "toxicity" = 6,
+    "participants" = 2,
+    "patients" = 1,
+    "subjects" = 0,
+    "cohorts" = 2,
+    "DLAE\\b" = 0,
+    "DLAEs\\b" = 0
+  )
+  actual <- stringr::str_count(x, names(expected))
+  names(actual) <- names(expected)
+  expect_equal(actual, expected)
+
+  # Custom label counts
+  x <- knit_print(.DefaultDesign(), asis = FALSE, label = "subject", tox_label = "DLAE")
+  expected <- c(
+    "toxicities" = 0,
+    "toxicity" = 1,
+    "participants" = 0,
+    "patients" = 1,
+    "subjects" = 2,
+    "cohorts" = 2,
+    "DLAE\\b" = 5,
+    "DLAEs\\b" = 2
+  )
+  actual <- stringr::str_count(x, names(expected))
+  names(actual) <- names(expected)
+  expect_equal(actual, expected)
+})
+
+test_that("knit_print-DualDesign works correctly", {
+  x <- knit_print(.DefaultDualDesign(), asis = FALSE)
+  expectedSections <- c(
+    "nextBest" = "Dose recommendation",
+    "cohort_size" = "Cohort size",
+    "data" = "Observed data",
+    "startingDose" = "Starting dose",
+    "increments" = "Escalation rule",
+    "stopping" = "Stopping rule",
+    "model" = "Dose-toxicity and dose-biomarker models",
+    "pl_cohort_size" = "Use of placebo"
+  )
+
+  # Section headers exist
+  expect_true(stringr::str_detect(x, "## Design"))
+  expect_true(all(stringr::str_detect(x, paste0("### ", expectedSections))))
+  # Initial label counts
+  expected <- c(
+    "toxicities" = 2,
+    "toxicity" = 4,
+    "participants" = 2,
+    "patients" = 1,
+    "subjects" = 0,
+    "cohort" = 3,
+    "Cohort" = 3,
+    "cohorts" = 0,
+    "DLAE\\b" = 0,
+    "DLAEs\\b" = 0,
+    "biomarker" = 8,
+    "Biomarker" = 1
+  )
+  actual <- stringr::str_count(x, names(expected))
+  names(actual) <- names(expected)
+  expect_equal(actual, expected)
+
+  # Custom label counts
+  x <- knit_print(.DefaultDualDesign(), asis = TRUE, label = "subject", tox_label = "DLAE")
+  expected <- c(
+    "toxicities" = 0,
+    "toxicity" = 0,
+    "participants" = 0,
+    "patients" = 1,
+    "subjects" = 2,
+    "cohort" = 3,
+    "Cohort" = 3,
+    "cohorts" = 0,
+    "DLAE\\b" = 4,
+    "DLAEs\\b" = 2,
+    "biomarker" = 8,
+    "Biomarker" = 1
+  )
+  actual <- stringr::str_count(x, names(expected))
+  names(actual) <- names(expected)
+  expect_equal(actual, expected)
+})
+
+test_that("knit_print-DADesign works correctly", {
+  x <- knit_print(.DefaultDADesign(), asis = FALSE)
+  expectedSections <- c(
+    "nextBest" = "Dose recommendation",
+    "cohort_size" = "Cohort size",
+    "data" = "Observed data",
+    "startingDose" = "Starting dose",
+    "increments" = "Escalation rule",
+    "stopping" = "Stopping rule",
+    "model" = "Dose toxicity model",
+    "pl_cohort_size" = "Use of placebo"
+  )
+
+  # Section headers exist
+  expect_true(stringr::str_detect(x, "## Design"))
+  expect_true(all(stringr::str_detect(x, paste0("### ", expectedSections))))
+  # Initial label counts
+  expected <- c(
+    "toxicities" = 2,
+    "toxicity" = 6,
+    "participants" = 6,
+    "participant\\b" = 1,
+    "patients" = 1,
+    "subjects" = 0,
+    "cohort\\b" = 7,
+    "Cohort" = 3,
+    "cohorts" = 1,
+    "DLAE\\b" = 0,
+    "DLAEs\\b" = 0
+  )
+  actual <- stringr::str_count(x, names(expected))
+  names(actual) <- names(expected)
+  expect_equal(actual, expected)
+
+  # Custom label counts
+  x <- knit_print(.DefaultDADesign(), asis = TRUE, label = "subject", tox_label = "DLAE")
+  expected <- c(
+    "toxicities" = 0,
+    "toxicity" = 1,
+    "participants" = 0,
+    "patients" = 1,
+    "subjects" = 6,
+    "cohort" = 8,
+    "Cohort" = 3,
+    "cohorts" = 1,
+    "DLAE\\b" = 5,
+    "DLAEs\\b" = 2
+  )
+  actual <- stringr::str_count(x, names(expected))
+  names(actual) <- names(expected)
+  expect_equal(actual, expected)
+})
+
+test_that("knit_print-DTDDesign works correctly", {
+  x <- knit_print(.DefaultTDDesign(), asis = FALSE)
+  expectedSections <- c(
+    "nextBest" = "Dose recommendation",
+    "cohort_size" = "Cohort size",
+    "data" = "Observed data",
+    "startingDose" = "Starting dose",
+    "increments" = "Escalation rule",
+    "stopping" = "Stopping rule",
+    "model" = "Dose toxicity model",
+    "pl_cohort_size" = "Use of placebo"
+  )
+
+  # Section headers exist
+  expect_true(stringr::str_detect(x, "## Design"))
+  expect_true(all(stringr::str_detect(x, paste0("### ", expectedSections))))
+  # Initial label counts
+  expected <- c(
+    "toxicities" = 0,
+    "toxicity" = 3,
+    "participants" = 3,
+    "participant\\b" = 0,
+    "patients" = 1,
+    "subjects" = 0,
+    "cohort\\b" = 1,
+    "Cohort" = 1,
+    "cohorts" = 0,
+    "DLAE\\b" = 1,
+    "DLAEs\\b" = 2
+  )
+  actual <- stringr::str_count(x, names(expected))
+  names(actual) <- names(expected)
+  expect_equal(actual, expected)
+
+  # Custom label counts
+  x <- knit_print(.DefaultTDDesign(), asis = TRUE, label = "subject", tox_label = "toxicity")
+  expected <- c(
+    "toxicities" = 2,
+    "toxicity" = 4,
+    "participants" = 0,
+    "patients" = 1,
+    "subjects" = 3,
+    "cohort" = 1,
+    "Cohort" = 1,
+    "cohorts" = 0,
+    "DLAE\\b" = 0,
+    "DLAEs\\b" = 0
+  )
+  actual <- stringr::str_count(x, names(expected))
+  names(actual) <- names(expected)
+  expect_equal(actual, expected)
+})
+
+test_that("knit_print-DualResponsesDesign works correctly", {
+  x <- knit_print(.DefaultDualResponsesDesign(), asis = FALSE)
+  expectedSections <- c(
+    "nextBest" = "Dose recommendation",
+    "cohort_size" = "Cohort size",
+    "data" = "Observed data",
+    "startingDose" = "Starting dose",
+    "increments" = "Escalation rule",
+    "stopping" = "Stopping rule",
+    "model" = "Dose-toxicity model",
+    "pl_cohort_size" = "Use of placebo",
+    "eff_model" = "Dose-efficacy model"
+  )
+
+  # Section headers exist
+  expect_true(stringr::str_detect(x, "## Design"))
+  expect_true(all(stringr::str_detect(x, paste0("### ", expectedSections))))
+  # Initial label counts
+  expected <- c(
+    "toxicities" = 0,
+    "toxicity" = 3,
+    "participants\\b" = 4,
+    "participants'" = 1,
+    "participant\\b" = 1,
+    "patients" = 1,
+    "subjects" = 0,
+    "cohort\\b" = 1,
+    "Cohort" = 1,
+    "cohorts" = 0,
+    "DLAE\\b" = 2,
+    "DLAEs\\b" = 2
+  )
+  actual <- stringr::str_count(x, names(expected))
+  names(actual) <- names(expected)
+  expect_equal(actual, expected)
+
+  # Custom label counts
+  x <- knit_print(
+    .DefaultDualResponsesDesign(),
+    asis = TRUE,
+    label = "subject",
+    tox_label = "toxicity",
+    eff_label = "CRP"
+  )
+  expected <- c(
+    "toxicities" = 2,
+    "toxicity" = 5,
+    "participants\\b" = 0,
+    "participants'\\b" = 0,
+    "participant\\b" = 0,
+    "subjects\\b" = 4,
+    "subjects\\." = 1,
+    "subjects'" = 1,
+    "subject\\b" = 1,
+    "patients" = 1,
+    "subjects" = 4,
+    "cohort\\b" = 1,
+    "Cohort" = 1,
+    "cohorts" = 0,
+    "DLAE\\b" = 0,
+    "DLAEs\\b" = 0
+  )
+  actual <- stringr::str_count(x, names(expected))
+  names(actual) <- names(expected)
+  expect_equal(actual, expected)
+})
+
+test_that("knit_print-DualResponsesSamplesDesign works correctly", {
+  x <- knit_print(.DefaultDualResponsesSamplesDesign(), asis = FALSE)
+  expectedSections <- c(
+    "nextBest" = "Dose recommendation",
+    "cohort_size" = "Cohort size",
+    "data" = "Observed data",
+    "startingDose" = "Starting dose",
+    "increments" = "Escalation rule",
+    "stopping" = "Stopping rule",
+    "model" = "Dose-toxicity model",
+    "pl_cohort_size" = "Use of placebo",
+    "eff_model" = "Dose-efficacy model"
+  )
+
+  # Section headers exist
+  expect_true(stringr::str_detect(x, "## Design"))
+  expect_true(all(stringr::str_detect(x, paste0("### ", expectedSections))))
+  # Initial label counts
+  expected <- c(
+    "toxicities" = 0,
+    "toxicity" = 3,
+    "participants\\b" = 4,
+    "participants'" = 1,
+    "participant\\b" = 1,
+    "patients" = 1,
+    "subjects" = 0,
+    "cohort\\b" = 1,
+    "Cohort" = 1,
+    "cohorts" = 0,
+    "DLAE\\b" = 2,
+    "DLAEs\\b" = 2
+  )
+  actual <- stringr::str_count(x, names(expected))
+  names(actual) <- names(expected)
+  expect_equal(actual, expected)
+
+  # Custom label counts
+  x <- knit_print(
+    .DefaultDualResponsesSamplesDesign(),
+    asis = TRUE,
+    label = "subject",
+    tox_label = "toxicity",
+    eff_label = "CRP"
+  )
+  expected <- c(
+    "toxicities" = 2,
+    "toxicity" = 5,
+    "participants\\b" = 0,
+    "participants'\\b" = 0,
+    "participant\\b" = 0,
+    "subjects\\b" = 4,
+    "subjects\\." = 1,
+    "subjects'" = 1,
+    "subject\\b" = 1,
+    "patients" = 1,
+    "subjects" = 4,
+    "cohort\\b" = 1,
+    "Cohort" = 1,
+    "cohorts" = 0,
+    "DLAE\\b" = 0,
+    "DLAEs\\b" = 0
+  )
+  actual <- stringr::str_count(x, names(expected))
+  names(actual) <- names(expected)
+  expect_equal(actual, expected)
+})
+
+test_that("knit_print-RuleDesignOrdinal works correctly", {
+  x <- knit_print(.DefaultRuleDesignOrdinal(), asis = FALSE)
+  expectedSections <- c(
+    "nextBest" = "Dose recommendation",
+    "cohort_size" = "Cohort size",
+    "data" = "Observed data",
+    "startingDose" = "Starting dose"
+  )
+
+  # Section headers exist
+  expect_true(stringr::str_detect(x, "## Design"))
+  expect_true(all(stringr::str_detect(x, paste0("### ", expectedSections))))
+  # Initial label counts
+  expected <- c(
+    "toxicities" = 0,
+    "toxicity" = 4,
+    "participants\\b" = 2,
+    "participant\\b" = 0,
+    "patients" = 0,
+    "subjects" = 0,
+    "cohort\\b" = 2,
+    "Cohort" = 1,
+    "cohorts" = 0,
+    "DLAE\\b" = 0,
+    "DLAEs\\b" = 0
+  )
+  actual <- stringr::str_count(x, names(expected))
+  names(actual) <- names(expected)
+  expect_equal(actual, expected)
+
+  # Custom label counts
+  x <- knit_print(
+    .DefaultRuleDesignOrdinal(),
+    asis = TRUE,
+    label = "subject",
+    tox_label = "DLAE",
+    eff_label = "CRP"
+  )
+  expected <- c(
+    "toxicities" = 0,
+    "toxicity" = 0,
+    "participants\\b" = 0,
+    "participant\\b" = 0,
+    "patients" = 0,
+    "subjects" = 2,
+    "cohort\\b" = 2,
+    "Cohort" = 1,
+    "cohorts" = 0,
+    "DLAE\\b" = 4,
+    "DLAEs\\b" = 0
+  )
+  actual <- stringr::str_count(x, names(expected))
+  names(actual) <- names(expected)
+  expect_equal(actual, expected)
+})
+

@@ -18,8 +18,9 @@ knit_print.NextBestMTD <- function(
     asis = TRUE) {
   # Validate
   assert_flag(asis)
-  assert_character(tox_label, len = 1, any.missing = FALSE)
   assert_character(target_label, len = 1, any.missing = FALSE)
+
+  tox_label <- h_prepare_labels(tox_label)
 
   # Execute
   rv <- paste0(
@@ -27,13 +28,13 @@ knit_print.NextBestMTD <- function(
     "-  First, ",
     target_label,
     " of the posterior distribution of ",
-    tox_label,
+    tox_label[1],
     " will be calculated for all dose levels that are eligible according to the ",
     " Increments rule.\n",
     "-  Next, the \"target dose\" (which may not be part of the dose grid) for which ",
     target_label,
     " of the posterior distribution of ",
-    tox_label,
+    tox_label[1],
     " is exactly equal to the target rate of ",
     x@target,
     " will be determined.\n",
@@ -117,15 +118,10 @@ knit_print.NextBestThreePlusThree <- function(
     asis = TRUE) {
   # Validate
   assert_flag(asis)
-  assert_character(tox_label, min.len = 1, max.len = 2, any.missing = FALSE)
 
   # Prepare
-  if (length(tox_label == 1)) {
-    tox_label <- c(tox_label, paste0(tox_label, "s"))
-  }
-  if (length(label == 1)) {
-    label <- c(label, paste0(label, "s"))
-  }
+  tox_label <- h_prepare_labels(tox_label)
+  label <- h_prepare_labels(label)
 
   # Execute
   rv <- paste0(
@@ -592,11 +588,16 @@ knit_print.NextBestMaxGainSamples <- function(
 knit_print.NextBestOrdinal <- function(
     x,
     ...,
+    tox_label = "toxicity",
     asis = TRUE) {
   assert_flag(asis)
+  assert_character(tox_label, max.len = 2, any.missing = FALSE)
 
+  tox_label <- h_prepare_labels(tox_label)
   rv <- paste0(
-    "Based on a toxicity grade of ",
+    "Based on a ",
+    tox_label[1],
+    " grade of ",
     x@grade,
     ": ",
     paste0(knit_print(x@rule, asis = asis, ...), collapse = "\n"),

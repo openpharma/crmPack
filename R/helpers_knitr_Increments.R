@@ -202,11 +202,8 @@ knit_print.IncrementsOrdinal <- function(x, ..., asis = TRUE) {
 #' @rdname knit_print
 knit_print.IncrementsRelativeParts <- function(x, ..., asis = TRUE, tox_label = c("toxicity", "toxicities")) {
   assert_flag(asis)
-  assert_character(tox_label, min.len = 1, max.len = 2, any.missing = FALSE)
 
-  if (length(tox_label) == 1) {
-    tox_label[2] <- paste0(tox_label[1], "s")
-  }
+  tox_label <- h_prepare_labels(tox_label)
   rv <- paste0(
     "The maximum increment in Part 1 is defined by the `part1Ladder` slot of ",
     "the associated `DataParts` object.\n\n",

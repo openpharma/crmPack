@@ -10,19 +10,6 @@
 #' @name knit_print
 NULL
 
-# RuleDesign                     Done
-# DesignGrouped                  Done
-# RuleDesignOrdinal
-# Design                         Done
-# TDsamplesDesign                Done
-# TDDesign                       Done
-# DesignOrdinal                  Done
-# DualDesign                     Done
-# DualResponsesSamplesDesign     Done
-# DualResponsesDesign            Done
-# DADesign                       Done
-
-
 #' Internal Helper Functions for Validation of [`StartingDose`] Objects
 #'
 #' @description `r lifecycle::badge("experimental")`
@@ -93,16 +80,18 @@ StartingDose <- function(starting_dose) {
 # Helper functions ----
 
 h_knit_print_design <- function(
-    x,
-    ...,
-    level = 2L,
-    title = "Design",
-    default_sections = NA,
-    user_sections = NA,
-    ignore_slots = c(),
-    asis = TRUE) {
+  x,
+  ...,
+  level = 2L,
+  title = "Design",
+  default_sections = NA,
+  user_sections = NA,
+  ignore_slots = c(),
+  asis = TRUE
+) {
   assert_flag(asis)
-  assert_integer(level, lower = 1L, upper = 6L, any.missing = FALSE, len = 1L)
+  # Because subsections use level + 1 and 6 is the lowest markdown header level
+  assert_integer(level, lower = 1L, upper = 5L, any.missing = FALSE, len = 1L)
   assert_character(title, any.missing = FALSE, len = 1L)
 
   slots_to_process <- setdiff(slotNames(x), ignore_slots)
@@ -117,19 +106,36 @@ h_knit_print_design <- function(
   assert_subset(slots_to_process, names(section_labels))
 
   rv <- paste0(
+    h_markdown_header(title, level = level),
     paste0(
       lapply(
         slots_to_process,
         function(nm) {
           tmp <- switch(nm,
-            starting_dose = knit_print(StartingDose(x@starting_dose), asis = FALSE, ...),
-            startingDose = knit_print(StartingDose(x@startingDose), asis = FALSE, ...),
+            starting_dose = knit_print(
+              StartingDose(x@starting_dose),
+              asis = FALSE,
+              level = level + 1L,
+              ...
+            ),
+            startingDose = knit_print(
+              StartingDose(x@startingDose),
+              asis = FALSE,
+              level = level + 1L,
+              ...
+            ),
             pl_cohort_size = ifelse(
               identical(slot(x, "pl_cohort_size"), CohortSizeConst(0)),
               "Placebo will not be administered in the trial.\n\n",
-              knit_print(slot(x, "pl_cohort_size"), asis = FALSE, ...)
-            ),
-            knit_print(slot(x, nm), asis = FALSE, ...)
+              knit_print(
+                slot(x, "pl_cohort_size"),
+                asis = FALSE,
+                level = level + 1L,
+                ...
+              )
+            ), {
+              knit_print(slot(x, nm), asis = FALSE, level = level + 1L, ...)
+            }
           )
           paste0(h_markdown_header(section_labels[nm], level + 1L), tmp)
         }
@@ -217,7 +223,6 @@ knit_print.StartingDose <- function(x, ..., asis = TRUE) {
   rv
 }
 
-
 # RuleDesign ----
 
 #' @description `r lifecycle::badge("experimental")`
@@ -263,12 +268,13 @@ knit_print.RuleDesign <- function(
 #' @export
 #' @method knit_print Design
 knit_print.Design <- function(
-    x,
-    ...,
-    level = 2L,
-    title = "Design",
-    sections = NA,
-    asis = TRUE) {
+  x,
+  ...,
+  level = 2L,
+  title = "Design",
+  sections = NA,
+  asis = TRUE
+) {
   h_knit_print_design(
     x,
     ...,
@@ -309,8 +315,8 @@ knit_print.DualDesign <- function(
 
   args <- list(...)
   bLabel <- ifelse(
-    "biomarker_name" %in% names(args),
-    args[["biomarker_name"]],
+    "biomarker_label" %in% names(args),
+    args[["biomarker_label"]],
     "biomarker"
   )
   tLabel <- ifelse(
@@ -368,8 +374,7 @@ knit_print.DADesign <- function(
       "safetyWindow" = "Safety window"
     ),
     user_sections = sections,
-    asis = asis,
-    ...
+    asis = asis
   )
 }
 
@@ -610,6 +615,7 @@ knit_print.DualResponsesDesign <- function(
     asis = TRUE) {
   h_knit_print_design(
     x,
+    ...,
     level = level,
     title = title,
     default_sections = c(
@@ -645,6 +651,7 @@ knit_print.DualResponsesSamplesDesign <- function(
     asis = TRUE) {
   h_knit_print_design(
     x,
+    ...,
     level = level,
     title = title,
     default_sections = c(

@@ -71,12 +71,9 @@ test_that("knit_print methods exist for all relevant classes and produce consist
         # once the snapshot has been compared with the previous version, which
         # can be found in /_snaps/helpers_knitr
         withr::with_file(
-          test_path("fixtures", outFileName),
-          {
+          test_path("fixtures", outFileName), {
             # Code run in the template does not contribute to test coverage
-
-            tryCatch(
-              {
+            tryCatch({
                 rmarkdown::render(
                   input = test_path("fixtures", "knit_print_template.Rmd"),
                   params = list("class_name" = cls),

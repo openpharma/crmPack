@@ -353,152 +353,218 @@ display: none;
 </div>
 
 
-<pre><code>## [1] &quot;TDDesign&quot;</code></pre>
-<div id="design" class="section level2">
-<h2>Design</h2>
-<div id="dose-toxicity-model" class="section level3">
-<h3>Dose toxicity model</h3>
-<p>A logistic log normal model will describe the relationship between
-dose and toxicity: <span class="math display">\[ p(Tox | d) = f(X = 1 |
-\theta, d) = \frac{e^{\phi_1 + \phi_2 \cdot log(d)}}{1 + e^{\phi_1 +
-\phi_2 \cdot log(d)}} \]</span>The prior is expressed in terms of pseudo
-data and, consequently, the number of cases and of DLAEs need not be
-whole numbers.</p>
-<p>The pseudo data are defined in the following table:</p>
+<pre><code>## [1] &quot;Effloglog&quot;</code></pre>
+<p>A linear log-log model with a pseudo data prior will describe the
+relationship between dose and efficacy. The model is given by <span class="math display">\[ y_i = \theta_1 + \theta_2 \cdot \log(\log(d_i +
+k)) + \epsilon_i \]</span>where k is a constant (equal to 0),
+y<sub>i</sub> is the efficacy response for participant i, treated at
+dose d<sub>i</sub> and ε<sub>i</sub> is an error term. The εs are iid
+N(0, ν<sup>-1</sup>).</p>
+<p>The posterior distribution of ν is currently Γ( 3.00, 0.98).</p>
+<p>The joint distribution of θ<sub>1</sub> and θ<sub>2</sub> is given
+by</p>
+<p><span class="math display">\[ \boldsymbol\theta =
+\begin{bmatrix}\theta_1 \\ \theta_2\end{bmatrix} \sim N\left(\mu, \nu
+\boldsymbol{Q}^\intercal \right) \]</span> where <span class="math inline">\(\boldsymbol{Q} =
+\boldsymbol{X_0}^\intercal\boldsymbol{X_0} +
+\boldsymbol{X}^\intercal\boldsymbol{X}\)</span> and
+<strong>X<sub>0</sub></strong> is a design matrix based on the dose
+levels in the pseudo data and <strong>X</strong> is a design matrix
+based on the dose levels of NA no-DLAE efficacy responses in the
+observed data, if any.</p>
+<p>The data observed to date are given in the following table:</p>
 <table class="table table-striped table-hover table-condensed" style="margin-left: auto; margin-right: auto;">
 <thead>
 <tr>
 <th style="text-align:right;">
+ID
+</th>
+<th style="text-align:right;">
+Cohort
+</th>
+<th style="text-align:right;">
 Dose
 </th>
-<th style="text-align:right;">
-N
+<th style="text-align:left;">
+Tox
+</th>
+<th style="text-align:left;">
+Placebo
 </th>
 <th style="text-align:right;">
-DLAEs
+W
 </th>
 </tr>
 </thead>
 <tbody>
 <tr>
 <td style="text-align:right;">
+1
+</td>
+<td style="text-align:right;">
+1
+</td>
+<td style="text-align:right;">
 25
 </td>
-<td style="text-align:right;">
-3
+<td style="text-align:left;">
+FALSE
+</td>
+<td style="text-align:left;">
+FALSE
 </td>
 <td style="text-align:right;">
-1.05
+0.31
 </td>
 </tr>
 <tr>
 <td style="text-align:right;">
-300
+2
+</td>
+<td style="text-align:right;">
+2
+</td>
+<td style="text-align:right;">
+50
+</td>
+<td style="text-align:left;">
+FALSE
+</td>
+<td style="text-align:left;">
+FALSE
+</td>
+<td style="text-align:right;">
+0.42
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+3
+</td>
+<td style="text-align:right;">
+2
+</td>
+<td style="text-align:right;">
+50
+</td>
+<td style="text-align:left;">
+FALSE
+</td>
+<td style="text-align:left;">
+FALSE
+</td>
+<td style="text-align:right;">
+0.59
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+4
 </td>
 <td style="text-align:right;">
 3
 </td>
 <td style="text-align:right;">
-1.80
+75
+</td>
+<td style="text-align:left;">
+FALSE
+</td>
+<td style="text-align:left;">
+FALSE
+</td>
+<td style="text-align:right;">
+0.45
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+5
+</td>
+<td style="text-align:right;">
+4
+</td>
+<td style="text-align:right;">
+100
+</td>
+<td style="text-align:left;">
+TRUE
+</td>
+<td style="text-align:left;">
+FALSE
+</td>
+<td style="text-align:right;">
+0.60
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+6
+</td>
+<td style="text-align:right;">
+4
+</td>
+<td style="text-align:right;">
+100
+</td>
+<td style="text-align:left;">
+TRUE
+</td>
+<td style="text-align:left;">
+FALSE
+</td>
+<td style="text-align:right;">
+0.70
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+7
+</td>
+<td style="text-align:right;">
+5
+</td>
+<td style="text-align:right;">
+225
+</td>
+<td style="text-align:left;">
+TRUE
+</td>
+<td style="text-align:left;">
+FALSE
+</td>
+<td style="text-align:right;">
+0.60
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+8
+</td>
+<td style="text-align:right;">
+6
+</td>
+<td style="text-align:right;">
+300
+</td>
+<td style="text-align:left;">
+TRUE
+</td>
+<td style="text-align:left;">
+FALSE
+</td>
+<td style="text-align:right;">
+0.52
 </td>
 </tr>
 </tbody>
 </table>
-<p>No observed data has yet been recorded.</p>
 <p>Together, the pseudo and observed data give rise to the following
 posterior for the model parameters:</p>
-<p><span class="math display">\[ \boldsymbol\phi = \begin{bmatrix}\phi_1
-\\ \phi_2\end{bmatrix}\sim N \left(\begin{bmatrix}-1.95
-\\  0.41\end{bmatrix} , \begin{bmatrix} 10.05 &amp; -2.08 \\ -2.08
-&amp;  0.46\end{bmatrix} \right) \]</span></p>
-</div>
-<div id="stopping-rule" class="section level3">
-<h3>Stopping rule</h3>
-<p>≥ 36 patients dosed: If 36 or more participants have been
-treated.</p>
-</div>
-<div id="escalation-rule" class="section level3">
-<h3>Escalation rule</h3>
-<table>
-<caption>
-Defined by highest dose administered so far
-</caption>
-<thead>
-<tr>
-<th style="border-bottom:hidden;padding-bottom:0; padding-left:3px;padding-right:3px;text-align: center; " colspan="2">
-<div style="border-bottom: 1px solid #ddd; padding-bottom: 5px; ">
-Dose
-</div>
-</th>
-<th style="empty-cells: hide;border-bottom:hidden;" colspan="1">
-</th>
-</tr>
-<tr>
-<th style="text-align:right;">
-Min
-</th>
-<th style="text-align:right;">
-Max
-</th>
-<th style="text-align:right;">
-Increment
-</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td style="text-align:right;">
-25
-</td>
-<td style="text-align:right;">
-300
-</td>
-<td style="text-align:right;">
-2
-</td>
-</tr>
-<tr>
-<td style="text-align:right;">
-300
-</td>
-<td style="text-align:right;">
-Inf
-</td>
-<td style="text-align:right;">
-2
-</td>
-</tr>
-</tbody>
-</table>
-</div>
-<div id="use-of-placebo" class="section level3">
-<h3>Use of placebo</h3>
-<p>Placebo will not be administered in the trial.</p>
-</div>
-<div id="dose-recommendation" class="section level3">
-<h3>Dose recommendation</h3>
-<p>The dose recommended for the next cohort will be the one which is
-both eligible and which is the highest dose in the dose grid strictly
-less than the dose (which may not be in the dose grid) that has a
-posterior plug-in estimate of the probability of toxicity exactly equal
-to the target toxicity rate, either during [0.35] or at the end of the
-trial [0.3].</p>
-</div>
-<div id="cohort-size" class="section level3">
-<h3>Cohort size</h3>
-<p>A constant size of 3 participants.</p>
-</div>
-<div id="observed-data" class="section level3">
-<h3>Observed data</h3>
-<p>No participants are yet evaluable.</p>
-<p>The dose grid is 25, 50, 75, 100, 125, 150, 175, 200, 225, 250, 275
-and 300.</p>
-</div>
-<div id="starting-dose" class="section level3">
-<h3>Starting dose</h3>
-<p>The starting dose is 25.</p>
-</div>
-</div>
+<p><span class="math display">\[ \boldsymbol\theta =
+\begin{bmatrix}\theta_1 \\ \theta_2\end{bmatrix}\sim N
+\left(\begin{bmatrix}-2.82 \\  2.71\end{bmatrix} , \begin{bmatrix} 6.00
+&amp;  8.27 \\ 8.27 &amp; 11.63\end{bmatrix} \right) \]</span></p>
 
 
 
