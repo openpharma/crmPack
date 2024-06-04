@@ -80,15 +80,14 @@ StartingDose <- function(starting_dose) {
 # Helper functions ----
 
 h_knit_print_design <- function(
-  x,
-  ...,
-  level = 2L,
-  title = "Design",
-  default_sections = NA,
-  user_sections = NA,
-  ignore_slots = c(),
-  asis = TRUE
-) {
+    x,
+    ...,
+    level = 2L,
+    title = "Design",
+    default_sections = NA,
+    user_sections = NA,
+    ignore_slots = c(),
+    asis = TRUE) {
   assert_flag(asis)
   # Because subsections use level + 1 and 6 is the lowest markdown header level
   assert_integer(level, lower = 1L, upper = 5L, any.missing = FALSE, len = 1L)
@@ -133,7 +132,8 @@ h_knit_print_design <- function(
                 level = level + 1L,
                 ...
               )
-            ), {
+            ),
+            {
               knit_print(slot(x, nm), asis = FALSE, level = level + 1L, ...)
             }
           )
@@ -268,13 +268,12 @@ knit_print.RuleDesign <- function(
 #' @export
 #' @method knit_print Design
 knit_print.Design <- function(
-  x,
-  ...,
-  level = 2L,
-  title = "Design",
-  sections = NA,
-  asis = TRUE
-) {
+    x,
+    ...,
+    level = 2L,
+    title = "Design",
+    sections = NA,
+    asis = TRUE) {
   h_knit_print_design(
     x,
     ...,

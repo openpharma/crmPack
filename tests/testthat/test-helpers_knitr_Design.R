@@ -544,4 +544,3 @@ test_that("knit_print-RuleDesignOrdinal works correctly", {
   names(actual) <- names(expected)
   expect_equal(actual, expected)
 })
-
