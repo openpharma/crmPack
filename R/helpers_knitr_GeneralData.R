@@ -385,7 +385,7 @@ knit_print.GeneralData <- function(
 }
 
 #' @export
-#' @method knit_print GeneralData
+#' @method knit_print DataParts
 #' @rdname knit_print
 knit_print.DataParts <- function(
     x, ..., asis = TRUE,
