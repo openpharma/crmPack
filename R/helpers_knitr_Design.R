@@ -14,18 +14,11 @@ NULL
 #'
 #' @description `r lifecycle::badge("experimental")`
 #'
-#' These functions are only used internally to validate the format of an input
-#' [`RuleDesign`] or inherited classes and therefore not exported.
+#' Validates that the `StartingDose` object contains valid `starting_dose`.
 #'
-#' @name v_starting_dose
 #' @param object (`StartingDose`)\cr object to validate.
 #' @return A `character` vector with the validation failure messages,
 #'   or `TRUE` in case validation passes.
-NULL
-
-#' @describeIn v_starting_dose validates that the `StartingDose` object
-#'   contains valid `starting_dose`.
-#' @noRd
 #' @keywords internal
 v_starting_dose <- function(object) {
   v <- Validate()

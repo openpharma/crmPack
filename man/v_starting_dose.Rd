@@ -3,6 +3,9 @@
 \name{v_starting_dose}
 \alias{v_starting_dose}
 \title{Internal Helper Functions for Validation of \code{\link{StartingDose}} Objects}
+\usage{
+v_starting_dose(object)
+}
 \arguments{
 \item{object}{(\code{StartingDose})\cr object to validate.}
 }
@@ -13,6 +16,6 @@ or \code{TRUE} in case validation passes.
 \description{
 \ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#experimental}{\figure{lifecycle-experimental.svg}{options: alt='[Experimental]'}}}{\strong{[Experimental]}}
 
-These functions are only used internally to validate the format of an input
-\code{\link{RuleDesign}} or inherited classes and therefore not exported.
+Validates that the \code{StartingDose} object contains valid \code{starting_dose}.
 }
+\keyword{internal}
