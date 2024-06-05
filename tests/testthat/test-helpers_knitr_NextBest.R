@@ -109,7 +109,7 @@ test_that("knit_print.NextBestThreePlusThree works correctly", {
     )
   )
   expect_equal(
-    knit_print(x, asis = FALSE, tox_label = "DLT", participant_label = "subject"),
+    knit_print(x, asis = FALSE, tox_label = "DLT", label = "subject"),
     paste0(
       "The dose recommended for the next cohort will be chosen using the ",
       "\"Three Plus Three\" rule.\n\n- If no DLTs have been reported at ",
@@ -477,7 +477,7 @@ test_that("knit_print.NextBestOrdinal works correctly", {
       "for which the 25th centile of the posterior distribution of toxicity is ",
       "exactly equal to the target rate of 0.25 will be determined.\n",
       "- Finally, the dose level whose absolute distance from the target dose ",
-      "is smallest will be selected as the recommended dose for the next cohort\n\n"
+      "is smallest will be selected as the recommended dose for the next cohort\n\n\n\n"
     )
   )
   x1 <- NextBestOrdinal(grade = 2L, rule = NextBestMTD(target = 0.25, derive = x@rule@derive))
@@ -489,7 +489,7 @@ test_that("knit_print.NextBestOrdinal works correctly", {
       target_label = "a custom measure"
     ),
     paste0(
-      "Based on a toxicity grade of 2: The dose level recommended for the ",
+      "Based on a DLT grade of 2: The dose level recommended for the ",
       "next cohort will be selected as follows:\n\n-  First, a custom ",
       "measure of the posterior distribution of DLT will be calculated for all ",
       "dose levels that are eligible according to the  Increments rule.\n",
@@ -497,7 +497,7 @@ test_that("knit_print.NextBestOrdinal works correctly", {
       "for which a custom measure of the posterior distribution of DLT is ",
       "exactly equal to the target rate of 0.25 will be determined.\n",
       "- Finally, the dose level whose absolute distance from the target dose ",
-      "is smallest will be selected as the recommended dose for the next cohort\n\n"
+      "is smallest will be selected as the recommended dose for the next cohort\n\n\n\n"
     )
   )
 })

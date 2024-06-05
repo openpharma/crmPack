@@ -43,7 +43,8 @@ h_knit_print_render_biomarker_model <- function(x, use_values = TRUE, ...) {
 # DualEndpoint ----
 
 #' @description `r lifecycle::badge("experimental")`
-#' @param biomarker_name (`character`)\cr A description of the biomarker
+#' @inheritParams knit_print.StoppingTargetProb
+#' @param biomarker_label (`character`)\cr A description of the biomarker
 #' @rdname knit_print
 #' @export
 #' @method knit_print DualEndpoint
@@ -54,19 +55,16 @@ knit_print.DualEndpoint <- function(
     use_values = TRUE,
     fmt = "%5.2f",
     units = NA,
-    biomarker_name = "a PD biomarker") {
-  assert_flag(asis)
+    tox_label = "toxicity",
+    biomarker_label = "PD biomarker") {
   # Validate
   assert_flag(asis)
   assert_flag(use_values)
   assert_format(fmt)
-  assert_character(biomarker_name, len = 1, any.missing = FALSE)
   # Initialise
-  if (is.na(units)) {
-    units <- ""
-  } else {
-    units <- paste0(" ", units)
-  }
+  biomarker_label <- h_prepare_labels(biomarker_label)
+  tox_label <- h_prepare_labels(tox_label)
+  units <- h_prepare_units(units)
   # Execute
   toxModel <- ProbitLogNormal(
     cov = x@betaZ_params@cov,
@@ -74,16 +72,26 @@ knit_print.DualEndpoint <- function(
     ref_dose = x@ref_dose
   )
   rv <- paste0(
-    "The relationships between dose and toxicity and between dose and ",
-    biomarker_name,
+    "The relationships between dose and ",
+    tox_label[1],
+    " and between dose and ",
+    biomarker_label[1],
     " will be modelled simultaneously.\n\n",
-    knit_print(toxModel, asis = asis, use_values = use_values, fmt = fmt, units = units),
+    knit_print(
+      toxModel,
+      asis = asis,
+      tox_label = tox_label,
+      use_values = use_values,
+      fmt = fmt,
+      units = units,
+      ...
+    ),
     "\n\n",
     "The ",
-    biomarker_name,
+    biomarker_label[1],
     " response `w` at dose `d` is modelled as ",
     "$$ w(d) \\sim N(f(d), \\sigma_w^2) $$ \n\nwhere ",
-    h_knit_print_render_biomarker_model(x, use_values = use_values)
+    h_knit_print_render_biomarker_model(x, use_values = use_values, ...)
   )
   if (asis) {
     rv <- knitr::asis_output(rv)
@@ -354,7 +362,7 @@ knit_print.GeneralModel <- function(
   assert_format(fmt)
   # Execute
   rv <- paste0(
-    h_knit_print_render_model(x, use_values = use_values, fmt = fmt),
+    h_knit_print_render_model(x, use_values = use_values, fmt = fmt, ...),
     knit_print(x@params, ..., asis = asis, use_values = use_values, fmt = fmt, params = params),
     "\\n\\n",
     h_knit_print_render_ref_dose(x, use_values = use_values, fmt = fmt, unit = unit)
@@ -370,11 +378,7 @@ h_knit_print_render_ref_dose.GeneralModel <- function(x, ..., use_values = TRUE,
   # Validate
   assert_character(units, len = 1)
   # Initialise
-  if (is.na(units)) {
-    units <- ""
-  } else {
-    units <- paste0(" ", units)
-  }
+  units <- h_prepare_units(units)
   # Execute
   ref_dose <- ifelse(
     use_values,
@@ -401,21 +405,27 @@ h_knit_print_render_ref_dose.LogisticKadane <- function(x, ...) {
 #' @rdname knit_print
 #' @export
 #' @method knit_print LogisticKadane
-knit_print.LogisticKadane <- function(x, ..., asis = TRUE, use_values = TRUE, fmt = "%5.2f", units = NA) {
+knit_print.LogisticKadane <- function(
+    x,
+    ...,
+    asis = TRUE,
+    use_values = TRUE,
+    fmt = "%5.2f",
+    units = NA,
+    tox_label = "toxicity") {
   # Validate
   assert_flag(asis)
   assert_flag(use_values)
   assert_format(fmt)
   # Initialise
-  if (is.na(units)) {
-    units <- ""
-  } else {
-    units <- paste0(" ", units)
-  }
+  tox_label <- h_prepare_labels(tox_label)
+  units <- h_prepare_units(units)
   # Execute
   rv <- paste0(
     "A logistic model using the parameterisation of Kadane (1980)  will ",
-    "describe the relationship between dose and toxicity.\n\n ",
+    "describe the relationship between dose and ",
+    tox_label[1],
+    ".\n\n ",
     ifelse(
       use_values,
       paste0(
@@ -466,21 +476,27 @@ knit_print.LogisticKadane <- function(x, ..., asis = TRUE, use_values = TRUE, fm
 #' @rdname knit_print
 #' @export
 #' @method knit_print LogisticKadaneBetaGamma
-knit_print.LogisticKadaneBetaGamma <- function(x, ..., asis = TRUE, use_values = TRUE, fmt = "%5.2f", units = NA) {
+knit_print.LogisticKadaneBetaGamma <- function(
+    x,
+    ...,
+    asis = TRUE,
+    use_values = TRUE,
+    fmt = "%5.2f",
+    tox_label = "toxicity",
+    units = NA) {
   # Validate
   assert_flag(asis)
   assert_flag(use_values)
   assert_format(fmt)
   # Initialise
-  if (is.na(units)) {
-    units <- ""
-  } else {
-    units <- paste0(" ", units)
-  }
+  units <- h_prepare_units(units)
+  tox_label <- h_prepare_labels(tox_label)
   # Execute
   rv <- paste0(
     "A logistic model using the parameterisation of Kadane (1980)  will ",
-    "describe the relationship between dose and toxicity, using a Beta ",
+    "describe the relationship between dose and ",
+    tox_label[1],
+    ", using a Beta ",
     "distribution as the prior for &rho;~0~ and a Gamma distribution as the prior ",
     "for &gamma;.\n\n ",
     ifelse(
@@ -531,10 +547,13 @@ knit_print.LogisticKadaneBetaGamma <- function(x, ..., asis = TRUE, use_values =
 
 #' @description `r lifecycle::badge("experimental")`
 #' @noRd
-h_knit_print_render_model.LogisticLogNormal <- function(x, ...) {
+h_knit_print_render_model.LogisticLogNormal <- function(x, tox_label = "toxicity", ...) {
+  tox_label <- h_prepare_labels(tox_label)
   z <- "e^{\\alpha + \\beta \\cdot log(d/d_{ref})}"
   paste0(
-    "A logistic log normal model will describe the relationship between dose and toxicity: ",
+    "A logistic log normal model will describe the relationship between dose and ",
+    tox_label[1],
+    ": ",
     "$$ p(Tox | d) = f(X = 1 | \\theta, d) = \\frac{", z, "}{1 + ", z, "} $$\\n ",
     "where d~ref~ denotes a reference dose.\n\n"
   )
@@ -572,7 +591,12 @@ knit_print.LogisticLogNormal <- function(
 
 #' @description `r lifecycle::badge("experimental")`
 #' @noRd
-h_knit_print_render_model.LogisticLogNormalMixture <- function(x, use_values = TRUE, ...) {
+h_knit_print_render_model.LogisticLogNormalMixture <- function(
+    x,
+    use_values = TRUE,
+    tox_label = "toxicity",
+    ...) {
+  tox_label <- h_prepare_labels(tox_label)
   z1 <- "e^{\\alpha_1 + \\beta_1 \\cdot log(d/d^*)}"
   z2 <- "e^{\\alpha_2 + \\beta_2 \\cdot log(d/d^*)}"
   pi_text <- ifelse(
@@ -581,7 +605,9 @@ h_knit_print_render_model.LogisticLogNormalMixture <- function(x, use_values = T
     "\\pi"
   )
   paste0(
-    "A mixture of two logistic log normal models will describe the relationship between dose and toxicity: ",
+    "A mixture of two logistic log normal models will describe the relationship between dose and ",
+    tox_label[1],
+    ": ",
     "$$ p(Tox | d) = f(X = 1 | \\theta, d) = ",
     pi_text,
     " \\times \\frac{", z1, "}{1 + ", z1, "} + (1 - ",
@@ -605,7 +631,7 @@ knit_print.LogisticLogNormalMixture <- function(x, ..., asis = TRUE, use_values 
   assert_format(fmt)
   # Execute
   rv <- paste0(
-    h_knit_print_render_model(x, use_values = use_values, fmt = fmt),
+    h_knit_print_render_model(x, use_values = use_values, fmt = fmt, ...),
     knit_print(
       x@params,
       ...,
@@ -627,11 +653,14 @@ knit_print.LogisticLogNormalMixture <- function(x, ..., asis = TRUE, use_values 
 
 #' @description `r lifecycle::badge("experimental")`
 #' @noRd
-h_knit_print_render_model.LogisticLogNormalSub <- function(x, ...) {
+h_knit_print_render_model.LogisticLogNormalSub <- function(x, ..., tox_label = "toxicity") {
+  tox_label <- h_prepare_labels(tox_label)
   z <- "e^{\\alpha + \\beta \\cdot (d \\, - \\, d^*)}"
   paste0(
     "A logistic log normal model with subtractive dose normalisation will ",
-    "describe the relationship between dose and toxicity: \n\n",
+    "describe the relationship between dose and ",
+    tox_label[1],
+    ": \n\n",
     "$$ p(Tox | d) = f(X = 1 | \\theta, d) = \\frac{", z, "}{1 + ", z, "} $$\\n ",
     "where d* denotes a reference dose.\n\n"
   )
@@ -659,10 +688,13 @@ knit_print.LogisticLogNormalSub <- function(
 
 #' @description `r lifecycle::badge("experimental")`
 #' @noRd
-h_knit_print_render_model.LogisticNormal <- function(x, ...) {
+h_knit_print_render_model.LogisticNormal <- function(x, ..., tox_label = "toxicity") {
+  tox_label <- h_prepare_labels(tox_label)
   z <- "e^{\\alpha + \\beta \\cdot d/d^*}"
   paste0(
-    "A logistic log normal model will describe the relationship between dose and toxicity: ",
+    "A logistic log normal model will describe the relationship between dose and ",
+    tox_label[1],
+    ": ",
     "$$ p(Tox | d) = f(X = 1 | \\theta, d) = \\frac{", z, "}{1 + ", z, "} $$\\n ",
     "where d* denotes a reference dose.\n\n"
   )
@@ -672,9 +704,12 @@ h_knit_print_render_model.LogisticNormal <- function(x, ...) {
 
 #' @description `r lifecycle::badge("experimental")`
 #' @noRd
-h_knit_print_render_model.ProbitLogNormal <- function(x, ...) {
+h_knit_print_render_model.ProbitLogNormal <- function(x, tox_label = "toxicity", ...) {
+  tox_label <- h_prepare_labels(tox_label)
   paste0(
-    "A probit log normal model will describe the relationship between dose and toxicity: ",
+    "A probit log normal model will describe the relationship between dose and ",
+    tox_label[1],
+    ": ",
     "$$ \\Phi^{-1}(Tox | d) = f(X = 1 | \\theta, d) = \\alpha + \\beta \\cdot log(d/d^*) $$\\n ",
     "where d* denotes a reference dose.\n\n"
   )
@@ -684,10 +719,17 @@ h_knit_print_render_model.ProbitLogNormal <- function(x, ...) {
 
 #' @description `r lifecycle::badge("experimental")`
 #' @noRd
-h_knit_print_render_model.ProbitLogNormalRel <- function(x, ..., asis = TRUE) {
+h_knit_print_render_model.ProbitLogNormalRel <- function(
+    x,
+    ...,
+    tox_label = "toxicity",
+    asis = TRUE) {
   assert_flag(asis)
+  tox_label <- h_prepare_labels(tox_label)
   paste0(
-    "A probit log normal model will describe the relationship between dose and toxicity: ",
+    "A probit log normal model will describe the relationship between dose and ",
+    tox_label[1],
+    ": ",
     "$$ \\Phi^{-1}(Tox | d) = f(X = 1 | \\theta, d) = \\alpha + \\beta \\cdot d/d^* $$\\n ",
     "where d* denotes a reference dose.\n\n"
   )
@@ -697,10 +739,13 @@ h_knit_print_render_model.ProbitLogNormalRel <- function(x, ..., asis = TRUE) {
 
 #' @description `r lifecycle::badge("experimental")`
 #' @noRd
-h_knit_print_render_model.LogisticNormalMixture <- function(x, ...) {
+h_knit_print_render_model.LogisticNormalMixture <- function(x, ..., tox_label = "toxicity") {
+  tox_label <- h_prepare_labels(tox_label)
   z <- "e^{\\alpha + \\beta \\cdot log(d/d^*)}"
   paste0(
-    "A mixture of two logistic log normal models will describe the relationship between dose and toxicity: ",
+    "A mixture of two logistic log normal models will describe the relationship between dose and ",
+    tox_label[1],
+    ": ",
     "$$ p(Tox | d) = f(X = 1 | \\theta, d) = \\frac{", z, "}{1 + ", z, "} $$\\n ",
     "where d* denotes a reference dose.\n\n"
   )
@@ -716,7 +761,7 @@ knit_print.LogisticNormalMixture <- function(x, ..., asis = TRUE, use_values = T
   assert_format(fmt)
   # Execute
   rv <- paste0(
-    h_knit_print_render_model(x, use_values = use_values, fmt = fmt),
+    h_knit_print_render_model(x, use_values = use_values, fmt = fmt, ...),
     "The prior for &theta; is given by\\n",
     "$$ \\theta = \\begin{bmatrix} \\alpha \\\\ log(\\beta) \\end{bmatrix}",
     " \\sim ",
@@ -754,7 +799,7 @@ knit_print.LogisticNormalFixedMixture <- function(x, ..., asis = TRUE, use_value
   # Execute
   beta <- ifelse(x@log_normal, "log(\\beta)", "\\beta")
   rv <- paste0(
-    h_knit_print_render_model(x, use_values = use_values, fmt = fmt),
+    h_knit_print_render_model(x, use_values = use_values, fmt = fmt, ...),
     " The prior for &theta; is given by\\n\\n",
     "$$ \\theta = \\begin{bmatrix} \\alpha \\\\ ", beta, " \\end{bmatrix}",
     " \\sim \\sum_{i=1}^{", length(x@components), "}",
@@ -802,13 +847,16 @@ knit_print.LogisticNormalFixedMixture <- function(x, ..., asis = TRUE, use_value
 
 #' @description `r lifecycle::badge("experimental")`
 #' @noRd
-h_knit_print_render_model.LogisticNormalFixedMixture <- function(x, ...) {
+h_knit_print_render_model.LogisticNormalFixedMixture <- function(x, ..., tox_label = "toxicity") {
+  tox_label <- h_prepare_labels(tox_label)
   z <- "e^{\\alpha + \\beta \\cdot log(d/d^*)}"
   paste0(
     "A mixture of ",
     length(x@components),
     " logistic log normal models with fixed weights will describe the relationship ",
-    "between dose and toxicity: ",
+    "between dose and ",
+    tox_label[1],
+    ": ",
     "$$ p(Tox | d) = f(X = 1 | \\theta, d) = \\frac{", z, "}{1 + ", z, "} $$\\n ",
     "where d* denotes a reference dose.\n\n"
   )
@@ -828,16 +876,25 @@ h_knit_print_render_model.ModelLogNormal <- function(x, ...) {
 #' @rdname knit_print
 #' @export
 #' @method knit_print OneParLogNormalPrior
-knit_print.OneParLogNormalPrior <- function(x, ..., asis = TRUE, use_values = TRUE, fmt = "%5.2f") {
+knit_print.OneParLogNormalPrior <- function(
+    x,
+    ...,
+    tox_label = "toxicity",
+    asis = TRUE,
+    use_values = TRUE,
+    fmt = "%5.2f") {
   assert_flag(asis)
 
+  tox_label <- h_prepare_labels(tox_label)
   s2text <- ifelse(
     use_values,
     stringr::str_trim(sprintf(fmt, x@sigma2)),
     "\\sigma^2"
   )
   rv <- paste0(
-    "The relationship between dose and toxicity will be modelled using a version ",
+    "The relationship between dose and ",
+    tox_label[1],
+    " will be modelled using a version ",
     "of the one parameter CRM of O'Quigley et al (1990) with an exponential prior on the ",
     "power parameter for the skeleton prior probabilities, with",
     ifelse(
@@ -892,10 +949,13 @@ knit_print.LogisticLogNormalGrouped <- function(
 
 #' @description `r lifecycle::badge("experimental")`
 #' @noRd
-h_knit_print_render_model.LogisticLogNormalGrouped <- function(x, ...) {
+h_knit_print_render_model.LogisticLogNormalGrouped <- function(x, tox_label = "toxicity", ...) {
+  tox_label <- h_prepare_labels(tox_label)
   z <- "e^{(\\alpha + I_c \\times \\delta_0) + (\\beta  + I_c \\times \\delta_1) \\cdot log(d/d^*)}"
   paste0(
-    "A logistic log normal model will describe the relationship between dose and toxicity: ",
+    "A logistic log normal model will describe the relationship between dose and ",
+    tox_label[1],
+    ": ",
     "$$ p(Tox | d) = f(X = 1 | \\theta, d) = \\frac{", z, "}{1 + ", z, "} $$\\n ",
     "where d* denotes a reference dose and I~c~ is a binary indicator which ",
     "is 1 for the combo arm and 0 for the mono arm.\n\n"
@@ -919,6 +979,8 @@ h_knit_print_render_model.LogisticLogNormalOrdinal <- function(x, ...) {
   )
 }
 
+# LogisticLogNormalOrdinal ----
+
 #' @description `r lifecycle::badge("experimental")`
 #' @rdname knit_print
 #' @export
@@ -940,4 +1002,197 @@ knit_print.LogisticLogNormalOrdinal <- function(
     names(params) <- paste0("\\", params)
   }
   NextMethod(params = params)
+}
+
+# LogisticIndepBeta ----
+
+#' @description `r lifecycle::badge("experimental")`
+#' @rdname knit_print
+#' @export
+#' @method knit_print LogisticIndepBeta
+knit_print.LogisticIndepBeta <- function(
+    x,
+    ...,
+    use_values = TRUE,
+    fmt = "%5.2f",
+    params = NA,
+    tox_label = "DLAE",
+    preamble = "The prior for &theta; is given by\\n",
+    asis = TRUE) {
+  assert_flag(asis)
+
+  tox_label <- h_prepare_labels(tox_label)
+  y <- tidy(x)
+  z <- "e^{\\phi_1 + \\phi_2 \\cdot log(d)}"
+  posterior <- ModelParamsNormal(mean = c(x@phi1, x@phi2), cov = x@Pcov)
+  # knit_print.ModelParamsNormal expects no row or column names
+  rownames(posterior@cov) <- NULL
+  colnames(posterior@cov) <- NULL
+
+  rv <- paste0(
+    "A logistic log normal model will describe the relationship between dose and ",
+    tox_label[1],
+    ": ",
+    "$$ p(Tox | d) = f(X = 1 | \\theta, d) = \\frac{", z, "}{1 + ", z, "} $$\\n ",
+    "The prior is expressed in terms of pseudo data and, consequently, the number ",
+    " of cases and of ",
+    tox_label[2],
+    " need not be whole numbers.\n\nThe pseudo data are ",
+    "defined in the following table:\n\n",
+    paste0(
+      do.call(
+        function(x) {
+          kableExtra::kable_styling(
+            knitr::kable(x, col.names = c("Dose", "N", tox_label[2])),
+            bootstrap_options = c("striped", "hover", "condensed")
+          )
+        },
+        list(x = y$pseudoData)
+      ),
+      collapse = "\n"
+    ),
+    ifelse(
+      nrow(y$data) == 0,
+      "\n\nNo observed data has yet been recorded.\n",
+      paste(
+        "\n\nThe observed data are given in the following table:\n\n",
+        paste((do.call(knitr::kable, list(x = y$data))), collapse = "\n")
+      )
+    ),
+    knit_print(
+      posterior,
+      preamble = paste0(
+        "\n\nTogether, the pseudo and observed data give rise to ",
+        "the following posterior for the model parameters:\n\n"
+      ),
+      params = c("\\phi_1" = "phi1", "\\phi_2" = "phi2"),
+      theta = "\\phi",
+      asis = FALSE,
+      ...
+    ),
+    "\n\n"
+  )
+
+  if (asis) {
+    rv <- knitr::asis_output(rv)
+  }
+  rv
+}
+
+# Effloglog ----
+
+#' @description `r lifecycle::badge("experimental")`
+#' @param eff_label (`character`)\cr the term used to describe efficacy
+#' @rdname knit_print
+#' @export
+#' @method knit_print Effloglog
+knit_print.Effloglog <- function(
+    x,
+    ...,
+    use_values = TRUE,
+    fmt = "%5.2f",
+    params = NA,
+    tox_label = "DLAE",
+    eff_label = "efficacy",
+    label = "participant",
+    preamble = "The prior for &theta; is given by\\n",
+    asis = TRUE) {
+  assert_flag(asis)
+  assert_character(eff_label, len = 1, any.missing = FALSE)
+
+  # Prepare
+  tox_label <- h_prepare_labels(tox_label)
+  eff_label <- h_prepare_labels(eff_label)
+  label <- h_prepare_labels(label)
+
+  y <- tidy(x)
+  # knit_print.ModelParamsNormal expects no row or column names
+  posterior <- ModelParamsNormal(mean = c(x@theta1, x@theta2), cov = x@Q)
+  rownames(posterior@cov) <- NULL
+  colnames(posterior@cov) <- NULL
+
+  rv <- paste0(
+    "A linear log-log model with a pseudo data prior will describe the ",
+    "relationship between dose and ",
+    eff_label[1],
+    ".  The model is given by\n ",
+    "$$ y_i = \\theta_1 + \\theta_2 \\cdot \\log(\\log(d_i + k)) + \\epsilon_i $$\\n ",
+    "where k is a constant (equal to ",
+    x@const,
+    "), y~i~ is the ",
+    eff_label[1],
+    " response for ",
+    label[1],
+    " i, treated at dose d~i~ and &epsilon;~i~ is an error term.  ",
+    "The &epsilon;s are iid N(0, &nu;^-1^).\n\n  ",
+    "The ",
+    ifelse(
+      length(x@nu) == 1,
+      paste0(
+        ifelse(nrow(y$data) == 0, "prior", "posterior"),
+        " value of &nu; is ",
+        x@nu,
+        "."
+      ),
+      paste0(
+        ifelse(nrow(y$data) == 0, "prior", "posterior"),
+        " distribution of &nu; is currently &Gamma;(",
+        sprintf(fmt, x@nu[1]),
+        ", ",
+        sprintf(fmt, x@nu[2]),
+        ")."
+      )
+    ),
+    "\n\nThe joint distribution of ",
+    "&theta;~1~ and &theta;~2~ is given by\n\n",
+    "$$ \\boldsymbol\\theta = \\begin{bmatrix}\\theta_1 \\\\ \\theta_2\\end{bmatrix} ",
+    "\\sim N\\left(\\mu, \\nu \\boldsymbol{Q}^\\intercal \\right) $$ \nwhere ",
+    "$\\boldsymbol{Q} = \\boldsymbol{X_0}^\\intercal\\boldsymbol{X_0} + ",
+    "\\boldsymbol{X}^\\intercal\\boldsymbol{X}$ and **X~0~** is a design matrix ",
+    "based on the dose levels in the pseudo data and **X** is a design matrix ",
+    "based on the dose levels of ",
+    label[2],
+    "' no-",
+    tox_label[1],
+    " ",
+    eff_label[1],
+    " responses in the observed data, if any.\n\n",
+    ifelse(
+      nrow(y$data) == 0,
+      "\n\nNo observed data has yet been recorded.\n",
+      paste(
+        "\n\nThe data observed to date are given in the following table:\n\n",
+        paste(
+          (do.call(
+            function(z) {
+              z %>%
+                dplyr::select(-c(NObs, NGrid, DoseGrid, XLevel)) %>%
+                knitr::kable() %>%
+                kableExtra::kable_styling(
+                  bootstrap_options = c("striped", "hover", "condensed")
+                )
+            },
+            list(z = y$data)
+          )),
+          collapse = "\n"
+        )
+      )
+    ),
+    knit_print(
+      posterior,
+      preamble = paste0(
+        "\n\nTogether, the pseudo and observed data give rise to ",
+        "the following posterior for the model parameters:\n\n"
+      ),
+      params = c("\\theta_1" = "theta1", "\\theta_2" = "theta2"),
+      asis = FALSE,
+      ...
+    ),
+    "\n\n"
+  )
+
+  if (asis) {
+    rv <- knitr::asis_output(rv)
+  }
+  rv
 }

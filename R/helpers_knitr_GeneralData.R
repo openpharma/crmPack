@@ -12,11 +12,7 @@ h_get_formatted_dosegrid <- function(grid, units = NA) {
   assert_character(units, len = 1)
 
   n <- length(grid)
-  if (is.na(units)) {
-    units <- ""
-  } else {
-    units <- paste0(" ", units)
-  }
+  units <- h_prepare_units(units)
   paste0(
     paste(
       lapply(grid[1:(n - 1)], paste0, sep = units),
@@ -24,7 +20,7 @@ h_get_formatted_dosegrid <- function(grid, units = NA) {
     ),
     " and ",
     grid[n],
-    paste0(units, ".")
+    paste0(units, ".\n\n")
   )
 }
 
@@ -300,7 +296,7 @@ h_knit_print_summarise.DataGrouped <- function(x, summarise, full_grid, ...) {
 
 #' Print a `GeneralData` Object in a Markdown or Quarto Chunk
 #'
-#' @param labels (`character`)\cr How to describe the participants in the trial.
+#' @param label (`character`)\cr How to describe the participants in the trial.
 #' See Usage Notes below.
 #' @param full_grid (`flag`)\cr Should the full dose grid appear in the output table
 #' or simply those doses for whom at least one evaluable participant is available?
@@ -313,7 +309,7 @@ h_knit_print_summarise.DataGrouped <- function(x, summarise, full_grid, ...) {
 #' The default applies no formatting.  Obvious alternatives include `kableExtra::kable_styling`.
 #' @param ... passed to [knitr::kable()]
 #' @section Usage Notes:
-#' `labels` describes the trial's participants.
+#' `label` describes the trial's participants.
 #'
 #' It should be a character vector of length 1 or 2.  If of length 2, the first
 #' element describes a single participant and the second describes all other
@@ -328,14 +324,13 @@ h_knit_print_summarise.DataGrouped <- function(x, summarise, full_grid, ...) {
 #' @rdname knit_print
 knit_print.GeneralData <- function(
     x, ..., asis = TRUE,
-    labels = c("participant", "participants"),
+    label = c("participant", "participants"),
     full_grid = FALSE,
     summarise = c("none", "dose", "cohort"),
     summarize = summarise,
     units = NA,
     format_func = function(x) x) {
   # Validate
-  assert_character(labels, max.len = 2, any.missing = FALSE)
   assert_flag(asis)
   assert_flag(full_grid)
   assert_function(format_func)
@@ -347,16 +342,14 @@ knit_print.GeneralData <- function(
   }
   assert_choice(summarise, c("none", "dose", "cohort"))
   # Initialise
-  if (length(labels) == 1) {
-    labels[2] <- paste0(labels[1], "s")
-  }
+  label <- h_prepare_labels(label)
   param <- list(...)
 
   # Execute
   param <- h_knit_print_set_headers(x, param, summarise, ...)
   if (summarise == "none") {
     if (!("caption" %in% names(param))) {
-      param[["caption"]] <- paste("Evaluable", labels[2], "to-date")
+      param[["caption"]] <- paste("Evaluable", label[2], "to-date")
     }
     xTidy <- h_knit_print_select_columns(x)
   } else {
@@ -369,7 +362,7 @@ knit_print.GeneralData <- function(
   rv <- if (length(x@x) > 0) {
     paste((do.call(knitr::kable, param)) %>% format_func(), collapse = "\n")
   } else {
-    paste("No", labels[2], "are yet evaluable.\n\n")
+    paste("No", label[2], "are yet evaluable.\n\n")
   }
   rv <- paste0(
     rv,
@@ -394,7 +387,7 @@ knit_print.GeneralData <- function(
 #' @rdname knit_print
 knit_print.DataParts <- function(
     x, ..., asis = TRUE,
-    labels = c("participant", "participants"),
+    label = c("participant", "participants"),
     full_grid = FALSE,
     summarise = c("none", "dose", "cohort"),
     summarize = summarise,

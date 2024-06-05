@@ -70,19 +70,19 @@ test_that("knit_print.SafetyWindowConst fails gracefully with bad input", {
 
   expect_error(
     knit_print(x, label = FALSE),
-    "Assertion on 'label' failed: Must be of type 'character', not 'logical'."
+    "Assertion on 'x' failed: Must be of type 'character', not 'logical'."
   )
   expect_error(
     knit_print(x, time_unit = FALSE),
-    "Assertion on 'time_unit' failed: Must be of type 'character', not 'logical'."
+    "Assertion on 'time_unit' failed: Must be of type 'character', not 'logical'\\."
   )
   expect_error(
     knit_print(x, ordinals = 1:10),
-    "Assertion on 'ordinals' failed: Must be of type 'character', not 'integer'."
+    "Assertion on 'ordinals' failed: Must be of type 'character', not 'integer'\\."
   )
   expect_error(
     knit_print(x, ordinals = c("tooShort")),
-    "Assertion on 'ordinals' failed: Must have length >= 2, but has length 1."
+    "Assertion on 'ordinals' failed: Must have length >= 2, but has length 1\\."
   )
 })
 
@@ -118,7 +118,7 @@ test_that("knit_print.SafetyWindowSize fails gracefully with bad input", {
 
   expect_error(
     knit_print(x, label = FALSE),
-    "Assertion on 'label' failed: Must be of type 'character', not 'logical'."
+    "Assertion on 'x' failed: Must be of type 'character', not 'logical'."
   )
   expect_error(
     knit_print(x, time_unit = FALSE),
