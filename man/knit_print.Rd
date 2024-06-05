@@ -202,7 +202,15 @@
   tox_label = "toxicity"
 )
 
-\method{knit_print}{LogisticKadaneBetaGamma}(x, ..., asis = TRUE, use_values = TRUE, fmt = "\%5.2f", units = NA)
+\method{knit_print}{LogisticKadaneBetaGamma}(
+  x,
+  ...,
+  asis = TRUE,
+  use_values = TRUE,
+  fmt = "\%5.2f",
+  tox_label = "toxicity",
+  units = NA
+)
 
 \method{knit_print}{LogisticLogNormal}(
   x,
