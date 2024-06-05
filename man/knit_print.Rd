@@ -148,7 +148,7 @@
   format_func = function(x) x
 )
 
-\method{knit_print}{DataParts}(
+\method{knit_print}{GeneralData}(
   x,
   ...,
   asis = TRUE,
