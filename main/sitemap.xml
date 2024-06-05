@@ -361,6 +361,9 @@
     <loc>https://openpharma.github.io/crmPack/reference/SimulationsSummary-class.html</loc>
   </url>
   <url>
+    <loc>https://openpharma.github.io/crmPack/reference/StartingDose-class.html</loc>
+  </url>
+  <url>
     <loc>https://openpharma.github.io/crmPack/reference/Stopping-class.html</loc>
   </url>
   <url>
@@ -650,6 +653,12 @@
   </url>
   <url>
     <loc>https://openpharma.github.io/crmPack/reference/h_plot_data_df.html</loc>
+  </url>
+  <url>
+    <loc>https://openpharma.github.io/crmPack/reference/h_prepare_labels.html</loc>
+  </url>
+  <url>
+    <loc>https://openpharma.github.io/crmPack/reference/h_prepare_units.html</loc>
   </url>
   <url>
     <loc>https://openpharma.github.io/crmPack/reference/h_rapply.html</loc>
@@ -950,6 +959,9 @@
   </url>
   <url>
     <loc>https://openpharma.github.io/crmPack/reference/v_samples_objects.html</loc>
+  </url>
+  <url>
+    <loc>https://openpharma.github.io/crmPack/reference/v_starting_dose.html</loc>
   </url>
   <url>
     <loc>https://openpharma.github.io/crmPack/reference/v_stopping.html</loc>

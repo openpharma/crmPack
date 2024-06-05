@@ -14,7 +14,7 @@ specified dose level, based on the model parameters (samples)."><meta property="
     
     <a class="navbar-brand me-2" href="../index.html">crmPack</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">2.0.0.9151</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">2.0.0.9152</small>
 
     
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -45,12 +45,6 @@ specified dose level, based on the model parameters (samples)."><meta property="
 <li class="nav-item">
   <a class="nav-link" href="../news/index.html">Changelog</a>
 </li>
-<!-- start dropdown for versions --> <li class="nav-item dropdown">
-        <a href="#" class="nav-link dropdown-toggle"
-          data-bs-toggle="dropdown" role="button"
-          aria-expanded="false" aria-haspopup="true"
-          id="dropdown-versions">Versions</a> <div class="dropdown-menu" aria-labelledby="dropdown-versions"> <a class="dropdown-item" data-toggle="tooltip" title="" href="https://openpharma.github.io/crmPack/main">main</a> </div></li>
-<!-- end dropdown for versions -->
 <li class="nav-item dropdown">
   <a href="#" class="nav-link dropdown-toggle" data-bs-toggle="dropdown" role="button" aria-expanded="false" aria-haspopup="true" id="dropdown-reports">Reports</a>
   <div class="dropdown-menu" aria-labelledby="dropdown-reports">
@@ -264,9 +258,9 @@ probability.</p>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co"># Posterior for Prob(DLT | dose = 50).</span></span></span>
 <span class="r-in"><span><span class="fu">prob</span><span class="op">(</span>dose <span class="op">=</span> <span class="fl">50</span>, model <span class="op">=</span> <span class="va">my_model</span>, samples <span class="op">=</span> <span class="va">my_samples</span><span class="op">)</span></span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  [1] 0.6415248 0.6415248 0.6415248 0.6415248 0.6304025 0.6304025 0.5555964</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  [8] 0.5555964 0.3907184 0.2524702 0.2524702 0.2524702 0.2524702 0.3463044</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [15] 0.3463044 0.3463044 0.3463044 0.3193287 0.3193287 0.3193287</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  [1] 0.3519939 0.3519939 0.3519939 0.5174110 0.5174110 0.1853071 0.1853071</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  [8] 0.3592532 0.6069324 0.6069324 0.4304768 0.5604472 0.4723485 0.4723485</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [15] 0.8538253 0.8538253 0.5712145 0.6938327 0.5948463 0.5948463</span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co"># Create data from the 'DataDual' class.</span></span></span>
 <span class="r-in"><span><span class="va">data_dual</span> <span class="op">&lt;-</span> <span class="fu"><a href="DataDual-class.html">DataDual</a></span><span class="op">(</span></span></span>
