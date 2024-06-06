@@ -35,7 +35,7 @@ test_that("knit_print.StoppingAll works correctly", {
       "-  P(0.2 ≤ prob(DLE | NBD) ≤ 0.35) ≥ 0.5: If the probability of ",
       "toxicity at the next best dose is in the range [0.20, 0.35] is at ",
       "least 0.50.\n\n\n",
-      "-  ≥ 20 patients dosed: If 20 or more participants have been treated.\n\n"
+      "-  ≥ 20 patients dosed: If 20 or more participants have been treated.\n\n\n\n"
     )
   )
   x@report_label <- NA_character_
@@ -47,7 +47,7 @@ test_that("knit_print.StoppingAll works correctly", {
       "-  P(0.2 ≤ prob(DLE | NBD) ≤ 0.35) ≥ 0.5: If the probability of ",
       "toxicity at the next best dose is in the range [0.20, 0.35] is at ",
       "least 0.50.\n\n\n",
-      "-  ≥ 20 patients dosed: If 20 or more participants have been treated.\n\n"
+      "-  ≥ 20 patients dosed: If 20 or more participants have been treated.\n\n\n\n"
     )
   )
 })
@@ -63,7 +63,7 @@ test_that("knit_print.StoppingAny works correctly", {
       "-  P(0.2 ≤ prob(DLE | NBD) ≤ 0.35) ≥ 0.5: If the probability of ",
       "toxicity at the next best dose is in the range [0.20, 0.35] is at ",
       "least 0.50.\n\n\n",
-      "-  ≥ 20 patients dosed: If 20 or more participants have been treated.\n\n"
+      "-  ≥ 20 patients dosed: If 20 or more participants have been treated.\n\n\n\n"
     )
   )
   x@report_label <- NA_character_
@@ -75,7 +75,7 @@ test_that("knit_print.StoppingAny works correctly", {
       "-  P(0.2 ≤ prob(DLE | NBD) ≤ 0.35) ≥ 0.5: If the probability of ",
       "toxicity at the next best dose is in the range [0.20, 0.35] is at ",
       "least 0.50.\n\n\n",
-      "-  ≥ 20 patients dosed: If 20 or more participants have been treated.\n\n"
+      "-  ≥ 20 patients dosed: If 20 or more participants have been treated.\n\n\n\n"
     )
   )
 })
@@ -92,7 +92,7 @@ test_that("knit_print.StoppingList works correctly", {
       "-  P(0.2 ≤ prob(DLE | NBD) ≤ 0.35) ≥ 0.5: If the probability of ",
       "toxicity at the next best dose is in the range [0.20, 0.35] is at ",
       "least 0.50.\n\n\n",
-      "-  ≥ 20 patients dosed: If 20 or more participants have been treated.\n\n"
+      "-  ≥ 20 patients dosed: If 20 or more participants have been treated.\n\n\n\n"
     )
   )
   x@report_label <- NA_character_
@@ -105,7 +105,7 @@ test_that("knit_print.StoppingList works correctly", {
       "-  P(0.2 ≤ prob(DLE | NBD) ≤ 0.35) ≥ 0.5: If the probability of ",
       "toxicity at the next best dose is in the range [0.20, 0.35] is at ",
       "least 0.50.\n\n\n",
-      "-  ≥ 20 patients dosed: If 20 or more participants have been treated.\n\n"
+      "-  ≥ 20 patients dosed: If 20 or more participants have been treated.\n\n\n\n"
     )
   )
 })
@@ -350,7 +350,7 @@ test_that("knit_print.StoppingMinPatients works correctly", {
     knit_print(
       StoppingMinPatients(nPatients = 10),
       asis = FALSE,
-      label = "subjects"
+      label = "subject"
     ),
     "≥ 10 patients dosed: If 10 or more subjects have been treated.\n\n"
   )

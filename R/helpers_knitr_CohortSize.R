@@ -30,14 +30,12 @@ NULL
 #' @seealso [`knit_print`] for more details.
 #'
 #' @export
+#' @method knit_print CohortSizeConst
 #' @rdname knit_print
 knit_print.CohortSizeConst <- function(x, ..., asis = TRUE, label = c("participant", "participants")) {
-  assert_character(label, min.len = 1, max.len = 2, any.missing = FALSE)
   assert_flag(asis)
 
-  if (length(label) == 1) {
-    label[2] <- paste0(label[1], "s")
-  }
+  label <- h_prepare_labels(label)
   rv <- paste0("A constant size of ", x@size, " ", label[ifelse(x@size == 1, 1, 2)], ".\n\n")
   if (asis) {
     rv <- knitr::asis_output(rv)
@@ -56,6 +54,7 @@ knit_print.CohortSizeConst <- function(x, ..., asis = TRUE, label = c("participa
 #' These values can be overridden by passing `col.names` and `caption` in the
 #' function call.
 #' @export
+#' @method knit_print CohortSizeRange
 #' @rdname knit_print
 knit_print.CohortSizeRange <- function(x, ..., asis = TRUE) {
   assert_flag(asis)
@@ -88,26 +87,31 @@ knit_print.CohortSizeRange <- function(x, ..., asis = TRUE) {
 #' @param ... Passed to [knitr::kable()].
 #'
 #' @section Usage Notes:
-#' The by default, the columns are labelled `Lower`, `Upper` and `Cohort size`.  The table's caption is
-#' `Defined by the number of DLTs so far observed`.  These values can be overridden by passing
-#' `col.names` and `caption` in the function call.
+#' The by default, the columns are labelled `Lower`, `Upper` and `Cohort size`.
+#'  The table's caption is `Defined by the number of <tox_label[2]> so far observed`.
+#'  These values can be overridden by passing `col.names` and `caption` in the
+#'  function call.
 #'
 #' @export
+#' @method knit_print CohortSizeDLT
 #' @rdname knit_print
-knit_print.CohortSizeDLT <- function(x, ..., asis = TRUE) {
+knit_print.CohortSizeDLT <- function(x, ..., tox_label = "toxicity", asis = TRUE) {
   assert_flag(asis)
-
   param <- list(...)
+  tox_label <- h_prepare_labels(tox_label)
+
   if (!("col.names" %in% names(param))) {
     param[["col.names"]] <- c("Lower", "Upper", "Cohort size")
   }
   if (!("caption" %in% names(param))) {
-    param[["caption"]] <- "Defined by the number of DLTs so far observed"
+    param[["caption"]] <- paste0("Defined by the number of ", tox_label[2], " so far observed")
   }
   param[["x"]] <- tidy(x)
+  headers <- c(2, 1)
+  names(headers) <- c(paste0("No of ", tox_label[2]), " ")
   rv <- kableExtra::add_header_above(
     do.call(knitr::kable, param),
-    c("No of DLTs" = 2, " " = 1)
+    headers
   )
   rv <- paste0(rv, "\n\n")
 
@@ -124,14 +128,12 @@ knit_print.CohortSizeDLT <- function(x, ..., asis = TRUE) {
 #' @inheritSection knit_print.CohortSizeConst Usage Notes
 #'
 #' @export
+#' @method knit_print CohortSizeParts
 #' @rdname knit_print
 knit_print.CohortSizeParts <- function(x, ..., asis = TRUE, label = c("participant", "participants")) {
-  assert_character(label, min.len = 1, max.len = 2, any.missing = FALSE)
   assert_flag(asis)
 
-  if (length(label) == 1) {
-    label[2] <- paste0(label[1], "s")
-  }
+  label <- h_prepare_labels(label)
   rv <- paste0(
     "A size of ",
     x@cohort_sizes[1],
@@ -157,16 +159,20 @@ knit_print.CohortSizeParts <- function(x, ..., asis = TRUE, label = c("participa
 #' rules
 #'
 #' @export
+#' @method knit_print CohortSizeMax
 #' @rdname knit_print
 knit_print.CohortSizeMax <- function(x, ..., asis = TRUE) {
   assert_flag(asis)
+
+  params <- list(...)
+  params[["asis"]] <- asis
   rv <- paste0(
     "The maximum of the cohort sizes defined in the following rules:",
     paste0(
       lapply(
         x@cohort_sizes,
-        function(x, ...) {
-          knit_print(x, asis = asis, ...)
+        function(x) {
+          knit_print(x, ..., asis = asis)
         }
       ),
       collapse = "\n"
@@ -189,6 +195,7 @@ knit_print.CohortSizeMax <- function(x, ..., asis = TRUE) {
 #' rules
 #'
 #' @export
+#' @method knit_print CohortSizeMin
 #' @rdname knit_print
 knit_print.CohortSizeMin <- function(x, ..., asis = TRUE) {
   assert_flag(asis)
@@ -219,12 +226,16 @@ knit_print.CohortSizeMin <- function(x, ..., asis = TRUE) {
 #' @param ... passed through to the `knit_print` method of the standard rule
 #'
 #' @export
+#' @method knit_print CohortSizeOrdinal
 #' @rdname knit_print
-knit_print.CohortSizeOrdinal <- function(x, ..., asis = TRUE) {
+knit_print.CohortSizeOrdinal <- function(x, ..., tox_label = "toxicity", asis = TRUE) {
   assert_flag(asis)
+  tox_label <- h_prepare_labels(tox_label)
 
   rv <- paste0(
-    "Based on a toxicity grade of ",
+    "Based on a ",
+    tox_label[1],
+    " grade of ",
     x@grade,
     ": ",
     paste0(knit_print(x@rule, asis = asis, ...), collapse = "\n"),

@@ -965,7 +965,8 @@ DASimulations <- function(trialduration,
 ## default constructor ----
 
 #' @rdname DASimulations-class
-#' @note Typically, end users will not use the `.DASimulations()` function.
+#' @note Typically, end users will not use the `.DASimulations()` function.  This
+#' function has a noticeable execution time.
 #' @export
 .DefaultDASimulations <- function() {
   design <- .DefaultDADesign()

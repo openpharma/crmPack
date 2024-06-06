@@ -262,8 +262,7 @@ dinvGamma <- function(x,
 ##' @param b the scale parameter of the inverse gamma distribution
 ##' @param lower.tail logical; if TRUE (default), probabilities are `P(X  > x)`,
 ##'   otherwise, `P(X <= x)`.
-##' @param logical; FALSE (default) if TRUE, probabilities/densities p
-##'   are returned as `log(p)`
+##' @param log.p if TRUE, probabilities/densities p are returned as `log(p)`
 ##'
 ##' @keywords internal
 pinvGamma <- function(q,
@@ -286,8 +285,7 @@ pinvGamma <- function(q,
 ##' @param b the scale parameter of the inverse gamma distribution
 ##' @param lower.tail logical; if TRUE (default), probabilities are `P(X  > x)`,
 ##'   otherwise, `P(X <= x)`.
-##' @param logical; FALSE (default) if TRUE, probabilities/densities p are
-##'   returned as `log(p)`
+##' @param log.p FALSE if TRUE, probabilities/densities p are returned as `log(p)`
 ##'
 ##' @keywords internal
 qinvGamma <- function(p,

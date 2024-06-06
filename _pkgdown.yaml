@@ -1,5 +1,5 @@
 ---
-url: https://roche.github.io/crmPack
+url: https://openpharma.github.io/crmPack
 
 template:
   bootstrap: 5
@@ -20,7 +20,7 @@ navbar:
           href: unit-test-report/
     github:
       icon: fa-github
-      href: https://github.com/roche/crmPack
+      href: https://github.com/openpharma/crmPack
 
 articles:
   - title: Articles
@@ -238,6 +238,7 @@ reference:
       - v_increments_dose_levels
       - v_increments_hsr_beta
       - v_increments_min
+      - v_starting_dose
       - v_stopping_cohorts_near_dose
       - v_stopping_min_cohorts
       - v_stopping_min_patients

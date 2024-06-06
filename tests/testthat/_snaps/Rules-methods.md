@@ -470,6 +470,6 @@
     structure(list(Range = c("Underdose", "Target", "Overdose", "Unacceptable"
     ), Lower = c(0, 0.2, 0.35, 0.6), Upper = c(0.2, 0.35, 0.6, 1), 
         LossCoefficient = c(1, 0, 1, 2), MaxOverdoseProb = c(0.25, 
-        0.25, 0.25, 0.25)), row.names = c(NA, -4L), class = c("tbl_df", 
-    "tbl", "data.frame"))
+        0.25, 0.25, 0.25)), row.names = c(NA, -4L), class = c("tbl_NextBestNCRMLoss", 
+    "tbl_df", "tbl", "data.frame"))
 
