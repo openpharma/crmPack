@@ -1,5 +1,31 @@
 library(knitr)
 
+# This code mocks functions that have long execution times so that unit tests
+# complete more quickly.  Initial tests suggest that the mocks need to be defined
+# in the file in which the tests are executed.  `source`ing the mocks does not
+# work.
+#
+# The persistent objects that are loaded are created by
+# /testthat/fixtures/make_persistent_objects_for_mocked_constructors.R.
+testthat::local_mocked_bindings(
+  .DefaultDASimulations = function(...) {
+    readRDS(testthat::test_path("fixtures", "default_da_simulations.Rds"))
+  }
+)
+
+testthat::local_mocked_bindings(
+  .DefaultSimulations = function(...) {
+    readRDS(testthat::test_path("fixtures", "default_simulations.Rds"))
+  }
+)
+
+testthat::local_mocked_bindings(
+  .DefaultDualSimulationsSummary = function(...) {
+    readRDS(testthat::test_path("fixtures", "default_dual_simulations_summary.Rds"))
+  }
+)
+# End of mocks
+
 # h_custom_method_exists could be removed once all necessary knit_print methods
 # have been defined
 
