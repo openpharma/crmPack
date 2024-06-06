@@ -75,7 +75,7 @@ h_is_covr_trace <- function(expr) {
     expr[[1]] == "if" &&
     expr[[2]] == quote(TRUE) &&
     expr[[3]][[1]] == "{" &&
-    length(expr[[3]] >= 3) &&
+    length(expr[[3]]) >= 3 &&
     is.call(expr[[3]][[2]]) &&
     expr[[3]][[2]][[1]] == call(":::", as.symbol("covr"), as.symbol("count"))
 }

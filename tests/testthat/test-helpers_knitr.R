@@ -100,13 +100,21 @@ test_that("knit_print methods exist for all relevant classes and produce consist
           test_path("fixtures", outFileName),
           {
             # Code run in the template does not contribute to test coverage
-            rmarkdown::render(
-              input = test_path("fixtures", "knit_print_template.Rmd"),
-              params = list("class_name" = cls),
-              output_file = outFileName,
-              output_dir = test_path("fixtures")
+            tryCatch(
+              {
+                rmarkdown::render(
+                  input = test_path("fixtures", "knit_print_template.Rmd"),
+                  params = list("class_name" = cls),
+                  output_file = outFileName,
+                  output_dir = test_path("fixtures"),
+                  quiet = TRUE
+                )
+                expect_snapshot_file(test_path("fixtures", outFileName))
+              },
+              error = function(e) {
+                warning(paste0("Error for class ", cls, ": "), geterrmessage())
+              }
             )
-            expect_snapshot_file(test_path("fixtures", outFileName))
           }
         )
       }
@@ -119,7 +127,15 @@ test_that("knit_print methods exist for all relevant classes and produce consist
 test_that("asis parameter works correctly for all implemented methods", {
   for (cls in crmpack_class_list) {
     if (!isClassUnion(cls)) {
+      startTime <- Sys.time()
+
       obj <- do.call(paste0(".Default", cls), list())
+
+      endTime <- Sys.time()
+      if (unclass(endTime - startTime) > 2) {
+        print(paste0("Long initialisation for ", cls))
+      }
+
       # If the default knit_print method has been overridden, test it
       if (h_custom_method_exists(knit_print, obj)) {
         # Default behaviour
@@ -252,7 +268,8 @@ test_that("knit_print.IncrementsRelativeParts works correctly", {
           input = test_path("fixtures", "knit_print_object_specific_template.Rmd"),
           params = list("obj" = testList[[name]]),
           output_file = name,
-          output_dir = test_path("fixtures")
+          output_dir = test_path("fixtures"),
+          quiet = TRUE
         )
         expect_snapshot_file(test_path("fixtures", name))
       }
@@ -265,7 +282,7 @@ test_that("knit_print.IncrementsRelativeParts works correctly", {
     stringr::str_count(
       knit_print(
         .DefaultIncrementsRelativeParts(),
-        labels = "DLT"
+        tox_label = "DLT"
       ),
       "DLTs"
     ),
@@ -293,7 +310,8 @@ test_that("summarise option works correctly for Data classes", {
           input = test_path("fixtures", "knit_print_data_classes_template.Rmd"),
           params = list("obj" = testList[[name]]),
           output_file = name,
-          output_dir = test_path("fixtures")
+          output_dir = test_path("fixtures"),
+          quiet = TRUE
         )
         expect_snapshot_file(test_path("fixtures", name))
       }

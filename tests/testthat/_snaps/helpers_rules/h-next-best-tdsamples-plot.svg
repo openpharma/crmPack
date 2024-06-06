@@ -52,19 +52,19 @@
 <text x='468.53' y='556.10' text-anchor='middle' style='font-size: 8.80px; fill: #4D4D4D; font-family: sans;' textLength='14.68px' lengthAdjust='spacingAndGlyphs'>120</text>
 <text x='332.59' y='568.24' text-anchor='middle' style='font-size: 11.00px; font-family: sans;' textLength='14.67px' lengthAdjust='spacingAndGlyphs'>TD</text>
 <text transform='translate(13.05,283.95) rotate(-90)' text-anchor='middle' style='font-size: 11.00px; font-family: sans;' textLength='81.94px' lengthAdjust='spacingAndGlyphs'>Posterior density</text>
-<rect x='631.11' y='249.39' width='83.41' height='69.12' style='stroke-width: 1.07; stroke: none; fill: #FFFFFF;' />
-<rect x='631.11' y='249.39' width='17.28' height='17.28' style='stroke-width: 1.07; stroke: none; fill: #FFFFFF;' />
-<line x1='639.75' y1='266.67' x2='639.75' y2='249.39' style='stroke-width: 1.07; stroke: #FF0000; stroke-linecap: butt;' />
-<rect x='631.11' y='266.67' width='17.28' height='17.28' style='stroke-width: 1.07; stroke: none; fill: #FFFFFF;' />
-<line x1='639.75' y1='283.95' x2='639.75' y2='266.67' style='stroke-width: 1.07; stroke: #0000FF; stroke-linecap: butt;' />
-<rect x='631.11' y='283.95' width='17.28' height='17.28' style='stroke-width: 1.07; stroke: none; fill: #FFFFFF;' />
-<line x1='639.75' y1='301.23' x2='639.75' y2='283.95' style='stroke-width: 1.07; stroke: #FFA500; stroke-linecap: butt;' />
-<rect x='631.11' y='301.23' width='17.28' height='17.28' style='stroke-width: 1.07; stroke: none; fill: #FFFFFF;' />
-<line x1='639.75' y1='318.51' x2='639.75' y2='301.23' style='stroke-width: 1.07; stroke: #EE82EE; stroke-linecap: butt;' />
-<text x='653.87' y='261.06' style='font-size: 8.80px; font-family: sans;' textLength='16.63px' lengthAdjust='spacingAndGlyphs'>Max</text>
-<text x='653.87' y='278.34' style='font-size: 8.80px; font-family: sans;' textLength='18.10px' lengthAdjust='spacingAndGlyphs'>Next</text>
-<text x='653.87' y='295.62' style='font-size: 8.80px; font-family: sans;' textLength='60.65px' lengthAdjust='spacingAndGlyphs'>TD 45 Estimate</text>
-<text x='653.87' y='312.90' style='font-size: 8.80px; font-family: sans;' textLength='60.65px' lengthAdjust='spacingAndGlyphs'>TD 40 Estimate</text>
+<rect x='631.11' y='246.65' width='83.41' height='74.60' style='stroke-width: 1.07; stroke: none; fill: #FFFFFF;' />
+<rect x='631.11' y='252.13' width='17.28' height='17.28' style='stroke-width: 1.07; stroke: none; fill: #FFFFFF;' />
+<line x1='639.75' y1='269.41' x2='639.75' y2='252.13' style='stroke-width: 1.07; stroke: #FF0000; stroke-linecap: butt;' />
+<rect x='631.11' y='269.41' width='17.28' height='17.28' style='stroke-width: 1.07; stroke: none; fill: #FFFFFF;' />
+<line x1='639.75' y1='286.69' x2='639.75' y2='269.41' style='stroke-width: 1.07; stroke: #0000FF; stroke-linecap: butt;' />
+<rect x='631.11' y='286.69' width='17.28' height='17.28' style='stroke-width: 1.07; stroke: none; fill: #FFFFFF;' />
+<line x1='639.75' y1='303.97' x2='639.75' y2='286.69' style='stroke-width: 1.07; stroke: #FFA500; stroke-linecap: butt;' />
+<rect x='631.11' y='303.97' width='17.28' height='17.28' style='stroke-width: 1.07; stroke: none; fill: #FFFFFF;' />
+<line x1='639.75' y1='321.25' x2='639.75' y2='303.97' style='stroke-width: 1.07; stroke: #EE82EE; stroke-linecap: butt;' />
+<text x='653.87' y='263.80' style='font-size: 8.80px; font-family: sans;' textLength='16.63px' lengthAdjust='spacingAndGlyphs'>Max</text>
+<text x='653.87' y='281.08' style='font-size: 8.80px; font-family: sans;' textLength='18.10px' lengthAdjust='spacingAndGlyphs'>Next</text>
+<text x='653.87' y='298.36' style='font-size: 8.80px; font-family: sans;' textLength='60.65px' lengthAdjust='spacingAndGlyphs'>TD 45 Estimate</text>
+<text x='653.87' y='315.64' style='font-size: 8.80px; font-family: sans;' textLength='60.65px' lengthAdjust='spacingAndGlyphs'>TD 40 Estimate</text>
 <text x='45.03' y='14.56' style='font-size: 13.20px; font-family: sans;' textLength='168.08px' lengthAdjust='spacingAndGlyphs'>h_next_best_tdsamples_plot</text>
 </g>
 </svg>
