@@ -321,6 +321,7 @@ h_knit_print_summarise.DataGrouped <- function(x, summarise, full_grid, ...) {
 #'
 #' @inheritParams h_get_formatted_dosegrid
 #' @export
+#' @method knit_print GeneralData
 #' @rdname knit_print
 knit_print.GeneralData <- function(
     x, ..., asis = TRUE,
@@ -384,6 +385,7 @@ knit_print.GeneralData <- function(
 }
 
 #' @export
+#' @method knit_print DataParts
 #' @rdname knit_print
 knit_print.DataParts <- function(
     x, ..., asis = TRUE,

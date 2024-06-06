@@ -14,6 +14,7 @@
 #' values can be overridden by passing `col.names` and `caption` in the function
 #' call.
 #' @export
+#' @method knit_print IncrementsRelative
 #' @rdname knit_print
 knit_print.IncrementsRelative <- function(x, ..., asis = TRUE) {
   assert_flag(asis)
@@ -50,6 +51,7 @@ knit_print.IncrementsRelative <- function(x, ..., asis = TRUE) {
 #' of `caption` is `"Defined by number of DLTs reported so far"`. These values
 #' can be overridden by passing `col.names` and `caption` in the function call.
 #' @export
+#' @method knit_print IncrementsRelativeDLT
 #' @rdname knit_print
 knit_print.IncrementsRelativeDLT <- function(x, ..., asis = TRUE) {
   assert_flag(asis)
@@ -83,6 +85,7 @@ knit_print.IncrementsRelativeDLT <- function(x, ..., asis = TRUE) {
 #' @inheritParams knit_print.CohortSizeConst
 #' @export
 #' @rdname knit_print
+#' @method knit_print IncrementsDoseLevels
 knit_print.IncrementsDoseLevels <- function(x, ..., asis = TRUE) {
   assert_flag(asis)
 
@@ -107,6 +110,7 @@ knit_print.IncrementsDoseLevels <- function(x, ..., asis = TRUE) {
 #' @inherit knit_print.CohortSizeConst return
 #' @inheritParams knit_print.CohortSizeConst
 #' @export
+#' @method knit_print IncrementsHSRBeta
 #' @rdname knit_print
 knit_print.IncrementsHSRBeta <- function(x, ..., asis = TRUE) {
   assert_flag(asis)
@@ -135,6 +139,7 @@ knit_print.IncrementsHSRBeta <- function(x, ..., asis = TRUE) {
 #' rules
 #' @inheritParams knit_print.CohortSizeConst
 #' @export
+#' @method knit_print IncrementsMin
 #' @rdname knit_print
 knit_print.IncrementsMin <- function(x, ..., asis = TRUE) {
   assert_flag(asis)
@@ -165,6 +170,7 @@ knit_print.IncrementsMin <- function(x, ..., asis = TRUE) {
 #' @param ... passed through to the `knit_print` method of the standard rule
 #' @inheritParams knit_print.CohortSizeConst
 #' @export
+#' @method knit_print IncrementsOrdinal
 #' @rdname knit_print
 knit_print.IncrementsOrdinal <- function(x, ..., asis = TRUE) {
   assert_flag(asis)
@@ -199,6 +205,7 @@ knit_print.IncrementsOrdinal <- function(x, ..., asis = TRUE) {
 #' describing a single toxicity.
 #'
 #' @export
+#' @method knit_print IncrementsRelativeParts
 #' @rdname knit_print
 knit_print.IncrementsRelativeParts <- function(x, ..., asis = TRUE, tox_label = c("toxicity", "toxicities")) {
   assert_flag(asis)
@@ -284,6 +291,7 @@ knit_print.IncrementsRelativeParts <- function(x, ..., asis = TRUE, tox_label = 
 #' describing a single toxicity.
 #'
 #' @export
+#' @method knit_print IncrementsRelativeDLTCurrent
 #' @rdname knit_print
 knit_print.IncrementsRelativeDLTCurrent <- function(
     x,

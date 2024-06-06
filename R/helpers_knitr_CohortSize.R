@@ -30,6 +30,7 @@ NULL
 #' @seealso [`knit_print`] for more details.
 #'
 #' @export
+#' @method knit_print CohortSizeConst
 #' @rdname knit_print
 knit_print.CohortSizeConst <- function(x, ..., asis = TRUE, label = c("participant", "participants")) {
   assert_flag(asis)
@@ -53,6 +54,7 @@ knit_print.CohortSizeConst <- function(x, ..., asis = TRUE, label = c("participa
 #' These values can be overridden by passing `col.names` and `caption` in the
 #' function call.
 #' @export
+#' @method knit_print CohortSizeRange
 #' @rdname knit_print
 knit_print.CohortSizeRange <- function(x, ..., asis = TRUE) {
   assert_flag(asis)
@@ -91,6 +93,7 @@ knit_print.CohortSizeRange <- function(x, ..., asis = TRUE) {
 #'  function call.
 #'
 #' @export
+#' @method knit_print CohortSizeDLT
 #' @rdname knit_print
 knit_print.CohortSizeDLT <- function(x, ..., tox_label = "toxicity", asis = TRUE) {
   assert_flag(asis)
@@ -125,6 +128,7 @@ knit_print.CohortSizeDLT <- function(x, ..., tox_label = "toxicity", asis = TRUE
 #' @inheritSection knit_print.CohortSizeConst Usage Notes
 #'
 #' @export
+#' @method knit_print CohortSizeParts
 #' @rdname knit_print
 knit_print.CohortSizeParts <- function(x, ..., asis = TRUE, label = c("participant", "participants")) {
   assert_flag(asis)
@@ -155,6 +159,7 @@ knit_print.CohortSizeParts <- function(x, ..., asis = TRUE, label = c("participa
 #' rules
 #'
 #' @export
+#' @method knit_print CohortSizeMax
 #' @rdname knit_print
 knit_print.CohortSizeMax <- function(x, ..., asis = TRUE) {
   assert_flag(asis)
@@ -190,6 +195,7 @@ knit_print.CohortSizeMax <- function(x, ..., asis = TRUE) {
 #' rules
 #'
 #' @export
+#' @method knit_print CohortSizeMin
 #' @rdname knit_print
 knit_print.CohortSizeMin <- function(x, ..., asis = TRUE) {
   assert_flag(asis)
@@ -220,6 +226,7 @@ knit_print.CohortSizeMin <- function(x, ..., asis = TRUE) {
 #' @param ... passed through to the `knit_print` method of the standard rule
 #'
 #' @export
+#' @method knit_print CohortSizeOrdinal
 #' @rdname knit_print
 knit_print.CohortSizeOrdinal <- function(x, ..., tox_label = "toxicity", asis = TRUE) {
   assert_flag(asis)
