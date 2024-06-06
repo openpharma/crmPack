@@ -5,6 +5,7 @@
 #
 # The persistent objects that are loaded are created by
 # /testthat/fixtures/make_persistent_objects_for_mocked_constructors.R.
+
 testthat::local_mocked_bindings(
   .DefaultDASimulations = function(...) {
     readRDS(testthat::test_path("fixtures", "default_da_simulations.Rds"))
