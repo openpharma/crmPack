@@ -1,0 +1,126 @@
+---
+title: "Describing `crmPack` Objects"
+output: rmarkdown::html_vignette
+editor: visual
+emved-resources: TRUE
+reference-location: margin
+citation-location: margin
+bibliography: vignettes.bib
+vignette: >
+  %\VignetteIndexEntry{demo}
+  %\VignetteEngine{quarto::html}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r}
+#| label: setup
+#| echo: FALSE
+
+suppressPackageStartupMessages({
+  library(tidyverse)
+  library(knitr)
+  library(kableExtra)
+  devtools::load_all()
+})
+```
+
+
+## Introduction
+
+A major innovation in `crmPack` version 2 gives users the ability to produce publication-ready, human-friendly renditions of (almost) all `crmPack` classes in Markdown and quarto documents with little or no additional effort.  
+
+```{r}
+#| label: not-friendly-1
+#| echo: TRUE
+#| eval: FALSE
+cs <- CohortSizeDLT(intervals = 0:2, cohort_size = c(1, 3, 5))
+cs
+```
+
+```{r}
+#| label: not-friendly-2
+#| echo: FALSE
+#| eval: TRUE
+cs <- CohortSizeDLT(intervals = 0:2, cohort_size = c(1, 3, 5))
+normal_print(cs)
+```
+
+Objects created by `crmPack` are almost always S4 objects.  Like all S4 objects, by default they do not render in a particularly user-friendly way.
+Fortunately, a little known feature of `knitr` can put this right at little or no cost to the end user: in the simplest case, demonstrated below, all that needs to be done is to reference the object in a markdown or Quarto chunk.
+
+```{r}
+#| label: not-friendly-3
+#| echo: TRUE
+#| eval: TRUE
+
+cs
+```
+
+> Formatting of these objects currently only works for HMTL output.  If another format - such as PDF or Microsoft Word - is required, our suggested wokaround is to create the HTML output and then print or save the document to the required format.
+
+## How is this done?
+
+When running code at the console, the result of an R function or statement that is not assigned to an object is `print`ed. (Unless, of course, it is returned `invisible`ly.)  The same process  appears to happen when the chunks of a markdown or Quarto document are evaluated.  But that is not quite the case.  Instead, the result is passed to an S3 function called `knit_print` [@Xie2024].  It is the results of running `knit_print` on the returned expression that appear in the rendered document.
+
+As a simple demonstration of the concept, consider:
+
+```{r}
+#| label: demo-1
+#| echo: TRUE
+#| eval: TRUE
+
+knit_print.DustySpringfield <- function(x, ...) {
+  "I just don't know what to do with myself"
+}
+
+lyric <- 10
+
+lyric
+
+class(lyric) <- "DustySpringfield"
+
+lyric
+```
+
+The actions of `knit_print` are entirely arbitrary, but this mechanism provides developers with an easy way to provide nicely-rendered versions of any objects that are rendered by `knitr`.  We have provided such methods for (almost) all `crmPack` classes.
+
+## Using `knit_print` in `crmPack`
+
+By default, all that needs to be done is to reference the object to be printed in a markdown or quarto chunk.  This is equivalent to `knit_print(object)`.  However, the `knit_print` methods for most `crmPack` classes have optional arguments that can be used to customise the way in which the object is rendered.  To change the default value of any parameter to `knit_print` the function must be called explicitly: `knit_print(cs, tox_label = "DLAE")`.
+
+### Common customisations
+
+The most commonly needed customisations are to alter the way in which participants and toxicities are described.  These are handled by the `label` and `tox_label` arguments to `knit_print`.
+
+These arguments can be provided either as a scalar or a vector of length 2.  If a vector, the first element is taken to describe a single instance and the second any other number of instances.  If a scalar, it is converted to a vector, whose first element is the scalar value provided and the second the scalar with `"s"` appended[^1].
+
+[^1]: Except for `tox_label = "toxicity"`, which becomes `tox_label = c("toxicity", "toxicities")`.
+
+So, for example:
+
+```{r}
+#| label: custom-1
+#| echo: TRUE
+#| eval: TRUE
+
+CohortSizeConst(3)
+knit_print(CohortSizeConst(3), label = "subject")
+```
+
+
+eff_label
+units
+biomarker_****
+
+## Restoring console-like behaviour
+
+To restore the default behaviour for `crmPack` objects, simply wrap the object in a call to `normal_print()`.
+
+```{r}
+#| label: restore-default
+#| echo: TRUE
+#| eval: TRUE
+
+normal_print(cs)
+```
+
