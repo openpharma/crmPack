@@ -26,7 +26,8 @@ h_get_formatted_dosegrid <- function(grid, units = NA, fmt = NA, ...) {
       lapply(
         formattedGrid[1:(n - 1)],
         paste0,
-      sep = units),
+        sep = units
+      ),
       collapse = ", "
     ),
     " and ",
