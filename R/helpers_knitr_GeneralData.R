@@ -2,24 +2,35 @@
 #'
 #' @param grid (`numeric`)\cr the dose grid
 #' @param units (`character`)\cr The units in which the values in `doseGrid` are
+#' @param fmt (`character`)\cr The format used to display values in `doseGrid`.
+#' If `NA`, grid values are not pre-formatted
+#' @param ... not used at present
 #' measured.  Appended to each value in `doseGrid` when `knit_print`ed.  The
 #' default, `NA`, omits the units.
 #' @return A character string containing the formatted dose grid.  If the grid
 #' is `c(1, 2, 3)` and `units` is `"mg"`, the returned value is `"1 mg, 2 mg and 3 mg"`.
 #' @keywords internal
-h_get_formatted_dosegrid <- function(grid, units = NA) {
+h_get_formatted_dosegrid <- function(grid, units = NA, fmt = NA, ...) {
   assert_numeric(grid, lower = 0, min.len = 2, unique = TRUE, finite = TRUE, sorted = TRUE, any.missing = FALSE)
   assert_character(units, len = 1)
 
   n <- length(grid)
   units <- h_prepare_units(units)
+  if (is.na(fmt)) {
+    formattedGrid <- as.character(grid)
+  } else {
+    formattedGrid <- sprintf(fmt, grid)
+  }
   paste0(
     paste(
-      lapply(grid[1:(n - 1)], paste0, sep = units),
+      lapply(
+        formattedGrid[1:(n - 1)],
+        paste0,
+      sep = units),
       collapse = ", "
     ),
     " and ",
-    grid[n],
+    formattedGrid[n],
     paste0(units, ".\n\n")
   )
 }
@@ -371,7 +382,8 @@ knit_print.GeneralData <- function(
       "\n\nThe dose grid is ",
       h_get_formatted_dosegrid(
         grid = x@doseGrid,
-        units = units
+        units = units,
+        ...
       ),
       ""
     ),
