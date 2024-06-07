@@ -174,8 +174,8 @@ Slot headers can be customised using the `sections` parameter.  `sections` shoul
 #| eval: FALSE
 
 knit_print(
-  .DefaultDesign(), 
-  level = 4, 
+  .DefaultDesign(),
+  level = 4,
   sections = c(
     "nextBest" = "Selection of the dose for the following cohort",
     "startingDose" = "Initial dose"
@@ -294,21 +294,29 @@ h_custom_method_exists <- function(generic, obj) {
 df <- lapply(
   crmpackClasses,
   function(cls) {
-    tryCatch({
-      x <- do.call(paste0(".Default", cls), list())
-      method <- h_custom_method_exists(knit_print, x)
-      tibble(Class = cls, Constructor = "OK", KnitPrint = method)
-    },
-    error = function(e) {
-      tibble(Class = cls, Constructor = geterrmessage(), KnitPrint = FALSE)
-    })
+    tryCatch(
+      {
+        x <- do.call(paste0(".Default", cls), list())
+        method <- h_custom_method_exists(knit_print, x)
+        tibble(Class = cls, Constructor = "OK", KnitPrint = method)
+      },
+      error = function(e) {
+        tibble(Class = cls, Constructor = geterrmessage(), KnitPrint = FALSE)
+      }
+    )
   }
 ) %>% dplyr::bind_rows()
 allClasses <- df %>% nrow()
-knitPrintDefined <- df %>% filter(KnitPrint) %>% nrow()
+knitPrintDefined <- df %>%
+  filter(KnitPrint) %>%
+  nrow()
 knitPrintNotDefined <- allClasses - knitPrintDefined
-virtualClasses <- df %>% filter(Constructor != "OK") %>% nrow()
-stillToDo <- df %>% filter(Constructor == "OK", !KnitPrint) %>% nrow()
+virtualClasses <- df %>%
+  filter(Constructor != "OK") %>%
+  nrow()
+stillToDo <- df %>%
+  filter(Constructor == "OK", !KnitPrint) %>%
+  nrow()
 ```
 
 `crmPack` defines `r allClasses` classes.  Custom `knit_print` methods exist for  `r knitPrintDefined` of them.  Of the remaining `r knitPrintNotDefined` classes, `r virtualClasses` are virtual classes that will never be directly instantiated by end users.  That leaves `r stillToDo` classes for which `knit_print` methods may be useful.  These classes are listed below.
@@ -318,9 +326,9 @@ stillToDo <- df %>% filter(Constructor == "OK", !KnitPrint) %>% nrow()
 #| echo: FALSE
 #| eval: TRUE
 
-df %>% 
-  filter(Constructor == "OK", !KnitPrint) %>% 
-  select(Class) %>% 
+df %>%
+  filter(Constructor == "OK", !KnitPrint) %>%
+  select(Class) %>%
   kable()
 ```
 
