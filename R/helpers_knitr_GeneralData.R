@@ -16,10 +16,10 @@ h_get_formatted_dosegrid <- function(grid, units = NA, fmt = NA, ...) {
 
   n <- length(grid)
   units <- h_prepare_units(units)
-  if (is.na(fmt)) {
-    formattedGrid <- as.character(grid)
+  formattedGrid <- if (is.na(fmt)) {
+    as.character(grid)
   } else {
-    formattedGrid <- sprintf(fmt, grid)
+    sprintf(fmt, grid)
   }
   paste0(
     paste(
