@@ -323,3 +323,26 @@ test_that("summarise option works correctly for Data classes", {
     expect_snapshot_value(rv, style = "serialize")
   }
 })
+
+test_that("h_get_formatted_dosegrid works correctly", {
+  expect_equal(
+    h_get_formatted_dosegrid(1:2),
+    "1 and 2.\n\n"
+  )
+  expect_equal(
+    h_get_formatted_dosegrid(1:3),
+    "1, 2 and 3.\n\n"
+  )
+  expect_equal(
+    h_get_formatted_dosegrid(1:3, units = "mg"),
+    "1 mg, 2 mg and 3 mg.\n\n"
+  )
+  expect_equal(
+    h_get_formatted_dosegrid(1:3, units = "mg", fmt = "%.2f"),
+    "1.00 mg, 2.00 mg and 3.00 mg.\n\n"
+  )
+  expect_equal(
+    h_get_formatted_dosegrid(1:3, fmt = "%.2f"),
+    "1.00, 2.00 and 3.00.\n\n"
+  )
+})

@@ -66,6 +66,7 @@ Suggests:
     covr,
     data.tree,
     ggmcmc,
+    quarto (>= 1.4),
     rmarkdown,
     stringr,
     testthat (>= 3.0.0),
@@ -73,7 +74,8 @@ Suggests:
     vdiffr,
     withr
 VignetteBuilder: 
-    knitr
+    knitr,
+    quarto
 Config/testthat/edition: 3
 Encoding: UTF-8
 Language: en-US

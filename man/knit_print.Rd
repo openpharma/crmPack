@@ -541,9 +541,7 @@ participant counts by dose and \code{"cohort"} by cohort.}
 
 \item{summarize}{(\code{character})\cr Synonym for \code{summarise}}
 
-\item{units}{(\code{character})\cr The units in which the values in \code{doseGrid} are
-measured.  Appended to each value in \code{doseGrid} when \code{knit_print}ed.  The
-default, \code{NA}, omits the units.}
+\item{units}{(\code{character})\cr The units in which the values in \code{doseGrid} are}
 
 \item{format_func}{(\code{function})\cr The function used to format the range table.}
 

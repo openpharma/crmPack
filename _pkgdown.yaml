@@ -33,6 +33,7 @@ articles:
       - ordinal-crm
       - rolling-crm
       - simulations
+      - knit_print
       - tidy_method
       - migration_from_the_old_crmPack
       - parallel_computing_with_extensions
