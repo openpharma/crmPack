@@ -33,7 +33,7 @@
     
     <a class="navbar-brand me-2" href="../index.html">crmPack</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">2.0.0.9152</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">2.0.0.9153</small>
 
     
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -55,6 +55,7 @@
     <a class="dropdown-item" href="../articles/ordinal-crm.html">Ordinal CRM</a>
     <a class="dropdown-item" href="../articles/rolling-crm.html">Rolling CRM Example</a>
     <a class="dropdown-item" href="../articles/simulations.html">Simulation study example</a>
+    <a class="dropdown-item" href="../articles/knit_print.html">Describing `crmPack` Objects</a>
     <a class="dropdown-item" href="../articles/tidy_method.html">Using tidy</a>
     <a class="dropdown-item" href="../articles/migration_from_the_old_crmPack.html">Migrating from crmPack version 1.0.3</a>
     <a class="dropdown-item" href="../articles/parallel_computing_with_extensions.html">Parallel computing with extensions</a>
@@ -65,12 +66,6 @@
 <li class="nav-item">
   <a class="nav-link" href="../news/index.html">Changelog</a>
 </li>
-<!-- start dropdown for versions --> <li class="nav-item dropdown">
-        <a href="#" class="nav-link dropdown-toggle"
-          data-bs-toggle="dropdown" role="button"
-          aria-expanded="false" aria-haspopup="true"
-          id="dropdown-versions">Versions</a> <div class="dropdown-menu" aria-labelledby="dropdown-versions"> <a class="dropdown-item" data-toggle="tooltip" title="" href="https://openpharma.github.io/crmPack/main">main</a> </div></li>
-<!-- end dropdown for versions -->
 <li class="nav-item dropdown">
   <a href="#" class="nav-link dropdown-toggle" data-bs-toggle="dropdown" role="button" aria-expanded="false" aria-haspopup="true" id="dropdown-reports">Reports</a>
   <div class="dropdown-menu" aria-labelledby="dropdown-reports">
@@ -1227,10 +1222,10 @@ of a fixed model’s parameters values.</p>
 <span><span class="co"># given a particular models and samples.</span></span>
 <span><span class="co"># Every single dose corresponds to one particular sample in `my_samples`.</span></span>
 <span><span class="fu"><a href="../reference/dose.html">dose</a></span><span class="op">(</span><span class="fl">0.3</span>, <span class="va">my_model</span>, <span class="va">my_samples</span><span class="op">)</span></span></code></pre></div>
-<pre><code><span><span class="co">##  [1]  0.15243464  0.11807604  0.50318704  0.58244240  1.33086573  0.02730102</span></span>
-<span><span class="co">##  [7] 32.62897042  1.54030168 90.16135514  1.06755456  1.96432119  0.80738139</span></span>
-<span><span class="co">## [13]  1.14598825  2.12041053  1.10879354  1.44000296  1.76631074  1.60629284</span></span>
-<span><span class="co">## [19]  0.42442890  0.02251006</span></span></code></pre>
+<pre><code><span><span class="co">##  [1] 1.710522e+00 7.523982e-01 1.697202e+00 4.295895e-01 2.767279e+01</span></span>
+<span><span class="co">##  [6] 7.386798e-02 7.752712e+00 2.680046e+14 1.932735e+00 1.665094e+00</span></span>
+<span><span class="co">## [11] 2.142036e+00 3.524633e-12 2.115004e+00 8.342322e-01 9.702277e-01</span></span>
+<span><span class="co">## [16] 1.431840e+00 7.407093e-01 1.723915e+00 1.811550e+00 6.695066e-02</span></span></code></pre>
 <div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># True dose-DLT relationship.</span></span>
 <span><span class="co"># Say that -0.8 and 1 are the true values for models parameters alpha0 and alpha1 respectively.</span></span>
@@ -1248,9 +1243,10 @@ of a fixed model’s parameters values.</p>
 <code class="sourceCode R"><span><span class="co"># Toxicity probabilities for a given dose (equal to 10), model and samples.</span></span>
 <span><span class="co"># Every single probability value corresponds to one particular sample in `my_samples`.</span></span>
 <span><span class="fu"><a href="../reference/prob.html">prob</a></span><span class="op">(</span><span class="fl">10</span>, <span class="va">my_model</span>, <span class="va">my_samples</span><span class="op">)</span></span></code></pre></div>
-<pre><code><span><span class="co">##  [1] 0.9585032 0.9125658 0.9089632 0.9903843 0.7334441 0.1893757 0.2010361</span></span>
-<span><span class="co">##  [8] 0.5912535 0.5140788 0.4590836 0.8225867 0.9867634 0.8831008 0.6509027</span></span>
-<span><span class="co">## [15] 0.1409513 0.7121052 0.9837163 0.7510258 0.7172900 0.6378614</span></span></code></pre>
+<pre><code><span><span class="co">##  [1] 0.69563850 0.97464694 0.74576729 0.87221586 0.24251376 0.76300298</span></span>
+<span><span class="co">##  [7] 0.26339365 0.72233238 0.10452669 0.73346862 0.48592410 0.45107157</span></span>
+<span><span class="co">## [13] 0.44842276 0.01259172 0.98406476 0.93591318 0.97453856 0.11025195</span></span>
+<span><span class="co">## [19] 0.47565671 0.66348234</span></span></code></pre>
 <div class="sourceCode" id="cb12"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># True DLT-dose relationship.</span></span>
 <span><span class="co"># Say that -0.8 and 1 are the true values for models parameters alpha0 and alpha1 respectively.</span></span>
