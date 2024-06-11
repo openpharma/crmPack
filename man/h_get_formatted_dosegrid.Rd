@@ -4,12 +4,17 @@
 \alias{h_get_formatted_dosegrid}
 \title{Format a \code{doseGrid} for Printing}
 \usage{
-h_get_formatted_dosegrid(grid, units = NA)
+h_get_formatted_dosegrid(grid, units = NA, fmt = NA, ...)
 }
 \arguments{
 \item{grid}{(\code{numeric})\cr the dose grid}
 
-\item{units}{(\code{character})\cr The units in which the values in \code{doseGrid} are
+\item{units}{(\code{character})\cr The units in which the values in \code{doseGrid} are}
+
+\item{fmt}{(\code{character})\cr The format used to display values in \code{doseGrid}.
+If \code{NA}, grid values are not pre-formatted}
+
+\item{...}{not used at present
 measured.  Appended to each value in \code{doseGrid} when \code{knit_print}ed.  The
 default, \code{NA}, omits the units.}
 }
