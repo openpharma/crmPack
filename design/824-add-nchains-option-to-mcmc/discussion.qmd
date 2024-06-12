@@ -1,0 +1,695 @@
+---
+title: "Design/discussion document for multiple MCMC chains"
+format: html
+embed-resources: TRUE
+editor: visual
+---
+
+```{r}
+#| eval: TRUE
+#| label: set-up
+
+suppressPackageStartupMessages({
+  library(crmPack)
+  library(knitr)
+  library(kableExtra)
+  library(mvtnorm)
+  library(checkmate)
+  library(dplyr)
+  library(rjags)
+})
+```
+
+# Background
+
+In principle, adding support for multiple MCMC chains to `crmPack` should be straightforward.
+`rjags` supports multiple chains via the `n.chains` argument to `jags.model` and related functions.
+All that it appears we need to do is to add a similar parameter to `mcmc` and we have what we need.
+
+And indeed, this will/should work. But it will not be effective. The reason is that, to test
+convergence effectively, different chains estimating the same model should start from different
+initial positions. If these positions are extreme, so much the better, as it supports the assumption
+that the chains will converge (to the same stable state) regardless of their starting positions.
+
+This is where our difficulties begin. For each model class, `crmPack` provides *constant* starting
+values for the MCMC chain(s). For example, this is the `init` slot for `LogisticLogNormal`:
+
+```{r}
+#| eval: FALSE
+#| label: example-init-slot
+
+init = function() {
+  list(theta = c(0, 1))
+}
+```
+
+Clearly, what values can be considered extreme depend on the prior distribution of the model. These are provided elsewhere in the model object.  (For example in the `params` slot of `ModelLogNormal`.) This is where our difficulties deepen:
+
+> There is no direct way for a slot of an S4 object to access the value in another slot *of the same object*.
+
+## Is there a need for an `n.chains` argument to `mcmc`?
+An `n.chains` argument to `mcmc` might be useful, but I don't believe it is necessary.  My reason for saying so is the way in which chains are initialised in JAGS.  When using a single chain, users simply supply a `list` containing the necessary information to initialise the chain.  To use multiple chains, the user supplies a `list` of such `list`s and sets `n.chains` to the length of the outer `list`. It would be a simple matter for `crmPack` to set `n.chains` for `jags.model` on the basis of the length of the list of user supplied `inits`.
+
+Of course, if the user wanted `crmPack` to automate the creation of the model `inits`, then `n.chains` would be useful.  However, as I shall demonstrate later in this document, I think there are better ways to do this.
+
+```{r}
+#| label: list-of-lists-demo
+#| eval: FALSE
+#| echo: FALSE
+model <- rjags::jags.model(
+  file = textConnection(
+    "model {
+      theta ~ dmnorm(mean, prec)
+      alpha0 <- theta[1]
+      alpha1 <- theta[2]
+    }"
+  ),
+  data = list(
+    mean = c(-0.85, 1.00),
+    prec = matrix(c(1.333, 0.667, 0.667, 1.333), nrow = 2)
+  ),
+  inits = list(
+    list(theta = c(1, 0)),
+    list(theta = c(0, 1))
+  ),
+  quiet = FALSE,
+  n.adapt = 0,
+  n.chains = 2
+)
+update(model, n.iter = 500)
+samples <- rjags::jags.samples(
+  model = model,
+  variable.names = c("alpha0", "alpha1"),
+  n.iter = 500,
+  thin = 2
+)
+samples
+```
+
+
+## Simplistic support for multiple chains
+By modifying the function` in a `Model`'s `init` slot to take a parameter that defines the number of chains required, multiple `inits` can be easily supported without breaking existing code:
+
+```{r}
+#| label: simple-inits-1
+#| eval: TRUE
+
+model <- .DefaultLogisticLogNormal()
+model@init()
+model@init
+
+model@init <- function(n = 1) {
+  lapply(seq_len(n), function(i) list(theta = c(-0.85, 1)))
+}
+
+model@init()
+model@init(3)
+```
+
+But this simply produces the same starting values for every chain.  As explained above, this is sub-optimal.  Different starting values for different chains are possible, but need reference to other slots of the same `Model` object.  As explained earlier, this is awkward, fragile and horrible:
+
+```{r}
+#| label: simple-inits-2
+#| eval: TRUE
+
+model@init <- function(n = 1, aModel) {
+  lapply(
+    seq_len(n), 
+    function(i, mu, var) {
+      x <- as.vector(rmvnorm(1, mu, var))
+      list("theta" = x)
+    },
+    mu = aModel@params@mean,
+    var = aModel@params@cov
+  )
+}
+
+model@init(3, model)
+```
+
+# An intermediate implementation route to support multipe MCMC chains 
+
+- Create a new class, `McmcOptionsList`, which simple contains a `list` of `McmcOptions`
+- Modify the signature of the `mcmc` generic so that `options = ANY`.
+- For each existing `mcmc` method, define a sibling with signature `options = "McmcOptionsList" that simply iterates over the current method and then binds the results together
+
+This option does not allow different initial values for each chain in the list.  I don't believe this is sufficient.
+
+# A comprehensive, flexible and reliable method of setting initial MCMC chain states
+To allow maximum flexibility - and to provide end users to implement their own initialisation strategy, create a new class.  The parent class does nothing beyond providing a placeholder.  Actual implementation is handled in child classes.  It will also be helpful to create a helper function to provide common functionality.
+
+> This needs a little more work.  because of the way `jags.model` operates, all chains in a single call  use the same burn-in, chain length, step and thinning parameter. Therefore, we need something more than a list of existing `Mcmcoptions` objects.
+
+```{r}
+#| label: initialiser-1
+#| eval: TRUE
+
+h_prepare_mcmcoptions_list <- function(n, options) {
+  assert_count(n)
+  if (is.null(options)) {
+    options <- lapply(seq_len(n), function(i) .DefaultMcmcOptions())
+  } else {
+    assert_true(length(options) == n)
+  }
+  assert_list(options, any.missing = FALSE)
+  for (opt in options) {
+    assert_class(opt, "McmcOptions")
+  } 
+  options
+}
+
+# Chain initialiser ----
+.ChainInitialiser <- setClass(
+  Class = "ChainInitialiser",
+  slots = c(
+    options_list = "list"
+  ),
+  prototype = prototype(
+    option_list = list()
+  ),
+  contains = "CrmPackClass"
+  # ,
+  # validity = v_chain_initialiser
+)
+
+## constructor ----
+ChainInitialiser <- function(n_chains = 1, options = NULL) {
+  options <- h_prepare_mcmcoptions_list(n_chains, options)
+  .ChainInitialiser(options_list = options)
+}
+```
+
+For example
+
+```{r}
+#| label: initialiser-2
+#| eval: TRUE
+ChainInitialiser()
+```
+
+## Legacy behaviour
+
+```{r}
+#| label: initialiser-3
+#| eval: TRUE
+
+# Legacy initialisation ----
+.LegacyChainInitialiser <- setClass(
+  Class = "LegacyChainInitialiser",
+  contains = "ChainInitialiser"
+  # ,
+  # validity = v_legacy_chain_initialiser
+)
+
+## constructor ----
+LegacyChainInitialiser <- function(n_chains = 1, options = NULL) {
+  options <- h_prepare_mcmcoptions_list(n_chains, options)
+  .LegacyChainInitialiser(options_list = options)
+}
+
+# Example usage ----
+LegacyChainInitialiser()
+```
+
+## New functionality
+
+```{r}
+#| label: initialiser-4
+#| eval: TRUE
+
+# Random initialisation ----
+.RandomChainInitialiser <- setClass(
+  Class = "RandomChainInitialiser",
+  contains = "ChainInitialiser"
+  # ,
+  # validity = v_random_chain_initialiser
+)
+
+## constructor ----
+RandomChainInitialiser <- function(n_chains = 1, options = NULL) {
+  options <- h_prepare_mcmcoptions_list(n_chains, options)
+  .RandomChainInitialiser(options_list = options)
+}
+```
+
+## New style initialisation
+Provide an initialisation method.  By separating the method from the class, we allow access to the initialisers slots, which is helpful: it allows us to implement new functionality without having to change code in the future.  Since the parent class does nothing, prevent its use - and provide a useful aide-memoire to developers.
+
+> More work is needed here.  When using multiple chains, JAGS requires  common numer of iterations and burnin size (and maybe others).  This current suggestion "allows" these to differ between chains (though the new `mcmc` method is hacked to prevent this).  The choiuce is probably between (a) allowing initialisation with the current `McmcOptions` class or (b) creating a (slightly) different new one or (c) embedding the necessary information directly in the new `Initialiser` classes.  My immediate reaction is that I prefer the last of those options.
+
+```{r}
+#| label: initialiser-5
+#| eval: TRUE
+#| error: TRUE
+setGeneric(
+  name = "initialise",
+  def = function(initialiser, model, ...) {
+    standardGeneric("initialise")
+  },
+  valueClass = "list"
+)
+
+setMethod(
+  f = "initialise",
+  signature = c("ChainInitialiser", "GeneralModel"),
+  def = function(initialiser, model, n_chains = 1, ...) {
+    stop("initialise must be implemented in a sub class.")
+  }
+)
+
+initialise(ChainInitialiser(), .DefaultLogisticNormal())
+```
+
+Legacy initialisation becomes
+
+```{r}
+#| label: initialiser-6
+#| eval: TRUE
+#| error: TRUE
+setMethod(
+  f = "initialise",
+  signature = c("LegacyChainInitialiser", "GeneralModel"),
+  def = function(initialiser, model, ...) {
+    model_init <- model@init()
+    names(model_init) <- names(model@init())
+    lapply(
+      seq_len(length(initialiser@options_list)), 
+      function(i) {
+        opt <- initialiser@options_list[[i]]
+        c(
+          model_init,
+          .RNG.name = h_null_if_na(opt@rng_kind),
+          .RNG.seed = h_null_if_na(opt@rng_seed),
+          n.iter = (opt@iterations - opt@burnin),
+          burnin = opt@burnin,
+          thin = opt@step
+        )
+      }
+    )
+  }
+)
+
+initialise(LegacyChainInitialiser(), .DefaultLogisticLogNormal())
+inits <- initialise(LegacyChainInitialiser(n_chains = 3), .DefaultLogisticLogNormal())
+for (i in inits) {
+  print(i$theta)
+}
+```
+
+
+Random initialisation is achieved so:
+
+```{r}
+#| label: initialiser-7
+#| eval: TRUE
+#| error: TRUE
+
+setMethod(
+  f = "initialise",
+  signature = c("RandomChainInitialiser", "GeneralModel"),
+  definition = function(initialiser, model, ...) {
+    n <- length(initialiser@options_list)
+    param_names <- names(model@init())
+    lapply(
+      seq_len(n), 
+      function(i) {
+        model_init <- list(mvtnorm::rmvnorm(1, model@params@mean, model@params@cov)[1, ])
+        names(model_init) <- param_names
+        opt <- initialiser@options_list[[i]]
+        c(
+          model_init,
+          .RNG.name = h_null_if_na(opt@rng_kind),
+          .RNG.seed = h_null_if_na(opt@rng_seed),
+          n.iter = (opt@iterations - opt@burnin),
+          burnin = opt@burnin,
+          thin = opt@step
+        )
+      }
+    )
+  }
+)
+
+initialise(RandomChainInitialiser(), .DefaultLogisticLogNormal())
+inits <- initialise(RandomChainInitialiser(n_chains = 3), .DefaultLogisticLogNormal())
+for (i in inits) {
+  print(i$theta)
+}
+```
+
+Other initialisers might include
+
+- `QuantileInitialiser`: starting values are chosen on the basis of equally-spaced quantiles of the prior
+- UserDefinedInitialiser`: user-defined starting values
+- Etc
+
+Now we have the infrastructure, we can start to use it, keeping in mind the need to avoid breaking changes.
+
+## Modify the `mcmc` method
+
+### Modified generic
+To avoid breaking changes, modify the signature of `mcmc`.
+
+```{r}
+#| label: mcmc-1
+#| eval: TRUE
+
+setGeneric(
+  name = "mcmc",
+  def = function(data, model, options = NULL, initialiser = NULL, ...) {
+    standardGeneric("mcmc")
+  },
+  valueClass = "Samples"
+)
+```
+
+### Managing potential conflicts
+To avoid conflict between `options` and `initialiser`, define a new stub.
+
+```{r}
+#| label: mcmc-1a
+#| eval: TRUE
+#| error: TRUE
+
+setMethod(
+  f = "mcmc",
+  signature = signature(
+    data = "GeneralData",
+    model = "GeneralModel",
+    options = "ANY",
+    initialiser = "ANY"
+  ),
+  def = function(data,
+                 model,
+                 options,
+                 initialiser,
+                 from_prior = data@nObs == 0L,
+                 ...) {
+    stop("You cannot specify both options and initialiser in a call to mcmc")
+  }
+)
+
+myModel <- LogisticLogNormal(
+  mean = c(-0.85, 1),
+  cov = matrix(c(1, -0.5, -0.5, 1), nrow = 2),
+  ref_dose = 56
+)
+emptyData <- Data(doseGrid = c(1, 3, 5, 10, 15, 20, 25, 40, 50, 80, 100))
+
+mcmc(emptyData, myModel, .DefaultMcmcOptions(), LegacyChainInitialiser())
+```
+
+### Current use
+The existing `mcmc` method becomes
+
+```{r}
+#| label: mcmc-2
+#| eval: FALSE
+
+setMethod(
+  f = "mcmc",
+  signature = signature(
+    data = "GeneralData",
+    model = "GeneralModel",
+    options = "McmcOptions",
+    initialiser = "missing"
+  ),
+  def = function(data,
+                 model,
+                 options,
+                 initialiser = NULL,
+                 from_prior = data@nObs == 0L,
+                 ...) {
+    # <body is unchanged>
+  }
+)
+```
+```{r}
+#| label: mcmc-2a
+#| eval: TRUE
+#| echo: FALSE
+
+setMethod(
+  f = "mcmc",
+  signature = signature(
+    data = "GeneralData",
+    model = "GeneralModel",
+    options = "McmcOptions",
+    initialiser = "missing"
+  ),
+  def = function(data,
+                 model,
+                 options,
+                 initialiser = NULL,
+                 from_prior = data@nObs == 0L,
+                 ...) {
+    assert_flag(from_prior)
+    
+    model_fun <- if (from_prior) {
+      model@priormodel
+    } else {
+      h_jags_join_models(model@datamodel, model@priormodel)
+    }
+    
+    model_file <- h_jags_write_model(model_fun)
+    model_inits <- h_jags_get_model_inits(model, data)
+    model_data <- h_jags_get_data(model, data, from_prior)
+    
+    jags_model <- rjags::jags.model(
+      file = model_file,
+      data = model_data,
+      inits = c(
+        model_inits,
+        .RNG.name = h_null_if_na(options@rng_kind),
+        .RNG.seed = h_null_if_na(options@rng_seed)
+      ),
+      quiet = !is_logging_enabled(),
+      n.adapt = 0 # No adaptation. Important for reproducibility.
+    )
+    update(jags_model, n.iter = options@burnin, progress.bar = "none")
+    
+    # This is necessary as some outputs are written directly from the JAGS
+    # compiled code to the outstream.
+    log_trace("Running rjags::jags.samples")
+    if (is_logging_enabled()) {
+      jags_samples <- rjags::jags.samples(
+        model = jags_model,
+        variable.names = model@sample,
+        n.iter = (options@iterations - options@burnin),
+        thin = options@step
+      )
+    } else {
+      invisible(
+        capture.output(
+          jags_samples <- rjags::jags.samples(
+            model = jags_model,
+            variable.names = model@sample,
+            n.iter = (options@iterations - options@burnin),
+            thin = options@step,
+            progress.bar = "none"
+          )
+        )
+      )
+    }
+    log_trace("JAGS samples: ", jags_samples, capture = TRUE)
+    samples <- lapply(jags_samples, h_jags_extract_samples)
+    
+    Samples(data = samples, options = options)
+  }
+)
+```
+
+This works exactly as it does at the moment.
+
+```{r}
+#| label: mcmc-3
+#| eval: TRUE
+
+samples <- mcmc(emptyData, myModel, .DefaultMcmcOptions())
+fit(samples, myModel, emptyData)
+```
+
+## New methodology
+
+> The `options` slot of the `Samples` class will need modification.
+
+`h_jags_extract_samples` appears to assume that there will be only a single chain:
+
+```{r}
+#| label: h_jags_extract_samples-1
+#| eval: FALSE
+
+h_jags_extract_samples <- function(x) {
+  assert_class(x, "mcarray")
+
+  x <- x[, , 1L]
+  # In case that there are multiple parameters in a node.
+  if (is.matrix(x)) {
+    x <- t(x)
+  }
+  x
+}
+```
+
+So modify it. [This is a temporary fix.]
+
+```{r}
+#| label: h_jags_extract_samples-2
+#| eval: TRUE
+
+h_jags_extract_samples <- function(x) {
+  assert_class(x, "mcarray")
+
+  nChains <- dim(x)[3]
+  w <- lapply(
+    seq_len(nChains),
+    function(i) {
+      z <- x[, , i]
+      # In case that there are multiple parameters in a node.
+      if (is.matrix(z)) {
+        z <- t(z)
+      }
+      z
+    }
+  )
+  unlist(w)
+}
+```
+
+The new `mcmc` method that handles `ChainInitialiser`s could look like this: 
+
+```{r}
+#| label: mcmc-4
+#| eval: TRUE
+#| error: TRUE
+
+setMethod(
+  f = "mcmc",
+  signature = signature(
+    data = "GeneralData",
+    model = "GeneralModel",
+    options = "missing",
+    initialiser = "ChainInitialiser"
+  ),
+  def = function(data,
+                 model,
+                 options = NULL,
+                 initialiser = LegacyChainInitialiser(),
+                 from_prior = data@nObs == 0L,
+                 ...) {
+    assert_flag(from_prior)
+    
+    inits <- initialise(initialiser, model)
+    
+    # Start of potential helper function: code from here is probably shared
+    # with the existing method
+    model_fun <- if (from_prior) {
+      model@priormodel
+    } else {
+      h_jags_join_models(model@datamodel, model@priormodel)
+    }
+    
+    model_file <- h_jags_write_model(model_fun)
+    model_data <- h_jags_get_data(model, data, from_prior)
+    
+    #Temporary hacks
+    n.iter <- inits[[1]]$n.iter
+    thin <- inits[[1]]$thin
+    inits <- lapply(
+      inits,
+      function(i) {
+        i[["n.iter"]] <- NULL
+        i[["burnin"]] <- NULL
+        i[["thin"]] <- NULL
+        i
+      }
+    )
+ 
+    jags_model <- rjags::jags.model(
+      file = model_file,
+      data = model_data,
+      inits = inits,
+      quiet = !is_logging_enabled(),
+      n.adapt = 0, # No adaptation. Important for reproducibility.
+      n.chains = length(initialiser@options_list)
+    )
+    update(jags_model, n.iter = n.iter, progress.bar = "none")
+    
+    # This is necessary as some outputs are written directly from the JAGS
+    # compiled code to the output stream.
+    log_trace("Running rjags::jags.samples")
+    
+    if (is_logging_enabled()) {
+      jags_samples <- rjags::jags.samples(
+        model = jags_model,
+        variable.names = model@sample,
+        n.iter = n.iter,
+        thin = thin,
+        n.chains = length(initialiser@options_list)
+      )
+    } else {
+      invisible(
+        capture.output(
+          jags_samples <- rjags::jags.samples(
+            model = jags_model,
+            variable.names = model@sample,
+            n.iter = n.iter,
+            thin = thin,
+            progress.bar = "none",
+            n.chains = length(initialiser@options_list)
+          )
+        )
+      )
+    }
+    log_trace("JAGS samples: ", jags_samples, capture = TRUE)
+    samples <- lapply(jags_samples, h_jags_extract_samples)
+
+    # Hack
+    tmp <- .DefaultMcmcOptions()
+    # Return
+    Samples(
+      data = samples, 
+      options = McmcOptions(
+        burnin = tmp@burnin,
+        step = tmp@step,
+        samples = length(samples[[1]])
+      )
+    )
+  }
+)
+oneChain <- mcmc(emptyData, myModel, initialiser = LegacyChainInitialiser())
+oneChain %>% tidy()
+```
+
+There's a problem with `tidy`: it doesn't recognise multiple chains.  This might be because of the hacky fix to `h_jags_extract_samples`.  But the observation count is correct.
+
+```{r}
+#| label: mcmc-5
+#| eval: TRUE
+#| error: TRUE
+
+threeChains <- mcmc(emptyData, myModel, initialiser = LegacyChainInitialiser(3))
+threeChains %>% tidy()
+```
+
+# Downstream adaptations
+
+The following methods and classes reference the Samples class, and so may need modification.  There are probably more.
+
+- `Design-simulate`
+- `Model-dose`
+- `Model-prob`
+- `Model-efficacy`
+- `Model-biomarker`
+- `NextBest-nextBest`
+- `NextBest-stopTrial`
+- `Samples-approximate`
+- `Samples-fit`
+- `Samples-fitGain`
+- `Samples-fitPEM`
+- `Samples-get`
+- `Samples-names`
+- `Samples-plot`
+- `Samples-plotGain`
+- `Samples-plotDualResponses`
+- `Samples-size`
+- `Samples-tidy`
