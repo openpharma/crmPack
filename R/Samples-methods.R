@@ -52,7 +52,7 @@ setMethod(
 
 # The next line is required to suppress the message "Creating a generic function
 # for ‘get’ from package ‘base’ in package ‘crmPack’" on package load.
-# See https://github.com/Roche/crmPack/issues/723
+# See https://github.com/openpharma/crmPack/issues/723
 setGeneric("get")
 
 #' Get specific parameter samples and produce a data.frame

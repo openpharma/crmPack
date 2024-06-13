@@ -14,6 +14,7 @@
 #' values can be overridden by passing `col.names` and `caption` in the function
 #' call.
 #' @export
+#' @method knit_print IncrementsRelative
 #' @rdname knit_print
 knit_print.IncrementsRelative <- function(x, ..., asis = TRUE) {
   assert_flag(asis)
@@ -50,6 +51,7 @@ knit_print.IncrementsRelative <- function(x, ..., asis = TRUE) {
 #' of `caption` is `"Defined by number of DLTs reported so far"`. These values
 #' can be overridden by passing `col.names` and `caption` in the function call.
 #' @export
+#' @method knit_print IncrementsRelativeDLT
 #' @rdname knit_print
 knit_print.IncrementsRelativeDLT <- function(x, ..., asis = TRUE) {
   assert_flag(asis)
@@ -83,6 +85,7 @@ knit_print.IncrementsRelativeDLT <- function(x, ..., asis = TRUE) {
 #' @inheritParams knit_print.CohortSizeConst
 #' @export
 #' @rdname knit_print
+#' @method knit_print IncrementsDoseLevels
 knit_print.IncrementsDoseLevels <- function(x, ..., asis = TRUE) {
   assert_flag(asis)
 
@@ -107,6 +110,7 @@ knit_print.IncrementsDoseLevels <- function(x, ..., asis = TRUE) {
 #' @inherit knit_print.CohortSizeConst return
 #' @inheritParams knit_print.CohortSizeConst
 #' @export
+#' @method knit_print IncrementsHSRBeta
 #' @rdname knit_print
 knit_print.IncrementsHSRBeta <- function(x, ..., asis = TRUE) {
   assert_flag(asis)
@@ -135,6 +139,7 @@ knit_print.IncrementsHSRBeta <- function(x, ..., asis = TRUE) {
 #' rules
 #' @inheritParams knit_print.CohortSizeConst
 #' @export
+#' @method knit_print IncrementsMin
 #' @rdname knit_print
 knit_print.IncrementsMin <- function(x, ..., asis = TRUE) {
   assert_flag(asis)
@@ -165,6 +170,7 @@ knit_print.IncrementsMin <- function(x, ..., asis = TRUE) {
 #' @param ... passed through to the `knit_print` method of the standard rule
 #' @inheritParams knit_print.CohortSizeConst
 #' @export
+#' @method knit_print IncrementsOrdinal
 #' @rdname knit_print
 knit_print.IncrementsOrdinal <- function(x, ..., asis = TRUE) {
   assert_flag(asis)
@@ -187,11 +193,11 @@ knit_print.IncrementsOrdinal <- function(x, ..., asis = TRUE) {
 #' Render an `IncrementsRelativeParts` object
 #'
 #' @inherit knit_print.CohortSizeConst return
-#' @param labels (`character`)\cr The word used to describe toxicities.  See
+#' @param tox_label (`character`)\cr The word used to describe toxicities.  See
 #' Usage Notes below.
 #' @inheritParams knit_print.CohortSizeConst
 #' @section Usage Notes:
-#' `labels` defines how toxicities are described.
+#' `label` defines how toxicities are described.
 #'
 #' It should be a character vector of length 1 or 2.  If of length 2, the first
 #' element describes a single toxicity and the second describes all other
@@ -199,18 +205,16 @@ knit_print.IncrementsOrdinal <- function(x, ..., asis = TRUE) {
 #' describing a single toxicity.
 #'
 #' @export
+#' @method knit_print IncrementsRelativeParts
 #' @rdname knit_print
-knit_print.IncrementsRelativeParts <- function(x, ..., asis = TRUE, labels = c("toxicity", "toxicities")) {
+knit_print.IncrementsRelativeParts <- function(x, ..., asis = TRUE, tox_label = c("toxicity", "toxicities")) {
   assert_flag(asis)
-  assert_character(labels, min.len = 1, max.len = 2, any.missing = FALSE)
 
-  if (length(labels) == 1) {
-    labels[2] <- paste0(labels[1], "s")
-  }
+  tox_label <- h_prepare_labels(tox_label)
   rv <- paste0(
     "The maximum increment in Part 1 is defined by the `part1Ladder` slot of ",
     "the associated `DataParts` object.\n\n",
-    "If no ", labels[2], " are reported in Part 1, the starting dose for Part 2 ",
+    "If no ", tox_label[2], " are reported in Part 1, the starting dose for Part 2 ",
     "will be ",
     ifelse(
       x@clean_start == 0,
@@ -222,7 +226,7 @@ knit_print.IncrementsRelativeParts <- function(x, ..., asis = TRUE, labels = c("
         "the highest dose used in Part 1.\n\n"
       )
     ),
-    "If one or more ", labels[2], " are reported in Part 1, the starting dose for Part 2 ",
+    "If one or more ", tox_label[2], " are reported in Part 1, the starting dose for Part 2 ",
     "will be ",
     ifelse(
       x@dlt_start == 0,
@@ -235,7 +239,7 @@ knit_print.IncrementsRelativeParts <- function(x, ..., asis = TRUE, labels = c("
       )
     ),
     "Once Part 2 has started, the maximum increment in dose levels will be based ",
-    "on the number of ", labels[2], " reported so far, as described in the ",
+    "on the number of ", tox_label[2], " reported so far, as described in the ",
     "following table:"
   )
 
@@ -244,10 +248,10 @@ knit_print.IncrementsRelativeParts <- function(x, ..., asis = TRUE, labels = c("
     param[["col.names"]] <- c("Lower", "Upper", "Increment")
   }
   if (!("caption" %in% names(param))) {
-    param[["caption"]] <- paste0("Defined by the number of ", labels[2], " reported so far")
+    param[["caption"]] <- paste0("Defined by the number of ", tox_label[2], " reported so far")
   }
   header <- c(2, 1)
-  headerLabel <- labels[2]
+  headerLabel <- tox_label[2]
   substr(headerLabel, 1, 1) <- toupper(substr(headerLabel, 1, 1))
   names(header) <- c(headerLabel, " ")
   param[["x"]] <- tibble(
@@ -270,7 +274,7 @@ knit_print.IncrementsRelativeParts <- function(x, ..., asis = TRUE, labels = c("
 #'
 #' @description `r lifecycle::badge("experimental")`
 #' @inherit knit_print.CohortSizeConst return
-#' @param labels (`character`)\cr The word used to describe toxicities.  See
+#' @param tox_label (`character`)\cr The word used to describe toxicities.  See
 #' Usage Notes below.
 #' @param ... passed to [knitr::kable()]
 #' @inheritParams knit_print.CohortSizeConst
@@ -279,7 +283,7 @@ knit_print.IncrementsRelativeParts <- function(x, ..., asis = TRUE, labels = c("
 #' of `caption` is `"Defined by number of DLTs in the current cohort"`. These values
 #' can be overridden by passing `col.names` and `caption` in the function call.
 #'
-#' `labels` defines how toxicities are described.
+#' `tox_label` defines how toxicities are described.
 #'
 #' It should be a character vector of length 1 or 2.  If of length 2, the first
 #' element describes a single toxicity and the second describes all other
@@ -287,13 +291,18 @@ knit_print.IncrementsRelativeParts <- function(x, ..., asis = TRUE, labels = c("
 #' describing a single toxicity.
 #'
 #' @export
+#' @method knit_print IncrementsRelativeDLTCurrent
 #' @rdname knit_print
-knit_print.IncrementsRelativeDLTCurrent <- function(x, ..., asis = TRUE, labels = c("DLT", "DLTs")) {
+knit_print.IncrementsRelativeDLTCurrent <- function(
+    x,
+    ...,
+    asis = TRUE,
+    tox_label = c("DLT", "DLTs")) {
   assert_flag(asis)
-  assert_character(labels, min.len = 1, max.len = 2, any.missing = FALSE)
+  assert_character(tox_label, min.len = 1, max.len = 2, any.missing = FALSE)
 
-  if (length(labels) == 1) {
-    labels[2] <- paste0(labels[1], "s")
+  if (length(tox_label) == 1) {
+    tox_label[2] <- paste0(tox_label[1], "s")
   }
 
   param <- list(...)
@@ -301,12 +310,18 @@ knit_print.IncrementsRelativeDLTCurrent <- function(x, ..., asis = TRUE, labels 
     param[["col.names"]] <- c("Min", "Max", "Increment")
   }
   if (!("caption" %in% names(param))) {
-    param[["caption"]] <- "Defined by number of DLTs reported in the current cohort"
+    param[["caption"]] <- paste0(
+      "Defined by number of ",
+      tox_label[2],
+      " reported in the current cohort"
+    )
   }
   param[["x"]] <- tidy(x)
+  header_text <- c(2, 1)
+  names(header_text) <- c(paste0("No ", tox_label[2]), " ")
   rv <- kableExtra::add_header_above(
     do.call(knitr::kable, param),
-    c("No DLTs" = 2, " " = 1)
+    header_text
   )
   rv <- paste0(rv, "\n\n")
 

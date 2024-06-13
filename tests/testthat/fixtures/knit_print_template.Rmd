@@ -8,7 +8,7 @@ params:
 ```{r, echo=FALSE}
 suppressPackageStartupMessages({
   if (file.exists("DESCRIPTION")) {
-    devtools::load_all(export_all = FALSE)
+    devtools::load_all()
   } else {
     library(crmPack)
   }

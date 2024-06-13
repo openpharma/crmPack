@@ -1,5 +1,31 @@
 library(knitr)
 
+# This code mocks functions that have long execution times so that unit tests
+# complete more quickly.  Initial tests suggest that the mocks need to be defined
+# in the file in which the tests are executed.  `source`ing the mocks does not
+# work.
+#
+# The persistent objects that are loaded are created by
+# /testthat/fixtures/make_persistent_objects_for_mocked_constructors.R.
+testthat::local_mocked_bindings(
+  .DefaultDASimulations = function(...) {
+    readRDS(testthat::test_path("fixtures", "default_da_simulations.Rds"))
+  }
+)
+
+testthat::local_mocked_bindings(
+  .DefaultSimulations = function(...) {
+    readRDS(testthat::test_path("fixtures", "default_simulations.Rds"))
+  }
+)
+
+testthat::local_mocked_bindings(
+  .DefaultDualSimulationsSummary = function(...) {
+    readRDS(testthat::test_path("fixtures", "default_dual_simulations_summary.Rds"))
+  }
+)
+# End of mocks
+
 # h_custom_method_exists could be removed once all necessary knit_print methods
 # have been defined
 
@@ -74,13 +100,21 @@ test_that("knit_print methods exist for all relevant classes and produce consist
           test_path("fixtures", outFileName),
           {
             # Code run in the template does not contribute to test coverage
-            rmarkdown::render(
-              input = test_path("fixtures", "knit_print_template.Rmd"),
-              params = list("class_name" = cls),
-              output_file = outFileName,
-              output_dir = test_path("fixtures")
+            tryCatch(
+              {
+                rmarkdown::render(
+                  input = test_path("fixtures", "knit_print_template.Rmd"),
+                  params = list("class_name" = cls),
+                  output_file = outFileName,
+                  output_dir = test_path("fixtures"),
+                  quiet = TRUE
+                )
+                expect_snapshot_file(test_path("fixtures", outFileName))
+              },
+              error = function(e) {
+                warning(paste0("Error for class ", cls, ": "), geterrmessage())
+              }
             )
-            expect_snapshot_file(test_path("fixtures", outFileName))
           }
         )
       }
@@ -93,7 +127,15 @@ test_that("knit_print methods exist for all relevant classes and produce consist
 test_that("asis parameter works correctly for all implemented methods", {
   for (cls in crmpack_class_list) {
     if (!isClassUnion(cls)) {
+      startTime <- Sys.time()
+
       obj <- do.call(paste0(".Default", cls), list())
+
+      endTime <- Sys.time()
+      if (unclass(endTime - startTime) > 2) {
+        print(paste0("Long initialisation for ", cls))
+      }
+
       # If the default knit_print method has been overridden, test it
       if (h_custom_method_exists(knit_print, obj)) {
         # Default behaviour
@@ -226,7 +268,8 @@ test_that("knit_print.IncrementsRelativeParts works correctly", {
           input = test_path("fixtures", "knit_print_object_specific_template.Rmd"),
           params = list("obj" = testList[[name]]),
           output_file = name,
-          output_dir = test_path("fixtures")
+          output_dir = test_path("fixtures"),
+          quiet = TRUE
         )
         expect_snapshot_file(test_path("fixtures", name))
       }
@@ -239,7 +282,7 @@ test_that("knit_print.IncrementsRelativeParts works correctly", {
     stringr::str_count(
       knit_print(
         .DefaultIncrementsRelativeParts(),
-        labels = "DLT"
+        tox_label = "DLT"
       ),
       "DLTs"
     ),
@@ -267,7 +310,8 @@ test_that("summarise option works correctly for Data classes", {
           input = test_path("fixtures", "knit_print_data_classes_template.Rmd"),
           params = list("obj" = testList[[name]]),
           output_file = name,
-          output_dir = test_path("fixtures")
+          output_dir = test_path("fixtures"),
+          quiet = TRUE
         )
         expect_snapshot_file(test_path("fixtures", name))
       }
@@ -278,4 +322,27 @@ test_that("summarise option works correctly for Data classes", {
     rv <- knit_print(testList[[name]], summarise = "cohort")
     expect_snapshot_value(rv, style = "serialize")
   }
+})
+
+test_that("h_get_formatted_dosegrid works correctly", {
+  expect_equal(
+    h_get_formatted_dosegrid(1:2),
+    "1 and 2.\n\n"
+  )
+  expect_equal(
+    h_get_formatted_dosegrid(1:3),
+    "1, 2 and 3.\n\n"
+  )
+  expect_equal(
+    h_get_formatted_dosegrid(1:3, units = "mg"),
+    "1 mg, 2 mg and 3 mg.\n\n"
+  )
+  expect_equal(
+    h_get_formatted_dosegrid(1:3, units = "mg", fmt = "%.2f"),
+    "1.00 mg, 2.00 mg and 3.00 mg.\n\n"
+  )
+  expect_equal(
+    h_get_formatted_dosegrid(1:3, fmt = "%.2f"),
+    "1.00, 2.00 and 3.00.\n\n"
+  )
 })

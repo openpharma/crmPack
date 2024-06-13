@@ -84,7 +84,8 @@ knit_print.StoppingList <- function(
     ifelse(is.na(x@report_label), "", paste0(x@report_label, ": ")),
     preamble,
     "\n",
-    rules_list
+    rules_list,
+    "\n\n"
   )
 
   if (asis) {
@@ -319,7 +320,8 @@ knit_print.StoppingHighestDose <- function(
   rv <- paste0(
     ifelse(is.na(x@report_label), "", paste0(x@report_label, ": ")),
     "If the next best dose is ",
-    dose_label, ".\n\n"
+    dose_label,
+    ".\n\n"
   )
 
   if (asis) {
@@ -428,16 +430,17 @@ knit_print.StoppingMinCohorts <- function(
 knit_print.StoppingMinPatients <- function(
     x,
     ...,
-    label = "participants",
+    label = "participant",
     asis = TRUE) {
   assert_flag(asis)
-  assert_character(label, len = 1, any.missing = FALSE)
+  label <- h_prepare_labels(label)
 
   rv <- paste0(
     ifelse(is.na(x@report_label), "", paste0(x@report_label, ": ")),
     "If ",
     x@nPatients,
-    paste0(" or more ", label, " have been treated.\n\n")
+    paste0(" or more ", label[2], " have been treated."),
+    "\n\n"
   )
   if (asis) {
     rv <- knitr::asis_output(rv)

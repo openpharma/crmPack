@@ -2,7 +2,7 @@
 <!-- markdownlint-disable-file -->
 <!-- README.md is generated from README.Rmd. Please edit that file -->
 
-# crmPack
+# `crmPack`
 
 <!-- badges: start -->
 
@@ -11,18 +11,18 @@ status](https://www.r-pkg.org/badges/version/crmPack)](https://CRAN.R-project.or
 [![Project Status: Active - The project has reached a stable, usable
 state and is being actively
 developed.](https://www.repostatus.org/badges/latest/active.svg)](https://www.repostatus.org/#active)
-[![License](https://img.shields.io/badge/License-Apache_2.0-blue.svg)](https://opensource.org/licenses/Apache-2.0)
+[![License](https://img.shields.io/badge/License-Apache_2.0-blue.svg)](https://opensource.org/license/apache-2-0)
 [![Check
-🛠](https://github.com/Roche/crmPack/actions/workflows/check.yaml/badge.svg)](https://github.com/Roche/crmPack/actions/workflows/check.yaml)
+🛠](https://github.com/openpharma/crmPack/actions/workflows/check.yaml/badge.svg)](https://github.com/openpharma/crmPack/actions/workflows/check.yaml)
 [![Test
-Coverage](https://raw.githubusercontent.com/Roche/crmPack/_xml_coverage_reports/data/main/badge.svg)](https://raw.githubusercontent.com/Roche/crmPack/_xml_coverage_reports/data/main/badge.svg)
+Coverage](https://raw.githubusercontent.com/openpharma/crmPack/_xml_coverage_reports/data/main/badge.svg)](https://raw.githubusercontent.com/openpharma/crmPack/_xml_coverage_reports/data/main/badge.svg)
 <!-- badges: end -->
 
 <p align="center">
 <img src='man/figures/logo.png' align="right" height="131.5" alt="crmPack-logo"/>
 </p>
 
-The goal of crmPack is to implement a wide range of model-based dose
+The goal of `crmPack` is to implement a wide range of model-based dose
 escalation designs, ranging from classical and modern continual
 reassessment methods (CRMs) based on dose-limiting toxicity endpoints to
 dual-endpoint designs taking into account a biomarker/efficacy outcome.
@@ -35,13 +35,13 @@ escalation or stopping rules.
 
 ## Installation
 
-You can install the development version of crmPack from github with:
+You can install the development version of `crmPack` from GitHub with:
 
 ``` r
-devtools::install_github("Roche/crmPack")
+devtools::install_github("openpharma/crmPack")
 ```
 
-You can install the stable release version of crmPack from CRAN with:
+You can install the stable release version of `crmPack` from CRAN with:
 
 ``` r
 install.packages("crmPack")
@@ -53,21 +53,21 @@ The package vignettes provide information on various aspects of CRM
 trial design, implementation, simulation and analysis:
 
 - [Trial
-  definition](https://roche.github.io/crmPack/main/articles/trial_definition.html)
+  definition](https://openpharma.github.io/crmPack/main/articles/trial_definition.html)
 - [Trial
-  analysis](https://roche.github.io/crmPack/main/articles/trial_analysis.html)
+  analysis](https://openpharma.github.io/crmPack/main/articles/trial_analysis.html)
 - [Sanity
-  checking](https://roche.github.io/crmPack/main/articles/trial_sanity_checks.html)
+  checking](https://openpharma.github.io/crmPack/main/articles/trial_sanity_checks.html)
 - [Simulation of operating
-  characteristics](https://roche.github.io/crmPack/main/articles/trial_simulation.html)
+  characteristics](https://openpharma.github.io/crmPack/main/articles/trial_simulation.html)
 - [Ordinal CRM
-  models](https://roche.github.io/crmPack/main/articles/ordinal-crm.html)
+  models](https://openpharma.github.io/crmPack/main/articles/ordinal-crm.html)
 - [Extending
-  crmPack](https://roche.github.io/crmPack/main/articles/parallel_computing_with_extensions.html)
+  crmPack](https://openpharma.github.io/crmPack/main/articles/parallel_computing_with_extensions.html)
 - [Tidy crmPack
-  data](https://roche.github.io/crmPack/main/articles/tidy_method.html)
+  data](https://openpharma.github.io/crmPack/main/articles/tidy_method.html)
 - [Migration from the old
-  crmPack](https://roche.github.io/crmPack/main/articles/migration_from_the_old_crmPack.html)
+  crmPack](https://openpharma.github.io/crmPack/main/articles/migration_from_the_old_crmPack.html)
 - Sabanes Bove et al (2019) Model-based Dose Escalation Designs in R
-  with crmPack. JSS 89:10 [DOI
+  with `crmPack`. JSS 89:10 [DOI
   10.18637/jss.v089.i10](https://www.jstatsoft.org/article/view/v089i10)

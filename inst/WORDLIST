@@ -76,6 +76,10 @@ crmPackHelp
 crmPackUpgrade
 crmPackVersion
 CRMs
+customisable
+customisation
+customisations
+customise
 customised
 DataCombo
 DataDual
@@ -169,6 +173,7 @@ gz
 Hmmm
 Hoffmann
 honoured
+HMTL
 http
 https
 httr
@@ -223,6 +228,7 @@ LogisticNormalMixture
 LogisticsIndepBeta
 loglog
 longdash
+ly
 magrittr
 mailto
 mathcal
