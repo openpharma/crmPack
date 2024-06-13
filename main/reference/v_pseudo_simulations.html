@@ -46,12 +46,6 @@ PseudoSimulations or inherited classes and therefore not exported."><meta proper
 <li class="nav-item">
   <a class="nav-link" href="../news/index.html">Changelog</a>
 </li>
-<!-- start dropdown for versions --> <li class="nav-item dropdown">
-        <a href="#" class="nav-link dropdown-toggle"
-          data-bs-toggle="dropdown" role="button"
-          aria-expanded="false" aria-haspopup="true"
-          id="dropdown-versions">Versions</a> <div class="dropdown-menu" aria-labelledby="dropdown-versions"> <a class="dropdown-item" data-toggle="tooltip" title="" href="https://openpharma.github.io/crmPack/main">main</a> </div></li>
-<!-- end dropdown for versions -->
 <li class="nav-item dropdown">
   <a href="#" class="nav-link dropdown-toggle" data-bs-toggle="dropdown" role="button" aria-expanded="false" aria-haspopup="true" id="dropdown-reports">Reports</a>
   <div class="dropdown-menu" aria-labelledby="dropdown-reports">
@@ -116,10 +110,10 @@ contains valid <code>fit</code>, <code>FinalTDtargetEndOfTrialEstimates</code> ,
 <code>FinalTDtargetDuringTrialAtDoseGrid</code>,<code>FinalTDtargetEndOfTrialAtDoseGrid</code> ,
 <code>FinalTDEOTCIs</code>, <code>FinalTDEOTRatios</code>, <code>FinalCIs</code>, <code>FinalRatios</code>,
 object and valid <code>stopReasons</code> simulations.</p></li>
-<li><p><code>v_pseudo_dual_simulations()</code>: validates that the <code><a href="PseudoDualSimulations.html">PseudoDualSimulations</a></code> object
-contains valid <code>fitEff</code>, <code>FinalGstarEstimates</code> , <code>FinalGstarAtDoseGrid</code>,
-<code>FinalGstarCIs</code> , <code>FinalGstarRatios</code>, <code>FinalOptimalDose</code>, <code>FinalOptimalDoseAtDoseGrid</code>
-object and valid <code>sigma2est</code> simulations.</p></li>
+<li><p><code>v_pseudo_dual_simulations()</code>: validates that the <code><a href="PseudoDualSimulations-class.html">PseudoDualSimulations</a></code> object
+contains valid <code>fit_eff</code>, <code>final_gstar_estimates</code> , <code>final_gstar_at_dose_grid</code>,
+<code>final_gstar_cis</code> , <code>final_gstar_ratios</code>, <code>final_optimal_dose</code>, <code>final_optimal_dose_at_dose_grid</code>
+object and valid <code>sigma2_est</code> simulations.</p></li>
 <li><p><code>v_pseudo_dual_flex_simulations()</code>: validates that the <code><a href="PseudoDualFlexiSimulations.html">PseudoDualFlexiSimulations</a></code>
 object contains valid <code>sigma2betaWest</code> vector of the final posterior mean
 sigma2betaW estimates.<code>FinalGstarEstimates</code> , <code>FinalGstarAtDoseGrid</code>,</p></li>

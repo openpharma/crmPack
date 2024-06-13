@@ -42,12 +42,6 @@
 <li class="nav-item">
   <a class="nav-link" href="../news/index.html">Changelog</a>
 </li>
-<!-- start dropdown for versions --> <li class="nav-item dropdown">
-        <a href="#" class="nav-link dropdown-toggle"
-          data-bs-toggle="dropdown" role="button"
-          aria-expanded="false" aria-haspopup="true"
-          id="dropdown-versions">Versions</a> <div class="dropdown-menu" aria-labelledby="dropdown-versions"> <a class="dropdown-item" data-toggle="tooltip" title="" href="https://openpharma.github.io/crmPack/main">main</a> </div></li>
-<!-- end dropdown for versions -->
 <li class="nav-item dropdown">
   <a href="#" class="nav-link dropdown-toggle" data-bs-toggle="dropdown" role="button" aria-expanded="false" aria-haspopup="true" id="dropdown-reports">Reports</a>
   <div class="dropdown-menu" aria-labelledby="dropdown-reports">
@@ -1191,7 +1185,7 @@
           
           <code><a href="GeneralSimulations-class.html">GeneralSimulations()</a></code> <code><a href="GeneralSimulations-class.html">.DefaultGeneralSimulations()</a></code> 
         </dt>
-        <dd><code>GeneralSimulations</code></dd>
+        <dd><code>GeneralSimulations</code> @description <a href="https://lifecycle.r-lib.org/articles/stages.html#stable" class="external-link"><img src="figures/lifecycle-stable.svg" alt="[Stable]"></a> This class captures trial simulations. Here also the random generator state before starting the simulation is saved, in order to be able to reproduce the outcome. For this just use <code><a href="https://rdrr.io/r/base/Random.html" class="external-link">set.seed</a></code> with the <code>seed</code> as argument before running <code>simulate,Design-method</code>.</dd>
       </dl><dl><dt>
           
           <code><a href="GeneralSimulationsSummary-class.html">.DefaultGeneralSimulationsSummary()</a></code> <code><a href="GeneralSimulationsSummary-class.html">.DefaultPseudoSimulationsSummary()</a></code> 
@@ -1224,14 +1218,9 @@
         <dd>Initialization function for 'PseudoDualFlexiSimulations' class</dd>
       </dl><dl><dt>
           
-          <code><a href="PseudoDualSimulations-class.html">.DefaultPseudoDualSimulations()</a></code> 
+          <code><a href="PseudoDualSimulations-class.html">PseudoDualSimulations()</a></code> <code><a href="PseudoDualSimulations-class.html">.DefaultPseudoDualSimulations()</a></code> 
         </dt>
-        <dd>Class <code>PseudoDualSimulations</code></dd>
-      </dl><dl><dt>
-          
-          <code><a href="PseudoDualSimulations.html">PseudoDualSimulations()</a></code> 
-        </dt>
-        <dd>Initialization function for 'DualPseudoSimulations' class</dd>
+        <dd><code>PseudoDualSimulations</code></dd>
       </dl><dl><dt>
           
           <code><a href="PseudoDualSimulationsSummary-class.html">.DefaultPseudoDualSimulationsSummary()</a></code> 
