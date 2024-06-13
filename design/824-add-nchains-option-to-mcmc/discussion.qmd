@@ -339,7 +339,7 @@ for (i in inits) {
 Other initialisers might include
 
 - `QuantileInitialiser`: starting values are chosen on the basis of equally-spaced quantiles of the prior
-- UserDefinedInitialiser`: user-defined starting values
+- `UserDefinedInitialiser`: user-defined starting values
 - Etc
 
 Now we have the infrastructure, we can start to use it, keeping in mind the need to avoid breaking changes.
@@ -901,9 +901,159 @@ str(threeChains)
 
 Again, all looks good.
 
+### `get-NewSamples` and `tidy-NewSamples`
+
+I will take these out of order because they will simplify presentation and validation in later sections.
+
+#### `get-NewSamples`
+
+```{r}
+#| label: get-NewSamples
+#| eval: TRUE
+#| error: FALSE
+
+setMethod("get",
+  signature =
+    signature(
+      x = "NewSamples",
+      pos = "character",
+      envir = "ANY",
+      mode = "ANY",
+      inherits = "ANY"
+    ),
+  def =
+    function(x,
+             pos,
+             envir = NULL,
+             mode = NULL,
+             inherits = NULL) {
+      ## check the parameter name
+      assert_scalar(pos)
+      assert_choice(pos, names(x@data))
+
+      ## get the samples for this parameter
+      rv <- lapply(
+        seq_len(length(x@data[[pos]])),
+        function(i) {
+          d <- x@data[[pos]][[i]]
+          ## this can be either a vector or a matrix
+
+          ## how many parameters do we have?
+          nPars <- NCOL(d)
+
+          ## what are the names of all parameter
+          ## elements?
+          elements <-
+            if (nPars == 1L) {
+              pos
+            } else {
+              paste(pos,
+                "[", seq_len(nPars), "]",
+                sep = ""
+              )
+            }
+
+          ## in case we have a vector parameter
+          if (nPars > 1L) {
+            ## what are the indices to be returned?
+            indices <-
+              if (is.null(envir)) {
+                seq_along(elements)
+              } else {
+                assert_integer(envir)
+                assert_subset(envir, seq_along(elements))
+              }
+
+            ## subset the data matrix and par names appropriately
+            d <- d[, indices, drop = FALSE]
+            elements <- elements[indices]
+
+            ## and also reduce the number of parameters
+            nPars <- length(indices)
+          }
+
+          ## now we can build
+          ret <- data.frame(
+            Iteration = seq_len(NROW(d)),
+            Parameter =
+              factor(rep(elements, each = NROW(d)),
+               levels = elements
+              ),
+            value = as.numeric(d)
+          )
+
+          ## add the attributes
+          ret <- structure(ret,
+            nChains = as.integer(length(x@data)),
+            nParameters = nPars,
+            nIterations = x@options@iterations,
+            nBurnin = x@options@burnin,
+            nThin = x@options@step,
+            description = elements,
+            parallel = FALSE
+          )
+        }
+      ) %>% dplyr::bind_rows(.id = "Chain")
+      return(rv)
+    }
+)
+
+threeChains <- mcmc(emptyData, myModel, initialiser = LegacyChainInitialiser(3))
+alpha0 <- threeChains %>% get("alpha0")
+
+alpha0 %>% 
+  group_by(Chain) %>% 
+  group_walk(function(.x, .y) print(.x %>% head()), .keep = TRUE)
+```
+
+#### `tidy-NewSamples`
+
+```{r}
+#| label: tidy-NewSamples
+#| eval: TRUE
+#| error: TRUE
+
+
+setMethod(
+  f = "tidy",
+  signature = signature(x = "NewSamples"),
+  definition = function(x, ...) {
+    rv <- lapply(
+      slotNames(x),
+      function(nm) {
+        if (nm == "data") {
+          lapply(
+            names(x@data),
+            function(nm) {
+              get(x, nm) %>% dplyr::bind_rows()
+            }
+          ) %>%
+            dplyr::bind_rows() %>%
+            tidyr::pivot_wider(
+              names_from = Parameter,
+              values_from = value
+            ) %>%
+            dplyr::bind_cols(crmPack:::h_handle_attributes(get(x, names(x@data)[1])))
+        } else {
+          slot(x, nm) %>%
+            tidy() %>%
+            dplyr::bind_cols()
+        }
+      }
+    )
+    names(rv) <- c("data", "options")
+    rv <- rv %>% crmPack:::h_tidy_class(x)
+    rv
+  }
+)
+threeChains %>% tidy()
+```
+
+
+
 # Downstream adaptations
 
-The following methods and classes reference the Samples class, and so may need modification.  There are probably more.
+The following methods and classes reference the Samples class and are not discussed above.  They may need modification.  There are probably more.
 
 - `Design-simulate`
 - `Model-dose`
@@ -916,10 +1066,8 @@ The following methods and classes reference the Samples class, and so may need m
 - `Samples-fit`
 - `Samples-fitGain`
 - `Samples-fitPEM`
-- `Samples-get`
 - `Samples-names`
 - `Samples-plot`
 - `Samples-plotGain`
 - `Samples-plotDualResponses`
 - `Samples-size`
-- `Samples-tidy`
