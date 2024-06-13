@@ -357,10 +357,13 @@ setGeneric(
   name = "mcmc",
   def = function(data, model, options = NULL, initialiser = NULL, ...) {
     standardGeneric("mcmc")
-  },
-  valueClass = "Samples"
+  }
+  # ,
+  # valueClass = "Samples"
 )
 ```
+
+> I've temporarily removed value class checking to allow flexibility whilst adapting the `Samples` class to support multiple chains 
 
 ### Managing potential conflicts
 To avoid conflict between `options` and `initialiser`, define a new stub.
@@ -510,52 +513,9 @@ fit(samples, myModel, emptyData)
 
 ## New methodology
 
-> The `options` slot of the `Samples` class will need modification.
+The new `mcmc` method that handles `ChainInitialiser`s could look like this:
 
-`h_jags_extract_samples` appears to assume that there will be only a single chain:
-
-```{r}
-#| label: h_jags_extract_samples-1
-#| eval: FALSE
-
-h_jags_extract_samples <- function(x) {
-  assert_class(x, "mcarray")
-
-  x <- x[, , 1L]
-  # In case that there are multiple parameters in a node.
-  if (is.matrix(x)) {
-    x <- t(x)
-  }
-  x
-}
-```
-
-So modify it. [This is a temporary fix.]
-
-```{r}
-#| label: h_jags_extract_samples-2
-#| eval: TRUE
-
-h_jags_extract_samples <- function(x) {
-  assert_class(x, "mcarray")
-
-  nChains <- dim(x)[3]
-  w <- lapply(
-    seq_len(nChains),
-    function(i) {
-      z <- x[, , i]
-      # In case that there are multiple parameters in a node.
-      if (is.matrix(z)) {
-        z <- t(z)
-      }
-      z
-    }
-  )
-  unlist(w)
-}
-```
-
-The new `mcmc` method that handles `ChainInitialiser`s could look like this: 
+> Note that this (temporary) implementation returns the raw JAGS output because various helper functions and methods used by `mcmc` do not support multiple chains.
 
 ```{r}
 #| label: mcmc-4
@@ -641,26 +601,14 @@ setMethod(
       )
     }
     log_trace("JAGS samples: ", jags_samples, capture = TRUE)
-    samples <- lapply(jags_samples, h_jags_extract_samples)
-
-    # Hack
-    tmp <- .DefaultMcmcOptions()
-    # Return
-    Samples(
-      data = samples, 
-      options = McmcOptions(
-        burnin = tmp@burnin,
-        step = tmp@step,
-        samples = length(samples[[1]])
-      )
-    )
+    # samples <- lapply(jags_samples, h_jags_extract_samples)
+    # Samples(data = samples, options = options)
+    jags_samples
   }
 )
-oneChain <- mcmc(emptyData, myModel, initialiser = LegacyChainInitialiser())
-oneChain %>% tidy()
 ```
 
-There's a problem with `tidy`: it doesn't recognise multiple chains.  This might be because of the hacky fix to `h_jags_extract_samples`.  But the observation count is correct.
+Run it for multiple chains.
 
 ```{r}
 #| label: mcmc-5
@@ -668,8 +616,290 @@ There's a problem with `tidy`: it doesn't recognise multiple chains.  This might
 #| error: TRUE
 
 threeChains <- mcmc(emptyData, myModel, initialiser = LegacyChainInitialiser(3))
-threeChains %>% tidy()
+
+str(threeChains)
 ```
+
+It's easy to see that the returned value deomstrates that three chains have been used.
+
+The final two lines of the current `mcmc` method are
+
+```{r}
+#| label: mcmc-6
+#| eval: FALSE
+
+    samples <- lapply(jags_samples, h_jags_extract_samples)
+    Samples(data = samples, options = options)
+```
+
+`h_jags_extract_samples` fails because the chain index is hard-coded to `1`:
+
+```{r}
+#| label: mcmc-7
+#| eval: TRUE
+
+body(crmPack:::h_jags_extract_samples)
+```
+
+An appropriate modification is
+
+```{r}
+#| label: mcmc-8
+#| eval: TRUE
+
+h_jags_extract_samples <- function(x) {
+  assert_class(x, "mcarray")
+  
+  lapply(
+    seq_len(dim(x)[3]),
+    function(i) {
+      z <- x[, , i]
+      # In case that there are multiple parameters in a node.
+      if (is.matrix(z)) {
+        z <- t(z)
+      }
+      z
+    }
+  )
+}
+
+new_samples <- lapply(threeChains, h_jags_extract_samples)
+str(samples)
+```
+
+The three chains are handled appropriately.
+
+The `Samples` constructor also fails with data in this new format, because the `data` slot is a `list` of `list`s rather than being a simple `list`:
+
+```{r}
+#| label: mcmc-9
+#| eval: TRUE
+#| error: TRUE
+
+Samples(data = new_samples, options = .DefaultMcmcOptions())
+```
+
+Redefine the validation function for the `Samples` class to handle the new data format.
+
+> The revised function could be simplified by requiring the `data` to be a `list` of `list`s, even
+for a single chain.
+
+> For some reason, I can't get R to recognise the new validation algorithm, even if redefining the original `Samples` class.  Therefore, create a new equivalent class to handle the new data.
+
+```{r}
+#| label: define-validate
+#| eval: TRUE
+#| echo: FALSE
+
+# The Validate class needs to be defined in the Quarto document.  Perhaps because it's not exported from `crmPack`?
+Validate <- setRefClass(
+  Class = "Validate",
+  fields = list(msg = "character"),
+  methods = list(
+    check = function(test, string = "") {
+      "Check whether the \\code{test} is \\code{TRUE}; if so, return \\code{NULL}.
+      Otherwise, add the \\code{string} message into the cumulative messages vector \\code{msg}."
+      assert_flag(test)
+      assert_string(string)
+      if (test) {
+        NULL
+      } else {
+        msg <<- c(msg, string)
+      }
+    },
+    result = function() {
+      "Return either cumulative messages vector \\code{msg}
+      (which contains the error messages from all the checks),
+      or \\code{NULL}, if \\code{msg} is empty (i.e. all the checks were successful)."
+      if (length(msg) > 0) {
+        msg
+      } else {
+        TRUE
+      }
+    }
+  )
+)
+```
+
+```{r}
+#| label: mcmc-10
+#| eval: TRUE
+#| 
+v_new_samples <- function(object) {
+  v <- Validate()
+  if (any(sapply(object@data, is.list))) {
+    sapply(
+      names(object@data),
+      function(nm) {
+        sapply(
+          seq_len(length(object@data[[nm]])),
+          function(i) {
+            v$check(
+              NROW(object@data[[nm]][[i]]) == (object@options@iterations - object@options@burnin) / object@options@step,
+              paste0(
+                "Every element in data@", 
+                nm, 
+                "[chain [", 
+                i ,
+                "] must be of the same length (no. of rows) as the original chain"              )
+            )
+            v$check(
+              test_numeric(object@data[[nm]][[i]], finite = TRUE, any.missing = FALSE),
+              paste0("Every element in data@", nm, "[chain ", i ,"] must be a finite object of type integer or double")
+            )
+          }
+        )
+      }
+    )
+  } else {print("Checking current format")
+    v$check(
+      all(sapply(object@data, NROW) == size(object@options)),
+      "Every element in data must be of the same length (no. of rows) as the sample size was"
+    )
+    v$check(
+      all(sapply(object@data, test_numeric, finite = TRUE, any.missing = FALSE)),
+      "Every element in data must be a finite object of type integer or double"
+    )
+  }
+  v$result()
+}
+
+.NewSamples <- setClass(
+  Class = "NewSamples",
+  slots = c(
+    data = "list",
+    options = "McmcOptions"
+  ),
+  prototype = prototype(
+    data = list(),
+    options = McmcOptions()
+  ),
+  contains = "CrmPackClass",
+  validity = v_new_samples
+)
+
+NewSamples <- function(data, options) {
+  new("NewSamples", data = data, options = options)
+}
+
+samples <- NewSamples(data = new_samples, options = .DefaultMcmcOptions())
+str(samples)
+```
+
+All looks good.  Making the obvious changes to the lst two lines of the `mcmc` method (not shown), we now have:
+
+```{r}
+#| label: mcmc-11
+#| eval: TRUE
+#| echo: FALSE
+#| include: FALSE
+
+setMethod(
+  f = "mcmc",
+  signature = signature(
+    data = "GeneralData",
+    model = "GeneralModel",
+    options = "missing",
+    initialiser = "ChainInitialiser"
+  ),
+  def = function(data,
+                 model,
+                 options = NULL,
+                 initialiser = LegacyChainInitialiser(),
+                 from_prior = data@nObs == 0L,
+                 ...) {
+    assert_flag(from_prior)
+    
+    inits <- initialise(initialiser, model)
+    
+    # Start of potential helper function: code from here is probably shared
+    # with the existing method
+    model_fun <- if (from_prior) {
+      model@priormodel
+    } else {
+      h_jags_join_models(model@datamodel, model@priormodel)
+    }
+    
+    model_file <- h_jags_write_model(model_fun)
+    model_data <- h_jags_get_data(model, data, from_prior)
+    
+    #Temporary hacks
+    n.iter <- inits[[1]]$n.iter
+    thin <- inits[[1]]$thin
+    inits <- lapply(
+      inits,
+      function(i) {
+        i[["n.iter"]] <- NULL
+        i[["burnin"]] <- NULL
+        i[["thin"]] <- NULL
+        i
+      }
+    )
+ 
+    jags_model <- rjags::jags.model(
+      file = model_file,
+      data = model_data,
+      inits = inits,
+      quiet = !is_logging_enabled(),
+      n.adapt = 0, # No adaptation. Important for reproducibility.
+      n.chains = length(initialiser@options_list)
+    )
+    update(jags_model, n.iter = n.iter, progress.bar = "none")
+    
+    # This is necessary as some outputs are written directly from the JAGS
+    # compiled code to the output stream.
+    log_trace("Running rjags::jags.samples")
+    
+    if (is_logging_enabled()) {
+      jags_samples <- rjags::jags.samples(
+        model = jags_model,
+        variable.names = model@sample,
+        n.iter = n.iter,
+        thin = thin,
+        n.chains = length(initialiser@options_list)
+      )
+    } else {
+      invisible(
+        capture.output(
+          jags_samples <- rjags::jags.samples(
+            model = jags_model,
+            variable.names = model@sample,
+            n.iter = n.iter,
+            thin = thin,
+            progress.bar = "none",
+            n.chains = length(initialiser@options_list)
+          )
+        )
+      )
+    }
+    log_trace("JAGS samples: ", jags_samples, capture = TRUE)
+    samples <- lapply(jags_samples, h_jags_extract_samples)
+    # Hack until new format of McmcOptions is agreed
+    tmp <- .DefaultMcmcOptions()
+    NewSamples(
+      data = samples, 
+      options = McmcOptions(
+        burnin = tmp@burnin,
+        step = tmp@step,
+        samples = (tmp@iterations - tmp@burnin) / tmp@step
+      )
+    )
+  }
+)
+```
+
+```{r}
+#| label: mcmc-12
+#| eval: TRUE
+
+oneChain <- mcmc(emptyData, myModel, initialiser = LegacyChainInitialiser())
+str(oneChain)
+
+threeChains <- mcmc(emptyData, myModel, initialiser = LegacyChainInitialiser(3))
+str(threeChains)
+```
+
+Again, all looks good.
 
 # Downstream adaptations
 
