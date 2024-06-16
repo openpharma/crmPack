@@ -479,3 +479,35 @@ test_that("PseudoDualSimulations user constructor argument names are as expected
     ordered = TRUE
   )
 })
+
+# PseudoDualFlexiSimulations-class ----
+test_that("PseudoDualFlexiSimulations generator does not throw error and validates", {
+  result <- expect_silent(.PseudoDualFlexiSimulations())
+  expect_valid(result, "PseudoDualFlexiSimulations")
+})
+
+test_that("PseudoDualFlexiSimulations object can be created with the user constructor", {
+  sigma2_beta_west <- c(0.001, 0.002)
+
+  seed <- as.integer(123)
+
+  result <- expect_silent(
+    PseudoDualFlexiSimulations(
+      sigma2_beta_west = sigma2_beta_west,
+      seed = seed
+    )
+  )
+
+  expect_valid(result, "PseudoDualFlexiSimulations")
+  expect_identical(result@sigma2_beta_west, sigma2_beta_west)
+})
+
+test_that("PseudoDualFlexiSimulations user constructor argument names are as expected", {
+  expect_function(
+    PseudoDualFlexiSimulations,
+    args = c(
+      "sigma2_beta_west", "..."
+    ),
+    ordered = TRUE
+  )
+})
