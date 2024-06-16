@@ -748,6 +748,7 @@ PseudoDualFlexiSimulations <- function(sigma2_beta_west,
   stop("Class PseudoFlexiSimulations cannot be instantiated directly. Please use one of its subclasses instead.")
 }
 
+# nolint start
 ## -------------------------------------------------------------------------------------------------------
 ## ================================================================================================
 
