@@ -19,7 +19,8 @@ PseudoDualFlexiSimulations(sigma2_beta_west, ...)
 }
 \description{
 \ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#stable}{\figure{lifecycle-stable.svg}{options: alt='[Stable]'}}}{\strong{[Stable]}}
-This class captures the trial simulations design using both the DLE and efficacy responses using \code{\link{EffFlexi}} efficacy model.
+This class captures the trial simulations design using both the DLE and
+efficacy responses using \code{\link{EffFlexi}} efficacy model.
 It extends \code{\link{PseudoDualSimulations}} by adding the capability to capture the sigma2betaW estimates.
 }
 \section{Slots}{

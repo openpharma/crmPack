@@ -709,7 +709,8 @@ PseudoDualSimulations <- function(fit_eff,
 #' `PseudoDualFlexiSimulations`
 #'
 #' @description `r lifecycle::badge("stable")`
-#' This class captures the trial simulations design using both the DLE and efficacy responses using [`EffFlexi`] efficacy model.
+#' This class captures the trial simulations design using both the DLE and 
+#' efficacy responses using [`EffFlexi`] efficacy model.
 #' It extends [`PseudoDualSimulations`] by adding the capability to capture the sigma2betaW estimates.
 #'
 #' @slot sigma2_beta_west (`numeric`)\cr the vector of the final posterior mean sigma2betaW estimates
