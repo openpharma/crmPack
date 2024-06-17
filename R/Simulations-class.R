@@ -736,7 +736,7 @@ PseudoDualFlexiSimulations <- function(sigma2_beta_west,
                                        ...) {
   start <- PseudoDualSimulations(...)
   .PseudoDualFlexiSimulations(start,
-                              sigma2_beta_west = sigma2_beta_west
+    sigma2_beta_west = sigma2_beta_west
   )
 }
 
