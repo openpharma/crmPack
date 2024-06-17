@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE coverage SYSTEM "https://raw.githubusercontent.com/cobertura/cobertura/master/cobertura/src/site/htdocs/xml/coverage-04.dtd">
-<coverage line-rate="0.778534370946822" branch-rate="0" lines-covered="12005" lines-valid="15420" branches-covered="0" branches-valid="0" complexity="0" version="3.6.4" timestamp="2024-06-16 11:37:56.035961">
+<coverage line-rate="0.778534370946822" branch-rate="0" lines-covered="12005" lines-valid="15420" branches-covered="0" branches-valid="0" complexity="0" version="3.6.4" timestamp="2024-06-17 18:53:18.406008">
   <sources>
     <source>/__w/crmPack/crmPack/crmPack</source>
   </sources>
@@ -33966,15 +33966,15 @@
                 <line number="160" hits="32" branch="false"/>
                 <line number="161" hits="32" branch="false"/>
                 <line number="162" hits="32" branch="false"/>
-                <line number="985" hits="6" branch="false"/>
                 <line number="986" hits="6" branch="false"/>
                 <line number="987" hits="6" branch="false"/>
-                <line number="988" hits="50" branch="false"/>
+                <line number="988" hits="6" branch="false"/>
                 <line number="989" hits="50" branch="false"/>
-                <line number="991" hits="38" branch="false"/>
-                <line number="996" hits="6" branch="false"/>
-                <line number="997" hits="0" branch="false"/>
-                <line number="999" hits="6" branch="false"/>
+                <line number="990" hits="50" branch="false"/>
+                <line number="992" hits="38" branch="false"/>
+                <line number="997" hits="6" branch="false"/>
+                <line number="998" hits="0" branch="false"/>
+                <line number="1000" hits="6" branch="false"/>
                 <line number="579" hits="2" branch="false"/>
                 <line number="580" hits="2" branch="false"/>
                 <line number="581" hits="2" branch="false"/>
@@ -34516,10 +34516,10 @@
             </method>
             <method name="PseudoDualFlexiSimulations" signature="" line-rate="0.285714285714286" branch-rate="0" complexity="0">
               <lines>
-                <line number="736" hits="1" branch="false"/>
                 <line number="737" hits="1" branch="false"/>
                 <line number="738" hits="1" branch="false"/>
                 <line number="739" hits="1" branch="false"/>
+                <line number="740" hits="1" branch="false"/>
                 <line number="2627" hits="0" branch="false"/>
                 <line number="2628" hits="0" branch="false"/>
                 <line number="2629" hits="0" branch="false"/>
@@ -34534,36 +34534,35 @@
             </method>
             <method name=".DefaultPseudoDualFlexiSimulations" signature="" line-rate="1" branch-rate="0" complexity="0">
               <lines>
-                <line number="748" hits="1" branch="false"/>
+                <line number="749" hits="1" branch="false"/>
               </lines>
             </method>
             <method name=".DefaultPseudoSimulationsSummary" signature="" line-rate="1" branch-rate="0" complexity="0">
               <lines>
-                <line number="852" hits="1" branch="false"/>
+                <line number="853" hits="1" branch="false"/>
               </lines>
             </method>
             <method name=".DefaultPseudoDualSimulationsSummary" signature="" line-rate="1" branch-rate="0" complexity="0">
               <lines>
-                <line number="899" hits="1" branch="false"/>
+                <line number="900" hits="1" branch="false"/>
               </lines>
             </method>
             <method name="DASimulations" signature="" line-rate="0" branch-rate="0" complexity="0">
               <lines>
-                <line number="936" hits="0" branch="false"/>
                 <line number="937" hits="0" branch="false"/>
                 <line number="938" hits="0" branch="false"/>
                 <line number="939" hits="0" branch="false"/>
+                <line number="940" hits="0" branch="false"/>
               </lines>
             </method>
             <method name=".DefaultDASimulations" signature="" line-rate="0" branch-rate="0" complexity="0">
               <lines>
-                <line number="950" hits="0" branch="false"/>
                 <line number="951" hits="0" branch="false"/>
                 <line number="952" hits="0" branch="false"/>
                 <line number="953" hits="0" branch="false"/>
                 <line number="954" hits="0" branch="false"/>
                 <line number="955" hits="0" branch="false"/>
-                <line number="957" hits="0" branch="false"/>
+                <line number="956" hits="0" branch="false"/>
                 <line number="958" hits="0" branch="false"/>
                 <line number="959" hits="0" branch="false"/>
                 <line number="960" hits="0" branch="false"/>
@@ -34576,6 +34575,7 @@
                 <line number="967" hits="0" branch="false"/>
                 <line number="968" hits="0" branch="false"/>
                 <line number="969" hits="0" branch="false"/>
+                <line number="970" hits="0" branch="false"/>
               </lines>
             </method>
           </methods>
@@ -34749,24 +34749,23 @@
             <line number="692" hits="4" branch="false"/>
             <line number="693" hits="4" branch="false"/>
             <line number="702" hits="1" branch="false"/>
-            <line number="736" hits="1" branch="false"/>
             <line number="737" hits="1" branch="false"/>
             <line number="738" hits="1" branch="false"/>
             <line number="739" hits="1" branch="false"/>
-            <line number="748" hits="1" branch="false"/>
-            <line number="852" hits="1" branch="false"/>
-            <line number="899" hits="1" branch="false"/>
-            <line number="936" hits="0" branch="false"/>
+            <line number="740" hits="1" branch="false"/>
+            <line number="749" hits="1" branch="false"/>
+            <line number="853" hits="1" branch="false"/>
+            <line number="900" hits="1" branch="false"/>
             <line number="937" hits="0" branch="false"/>
             <line number="938" hits="0" branch="false"/>
             <line number="939" hits="0" branch="false"/>
-            <line number="950" hits="0" branch="false"/>
+            <line number="940" hits="0" branch="false"/>
             <line number="951" hits="0" branch="false"/>
             <line number="952" hits="0" branch="false"/>
             <line number="953" hits="0" branch="false"/>
             <line number="954" hits="0" branch="false"/>
             <line number="955" hits="0" branch="false"/>
-            <line number="957" hits="0" branch="false"/>
+            <line number="956" hits="0" branch="false"/>
             <line number="958" hits="0" branch="false"/>
             <line number="959" hits="0" branch="false"/>
             <line number="960" hits="0" branch="false"/>
@@ -34779,15 +34778,16 @@
             <line number="967" hits="0" branch="false"/>
             <line number="968" hits="0" branch="false"/>
             <line number="969" hits="0" branch="false"/>
-            <line number="985" hits="6" branch="false"/>
+            <line number="970" hits="0" branch="false"/>
             <line number="986" hits="6" branch="false"/>
             <line number="987" hits="6" branch="false"/>
-            <line number="988" hits="50" branch="false"/>
+            <line number="988" hits="6" branch="false"/>
             <line number="989" hits="50" branch="false"/>
-            <line number="991" hits="38" branch="false"/>
-            <line number="996" hits="6" branch="false"/>
-            <line number="997" hits="0" branch="false"/>
-            <line number="999" hits="6" branch="false"/>
+            <line number="990" hits="50" branch="false"/>
+            <line number="992" hits="38" branch="false"/>
+            <line number="997" hits="6" branch="false"/>
+            <line number="998" hits="0" branch="false"/>
+            <line number="1000" hits="6" branch="false"/>
           </lines>
         </class>
         <class name="Simulations-methods.R" filename="R/Simulations-methods.R" line-rate="0.0890538033395176" branch-rate="0" complexity="0">
@@ -35111,15 +35111,15 @@
                 <line number="160" hits="32" branch="false"/>
                 <line number="161" hits="32" branch="false"/>
                 <line number="162" hits="32" branch="false"/>
-                <line number="985" hits="6" branch="false"/>
                 <line number="986" hits="6" branch="false"/>
                 <line number="987" hits="6" branch="false"/>
-                <line number="988" hits="50" branch="false"/>
+                <line number="988" hits="6" branch="false"/>
                 <line number="989" hits="50" branch="false"/>
-                <line number="991" hits="38" branch="false"/>
-                <line number="996" hits="6" branch="false"/>
-                <line number="997" hits="0" branch="false"/>
-                <line number="999" hits="6" branch="false"/>
+                <line number="990" hits="50" branch="false"/>
+                <line number="992" hits="38" branch="false"/>
+                <line number="997" hits="6" branch="false"/>
+                <line number="998" hits="0" branch="false"/>
+                <line number="1000" hits="6" branch="false"/>
                 <line number="579" hits="2" branch="false"/>
                 <line number="580" hits="2" branch="false"/>
                 <line number="581" hits="2" branch="false"/>
@@ -36338,10 +36338,10 @@
             </method>
             <method name="PseudoDualFlexiSimulations" signature="" line-rate="0.285714285714286" branch-rate="0" complexity="0">
               <lines>
-                <line number="736" hits="1" branch="false"/>
                 <line number="737" hits="1" branch="false"/>
                 <line number="738" hits="1" branch="false"/>
                 <line number="739" hits="1" branch="false"/>
+                <line number="740" hits="1" branch="false"/>
                 <line number="2627" hits="0" branch="false"/>
                 <line number="2628" hits="0" branch="false"/>
                 <line number="2629" hits="0" branch="false"/>
