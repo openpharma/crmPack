@@ -8,6 +8,7 @@ editor: visual
 ```{r}
 #| eval: TRUE
 #| label: set-up
+#| echo: FALSE
 
 suppressPackageStartupMessages({
   library(crmPack)
@@ -18,7 +19,41 @@ suppressPackageStartupMessages({
   library(dplyr)
   library(rjags)
 })
+
+# The Validate class needs to be defined in the Quarto document.  Perhaps because it's not exported from `crmPack`?
+Validate <- setRefClass(
+  Class = "Validate",
+  fields = list(msg = "character"),
+  methods = list(
+    check = function(test, string = "") {
+      "Check whether the \\code{test} is \\code{TRUE}; if so, return \\code{NULL}.
+      Otherwise, add the \\code{string} message into the cumulative messages vector \\code{msg}."
+      assert_flag(test)
+      assert_string(string)
+      if (test) {
+        NULL
+      } else {
+        msg <<- c(msg, string)
+      }
+    },
+    result = function() {
+      "Return either cumulative messages vector \\code{msg}
+      (which contains the error messages from all the checks),
+      or \\code{NULL}, if \\code{msg} is empty (i.e. all the checks were successful)."
+      if (length(msg) > 0) {
+        msg
+      } else {
+        TRUE
+      }
+    }
+  )
+)
 ```
+
+# Questions
+
+- Why does `McmcOptions` treat `burnin` and `n.iter` differently to JAGS?  `mcmc` sets the JAGS `n.iter` option to `McmcOptions` `iterations - burnin`.
+- Should we consider modifying `h_jags_write_model` to use return a string rather than a temporary file?  `jags_model` could then use `textConnection`, which removes any interaction with the file system.
 
 # Background
 
@@ -87,7 +122,7 @@ samples
 ```
 
 
-## Simplistic support for multiple chains
+# Simplistic support for multiple chains
 By modifying the function` in a `Model`'s `init` slot to take a parameter that defines the number of chains required, multiple `inits` can be easily supported without breaking existing code:
 
 ```{r}
@@ -127,18 +162,106 @@ model@init <- function(n = 1, aModel) {
 model@init(3, model)
 ```
 
-# An intermediate implementation route to support multipe MCMC chains 
+# An intermediate route to support multipe MCMC chains 
 
-- Create a new class, `McmcOptionsList`, which simple contains a `list` of `McmcOptions`
+- Create a new class, `McmcOptionsList`, which simply contains a `list` of `McmcOptions`
 - Modify the signature of the `mcmc` generic so that `options = ANY`.
 - For each existing `mcmc` method, define a sibling with signature `options = "McmcOptionsList" that simply iterates over the current method and then binds the results together
 
 This option does not allow different initial values for each chain in the list.  I don't believe this is sufficient.
 
 # A comprehensive, flexible and reliable method of setting initial MCMC chain states
-To allow maximum flexibility - and to provide end users to implement their own initialisation strategy, create a new class.  The parent class does nothing beyond providing a placeholder.  Actual implementation is handled in child classes.  It will also be helpful to create a helper function to provide common functionality.
+To allow maximum flexibility - and to provide end users to implement their own initialisation strategy - create a new class.  The parent class does nothing beyond providing a placeholder.  Actual implementation is handled in child classes.  It will also be helpful to create a helper function to provide common functionality.
 
-> This needs a little more work.  because of the way `jags.model` operates, all chains in a single call  use the same burn-in, chain length, step and thinning parameter. Therefore, we need something more than a list of existing `Mcmcoptions` objects.
+## Separation of chain-level and simulation-level parameters
+
+Some JAGS parameters affect only a single chain, others the entire call to the simulation function.  Since `crmPack` currently supports use of only a single chain, these two types of setting are conflated in `McmcOptions`.  For clarity, separate them into different classes.
+
+### Chain-level JAGS parameters
+
+These essentially control a single pseudo-random number generator.  Here, `model_init` is the slot that contains the value retuned by `model@init()`, which would normally be set by the `initialise(chainOptions, model)` method.
+
+>  Does the `initialised` slot fit better here or in `ChainOptions`?  Or is it even needed?  [It's difficult to imagine a situation in which some `RNGOptions` elements of a `ChainOptions`'s `option_list` slot are initialised and others aren't...]
+
+```{r}
+#| label: prng-1
+
+# Closely based on v_mcmc_options
+v_rng_options <- function(object) {
+  v <- Validate()
+  allowed_rng_kinds <- c(
+    "base::Wichmann-Hill",
+    "base::Marsaglia-Multicarry",
+    "base::Super-Duper",
+    "base::Mersenne-Twister",
+    NA_character_
+  )
+  
+  is_rng_kind_scalar <- test_string(object@rng_name, na.ok = TRUE)
+  v$check(is_rng_kind_scalar, "rng_name must be a single string")
+  v$check(
+    test_subset(object@rng_name, allowed_rng_kinds),
+    paste0(
+      "rng_name must one of the following: ",
+      paste(allowed_rng_kinds, collapse = ", "),
+      ". User specifies the rng_name without `base::` prefix"
+    )
+  )
+  
+  is_rng_seed_scalar <- test_int(object@rng_seed, na.ok = TRUE)
+  v$check(is_rng_seed_scalar, "rng_seed must be an integer scalar")
+  
+  # Below `if` condition is not only reasonable but also needed as R CMD check
+  # is activating some stricter checks and it fails when arguments to `||` are
+  # not scalars, even if `||` works well with vectors of length > 1.
+  if (is_rng_kind_scalar && is_rng_seed_scalar) {
+    v$check(
+      !is.na(object@rng_name) || is.na(object@rng_seed),
+      "rng_seed supplied but rng_kind not set"
+    )
+  }
+  v$result()  
+}
+
+.RNGOptions <- setClass(
+  Class = "RNGOptions",
+  slots = c(
+    initialised = "logical",
+    model_init = "list",
+    rng_name = "character",
+    rng_seed = "integer"
+  ),
+  prototype = prototype(
+    initialised = FALSE,
+    model_init = list(),
+    rng_name = NA_character_,
+    rng_seed = NA_integer_
+  ),
+  contains = "CrmPackClass",
+  validity = v_rng_options
+)
+
+## constructor ----
+RNGOptions <- function(name = NA_character_, seed = NA_integer_) {
+  .RNGOptions(
+    rng_name = ifelse(is.na(name), NA_character_, paste0("base::", name)),
+    rng_seed = seed, 
+    model_init = list()
+  )
+}
+
+## default constructor ----
+.DefaultRNGOptions <- function() {
+  .RNGOptions()
+}
+
+RNGOptions()
+x <- RNGOptions("Mersenne-Twister", 511031L)
+x@model_init <- (.DefaultLogisticLogNormal())@init()
+x
+```
+
+### Simulation-level JAGS parameters
 
 ```{r}
 #| label: initialiser-1
@@ -147,35 +270,74 @@ To allow maximum flexibility - and to provide end users to implement their own i
 h_prepare_mcmcoptions_list <- function(n, options) {
   assert_count(n)
   if (is.null(options)) {
-    options <- lapply(seq_len(n), function(i) .DefaultMcmcOptions())
+    options <- lapply(seq_len(n), function(i) .DefaultRNGOptions())
   } else {
     assert_true(length(options) == n)
   }
   assert_list(options, any.missing = FALSE)
   for (opt in options) {
-    assert_class(opt, "McmcOptions")
+    assert_class(opt, "RNGOptions")
   } 
   options
 }
 
-# Chain initialiser ----
-.ChainInitialiser <- setClass(
-  Class = "ChainInitialiser",
+# Chain Options ----
+v_chain_options <- function(object) {
+  v <- Validate()
+  v$check(
+    test_int(object@samples, lower = 1L),
+    "samples must be integer scalar greater than or equal to 1"
+  )
+  v$check(
+    test_int(object@burnin, lower = 0L),
+    "burn-in must be non-negative integer scalar"
+  )
+  # This below check should not be conducted in above test, using
+  # `upper = object@samples -1` argument, since object@samples might be
+  # not-valid. In such a case `test_int` throws an internal error.
+  v$check(
+    test_true(object@burnin < object@samples),
+    "burn-in must be lower than samples"
+  )
+  v$check(
+    test_int(object@step, lower = 1L),
+    "step must be integer scalar greater than or equal to 1"
+  )
+  v$check(
+    all(sapply(object@options_list, function(z) test_class(z, "RNGOptions"))),
+    "all elements of options_list must be RNGOptions objects"
+  )
+  v$result()
+}
+
+.ChainOptions <- setClass(
+  Class = "ChainOptions",
   slots = c(
+    burnin = "integer",
+    step = "integer",
+    samples = "integer",
     options_list = "list"
   ),
   prototype = prototype(
+    burnin = 1e4L,
+    step = 2L,
+    samples = 2e4L,
     option_list = list()
   ),
-  contains = "CrmPackClass"
-  # ,
-  # validity = v_chain_initialiser
+  contains = "CrmPackClass",
+  validity = v_chain_options
 )
 
 ## constructor ----
-ChainInitialiser <- function(n_chains = 1, options = NULL) {
+ChainOptions <- function(
+    burnin = 1E4L, 
+    step = 2L, 
+    samples = 1E4L, 
+    n_chains = 1, 
+    options = NULL
+  ) {
   options <- h_prepare_mcmcoptions_list(n_chains, options)
-  .ChainInitialiser(options_list = options)
+  .ChainOptions(options_list = options)
 }
 ```
 
@@ -184,7 +346,9 @@ For example
 ```{r}
 #| label: initialiser-2
 #| eval: TRUE
-ChainInitialiser()
+#| error: TRUE
+
+ChainOptions()
 ```
 
 ## Legacy behaviour
@@ -194,21 +358,32 @@ ChainInitialiser()
 #| eval: TRUE
 
 # Legacy initialisation ----
-.LegacyChainInitialiser <- setClass(
-  Class = "LegacyChainInitialiser",
-  contains = "ChainInitialiser"
-  # ,
-  # validity = v_legacy_chain_initialiser
+v_legacy_chain_options <- function(object) {
+  v <- v_chain_options(object)
+  if (v) {
+    v <- Validate()
+  }
+  params <- lapply(object@options_list, function(z) z@model_init)
+  v$check(
+    sum(duplicated.default(params)) == length(params) - 1L,
+    "All elements of the options_list must have the same value in their model_init slots"
+  )
+  v$result()
+}
+
+.LegacyChainOptions <- setClass(
+  Class = "LegacyChainOptions",
+  contains = "ChainOptions",
+  validity = v_legacy_chain_options
 )
 
 ## constructor ----
-LegacyChainInitialiser <- function(n_chains = 1, options = NULL) {
+LegacyChainOptions <- function(n_chains = 1, options = NULL) {
   options <- h_prepare_mcmcoptions_list(n_chains, options)
-  .LegacyChainInitialiser(options_list = options)
+  .LegacyChainOptions(options_list = options)
 }
 
-# Example usage ----
-LegacyChainInitialiser()
+LegacyChainOptions()
 ```
 
 ## New functionality
@@ -218,84 +393,104 @@ LegacyChainInitialiser()
 #| eval: TRUE
 
 # Random initialisation ----
-.RandomChainInitialiser <- setClass(
-  Class = "RandomChainInitialiser",
-  contains = "ChainInitialiser"
-  # ,
-  # validity = v_random_chain_initialiser
+v_random_chain_options <- function(object) {
+  v <- v_chain_options(object)
+  if (v) {
+    v <- Validate()
+  }
+  v$result()
+}
+
+.RandomChainOptions <- setClass(
+  Class = "RandomChainOptions",
+  contains = "ChainOptions",
+  validity = v_random_chain_options
 )
 
 ## constructor ----
-RandomChainInitialiser <- function(n_chains = 1, options = NULL) {
+RandomChainOptions <- function(n_chains = 1, options = NULL) {
   options <- h_prepare_mcmcoptions_list(n_chains, options)
-  .RandomChainInitialiser(options_list = options)
+  .RandomChainOptions(options_list = options)
 }
+
+RandomChainOptions(2)
 ```
 
 ## New style initialisation
-Provide an initialisation method.  By separating the method from the class, we allow access to the initialisers slots, which is helpful: it allows us to implement new functionality without having to change code in the future.  Since the parent class does nothing, prevent its use - and provide a useful aide-memoire to developers.
 
-> More work is needed here.  When using multiple chains, JAGS requires  common numer of iterations and burnin size (and maybe others).  This current suggestion "allows" these to differ between chains (though the new `mcmc` method is hacked to prevent this).  The choiuce is probably between (a) allowing initialisation with the current `McmcOptions` class or (b) creating a (slightly) different new one or (c) embedding the necessary information directly in the new `Initialiser` classes.  My immediate reaction is that I prefer the last of those options.
+Provide an initialisation method.  By separating the method from the class, we allow access to the option object's slots, which is helpful - not least because it allows us (and end users) to implement new functionality in the future without having to change the existing code base.  
 
 ```{r}
 #| label: initialiser-5
 #| eval: TRUE
-#| error: TRUE
+#| output: false
+
 setGeneric(
   name = "initialise",
-  def = function(initialiser, model, ...) {
+  def = function(opts, model, ...) {
     standardGeneric("initialise")
   },
-  valueClass = "list"
+  valueClass = "ChainOptions"
 )
+
+
+```
+
+Since the parent class does nothing, prevent its use - and provide a useful aide-memoire to developers.
+
+```{r}
+#| label: initialiser-5a
+#| eval: TRUE
+#| error: TRUE
 
 setMethod(
   f = "initialise",
-  signature = c("ChainInitialiser", "GeneralModel"),
-  def = function(initialiser, model, n_chains = 1, ...) {
+  signature = c("ChainOptions", "GeneralModel"),
+  def = function(opts, model, n_chains = 1, ...) {
     stop("initialise must be implemented in a sub class.")
   }
 )
 
-initialise(ChainInitialiser(), .DefaultLogisticNormal())
+initialise(ChainOptions(), .DefaultLogisticNormal())
 ```
+
+### Legacy initialisation
 
 Legacy initialisation becomes
 
 ```{r}
 #| label: initialiser-6
 #| eval: TRUE
-#| error: TRUE
+
 setMethod(
   f = "initialise",
-  signature = c("LegacyChainInitialiser", "GeneralModel"),
-  def = function(initialiser, model, ...) {
+  signature = c("LegacyChainOptions", "GeneralModel"),
+  def = function(opts, model, ...) {
     model_init <- model@init()
     names(model_init) <- names(model@init())
-    lapply(
-      seq_len(length(initialiser@options_list)), 
-      function(i) {
-        opt <- initialiser@options_list[[i]]
-        c(
-          model_init,
-          .RNG.name = h_null_if_na(opt@rng_kind),
-          .RNG.seed = h_null_if_na(opt@rng_seed),
-          n.iter = (opt@iterations - opt@burnin),
-          burnin = opt@burnin,
-          thin = opt@step
-        )
-      }
-    )
+    for (i in seq_len(length(opts@options_list))) {
+      opts@options_list[[i]]@model_init  <- model_init
+      opts@options_list[[i]]@initialised <- TRUE
+    }
+    opts
   }
 )
 
-initialise(LegacyChainInitialiser(), .DefaultLogisticLogNormal())
-inits <- initialise(LegacyChainInitialiser(n_chains = 3), .DefaultLogisticLogNormal())
-for (i in inits) {
-  print(i$theta)
+opts <- LegacyChainOptions()
+opts <- initialise(opts, .DefaultLogisticLogNormal())
+opts
+
+opts1 <- LegacyChainOptions(2)
+opts1 <- initialise(opts1, .DefaultLogisticLogNormal())
+for (i in opts1@options_list) {
+  print(paste0(names(i@model_init), ": ", paste0(i@model_init, collapse = " ")))
 }
+
+opts2 <- LegacyChainOptions(2, opts1@options_list)
+opts2
 ```
 
+### Random initialisation
 
 Random initialisation is achieved so:
 
@@ -306,40 +501,38 @@ Random initialisation is achieved so:
 
 setMethod(
   f = "initialise",
-  signature = c("RandomChainInitialiser", "GeneralModel"),
-  definition = function(initialiser, model, ...) {
-    n <- length(initialiser@options_list)
+  signature = c("RandomChainOptions", "GeneralModel"),
+  definition = function(opts, model, ...) {
     param_names <- names(model@init())
-    lapply(
-      seq_len(n), 
-      function(i) {
-        model_init <- list(mvtnorm::rmvnorm(1, model@params@mean, model@params@cov)[1, ])
-        names(model_init) <- param_names
-        opt <- initialiser@options_list[[i]]
-        c(
-          model_init,
-          .RNG.name = h_null_if_na(opt@rng_kind),
-          .RNG.seed = h_null_if_na(opt@rng_seed),
-          n.iter = (opt@iterations - opt@burnin),
-          burnin = opt@burnin,
-          thin = opt@step
-        )
+    opts@options_list <- lapply(
+      opts@options_list, 
+      function(z) {
+        tmp <- mvtnorm::rmvnorm(1, model@params@mean, model@params@cov)[1, ]
+        model_init <- list()
+        model_init[[param_names]] <- tmp
+        z@model_init <- model_init
+        z@initialised <- TRUE
+        z
       }
     )
+    opts
   }
 )
 
-initialise(RandomChainInitialiser(), .DefaultLogisticLogNormal())
-inits <- initialise(RandomChainInitialiser(n_chains = 3), .DefaultLogisticLogNormal())
-for (i in inits) {
-  print(i$theta)
+initialise(RandomChainOptions(), .DefaultLogisticLogNormal())
+opts3 <- initialise(RandomChainOptions(n_chains = 3), .DefaultLogisticLogNormal())
+for (i in opts3@options_list) {
+  print(paste0(names(i@model_init), ": ", paste0(i@model_init, collapse = " ")))
 }
+
 ```
 
-Other initialisers might include
+### Other `ChainOptions` classes
 
-- `QuantileInitialiser`: starting values are chosen on the basis of equally-spaced quantiles of the prior
-- `UserDefinedInitialiser`: user-defined starting values
+Other `ChainOptions` might include
+
+- `QuantileChainOptions`: starting values are chosen on the basis of equally-spaced quantiles of the prior
+- `UserDefinedChainOptions`: user-defined starting values
 - Etc
 
 Now we have the infrastructure, we can start to use it, keeping in mind the need to avoid breaking changes.
@@ -347,11 +540,17 @@ Now we have the infrastructure, we can start to use it, keeping in mind the need
 ## Modify the `mcmc` method
 
 ### Modified generic
-To avoid breaking changes, modify the signature of `mcmc`.
+
+> In what follows, I've temporarily removed value class checking to allow flexibility whilst adapting the `Samples` class to support multiple chains 
+
+We need to modify the signature of `mcmc`, remembering the need to avoid breaking changes.  We could write:
+
+#### Option 1
 
 ```{r}
 #| label: mcmc-1
 #| eval: TRUE
+#| output: FALSE
 
 setGeneric(
   name = "mcmc",
@@ -363,10 +562,7 @@ setGeneric(
 )
 ```
 
-> I've temporarily removed value class checking to allow flexibility whilst adapting the `Samples` class to support multiple chains 
-
-### Managing potential conflicts
-To avoid conflict between `options` and `initialiser`, define a new stub.
+This separates the existing and new methodology, but allows the possibility of conflict between the `options` and `initialiser` arguments.  So, ideally, we'd also need a new stub.
 
 ```{r}
 #| label: mcmc-1a
@@ -398,250 +594,217 @@ myModel <- LogisticLogNormal(
 )
 emptyData <- Data(doseGrid = c(1, 3, 5, 10, 15, 20, 25, 40, 50, 80, 100))
 
-mcmc(emptyData, myModel, .DefaultMcmcOptions(), LegacyChainInitialiser())
+mcmc(emptyData, myModel, .DefaultMcmcOptions(), LegacyChainOptions())
 ```
 
-### Current use
-The existing `mcmc` method becomes
+#### Option 2
+
+With a new helper function to convert between `McmcOptions` and `ChainOptions`, we could write:
 
 ```{r}
-#| label: mcmc-2
+#| label: mcmc-1b
 #| eval: FALSE
+
+h_ensure_new_style_initialisation <- function(opts) {
+  if (test_class(opts, "McmcOptions")) {
+    lifecycle::deprecate_warn(
+      paste0(
+        "The McmcOptions class has been deprecated and will be removed in a ",
+        "future version of crmPack.  Please use the ChainOptions class instead"
+      )
+    )
+    tmp <- LegacyChainOptions()
+    tmp <- initialise(tmp, opts)
+    opts <- tmp
+  }
+  assert_class(opts, "ChainOptions")
+  opts
+}
 
 setMethod(
   f = "mcmc",
   signature = signature(
     data = "GeneralData",
     model = "GeneralModel",
-    options = "McmcOptions",
-    initialiser = "missing"
+    options = "ANY"
   ),
   def = function(data,
                  model,
                  options,
-                 initialiser = NULL,
                  from_prior = data@nObs == 0L,
                  ...) {
-    # <body is unchanged>
+    options <- h_ensure_new_style_initilisation(options)
+    ...
   }
 )
 ```
+
+This removes the need for a stub to check if both `initialiser` and `options` are specified.  I prefer this option.
+
 ```{r}
-#| label: mcmc-2a
+#| label: mcmc-1c
 #| eval: TRUE
 #| echo: FALSE
 
-setMethod(
-  f = "mcmc",
-  signature = signature(
-    data = "GeneralData",
-    model = "GeneralModel",
-    options = "McmcOptions",
-    initialiser = "missing"
-  ),
-  def = function(data,
-                 model,
-                 options,
-                 initialiser = NULL,
-                 from_prior = data@nObs == 0L,
-                 ...) {
-    assert_flag(from_prior)
-    
-    model_fun <- if (from_prior) {
-      model@priormodel
-    } else {
-      h_jags_join_models(model@datamodel, model@priormodel)
-    }
-    
-    model_file <- h_jags_write_model(model_fun)
-    model_inits <- h_jags_get_model_inits(model, data)
-    model_data <- h_jags_get_data(model, data, from_prior)
-    
-    jags_model <- rjags::jags.model(
-      file = model_file,
-      data = model_data,
-      inits = c(
-        model_inits,
-        .RNG.name = h_null_if_na(options@rng_kind),
-        .RNG.seed = h_null_if_na(options@rng_seed)
-      ),
-      quiet = !is_logging_enabled(),
-      n.adapt = 0 # No adaptation. Important for reproducibility.
+h_ensure_new_style_initialisation <- function(opts, model) {
+  if (test_class(opts, "McmcOptions")) {
+    lifecycle::deprecate_warn(
+      when = "2.0",
+      what = "crmPack::McmcOptions()",
+      details = paste0(
+        "The McmcOptions class has been deprecated and will be removed in a ",
+        "future version of crmPack.  Please use the ChainOptions class instead"
+      )
     )
-    update(jags_model, n.iter = options@burnin, progress.bar = "none")
-    
-    # This is necessary as some outputs are written directly from the JAGS
-    # compiled code to the outstream.
-    log_trace("Running rjags::jags.samples")
-    if (is_logging_enabled()) {
-      jags_samples <- rjags::jags.samples(
-        model = jags_model,
-        variable.names = model@sample,
-        n.iter = (options@iterations - options@burnin),
-        thin = options@step
-      )
-    } else {
-      invisible(
-        capture.output(
-          jags_samples <- rjags::jags.samples(
-            model = jags_model,
-            variable.names = model@sample,
-            n.iter = (options@iterations - options@burnin),
-            thin = options@step,
-            progress.bar = "none"
-          )
-        )
-      )
-    }
-    log_trace("JAGS samples: ", jags_samples, capture = TRUE)
-    samples <- lapply(jags_samples, h_jags_extract_samples)
-    
-    Samples(data = samples, options = options)
+    opts <- LegacyChainOptions()
+    opts <- initialise(opts, model)
   }
-)
+  assert_class(opts, "ChainOptions")
+  opts
+}
 ```
 
-This works exactly as it does at the moment.
+### The `NewSamples` class
+
+The `options` slot of the `Samples` class requires its value to be an `McmcOptions` class.  This will need to change.  As a temporary workaround, define a `NewSamples` class.
 
 ```{r}
-#| label: mcmc-3
+#| label: new-samples-1
 #| eval: TRUE
 
-samples <- mcmc(emptyData, myModel, .DefaultMcmcOptions())
-fit(samples, myModel, emptyData)
-```
-
-## New methodology
-
-The new `mcmc` method that handles `ChainInitialiser`s could look like this:
-
-> Note that this (temporary) implementation returns the raw JAGS output because various helper functions and methods used by `mcmc` do not support multiple chains.
-
-```{r}
-#| label: mcmc-4
-#| eval: TRUE
-#| error: TRUE
-
-setMethod(
-  f = "mcmc",
-  signature = signature(
-    data = "GeneralData",
-    model = "GeneralModel",
-    options = "missing",
-    initialiser = "ChainInitialiser"
-  ),
-  def = function(data,
-                 model,
-                 options = NULL,
-                 initialiser = LegacyChainInitialiser(),
-                 from_prior = data@nObs == 0L,
-                 ...) {
-    assert_flag(from_prior)
-    
-    inits <- initialise(initialiser, model)
-    
-    # Start of potential helper function: code from here is probably shared
-    # with the existing method
-    model_fun <- if (from_prior) {
-      model@priormodel
-    } else {
-      h_jags_join_models(model@datamodel, model@priormodel)
-    }
-    
-    model_file <- h_jags_write_model(model_fun)
-    model_data <- h_jags_get_data(model, data, from_prior)
-    
-    #Temporary hacks
-    n.iter <- inits[[1]]$n.iter
-    thin <- inits[[1]]$thin
-    inits <- lapply(
-      inits,
-      function(i) {
-        i[["n.iter"]] <- NULL
-        i[["burnin"]] <- NULL
-        i[["thin"]] <- NULL
-        i
+v_new_samples <- function(object) {
+  v <- Validate()
+  sapply(
+    names(object@data),
+    function(nm) {
+      x <- object@data[[nm]]
+      if (is.list(x)) {
+        sapply(
+          seq_len(length(x)),
+          function(i) {
+            v$check(
+              NROW(x[[i]]) == (object@options@samples - object@options@burnin) / object@options@step,
+              paste0(
+                "Every element in data@",
+                nm,
+                "[chain [",
+                i ,
+                "] must be of the same length (no. of rows) as the original chain"              )
+            )
+            v$check(
+              test_numeric(x[[i]], finite = TRUE, any.missing = FALSE),
+              paste0("Every element in data@", nm, "[chain ", i ,"] must be a finite object of type integer or double")
+            )
+          }
+        )       
+      } else {
+        expected <- dim(x)["iteration"]
+        if (is.null(expected)) {
+          expected <- length(x)
+        }
+        v$check(
+          expected == round((object@options@samples - object@options@burnin) / object@options@step, 3),
+          "Every element in data must be of the same length (no. of rows) as the sample size was"
+        )
+        v$check(
+          all(sapply(object@data, test_numeric, finite = TRUE, any.missing = FALSE)),
+          "Every element in data must be a finite object of type integer or double"
+        )        
       }
-    )
- 
-    jags_model <- rjags::jags.model(
-      file = model_file,
-      data = model_data,
-      inits = inits,
-      quiet = !is_logging_enabled(),
-      n.adapt = 0, # No adaptation. Important for reproducibility.
-      n.chains = length(initialiser@options_list)
-    )
-    update(jags_model, n.iter = n.iter, progress.bar = "none")
-    
-    # This is necessary as some outputs are written directly from the JAGS
-    # compiled code to the output stream.
-    log_trace("Running rjags::jags.samples")
-    
-    if (is_logging_enabled()) {
-      jags_samples <- rjags::jags.samples(
-        model = jags_model,
-        variable.names = model@sample,
-        n.iter = n.iter,
-        thin = thin,
-        n.chains = length(initialiser@options_list)
-      )
-    } else {
-      invisible(
-        capture.output(
-          jags_samples <- rjags::jags.samples(
-            model = jags_model,
-            variable.names = model@sample,
-            n.iter = n.iter,
-            thin = thin,
-            progress.bar = "none",
-            n.chains = length(initialiser@options_list)
-          )
-        )
-      )
     }
-    log_trace("JAGS samples: ", jags_samples, capture = TRUE)
-    # samples <- lapply(jags_samples, h_jags_extract_samples)
-    # Samples(data = samples, options = options)
-    jags_samples
-  }
+  )
+  v$result()
+}
+
+.NewSamples <- setClass(
+  Class = "NewSamples",
+  slots = c(
+    data = "list",
+    options = "ChainOptions"
+  ),
+  prototype = prototype(
+    data = list(),
+    options = ChainOptions()
+  ),
+  contains = "CrmPackClass",
+  validity = v_new_samples
 )
+
+NewSamples <- function(data, options) {
+  new("NewSamples", data = data, options = options)
+}
+
+opt <- LegacyChainOptions()
+jags_model <- rjags::jags.model(
+  file = textConnection(
+    "model {
+       theta ~ dmnorm(mean, prec)
+       alpha0 <- theta[1]
+       alpha1 <- exp(theta[2])
+    }"
+  ),
+  data = h_jags_get_data(myModel, emptyData, TRUE),
+  inits = list(theta = c(0, 1)),
+  n.adapt = 0
+  )
+jags_samples <- rjags::jags.samples(
+  model = jags_model,
+  variable.names = myModel@sample,
+  n.iter = (opt@samples - opt@burnin),
+  thin = opt@step
+)
+
+oneChain <- NewSamples(data = jags_samples, options = opt)
+str(oneChain)
 ```
 
-Run it for multiple chains.
+All looks good.
+
+> The validation function for `NewSamples` could be simplified by requiring the `data` to be a `list` of `list`s, even
+for a single chain.
+
+What about multiple chains?
 
 ```{r}
-#| label: mcmc-5
-#| eval: TRUE
-#| error: TRUE
+#| label: new-samples-2
+#| echo: TRUE
 
-threeChains <- mcmc(emptyData, myModel, initialiser = LegacyChainInitialiser(3))
+opt <- LegacyChainOptions(3)
+jags_model <- rjags::jags.model(
+  file = textConnection(
+    "model {
+       theta ~ dmnorm(mean, prec)
+       alpha0 <- theta[1]
+       alpha1 <- exp(theta[2])
+    }"
+  ),
+  data = h_jags_get_data(myModel, emptyData, TRUE),
+  inits = list(
+    list(theta = c(0, 1)),
+    list(theta = c(0, 1)),
+    list(theta = c(0, 1))
+  ),
+  n.chains = 3,
+  n.adapt = 0
+  )
+jags_samples <- rjags::jags.samples(
+  model = jags_model,
+  variable.names = myModel@sample,
+  n.iter = (opt@samples - opt@burnin),
+  thin = opt@step
+)
 
+threeChains <- NewSamples(data = jags_samples, options = opt)
 str(threeChains)
 ```
 
-It's easy to see that the returned value deomstrates that three chains have been used.
+That looks OK too.
 
-The final two lines of the current `mcmc` method are
+### Modifying the `mcmc` method
 
-```{r}
-#| label: mcmc-6
-#| eval: FALSE
+#### Modify the `h_jags_extract_samples
 
-    samples <- lapply(jags_samples, h_jags_extract_samples)
-    Samples(data = samples, options = options)
-```
-
-`h_jags_extract_samples` fails because the chain index is hard-coded to `1`:
-
-```{r}
-#| label: mcmc-7
-#| eval: TRUE
-
-body(crmPack:::h_jags_extract_samples)
-```
-
-An appropriate modification is
+`h_jags_extract_samples` needs to be rewritten because the current version hard codes the chain index to 1.
 
 ```{r}
 #| label: mcmc-8
@@ -662,201 +825,64 @@ h_jags_extract_samples <- function(x) {
     }
   )
 }
-
-new_samples <- lapply(threeChains, h_jags_extract_samples)
-str(samples)
 ```
 
-The three chains are handled appropriately.
-
-The `Samples` constructor also fails with data in this new format, because the `data` slot is a `list` of `list`s rather than being a simple `list`:
+Now the `mcmc` method becomes:
 
 ```{r}
-#| label: mcmc-9
-#| eval: TRUE
-#| error: TRUE
-
-Samples(data = new_samples, options = .DefaultMcmcOptions())
-```
-
-Redefine the validation function for the `Samples` class to handle the new data format.
-
-> The revised function could be simplified by requiring the `data` to be a `list` of `list`s, even
-for a single chain.
-
-> For some reason, I can't get R to recognise the new validation algorithm, even if redefining the original `Samples` class.  Therefore, create a new equivalent class to handle the new data.
-
-```{r}
-#| label: define-validate
-#| eval: TRUE
-#| echo: FALSE
-
-# The Validate class needs to be defined in the Quarto document.  Perhaps because it's not exported from `crmPack`?
-Validate <- setRefClass(
-  Class = "Validate",
-  fields = list(msg = "character"),
-  methods = list(
-    check = function(test, string = "") {
-      "Check whether the \\code{test} is \\code{TRUE}; if so, return \\code{NULL}.
-      Otherwise, add the \\code{string} message into the cumulative messages vector \\code{msg}."
-      assert_flag(test)
-      assert_string(string)
-      if (test) {
-        NULL
-      } else {
-        msg <<- c(msg, string)
-      }
-    },
-    result = function() {
-      "Return either cumulative messages vector \\code{msg}
-      (which contains the error messages from all the checks),
-      or \\code{NULL}, if \\code{msg} is empty (i.e. all the checks were successful)."
-      if (length(msg) > 0) {
-        msg
-      } else {
-        TRUE
-      }
-    }
-  )
-)
-```
-
-```{r}
-#| label: mcmc-10
-#| eval: TRUE
-#| 
-v_new_samples <- function(object) {
-  v <- Validate()
-  if (any(sapply(object@data, is.list))) {
-    sapply(
-      names(object@data),
-      function(nm) {
-        sapply(
-          seq_len(length(object@data[[nm]])),
-          function(i) {
-            v$check(
-              NROW(object@data[[nm]][[i]]) == (object@options@iterations - object@options@burnin) / object@options@step,
-              paste0(
-                "Every element in data@", 
-                nm, 
-                "[chain [", 
-                i ,
-                "] must be of the same length (no. of rows) as the original chain"              )
-            )
-            v$check(
-              test_numeric(object@data[[nm]][[i]], finite = TRUE, any.missing = FALSE),
-              paste0("Every element in data@", nm, "[chain ", i ,"] must be a finite object of type integer or double")
-            )
-          }
-        )
-      }
-    )
-  } else {print("Checking current format")
-    v$check(
-      all(sapply(object@data, NROW) == size(object@options)),
-      "Every element in data must be of the same length (no. of rows) as the sample size was"
-    )
-    v$check(
-      all(sapply(object@data, test_numeric, finite = TRUE, any.missing = FALSE)),
-      "Every element in data must be a finite object of type integer or double"
-    )
-  }
-  v$result()
-}
-
-.NewSamples <- setClass(
-  Class = "NewSamples",
-  slots = c(
-    data = "list",
-    options = "McmcOptions"
-  ),
-  prototype = prototype(
-    data = list(),
-    options = McmcOptions()
-  ),
-  contains = "CrmPackClass",
-  validity = v_new_samples
-)
-
-NewSamples <- function(data, options) {
-  new("NewSamples", data = data, options = options)
-}
-
-samples <- NewSamples(data = new_samples, options = .DefaultMcmcOptions())
-str(samples)
-```
-
-All looks good.  Making the obvious changes to the lst two lines of the `mcmc` method (not shown), we now have:
-
-```{r}
-#| label: mcmc-11
-#| eval: TRUE
-#| echo: FALSE
-#| include: FALSE
+#| label: mcmc-2a
+#| echo: TRUE
 
 setMethod(
   f = "mcmc",
   signature = signature(
     data = "GeneralData",
     model = "GeneralModel",
-    options = "missing",
-    initialiser = "ChainInitialiser"
+    options = "ANY"
   ),
   def = function(data,
                  model,
-                 options = NULL,
-                 initialiser = LegacyChainInitialiser(),
+                 options,
                  from_prior = data@nObs == 0L,
                  ...) {
     assert_flag(from_prior)
-    
-    inits <- initialise(initialiser, model)
-    
-    # Start of potential helper function: code from here is probably shared
-    # with the existing method
+    options <- h_ensure_new_style_initialisation(options, model)
     model_fun <- if (from_prior) {
       model@priormodel
     } else {
       h_jags_join_models(model@datamodel, model@priormodel)
     }
-    
+
     model_file <- h_jags_write_model(model_fun)
-    model_data <- h_jags_get_data(model, data, from_prior)
-    
-    #Temporary hacks
-    n.iter <- inits[[1]]$n.iter
-    thin <- inits[[1]]$thin
-    inits <- lapply(
-      inits,
-      function(i) {
-        i[["n.iter"]] <- NULL
-        i[["burnin"]] <- NULL
-        i[["thin"]] <- NULL
-        i
+    local_options <- initialise(options, model)
+    init_list <- lapply(
+      local_options@options_list, 
+      function(z) {
+        rv <- z@model_init
+        rv$.RNG.name <- h_null_if_na(z@rng_name)
+        rv$.RNG.seed <- h_null_if_na(z@rng_seed)
+        rv
       }
     )
- 
+    model_data <- h_jags_get_data(model, data, from_prior)
     jags_model <- rjags::jags.model(
       file = model_file,
       data = model_data,
-      inits = inits,
+      inits = init_list,
       quiet = !is_logging_enabled(),
       n.adapt = 0, # No adaptation. Important for reproducibility.
-      n.chains = length(initialiser@options_list)
+      n.chains = length(local_options@options_list)
     )
-    update(jags_model, n.iter = n.iter, progress.bar = "none")
-    
+    update(jags_model, n.iter = local_options@burnin, progress.bar = "none")
     # This is necessary as some outputs are written directly from the JAGS
-    # compiled code to the output stream.
+    # compiled code to the outstream.
     log_trace("Running rjags::jags.samples")
-    
     if (is_logging_enabled()) {
       jags_samples <- rjags::jags.samples(
         model = jags_model,
         variable.names = model@sample,
-        n.iter = n.iter,
-        thin = thin,
-        n.chains = length(initialiser@options_list)
+        n.iter = (local_options@samples - local_options@burnin),
+        thin = local_options@step
       )
     } else {
       invisible(
@@ -864,42 +890,45 @@ setMethod(
           jags_samples <- rjags::jags.samples(
             model = jags_model,
             variable.names = model@sample,
-            n.iter = n.iter,
-            thin = thin,
-            progress.bar = "none",
-            n.chains = length(initialiser@options_list)
+            n.iter = (local_options@samples - local_options@burnin),
+            thin = local_options@step,
+            progress.bar = "none"
           )
         )
       )
     }
     log_trace("JAGS samples: ", jags_samples, capture = TRUE)
     samples <- lapply(jags_samples, h_jags_extract_samples)
-    # Hack until new format of McmcOptions is agreed
-    tmp <- .DefaultMcmcOptions()
-    NewSamples(
-      data = samples, 
-      options = McmcOptions(
-        burnin = tmp@burnin,
-        step = tmp@step,
-        samples = (tmp@iterations - tmp@burnin) / tmp@step
-      )
-    )
+    NewSamples(data = samples, options = local_options)
   }
 )
 ```
 
+#### Using `McmcOptions`
+
+With the exception of the deprecation warning, calls using `McmcOptions` work exactly as they do at the moment.
+
 ```{r}
-#| label: mcmc-12
-#| eval: TRUE
+#| label: mcmc-3
+#|echo: TRUE
 
-oneChain <- mcmc(emptyData, myModel, initialiser = LegacyChainInitialiser())
+oneChain <- mcmc(emptyData, myModel, .DefaultMcmcOptions())
 str(oneChain)
-
-threeChains <- mcmc(emptyData, myModel, initialiser = LegacyChainInitialiser(3))
-str(threeChains)
 ```
 
-Again, all looks good.
+#### Using `ChainOptions`
+
+For example:
+
+```{r}
+#| label: mcmc-5
+#| eval: TRUE
+#| error: TRUE
+
+threeChains <- mcmc(emptyData, myModel, options = LegacyChainOptions(3))
+
+str(threeChains)
+```
 
 ### `get-NewSamples` and `tidy-NewSamples`
 
@@ -910,7 +939,7 @@ I will take these out of order because they will simplify presentation and valid
 ```{r}
 #| label: get-NewSamples
 #| eval: TRUE
-#| error: FALSE
+#| error: TRUE
 
 setMethod("get",
   signature =
@@ -986,7 +1015,7 @@ setMethod("get",
           ret <- structure(ret,
             nChains = as.integer(length(x@data)),
             nParameters = nPars,
-            nIterations = x@options@iterations,
+            nIterations = x@options@samples,
             nBurnin = x@options@burnin,
             nThin = x@options@step,
             description = elements,
@@ -998,21 +1027,66 @@ setMethod("get",
     }
 )
 
-threeChains <- mcmc(emptyData, myModel, initialiser = LegacyChainInitialiser(3))
 alpha0 <- threeChains %>% get("alpha0")
+
+as_tibble(alpha0)
 
 alpha0 %>% 
   group_by(Chain) %>% 
-  group_walk(function(.x, .y) print(.x %>% head()), .keep = TRUE)
+  group_walk(
+    function(.x, .y) print(.x %>% head()),
+    .keep = TRUE
+  )
 ```
 
+This appears to work as expected.
+
 #### `tidy-NewSamples`
+
+First, we need `tidy` methods for `RNGOptions` and `ChainOptions`.
+
+#### `tidy-RNGOptions`
+
+```{r}
+#| label: tidy-NewRNGOptions
+#| eval: TRUE
+#| error: TRUE
+
+setMethod(
+  f = "tidy",
+  signature = signature(x = "RNGOptions"),
+  definition = function(x, ...) {
+    tibble(
+      model_init = list(x@model_init),
+      rng_name = x@rng_name,
+      rng_seed = x@rng_seed,
+      initialised = x@initialised
+    )
+  }
+)
+
+tidy(NewRNGOptions())
+```
+
+#### `tidy-ChainOptions`
+
+```{r}
+#| label: tidy-ChainOptions
+#| eval: TRUE
+#| error: TRUE
+
+# TODO
+
+knit_exit()
+
+```
+
+Now we can proceed.
 
 ```{r}
 #| label: tidy-NewSamples
 #| eval: TRUE
 #| error: TRUE
-
 
 setMethod(
   f = "tidy",
