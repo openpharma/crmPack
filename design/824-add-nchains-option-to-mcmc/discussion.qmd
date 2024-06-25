@@ -76,7 +76,7 @@ values for the MCMC chain(s). For example, this is the `init` slot for `Logistic
 #| eval: FALSE
 #| label: example-init-slot
 
-init = function() {
+init <- function() {
   list(theta = c(0, 1))
 }
 ```
@@ -167,7 +167,7 @@ other slots of the same `Model` object. As explained earlier, this is awkward, f
 
 model@init <- function(n = 1, aModel) {
   lapply(
-    seq_len(n), 
+    seq_len(n),
     function(i, mu, var) {
       x <- as.vector(rmvnorm(1, mu, var))
       list("theta" = x)
@@ -226,7 +226,7 @@ v_rng_options <- function(object) {
     "base::Mersenne-Twister",
     NA_character_
   )
-  
+
   is_rng_kind_scalar <- test_string(object@rng_name, na.ok = TRUE)
   v$check(is_rng_kind_scalar, "rng_name must be a single string")
   v$check(
@@ -237,10 +237,10 @@ v_rng_options <- function(object) {
       ". User specifies the rng_name without `base::` prefix"
     )
   )
-  
+
   is_rng_seed_scalar <- test_int(object@rng_seed, na.ok = TRUE)
   v$check(is_rng_seed_scalar, "rng_seed must be an integer scalar")
-  
+
   # Below `if` condition is not only reasonable but also needed as R CMD check
   # is activating some stricter checks and it fails when arguments to `||` are
   # not scalars, even if `||` works well with vectors of length > 1.
@@ -250,7 +250,7 @@ v_rng_options <- function(object) {
       "rng_seed supplied but rng_kind not set"
     )
   }
-  v$result()  
+  v$result()
 }
 
 .RNGOptions <- setClass(
@@ -275,7 +275,7 @@ v_rng_options <- function(object) {
 RNGOptions <- function(name = NA_character_, seed = NA_integer_) {
   .RNGOptions(
     rng_name = ifelse(is.na(name), NA_character_, paste0("base::", name)),
-    rng_seed = seed, 
+    rng_seed = seed,
     model_init = list()
   )
 }
@@ -307,7 +307,7 @@ h_prepare_mcmcoptions_list <- function(n, options) {
   assert_list(options, any.missing = FALSE)
   for (opt in options) {
     assert_class(opt, "RNGOptions")
-  } 
+  }
   options
 }
 
@@ -360,12 +360,11 @@ v_chain_options <- function(object) {
 
 ## constructor ----
 ChainOptions <- function(
-    burnin = 1E4L, 
-    step = 2L, 
-    samples = 1E4L, 
-    n_chains = 1, 
-    options = NULL
-  ) {
+    burnin = 1E4L,
+    step = 2L,
+    samples = 1E4L,
+    n_chains = 1,
+    options = NULL) {
   options <- h_prepare_mcmcoptions_list(n_chains, options)
   .ChainOptions(options_list = options)
 }
@@ -464,8 +463,6 @@ setGeneric(
   },
   valueClass = "ChainOptions"
 )
-
-
 ```
 
 Since the parent class does nothing, prevent its use - and provide a useful aide-memoire to
@@ -502,7 +499,7 @@ setMethod(
     model_init <- model@init()
     names(model_init) <- names(model@init())
     for (i in seq_len(length(opts@options_list))) {
-      opts@options_list[[i]]@model_init  <- model_init
+      opts@options_list[[i]]@model_init <- model_init
       opts@options_list[[i]]@initialised <- TRUE
     }
     opts
@@ -538,7 +535,7 @@ setMethod(
   definition = function(opts, model, ...) {
     param_names <- names(model@init())
     opts@options_list <- lapply(
-      opts@options_list, 
+      opts@options_list,
       function(z) {
         tmp <- mvtnorm::rmvnorm(1, model@params@mean, model@params@cov)[1, ]
         model_init <- list()
@@ -557,7 +554,6 @@ opts3 <- initialise(RandomChainOptions(n_chains = 3), .DefaultLogisticLogNormal(
 for (i in opts3@options_list) {
   print(paste0(names(i@model_init), ": ", paste0(i@model_init, collapse = " ")))
 }
-
 ```
 
 ### Other `ChainOptions` classes
@@ -728,15 +724,16 @@ v_new_samples <- function(object) {
                 "Every element in data@",
                 nm,
                 "[chain [",
-                i ,
-                "] must be of the same length (no. of rows) as the original chain"              )
+                i,
+                "] must be of the same length (no. of rows) as the original chain"
+              )
             )
             v$check(
               test_numeric(x[[i]], finite = TRUE, any.missing = FALSE),
-              paste0("Every element in data@", nm, "[chain ", i ,"] must be a finite object of type integer or double")
+              paste0("Every element in data@", nm, "[chain ", i, "] must be a finite object of type integer or double")
             )
           }
-        )       
+        )
       } else {
         expected <- dim(x)["iteration"]
         if (is.null(expected)) {
@@ -749,7 +746,7 @@ v_new_samples <- function(object) {
         v$check(
           all(sapply(object@data, test_numeric, finite = TRUE, any.missing = FALSE)),
           "Every element in data must be a finite object of type integer or double"
-        )        
+        )
       }
     }
   )
@@ -786,7 +783,7 @@ jags_model <- rjags::jags.model(
   data = h_jags_get_data(myModel, emptyData, TRUE),
   inits = list(theta = c(0, 1)),
   n.adapt = 0
-  )
+)
 jags_samples <- rjags::jags.samples(
   model = jags_model,
   variable.names = myModel@sample,
@@ -826,7 +823,7 @@ jags_model <- rjags::jags.model(
   ),
   n.chains = 3,
   n.adapt = 0
-  )
+)
 jags_samples <- rjags::jags.samples(
   model = jags_model,
   variable.names = myModel@sample,
@@ -853,7 +850,7 @@ index to 1.
 
 h_jags_extract_samples <- function(x) {
   assert_class(x, "mcarray")
-  
+
   lapply(
     seq_len(dim(x)[3]),
     function(i) {
@@ -897,7 +894,7 @@ setMethod(
     model_file <- h_jags_write_model(model_fun)
     local_options <- initialise(options, model)
     init_list <- lapply(
-      local_options@options_list, 
+      local_options@options_list,
       function(z) {
         rv <- z@model_init
         rv$.RNG.name <- h_null_if_na(z@rng_name)
@@ -1049,7 +1046,7 @@ setMethod("get",
             Iteration = seq_len(NROW(d)),
             Parameter =
               factor(rep(elements, each = NROW(d)),
-               levels = elements
+                levels = elements
               ),
             value = as.numeric(d)
           )
@@ -1074,8 +1071,8 @@ alpha0 <- threeChains %>% get("alpha0")
 
 as_tibble(alpha0)
 
-alpha0 %>% 
-  group_by(Chain) %>% 
+alpha0 %>%
+  group_by(Chain) %>%
   group_walk(
     function(.x, .y) print(.x %>% head()),
     .keep = TRUE
@@ -1127,16 +1124,17 @@ setMethod(
       step = x@step,
       samples = x@samples
     ) %>%
-    dplyr::bind_rows(
-      lapply(
-        seq_len(length(x@options_list)), 
-        function(i) tidy(x@options_list[[i]]) %>% tibble::add_column(Chain = i) 
-      )
-    ) %>% crmPack:::h_tidy_class(x)
+      dplyr::bind_rows(
+        lapply(
+          seq_len(length(x@options_list)),
+          function(i) tidy(x@options_list[[i]]) %>% tibble::add_column(Chain = i)
+        )
+      ) %>%
+      crmPack:::h_tidy_class(x)
   }
 )
 
-LegacyChainOptions(3) %>%  tidy()
+LegacyChainOptions(3) %>% tidy()
 ```
 
 Now we can proceed.
