@@ -52,8 +52,11 @@ Validate <- setRefClass(
 
 # Questions
 
-- Why does `McmcOptions` treat `burnin` and `n.iter` differently to JAGS?  `mcmc` sets the JAGS `n.iter` option to `McmcOptions` `iterations - burnin`.
-- Should we consider modifying `h_jags_write_model` to use return a string rather than a temporary file?  `jags_model` could then use `textConnection`, which removes any interaction with the file system.
+-   Why does `McmcOptions` treat `burnin` and `n.iter` differently to JAGS? `mcmc` sets the JAGS
+    `n.iter` option to `McmcOptions` `iterations - burnin`.
+-   Should we consider modifying `h_jags_write_model` to use return a string rather than a temporary
+    file? `jags_model` could then use `textConnection`, which removes any interaction with the file
+    system.
 
 # Background
 
@@ -78,14 +81,25 @@ init = function() {
 }
 ```
 
-Clearly, what values can be considered extreme depend on the prior distribution of the model. These are provided elsewhere in the model object.  (For example in the `params` slot of `ModelLogNormal`.) This is where our difficulties deepen:
+Clearly, what values can be considered extreme depend on the prior distribution of the model. These
+are provided elsewhere in the model object. (For example in the `params` slot of `ModelLogNormal`.)
+This is where our difficulties deepen:
 
-> There is no direct way for a slot of an S4 object to access the value in another slot *of the same object*.
+> There is no direct way for a slot of an S4 object to access the value in another slot *of the same
+> object*.
 
 ## Is there a need for an `n.chains` argument to `mcmc`?
-An `n.chains` argument to `mcmc` might be useful, but I don't believe it is necessary.  My reason for saying so is the way in which chains are initialised in JAGS.  When using a single chain, users simply supply a `list` containing the necessary information to initialise the chain.  To use multiple chains, the user supplies a `list` of such `list`s and sets `n.chains` to the length of the outer `list`. It would be a simple matter for `crmPack` to set `n.chains` for `jags.model` on the basis of the length of the list of user supplied `inits`.
 
-Of course, if the user wanted `crmPack` to automate the creation of the model `inits`, then `n.chains` would be useful.  However, as I shall demonstrate later in this document, I think there are better ways to do this.
+An `n.chains` argument to `mcmc` might be useful, but I don't believe it is necessary. My reason for
+saying so is the way in which chains are initialised in JAGS. When using a single chain, users
+simply supply a `list` containing the necessary information to initialise the chain. To use multiple
+chains, the user supplies a `list` of such `list`s and sets `n.chains` to the length of the outer
+`list`. It would be a simple matter for `crmPack` to set `n.chains` for `jags.model` on the basis of
+the length of the list of user supplied `inits`.
+
+Of course, if the user wanted `crmPack` to automate the creation of the model `inits`, then
+`n.chains` would be useful. However, as I shall demonstrate later in this document, I think there
+are better ways to do this.
 
 ```{r}
 #| label: list-of-lists-demo
@@ -121,9 +135,11 @@ samples <- rjags::jags.samples(
 samples
 ```
 
-
 # Simplistic support for multiple chains
-By modifying the function` in a `Model`'s `init` slot to take a parameter that defines the number of chains required, multiple `inits` can be easily supported without breaking existing code:
+
+By modifying the
+function`in a`Model`'s`init`slot to take a parameter that defines the number of chains required, multiple`inits\`
+can be easily supported without breaking existing code:
 
 ```{r}
 #| label: simple-inits-1
@@ -141,7 +157,9 @@ model@init()
 model@init(3)
 ```
 
-But this simply produces the same starting values for every chain.  As explained above, this is sub-optimal.  Different starting values for different chains are possible, but need reference to other slots of the same `Model` object.  As explained earlier, this is awkward, fragile and horrible:
+But this simply produces the same starting values for every chain. As explained above, this is
+sub-optimal. Different starting values for different chains are possible, but need reference to
+other slots of the same `Model` object. As explained earlier, this is awkward, fragile and horrible:
 
 ```{r}
 #| label: simple-inits-2
@@ -162,26 +180,38 @@ model@init <- function(n = 1, aModel) {
 model@init(3, model)
 ```
 
-# An intermediate route to support multipe MCMC chains 
+# An intermediate route to support multipe MCMC chains
 
-- Create a new class, `McmcOptionsList`, which simply contains a `list` of `McmcOptions`
-- Modify the signature of the `mcmc` generic so that `options = ANY`.
-- For each existing `mcmc` method, define a sibling with signature `options = "McmcOptionsList" that simply iterates over the current method and then binds the results together
+-   Create a new class, `McmcOptionsList`, which simply contains a `list` of `McmcOptions`
+-   Modify the signature of the `mcmc` generic so that `options = ANY`.
+-   For each existing `mcmc` method, define a sibling with signature \`options = "McmcOptionsList"
+    that simply iterates over the current method and then binds the results together
 
-This option does not allow different initial values for each chain in the list.  I don't believe this is sufficient.
+This option does not allow different initial values for each chain in the list. I don't believe this
+is sufficient.
 
 # A comprehensive, flexible and reliable method of setting initial MCMC chain states
-To allow maximum flexibility - and to provide end users to implement their own initialisation strategy - create a new class.  The parent class does nothing beyond providing a placeholder.  Actual implementation is handled in child classes.  It will also be helpful to create a helper function to provide common functionality.
+
+To allow maximum flexibility - and to provide end users to implement their own initialisation
+strategy - create a new class. The parent class does nothing beyond providing a placeholder. Actual
+implementation is handled in child classes. It will also be helpful to create a helper function to
+provide common functionality.
 
 ## Separation of chain-level and simulation-level parameters
 
-Some JAGS parameters affect only a single chain, others the entire call to the simulation function.  Since `crmPack` currently supports use of only a single chain, these two types of setting are conflated in `McmcOptions`.  For clarity, separate them into different classes.
+Some JAGS parameters affect only a single chain, others the entire call to the simulation function.
+Since `crmPack` currently supports use of only a single chain, these two types of setting are
+conflated in `McmcOptions`. For clarity, separate them into different classes.
 
 ### Chain-level JAGS parameters
 
-These essentially control a single pseudo-random number generator.  Here, `model_init` is the slot that contains the value retuned by `model@init()`, which would normally be set by the `initialise(chainOptions, model)` method.
+These essentially control a single pseudo-random number generator. Here, `model_init` is the slot
+that contains the value retuned by `model@init()`, which would normally be set by the
+`initialise(chainOptions, model)` method.
 
->  Does the `initialised` slot fit better here or in `ChainOptions`?  Or is it even needed?  [It's difficult to imagine a situation in which some `RNGOptions` elements of a `ChainOptions`'s `option_list` slot are initialised and others aren't...]
+> Does the `initialised` slot fit better here or in `ChainOptions`? Or is it even needed? \[It's
+> difficult to imagine a situation in which some `RNGOptions` elements of a `ChainOptions`'s
+> `option_list` slot are initialised and others aren't...\]
 
 ```{r}
 #| label: prng-1
@@ -418,7 +448,9 @@ RandomChainOptions(2)
 
 ## New style initialisation
 
-Provide an initialisation method.  By separating the method from the class, we allow access to the option object's slots, which is helpful - not least because it allows us (and end users) to implement new functionality in the future without having to change the existing code base.  
+Provide an initialisation method. By separating the method from the class, we allow access to the
+option object's slots, which is helpful - not least because it allows us (and end users) to
+implement new functionality in the future without having to change the existing code base.
 
 ```{r}
 #| label: initialiser-5
@@ -436,7 +468,8 @@ setGeneric(
 
 ```
 
-Since the parent class does nothing, prevent its use - and provide a useful aide-memoire to developers.
+Since the parent class does nothing, prevent its use - and provide a useful aide-memoire to
+developers.
 
 ```{r}
 #| label: initialiser-5a
@@ -531,19 +564,23 @@ for (i in opts3@options_list) {
 
 Other `ChainOptions` might include
 
-- `QuantileChainOptions`: starting values are chosen on the basis of equally-spaced quantiles of the prior
-- `UserDefinedChainOptions`: user-defined starting values
-- Etc
+-   `QuantileChainOptions`: starting values are chosen on the basis of equally-spaced quantiles of
+    the prior
+-   `UserDefinedChainOptions`: user-defined starting values
+-   Etc
 
-Now we have the infrastructure, we can start to use it, keeping in mind the need to avoid breaking changes.
+Now we have the infrastructure, we can start to use it, keeping in mind the need to avoid breaking
+changes.
 
 ## Modify the `mcmc` method
 
 ### Modified generic
 
-> In what follows, I've temporarily removed value class checking to allow flexibility whilst adapting the `Samples` class to support multiple chains 
+> In what follows, I've temporarily removed value class checking to allow flexibility whilst
+> adapting the `Samples` class to support multiple chains
 
-We need to modify the signature of `mcmc`, remembering the need to avoid breaking changes.  We could write:
+We need to modify the signature of `mcmc`, remembering the need to avoid breaking changes. We could
+write:
 
 #### Option 1
 
@@ -562,7 +599,8 @@ setGeneric(
 )
 ```
 
-This separates the existing and new methodology, but allows the possibility of conflict between the `options` and `initialiser` arguments.  So, ideally, we'd also need a new stub.
+This separates the existing and new methodology, but allows the possibility of conflict between the
+`options` and `initialiser` arguments. So, ideally, we'd also need a new stub.
 
 ```{r}
 #| label: mcmc-1a
@@ -639,7 +677,8 @@ setMethod(
 )
 ```
 
-This removes the need for a stub to check if both `initialiser` and `options` are specified.  I prefer this option.
+This removes the need for a stub to check if both `initialiser` and `options` are specified. I
+prefer this option.
 
 ```{r}
 #| label: mcmc-1c
@@ -666,7 +705,8 @@ h_ensure_new_style_initialisation <- function(opts, model) {
 
 ### The `NewSamples` class
 
-The `options` slot of the `Samples` class requires its value to be an `McmcOptions` class.  This will need to change.  As a temporary workaround, define a `NewSamples` class.
+The `options` slot of the `Samples` class requires its value to be an `McmcOptions` class. This will
+need to change. As a temporary workaround, define a `NewSamples` class.
 
 ```{r}
 #| label: new-samples-1
@@ -760,8 +800,8 @@ str(oneChain)
 
 All looks good.
 
-> The validation function for `NewSamples` could be simplified by requiring the `data` to be a `list` of `list`s, even
-for a single chain.
+> The validation function for `NewSamples` could be simplified by requiring the `data` to be a
+> `list` of `list`s, even for a single chain.
 
 What about multiple chains?
 
@@ -802,9 +842,10 @@ That looks OK too.
 
 ### Modifying the `mcmc` method
 
-#### Modify the `h_jags_extract_samples
+#### Modify the \`h_jags_extract_samples
 
-`h_jags_extract_samples` needs to be rewritten because the current version hard codes the chain index to 1.
+`h_jags_extract_samples` needs to be rewritten because the current version hard codes the chain
+index to 1.
 
 ```{r}
 #| label: mcmc-8
@@ -906,7 +947,8 @@ setMethod(
 
 #### Using `McmcOptions`
 
-With the exception of the deprecation warning, calls using `McmcOptions` work exactly as they do at the moment.
+With the exception of the deprecation warning, calls using `McmcOptions` work exactly as they do at
+the moment.
 
 ```{r}
 #| label: mcmc-3
@@ -932,7 +974,8 @@ str(threeChains)
 
 ### `get-NewSamples` and `tidy-NewSamples`
 
-I will take these out of order because they will simplify presentation and validation in later sections.
+I will take these out of order because they will simplify presentation and validation in later
+sections.
 
 #### `get-NewSamples`
 
@@ -1138,25 +1181,24 @@ setMethod(
 threeChains %>% tidy()
 ```
 
-
-
 # Downstream adaptations
 
-The following methods and classes reference the Samples class and are not discussed above.  They may need modification.  There are probably more.
+The following methods and classes reference the `Samples` class and are not discussed above. They
+may need modification. There are probably more.
 
-- `Design-simulate`
-- `Model-dose`
-- `Model-prob`
-- `Model-efficacy`
-- `Model-biomarker`
-- `NextBest-nextBest`
-- `NextBest-stopTrial`
-- `Samples-approximate`
-- `Samples-fit`
-- `Samples-fitGain`
-- `Samples-fitPEM`
-- `Samples-names`
-- `Samples-plot`
-- `Samples-plotGain`
-- `Samples-plotDualResponses`
-- `Samples-size`
+-   `Design-simulate`
+-   `Model-dose`
+-   `Model-prob`
+-   `Model-efficacy`
+-   `Model-biomarker`
+-   `NextBest-nextBest`
+-   `NextBest-stopTrial`
+-   `Samples-approximate`
+-   `Samples-fit`
+-   `Samples-fitGain`
+-   `Samples-fitPEM`
+-   `Samples-names`
+-   `Samples-plot`
+-   `Samples-plotGain`
+-   `Samples-plotDualResponses`
+-   `Samples-size`
