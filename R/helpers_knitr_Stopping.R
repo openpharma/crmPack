@@ -60,6 +60,9 @@ knit_print.StoppingMaxGainCIRatio <- function(
 #' @description `r lifecycle::badge("experimental")`
 #' @inheritParams knit_print.StoppingTargetProb
 #' @param preamble (`character`)\cr the text that introduces the list of rules
+#' @param indent (`integer`)\cr the indent level of the current stoppling rule
+#'   list. Spaces with length `indent * 4` will be padded to the beginning of
+#'   the rendered stopping rule list.
 #' @rdname knit_print
 #' @export
 #' @method knit_print StoppingList
@@ -67,16 +70,21 @@ knit_print.StoppingList <- function(
     x,
     ...,
     preamble = "If the result of applying the summary function to the following rules is `TRUE`:\n",
+    indent = 0L,
     asis = TRUE) {
   assert_flag(asis)
   assert_character(preamble, len = 1, any.missing = FALSE)
+  assert_integer(indent, lower = 0)
 
   rules_list <- paste0(
     lapply(
       x@stop_list,
-      function(z) {
-        paste0("-  ", knit_print(z, asis = FALSE, ...))
-      }
+      function(z, indent) {
+        paste0(
+          strrep(" ", indent * 4),
+          "-  ", knit_print(z, asis = FALSE, indent = indent + 1L, ...))
+      },
+      indent = indent
     ),
     collapse = "\n"
   )
@@ -105,6 +113,7 @@ knit_print.StoppingAny <- function(
     x,
     ...,
     preamble = "If any of the following rules are `TRUE`:\n",
+    indent = 0L,
     asis = TRUE) {
   knit_print.StoppingList(x, ..., preamble = preamble, asis = asis)
 }
@@ -118,6 +127,7 @@ knit_print.StoppingAll <- function(
     x,
     ...,
     preamble = "If all of the following rules are `TRUE`:\n",
+    indent = 0L,
     asis = TRUE) {
   knit_print.StoppingList(x, ..., preamble = preamble, asis = asis)
 }

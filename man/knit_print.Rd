@@ -405,6 +405,7 @@
   ...,
   preamble =
     "If the result of applying the summary function to the following rules is `TRUE`:\\n",
+  indent = 0L,
   asis = TRUE
 )
 
@@ -412,6 +413,7 @@
   x,
   ...,
   preamble = "If any of the following rules are `TRUE`:\\n",
+  indent = 0L,
   asis = TRUE
 )
 
@@ -419,6 +421,7 @@
   x,
   ...,
   preamble = "If all of the following rules are `TRUE`:\\n",
+  indent = 0L,
   asis = TRUE
 )
 
@@ -577,6 +580,10 @@ See Usage Notes below.}
 
 \item{ordinals}{(\code{character})\cr a character vector whose nth defines the
 word used as the written representation of the nth ordinal number.}
+
+\item{indent}{(\code{integer})\cr the indent level of the current stoppling rule
+list. Spaces with length \code{indent * 4} will be padded to the beginning of
+the rendered stopping rule list.}
 
 \item{dose_label}{(\code{character})\cr the term used to describe the target dose}
 
