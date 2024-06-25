@@ -1061,11 +1061,11 @@ setMethod(
       rng_name = x@rng_name,
       rng_seed = x@rng_seed,
       initialised = x@initialised
-    )
+    ) %>% crmPack:::h_tidy_class(x)
   }
 )
 
-tidy(NewRNGOptions())
+tidy(RNGOptions())
 ```
 
 #### `tidy-ChainOptions`
@@ -1075,10 +1075,25 @@ tidy(NewRNGOptions())
 #| eval: TRUE
 #| error: TRUE
 
-# TODO
+setMethod(
+  f = "tidy",
+  signature = signature(x = "ChainOptions"),
+  definition = function(x, ...) {
+    tibble(
+      burnin = x@burnin,
+      step = x@step,
+      samples = x@samples
+    ) %>%
+    dplyr::bind_rows(
+      lapply(
+        seq_len(length(x@options_list)), 
+        function(i) tidy(x@options_list[[i]]) %>% tibble::add_column(Chain = i) 
+      )
+    ) %>% crmPack:::h_tidy_class(x)
+  }
+)
 
-knit_exit()
-
+LegacyChainOptions(3) %>%  tidy()
 ```
 
 Now we can proceed.
