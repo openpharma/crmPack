@@ -50,6 +50,27 @@ test_that("knit_print.StoppingAll works correctly", {
       "-  ≥ 20 patients dosed: If 20 or more participants have been treated.\n\n\n\n"
     )
   )
+
+  x@stop_list <- x@stop_list[1 : 2]
+  expect_equal(
+    knit_print(x, asis = FALSE),
+    paste0(
+      "If both of the following rules are `TRUE`:\n\n",
+      "-  ≥ 3 cohorts dosed: If 3 or more cohorts have been treated.\n\n\n",
+      "-  P(0.2 ≤ prob(DLE | NBD) ≤ 0.35) ≥ 0.5: If the probability of ",
+      "toxicity at the next best dose is in the range [0.20, 0.35] is at ",
+      "least 0.50.\n\n\n\n"
+    )
+  )
+
+  x@stop_list <- x@stop_list[1]
+  expect_equal(
+    knit_print(x, asis = FALSE),
+    paste0(
+      "If this following rule is `TRUE`:\n\n",
+      "-  ≥ 3 cohorts dosed: If 3 or more cohorts have been treated.\n\n\n\n"
+    )
+  )
 })
 
 test_that("knit_print.StoppingAny works correctly", {
@@ -78,6 +99,27 @@ test_that("knit_print.StoppingAny works correctly", {
       "-  ≥ 20 patients dosed: If 20 or more participants have been treated.\n\n\n\n"
     )
   )
+
+  x@stop_list <- x@stop_list[1 : 2]
+  expect_equal(
+    knit_print(x, asis = FALSE),
+    paste0(
+      "If either of the following rules are `TRUE`:\n\n",
+      "-  ≥ 3 cohorts dosed: If 3 or more cohorts have been treated.\n\n\n",
+      "-  P(0.2 ≤ prob(DLE | NBD) ≤ 0.35) ≥ 0.5: If the probability of ",
+      "toxicity at the next best dose is in the range [0.20, 0.35] is at ",
+      "least 0.50.\n\n\n\n"
+    )
+  )
+
+  x@stop_list <- x@stop_list[1]
+  expect_equal(
+    knit_print(x, asis = FALSE),
+    paste0(
+      "If this following rule is `TRUE`:\n\n",
+      "-  ≥ 3 cohorts dosed: If 3 or more cohorts have been treated.\n\n\n\n"
+    )
+  )
 })
 
 test_that("knit_print.StoppingList works correctly", {
@@ -95,6 +137,19 @@ test_that("knit_print.StoppingList works correctly", {
       "-  ≥ 20 patients dosed: If 20 or more participants have been treated.\n\n\n\n"
     )
   )
+  expect_equal(
+    knit_print(x, asis = FALSE, indent = 1L),
+    paste0(
+      "LIST: If the result of applying the summary function to the following ",
+      "rules is `TRUE`:\n\n",
+      "    -  ≥ 3 cohorts dosed: If 3 or more cohorts have been treated.\n\n\n",
+      "    -  P(0.2 ≤ prob(DLE | NBD) ≤ 0.35) ≥ 0.5: If the probability of ",
+      "toxicity at the next best dose is in the range [0.20, 0.35] is at ",
+      "least 0.50.\n\n\n",
+      "    -  ≥ 20 patients dosed: If 20 or more participants have been treated.\n\n\n\n"
+    )
+  )
+
   x@report_label <- NA_character_
   expect_equal(
     knit_print(x, asis = FALSE),
@@ -106,6 +161,28 @@ test_that("knit_print.StoppingList works correctly", {
       "toxicity at the next best dose is in the range [0.20, 0.35] is at ",
       "least 0.50.\n\n\n",
       "-  ≥ 20 patients dosed: If 20 or more participants have been treated.\n\n\n\n"
+    )
+  )
+  expect_equal(
+    knit_print(x, asis = FALSE, indent = 1L),
+    paste0(
+      "If the result of applying the summary function to the following ",
+      "rules is `TRUE`:\n\n",
+      "    -  ≥ 3 cohorts dosed: If 3 or more cohorts have been treated.\n\n\n",
+      "    -  P(0.2 ≤ prob(DLE | NBD) ≤ 0.35) ≥ 0.5: If the probability of ",
+      "toxicity at the next best dose is in the range [0.20, 0.35] is at ",
+      "least 0.50.\n\n\n",
+      "    -  ≥ 20 patients dosed: If 20 or more participants have been treated.\n\n\n\n"
+    )
+  )
+
+  x@stop_list <- x@stop_list[1]
+  expect_equal(
+    knit_print(x, asis = FALSE),
+    paste0(
+      "If the result of applying the summary function to the following ",
+      "rule is `TRUE`:\n\n",
+      "-  ≥ 3 cohorts dosed: If 3 or more cohorts have been treated.\n\n\n\n"
     )
   )
 })
