@@ -1210,7 +1210,7 @@ setMethod(
 LegacyChainOptions(3) %>% tidy()
 ```
 
-Now we can proceed.
+Now we can proceed...
 
 ```{r}
 #| label: tidy-NewSamples
