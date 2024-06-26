@@ -4,47 +4,69 @@
 \name{PseudoDualSimulations-class}
 \alias{PseudoDualSimulations-class}
 \alias{.PseudoDualSimulations}
+\alias{PseudoDualSimulations}
 \alias{.DefaultPseudoDualSimulations}
-\title{Class \code{PseudoDualSimulations}}
+\title{\code{PseudoDualSimulations}}
 \usage{
+PseudoDualSimulations(
+  fit_eff,
+  final_gstar_estimates,
+  final_gstar_at_dose_grid,
+  final_gstar_cis,
+  final_gstar_ratios,
+  final_optimal_dose,
+  final_optimal_dose_at_dose_grid,
+  sigma2_est,
+  ...
+)
+
 .DefaultPseudoDualSimulations()
 }
+\arguments{
+\item{fit_eff}{(\code{list})\cr see slot definition.}
+
+\item{final_gstar_estimates}{(\code{numeric})\cr see slot definition.}
+
+\item{final_gstar_at_dose_grid}{(\code{numeric})\cr see slot definition.}
+
+\item{final_gstar_cis}{(\code{list})\cr see slot definition.}
+
+\item{final_gstar_ratios}{(\code{numeric})\cr see slot definition.}
+
+\item{final_optimal_dose}{(\code{numeric})\cr see slot definition.}
+
+\item{final_optimal_dose_at_dose_grid}{(\code{numeric})\cr see slot definition.}
+
+\item{sigma2_est}{(\code{numeric})\cr see slot definition.}
+
+\item{\dots}{additional parameters from \code{\link{PseudoSimulations}}}
+}
 \description{
-This is a class which captures the trial simulations design using both the
-DLE and efficacy responses. The design of model from \code{\linkS4class{ModelTox}}
-class and the efficacy model from \code{\linkS4class{ModelEff}} class
-(except \code{\linkS4class{EffFlexi}} class). It contains all slots from
-\code{\linkS4class{GeneralSimulations}} and \code{\linkS4class{PseudoSimulations}} object.
-In comparison to the parent class \code{\linkS4class{PseudoSimulations}},
-it contains additional slots to
-capture the dose-efficacy curve and the sigma2 estimates.
+\ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#stable}{\figure{lifecycle-stable.svg}{options: alt='[Stable]'}}}{\strong{[Stable]}}
+This class conducts trial simulations for designs using both the
+DLE and efficacy responses. It defines final values for
+efficacy fit and DLE, estimates of Gstar, optimal dose and sigma2.
 }
 \section{Slots}{
 
 \describe{
-\item{\code{fitEff}}{list of the final values. If DLE and efficacy samples are generated, it contains the
-final fitted values. If no DLE and efficacy samples are used, it contains the modal estimates of the
-parameters in the two models and the posterior estimates of the probabilities of the occurrence of a
-DLE and the expected efficacy responses.}
+\item{\code{fit_eff}}{(\code{list})\cr final values of efficacy fit.}
 
-\item{\code{FinalGstarEstimates}}{a vector of the final estimates of Gstar at the end of each simulations.}
+\item{\code{final_gstar_estimates}}{(\code{numeric})\cr final Gstar estimates.}
 
-\item{\code{FinalGstarAtDoseGrid}}{is a vector of the final estimates of Gstar at dose Grid at the end of each simulations}
+\item{\code{final_gstar_at_dose_grid}}{(\code{numeric})\cr final Gstar estimates at dose grid.}
 
-\item{\code{FinalGstarCIs}}{is the list of all 95\% credibility interval of the final estimates of Gstar}
+\item{\code{final_gstar_cis}}{(\code{list})\cr list of 95\% confidence interval for Gstar estimates.}
 
-\item{\code{FinalGstarRatios}}{is the vector of the ratios of the CI, the ratio of the upper to the lower 95\% credibility interval
-of the final estimates of Gstar}
+\item{\code{final_gstar_ratios}}{(\code{numeric})\cr ratios of confidence intervals for Gstar estimates.}
 
-\item{\code{FinalOptimalDose}}{is the vector of the final optimal dose, the minimum of the final TDtargetEndOfTrial estimates and Gstar
-estimates}
+\item{\code{final_optimal_dose}}{(\code{numeric})\cr final optimal dose.}
 
-\item{\code{FinalOptimalDoseAtDoseGrid}}{is the vector of the final optimal dose, the minimum of the final TDtargetEndOfTrial estimates
-and Gstar estimates at dose Grid}
+\item{\code{final_optimal_dose_at_dose_grid}}{(\code{numeric})\cr final optimal dose at dose grid.}
 
-\item{\code{sigma2est}}{the vector of the final posterior mean sigma2 estimates}
+\item{\code{sigma2_est}}{(\code{numeric})\cr final sigma2 estimates.}
 }}
 
 \note{
-Typically, end users will not use the \code{.DefaultPseudoDualSimulations()} function.
+Do not use the \code{.DefaultPseudoDualSimulations()} function.
 }

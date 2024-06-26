@@ -27,7 +27,8 @@ This short vignette shall introduce into the usage of the package
 `crmPack`. Hopefully it makes it easy for you to set up your own CRM.
 
 If you have any questions or feedback concerning the package, please write an
-email to the package maintainer: [sabanesd@roche.com](mailto:sabanesd@roche.com).
+email to the package maintainer:
+[daniel.sabanes_bove@rconis.com](mailto:daniel.sabanes_bove@rconis.com).
 
 Thank you very much in advance!
 

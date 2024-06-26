@@ -274,7 +274,7 @@ test_that("DualSimulationsSummary generator function works as expected", {
   expect_valid(result, "DualSimulations")
 })
 
-# PseudoSimulations-class
+# PseudoSimulations-class ----
 test_that("PseudoSimulations generator function works as expected", {
   result <- expect_silent(.PseudoSimulations())
   expect_valid(result, "PseudoSimulations")
@@ -366,5 +366,116 @@ test_that(".DefaultPseudoSimulations cannot be instantiated directly", {
   expect_error(.DefaultPseudoSimulations(),
     "Class PseudoSimulations cannot be instantiated directly. Please use one of its subclasses instead.",
     fixed = FALSE
+  )
+})
+
+# PseudoDualSimulations-class ----
+test_that("PseudoDualSimulations generator does not throw error and validates", {
+  result <- expect_silent(.PseudoDualSimulations())
+  expect_valid(result, "PseudoDualSimulations")
+})
+
+test_that("PseudoDualSimulations object can be created with the user constructor", {
+  fit <- list(c(0.1, 0.2), c(0.3, 0.4))
+
+  fit_eff <- list(
+    c(0.1, 0.2),
+    c(0.3, 0.4)
+  )
+
+  final_gstar_estimates <- c(0.05, 0.06)
+  final_gstar_at_dose_grid <- c(0.07, 0.08)
+  final_gstar_cis <- list(
+    c(0.1, 0.2),
+    c(0.2, 0.3)
+  )
+  final_gstar_ratios <- c(0.2, 0.2)
+  final_optimal_dose <- c(1, 2)
+  final_optimal_dose_at_dose_grid <- c(3, 4)
+  sigma2_est <- c(0.001, 0.002)
+
+  final_td_target_during_trial_estimates <- c(0.1, 0.2)
+  final_td_target_end_of_trial_estimates <- c(0.1, 0.2)
+
+  final_td_target_during_trial_at_dose_grid <- c(0.1, 0.2)
+  final_td_target_end_of_trial_at_dose_grid <- c(0.1, 0.2)
+
+  final_tdeot_cis <- list(c(0.1, 0.2), c(0.1, 0.2))
+  final_tdeot_ratios <- c(0.1, 0.2)
+
+  final_cis <- list(c(0.1, 0.2), c(0.1, 0.2))
+  final_ratios <- c(0.1, 0.2)
+
+  stop_report <- matrix(TRUE, nrow = 2)
+  stop_reasons <- list("A", "B")
+
+  data <- list(
+    Data(
+      x = 1:2,
+      y = 0:1,
+      doseGrid = 1:2,
+      ID = 1L:2L,
+      cohort = 1L:2L
+    ),
+    Data(
+      x = 3:4,
+      y = 0:1,
+      doseGrid = 3:4,
+      ID = 1L:2L,
+      cohort = 1L:2L
+    )
+  )
+
+  doses <- c(1, 2)
+
+  seed <- as.integer(123)
+
+  result <- expect_silent(
+    PseudoDualSimulations(
+      fit = fit,
+      data = data,
+      doses = doses,
+      fit_eff = fit_eff,
+      final_gstar_estimates = final_gstar_estimates,
+      final_gstar_at_dose_grid = final_gstar_at_dose_grid,
+      final_gstar_cis = final_gstar_cis,
+      final_gstar_ratios = final_gstar_ratios,
+      final_optimal_dose = final_optimal_dose,
+      final_optimal_dose_at_dose_grid = final_optimal_dose_at_dose_grid,
+      final_td_target_during_trial_estimates = final_td_target_during_trial_estimates,
+      final_td_target_end_of_trial_estimates = final_td_target_end_of_trial_estimates,
+      final_td_target_during_trial_at_dose_grid = final_td_target_during_trial_at_dose_grid,
+      final_td_target_end_of_trial_at_dose_grid = final_td_target_end_of_trial_at_dose_grid,
+      final_tdeot_cis = final_tdeot_cis,
+      final_tdeot_ratios = final_tdeot_ratios,
+      final_cis = final_cis,
+      final_ratios = final_ratios,
+      stop_report = stop_report,
+      stop_reasons = stop_reasons,
+      sigma2_est = sigma2_est,
+      seed = seed
+    )
+  )
+
+  expect_valid(result, "PseudoDualSimulations")
+  expect_identical(result@fit_eff, fit_eff)
+  expect_identical(result@final_gstar_estimates, final_gstar_estimates)
+  expect_identical(result@final_gstar_at_dose_grid, final_gstar_at_dose_grid)
+  expect_identical(result@final_gstar_cis, final_gstar_cis)
+  expect_identical(result@final_gstar_ratios, final_gstar_ratios)
+  expect_identical(result@final_optimal_dose, final_optimal_dose)
+  expect_identical(result@final_optimal_dose_at_dose_grid, final_optimal_dose_at_dose_grid)
+  expect_identical(result@sigma2_est, sigma2_est)
+})
+
+test_that("PseudoDualSimulations user constructor argument names are as expected", {
+  expect_function(
+    PseudoDualSimulations,
+    args = c(
+      "fit_eff", "final_gstar_estimates", "final_gstar_at_dose_grid", "final_gstar_cis",
+      "final_gstar_ratios", "final_optimal_dose", "final_optimal_dose_at_dose_grid",
+      "sigma2_est", "..."
+    ),
+    ordered = TRUE
   )
 })
