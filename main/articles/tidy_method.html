@@ -66,12 +66,6 @@
 <li class="nav-item">
   <a class="nav-link" href="../news/index.html">Changelog</a>
 </li>
-<!-- start dropdown for versions --> <li class="nav-item dropdown">
-        <a href="#" class="nav-link dropdown-toggle"
-          data-bs-toggle="dropdown" role="button"
-          aria-expanded="false" aria-haspopup="true"
-          id="dropdown-versions">Versions</a> <div class="dropdown-menu" aria-labelledby="dropdown-versions"> <a class="dropdown-item" data-toggle="tooltip" title="" href="https://openpharma.github.io/crmPack/main">main</a> </div></li>
-<!-- end dropdown for versions -->
 <li class="nav-item dropdown">
   <a href="#" class="nav-link dropdown-toggle" data-bs-toggle="dropdown" role="button" aria-expanded="false" aria-haspopup="true" id="dropdown-reports">Reports</a>
   <div class="dropdown-menu" aria-labelledby="dropdown-reports">
@@ -253,16 +247,16 @@ presentations not yet supported by <code>crmPack</code> directly.</p>
 <span><span class="co">#&gt; <span style="color: #949494;"># A tibble: 2,000 × 10</span></span></span>
 <span><span class="co">#&gt;    Iteration Chain  alpha0 alpha1 nChains nParameters nIterations nBurnin nThin</span></span>
 <span><span class="co">#&gt;        <span style="color: #949494; font-style: italic;">&lt;int&gt;</span> <span style="color: #949494; font-style: italic;">&lt;int&gt;</span>   <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>  <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>   <span style="color: #949494; font-style: italic;">&lt;int&gt;</span>       <span style="color: #949494; font-style: italic;">&lt;int&gt;</span>       <span style="color: #949494; font-style: italic;">&lt;int&gt;</span>   <span style="color: #949494; font-style: italic;">&lt;int&gt;</span> <span style="color: #949494; font-style: italic;">&lt;int&gt;</span></span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 1</span>         1     1 -<span style="color: #BB0000;">1.54</span>    6.18        1           1        <span style="text-decoration: underline;">2</span>100     100     1</span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 2</span>         2     1  0.195   4.32        1           1        <span style="text-decoration: underline;">2</span>100     100     1</span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 3</span>         3     1 -<span style="color: #BB0000;">2.40</span>   17.4         1           1        <span style="text-decoration: underline;">2</span>100     100     1</span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 4</span>         4     1 -<span style="color: #BB0000;">1.19</span>    1.51        1           1        <span style="text-decoration: underline;">2</span>100     100     1</span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 5</span>         5     1 -<span style="color: #BB0000;">0.015</span><span style="color: #BB0000; text-decoration: underline;">3</span>  2.13        1           1        <span style="text-decoration: underline;">2</span>100     100     1</span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 6</span>         6     1  0.537   0.557       1           1        <span style="text-decoration: underline;">2</span>100     100     1</span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 7</span>         7     1  0.452   1.03        1           1        <span style="text-decoration: underline;">2</span>100     100     1</span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 8</span>         8     1  0.012<span style="text-decoration: underline;">5</span>  3.70        1           1        <span style="text-decoration: underline;">2</span>100     100     1</span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 9</span>         9     1  1.71    0.721       1           1        <span style="text-decoration: underline;">2</span>100     100     1</span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;">10</span>        10     1 -<span style="color: #BB0000;">0.298</span>   1.14        1           1        <span style="text-decoration: underline;">2</span>100     100     1</span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 1</span>         1     1 -<span style="color: #BB0000;">2.08</span>    2.19        1           1        <span style="text-decoration: underline;">2</span>100     100     1</span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 2</span>         2     1 -<span style="color: #BB0000;">3.30</span>    7.80        1           1        <span style="text-decoration: underline;">2</span>100     100     1</span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 3</span>         3     1 -<span style="color: #BB0000;">1.23</span>    4.79        1           1        <span style="text-decoration: underline;">2</span>100     100     1</span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 4</span>         4     1 -<span style="color: #BB0000;">0.040</span><span style="color: #BB0000; text-decoration: underline;">8</span>  0.437       1           1        <span style="text-decoration: underline;">2</span>100     100     1</span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 5</span>         5     1 -<span style="color: #BB0000;">2.32</span>    6.92        1           1        <span style="text-decoration: underline;">2</span>100     100     1</span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 6</span>         6     1 -<span style="color: #BB0000;">1.78</span>    1.90        1           1        <span style="text-decoration: underline;">2</span>100     100     1</span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 7</span>         7     1 -<span style="color: #BB0000;">1.03</span>    7.52        1           1        <span style="text-decoration: underline;">2</span>100     100     1</span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 8</span>         8     1 -<span style="color: #BB0000;">1.97</span>    1.34        1           1        <span style="text-decoration: underline;">2</span>100     100     1</span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 9</span>         9     1 -<span style="color: #BB0000;">1.19</span>    0.730       1           1        <span style="text-decoration: underline;">2</span>100     100     1</span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;">10</span>        10     1 -<span style="color: #BB0000;">1.47</span>   18.3         1           1        <span style="text-decoration: underline;">2</span>100     100     1</span></span>
 <span><span class="co">#&gt; <span style="color: #949494;"># ℹ 1,990 more rows</span></span></span>
 <span><span class="co">#&gt; <span style="color: #949494;"># ℹ 1 more variable: parallel &lt;lgl&gt;</span></span></span>
 <span><span class="co">#&gt; </span></span>
@@ -440,28 +434,28 @@ fictional trial.</p>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; other attached packages:</span></span>
 <span><span class="co">#&gt; [1] dplyr_1.1.4        magrittr_2.0.3     tidyr_1.3.1        kableExtra_1.4.0  </span></span>
-<span><span class="co">#&gt; [5] knitr_1.46         crmPack_2.0.0.9153 ggplot2_3.5.1     </span></span>
+<span><span class="co">#&gt; [5] knitr_1.47         crmPack_2.0.0.9153 ggplot2_3.5.1     </span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; loaded via a namespace (and not attached):</span></span>
-<span><span class="co">#&gt;  [1] gtable_0.3.5         xfun_0.44            bslib_0.7.0         </span></span>
+<span><span class="co">#&gt;  [1] gtable_0.3.5         xfun_0.45            bslib_0.7.0         </span></span>
 <span><span class="co">#&gt;  [4] htmlwidgets_1.6.4    lattice_0.22-6       vctrs_0.6.5         </span></span>
 <span><span class="co">#&gt;  [7] tools_4.4.0          generics_0.1.3       parallel_4.4.0      </span></span>
-<span><span class="co">#&gt; [10] tibble_3.2.1         fansi_1.0.6          highr_0.10          </span></span>
+<span><span class="co">#&gt; [10] tibble_3.2.1         fansi_1.0.6          highr_0.11          </span></span>
 <span><span class="co">#&gt; [13] pkgconfig_2.0.3      checkmate_2.3.1      desc_1.4.3          </span></span>
 <span><span class="co">#&gt; [16] lifecycle_1.0.4      compiler_4.4.0       farver_2.1.2        </span></span>
-<span><span class="co">#&gt; [19] stringr_1.5.1        textshaping_0.3.7    munsell_0.5.1       </span></span>
+<span><span class="co">#&gt; [19] stringr_1.5.1        textshaping_0.4.0    munsell_0.5.1       </span></span>
 <span><span class="co">#&gt; [22] htmltools_0.5.8.1    sass_0.4.9           yaml_2.3.8          </span></span>
 <span><span class="co">#&gt; [25] pillar_1.9.0         pkgdown_2.0.9        jquerylib_0.1.4     </span></span>
 <span><span class="co">#&gt; [28] cachem_1.1.0         parallelly_1.37.1    tidyselect_1.2.1    </span></span>
-<span><span class="co">#&gt; [31] digest_0.6.35        mvtnorm_1.2-5        stringi_1.8.4       </span></span>
+<span><span class="co">#&gt; [31] digest_0.6.36        mvtnorm_1.2-5        stringi_1.8.4       </span></span>
 <span><span class="co">#&gt; [34] purrr_1.0.2          labeling_0.4.3       fastmap_1.2.0       </span></span>
-<span><span class="co">#&gt; [37] grid_4.4.0           colorspace_2.1-0     cli_3.6.2           </span></span>
+<span><span class="co">#&gt; [37] grid_4.4.0           colorspace_2.1-0     cli_3.6.3           </span></span>
 <span><span class="co">#&gt; [40] utf8_1.2.4           GenSA_1.1.14         withr_3.0.0         </span></span>
-<span><span class="co">#&gt; [43] scales_1.3.0         backports_1.4.1      rmarkdown_2.27      </span></span>
+<span><span class="co">#&gt; [43] scales_1.3.0         backports_1.5.0      rmarkdown_2.27      </span></span>
 <span><span class="co">#&gt; [46] lambda.r_1.2.4       gridExtra_2.3        futile.logger_1.4.3 </span></span>
 <span><span class="co">#&gt; [49] rjags_4-15           ragg_1.3.2           memoise_2.0.1       </span></span>
-<span><span class="co">#&gt; [52] coda_0.19-4.1        evaluate_0.23        viridisLite_0.4.2   </span></span>
-<span><span class="co">#&gt; [55] rlang_1.1.3          futile.options_1.0.1 glue_1.7.0          </span></span>
+<span><span class="co">#&gt; [52] coda_0.19-4.1        evaluate_0.24.0      viridisLite_0.4.2   </span></span>
+<span><span class="co">#&gt; [55] rlang_1.1.4          futile.options_1.0.1 glue_1.7.0          </span></span>
 <span><span class="co">#&gt; [58] formatR_1.14         xml2_1.3.6           svglite_2.1.3       </span></span>
 <span><span class="co">#&gt; [61] rstudioapi_0.16.0    jsonlite_1.8.8       R6_2.5.1            </span></span>
 <span><span class="co">#&gt; [64] systemfonts_1.1.0    fs_1.6.4</span></span></code></pre></div>
