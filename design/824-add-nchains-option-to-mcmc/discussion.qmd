@@ -81,7 +81,7 @@ init <- function() {
 }
 ```
 
-Clearly, what values can be considered extreme depend on the prior distribution of the model. These
+Clearly, what values can be considered extreme depends on the prior distribution of the model. These
 are provided elsewhere in the model object. (For example in the `params` slot of `ModelLogNormal`.)
 This is where our difficulties deepen:
 
@@ -137,9 +137,8 @@ samples
 
 # Simplistic support for multiple chains
 
-By modifying the
-function`in a`Model`'s`init`slot to take a parameter that defines the number of chains required, multiple`inits\`
-can be easily supported without breaking existing code:
+By modifying the function in a `Model`'s `init` slot to take a parameter that defines the number of
+chains required, multiple `inits` can be easily supported without breaking existing code:
 
 ```{r}
 #| label: simple-inits-1
@@ -273,8 +272,13 @@ v_rng_options <- function(object) {
 
 ## constructor ----
 RNGOptions <- function(name = NA_character_, seed = NA_integer_) {
+  if (!is.na(name)) {
+    if (stringr::str_sub(name, 1, min(6, nchar(name))) != "base::") {
+      name <- paste0("base::", name)
+    }
+  }
   .RNGOptions(
-    rng_name = ifelse(is.na(name), NA_character_, paste0("base::", name)),
+    rng_name = name,
     rng_seed = seed,
     model_init = list()
   )
@@ -360,13 +364,18 @@ v_chain_options <- function(object) {
 
 ## constructor ----
 ChainOptions <- function(
+    n_chains = 1,
     burnin = 1E4L,
     step = 2L,
-    samples = 1E4L,
-    n_chains = 1,
+    samples = 2E4L,
     options = NULL) {
   options <- h_prepare_mcmcoptions_list(n_chains, options)
-  .ChainOptions(options_list = options)
+  .ChainOptions(
+    burnin = burnin,
+    step = step,
+    samples = samples,
+    options_list = options
+  )
 }
 ```
 
@@ -407,9 +416,20 @@ v_legacy_chain_options <- function(object) {
 )
 
 ## constructor ----
-LegacyChainOptions <- function(n_chains = 1, options = NULL) {
+LegacyChainOptions <- function(
+    n_chains = 1, 
+    burnin = 1E4L,
+    step = 2L,
+    samples = 2E4L,
+    options = NULL
+) {
   options <- h_prepare_mcmcoptions_list(n_chains, options)
-  .LegacyChainOptions(options_list = options)
+  .LegacyChainOptions(
+    burnin = burnin,
+    step = step,
+    samples = samples,
+    options_list = options
+  )
 }
 
 LegacyChainOptions()
@@ -437,9 +457,20 @@ v_random_chain_options <- function(object) {
 )
 
 ## constructor ----
-RandomChainOptions <- function(n_chains = 1, options = NULL) {
+RandomChainOptions <- function(
+    n_chains = 1,
+    burnin = 1E4L,
+    step = 2L,
+    samples = 2E4L,
+    options = NULL
+) {
   options <- h_prepare_mcmcoptions_list(n_chains, options)
-  .RandomChainOptions(options_list = options)
+  .RandomChainOptions(
+    burnin = burnin,
+    step = step,
+    samples = samples,
+    options_list = options
+  )
 }
 
 RandomChainOptions(2)
@@ -516,7 +547,7 @@ for (i in opts1@options_list) {
   print(paste0(names(i@model_init), ": ", paste0(i@model_init, collapse = " ")))
 }
 
-opts2 <- LegacyChainOptions(2, opts1@options_list)
+opts2 <- LegacyChainOptions(2, options = opts1@options_list)
 opts2
 ```
 
@@ -567,6 +598,35 @@ Other `ChainOptions` might include
 
 Now we have the infrastructure, we can start to use it, keeping in mind the need to avoid breaking
 changes.
+
+##  Custom initialisation of MCMC chains
+
+The chain length, burn-in and thinning parameters can be set manually when constructing a `ChainOptions` object, whether using legacy or novel settings for individual chains:
+
+```{r}
+#| label: custom-initialisation-1
+#| echo: TRUE
+
+opts <- LegacyChainOptions(samples = 25000L, step = 3L)
+opts
+
+opts@burnin <- 5000L
+opts@burnin
+```
+
+Chain-level settings can be defined either at the time the `RNGOptions` object is created, or by modifying the appropriate ement of the `ChainOptions` object's 
+
+```{r}
+#| label: custom-initialisation-2
+#| echo: TRUE
+
+rngOpts1 <- RNGOptions(name = "Wichmann-Hill", seed = 123L)
+rngOpts2 <- RNGOptions(name = "Super-Duper", seed = 456L)
+
+customRandomChainOptions <- RandomChainOptions(2, options = list(rngOpts1, rngOpts2))
+```
+
+Note that initialisation of the `model_init` slot requires a `GeneralModel` object and use of the `initialise` function.
 
 ## Modify the `mcmc` method
 
@@ -968,6 +1028,19 @@ threeChains <- mcmc(emptyData, myModel, options = LegacyChainOptions(3))
 
 str(threeChains)
 ```
+
+We can also use the custom inits that we created earlier.
+
+```{r}
+#| label: mcmc-5a
+#| eval: TRUE
+#| error: TRUE
+
+customChains <- mcmc(emptyData, myModel, options = customRandomChainOptions)
+
+str(customChains)
+```
+
 
 ### `get-NewSamples` and `tidy-NewSamples`
 
