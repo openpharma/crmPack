@@ -174,7 +174,7 @@ crmPack objects in Markdown and Quarto files
     
     <a class="navbar-brand me-2" href="../index.html">crmPack</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">2.0.0.9153</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">2.0.0.9154</small>
 
     
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -206,12 +206,6 @@ crmPack objects in Markdown and Quarto files
 <li class="nav-item">
   <a class="nav-link" href="../news/index.html">Changelog</a>
 </li>
-<!-- start dropdown for versions --> <li class="nav-item dropdown">
-        <a href="#" class="nav-link dropdown-toggle"
-          data-bs-toggle="dropdown" role="button"
-          aria-expanded="false" aria-haspopup="true"
-          id="dropdown-versions">Versions</a> <div class="dropdown-menu" aria-labelledby="dropdown-versions"> <a class="dropdown-item" data-toggle="tooltip" title="" href="https://openpharma.github.io/crmPack/main">main</a> </div></li>
-<!-- end dropdown for versions -->
 <li class="nav-item dropdown">
   <a href="#" class="nav-link dropdown-toggle" data-bs-toggle="dropdown" role="button" aria-expanded="false" aria-haspopup="true" id="dropdown-reports">Reports</a>
   <div class="dropdown-menu" aria-labelledby="dropdown-reports">
@@ -706,29 +700,13 @@ crmPack objects in Markdown and Quarto files</p>
 <span><span class="fu">knit_print</span><span class="op">(</span><span class="va">x</span>, <span class="va">...</span>, asis <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span>
 <span></span>
 <span><span class="co"># S3 method for StoppingList</span></span>
-<span><span class="fu">knit_print</span><span class="op">(</span></span>
-<span>  <span class="va">x</span>,</span>
-<span>  <span class="va">...</span>,</span>
-<span>  preamble <span class="op">=</span></span>
-<span>    <span class="st">"If the result of applying the summary function to the following rules is `TRUE`:\n"</span>,</span>
-<span>  asis <span class="op">=</span> <span class="cn">TRUE</span></span>
-<span><span class="op">)</span></span>
+<span><span class="fu">knit_print</span><span class="op">(</span><span class="va">x</span>, <span class="va">...</span>, <span class="va">preamble</span>, indent <span class="op">=</span> <span class="fl">0L</span>, asis <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span>
 <span></span>
 <span><span class="co"># S3 method for StoppingAny</span></span>
-<span><span class="fu">knit_print</span><span class="op">(</span></span>
-<span>  <span class="va">x</span>,</span>
-<span>  <span class="va">...</span>,</span>
-<span>  preamble <span class="op">=</span> <span class="st">"If any of the following rules are `TRUE`:\n"</span>,</span>
-<span>  asis <span class="op">=</span> <span class="cn">TRUE</span></span>
-<span><span class="op">)</span></span>
+<span><span class="fu">knit_print</span><span class="op">(</span><span class="va">x</span>, <span class="va">...</span>, <span class="va">preamble</span>, asis <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span>
 <span></span>
 <span><span class="co"># S3 method for StoppingAll</span></span>
-<span><span class="fu">knit_print</span><span class="op">(</span></span>
-<span>  <span class="va">x</span>,</span>
-<span>  <span class="va">...</span>,</span>
-<span>  preamble <span class="op">=</span> <span class="st">"If all of the following rules are `TRUE`:\n"</span>,</span>
-<span>  asis <span class="op">=</span> <span class="cn">TRUE</span></span>
-<span><span class="op">)</span></span>
+<span><span class="fu">knit_print</span><span class="op">(</span><span class="va">x</span>, <span class="va">...</span>, <span class="va">preamble</span>, asis <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span>
 <span></span>
 <span><span class="co"># S3 method for StoppingTDCIRatio</span></span>
 <span><span class="fu">knit_print</span><span class="op">(</span></span>
@@ -951,6 +929,12 @@ See Usage Notes below.</p></dd>
 <dt>ordinals</dt>
 <dd><p>(<code>character</code>)<br> a character vector whose nth defines the
 word used as the written representation of the nth ordinal number.</p></dd>
+
+
+<dt>indent</dt>
+<dd><p>(<code>integer</code>)<br> the indent level of the current stopping rule
+list. Spaces with length <code>indent * 4</code> will be prepended to the beginning of
+the rendered stopping rule list.</p></dd>
 
 
 <dt>dose_label</dt>
