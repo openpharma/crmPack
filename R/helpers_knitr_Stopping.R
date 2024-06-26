@@ -113,7 +113,6 @@ knit_print.StoppingAny <- function(
     x,
     ...,
     preamble = "If any of the following rules are `TRUE`:\n",
-    indent = 0L,
     asis = TRUE) {
   knit_print.StoppingList(x, ..., preamble = preamble, asis = asis)
 }
@@ -127,7 +126,6 @@ knit_print.StoppingAll <- function(
     x,
     ...,
     preamble = "If all of the following rules are `TRUE`:\n",
-    indent = 0L,
     asis = TRUE) {
   knit_print.StoppingList(x, ..., preamble = preamble, asis = asis)
 }
