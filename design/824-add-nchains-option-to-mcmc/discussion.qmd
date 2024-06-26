@@ -417,12 +417,11 @@ v_legacy_chain_options <- function(object) {
 
 ## constructor ----
 LegacyChainOptions <- function(
-    n_chains = 1, 
+    n_chains = 1,
     burnin = 1E4L,
     step = 2L,
     samples = 2E4L,
-    options = NULL
-) {
+    options = NULL) {
   options <- h_prepare_mcmcoptions_list(n_chains, options)
   .LegacyChainOptions(
     burnin = burnin,
@@ -462,8 +461,7 @@ RandomChainOptions <- function(
     burnin = 1E4L,
     step = 2L,
     samples = 2E4L,
-    options = NULL
-) {
+    options = NULL) {
   options <- h_prepare_mcmcoptions_list(n_chains, options)
   .RandomChainOptions(
     burnin = burnin,
