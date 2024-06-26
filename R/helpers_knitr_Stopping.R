@@ -60,23 +60,45 @@ knit_print.StoppingMaxGainCIRatio <- function(
 #' @description `r lifecycle::badge("experimental")`
 #' @inheritParams knit_print.StoppingTargetProb
 #' @param preamble (`character`)\cr the text that introduces the list of rules
+#' @param indent (`integer`)\cr the indent level of the current stopping rule
+#'   list. Spaces with length `indent * 4` will be prepended to the beginning of
+#'   the rendered stopping rule list.
 #' @rdname knit_print
 #' @export
 #' @method knit_print StoppingList
 knit_print.StoppingList <- function(
     x,
     ...,
-    preamble = "If the result of applying the summary function to the following rules is `TRUE`:\n",
+    preamble,
+    indent = 0L,
     asis = TRUE) {
   assert_flag(asis)
-  assert_character(preamble, len = 1, any.missing = FALSE)
+  assert_integer(indent, lower = 0)
+
+  if (missing(preamble)) {
+    case_string <- switch(
+      as.character(length(x@stop_list)),
+      `1` = "rule ",
+      "rules "
+    )
+    preamble <- paste0(
+      "If the result of applying the summary function to the following ",
+      case_string,
+      "is `TRUE`:\n"
+    )
+  }else {
+    assert_character(preamble, len = 1, any.missing = FALSE)
+  }
 
   rules_list <- paste0(
     lapply(
       x@stop_list,
-      function(z) {
-        paste0("-  ", knit_print(z, asis = FALSE, ...))
-      }
+      function(z, indent) {
+        paste0(
+          strrep(" ", indent * 4),
+          "-  ", knit_print(z, asis = FALSE, indent = indent + 1L, ...))
+      },
+      indent = indent
     ),
     collapse = "\n"
   )
@@ -104,8 +126,22 @@ knit_print.StoppingList <- function(
 knit_print.StoppingAny <- function(
     x,
     ...,
-    preamble = "If any of the following rules are `TRUE`:\n",
+    preamble,
     asis = TRUE) {
+
+  if (missing(preamble)) {
+    case_string <- switch(
+      as.character(length(x@stop_list)),
+      `1` = c("this ", "rule is "),
+      `2` = c("either of the ", "rules are "),
+      c("any of the ", "rules are ")    # this works as default case
+    )
+    preamble <- paste0(
+      "If ", case_string[1],
+      "following ", case_string[2],
+      "`TRUE`:\n"
+    )
+  }
   knit_print.StoppingList(x, ..., preamble = preamble, asis = asis)
 }
 
@@ -117,8 +153,21 @@ knit_print.StoppingAny <- function(
 knit_print.StoppingAll <- function(
     x,
     ...,
-    preamble = "If all of the following rules are `TRUE`:\n",
+    preamble,
     asis = TRUE) {
+  if (missing(preamble)) {
+    case_string <- switch(
+      as.character(length(x@stop_list)),
+      `1` = c("this ", "rule is "),
+      `2` = c("both of the ", "rules are "),
+      c("all of the ", "rules are ")    # this works as default case
+    )
+    preamble <- paste0(
+      "If ", case_string[1],
+      "following ", case_string[2],
+      "`TRUE`:\n"
+    )
+  }
   knit_print.StoppingList(x, ..., preamble = preamble, asis = asis)
 }
 
