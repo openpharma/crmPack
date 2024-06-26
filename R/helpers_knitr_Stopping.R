@@ -75,7 +75,7 @@ knit_print.StoppingList <- function(
   assert_flag(asis)
   assert_integer(indent, lower = 0)
 
-  if(missing(preamble)){
+  if (missing(preamble)) {
     case_string <- switch(
       as.character(length(x@stop_list)),
       `1` = "rule ",
@@ -86,7 +86,7 @@ knit_print.StoppingList <- function(
       case_string,
       "is `TRUE`:\n"
     )
-  }else{
+  }else {
     assert_character(preamble, len = 1, any.missing = FALSE)
   }
 
@@ -129,7 +129,7 @@ knit_print.StoppingAny <- function(
     preamble,
     asis = TRUE) {
 
-  if(missing(preamble)){
+  if (missing(preamble)) {
     case_string <- switch(
       as.character(length(x@stop_list)),
       `1` = c("this ", "rule is "),
@@ -155,7 +155,7 @@ knit_print.StoppingAll <- function(
     ...,
     preamble,
     asis = TRUE) {
-  if(missing(preamble)){
+  if (missing(preamble)) {
     case_string <- switch(
       as.character(length(x@stop_list)),
       `1` = c("this ", "rule is "),
