@@ -60,8 +60,8 @@ knit_print.StoppingMaxGainCIRatio <- function(
 #' @description `r lifecycle::badge("experimental")`
 #' @inheritParams knit_print.StoppingTargetProb
 #' @param preamble (`character`)\cr the text that introduces the list of rules
-#' @param indent (`integer`)\cr the indent level of the current stoppling rule
-#'   list. Spaces with length `indent * 4` will be padded to the beginning of
+#' @param indent (`integer`)\cr the indent level of the current stopping rule
+#'   list. Spaces with length `indent * 4` will be prepended to the beginning of
 #'   the rendered stopping rule list.
 #' @rdname knit_print
 #' @export

@@ -581,8 +581,8 @@ See Usage Notes below.}
 \item{ordinals}{(\code{character})\cr a character vector whose nth defines the
 word used as the written representation of the nth ordinal number.}
 
-\item{indent}{(\code{integer})\cr the indent level of the current stoppling rule
-list. Spaces with length \code{indent * 4} will be padded to the beginning of
+\item{indent}{(\code{integer})\cr the indent level of the current stopping rule
+list. Spaces with length \code{indent * 4} will be prepended to the beginning of
 the rendered stopping rule list.}
 
 \item{dose_label}{(\code{character})\cr the term used to describe the target dose}
