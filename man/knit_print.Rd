@@ -400,30 +400,11 @@
 
 \method{knit_print}{StoppingMaxGainCIRatio}(x, ..., asis = TRUE)
 
-\method{knit_print}{StoppingList}(
-  x,
-  ...,
-  preamble =
-    "If the result of applying the summary function to the following rules is `TRUE`:\\n",
-  indent = 0L,
-  asis = TRUE
-)
+\method{knit_print}{StoppingList}(x, ..., preamble, indent = 0L, asis = TRUE)
 
-\method{knit_print}{StoppingAny}(
-  x,
-  ...,
-  preamble = "If any of the following rules are `TRUE`:\\n",
-  indent = 0L,
-  asis = TRUE
-)
+\method{knit_print}{StoppingAny}(x, ..., preamble, asis = TRUE)
 
-\method{knit_print}{StoppingAll}(
-  x,
-  ...,
-  preamble = "If all of the following rules are `TRUE`:\\n",
-  indent = 0L,
-  asis = TRUE
-)
+\method{knit_print}{StoppingAll}(x, ..., preamble, asis = TRUE)
 
 \method{knit_print}{StoppingTDCIRatio}(
   x,

@@ -69,12 +69,26 @@ knit_print.StoppingMaxGainCIRatio <- function(
 knit_print.StoppingList <- function(
     x,
     ...,
-    preamble = "If the result of applying the summary function to the following rules is `TRUE`:\n",
+    preamble,
     indent = 0L,
     asis = TRUE) {
   assert_flag(asis)
-  assert_character(preamble, len = 1, any.missing = FALSE)
   assert_integer(indent, lower = 0)
+
+  if(missing(preamble)){
+    case_string <- switch(
+      as.character(length(x@stop_list)),
+      `1` = "rule ",
+      "rules "
+    )
+    preamble <- paste0(
+      "If the result of applying the summary function to the following ",
+      case_string,
+      "is `TRUE`:\n"
+    )
+  }else{
+    assert_character(preamble, len = 1, any.missing = FALSE)
+  }
 
   rules_list <- paste0(
     lapply(
@@ -112,8 +126,22 @@ knit_print.StoppingList <- function(
 knit_print.StoppingAny <- function(
     x,
     ...,
-    preamble = "If any of the following rules are `TRUE`:\n",
+    preamble,
     asis = TRUE) {
+
+  if(missing(preamble)){
+    case_string <- switch(
+      as.character(length(x@stop_list)),
+      `1` = c("this ", "rule is "),
+      `2` = c("either of the ", "rules are "),
+      c("any of the ", "rules are ")    # this works as default case
+    )
+    preamble <- paste0(
+      "If ", case_string[1],
+      "following ", case_string[2],
+      "`TRUE`:\n"
+    )
+  }
   knit_print.StoppingList(x, ..., preamble = preamble, asis = asis)
 }
 
@@ -125,8 +153,21 @@ knit_print.StoppingAny <- function(
 knit_print.StoppingAll <- function(
     x,
     ...,
-    preamble = "If all of the following rules are `TRUE`:\n",
+    preamble,
     asis = TRUE) {
+  if(missing(preamble)){
+    case_string <- switch(
+      as.character(length(x@stop_list)),
+      `1` = c("this ", "rule is "),
+      `2` = c("both of the ", "rules are "),
+      c("all of the ", "rules are ")    # this works as default case
+    )
+    preamble <- paste0(
+      "If ", case_string[1],
+      "following ", case_string[2],
+      "`TRUE`:\n"
+    )
+  }
   knit_print.StoppingList(x, ..., preamble = preamble, asis = asis)
 }
 
