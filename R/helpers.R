@@ -157,7 +157,7 @@ probit <- function(x) {
 ##' @return nothing
 ##' @export
 ##' @keywords documentation
-##' @author Daniel Sabanes Bove \email{sabanesd@@roche.com}
+##' @author Daniel Sabanes Bove \email{sabanesd@@rconis.com}
 crmPackExample <- function() {
   crmPath <- system.file(package = "crmPack")
   printVignette(list(PDF = "example.pdf", Dir = crmPath))
@@ -173,7 +173,7 @@ crmPackExample <- function() {
 ##' @export
 ##' @importFrom utils help
 ##' @keywords documentation
-##' @author Daniel Sabanes Bove \email{sabanesd@@roche.com}
+##' @author Daniel Sabanes Bove \email{sabanesd@@rconis.com}
 crmPackHelp <- function() {
   utils::help(package = "crmPack", help_type = "html")
 }
