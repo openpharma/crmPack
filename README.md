@@ -63,9 +63,11 @@ trial design, implementation, simulation and analysis:
 - [Ordinal CRM
   models](https://openpharma.github.io/crmPack/main/articles/ordinal-crm.html)
 - [Extending
-  crmPack](https://openpharma.github.io/crmPack/main/articles/parallel_computing_with_extensions.html)
-- [Tidy crmPack
+  `crmPack`](https://openpharma.github.io/crmPack/main/articles/parallel_computing_with_extensions.html)
+- [Tidy `crmPack`
   data](https://openpharma.github.io/crmPack/main/articles/tidy_method.html)
+- [Describing `crmPack` objects in Markdown and Quarto
+  documents](https://openpharma.github.io/crmPack/main/articles/knit_print.html)
 - [Migration from the old
   crmPack](https://openpharma.github.io/crmPack/main/articles/migration_from_the_old_crmPack.html)
 - Sabanes Bove et al (2019) Model-based Dose Escalation Designs in R
