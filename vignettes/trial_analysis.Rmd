@@ -162,13 +162,13 @@ firstFour <- Data(
 Within a `Data` object, the doses at which each patient is treated are given by the `x` slot and their toxicity status (a Boolean where a toxicity is represented by a truthy value) by the `y` slot.
 
 The observed data is easily visualised
-```{r}
+```{r, fig.alt = "A visual representation of the data from the first four participants.  The first three, treated at doses 1, 3 and 9, do not report any toxicities.  The fourth, treated at 20, does."}
 plot(firstFour)
 ```
 
 and, since the `plot` method returns a `ggplot` object, it is easily customised.
 
-```{r}
+```{r, fig.alt = "The same graph as above, but with a white background to the plot area rather than a grey one."}
 plot(firstFour) + theme_light()
 ```
 
@@ -185,12 +185,12 @@ postSamples <- mcmc(
 
 The posterior estimate of the dose toxicity curve is easily visualised:
 
-```{r}
+```{r, fig.alt = "A plot of the posterior after the first four participants.  The mean probability of toxicity increases smoothly, with a slight convex curve, from about zero percent at a dose of zero to about 65% at a dose of 100.  The confidence interval extends from 0% to about 25% at a dose of zero and from about 30% to  about 90% at a dose of 100."}
 plot(postSamples, model, firstFour)
 ```
 
 A visual representation of the model's state is obtained with:
-```{r}
+```{r, fig.alt = "Two graphs arranged in a single column.  The upper graph shoes green lines of various heights that show the probability each dose is in the target toxicity range.  There is a big arrow pointing to the bar at a dose of 20, indicating tat this dose has the highest probability of being in the target toxicity range.  The lower graph as a similar series of red lines, indicating the probability that each dose is in the overdose range.  There is a horizontal black dashed line at 25%, indicating that this is the highest acceptable probability of being in the overdose range.  The red bars for doses of 30 and above all extend above 25%, indicating that their toxicity is unacceptable.  The toxicity for doses of 20 and below lie below 25%."}
 nextBest(
   my_next_best,
   doselimit = 100,
@@ -557,16 +557,20 @@ x
 
 crmPack provides a wealth of information about the trial's results.  The following code snippets illustrate some of the many possibilities for how the trial might be summarised.
 
-```{r}
+```{r, fig.alt = "A visual representation of the data after nineteen participants have been treated.  One each at doses 1, 3 and 9; four at a dose of 20; 6 at a dose of 30 and 6 at a dose of 45.  Toxicitiues were reported by participants 4 (at a dose of 20) and 18 and 19 (both at a dose of 45)."}
 plot(fifthFullCohort)
+```
+
+```{rfig.alt = "A plot of the posterior after  nineteen participants have been treated.  The mean probability of toxicity increases smoothly from about zero percent at a dose of zero to about 55% at a dose of 100.  The confidence interval extends from 0% to about 6% at a dose of zero and from about 22% to  about 90% at a dose of 100."}
 plot(postSamples5, model, fifthFullCohort)
 ```
-```{r}
+
+```{rfig.alt = "Two graphs arranged in a single column.  The upper graph shoes green lines of various heights that show the probability each dose is in the target toxicity range.  There is a big arrow pointing to the bar at a dose of 45, indicating that this dose has the highest probability of being in the target toxicity range.  The lower graph as a similar series of red lines, indicating the probability that each dose is in the overdose range.  There is a horizontal black dashed line at 25%, indicating that this is the highest acceptable probability of being in the overdose range.  The red bars for doses of 60 and above all extend above 25%, indicating that their toxicity is unacceptable.  The toxicity for doses of 45 and below lie below 25%."}
 doseRecommendation$plot
 ```
 
 With a little bit of work, we can obtain a more detailed summary and plot of the posterior probabilities of toxicity at each dose:
-```{r, error=TRUE}
+```{r, fig.alt = "A graph showing the posterior density of of the probability of toxicity for all doses greater than nine.  The mode of each density moves to the right as dose increases.  The densities for low doses are heaviliy skewed to the left.  Densities for higher doses are more symmetric and flatter."}
 slotNames(model)
 
 fullSamples <- tibble(
@@ -620,7 +624,7 @@ fullSamples %>%
   )
 ```
 
-```{r, error=TRUE}
+```{r, fig.alt = "A visual representation of the posterior dose - toxicity curve.  Very closely spaced sloid lines in black and blue, represewnting the mean and median estimate of toxicity for each dose rise almost linearly from zero percent for a dose of zero to about 55% for a dose of 100.  Shading extends to each side of the two solid lines.  The transparency of the shading increases with distance from the solid lines.  The shading is funnel shaped, with a narrow mneck at a dose of 100 and a wider mouth at a dose of 100.  The shading represents the central 90%, 80% and 50% confidence intervals for the posterior mean estimate of toxicity at each dose."}
 fullSummary %>%
   ggplot(aes(x = Dose)) +
   geom_ribbon(aes(ymin = Q05, ymax = Q95), fill = "steelblue", alpha = 0.25) +
