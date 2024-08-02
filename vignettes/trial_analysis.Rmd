@@ -561,7 +561,7 @@ crmPack provides a wealth of information about the trial's results.  The followi
 plot(fifthFullCohort)
 ```
 
-```{rfig.alt = "A plot of the posterior after  nineteen participants have been treated.  The mean probability of toxicity increases smoothly from about zero percent at a dose of zero to about 55% at a dose of 100.  The confidence interval extends from 0% to about 6% at a dose of zero and from about 22% to  about 90% at a dose of 100."}
+```{rfig.alt = "A plot of the posterior after nineteen participants have been treated.  The mean probability of toxicity increases smoothly from about zero percent at a dose of zero to about 55% at a dose of 100.  The confidence interval extends from 0% to about 6% at a dose of zero and from about 22% to  about 90% at a dose of 100."}
 plot(postSamples5, model, fifthFullCohort)
 ```
 
