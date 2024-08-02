@@ -605,7 +605,7 @@
       result
     Output
       An object of class "PseudoDualSimulations"
-      Slot "fitEff":
+      Slot "fit_eff":
       [[1]]
       [[1]]$theta1
       [1] -4.20662
@@ -619,13 +619,13 @@
       
       
       
-      Slot "FinalGstarEstimates":
+      Slot "final_gstar_estimates":
       [1] 146.2479
       
-      Slot "FinalGstarAtDoseGrid":
+      Slot "final_gstar_at_dose_grid":
       [1] 125
       
-      Slot "FinalGstarCIs":
+      Slot "final_gstar_cis":
       [[1]]
       [[1]]$lower
       [1] 75.03531
@@ -635,16 +635,16 @@
       
       
       
-      Slot "FinalGstarRatios":
+      Slot "final_gstar_ratios":
       [1] 3.798815
       
-      Slot "FinalOptimalDose":
+      Slot "final_optimal_dose":
       [1] 137.5996
       
-      Slot "FinalOptimalDoseAtDoseGrid":
+      Slot "final_optimal_dose_at_dose_grid":
       [1] 125
       
-      Slot "sigma2est":
+      Slot "sigma2_est":
       [1] 0.1616952
       
       Slot "fit":
@@ -765,7 +765,7 @@
       result
     Output
       An object of class "PseudoDualSimulations"
-      Slot "fitEff":
+      Slot "fit_eff":
       [[1]]
              middle      lower      upper
       1  -0.3079474 -0.8521410 0.08196096
@@ -782,13 +782,13 @@
       12  1.6915134  1.2623492 2.22318756
       
       
-      Slot "FinalGstarEstimates":
+      Slot "final_gstar_estimates":
       [1] 300
       
-      Slot "FinalGstarAtDoseGrid":
+      Slot "final_gstar_at_dose_grid":
       [1] 225
       
-      Slot "FinalGstarCIs":
+      Slot "final_gstar_cis":
       [[1]]
       [[1]]$lower
       [1] 300
@@ -798,16 +798,16 @@
       
       
       
-      Slot "FinalGstarRatios":
+      Slot "final_gstar_ratios":
       [1] 1
       
-      Slot "FinalOptimalDose":
+      Slot "final_optimal_dose":
       [1] 62.78087
       
-      Slot "FinalOptimalDoseAtDoseGrid":
+      Slot "final_optimal_dose_at_dose_grid":
       [1] 50
       
-      Slot "sigma2est":
+      Slot "sigma2_est":
       [1] 0.2648646
       
       Slot "fit":

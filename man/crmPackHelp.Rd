@@ -14,6 +14,6 @@ This convenience function opens your browser with the help pages for
 crmPack.
 }
 \author{
-Daniel Sabanes Bove \email{sabanesd@roche.com}
+Daniel Sabanes Bove \email{sabanesd@rconis.com}
 }
 \keyword{documentation}
