@@ -44,7 +44,7 @@ defines a `DataOrdinal` object with three toxicity grades, labelled "No tox`", "
 
 The `update`, `plot` and `dose_grid_range` methods work exactly as they do for `Data` objects:
 
-```{r, data-ordinal-2}
+```{r, data-ordinal-2, fig.alt = "A graph showing Patient ID on the x axis and dose administered on the y axis.  The shape and colour of the symbols indicate the toxicity status of the patient: red triangles for DLTs, orange circles for sub-toxic AEs and black triangles for no reported toxicities.  Patients 1 to 4 are dosed at 10, 20, 30 and 40, with no toxicitis reported.  patients 5 to 7 are dosed at 50, with patient 6 reporting a sub-toxic AE.  Patients 8 to 10 are treated at 60.  Patient 9 reports a sub-toxic AE and patient 10 a DLT."}
 dose_grid_range(empty_ordinal_data)
 
 ordinal_data <- update(empty_ordinal_data, x = 10, y = 0)
@@ -127,9 +127,15 @@ fit(samples, ordinal_model, ordinal_data, grade = 2L, cumulative = FALSE)
 
 The `plot` method also takes `grade` and `cumulative` parameters.
 
-```{r, plot}
+```{r, plot1, fig.alt = "A graph of the posterior probability of toxicity (DLT only) against dose.  The mean probability of toxicity is barely above 0% at a dose of zero and rises in a sigmoidal curve to around 65% at a dose of 100.  The confidence interval is relatively narrow for low doses but widens considerably for doses over 60, extending from around 15% to 100% for a dose of 100."}
 plot(samples, ordinal_model, ordinal_data, grade = 2L)
+```
+
+```{r, plot2, fig.alt = "A graph of the posterior cumulative probability of toxicity (sub-toxic AE or DLT) against dose.  The mean probability of toxicity is barely above 0% at a dose of zero and rises in a sigmoidal curve to around 75% at a dose of 100.  The confidence interval is relatively narrow for low doses but widens considerably for doses over 60, extending from around 30% to 100% for a dose of 100."}
 plot(samples, ordinal_model, ordinal_data, grade = 1L)
+```
+
+```{r, plot3, fig.alt = "A graph of the posterior probability of sub toxic AE against dose.  The mean probability of toxicity is barely above 0% at a dose of zero, rises to a peak of about 18% at a dose of 60 before falling to around 12% at a dose of 100.  The confidence interval is relatively narrow for low doses but widens considerably for doses over 60, extending from around 30% to 100% for a dose of 100."}
 plot(samples, ordinal_model, ordinal_data, grade = 1L, cumulative = FALSE)
 ```
 

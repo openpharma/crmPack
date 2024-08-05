@@ -624,7 +624,7 @@ fullSamples %>%
   )
 ```
 
-```{r, fig.alt = "A visual representation of the posterior dose - toxicity curve.  Very closely spaced sloid lines in black and blue, represewnting the mean and median estimate of toxicity for each dose rise almost linearly from zero percent for a dose of zero to about 55% for a dose of 100.  Shading extends to each side of the two solid lines.  The transparency of the shading increases with distance from the solid lines.  The shading is funnel shaped, with a narrow mneck at a dose of 100 and a wider mouth at a dose of 100.  The shading represents the central 90%, 80% and 50% confidence intervals for the posterior mean estimate of toxicity at each dose."}
+```{r, fig.alt = "A visual representation of the posterior dose - toxicity curve.  Very closely spaced solid lines in black and blue, representing the mean and median estimate of toxicity for each dose rise almost linearly from zero percent for a dose of zero to about 55% for a dose of 100.  Shading extends to each side of the two solid lines.  The transparency of the shading increases with distance from the solid lines.  The shading is funnel shaped, with a narrow mneck at a dose of 100 and a wider mouth at a dose of 100.  The shading represents the central 90%, 80% and 50% confidence intervals for the posterior mean estimate of toxicity at each dose."}
 fullSummary %>%
   ggplot(aes(x = Dose)) +
   geom_ribbon(aes(ymin = Q05, ymax = Q95), fill = "steelblue", alpha = 0.25) +
