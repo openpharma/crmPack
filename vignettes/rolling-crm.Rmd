@@ -89,7 +89,6 @@ print(ggs_traceplot(alpha0samples))
 ```
 
 ```{r Diagnose-2, fig.alt = "An auto correlation plot for aplha0.  There is significant auto-correlation of 0.25 or more even at lags of 50.  There is seasonality too, with three groups of negative auto-correlation and four of positive."}
-
 print(ggs_autocorrelation(alpha0samples))
 ```
 
