@@ -20,7 +20,12 @@ navbar:
           href: unit-test-report/
     github:
       icon: fa-github
+      aria-label: View on GitHub
       href: https://github.com/openpharma/crmPack
+    cran:
+      icon: fab fa-r-project
+      href: https://cloud.r-project.org/package=crmPack
+      aria-label: View on CRAN
 
 articles:
   - title: Articles
