@@ -400,27 +400,11 @@
 
 \method{knit_print}{StoppingMaxGainCIRatio}(x, ..., asis = TRUE)
 
-\method{knit_print}{StoppingList}(
-  x,
-  ...,
-  preamble =
-    "If the result of applying the summary function to the following rules is `TRUE`:\\n",
-  asis = TRUE
-)
+\method{knit_print}{StoppingList}(x, ..., preamble, indent = 0L, asis = TRUE)
 
-\method{knit_print}{StoppingAny}(
-  x,
-  ...,
-  preamble = "If any of the following rules are `TRUE`:\\n",
-  asis = TRUE
-)
+\method{knit_print}{StoppingAny}(x, ..., preamble, asis = TRUE)
 
-\method{knit_print}{StoppingAll}(
-  x,
-  ...,
-  preamble = "If all of the following rules are `TRUE`:\\n",
-  asis = TRUE
-)
+\method{knit_print}{StoppingAll}(x, ..., preamble, asis = TRUE)
 
 \method{knit_print}{StoppingTDCIRatio}(
   x,
@@ -577,6 +561,10 @@ See Usage Notes below.}
 
 \item{ordinals}{(\code{character})\cr a character vector whose nth defines the
 word used as the written representation of the nth ordinal number.}
+
+\item{indent}{(\code{integer})\cr the indent level of the current stopping rule
+list. Spaces with length \code{indent * 4} will be prepended to the beginning of
+the rendered stopping rule list.}
 
 \item{dose_label}{(\code{character})\cr the term used to describe the target dose}
 
