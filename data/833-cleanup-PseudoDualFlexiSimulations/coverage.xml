@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE coverage SYSTEM "https://raw.githubusercontent.com/cobertura/cobertura/master/cobertura/src/site/htdocs/xml/coverage-04.dtd">
-<coverage line-rate="0.779093084934342" branch-rate="0" lines-covered="12044" lines-valid="15459" branches-covered="0" branches-valid="0" complexity="0" version="3.6.4" timestamp="2024-08-06 09:37:37.062185">
+<coverage line-rate="0.779093084934342" branch-rate="0" lines-covered="12044" lines-valid="15459" branches-covered="0" branches-valid="0" complexity="0" version="3.6.4" timestamp="2024-08-06 09:59:10.853302">
   <sources>
     <source>/__w/crmPack/crmPack/crmPack</source>
   </sources>
