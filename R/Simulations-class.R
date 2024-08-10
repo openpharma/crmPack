@@ -713,14 +713,14 @@ PseudoDualSimulations <- function(fit_eff,
 #' efficacy responses using [`EffFlexi`] efficacy model.
 #' It extends [`PseudoDualSimulations`] by adding the capability to capture the sigma2betaW estimates.
 #'
-#' @slot sigma2_beta_west (`numeric`)\cr the vector of the final posterior mean sigma2betaW estimates
+#' @slot sigma2_beta_w_est (`numeric`)\cr the vector of the final posterior mean sigma2betaW estimates
 #' @aliases PseudoDualFlexiSimulations
 #' @export
 .PseudoDualFlexiSimulations <-
   setClass(
     Class = "PseudoDualFlexiSimulations",
-    slots = c(sigma2_beta_west = "numeric"),
-    prototype = prototype(sigma2_beta_west = c(0.001, 0.002)),
+    slots = c(sigma2_beta_w_est = "numeric"),
+    prototype = prototype(sigma2_beta_w_est = c(0.001, 0.002)),
     contains = "PseudoDualSimulations"
   )
 
@@ -728,15 +728,15 @@ PseudoDualSimulations <- function(fit_eff,
 
 #' @rdname PseudoDualFlexiSimulations-class
 #'
-#' @param sigma2_beta_west (`numeric`)\cr the vector of the final posterior mean sigma2betaW estimates
+#' @param sigma2_beta_w_est (`numeric`)\cr the vector of the final posterior mean sigma2betaW estimates
 #' @param \dots additional parameters from [`PseudoDualSimulations`]
 #'
 #' @export
-PseudoDualFlexiSimulations <- function(sigma2_beta_west,
+PseudoDualFlexiSimulations <- function(sigma2_beta_w_est,
                                        ...) {
   start <- PseudoDualSimulations(...)
   .PseudoDualFlexiSimulations(start,
-    sigma2_beta_west = sigma2_beta_west
+    sigma2_beta_w_est = sigma2_beta_w_est
   )
 }
 

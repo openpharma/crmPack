@@ -495,7 +495,7 @@ test_that("PseudoDualFlexiSimulations can be instantiated using the constructor"
   final_optimal_dose <- c(0.5, 0.6)
   final_optimal_dose_at_dose_grid <- c(0.7, 0.8)
   sigma2_est <- c(0.01, 0.02)
-  sigma2_beta_west <- c(0.03, 0.04)
+  sigma2_beta_w_est <- c(0.03, 0.04)
 
   fit <- list(c(0.1, 0.2), c(0.3, 0.4))
   final_td_target_during_trial_estimates <- c(0.5, 0.6)
@@ -538,7 +538,7 @@ test_that("PseudoDualFlexiSimulations can be instantiated using the constructor"
     final_optimal_dose = final_optimal_dose,
     final_optimal_dose_at_dose_grid = final_optimal_dose_at_dose_grid,
     sigma2_est = sigma2_est,
-    sigma2_beta_west = sigma2_beta_west,
+    sigma2_beta_w_est = sigma2_beta_w_est,
     fit = fit,
     data = data,
     doses = doses,
@@ -556,14 +556,14 @@ test_that("PseudoDualFlexiSimulations can be instantiated using the constructor"
   )
 
   expect_valid(sim_obj, "PseudoDualFlexiSimulations")
-  expect_identical(sim_obj@sigma2_beta_west, sigma2_beta_west)
+  expect_identical(sim_obj@sigma2_beta_w_est, sigma2_beta_w_est)
 })
 
 test_that("PseudoDualFlexiSimulations user constructor argument names", {
   expect_function(
     PseudoDualFlexiSimulations,
     args = c(
-      "sigma2_beta_west", "..."
+      "sigma2_beta_w_est", "..."
     ),
     ordered = TRUE
   )

@@ -8,12 +8,12 @@
 \alias{.DefaultPseudoDualFlexiSimulations}
 \title{\code{PseudoDualFlexiSimulations}}
 \usage{
-PseudoDualFlexiSimulations(sigma2_beta_west, ...)
+PseudoDualFlexiSimulations(sigma2_beta_w_est, ...)
 
 .DefaultPseudoDualFlexiSimulations()
 }
 \arguments{
-\item{sigma2_beta_west}{(\code{numeric})\cr the vector of the final posterior mean sigma2betaW estimates}
+\item{sigma2_beta_w_est}{(\code{numeric})\cr the vector of the final posterior mean sigma2betaW estimates}
 
 \item{\dots}{additional parameters from \code{\link{PseudoDualSimulations}}}
 }
@@ -26,7 +26,7 @@ It extends \code{\link{PseudoDualSimulations}} by adding the capability to captu
 \section{Slots}{
 
 \describe{
-\item{\code{sigma2_beta_west}}{(\code{numeric})\cr the vector of the final posterior mean sigma2betaW estimates}
+\item{\code{sigma2_beta_w_est}}{(\code{numeric})\cr the vector of the final posterior mean sigma2betaW estimates}
 }}
 
 \note{
