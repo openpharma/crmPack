@@ -183,7 +183,7 @@ v_data_da <- function(object) {
   v$check(
     test_numeric(object@u, upper = object@Tmax, len = object@nObs, any.missing = FALSE) &&
       all(object@u >= 0),
-    "u must be of type double, nObs length, non-negative and not greater than Tmax"
+    "u must be of type double, nObs length, non-negative, not missing and not greater than Tmax"
   )
   v$check(
     test_numeric(object@t0, lower = 0, len = object@nObs, any.missing = FALSE, sorted = TRUE),
