@@ -33,7 +33,7 @@ Description: Implements a wide range of model-based dose escalation
     new models, escalation or stopping rules. Further details are
     presented in Sabanes Bove et al. (2019) <doi:10.18637/jss.v089.i10>.
 License: GPL (>= 2)
-URL: https://github.com/openpharma/crmPack, https://pages.github.com/openpharma/crmPack
+URL: https://github.com/openpharma/crmPack, https://openpharma.github.io/crmPack
 BugReports: https://github.com/openpharma/crmPack/issues
 Depends:
     ggplot2 (>= 2.0.0),
