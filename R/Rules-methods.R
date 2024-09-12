@@ -1455,7 +1455,7 @@ setMethod(
       function(nb) nextBest(nb, doselimit, samples, model, data)
     )
 
-    #Obtain the next best dose
+    # Obtain the next best dose
     recommedations <- sapply(nb_list, function(nb) nb$value)
     next_dose <- nextBest@summary(recommedations)
 
