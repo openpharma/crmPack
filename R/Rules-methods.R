@@ -1418,6 +1418,55 @@ setMethod(
   }
 )
 
+## NextBestList ----
+
+#' @describeIn nextBest find the next best dose defined by applying a summary
+#' function to a `list` of `NextBest` rules.
+#'
+#' @aliases nextBest-NextBestList
+#'
+#' @export
+#' @example examples/Rules-method-nextBest-NextBestList.R
+#'
+setMethod(
+  f = "nextBest",
+  signature = signature(
+    nextBest = "NextBestList",
+    doselimit = "numeric",
+    samples = "Samples",
+    model = "GeneralModel",
+    data = "Data"
+  ),
+  definition = function(nextBest, doselimit = Inf, samples, model, data, ...) {
+    # Apply the rules
+    nb_list <- lapply(
+      nextBest@rules,
+      nextBest,
+      doselimit = doselimit,
+      samples = samples,
+      model = model,
+      data = data,
+      ...
+    )
+
+    # Apply the rules
+    nb_list <- lapply(
+      nextBest@rules,
+      function(nb) nextBest(nb, doselimit, samples, model, data)
+    )
+
+    #Obtain the next best dose
+    recommedations <- sapply(nb_list, function(nb) nb$value)
+    next_dose <- nextBest@summary(recommedations)
+
+    # Facet the plots
+    single_plots <- lapply(nb_list, function(nb) nb$plot)
+    plot <- patchwork::wrap_plots(single_plots)
+
+    list(value = next_dose, plot = plot, singlePlots = single_plots)
+  }
+)
+
 # maxDose ----
 
 ## generic ----

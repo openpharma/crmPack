@@ -910,6 +910,89 @@ test_that("nextBest-NextBestOrdinal works correctly", {
   expect_equal(actual$value, 50)
 })
 
+test_that("nextBest-NextBestMax works correctly", {
+  data <- Data(
+    doseGrid = c(1, 3, 9, 18, 36, 54, 80, 100),
+    x = c(1, 1, 1, 3, 3, 3, 9, 9, 9),
+    y = c(rep(0, 8), 1),
+    cohort = rep(1L:3L, each = 3),
+    ID = 1L:9L
+  )
+
+  model <- .DefaultLogisticLogNormal()
+  samples <- mcmc(
+    data,
+    model,
+    McmcOptions(
+      burnin = 250,
+      samples = 1000,
+      rng_kind = "Mersenne-Twister",
+      rng_seed = 123L
+    )
+  )
+
+  next_best_mtd <- NextBestMTD(
+    0.25,
+    function(mtd_samples) quantile(mtd_samples, probs = 0.25)
+  )
+
+  next_best_min_dist <- .DefaultNextBestMinDist()
+
+  next_best_max <- NextBestMax(list(next_best_mtd, next_best_min_dist))
+  actual <- nextBest(next_best_max, Inf, samples, model, data)
+  expect_equal(actual$value, 18L)
+  vdiffr::expect_doppelganger("nextBest-NextBestMax", actual$plot)
+})
+
+test_that("nextBest-NextBestMin works correctly", {
+  data <- Data(
+    doseGrid = c(1, 3, 9, 18, 36, 54, 80, 100),
+    x = c(1, 1, 1, 3, 3, 3, 9, 9, 9),
+    y = c(rep(0, 8), 1),
+    cohort = rep(1L:3L, each = 3),
+    ID = 1L:9L
+  )
+
+  model <- .DefaultLogisticLogNormal()
+  samples <- mcmc(
+    data,
+    model,
+    McmcOptions(
+      burnin = 250,
+      samples = 1000,
+      rng_kind = "Mersenne-Twister",
+      rng_seed = 123L
+    )
+  )
+
+  next_best_mtd <- NextBestMTD(
+    0.25,
+    function(mtd_samples) quantile(mtd_samples, probs = 0.25)
+  )
+
+  next_best_min_dist <- .DefaultNextBestMinDist()
+
+  next_best_max <- NextBestMin(list(next_best_mtd, next_best_min_dist))
+  actual <- nextBest(next_best_max, Inf, samples, model, data)
+  expect_equal(actual$value, 9L)
+  vdiffr::expect_doppelganger("nextBest-NextBestMin", actual$plot)
+})
+
+test_that("NextBestList fails gracefully with bad input", {
+  expect_error(
+    NextBestList(
+      "notAFunction",
+      list(.DefaultNextBestMTD(), .DefaultNextBestMinDist())
+    )
+  )
+  expect_error(
+    NextBestList(
+      mean,
+      list(.DefaultNextBestMTD(), .DefaultCohortSizeConst())
+    )
+  )
+})
+
 # maxDose ----
 
 ## IncrementsRelative ----

@@ -53,6 +53,7 @@ Imports:
     mvtnorm,
     parallel,
     parallelly,
+    patchwork,
     rjags,
     rlang,
     survival,

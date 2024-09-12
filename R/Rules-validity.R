@@ -218,6 +218,27 @@ v_next_best_prob_mtd_min_dist <- function(object) {
   v$result()
 }
 
+#' @describeIn v_next_best validates that the [`NextBestList`] object
+#'   contains a valid `summary` function and `rules` objects.
+v_next_best_list <- function(object) {
+  v <- Validate()
+  v$check(
+    test_function(object@summary),
+    "summary must be a function"
+  )
+  v$check(
+    test_list(object@rules),
+    "rules must be a list"
+  )
+  for (rule in object@rules) {
+    v$check(
+      test_class(rule, "NextBest"),
+      paste0("rules contains an object of class ", class(rule), ": only NextBest objects are permitted")
+    )
+  }
+  v$result()
+}
+
 # Increments ----
 
 #' Internal Helper Functions for Validation of [`Increments`] Objects

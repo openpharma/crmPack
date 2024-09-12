@@ -979,6 +979,161 @@ NextBestOrdinal <- function(grade, rule) {
   )
 }
 
+# NextBestList ----
+
+## class ----
+
+#' `NextBestList`
+#'
+#' @description `r lifecycle::badge("experimental")`
+#'
+#' [`NextBestList`] is the class for selecting the overall next best dose by
+#' applying a function to a `list` of `NextBest` rules.
+#'
+#' @slot summary (`function`)\cr the summary function that selects the overall
+#' next best dose
+#' @slot rules (`list`)\cr the list of rules to which `summary` will be applied
+#' @aliases NextBestList
+#' @export
+#'
+.NextBestList <- setClass(
+  Class = "NextBestList",
+  slots = c(summary = "function", rules = "list"),
+  contains = "NextBest",
+  validity = v_next_best_list
+)
+
+## constructor ----
+
+#' @rdname NextBestList-class
+#'
+#' @param summary (`function`)\cr see slot definition.
+#' @param rules (`list`)\cr see slot definition.
+#' @export
+#' @example examples/Rules-class-NextBestList.R
+#'
+NextBestList <- function(summary, rules) {
+  .NextBestList(summary = summary, rules = rules)
+}
+
+## default constructor ----
+
+#' @rdname NextBestList-class
+#' @note Typically, end users will not use the `.DefaultNextBestList()` function.
+#' @export
+.DefaultNextBestList <- function() {
+  NextBestList(
+    summary = min,
+    rules = list(
+      NextBestMTD(
+        0.25,
+        function(mtd_samples) {
+          quantile(mtd_samples, probs = 0.25)
+        }
+      ),
+      NextBestMinDist(target = 0.33)
+    )
+  )
+}
+
+## class ----
+
+#' `NextBestMin`
+#'
+#' @description `r lifecycle::badge("experimental")`
+#'
+#' [`NextBestMin`] is the class for selecting the overall next best dose as the
+#' minimum of next best doses derived from `list` of `NextBest` rules.
+#'
+#' @inheritParams NextBestList
+#' @aliases NextBestMin
+#' @export
+#'
+.NextBestMin <- setClass(
+  Class = "NextBestMin",
+  contains = "NextBestList",
+  validity = v_next_best_list
+)
+
+## constructor ----
+
+#' @rdname NextBestMin-class
+#'
+#' @export
+#' @example examples/Rules-class-NextBestList.R
+#'
+NextBestMin <- function(rules) {
+  .NextBestList(summary = min, rules = rules)
+}
+
+## default constructor ----
+
+#' @rdname NextBestMin-class
+#' @note Typically, end users will not use the `.DefaultNextBestMin()` function.
+#' @export
+.DefaultNextBestMin <- function() {
+  NextBestMin(
+    rules = list(
+      NextBestMTD(
+        0.25,
+        function(mtd_samples) {
+          quantile(mtd_samples, probs = 0.25)
+        }
+      ),
+      NextBestMinDist(target = 0.33)
+    )
+  )
+}
+
+## class ----
+
+#' `NextBestMax`
+#'
+#' @description `r lifecycle::badge("experimental")`
+#'
+#' [`NextBestMin`] is the class for selecting the overall next best dose as the
+#' maximum of next best doses derived from `list` of `NextBest` rules.
+#'
+#' @inheritParams NextBestList
+#' @aliases NextBestMax
+#' @export
+#'
+.NextBestMax <- setClass(
+  Class = "NextBestMax",
+  contains = "NextBestList",
+  validity = v_next_best_list
+)
+
+## constructor ----
+
+#' @rdname NextBestMin-class
+#'
+#' @export
+#' @example examples/Rules-class-NextBestList.R
+#'
+NextBestMax <- function(rules) {
+  .NextBestList(summary = max, rules = rules)
+}
+
+## default constructor ----
+
+#' @rdname NextBestMin-class
+#' @note Typically, end users will not use the `.DefaultNextBestMin()` function.
+#' @export
+.DefaultNextBestMax <- function() {
+  NextBestMax(
+    rules = list(
+      NextBestMTD(
+        0.25,
+        function(mtd_samples) {
+          quantile(mtd_samples, probs = 0.25)
+        }
+      ),
+      NextBestMinDist(target = 0.33)
+    )
+  )
+}
+
 # Increments ----
 
 ## class ----
