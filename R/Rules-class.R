@@ -1052,6 +1052,10 @@ NextBestList <- function(summary, rules) {
 .NextBestMin <- setClass(
   Class = "NextBestMin",
   contains = "NextBestList",
+  prototype = prototype(
+    summary = min,
+    rules = list()
+  ),
   validity = v_next_best_list
 )
 
@@ -1063,7 +1067,7 @@ NextBestList <- function(summary, rules) {
 #' @example examples/Rules-class-NextBestList.R
 #'
 NextBestMin <- function(rules) {
-  .NextBestList(summary = min, rules = rules)
+  .NextBestMin(rules = rules)
 }
 
 ## default constructor ----
@@ -1101,6 +1105,10 @@ NextBestMin <- function(rules) {
 .NextBestMax <- setClass(
   Class = "NextBestMax",
   contains = "NextBestList",
+  prototype = prototype(
+    summary = max,
+    rules = list()
+  ),
   validity = v_next_best_list
 )
 
@@ -1112,13 +1120,13 @@ NextBestMin <- function(rules) {
 #' @example examples/Rules-class-NextBestList.R
 #'
 NextBestMax <- function(rules) {
-  .NextBestList(summary = max, rules = rules)
+  .NextBestMax(rules = rules)
 }
 
 ## default constructor ----
 
-#' @rdname NextBestMin-class
-#' @note Typically, end users will not use the `.DefaultNextBestMin()` function.
+#' @rdname NextBestMax-class
+#' @note Typically, end users will not use the `.DefaultNextBestMax()` function.
 #' @export
 .DefaultNextBestMax <- function() {
   NextBestMax(
