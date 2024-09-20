@@ -4244,8 +4244,10 @@ test_that("maxDose-IncrementsMaxToxProb works correctly with ordinal data", {
   )
   opts <- McmcOptions(burnin = 10000L, step = 2L, samples = 40000L)
 
-  #For warning regarding tox, see issue #748 https://github.com/openpharma/crmPack/issues/748
-  suppressWarnings({samples <- mcmc(emptyData, model, opts)})
+  # For warning regarding tox, see issue #748 https://github.com/openpharma/crmPack/issues/748
+  suppressWarnings({
+    samples <- mcmc(emptyData, model, opts)
+  })
 
   inc1 <- IncrementsMaxToxProb(prob = c("DLAE" = 0.2, "CRS" = 1.0))
   inc2 <- IncrementsMaxToxProb(prob = c("DLAE" = 1.0, "CRS" = 0.05))
