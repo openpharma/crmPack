@@ -1749,13 +1749,14 @@ setMethod(
     assert_set_equal(names(increments@prob), names(data@yCategories)[2:length(data@yCategories)])
 
     probs <- lapply(
-      1:length(increments@prob),
+      seq_along(length(increments@prob)),
       function(g) {
         fit(samples, model, data, grade = g, ...) %>%
           dplyr::filter(middle < increments@prob[g]) %>%
           utils::tail(1)
       }
-    ) %>% dplyr::bind_rows()
+    ) %>%
+    dplyr::bind_rows()
     return(min(probs$dose))
   }
 )
