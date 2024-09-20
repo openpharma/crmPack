@@ -19,6 +19,9 @@
 \alias{maxDose,IncrementsMin,DataOrdinal-method}
 \alias{maxDose,IncrementsOrdinal,DataOrdinal-method}
 \alias{maxDose-IncrementsOrdinal}
+\alias{maxDose,IncrementsMaxToxProb,DataOrdinal-method}
+\alias{maxDose-IncrementsMaxToxProb}
+\alias{maxDose,IncrementsMaxToxProb,Data-method}
 \title{Determine the Maximum Possible Next Dose}
 \usage{
 maxDose(increments, data, ...)
@@ -40,6 +43,10 @@ maxDose(increments, data, ...)
 \S4method{maxDose}{IncrementsMin,DataOrdinal}(increments, data, ...)
 
 \S4method{maxDose}{IncrementsOrdinal,DataOrdinal}(increments, data, ...)
+
+\S4method{maxDose}{IncrementsMaxToxProb,DataOrdinal}(increments, data, model, samples, ...)
+
+\S4method{maxDose}{IncrementsMaxToxProb,Data}(increments, data, model, samples, ...)
 }
 \arguments{
 \item{increments}{(\code{Increments})\cr the rule for the next best dose.}
@@ -47,6 +54,10 @@ maxDose(increments, data, ...)
 \item{data}{(\code{Data})\cr input data.}
 
 \item{...}{additional arguments without method dispatch.}
+
+\item{model}{(\code{GeneralModel})\cr The model on which probabilities will be based}
+
+\item{`samples`}{(\code{Samples})\cr The MCMC samples to which \code{model} will be applied}
 }
 \value{
 A \code{number}, the maximum possible next dose.
@@ -88,6 +99,12 @@ multiple increment rules, taking the minimum across individual increments.
 
 \item \code{maxDose(increments = IncrementsOrdinal, data = DataOrdinal)}: determine the maximum possible next dose in an ordinal
 CRM trial
+
+\item \code{maxDose(increments = IncrementsMaxToxProb, data = DataOrdinal)}: determine the maximum possible next dose based on the
+probability of toxicity
+
+\item \code{maxDose(increments = IncrementsMaxToxProb, data = Data)}: determine the maximum possible next dose based on the
+probability of toxicity
 
 }}
 \examples{
@@ -261,4 +278,34 @@ maxDose(
   increments = IncrementsOrdinal(2L, .DefaultIncrementsRelative()),
   data = .DefaultDataOrdinal()
 )
+model <- LogisticLogNormalOrdinal(
+  mean = c(0.25, 0.15, 0.5),
+  cov = matrix(c(1.5, 0, 0, 0, 2, 0, 0, 0, 1), nrow = 3),
+  ref_dose = 30
+)
+
+emptyData <- DataOrdinal(
+  doseGrid = doseGrid,
+  yCategories = c("No tox" = 0L, "DLAE" = 1L, "CRS" = 2L)
+)
+
+#For warning regarding tox, see issue #748 https://github.com/openpharma/crmPack/issues/748
+suppressWarnings({samples <- mcmc(emptyData, model, .DefaultMcmcOptions())})
+toxIncrements <- IncrementsMaxToxProb(probs = c("DLAE" = 0.2, "CRS" = 0.05))
+maxDose(toxIncrements, emptyData, model, samples)
+model <- LogisticLogNormalOrdinal(
+  mean = c(0.25, 0.15, 0.5),
+  cov = matrix(c(1.5, 0, 0, 0, 2, 0, 0, 0, 1), nrow = 3),
+  ref_dose = 30
+)
+
+emptyData <- DataOrdinal(
+  doseGrid = doseGrid,
+  yCategories = c("No tox" = 0L, "DLAE" = 1L, "CRS" = 2L)
+)
+
+#For warning regarding tox, see issue #748 https://github.com/openpharma/crmPack/issues/748
+suppressWarnings({samples <- mcmc(emptyData, model, .DefaultMcmcOptions())})
+toxIncrements <- IncrementsMaxToxProb(probs = c("DLAE" = 0.2, "CRS" = 0.05))
+maxDose(toxIncrements, emptyData, model, samples)
 }

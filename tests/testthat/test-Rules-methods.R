@@ -4230,3 +4230,53 @@ test_that("tidy-IncrementsRelativeDLT works correctly", {
   class(expected) <- c("tbl_IncrementsRelativeDLT", class(expected))
   expect_identical(actual, expected)
 })
+
+test_that("maxDose-IncrementsMaxToxProb works correctly with ordinal data", {
+  doseGrid <- c(1, 3, 6, 12, 24, 36)
+  emptyData <- DataOrdinal(
+    doseGrid = doseGrid,
+    yCategories = c("No tox" = 0L, "DLAE" = 1L, "CRS" = 2L)
+  )
+  model <- LogisticLogNormalOrdinal(
+    mean = c(0.25, 0.15, 0.5),
+    cov = matrix(c(1.5, 0, 0, 0, 2, 0, 0, 0, 1), nrow = 3),
+    ref_dose = 30
+  )
+  opts <- McmcOptions(burnin = 10000L, step = 2L, samples = 40000L)
+
+  #For warning regarding tox, see issue #748 https://github.com/openpharma/crmPack/issues/748
+  suppressWarnings({samples <- mcmc(emptyData, model, opts)})
+
+  inc1 <- IncrementsMaxToxProb(prob = c("DLAE" = 0.2, "CRS" = 1.0))
+  inc2 <- IncrementsMaxToxProb(prob = c("DLAE" = 1.0, "CRS" = 0.05))
+  inc3 <- IncrementsMaxToxProb(prob = c("DLAE" = 0.2, "CRS" = 0.05))
+
+  expected2 <- fit(samples, model, emptyData, grade = 2L) %>%
+    dplyr::filter(middle < 0.05) %>%
+    utils::tail(1) %>%
+    dplyr::pull(dose)
+  expected1 <- fit(samples, model, emptyData, grade = 1L) %>%
+    dplyr::filter(middle < 0.2) %>%
+    utils::tail(1) %>%
+    dplyr::pull(dose)
+
+  expect_equal(maxDose(inc1, emptyData, model, samples), expected1)
+  expect_equal(maxDose(inc2, emptyData, model, samples), expected2)
+  expect_equal(maxDose(inc3, emptyData, model, samples), min(expected1, expected2))
+})
+
+test_that("maxDose-IncrementsMaxToxProb works correctly with binary data", {
+  emptyData <- .DefaultData()
+  model <- .DefaultLogisticLogNormal()
+  opts <- McmcOptions(burnin = 10000L, step = 2L, samples = 40000L)
+  samples <- mcmc(emptyData, model, opts)
+
+  inc1 <- IncrementsMaxToxProb(prob = 0.33)
+
+  expected1 <- fit(samples, model, emptyData) %>%
+    dplyr::filter(middle < 0.33) %>%
+    utils::tail(1) %>%
+    dplyr::pull(dose)
+
+  expect_equal(maxDose(inc1, emptyData, model, samples), expected1)
+})

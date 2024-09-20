@@ -1725,6 +1725,90 @@ setMethod(
   }
 )
 
+## IncrementsMaxToxProb ----
+
+#' @describeIn maxDose determine the maximum possible next dose based on the
+#' probability of toxicity
+#' @param model (`GeneralModel`)\cr The model on which probabilities will be based
+#' @param `samples` (`Samples`)\cr The MCMC samples to which `model` will be applied
+#'
+#' @aliases maxDose-IncrementsMaxToxProb
+#'
+#' @export
+#' @example examples/Rules-method-maxDose-IncrementsMaxToxProb.R
+#'
+setMethod(
+  f = "maxDose",
+  signature = signature(
+    increments = "IncrementsMaxToxProb",
+    data = "DataOrdinal"
+  ),
+  definition = function(increments, data, model, samples, ...) {
+    assert_class(samples, "Samples")
+    assert_true(length(increments@prob) == length(data@yCategories) - 1)
+    assert_set_equal(names(increments@prob), names(data@yCategories)[2:length(data@yCategories)])
+
+    probs <- lapply(
+      1:length(increments@prob),
+      function(g) {
+        fit(samples, model, data, grade = g, ...) %>%
+          dplyr::filter(middle < increments@prob[g]) %>%
+          utils::tail(1)
+      }
+    ) %>% dplyr::bind_rows()
+    return(min(probs$dose))
+  }
+)
+#' @describeIn maxDose determine the maximum possible next dose based on the
+#' probability of toxicity
+#' @param model (`GeneralModel`)\cr The model on which probabilities will be based
+#' @param `samples` (`Samples`)\cr The MCMC samples to which `model` will be applied
+#'
+#' @aliases maxDose-IncrementsMaxToxProb
+#'
+#' @export
+#' @example examples/Rules-method-maxDose-IncrementsMaxToxProb.R
+#'
+setMethod(
+  f = "maxDose",
+  signature = signature(
+    increments = "IncrementsMaxToxProb",
+    data = "Data"
+  ),
+  definition = function(increments, data, model, samples, ...) {
+    assert_class(samples, "Samples")
+    assert_true(length(increments@prob) == 1)
+
+    prob <- fit(samples, model, data, ...) %>%
+      dplyr::filter(middle < increments@prob) %>%
+      utils::tail(1) %>%
+      dplyr::pull(dose)
+    return(prob)
+  }
+)
+
+## tidy-IncrementsMaxToxProb ----
+
+#' @rdname tidy
+#' @aliases tidy-IncrementsMaxToxProb
+#' @example examples/Rules-method-tidyIncrementsMaxToxProb.R
+#' @export
+setMethod(
+  f = "tidy",
+  signature = signature(x = "IncrementsMaxToxProb"),
+  definition = function(x, ...) {
+    grades <- names(x@prob)
+    if (is.null(grades)) {
+      grades <- "1"
+    }
+    tibble(
+      Grade = grades,
+      Prob = x@prob
+    ) %>%
+    crmPack:::h_tidy_class(x)
+  }
+)
+
 # nolint start
 
 ## ============================================================
