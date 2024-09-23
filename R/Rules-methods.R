@@ -1757,7 +1757,7 @@ setMethod(
           utils::tail(1)
       }
     ) %>%
-    dplyr::bind_rows()
+      dplyr::bind_rows()
     return(min(probs$dose))
   }
 )
