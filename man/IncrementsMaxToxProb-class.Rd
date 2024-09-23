@@ -13,7 +13,7 @@ IncrementsMaxToxProb(prob)
 .DefaultIncrementsMaxToxProb()
 }
 \arguments{
-\item{probs}{(\code{numeric})\cr see slot definition.}
+\item{prob}{(\code{numeric})\cr see slot definition.}
 }
 \description{
 \ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#experimental}{\figure{lifecycle-experimental.svg}{options: alt='[Experimental]'}}}{\strong{[Experimental]}}

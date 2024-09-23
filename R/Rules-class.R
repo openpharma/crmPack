@@ -1578,7 +1578,7 @@ IncrementsOrdinal <- function(grade, rule) {
 
 #' @rdname IncrementsMaxToxProb-class
 #'
-#' @param probs (`numeric`)\cr see slot definition.
+#' @param prob (`numeric`)\cr see slot definition.
 #'
 #' @export
 #' @example examples/Rules-class-IncrementsMaxToxProb.R

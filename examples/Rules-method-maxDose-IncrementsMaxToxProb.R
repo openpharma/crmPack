@@ -5,7 +5,7 @@ model <- LogisticLogNormalOrdinal(
 )
 
 emptyData <- DataOrdinal(
-  doseGrid = doseGrid,
+  doseGrid = c(1, 3, 9, 25, 50, 75, 100),
   yCategories = c("No tox" = 0L, "DLAE" = 1L, "CRS" = 2L)
 )
 

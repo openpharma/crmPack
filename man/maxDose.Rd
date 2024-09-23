@@ -57,6 +57,8 @@ maxDose(increments, data, ...)
 
 \item{model}{(\code{GeneralModel})\cr The model on which probabilities will be based}
 
+\item{samples}{(\code{Samples})\cr The MCMC samples to which \code{model} will be applied}
+
 \item{`samples`}{(\code{Samples})\cr The MCMC samples to which \code{model} will be applied}
 }
 \value{
@@ -285,12 +287,14 @@ model <- LogisticLogNormalOrdinal(
 )
 
 emptyData <- DataOrdinal(
-  doseGrid = doseGrid,
+  doseGrid = c(1, 3, 9, 25, 50, 75, 100),
   yCategories = c("No tox" = 0L, "DLAE" = 1L, "CRS" = 2L)
 )
 
-#For warning regarding tox, see issue #748 https://github.com/openpharma/crmPack/issues/748
-suppressWarnings({samples <- mcmc(emptyData, model, .DefaultMcmcOptions())})
+# For warning regarding tox, see issue #748 https://github.com/openpharma/crmPack/issues/748
+suppressWarnings({
+  samples <- mcmc(emptyData, model, .DefaultMcmcOptions())
+})
 toxIncrements <- IncrementsMaxToxProb(probs = c("DLAE" = 0.2, "CRS" = 0.05))
 maxDose(toxIncrements, emptyData, model, samples)
 model <- LogisticLogNormalOrdinal(
@@ -300,12 +304,14 @@ model <- LogisticLogNormalOrdinal(
 )
 
 emptyData <- DataOrdinal(
-  doseGrid = doseGrid,
+  doseGrid = c(1, 3, 9, 25, 50, 75, 100),
   yCategories = c("No tox" = 0L, "DLAE" = 1L, "CRS" = 2L)
 )
 
-#For warning regarding tox, see issue #748 https://github.com/openpharma/crmPack/issues/748
-suppressWarnings({samples <- mcmc(emptyData, model, .DefaultMcmcOptions())})
+# For warning regarding tox, see issue #748 https://github.com/openpharma/crmPack/issues/748
+suppressWarnings({
+  samples <- mcmc(emptyData, model, .DefaultMcmcOptions())
+})
 toxIncrements <- IncrementsMaxToxProb(probs = c("DLAE" = 0.2, "CRS" = 0.05))
 maxDose(toxIncrements, emptyData, model, samples)
 }
