@@ -1758,7 +1758,7 @@ setMethod(
       }
     ) %>%
       dplyr::bind_rows()
-    return(min(probs$dose))
+    min(probs$dose)
   }
 )
 #' @describeIn maxDose determine the maximum possible next dose based on the
