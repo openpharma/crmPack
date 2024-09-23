@@ -1746,13 +1746,14 @@ setMethod(
   definition = function(increments, data, model, samples, ...) {
     assert_class(samples, "Samples")
     assert_true(length(increments@prob) == length(data@yCategories) - 1)
-    assert_set_equal(names(increments@prob), names(data@yCategories)[2:length(data@yCategories)])
+    nm <- names(data@yCategories)[2:length(data@yCategories)]
+    assert_set_equal(names(increments@prob), nm)
 
     probs <- lapply(
-      seq_along(length(increments@prob)),
+      seq_along(increments@prob),
       function(g) {
         fit(samples, model, data, grade = g, ...) %>%
-          dplyr::filter(middle < increments@prob[g]) %>%
+          dplyr::filter(middle < increments@prob[nm[g]]) %>%
           utils::tail(1)
       }
     ) %>%
