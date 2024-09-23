@@ -1749,15 +1749,16 @@ setMethod(
     nm <- tail(names(data@yCategories), -1)
     assert_set_equal(names(increments@prob), nm)
 
-    probs <- lapply(
-      seq_along(increments@prob),
-      function(g) {
-        fit(samples, model, data, grade = g, ...) %>%
-          dplyr::filter(middle < increments@prob[nm[g]]) %>%
-          utils::tail(1)
-      }
-    ) %>%
-      dplyr::bind_rows()
+    probs <- dplyr::bind_rows(
+      lapply(
+        seq_along(increments@prob),
+        function(g) {
+          fitted_probs <- fit(samples, model, data, grade = g, ...)
+          safe_fitted_probs <- dplyr::filter(fitted_probs, middle < increments@prob[nm[g]])
+          highest_safe_fitted_prob <- utils::tail(safe_fitted_probs, 1)
+        }
+      )
+    )
     min(probs$dose)
   }
 )
@@ -1781,11 +1782,10 @@ setMethod(
     assert_class(samples, "Samples")
     assert_true(length(increments@prob) == 1)
 
-    prob <- fit(samples, model, data, ...) %>%
-      dplyr::filter(middle < increments@prob) %>%
-      utils::tail(1) %>%
-      dplyr::pull(dose)
-    return(prob)
+    fitted_prob <- fit(samples, model, data, ...)
+    safe_fitted_prob <- dplyr::filter(fitted_prob, middle < increments@prob)
+    highest_safe_fitted_prob <- utils::tail(safe_fitted_prob, 1)
+    highest_safe_fitted_prob$dose
   }
 )
 
