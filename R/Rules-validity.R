@@ -337,10 +337,6 @@ v_increments_maxtoxprob <- function(object) {
     test_probabilities(object@prob),
     "prob must be a vector of probabilities with minimum length 1 and no missing values"
   )
-  v$check(
-    test_numeric(object@prob, any.missing = FALSE, min.len = 1),
-    "prob must be a vector of probabilities with minimum length 1 and no missing values"
-  )
   v$result()
 }
 
