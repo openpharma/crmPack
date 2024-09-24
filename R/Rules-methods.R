@@ -1730,7 +1730,7 @@ setMethod(
 #' @describeIn maxDose determine the maximum possible next dose based on the
 #' probability of toxicity
 #' @param model (`GeneralModel`)\cr The model on which probabilities will be based
-#' @param `samples` (`Samples`)\cr The MCMC samples to which `model` will be applied
+#' @param samples (`Samples`)\cr The MCMC samples to which `model` will be applied
 #'
 #' @aliases maxDose-IncrementsMaxToxProb
 #'

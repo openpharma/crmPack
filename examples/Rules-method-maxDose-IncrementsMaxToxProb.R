@@ -13,5 +13,5 @@ emptyData <- DataOrdinal(
 suppressWarnings({
   samples <- mcmc(emptyData, model, .DefaultMcmcOptions())
 })
-toxIncrements <- IncrementsMaxToxProb(probs = c("DLAE" = 0.2, "CRS" = 0.05))
+toxIncrements <- IncrementsMaxToxProb(prob = c("DLAE" = 0.2, "CRS" = 0.05))
 maxDose(toxIncrements, emptyData, model, samples)

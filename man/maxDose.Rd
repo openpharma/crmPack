@@ -58,8 +58,6 @@ maxDose(increments, data, ...)
 \item{model}{(\code{GeneralModel})\cr The model on which probabilities will be based}
 
 \item{samples}{(\code{Samples})\cr The MCMC samples to which \code{model} will be applied}
-
-\item{`samples`}{(\code{Samples})\cr The MCMC samples to which \code{model} will be applied}
 }
 \value{
 A \code{number}, the maximum possible next dose.
@@ -295,7 +293,7 @@ emptyData <- DataOrdinal(
 suppressWarnings({
   samples <- mcmc(emptyData, model, .DefaultMcmcOptions())
 })
-toxIncrements <- IncrementsMaxToxProb(probs = c("DLAE" = 0.2, "CRS" = 0.05))
+toxIncrements <- IncrementsMaxToxProb(prob = c("DLAE" = 0.2, "CRS" = 0.05))
 maxDose(toxIncrements, emptyData, model, samples)
 model <- LogisticLogNormalOrdinal(
   mean = c(0.25, 0.15, 0.5),
@@ -312,6 +310,6 @@ emptyData <- DataOrdinal(
 suppressWarnings({
   samples <- mcmc(emptyData, model, .DefaultMcmcOptions())
 })
-toxIncrements <- IncrementsMaxToxProb(probs = c("DLAE" = 0.2, "CRS" = 0.05))
+toxIncrements <- IncrementsMaxToxProb(prob = c("DLAE" = 0.2, "CRS" = 0.05))
 maxDose(toxIncrements, emptyData, model, samples)
 }
