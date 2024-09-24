@@ -1650,18 +1650,21 @@ test_that("v_nextbest_ordinal validates correctly", {
     x <- NextBestOrdinal(grade = 1L, rule = NextBestMTD(target = 0.3, derive = mean))
   })
 
-  expect_error({
-    x <- NextBestOrdinal(grade = pi, rule = NextBestMTD(target = 0.3, derive = mean))
-  },
-  "grade must be a positive integer"
+  expect_error(
+    {
+      x <- NextBestOrdinal(grade = pi, rule = NextBestMTD(target = 0.3, derive = mean))
+    },
+    "grade must be a positive integer"
   )
-  expect_error({
-    x <- NextBestOrdinal(grade = -2, rule = NextBestMTD(target = 0.3, derive = mean))
-  },
-  "grade must be a positive integer"
+  expect_error(
+    {
+      x <- NextBestOrdinal(grade = -2, rule = NextBestMTD(target = 0.3, derive = mean))
+    },
+    "grade must be a positive integer"
   )
 
-  expect_error({
+  expect_error(
+    {
       x <- NextBestOrdinal(grade = 1L, rule = CohortSizeConst(3))
     },
     paste0(
