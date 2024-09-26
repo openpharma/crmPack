@@ -11,6 +11,9 @@ vignette: >
   %\VignetteIndexEntry{demo}
   %\VignetteEngine{quarto::html}
   %\VignetteEncoding{UTF-8}
+execute:
+  error: true
+  warning: true
 ---
 
 ```{r}
