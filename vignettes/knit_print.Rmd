@@ -9,6 +9,7 @@ citation-location: margin
 bibliography: vignettes.bib
 vignette: >
   %\VignetteIndexEntry{demo}
+  %\VignetteEngine{knitr::rmarkdown}
   %\VignetteEncoding{UTF-8}
 ---
 
@@ -60,7 +61,7 @@ cs
 
 > The `knit_print`methods provided by `crmPack` are not intended to be fully customisable or
 > comprehensive. We do believe, however, that they cover the vast majority of use-cases and are
-> easily extended using the techniques described in @sec-override of this vignette.
+> easily extended using the techniques described later in this vignette.
 
 > Formatting of these objects currently only works for HMTL output. If another format - such as PDF
 > or Microsoft Word - is required, our suggested workaround is to create the HTML output and then
