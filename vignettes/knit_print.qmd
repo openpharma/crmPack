@@ -21,13 +21,13 @@ execute:
 #| label: setup
 #| echo: FALSE
 
-suppressPackageStartupMessages({
+
   library(tibble)
   library(dplyr)
   library(knitr)
   library(kableExtra)
   library(crmPack)
-})
+
 ```
 
 ## Introduction
