@@ -5,96 +5,67 @@
 <meta charset="utf-8">
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-<meta name="description" content="crmPack">
 <title>Model-based Dose Escalation Designs in R with crmPack (JSS manuscript) • crmPack</title>
-<!-- favicons --><link rel="icon" type="image/png" sizes="16x16" href="../favicon-16x16.png">
-<link rel="icon" type="image/png" sizes="32x32" href="../favicon-32x32.png">
-<link rel="apple-touch-icon" type="image/png" sizes="180x180" href="../apple-touch-icon.png">
-<link rel="apple-touch-icon" type="image/png" sizes="120x120" href="../apple-touch-icon-120x120.png">
-<link rel="apple-touch-icon" type="image/png" sizes="76x76" href="../apple-touch-icon-76x76.png">
-<link rel="apple-touch-icon" type="image/png" sizes="60x60" href="../apple-touch-icon-60x60.png">
 <script src="../deps/jquery-3.6.0/jquery-3.6.0.min.js"></script><meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 <link href="../deps/bootstrap-5.3.1/bootstrap.min.css" rel="stylesheet">
-<script src="../deps/bootstrap-5.3.1/bootstrap.bundle.min.js"></script><!-- Font Awesome icons --><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.12.1/css/all.min.css" integrity="sha256-mmgLkCYLUQbXn0B1SRqzHar6dCnv9oZFPEC1g1cwlkk=" crossorigin="anonymous">
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.12.1/css/v4-shims.min.css" integrity="sha256-wZjR52fzng1pJHwx4aV2AO3yyTOXrcDW7jBpJtTwVxw=" crossorigin="anonymous">
-<!-- bootstrap-toc --><script src="https://cdn.jsdelivr.net/gh/afeld/bootstrap-toc@v1.0.1/dist/bootstrap-toc.min.js" integrity="sha256-4veVQbu7//Lk5TSmc7YV48MxtMy98e26cf5MrgZYnwo=" crossorigin="anonymous"></script><!-- headroom.js --><script src="https://cdnjs.cloudflare.com/ajax/libs/headroom/0.11.0/headroom.min.js" integrity="sha256-AsUX4SJE1+yuDu5+mAVzJbuYNPHj/WroHuZ8Ir/CkE0=" crossorigin="anonymous"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/headroom/0.11.0/jQuery.headroom.min.js" integrity="sha256-ZX/yNShbjqsohH1k95liqY9Gd8uOiE1S4vZc+9KQ1K4=" crossorigin="anonymous"></script><!-- clipboard.js --><script src="https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/2.0.11/clipboard.min.js" integrity="sha512-7O5pXpc0oCRrxk8RUfDYFgn0nO1t+jLuIOQdOMRp4APB7uZ4vSjspzp5y6YDtDs4VzUSTbWzBFZ/LKJhnyFOKw==" crossorigin="anonymous" referrerpolicy="no-referrer"></script><!-- search --><script src="https://cdnjs.cloudflare.com/ajax/libs/fuse.js/6.4.6/fuse.js" integrity="sha512-zv6Ywkjyktsohkbp9bb45V6tEMoWhzFzXis+LrMehmJZZSys19Yxf1dopHx7WzIKxr5tK2dVcYmaCk2uqdjF4A==" crossorigin="anonymous"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/autocomplete.js/0.38.0/autocomplete.jquery.min.js" integrity="sha512-GU9ayf+66Xx2TmpxqJpliWbT5PiGYxpaG8rfnBEk1LL8l1KGkRShhngwdXK1UgqhAzWpZHSiYPc09/NwDQIGyg==" crossorigin="anonymous"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/mark.js/8.11.1/mark.min.js" integrity="sha512-5CYOlHXGh6QpOFA/TeTylKLWfB3ftPsde7AnmhuitiTX4K5SqCLBeKro6sPS8ilsz1Q4NRx3v8Ko2IBiszzdww==" crossorigin="anonymous"></script><!-- pkgdown --><script src="../pkgdown.js"></script><meta property="og:title" content="Model-based Dose Escalation Designs in R with crmPack (JSS manuscript)">
-<meta property="og:description" content="crmPack">
-<meta property="og:image" content="https://openpharma.github.io/crmPack/logo.png">
-<!-- mathjax --><script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/MathJax.js" integrity="sha256-nvJJv9wWKEm88qvoQl9ekL2J+k/RWIsaSScxxlsrv8k=" crossorigin="anonymous"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/config/TeX-AMS-MML_HTMLorMML.js" integrity="sha256-84DKXVJXs0/F8OTMzX4UR909+jtl4G7SPypPavF+GfA=" crossorigin="anonymous"></script><!--[if lt IE 9]>
-<script src="https://oss.maxcdn.com/html5shiv/3.7.3/html5shiv.min.js"></script>
-<script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
-<![endif]-->
+<script src="../deps/bootstrap-5.3.1/bootstrap.bundle.min.js"></script><link href="../deps/font-awesome-6.4.2/css/all.min.css" rel="stylesheet">
+<link href="../deps/font-awesome-6.4.2/css/v4-shims.min.css" rel="stylesheet">
+<script src="../deps/headroom-0.11.0/headroom.min.js"></script><script src="../deps/headroom-0.11.0/jQuery.headroom.min.js"></script><script src="../deps/bootstrap-toc-1.0.1/bootstrap-toc.min.js"></script><script src="../deps/clipboard.js-2.0.11/clipboard.min.js"></script><script src="../deps/search-1.0.0/autocomplete.jquery.min.js"></script><script src="../deps/search-1.0.0/fuse.min.js"></script><script src="../deps/search-1.0.0/mark.min.js"></script><!-- pkgdown --><script src="../pkgdown.js"></script><meta property="og:title" content="Model-based Dose Escalation Designs in R with crmPack (JSS manuscript)">
 </head>
 <body>
     <a href="#main" class="visually-hidden-focusable">Skip to contents</a>
-    
 
-    <nav class="navbar fixed-top navbar-default navbar-expand-lg bg-primary" data-bs-theme="default"><div class="container">
-    
+
+    <nav class="navbar navbar-expand-lg fixed-top bg-primary" data-bs-theme="default" aria-label="Site navigation"><div class="container">
+
     <a class="navbar-brand me-2" href="../index.html">crmPack</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">2.0.0.9155</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">2.0.0.9158</small>
 
-    
+
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
       <span class="navbar-toggler-icon"></span>
     </button>
 
     <div id="navbar" class="collapse navbar-collapse ms-3">
       <ul class="navbar-nav me-auto">
-<li class="nav-item">
-  <a class="nav-link" href="../reference/index.html">Reference</a>
-</li>
+<li class="nav-item"><a class="nav-link" href="../reference/index.html">Reference</a></li>
 <li class="active nav-item dropdown">
-  <a href="#" class="nav-link dropdown-toggle" data-bs-toggle="dropdown" role="button" aria-expanded="false" aria-haspopup="true" id="dropdown-articles">Articles</a>
-  <div class="dropdown-menu" aria-labelledby="dropdown-articles">
-    <a class="dropdown-item" href="../articles/trial_definition.html">Trial Definition</a>
-    <a class="dropdown-item" href="../articles/trial_analysis.html">Trial Analysis</a>
-    <a class="dropdown-item" href="../articles/trial_sanity_checks.html">Trial Design: basic sanity checks</a>
-    <a class="dropdown-item" href="../articles/trial_simulation.html">Trial Simulation</a>
-    <a class="dropdown-item" href="../articles/ordinal-crm.html">Ordinal CRM</a>
-    <a class="dropdown-item" href="../articles/rolling-crm.html">Rolling CRM Example</a>
-    <a class="dropdown-item" href="../articles/simulations.html">Simulation study example</a>
-    <a class="dropdown-item" href="../articles/knit_print.html">Describing `crmPack` Objects</a>
-    <a class="dropdown-item" href="../articles/tidy_method.html">Using tidy</a>
-    <a class="dropdown-item" href="../articles/migration_from_the_old_crmPack.html">Migrating from crmPack version 1.0.3</a>
-    <a class="dropdown-item" href="../articles/parallel_computing_with_extensions.html">Parallel computing with extensions</a>
-    <a class="dropdown-item" href="../articles/crmPack-jss-paper.html">Model-based Dose Escalation Designs in R with crmPack (JSS manuscript)</a>
-    <a class="dropdown-item" href="../articles/example.html">crmPack: Object-oriented implementation of CRM designs</a>
-  </div>
+  <button class="nav-link dropdown-toggle" type="button" id="dropdown-articles" data-bs-toggle="dropdown" aria-expanded="false" aria-haspopup="true">Articles</button>
+  <ul class="dropdown-menu" aria-labelledby="dropdown-articles">
+<li><a class="dropdown-item" href="../articles/trial_definition.html">Trial Definition</a></li>
+    <li><a class="dropdown-item" href="../articles/trial_analysis.html">Trial Analysis</a></li>
+    <li><a class="dropdown-item" href="../articles/trial_sanity_checks.html">Trial Design: basic sanity checks</a></li>
+    <li><a class="dropdown-item" href="../articles/trial_simulation.html">Trial Simulation</a></li>
+    <li><a class="dropdown-item" href="../articles/ordinal-crm.html">Ordinal CRM</a></li>
+    <li><a class="dropdown-item" href="../articles/rolling-crm.html">Rolling CRM Example</a></li>
+    <li><a class="dropdown-item" href="../articles/simulations.html">Simulation study example</a></li>
+    <li><a class="dropdown-item" href="../articles/knit_print.html">Describing `crmPack` Objects</a></li>
+    <li><a class="dropdown-item" href="../articles/tidy_method.html">Using tidy</a></li>
+    <li><a class="dropdown-item" href="../articles/migration_from_the_old_crmPack.html">Migrating from crmPack version 1.0.3</a></li>
+    <li><a class="dropdown-item" href="../articles/parallel_computing_with_extensions.html">Parallel computing with extensions</a></li>
+    <li><a class="dropdown-item" href="../articles/crmPack-jss-paper.html">Model-based Dose Escalation Designs in R with crmPack (JSS manuscript)</a></li>
+    <li><a class="dropdown-item" href="../articles/example.html">crmPack: Object-oriented implementation of CRM designs</a></li>
+  </ul>
 </li>
-<li class="nav-item">
-  <a class="nav-link" href="../news/index.html">Changelog</a>
-</li>
-<!-- start dropdown for versions --> <li class="nav-item dropdown">
-        <a href="#" class="nav-link dropdown-toggle"
-          data-bs-toggle="dropdown" role="button"
-          aria-expanded="false" aria-haspopup="true"
-          id="dropdown-versions">Versions</a> <div class="dropdown-menu" aria-labelledby="dropdown-versions"> <a class="dropdown-item" data-toggle="tooltip" title="" href="https://openpharma.github.io/crmPack/main">main</a> </div></li>
-<!-- end dropdown for versions -->
+<li class="nav-item"><a class="nav-link" href="../news/index.html">Changelog</a></li>
 <li class="nav-item dropdown">
-  <a href="#" class="nav-link dropdown-toggle" data-bs-toggle="dropdown" role="button" aria-expanded="false" aria-haspopup="true" id="dropdown-reports">Reports</a>
-  <div class="dropdown-menu" aria-labelledby="dropdown-reports">
-    <a class="dropdown-item" href="../coverage-report/">Coverage report</a>
-    <a class="dropdown-item" href="../unit-test-report/">Unit test report</a>
-  </div>
+  <button class="nav-link dropdown-toggle" type="button" id="dropdown-reports" data-bs-toggle="dropdown" aria-expanded="false" aria-haspopup="true">Reports</button>
+  <ul class="dropdown-menu" aria-labelledby="dropdown-reports">
+<li><a class="dropdown-item" href="../coverage-report/">Coverage report</a></li>
+    <li><a class="dropdown-item" href="../unit-test-report/">Unit test report</a></li>
+  </ul>
 </li>
       </ul>
-<form class="form-inline my-2 my-lg-0" role="search">
-        <input type="search" class="form-control me-sm-2" aria-label="Toggle navigation" name="search-input" data-search-index="../search.json" id="search-input" placeholder="Search for" autocomplete="off">
-</form>
-
-      <ul class="navbar-nav">
-<li class="nav-item">
-  <a class="external-link nav-link" href="https://github.com/openpharma/crmPack">
-    <span class="fa fa-github"></span>
-     
-  </a>
-</li>
+<ul class="navbar-nav">
+<li class="nav-item"><form class="form-inline" role="search">
+ <input class="form-control" type="search" name="search-input" id="search-input" autocomplete="off" aria-label="Search site" placeholder="Search for" data-search-index="../search.json">
+</form></li>
+<li class="nav-item"><a class="external-link nav-link" href="https://github.com/openpharma/crmPack"><span class="fa fa-github"></span></a></li>
       </ul>
 </div>
 
-    
+
   </div>
 </nav><div class="container template-article">
 
@@ -106,7 +77,7 @@
       <img src="../logo.png" class="logo" alt=""><h1>Model-based Dose Escalation Designs in R with crmPack (JSS manuscript)</h1>
             
       
-      <small class="dont-index">Source: <a href="https://github.com/openpharma/crmPack/blob/HEAD/vignettes/crmPack-jss-paper.Rmd" class="external-link"><code>vignettes/crmPack-jss-paper.Rmd</code></a></small>
+      <small class="dont-index">Source: <a href="https://github.com/openpharma/crmPack/blob/main/vignettes/crmPack-jss-paper.Rmd" class="external-link"><code>vignettes/crmPack-jss-paper.Rmd</code></a></small>
       <div class="d-none name"><code>crmPack-jss-paper.Rmd</code></div>
     </div>
 
@@ -249,72 +220,121 @@ hypothetical trial courses and operating characteristics, respectively.
 Note that individual model classes and methods are not shown here for
 clarity, please refer to the package documentation for details, e.g., by
 calling <code><a href="../reference/crmPackHelp.html">crmPackHelp()</a></code>.’</p>
-<p><strong>Data</strong> Let <span class="math inline">\(x\)</span>
+<p><strong>Data</strong> Let
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>x</mi><annotation encoding="application/x-tex">x</annotation></semantics></math>
 denote one specific treatment, chosen from the set of possible
-treatments <span class="math inline">\({\cal X}\)</span>. This could be
+treatments <span class="math inline">${\cal X}$</span>. This could be
 one specific dose, but also more generally a vector, containing for
 example doses of multiple drugs in a combination trial. After giving
-treatment <span class="math inline">\(x\)</span> to a patient, the
-outcome <span class="math inline">\(y\)</span> is observed, typically a
-safety endpoint as e.g., the binary DLT <span class="math inline">\(y
-\in \{0,
-1\}\)</span>. Grouping together <span class="math inline">\(n_{j}\)</span> patients in cohort <span class="math inline">\(j\)</span>, generating the cohort <span class="math inline">\(j\)</span> data <span class="math inline">\({\cal
-C}_{j} = \{(x_{j}, y_{j,1}), \dotsc, (x_{j},
-y_{j,n_{j}})\}\)</span>, we can denote the data generated from the first
-<span class="math inline">\(N\)</span> cohorts as <span class="math inline">\({\cal D}_{N}= {\cal C}_{1} \cup \dotsb \cup {\cal
-C}_{N}\)</span>.</p>
+treatment
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>x</mi><annotation encoding="application/x-tex">x</annotation></semantics></math>
+to a patient, the outcome
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>y</mi><annotation encoding="application/x-tex">y</annotation></semantics></math>
+is observed, typically a safety endpoint as e.g., the binary DLT
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>y</mi><mo>∈</mo><mo stretchy="false" form="prefix">{</mo><mn>0</mn><mo>,</mo><mn>1</mn><mo stretchy="false" form="postfix">}</mo></mrow><annotation encoding="application/x-tex">y \in \{0,
+1\}</annotation></semantics></math>. Grouping together
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msub><mi>n</mi><mi>j</mi></msub><annotation encoding="application/x-tex">n_{j}</annotation></semantics></math>
+patients in cohort
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>j</mi><annotation encoding="application/x-tex">j</annotation></semantics></math>,
+generating the cohort
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>j</mi><annotation encoding="application/x-tex">j</annotation></semantics></math>
+data <span class="math inline">${\cal C}_{j} = \{(x_{j}, y_{j,1}),
+\dotsc, (x_{j},
+y_{j,n_{j}})\}$</span>, we can denote the data generated from the first
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>N</mi><annotation encoding="application/x-tex">N</annotation></semantics></math>
+cohorts as <span class="math inline">${\cal D}_{N}= {\cal C}_{1} \cup
+\dotsb \cup {\cal C}_{N}$</span>.</p>
 <p>In <code>crmPack</code> the <code>S4</code> class
 <code>GeneralData</code> encapsulates this notion and subclasses
 implement concrete data structures.</p>
 <p><strong>Model</strong> The core of model-based dose escalation
 designs is the underlying statistical model. Taking a Bayesian approach
 to inference, the model in <code>crmPack</code> consists of firstly the
-likelihood, which is either a probability density function <span class="math display">\[ f(y | x,
-\theta)\]</span> or a probability mass function <span class="math display">\[ Prob(Y=y | x, \theta)\]</span> of <span class="math inline">\(y\)</span> for a patient who receives treatment
-<span class="math inline">\(x\)</span> assuming the parameter (vector)
-<span class="math inline">\(\theta\)</span>, (this is the likelihood of
-<span class="math inline">\(\theta\)</span>) and secondly the prior
-<span class="math display">\[ p(\theta | \xi)\]</span> for <span class="math inline">\(\theta\)</span> given fixed hyperparameters <span class="math inline">\(\xi\)</span>.</p>
+likelihood, which is either a probability density function
+<math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>f</mi><mrow><mo stretchy="true" form="prefix">(</mo><mi>y</mi><mo stretchy="false" form="prefix">|</mo><mi>x</mi><mo>,</mo><mi>θ</mi><mo stretchy="true" form="postfix">)</mo></mrow></mrow><annotation encoding="application/x-tex"> f(y | x,
+\theta)</annotation></semantics></math> or a probability mass function
+<math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>P</mi><mi>r</mi><mi>o</mi><mi>b</mi><mrow><mo stretchy="true" form="prefix">(</mo><mi>Y</mi><mo>=</mo><mi>y</mi><mo stretchy="false" form="prefix">|</mo><mi>x</mi><mo>,</mo><mi>θ</mi><mo stretchy="true" form="postfix">)</mo></mrow></mrow><annotation encoding="application/x-tex"> Prob(Y=y | x, \theta)</annotation></semantics></math>
+of
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>y</mi><annotation encoding="application/x-tex">y</annotation></semantics></math>
+for a patient who receives treatment
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>x</mi><annotation encoding="application/x-tex">x</annotation></semantics></math>
+assuming the parameter (vector)
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>θ</mi><annotation encoding="application/x-tex">\theta</annotation></semantics></math>,
+(this is the likelihood of
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>θ</mi><annotation encoding="application/x-tex">\theta</annotation></semantics></math>)
+and secondly the prior
+<math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>p</mi><mrow><mo stretchy="true" form="prefix">(</mo><mi>θ</mi><mo stretchy="false" form="prefix">|</mo><mi>ξ</mi><mo stretchy="true" form="postfix">)</mo></mrow></mrow><annotation encoding="application/x-tex"> p(\theta | \xi)</annotation></semantics></math>
+for
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>θ</mi><annotation encoding="application/x-tex">\theta</annotation></semantics></math>
+given fixed hyperparameters
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>ξ</mi><annotation encoding="application/x-tex">\xi</annotation></semantics></math>.</p>
 <p>In <code>crmPack</code> the virtual <code>S4</code> class
 <code>GeneralModel</code> encapsulates this notion and subclasses
 implement concrete models.</p>
 <p>For example, the class <code>LogisticLogNormal</code> implements the
 logistic regression model <span class="citation">(Neuenschwander,
-Branson, and Gsponer 2008)</span> with <span class="math display">\[\begin{equation}
+Branson, and Gsponer 2008)</span> with
+<math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mrow><mi mathvariant="normal">l</mi><mi mathvariant="normal">o</mi><mi mathvariant="normal">g</mi><mi mathvariant="normal">i</mi><mi mathvariant="normal">t</mi></mrow><mrow><mo stretchy="true" form="prefix">(</mo><mi>P</mi><mi>r</mi><mi>o</mi><mi>b</mi><mrow><mo stretchy="true" form="prefix">(</mo><mi>Y</mi><mo>=</mo><mn>1</mn><mo stretchy="false" form="prefix">|</mo><mi>x</mi><mo>,</mo><mi>θ</mi><mo stretchy="true" form="postfix">)</mo></mrow><mo stretchy="true" form="postfix">)</mo></mrow><mo>≡</mo><mrow><mi mathvariant="normal">l</mi><mi mathvariant="normal">o</mi><mi mathvariant="normal">g</mi><mi mathvariant="normal">i</mi><mi mathvariant="normal">t</mi></mrow><mrow><mo stretchy="true" form="prefix">(</mo><mi>π</mi><mrow><mo stretchy="true" form="prefix">(</mo><mi>x</mi><mo>,</mo><mi>θ</mi><mo stretchy="true" form="postfix">)</mo></mrow><mo stretchy="true" form="postfix">)</mo></mrow><mo>=</mo><msub><mi>α</mi><mn>0</mn></msub><mo>+</mo><msub><mi>α</mi><mn>1</mn></msub><mo>log</mo><mrow><mo stretchy="true" form="prefix">(</mo><mfrac><mi>x</mi><msup><mi>x</mi><mo>*</mo></msup></mfrac><mo stretchy="true" form="postfix">)</mo></mrow><mo>,</mo></mrow><annotation encoding="application/x-tex">\begin{equation}
 \label{eq:LogisticLogNormal}
 \mathrm{logit}(Prob(Y=1 | x,\theta))
 \equiv \mathrm{logit}(\pi(x,\theta))
 = \alpha_{0} + \alpha_{1} \log\left(\frac{x}{x^*}\right),
-\end{equation}\]</span> parameter vector <span class="math inline">\(\theta = (\alpha_{0},\alpha_{1})\)</span>, dose
-<span class="math inline">\(x &gt; 0\)</span> and specified reference
-dose <span class="math inline">\(x^{*}\)</span>. The prior <span class="math inline">\(p(\theta | \xi)\)</span> is specified via a
-bivariate normal distribution on a transformation of <span class="math inline">\(\theta\)</span> to ensure <span class="math inline">\(\alpha_{1} &gt; 0\)</span>: <span class="math display">\[\begin{equation}
+\end{equation}</annotation></semantics></math> parameter vector
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>θ</mi><mo>=</mo><mrow><mo stretchy="true" form="prefix">(</mo><msub><mi>α</mi><mn>0</mn></msub><mo>,</mo><msub><mi>α</mi><mn>1</mn></msub><mo stretchy="true" form="postfix">)</mo></mrow></mrow><annotation encoding="application/x-tex">\theta = (\alpha_{0},\alpha_{1})</annotation></semantics></math>,
+dose
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>x</mi><mo>&gt;</mo><mn>0</mn></mrow><annotation encoding="application/x-tex">x &gt; 0</annotation></semantics></math>
+and specified reference dose
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msup><mi>x</mi><mo>*</mo></msup><annotation encoding="application/x-tex">x^{*}</annotation></semantics></math>.
+The prior
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>p</mi><mrow><mo stretchy="true" form="prefix">(</mo><mi>θ</mi><mo stretchy="false" form="prefix">|</mo><mi>ξ</mi><mo stretchy="true" form="postfix">)</mo></mrow></mrow><annotation encoding="application/x-tex">p(\theta | \xi)</annotation></semantics></math>
+is specified via a bivariate normal distribution on a transformation of
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>θ</mi><annotation encoding="application/x-tex">\theta</annotation></semantics></math>
+to ensure
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>α</mi><mn>1</mn></msub><mo>&gt;</mo><mn>0</mn></mrow><annotation encoding="application/x-tex">\alpha_{1} &gt; 0</annotation></semantics></math>:
+<math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mrow><mo stretchy="true" form="prefix">(</mo><msub><mi>α</mi><mn>0</mn></msub><mo>,</mo><mo>log</mo><mrow><mo stretchy="true" form="prefix">(</mo><msub><mi>α</mi><mn>1</mn></msub><mo stretchy="true" form="postfix">)</mo></mrow><mo stretchy="true" form="postfix">)</mo></mrow><mo stretchy="false" form="prefix">|</mo><mi>ξ</mi><mo>∼</mo><msub><mi>𝒩</mi><mn>2</mn></msub><mrow><mo stretchy="true" form="prefix">(</mo><mi>μ</mi><mo>,</mo><mi>Σ</mi><mo stretchy="true" form="postfix">)</mo></mrow></mrow><annotation encoding="application/x-tex">\begin{equation}
   \label{eq:bivariateNormal}
-  (\alpha_{0}, \log(\alpha_{1})) | \xi \sim \mathcal{N}_{2} (\mu,
-\Sigma)
-\end{equation}\]</span> with hyperparameters <span class="math inline">\(\xi = (\mu, \Sigma)\)</span> consisting of the
-prior mean vector <span class="math inline">\(\mu\)</span> and the prior
-covariance matrix <span class="math inline">\(\Sigma\)</span>.</p>
+  (\alpha_{0}, \log(\alpha_{1})) | \xi \sim \mathcal{N}_{2} (\mu, \Sigma)
+\end{equation}</annotation></semantics></math> with hyperparameters
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>ξ</mi><mo>=</mo><mrow><mo stretchy="true" form="prefix">(</mo><mi>μ</mi><mo>,</mo><mi>Σ</mi><mo stretchy="true" form="postfix">)</mo></mrow></mrow><annotation encoding="application/x-tex">\xi = (\mu, \Sigma)</annotation></semantics></math>
+consisting of the prior mean vector
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>μ</mi><annotation encoding="application/x-tex">\mu</annotation></semantics></math>
+and the prior covariance matrix
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>Σ</mi><annotation encoding="application/x-tex">\Sigma</annotation></semantics></math>.</p>
 <p><strong>Decision making for the next dose</strong> Another core
 element of a dose escalation design concerns the decision making for the
-next dose <span class="math inline">\(x_{N+1}\)</span> to be tested in
-the next cohort <span class="math inline">\(N+1\)</span>. In the <span class="citation">(Thall 2010)</span> notation, the function <span class="math inline">\(\alpha\)</span> is mapping the currently
-accumulated data <span class="math inline">\(\mathcal{D}_{N}\)</span> to
-the dose space <span class="math inline">\(\mathcal{X}\)</span> (or to
-dose <span class="math inline">\(0\)</span>, meaning to stop the trial
-because all doses are too toxic): <span class="math display">\[\begin{equation}
+next dose
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msub><mi>x</mi><mrow><mi>N</mi><mo>+</mo><mn>1</mn></mrow></msub><annotation encoding="application/x-tex">x_{N+1}</annotation></semantics></math>
+to be tested in the next cohort
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>N</mi><mo>+</mo><mn>1</mn></mrow><annotation encoding="application/x-tex">N+1</annotation></semantics></math>.
+In the <span class="citation">(Thall 2010)</span> notation, the function
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>α</mi><annotation encoding="application/x-tex">\alpha</annotation></semantics></math>
+is mapping the currently accumulated data
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msub><mi>𝒟</mi><mi>N</mi></msub><annotation encoding="application/x-tex">\mathcal{D}_{N}</annotation></semantics></math>
+to the dose space
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>𝒳</mi><annotation encoding="application/x-tex">\mathcal{X}</annotation></semantics></math>
+(or to dose
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>0</mn><annotation encoding="application/x-tex">0</annotation></semantics></math>,
+meaning to stop the trial because all doses are too toxic): <span class="math display">$$\begin{equation}
 \alpha: {\cal D}_{N} \rightarrow \mathcal{X} \cup \{0\}
-\end{equation}\]</span> This mapping is commonly specified via the
-combination of two elements: The first element is a function <span class="math inline">\(\tau\)</span> for the maximum increments between
-dose levels, which can calculate from the current data <span class="math inline">\(\mathcal{D}_{N}\)</span> (including the current
-dose <span class="math inline">\(x_{N}\)</span>) the maximum possible
-next dose <span class="math inline">\(t_{N+1}=\tau(\mathcal{D}_{N})\)</span> for the
-next cohort. The second element is a rule <span class="math inline">\(\nu\)</span> indirectly acting on the current data
-through the posterior distribution <span class="math inline">\(p(\theta
-|
-\mathcal{D}_{N})\)</span> and the maximum possible dose <span class="math inline">\(t_{N+1}\)</span> to finally give the next dose
-<span class="math inline">\(x_{N+1} = \nu(p(\theta | \mathcal{D}_{N}),
-t_{N+1})\)</span>.</p>
+\end{equation}$$</span> This mapping is commonly specified via the
+combination of two elements: The first element is a function
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>τ</mi><annotation encoding="application/x-tex">\tau</annotation></semantics></math>
+for the maximum increments between dose levels, which can calculate from
+the current data
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msub><mi>𝒟</mi><mi>N</mi></msub><annotation encoding="application/x-tex">\mathcal{D}_{N}</annotation></semantics></math>
+(including the current dose
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msub><mi>x</mi><mi>N</mi></msub><annotation encoding="application/x-tex">x_{N}</annotation></semantics></math>)
+the maximum possible next dose
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>t</mi><mrow><mi>N</mi><mo>+</mo><mn>1</mn></mrow></msub><mo>=</mo><mi>τ</mi><mrow><mo stretchy="true" form="prefix">(</mo><msub><mi>𝒟</mi><mi>N</mi></msub><mo stretchy="true" form="postfix">)</mo></mrow></mrow><annotation encoding="application/x-tex">t_{N+1}=\tau(\mathcal{D}_{N})</annotation></semantics></math>
+for the next cohort. The second element is a rule
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>ν</mi><annotation encoding="application/x-tex">\nu</annotation></semantics></math>
+indirectly acting on the current data through the posterior distribution
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>p</mi><mrow><mo stretchy="true" form="prefix">(</mo><mi>θ</mi><mo stretchy="false" form="prefix">|</mo><msub><mi>𝒟</mi><mi>N</mi></msub><mo stretchy="true" form="postfix">)</mo></mrow></mrow><annotation encoding="application/x-tex">p(\theta |
+\mathcal{D}_{N})</annotation></semantics></math> and the maximum
+possible dose
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msub><mi>t</mi><mrow><mi>N</mi><mo>+</mo><mn>1</mn></mrow></msub><annotation encoding="application/x-tex">t_{N+1}</annotation></semantics></math>
+to finally give the next dose
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>x</mi><mrow><mi>N</mi><mo>+</mo><mn>1</mn></mrow></msub><mo>=</mo><mi>ν</mi><mrow><mo stretchy="true" form="prefix">(</mo><mi>p</mi><mrow><mo stretchy="true" form="prefix">(</mo><mi>θ</mi><mo stretchy="false" form="prefix">|</mo><msub><mi>𝒟</mi><mi>N</mi></msub><mo stretchy="true" form="postfix">)</mo></mrow><mo>,</mo><msub><mi>t</mi><mrow><mi>N</mi><mo>+</mo><mn>1</mn></mrow></msub><mo stretchy="true" form="postfix">)</mo></mrow></mrow><annotation encoding="application/x-tex">x_{N+1} = \nu(p(\theta | \mathcal{D}_{N}), t_{N+1})</annotation></semantics></math>.</p>
 <p>In <code>crmPack</code> maximum increments are specified by
 subclasses of <code>Increments</code>, and the next best dose rule by
 subclasses of <code>NextBest</code>.</p>
@@ -322,7 +342,8 @@ subclasses of <code>NextBest</code>.</p>
 concern the adaptive sizing of the next cohort and the adaptive stopping
 of the trial. Those are implemented in subclasses of
 <code>CohortSize</code> and <code>Stopping</code>, respectively.
-Moreover, the starting dose <span class="math inline">\(x_{1}\)</span>
+Moreover, the starting dose
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msub><mi>x</mi><mn>1</mn></msub><annotation encoding="application/x-tex">x_{1}</annotation></semantics></math>
 is also a feature of the design.</p>
 <p>Finally, the overall dose escalation design is bundling all the
 described features together in a dedicated class typically inheriting
@@ -375,13 +396,21 @@ vignette.</p>
 </h3>
 <p>Suppose that 12 dose levels ranging from 25 to 300 mg in 25 mg
 increments of a novel agent are available in addition to placebo,
-defining our dose grid <span class="math inline">\(\mathcal{X} =
-\{0.001,25, 50,\dotsc, 300\}\)</span>, with <span class="math inline">\(x_{1} = 0.001\)</span> mg representing placebo and
-<span class="math inline">\(x_{2} = 25\)</span> being our starting dose.
-Note that here we used a very small dose instead of zero for <span class="math inline">\(x_{1}\)</span>, since we consider here the
-regression model @eqref(eq:LogisticLogNormal) with a log transformation
-of the dose <span class="math inline">\(x\)</span> (with <span class="math inline">\(x^{*} = 100\)</span> chosen as reference
-dose).</p>
+defining our dose grid
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>𝒳</mi><mo>=</mo><mo stretchy="false" form="prefix">{</mo><mn>0.001</mn><mo>,</mo><mn>25</mn><mo>,</mo><mn>50</mn><mo>,</mo><mi>…</mi><mo>,</mo><mn>300</mn><mo stretchy="false" form="postfix">}</mo></mrow><annotation encoding="application/x-tex">\mathcal{X} = \{0.001,25, 50,\dotsc, 300\}</annotation></semantics></math>,
+with
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>x</mi><mn>1</mn></msub><mo>=</mo><mn>0.001</mn></mrow><annotation encoding="application/x-tex">x_{1} = 0.001</annotation></semantics></math>
+mg representing placebo and
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>x</mi><mn>2</mn></msub><mo>=</mo><mn>25</mn></mrow><annotation encoding="application/x-tex">x_{2} = 25</annotation></semantics></math>
+being our starting dose. Note that here we used a very small dose
+instead of zero for
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msub><mi>x</mi><mn>1</mn></msub><annotation encoding="application/x-tex">x_{1}</annotation></semantics></math>,
+since we consider here the regression model @eqref(eq:LogisticLogNormal)
+with a log transformation of the dose
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>x</mi><annotation encoding="application/x-tex">x</annotation></semantics></math>
+(with
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msup><mi>x</mi><mo>*</mo></msup><mo>=</mo><mn>100</mn></mrow><annotation encoding="application/x-tex">x^{*} = 100</annotation></semantics></math>
+chosen as reference dose).</p>
 <p><strong>Minimally informative prior</strong> Here we assume that
 limited prior information is available on the dose-toxicity
 relationship, and hence would like to use a minimally informative prior
@@ -402,22 +431,25 @@ computation time:</p>
 <span><span class="op">)</span><span class="op">$</span><span class="va">model</span></span></code></pre></div>
 <p>The resulting <code>model</code> (which is an object of class
 <code>LogisticLogNormal</code>) has prior parameters</p>
-<p><span class="math display">\[\mu = (0.0720313, 2)\]</span></p>
+<p><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>μ</mi><mo>=</mo><mrow><mo stretchy="true" form="prefix">(</mo><mn>0.0720313</mn><mo>,</mo><mn>2</mn><mo stretchy="true" form="postfix">)</mo></mrow></mrow><annotation encoding="application/x-tex">\mu = (0.0720313, 2)</annotation></semantics></math></p>
 <p>and</p>
-<p><span class="math display">\[\Sigma=
-\left(\begin{smallmatrix}
+<p><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>Σ</mi><mo>=</mo><mrow><mo stretchy="true" form="prefix">(</mo><mtable><mtr><mtd columnalign="center" style="text-align: center"><mn>1.51</mn></mtd><mtd columnalign="center" style="text-align: center"><mn>0.18</mn></mtd></mtr><mtr><mtd columnalign="center" style="text-align: center"><mn>0.18</mn></mtd><mtd columnalign="center" style="text-align: center"><mn>0.21</mn></mtd></mtr></mtable><mo stretchy="true" form="postfix">)</mo></mrow></mrow><annotation encoding="application/x-tex">\Sigma=
+ \left(\begin{smallmatrix}
    1.51 &amp; 0.18 \\
    0.18 &amp; 0.21
-\end{smallmatrix}\right)\]</span> and will approximately have 5%
-probability each for the DLT rate to exceed 10% (<code>threshmin</code>
-argument) at the 25 mg dose and to be below 20% (<code>threshmax</code>)
-at the 300 mg dose.</p>
+ \end{smallmatrix}\right)</annotation></semantics></math> and will
+approximately have 5% probability each for the DLT rate to exceed 10%
+(<code>threshmin</code> argument) at the 25 mg dose and to be below 20%
+(<code>threshmax</code>) at the 300 mg dose.</p>
 <p><strong>Data object definition and visualization</strong> In this
-simple case of a univariate dose <span class="math inline">\(x\)</span>
-resulting in binary DLT observations <span class="math inline">\(y\)</span>, the <code>S4</code> class
-<code>Data</code> can be used. Objects of this class can be created by
-calling the accompanying initialization function of the same name (which
-is a general convention in <code>crmPack</code>):</p>
+simple case of a univariate dose
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>x</mi><annotation encoding="application/x-tex">x</annotation></semantics></math>
+resulting in binary DLT observations
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>y</mi><annotation encoding="application/x-tex">y</annotation></semantics></math>,
+the <code>S4</code> class <code>Data</code> can be used. Objects of this
+class can be created by calling the accompanying initialization function
+of the same name (which is a general convention in
+<code>crmPack</code>):</p>
 <div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">PL</span> <span class="op">&lt;-</span> <span class="fl">0.001</span></span>
 <span><span class="va">data</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/Data-class.html">Data</a></span><span class="op">(</span></span>
@@ -428,20 +460,27 @@ is a general convention in <code>crmPack</code>):</p>
 <span>  ID <span class="op">=</span> <span class="fl">1</span><span class="op">:</span><span class="fl">12</span>,</span>
 <span>  placebo <span class="op">=</span> <span class="cn">TRUE</span></span>
 <span><span class="op">)</span></span></code></pre></div>
-<p>The argument <code>x</code> takes the doses <span class="math inline">\(x_{1}=0.001, x_{2}=25, x_{3} = 50, x_{4} =
-100\)</span> (note the repetition to match the outcome variables <span class="math inline">\(y_{j,k}\)</span>) where <code>doseGrid</code>
-captures the set <span class="math inline">\({\cal X}\)</span> of all
-possible doses, <code>y</code> takes the binary DLTs (here <span class="math inline">\(y_{3, 3} = 1\)</span> denotes the only DLT having
-been observed in the 3rd patient in the 3rd cohort), while
-<code>cohort</code> groups the patients together in cohorts (here <span class="math inline">\(N=3\)</span>). The option <code>placebo</code> is
-used to specify that this is a placebo controlled study, with placebo
-patients included in each cohort. The lowest dose <span class="math inline">\(x_{1}\)</span> is then interpreted internally as
-the placebo dose. Patient IDs can be given optionally in the
-<code>ID</code> argument. The data can then be visualized by simply
-applying the <code>plot</code> function to the object, which also allows
-to produce a blinded plot (hiding patient IDs and placebo/treatment
-assignment) with the option <code>blind</code>, see Figure
-@ref(fig:plot-data):</p>
+<p>The argument <code>x</code> takes the doses
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>x</mi><mn>1</mn></msub><mo>=</mo><mn>0.001</mn><mo>,</mo><msub><mi>x</mi><mn>2</mn></msub><mo>=</mo><mn>25</mn><mo>,</mo><msub><mi>x</mi><mn>3</mn></msub><mo>=</mo><mn>50</mn><mo>,</mo><msub><mi>x</mi><mn>4</mn></msub><mo>=</mo><mn>100</mn></mrow><annotation encoding="application/x-tex">x_{1}=0.001, x_{2}=25, x_{3} = 50, x_{4} = 100</annotation></semantics></math>
+(note the repetition to match the outcome variables
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msub><mi>y</mi><mrow><mi>j</mi><mo>,</mo><mi>k</mi></mrow></msub><annotation encoding="application/x-tex">y_{j,k}</annotation></semantics></math>)
+where <code>doseGrid</code> captures the set <span class="math inline">${\cal X}$</span> of all possible doses,
+<code>y</code> takes the binary DLTs (here
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>y</mi><mrow><mn>3</mn><mo>,</mo><mn>3</mn></mrow></msub><mo>=</mo><mn>1</mn></mrow><annotation encoding="application/x-tex">y_{3, 3} = 1</annotation></semantics></math>
+denotes the only DLT having been observed in the 3rd patient in the 3rd
+cohort), while <code>cohort</code> groups the patients together in
+cohorts (here
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>N</mi><mo>=</mo><mn>3</mn></mrow><annotation encoding="application/x-tex">N=3</annotation></semantics></math>).
+The option <code>placebo</code> is used to specify that this is a
+placebo controlled study, with placebo patients included in each cohort.
+The lowest dose
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msub><mi>x</mi><mn>1</mn></msub><annotation encoding="application/x-tex">x_{1}</annotation></semantics></math>
+is then interpreted internally as the placebo dose. Patient IDs can be
+given optionally in the <code>ID</code> argument. The data can then be
+visualized by simply applying the <code>plot</code> function to the
+object, which also allows to produce a blinded plot (hiding patient IDs
+and placebo/treatment assignment) with the option <code>blind</code>,
+see Figure @ref(fig:plot-data):</p>
 <div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">data</span><span class="op">)</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">data</span>, blind <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span></code></pre></div>
@@ -452,11 +491,16 @@ Open and blinded data plots
 </div>
 <p><strong>Sampling from the prior and posterior</strong> Now that we
 have the model and the data in place, we can use MCMC sampling for
-obtaining the posterior distribution of the model parameters <span class="math inline">\(\theta\)</span>, and hence the DLT rates <span class="math inline">\(Prob(Y=1 | x,\theta)\)</span>, at various doses
-<span class="math inline">\(x\)</span>. The MCMC sampling can be
-controlled with an object of class <code>McmcOptions</code>, which is
-then provided to the <code>mcmc</code> function, together with the
-<code>data</code> and the <code>model</code> objects:</p>
+obtaining the posterior distribution of the model parameters
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>θ</mi><annotation encoding="application/x-tex">\theta</annotation></semantics></math>,
+and hence the DLT rates
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>P</mi><mi>r</mi><mi>o</mi><mi>b</mi><mrow><mo stretchy="true" form="prefix">(</mo><mi>Y</mi><mo>=</mo><mn>1</mn><mo stretchy="false" form="prefix">|</mo><mi>x</mi><mo>,</mo><mi>θ</mi><mo stretchy="true" form="postfix">)</mo></mrow></mrow><annotation encoding="application/x-tex">Prob(Y=1 | x,\theta)</annotation></semantics></math>,
+at various doses
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>x</mi><annotation encoding="application/x-tex">x</annotation></semantics></math>.
+The MCMC sampling can be controlled with an object of class
+<code>McmcOptions</code>, which is then provided to the
+<code>mcmc</code> function, together with the <code>data</code> and the
+<code>model</code> objects:</p>
 <div class="sourceCode" id="cb9"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">options</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/McmcOptions-class.html">McmcOptions</a></span><span class="op">(</span>burnin <span class="op">=</span> <span class="fl">1000</span>, step <span class="op">=</span> <span class="fl">2</span>, samples <span class="op">=</span> <span class="fl">10000</span><span class="op">)</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/Random.html" class="external-link">set.seed</a></span><span class="op">(</span><span class="fl">94</span><span class="op">)</span></span>
@@ -486,24 +530,26 @@ is reduced due to the data (smaller credible intervals, dashed
 lines).</p>
 <p><strong>Decision making for the next dose</strong> To determine which
 dose to administer to the next (cohort of) patients we begin by
-specifying the maximum increments function <span class="math inline">\(\tau\)</span>. In the example below a maximum
-increase of 100% for doses below 100 mg, 50% for doses in the range from
-100 mg to 200 mg, and 33% for doses equal or above 200 mg is specified
-using the class <code>IncrementsRelative</code>:</p>
+specifying the maximum increments function
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>τ</mi><annotation encoding="application/x-tex">\tau</annotation></semantics></math>.
+In the example below a maximum increase of 100% for doses below 100 mg,
+50% for doses in the range from 100 mg to 200 mg, and 33% for doses
+equal or above 200 mg is specified using the class
+<code>IncrementsRelative</code>:</p>
 <div class="sourceCode" id="cb11"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">myIncrements</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/IncrementsRelative-class.html">IncrementsRelative</a></span><span class="op">(</span></span>
 <span>  intervals <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">0</span>, <span class="fl">100</span>, <span class="fl">200</span><span class="op">)</span>,</span>
 <span>  increments <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">1</span>, <span class="fl">0.5</span>, <span class="fl">0.33</span><span class="op">)</span></span>
 <span><span class="op">)</span></span></code></pre></div>
-<p>This specific rule <span class="math inline">\(\tau\)</span> can then
-be evaluated on the current dataset <span class="math inline">\({\cal
-D}_{N}\)</span> by the <code>maxDose</code> function to obtain the
-maximum next dose <span class="math inline">\(t_{N+1} = \tau({\cal
-D}_{N})\)</span>:</p>
+<p>This specific rule
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>τ</mi><annotation encoding="application/x-tex">\tau</annotation></semantics></math>
+can then be evaluated on the current dataset <span class="math inline">${\cal D}_{N}$</span> by the <code>maxDose</code>
+function to obtain the maximum next dose <span class="math inline">$t_{N+1} = \tau({\cal D}_{N})$</span>:</p>
 <div class="sourceCode" id="cb12"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="op">(</span><span class="va">nextMaxDose</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/maxDose.html">maxDose</a></span><span class="op">(</span><span class="va">myIncrements</span>, <span class="va">data</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
 <pre><code><span><span class="co">## [1] 150</span></span></code></pre>
-<p>We then define the function <span class="math inline">\(\nu\)</span>
+<p>We then define the function
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>ν</mi><annotation encoding="application/x-tex">\nu</annotation></semantics></math>
 for selecting a dose for the next cohort. In this case we would like to
 select the dose which maximizes the probability of the DLT rate being in
 the target toxicity range from 20% to 35%, but with the probability of
@@ -516,7 +562,7 @@ class:</p>
 <span>  max_overdose_prob <span class="op">=</span> <span class="fl">0.25</span></span>
 <span><span class="op">)</span></span></code></pre></div>
 <p>This rule can then be evaluated with the function
-<code>NextBest</code> to obtain the next dose <span class="math inline">\(x_{N+1}=\nu({\cal D}_{N}, t_{N+1})\)</span>:</p>
+<code>NextBest</code> to obtain the next dose <span class="math inline">$x_{N+1}=\nu({\cal D}_{N}, t_{N+1})$</span>:</p>
 <div class="sourceCode" id="cb15"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">nextDoseRes</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/nextBest.html">nextBest</a></span><span class="op">(</span><span class="va">myNextBest</span>, <span class="va">nextMaxDose</span>, <span class="va">samples</span>, <span class="va">model</span>, <span class="va">data</span><span class="op">)</span></span>
 <span><span class="op">(</span><span class="va">nextDoseVal</span> <span class="op">&lt;-</span> <span class="va">nextDoseRes</span><span class="op">$</span><span class="va">value</span><span class="op">)</span></span></code></pre></div>
@@ -529,13 +575,16 @@ Dose recommendation plot from NCRM design
 </p>
 </div>
 <p><strong>Adaptive stopping of the trial</strong> We would like to stop
-the dose escalation adaptively if the maximum sample size of <span class="math inline">\(n=30\)</span> patients has been reached already,
-or if we have sufficient precision for the MTD estimate. We can specify
-the latter condition as follows: The probability that the next dose
-<span class="math inline">\(x_{N+1}\)</span> is in the target toxicity
-range is above 50%, and at least 9 patients were already dosed within
-+/- 20% range of <span class="math inline">\(x_{N+1}\)</span>. The
-corresponding <code>Stopping</code> class object is constructed by
+the dose escalation adaptively if the maximum sample size of
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>n</mi><mo>=</mo><mn>30</mn></mrow><annotation encoding="application/x-tex">n=30</annotation></semantics></math>
+patients has been reached already, or if we have sufficient precision
+for the MTD estimate. We can specify the latter condition as follows:
+The probability that the next dose
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msub><mi>x</mi><mrow><mi>N</mi><mo>+</mo><mn>1</mn></mrow></msub><annotation encoding="application/x-tex">x_{N+1}</annotation></semantics></math>
+is in the target toxicity range is above 50%, and at least 9 patients
+were already dosed within +/- 20% range of
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msub><mi>x</mi><mrow><mi>N</mi><mo>+</mo><mn>1</mn></mrow></msub><annotation encoding="application/x-tex">x_{N+1}</annotation></semantics></math>.
+The corresponding <code>Stopping</code> class object is constructed by
 combining the atomic rules with logical operators as follows:</p>
 <div class="sourceCode" id="cb17"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">myStopping1</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/StoppingMinPatients-class.html">StoppingMinPatients</a></span><span class="op">(</span>nPatients <span class="op">=</span> <span class="fl">30</span><span class="op">)</span></span>
@@ -553,7 +602,7 @@ combining the atomic rules with logical operators as follows:</p>
 <span><span class="co">## </span></span>
 <span><span class="co">## attr(,"message")[[2]]</span></span>
 <span><span class="co">## attr(,"message")[[2]][[1]]</span></span>
-<span><span class="co">## [1] "Probability for target toxicity is 33 % for dose 100 and thus below the required 50 %"</span></span>
+<span><span class="co">## [1] "Probability for target toxicity is 31 % for dose 100 and thus below the required 50 %"</span></span>
 <span><span class="co">## </span></span>
 <span><span class="co">## attr(,"message")[[2]][[2]]</span></span>
 <span><span class="co">## [1] "3 patients lie within 20% of the next best dose 100. This is below the required 9 patients"</span></span>
@@ -571,7 +620,7 @@ combining the atomic rules with logical operators as follows:</p>
 <span><span class="co">## [1] FALSE</span></span>
 <span><span class="co">## attr(,"message")</span></span>
 <span><span class="co">## attr(,"message")[[1]]</span></span>
-<span><span class="co">## [1] "Probability for target toxicity is 33 % for dose 100 and thus below the required 50 %"</span></span>
+<span><span class="co">## [1] "Probability for target toxicity is 31 % for dose 100 and thus below the required 50 %"</span></span>
 <span><span class="co">## </span></span>
 <span><span class="co">## attr(,"message")[[2]]</span></span>
 <span><span class="co">## [1] "3 patients lie within 20% of the next best dose 100. This is below the required 9 patients"</span></span>
@@ -580,7 +629,7 @@ combining the atomic rules with logical operators as follows:</p>
 <span><span class="co">## attr(,"individual")[[1]]</span></span>
 <span><span class="co">## [1] FALSE</span></span>
 <span><span class="co">## attr(,"message")</span></span>
-<span><span class="co">## [1] "Probability for target toxicity is 33 % for dose 100 and thus below the required 50 %"</span></span>
+<span><span class="co">## [1] "Probability for target toxicity is 31 % for dose 100 and thus below the required 50 %"</span></span>
 <span><span class="co">## attr(,"report_label")</span></span>
 <span><span class="co">## [1] "P(0.2 ≤ prob(DLE | NBD) ≤ 0.35) ≥ 0.5"</span></span>
 <span><span class="co">## </span></span>
@@ -653,7 +702,7 @@ recommended as 225, 175 and 150 mg, respectively.</p>
 <span><span class="co">## 15  125    2      100 FALSE       -20</span></span>
 <span><span class="co">## 16  125    3       75 FALSE       -40</span></span>
 <span><span class="co">## 17  175    0      250 FALSE        43</span></span>
-<span><span class="co">## 18  175    1      150 FALSE       -14</span></span>
+<span><span class="co">## 18  175    1      175 FALSE         0</span></span>
 <span><span class="co">## 19  175    2      125 FALSE       -29</span></span>
 <span><span class="co">## 20  175    3      100 FALSE       -43</span></span>
 <span><span class="co">## 21  250    0      300 FALSE        20</span></span>
@@ -695,7 +744,7 @@ used:</p>
 the results. The argument <code>parallel</code> can be set to
 <code>TRUE</code> if one wishes to run the iterations in parallel on all
 processors of the computer, which can yield a meaningful speedup. Here
-we needed 121 seconds for 100 simulated trials on an Intel Core i5-6300U
+we needed 126 seconds for 100 simulated trials on an Intel Core i5-6300U
 CPU with 2.4 GHz.</p>
 <p>The result is an object of class <code>Simulations</code> containing
 multiple slots, with e.g., the <code>data</code> slot containing the
@@ -737,15 +786,15 @@ description of the results:</p>
 <span><span class="co">## Proportions of DLTs in the trials for patients on placebo : mean 0 % (0 %, 0 %) </span></span>
 <span><span class="co">## Proportions of DLTs in the trials for patients on active : mean 28 % (21 %, 34 %) </span></span>
 <span><span class="co">## Mean toxicity risks for the patients on active : mean 27 % (18 %, 33 %) </span></span>
-<span><span class="co">## Doses selected as MTD : mean 46.8 (25, 50) </span></span>
-<span><span class="co">## True toxicity at doses selected : mean 23 % (0 %, 26 %) </span></span>
-<span><span class="co">## Proportion of trials selecting target MTD: 87 %</span></span>
+<span><span class="co">## Doses selected as MTD : mean 46 (25, 50) </span></span>
+<span><span class="co">## True toxicity at doses selected : mean 22 % (0 %, 26 %) </span></span>
+<span><span class="co">## Proportion of trials selecting target MTD: 84 %</span></span>
 <span><span class="co">## Dose most often selected as MTD: 50 </span></span>
 <span><span class="co">## Observed toxicity rate at dose most often selected: 27 %</span></span>
-<span><span class="co">## Fitted toxicity rate at dose most often selected : mean 23 % (17 %, 30 %) </span></span>
+<span><span class="co">## Fitted toxicity rate at dose most often selected : mean 23 % (16 %, 29 %) </span></span>
 <span><span class="co">## Stop reason triggered:</span></span>
-<span><span class="co">##  ≥ 30 patients dosed :  62 %</span></span>
-<span><span class="co">##  P(0.2 ≤ prob(DLE | NBD) ≤ 0.35) ≥ 0.5 :  50 %</span></span>
+<span><span class="co">##  ≥ 30 patients dosed :  64 %</span></span>
+<span><span class="co">##  P(0.2 ≤ prob(DLE | NBD) ≤ 0.35) ≥ 0.5 :  44 %</span></span>
 <span><span class="co">##  ≥ 9 patients dosed in 20 % dose range around NBD :  98 %</span></span></code></pre>
 A plot of the summary results can also be produced, see Figure
 @ref(fig:sim-summary-plot).
@@ -780,26 +829,38 @@ describe separate modelling, as proposed in <span class="citation">(Yeung et al.
 endpoint design can help to estimate an optimal dose level which
 represents the best trade-off between safety and efficacy.</p>
 <p><strong>Methodology</strong> Briefly introducing the methodology in
-current notation, assume that the dose grid <span class="math inline">\(\cal{X}\)</span> contains <span class="math inline">\(k\)</span> dose levels, and the logistic
-regression model @<span class="math inline">\(\eqref{eq:LogisticLogNormal}\)</span> with <span class="math inline">\(x^{*}=1\)</span> is used for the safety endpoint
-<span class="math inline">\(y\)</span>. For the continuous efficacy
-endpoint <span class="math inline">\(w\)</span>, a linear log-log model
-can be used, conditional on <span class="math inline">\(y=0\)</span> (no
-DLT): <span class="math display">\[\begin{equation}\label{eq:loglog}
+current notation, assume that the dose grid <span class="math inline">$\cal{X}$</span> contains
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>k</mi><annotation encoding="application/x-tex">k</annotation></semantics></math>
+dose levels, and the logistic regression model @ with
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msup><mi>x</mi><mo>*</mo></msup><mo>=</mo><mn>1</mn></mrow><annotation encoding="application/x-tex">x^{*}=1</annotation></semantics></math>
+is used for the safety endpoint
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>y</mi><annotation encoding="application/x-tex">y</annotation></semantics></math>.
+For the continuous efficacy endpoint
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>w</mi><annotation encoding="application/x-tex">w</annotation></semantics></math>,
+a linear log-log model can be used, conditional on
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>y</mi><mo>=</mo><mn>0</mn></mrow><annotation encoding="application/x-tex">y=0</annotation></semantics></math>
+(no DLT):
+<math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>E</mi><mrow><mo stretchy="true" form="prefix">(</mo><mi>w</mi><mrow><mo stretchy="true" form="prefix">(</mo><mi>x</mi><mo stretchy="true" form="postfix">)</mo></mrow><mo stretchy="true" form="postfix">)</mo></mrow><mo>=</mo><mi>γ</mi><mo>+</mo><mi>δ</mi><mo>log</mo><mo stretchy="false" form="prefix">{</mo><mo>log</mo><mrow><mo stretchy="true" form="prefix">(</mo><mi>x</mi><mo>+</mo><mi>c</mi><mo stretchy="true" form="postfix">)</mo></mrow><mo stretchy="false" form="postfix">}</mo></mrow><annotation encoding="application/x-tex">\begin{equation}\label{eq:loglog}
 E(w(x)) = \gamma + \delta \log\{\log(x + c)\}
-\end{equation}\]</span> such that <span class="math inline">\(w(x) \sim
-N(E(w(x)), \sigma^2)\)</span> with <span class="math inline">\(c \geq
-0\)</span> as a constant. Usually the default value <span class="math inline">\(c=0\)</span> can be used, but in our case we
-choose <span class="math inline">\(c=2\)</span> to allow for the placebo
-dose <span class="math inline">\(x=0.001\)</span> which is close to
-0.</p>
+\end{equation}</annotation></semantics></math> such that
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>w</mi><mrow><mo stretchy="true" form="prefix">(</mo><mi>x</mi><mo stretchy="true" form="postfix">)</mo></mrow><mo>∼</mo><mi>N</mi><mrow><mo stretchy="true" form="prefix">(</mo><mi>E</mi><mrow><mo stretchy="true" form="prefix">(</mo><mi>w</mi><mrow><mo stretchy="true" form="prefix">(</mo><mi>x</mi><mo stretchy="true" form="postfix">)</mo></mrow><mo stretchy="true" form="postfix">)</mo></mrow><mo>,</mo><msup><mi>σ</mi><mn>2</mn></msup><mo stretchy="true" form="postfix">)</mo></mrow></mrow><annotation encoding="application/x-tex">w(x) \sim N(E(w(x)), \sigma^2)</annotation></semantics></math>
+with
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>c</mi><mo>≥</mo><mn>0</mn></mrow><annotation encoding="application/x-tex">c \geq 0</annotation></semantics></math>
+as a constant. Usually the default value
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>c</mi><mo>=</mo><mn>0</mn></mrow><annotation encoding="application/x-tex">c=0</annotation></semantics></math>
+can be used, but in our case we choose
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>c</mi><mo>=</mo><mn>2</mn></mrow><annotation encoding="application/x-tex">c=2</annotation></semantics></math>
+to allow for the placebo dose
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>x</mi><mo>=</mo><mn>0.001</mn></mrow><annotation encoding="application/x-tex">x=0.001</annotation></semantics></math>
+which is close to 0.</p>
 <p>For both the safety and efficacy models, the prior will be expressed
 in form of imaginary pseudo data see <span class="citation">(Yeung et
 al. 2015)</span> for details. Prior and posterior modal estimates of the
 model parameters can then be obtained as the maximum likelihood
 estimates from the data set combining pseudo data with observed data
-<span class="citation">(Whitehead 2006)</span>. The variance <span class="math inline">\(\sigma^{2}\)</span> can be fixed or assigned an
-inverse gamma prior distribution.</p>
+<span class="citation">(Whitehead 2006)</span>. The variance
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msup><mi>σ</mi><mn>2</mn></msup><annotation encoding="application/x-tex">\sigma^{2}</annotation></semantics></math>
+can be fixed or assigned an inverse gamma prior distribution.</p>
 <p><strong>Model classes</strong> The <code>ModelPseudo</code> class
 contains all model classes where the priors are specified in terms of
 pseudo data, with subclasses for safety (<code>ModelTox</code>) and
@@ -808,8 +869,8 @@ efficacy (<code>ModelEff</code>).</p>
 prior assumes that 3 subjects each are treated at the lowest (25 mg) and
 the highest (300 mg) dose level, with 1.05 and 1.8 DLTs being observed
 at these two dose levels, respectively. This corresponds to prior means
-of 0.35 and 0.6 for the DLT probabilities. We implement model @<span class="math inline">\(\eqref{eq:LogisticLogNormal}\)</span> with this
-pseudo data prior as follows:</p>
+of 0.35 and 0.6 for the DLT probabilities. We implement model @ with
+this pseudo data prior as follows:</p>
 <div class="sourceCode" id="cb33"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">DLTmodel</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/LogisticIndepBeta-class.html">LogisticIndepBeta</a></span><span class="op">(</span></span>
 <span>  binDLE <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">1.05</span>, <span class="fl">1.8</span><span class="op">)</span>, DLEweights <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">3</span>, <span class="fl">3</span><span class="op">)</span>,</span>
@@ -832,15 +893,19 @@ used to quantify the trade-off between efficacy and safety, and the next
 dose should maximize the estimated gain modulo safety constraints. Here
 we will define the gain as the expected efficacy response, with the
 convention that a DLT will automatically lead to a zero efficacy
-response: <span class="math display">\[\begin{equation}
+response:
+<math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>G</mi><mrow><mo stretchy="true" form="prefix">(</mo><mi>x</mi><mo stretchy="true" form="postfix">)</mo></mrow><mo>=</mo><mi>P</mi><mi>r</mi><mi>o</mi><mi>b</mi><mrow><mo stretchy="true" form="prefix">(</mo><mi>Y</mi><mo>=</mo><mn>0</mn><mo stretchy="false" form="prefix">|</mo><mi>x</mi><mo>,</mo><mi>θ</mi><mo stretchy="true" form="postfix">)</mo></mrow><mi>E</mi><mrow><mo stretchy="true" form="prefix">(</mo><mi>w</mi><mrow><mo stretchy="true" form="prefix">(</mo><mi>x</mi><mo stretchy="true" form="postfix">)</mo></mrow><mo stretchy="true" form="postfix">)</mo></mrow></mrow><annotation encoding="application/x-tex">\begin{equation}
 \label{eq:gainfunction}
 G(x)=Prob(Y=0 | x, \theta)E(w(x))
-\end{equation}\]</span> Note that the gain function depends on the
-safety parameter vector <span class="math inline">\(\theta\)</span> and
-the efficacy parameters <span class="math inline">\(\gamma\)</span> and
-<span class="math inline">\(\delta\)</span>, which will be estimated by
-their posterior modal estimates using the <code>update</code>
-method:</p>
+\end{equation}</annotation></semantics></math> Note that the gain
+function depends on the safety parameter vector
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>θ</mi><annotation encoding="application/x-tex">\theta</annotation></semantics></math>
+and the efficacy parameters
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>γ</mi><annotation encoding="application/x-tex">\gamma</annotation></semantics></math>
+and
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>δ</mi><annotation encoding="application/x-tex">\delta</annotation></semantics></math>,
+which will be estimated by their posterior modal estimates using the
+<code>update</code> method:</p>
 <div class="sourceCode" id="cb35"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">newDLTmodel</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/stats/update.html" class="external-link">update</a></span><span class="op">(</span>object <span class="op">=</span> <span class="va">DLTmodel</span>, data <span class="op">=</span> <span class="va">data2</span><span class="op">)</span></span>
 <span><span class="va">newEffmodel</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/stats/update.html" class="external-link">update</a></span><span class="op">(</span>object <span class="op">=</span> <span class="va">Effmodel</span>, data <span class="op">=</span> <span class="va">data2</span><span class="op">)</span></span></code></pre></div>
@@ -854,10 +919,13 @@ recommendation based on maximizing the gain function as follows:</p>
 <p>where <code>prob_target_drt</code> specifies the maximum estimated
 DLT rate tolerated during the study and <code>prob_target_eot</code> the
 maximum estimated DLT rate tolerated at the end of the study. As in <a href="#implementing-a-crm-trial">Implementing a CRM trial</a> this rule
-<span class="math inline">\(\nu\)</span> can be evaluated using
-<code>NextBest</code> to obtain <span class="math inline">\(x_{N+1}\)</span>, after evaluating the maximum
-increments rule <span class="math inline">\(\tau\)</span> using
-<code>maxDose</code> to obtain <span class="math inline">\(t_{N+1}\)</span>:</p>
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>ν</mi><annotation encoding="application/x-tex">\nu</annotation></semantics></math>
+can be evaluated using <code>NextBest</code> to obtain
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msub><mi>x</mi><mrow><mi>N</mi><mo>+</mo><mn>1</mn></mrow></msub><annotation encoding="application/x-tex">x_{N+1}</annotation></semantics></math>,
+after evaluating the maximum increments rule
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>τ</mi><annotation encoding="application/x-tex">\tau</annotation></semantics></math>
+using <code>maxDose</code> to obtain
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msub><mi>t</mi><mrow><mi>N</mi><mo>+</mo><mn>1</mn></mrow></msub><annotation encoding="application/x-tex">t_{N+1}</annotation></semantics></math>:</p>
 <div class="sourceCode" id="cb37"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="op">(</span><span class="va">nextMaxDose</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/maxDose.html">maxDose</a></span><span class="op">(</span><span class="va">myIncrements</span>, <span class="va">data2</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
 <pre><code><span><span class="co">## [1] 150</span></span></code></pre>
@@ -876,12 +944,14 @@ increments rule <span class="math inline">\(\tau\)</span> using
 <p>Dose recommendation plot from dual endpoint design. The red, blue and
 green curves correspond to the (posterior modal) estimated curves for
 safety, efficacy and gain, respectively. The vertical red line in the
-plot shows the maximum possible dose <span class="math inline">\(t_{N+1}
-= 150\)</span> mg and the vertical violet line shows the next dose <span class="math inline">\(x_{N+1} = 25\)</span> mg. The circle, square and
-triangle symbols mark the estimated doses with target toxicity (100 mg
-for 35% DLT probability during the trial and 75 mg for 30% DLT
-probability at the end of trial) and the estimated dose with maximum
-gain, 25 mg. The numbers can be obtained from the
+plot shows the maximum possible dose
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>t</mi><mrow><mi>N</mi><mo>+</mo><mn>1</mn></mrow></msub><mo>=</mo><mn>150</mn></mrow><annotation encoding="application/x-tex">t_{N+1} = 150</annotation></semantics></math>
+mg and the vertical violet line shows the next dose
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>x</mi><mrow><mi>N</mi><mo>+</mo><mn>1</mn></mrow></msub><mo>=</mo><mn>25</mn></mrow><annotation encoding="application/x-tex">x_{N+1} = 25</annotation></semantics></math>
+mg. The circle, square and triangle symbols mark the estimated doses
+with target toxicity (100 mg for 35% DLT probability during the trial
+and 75 mg for 30% DLT probability at the end of trial) and the estimated
+dose with maximum gain, 25 mg. The numbers can be obtained from the
 <code>doseRecGain</code> list.</p>
 <p><strong>Stopping rules</strong> In addition to the simple stopping
 rule based on the maximum number of patients in our trial, we can use
@@ -916,8 +986,10 @@ by defining the true DLT and efficacy curves that we will be using:</p>
 <span><span class="op">}</span></span></code></pre></div>
 <p>Please note that the parameter names <code>phi1</code>,
 <code>phi2</code>, <code>theta1</code> and <code>theta2</code>
-correspond to <span class="math inline">\(\alpha_0, \alpha_1,
-\gamma\)</span> and <span class="math inline">\(\delta\)</span>,
+correspond to
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>α</mi><mn>0</mn></msub><mo>,</mo><msub><mi>α</mi><mn>1</mn></msub><mo>,</mo><mi>γ</mi></mrow><annotation encoding="application/x-tex">\alpha_0, \alpha_1, \gamma</annotation></semantics></math>
+and
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>δ</mi><annotation encoding="application/x-tex">\delta</annotation></semantics></math>,
 respectively. Simulations are again produced by the
 <code>simulate</code> function:</p>
 <div class="sourceCode" id="cb44"><pre class="downlit sourceCode r">
@@ -926,10 +998,12 @@ respectively. Simulations are again produced by the
 <span>  trueEff <span class="op">=</span> <span class="va">myTruthEff</span>, trueNu <span class="op">=</span> <span class="fl">1</span> <span class="op">/</span> <span class="fl">0.025</span>, nsim <span class="op">=</span> <span class="fl">20</span>,</span>
 <span>  seed <span class="op">=</span> <span class="fl">819</span>, parallel <span class="op">=</span> <span class="cn">FALSE</span></span>
 <span><span class="op">)</span></span></code></pre></div>
-<p>Note that the fixed precision <code>nu</code> <span class="math inline">\(1/\sigma^{2}\)</span> is specified instead of the
-variance <span class="math inline">\(\sigma^{2}\)</span>. % The results
-of the simulation can then be plotted and summarized as shown
-before.</p>
+<p>Note that the fixed precision <code>nu</code>
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mn>1</mn><mi>/</mi><msup><mi>σ</mi><mn>2</mn></msup></mrow><annotation encoding="application/x-tex">1/\sigma^{2}</annotation></semantics></math>
+is specified instead of the variance
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msup><mi>σ</mi><mn>2</mn></msup><annotation encoding="application/x-tex">\sigma^{2}</annotation></semantics></math>.
+% The results of the simulation can then be plotted and summarized as
+shown before.</p>
 </div>
 <div class="section level3">
 <h3 id="extending-crmpack-functionality">Extending crmPack functionality<a class="anchor" aria-label="anchor" href="#extending-crmpack-functionality"></a>
@@ -943,21 +1017,29 @@ functionality easily to the specific needs of the study.</p>
 the one-parameter CRM <span class="citation">(O’Quigley, Pepe, and
 Fisher 1990)</span>, which is currently not (yet) included in the
 package. It is based on a one-parameter power model to describe the
-relationship between the binary DLT responses <span class="math inline">\(Y\)</span> and their corresponding dose levels
-<span class="math inline">\(x\)</span>: <span class="math display">\[\begin{equation}
+relationship between the binary DLT responses
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>Y</mi><annotation encoding="application/x-tex">Y</annotation></semantics></math>
+and their corresponding dose levels
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>x</mi><annotation encoding="application/x-tex">x</annotation></semantics></math>:
+<math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>π</mi><mrow><mo stretchy="true" form="prefix">(</mo><mi>x</mi><mo>,</mo><mi>θ</mi><mo stretchy="true" form="postfix">)</mo></mrow><mo>=</mo><mi>P</mi><mi>r</mi><mi>o</mi><mi>b</mi><mrow><mo stretchy="true" form="prefix">(</mo><mi>Y</mi><mo>=</mo><mn>1</mn><mo stretchy="false" form="prefix">|</mo><mi>x</mi><mo>,</mo><mi>θ</mi><mo stretchy="true" form="postfix">)</mo></mrow><mo>=</mo><mi>f</mi><msup><mrow><mo stretchy="true" form="prefix">(</mo><mi>x</mi><mo stretchy="true" form="postfix">)</mo></mrow><mi>θ</mi></msup></mrow><annotation encoding="application/x-tex">\begin{equation}
 \label{eq:oneparameter}
 \pi(x, \theta) = Prob(Y=1 | x, \theta) = f(x)^{\theta}
-\end{equation}\]</span> Here <span class="math inline">\(0 &lt; f(x)
-&lt; 1\)</span> is monotonically increasing in <span class="math inline">\(x\)</span> and is specified by the investigator
-upfront. The sequence <span class="math inline">\(f(x_{1}), \dotsc,
-f(x_{k})\)</span> along the dose grid is often called ``skeleton’’ of
-the CRM. An exponential distribution with parameter <span class="math inline">\(\lambda\)</span> is imposed as the prior
-distribution for the unknown parameter <span class="math inline">\(\theta\)</span>. The next dose should then be
-chosen such that the distance of the posterior mean estimated DLT
-probability to a predefined target toxicity level is minimized.</p>
+\end{equation}</annotation></semantics></math> Here
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mn>0</mn><mo>&lt;</mo><mi>f</mi><mrow><mo stretchy="true" form="prefix">(</mo><mi>x</mi><mo stretchy="true" form="postfix">)</mo></mrow><mo>&lt;</mo><mn>1</mn></mrow><annotation encoding="application/x-tex">0 &lt; f(x) &lt; 1</annotation></semantics></math>
+is monotonically increasing in
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>x</mi><annotation encoding="application/x-tex">x</annotation></semantics></math>
+and is specified by the investigator upfront. The sequence
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>f</mi><mrow><mo stretchy="true" form="prefix">(</mo><msub><mi>x</mi><mn>1</mn></msub><mo stretchy="true" form="postfix">)</mo></mrow><mo>,</mo><mi>…</mi><mo>,</mo><mi>f</mi><mrow><mo stretchy="true" form="prefix">(</mo><msub><mi>x</mi><mi>k</mi></msub><mo stretchy="true" form="postfix">)</mo></mrow></mrow><annotation encoding="application/x-tex">f(x_{1}), \dotsc, f(x_{k})</annotation></semantics></math>
+along the dose grid is often called ``skeleton’’ of the CRM. An
+exponential distribution with parameter
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>λ</mi><annotation encoding="application/x-tex">\lambda</annotation></semantics></math>
+is imposed as the prior distribution for the unknown parameter
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>θ</mi><annotation encoding="application/x-tex">\theta</annotation></semantics></math>.
+The next dose should then be chosen such that the distance of the
+posterior mean estimated DLT probability to a predefined target toxicity
+level is minimized.</p>
 <p><strong>Creating a new model</strong> To implement the one-parameter
-model @<span class="math inline">\(\eqref{eq:oneparameter}\)</span> in
-<code>crmPack</code> we first need to define an appropriate
+model @ in <code>crmPack</code> we first need to define an appropriate
 <code>S4</code> class inheriting from the general model class
 <code>GeneralModel</code>:</p>
 <div class="sourceCode" id="cb45"><pre class="downlit sourceCode r">
@@ -972,7 +1054,8 @@ model @<span class="math inline">\(\eqref{eq:oneparameter}\)</span> in
 <span><span class="op">)</span></span></code></pre></div>
 <p>Here we specify that the new class is called <code>OneParExp</code>
 and contains three additional slots containing the resulting skeleton
-prior probabilities, the dose grid, and the prior parameter <span class="math inline">\(\lambda\)</span>.</p>
+prior probabilities, the dose grid, and the prior parameter
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>λ</mi><annotation encoding="application/x-tex">\lambda</annotation></semantics></math>.</p>
 <p>Second we have to create a convenient initialization function, which
 specifies the likelihood and prior distributions in the underlying
 <code>GeneralModel</code> in <code>JAGS</code>. We choose to let the
@@ -1013,10 +1096,15 @@ returned:</p>
 methods. The <code>prob</code> method is based on the (a skeleton)
 function which does the interpolation between the dose grid points in
 order to obtain the probability of a DLT. The <code>dose</code>, on the
-other hand, uses an inverse of (the skeleton) function <span class="math display">\[\begin{equation}
+other hand, uses an inverse of (the skeleton) function
+<math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msup><mi>π</mi><mrow><mi>−</mi><mn>1</mn></mrow></msup><mrow><mo stretchy="true" form="prefix">(</mo><mi>p</mi><mo>,</mo><mi>θ</mi><mo stretchy="true" form="postfix">)</mo></mrow><mo>=</mo><msup><mi>f</mi><mrow><mi>−</mi><mn>1</mn></mrow></msup><mrow><mo stretchy="true" form="prefix">(</mo><msup><mi>p</mi><mrow><mn>1</mn><mi>/</mi><mi>θ</mi></mrow></msup><mo stretchy="true" form="postfix">)</mo></mrow></mrow><annotation encoding="application/x-tex">\begin{equation}
 \label{eq:oneparameterInverse}
 \pi^{-1}(p, \theta) = f^{-1}(p^{1/\theta})
-\end{equation}\]</span> which maps the probability <span class="math inline">\(p\)</span> to a dose <span class="math inline">\(x\)</span>.</p>
+\end{equation}</annotation></semantics></math> which maps the
+probability
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>p</mi><annotation encoding="application/x-tex">p</annotation></semantics></math>
+to a dose
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>x</mi><annotation encoding="application/x-tex">x</annotation></semantics></math>.</p>
 <div class="sourceCode" id="cb47"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="kw">setMethod</span><span class="op">(</span></span>
 <span>  f <span class="op">=</span> <span class="st">"dose"</span>,</span>
@@ -1047,8 +1135,9 @@ other hand, uses an inverse of (the skeleton) function <span class="math display
 <span><span class="op">)</span></span></code></pre></div>
 <p>Now we can already use the model, for example in the following we
 specify the skeleton probabilities via the dose grid and use a standard
-exponential prior for <span class="math inline">\(\theta\)</span>. The
-resulting posterior fit can be plotted as usual, see Figure
+exponential prior for
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>θ</mi><annotation encoding="application/x-tex">\theta</annotation></semantics></math>.
+The resulting posterior fit can be plotted as usual, see Figure
 @ref(fig:OneParExp-model-example).</p>
 <div class="sourceCode" id="cb48"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="op">(</span><span class="va">skeleton_probs</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/Round.html" class="external-link">round</a></span><span class="op">(</span><span class="va">data</span><span class="op">@</span><span class="va">doseGrid</span> <span class="op">/</span> <span class="fu"><a href="https://rdrr.io/r/base/Extremes.html" class="external-link">max</a></span><span class="op">(</span><span class="va">data</span><span class="op">@</span><span class="va">doseGrid</span><span class="op">)</span> <span class="op">/</span> <span class="fl">2</span>, <span class="fl">2</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
@@ -1225,7 +1314,7 @@ Computing</em>. Vienna, Austria: Foundation for Statistical Computing.
 </div>
 <div id="ref-East2016" class="csl-entry">
 Cytel Inc. 2016.<em> 6: Statistical Software for the Design, Simulation
-and Monitoring of Clinical Trials</em>. Cambridge, MA. <a href="http://www.cytel.com/software/east/" class="external-link">http://www.cytel.com/software/east/</a>.
+and Monitoring of Clinical Trials</em>. Cambridge, MA. <a href="https://www.cytel.com/software/east/" class="external-link">https://www.cytel.com/software/east/</a>.
 </div>
 <div id="ref-ordcrm" class="csl-entry">
 Dressler, Emily V., and Zhengyan Huang. 2016. <em>: Likelihood-Based
@@ -1233,14 +1322,14 @@ Continual Reassessment Method (CRM) Dose Finding Designs</em>. <a href="https://
 </div>
 <div id="ref-FACTS" class="csl-entry">
 FACTS Development Team. 2015. <em>Fixed and Adaptive Clinical Trial
-Simulator</em>. <a href="http://www.berryconsultants.com/software" class="external-link">http://www.berryconsultants.com/software</a>.
+Simulator</em>. <a href="https://www.berryconsultants.com/software" class="external-link">https://www.berryconsultants.com/software</a>.
 </div>
 <div id="ref-Addplan2016" class="csl-entry">
 ICON Plc. 2016. <em>: Adaptive Design Trials Software</em>. Dublin,
-Ireland. <a href="http://www.iconplc.com/innovation/addplan/" class="external-link">http://www.iconplc.com/innovation/addplan/</a>.
+Ireland. <a href="https://www.iconplc.com/innovation/addplan/" class="external-link">https://www.iconplc.com/innovation/addplan/</a>.
 </div>
 <div id="ref-SAS2003" class="csl-entry">
-Institute Inc. 2003.<em> Software, Version 9.1</em>. Cary, NC. <a href="http://www.sas.com/" class="external-link">http://www.sas.com/</a>.
+Institute Inc. 2003.<em> Software, Version 9.1</em>. Cary, NC. <a href="https://www.sas.com/" class="external-link">https://www.sas.com/</a>.
 </div>
 <div id="ref-jaki2013" class="csl-entry">
 Jaki, Thomas, Sally Clive, and Christopher J Weir. 2013.
@@ -1275,7 +1364,7 @@ Phase i Trials.”</span> <em>Annals of Oncology</em> 26 (9): 1808–12.
 </div>
 <div id="ref-JAGS" class="csl-entry">
 Plummer, Martyn. 2003. <em>: A Program for Analysis of Bayesian
-Graphical Models Using Gibbs Sampling</em>. <a href="http://mcmc-jags.sourceforge.net" class="external-link">http://mcmc-jags.sourceforge.net</a>.
+Graphical Models Using Gibbs Sampling</em>. <a href="https://mcmc-jags.sourceforge.net" class="external-link">https://mcmc-jags.sourceforge.net</a>.
 </div>
 <div id="ref-Riviere2014" class="csl-entry">
 Riviere, M.- K., C. Le Tourneau, X. Paoletti, F. Dubois, and S. Zohar.
@@ -1285,16 +1374,15 @@ Systematic Review of the Literature.”</span> <em>Annals of Oncology</em>
 </div>
 <div id="ref-crmPack" class="csl-entry">
 Sabanes Bove, Daniel, Wai Yin Yeung, Giuseppe Palermo, and Thomas Jaki.
-2018. <em>: Object-Oriented Implementation of CRM Designs</em>. <a href="http://CRAN.R-project.org/package=crmPack" class="external-link">http://CRAN.R-project.org/package=crmPack</a>.
+2018. <em>: Object-Oriented Implementation of CRM Designs</em>. <a href="https://CRAN.R-project.org/package=crmPack" class="external-link">https://CRAN.R-project.org/package=crmPack</a>.
 </div>
 <div id="ref-Stata2015" class="csl-entry">
 StataCorp. 2015.<em> Statistical Software: Release 14</em>. College
-Station, TX: StataCorp LP. <a href="http://www.stata.com/" class="external-link">http://www.stata.com/</a>.
+Station, TX: StataCorp LP. <a href="https://www.stata.com/" class="external-link">https://www.stata.com/</a>.
 </div>
 <div id="ref-Storer1989" class="csl-entry">
-Storer, Barry E. 1989. <span>“<a href="https://www.ncbi.nlm.nih.gov/pubmed/2790129" class="external-link">Design and Analysis
-of Phase i Clinical Trials</a>.”</span> <em>Biometrics</em> 45 (3):
-925–37.
+Storer, Barry E. 1989. <span>“Design and Analysis of Phase i Clinical
+Trials.”</span> <em>Biometrics</em> 45 (3): 925–37. <a href="https://www.ncbi.nlm.nih.gov/2790129" class="external-link">https://www.ncbi.nlm.nih.gov/2790129</a>.
 </div>
 <div id="ref-Sweeting2012" class="csl-entry">
 Sweeting, Michael J, and Adrian P Mander. 2012. <span>“Escalation
@@ -1307,9 +1395,9 @@ Bayesian Continual Reassessment Method Designs for Phase i Dose-Finding
 Trials.”</span> <em>Journal of Statistical Software</em> 54 (13): 1–26.
 </div>
 <div id="ref-Thall2010" class="csl-entry">
-Thall, Peter F. 2010. <span>“<a href="https://www.ncbi.nlm.nih.gov/pubmed/21318084" class="external-link">Bayesian Models and
-Decision Algorithms for Complex Early Phase Clinical Trials</a>.”</span>
-<em>Statistical Science</em> 25 (2): 227–44.
+Thall, Peter F. 2010. <span>“Bayesian Models and Decision Algorithms for
+Complex Early Phase Clinical Trials.”</span> <em>Statistical
+Science</em> 25 (2): 227–44. <a href="https://pubmed.ncbi.nlm.nih.gov/21318084/" class="external-link">https://pubmed.ncbi.nlm.nih.gov/21318084/</a>.
 </div>
 <div id="ref-dfpk" class="csl-entry">
 Toumazi, Artemis, Moreno Ursino, and Sarah Zohar. 2017. <em>: A Bayesian
@@ -1323,11 +1411,11 @@ Sons.
 </div>
 <div id="ref-ggplot2" class="csl-entry">
 Wickham, Hadley. 2009. <em>: Elegant Graphics for Data Analysis</em>.
-Springer-Verlag. <a href="http://ggplot2.org" class="external-link">http://ggplot2.org</a>.
+Springer-Verlag. <a href="https://ggplot2.tidyverse.org/" class="external-link">https://ggplot2.tidyverse.org/</a>.
 </div>
 <div id="ref-knitr2018" class="csl-entry">
 Xie, Yihui. 2018. <em>: A General-Purpose Package for Dynamic Report
-Generation in r</em>. <a href="https://yihui.name/knitr/" class="external-link">https://yihui.name/knitr/</a>.
+Generation in r</em>. <a href="https://yihui.org/knitr/" class="external-link">https://yihui.org/knitr/</a>.
 </div>
 <div id="ref-yeung2015" class="csl-entry">
 Yeung, Wai Yin, John Whitehead, Bruno Reigner, Ulrich Beyer, Cheikh
@@ -1338,7 +1426,7 @@ Function.”</span> <em><span>Pharmaceutical Statistics</span></em> 14
 </div>
 </div>
 </div>
-  </main><aside class="col-md-3"><nav id="toc"><h2>On this page</h2>
+  </main><aside class="col-md-3"><nav id="toc" aria-label="Table of contents"><h2>On this page</h2>
     </nav></aside>
 </div>
 
@@ -1349,15 +1437,15 @@ Function.”</span> <em><span>Pharmaceutical Statistics</span></em> 14
 </div>
 
 <div class="pkgdown-footer-right">
-  <p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.9.</p>
+  <p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.1.0.</p>
 </div>
 
     </footer>
 </div>
 
-  
 
-  
+
+
 
   </body>
 </html>

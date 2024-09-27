@@ -1,972 +1,326 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
-  <url>
-    <loc>https://openpharma.github.io/crmPack/404.html</loc>
-  </url>
-  <url>
-    <loc>https://openpharma.github.io/crmPack/articles/crmPack-jss-paper.html</loc>
-  </url>
-  <url>
-    <loc>https://openpharma.github.io/crmPack/articles/example.html</loc>
-  </url>
-  <url>
-    <loc>https://openpharma.github.io/crmPack/articles/index.html</loc>
-  </url>
-  <url>
-    <loc>https://openpharma.github.io/crmPack/articles/knit_print.html</loc>
-  </url>
-  <url>
-    <loc>https://openpharma.github.io/crmPack/articles/migration_from_the_old_crmPack.html</loc>
-  </url>
-  <url>
-    <loc>https://openpharma.github.io/crmPack/articles/ordinal-crm.html</loc>
-  </url>
-  <url>
-    <loc>https://openpharma.github.io/crmPack/articles/parallel_computing_with_extensions.html</loc>
-  </url>
-  <url>
-    <loc>https://openpharma.github.io/crmPack/articles/rolling-crm.html</loc>
-  </url>
-  <url>
-    <loc>https://openpharma.github.io/crmPack/articles/simulations.html</loc>
-  </url>
-  <url>
-    <loc>https://openpharma.github.io/crmPack/articles/tidy_method.html</loc>
-  </url>
-  <url>
-    <loc>https://openpharma.github.io/crmPack/articles/trial_analysis.html</loc>
-  </url>
-  <url>
-    <loc>https://openpharma.github.io/crmPack/articles/trial_definition.html</loc>
-  </url>
-  <url>
-    <loc>https://openpharma.github.io/crmPack/articles/trial_sanity_checks.html</loc>
-  </url>
-  <url>
-    <loc>https://openpharma.github.io/crmPack/articles/trial_simulation.html</loc>
-  </url>
-  <url>
-    <loc>https://openpharma.github.io/crmPack/authors.html</loc>
-  </url>
-  <url>
-    <loc>https://openpharma.github.io/crmPack/index.html</loc>
-  </url>
-  <url>
-    <loc>https://openpharma.github.io/crmPack/news/index.html</loc>
-  </url>
-  <url>
-    <loc>https://openpharma.github.io/crmPack/reference/CohortSize-class.html</loc>
-  </url>
-  <url>
-    <loc>https://openpharma.github.io/crmPack/reference/CohortSizeConst-class.html</loc>
-  </url>
-  <url>
-    <loc>https://openpharma.github.io/crmPack/reference/CohortSizeDLT-class.html</loc>
-  </url>
-  <url>
-    <loc>https://openpharma.github.io/crmPack/reference/CohortSizeMax-class.html</loc>
-  </url>
-  <url>
-    <loc>https://openpharma.github.io/crmPack/reference/CohortSizeMin-class.html</loc>
-  </url>
-  <url>
-    <loc>https://openpharma.github.io/crmPack/reference/CohortSizeOrdinal-class.html</loc>
-  </url>
-  <url>
-    <loc>https://openpharma.github.io/crmPack/reference/CohortSizeParts-class.html</loc>
-  </url>
-  <url>
-    <loc>https://openpharma.github.io/crmPack/reference/CohortSizeRange-class.html</loc>
-  </url>
-  <url>
-    <loc>https://openpharma.github.io/crmPack/reference/CrmPackClass.html</loc>
-  </url>
-  <url>
-    <loc>https://openpharma.github.io/crmPack/reference/DADesign-class.html</loc>
-  </url>
-  <url>
-    <loc>https://openpharma.github.io/crmPack/reference/DALogisticLogNormal-class.html</loc>
-  </url>
-  <url>
-    <loc>https://openpharma.github.io/crmPack/reference/DASimulations-class.html</loc>
-  </url>
-  <url>
-    <loc>https://openpharma.github.io/crmPack/reference/DASimulations.html</loc>
-  </url>
-  <url>
-    <loc>https://openpharma.github.io/crmPack/reference/DLTLikelihood.html</loc>
-  </url>
-  <url>
-    <loc>https://openpharma.github.io/crmPack/reference/Data-class.html</loc>
-  </url>
-  <url>
-    <loc>https://openpharma.github.io/crmPack/reference/DataDA-class.html</loc>
-  </url>
-  <url>
-    <loc>https://openpharma.github.io/crmPack/reference/DataDual-class.html</loc>
-  </url>
-  <url>
-    <loc>https://openpharma.github.io/crmPack/reference/DataGrouped-class.html</loc>
-  </url>
-  <url>
-    <loc>https://openpharma.github.io/crmPack/reference/DataMixture-class.html</loc>
-  </url>
-  <url>
-    <loc>https://openpharma.github.io/crmPack/reference/DataOrdinal-class.html</loc>
-  </url>
-  <url>
-    <loc>https://openpharma.github.io/crmPack/reference/DataParts-class.html</loc>
-  </url>
-  <url>
-    <loc>https://openpharma.github.io/crmPack/reference/Design-class.html</loc>
-  </url>
-  <url>
-    <loc>https://openpharma.github.io/crmPack/reference/DesignGrouped-class.html</loc>
-  </url>
-  <url>
-    <loc>https://openpharma.github.io/crmPack/reference/DesignOrdinal-class.html</loc>
-  </url>
-  <url>
-    <loc>https://openpharma.github.io/crmPack/reference/DualDesign-class.html</loc>
-  </url>
-  <url>
-    <loc>https://openpharma.github.io/crmPack/reference/DualEndpoint-class.html</loc>
-  </url>
-  <url>
-    <loc>https://openpharma.github.io/crmPack/reference/DualEndpointBeta-class.html</loc>
-  </url>
-  <url>
-    <loc>https://openpharma.github.io/crmPack/reference/DualEndpointEmax-class.html</loc>
-  </url>
-  <url>
-    <loc>https://openpharma.github.io/crmPack/reference/DualEndpointRW-class.html</loc>
-  </url>
-  <url>
-    <loc>https://openpharma.github.io/crmPack/reference/DualResponsesDesign-class.html</loc>
-  </url>
-  <url>
-    <loc>https://openpharma.github.io/crmPack/reference/DualResponsesSamplesDesign-class.html</loc>
-  </url>
-  <url>
-    <loc>https://openpharma.github.io/crmPack/reference/DualSimulations-class.html</loc>
-  </url>
-  <url>
-    <loc>https://openpharma.github.io/crmPack/reference/DualSimulationsSummary-class.html</loc>
-  </url>
-  <url>
-    <loc>https://openpharma.github.io/crmPack/reference/EffFlexi-class.html</loc>
-  </url>
-  <url>
-    <loc>https://openpharma.github.io/crmPack/reference/Effloglog-class.html</loc>
-  </url>
-  <url>
-    <loc>https://openpharma.github.io/crmPack/reference/FractionalCRM-class.html</loc>
-  </url>
-  <url>
-    <loc>https://openpharma.github.io/crmPack/reference/GeneralData-class.html</loc>
-  </url>
-  <url>
-    <loc>https://openpharma.github.io/crmPack/reference/GeneralModel-class.html</loc>
-  </url>
-  <url>
-    <loc>https://openpharma.github.io/crmPack/reference/GeneralSimulations-class.html</loc>
-  </url>
-  <url>
-    <loc>https://openpharma.github.io/crmPack/reference/GeneralSimulationsSummary-class.html</loc>
-  </url>
-  <url>
-    <loc>https://openpharma.github.io/crmPack/reference/Increments-class.html</loc>
-  </url>
-  <url>
-    <loc>https://openpharma.github.io/crmPack/reference/IncrementsDoseLevels-class.html</loc>
-  </url>
-  <url>
-    <loc>https://openpharma.github.io/crmPack/reference/IncrementsHSRBeta-class.html</loc>
-  </url>
-  <url>
-    <loc>https://openpharma.github.io/crmPack/reference/IncrementsMin-class.html</loc>
-  </url>
-  <url>
-    <loc>https://openpharma.github.io/crmPack/reference/IncrementsOrdinal-class.html</loc>
-  </url>
-  <url>
-    <loc>https://openpharma.github.io/crmPack/reference/IncrementsRelative-class.html</loc>
-  </url>
-  <url>
-    <loc>https://openpharma.github.io/crmPack/reference/IncrementsRelativeDLT-class.html</loc>
-  </url>
-  <url>
-    <loc>https://openpharma.github.io/crmPack/reference/IncrementsRelativeDLTCurrent-class.html</loc>
-  </url>
-  <url>
-    <loc>https://openpharma.github.io/crmPack/reference/IncrementsRelativeParts-class.html</loc>
-  </url>
-  <url>
-    <loc>https://openpharma.github.io/crmPack/reference/LogisticIndepBeta-class.html</loc>
-  </url>
-  <url>
-    <loc>https://openpharma.github.io/crmPack/reference/LogisticKadane-class.html</loc>
-  </url>
-  <url>
-    <loc>https://openpharma.github.io/crmPack/reference/LogisticKadaneBetaGamma-class.html</loc>
-  </url>
-  <url>
-    <loc>https://openpharma.github.io/crmPack/reference/LogisticLogNormal-class.html</loc>
-  </url>
-  <url>
-    <loc>https://openpharma.github.io/crmPack/reference/LogisticLogNormalGrouped-class.html</loc>
-  </url>
-  <url>
-    <loc>https://openpharma.github.io/crmPack/reference/LogisticLogNormalMixture-class.html</loc>
-  </url>
-  <url>
-    <loc>https://openpharma.github.io/crmPack/reference/LogisticLogNormalOrdinal-class.html</loc>
-  </url>
-  <url>
-    <loc>https://openpharma.github.io/crmPack/reference/LogisticLogNormalSub-class.html</loc>
-  </url>
-  <url>
-    <loc>https://openpharma.github.io/crmPack/reference/LogisticNormal-class.html</loc>
-  </url>
-  <url>
-    <loc>https://openpharma.github.io/crmPack/reference/LogisticNormalFixedMixture-class.html</loc>
-  </url>
-  <url>
-    <loc>https://openpharma.github.io/crmPack/reference/LogisticNormalMixture-class.html</loc>
-  </url>
-  <url>
-    <loc>https://openpharma.github.io/crmPack/reference/McmcOptions-class.html</loc>
-  </url>
-  <url>
-    <loc>https://openpharma.github.io/crmPack/reference/MinimalInformative.html</loc>
-  </url>
-  <url>
-    <loc>https://openpharma.github.io/crmPack/reference/ModelEff-class.html</loc>
-  </url>
-  <url>
-    <loc>https://openpharma.github.io/crmPack/reference/ModelLogNormal-class.html</loc>
-  </url>
-  <url>
-    <loc>https://openpharma.github.io/crmPack/reference/ModelParamsNormal-class.html</loc>
-  </url>
-  <url>
-    <loc>https://openpharma.github.io/crmPack/reference/ModelPseudo-class.html</loc>
-  </url>
-  <url>
-    <loc>https://openpharma.github.io/crmPack/reference/ModelTox-class.html</loc>
-  </url>
-  <url>
-    <loc>https://openpharma.github.io/crmPack/reference/NextBest-class.html</loc>
-  </url>
-  <url>
-    <loc>https://openpharma.github.io/crmPack/reference/NextBestDualEndpoint-class.html</loc>
-  </url>
-  <url>
-    <loc>https://openpharma.github.io/crmPack/reference/NextBestInfTheory-class.html</loc>
-  </url>
-  <url>
-    <loc>https://openpharma.github.io/crmPack/reference/NextBestMTD-class.html</loc>
-  </url>
-  <url>
-    <loc>https://openpharma.github.io/crmPack/reference/NextBestMaxGain-class.html</loc>
-  </url>
-  <url>
-    <loc>https://openpharma.github.io/crmPack/reference/NextBestMaxGainSamples-class.html</loc>
-  </url>
-  <url>
-    <loc>https://openpharma.github.io/crmPack/reference/NextBestMinDist-class.html</loc>
-  </url>
-  <url>
-    <loc>https://openpharma.github.io/crmPack/reference/NextBestNCRM-class.html</loc>
-  </url>
-  <url>
-    <loc>https://openpharma.github.io/crmPack/reference/NextBestNCRMLoss-class.html</loc>
-  </url>
-  <url>
-    <loc>https://openpharma.github.io/crmPack/reference/NextBestOrdinal-class.html</loc>
-  </url>
-  <url>
-    <loc>https://openpharma.github.io/crmPack/reference/NextBestProbMTDLTE-class.html</loc>
-  </url>
-  <url>
-    <loc>https://openpharma.github.io/crmPack/reference/NextBestProbMTDMinDist-class.html</loc>
-  </url>
-  <url>
-    <loc>https://openpharma.github.io/crmPack/reference/NextBestTD-class.html</loc>
-  </url>
-  <url>
-    <loc>https://openpharma.github.io/crmPack/reference/NextBestTDsamples-class.html</loc>
-  </url>
-  <url>
-    <loc>https://openpharma.github.io/crmPack/reference/NextBestThreePlusThree-class.html</loc>
-  </url>
-  <url>
-    <loc>https://openpharma.github.io/crmPack/reference/OneParExpPrior-class.html</loc>
-  </url>
-  <url>
-    <loc>https://openpharma.github.io/crmPack/reference/OneParLogNormalPrior-class.html</loc>
-  </url>
-  <url>
-    <loc>https://openpharma.github.io/crmPack/reference/ProbitLogNormal-class.html</loc>
-  </url>
-  <url>
-    <loc>https://openpharma.github.io/crmPack/reference/ProbitLogNormalRel-class.html</loc>
-  </url>
-  <url>
-    <loc>https://openpharma.github.io/crmPack/reference/PseudoDualFlexiSimulations-class.html</loc>
-  </url>
-  <url>
-    <loc>https://openpharma.github.io/crmPack/reference/PseudoDualFlexiSimulations.html</loc>
-  </url>
-  <url>
-    <loc>https://openpharma.github.io/crmPack/reference/PseudoDualSimulations-class.html</loc>
-  </url>
-  <url>
-    <loc>https://openpharma.github.io/crmPack/reference/PseudoDualSimulationsSummary-class.html</loc>
-  </url>
-  <url>
-    <loc>https://openpharma.github.io/crmPack/reference/PseudoSimulations-class.html</loc>
-  </url>
-  <url>
-    <loc>https://openpharma.github.io/crmPack/reference/PseudoSimulationsSummary-class.html</loc>
-  </url>
-  <url>
-    <loc>https://openpharma.github.io/crmPack/reference/Quantiles2LogisticNormal.html</loc>
-  </url>
-  <url>
-    <loc>https://openpharma.github.io/crmPack/reference/Report.html</loc>
-  </url>
-  <url>
-    <loc>https://openpharma.github.io/crmPack/reference/RuleDesign-class.html</loc>
-  </url>
-  <url>
-    <loc>https://openpharma.github.io/crmPack/reference/RuleDesignOrdinal-class.html</loc>
-  </url>
-  <url>
-    <loc>https://openpharma.github.io/crmPack/reference/SafetyWindow-class.html</loc>
-  </url>
-  <url>
-    <loc>https://openpharma.github.io/crmPack/reference/SafetyWindowConst-class.html</loc>
-  </url>
-  <url>
-    <loc>https://openpharma.github.io/crmPack/reference/SafetyWindowSize-class.html</loc>
-  </url>
-  <url>
-    <loc>https://openpharma.github.io/crmPack/reference/Samples-class.html</loc>
-  </url>
-  <url>
-    <loc>https://openpharma.github.io/crmPack/reference/Simulations-class.html</loc>
-  </url>
-  <url>
-    <loc>https://openpharma.github.io/crmPack/reference/SimulationsSummary-class.html</loc>
-  </url>
-  <url>
-    <loc>https://openpharma.github.io/crmPack/reference/StartingDose-class.html</loc>
-  </url>
-  <url>
-    <loc>https://openpharma.github.io/crmPack/reference/Stopping-class.html</loc>
-  </url>
-  <url>
-    <loc>https://openpharma.github.io/crmPack/reference/StoppingAll-class.html</loc>
-  </url>
-  <url>
-    <loc>https://openpharma.github.io/crmPack/reference/StoppingAny-class.html</loc>
-  </url>
-  <url>
-    <loc>https://openpharma.github.io/crmPack/reference/StoppingCohortsNearDose-class.html</loc>
-  </url>
-  <url>
-    <loc>https://openpharma.github.io/crmPack/reference/StoppingExternal-class.html</loc>
-  </url>
-  <url>
-    <loc>https://openpharma.github.io/crmPack/reference/StoppingHighestDose-class.html</loc>
-  </url>
-  <url>
-    <loc>https://openpharma.github.io/crmPack/reference/StoppingList-class.html</loc>
-  </url>
-  <url>
-    <loc>https://openpharma.github.io/crmPack/reference/StoppingLowestDoseHSRBeta-class.html</loc>
-  </url>
-  <url>
-    <loc>https://openpharma.github.io/crmPack/reference/StoppingMTDCV-class.html</loc>
-  </url>
-  <url>
-    <loc>https://openpharma.github.io/crmPack/reference/StoppingMTDdistribution-class.html</loc>
-  </url>
-  <url>
-    <loc>https://openpharma.github.io/crmPack/reference/StoppingMaxGainCIRatio-class.html</loc>
-  </url>
-  <url>
-    <loc>https://openpharma.github.io/crmPack/reference/StoppingMinCohorts-class.html</loc>
-  </url>
-  <url>
-    <loc>https://openpharma.github.io/crmPack/reference/StoppingMinPatients-class.html</loc>
-  </url>
-  <url>
-    <loc>https://openpharma.github.io/crmPack/reference/StoppingMissingDose-class.html</loc>
-  </url>
-  <url>
-    <loc>https://openpharma.github.io/crmPack/reference/StoppingOrdinal-class.html</loc>
-  </url>
-  <url>
-    <loc>https://openpharma.github.io/crmPack/reference/StoppingPatientsNearDose-class.html</loc>
-  </url>
-  <url>
-    <loc>https://openpharma.github.io/crmPack/reference/StoppingSpecificDose-class.html</loc>
-  </url>
-  <url>
-    <loc>https://openpharma.github.io/crmPack/reference/StoppingTDCIRatio-class.html</loc>
-  </url>
-  <url>
-    <loc>https://openpharma.github.io/crmPack/reference/StoppingTargetBiomarker-class.html</loc>
-  </url>
-  <url>
-    <loc>https://openpharma.github.io/crmPack/reference/StoppingTargetProb-class.html</loc>
-  </url>
-  <url>
-    <loc>https://openpharma.github.io/crmPack/reference/TDDesign-class.html</loc>
-  </url>
-  <url>
-    <loc>https://openpharma.github.io/crmPack/reference/TDsamplesDesign-class.html</loc>
-  </url>
-  <url>
-    <loc>https://openpharma.github.io/crmPack/reference/TITELogisticLogNormal-class.html</loc>
-  </url>
-  <url>
-    <loc>https://openpharma.github.io/crmPack/reference/Validate.html</loc>
-  </url>
-  <url>
-    <loc>https://openpharma.github.io/crmPack/reference/and-Stopping-Stopping-method.html</loc>
-  </url>
-  <url>
-    <loc>https://openpharma.github.io/crmPack/reference/and-Stopping-StoppingAll-method.html</loc>
-  </url>
-  <url>
-    <loc>https://openpharma.github.io/crmPack/reference/and-StoppingAll-Stopping-method.html</loc>
-  </url>
-  <url>
-    <loc>https://openpharma.github.io/crmPack/reference/approximate.html</loc>
-  </url>
-  <url>
-    <loc>https://openpharma.github.io/crmPack/reference/assertions.html</loc>
-  </url>
-  <url>
-    <loc>https://openpharma.github.io/crmPack/reference/biomarker.html</loc>
-  </url>
-  <url>
-    <loc>https://openpharma.github.io/crmPack/reference/check_equal.html</loc>
-  </url>
-  <url>
-    <loc>https://openpharma.github.io/crmPack/reference/check_format.html</loc>
-  </url>
-  <url>
-    <loc>https://openpharma.github.io/crmPack/reference/check_length.html</loc>
-  </url>
-  <url>
-    <loc>https://openpharma.github.io/crmPack/reference/check_probabilities.html</loc>
-  </url>
-  <url>
-    <loc>https://openpharma.github.io/crmPack/reference/check_probability.html</loc>
-  </url>
-  <url>
-    <loc>https://openpharma.github.io/crmPack/reference/check_probability_range.html</loc>
-  </url>
-  <url>
-    <loc>https://openpharma.github.io/crmPack/reference/check_range.html</loc>
-  </url>
-  <url>
-    <loc>https://openpharma.github.io/crmPack/reference/crmPack-package.html</loc>
-  </url>
-  <url>
-    <loc>https://openpharma.github.io/crmPack/reference/crmPackExample.html</loc>
-  </url>
-  <url>
-    <loc>https://openpharma.github.io/crmPack/reference/crmPackHelp.html</loc>
-  </url>
-  <url>
-    <loc>https://openpharma.github.io/crmPack/reference/dapply.html</loc>
-  </url>
-  <url>
-    <loc>https://openpharma.github.io/crmPack/reference/dinvGamma.html</loc>
-  </url>
-  <url>
-    <loc>https://openpharma.github.io/crmPack/reference/dose.html</loc>
-  </url>
-  <url>
-    <loc>https://openpharma.github.io/crmPack/reference/doseFunction.html</loc>
-  </url>
-  <url>
-    <loc>https://openpharma.github.io/crmPack/reference/dose_grid_range.html</loc>
-  </url>
-  <url>
-    <loc>https://openpharma.github.io/crmPack/reference/efficacy.html</loc>
-  </url>
-  <url>
-    <loc>https://openpharma.github.io/crmPack/reference/efficacyFunction.html</loc>
-  </url>
-  <url>
-    <loc>https://openpharma.github.io/crmPack/reference/enable_logging.html</loc>
-  </url>
-  <url>
-    <loc>https://openpharma.github.io/crmPack/reference/examine.html</loc>
-  </url>
-  <url>
-    <loc>https://openpharma.github.io/crmPack/reference/fit.html</loc>
-  </url>
-  <url>
-    <loc>https://openpharma.github.io/crmPack/reference/fitGain.html</loc>
-  </url>
-  <url>
-    <loc>https://openpharma.github.io/crmPack/reference/fitPEM.html</loc>
-  </url>
-  <url>
-    <loc>https://openpharma.github.io/crmPack/reference/gain.html</loc>
-  </url>
-  <url>
-    <loc>https://openpharma.github.io/crmPack/reference/get-Samples-character-method.html</loc>
-  </url>
-  <url>
-    <loc>https://openpharma.github.io/crmPack/reference/getEff.html</loc>
-  </url>
-  <url>
-    <loc>https://openpharma.github.io/crmPack/reference/get_result_list.html</loc>
-  </url>
-  <url>
-    <loc>https://openpharma.github.io/crmPack/reference/h_all_equivalent.html</loc>
-  </url>
-  <url>
-    <loc>https://openpharma.github.io/crmPack/reference/h_barplot_percentages.html</loc>
-  </url>
-  <url>
-    <loc>https://openpharma.github.io/crmPack/reference/h_blind_plot_data.html</loc>
-  </url>
-  <url>
-    <loc>https://openpharma.github.io/crmPack/reference/h_calc_report_label_percentage.html</loc>
-  </url>
-  <url>
-    <loc>https://openpharma.github.io/crmPack/reference/h_check_fun_formals.html</loc>
-  </url>
-  <url>
-    <loc>https://openpharma.github.io/crmPack/reference/h_convert_ordinal_data.html</loc>
-  </url>
-  <url>
-    <loc>https://openpharma.github.io/crmPack/reference/h_convert_ordinal_model.html</loc>
-  </url>
-  <url>
-    <loc>https://openpharma.github.io/crmPack/reference/h_convert_ordinal_samples.html</loc>
-  </url>
-  <url>
-    <loc>https://openpharma.github.io/crmPack/reference/h_covr_helpers.html</loc>
-  </url>
-  <url>
-    <loc>https://openpharma.github.io/crmPack/reference/h_default_if_empty.html</loc>
-  </url>
-  <url>
-    <loc>https://openpharma.github.io/crmPack/reference/h_determine_dlts.html</loc>
-  </url>
-  <url>
-    <loc>https://openpharma.github.io/crmPack/reference/h_find_interval.html</loc>
-  </url>
-  <url>
-    <loc>https://openpharma.github.io/crmPack/reference/h_format_number.html</loc>
-  </url>
-  <url>
-    <loc>https://openpharma.github.io/crmPack/reference/h_get_formatted_dosegrid.html</loc>
-  </url>
-  <url>
-    <loc>https://openpharma.github.io/crmPack/reference/h_get_min_inf_beta.html</loc>
-  </url>
-  <url>
-    <loc>https://openpharma.github.io/crmPack/reference/h_group_data.html</loc>
-  </url>
-  <url>
-    <loc>https://openpharma.github.io/crmPack/reference/h_in_range.html</loc>
-  </url>
-  <url>
-    <loc>https://openpharma.github.io/crmPack/reference/h_info_theory_dist.html</loc>
-  </url>
-  <url>
-    <loc>https://openpharma.github.io/crmPack/reference/h_is_positive_definite.html</loc>
-  </url>
-  <url>
-    <loc>https://openpharma.github.io/crmPack/reference/h_jags_add_dummy.html</loc>
-  </url>
-  <url>
-    <loc>https://openpharma.github.io/crmPack/reference/h_jags_extract_samples.html</loc>
-  </url>
-  <url>
-    <loc>https://openpharma.github.io/crmPack/reference/h_jags_get_data.html</loc>
-  </url>
-  <url>
-    <loc>https://openpharma.github.io/crmPack/reference/h_jags_get_model_inits.html</loc>
-  </url>
-  <url>
-    <loc>https://openpharma.github.io/crmPack/reference/h_jags_join_models.html</loc>
-  </url>
-  <url>
-    <loc>https://openpharma.github.io/crmPack/reference/h_jags_write_model.html</loc>
-  </url>
-  <url>
-    <loc>https://openpharma.github.io/crmPack/reference/h_model_dual_endpoint_beta.html</loc>
-  </url>
-  <url>
-    <loc>https://openpharma.github.io/crmPack/reference/h_model_dual_endpoint_rho.html</loc>
-  </url>
-  <url>
-    <loc>https://openpharma.github.io/crmPack/reference/h_model_dual_endpoint_sigma2W.html</loc>
-  </url>
-  <url>
-    <loc>https://openpharma.github.io/crmPack/reference/h_model_dual_endpoint_sigma2betaW.html</loc>
-  </url>
-  <url>
-    <loc>https://openpharma.github.io/crmPack/reference/h_next_best_eligible_doses.html</loc>
-  </url>
-  <url>
-    <loc>https://openpharma.github.io/crmPack/reference/h_next_best_mg_ci.html</loc>
-  </url>
-  <url>
-    <loc>https://openpharma.github.io/crmPack/reference/h_next_best_mg_doses_at_grid.html</loc>
-  </url>
-  <url>
-    <loc>https://openpharma.github.io/crmPack/reference/h_next_best_mg_plot.html</loc>
-  </url>
-  <url>
-    <loc>https://openpharma.github.io/crmPack/reference/h_next_best_mgsamples_plot.html</loc>
-  </url>
-  <url>
-    <loc>https://openpharma.github.io/crmPack/reference/h_next_best_ncrm_loss_plot.html</loc>
-  </url>
-  <url>
-    <loc>https://openpharma.github.io/crmPack/reference/h_next_best_td_plot.html</loc>
-  </url>
-  <url>
-    <loc>https://openpharma.github.io/crmPack/reference/h_next_best_tdsamples_plot.html</loc>
-  </url>
-  <url>
-    <loc>https://openpharma.github.io/crmPack/reference/h_null_if_na.html</loc>
-  </url>
-  <url>
-    <loc>https://openpharma.github.io/crmPack/reference/h_obtain_dose_grid_range.html</loc>
-  </url>
-  <url>
-    <loc>https://openpharma.github.io/crmPack/reference/h_plot_data_cohort_lines.html</loc>
-  </url>
-  <url>
-    <loc>https://openpharma.github.io/crmPack/reference/h_plot_data_df.html</loc>
-  </url>
-  <url>
-    <loc>https://openpharma.github.io/crmPack/reference/h_prepare_labels.html</loc>
-  </url>
-  <url>
-    <loc>https://openpharma.github.io/crmPack/reference/h_prepare_units.html</loc>
-  </url>
-  <url>
-    <loc>https://openpharma.github.io/crmPack/reference/h_rapply.html</loc>
-  </url>
-  <url>
-    <loc>https://openpharma.github.io/crmPack/reference/h_simulations_output_format.html</loc>
-  </url>
-  <url>
-    <loc>https://openpharma.github.io/crmPack/reference/h_slots.html</loc>
-  </url>
-  <url>
-    <loc>https://openpharma.github.io/crmPack/reference/h_summarize_add_stats.html</loc>
-  </url>
-  <url>
-    <loc>https://openpharma.github.io/crmPack/reference/h_test_named_numeric.html</loc>
-  </url>
-  <url>
-    <loc>https://openpharma.github.io/crmPack/reference/h_this_truth.html</loc>
-  </url>
-  <url>
-    <loc>https://openpharma.github.io/crmPack/reference/h_unpack_stopit.html</loc>
-  </url>
-  <url>
-    <loc>https://openpharma.github.io/crmPack/reference/h_validate_combine_results.html</loc>
-  </url>
-  <url>
-    <loc>https://openpharma.github.io/crmPack/reference/h_validate_common_data_slots.html</loc>
-  </url>
-  <url>
-    <loc>https://openpharma.github.io/crmPack/reference/index.html</loc>
-  </url>
-  <url>
-    <loc>https://openpharma.github.io/crmPack/reference/is.wholenumber.html</loc>
-  </url>
-  <url>
-    <loc>https://openpharma.github.io/crmPack/reference/knit_print.html</loc>
-  </url>
-  <url>
-    <loc>https://openpharma.github.io/crmPack/reference/logit.html</loc>
-  </url>
-  <url>
-    <loc>https://openpharma.github.io/crmPack/reference/match_within_tolerance.html</loc>
-  </url>
-  <url>
-    <loc>https://openpharma.github.io/crmPack/reference/maxDose.html</loc>
-  </url>
-  <url>
-    <loc>https://openpharma.github.io/crmPack/reference/maxSize.html</loc>
-  </url>
-  <url>
-    <loc>https://openpharma.github.io/crmPack/reference/mcmc.html</loc>
-  </url>
-  <url>
-    <loc>https://openpharma.github.io/crmPack/reference/minSize.html</loc>
-  </url>
-  <url>
-    <loc>https://openpharma.github.io/crmPack/reference/myBayesLogit.html</loc>
-  </url>
-  <url>
-    <loc>https://openpharma.github.io/crmPack/reference/names-Samples-method.html</loc>
-  </url>
-  <url>
-    <loc>https://openpharma.github.io/crmPack/reference/nextBest.html</loc>
-  </url>
-  <url>
-    <loc>https://openpharma.github.io/crmPack/reference/ngrid.html</loc>
-  </url>
-  <url>
-    <loc>https://openpharma.github.io/crmPack/reference/or-Stopping-Stopping.html</loc>
-  </url>
-  <url>
-    <loc>https://openpharma.github.io/crmPack/reference/or-Stopping-StoppingAny.html</loc>
-  </url>
-  <url>
-    <loc>https://openpharma.github.io/crmPack/reference/or-StoppingAny-Stopping.html</loc>
-  </url>
-  <url>
-    <loc>https://openpharma.github.io/crmPack/reference/pinvGamma.html</loc>
-  </url>
-  <url>
-    <loc>https://openpharma.github.io/crmPack/reference/pipe.html</loc>
-  </url>
-  <url>
-    <loc>https://openpharma.github.io/crmPack/reference/plot-Data-ModelTox-method.html</loc>
-  </url>
-  <url>
-    <loc>https://openpharma.github.io/crmPack/reference/plot-Data.html</loc>
-  </url>
-  <url>
-    <loc>https://openpharma.github.io/crmPack/reference/plot-DataDA-missing-method.html</loc>
-  </url>
-  <url>
-    <loc>https://openpharma.github.io/crmPack/reference/plot-DataDual-ModelEff-method.html</loc>
-  </url>
-  <url>
-    <loc>https://openpharma.github.io/crmPack/reference/plot-DataDual-missing-method.html</loc>
-  </url>
-  <url>
-    <loc>https://openpharma.github.io/crmPack/reference/plot-DualSimulations-missing-method.html</loc>
-  </url>
-  <url>
-    <loc>https://openpharma.github.io/crmPack/reference/plot-DualSimulationsSummary-missing-method.html</loc>
-  </url>
-  <url>
-    <loc>https://openpharma.github.io/crmPack/reference/plot-GeneralSimulations-missing-method.html</loc>
-  </url>
-  <url>
-    <loc>https://openpharma.github.io/crmPack/reference/plot-GeneralSimulationsSummary-missing-method.html</loc>
-  </url>
-  <url>
-    <loc>https://openpharma.github.io/crmPack/reference/plot-PseudoDualFlexiSimulations-missing-method.html</loc>
-  </url>
-  <url>
-    <loc>https://openpharma.github.io/crmPack/reference/plot-PseudoDualSimulations-missing-method.html</loc>
-  </url>
-  <url>
-    <loc>https://openpharma.github.io/crmPack/reference/plot-PseudoDualSimulationsSummary-missing-method.html</loc>
-  </url>
-  <url>
-    <loc>https://openpharma.github.io/crmPack/reference/plot-PseudoSimulationsSummary-missing-method.html</loc>
-  </url>
-  <url>
-    <loc>https://openpharma.github.io/crmPack/reference/plot-Samples-DALogisticLogNormal-method.html</loc>
-  </url>
-  <url>
-    <loc>https://openpharma.github.io/crmPack/reference/plot-Samples-DualEndpoint-method.html</loc>
-  </url>
-  <url>
-    <loc>https://openpharma.github.io/crmPack/reference/plot-Samples-GeneralModel-method.html</loc>
-  </url>
-  <url>
-    <loc>https://openpharma.github.io/crmPack/reference/plot-Samples-ModelEff-method.html</loc>
-  </url>
-  <url>
-    <loc>https://openpharma.github.io/crmPack/reference/plot-Samples-ModelTox-method.html</loc>
-  </url>
-  <url>
-    <loc>https://openpharma.github.io/crmPack/reference/plot-SimulationsSummary-missing-method.html</loc>
-  </url>
-  <url>
-    <loc>https://openpharma.github.io/crmPack/reference/plot.gtable.html</loc>
-  </url>
-  <url>
-    <loc>https://openpharma.github.io/crmPack/reference/plotDualResponses.html</loc>
-  </url>
-  <url>
-    <loc>https://openpharma.github.io/crmPack/reference/plotGain.html</loc>
-  </url>
-  <url>
-    <loc>https://openpharma.github.io/crmPack/reference/positive_number.html</loc>
-  </url>
-  <url>
-    <loc>https://openpharma.github.io/crmPack/reference/printVignette.html</loc>
-  </url>
-  <url>
-    <loc>https://openpharma.github.io/crmPack/reference/prob.html</loc>
-  </url>
-  <url>
-    <loc>https://openpharma.github.io/crmPack/reference/probFunction.html</loc>
-  </url>
-  <url>
-    <loc>https://openpharma.github.io/crmPack/reference/probit.html</loc>
-  </url>
-  <url>
-    <loc>https://openpharma.github.io/crmPack/reference/qinvGamma.html</loc>
-  </url>
-  <url>
-    <loc>https://openpharma.github.io/crmPack/reference/rinvGamma.html</loc>
-  </url>
-  <url>
-    <loc>https://openpharma.github.io/crmPack/reference/safeInteger.html</loc>
-  </url>
-  <url>
-    <loc>https://openpharma.github.io/crmPack/reference/saveSample.html</loc>
-  </url>
-  <url>
-    <loc>https://openpharma.github.io/crmPack/reference/set_seed.html</loc>
-  </url>
-  <url>
-    <loc>https://openpharma.github.io/crmPack/reference/show-DualSimulationsSummary-method.html</loc>
-  </url>
-  <url>
-    <loc>https://openpharma.github.io/crmPack/reference/show-GeneralSimulationsSummary-method.html</loc>
-  </url>
-  <url>
-    <loc>https://openpharma.github.io/crmPack/reference/show-PseudoDualSimulationsSummary-method.html</loc>
-  </url>
-  <url>
-    <loc>https://openpharma.github.io/crmPack/reference/show-PseudoSimulationsSummary-method.html</loc>
-  </url>
-  <url>
-    <loc>https://openpharma.github.io/crmPack/reference/show-SimulationsSummary-method.html</loc>
-  </url>
-  <url>
-    <loc>https://openpharma.github.io/crmPack/reference/simulate-DADesign-method.html</loc>
-  </url>
-  <url>
-    <loc>https://openpharma.github.io/crmPack/reference/simulate-Design-method.html</loc>
-  </url>
-  <url>
-    <loc>https://openpharma.github.io/crmPack/reference/simulate-DesignGrouped-method.html</loc>
-  </url>
-  <url>
-    <loc>https://openpharma.github.io/crmPack/reference/simulate-DualDesign-method.html</loc>
-  </url>
-  <url>
-    <loc>https://openpharma.github.io/crmPack/reference/simulate-DualResponsesDesign-method.html</loc>
-  </url>
-  <url>
-    <loc>https://openpharma.github.io/crmPack/reference/simulate-DualResponsesSamplesDesign-method.html</loc>
-  </url>
-  <url>
-    <loc>https://openpharma.github.io/crmPack/reference/simulate-RuleDesign-method.html</loc>
-  </url>
-  <url>
-    <loc>https://openpharma.github.io/crmPack/reference/simulate-TDDesign-method.html</loc>
-  </url>
-  <url>
-    <loc>https://openpharma.github.io/crmPack/reference/simulate-TDsamplesDesign-method.html</loc>
-  </url>
-  <url>
-    <loc>https://openpharma.github.io/crmPack/reference/size.html</loc>
-  </url>
-  <url>
-    <loc>https://openpharma.github.io/crmPack/reference/stopTrial.html</loc>
-  </url>
-  <url>
-    <loc>https://openpharma.github.io/crmPack/reference/summary-DualSimulations-method.html</loc>
-  </url>
-  <url>
-    <loc>https://openpharma.github.io/crmPack/reference/summary-GeneralSimulations-method.html</loc>
-  </url>
-  <url>
-    <loc>https://openpharma.github.io/crmPack/reference/summary-PseudoDualFlexiSimulations-method.html</loc>
-  </url>
-  <url>
-    <loc>https://openpharma.github.io/crmPack/reference/summary-PseudoDualSimulations-method.html</loc>
-  </url>
-  <url>
-    <loc>https://openpharma.github.io/crmPack/reference/summary-PseudoSimulations-method.html</loc>
-  </url>
-  <url>
-    <loc>https://openpharma.github.io/crmPack/reference/summary-Simulations-method.html</loc>
-  </url>
-  <url>
-    <loc>https://openpharma.github.io/crmPack/reference/tidy.html</loc>
-  </url>
-  <url>
-    <loc>https://openpharma.github.io/crmPack/reference/update-Data-method.html</loc>
-  </url>
-  <url>
-    <loc>https://openpharma.github.io/crmPack/reference/update-DataDA-method.html</loc>
-  </url>
-  <url>
-    <loc>https://openpharma.github.io/crmPack/reference/update-DataDual-method.html</loc>
-  </url>
-  <url>
-    <loc>https://openpharma.github.io/crmPack/reference/update-DataOrdinal-method.html</loc>
-  </url>
-  <url>
-    <loc>https://openpharma.github.io/crmPack/reference/update-DataParts-method.html</loc>
-  </url>
-  <url>
-    <loc>https://openpharma.github.io/crmPack/reference/update-ModelPseudo-method.html</loc>
-  </url>
-  <url>
-    <loc>https://openpharma.github.io/crmPack/reference/v_cohort_size.html</loc>
-  </url>
-  <url>
-    <loc>https://openpharma.github.io/crmPack/reference/v_data_objects.html</loc>
-  </url>
-  <url>
-    <loc>https://openpharma.github.io/crmPack/reference/v_design.html</loc>
-  </url>
-  <url>
-    <loc>https://openpharma.github.io/crmPack/reference/v_general_simulations.html</loc>
-  </url>
-  <url>
-    <loc>https://openpharma.github.io/crmPack/reference/v_increments.html</loc>
-  </url>
-  <url>
-    <loc>https://openpharma.github.io/crmPack/reference/v_mcmcoptions_objects.html</loc>
-  </url>
-  <url>
-    <loc>https://openpharma.github.io/crmPack/reference/v_model_objects.html</loc>
-  </url>
-  <url>
-    <loc>https://openpharma.github.io/crmPack/reference/v_model_params.html</loc>
-  </url>
-  <url>
-    <loc>https://openpharma.github.io/crmPack/reference/v_next_best.html</loc>
-  </url>
-  <url>
-    <loc>https://openpharma.github.io/crmPack/reference/v_pseudo_simulations.html</loc>
-  </url>
-  <url>
-    <loc>https://openpharma.github.io/crmPack/reference/v_safety_window.html</loc>
-  </url>
-  <url>
-    <loc>https://openpharma.github.io/crmPack/reference/v_samples_objects.html</loc>
-  </url>
-  <url>
-    <loc>https://openpharma.github.io/crmPack/reference/v_starting_dose.html</loc>
-  </url>
-  <url>
-    <loc>https://openpharma.github.io/crmPack/reference/v_stopping.html</loc>
-  </url>
-  <url>
-    <loc>https://openpharma.github.io/crmPack/reference/windowLength.html</loc>
-  </url>
+<urlset xmlns = 'http://www.sitemaps.org/schemas/sitemap/0.9'>
+<url><loc>https://openpharma.github.io/crmPack/404.html</loc></url>
+<url><loc>https://openpharma.github.io/crmPack/articles/crmPack-jss-paper.html</loc></url>
+<url><loc>https://openpharma.github.io/crmPack/articles/example.html</loc></url>
+<url><loc>https://openpharma.github.io/crmPack/articles/index.html</loc></url>
+<url><loc>https://openpharma.github.io/crmPack/articles/knit_print.html</loc></url>
+<url><loc>https://openpharma.github.io/crmPack/articles/migration_from_the_old_crmPack.html</loc></url>
+<url><loc>https://openpharma.github.io/crmPack/articles/ordinal-crm.html</loc></url>
+<url><loc>https://openpharma.github.io/crmPack/articles/parallel_computing_with_extensions.html</loc></url>
+<url><loc>https://openpharma.github.io/crmPack/articles/rolling-crm.html</loc></url>
+<url><loc>https://openpharma.github.io/crmPack/articles/simulations.html</loc></url>
+<url><loc>https://openpharma.github.io/crmPack/articles/tidy_method.html</loc></url>
+<url><loc>https://openpharma.github.io/crmPack/articles/trial_analysis.html</loc></url>
+<url><loc>https://openpharma.github.io/crmPack/articles/trial_definition.html</loc></url>
+<url><loc>https://openpharma.github.io/crmPack/articles/trial_sanity_checks.html</loc></url>
+<url><loc>https://openpharma.github.io/crmPack/articles/trial_simulation.html</loc></url>
+<url><loc>https://openpharma.github.io/crmPack/authors.html</loc></url>
+<url><loc>https://openpharma.github.io/crmPack/index.html</loc></url>
+<url><loc>https://openpharma.github.io/crmPack/news/index.html</loc></url>
+<url><loc>https://openpharma.github.io/crmPack/reference/CohortSize-class.html</loc></url>
+<url><loc>https://openpharma.github.io/crmPack/reference/CohortSizeConst-class.html</loc></url>
+<url><loc>https://openpharma.github.io/crmPack/reference/CohortSizeDLT-class.html</loc></url>
+<url><loc>https://openpharma.github.io/crmPack/reference/CohortSizeMax-class.html</loc></url>
+<url><loc>https://openpharma.github.io/crmPack/reference/CohortSizeMin-class.html</loc></url>
+<url><loc>https://openpharma.github.io/crmPack/reference/CohortSizeOrdinal-class.html</loc></url>
+<url><loc>https://openpharma.github.io/crmPack/reference/CohortSizeParts-class.html</loc></url>
+<url><loc>https://openpharma.github.io/crmPack/reference/CohortSizeRange-class.html</loc></url>
+<url><loc>https://openpharma.github.io/crmPack/reference/CrmPackClass.html</loc></url>
+<url><loc>https://openpharma.github.io/crmPack/reference/DADesign-class.html</loc></url>
+<url><loc>https://openpharma.github.io/crmPack/reference/DALogisticLogNormal-class.html</loc></url>
+<url><loc>https://openpharma.github.io/crmPack/reference/DASimulations-class.html</loc></url>
+<url><loc>https://openpharma.github.io/crmPack/reference/DASimulations.html</loc></url>
+<url><loc>https://openpharma.github.io/crmPack/reference/DLTLikelihood.html</loc></url>
+<url><loc>https://openpharma.github.io/crmPack/reference/Data-class.html</loc></url>
+<url><loc>https://openpharma.github.io/crmPack/reference/DataDA-class.html</loc></url>
+<url><loc>https://openpharma.github.io/crmPack/reference/DataDual-class.html</loc></url>
+<url><loc>https://openpharma.github.io/crmPack/reference/DataGrouped-class.html</loc></url>
+<url><loc>https://openpharma.github.io/crmPack/reference/DataMixture-class.html</loc></url>
+<url><loc>https://openpharma.github.io/crmPack/reference/DataOrdinal-class.html</loc></url>
+<url><loc>https://openpharma.github.io/crmPack/reference/DataParts-class.html</loc></url>
+<url><loc>https://openpharma.github.io/crmPack/reference/Design-class.html</loc></url>
+<url><loc>https://openpharma.github.io/crmPack/reference/DesignGrouped-class.html</loc></url>
+<url><loc>https://openpharma.github.io/crmPack/reference/DesignOrdinal-class.html</loc></url>
+<url><loc>https://openpharma.github.io/crmPack/reference/DualDesign-class.html</loc></url>
+<url><loc>https://openpharma.github.io/crmPack/reference/DualEndpoint-class.html</loc></url>
+<url><loc>https://openpharma.github.io/crmPack/reference/DualEndpointBeta-class.html</loc></url>
+<url><loc>https://openpharma.github.io/crmPack/reference/DualEndpointEmax-class.html</loc></url>
+<url><loc>https://openpharma.github.io/crmPack/reference/DualEndpointRW-class.html</loc></url>
+<url><loc>https://openpharma.github.io/crmPack/reference/DualResponsesDesign-class.html</loc></url>
+<url><loc>https://openpharma.github.io/crmPack/reference/DualResponsesSamplesDesign-class.html</loc></url>
+<url><loc>https://openpharma.github.io/crmPack/reference/DualSimulations-class.html</loc></url>
+<url><loc>https://openpharma.github.io/crmPack/reference/DualSimulationsSummary-class.html</loc></url>
+<url><loc>https://openpharma.github.io/crmPack/reference/EffFlexi-class.html</loc></url>
+<url><loc>https://openpharma.github.io/crmPack/reference/Effloglog-class.html</loc></url>
+<url><loc>https://openpharma.github.io/crmPack/reference/FractionalCRM-class.html</loc></url>
+<url><loc>https://openpharma.github.io/crmPack/reference/GeneralData-class.html</loc></url>
+<url><loc>https://openpharma.github.io/crmPack/reference/GeneralModel-class.html</loc></url>
+<url><loc>https://openpharma.github.io/crmPack/reference/GeneralSimulations-class.html</loc></url>
+<url><loc>https://openpharma.github.io/crmPack/reference/GeneralSimulationsSummary-class.html</loc></url>
+<url><loc>https://openpharma.github.io/crmPack/reference/Increments-class.html</loc></url>
+<url><loc>https://openpharma.github.io/crmPack/reference/IncrementsDoseLevels-class.html</loc></url>
+<url><loc>https://openpharma.github.io/crmPack/reference/IncrementsHSRBeta-class.html</loc></url>
+<url><loc>https://openpharma.github.io/crmPack/reference/IncrementsMin-class.html</loc></url>
+<url><loc>https://openpharma.github.io/crmPack/reference/IncrementsOrdinal-class.html</loc></url>
+<url><loc>https://openpharma.github.io/crmPack/reference/IncrementsRelative-class.html</loc></url>
+<url><loc>https://openpharma.github.io/crmPack/reference/IncrementsRelativeDLT-class.html</loc></url>
+<url><loc>https://openpharma.github.io/crmPack/reference/IncrementsRelativeDLTCurrent-class.html</loc></url>
+<url><loc>https://openpharma.github.io/crmPack/reference/IncrementsRelativeParts-class.html</loc></url>
+<url><loc>https://openpharma.github.io/crmPack/reference/LogisticIndepBeta-class.html</loc></url>
+<url><loc>https://openpharma.github.io/crmPack/reference/LogisticKadane-class.html</loc></url>
+<url><loc>https://openpharma.github.io/crmPack/reference/LogisticKadaneBetaGamma-class.html</loc></url>
+<url><loc>https://openpharma.github.io/crmPack/reference/LogisticLogNormal-class.html</loc></url>
+<url><loc>https://openpharma.github.io/crmPack/reference/LogisticLogNormalGrouped-class.html</loc></url>
+<url><loc>https://openpharma.github.io/crmPack/reference/LogisticLogNormalMixture-class.html</loc></url>
+<url><loc>https://openpharma.github.io/crmPack/reference/LogisticLogNormalOrdinal-class.html</loc></url>
+<url><loc>https://openpharma.github.io/crmPack/reference/LogisticLogNormalSub-class.html</loc></url>
+<url><loc>https://openpharma.github.io/crmPack/reference/LogisticNormal-class.html</loc></url>
+<url><loc>https://openpharma.github.io/crmPack/reference/LogisticNormalFixedMixture-class.html</loc></url>
+<url><loc>https://openpharma.github.io/crmPack/reference/LogisticNormalMixture-class.html</loc></url>
+<url><loc>https://openpharma.github.io/crmPack/reference/McmcOptions-class.html</loc></url>
+<url><loc>https://openpharma.github.io/crmPack/reference/MinimalInformative.html</loc></url>
+<url><loc>https://openpharma.github.io/crmPack/reference/ModelEff-class.html</loc></url>
+<url><loc>https://openpharma.github.io/crmPack/reference/ModelLogNormal-class.html</loc></url>
+<url><loc>https://openpharma.github.io/crmPack/reference/ModelParamsNormal-class.html</loc></url>
+<url><loc>https://openpharma.github.io/crmPack/reference/ModelPseudo-class.html</loc></url>
+<url><loc>https://openpharma.github.io/crmPack/reference/ModelTox-class.html</loc></url>
+<url><loc>https://openpharma.github.io/crmPack/reference/NextBest-class.html</loc></url>
+<url><loc>https://openpharma.github.io/crmPack/reference/NextBestDualEndpoint-class.html</loc></url>
+<url><loc>https://openpharma.github.io/crmPack/reference/NextBestInfTheory-class.html</loc></url>
+<url><loc>https://openpharma.github.io/crmPack/reference/NextBestMTD-class.html</loc></url>
+<url><loc>https://openpharma.github.io/crmPack/reference/NextBestMaxGain-class.html</loc></url>
+<url><loc>https://openpharma.github.io/crmPack/reference/NextBestMaxGainSamples-class.html</loc></url>
+<url><loc>https://openpharma.github.io/crmPack/reference/NextBestMinDist-class.html</loc></url>
+<url><loc>https://openpharma.github.io/crmPack/reference/NextBestNCRM-class.html</loc></url>
+<url><loc>https://openpharma.github.io/crmPack/reference/NextBestNCRMLoss-class.html</loc></url>
+<url><loc>https://openpharma.github.io/crmPack/reference/NextBestOrdinal-class.html</loc></url>
+<url><loc>https://openpharma.github.io/crmPack/reference/NextBestProbMTDLTE-class.html</loc></url>
+<url><loc>https://openpharma.github.io/crmPack/reference/NextBestProbMTDMinDist-class.html</loc></url>
+<url><loc>https://openpharma.github.io/crmPack/reference/NextBestTD-class.html</loc></url>
+<url><loc>https://openpharma.github.io/crmPack/reference/NextBestTDsamples-class.html</loc></url>
+<url><loc>https://openpharma.github.io/crmPack/reference/NextBestThreePlusThree-class.html</loc></url>
+<url><loc>https://openpharma.github.io/crmPack/reference/OneParExpPrior-class.html</loc></url>
+<url><loc>https://openpharma.github.io/crmPack/reference/OneParLogNormalPrior-class.html</loc></url>
+<url><loc>https://openpharma.github.io/crmPack/reference/ProbitLogNormal-class.html</loc></url>
+<url><loc>https://openpharma.github.io/crmPack/reference/ProbitLogNormalRel-class.html</loc></url>
+<url><loc>https://openpharma.github.io/crmPack/reference/PseudoDualFlexiSimulations-class.html</loc></url>
+<url><loc>https://openpharma.github.io/crmPack/reference/PseudoDualFlexiSimulations.html</loc></url>
+<url><loc>https://openpharma.github.io/crmPack/reference/PseudoDualSimulations-class.html</loc></url>
+<url><loc>https://openpharma.github.io/crmPack/reference/PseudoDualSimulationsSummary-class.html</loc></url>
+<url><loc>https://openpharma.github.io/crmPack/reference/PseudoSimulations-class.html</loc></url>
+<url><loc>https://openpharma.github.io/crmPack/reference/PseudoSimulationsSummary-class.html</loc></url>
+<url><loc>https://openpharma.github.io/crmPack/reference/Quantiles2LogisticNormal.html</loc></url>
+<url><loc>https://openpharma.github.io/crmPack/reference/Report.html</loc></url>
+<url><loc>https://openpharma.github.io/crmPack/reference/RuleDesign-class.html</loc></url>
+<url><loc>https://openpharma.github.io/crmPack/reference/RuleDesignOrdinal-class.html</loc></url>
+<url><loc>https://openpharma.github.io/crmPack/reference/SafetyWindow-class.html</loc></url>
+<url><loc>https://openpharma.github.io/crmPack/reference/SafetyWindowConst-class.html</loc></url>
+<url><loc>https://openpharma.github.io/crmPack/reference/SafetyWindowSize-class.html</loc></url>
+<url><loc>https://openpharma.github.io/crmPack/reference/Samples-class.html</loc></url>
+<url><loc>https://openpharma.github.io/crmPack/reference/Simulations-class.html</loc></url>
+<url><loc>https://openpharma.github.io/crmPack/reference/SimulationsSummary-class.html</loc></url>
+<url><loc>https://openpharma.github.io/crmPack/reference/StartingDose-class.html</loc></url>
+<url><loc>https://openpharma.github.io/crmPack/reference/Stopping-class.html</loc></url>
+<url><loc>https://openpharma.github.io/crmPack/reference/StoppingAll-class.html</loc></url>
+<url><loc>https://openpharma.github.io/crmPack/reference/StoppingAny-class.html</loc></url>
+<url><loc>https://openpharma.github.io/crmPack/reference/StoppingCohortsNearDose-class.html</loc></url>
+<url><loc>https://openpharma.github.io/crmPack/reference/StoppingExternal-class.html</loc></url>
+<url><loc>https://openpharma.github.io/crmPack/reference/StoppingHighestDose-class.html</loc></url>
+<url><loc>https://openpharma.github.io/crmPack/reference/StoppingList-class.html</loc></url>
+<url><loc>https://openpharma.github.io/crmPack/reference/StoppingLowestDoseHSRBeta-class.html</loc></url>
+<url><loc>https://openpharma.github.io/crmPack/reference/StoppingMTDCV-class.html</loc></url>
+<url><loc>https://openpharma.github.io/crmPack/reference/StoppingMTDdistribution-class.html</loc></url>
+<url><loc>https://openpharma.github.io/crmPack/reference/StoppingMaxGainCIRatio-class.html</loc></url>
+<url><loc>https://openpharma.github.io/crmPack/reference/StoppingMinCohorts-class.html</loc></url>
+<url><loc>https://openpharma.github.io/crmPack/reference/StoppingMinPatients-class.html</loc></url>
+<url><loc>https://openpharma.github.io/crmPack/reference/StoppingMissingDose-class.html</loc></url>
+<url><loc>https://openpharma.github.io/crmPack/reference/StoppingOrdinal-class.html</loc></url>
+<url><loc>https://openpharma.github.io/crmPack/reference/StoppingPatientsNearDose-class.html</loc></url>
+<url><loc>https://openpharma.github.io/crmPack/reference/StoppingSpecificDose-class.html</loc></url>
+<url><loc>https://openpharma.github.io/crmPack/reference/StoppingTDCIRatio-class.html</loc></url>
+<url><loc>https://openpharma.github.io/crmPack/reference/StoppingTargetBiomarker-class.html</loc></url>
+<url><loc>https://openpharma.github.io/crmPack/reference/StoppingTargetProb-class.html</loc></url>
+<url><loc>https://openpharma.github.io/crmPack/reference/TDDesign-class.html</loc></url>
+<url><loc>https://openpharma.github.io/crmPack/reference/TDsamplesDesign-class.html</loc></url>
+<url><loc>https://openpharma.github.io/crmPack/reference/TITELogisticLogNormal-class.html</loc></url>
+<url><loc>https://openpharma.github.io/crmPack/reference/Validate.html</loc></url>
+<url><loc>https://openpharma.github.io/crmPack/reference/and-Stopping-Stopping-method.html</loc></url>
+<url><loc>https://openpharma.github.io/crmPack/reference/and-Stopping-StoppingAll-method.html</loc></url>
+<url><loc>https://openpharma.github.io/crmPack/reference/and-StoppingAll-Stopping-method.html</loc></url>
+<url><loc>https://openpharma.github.io/crmPack/reference/approximate.html</loc></url>
+<url><loc>https://openpharma.github.io/crmPack/reference/assertions.html</loc></url>
+<url><loc>https://openpharma.github.io/crmPack/reference/biomarker.html</loc></url>
+<url><loc>https://openpharma.github.io/crmPack/reference/check_equal.html</loc></url>
+<url><loc>https://openpharma.github.io/crmPack/reference/check_format.html</loc></url>
+<url><loc>https://openpharma.github.io/crmPack/reference/check_length.html</loc></url>
+<url><loc>https://openpharma.github.io/crmPack/reference/check_probabilities.html</loc></url>
+<url><loc>https://openpharma.github.io/crmPack/reference/check_probability.html</loc></url>
+<url><loc>https://openpharma.github.io/crmPack/reference/check_probability_range.html</loc></url>
+<url><loc>https://openpharma.github.io/crmPack/reference/check_range.html</loc></url>
+<url><loc>https://openpharma.github.io/crmPack/reference/crmPack-package.html</loc></url>
+<url><loc>https://openpharma.github.io/crmPack/reference/crmPackExample.html</loc></url>
+<url><loc>https://openpharma.github.io/crmPack/reference/crmPackHelp.html</loc></url>
+<url><loc>https://openpharma.github.io/crmPack/reference/dapply.html</loc></url>
+<url><loc>https://openpharma.github.io/crmPack/reference/dinvGamma.html</loc></url>
+<url><loc>https://openpharma.github.io/crmPack/reference/dose.html</loc></url>
+<url><loc>https://openpharma.github.io/crmPack/reference/doseFunction.html</loc></url>
+<url><loc>https://openpharma.github.io/crmPack/reference/dose_grid_range.html</loc></url>
+<url><loc>https://openpharma.github.io/crmPack/reference/efficacy.html</loc></url>
+<url><loc>https://openpharma.github.io/crmPack/reference/efficacyFunction.html</loc></url>
+<url><loc>https://openpharma.github.io/crmPack/reference/enable_logging.html</loc></url>
+<url><loc>https://openpharma.github.io/crmPack/reference/examine.html</loc></url>
+<url><loc>https://openpharma.github.io/crmPack/reference/fit.html</loc></url>
+<url><loc>https://openpharma.github.io/crmPack/reference/fitGain.html</loc></url>
+<url><loc>https://openpharma.github.io/crmPack/reference/fitPEM.html</loc></url>
+<url><loc>https://openpharma.github.io/crmPack/reference/gain.html</loc></url>
+<url><loc>https://openpharma.github.io/crmPack/reference/get-Samples-character-method.html</loc></url>
+<url><loc>https://openpharma.github.io/crmPack/reference/getEff.html</loc></url>
+<url><loc>https://openpharma.github.io/crmPack/reference/get_result_list.html</loc></url>
+<url><loc>https://openpharma.github.io/crmPack/reference/h_all_equivalent.html</loc></url>
+<url><loc>https://openpharma.github.io/crmPack/reference/h_barplot_percentages.html</loc></url>
+<url><loc>https://openpharma.github.io/crmPack/reference/h_blind_plot_data.html</loc></url>
+<url><loc>https://openpharma.github.io/crmPack/reference/h_calc_report_label_percentage.html</loc></url>
+<url><loc>https://openpharma.github.io/crmPack/reference/h_check_fun_formals.html</loc></url>
+<url><loc>https://openpharma.github.io/crmPack/reference/h_convert_ordinal_data.html</loc></url>
+<url><loc>https://openpharma.github.io/crmPack/reference/h_convert_ordinal_model.html</loc></url>
+<url><loc>https://openpharma.github.io/crmPack/reference/h_convert_ordinal_samples.html</loc></url>
+<url><loc>https://openpharma.github.io/crmPack/reference/h_covr_helpers.html</loc></url>
+<url><loc>https://openpharma.github.io/crmPack/reference/h_default_if_empty.html</loc></url>
+<url><loc>https://openpharma.github.io/crmPack/reference/h_determine_dlts.html</loc></url>
+<url><loc>https://openpharma.github.io/crmPack/reference/h_find_interval.html</loc></url>
+<url><loc>https://openpharma.github.io/crmPack/reference/h_format_number.html</loc></url>
+<url><loc>https://openpharma.github.io/crmPack/reference/h_get_formatted_dosegrid.html</loc></url>
+<url><loc>https://openpharma.github.io/crmPack/reference/h_get_min_inf_beta.html</loc></url>
+<url><loc>https://openpharma.github.io/crmPack/reference/h_group_data.html</loc></url>
+<url><loc>https://openpharma.github.io/crmPack/reference/h_in_range.html</loc></url>
+<url><loc>https://openpharma.github.io/crmPack/reference/h_info_theory_dist.html</loc></url>
+<url><loc>https://openpharma.github.io/crmPack/reference/h_is_positive_definite.html</loc></url>
+<url><loc>https://openpharma.github.io/crmPack/reference/h_jags_add_dummy.html</loc></url>
+<url><loc>https://openpharma.github.io/crmPack/reference/h_jags_extract_samples.html</loc></url>
+<url><loc>https://openpharma.github.io/crmPack/reference/h_jags_get_data.html</loc></url>
+<url><loc>https://openpharma.github.io/crmPack/reference/h_jags_get_model_inits.html</loc></url>
+<url><loc>https://openpharma.github.io/crmPack/reference/h_jags_join_models.html</loc></url>
+<url><loc>https://openpharma.github.io/crmPack/reference/h_jags_write_model.html</loc></url>
+<url><loc>https://openpharma.github.io/crmPack/reference/h_model_dual_endpoint_beta.html</loc></url>
+<url><loc>https://openpharma.github.io/crmPack/reference/h_model_dual_endpoint_rho.html</loc></url>
+<url><loc>https://openpharma.github.io/crmPack/reference/h_model_dual_endpoint_sigma2W.html</loc></url>
+<url><loc>https://openpharma.github.io/crmPack/reference/h_model_dual_endpoint_sigma2betaW.html</loc></url>
+<url><loc>https://openpharma.github.io/crmPack/reference/h_next_best_eligible_doses.html</loc></url>
+<url><loc>https://openpharma.github.io/crmPack/reference/h_next_best_mg_ci.html</loc></url>
+<url><loc>https://openpharma.github.io/crmPack/reference/h_next_best_mg_doses_at_grid.html</loc></url>
+<url><loc>https://openpharma.github.io/crmPack/reference/h_next_best_mg_plot.html</loc></url>
+<url><loc>https://openpharma.github.io/crmPack/reference/h_next_best_mgsamples_plot.html</loc></url>
+<url><loc>https://openpharma.github.io/crmPack/reference/h_next_best_ncrm_loss_plot.html</loc></url>
+<url><loc>https://openpharma.github.io/crmPack/reference/h_next_best_td_plot.html</loc></url>
+<url><loc>https://openpharma.github.io/crmPack/reference/h_next_best_tdsamples_plot.html</loc></url>
+<url><loc>https://openpharma.github.io/crmPack/reference/h_null_if_na.html</loc></url>
+<url><loc>https://openpharma.github.io/crmPack/reference/h_obtain_dose_grid_range.html</loc></url>
+<url><loc>https://openpharma.github.io/crmPack/reference/h_plot_data_cohort_lines.html</loc></url>
+<url><loc>https://openpharma.github.io/crmPack/reference/h_plot_data_df.html</loc></url>
+<url><loc>https://openpharma.github.io/crmPack/reference/h_prepare_labels.html</loc></url>
+<url><loc>https://openpharma.github.io/crmPack/reference/h_prepare_units.html</loc></url>
+<url><loc>https://openpharma.github.io/crmPack/reference/h_rapply.html</loc></url>
+<url><loc>https://openpharma.github.io/crmPack/reference/h_simulations_output_format.html</loc></url>
+<url><loc>https://openpharma.github.io/crmPack/reference/h_slots.html</loc></url>
+<url><loc>https://openpharma.github.io/crmPack/reference/h_summarize_add_stats.html</loc></url>
+<url><loc>https://openpharma.github.io/crmPack/reference/h_test_named_numeric.html</loc></url>
+<url><loc>https://openpharma.github.io/crmPack/reference/h_this_truth.html</loc></url>
+<url><loc>https://openpharma.github.io/crmPack/reference/h_unpack_stopit.html</loc></url>
+<url><loc>https://openpharma.github.io/crmPack/reference/h_validate_combine_results.html</loc></url>
+<url><loc>https://openpharma.github.io/crmPack/reference/h_validate_common_data_slots.html</loc></url>
+<url><loc>https://openpharma.github.io/crmPack/reference/index.html</loc></url>
+<url><loc>https://openpharma.github.io/crmPack/reference/is.wholenumber.html</loc></url>
+<url><loc>https://openpharma.github.io/crmPack/reference/knit_print.html</loc></url>
+<url><loc>https://openpharma.github.io/crmPack/reference/logit.html</loc></url>
+<url><loc>https://openpharma.github.io/crmPack/reference/match_within_tolerance.html</loc></url>
+<url><loc>https://openpharma.github.io/crmPack/reference/maxDose.html</loc></url>
+<url><loc>https://openpharma.github.io/crmPack/reference/maxSize.html</loc></url>
+<url><loc>https://openpharma.github.io/crmPack/reference/mcmc.html</loc></url>
+<url><loc>https://openpharma.github.io/crmPack/reference/minSize.html</loc></url>
+<url><loc>https://openpharma.github.io/crmPack/reference/myBayesLogit.html</loc></url>
+<url><loc>https://openpharma.github.io/crmPack/reference/names-Samples-method.html</loc></url>
+<url><loc>https://openpharma.github.io/crmPack/reference/nextBest.html</loc></url>
+<url><loc>https://openpharma.github.io/crmPack/reference/ngrid.html</loc></url>
+<url><loc>https://openpharma.github.io/crmPack/reference/or-Stopping-Stopping.html</loc></url>
+<url><loc>https://openpharma.github.io/crmPack/reference/or-Stopping-StoppingAny.html</loc></url>
+<url><loc>https://openpharma.github.io/crmPack/reference/or-StoppingAny-Stopping.html</loc></url>
+<url><loc>https://openpharma.github.io/crmPack/reference/pinvGamma.html</loc></url>
+<url><loc>https://openpharma.github.io/crmPack/reference/pipe.html</loc></url>
+<url><loc>https://openpharma.github.io/crmPack/reference/plot-Data-ModelTox-method.html</loc></url>
+<url><loc>https://openpharma.github.io/crmPack/reference/plot-Data.html</loc></url>
+<url><loc>https://openpharma.github.io/crmPack/reference/plot-DataDA-missing-method.html</loc></url>
+<url><loc>https://openpharma.github.io/crmPack/reference/plot-DataDual-ModelEff-method.html</loc></url>
+<url><loc>https://openpharma.github.io/crmPack/reference/plot-DataDual-missing-method.html</loc></url>
+<url><loc>https://openpharma.github.io/crmPack/reference/plot-DualSimulations-missing-method.html</loc></url>
+<url><loc>https://openpharma.github.io/crmPack/reference/plot-DualSimulationsSummary-missing-method.html</loc></url>
+<url><loc>https://openpharma.github.io/crmPack/reference/plot-GeneralSimulations-missing-method.html</loc></url>
+<url><loc>https://openpharma.github.io/crmPack/reference/plot-GeneralSimulationsSummary-missing-method.html</loc></url>
+<url><loc>https://openpharma.github.io/crmPack/reference/plot-PseudoDualFlexiSimulations-missing-method.html</loc></url>
+<url><loc>https://openpharma.github.io/crmPack/reference/plot-PseudoDualSimulations-missing-method.html</loc></url>
+<url><loc>https://openpharma.github.io/crmPack/reference/plot-PseudoDualSimulationsSummary-missing-method.html</loc></url>
+<url><loc>https://openpharma.github.io/crmPack/reference/plot-PseudoSimulationsSummary-missing-method.html</loc></url>
+<url><loc>https://openpharma.github.io/crmPack/reference/plot-Samples-DALogisticLogNormal-method.html</loc></url>
+<url><loc>https://openpharma.github.io/crmPack/reference/plot-Samples-DualEndpoint-method.html</loc></url>
+<url><loc>https://openpharma.github.io/crmPack/reference/plot-Samples-GeneralModel-method.html</loc></url>
+<url><loc>https://openpharma.github.io/crmPack/reference/plot-Samples-ModelEff-method.html</loc></url>
+<url><loc>https://openpharma.github.io/crmPack/reference/plot-Samples-ModelTox-method.html</loc></url>
+<url><loc>https://openpharma.github.io/crmPack/reference/plot-SimulationsSummary-missing-method.html</loc></url>
+<url><loc>https://openpharma.github.io/crmPack/reference/plot.gtable.html</loc></url>
+<url><loc>https://openpharma.github.io/crmPack/reference/plotDualResponses.html</loc></url>
+<url><loc>https://openpharma.github.io/crmPack/reference/plotGain.html</loc></url>
+<url><loc>https://openpharma.github.io/crmPack/reference/positive_number.html</loc></url>
+<url><loc>https://openpharma.github.io/crmPack/reference/printVignette.html</loc></url>
+<url><loc>https://openpharma.github.io/crmPack/reference/prob.html</loc></url>
+<url><loc>https://openpharma.github.io/crmPack/reference/probFunction.html</loc></url>
+<url><loc>https://openpharma.github.io/crmPack/reference/probit.html</loc></url>
+<url><loc>https://openpharma.github.io/crmPack/reference/qinvGamma.html</loc></url>
+<url><loc>https://openpharma.github.io/crmPack/reference/rinvGamma.html</loc></url>
+<url><loc>https://openpharma.github.io/crmPack/reference/safeInteger.html</loc></url>
+<url><loc>https://openpharma.github.io/crmPack/reference/saveSample.html</loc></url>
+<url><loc>https://openpharma.github.io/crmPack/reference/set_seed.html</loc></url>
+<url><loc>https://openpharma.github.io/crmPack/reference/show-DualSimulationsSummary-method.html</loc></url>
+<url><loc>https://openpharma.github.io/crmPack/reference/show-GeneralSimulationsSummary-method.html</loc></url>
+<url><loc>https://openpharma.github.io/crmPack/reference/show-PseudoDualSimulationsSummary-method.html</loc></url>
+<url><loc>https://openpharma.github.io/crmPack/reference/show-PseudoSimulationsSummary-method.html</loc></url>
+<url><loc>https://openpharma.github.io/crmPack/reference/show-SimulationsSummary-method.html</loc></url>
+<url><loc>https://openpharma.github.io/crmPack/reference/simulate-DADesign-method.html</loc></url>
+<url><loc>https://openpharma.github.io/crmPack/reference/simulate-Design-method.html</loc></url>
+<url><loc>https://openpharma.github.io/crmPack/reference/simulate-DesignGrouped-method.html</loc></url>
+<url><loc>https://openpharma.github.io/crmPack/reference/simulate-DualDesign-method.html</loc></url>
+<url><loc>https://openpharma.github.io/crmPack/reference/simulate-DualResponsesDesign-method.html</loc></url>
+<url><loc>https://openpharma.github.io/crmPack/reference/simulate-DualResponsesSamplesDesign-method.html</loc></url>
+<url><loc>https://openpharma.github.io/crmPack/reference/simulate-RuleDesign-method.html</loc></url>
+<url><loc>https://openpharma.github.io/crmPack/reference/simulate-TDDesign-method.html</loc></url>
+<url><loc>https://openpharma.github.io/crmPack/reference/simulate-TDsamplesDesign-method.html</loc></url>
+<url><loc>https://openpharma.github.io/crmPack/reference/size.html</loc></url>
+<url><loc>https://openpharma.github.io/crmPack/reference/stopTrial.html</loc></url>
+<url><loc>https://openpharma.github.io/crmPack/reference/summary-DualSimulations-method.html</loc></url>
+<url><loc>https://openpharma.github.io/crmPack/reference/summary-GeneralSimulations-method.html</loc></url>
+<url><loc>https://openpharma.github.io/crmPack/reference/summary-PseudoDualFlexiSimulations-method.html</loc></url>
+<url><loc>https://openpharma.github.io/crmPack/reference/summary-PseudoDualSimulations-method.html</loc></url>
+<url><loc>https://openpharma.github.io/crmPack/reference/summary-PseudoSimulations-method.html</loc></url>
+<url><loc>https://openpharma.github.io/crmPack/reference/summary-Simulations-method.html</loc></url>
+<url><loc>https://openpharma.github.io/crmPack/reference/tidy.html</loc></url>
+<url><loc>https://openpharma.github.io/crmPack/reference/update-Data-method.html</loc></url>
+<url><loc>https://openpharma.github.io/crmPack/reference/update-DataDA-method.html</loc></url>
+<url><loc>https://openpharma.github.io/crmPack/reference/update-DataDual-method.html</loc></url>
+<url><loc>https://openpharma.github.io/crmPack/reference/update-DataOrdinal-method.html</loc></url>
+<url><loc>https://openpharma.github.io/crmPack/reference/update-DataParts-method.html</loc></url>
+<url><loc>https://openpharma.github.io/crmPack/reference/update-ModelPseudo-method.html</loc></url>
+<url><loc>https://openpharma.github.io/crmPack/reference/v_cohort_size.html</loc></url>
+<url><loc>https://openpharma.github.io/crmPack/reference/v_data_objects.html</loc></url>
+<url><loc>https://openpharma.github.io/crmPack/reference/v_design.html</loc></url>
+<url><loc>https://openpharma.github.io/crmPack/reference/v_general_simulations.html</loc></url>
+<url><loc>https://openpharma.github.io/crmPack/reference/v_increments.html</loc></url>
+<url><loc>https://openpharma.github.io/crmPack/reference/v_mcmcoptions_objects.html</loc></url>
+<url><loc>https://openpharma.github.io/crmPack/reference/v_model_objects.html</loc></url>
+<url><loc>https://openpharma.github.io/crmPack/reference/v_model_params.html</loc></url>
+<url><loc>https://openpharma.github.io/crmPack/reference/v_next_best.html</loc></url>
+<url><loc>https://openpharma.github.io/crmPack/reference/v_pseudo_simulations.html</loc></url>
+<url><loc>https://openpharma.github.io/crmPack/reference/v_safety_window.html</loc></url>
+<url><loc>https://openpharma.github.io/crmPack/reference/v_samples_objects.html</loc></url>
+<url><loc>https://openpharma.github.io/crmPack/reference/v_starting_dose.html</loc></url>
+<url><loc>https://openpharma.github.io/crmPack/reference/v_stopping.html</loc></url>
+<url><loc>https://openpharma.github.io/crmPack/reference/windowLength.html</loc></url>
 </urlset>
+

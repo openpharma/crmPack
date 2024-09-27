@@ -5,96 +5,67 @@
 <meta charset="utf-8">
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-<meta name="description" content="crmPack">
 <title>Migrating from crmPack version 1.0.3 • crmPack</title>
-<!-- favicons --><link rel="icon" type="image/png" sizes="16x16" href="../favicon-16x16.png">
-<link rel="icon" type="image/png" sizes="32x32" href="../favicon-32x32.png">
-<link rel="apple-touch-icon" type="image/png" sizes="180x180" href="../apple-touch-icon.png">
-<link rel="apple-touch-icon" type="image/png" sizes="120x120" href="../apple-touch-icon-120x120.png">
-<link rel="apple-touch-icon" type="image/png" sizes="76x76" href="../apple-touch-icon-76x76.png">
-<link rel="apple-touch-icon" type="image/png" sizes="60x60" href="../apple-touch-icon-60x60.png">
 <script src="../deps/jquery-3.6.0/jquery-3.6.0.min.js"></script><meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 <link href="../deps/bootstrap-5.3.1/bootstrap.min.css" rel="stylesheet">
-<script src="../deps/bootstrap-5.3.1/bootstrap.bundle.min.js"></script><!-- Font Awesome icons --><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.12.1/css/all.min.css" integrity="sha256-mmgLkCYLUQbXn0B1SRqzHar6dCnv9oZFPEC1g1cwlkk=" crossorigin="anonymous">
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.12.1/css/v4-shims.min.css" integrity="sha256-wZjR52fzng1pJHwx4aV2AO3yyTOXrcDW7jBpJtTwVxw=" crossorigin="anonymous">
-<!-- bootstrap-toc --><script src="https://cdn.jsdelivr.net/gh/afeld/bootstrap-toc@v1.0.1/dist/bootstrap-toc.min.js" integrity="sha256-4veVQbu7//Lk5TSmc7YV48MxtMy98e26cf5MrgZYnwo=" crossorigin="anonymous"></script><!-- headroom.js --><script src="https://cdnjs.cloudflare.com/ajax/libs/headroom/0.11.0/headroom.min.js" integrity="sha256-AsUX4SJE1+yuDu5+mAVzJbuYNPHj/WroHuZ8Ir/CkE0=" crossorigin="anonymous"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/headroom/0.11.0/jQuery.headroom.min.js" integrity="sha256-ZX/yNShbjqsohH1k95liqY9Gd8uOiE1S4vZc+9KQ1K4=" crossorigin="anonymous"></script><!-- clipboard.js --><script src="https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/2.0.11/clipboard.min.js" integrity="sha512-7O5pXpc0oCRrxk8RUfDYFgn0nO1t+jLuIOQdOMRp4APB7uZ4vSjspzp5y6YDtDs4VzUSTbWzBFZ/LKJhnyFOKw==" crossorigin="anonymous" referrerpolicy="no-referrer"></script><!-- search --><script src="https://cdnjs.cloudflare.com/ajax/libs/fuse.js/6.4.6/fuse.js" integrity="sha512-zv6Ywkjyktsohkbp9bb45V6tEMoWhzFzXis+LrMehmJZZSys19Yxf1dopHx7WzIKxr5tK2dVcYmaCk2uqdjF4A==" crossorigin="anonymous"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/autocomplete.js/0.38.0/autocomplete.jquery.min.js" integrity="sha512-GU9ayf+66Xx2TmpxqJpliWbT5PiGYxpaG8rfnBEk1LL8l1KGkRShhngwdXK1UgqhAzWpZHSiYPc09/NwDQIGyg==" crossorigin="anonymous"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/mark.js/8.11.1/mark.min.js" integrity="sha512-5CYOlHXGh6QpOFA/TeTylKLWfB3ftPsde7AnmhuitiTX4K5SqCLBeKro6sPS8ilsz1Q4NRx3v8Ko2IBiszzdww==" crossorigin="anonymous"></script><!-- pkgdown --><script src="../pkgdown.js"></script><meta property="og:title" content="Migrating from crmPack version 1.0.3">
-<meta property="og:description" content="crmPack">
-<meta property="og:image" content="https://openpharma.github.io/crmPack/logo.png">
-<!-- mathjax --><script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/MathJax.js" integrity="sha256-nvJJv9wWKEm88qvoQl9ekL2J+k/RWIsaSScxxlsrv8k=" crossorigin="anonymous"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/config/TeX-AMS-MML_HTMLorMML.js" integrity="sha256-84DKXVJXs0/F8OTMzX4UR909+jtl4G7SPypPavF+GfA=" crossorigin="anonymous"></script><!--[if lt IE 9]>
-<script src="https://oss.maxcdn.com/html5shiv/3.7.3/html5shiv.min.js"></script>
-<script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
-<![endif]-->
+<script src="../deps/bootstrap-5.3.1/bootstrap.bundle.min.js"></script><link href="../deps/font-awesome-6.4.2/css/all.min.css" rel="stylesheet">
+<link href="../deps/font-awesome-6.4.2/css/v4-shims.min.css" rel="stylesheet">
+<script src="../deps/headroom-0.11.0/headroom.min.js"></script><script src="../deps/headroom-0.11.0/jQuery.headroom.min.js"></script><script src="../deps/bootstrap-toc-1.0.1/bootstrap-toc.min.js"></script><script src="../deps/clipboard.js-2.0.11/clipboard.min.js"></script><script src="../deps/search-1.0.0/autocomplete.jquery.min.js"></script><script src="../deps/search-1.0.0/fuse.min.js"></script><script src="../deps/search-1.0.0/mark.min.js"></script><!-- pkgdown --><script src="../pkgdown.js"></script><meta property="og:title" content="Migrating from crmPack version 1.0.3">
 </head>
 <body>
     <a href="#main" class="visually-hidden-focusable">Skip to contents</a>
-    
 
-    <nav class="navbar fixed-top navbar-default navbar-expand-lg bg-primary" data-bs-theme="default"><div class="container">
-    
+
+    <nav class="navbar navbar-expand-lg fixed-top bg-primary" data-bs-theme="default" aria-label="Site navigation"><div class="container">
+
     <a class="navbar-brand me-2" href="../index.html">crmPack</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">2.0.0.9155</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">2.0.0.9158</small>
 
-    
+
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
       <span class="navbar-toggler-icon"></span>
     </button>
 
     <div id="navbar" class="collapse navbar-collapse ms-3">
       <ul class="navbar-nav me-auto">
-<li class="nav-item">
-  <a class="nav-link" href="../reference/index.html">Reference</a>
-</li>
+<li class="nav-item"><a class="nav-link" href="../reference/index.html">Reference</a></li>
 <li class="active nav-item dropdown">
-  <a href="#" class="nav-link dropdown-toggle" data-bs-toggle="dropdown" role="button" aria-expanded="false" aria-haspopup="true" id="dropdown-articles">Articles</a>
-  <div class="dropdown-menu" aria-labelledby="dropdown-articles">
-    <a class="dropdown-item" href="../articles/trial_definition.html">Trial Definition</a>
-    <a class="dropdown-item" href="../articles/trial_analysis.html">Trial Analysis</a>
-    <a class="dropdown-item" href="../articles/trial_sanity_checks.html">Trial Design: basic sanity checks</a>
-    <a class="dropdown-item" href="../articles/trial_simulation.html">Trial Simulation</a>
-    <a class="dropdown-item" href="../articles/ordinal-crm.html">Ordinal CRM</a>
-    <a class="dropdown-item" href="../articles/rolling-crm.html">Rolling CRM Example</a>
-    <a class="dropdown-item" href="../articles/simulations.html">Simulation study example</a>
-    <a class="dropdown-item" href="../articles/knit_print.html">Describing `crmPack` Objects</a>
-    <a class="dropdown-item" href="../articles/tidy_method.html">Using tidy</a>
-    <a class="dropdown-item" href="../articles/migration_from_the_old_crmPack.html">Migrating from crmPack version 1.0.3</a>
-    <a class="dropdown-item" href="../articles/parallel_computing_with_extensions.html">Parallel computing with extensions</a>
-    <a class="dropdown-item" href="../articles/crmPack-jss-paper.html">Model-based Dose Escalation Designs in R with crmPack (JSS manuscript)</a>
-    <a class="dropdown-item" href="../articles/example.html">crmPack: Object-oriented implementation of CRM designs</a>
-  </div>
+  <button class="nav-link dropdown-toggle" type="button" id="dropdown-articles" data-bs-toggle="dropdown" aria-expanded="false" aria-haspopup="true">Articles</button>
+  <ul class="dropdown-menu" aria-labelledby="dropdown-articles">
+<li><a class="dropdown-item" href="../articles/trial_definition.html">Trial Definition</a></li>
+    <li><a class="dropdown-item" href="../articles/trial_analysis.html">Trial Analysis</a></li>
+    <li><a class="dropdown-item" href="../articles/trial_sanity_checks.html">Trial Design: basic sanity checks</a></li>
+    <li><a class="dropdown-item" href="../articles/trial_simulation.html">Trial Simulation</a></li>
+    <li><a class="dropdown-item" href="../articles/ordinal-crm.html">Ordinal CRM</a></li>
+    <li><a class="dropdown-item" href="../articles/rolling-crm.html">Rolling CRM Example</a></li>
+    <li><a class="dropdown-item" href="../articles/simulations.html">Simulation study example</a></li>
+    <li><a class="dropdown-item" href="../articles/knit_print.html">Describing `crmPack` Objects</a></li>
+    <li><a class="dropdown-item" href="../articles/tidy_method.html">Using tidy</a></li>
+    <li><a class="dropdown-item" href="../articles/migration_from_the_old_crmPack.html">Migrating from crmPack version 1.0.3</a></li>
+    <li><a class="dropdown-item" href="../articles/parallel_computing_with_extensions.html">Parallel computing with extensions</a></li>
+    <li><a class="dropdown-item" href="../articles/crmPack-jss-paper.html">Model-based Dose Escalation Designs in R with crmPack (JSS manuscript)</a></li>
+    <li><a class="dropdown-item" href="../articles/example.html">crmPack: Object-oriented implementation of CRM designs</a></li>
+  </ul>
 </li>
-<li class="nav-item">
-  <a class="nav-link" href="../news/index.html">Changelog</a>
-</li>
-<!-- start dropdown for versions --> <li class="nav-item dropdown">
-        <a href="#" class="nav-link dropdown-toggle"
-          data-bs-toggle="dropdown" role="button"
-          aria-expanded="false" aria-haspopup="true"
-          id="dropdown-versions">Versions</a> <div class="dropdown-menu" aria-labelledby="dropdown-versions"> <a class="dropdown-item" data-toggle="tooltip" title="" href="https://openpharma.github.io/crmPack/main">main</a> </div></li>
-<!-- end dropdown for versions -->
+<li class="nav-item"><a class="nav-link" href="../news/index.html">Changelog</a></li>
 <li class="nav-item dropdown">
-  <a href="#" class="nav-link dropdown-toggle" data-bs-toggle="dropdown" role="button" aria-expanded="false" aria-haspopup="true" id="dropdown-reports">Reports</a>
-  <div class="dropdown-menu" aria-labelledby="dropdown-reports">
-    <a class="dropdown-item" href="../coverage-report/">Coverage report</a>
-    <a class="dropdown-item" href="../unit-test-report/">Unit test report</a>
-  </div>
+  <button class="nav-link dropdown-toggle" type="button" id="dropdown-reports" data-bs-toggle="dropdown" aria-expanded="false" aria-haspopup="true">Reports</button>
+  <ul class="dropdown-menu" aria-labelledby="dropdown-reports">
+<li><a class="dropdown-item" href="../coverage-report/">Coverage report</a></li>
+    <li><a class="dropdown-item" href="../unit-test-report/">Unit test report</a></li>
+  </ul>
 </li>
       </ul>
-<form class="form-inline my-2 my-lg-0" role="search">
-        <input type="search" class="form-control me-sm-2" aria-label="Toggle navigation" name="search-input" data-search-index="../search.json" id="search-input" placeholder="Search for" autocomplete="off">
-</form>
-
-      <ul class="navbar-nav">
-<li class="nav-item">
-  <a class="external-link nav-link" href="https://github.com/openpharma/crmPack">
-    <span class="fa fa-github"></span>
-     
-  </a>
-</li>
+<ul class="navbar-nav">
+<li class="nav-item"><form class="form-inline" role="search">
+ <input class="form-control" type="search" name="search-input" id="search-input" autocomplete="off" aria-label="Search site" placeholder="Search for" data-search-index="../search.json">
+</form></li>
+<li class="nav-item"><a class="external-link nav-link" href="https://github.com/openpharma/crmPack"><span class="fa fa-github"></span></a></li>
       </ul>
 </div>
 
-    
+
   </div>
 </nav><div class="container template-article">
 
@@ -109,7 +80,7 @@ Wójciak, Oliver Boix</h4>
             
             <h4 data-toc-skip class="date">20 June 2023</h4>
       
-      <small class="dont-index">Source: <a href="https://github.com/openpharma/crmPack/blob/HEAD/vignettes/migration_from_the_old_crmPack.Rmd" class="external-link"><code>vignettes/migration_from_the_old_crmPack.Rmd</code></a></small>
+      <small class="dont-index">Source: <a href="https://github.com/openpharma/crmPack/blob/main/vignettes/migration_from_the_old_crmPack.Rmd" class="external-link"><code>vignettes/migration_from_the_old_crmPack.Rmd</code></a></small>
       <div class="d-none name"><code>migration_from_the_old_crmPack.Rmd</code></div>
     </div>
 
@@ -1228,10 +1199,10 @@ of a fixed model’s parameters values.</p>
 <span><span class="co"># given a particular models and samples.</span></span>
 <span><span class="co"># Every single dose corresponds to one particular sample in `my_samples`.</span></span>
 <span><span class="fu"><a href="../reference/dose.html">dose</a></span><span class="op">(</span><span class="fl">0.3</span>, <span class="va">my_model</span>, <span class="va">my_samples</span><span class="op">)</span></span></code></pre></div>
-<pre><code><span><span class="co">##  [1]  1.101748e+00  6.695441e-01  1.304849e+00  1.183638e+00  1.650810e-24</span></span>
-<span><span class="co">##  [6]  5.694780e-01  5.282712e+00  2.358843e-01  2.029382e+00  3.320413e-02</span></span>
-<span><span class="co">## [11]  1.235645e+00  9.295394e-01  2.115219e+00  7.683042e-47 1.390120e-291</span></span>
-<span><span class="co">## [16]  6.506022e-01  1.287534e+00  1.063820e+00  8.382051e-01  2.300896e-01</span></span></code></pre>
+<pre><code><span><span class="co">##  [1]   5.65036643   1.24350338   2.96492048   0.02512282   1.36651747</span></span>
+<span><span class="co">##  [6]   0.97657463   0.75257581  49.16028291   0.06933997   5.00619033</span></span>
+<span><span class="co">## [11]   1.66932300   1.44858553   1.85547724   4.84803855   1.13061730</span></span>
+<span><span class="co">## [16]   2.19373557   0.27137271   1.14110057   6.39340240 435.83010391</span></span></code></pre>
 <div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># True dose-DLT relationship.</span></span>
 <span><span class="co"># Say that -0.8 and 1 are the true values for models parameters alpha0 and alpha1 respectively.</span></span>
@@ -1249,9 +1220,9 @@ of a fixed model’s parameters values.</p>
 <code class="sourceCode R"><span><span class="co"># Toxicity probabilities for a given dose (equal to 10), model and samples.</span></span>
 <span><span class="co"># Every single probability value corresponds to one particular sample in `my_samples`.</span></span>
 <span><span class="fu"><a href="../reference/prob.html">prob</a></span><span class="op">(</span><span class="fl">10</span>, <span class="va">my_model</span>, <span class="va">my_samples</span><span class="op">)</span></span></code></pre></div>
-<pre><code><span><span class="co">##  [1] 0.9940579 0.9361384 0.9947118 0.5538567 0.6886848 0.8198514 0.2667993</span></span>
-<span><span class="co">##  [8] 0.8383882 0.5218416 0.3840367 0.9750583 0.0860583 0.8446938 0.6678087</span></span>
-<span><span class="co">## [15] 0.5612447 0.9877720 0.8939360 0.9260523 0.9697691 0.5949305</span></span></code></pre>
+<pre><code><span><span class="co">##  [1] 0.1885651 0.9886133 0.7958300 0.5580279 0.9907034 0.8147702 0.9758542</span></span>
+<span><span class="co">##  [8] 0.5161137 0.7434164 0.4602496 0.9512807 0.7656711 0.9732938 0.5399987</span></span>
+<span><span class="co">## [15] 0.8252555 0.9003020 0.9904545 0.5646940 0.3581783 0.4252660</span></span></code></pre>
 <div class="sourceCode" id="cb12"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># True DLT-dose relationship.</span></span>
 <span><span class="co"># Say that -0.8 and 1 are the true values for models parameters alpha0 and alpha1 respectively.</span></span>
@@ -1305,13 +1276,11 @@ treated.</p></li>
 <code class="sourceCode R"><span><span class="va">class_name</span> <span class="op">&lt;-</span> <span class="st">"LogisticNormal"</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/eval.html" class="external-link">eval</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/parse.html" class="external-link">parse</a></span><span class="op">(</span>text <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/paste.html" class="external-link">paste0</a></span><span class="op">(</span><span class="st">".Default"</span>, <span class="va">class_name</span>, <span class="st">"()"</span><span class="op">)</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
 <p>A logistic log normal model will describe the relationship between
-dose and toxicity: <span class="math display">\[ p(Tox | d) = f(X = 1 |
-\theta, d) = \frac{e^{\alpha + \beta \cdot d/d^*}}{1 + e^{\alpha + \beta
-\cdot d/d^*}} \]</span>where d* denotes a reference dose.</p>
-<p>The prior for θ is given by<span class="math display">\[
-\boldsymbol\theta = \begin{bmatrix}\alpha \\ \beta\end{bmatrix}\sim N
-\left(\begin{bmatrix}-0.85 \\  1.00\end{bmatrix} , \begin{bmatrix} 1.00
-&amp; -0.50 \\ -0.50 &amp;  1.00\end{bmatrix} \right) \]</span></p>
+dose and toxicity:
+<math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>p</mi><mrow><mo stretchy="true" form="prefix">(</mo><mi>T</mi><mi>o</mi><mi>x</mi><mo stretchy="false" form="prefix">|</mo><mi>d</mi><mo stretchy="true" form="postfix">)</mo></mrow><mo>=</mo><mi>f</mi><mrow><mo stretchy="true" form="prefix">(</mo><mi>X</mi><mo>=</mo><mn>1</mn><mo stretchy="false" form="prefix">|</mo><mi>θ</mi><mo>,</mo><mi>d</mi><mo stretchy="true" form="postfix">)</mo></mrow><mo>=</mo><mfrac><msup><mi>e</mi><mrow><mi>α</mi><mo>+</mo><mi>β</mi><mo>⋅</mo><mi>d</mi><mi>/</mi><msup><mi>d</mi><mo>*</mo></msup></mrow></msup><mrow><mn>1</mn><mo>+</mo><msup><mi>e</mi><mrow><mi>α</mi><mo>+</mo><mi>β</mi><mo>⋅</mo><mi>d</mi><mi>/</mi><msup><mi>d</mi><mo>*</mo></msup></mrow></msup></mrow></mfrac></mrow><annotation encoding="application/x-tex"> p(Tox | d) = f(X = 1 | \theta, d) = \frac{e^{\alpha + \beta \cdot d/d^*}}{1 + e^{\alpha + \beta \cdot d/d^*}} </annotation></semantics></math>where
+d* denotes a reference dose.</p>
+<p>The prior for θ is given
+by<math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>𝛉</mi><mo>=</mo><mrow><mo stretchy="true" form="prefix">[</mo><mtable><mtr><mtd columnalign="center" style="text-align: center"><mi>α</mi></mtd></mtr><mtr><mtd columnalign="center" style="text-align: center"><mi>β</mi></mtd></mtr></mtable><mo stretchy="true" form="postfix">]</mo></mrow><mo>∼</mo><mi>N</mi><mrow><mo stretchy="true" form="prefix">(</mo><mrow><mo stretchy="true" form="prefix">[</mo><mtable><mtr><mtd columnalign="center" style="text-align: center"><mi>−</mi><mn>0.85</mn></mtd></mtr><mtr><mtd columnalign="center" style="text-align: center"><mn>1.00</mn></mtd></mtr></mtable><mo stretchy="true" form="postfix">]</mo></mrow><mo>,</mo><mrow><mo stretchy="true" form="prefix">[</mo><mtable><mtr><mtd columnalign="center" style="text-align: center"><mn>1.00</mn></mtd><mtd columnalign="center" style="text-align: center"><mi>−</mi><mn>0.50</mn></mtd></mtr><mtr><mtd columnalign="center" style="text-align: center"><mi>−</mi><mn>0.50</mn></mtd><mtd columnalign="center" style="text-align: center"><mn>1.00</mn></mtd></mtr></mtable><mo stretchy="true" form="postfix">]</mo></mrow><mo stretchy="true" form="postfix">)</mo></mrow></mrow><annotation encoding="application/x-tex"> \boldsymbol\theta = \begin{bmatrix}\alpha \\ \beta\end{bmatrix}\sim N \left(\begin{bmatrix}-0.85 \\  1.00\end{bmatrix} , \begin{bmatrix} 1.00 &amp; -0.50 \\ -0.50 &amp;  1.00\end{bmatrix} \right) </annotation></semantics></math></p>
 <p>The reference dose will be 1.00.</p>
 </div>
 <div class="section level2">
@@ -3109,7 +3078,7 @@ Wickham, Hadley. 2019. <em>Advanced r, Second Edition</em>. Chapman
 </div>
 </div>
 </div>
-  </main><aside class="col-md-3"><nav id="toc"><h2>On this page</h2>
+  </main><aside class="col-md-3"><nav id="toc" aria-label="Table of contents"><h2>On this page</h2>
     </nav></aside>
 </div>
 
@@ -3120,15 +3089,15 @@ Wickham, Hadley. 2019. <em>Advanced r, Second Edition</em>. Chapman
 </div>
 
 <div class="pkgdown-footer-right">
-  <p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.9.</p>
+  <p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.1.0.</p>
 </div>
 
     </footer>
 </div>
 
-  
 
-  
+
+
 
   </body>
 </html>
