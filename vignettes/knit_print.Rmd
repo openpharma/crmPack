@@ -9,11 +9,10 @@ citation-location: margin
 bibliography: vignettes.bib
 vignette: >
   %\VignetteIndexEntry{demo}
-  %\VignetteEngine{quarto::html}
   %\VignetteEncoding{UTF-8}
 ---
 
-```{r}
+```{r, label = "setup"}
 #| label: setup
 #| echo: FALSE
 
@@ -216,7 +215,7 @@ knit_print(
 )
 ```
 
-\[Output not shown.\]
+$$Output not shown.$$
 
 > It is not possible to omit slots from the rendition of a `crmPack` object. If you need to do this,
 > you can either render the required slots individually, or override the definition of `knit_print`
@@ -286,7 +285,9 @@ As an example, consider `knit_print.NextBestNCRM`, which currently returns a par
 
 You might feel this is better presented as a bulleted list. You can achieve this as follows[^3]:
 
-[^3]: For simplicity, the `tox_label` and `asis` parameters, which are defined in the current implementation of the function, are omitted in this custom implementation.  They should be preserved in any "real world" customisation.
+[^3]: For simplicity, the `tox_label` and `asis` parameters, which are defined in the current
+    implementation of the function, are omitted in this custom implementation. They should be
+    preserved in any "real world" customisation.
 
 ```{r}
 #| label: override-2
