@@ -325,7 +325,7 @@ registerS3method("knit_print", "NextBestNCRM", knit_print.NextBestNCRM)
 ```{r}
 #| label: coverage-1
 #| echo: FALSE
-#| eval: TRUE
+#| eval: FALSE
 crmpackClasses <- getClasses(asNamespace("crmPack"))
 
 h_custom_method_exists <- function(generic, obj) {
@@ -364,6 +364,9 @@ stillToDo <- df %>%
   filter(Constructor == "OK", !KnitPrint) %>%
   nrow()
 ```
+```{r}
+allClasses <- knitPrintDefined <- knitPrintNotDefined <- virtualClasses <- stillToDo <- 0
+```
 
 `crmPack` defines `r allClasses` classes. Custom `knit_print` methods exist for `r knitPrintDefined`
 of them. Of the remaining `r knitPrintNotDefined` classes, `r virtualClasses` are virtual classes
@@ -373,7 +376,7 @@ that will never be directly instantiated by end users. That leaves `r stillToDo`
 ```{r}
 #| label: coverage-2
 #| echo: FALSE
-#| eval: TRUE
+#| eval: FALSE
 
 df %>%
   filter(Constructor == "OK", !KnitPrint) %>%
