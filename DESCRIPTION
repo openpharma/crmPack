@@ -1,6 +1,6 @@
 Package: crmPack
 Title: Object-Oriented Implementation of CRM Designs
-Version: 2.0.0.9160
+Version: 2.0.0
 Authors@R: c(
     person("Daniel", "Sabanes Bove", , "daniel.sabanes_bove@rconis.com", role = c("aut", "cre")),
     person("Wai", "Yin Yeung", , "winnie.yeung@roche.com", role = "aut"),
@@ -32,8 +32,8 @@ Description: Implements a wide range of model-based dose escalation
     form in the S4 class system, making it very flexible for adaptation to
     new models, escalation or stopping rules. Further details are
     presented in Sabanes Bove et al. (2019) <doi:10.18637/jss.v089.i10>.
-License: GPL (>= 2)
-URL: https://github.com/openpharma/crmPack
+License: GPL (>= 2) 
+URL: https://github.com/openpharma/crmPack, https://openpharma.github.io/crmPack/
 BugReports: https://github.com/openpharma/crmPack/issues
 Depends:
     ggplot2 (>= 2.0.0),
