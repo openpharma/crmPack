@@ -1,6 +1,6 @@
 Package: crmPack
 Title: Object-Oriented Implementation of CRM Designs
-Version: 2.0.0.9159
+Version: 2.0.0.9160
 Authors@R: c(
     person("Daniel", "Sabanes Bove", , "daniel.sabanes_bove@rconis.com", role = c("aut", "cre")),
     person("Wai", "Yin Yeung", , "winnie.yeung@roche.com", role = "aut"),

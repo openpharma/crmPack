@@ -1,4 +1,4 @@
-# Version 2.0.0.9159
+# Version 2.0.0.9160
 * **Note: This release (1.0 -> 2.0) signifies a major breaking revamp of the package.** Users are advised to carefully review the release notes and documentation for detailed information on the changes and any necessary updates to their existing code.
 * Implemented `knit_print` methods for almost all `crmPack` classes to improve rendering in Markdown and Quarto documents.  See the vignette for more details.
 * Provided basic support for ordinal CRM models.  See the vignette for more details.
