@@ -1807,7 +1807,7 @@ setMethod(
       Grade = grades,
       Prob = x@prob
     ) %>%
-      crmPack:::h_tidy_class(x)
+    h_tidy_class(x)
   }
 )
 
