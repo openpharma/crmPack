@@ -51,7 +51,7 @@ A method that tidies a Effloglog object."><meta property="og:image" content="htt
 
     <a class="navbar-brand me-2" href="../index.html">crmPack</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">2.0.0.9158</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">2.0.0.9159</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -78,12 +78,6 @@ A method that tidies a Effloglog object."><meta property="og:image" content="htt
   </ul></li>
 <li class="nav-item"><a class="nav-link" href="../news/index.html">Changelog</a></li>
 <li class="nav-item dropdown">
-<!-- start dropdown for versions --> <li class="nav-item dropdown">
-        <a href="#" class="nav-link dropdown-toggle"
-          data-bs-toggle="dropdown" role="button"
-          aria-expanded="false" aria-haspopup="true"
-          id="dropdown-versions">Versions</a> <div class="dropdown-menu" aria-labelledby="dropdown-versions"> <a class="dropdown-item" data-toggle="tooltip" title="" href="https://openpharma.github.io/crmPack/main">main</a> </div></li>
-<!-- end dropdown for versions -->
   <button class="nav-link dropdown-toggle" type="button" id="dropdown-reports" data-bs-toggle="dropdown" aria-expanded="false" aria-haspopup="true">Reports</button>
   <ul class="dropdown-menu" aria-labelledby="dropdown-reports"><li><a class="dropdown-item" href="../coverage-report/">Coverage report</a></li>
     <li><a class="dropdown-item" href="../unit-test-report/">Unit test report</a></li>
@@ -493,17 +487,17 @@ object to a (list of) tibbles.  This is a basic, default representation.</p>
 <span class="r-out co"><span class="r-pr">#&gt;</span> $fit</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> $fit[[1]]</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>        middle        lower     upper</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 1  0.02671960 0.0001223655 0.1411116</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 2  0.05779594 0.0017862744 0.2217374</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 3  0.08588853 0.0062465953 0.2687195</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 4  0.15215584 0.0303941512 0.3533671</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 5  0.21479872 0.0682580865 0.4152537</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 6  0.27352380 0.1104642383 0.4685279</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 7  0.32764508 0.1572958889 0.5237762</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 8  0.45995781 0.2332889800 0.6610840</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 9  0.52559654 0.2802002415 0.7265115</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 10 0.65249971 0.3609877864 0.8761249</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 11 0.70346326 0.3909371882 0.9184259</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 1  0.01687513 8.689119e-05 0.1013212</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 2  0.04139909 1.293984e-03 0.1743463</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 3  0.06588570 4.650838e-03 0.2233726</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 4  0.12914769 2.305526e-02 0.2970714</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 5  0.19348494 6.182287e-02 0.3823173</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 6  0.25621900 1.020467e-01 0.4346606</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 7  0.31533989 1.529683e-01 0.5138273</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 8  0.46244209 2.550695e-01 0.6707662</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 9  0.53561142 2.943047e-01 0.7674973</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 10 0.67489353 3.764385e-01 0.9100949</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 11 0.72937278 4.182109e-01 0.9419597</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> $stop_report</span>
@@ -516,28 +510,20 @@ object to a (list of) tibbles.  This is a basic, default representation.</p>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> $data</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> $data[[1]]</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># A tibble: 19 × 9</span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># A tibble: 22 × 9</span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>       ID Cohort  Dose XLevel Tox   Placebo  NObs NGrid DoseGrid  </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>    <span style="color: #949494; font-style: italic;">&lt;int&gt;</span>  <span style="color: #949494; font-style: italic;">&lt;int&gt;</span> <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>  <span style="color: #949494; font-style: italic;">&lt;int&gt;</span> <span style="color: #949494; font-style: italic;">&lt;lgl&gt;</span> <span style="color: #949494; font-style: italic;">&lt;lgl&gt;</span>   <span style="color: #949494; font-style: italic;">&lt;int&gt;</span> <span style="color: #949494; font-style: italic;">&lt;int&gt;</span> <span style="color: #949494; font-style: italic;">&lt;list&gt;</span>    </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 1</span>     1      1     3      2 FALSE FALSE      19    11 <span style="color: #949494;">&lt;dbl [11]&gt;</span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 2</span>     2      2     5      3 FALSE FALSE      19    11 <span style="color: #949494;">&lt;dbl [11]&gt;</span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 3</span>     3      3    10      4 FALSE FALSE      19    11 <span style="color: #949494;">&lt;dbl [11]&gt;</span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 4</span>     4      4    20      6 TRUE  FALSE      19    11 <span style="color: #949494;">&lt;dbl [11]&gt;</span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 5</span>     5      5    20      6 FALSE FALSE      19    11 <span style="color: #949494;">&lt;dbl [11]&gt;</span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 6</span>     6      5    20      6 FALSE FALSE      19    11 <span style="color: #949494;">&lt;dbl [11]&gt;</span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 7</span>     7      5    20      6 FALSE FALSE      19    11 <span style="color: #949494;">&lt;dbl [11]&gt;</span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 8</span>     8      6    25      7 FALSE FALSE      19    11 <span style="color: #949494;">&lt;dbl [11]&gt;</span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 9</span>     9      6    25      7 TRUE  FALSE      19    11 <span style="color: #949494;">&lt;dbl [11]&gt;</span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">10</span>    10      6    25      7 FALSE FALSE      19    11 <span style="color: #949494;">&lt;dbl [11]&gt;</span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">11</span>    11      7    25      7 FALSE FALSE      19    11 <span style="color: #949494;">&lt;dbl [11]&gt;</span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">12</span>    12      7    25      7 TRUE  FALSE      19    11 <span style="color: #949494;">&lt;dbl [11]&gt;</span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">13</span>    13      7    25      7 FALSE FALSE      19    11 <span style="color: #949494;">&lt;dbl [11]&gt;</span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">14</span>    14      8    25      7 TRUE  FALSE      19    11 <span style="color: #949494;">&lt;dbl [11]&gt;</span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">15</span>    15      8    25      7 TRUE  FALSE      19    11 <span style="color: #949494;">&lt;dbl [11]&gt;</span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">16</span>    16      8    25      7 TRUE  FALSE      19    11 <span style="color: #949494;">&lt;dbl [11]&gt;</span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">17</span>    17      9    15      5 FALSE FALSE      19    11 <span style="color: #949494;">&lt;dbl [11]&gt;</span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">18</span>    18      9    15      5 FALSE FALSE      19    11 <span style="color: #949494;">&lt;dbl [11]&gt;</span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">19</span>    19      9    15      5 FALSE FALSE      19    11 <span style="color: #949494;">&lt;dbl [11]&gt;</span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 1</span>     1      1     3      2 FALSE FALSE      22    11 <span style="color: #949494;">&lt;dbl [11]&gt;</span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 2</span>     2      2     5      3 FALSE FALSE      22    11 <span style="color: #949494;">&lt;dbl [11]&gt;</span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 3</span>     3      3    10      4 FALSE FALSE      22    11 <span style="color: #949494;">&lt;dbl [11]&gt;</span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 4</span>     4      4    20      6 TRUE  FALSE      22    11 <span style="color: #949494;">&lt;dbl [11]&gt;</span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 5</span>     5      5    15      5 FALSE FALSE      22    11 <span style="color: #949494;">&lt;dbl [11]&gt;</span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 6</span>     6      5    15      5 FALSE FALSE      22    11 <span style="color: #949494;">&lt;dbl [11]&gt;</span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 7</span>     7      5    15      5 FALSE FALSE      22    11 <span style="color: #949494;">&lt;dbl [11]&gt;</span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 8</span>     8      6    25      7 FALSE FALSE      22    11 <span style="color: #949494;">&lt;dbl [11]&gt;</span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 9</span>     9      6    25      7 TRUE  FALSE      22    11 <span style="color: #949494;">&lt;dbl [11]&gt;</span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">10</span>    10      6    25      7 FALSE FALSE      22    11 <span style="color: #949494;">&lt;dbl [11]&gt;</span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># ℹ 12 more rows</span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> $doses</span>
@@ -979,16 +965,16 @@ object to a (list of) tibbles.  This is a basic, default representation.</p>
 <span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># A tibble: 2,000 × 10</span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>    Iteration Chain  alpha0 alpha1 nChains nParameters nIterations nBurnin nThin</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>        <span style="color: #949494; font-style: italic;">&lt;int&gt;</span> <span style="color: #949494; font-style: italic;">&lt;int&gt;</span>   <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>  <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>   <span style="color: #949494; font-style: italic;">&lt;int&gt;</span>       <span style="color: #949494; font-style: italic;">&lt;int&gt;</span>       <span style="color: #949494; font-style: italic;">&lt;int&gt;</span>   <span style="color: #949494; font-style: italic;">&lt;int&gt;</span> <span style="color: #949494; font-style: italic;">&lt;int&gt;</span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 1</span>         1     1 -<span style="color: #BB0000;">1.99</span>     2.95       1           1        <span style="text-decoration: underline;">2</span>100     100     1</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 2</span>         2     1 -<span style="color: #BB0000;">1.51</span>    22.5        1           1        <span style="text-decoration: underline;">2</span>100     100     1</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 3</span>         3     1 -<span style="color: #BB0000;">1.55</span>     1.66       1           1        <span style="text-decoration: underline;">2</span>100     100     1</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 4</span>         4     1  0.086<span style="text-decoration: underline;">9</span>   4.23       1           1        <span style="text-decoration: underline;">2</span>100     100     1</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 5</span>         5     1 -<span style="color: #BB0000;">0.827</span>    1.62       1           1        <span style="text-decoration: underline;">2</span>100     100     1</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 6</span>         6     1  0.499    1.74       1           1        <span style="text-decoration: underline;">2</span>100     100     1</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 7</span>         7     1  0.331    1.87       1           1        <span style="text-decoration: underline;">2</span>100     100     1</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 8</span>         8     1 -<span style="color: #BB0000;">1.11</span>     1.36       1           1        <span style="text-decoration: underline;">2</span>100     100     1</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 9</span>         9     1 -<span style="color: #BB0000;">1.35</span>     3.07       1           1        <span style="text-decoration: underline;">2</span>100     100     1</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">10</span>        10     1 -<span style="color: #BB0000;">0.792</span>    1.37       1           1        <span style="text-decoration: underline;">2</span>100     100     1</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 1</span>         1     1 -<span style="color: #BB0000;">3.31</span>   19.9         1           1        <span style="text-decoration: underline;">2</span>100     100     1</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 2</span>         2     1 -<span style="color: #BB0000;">1.07</span>    5.05        1           1        <span style="text-decoration: underline;">2</span>100     100     1</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 3</span>         3     1 -<span style="color: #BB0000;">0.596</span>   3.78        1           1        <span style="text-decoration: underline;">2</span>100     100     1</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 4</span>         4     1 -<span style="color: #BB0000;">0.952</span>   3.55        1           1        <span style="text-decoration: underline;">2</span>100     100     1</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 5</span>         5     1 -<span style="color: #BB0000;">1.92</span>    8.10        1           1        <span style="text-decoration: underline;">2</span>100     100     1</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 6</span>         6     1 -<span style="color: #BB0000;">0.098</span><span style="color: #BB0000; text-decoration: underline;">6</span>  4.58        1           1        <span style="text-decoration: underline;">2</span>100     100     1</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 7</span>         7     1  0.338   0.812       1           1        <span style="text-decoration: underline;">2</span>100     100     1</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 8</span>         8     1  0.261   4.91        1           1        <span style="text-decoration: underline;">2</span>100     100     1</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 9</span>         9     1 -<span style="color: #BB0000;">2.43</span>   24.6         1           1        <span style="text-decoration: underline;">2</span>100     100     1</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">10</span>        10     1 -<span style="color: #BB0000;">0.522</span>   4.53        1           1        <span style="text-decoration: underline;">2</span>100     100     1</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># ℹ 1,990 more rows</span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># ℹ 1 more variable: parallel &lt;lgl&gt;</span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
@@ -1011,7 +997,7 @@ object to a (list of) tibbles.  This is a basic, default representation.</p>
 </div>
 
 <div class="pkgdown-footer-right">
-  <p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.1.0.</p>
+  <p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.1.1.</p>
 </div>
 
     </footer></div>

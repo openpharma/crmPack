@@ -20,7 +20,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">crmPack</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">2.0.0.9158</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">2.0.0.9159</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -50,12 +50,6 @@
 </li>
 <li class="nav-item"><a class="nav-link" href="../news/index.html">Changelog</a></li>
 <li class="nav-item dropdown">
-<!-- start dropdown for versions --> <li class="nav-item dropdown">
-        <a href="#" class="nav-link dropdown-toggle"
-          data-bs-toggle="dropdown" role="button"
-          aria-expanded="false" aria-haspopup="true"
-          id="dropdown-versions">Versions</a> <div class="dropdown-menu" aria-labelledby="dropdown-versions"> <a class="dropdown-item" data-toggle="tooltip" title="" href="https://openpharma.github.io/crmPack/main">main</a> </div></li>
-<!-- end dropdown for versions -->
   <button class="nav-link dropdown-toggle" type="button" id="dropdown-reports" data-bs-toggle="dropdown" aria-expanded="false" aria-haspopup="true">Reports</button>
   <ul class="dropdown-menu" aria-labelledby="dropdown-reports">
 <li><a class="dropdown-item" href="../coverage-report/">Coverage report</a></li>
@@ -487,7 +481,7 @@ dose of 0.1 mg and a maximum dose of 100 mg:</p>
 <span><span class="co">## Emini is: 0.1205177306</span></span>
 <span><span class="co">## xmini are:</span></span>
 <span><span class="co">## 1.149417785 1.182441052 1.97337573 0.3758820995 0.3619198625 </span></span>
-<span><span class="co">## Totally it used 19.951325 secs</span></span>
+<span><span class="co">## Totally it used 20.812704 secs</span></span>
 <span><span class="co">## No. of function call is: 4807</span></span>
 <span><span class="co">## Algorithm reached max number of iterations.</span></span></code></pre>
 <p>We use a few grid points between the minimum and the maximum to guide
@@ -623,8 +617,8 @@ parameters)</p>
 <span><span class="fu"><a href="https://rdrr.io/r/utils/str.html" class="external-link">str</a></span><span class="op">(</span><span class="va">samples</span><span class="op">)</span></span></code></pre></div>
 <pre><code><span><span class="co">## Formal class 'Samples' [package "crmPack"] with 2 slots</span></span>
 <span><span class="co">##   ..@ data   :List of 2</span></span>
-<span><span class="co">##   .. ..$ alpha0: num [1:2000] 0.0361 0.0361 0.0361 0.0361 0.0361 ...</span></span>
-<span><span class="co">##   .. ..$ alpha1: num [1:2000] 1.88 1.88 1.88 1.88 1.88 ...</span></span>
+<span><span class="co">##   .. ..$ alpha0: num [1:2000] 1.479 1.479 0.197 0.197 0.197 ...</span></span>
+<span><span class="co">##   .. ..$ alpha1: num [1:2000] 1.14 1.14 1.38 1.38 1.38 ...</span></span>
 <span><span class="co">##   ..@ options:Formal class 'McmcOptions' [package "crmPack"] with 5 slots</span></span>
 <span><span class="co">##   .. .. ..@ iterations: int 4100</span></span>
 <span><span class="co">##   .. .. ..@ burnin    : int 100</span></span>
@@ -1135,9 +1129,9 @@ number of patients or cohorts have been enrolled. We have also other
 stopping rules such that a trial will be stopped either based on the MTD
 distribution (<code>StoppingMTDdistribution</code>), or reached a
 pre-specified probability of the next dose being in the target toxicity
-interval (<code>StoppingTargetProb</code>) or or target biomarker
-interval (<code>StoppingTargetBiomarker</code>) or when the current
-estimate of the quantity of interest is ‘accurate’ enough
+interval (<code>StoppingTargetProb</code>) or target biomarker interval
+(<code>StoppingTargetBiomarker</code>) or when the current estimate of
+the quantity of interest is ‘accurate’ enough
 (<code>StoppingTDCIRatio</code> and
 <code>StoppingMaxGainCIRatio</code>)</p>
 <p>Stopping rules are often quite complex, because they are built from
@@ -1195,7 +1189,7 @@ the rule has already been fulfilled. For example in our case:</p>
 <span><span class="co">## [1] "Number of cohorts is 6 and thus reached the prespecified minimum number 3"</span></span>
 <span><span class="co">## </span></span>
 <span><span class="co">## attr(,"message")[[1]][[2]]</span></span>
-<span><span class="co">## [1] "Probability for target toxicity is 35 % for dose 20 and thus below the required 50 %"</span></span>
+<span><span class="co">## [1] "Probability for target toxicity is 33 % for dose 20 and thus below the required 50 %"</span></span>
 <span><span class="co">## </span></span>
 <span><span class="co">## </span></span>
 <span><span class="co">## attr(,"message")[[2]]</span></span>
@@ -1209,7 +1203,7 @@ the rule has already been fulfilled. For example in our case:</p>
 <span><span class="co">## [1] "Number of cohorts is 6 and thus reached the prespecified minimum number 3"</span></span>
 <span><span class="co">## </span></span>
 <span><span class="co">## attr(,"message")[[2]]</span></span>
-<span><span class="co">## [1] "Probability for target toxicity is 35 % for dose 20 and thus below the required 50 %"</span></span>
+<span><span class="co">## [1] "Probability for target toxicity is 33 % for dose 20 and thus below the required 50 %"</span></span>
 <span><span class="co">## </span></span>
 <span><span class="co">## attr(,"individual")</span></span>
 <span><span class="co">## attr(,"individual")[[1]]</span></span>
@@ -1222,7 +1216,7 @@ the rule has already been fulfilled. For example in our case:</p>
 <span><span class="co">## attr(,"individual")[[2]]</span></span>
 <span><span class="co">## [1] FALSE</span></span>
 <span><span class="co">## attr(,"message")</span></span>
-<span><span class="co">## [1] "Probability for target toxicity is 35 % for dose 20 and thus below the required 50 %"</span></span>
+<span><span class="co">## [1] "Probability for target toxicity is 33 % for dose 20 and thus below the required 50 %"</span></span>
 <span><span class="co">## attr(,"report_label")</span></span>
 <span><span class="co">## [1] "P(0.2 ≤ prob(DLE | NBD) ≤ 0.35) ≥ 0.5"</span></span>
 <span><span class="co">## </span></span>
@@ -1368,13 +1362,13 @@ shown. In the current example we have</p>
 <span><span class="fu"><a href="../reference/examine.html">examine</a></span><span class="op">(</span><span class="va">design</span><span class="op">)</span></span></code></pre></div>
 <pre><code><span><span class="co">##    dose DLTs nextDose  stop increment</span></span>
 <span><span class="co">## 1     3    0      6.0 FALSE       100</span></span>
-<span><span class="co">## 2     3    1      3.0 FALSE         0</span></span>
+<span><span class="co">## 2     3    1      6.0 FALSE       100</span></span>
 <span><span class="co">## 3     3    2      0.1 FALSE       -97</span></span>
 <span><span class="co">## 4     3    3       NA FALSE        NA</span></span>
 <span><span class="co">## 5     6    0     12.0 FALSE       100</span></span>
 <span><span class="co">## 6     6    1     12.0 FALSE       100</span></span>
 <span><span class="co">## 7     6    2      3.0 FALSE       -50</span></span>
-<span><span class="co">## 8     6    3      1.5 FALSE       -75</span></span>
+<span><span class="co">## 8     6    3      0.5 FALSE       -92</span></span>
 <span><span class="co">## 9    12    0     24.0 FALSE       100</span></span>
 <span><span class="co">## 10   12    1     24.0 FALSE       100</span></span>
 <span><span class="co">## 11   12    2     14.0 FALSE        17</span></span>
@@ -1385,14 +1379,14 @@ shown. In the current example we have</p>
 <span><span class="co">## 16   24    3     18.0 FALSE       -25</span></span>
 <span><span class="co">## 17   30    0     38.0 FALSE        27</span></span>
 <span><span class="co">## 18   30    1     38.0 FALSE        27</span></span>
-<span><span class="co">## 19   30    2     36.0 FALSE        20</span></span>
+<span><span class="co">## 19   30    2     34.0 FALSE        13</span></span>
 <span><span class="co">## 20   30    3     28.0 FALSE        -7</span></span>
 <span><span class="co">## 21   38    0     50.0 FALSE        32</span></span>
 <span><span class="co">## 22   38    1     50.0 FALSE        32</span></span>
 <span><span class="co">## 23   38    2     42.0 FALSE        11</span></span>
 <span><span class="co">## 24   38    3     36.0 FALSE        -5</span></span>
 <span><span class="co">## 25   50    0     58.0  TRUE        16</span></span>
-<span><span class="co">## 26   50    1     54.0  TRUE         8</span></span>
+<span><span class="co">## 26   50    1     56.0  TRUE        12</span></span>
 <span><span class="co">## 27   50    2     50.0  TRUE         0</span></span>
 <span><span class="co">## 28   50    3     44.0  TRUE       -12</span></span></code></pre>
 <p>Note that it is important to set a seed, since minor changes might
@@ -1452,10 +1446,10 @@ increased of course to at least 500:</p>
 <span><span class="op">)</span><span class="op">)</span><span class="op">[</span><span class="fl">3</span><span class="op">]</span></span>
 <span><span class="va">time</span></span></code></pre></div>
 <pre><code><span><span class="co">## elapsed </span></span>
-<span><span class="co">##  89.309</span></span></code></pre>
+<span><span class="co">##  92.005</span></span></code></pre>
 <p>We have wrapped the call to <code>simulate</code> in a
 <code>system.time</code> to obtain the required time for the simulations
-(about 89 seconds in this case). The argument <code>args</code> could
+(about 92 seconds in this case). The argument <code>args</code> could
 contain additional arguments for the <code>truth</code> function, which
 we did not require here and therefore let it at the default
 <code>NULL</code>. We specify the number of simulations with
@@ -1491,7 +1485,7 @@ trial as follows:</p>
 <p>The final dose for this trial was</p>
 <div class="sourceCode" id="cb112"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">mySims</span><span class="op">@</span><span class="va">doses</span><span class="op">[</span><span class="fl">3</span><span class="op">]</span></span></code></pre></div>
-<pre><code><span><span class="co">## [1] 22</span></span></code></pre>
+<pre><code><span><span class="co">## [1] 20</span></span></code></pre>
 <p>and the stopping reason was</p>
 <div class="sourceCode" id="cb114"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">mySims</span><span class="op">@</span><span class="va">stop_reasons</span><span class="op">[[</span><span class="fl">3</span><span class="op">]</span><span class="op">]</span></span></code></pre></div>
@@ -1500,7 +1494,7 @@ trial as follows:</p>
 <span><span class="co">## [1] "Number of cohorts is 7 and thus reached the prespecified minimum number 3"</span></span>
 <span><span class="co">## </span></span>
 <span><span class="co">## [[1]][[2]]</span></span>
-<span><span class="co">## [1] "Probability for target toxicity is 60 % for dose 22 and thus above the required 50 %"</span></span>
+<span><span class="co">## [1] "Probability for target toxicity is 54 % for dose 20 and thus above the required 50 %"</span></span>
 <span><span class="co">## </span></span>
 <span><span class="co">## </span></span>
 <span><span class="co">## [[2]]</span></span>
@@ -1530,18 +1524,18 @@ to supply a true dose-toxicity function. We take the same
 <span><span class="co">## </span></span>
 <span><span class="co">## Number of patients overall : mean 19 (18, 21) </span></span>
 <span><span class="co">## Number of patients treated above target tox interval : mean 7 (6, 9) </span></span>
-<span><span class="co">## Proportions of DLTs in the trials : mean 27 % (22 %, 33 %) </span></span>
-<span><span class="co">## Mean toxicity risks for the patients on active : mean 26 % (17 %, 36 %) </span></span>
-<span><span class="co">## Doses selected as MTD : mean 20.2 (16, 24.2) </span></span>
-<span><span class="co">## True toxicity at doses selected : mean 27 % (5 %, 57 %) </span></span>
-<span><span class="co">## Proportion of trials selecting target MTD: 27 %</span></span>
-<span><span class="co">## Dose most often selected as MTD: 20 </span></span>
-<span><span class="co">## Observed toxicity rate at dose most often selected: 18 %</span></span>
-<span><span class="co">## Fitted toxicity rate at dose most often selected : mean 27 % (22 %, 31 %) </span></span>
+<span><span class="co">## Proportions of DLTs in the trials : mean 26 % (22 %, 33 %) </span></span>
+<span><span class="co">## Mean toxicity risks for the patients on active : mean 25 % (18 %, 34 %) </span></span>
+<span><span class="co">## Doses selected as MTD : mean 20.7 (16, 26) </span></span>
+<span><span class="co">## True toxicity at doses selected : mean 31 % (5 %, 70 %) </span></span>
+<span><span class="co">## Proportion of trials selecting target MTD: 18 %</span></span>
+<span><span class="co">## Dose most often selected as MTD: 18 </span></span>
+<span><span class="co">## Observed toxicity rate at dose most often selected: 15 %</span></span>
+<span><span class="co">## Fitted toxicity rate at dose most often selected : mean 24 % (19 %, 29 %) </span></span>
 <span><span class="co">## Stop reason triggered:</span></span>
 <span><span class="co">##  ≥ 3 cohorts dosed :  100 %</span></span>
 <span><span class="co">##  P(0.2 ≤ prob(DLE | NBD) ≤ 0.35) ≥ 0.5 :  97 %</span></span>
-<span><span class="co">##  ≥ 20 patients dosed :  47 %</span></span></code></pre>
+<span><span class="co">##  ≥ 20 patients dosed :  38 %</span></span></code></pre>
 <p>Note that sometimes the observed toxicity rate at the dose most often
 selected (here 20 mg) is not available, because it can happen that no
 patients were actually treated that dose during the simulations. (Here
@@ -1582,7 +1576,7 @@ the plots)</p>
 <span><span class="co">## Adding another scale for <span style="color: #00BB00;">x</span>, which will replace the existing scale.</span></span></code></pre>
 <div class="sourceCode" id="cb122"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/base/print.html" class="external-link">print</a></span><span class="op">(</span><span class="va">dosePlot</span><span class="op">)</span></span></code></pre></div>
-<pre><code><span><span class="co">## Warning: Removed 1 row containing missing values or values outside the scale range</span></span>
+<pre><code><span><span class="co">## Warning: Removed 2 rows containing missing values or values outside the scale range</span></span>
 <span><span class="co">## (`geom_bar()`).</span></span></code></pre>
 <p><img src="example_files/figure-html/sim-sum-plot2-1.png" width="576"></p>
 <p>Some further examples will be given for simulations using the
@@ -1765,26 +1759,26 @@ reduce the runtime for this example:</p>
 <code class="sourceCode R"><span><span class="va">postSamples</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/as.data.frame.html" class="external-link">as.data.frame</a></span><span class="op">(</span><span class="va">samples</span><span class="op">@</span><span class="va">data</span><span class="op">)</span><span class="op">[</span><span class="op">(</span><span class="fl">1</span><span class="op">:</span><span class="fl">20</span><span class="op">)</span> <span class="op">*</span> <span class="fl">50</span>, <span class="op">]</span></span>
 <span><span class="va">postSamples</span></span></code></pre></div>
 <pre><code><span><span class="co">##           alpha0    alpha1</span></span>
-<span><span class="co">## 50   -0.06385895 1.0619642</span></span>
-<span><span class="co">## 100   0.02968703 0.8844076</span></span>
-<span><span class="co">## 150  -0.64527897 1.8126479</span></span>
-<span><span class="co">## 200  -1.08318088 0.8518311</span></span>
-<span><span class="co">## 250   1.21894003 2.0768494</span></span>
-<span><span class="co">## 300  -0.89789424 0.7977612</span></span>
-<span><span class="co">## 350   0.59435554 1.1096691</span></span>
-<span><span class="co">## 400  -1.27985492 0.9878947</span></span>
-<span><span class="co">## 450   0.91440795 1.0679339</span></span>
-<span><span class="co">## 500  -0.09145271 1.3194589</span></span>
-<span><span class="co">## 550  -0.39741321 1.0661094</span></span>
-<span><span class="co">## 600  -1.33672352 1.6710704</span></span>
-<span><span class="co">## 650   0.45655818 1.6123355</span></span>
-<span><span class="co">## 700  -0.43094373 0.6431592</span></span>
-<span><span class="co">## 750   0.22331468 0.3682197</span></span>
-<span><span class="co">## 800  -0.39163673 0.6446038</span></span>
-<span><span class="co">## 850  -0.46582904 2.0496237</span></span>
-<span><span class="co">## 900  -0.86517569 1.2827458</span></span>
-<span><span class="co">## 950  -0.16155558 1.1393098</span></span>
-<span><span class="co">## 1000 -0.82898135 0.7847416</span></span></code></pre>
+<span><span class="co">## 50    0.11425026 0.7329690</span></span>
+<span><span class="co">## 100   0.32229882 0.9603481</span></span>
+<span><span class="co">## 150   0.81089003 1.0381932</span></span>
+<span><span class="co">## 200  -0.32410742 0.7782883</span></span>
+<span><span class="co">## 250  -0.09508992 0.4256152</span></span>
+<span><span class="co">## 300  -0.17622409 0.5412372</span></span>
+<span><span class="co">## 350   0.48612939 0.9442871</span></span>
+<span><span class="co">## 400  -0.46606356 0.8073193</span></span>
+<span><span class="co">## 450   0.74329364 1.0731452</span></span>
+<span><span class="co">## 500   0.36959882 1.3595226</span></span>
+<span><span class="co">## 550   1.44035730 1.2239997</span></span>
+<span><span class="co">## 600   1.16579951 0.7040428</span></span>
+<span><span class="co">## 650  -0.44493270 0.4747293</span></span>
+<span><span class="co">## 700   1.19611346 1.0234658</span></span>
+<span><span class="co">## 750  -0.58822388 1.1442737</span></span>
+<span><span class="co">## 800  -1.60492239 1.0366739</span></span>
+<span><span class="co">## 850   0.10416758 0.6730050</span></span>
+<span><span class="co">## 900   0.28570053 2.2431864</span></span>
+<span><span class="co">## 950  -1.10801063 1.0942829</span></span>
+<span><span class="co">## 1000  1.16340547 1.3138570</span></span></code></pre>
 <p>Therefore, each simulated trial will come from a posterior sample of
 our estimated model, given all data so far.</p>
 <p>Furthermore we have to make a new <code>Design</code> object that
@@ -1828,7 +1822,7 @@ dose as the starting dose:</p>
 <span><span class="op">)</span><span class="op">)</span><span class="op">[</span><span class="fl">3</span><span class="op">]</span></span>
 <span><span class="va">time</span></span></code></pre></div>
 <pre><code><span><span class="co">## elapsed </span></span>
-<span><span class="co">##   9.817</span></span></code></pre>
+<span><span class="co">##   8.946</span></span></code></pre>
 <p>And now, exactly in the same way as above for the operating
 characteristics simulations, we can summarize the resulting predictive
 simulations, for example show the predicted trajectories of doses:</p>
@@ -1849,20 +1843,20 @@ truth:</p>
 <span><span class="co">## Target dose interval corresponding to this was 19.6, 21.6 </span></span>
 <span><span class="co">## Intervals are corresponding to 10 and 90 % quantiles</span></span>
 <span><span class="co">## </span></span>
-<span><span class="co">## Number of patients overall : mean 18 (17, 20) </span></span>
-<span><span class="co">## Number of patients treated above target tox interval : mean 4 (0, 9) </span></span>
-<span><span class="co">## Proportions of DLTs in the trials : mean 20 % (10 %, 29 %) </span></span>
-<span><span class="co">## Mean toxicity risks for the patients on active : mean 23 % (5 %, 38 %) </span></span>
-<span><span class="co">## Doses selected as MTD : mean 26.1 (11.8, 41) </span></span>
-<span><span class="co">## True toxicity at doses selected : mean 51 % (0 %, 99 %) </span></span>
-<span><span class="co">## Proportion of trials selecting target MTD: 15 %</span></span>
-<span><span class="co">## Dose most often selected as MTD: 20 </span></span>
-<span><span class="co">## Observed toxicity rate at dose most often selected: 24 %</span></span>
-<span><span class="co">## Fitted toxicity rate at dose most often selected : mean 24 % (12 %, 37 %) </span></span>
+<span><span class="co">## Number of patients overall : mean 17 (14, 20) </span></span>
+<span><span class="co">## Number of patients treated above target tox interval : mean 3 (0, 9) </span></span>
+<span><span class="co">## Proportions of DLTs in the trials : mean 24 % (16 %, 31 %) </span></span>
+<span><span class="co">## Mean toxicity risks for the patients on active : mean 17 % (5 %, 35 %) </span></span>
+<span><span class="co">## Doses selected as MTD : mean 19.9 (10, 30.2) </span></span>
+<span><span class="co">## True toxicity at doses selected : mean 26 % (0 %, 83 %) </span></span>
+<span><span class="co">## Proportion of trials selecting target MTD: 25 %</span></span>
+<span><span class="co">## Dose most often selected as MTD: 10 </span></span>
+<span><span class="co">## Observed toxicity rate at dose most often selected: 32 %</span></span>
+<span><span class="co">## Fitted toxicity rate at dose most often selected : mean 19 % (11 %, 27 %) </span></span>
 <span><span class="co">## Stop reason triggered:</span></span>
 <span><span class="co">##  ≥ 3 cohorts dosed :  100 %</span></span>
 <span><span class="co">##  P(0.2 ≤ prob(DLE | NBD) ≤ 0.35) ≥ 0.5 :  85 %</span></span>
-<span><span class="co">##  ≥ 20 patients dosed :  50 %</span></span></code></pre>
+<span><span class="co">##  ≥ 20 patients dosed :  40 %</span></span></code></pre>
 <p>We see here e.g. that the estimated number of patients overall is 19,
 so 11 more than the current 8 patients are expected to be needed before
 finishing the trial.</p>
@@ -2115,7 +2109,7 @@ here:</p>
 <span><span class="op">)</span></span></code></pre></div>
 <pre><code><span><span class="co">## [1] FALSE</span></span>
 <span><span class="co">## attr(,"message")</span></span>
-<span><span class="co">## [1] "Probability for target biomarker is 11 % for dose 6 and thus below the required 50 %"</span></span>
+<span><span class="co">## [1] "Probability for target biomarker is 12 % for dose 6 and thus below the required 50 %"</span></span>
 <span><span class="co">## attr(,"report_label")</span></span>
 <span><span class="co">## [1] "P(0.9 ≤ Biomarker ≤ 1) ≥ 0.5 (relative)"</span></span></code></pre>
 <p>Again, this dual-endpoint specific rule can be combined as required
@@ -3309,7 +3303,7 @@ Continuous Responses Utilizing a Gain Function.”</span>
 </div>
 
 <div class="pkgdown-footer-right">
-  <p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.1.0.</p>
+  <p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.1.1.</p>
 </div>
 
     </footer>
