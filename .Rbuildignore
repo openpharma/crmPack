@@ -22,4 +22,5 @@ TODO
 ^Meta$
 Rplots.pdf
 ^pkgdown$
+⁠pkgdown/⁠
 ^data-raw$

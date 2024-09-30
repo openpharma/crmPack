@@ -242,7 +242,7 @@ test_that("v_data_da: error for u of wrong length and values", {
 
   expect_equal(
     v_data_da(object),
-    "u must be of type double, nObs length, non-negative and not greater than Tmax" # nolintr
+    "u must be of type double, nObs length, non-negative, not missing and not greater than Tmax" # nolintr
   )
 })
 
