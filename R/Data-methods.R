@@ -1001,7 +1001,14 @@ setMethod(
         names_prefix = "Cat",
         values_fill = 0
       ) %>%
-      dplyr::mutate(dplyr::across(tidyselect::matches("Cat\\d+"), \(x) x > 0)) %>%
+      dplyr::mutate(
+        dplyr::across(tidyselect::matches("Cat\\d+"), \(x) x > 0)
+      ) %>%
+      dplyr::rowwise() %>%
+      dplyr::mutate(
+        Cat0 = !any(dplyr::across(c(starts_with("Cat"), -Cat0), any))
+      ) %>%
+      dplyr::ungroup() %>%
       h_tidy_class(x)
   }
 )
