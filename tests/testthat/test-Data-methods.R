@@ -670,4 +670,3 @@ test_that("tidy-Dataordinal creates the correct tibble", {
 
   expect_equal(actual$Cat0, actual$ExpectedCat0)
 })
-
