@@ -1006,7 +1006,7 @@ setMethod(
       ) %>%
       dplyr::rowwise() %>%
       dplyr::mutate(
-        Cat0 = !any(dplyr::across(c(starts_with("Cat"), -Cat0), any))
+        Cat0 = !any(dplyr::across(c(tidyselect::starts_with("Cat"), -Cat0), any))
       ) %>%
       dplyr::ungroup() %>%
       h_tidy_class(x)
