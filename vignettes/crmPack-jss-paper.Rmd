@@ -100,7 +100,7 @@ For describing the framework of the package we will adapt the general notation
 for early phase trials from [@Thall2010]. Figure \@ref(fig:schematic) summarizes
 the framework in a schematic.
 
-```{r schematic, fig.align='center', out.height = "540px", out.width="700px", fig.cap='Schematic of the framework'}
+```{r schematic, fig.align='center', out.height = "540px", out.width="700px", fig.cap='Schematic of the framework', fig.alt = "Schematic showing the general framework of an early phase dose escalation design.", echo = FALSE}
 knitr::include_graphics("./schematic.png")
 ```
 
@@ -280,8 +280,11 @@ optionally in the `ID` argument. The data can then be visualized by simply apply
 the `plot` function to the object, which also allows to produce a blinded plot (hiding patient
 IDs and placebo/treatment assignment) with the option `blind`, see Figure \@ref(fig:plot-data):
 
-```{r plot-data,fig.show='hold',fig.width=5,fig.height=5,out.width='.35\\linewidth',fig.align='center', fig.env='figure', fig.cap='Open and blinded data plots'}
+```{r plot-data,fig.width=5,fig.height=5,out.width='.35\\linewidth',fig.align='center', fig.env='figure', fig.cap='Open and blinded data plots', fig.alt = "An unblinded graph with patient id on the x axis and dose administered on the y axis.  Red triangles indicate patients who reported DLTs, black circles those who did not.  Symbols are annotated with patient IDs.  Vertical dashed green lines delineate cohorts."}
 plot(data)
+```
+
+```{r plot-data-blind,fig.width=5,fig.height=5,out.width='.35\\linewidth',fig.align='center', fig.env='figure', fig.cap='Open and blinded data plots', fig.env='figure', fig.cap='Open and blinded data plots', fig.alt = "A blinded graph with patient id on the x axis and dose administered on the y axis.  Red triangles indicate reports of DLTs, black circles indicate an absense of DLTs.  However, within each cohort, patients with DLTs appear before those without.  Symbols are not annotated with patient IDs.  Vertical dashed green lines delineate cohorts."}
 plot(data, blind = TRUE)
 ```
 
@@ -303,7 +306,7 @@ DLT rates can be obtained by supplying
 the samples, model and data to the generic `plot` function. Similarly we can
 also produce a similar plot without any data, which is then giving the prior, see Figure \@ref(fig:plot-model-fit):
 
-```{r plot-model-fit,fig.show='hold',fig.width=5,fig.height=5,out.width='.35\\linewidth',fig.align='center', fig.env='figure', fig.cap='Posterior and prior regression model fits'}
+```{r plot-model-fit,fig.show='hold',fig.width=5,fig.height=5,out.width='.35\\linewidth',fig.align='center', fig.env='figure', fig.cap='Posterior and prior regression model fits', fig.alt = "Prior and posterior dose-toxicity curves."}
 plot(samples, model, data) + ggtitle("Posterior")
 
 emptydata <- Data(doseGrid = data@doseGrid, placebo = TRUE)
@@ -346,7 +349,7 @@ nextDoseRes <- nextBest(myNextBest, nextMaxDose, samples, model, data)
 
 The returned list also contains an accompanying plot (`nextDoseRes$plot`), see Figure \@ref(fig:nextBest-ncrm).
 
-```{r nextBest-ncrm,echo=FALSE,fig.width=4,fig.height=4,out.width='.5\\linewidth',fig.align='center',fig.env='figure', fig.cap='Dose recommendation plot from NCRM design'}
+```{r nextBest-ncrm,echo=FALSE,fig.width=4,fig.height=4,out.width='.5\\linewidth',fig.align='center',fig.env='figure', fig.cap='Dose recommendation plot from NCRM design', fig.alt = "A graphical description of the logic between the recommendation of the nextBestRes object."}
 nextDoseRes$plot
 ```
 
@@ -417,7 +420,7 @@ mySims@data[[3]]@nObs
 mySims@doses[3]
 ```
 Furthermore, we can plot the `Simulations` object by calling the `plot` method on it, see Figure \@ref(fig:sim-plot). You can select the plots by changing the `type` argument of `plot`, which by default is `type = c("trajectory", "dosesTried")`.
-```{r sim-plot, echo=FALSE, fig.width=4,fig.height=4,out.width='.5\\linewidth',fig.align='center',fig.env='figure', fig.cap='Simulation plot'}
+```{r sim-plot, echo=FALSE, fig.width=4,fig.height=4,out.width='.5\\linewidth',fig.align='center',fig.env='figure', fig.cap='Simulation plot', fig.alt = "A graphical representation of the simulation results."}
 plot(mySims)
 ```
 
@@ -428,7 +431,7 @@ simSum <- summary(mySims, truth = myTruth)
 simSum
 ```
 A plot of the summary results can also be produced, see Figure \@ref(fig:sim-summary-plot).
-```{r sim-summary-plot, echo=FALSE, fig.width=6,fig.height=6,out.width='.6\\linewidth',fig.align='center', warning=FALSE, fig.env='figure', fig.cap='Simulation summary plot'}
+```{r sim-summary-plot, echo=FALSE, fig.width=6,fig.height=6,out.width='.6\\linewidth',fig.align='center', warning=FALSE, fig.env='figure', fig.cap='Simulation summary plot', fig.alt = "A graphical representation of the information in the simulation summary."}
 plot(simSum)
 ```
 
@@ -515,7 +518,7 @@ doseRecGain <- nextBest(GainNextBest,
 ```
 The plot for the next dose allocation is contained in `doseRecGain$plot` and shown in Figure \@ref(fig:doseRecommendation).
 \begin{figure}
-```{r doseRecommendation, echo=FALSE, fig.width=7,fig.height=5,out.width='.6\\linewidth',fig.align='center'}
+```{r doseRecommendation, echo=FALSE, fig.width=7,fig.height=5,out.width='.6\\linewidth',fig.align='center', fig.alt = "A graphical representation of the logic behind the recommendation of the doseResgen object."}
 print(doseRecGain$plot)
 ```
 
@@ -682,7 +685,7 @@ Now we can already use the model, for example in the following we specify the
 skeleton probabilities via the dose grid and use a standard exponential prior
 for $\theta$. The resulting posterior fit can be plotted as usual,
 see Figure \@ref(fig:OneParExp-model-example).
-```{r OneParExp-model-example, fig.width=5,fig.height=4,out.width='.5\\linewidth',fig.align='center', fig.env='figure', fig.cap='Model fit of the one parameter power model'}
+```{r OneParExp-model-example, fig.width=5,fig.height=4,out.width='.5\\linewidth',fig.align='center', fig.env='figure', fig.cap='Model fit of the one parameter power model', fig.alt = "The posterior dose-toxicity curve from the one parameter power model."}
 (skeleton_probs <- round(data@doseGrid / max(data@doseGrid) / 2, 2))
 newModel <- OneParExp(
   skeleton_probs = skeleton_probs,

@@ -63,7 +63,7 @@ The whole R-package is built in a modular form, by using S4 classes and methods.
 
 # Data
 
-```{r, fig.cap="Data classes structure"}
+```{r, fig.cap="Data classes structure", fig.alt = "GeneralData is the grand parent, Data the child and DataDual the grand child."}
 df <- data.frame(
   pathString = c(
     "GeneralData/Data/DataDual"
@@ -128,7 +128,7 @@ data@ID
 You can get a visual summary of the data by applying `plot` to the
 object:
 
-```{r plotdata, fig=TRUE}
+```{r plotdata, fig=TRUE, fig.alt = "A graph with patient ID on the x axis and dose level on the y axis.  A red triangle indicates that patient 7 reported a DLT.  Black squares indicate that no other patient reported a toxicity.  Patients 1 to 5 are dosed in an ascending fashion from 0.1 to 6.  Patients 6 to 9 are dosed at 10."}
 print(plot(data))
 ```
 
@@ -139,7 +139,7 @@ print(plot(data))
 Figure \@ref(fig:model-classes) shows the structure of the model class defined in this package. The `AllModels` class is the parent class from which all model classes inherit. There are two sub-classes: First, the `GeneralModel` class from which all models inherit that are using `JAGS` to specify the model and the prior distribution and will then be estimated by MCMC later on. Then, the second subclass is the `ModelPseudo` class for which the prior of the models are specified in terms of pseudo data and standard maximum likelihood routines from R will be used for
 computational purposes. All models included in this package will have a parent class of either the `GeneralModel` or the `ModelPseudo` classes. There are two further classes under `ModelPseudo` which are the `ModelTox` class include all DLT (the occurrence of a dose-limiting toxicity) class models, and class `ModelEff` which includes all efficacy class models.
 
-```{r model-classes, echo = FALSE, fig.cap = "Model classes structure", fig.width = 6}
+```{r model-classes, echo = FALSE, fig.cap = "Model classes structure", fig.width = 6, fig.alt = "A dedrogram showing the inheritance structure for descendants of AllModels."}
 library(data.tree)
 df <- data.frame(
   pathString = c(
@@ -321,7 +321,7 @@ maximum dose, respectively.
 The result `minInfModel` is a list, and we can use its contents to
 illustrate the creation of the prior:
 
-```{r min-inf-res, fig=TRUE, fig.width=6}
+```{r min-inf-res, fig=TRUE, fig.width=6, fig.alt = "A graph showing the relationship between the requested quantiles of the prior and those obtained from MinimalInformative.  The approximation is less than ideal."}
 matplot(
   x = coarseGrid,
   y = minInfModel$required,
@@ -426,12 +426,12 @@ alpha0samples <- get(samples, "alpha0")
 understood by `ggmcmc` and we can produce plots with it, e.g. a trace plot
 and an autocorrelation plot:
 
-```{r ggmcmc, fig=TRUE}
+```{r ggmcmc, fig=TRUE, fig.alt = "A trace plot for alpha0"}
 library(ggmcmc)
 print(ggs_traceplot(alpha0samples))
 ```
 
-```{r ggmcmc2, fig=TRUE}
+```{r ggmcmc2, fig=TRUE, fig.alt = "An autocorrelation plot for alpha0"}
 print(ggs_autocorrelation(alpha0samples))
 ```
 
@@ -490,7 +490,7 @@ In the example, the `update` function is used to obtain the posterior modal esti
 After having obtained the parameter samples, we can plot the model fit, by
 supplying the samples, model and data to the generic plot function:
 
-```{r plot-model-fit, fig=TRUE}
+```{r plot-model-fit, fig=TRUE, fig.alt = "A graph with dose level on the x axis and the probability of DLT on the y axis.  The posterior mean probability of toxicity increases smoothly with dose.  The 95% credible interval is roughly symmetric about the mean."}
 print(plot(samples, model, data))
 ```
 
@@ -501,7 +501,7 @@ Note that you can also produce a plot of the prior mean curve and credible
 intervals, i.e. from the model without any data. This works in principle the
 same way as with data, just that we use an empty data object:
 
-```{r empty-data, fig=TRUE}
+```{r empty-data, fig=TRUE, fig.alt = "A graph with dose level on the x axis and the probability of DLT on the y axis.  The prior mean probability of toxicity increases with dose, but is much less smooth than the posterior.  Similarly, The 95% credible interval is not symmetric about the mean."}
 ## provide only the dose grid:
 emptydata <- Data(doseGrid = data@doseGrid)
 ## obtain prior samples with this Data object
@@ -512,14 +512,14 @@ print(plot(priorsamples, model, emptydata))
 
 
 This `plot` function can also apply to the `DLTmodel` when samples of the parameters have been generated:
-```{r plot-samplesdata1 , fig=TRUE}
+```{r plot-samplesdata1 , fig=TRUE, fig.alt = "A graph similar to those above, but based on the DLTmodel object."}
 print(plot(DLTsamples, DLTmodel, data1))
 ```
 
 
 In addition, we can also plot the fitted dose-response curve using the prior or the posterior modal estimates of the model parameters when no MCMC sampling is used. For example, we have the `DLTmodel` specified earlier under the `ModelTox` class with the data set `data1` we specified earlier:
 
-```{r emptydatanoDLTsamples, fig=TRUE}
+```{r emptydatanoDLTsamples, fig=TRUE, fig.alt = "A graph with dose level on the x axis and the probability of DLT on the y axis.  The modal probability of toxicity increases with dose.  No credible interval is plotted."}
 print(plot(data1, DLTmodel))
 ```
 
@@ -543,7 +543,7 @@ and `Stopping-class`.
 
 Figure \@ref(fig:increments) shows the structure of the `Increments` classes:
 
-```{r increments, fig.cap = "Increments classes structure", echo = FALSE}
+```{r increments, fig.cap = "Increments classes structure", echo = FALSE, fig.alt = "A dendrogram showing the inheritance structure of the Increments classes."}
 df <- data.frame(
   pathString = c(
     "Increments/IncrementsRelative/IncrementsRelativeParts",
@@ -603,7 +603,7 @@ The `IncrementsRelativeDLT` class works similarly, taking the number of DLTs in 
 
 Figure \@ref(fig:rules) show the structure of the next best dose recommendation rules currently implemented in `crmPack`.
 
-```{r rules, fig.width=6, fig.cap="Escalation classes structure", echo = FALSE}
+```{r rules, fig.width=6, fig.cap="Escalation classes structure", echo = FALSE, fig.alt = "A dendrogram showing the inheritance structure of the NextBest classes.  Next Best is the parent class.  All other NextBest classes are children of NextBest."}
 df <- data.frame(
   pathString = c(
     "NextBest/NextBestMTD",
@@ -701,7 +701,7 @@ rule, therefore the plot gives the target-dosing and overdosing probabilities
 together with the safety bar of 25%, the maximum dose and the final
 recommendation (the red triangle):
 
-```{r next-best-results, fig=TRUE, fig.width=6}
+```{r next-best-results, fig=TRUE, fig.width=6, fig.alt = "Two graphs, one above the other.  Both have dose on the x axis.  In the upper plot, green vertical bars indicate the probability that each dose is in the target toxicity range.  In the lower, vertical red bars indicate the probability that each dose is in the overdose range.  On the lower graph, a horizontal black dashed line at 25% indicates that all doses above 20 have an unacceptable risk of toxicity.  On the upper graph, a red arrow pointing at 20 indicates that it is the dose with the highest probability of being in the target toxicity range whilst at the same time not being unacceptably toxic."}
 doseRecommendation$value
 print(doseRecommendation$plot)
 ```
@@ -714,7 +714,7 @@ doseRecDLT <- nextBest(TDNextBest, doselimit = 300, model = newDLTmodel, data = 
 
 A list of numerical values and a plot showing how the next best dose was computed will be given. This list of results will provide the numerical values for the next dose level, `next_dose_drt`; the target probability of DLT used during the trial, `prob_target_drt`; the estimated dose level for which its probability of DLT equals the target probability used during the trial, `dose_target_drt`; the target probability of DLT used at the end of a trial, `prob_target_eot`; the estimated dose level for which its probability of DLT equals the target probability of DLT used at the end of a trial `dose_target_eot`; and the dose level at dose grid closest and less than the `dose_target_eot`, `next_dose_eot`. We can use the `$` operator to obtain these values and the plot from the list. For example,
 
-```{r next-bestTD-results, fig=TRUE}
+```{r next-bestTD-results, fig=TRUE, fig.alt = "A graph describing the results of applying TDNextBest rule to the data3 dataset and newDLTmodel model.  A red line indicates the posterior modal estimate of toxicity.  Vertical porle and dark red lines indicate the recommended dose for the next cohort (labelled Next) and the maximum dose permitted by the increments rule.  The maximum dose is 300, the recommended dose, 50.  A puple square and an orange triangle indicate the TD30 and TD35 estimates, both of which are close to 50."}
 doseRecDLT$next_dose_drt
 doseRecDLT$prob_target_drt
 doseRecDLT$dose_target_drt
@@ -735,9 +735,10 @@ doseRecDLTSamples <- nextBest(TDsamplesNextBest,
 
 The same list of results will be produced as in the example before: The values of the `next_dose_drt`, `prob_target_drt`, `dose_target_drt`, `prob_target_eot`, `dose_target_eot` and `next_dose_eot` can be obtained using the `$` operator. The only difference is that the plot in this example will look slightly different than in the previous example:
 
-```{r next-bestTDsamples-results, fig=TRUE}
+```{r next-bestTDsamples-results, fig=TRUE, fig.alt = "A denisty plot showing the PDFs for the TD35 and TD30 against dose.  Both are highly skewed to the left. Vertical blue and red lines indicate the recommended dose for the next cohort and the maximum dose permitted by the increments rule. The recommended dose is 50 and the maximum dose 300."}
 print(doseRecDLTSamples$plot)
 ```
+
 > This graph is incorrect
 
 In the plot, vertical lines are given to show the value for the next dose, the TD30 estimate, the TD35 estimate and the maximum allowable dose level. Since samples of model parameters were utilized, the density curves of the TD30 (pink) and the TD35 (grey) are plotted.
@@ -757,7 +758,7 @@ df <- data.frame(
 )
 
 tree <- as.Node(df)
-SetNodeStyle(tree, shape = "box")
+SetNodeStyle(tree, shape = "box", fig.alt = "A dendrogram showing the inheritance stricture of the CohortSize classes.  CohortSie is the parent class.  All other classes are children of CohortSize.")
 plot(tree)
 ```
 % All classes related to cohort size in this package are contains within `CohortSize` class.
@@ -897,7 +898,7 @@ In order to run simulations, we first have to build a specific design, that
 comprises a model, the escalation rules, starting data, a cohort size and a starting dose.
 
 The structure of the design classes in this package is shown in figure \@ref(fig:Design).
-```{r Design, fig.width=6, fig.cap="Design classes structure", echo = FALSE}
+```{r Design, fig.width=6, fig.cap="Design classes structure", echo = FALSE, fig.alt = "A dendrogram showing the inheritance structure of the Design classes.  RuleDesign is the grandparent.  Design, TDDesign and TDSampesDesign are its children and DualDeaign, DualResponsesDesign and DualResponsesTDSamplesDesign its grandchildren."}
 df <- data.frame(
   pathString = c(
     "RuleDesign/Design/DualDesign",
@@ -990,7 +991,7 @@ scenario, from which the data should arise. In this case, this only requires a
 function that computes the probability of DLT given a dose. Here we use a
 specific case of the function contained in the model space:
 
-```{r true-def, fig=TRUE}
+```{r true-def, fig=TRUE, fig.alt = "The CDF defined by the myTruth function"}
 ## define the true function
 myTruth <- probFunction(model, alpha0 = 7, alpha1 = 8)
 
@@ -1001,7 +1002,7 @@ curve(myTruth(x), from = 0, to = 80, ylim = c(0, 1))
 In a similar way, we can also simulate trials based on a true DLT scenario using the `TDDesign` and the `TDsamplesDesign`.
 
 First, we will specified the true DLT scenario such that
-```{r trueDLT, fig=TRUE}
+```{r trueDLT, fig=TRUE, fig.alt = "The CDF defined by the TrueDLT function"}
 ## define the true function
 TrueDLT <- probFunction(DLTmodel, phi1 = -53.66584, phi2 = 10.50499)
 
@@ -1059,7 +1060,7 @@ looking at the help pages for `Simulations` and the parent class
 produced `Data` objects of the simulated trials. Therefore, we can plot
 the course of e.g. the third simulated trial as follows:
 
-```{r third-trial, fig=TRUE}
+```{r third-trial, fig=TRUE, fig.alt = "A graph summarising dose allocations for the third trial in the simulation.  Patient number runs along the x axis, dose administered along the y axis.  Red triangle indicate patients who reported a DLT, black circles those who did not.  DLTs were reported by patients 10, 11, 12, 16 and 18, all at a dose of 24.  No other patients reported DLTs."}
 print(plot(mySims@data[[3]]))
 ```
 
@@ -1078,7 +1079,7 @@ mySims@stop_reasons[[3]]
 Furthermore, with this object, we can apply two methods. First, we can plot it,
 i.e. we can apply the plot method:
 
-```{r sim-plot, fig=TRUE}
+```{r sim-plot, fig=TRUE, fig.alt = "two plots in a single column.  The first shows patient number on the x axis and dose administered on the y axis.  Lines in various styles indicate the minimum, maximum, median, lower quartile and upper quartile of the dose administered tat each patient number, calculated over all simulations.  The lower graph has dose on the x axis and proportion of patients treated at that dose on the y axis.  The proportuon of patients treated is avreaged over all simulations."}
 print(plot(mySims))
 ```
 
@@ -1107,7 +1108,7 @@ designs.
 Now we can also produce a plot of the summary results, which gives a bit more
 detail than the textual summary we have just seen:
 
-```{r sim-sum-plot, fig=TRUE, fig.width=6}
+```{r sim-sum-plot, fig=TRUE, fig.width=6, fig.alt = "A 2x2 panel of four plots.  A description of each panel element is provided in the paragraph below."}
 simSum <- summary(mySims,
   truth = myTruth
 )
@@ -1133,7 +1134,7 @@ selected doses is too small and shows not the right x-axis window, we can only
 plot this one and add x-axis customization on top: (see the `ggplot2`
 documentation for more information on customizing the plots)
 
-```{r sim-sum-plot2, fig=TRUE}
+```{r sim-sum-plot2, fig=TRUE, fig.alt = "A fistogram showing the proportion of simulatd trials that identified each dose as the MTD.  All but one of the simulated trials identified a dose between 16 and 26 as the MTD."}
 dosePlot <- plot(simSum, type = "doseSelected") +
   scale_x_continuous(breaks = 10:30, limits = c(10, 30))
 print(dosePlot)
@@ -1180,11 +1181,11 @@ DLTsampSim@doses[3]
 
 The overall results of the 100 trials for these two simulations can also be plotted as
 
-```{r plotDLTSim, fig=TRUE}
+```{r plotDLTSim, fig=TRUE, fig.alt = "Two graphs in a single column describing the dose allocations in the DLTSim object."}
 print(plot(DLTSim))
 ```
 
-```{r plotDLTsampSim, fig=TRUE}
+```{r plotDLTsampSim, fig=TRUE, fig.alt = "Two graphs in a single column describing the dose allocations in the DLTsampSim object."}
 print(plot(DLTsampSim))
 ```
 
@@ -1206,7 +1207,7 @@ summary(DLTsampSim,
 
 Then we can also plot the summary of these two simulations using the `plot` function:
 
-```{r DLTSim-plotsummary,fig=TRUE, fig.width=6}
+```{r DLTSim-plotsummary,fig=TRUE, fig.width=6, fig.alt = "A 2x2 panel of graphs summarising the results of the DLTSim object.  Refer to simSum above for a description of the individual panel elements."}
 DLTsimSum <- summary(DLTSim,
   truth = TrueDLT
 )
@@ -1215,7 +1216,7 @@ print(plot(DLTsimSum))
 
 and
 
-```{r DLTsampSim-plotsummary,fig=TRUE, fig.width=6}
+```{r DLTsampSim-plotsummary,fig=TRUE, fig.width=6, fig.alt = "A 2x2 panel of graphs summarising the results of the DLTsampSim object.  Refer to simSum above for a description of the individual panel elements."}
 DLTsimsampSum <- summary(DLTsampSim,
   truth = TrueDLT
 )
@@ -1296,7 +1297,7 @@ And now, exactly in the same way as above for the operating characteristics
 simulations, we can summarize the resulting predictive simulations, for example
 show the predicted trajectories of doses:
 
-```{r sim-future-plot, fig=TRUE}
+```{r sim-future-plot, fig=TRUE, fig.alt = "A histrogram showing the proportions of simulations in simSum that identified each dose as the MTD."}
 print(plot(futureSims))
 ```
 
@@ -1369,7 +1370,7 @@ average true toxicity of
 Graphical summaries are again obtained by calling `plot` on the summary
 object:
 
-```{r three-sims-plot, fig=TRUE, fig.width=6}
+```{r three-sims-plot, fig=TRUE, fig.width=6, fig.alt = "A 2x2 panel of graphs summarising the results of the simulations in the threeSimsSum object."}
 print(plot(threeSimsSum))
 ```
 
@@ -1421,7 +1422,7 @@ data <- DataDual(
 
 The corresponding plot can again be obtained with:
 
-```{r dual-data-plot, fig=TRUE, fig.width=6}
+```{r dual-data-plot, fig=TRUE, fig.width=6, fig.alt = "Two graphs, side-by-side.  The first shows patient number on the x axis and dose administered on the y axis.  Different symbols indicate the toxicity status of each patient.  The second graph has dose on the x axis and biomarker value on the y axis.  Again, different symbols indicate toxicity status and annotations show the patient number with which each point is asscoated."}
 print(plot(data))
 ```
 
@@ -1469,7 +1470,7 @@ samples <- mcmc(data, model, options)
 And we check the convergence by picking a few of the fitted biomarker means and
 plotting their traceplots:
 
-```{r dual-conv, fig=TRUE}
+```{r dual-conv, fig=TRUE, fig.alt = "Traceplots for selected elements of the betaW array."}
 data@nGrid
 betaWpicks <- get(samples, "betaW", c(1L, 5L, 10L, 25L))
 ggs_traceplot(betaWpicks)
@@ -1481,7 +1482,7 @@ converged, as the traceplots show. (Remember that `data@nGrid` gives the
 number of grid points.) So we can plot the model fit:
 
 \setkeys{Gin}{width=\textwidth}
-```{r dual-modelfit, fig=TRUE}
+```{r dual-modelfit, fig=TRUE, fig.alt = "Two plots, side-by-side.  The first shows the posterior estimate of the dose-toxicity curve, with a credible interval.  The second shows the posterior estimate of biomarker level against dose, again with a credible interval."}
 print(plot(samples, model, data, extrapolate = FALSE))
 ```
 \setkeys{Gin}{width=0.65\textwidth}
@@ -1492,7 +1493,7 @@ biomarker fit to higher dose levels. We can also look at the estimated biomarker
 precision $1 / \sigma^{2}_{W}$. For that we extract the precision `precW` and
 then use another `ggmcmc` function to create the histogram:
 
-```{r dual-variance, fig=TRUE}
+```{r dual-variance, fig=TRUE, fig.alt = "A histogram of the biomarker precision in the samples object."}
 ggs_histogram(get(samples, "precW"))
 ```
 
@@ -1526,7 +1527,7 @@ nextDose$value
 A corresponding plot can be produced by printing the `plot` element of the
 returned list:
 
-```{r dual-nextdose-plot}
+```{r dual-nextdose-plot, fig.alt = "Two graphs in a single column that summarise the results of applying the NextBest rule.  For descriptions of the plots, refer to earlier examples in this vignette."}
 print(nextDose$plot)
 ```
 
@@ -1610,7 +1611,7 @@ trueTox <- function(dose) {
 
 We can draw the corresponding curves:
 
-```{r dual-sc-plot, fig=TRUE}
+```{r dual-sc-plot, fig=TRUE, fig.alt = "Two graphs representing the true relationships between dose and toxicity and dose and biomarker level."}
 par(mfrow = c(1, 2))
 curve(trueTox(x), from = 0, to = 80)
 curve(trueBiomarker(x), from = 0, to = 80)
@@ -1647,7 +1648,7 @@ Plotting the result gives not only an overview of the final dose recommendations
 and trial trajectories, but also a summary of the biomarker variance and
 correlation estimates in the simulations:
 
-```{r dual-sims-plot, fig=TRUE}
+```{r dual-sims-plot, fig=TRUE, fig.alt = "A panel of four plots summarisong the results of the simulation."}
 print(plot(mySims))
 ```
 
@@ -1668,7 +1669,7 @@ biomarker target instead, and the true biomarker response peaked at 50 mg.
 
 The corresponding plot looks as follows:
 
-```{r dual-sim-sum-plot, fig=TRUE, fig.width = 6}
+```{r dual-sim-sum-plot, fig=TRUE, fig.width = 6, fig.alt = "A panel of plots that dscribe the results of the simulation summary."}
 print(plot(sumOut))
 ```
 
@@ -1793,17 +1794,17 @@ newEffmodel2@RW
 
 The `plot` function can also be applied to the `Effloglog` model class or the `EffFlexi` model class objects, when samples of the parameters are generated under all these models:
 
-```{r plot-samplesdata2loglog, fig=TRUE, fig.width=6}
+```{r plot-samplesdata2loglog, fig=TRUE, fig.width=6, fig.alt = "Expected efficacy against dose for the data4 object, assuming the model described by the newEffmodel object."}
 print(plot(Effpostsamples, newEffmodel, data4))
 ```
 
-```{r plot-samplesdata2Flexi, fig=TRUE, fig.width=6}
+```{r plot-samplesdata2Flexi, fig=TRUE, fig.width=6, fig.alt = "Expected efficacy against dose for the data4 object, assuming the model described by the newEffmodel2 object."}
 print(plot(Effpostsamples2, newEffmodel2, data4))
 ```
 
 In addition, we can also plot the fitted dose-efficacy curve using the prior or the posterior modal estimates of the model parameters when no MCMC sampling is used. For example, using `Effmodel` and data set `data2` specified earlier:
 
-```{r plot-nosamplesEffmodel, fig=TRUE, fig.width=6}
+```{r plot-nosamplesEffmodel, fig=TRUE, fig.width=6, fig.alt = "Expected efficacy against dose for the data2 object, assuming the model described by the Effmodel object."}
 print(plot(data2, Effmodel))
 ```
 
@@ -1812,7 +1813,7 @@ Since no samples are involved, only the curves using the prior or posterior moda
 Furthermore, we can also plot the estimated DLT probability and efficacy curve side by side using the `plotDualResponses` function.
 For example, using the `DLTmodel`, `Effmodel` and `data2` specified in earlier examples:
 
-```{r plotDualResponseNoSamples, fig=TRUE, fig.width=6}
+```{r plotDualResponseNoSamples, fig=TRUE, fig.width=6, fig.alt = "Model estimates of toxicity and biomarker level by dose."}
 plotDualResponses(
   DLEmodel = DLTmodel,
   Effmodel = Effmodel, data = data2
@@ -1820,7 +1821,7 @@ plotDualResponses(
 ```
 
 When the MCMC samples are used, we have:
-```{r plotDualResponseSamples, fig=TRUE, fig.width=6}
+```{r plotDualResponseSamples, fig=TRUE, fig.width=6, fig.alt = "Model estimates of toxicity and biomarker level by dose, both with credible intervals."}
 plotDualResponses(
   DLEmodel = DLTmodel, DLEsamples = DLTsamples,
   Effmodel = Effmodel, Effsamples = Effsamples, data = data2
@@ -1840,7 +1841,7 @@ For example, the most ideal case is that both the probability of no DLT and the 
 
 We can plot the gain function given a DLT model specified under the `ModelTox` class and an efficacy model specified under the `ModelEff` class using the `plotGain` function. For example, using the variables `newDLTmodel`, `newEffmodel` and the data set with observations, `data4`, specified in earlier examples, we have:
 
-```{r plotGain, fig=TRUE}
+```{r plotGain, fig=TRUE, fig.alt = "A summary of the gain function  for newDLEmodel and newEffmodel applied to data4."}
 plotGain(DLEmodel = newDLTmodel, Effmodel = newEffmodel, data = data4)
 ```
 
@@ -1866,7 +1867,7 @@ doseRecGain <- nextBest(GainNextBest,
 ```
 The results will be a list of numerical values with a plot illustrating how the next best dose was computed. The list of numerical values include the next best dose suggested, the values of the target probabilities of DLT used during and at the end of a trial. Furthermore, the estimated doses for these two targets, as well as the "Gstar" estimated dose (the dose with gives the maximum gain value) are provided along with the corresponding dose level in the dose grid for the above three estimates. We can also get to see the plot about the next best dose recommendation using the `$` operator.
 
-```{r nextbestplot-maxgain,fig=TRUE}
+```{r nextbestplot-maxgain,fig=TRUE, fig.alt = "A summary the results of applying the GainNextBest object to the gain function for newDLEmodel and newEffmodel applied to data4."}
 doseRecGain$plot
 ```
 
@@ -1902,7 +1903,7 @@ doseRecGainSamples <- nextBest(GainsamplesNextBest,
 )
 ```
 The list of numerical results given in the output will be the same as those given using `NextBestMaxGain` class object which includes the next dose suggested, the current estimates of TD30, TD35 and Gstar and their corresponding dose levels at dose Grid. We can also see the plot:
-```{r nextbest-NextBestMaxGainSamplesplot,fig=TRUE}
+```{r nextbest-NextBestMaxGainSamplesplot,fig=TRUE, fig.alt ="A description of this graph is given in the text below."}
 doseRecGainSamples$plot
 ```
 
@@ -2003,7 +2004,7 @@ myTruthGain <- function(dose) {
 ```
 
 The true DLT, efficacy and gain curves can be obtained. We can see the corresponding curves as
-```{r Truecurves, fig=TRUE}
+```{r Truecurves, fig=TRUE, fig.alt ="A description of this graph is given in the text below."}
 TruthTD <- doseFunction(DLTmodel, phi1 = -53.66584, phi2 = 10.50499)
 
 GAIN <- function(xi) {
@@ -2051,7 +2052,7 @@ myTruthGain1 <- myTruthEff1 * (1 - myTruthDLT(d1))
 
 The corresponding curves can also be plotted as:
 
-```{r TruecurvesFlexi,fig=TRUE}
+```{r TruecurvesFlexi,fig=TRUE, fig.alt = "A description of this graph is given in the text below."}
 maxg1 <- max(myTruthGain1)
 gstar1 <- data2@doseGrid[which.max(myTruthGain1)]
 DoseLevels1 <- seq(1, 300, 1)
@@ -2138,13 +2139,15 @@ For the specification of the arguments `object`, `args`, `trueDLE`, `trueEff`, `
 
 Furthermore, we can also plot, summarize and plot the summary of the simulated results using `plot` and `summary` function:
 
-```{r plotsimulationresults1,fig=TRUE}
+```{r plotsimulationresults1,fig=TRUE, fig.alt = "A description of the Sim1 object."}
 plot(Sim1)
 ```
-```{r plotsimulationresults2,fig=TRUE}
+
+```{r plotsimulationresults2,fig=TRUE, fig.alt = "A description of the Sim2 object."}
 plot(Sim2)
 ```
-```{r plotsimulationresults3,fig=TRUE}
+
+```{r plotsimulationresults3,fig=TRUE, fig.alt = "A description of the Sim3 object."}
 plot(Sim3)
 ```
 
@@ -2152,7 +2155,7 @@ The plots give an overview of the final dose recommendations and trial trajector
 
 Then, the summary and the plot of the summary of the simulations can be obtained by:
 
-```{r summarysimulationresults1, fig=TRUE, fig.width=6}
+```{r summarysimulationresults1, fig=TRUE, fig.width=6, fig.alt = "A description of the summary of the Sim1 object."}
 Sum1 <- summary(Sim1,
   trueDLE = myTruthDLT,
   trueEff = myTruthEff
@@ -2161,7 +2164,7 @@ Sum1
 print(plot(Sum1))
 ```
 
-```{r summarysimulationresults2,fig=TRUE, fig.width=6}
+```{r summarysimulationresults2,fig=TRUE, fig.width=6, fig.alt = "A description of the summary of the Sim2 object."}
 Sum2 <- summary(Sim2,
   trueDLE = myTruthDLT,
   trueEff = myTruthEff
@@ -2170,7 +2173,7 @@ Sum2
 print(plot(Sum2))
 ```
 
-```{r summarysimulationresults3,fig=TRUE, fig.width=6}
+```{r summarysimulationresults3,fig=TRUE, fig.width=6, fig.alt = "A description of the summary of the Sim3 object."}
 Sum3 <- summary(Sim3,
   trueDLE = myTruthDLT,
   trueEff = myTruthEff1
