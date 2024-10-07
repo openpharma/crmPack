@@ -1746,7 +1746,7 @@ setMethod(
   definition = function(increments, data, model, samples, ...) {
     assert_class(samples, "Samples")
     assert_true(length(increments@prob) == length(data@yCategories) - 1)
-    nm <- tail(names(data@yCategories), -1)
+    nm <- utils::tail(names(data@yCategories), -1)
     assert_set_equal(names(increments@prob), nm)
 
     probs <- dplyr::bind_rows(
