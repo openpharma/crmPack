@@ -20,7 +20,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">crmPack</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">2.0.0</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">2.0.0.9000</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -50,12 +50,6 @@
 </li>
 <li class="nav-item"><a class="nav-link" href="../news/index.html">Changelog</a></li>
 <li class="nav-item dropdown">
-<!-- start dropdown for versions --> <li class="nav-item dropdown">
-        <a href="#" class="nav-link dropdown-toggle"
-          data-bs-toggle="dropdown" role="button"
-          aria-expanded="false" aria-haspopup="true"
-          id="dropdown-versions">Versions</a> <div class="dropdown-menu" aria-labelledby="dropdown-versions"> <a class="dropdown-item" data-toggle="tooltip" title="" href="https://openpharma.github.io/crmPack/main">main</a> </div></li>
-<!-- end dropdown for versions -->
   <button class="nav-link dropdown-toggle" type="button" id="dropdown-reports" data-bs-toggle="dropdown" aria-expanded="false" aria-haspopup="true">Reports</button>
   <ul class="dropdown-menu" aria-labelledby="dropdown-reports">
 <li><a class="dropdown-item" href="../coverage-report/">Coverage report</a></li>
@@ -67,7 +61,7 @@
 <li class="nav-item"><form class="form-inline" role="search">
  <input class="form-control" type="search" name="search-input" id="search-input" autocomplete="off" aria-label="Search site" placeholder="Search for" data-search-index="../search.json">
 </form></li>
-<li class="nav-item"><a class="external-link nav-link" href="https://github.com/openpharma/crmPack"><span class="fa fa-github"></span></a></li>
+<li class="nav-item"><a class="external-link nav-link" href="https://github.com/openpharma/crmPack" aria-label="View on GitHub"><span class="fa fa-github"></span></a></li>
       </ul>
 </div>
 
@@ -205,10 +199,8 @@ optimal biological dose are already available.</p>
 notation for early phase trials from <span class="citation">(Thall
 2010)</span>. Figure @ref(fig:schematic) summarizes the framework in a
 schematic.</p>
-<div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="fu">knitr</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/knitr/man/include_graphics.html" class="external-link">include_graphics</a></span><span class="op">(</span><span class="st">"./schematic.png"</span><span class="op">)</span></span></code></pre></div>
 <div class="figure" style="text-align: center">
-<img src="schematic.png" alt="Schematic of the framework" width="700px" height="540px"><p class="caption">
+<img src="schematic.png" alt="Schematic showing the general framework of an early phase dose escalation design." width="700px" height="540px"><p class="caption">
 Schematic of the framework
 </p>
 </div>
@@ -384,7 +376,7 @@ functionality</a> gives an example on extending the <code>crmPack</code>
 functionality.</p>
 <p>Before we start, we have to install and subsequently load our package
 in <code>R</code>:</p>
-<div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="st"><a href="https://github.com/openpharma/crmPack" class="external-link">"crmPack"</a></span><span class="op">)</span></span></code></pre></div>
 <pre><code><span><span class="co">## Loading required package: ggplot2</span></span></code></pre>
 <pre><code><span><span class="co">## Registered S3 method overwritten by 'crmPack':</span></span>
@@ -427,7 +419,7 @@ internally, setting of a seed is required for reproducibility.
 Furthermore, it is recommended to specify a coarse dose grid across the
 original dose range (excluding the placebo dose) to avoid long
 computation time:</p>
-<div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">coarseGrid</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">25</span>, <span class="fl">50</span>, <span class="fl">100</span>, <span class="fl">200</span>, <span class="fl">300</span><span class="op">)</span></span>
 <span><span class="va">model</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/MinimalInformative.html">MinimalInformative</a></span><span class="op">(</span></span>
 <span>  dosegrid <span class="op">=</span> <span class="va">coarseGrid</span>, refDose <span class="op">=</span> <span class="fl">100</span>,</span>
@@ -456,7 +448,7 @@ the <code>S4</code> class <code>Data</code> can be used. Objects of this
 class can be created by calling the accompanying initialization function
 of the same name (which is a general convention in
 <code>crmPack</code>):</p>
-<div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">PL</span> <span class="op">&lt;-</span> <span class="fl">0.001</span></span>
 <span><span class="va">data</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/Data-class.html">Data</a></span><span class="op">(</span></span>
 <span>  x <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="va">PL</span>, <span class="fl">25</span>, <span class="fl">25</span>, <span class="fl">25</span>, <span class="va">PL</span>, <span class="fl">50</span>, <span class="fl">50</span>, <span class="fl">50</span>, <span class="va">PL</span>, <span class="fl">100</span>, <span class="fl">100</span>, <span class="fl">100</span><span class="op">)</span>,</span>
@@ -487,11 +479,17 @@ visualized by simply applying the <code>plot</code> function to the
 object, which also allows to produce a blinded plot (hiding patient IDs
 and placebo/treatment assignment) with the option <code>blind</code>,
 see Figure @ref(fig:plot-data):</p>
-<div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">data</span><span class="op">)</span></span>
-<span><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">data</span>, blind <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span></code></pre></div>
+<div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">data</span><span class="op">)</span></span></code></pre></div>
 <div class="figure" style="text-align: center">
-<img src="crmPack-jss-paper_files/figure-html/plot-data-1.png" alt="Open and blinded data plots" width=".35\linewidth"><img src="crmPack-jss-paper_files/figure-html/plot-data-2.png" alt="Open and blinded data plots" width=".35\linewidth"><p class="caption">
+<img src="crmPack-jss-paper_files/figure-html/plot-data-1.png" alt="An unblinded graph with patient id on the x axis and dose administered on the y axis.  Red triangles indicate patients who reported DLTs, black circles those who did not.  Symbols are annotated with patient IDs.  Vertical dashed green lines delineate cohorts." width=".35\linewidth"><p class="caption">
+Open and blinded data plots
+</p>
+</div>
+<div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">data</span>, blind <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span></code></pre></div>
+<div class="figure" style="text-align: center">
+<img src="crmPack-jss-paper_files/figure-html/plot-data-blind-1.png" alt="A blinded graph with patient id on the x axis and dose administered on the y axis.  Red triangles indicate reports of DLTs, black circles indicate an absense of DLTs.  However, within each cohort, patients with DLTs appear before those without.  Symbols are not annotated with patient IDs.  Vertical dashed green lines delineate cohorts." width=".35\linewidth"><p class="caption">
 Open and blinded data plots
 </p>
 </div>
@@ -523,7 +521,7 @@ see Figure @ref(fig:plot-model-fit):</p>
 <span><span class="va">priorsamples</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/mcmc.html">mcmc</a></span><span class="op">(</span><span class="va">emptydata</span>, <span class="va">model</span>, <span class="va">options</span><span class="op">)</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">priorsamples</span>, <span class="va">model</span>, <span class="va">emptydata</span><span class="op">)</span> <span class="op">+</span> <span class="fu">ggtitle</span><span class="op">(</span><span class="st">"Prior"</span><span class="op">)</span></span></code></pre></div>
 <div class="figure" style="text-align: center">
-<img src="crmPack-jss-paper_files/figure-html/plot-model-fit-1.png" alt="Posterior and prior regression model fits" width=".35\linewidth"><img src="crmPack-jss-paper_files/figure-html/plot-model-fit-2.png" alt="Posterior and prior regression model fits" width=".35\linewidth"><p class="caption">
+<img src="crmPack-jss-paper_files/figure-html/plot-model-fit-1.png" alt="Prior and posterior dose-toxicity curves." width=".35\linewidth"><img src="crmPack-jss-paper_files/figure-html/plot-model-fit-2.png" alt="Prior and posterior dose-toxicity curves." width=".35\linewidth"><p class="caption">
 Posterior and prior regression model fits
 </p>
 </div>
@@ -572,11 +570,11 @@ class:</p>
 <div class="sourceCode" id="cb15"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">nextDoseRes</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/nextBest.html">nextBest</a></span><span class="op">(</span><span class="va">myNextBest</span>, <span class="va">nextMaxDose</span>, <span class="va">samples</span>, <span class="va">model</span>, <span class="va">data</span><span class="op">)</span></span>
 <span><span class="op">(</span><span class="va">nextDoseVal</span> <span class="op">&lt;-</span> <span class="va">nextDoseRes</span><span class="op">$</span><span class="va">value</span><span class="op">)</span></span></code></pre></div>
-<pre><code><span><span class="co">## [1] 100</span></span></code></pre>
+<pre><code><span><span class="co">## [1] 75</span></span></code></pre>
 <p>The returned list also contains an accompanying plot
 (<code>nextDoseRes$plot</code>), see Figure @ref(fig:nextBest-ncrm).</p>
 <div class="figure" style="text-align: center">
-<img src="crmPack-jss-paper_files/figure-html/nextBest-ncrm-1.png" alt="Dose recommendation plot from NCRM design" width=".5\linewidth"><p class="caption">
+<img src="crmPack-jss-paper_files/figure-html/nextBest-ncrm-1.png" alt="A graphical description of the logic between the recommendation of the nextBestRes object." width=".5\linewidth"><p class="caption">
 Dose recommendation plot from NCRM design
 </p>
 </div>
@@ -608,10 +606,10 @@ combining the atomic rules with logical operators as follows:</p>
 <span><span class="co">## </span></span>
 <span><span class="co">## attr(,"message")[[2]]</span></span>
 <span><span class="co">## attr(,"message")[[2]][[1]]</span></span>
-<span><span class="co">## [1] "Probability for target toxicity is 34 % for dose 100 and thus below the required 50 %"</span></span>
+<span><span class="co">## [1] "Probability for target toxicity is 21 % for dose 75 and thus below the required 50 %"</span></span>
 <span><span class="co">## </span></span>
 <span><span class="co">## attr(,"message")[[2]][[2]]</span></span>
-<span><span class="co">## [1] "3 patients lie within 20% of the next best dose 100. This is below the required 9 patients"</span></span>
+<span><span class="co">## [1] "0 patients lie within 20% of the next best dose 75. This is below the required 9 patients"</span></span>
 <span><span class="co">## </span></span>
 <span><span class="co">## </span></span>
 <span><span class="co">## attr(,"individual")</span></span>
@@ -626,23 +624,23 @@ combining the atomic rules with logical operators as follows:</p>
 <span><span class="co">## [1] FALSE</span></span>
 <span><span class="co">## attr(,"message")</span></span>
 <span><span class="co">## attr(,"message")[[1]]</span></span>
-<span><span class="co">## [1] "Probability for target toxicity is 34 % for dose 100 and thus below the required 50 %"</span></span>
+<span><span class="co">## [1] "Probability for target toxicity is 21 % for dose 75 and thus below the required 50 %"</span></span>
 <span><span class="co">## </span></span>
 <span><span class="co">## attr(,"message")[[2]]</span></span>
-<span><span class="co">## [1] "3 patients lie within 20% of the next best dose 100. This is below the required 9 patients"</span></span>
+<span><span class="co">## [1] "0 patients lie within 20% of the next best dose 75. This is below the required 9 patients"</span></span>
 <span><span class="co">## </span></span>
 <span><span class="co">## attr(,"individual")</span></span>
 <span><span class="co">## attr(,"individual")[[1]]</span></span>
 <span><span class="co">## [1] FALSE</span></span>
 <span><span class="co">## attr(,"message")</span></span>
-<span><span class="co">## [1] "Probability for target toxicity is 34 % for dose 100 and thus below the required 50 %"</span></span>
+<span><span class="co">## [1] "Probability for target toxicity is 21 % for dose 75 and thus below the required 50 %"</span></span>
 <span><span class="co">## attr(,"report_label")</span></span>
 <span><span class="co">## [1] "P(0.2 ≤ prob(DLE | NBD) ≤ 0.35) ≥ 0.5"</span></span>
 <span><span class="co">## </span></span>
 <span><span class="co">## attr(,"individual")[[2]]</span></span>
 <span><span class="co">## [1] FALSE</span></span>
 <span><span class="co">## attr(,"message")</span></span>
-<span><span class="co">## [1] "3 patients lie within 20% of the next best dose 100. This is below the required 9 patients"</span></span>
+<span><span class="co">## [1] "0 patients lie within 20% of the next best dose 75. This is below the required 9 patients"</span></span>
 <span><span class="co">## attr(,"report_label")</span></span>
 <span><span class="co">## [1] "≥ 9 patients dosed in 20 % dose range around NBD"</span></span>
 <span><span class="co">## </span></span>
@@ -708,7 +706,7 @@ recommended as 225, 175 and 150 mg, respectively.</p>
 <span><span class="co">## 15  125    2      100 FALSE       -20</span></span>
 <span><span class="co">## 16  125    3       75 FALSE       -40</span></span>
 <span><span class="co">## 17  175    0      250 FALSE        43</span></span>
-<span><span class="co">## 18  175    1      175 FALSE         0</span></span>
+<span><span class="co">## 18  175    1      150 FALSE       -14</span></span>
 <span><span class="co">## 19  175    2      125 FALSE       -29</span></span>
 <span><span class="co">## 20  175    3      100 FALSE       -43</span></span>
 <span><span class="co">## 21  250    0      300 FALSE        20</span></span>
@@ -750,7 +748,7 @@ used:</p>
 the results. The argument <code>parallel</code> can be set to
 <code>TRUE</code> if one wishes to run the iterations in parallel on all
 processors of the computer, which can yield a meaningful speedup. Here
-we needed 131 seconds for 100 simulated trials on an Intel Core i5-6300U
+we needed 126 seconds for 100 simulated trials on an Intel Core i5-6300U
 CPU with 2.4 GHz.</p>
 <p>The result is an object of class <code>Simulations</code> containing
 multiple slots, with e.g., the <code>data</code> slot containing the
@@ -770,7 +768,7 @@ can select the plots by changing the <code>type</code> argument of
 <code>plot</code>, which by default is
 <code>type = c("trajectory", "dosesTried")</code>.
 <div class="figure" style="text-align: center">
-<img src="crmPack-jss-paper_files/figure-html/sim-plot-1.png" alt="Simulation plot" width=".5\linewidth"><p class="caption">
+<img src="crmPack-jss-paper_files/figure-html/sim-plot-1.png" alt="A graphical representation of the simulation results." width=".5\linewidth"><p class="caption">
 Simulation plot
 </p>
 </div>
@@ -790,22 +788,22 @@ description of the results:</p>
 <span><span class="co">## Number of patients overall : mean 30 (24, 32) </span></span>
 <span><span class="co">## Number of patients treated above target tox interval : mean 3 (0, 3) </span></span>
 <span><span class="co">## Proportions of DLTs in the trials for patients on placebo : mean 0 % (0 %, 0 %) </span></span>
-<span><span class="co">## Proportions of DLTs in the trials for patients on active : mean 28 % (21 %, 33 %) </span></span>
+<span><span class="co">## Proportions of DLTs in the trials for patients on active : mean 28 % (21 %, 34 %) </span></span>
 <span><span class="co">## Mean toxicity risks for the patients on active : mean 27 % (18 %, 33 %) </span></span>
-<span><span class="co">## Doses selected as MTD : mean 46.2 (25, 50) </span></span>
-<span><span class="co">## True toxicity at doses selected : mean 22 % (0 %, 26 %) </span></span>
-<span><span class="co">## Proportion of trials selecting target MTD: 85 %</span></span>
+<span><span class="co">## Doses selected as MTD : mean 45.2 (25, 50) </span></span>
+<span><span class="co">## True toxicity at doses selected : mean 21 % (0 %, 26 %) </span></span>
+<span><span class="co">## Proportion of trials selecting target MTD: 81 %</span></span>
 <span><span class="co">## Dose most often selected as MTD: 50 </span></span>
-<span><span class="co">## Observed toxicity rate at dose most often selected: 26 %</span></span>
-<span><span class="co">## Fitted toxicity rate at dose most often selected : mean 23 % (16 %, 30 %) </span></span>
+<span><span class="co">## Observed toxicity rate at dose most often selected: 27 %</span></span>
+<span><span class="co">## Fitted toxicity rate at dose most often selected : mean 24 % (17 %, 30 %) </span></span>
 <span><span class="co">## Stop reason triggered:</span></span>
-<span><span class="co">##  ≥ 30 patients dosed :  64 %</span></span>
-<span><span class="co">##  P(0.2 ≤ prob(DLE | NBD) ≤ 0.35) ≥ 0.5 :  44 %</span></span>
-<span><span class="co">##  ≥ 9 patients dosed in 20 % dose range around NBD :  98 %</span></span></code></pre>
+<span><span class="co">##  ≥ 30 patients dosed :  65 %</span></span>
+<span><span class="co">##  P(0.2 ≤ prob(DLE | NBD) ≤ 0.35) ≥ 0.5 :  43 %</span></span>
+<span><span class="co">##  ≥ 9 patients dosed in 20 % dose range around NBD :  97 %</span></span></code></pre>
 A plot of the summary results can also be produced, see Figure
 @ref(fig:sim-summary-plot).
 <div class="figure" style="text-align: center">
-<img src="crmPack-jss-paper_files/figure-html/sim-summary-plot-1.png" alt="Simulation summary plot" width=".6\linewidth"><p class="caption">
+<img src="crmPack-jss-paper_files/figure-html/sim-summary-plot-1.png" alt="A graphical representation of the information in the simulation summary." width=".6\linewidth"><p class="caption">
 Simulation summary plot
 </p>
 </div>
@@ -946,7 +944,7 @@ using <code>maxDose</code> to obtain
 <p>The plot for the next dose allocation is contained in
 <code>doseRecGain$plot</code> and shown in Figure
 @ref(fig:doseRecommendation). \begin{figure}
-<img src="crmPack-jss-paper_files/figure-html/doseRecommendation-1.png" width=".6\linewidth" style="display: block; margin: auto;"></p>
+<img src="crmPack-jss-paper_files/figure-html/doseRecommendation-1.png" alt="A graphical representation of the logic behind the recommendation of the doseResgen object." width=".6\linewidth" style="display: block; margin: auto;"></p>
 <p>Dose recommendation plot from dual endpoint design. The red, blue and
 green curves correspond to the (posterior modal) estimated curves for
 safety, efficacy and gain, respectively. The vertical red line in the
@@ -1157,7 +1155,7 @@ The resulting posterior fit can be plotted as usual, see Figure
 <span><span class="va">newSamples</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/mcmc.html">mcmc</a></span><span class="op">(</span><span class="va">data</span>, <span class="va">newModel</span>, <span class="va">options</span><span class="op">)</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">newSamples</span>, <span class="va">newModel</span>, <span class="va">data</span><span class="op">)</span></span></code></pre></div>
 <div class="figure" style="text-align: center">
-<img src="crmPack-jss-paper_files/figure-html/OneParExp-model-example-1.png" alt="Model fit of the one parameter power model" width=".5\linewidth"><p class="caption">
+<img src="crmPack-jss-paper_files/figure-html/OneParExp-model-example-1.png" alt="The posterior dose-toxicity curve from the one parameter power model." width=".5\linewidth"><p class="caption">
 Model fit of the one parameter power model
 </p>
 </div>
