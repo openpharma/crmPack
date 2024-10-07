@@ -81,27 +81,31 @@ samples <- mcmc(data, model, options)
 
 ### Use ggmcmc to diagnose
 
-```{r Diagnose}
+```{r Diagnose-1, fig.alt = "A trace plot for alpha0.  It looks like skyscrapers ina big city, but there are only just over 200 samples in the chain."}
 library(ggmcmc)
 alpha0samples <- get(samples, "alpha0")
 
 print(ggs_traceplot(alpha0samples))
+```
 
+```{r Diagnose-2, fig.alt = "An auto correlation plot for aplha0.  There is significant auto-correlation of 0.25 or more even at lags of 50.  There is seasonality too, with three groups of negative auto-correlation and four of positive."}
 print(ggs_autocorrelation(alpha0samples))
 ```
 
 ### Plot the model fit
 
-```{r Fit}
+```{r Fit-1, fig.width = 7, fig.alt = "Two plots in a single row.  The first shows the posterior mean and ci for the probability of toxicity by dose.  The second shows 100 times the posterior hazard by time."}
 plot(samples, model, data, hazard = TRUE)
+```
 
+```{r Fit-2, fig.width = 7, fig.alt = "Two plots in a single row.  Both show the posterior mean and ci for the probability of toxicity by dose on the y axis.  In the first plot, the x axis is dose.  In the second, it is time."}
 plot(samples, model, data, hazard = FALSE)
 ```
 
 
 ### prior mean curve
 
-```{r Prior}
+```{r Prior, fig.width = 7, fig.alt = "Two plots in a single row.  Both show the prior mean and ci for the probability of toxicity by dose on the y axis.  In the first plot, the x axis is dose.  In the second, it is time."}
 emptydata <- DataDA(doseGrid = c(
   0.1, 0.5, 1.5, 3, 6,
   seq(from = 10, to = 80, by = 2)
@@ -142,14 +146,13 @@ myStopping <- (myStopping1 | myStopping2)
 
 ### Recommended dose for the next cohort
 
-```{r Recommend}
+```{r Recommend, fig.width = 7, fig.alt = "Two graphs arranged in a single column.  The upper graph shoes green lines of various heights that show the probability each dose is in the target toxicity range.  There is a big arrow pointing to the bar at a dose of 0.5, that this is the recommended dose for the next cohort.  The bars for other doses are higher, but they are not eligible for dosing because of the overdose rule illustrated in the second graph below.  The lower graph as a similar series of red lines, indicating the probability that each dose is in the overdose range.  There is a horizontal black dashed line at 25%, indicating that this is the highest acceptable probability of being in the overdose range.  The red bars for doses above 0.5 all extend above 25%, indicating that their toxicity is unacceptable.  The toxicity for doses of 0.1 and 0.5 lie below 25%."}
 doseRecommendation <- nextBest(myNextBest,
   doselimit = nextMaxDose,
   samples = samples,
   model = model,
   data = data
 )
-
 
 doseRecommendation$plot
 doseRecommendation$value
@@ -177,7 +180,7 @@ design <- DADesign(
 
 ### Set up true curves
 
-```{r Truth}
+```{r Truth, fig.alt = "A logistic dose response curverising from 0 at dose 0 to almost 100% for a dose of 100."}
 myTruth <- probFunction(model, alpha0 = 2, alpha1 = 3)
 curve(myTruth(x), from = 0, to = 100, ylim = c(0, 1))
 
@@ -210,7 +213,7 @@ mySims <- simulate(design,
 
 Use a similar way as section 9.2 in the "using the package crmPack: introductory examples" document 
 
-```{r Interpret}
+```{r Interpret, fig.width = 7, fig.height = 7, fig.alt = "Two graphs in a single column, summarising the results of a single simulated trial.  The upper one plots patient number on the x axis and dose andministered on the y axis.  Different symbols indicate whether or not each participant reported a toxicity.  Sixteen patients were enrolled, four of which reported toxicities.  The points rise and fall like waves in response to changes in the model's recommended dose.  The lower one plots time on the x axis and patient number on the y axis.  For each patient, a horizontal line runs from their enrolment time to the time at which they reported a toxicity, completed their safety evaluatiuon window or (at the end of the trial) were censored.  Different coloured and shaped symbols at the right hand end of each line indicate whether or not the participant reported a toxicity."}
 a <- summary(mySims, truth = myTruth)
 b <- mySims@data[[1]]
 
