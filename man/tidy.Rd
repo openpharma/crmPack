@@ -26,6 +26,8 @@
 \alias{tidy-LogisticIndepBeta}
 \alias{tidy,Effloglog-method}
 \alias{tidy-Effloglog}
+\alias{tidy,IncrementsMaxToxProb-method}
+\alias{tidy-IncrementsMaxToxProb}
 \alias{tidy,IncrementsRelative-method}
 \alias{tidy-IncrementsRelative}
 \alias{tidy,CohortSizeDLT-method}
@@ -77,6 +79,8 @@ tidy(x, ...)
 \S4method{tidy}{LogisticIndepBeta}(x, ...)
 
 \S4method{tidy}{Effloglog}(x, ...)
+
+\S4method{tidy}{IncrementsMaxToxProb}(x, ...)
 
 \S4method{tidy}{IncrementsRelative}(x, ...)
 
@@ -218,6 +222,7 @@ CohortSizeConst(3) \%>\% tidy()
 .DefaultSimulations() \%>\% tidy()
 .DefaultLogisticIndepBeta() \%>\% tidy()
 .DefaultEffloglog() \%>\% tidy()
+IncrementsMaxToxProb(prob = c("DLAE" = 0.2, "CRS" = 0.05)) \%>\% tidy()
 CohortSizeRange(intervals = c(0, 20), cohort_size = c(1, 3)) \%>\% tidy()
 .DefaultCohortSizeDLT() \%>\% tidy()
 .DefaultCohortSizeMin() \%>\% tidy()

@@ -8,6 +8,7 @@
 \alias{v_increments_dose_levels}
 \alias{v_increments_hsr_beta}
 \alias{v_increments_min}
+\alias{v_increments_maxtoxprob}
 \alias{v_increments_ordinal}
 \alias{v_cohort_size_ordinal}
 \title{Internal Helper Functions for Validation of \code{\link{Increments}} Objects}
@@ -23,6 +24,8 @@ v_increments_dose_levels(object)
 v_increments_hsr_beta(object)
 
 v_increments_min(object)
+
+v_increments_maxtoxprob(object)
 
 v_increments_ordinal(object)
 
@@ -60,6 +63,8 @@ object contains valid probability target, threshold and shape parameters.
 
 \item \code{v_increments_min()}: validates that the \code{\link{IncrementsMin}}
 object contains a list with \code{Increments} objects.
+
+\item \code{v_increments_maxtoxprob()}: validates the \code{\link{IncrementsMaxToxProb}}
 
 \item \code{v_increments_ordinal()}: validates that the \code{\link{IncrementsOrdinal}} object
 contains valid \code{grade} and standard \code{Increments} rule.

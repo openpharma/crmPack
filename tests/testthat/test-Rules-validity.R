@@ -1622,3 +1622,55 @@ test_that("v_safety_window_const returns message for non-valid follow_min", {
   object@follow_min <- NA_integer_
   expect_equal(v_safety_window_const(object), err_msg)
 })
+
+test_that("v_increments_maxtoxprob validates correctly", {
+  expect_no_error({
+    x <- IncrementsMaxToxProb(c("DLAE" = 0.3, "DLT" = 0.1))
+  })
+
+  expect_error({
+    x <- IncrementsMaxToxProb(NA)
+  })
+
+  expect_error({
+    x <- IncrementsMaxToxProb(c(0.3, NA))
+  })
+
+  expect_error({
+    x <- IncrementsMaxToxProb(c(-1, 0.2))
+  })
+
+  expect_error({
+    x <- IncrementsMaxToxProb(c(0.2, 3))
+  })
+})
+
+test_that("v_nextbest_ordinal validates correctly", {
+  expect_no_error({
+    x <- NextBestOrdinal(grade = 1L, rule = NextBestMTD(target = 0.3, derive = mean))
+  })
+
+  expect_error(
+    {
+      x <- NextBestOrdinal(grade = pi, rule = NextBestMTD(target = 0.3, derive = mean))
+    },
+    "grade must be a positive integer"
+  )
+  expect_error(
+    {
+      x <- NextBestOrdinal(grade = -2, rule = NextBestMTD(target = 0.3, derive = mean))
+    },
+    "grade must be a positive integer"
+  )
+
+  expect_error(
+    {
+      x <- NextBestOrdinal(grade = 1L, rule = CohortSizeConst(3))
+    },
+    paste0(
+      "invalid class \"NextBestOrdinal\" object: invalid object for slot \"rule\"",
+      " in class \"NextBestOrdinal\": got class \"CohortSizeConst\", should be or ",
+      "extend class \"NextBest\""
+    )
+  )
+})
