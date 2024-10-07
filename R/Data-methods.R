@@ -1006,7 +1006,7 @@ setMethod(
       ) %>%
       dplyr::rowwise() %>%
       dplyr::mutate(
-        AnyTox = any(dplyr::across(c(starts_with("Cat"), -Cat0), any)),
+        AnyTox = any(dplyr::across(c(tidyselect::starts_with("Cat"), -Cat0), any)),
         # Direct assignment fails on GitHub
         Cat0 = !AnyTox
       ) %>%
