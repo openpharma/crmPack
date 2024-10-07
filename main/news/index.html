@@ -33,12 +33,6 @@
     <li><a class="dropdown-item" href="../articles/example.html">crmPack: Object-oriented implementation of CRM designs</a></li>
   </ul></li>
 <li class="active nav-item"><a class="nav-link" href="../news/index.html">Changelog</a></li>
-<!-- start dropdown for versions --> <li class="nav-item dropdown">
-        <a href="#" class="nav-link dropdown-toggle"
-          data-bs-toggle="dropdown" role="button"
-          aria-expanded="false" aria-haspopup="true"
-          id="dropdown-versions">Versions</a> <div class="dropdown-menu" aria-labelledby="dropdown-versions"> <a class="dropdown-item" data-toggle="tooltip" title="" href="https://openpharma.github.io/crmPack/main">main</a> </div></li>
-<!-- end dropdown for versions -->
 <li class="nav-item dropdown">
   <button class="nav-link dropdown-toggle" type="button" id="dropdown-reports" data-bs-toggle="dropdown" aria-expanded="false" aria-haspopup="true">Reports</button>
   <ul class="dropdown-menu" aria-labelledby="dropdown-reports"><li><a class="dropdown-item" href="../coverage-report/">Coverage report</a></li>
@@ -62,6 +56,7 @@
 <h2 class="pkg-version" data-toc-text="2.0.0.9000" id="version-2009000">Version 2.0.0.9000<a class="anchor" aria-label="anchor" href="#version-2009000"></a></h2>
 <ul><li>
 <strong>Note: This release (1.0 -&gt; 2.0) signifies a major breaking revamp of the package.</strong> Users are advised to carefully review the release notes and documentation for detailed information on the changes and any necessary updates to their existing code.</li>
+<li>Implemented the <code>IncrementsMaxToxProb</code> class</li>
 <li>Implemented <code>knit_print</code> methods for almost all <code>crmPack</code> classes to improve rendering in Markdown and Quarto documents. See the vignette for more details.</li>
 <li>Provided basic support for ordinal CRM models. See the vignette for more details.</li>
 <li>Implemented <code>broom</code>-like <code>tidy</code> methods for all concrete <code>crmPack</code> classes. See the vignette for more details.</li>

@@ -37,12 +37,6 @@ Increments or inherited classes and therefore not exported."><meta property="og:
     <li><a class="dropdown-item" href="../articles/example.html">crmPack: Object-oriented implementation of CRM designs</a></li>
   </ul></li>
 <li class="nav-item"><a class="nav-link" href="../news/index.html">Changelog</a></li>
-<!-- start dropdown for versions --> <li class="nav-item dropdown">
-        <a href="#" class="nav-link dropdown-toggle"
-          data-bs-toggle="dropdown" role="button"
-          aria-expanded="false" aria-haspopup="true"
-          id="dropdown-versions">Versions</a> <div class="dropdown-menu" aria-labelledby="dropdown-versions"> <a class="dropdown-item" data-toggle="tooltip" title="" href="https://openpharma.github.io/crmPack/main">main</a> </div></li>
-<!-- end dropdown for versions -->
 <li class="nav-item dropdown">
   <button class="nav-link dropdown-toggle" type="button" id="dropdown-reports" data-bs-toggle="dropdown" aria-expanded="false" aria-haspopup="true">Reports</button>
   <ul class="dropdown-menu" aria-labelledby="dropdown-reports"><li><a class="dropdown-item" href="../coverage-report/">Coverage report</a></li>
@@ -83,6 +77,8 @@ Increments or inherited classes and therefore not exported."><meta property="og:
 <span></span>
 <span><span class="fu">v_increments_min</span><span class="op">(</span><span class="va">object</span><span class="op">)</span></span>
 <span></span>
+<span><span class="fu">v_increments_maxtoxprob</span><span class="op">(</span><span class="va">object</span><span class="op">)</span></span>
+<span></span>
 <span><span class="fu">v_increments_ordinal</span><span class="op">(</span><span class="va">object</span><span class="op">)</span></span>
 <span></span>
 <span><span class="fu">v_cohort_size_ordinal</span><span class="op">(</span><span class="va">object</span><span class="op">)</span></span></code></pre></div>
@@ -116,6 +112,7 @@ contains valid <code>levels</code> and <code>basis_level</code> option.</p></li>
 object contains valid probability target, threshold and shape parameters.</p></li>
 <li><p><code>v_increments_min()</code>: validates that the <code><a href="IncrementsMin-class.html">IncrementsMin</a></code>
 object contains a list with <code>Increments</code> objects.</p></li>
+<li><p><code>v_increments_maxtoxprob()</code>: validates the <code><a href="IncrementsMaxToxProb-class.html">IncrementsMaxToxProb</a></code></p></li>
 <li><p><code>v_increments_ordinal()</code>: validates that the <code><a href="IncrementsOrdinal-class.html">IncrementsOrdinal</a></code> object
 contains valid <code>grade</code> and standard <code>Increments</code> rule.</p></li>
 <li><p><code>v_cohort_size_ordinal()</code>: validates that the <code><a href="CohortSizeOrdinal-class.html">CohortSizeOrdinal</a></code> object

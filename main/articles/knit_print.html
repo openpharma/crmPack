@@ -49,12 +49,6 @@
   </ul>
 </li>
 <li class="nav-item"><a class="nav-link" href="../news/index.html">Changelog</a></li>
-<!-- start dropdown for versions --> <li class="nav-item dropdown">
-        <a href="#" class="nav-link dropdown-toggle"
-          data-bs-toggle="dropdown" role="button"
-          aria-expanded="false" aria-haspopup="true"
-          id="dropdown-versions">Versions</a> <div class="dropdown-menu" aria-labelledby="dropdown-versions"> <a class="dropdown-item" data-toggle="tooltip" title="" href="https://openpharma.github.io/crmPack/main">main</a> </div></li>
-<!-- end dropdown for versions -->
 <li class="nav-item dropdown">
   <button class="nav-link dropdown-toggle" type="button" id="dropdown-reports" data-bs-toggle="dropdown" aria-expanded="false" aria-haspopup="true">Reports</button>
   <ul class="dropdown-menu" aria-labelledby="dropdown-reports">
@@ -880,10 +874,10 @@ toxicity range of 0.2 to 0.35 (inclusive) will be selected.</li>
 <div class="section level2">
 <h2 id="class-coverage">Class coverage<a class="anchor" aria-label="anchor" href="#class-coverage"></a>
 </h2>
-<p><code>crmPack</code> defines 123 classes. Custom
+<p><code>crmPack</code> defines 124 classes. Custom
 <code>knit_print</code> methods exist for 91 of them. Of the remaining
-32 classes, 23 are virtual classes that will never be directly
-instantiated by end users. That leaves 9 classes for which
+33 classes, 23 are virtual classes that will never be directly
+instantiated by end users. That leaves 10 classes for which
 <code>knit_print</code> methods may be useful. These classes are listed
 below.</p>
 <table class="table">
@@ -910,12 +904,15 @@ below.</p>
 <td align="left">StoppingExternal</td>
 </tr>
 <tr class="odd">
-<td align="left">Simulations</td>
+<td align="left">IncrementsMaxToxProb</td>
 </tr>
 <tr class="even">
-<td align="left">McmcOptions</td>
+<td align="left">Simulations</td>
 </tr>
 <tr class="odd">
+<td align="left">McmcOptions</td>
+</tr>
+<tr class="even">
 <td align="left">DualSimulationsSummary</td>
 </tr>
 </tbody>
