@@ -1539,6 +1539,65 @@ IncrementsOrdinal <- function(grade, rule) {
   )
 }
 
+# IncrementsMaxToxProb ----
+
+## class ----
+
+#' `IncrementsMaxToxProb`
+#'
+#' @description `r lifecycle::badge("experimental")`
+#'
+#' [`IncrementsMaxToxProb`] is the class for increments control based on
+#' probability of toxicity
+#'
+#' @slot prob (`numeric`)\cr See Usage Notes below.
+#'
+#' @section Usage Notes:
+#' For binary models, `prob` should be a scalar probability.
+#'
+#' For ordinal models, `prob` should be a named vector containing the maximum
+#' permissible probability of toxicity by grade.  The names should match the
+#' names of the `yCategories` slot of the associated `DataOrdinal` object.
+#'
+#' @aliases IncrementsMaxToxProb
+#' @export
+#'
+.IncrementsMaxToxProb <- setClass(
+  Class = "IncrementsMaxToxProb",
+  slots = c(
+    prob = "numeric"
+  ),
+  prototype = prototype(
+    prob = c("DLAE" = 0.2, "DLT" = 0.05)
+  ),
+  contains = "Increments",
+  validity = v_increments_maxtoxprob
+)
+
+## constructor ----
+
+#' @rdname IncrementsMaxToxProb-class
+#'
+#' @param prob (`numeric`)\cr see slot definition.
+#'
+#' @export
+#' @example examples/Rules-class-IncrementsMaxToxProb.R
+#'
+IncrementsMaxToxProb <- function(prob) {
+  .IncrementsMaxToxProb(
+    prob = prob
+  )
+}
+
+## default constructor ----
+
+#' @rdname IncrementsMaxToxProb-class
+#' @note Typically, end users will not use the `.DefaultIncrementsMaxToxProb()` function.
+#' @export
+.DefaultIncrementsMaxToxProb <- function() {
+  IncrementsMaxToxProb(prob = c("DLAE" = 0.2, "DLT" = 0.05))
+}
+
 # Stopping ----
 
 ## class ----
