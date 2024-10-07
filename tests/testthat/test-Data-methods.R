@@ -657,7 +657,6 @@ test_that("tidy-DataGeneral creates the correct tibble", {
   expect_equal(tidy(d), expected)
 })
 
-# See https://github.com/openpharma/crmPack/issues/866
 test_that("tidy-Dataordinal creates the correct tibble", {
   tidyData <- .DefaultDataOrdinal() %>% tidy()
   x <- .DefaultDataOrdinal() %>% tidy()
