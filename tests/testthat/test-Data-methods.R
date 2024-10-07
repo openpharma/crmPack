@@ -656,3 +656,16 @@ test_that("tidy-DataGeneral creates the correct tibble", {
   expected$Tox <- c(FALSE, TRUE, FALSE)
   expect_equal(tidy(d), expected)
 })
+
+test_that("tidy-Dataordinal creates the correct tibble", {
+  tidyData <- .DefaultDataOrdinal() %>% tidy()
+  x <- .DefaultDataOrdinal() %>% tidy()
+  actual <- x %>%
+    dplyr::rowwise() %>%
+    dplyr::mutate(
+      AnyTox = any(dplyr::across(c(starts_with("Cat"), -Cat0), any)),
+      ExpectedCat0 = !AnyTox
+    )
+
+  expect_equal(actual$Cat0, actual$ExpectedCat0)
+})
