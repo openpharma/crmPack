@@ -984,7 +984,7 @@ setMethod(
   f = "tidy",
   signature = signature(x = "DataOrdinal"),
   definition = function(x, ...) {
-    tibble::tibble(
+    y <- tibble::tibble(
       ID = x@ID,
       Cohort = x@cohort,
       Dose = x@x,
@@ -1000,7 +1000,9 @@ setMethod(
         values_from = "Tox",
         names_prefix = "Cat",
         values_fill = 0
-      ) %>%
+      )
+    if (nrow(y) > 0) {
+    y <- y %>%
       dplyr::mutate(
         dplyr::across(tidyselect::matches("Cat\\d+"), \(x) x > 0)
       ) %>%
@@ -1011,7 +1013,9 @@ setMethod(
         Cat0 = !AnyTox
       ) %>%
       dplyr::select(-AnyTox) %>%
-      dplyr::ungroup() %>%
-      h_tidy_class(x)
+      dplyr::ungroup()
+    }
+    y <- y %>% h_tidy_class(x)
+    y
   }
 )
