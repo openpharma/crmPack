@@ -115,6 +115,7 @@ reference:
       - IncrementsDoseLevels
       - IncrementsHSRBeta
       - IncrementsMin
+      - IncrementsMaxToxProb
       - Stopping
       - StoppingMissingDose
       - StoppingCohortsNearDose
@@ -244,6 +245,7 @@ reference:
       - v_increments_dose_levels
       - v_increments_hsr_beta
       - v_increments_min
+      - v_increments_maxtoxprob
       - v_starting_dose
       - v_stopping_cohorts_near_dose
       - v_stopping_min_cohorts
@@ -395,6 +397,7 @@ reference:
       - maxDose-IncrementsDoseLevels
       - maxDose-IncrementsHSRBeta
       - maxDose-IncrementsMin
+      - maxDose-IncrementsMaxToxProb
   - title: Functions
     contents:
       - enable_logging
@@ -421,6 +424,7 @@ reference:
       - GeneralSimulations-class
       - GeneralSimulations
       - GeneralSimulationsSummary-class
+      - IncrementsMaxToxProb-class
       - LogisticLogNormalOrdinal-class
       - MinimalInformative
       - NextBestOrdinal-class
