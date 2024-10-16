@@ -112,12 +112,12 @@ Now, we define the maximum possible increment between the dose used in current c
 # Choose the rule for dose increments.
 my_increments <- IncrementsRelative(
   intervals = c(0, 30),
-  increments = c(1, 0.5)
+  increments = c(2, 0.5)
 )
 ```
-The rule we have chosen here defines the maximum possible increment in terms of multiples of the highest dose so far administered: for doses greater than `0` and less than `20`, the maximum increment is 100 x (1 + 1)%, or 200% of the highest dose used so far.  For doses of `20` or more, the maximum increment is 100 x (1 + 0.5)%, or 150% of the highest dose used so far.  
+The rule we have chosen here defines the maximum possible increment in terms of multiples of the highest dose so far administered: for doses greater than `0` and less than `20`, the maximum increment is 100% x 2, or 200% of the highest dose used so far (or an escalation to 100% x (1 + 2) = 300% of the highest dose used so far).  For doses of `20` or more, the maximum increment is 100% x 0.5, or 50% of the highest dose used so far, to a dose no more than 100% x (1 + 0.5) = 150% of the highest dose used so far.  
 
-Note that a 2-fold *increment* corresponds to a 3-fold *escalation*.
+> Note that a 2-fold *increment* corresponds to a 3-fold *escalation*.
 
 In tabular form, based on the dose grid defined above, the maximum permitted escalation is
 
