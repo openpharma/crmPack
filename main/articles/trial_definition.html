@@ -49,12 +49,6 @@
   </ul>
 </li>
 <li class="nav-item"><a class="nav-link" href="../news/index.html">Changelog</a></li>
-<!-- start dropdown for versions --> <li class="nav-item dropdown">
-        <a href="#" class="nav-link dropdown-toggle"
-          data-bs-toggle="dropdown" role="button"
-          aria-expanded="false" aria-haspopup="true"
-          id="dropdown-versions">Versions</a> <div class="dropdown-menu" aria-labelledby="dropdown-versions"> <a class="dropdown-item" data-toggle="tooltip" title="" href="https://openpharma.github.io/crmPack/main">main</a> </div></li>
-<!-- end dropdown for versions -->
 <li class="nav-item dropdown">
   <button class="nav-link dropdown-toggle" type="button" id="dropdown-reports" data-bs-toggle="dropdown" aria-expanded="false" aria-haspopup="true">Reports</button>
   <ul class="dropdown-menu" aria-labelledby="dropdown-reports">
@@ -215,16 +209,20 @@ toxicity.</p>
 <code class="sourceCode R"><span><span class="co"># Choose the rule for dose increments.</span></span>
 <span><span class="va">my_increments</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/IncrementsRelative-class.html">IncrementsRelative</a></span><span class="op">(</span></span>
 <span>  intervals <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">0</span>, <span class="fl">30</span><span class="op">)</span>,</span>
-<span>  increments <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">1</span>, <span class="fl">0.5</span><span class="op">)</span></span>
+<span>  increments <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">2</span>, <span class="fl">0.5</span><span class="op">)</span></span>
 <span><span class="op">)</span></span></code></pre></div>
 <p>The rule we have chosen here defines the maximum possible increment
 in terms of multiples of the highest dose so far administered: for doses
 greater than <code>0</code> and less than <code>20</code>, the maximum
-increment is 100 x (1 + 1)%, or 200% of the highest dose used so far.
-For doses of <code>20</code> or more, the maximum increment is 100 x (1
-+ 0.5)%, or 150% of the highest dose used so far.</p>
+increment is 100% x 2, or 200% of the highest dose used so far (or an
+escalation to 100% x (1 + 2) = 300% of the highest dose used so far).
+For doses of <code>20</code> or more, the maximum increment is 100% x
+0.5, or 50% of the highest dose used so far, to a dose no more than 100%
+x (1 + 0.5) = 150% of the highest dose used so far.</p>
+<blockquote>
 <p>Note that a 2-fold <em>increment</em> corresponds to a 3-fold
 <em>escalation</em>.</p>
+</blockquote>
 <p>In tabular form, based on the dose grid defined above, the maximum
 permitted escalation is</p>
 <table class="table">

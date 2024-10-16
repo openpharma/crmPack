@@ -49,12 +49,6 @@
   </ul>
 </li>
 <li class="nav-item"><a class="nav-link" href="../news/index.html">Changelog</a></li>
-<!-- start dropdown for versions --> <li class="nav-item dropdown">
-        <a href="#" class="nav-link dropdown-toggle"
-          data-bs-toggle="dropdown" role="button"
-          aria-expanded="false" aria-haspopup="true"
-          id="dropdown-versions">Versions</a> <div class="dropdown-menu" aria-labelledby="dropdown-versions"> <a class="dropdown-item" data-toggle="tooltip" title="" href="https://openpharma.github.io/crmPack/main">main</a> </div></li>
-<!-- end dropdown for versions -->
 <li class="nav-item dropdown">
   <button class="nav-link dropdown-toggle" type="button" id="dropdown-reports" data-bs-toggle="dropdown" aria-expanded="false" aria-haspopup="true">Reports</button>
   <ul class="dropdown-menu" aria-labelledby="dropdown-reports">
@@ -1205,10 +1199,10 @@ of a fixed model’s parameters values.</p>
 <span><span class="co"># given a particular models and samples.</span></span>
 <span><span class="co"># Every single dose corresponds to one particular sample in `my_samples`.</span></span>
 <span><span class="fu"><a href="../reference/dose.html">dose</a></span><span class="op">(</span><span class="fl">0.3</span>, <span class="va">my_model</span>, <span class="va">my_samples</span><span class="op">)</span></span></code></pre></div>
-<pre><code><span><span class="co">##  [1]  1.5142637  1.0715383  5.9370615  0.4293433 10.6362506  1.1151313</span></span>
-<span><span class="co">##  [7]  1.2266887  2.0411913  0.9379034  2.8815138  6.6329198  0.6614164</span></span>
-<span><span class="co">## [13]  0.9118942  0.6318222  4.0744882  0.2828445  1.2568968  0.6587045</span></span>
-<span><span class="co">## [19] 70.5521501  0.3812372</span></span></code></pre>
+<pre><code><span><span class="co">##  [1]  0.5708253 13.1611369  0.4753299  0.9067872  1.1002401  1.6130876</span></span>
+<span><span class="co">##  [7]  1.8026864 83.7639153  0.8587354  1.4449534  0.8738837  1.6442285</span></span>
+<span><span class="co">## [13]  1.1594674  1.6431664  0.2672917  0.7381146  2.1082798  1.3335597</span></span>
+<span><span class="co">## [19]  1.1322174 16.5270987</span></span></code></pre>
 <div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># True dose-DLT relationship.</span></span>
 <span><span class="co"># Say that -0.8 and 1 are the true values for models parameters alpha0 and alpha1 respectively.</span></span>
@@ -1226,9 +1220,9 @@ of a fixed model’s parameters values.</p>
 <code class="sourceCode R"><span><span class="co"># Toxicity probabilities for a given dose (equal to 10), model and samples.</span></span>
 <span><span class="co"># Every single probability value corresponds to one particular sample in `my_samples`.</span></span>
 <span><span class="fu"><a href="../reference/prob.html">prob</a></span><span class="op">(</span><span class="fl">10</span>, <span class="va">my_model</span>, <span class="va">my_samples</span><span class="op">)</span></span></code></pre></div>
-<pre><code><span><span class="co">##  [1] 0.9875766 0.8527451 0.3477044 0.8856820 0.3061290 0.8338513 0.9450610</span></span>
-<span><span class="co">##  [8] 0.6621801 0.5205088 0.7793163 0.2148588 0.8692098 0.9185901 0.9740021</span></span>
-<span><span class="co">## [15] 0.7626605 0.9946046 0.9318951 0.6219215 0.1943838 0.4399884</span></span></code></pre>
+<pre><code><span><span class="co">##  [1] 0.9568939 0.3351952 0.8752137 0.7969311 0.8650656 0.8572232 0.3912691</span></span>
+<span><span class="co">##  [8] 0.3978126 0.9991332 0.9685662 0.9891118 0.6854793 0.9181210 0.7705061</span></span>
+<span><span class="co">## [15] 0.8156145 0.8254586 0.7737791 0.9665601 0.9449906 0.2591712</span></span></code></pre>
 <div class="sourceCode" id="cb12"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># True DLT-dose relationship.</span></span>
 <span><span class="co"># Say that -0.8 and 1 are the true values for models parameters alpha0 and alpha1 respectively.</span></span>

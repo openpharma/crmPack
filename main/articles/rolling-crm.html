@@ -49,12 +49,6 @@
   </ul>
 </li>
 <li class="nav-item"><a class="nav-link" href="../news/index.html">Changelog</a></li>
-<!-- start dropdown for versions --> <li class="nav-item dropdown">
-        <a href="#" class="nav-link dropdown-toggle"
-          data-bs-toggle="dropdown" role="button"
-          aria-expanded="false" aria-haspopup="true"
-          id="dropdown-versions">Versions</a> <div class="dropdown-menu" aria-labelledby="dropdown-versions"> <a class="dropdown-item" data-toggle="tooltip" title="" href="https://openpharma.github.io/crmPack/main">main</a> </div></li>
-<!-- end dropdown for versions -->
 <li class="nav-item dropdown">
   <button class="nav-link dropdown-toggle" type="button" id="dropdown-reports" data-bs-toggle="dropdown" aria-expanded="false" aria-haspopup="true">Reports</button>
   <ul class="dropdown-menu" aria-labelledby="dropdown-reports">
@@ -256,7 +250,7 @@ package crmPack: introductory examples”)</p>
 <p><img src="rolling-crm_files/figure-html/Recommend-1.png" alt="Two graphs arranged in a single column.  The upper graph shoes green lines of various heights that show the probability each dose is in the target toxicity range.  There is a big arrow pointing to the bar at a dose of 0.5, that this is the recommended dose for the next cohort.  The bars for other doses are higher, but they are not eligible for dosing because of the overdose rule illustrated in the second graph below.  The lower graph as a similar series of red lines, indicating the probability that each dose is in the overdose range.  There is a horizontal black dashed line at 25%, indicating that this is the highest acceptable probability of being in the overdose range.  The red bars for doses above 0.5 all extend above 25%, indicating that their toxicity is unacceptable.  The toxicity for doses of 0.1 and 0.5 lie below 25%." width="672"></p>
 <div class="sourceCode" id="cb22"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">doseRecommendation</span><span class="op">$</span><span class="va">value</span></span></code></pre></div>
-<pre><code><span><span class="co">## [1] 0.5</span></span></code></pre>
+<pre><code><span><span class="co">## [1] 0.1</span></span></code></pre>
 </div>
 </div>
 <div class="section level2">
@@ -325,7 +319,7 @@ introductory examples” document</p>
 <div class="sourceCode" id="cb29"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">mySims</span><span class="op">@</span><span class="va">stop_reasons</span><span class="op">[[</span><span class="fl">2</span><span class="op">]</span><span class="op">]</span></span></code></pre></div>
 <pre><code><span><span class="co">## [[1]]</span></span>
-<span><span class="co">## [1] "Probability for target toxicity is 57 % for dose 20 and thus above the required 50 %"</span></span>
+<span><span class="co">## [1] "Probability for target toxicity is 60 % for dose 20 and thus above the required 50 %"</span></span>
 <span><span class="co">## </span></span>
 <span><span class="co">## [[2]]</span></span>
 <span><span class="co">## [1] "Number of patients is 20 and thus below the prespecified minimum number 50"</span></span></code></pre>
