@@ -330,6 +330,16 @@ v_increments_min <- function(object) {
   v$result()
 }
 
+#' @describeIn v_increments validates the [`IncrementsMaxToxProb`]
+v_increments_maxtoxprob <- function(object) {
+  v <- Validate()
+  v$check(
+    test_probabilities(object@prob),
+    "prob must be a vector of probabilities with minimum length 1 and no missing values"
+  )
+  v$result()
+}
+
 # Stopping ----
 
 #' Internal Helper Functions for Validation of [`Stopping`] Objects
