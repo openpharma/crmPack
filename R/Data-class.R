@@ -129,7 +129,11 @@ Data <- function(x = numeric(),
   assert_integerish(y, lower = 0, upper = 1, any.missing = FALSE)
   assert_integerish(ID, unique = TRUE, any.missing = FALSE)
   assert_integerish(cohort)
-  assert_numeric(doseGrid, any.missing = FALSE, unique = TRUE)
+  if (length(x) > 0) {
+    assert_numeric(doseGrid, any.missing = FALSE, unique = TRUE, min.len = 1)
+  } else {
+    assert_numeric(doseGrid, any.missing = FALSE, unique = TRUE)
+  }
   assert_flag(placebo)
 
   doseGrid <- sort(doseGrid)
