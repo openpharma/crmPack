@@ -249,3 +249,16 @@ test_that("DataGrouped default constructor works as expected", {
   result <- expect_silent(.DefaultDataGrouped())
   expect_valid(result, "DataGrouped")
 })
+
+test_that("Data constructor provides informative error message when doseGrid is misspelt", {
+  expect_error(
+    Data(
+      x = c(1, 1, 1, 2, 2, 2),
+      y = c(0, 0, 0, 0, 1, 0),
+      dataGrid = c(1, 2, 4, 8, 16, 30, 50, 100),
+      ID = 1L:6L,
+      cohort = rep(1:2, each = 3)
+    ),
+    "Assertion on 'doseGrid' failed: Must have length >= 1, but has length 0."
+  )
+})
