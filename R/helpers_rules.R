@@ -53,12 +53,14 @@ h_info_theory_dist <- function(prob, target, asymmetry) {
 #'
 #' @export
 #'
-h_next_best_mg_ci <- function(dose_target,
-                              dose_mg,
-                              prob_target,
-                              placebo,
-                              model,
-                              model_eff) {
+h_next_best_mg_ci <- function(
+  dose_target,
+  dose_mg,
+  prob_target,
+  placebo,
+  model,
+  model_eff
+) {
   assert_number(dose_target, na.ok = TRUE)
   assert_number(dose_mg, na.ok = TRUE)
   assert_probability(prob_target)
@@ -77,7 +79,9 @@ h_next_best_mg_ci <- function(dose_target,
   var_dose_target <- as.vector(mat %*% model@Pcov %*% t(mat))
 
   # 95% credibility interval for target dose.
-  ci_dose_target <- exp(log(dose_target) + c(-1, 1) * 1.96 * sqrt(var_dose_target))
+  ci_dose_target <- exp(
+    log(dose_target) + c(-1, 1) * 1.96 * sqrt(var_dose_target)
+  )
   cir_dose_target <- ci_dose_target[2] / ci_dose_target[1]
 
   # Find the variance of the log of dose_mg.
@@ -89,14 +93,21 @@ h_next_best_mg_ci <- function(dose_target,
   mean_eff_mg <- model_eff@theta1 + model_eff@theta2 * log(log_dose_mg)
   denom <- model@phi2 * mean_eff_mg * (1 + model@phi2 * log_dose_mg)
   dgphi1 <- -(mean_eff_mg * log_dose_mg * model@phi2 - model_eff@theta2) / denom
-  dgphi2 <- -(log_dose_mg * (mean_eff_mg * (1 + log_dose_mg * model@phi2) - model_eff@theta2)) / denom
+  dgphi2 <- -(log_dose_mg *
+    (mean_eff_mg * (1 + log_dose_mg * model@phi2) - model_eff@theta2)) /
+    denom
   dgtheta1 <- -(log_dose_mg * model@phi2) / denom
-  dgtheta2_num <- -(exp(model@phi1 + model@phi2 * log_dose_mg) * (model@phi2 * log_dose_mg * log(log_dose_mg) - 1) - 1)
+  dgtheta2_num <- -(exp(model@phi1 + model@phi2 * log_dose_mg) *
+    (model@phi2 * log_dose_mg * log(log_dose_mg) - 1) -
+    1)
   dgtheta2 <- dgtheta2_num / denom
   delta_g <- matrix(c(dgphi1, dgphi2, dgtheta1, dgtheta2), 4, 1)
 
   zero_matrix <- matrix(0, 2, 2)
-  cov_beta <- cbind(rbind(model@Pcov, zero_matrix), rbind(zero_matrix, model_eff@Pcov))
+  cov_beta <- cbind(
+    rbind(model@Pcov, zero_matrix),
+    rbind(zero_matrix, model_eff@Pcov)
+  )
   var_log_dose_mg <- as.vector(t(delta_g) %*% cov_beta %*% delta_g)
 
   # 95% credibility interval for max gain dose.
@@ -132,12 +143,14 @@ h_next_best_mg_ci <- function(dose_target,
 #'
 #' @export
 #'
-h_next_best_mg_doses_at_grid <- function(dose_target_drt,
-                                         dose_target_eot,
-                                         dose_mg,
-                                         dose_grid,
-                                         doselimit,
-                                         placebo) {
+h_next_best_mg_doses_at_grid <- function(
+  dose_target_drt,
+  dose_target_eot,
+  dose_mg,
+  dose_grid,
+  doselimit,
+  placebo
+) {
   assert_number(dose_target_drt, na.ok = TRUE)
   assert_number(dose_target_eot, na.ok = TRUE)
   assert_number(dose_mg, na.ok = TRUE)
@@ -145,7 +158,10 @@ h_next_best_mg_doses_at_grid <- function(dose_target_drt,
   doses_eligible <- h_next_best_eligible_doses(dose_grid, doselimit, placebo)
 
   # h_find_interval assumes that elements in doses_eligible are strictly increasing.
-  next_dose_lev <- h_find_interval(min(dose_mg, dose_target_drt), doses_eligible)
+  next_dose_lev <- h_find_interval(
+    min(dose_mg, dose_target_drt),
+    doses_eligible
+  )
   next_dose <- doses_eligible[next_dose_lev]
 
   next_dose_mg_lev <- h_find_interval(dose_mg, doses_eligible)
@@ -175,7 +191,7 @@ h_next_best_mg_doses_at_grid <- function(dose_target_drt,
 #' The eligible doses are the doses which do not exceed a given
 #' `doselimit`. For placebo design, if safety allows (i.e. if there is at least
 #' one non-placebo dose which does not exceed the dose limit), the placebo dose
-#' it then excluded from the eligible doses.
+#' is then excluded from the eligible doses.
 #'
 #' @param dose_grid (`numeric`)\cr all possible doses.
 #' @param doselimit (`number`)\cr the maximum allowed next dose.
@@ -192,11 +208,19 @@ h_next_best_mg_doses_at_grid <- function(dose_target_drt,
 #' dose_grid <- c(0.001, seq(25, 200, 25))
 #' h_next_best_eligible_doses(dose_grid, 79, TRUE)
 #' h_next_best_eligible_doses(dose_grid, 24, TRUE)
-h_next_best_eligible_doses <- function(dose_grid,
-                                       doselimit,
-                                       placebo,
-                                       levels = FALSE) {
-  assert_numeric(dose_grid, finite = TRUE, any.missing = FALSE, min.len = 1L, sorted = TRUE)
+h_next_best_eligible_doses <- function(
+  dose_grid,
+  doselimit,
+  placebo,
+  levels = FALSE
+) {
+  assert_numeric(
+    dose_grid,
+    finite = TRUE,
+    any.missing = FALSE,
+    min.len = 1L,
+    sorted = TRUE
+  )
   assert_number(doselimit)
   assert_flag(placebo)
   assert_flag(levels)
@@ -239,25 +263,44 @@ h_next_best_eligible_doses <- function(dose_grid,
 #' @param is_unacceptable_specified (`flag`)\cr is unacceptable interval specified?
 #'
 #' @export
-h_next_best_ncrm_loss_plot <- function(prob_mat,
-                                       posterior_loss,
-                                       max_overdose_prob,
-                                       dose_grid,
-                                       max_eligible_dose_level,
-                                       doselimit,
-                                       next_dose,
-                                       is_unacceptable_specified) {
+h_next_best_ncrm_loss_plot <- function(
+  prob_mat,
+  posterior_loss,
+  max_overdose_prob,
+  dose_grid,
+  max_eligible_dose_level,
+  doselimit,
+  next_dose,
+  is_unacceptable_specified
+) {
   assert_numeric(dose_grid, finite = TRUE, any.missing = FALSE, sorted = TRUE)
   n_grid <- length(dose_grid)
   assert_flag(is_unacceptable_specified)
   assert_probabilities(prob_mat)
-  assert_matrix(prob_mat, min.cols = 3, max.cols = 4, nrows = n_grid, col.names = "named")
+  assert_matrix(
+    prob_mat,
+    min.cols = 3,
+    max.cols = 4,
+    nrows = n_grid,
+    col.names = "named"
+  )
   if (!is_unacceptable_specified) {
-    assert_names(colnames(prob_mat), permutation.of = c("underdosing", "target", "overdose"))
+    assert_names(
+      colnames(prob_mat),
+      permutation.of = c("underdosing", "target", "overdose")
+    )
   } else {
-    assert_names(colnames(prob_mat), permutation.of = c("underdosing", "target", "excessive", "unacceptable"))
+    assert_names(
+      colnames(prob_mat),
+      permutation.of = c("underdosing", "target", "excessive", "unacceptable")
+    )
   }
-  assert_numeric(posterior_loss, finite = TRUE, any.missing = FALSE, len = n_grid)
+  assert_numeric(
+    posterior_loss,
+    finite = TRUE,
+    any.missing = FALSE,
+    len = n_grid
+  )
   assert_probability(max_overdose_prob)
   assert_number(max_eligible_dose_level, lower = 0, upper = n_grid)
   assert_number(doselimit)
@@ -278,12 +321,18 @@ h_next_best_ncrm_loss_plot <- function(prob_mat,
     ylab(paste("Target probability [%]"))
 
   if (is.finite(doselimit)) {
-    p1 <- p1 + geom_vline(xintercept = doselimit, lwd = 1.1, lty = 2, colour = "black")
+    p1 <- p1 +
+      geom_vline(xintercept = doselimit, lwd = 1.1, lty = 2, colour = "black")
   }
 
   if (max_eligible_dose_level > 0) {
     p1 <- p1 +
-      geom_vline(xintercept = dose_grid[max_eligible_dose_level], lwd = 1.1, lty = 2, colour = "red")
+      geom_vline(
+        xintercept = dose_grid[max_eligible_dose_level],
+        lwd = 1.1,
+        lty = 2,
+        colour = "red"
+      )
   }
 
   p_loss <- ggplot() +
@@ -319,7 +368,9 @@ h_next_best_ncrm_loss_plot <- function(prob_mat,
         fill = "red"
       ) +
       geom_hline(
-        yintercept = max_overdose_prob * 100, lwd = 1.1, lty = 2,
+        yintercept = max_overdose_prob * 100,
+        lwd = 1.1,
+        lty = 2,
         colour = "black"
       ) +
       ylim(c(0, 100)) +
@@ -345,7 +396,10 @@ h_next_best_ncrm_loss_plot <- function(prob_mat,
 
     p3 <- ggplot() +
       geom_bar(
-        data = data.frame(Dose = dose_grid, y = prob_mat[, "unacceptable"] * 100),
+        data = data.frame(
+          Dose = dose_grid,
+          y = prob_mat[, "unacceptable"] * 100
+        ),
         aes(x = .data$Dose, y = .data$y),
         stat = "identity",
         position = "identity",
@@ -382,14 +436,16 @@ h_next_best_ncrm_loss_plot <- function(prob_mat,
 #'
 #' @export
 #'
-h_next_best_tdsamples_plot <- function(dose_target_drt_samples,
-                                       dose_target_eot_samples,
-                                       dose_target_drt,
-                                       dose_target_eot,
-                                       dose_grid_range,
-                                       nextBest,
-                                       doselimit,
-                                       next_dose) {
+h_next_best_tdsamples_plot <- function(
+  dose_target_drt_samples,
+  dose_target_eot_samples,
+  dose_target_drt,
+  dose_target_eot,
+  dose_grid_range,
+  nextBest,
+  doselimit,
+  next_dose
+) {
   assert_numeric(dose_target_drt_samples, any.missing = FALSE)
   assert_numeric(dose_target_eot_samples, any.missing = FALSE)
   assert_number(dose_target_drt)
@@ -428,7 +484,12 @@ h_next_best_tdsamples_plot <- function(dose_target_drt_samples,
     ylab("Posterior density") +
     scale_colour_manual(
       name = NULL,
-      values = c("during" = "orange", "end" = "violet", "Max" = "red", "Next" = "blue"),
+      values = c(
+        "during" = "orange",
+        "end" = "violet",
+        "Max" = "red",
+        "Next" = "blue"
+      ),
       labels = c("during" = lbl1, "end" = lbl2, "Max" = "Max", "Next" = "Next")
     ) +
     scale_fill_manual(
@@ -453,14 +514,16 @@ h_next_best_tdsamples_plot <- function(dose_target_drt_samples,
 #'
 #' @export
 #'
-h_next_best_td_plot <- function(prob_target_drt,
-                                dose_target_drt,
-                                prob_target_eot,
-                                dose_target_eot,
-                                data,
-                                prob_dlt,
-                                doselimit,
-                                next_dose) {
+h_next_best_td_plot <- function(
+  prob_target_drt,
+  dose_target_drt,
+  prob_target_eot,
+  dose_target_eot,
+  data,
+  prob_dlt,
+  doselimit,
+  next_dose
+) {
   assert_probability(prob_target_drt)
   assert_number(dose_target_drt)
   assert_probability(prob_target_eot)
@@ -481,7 +544,9 @@ h_next_best_td_plot <- function(prob_target_drt,
     ylim(c(0, 1)) +
     xlab("Dose Levels") +
     ylab("Probability of DLT")
-  if (h_in_range(dose_target_drt, range = dosegrid_range, bounds_closed = TRUE)) {
+  if (
+    h_in_range(dose_target_drt, range = dosegrid_range, bounds_closed = TRUE)
+  ) {
     p <- p +
       geom_point(
         data = data.frame(x = dose_target_drt, y = prob_target_drt),
@@ -500,7 +565,9 @@ h_next_best_td_plot <- function(prob_target_drt,
       )
   }
 
-  if (h_in_range(dose_target_eot, range = dosegrid_range, bounds_closed = TRUE)) {
+  if (
+    h_in_range(dose_target_eot, range = dosegrid_range, bounds_closed = TRUE)
+  ) {
     p <- p +
       geom_point(
         data = data.frame(x = dose_target_eot, y = prob_target_eot),
@@ -562,17 +629,19 @@ h_next_best_td_plot <- function(prob_target_drt,
 #'
 #' @export
 #'
-h_next_best_mg_plot <- function(prob_target_drt,
-                                dose_target_drt,
-                                prob_target_eot,
-                                dose_target_eot,
-                                dose_mg,
-                                max_gain,
-                                next_dose,
-                                doselimit,
-                                data,
-                                model,
-                                model_eff) {
+h_next_best_mg_plot <- function(
+  prob_target_drt,
+  dose_target_drt,
+  prob_target_eot,
+  dose_target_eot,
+  dose_mg,
+  max_gain,
+  next_dose,
+  doselimit,
+  data,
+  model,
+  model_eff
+) {
   assert_probability(prob_target_drt)
   assert_number(dose_target_drt)
   assert_probability(prob_target_eot)
@@ -603,13 +672,18 @@ h_next_best_mg_plot <- function(prob_target_drt,
 
   p <- ggplot(data = data_plot, aes(x = .data$dose, y = .data$y)) +
     geom_line(aes(group = group, color = group), linewidth = 1.5) +
-    ggplot2::scale_colour_manual(name = "curves", values = c("blue", "green3", "red")) +
+    ggplot2::scale_colour_manual(
+      name = "curves",
+      values = c("blue", "green3", "red")
+    ) +
     coord_cartesian(xlim = c(0, dosegrid_range[2])) +
     ylim(range(data_plot$y)) +
     xlab("Dose Level") +
     ylab("Values")
 
-  if (h_in_range(dose_target_eot, range = dosegrid_range, bounds_closed = FALSE)) {
+  if (
+    h_in_range(dose_target_eot, range = dosegrid_range, bounds_closed = FALSE)
+  ) {
     lab <- paste("TD", prob_target_eot * 100, "Estimate")
     p <- p +
       geom_point(
@@ -620,7 +694,12 @@ h_next_best_mg_plot <- function(prob_target_drt,
         size = 8
       ) +
       annotate(
-        geom = "text", label = lab, x = dose_target_eot - 1, y = 0.2, size = 5, colour = "violet"
+        geom = "text",
+        label = lab,
+        x = dose_target_eot - 1,
+        y = 0.2,
+        size = 5,
+        colour = "violet"
       )
   }
 
@@ -635,11 +714,17 @@ h_next_best_mg_plot <- function(prob_target_drt,
       ) +
       annotate(
         "text",
-        label = "Max Gain Estimate", x = dose_mg, y = max_gain - 0.1, size = 5, colour = "green3"
+        label = "Max Gain Estimate",
+        x = dose_mg,
+        y = max_gain - 0.1,
+        size = 5,
+        colour = "green3"
       )
   }
 
-  if (h_in_range(dose_target_drt, range = dosegrid_range, bounds_closed = FALSE)) {
+  if (
+    h_in_range(dose_target_drt, range = dosegrid_range, bounds_closed = FALSE)
+  ) {
     lab <- paste("TD", prob_target_drt * 100, "Estimate")
     p <- p +
       geom_point(
@@ -650,7 +735,12 @@ h_next_best_mg_plot <- function(prob_target_drt,
         size = 8
       ) +
       annotate(
-        geom = "text", label = lab, x = dose_target_drt + 25, y = prob_target_drt + 0.01, size = 5, colour = "orange"
+        geom = "text",
+        label = lab,
+        x = dose_target_drt + 25,
+        y = prob_target_drt + 0.01,
+        size = 5,
+        colour = "orange"
       )
   }
 
@@ -702,15 +792,17 @@ h_next_best_mg_plot <- function(prob_target_drt,
 #'
 #' @export
 #'
-h_next_best_mgsamples_plot <- function(prob_target_drt,
-                                       dose_target_drt,
-                                       prob_target_eot,
-                                       dose_target_eot,
-                                       dose_mg,
-                                       dose_mg_samples,
-                                       next_dose,
-                                       doselimit,
-                                       dose_grid_range) {
+h_next_best_mgsamples_plot <- function(
+  prob_target_drt,
+  dose_target_drt,
+  prob_target_eot,
+  dose_target_eot,
+  dose_mg,
+  dose_mg_samples,
+  next_dose,
+  doselimit,
+  dose_grid_range
+) {
   assert_range(dose_grid_range, finite = TRUE, unique = FALSE)
   assert_probability(prob_target_drt)
   assert_number(dose_target_drt)
@@ -719,7 +811,10 @@ h_next_best_mgsamples_plot <- function(prob_target_drt,
   assert_number(dose_mg, na.ok = TRUE)
   assert_numeric(
     dose_mg_samples,
-    lower = dose_grid_range[1], upper = dose_grid_range[2], finite = TRUE, any.missing = FALSE
+    lower = dose_grid_range[1],
+    upper = dose_grid_range[2],
+    finite = TRUE,
+    any.missing = FALSE
   )
   assert_number(next_dose, na.ok = TRUE)
   assert_number(doselimit)
@@ -735,21 +830,39 @@ h_next_best_mgsamples_plot <- function(prob_target_drt,
     coord_cartesian(xlim = c(0, dose_grid_range[2])) +
     ylab("Posterior density")
 
-  if (h_in_range(dose_target_drt, range = dose_grid_range, bounds_closed = FALSE)) {
+  if (
+    h_in_range(dose_target_drt, range = dose_grid_range, bounds_closed = FALSE)
+  ) {
     lab <- paste("TD", prob_target_drt * 100, "Estimate")
     p <- p +
       geom_vline(xintercept = dose_target_drt, colour = "orange", lwd = 1.1) +
       annotate(
-        geom = "text", label = lab, x = dose_target_drt, y = 0, hjust = -0.1, vjust = -20, size = 5, colour = "orange"
+        geom = "text",
+        label = lab,
+        x = dose_target_drt,
+        y = 0,
+        hjust = -0.1,
+        vjust = -20,
+        size = 5,
+        colour = "orange"
       )
   }
 
-  if (h_in_range(dose_target_eot, range = dose_grid_range, bounds_closed = FALSE)) {
+  if (
+    h_in_range(dose_target_eot, range = dose_grid_range, bounds_closed = FALSE)
+  ) {
     lab <- paste("TD", prob_target_eot * 100, "Estimate")
     p <- p +
       geom_vline(xintercept = dose_target_eot, colour = "violet", lwd = 1.1) +
       annotate(
-        geom = "text", label = lab, x = dose_target_eot, y = 0, hjust = -0.1, vjust = -25, size = 5, colour = "violet"
+        geom = "text",
+        label = lab,
+        x = dose_target_eot,
+        y = 0,
+        hjust = -0.1,
+        vjust = -25,
+        size = 5,
+        colour = "violet"
       )
   }
 
@@ -758,7 +871,14 @@ h_next_best_mgsamples_plot <- function(prob_target_drt,
     p <- p +
       geom_vline(xintercept = dose_mg, colour = "green", lwd = 1.1) +
       annotate(
-        geom = "text", label = lab, x = dose_mg, y = 0, hjust = -0.1, vjust = -25, size = 5, colour = "green"
+        geom = "text",
+        label = lab,
+        x = dose_mg,
+        y = 0,
+        hjust = -0.1,
+        vjust = -25,
+        size = 5,
+        colour = "green"
       )
   }
 
@@ -767,10 +887,22 @@ h_next_best_mgsamples_plot <- function(prob_target_drt,
   p +
     geom_vline(xintercept = maxdoselimit, colour = "red", lwd = 1.1) +
     annotate(
-      geom = "text", label = "Max", x = maxdoselimit, y = 0, hjust = +1, vjust = -35, colour = "red"
+      geom = "text",
+      label = "Max",
+      x = maxdoselimit,
+      y = 0,
+      hjust = +1,
+      vjust = -35,
+      colour = "red"
     ) +
     geom_vline(xintercept = next_dose, colour = "blue", lwd = 1.1) +
     annotate(
-      geom = "text", label = "Next", x = next_dose, y = 0, hjust = 0.1, vjust = -30, colour = "blue"
+      geom = "text",
+      label = "Next",
+      x = next_dose,
+      y = 0,
+      hjust = 0.1,
+      vjust = -30,
+      colour = "blue"
     )
 }

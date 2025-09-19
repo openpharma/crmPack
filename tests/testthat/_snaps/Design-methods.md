@@ -24,8 +24,8 @@
       Slot "stop_report":
            <NA>  <NA> ≥ 3 cohorts dosed P(0.2 ≤ prob(DLE | NBD) ≤ 0.35) ≥ 0.5
       [1,] TRUE FALSE              TRUE                                 FALSE
-           ≥ 20 patients dosed
-      [1,]                TRUE
+           ≥ 20 patients dosed Stopped because of missing dose
+      [1,]                TRUE                           FALSE
       
       Slot "stop_reasons":
       [[1]]
@@ -39,6 +39,9 @@
       
       [[1]][[2]]
       [1] "Number of patients is 20 and thus reached the prespecified minimum number 20"
+      
+      [[1]][[3]]
+      [1] "Next dose is available at the dose grid."
       
       
       
@@ -113,8 +116,8 @@
       Slot "stop_report":
            <NA>  <NA> ≥ 3 cohorts dosed P(0.2 ≤ prob(DLE | NBD) ≤ 0.35) ≥ 0.5
       [1,] TRUE FALSE              TRUE                                 FALSE
-           ≥ 20 patients dosed
-      [1,]                TRUE
+           ≥ 20 patients dosed Stopped because of missing dose
+      [1,]                TRUE                           FALSE
       
       Slot "stop_reasons":
       [[1]]
@@ -128,6 +131,9 @@
       
       [[1]][[2]]
       [1] "Number of patients is 21 and thus reached the prespecified minimum number 20"
+      
+      [[1]][[3]]
+      [1] "Next dose is available at the dose grid."
       
       
       
@@ -318,6 +324,8 @@
       Slot "stop_report":
            <NA> P(0.9 ≤ Biomarker ≤ 1) ≥ 0.5 (relative) ≥ 10 patients dosed
       [1,] TRUE                                   FALSE                TRUE
+           Stopped because of missing dose
+      [1,]                           FALSE
       
       Slot "stop_reasons":
       [[1]]
@@ -326,6 +334,9 @@
       
       [[1]][[2]]
       [1] "Number of patients is 12 and thus reached the prespecified minimum number 10"
+      
+      [[1]][[3]]
+      [1] "Next dose is available at the dose grid."
       
       
       
@@ -372,6 +383,226 @@
       
       Slot "doses":
       [1] 1
+      
+      Slot "seed":
+      [1] 3
+      
+
+---
+
+    Code
+      result
+    Output
+      An object of class "DualSimulations"
+      Slot "rho_est":
+      [1] 0.06611618
+      
+      Slot "sigma2w_est":
+      [1] 0.09181379
+      
+      Slot "fit_biomarker":
+      [[1]]
+         middleBiomarker lowerBiomarker upperBiomarker
+      1        0.2279948     -0.3024101      0.6737112
+      2        0.2274759     -0.2189952      0.7034534
+      3        0.2294547     -0.2809549      0.8129385
+      4        0.2267946     -0.4990013      0.9702282
+      5        0.2353311     -0.5084695      1.1986096
+      6        0.2226399     -0.6489695      1.1434165
+      7        0.2077775     -0.9357929      1.2670528
+      8        0.2033259     -1.2744141      1.4465307
+      9        0.2468064     -1.2324341      1.6871920
+      10       0.2060423     -1.7461333      1.9678736
+      11       0.2028092     -1.4860999      2.1509038
+      
+      
+      Slot "fit":
+      [[1]]
+             middle        lower     upper
+      1  0.03424327 0.0005114312 0.1441135
+      2  0.37482637 0.0789682953 0.6274737
+      3  0.64417886 0.1691032466 0.9529461
+      4  0.81627361 0.2731796477 0.9999059
+      5  0.86725607 0.3461037917 0.9999996
+      6  0.89330581 0.4017832069 1.0000000
+      7  0.90964652 0.4464586351 1.0000000
+      8  0.93648214 0.5421121210 1.0000000
+      9  0.94652849 0.5870163938 1.0000000
+      10 0.96331486 0.6773304054 1.0000000
+      11 0.96951461 0.7171402854 1.0000000
+      
+      
+      Slot "stop_report":
+           <NA> P(0.9 ≤ Biomarker ≤ 1) ≥ 0.5 (relative) ≥ 10 patients dosed
+      [1,] TRUE                                   FALSE               FALSE
+           Stopped because of missing dose
+      [1,]                            TRUE
+      
+      Slot "stop_reasons":
+      [[1]]
+      [[1]][[1]]
+      [1] "Probability for target biomarker is 0 % for dose NA and thus below the required 50 %"
+      
+      [[1]][[2]]
+      [1] "Number of patients is 4 and thus below the prespecified minimum number 10"
+      
+      [[1]][[3]]
+      [1] "Next dose is NA , i.e., no active dose is safe enough according to the NextBest rule."
+      
+      
+      
+      Slot "additional_stats":
+      [[1]]
+      list()
+      
+      
+      Slot "data":
+      [[1]]
+      An object of class "DataDual"
+      Slot "w":
+      [1] 0.2531184 0.2557299 0.1150998 0.3181927
+      
+      Slot "x":
+      [1] 1 3 3 3
+      
+      Slot "y":
+      [1] 0 0 0 0
+      
+      Slot "doseGrid":
+       [1]   1   3   5  10  15  20  25  40  50  80 100
+      
+      Slot "nGrid":
+      [1] 11
+      
+      Slot "xLevel":
+      [1] 1 2 2 2
+      
+      Slot "placebo":
+      [1] TRUE
+      
+      Slot "ID":
+      [1] 1 2 3 4
+      
+      Slot "cohort":
+      [1] 1 1 1 1
+      
+      Slot "nObs":
+      [1] 4
+      
+      
+      
+      Slot "doses":
+      [1] NA
+      
+      Slot "seed":
+      [1] 3
+      
+
+---
+
+    Code
+      result
+    Output
+      An object of class "DualSimulations"
+      Slot "rho_est":
+      [1] 0.06611618
+      
+      Slot "sigma2w_est":
+      [1] 0.09181379
+      
+      Slot "fit_biomarker":
+      [[1]]
+         middleBiomarker lowerBiomarker upperBiomarker
+      1        0.2279948     -0.3024101      0.6737112
+      2        0.2274759     -0.2189952      0.7034534
+      3        0.2294547     -0.2809549      0.8129385
+      4        0.2267946     -0.4990013      0.9702282
+      5        0.2353311     -0.5084695      1.1986096
+      6        0.2226399     -0.6489695      1.1434165
+      7        0.2077775     -0.9357929      1.2670528
+      8        0.2033259     -1.2744141      1.4465307
+      9        0.2468064     -1.2324341      1.6871920
+      10       0.2060423     -1.7461333      1.9678736
+      11       0.2028092     -1.4860999      2.1509038
+      
+      
+      Slot "fit":
+      [[1]]
+             middle        lower     upper
+      1  0.03424327 0.0005114312 0.1441135
+      2  0.37482637 0.0789682953 0.6274737
+      3  0.64417886 0.1691032466 0.9529461
+      4  0.81627361 0.2731796477 0.9999059
+      5  0.86725607 0.3461037917 0.9999996
+      6  0.89330581 0.4017832069 1.0000000
+      7  0.90964652 0.4464586351 1.0000000
+      8  0.93648214 0.5421121210 1.0000000
+      9  0.94652849 0.5870163938 1.0000000
+      10 0.96331486 0.6773304054 1.0000000
+      11 0.96951461 0.7171402854 1.0000000
+      
+      
+      Slot "stop_report":
+           <NA> P(0.9 ≤ Biomarker ≤ 1) ≥ 0.5 (relative) ≥ 10 patients dosed
+      [1,] TRUE                                   FALSE               FALSE
+           Stopped because of missing dose
+      [1,]                            TRUE
+      
+      Slot "stop_reasons":
+      [[1]]
+      [[1]][[1]]
+      [1] "Probability for target biomarker is 0 % for dose NA and thus below the required 50 %"
+      
+      [[1]][[2]]
+      [1] "Number of patients is 4 and thus below the prespecified minimum number 10"
+      
+      [[1]][[3]]
+      [1] "Next dose is NA , i.e., no active dose is safe enough according to the NextBest rule."
+      
+      
+      
+      Slot "additional_stats":
+      [[1]]
+      list()
+      
+      
+      Slot "data":
+      [[1]]
+      An object of class "DataDual"
+      Slot "w":
+      [1] 0.2531184 0.2557299 0.1150998 0.3181927
+      
+      Slot "x":
+      [1] 1 3 3 3
+      
+      Slot "y":
+      [1] 0 0 0 0
+      
+      Slot "doseGrid":
+       [1]   1   3   5  10  15  20  25  40  50  80 100
+      
+      Slot "nGrid":
+      [1] 11
+      
+      Slot "xLevel":
+      [1] 1 2 2 2
+      
+      Slot "placebo":
+      [1] TRUE
+      
+      Slot "ID":
+      [1] 1 2 3 4
+      
+      Slot "cohort":
+      [1] 1 1 1 1
+      
+      Slot "nObs":
+      [1] 4
+      
+      
+      
+      Slot "doses":
+      [1] NA
       
       Slot "seed":
       [1] 3
@@ -1047,7 +1278,7 @@
       1     3    0      1.0 FALSE       -67
       2     3    1      3.0 FALSE         0
       3     3    2      1.0 FALSE       -67
-      4     3    3       NA FALSE        NA
+      4     3    3       NA  TRUE        NA
       5     1    0      1.0 FALSE         0
       6     1    1      1.0 FALSE         0
       7     1    2      1.0 FALSE         0
@@ -1082,7 +1313,7 @@
       1     3    0        1 FALSE       -67
       2     3    1        3 FALSE         0
       3     3    2        1 FALSE       -67
-      4     3    3       NA FALSE        NA
+      4     3    3       NA  TRUE        NA
       5     1    0        1 FALSE         0
       6     1    1        1 FALSE         0
       7     1    2        1 FALSE         0

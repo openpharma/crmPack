@@ -67,7 +67,7 @@ test_that("simulate for the class design returns correct objects", {
 
   expect_equal(any(sapply(mySims@fit[[1]], is.numeric)), TRUE) # check if all elements in mySims@fit are numeric
 
-  expect_equal(length(mySims@stop_report), 5) # check for length
+  expect_equal(length(mySims@stop_report), 6) # check for length
 
   expect_logical(mySims@stop_report) # check for stop_report to be logical vector
 
@@ -108,7 +108,7 @@ test_that("simulate for the class design with placebo returns correct objects", 
 
   expect_equal(any(sapply(mySims@fit[[1]], is.numeric)), TRUE) # check if all elements in mySims@fit are numeric
 
-  expect_equal(length(mySims@stop_report), 5) # check for length
+  expect_equal(length(mySims@stop_report), 6) # check for length
 
   expect_logical(mySims@stop_report) # check for stop_report to be logical vector
 
@@ -150,7 +150,7 @@ test_that("simulate for the class design with placebo and sentinel patients retu
 
   expect_equal(any(sapply(mySims@fit[[1]], is.numeric)), TRUE) # check if all elements in mySims@fit are numeric
 
-  expect_equal(length(mySims@stop_report), 5) # check for length
+  expect_equal(length(mySims@stop_report), 6) # check for length
 
   expect_logical(mySims@stop_report) # check for stop_report to be logical vector
 
@@ -304,7 +304,7 @@ test_that("simulate-DualDesign produces consistent results with sentinel patient
 
   expect_equal(dim(result@fit_biomarker[[1]])[2], 3)
 
-  expect_equal(length(result@stop_report), 3) # check for length
+  expect_equal(length(result@stop_report), 4) # check for length
 
   expect_logical(result@stop_report) # check for stop_report to be logical vector
 
@@ -431,7 +431,7 @@ test_that("simulate-DualDesign produces consistent results with sentinel patient
 
   expect_equal(dim(result@fit_biomarker[[1]])[2], 3)
 
-  expect_equal(length(result@stop_report), 3) # check for length
+  expect_equal(length(result@stop_report), 4) # check for length
 
   expect_logical(result@stop_report) # check for stop_report to be logical vector
 
