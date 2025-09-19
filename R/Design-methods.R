@@ -560,6 +560,7 @@ setMethod(
       ## initialize with starting dose
       thisDose <- object@startingDose
 
+      # In case there are placebo, extract true Toxicity and Efficacy for placebo
       if (thisData@placebo) {
         ## what is the probability for tox. at placebo?
         thisProb.PL <- thisTrueTox(object@data@doseGrid[1])
@@ -568,8 +569,6 @@ setMethod(
         ## what is the biomarker mean at placebo?
         thisMeanBiomarker.PL <- thisTrueBiomarker(object@data@doseGrid[1])
       }
-
-      # In case there are placebo, extract true Toxicity and Efficacy for placebo
 
       ## inside this loop we simulate the whole trial, until stopping
       while (!stopit) {
