@@ -145,7 +145,7 @@
   summarise = c("none", "dose", "cohort"),
   summarize = summarise,
   units = NA,
-  format_func = function(x) x
+  format_func = h_knit_format_func
 )
 
 \method{knit_print}{DataParts}(
@@ -157,7 +157,7 @@
   summarise = c("none", "dose", "cohort"),
   summarize = summarise,
   units = NA,
-  format_func = function(x) x
+  format_func = h_knit_format_func
 )
 
 \method{knit_print}{DualEndpoint}(
@@ -361,10 +361,7 @@
   ...,
   tox_label = "toxicity",
   asis = TRUE,
-  format_func = function(x) {
-     kableExtra::kable_styling(x, bootstrap_options =
-    c("striped", "hover", "condensed"))
- }
+  format_func = h_knit_format_func
 )
 
 \method{knit_print}{NextBestTDsamples}(x, ..., tox_label = "toxicity", asis = TRUE)
