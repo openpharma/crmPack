@@ -39,7 +39,7 @@ BugReports: https://github.com/openpharma/crmPack/issues
 Depends:
     ggplot2 (>= 2.0.0),
     graphics,
-    R (>= 3.5.0)
+    R (>= 4.1.0)
 Imports:
     checkmate (>= 2.2.0),
     dplyr,
