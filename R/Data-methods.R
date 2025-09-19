@@ -1029,7 +1029,7 @@ setMethod(
           # Direct assignment fails on GitHub
           Cat0 = !.data$AnyTox
         ) %>%
-        dplyr::select(-tidyselect::all_of("Cat0")) %>%
+        dplyr::select(-tidyselect::all_of("AnyTox")) %>%
         dplyr::ungroup()
     }
     y <- y %>% h_tidy_class(x)
