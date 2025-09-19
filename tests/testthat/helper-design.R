@@ -7,8 +7,10 @@ h_get_design_dualresponses <- function() {
     data = data
   )
   Effmodel <- Effloglog(
-    eff = c(1.223, 2.513), eff_dose = c(25, 300),
-    nu = c(a = 1, b = 0.025), data = data
+    eff = c(1.223, 2.513),
+    eff_dose = c(25, 300),
+    nu = c(a = 1, b = 0.025),
+    data = data
   )
   design <- DualResponsesDesign(
     nextBest = NextBestMaxGain(
@@ -96,7 +98,7 @@ h_get_design_dualdata <- function(placebo = FALSE) {
     target = c(0.9, 1),
     prob = 0.5
   )
-  myStopping <- myStopping4 | StoppingMinPatients(10)
+  myStopping <- myStopping4 | StoppingMinPatients(10) | StoppingMissingDose()
 
   # Choose the rule for dose increments
   myIncrements <- IncrementsRelative(
@@ -130,10 +132,7 @@ h_get_design_data <- function(placebo = FALSE) {
   # Initialize the CRM model
   model <- LogisticLogNormal(
     mean = c(-0.85, 1),
-    cov =
-      matrix(c(1, -0.5, -0.5, 1),
-        nrow = 2
-      ),
+    cov = matrix(c(1, -0.5, -0.5, 1), nrow = 2),
     ref_dose = 56
   )
 
@@ -151,7 +150,9 @@ h_get_design_data <- function(placebo = FALSE) {
     prob = 0.5
   )
   myStopping3 <- StoppingMinPatients(nPatients = 20)
-  myStopping <- (myStopping1 & myStopping2) | myStopping3
+  myStopping <- (myStopping1 & myStopping2) |
+    myStopping3 |
+    StoppingMissingDose()
 
   # Choose the rule for dose increments
   myIncrements <- IncrementsRelative(

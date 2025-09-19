@@ -73,7 +73,11 @@ setMethod(
     dose_target <- nextBest@derive(dose_target_samples)
 
     # Round to the next possible grid point.
-    doses_eligible <- h_next_best_eligible_doses(data@doseGrid, doselimit, data@placebo)
+    doses_eligible <- h_next_best_eligible_doses(
+      data@doseGrid,
+      doselimit,
+      data@placebo
+    )
     next_dose_level <- which.min(abs(doses_eligible - dose_target))
     next_dose <- doses_eligible[next_dose_level]
 
@@ -152,15 +156,30 @@ setMethod(
   ),
   definition = function(nextBest, doselimit = Inf, samples, model, data, ...) {
     # Matrix with samples from the dose-tox curve at the dose grid points.
-    prob_samples <- sapply(data@doseGrid, prob, model = model, samples = samples, ...)
+    prob_samples <- sapply(
+      data@doseGrid,
+      prob,
+      model = model,
+      samples = samples,
+      ...
+    )
 
     # Estimates of posterior probabilities that are based on the prob. samples
     # which are within overdose/target interval.
-    prob_overdose <- colMeans(h_in_range(prob_samples, nextBest@overdose, bounds_closed = c(FALSE, TRUE)))
+    prob_overdose <- colMeans(h_in_range(
+      prob_samples,
+      nextBest@overdose,
+      bounds_closed = c(FALSE, TRUE)
+    ))
     prob_target <- colMeans(h_in_range(prob_samples, nextBest@target))
 
     # Eligible grid doses after accounting for maximum possible dose and discarding overdoses.
-    is_dose_eligible <- h_next_best_eligible_doses(data@doseGrid, doselimit, data@placebo, levels = TRUE) &
+    is_dose_eligible <- h_next_best_eligible_doses(
+      data@doseGrid,
+      doselimit,
+      data@placebo,
+      levels = TRUE
+    ) &
       (prob_overdose <= nextBest@max_overdose_prob)
 
     next_dose <- if (any(is_dose_eligible)) {
@@ -192,14 +211,23 @@ setMethod(
       ylab(paste("Target probability [%]"))
 
     if (is.finite(doselimit)) {
-      p1 <- p1 + geom_vline(xintercept = doselimit, lwd = 1.1, lty = 2, colour = "black")
+      p1 <- p1 +
+        geom_vline(xintercept = doselimit, lwd = 1.1, lty = 2, colour = "black")
     }
 
     if (any(is_dose_eligible)) {
       p1 <- p1 +
-        geom_vline(xintercept = data@doseGrid[sum(is_dose_eligible)], lwd = 1.1, lty = 2, colour = "red") +
+        geom_vline(
+          xintercept = data@doseGrid[sum(is_dose_eligible)],
+          lwd = 1.1,
+          lty = 2,
+          colour = "red"
+        ) +
         geom_point(
-          data = data.frame(x = next_dose, y = prob_target[is_dose_eligible][next_best_level] * 100 + 0.03),
+          data = data.frame(
+            x = next_dose,
+            y = prob_target[is_dose_eligible][next_best_level] * 100 + 0.03
+          ),
           aes(x = x, y = y),
           size = 3,
           pch = 25,
@@ -219,7 +247,12 @@ setMethod(
         colour = "red",
         fill = "red"
       ) +
-      geom_hline(yintercept = nextBest@max_overdose_prob * 100, lwd = 1.1, lty = 2, colour = "black") +
+      geom_hline(
+        yintercept = nextBest@max_overdose_prob * 100,
+        lwd = 1.1,
+        lty = 2,
+        colour = "black"
+      ) +
       ylim(c(0, 100)) +
       ylab("Overdose probability [%]")
 
@@ -284,7 +317,8 @@ setMethod(
 #' @export
 #' @example examples/Rules-method-nextBest-NextBestNCRMLoss.R
 #'
-setMethod("nextBest",
+setMethod(
+  "nextBest",
   signature = signature(
     nextBest = "NextBestNCRMLoss",
     doselimit = "numeric",
@@ -294,21 +328,39 @@ setMethod("nextBest",
   ),
   definition = function(nextBest, doselimit = Inf, samples, model, data, ...) {
     # Matrix with samples from the dose-tox curve at the dose grid points.
-    prob_samples <- sapply(data@doseGrid, prob, model = model, samples = samples, ...)
+    prob_samples <- sapply(
+      data@doseGrid,
+      prob,
+      model = model,
+      samples = samples,
+      ...
+    )
     # Compute probabilities to be in target and overdose tox interval.
     prob_underdosing <- colMeans(prob_samples < nextBest@target[1])
     prob_target <- colMeans(h_in_range(prob_samples, nextBest@target))
-    prob_overdose <- colMeans(h_in_range(prob_samples, nextBest@overdose, bounds_closed = c(FALSE, TRUE)))
+    prob_overdose <- colMeans(h_in_range(
+      prob_samples,
+      nextBest@overdose,
+      bounds_closed = c(FALSE, TRUE)
+    ))
     prob_mean <- colMeans(prob_samples)
     prob_sd <- apply(prob_samples, 2, stats::sd)
 
     is_unacceptable_specified <- any(nextBest@unacceptable != c(1, 1))
 
     prob_mat <- if (!is_unacceptable_specified) {
-      cbind(underdosing = prob_underdosing, target = prob_target, overdose = prob_overdose)
+      cbind(
+        underdosing = prob_underdosing,
+        target = prob_target,
+        overdose = prob_overdose
+      )
     } else {
       prob_unacceptable <- colMeans(
-        h_in_range(prob_samples, nextBest@unacceptable, bounds_closed = c(FALSE, TRUE))
+        h_in_range(
+          prob_samples,
+          nextBest@unacceptable,
+          bounds_closed = c(FALSE, TRUE)
+        )
       )
       prob_excessive <- prob_overdose
       prob_overdose <- prob_excessive + prob_unacceptable
@@ -332,7 +384,12 @@ setMethod("nextBest",
     )
 
     # Eligible grid doses after accounting for maximum possible dose and discarding overdoses.
-    is_dose_eligible <- h_next_best_eligible_doses(data@doseGrid, doselimit, data@placebo, levels = TRUE) &
+    is_dose_eligible <- h_next_best_eligible_doses(
+      data@doseGrid,
+      doselimit,
+      data@placebo,
+      levels = TRUE
+    ) &
       (prob_overdose < nextBest@max_overdose_prob)
 
     # Next best dose is the dose with the minimum loss function.
@@ -388,11 +445,19 @@ setMethod(
 
     level_change <- if (dlt_rate_last_level < 1 / 3) {
       # Escalate it, unless this is the highest level or the higher dose was already tried.
-      ifelse((last_level == data@nGrid) || (nPatients[last_level + 1L] > 0), 0L, 1L)
+      ifelse(
+        (last_level == data@nGrid) || (nPatients[last_level + 1L] > 0),
+        0L,
+        1L
+      )
     } else {
       # Rate is too high, deescalate it, unless an edge case of 1/3, where the decision
       # depends on the num. of patients: if >3, then deescalate it, otherwise stay.
-      ifelse((dlt_rate_last_level == 1 / 3) && (nPatients[last_level] <= 3L), 0L, -1L)
+      ifelse(
+        (dlt_rate_last_level == 1 / 3) && (nPatients[last_level] <= 3L),
+        0L,
+        -1L
+      )
     }
     next_dose_level <- last_level + level_change
 
@@ -446,9 +511,16 @@ setMethod(
       } else {
         target_levels <- apply(biom_samples, 1L, function(x) {
           rng <- range(x)
-          min(which(h_in_range(x, nextBest@target * diff(rng) + rng[1] + c(0, 1e-10), bounds_closed = c(FALSE, TRUE))))
+          min(which(h_in_range(
+            x,
+            nextBest@target * diff(rng) + rng[1] + c(0, 1e-10),
+            bounds_closed = c(FALSE, TRUE)
+          )))
         })
-        prob_target <- as.vector(table(factor(target_levels, levels = 1:data@nGrid)))
+        prob_target <- as.vector(table(factor(
+          target_levels,
+          levels = 1:data@nGrid
+        )))
         prob_target / nrow(biom_samples)
       }
     } else {
@@ -457,10 +529,24 @@ setMethod(
 
     # Now, compute probabilities to be in overdose tox interval, then flag
     # eligible grid doses after accounting for maximum possible dose and discarding overdoses.
-    prob_samples <- sapply(data@doseGrid, prob, model = model, samples = samples)
-    prob_overdose <- colMeans(h_in_range(prob_samples, nextBest@overdose, bounds_closed = c(FALSE, TRUE)))
+    prob_samples <- sapply(
+      data@doseGrid,
+      prob,
+      model = model,
+      samples = samples
+    )
+    prob_overdose <- colMeans(h_in_range(
+      prob_samples,
+      nextBest@overdose,
+      bounds_closed = c(FALSE, TRUE)
+    ))
 
-    is_dose_eligible <- h_next_best_eligible_doses(data@doseGrid, doselimit, data@placebo, levels = TRUE) &
+    is_dose_eligible <- h_next_best_eligible_doses(
+      data@doseGrid,
+      doselimit,
+      data@placebo,
+      levels = TRUE
+    ) &
       (prob_overdose < nextBest@max_overdose_prob)
 
     next_dose <- if (any(is_dose_eligible)) {
@@ -492,14 +578,23 @@ setMethod(
       ylab(paste("Target probability [%]"))
 
     if (is.finite(doselimit)) {
-      p1 <- p1 + geom_vline(xintercept = doselimit, lwd = 1.1, lty = 2, colour = "black")
+      p1 <- p1 +
+        geom_vline(xintercept = doselimit, lwd = 1.1, lty = 2, colour = "black")
     }
 
     if (any(is_dose_eligible)) {
       p1 <- p1 +
-        geom_vline(xintercept = data@doseGrid[sum(is_dose_eligible)], lwd = 1.1, lty = 2, colour = "red") +
+        geom_vline(
+          xintercept = data@doseGrid[sum(is_dose_eligible)],
+          lwd = 1.1,
+          lty = 2,
+          colour = "red"
+        ) +
         geom_point(
-          data = data.frame(x = next_dose, y = prob_target[is_dose_eligible][next_dose_level] * 100 + 0.03),
+          data = data.frame(
+            x = next_dose,
+            y = prob_target[is_dose_eligible][next_dose_level] * 100 + 0.03
+          ),
           aes(x = x, y = y),
           size = 3,
           pch = 25,
@@ -519,7 +614,12 @@ setMethod(
         colour = "red",
         fill = "red"
       ) +
-      geom_hline(yintercept = nextBest@max_overdose_prob * 100, lwd = 1.1, lty = 2, colour = "black") +
+      geom_hline(
+        yintercept = nextBest@max_overdose_prob * 100,
+        lwd = 1.1,
+        lty = 2,
+        colour = "black"
+      ) +
       ylim(c(0, 100)) +
       ylab("Overdose probability [%]")
 
@@ -530,7 +630,11 @@ setMethod(
       value = next_dose,
       plot = plot_joint,
       singlePlots = list(plot1 = p1, plot2 = p2),
-      probs = cbind(dose = data@doseGrid, target = prob_target, overdose = prob_overdose)
+      probs = cbind(
+        dose = data@doseGrid,
+        target = prob_target,
+        overdose = prob_overdose
+      )
     )
   }
 )
@@ -555,7 +659,13 @@ setMethod(
   ),
   definition = function(nextBest, doselimit = Inf, samples, model, data, ...) {
     # Matrix with samples from the dose-tox curve at the dose grid points.
-    prob_samples <- sapply(data@doseGrid, prob, model = model, samples = samples, ...)
+    prob_samples <- sapply(
+      data@doseGrid,
+      prob,
+      model = model,
+      samples = samples,
+      ...
+    )
     dlt_prob <- colMeans(prob_samples)
 
     # Determine the dose with the closest distance.
@@ -653,11 +763,26 @@ setMethod(
   ),
   definition = function(nextBest, doselimit = Inf, samples, model, data, ...) {
     # Matrix with samples from the dose-tox curve at the dose grid points.
-    prob_samples <- sapply(data@doseGrid, prob, model = model, samples = samples, ...)
+    prob_samples <- sapply(
+      data@doseGrid,
+      prob,
+      model = model,
+      samples = samples,
+      ...
+    )
 
-    criterion <- colMeans(h_info_theory_dist(prob_samples, nextBest@target, nextBest@asymmetry))
+    criterion <- colMeans(h_info_theory_dist(
+      prob_samples,
+      nextBest@target,
+      nextBest@asymmetry
+    ))
 
-    is_dose_eligible <- h_next_best_eligible_doses(data@doseGrid, doselimit, data@placebo, levels = TRUE)
+    is_dose_eligible <- h_next_best_eligible_doses(
+      data@doseGrid,
+      doselimit,
+      data@placebo,
+      levels = TRUE
+    )
     doses_eligible <- data@doseGrid[is_dose_eligible]
     next_best_level <- which.min(criterion[is_dose_eligible])
     next_best <- doses_eligible[next_best_level]
@@ -690,7 +815,14 @@ setMethod(
     model = "LogisticIndepBeta",
     data = "Data"
   ),
-  definition = function(nextBest, doselimit = Inf, model, data, in_sim = FALSE, ...) {
+  definition = function(
+    nextBest,
+    doselimit = Inf,
+    model,
+    data,
+    in_sim = FALSE,
+    ...
+  ) {
     assert_flag(in_sim)
 
     # 'drt' - during the trial, 'eot' end of trial.
@@ -705,7 +837,11 @@ setMethod(
     # Find the next best doses in the doseGrid. The next best dose is the dose
     # at level closest and below the target dose estimate.
     # h_find_interval assumes that elements in doses_eligible are strictly increasing.
-    doses_eligible <- h_next_best_eligible_doses(data@doseGrid, doselimit, data@placebo)
+    doses_eligible <- h_next_best_eligible_doses(
+      data@doseGrid,
+      doselimit,
+      data@placebo
+    )
 
     next_dose_lev_drt <- h_find_interval(dose_target_drt, doses_eligible)
     next_dose_drt <- doses_eligible[next_dose_lev_drt]
@@ -717,14 +853,17 @@ setMethod(
     mat <- matrix(
       c(
         -1 / (model@phi2),
-        -(log(prob_target_eot / (1 - prob_target_eot)) - model@phi1) / (model@phi2)^2
+        -(log(prob_target_eot / (1 - prob_target_eot)) - model@phi1) /
+          (model@phi2)^2
       ),
       nrow = 1
     )
     var_dose_target_eot <- as.vector(mat %*% model@Pcov %*% t(mat))
 
     # 95% credibility interval.
-    ci_dose_target_eot <- exp(log(dose_target_eot) + c(-1, 1) * 1.96 * sqrt(var_dose_target_eot))
+    ci_dose_target_eot <- exp(
+      log(dose_target_eot) + c(-1, 1) * 1.96 * sqrt(var_dose_target_eot)
+    )
     cir_dose_target_eot <- ci_dose_target_eot[2] / ci_dose_target_eot[1]
 
     # Build plot.
@@ -739,11 +878,37 @@ setMethod(
       next_dose = next_dose_drt
     )
 
-    if (!h_in_range(dose_target_drt, range = dose_grid_range(data), bounds_closed = TRUE) && !in_sim) {
-      warning(paste("TD", prob_target_drt * 100, "=", dose_target_drt, "not within dose grid"))
+    if (
+      !h_in_range(
+        dose_target_drt,
+        range = dose_grid_range(data),
+        bounds_closed = TRUE
+      ) &&
+        !in_sim
+    ) {
+      warning(paste(
+        "TD",
+        prob_target_drt * 100,
+        "=",
+        dose_target_drt,
+        "not within dose grid"
+      ))
     }
-    if (!h_in_range(dose_target_eot, range = dose_grid_range(data), bounds_closed = TRUE) && !in_sim) {
-      warning(paste("TD", prob_target_eot * 100, "=", dose_target_eot, "not within dose grid"))
+    if (
+      !h_in_range(
+        dose_target_eot,
+        range = dose_grid_range(data),
+        bounds_closed = TRUE
+      ) &&
+        !in_sim
+    ) {
+      warning(paste(
+        "TD",
+        prob_target_eot * 100,
+        "=",
+        dose_target_eot,
+        "not within dose grid"
+      ))
     }
 
     list(
@@ -779,12 +944,30 @@ setMethod(
     model = "LogisticIndepBeta",
     data = "Data"
   ),
-  definition = function(nextBest, doselimit = Inf, samples, model, data, in_sim, ...) {
+  definition = function(
+    nextBest,
+    doselimit = Inf,
+    samples,
+    model,
+    data,
+    in_sim,
+    ...
+  ) {
     # Generate target dose samples, i.e. the doses with probability of the
     # occurrence of a DLT that equals to the nextBest@prob_target_drt
     # (or nextBest@prob_target_eot, respectively).
-    dose_target_drt_samples <- dose(x = nextBest@prob_target_drt, model, samples, ...)
-    dose_target_eot_samples <- dose(x = nextBest@prob_target_eot, model, samples, ...)
+    dose_target_drt_samples <- dose(
+      x = nextBest@prob_target_drt,
+      model,
+      samples,
+      ...
+    )
+    dose_target_eot_samples <- dose(
+      x = nextBest@prob_target_eot,
+      model,
+      samples,
+      ...
+    )
 
     # Derive the prior/posterior estimates based on two above samples.
     dose_target_drt <- nextBest@derive(dose_target_drt_samples)
@@ -793,7 +976,11 @@ setMethod(
     # Find the next doses in the doseGrid. The next dose is the dose at level
     # closest and below the dose_target_drt (or dose_target_eot, respectively).
     # h_find_interval assumes that elements in doses_eligible are strictly increasing.
-    doses_eligible <- h_next_best_eligible_doses(data@doseGrid, doselimit, data@placebo)
+    doses_eligible <- h_next_best_eligible_doses(
+      data@doseGrid,
+      doselimit,
+      data@placebo
+    )
 
     next_dose_lev_drt <- h_find_interval(dose_target_drt, doses_eligible)
     next_dose_drt <- doses_eligible[next_dose_lev_drt]
@@ -802,7 +989,10 @@ setMethod(
     next_dose_eot <- doses_eligible[next_dose_lev_eot]
 
     # 95% credibility interval.
-    ci_dose_target_eot <- as.numeric(quantile(dose_target_eot_samples, probs = c(0.025, 0.975)))
+    ci_dose_target_eot <- as.numeric(quantile(
+      dose_target_eot_samples,
+      probs = c(0.025, 0.975)
+    ))
     cir_dose_target_eot <- ci_dose_target_eot[2] / ci_dose_target_eot[1]
 
     # Build plot.
@@ -857,7 +1047,15 @@ setMethod(
     model = "ModelTox",
     data = "DataDual"
   ),
-  definition = function(nextBest, doselimit = Inf, model, data, model_eff, in_sim = FALSE, ...) {
+  definition = function(
+    nextBest,
+    doselimit = Inf,
+    model,
+    data,
+    model_eff,
+    in_sim = FALSE,
+    ...
+  ) {
     assert_class(model_eff, "Effloglog")
     assert_flag(in_sim)
 
@@ -885,13 +1083,46 @@ setMethod(
     max_gain <- -opt$value
 
     # Print info message if dose target is outside of the range.
-    if (!h_in_range(dose_target_drt, range = dose_grid_range(data), bounds_closed = FALSE) && !in_sim) {
-      print(paste("Estimated TD", prob_target_drt * 100, "=", dose_target_drt, "not within dose grid"))
+    if (
+      !h_in_range(
+        dose_target_drt,
+        range = dose_grid_range(data),
+        bounds_closed = FALSE
+      ) &&
+        !in_sim
+    ) {
+      print(paste(
+        "Estimated TD",
+        prob_target_drt * 100,
+        "=",
+        dose_target_drt,
+        "not within dose grid"
+      ))
     }
-    if (!h_in_range(dose_target_eot, range = dose_grid_range(data), bounds_closed = FALSE) && !in_sim) {
-      print(paste("Estimated TD", prob_target_eot * 100, "=", dose_target_eot, "not within dose grid"))
+    if (
+      !h_in_range(
+        dose_target_eot,
+        range = dose_grid_range(data),
+        bounds_closed = FALSE
+      ) &&
+        !in_sim
+    ) {
+      print(paste(
+        "Estimated TD",
+        prob_target_eot * 100,
+        "=",
+        dose_target_eot,
+        "not within dose grid"
+      ))
     }
-    if (!h_in_range(dose_mg, range = dose_grid_range(data), bounds_closed = FALSE) && !in_sim) {
+    if (
+      !h_in_range(
+        dose_mg,
+        range = dose_grid_range(data),
+        bounds_closed = FALSE
+      ) &&
+        !in_sim
+    ) {
       print(paste("Estimated max gain dose =", dose_mg, "not within dose grid"))
     }
 
@@ -977,8 +1208,20 @@ setMethod(
     model = "ModelTox",
     data = "DataDual"
   ),
-  definition = function(nextBest, doselimit = Inf, samples, model, data, model_eff, samples_eff, in_sim = FALSE, ...) {
-    assert_true(test_class(model_eff, "Effloglog") || test_class(model_eff, "EffFlexi"))
+  definition = function(
+    nextBest,
+    doselimit = Inf,
+    samples,
+    model,
+    data,
+    model_eff,
+    samples_eff,
+    in_sim = FALSE,
+    ...
+  ) {
+    assert_true(
+      test_class(model_eff, "Effloglog") || test_class(model_eff, "EffFlexi")
+    )
     assert_class(samples_eff, "Samples")
     assert_flag(in_sim)
 
@@ -988,15 +1231,33 @@ setMethod(
 
     # Generate target dose samples, i.e. the doses with probability of the
     # occurrence of a DLT that equals to the prob_target_drt or prob_target_eot.
-    dose_target_drt_samples <- dose(x = prob_target_drt, model, samples = samples, ...)
-    dose_target_eot_samples <- dose(x = prob_target_eot, model, samples = samples, ...)
+    dose_target_drt_samples <- dose(
+      x = prob_target_drt,
+      model,
+      samples = samples,
+      ...
+    )
+    dose_target_eot_samples <- dose(
+      x = prob_target_eot,
+      model,
+      samples = samples,
+      ...
+    )
 
     # Derive the prior/posterior estimates based on two above samples.
     dose_target_drt <- nextBest@derive(dose_target_drt_samples)
     dose_target_eot <- nextBest@derive(dose_target_eot_samples)
 
     # Gain samples.
-    gain_samples <- sapply(data@doseGrid, gain, model, samples, model_eff, samples_eff, ...)
+    gain_samples <- sapply(
+      data@doseGrid,
+      gain,
+      model,
+      samples,
+      model_eff,
+      samples_eff,
+      ...
+    )
     # For every sample, get the dose (from the dose grid) that gives the maximum gain value.
     dose_lev_mg_samples <- apply(gain_samples, 1, which.max)
     dose_mg_samples <- data@doseGrid[dose_lev_mg_samples]
@@ -1006,13 +1267,42 @@ setMethod(
 
     # Print info message if dose target is outside of the range.
     dosegrid_range <- dose_grid_range(data)
-    if (!h_in_range(dose_target_drt, range = dosegrid_range, bounds_closed = FALSE) && !in_sim) {
-      print(paste("Estimated TD", prob_target_drt * 100, "=", dose_target_drt, "not within dose grid"))
+    if (
+      !h_in_range(
+        dose_target_drt,
+        range = dosegrid_range,
+        bounds_closed = FALSE
+      ) &&
+        !in_sim
+    ) {
+      print(paste(
+        "Estimated TD",
+        prob_target_drt * 100,
+        "=",
+        dose_target_drt,
+        "not within dose grid"
+      ))
     }
-    if (!h_in_range(dose_target_eot, range = dosegrid_range, bounds_closed = FALSE) && !in_sim) {
-      print(paste("Estimated TD", prob_target_eot * 100, "=", dose_target_eot, "not within dose grid"))
+    if (
+      !h_in_range(
+        dose_target_eot,
+        range = dosegrid_range,
+        bounds_closed = FALSE
+      ) &&
+        !in_sim
+    ) {
+      print(paste(
+        "Estimated TD",
+        prob_target_eot * 100,
+        "=",
+        dose_target_eot,
+        "not within dose grid"
+      ))
     }
-    if (!h_in_range(dose_mg, range = dosegrid_range, bounds_closed = FALSE) && !in_sim) {
+    if (
+      !h_in_range(dose_mg, range = dosegrid_range, bounds_closed = FALSE) &&
+        !in_sim
+    ) {
       print(paste("Estimated max gain dose =", dose_mg, "not within dose grid"))
     }
 
@@ -1030,7 +1320,10 @@ setMethod(
     ci_dose_mg <- as.numeric(quantile(dose_mg_samples, probs = c(0.025, 0.975)))
     cir_dose_mg <- ci_dose_mg[2] / ci_dose_mg[1]
 
-    ci_dose_target_eot <- as.numeric(quantile(dose_target_eot, probs = c(0.025, 0.975)))
+    ci_dose_target_eot <- as.numeric(quantile(
+      dose_target_eot,
+      probs = c(0.025, 0.975)
+    ))
     cir_dose_target_eot <- ci_dose_target_eot[2] / ci_dose_target_eot[1]
 
     # Build plot.
@@ -1087,7 +1380,13 @@ setMethod(
   ),
   definition = function(nextBest, doselimit, samples, model, data, ...) {
     # Matrix with samples from the dose-tox curve at the dose grid points.
-    prob_samples <- sapply(data@doseGrid, prob, model = model, samples = samples, ...)
+    prob_samples <- sapply(
+      data@doseGrid,
+      prob,
+      model = model,
+      samples = samples,
+      ...
+    )
 
     # Determine the maximum dose level with a toxicity probability below or
     # equal to the target and calculate how often a dose is selected as MTD
@@ -1172,7 +1471,8 @@ setMethod(
       doselimit_level <- if (sum(allocation_crit_dose == doselimit) > 0) {
         which(allocation_crit_dose == doselimit)
       } else {
-        ifelse(test = data@placebo && (data@doseGrid[1] == next_dose),
+        ifelse(
+          test = data@placebo && (data@doseGrid[1] == next_dose),
           yes = 1.5,
           no = sum(allocation_crit_dose < doselimit) + 0.5
         )
@@ -1181,7 +1481,8 @@ setMethod(
       p <- p +
         geom_vline(
           xintercept = doselimit_level,
-          colour = "red", lwd = 1.1
+          colour = "red",
+          lwd = 1.1
         ) +
         geom_text(
           data = data.frame(x = doselimit_level),
@@ -1197,7 +1498,8 @@ setMethod(
     p <- p +
       geom_vline(
         xintercept = as.factor(next_dose),
-        colour = "blue", lwd = 1.1
+        colour = "blue",
+        lwd = 1.1
       ) +
       geom_text(
         data = data.frame(x = as.factor(next_dose)),
@@ -1211,7 +1513,10 @@ setMethod(
 
     list(
       value = next_dose,
-      allocation = cbind(dose = allocation_crit_dose, allocation = allocation_crit),
+      allocation = cbind(
+        dose = allocation_crit_dose,
+        allocation = allocation_crit
+      ),
       plot = p
     )
   }
@@ -1239,11 +1544,19 @@ setMethod(
   ),
   definition = function(nextBest, doselimit, samples, model, data, ...) {
     # Matrix with samples from the dose-tox curve at the dose grid points.
-    prob_samples <- sapply(data@doseGrid, prob, model = model, samples = samples, ...)
+    prob_samples <- sapply(
+      data@doseGrid,
+      prob,
+      model = model,
+      samples = samples,
+      ...
+    )
 
     # Determine which dose level has the minimum distance to target.
     dose_min_mtd_dist <- apply(
-      prob_samples, 1, function(x) which.min(abs(x - nextBest@target))
+      prob_samples,
+      1,
+      function(x) which.min(abs(x - nextBest@target))
     )
 
     allocation_crit <- prop.table(
@@ -1308,12 +1621,12 @@ setMethod(
       xlab("Dose") +
       ylab(paste("Allocation criterion [%]"))
 
-
     if (is.finite(doselimit)) {
       doselimit_level <- if (any(allocation_crit_dose == doselimit)) {
         which(allocation_crit_dose == doselimit)
       } else {
-        ifelse(test = data@placebo && data@doseGrid[1] == next_dose,
+        ifelse(
+          test = data@placebo && data@doseGrid[1] == next_dose,
           yes = 1.5,
           no = sum(allocation_crit_dose < doselimit) + 0.5
         )
@@ -1322,7 +1635,8 @@ setMethod(
       p <- p +
         geom_vline(
           xintercept = doselimit_level,
-          colour = "red", lwd = 1.1
+          colour = "red",
+          lwd = 1.1
         ) +
         geom_text(
           data = data.frame(x = doselimit_level),
@@ -1338,7 +1652,8 @@ setMethod(
     p <- p +
       geom_vline(
         xintercept = as.factor(next_dose),
-        colour = "blue", lwd = 1.1
+        colour = "blue",
+        lwd = 1.1
       ) +
       geom_text(
         data = data.frame(x = as.factor(next_dose)),
@@ -1352,7 +1667,10 @@ setMethod(
 
     list(
       value = next_dose,
-      allocation = cbind(dose = allocation_crit_dose, allocation = allocation_crit),
+      allocation = cbind(
+        dose = allocation_crit_dose,
+        allocation = allocation_crit
+      ),
       plot = p
     )
   }
@@ -1465,7 +1783,10 @@ setMethod(
     last_dose <- data@x[data@nObs]
     # Determine in which interval the `last_dose` is.
     assert_true(last_dose >= head(increments@intervals, 1))
-    last_dose_interval <- findInterval(x = last_dose, vec = increments@intervals)
+    last_dose_interval <- findInterval(
+      x = last_dose,
+      vec = increments@intervals
+    )
     (1 + increments@increments[last_dose_interval]) * last_dose
   }
 )
@@ -1490,7 +1811,10 @@ setMethod(
     dlt_count <- sum(data@y)
     # Determine in which interval the `dlt_count` is.
     assert_true(dlt_count >= increments@intervals[1])
-    dlt_count_interval <- findInterval(x = dlt_count, vec = increments@intervals)
+    dlt_count_interval <- findInterval(
+      x = dlt_count,
+      vec = increments@intervals
+    )
     (1 + increments@increments[dlt_count_interval]) * data@x[data@nObs]
   }
 )
@@ -1521,7 +1845,10 @@ setMethod(
 
     # Determine in which interval the `dlt_count_lcohort` is.
     assert_true(dlt_count_lcohort >= increments@intervals[1])
-    dlt_count_lcohort_int <- findInterval(x = dlt_count_lcohort, vec = increments@intervals)
+    dlt_count_lcohort_int <- findInterval(
+      x = dlt_count_lcohort,
+      vec = increments@intervals
+    )
     (1 + increments@increments[dlt_count_lcohort_int]) * last_dose
   }
 )
@@ -1561,7 +1888,10 @@ setMethod(
     if (is.null(incrmnt)) {
       callNextMethod(increments, data, ...)
     } else {
-      max_dose_lev_part1 <- match_within_tolerance(max(data@x), data@part1Ladder)
+      max_dose_lev_part1 <- match_within_tolerance(
+        max(data@x),
+        data@part1Ladder
+      )
       new_max_dose_level <- max_dose_lev_part1 + incrmnt
       assert_true(new_max_dose_level >= 0L)
       assert_true(new_max_dose_level <= length(data@part1Ladder))
@@ -1594,7 +1924,9 @@ setMethod(
     # Determine what is the basis level for increment,
     # i.e. the last dose or the max dose applied.
     basis_dose_level <- ifelse(
-      increments@basis_level == "last", data@xLevel[data@nObs], max(data@xLevel)
+      increments@basis_level == "last",
+      data@xLevel[data@nObs],
+      max(data@xLevel)
     )
     max_dose_level <- min(basis_dose_level + increments@levels, data@nGrid)
     data@doseGrid[max_dose_level]
@@ -1653,7 +1985,10 @@ setMethod(
     # the first active dose is reported as maximum. I.e. in case that placebo is used,
     # the second dose is reported. Please note that this rule should be used together
     # with the hard safety stopping rule to avoid inconsistent results.
-    max(data@doseGrid[data@doseGrid < dose_tox], data@doseGrid[data@placebo + 1])
+    max(
+      data@doseGrid[data@doseGrid < dose_tox],
+      data@doseGrid[data@placebo + 1]
+    )
   }
 )
 
@@ -1674,7 +2009,12 @@ setMethod(
     data = "Data"
   ),
   definition = function(increments, data, ...) {
-    individual_results <- sapply(increments@increments_list, maxDose, data = data, ...)
+    individual_results <- sapply(
+      increments@increments_list,
+      maxDose,
+      data = data,
+      ...
+    )
     min(individual_results)
   }
 )
@@ -1692,7 +2032,12 @@ setMethod(
     data = "DataOrdinal"
   ),
   definition = function(increments, data, ...) {
-    individual_results <- sapply(increments@increments_list, maxDose, data = data, ...)
+    individual_results <- sapply(
+      increments@increments_list,
+      maxDose,
+      data = data,
+      ...
+    )
     min(individual_results)
   }
 )
@@ -1754,7 +2099,10 @@ setMethod(
         seq_along(increments@prob),
         function(g) {
           fitted_probs <- fit(samples, model, data, grade = g, ...)
-          safe_fitted_probs <- dplyr::filter(fitted_probs, middle < increments@prob[nm[g]])
+          safe_fitted_probs <- dplyr::filter(
+            fitted_probs,
+            middle < increments@prob[nm[g]]
+          )
           highest_safe_fitted_prob <- utils::tail(safe_fitted_probs, 1)
         }
       )
@@ -1827,15 +2175,15 @@ setMethod(
 ##'
 ##' @example examples/Rules-method-and-stopping-stopping.R
 ##' @keywords methods
-setMethod("&",
+setMethod(
+  "&",
   signature(
     e1 = "Stopping",
     e2 = "Stopping"
   ),
-  def =
-    function(e1, e2) {
-      StoppingAll(list(e1, e2))
-    }
+  def = function(e1, e2) {
+    StoppingAll(list(e1, e2))
+  }
 )
 
 ##' The method combining a stopping list and an atomic
@@ -1846,19 +2194,19 @@ setMethod("&",
 ##'
 ##' @example examples/Rules-method-and-stoppingAll-stopping.R
 ##' @keywords methods
-setMethod("&",
+setMethod(
+  "&",
   signature(
     e1 = "StoppingAll",
     e2 = "Stopping"
   ),
-  def =
-    function(e1, e2) {
-      e1@stop_list <- c(
-        e1@stop_list,
-        e2
-      )
-      return(e1)
-    }
+  def = function(e1, e2) {
+    e1@stop_list <- c(
+      e1@stop_list,
+      e2
+    )
+    return(e1)
+  }
 )
 
 ##' The method combining an atomic and a stopping list
@@ -1869,19 +2217,19 @@ setMethod("&",
 ##'
 ##' @example examples/Rules-method-and-stopping-stoppingAll.R
 ##' @keywords methods
-setMethod("&",
+setMethod(
+  "&",
   signature(
     e1 = "Stopping",
     e2 = "StoppingAll"
   ),
-  def =
-    function(e1, e2) {
-      e2@stop_list <- c(
-        e1,
-        e2@stop_list
-      )
-      return(e2)
-    }
+  def = function(e1, e2) {
+    e2@stop_list <- c(
+      e1,
+      e2@stop_list
+    )
+    return(e2)
+  }
 )
 
 ## --------------------------------------------------
@@ -1898,15 +2246,15 @@ setMethod("&",
 ##' @name or-Stopping-Stopping
 ##' @example examples/Rules-method-or-stopping-stopping.R
 ##' @keywords methods
-setMethod("|",
+setMethod(
+  "|",
   signature(
     e1 = "Stopping",
     e2 = "Stopping"
   ),
-  def =
-    function(e1, e2) {
-      StoppingAny(list(e1, e2))
-    }
+  def = function(e1, e2) {
+    StoppingAny(list(e1, e2))
+  }
 )
 
 ##' The method combining a stopping list and an atomic
@@ -1919,19 +2267,19 @@ setMethod("|",
 ##' @name or-Stopping-StoppingAny
 ##' @example examples/Rules-method-or-stoppingAny-stopping.R
 ##' @keywords methods
-setMethod("|",
+setMethod(
+  "|",
   signature(
     e1 = "StoppingAny",
     e2 = "Stopping"
   ),
-  def =
-    function(e1, e2) {
-      e1@stop_list <- c(
-        e1@stop_list,
-        e2
-      )
-      return(e1)
-    }
+  def = function(e1, e2) {
+    e1@stop_list <- c(
+      e1@stop_list,
+      e2
+    )
+    return(e1)
+  }
 )
 
 ##' The method combining an atomic and a stopping list
@@ -1944,19 +2292,19 @@ setMethod("|",
 ##' @name or-StoppingAny-Stopping
 ##' @example examples/Rules-method-or-stopping-stoppingAny.R
 ##' @keywords methods
-setMethod("|",
+setMethod(
+  "|",
   signature(
     e1 = "Stopping",
     e2 = "StoppingAny"
   ),
-  def =
-    function(e1, e2) {
-      e2@stop_list <- c(
-        e1,
-        e2@stop_list
-      )
-      return(e2)
-    }
+  def = function(e1, e2) {
+    e2@stop_list <- c(
+      e1,
+      e2@stop_list
+    )
+    return(e2)
+  }
 )
 
 # nolint end
@@ -2029,10 +2377,7 @@ setMethod(
       )
     )
 
-    structure(do_stop,
-      message = msg,
-      report_label = stopping@report_label
-    )
+    structure(do_stop, message = msg, report_label = stopping@report_label)
   }
 )
 
@@ -2044,51 +2389,53 @@ setMethod(
 
 ##' @describeIn stopTrial Stop based on multiple stopping rules
 ##' @example examples/Rules-method-stopTrial-StoppingList.R
-setMethod("stopTrial",
-  signature =
-    signature(
-      stopping = "StoppingList",
-      dose = "ANY",
-      samples = "ANY",
-      model = "ANY",
-      data = "ANY"
-    ),
-  def =
-    function(stopping, dose, samples, model, data, ...) {
-      ## evaluate the individual stopping rules
-      ## in the list
-      individualResults <-
-        if (missing(samples)) {
-          lapply(stopping@stop_list,
-            stopTrial,
-            dose = dose,
-            model = model,
-            data = data,
-            ...
-          )
-        } else {
-          lapply(stopping@stop_list,
-            stopTrial,
-            dose = dose,
-            samples = samples,
-            model = model,
-            data = data,
-            ...
-          )
-        }
+setMethod(
+  "stopTrial",
+  signature = signature(
+    stopping = "StoppingList",
+    dose = "ANY",
+    samples = "ANY",
+    model = "ANY",
+    data = "ANY"
+  ),
+  def = function(stopping, dose, samples, model, data, ...) {
+    ## evaluate the individual stopping rules
+    ## in the list
+    individualResults <-
+      if (missing(samples)) {
+        lapply(
+          stopping@stop_list,
+          stopTrial,
+          dose = dose,
+          model = model,
+          data = data,
+          ...
+        )
+      } else {
+        lapply(
+          stopping@stop_list,
+          stopTrial,
+          dose = dose,
+          samples = samples,
+          model = model,
+          data = data,
+          ...
+        )
+      }
 
-      ## summarize to obtain overall result
-      overallResult <- stopping@summary(as.logical(individualResults))
+    ## summarize to obtain overall result
+    overallResult <- stopping@summary(as.logical(individualResults))
 
-      ## retrieve individual text messages,
-      ## but let them in the list structure
-      overallText <- lapply(individualResults, attr, "message")
+    ## retrieve individual text messages,
+    ## but let them in the list structure
+    overallText <- lapply(individualResults, attr, "message")
 
-      return(structure(overallResult,
-        message = overallText,
-        individual = individualResults
-      ))
-    }
+    return(structure(
+      overallResult,
+      message = overallText,
+      individual = individualResults
+    ))
+  }
 )
 
 ## --------------------------------------------------
@@ -2099,52 +2446,54 @@ setMethod("stopTrial",
 ##' rules
 ##'
 ##' @example examples/Rules-method-stopTrial-StoppingAll.R
-setMethod("stopTrial",
-  signature =
-    signature(
-      stopping = "StoppingAll",
-      dose = "ANY",
-      samples = "ANY",
-      model = "ANY",
-      data = "ANY"
-    ),
-  def =
-    function(stopping, dose, samples, model, data, ...) {
-      ## evaluate the individual stopping rules
-      ## in the list
-      individualResults <-
-        if (missing(samples)) {
-          lapply(stopping@stop_list,
-            stopTrial,
-            dose = dose,
-            model = model,
-            data = data,
-            ...
-          )
-        } else {
-          lapply(stopping@stop_list,
-            stopTrial,
-            dose = dose,
-            samples = samples,
-            model = model,
-            data = data,
-            ...
-          )
-        }
+setMethod(
+  "stopTrial",
+  signature = signature(
+    stopping = "StoppingAll",
+    dose = "ANY",
+    samples = "ANY",
+    model = "ANY",
+    data = "ANY"
+  ),
+  def = function(stopping, dose, samples, model, data, ...) {
+    ## evaluate the individual stopping rules
+    ## in the list
+    individualResults <-
+      if (missing(samples)) {
+        lapply(
+          stopping@stop_list,
+          stopTrial,
+          dose = dose,
+          model = model,
+          data = data,
+          ...
+        )
+      } else {
+        lapply(
+          stopping@stop_list,
+          stopTrial,
+          dose = dose,
+          samples = samples,
+          model = model,
+          data = data,
+          ...
+        )
+      }
 
-      ## summarize to obtain overall result
-      overallResult <- all(as.logical(individualResults))
+    ## summarize to obtain overall result
+    overallResult <- all(as.logical(individualResults))
 
-      ## retrieve individual text messages,
-      ## but let them in the list structure
-      overallText <- lapply(individualResults, attr, "message")
+    ## retrieve individual text messages,
+    ## but let them in the list structure
+    overallText <- lapply(individualResults, attr, "message")
 
-      return(structure(overallResult,
-        message = overallText,
-        individual = individualResults,
-        report_label = stopping@report_label
-      ))
-    }
+    return(structure(
+      overallResult,
+      message = overallText,
+      individual = individualResults,
+      report_label = stopping@report_label
+    ))
+  }
 )
 
 
@@ -2155,55 +2504,55 @@ setMethod("stopTrial",
 ##' @describeIn stopTrial Stop based on fulfillment of any stopping rule
 ##'
 ##' @example examples/Rules-method-stopTrial-StoppingAny.R
-setMethod("stopTrial",
-  signature =
-    signature(
-      stopping = "StoppingAny",
-      dose = "ANY",
-      samples = "ANY",
-      model = "ANY",
-      data = "ANY"
-    ),
-  def =
-    function(stopping, dose, samples, model, data, ...) {
-      ## evaluate the individual stopping rules
-      ## in the list
-      individualResults <-
-        if (missing(samples)) {
-          lapply(stopping@stop_list,
-            stopTrial,
-            dose = dose,
-            model = model,
-            data = data,
-            ...
-          )
-        } else {
-          lapply(stopping@stop_list,
-            stopTrial,
-            dose = dose,
-            samples = samples,
-            model = model,
-            data = data,
-            ...
-          )
-        }
+setMethod(
+  "stopTrial",
+  signature = signature(
+    stopping = "StoppingAny",
+    dose = "ANY",
+    samples = "ANY",
+    model = "ANY",
+    data = "ANY"
+  ),
+  def = function(stopping, dose, samples, model, data, ...) {
+    ## evaluate the individual stopping rules
+    ## in the list
+    individualResults <-
+      if (missing(samples)) {
+        lapply(
+          stopping@stop_list,
+          stopTrial,
+          dose = dose,
+          model = model,
+          data = data,
+          ...
+        )
+      } else {
+        lapply(
+          stopping@stop_list,
+          stopTrial,
+          dose = dose,
+          samples = samples,
+          model = model,
+          data = data,
+          ...
+        )
+      }
 
-      ## summarize to obtain overall result
-      overallResult <- any(as.logical(individualResults))
+    ## summarize to obtain overall result
+    overallResult <- any(as.logical(individualResults))
 
-      ## retrieve individual text messages,
-      ## but let them in the list structure
-      overallText <- lapply(individualResults, attr, "message")
+    ## retrieve individual text messages,
+    ## but let them in the list structure
+    overallText <- lapply(individualResults, attr, "message")
 
-      return(structure(overallResult,
-        message = overallText,
-        individual = individualResults,
-        report_label = stopping@report_label
-      ))
-    }
+    return(structure(
+      overallResult,
+      message = overallText,
+      individual = individualResults,
+      report_label = stopping@report_label
+    ))
+  }
 )
-
-
 
 
 ## --------------------------------------------------
@@ -2213,50 +2562,51 @@ setMethod("stopTrial",
 ##' @describeIn stopTrial Stop based on number of cohorts near to next best dose
 ##'
 ##' @example examples/Rules-method-stopTrial-StoppingCohortsNearDose.R
-setMethod("stopTrial",
-  signature =
-    signature(
-      stopping = "StoppingCohortsNearDose",
-      dose = "numeric",
-      samples = "ANY",
-      model = "ANY",
-      data = "Data"
-    ),
-  def =
-    function(stopping, dose, samples, model, data, ...) {
-      ## determine the range where the cohorts must lie in
-      lower <- (100 - stopping@percentage) / 100 * dose
-      upper <- (100 + stopping@percentage) / 100 * dose
+setMethod(
+  "stopTrial",
+  signature = signature(
+    stopping = "StoppingCohortsNearDose",
+    dose = "numeric",
+    samples = "ANY",
+    model = "ANY",
+    data = "Data"
+  ),
+  def = function(stopping, dose, samples, model, data, ...) {
+    ## determine the range where the cohorts must lie in
+    lower <- (100 - stopping@percentage) / 100 * dose
+    upper <- (100 + stopping@percentage) / 100 * dose
 
-      ## which patients lie there?
-      indexPatients <- which((data@x >= lower) & (data@x <= upper))
+    ## which patients lie there?
+    indexPatients <- which((data@x >= lower) & (data@x <= upper))
 
-      ## how many cohorts?
-      nCohorts <- length(unique(data@cohort[indexPatients]))
+    ## how many cohorts?
+    nCohorts <- length(unique(data@cohort[indexPatients]))
 
-      ## so can we stop?
-      doStop <- nCohorts >= stopping@nCohorts
+    ## so can we stop?
+    doStop <- nCohorts >= stopping@nCohorts
 
-      ## generate message
-      text <- paste(nCohorts,
-        " cohorts lie within ",
-        stopping@percentage,
-        "% of the next best dose ",
-        dose,
-        ". This ",
-        ifelse(doStop, "reached", "is below"),
-        " the required ",
-        stopping@nCohorts,
-        " cohorts",
-        sep = ""
-      )
+    ## generate message
+    text <- paste(
+      nCohorts,
+      " cohorts lie within ",
+      stopping@percentage,
+      "% of the next best dose ",
+      dose,
+      ". This ",
+      ifelse(doStop, "reached", "is below"),
+      " the required ",
+      stopping@nCohorts,
+      " cohorts",
+      sep = ""
+    )
 
-      ## return both
-      return(structure(doStop,
-        message = text,
-        report_label = stopping@report_label
-      ))
-    }
+    ## return both
+    return(structure(
+      doStop,
+      message = text,
+      report_label = stopping@report_label
+    ))
+  }
 )
 
 
@@ -2268,51 +2618,52 @@ setMethod("stopTrial",
 ##' dose
 ##'
 ##' @example examples/Rules-method-stopTrial-StoppingPatientsNearDose.R
-setMethod("stopTrial",
-  signature =
-    signature(
-      stopping = "StoppingPatientsNearDose",
-      dose = "numeric",
-      samples = "ANY",
-      model = "ANY",
-      data = "Data"
-    ),
-  def =
-    function(stopping, dose, samples, model, data, ...) {
-      ## determine the range where the cohorts must lie in
-      lower <- (100 - stopping@percentage) / 100 * dose
-      upper <- (100 + stopping@percentage) / 100 * dose
+setMethod(
+  "stopTrial",
+  signature = signature(
+    stopping = "StoppingPatientsNearDose",
+    dose = "numeric",
+    samples = "ANY",
+    model = "ANY",
+    data = "Data"
+  ),
+  def = function(stopping, dose, samples, model, data, ...) {
+    ## determine the range where the cohorts must lie in
+    lower <- (100 - stopping@percentage) / 100 * dose
+    upper <- (100 + stopping@percentage) / 100 * dose
 
-      ## how many patients lie there?
-      nPatients <- ifelse(
-        is.na(dose),
-        0,
-        sum((data@x >= lower) & (data@x <= upper))
-      )
+    ## how many patients lie there?
+    nPatients <- ifelse(
+      is.na(dose),
+      0,
+      sum((data@x >= lower) & (data@x <= upper))
+    )
 
-      ## so can we stop?
-      doStop <- nPatients >= stopping@nPatients
+    ## so can we stop?
+    doStop <- nPatients >= stopping@nPatients
 
-      ## generate message
-      text <- paste(nPatients,
-        " patients lie within ",
-        stopping@percentage,
-        "% of the next best dose ",
-        dose,
-        ". This ",
-        ifelse(doStop, "reached", "is below"),
-        " the required ",
-        stopping@nPatients,
-        " patients",
-        sep = ""
-      )
+    ## generate message
+    text <- paste(
+      nPatients,
+      " patients lie within ",
+      stopping@percentage,
+      "% of the next best dose ",
+      dose,
+      ". This ",
+      ifelse(doStop, "reached", "is below"),
+      " the required ",
+      stopping@nPatients,
+      " patients",
+      sep = ""
+    )
 
-      ## return both
-      return(structure(doStop,
-        message = text,
-        report_label = stopping@report_label
-      ))
-    }
+    ## return both
+    return(structure(
+      doStop,
+      message = text,
+      report_label = stopping@report_label
+    ))
+  }
 )
 
 ## --------------------------------------------------
@@ -2322,40 +2673,40 @@ setMethod("stopTrial",
 ##' @describeIn stopTrial Stop based on minimum number of cohorts
 ##'
 ##' @example examples/Rules-method-stopTrial-StoppingMinCohorts.R
-setMethod("stopTrial",
-  signature =
-    signature(
-      stopping = "StoppingMinCohorts",
-      dose = "ANY",
-      samples = "ANY",
-      model = "ANY",
-      data = "Data"
-    ),
-  def =
-    function(stopping, dose, samples, model, data, ...) {
-      ## determine number of cohorts
-      nCohorts <- length(unique(data@cohort))
+setMethod(
+  "stopTrial",
+  signature = signature(
+    stopping = "StoppingMinCohorts",
+    dose = "ANY",
+    samples = "ANY",
+    model = "ANY",
+    data = "Data"
+  ),
+  def = function(stopping, dose, samples, model, data, ...) {
+    ## determine number of cohorts
+    nCohorts <- length(unique(data@cohort))
 
-      ## so can we stop?
-      doStop <- nCohorts >= stopping@nCohorts
+    ## so can we stop?
+    doStop <- nCohorts >= stopping@nCohorts
 
-      ## generate message
-      text <-
-        paste(
-          "Number of cohorts is",
-          nCohorts,
-          "and thus",
-          ifelse(doStop, "reached", "below"),
-          "the prespecified minimum number",
-          stopping@nCohorts
-        )
+    ## generate message
+    text <-
+      paste(
+        "Number of cohorts is",
+        nCohorts,
+        "and thus",
+        ifelse(doStop, "reached", "below"),
+        "the prespecified minimum number",
+        stopping@nCohorts
+      )
 
-      ## return both
-      return(structure(doStop,
-        message = text,
-        report_label = stopping@report_label
-      ))
-    }
+    ## return both
+    return(structure(
+      doStop,
+      message = text,
+      report_label = stopping@report_label
+    ))
+  }
 )
 
 ## --------------------------------------------------
@@ -2365,37 +2716,37 @@ setMethod("stopTrial",
 ##' @describeIn stopTrial Stop based on minimum number of patients
 ##'
 ##' @example examples/Rules-method-stopTrial-StoppingMinPatients.R
-setMethod("stopTrial",
-  signature =
-    signature(
-      stopping = "StoppingMinPatients",
-      dose = "ANY",
-      samples = "ANY",
-      model = "ANY",
-      data = "Data"
-    ),
-  def =
-    function(stopping, dose, samples, model, data, ...) {
-      ## so can we stop?
-      doStop <- data@nObs >= stopping@nPatients
+setMethod(
+  "stopTrial",
+  signature = signature(
+    stopping = "StoppingMinPatients",
+    dose = "ANY",
+    samples = "ANY",
+    model = "ANY",
+    data = "Data"
+  ),
+  def = function(stopping, dose, samples, model, data, ...) {
+    ## so can we stop?
+    doStop <- data@nObs >= stopping@nPatients
 
-      ## generate message
-      text <-
-        paste(
-          "Number of patients is",
-          data@nObs,
-          "and thus",
-          ifelse(doStop, "reached", "below"),
-          "the prespecified minimum number",
-          stopping@nPatients
-        )
+    ## generate message
+    text <-
+      paste(
+        "Number of patients is",
+        data@nObs,
+        "and thus",
+        ifelse(doStop, "reached", "below"),
+        "the prespecified minimum number",
+        stopping@nPatients
+      )
 
-      ## return both
-      return(structure(doStop,
-        message = text,
-        report_label = stopping@report_label
-      ))
-    }
+    ## return both
+    return(structure(
+      doStop,
+      message = text,
+      report_label = stopping@report_label
+    ))
+  }
 )
 
 # nolint end
@@ -2408,14 +2759,13 @@ setMethod("stopTrial",
 #' @example examples/Rules-method-stopTrial-StoppingTargetProb.R
 setMethod(
   f = "stopTrial",
-  signature =
-    signature(
-      stopping = "StoppingTargetProb",
-      dose = "numeric",
-      samples = "Samples",
-      model = "GeneralModel",
-      data = "ANY"
-    ),
+  signature = signature(
+    stopping = "StoppingTargetProb",
+    dose = "numeric",
+    samples = "Samples",
+    model = "GeneralModel",
+    data = "ANY"
+  ),
   definition = function(stopping, dose, samples, model, data, ...) {
     # Compute probability to be in target interval.
     prob_target <- ifelse(
@@ -2458,64 +2808,64 @@ setMethod(
 ##' @describeIn stopTrial Stop based on MTD distribution
 ##'
 ##' @example examples/Rules-method-stopTrial-StoppingMTDdistribution.R
-setMethod("stopTrial",
-  signature =
-    signature(
-      stopping = "StoppingMTDdistribution",
-      dose = "numeric",
-      samples = "Samples",
-      model = "GeneralModel",
-      data = "ANY"
-    ),
-  def =
-    function(stopping, dose, samples, model, data, ...) {
-      ## First, generate the MTD samples.
+setMethod(
+  "stopTrial",
+  signature = signature(
+    stopping = "StoppingMTDdistribution",
+    dose = "numeric",
+    samples = "Samples",
+    model = "GeneralModel",
+    data = "ANY"
+  ),
+  def = function(stopping, dose, samples, model, data, ...) {
+    ## First, generate the MTD samples.
 
-      ## add prior data and samples to the
-      ## function environment so that they
-      ## can be used.
-      mtdSamples <- dose(
-        x = stopping@target,
-        model,
-        samples,
-        ...
+    ## add prior data and samples to the
+    ## function environment so that they
+    ## can be used.
+    mtdSamples <- dose(
+      x = stopping@target,
+      model,
+      samples,
+      ...
+    )
+
+    ## what is the absolute threshold?
+    absThresh <- stopping@thresh * dose
+
+    ## what is the probability to be above this dose?
+    prob <- ifelse(
+      is.na(absThresh),
+      0,
+      mean(mtdSamples > absThresh)
+    )
+
+    ## so can we stop?
+    doStop <- prob >= stopping@prob
+
+    ## generate message
+    text <-
+      paste(
+        "Probability of MTD above",
+        round(stopping@thresh * 100),
+        "% of current dose",
+        dose,
+        "is",
+        round(prob * 100),
+        "% and thus",
+        ifelse(doStop, "greater than or equal to", "strictly less than"),
+        "the required",
+        round(stopping@prob * 100),
+        "%"
       )
 
-      ## what is the absolute threshold?
-      absThresh <- stopping@thresh * dose
-
-      ## what is the probability to be above this dose?
-      prob <- ifelse(
-        is.na(absThresh),
-        0,
-        mean(mtdSamples > absThresh)
-      )
-
-      ## so can we stop?
-      doStop <- prob >= stopping@prob
-
-      ## generate message
-      text <-
-        paste(
-          "Probability of MTD above",
-          round(stopping@thresh * 100),
-          "% of current dose",
-          dose,
-          "is",
-          round(prob * 100),
-          "% and thus",
-          ifelse(doStop, "greater than or equal to", "strictly less than"),
-          "the required",
-          round(stopping@prob * 100),
-          "%"
-        )
-
-      ## return both
-      return(structure(doStop,
-        message = text,
-        report_label = stopping@report_label
-      ))
-    }
+    ## return both
+    return(structure(
+      doStop,
+      message = text,
+      report_label = stopping@report_label
+    ))
+  }
 )
 
 # nolint end
@@ -2602,7 +2952,12 @@ setMethod(
     tox_prob_first_dose <-
       if (n > 0) {
         x <- sum(data@y[which(data@x == data@doseGrid[data@placebo + 1])])
-        pbeta(stopping@target, x + stopping@a, n - x + stopping@b, lower.tail = FALSE)
+        pbeta(
+          stopping@target,
+          x + stopping@a,
+          n - x + stopping@b,
+          lower.tail = FALSE
+        )
       } else {
         0
       }
@@ -2617,7 +2972,10 @@ setMethod(
         "Probability that the lowest active dose of ",
         data@doseGrid[data@placebo + 1],
         " being toxic based on posterior Beta distribution using a Beta(",
-        stopping@a, ",", stopping@b, ") prior is ",
+        stopping@a,
+        ",",
+        stopping@b,
+        ") prior is ",
         round(tox_prob_first_dose * 100),
         "% and thus ",
         ifelse(do_stop, "above", "below"),
@@ -2654,7 +3012,12 @@ setMethod(
   definition = function(stopping, dose, samples, model, data, ...) {
     # Compute the target biomarker prob at this dose.
     # Get the biomarker level samples at the dose grid points.
-    biom_level_samples <- biomarker(xLevel = seq_len(data@nGrid), model, samples, ...)
+    biom_level_samples <- biomarker(
+      xLevel = seq_len(data@nGrid),
+      model,
+      samples,
+      ...
+    )
 
     # If target is relative to maximum.
     if (stopping@is_relative) {
@@ -2669,8 +3032,12 @@ setMethod(
         prob_target <- sapply(
           seq(1, ncol(biom_level_samples)),
           function(x) {
-            sum(biom_level_samples[, x] >= stopping@target[1] * samples@data$Emax &
-              biom_level_samples[, x] <= stopping@target[2] * samples@data$Emax) /
+            sum(
+              biom_level_samples[, x] >=
+                stopping@target[1] * samples@data$Emax &
+                biom_level_samples[, x] <=
+                  stopping@target[2] * samples@data$Emax
+            ) /
               nrow(biom_level_samples)
           }
         )
@@ -2678,7 +3045,8 @@ setMethod(
         # For each sample, look which was the minimum dose giving
         # relative target level.
         targetIndex <- apply(
-          biom_level_samples, 1L,
+          biom_level_samples,
+          1L,
           function(x) {
             rnx <- range(x)
             min(which(
@@ -2701,7 +3069,10 @@ setMethod(
       prob_target <- sapply(
         seq(1, ncol(biom_level_samples)),
         function(x) {
-          sum(biom_level_samples[, x] >= stopping@target[1] & biom_level_samples[, x] <= stopping@target[2]) /
+          sum(
+            biom_level_samples[, x] >= stopping@target[1] &
+              biom_level_samples[, x] <= stopping@target[2]
+          ) /
             nrow(biom_level_samples)
         }
       )
@@ -2790,34 +3161,33 @@ setMethod(
 ##' @describeIn stopTrial Stop when the highest dose is reached
 ##'
 ##' @example examples/Rules-method-stopTrial-StoppingHighestDose.R
-setMethod("stopTrial",
-  signature =
-    signature(
-      stopping = "StoppingHighestDose",
-      dose = "numeric",
-      samples = "ANY",
-      model = "ANY",
-      data = "Data"
-    ),
-  def =
-    function(stopping, dose, samples, model, data, ...) {
-      isHighestDose <- ifelse(
-        is.na(dose),
-        FALSE,
-        (dose == data@doseGrid[data@nGrid])
-      )
-      return(structure(isHighestDose,
-        message =
-          paste(
-            "Next best dose is", dose, "and thus",
-            ifelse(isHighestDose, "the",
-              "not the"
-            ),
-            "highest dose"
-          ),
-        report_label = stopping@report_label
-      ))
-    }
+setMethod(
+  "stopTrial",
+  signature = signature(
+    stopping = "StoppingHighestDose",
+    dose = "numeric",
+    samples = "ANY",
+    model = "ANY",
+    data = "Data"
+  ),
+  def = function(stopping, dose, samples, model, data, ...) {
+    isHighestDose <- ifelse(
+      is.na(dose),
+      FALSE,
+      (dose == data@doseGrid[data@nGrid])
+    )
+    return(structure(
+      isHighestDose,
+      message = paste(
+        "Next best dose is",
+        dose,
+        "and thus",
+        ifelse(isHighestDose, "the", "not the"),
+        "highest dose"
+      ),
+      report_label = stopping@report_label
+    ))
+  }
 )
 
 ## StoppingOrdinal ----
@@ -2935,25 +3305,21 @@ setMethod(
 ##' @seealso \code{\link{minSize}}
 ##' @export
 ##' @keywords methods
-setGeneric("maxSize",
-  def =
-    function(...) {
-      ## there should be no default method,
-      ## therefore just forward to next method!
-      standardGeneric("maxSize")
-    },
+setGeneric(
+  "maxSize",
+  def = function(...) {
+    ## there should be no default method,
+    ## therefore just forward to next method!
+    standardGeneric("maxSize")
+  },
   valueClass = "CohortSizeMax"
 )
 
 ##' @describeIn maxSize The method combining cohort size rules by taking maximum
 ##' @example examples/Rules-method-maxSize.R
-setMethod("maxSize",
-  "CohortSize",
-  def =
-    function(...) {
-      CohortSizeMax(list(...))
-    }
-)
+setMethod("maxSize", "CohortSize", def = function(...) {
+  CohortSizeMax(list(...))
+})
 
 ## --------------------------------------------------
 ## "MIN" combination of cohort size rules
@@ -2971,25 +3337,21 @@ setMethod("maxSize",
 ##' @seealso \code{\link{maxSize}}
 ##' @export
 ##' @keywords methods
-setGeneric("minSize",
-  def =
-    function(...) {
-      ## there should be no default method,
-      ## therefore just forward to next method!
-      standardGeneric("minSize")
-    },
+setGeneric(
+  "minSize",
+  def = function(...) {
+    ## there should be no default method,
+    ## therefore just forward to next method!
+    standardGeneric("minSize")
+  },
   valueClass = "CohortSizeMin"
 )
 
 ##' @describeIn minSize The method combining cohort size rules by taking minimum
 ##' @example examples/Rules-method-minSize.R
-setMethod("minSize",
-  "CohortSize",
-  def =
-    function(...) {
-      CohortSizeMin(list(...))
-    }
-)
+setMethod("minSize", "CohortSize", def = function(...) {
+  CohortSizeMin(list(...))
+})
 
 # size ----
 
@@ -3247,12 +3609,10 @@ setMethod(
       round(dose_target_ci_ratio, 4),
       " is ",
       ifelse(do_stop, "less than or equal to ", "greater than "),
-      "target_ratio = ", stopping@target_ratio
+      "target_ratio = ",
+      stopping@target_ratio
     )
-    structure(do_stop,
-      message = text,
-      report_label = stopping@report_label
-    )
+    structure(do_stop, message = text, report_label = stopping@report_label)
   }
 )
 
@@ -3264,44 +3624,58 @@ setMethod(
 ##' interval of the estimate (TDtargetEndOfTrial). This is a stopping rule which incorporate only
 ##' DLE responses and no DLE samples are involved
 ##' @example examples/Rules-method-stopTrialCITD.R
-setMethod("stopTrial",
-  signature =
-    signature(
-      stopping = "StoppingTDCIRatio",
-      dose = "ANY",
-      samples = "missing",
-      model = "ModelTox",
-      data = "ANY"
-    ),
-  def =
-    function(stopping, dose, model, data, ...) {
-      assert_probability(stopping@prob_target)
+setMethod(
+  "stopTrial",
+  signature = signature(
+    stopping = "StoppingTDCIRatio",
+    dose = "ANY",
+    samples = "missing",
+    model = "ModelTox",
+    data = "ANY"
+  ),
+  def = function(stopping, dose, model, data, ...) {
+    assert_probability(stopping@prob_target)
 
-      prob_target <- stopping@prob_target
-      dose_target_samples <- dose(x = prob_target, model = model, ...)
-      ## Find the variance of the log of the dose_target_samples(eta)
-      M1 <- matrix(c(-1 / (model@phi2), -(log(prob_target / (1 - prob_target)) - model@phi1) / (model@phi2)^2), 1, 2)
-      M2 <- model@Pcov
-      varEta <- as.vector(M1 %*% M2 %*% t(M1))
+    prob_target <- stopping@prob_target
+    dose_target_samples <- dose(x = prob_target, model = model, ...)
+    ## Find the variance of the log of the dose_target_samples(eta)
+    M1 <- matrix(
+      c(
+        -1 / (model@phi2),
+        -(log(prob_target / (1 - prob_target)) - model@phi1) / (model@phi2)^2
+      ),
+      1,
+      2
+    )
+    M2 <- model@Pcov
+    varEta <- as.vector(M1 %*% M2 %*% t(M1))
 
-      ## Find the upper and lower limit of the 95% credibility interval
-      CI <- exp(log(dose_target_samples) + c(-1, 1) * 1.96 * sqrt(varEta))
-      ratio <- CI[2] / CI[1]
+    ## Find the upper and lower limit of the 95% credibility interval
+    CI <- exp(log(dose_target_samples) + c(-1, 1) * 1.96 * sqrt(varEta))
+    ratio <- CI[2] / CI[1]
 
-      ## so can we stop?
-      doStop <- ratio <= stopping@target_ratio
-      ## generate message
-      text <- paste(
-        "95% CI is (", round(CI[1], 4), ",", round(CI[2], 4), "), Ratio =", round(ratio, 4), "is ", ifelse(doStop, "is less than or equal to", "greater than"),
-        "target_ratio =", stopping@target_ratio
-      )
-      ## return both
-      return(structure(
-        doStop,
-        message = text,
-        report_label = stopping@report_label
-      ))
-    }
+    ## so can we stop?
+    doStop <- ratio <= stopping@target_ratio
+    ## generate message
+    text <- paste(
+      "95% CI is (",
+      round(CI[1], 4),
+      ",",
+      round(CI[2], 4),
+      "), Ratio =",
+      round(ratio, 4),
+      "is ",
+      ifelse(doStop, "is less than or equal to", "greater than"),
+      "target_ratio =",
+      stopping@target_ratio
+    )
+    ## return both
+    return(structure(
+      doStop,
+      message = text,
+      report_label = stopping@report_label
+    ))
+  }
 )
 
 ## --------------------------------------------------------------------------------------------------
@@ -3323,115 +3697,139 @@ setMethod("stopTrial",
 ##' called \code{Gstarsamples}, the final next best Gstar estimate.
 ##'
 ##' @example examples/Rules-method-stopTrialCIMaxGainSamples.R
-setMethod("stopTrial",
-  signature =
-    signature(
-      stopping = "StoppingMaxGainCIRatio",
-      dose = "ANY",
-      samples = "Samples",
-      model = "ModelTox",
-      data = "DataDual"
-    ),
-  def =
-    function(stopping, dose, samples, model, data, TDderive, Effmodel, Effsamples, Gstarderive, ...) {
-      prob_target <- stopping@prob_target
+setMethod(
+  "stopTrial",
+  signature = signature(
+    stopping = "StoppingMaxGainCIRatio",
+    dose = "ANY",
+    samples = "Samples",
+    model = "ModelTox",
+    data = "DataDual"
+  ),
+  def = function(
+    stopping,
+    dose,
+    samples,
+    model,
+    data,
+    TDderive,
+    Effmodel,
+    Effsamples,
+    Gstarderive,
+    ...
+  ) {
+    prob_target <- stopping@prob_target
 
-      ## checks
-      assert_probability(prob_target)
-      stopifnot(is(Effmodel, "ModelEff"))
-      stopifnot(is(Effsamples, "Samples"))
-      stopifnot(is.function(TDderive))
-      stopifnot(is.function(Gstarderive))
+    ## checks
+    assert_probability(prob_target)
+    stopifnot(is(Effmodel, "ModelEff"))
+    stopifnot(is(Effsamples, "Samples"))
+    stopifnot(is.function(TDderive))
+    stopifnot(is.function(Gstarderive))
 
-      ## find the TDtarget End of Trial samples
-      TDtargetEndOfTrialSamples <- dose(
-        x = prob_target,
-        model = model,
-        samples = samples,
+    ## find the TDtarget End of Trial samples
+    TDtargetEndOfTrialSamples <- dose(
+      x = prob_target,
+      model = model,
+      samples = samples,
+      ...
+    )
+    ## Find the TDtarget End of trial estimate
+    TDtargetEndOfTrialEstimate <- TDderive(TDtargetEndOfTrialSamples)
+
+    ## Find the gain value samples then the GstarSamples
+    points <- data@doseGrid
+
+    GainSamples <- matrix(
+      nrow = size(samples),
+      ncol = length(points)
+    )
+
+    ## evaluate the probs, for all gain samples.
+    for (i in seq_along(points)) {
+      ## Now we want to evaluate for the
+      ## following dose:
+      GainSamples[, i] <- gain(
+        dose = points[i],
+        model,
+        samples,
+        Effmodel,
+        Effsamples,
         ...
       )
-      ## Find the TDtarget End of trial estimate
-      TDtargetEndOfTrialEstimate <- TDderive(TDtargetEndOfTrialSamples)
-
-      ## Find the gain value samples then the GstarSamples
-      points <- data@doseGrid
-
-      GainSamples <- matrix(
-        nrow = size(samples),
-        ncol = length(points)
-      )
-
-      ## evaluate the probs, for all gain samples.
-      for (i in seq_along(points))
-      {
-        ## Now we want to evaluate for the
-        ## following dose:
-        GainSamples[, i] <- gain(
-          dose = points[i],
-          model,
-          samples,
-          Effmodel,
-          Effsamples,
-          ...
-        )
-      }
-
-      ## Find the maximum gain value samples
-      MaxGainSamples <- apply(GainSamples, 1, max)
-
-      ## Obtain Gstar samples, samples for the dose level which gives the maximum gain value
-      IndexG <- apply(GainSamples, 1, which.max)
-      GstarSamples <- data@doseGrid[IndexG]
-
-      ## Find the Gstar estimate
-
-      Gstar <- Gstarderive(GstarSamples)
-      ## Find the 95% credibility interval of Gstar and its ratio of the upper to the lower limit
-      CIGstar <- quantile(GstarSamples, probs = c(0.025, 0.975))
-      ratioGstar <- as.numeric(CIGstar[2] / CIGstar[1])
-
-      ## Find the 95% credibility interval of TDtargetEndOfTrial and its ratio of the upper to the lower limit
-      CITDEOT <- quantile(TDtargetEndOfTrialSamples, probs = c(0.025, 0.975))
-      ratioTDEOT <- as.numeric(CITDEOT[2] / CITDEOT[1])
-
-      ## Find which is smaller (TDtargetEndOfTrialEstimate or Gstar)
-
-      if (TDtargetEndOfTrialEstimate <= Gstar) {
-        ## Find the upper and lower limit of the 95% credibility interval and its ratio of the smaller
-        CI <- CITDEOT
-        ratio <- ratioTDEOT
-        chooseTD <- TRUE
-      } else {
-        CI <- CIGstar
-        ratio <- ratioGstar
-        chooseTD <- FALSE
-      }
-
-      ## so can we stop?
-      doStop <- ratio <= stopping@target_ratio
-      ## generate message
-      text1 <- paste(
-        "Gstar estimate is", round(Gstar, 4), "with 95% CI (", round(CIGstar[1], 4), ",", round(CIGstar[2], 4),
-        ") and its ratio =",
-        round(ratioGstar, 4)
-      )
-      text2 <- paste(
-        "TDtargetEndOfTrial estimate is ", round(TDtargetEndOfTrialEstimate, 4),
-        "with 95% CI (", round(CITDEOT[1], 4), ",", round(CITDEOT[2], 4), ") and its ratio=",
-        round(ratioTDEOT, 4)
-      )
-      text3 <- paste(
-        ifelse(chooseTD, "TDtargetEndOfTrial estimate", "Gstar estimate"), "is smaller with ratio =",
-        round(ratio, 4), " which is ", ifelse(doStop, "is less than or equal to", "greater than"),
-        "target_ratio =", stopping@target_ratio
-      )
-      text <- c(text1, text2, text3)
-      ## return both
-      return(structure(doStop,
-        message = text,
-        report_label = stopping@report_label
-      ))
     }
+
+    ## Find the maximum gain value samples
+    MaxGainSamples <- apply(GainSamples, 1, max)
+
+    ## Obtain Gstar samples, samples for the dose level which gives the maximum gain value
+    IndexG <- apply(GainSamples, 1, which.max)
+    GstarSamples <- data@doseGrid[IndexG]
+
+    ## Find the Gstar estimate
+
+    Gstar <- Gstarderive(GstarSamples)
+    ## Find the 95% credibility interval of Gstar and its ratio of the upper to the lower limit
+    CIGstar <- quantile(GstarSamples, probs = c(0.025, 0.975))
+    ratioGstar <- as.numeric(CIGstar[2] / CIGstar[1])
+
+    ## Find the 95% credibility interval of TDtargetEndOfTrial and its ratio of the upper to the lower limit
+    CITDEOT <- quantile(TDtargetEndOfTrialSamples, probs = c(0.025, 0.975))
+    ratioTDEOT <- as.numeric(CITDEOT[2] / CITDEOT[1])
+
+    ## Find which is smaller (TDtargetEndOfTrialEstimate or Gstar)
+
+    if (TDtargetEndOfTrialEstimate <= Gstar) {
+      ## Find the upper and lower limit of the 95% credibility interval and its ratio of the smaller
+      CI <- CITDEOT
+      ratio <- ratioTDEOT
+      chooseTD <- TRUE
+    } else {
+      CI <- CIGstar
+      ratio <- ratioGstar
+      chooseTD <- FALSE
+    }
+
+    ## so can we stop?
+    doStop <- ratio <= stopping@target_ratio
+    ## generate message
+    text1 <- paste(
+      "Gstar estimate is",
+      round(Gstar, 4),
+      "with 95% CI (",
+      round(CIGstar[1], 4),
+      ",",
+      round(CIGstar[2], 4),
+      ") and its ratio =",
+      round(ratioGstar, 4)
+    )
+    text2 <- paste(
+      "TDtargetEndOfTrial estimate is ",
+      round(TDtargetEndOfTrialEstimate, 4),
+      "with 95% CI (",
+      round(CITDEOT[1], 4),
+      ",",
+      round(CITDEOT[2], 4),
+      ") and its ratio=",
+      round(ratioTDEOT, 4)
+    )
+    text3 <- paste(
+      ifelse(chooseTD, "TDtargetEndOfTrial estimate", "Gstar estimate"),
+      "is smaller with ratio =",
+      round(ratio, 4),
+      " which is ",
+      ifelse(doStop, "is less than or equal to", "greater than"),
+      "target_ratio =",
+      stopping@target_ratio
+    )
+    text <- c(text1, text2, text3)
+    ## return both
+    return(structure(
+      doStop,
+      message = text,
+      report_label = stopping@report_label
+    ))
+  }
 )
 
 ## -----------------------------------------------------------------------------------------------
@@ -3441,144 +3839,186 @@ setMethod("stopTrial",
 ##' interval of the estimate (the minimum of Gstar and TDtargetEndOfTrial). This is a stopping rule which
 ##' incorporate DLE and efficacy responses without DLE and efficacy samples involved.
 ##' @example examples/Rules-method-stopTrialCIMaxGain.R
-setMethod("stopTrial",
-  signature =
-    signature(
-      stopping = "StoppingMaxGainCIRatio",
-      dose = "ANY",
-      samples = "missing",
-      model = "ModelTox",
-      data = "DataDual"
-    ),
-  def =
-    function(stopping, dose, model, data, Effmodel, ...) {
-      prob_target <- stopping@prob_target
+setMethod(
+  "stopTrial",
+  signature = signature(
+    stopping = "StoppingMaxGainCIRatio",
+    dose = "ANY",
+    samples = "missing",
+    model = "ModelTox",
+    data = "DataDual"
+  ),
+  def = function(stopping, dose, model, data, Effmodel, ...) {
+    prob_target <- stopping@prob_target
 
-      ## checks
-      assert_probability(prob_target)
-      stopifnot(is(Effmodel, "ModelEff"))
+    ## checks
+    assert_probability(prob_target)
+    stopifnot(is(Effmodel, "ModelEff"))
 
+    ## find the TDtarget End of Trial
+    TDtargetEndOfTrial <- dose(
+      x = prob_target,
+      model = model,
+      ...
+    )
 
-      ## find the TDtarget End of Trial
-      TDtargetEndOfTrial <- dose(
-        x = prob_target,
-        model = model,
-        ...
-      )
-
-      ## Find the dose with maximum gain value
-      Gainfun <- function(DOSE) {
-        -gain(DOSE, model_dle = model, model_eff = Effmodel, ...)
-      }
-
-      # if(data@placebo) {
-      # n <- length(data@doseGrid)
-      # LowestDose <- sort(data@doseGrid)[2]} else {
-      LowestDose <- min(data@doseGrid)
-      # }
-
-      Gstar <- (optim(LowestDose, Gainfun, method = "L-BFGS-B", lower = LowestDose, upper = max(data@doseGrid))$par)
-      MaxGain <- -(optim(LowestDose, Gainfun, method = "L-BFGS-B", lower = LowestDose, upper = max(data@doseGrid))$value)
-      if (data@placebo) {
-        logGstar <- log(Gstar + Effmodel@const)
-      } else {
-        logGstar <- log(Gstar)
-      }
-
-
-
-      ## From paper (Yeung et. al 2015)
-
-      meanEffGstar <- Effmodel@theta1 + Effmodel@theta2 * log(logGstar)
-
-      denom <- (model@phi2) * (meanEffGstar) * (1 + logGstar * model@phi2)
-
-      dgphi1 <- -(meanEffGstar * logGstar * model@phi2 - Effmodel@theta2) / denom
-
-      dgphi2 <- -((meanEffGstar) * logGstar + meanEffGstar * (logGstar)^2 * model@phi2 - Effmodel@theta2 * logGstar) / denom
-
-      dgtheta1 <- -(logGstar * model@phi2) / denom
-
-      dgtheta2 <- -(logGstar * exp(model@phi1 + model@phi2 * logGstar) * model@phi2 * log(logGstar) - 1 - exp(model@phi1 + model@phi2 * logGstar)) / denom
-
-      # DLEPRO <- exp(model@phi1+model@phi2*logGstar)
-
-      # dgphi1 <- Effmodel@theta2*DLEPRO - logGstar*model@phi2*meanEffGstar*DLEPRO
-
-      # dgphi2 <- logGstar*DLEPRO *(Effmodel@theta2-(meanEffGstar)+model@phi2)
-
-      # dgtheta1 <- -logGstar*DLEPRO*model@phi2
-
-      # dgtheta2 <- 1+DLEPRO-logGstar*DLEPRO*model@phi2*log(logGstar)
-
-      deltaG <- matrix(c(dgphi1, dgphi2, dgtheta1, dgtheta2), 4, 1)
-
-
-      ## Find the variance of the log Gstar
-      ## First find the covariance matrix of all the parameters, phi1, phi2, theta1 and theta2
-      ## such that phi1 and phi2 and independent of theta1 and theta2
-      emptyMatrix <- matrix(0, 2, 2)
-      covBETA <- cbind(rbind(model@Pcov, emptyMatrix), rbind(emptyMatrix, Effmodel@Pcov))
-      varlogGstar <- as.vector(t(deltaG) %*% covBETA %*% deltaG)
-
-      ## Find the upper and lower limit of the 95% credibility interval of Gstar
-      CIGstar <- exp(logGstar + c(-1, 1) * 1.96 * sqrt(varlogGstar))
-
-      ## The ratio of the upper to the lower 95% credibility interval
-      ratioGstar <- CIGstar[2] / CIGstar[1]
-
-      ## Find the variance of the log of the TDtargetEndOfTrial(eta)
-      M1 <- matrix(c(-1 / (model@phi2), -(log(prob_target / (1 - prob_target)) - model@phi1) / (model@phi2)^2), 1, 2)
-      M2 <- model@Pcov
-
-      varEta <- as.vector(M1 %*% M2 %*% t(M1))
-
-      ## Find the upper and lower limit of the 95% credibility interval of
-      ## TDtargetEndOfTrial
-      CITDEOT <- exp(log(TDtargetEndOfTrial) + c(-1, 1) * 1.96 * sqrt(varEta))
-
-      ## The ratio of the upper to the lower 95% credibility interval
-      ratioTDEOT <- CITDEOT[2] / CITDEOT[1]
-
-      if (Gstar <= TDtargetEndOfTrial) {
-        chooseTD <- FALSE
-        CI <- c()
-        CI[2] <- CIGstar[2]
-        CI[1] <- CIGstar[1]
-        ratio <- ratioGstar
-      } else {
-        chooseTD <- TRUE
-        CI <- c()
-        CI[2] <- CITDEOT[2]
-        CI[1] <- CITDEOT[1]
-        ratio <- ratioTDEOT
-      }
-      ## so can we stop?
-      doStop <- ratio <= stopping@target_ratio
-      ## generate message
-
-      text1 <- paste(
-        "Gstar estimate is", round(Gstar, 4), "with 95% CI (", round(CIGstar[1], 4), ",", round(CIGstar[2], 4),
-        ") and its ratio =",
-        round(ratioGstar, 4)
-      )
-      text2 <- paste(
-        "TDtargetEndOfTrial estimate is ", round(TDtargetEndOfTrial, 4),
-        "with 95% CI (", round(CITDEOT[1], 4), ",", round(CITDEOT[2], 4), ") and its ratio=",
-        round(ratioTDEOT, 4)
-      )
-      text3 <- paste(
-        ifelse(chooseTD, "TDatrgetEndOfTrial estimate", "Gstar estimate"), "is smaller with ratio =",
-        round(ratio, 4), "which is ", ifelse(doStop, "is less than or equal to", "greater than"),
-        "target_ratio =", stopping@target_ratio
-      )
-      text <- c(text1, text2, text3)
-      ## return both
-      return(structure(doStop,
-        message = text,
-        report_label = stopping@report_label
-      ))
+    ## Find the dose with maximum gain value
+    Gainfun <- function(DOSE) {
+      -gain(DOSE, model_dle = model, model_eff = Effmodel, ...)
     }
+
+    # if(data@placebo) {
+    # n <- length(data@doseGrid)
+    # LowestDose <- sort(data@doseGrid)[2]} else {
+    LowestDose <- min(data@doseGrid)
+    # }
+
+    Gstar <- (optim(
+      LowestDose,
+      Gainfun,
+      method = "L-BFGS-B",
+      lower = LowestDose,
+      upper = max(data@doseGrid)
+    )$par)
+    MaxGain <- -(optim(
+      LowestDose,
+      Gainfun,
+      method = "L-BFGS-B",
+      lower = LowestDose,
+      upper = max(data@doseGrid)
+    )$value)
+    if (data@placebo) {
+      logGstar <- log(Gstar + Effmodel@const)
+    } else {
+      logGstar <- log(Gstar)
+    }
+
+    ## From paper (Yeung et. al 2015)
+
+    meanEffGstar <- Effmodel@theta1 + Effmodel@theta2 * log(logGstar)
+
+    denom <- (model@phi2) * (meanEffGstar) * (1 + logGstar * model@phi2)
+
+    dgphi1 <- -(meanEffGstar * logGstar * model@phi2 - Effmodel@theta2) / denom
+
+    dgphi2 <- -((meanEffGstar) *
+      logGstar +
+      meanEffGstar * (logGstar)^2 * model@phi2 -
+      Effmodel@theta2 * logGstar) /
+      denom
+
+    dgtheta1 <- -(logGstar * model@phi2) / denom
+
+    dgtheta2 <- -(logGstar *
+      exp(model@phi1 + model@phi2 * logGstar) *
+      model@phi2 *
+      log(logGstar) -
+      1 -
+      exp(model@phi1 + model@phi2 * logGstar)) /
+      denom
+
+    # DLEPRO <- exp(model@phi1+model@phi2*logGstar)
+
+    # dgphi1 <- Effmodel@theta2*DLEPRO - logGstar*model@phi2*meanEffGstar*DLEPRO
+
+    # dgphi2 <- logGstar*DLEPRO *(Effmodel@theta2-(meanEffGstar)+model@phi2)
+
+    # dgtheta1 <- -logGstar*DLEPRO*model@phi2
+
+    # dgtheta2 <- 1+DLEPRO-logGstar*DLEPRO*model@phi2*log(logGstar)
+
+    deltaG <- matrix(c(dgphi1, dgphi2, dgtheta1, dgtheta2), 4, 1)
+
+    ## Find the variance of the log Gstar
+    ## First find the covariance matrix of all the parameters, phi1, phi2, theta1 and theta2
+    ## such that phi1 and phi2 and independent of theta1 and theta2
+    emptyMatrix <- matrix(0, 2, 2)
+    covBETA <- cbind(
+      rbind(model@Pcov, emptyMatrix),
+      rbind(emptyMatrix, Effmodel@Pcov)
+    )
+    varlogGstar <- as.vector(t(deltaG) %*% covBETA %*% deltaG)
+
+    ## Find the upper and lower limit of the 95% credibility interval of Gstar
+    CIGstar <- exp(logGstar + c(-1, 1) * 1.96 * sqrt(varlogGstar))
+
+    ## The ratio of the upper to the lower 95% credibility interval
+    ratioGstar <- CIGstar[2] / CIGstar[1]
+
+    ## Find the variance of the log of the TDtargetEndOfTrial(eta)
+    M1 <- matrix(
+      c(
+        -1 / (model@phi2),
+        -(log(prob_target / (1 - prob_target)) - model@phi1) / (model@phi2)^2
+      ),
+      1,
+      2
+    )
+    M2 <- model@Pcov
+
+    varEta <- as.vector(M1 %*% M2 %*% t(M1))
+
+    ## Find the upper and lower limit of the 95% credibility interval of
+    ## TDtargetEndOfTrial
+    CITDEOT <- exp(log(TDtargetEndOfTrial) + c(-1, 1) * 1.96 * sqrt(varEta))
+
+    ## The ratio of the upper to the lower 95% credibility interval
+    ratioTDEOT <- CITDEOT[2] / CITDEOT[1]
+
+    if (Gstar <= TDtargetEndOfTrial) {
+      chooseTD <- FALSE
+      CI <- c()
+      CI[2] <- CIGstar[2]
+      CI[1] <- CIGstar[1]
+      ratio <- ratioGstar
+    } else {
+      chooseTD <- TRUE
+      CI <- c()
+      CI[2] <- CITDEOT[2]
+      CI[1] <- CITDEOT[1]
+      ratio <- ratioTDEOT
+    }
+    ## so can we stop?
+    doStop <- ratio <= stopping@target_ratio
+    ## generate message
+
+    text1 <- paste(
+      "Gstar estimate is",
+      round(Gstar, 4),
+      "with 95% CI (",
+      round(CIGstar[1], 4),
+      ",",
+      round(CIGstar[2], 4),
+      ") and its ratio =",
+      round(ratioGstar, 4)
+    )
+    text2 <- paste(
+      "TDtargetEndOfTrial estimate is ",
+      round(TDtargetEndOfTrial, 4),
+      "with 95% CI (",
+      round(CITDEOT[1], 4),
+      ",",
+      round(CITDEOT[2], 4),
+      ") and its ratio=",
+      round(ratioTDEOT, 4)
+    )
+    text3 <- paste(
+      ifelse(chooseTD, "TDatrgetEndOfTrial estimate", "Gstar estimate"),
+      "is smaller with ratio =",
+      round(ratio, 4),
+      "which is ",
+      ifelse(doStop, "is less than or equal to", "greater than"),
+      "target_ratio =",
+      stopping@target_ratio
+    )
+    text <- c(text1, text2, text3)
+    ## return both
+    return(structure(
+      doStop,
+      message = text,
+      report_label = stopping@report_label
+    ))
+  }
 )
 
 
@@ -3604,13 +4044,13 @@ setMethod("stopTrial",
 ##'
 ##' @export
 ##' @keywords methods
-setGeneric("windowLength",
-  def =
-    function(safetyWindow, size, ...) {
-      ## there should be no default method,
-      ## therefore just forward to next method!
-      standardGeneric("windowLength")
-    },
+setGeneric(
+  "windowLength",
+  def = function(safetyWindow, size, ...) {
+    ## there should be no default method,
+    ## therefore just forward to next method!
+    standardGeneric("windowLength")
+  },
   valueClass = "list"
 )
 
@@ -3625,33 +4065,40 @@ setGeneric("windowLength",
 ##' on the cohort size
 ##'
 ##' @example examples/Rules-method-windowLength-SafetyWindowSize.R
-setMethod("windowLength",
-  signature =
-    signature(
-      safetyWindow = "SafetyWindowSize",
-      size = "ANY"
-    ),
-  def =
-    function(safetyWindow, size, data, ...) {
-      ## determine in which interval the next size is
-      interval <-
-        findInterval(
-          x = size,
-          vec = safetyWindow@size
-        )
+setMethod(
+  "windowLength",
+  signature = signature(
+    safetyWindow = "SafetyWindowSize",
+    size = "ANY"
+  ),
+  def = function(safetyWindow, size, data, ...) {
+    ## determine in which interval the next size is
+    interval <-
+      findInterval(
+        x = size,
+        vec = safetyWindow@size
+      )
 
-      ## so the safety window length is
-      patientGap <- head(c(
-        0, safetyWindow@gap[[interval]],
+    ## so the safety window length is
+    patientGap <- head(
+      c(
+        0,
+        safetyWindow@gap[[interval]],
         rep(tail(safetyWindow@gap[[interval]], 1), 100)
-      ), size)
-      patientFollow <- safetyWindow@follow
-      patientFollowMin <- safetyWindow@follow_min
+      ),
+      size
+    )
+    patientFollow <- safetyWindow@follow
+    patientFollowMin <- safetyWindow@follow_min
 
-      ret <- list(patientGap = patientGap, patientFollow = patientFollow, patientFollowMin = patientFollowMin)
+    ret <- list(
+      patientGap = patientGap,
+      patientFollow = patientFollow,
+      patientFollowMin = patientFollowMin
+    )
 
-      return(ret)
-    }
+    return(ret)
+  }
 )
 
 ## ============================================================
@@ -3662,30 +4109,33 @@ setMethod("windowLength",
 
 ##' @describeIn windowLength Constant safety window length
 ##' @example examples/Rules-method-windowLength-SafetyWindowConst.R
-setMethod("windowLength",
-  signature =
-    signature(
-      safetyWindow = "SafetyWindowConst",
-      size = "ANY"
-    ),
-  def =
-    function(safetyWindow, size, ...) {
-      ## first element should be 0.
-      patientGap <- head(c(
-        0, safetyWindow@gap,
+setMethod(
+  "windowLength",
+  signature = signature(
+    safetyWindow = "SafetyWindowConst",
+    size = "ANY"
+  ),
+  def = function(safetyWindow, size, ...) {
+    ## first element should be 0.
+    patientGap <- head(
+      c(
+        0,
+        safetyWindow@gap,
         rep(tail(safetyWindow@gap, 1), 100)
-      ), size)
-      patientFollow <- safetyWindow@follow
-      patientFollowMin <- safetyWindow@follow_min
+      ),
+      size
+    )
+    patientFollow <- safetyWindow@follow
+    patientFollowMin <- safetyWindow@follow_min
 
-      ret <- list(
-        patientGap = patientGap,
-        patientFollow = patientFollow,
-        patientFollowMin = patientFollowMin
-      )
+    ret <- list(
+      patientGap = patientGap,
+      patientFollow = patientFollow,
+      patientFollowMin = patientFollowMin
+    )
 
-      return(ret)
-    }
+    return(ret)
+  }
 )
 
 # nolint end
@@ -3920,7 +4370,8 @@ setMethod(
             )
           },
           obj = x
-        ) %>% dplyr::bind_rows()
+        ) %>%
+          dplyr::bind_rows()
       ) %>%
       add_column(LossCoefficient = x@losses) %>%
       add_column(MaxOverdoseProb = x@max_overdose_prob) %>%
