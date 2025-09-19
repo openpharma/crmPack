@@ -89,6 +89,7 @@ my_design <- DualResponsesDesign(
 my_truth_dle <- probFunction(dle_model, phi1 = -53.66584, phi2 = 10.50499)
 my_truth_eff <- efficacyFunction(eff_model, theta1 = -4.818429, theta2 = 3.653058)
 
+\donttest{
 # Specify the simulations and generate the 2 trials.
 my_sim <- simulate(
   object = my_design,
@@ -107,6 +108,7 @@ summary(
   trueDLE = my_truth_dle,
   trueEff = my_truth_eff
 )
+}
 
 # Example where DLE and efficacy samples are involved.
 # Please refer to design-method 'simulate DualResponsesSamplesDesign' examples for details.
@@ -138,6 +140,7 @@ my_design <- DualResponsesSamplesDesign(
 # For illustration purpose 50 burn-ins to generate 200 samples are used.
 my_options <- McmcOptions(burnin = 50, step = 2, samples = 200)
 
+\donttest{
 # For illustration purpose 2 simulation are created.
 my_sim <- simulate(
   object = my_design,
@@ -157,5 +160,6 @@ summary(
   trueDLE = my_truth_dle,
   trueEff = my_truth_eff
 )
+}
 }
 \keyword{methods}
