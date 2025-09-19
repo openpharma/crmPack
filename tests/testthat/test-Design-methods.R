@@ -576,9 +576,7 @@ test_that("simulate-DualResponsesDesign produces consistent results", {
   )
 
   myTruthGain <- function(dose) {
-    return(
-      (myTruthEff(dose)) / (1 + (myTruthDLE(dose) / (1 - myTruthDLE(dose))))
-    )
+    myTruthEff(dose) / (1 + (myTruthDLE(dose) / (1 - myTruthDLE(dose))))
   }
   options <- McmcOptions(burnin = 100, step = 2, samples = 200)
   result <- simulate(
@@ -651,9 +649,7 @@ test_that("simulate-DualResponsesSamplesDesign produces consistent results", {
   )
 
   myTruthGain <- function(dose) {
-    return(
-      (myTruthEff(dose)) / (1 + (myTruthDLE(dose) / (1 - myTruthDLE(dose))))
-    )
+    myTruthEff(dose) / (1 + (myTruthDLE(dose) / (1 - myTruthDLE(dose))))
   }
 
   options <- McmcOptions(burnin = 10, step = 1, samples = 50)
