@@ -157,7 +157,7 @@ probit <- function(x) {
 ##' @return nothing
 ##' @export
 ##' @keywords documentation
-##' @author Daniel Sabanes Bove \email{sabanesd@@roche.com}
+##' @author Daniel Sabanes Bove \email{sabanesd@@rconis.com}
 crmPackExample <- function() {
   crmPath <- system.file(package = "crmPack")
   printVignette(list(PDF = "example.pdf", Dir = crmPath))
@@ -173,7 +173,7 @@ crmPackExample <- function() {
 ##' @export
 ##' @importFrom utils help
 ##' @keywords documentation
-##' @author Daniel Sabanes Bove \email{sabanesd@@roche.com}
+##' @author Daniel Sabanes Bove \email{sabanesd@@rconis.com}
 crmPackHelp <- function() {
   utils::help(package = "crmPack", help_type = "html")
 }
@@ -262,8 +262,7 @@ dinvGamma <- function(x,
 ##' @param b the scale parameter of the inverse gamma distribution
 ##' @param lower.tail logical; if TRUE (default), probabilities are `P(X  > x)`,
 ##'   otherwise, `P(X <= x)`.
-##' @param logical; FALSE (default) if TRUE, probabilities/densities p
-##'   are returned as `log(p)`
+##' @param log.p if TRUE, probabilities/densities p are returned as `log(p)`
 ##'
 ##' @keywords internal
 pinvGamma <- function(q,
@@ -286,8 +285,7 @@ pinvGamma <- function(q,
 ##' @param b the scale parameter of the inverse gamma distribution
 ##' @param lower.tail logical; if TRUE (default), probabilities are `P(X  > x)`,
 ##'   otherwise, `P(X <= x)`.
-##' @param logical; FALSE (default) if TRUE, probabilities/densities p are
-##'   returned as `log(p)`
+##' @param log.p FALSE if TRUE, probabilities/densities p are returned as `log(p)`
 ##'
 ##' @keywords internal
 qinvGamma <- function(p,
@@ -680,8 +678,9 @@ h_null_if_na <- function(x) {
 #'
 #' @description `r lifecycle::badge("stable")`
 #'
-#' A simple helper function that sets a default value for an empty object,
-#' that is an object for which [length()] function returns `0L`.
+#' A simple helper function that sets a default value for an empty or missing object,
+#' that is an object for which [length()] function returns `0L` or it has length 1
+#' and [is.na()] returns `TRUE`.
 #'
 #' @param x (`any`) \cr an object to handle. It can be any object for which
 #'   [length()] function is defined.
@@ -693,7 +692,7 @@ h_null_if_na <- function(x) {
 #' h_default_if_empty("custom label", default = "default label")
 #' h_default_if_empty(NA, default = "default label")
 h_default_if_empty <- function(x, default) {
-  if (length(x) == 0L) {
+  if (length(x) == 0L || (length(x) == 1L && is.na(x))) {
     default
   } else {
     x

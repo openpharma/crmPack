@@ -467,14 +467,9 @@
 
 # tidy-NextBestNCRMLoss works correctly
 
-    structure(list(unacceptable = structure(list(unacceptable = c(0.6, 
-    1)), class = c("tbl_df", "tbl", "data.frame"), row.names = c(NA, 
-    -2L)), losses = structure(list(losses = c(1, 0, 1, 2)), class = c("tbl_df", 
-    "tbl", "data.frame"), row.names = c(NA, -4L)), target = structure(list(
-        target = c(0.2, 0.35)), class = c("tbl_df", "tbl", "data.frame"
-    ), row.names = c(NA, -2L)), overdose = structure(list(overdose = c(0.35, 
-    0.6)), class = c("tbl_df", "tbl", "data.frame"), row.names = c(NA, 
-    -2L)), max_overdose_prob = structure(list(max_overdose_prob = 0.25), class = c("tbl_df", 
-    "tbl", "data.frame"), row.names = c(NA, -1L))), class = c("tbl_NextBestNCRMLoss", 
-    "list"))
+    structure(list(Range = c("Underdose", "Target", "Overdose", "Unacceptable"
+    ), Lower = c(0, 0.2, 0.35, 0.6), Upper = c(0.2, 0.35, 0.6, 1), 
+        LossCoefficient = c(1, 0, 1, 2), MaxOverdoseProb = c(0.25, 
+        0.25, 0.25, 0.25)), row.names = c(NA, -4L), class = c("tbl_NextBestNCRMLoss", 
+    "tbl_df", "tbl", "data.frame"))
 

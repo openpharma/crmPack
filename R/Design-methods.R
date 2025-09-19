@@ -1996,15 +1996,15 @@ setMethod("simulate",
         data = dataList,
         doses = recommendedDoses,
         fit = fitList,
-        FinalTDtargetDuringTrialEstimates = TDtargetDuringTrialList,
-        FinalTDtargetEndOfTrialEstimates = TDtargetEndOfTrialList,
-        FinalTDtargetDuringTrialAtDoseGrid = TDtargetDuringTrialDoseGridList,
-        FinalTDtargetEndOfTrialAtDoseGrid = TDtargetEndOfTrialDoseGridList,
-        FinalCIs = CIList,
-        FinalRatios = ratioList,
-        FinalTDEOTCIs = CITDEOTList,
-        FinalTDEOTRatios = ratioTDEOTList,
-        stopReasons = stopReasons,
+        final_td_target_during_trial_estimates = TDtargetDuringTrialList,
+        final_td_target_end_of_trial_estimates = TDtargetEndOfTrialList,
+        final_td_target_during_trial_at_dose_grid = TDtargetDuringTrialDoseGridList,
+        final_td_target_end_of_trial_at_dose_grid = TDtargetEndOfTrialDoseGridList,
+        final_cis = CIList,
+        final_ratios = ratioList,
+        final_tdeot_cis = CITDEOTList,
+        final_tdeot_ratios = ratioTDEOTList,
+        stop_reasons = stopReasons,
         stop_report = stop_report,
         seed = RNGstate
       )
@@ -2350,15 +2350,15 @@ setMethod("simulate",
         data = dataList,
         doses = recommendedDoses,
         fit = fitList,
-        FinalTDtargetDuringTrialEstimates = TDtargetDuringTrialList,
-        FinalTDtargetEndOfTrialEstimates = TDtargetEndOfTrialList,
-        FinalTDtargetDuringTrialAtDoseGrid = TDtargetDuringTrialDoseGridList,
-        FinalTDtargetEndOfTrialAtDoseGrid = TDtargetEndOfTrialDoseGridList,
-        FinalCIs = CIList,
-        FinalRatios = ratioList,
-        FinalTDEOTCIs = CITDEOTList,
-        FinalTDEOTRatios = ratioTDEOTList,
-        stopReasons = stopReasons,
+        final_td_target_during_trial_estimates = TDtargetDuringTrialList,
+        final_td_target_end_of_trial_estimates = TDtargetEndOfTrialList,
+        final_td_target_during_trial_at_dose_grid = TDtargetDuringTrialDoseGridList,
+        final_td_target_end_of_trial_at_dose_grid = TDtargetEndOfTrialDoseGridList,
+        final_cis = CIList,
+        final_ratios = ratioList,
+        final_tdeot_cis = CITDEOTList,
+        final_tdeot_ratios = ratioTDEOTList,
+        stop_reasons = stopReasons,
         stop_report = stop_report,
         seed = RNGstate
       )
@@ -2872,24 +2872,24 @@ setMethod("simulate",
       ret <- PseudoDualSimulations(
         data = dataList,
         doses = recommendedDoses,
-        FinalTDtargetDuringTrialEstimates = TDtargetDuringTrialList,
-        FinalTDtargetEndOfTrialEstimates = TDtargetEndOfTrialList,
-        FinalTDtargetDuringTrialAtDoseGrid = TDtargetDuringTrialDoseGridList,
-        FinalTDtargetEndOfTrialAtDoseGrid = TDtargetEndOfTrialDoseGridList,
-        FinalCIs = CIList,
-        FinalRatios = ratioList,
-        FinalGstarEstimates = GstarList,
-        FinalGstarAtDoseGrid = GstarAtDoseGridList,
-        FinalGstarCIs = CIGstarList,
-        FinalGstarRatios = ratioGstarList,
-        FinalTDEOTCIs = CITDEOTList,
-        FinalTDEOTRatios = ratioTDEOTList,
-        FinalOptimalDose = OptimalDoseList,
-        FinalOptimalDoseAtDoseGrid = OptimalDoseAtDoseGridList,
+        final_td_target_during_trial_estimates = TDtargetDuringTrialList,
+        final_td_target_end_of_trial_estimates = TDtargetEndOfTrialList,
+        final_td_target_during_trial_at_dose_grid = TDtargetDuringTrialDoseGridList,
+        final_td_target_end_of_trial_at_dose_grid = TDtargetEndOfTrialDoseGridList,
+        final_cis = CIList,
+        final_ratios = ratioList,
+        final_gstar_estimates = GstarList,
+        final_gstar_at_dose_grid = GstarAtDoseGridList,
+        final_gstar_cis = CIGstarList,
+        final_gstar_ratios = ratioGstarList,
+        final_tdeot_cis = CITDEOTList,
+        final_tdeot_ratios = ratioTDEOTList,
+        final_optimal_dose = OptimalDoseList,
+        final_optimal_dose_at_dose_grid = OptimalDoseAtDoseGridList,
         fit = fitDLEList,
-        fitEff = fitEffList,
-        sigma2est = sigma2Estimates,
-        stopReasons = stopReasons,
+        fit_eff = fitEffList,
+        sigma2_est = sigma2Estimates,
+        stop_reasons = stopReasons,
         stop_report = stop_report,
         seed = RNGstate
       )
@@ -3425,25 +3425,25 @@ setMethod("simulate",
         ret <- PseudoDualFlexiSimulations(
           data = dataList,
           doses = recommendedDoses,
-          FinalTDtargetDuringTrialEstimates = TDtargetDuringTrialList,
-          FinalTDtargetEndOfTrialEstimates = TDtargetEndOfTrialList,
-          FinalTDtargetDuringTrialAtDoseGrid = TDtargetDuringTrialDoseGridList,
-          FinalTDtargetEndOfTrialAtDoseGrid = TDtargetEndOfTrialDoseGridList,
-          FinalCIs = CIList,
-          FinalRatios = ratioList,
-          FinalGstarEstimates = GstarList,
-          FinalGstarAtDoseGrid = GstarAtDoseGridList,
-          FinalGstarCIs = CIGstarList,
-          FinalGstarRatios = ratioGstarList,
-          FinalTDEOTCIs = CITDEOTList,
-          FinalTDEOTRatios = ratioTDEOTList,
-          FinalOptimalDose = OptimalDoseList,
-          FinalOptimalDoseAtDoseGrid = OptimalDoseAtDoseGridList,
+          final_td_target_during_trial_estimates = TDtargetDuringTrialList,
+          final_td_target_end_of_trial_estimates = TDtargetEndOfTrialList,
+          final_td_target_during_trial_at_dose_grid = TDtargetDuringTrialDoseGridList,
+          final_td_target_end_of_trial_at_dose_grid = TDtargetEndOfTrialDoseGridList,
+          final_cis = CIList,
+          final_ratios = ratioList,
+          final_gstar_estimates = GstarList,
+          final_gstar_at_dose_grid = GstarAtDoseGridList,
+          final_gstar_cis = CIGstarList,
+          final_gstar_ratios = ratioGstarList,
+          final_tdeot_cis = CITDEOTList,
+          final_tdeot_ratios = ratioTDEOTList,
+          final_optimal_dose = OptimalDoseList,
+          final_optimal_dose_at_dose_grid = OptimalDoseAtDoseGridList,
           fit = fitDLEList,
-          fitEff = fitEffList,
-          sigma2est = sigma2Estimates,
+          fit_eff = fitEffList,
+          sigma2_est = sigma2Estimates,
           sigma2betaWest = sigma2betaWEstimates,
-          stopReasons = stopReasons,
+          stop_reasons = stopReasons,
           stop_report = stop_report,
           seed = RNGstate
         )
@@ -3898,24 +3898,24 @@ setMethod("simulate",
         ret <- PseudoDualSimulations(
           data = dataList,
           doses = recommendedDoses,
-          FinalTDtargetDuringTrialEstimates = TDtargetDuringTrialList,
-          FinalTDtargetEndOfTrialEstimates = TDtargetEndOfTrialList,
-          FinalTDtargetDuringTrialAtDoseGrid = TDtargetDuringTrialDoseGridList,
-          FinalTDtargetEndOfTrialAtDoseGrid = TDtargetEndOfTrialDoseGridList,
-          FinalCIs = CIList,
-          FinalRatios = ratioList,
-          FinalGstarEstimates = GstarList,
-          FinalGstarAtDoseGrid = GstarAtDoseGridList,
-          FinalGstarCIs = CIGstarList,
-          FinalGstarRatios = ratioGstarList,
-          FinalTDEOTCIs = CITDEOTList,
-          FinalTDEOTRatios = ratioTDEOTList,
-          FinalOptimalDose = OptimalDoseList,
-          FinalOptimalDoseAtDoseGrid = OptimalDoseAtDoseGridList,
+          final_td_target_during_trial_estimates = TDtargetDuringTrialList,
+          final_td_target_end_of_trial_estimates = TDtargetEndOfTrialList,
+          final_td_target_during_trial_at_dose_grid = TDtargetDuringTrialDoseGridList,
+          final_td_target_end_of_trial_at_dose_grid = TDtargetEndOfTrialDoseGridList,
+          final_cis = CIList,
+          final_ratios = ratioList,
+          final_gstar_estimates = GstarList,
+          final_gstar_at_dose_grid = GstarAtDoseGridList,
+          final_gstar_cis = CIGstarList,
+          final_gstar_ratios = ratioGstarList,
+          final_tdeot_cis = CITDEOTList,
+          final_tdeot_ratios = ratioTDEOTList,
+          final_optimal_dose = OptimalDoseList,
+          final_optimal_dose_at_dose_grid = OptimalDoseAtDoseGridList,
           fit = fitDLEList,
-          fitEff = fitEffList,
-          sigma2est = sigma2Estimates,
-          stopReasons = stopReasons,
+          fit_eff = fitEffList,
+          sigma2_est = sigma2Estimates,
+          stop_reasons = stopReasons,
           stop_report = stop_report,
           seed = RNGstate
         )
@@ -4632,8 +4632,6 @@ setMethod(
         current$first <- TRUE
         current$mono$stop <- current$combo$stop <- FALSE
 
-
-
         # What are the next doses to be used? Initialize with starting doses.
         if (object@same_dose_for_all || (!object@first_cohort_mono_only && object@same_dose_for_start)) {
           current$mono$dose <- current$combo$dose <- min(object@mono@startingDose, object@combo@startingDose)
@@ -4642,26 +4640,15 @@ setMethod(
           current$combo$dose <- object@combo@startingDose
         }
 
-
-        cohort_size_mono <- size(object@mono@cohort_size,
-          dose = current$mono$dose,
-          data = current$mono$data
-        )
-
-        cohort_size_combo <- size(object@combo@cohort_size,
-          dose = current$combo$dose,
-          data = current$combo$data
-        )
-
-
-        this_prob_mono <- current$mono$truth(current$mono$dose)
-        this_prob_combo <- current$combo$truth(current$combo$dose)
-
-
-
         # Inside this loop we simulate the whole trial, until stopping.
         while (!(current$mono$stop && current$combo$stop)) {
           if (!current$mono$stop) {
+            cohort_size_mono <- size(
+              object@mono@cohort_size,
+              dose = current$mono$dose,
+              data = current$mono$data
+            )
+            this_prob_mono <- current$mono$truth(current$mono$dose)
             current$mono$data <- current$mono$data %>%
               h_determine_dlts(
                 dose = current$mono$dose,
@@ -4671,6 +4658,12 @@ setMethod(
               )
           }
           if (!current$combo$stop && (!current$first || !object@first_cohort_mono_only)) {
+            cohort_size_combo <- size(
+              object@combo@cohort_size,
+              dose = current$combo$dose,
+              data = current$combo$data
+            )
+            this_prob_combo <- current$combo$truth(current$combo$dose)
             current$combo$data <- current$combo$data %>%
               h_determine_dlts(
                 dose = current$combo$dose,
@@ -4680,7 +4673,6 @@ setMethod(
               )
           }
 
-
           current$grouped <- h_group_data(current$mono$data, current$combo$data)
           current$samples <- mcmc(current$grouped, object@model, mcmcOptions)
           if (!current$mono$stop) {
@@ -4688,9 +4680,6 @@ setMethod(
             current$mono$dose <- object@mono@nextBest %>%
               nextBest(current$mono$limit, current$samples, object@model, current$grouped, group = "mono")
             current$mono$dose <- current$mono$dose$value
-            current$mono$stop <- object@mono@stopping %>%
-              stopTrial(current$mono$dose, current$samples, object@model, current$mono$data, group = "mono")
-            current$mono$results <- h_unpack_stopit(current$mono$stop)
           }
           if (!current$combo$stop && (!current$first || !object@first_cohort_mono_only)) {
             current$combo$limit <- if (is.na(current$mono$dose)) {
@@ -4706,24 +4695,16 @@ setMethod(
               stopTrial(current$combo$dose, current$samples, object@model, current$combo$data, group = "combo")
             current$combo$results <- h_unpack_stopit(current$combo$stop)
           }
+          if (!current$mono$stop) {
+            current$mono$stop <- object@mono@stopping %>%
+              stopTrial(
+                current$mono$dose, current$samples, object@model, current$mono$data,
+                group = "mono", external = current$combo$stop
+              )
+            current$mono$results <- h_unpack_stopit(current$mono$stop)
+          }
           if (object@same_dose_for_all && !current$mono$stop && !current$combo$stop) {
             current$mono$dose <- current$combo$dose <- min(current$mono$dose, current$combo$dose)
-          }
-          if (object@stop_mono_with_combo) {
-            if (current$combo$stop && !current$mono$stop) {
-              current$mono$stop <- structure(
-                TRUE,
-                message = "mono stopped because combo stopped",
-                report_label = "mono stopped because combo stopped"
-              )
-              new_result <- TRUE
-            } else {
-              new_result <- FALSE
-            }
-            current$mono$results <- c(
-              current$mono$results,
-              "mono stopped because combo stopped" = new_result
-            )
           }
           if (current$first) {
             current$first <- FALSE
@@ -4743,6 +4724,7 @@ setMethod(
         )
       }
       vars_needed <- c("simSeeds", "args", "nArgs", "truth", "combo_truth", "firstSeparate", "object", "mcmcOptions")
+
       result_list <- get_result_list(run_sim, nsim, vars_needed, parallel, nCores)
       # Now we have a list with each element containing mono and combo. Reorder this a bit:
       result_list <- list(

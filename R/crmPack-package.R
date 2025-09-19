@@ -19,13 +19,6 @@
 #' @aliases crmPack
 #' @docType package
 #' @title Object-oriented implementation of CRM designs
-#' @author Daniel Sabanes Bove \email{daniel.sabanesbove@@gmx.net}, W
-#' Wai Yin Yeung \email{winnie.yeung@@roche.com}
-#' Giuseppe Palermo \email{giuseppe.palermo@@roche.com},
-#' Thomas Jaki \email{jaki.thomas@@gmail.com}
-# @useDynLib crmPack
-#  cpp_glmBayesMfp cpp_bfgs cpp_optimize cpp_sampleGlm cpp_evalZdensity
-#  cpp_coxfit
 #' @import checkmate
 #' @import ggplot2
 #' @import methods
@@ -145,7 +138,14 @@ globalVariables(c(
   "k",
   "value",
   "Parameter",
-  "intervals"
+  "intervals",
+  "Group",
+  "Tox",
+  "MaxOverdoseProb",
+  "DoseGrid",
+  "NGrid",
+  "NObs",
+  "XLevel"
 ))
 
 # nolint end

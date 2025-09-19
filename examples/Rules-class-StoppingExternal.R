@@ -1,0 +1,1 @@
+my_stopping <- StoppingExternal()

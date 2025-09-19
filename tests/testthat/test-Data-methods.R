@@ -607,3 +607,65 @@ test_that("dose_grid_range-DataOrdinal works as expected without placebo in grid
   expect_identical(dose_grid_range(data_empty), c(-Inf, Inf))
   expect_identical(dose_grid_range(data_empty, FALSE), c(-Inf, Inf))
 })
+
+test_that("tidy-DataGeneral creates the correct tibble", {
+  d <- Data(
+    x = c(1, 3, 5),
+    y = c(0, 0, 0),
+    doseGrid = c(1, 3, 5, 10, 15, 20, 25, 40, 50, 80, 100),
+    placebo = FALSE,
+    ID = 1:3,
+    cohort = 1:3
+  )
+  expected <- tibble(
+    ID = 1:3,
+    Cohort = 1:3,
+    Dose = c(1, 3, 5),
+    XLevel = 1:3,
+    Tox = FALSE,
+    Placebo = FALSE,
+    NObs = 3,
+    NGrid = 11,
+    DoseGrid = list(c(1, 3, 5, 10, 15, 20, 25, 40, 50, 80, 100))
+  )
+  class(expected) <- c("tbl_Data", class(expected))
+
+  expect_equal(tidy(d), expected)
+
+  d@ID <- 5:7
+  expected$ID <- 5:7
+  expect_equal(tidy(d), expected)
+
+  d@cohort <- 5:7
+  expected$Cohort <- 5:7
+  expect_equal(tidy(d), expected)
+
+  d@x[3] <- 10
+  expected$Dose[3] <- 10
+  expect_equal(tidy(d), expected)
+
+  d@xLevel[3] <- 4L
+  expected$XLevel[3] <- 4L
+  expect_equal(tidy(d), expected)
+
+  d@placebo <- TRUE
+  expected$Placebo <- TRUE
+  expect_equal(tidy(d), expected)
+
+  d@y <- c(0L, 1L, 0L)
+  expected$Tox <- c(FALSE, TRUE, FALSE)
+  expect_equal(tidy(d), expected)
+})
+
+test_that("tidy-Dataordinal creates the correct tibble", {
+  tidyData <- .DefaultDataOrdinal() %>% tidy()
+  x <- .DefaultDataOrdinal() %>% tidy()
+  actual <- x %>%
+    dplyr::rowwise() %>%
+    dplyr::mutate(
+      AnyTox = any(dplyr::across(c(starts_with("Cat"), -Cat0), any)),
+      ExpectedCat0 = !AnyTox
+    )
+
+  expect_equal(actual$Cat0, actual$ExpectedCat0)
+})

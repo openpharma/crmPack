@@ -170,8 +170,12 @@ test_that("simulate for the class design with placebo and sentinel patients retu
 ## RuleDesign ----
 
 test_that("simulate-RuleDesign produces consistent results", {
-  design <- ThreePlusThreeDesign(doseGrid = c(1, 3, 5, 10, 15, 20, 25, 40, 50, 80, 100))
-  myTruth <- function(x) seq(0.05, 0.55, length.out = length(design@data@doseGrid))
+  design <- ThreePlusThreeDesign(
+    doseGrid = c(1, 3, 5, 10, 15, 20, 25, 40, 50, 80, 100)
+  )
+  myTruth <- function(x) {
+    seq(0.05, 0.55, length.out = length(design@data@doseGrid))
+  }
   options <- h_get_mcmc_options()
 
   result <- simulate(
@@ -195,13 +199,22 @@ test_that("simulate-DualDesign produces consistent results", {
 
   # define scenarios for the TRUE toxicity and efficacy profiles
   betaMod <- function(dose, e0, eMax, delta1, delta2, scal) {
-    maxDens <- (delta1^delta1) * (delta2^delta2) / ((delta1 + delta2)^(delta1 + delta2))
+    maxDens <- (delta1^delta1) *
+      (delta2^delta2) /
+      ((delta1 + delta2)^(delta1 + delta2))
     dose <- dose / scal
     e0 + eMax / maxDens * (dose^delta1) * (1 - dose)^delta2
   }
 
   trueBiomarker <- function(dose) {
-    betaMod(dose, e0 = 0.2, eMax = 0.6, delta1 = 5, delta2 = 5 * 0.5 / 0.5, scal = 100)
+    betaMod(
+      dose,
+      e0 = 0.2,
+      eMax = 0.6,
+      delta1 = 5,
+      delta2 = 5 * 0.5 / 0.5,
+      scal = 100
+    )
   }
 
   trueTox <- function(dose) {
@@ -235,13 +248,22 @@ test_that("simulate-DualDesign produces consistent results with sentinel patient
 
   # define scenarios for the TRUE toxicity and efficacy profiles
   betaMod <- function(dose, e0, eMax, delta1, delta2, scal) {
-    maxDens <- (delta1^delta1) * (delta2^delta2) / ((delta1 + delta2)^(delta1 + delta2))
+    maxDens <- (delta1^delta1) *
+      (delta2^delta2) /
+      ((delta1 + delta2)^(delta1 + delta2))
     dose <- dose / scal
     e0 + eMax / maxDens * (dose^delta1) * (1 - dose)^delta2
   }
 
   trueBiomarker <- function(dose) {
-    betaMod(dose, e0 = 0.2, eMax = 0.6, delta1 = 5, delta2 = 5 * 0.5 / 0.5, scal = 100)
+    betaMod(
+      dose,
+      e0 = 0.2,
+      eMax = 0.6,
+      delta1 = 5,
+      delta2 = 5 * 0.5 / 0.5,
+      scal = 100
+    )
   }
 
   trueTox <- function(dose) {
@@ -304,13 +326,22 @@ test_that("simulate-DualDesign produces consistent results", {
 
   # define scenarios for the TRUE toxicity and efficacy profiles
   betaMod <- function(dose, e0, eMax, delta1, delta2, scal) {
-    maxDens <- (delta1^delta1) * (delta2^delta2) / ((delta1 + delta2)^(delta1 + delta2))
+    maxDens <- (delta1^delta1) *
+      (delta2^delta2) /
+      ((delta1 + delta2)^(delta1 + delta2))
     dose <- dose / scal
     e0 + eMax / maxDens * (dose^delta1) * (1 - dose)^delta2
   }
 
   trueBiomarker <- function(dose) {
-    betaMod(dose, e0 = 0.2, eMax = 0.6, delta1 = 5, delta2 = 5 * 0.5 / 0.5, scal = 100)
+    betaMod(
+      dose,
+      e0 = 0.2,
+      eMax = 0.6,
+      delta1 = 5,
+      delta2 = 5 * 0.5 / 0.5,
+      scal = 100
+    )
   }
 
   trueTox <- function(dose) {
@@ -339,6 +370,134 @@ test_that("simulate-DualDesign produces consistent results", {
   expect_snapshot(result)
 })
 
+test_that("simulate-DualDesign produces consistent results with sentinel patients", {
+  design <- h_get_design_dualdata()
+
+  # define scenarios for the TRUE toxicity and efficacy profiles
+  betaMod <- function(dose, e0, eMax, delta1, delta2, scal) {
+    maxDens <- (delta1^delta1) *
+      (delta2^delta2) /
+      ((delta1 + delta2)^(delta1 + delta2))
+    dose <- dose / scal
+    e0 + eMax / maxDens * (dose^delta1) * (1 - dose)^delta2
+  }
+
+  trueBiomarker <- function(dose) {
+    betaMod(
+      dose,
+      e0 = 0.2,
+      eMax = 0.6,
+      delta1 = 5,
+      delta2 = 5 * 0.5 / 0.5,
+      scal = 100
+    )
+  }
+
+  trueTox <- function(dose) {
+    pnorm((dose - 60) / 10)
+  }
+
+  result <- simulate(
+    design,
+    trueTox = trueTox,
+    trueBiomarker = trueBiomarker,
+    sigma2W = 0.01,
+    rho = 0,
+    nsim = 1,
+    parallel = FALSE,
+    seed = 3,
+    startingDose = 6,
+    firstSeparate = TRUE,
+    mcmcOptions = McmcOptions(
+      burnin = 100,
+      step = 1,
+      samples = 300,
+      rng_kind = "Mersenne-Twister",
+      rng_seed = 1234
+    )
+  )
+
+  expect_equal(result@rho_est, 0.07991541, tolerance = 1e-7) # printed result
+
+  expect_equal(result@rho_est, 0.079915412) # actual result
+
+  expect_equal(result@sigma2w_est, 0.03177778, tolerance = 1e-7) # printed result
+
+  expect_equal(result@sigma2w_est, 0.031777778) # actual result
+
+  expect_equal(any(sapply(result@fit_biomarker[[1]], is.numeric)), TRUE) # all elements of fit are numeric
+
+  expect_equal(dim(result@fit_biomarker[[1]])[1], 11)
+
+  expect_equal(dim(result@fit_biomarker[[1]])[2], 3)
+
+  expect_equal(length(result@stop_report), 3) # check for length
+
+  expect_logical(result@stop_report) # check for stop_report to be logical vector
+
+  expect_list(result@data)
+
+  expect_class(result@data[[1]], "Data") # check for data object has correct class
+
+  expect_list(result@additional_stats)
+
+  expect_list(result@additional_stats[[1]])
+
+  expect_length(result@additional_stats[[1]], 0)
+
+  expect_equal(result@doses, 1)
+})
+
+test_that("simulate-DualDesign produces consistent results", {
+  design <- h_get_design_dualdata(TRUE)
+
+  # define scenarios for the TRUE toxicity and efficacy profiles
+  betaMod <- function(dose, e0, eMax, delta1, delta2, scal) {
+    maxDens <- (delta1^delta1) *
+      (delta2^delta2) /
+      ((delta1 + delta2)^(delta1 + delta2))
+    dose <- dose / scal
+    e0 + eMax / maxDens * (dose^delta1) * (1 - dose)^delta2
+  }
+
+  trueBiomarker <- function(dose) {
+    betaMod(
+      dose,
+      e0 = 0.2,
+      eMax = 0.6,
+      delta1 = 5,
+      delta2 = 5 * 0.5 / 0.5,
+      scal = 100
+    )
+  }
+
+  trueTox <- function(dose) {
+    pnorm((dose - 60) / 10)
+  }
+
+  result <- simulate(
+    design,
+    trueTox = trueTox,
+    trueBiomarker = trueBiomarker,
+    sigma2W = 0.01,
+    rho = 0,
+    nsim = 1,
+    parallel = FALSE,
+    seed = 3,
+    startingDose = 6,
+    mcmcOptions = McmcOptions(
+      burnin = 100,
+      step = 1,
+      samples = 300,
+      rng_kind = "Mersenne-Twister",
+      rng_seed = 1234
+    )
+  )
+
+  expect_snapshot(result)
+})
+
+# TDSamplesDesign ----
 
 test_that("simulate-TDSamplesDesign produces consistent results", {
   data <- Data(doseGrid = seq(25, 300, 25))
@@ -369,7 +528,8 @@ test_that("simulate-TDSamplesDesign produces consistent results", {
     stopping = myStopping,
     increments = myIncrements,
     cohort_size = mySize,
-    data = data, startingDose = 25
+    data = data,
+    startingDose = 25
   )
   myTruth <- probFunction(model, phi1 = -53.66584, phi2 = 10.50499)
   options <- McmcOptions(burnin = 100, step = 2, samples = 200)
@@ -386,8 +546,12 @@ test_that("simulate-TDSamplesDesign produces consistent results", {
   expect_snapshot(result)
 })
 
+# TDDesign ----
+
 test_that("simulate-TDDesign produces consistent results", {
-  design <- h_get_design_tddesign()
+  suppressWarnings({
+    design <- h_get_design_tddesign()
+  })
 
   myTruth <- probFunction(design@model, phi1 = -53.66584, phi2 = 10.50499)
 
@@ -405,10 +569,16 @@ test_that("simulate-TDDesign produces consistent results", {
 test_that("simulate-DualResponsesDesign produces consistent results", {
   design <- h_get_design_dualresponses()
   myTruthDLE <- probFunction(design@model, phi1 = -53.66584, phi2 = 10.50499)
-  myTruthEff <- efficacyFunction(design@eff_model, theta1 = -4.818429, theta2 = 3.653058)
+  myTruthEff <- efficacyFunction(
+    design@eff_model,
+    theta1 = -4.818429,
+    theta2 = 3.653058
+  )
 
   myTruthGain <- function(dose) {
-    return((myTruthEff(dose)) / (1 + (myTruthDLE(dose) / (1 - myTruthDLE(dose)))))
+    return(
+      (myTruthEff(dose)) / (1 + (myTruthDLE(dose) / (1 - myTruthDLE(dose))))
+    )
   }
   options <- McmcOptions(burnin = 100, step = 2, samples = 200)
   result <- simulate(
@@ -425,6 +595,8 @@ test_that("simulate-DualResponsesDesign produces consistent results", {
   expect_snapshot(result)
 })
 
+# DualResponsesSamplesDesign ----
+
 test_that("simulate-DualResponsesSamplesDesign produces consistent results", {
   data <- DataDual(doseGrid = seq(25, 300, 25), placebo = FALSE)
   DLEmodel <- LogisticIndepBeta(
@@ -435,8 +607,10 @@ test_that("simulate-DualResponsesSamplesDesign produces consistent results", {
   )
 
   Effmodel <- Effloglog(
-    eff = c(1.223, 2.513), eff_dose = c(25, 300),
-    nu = c(a = 1, b = 0.025), data = data
+    eff = c(1.223, 2.513),
+    eff_dose = c(25, 300),
+    nu = c(a = 1, b = 0.025),
+    data = data
   )
 
   mynextbest <- NextBestMaxGainSamples(
@@ -470,14 +644,21 @@ test_that("simulate-DualResponsesSamplesDesign produces consistent results", {
   )
 
   myTruthDLE <- probFunction(design@model, phi1 = -53.66584, phi2 = 10.50499)
-  myTruthEff <- efficacyFunction(design@eff_model, theta1 = -4.818429, theta2 = 3.653058)
+  myTruthEff <- efficacyFunction(
+    design@eff_model,
+    theta1 = -4.818429,
+    theta2 = 3.653058
+  )
 
   myTruthGain <- function(dose) {
-    return((myTruthEff(dose)) / (1 + (myTruthDLE(dose) / (1 - myTruthDLE(dose)))))
+    return(
+      (myTruthEff(dose)) / (1 + (myTruthDLE(dose) / (1 - myTruthDLE(dose))))
+    )
   }
 
   options <- McmcOptions(burnin = 10, step = 1, samples = 50)
-  result <- simulate(design,
+  result <- simulate(
+    design,
     args = NULL,
     trueDLE = myTruthDLE,
     trueEff = myTruthEff,
@@ -490,6 +671,8 @@ test_that("simulate-DualResponsesSamplesDesign produces consistent results", {
 
   expect_snapshot(result)
 })
+
+# Design ----
 
 test_that("Test if simulate generate the expected output.", {
   data <- h_get_data(placebo = FALSE)
@@ -511,7 +694,13 @@ test_that("Test if simulate generate the expected output.", {
     startingDose = 25
   )
 
-  my_options <- McmcOptions(burnin = 100, step = 2, samples = 5, rng_kind = "Mersenne-Twister", rng_seed = 3)
+  my_options <- McmcOptions(
+    burnin = 100,
+    step = 2,
+    samples = 5,
+    rng_kind = "Mersenne-Twister",
+    rng_seed = 3
+  )
 
   sim <- simulate(
     design,
@@ -525,7 +714,6 @@ test_that("Test if simulate generate the expected output.", {
   # regardless of style
   expect_snapshot(sim)
 })
-
 
 ## NextBestInfTheory ----
 
@@ -667,10 +855,18 @@ test_that("stop_reasons can be NA with certain stopping rule settings", {
 
 test_that("simulate for DesignGrouped works as expected", {
   object <- DesignGrouped(
-    model = LogisticLogNormalGrouped(mean = rep(-1, 4), cov = diag(5, 4), ref_dose = 1),
+    model = LogisticLogNormalGrouped(
+      mean = rep(-1, 4),
+      cov = diag(5, 4),
+      ref_dose = 1
+    ),
     mono = Design(
       model = .LogisticNormal(),
-      nextBest = NextBestNCRM(target = c(0.3, 0.6), overdose = c(0.6, 1), max_overdose_prob = 0.7),
+      nextBest = NextBestNCRM(
+        target = c(0.3, 0.6),
+        overdose = c(0.6, 1),
+        max_overdose_prob = 0.7
+      ),
       stopping = StoppingMinPatients(nPatients = 9),
       increments = IncrementsDoseLevels(levels = 5),
       cohort_size = CohortSizeConst(3),
@@ -710,10 +906,18 @@ test_that("simulate for DesignGrouped works as expected", {
 
 test_that("simulate for DesignGrouped works as expected with different doses, parallel first cohort", {
   object <- DesignGrouped(
-    model = LogisticLogNormalGrouped(mean = rep(-1, 4), cov = diag(5, 4), ref_dose = 1),
+    model = LogisticLogNormalGrouped(
+      mean = rep(-1, 4),
+      cov = diag(5, 4),
+      ref_dose = 1
+    ),
     mono = Design(
       model = .LogisticNormal(),
-      nextBest = NextBestNCRM(target = c(0.3, 0.6), overdose = c(0.6, 1), max_overdose_prob = 0.7),
+      nextBest = NextBestNCRM(
+        target = c(0.3, 0.6),
+        overdose = c(0.6, 1),
+        max_overdose_prob = 0.7
+      ),
       stopping = StoppingMinPatients(nPatients = 20),
       increments = IncrementsDoseLevels(levels = 5),
       cohort_size = CohortSizeConst(3),
@@ -752,10 +956,18 @@ test_that("simulate for DesignGrouped works as expected with different doses, pa
 
 test_that("simulate for DesignGrouped works when first patient is dosed separately, different combo design", {
   object <- DesignGrouped(
-    model = LogisticLogNormalGrouped(mean = rep(-1, 4), cov = diag(5, 4), ref_dose = 1),
+    model = LogisticLogNormalGrouped(
+      mean = rep(-1, 4),
+      cov = diag(5, 4),
+      ref_dose = 1
+    ),
     mono = Design(
       model = .LogisticNormal(),
-      nextBest = NextBestNCRM(target = c(0.3, 0.6), overdose = c(0.6, 1), max_overdose_prob = 0.7),
+      nextBest = NextBestNCRM(
+        target = c(0.3, 0.6),
+        overdose = c(0.6, 1),
+        max_overdose_prob = 0.7
+      ),
       stopping = StoppingMinPatients(nPatients = 10),
       increments = IncrementsDoseLevels(levels = 3),
       cohort_size = CohortSizeConst(2),
@@ -764,7 +976,11 @@ test_that("simulate for DesignGrouped works when first patient is dosed separate
     ),
     combo = Design(
       model = .LogisticNormal(),
-      nextBest = NextBestNCRM(target = c(0.3, 0.6), overdose = c(0.6, 1), max_overdose_prob = 0.7),
+      nextBest = NextBestNCRM(
+        target = c(0.3, 0.6),
+        overdose = c(0.6, 1),
+        max_overdose_prob = 0.7
+      ),
       stopping = StoppingMinPatients(nPatients = 20),
       increments = IncrementsDoseLevels(levels = 5),
       cohort_size = CohortSizeConst(3),
@@ -810,10 +1026,18 @@ test_that("simulate for DesignGrouped works when first patient is dosed separate
 
 test_that("simulate for DesignGrouped works with different starting doses and first mono", {
   object <- DesignGrouped(
-    model = LogisticLogNormalGrouped(mean = rep(-1, 4), cov = diag(5, 4), ref_dose = 1),
+    model = LogisticLogNormalGrouped(
+      mean = rep(-1, 4),
+      cov = diag(5, 4),
+      ref_dose = 1
+    ),
     mono = Design(
       model = .LogisticNormal(),
-      nextBest = NextBestNCRM(target = c(0.3, 0.6), overdose = c(0.6, 1), max_overdose_prob = 0.7),
+      nextBest = NextBestNCRM(
+        target = c(0.3, 0.6),
+        overdose = c(0.6, 1),
+        max_overdose_prob = 0.7
+      ),
       stopping = StoppingMinPatients(nPatients = 9),
       increments = IncrementsDoseLevels(levels = 5),
       cohort_size = CohortSizeConst(3),
@@ -822,7 +1046,11 @@ test_that("simulate for DesignGrouped works with different starting doses and fi
     ),
     combo = Design(
       model = .LogisticNormal(),
-      nextBest = NextBestNCRM(target = c(0.3, 0.6), overdose = c(0.6, 1), max_overdose_prob = 0.7),
+      nextBest = NextBestNCRM(
+        target = c(0.3, 0.6),
+        overdose = c(0.6, 1),
+        max_overdose_prob = 0.7
+      ),
       stopping = StoppingMinPatients(nPatients = 9),
       increments = IncrementsRelative(c(0, 100), c(2, 1)),
       cohort_size = CohortSizeConst(3),
@@ -862,7 +1090,11 @@ test_that("simulate for DesignGrouped works with different starting doses and fi
 test_that("simulate for DesignGrouped allows to stop mono when combo stops", {
   mono_arm <- Design(
     model = .LogisticNormal(),
-    nextBest = NextBestNCRM(target = c(0.3, 0.6), overdose = c(0.6, 1), max_overdose_prob = 0.7),
+    nextBest = NextBestNCRM(
+      target = c(0.3, 0.6),
+      overdose = c(0.6, 1),
+      max_overdose_prob = 0.7
+    ),
     # With a custom label that we can check below.
     stopping = StoppingMinPatients(nPatients = 20, report_label = "my label"),
     increments = IncrementsDoseLevels(levels = 5),
@@ -876,7 +1108,11 @@ test_that("simulate for DesignGrouped allows to stop mono when combo stops", {
     stopping = StoppingMinPatients(nPatients = 1)
   )
   object <- DesignGrouped(
-    model = LogisticLogNormalGrouped(mean = rep(-1, 4), cov = diag(5, 4), ref_dose = 1),
+    model = LogisticLogNormalGrouped(
+      mean = rep(-1, 4),
+      cov = diag(5, 4),
+      ref_dose = 1
+    ),
     mono = mono_arm,
     combo = combo_arm,
     same_dose_for_all = FALSE,
@@ -901,13 +1137,18 @@ test_that("simulate for DesignGrouped allows to stop mono when combo stops", {
   expect_valid(result$combo, "Simulations")
 
   # We see the expected stop reasons.
-  expect_identical(
+  lapply(
     result$mono@stop_reasons,
-    rep(list("mono stopped because combo stopped"), 2)
+    function(x) expect_subset("Based on external result stop", unlist(x))
   )
   expect_identical(
     result$combo@stop_reasons,
-    rep(list("Number of patients is 3 and thus reached the prespecified minimum number 1"), 2)
+    rep(
+      list(
+        "Number of patients is 3 and thus reached the prespecified minimum number 1"
+      ),
+      2
+    )
   )
 
   # But mono still had the initial 3 patients in both simulations.
@@ -919,14 +1160,18 @@ test_that("simulate for DesignGrouped allows to stop mono when combo stops", {
   # And we see the stop report includes the previous stopping rule too.
   expect_identical(
     colnames(result$mono@stop_report),
-    c("my label", "mono stopped because combo stopped")
+    c(NA, "my label", "Stop Mono with Combo")
   )
 })
 
 test_that("simulate for DesignGrouped reports correctly when mono is not stopped because of combo", {
   mono_arm <- Design(
     model = .LogisticNormal(),
-    nextBest = NextBestNCRM(target = c(0.2, 0.4), overdose = c(0.4, 1), max_overdose_prob = 0.7),
+    nextBest = NextBestNCRM(
+      target = c(0.2, 0.4),
+      overdose = c(0.4, 1),
+      max_overdose_prob = 0.7
+    ),
     # With a custom label that we can check below.
     stopping = StoppingTargetProb(report_label = "my label"),
     increments = IncrementsDoseLevels(levels = 5),
@@ -935,7 +1180,11 @@ test_that("simulate for DesignGrouped reports correctly when mono is not stopped
     startingDose = 10
   )
   object <- DesignGrouped(
-    model = LogisticLogNormalGrouped(mean = rep(-1, 4), cov = diag(5, 4), ref_dose = 1),
+    model = LogisticLogNormalGrouped(
+      mean = rep(-1, 4),
+      cov = diag(5, 4),
+      ref_dose = 1
+    ),
     mono = mono_arm,
     combo = mono_arm,
     same_dose_for_all = FALSE,
@@ -963,7 +1212,7 @@ test_that("simulate for DesignGrouped reports correctly when mono is not stopped
   # We see the stop report includes the previous stopping rule and the mono because combo thing too.
   expect_identical(
     colnames(result$mono@stop_report),
-    c("my label", "mono stopped because combo stopped")
+    c(NA, "my label", "Stop Mono with Combo")
   )
   # But not for the combo.
   expect_identical(
@@ -974,10 +1223,18 @@ test_that("simulate for DesignGrouped reports correctly when mono is not stopped
 
 test_that("simulate for DesignGrouped works with parallel start when first cohort mono only", {
   object <- DesignGrouped(
-    model = LogisticLogNormalGrouped(mean = rep(-1, 4), cov = diag(5, 4), ref_dose = 1),
+    model = LogisticLogNormalGrouped(
+      mean = rep(-1, 4),
+      cov = diag(5, 4),
+      ref_dose = 1
+    ),
     mono = Design(
       model = .LogisticNormal(),
-      nextBest = NextBestNCRM(target = c(0.3, 0.6), overdose = c(0.6, 1), max_overdose_prob = 0.7),
+      nextBest = NextBestNCRM(
+        target = c(0.3, 0.6),
+        overdose = c(0.6, 1),
+        max_overdose_prob = 0.7
+      ),
       stopping = StoppingMinPatients(nPatients = 9),
       increments = IncrementsDoseLevels(levels = 5),
       cohort_size = CohortSizeConst(3),
@@ -986,7 +1243,11 @@ test_that("simulate for DesignGrouped works with parallel start when first cohor
     ),
     combo = Design(
       model = .LogisticNormal(),
-      nextBest = NextBestNCRM(target = c(0.3, 0.6), overdose = c(0.6, 1), max_overdose_prob = 0.7),
+      nextBest = NextBestNCRM(
+        target = c(0.3, 0.6),
+        overdose = c(0.6, 1),
+        max_overdose_prob = 0.7
+      ),
       stopping = StoppingMinPatients(nPatients = 9),
       increments = IncrementsRelative(c(0, 100), c(2, 1)),
       cohort_size = CohortSizeConst(3),
@@ -1029,10 +1290,18 @@ test_that("simulate for DesignGrouped works with parallel start when first cohor
 
 test_that("simulate for DesignGrouped works with parallel start when first cohort mono and combo", {
   object <- DesignGrouped(
-    model = LogisticLogNormalGrouped(mean = rep(-1, 4), cov = diag(5, 4), ref_dose = 1),
+    model = LogisticLogNormalGrouped(
+      mean = rep(-1, 4),
+      cov = diag(5, 4),
+      ref_dose = 1
+    ),
     mono = Design(
       model = .LogisticNormal(),
-      nextBest = NextBestNCRM(target = c(0.3, 0.6), overdose = c(0.6, 1), max_overdose_prob = 0.7),
+      nextBest = NextBestNCRM(
+        target = c(0.3, 0.6),
+        overdose = c(0.6, 1),
+        max_overdose_prob = 0.7
+      ),
       stopping = StoppingMinPatients(nPatients = 9),
       increments = IncrementsDoseLevels(levels = 5),
       cohort_size = CohortSizeConst(3),
@@ -1041,7 +1310,11 @@ test_that("simulate for DesignGrouped works with parallel start when first cohor
     ),
     combo = Design(
       model = .LogisticNormal(),
-      nextBest = NextBestNCRM(target = c(0.3, 0.6), overdose = c(0.6, 1), max_overdose_prob = 0.7),
+      nextBest = NextBestNCRM(
+        target = c(0.3, 0.6),
+        overdose = c(0.6, 1),
+        max_overdose_prob = 0.7
+      ),
       stopping = StoppingMinPatients(nPatients = 9),
       increments = IncrementsRelative(c(0, 100), c(2, 1)),
       cohort_size = CohortSizeConst(3),
@@ -1080,6 +1353,67 @@ test_that("simulate for DesignGrouped works with parallel start when first cohor
   expect_true(all(combo_trial@x[1:3] == 1))
 })
 
+test_that("simulate for DesignGrouped uses DLT probabilities and cohort sizes correctly", {
+  object <- DesignGrouped(
+    model = LogisticLogNormalGrouped(
+      mean = rep(-1, 4),
+      cov = diag(5, 4),
+      ref_dose = 1
+    ),
+    mono = Design(
+      model = .LogisticNormal(),
+      nextBest = NextBestNCRM(
+        target = c(0.3, 0.6),
+        overdose = c(0.6, 1),
+        max_overdose_prob = 0.7
+      ),
+      stopping = StoppingMinPatients(nPatients = 9),
+      increments = IncrementsDoseLevels(levels = 5),
+      # Make sure that cohort size changes across doses.
+      cohort_size = CohortSizeRange(
+        intervals = c(0, 5, 10),
+        cohort_size = c(1, 2, 3)
+      ),
+      data = Data(doseGrid = 1:100),
+      startingDose = 1
+    ),
+    same_dose_for_all = TRUE,
+    first_cohort_mono_only = TRUE
+  )
+  # Make sure that the true DLT probabilities change heavily across doses.
+  my_truth <- stats::stepfun(x = c(0, 5, 10), y = c(0, 0, 0.5, 0.99))
+  my_combo_truth <- my_truth
+
+  result <- expect_silent(simulate(
+    object,
+    nsim = 2,
+    seed = 123,
+    truth = my_truth,
+    combo_truth = my_combo_truth,
+    mcmcOptions = h_get_mcmc_options()
+  ))
+
+  expect_list(result)
+  expect_names(names(result), identical.to = c("mono", "combo"))
+  expect_valid(result$mono, "Simulations")
+  expect_valid(result$combo, "Simulations")
+
+  mono_trial <- result$mono@data[[2L]]
+  combo_trial <- result$combo@data[[2L]]
+
+  # We have seen doses of 5 or larger.
+  expect_true(any(mono_trial@x >= 5))
+  expect_true(any(combo_trial@x >= 5))
+
+  # And therefore we must have seen DLTs.
+  expect_true(any(mono_trial@y > 0))
+  expect_true(any(combo_trial@y > 0))
+
+  # And therefore we must also have had cohort sizes larger than 1.
+  expect_true(any(table(mono_trial@cohort) > 1))
+  expect_true(any(table(combo_trial@cohort) > 1))
+})
+
 # examine ----
 
 ## DADesign ----
@@ -1089,7 +1423,12 @@ test_that("examine for DADesign works as expected", {
 
   emptydata <- DataDA(
     doseGrid = c(
-      0.1, 0.5, 1, 1.5, 3, 6,
+      0.1,
+      0.5,
+      1,
+      1.5,
+      3,
+      6,
       seq(from = 10, to = 80, by = 2)
     ),
     Tmax = t_max
@@ -1162,7 +1501,10 @@ test_that("examine for DADesign works as expected", {
     "Stopping because 2 times no increment"
   )
   expect_data_frame(result)
-  expect_named(result, c("DLTsearly_1", "dose", "DLTs", "nextDose", "stop", "increment"))
+  expect_named(
+    result,
+    c("DLTsearly_1", "dose", "DLTs", "nextDose", "stop", "increment")
+  )
 })
 
 ## Design ----
@@ -1188,7 +1530,9 @@ test_that("examine produces consistent results with placebo data", {
 ## RuleDesign ----
 
 test_that("simulate-RuleDesign produces consistent results", {
-  design <- ThreePlusThreeDesign(doseGrid = c(1, 3, 5, 10, 15, 20, 25, 40, 50, 80, 100))
+  design <- ThreePlusThreeDesign(
+    doseGrid = c(1, 3, 5, 10, 15, 20, 25, 40, 50, 80, 100)
+  )
   options <- h_get_mcmc_options()
 
   result <- examine(design, mcmcOptions = options)

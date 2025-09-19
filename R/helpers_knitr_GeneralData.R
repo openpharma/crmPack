@@ -2,29 +2,37 @@
 #'
 #' @param grid (`numeric`)\cr the dose grid
 #' @param units (`character`)\cr The units in which the values in `doseGrid` are
+#' @param fmt (`character`)\cr The format used to display values in `doseGrid`.
+#' If `NA`, grid values are not pre-formatted
+#' @param ... not used at present
 #' measured.  Appended to each value in `doseGrid` when `knit_print`ed.  The
 #' default, `NA`, omits the units.
 #' @return A character string containing the formatted dose grid.  If the grid
 #' is `c(1, 2, 3)` and `units` is `"mg"`, the returned value is `"1 mg, 2 mg and 3 mg"`.
 #' @keywords internal
-h_get_formatted_dosegrid <- function(grid, units = NA) {
+h_get_formatted_dosegrid <- function(grid, units = NA, fmt = NA, ...) {
   assert_numeric(grid, lower = 0, min.len = 2, unique = TRUE, finite = TRUE, sorted = TRUE, any.missing = FALSE)
   assert_character(units, len = 1)
 
   n <- length(grid)
-  if (is.na(units)) {
-    units <- ""
+  units <- h_prepare_units(units)
+  formattedGrid <- if (is.na(fmt)) {
+    as.character(grid)
   } else {
-    units <- paste0(" ", units)
+    sprintf(fmt, grid)
   }
   paste0(
     paste(
-      lapply(grid[1:(n - 1)], paste0, sep = units),
+      lapply(
+        formattedGrid[1:(n - 1)],
+        paste0,
+        sep = units
+      ),
       collapse = ", "
     ),
     " and ",
-    grid[n],
-    paste0(units, ".")
+    formattedGrid[n],
+    paste0(units, ".\n\n")
   )
 }
 
@@ -154,7 +162,7 @@ h_knit_print_select_columns <- function(x, ...) {
 h_knit_print_select_columns.GeneralData <- function(x, ...) {
   x %>%
     tidy() %>%
-    dplyr::select(.data$ID, .data$Cohort, .data$Dose, .data$Tox)
+    dplyr::select("ID", "Cohort", "Dose", "Tox")
 }
 
 #' @description `r lifecycle::badge("experimental")`
@@ -163,7 +171,7 @@ h_knit_print_select_columns.GeneralData <- function(x, ...) {
 h_knit_print_select_columns.Data <- function(x, ...) {
   x %>%
     tidy() %>%
-    dplyr::select(.data$ID, .data$Cohort, .data$Dose, .data$Tox)
+    dplyr::select("ID", "Cohort", "Dose", "Tox")
 }
 
 #' @description `r lifecycle::badge("experimental")`
@@ -172,7 +180,7 @@ h_knit_print_select_columns.Data <- function(x, ...) {
 h_knit_print_select_columns.DataParts <- function(x, ...) {
   x %>%
     tidy() %>%
-    dplyr::select(.data$ID, .data$Part, .data$Cohort, .data$Dose, .data$Tox)
+    dplyr::select("ID", "Part", "Cohort", "Dose", "Tox")
 }
 
 #' @description `r lifecycle::badge("experimental")`
@@ -181,7 +189,7 @@ h_knit_print_select_columns.DataParts <- function(x, ...) {
 h_knit_print_select_columns.DataOrdinal <- function(x, ...) {
   x %>%
     tidy() %>%
-    dplyr::select(.data$ID, .data$Cohort, .data$Dose, tidyselect::starts_with("Cat"))
+    dplyr::select("ID", "Cohort", "Dose", tidyselect::starts_with("Cat"))
 }
 
 #' @description `r lifecycle::badge("experimental")`
@@ -190,7 +198,7 @@ h_knit_print_select_columns.DataOrdinal <- function(x, ...) {
 h_knit_print_select_columns.DataDA <- function(x, param, summarise, ...) {
   x %>%
     tidy() %>%
-    dplyr::select(.data$ID, .data$Cohort, .data$Dose, .data$Tox, .data$U, .data$T0, .data$TMax)
+    dplyr::select("ID", "Cohort", "Dose", "Tox", "U", "T0", "TMax")
 }
 
 #' @description `r lifecycle::badge("experimental")`
@@ -199,7 +207,7 @@ h_knit_print_select_columns.DataDA <- function(x, param, summarise, ...) {
 h_knit_print_select_columns.DataGrouped <- function(x, param, summarise, ...) {
   x %>%
     tidy() %>%
-    dplyr::select(.data$ID, .data$Cohort, .data$Dose, .data$Group, .data$Tox)
+    dplyr::select("ID", "Cohort", "Dose", "Group", "Tox")
 }
 
 #' @description `r lifecycle::badge("experimental")`
@@ -208,7 +216,7 @@ h_knit_print_select_columns.DataGrouped <- function(x, param, summarise, ...) {
 h_knit_print_select_columns.DataDual <- function(x, param, summarise, ...) {
   x %>%
     tidy() %>%
-    dplyr::select(.data$ID, .data$Cohort, .data$Dose, .data$Tox, .data$W)
+    dplyr::select("ID", "Cohort", "Dose", "Tox", "W")
 }
 
 #' Summarise a `Data` Object by Dose or Cohort for Display in Custom `knit_print` Methods
@@ -234,7 +242,7 @@ h_knit_print_summarise.GeneralData <- function(x, summarise, full_grid, ...) {
     dplyr::group_by(.data[[stringr::str_to_title(summarise)]]) %>%
     dplyr::summarise(
       N = dplyr::n(),
-      ToxCount = sum(.data$Tox)
+      ToxCount = sum(Tox)
     )
   if (full_grid && summarise == "dose") {
     xTidy <- xTidy %>%
@@ -285,7 +293,7 @@ h_knit_print_summarise.DataGrouped <- function(x, summarise, full_grid, ...) {
     dplyr::group_by(.data[[stringr::str_to_title(summarise)]], .data$Group) %>%
     dplyr::summarise(
       N = dplyr::n(),
-      ToxCount = sum(.data$Tox)
+      ToxCount = sum(Tox)
     )
   if (full_grid && summarise == "dose") {
     xTidy <- tidyr::expand_grid(
@@ -300,7 +308,7 @@ h_knit_print_summarise.DataGrouped <- function(x, summarise, full_grid, ...) {
 
 #' Print a `GeneralData` Object in a Markdown or Quarto Chunk
 #'
-#' @param labels (`character`)\cr How to describe the participants in the trial.
+#' @param label (`character`)\cr How to describe the participants in the trial.
 #' See Usage Notes below.
 #' @param full_grid (`flag`)\cr Should the full dose grid appear in the output table
 #' or simply those doses for whom at least one evaluable participant is available?
@@ -313,7 +321,7 @@ h_knit_print_summarise.DataGrouped <- function(x, summarise, full_grid, ...) {
 #' The default applies no formatting.  Obvious alternatives include `kableExtra::kable_styling`.
 #' @param ... passed to [knitr::kable()]
 #' @section Usage Notes:
-#' `labels` describes the trial's participants.
+#' `label` describes the trial's participants.
 #'
 #' It should be a character vector of length 1 or 2.  If of length 2, the first
 #' element describes a single participant and the second describes all other
@@ -325,17 +333,17 @@ h_knit_print_summarise.DataGrouped <- function(x, summarise, full_grid, ...) {
 #'
 #' @inheritParams h_get_formatted_dosegrid
 #' @export
+#' @method knit_print GeneralData
 #' @rdname knit_print
 knit_print.GeneralData <- function(
     x, ..., asis = TRUE,
-    labels = c("participant", "participants"),
+    label = c("participant", "participants"),
     full_grid = FALSE,
     summarise = c("none", "dose", "cohort"),
     summarize = summarise,
     units = NA,
     format_func = function(x) x) {
   # Validate
-  assert_character(labels, max.len = 2, any.missing = FALSE)
   assert_flag(asis)
   assert_flag(full_grid)
   assert_function(format_func)
@@ -347,16 +355,14 @@ knit_print.GeneralData <- function(
   }
   assert_choice(summarise, c("none", "dose", "cohort"))
   # Initialise
-  if (length(labels) == 1) {
-    labels[2] <- paste0(labels[1], "s")
-  }
+  label <- h_prepare_labels(label)
   param <- list(...)
 
   # Execute
   param <- h_knit_print_set_headers(x, param, summarise, ...)
   if (summarise == "none") {
     if (!("caption" %in% names(param))) {
-      param[["caption"]] <- paste("Evaluable", labels[2], "to-date")
+      param[["caption"]] <- paste("Evaluable", label[2], "to-date")
     }
     xTidy <- h_knit_print_select_columns(x)
   } else {
@@ -366,22 +372,24 @@ knit_print.GeneralData <- function(
     }
   }
   param[["x"]] <- xTidy
-  rv <- ifelse(
-    length(x@x) > 0,
-    (do.call(knitr::kable, param)) %>% format_func(),
-    paste("No", labels[2], "are yet evaluable.\n\n")
-  )
+  rv <- if (length(x@x) > 0) {
+    paste((do.call(knitr::kable, param)) %>% format_func(), collapse = "\n")
+  } else {
+    paste("No", label[2], "are yet evaluable.\n\n")
+  }
   rv <- paste0(
     rv,
     paste0(
       "\n\nThe dose grid is ",
       h_get_formatted_dosegrid(
         grid = x@doseGrid,
-        units = units
+        units = units,
+        ...
       ),
       ""
     ),
-    collpase = "<br>"
+    "\n\n",
+    collpase = "\n"
   )
   if (asis) {
     rv <- knitr::asis_output(rv)
@@ -389,9 +397,12 @@ knit_print.GeneralData <- function(
   rv
 }
 
+#' @export
+#' @method knit_print DataParts
+#' @rdname knit_print
 knit_print.DataParts <- function(
     x, ..., asis = TRUE,
-    labels = c("participant", "participants"),
+    label = c("participant", "participants"),
     full_grid = FALSE,
     summarise = c("none", "dose", "cohort"),
     summarize = summarise,
@@ -404,7 +415,7 @@ knit_print.DataParts <- function(
       "\n\nThe part 1 ladder is ",
       h_get_formatted_dosegrid(x@part1Ladder, units)
     ),
-    paste0("\n\nThe next part is Part ", x@nextPart, ".")
+    paste0("\n\nThe next part is Part ", x@nextPart, ".\n\n")
   )
   if (asis) {
     rv <- knitr::asis_output(rv)

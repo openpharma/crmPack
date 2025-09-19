@@ -978,7 +978,7 @@ setMethod(
     model = "LogisticNormal",
     samples = "Samples"
   ),
-  definition = function(dose, model, samples) {
+  definition = function(dose, model, samples, ...) {
     assert_numeric(dose, lower = 0L, any.missing = FALSE, min.len = 1)
     assert_subset(c("alpha0", "alpha1"), names(samples))
     assert_length(dose, len = size(samples))
@@ -1004,7 +1004,7 @@ setMethod(
     model = "LogisticLogNormal",
     samples = "Samples"
   ),
-  definition = function(dose, model, samples) {
+  definition = function(dose, model, samples, ...) {
     assert_numeric(dose, lower = 0L, any.missing = FALSE, min.len = 1L)
     assert_subset(c("alpha0", "alpha1"), names(samples))
     assert_length(dose, len = size(samples))
@@ -1030,7 +1030,7 @@ setMethod(
     model = "LogisticLogNormalSub",
     samples = "Samples"
   ),
-  definition = function(dose, model, samples) {
+  definition = function(dose, model, samples, ...) {
     assert_numeric(dose, lower = 0L, any.missing = FALSE, min.len = 1L)
     assert_subset(c("alpha0", "alpha1"), names(samples))
     assert_length(dose, len = size(samples))
@@ -1056,7 +1056,7 @@ setMethod(
     model = "ProbitLogNormal",
     samples = "Samples"
   ),
-  definition = function(dose, model, samples) {
+  definition = function(dose, model, samples, ...) {
     assert_numeric(dose, lower = 0L, any.missing = FALSE, min.len = 1L)
     assert_subset(c("alpha0", "alpha1"), names(samples))
     assert_length(dose, len = size(samples))
@@ -1082,7 +1082,7 @@ setMethod(
     model = "ProbitLogNormalRel",
     samples = "Samples"
   ),
-  definition = function(dose, model, samples) {
+  definition = function(dose, model, samples, ...) {
     assert_numeric(dose, lower = 0L, any.missing = FALSE, min.len = 1L)
     assert_subset(c("alpha0", "alpha1"), names(samples))
     assert_length(dose, len = size(samples))
@@ -1111,7 +1111,7 @@ setMethod(
     model = "LogisticLogNormalGrouped",
     samples = "Samples"
   ),
-  definition = function(dose, model, samples, group) {
+  definition = function(dose, model, samples, group, ...) {
     assert_numeric(dose, lower = 0L, any.missing = FALSE, min.len = 1L)
     assert_subset(c("alpha0", "delta0", "alpha1", "delta1"), names(samples))
     assert_length(dose, len = size(samples))
@@ -1143,7 +1143,7 @@ setMethod(
     model = "LogisticKadane",
     samples = "Samples"
   ),
-  definition = function(dose, model, samples) {
+  definition = function(dose, model, samples, ...) {
     assert_numeric(dose, lower = 0L, any.missing = FALSE, min.len = 1L)
     assert_subset(c("rho0", "gamma"), names(samples))
     assert_length(dose, len = size(samples))
@@ -1171,7 +1171,7 @@ setMethod(
     model = "LogisticKadaneBetaGamma",
     samples = "Samples"
   ),
-  definition = function(dose, model, samples) {
+  definition = function(dose, model, samples, ...) {
     assert_numeric(dose, lower = 0L, any.missing = FALSE, min.len = 1L)
     assert_subset(c("rho0", "gamma"), names(samples))
     assert_length(dose, len = size(samples))
@@ -1199,7 +1199,7 @@ setMethod(
     model = "LogisticNormalMixture",
     samples = "Samples"
   ),
-  definition = function(dose, model, samples) {
+  definition = function(dose, model, samples, ...) {
     assert_numeric(dose, lower = 0L, any.missing = FALSE, min.len = 1L)
     assert_subset(c("alpha0", "alpha1"), names(samples))
     assert_length(dose, len = size(samples))
@@ -1225,7 +1225,7 @@ setMethod(
     model = "LogisticNormalFixedMixture",
     samples = "Samples"
   ),
-  definition = function(dose, model, samples) {
+  definition = function(dose, model, samples, ...) {
     assert_numeric(dose, lower = 0L, any.missing = FALSE, min.len = 1L)
     assert_subset(c("alpha0", "alpha1"), names(samples))
     assert_length(dose, len = size(samples))
@@ -1251,7 +1251,7 @@ setMethod(
     model = "LogisticLogNormalMixture",
     samples = "Samples"
   ),
-  definition = function(dose, model, samples) {
+  definition = function(dose, model, samples, ...) {
     assert_numeric(dose, lower = 0L, any.missing = FALSE, min.len = 1L)
     assert_subset(c("alpha0", "alpha1"), names(samples))
     assert_length(dose, len = size(samples))
@@ -1279,7 +1279,7 @@ setMethod(
     model = "DualEndpoint",
     samples = "Samples"
   ),
-  definition = function(dose, model, samples) {
+  definition = function(dose, model, samples, ...) {
     assert_numeric(dose, lower = 0L, any.missing = FALSE, min.len = 1L)
     assert_subset("betaZ", names(samples))
     assert_length(dose, len = size(samples))
@@ -1311,7 +1311,7 @@ setMethod(
     model = "LogisticIndepBeta",
     samples = "Samples"
   ),
-  definition = function(dose, model, samples) {
+  definition = function(dose, model, samples, ...) {
     assert_numeric(dose, lower = 0L, any.missing = FALSE, min.len = 1L)
     assert_subset(c("phi1", "phi2"), names(samples))
     assert_length(dose, len = size(samples))
@@ -1339,7 +1339,7 @@ setMethod(
     model = "LogisticIndepBeta",
     samples = "missing"
   ),
-  definition = function(dose, model) {
+  definition = function(dose, model, ...) {
     model_params <- h_slots(model, c("phi1", "phi2"))
     nsamples <- length(model_params[[1]])
     samples <- Samples(data = model_params, options = McmcOptions(samples = nsamples))
@@ -1365,7 +1365,7 @@ setMethod(
     model = "OneParLogNormalPrior",
     samples = "Samples"
   ),
-  definition = function(dose, model, samples) {
+  definition = function(dose, model, samples, ...) {
     assert_numeric(dose, lower = 0L, any.missing = FALSE, min.len = 1L)
     assert_subset("alpha", names(samples))
     assert_length(dose, len = size(samples))
@@ -1390,7 +1390,7 @@ setMethod(
     model = "OneParExpPrior",
     samples = "Samples"
   ),
-  definition = function(dose, model, samples) {
+  definition = function(dose, model, samples, ...) {
     assert_numeric(dose, lower = 0L, any.missing = FALSE, min.len = 1L)
     assert_subset("theta", names(samples))
     assert_length(dose, len = size(samples))
@@ -1419,7 +1419,7 @@ setMethod(
     model = "LogisticLogNormalOrdinal",
     samples = "Samples"
   ),
-  definition = function(dose, model, samples, grade, cumulative = TRUE) {
+  definition = function(dose, model, samples, grade, cumulative = TRUE, ...) {
     assert_numeric(dose, lower = 0L, any.missing = FALSE, min.len = 1L)
     assert_integer(
       grade,
@@ -1798,5 +1798,87 @@ setMethod(
       constructor_name,
       c(h_slots(object, arg_names), list(data = data))
     )
+  }
+)
+
+# tidy ----
+
+# LogisticIndepBeta
+
+#' Tidy Method for the [`LogisticIndepBeta`] Class
+#'
+#' @description `r lifecycle::badge("experimental")`
+#'
+#' A method that tidies a [`LogisticIndepBeta`] object.
+#'
+#' @return The [`list`] of [`tibble`] objects.
+#'
+#' @aliases tidy-LogisticIndepBeta
+#' @rdname tidy
+#' @method tidy LogisticIndepBeta
+#' @export
+#' @example examples/LogisticIndepBeta-method-tidy.R
+#'
+setMethod(
+  f = "tidy",
+  signature = signature(x = "LogisticIndepBeta"),
+  definition = function(x, ...) {
+    start <- callNextMethod()
+    # N$DLEweights Dose$DLEdose Tox$binDLE
+    pseudoData <- tibble::tibble(
+      Dose = dplyr::pull(start$DLEdose),
+      N = dplyr::pull(start$DLEweights),
+      Tox = dplyr::pull(start$binDLE)
+    )
+    params <- tibble::tibble(
+      Param = c("Phi1", "Phi2"),
+      mean = c(dplyr::pull(start$phi1), dplyr::pull(start$phi2)),
+      cov = as.list(start$Pcov)
+    )
+    list(
+      pseudoData = pseudoData,
+      data = start$data,
+      params = params
+    ) %>%
+      h_tidy_class(x)
+  }
+)
+
+# Effloglog
+
+#' Tidy Method for the [`Effloglog`] Class
+#'
+#' @description `r lifecycle::badge("experimental")`
+#'
+#' A method that tidies a [`Effloglog`] object.
+#'
+#' @return The [`list`] of [`tibble`] objects.
+#'
+#' @aliases tidy-Effloglog
+#' @rdname tidy
+#' @method tidy Edffloglog
+#' @export
+#' @example examples/Effloglog-method-tidy.R
+#'
+setMethod(
+  f = "tidy",
+  signature = signature(x = "Effloglog"),
+  definition = function(x, ...) {
+    start <- callNextMethod()
+    pseudoData <- tibble::tibble(
+      Dose = dplyr::pull(start$eff_dose),
+      Response = dplyr::pull(start$eff)
+    )
+    params <- tibble::tibble(
+      Param = c("theta1", "theta2"),
+      mean = c(dplyr::pull(start$theta1), dplyr::pull(start$theta2)),
+      cov = as.list(start$Pcov)
+    )
+    list(
+      pseudoData = pseudoData,
+      data = start$data,
+      params = params
+    ) %>%
+      h_tidy_class(x)
   }
 )

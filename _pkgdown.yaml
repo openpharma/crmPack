@@ -1,5 +1,5 @@
 ---
-url: https://roche.github.io/crmPack
+url: https://openpharma.github.io/crmPack
 
 template:
   bootstrap: 5
@@ -20,7 +20,12 @@ navbar:
           href: unit-test-report/
     github:
       icon: fa-github
-      href: https://github.com/roche/crmPack
+      aria-label: View on GitHub
+      href: https://github.com/openpharma/crmPack
+    cran:
+      icon: fab fa-r-project
+      href: https://cloud.r-project.org/package=crmPack
+      aria-label: View on CRAN
 
 articles:
   - title: Articles
@@ -33,6 +38,7 @@ articles:
       - ordinal-crm
       - rolling-crm
       - simulations
+      - knit_print
       - tidy_method
       - migration_from_the_old_crmPack
       - parallel_computing_with_extensions
@@ -109,6 +115,7 @@ reference:
       - IncrementsDoseLevels
       - IncrementsHSRBeta
       - IncrementsMin
+      - IncrementsMaxToxProb
       - Stopping
       - StoppingMissingDose
       - StoppingCohortsNearDose
@@ -127,6 +134,7 @@ reference:
       - StoppingAny
       - StoppingTDCIRatio
       - StoppingMaxGainCIRatio
+      - StoppingExternal
       - CohortSize
       - CohortSizeRange
       - CohortSizeDLT
@@ -237,6 +245,8 @@ reference:
       - v_increments_dose_levels
       - v_increments_hsr_beta
       - v_increments_min
+      - v_increments_maxtoxprob
+      - v_starting_dose
       - v_stopping_cohorts_near_dose
       - v_stopping_min_cohorts
       - v_stopping_min_patients
@@ -387,6 +397,7 @@ reference:
       - maxDose-IncrementsDoseLevels
       - maxDose-IncrementsHSRBeta
       - maxDose-IncrementsMin
+      - maxDose-IncrementsMaxToxProb
   - title: Functions
     contents:
       - enable_logging
@@ -413,6 +424,7 @@ reference:
       - GeneralSimulations-class
       - GeneralSimulations
       - GeneralSimulationsSummary-class
+      - IncrementsMaxToxProb-class
       - LogisticLogNormalOrdinal-class
       - MinimalInformative
       - NextBestOrdinal-class
@@ -434,6 +446,9 @@ reference:
       - assertions
       - assert_equal
       - check_equal
+      - check_format
+      - assert_format
+      - test_format
       - crmPackExample
       - crmPackHelp
       - examine
@@ -441,7 +456,7 @@ reference:
       - fitGain
       - fitPEM
       - get,Samples,character-method
-      - getMinInfBeta
+      - h_get_min_inf_beta
       - logit
       - match_within_tolerance
       - maxSize

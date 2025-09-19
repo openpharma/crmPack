@@ -73,9 +73,5 @@ v_design_grouped <- function(object) {
     test_flag(object@same_dose_for_all),
     "same_dose_for_start must be a flag"
   )
-  v$check(
-    test_flag(object@stop_mono_with_combo),
-    "stop_mono_with_combo must be a flag"
-  )
   v$result()
 }

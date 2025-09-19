@@ -1,6 +1,9 @@
-# Version 2.0.0.9145
+# Version 2.0.0.9002
 * **Note: This release (1.0 -> 2.0) signifies a major breaking revamp of the package.** Users are advised to carefully review the release notes and documentation for detailed information on the changes and any necessary updates to their existing code.
-* Implemented `broom`-like `tidy` methods for all concrete `crmPack` classes.
+* Implemented the `IncrementsMaxToxProb` class
+* Implemented `knit_print` methods for almost all `crmPack` classes to improve rendering in Markdown and Quarto documents.  See the vignette for more details.
+* Provided basic support for ordinal CRM models.  See the vignette for more details.
+* Implemented `broom`-like `tidy` methods for all concrete `crmPack` classes.  See the vignette for more details.
 * Removed `multiplot` function.  Use Please use equivalent functionality in other packages, such as `cowplot` or `ggpubr`.
 * Added new `DataGrouped` and `DesignGrouped` classes with corresponding model `LogisticLogNormalGrouped` to support simultaneous dose escalation with monotherapy and combination therapy arms.
 * Created the `CrmPackClass` class as the ultimate ancestor of all other 

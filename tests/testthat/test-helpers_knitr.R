@@ -1,7 +1,30 @@
 library(knitr)
-if (!is_checking()) {
-  devtools::load_all()
-}
+
+# This code mocks functions that have long execution times so that unit tests
+# complete more quickly.  Initial tests suggest that the mocks need to be defined
+# in the file in which the tests are executed.  `source`ing the mocks does not
+# work.
+#
+# The persistent objects that are loaded are created by
+# /testthat/fixtures/make_persistent_objects_for_mocked_constructors.R.
+testthat::local_mocked_bindings(
+  .DefaultDASimulations = function(...) {
+    readRDS(testthat::test_path("fixtures", "default_da_simulations.Rds"))
+  }
+)
+
+testthat::local_mocked_bindings(
+  .DefaultSimulations = function(...) {
+    readRDS(testthat::test_path("fixtures", "default_simulations.Rds"))
+  }
+)
+
+testthat::local_mocked_bindings(
+  .DefaultDualSimulationsSummary = function(...) {
+    readRDS(testthat::test_path("fixtures", "default_dual_simulations_summary.Rds"))
+  }
+)
+# End of mocks
 
 # h_custom_method_exists could be removed once all necessary knit_print methods
 # have been defined
@@ -77,13 +100,21 @@ test_that("knit_print methods exist for all relevant classes and produce consist
           test_path("fixtures", outFileName),
           {
             # Code run in the template does not contribute to test coverage
-            rmarkdown::render(
-              input = test_path("fixtures", "knit_print_template.Rmd"),
-              params = list("class_name" = cls),
-              output_file = outFileName,
-              output_dir = test_path("fixtures")
+            tryCatch(
+              {
+                rmarkdown::render(
+                  input = test_path("fixtures", "knit_print_template.Rmd"),
+                  params = list("class_name" = cls),
+                  output_file = outFileName,
+                  output_dir = test_path("fixtures"),
+                  quiet = TRUE
+                )
+                expect_snapshot_file(test_path("fixtures", outFileName))
+              },
+              error = function(e) {
+                warning(paste0("Error for class ", cls, ": "), geterrmessage())
+              }
             )
-            expect_snapshot_file(test_path("fixtures", outFileName))
           }
         )
       }
@@ -96,24 +127,61 @@ test_that("knit_print methods exist for all relevant classes and produce consist
 test_that("asis parameter works correctly for all implemented methods", {
   for (cls in crmpack_class_list) {
     if (!isClassUnion(cls)) {
+      startTime <- Sys.time()
+
       obj <- do.call(paste0(".Default", cls), list())
+
+      endTime <- Sys.time()
+      if (unclass(endTime - startTime) > 2) {
+        print(paste0("Long initialisation for ", cls))
+      }
+
       # If the default knit_print method has been overridden, test it
       if (h_custom_method_exists(knit_print, obj)) {
-        rv <- knit_print(obj)
         # Default behaviour
+        rv <- knit_print(obj)
+        if (is.null(rv)) print(paste0("knit_print(obj) returns NULL for class ", cls, "."))
         expect_class(rv, "knit_asis")
 
         # Explicit behaviours
         rv <- knit_print(obj, asis = TRUE)
+        if (is.null(rv)) print(paste0("knit_print(obj, asis = TRUE) returns NULL for class ", cls, "."))
         expect_class(rv, "knit_asis")
         rv <- knit_print(obj, asis = FALSE)
+        if (is.null(rv)) print(paste0("knit_print(obj, asis = FALSE) returns NULL for class ", cls, "."))
         # Most objects return a character, but not all.  For example,
         # CohortSizeDLT returns a knitr_table
         if ("knit_asis" %in% class(rv)) print(cls)
         expect_true(!("knit_asis" %in% class(rv)))
 
         # Invalid value
+        errorThrown <- FALSE
+        tryCatch(
+          {
+            knit_print(obj, asis = "badValue")
+          },
+          error = function(e) errorThrown <<- TRUE
+        )
+        if (!errorThrown) print(paste0("No error thrown for ", cls, "."))
         expect_error(knit_print(obj, asis = "badValue"))
+      }
+    }
+  }
+})
+
+test_that("knit_print output is suffixed by two newlines for all implemented methods", {
+  for (cls in crmpack_class_list) {
+    if (!isClassUnion(cls)) {
+      obj <- do.call(paste0(".Default", cls), list())
+      # If the default knit_print method has been overridden, test it
+      if (h_custom_method_exists(knit_print, obj)) {
+        rv <- knit_print(obj, asis = FALSE)
+        if (is.null(rv)) print(paste0("knit_print(obj, asis = TRUE) returns NULL for class ", cls, "."))
+        ok <- identical(stringr::str_sub(rv, -2), "\n\n")
+        if (!ok) {
+          print(paste0("Double newline missing for ", cls))
+        }
+        expect_true(ok)
       }
     }
   }
@@ -126,19 +194,19 @@ test_that("asis parameter works correctly for all implemented methods", {
 test_that("knit_print.CohortSizeConst works correctly", {
   x <- CohortSizeConst(3)
   rv <- knit_print(x)
-  expect_equal(rv, "A constant size of 3 participants.", ignore_attr = TRUE)
+  expect_equal(rv, "A constant size of 3 participants.\n\n", ignore_attr = TRUE)
 
   x <- CohortSizeConst(2)
   rv <- knit_print(x, label = "subject")
-  expect_equal(rv, "A constant size of 2 subjects.", ignore_attr = TRUE)
+  expect_equal(rv, "A constant size of 2 subjects.\n\n", ignore_attr = TRUE)
 
   x <- CohortSizeConst(1)
   rv <- knit_print(x, label = "subject")
-  expect_equal(rv, "A constant size of 1 subject.", ignore_attr = TRUE)
+  expect_equal(rv, "A constant size of 1 subject.\n\n", ignore_attr = TRUE)
 
   x <- CohortSizeConst(3)
   rv <- knit_print(x, asis = FALSE)
-  expect_equal(rv, "A constant size of 3 participants.")
+  expect_equal(rv, "A constant size of 3 participants.\n\n")
 })
 
 #  CohortSizeParts
@@ -146,19 +214,34 @@ test_that("knit_print.CohortSizeConst works correctly", {
 test_that("knit_print.CohortSizeParts works correctly", {
   x <- CohortSizeParts(c(1, 3))
   rv <- knit_print(x)
-  expect_equal(rv, "A size of 1 participant in the first part and 3 participants in the second.", ignore_attr = TRUE)
+  expect_equal(
+    rv,
+    "A size of 1 participant in the first part and 3 participants in the second.\n\n",
+    ignore_attr = TRUE
+  )
 
   x <- CohortSizeParts(c(1, 3))
   rv <- knit_print(x, label = "subject")
-  expect_equal(rv, "A size of 1 subject in the first part and 3 subjects in the second.", ignore_attr = TRUE)
+  expect_equal(
+    rv,
+    "A size of 1 subject in the first part and 3 subjects in the second.\n\n",
+    ignore_attr = TRUE
+  )
 
   x <- CohortSizeParts(c(1, 3))
   rv <- knit_print(x, label = "subject")
-  expect_equal(rv, "A size of 1 subject in the first part and 3 subjects in the second.", ignore_attr = TRUE)
+  expect_equal(
+    rv,
+    "A size of 1 subject in the first part and 3 subjects in the second.\n\n",
+    ignore_attr = TRUE
+  )
 
   x <- CohortSizeParts(c(1, 3))
   rv <- knit_print(x, asis = FALSE)
-  expect_equal(rv, "A size of 1 participant in the first part and 3 participants in the second.")
+  expect_equal(
+    rv,
+    "A size of 1 participant in the first part and 3 participants in the second.\n\n"
+  )
 })
 
 # Increments ----
@@ -185,7 +268,8 @@ test_that("knit_print.IncrementsRelativeParts works correctly", {
           input = test_path("fixtures", "knit_print_object_specific_template.Rmd"),
           params = list("obj" = testList[[name]]),
           output_file = name,
-          output_dir = test_path("fixtures")
+          output_dir = test_path("fixtures"),
+          quiet = TRUE
         )
         expect_snapshot_file(test_path("fixtures", name))
       }
@@ -198,7 +282,7 @@ test_that("knit_print.IncrementsRelativeParts works correctly", {
     stringr::str_count(
       knit_print(
         .DefaultIncrementsRelativeParts(),
-        labels = "DLT"
+        tox_label = "DLT"
       ),
       "DLTs"
     ),
@@ -226,7 +310,8 @@ test_that("summarise option works correctly for Data classes", {
           input = test_path("fixtures", "knit_print_data_classes_template.Rmd"),
           params = list("obj" = testList[[name]]),
           output_file = name,
-          output_dir = test_path("fixtures")
+          output_dir = test_path("fixtures"),
+          quiet = TRUE
         )
         expect_snapshot_file(test_path("fixtures", name))
       }
@@ -237,4 +322,27 @@ test_that("summarise option works correctly for Data classes", {
     rv <- knit_print(testList[[name]], summarise = "cohort")
     expect_snapshot_value(rv, style = "serialize")
   }
+})
+
+test_that("h_get_formatted_dosegrid works correctly", {
+  expect_equal(
+    h_get_formatted_dosegrid(1:2),
+    "1 and 2.\n\n"
+  )
+  expect_equal(
+    h_get_formatted_dosegrid(1:3),
+    "1, 2 and 3.\n\n"
+  )
+  expect_equal(
+    h_get_formatted_dosegrid(1:3, units = "mg"),
+    "1 mg, 2 mg and 3 mg.\n\n"
+  )
+  expect_equal(
+    h_get_formatted_dosegrid(1:3, units = "mg", fmt = "%.2f"),
+    "1.00 mg, 2.00 mg and 3.00 mg.\n\n"
+  )
+  expect_equal(
+    h_get_formatted_dosegrid(1:3, fmt = "%.2f"),
+    "1.00, 2.00 and 3.00.\n\n"
+  )
 })

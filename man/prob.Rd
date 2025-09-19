@@ -40,39 +40,39 @@
 \usage{
 prob(dose, model, samples, ...)
 
-\S4method{prob}{numeric,LogisticNormal,Samples}(dose, model, samples)
+\S4method{prob}{numeric,LogisticNormal,Samples}(dose, model, samples, ...)
 
-\S4method{prob}{numeric,LogisticLogNormal,Samples}(dose, model, samples)
+\S4method{prob}{numeric,LogisticLogNormal,Samples}(dose, model, samples, ...)
 
-\S4method{prob}{numeric,LogisticLogNormalSub,Samples}(dose, model, samples)
+\S4method{prob}{numeric,LogisticLogNormalSub,Samples}(dose, model, samples, ...)
 
-\S4method{prob}{numeric,ProbitLogNormal,Samples}(dose, model, samples)
+\S4method{prob}{numeric,ProbitLogNormal,Samples}(dose, model, samples, ...)
 
-\S4method{prob}{numeric,ProbitLogNormalRel,Samples}(dose, model, samples)
+\S4method{prob}{numeric,ProbitLogNormalRel,Samples}(dose, model, samples, ...)
 
-\S4method{prob}{numeric,LogisticLogNormalGrouped,Samples}(dose, model, samples, group)
+\S4method{prob}{numeric,LogisticLogNormalGrouped,Samples}(dose, model, samples, group, ...)
 
-\S4method{prob}{numeric,LogisticKadane,Samples}(dose, model, samples)
+\S4method{prob}{numeric,LogisticKadane,Samples}(dose, model, samples, ...)
 
-\S4method{prob}{numeric,LogisticKadaneBetaGamma,Samples}(dose, model, samples)
+\S4method{prob}{numeric,LogisticKadaneBetaGamma,Samples}(dose, model, samples, ...)
 
-\S4method{prob}{numeric,LogisticNormalMixture,Samples}(dose, model, samples)
+\S4method{prob}{numeric,LogisticNormalMixture,Samples}(dose, model, samples, ...)
 
-\S4method{prob}{numeric,LogisticNormalFixedMixture,Samples}(dose, model, samples)
+\S4method{prob}{numeric,LogisticNormalFixedMixture,Samples}(dose, model, samples, ...)
 
-\S4method{prob}{numeric,LogisticLogNormalMixture,Samples}(dose, model, samples)
+\S4method{prob}{numeric,LogisticLogNormalMixture,Samples}(dose, model, samples, ...)
 
-\S4method{prob}{numeric,DualEndpoint,Samples}(dose, model, samples)
+\S4method{prob}{numeric,DualEndpoint,Samples}(dose, model, samples, ...)
 
-\S4method{prob}{numeric,LogisticIndepBeta,Samples}(dose, model, samples)
+\S4method{prob}{numeric,LogisticIndepBeta,Samples}(dose, model, samples, ...)
 
-\S4method{prob}{numeric,LogisticIndepBeta,missing}(dose, model)
+\S4method{prob}{numeric,LogisticIndepBeta,missing}(dose, model, samples, ...)
 
-\S4method{prob}{numeric,OneParLogNormalPrior,Samples}(dose, model, samples)
+\S4method{prob}{numeric,OneParLogNormalPrior,Samples}(dose, model, samples, ...)
 
-\S4method{prob}{numeric,OneParExpPrior,Samples}(dose, model, samples)
+\S4method{prob}{numeric,OneParExpPrior,Samples}(dose, model, samples, ...)
 
-\S4method{prob}{numeric,LogisticLogNormalOrdinal,Samples}(dose, model, samples, grade, cumulative = TRUE)
+\S4method{prob}{numeric,LogisticLogNormalOrdinal,Samples}(dose, model, samples, grade, cumulative = TRUE, ...)
 }
 \arguments{
 \item{dose}{(\code{number} or \code{numeric})\cr the dose which is targeted.

@@ -1538,16 +1538,16 @@ setMethod("summary",
       targetDoseDuringTrialAtDoseGrid <- doseGrid[max(which(targetDoseDuringTrial - doseGrid >= 0))]
 
       ## A summary for all TDtargetEndOfTrial dose obtained
-      TDEOTSummary <- summary(object@FinalTDtargetEndOfTrialEstimates)
+      TDEOTSummary <- summary(object@final_td_target_end_of_trial_estimates)
 
       FinalDoseRecSummary <- TDEOTSummary
 
-      ratioTDEOTSummary <- summary(object@FinalTDEOTRatios)
+      ratioTDEOTSummary <- summary(object@final_tdeot_ratios)
       FinalRatioSummary <- ratioTDEOTSummary
 
 
       ## A summary for all TDtargetDuringTrial dose obtained
-      TDDTSummary <- summary(object@FinalTDtargetDuringTrialEstimates)
+      TDDTSummary <- summary(object@final_td_target_during_trial_estimates)
       ## what are the levels above target End of Trial?
       xAboveTargetEndOfTrial <- which(trueDLE > targetEndOfTrial)
 
@@ -2304,7 +2304,7 @@ setMethod("plot",
         ## save the plot
         plotList[[plotIndex <- plotIndex + 1L]] <-
           qplot(factor(0),
-            y = y, data = data.frame(y = x@sigma2est), geom = "boxplot",
+            y = y, data = data.frame(y = x@sigma2_est), geom = "boxplot",
             xlab = "", ylab = "Efficacy variance estimates"
           ) +
           coord_flip() + scale_x_discrete(breaks = NULL)
@@ -2504,26 +2504,26 @@ setMethod("summary",
       }
 
       ## A summary for all final Gstar obtained
-      GstarSummary <- summary(object@FinalGstarEstimates)
-      ratioGstarSummary <- summary(object@FinalGstarRatios)
+      GstarSummary <- summary(object@final_gstar_estimates)
+      ratioGstarSummary <- summary(object@final_gstar_ratios)
 
-      FinalDoseRecSummary <- summary(object@FinalOptimalDose)
-      FinalRatioSummary <- summary(object@FinalRatios)
+      FinalDoseRecSummary <- summary(object@final_optimal_dose)
+      FinalRatioSummary <- summary(object@final_ratios)
 
 
 
       ## find names in the fit efficacy list (check it is with or without samples)
-      FitNames <- sapply(object@fitEff, names)
+      FitNames <- sapply(object@fit_eff, names)
       if ("ExpEff" %in% FitNames) {
         ## fitted efficacy level at dose most often selected
         EffFitAtDoseMostSelected <- sapply(
-          object@fitEff,
+          object@fit_eff,
           function(f) {
             f$ExpEff[xMostSelected]
           }
         )
         meanEffFitMatrix <- sapply(
-          object@fitEff,
+          object@fit_eff,
           "[[",
           "ExpEff"
         )
@@ -2536,7 +2536,7 @@ setMethod("summary",
       } else { ## fitted efficacy level at dose most often selected
         EffFitAtDoseMostSelected <-
           sapply(
-            object@fitEff,
+            object@fit_eff,
             function(f) {
               f$middle[xMostSelected]
             }
@@ -2546,7 +2546,7 @@ setMethod("summary",
         ## at each dose level
         ## (this is required for plotting)
         meanEffFitMatrix <- sapply(
-          object@fitEff,
+          object@fit_eff,
           "[[",
           "middle"
         )

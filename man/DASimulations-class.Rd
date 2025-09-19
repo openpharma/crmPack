@@ -22,6 +22,7 @@ parameters and the trial duration.
 }}
 
 \note{
-Typically, end users will not use the \code{.DASimulations()} function.
+Typically, end users will not use the \code{.DASimulations()} function.  This
+function has a noticeable execution time.
 }
 \keyword{classes}

@@ -456,12 +456,19 @@ test_that("DesignGrouped works as expected", {
         cohort_size = cohort_size,
         data = empty_data,
         startingDose = 3
-      )
+      ),
+      stop_mono_with_combo = TRUE
     )
   )
 
   expect_valid(result, "DesignGrouped")
-  expect_identical(result@mono, result@combo)
+  slots_except_stopping <- setdiff(slotNames(result@mono), "stopping")
+  sapply(
+    slots_except_stopping,
+    function(x) expect_identical(slot(result@mono, x), slot(result@combo, x))
+  )
+  expect_class(result@mono@stopping, "StoppingAny")
+  expect_class(result@combo@stopping, "StoppingTargetProb")
   expect_true(result@first_cohort_mono_only)
   expect_true(result@same_dose_for_all)
 })
