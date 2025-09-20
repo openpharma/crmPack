@@ -59,21 +59,26 @@ setMethod(
 setMethod(
   f = "plot",
   signature = signature(x = "DataOrdinal", y = "missing"),
-  definition = function(x,
-                        y,
-                        blind = FALSE,
-                        legend = TRUE,
-                        tox_labels = NULL,
-                        tox_shapes = NULL,
-                        ...) {
+  definition = function(
+    x,
+    y,
+    blind = FALSE,
+    legend = TRUE,
+    tox_labels = NULL,
+    tox_shapes = NULL,
+    ...
+  ) {
     if (is.null(tox_shapes)) {
       assert_true(length(x@yCategories) <= 9)
-      tox_shapes <- c(17L, 16L, 15L, 18L, 0L:2L, 5L, 6L)[seq_along(x@yCategories)]
+      tox_shapes <- c(17L, 16L, 15L, 18L, 0L:2L, 5L, 6L)[seq_along(
+        x@yCategories
+      )]
       names(tox_shapes) <- names(x@yCategories)
     }
     if (is.null(tox_labels)) {
       assert_true(length(x@yCategories) <= 5)
-      tox_labels <- switch(length(x@yCategories),
+      tox_labels <- switch(
+        length(x@yCategories),
         c("black"),
         c("black", "red"),
         c("black", "orange", "red"),
@@ -132,7 +137,8 @@ setMethod(
     plot2 <- ggplot(df, aes(x = dose, y = biomarker)) +
       geom_point(aes(shape = toxicity, colour = toxicity), size = 3) +
       scale_colour_manual(
-        name = "Toxicity", values = c(Yes = "red", No = "black")
+        name = "Toxicity",
+        values = c(Yes = "red", No = "black")
       ) +
       scale_shape_manual(name = "Toxicity", values = c(Yes = 17, No = 16)) +
       xlab("Dose Level") +
@@ -143,7 +149,8 @@ setMethod(
         geom_text(
           aes(
             y = biomarker + 0.02 * diff(range(biomarker)),
-            label = patient, size = 2
+            label = patient,
+            size = 2
           ),
           data = df,
           hjust = 0,
@@ -214,7 +221,10 @@ setMethod(
       scale_colour_manual(
         name = "Toxicity",
         values = c(
-          Yes = "red", No = "black", Start = "black", Censored = "black"
+          Yes = "red",
+          No = "black",
+          Start = "black",
+          Censored = "black"
         )
       ) +
       scale_shape_manual(
@@ -290,13 +300,15 @@ setMethod(
 setMethod(
   f = "update",
   signature = signature(object = "Data"),
-  definition = function(object,
-                        x,
-                        y,
-                        ID = length(object@ID) + seq_along(y),
-                        new_cohort = TRUE,
-                        check = TRUE,
-                        ...) {
+  definition = function(
+    object,
+    x,
+    y,
+    ID = length(object@ID) + seq_along(y),
+    new_cohort = TRUE,
+    check = TRUE,
+    ...
+  ) {
     assert_numeric(x, min.len = 0, max.len = 1)
     assert_integerish(y, lower = 0, upper = 1, any.missing = FALSE)
     assert_integerish(ID, len = length(y), any.missing = FALSE)
@@ -381,15 +393,22 @@ setMethod(
 setMethod(
   f = "update",
   signature = signature(object = "DataOrdinal"),
-  definition = function(object,
-                        x,
-                        y,
-                        ID = length(object@ID) + seq_along(y),
-                        new_cohort = TRUE,
-                        check = TRUE,
-                        ...) {
+  definition = function(
+    object,
+    x,
+    y,
+    ID = length(object@ID) + seq_along(y),
+    new_cohort = TRUE,
+    check = TRUE,
+    ...
+  ) {
     assert_numeric(x, min.len = 0, max.len = 1)
-    assert_integerish(y, lower = 0, upper = length(object@yCategories) - 1, any.missing = FALSE)
+    assert_integerish(
+      y,
+      lower = 0,
+      upper = length(object@yCategories) - 1,
+      any.missing = FALSE
+    )
     assert_integerish(ID, unique = TRUE, any.missing = FALSE, len = length(y))
     assert_disjunct(object@ID, ID)
     assert_flag(new_cohort)
@@ -564,13 +583,7 @@ setMethod(
 setMethod(
   f = "update",
   signature = signature(object = "DataDA"),
-  definition = function(object,
-                        u,
-                        t0,
-                        trialtime,
-                        y,
-                        ...,
-                        check = TRUE) {
+  definition = function(object, u, t0, trialtime, y, ..., check = TRUE) {
     assert_flag(check)
     assert_numeric(y, lower = 0, upper = 1)
     assert_true(length(y) == 0 || length(y) >= object@nObs)
@@ -814,7 +827,8 @@ setMethod(
       NObs = x@nObs,
       NGrid = x@nGrid,
       DoseGrid = list(x@doseGrid)
-    ) %>% h_tidy_class(x)
+    ) %>%
+      h_tidy_class(x)
   }
 )
 
@@ -1008,11 +1022,14 @@ setMethod(
         ) %>%
         dplyr::rowwise() %>%
         dplyr::mutate(
-          AnyTox = any(dplyr::across(c(tidyselect::starts_with("Cat"), -Cat0), any)),
+          AnyTox = any(dplyr::across(
+            c(tidyselect::starts_with("Cat"), -tidyselect::all_of("Cat0")),
+            any
+          )),
           # Direct assignment fails on GitHub
-          Cat0 = !AnyTox
+          Cat0 = !.data$AnyTox
         ) %>%
-        dplyr::select(-AnyTox) %>%
+        dplyr::select(-tidyselect::all_of("AnyTox")) %>%
         dplyr::ungroup()
     }
     y <- y %>% h_tidy_class(x)

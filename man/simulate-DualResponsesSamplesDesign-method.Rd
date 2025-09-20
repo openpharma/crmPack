@@ -42,13 +42,13 @@ simulate the data from}
 \item{trueEff}{a function which takes as input a dose (vector) and returns the expected
 efficacy responses (vector). Additional arguments can be supplied in \code{args}.}
 
-\item{trueNu}{(not with code{\linkS4class{EffFlexi}}) the precision, the inverse of the
+\item{trueNu}{(not with \code{\linkS4class{EffFlexi}}) the precision, the inverse of the
 variance of the efficacy responses}
 
-\item{trueSigma2}{(only with code{\linkS4class{EffFlexi}}) the true variance of the efficacy
+\item{trueSigma2}{(only with \code{\linkS4class{EffFlexi}}) the true variance of the efficacy
 responses which must be a single positive scalar.}
 
-\item{trueSigma2betaW}{(only with code{\linkS4class{EffFlexi}}) the true variance for the
+\item{trueSigma2betaW}{(only with \code{\linkS4class{EffFlexi}}) the true variance for the
 random walk model used for smoothing. This must be a single positive scalar.}
 
 \item{args}{data frame with arguments for the \code{trueDLE} and

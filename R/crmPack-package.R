@@ -1,23 +1,8 @@
 # nolint start
 
-#####################################################################################
-## Author: Daniel Sabanes Bove [sabanesd *a*t* roche *.* com]
-## Project: Object-oriented implementation of CRM designs
-##
-## Time-stamp: <[crmPack-package.R] by DSB Mon 11/05/2015 17:47>
-##
-## Description:
-## Package description.
-##
-## History:
-## 29/01/2014   file creation
-#####################################################################################
-
 #' Object-oriented implementation of CRM designs
 #'
-#' @name crmPack-package
-#' @aliases crmPack
-#' @docType package
+#' @name crmPack
 #' @title Object-oriented implementation of CRM designs
 #' @import checkmate
 #' @import ggplot2
@@ -43,7 +28,7 @@
 #' "Model-Based Dose Escalation Designs in R with crmPack."
 #' Journal of Statistical Software, 89(10), 1-22.
 #' doi:10.18637/jss.v089.i10 (URL: http://doi.org/10.18637/jss.v089.i10).
-{}
+"_PACKAGE"
 
 ##' @keywords internal
 .onAttach <- function(libname, pkgname) {

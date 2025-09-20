@@ -79,9 +79,11 @@ options <- McmcOptions(
   rng_kind = "Mersenne-Twister",
   rng_seed = 12
 )
+\donttest{
 testthat::expect_warning(
   result <- examine(design, mcmcOptions = options, maxNoIncrement = 2),
   "Stopping because 2 times no increment"
 )
+}
 
 # nolint end

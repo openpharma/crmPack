@@ -11,11 +11,12 @@
 #' @export
 #' @method knit_print NextBestMTD
 knit_print.NextBestMTD <- function(
-    x,
-    ...,
-    target_label = "the 25th centile",
-    tox_label = "toxicity",
-    asis = TRUE) {
+  x,
+  ...,
+  target_label = "the 25th centile",
+  tox_label = "toxicity",
+  asis = TRUE
+) {
   # Validate
   assert_flag(asis)
   assert_character(target_label, len = 1, any.missing = FALSE)
@@ -55,10 +56,11 @@ knit_print.NextBestMTD <- function(
 #' @export
 #' @method knit_print NextBestNCRM
 knit_print.NextBestNCRM <- function(
-    x,
-    ...,
-    tox_label = "toxicity",
-    asis = TRUE) {
+  x,
+  ...,
+  tox_label = "toxicity",
+  asis = TRUE
+) {
   # Validate
   assert_flag(asis)
   assert_character(tox_label, max.len = 2, any.missing = FALSE)
@@ -70,7 +72,9 @@ knit_print.NextBestNCRM <- function(
     "will be discarded.  Next, any dose for which the mean posterior probability of ",
     tox_label,
     " being in the overdose range - (",
-    x@overdose[1], ", ", x@overdose[2],
+    x@overdose[1],
+    ", ",
+    x@overdose[2],
     "] - is ",
     x@max_overdose_prob,
     " or more will also be discarded.  Finally, the dose amongst those remaining ",
@@ -110,11 +114,12 @@ knit_print.NextBestNCRM <- function(
 #' @export
 #' @method knit_print NextBestThreePlusThree
 knit_print.NextBestThreePlusThree <- function(
-    x,
-    ...,
-    tox_label = c("toxicity", "toxicities"),
-    label = "participant",
-    asis = TRUE) {
+  x,
+  ...,
+  tox_label = c("toxicity", "toxicities"),
+  label = "participant",
+  asis = TRUE
+) {
   # Validate
   assert_flag(asis)
 
@@ -155,12 +160,13 @@ knit_print.NextBestThreePlusThree <- function(
 #' @export
 #' @method knit_print NextBestDualEndpoint
 knit_print.NextBestDualEndpoint <- function(
-    x,
-    ...,
-    tox_label = "toxicity",
-    biomarker_label = "the biomarker",
-    biomarker_units = ifelse(x@target_relative, "%", ""),
-    asis = TRUE) {
+  x,
+  ...,
+  tox_label = "toxicity",
+  biomarker_label = "the biomarker",
+  biomarker_units = ifelse(x@target_relative, "%", ""),
+  asis = TRUE
+) {
   assert_flag(asis)
   assert_character(tox_label, len = 1, any.missing = FALSE)
   assert_character(biomarker_label, len = 1, any.missing = FALSE)
@@ -172,7 +178,9 @@ knit_print.NextBestDualEndpoint <- function(
     "will be discarded.  Next, any dose for which the mean posterior probability of ",
     tox_label,
     " being in the overdose range - (",
-    x@overdose[1], ", ", x@overdose[2],
+    x@overdose[1],
+    ", ",
+    x@overdose[2],
     "] - is ",
     x@max_overdose_prob,
     " or more will also be discarded.  Finally, the dose amongst those remaining ",
@@ -182,10 +190,18 @@ knit_print.NextBestDualEndpoint <- function(
     biomarker_label,
     ", which is ",
     x@target[1],
-    ifelse(x@target_relative, "", stringr::str_squish(paste0(" ", biomarker_units))),
+    ifelse(
+      x@target_relative,
+      "",
+      stringr::str_squish(paste0(" ", biomarker_units))
+    ),
     " to ",
     x@target[2],
-    ifelse(x@target_relative, "", stringr::str_squish(paste0(" ", biomarker_units))),
+    ifelse(
+      x@target_relative,
+      "",
+      stringr::str_squish(paste0(" ", biomarker_units))
+    ),
     " (inclusive),",
     ifelse(
       x@target_relative,
@@ -212,10 +228,11 @@ knit_print.NextBestDualEndpoint <- function(
 #' @export
 #' @method knit_print NextBestMinDist
 knit_print.NextBestMinDist <- function(
-    x,
-    ...,
-    tox_label = "toxicity",
-    asis = TRUE) {
+  x,
+  ...,
+  tox_label = "toxicity",
+  asis = TRUE
+) {
   # Validate
   assert_flag(asis)
   assert_character(tox_label, len = 1, any.missing = FALSE)
@@ -252,12 +269,13 @@ knit_print.NextBestMinDist <- function(
 #' @export
 #' @method knit_print NextBestInfTheory
 knit_print.NextBestInfTheory <- function(
-    x,
-    ...,
-    tox_label = "toxicity",
-    citation_text = "Mozgunov & Jaki (2019)",
-    citation_link = "https://doi.org/10.1002/sim.8450",
-    asis = TRUE) {
+  x,
+  ...,
+  tox_label = "toxicity",
+  citation_text = "Mozgunov & Jaki (2019)",
+  citation_link = "https://doi.org/10.1002/sim.8450",
+  asis = TRUE
+) {
   # Validate
   assert_flag(asis)
   assert_character(tox_label, len = 1, any.missing = FALSE)
@@ -268,7 +286,9 @@ knit_print.NextBestInfTheory <- function(
   rv <- paste0(
     "The recommended dose for the next cohort will be chosen using the ",
     "complex infinite bounds penalisation (CIBP) criterion of ",
-    "[", citation_text, "]",
+    "[",
+    citation_text,
+    "]",
     ifelse(nchar(citation_link) > 0, paste0("(", citation_link, ")"), ""),
     ".  Let\n\n",
     "$$ \\delta(\\hat{p}_d, \\gamma) = \\frac{(\\hat{p}_d - \\gamma)^2}",
@@ -300,10 +320,11 @@ knit_print.NextBestInfTheory <- function(
 #' @export
 #' @method knit_print NextBestTD
 knit_print.NextBestTD <- function(
-    x,
-    ...,
-    tox_label = "toxicity",
-    asis = TRUE) {
+  x,
+  ...,
+  tox_label = "toxicity",
+  asis = TRUE
+) {
   # Validate
   assert_flag(asis)
   assert_character(tox_label, len = 1, any.missing = FALSE)
@@ -338,10 +359,11 @@ knit_print.NextBestTD <- function(
 #' @export
 #' @method knit_print NextBestMaxGain
 knit_print.NextBestMaxGain <- function(
-    x,
-    ...,
-    tox_label = "toxicity",
-    asis = TRUE) {
+  x,
+  ...,
+  tox_label = "toxicity",
+  asis = TRUE
+) {
   # Validate
   assert_flag(asis)
   assert_character(tox_label, len = 1, any.missing = FALSE)
@@ -374,10 +396,11 @@ knit_print.NextBestMaxGain <- function(
 #' @export
 #' @method knit_print NextBestProbMTDLTE
 knit_print.NextBestProbMTDLTE <- function(
-    x,
-    ...,
-    tox_label = "toxicity",
-    asis = TRUE) {
+  x,
+  ...,
+  tox_label = "toxicity",
+  asis = TRUE
+) {
   # Validate
   assert_flag(asis)
   assert_character(tox_label, len = 1, any.missing = FALSE)
@@ -407,10 +430,11 @@ knit_print.NextBestProbMTDLTE <- function(
 #' @export
 #' @method knit_print NextBestProbMTDMinDist
 knit_print.NextBestProbMTDMinDist <- function(
-    x,
-    ...,
-    tox_label = "toxicity",
-    asis = TRUE) {
+  x,
+  ...,
+  tox_label = "toxicity",
+  asis = TRUE
+) {
   # Validate
   assert_flag(asis)
   assert_character(tox_label, len = 1, any.missing = FALSE)
@@ -442,16 +466,12 @@ knit_print.NextBestProbMTDMinDist <- function(
 #' @export
 #' @method knit_print NextBestNCRMLoss
 knit_print.NextBestNCRMLoss <- function(
-    x,
-    ...,
-    tox_label = "toxicity",
-    asis = TRUE,
-    format_func = function(x) {
-      kableExtra::kable_styling(
-        x,
-        bootstrap_options = c("striped", "hover", "condensed")
-      )
-    }) {
+  x,
+  ...,
+  tox_label = "toxicity",
+  asis = TRUE,
+  format_func = h_knit_format_func
+) {
   # Validate
   assert_flag(asis)
   assert_character(tox_label, len = 1, any.missing = FALSE)
@@ -510,10 +530,11 @@ knit_print.NextBestNCRMLoss <- function(
 #' @export
 #' @method knit_print NextBestTDsamples
 knit_print.NextBestTDsamples <- function(
-    x,
-    ...,
-    tox_label = "toxicity",
-    asis = TRUE) {
+  x,
+  ...,
+  tox_label = "toxicity",
+  asis = TRUE
+) {
   # Validate
   assert_flag(asis)
   assert_character(tox_label, len = 1, any.missing = FALSE)
@@ -549,10 +570,11 @@ knit_print.NextBestTDsamples <- function(
 #' @export
 #' @method knit_print NextBestMaxGainSamples
 knit_print.NextBestMaxGainSamples <- function(
-    x,
-    ...,
-    tox_label = "toxicity",
-    asis = TRUE) {
+  x,
+  ...,
+  tox_label = "toxicity",
+  asis = TRUE
+) {
   # Validate
   assert_flag(asis)
   assert_character(tox_label, len = 1, any.missing = FALSE)
@@ -585,10 +607,11 @@ knit_print.NextBestMaxGainSamples <- function(
 #' @export
 #' @method knit_print NextBestOrdinal
 knit_print.NextBestOrdinal <- function(
-    x,
-    ...,
-    tox_label = "toxicity",
-    asis = TRUE) {
+  x,
+  ...,
+  tox_label = "toxicity",
+  asis = TRUE
+) {
   assert_flag(asis)
   assert_character(tox_label, max.len = 2, any.missing = FALSE)
 
@@ -599,7 +622,10 @@ knit_print.NextBestOrdinal <- function(
     " grade of ",
     x@grade,
     ": ",
-    paste0(knit_print(x@rule, asis = asis, tox_label = tox_label, ...), collapse = "\n"),
+    paste0(
+      knit_print(x@rule, asis = asis, tox_label = tox_label, ...),
+      collapse = "\n"
+    ),
     "\n\n"
   )
 

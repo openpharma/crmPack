@@ -32,7 +32,7 @@ expect_range(
 )
 }
 \arguments{
-\item{x}{[any]\cr
+\item{x}{[\code{any}]\cr
 Object to check.}
 
 \item{lower}{[\code{numeric(1)}]\cr

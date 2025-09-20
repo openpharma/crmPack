@@ -1,4 +1,4 @@
-
+\donttest{
 # Setting up a minimal informative prior 
 # max.time is quite small only for the purpose of showing the example. They 
 # should be increased for a real case.
@@ -25,4 +25,4 @@ legend("right",
        col=c("blue", "red"),
        lty=1,
        bty="n")
-
+}

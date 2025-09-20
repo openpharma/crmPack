@@ -12,4 +12,6 @@ myDesign <- RuleDesign(
 
 # Examine the design
 set.seed(4235)
+\donttest{
 examine(myDesign)
+}

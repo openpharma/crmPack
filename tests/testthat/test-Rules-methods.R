@@ -6,7 +6,10 @@ test_that("nextBest-NextBestMTD returns correct next dose and plot", {
   data <- h_get_data(placebo = FALSE)
   model <- h_get_logistic_log_normal()
   samples <- h_as_samples(
-    list(alpha0 = c(-2.38, -2.13, -1.43, -2.57), alpha1 = c(1.67, 1.3, 1.77, 2.51))
+    list(
+      alpha0 = c(-2.38, -2.13, -1.43, -2.57),
+      alpha1 = c(1.67, 1.3, 1.77, 2.51)
+    )
   )
   nb_mtd <- NextBestMTD(
     target = 0.33,
@@ -23,14 +26,17 @@ test_that("nextBest-NextBestMTD returns correct next dose and plot", {
     data = data
   )
   expect_identical(result$value, 75)
-  vdiffr::expect_doppelganger("Plot of nextBest-NextBestMTD", result$plot)
+  expect_doppel("Plot of nextBest-NextBestMTD", result$plot)
 })
 
 test_that("nextBest-NextBestMTD returns correct next dose and plot (no doselimit)", {
   data <- h_get_data(placebo = FALSE)
   model <- h_get_logistic_log_normal()
   samples <- h_as_samples(
-    list(alpha0 = c(-2.38, -2.13, -1.43, -2.57), alpha1 = c(1.67, 1.3, 1.77, 2.51))
+    list(
+      alpha0 = c(-2.38, -2.13, -1.43, -2.57),
+      alpha1 = c(1.67, 1.3, 1.77, 2.51)
+    )
   )
   nb_mtd <- NextBestMTD(
     target = 0.33,
@@ -41,14 +47,17 @@ test_that("nextBest-NextBestMTD returns correct next dose and plot (no doselimit
 
   result <- nextBest(nb_mtd, Inf, samples, model, data)
   expect_identical(result$value, 100)
-  vdiffr::expect_doppelganger("Plot of nextBest-NextBestMTD without doselimit", result$plot)
+  expect_doppel("Plot of nextBest-NextBestMTD without doselimit", result$plot)
 })
 
 test_that("nextBest-NextBestMTD returns correct next dose and plot when doselimit=0", {
   data <- h_get_data(placebo = FALSE)
   model <- h_get_logistic_log_normal()
   samples <- h_as_samples(
-    list(alpha0 = c(-2.38, -2.13, -1.43, -2.57), alpha1 = c(1.67, 1.3, 1.77, 2.51))
+    list(
+      alpha0 = c(-2.38, -2.13, -1.43, -2.57),
+      alpha1 = c(1.67, 1.3, 1.77, 2.51)
+    )
   )
   nb_mtd <- NextBestMTD(
     target = 0.33,
@@ -65,7 +74,7 @@ test_that("nextBest-NextBestMTD returns correct next dose and plot when doselimi
     data = data
   )
   expect_identical(result$value, numeric(0))
-  vdiffr::expect_doppelganger("Plot of nextBest-NextBestMTD-doselimit-zero", result$plot)
+  expect_doppel("Plot of nextBest-NextBestMTD-doselimit-zero", result$plot)
 })
 
 
@@ -78,15 +87,17 @@ test_that("nextBest-NextBestNCRM returns expected values of the objects", {
     list(alpha0 = c(-1.8, -3.8, -2.2, -1.6), alpha1 = c(1.7, 3.3, 5.1, 2.2))
   )
   nb_ncrm <- NextBestNCRM(
-    target = c(0.2, 0.35), overdose = c(0.35, 1), max_overdose_prob = 0.25
+    target = c(0.2, 0.35),
+    overdose = c(0.35, 1),
+    max_overdose_prob = 0.25
   )
 
   result <- nextBest(nb_ncrm, 45, samples, model, data)
   expect_identical(result$value, 25)
   expect_snapshot(result$probs)
-  vdiffr::expect_doppelganger("Plot of nextBest-NextBestNCRM", result$plot)
-  vdiffr::expect_doppelganger("Plot of nextBest-NextBestNCRM_p1", result$singlePlots$plot1)
-  vdiffr::expect_doppelganger("Plot of nextBest-NextBestNCRM_p2", result$singlePlots$plot2)
+  expect_doppel("Plot of nextBest-NextBestNCRM", result$plot)
+  expect_doppel("Plot of nextBest-NextBestNCRM_p1", result$singlePlots$plot1)
+  expect_doppel("Plot of nextBest-NextBestNCRM_p2", result$singlePlots$plot2)
 })
 
 test_that("nextBest-NextBestNCRM returns expected values of the objects (no doselimit)", {
@@ -96,23 +107,38 @@ test_that("nextBest-NextBestNCRM returns expected values of the objects (no dose
     list(alpha0 = c(-1.8, -3.8, -2.2, -1.6), alpha1 = c(1.7, 3.3, 5.1, 2.2))
   )
   nb_ncrm <- NextBestNCRM(
-    target = c(0.2, 0.35), overdose = c(0.35, 1), max_overdose_prob = 0.25
+    target = c(0.2, 0.35),
+    overdose = c(0.35, 1),
+    max_overdose_prob = 0.25
   )
 
   result <- nextBest(nb_ncrm, Inf, samples, model, data)
   expect_identical(result$value, 75)
   expect_snapshot(result$probs)
-  vdiffr::expect_doppelganger("Plot of nextBest-NextBestNCRM without doselimit", result$plot)
+  expect_doppel("Plot of nextBest-NextBestNCRM without doselimit", result$plot)
 })
 
 test_that("nextBest-NextBestNCRM can accept additional arguments and pass them to prob inside", {
   my_data <- h_get_data_grouped()
   my_model <- .DefaultLogisticLogNormalGrouped()
-  my_samples <- mcmc(my_data, my_model, h_get_mcmc_options(samples = 10, burnin = 10))
-  nb_ncrm <- NextBestNCRM(
-    target = c(0.2, 0.35), overdose = c(0.35, 1), max_overdose_prob = 0.25
+  my_samples <- mcmc(
+    my_data,
+    my_model,
+    h_get_mcmc_options(samples = 10, burnin = 10)
   )
-  result <- nextBest(nb_ncrm, Inf, my_samples, my_model, my_data, group = "mono")
+  nb_ncrm <- NextBestNCRM(
+    target = c(0.2, 0.35),
+    overdose = c(0.35, 1),
+    max_overdose_prob = 0.25
+  )
+  result <- nextBest(
+    nb_ncrm,
+    Inf,
+    my_samples,
+    my_model,
+    my_data,
+    group = "mono"
+  )
   expect_identical(result$value, NA_real_)
 })
 
@@ -125,13 +151,15 @@ test_that("nextBest-NextBestNCRM-DataParts returns expected values of the object
     list(alpha0 = c(-1.8, -3.8, -2.2, -1.6), alpha1 = c(1.7, 3.3, 5.1, 2.2))
   )
   nb_ncrm <- NextBestNCRM(
-    target = c(0.2, 0.35), overdose = c(0.35, 1), max_overdose_prob = 0.25
+    target = c(0.2, 0.35),
+    overdose = c(0.35, 1),
+    max_overdose_prob = 0.25
   )
 
   result <- nextBest(nb_ncrm, 45, samples, model, data)
   expect_identical(result$value, 25)
   expect_snapshot(result$probs)
-  vdiffr::expect_doppelganger("Plot of nextBest-NextBestNCRM-DataParts", result$plot)
+  expect_doppel("Plot of nextBest-NextBestNCRM-DataParts", result$plot)
 })
 
 test_that("nextBest-NextBestNCRM-DataParts returns expected values of the objects (no doselimit)", {
@@ -141,13 +169,15 @@ test_that("nextBest-NextBestNCRM-DataParts returns expected values of the object
     list(alpha0 = c(-1.8, -3.8, -2.2, -1.6), alpha1 = c(1.7, 3.3, 5.1, 2.2))
   )
   nb_ncrm <- NextBestNCRM(
-    target = c(0.2, 0.35), overdose = c(0.35, 1), max_overdose_prob = 0.25
+    target = c(0.2, 0.35),
+    overdose = c(0.35, 1),
+    max_overdose_prob = 0.25
   )
 
   result <- nextBest(nb_ncrm, Inf, samples, model, data)
   expect_identical(result$value, 75)
   expect_snapshot(result$probs)
-  vdiffr::expect_doppelganger("Plot of nextBest-NextBestNCRM-DataParts nodlim", result$plot)
+  expect_doppel("Plot of nextBest-NextBestNCRM-DataParts nodlim", result$plot)
 })
 
 test_that("nextBest-NextBestNCRM-DataParts returns expected value for all parts 1", {
@@ -157,7 +187,9 @@ test_that("nextBest-NextBestNCRM-DataParts returns expected value for all parts 
     list(alpha0 = c(-1.8, -3.8, -2.2, -1.6), alpha1 = c(1.7, 3.3, 5.1, 2.2))
   )
   nb_ncrm <- NextBestNCRM(
-    target = c(0.2, 0.35), overdose = c(0.35, 1), max_overdose_prob = 0.25
+    target = c(0.2, 0.35),
+    overdose = c(0.35, 1),
+    max_overdose_prob = 0.25
   )
 
   result <- nextBest(nb_ncrm, 45, samples, model, data)
@@ -172,7 +204,9 @@ test_that("nextBest-NextBestNCRM-DataParts throws the error for all parts 1 and 
     list(alpha0 = c(-1.8, -3.8, -2.2, -1.6), alpha1 = c(1.7, 3.3, 5.1, 2.2))
   )
   nb_ncrm <- NextBestNCRM(
-    target = c(0.2, 0.35), overdose = c(0.35, 1), max_overdose_prob = 0.25
+    target = c(0.2, 0.35),
+    overdose = c(0.35, 1),
+    max_overdose_prob = 0.25
   )
 
   expect_error(
@@ -199,10 +233,19 @@ test_that("nextBest-NextBestNCRMLoss returns expected values of the objects", {
   result <- nextBest(nb_ncrm_loss, 60, samples, model, data)
   expect_identical(result$value, 25)
   expect_snapshot(result$probs)
-  vdiffr::expect_doppelganger("Plot of nextBest-NextBestNCRMLoss", result$plot_joint)
-  vdiffr::expect_doppelganger("Plot of nextBest-NextBestNCRMLoss_p1", result$plots_single$plot1)
-  vdiffr::expect_doppelganger("Plot of nextBest-NextBestNCRMLoss_p2", result$plots_single$plot2)
-  vdiffr::expect_doppelganger("Plot of nextBest-NextBestNCRMLoss_ploss", result$plots_single$plot_loss)
+  expect_doppel("Plot of nextBest-NextBestNCRMLoss", result$plot_joint)
+  expect_doppel(
+    "Plot of nextBest-NextBestNCRMLoss_p1",
+    result$plots_single$plot1
+  )
+  expect_doppel(
+    "Plot of nextBest-NextBestNCRMLoss_p2",
+    result$plots_single$plot2
+  )
+  expect_doppel(
+    "Plot of nextBest-NextBestNCRMLoss_ploss",
+    result$plots_single$plot_loss
+  )
 })
 
 test_that("nextBest-NextBestNCRMLoss returns expected values of the objects (loss function of 4 elements)", {
@@ -222,7 +265,10 @@ test_that("nextBest-NextBestNCRMLoss returns expected values of the objects (los
   result <- nextBest(nb_ncrm_loss, Inf, samples, model, data)
   expect_identical(result$value, 25)
   expect_snapshot(result$probs)
-  vdiffr::expect_doppelganger("Plot of nextBest-NextBestNCRMLoss with losses of 4", result$plot_joint)
+  expect_doppel(
+    "Plot of nextBest-NextBestNCRMLoss with losses of 4",
+    result$plot_joint
+  )
 })
 
 test_that("nextBest-NextBestNCRMLoss returns expected values of the objects (no doselimit)", {
@@ -232,13 +278,19 @@ test_that("nextBest-NextBestNCRMLoss returns expected values of the objects (no 
     list(alpha0 = c(-1.8, -3.8, -2.2, -1.6), alpha1 = c(1.7, 3.3, 5.1, 2.2))
   )
   nb_ncrm_loss <- NextBestNCRMLoss(
-    target = c(0.2, 0.35), overdose = c(0.35, 1), max_overdose_prob = 0.25, losses = c(1, 0, 2)
+    target = c(0.2, 0.35),
+    overdose = c(0.35, 1),
+    max_overdose_prob = 0.25,
+    losses = c(1, 0, 2)
   )
 
   result <- nextBest(nb_ncrm_loss, Inf, samples, model, data)
   expect_identical(result$value, 25)
   expect_snapshot(result$probs)
-  vdiffr::expect_doppelganger("Plot of nextBest-NextBestNCRMLoss without doselimit", result$plot_joint)
+  expect_doppel(
+    "Plot of nextBest-NextBestNCRMLoss without doselimit",
+    result$plot_joint
+  )
 })
 
 ## NextBestThreePlusThree ----
@@ -262,7 +314,11 @@ test_that("nextBest-NextBestThreePlusThree returns expected values (< 33%, max d
 
 test_that("nextBest-NextBestThreePlusThree returns expected values (< 33% and no escalation)", {
   data <- h_get_data(placebo = FALSE)
-  data <- update(data, x = data@doseGrid[tail(data@xLevel, 1) - 1], y = c(0L, 1L, 0L, 0L))
+  data <- update(
+    data,
+    x = data@doseGrid[tail(data@xLevel, 1) - 1],
+    y = c(0L, 1L, 0L, 0L)
+  )
 
   result <- nextBest(NextBestThreePlusThree(), data = data)
   expect_identical(result$value, 75)
@@ -320,9 +376,15 @@ test_that("nextBest-NextBestDualEndpoint returns expected elements", {
   result <- nextBest(nb_de, 133, samples, model, data)
   expect_identical(result$value, 25)
   expect_snapshot(result$probs)
-  vdiffr::expect_doppelganger("Plot of nextBest-NextBestDualEndpoint", result$plot)
-  vdiffr::expect_doppelganger("Plot of nextBest-NextBestDualEndpoint_p1", result$singlePlots$plot1)
-  vdiffr::expect_doppelganger("Plot of nextBest-NextBestDualEndpoint_p2", result$singlePlots$plot2)
+  expect_doppel("Plot of nextBest-NextBestDualEndpoint", result$plot)
+  expect_doppel(
+    "Plot of nextBest-NextBestDualEndpoint_p1",
+    result$singlePlots$plot1
+  )
+  expect_doppel(
+    "Plot of nextBest-NextBestDualEndpoint_p2",
+    result$singlePlots$plot2
+  )
 })
 
 test_that("nextBest-NextBestDualEndpoint returns expected elements (with Emax param)", {
@@ -338,7 +400,7 @@ test_that("nextBest-NextBestDualEndpoint returns expected elements (with Emax pa
   result <- nextBest(nb_de, 133, samples, model, data)
   expect_identical(result$value, 50)
   expect_snapshot(result$probs)
-  vdiffr::expect_doppelganger("Plot of nextBest-NextBestDualEndpoint_Emax", result$plot)
+  expect_doppel("Plot of nextBest-NextBestDualEndpoint_Emax", result$plot)
 })
 
 test_that("nextBest-NextBestDualEndpoint returns expected elements (absolute target)", {
@@ -355,7 +417,7 @@ test_that("nextBest-NextBestDualEndpoint returns expected elements (absolute tar
   result <- nextBest(nb_de, 90, samples, model, data)
   expect_identical(result$value, 75)
   expect_snapshot(result$probs)
-  vdiffr::expect_doppelganger("Plot of nextBest-NextBestDualEndpoint_abstarget", result$plot)
+  expect_doppel("Plot of nextBest-NextBestDualEndpoint_abstarget", result$plot)
 })
 
 test_that("nextBest-NextBestDualEndpoint returns expected elements (absolute target, no doselimit)", {
@@ -372,7 +434,7 @@ test_that("nextBest-NextBestDualEndpoint returns expected elements (absolute tar
   result <- nextBest(nb_de, Inf, samples, model, data)
   expect_identical(result$value, 100)
   expect_snapshot(result$probs)
-  vdiffr::expect_doppelganger("nextBest-NextBestDualEndpoint_atgt_nodlim", result$plot)
+  expect_doppel("nextBest-NextBestDualEndpoint_atgt_nodlim", result$plot)
 })
 
 ## NextBestMinDist ----
@@ -388,21 +450,24 @@ test_that("nextBest-NextBestMinDist returns expected values and plot", {
   result <- nextBest(nb_md, 50, samples, model, data)
   expect_identical(result$value, 50)
   expect_snapshot(result$probs)
-  vdiffr::expect_doppelganger("Plot of nextBest-NextBestMinDist", result$plot)
+  expect_doppel("Plot of nextBest-NextBestMinDist", result$plot)
 })
 
 test_that("nextBest-NextBestMinDist returns expected values and plot (with placebo)", {
   data <- h_get_data(placebo = TRUE)
   model <- h_get_logistic_log_normal()
   samples <- h_as_samples(
-    list(alpha0 = c(-0.38, -0.13, 1.43, 2.57), alpha1 = c(1.67, 1.3, 1.77, 2.51))
+    list(
+      alpha0 = c(-0.38, -0.13, 1.43, 2.57),
+      alpha1 = c(1.67, 1.3, 1.77, 2.51)
+    )
   )
   nb_md <- NextBestMinDist(target = 0.1)
 
   result <- nextBest(nb_md, 40, samples, model, data)
   expect_identical(result$value, 25)
   expect_snapshot(result$probs)
-  vdiffr::expect_doppelganger("Plot of nextBest-NextBestMinDist with placebo", result$plot)
+  expect_doppel("Plot of nextBest-NextBestMinDist with placebo", result$plot)
 })
 
 test_that("nextBest-NextBestMinDist returns expected values and plot (no doselimit)", {
@@ -416,7 +481,7 @@ test_that("nextBest-NextBestMinDist returns expected values and plot (no doselim
   result <- nextBest(nb_md, Inf, samples, model, data)
   expect_identical(result$value, 75)
   expect_snapshot(result$probs)
-  vdiffr::expect_doppelganger("Plot nextBest-NextBestMinDist w/o doselimit", result$plot)
+  expect_doppel("Plot nextBest-NextBestMinDist w/o doselimit", result$plot)
 })
 
 ## NextBestInfTheory ----
@@ -428,7 +493,10 @@ test_that("nextBest-NextBestInfTheory returns correct next dose", {
     mean = c(-4.47, 0.0033),
     cov = matrix(c(1.06, 0.85, 0.85, 2.72), nrow = 2)
   )
-  samples <- h_as_samples(list(alpha0 = c(0, -1, 1, 2), alpha1 = c(0, 2, 1, -1)))
+  samples <- h_as_samples(list(
+    alpha0 = c(0, -1, 1, 2),
+    alpha1 = c(0, 2, 1, -1)
+  ))
   nb_it <- NextBestInfTheory(target = 0.25, asymmetry = 0.1)
 
   result <- nextBest(nb_it, 75, samples, model, data)
@@ -442,7 +510,10 @@ test_that("nextBest-NextBestInfTheory returns correct next dose (no doselimit)",
     mean = c(-4.47, 0.0033),
     cov = matrix(c(1.06, 0.85, 0.85, 2.72), nrow = 2)
   )
-  samples <- h_as_samples(list(alpha0 = c(0, -1, 1, 2), alpha1 = c(0, 2, 1, -1)))
+  samples <- h_as_samples(list(
+    alpha0 = c(0, -1, 1, 2),
+    alpha1 = c(0, 2, 1, -1)
+  ))
   nb_it <- NextBestInfTheory(target = 0.25, asymmetry = 0.1)
 
   result <- nextBest(nb_it, Inf, samples, model, data)
@@ -456,7 +527,18 @@ test_that("nextBest-NextBestTDsamples returns expected values of the objects", {
   model <- h_get_logistic_indep_beta()
   samples <- h_as_samples(
     list(
-      phi1 = c(-6.99, -6.99, -8.58, -8.62, -8.62, -8.62, -8.62, -8.23, -8.71, -8.71),
+      phi1 = c(
+        -6.99,
+        -6.99,
+        -8.58,
+        -8.62,
+        -8.62,
+        -8.62,
+        -8.62,
+        -8.23,
+        -8.71,
+        -8.71
+      ),
       phi2 = c(1.69, 1.69, 1.26, 1.72, 1.72, 1.72, 1.72, 1.78, 1.74, 1.74)
     )
   )
@@ -475,7 +557,7 @@ test_that("nextBest-NextBestTDsamples returns expected values of the objects", {
   )
   expect_identical(result[names(expected)], expected, tolerance = 10e-7)
   suppressWarnings({
-    vdiffr::expect_doppelganger("Plot of nextBest-NextBestTDsamples", result$plot)
+    expect_doppel("Plot of nextBest-NextBestTDsamples", result$plot)
   })
 })
 
@@ -484,7 +566,18 @@ test_that("nextBest-NextBestTDsamples returns expected values of the objects (no
   model <- h_get_logistic_indep_beta()
   samples <- h_as_samples(
     list(
-      phi1 = c(-6.99, -6.99, -8.58, -8.62, -8.62, -8.62, -8.62, -8.23, -8.71, -8.71),
+      phi1 = c(
+        -6.99,
+        -6.99,
+        -8.58,
+        -8.62,
+        -8.62,
+        -8.62,
+        -8.62,
+        -8.23,
+        -8.71,
+        -8.71
+      ),
       phi2 = c(1.69, 1.69, 1.26, 1.72, 1.72, 1.72, 1.72, 1.78, 1.74, 1.74)
     )
   )
@@ -503,7 +596,7 @@ test_that("nextBest-NextBestTDsamples returns expected values of the objects (no
   )
   expect_identical(result[names(expected)], expected, tolerance = 10e-7)
   suppressWarnings({
-    vdiffr::expect_doppelganger("Plot of nextBest-NextBestTDsamples_nodoselim", result$plot)
+    expect_doppel("Plot of nextBest-NextBestTDsamples_nodoselim", result$plot)
   })
 })
 
@@ -512,7 +605,18 @@ test_that("nextBest-NextBestTDsamples returns expected values of the objects (ot
   model <- h_get_logistic_indep_beta()
   samples <- h_as_samples(
     list(
-      phi1 = c(-6.99, -6.99, -8.58, -8.62, -8.62, -8.62, -8.62, -8.23, -8.71, -8.71),
+      phi1 = c(
+        -6.99,
+        -6.99,
+        -8.58,
+        -8.62,
+        -8.62,
+        -8.62,
+        -8.62,
+        -8.23,
+        -8.71,
+        -8.71
+      ),
       phi2 = c(1.69, 1.69, 1.26, 1.72, 1.72, 1.72, 1.72, 1.78, 1.74, 1.74)
     )
   )
@@ -551,7 +655,7 @@ test_that("nextBest-NextBestTD returns expected values of the objects", {
     ci_ratio_dose_target_eot = 9.612886
   )
   expect_identical(result[names(expected)], expected, tolerance = 10e-7)
-  vdiffr::expect_doppelganger("Plot of nextBest-NextBestTD", result$plot)
+  expect_doppel("Plot of nextBest-NextBestTD", result$plot)
 })
 
 test_that("nextBest-NextBestTD returns expected values of the objects (no doselimit)", {
@@ -571,7 +675,7 @@ test_that("nextBest-NextBestTD returns expected values of the objects (no doseli
     ci_ratio_dose_target_eot = 9.612886
   )
   expect_identical(result[names(expected)], expected, tolerance = 10e-7)
-  vdiffr::expect_doppelganger("Plot of nextBest-NextBestTD_nodoselim", result$plot)
+  expect_doppel("Plot of nextBest-NextBestTD_nodoselim", result$plot)
 })
 
 test_that("nextBest-NextBestTD returns expected values of the objects (other targets)", {
@@ -601,7 +705,13 @@ test_that("nextBest-NextBestMaxGain returns expected values of the objects", {
   model_eff <- h_get_eff_log_log(const = 5)
   nb_mg <- NextBestMaxGain(prob_target_drt = 0.35, prob_target_eot = 0.3)
 
-  result <- nextBest(nb_mg, 49, model = model_dlt, data = data, model_eff = model_eff)
+  result <- nextBest(
+    nb_mg,
+    49,
+    model = model_dlt,
+    data = data,
+    model_eff = model_eff
+  )
   expected <- list(
     next_dose = 25,
     prob_target_drt = 0.35,
@@ -618,7 +728,7 @@ test_that("nextBest-NextBestMaxGain returns expected values of the objects", {
     ci_ratio_dose_max_gain = 13.21345
   )
   expect_identical(result[names(expected)], expected, tolerance = 10e-7)
-  vdiffr::expect_doppelganger("Plot of nextBest-NextBestMaxGain", result$plot)
+  expect_doppel("Plot of nextBest-NextBestMaxGain", result$plot)
 })
 
 test_that("nextBest-NextBestMaxGain returns expected values of the objects (no doselimit)", {
@@ -627,7 +737,13 @@ test_that("nextBest-NextBestMaxGain returns expected values of the objects (no d
   model_eff <- h_get_eff_log_log(const = 5)
   nb_mg <- NextBestMaxGain(prob_target_drt = 0.35, prob_target_eot = 0.3)
 
-  result <- nextBest(nb_mg, Inf, model = model_dlt, data = data, model_eff = model_eff)
+  result <- nextBest(
+    nb_mg,
+    Inf,
+    model = model_dlt,
+    data = data,
+    model_eff = model_eff
+  )
   expected <- list(
     next_dose = 50,
     prob_target_drt = 0.35,
@@ -644,7 +760,7 @@ test_that("nextBest-NextBestMaxGain returns expected values of the objects (no d
     ci_ratio_dose_max_gain = 13.21345
   )
   expect_identical(result[names(expected)], expected, tolerance = 10e-7)
-  vdiffr::expect_doppelganger("Plot of nextBest-NextBestMaxGain_nodoselim", result$plot)
+  expect_doppel("Plot of nextBest-NextBestMaxGain_nodoselim", result$plot)
 })
 
 test_that("nextBest-NextBestMaxGain returns expected values of the objects (other targets, placebo)", {
@@ -653,7 +769,13 @@ test_that("nextBest-NextBestMaxGain returns expected values of the objects (othe
   model_eff <- h_get_eff_log_log(const = 5)
   nb_mg <- NextBestMaxGain(prob_target_drt = 0.45, prob_target_eot = 0.4)
 
-  result <- nextBest(nb_mg, 150, model = model_dlt, data = data, model_eff = model_eff)
+  result <- nextBest(
+    nb_mg,
+    150,
+    model = model_dlt,
+    data = data,
+    model_eff = model_eff
+  )
   expected <- list(
     next_dose = 75,
     prob_target_drt = 0.45,
@@ -690,7 +812,15 @@ test_that("nextBest-NextBestMaxGainSamples returns expected values of the object
   )
   nb_mgs <- h_next_best_mgsamples()
 
-  result <- nextBest(nb_mgs, 49, samples_dlt, model_dlt, data, model_eff, samples_eff)
+  result <- nextBest(
+    nb_mgs,
+    49,
+    samples_dlt,
+    model_dlt,
+    data,
+    model_eff,
+    samples_eff
+  )
   expected <- list(
     next_dose = 25,
     prob_target_drt = 0.45,
@@ -707,7 +837,7 @@ test_that("nextBest-NextBestMaxGainSamples returns expected values of the object
     ci_ratio_dose_max_gain = 9.428571
   )
   expect_identical(result[names(expected)], expected, tolerance = 10e-7)
-  vdiffr::expect_doppelganger("Plot of nextBest-NextBestMaxGainSamples", result$plot)
+  expect_doppel("Plot of nextBest-NextBestMaxGainSamples", result$plot)
 })
 
 test_that("nextBest-NextBestMaxGainSamples returns expected values of the objects (no doselimit)", {
@@ -726,7 +856,15 @@ test_that("nextBest-NextBestMaxGainSamples returns expected values of the object
   )
   nb_mgs <- h_next_best_mgsamples()
 
-  result <- nextBest(nb_mgs, Inf, samples_dlt, model_dlt, data, model_eff, samples_eff)
+  result <- nextBest(
+    nb_mgs,
+    Inf,
+    samples_dlt,
+    model_dlt,
+    data,
+    model_eff,
+    samples_eff
+  )
   expected <- list(
     next_dose = 125,
     prob_target_drt = 0.45,
@@ -743,7 +881,10 @@ test_that("nextBest-NextBestMaxGainSamples returns expected values of the object
     ci_ratio_dose_max_gain = 9.428571
   )
   expect_identical(result[names(expected)], expected, tolerance = 10e-7)
-  vdiffr::expect_doppelganger("Plot of nextBest-NextBestMaxGainSamples_nodoselim", result$plot)
+  expect_doppel(
+    "Plot of nextBest-NextBestMaxGainSamples_nodoselim",
+    result$plot
+  )
 })
 
 test_that("nextBest-NextBestMaxGainSamples returns expected values of the objects (other targets, placebo)", {
@@ -751,7 +892,10 @@ test_that("nextBest-NextBestMaxGainSamples returns expected values of the object
   model_dlt <- h_get_logistic_indep_beta()
   model_eff <- h_get_eff_log_log(const = 5)
   samples_dlt <- h_as_samples(
-    list(phi1 = c(-4.03, -4.48, -4.07, -4.37, -4.5), phi2 = c(1.45, 0.86, 0.56, 0.42, 0.6))
+    list(
+      phi1 = c(-4.03, -4.48, -4.07, -4.37, -4.5),
+      phi2 = c(1.45, 0.86, 0.56, 0.42, 0.6)
+    )
   )
   samples_eff <- h_as_samples(
     list(
@@ -762,7 +906,15 @@ test_that("nextBest-NextBestMaxGainSamples returns expected values of the object
   )
   nb_mgs <- h_next_best_mgsamples(td = 0.5, te = 0.45, p = 0.25, p_gstar = 0.3)
 
-  result <- nextBest(nb_mgs, 60, samples_dlt, model_dlt, data, model_eff, samples_eff)
+  result <- nextBest(
+    nb_mgs,
+    60,
+    samples_dlt,
+    model_dlt,
+    data,
+    model_eff,
+    samples_eff
+  )
   expected <- list(
     next_dose = 50,
     prob_target_drt = 0.5,
@@ -787,28 +939,34 @@ test_that("nextBest-NextBestProbMTDLTE returns correct next dose and plot", {
   data <- h_get_data(placebo = FALSE)
   model <- h_get_logistic_log_normal()
   samples <- h_as_samples(
-    list(alpha0 = c(-2.38, -2.13, -1.43, -2.57), alpha1 = c(1.67, 1.3, 1.77, 2.51))
+    list(
+      alpha0 = c(-2.38, -2.13, -1.43, -2.57),
+      alpha1 = c(1.67, 1.3, 1.77, 2.51)
+    )
   )
   nb_prob_mtd <- NextBestProbMTDLTE(target = 0.3)
 
   result <- nextBest(nb_prob_mtd, 90, samples, model, data)
   expect_identical(result$value, 75)
   expect_snapshot(result$allocation)
-  vdiffr::expect_doppelganger("Plot of nextBest-NextBestProbMTDLTE", result$plot)
+  expect_doppel("Plot of nextBest-NextBestProbMTDLTE", result$plot)
 })
 
 test_that("nextBest-NextBestProbMTDLTE returns correct next dose and plot (with placebo)", {
   data <- h_get_data(placebo = TRUE)
   model <- h_get_logistic_log_normal()
   samples <- h_as_samples(
-    list(alpha0 = c(-0.38, -0.13, 1.43, -2.57), alpha1 = c(1.67, 1.3, 1.77, 2.51))
+    list(
+      alpha0 = c(-0.38, -0.13, 1.43, -2.57),
+      alpha1 = c(1.67, 1.3, 1.77, 2.51)
+    )
   )
   nb_prob_mtd <- NextBestProbMTDLTE(target = 0.3)
 
   result <- nextBest(nb_prob_mtd, 40, samples, model, data)
   expect_identical(result$value, 25)
   expect_snapshot(result$allocation)
-  vdiffr::expect_doppelganger("Plot of nextBest-NextBestProbMTDLTE with placebo", result$plot)
+  expect_doppel("Plot of nextBest-NextBestProbMTDLTE with placebo", result$plot)
 })
 
 
@@ -816,14 +974,17 @@ test_that("nextBest-NextBestProbMTDLTE returns correct next dose and plot (no do
   data <- h_get_data(placebo = FALSE)
   model <- h_get_logistic_log_normal()
   samples <- h_as_samples(
-    list(alpha0 = c(-2.38, -2.13, -1.43, -2.57), alpha1 = c(1.67, 1.3, 1.77, 2.51))
+    list(
+      alpha0 = c(-2.38, -2.13, -1.43, -2.57),
+      alpha1 = c(1.67, 1.3, 1.77, 2.51)
+    )
   )
   nb_prob_mtd <- NextBestProbMTDLTE(target = 0.3)
 
   result <- nextBest(nb_prob_mtd, Inf, samples, model, data)
   expect_identical(result$value, 125)
   expect_snapshot(result$allocation)
-  vdiffr::expect_doppelganger("Plot nextBest-NextBestProbMTDLTE w/o doselimit", result$plot)
+  expect_doppel("Plot nextBest-NextBestProbMTDLTE w/o doselimit", result$plot)
 })
 
 ## NextBestProbMTDMinDist ----
@@ -832,42 +993,57 @@ test_that("nextBest-NextBestProbMTDMinDist returns correct next dose and plot", 
   data <- h_get_data(placebo = FALSE)
   model <- h_get_logistic_log_normal()
   samples <- h_as_samples(
-    list(alpha0 = c(-2.38, -2.13, -1.43, -2.57), alpha1 = c(1.67, 1.3, 1.77, 2.51))
+    list(
+      alpha0 = c(-2.38, -2.13, -1.43, -2.57),
+      alpha1 = c(1.67, 1.3, 1.77, 2.51)
+    )
   )
   nb_prob_mtd <- NextBestProbMTDMinDist(target = 0.3)
 
   result <- nextBest(nb_prob_mtd, 90, samples, model, data)
   expect_identical(result$value, 75)
   expect_snapshot(result$allocation)
-  vdiffr::expect_doppelganger("Plot of nextBest-NextBestProbMTDMinDist", result$plot)
+  expect_doppel("Plot of nextBest-NextBestProbMTDMinDist", result$plot)
 })
 
 test_that("nextBest-NextBestProbMTDMinDist returns correct next dose and plot (with placebo)", {
   data <- h_get_data(placebo = TRUE)
   model <- h_get_logistic_log_normal()
   samples <- h_as_samples(
-    list(alpha0 = c(-0.38, -0.13, 1.43, 2.57), alpha1 = c(1.67, 1.3, 1.77, 2.51))
+    list(
+      alpha0 = c(-0.38, -0.13, 1.43, 2.57),
+      alpha1 = c(1.67, 1.3, 1.77, 2.51)
+    )
   )
   nb_prob_mtd <- NextBestProbMTDMinDist(target = 0.3)
 
   result <- nextBest(nb_prob_mtd, 40, samples, model, data)
   expect_identical(result$value, 25)
   expect_snapshot(result$allocation)
-  vdiffr::expect_doppelganger("Plot of nextBest-NextBestProbMTDMinDist with placebo", result$plot)
+  expect_doppel(
+    "Plot of nextBest-NextBestProbMTDMinDist with placebo",
+    result$plot
+  )
 })
 
 test_that("nextBest-NextBestProbMTDMinDist returns correct next dose and plot (no doselimit)", {
   data <- h_get_data(placebo = FALSE)
   model <- h_get_logistic_log_normal()
   samples <- h_as_samples(
-    list(alpha0 = c(2.38, -2.13, -1.43, -2.57), alpha1 = c(1.67, 1.3, 1.77, 2.51))
+    list(
+      alpha0 = c(2.38, -2.13, -1.43, -2.57),
+      alpha1 = c(1.67, 1.3, 1.77, 2.51)
+    )
   )
   nb_prob_mtd <- NextBestProbMTDMinDist(target = 0.3)
 
   result <- nextBest(nb_prob_mtd, Inf, samples, model, data)
   expect_identical(result$value, 25)
   expect_snapshot(result$allocation)
-  vdiffr::expect_doppelganger("Plot nextBest-NextBestProbMTDMinDist w/o doselimit", result$plot)
+  expect_doppel(
+    "Plot nextBest-NextBestProbMTDMinDist w/o doselimit",
+    result$plot
+  )
 })
 
 ## NextBestOrdinal ----
@@ -906,7 +1082,7 @@ test_that("nextBest-NextBestOrdinal works correctly", {
   bad_data <- .DefaultData()
 
   actual <- nextBest(next_best, Inf, samples, ordinal_model, ordinal_data)
-  vdiffr::expect_doppelganger("nextBest-NextBestOrdinal", actual$plot)
+  expect_doppel("nextBest-NextBestOrdinal", actual$plot)
   expect_equal(actual$value, 50)
 })
 
@@ -915,9 +1091,16 @@ test_that("nextBest-NextBestOrdinal works correctly", {
 ## IncrementsRelative ----
 
 test_that("maxDose-IncrementsRelative works correctly for last dose in 1st interval", {
-  increments <- IncrementsRelative(intervals = c(0, 110), increments = c(1, 0.5))
+  increments <- IncrementsRelative(
+    intervals = c(0, 110),
+    increments = c(1, 0.5)
+  )
   data <- Data(
-    x = c(5, 100), y = c(1L, 0L), doseGrid = c(5, 100, 270), ID = 1:2, cohort = 1:2
+    x = c(5, 100),
+    y = c(1L, 0L),
+    doseGrid = c(5, 100, 270),
+    ID = 1:2,
+    cohort = 1:2
   )
   result <- maxDose(increments, data)
   expect_equal(result, 200)
@@ -926,21 +1109,35 @@ test_that("maxDose-IncrementsRelative works correctly for last dose in 1st inter
 test_that("maxDose-IncrementsRelative works correctly for last dose in 2nd interval", {
   increments <- IncrementsRelative(intervals = c(0, 90), increments = c(1, 0.5))
   data <- Data(
-    x = c(5, 100), y = c(1L, 0L), doseGrid = c(5, 100, 270), ID = 1:2, cohort = 1:2
+    x = c(5, 100),
+    y = c(1L, 0L),
+    doseGrid = c(5, 100, 270),
+    ID = 1:2,
+    cohort = 1:2
   )
   result <- maxDose(increments, data)
   expect_equal(result, 150)
 
   # Edge case: interval bound is equal to the last dose.
-  increments <- IncrementsRelative(intervals = c(0, 100), increments = c(1, 0.5))
+  increments <- IncrementsRelative(
+    intervals = c(0, 100),
+    increments = c(1, 0.5)
+  )
   result <- maxDose(increments, data)
   expect_equal(result, 150)
 })
 
 test_that("maxDose-IncrementsRelative throws error when last dose is below the first interval", {
-  increments <- IncrementsRelative(intervals = c(200, 300), increments = c(1, 0.5))
+  increments <- IncrementsRelative(
+    intervals = c(200, 300),
+    increments = c(1, 0.5)
+  )
   data <- Data(
-    x = c(5, 100), y = c(1L, 0L), doseGrid = c(5, 100, 270), ID = 1:2, cohort = 1:2
+    x = c(5, 100),
+    y = c(1L, 0L),
+    doseGrid = c(5, 100, 270),
+    ID = 1:2,
+    cohort = 1:2
   )
   expect_error(
     maxDose(increments, data),
@@ -949,7 +1146,10 @@ test_that("maxDose-IncrementsRelative throws error when last dose is below the f
 })
 
 test_that("maxDose-IncrementsRelative throws error when IncrementsRelative is empty", {
-  increments <- IncrementsRelative(intervals = numeric(0), increments = numeric(0))
+  increments <- IncrementsRelative(
+    intervals = numeric(0),
+    increments = numeric(0)
+  )
   data <- h_get_data()
   expect_error(
     maxDose(increments, data),
@@ -958,7 +1158,10 @@ test_that("maxDose-IncrementsRelative throws error when IncrementsRelative is em
 })
 
 test_that("maxDose-IncrementsRelative throws error when Data is empty", {
-  increments <- IncrementsRelative(intervals = c(0, 100), increments = c(1, 0.5))
+  increments <- IncrementsRelative(
+    intervals = c(0, 100),
+    increments = c(1, 0.5)
+  )
   expect_error(
     maxDose(increments, Data()),
     "Assertion on 'last_dose.*intervals.*failed: Must be TRUE."
@@ -968,9 +1171,16 @@ test_that("maxDose-IncrementsRelative throws error when Data is empty", {
 ## IncrementsRelativeDLT ----
 
 test_that("maxDose-IncrementsRelativeDLT works correctly for no of DLTs in 1st interval", {
-  increments <- IncrementsRelativeDLT(intervals = c(0, 2), increments = c(1, 0.5))
+  increments <- IncrementsRelativeDLT(
+    intervals = c(0, 2),
+    increments = c(1, 0.5)
+  )
   data <- Data(
-    x = c(5, 100), y = c(0L, 0L), doseGrid = c(5, 100), ID = 1:2, cohort = 1:2
+    x = c(5, 100),
+    y = c(0L, 0L),
+    doseGrid = c(5, 100),
+    ID = 1:2,
+    cohort = 1:2
   )
   result <- maxDose(increments, data)
   expect_equal(result, 200)
@@ -983,22 +1193,44 @@ test_that("maxDose-IncrementsRelativeDLT works correctly for no of DLTs in 1st i
 
 test_that("maxDose-IncrementsRelativeDLT works correctly for no of DLTs in 2nd interval", {
   dgrid <- c(5, 100, 150, 200)
-  increments <- IncrementsRelativeDLT(intervals = c(0, 2), increments = c(1, 0.5))
-  data <- Data(x = c(5, 100), y = c(1L, 1L), doseGrid = dgrid, ID = 1:2, cohort = 1:2)
+  increments <- IncrementsRelativeDLT(
+    intervals = c(0, 2),
+    increments = c(1, 0.5)
+  )
+  data <- Data(
+    x = c(5, 100),
+    y = c(1L, 1L),
+    doseGrid = dgrid,
+    ID = 1:2,
+    cohort = 1:2
+  )
   result <- maxDose(increments, data)
   expect_equal(result, 150)
 
   # 3 DLTs in total.
   data <- Data(
-    x = c(5, 100, 150, 200), y = c(1L, 1L, 1L, 0L), doseGrid = dgrid, ID = 1:4, cohort = 1:4
+    x = c(5, 100, 150, 200),
+    y = c(1L, 1L, 1L, 0L),
+    doseGrid = dgrid,
+    ID = 1:4,
+    cohort = 1:4
   )
   result <- maxDose(increments, data)
   expect_equal(result, 300)
 })
 
 test_that("maxDose-IncrementsRelativeDLT throws error when no of DLTs is below the first interval", {
-  increments <- IncrementsRelativeDLT(intervals = c(2, 5), increments = c(1, 0.5))
-  data <- Data(x = c(5, 100), y = c(0L, 1L), doseGrid = c(5, 100), ID = 1:2, cohort = 1:2)
+  increments <- IncrementsRelativeDLT(
+    intervals = c(2, 5),
+    increments = c(1, 0.5)
+  )
+  data <- Data(
+    x = c(5, 100),
+    y = c(0L, 1L),
+    doseGrid = c(5, 100),
+    ID = 1:2,
+    cohort = 1:2
+  )
   expect_error(
     maxDose(increments, data),
     "Assertion on 'dlt_count.*intervals.*failed: Must be TRUE."
@@ -1006,7 +1238,10 @@ test_that("maxDose-IncrementsRelativeDLT throws error when no of DLTs is below t
 })
 
 test_that("maxDose-IncrementsRelativeDLT throws error when IncrementsRelativeDLT is empty", {
-  increments <- IncrementsRelativeDLT(intervals = numeric(0), increments = numeric(0))
+  increments <- IncrementsRelativeDLT(
+    intervals = numeric(0),
+    increments = numeric(0)
+  )
   data <- h_get_data()
   expect_error(
     maxDose(increments, data),
@@ -1015,7 +1250,10 @@ test_that("maxDose-IncrementsRelativeDLT throws error when IncrementsRelativeDLT
 })
 
 test_that("maxDose-IncrementsRelativeDLT throws error when Data is empty", {
-  increments <- IncrementsRelativeDLT(intervals = c(1, 4), increments = c(1, 0.5))
+  increments <- IncrementsRelativeDLT(
+    intervals = c(1, 4),
+    increments = c(1, 0.5)
+  )
   expect_error(
     maxDose(increments, Data()),
     "Assertion on 'dlt_count.*intervals.*failed: Must be TRUE."
@@ -1035,10 +1273,17 @@ test_that("IncrementsRelativeDLTCurrent works correctly", {
 })
 
 test_that("maxDose-IncrementsRelativeDLTCurrent works correctly when DLTs in 1st interval, no DLTs in cohorts", {
-  increments <- IncrementsRelativeDLTCurrent(intervals = c(0, 2), increments = c(1, 0.5))
+  increments <- IncrementsRelativeDLTCurrent(
+    intervals = c(0, 2),
+    increments = c(1, 0.5)
+  )
   # no DLTs in 1st interval.
   data <- Data(
-    x = c(5, 100, 100), y = c(0L, 0L, 0L), doseGrid = c(5, 100), ID = 1:3, cohort = c(1, 2, 2)
+    x = c(5, 100, 100),
+    y = c(0L, 0L, 0L),
+    doseGrid = c(5, 100),
+    ID = 1:3,
+    cohort = c(1, 2, 2)
   )
   result <- maxDose(increments, data)
   expect_equal(result, 200)
@@ -1050,7 +1295,10 @@ test_that("maxDose-IncrementsRelativeDLTCurrent works correctly when DLTs in 1st
 })
 
 test_that("maxDose-IncrementsRelativeDLTCurrent works correctly when DLTs in 1st interval, DLTs in cohorts", {
-  increments <- IncrementsRelativeDLTCurrent(intervals = c(0, 2), increments = c(1, 0.5))
+  increments <- IncrementsRelativeDLTCurrent(
+    intervals = c(0, 2),
+    increments = c(1, 0.5)
+  )
   # no DLTs in 1st interval.
   data <- Data(
     x = c(5, 5, 20, 20, 20, 100, 100),
@@ -1069,24 +1317,38 @@ test_that("maxDose-IncrementsRelativeDLTCurrent works correctly when DLTs in 1st
 })
 
 test_that("maxDose-IncrementsRelativeDLTCurrent works correctly when DLTs in 2nd interval, no DLTs in cohorts", {
-  increments <- IncrementsRelativeDLTCurrent(intervals = c(0, 2), increments = c(1, 0.5))
+  increments <- IncrementsRelativeDLTCurrent(
+    intervals = c(0, 2),
+    increments = c(1, 0.5)
+  )
   # 2 DLTs in 2nd interval.
   data <- Data(
-    x = c(5, 100, 100), y = c(0L, 1L, 1L), doseGrid = c(5, 100), ID = 1:3, cohort = c(1, 2, 2)
+    x = c(5, 100, 100),
+    y = c(0L, 1L, 1L),
+    doseGrid = c(5, 100),
+    ID = 1:3,
+    cohort = c(1, 2, 2)
   )
   result <- maxDose(increments, data)
   expect_equal(result, 150)
 
   # 3 DLT in 1st interval.
   data <- Data(
-    x = c(5, 100, 100, 100), y = c(0L, 1L, 1L, 1L), doseGrid = c(5, 100), ID = 1:4, cohort = c(1, 2, 2, 2)
+    x = c(5, 100, 100, 100),
+    y = c(0L, 1L, 1L, 1L),
+    doseGrid = c(5, 100),
+    ID = 1:4,
+    cohort = c(1, 2, 2, 2)
   )
   result <- maxDose(increments, data)
   expect_equal(result, 150)
 })
 
 test_that("maxDose-IncrementsRelativeDLTCurrent works correctly when DLTs in 2nd interval, DLTs in cohorts", {
-  increments <- IncrementsRelativeDLTCurrent(intervals = c(0, 2), increments = c(1, 0.5))
+  increments <- IncrementsRelativeDLTCurrent(
+    intervals = c(0, 2),
+    increments = c(1, 0.5)
+  )
   # 2 DLTs in 2nd interval.
   data <- Data(
     x = c(5, 5, 20, 20, 20, 100, 100, 100),
@@ -1105,8 +1367,17 @@ test_that("maxDose-IncrementsRelativeDLTCurrent works correctly when DLTs in 2nd
 })
 
 test_that("maxDose-IncrementsRelativeDLTCurrent throws error when no of DLTs below the first interval", {
-  increments <- IncrementsRelativeDLTCurrent(intervals = c(2, 5), increments = c(1, 0.5))
-  data <- Data(x = c(5, 100), y = c(0L, 1L), doseGrid = c(5, 100), ID = 1:2, cohort = 1:2)
+  increments <- IncrementsRelativeDLTCurrent(
+    intervals = c(2, 5),
+    increments = c(1, 0.5)
+  )
+  data <- Data(
+    x = c(5, 100),
+    y = c(0L, 1L),
+    doseGrid = c(5, 100),
+    ID = 1:2,
+    cohort = 1:2
+  )
   expect_error(
     maxDose(increments, data),
     "Assertion on 'dlt_count_lcohort.*intervals.*failed: Must be TRUE."
@@ -1114,7 +1385,10 @@ test_that("maxDose-IncrementsRelativeDLTCurrent throws error when no of DLTs bel
 })
 
 test_that("maxDose-IncrementsRelativeDLTCurrent throws error when IncrementsRelativeDLTCurrent is empty", {
-  increments <- IncrementsRelativeDLTCurrent(intervals = numeric(0), increments = numeric(0))
+  increments <- IncrementsRelativeDLTCurrent(
+    intervals = numeric(0),
+    increments = numeric(0)
+  )
   data <- h_get_data()
   expect_error(
     maxDose(increments, data),
@@ -1123,7 +1397,10 @@ test_that("maxDose-IncrementsRelativeDLTCurrent throws error when IncrementsRela
 })
 
 test_that("maxDose-IncrementsRelativeDLTCurrent throws error when Data is empty", {
-  increments <- IncrementsRelativeDLTCurrent(intervals = c(1, 4), increments = c(1, 0.5))
+  increments <- IncrementsRelativeDLTCurrent(
+    intervals = c(1, 4),
+    increments = c(1, 0.5)
+  )
   expect_error(
     maxDose(increments, Data()),
     "Assertion on 'dlt_count_lcohort.*intervals.*failed: Must be TRUE."
@@ -1134,7 +1411,10 @@ test_that("maxDose-IncrementsRelativeDLTCurrent throws error when Data is empty"
 
 test_that("maxDose-IncrementsRelativeParts works correctly when in part 1 and part 2 not started", {
   increments <- IncrementsRelativeParts(
-    dlt_start = 5, clean_start = 9, intervals = c(0, 1), increments = c(4, 3)
+    dlt_start = 5,
+    clean_start = 9,
+    intervals = c(0, 1),
+    increments = c(4, 3)
   )
   data <- DataParts(
     x = c(0.1, 1.5, 0.5),
@@ -1152,7 +1432,10 @@ test_that("maxDose-IncrementsRelativeParts works correctly when in part 1 and pa
 
 test_that("maxDose-IncrementsRelativeParts works correctly when in part 1, part 2 started, DLT", {
   increments <- IncrementsRelativeParts(
-    dlt_start = 3, clean_start = 9, intervals = c(0, 1), increments = c(4, 3)
+    dlt_start = 3,
+    clean_start = 9,
+    intervals = c(0, 1),
+    increments = c(4, 3)
   )
   data <- DataParts(
     x = c(0.1, 1.5, 0.5),
@@ -1170,7 +1453,10 @@ test_that("maxDose-IncrementsRelativeParts works correctly when in part 1, part 
 
 test_that("maxDose-IncrementsRelativeParts works correctly when in part 1, part 2 started, no DLT, clean_start > 0", {
   increments <- IncrementsRelativeParts(
-    dlt_start = 3, clean_start = 9, intervals = c(0, 1), increments = c(4, 3)
+    dlt_start = 3,
+    clean_start = 9,
+    intervals = c(0, 1),
+    increments = c(4, 3)
   )
   data <- DataParts(
     x = c(0.1, 1.5, 0.5),
@@ -1183,14 +1469,20 @@ test_that("maxDose-IncrementsRelativeParts works correctly when in part 1, part 
     part1Ladder = c(0.1, 0.5, 1.5, 3, 6, 10, 20)
   )
   result <- maxDose(increments, data)
-  expected_increments <- IncrementsRelative(intervals = c(0, 1), increments = c(4, 3))
+  expected_increments <- IncrementsRelative(
+    intervals = c(0, 1),
+    increments = c(4, 3)
+  )
   expected <- maxDose(expected_increments, data) # expected = 2.5 # nolintr
   expect_equal(result, expected)
 })
 
 test_that("maxDose-IncrementsRelativeParts works correctly when in part 1, part 2 started, no DLT, clean_start <= 0", {
   increments <- IncrementsRelativeParts(
-    dlt_start = -9, clean_start = -2, intervals = c(0, 1), increments = c(4, 3)
+    dlt_start = -9,
+    clean_start = -2,
+    intervals = c(0, 1),
+    increments = c(4, 3)
   )
   data <- DataParts(
     x = c(0.1, 1.5, 0.5),
@@ -1208,7 +1500,10 @@ test_that("maxDose-IncrementsRelativeParts works correctly when in part 1, part 
 
 test_that("maxDose-IncrementsRelativeParts works correctly when already in part 2", {
   increments <- IncrementsRelativeParts(
-    dlt_start = 5, clean_start = 9, intervals = c(0, 1), increments = c(4, 3)
+    dlt_start = 5,
+    clean_start = 9,
+    intervals = c(0, 1),
+    increments = c(4, 3)
   )
   data <- DataParts(
     x = c(0.1, 0.5, 1.5),
@@ -1221,14 +1516,20 @@ test_that("maxDose-IncrementsRelativeParts works correctly when already in part 
     part1Ladder = c(0.1, 0.5, 1.5, 3, 6)
   )
   result <- maxDose(increments, data)
-  expected_increments <- IncrementsRelative(intervals = c(0, 1), increments = c(4, 3))
+  expected_increments <- IncrementsRelative(
+    intervals = c(0, 1),
+    increments = c(4, 3)
+  )
   expected <- maxDose(expected_increments, data) # expected = 6 # nolintr
   expect_equal(result, expected)
 })
 
 test_that("maxDose-IncrementsRelativeParts throws error when part1Ladder is exceeded (in p1, no p2)", {
   increments <- IncrementsRelativeParts(
-    dlt_start = 5, clean_start = 9, intervals = c(0, 1), increments = c(4, 3)
+    dlt_start = 5,
+    clean_start = 9,
+    intervals = c(0, 1),
+    increments = c(4, 3)
   )
   data <- DataParts(
     x = c(0.1, 6, 0.5),
@@ -1248,7 +1549,10 @@ test_that("maxDose-IncrementsRelativeParts throws error when part1Ladder is exce
 
 test_that("maxDose-IncrementsRelativeParts throws error when part1Ladder is exceeded (in p1, p2, DLT)", {
   increments <- IncrementsRelativeParts(
-    dlt_start = 5, clean_start = 9, intervals = c(0, 1), increments = c(4, 3)
+    dlt_start = 5,
+    clean_start = 9,
+    intervals = c(0, 1),
+    increments = c(4, 3)
   )
   data <- DataParts(
     x = c(0.1, 1.5, 0.5),
@@ -1273,7 +1577,10 @@ test_that("maxDose-IncrementsRelativeParts throws error when part1Ladder is exce
 
 test_that("maxDose-IncrementsRelativeParts throws error when part1Ladder is exceeded (in p1, p2, DLT, cstart <= 0)", {
   increments <- IncrementsRelativeParts(
-    dlt_start = -9, clean_start = -5, intervals = c(0, 1), increments = c(4, 3)
+    dlt_start = -9,
+    clean_start = -5,
+    intervals = c(0, 1),
+    increments = c(4, 3)
   )
   data <- DataParts(
     x = c(0.1, 1.5, 0.5),
@@ -1293,7 +1600,10 @@ test_that("maxDose-IncrementsRelativeParts throws error when part1Ladder is exce
 
 test_that("maxDose-IncrementsRelativeParts throws error when part1Ladder is exceeded (in p1, p2, DLT, cstart <= 0)", {
   increments <- IncrementsRelativeParts(
-    dlt_start = 10, clean_start = 20, intervals = c(0, 1), increments = c(4, 3)
+    dlt_start = 10,
+    clean_start = 20,
+    intervals = c(0, 1),
+    increments = c(4, 3)
   )
   data <- DataParts(
     x = c(0.1, 1.5, 0.5),
@@ -1317,7 +1627,11 @@ test_that("maxDose-IncrementsRelativeParts throws error when part1Ladder is exce
 test_that("maxDose-IncrementsDoseLevels works correctly for 'last' basis_level and 1 level increase", {
   increments <- IncrementsDoseLevels(levels = 1)
   data <- Data(
-    x = c(5, 250, 100), y = c(0L, 1L, 1L), doseGrid = c(5, 100, 250, 300, 400), ID = 1:3, cohort = 1:3
+    x = c(5, 250, 100),
+    y = c(0L, 1L, 1L),
+    doseGrid = c(5, 100, 250, 300, 400),
+    ID = 1:3,
+    cohort = 1:3
   )
   result <- maxDose(increments, data = data)
   expect_equal(result, 250)
@@ -1326,7 +1640,11 @@ test_that("maxDose-IncrementsDoseLevels works correctly for 'last' basis_level a
 test_that("maxDose-IncrementsDoseLevels works correctly for 'last' basis_level and 2 levels increase", {
   increments <- IncrementsDoseLevels(levels = 2)
   data <- Data(
-    x = c(5, 250, 100), y = c(0L, 1L, 1L), doseGrid = c(5, 100, 250, 300, 400), ID = 1:3, cohort = 1:3
+    x = c(5, 250, 100),
+    y = c(0L, 1L, 1L),
+    doseGrid = c(5, 100, 250, 300, 400),
+    ID = 1:3,
+    cohort = 1:3
   )
   result <- maxDose(increments, data = data)
   expect_equal(result, 300)
@@ -1335,7 +1653,11 @@ test_that("maxDose-IncrementsDoseLevels works correctly for 'last' basis_level a
 test_that("maxDose-IncrementsDoseLevels works correctly for 'max' basis_level and 1 level increase", {
   increments <- IncrementsDoseLevels(levels = 1, basis_level = "max")
   data <- Data(
-    x = c(5, 250, 100), y = c(0L, 1L, 1L), doseGrid = c(5, 100, 250, 300, 400), ID = 1:3, cohort = 1:3
+    x = c(5, 250, 100),
+    y = c(0L, 1L, 1L),
+    doseGrid = c(5, 100, 250, 300, 400),
+    ID = 1:3,
+    cohort = 1:3
   )
   result <- maxDose(increments, data = data)
   expect_equal(result, 300)
@@ -1344,7 +1666,11 @@ test_that("maxDose-IncrementsDoseLevels works correctly for 'max' basis_level an
 test_that("maxDose-IncrementsDoseLevels works correctly for 'max' basis_level and 2 levels increase", {
   increments <- IncrementsDoseLevels(levels = 2, basis_level = "max")
   data <- Data(
-    x = c(5, 250, 100), y = c(0L, 1L, 1L), doseGrid = c(5, 100, 250, 300, 400), ID = 1:3, cohort = 1:3
+    x = c(5, 250, 100),
+    y = c(0L, 1L, 1L),
+    doseGrid = c(5, 100, 250, 300, 400),
+    ID = 1:3,
+    cohort = 1:3
   )
   result <- maxDose(increments, data = data)
   expect_equal(result, 400)
@@ -1353,7 +1679,11 @@ test_that("maxDose-IncrementsDoseLevels works correctly for 'max' basis_level an
 test_that("maxDose-IncrementsDoseLevels works correctly for 'last' basis_level and over-grid increase", {
   increments <- IncrementsDoseLevels(levels = 4)
   data <- Data(
-    x = c(5, 250, 100), y = c(0L, 1L, 1L), doseGrid = c(5, 100, 250, 300, 400), ID = 1:3, cohort = 1:3
+    x = c(5, 250, 100),
+    y = c(0L, 1L, 1L),
+    doseGrid = c(5, 100, 250, 300, 400),
+    ID = 1:3,
+    cohort = 1:3
   )
   result <- maxDose(increments, data = data)
   expect_equal(result, 400)
@@ -1362,7 +1692,11 @@ test_that("maxDose-IncrementsDoseLevels works correctly for 'last' basis_level a
 test_that("maxDose-IncrementsDoseLevels works correctly for 'max' basis_level and over-grid increase", {
   increments <- IncrementsDoseLevels(levels = 3, basis_level = "max")
   data <- Data(
-    x = c(5, 250, 100), y = c(0L, 1L, 1L), doseGrid = c(5, 100, 250, 300, 400), ID = 1:3, cohort = 1:3
+    x = c(5, 250, 100),
+    y = c(0L, 1L, 1L),
+    doseGrid = c(5, 100, 250, 300, 400),
+    ID = 1:3,
+    cohort = 1:3
   )
   result <- maxDose(increments, data = data)
   expect_equal(result, 400)
@@ -1386,16 +1720,19 @@ test_that("IncrementsHSRBeta works correctly if toxcicity probability is above t
   expect_equal(result, 75) # maxDose is 75 as toxicity probability of dose 100 is above 0.90.
 })
 
-test_that(paste(
-  "IncrementsHSRBeta works correctly if toxcicity probability of first",
-  "active dose is above threshold probability"
-), {
-  increments <- IncrementsHSRBeta(target = 0.3, prob = 0.95)
-  data <- h_get_data()
-  data@y[data@cohort == 1L] <- c(0L, 1L, 1L, 1L)
-  result <- maxDose(increments, data)
-  expect_equal(result, 25) # maxDose is 25 as toxicity probability of dose 25 is above 0.95 and placebo used.
-})
+test_that(
+  paste(
+    "IncrementsHSRBeta works correctly if toxcicity probability of first",
+    "active dose is above threshold probability"
+  ),
+  {
+    increments <- IncrementsHSRBeta(target = 0.3, prob = 0.95)
+    data <- h_get_data()
+    data@y[data@cohort == 1L] <- c(0L, 1L, 1L, 1L)
+    result <- maxDose(increments, data)
+    expect_equal(result, 25) # maxDose is 25 as toxicity probability of dose 25 is above 0.95 and placebo used.
+  }
+)
 
 test_that("IncrementsHSRBeta works correctly if toxcicity probability of placebo is above threshold probability", {
   increments <- IncrementsHSRBeta(target = 0.3, prob = 0.95)
@@ -1405,28 +1742,34 @@ test_that("IncrementsHSRBeta works correctly if toxcicity probability of placebo
   expect_equal(result, 300) # maxDose is 300 as placebo is ignored.
 })
 
-test_that(paste(
-  "IncrementsHSRBeta works correctly if toxcicity probability of first",
-  "active dose is above threshold probability and placebo == T, but not appplied"
-), {
-  increments <- IncrementsHSRBeta(target = 0.3, prob = 0.95)
-  data <- h_get_data()
-  data@x <- c(rep(25, 4), rep(50, 4), rep(100, 4))
-  data@y[data@cohort == 1] <- c(0L, 1L, 1L, 1L)
-  result <- maxDose(increments, data)
-  expect_equal(result, 25) # maxDose is 25 as toxicity probability of dose 25 is above 0.95 and placebo used.
-})
+test_that(
+  paste(
+    "IncrementsHSRBeta works correctly if toxcicity probability of first",
+    "active dose is above threshold probability and placebo == T, but not appplied"
+  ),
+  {
+    increments <- IncrementsHSRBeta(target = 0.3, prob = 0.95)
+    data <- h_get_data()
+    data@x <- c(rep(25, 4), rep(50, 4), rep(100, 4))
+    data@y[data@cohort == 1] <- c(0L, 1L, 1L, 1L)
+    result <- maxDose(increments, data)
+    expect_equal(result, 25) # maxDose is 25 as toxicity probability of dose 25 is above 0.95 and placebo used.
+  }
+)
 
-test_that(paste(
-  "IncrementsHSRBeta works correctly if toxcicity probability of first",
-  "active dose is above threshold probability (no placebo)"
-), {
-  increments <- IncrementsHSRBeta(target = 0.3, prob = 0.90)
-  data <- h_get_data(placebo = FALSE)
-  data@y[data@cohort == 1] <- c(0L, 1L, 1L, 1L)
-  result <- maxDose(increments, data)
-  expect_equal(result, 25) # maxDose is 25 as toxicity probability of dose 25 is above 0.90.
-})
+test_that(
+  paste(
+    "IncrementsHSRBeta works correctly if toxcicity probability of first",
+    "active dose is above threshold probability (no placebo)"
+  ),
+  {
+    increments <- IncrementsHSRBeta(target = 0.3, prob = 0.90)
+    data <- h_get_data(placebo = FALSE)
+    data@y[data@cohort == 1] <- c(0L, 1L, 1L, 1L)
+    result <- maxDose(increments, data)
+    expect_equal(result, 25) # maxDose is 25 as toxicity probability of dose 25 is above 0.90.
+  }
+)
 
 test_that("IncrementsHSRBeta works correctly if toxcicity probability is above threshold probability (no placebo)", {
   increments <- IncrementsHSRBeta(target = 0.3, prob = 0.90)
@@ -1440,10 +1783,17 @@ test_that("IncrementsHSRBeta works correctly if toxcicity probability is above t
 
 test_that("maxDose-IncrementsMin works correctly when incr1 is minimum", {
   incr1 <- IncrementsRelative(intervals = c(0, 20), increments = c(4, 0.1))
-  incr2 <- IncrementsRelativeDLT(intervals = c(0, 1, 3), increments = c(2, 0.5, 0.4))
+  incr2 <- IncrementsRelativeDLT(
+    intervals = c(0, 1, 3),
+    increments = c(2, 0.5, 0.4)
+  )
   increments <- IncrementsMin(increments_list = list(incr1, incr2))
   data <- Data(
-    x = c(5, 100), y = c(1L, 0L), doseGrid = c(5, 100), ID = 1:2, cohort = 1:2
+    x = c(5, 100),
+    y = c(1L, 0L),
+    doseGrid = c(5, 100),
+    ID = 1:2,
+    cohort = 1:2
   )
   result <- maxDose(increments, data)
   expect_equal(result, 110)
@@ -1451,10 +1801,17 @@ test_that("maxDose-IncrementsMin works correctly when incr1 is minimum", {
 
 test_that("maxDose-IncrementsMin works correctly when incr2 is minimum", {
   incr1 <- IncrementsRelative(intervals = c(0, 20), increments = c(4, 0.7))
-  incr2 <- IncrementsRelativeDLT(intervals = c(0, 1, 3), increments = c(2, 0.5, 0.4))
+  incr2 <- IncrementsRelativeDLT(
+    intervals = c(0, 1, 3),
+    increments = c(2, 0.5, 0.4)
+  )
   increments <- IncrementsMin(increments_list = list(incr1, incr2))
   data <- Data(
-    x = c(5, 100), y = c(1L, 0L), doseGrid = c(5, 100), ID = 1:2, cohort = 1:2
+    x = c(5, 100),
+    y = c(1L, 0L),
+    doseGrid = c(5, 100),
+    ID = 1:2,
+    cohort = 1:2
   )
   result <- maxDose(increments, data)
   expect_equal(result, 150)
@@ -1471,7 +1828,11 @@ test_that("maxDose-IncrementsMin-DataOrdinal works correctly when incr1 is minim
   )
   increments <- IncrementsMin(increments_list = list(incr1, incr2))
   data <- DataOrdinal(
-    x = c(5, 100), y = c(1L, 0L), doseGrid = c(5, 100), ID = 1:2, cohort = 1:2
+    x = c(5, 100),
+    y = c(1L, 0L),
+    doseGrid = c(5, 100),
+    ID = 1:2,
+    cohort = 1:2
   )
   result <- maxDose(increments, data)
   expect_equal(result, 150)
@@ -1488,7 +1849,11 @@ test_that("maxDose-IncrementsMinOrdinal works correctly when incr2 is minimum", 
   )
   increments <- IncrementsMin(increments_list = list(incr1, incr2))
   data <- DataOrdinal(
-    x = c(5, 100), y = c(1L, 0L), doseGrid = c(5, 100), ID = 1:2, cohort = 1:2
+    x = c(5, 100),
+    y = c(1L, 0L),
+    doseGrid = c(5, 100),
+    ID = 1:2,
+    cohort = 1:2
   )
   result <- maxDose(increments, data)
   expect_equal(result, 150)
@@ -1557,7 +1922,11 @@ test_that("StoppingMissingDose works correctly", {
 test_that("StoppingCohortsNearDose can handle when dose is NA", {
   my_data <- h_get_data()
   my_model <- h_get_logistic_kadane()
-  my_samples <- mcmc(my_data, my_model, h_get_mcmc_options(samples = 1000, burnin = 1000))
+  my_samples <- mcmc(
+    my_data,
+    my_model,
+    h_get_mcmc_options(samples = 1000, burnin = 1000)
+  )
   stopping <- StoppingCohortsNearDose(nCohorts = 2, percentage = 0)
   result <- stopTrial(
     stopping = stopping,
@@ -1581,7 +1950,13 @@ test_that("stopTrial works correctly for StoppingCohortsNearDose", {
     stopping = stopRule,
     dose = 2,
     model = LogisticLogNormal(mean = c(0, 1), cov = diag(2)),
-    data = Data(x = c(1, 2), y = c(0, 0), cohort = c(1L, 2L), ID = 1:2, doseGrid = 1:3)
+    data = Data(
+      x = c(1, 2),
+      y = c(0, 0),
+      cohort = c(1L, 2L),
+      ID = 1:2,
+      doseGrid = 1:3
+    )
   )
   expect_false(rv)
   expect_equal(
@@ -1595,7 +1970,13 @@ test_that("stopTrial works correctly for StoppingCohortsNearDose", {
     stopping = stopRule,
     dose = 2,
     model = LogisticLogNormal(mean = c(0, 1), cov = diag(2)),
-    data = Data(x = c(1, 2), y = c(0, 0), cohort = c(1L, 2L), ID = 1:2, doseGrid = 1:3),
+    data = Data(
+      x = c(1, 2),
+      y = c(0, 0),
+      cohort = c(1L, 2L),
+      ID = 1:2,
+      doseGrid = 1:3
+    ),
     new("Samples")
   )
   expect_false(rv)
@@ -1611,7 +1992,13 @@ test_that("stopTrial works correctly for StoppingCohortsNearDose", {
     stopping = stopRule,
     dose = 2,
     model = LogisticLogNormal(mean = c(0, 1), cov = diag(2)),
-    data = Data(x = c(2, 2), y = c(0, 0), cohort = c(1L, 2L), ID = 1:2, doseGrid = 1:3)
+    data = Data(
+      x = c(2, 2),
+      y = c(0, 0),
+      cohort = c(1L, 2L),
+      ID = 1:2,
+      doseGrid = 1:3
+    )
   )
   expect_true(rv)
   expect_equal(
@@ -1626,7 +2013,13 @@ test_that("stopTrial works correctly for StoppingCohortsNearDose", {
     stopping = stopRule,
     dose = 2,
     model = LogisticLogNormal(mean = c(0, 1), cov = diag(2)),
-    data = Data(x = c(2, 2), y = c(0, 0), cohort = c(1L, 2L), ID = 1:2, doseGrid = 1:3),
+    data = Data(
+      x = c(2, 2),
+      y = c(0, 0),
+      cohort = c(1L, 2L),
+      ID = 1:2,
+      doseGrid = 1:3
+    ),
     new("Samples")
   )
   expect_true(rv)
@@ -1642,7 +2035,13 @@ test_that("stopTrial works correctly for StoppingCohortsNearDose", {
     stopping = stopRule,
     dose = 2,
     model = LogisticLogNormal(mean = c(0, 1), cov = diag(2)),
-    data = Data(x = c(2, 2), y = c(0, 0), cohort = c(1L, 1L), ID = 1:2, doseGrid = 1:3)
+    data = Data(
+      x = c(2, 2),
+      y = c(0, 0),
+      cohort = c(1L, 1L),
+      ID = 1:2,
+      doseGrid = 1:3
+    )
   )
   expect_false(rv)
   expect_equal(
@@ -1657,7 +2056,13 @@ test_that("stopTrial works correctly for StoppingCohortsNearDose", {
     stopping = stopRule,
     dose = 2,
     model = LogisticLogNormal(mean = c(0, 1), cov = diag(2)),
-    data = Data(x = c(2, 2), y = c(0, 0), cohort = c(1L, 1L), ID = 1:2, doseGrid = 1:3),
+    data = Data(
+      x = c(2, 2),
+      y = c(0, 0),
+      cohort = c(1L, 1L),
+      ID = 1:2,
+      doseGrid = 1:3
+    ),
     new("Samples")
   )
   expect_false(rv)
@@ -1673,7 +2078,13 @@ test_that("stopTrial works correctly for StoppingCohortsNearDose", {
     stopping = stopRule,
     dose = 2,
     model = LogisticLogNormal(mean = c(0, 1), cov = diag(2)),
-    data = Data(x = c(1, 1, 2, 2, 2, 2), y = rep(0, 6), cohort = c(1L, 1L, 2L, 2L, 3L, 3L), ID = 1:6, doseGrid = 1:3),
+    data = Data(
+      x = c(1, 1, 2, 2, 2, 2),
+      y = rep(0, 6),
+      cohort = c(1L, 1L, 2L, 2L, 3L, 3L),
+      ID = 1:6,
+      doseGrid = 1:3
+    ),
     new("Samples")
   )
   expect_true(rv)
@@ -1689,7 +2100,13 @@ test_that("stopTrial works correctly for StoppingCohortsNearDose", {
     stopping = stopRule,
     dose = 2,
     model = LogisticLogNormal(mean = c(0, 1), cov = diag(2)),
-    data = Data(x = c(1, 1, 2, 2, 2, 2), y = rep(0, 6), cohort = c(1L, 1L, 2L, 2L, 3L, 3L), ID = 1:6, doseGrid = 1:3)
+    data = Data(
+      x = c(1, 1, 2, 2, 2, 2),
+      y = rep(0, 6),
+      cohort = c(1L, 1L, 2L, 2L, 3L, 3L),
+      ID = 1:6,
+      doseGrid = 1:3
+    )
   )
   expect_true(rv)
   expect_equal(
@@ -1704,7 +2121,13 @@ test_that("stopTrial works correctly for StoppingCohortsNearDose", {
     stopping = stopRule,
     dose = 2,
     model = LogisticLogNormal(mean = c(0, 1), cov = diag(2)),
-    data = Data(x = c(1, 1, 2, 2, 2, 2), y = rep(0, 6), cohort = c(1L, 1L, 2L, 2L, 2L, 2L), ID = 1:6, doseGrid = 1:3)
+    data = Data(
+      x = c(1, 1, 2, 2, 2, 2),
+      y = rep(0, 6),
+      cohort = c(1L, 1L, 2L, 2L, 2L, 2L),
+      ID = 1:6,
+      doseGrid = 1:3
+    )
   )
   expect_false(rv)
   expect_equal(
@@ -1719,7 +2142,13 @@ test_that("stopTrial works correctly for StoppingCohortsNearDose", {
     stopping = stopRule,
     dose = 2,
     model = LogisticLogNormal(mean = c(0, 1), cov = diag(2)),
-    data = Data(x = c(1, 1, 2, 2, 2, 2), y = rep(0, 6), cohort = c(1L, 1L, 2L, 2L, 2L, 2L), ID = 1:6, doseGrid = 1:3),
+    data = Data(
+      x = c(1, 1, 2, 2, 2, 2),
+      y = rep(0, 6),
+      cohort = c(1L, 1L, 2L, 2L, 2L, 2L),
+      ID = 1:6,
+      doseGrid = 1:3
+    ),
     new("Samples")
   )
   expect_false(rv)
@@ -1737,7 +2166,13 @@ test_that("stopTrial works correctly for StoppingCohortsNearDose", {
     stopping = stopRule,
     dose = 2,
     model = LogisticLogNormal(mean = c(0, 1), cov = diag(2)),
-    data = Data(x = c(1, 2), y = c(0, 0), cohort = c(1L, 2L), ID = 1:2, doseGrid = 1:3)
+    data = Data(
+      x = c(1, 2),
+      y = c(0, 0),
+      cohort = c(1L, 2L),
+      ID = 1:2,
+      doseGrid = 1:3
+    )
   )
   expect_false(rv)
   expect_equal(
@@ -1752,7 +2187,13 @@ test_that("stopTrial works correctly for StoppingCohortsNearDose", {
     stopping = stopRule,
     dose = 3,
     model = LogisticLogNormal(mean = c(0, 1), cov = diag(2)),
-    data = Data(x = c(3, 3), y = c(0, 0), cohort = c(1L, 1L), ID = 1:2, doseGrid = 1:3)
+    data = Data(
+      x = c(3, 3),
+      y = c(0, 0),
+      cohort = c(1L, 1L),
+      ID = 1:2,
+      doseGrid = 1:3
+    )
   )
   expect_false(rv)
   expect_equal(
@@ -1767,7 +2208,13 @@ test_that("stopTrial works correctly for StoppingCohortsNearDose", {
     stopping = stopRule,
     dose = 3,
     model = LogisticLogNormal(mean = c(0, 1), cov = diag(2)),
-    data = Data(x = c(2, 3), y = c(0, 0), cohort = c(1L, 2L), ID = 1:2, doseGrid = 1:3)
+    data = Data(
+      x = c(2, 3),
+      y = c(0, 0),
+      cohort = c(1L, 2L),
+      ID = 1:2,
+      doseGrid = 1:3
+    )
   )
   expect_true(rv)
   expect_equal(
@@ -1784,7 +2231,11 @@ test_that("stopTrial works correctly for StoppingCohortsNearDose", {
 test_that("StoppingPatientsNearDose can handle when dose is NA", {
   my_data <- h_get_data()
   my_model <- h_get_logistic_kadane()
-  my_samples <- mcmc(my_data, my_model, h_get_mcmc_options(samples = 1000, burnin = 1000))
+  my_samples <- mcmc(
+    my_data,
+    my_model,
+    h_get_mcmc_options(samples = 1000, burnin = 1000)
+  )
   stopping <- StoppingPatientsNearDose(nPatients = 9, percentage = 0)
   result <- stopTrial(
     stopping = stopping,
@@ -1882,7 +2333,13 @@ test_that("stopTrial works correctly for StoppingMinPatients", {
     stopping = stopRule,
     dose = 2,
     model = LogisticLogNormal(mean = c(0, 1), cov = diag(2)),
-    data = Data(x = c(1, 2), y = c(0, 0), cohort = c(1L, 2L), ID = 1:2, doseGrid = 1:3),
+    data = Data(
+      x = c(1, 2),
+      y = c(0, 0),
+      cohort = c(1L, 2L),
+      ID = 1:2,
+      doseGrid = 1:3
+    ),
     new("Samples")
   )
   expect_false(rv)
@@ -1898,7 +2355,13 @@ test_that("stopTrial works correctly for StoppingMinPatients", {
     stopping = stopRule,
     dose = 2,
     model = LogisticLogNormal(mean = c(0, 1), cov = diag(2)),
-    data = Data(x = c(1, 2), y = c(0, 0), cohort = c(1L, 2L), ID = 1:2, doseGrid = 1:3)
+    data = Data(
+      x = c(1, 2),
+      y = c(0, 0),
+      cohort = c(1L, 2L),
+      ID = 1:2,
+      doseGrid = 1:3
+    )
   )
   expect_false(rv)
   expect_equal(
@@ -1913,7 +2376,13 @@ test_that("stopTrial works correctly for StoppingMinPatients", {
     stopping = stopRule,
     dose = 2,
     model = LogisticLogNormal(mean = c(0, 1), cov = diag(2)),
-    data = Data(x = c(1, 2, 2), y = c(0, 0, 0), cohort = c(1L, 2L, 2L), ID = 1:3, doseGrid = 1:3)
+    data = Data(
+      x = c(1, 2, 2),
+      y = c(0, 0, 0),
+      cohort = c(1L, 2L, 2L),
+      ID = 1:3,
+      doseGrid = 1:3
+    )
   )
   expect_true(rv)
   expect_equal(
@@ -1930,7 +2399,11 @@ test_that("stopTrial works correctly for StoppingMinPatients", {
 test_that("StoppingTargetProb can handle when dose is NA", {
   my_data <- h_get_data()
   my_model <- h_get_logistic_kadane()
-  my_samples <- mcmc(my_data, my_model, h_get_mcmc_options(samples = 1000, burnin = 1000))
+  my_samples <- mcmc(
+    my_data,
+    my_model,
+    h_get_mcmc_options(samples = 1000, burnin = 1000)
+  )
   stopping <- StoppingTargetProb(target = c(0.15, 0.2), prob = 0.3)
   result <- stopTrial(
     stopping = stopping,
@@ -1950,7 +2423,11 @@ test_that("StoppingTargetProb can handle when dose is NA", {
 test_that("StoppingTargetProb works correctly when below threshold", {
   my_data <- h_get_data()
   my_model <- h_get_logistic_kadane()
-  my_samples <- mcmc(my_data, my_model, h_get_mcmc_options(samples = 1000, burnin = 1000))
+  my_samples <- mcmc(
+    my_data,
+    my_model,
+    h_get_mcmc_options(samples = 1000, burnin = 1000)
+  )
   stopping <- StoppingTargetProb(target = c(0.15, 0.2), prob = 0.3)
   result <- stopTrial(
     stopping = stopping,
@@ -1970,7 +2447,11 @@ test_that("StoppingTargetProb works correctly when below threshold", {
 test_that("StoppingTargetProb works correctly when above threshold", {
   my_data <- h_get_data()
   my_model <- h_get_logistic_kadane()
-  my_samples <- mcmc(my_data, my_model, h_get_mcmc_options(samples = 1000, burnin = 1000))
+  my_samples <- mcmc(
+    my_data,
+    my_model,
+    h_get_mcmc_options(samples = 1000, burnin = 1000)
+  )
   stopping <- StoppingTargetProb(target = c(0.1, 0.4), prob = 0.3)
   result <- stopTrial(
     stopping = stopping,
@@ -1990,7 +2471,11 @@ test_that("StoppingTargetProb works correctly when above threshold", {
 test_that("stopTrial-StoppingTargetProb can accept additional arguments and pass them to prob", {
   my_data <- h_get_data_grouped()
   my_model <- .DefaultLogisticLogNormalGrouped()
-  my_samples <- mcmc(my_data, my_model, h_get_mcmc_options(samples = 10, burnin = 10))
+  my_samples <- mcmc(
+    my_data,
+    my_model,
+    h_get_mcmc_options(samples = 10, burnin = 10)
+  )
   stopping <- StoppingTargetProb(target = c(0.1, 0.4), prob = 0.3)
   result <- stopTrial(
     stopping = stopping,
@@ -2008,7 +2493,11 @@ test_that("stopTrial-StoppingTargetProb can accept additional arguments and pass
 test_that("StoppingMTDdistribution can handle when dose is NA", {
   my_data <- h_get_data()
   my_model <- h_get_logistic_kadane()
-  my_samples <- mcmc(my_data, my_model, h_get_mcmc_options(samples = 1000, burnin = 1000))
+  my_samples <- mcmc(
+    my_data,
+    my_model,
+    h_get_mcmc_options(samples = 1000, burnin = 1000)
+  )
   stopping <- StoppingMTDdistribution(target = 0.25, thresh = 0.3, prob = 0.3)
   result <- stopTrial(
     stopping = stopping,
@@ -2055,15 +2544,32 @@ test_that("stopTrial works correctly for StoppingMTDdistribution", {
             model,
             data = emptyData
           )
-          direction <- ifelse(as.logical(result), "greater than or equal to", "strictly less than")
+          direction <- ifelse(
+            as.logical(result),
+            "greater than or equal to",
+            "strictly less than"
+          )
           expected <- sampledConfidence >= confidence
           if (expected != as.logical(result)) {
             print(
               paste0(
-                "targetRate: ", targetRate, "; threshold: ", threshold,
-                "; confidence: ", confidence, "; d: ", d, "; expected: ",
-                expected, "[", sampledConfidence, "]; actual: ",
-                as.logical(result), " [", attr(result, "message"), "]"
+                "targetRate: ",
+                targetRate,
+                "; threshold: ",
+                threshold,
+                "; confidence: ",
+                confidence,
+                "; d: ",
+                d,
+                "; expected: ",
+                expected,
+                "[",
+                sampledConfidence,
+                "]; actual: ",
+                as.logical(result),
+                " [",
+                attr(result, "message"),
+                "]"
               )
             )
           }
@@ -2081,7 +2587,12 @@ test_that("stopTrial works correctly for StoppingMTDdistribution", {
             " %"
           )
           attr(expected, "report_label") <- paste0(
-            "P(MTD > ", threshold, " * NBD | P(DLE) = ", targetRate, ") ≥ ", confidence
+            "P(MTD > ",
+            threshold,
+            " * NBD | P(DLE) = ",
+            targetRate,
+            ") ≥ ",
+            confidence
           )
           expect_equal(result, expected)
         }
@@ -2095,7 +2606,11 @@ test_that("stopTrial works correctly for StoppingMTDdistribution", {
 test_that("StoppingMTDCV can handle when dose is NA", {
   my_data <- h_get_data()
   my_model <- h_get_logistic_kadane()
-  my_samples <- mcmc(my_data, my_model, h_get_mcmc_options(samples = 1000, burnin = 1000))
+  my_samples <- mcmc(
+    my_data,
+    my_model,
+    h_get_mcmc_options(samples = 1000, burnin = 1000)
+  )
   stopping <- StoppingMTDCV(target = 0.3, thresh_cv = 30)
   result <- stopTrial(
     stopping = stopping,
@@ -2115,7 +2630,11 @@ test_that("StoppingMTDCV can handle when dose is NA", {
 test_that("StoppingMTDCV works correctly if CV is below threshold", {
   my_data <- h_get_data()
   my_model <- h_get_logistic_kadane()
-  my_samples <- mcmc(my_data, my_model, h_get_mcmc_options(samples = 1000, burnin = 1000))
+  my_samples <- mcmc(
+    my_data,
+    my_model,
+    h_get_mcmc_options(samples = 1000, burnin = 1000)
+  )
   stopping <- StoppingMTDCV(target = 0.3, thresh_cv = 50)
   result <- stopTrial(
     stopping = stopping,
@@ -2135,7 +2654,11 @@ test_that("StoppingMTDCV works correctly if CV is below threshold", {
 test_that("StoppingMTDCV works correctly if CV is above threshold", {
   my_data <- h_get_data()
   my_model <- h_get_logistic_kadane()
-  my_samples <- mcmc(my_data, my_model, h_get_mcmc_options(samples = 1000, burnin = 1000))
+  my_samples <- mcmc(
+    my_data,
+    my_model,
+    h_get_mcmc_options(samples = 1000, burnin = 1000)
+  )
   stopping <- StoppingMTDCV(target = 0.3, thresh_cv = 20)
   result <- stopTrial(
     stopping = stopping,
@@ -2348,19 +2871,68 @@ test_that("stopTrial works for StoppingTargetBiomarker", {
     ID = 1:17,
     cohort = 1:17,
     x = c(
-      0.1, 0.5, 1.5, 3, 6, 10, 10, 10,
-      20, 20, 20, 40, 40, 40, 50, 50, 50
+      0.1,
+      0.5,
+      1.5,
+      3,
+      6,
+      10,
+      10,
+      10,
+      20,
+      20,
+      20,
+      40,
+      40,
+      40,
+      50,
+      50,
+      50
     ),
     y = c(
-      0, 0, 0, 0, 0, 0, 1, 0,
-      0, 1, 1, 0, 0, 1, 0, 1, 1
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      1,
+      0,
+      0,
+      1,
+      1,
+      0,
+      0,
+      1,
+      0,
+      1,
+      1
     ),
     w = c(
-      0.31, 0.42, 0.59, 0.45, 0.6, 0.7, 0.55, 0.6,
-      0.52, 0.54, 0.56, 0.43, 0.41, 0.39, 0.34, 0.38, 0.21
+      0.31,
+      0.42,
+      0.59,
+      0.45,
+      0.6,
+      0.7,
+      0.55,
+      0.6,
+      0.52,
+      0.54,
+      0.56,
+      0.43,
+      0.41,
+      0.39,
+      0.34,
+      0.38,
+      0.21
     ),
     doseGrid = c(
-      0.1, 0.5, 1.5, 3, 6,
+      0.1,
+      0.5,
+      1.5,
+      3,
+      6,
       seq(from = 10, to = 80, by = 2)
     )
   )
@@ -2469,7 +3041,10 @@ test_that("stopTrial works for StoppingTargetBiomarker", {
       )
       expected <- FALSE
       attr(expected, "message") <- expectedAttributes[[as.character(d)]]
-      attr(expected, "report_label") <- "P(0.9 ≤ Biomarker ≤ 1) ≥ 0.5 (relative)"
+      attr(
+        expected,
+        "report_label"
+      ) <- "P(0.9 ≤ Biomarker ≤ 1) ≥ 0.5 (relative)"
       expect_equal(actual, expected)
     }
   )
@@ -2480,7 +3055,10 @@ test_that("stopTrial works for StoppingTargetBiomarker", {
 
 test_that("StoppingSpecificDose works correctly if next dose is NA", {
   my_samples <- h_as_samples(
-    list(alpha0 = c(1.2, 0, -0.4, -0.1, 0.9), alpha1 = c(0.7, 1.7, 1.9, 0.6, 2.8))
+    list(
+      alpha0 = c(1.2, 0, -0.4, -0.1, 0.9),
+      alpha1 = c(0.7, 1.7, 1.9, 0.6, 2.8)
+    )
   )
   result <- stopTrial(
     stopping = h_stopping_specific_dose(),
@@ -2501,7 +3079,10 @@ test_that("StoppingSpecificDose works correctly if dose rec. differs from specif
   # StoppingSpecificDose works correctly if dose recommendation is not the same
   # as the specific dose and stop is not met.
   my_samples <- h_as_samples(
-    list(alpha0 = c(1.2, 0, -0.4, -0.1, 0.9), alpha1 = c(0.7, 1.7, 1.9, 0.6, 2.8))
+    list(
+      alpha0 = c(1.2, 0, -0.4, -0.1, 0.9),
+      alpha1 = c(0.7, 1.7, 1.9, 0.6, 2.8)
+    )
   )
   result <- stopTrial(
     stopping = h_stopping_specific_dose(),
@@ -2523,7 +3104,18 @@ test_that("StoppingSpecificDose works correctly if dose rec. differs from specif
   # as the specific dose and stop is met.
   my_samples <- h_as_samples(
     list(
-      alpha0 = c(-1.88, -1.58, -2.43, -3.61, -2.15, -2.28, -3.32, -2.16, -2.79, -2.90),
+      alpha0 = c(
+        -1.88,
+        -1.58,
+        -2.43,
+        -3.61,
+        -2.15,
+        -2.28,
+        -3.32,
+        -2.16,
+        -2.79,
+        -2.90
+      ),
       alpha1 = c(1.08, 0.86, 0.67, 2.38, 5.99, 2.94, 0.74, 2.39, 1.74, 0.84)
     )
   )
@@ -2546,7 +3138,10 @@ test_that("StoppingSpecificDose works correctly if dose rec = specific and stop 
   # StoppingSpecificDose works correctly if dose recommendation is the same
   # as the specific dose and stop is not met.
   my_samples <- h_as_samples(
-    list(alpha0 = c(1.2, 0, -0.4, -0.1, 0.9), alpha1 = c(0.7, 1.7, 1.9, 0.6, 2.8))
+    list(
+      alpha0 = c(1.2, 0, -0.4, -0.1, 0.9),
+      alpha1 = c(0.7, 1.7, 1.9, 0.6, 2.8)
+    )
   )
   result <- stopTrial(
     stopping = h_stopping_specific_dose(),
@@ -2568,7 +3163,18 @@ test_that("StoppingSpecificDose works correctly if dose rec. = specific and stop
   # as the specific dose and stop is met.
   my_samples <- h_as_samples(
     list(
-      alpha0 = c(-1.88, -1.58, -2.43, -3.61, -2.15, -2.28, -3.32, -2.16, -2.79, -2.90),
+      alpha0 = c(
+        -1.88,
+        -1.58,
+        -2.43,
+        -3.61,
+        -2.15,
+        -2.28,
+        -3.32,
+        -2.16,
+        -2.79,
+        -2.90
+      ),
       alpha1 = c(1.08, 0.86, 0.67, 2.38, 5.99, 2.94, 0.74, 2.39, 1.74, 0.84)
     )
   )
@@ -2594,7 +3200,18 @@ test_that("StoppingSpecificDose correctly replaces next best string with specifi
   )
   my_samples <- h_as_samples(
     list(
-      alpha0 = c(-1.88, -1.58, -2.43, -3.61, -2.15, -2.28, -3.32, -2.16, -2.79, -2.90),
+      alpha0 = c(
+        -1.88,
+        -1.58,
+        -2.43,
+        -3.61,
+        -2.15,
+        -2.28,
+        -3.32,
+        -2.16,
+        -2.79,
+        -2.90
+      ),
       alpha1 = c(1.08, 0.86, 0.67, 2.38, 5.99, 2.94, 0.74, 2.39, 1.74, 0.84)
     )
   )
@@ -2717,10 +3334,34 @@ test_that("stopTrial works correctly for StoppingList", {
   any1 <- StoppingList(stop_list = list(s1, s2), summary = any)
   all1 <- StoppingList(stop_list = list(s1, s2), summary = all)
 
-  data_none <- Data(x = c(1, 1), y = c(0, 0), cohort = c(1L, 1L), ID = 1:2, doseGrid = 1:3)
-  data_any1 <- Data(x = c(3, 3), y = c(0, 0), cohort = c(1L, 1L), ID = 1:2, doseGrid = 1:3)
-  data_any2 <- Data(x = c(1, 2), y = c(0, 0), cohort = c(1L, 2L), ID = 1:2, doseGrid = 1:3)
-  data_all <- Data(x = c(1, 3), y = c(0, 0), cohort = c(1L, 2L), ID = 1:2, doseGrid = 1:3)
+  data_none <- Data(
+    x = c(1, 1),
+    y = c(0, 0),
+    cohort = c(1L, 1L),
+    ID = 1:2,
+    doseGrid = 1:3
+  )
+  data_any1 <- Data(
+    x = c(3, 3),
+    y = c(0, 0),
+    cohort = c(1L, 1L),
+    ID = 1:2,
+    doseGrid = 1:3
+  )
+  data_any2 <- Data(
+    x = c(1, 2),
+    y = c(0, 0),
+    cohort = c(1L, 2L),
+    ID = 1:2,
+    doseGrid = 1:3
+  )
+  data_all <- Data(
+    x = c(1, 3),
+    y = c(0, 0),
+    cohort = c(1L, 2L),
+    ID = 1:2,
+    doseGrid = 1:3
+  )
 
   rv <- stopTrial(
     stopping = any1,
@@ -2953,7 +3594,13 @@ test_that("stopTrial works correctly for StoppingList", {
     )
   )
 
-  data_any1 <- Data(x = c(3, 3), y = c(0, 0), cohort = c(1L, 1L), ID = 1:2, doseGrid = 1:3)
+  data_any1 <- Data(
+    x = c(3, 3),
+    y = c(0, 0),
+    cohort = c(1L, 1L),
+    ID = 1:2,
+    doseGrid = 1:3
+  )
   rv <- stopTrial(
     stopping = any1,
     dose = 3,
@@ -2984,7 +3631,13 @@ test_that("stopTrial works correctly for StoppingList", {
     )
   )
 
-  data_any2 <- Data(x = c(1, 2), y = c(0, 0), cohort = c(1L, 2L), ID = 1:2, doseGrid = 1:3)
+  data_any2 <- Data(
+    x = c(1, 2),
+    y = c(0, 0),
+    cohort = c(1L, 2L),
+    ID = 1:2,
+    doseGrid = 1:3
+  )
   rv <- stopTrial(
     stopping = any1,
     dose = 2,
@@ -3120,10 +3773,34 @@ test_that("stopTrial works correctly for StoppingAll", {
   s2 <- StoppingHighestDose()
   all1 <- StoppingAll(stop_list = list(s1, s2))
 
-  data_none <- Data(x = c(1, 1), y = c(0, 0), cohort = c(1L, 1L), ID = 1:2, doseGrid = 1:3)
-  data_any1 <- Data(x = c(3, 3), y = c(0, 0), cohort = c(1L, 1L), ID = 1:2, doseGrid = 1:3)
-  data_any2 <- Data(x = c(1, 2), y = c(0, 0), cohort = c(1L, 2L), ID = 1:2, doseGrid = 1:3)
-  data_all <- Data(x = c(1, 3), y = c(0, 0), cohort = c(1L, 2L), ID = 1:2, doseGrid = 1:3)
+  data_none <- Data(
+    x = c(1, 1),
+    y = c(0, 0),
+    cohort = c(1L, 1L),
+    ID = 1:2,
+    doseGrid = 1:3
+  )
+  data_any1 <- Data(
+    x = c(3, 3),
+    y = c(0, 0),
+    cohort = c(1L, 1L),
+    ID = 1:2,
+    doseGrid = 1:3
+  )
+  data_any2 <- Data(
+    x = c(1, 2),
+    y = c(0, 0),
+    cohort = c(1L, 2L),
+    ID = 1:2,
+    doseGrid = 1:3
+  )
+  data_all <- Data(
+    x = c(1, 3),
+    y = c(0, 0),
+    cohort = c(1L, 2L),
+    ID = 1:2,
+    doseGrid = 1:3
+  )
 
   rv <- stopTrial(
     stopping = all1,
@@ -3306,7 +3983,13 @@ test_that("stopTrial works correctly for StoppingAll", {
     )
   )
 
-  data_any2 <- Data(x = c(1, 2), y = c(0, 0), cohort = c(1L, 2L), ID = 1:2, doseGrid = 1:3)
+  data_any2 <- Data(
+    x = c(1, 2),
+    y = c(0, 0),
+    cohort = c(1L, 2L),
+    ID = 1:2,
+    doseGrid = 1:3
+  )
   rv <- stopTrial(
     stopping = all1,
     dose = 2,
@@ -3457,10 +4140,34 @@ test_that("stopTrial works correctly for StoppingAny", {
   s2 <- StoppingHighestDose()
   any1 <- StoppingAny(stop_list = list(s1, s2))
 
-  data_none <- Data(x = c(1, 1), y = c(0, 0), cohort = c(1L, 1L), ID = 1:2, doseGrid = 1:3)
-  data_any1 <- Data(x = c(3, 3), y = c(0, 0), cohort = c(1L, 1L), ID = 1:2, doseGrid = 1:3)
-  data_any2 <- Data(x = c(1, 2), y = c(0, 0), cohort = c(1L, 2L), ID = 1:2, doseGrid = 1:3)
-  data_any3 <- Data(x = c(3, 3), y = c(0, 0), cohort = c(1L, 2L), ID = 1:2, doseGrid = 1:3)
+  data_none <- Data(
+    x = c(1, 1),
+    y = c(0, 0),
+    cohort = c(1L, 1L),
+    ID = 1:2,
+    doseGrid = 1:3
+  )
+  data_any1 <- Data(
+    x = c(3, 3),
+    y = c(0, 0),
+    cohort = c(1L, 1L),
+    ID = 1:2,
+    doseGrid = 1:3
+  )
+  data_any2 <- Data(
+    x = c(1, 2),
+    y = c(0, 0),
+    cohort = c(1L, 2L),
+    ID = 1:2,
+    doseGrid = 1:3
+  )
+  data_any3 <- Data(
+    x = c(3, 3),
+    y = c(0, 0),
+    cohort = c(1L, 2L),
+    ID = 1:2,
+    doseGrid = 1:3
+  )
 
   rv <- stopTrial(
     stopping = any1,
@@ -3802,10 +4509,19 @@ test_that("stopTrial works correctly for StoppingTDCIRatio when samples are prov
         if (expected != as.logical(result)) {
           print(
             paste0(
-              "targetRate: ", targetRate, "; targetRatio: ", targetRatio,
-              "; d: ", d, "; expected: ",
-              expected, "; actual: ",
-              as.logical(result), " [", attr(result, "message"), "]"
+              "targetRate: ",
+              targetRate,
+              "; targetRatio: ",
+              targetRatio,
+              "; d: ",
+              d,
+              "; expected: ",
+              expected,
+              "; actual: ",
+              as.logical(result),
+              " [",
+              attr(result, "message"),
+              "]"
             )
           )
         }
@@ -3955,7 +4671,13 @@ test_that("size works as expected for CohortSizeDLT", {
       size(
         object = cohortSize,
         dose = dose,
-        data = Data(x = 1:2, y = c(0, 0), ID = 1:2, cohort = 1:2, doseGrid = 1:3)
+        data = Data(
+          x = 1:2,
+          y = c(0, 0),
+          ID = 1:2,
+          cohort = 1:2,
+          doseGrid = 1:3
+        )
       ),
       1
     )
@@ -3963,7 +4685,13 @@ test_that("size works as expected for CohortSizeDLT", {
       size(
         object = cohortSize,
         dose = dose,
-        data = Data(x = 1:2, y = c(0, 1), ID = 1:2, cohort = 1:2, doseGrid = 1:3)
+        data = Data(
+          x = 1:2,
+          y = c(0, 1),
+          ID = 1:2,
+          cohort = 1:2,
+          doseGrid = 1:3
+        )
       ),
       3
     )
@@ -3971,7 +4699,13 @@ test_that("size works as expected for CohortSizeDLT", {
       size(
         object = cohortSize,
         dose = dose,
-        data = Data(x = 1:2, y = c(1, 1), ID = 1:2, cohort = 1:2, doseGrid = 1:3)
+        data = Data(
+          x = 1:2,
+          y = c(1, 1),
+          ID = 1:2,
+          cohort = 1:2,
+          doseGrid = 1:3
+        )
       ),
       3
     )
@@ -3997,7 +4731,10 @@ test_that("size works as expected for CohortSizeRange", {
   emptyData <- Data(doseGrid = 1:10)
   expect_equal(size(cohortSize, NA, Data(doseGrid = doseGrid)), 0)
   for (dose in doseGrid) {
-    expect_equal(size(object = cohortSize, dose = dose, data = emptyData), ifelse(dose < 5, 1, 2))
+    expect_equal(
+      size(object = cohortSize, dose = dose, data = emptyData),
+      ifelse(dose < 5, 1, 2)
+    )
   }
 })
 
@@ -4014,11 +4751,23 @@ test_that("size works as expected for CohortSizeMax", {
   emptyData <- Data(doseGrid = doseGrid)
   noDLT <- Data(x = 1, y = 0, ID = 1, cohort = 1, doseGrid = doseGrid)
   oneDLT <- Data(x = 1, y = 1, ID = 1, cohort = 1, doseGrid = doseGrid)
-  twoDLTs <- Data(x = 1:2, y = c(1, 1), ID = 1:2, cohort = 1:2, doseGrid = doseGrid)
+  twoDLTs <- Data(
+    x = 1:2,
+    y = c(1, 1),
+    ID = 1:2,
+    cohort = 1:2,
+    doseGrid = doseGrid
+  )
   expect_equal(size(cohortSize, NA, Data(doseGrid = doseGrid)), 0)
   for (dose in doseGrid) {
-    expect_equal(size(object = cohortSize, dose = dose, data = emptyData), ifelse(dose < 3, 1, 2))
-    expect_equal(size(object = cohortSize, dose = dose, data = noDLT), ifelse(dose < 3, 1, 2))
+    expect_equal(
+      size(object = cohortSize, dose = dose, data = emptyData),
+      ifelse(dose < 3, 1, 2)
+    )
+    expect_equal(
+      size(object = cohortSize, dose = dose, data = noDLT),
+      ifelse(dose < 3, 1, 2)
+    )
     expect_equal(size(object = cohortSize, dose = dose, data = oneDLT), 3)
     expect_equal(size(object = cohortSize, dose = dose, data = twoDLTs), 6)
   }
@@ -4044,13 +4793,25 @@ test_that("size works as expected for CohortSizeMin", {
   emptyData <- Data(doseGrid = doseGrid)
   noDLT <- Data(x = 1, y = 0, ID = 1, cohort = 1, doseGrid = doseGrid)
   oneDLT <- Data(x = 1, y = 1, ID = 1, cohort = 1, doseGrid = doseGrid)
-  twoDLTs <- Data(x = 1:2, y = c(1, 1), ID = 1:2, cohort = 1:2, doseGrid = doseGrid)
+  twoDLTs <- Data(
+    x = 1:2,
+    y = c(1, 1),
+    ID = 1:2,
+    cohort = 1:2,
+    doseGrid = doseGrid
+  )
   expect_equal(size(cohortSize, NA, Data(doseGrid = doseGrid)), 0)
   for (dose in doseGrid) {
     expect_equal(size(object = cohortSize, dose = dose, data = emptyData), 1)
     expect_equal(size(object = cohortSize, dose = dose, data = noDLT), 1)
-    expect_equal(size(object = cohortSize, dose = dose, data = oneDLT), ifelse(dose < 3, 1, 2))
-    expect_equal(size(object = cohortSize, dose = dose, data = twoDLTs), ifelse(dose < 3, 1, 2))
+    expect_equal(
+      size(object = cohortSize, dose = dose, data = oneDLT),
+      ifelse(dose < 3, 1, 2)
+    )
+    expect_equal(
+      size(object = cohortSize, dose = dose, data = twoDLTs),
+      ifelse(dose < 3, 1, 2)
+    )
   }
 })
 
@@ -4060,8 +4821,14 @@ test_that("size works as expected for CohortSizeMin", {
   expect_equal(size(cohortSize, NA, DataParts(nextPart = 1L)), 0)
   expect_equal(size(cohortSize, NA, DataParts(nextPart = 2L)), 0)
   for (dose in doseGrid) {
-    expect_equal(size(object = cohortSize, dose = dose, data = DataParts(nextPart = 1L)), 1)
-    expect_equal(size(object = cohortSize, dose = dose, data = DataParts(nextPart = 2L)), 3)
+    expect_equal(
+      size(object = cohortSize, dose = dose, data = DataParts(nextPart = 1L)),
+      1
+    )
+    expect_equal(
+      size(object = cohortSize, dose = dose, data = DataParts(nextPart = 2L)),
+      3
+    )
   }
 })
 
@@ -4092,7 +4859,11 @@ test_that("windowLength works correctly", {
     follow = 7,
     follow_min = 14
   )
-  windowLengthConst <- SafetyWindowConst(gap = c(7, 3), follow = 7, follow_min = 14)
+  windowLengthConst <- SafetyWindowConst(
+    gap = c(7, 3),
+    follow = 7,
+    follow_min = 14
+  )
 
   for (d in emptyData@doseGrid) {
     for (cSize in 1:6) {
@@ -4100,7 +4871,10 @@ test_that("windowLength works correctly", {
       sizeRecommendation <- size(cohortSize, dose = d, data = emptyData)
 
       actual <- windowLength(windowLengthVariable, size = sizeRecommendation)
-      expect_equal(names(actual), c("patientGap", "patientFollow", "patientFollowMin"))
+      expect_equal(
+        names(actual),
+        c("patientGap", "patientFollow", "patientFollowMin")
+      )
       expect_equal(length(actual$patientGap), cSize)
       expect_equal(actual$patientFollow, 7)
       expect_equal(actual$patientFollowMin, 14)
@@ -4116,7 +4890,10 @@ test_that("windowLength works correctly", {
       expect_equal(actual$patientGap, expectedGaps)
 
       actual <- windowLength(windowLengthConst, size = sizeRecommendation)
-      expect_equal(names(actual), c("patientGap", "patientFollow", "patientFollowMin"))
+      expect_equal(
+        names(actual),
+        c("patientGap", "patientFollow", "patientFollowMin")
+      )
       expect_equal(length(actual$patientGap), cSize)
       expect_equal(actual$patientFollow, 7)
       expect_equal(actual$patientFollowMin, 14)
@@ -4264,7 +5041,10 @@ test_that("maxDose-IncrementsMaxToxProb works correctly with ordinal data", {
 
   expect_equal(maxDose(inc1, emptyData, model, samples), expected1)
   expect_equal(maxDose(inc2, emptyData, model, samples), expected2)
-  expect_equal(maxDose(inc3, emptyData, model, samples), min(expected1, expected2))
+  expect_equal(
+    maxDose(inc3, emptyData, model, samples),
+    min(expected1, expected2)
+  )
 })
 
 test_that("maxDose-IncrementsMaxToxProb works correctly with binary data", {

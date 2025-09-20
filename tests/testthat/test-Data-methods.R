@@ -4,22 +4,23 @@ test_that("Plot works as expected for Data object with placebo", {
   data <- h_get_data()
   result <- plot(data)
 
-  vdiffr::expect_doppelganger("Plot of Data with placebo", result)
+  expect_doppel("Plot of Data with placebo", result)
 })
 
 test_that("Plot works as expected for Data object with placebo and blinding", {
   data <- h_get_data()
   result <- plot(data, blind = TRUE)
 
-  vdiffr::expect_doppelganger("Plot of Data with placebo and blinding", result)
+  expect_doppel("Plot of Data with placebo and blinding", result)
 })
 
 test_that("Plot works for Data object with placebo, blinding and no legend", {
   data <- h_get_data()
   result <- plot(data, blind = TRUE, legend = FALSE)
 
-  vdiffr::expect_doppelganger(
-    "Plot of Data with placebo, blinding and no legend", result
+  expect_doppel(
+    "Plot of Data with placebo, blinding and no legend",
+    result
   )
 })
 
@@ -29,15 +30,16 @@ test_that("Plot works as expected for DataDual object with placebo", {
   data <- h_get_data_dual()
   result <- plot(data)
 
-  vdiffr::expect_doppelganger("Plot of DataDual with placebo", result)
+  expect_doppel("Plot of DataDual with placebo", result)
 })
 
 test_that("Plot works for DataDual object with placebo and blinding", {
   data <- h_get_data_dual()
   result <- plot(data, blind = TRUE)
 
-  vdiffr::expect_doppelganger(
-    "Plot of DataDual with placebo and blinding", result
+  expect_doppel(
+    "Plot of DataDual with placebo and blinding",
+    result
   )
 })
 
@@ -47,15 +49,16 @@ test_that("Plot works as expected for DataDA object with placebo", {
   data <- h_get_data_da()
   result <- plot(data)
 
-  vdiffr::expect_doppelganger("Plot of DataDA with placebo", result)
+  expect_doppel("Plot of DataDA with placebo", result)
 })
 
 test_that("Plot works for DataDA object with placebo and blinding", {
   data <- h_get_data_da()
   result <- plot(data, blind = TRUE)
 
-  vdiffr::expect_doppelganger(
-    "Plot of DataDA with placebo and blinding", result
+  expect_doppel(
+    "Plot of DataDA with placebo and blinding",
+    result
   )
 })
 
@@ -65,21 +68,21 @@ test_that("Plot works as expected for DataOrdinal object with placebo", {
   data <- h_get_data_ordinal()
   result <- plot(data)
 
-  vdiffr::expect_doppelganger("plot-DataOrdinal-placebo", result)
+  expect_doppel("plot-DataOrdinal-placebo", result)
 })
 
 test_that("Plot works as expected for DataOrdinal object with placebo and blinding", {
   data <- h_get_data_ordinal()
   result <- plot(data, blind = TRUE)
 
-  vdiffr::expect_doppelganger("plot-DataOrdinal-placebo-blinding", result)
+  expect_doppel("plot-DataOrdinal-placebo-blinding", result)
 })
 
 test_that("Plot works for DataOrdinal object with placebo, blinding and no legend", {
   data <- h_get_data()
   result <- plot(data, blind = TRUE, legend = FALSE)
 
-  vdiffr::expect_doppelganger("plot-DataOrdinal-placebo-blinding-nolegend", result)
+  expect_doppel("plot-DataOrdinal-placebo-blinding-nolegend", result)
 })
 
 
@@ -102,7 +105,11 @@ test_that("Update of Data works as expected", {
 
 test_that("Update of empty Data works as expected", {
   object <- Data(
-    x = c(25, 25), y = c(0L, 1L), doseGrid = 25, ID = 1:2, cohort = c(1L, 1L)
+    x = c(25, 25),
+    y = c(0L, 1L),
+    doseGrid = 25,
+    ID = 1:2,
+    cohort = c(1L, 1L)
   )
   result <- update(Data(doseGrid = 25), x = 25, y = c(0L, 1L))
 
@@ -144,7 +151,10 @@ test_that("Update of Data, no error for non-valid update and validation off", {
   expect_silent(
     update(
       object,
-      x = 12345, y = c(0L, 1L, 1L), new_cohort = FALSE, check = FALSE
+      x = 12345,
+      y = c(0L, 1L, 1L),
+      new_cohort = FALSE,
+      check = FALSE
     )
   )
 })
@@ -167,7 +177,11 @@ test_that("Update of Data works as expected", {
 
 test_that("Update of empty DataOrdinal works as expected", {
   object <- DataOrdinal(
-    x = c(25, 25), y = c(0L, 1L), doseGrid = 25, ID = 1:2, cohort = c(1L, 1L)
+    x = c(25, 25),
+    y = c(0L, 1L),
+    doseGrid = 25,
+    ID = 1:2,
+    cohort = c(1L, 1L)
   )
   result <- update(DataOrdinal(doseGrid = 25), x = 25, y = c(0L, 1L))
 
@@ -209,7 +223,10 @@ test_that("Update of DataOrdinal, no error for non-valid update and validation o
   expect_silent(
     update(
       object,
-      x = 12345, y = c(0L, 1L, 1L), new_cohort = FALSE, check = FALSE
+      x = 12345,
+      y = c(0L, 1L, 1L),
+      new_cohort = FALSE,
+      check = FALSE
     )
   )
 })

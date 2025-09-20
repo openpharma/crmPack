@@ -25,8 +25,8 @@ log_trace(msg, ..., capture = FALSE)
 \description{
 \ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#experimental}{\figure{lifecycle-experimental.svg}{options: alt='[Experimental]'}}}{\strong{[Experimental]}}
 
-A family of wrappers of selected \code{\link{futile.logger}} functions that control
-the logging mechanism in \code{crmPack}. The \code{crmPack} uses \code{\link{futile.logger}}
+A family of wrappers of selected \code{\link[futile.logger:futile.logger-package]{futile.logger::futile.logger}} functions that control
+the logging mechanism in \code{crmPack}. The \code{crmPack} uses \code{\link[futile.logger:futile.logger-package]{futile.logger::futile.logger}}
 package for the logging purposes. All the messages logged in \code{crmPack} are
 logged into \code{crmPack} logger at the \code{\link[futile.logger:logger.options]{futile.logger::TRACE}} level. Hence,
 enabling verbose logging means that the logging threshold will be set to

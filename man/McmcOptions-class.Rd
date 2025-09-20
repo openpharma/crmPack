@@ -55,15 +55,15 @@ For example, for \code{iterations = 6}, \code{burnin = 0} and \code{step = 2}, o
 samples from iterations \verb{2,4,6} will be saved.}
 
 \item{\code{rng_kind}}{(\code{string})\cr a Random Number Generator (RNG) type used by
-\code{\link{rjags}}. It must be one out of the following four values:
+\code{\link[rjags:rjags-package]{rjags::rjags}}. It must be one out of the following four values:
 \code{base::Wichmann-Hill}, \code{base::Marsaglia-Multicarry},
 \code{base::Super-Duper}, \code{base::Mersenne-Twister}, or \code{NA_character_}.
 If it is \code{NA_character_} (default), then the RNG kind will be chosen by
-\code{\link{rjags}}.}
+\code{\link[rjags:rjags-package]{rjags::rjags}}.}
 
 \item{\code{rng_seed}}{(\code{number})\cr a Random Number Generator (RNG) seed
-used by \code{\link{rjags}} for a chosen \code{rng_kind}. It must be an integer scalar or
-\code{NA_integer_}, which means that the seed will be chosen by \code{\link{rjags}}.}
+used by \code{\link[rjags:rjags-package]{rjags::rjags}} for a chosen \code{rng_kind}. It must be an integer scalar or
+\code{NA_integer_}, which means that the seed will be chosen by \code{\link[rjags:rjags-package]{rjags::rjags}}.}
 }}
 
 \note{

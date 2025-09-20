@@ -75,7 +75,7 @@ test_that("h_plot_data_cohort_lines works as expected", {
     geom_point() +
     h_plot_data_cohort_lines(df$cohort, placebo = data@placebo)
 
-  vdiffr::expect_doppelganger("h_plot_data_cohort_lines with placego", result)
+  expect_doppel("h_plot_data_cohort_lines with placego", result)
 })
 
 test_that("h_plot_data_cohort_lines works as expected when no placebo", {
@@ -87,7 +87,7 @@ test_that("h_plot_data_cohort_lines works as expected when no placebo", {
     geom_point() +
     h_plot_data_cohort_lines(df$cohort, placebo = data@placebo)
 
-  vdiffr::expect_doppelganger(
+  expect_doppel(
     "h_plot_data_cohort_lines without placebo",
     result
   )
@@ -103,7 +103,7 @@ test_that("h_plot_data_cohort_lines works as expected for single cohort", {
     geom_point() +
     h_plot_data_cohort_lines(df$cohort, placebo = data@placebo)
 
-  vdiffr::expect_doppelganger(
+  expect_doppel(
     "h_plot_data_cohort_lines for single cohort",
     result
   )
@@ -141,7 +141,11 @@ test_that("h_check_fun_formals returns FALSE for non-valid arguments", {
     i = h_check_fun_formals(function(x) {}, mandatory = "m", allowed = "a"),
     j = h_check_fun_formals(function(x, a) {}, mandatory = "m", allowed = "a"),
     k = h_check_fun_formals(function(m, x) {}, mandatory = "m", allowed = "a"),
-    l = h_check_fun_formals(function(m, a, x) {}, mandatory = "m", allowed = "a")
+    l = h_check_fun_formals(
+      function(m, a, x) {},
+      mandatory = "m",
+      allowed = "a"
+    )
   )
   # nolint end
 
@@ -333,7 +337,11 @@ test_that("h_test_named_numeric returns TRUE as expected for duplicated names", 
   x <- c(a = 1, b = 2, b = 3)
   expect_true(h_test_named_numeric(x, len = 3, subset.of = c("a", "b", "c")))
   expect_true(h_test_named_numeric(x, len = 3, identical.to = c("a", "b", "b")))
-  expect_true(h_test_named_numeric(x, len = 3, disjunct.from = c("c", "d", "e")))
+  expect_true(h_test_named_numeric(
+    x,
+    len = 3,
+    disjunct.from = c("c", "d", "e")
+  ))
 })
 
 test_that("h_test_named_numeric returns FALSE as expected", {
@@ -403,19 +411,31 @@ test_that("h_in_range returns expected matrix of flags", {
 
   expect_identical(
     h_in_range(mat, interval),
-    matrix(c(TRUE, TRUE, TRUE, FALSE, TRUE, FALSE, TRUE, FALSE, FALSE), nrow = 3)
+    matrix(
+      c(TRUE, TRUE, TRUE, FALSE, TRUE, FALSE, TRUE, FALSE, FALSE),
+      nrow = 3
+    )
   )
   expect_identical(
     h_in_range(mat, interval, FALSE),
-    matrix(c(TRUE, FALSE, TRUE, FALSE, TRUE, FALSE, FALSE, FALSE, FALSE), nrow = 3)
+    matrix(
+      c(TRUE, FALSE, TRUE, FALSE, TRUE, FALSE, FALSE, FALSE, FALSE),
+      nrow = 3
+    )
   )
   expect_identical(
     h_in_range(mat, interval, c(FALSE, TRUE)),
-    matrix(c(TRUE, TRUE, TRUE, FALSE, TRUE, FALSE, FALSE, FALSE, FALSE), nrow = 3)
+    matrix(
+      c(TRUE, TRUE, TRUE, FALSE, TRUE, FALSE, FALSE, FALSE, FALSE),
+      nrow = 3
+    )
   )
   expect_identical(
     h_in_range(mat, interval, c(TRUE, FALSE)),
-    matrix(c(TRUE, FALSE, TRUE, FALSE, TRUE, FALSE, TRUE, FALSE, FALSE), nrow = 3)
+    matrix(
+      c(TRUE, FALSE, TRUE, FALSE, TRUE, FALSE, TRUE, FALSE, FALSE),
+      nrow = 3
+    )
   )
 })
 
@@ -480,7 +500,11 @@ test_that("default constructors exist for all subclasses of GeneralModel", {
     function(cls) {
       # Function exists
       expect_true(
-        length(findFunction(paste0(".Default", cls), where = asNamespace("crmPack"))) > 1,
+        length(findFunction(
+          paste0(".Default", cls),
+          where = asNamespace("crmPack")
+        )) >
+          1,
         label = cls
       )
       # Return value is of the correct class
@@ -496,7 +520,13 @@ test_that("default constructors exist for all subclasses of Increments", {
     classesToTest,
     function(cls) {
       # Function exists
-      expect_true(length(findFunction(paste0(".Default", cls), where = asNamespace("crmPack"))) > 1)
+      expect_true(
+        length(findFunction(
+          paste0(".Default", cls),
+          where = asNamespace("crmPack")
+        )) >
+          1
+      )
       # Return value is of the correct class
       test_obj <- eval(parse(text = paste0(".Default", cls, "()")))
       expect_class(test_obj, cls)
@@ -511,7 +541,13 @@ test_that("default constructors exist for all subclasses of NextBest", {
     classesToTest,
     function(cls) {
       # Function exists
-      expect_true(length(findFunction(paste0(".Default", cls), where = asNamespace("crmPack"))) > 1)
+      expect_true(
+        length(findFunction(
+          paste0(".Default", cls),
+          where = asNamespace("crmPack")
+        )) >
+          1
+      )
       # Return value is of the correct class
       test_obj <- eval(parse(text = paste0(".Default", cls, "()")))
       expect_class(test_obj, cls)
@@ -526,7 +562,13 @@ test_that("default constructors exist for all subclasses of Stopping", {
     classesToTest,
     function(cls) {
       # Function exists
-      expect_true(length(findFunction(paste0(".Default", cls), where = asNamespace("crmPack"))) > 1)
+      expect_true(
+        length(findFunction(
+          paste0(".Default", cls),
+          where = asNamespace("crmPack")
+        )) >
+          1
+      )
       # Return value is of the correct class
       test_obj <- eval(parse(text = paste0(".Default", cls, "()")))
       expect_class(test_obj, cls)
@@ -546,32 +588,34 @@ test_that("stopping rule unpacking works", {
   )
   samples <- mcmc(data, model, options)
   increments <- h_increments_relative()
-  next_max_dose <- maxDose(increments,
-    data = data
-  )
+  next_max_dose <- maxDose(increments, data = data)
 
   next_best <- h_next_best_ncrm()
 
-  doseRecommendation <- nextBest(next_best,
+  doseRecommendation <- nextBest(
+    next_best,
     doselimit = next_max_dose,
-    samples = samples, model = model, data = data
+    samples = samples,
+    model = model,
+    data = data
   )
 
   myStopping1 <- StoppingMinCohorts(nCohorts = 4, report_label = "stop_rule_1")
   myStopping2 <- StoppingMissingDose(report_label = "stop_rule_2")
-  myStopping3 <- StoppingMinPatients(nPatients = 1, report_label = "stop_rule_3")
-  myStopping <- StoppingAny(
-    stop_list =
-      c(
-        StoppingAll(
-          stop_list =
-            c(myStopping1, myStopping2),
-          report_label = "StoppingAll"
-        ),
-        myStopping3
-      ), report_label = "StoppingAny"
+  myStopping3 <- StoppingMinPatients(
+    nPatients = 1,
+    report_label = "stop_rule_3"
   )
-
+  myStopping <- StoppingAny(
+    stop_list = c(
+      StoppingAll(
+        stop_list = c(myStopping1, myStopping2),
+        report_label = "StoppingAll"
+      ),
+      myStopping3
+    ),
+    report_label = "StoppingAny"
+  )
 
   my_stopit <- stopTrial(
     stopping = myStopping,
@@ -583,7 +627,13 @@ test_that("stopping rule unpacking works", {
   result <- h_unpack_stopit(my_stopit)
 
   expected <- c(TRUE, FALSE, FALSE, FALSE, TRUE)
-  names(expected) <- c("StoppingAny", "StoppingAll", "stop_rule_1", "stop_rule_2", "stop_rule_3")
+  names(expected) <- c(
+    "StoppingAny",
+    "StoppingAll",
+    "stop_rule_1",
+    "stop_rule_2",
+    "stop_rule_3"
+  )
 
   expect_equal(result, expected)
 })
@@ -598,30 +648,33 @@ test_that("conditions in stopping rule unpacking helpers work as expected", {
   )
   samples <- mcmc(data, model, options)
   increments <- h_increments_relative()
-  next_max_dose <- maxDose(increments,
-    data = data
-  )
+  next_max_dose <- maxDose(increments, data = data)
 
   next_best <- h_next_best_ncrm()
 
-  doseRecommendation <- nextBest(next_best,
+  doseRecommendation <- nextBest(
+    next_best,
     doselimit = next_max_dose,
-    samples = samples, model = model, data = data
+    samples = samples,
+    model = model,
+    data = data
   )
 
   myStopping1 <- StoppingMinCohorts(nCohorts = 4, report_label = "stop_rule_1")
   myStopping2 <- StoppingMissingDose(report_label = "stop_rule_2")
-  myStopping3 <- StoppingMinPatients(nPatients = 1, report_label = "stop_rule_3")
+  myStopping3 <- StoppingMinPatients(
+    nPatients = 1,
+    report_label = "stop_rule_3"
+  )
   myStopping <- StoppingAny(
-    stop_list =
-      c(
-        StoppingAll(
-          stop_list =
-            c(myStopping1, myStopping2),
-          report_label = "StoppingAll"
-        ),
-        myStopping3
-      ), report_label = "StoppingAny"
+    stop_list = c(
+      StoppingAll(
+        stop_list = c(myStopping1, myStopping2),
+        report_label = "StoppingAll"
+      ),
+      myStopping3
+    ),
+    report_label = "StoppingAny"
   )
 
   # enters only "if is.null condition" since atomic
@@ -650,13 +703,35 @@ test_that("conditions in stopping rule unpacking helpers work as expected", {
   result <- h_unpack_stopit(my_stopit)
 
   expected <- c(TRUE, FALSE, FALSE, FALSE, TRUE)
-  names(expected) <- c("StoppingAny", "StoppingAll", "stop_rule_1", "stop_rule_2", "stop_rule_3")
+  names(expected) <- c(
+    "StoppingAny",
+    "StoppingAll",
+    "stop_rule_1",
+    "stop_rule_2",
+    "stop_rule_3"
+  )
   expect_equal(result, expected)
 })
 
 test_that("calculations for percentages, given report_labels are provided works as expected", {
   # Define the stop_report matrix
-  stop_report <- matrix(c(TRUE, FALSE, TRUE, TRUE, FALSE, TRUE, FALSE, FALSE, TRUE, FALSE, FALSE, TRUE), ncol = 3)
+  stop_report <- matrix(
+    c(
+      TRUE,
+      FALSE,
+      TRUE,
+      TRUE,
+      FALSE,
+      TRUE,
+      FALSE,
+      FALSE,
+      TRUE,
+      FALSE,
+      FALSE,
+      TRUE
+    ),
+    ncol = 3
+  )
 
   dimnames(stop_report) <- list(
     c("", "", "", ""),
@@ -669,16 +744,43 @@ test_that("calculations for percentages, given report_labels are provided works 
 
   result <- h_calc_report_label_percentage(stop_report)
 
-  expect_named(result, c("≥ 3 cohorts dosed", "P(0.2 ≤ prob(DLE | NBD) ≤ 0.35) ≥ 0.5", "≥ 20 patients dosed"))
+  expect_named(
+    result,
+    c(
+      "≥ 3 cohorts dosed",
+      "P(0.2 ≤ prob(DLE | NBD) ≤ 0.35) ≥ 0.5",
+      "≥ 20 patients dosed"
+    )
+  )
   expect_double(result)
   expected <- c(75, 25, 50)
-  names(expected) <- c("≥ 3 cohorts dosed", "P(0.2 ≤ prob(DLE | NBD) ≤ 0.35) ≥ 0.5", "≥ 20 patients dosed")
+  names(expected) <- c(
+    "≥ 3 cohorts dosed",
+    "P(0.2 ≤ prob(DLE | NBD) ≤ 0.35) ≥ 0.5",
+    "≥ 20 patients dosed"
+  )
   expect_equal(result, expected)
 })
 
 test_that("calculations for percentages, given report_labels are not provided works as expected", {
   # Define the stop_report matrix
-  stop_report <- matrix(c(TRUE, FALSE, TRUE, TRUE, FALSE, TRUE, FALSE, FALSE, TRUE, FALSE, FALSE, TRUE), ncol = 3)
+  stop_report <- matrix(
+    c(
+      TRUE,
+      FALSE,
+      TRUE,
+      TRUE,
+      FALSE,
+      TRUE,
+      FALSE,
+      FALSE,
+      TRUE,
+      FALSE,
+      FALSE,
+      TRUE
+    ),
+    ncol = 3
+  )
 
   dimnames(stop_report) <- list(
     c("", "", "", ""),
@@ -704,7 +806,10 @@ test_that("h_group_data works as expected", {
   group_data <- expect_silent(h_group_data(mono_data, combo_data))
   expect_valid(group_data, "DataGrouped")
   expect_identical(mono_data@nObs + combo_data@nObs, group_data@nObs)
-  expect_identical(sort(union(mono_data@doseGrid, combo_data@doseGrid)), group_data@doseGrid)
+  expect_identical(
+    sort(union(mono_data@doseGrid, combo_data@doseGrid)),
+    group_data@doseGrid
+  )
   mono_data_from_group <- cbind(
     x = group_data@x[group_data@group == "mono"],
     y = group_data@y[group_data@group == "mono"]
@@ -730,7 +835,7 @@ test_that("h_group_data works as expected", {
 test_that("print for gtable works", {
   result <- gridExtra::arrangeGrob(grid::rectGrob(), grid::rectGrob())
   assert_class(result, "gtable")
-  vdiffr::expect_doppelganger("print-gtable", result)
+  expect_doppel("print-gtable", result)
 })
 
 # plot.gtable ----
@@ -738,5 +843,5 @@ test_that("print for gtable works", {
 test_that("plot for gtable works", {
   result <- gridExtra::arrangeGrob(grid::rectGrob(), grid::rectGrob())
   assert_class(result, "gtable")
-  vdiffr::expect_doppelganger("plot-gtable", plot(result))
+  expect_doppel("plot-gtable", plot(result))
 })
