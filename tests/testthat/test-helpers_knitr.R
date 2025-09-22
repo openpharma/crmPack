@@ -48,7 +48,7 @@ h_custom_method_exists <- function(generic, obj) {
     assign(sub(generic_name, "X", m, fixed = TRUE), "body<-"(f, value = m))
   }
   method_name <- X(obj)
-  return(method_name != paste0(generic_name, ".default"))
+  (method_name != paste0(generic_name, ".default"))
 }
 
 test_that("h_custom_method_exists works correctly", {

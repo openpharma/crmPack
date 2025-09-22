@@ -428,7 +428,7 @@ knit_print.GeneralData <- function(
 
 #' Used to obtain expected format.
 #' @keywords internal
-h_knit_format_func = function(x) {
+h_knit_format_func <- function(x) {
   kableExtra::kable_styling(
     x,
     bootstrap_options = c("striped", "hover", "condensed")
