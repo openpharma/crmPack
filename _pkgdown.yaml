@@ -48,7 +48,7 @@ articles:
 reference:
   - title: Package
     contents:
-      - crmPack-package
+      - crmPack
   - title: Classes
     contents:
       - Validate

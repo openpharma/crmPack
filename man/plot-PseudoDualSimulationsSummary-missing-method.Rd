@@ -23,7 +23,7 @@
 }
 \value{
 A single \code{\link[ggplot2]{ggplot}} object if a single plot is
-asked for, otherwise a \code{\link{gridExtra}{gTree}} object.
+asked for, otherwise a \code{gtable} object.
 }
 \description{
 This plot method can be applied to \code{\linkS4class{PseudoDualSimulationsSummary}} objects in order
@@ -93,6 +93,7 @@ my_design <- DualResponsesDesign(
 my_truth_dle <- probFunction(dle_model, phi1 = -53.66584, phi2 = 10.50499)
 my_truth_eff <- efficacyFunction(eff_model, theta1 = -4.818429, theta2 = 3.653058)
 
+\donttest{
 # For illustration purpose only 1 simulation is produced.
 my_sim <- simulate(
   object = my_design,
@@ -115,6 +116,7 @@ my_sum <- summary(
 
 # Plot the summary of the simulations.
 print(plot(my_sum))
+}
 
 # Example where DLE and efficacy samples are involved.
 # Please refer to design-method 'simulate DualResponsesSamplesDesign' examples
@@ -146,6 +148,7 @@ my_design <- DualResponsesSamplesDesign(
 # MCMC options.
 my_options <- McmcOptions(burnin = 10, step = 2, samples = 50)
 
+\donttest{
 # For illustration purpose only 1 simulation is produced.
 my_sim <- simulate(
   object = my_design,
@@ -169,6 +172,7 @@ my_sum <- summary(
 
 # Plot the summary of the simulations.
 print(plot(my_sum))
+}
 
 # Example where the 'EffFlexi' class is used for the efficacy model.
 eff_model <- EffFlexi(
@@ -206,6 +210,7 @@ my_truth_gain <- function(dose) {
   return((my_truth_eff(dose)) / (1 + (my_truth_dle(dose) / (1 - my_truth_dle(dose)))))
 }
 
+\donttest{
 ## The simulations
 ## For illustration purpose only 1 simulation is produced (nsim=1).
 mySim <- simulate(
@@ -230,5 +235,6 @@ my_sum <- summary(
 
 # Plot the summary of the simulations.
 print(plot(my_sim))
+}
 }
 \keyword{methods}

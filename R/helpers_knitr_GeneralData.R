@@ -11,7 +11,15 @@
 #' is `c(1, 2, 3)` and `units` is `"mg"`, the returned value is `"1 mg, 2 mg and 3 mg"`.
 #' @keywords internal
 h_get_formatted_dosegrid <- function(grid, units = NA, fmt = NA, ...) {
-  assert_numeric(grid, lower = 0, min.len = 2, unique = TRUE, finite = TRUE, sorted = TRUE, any.missing = FALSE)
+  assert_numeric(
+    grid,
+    lower = 0,
+    min.len = 2,
+    unique = TRUE,
+    finite = TRUE,
+    sorted = TRUE,
+    any.missing = FALSE
+  )
   assert_character(units, len = 1)
 
   n <- length(grid)
@@ -71,7 +79,15 @@ h_knit_print_set_headers.GeneralData <- function(x, param, summarise, ...) {
 h_knit_print_set_headers.DataDA <- function(x, param, summarise, ...) {
   if (!("col.names" %in% names(param))) {
     if (summarise == "none") {
-      param[["col.names"]] <- c("ID", "Cohort", "Dose", "Tox", "U", "T0", "TMax")
+      param[["col.names"]] <- c(
+        "ID",
+        "Cohort",
+        "Dose",
+        "Tox",
+        "U",
+        "T0",
+        "TMax"
+      )
     } else if (summarise == "dose") {
       param[["col.names"]] <- c("Dose", "Evaluable", "With Toxicities")
     } else {
@@ -91,7 +107,12 @@ h_knit_print_set_headers.DataGrouped <- function(x, param, summarise, ...) {
     } else if (summarise == "dose") {
       param[["col.names"]] <- c("Dose", "Group", "Evaluable", "With Toxicities")
     } else {
-      param[["col.names"]] <- c("Cohort", "Group", "Evaluable", "With Toxicities")
+      param[["col.names"]] <- c(
+        "Cohort",
+        "Group",
+        "Evaluable",
+        "With Toxicities"
+      )
     }
   }
   param
@@ -118,7 +139,12 @@ h_knit_print_set_headers.DataParts <- function(x, param, summarise, ...) {
 h_knit_print_set_headers.DataOrdinal <- function(x, param, summarise, ...) {
   if (!("col.names" %in% names(param))) {
     if (summarise == "none") {
-      param[["col.names"]] <- c("ID", "Cohort", "Dose", paste0("Cat", 0:(length(x@yCategories) - 1)))
+      param[["col.names"]] <- c(
+        "ID",
+        "Cohort",
+        "Dose",
+        paste0("Cat", 0:(length(x@yCategories) - 1))
+      )
     } else if (summarise == "dose") {
       param[["col.names"]] <- c("Dose", "Evaluable", names(x@yCategories))
     } else {
@@ -336,13 +362,16 @@ h_knit_print_summarise.DataGrouped <- function(x, summarise, full_grid, ...) {
 #' @method knit_print GeneralData
 #' @rdname knit_print
 knit_print.GeneralData <- function(
-    x, ..., asis = TRUE,
-    label = c("participant", "participants"),
-    full_grid = FALSE,
-    summarise = c("none", "dose", "cohort"),
-    summarize = summarise,
-    units = NA,
-    format_func = function(x) x) {
+  x,
+  ...,
+  asis = TRUE,
+  label = c("participant", "participants"),
+  full_grid = FALSE,
+  summarise = c("none", "dose", "cohort"),
+  summarize = summarise,
+  units = NA,
+  format_func = h_knit_format_func
+) {
   # Validate
   assert_flag(asis)
   assert_flag(full_grid)
@@ -397,17 +426,29 @@ knit_print.GeneralData <- function(
   rv
 }
 
+#' Used to obtain expected format.
+#' @keywords internal
+h_knit_format_func <- function(x) {
+  kableExtra::kable_styling(
+    x,
+    bootstrap_options = c("striped", "hover", "condensed")
+  )
+}
+
 #' @export
 #' @method knit_print DataParts
 #' @rdname knit_print
 knit_print.DataParts <- function(
-    x, ..., asis = TRUE,
-    label = c("participant", "participants"),
-    full_grid = FALSE,
-    summarise = c("none", "dose", "cohort"),
-    summarize = summarise,
-    units = NA,
-    format_func = function(x) x) {
+  x,
+  ...,
+  asis = TRUE,
+  label = c("participant", "participants"),
+  full_grid = FALSE,
+  summarise = c("none", "dose", "cohort"),
+  summarize = summarise,
+  units = NA,
+  format_func = h_knit_format_func
+) {
   rv <- NextMethod()
   rv <- paste0(
     rv,

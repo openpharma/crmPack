@@ -76,7 +76,14 @@ test_that("h_next_best_mg_ci works as expected (with placebo)", {
 ### h_next_best_mg_doses_at_grid ----
 
 test_that("h_next_best_mg_doses_at_grid works as expected", {
-  result <- h_next_best_mg_doses_at_grid(52.3, 42.7, 84, seq(25, 200, 25), 100, FALSE)
+  result <- h_next_best_mg_doses_at_grid(
+    52.3,
+    42.7,
+    84,
+    seq(25, 200, 25),
+    100,
+    FALSE
+  )
   expected <- list(
     next_dose = 50,
     next_dose_drt = 50,
@@ -87,7 +94,14 @@ test_that("h_next_best_mg_doses_at_grid works as expected", {
 })
 
 test_that("h_next_best_mg_doses_at_grid works as expected (small doselimit)", {
-  result <- h_next_best_mg_doses_at_grid(52.3, 42.7, 84, seq(25, 200, 25), 49, FALSE)
+  result <- h_next_best_mg_doses_at_grid(
+    52.3,
+    42.7,
+    84,
+    seq(25, 200, 25),
+    49,
+    FALSE
+  )
   expected <- list(
     next_dose = 25,
     next_dose_drt = 25,
@@ -98,7 +112,14 @@ test_that("h_next_best_mg_doses_at_grid works as expected (small doselimit)", {
 })
 
 test_that("h_next_best_mg_doses_at_grid works as expected (small doselimit, placebo)", {
-  result <- h_next_best_mg_doses_at_grid(24, 42.7, 84, c(0.001, seq(25, 200, 25)), 49, TRUE)
+  result <- h_next_best_mg_doses_at_grid(
+    24,
+    42.7,
+    84,
+    c(0.001, seq(25, 200, 25)),
+    49,
+    TRUE
+  )
   expected <- list(
     next_dose = NA_real_,
     next_dose_drt = NA_real_,
@@ -109,7 +130,14 @@ test_that("h_next_best_mg_doses_at_grid works as expected (small doselimit, plac
 })
 
 test_that("h_next_best_mg_doses_at_grid works as expected (td > mg)", {
-  result <- h_next_best_mg_doses_at_grid(94, 42.7, 84, seq(25, 200, 25), 100, FALSE)
+  result <- h_next_best_mg_doses_at_grid(
+    94,
+    42.7,
+    84,
+    seq(25, 200, 25),
+    100,
+    FALSE
+  )
   expected <- list(
     next_dose = 75,
     next_dose_drt = 75,
@@ -127,12 +155,30 @@ test_that("h_next_best_eligible_doses works as expected", {
   dose_grid <- c(0.001, seq(25, 200, 25))
 
   # doses
-  expect_identical(h_next_best_eligible_doses(dose_grid, 79, TRUE), dose_grid[2:4])
-  expect_identical(h_next_best_eligible_doses(dose_grid, 250, TRUE), dose_grid[-1])
-  expect_identical(h_next_best_eligible_doses(dose_grid, 200, TRUE), dose_grid[-1])
-  expect_identical(h_next_best_eligible_doses(dose_grid, 75, TRUE), dose_grid[2:4])
-  expect_identical(h_next_best_eligible_doses(dose_grid, 0.001, TRUE), dose_grid[1])
-  expect_identical(h_next_best_eligible_doses(dose_grid, 0.00001, TRUE), numeric(0))
+  expect_identical(
+    h_next_best_eligible_doses(dose_grid, 79, TRUE),
+    dose_grid[2:4]
+  )
+  expect_identical(
+    h_next_best_eligible_doses(dose_grid, 250, TRUE),
+    dose_grid[-1]
+  )
+  expect_identical(
+    h_next_best_eligible_doses(dose_grid, 200, TRUE),
+    dose_grid[-1]
+  )
+  expect_identical(
+    h_next_best_eligible_doses(dose_grid, 75, TRUE),
+    dose_grid[2:4]
+  )
+  expect_identical(
+    h_next_best_eligible_doses(dose_grid, 0.001, TRUE),
+    dose_grid[1]
+  )
+  expect_identical(
+    h_next_best_eligible_doses(dose_grid, 0.00001, TRUE),
+    numeric(0)
+  )
 
   # levels
   ftttf <- c(FALSE, rep(TRUE, 3), rep(FALSE, 5))
@@ -141,28 +187,49 @@ test_that("h_next_best_eligible_doses works as expected", {
   expect_identical(h_next_best_eligible_doses(dose_grid, 250, TRUE, TRUE), ft)
   expect_identical(h_next_best_eligible_doses(dose_grid, 200, TRUE, TRUE), ft)
   expect_identical(h_next_best_eligible_doses(dose_grid, 75, TRUE, TRUE), ftttf)
-  expect_identical(h_next_best_eligible_doses(dose_grid, 0.001, TRUE, TRUE), !ft)
-  expect_identical(h_next_best_eligible_doses(dose_grid, 0.00001, TRUE, TRUE), rep(FALSE, 9))
+  expect_identical(
+    h_next_best_eligible_doses(dose_grid, 0.001, TRUE, TRUE),
+    !ft
+  )
+  expect_identical(
+    h_next_best_eligible_doses(dose_grid, 0.00001, TRUE, TRUE),
+    rep(FALSE, 9)
+  )
 })
 
 test_that("h_next_best_eligible_doses works as expected (no placebo)", {
   dose_grid <- seq(25, 200, 25)
 
   # doses
-  expect_identical(h_next_best_eligible_doses(dose_grid, 79, FALSE), dose_grid[1:3])
+  expect_identical(
+    h_next_best_eligible_doses(dose_grid, 79, FALSE),
+    dose_grid[1:3]
+  )
   expect_identical(h_next_best_eligible_doses(dose_grid, 250, FALSE), dose_grid)
   expect_identical(h_next_best_eligible_doses(dose_grid, 200, FALSE), dose_grid)
-  expect_identical(h_next_best_eligible_doses(dose_grid, 75, FALSE), dose_grid[1:3])
+  expect_identical(
+    h_next_best_eligible_doses(dose_grid, 75, FALSE),
+    dose_grid[1:3]
+  )
   expect_identical(h_next_best_eligible_doses(dose_grid, 1, FALSE), numeric(0))
 
   # levels
   tttf <- c(rep(TRUE, 3), rep(FALSE, 5))
   all_true <- rep(TRUE, 8)
   expect_identical(h_next_best_eligible_doses(dose_grid, 79, FALSE, TRUE), tttf)
-  expect_identical(h_next_best_eligible_doses(dose_grid, 250, FALSE, TRUE), all_true)
-  expect_identical(h_next_best_eligible_doses(dose_grid, 200, FALSE, TRUE), all_true)
+  expect_identical(
+    h_next_best_eligible_doses(dose_grid, 250, FALSE, TRUE),
+    all_true
+  )
+  expect_identical(
+    h_next_best_eligible_doses(dose_grid, 200, FALSE, TRUE),
+    all_true
+  )
   expect_identical(h_next_best_eligible_doses(dose_grid, 75, FALSE, TRUE), tttf)
-  expect_identical(h_next_best_eligible_doses(dose_grid, 1, FALSE, TRUE), !all_true)
+  expect_identical(
+    h_next_best_eligible_doses(dose_grid, 1, FALSE, TRUE),
+    !all_true
+  )
 })
 
 test_that("h_next_best_eligible_doses throws the error for empty dose grid or not sorted", {
@@ -183,78 +250,184 @@ test_that("h_next_best_eligible_doses throws the error for empty dose grid or no
 test_that("h_next_best_ncrm_loss_plot works as expected", {
   prob_mat <- matrix(
     c(
-      0.084, 0.024, 0.156, 0.172, 0.024, 1,
-      0.284, 0.122, 0.348, 0.336, 0.138, 0.22,
-      0.632, 0.854, 0.496, 0.492, 0.838, 0.42
+      0.084,
+      0.024,
+      0.156,
+      0.172,
+      0.024,
+      1,
+      0.284,
+      0.122,
+      0.348,
+      0.336,
+      0.138,
+      0.22,
+      0.632,
+      0.854,
+      0.496,
+      0.492,
+      0.838,
+      0.42
     ),
-    byrow = FALSE, ncol = 3, dimnames = list(NULL, c("underdosing", "target", "overdose"))
+    byrow = FALSE,
+    ncol = 3,
+    dimnames = list(NULL, c("underdosing", "target", "overdose"))
   )
   posterior_loss <- c(0.856, 1.182, 0.746, 0.738, 1.152, 1)
 
   result <- h_next_best_ncrm_loss_plot(
-    prob_mat, posterior_loss, 0.9, seq(10, by = 5, length.out = 6), 5, 20, 15, FALSE
+    prob_mat,
+    posterior_loss,
+    0.9,
+    seq(10, by = 5, length.out = 6),
+    5,
+    20,
+    15,
+    FALSE
   )
-  vdiffr::expect_doppelganger("h_next_best_ncrm_loss_plot", result$plot_joint)
-  vdiffr::expect_doppelganger("h_next_best_ncrm_loss_plot_p1", result$plots_single$plot1)
-  vdiffr::expect_doppelganger("h_next_best_ncrm_loss_plot_p2", result$plots_single$plot2)
-  vdiffr::expect_doppelganger("h_next_best_ncrm_loss_plot_p2_ploss", result$plots_single$plot_loss)
+  expect_doppel("h_next_best_ncrm_loss_plot", result$plot_joint)
+  expect_doppel("h_next_best_ncrm_loss_plot_p1", result$plots_single$plot1)
+  expect_doppel("h_next_best_ncrm_loss_plot_p2", result$plots_single$plot2)
+  expect_doppel(
+    "h_next_best_ncrm_loss_plot_p2_ploss",
+    result$plots_single$plot_loss
+  )
 })
 
 test_that("h_next_best_ncrm_loss_plot works as expected (unacceptable specified)", {
   prob_mat <- matrix(
     c(
-      0.61, 0.084, 0.024, 0.982, 0.244, 0.024,
-      0.326, 0.284, 0.138, 0.016, 0.338, 0.154,
-      0.058, 0.492, 0.548, 0.002, 0.378, 0.544,
-      0.006, 0.14, 0.29, 0.17, 0.04, 0.278
+      0.61,
+      0.084,
+      0.024,
+      0.982,
+      0.244,
+      0.024,
+      0.326,
+      0.284,
+      0.138,
+      0.016,
+      0.338,
+      0.154,
+      0.058,
+      0.492,
+      0.548,
+      0.002,
+      0.378,
+      0.544,
+      0.006,
+      0.14,
+      0.29,
+      0.17,
+      0.04,
+      0.278
     ),
-    byrow = FALSE, ncol = 4, dimnames = list(NULL, c("underdosing", "target", "excessive", "unacceptable"))
+    byrow = FALSE,
+    ncol = 4,
+    dimnames = list(
+      NULL,
+      c("underdosing", "target", "excessive", "unacceptable")
+    )
   )
   posterior_loss <- c(0.68, 0.856, 1.152, 0.984, 0.702, 1.124)
 
   result <- h_next_best_ncrm_loss_plot(
-    prob_mat, posterior_loss, 0.9, seq(10, by = 5, length.out = 6), 5, 20, 15, TRUE
+    prob_mat,
+    posterior_loss,
+    0.9,
+    seq(10, by = 5, length.out = 6),
+    5,
+    20,
+    15,
+    TRUE
   )
-  vdiffr::expect_doppelganger("h_next_best_ncrm_loss_plot_unacpt", result$plot_joint)
-  vdiffr::expect_doppelganger("h_next_best_ncrm_loss_plot_unacpt_p1", result$plots_single$plot1)
-  vdiffr::expect_doppelganger("h_next_best_ncrm_loss_plot_unacpt_p2", result$plots_single$plot2)
-  vdiffr::expect_doppelganger("h_next_best_ncrm_loss_plot_unacpt_p2_ploss", result$plots_single$plot_loss)
+  expect_doppel("h_next_best_ncrm_loss_plot_unacpt", result$plot_joint)
+  expect_doppel(
+    "h_next_best_ncrm_loss_plot_unacpt_p1",
+    result$plots_single$plot1
+  )
+  expect_doppel(
+    "h_next_best_ncrm_loss_plot_unacpt_p2",
+    result$plots_single$plot2
+  )
+  expect_doppel(
+    "h_next_best_ncrm_loss_plot_unacpt_p2_ploss",
+    result$plots_single$plot_loss
+  )
 })
 
 test_that("h_next_best_ncrm_loss_plot works as expected (no doselimit)", {
   prob_mat <- matrix(
     c(
-      0.084, 0.024, 0.156, 0.172, 0.024, 1,
-      0.284, 0.122, 0.348, 0.336, 0.138, 0.22,
-      0.632, 0.854, 0.496, 0.492, 0.838, 0.42
+      0.084,
+      0.024,
+      0.156,
+      0.172,
+      0.024,
+      1,
+      0.284,
+      0.122,
+      0.348,
+      0.336,
+      0.138,
+      0.22,
+      0.632,
+      0.854,
+      0.496,
+      0.492,
+      0.838,
+      0.42
     ),
-    byrow = FALSE, ncol = 3, dimnames = list(NULL, c("underdosing", "target", "overdose"))
+    byrow = FALSE,
+    ncol = 3,
+    dimnames = list(NULL, c("underdosing", "target", "overdose"))
   )
   posterior_loss <- c(0.856, 1.182, 0.746, 0.738, 1.152, 1)
 
   result <- h_next_best_ncrm_loss_plot(
-    prob_mat, posterior_loss, 0.9, seq(10, by = 5, length.out = 6), 5, Inf, 25, FALSE
+    prob_mat,
+    posterior_loss,
+    0.9,
+    seq(10, by = 5, length.out = 6),
+    5,
+    Inf,
+    25,
+    FALSE
   )
-  vdiffr::expect_doppelganger("h_next_best_ncrm_loss_plot_nodoselim", result$plot_joint)
+  expect_doppel("h_next_best_ncrm_loss_plot_nodoselim", result$plot_joint)
 })
 
 ### h_next_best_tdsamples_plot ----
 
 test_that("h_next_best_tdsamples_plot works as expected", {
   result <- h_next_best_tdsamples_plot(
-    1:100, 50:150, 100, 120, c(25, 300), h_next_best_tdsamples(), 75, 60
+    1:100,
+    50:150,
+    100,
+    120,
+    c(25, 300),
+    h_next_best_tdsamples(),
+    75,
+    60
   )
   suppressWarnings({
-    vdiffr::expect_doppelganger("h_next_best_tdsamples_plot", result)
+    expect_doppel("h_next_best_tdsamples_plot", result)
   })
 })
 
 test_that("h_next_best_tdsamples_plot works as expected (no doselimit)", {
   result <- h_next_best_tdsamples_plot(
-    1:100, 50:150, 100, 120, c(25, 300), h_next_best_tdsamples(), Inf, 60
+    1:100,
+    50:150,
+    100,
+    120,
+    c(25, 300),
+    h_next_best_tdsamples(),
+    Inf,
+    60
   )
   suppressWarnings({
-    vdiffr::expect_doppelganger("h_next_best_tdsamples_plot_nodoselim", result)
+    expect_doppel("h_next_best_tdsamples_plot_nodoselim", result)
   })
 })
 
@@ -262,16 +435,42 @@ test_that("h_next_best_tdsamples_plot works as expected (no doselimit)", {
 
 test_that("h_next_best_td_plot works as expected", {
   data <- h_get_data(empty = TRUE, placebo = FALSE)
-  prob_dlt <- c(0.11, 0.22, 0.31, 0.37, 0.43, 0.47, 0.5, 0.53, 0.55, 0.57, 0.59, 0.6)
+  prob_dlt <- c(
+    0.11,
+    0.22,
+    0.31,
+    0.37,
+    0.43,
+    0.47,
+    0.5,
+    0.53,
+    0.55,
+    0.57,
+    0.59,
+    0.6
+  )
   result <- h_next_best_td_plot(0.33, 80, 0.27, 70, data, prob_dlt, 200, 75)
-  vdiffr::expect_doppelganger("h_next_best_td_plot", result)
+  expect_doppel("h_next_best_td_plot", result)
 })
 
 test_that("h_next_best_td_plot works as expected (no doselimit)", {
   data <- h_get_data(empty = TRUE, placebo = FALSE)
-  prob_dlt <- c(0.11, 0.22, 0.31, 0.37, 0.43, 0.47, 0.5, 0.53, 0.55, 0.57, 0.59, 0.6)
+  prob_dlt <- c(
+    0.11,
+    0.22,
+    0.31,
+    0.37,
+    0.43,
+    0.47,
+    0.5,
+    0.53,
+    0.55,
+    0.57,
+    0.59,
+    0.6
+  )
   result <- h_next_best_td_plot(0.33, 80, 0.27, 70, data, prob_dlt, Inf, 75)
-  vdiffr::expect_doppelganger("h_next_best_td_plot_nodoselim", result)
+  expect_doppel("h_next_best_td_plot_nodoselim", result)
 })
 
 ### h_next_best_mg_plot ----
@@ -282,9 +481,19 @@ test_that("h_next_best_mg_plot works as expected", {
   model_eff <- h_get_eff_log_log(const = 0)
 
   result <- h_next_best_mg_plot(
-    0.35, 52.3, 0.3, 42.7, 79.8, 0.63, 50, 70, data, model_dlt, model_eff
+    0.35,
+    52.3,
+    0.3,
+    42.7,
+    79.8,
+    0.63,
+    50,
+    70,
+    data,
+    model_dlt,
+    model_eff
   )
-  vdiffr::expect_doppelganger("h_next_best_mg_plot", result)
+  expect_doppel("h_next_best_mg_plot", result)
 })
 
 test_that("h_next_best_mg_plot works as expected (no doselimit)", {
@@ -293,23 +502,49 @@ test_that("h_next_best_mg_plot works as expected (no doselimit)", {
   model_eff <- h_get_eff_log_log(const = 0)
 
   result <- h_next_best_mg_plot(
-    0.35, 52.3, 0.3, 42.7, 79.8, 0.63, 50, Inf, data, model_dlt, model_eff
+    0.35,
+    52.3,
+    0.3,
+    42.7,
+    79.8,
+    0.63,
+    50,
+    Inf,
+    data,
+    model_dlt,
+    model_eff
   )
-  vdiffr::expect_doppelganger("h_next_best_mg_plot_nodoselim", result)
+  expect_doppel("h_next_best_mg_plot_nodoselim", result)
 })
 
 ### h_next_best_mgsamples_plot ----
 
 test_that("h_next_best_mgsamples_plot works as expected", {
   result <- h_next_best_mgsamples_plot(
-    0.45, 104, 0.4, 83, 200, c(100, 300, 250, 125, 100, 175, 50, 300, 300, 150), 75, 80, c(50, 320)
+    0.45,
+    104,
+    0.4,
+    83,
+    200,
+    c(100, 300, 250, 125, 100, 175, 50, 300, 300, 150),
+    75,
+    80,
+    c(50, 320)
   )
-  vdiffr::expect_doppelganger("h_next_best_mgsamples_plot", result)
+  expect_doppel("h_next_best_mgsamples_plot", result)
 })
 
 test_that("h_next_best_mgsamples_plot works as expected (no doselimit)", {
   result <- h_next_best_mgsamples_plot(
-    0.35, 67.5, 0.3, 53, 125, c(300, 225, 50, 175, 75, 125, 25, 125, 125, 250), 50, Inf, c(25, 300)
+    0.35,
+    67.5,
+    0.3,
+    53,
+    125,
+    c(300, 225, 50, 175, 75, 125, 25, 125, 125, 250),
+    50,
+    Inf,
+    c(25, 300)
   )
-  vdiffr::expect_doppelganger("h_next_best_mgsamples_plot_nodoselim", result)
+  expect_doppel("h_next_best_mgsamples_plot_nodoselim", result)
 })

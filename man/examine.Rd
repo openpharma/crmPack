@@ -67,10 +67,7 @@ emptydata <- Data(doseGrid = c(1, 3, 5, 10, 15, 20, 25))
 # Initialize the CRM model.
 my_model <- LogisticLogNormal(
   mean = c(-0.85, 1),
-  cov =
-    matrix(c(1, -0.5, -0.5, 1),
-      nrow = 2
-    ),
+  cov = matrix(c(1, -0.5, -0.5, 1), nrow = 2),
   ref_dose = 56
 )
 
@@ -119,11 +116,16 @@ my_design <- Design(
 )
 
 my_options <- McmcOptions(
-  burnin = 10, step = 1, samples = 20, rng_kind = "Super-Duper",
+  burnin = 10,
+  step = 1,
+  samples = 20,
+  rng_kind = "Super-Duper",
   rng_seed = 94
 )
 
+\donttest{
 examine(my_design, my_options)
+}
 
 # Example where examine stops because stopping rule already fulfilled.
 my_stopping4 <- StoppingMinPatients(nPatients = 3)
@@ -139,7 +141,9 @@ my_design <- Design(
   startingDose = 3
 )
 
+\donttest{
 examine(my_design, mcmcOptions = my_options)
+}
 
 # Example where examine stops because infinite looping
 # (note that here a very low threshold is used for the parameter
@@ -161,7 +165,9 @@ design <- Design(
   startingDose = 3
 )
 
+\donttest{
 examine(my_design, mcmcOptions = my_options, maxNoIncrement = 2)
+}
 # Define the dose-grid
 emptydata <- Data(doseGrid = c(5, 10, 15, 25, 35, 50, 80))
 
@@ -176,7 +182,9 @@ myDesign <- RuleDesign(
 
 # Examine the design
 set.seed(4235)
+\donttest{
 examine(myDesign)
+}
 # nolint start
 
 # Define the dose-grid and PEM parameters
@@ -258,10 +266,12 @@ options <- McmcOptions(
   rng_kind = "Mersenne-Twister",
   rng_seed = 12
 )
+\donttest{
 testthat::expect_warning(
   result <- examine(design, mcmcOptions = options, maxNoIncrement = 2),
   "Stopping because 2 times no increment"
 )
+}
 
 # nolint end
 }

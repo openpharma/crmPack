@@ -28,7 +28,7 @@ Helper function that gets the eligible doses from the dose grid.
 The eligible doses are the doses which do not exceed a given
 \code{doselimit}. For placebo design, if safety allows (i.e. if there is at least
 one non-placebo dose which does not exceed the dose limit), the placebo dose
-it then excluded from the eligible doses.
+is then excluded from the eligible doses.
 }
 \examples{
 dose_grid <- c(0.001, seq(25, 200, 25))

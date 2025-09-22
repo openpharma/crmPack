@@ -6,7 +6,7 @@ test_that("h_barplot_percentages produces consistent results", {
     "test"
   )
 
-  vdiffr::expect_doppelganger("barplot-percentages", plot)
+  expect_doppel("barplot-percentages", plot)
 })
 
 test_that("barplot_percentages fails gracefully with bad input", {
@@ -34,7 +34,6 @@ test_that("barplot_percentages fails gracefully with bad input", {
     "Assertion on 'description' failed: Must be of type 'character', not 'double'."
   )
 })
-
 
 
 test_that("aggregation of additional stats works correctly", {

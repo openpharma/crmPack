@@ -2947,11 +2947,11 @@ setMethod(
 ##' (vector) of the occurrence of a DLE. Additional arguments can be supplied in \code{args}.
 ##' @param trueEff a function which takes as input a dose (vector) and returns the expected
 ##' efficacy responses (vector). Additional arguments can be supplied in \code{args}.
-##' @param trueNu (not with code{\linkS4class{EffFlexi}}) the precision, the inverse of the
+##' @param trueNu (not with \code{\linkS4class{EffFlexi}}) the precision, the inverse of the
 ##' variance of the efficacy responses
-##' @param trueSigma2 (only with code{\linkS4class{EffFlexi}}) the true variance of the efficacy
+##' @param trueSigma2 (only with \code{\linkS4class{EffFlexi}}) the true variance of the efficacy
 ##' responses which must be a single positive scalar.
-##' @param trueSigma2betaW (only with code{\linkS4class{EffFlexi}}) the true variance for the
+##' @param trueSigma2betaW (only with \code{\linkS4class{EffFlexi}}) the true variance for the
 ##' random walk model used for smoothing. This must be a single positive scalar.
 ##' @param args data frame with arguments for the \code{trueDLE} and
 ##' \code{trueEff} function. The column names correspond to the argument

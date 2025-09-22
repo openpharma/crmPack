@@ -18,7 +18,7 @@ to plot from}
 }
 \value{
 A single \code{\link[ggplot2]{ggplot}} object if a single plot is
-asked for, otherwise a \code{\link{gridExtra}{gTree}} object.
+asked for, otherwise a \code{gtable} object.
 }
 \description{
 Summarize the simulations with plots
