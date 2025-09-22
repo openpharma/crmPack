@@ -36,7 +36,7 @@
 ##' @param type the type of plots you want to obtain.
 ##' @param \dots not used
 ##' @return A single \code{\link[ggplot2]{ggplot}} object if a single plot is
-##' asked for, otherwise a \code{\link[gridExtra]{gTree}} object.
+##' asked for, otherwise a `gtable` object.
 ##'
 ##' @importFrom ggplot2 ggplot geom_step geom_bar aes xlab ylab
 ##' scale_linetype_manual
@@ -244,7 +244,7 @@ setMethod(
 ##' @param type the type of plots you want to obtain.
 ##' @param \dots not used
 ##' @return A single \code{\link[ggplot2]{ggplot}} object if a single plot is
-##' asked for, otherwise a \code{\link[gridExtra]{gTree}} object.
+##' asked for, otherwise a `gtable` object.
 ##'
 ##' @importFrom ggplot2 qplot coord_flip scale_x_discrete
 ##' @importFrom gridExtra arrangeGrob
@@ -1058,7 +1058,7 @@ setMethod(
 ##' @param type the types of plots you want to obtain.
 ##' @param \dots not used
 ##' @return A single \code{\link[ggplot2]{ggplot}} object if a single plot is
-##' asked for, otherwise a \code{\link[gridExtra]{gTree}} object.
+##' asked for, otherwise a `gtable` object.
 ##'
 ##' @importFrom ggplot2 geom_histogram ggplot aes xlab ylab geom_line
 ##' scale_linetype_manual scale_colour_manual
@@ -1197,7 +1197,7 @@ setMethod(
 ##' @param type the types of plots you want to obtain.
 ##' @param \dots not used
 ##' @return A single \code{\link[ggplot2]{ggplot}} object if a single plot is
-##' asked for, otherwise a \code{\link[gridExtra]{gTree}} object.
+##' asked for, otherwise a `gtable` object.
 ##'
 ##' @importFrom ggplot2 geom_histogram ggplot aes xlab ylab geom_line
 ##' scale_linetype_manual scale_colour_manual
@@ -1333,7 +1333,7 @@ setMethod(
 ##' @param type the types of plots you want to obtain.
 ##' @param \dots not used
 ##' @return A single \code{\link[ggplot2]{ggplot}} object if a single plot is
-##' asked for, otherwise a \code{\link[gridExtra]{gTree}} object.
+##' asked for, otherwise a `gtable` object.
 ##'
 ##' @importFrom ggplot2 geom_histogram ggplot aes xlab ylab geom_line
 ##' scale_linetype_manual scale_colour_manual
@@ -1981,7 +1981,7 @@ setMethod(
 ##' @param type the types of plots you want to obtain.
 ##' @param \dots not used
 ##' @return A single \code{\link[ggplot2]{ggplot}} object if a single plot is
-##' asked for, otherwise a \code{\link[gridExtra]{gTree}} object.
+##' asked for, otherwise a `gtable` object.
 ##'
 ##' @importFrom ggplot2 geom_histogram ggplot aes xlab ylab geom_line
 ##' scale_linetype_manual scale_colour_manual
@@ -2211,7 +2211,7 @@ setMethod(
 ##' @param type the type of plots you want to obtain.
 ##' @param \dots not used
 ##' @return A single \code{\link[ggplot2]{ggplot}} object if a single plot is
-##' asked for, otherwise a \code{\link[gridExtra]{gTree}} object.
+##' asked for, otherwise a `gtable` object.
 ##'
 ##' @importFrom ggplot2 ggplot geom_step geom_bar aes xlab ylab
 ##' scale_linetype_manual
@@ -2323,7 +2323,7 @@ setMethod(
 ##' @param type the type of plots you want to obtain.
 ##' @param \dots not used
 ##' @return A single \code{\link[ggplot2]{ggplot}} object if a single plot is
-##' asked for, otherwise a \code{\link[gridExtra]{gTree}} object.
+##' asked for, otherwise a `gtable` object.
 ##'
 ##' @importFrom ggplot2 ggplot geom_step geom_bar aes xlab ylab
 ##' scale_linetype_manual
@@ -2766,7 +2766,7 @@ setMethod(
 ##' @param type the types of plots you want to obtain.
 ##' @param \dots not used
 ##' @return A single \code{\link[ggplot2]{ggplot}} object if a single plot is
-##' asked for, otherwise a \code{\link[gridExtra]{gTree}} object.
+##' asked for, otherwise a `gtable` object.
 ##'
 ##' @importFrom ggplot2 geom_histogram ggplot aes xlab ylab geom_line
 ##' scale_linetype_manual scale_colour_manual
