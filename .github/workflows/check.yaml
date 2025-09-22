@@ -27,7 +27,8 @@ jobs:
     with:
       additional-env-vars: |
         _R_CHECK_CRAN_INCOMING_REMOTE_=false
-      additional-r-cmd-check-params: '--as-cran --no-build-vignettes'
+      additional-r-cmd-check-params: |
+        --ignore-vignettes
       enforce-note-blocklist: true
       note-blocklist: |
         checking dependencies in R code .* NOTE
