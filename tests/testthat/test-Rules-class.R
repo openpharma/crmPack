@@ -297,7 +297,10 @@ test_that(".DefaultNextBestProbMTDMinDist works as expected", {
 
 ## NextBestOrdinal ----
 test_that(".NextBestOrdinal works as expected", {
-  result <- expect_silent(.NextBestOrdinal(grade = 1L, rule = NextBestMinDist(target = 0.25)))
+  result <- expect_silent(.NextBestOrdinal(
+    grade = 1L,
+    rule = NextBestMinDist(target = 0.25)
+  ))
   expect_valid(result, "NextBestOrdinal")
 })
 
@@ -403,7 +406,10 @@ test_that("IncrementsRelativeDLTCurrent object can be created with user construc
 test_that(".DefaultIncrementsRelativeDLTCurrent works as expected", {
   expect_equal(
     .DefaultIncrementsRelativeDLTCurrent(),
-    IncrementsRelativeDLTCurrent(intervals = c(0, 1, 3), increments = c(1, 0.33, 0.2))
+    IncrementsRelativeDLTCurrent(
+      intervals = c(0, 1, 3),
+      increments = c(1, 0.33, 0.2)
+    )
   )
 })
 
@@ -564,7 +570,10 @@ test_that("StoppingCohortsNearDose object can be created with user constructor (
   expect_valid(result, "StoppingCohortsNearDose")
   expect_identical(result@nCohorts, 2L)
   expect_identical(result@percentage, 50)
-  expect_identical(result@report_label, "≥ 2 cohorts dosed in 50 % dose range around NBD")
+  expect_identical(
+    result@report_label,
+    "≥ 2 cohorts dosed in 50 % dose range around NBD"
+  )
 })
 
 test_that("StoppingCohortsNearDose object can be created with user constructor", {
@@ -577,13 +586,20 @@ test_that("StoppingCohortsNearDose object can be created with user constructor",
 
 test_that("StoppingCohortsNearDose replaces empty label with correct default label", {
   result <- expect_silent(StoppingCohortsNearDose(5L, 40, character(0)))
-  expect_identical(result@report_label, "≥ 5 cohorts dosed in 40 % dose range around NBD")
+  expect_identical(
+    result@report_label,
+    "≥ 5 cohorts dosed in 40 % dose range around NBD"
+  )
 })
 
 test_that(".DefaultStoppingCohortsNearDose works as expected", {
   expect_equal(
     .DefaultStoppingCohortsNearDose(),
-    StoppingCohortsNearDose(nCohorts = 3, percentage = 0.2, report_label = NA_character_)
+    StoppingCohortsNearDose(
+      nCohorts = 3,
+      percentage = 0.2,
+      report_label = NA_character_
+    )
   )
 })
 
@@ -599,7 +615,10 @@ test_that("StoppingPatientsNearDose object can be created with user constructor 
   expect_valid(result, "StoppingPatientsNearDose")
   expect_identical(result@nPatients, 10L)
   expect_identical(result@percentage, 50)
-  expect_identical(result@report_label, "≥ 10 patients dosed in 50 % dose range around NBD")
+  expect_identical(
+    result@report_label,
+    "≥ 10 patients dosed in 50 % dose range around NBD"
+  )
 })
 
 test_that("StoppingPatientsNearDose object can be created with user constructor", {
@@ -612,13 +631,20 @@ test_that("StoppingPatientsNearDose object can be created with user constructor"
 
 test_that("StoppingPatientsNearDose replaces empty label with correct default label", {
   result <- expect_silent(StoppingPatientsNearDose(5L, 40, character(0)))
-  expect_identical(result@report_label, "≥ 5 patients dosed in 40 % dose range around NBD")
+  expect_identical(
+    result@report_label,
+    "≥ 5 patients dosed in 40 % dose range around NBD"
+  )
 })
 
 test_that(".DefaultStoppingPatientsNearDose works as expected", {
   expect_equal(
     .DefaultStoppingPatientsNearDose(),
-    StoppingPatientsNearDose(nPatients = 9, percentage = 20, report_label = NA_character_)
+    StoppingPatientsNearDose(
+      nPatients = 9,
+      percentage = 20,
+      report_label = NA_character_
+    )
   )
 })
 
@@ -722,7 +748,11 @@ test_that("StoppingTargetProb replaces empty label with correct default label", 
 test_that(".DefaultStoppingTargetProb works as expected", {
   expect_equal(
     .DefaultStoppingTargetProb(),
-    StoppingTargetProb(target = c(0.2, 0.35), prob = 0.5, report_label = NA_character_)
+    StoppingTargetProb(
+      target = c(0.2, 0.35),
+      prob = 0.5,
+      report_label = NA_character_
+    )
   )
 })
 
@@ -741,7 +771,10 @@ test_that("StoppingMTDdistribution object can be created with user constructor (
   expect_identical(result@target, 0.33)
   expect_identical(result@thresh, 0.5)
   expect_identical(result@prob, 0.9)
-  expect_identical(result@report_label, "P(MTD > 0.5 * NBD | P(DLE) = 0.33) ≥ 0.9")
+  expect_identical(
+    result@report_label,
+    "P(MTD > 0.5 * NBD | P(DLE) = 0.33) ≥ 0.9"
+  )
 })
 
 test_that("StoppingMTDdistribution object can be created with user constructor", {
@@ -757,13 +790,21 @@ test_that("StoppingMTDdistribution object can be created with user constructor",
 
 test_that("StoppingMTDdistribution replaces empty label with correct default label", {
   result <- expect_silent(StoppingMTDdistribution(0.4, 0.4, 0.8, character(0)))
-  expect_identical(result@report_label, "P(MTD > 0.4 * NBD | P(DLE) = 0.4) ≥ 0.8")
+  expect_identical(
+    result@report_label,
+    "P(MTD > 0.4 * NBD | P(DLE) = 0.4) ≥ 0.8"
+  )
 })
 
 test_that(".DefaultStoppingMTDdistribution works as expected", {
   expect_equal(
     .DefaultStoppingMTDdistribution(),
-    StoppingMTDdistribution(target = 0.33, thresh = 0.5, prob = 0.9, report_label = NA_character_)
+    StoppingMTDdistribution(
+      target = 0.33,
+      thresh = 0.5,
+      prob = 0.9,
+      report_label = NA_character_
+    )
   )
 })
 
@@ -821,7 +862,13 @@ test_that("StoppingLowestDoseHSRBeta object can be created with user constructor
 })
 
 test_that("StoppingLowestDoseHSRBeta object can be created with user constructor", {
-  result <- expect_silent(StoppingLowestDoseHSRBeta(0.25, 0.82, 5, 2, "custom label"))
+  result <- expect_silent(StoppingLowestDoseHSRBeta(
+    0.25,
+    0.82,
+    5,
+    2,
+    "custom label"
+  ))
   expect_valid(result, "StoppingLowestDoseHSRBeta")
   expect_identical(result@target, 0.25)
   expect_identical(result@prob, 0.82)
@@ -831,8 +878,17 @@ test_that("StoppingLowestDoseHSRBeta object can be created with user constructor
 })
 
 test_that("StoppingLowestDoseHSRBeta replaces empty label with correct default label", {
-  result <- expect_silent(StoppingLowestDoseHSRBeta(0.25, 0.82, 5, 2, character(0)))
-  expect_identical(result@report_label, "Pβ(lowest dose > P(DLE) = 0.25) > 0.82")
+  result <- expect_silent(StoppingLowestDoseHSRBeta(
+    0.25,
+    0.82,
+    5,
+    2,
+    character(0)
+  ))
+  expect_identical(
+    result@report_label,
+    "Pβ(lowest dose > P(DLE) = 0.25) > 0.82"
+  )
 })
 
 test_that(".DefaultStoppingLowestDoseHSRBeta works as expected", {
@@ -864,7 +920,12 @@ test_that("StoppingTargetBiomarker object can be created with user constructor (
 })
 
 test_that("StoppingTargetBiomarker object can be created with user constructor", {
-  result <- expect_silent(StoppingTargetBiomarker(c(0.85, 1), 0.4, FALSE, "custom label"))
+  result <- expect_silent(StoppingTargetBiomarker(
+    c(0.85, 1),
+    0.4,
+    FALSE,
+    "custom label"
+  ))
   expect_valid(result, "StoppingTargetBiomarker")
   expect_identical(result@target, c(0.85, 1))
   expect_identical(result@is_relative, FALSE)
@@ -873,8 +934,16 @@ test_that("StoppingTargetBiomarker object can be created with user constructor",
 })
 
 test_that("StoppingTargetBiomarker replaces empty label with correct default label", {
-  result <- expect_silent(StoppingTargetBiomarker(c(0.85, 1), 0.4, FALSE, character(0)))
-  expect_identical(result@report_label, "P(0.85 ≤ Biomarker ≤ 1) ≥ 0.4 (absolute)")
+  result <- expect_silent(StoppingTargetBiomarker(
+    c(0.85, 1),
+    0.4,
+    FALSE,
+    character(0)
+  ))
+  expect_identical(
+    result@report_label,
+    "P(0.85 ≤ Biomarker ≤ 1) ≥ 0.4 (absolute)"
+  )
 })
 
 test_that(".DefaultStoppingTargetBiomarker works as expected", {
@@ -904,7 +973,10 @@ test_that("StoppingSpecificDose object can be created with user constructor (def
   expect_identical(result@rule@target, c(0, 0.3))
   expect_identical(result@rule@prob, 0.8)
   expect_identical(result@dose@.Data, 80)
-  expect_identical(result@report_label, "Dose 80 used for testing a stopping rule")
+  expect_identical(
+    result@report_label,
+    "Dose 80 used for testing a stopping rule"
+  )
 })
 
 test_that("StoppingSpecificDose object can be created with user constructor", {
@@ -930,7 +1002,10 @@ test_that("StoppingSpecificDose replaces empty label with correct default label"
     dose = 75,
     character(0)
   ))
-  expect_identical(result@report_label, "Dose 75 used for testing a stopping rule")
+  expect_identical(
+    result@report_label,
+    "Dose 75 used for testing a stopping rule"
+  )
 })
 
 test_that(".DefaultStoppingSpecificDose works as expected", {
@@ -1093,7 +1168,11 @@ test_that("StoppingTDCIRatio replaces empty label with correct default label", {
 test_that(".DefaultStoppingTDCIRatio works as expected", {
   expect_equal(
     .DefaultStoppingTDCIRatio(),
-    StoppingTDCIRatio(target_ratio = 5, prob_target = 0.3, report_label = NA_character_)
+    StoppingTDCIRatio(
+      target_ratio = 5,
+      prob_target = 0.3,
+      report_label = NA_character_
+    )
   )
 })
 
@@ -1128,7 +1207,11 @@ test_that("StoppingMaxGainCIRatio replaces empty label with correct default labe
 test_that(".DefaultStoppingMaxGainCIRatio works as expected", {
   expect_equal(
     .DefaultStoppingMaxGainCIRatio(),
-    StoppingMaxGainCIRatio(target_ratio = 5, prob_target = 0.3, report_label = NA_character_)
+    StoppingMaxGainCIRatio(
+      target_ratio = 5,
+      prob_target = 0.3,
+      report_label = NA_character_
+    )
   )
 })
 

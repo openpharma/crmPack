@@ -60,7 +60,9 @@ h_covr_detrace <- function(expr) {
     }
 
     x <- h_covr_detrace_call(x)
-    if (is.call(x)) x[-1] <- lapply(x[-1], h_covr_detrace)
+    if (is.call(x)) {
+      x[-1] <- lapply(x[-1], h_covr_detrace)
+    }
     x
   }
 

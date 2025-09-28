@@ -74,7 +74,8 @@ design <- TDDesign(
   stopping = myStopping,
   increments = myIncrements,
   cohort_size = mySize,
-  data = data, startingDose = 25
+  data = data,
+  startingDose = 25
 )
 
 ## Specify the truth of the DLE responses
@@ -83,7 +84,8 @@ myTruth <- probFunction(model, phi1 = -53.66584, phi2 = 10.50499)
 ## Then specified the simulations and generate the trial
 ## For illustration purpose only 1 simulation is produced (nsim=1).
 ## The simulations
-mySim <- simulate(design,
+mySim <- simulate(
+  design,
   args = NULL,
   truth = myTruth,
   nsim = 1,
@@ -94,7 +96,6 @@ mySim <- simulate(design,
 
 ## plot the simulations
 print(plot(mySim))
-
 
 
 ## If DLE samples are involved
@@ -113,7 +114,8 @@ design <- TDsamplesDesign(
   stopping = myStopping,
   increments = myIncrements,
   cohort_size = mySize,
-  data = data, startingDose = 25
+  data = data,
+  startingDose = 25
 )
 ## options for MCMC
 ## The simulations

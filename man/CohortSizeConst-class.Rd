@@ -30,7 +30,6 @@ CohortSizeConst(size)
 Typically, end users will not use the \code{.DefaultCohortSizeConst()} function.
 }
 \examples{
-
 # Cohort of size 3, constant along the study.
 my_size <- CohortSizeConst(size = 3)
 }

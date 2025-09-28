@@ -15,12 +15,19 @@ my_model <- LogisticLogNormal(
 
 # Set-up some MCMC parameters and generate samples from the posterior.
 my_options <- McmcOptions(
-  burnin = 100, step = 2, samples = 2000, rng_kind = "Mersenne-Twister", rng_seed = 94
+  burnin = 100,
+  step = 2,
+  samples = 2000,
+  rng_kind = "Mersenne-Twister",
+  rng_seed = 94
 )
 my_samples <- mcmc(my_data, my_model, my_options)
 
 # Define the rule for dose increments and calculate the maximum dose allowed.
-my_increments <- IncrementsRelative(intervals = c(0, 20), increments = c(1, 0.33))
+my_increments <- IncrementsRelative(
+  intervals = c(0, 20),
+  increments = c(1, 0.33)
+)
 next_max_dose <- maxDose(my_increments, data = my_data)
 
 # Define the rule which will be used to select the next best dose

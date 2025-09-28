@@ -41,7 +41,6 @@ CV is less than or equal to \code{tresh_cv}.}
 Typically, end users will not use the \code{.DefaultStoppingMTDCV()} function.
 }
 \examples{
-
 # Stopping the study if the MTD estimation is precise enough, i.e. if robust
 # coefficient of variation of the MTD is below 40\%.
 my_stopping <- StoppingMTDCV(target = 0.3, thresh_cv = 40)

@@ -57,10 +57,7 @@ NULL
 #' @export
 #' @example examples/Design-class-RuleDesign.R
 #'
-RuleDesign <- function(nextBest,
-                       cohort_size,
-                       data,
-                       startingDose) {
+RuleDesign <- function(nextBest, cohort_size, data, startingDose) {
   new(
     "RuleDesign",
     nextBest = nextBest,
@@ -157,11 +154,13 @@ ThreePlusThreeDesign <- function(doseGrid) {
 #' @example examples/Design-class-Design.R
 #'
 #'
-Design <- function(model,
-                   stopping,
-                   increments,
-                   pl_cohort_size = CohortSizeConst(0L),
-                   ...) {
+Design <- function(
+  model,
+  stopping,
+  increments,
+  pl_cohort_size = CohortSizeConst(0L),
+  ...
+) {
   start <- RuleDesign(...)
   new(
     "Design",
@@ -267,9 +266,7 @@ Design <- function(model,
 #' @export
 #' @example examples/Design-class-DualDesign.R
 #'
-DualDesign <- function(model,
-                       data,
-                       ...) {
+DualDesign <- function(model, data, ...) {
   start <- Design(model = model, data = data, ...)
   new(
     "DualDesign",
@@ -389,11 +386,13 @@ DualDesign <- function(model,
 #' @export
 #' @example examples/Design-class-TDsamplesDesign.R
 #'
-TDsamplesDesign <- function(model,
-                            stopping,
-                            increments,
-                            pl_cohort_size = CohortSizeConst(0L),
-                            ...) {
+TDsamplesDesign <- function(
+  model,
+  stopping,
+  increments,
+  pl_cohort_size = CohortSizeConst(0L),
+  ...
+) {
   start <- RuleDesign(...)
   new(
     "TDsamplesDesign",
@@ -491,11 +490,13 @@ TDsamplesDesign <- function(model,
 #' @export
 #' @example examples/Design-class-TDDesign.R
 #'
-TDDesign <- function(model,
-                     stopping,
-                     increments,
-                     pl_cohort_size = CohortSizeConst(0L),
-                     ...) {
+TDDesign <- function(
+  model,
+  stopping,
+  increments,
+  pl_cohort_size = CohortSizeConst(0L),
+  ...
+) {
   start <- RuleDesign(...)
   new(
     "TDDesign",
@@ -585,9 +586,7 @@ TDDesign <- function(model,
 #' @example examples/Design-class-DualResponsesSamplesDesign.R
 #' @export
 #'
-DualResponsesSamplesDesign <- function(eff_model,
-                                       data,
-                                       ...) {
+DualResponsesSamplesDesign <- function(eff_model, data, ...) {
   start <- TDsamplesDesign(data = data, ...)
   .DualResponsesSamplesDesign(
     start,
@@ -693,9 +692,7 @@ DualResponsesSamplesDesign <- function(eff_model,
 #' @example examples/Design-class-DualResponsesDesign.R
 #' @export
 #'
-DualResponsesDesign <- function(eff_model,
-                                data,
-                                ...) {
+DualResponsesDesign <- function(eff_model, data, ...) {
   start <- TDDesign(data = data, ...)
   .DualResponsesDesign(
     start,
@@ -805,17 +802,13 @@ DualResponsesDesign <- function(eff_model,
 #' @example examples/Design-class-DADesign.R
 #' @export
 #'
-DADesign <- function(model, data,
-                     safetyWindow,
-                     ...) {
+DADesign <- function(model, data, safetyWindow, ...) {
   start <- Design(
     data = data,
     model = model,
     ...
   )
-  .DADesign(start,
-    safetyWindow = safetyWindow
-  )
+  .DADesign(start, safetyWindow = safetyWindow)
 }
 
 ## default constructor ----
@@ -841,7 +834,11 @@ DADesign <- function(model, data,
     cov = matrix(c(1, -0.5, -0.5, 1), nrow = 2),
     ref_dose = 56,
     npiece = npiece_,
-    l = as.numeric(t(apply(as.matrix(c(1:npiece_), 1, npiece_), 2, lambda_prior))),
+    l = as.numeric(t(apply(
+      as.matrix(c(1:npiece_), 1, npiece_),
+      2,
+      lambda_prior
+    ))),
     c_par = 2
   )
 
@@ -961,14 +958,16 @@ DADesign <- function(model, data,
 #' @export
 #' @example examples/Design-class-DesignGrouped.R
 #'
-DesignGrouped <- function(model,
-                          mono,
-                          combo = mono,
-                          first_cohort_mono_only = TRUE,
-                          same_dose_for_all = !same_dose_for_start,
-                          same_dose_for_start = FALSE,
-                          stop_mono_with_combo = FALSE,
-                          ...) {
+DesignGrouped <- function(
+  model,
+  mono,
+  combo = mono,
+  first_cohort_mono_only = TRUE,
+  same_dose_for_all = !same_dose_for_start,
+  same_dose_for_start = FALSE,
+  stop_mono_with_combo = FALSE,
+  ...
+) {
   assert_flag(stop_mono_with_combo)
   assert_class(mono, "Design")
   force(combo)
@@ -1046,10 +1045,11 @@ DesignGrouped <- function(model,
 #' @example examples/Design-class-RuleDesignOrdinal.R
 #'
 RuleDesignOrdinal <- function(
-    next_best,
-    cohort_size,
-    data,
-    starting_dose) {
+  next_best,
+  cohort_size,
+  data,
+  starting_dose
+) {
   new(
     "RuleDesignOrdinal",
     next_best = next_best,
@@ -1130,11 +1130,12 @@ RuleDesignOrdinal <- function(
 #'
 #'
 DesignOrdinal <- function(
-    model,
-    stopping,
-    increments,
-    pl_cohort_size = CohortSizeOrdinal(1L, CohortSizeConst(0L)),
-    ...) {
+  model,
+  stopping,
+  increments,
+  pl_cohort_size = CohortSizeOrdinal(1L, CohortSizeConst(0L)),
+  ...
+) {
   start <- RuleDesignOrdinal(...)
   new(
     "DesignOrdinal",
@@ -1168,7 +1169,10 @@ DesignOrdinal <- function(
     prob = 0.5
   )
   my_stopping3 <- StoppingMinPatients(nPatients = 20)
-  my_stopping <- StoppingOrdinal(1L, (my_stopping1 & my_stopping2) | my_stopping3)
+  my_stopping <- StoppingOrdinal(
+    1L,
+    (my_stopping1 & my_stopping2) | my_stopping3
+  )
 
   # Initialize the design.
   design <- DesignOrdinal(

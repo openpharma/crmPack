@@ -70,7 +70,9 @@ my_next_best <- NextBestNCRM(
   max_overdose_prob = 0.3
 )
 my_cohort_size <- CohortSizeConst(3)
-empty_data <- Data(doseGrid = c(0.1, 0.5, 1.5, 3, 6, seq(from = 10, to = 80, by = 2)))
+empty_data <- Data(
+  doseGrid = c(0.1, 0.5, 1.5, 3, 6, seq(from = 10, to = 80, by = 2))
+)
 my_model <- LogisticLogNormalGrouped(
   mean = c(-4, -4, -4, -4),
   cov = diag(rep(6, 4)),

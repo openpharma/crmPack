@@ -28,7 +28,8 @@ saveRDS(
 
 design <- .DefaultDADesign()
 myTruth <- probFunction(design@model, alpha0 = 2, alpha1 = 3)
-exp_cond.cdf <- function(x, onset = 15) { # nolint
+exp_cond.cdf <- function(x, onset = 15) {
+  # nolint
   a <- stats::pexp(28, 1 / onset, lower.tail = FALSE)
   1 - (stats::pexp(x, 1 / onset, lower.tail = FALSE) - a) / (1 - a)
 }
@@ -104,13 +105,22 @@ my_design <- DualDesign(
 )
 
 beta_mod <- function(dose, e0, eMax, delta1, delta2, scal) {
-  maxDens <- (delta1^delta1) * (delta2^delta2) / ((delta1 + delta2)^(delta1 + delta2))
+  maxDens <- (delta1^delta1) *
+    (delta2^delta2) /
+    ((delta1 + delta2)^(delta1 + delta2))
   dose <- dose / scal
   e0 + eMax / maxDens * (dose^delta1) * (1 - dose)^delta2
 }
 
 true_biomarker <- function(dose) {
-  beta_mod(dose, e0 = 0.2, eMax = 0.6, delta1 = 5, delta2 = 5 * 0.5 / 0.5, scal = 100)
+  beta_mod(
+    dose,
+    e0 = 0.2,
+    eMax = 0.6,
+    delta1 = 5,
+    delta2 = 5 * 0.5 / 0.5,
+    scal = 100
+  )
 }
 
 true_tox <- function(dose) {

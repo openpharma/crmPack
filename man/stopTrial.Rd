@@ -329,19 +329,13 @@ incorporate DLE and efficacy responses without DLE and efficacy samples involved
 
 }}
 \examples{
-
 ## Example of combining stopping rules with '&' and/or '|' operators
 
-myStopping1 <- StoppingMinCohorts(nCohorts=3)
-myStopping2 <- StoppingTargetProb(target=c(0.2, 0.35),
-                                  prob=0.5)
-myStopping3 <- StoppingMinPatients(nPatients=20)
+myStopping1 <- StoppingMinCohorts(nCohorts = 3)
+myStopping2 <- StoppingTargetProb(target = c(0.2, 0.35), prob = 0.5)
+myStopping3 <- StoppingMinPatients(nPatients = 20)
 
 myStopping <- (myStopping1 & myStopping2) | myStopping3
-
-
-
-
 # Example of usage for `StoppingMissingDose` StopTrial class.
 
 # Create the data.
@@ -351,7 +345,12 @@ my_data <- Data(
   cohort = c(1, 1, 2, 3, 4, 5, 5, 5),
   ID = 1:8,
   doseGrid = c(
-    0.01, 0.1, 0.5, 1.5, 3, 6,
+    0.01,
+    0.1,
+    0.5,
+    1.5,
+    3,
+    6,
     seq(from = 10, to = 80, by = 2)
   ),
   placebo = TRUE
@@ -360,10 +359,7 @@ my_data <- Data(
 # Initialize the CRM model used to model the data.
 my_model <- LogisticLogNormal(
   mean = c(-0.85, 1),
-  cov =
-    matrix(c(1, -0.5, -0.5, 1),
-      nrow = 2
-    ),
+  cov = matrix(c(1, -0.5, -0.5, 1), nrow = 2),
   ref_dose = 56
 )
 
@@ -382,9 +378,7 @@ my_increments <- IncrementsRelative(
   increments = c(1, 0.33)
 )
 
-next_max_dose <- maxDose(my_increments,
-  data = my_data
-)
+next_max_dose <- maxDose(my_increments, data = my_data)
 
 # Define the rule which will be used to select the next best dose based
 # on the class 'NextBestNCRM'.
@@ -398,7 +392,9 @@ my_next_best <- NextBestNCRM(
 dose_recommendation <- nextBest(
   my_next_best,
   doselimit = next_max_dose,
-  samples = my_samples, model = my_model, data = my_data
+  samples = my_samples,
+  model = my_model,
+  data = my_data
 )
 
 # Define the stopping rule such that the study would be stopped if there is
@@ -421,487 +417,537 @@ stopTrial(
 # nolint start
 
 # Create some data
-data <- Data(x=c(0.1, 0.5, 1.5, 3, 6, 10, 10, 10),
-             y=c(0, 0, 0, 0, 0, 0, 1, 0),
-             cohort=c(0, 1, 2, 3, 4, 5, 5, 5),
-             doseGrid=
-               c(0.1, 0.5, 1.5, 3, 6,
-                 seq(from=10, to=80, by=2)))
+data <- Data(
+  x = c(0.1, 0.5, 1.5, 3, 6, 10, 10, 10),
+  y = c(0, 0, 0, 0, 0, 0, 1, 0),
+  cohort = c(0, 1, 2, 3, 4, 5, 5, 5),
+  doseGrid = c(0.1, 0.5, 1.5, 3, 6, seq(from = 10, to = 80, by = 2))
+)
 
 # Initialize the CRM model used to model the data
-model <- LogisticLogNormal(mean=c(-0.85, 1),
-                           cov=
-                             matrix(c(1, -0.5, -0.5, 1),
-                                    nrow=2),
-                           ref_dose=56)
+model <- LogisticLogNormal(
+  mean = c(-0.85, 1),
+  cov = matrix(c(1, -0.5, -0.5, 1), nrow = 2),
+  ref_dose = 56
+)
 
 # Set-up some MCMC parameters and generate samples from the posterior
-options <- McmcOptions(burnin=100,
-                       step=2,
-                       samples=2000)
+options <- McmcOptions(burnin = 100, step = 2, samples = 2000)
 set.seed(94)
 samples <- mcmc(data, model, options)
 
 # Define the rule for dose increments and calculate the maximum dose allowed
-myIncrements <- IncrementsRelative(intervals=c(0, 20),
-                                   increments=c(1, 0.33))
-nextMaxDose <- maxDose(myIncrements,
-                       data=data)
+myIncrements <- IncrementsRelative(
+  intervals = c(0, 20),
+  increments = c(1, 0.33)
+)
+nextMaxDose <- maxDose(myIncrements, data = data)
 
 # Define the rule which will be used to select the next best dose
 # based on the class 'NextBestNCRM'
-myNextBest <- NextBestNCRM(target=c(0.2, 0.35),
-                           overdose=c(0.35, 1),
-                           max_overdose_prob=0.25)
+myNextBest <- NextBestNCRM(
+  target = c(0.2, 0.35),
+  overdose = c(0.35, 1),
+  max_overdose_prob = 0.25
+)
 
 # Calculate the next best dose
-doseRecommendation <- nextBest(myNextBest,
-                               doselimit=nextMaxDose,
-                               samples=samples, model=model, data=data)
+doseRecommendation <- nextBest(
+  myNextBest,
+  doselimit = nextMaxDose,
+  samples = samples,
+  model = model,
+  data = data
+)
 
 # Define the stopping rules
-myStopping1 <- StoppingMinCohorts(nCohorts=3)
-myStopping2 <- StoppingTargetProb(target=c(0.2, 0.35),
-                                  prob=0.5)
-myStopping3 <- StoppingMinPatients(nPatients=20)
+myStopping1 <- StoppingMinCohorts(nCohorts = 3)
+myStopping2 <- StoppingTargetProb(target = c(0.2, 0.35), prob = 0.5)
+myStopping3 <- StoppingMinPatients(nPatients = 20)
 
 # Create a list of stopping rules (of class 'StoppingList') which will then be
 # summarized (in this specific example) with the 'any' function, meaning that the study
 # would be stopped if 'any' of the single stopping rules is TRUE.
-mystopping <- StoppingList(stop_list=c(myStopping1,myStopping2,myStopping3),
-                           summary=any)
+mystopping <- StoppingList(
+  stop_list = c(myStopping1, myStopping2, myStopping3),
+  summary = any
+)
 
 # Evaluate if to stop the Trial
-stopTrial(stopping=myStopping, dose=doseRecommendation$value,
-          samples=samples, model=model, data=data)
+stopTrial(
+  stopping = myStopping,
+  dose = doseRecommendation$value,
+  samples = samples,
+  model = model,
+  data = data
+)
 
 # nolint end
 # nolint start
 
 # Create some data
-data <- Data(x=c(0.1, 0.5, 1.5, 3, 6, 10, 10, 10),
-             y=c(0, 0, 0, 0, 0, 0, 1, 0),
-             cohort=c(0, 1, 2, 3, 4, 5, 5, 5),
-             doseGrid=
-               c(0.1, 0.5, 1.5, 3, 6,
-                 seq(from=10, to=80, by=2)))
+data <- Data(
+  x = c(0.1, 0.5, 1.5, 3, 6, 10, 10, 10),
+  y = c(0, 0, 0, 0, 0, 0, 1, 0),
+  cohort = c(0, 1, 2, 3, 4, 5, 5, 5),
+  doseGrid = c(0.1, 0.5, 1.5, 3, 6, seq(from = 10, to = 80, by = 2))
+)
 
 # Initialize the CRM model used to model the data
-model <- LogisticLogNormal(mean=c(-0.85, 1),
-                           cov=
-                             matrix(c(1, -0.5, -0.5, 1),
-                                    nrow=2),
-                           ref_dose=56)
+model <- LogisticLogNormal(
+  mean = c(-0.85, 1),
+  cov = matrix(c(1, -0.5, -0.5, 1), nrow = 2),
+  ref_dose = 56
+)
 
 # Set-up some MCMC parameters and generate samples from the posterior
-options <- McmcOptions(burnin=100,
-                       step=2,
-                       samples=2000)
+options <- McmcOptions(burnin = 100, step = 2, samples = 2000)
 set.seed(94)
 samples <- mcmc(data, model, options)
 
 # Define the rule for dose increments and calculate the maximum dose allowed
-myIncrements <- IncrementsRelative(intervals=c(0, 20),
-                                   increments=c(1, 0.33))
-nextMaxDose <- maxDose(myIncrements,
-                       data=data)
+myIncrements <- IncrementsRelative(
+  intervals = c(0, 20),
+  increments = c(1, 0.33)
+)
+nextMaxDose <- maxDose(myIncrements, data = data)
 
 # Define the rule which will be used to select the next best dose
 # based on the class 'NextBestNCRM'
-myNextBest <- NextBestNCRM(target=c(0.2, 0.35),
-                           overdose=c(0.35, 1),
-                           max_overdose_prob=0.25)
+myNextBest <- NextBestNCRM(
+  target = c(0.2, 0.35),
+  overdose = c(0.35, 1),
+  max_overdose_prob = 0.25
+)
 
 # Calculate the next best dose
-doseRecommendation <- nextBest(myNextBest,
-                               doselimit=nextMaxDose,
-                               samples=samples, model=model, data=data)
+doseRecommendation <- nextBest(
+  myNextBest,
+  doselimit = nextMaxDose,
+  samples = samples,
+  model = model,
+  data = data
+)
 
 # Define the stopping rules
-myStopping1 <- StoppingMinCohorts(nCohorts=3)
-myStopping2 <- StoppingTargetProb(target=c(0.2, 0.35),
-                                  prob=0.5)
-myStopping3 <- StoppingMinPatients(nPatients=20)
+myStopping1 <- StoppingMinCohorts(nCohorts = 3)
+myStopping2 <- StoppingTargetProb(target = c(0.2, 0.35), prob = 0.5)
+myStopping3 <- StoppingMinPatients(nPatients = 20)
 
 # Combine the stopping rules, obtaining (in this specific example) a list of stopping
 # rules of class 'StoppingAll'
 myStopping <- (myStopping1 | myStopping2) & myStopping3
 
 # Evaluate if to stop the Trial
-stopTrial(stopping=myStopping, dose=doseRecommendation$value,
-          samples=samples, model=model, data=data)
+stopTrial(
+  stopping = myStopping,
+  dose = doseRecommendation$value,
+  samples = samples,
+  model = model,
+  data = data
+)
 
 # nolint end
 # nolint start
 
 # Create some data
-data <- Data(x=c(0.1, 0.5, 1.5, 3, 6, 10, 10, 10),
-             y=c(0, 0, 0, 0, 0, 0, 1, 0),
-             cohort=c(0, 1, 2, 3, 4, 5, 5, 5),
-             doseGrid=
-               c(0.1, 0.5, 1.5, 3, 6,
-                 seq(from=10, to=80, by=2)))
+data <- Data(
+  x = c(0.1, 0.5, 1.5, 3, 6, 10, 10, 10),
+  y = c(0, 0, 0, 0, 0, 0, 1, 0),
+  cohort = c(0, 1, 2, 3, 4, 5, 5, 5),
+  doseGrid = c(0.1, 0.5, 1.5, 3, 6, seq(from = 10, to = 80, by = 2))
+)
 
 # Initialize the CRM model used to model the data
-model <- LogisticLogNormal(mean=c(-0.85, 1),
-                           cov=
-                             matrix(c(1, -0.5, -0.5, 1),
-                                    nrow=2),
-                           ref_dose=56)
+model <- LogisticLogNormal(
+  mean = c(-0.85, 1),
+  cov = matrix(c(1, -0.5, -0.5, 1), nrow = 2),
+  ref_dose = 56
+)
 
 # Set-up some MCMC parameters and generate samples from the posterior
-options <- McmcOptions(burnin=100,
-                       step=2,
-                       samples=2000)
+options <- McmcOptions(burnin = 100, step = 2, samples = 2000)
 set.seed(94)
 samples <- mcmc(data, model, options)
 
 # Define the rule for dose increments and calculate the maximum dose allowed
-myIncrements <- IncrementsRelative(intervals=c(0, 20),
-                                   increments=c(1, 0.33))
-nextMaxDose <- maxDose(myIncrements,
-                       data=data)
+myIncrements <- IncrementsRelative(
+  intervals = c(0, 20),
+  increments = c(1, 0.33)
+)
+nextMaxDose <- maxDose(myIncrements, data = data)
 
 # Define the rule which will be used to select the next best dose
 # based on the class 'NextBestNCRM'
-myNextBest <- NextBestNCRM(target=c(0.2, 0.35),
-                           overdose=c(0.35, 1),
-                           max_overdose_prob=0.25)
+myNextBest <- NextBestNCRM(
+  target = c(0.2, 0.35),
+  overdose = c(0.35, 1),
+  max_overdose_prob = 0.25
+)
 
 # Calculate the next best dose
-doseRecommendation <- nextBest(myNextBest,
-                               doselimit=nextMaxDose,
-                               samples=samples, model=model, data=data)
+doseRecommendation <- nextBest(
+  myNextBest,
+  doselimit = nextMaxDose,
+  samples = samples,
+  model = model,
+  data = data
+)
 
 # Define the stopping rules
-myStopping1 <- StoppingMinCohorts(nCohorts=3)
-myStopping2 <- StoppingTargetProb(target=c(0.2, 0.35),
-                                  prob=0.5)
-myStopping3 <- StoppingMinPatients(nPatients=20)
+myStopping1 <- StoppingMinCohorts(nCohorts = 3)
+myStopping2 <- StoppingTargetProb(target = c(0.2, 0.35), prob = 0.5)
+myStopping3 <- StoppingMinPatients(nPatients = 20)
 
 # Combine the stopping rules, obtaining (in this specific example) a list of stopping
 # rules of class 'StoppingAny'
 myStopping <- (myStopping1 | myStopping2) | myStopping3
 
 # Evaluate if to stop the Trial
-stopTrial(stopping=myStopping, dose=doseRecommendation$value,
-          samples=samples, model=model, data=data)
+stopTrial(
+  stopping = myStopping,
+  dose = doseRecommendation$value,
+  samples = samples,
+  model = model,
+  data = data
+)
 
 # nolint end
 # nolint start
 
 # Create the data
-data <- Data(x=c(0.1, 0.5, 1.5, 3, 6, 10, 10, 10),
-             y=c(0, 0, 0, 0, 0, 0, 1, 0),
-             cohort=c(0, 1, 2, 3, 4, 5, 5, 5),
-             doseGrid=
-               c(0.1, 0.5, 1.5, 3, 6,
-                 seq(from=10, to=80, by=2)))
+data <- Data(
+  x = c(0.1, 0.5, 1.5, 3, 6, 10, 10, 10),
+  y = c(0, 0, 0, 0, 0, 0, 1, 0),
+  cohort = c(0, 1, 2, 3, 4, 5, 5, 5),
+  doseGrid = c(0.1, 0.5, 1.5, 3, 6, seq(from = 10, to = 80, by = 2))
+)
 
 # Initialize the CRM model used to model the data
-model <- LogisticLogNormal(mean=c(-0.85, 1),
-                           cov=
-                             matrix(c(1, -0.5, -0.5, 1),
-                                    nrow=2),
-                           ref_dose=56)
+model <- LogisticLogNormal(
+  mean = c(-0.85, 1),
+  cov = matrix(c(1, -0.5, -0.5, 1), nrow = 2),
+  ref_dose = 56
+)
 
 # Set-up some MCMC parameters and generate samples from the posterior
-options <- McmcOptions(burnin=100,
-                       step=2,
-                       samples=2000)
+options <- McmcOptions(burnin = 100, step = 2, samples = 2000)
 set.seed(94)
 samples <- mcmc(data, model, options)
 
 # Define the rule for dose increments and calculate the maximum dose allowed
-myIncrements <- IncrementsRelative(intervals=c(0, 20),
-                                   increments=c(1, 0.33))
-nextMaxDose <- maxDose(myIncrements,
-                       data=data)
+myIncrements <- IncrementsRelative(
+  intervals = c(0, 20),
+  increments = c(1, 0.33)
+)
+nextMaxDose <- maxDose(myIncrements, data = data)
 
 # Define the rule which will be used to select the next best dose
 # based on the class 'NextBestNCRM'
-myNextBest <- NextBestNCRM(target=c(0.2, 0.35),
-                           overdose=c(0.35, 1),
-                           max_overdose_prob=0.25)
+myNextBest <- NextBestNCRM(
+  target = c(0.2, 0.35),
+  overdose = c(0.35, 1),
+  max_overdose_prob = 0.25
+)
 
 # Calculate the next best dose
-doseRecommendation <- nextBest(myNextBest,
-                               doselimit=nextMaxDose,
-                               samples=samples, model=model, data=data)
+doseRecommendation <- nextBest(
+  myNextBest,
+  doselimit = nextMaxDose,
+  samples = samples,
+  model = model,
+  data = data
+)
 
 # Define the stopping rule such that the study would be stopped if at least 3
 # cohorts were already dosed within 1 +/- 0.2 of the next best dose
-myStopping <- StoppingCohortsNearDose(nCohorts = 3,
-                                      percentage = 0.2)
+myStopping <- StoppingCohortsNearDose(nCohorts = 3, percentage = 0.2)
 
 # Evaluate if to stop the trial
-stopTrial(stopping=myStopping,
-          dose=doseRecommendation$value,
-          data=data)
+stopTrial(stopping = myStopping, dose = doseRecommendation$value, data = data)
 
 # nolint end
 # nolint start
 
 # Create the data
-data <- Data(x=c(0.1, 0.5, 1.5, 3, 6, 10, 10, 10),
-             y=c(0, 0, 0, 0, 0, 0, 1, 0),
-             cohort=c(0, 1, 2, 3, 4, 5, 5, 5),
-             doseGrid=
-               c(0.1, 0.5, 1.5, 3, 6,
-                 seq(from=10, to=80, by=2)))
+data <- Data(
+  x = c(0.1, 0.5, 1.5, 3, 6, 10, 10, 10),
+  y = c(0, 0, 0, 0, 0, 0, 1, 0),
+  cohort = c(0, 1, 2, 3, 4, 5, 5, 5),
+  doseGrid = c(0.1, 0.5, 1.5, 3, 6, seq(from = 10, to = 80, by = 2))
+)
 
 # Initialize the CRM model used to model the data
-model <- LogisticLogNormal(mean=c(-0.85, 1),
-                           cov=
-                             matrix(c(1, -0.5, -0.5, 1),
-                                    nrow=2),
-                           ref_dose=56)
+model <- LogisticLogNormal(
+  mean = c(-0.85, 1),
+  cov = matrix(c(1, -0.5, -0.5, 1), nrow = 2),
+  ref_dose = 56
+)
 
 # Set-up some MCMC parameters and generate samples from the posterior
-options <- McmcOptions(burnin=100,
-                       step=2,
-                       samples=2000)
+options <- McmcOptions(burnin = 100, step = 2, samples = 2000)
 set.seed(94)
 samples <- mcmc(data, model, options)
 
 # Define the rule for dose increments and calculate the maximum dose allowed
-myIncrements <- IncrementsRelative(intervals=c(0, 20),
-                                   increments=c(1, 0.33))
-nextMaxDose <- maxDose(myIncrements,
-                       data=data)
+myIncrements <- IncrementsRelative(
+  intervals = c(0, 20),
+  increments = c(1, 0.33)
+)
+nextMaxDose <- maxDose(myIncrements, data = data)
 
 # Define the rule which will be used to select the next best dose
 # based on the class 'NextBestNCRM'
-myNextBest <- NextBestNCRM(target=c(0.2, 0.35),
-                           overdose=c(0.35, 1),
-                           max_overdose_prob=0.25)
+myNextBest <- NextBestNCRM(
+  target = c(0.2, 0.35),
+  overdose = c(0.35, 1),
+  max_overdose_prob = 0.25
+)
 
 # Calculate the next best dose
-doseRecommendation <- nextBest(myNextBest,
-                               doselimit=nextMaxDose,
-                               samples=samples, model=model, data=data)
+doseRecommendation <- nextBest(
+  myNextBest,
+  doselimit = nextMaxDose,
+  samples = samples,
+  model = model,
+  data = data
+)
 
 # Define the stopping rule such that the study would be stopped if at least 9
 # patients were already dosed within 1 +/- 0.2 of the next best dose
-myStopping <- StoppingPatientsNearDose(nPatients = 9,
-                                       percentage = 0.2)
+myStopping <- StoppingPatientsNearDose(nPatients = 9, percentage = 0.2)
 
 # Evaluate if to stop the trial
-stopTrial(stopping=myStopping,
-          dose=doseRecommendation$value,
-          data=data)
+stopTrial(stopping = myStopping, dose = doseRecommendation$value, data = data)
 
 # nolint end
 # nolint start
 
 # Create the data
-data <- Data(x=c(0.1, 0.5, 1.5, 3, 6, 10, 10, 10),
-             y=c(0, 0, 0, 0, 0, 0, 1, 0),
-             cohort=c(0, 1, 2, 3, 4, 5, 5, 5),
-             doseGrid=
-               c(0.1, 0.5, 1.5, 3, 6,
-                 seq(from=10, to=80, by=2)))
+data <- Data(
+  x = c(0.1, 0.5, 1.5, 3, 6, 10, 10, 10),
+  y = c(0, 0, 0, 0, 0, 0, 1, 0),
+  cohort = c(0, 1, 2, 3, 4, 5, 5, 5),
+  doseGrid = c(0.1, 0.5, 1.5, 3, 6, seq(from = 10, to = 80, by = 2))
+)
 
 # Initialize the CRM model used to model the data
-model <- LogisticLogNormal(mean=c(-0.85, 1),
-                           cov=
-                             matrix(c(1, -0.5, -0.5, 1),
-                                    nrow=2),
-                           ref_dose=56)
+model <- LogisticLogNormal(
+  mean = c(-0.85, 1),
+  cov = matrix(c(1, -0.5, -0.5, 1), nrow = 2),
+  ref_dose = 56
+)
 
 # Set-up some MCMC parameters and generate samples from the posterior
-options <- McmcOptions(burnin=100,
-                       step=2,
-                       samples=2000)
+options <- McmcOptions(burnin = 100, step = 2, samples = 2000)
 set.seed(94)
 samples <- mcmc(data, model, options)
 
 # Define the rule for dose increments and calculate the maximum dose allowed
-myIncrements <- IncrementsRelative(intervals=c(0, 20),
-                                   increments=c(1, 0.33))
-nextMaxDose <- maxDose(myIncrements,
-                       data=data)
+myIncrements <- IncrementsRelative(
+  intervals = c(0, 20),
+  increments = c(1, 0.33)
+)
+nextMaxDose <- maxDose(myIncrements, data = data)
 
 # Define the rule which will be used to select the next best dose
 # based on the class 'NextBestNCRM'
-myNextBest <- NextBestNCRM(target=c(0.2, 0.35),
-                           overdose=c(0.35, 1),
-                           max_overdose_prob=0.25)
+myNextBest <- NextBestNCRM(
+  target = c(0.2, 0.35),
+  overdose = c(0.35, 1),
+  max_overdose_prob = 0.25
+)
 
 # Calculate the next best dose
-doseRecommendation <- nextBest(myNextBest,
-                               doselimit=nextMaxDose,
-                               samples=samples, model=model, data=data)
+doseRecommendation <- nextBest(
+  myNextBest,
+  doselimit = nextMaxDose,
+  samples = samples,
+  model = model,
+  data = data
+)
 
 # Define the stopping rule such that the study would be stopped if at least 6
 # cohorts were already dosed
 myStopping <- StoppingMinCohorts(nCohorts = 6)
 
 # Evaluate if to stop the trial
-stopTrial(stopping=myStopping,
-          dose=doseRecommendation$value,
-          data=data)
+stopTrial(stopping = myStopping, dose = doseRecommendation$value, data = data)
 
 # nolint end
 # nolint start
 
 # Create the data
-data <- Data(x=c(0.1, 0.5, 1.5, 3, 6, 10, 10, 10),
-             y=c(0, 0, 0, 0, 0, 0, 1, 0),
-             cohort=c(0, 1, 2, 3, 4, 5, 5, 5),
-             doseGrid=
-               c(0.1, 0.5, 1.5, 3, 6,
-                 seq(from=10, to=80, by=2)))
+data <- Data(
+  x = c(0.1, 0.5, 1.5, 3, 6, 10, 10, 10),
+  y = c(0, 0, 0, 0, 0, 0, 1, 0),
+  cohort = c(0, 1, 2, 3, 4, 5, 5, 5),
+  doseGrid = c(0.1, 0.5, 1.5, 3, 6, seq(from = 10, to = 80, by = 2))
+)
 
 # Initialize the CRM model used to model the data
-model <- LogisticLogNormal(mean=c(-0.85, 1),
-                           cov=
-                             matrix(c(1, -0.5, -0.5, 1),
-                                    nrow=2),
-                           ref_dose=56)
+model <- LogisticLogNormal(
+  mean = c(-0.85, 1),
+  cov = matrix(c(1, -0.5, -0.5, 1), nrow = 2),
+  ref_dose = 56
+)
 
 # Set-up some MCMC parameters and generate samples from the posterior
-options <- McmcOptions(burnin=100,
-                       step=2,
-                       samples=2000)
+options <- McmcOptions(burnin = 100, step = 2, samples = 2000)
 set.seed(94)
 samples <- mcmc(data, model, options)
 
 # Define the rule for dose increments and calculate the maximum dose allowed
-myIncrements <- IncrementsRelative(intervals=c(0, 20),
-                                   increments=c(1, 0.33))
-nextMaxDose <- maxDose(myIncrements,
-                       data=data)
+myIncrements <- IncrementsRelative(
+  intervals = c(0, 20),
+  increments = c(1, 0.33)
+)
+nextMaxDose <- maxDose(myIncrements, data = data)
 
 # Define the rule which will be used to select the next best dose
 # based on the class 'NextBestNCRM'
-myNextBest <- NextBestNCRM(target=c(0.2, 0.35),
-                           overdose=c(0.35, 1),
-                           max_overdose_prob=0.25)
+myNextBest <- NextBestNCRM(
+  target = c(0.2, 0.35),
+  overdose = c(0.35, 1),
+  max_overdose_prob = 0.25
+)
 
 # Calculate the next best dose
-doseRecommendation <- nextBest(myNextBest,
-                               doselimit=nextMaxDose,
-                               samples=samples, model=model, data=data)
+doseRecommendation <- nextBest(
+  myNextBest,
+  doselimit = nextMaxDose,
+  samples = samples,
+  model = model,
+  data = data
+)
 
 # Define the stopping rule such that the study would be stopped if at least 20
 # patients were already dosed
 myStopping <- StoppingMinPatients(nPatients = 20)
 
 # Evaluate if to stop the trial
-stopTrial(stopping=myStopping,
-          dose=doseRecommendation$value,
-          data=data)
+stopTrial(stopping = myStopping, dose = doseRecommendation$value, data = data)
 
 # nolint end
 # nolint start
 
 # Create the data
-data <- Data(x=c(0.1, 0.5, 1.5, 3, 6, 10, 10, 10),
-             y=c(0, 0, 0, 0, 0, 0, 1, 0),
-             cohort=c(0, 1, 2, 3, 4, 5, 5, 5),
-             doseGrid=
-               c(0.1, 0.5, 1.5, 3, 6,
-                 seq(from=10, to=80, by=2)))
+data <- Data(
+  x = c(0.1, 0.5, 1.5, 3, 6, 10, 10, 10),
+  y = c(0, 0, 0, 0, 0, 0, 1, 0),
+  cohort = c(0, 1, 2, 3, 4, 5, 5, 5),
+  doseGrid = c(0.1, 0.5, 1.5, 3, 6, seq(from = 10, to = 80, by = 2))
+)
 
 # Initialize the CRM model used to model the data
-model <- LogisticLogNormal(mean=c(-0.85, 1),
-                           cov=
-                             matrix(c(1, -0.5, -0.5, 1),
-                                    nrow=2),
-                           ref_dose=56)
+model <- LogisticLogNormal(
+  mean = c(-0.85, 1),
+  cov = matrix(c(1, -0.5, -0.5, 1), nrow = 2),
+  ref_dose = 56
+)
 
 # Set-up some MCMC parameters and generate samples from the posterior
-options <- McmcOptions(burnin=100,
-                       step=2,
-                       samples=2000)
+options <- McmcOptions(burnin = 100, step = 2, samples = 2000)
 set.seed(94)
 samples <- mcmc(data, model, options)
 
 # Define the rule for dose increments and calculate the maximum dose allowed
-myIncrements <- IncrementsRelative(intervals=c(0, 20),
-                                   increments=c(1, 0.33))
-nextMaxDose <- maxDose(myIncrements,
-                       data=data)
+myIncrements <- IncrementsRelative(
+  intervals = c(0, 20),
+  increments = c(1, 0.33)
+)
+nextMaxDose <- maxDose(myIncrements, data = data)
 
 # Define the rule which will be used to select the next best dose
 # based on the class 'NextBestNCRM'
-myNextBest <- NextBestNCRM(target=c(0.2, 0.35),
-                           overdose=c(0.35, 1),
-                           max_overdose_prob=0.25)
+myNextBest <- NextBestNCRM(
+  target = c(0.2, 0.35),
+  overdose = c(0.35, 1),
+  max_overdose_prob = 0.25
+)
 
 # Calculate the next best dose
-doseRecommendation <- nextBest(myNextBest,
-                               doselimit=nextMaxDose,
-                               samples=samples, model=model, data=data)
+doseRecommendation <- nextBest(
+  myNextBest,
+  doselimit = nextMaxDose,
+  samples = samples,
+  model = model,
+  data = data
+)
 
 # Define the stopping rule such that the study would be stopped if there is at least
 # 0.5 posterior probability that [0.2 =< Prob(DLT | next-best-dose) <= 0.35]
-myStopping <- StoppingTargetProb(target=c(0.2, 0.35),
-                                 prob=0.5)
+myStopping <- StoppingTargetProb(target = c(0.2, 0.35), prob = 0.5)
 
 # Evaluate if to stop the trial
-stopTrial(stopping=myStopping,
-          dose=doseRecommendation$value,
-          samples=samples,
-          model=model,
-          data=data)
+stopTrial(
+  stopping = myStopping,
+  dose = doseRecommendation$value,
+  samples = samples,
+  model = model,
+  data = data
+)
 
 # nolint end
 # nolint start
 
 # Create the data
-data <- Data(x=c(0.1, 0.5, 1.5, 3, 6, 10, 10, 10),
-             y=c(0, 0, 0, 0, 0, 0, 1, 0),
-             cohort=c(0, 1, 2, 3, 4, 5, 5, 5),
-             doseGrid=
-               c(0.1, 0.5, 1.5, 3, 6,
-                 seq(from=10, to=80, by=2)))
+data <- Data(
+  x = c(0.1, 0.5, 1.5, 3, 6, 10, 10, 10),
+  y = c(0, 0, 0, 0, 0, 0, 1, 0),
+  cohort = c(0, 1, 2, 3, 4, 5, 5, 5),
+  doseGrid = c(0.1, 0.5, 1.5, 3, 6, seq(from = 10, to = 80, by = 2))
+)
 
 # Initialize the CRM model used to model the data
-model <- LogisticLogNormal(mean=c(-0.85, 1),
-                           cov=
-                             matrix(c(1, -0.5, -0.5, 1),
-                                    nrow=2),
-                           ref_dose=56)
+model <- LogisticLogNormal(
+  mean = c(-0.85, 1),
+  cov = matrix(c(1, -0.5, -0.5, 1), nrow = 2),
+  ref_dose = 56
+)
 
 # Set-up some MCMC parameters and generate samples from the posterior
-options <- McmcOptions(burnin=100,
-                       step=2,
-                       samples=2000)
+options <- McmcOptions(burnin = 100, step = 2, samples = 2000)
 set.seed(94)
 samples <- mcmc(data, model, options)
 
 # Define the rule for dose increments and calculate the maximum dose allowed
-myIncrements <- IncrementsRelative(intervals=c(0, 20),
-                                   increments=c(1, 0.33))
-nextMaxDose <- maxDose(myIncrements,
-                       data=data)
+myIncrements <- IncrementsRelative(
+  intervals = c(0, 20),
+  increments = c(1, 0.33)
+)
+nextMaxDose <- maxDose(myIncrements, data = data)
 
 # Define the rule which will be used to select the next best dose
 # based on the class 'NextBestNCRM'
-myNextBest <- NextBestNCRM(target=c(0.2, 0.35),
-                           overdose=c(0.35, 1),
-                           max_overdose_prob=0.25)
+myNextBest <- NextBestNCRM(
+  target = c(0.2, 0.35),
+  overdose = c(0.35, 1),
+  max_overdose_prob = 0.25
+)
 
 # Calculate the next best dose
-doseRecommendation <- nextBest(myNextBest,
-                               doselimit=nextMaxDose,
-                               samples=samples, model=model, data=data)
+doseRecommendation <- nextBest(
+  myNextBest,
+  doselimit = nextMaxDose,
+  samples = samples,
+  model = model,
+  data = data
+)
 
 # Define the stopping rule such that the study would be stopped if there is at least
 # 0.9 probability that MTD > 0.5*next_best_dose. Here MTD is defined as the dose for
 # which prob(DLE)=0.33
-myStopping <- StoppingMTDdistribution(target = 0.33,
-                                      thresh = 0.5,
-                                      prob = 0.9)
+myStopping <- StoppingMTDdistribution(target = 0.33, thresh = 0.5, prob = 0.9)
 
 # Evaluate if to stop the trial
-stopTrial(stopping=myStopping,
-          dose=doseRecommendation$value,
-          samples=samples,
-          model=model,
-          data=data)
+stopTrial(
+  stopping = myStopping,
+  dose = doseRecommendation$value,
+  samples = samples,
+  model = model,
+  data = data
+)
 
 # nolint end
 # Create the data.
@@ -921,12 +967,19 @@ my_model <- LogisticLogNormal(
 
 # Set-up some MCMC parameters and generate samples from the posterior.
 my_options <- McmcOptions(
-  burnin = 100, step = 2, samples = 2000, rng_kind = "Mersenne-Twister", rng_seed = 94
+  burnin = 100,
+  step = 2,
+  samples = 2000,
+  rng_kind = "Mersenne-Twister",
+  rng_seed = 94
 )
 my_samples <- mcmc(my_data, my_model, my_options)
 
 # Define the rule for dose increments and calculate the maximum dose allowed.
-my_increments <- IncrementsRelative(intervals = c(0, 20), increments = c(1, 0.33))
+my_increments <- IncrementsRelative(
+  intervals = c(0, 20),
+  increments = c(1, 0.33)
+)
 next_max_dose <- maxDose(my_increments, data = my_data)
 
 # Define the rule which will be used to select the next best dose
@@ -959,14 +1012,17 @@ stopTrial(
   model = my_model,
   data = my_data
 )
-
 # Create the data.
 data <- Data(
   x = c(0.1, 0.1, 0.1),
   y = c(0, 0, 1),
   cohort = c(1, 1, 1),
   doseGrid = c(
-    0.1, 0.5, 1.5, 3, 6,
+    0.1,
+    0.5,
+    1.5,
+    3,
+    6,
     seq(from = 10, to = 80, by = 2)
   ),
   ID = 1:3
@@ -1005,9 +1061,12 @@ my_next_best <- NextBestNCRM(
 )
 
 # Calculate the next best dose.
-dose_recommendation <- nextBest(my_next_best,
+dose_recommendation <- nextBest(
+  my_next_best,
   doselimit = next_max_dose,
-  samples = samples, model = model, data = data
+  samples = samples,
+  model = model,
+  data = data
 )
 
 # Define the stopping rule such that the study would be stopped if first dose
@@ -1029,65 +1088,85 @@ stopTrial(
 
 # Create the data
 data <- DataDual(
-  x=c(0.1, 0.5, 1.5, 3, 6, 10, 10, 10,
-      20, 20, 20, 40, 40, 40, 50, 50, 50),
-  y=c(0, 0, 0, 0, 0, 0, 1, 0,
-      0, 1, 1, 0, 0, 1, 0, 1, 1),
-  w=c(0.31, 0.42, 0.59, 0.45, 0.6, 0.7, 0.55, 0.6,
-      0.52, 0.54, 0.56, 0.43, 0.41, 0.39, 0.34, 0.38, 0.21),
-  doseGrid=c(0.1, 0.5, 1.5, 3, 6,
-             seq(from=10, to=80, by=2)))
+  x = c(0.1, 0.5, 1.5, 3, 6, 10, 10, 10, 20, 20, 20, 40, 40, 40, 50, 50, 50),
+  y = c(0, 0, 0, 0, 0, 0, 1, 0, 0, 1, 1, 0, 0, 1, 0, 1, 1),
+  w = c(
+    0.31,
+    0.42,
+    0.59,
+    0.45,
+    0.6,
+    0.7,
+    0.55,
+    0.6,
+    0.52,
+    0.54,
+    0.56,
+    0.43,
+    0.41,
+    0.39,
+    0.34,
+    0.38,
+    0.21
+  ),
+  doseGrid = c(0.1, 0.5, 1.5, 3, 6, seq(from = 10, to = 80, by = 2))
+)
 
 # Initialize the Dual-Endpoint model (in this case RW1)
-model <- DualEndpointRW(mean = c(0, 1),
-                        cov = matrix(c(1, 0, 0, 1), nrow=2),
-                        sigma2betaW = 0.01,
-                        sigma2W = c(a=0.1, b=0.1),
-                        rho = c(a=1, b=1),
-                        rw1 = TRUE)
+model <- DualEndpointRW(
+  mean = c(0, 1),
+  cov = matrix(c(1, 0, 0, 1), nrow = 2),
+  sigma2betaW = 0.01,
+  sigma2W = c(a = 0.1, b = 0.1),
+  rho = c(a = 1, b = 1),
+  rw1 = TRUE
+)
 
 # Set-up some MCMC parameters and generate samples from the posterior
-options <- McmcOptions(burnin=100,
-                       step=2,
-                       samples=500)
+options <- McmcOptions(burnin = 100, step = 2, samples = 500)
 set.seed(94)
 samples <- mcmc(data, model, options)
 
 # Define the rule for dose increments and calculate the maximum dose allowed
-myIncrements <- IncrementsRelative(intervals=c(0, 20),
-                                   increments=c(1, 0.33))
-nextMaxDose <- maxDose(myIncrements,
-                       data=data)
+myIncrements <- IncrementsRelative(
+  intervals = c(0, 20),
+  increments = c(1, 0.33)
+)
+nextMaxDose <- maxDose(myIncrements, data = data)
 
 # Define the rule which will be used to select the next best dose
 # In this case target a dose achieving at least 0.9 of maximum biomarker level (efficacy)
 # and with a probability below 0.25 that prob(DLT)>0.35 (safety)
-myNextBest <- NextBestDualEndpoint(target=c(0.9, 1),
-                                   overdose=c(0.35, 1),
-                                   max_overdose_prob=0.25)
+myNextBest <- NextBestDualEndpoint(
+  target = c(0.9, 1),
+  overdose = c(0.35, 1),
+  max_overdose_prob = 0.25
+)
 
 # Calculate the next best dose
-doseRecommendation <- nextBest(myNextBest,
-                               doselimit=nextMaxDose,
-                               samples=samples,
-                               model=model,
-                               data=data)
+doseRecommendation <- nextBest(
+  myNextBest,
+  doselimit = nextMaxDose,
+  samples = samples,
+  model = model,
+  data = data
+)
 
 # Define the stopping rule such that the study would be stopped if if there is at
 # least 0.5 posterior probability that the biomarker (efficacy) is within the
 # biomarker target range of [0.9, 1.0] (relative to the maximum for the biomarker).
-myStopping <- StoppingTargetBiomarker(target = c(0.9, 1),
-                                      prob = 0.5)
+myStopping <- StoppingTargetBiomarker(target = c(0.9, 1), prob = 0.5)
 
 # Evaluate if to stop the trial
-stopTrial(stopping=myStopping,
-          dose=doseRecommendation$value,
-          samples=samples,
-          model=model,
-          data=data)
+stopTrial(
+  stopping = myStopping,
+  dose = doseRecommendation$value,
+  samples = samples,
+  model = model,
+  data = data
+)
 
 # nolint end
-
 # Create some data.
 my_data <- Data(
   x = c(0.1, 0.5, 1.5, 3, 6, 10, 10, 10),
@@ -1149,66 +1228,70 @@ stopTrial(
 # nolint start
 
 # Create the data
-data <- Data(x=c(0.1, 0.5, 1.5, 3, 6, 10, 10, 10, 20, 20, 20, 40, 40, 40,
-                 80, 80, 80),
-             y=c(0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0),
-             cohort=c(0, 1, 2, 3, 4, 5, 5, 5, 6, 6, 6, 7, 7, 7, 8, 8, 8),
-             doseGrid=
-               c(0.1, 0.5, 1.5, 3, 6,
-                 seq(from=10, to=80, by=2)))
+data <- Data(
+  x = c(0.1, 0.5, 1.5, 3, 6, 10, 10, 10, 20, 20, 20, 40, 40, 40, 80, 80, 80),
+  y = c(0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0),
+  cohort = c(0, 1, 2, 3, 4, 5, 5, 5, 6, 6, 6, 7, 7, 7, 8, 8, 8),
+  doseGrid = c(0.1, 0.5, 1.5, 3, 6, seq(from = 10, to = 80, by = 2))
+)
 
 # Initialize the CRM model used to model the data
-model <- LogisticLogNormal(mean=c(-0.85, 1),
-                           cov=
-                             matrix(c(1, -0.5, -0.5, 1),
-                                    nrow=2),
-                           ref_dose=56)
+model <- LogisticLogNormal(
+  mean = c(-0.85, 1),
+  cov = matrix(c(1, -0.5, -0.5, 1), nrow = 2),
+  ref_dose = 56
+)
 
 # Set-up some MCMC parameters and generate samples from the posterior
-options <- McmcOptions(burnin=100,
-                       step=2,
-                       samples=2000)
+options <- McmcOptions(burnin = 100, step = 2, samples = 2000)
 set.seed(94)
 samples <- mcmc(data, model, options)
 
 # Define the rule for dose increments and calculate the maximum dose allowed
-myIncrements <- IncrementsRelative(intervals=c(0, 20),
-                                   increments=c(1, 0.33))
-nextMaxDose <- maxDose(myIncrements,
-                       data=data)
+myIncrements <- IncrementsRelative(
+  intervals = c(0, 20),
+  increments = c(1, 0.33)
+)
+nextMaxDose <- maxDose(myIncrements, data = data)
 
 # Define the rule which will be used to select the next best dose
 # based on the class 'NextBestNCRM'
-myNextBest <- NextBestNCRM(target=c(0.2, 0.35),
-                           overdose=c(0.35, 1),
-                           max_overdose_prob=0.25)
+myNextBest <- NextBestNCRM(
+  target = c(0.2, 0.35),
+  overdose = c(0.35, 1),
+  max_overdose_prob = 0.25
+)
 
 # Calculate the next best dose
-doseRecommendation <- nextBest(myNextBest,
-                               doselimit=nextMaxDose,
-                               samples=samples, model=model, data=data)
+doseRecommendation <- nextBest(
+  myNextBest,
+  doselimit = nextMaxDose,
+  samples = samples,
+  model = model,
+  data = data
+)
 
 # Define the stopping rule such that the study would be stopped if there is at least
 # 0.5 posterior probability that [0.2 =< Prob(DLT | next-best-dose) <= 0.35]
-stopTarget <- StoppingTargetProb(target=c(0.2, 0.35),
-                                 prob=0.5)
+stopTarget <- StoppingTargetProb(target = c(0.2, 0.35), prob = 0.5)
 
 ## now use the StoppingHighestDose rule:
 stopHigh <-
   StoppingHighestDose() &
-  StoppingPatientsNearDose(nPatients=3, percentage=0) &
-  StoppingTargetProb(target=c(0, 0.2),
-                     prob=0.5)
+  StoppingPatientsNearDose(nPatients = 3, percentage = 0) &
+  StoppingTargetProb(target = c(0, 0.2), prob = 0.5)
 
 ## and combine everything:
 myStopping <- stopTarget | stopHigh
 
 # Then evaluate if to stop the trial
-stopTrial(stopping=myStopping,
-          dose=doseRecommendation$value,
-          samples=samples,
-          model=model,
-          data=data)
+stopTrial(
+  stopping = myStopping,
+  dose = doseRecommendation$value,
+  samples = samples,
+  model = model,
+  data = data
+)
 
 # nolint end
 data <- .DefaultDataOrdinal()
@@ -1267,41 +1350,66 @@ stopTrial(
 )
 my_rule <- StoppingExternal(report_label = "Based on combo stop")
 
-stopTrial(my_rule, 5, .DefaultSamples(), .DefaultModelLogNormal(), .DefaultData(), external = TRUE)
+stopTrial(
+  my_rule,
+  5,
+  .DefaultSamples(),
+  .DefaultModelLogNormal(),
+  .DefaultData(),
+  external = TRUE
+)
 # nolint start
 
 ##define the stopping rules based on the 'StoppingTDCIRatio' class
 ##Using only DLE responses with samples
 ## we need a data object with doses >= 1:
-data<-Data(x=c(25,50,50,75,150,200,225,300),
-           y=c(0,0,0,0,1,1,1,1),
-           doseGrid=seq(from=25,to=300,by=25))
+data <- Data(
+  x = c(25, 50, 50, 75, 150, 200, 225, 300),
+  y = c(0, 0, 0, 0, 1, 1, 1, 1),
+  doseGrid = seq(from = 25, to = 300, by = 25)
+)
 
 ##model can be specified of 'Model' or 'ModelTox' class
 ##For example, the 'logisticIndepBeta' class model
-model<-LogisticIndepBeta(binDLE=c(1.05,1.8),DLEweights=c(3,3),DLEdose=c(25,300),data=data)
+model <- LogisticIndepBeta(
+  binDLE = c(1.05, 1.8),
+  DLEweights = c(3, 3),
+  DLEdose = c(25, 300),
+  data = data
+)
 ##define MCMC options
 ##for illustration purpose we use 10 burn-in and generate 50 samples
-options<-McmcOptions(burnin=10,step=2,samples=50)
+options <- McmcOptions(burnin = 10, step = 2, samples = 50)
 ##samples of 'Samples' class
-samples<-mcmc(data,model,options)
+samples <- mcmc(data, model, options)
 ##define the 'StoppingTDCIRatio' class
 myStopping <- StoppingTDCIRatio(target_ratio = 5, prob_target = 0.3)
 ##Find the next Recommend dose using the nextBest method (plesae refer to nextbest examples)
 tdNextBest <- NextBestTDsamples(
-  prob_target_drt = 0.35, prob_target_eot = 0.3,
+  prob_target_drt = 0.35,
+  prob_target_eot = 0.3,
   derive = function(samples) {
     as.numeric(quantile(samples, probs = 0.3))
   }
 )
 
-RecommendDose<-nextBest(tdNextBest,doselimit=max(data@doseGrid),samples=samples,
-                        model=model,data=data)
+RecommendDose <- nextBest(
+  tdNextBest,
+  doselimit = max(data@doseGrid),
+  samples = samples,
+  model = model,
+  data = data
+)
 ##use 'stopTrial' to determine if the rule has been fulfilled
 ##use 0.3 as the target proability of DLE at the end of the trial
 
-stopTrial(stopping=myStopping,dose=RecommendDose$next_dose_drt,
-          samples=samples,model=model,data=data)
+stopTrial(
+  stopping = myStopping,
+  dose = RecommendDose$next_dose_drt,
+  samples = samples,
+  model = model,
+  data = data
+)
 
 # nolint end
 # nolint start
@@ -1309,49 +1417,77 @@ stopTrial(stopping=myStopping,dose=RecommendDose$next_dose_drt,
 ##define the stopping rules based on the 'StoppingTDCIRatio' class
 ##Using only DLE responses
 ## we need a data object with doses >= 1:
-data<-Data(x=c(25,50,50,75,150,200,225,300),
-           y=c(0,0,0,0,1,1,1,1),
-           doseGrid=seq(from=25,to=300,by=25))
+data <- Data(
+  x = c(25, 50, 50, 75, 150, 200, 225, 300),
+  y = c(0, 0, 0, 0, 1, 1, 1, 1),
+  doseGrid = seq(from = 25, to = 300, by = 25)
+)
 
 ##model must be of 'ModelTox' class
 ##For example, the 'logisticIndepBeta' class model
-model<-LogisticIndepBeta(binDLE=c(1.05,1.8),DLEweights=c(3,3),DLEdose=c(25,300),data=data)
+model <- LogisticIndepBeta(
+  binDLE = c(1.05, 1.8),
+  DLEweights = c(3, 3),
+  DLEdose = c(25, 300),
+  data = data
+)
 ##define the 'StoppingTDCIRatio' class
 myStopping <- StoppingTDCIRatio(target_ratio = 5, prob_target = 0.3)
 ##Find the next Recommend dose using the nextBest method (plesae refer to nextbest examples)
-tdNextBest<-NextBestTD(prob_target_drt=0.35,prob_target_eot=0.3)
+tdNextBest <- NextBestTD(prob_target_drt = 0.35, prob_target_eot = 0.3)
 
 
-RecommendDose<-nextBest(tdNextBest,doselimit=max(data@doseGrid),model=model,data=data)
+RecommendDose <- nextBest(
+  tdNextBest,
+  doselimit = max(data@doseGrid),
+  model = model,
+  data = data
+)
 ##use 'stopTrial' to determine if the rule has been fulfilled
 ##use 0.3 as the target proability of DLE at the end of the trial
 
-stopTrial(stopping=myStopping,dose=RecommendDose$next_dose_drt,
-          model=model,data=data)
+stopTrial(
+  stopping = myStopping,
+  dose = RecommendDose$next_dose_drt,
+  model = model,
+  data = data
+)
 
 # nolint end
 # nolint start
 ##define the stopping rules based on the 'StoppingMaxGainCIRatio' class
 ##Using both DLE and efficacy responses
 ## we need a data object with doses >= 1:
-data <-DataDual(x=c(25,50,25,50,75,300,250,150),
-                y=c(0,0,0,0,0,1,1,0),
-                w=c(0.31,0.42,0.59,0.45,0.6,0.7,0.6,0.52),
-                doseGrid=seq(25,300,25),
-                placebo=FALSE)
+data <- DataDual(
+  x = c(25, 50, 25, 50, 75, 300, 250, 150),
+  y = c(0, 0, 0, 0, 0, 1, 1, 0),
+  w = c(0.31, 0.42, 0.59, 0.45, 0.6, 0.7, 0.6, 0.52),
+  doseGrid = seq(25, 300, 25),
+  placebo = FALSE
+)
 
 ##DLEmodel must be of 'ModelTox' class
 ##For example, the 'logisticIndepBeta' class model
-DLEmodel<-LogisticIndepBeta(binDLE=c(1.05,1.8),DLEweights=c(3,3),DLEdose=c(25,300),data=data)
+DLEmodel <- LogisticIndepBeta(
+  binDLE = c(1.05, 1.8),
+  DLEweights = c(3, 3),
+  DLEdose = c(25, 300),
+  data = data
+)
 
 ##Effmodel must be  of 'ModelEff' class
 ##For example, the 'Effloglog' class model
-Effmodel<-Effloglog(eff=c(1.223,2.513),eff_dose=c(25,300),nu=c(a=1,b=0.025),data=data)
+Effmodel <- Effloglog(
+  eff = c(1.223, 2.513),
+  eff_dose = c(25, 300),
+  nu = c(a = 1, b = 0.025),
+  data = data
+)
 ##for illustration purpose we use 10 burn-in and generate 50 samples
-options<-McmcOptions(burnin=10,step=2,samples=50)
+options <- McmcOptions(burnin = 10, step = 2, samples = 50)
 ##DLE and efficacy samples must be of 'Samples' class
-DLEsamples<-mcmc(data,DLEmodel,options)
-Effsamples<-mcmc(data,Effmodel,options)
+DLEsamples <- mcmc(data, DLEmodel, options)
+Effsamples <- mcmc(data, Effmodel, options)
 
 ##define the 'StoppingMaxGainCIRatio' class
 myStopping <- StoppingMaxGainCIRatio(target_ratio = 5, prob_target = 0.3)
@@ -1367,22 +1503,33 @@ mynextbest <- NextBestMaxGainSamples(
   }
 )
 
-RecommendDose<-nextBest(mynextbest,doselimit=max(data@doseGrid),samples=DLEsamples,model=DLEmodel,
-                        data=data,model_eff=Effmodel,samples_eff=Effsamples)
+RecommendDose <- nextBest(
+  mynextbest,
+  doselimit = max(data@doseGrid),
+  samples = DLEsamples,
+  model = DLEmodel,
+  data = data,
+  model_eff = Effmodel,
+  samples_eff = Effsamples
+)
 ##use 'stopTrial' to determine if the rule has been fulfilled
 ##use 0.3 as the target proability of DLE at the end of the trial
 
-stopTrial(stopping=myStopping,
-          dose=RecommendDose$next_dose,
-          samples=DLEsamples,
-          model=DLEmodel,
-          data=data,
-          TDderive=function(TDsamples){
-            quantile(TDsamples,prob=0.3)},
-          Effmodel=Effmodel,
-          Effsamples=Effsamples,
-          Gstarderive=function(Gstarsamples){
-            quantile(Gstarsamples,prob=0.5)})
+stopTrial(
+  stopping = myStopping,
+  dose = RecommendDose$next_dose,
+  samples = DLEsamples,
+  model = DLEmodel,
+  data = data,
+  TDderive = function(TDsamples) {
+    quantile(TDsamples, prob = 0.3)
+  },
+  Effmodel = Effmodel,
+  Effsamples = Effsamples,
+  Gstarderive = function(Gstarsamples) {
+    quantile(Gstarsamples, prob = 0.5)
+  }
+)
 
 # nolint end
 # nolint start
@@ -1390,35 +1537,56 @@ stopTrial(stopping=myStopping,
 ##define the stopping rules based on the 'StoppingMaxGainCIRatio' class
 ##Using both DLE and efficacy responses
 ## we need a data object with doses >= 1:
-data <-DataDual(x=c(25,50,25,50,75,300,250,150),
-                y=c(0,0,0,0,0,1,1,0),
-                w=c(0.31,0.42,0.59,0.45,0.6,0.7,0.6,0.52),
-                doseGrid=seq(25,300,25),
-                placebo=FALSE)
+data <- DataDual(
+  x = c(25, 50, 25, 50, 75, 300, 250, 150),
+  y = c(0, 0, 0, 0, 0, 1, 1, 0),
+  w = c(0.31, 0.42, 0.59, 0.45, 0.6, 0.7, 0.6, 0.52),
+  doseGrid = seq(25, 300, 25),
+  placebo = FALSE
+)
 
 ##DLEmodel must be of 'ModelTox' class
 ##For example, the 'logisticIndepBeta' class model
-DLEmodel<-LogisticIndepBeta(binDLE=c(1.05,1.8),DLEweights=c(3,3),DLEdose=c(25,300),data=data)
+DLEmodel <- LogisticIndepBeta(
+  binDLE = c(1.05, 1.8),
+  DLEweights = c(3, 3),
+  DLEdose = c(25, 300),
+  data = data
+)
 
 ##Effmodel must be  of 'ModelEff' class
 ##For example, the 'Effloglog' class model
-Effmodel<-Effloglog(eff=c(1.223,2.513),eff_dose=c(25,300),nu=c(a=1,b=0.025),data=data)
+Effmodel <- Effloglog(
+  eff = c(1.223, 2.513),
+  eff_dose = c(25, 300),
+  nu = c(a = 1, b = 0.025),
+  data = data
+)
 
 
 ##define the 'StoppingMaxGainCIRatio' class
 myStopping <- StoppingMaxGainCIRatio(target_ratio = 5, prob_target = 0.3)
 ##Find the next Recommend dose using the nextBest method (plesae refer to nextbest examples)
-mynextbest<-NextBestMaxGain(prob_target_drt=0.35, prob_target_eot=0.3)
+mynextbest <- NextBestMaxGain(prob_target_drt = 0.35, prob_target_eot = 0.3)
 
-RecommendDose<-nextBest(mynextbest,doselimit=max(data@doseGrid),model=DLEmodel,
-                        model_eff=Effmodel,data=data)
+RecommendDose <- nextBest(
+  mynextbest,
+  doselimit = max(data@doseGrid),
+  model = DLEmodel,
+  model_eff = Effmodel,
+  data = data
+)
 
 ##use 'stopTrial' to determine if the rule has been fulfilled
 ##use 0.3 as the target proability of DLE at the end of the trial
 
-
-stopTrial(stopping=myStopping,dose=RecommendDose$next_dose,model=DLEmodel,
-          data=data, Effmodel=Effmodel)
+stopTrial(
+  stopping = myStopping,
+  dose = RecommendDose$next_dose,
+  model = DLEmodel,
+  data = data,
+  Effmodel = Effmodel
+)
 
 # nolint end
 }

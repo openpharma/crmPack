@@ -1,4 +1,3 @@
-
 # Example of usage for `NextBestNCRMLoss` NextBest class.
 
 # Create the data.

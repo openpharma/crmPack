@@ -40,25 +40,26 @@ NULL
 ##' @importFrom mvtnorm rmvnorm
 ##' @export
 ##' @keywords programming
-Quantiles2LogisticNormal <- function(dosegrid,
-                                     refDose,
-                                     lower,
-                                     median,
-                                     upper,
-                                     level = 0.95,
-                                     logNormal = FALSE,
-                                     parstart = NULL,
-                                     parlower = c(-10, -10, 0, 0, -0.95),
-                                     parupper = c(10, 10, 10, 10, 0.95),
-                                     seed = 12345,
-                                     verbose = TRUE,
-                                     control =
-                                       list(
-                                         threshold.stop = 0.01,
-                                         maxit = 50000,
-                                         temperature = 50000,
-                                         max.time = 600
-                                       )) {
+Quantiles2LogisticNormal <- function(
+  dosegrid,
+  refDose,
+  lower,
+  median,
+  upper,
+  level = 0.95,
+  logNormal = FALSE,
+  parstart = NULL,
+  parlower = c(-10, -10, 0, 0, -0.95),
+  parupper = c(10, 10, 10, 10, 0.95),
+  seed = 12345,
+  verbose = TRUE,
+  control = list(
+    threshold.stop = 0.01,
+    maxit = 50000,
+    temperature = 50000,
+    max.time = 600
+  )
+) {
   ## extracts and checks
   nDoses <- length(dosegrid)
 
@@ -96,16 +97,11 @@ Quantiles2LogisticNormal <- function(dosegrid,
 
       ## overall starting values:
       c(
-        meanAlpha =
-          startAlphaBeta[1],
-        meanBeta =
-          if (logNormal) log(startAlphaBeta[2]) else startAlphaBeta[2],
-        sdAlpha =
-          1,
-        sdBeta =
-          1,
-        correlation =
-          0
+        meanAlpha = startAlphaBeta[1],
+        meanBeta = if (logNormal) log(startAlphaBeta[2]) else startAlphaBeta[2],
+        sdAlpha = 1,
+        sdBeta = 1,
+        correlation = 0
       )
     } else {
       parstart
@@ -122,7 +118,8 @@ Quantiles2LogisticNormal <- function(dosegrid,
         prod(param[3:5]),
         param[4]^2
       ),
-      nrow = 2L, ncol = 2L
+      nrow = 2L,
+      ncol = 2L
     )
 
     ## simulate from the corresponding normal distribution
@@ -135,7 +132,11 @@ Quantiles2LogisticNormal <- function(dosegrid,
 
     ## extract separate coefficients
     alphaSamples <- normalSamples[, 1L]
-    betaSamples <- if (logNormal) exp(normalSamples[, 2L]) else normalSamples[, 2L]
+    betaSamples <- if (logNormal) {
+      exp(normalSamples[, 2L])
+    } else {
+      normalSamples[, 2L]
+    }
 
     ## and compute resulting quantiles
     quants <- matrix(
@@ -145,26 +146,19 @@ Quantiles2LogisticNormal <- function(dosegrid,
     colnames(quants) <- c("lower", "median", "upper")
 
     ## process each dose after another:
-    for (i in seq_along(dosegrid))
-    {
+    for (i in seq_along(dosegrid)) {
       ## create samples of the probability
       probSamples <-
         plogis(alphaSamples + betaSamples * log(dosegrid[i] / refDose))
 
       ## compute lower, median and upper quantile
       quants[i, ] <-
-        quantile(probSamples,
-          probs = c((1 - level) / 2, 0.5, (1 + level) / 2)
-        )
+        quantile(probSamples, probs = c((1 - level) / 2, 0.5, (1 + level) / 2))
     }
 
     ## now we can compute the target value
     ret <- max(abs(quants - c(lower, median, upper)))
-    return(structure(ret,
-      mean = mean,
-      cov = cov,
-      quantiles = quants
-    ))
+    return(structure(ret, mean = mean, cov = cov, quantiles = quants))
   }
 
   set.seed(seed)
@@ -283,13 +277,15 @@ h_get_min_inf_beta <- function(p, q) {
 ##' @example examples/MinimalInformative.R
 ##' @export
 ##' @keywords programming
-MinimalInformative <- function(dosegrid,
-                               refDose,
-                               threshmin = 0.2,
-                               threshmax = 0.3,
-                               probmin = 0.05,
-                               probmax = 0.05,
-                               ...) {
+MinimalInformative <- function(
+  dosegrid,
+  refDose,
+  threshmin = 0.2,
+  threshmax = 0.3,
+  probmin = 0.05,
+  probmax = 0.05,
+  ...
+) {
   ## extracts and checks
   nDoses <- length(dosegrid)
 
@@ -331,8 +327,7 @@ MinimalInformative <- function(dosegrid,
   ## finally for all doses calculate 95% credible interval bounds
   ## (lower and upper)
   lower <- upper <- dosegrid
-  for (i in seq_along(dosegrid))
-  {
+  for (i in seq_along(dosegrid)) {
     ## get min inf beta distribution
     thisMinBeta <- h_get_min_inf_beta(
       p = 0.5,

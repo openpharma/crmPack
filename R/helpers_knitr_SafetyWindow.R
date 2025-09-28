@@ -19,7 +19,12 @@ NULL
 #' @noRd
 #' @keywords internal
 h_describe_safety_gap <- function(gap, ordinals, label, time_unit) {
-  assert_character(ordinals, min.len = length(gap) - 1, any.missing = FALSE, unique = TRUE)
+  assert_character(
+    ordinals,
+    min.len = length(gap) - 1,
+    any.missing = FALSE,
+    unique = TRUE
+  )
 
   if (length(gap) == 1) {
     paste0(
@@ -80,11 +85,12 @@ h_describe_safety_gap <- function(gap, ordinals, label, time_unit) {
 #' @export
 #' @method knit_print SafetyWindow
 knit_print.SafetyWindow <- function(
-    x,
-    ...,
-    asis = TRUE,
-    time_unit = "day",
-    label = "participant") {
+  x,
+  ...,
+  asis = TRUE,
+  time_unit = "day",
+  label = "participant"
+) {
   assert_character(time_unit, min.len = 1, max.len = 2, any.missing = FALSE)
   assert_flag(asis)
 
@@ -124,17 +130,31 @@ knit_print.SafetyWindow <- function(
 #' @export
 #' @method knit_print SafetyWindowConst
 knit_print.SafetyWindowConst <- function(
-    x,
-    ...,
-    asis = TRUE,
-    label = "participant",
-    ordinals = c(
-      "first", "second", "third", "fourth", "fifth", "sixth",
-      "seventh", "eighth", "ninth", "tenth"
-    ),
-    time_unit = "day") {
+  x,
+  ...,
+  asis = TRUE,
+  label = "participant",
+  ordinals = c(
+    "first",
+    "second",
+    "third",
+    "fourth",
+    "fifth",
+    "sixth",
+    "seventh",
+    "eighth",
+    "ninth",
+    "tenth"
+  ),
+  time_unit = "day"
+) {
   assert_character(time_unit, min.len = 1, max.len = 2, any.missing = FALSE)
-  assert_character(ordinals, min.len = length(x@gap) - 1, any.missing = FALSE, unique = TRUE)
+  assert_character(
+    ordinals,
+    min.len = length(x@gap) - 1,
+    any.missing = FALSE,
+    unique = TRUE
+  )
   assert_flag(asis)
 
   label <- h_prepare_labels(label)
@@ -178,18 +198,27 @@ knit_print.SafetyWindowConst <- function(
 #' @export
 #' @method knit_print SafetyWindowSize
 knit_print.SafetyWindowSize <- function(
-    x,
-    ...,
-    asis = TRUE,
-    # We could use package english here and avoid the need for `ordinals`, but
-    # is an extra dependency for very limited benefit
-    ordinals = c(
-      "first", "second", "third", "fourth", "fifth", "sixth", "seventh",
-      "eighth", "ninth", "tenth"
-    ),
-    label = "participant",
-    time_unit = "day",
-    level = 2L) {
+  x,
+  ...,
+  asis = TRUE,
+  # We could use package english here and avoid the need for `ordinals`, but
+  # is an extra dependency for very limited benefit
+  ordinals = c(
+    "first",
+    "second",
+    "third",
+    "fourth",
+    "fifth",
+    "sixth",
+    "seventh",
+    "eighth",
+    "ninth",
+    "tenth"
+  ),
+  label = "participant",
+  time_unit = "day",
+  level = 2L
+) {
   assert_character(time_unit, min.len = 1, max.len = 2, any.missing = FALSE)
   assert_flag(asis)
   assert_integer(level, lower = 1, upper = 6, any.missing = FALSE)
@@ -207,24 +236,27 @@ knit_print.SafetyWindowSize <- function(
         function(i) {
           paste0(
             dplyr::case_when(
-              i == 1 ~ paste0(
-                stringr::str_dup("#", level),
-                " For cohort sizes of less than ",
-                x@size[2]
-              ),
-              i == length(x@size) ~ paste0(
-                stringr::str_dup("#", level),
-                " For cohort sizes of ",
-                x@size[i],
-                " or more"
-              ),
-              TRUE ~ paste0(
-                stringr::str_dup("#", level),
-                " For cohort sizes greater than or equal to ",
-                x@size[i],
-                " and strictly less than ",
-                x@size[i + 1]
-              )
+              i == 1 ~
+                paste0(
+                  stringr::str_dup("#", level),
+                  " For cohort sizes of less than ",
+                  x@size[2]
+                ),
+              i == length(x@size) ~
+                paste0(
+                  stringr::str_dup("#", level),
+                  " For cohort sizes of ",
+                  x@size[i],
+                  " or more"
+                ),
+              TRUE ~
+                paste0(
+                  stringr::str_dup("#", level),
+                  " For cohort sizes greater than or equal to ",
+                  x@size[i],
+                  " and strictly less than ",
+                  x@size[i + 1]
+                )
             ),
             "\n\n",
             h_describe_safety_gap(x@gap[[i]], ordinals, label, time_unit)

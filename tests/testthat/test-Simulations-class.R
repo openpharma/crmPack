@@ -20,7 +20,10 @@ testthat::local_mocked_bindings(
 
 testthat::local_mocked_bindings(
   .DefaultDualSimulationsSummary = function(...) {
-    readRDS(testthat::test_path("fixtures", "default_dual_simulations_summary.Rds"))
+    readRDS(testthat::test_path(
+      "fixtures",
+      "default_dual_simulations_summary.Rds"
+    ))
   }
 )
 # End of mocks
@@ -246,7 +249,8 @@ test_that("GeneralSimulationsSummary generates object correctly", {
 })
 
 test_that("GeneralSimulationsSummary cannot be instantiated directly", {
-  expect_error(.DefaultGeneralSimulationsSummary(),
+  expect_error(
+    .DefaultGeneralSimulationsSummary(),
     "Class GeneralSimulationsSummary cannot be instantiated directly",
     fixed = FALSE
   )
@@ -265,7 +269,10 @@ test_that("DualSimulationsSummary object can be created with the user constructo
   )
 
   expect_valid(result, "DualSimulationsSummary")
-  expect_identical(result@biomarker_fit_at_dose_most_selected, biomarker_fit_at_dose_most_selected)
+  expect_identical(
+    result@biomarker_fit_at_dose_most_selected,
+    biomarker_fit_at_dose_most_selected
+  )
   expect_identical(result@mean_biomarker_fit, mean_biomarker_fit)
 })
 
@@ -363,7 +370,8 @@ test_that("PseudoSimulations user constructor argument names are as expected", {
 })
 
 test_that(".DefaultPseudoSimulations cannot be instantiated directly", {
-  expect_error(.DefaultPseudoSimulations(),
+  expect_error(
+    .DefaultPseudoSimulations(),
     "Class PseudoSimulations cannot be instantiated directly. Please use one of its subclasses instead.",
     fixed = FALSE
   )
@@ -464,7 +472,10 @@ test_that("PseudoDualSimulations object can be created with the user constructor
   expect_identical(result@final_gstar_cis, final_gstar_cis)
   expect_identical(result@final_gstar_ratios, final_gstar_ratios)
   expect_identical(result@final_optimal_dose, final_optimal_dose)
-  expect_identical(result@final_optimal_dose_at_dose_grid, final_optimal_dose_at_dose_grid)
+  expect_identical(
+    result@final_optimal_dose_at_dose_grid,
+    final_optimal_dose_at_dose_grid
+  )
   expect_identical(result@sigma2_est, sigma2_est)
 })
 
@@ -472,9 +483,15 @@ test_that("PseudoDualSimulations user constructor argument names are as expected
   expect_function(
     PseudoDualSimulations,
     args = c(
-      "fit_eff", "final_gstar_estimates", "final_gstar_at_dose_grid", "final_gstar_cis",
-      "final_gstar_ratios", "final_optimal_dose", "final_optimal_dose_at_dose_grid",
-      "sigma2_est", "..."
+      "fit_eff",
+      "final_gstar_estimates",
+      "final_gstar_at_dose_grid",
+      "final_gstar_cis",
+      "final_gstar_ratios",
+      "final_optimal_dose",
+      "final_optimal_dose_at_dose_grid",
+      "sigma2_est",
+      "..."
     ),
     ordered = TRUE
   )
@@ -563,7 +580,8 @@ test_that("PseudoDualFlexiSimulations user constructor argument names", {
   expect_function(
     PseudoDualFlexiSimulations,
     args = c(
-      "sigma2_beta_w_est", "..."
+      "sigma2_beta_w_est",
+      "..."
     ),
     ordered = TRUE
   )

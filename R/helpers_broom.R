@@ -15,7 +15,10 @@
 #'
 #' @keywords internal
 #' @noRd
-h_handle_attributes <- function(x, .ignore = c("names", "class", "description", "row.names")) {
+h_handle_attributes <- function(
+  x,
+  .ignore = c("names", "class", "description", "row.names")
+) {
   a <- attributes(x)
   valid_names <- setdiff(names(a), .ignore)
   lapply(
@@ -76,7 +79,10 @@ h_tidy_slot <- function(obj, slot_name, col = NULL, attributes = FALSE) {
         function(x) {
           if (is.data.frame(x)) {
             return(x)
-          } else if (is.list(x) && stringr::str_detect(class(x)[1], stringr::fixed("tbl_"))) {
+          } else if (
+            is.list(x) &&
+              stringr::str_detect(class(x)[1], stringr::fixed("tbl_"))
+          ) {
             # Already tidied to a list.
             return(x)
           } else if (is.numeric(x) | is.character(x)) {
@@ -190,12 +196,13 @@ h_tidy_class <- function(d, obj) {
 #' @keywords internal
 #' @noRd
 h_range_to_minmax <- function(
-    x,
-    col,
-    min_col = "min",
-    max_col = "max",
-    range_min = -Inf,
-    range_max = Inf) {
+  x,
+  col,
+  min_col = "min",
+  max_col = "max",
+  range_min = -Inf,
+  range_max = Inf
+) {
   vals <- x %>% dplyr::pull({{ col }})
   tibble(
     {{ min_col }} := c(range_min, vals),

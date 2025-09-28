@@ -64,7 +64,6 @@ knit_print.IncrementsRelativeDLT <- function(x, ..., asis = TRUE) {
     param[["caption"]] <- "Defined by number of DLTs reported so far"
   }
 
-
   param[["x"]] <- tidy(x)
   rv <- kableExtra::add_header_above(
     do.call(knitr::kable, param),
@@ -94,7 +93,11 @@ knit_print.IncrementsDoseLevels <- function(x, ..., asis = TRUE) {
     x@levels,
     ifelse(x@levels == 1, " level", " levels"),
     " relative to the ",
-    ifelse(x@basis_level == "last", "dose used in the previous cohort.", "highest dose used so far."),
+    ifelse(
+      x@basis_level == "last",
+      "dose used in the previous cohort.",
+      "highest dose used so far."
+    ),
     "\n\n"
   )
 
@@ -117,7 +120,11 @@ knit_print.IncrementsHSRBeta <- function(x, ..., asis = TRUE) {
 
   rv <- paste0(
     "The maximum increment is defined by a hard safety rule, independent of the CRM model, ",
-    " and based on a beta(", x@a, ", ", x@b, ") ",
+    " and based on a beta(",
+    x@a,
+    ", ",
+    x@b,
+    ") ",
     "prior with a target toxicity rate of ",
     x@target,
     " and a probability threshold of ",
@@ -207,14 +214,21 @@ knit_print.IncrementsOrdinal <- function(x, ..., asis = TRUE) {
 #' @export
 #' @method knit_print IncrementsRelativeParts
 #' @rdname knit_print
-knit_print.IncrementsRelativeParts <- function(x, ..., asis = TRUE, tox_label = c("toxicity", "toxicities")) {
+knit_print.IncrementsRelativeParts <- function(
+  x,
+  ...,
+  asis = TRUE,
+  tox_label = c("toxicity", "toxicities")
+) {
   assert_flag(asis)
 
   tox_label <- h_prepare_labels(tox_label)
   rv <- paste0(
     "The maximum increment in Part 1 is defined by the `part1Ladder` slot of ",
     "the associated `DataParts` object.\n\n",
-    "If no ", tox_label[2], " are reported in Part 1, the starting dose for Part 2 ",
+    "If no ",
+    tox_label[2],
+    " are reported in Part 1, the starting dose for Part 2 ",
     "will be ",
     ifelse(
       x@clean_start == 0,
@@ -226,7 +240,9 @@ knit_print.IncrementsRelativeParts <- function(x, ..., asis = TRUE, tox_label = 
         "the highest dose used in Part 1.\n\n"
       )
     ),
-    "If one or more ", tox_label[2], " are reported in Part 1, the starting dose for Part 2 ",
+    "If one or more ",
+    tox_label[2],
+    " are reported in Part 1, the starting dose for Part 2 ",
     "will be ",
     ifelse(
       x@dlt_start == 0,
@@ -239,7 +255,9 @@ knit_print.IncrementsRelativeParts <- function(x, ..., asis = TRUE, tox_label = 
       )
     ),
     "Once Part 2 has started, the maximum increment in dose levels will be based ",
-    "on the number of ", tox_label[2], " reported so far, as described in the ",
+    "on the number of ",
+    tox_label[2],
+    " reported so far, as described in the ",
     "following table:"
   )
 
@@ -248,7 +266,11 @@ knit_print.IncrementsRelativeParts <- function(x, ..., asis = TRUE, tox_label = 
     param[["col.names"]] <- c("Lower", "Upper", "Increment")
   }
   if (!("caption" %in% names(param))) {
-    param[["caption"]] <- paste0("Defined by the number of ", tox_label[2], " reported so far")
+    param[["caption"]] <- paste0(
+      "Defined by the number of ",
+      tox_label[2],
+      " reported so far"
+    )
   }
   header <- c(2, 1)
   headerLabel <- tox_label[2]
@@ -294,10 +316,11 @@ knit_print.IncrementsRelativeParts <- function(x, ..., asis = TRUE, tox_label = 
 #' @method knit_print IncrementsRelativeDLTCurrent
 #' @rdname knit_print
 knit_print.IncrementsRelativeDLTCurrent <- function(
-    x,
-    ...,
-    asis = TRUE,
-    tox_label = c("DLT", "DLTs")) {
+  x,
+  ...,
+  asis = TRUE,
+  tox_label = c("DLT", "DLTs")
+) {
   assert_flag(asis)
   assert_character(tox_label, min.len = 1, max.len = 2, any.missing = FALSE)
 

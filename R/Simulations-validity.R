@@ -52,7 +52,8 @@ v_simulations <- function(object) {
   )
 
   v$check(
-    checkmate::test_matrix(object@stop_report,
+    checkmate::test_matrix(
+      object@stop_report,
       mode = "logical",
       nrows = nSims,
       min.cols = 1,

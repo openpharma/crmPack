@@ -246,7 +246,10 @@ test_that("v_next_best_dual_endpoint returns message for non-valid target_relati
 
   # Changing `target_relative` so that it is not a flag.
   object@target_relative <- c(TRUE, FALSE)
-  expect_equal(v_next_best_dual_endpoint(object), "target_relative must be a flag")
+  expect_equal(
+    v_next_best_dual_endpoint(object),
+    "target_relative must be a flag"
+  )
 })
 
 test_that("v_next_best_dual_endpoint returns message for non-valid overdose", {
@@ -531,7 +534,10 @@ test_that("v_increments_relative passes for valid object", {
 
 test_that("v_increments_relative returns message for non-valid intervals", {
   err_msg <- "intervals has to be a numerical vector with unique, finite, non-negative and sorted non-missing values"
-  object <- IncrementsRelative(intervals = c(0, 2, 3), increments = c(2, 1, 1.5))
+  object <- IncrementsRelative(
+    intervals = c(0, 2, 3),
+    increments = c(2, 1, 1.5)
+  )
 
   # Changing `intervals` so that it contains non-unique values.
   object@intervals <- c(1, 2, 2)
@@ -549,7 +555,10 @@ test_that("v_increments_relative returns message for non-valid intervals", {
 
 test_that("v_increments_relative returns message for non-valid increments", {
   err_msg <- "increments has to be a numerical vector of the same length as `intervals` with finite values"
-  object <- IncrementsRelative(intervals = c(0, 2, 3), increments = c(2, 1, 1.5))
+  object <- IncrementsRelative(
+    intervals = c(0, 2, 3),
+    increments = c(2, 1, 1.5)
+  )
 
   # Changing `increments` so that it is of a length different than the length of `intervals`.
   object@increments <- c(1, 2, 3, 4)
@@ -606,7 +615,10 @@ test_that("v_increments_relative_dlt passes for valid object", {
 
 test_that("v_increments_relative_dlt returns message for non-valid intervals", {
   err_msg <- "intervals has to be an integer vector with unique, finite, non-negative and sorted non-missing values"
-  object <- IncrementsRelativeDLT(intervals = c(0, 2, 3), increments = c(2, 1, 1.5))
+  object <- IncrementsRelativeDLT(
+    intervals = c(0, 2, 3),
+    increments = c(2, 1, 1.5)
+  )
 
   # Changing `intervals` so that it contains non-unique values.
   object@intervals <- c(1L, 2L, 2L)
@@ -623,7 +635,10 @@ test_that("v_increments_relative_dlt returns message for non-valid intervals", {
 
 test_that("v_increments_relative_dlt returns message for non-valid increments", {
   err_msg <- "increments has to be a numerical vector of the same length as `intervals` with finite values"
-  object <- IncrementsRelativeDLT(intervals = c(0, 2, 3), increments = c(2, 1, 1.5))
+  object <- IncrementsRelativeDLT(
+    intervals = c(0, 2, 3),
+    increments = c(2, 1, 1.5)
+  )
 
   # Changing `increments` so that it is of a length different than the length of `intervals`.
   object@increments <- c(1, 2, 3, 4)
@@ -1647,18 +1662,27 @@ test_that("v_increments_maxtoxprob validates correctly", {
 
 test_that("v_nextbest_ordinal validates correctly", {
   expect_no_error({
-    x <- NextBestOrdinal(grade = 1L, rule = NextBestMTD(target = 0.3, derive = mean))
+    x <- NextBestOrdinal(
+      grade = 1L,
+      rule = NextBestMTD(target = 0.3, derive = mean)
+    )
   })
 
   expect_error(
     {
-      x <- NextBestOrdinal(grade = pi, rule = NextBestMTD(target = 0.3, derive = mean))
+      x <- NextBestOrdinal(
+        grade = pi,
+        rule = NextBestMTD(target = 0.3, derive = mean)
+      )
     },
     "grade must be a positive integer"
   )
   expect_error(
     {
-      x <- NextBestOrdinal(grade = -2, rule = NextBestMTD(target = 0.3, derive = mean))
+      x <- NextBestOrdinal(
+        grade = -2,
+        rule = NextBestMTD(target = 0.3, derive = mean)
+      )
     },
     "grade must be a positive integer"
   )

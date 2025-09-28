@@ -30,23 +30,22 @@ NULL
       seed = "integer"
     ),
     prototype = prototype(
-      data =
-        list(
-          Data(
-            x = 1:2,
-            y = 0:1,
-            doseGrid = 1:2,
-            ID = 1L:2L,
-            cohort = 1L:2L
-          ),
-          Data(
-            x = 3:4,
-            y = 0:1,
-            doseGrid = 3:4,
-            ID = 1L:2L,
-            cohort = 1L:2L
-          )
+      data = list(
+        Data(
+          x = 1:2,
+          y = 0:1,
+          doseGrid = 1:2,
+          ID = 1L:2L,
+          cohort = 1L:2L
         ),
+        Data(
+          x = 3:4,
+          y = 0:1,
+          doseGrid = 3:4,
+          ID = 1L:2L,
+          cohort = 1L:2L
+        )
+      ),
       doses = c(1, 2),
       seed = 1L
     ),
@@ -64,9 +63,7 @@ NULL
 #'
 #' @example examples/Simulations-class-GeneralSimulations.R
 #' @export
-GeneralSimulations <- function(data,
-                               doses,
-                               seed) {
+GeneralSimulations <- function(data, doses, seed) {
   assert_integerish(seed)
   .GeneralSimulations(
     data = data,
@@ -121,16 +118,13 @@ GeneralSimulations <- function(data,
       additional_stats = "list"
     ),
     prototype = prototype(
-      fit =
-        list(
-          c(0.1, 0.2),
-          c(0.1, 0.2)
-        ),
+      fit = list(
+        c(0.1, 0.2),
+        c(0.1, 0.2)
+      ),
       stop_report = matrix(TRUE, nrow = 2),
-      stop_reasons =
-        list("A", "A"),
-      additional_stats =
-        list(a = 1, b = 1)
+      stop_reasons = list("A", "A"),
+      additional_stats = list(a = 1, b = 1)
     ),
     contains = "GeneralSimulations",
     validity = v_simulations
@@ -148,13 +142,10 @@ GeneralSimulations <- function(data,
 #'
 #' @example examples/Simulations-class-Simulations.R
 #' @export
-Simulations <- function(fit,
-                        stop_reasons,
-                        stop_report,
-                        additional_stats,
-                        ...) {
+Simulations <- function(fit, stop_reasons, stop_report, additional_stats, ...) {
   start <- GeneralSimulations(...)
-  .Simulations(start,
+  .Simulations(
+    start,
     fit = fit,
     stop_report = stop_report,
     stop_reasons = stop_reasons,
@@ -211,11 +202,10 @@ Simulations <- function(fit,
     prototype = prototype(
       rho_est = c(0.2, 0.3),
       sigma2w_est = c(0.2, 0.3),
-      fit_biomarker =
-        list(
-          c(0.1, 0.2),
-          c(0.1, 0.2)
-        )
+      fit_biomarker = list(
+        c(0.1, 0.2),
+        c(0.1, 0.2)
+      )
     ),
     contains = "Simulations",
     validity = v_dual_simulations
@@ -233,12 +223,10 @@ Simulations <- function(fit,
 #'
 #' @example examples/Simulations-class-DualSimulations.R
 #' @export
-DualSimulations <- function(rho_est,
-                            sigma2w_est,
-                            fit_biomarker,
-                            ...) {
+DualSimulations <- function(rho_est, sigma2w_est, fit_biomarker, ...) {
   start <- Simulations(...)
-  .DualSimulations(start,
+  .DualSimulations(
+    start,
     rho_est = rho_est,
     sigma2w_est = sigma2w_est,
     fit_biomarker = fit_biomarker
@@ -466,13 +454,22 @@ DualSimulations <- function(rho_est,
   )
 
   beta_mod <- function(dose, e0, eMax, delta1, delta2, scal) {
-    maxDens <- (delta1^delta1) * (delta2^delta2) / ((delta1 + delta2)^(delta1 + delta2))
+    maxDens <- (delta1^delta1) *
+      (delta2^delta2) /
+      ((delta1 + delta2)^(delta1 + delta2))
     dose <- dose / scal
     e0 + eMax / maxDens * (dose^delta1) * (1 - dose)^delta2
   }
 
   true_biomarker <- function(dose) {
-    beta_mod(dose, e0 = 0.2, eMax = 0.6, delta1 = 5, delta2 = 5 * 0.5 / 0.5, scal = 100)
+    beta_mod(
+      dose,
+      e0 = 0.2,
+      eMax = 0.6,
+      delta1 = 5,
+      delta2 = 5 * 0.5 / 0.5,
+      scal = 100
+    )
   }
 
   true_tox <- function(dose) {
@@ -572,20 +569,23 @@ DualSimulations <- function(rho_est,
 #' @param \dots additional parameters from [`GeneralSimulations`]
 #'
 #' @export
-PseudoSimulations <- function(fit,
-                              final_td_target_during_trial_estimates,
-                              final_td_target_end_of_trial_estimates,
-                              final_td_target_during_trial_at_dose_grid,
-                              final_td_target_end_of_trial_at_dose_grid,
-                              final_tdeot_cis,
-                              final_tdeot_ratios,
-                              final_cis,
-                              final_ratios,
-                              stop_report,
-                              stop_reasons,
-                              ...) {
+PseudoSimulations <- function(
+  fit,
+  final_td_target_during_trial_estimates,
+  final_td_target_end_of_trial_estimates,
+  final_td_target_during_trial_at_dose_grid,
+  final_td_target_end_of_trial_at_dose_grid,
+  final_tdeot_cis,
+  final_tdeot_ratios,
+  final_cis,
+  final_ratios,
+  stop_report,
+  stop_reasons,
+  ...
+) {
   start <- GeneralSimulations(...)
-  .PseudoSimulations(start,
+  .PseudoSimulations(
+    start,
     fit = fit,
     final_td_target_during_trial_estimates = final_td_target_during_trial_estimates,
     final_td_target_end_of_trial_estimates = final_td_target_end_of_trial_estimates,
@@ -606,7 +606,9 @@ PseudoSimulations <- function(fit,
 #' @note Typically, end users will not use the `.DefaultPseudoSimulations()` function.
 #' @export
 .DefaultPseudoSimulations <- function() {
-  stop("Class PseudoSimulations cannot be instantiated directly. Please use one of its subclasses instead.")
+  stop(
+    "Class PseudoSimulations cannot be instantiated directly. Please use one of its subclasses instead."
+  )
 }
 
 # PseudoDualSimulations ----
@@ -671,17 +673,20 @@ PseudoSimulations <- function(fit,
 #' @param sigma2_est (`numeric`)\cr see slot definition.
 #' @param \dots additional parameters from [`PseudoSimulations`]
 #' @export
-PseudoDualSimulations <- function(fit_eff,
-                                  final_gstar_estimates,
-                                  final_gstar_at_dose_grid,
-                                  final_gstar_cis,
-                                  final_gstar_ratios,
-                                  final_optimal_dose,
-                                  final_optimal_dose_at_dose_grid,
-                                  sigma2_est,
-                                  ...) {
+PseudoDualSimulations <- function(
+  fit_eff,
+  final_gstar_estimates,
+  final_gstar_at_dose_grid,
+  final_gstar_cis,
+  final_gstar_ratios,
+  final_optimal_dose,
+  final_optimal_dose_at_dose_grid,
+  sigma2_est,
+  ...
+) {
   start <- PseudoSimulations(...)
-  .PseudoDualSimulations(start,
+  .PseudoDualSimulations(
+    start,
     fit_eff = fit_eff,
     final_gstar_estimates = final_gstar_estimates,
     final_gstar_at_dose_grid = final_gstar_at_dose_grid,
@@ -699,7 +704,9 @@ PseudoDualSimulations <- function(fit_eff,
 #' @note Do not use the `.DefaultPseudoDualSimulations()` function.
 #' @export
 .DefaultPseudoDualSimulations <- function() {
-  stop("Class PseudoDualSimulations cannot be instantiated directly. Please use a subclass.")
+  stop(
+    "Class PseudoDualSimulations cannot be instantiated directly. Please use a subclass."
+  )
 }
 
 # PseudoDualFlexiSimulations ----
@@ -732,12 +739,9 @@ PseudoDualSimulations <- function(fit_eff,
 #' @param \dots additional parameters from [`PseudoDualSimulations`]
 #'
 #' @export
-PseudoDualFlexiSimulations <- function(sigma2_beta_w_est,
-                                       ...) {
+PseudoDualFlexiSimulations <- function(sigma2_beta_w_est, ...) {
   start <- PseudoDualSimulations(...)
-  .PseudoDualFlexiSimulations(start,
-    sigma2_beta_w_est = sigma2_beta_w_est
-  )
+  .PseudoDualFlexiSimulations(start, sigma2_beta_w_est = sigma2_beta_w_est)
 }
 
 ## default constructor ----
@@ -746,7 +750,9 @@ PseudoDualFlexiSimulations <- function(sigma2_beta_w_est,
 #' @note Typically, end users will not use the `.DefaultPseudoFlexiSimulations()` function.
 #' @export
 .DefaultPseudoDualFlexiSimulations <- function() {
-  stop("Class PseudoFlexiSimulations cannot be instantiated directly. Please use one of its subclasses instead.")
+  stop(
+    "Class PseudoFlexiSimulations cannot be instantiated directly. Please use one of its subclasses instead."
+  )
 }
 
 # nolint start
@@ -850,7 +856,9 @@ PseudoDualFlexiSimulations <- function(sigma2_beta_w_est,
 #' @note Typically, end users will not use the `.DefaultPseudoSimulationsSummary()` function.
 #' @export
 .DefaultPseudoSimulationsSummary <- function() {
-  stop(paste0("Class PseudoSimulationsSummary cannot be instantiated directly.  Please use one of its subclasses instead."))
+  stop(paste0(
+    "Class PseudoSimulationsSummary cannot be instantiated directly.  Please use one of its subclasses instead."
+  ))
 }
 
 ## ---------------------------------------------------------------------------------------------
@@ -880,15 +888,14 @@ PseudoDualFlexiSimulations <- function(sigma2_beta_w_est,
   setClass(
     Class = "PseudoDualSimulationsSummary",
     contains = "PseudoSimulationsSummary",
-    representation =
-      representation(
-        targetGstar = "numeric",
-        targetGstarAtDoseGrid = "numeric",
-        GstarSummary = "table",
-        ratioGstarSummary = "table",
-        EffFitAtDoseMostSelected = "numeric",
-        meanEffFit = "list"
-      )
+    representation = representation(
+      targetGstar = "numeric",
+      targetGstarAtDoseGrid = "numeric",
+      GstarSummary = "table",
+      ratioGstarSummary = "table",
+      EffFitAtDoseMostSelected = "numeric",
+      meanEffFit = "list"
+    )
   )
 
 ## default constructor ----
@@ -897,7 +904,9 @@ PseudoDualFlexiSimulations <- function(sigma2_beta_w_est,
 #' @note Typically, end users will not use the `.DefaultPseudoDualSimulationsSummary()` function.
 #' @export
 .DefaultPseudoDualSimulationsSummary <- function() {
-  stop(paste0("Class PseudoDualSimulationsSummary cannot be instantiated directly.  Please use one of its subclasses instead."))
+  stop(paste0(
+    "Class PseudoDualSimulationsSummary cannot be instantiated directly.  Please use one of its subclasses instead."
+  ))
 }
 
 ## ---------------------------------------------------------------------------------------------
@@ -932,12 +941,9 @@ validObject(.DASimulations())
 ##'
 ##' @export
 ##' @keywords methods
-DASimulations <- function(trialduration,
-                          ...) {
+DASimulations <- function(trialduration, ...) {
   start <- Simulations(...)
-  .DASimulations(start,
-    trialduration = trialduration
-  )
+  .DASimulations(start, trialduration = trialduration)
 }
 
 
@@ -987,8 +993,7 @@ setMethod(
     rv <- list()
     for (nm in slot_names) {
       if (!is.function(slot(x, nm))) {
-        if (nm %in% c("stop_reasons", "additional_stats")) {
-        } else {
+        if (nm %in% c("stop_reasons", "additional_stats")) {} else {
           rv[[nm]] <- h_tidy_slot(x, nm)
         }
       }

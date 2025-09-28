@@ -15,7 +15,8 @@ test_that("Posterior summaries for probabilities of
   dose_grid_sc3 <- c(10, 15, 30, 45, 60, 90, 120, 150, 180, 240)
 
   data <- Data(
-    x = c(rep(15, 3)), y = c(rep(0, 2), 1),
+    x = c(rep(15, 3)),
+    y = c(rep(0, 2), 1),
     cohort = c(rep(1, 3)),
     doseGrid = dose_grid_sc3,
     ID = 1:3
@@ -55,14 +56,20 @@ test_that("Posterior summaries for probabilities of
 
   postSamples <- mcmc(data, model_bcrm_sc3, mcmc_options)
 
-  dose_rec_loss <- expect_silent(nextBest(ncrm_loss_sc3,
+  dose_rec_loss <- expect_silent(nextBest(
+    ncrm_loss_sc3,
     doselimit = maxDose(combIncrement, data),
-    postSamples, model_bcrm_sc3, data
+    postSamples,
+    model_bcrm_sc3,
+    data
   ))
 
-  dose_rec <- expect_silent(nextBest(ncrm_sc3,
+  dose_rec <- expect_silent(nextBest(
+    ncrm_sc3,
     doselimit = maxDose(combIncrement, data),
-    postSamples, model_bcrm_sc3, data
+    postSamples,
+    model_bcrm_sc3,
+    data
   ))
 
   rec_dose_loss_sc3 <- dose_rec_loss$value
@@ -94,8 +101,10 @@ test_that("Posterior summaries for probabilities of
   )
 
   # Posterior summaries computed by SAS
-  temp <- read.csv2(test_path("testdata/sc3_sit1.csv"),
-    header = TRUE, dec = "."
+  temp <- read.csv2(
+    test_path("testdata/sc3_sit1.csv"),
+    header = TRUE,
+    dec = "."
   )
   sas_sc3 <- apply(as.matrix(temp[, -1]), 2, as.numeric)
   rownames(sas_sc3) <- temp[, 1]
@@ -170,14 +179,20 @@ test_that("Posterior summaries for probabilities of
 
   postSamples <- mcmc(data, model_bcrm_sc3, mcmc_options)
 
-  dose_rec_loss <- expect_silent(nextBest(ncrm_loss_sc3,
+  dose_rec_loss <- expect_silent(nextBest(
+    ncrm_loss_sc3,
     doselimit = maxDose(combIncrement, data),
-    postSamples, model_bcrm_sc3, data
+    postSamples,
+    model_bcrm_sc3,
+    data
   ))
 
-  dose_rec <- expect_silent(nextBest(ncrm_sc3,
+  dose_rec <- expect_silent(nextBest(
+    ncrm_sc3,
     doselimit = maxDose(combIncrement, data),
-    postSamples, model_bcrm_sc3, data
+    postSamples,
+    model_bcrm_sc3,
+    data
   ))
 
   rec_dose_loss_sc3 <- dose_rec_loss$value
@@ -209,8 +224,10 @@ test_that("Posterior summaries for probabilities of
   )
 
   # Posterior summaries computed by SAS
-  temp <- read.csv2(test_path("testdata/sc3_sit2.csv"),
-    header = TRUE, dec = "."
+  temp <- read.csv2(
+    test_path("testdata/sc3_sit2.csv"),
+    header = TRUE,
+    dec = "."
   )
   sas_sc3 <- apply(as.matrix(temp[, -1]), 2, as.numeric)
   rownames(sas_sc3) <- temp[, 1]
@@ -285,14 +302,20 @@ test_that("Posterior summaries for probabilities of
 
   postSamples <- mcmc(data, model_bcrm_sc3, mcmc_options)
 
-  dose_rec_loss <- expect_silent(nextBest(ncrm_loss_sc3,
+  dose_rec_loss <- expect_silent(nextBest(
+    ncrm_loss_sc3,
     doselimit = maxDose(combIncrement, data),
-    postSamples, model_bcrm_sc3, data
+    postSamples,
+    model_bcrm_sc3,
+    data
   ))
 
-  dose_rec <- expect_silent(nextBest(ncrm_sc3,
+  dose_rec <- expect_silent(nextBest(
+    ncrm_sc3,
     doselimit = maxDose(combIncrement, data),
-    postSamples, model_bcrm_sc3, data
+    postSamples,
+    model_bcrm_sc3,
+    data
   ))
 
   rec_dose_loss_sc3 <- dose_rec_loss$value
@@ -324,8 +347,10 @@ test_that("Posterior summaries for probabilities of
   )
 
   # Posterior summaries computed by SAS
-  temp <- read.csv2(test_path("testdata/sc3_sit3.csv"),
-    header = TRUE, dec = "."
+  temp <- read.csv2(
+    test_path("testdata/sc3_sit3.csv"),
+    header = TRUE,
+    dec = "."
   )
   sas_sc3 <- apply(as.matrix(temp[, -1]), 2, as.numeric)
   rownames(sas_sc3) <- temp[, 1]
@@ -400,14 +425,20 @@ test_that("Posterior summaries for probabilities of
 
   postSamples <- mcmc(data, model_bcrm_sc3, mcmc_options)
 
-  dose_rec_loss <- expect_silent(nextBest(ncrm_loss_sc3,
+  dose_rec_loss <- expect_silent(nextBest(
+    ncrm_loss_sc3,
     doselimit = maxDose(combIncrement, data),
-    postSamples, model_bcrm_sc3, data
+    postSamples,
+    model_bcrm_sc3,
+    data
   ))
 
-  dose_rec <- expect_silent(nextBest(ncrm_sc3,
+  dose_rec <- expect_silent(nextBest(
+    ncrm_sc3,
     doselimit = maxDose(combIncrement, data),
-    postSamples, model_bcrm_sc3, data
+    postSamples,
+    model_bcrm_sc3,
+    data
   ))
 
   rec_dose_loss_sc3 <- dose_rec_loss$value
@@ -439,8 +470,10 @@ test_that("Posterior summaries for probabilities of
   )
 
   # Posterior summaries computed by SAS
-  temp <- read.csv2(test_path("testdata/sc3_sit4.csv"),
-    header = TRUE, dec = "."
+  temp <- read.csv2(
+    test_path("testdata/sc3_sit4.csv"),
+    header = TRUE,
+    dec = "."
   )
   sas_sc3 <- apply(as.matrix(temp[, -1]), 2, as.numeric)
   rownames(sas_sc3) <- temp[, 1]

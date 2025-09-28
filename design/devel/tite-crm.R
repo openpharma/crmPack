@@ -15,21 +15,33 @@ source("R/TITE-CRM-simulation.r")
 data <- DataTITE(
   x = c(0.1, 0.5, 1.5, 3, 6, 10, 10, 10),
   y = c(0, 0, 1, 1, 0, 0, 1, 0),
-  doseGrid =
-    c(
-      0.1, 0.5, 1.5, 3, 6,
-      seq(from = 10, to = 80, by = 2)
-    ),
+  doseGrid = c(
+    0.1,
+    0.5,
+    1.5,
+    3,
+    6,
+    seq(from = 10, to = 80, by = 2)
+  ),
   u = c(42, 30, 15, 5, 20, 25, 30, 60),
   t0 = c(0, -15, -30, -40, -55, -70, -75, -85),
   Tmax = 60,
   weightMethod = "adaptive"
 )
 
-emptydata <- DataTITE(doseGrid = c(
-  0.1, 0.5, 1, 1.5, 3, 6,
-  seq(from = 2, to = 50, by = 2)
-), Tmax = 42, weightMethod = "adaptive")
+emptydata <- DataTITE(
+  doseGrid = c(
+    0.1,
+    0.5,
+    1,
+    1.5,
+    3,
+    6,
+    seq(from = 2, to = 50, by = 2)
+  ),
+  Tmax = 42,
+  weightMethod = "adaptive"
+)
 
 
 # 2) Structure of the model class
@@ -71,10 +83,18 @@ plot(samples, model, data, hazard = TRUE)
 plot(samples, model, data, hazard = FALSE)
 
 # prior mean curve
-emptydata <- DataTITE(doseGrid = c(
-  0.1, 0.5, 1.5, 3, 6,
-  seq(from = 10, to = 80, by = 2)
-), Tmax = 60, weightMethod = "adaptive")
+emptydata <- DataTITE(
+  doseGrid = c(
+    0.1,
+    0.5,
+    1.5,
+    3,
+    6,
+    seq(from = 10, to = 80, by = 2)
+  ),
+  Tmax = 60,
+  weightMethod = "adaptive"
+)
 
 set.seed(94)
 Priorsamples <- mcmc(emptydata, model, options)
@@ -119,7 +139,8 @@ myStopping <- (myStopping1 | myStopping2)
 
 # 7) recommended dose for the next cohort
 
-doseRecommendation <- nextBest(myNextBest,
+doseRecommendation <- nextBest(
+  myNextBest,
   doselimit = nextMaxDose,
   samples = samples,
   model = model,
@@ -156,17 +177,20 @@ myTruth <- function(dose) {
 curve(myTruth(x), from = 0, to = 100, ylim = c(0, 1))
 
 
-
 onset <- 15
 
 exp_cond.cdf <- function(x) {
-  1 - (pexp(x, 1 / onset, lower.tail = FALSE) - pexp(28, 1 / onset, lower.tail = FALSE)) / pexp(28, 1 / onset)
+  1 -
+    (pexp(x, 1 / onset, lower.tail = FALSE) -
+      pexp(28, 1 / onset, lower.tail = FALSE)) /
+      pexp(28, 1 / onset)
 }
 
 
 # 3) set up simulation settings
 
-mySims <- simulate(design,
+mySims <- simulate(
+  design,
   args = NULL,
   truthTox = myTruth,
   truthSurv = exp_cond.cdf, # piece_exp_cond.cdf,
@@ -191,7 +215,6 @@ mySims <- simulate(design,
 #                      deescalate=FALSE,
 #                      parallel=FALSE))
 
-
 # 4) interprate simulation result
 # use a similar way as section 9.2 in the "using the package crmPack: introductory examples" document
 a <- summary(mySims, truth = myTruth)
@@ -201,7 +224,17 @@ plot(mySims)
 mySims@stopReasons[[3]]
 
 savePlot <- function(myPlot, name) {
-  png(filename = paste(Sys.Date(), "C:/Users/liaoz4/Documents/R/simulation_result/", name, ".png", sep = ""), width = 480, height = 480)
+  png(
+    filename = paste(
+      Sys.Date(),
+      "C:/Users/liaoz4/Documents/R/simulation_result/",
+      name,
+      ".png",
+      sep = ""
+    ),
+    width = 480,
+    height = 480
+  )
   print(myPlot)
   dev.off()
 }

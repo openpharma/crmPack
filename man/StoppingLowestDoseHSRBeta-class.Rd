@@ -63,7 +63,6 @@ This stopping rule is independent from the underlying model.
 Typically, end users will not use the \code{.DefaultStoppingLowestDoseHSRBeta()} function.
 }
 \examples{
-
 # Stopping the study if the first dose is toxic with more than 90\%
 # probability based on a Beta posterior distribution with Beta(1,1) prior.
 my_stopping <- StoppingLowestDoseHSRBeta(

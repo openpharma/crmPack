@@ -24,3 +24,5 @@ Rplots.pdf
 ^pkgdown$
 ⁠pkgdown/⁠
 ^data-raw$
+^\.vscode$
+^[.]?air[.]toml$

@@ -65,6 +65,5 @@ aggressive than in case of a clean part 1 without DLT.
 Typically, end users will not use the \code{.DefaultIncrementsRelativeParts()} function.
 }
 \examples{
-
 my_increments <- IncrementsRelativeParts(dlt_start = 0, clean_start = 1)
 }

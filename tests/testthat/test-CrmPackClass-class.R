@@ -21,7 +21,10 @@ testthat::local_mocked_bindings(
 
 testthat::local_mocked_bindings(
   .DefaultDualSimulationsSummary = function(...) {
-    readRDS(testthat::test_path("fixtures", "default_dual_simulations_summary.Rds"))
+    readRDS(testthat::test_path(
+      "fixtures",
+      "default_dual_simulations_summary.Rds"
+    ))
   }
 )
 # End of mocks
@@ -29,13 +32,29 @@ testthat::local_mocked_bindings(
 test_that("CrmPackClass correctly identifies crmPack classes", {
   crmPack_class_list <- getClasses(asNamespace("crmPack"))
   exclusions <- c(
-    "CohortSize", "CrmPackClass", "DualEndpoint", "GeneralData", "GeneralModel",
-    "GeneralSimulationsSummary", "Increments", "ModelEff", "ModelPseudo",
-    "ModelTox", "NextBest", "positive_number", "PseudoSimulations",
-    "PseudoDualSimulations", "PseudoDualSimulationsSummary",
-    "PseudoDualFlexiSimulations", "PseudoFlexiSimulations",
-    "PseudoSimulationsSummary", "SimulationsSummary", "Report", "SafetyWindow",
-    "Stopping", "Validate"
+    "CohortSize",
+    "CrmPackClass",
+    "DualEndpoint",
+    "GeneralData",
+    "GeneralModel",
+    "GeneralSimulationsSummary",
+    "Increments",
+    "ModelEff",
+    "ModelPseudo",
+    "ModelTox",
+    "NextBest",
+    "positive_number",
+    "PseudoSimulations",
+    "PseudoDualSimulations",
+    "PseudoDualSimulationsSummary",
+    "PseudoDualFlexiSimulations",
+    "PseudoFlexiSimulations",
+    "PseudoSimulationsSummary",
+    "SimulationsSummary",
+    "Report",
+    "SafetyWindow",
+    "Stopping",
+    "Validate"
   )
   crmPack_class_list <- setdiff(crmPack_class_list, exclusions)
 
@@ -43,7 +62,10 @@ test_that("CrmPackClass correctly identifies crmPack classes", {
     if (!isClassUnion(cls)) {
       constructor_name <- paste0(".Default", cls)
       if (exists(constructor_name, mode = "function")) {
-        expect_true(is(do.call(paste0(".Default", cls), list()), "CrmPackClass"))
+        expect_true(is(
+          do.call(paste0(".Default", cls), list()),
+          "CrmPackClass"
+        ))
       } else {
         fail(paste0("No default constructor for ", cls))
       }
@@ -64,13 +86,29 @@ test_that("CrmPackClass does not identify random non-crmPack classes", {
 
 test_that("virtual CrmPackClass classes throw expected error when default constructor called", {
   exception_class_list <- c(
-    "CohortSize", "CrmPackClass", "DualEndpoint", "GeneralData", "GeneralModel",
-    "GeneralSimulationsSummary", "Increments", "ModelEff", "ModelPseudo",
-    "ModelTox", "NextBest", "positive_number", "PseudoSimulations",
-    "PseudoDualSimulations", "PseudoDualSimulationsSummary",
-    "PseudoDualFlexiSimulations", "PseudoFlexiSimulations",
-    "PseudoSimulationsSummary", "SimulationsSummary", "Report", "SafetyWindow",
-    "Stopping", "Validate"
+    "CohortSize",
+    "CrmPackClass",
+    "DualEndpoint",
+    "GeneralData",
+    "GeneralModel",
+    "GeneralSimulationsSummary",
+    "Increments",
+    "ModelEff",
+    "ModelPseudo",
+    "ModelTox",
+    "NextBest",
+    "positive_number",
+    "PseudoSimulations",
+    "PseudoDualSimulations",
+    "PseudoDualSimulationsSummary",
+    "PseudoDualFlexiSimulations",
+    "PseudoFlexiSimulations",
+    "PseudoSimulationsSummary",
+    "SimulationsSummary",
+    "Report",
+    "SafetyWindow",
+    "Stopping",
+    "Validate"
   )
   for (cls in exception_class_list) {
     constructor_name <- paste0(".Default", cls)

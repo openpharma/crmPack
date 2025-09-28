@@ -238,7 +238,8 @@ NextBestNCRM(
   target = c(0.2, 0.35),
   overdose = c(0.35, 1),
   max_overdose_prob = 0.25
-) \%>\% tidy()
+) \%>\%
+  tidy()
 .DefaultNextBestNCRMLoss() \%>\% tidy()
 .DefaultDualDesign() \%>\% tidy()
 options <- McmcOptions(
@@ -251,10 +252,7 @@ emptydata <- Data(doseGrid = c(1, 3, 5, 10, 15, 20, 25, 40, 50, 80, 100))
 
 model <- LogisticLogNormal(
   mean = c(-0.85, 1),
-  cov =
-    matrix(c(1, -0.5, -0.5, 1),
-      nrow = 2
-    ),
+  cov = matrix(c(1, -0.5, -0.5, 1), nrow = 2),
   ref_dose = 56
 )
 

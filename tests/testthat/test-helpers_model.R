@@ -10,7 +10,11 @@ test_that("h_model_dual_endpoint_sigma2W updates model components for fixed sigm
 test_that("h_model_dual_endpoint_sigma2W updates model components", {
   comp <- h_get_model_4comp()
 
-  result <- h_model_dual_endpoint_sigma2W(FALSE, sigma2W = c(a = 2, b = 4), comp = comp)
+  result <- h_model_dual_endpoint_sigma2W(
+    FALSE,
+    sigma2W = c(a = 2, b = 4),
+    comp = comp
+  )
   comp$priormodel <- function() {
     y ~ x + 1
     precW ~ dgamma(precWa, precWb)
@@ -103,13 +107,23 @@ test_that("h_model_dual_endpoint_sigma2betaW updates model components for fixed 
     c(ms(from_prior), list(precBetaW = 1 / 5))
   }
 
-  expect_identical(result@modelspecs(from_prior = TRUE), de@modelspecs(from_prior = TRUE)) # nolintr
-  expect_identical(result@modelspecs(from_prior = FALSE), de@modelspecs(from_prior = FALSE)) # nolintr
+  expect_identical(
+    result@modelspecs(from_prior = TRUE),
+    de@modelspecs(from_prior = TRUE)
+  ) # nolintr
+  expect_identical(
+    result@modelspecs(from_prior = FALSE),
+    de@modelspecs(from_prior = FALSE)
+  ) # nolintr
 })
 
 test_that("h_model_dual_endpoint_sigma2betaW updates model components", {
   de <- h_get_dual_endpoint()
-  result <- h_model_dual_endpoint_sigma2betaW(FALSE, sigma2betaW = c(a = 2, b = 4), de = de)
+  result <- h_model_dual_endpoint_sigma2betaW(
+    FALSE,
+    sigma2betaW = c(a = 2, b = 4),
+    de = de
+  )
 
   ms <- de@modelspecs
   init <- de@init
@@ -130,8 +144,14 @@ test_that("h_model_dual_endpoint_sigma2betaW updates model components", {
 
   # nolint start
   expect_identical(result@priormodel, de@priormodel)
-  expect_identical(result@modelspecs(from_prior = TRUE), de@modelspecs(from_prior = TRUE))
-  expect_identical(result@modelspecs(from_prior = FALSE), de@modelspecs(from_prior = FALSE))
+  expect_identical(
+    result@modelspecs(from_prior = TRUE),
+    de@modelspecs(from_prior = TRUE)
+  )
+  expect_identical(
+    result@modelspecs(from_prior = FALSE),
+    de@modelspecs(from_prior = FALSE)
+  )
   expect_identical(result@init(0), de@init(0))
   expect_identical(result@init(2), de@init(2))
   expect_identical(result@sample, de@sample)

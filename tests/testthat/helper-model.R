@@ -124,7 +124,8 @@ h_get_logistic_normal_mix <- function() {
   )
 }
 
-h_get_logistic_normal_fixed_mix <- function(log_normal = FALSE) { # nolint
+h_get_logistic_normal_fixed_mix <- function(log_normal = FALSE) {
+  # nolint
   LogisticNormalFixedMixture(
     components = list(
       comp1 = ModelParamsNormal(
@@ -170,11 +171,14 @@ h_get_dual_endpoint <- function(use_log_dose = FALSE, fixed = TRUE) {
   )
 }
 
-h_get_dual_endpoint_rw <- function(use_log_dose = FALSE,
-                                   rw1 = TRUE,
-                                   fixed = TRUE) {
+h_get_dual_endpoint_rw <- function(
+  use_log_dose = FALSE,
+  rw1 = TRUE,
+  fixed = TRUE
+) {
   de <- h_get_dual_endpoint(use_log_dose = use_log_dose, fixed = fixed)
-  sigma2betaW <- if (fixed) { # nolint
+  sigma2betaW <- if (fixed) {
+    # nolint
     0.01
   } else {
     c(a = 1, b = 2)
@@ -221,8 +225,7 @@ h_get_dual_endpoint_beta <- function(use_log_dose = FALSE, fixed = TRUE) {
   )
 }
 
-h_get_dual_endpoint_emax <- function(use_log_dose = FALSE,
-                                     fixed = TRUE) {
+h_get_dual_endpoint_emax <- function(use_log_dose = FALSE, fixed = TRUE) {
   de <- h_get_dual_endpoint(use_log_dose = use_log_dose, fixed = fixed)
   if (fixed) {
     E0 <- 10 # nolint
@@ -270,9 +273,11 @@ h_get_logistic_indep_beta <- function(emptydata = FALSE) {
   )
 }
 
-h_get_eff_log_log <- function(emptydata = FALSE,
-                              dlt_observed_only = FALSE,
-                              const = 2) {
+h_get_eff_log_log <- function(
+  emptydata = FALSE,
+  dlt_observed_only = FALSE,
+  const = 2
+) {
   dose_grid <- seq(25, 300, 25)
 
   data <- if (emptydata) {
@@ -306,9 +311,11 @@ h_get_eff_log_log <- function(emptydata = FALSE,
   )
 }
 
-h_get_eff_flexi <- function(emptydata = FALSE,
-                            rw1 = TRUE,
-                            dlt_observed_only = FALSE) {
+h_get_eff_flexi <- function(
+  emptydata = FALSE,
+  rw1 = TRUE,
+  dlt_observed_only = FALSE
+) {
   dose_grid <- seq(25, 300, 25)
 
   data <- if (emptydata) {

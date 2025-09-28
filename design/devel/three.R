@@ -20,28 +20,53 @@ source("../R/Data-methods.R")
 
 ## create some test data
 data <- Data(
-  x =
-    c(
-      0.1, 0.1, 0.1,
-      10, 10, 10,
-      10, 10, 10,
-      20, 20, 20,
-      30, 30, 30,
-      60, 60, 60,
-      60, 60, 60
-    ),
-  y =
-    as.integer(c(
-      1, 1, 0,
-      0, 0, 1,
-      0, 0, 0,
-      0, 0, 0,
-      0, 0, 0,
-      0, 0, 0,
-      1, 0, 0
-    )),
-  doseGrid =
-    c(0.1, 10, 20, 30, 60)
+  x = c(
+    0.1,
+    0.1,
+    0.1,
+    10,
+    10,
+    10,
+    10,
+    10,
+    10,
+    20,
+    20,
+    20,
+    30,
+    30,
+    30,
+    60,
+    60,
+    60,
+    60,
+    60,
+    60
+  ),
+  y = as.integer(c(
+    1,
+    1,
+    0,
+    0,
+    0,
+    1,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    1,
+    0,
+    0
+  )),
+  doseGrid = c(0.1, 10, 20, 30, 60)
 )
 data
 data@nGrid
@@ -85,10 +110,8 @@ design <- RuleDesign(
 design <- ThreePlusThreeDesign(emptydata@doseGrid)
 
 
-
 ## ----------------------------------------
 ## todo: cont here
-
 
 ## for testing the simulate function:
 object <- design
@@ -109,15 +132,10 @@ seed <- 23
 
 ## iterSim <- 1L
 
-
 source("../R/Simulations-class.R")
 source("../R/Design-methods.R")
 
-mySims <- simulate(design,
-  truth = truth,
-  args = args,
-  nsim = 10L
-)
+mySims <- simulate(design, truth = truth, args = args, nsim = 10L)
 
 str(mySims)
 
@@ -132,7 +150,8 @@ mySims@doses
 ## what is the true prob at these doses?
 truth(
   mySims@doses,
-  args$alpha0, args$alpha1
+  args$alpha0,
+  args$alpha1
 )
 
 
@@ -145,9 +164,7 @@ myTruth <- function(dose) {
 }
 curve(myTruth(x), from = 0, to = 60)
 
-sumOut <- summary(mySims,
-  truth = myTruth
-)
+sumOut <- summary(mySims, truth = myTruth)
 sumOut
 
 mySims@doses

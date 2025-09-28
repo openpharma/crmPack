@@ -82,8 +82,10 @@ DLEmodel <- LogisticIndepBeta(
 
 ## The efficacy model of 'ModelEff' (e.g 'Effloglog') class
 Effmodel <- Effloglog(
-  eff = c(1.223, 2.513), eff_dose = c(25, 300),
-  nu = c(a = 1, b = 0.025), data = data
+  eff = c(1.223, 2.513),
+  eff_dose = c(25, 300),
+  nu = c(a = 1, b = 0.025),
+  data = data
 )
 
 ## The escalation rule using the 'NextBestMaxGain' class
@@ -113,7 +115,8 @@ design <- DualResponsesDesign(
   stopping = myStopping,
   increments = myIncrements,
   cohort_size = mySize,
-  data = data, startingDose = 25
+  data = data,
+  startingDose = 25
 )
 ## Specify the true DLE and efficacy curves
 myTruthDLE <- probFunction(DLEmodel, phi1 = -53.66584, phi2 = 10.50499)

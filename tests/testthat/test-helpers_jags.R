@@ -215,7 +215,7 @@ test_that("h_jags_join_models works as expected for empty model2", {
   model1 <- function(x) {
     x - 2
   } # nolintr
-  model2 <- function(x) { } # nolintr
+  model2 <- function(x) {} # nolintr
   result <- h_jags_join_models(model1, model2)
   expected <- model1
 
@@ -263,7 +263,7 @@ test_that("h_jags_extract_samples works as expected for vector", {
   class(x) <- "mcarray"
 
   result <- h_jags_extract_samples(x)
-  expected <- x[, , 1L]
+  expected <- x[,, 1L]
   expect_identical(result, expected)
 })
 
@@ -272,6 +272,6 @@ test_that("h_jags_extract_samples works as expected for matrix", {
   class(x) <- "mcarray"
 
   result <- h_jags_extract_samples(x)
-  expected <- t(x[, , 1L])
+  expected <- t(x[,, 1L])
   expect_identical(result, expected)
 })

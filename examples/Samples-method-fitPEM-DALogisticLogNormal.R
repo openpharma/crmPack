@@ -6,11 +6,14 @@ data <- DataDA(
   y = c(0, 0, 1, 1, 0, 0, 1, 0),
   ID = 1L:8L,
   cohort = as.integer(c(1:5, 6, 6, 6)),
-  doseGrid =
-    c(
-      0.1, 0.5, 1.5, 3, 6,
-      seq(from = 10, to = 80, by = 2)
-    ),
+  doseGrid = c(
+    0.1,
+    0.5,
+    1.5,
+    3,
+    6,
+    seq(from = 10, to = 80, by = 2)
+  ),
   u = c(42, 30, 15, 5, 20, 25, 30, 60),
   t0 = c(0, 15, 30, 40, 55, 70, 75, 85),
   Tmax = 60
@@ -27,7 +30,11 @@ model <- DALogisticLogNormal(
   cov = matrix(c(1, -0.5, -0.5, 1), nrow = 2),
   ref_dose = 56,
   npiece = npiece_,
-  l = as.numeric(t(apply(as.matrix(c(1:npiece_), 1, npiece_), 2, lambda_prior))),
+  l = as.numeric(t(apply(
+    as.matrix(c(1:npiece_), 1, npiece_),
+    2,
+    lambda_prior
+  ))),
   c_par = 2
 )
 

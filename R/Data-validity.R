@@ -21,11 +21,23 @@ v_general_data <- function(object) {
     return("nObs must be of type integer of length 1")
   }
   v$check(
-    test_integer(object@ID, len = object@nObs, any.missing = FALSE, unique = TRUE, null.ok = TRUE),
+    test_integer(
+      object@ID,
+      len = object@nObs,
+      any.missing = FALSE,
+      unique = TRUE,
+      null.ok = TRUE
+    ),
     "ID must be of type integer and length nObs and unique"
   )
   v$check(
-    test_integer(object@cohort, lower = 0L, len = object@nObs, any.missing = FALSE, sorted = TRUE),
+    test_integer(
+      object@cohort,
+      lower = 0L,
+      len = object@nObs,
+      any.missing = FALSE,
+      sorted = TRUE
+    ),
     "cohort must be of type integer and length nObs and contain non-negative, sorted values"
   )
   v$result()
@@ -60,7 +72,13 @@ h_validate_common_data_slots <- function(object) {
     "Doses vector x must be of type double and length nObs"
   )
   v$check(
-    test_double(object@doseGrid, len = object@nGrid, any.missing = FALSE, unique = TRUE, sorted = TRUE),
+    test_double(
+      object@doseGrid,
+      len = object@nGrid,
+      any.missing = FALSE,
+      unique = TRUE,
+      sorted = TRUE
+    ),
     "doseGrid must be of type double and length nGrid and contain unique, sorted values"
   )
   v$check(
@@ -90,7 +108,10 @@ h_validate_common_data_slots <- function(object) {
       "A cohort with only placebo is not allowed"
     )
     v$check(
-      h_doses_unique_per_cohort(dose = object@x[!is_placebo], cohort = object@cohort[!is_placebo]),
+      h_doses_unique_per_cohort(
+        dose = object@x[!is_placebo],
+        cohort = object@cohort[!is_placebo]
+      ),
       "There must be only one dose level, other than placebo, per cohort"
     )
   } else {
@@ -107,7 +128,13 @@ h_validate_common_data_slots <- function(object) {
 v_data <- function(object) {
   v <- h_validate_common_data_slots(object)
   v$check(
-    test_integer(object@y, lower = 0, upper = 1, len = object@nObs, any.missing = FALSE),
+    test_integer(
+      object@y,
+      lower = 0,
+      upper = 1,
+      len = object@nObs,
+      any.missing = FALSE
+    ),
     "DLT vector y must be nObs long and contain 0 or 1 integers only"
   )
 
@@ -130,7 +157,13 @@ v_data_dual <- function(object) {
 v_data_parts <- function(object) {
   v <- Validate()
   v$check(
-    test_integer(object@part, lower = 1, upper = 2, len = object@nObs, any.missing = FALSE),
+    test_integer(
+      object@part,
+      lower = 1,
+      upper = 2,
+      len = object@nObs,
+      any.missing = FALSE
+    ),
     "vector part must be nObs long and contain 1 or 2 integers only"
   )
   v$check(
@@ -138,7 +171,12 @@ v_data_parts <- function(object) {
     "nextPart must be integer scalar 1 or 2"
   )
   v$check(
-    test_numeric(object@part1Ladder, any.missing = FALSE, sorted = TRUE, unique = TRUE),
+    test_numeric(
+      object@part1Ladder,
+      any.missing = FALSE,
+      sorted = TRUE,
+      unique = TRUE
+    ),
     "part1Ladder must be of type double and contain unique, sorted values"
   )
   v$check(
@@ -162,7 +200,13 @@ v_data_mixture <- function(object) {
     "Dose vector xshare must be of type double and length nObsshare"
   )
   v$check(
-    test_integer(object@yshare, lower = 0, upper = 1, len = object@nObsshare, any.missing = FALSE),
+    test_integer(
+      object@yshare,
+      lower = 0,
+      upper = 1,
+      len = object@nObsshare,
+      any.missing = FALSE
+    ),
     "DLT vector yshare must be nObsshare long and contain 0 or 1 integers only"
   )
   v$check(
@@ -178,15 +222,28 @@ v_data_da <- function(object) {
   v <- Validate()
   # In if clause so that below test_* won't fail.
   if (!(test_number(object@Tmax) && object@Tmax > 0)) {
-    return("DLT window Tmax must be of type double of length 1 and greater than 0")
+    return(
+      "DLT window Tmax must be of type double of length 1 and greater than 0"
+    )
   }
   v$check(
-    test_numeric(object@u, upper = object@Tmax, len = object@nObs, any.missing = FALSE) &&
+    test_numeric(
+      object@u,
+      upper = object@Tmax,
+      len = object@nObs,
+      any.missing = FALSE
+    ) &&
       all(object@u >= 0),
     "u must be of type double, nObs length, non-negative, not missing and not greater than Tmax"
   )
   v$check(
-    test_numeric(object@t0, lower = 0, len = object@nObs, any.missing = FALSE, sorted = TRUE),
+    test_numeric(
+      object@t0,
+      lower = 0,
+      len = object@nObs,
+      any.missing = FALSE,
+      sorted = TRUE
+    ),
     "t0 must be of type double, nObs length, sorted non-negative"
   )
   v$result()
@@ -197,11 +254,18 @@ v_data_da <- function(object) {
 v_data_ordinal <- function(object) {
   v <- h_validate_common_data_slots(object)
   v$check(
-    test_integer(object@y, lower = 0, upper = length(object@yCategories) - 1, len = object@nObs, any.missing = FALSE),
+    test_integer(
+      object@y,
+      lower = 0,
+      upper = length(object@yCategories) - 1,
+      len = object@nObs,
+      any.missing = FALSE
+    ),
     "DLT vector y must be nObs long and contain integers between 0 and k-1 only, where k is the length of the vector in the yCategories slot" # nolint
   )
   v$check(
-    length(unique(names(object@yCategories))) == length(names(object@yCategories)),
+    length(unique(names(object@yCategories))) ==
+      length(names(object@yCategories)),
     "yCategory labels must be unique"
   )
   v$result()

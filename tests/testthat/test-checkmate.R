@@ -12,12 +12,24 @@ test_that("check_equal works correctly", {
 # assert_equal ----
 test_that("assert_equal works correctly", {
   expect_invisible(assert_equal(1:2, 1:2))
-  expect_error(assert_equal(1:2, 2:3), "Assertion on 'x' failed: Not all equal.")
-  expect_error(assert_equal(Inf, Inf), "Assertion on 'x' failed: Not all entries finite.")
+  expect_error(
+    assert_equal(1:2, 2:3),
+    "Assertion on 'x' failed: Not all equal."
+  )
+  expect_error(
+    assert_equal(Inf, Inf),
+    "Assertion on 'x' failed: Not all entries finite."
+  )
   expect_error(assert_equal(NA, 1), "Assertion on 'x' failed: Some entries NA")
-  expect_error(assert_equal(0.01, 0.02), "Assertion on 'x' failed: Not all equal.")
+  expect_error(
+    assert_equal(0.01, 0.02),
+    "Assertion on 'x' failed: Not all equal."
+  )
   expect_invisible(assert_equal(0.01, 0.02, tol = 0.05))
-  expect_error(assert_equal(1, c(1, 1)), "Assertion on 'x' failed: Not all of same length.")
+  expect_error(
+    assert_equal(1, c(1, 1)),
+    "Assertion on 'x' failed: Not all of same length."
+  )
 })
 
 # check_probabilities ----
@@ -280,35 +292,86 @@ test_that("check_range throws the error as expected", {
 test_that("check_range returns error message as expected", {
   em <- "x must be a valid numerical range."
 
-  expect_identical(check_range(c("a", "c")), paste(em, "Must be of type 'numeric', not 'character'"))
-  expect_identical(check_range(1), paste(em, "Must have length 2, but has length 1"))
-  expect_identical(check_range(c(1, 2, 3)), paste(em, "Must have length 2, but has length 3"))
-  expect_identical(check_range(c(1, 1)), paste(em, "Contains duplicated values, position 2"))
+  expect_identical(
+    check_range(c("a", "c")),
+    paste(em, "Must be of type 'numeric', not 'character'")
+  )
+  expect_identical(
+    check_range(1),
+    paste(em, "Must have length 2, but has length 1")
+  )
+  expect_identical(
+    check_range(c(1, 2, 3)),
+    paste(em, "Must have length 2, but has length 3")
+  )
+  expect_identical(
+    check_range(c(1, 1)),
+    paste(em, "Contains duplicated values, position 2")
+  )
   expect_identical(check_range(c(2, 1)), paste(em, "Must be sorted"))
-  expect_identical(check_range(c(1, NA)), paste(em, "Contains missing values (element 2)"))
+  expect_identical(
+    check_range(c(1, NA)),
+    paste(em, "Contains missing values (element 2)")
+  )
 
   # Adding lower or upper bounds.
-  expect_identical(check_range(c(1, 5), lower = 6), paste(em, "Element 1 is not >= 6"))
-  expect_identical(check_range(c(1, 5), upper = 0), paste(em, "Element 1 is not <= 0"))
+  expect_identical(
+    check_range(c(1, 5), lower = 6),
+    paste(em, "Element 1 is not >= 6")
+  )
+  expect_identical(
+    check_range(c(1, 5), upper = 0),
+    paste(em, "Element 1 is not <= 0")
+  )
 
   # Restricting to finite.
-  expect_identical(check_range(c(1, Inf), finite = TRUE), paste(em, "Must be finite"))
-  expect_identical(check_range(c(-Inf, 5), finite = TRUE), paste(em, "Must be finite"))
+  expect_identical(
+    check_range(c(1, Inf), finite = TRUE),
+    paste(em, "Must be finite")
+  )
+  expect_identical(
+    check_range(c(-Inf, 5), finite = TRUE),
+    paste(em, "Must be finite")
+  )
 })
 
 test_that("check_range returns error message as expected when unique is FALSE", {
   em <- "x must be a valid numerical range."
 
-  expect_identical(check_range(1, unique = FALSE), paste(em, "Must have length 2, but has length 1"))
-  expect_identical(check_range(c(1, 2, 3), unique = FALSE), paste(em, "Must have length 2, but has length 3"))
-  expect_identical(check_range(c(2, 1), unique = FALSE), paste(em, "Must be sorted"))
-  expect_identical(check_range(c(1, NA), unique = FALSE), paste(em, "Contains missing values (element 2)"))
+  expect_identical(
+    check_range(1, unique = FALSE),
+    paste(em, "Must have length 2, but has length 1")
+  )
+  expect_identical(
+    check_range(c(1, 2, 3), unique = FALSE),
+    paste(em, "Must have length 2, but has length 3")
+  )
+  expect_identical(
+    check_range(c(2, 1), unique = FALSE),
+    paste(em, "Must be sorted")
+  )
+  expect_identical(
+    check_range(c(1, NA), unique = FALSE),
+    paste(em, "Contains missing values (element 2)")
+  )
 
   # Adding lower or upper bounds.
-  expect_identical(check_range(c(1, 5), lower = 6, unique = FALSE), paste(em, "Element 1 is not >= 6"))
-  expect_identical(check_range(c(1, 5), upper = 0, unique = FALSE), paste(em, "Element 1 is not <= 0"))
+  expect_identical(
+    check_range(c(1, 5), lower = 6, unique = FALSE),
+    paste(em, "Element 1 is not >= 6")
+  )
+  expect_identical(
+    check_range(c(1, 5), upper = 0, unique = FALSE),
+    paste(em, "Element 1 is not <= 0")
+  )
 
   # Restricting to finite.
-  expect_identical(check_range(c(1, Inf), finite = TRUE, unique = FALSE), paste(em, "Must be finite"))
-  expect_identical(check_range(c(-Inf, 5), finite = TRUE, unique = FALSE), paste(em, "Must be finite"))
+  expect_identical(
+    check_range(c(1, Inf), finite = TRUE, unique = FALSE),
+    paste(em, "Must be finite")
+  )
+  expect_identical(
+    check_range(c(-Inf, 5), finite = TRUE, unique = FALSE),
+    paste(em, "Must be finite")
+  )
 })

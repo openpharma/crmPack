@@ -6,10 +6,7 @@ emptydata <- Data(doseGrid = c(1, 3, 5, 10, 15, 20, 25, 40, 50, 80, 100))
 # Initialize the CRM model
 model <- LogisticLogNormal(
   mean = c(-0.85, 1),
-  cov =
-    matrix(c(1, -0.5, -0.5, 1),
-      nrow = 2
-    ),
+  cov = matrix(c(1, -0.5, -0.5, 1), nrow = 2),
   ref_dose = 56
 )
 
@@ -68,14 +65,17 @@ options <- McmcOptions(
   step = 1,
   samples = 100
 )
-time <- system.time(mySims <- simulate(design,
-  args = NULL,
-  truth = myTruth,
-  nsim = 1,
-  seed = 819,
-  mcmcOptions = options,
-  parallel = FALSE
-))[3]
+time <- system.time(
+  mySims <- simulate(
+    design,
+    args = NULL,
+    truth = myTruth,
+    nsim = 1,
+    seed = 819,
+    mcmcOptions = options,
+    parallel = FALSE
+  )
+)[3]
 
 # Plot the Summary of the Simulations
 plot(summary(mySims, truth = myTruth))

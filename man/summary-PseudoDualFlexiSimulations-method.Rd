@@ -49,8 +49,12 @@ DLEmodel <- LogisticIndepBeta(
 
 ## for the efficacy model
 Effmodel <- EffFlexi(
-  eff = c(1.223, 2.513), eff_dose = c(25, 300),
-  sigma2W = c(a = 0.1, b = 0.1), sigma2betaW = c(a = 20, b = 50), rw1 = FALSE, data = data
+  eff = c(1.223, 2.513),
+  eff_dose = c(25, 300),
+  sigma2W = c(a = 0.1, b = 0.1),
+  sigma2betaW = c(a = 20, b = 50),
+  rw1 = FALSE,
+  data = data
 )
 
 
@@ -93,9 +97,18 @@ design <- DualResponsesSamplesDesign(
 myTruthDLE <- probFunction(DLEmodel, phi1 = -53.66584, phi2 = 10.50499)
 
 myTruthEff <- c(
-  -0.5478867, 0.1645417, 0.5248031, 0.7604467,
-  0.9333009, 1.0687031, 1.1793942, 1.2726408,
-  1.3529598, 1.4233411, 1.4858613, 1.5420182
+  -0.5478867,
+  0.1645417,
+  0.5248031,
+  0.7604467,
+  0.9333009,
+  1.0687031,
+  1.1793942,
+  1.2726408,
+  1.3529598,
+  1.4233411,
+  1.4858613,
+  1.5420182
 )
 
 
@@ -117,10 +130,7 @@ mySim <- simulate(
   mcmcOptions = options
 )
 ## summarize the simulation results
-summary(mySim,
-  trueDLE = myTruthDLE,
-  trueEff = myTruthEff
-)
+summary(mySim, trueDLE = myTruthDLE, trueEff = myTruthEff)
 
 # nolint end
 }

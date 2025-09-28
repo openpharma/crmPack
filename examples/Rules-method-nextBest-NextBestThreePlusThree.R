@@ -1,4 +1,3 @@
-
 # Example of usage for `NextBestThreePlusThree` NextBest class.
 
 # Create the data.

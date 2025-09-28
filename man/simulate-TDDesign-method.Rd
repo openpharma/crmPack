@@ -83,7 +83,8 @@ tdNextBest <- NextBestTD(
   prob_target_drt = 0.35,
   prob_target_eot = 0.3
 )
-doseRecommendation <- nextBest(tdNextBest,
+doseRecommendation <- nextBest(
+  tdNextBest,
   doselimit = max(data@doseGrid),
   model = model,
   data = data
@@ -111,7 +112,8 @@ design <- TDDesign(
   stopping = myStopping,
   increments = myIncrements,
   cohort_size = mySize,
-  data = data, startingDose = 25
+  data = data,
+  startingDose = 25
 )
 
 ## Specify the truth of the DLE responses

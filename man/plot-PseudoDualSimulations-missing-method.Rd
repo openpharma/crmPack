@@ -50,7 +50,8 @@ dle_model <- LogisticIndepBeta(
 
 # The efficacy model must be of 'ModelEff' (e.g 'Effloglog') class.
 eff_model <- Effloglog(
-  eff = c(1.223, 2.513), eff_dose = c(25, 300),
+  eff = c(1.223, 2.513),
+  eff_dose = c(25, 300),
   nu = c(a = 1, b = 0.025),
   data = emptydata
 )
@@ -85,7 +86,11 @@ my_design <- DualResponsesDesign(
 
 # Specify the true DLE and efficacy curves.
 my_truth_dle <- probFunction(dle_model, phi1 = -53.66584, phi2 = 10.50499)
-my_truth_eff <- efficacyFunction(eff_model, theta1 = -4.818429, theta2 = 3.653058)
+my_truth_eff <- efficacyFunction(
+  eff_model,
+  theta1 = -4.818429,
+  theta2 = 3.653058
+)
 
 # Run simulations (for illustration purpose only 1 simulation is produced).
 my_sim <- simulate(

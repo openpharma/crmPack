@@ -9,12 +9,14 @@ library(MCMCpack)
 library(rjags)
 
 ## new helper function
-myBayesLogit <- function(y, ## 0/1 vector of responses
-                         X, ## design matrix
-                         m0, ## prior mean vector
-                         P0, ## precision matrix
-                         options) ## McmcOptions object
-{
+myBayesLogit <- function(
+  y, ## 0/1 vector of responses
+  X, ## design matrix
+  m0, ## prior mean vector
+  P0, ## precision matrix
+  options
+) {
+  ## McmcOptions object
   ## assertions
   p <- length(m0)
   nObs <- length(y)
@@ -29,9 +31,7 @@ myBayesLogit <- function(y, ## 0/1 vector of responses
   )
 
   ## get or set the seed
-  rSeed <- try(get(".Random.seed", envir = .GlobalEnv),
-    silent = TRUE
-  )
+  rSeed <- try(get(".Random.seed", envir = .GlobalEnv), silent = TRUE)
   if (is(rSeed, "try-error")) {
     set.seed(floor(runif(n = 1, min = 0, max = 1e4)))
     rSeed <- get(".Random.seed", envir = .GlobalEnv)
@@ -49,23 +49,23 @@ myBayesLogit <- function(y, ## 0/1 vector of responses
   ## build the model according to whether we sample from prior
   ## or not:
   bugsModel <- function() {
-    for (i in 1:nObs)
-    {
+    for (i in 1:nObs) {
       y[i] ~ dbern(p[i])
       logit(p[i]) <- mu[i]
     }
 
-    mu <- X[, ] %*% beta
+    mu <- X[,] %*% beta
 
     ## the multivariate normal prior on the coefficients
-    beta ~ dmnorm(priorMean[], priorPrec[, ])
+    beta ~ dmnorm(priorMean[], priorPrec[,])
   }
 
   ## write the model file into it
   modelFileName <- file.path(bugsTempDir, "bugsModel.txt")
   h_jags_write_model(bugsModel, modelFileName)
 
-  jagsModel <- rjags::jags.model(modelFileName,
+  jagsModel <- rjags::jags.model(
+    modelFileName,
     data = list(
       "X" = X,
       "y" = y,
@@ -73,35 +73,30 @@ myBayesLogit <- function(y, ## 0/1 vector of responses
       priorMean = m0,
       priorPrec = P0
     ),
-    inits =
     ## add the RNG seed to the inits list:
     ## (use Mersenne Twister as per R
     ## default)
-      list(
-        .RNG.name = "base::Mersenne-Twister",
-        .RNG.seed = rSeed
-      ),
+    inits = list(
+      .RNG.name = "base::Mersenne-Twister",
+      .RNG.seed = rSeed
+    ),
     n.chains = 1,
     n.adapt = 0
   )
   ## burn in
-  update(jagsModel,
-    n.iter = options@burnin,
-    progress.bar = "none"
-  )
+  update(jagsModel, n.iter = options@burnin, progress.bar = "none")
 
   ## samples
   samples <-
     rjags::jags.samples(
       model = jagsModel,
       variable.names = "beta",
-      n.iter =
-        (options@iterations - options@burnin),
+      n.iter = (options@iterations - options@burnin),
       thin = options@step,
       progress.bar = "none"
     )
 
-  return(t(samples$beta[, , 1L]))
+  return(t(samples$beta[,, 1L]))
 }
 
 
@@ -119,7 +114,8 @@ str(output)
 output$beta
 
 ## now try the same with MCMCpack:
-initres <- MCMClogit(is.spam ~ word.freq.free + word.freq.1999,
+initres <- MCMClogit(
+  is.spam ~ word.freq.free + word.freq.1999,
   data = sbase,
   burnin = 100,
   mcmc = 10000
@@ -139,18 +135,11 @@ res3 <- myBayesLogit(
 )
 str(res3)
 
-for (i in 1:3)
-{
+for (i in 1:3) {
   par(mfrow = c(3, 1))
-  hist(output$beta[, i],
-    main = paste("BayesLogit", i)
-  )
-  hist(initres[, i],
-    main = paste("MCMCpack", i)
-  )
-  hist(initres[, i],
-    main = paste("myBayesLogit (JAGS)", i)
-  )
+  hist(output$beta[, i], main = paste("BayesLogit", i))
+  hist(initres[, i], main = paste("MCMCpack", i))
+  hist(initres[, i], main = paste("myBayesLogit (JAGS)", i))
 }
 
 ## so this looks comparable - ok
@@ -160,16 +149,27 @@ priorphi1 <- -1.946152
 priorphi2 <- 0.4122909
 precision <- matrix(
   c(
-    1.402500, 6.303606,
-    6.303606, 30.495350
+    1.402500,
+    6.303606,
+    6.303606,
+    30.495350
   ),
   nrow = 2,
   byrow = TRUE
 )
 
-data <- Data(x = c(25, 50, 50, 75, 100, 100, 225, 300), y = c(1, 0, 0, 0, 1, 1, 1, 0), doseGrid = seq(25, 300, 25))
+data <- Data(
+  x = c(25, 50, 50, 75, 100, 100, 225, 300),
+  y = c(1, 0, 0, 0, 1, 1, 1, 0),
+  doseGrid = seq(25, 300, 25)
+)
 
-model <- LogisticIndepBeta(binDLE = c(1.05, 1.8), DLEweights = c(3, 3), DLEdose = c(25, 300), data = data)
+model <- LogisticIndepBeta(
+  binDLE = c(1.05, 1.8),
+  DLEweights = c(3, 3),
+  DLEdose = c(25, 300),
+  data = data
+)
 
 options <- McmcOptions(burnin = 100, step = 2, samples = 10000)
 
@@ -200,16 +200,10 @@ head(res3)
 plot(res3[, 1])
 ## so JAGS mixing is not as good as BayesLogit
 
-
-for (i in 1:2)
-{
+for (i in 1:2) {
   par(mfrow = c(2, 1))
-  hist(samples[, i],
-    main = paste("BayesLogit", i)
-  )
-  hist(res3[, i],
-    main = paste("myBayesLogit (JAGS)", i)
-  )
+  hist(samples[, i], main = paste("BayesLogit", i))
+  hist(res3[, i], main = paste("myBayesLogit (JAGS)", i))
 }
 
 tempData <- data.frame(
@@ -219,7 +213,8 @@ tempData <- data.frame(
 initRes2 <- MCMCpack::MCMClogit(
   formula = y ~ logx,
   data = tempData,
-  b0 = c(priorphi1, priorphi2), BO = precision,
+  b0 = c(priorphi1, priorphi2),
+  BO = precision,
   mcmc = options@iterations - options@burnin,
   burnin = options@burnin,
   thin = options@step,

@@ -32,11 +32,22 @@ NULL
 #' @export
 #' @method knit_print CohortSizeConst
 #' @rdname knit_print
-knit_print.CohortSizeConst <- function(x, ..., asis = TRUE, label = c("participant", "participants")) {
+knit_print.CohortSizeConst <- function(
+  x,
+  ...,
+  asis = TRUE,
+  label = c("participant", "participants")
+) {
   assert_flag(asis)
 
   label <- h_prepare_labels(label)
-  rv <- paste0("A constant size of ", x@size, " ", label[ifelse(x@size == 1, 1, 2)], ".\n\n")
+  rv <- paste0(
+    "A constant size of ",
+    x@size,
+    " ",
+    label[ifelse(x@size == 1, 1, 2)],
+    ".\n\n"
+  )
   if (asis) {
     rv <- knitr::asis_output(rv)
   }
@@ -95,7 +106,12 @@ knit_print.CohortSizeRange <- function(x, ..., asis = TRUE) {
 #' @export
 #' @method knit_print CohortSizeDLT
 #' @rdname knit_print
-knit_print.CohortSizeDLT <- function(x, ..., tox_label = "toxicity", asis = TRUE) {
+knit_print.CohortSizeDLT <- function(
+  x,
+  ...,
+  tox_label = "toxicity",
+  asis = TRUE
+) {
   assert_flag(asis)
   param <- list(...)
   tox_label <- h_prepare_labels(tox_label)
@@ -104,7 +120,11 @@ knit_print.CohortSizeDLT <- function(x, ..., tox_label = "toxicity", asis = TRUE
     param[["col.names"]] <- c("Lower", "Upper", "Cohort size")
   }
   if (!("caption" %in% names(param))) {
-    param[["caption"]] <- paste0("Defined by the number of ", tox_label[2], " so far observed")
+    param[["caption"]] <- paste0(
+      "Defined by the number of ",
+      tox_label[2],
+      " so far observed"
+    )
   }
   param[["x"]] <- tidy(x)
   headers <- c(2, 1)
@@ -130,7 +150,12 @@ knit_print.CohortSizeDLT <- function(x, ..., tox_label = "toxicity", asis = TRUE
 #' @export
 #' @method knit_print CohortSizeParts
 #' @rdname knit_print
-knit_print.CohortSizeParts <- function(x, ..., asis = TRUE, label = c("participant", "participants")) {
+knit_print.CohortSizeParts <- function(
+  x,
+  ...,
+  asis = TRUE,
+  label = c("participant", "participants")
+) {
   assert_flag(asis)
 
   label <- h_prepare_labels(label)
@@ -228,7 +253,12 @@ knit_print.CohortSizeMin <- function(x, ..., asis = TRUE) {
 #' @export
 #' @method knit_print CohortSizeOrdinal
 #' @rdname knit_print
-knit_print.CohortSizeOrdinal <- function(x, ..., tox_label = "toxicity", asis = TRUE) {
+knit_print.CohortSizeOrdinal <- function(
+  x,
+  ...,
+  tox_label = "toxicity",
+  asis = TRUE
+) {
   assert_flag(asis)
   tox_label <- h_prepare_labels(tox_label)
 

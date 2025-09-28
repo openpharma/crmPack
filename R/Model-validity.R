@@ -18,7 +18,10 @@ NULL
 v_general_model <- function(object) {
   v <- Validate()
   v$check(
-    h_check_fun_formals(object@init, allowed = union(object@datanames, object@datanames_prior)),
+    h_check_fun_formals(
+      object@init,
+      allowed = union(object@datanames, object@datanames_prior)
+    ),
     "Arguments of the init function must be data names"
   )
   v$result()
@@ -39,14 +42,18 @@ v_model_logistic_kadane <- function(object) {
   v$check(is_xmax_number, "xmax must be scalar")
 
   if (is_xmin_number && is_xmax_number) {
-    v$check(object@xmin < object@xmax, "xmin must be strictly smaller than xmax")
+    v$check(
+      object@xmin < object@xmax,
+      "xmin must be strictly smaller than xmax"
+    )
   }
   v$result()
 }
 
 #' @describeIn v_model_objects validates that the logistic Kadane model
 #'   parameters with a beta and gamma prior are valid.
-v_model_logistic_kadane_beta_gamma <- function(object) { # nolintr
+v_model_logistic_kadane_beta_gamma <- function(object) {
+  # nolintr
   v <- Validate()
   v$check(
     test_number(object@alpha, lower = .Machine$double.xmin, finite = TRUE),
@@ -79,7 +86,8 @@ v_model_logistic_normal_mix <- function(object) {
 
 #' @describeIn v_model_objects validates that `component` is a list with
 #'   valid `ModelParamsNormal` objects as well as `weights` are correct.
-v_model_logistic_normal_fixed_mix <- function(object) { # nolintr
+v_model_logistic_normal_fixed_mix <- function(object) {
+  # nolintr
   v <- Validate()
   v$check(
     all(sapply(object@components, test_class, "ModelParamsNormal")),
@@ -101,7 +109,12 @@ v_model_logistic_normal_fixed_mix <- function(object) { # nolintr
     "components must have same length as weights"
   )
   v$check(
-    test_numeric(object@weights, lower = .Machine$double.xmin, finite = TRUE, any.missing = FALSE),
+    test_numeric(
+      object@weights,
+      lower = .Machine$double.xmin,
+      finite = TRUE,
+      any.missing = FALSE
+    ),
     "weights must be positive"
   )
   v$check(
@@ -116,7 +129,8 @@ v_model_logistic_normal_fixed_mix <- function(object) { # nolintr
 }
 
 #' @describeIn v_model_objects validates that `share_weight` represents probability.
-v_model_logistic_log_normal_mix <- function(object) { # nolintr
+v_model_logistic_log_normal_mix <- function(object) {
+  # nolintr
   v <- Validate()
   v$check(
     test_probability(object@share_weight),
@@ -184,7 +198,11 @@ v_model_dual_endpoint_rw <- function(object) {
   )
   if (isTRUE(uf_sigma2W)) {
     v$check(
-      test_number(object@sigma2betaW, lower = .Machine$double.xmin, finite = TRUE),
+      test_number(
+        object@sigma2betaW,
+        lower = .Machine$double.xmin,
+        finite = TRUE
+      ),
       "sigma2betaW must be a positive and finite numerical scalar"
     )
   } else {
@@ -207,7 +225,11 @@ v_model_dual_endpoint_beta <- function(object) {
 
     v$check(
       test_flag(uf),
-      paste0("use_fixed must be a named logical vector that contains name '", s, "'")
+      paste0(
+        "use_fixed must be a named logical vector that contains name '",
+        s,
+        "'"
+      )
     )
     if (isTRUE(uf)) {
       if (s %in% c("delta1", "mode")) {
@@ -228,7 +250,10 @@ v_model_dual_endpoint_beta <- function(object) {
           unique = TRUE,
           sorted = TRUE
         ),
-        paste(s, "must be a numerical vector of length two with non-negative, finite, unique and sorted (asc.) values")
+        paste(
+          s,
+          "must be a numerical vector of length two with non-negative, finite, unique and sorted (asc.) values"
+        )
       )
     }
   }
@@ -246,7 +271,11 @@ v_model_dual_endpoint_emax <- function(object) {
 
     v$check(
       test_flag(uf),
-      paste0("use_fixed must be a named logical vector that contains name '", s, "'")
+      paste0(
+        "use_fixed must be a named logical vector that contains name '",
+        s,
+        "'"
+      )
     )
     if (isTRUE(uf)) {
       v$check(
@@ -265,7 +294,10 @@ v_model_dual_endpoint_emax <- function(object) {
           unique = TRUE,
           sorted = TRUE
         ),
-        paste(s, "must be a numerical vector of length two with non-negative, finite, unique and sorted (asc.) values")
+        paste(
+          s,
+          "must be a numerical vector of length two with non-negative, finite, unique and sorted (asc.) values"
+        )
       )
     }
   }
@@ -279,11 +311,21 @@ v_model_logistic_indep_beta <- function(object) {
 
   dle_len <- length(object@binDLE)
   v$check(
-    test_numeric(object@binDLE, finite = TRUE, any.missing = FALSE, min.len = 2),
+    test_numeric(
+      object@binDLE,
+      finite = TRUE,
+      any.missing = FALSE,
+      min.len = 2
+    ),
     "binDLE must be a finite numerical vector of minimum length 2, without missing values"
   )
   v$check(
-    test_numeric(object@DLEdose, finite = TRUE, any.missing = FALSE, len = dle_len),
+    test_numeric(
+      object@DLEdose,
+      finite = TRUE,
+      any.missing = FALSE,
+      len = dle_len
+    ),
     "DLEdose must be a finite numerical vector of the same length as 'binDLE', without missing values"
   )
   v$check(
@@ -316,7 +358,10 @@ v_model_eff_log_log <- function(object) {
   )
   eff_dose_ok <- test_numeric(
     object@eff_dose,
-    lower = rmin, finite = TRUE, any.missing = FALSE, len = length(object@eff)
+    lower = rmin,
+    finite = TRUE,
+    any.missing = FALSE,
+    len = length(object@eff)
   )
   v$check(
     eff_dose_ok,
@@ -362,7 +407,8 @@ v_model_eff_log_log <- function(object) {
     )
   } else {
     v$check(
-      test_matrix(object@Pcov, mode = "numeric", nrows = 2, ncols = 2) && all(is.na(object@Pcov)),
+      test_matrix(object@Pcov, mode = "numeric", nrows = 2, ncols = 2) &&
+        all(is.na(object@Pcov)),
       "Pcov must be 2x2 numeric matrix with all values missing if the length of combined data is 2"
     )
   }
@@ -372,7 +418,13 @@ v_model_eff_log_log <- function(object) {
   )
   Xnrow <- ifelse(nobs_no_dlt > 0, nobs_no_dlt, length(object@eff_dose))
   v$check(
-    test_matrix(object@X, mode = "numeric", nrows = Xnrow, ncols = 2, any.missing = FALSE),
+    test_matrix(
+      object@X,
+      mode = "numeric",
+      nrows = Xnrow,
+      ncols = 2,
+      any.missing = FALSE
+    ),
     paste(
       "X must be a finite numerical matrix of size",
       Xnrow,
@@ -410,7 +462,10 @@ v_model_eff_flexi <- function(object) {
   v$check(
     test_numeric(
       object@eff_dose,
-      lower = rmin, finite = TRUE, any.missing = FALSE, len = length(object@eff)
+      lower = rmin,
+      finite = TRUE,
+      any.missing = FALSE,
+      len = length(object@eff)
     ),
     "eff_dose must be a finite numerical vector of the same length as 'eff', without missing values"
   )
@@ -456,19 +511,41 @@ v_model_eff_flexi <- function(object) {
     "rw1 must be a flag"
   )
   v$check(
-    test_matrix(object@X, mode = "integer", ncols = object@data@nGrid, any.missing = FALSE),
-    paste("X must be an integer matrix with", object@data@nGrid, "columns and without any missing values")
+    test_matrix(
+      object@X,
+      mode = "integer",
+      ncols = object@data@nGrid,
+      any.missing = FALSE
+    ),
+    paste(
+      "X must be an integer matrix with",
+      object@data@nGrid,
+      "columns and without any missing values"
+    )
   )
   v$check(
     all(object@X == 0L | object@X == 1L),
     "X must be a matrix with 0-1 values only"
   )
   v$check(
-    test_matrix(object@RW, nrows = object@data@nGrid, ncols = object@data@nGrid, any.missing = FALSE),
-    paste0("RW must be ", object@data@nGrid, "x", object@data@nGrid, " matrix without any missing values")
+    test_matrix(
+      object@RW,
+      nrows = object@data@nGrid,
+      ncols = object@data@nGrid,
+      any.missing = FALSE
+    ),
+    paste0(
+      "RW must be ",
+      object@data@nGrid,
+      "x",
+      object@data@nGrid,
+      " matrix without any missing values"
+    )
   )
   v$check(
-    test_int(object@RW_rank) && (object@RW_rank == (object@data@nGrid - ifelse(isTRUE(object@rw1), 1L, 2L))),
+    test_int(object@RW_rank) &&
+      (object@RW_rank ==
+        (object@data@nGrid - ifelse(isTRUE(object@rw1), 1L, 2L))),
     "RW_rank must be an integer equal to data@nGrid - 2L"
   )
   v$result()
@@ -482,7 +559,13 @@ v_model_da_logistic_log_normal <- function(object) {
   v$check(npiece_ok, "npiece must be a is a single integerish value")
   if (npiece_ok) {
     v$check(
-      test_numeric(object@l, lower = 0, finite = TRUE, any.missing = FALSE, len = object@npiece),
+      test_numeric(
+        object@l,
+        lower = 0,
+        finite = TRUE,
+        any.missing = FALSE,
+        len = object@npiece
+      ),
       "prior parameter vector l of lambda must be a non-negative vector of length equal to npiece"
     )
   }
@@ -498,7 +581,8 @@ v_model_da_logistic_log_normal <- function(object) {
 }
 
 #' @describeIn v_model_objects validates that [`TITELogisticLogNormal`] class slots are valid.
-v_model_tite_logistic_log_normal <- function(object) { # nolintr
+v_model_tite_logistic_log_normal <- function(object) {
+  # nolintr
   v <- Validate()
   v$check(
     test_string(object@weight_method, pattern = "^linear$|^adaptive$"),
@@ -508,10 +592,15 @@ v_model_tite_logistic_log_normal <- function(object) { # nolintr
 }
 
 #' @describeIn v_model_objects validates that [`OneParLogNormalPrior`] class slots are valid.
-v_model_one_par_exp_normal_prior <- function(object) { # nolintr
+v_model_one_par_exp_normal_prior <- function(object) {
+  # nolintr
   v <- Validate()
 
-  is_skel_prob_ok <- test_probabilities(object@skel_probs, unique = TRUE, sorted = TRUE)
+  is_skel_prob_ok <- test_probabilities(
+    object@skel_probs,
+    unique = TRUE,
+    sorted = TRUE
+  )
   v$check(
     is_skel_prob_ok,
     "skel_probs must be a unique sorted probability values between 0 and 1"
@@ -521,7 +610,11 @@ v_model_one_par_exp_normal_prior <- function(object) { # nolintr
     # Validating skel_fun/skel_fun_inv on within the range of skeleton probs.
     skel_probs_range <- range(object@skel_probs)
     # Probabilities within the range of skel_probs.
-    probs_in_range <- seq(from = skel_probs_range[1], to = skel_probs_range[2], by = 0.01)
+    probs_in_range <- seq(
+      from = skel_probs_range[1],
+      to = skel_probs_range[2],
+      by = 0.01
+    )
     # Interpolated dose grid.
     doses_in_range <- object@skel_fun_inv(probs_in_range)
     v$check(
@@ -536,7 +629,10 @@ v_model_one_par_exp_normal_prior <- function(object) { # nolintr
     )
     doses_out_range <- object@skel_fun_inv(probs_out_range)
     v$check(
-      isTRUE(all.equal(object@skel_fun(doses_out_range), rep(skel_probs_range, each = 3))),
+      isTRUE(all.equal(
+        object@skel_fun(doses_out_range),
+        rep(skel_probs_range, each = 3)
+      )),
       "skel_fun_inv must be an inverse funtion of skel_fun function on outside the range of sekeleton probs"
     )
   }
@@ -553,7 +649,11 @@ v_model_one_par_exp_normal_prior <- function(object) { # nolintr
 v_model_one_par_exp_prior <- function(object) {
   v <- Validate()
 
-  is_skel_prob_ok <- test_probabilities(object@skel_probs, unique = TRUE, sorted = TRUE)
+  is_skel_prob_ok <- test_probabilities(
+    object@skel_probs,
+    unique = TRUE,
+    sorted = TRUE
+  )
   v$check(
     is_skel_prob_ok,
     "skel_probs must be a unique sorted probability values between 0 and 1"
@@ -563,7 +663,11 @@ v_model_one_par_exp_prior <- function(object) {
     # Validating skel_fun/skel_fun_inv on within the range of skeleton probs.
     skel_probs_range <- range(object@skel_probs)
     # Probabilities within the range of skel_probs.
-    probs_in_range <- seq(from = skel_probs_range[1], to = skel_probs_range[2], by = 0.01)
+    probs_in_range <- seq(
+      from = skel_probs_range[1],
+      to = skel_probs_range[2],
+      by = 0.01
+    )
     # Interpolated dose grid.
     doses_in_range <- object@skel_fun_inv(probs_in_range)
     v$check(
@@ -578,7 +682,10 @@ v_model_one_par_exp_prior <- function(object) {
     )
     doses_out_range <- object@skel_fun_inv(probs_out_range)
     v$check(
-      isTRUE(all.equal(object@skel_fun(doses_out_range), rep(skel_probs_range, each = 3))),
+      isTRUE(all.equal(
+        object@skel_fun(doses_out_range),
+        rep(skel_probs_range, each = 3)
+      )),
       "skel_fun_inv must be an inverse funtion of skel_fun function on outside the range of sekeleton probs"
     )
   }

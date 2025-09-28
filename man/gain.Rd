@@ -121,7 +121,6 @@ gain(
   model_eff = model_effflexi,
   samples_eff = samples_effflexi
 )
-
 # Obtain the gain value for a given dose, a pseudo DLE and efficacy models
 # without DLE and efficacy samples.
 emptydata <- DataDual(doseGrid = seq(25, 300, 25), placebo = FALSE)

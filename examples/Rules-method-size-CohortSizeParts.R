@@ -5,7 +5,11 @@ data <- DataParts(
   x = c(0.1, 0.5, 1.5),
   y = c(0, 0, 0),
   doseGrid = c(
-    0.1, 0.5, 1.5, 3, 6,
+    0.1,
+    0.5,
+    1.5,
+    3,
+    6,
     seq(from = 10, to = 80, by = 2)
   ),
   part = c(1L, 1L, 1L),
@@ -16,10 +20,7 @@ data <- DataParts(
 # Initialize the CRM model used to model the data
 model <- LogisticLogNormal(
   mean = c(-0.85, 1),
-  cov =
-    matrix(c(1, -0.5, -0.5, 1),
-      nrow = 2
-    ),
+  cov = matrix(c(1, -0.5, -0.5, 1), nrow = 2),
   ref_dose = 56
 )
 
@@ -36,9 +37,7 @@ myIncrements <- IncrementsRelativeParts(
   dlt_start = 0,
   clean_start = 1
 )
-nextMaxDose <- maxDose(myIncrements,
-  data = data
-)
+nextMaxDose <- maxDose(myIncrements, data = data)
 
 # Define the rule which will be used to select the next best dose
 # based on the class 'NextBestNCRM'
@@ -49,7 +48,8 @@ myNextBest <- NextBestNCRM(
 )
 
 # Calculate the next best dose
-doseRecommendation <- nextBest(myNextBest,
+doseRecommendation <- nextBest(
+  myNextBest,
   doselimit = nextMaxDose,
   samples = samples,
   model = model,

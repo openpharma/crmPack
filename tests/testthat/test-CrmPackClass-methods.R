@@ -21,7 +21,10 @@ testthat::local_mocked_bindings(
 
 testthat::local_mocked_bindings(
   .DefaultDualSimulationsSummary = function(...) {
-    readRDS(testthat::test_path("fixtures", "default_dual_simulations_summary.Rds"))
+    readRDS(testthat::test_path(
+      "fixtures",
+      "default_dual_simulations_summary.Rds"
+    ))
   }
 )
 # End of mocks
@@ -29,13 +32,29 @@ testthat::local_mocked_bindings(
 test_that("tidy methods exist for all relevant classes", {
   crmpack_class_list <- getClasses(asNamespace("crmPack"))
   exclusions <- c(
-    "CohortSize", "CrmPackClass", "DualEndpoint", "GeneralData", "GeneralModel",
-    "GeneralSimulationsSummary", "Increments", "ModelEff", "ModelPseudo",
-    "ModelTox", "NextBest", "positive_number", "PseudoSimulations",
-    "PseudoDualSimulations", "PseudoDualSimulationsSummary",
-    "PseudoDualFlexiSimulations", "PseudoFlexiSimulations",
-    "PseudoSimulationsSummary", "SimulationsSummary", "Report", "SafetyWindow",
-    "Stopping", "Validate",
+    "CohortSize",
+    "CrmPackClass",
+    "DualEndpoint",
+    "GeneralData",
+    "GeneralModel",
+    "GeneralSimulationsSummary",
+    "Increments",
+    "ModelEff",
+    "ModelPseudo",
+    "ModelTox",
+    "NextBest",
+    "positive_number",
+    "PseudoSimulations",
+    "PseudoDualSimulations",
+    "PseudoDualSimulationsSummary",
+    "PseudoDualFlexiSimulations",
+    "PseudoFlexiSimulations",
+    "PseudoSimulationsSummary",
+    "SimulationsSummary",
+    "Report",
+    "SafetyWindow",
+    "Stopping",
+    "Validate",
     # The following classes have no constructors
     "DualSimulationsSummary"
   )
@@ -51,7 +70,9 @@ test_that("tidy methods exist for all relevant classes", {
             result <- x %>% tidy()
             expect_equal(class(result)[1], paste0("tbl_", cls))
           },
-          error = function(e) fail(paste0("Unable to tidy ", cls, " objects: ", e))
+          error = function(e) {
+            fail(paste0("Unable to tidy ", cls, " objects: ", e))
+          }
         )
       } else {
         print(paste0("No default constructor for ", cls))
@@ -67,13 +88,29 @@ test_that("tidy methods return non-empty value for all classes", {
   # with some elements of length zero
   some_elements_length_zero <- c("RuleDesign")
   exclusions <- c(
-    "CohortSize", "CrmPackClass", "DualEndpoint", "GeneralData", "GeneralModel",
-    "GeneralSimulationsSummary", "Increments", "ModelEff", "ModelPseudo",
-    "ModelTox", "NextBest", "positive_number", "PseudoSimulations",
-    "PseudoDualSimulations", "PseudoDualSimulationsSummary",
-    "PseudoDualFlexiSimulations", "PseudoFlexiSimulations",
-    "PseudoSimulationsSummary", "SimulationsSummary", "Report", "SafetyWindow",
-    "Stopping", "Validate",
+    "CohortSize",
+    "CrmPackClass",
+    "DualEndpoint",
+    "GeneralData",
+    "GeneralModel",
+    "GeneralSimulationsSummary",
+    "Increments",
+    "ModelEff",
+    "ModelPseudo",
+    "ModelTox",
+    "NextBest",
+    "positive_number",
+    "PseudoSimulations",
+    "PseudoDualSimulations",
+    "PseudoDualSimulationsSummary",
+    "PseudoDualFlexiSimulations",
+    "PseudoFlexiSimulations",
+    "PseudoSimulationsSummary",
+    "SimulationsSummary",
+    "Report",
+    "SafetyWindow",
+    "Stopping",
+    "Validate",
     # The following classes have no constructors
     "DualSimulationsSummary"
   )
@@ -97,7 +134,9 @@ test_that("tidy methods return non-empty value for all classes", {
               expect_true(length(result) > 0)
             }
           },
-          error = function(e) fail(paste0("Unable to tidy ", cls, " objects: ", e))
+          error = function(e) {
+            fail(paste0("Unable to tidy ", cls, " objects: ", e))
+          }
         )
       } else {
         print(paste0("No default constructor for ", cls))

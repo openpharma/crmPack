@@ -13,45 +13,34 @@
 
 setClass(
   Class = "A",
-  representation =
-    representation(x = "numeric"),
-  validity =
-    function(object) {
-      stopifnot(object@x > 0)
-    }
+  representation = representation(x = "numeric"),
+  validity = function(object) {
+    stopifnot(object@x > 0)
+  }
 )
 
 setMethod(
   "initialize",
   signature(.Object = "A"),
-  function(.Object,
-           ...,
-           z) {
+  function(.Object, ..., z) {
     x <- get("z") + 1
-    callNextMethod(.Object,
-      ...,
-      x = x
-    )
+    callNextMethod(.Object, ..., x = x)
   }
 )
 
 setClass(
   Class = "B",
   contains = "A",
-  representation =
-    representation(y = "numeric"),
-  validity =
-    function(object) {
-      stopifnot(object@y > 0)
-    }
+  representation = representation(y = "numeric"),
+  validity = function(object) {
+    stopifnot(object@y > 0)
+  }
 )
 
 setMethod(
   "initialize",
   signature(.Object = "B"),
-  function(.Object,
-           ...,
-           bla) {
+  function(.Object, ..., bla) {
     .Object <- callNextMethod(
       .Object,
       ...
@@ -62,9 +51,6 @@ setMethod(
   }
 )
 
-test <- new("B",
-  z = 4,
-  bla = 5
-)
+test <- new("B", z = 4, bla = 5)
 test
 source("../devel/classes.R")

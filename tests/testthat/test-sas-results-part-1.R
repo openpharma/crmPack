@@ -38,9 +38,12 @@ test_that("Posterior summaries for probabilities of
 
   postSamples <- mcmc(data, model_bcrm_sc1, mcmc_options)
 
-  dose_rec_loss <- expect_silent(nextBest(ncrm_loss_sc1,
+  dose_rec_loss <- expect_silent(nextBest(
+    ncrm_loss_sc1,
     doselimit = Inf,
-    postSamples, model_bcrm_sc1, data
+    postSamples,
+    model_bcrm_sc1,
+    data
   ))
 
   rec_dose_sc1 <- dose_rec_loss$value
@@ -71,8 +74,10 @@ test_that("Posterior summaries for probabilities of
   )
 
   # Posterior summaries computed by SAS
-  temp <- read.csv2(test_path("testdata/sc1_sit1.csv"),
-    header = TRUE, dec = "."
+  temp <- read.csv2(
+    test_path("testdata/sc1_sit1.csv"),
+    header = TRUE,
+    dec = "."
   )
   sas_sc1 <- apply(as.matrix(temp[, -1]), 2, as.numeric)
   rownames(sas_sc1) <- temp[, 1]
@@ -129,9 +134,12 @@ test_that("Posterior summaries for probabilities of
 
   postSamples <- mcmc(data, model_bcrm_sc1, mcmc_options)
 
-  dose_rec_loss <- expect_silent(nextBest(ncrm_loss_sc1,
+  dose_rec_loss <- expect_silent(nextBest(
+    ncrm_loss_sc1,
     doselimit = Inf,
-    postSamples, model_bcrm_sc1, data
+    postSamples,
+    model_bcrm_sc1,
+    data
   ))
 
   rec_dose_sc1 <- dose_rec_loss$value
@@ -162,8 +170,10 @@ test_that("Posterior summaries for probabilities of
   )
 
   # Posterior summaries computed by SAS
-  temp <- read.csv2(test_path("testdata/sc1_sit2.csv"),
-    header = TRUE, dec = "."
+  temp <- read.csv2(
+    test_path("testdata/sc1_sit2.csv"),
+    header = TRUE,
+    dec = "."
   )
   sas_sc1 <- apply(as.matrix(temp[, -1]), 2, as.numeric)
   rownames(sas_sc1) <- temp[, 1]
@@ -198,13 +208,17 @@ test_that("Posterior summaries for probabilities of
 
   data <- Data(
     x = c(
-      rep(10, 3), rep(20, 3),
-      rep(35, 3), rep(50, 3)
+      rep(10, 3),
+      rep(20, 3),
+      rep(35, 3),
+      rep(50, 3)
     ),
     y = c(rep(0, 3 * 4)),
     cohort = c(
-      rep(1, 3), rep(2, 3),
-      rep(3, 3), rep(4, 3)
+      rep(1, 3),
+      rep(2, 3),
+      rep(3, 3),
+      rep(4, 3)
     ),
     doseGrid = dose_grid_sc1,
     ID = 1:12
@@ -226,9 +240,12 @@ test_that("Posterior summaries for probabilities of
 
   postSamples <- mcmc(data, model_bcrm_sc1, mcmc_options)
 
-  dose_rec_loss <- expect_silent(nextBest(ncrm_loss_sc1,
+  dose_rec_loss <- expect_silent(nextBest(
+    ncrm_loss_sc1,
     doselimit = Inf,
-    postSamples, model_bcrm_sc1, data
+    postSamples,
+    model_bcrm_sc1,
+    data
   ))
 
   rec_dose_sc1 <- dose_rec_loss$value
@@ -259,8 +276,10 @@ test_that("Posterior summaries for probabilities of
   )
 
   # Posterior summaries computed by SAS
-  temp <- read.csv2(test_path("testdata/sc1_sit3.csv"),
-    header = TRUE, dec = "."
+  temp <- read.csv2(
+    test_path("testdata/sc1_sit3.csv"),
+    header = TRUE,
+    dec = "."
   )
   sas_sc1 <- apply(as.matrix(temp[, -1]), 2, as.numeric)
   rownames(sas_sc1) <- temp[, 1]
@@ -295,13 +314,17 @@ test_that("Posterior summaries for probabilities of
 
   data <- Data(
     x = c(
-      rep(10, 3), rep(20, 3),
-      rep(35, 3), rep(50, 3)
+      rep(10, 3),
+      rep(20, 3),
+      rep(35, 3),
+      rep(50, 3)
     ),
     y = c(rep(0, 3 * 3), rep(0, 2), 1),
     cohort = c(
-      rep(1, 3), rep(2, 3),
-      rep(3, 3), rep(4, 3)
+      rep(1, 3),
+      rep(2, 3),
+      rep(3, 3),
+      rep(4, 3)
     ),
     doseGrid = dose_grid_sc1,
     ID = 1:12
@@ -323,9 +346,12 @@ test_that("Posterior summaries for probabilities of
 
   postSamples <- mcmc(data, model_bcrm_sc1, mcmc_options)
 
-  dose_rec_loss <- expect_silent(nextBest(ncrm_loss_sc1,
+  dose_rec_loss <- expect_silent(nextBest(
+    ncrm_loss_sc1,
     doselimit = Inf,
-    postSamples, model_bcrm_sc1, data
+    postSamples,
+    model_bcrm_sc1,
+    data
   ))
 
   rec_dose_sc1 <- dose_rec_loss$value
@@ -356,8 +382,10 @@ test_that("Posterior summaries for probabilities of
   )
 
   # Posterior summaries computed by SAS
-  temp <- read.csv2(test_path("testdata/sc1_sit4.csv"),
-    header = TRUE, dec = "."
+  temp <- read.csv2(
+    test_path("testdata/sc1_sit4.csv"),
+    header = TRUE,
+    dec = "."
   )
   sas_sc1 <- apply(as.matrix(temp[, -1]), 2, as.numeric)
   rownames(sas_sc1) <- temp[, 1]

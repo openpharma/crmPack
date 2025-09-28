@@ -1,4 +1,3 @@
-
 # Example of usage for `NextBestNCRM` NextBest class.
 
 # Create the data.

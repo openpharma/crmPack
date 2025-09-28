@@ -235,7 +235,8 @@ test_that("v_model_logistic_normal_fixed_mix returns message for weights and com
   object@weights <- rep(0.1, 10)
 
   expect_equal(
-    v_model_logistic_normal_fixed_mix(object), "components must have same length as weights"
+    v_model_logistic_normal_fixed_mix(object),
+    "components must have same length as weights"
   )
 })
 
@@ -878,7 +879,10 @@ test_that("v_model_eff_flexi returns message for wrong rw1", {
   object@rw1 <- c(TRUE, FALSE)
   expect_equal(
     v_model_eff_flexi(object),
-    c("rw1 must be a flag", "RW_rank must be an integer equal to data@nGrid - 2L")
+    c(
+      "rw1 must be a flag",
+      "RW_rank must be an integer equal to data@nGrid - 2L"
+    )
   )
 })
 

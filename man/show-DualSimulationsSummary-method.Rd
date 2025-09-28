@@ -77,13 +77,22 @@ my_design <- DualDesign(
 
 # Define scenarios for the TRUE toxicity and efficacy profiles.
 beta_mod <- function(dose, e0, eMax, delta1, delta2, scal) {
-  maxDens <- (delta1^delta1) * (delta2^delta2) / ((delta1 + delta2)^(delta1 + delta2))
+  maxDens <- (delta1^delta1) *
+    (delta2^delta2) /
+    ((delta1 + delta2)^(delta1 + delta2))
   dose <- dose / scal
   e0 + eMax / maxDens * (dose^delta1) * (1 - dose)^delta2
 }
 
 true_biomarker <- function(dose) {
-  beta_mod(dose, e0 = 0.2, eMax = 0.6, delta1 = 5, delta2 = 5 * 0.5 / 0.5, scal = 100)
+  beta_mod(
+    dose,
+    e0 = 0.2,
+    eMax = 0.6,
+    delta1 = 5,
+    delta2 = 5 * 0.5 / 0.5,
+    scal = 100
+  )
 }
 
 true_tox <- function(dose) {

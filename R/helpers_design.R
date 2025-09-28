@@ -59,11 +59,12 @@ set_seed <- function(seed = NULL) {
 #' @importFrom parallelly availableCores
 #' @keywords internal programming
 get_result_list <- function(
-    fun,
-    nsim,
-    vars,
-    parallel,
-    n_cores) {
+  fun,
+  nsim,
+  vars,
+  parallel,
+  n_cores
+) {
   assert_flag(parallel)
   assert_integerish(n_cores, lower = 1)
 
@@ -129,8 +130,6 @@ get_result_list <- function(
     res
   }
 }
-
-
 
 
 #' Helper Function to call truth calculation
@@ -209,10 +208,12 @@ h_unpack_stopit <- function(stopit_tree) {
   if (is.null(attr(stopit_tree, "individual"))) {
     return(value)
   } else {
-    return(unlist(c(value, lapply(attr(stopit_tree, "individual"), h_unpack_stopit))))
+    return(unlist(c(
+      value,
+      lapply(attr(stopit_tree, "individual"), h_unpack_stopit)
+    )))
   }
 }
-
 
 
 #' Helper function to determine the dlts including first separate and placebo
@@ -229,15 +230,16 @@ h_unpack_stopit <- function(stopit_tree) {
 #' @return updated data object
 #' @keywords internal
 
-
-h_determine_dlts <- function(data,
-                             dose,
-                             prob,
-                             prob_placebo,
-                             cohort_size,
-                             cohort_size_placebo,
-                             dose_grid,
-                             first_separate) {
+h_determine_dlts <- function(
+  data,
+  dose,
+  prob,
+  prob_placebo,
+  cohort_size,
+  cohort_size_placebo,
+  dose_grid,
+  first_separate
+) {
   assert_class(data, "Data")
   assert_number(dose)
   assert_number(prob)
@@ -252,20 +254,26 @@ h_determine_dlts <- function(data,
     if (dlts == 0) {
       dlts <- c(dlts, rbinom(n = cohort_size - 1L, size = 1, prob = prob))
       if ((data@placebo) && cohort_size_placebo > 0) {
-        dlts_placebo <- c(dlts_placebo, rbinom(
-          n = cohort_size_placebo, # cohort_size_placebo - 1?
-          size = 1,
-          prob = prob_placebo
-        ))
+        dlts_placebo <- c(
+          dlts_placebo,
+          rbinom(
+            n = cohort_size_placebo, # cohort_size_placebo - 1?
+            size = 1,
+            prob = prob_placebo
+          )
+        )
       }
     }
   } else {
     dlts <- rbinom(n = cohort_size, size = 1, prob = prob)
     if ((data@placebo) && cohort_size_placebo > 0) {
-      dlts_placebo <- rbinom(n = cohort_size_placebo, size = 1, prob = prob_placebo)
+      dlts_placebo <- rbinom(
+        n = cohort_size_placebo,
+        size = 1,
+        prob = prob_placebo
+      )
     }
   }
-
 
   if ((data@placebo) && cohort_size_placebo > 0) {
     this_data <- update(
