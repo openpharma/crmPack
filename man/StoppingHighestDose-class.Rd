@@ -25,7 +25,6 @@ That is, the stopping occurs when the highest dose is reached.
 Typically, end users will not use the \code{.DefaultStoppingHighestDose()} function.
 }
 \examples{
-
 # The following stopping rule is met when:
 # - next proposed dose is highest dose, and
 # - there are already at least 3 patients on that dose, and

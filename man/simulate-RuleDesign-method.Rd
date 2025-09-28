@@ -72,7 +72,8 @@ myTruth <- probFunction(model, alpha0 = 7, alpha1 = 8)
 
 # Perform the simulation
 ## For illustration purpose only 10 simulation is produced (nsim=10).
-threeSims <- simulate(myDesign,
+threeSims <- simulate(
+  myDesign,
   nsim = 10,
   seed = 35,
   truth = myTruth,

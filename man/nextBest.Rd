@@ -324,7 +324,6 @@ dose_recommendation <- nextBest(
   model = my_model,
   data = my_data
 )
-
 # Example of usage for `NextBestNCRM` NextBest class.
 
 # Create the data.
@@ -373,7 +372,6 @@ dose_recommendation <- nextBest(
 
 # See the probabilities.
 dose_recommendation$probs
-
 # Example of usage for `NextBestNCRM-DataParts` NextBest class.
 
 # Create the data.
@@ -424,7 +422,6 @@ dose_recommendation <- nextBest(
 )
 
 dose_recommendation
-
 # Example of usage for `NextBestNCRMLoss` NextBest class.
 
 # Create the data.
@@ -501,7 +498,6 @@ dose_recommendation_losses_3$value
 
 # Look at the probabilities.
 dose_recommendation_losses_3$probs
-
 # Example of usage for `NextBestThreePlusThree` NextBest class.
 
 # Create the data.
@@ -525,10 +521,43 @@ my_data <- DataDual(
   x = c(0.1, 0.5, 1.5, 3, 6, 10, 10, 10, 20, 20, 20, 40, 40, 40, 50, 50, 50),
   y = c(0, 0, 0, 0, 0, 0, 1, 0, 0, 1, 1, 0, 0, 1, 0, 1, 1),
   ID = 1:17,
-  cohort = c(1L, 2L, 3L, 4L, 5L, 6L, 6L, 6L, 7L, 7L, 7L, 8L, 8L, 8L, 9L, 9L, 9L),
+  cohort = c(
+    1L,
+    2L,
+    3L,
+    4L,
+    5L,
+    6L,
+    6L,
+    6L,
+    7L,
+    7L,
+    7L,
+    8L,
+    8L,
+    8L,
+    9L,
+    9L,
+    9L
+  ),
   w = c(
-    0.31, 0.42, 0.59, 0.45, 0.6, 0.7, 0.55, 0.6, 0.52, 0.54,
-    0.56, 0.43, 0.41, 0.39, 0.34, 0.38, 0.21
+    0.31,
+    0.42,
+    0.59,
+    0.45,
+    0.6,
+    0.7,
+    0.55,
+    0.6,
+    0.52,
+    0.54,
+    0.56,
+    0.43,
+    0.41,
+    0.39,
+    0.34,
+    0.38,
+    0.21
   ),
   doseGrid = c(0.1, 0.5, 1.5, 3, 6, seq(from = 10, to = 80, by = 2))
 )
@@ -581,7 +610,6 @@ print(dose_recommendation$plot)
 # Show customization of single plot.
 variant1 <- dose_recommendation$singlePlots$plot1 + xlim(0, 20)
 print(variant1)
-
 # Example of usage for `NextBestTD` NextBest class.
 my_data <- Data(
   x = c(25, 50, 50, 75, 150, 200, 225, 300),
@@ -655,7 +683,6 @@ dose_recommendation <- nextBest(
 
 dose_recommendation$next_dose_drt
 dose_recommendation$plot
-
 # Example of usage for `NextBestMaxGain` NextBest class.
 
 # Create the data.
@@ -703,7 +730,6 @@ dose_recommendation <- nextBest(
 
 dose_recommendation$next_dose
 dose_recommendation$plot
-
 # Example of usage for `NextBestMaxGainSamples` NextBest class.
 
 # Create the data.

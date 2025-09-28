@@ -40,7 +40,6 @@ allowable relative increments in the \code{intervals}.}
 Typically, end users will not use the \code{.DefaultIncrementsRelative()} function.
 }
 \examples{
-
 # This is the example of a rule for:
 # maximum doubling the dose if the current dose is <20
 # or only maximum increasing the dose by 1.33 if the current dose is >=20.

@@ -52,7 +52,6 @@ reaching sufficient precision.}
 Typically, end users will not use the \code{.DefaultStoppingTargetBiomarker()} function.
 }
 \examples{
-
 # Stopping the study if there is at least 0.5 probability that the biomarker
 # (efficacy) is within the biomarker target range of [0.9, 1.0] (relative to the
 # maximum for the biomarker).

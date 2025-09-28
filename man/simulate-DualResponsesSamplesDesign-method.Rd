@@ -103,8 +103,10 @@ DLEmodel <- LogisticIndepBeta(
 
 ## The efficacy model of 'ModelEff' (e.g 'Effloglog') class
 Effmodel <- Effloglog(
-  eff = c(1.223, 2.513), eff_dose = c(25, 300),
-  nu = c(a = 1, b = 0.025), data = data
+  eff = c(1.223, 2.513),
+  eff_dose = c(25, 300),
+  nu = c(a = 1, b = 0.025),
+  data = data
 )
 
 
@@ -134,7 +136,6 @@ myStopping <- StoppingMinPatients(nPatients = 10)
 ## Now specified the design with all the above information and starting with
 ## a dose of 25
 
-
 ## Specified the design
 design <- DualResponsesSamplesDesign(
   nextBest = mynextbest,
@@ -159,7 +160,8 @@ myTruthGain <- function(dose) {
 ## for illustration purpose we use 10 burn-ins to generate 50 samples
 options <- McmcOptions(burnin = 10, step = 1, samples = 50)
 ## For illustration purpose only 1 simulations are produced (nsim=1).
-mySim <- simulate(design,
+mySim <- simulate(
+  design,
   args = NULL,
   trueDLE = myTruthDLE,
   trueEff = myTruthEff,
@@ -171,13 +173,16 @@ mySim <- simulate(design,
 )
 
 
-
 ## Simulate dose-escalation procedure based on DLE and efficacy responses where DLE
 ## and efficacy samples are used
 ## when the efficacy model is of 'EffFlexi' class
 Effmodel <- EffFlexi(
-  eff = c(1.223, 2.513), eff_dose = c(25, 300),
-  sigma2W = c(a = 0.1, b = 0.1), sigma2betaW = c(a = 20, b = 50), rw1 = FALSE, data = data
+  eff = c(1.223, 2.513),
+  eff_dose = c(25, 300),
+  sigma2W = c(a = 0.1, b = 0.1),
+  sigma2betaW = c(a = 20, b = 50),
+  rw1 = FALSE,
+  data = data
 )
 
 
@@ -196,9 +201,18 @@ design <- DualResponsesSamplesDesign(
 myTruthDLE <- probFunction(DLEmodel, phi1 = -53.66584, phi2 = 10.50499)
 
 myTruthEff <- c(
-  -0.5478867, 0.1645417, 0.5248031, 0.7604467,
-  0.9333009, 1.0687031, 1.1793942, 1.2726408,
-  1.3529598, 1.4233411, 1.4858613, 1.5420182
+  -0.5478867,
+  0.1645417,
+  0.5248031,
+  0.7604467,
+  0.9333009,
+  1.0687031,
+  1.1793942,
+  1.2726408,
+  1.3529598,
+  1.4233411,
+  1.4858613,
+  1.5420182
 )
 ## The true gain curve can also be seen
 d1 <- data@doseGrid

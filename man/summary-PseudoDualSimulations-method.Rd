@@ -140,6 +140,7 @@ my_design <- DualResponsesSamplesDesign(
 # For illustration purpose 50 burn-ins to generate 200 samples are used.
 my_options <- McmcOptions(burnin = 50, step = 2, samples = 200)
 
+# fmt: skip
 \donttest{
 # For illustration purpose 2 simulation are created.
 my_sim <- simulate(

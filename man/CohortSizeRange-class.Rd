@@ -36,7 +36,6 @@ corresponding to the elements of \code{intervals}.}
 Typically, end users will not use the \code{.DefaultCohortSizeRange()} function.
 }
 \examples{
-
 # Example for the rule having cohort of size 1 for doses <30
 # and having cohort of size 3 for doses >=30.
 

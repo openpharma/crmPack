@@ -46,7 +46,6 @@ of a DLT.}
 Typically, end users will not use the \code{.DefaultStoppingTDCIRatio()} function.
 }
 \examples{
-
 # Define the target stopping ratio (5) and the target probability of a DLT to
 # be used (0.3).
 my_stopping <- StoppingTDCIRatio(

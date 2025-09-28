@@ -112,7 +112,8 @@ design <- TDsamplesDesign(
   stopping = myStopping,
   increments = myIncrements,
   cohort_size = mySize,
-  data = data, startingDose = 25
+  data = data,
+  startingDose = 25
 )
 
 ## Specify the truth of the DLE responses
