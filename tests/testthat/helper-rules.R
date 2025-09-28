@@ -49,7 +49,10 @@ h_next_best_ncrm_loss <- function(edge_case = 0L) {
   )
 }
 
-h_next_best_dual_endpoint <- function(target_relative = TRUE, edge_case = FALSE) {
+h_next_best_dual_endpoint <- function(
+  target_relative = TRUE,
+  edge_case = FALSE
+) {
   target <- if (target_relative) {
     if (edge_case) {
       c(0, 1)

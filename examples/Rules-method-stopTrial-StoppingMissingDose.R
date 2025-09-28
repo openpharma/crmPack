@@ -7,7 +7,12 @@ my_data <- Data(
   cohort = c(1, 1, 2, 3, 4, 5, 5, 5),
   ID = 1:8,
   doseGrid = c(
-    0.01, 0.1, 0.5, 1.5, 3, 6,
+    0.01,
+    0.1,
+    0.5,
+    1.5,
+    3,
+    6,
     seq(from = 10, to = 80, by = 2)
   ),
   placebo = TRUE
@@ -16,10 +21,7 @@ my_data <- Data(
 # Initialize the CRM model used to model the data.
 my_model <- LogisticLogNormal(
   mean = c(-0.85, 1),
-  cov =
-    matrix(c(1, -0.5, -0.5, 1),
-      nrow = 2
-    ),
+  cov = matrix(c(1, -0.5, -0.5, 1), nrow = 2),
   ref_dose = 56
 )
 
@@ -38,9 +40,7 @@ my_increments <- IncrementsRelative(
   increments = c(1, 0.33)
 )
 
-next_max_dose <- maxDose(my_increments,
-  data = my_data
-)
+next_max_dose <- maxDose(my_increments, data = my_data)
 
 # Define the rule which will be used to select the next best dose based
 # on the class 'NextBestNCRM'.
@@ -54,7 +54,9 @@ my_next_best <- NextBestNCRM(
 dose_recommendation <- nextBest(
   my_next_best,
   doselimit = next_max_dose,
-  samples = my_samples, model = my_model, data = my_data
+  samples = my_samples,
+  model = my_model,
+  data = my_data
 )
 
 # Define the stopping rule such that the study would be stopped if there is

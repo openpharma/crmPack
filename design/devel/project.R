@@ -19,10 +19,7 @@ source("../R/Model-class.R")
 
 model <- LogisticLogNormal(
   mean = c(-0.85, 1),
-  cov =
-    matrix(c(1, -0.5, -0.5, 1),
-      nrow = 2L
-    ),
+  cov = matrix(c(1, -0.5, -0.5, 1), nrow = 2L),
   refDose = 56
 )
 
@@ -33,20 +30,20 @@ model@prob(30, 0, 1)
 ##              xmin=0.1,
 ##              xmax=100)
 
-
 source("../R/Data-class.R")
 source("../R/Data-methods.R")
 ## create some test data
 data <- Data(
-  x =
-    c(0.1, 0.5, 1.5, 3, 6, 10, 10, 10),
-  y =
-    as.integer(c(0, 0, 0, 0, 0, 0, 1, 0)),
-  doseGrid =
-    c(
-      0.1, 0.5, 1.5, 3, 6,
-      seq(from = 10, to = 80, by = 2)
-    )
+  x = c(0.1, 0.5, 1.5, 3, 6, 10, 10, 10),
+  y = as.integer(c(0, 0, 0, 0, 0, 0, 1, 0)),
+  doseGrid = c(
+    0.1,
+    0.5,
+    1.5,
+    3,
+    6,
+    seq(from = 10, to = 80, by = 2)
+  )
 )
 
 data
@@ -84,13 +81,17 @@ str(samples3)
 samples1 <- samples2
 
 ## with the standard method:
-time1 <- system.time(samples1 <-
-  getMethod("mcmc", signature(
-    data = "Data",
-    model = "Model",
-    options = "McmcOptions"
-  ))(data,
-    model, options, verbose = TRUE))
+time1 <- system.time(
+  samples1 <-
+    getMethod(
+      "mcmc",
+      signature(
+        data = "Data",
+        model = "Model",
+        options = "McmcOptions"
+      )
+    )(data, model, options, verbose = TRUE)
+)
 
 ## extract samples for diagnostic plots
 alpha0 <- get(samples1, "alpha0")
@@ -106,7 +107,6 @@ ggs_traceplot(alpha1)
 ggs_autocorrelation(alpha1)
 ggs_density(alpha1)
 ## etc.
-
 
 ## ok now we want to plot the fit:
 samples <- samples2
@@ -129,28 +129,23 @@ gdata <-
     data.frame(
       x = rep(dose, 3),
       y = c(middle, lower, upper) * 100,
-      group =
-        rep(c("mean", "lower", "upper"),
-          each = nrow(f2)
-        ),
-      Type =
-        factor(
-          c(
-            rep(
-              "Estimate",
-              nrow(f2)
-            ),
-            rep(
-              "95% Credible Interval",
-              nrow(f2) * 2
-            )
+      group = rep(c("mean", "lower", "upper"), each = nrow(f2)),
+      Type = factor(
+        c(
+          rep(
+            "Estimate",
+            nrow(f2)
           ),
-          levels =
-            c(
-              "Estimate",
-              "95% Credible Interval"
-            )
+          rep(
+            "95% Credible Interval",
+            nrow(f2) * 2
+          )
+        ),
+        levels = c(
+          "Estimate",
+          "95% Credible Interval"
         )
+      )
     )
   )
 
@@ -173,79 +168,64 @@ quantTest <-
     lower = c(0.01, 0.02, 0.05, 0.1, 0.3),
     upper = c(0.5, 0.6, 0.7, 0.8, 0.95),
     median = c(0.2, 0.3, 0.4, 0.45, 0.5),
-    control =
-      list(
-        threshold.stop = 0.01,
-        maxit = 50000,
-        temperature = 50000,
-        max.time = 10,
-        verbose = TRUE
-      )
+    control = list(
+      threshold.stop = 0.01,
+      maxit = 50000,
+      temperature = 50000,
+      max.time = 10,
+      verbose = TRUE
+    )
   )
 str(quantTest)
 
-matplot(quantTest$required,
-  type = "l", col = "blue", lty = 1
-)
-matlines(quantTest$quantiles,
-  col = "red", lty = 1
-)
+matplot(quantTest$required, type = "l", col = "blue", lty = 1)
+matlines(quantTest$quantiles, col = "red", lty = 1)
 
 ## test minimally informative
 minTest <- MinimalInformative(
   dosegrid = 1:5,
   refDose = 2.5,
-  control =
-    list(
-      threshold.stop = 0.01,
-      maxit = 50000,
-      temperature = 50000,
-      max.time = 20,
-      verbose = TRUE
-    )
+  control = list(
+    threshold.stop = 0.01,
+    maxit = 50000,
+    temperature = 50000,
+    max.time = 20,
+    verbose = TRUE
+  )
 )
 
 minTest <- MinimalInformative(
   dosegrid = 1:5,
   refDose = 2.5,
   parstart = minTest$parameters,
-  control =
-    list(
-      threshold.stop = 0.01,
-      maxit = 50000,
-      temperature = 50000,
-      max.time = 20,
-      verbose = TRUE
-    )
+  control = list(
+    threshold.stop = 0.01,
+    maxit = 50000,
+    temperature = 50000,
+    max.time = 20,
+    verbose = TRUE
+  )
 )
 str(minTest)
 
-matplot(minTest$required,
-  type = "l", col = "blue", lty = 1
-)
-matlines(minTest$quantiles,
-  col = "red", lty = 1
-)
+matplot(minTest$required, type = "l", col = "blue", lty = 1)
+matlines(minTest$quantiles, col = "red", lty = 1)
 
 
 ## OK, now we can setup the mixture prior:
 ## Note that the informative part does not match the LogisticLogNormal model
 ## above, because here we use LogisticNormal...
 
-mixModel <- new("LogisticNormalMixture",
-  comp1 =
-    list(
-      mean = c(-0.85, exp(1)),
-      cov =
-        matrix(c(1, -0.5, -0.5, 1),
-          nrow = 2L
-        )
-    ),
-  comp2 =
-    list(
-      mean = minTest$model@mean,
-      cov = minTest$model@cov
-    ),
+mixModel <- new(
+  "LogisticNormalMixture",
+  comp1 = list(
+    mean = c(-0.85, exp(1)),
+    cov = matrix(c(1, -0.5, -0.5, 1), nrow = 2L)
+  ),
+  comp2 = list(
+    mean = minTest$model@mean,
+    cov = minTest$model@cov
+  ),
   weightpar = c(a = 1, b = 1),
   refDose = 56
 )
@@ -278,20 +258,18 @@ ggs_density(w)
 plot(mixSamples, mixModel, data)
 
 ## compare with the minimal informative result:
-time <- system.time(minSamples <- mcmc(data, minTest$model, options,
-  verbose = TRUE
-))
+time <- system.time(
+  minSamples <- mcmc(data, minTest$model, options, verbose = TRUE)
+)
 x11()
 plot(minSamples, minTest$model, data)
 
 
 ## and with the informative result:
-infModel <- new("LogisticNormal",
+infModel <- new(
+  "LogisticNormal",
   mean = c(-0.85, exp(1)),
-  cov =
-    matrix(c(1, -0.5, -0.5, 1),
-      nrow = 2L
-    ),
+  cov = matrix(c(1, -0.5, -0.5, 1), nrow = 2L),
   refDose = 56
 )
 infSamples <- mcmc(data, infModel, options)
@@ -309,16 +287,15 @@ source("../R/Rules-methods.R")
 ## and 90% one-sided CI must be above 50% of current MTD estimate,
 ## that is the probability that the MTD is above 50% of the current estimate
 ## must be larger than 90%
-myNextBest <- new("NextBestMTD",
-  target = 0.5,
-  derive =
-    function(mtdSamples) {
-      quantile(mtdSamples, probs = 0.25)
-    }
-)
+myNextBest <- new("NextBestMTD", target = 0.5, derive = function(mtdSamples) {
+  quantile(mtdSamples, probs = 0.25)
+})
 
-mtdRet <- nextBest(myNextBest,
-  doselimit = 50, samples = samples, model = model,
+mtdRet <- nextBest(
+  myNextBest,
+  doselimit = 50,
+  samples = samples,
+  model = model,
   data = data,
   plot = FALSE
 )
@@ -333,14 +310,16 @@ myNextBest <- NextBestNCRM(
   maxOverdoseProb = 0.25
 )
 
-ncrmRet <- nextBest(myNextBest,
+ncrmRet <- nextBest(
+  myNextBest,
   doselimit = 50,
-  samples = samples, model = model, data = data,
+  samples = samples,
+  model = model,
+  data = data,
   plot = FALSE
 )
 ncrmRet$value
 ncrmRet$plot
-
 
 
 ## stopping rule:
@@ -432,12 +411,12 @@ parallel <- TRUE
 
 ## iterSim <- 1L
 
-
 source("../R/Simulations-class.R")
 source("../R/Design-methods.R")
 
 set.seed(29)
-mySims <- simulate(design,
+mySims <- simulate(
+  design,
   truth = truth,
   args = args,
   nsim = 2L,
@@ -446,7 +425,8 @@ mySims <- simulate(design,
 )
 
 set.seed(29)
-mySims2 <- simulate(design,
+mySims2 <- simulate(
+  design,
   truth = truth,
   args = args,
   nsim = 2L,
@@ -467,14 +447,9 @@ mySims@stopReasons[[2]]
 mySims@doses
 
 ## what is the true prob at these doses?
-truth(mySims@doses,
-  alpha0 = 0,
-  alpha1 = 1
-)
+truth(mySims@doses, alpha0 = 0, alpha1 = 1)
 
 ## todo: test hypothetical cohorts
-
-
 
 ## extract operating characteristics
 source("../R/Simulations-methods.R")
@@ -485,9 +460,7 @@ myTruth <- function(dose) {
 }
 curve(myTruth(x), from = 0, to = 30)
 
-sumOut <- summary(as(mySims, Class = "Simulations"),
-  truth = myTruth
-)
+sumOut <- summary(as(mySims, Class = "Simulations"), truth = myTruth)
 sumOut
 
 mySims@doses

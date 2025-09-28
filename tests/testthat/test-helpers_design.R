@@ -45,12 +45,17 @@ test_that("get_result_list returns correct value", {
 })
 
 
-
 test_that("h_simulations_output_format returns object as expected", {
   data_test <- new("Data", nGrid = 3L, doseGrid = c(1, 3, 5))
   dose <- 20
-  fit <- data.frame(middle = c(0.2, 0.7), lower = c(0.1, 0.5), upper = c(0.3, 0.4))
-  stop <- list(list("Number of cohorts is 10 and thus reached the prespecified minimum number 3"))
+  fit <- data.frame(
+    middle = c(0.2, 0.7),
+    lower = c(0.1, 0.5),
+    upper = c(0.3, 0.4)
+  )
+  stop <- list(list(
+    "Number of cohorts is 10 and thus reached the prespecified minimum number 3"
+  ))
   report_results <- c(TRUE, TRUE, TRUE, TRUE, TRUE)
   names(report_results) <- c(NA, NA, NA, NA, NA)
   additional_stats <- list()
@@ -69,7 +74,10 @@ test_that("h_simulations_output_format returns object as expected", {
   expect_equal(simulations_output$dataList[[1]], data_test)
   expect_equal(simulations_output$recommendedDoses, dose)
   expect_equal(simulations_output$fitList[[1]], fit)
-  expect_equal(simulations_output$stop_matrix, do.call(rbind, lapply(result_list_test, "[[", "report_results")))
+  expect_equal(
+    simulations_output$stop_matrix,
+    do.call(rbind, lapply(result_list_test, "[[", "report_results"))
+  )
 })
 
 
@@ -82,10 +90,7 @@ test_that("h_this_truth returns correct results for given dose", {
 
   model <- LogisticLogNormal(
     mean = c(-0.85, 1),
-    cov =
-      matrix(c(1, -0.5, -0.5, 1),
-        nrow = 2
-      ),
+    cov = matrix(c(1, -0.5, -0.5, 1), nrow = 2),
     ref_dose = 56
   )
 
@@ -102,7 +107,6 @@ test_that("h_determine_dlts returns correctly updated data object for default co
   prob <- 0
   size <- 1
 
-
   result <- h_determine_dlts(
     data = data,
     dose = dose,
@@ -111,9 +115,16 @@ test_that("h_determine_dlts returns correctly updated data object for default co
     first_separate = FALSE
   )
 
-  expected_result <- data <- new("Data",
-    x = 3, y = 0L, nGrid = 3L, doseGrid = c(2, 3, 5),
-    xLevel = 2L, placebo = FALSE, ID = 1L, cohort = 1L,
+  expected_result <- data <- new(
+    "Data",
+    x = 3,
+    y = 0L,
+    nGrid = 3L,
+    doseGrid = c(2, 3, 5),
+    xLevel = 2L,
+    placebo = FALSE,
+    ID = 1L,
+    cohort = 1L,
     nObs = 1L
   )
 
@@ -129,7 +140,6 @@ test_that("h_determine_dlts returns correctly updated data object for
   prob <- 1
   size <- 2
 
-
   result <- h_determine_dlts(
     data = data,
     dose = dose,
@@ -138,9 +148,16 @@ test_that("h_determine_dlts returns correctly updated data object for
     first_separate = TRUE
   )
 
-  expected_result <- data <- new("Data",
-    x = 3, y = 1L, nGrid = 3L, doseGrid = c(2, 3, 5),
-    xLevel = 2L, placebo = FALSE, ID = 1L, cohort = 1L,
+  expected_result <- data <- new(
+    "Data",
+    x = 3,
+    y = 1L,
+    nGrid = 3L,
+    doseGrid = c(2, 3, 5),
+    xLevel = 2L,
+    placebo = FALSE,
+    ID = 1L,
+    cohort = 1L,
     nObs = 1L
   )
 
@@ -156,7 +173,6 @@ test_that("h_determine_dlts returns correctly updated data object for first_sepa
   prob <- 0
   size <- 2
 
-
   result <- h_determine_dlts(
     data = data,
     dose = dose,
@@ -165,9 +181,16 @@ test_that("h_determine_dlts returns correctly updated data object for first_sepa
     first_separate = TRUE
   )
 
-  expected_result <- data <- new("Data",
-    x = c(3, 3), y = c(0L, 0L), nGrid = 3L, doseGrid = c(2, 3, 5),
-    xLevel = c(2L, 2L), placebo = FALSE, ID = c(1L, 2L), cohort = c(1L, 1L),
+  expected_result <- data <- new(
+    "Data",
+    x = c(3, 3),
+    y = c(0L, 0L),
+    nGrid = 3L,
+    doseGrid = c(2, 3, 5),
+    xLevel = c(2L, 2L),
+    placebo = FALSE,
+    ID = c(1L, 2L),
+    cohort = c(1L, 1L),
     nObs = 2L
   )
 
@@ -184,7 +207,6 @@ test_that("h_determine_dlts returns correctly updated data object for placebo = 
   size_pl <- 1
   prob_pl <- 0
 
-
   result <- h_determine_dlts(
     data = data,
     dose = dose,
@@ -196,9 +218,16 @@ test_that("h_determine_dlts returns correctly updated data object for placebo = 
     first_separate = FALSE
   )
 
-  expected_result <- data <- new("Data",
-    x = c(0.0001, 3), y = c(0L, 0L), nGrid = 3L, doseGrid = c(0.0001, 2, 3),
-    xLevel = c(1L, 3L), placebo = TRUE, ID = c(1L, 2L), cohort = c(1L, 1L),
+  expected_result <- data <- new(
+    "Data",
+    x = c(0.0001, 3),
+    y = c(0L, 0L),
+    nGrid = 3L,
+    doseGrid = c(0.0001, 2, 3),
+    xLevel = c(1L, 3L),
+    placebo = TRUE,
+    ID = c(1L, 2L),
+    cohort = c(1L, 1L),
     nObs = 2L
   )
 

@@ -33,7 +33,9 @@ setClass(
 #' @note Typically, end users will not use the `DefaultNextBest()` function.
 #' @export
 .DefaultNextBest <- function() {
-  stop(paste0("Class NextBest should not be instantiated directly.  Please use one of its subclasses instead."))
+  stop(paste0(
+    "Class NextBest should not be instantiated directly.  Please use one of its subclasses instead."
+  ))
 }
 
 
@@ -156,9 +158,7 @@ NextBestMTD <- function(target, derive) {
 #' @export
 #' @example examples/Rules-class-NextBestNCRM.R
 #'
-NextBestNCRM <- function(target,
-                         overdose,
-                         max_overdose_prob) {
+NextBestNCRM <- function(target, overdose, max_overdose_prob) {
   .NextBestNCRM(
     target = target,
     overdose = overdose,
@@ -172,7 +172,11 @@ NextBestNCRM <- function(target,
 #' @note Typically, end users will not use the `.DefaultNextBestNCRM()` function.
 #' @export
 .DefaultNextBestNCRM <- function() {
-  NextBestNCRM(target = c(0.2, 0.35), overdose = c(0.35, 1), max_overdose_prob = 0.25)
+  NextBestNCRM(
+    target = c(0.2, 0.35),
+    overdose = c(0.35, 1),
+    max_overdose_prob = 0.25
+  )
 }
 
 # NextBestNCRMLoss ----
@@ -242,11 +246,13 @@ NextBestNCRM <- function(target,
 #' @export
 #' @example examples/Rules-class-NextBestNCRMLoss.R
 #'
-NextBestNCRMLoss <- function(target,
-                             overdose,
-                             unacceptable = c(1, 1),
-                             max_overdose_prob,
-                             losses) {
+NextBestNCRMLoss <- function(
+  target,
+  overdose,
+  unacceptable = c(1, 1),
+  max_overdose_prob,
+  losses
+) {
   .NextBestNCRMLoss(
     target = target,
     overdose = overdose,
@@ -388,11 +394,13 @@ NextBestThreePlusThree <- function() {
 #' @export
 #' @example examples/Rules-class-NextBestDualEndpoint.R
 #'
-NextBestDualEndpoint <- function(target,
-                                 overdose,
-                                 max_overdose_prob,
-                                 target_relative = TRUE,
-                                 target_thresh = 0.01) {
+NextBestDualEndpoint <- function(
+  target,
+  overdose,
+  max_overdose_prob,
+  target_relative = TRUE,
+  target_thresh = 0.01
+) {
   .NextBestDualEndpoint(
     target = target,
     overdose = overdose,
@@ -789,10 +797,12 @@ NextBestMaxGain <- function(prob_target_drt, prob_target_eot) {
 #' @export
 #' @example examples/Rules-class-NextBestMaxGainSamples.R
 #'
-NextBestMaxGainSamples <- function(prob_target_drt,
-                                   prob_target_eot,
-                                   derive,
-                                   mg_derive) {
+NextBestMaxGainSamples <- function(
+  prob_target_drt,
+  prob_target_eot,
+  derive,
+  mg_derive
+) {
   .NextBestMaxGainSamples(
     prob_target_drt = prob_target_drt,
     prob_target_eot = prob_target_eot,
@@ -1007,7 +1017,9 @@ setClass(
 #' @note Typically, end users will not use the `.DefaultIncrements()` function.
 #' @export
 .DefaultIncrements <- function() {
-  stop(paste0("Class Increments cannot be instantiated directly.  Please use one of its subclasses instead."))
+  stop(paste0(
+    "Class Increments cannot be instantiated directly.  Please use one of its subclasses instead."
+  ))
 }
 
 
@@ -1178,8 +1190,10 @@ IncrementsRelativeDLT <- function(intervals, increments) {
 #' @export
 #' @example examples/Rules-class-IncrementsRelativeDLTCurrent.R
 #'
-IncrementsRelativeDLTCurrent <- function(intervals = c(0L, 1L),
-                                         increments = c(2L, 1L)) {
+IncrementsRelativeDLTCurrent <- function(
+  intervals = c(0L, 1L),
+  increments = c(2L, 1L)
+) {
   assert_integerish(intervals, lower = 0, any.missing = FALSE)
   assert_numeric(increments, any.missing = FALSE, lower = 0)
 
@@ -1194,8 +1208,12 @@ IncrementsRelativeDLTCurrent <- function(intervals = c(0L, 1L),
 #' @rdname IncrementsRelativeDLTCurrent-class
 #' @note Typically, end users will not use the `.DefaultIncrementsRelativeDLTCurrent()` function.
 #' @export
-.DefaultIncrementsRelativeDLTCurrent <- function() { # nolint
-  IncrementsRelativeDLTCurrent(intervals = c(0L, 1L, 3L), increments = c(1, 0.33, 0.2))
+.DefaultIncrementsRelativeDLTCurrent <- function() {
+  # nolint
+  IncrementsRelativeDLTCurrent(
+    intervals = c(0L, 1L, 3L),
+    increments = c(1, 0.33, 0.2)
+  )
 }
 
 # IncrementsRelativeParts ----
@@ -1411,10 +1429,7 @@ IncrementsDoseLevels <- function(levels = 1L, basis_level = "last") {
 #' @example examples/Rules-class-IncrementsHSRBeta.R
 #' @export
 #'
-IncrementsHSRBeta <- function(target = 0.3,
-                              prob = 0.95,
-                              a = 1,
-                              b = 1) {
+IncrementsHSRBeta <- function(target = 0.3, prob = 0.95, a = 1, b = 1) {
   .IncrementsHSRBeta(
     target = target,
     prob = prob,
@@ -1483,7 +1498,10 @@ IncrementsMin <- function(increments_list) {
 .DefaultIncrementsMin <- function() {
   IncrementsMin(
     increments_list = list(
-      IncrementsRelativeDLT(intervals = c(0, 1, 3), increments = c(1, 0.33, 0.2)),
+      IncrementsRelativeDLT(
+        intervals = c(0, 1, 3),
+        increments = c(1, 0.33, 0.2)
+      ),
       IncrementsRelative(intervals = c(0, 20), increments = c(1, 0.33))
     )
   )
@@ -1637,7 +1655,9 @@ setClass(
 #' @note Typically, end users will not use the `DefaultCohortSize()` function.
 #' @export
 .DefaultCohortSize <- function() {
-  stop(paste0("Class CohortSize should not be instantiated directly.  Please use one of its subclasses instead."))
+  stop(paste0(
+    "Class CohortSize should not be instantiated directly.  Please use one of its subclasses instead."
+  ))
 }
 
 # StoppingMissingDose ----
@@ -1729,15 +1749,23 @@ StoppingMissingDose <- function(report_label = NA_character_) {
 #' @example examples/Rules-class-StoppingCohortsNearDose.R
 #' @export
 #'
-StoppingCohortsNearDose <- function(nCohorts = 2L,
-                                    percentage = 50,
-                                    report_label = NA_character_) {
+StoppingCohortsNearDose <- function(
+  nCohorts = 2L,
+  percentage = 50,
+  report_label = NA_character_
+) {
   assert_count(nCohorts, positive = TRUE)
   assert_numeric(percentage, lower = 0)
 
   report_label <- h_default_if_empty(
     as.character(report_label),
-    paste("\u2265", nCohorts, "cohorts dosed in", percentage, "% dose range around NBD")
+    paste(
+      "\u2265",
+      nCohorts,
+      "cohorts dosed in",
+      percentage,
+      "% dose range around NBD"
+    )
   )
 
   .StoppingCohortsNearDose(
@@ -1752,7 +1780,8 @@ StoppingCohortsNearDose <- function(nCohorts = 2L,
 #' @rdname StoppingCohortsNearDose-class
 #' @note Typically, end users will not use the `.DefaultStoppingCohortsNearDose()` function.
 #' @export
-.DefaultStoppingCohortsNearDose <- function() { # nolint
+.DefaultStoppingCohortsNearDose <- function() {
+  # nolint
   StoppingCohortsNearDose(
     nCohorts = 3L,
     percentage = 0.2
@@ -1803,15 +1832,23 @@ StoppingCohortsNearDose <- function(nCohorts = 2L,
 #' @example examples/Rules-class-StoppingPatientsNearDose.R
 #' @export
 #'
-StoppingPatientsNearDose <- function(nPatients = 10L,
-                                     percentage = 50,
-                                     report_label = NA_character_) {
+StoppingPatientsNearDose <- function(
+  nPatients = 10L,
+  percentage = 50,
+  report_label = NA_character_
+) {
   assert_count(nPatients, positive = TRUE)
   assert_number(percentage, lower = 0, upper = 100)
 
   report_label <- h_default_if_empty(
     as.character(report_label),
-    paste("\u2265", nPatients, "patients dosed in", percentage, "% dose range around NBD")
+    paste(
+      "\u2265",
+      nPatients,
+      "patients dosed in",
+      percentage,
+      "% dose range around NBD"
+    )
   )
 
   .StoppingPatientsNearDose(
@@ -1826,7 +1863,8 @@ StoppingPatientsNearDose <- function(nPatients = 10L,
 #' @rdname StoppingPatientsNearDose-class
 #' @note Typically, end users will not use the `.DefaultStoppingPatientsNearDose()` function.
 #' @export
-.DefaultStoppingPatientsNearDose <- function() { # nolint
+.DefaultStoppingPatientsNearDose <- function() {
+  # nolint
   StoppingPatientsNearDose(
     nPatients = 9L,
     percentage = 20,
@@ -1868,8 +1906,7 @@ StoppingPatientsNearDose <- function(nPatients = 10L,
 #' @example examples/Rules-class-StoppingMinCohorts.R
 #' @export
 #'
-StoppingMinCohorts <- function(nCohorts = 2L,
-                               report_label = NA_character_) {
+StoppingMinCohorts <- function(nCohorts = 2L, report_label = NA_character_) {
   assert_count(nCohorts, positive = TRUE)
 
   report_label <- h_default_if_empty(
@@ -1928,8 +1965,7 @@ StoppingMinCohorts <- function(nCohorts = 2L,
 #' @example examples/Rules-class-StoppingMinPatients.R
 #' @export
 #'
-StoppingMinPatients <- function(nPatients = 20L,
-                                report_label = NA_character_) {
+StoppingMinPatients <- function(nPatients = 20L, report_label = NA_character_) {
   assert_count(nPatients, positive = TRUE)
 
   report_label <- h_default_if_empty(
@@ -1997,13 +2033,22 @@ StoppingMinPatients <- function(nPatients = 20L,
 #' @example examples/Rules-class-StoppingTargetProb.R
 #' @export
 #'
-StoppingTargetProb <- function(target = c(0.2, 0.35),
-                               prob = 0.4,
-                               report_label = NA_character_) {
+StoppingTargetProb <- function(
+  target = c(0.2, 0.35),
+  prob = 0.4,
+  report_label = NA_character_
+) {
   assert_numeric(target, len = 2)
   report_label <- h_default_if_empty(
     as.character(report_label),
-    paste0("P(", target[1], " \u2264 prob(DLE | NBD) \u2264 ", target[2], ") \u2265 ", prob)
+    paste0(
+      "P(",
+      target[1],
+      " \u2264 prob(DLE | NBD) \u2264 ",
+      target[2],
+      ") \u2265 ",
+      prob
+    )
   )
 
   .StoppingTargetProb(
@@ -2077,10 +2122,12 @@ StoppingTargetProb <- function(target = c(0.2, 0.35),
 #' @example examples/Rules-class-StoppingMTDdistribution.R
 #' @export
 #'
-StoppingMTDdistribution <- function(target = 0.33,
-                                    thresh = 0.5,
-                                    prob = 0.9,
-                                    report_label = NA_character_) {
+StoppingMTDdistribution <- function(
+  target = 0.33,
+  thresh = 0.5,
+  prob = 0.9,
+  report_label = NA_character_
+) {
   report_label <- h_default_if_empty(
     as.character(report_label),
     paste0("P(MTD > ", thresh, " * NBD | P(DLE) = ", target, ") \u2265 ", prob)
@@ -2153,9 +2200,11 @@ StoppingMTDdistribution <- function(target = 0.33,
 #' @export
 #' @example examples/Rules-class-StoppingMTDCV.R
 #'
-StoppingMTDCV <- function(target = 0.3,
-                          thresh_cv = 40,
-                          report_label = NA_character_) {
+StoppingMTDCV <- function(
+  target = 0.3,
+  thresh_cv = 40,
+  report_label = NA_character_
+) {
   report_label <- h_default_if_empty(
     as.character(report_label),
     paste("CV(MTD) >", target)
@@ -2243,11 +2292,13 @@ StoppingMTDCV <- function(target = 0.3,
 #' @export
 #' @example examples/Rules-class-StoppingLowestDoseHSRBeta.R
 #'
-StoppingLowestDoseHSRBeta <- function(target = 0.3,
-                                      prob = 0.95,
-                                      a = 1,
-                                      b = 1,
-                                      report_label = NA_character_) {
+StoppingLowestDoseHSRBeta <- function(
+  target = 0.3,
+  prob = 0.95,
+  a = 1,
+  b = 1,
+  report_label = NA_character_
+) {
   report_label <- h_default_if_empty(
     as.character(report_label),
     paste0("P\u03B2(lowest dose > P(DLE) = ", target, ") > ", prob)
@@ -2267,7 +2318,8 @@ StoppingLowestDoseHSRBeta <- function(target = 0.3,
 #' @rdname StoppingLowestDoseHSRBeta-class
 #' @note Typically, end users will not use the `.DefaultStoppingLowestDoseHSRBeta()` function.
 #' @export
-.DefaultStoppingLowestDoseHSRBeta <- function() { # nolint
+.DefaultStoppingLowestDoseHSRBeta <- function() {
+  # nolint
   StoppingLowestDoseHSRBeta(
     target = 0.3,
     prob = 0.95,
@@ -2328,17 +2380,25 @@ StoppingLowestDoseHSRBeta <- function(target = 0.3,
 #' @export
 #' @example examples/Rules-class-StoppingTargetBiomarker.R
 #'
-StoppingTargetBiomarker <- function(target = c(0.9, 1),
-                                    prob = 0.3,
-                                    is_relative = TRUE,
-                                    report_label = NA_character_) {
+StoppingTargetBiomarker <- function(
+  target = c(0.9, 1),
+  prob = 0.3,
+  is_relative = TRUE,
+  report_label = NA_character_
+) {
   assert_numeric(target, len = 2)
   assert_flag(is_relative)
 
   report_label <- h_default_if_empty(
     as.character(report_label),
     paste0(
-      "P(", target[1], " \u2264 ", "Biomarker \u2264 ", target[2], ") \u2265 ", prob,
+      "P(",
+      target[1],
+      " \u2264 ",
+      "Biomarker \u2264 ",
+      target[2],
+      ") \u2265 ",
+      prob,
       ifelse(is_relative, " (relative)", " (absolute)")
     )
   )
@@ -2402,9 +2462,11 @@ StoppingTargetBiomarker <- function(target = c(0.9, 1),
 #' @export
 #' @example examples/Rules-class-StoppingSpecificDose.R
 #'
-StoppingSpecificDose <- function(rule = StoppingTargetProb(target = c(0, 0.3), prob = 0.8),
-                                 dose = 80,
-                                 report_label = NA_character_) {
+StoppingSpecificDose <- function(
+  rule = StoppingTargetProb(target = c(0, 0.3), prob = 0.8),
+  dose = 80,
+  report_label = NA_character_
+) {
   report_label <- h_default_if_empty(
     as.character(report_label),
     paste0("Dose ", dose, " used for testing a stopping rule")
@@ -2521,9 +2583,11 @@ StoppingHighestDose <- function(report_label = NA_character_) {
 #' @export
 #' @example examples/Rules-class-StoppingTDCIRatio.R
 #'
-StoppingTDCIRatio <- function(target_ratio = 5,
-                              prob_target = 0.3,
-                              report_label = NA_character_) {
+StoppingTDCIRatio <- function(
+  target_ratio = 5,
+  prob_target = 0.3,
+  report_label = NA_character_
+) {
   report_label <- h_default_if_empty(
     as.character(report_label),
     paste("TD", target_ratio, "for", prob_target, "target prob")
@@ -2598,9 +2662,11 @@ StoppingTDCIRatio <- function(target_ratio = 5,
 #' @export
 #' @example examples/Rules-class-StoppingMaxGainCIRatio.R
 #'
-StoppingMaxGainCIRatio <- function(target_ratio = 5,
-                                   prob_target = 0.3,
-                                   report_label = NA_character_) {
+StoppingMaxGainCIRatio <- function(
+  target_ratio = 5,
+  prob_target = 0.3,
+  report_label = NA_character_
+) {
   report_label <- h_default_if_empty(
     as.character(report_label),
     paste("GStar", target_ratio, "for", prob_target, "target prob")
@@ -2939,7 +3005,9 @@ setClass(
 #' @note Typically, end users will not use the `DefaultCohortSize()` function.
 #' @export
 .DefaultCohortSize <- function() {
-  stop(paste0("Class CohortSize should not be instantiated directly.  Please use one of its subclasses instead."))
+  stop(paste0(
+    "Class CohortSize should not be instantiated directly.  Please use one of its subclasses instead."
+  ))
 }
 
 # CohortSizeRange ----
@@ -3246,11 +3314,10 @@ CohortSizeMax <- function(cohort_sizes) {
   Class = "CohortSizeMin",
   slots = c(cohort_sizes = "list"),
   prototype = prototype(
-    cohort_sizes =
-      list(
-        CohortSizeRange(intervals = c(0, 30), cohort_size = c(1, 3)),
-        CohortSizeDLT(intervals = c(0, 1), cohort_size = c(1, 3))
-      )
+    cohort_sizes = list(
+      CohortSizeRange(intervals = c(0, 30), cohort_size = c(1, 3)),
+      CohortSizeDLT(intervals = c(0, 1), cohort_size = c(1, 3))
+    )
   ),
   contains = "CohortSize",
   validity = v_cohort_size_max
@@ -3370,7 +3437,9 @@ setClass(
 #' @note Typically, end users will not use the `.DefaultSafetyWindow()` function.
 #' @export
 .DefaultSafetyWindow <- function() {
-  stop(paste0("Class SafetyWindow cannot be instantiated directly.  Please use one of its subclasses instead."))
+  stop(paste0(
+    "Class SafetyWindow cannot be instantiated directly.  Please use one of its subclasses instead."
+  ))
 }
 
 
@@ -3447,10 +3516,7 @@ setClass(
 #' @export
 #' @example examples/Rules-class-SafetyWindowSize.R
 #'
-SafetyWindowSize <- function(gap,
-                             size,
-                             follow,
-                             follow_min) {
+SafetyWindowSize <- function(gap, size, follow, follow_min) {
   assert_integerish(follow, lower = 0)
   assert_integerish(follow_min, lower = 0)
   for (g in gap) {
@@ -3458,7 +3524,9 @@ SafetyWindowSize <- function(gap,
   }
   assert_integerish(size, lower = 0)
   if (follow > follow_min) {
-    warning("The value of follow_min is typically larger than the value of follow")
+    warning(
+      "The value of follow_min is typically larger than the value of follow"
+    )
   }
   gap <- lapply(gap, as.integer)
   .SafetyWindowSize(
@@ -3532,15 +3600,15 @@ SafetyWindowSize <- function(gap,
 #' @export
 #' @example examples/Rules-class-SafetyWindowConst.R
 #'
-SafetyWindowConst <- function(gap,
-                              follow,
-                              follow_min) {
+SafetyWindowConst <- function(gap, follow, follow_min) {
   assert_integerish(follow, lower = 0)
   assert_integerish(follow_min, lower = 0)
   assert_integerish(gap, lower = 0)
 
   if (follow > follow_min) {
-    warning("The value of follow_min is typically larger than the value of follow")
+    warning(
+      "The value of follow_min is typically larger than the value of follow"
+    )
   }
   .SafetyWindowConst(
     gap = as.integer(gap),

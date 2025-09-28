@@ -524,7 +524,11 @@ test_that("MCMC computes correct values for LogisticNormalFixedMixture model", {
   options <- h_get_mcmc_options()
 
   result <- mcmc(data = data, model = model, options = options)
-  result_log_normal <- mcmc(data = data, model = model_log_normal, options = options)
+  result_log_normal <- mcmc(
+    data = data,
+    model = model_log_normal,
+    options = options
+  )
   expect_snapshot(result@data)
   expect_snapshot(result_log_normal@data)
 })
@@ -536,7 +540,11 @@ test_that("MCMC computes correct values for LogisticNormalFixedMixture model and
   options <- h_get_mcmc_options()
 
   result <- mcmc(data = data, model = model, options = options)
-  result_log_normal <- mcmc(data = data, model = model_log_normal, options = options)
+  result_log_normal <- mcmc(
+    data = data,
+    model = model_log_normal,
+    options = options
+  )
   expect_snapshot(result@data)
   expect_snapshot(result_log_normal@data)
 })
@@ -641,7 +649,11 @@ test_that("MCMC computes correct values for DualEndpointRW model (fixed params)"
   options <- h_get_mcmc_options()
 
   result <- mcmc(data = data, model = model, options = options)
-  result_log_dose <- mcmc(data = data, model = model_log_dose, options = options)
+  result_log_dose <- mcmc(
+    data = data,
+    model = model_log_dose,
+    options = options
+  )
   expect_snapshot(result@data)
   expect_snapshot(result_log_dose@data)
 })
@@ -653,7 +665,11 @@ test_that("MCMC computes correct values for DualEndpointRW model", {
   options <- h_get_mcmc_options()
 
   result <- mcmc(data = data, model = model, options = options)
-  result_log_dose <- mcmc(data = data, model = model_log_dose, options = options)
+  result_log_dose <- mcmc(
+    data = data,
+    model = model_log_dose,
+    options = options
+  )
   expect_snapshot(result@data)
   expect_snapshot(result_log_dose@data)
 })
@@ -665,7 +681,11 @@ test_that("MCMC computes correct values for DualEndpointRW model with RW2", {
   options <- h_get_mcmc_options()
 
   result <- mcmc(data = data, model = model, options = options)
-  result_log_dose <- mcmc(data = data, model = model_log_dose, options = options)
+  result_log_dose <- mcmc(
+    data = data,
+    model = model_log_dose,
+    options = options
+  )
   expect_snapshot(result@data)
   expect_snapshot(result_log_dose@data)
 })
@@ -673,11 +693,19 @@ test_that("MCMC computes correct values for DualEndpointRW model with RW2", {
 test_that("MCMC computes correct values for DualEndpointRW model (fixed params) with RW2", {
   data <- h_get_data_dual()
   model <- h_get_dual_endpoint_rw(rw1 = FALSE, fixed = FALSE)
-  model_log_dose <- h_get_dual_endpoint_rw(use_log_dose = TRUE, rw1 = FALSE, fixed = FALSE)
+  model_log_dose <- h_get_dual_endpoint_rw(
+    use_log_dose = TRUE,
+    rw1 = FALSE,
+    fixed = FALSE
+  )
   options <- h_get_mcmc_options()
 
   result <- mcmc(data = data, model = model, options = options)
-  result_log_dose <- mcmc(data = data, model = model_log_dose, options = options)
+  result_log_dose <- mcmc(
+    data = data,
+    model = model_log_dose,
+    options = options
+  )
   expect_snapshot(result@data)
   expect_snapshot(result_log_dose@data)
 })
@@ -689,7 +717,11 @@ test_that("MCMC computes correct values for DualEndpointRW model (fixed params, 
   options <- h_get_mcmc_options()
 
   result <- mcmc(data = data, model = model, options = options)
-  result_log_dose <- mcmc(data = data, model = model_log_dose, options = options)
+  result_log_dose <- mcmc(
+    data = data,
+    model = model_log_dose,
+    options = options
+  )
   expect_snapshot(result@data)
   expect_snapshot(result_log_dose@data)
 })
@@ -701,7 +733,11 @@ test_that("MCMC computes correct values for DualEndpointRW model (empty data)", 
   options <- h_get_mcmc_options()
 
   result <- mcmc(data = data, model = model, options = options)
-  result_log_dose <- mcmc(data = data, model = model_log_dose, options = options)
+  result_log_dose <- mcmc(
+    data = data,
+    model = model_log_dose,
+    options = options
+  )
   expect_snapshot(result@data)
   expect_snapshot(result_log_dose@data)
 })
@@ -713,7 +749,11 @@ test_that("MCMC computes correct values for DualEndpointRW model with RW2 (empty
   options <- h_get_mcmc_options()
 
   result <- mcmc(data = data, model = model, options = options)
-  result_log_dose <- mcmc(data = data, model = model_log_dose, options = options)
+  result_log_dose <- mcmc(
+    data = data,
+    model = model_log_dose,
+    options = options
+  )
   expect_snapshot(result@data)
   expect_snapshot(result_log_dose@data)
 })
@@ -721,11 +761,19 @@ test_that("MCMC computes correct values for DualEndpointRW model with RW2 (empty
 test_that("MCMC computes correct values for DualEndpointRW model (fixed params, empty data) with RW2", {
   data <- h_get_data_dual(empty = TRUE)
   model <- h_get_dual_endpoint_rw(rw1 = FALSE, fixed = FALSE)
-  model_log_dose <- h_get_dual_endpoint_rw(use_log_dose = TRUE, rw1 = FALSE, fixed = FALSE)
+  model_log_dose <- h_get_dual_endpoint_rw(
+    use_log_dose = TRUE,
+    rw1 = FALSE,
+    fixed = FALSE
+  )
   options <- h_get_mcmc_options()
 
   result <- mcmc(data = data, model = model, options = options)
-  result_log_dose <- mcmc(data = data, model = model_log_dose, options = options)
+  result_log_dose <- mcmc(
+    data = data,
+    model = model_log_dose,
+    options = options
+  )
   expect_snapshot(result@data)
   expect_snapshot(result_log_dose@data)
 })
@@ -808,7 +856,11 @@ test_that("MCMC computes correct values for DualEndpointBeta model with fixed pa
   options <- h_get_mcmc_options()
 
   result <- mcmc(data = data, model = model, options = options)
-  result_log_dose <- mcmc(data = data, model = model_log_dose, options = options)
+  result_log_dose <- mcmc(
+    data = data,
+    model = model_log_dose,
+    options = options
+  )
   expect_snapshot(result@data)
   expect_snapshot(result_log_dose@data)
 })
@@ -820,7 +872,11 @@ test_that("MCMC computes correct values for DualEndpointBeta model", {
   options <- h_get_mcmc_options()
 
   result <- mcmc(data = data, model = model, options = options)
-  result_log_dose <- mcmc(data = data, model = model_log_dose, options = options)
+  result_log_dose <- mcmc(
+    data = data,
+    model = model_log_dose,
+    options = options
+  )
   expect_snapshot(result@data)
   expect_snapshot(result_log_dose@data)
 })
@@ -855,7 +911,11 @@ test_that("MCMC computes correct values for DualEndpointBeta model with fixed pa
   options <- h_get_mcmc_options()
 
   result <- mcmc(data = data, model = model, options = options)
-  result_log_dose <- mcmc(data = data, model = model_log_dose, options = options)
+  result_log_dose <- mcmc(
+    data = data,
+    model = model_log_dose,
+    options = options
+  )
   expect_snapshot(result@data)
   expect_snapshot(result_log_dose@data)
 })
@@ -867,7 +927,11 @@ test_that("MCMC computes correct values for DualEndpointBeta model (empty data)"
   options <- h_get_mcmc_options()
 
   result <- mcmc(data = data, model = model, options = options)
-  result_log_dose <- mcmc(data = data, model = model_log_dose, options = options)
+  result_log_dose <- mcmc(
+    data = data,
+    model = model_log_dose,
+    options = options
+  )
   expect_snapshot(result@data)
   expect_snapshot(result_log_dose@data)
 })
@@ -911,7 +975,11 @@ test_that("MCMC computes correct values for DualEndpointEmax model with fixed pa
   options <- h_get_mcmc_options()
 
   result <- mcmc(data = data, model = model, options = options)
-  result_log_dose <- mcmc(data = data, model = model_log_dose, options = options)
+  result_log_dose <- mcmc(
+    data = data,
+    model = model_log_dose,
+    options = options
+  )
   expect_snapshot(result@data)
   expect_snapshot(result_log_dose@data)
 })
@@ -923,7 +991,11 @@ test_that("MCMC computes correct values for DualEndpointEmax model", {
   options <- h_get_mcmc_options()
 
   result <- mcmc(data = data, model = model, options = options)
-  result_log_dose <- mcmc(data = data, model = model_log_dose, options = options)
+  result_log_dose <- mcmc(
+    data = data,
+    model = model_log_dose,
+    options = options
+  )
   expect_snapshot(result@data)
   expect_snapshot(result_log_dose@data)
 })
@@ -935,7 +1007,11 @@ test_that("MCMC computes correct values for DualEndpointEmax model with fixed pa
   options <- h_get_mcmc_options()
 
   result <- mcmc(data = data, model = model, options = options)
-  result_log_dose <- mcmc(data = data, model = model_log_dose, options = options)
+  result_log_dose <- mcmc(
+    data = data,
+    model = model_log_dose,
+    options = options
+  )
   expect_snapshot(result@data)
   expect_snapshot(result_log_dose@data)
 })
@@ -947,7 +1023,11 @@ test_that("MCMC computes correct values for DualEndpointEmax model (empty data)"
   options <- h_get_mcmc_options()
 
   result <- mcmc(data = data, model = model, options = options)
-  result_log_dose <- mcmc(data = data, model = model_log_dose, options = options)
+  result_log_dose <- mcmc(
+    data = data,
+    model = model_log_dose,
+    options = options
+  )
   expect_snapshot(result@data)
   expect_snapshot(result_log_dose@data)
 })
@@ -1123,7 +1203,11 @@ test_that(".DefaultDALogisticLogNormal works as expected", {
         cov = matrix(c(1, -0.5, -0.5, 1), nrow = 2),
         ref_dose = 56,
         npiece = npiece,
-        l = as.numeric(t(apply(as.matrix(c(1:npiece), 1, npiece), 2, lambda_prior))),
+        l = as.numeric(t(apply(
+          as.matrix(c(1:npiece), 1, npiece),
+          2,
+          lambda_prior
+        ))),
         c_par = 2
       )
     )
@@ -1245,8 +1329,14 @@ test_that("OneParLogNormalPrior object can be created with user constructor", {
   expect_valid(result, "OneParLogNormalPrior")
   expect_identical(result@skel_probs, c(0.1, 0.3, 0.5, 0.7, 0.9))
   expect_identical(result@sigma2, 2)
-  expect_identical(result@skel_fun(c(1, 1.5, 3, 3.7, 5)), c(0.10, 0.20, 0.50, 0.64, 0.90))
-  expect_identical(result@skel_fun_inv(c(0.10, 0.20, 0.50, 0.64, 0.90)), c(1, 1.5, 3, 3.7, 5))
+  expect_identical(
+    result@skel_fun(c(1, 1.5, 3, 3.7, 5)),
+    c(0.10, 0.20, 0.50, 0.64, 0.90)
+  )
+  expect_identical(
+    result@skel_fun_inv(c(0.10, 0.20, 0.50, 0.64, 0.90)),
+    c(1, 1.5, 3, 3.7, 5)
+  )
 })
 
 test_that("OneParLogNormalPrior throws the error when dose_grid and skel_probs have diff. lengths", {
@@ -1363,8 +1453,14 @@ test_that("OneParExpPrior object can be created with user constructor", {
   expect_valid(result, "OneParExpPrior")
   expect_identical(result@skel_probs, c(0.1, 0.3, 0.5, 0.7, 0.9))
   expect_identical(result@lambda, 2)
-  expect_identical(result@skel_fun(c(1, 1.5, 3, 3.7, 5)), c(0.10, 0.20, 0.50, 0.64, 0.90))
-  expect_identical(result@skel_fun_inv(c(0.10, 0.20, 0.50, 0.64, 0.90)), c(1, 1.5, 3, 3.7, 5))
+  expect_identical(
+    result@skel_fun(c(1, 1.5, 3, 3.7, 5)),
+    c(0.10, 0.20, 0.50, 0.64, 0.90)
+  )
+  expect_identical(
+    result@skel_fun_inv(c(0.10, 0.20, 0.50, 0.64, 0.90)),
+    c(1, 1.5, 3, 3.7, 5)
+  )
 })
 
 test_that("OneParExpPrior throws the error when dose_grid and skel_probs have diff. lengths", {

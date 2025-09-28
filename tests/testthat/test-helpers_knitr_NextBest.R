@@ -480,7 +480,10 @@ test_that("knit_print.NextBestOrdinal works correctly", {
       "is smallest will be selected as the recommended dose for the next cohort\n\n\n\n"
     )
   )
-  x1 <- NextBestOrdinal(grade = 2L, rule = NextBestMTD(target = 0.25, derive = x@rule@derive))
+  x1 <- NextBestOrdinal(
+    grade = 2L,
+    rule = NextBestMTD(target = 0.25, derive = x@rule@derive)
+  )
   expect_equal(
     knit_print(
       x1,

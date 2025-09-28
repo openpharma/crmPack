@@ -4,7 +4,10 @@
 
 test_that("doseFunction-GeneralModel returns correct dose function", {
   model <- h_get_logistic_log_normal()
-  samples <- Samples(list(alpha0 = 1, alpha1 = 2), options = McmcOptions(samples = 1))
+  samples <- Samples(
+    list(alpha0 = 1, alpha1 = 2),
+    options = McmcOptions(samples = 1)
+  )
 
   dose_fun <- doseFunction(model, alpha0 = 1, alpha1 = 2)
   dose_fun <- h_covr_detrace(dose_fun)
@@ -37,8 +40,14 @@ test_that("doseFunction-GeneralModel returns correct dose function for matrix pa
   model <- h_get_logistic_log_normal_mix()
   samples <- Samples(
     list(
-      alpha0 = matrix(c(-0.94, -0.94, -2.37, -2.37, -0.67, -0.67, -1.28, -1.08), nrow = 4),
-      alpha1 = matrix(c(0.45, 0.45, 0.40, 0.40, 0.75, 0.75, 1.18, 0.63), nrow = 4),
+      alpha0 = matrix(
+        c(-0.94, -0.94, -2.37, -2.37, -0.67, -0.67, -1.28, -1.08),
+        nrow = 4
+      ),
+      alpha1 = matrix(
+        c(0.45, 0.45, 0.40, 0.40, 0.75, 0.75, 1.18, 0.63),
+        nrow = 4
+      ),
       comp = c(1, 1, 1, 1)
     ),
     options = McmcOptions(samples = 4)
@@ -46,7 +55,9 @@ test_that("doseFunction-GeneralModel returns correct dose function for matrix pa
 
   dose_fun <- doseFunction(
     model,
-    alpha0 = samples@data$alpha0, alpha1 = samples@data$alpha1, comp = samples@data$comp
+    alpha0 = samples@data$alpha0,
+    alpha1 = samples@data$alpha1,
+    comp = samples@data$comp
   )
   dose_fun <- h_covr_detrace(dose_fun)
   dose_fun_env <- environment(dose_fun)
@@ -91,7 +102,11 @@ test_that("doseFunction-GeneralModel throws the error when valid params are not 
 
 test_that("doseFunction-ModelPseudo returns correct dose function", {
   model <- h_get_logistic_indep_beta()
-  samples <- h_as_samples(list(phi1 = 35, phi2 = 5), burnin = 10000, fixed = FALSE)
+  samples <- h_as_samples(
+    list(phi1 = 35, phi2 = 5),
+    burnin = 10000,
+    fixed = FALSE
+  )
   dose_args <- c("x", "model", "samples")
 
   dose_fun <- doseFunction(model, phi1 = 35, phi2 = 5)
@@ -126,7 +141,10 @@ test_that("doseFunction-LogisticLogNormalGrouped works as expected", {
 
   dose_fun <- expect_silent(doseFunction(
     model,
-    alpha0 = 1, delta0 = 0.5, alpha1 = 0.5, delta1 = -0.2
+    alpha0 = 1,
+    delta0 = 0.5,
+    alpha1 = 0.5,
+    delta1 = -0.2
   ))
   dose_fun <- h_covr_detrace(dose_fun)
 
@@ -211,7 +229,10 @@ test_that("doseFunction-LogisticLogNormalOrdinal fails gracefully with bad input
 
 test_that("probFunction-GeneralModel returns correct prob function", {
   model <- h_get_logistic_log_normal()
-  samples <- Samples(list(alpha0 = 1, alpha1 = 2), options = McmcOptions(samples = 1))
+  samples <- Samples(
+    list(alpha0 = 1, alpha1 = 2),
+    options = McmcOptions(samples = 1)
+  )
 
   prob_fun <- probFunction(model, alpha0 = 1, alpha1 = 2)
   prob_fun <- h_covr_detrace(prob_fun)
@@ -244,8 +265,14 @@ test_that("probFunction-GeneralModel returns correct prob function for matrix pa
   model <- h_get_logistic_log_normal_mix()
   samples <- Samples(
     list(
-      alpha0 = matrix(c(-0.94, -0.94, -2.37, -2.37, -0.67, -0.67, -1.28, -1.08), nrow = 4),
-      alpha1 = matrix(c(0.45, 0.45, 0.40, 0.40, 0.75, 0.75, 1.18, 0.63), nrow = 4),
+      alpha0 = matrix(
+        c(-0.94, -0.94, -2.37, -2.37, -0.67, -0.67, -1.28, -1.08),
+        nrow = 4
+      ),
+      alpha1 = matrix(
+        c(0.45, 0.45, 0.40, 0.40, 0.75, 0.75, 1.18, 0.63),
+        nrow = 4
+      ),
       comp = c(1, 1, 1, 1)
     ),
     options = McmcOptions(samples = 4)
@@ -253,7 +280,9 @@ test_that("probFunction-GeneralModel returns correct prob function for matrix pa
 
   prob_fun <- probFunction(
     model,
-    alpha0 = samples@data$alpha0, alpha1 = samples@data$alpha1, comp = samples@data$comp
+    alpha0 = samples@data$alpha0,
+    alpha1 = samples@data$alpha1,
+    comp = samples@data$comp
   )
   prob_fun <- h_covr_detrace(prob_fun)
   prob_fun_env <- environment(prob_fun)
@@ -298,7 +327,11 @@ test_that("probFunction-GeneralModel throws the error when valid params are not 
 
 test_that("probFunction-ModelTox returns correct prob function", {
   model <- h_get_logistic_indep_beta()
-  samples <- h_as_samples(list(phi1 = 35, phi2 = 5), burnin = 10000, fixed = FALSE)
+  samples <- h_as_samples(
+    list(phi1 = 35, phi2 = 5),
+    burnin = 10000,
+    fixed = FALSE
+  )
   prob_args <- c("dose", "model", "samples")
 
   prob_fun <- probFunction(model, phi1 = 35, phi2 = 5)
@@ -332,7 +365,10 @@ test_that("probFunction-LogisticLogNormalGrouped works as expected", {
 
   prob_fun <- expect_silent(probFunction(
     model,
-    alpha0 = 1, delta0 = 0.5, alpha1 = 0.5, delta1 = -0.2
+    alpha0 = 1,
+    delta0 = 0.5,
+    alpha1 = 0.5,
+    delta1 = -0.2
   ))
   prob_fun <- h_covr_detrace(prob_fun)
 
@@ -418,7 +454,10 @@ test_that("doseFunction-LogisticLogNormalOrdinal fails gracefully with bad input
 
 test_that("efficacyFunction-ModelEff returns correct efficacy function", {
   model <- h_get_eff_log_log()
-  samples <- Samples(list(theta1 = -4.8, theta2 = 3.7), options = McmcOptions(samples = 1))
+  samples <- Samples(
+    list(theta1 = -4.8, theta2 = 3.7),
+    options = McmcOptions(samples = 1)
+  )
 
   eff_fun <- efficacyFunction(model, theta1 = -4.8, theta2 = 3.7)
   eff_fun <- h_covr_detrace(eff_fun)
@@ -462,7 +501,10 @@ test_that("efficacyFunction-ModelEff throws the error when no params are provide
 
 test_that("dose-LogisticNormal works as expected", {
   model <- h_get_logistic_normal()
-  samples <- h_as_samples(list(alpha0 = c(0, -1, 1, 2), alpha1 = c(0, 2, 1, -1)))
+  samples <- h_as_samples(list(
+    alpha0 = c(0, -1, 1, 2),
+    alpha1 = c(0, 2, 1, -1)
+  ))
 
   result <- dose(0.4, model, samples)
   expect_equal(result, c(0, 67.30876, 12.26265, 554.17921), tolerance = 1e-7)
@@ -505,7 +547,10 @@ test_that("dose-LogisticNormal throws the error when x and samples lengths diffe
 
 test_that("dose-LogisticLogNormal works as expected", {
   model <- h_get_logistic_log_normal()
-  samples <- h_as_samples(list(alpha0 = c(0, -1, 1, 2), alpha1 = c(0, 2, 1, -1)))
+  samples <- h_as_samples(list(
+    alpha0 = c(0, -1, 1, 2),
+    alpha1 = c(0, 2, 1, -1)
+  ))
 
   result <- dose(0.4, model, samples)
   expect_equal(result, c(0, 67.30876, 12.26265, 554.17921), tolerance = 1e-7)
@@ -549,10 +594,17 @@ test_that("dose-LogisticLogNormal throws the error when x is not valid", {
 
 test_that("dose-LogisticLogNormalSub works as expected", {
   model <- h_get_logistic_log_normal_sub()
-  samples <- h_as_samples(list(alpha0 = c(0, -1, 1, 2), alpha1 = c(0, 2, 1, -1)))
+  samples <- h_as_samples(list(
+    alpha0 = c(0, -1, 1, 2),
+    alpha1 = c(0, 2, 1, -1)
+  ))
 
   result <- dose(0.4, model, samples)
-  expect_equal(result, c(-Inf, 2.2972674, 0.5945349, 4.4054651), tolerance = 1e-7)
+  expect_equal(
+    result,
+    c(-Inf, 2.2972674, 0.5945349, 4.4054651),
+    tolerance = 1e-7
+  )
 })
 
 test_that("dose-LogisticLogNormalSub works as expected for scalar samples", {
@@ -593,7 +645,10 @@ test_that("dose-LogisticLogNormalSub throws the error when x is not valid", {
 
 test_that("dose-ProbitLogNormal works as expected", {
   model <- h_get_probit_log_normal()
-  samples <- h_as_samples(list(alpha0 = c(0, -1, 1, 2), alpha1 = c(0, 2, 1, -1)))
+  samples <- h_as_samples(list(
+    alpha0 = c(0, -1, 1, 2),
+    alpha1 = c(0, 2, 1, -1)
+  ))
 
   result <- dose(0.4, model, samples)
   expect_equal(result, c(0, 10.458421, 2.055942, 68.540727), tolerance = 1e-7)
@@ -637,10 +692,17 @@ test_that("dose-ProbitLogNormal throws the error when x is not valid", {
 
 test_that("dose-ProbitLogNormalRel works as expected", {
   model <- h_get_probit_log_normal_rel()
-  samples <- h_as_samples(list(alpha0 = c(0, -1, 1, 2), alpha1 = c(0, 2, 1, -1)))
+  samples <- h_as_samples(list(
+    alpha0 = c(0, -1, 1, 2),
+    alpha1 = c(0, 2, 1, -1)
+  ))
 
   result <- dose(0.4, model, samples)
-  expect_equal(result, c(-Inf, 0.7466529, -2.5066942, 4.5066942), tolerance = 1e-7)
+  expect_equal(
+    result,
+    c(-Inf, 0.7466529, -2.5066942, 4.5066942),
+    tolerance = 1e-7
+  )
 })
 
 test_that("dose-ProbitLogNormalRel works as expected for scalar samples", {
@@ -697,7 +759,12 @@ test_that("dose-LogisticLogNormalGrouped works as expected", {
 
 test_that("dose-LogisticLogNormalGrouped works as expected for scalar samples", {
   model <- .DefaultLogisticLogNormalGrouped()
-  samples <- h_as_samples(list(alpha0 = 1, delta0 = -1, alpha1 = 1, delta1 = -0.5))
+  samples <- h_as_samples(list(
+    alpha0 = 1,
+    delta0 = -1,
+    alpha1 = 1,
+    delta1 = -0.5
+  ))
 
   result <- dose(c(0.2, 0.8), model, samples, group = "combo")
   expect_equal(result, c(0.0625, 16), tolerance = 1e-4)
@@ -810,7 +877,10 @@ test_that("dose-LogisticKadaneBetaGamma throws the error when x is not valid", {
 
 test_that("dose-LogisticNormalMixture works as expected", {
   model <- h_get_logistic_normal_mix()
-  samples <- h_as_samples(list(alpha0 = c(0, -1, 1, 2), alpha1 = c(0, 2, 1, -1)))
+  samples <- h_as_samples(list(
+    alpha0 = c(0, -1, 1, 2),
+    alpha1 = c(0, 2, 1, -1)
+  ))
 
   result <- dose(0.2, model, samples)
   expect_equal(result, c(0, 1.6487213, 0.1839397, 59.1124488), tolerance = 1e-7)
@@ -854,7 +924,10 @@ test_that("dose-LogisticNormalMixture throws the error when x is not valid", {
 
 test_that("dose-LogisticNormalFixedMixture works as expected", {
   model <- h_get_logistic_normal_fixed_mix()
-  samples <- h_as_samples(list(alpha0 = c(0, -1, 1, 2), alpha1 = c(0, 2, 1, -1)))
+  samples <- h_as_samples(list(
+    alpha0 = c(0, -1, 1, 2),
+    alpha1 = c(0, 2, 1, -1)
+  ))
 
   result <- dose(0.2, model, samples)
   expect_equal(result, c(0, 41.218032, 4.598493, 1477.811220), tolerance = 1e-7)
@@ -898,7 +971,10 @@ test_that("dose-LogisticNormalFixedMixture throws the error when x is not valid"
 
 test_that("dose-LogisticLogNormalMixture is not implemented", {
   model <- h_get_logistic_log_normal_mix()
-  samples <- h_as_samples(list(alpha0 = c(0, -1, 1, 2), alpha1 = c(0, 2, 1, -1)))
+  samples <- h_as_samples(list(
+    alpha0 = c(0, -1, 1, 2),
+    alpha1 = c(0, 2, 1, -1)
+  ))
   expect_error(
     dose(2, model, samples),
     "not implemented"
@@ -916,8 +992,16 @@ test_that("dose-DualEndpoint works as expected", {
   result <- dose(0.2, model, samples)
   result_log_dose <- dose(0.2, model_log_dose, samples)
   expect_false(identical(result, result_log_dose))
-  expect_equal(result, c(1.910187, -12.832425, -11.180177, 3.381789), tolerance = 1e-7)
-  expect_equal(result_log_dose, c(5.197825875, 0.003269673, 0.007469395, 10.848660131), tolerance = 1e-7)
+  expect_equal(
+    result,
+    c(1.910187, -12.832425, -11.180177, 3.381789),
+    tolerance = 1e-7
+  )
+  expect_equal(
+    result_log_dose,
+    c(5.197825875, 0.003269673, 0.007469395, 10.848660131),
+    tolerance = 1e-7
+  )
 })
 
 test_that("dose-DualEndpoint works as expected for scalar samples", {
@@ -935,7 +1019,9 @@ test_that("dose-DualEndpoint works as expected for scalar samples", {
 test_that("dose-DualEndpoint works as expected for vectors", {
   model <- h_get_dual_endpoint()
   model_log_dose <- h_get_dual_endpoint(use_log_dose = TRUE)
-  samples <- h_as_samples(list(betaZ = matrix(c(0.4, -0.2, 0.5, 0.9), ncol = 2)))
+  samples <- h_as_samples(list(
+    betaZ = matrix(c(0.4, -0.2, 0.5, 0.9), ncol = 2)
+  ))
 
   result <- dose(c(0.3, 0.7), model, samples)
   result_log_dose <- dose(c(0.3, 0.7), model_log_dose, samples)
@@ -946,7 +1032,9 @@ test_that("dose-DualEndpoint works as expected for vectors", {
 
 test_that("dose-DualEndpoint throws the error when x is not valid", {
   model <- h_get_dual_endpoint()
-  samples <- h_as_samples(list(betaZ = matrix(c(0.4, -0.2, 0.5, 0.9), ncol = 2)))
+  samples <- h_as_samples(list(
+    betaZ = matrix(c(0.4, -0.2, 0.5, 0.9), ncol = 2)
+  ))
 
   expect_error(
     dose(c(0.4, 0.6, 0.5), model, samples),
@@ -1042,7 +1130,11 @@ test_that("dose-OneParLogNormalPrior works as expected", {
   samples <- h_as_samples(list(alpha = c(0, 0.5, 1, 2)))
 
   result <- dose(0.4, model, samples)
-  expect_equal(result, c(5.125000, 7.512509, 9.440417, 11.771394), tolerance = 1e-7)
+  expect_equal(
+    result,
+    c(5.125000, 7.512509, 9.440417, 11.771394),
+    tolerance = 1e-7
+  )
 })
 
 test_that("dose-OneParLogNormalPrior works as expected for scalar samples", {
@@ -1140,7 +1232,11 @@ test_that("dose-LogisticLogNormalOrdinal works correctly", {
     samples <- mcmc(ordinal_data, model, opts),
     "Unused variable \"y\" in data"
   )
-  prob_list <- c(seq(0.01, 0.04, 0.01), seq(0.05, 0.95, 0.05), seq(0.96, 0.99, 0.01))
+  prob_list <- c(
+    seq(0.01, 0.04, 0.01),
+    seq(0.05, 0.95, 0.05),
+    seq(0.96, 0.99, 0.01)
+  )
   for (prob in prob_list) {
     expected <- lapply(
       1:max(ordinal_data@yCategories),
@@ -1229,7 +1325,10 @@ test_that("prob-LogisticNormal works as expected", {
     # Compare actual with expected probabilities: grade-specific
     for (g in 1L:(max(ordinal_data@yCategories))) {
       if (g == max(ordinal_data@yCategories)) {
-        expect_equal(prob(!!dose, model, samples, grade = !!g, cumulative = FALSE), expected[[g]])
+        expect_equal(
+          prob(!!dose, model, samples, grade = !!g, cumulative = FALSE),
+          expected[[g]]
+        )
       } else {
         expect_equal(
           prob(!!dose, model, samples, grade = !!g, cumulative = FALSE),
@@ -1280,10 +1379,17 @@ test_that("prob-numeric-LogisticLogNormalOrdinal fails gracefully with bad input
 
 test_that("prob-LogisticNormal works as expected", {
   model <- h_get_logistic_normal()
-  samples <- h_as_samples(list(alpha0 = c(0, -1, 1, 2), alpha1 = c(0, 2, 1, -1)))
+  samples <- h_as_samples(list(
+    alpha0 = c(0, -1, 1, 2),
+    alpha1 = c(0, 2, 1, -1)
+  ))
 
   result <- prob(60, model, samples)
-  expect_equal(result, c(0.5, 0.3462969, 0.7653650, 0.8602873), tolerance = 1e-7)
+  expect_equal(
+    result,
+    c(0.5, 0.3462969, 0.7653650, 0.8602873),
+    tolerance = 1e-7
+  )
 })
 
 test_that("prob-LogisticNormal works as expected for scalar samples", {
@@ -1320,10 +1426,17 @@ test_that("prob-LogisticNormal throws the error when dose is not valid", {
 
 test_that("prob-LogisticLogNormal works as expected", {
   model <- h_get_logistic_log_normal()
-  samples <- h_as_samples(list(alpha0 = c(0, -1, 1, 2), alpha1 = c(0, 2, 1, -1)))
+  samples <- h_as_samples(list(
+    alpha0 = c(0, -1, 1, 2),
+    alpha1 = c(0, 2, 1, -1)
+  ))
 
   result <- prob(60, model, samples)
-  expect_equal(result, c(0.5, 0.3462969, 0.7653650, 0.8602873), tolerance = 1e-7)
+  expect_equal(
+    result,
+    c(0.5, 0.3462969, 0.7653650, 0.8602873),
+    tolerance = 1e-7
+  )
 })
 
 test_that("prob-LogisticLogNormal works as expected for scalar samples", {
@@ -1360,7 +1473,10 @@ test_that("prob-LogisticLogNormal throws the error when dose is not valid", {
 
 test_that("prob-LogisticLogNormalSub works as expected", {
   model <- h_get_logistic_log_normal_sub()
-  samples <- h_as_samples(list(alpha0 = c(0, -1, 1, 2), alpha1 = c(0, 2, 1, -1)))
+  samples <- h_as_samples(list(
+    alpha0 = c(0, -1, 1, 2),
+    alpha1 = c(0, 2, 1, -1)
+  ))
 
   result <- prob(4, model, samples)
   expect_equal(result, c(0.5, 0.9525741, 0.9525741, 0.5), tolerance = 1e-7)
@@ -1400,10 +1516,17 @@ test_that("prob-LogisticLogNormalSub throws the error when dose is not valid", {
 
 test_that("prob-ProbitLogNormal works as expected", {
   model <- h_get_probit_log_normal()
-  samples <- h_as_samples(list(alpha0 = c(0, -1, 1, 2), alpha1 = c(0, 2, 1, -1)))
+  samples <- h_as_samples(list(
+    alpha0 = c(0, -1, 1, 2),
+    alpha1 = c(0, 2, 1, -1)
+  ))
 
   result <- prob(4, model, samples)
-  expect_equal(result, c(0.5, 0.01479359, 0.65990847, 0.99517026), tolerance = 1e-7)
+  expect_equal(
+    result,
+    c(0.5, 0.01479359, 0.65990847, 0.99517026),
+    tolerance = 1e-7
+  )
 })
 
 test_that("prob-ProbitLogNormal works as expected for scalar samples", {
@@ -1440,7 +1563,10 @@ test_that("prob-ProbitLogNormal throws the error when dose is not valid", {
 
 test_that("prob-ProbitLogNormalRel works as expected", {
   model <- h_get_probit_log_normal_rel()
-  samples <- h_as_samples(list(alpha0 = c(0, -1, 1, 2), alpha1 = c(0, 2, 1, -1)))
+  samples <- h_as_samples(list(
+    alpha0 = c(0, -1, 1, 2),
+    alpha1 = c(0, 2, 1, -1)
+  ))
 
   result <- prob(4, model, samples)
   expect_equal(result, c(0.5, 0.9986501, 0.9986501, 0.5), tolerance = 1e-7)
@@ -1493,7 +1619,12 @@ test_that("prob-LogisticLogNormalGrouped works as expected", {
 
 test_that("prob-LogisticLogNormalGrouped works as expected for scalar samples", {
   model <- .DefaultLogisticLogNormalGrouped()
-  samples <- h_as_samples(list(alpha0 = 1, delta0 = -1, alpha1 = 1, delta1 = -0.5))
+  samples <- h_as_samples(list(
+    alpha0 = 1,
+    delta0 = -1,
+    alpha1 = 1,
+    delta1 = -0.5
+  ))
 
   result <- prob(c(1, 30), model, samples, group = "combo")
   expect_equal(result, c(0.5, 0.8456), tolerance = 1e-4)
@@ -1556,10 +1687,17 @@ test_that("prob-LogisticKadane throws the error when dose is not valid", {
 
 test_that("prob-LogisticNormalMixture works as expected", {
   model <- h_get_logistic_normal_mix()
-  samples <- h_as_samples(list(alpha0 = c(0, -1, 1, 2), alpha1 = c(0, 2, 1, -1)))
+  samples <- h_as_samples(list(
+    alpha0 = c(0, -1, 1, 2),
+    alpha1 = c(0, 2, 1, -1)
+  ))
 
   result <- prob(60, model, samples)
-  expect_equal(result, c(0.5, 0.9969888, 0.9878859, 0.1976262), tolerance = 1e-7)
+  expect_equal(
+    result,
+    c(0.5, 0.9969888, 0.9878859, 0.1976262),
+    tolerance = 1e-7
+  )
 })
 
 test_that("prob-LogisticNormalMixture works as expected for scalar samples", {
@@ -1596,10 +1734,17 @@ test_that("prob-LogisticNormalMixture throws the error when dose is not valid", 
 
 test_that("prob-LogisticNormalFixedMixture works as expected", {
   model <- h_get_logistic_normal_fixed_mix()
-  samples <- h_as_samples(list(alpha0 = c(0, -1, 1, 2), alpha1 = c(0, 2, 1, -1)))
+  samples <- h_as_samples(list(
+    alpha0 = c(0, -1, 1, 2),
+    alpha1 = c(0, 2, 1, -1)
+  ))
 
   result <- prob(60, model, samples)
-  expect_equal(result, c(0.5, 0.3462969, 0.7653650, 0.8602873), tolerance = 1e-7)
+  expect_equal(
+    result,
+    c(0.5, 0.3462969, 0.7653650, 0.8602873),
+    tolerance = 1e-7
+  )
 })
 
 test_that("prob-LogisticNormalFixedMixture works as expected for scalar samples", {
@@ -1653,7 +1798,11 @@ test_that("prob-LogisticLogNormalMixture works as expected", {
   )
 
   result <- prob(60, model, samples)
-  expect_equal(result, c(0.6748043, 0.6726061, 0.2901927, 0.2901927), tolerance = 1e-7)
+  expect_equal(
+    result,
+    c(0.6748043, 0.6726061, 0.2901927, 0.2901927),
+    tolerance = 1e-7
+  )
 })
 
 test_that("prob-LogisticLogNormalMixture works as expected for single samples", {
@@ -1687,7 +1836,11 @@ test_that("prob-LogisticLogNormalMixture works as expected for vectorized dose-s
     )
   )
   result <- prob(c(1, 1.5, 3, 6), model, samples)
-  expect_equal(result, c(0.2474127, 0.2809003, 0.1098043, 0.1399769), tolerance = 1e-6)
+  expect_equal(
+    result,
+    c(0.2474127, 0.2809003, 0.1098043, 0.1399769),
+    tolerance = 1e-6
+  )
 })
 
 test_that("prob-LogisticLogNormalMixture throws the error when dose is not valid", {
@@ -1729,8 +1882,16 @@ test_that("prob-DualEndpoint works as expected", {
   result <- prob(5, model, samples)
   result_log_dose <- prob(5, model_log_dose, samples)
   expect_false(identical(result, result_log_dose))
-  expect_equal(result, c(0.363169349, 0.363169349, 0.864333939, 0.006477572), tolerance = 1e-7)
-  expect_equal(result_log_dose, c(0.5497829, 0.3055966, 0.7642097, 0.1966136), tolerance = 1e-7)
+  expect_equal(
+    result,
+    c(0.363169349, 0.363169349, 0.864333939, 0.006477572),
+    tolerance = 1e-7
+  )
+  expect_equal(
+    result_log_dose,
+    c(0.5497829, 0.3055966, 0.7642097, 0.1966136),
+    tolerance = 1e-7
+  )
 })
 
 test_that("prob-DualEndpoint works as expected for scalar samples", {
@@ -1748,7 +1909,9 @@ test_that("prob-DualEndpoint works as expected for scalar samples", {
 test_that("prob-DualEndpoint works as expected for vectorized dose-samples", {
   model <- h_get_dual_endpoint()
   model_log_dose <- h_get_dual_endpoint(use_log_dose = TRUE)
-  samples <- h_as_samples(list(betaZ = matrix(c(0.4, -0.2, 0.5, 0.9), ncol = 2)))
+  samples <- h_as_samples(list(
+    betaZ = matrix(c(0.4, -0.2, 0.5, 0.9), ncol = 2)
+  ))
 
   result <- prob(c(5, 8), model, samples)
   result_log_dose <- prob(c(5, 8), model_log_dose, samples)
@@ -1759,7 +1922,9 @@ test_that("prob-DualEndpoint works as expected for vectorized dose-samples", {
 
 test_that("prob-DualEndpoint throws the error when dose is not valid", {
   model <- h_get_dual_endpoint()
-  samples <- h_as_samples(list(betaZ = matrix(c(0.4, -0.2, 0.5, 0.9), ncol = 2)))
+  samples <- h_as_samples(list(
+    betaZ = matrix(c(0.4, -0.2, 0.5, 0.9), ncol = 2)
+  ))
 
   expect_error(
     prob(c(40, 50, 90), model, samples),
@@ -1785,7 +1950,13 @@ test_that("prob-LogisticIndepBeta works as expected", {
 
   result_emptydat <- prob(20, dlt_model_emptydat, samples)
   result <- prob(20, dlt_model, samples)
-  result_expected <- c(0.0003968183, 0.0195350305, 0.5, 0.9804649695, 0.9996031817)
+  result_expected <- c(
+    0.0003968183,
+    0.0195350305,
+    0.5,
+    0.9804649695,
+    0.9996031817
+  )
   expect_equal(result_emptydat, result_expected, tolerance = 1e-7)
   expect_equal(result, result_expected, tolerance = 1e-7)
 })
@@ -1857,7 +2028,11 @@ test_that("prob-OneParLogNormalPrior works as expected", {
   samples <- h_as_samples(list(alpha = c(0, 0.5, 1, 2)))
 
   result <- prob(60, model, samples)
-  expect_equal(result, c(0.9, 0.8405405, 0.7509625, 0.4590874), tolerance = 1e-7)
+  expect_equal(
+    result,
+    c(0.9, 0.8405405, 0.7509625, 0.4590874),
+    tolerance = 1e-7
+  )
 })
 
 test_that("prob-OneParLogNormalPrior works as expected for scalar samples", {
@@ -1958,7 +2133,11 @@ test_that("efficacy-Effloglog works as expected for scalar samples", {
 
 test_that("efficacy-Effloglog works as expected for vectors", {
   model <- h_get_eff_log_log()
-  samples <- h_as_samples(list(theta1 = c(15, 28), theta2 = c(20, 32), nu = c(0, 1)))
+  samples <- h_as_samples(list(
+    theta1 = c(15, 28),
+    theta2 = c(20, 32),
+    nu = c(0, 1)
+  ))
 
   result <- efficacy(dose = c(75, 90), model = model, samples = samples)
   expect_equal(result, c(44.37502, 76.28504), tolerance = 1e-7)
@@ -1966,7 +2145,11 @@ test_that("efficacy-Effloglog works as expected for vectors", {
 
 test_that("efficacy-Effloglog throws the error when dose and samples lengths differ", {
   model <- h_get_eff_log_log()
-  samples <- h_as_samples(list(theta1 = c(15, 28), theta2 = c(20, 32), nu = c(0, 1)))
+  samples <- h_as_samples(list(
+    theta1 = c(15, 28),
+    theta2 = c(20, 32),
+    nu = c(0, 1)
+  ))
   expect_error(
     efficacy(c(0.4, 0.6, 0.5), model, samples),
     "Assertion on 'dose' failed: x is of length 3 which is not allowed; the allowed lengths are: 1 or 2."
@@ -1975,7 +2158,11 @@ test_that("efficacy-Effloglog throws the error when dose and samples lengths dif
 
 test_that("efficacy-Effloglog throws the error when dose is negative", {
   model <- h_get_eff_log_log()
-  samples <- h_as_samples(list(theta1 = c(15, 28), theta2 = c(20, 32), nu = c(0, 1)))
+  samples <- h_as_samples(list(
+    theta1 = c(15, 28),
+    theta2 = c(20, 32),
+    nu = c(0, 1)
+  ))
   expect_error(
     efficacy(-1, model, samples),
     "Assertion on 'dose' failed: Element 1 is not >= 0."
@@ -1984,7 +2171,11 @@ test_that("efficacy-Effloglog throws the error when dose is negative", {
 
 test_that("efficacy-Effloglog throws the error when sample parameter names are not valid", {
   model <- h_get_eff_log_log()
-  samples <- h_as_samples(list(theta1_wrong = c(15, 28), theta2 = c(20, 32), nu = c(0, 1)))
+  samples <- h_as_samples(list(
+    theta1_wrong = c(15, 28),
+    theta2 = c(20, 32),
+    nu = c(0, 1)
+  ))
   expect_error(
     efficacy(1, model, samples),
     "Assertion on 'c\\(\"theta1\", \"theta2\"\\)' failed: Must be a subset*"
@@ -2053,7 +2244,11 @@ test_that("efficacy-EffFlexi works as expected for row samples (match tolerance)
   model <- h_get_eff_flexi()
   samples <- h_samples_eff_flexi(1)
 
-  result <- efficacy(dose = c(75.0000000003, 200), model = model, samples = samples)
+  result <- efficacy(
+    dose = c(75.0000000003, 200),
+    model = model,
+    samples = samples
+  )
   expect_equal(result, c(0.47, -0.27))
 })
 
@@ -2069,7 +2264,11 @@ test_that("efficacy-EffFlexi works as expected for vectors", {
   model <- h_get_eff_flexi()
   samples <- h_samples_eff_flexi()
 
-  result <- efficacy(dose = c(25, 75, 200, 300), model = model, samples = samples)
+  result <- efficacy(
+    dose = c(25, 75, 200, 300),
+    model = model,
+    samples = samples
+  )
   expect_equal(result, c(0.76, 0.48, -0.40, 2.51))
 })
 
@@ -2077,7 +2276,11 @@ test_that("efficacy-EffFlexi works as expected for vectors (match tolerance)", {
   model <- h_get_eff_flexi()
   samples <- h_samples_eff_flexi()
 
-  result <- efficacy(dose = c(25, 75, 200.0000000004, 300), model = model, samples = samples)
+  result <- efficacy(
+    dose = c(25, 75, 200.0000000004, 300),
+    model = model,
+    samples = samples
+  )
   expect_equal(result, c(0.76, 0.48, -0.40, 2.51))
 })
 
@@ -2085,7 +2288,11 @@ test_that("efficacy-EffFlexi works as expected for vectors (dose interpolation)"
   model <- h_get_eff_flexi()
   samples <- h_samples_eff_flexi()
 
-  result <- efficacy(dose = c(50, 140, 275, 210), model = model, samples = samples)
+  result <- efficacy(
+    dose = c(50, 140, 275, 210),
+    model = model,
+    samples = samples
+  )
   expect_equal(result, c(0.510, 1.766, 3.750, 7.028))
 })
 
@@ -2095,7 +2302,11 @@ test_that("efficacy-EffFlexi throws warning and returns NA when dose is out of d
   samples <- h_samples_eff_flexi()
 
   expect_warning(
-    result_3 <- efficacy(dose = c(20, 15, 90), model = model, samples = samples1),
+    result_3 <- efficacy(
+      dose = c(20, 15, 90),
+      model = model,
+      samples = samples1
+    ),
     "At least one dose out of 20, 15, 90 is outside of the dose grid range"
   )
   expect_identical(result_3, c(NA_real_, NA_real_, 0.746))
@@ -2113,7 +2324,11 @@ test_that("efficacy-EffFlexi throws warning and returns NA when dose is out of d
   expect_identical(result_1b, c(NA_real_, NA_real_, NA_real_, NA_real_))
 
   expect_warning(
-    result_4d <- efficacy(dose = c(50, 20, 125, 400), model = model, samples = samples),
+    result_4d <- efficacy(
+      dose = c(50, 20, 125, 400),
+      model = model,
+      samples = samples
+    ),
     "At least one dose out of 50, 20, 125, 400 is outside of the dose grid range"
   )
   expect_identical(result_4d, c(0.51, NA_real_, 0.96, NA_real_))
@@ -2204,7 +2419,11 @@ test_that("gain-ModelTox-ModelEff works as expected", {
   )
 
   result <- gain(dose = 75, model_dle, samples_dle, model_eff, samples_eff)
-  expect_equal(result, c(0.1388810, 0.1662916, 1.0205899, 0.8068247), tolerance = 1e-7)
+  expect_equal(
+    result,
+    c(0.1388810, 0.1662916, 1.0205899, 0.8068247),
+    tolerance = 1e-7
+  )
 })
 
 test_that("gain-ModelTox-ModelEff works as expected for scalar samples", {
@@ -2213,7 +2432,13 @@ test_that("gain-ModelTox-ModelEff works as expected for scalar samples", {
   model_eff <- h_get_eff_log_log(emptydata = TRUE)
   samples_eff <- h_as_samples(list(theta1 = -1.08, theta2 = 1.93, nu = 6.48))
 
-  result <- gain(dose = c(50, 175), model_dle, samples_dle, model_eff, samples_eff)
+  result <- gain(
+    dose = c(50, 175),
+    model_dle,
+    samples_dle,
+    model_eff,
+    samples_eff
+  )
   expect_equal(result, c(0.1325413, 0.1449772), tolerance = 1e-7)
 })
 
@@ -2225,7 +2450,13 @@ test_that("gain-ModelTox-ModelEff works as expected for vectors", {
     list(theta1 = c(-1.08, -0.87), theta2 = c(1.93, 1.51), nu = c(6.48, 63.36))
   )
 
-  result <- gain(dose = c(50, 175), model_dle, samples_dle, model_eff, samples_eff)
+  result <- gain(
+    dose = c(50, 175),
+    model_dle,
+    samples_dle,
+    model_eff,
+    samples_eff
+  )
   expect_equal(result, c(0.1325413, 0.1083962), tolerance = 1e-6)
 })
 

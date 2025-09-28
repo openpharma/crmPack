@@ -123,12 +123,13 @@ setMethod(
 #'
 #' @rdname plot-Data
 h_plot_data_dataordinal <- function(
-    x,
-    blind = FALSE,
-    legend = TRUE,
-    tox_labels = c(Yes = "red", No = "black"),
-    tox_shapes = c(Yes = 17L, No = 16L),
-    ...) {
+  x,
+  blind = FALSE,
+  legend = TRUE,
+  tox_labels = c(Yes = "red", No = "black"),
+  tox_shapes = c(Yes = 17L, No = 16L),
+  ...
+) {
   assert_flag(blind)
   assert_flag(legend)
   assert_character(tox_labels, any.missing = FALSE, unique = TRUE)

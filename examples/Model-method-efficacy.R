@@ -14,7 +14,11 @@ my_model <- EffFlexi(
 )
 
 my_options <- McmcOptions(
-  burnin = 100, step = 2, samples = 200, rng_kind = "Mersenne-Twister", rng_seed = 94
+  burnin = 100,
+  step = 2,
+  samples = 200,
+  rng_kind = "Mersenne-Twister",
+  rng_seed = 94
 )
 
 my_samples <- mcmc(data = my_data, model = my_model, options = my_options)

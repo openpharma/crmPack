@@ -1,4 +1,3 @@
-
 # Stop if highest dose 80 is safe.
 highest_dose_safe <- StoppingSpecificDose(
   rule = StoppingTargetProb(target = c(0, 0.3), prob = 0.8),

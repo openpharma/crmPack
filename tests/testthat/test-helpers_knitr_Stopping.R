@@ -51,7 +51,7 @@ test_that("knit_print.StoppingAll works correctly", {
     )
   )
 
-  x@stop_list <- x@stop_list[1 : 2]
+  x@stop_list <- x@stop_list[1:2]
   expect_equal(
     knit_print(x, asis = FALSE),
     paste0(
@@ -100,7 +100,7 @@ test_that("knit_print.StoppingAny works correctly", {
     )
   )
 
-  x@stop_list <- x@stop_list[1 : 2]
+  x@stop_list <- x@stop_list[1:2]
   expect_equal(
     knit_print(x, asis = FALSE),
     paste0(
@@ -190,7 +190,11 @@ test_that("knit_print.StoppingList works correctly", {
 test_that("knit_print.StoppingMaxGainCIRatio works correctly", {
   expect_equal(
     knit_print(
-      StoppingMaxGainCIRatio(target_ratio = 4, prob_target = 0.3, report_label = "MAXGAINCI_RATIO"),
+      StoppingMaxGainCIRatio(
+        target_ratio = 4,
+        prob_target = 0.3,
+        report_label = "MAXGAINCI_RATIO"
+      ),
       asis = FALSE
     ),
     paste0(
@@ -218,7 +222,11 @@ test_that("knit_print.StoppingMaxGainCIRatio works correctly", {
 test_that("knit_print.StoppingTDCIRatio works correctly", {
   expect_equal(
     knit_print(
-      StoppingTDCIRatio(target_ratio = 4, prob_target = 0.3, report_label = "TDCI_RATIO"),
+      StoppingTDCIRatio(
+        target_ratio = 4,
+        prob_target = 0.3,
+        report_label = "TDCI_RATIO"
+      ),
       asis = FALSE
     ),
     paste0(
@@ -244,7 +252,11 @@ test_that("knit_print.StoppingTDCIRatio works correctly", {
 test_that("knit_print.StoppingTargetBiomarker works correctly", {
   expect_equal(
     knit_print(
-      StoppingTargetBiomarker(target = c(0.9, 1.0), prob = 0.5, report_label = "BIOMARKER"),
+      StoppingTargetBiomarker(
+        target = c(0.9, 1.0),
+        prob = 0.5,
+        report_label = "BIOMARKER"
+      ),
       asis = FALSE
     ),
     paste0(
@@ -255,7 +267,11 @@ test_that("knit_print.StoppingTargetBiomarker works correctly", {
   )
   expect_equal(
     knit_print(
-      StoppingTargetBiomarker(target = c(300, 500), is_relative = FALSE, prob = 0.75),
+      StoppingTargetBiomarker(
+        target = c(300, 500),
+        is_relative = FALSE,
+        prob = 0.75
+      ),
       asis = FALSE,
       dose_label = "the MTD",
       biomarker_label = "hs-CRP"
@@ -271,7 +287,12 @@ test_that("knit_print.StoppingTargetBiomarker works correctly", {
 test_that("knit_print.StoppingLowestDoseHSRBeta works correctly", {
   expect_equal(
     knit_print(
-      StoppingLowestDoseHSRBeta(target = 0.33, a = 1, b = 1, report_label = "HSR"),
+      StoppingLowestDoseHSRBeta(
+        target = 0.33,
+        a = 1,
+        b = 1,
+        report_label = "HSR"
+      ),
       asis = FALSE
     ),
     paste0(
@@ -319,7 +340,12 @@ test_that("knit_print.StoppingMTDCV works correctly", {
 test_that("knit_print.StoppingMTDdistribution works correctly", {
   expect_equal(
     knit_print(
-      StoppingMTDdistribution(target = 0.33, thresh = 0.5, prob = 0.9, report_label = "MTD_DIST"),
+      StoppingMTDdistribution(
+        target = 0.33,
+        thresh = 0.5,
+        prob = 0.9,
+        report_label = "MTD_DIST"
+      ),
       asis = FALSE
     ),
     paste0(
@@ -392,7 +418,11 @@ test_that("knit_print.StoppingSpecificDose works correctly", {
 test_that("knit_print.StoppingTargetProb works correctly", {
   expect_equal(
     knit_print(
-      StoppingTargetProb(target = c(0.25, 0.6), prob = 0.75, report_label = "TARGET_PROB"),
+      StoppingTargetProb(
+        target = c(0.25, 0.6),
+        prob = 0.75,
+        report_label = "TARGET_PROB"
+      ),
       asis = FALSE
     ),
     paste0(

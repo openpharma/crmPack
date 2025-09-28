@@ -61,10 +61,16 @@ v_next_best_ncrm_loss <- function(object) {
     "target has to be a probability range excluding 0 and 1"
   )
 
-  is_overdose_ok <- test_probability_range(object@overdose, bounds_closed = TRUE)
+  is_overdose_ok <- test_probability_range(
+    object@overdose,
+    bounds_closed = TRUE
+  )
   v$check(is_overdose_ok, "overdose has to be a probability range")
 
-  is_unacceptable_ok <- test_probability_range(object@unacceptable, bounds_closed = TRUE)
+  is_unacceptable_ok <- test_probability_range(
+    object@unacceptable,
+    bounds_closed = TRUE
+  )
   v$check(is_unacceptable_ok, "unacceptable has to be a probability range")
 
   if (is_overdose_ok && is_unacceptable_ok) {
@@ -76,7 +82,13 @@ v_next_best_ncrm_loss <- function(object) {
   if (is_unacceptable_ok) {
     losses_len <- ifelse(all(object@unacceptable == c(1, 1)), 3L, 4L)
     v$check(
-      test_numeric(object@losses, lower = 0, finite = TRUE, any.missing = FALSE, len = losses_len),
+      test_numeric(
+        object@losses,
+        lower = 0,
+        finite = TRUE,
+        any.missing = FALSE,
+        len = losses_len
+      ),
       "losses must be a vector of non-negative numbers of length 3 if unacceptable is c(1, 1), otherwise 4"
     )
   }
@@ -137,7 +149,8 @@ v_next_best_inf_theory <- function(object) {
     "target must be a probability value from (0, 1) interval"
   )
   v$check(
-    test_number(object@asymmetry, finite = TRUE) && h_in_range(object@asymmetry, c(0, 2), FALSE),
+    test_number(object@asymmetry, finite = TRUE) &&
+      h_in_range(object@asymmetry, c(0, 2), FALSE),
     "asymmetry must be a number from (0, 2) interval"
   )
   v$result()
@@ -240,12 +253,21 @@ v_increments_relative <- function(object) {
   v$check(
     test_numeric(
       object@intervals,
-      lower = 0, finite = TRUE, any.missing = FALSE, unique = TRUE, sorted = TRUE
+      lower = 0,
+      finite = TRUE,
+      any.missing = FALSE,
+      unique = TRUE,
+      sorted = TRUE
     ),
     "intervals has to be a numerical vector with unique, finite, non-negative and sorted non-missing values"
   )
   v$check(
-    test_numeric(object@increments, finite = TRUE, any.missing = FALSE, len = length(object@intervals)),
+    test_numeric(
+      object@increments,
+      finite = TRUE,
+      any.missing = FALSE,
+      len = length(object@intervals)
+    ),
     "increments has to be a numerical vector of the same length as `intervals` with finite values"
   )
   v$result()
@@ -271,11 +293,22 @@ v_increments_relative_parts <- function(object) {
 v_increments_relative_dlt <- function(object) {
   v <- Validate()
   v$check(
-    test_integer(object@intervals, lower = 0, any.missing = FALSE, unique = TRUE, sorted = TRUE),
+    test_integer(
+      object@intervals,
+      lower = 0,
+      any.missing = FALSE,
+      unique = TRUE,
+      sorted = TRUE
+    ),
     "intervals has to be an integer vector with unique, finite, non-negative and sorted non-missing values"
   )
   v$check(
-    test_numeric(object@increments, finite = TRUE, any.missing = FALSE, len = length(object@intervals)),
+    test_numeric(
+      object@increments,
+      finite = TRUE,
+      any.missing = FALSE,
+      len = length(object@intervals)
+    ),
     "increments has to be a numerical vector of the same length as `intervals` with finite values"
   )
   v$result()
@@ -523,7 +556,11 @@ v_stopping_all <- function(object) {
 v_stopping_tdci_ratio <- function(object) {
   v <- Validate()
   v$check(
-    test_number(object@target_ratio, lower = .Machine$double.xmin, finite = TRUE),
+    test_number(
+      object@target_ratio,
+      lower = .Machine$double.xmin,
+      finite = TRUE
+    ),
     "target_ratio must be a positive number"
   )
   v$check(
@@ -555,14 +592,21 @@ v_cohort_size_range <- function(object) {
   v$check(
     test_numeric(
       object@intervals,
-      lower = 0, finite = TRUE, any.missing = FALSE, min.len = 1, unique = TRUE, sorted = TRUE
+      lower = 0,
+      finite = TRUE,
+      any.missing = FALSE,
+      min.len = 1,
+      unique = TRUE,
+      sorted = TRUE
     ),
     "intervals must be a numeric vector with non-negative, sorted (asc.) and unique values"
   )
   v$check(
     test_integer(
       object@cohort_size,
-      lower = 0, any.missing = FALSE, len = length(object@intervals)
+      lower = 0,
+      any.missing = FALSE,
+      len = length(object@intervals)
     ),
     "cohort_size must be an integer vector of the same length as intervals, containing non-negative values only"
   )
@@ -576,14 +620,20 @@ v_cohort_size_dlt <- function(object) {
   v$check(
     test_integer(
       object@intervals,
-      lower = 0, any.missing = FALSE, min.len = 1, unique = TRUE, sorted = TRUE
+      lower = 0,
+      any.missing = FALSE,
+      min.len = 1,
+      unique = TRUE,
+      sorted = TRUE
     ),
     "intervals must be an integer vector with non-negative, sorted (asc.) and unique values"
   )
   v$check(
     test_integer(
       object@cohort_size,
-      lower = 0, any.missing = FALSE, len = length(object@intervals)
+      lower = 0,
+      any.missing = FALSE,
+      len = length(object@intervals)
     ),
     "cohort_size must be an integer vector of the same length as intervals, containing non-negative values only"
   )
@@ -606,7 +656,12 @@ v_cohort_size_const <- function(object) {
 v_cohort_size_parts <- function(object) {
   v <- Validate()
   v$check(
-    test_integer(object@cohort_sizes, lower = .Machine$double.xmin, any.missing = FALSE, len = 2),
+    test_integer(
+      object@cohort_sizes,
+      lower = .Machine$double.xmin,
+      any.missing = FALSE,
+      len = 2
+    ),
     "cohort_sizes needs to be an integer vector of length 2 with all elements positive"
   )
   v$result()
@@ -617,7 +672,13 @@ v_cohort_size_parts <- function(object) {
 v_cohort_size_max <- function(object) {
   v <- Validate()
   v$check(
-    test_list(object@cohort_sizes, types = "CohortSize", any.missing = FALSE, min.len = 2, unique = TRUE),
+    test_list(
+      object@cohort_sizes,
+      types = "CohortSize",
+      any.missing = FALSE,
+      min.len = 2,
+      unique = TRUE
+    ),
     "cohort_sizes must be a list of CohortSize (unique) objects only and be of length >= 2"
   )
   v$result()
@@ -647,14 +708,24 @@ v_safety_window_size <- function(object) {
     "gap must be a list of length >= 1 with integer vectors only"
   )
   v$check(
-    all(sapply(object@gap, test_integer, lower = 0, any.missing = FALSE, min.len = 1)),
+    all(sapply(
+      object@gap,
+      test_integer,
+      lower = 0,
+      any.missing = FALSE,
+      min.len = 1
+    )),
     "every element in gap list has to be an integer vector with non-negative and non-missing values"
   )
   pg_len <- length(object@gap)
   v$check(
     test_integer(
       object@size,
-      lower = .Machine$double.xmin, any.missing = FALSE, len = pg_len, unique = TRUE, sorted = TRUE
+      lower = .Machine$double.xmin,
+      any.missing = FALSE,
+      len = pg_len,
+      unique = TRUE,
+      sorted = TRUE
     ),
     "size has to be an integer vector, of the same length as gap, with positive, unique and sorted non-missing values"
   )

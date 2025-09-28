@@ -87,7 +87,9 @@ match_within_tolerance <- function(x, table) {
 
   as.integer(sapply(x, function(.x) {
     which(sapply(table, function(.table) {
-      isTRUE(all.equal(.x, .table,
+      isTRUE(all.equal(
+        .x,
+        .table,
         tolerance = 1e-10,
         check.names = FALSE,
         check.attributes = FALSE
@@ -211,11 +213,13 @@ printVignette <- function(x, ...) {
     out <- file.path(x$Dir, "doc", out)
     if (tolower(ext) == "pdf") {
       pdfviewer <- getOption("pdfviewer")
-      if (identical(pdfviewer, "false")) {
-      } else if (.Platform$OS.type == "windows" && identical(
-        pdfviewer,
-        file.path(R.home("bin"), "open.exe")
-      )) {
+      if (identical(pdfviewer, "false")) {} else if (
+        .Platform$OS.type == "windows" &&
+          identical(
+            pdfviewer,
+            file.path(R.home("bin"), "open.exe")
+          )
+      ) {
         shell.exec(out)
       } else {
         system2(pdfviewer, shQuote(out), wait = FALSE)
@@ -224,8 +228,10 @@ printVignette <- function(x, ...) {
       browseURL(out)
     }
   } else {
-    warning(gettextf("vignette %s has no PDF/HTML", sQuote(x$Topic)),
-      call. = FALSE, domain = NA
+    warning(
+      gettextf("vignette %s has no PDF/HTML", sQuote(x$Topic)),
+      call. = FALSE,
+      domain = NA
     )
   }
   invisible(x)
@@ -239,11 +245,7 @@ printVignette <- function(x, ...) {
 ##' @param normalize logical; if TRUE, the output will be normalized
 ##'
 ##' @keywords internal
-dinvGamma <- function(x,
-                      a,
-                      b,
-                      log = FALSE,
-                      normalize = TRUE) {
+dinvGamma <- function(x, a, b, log = FALSE, normalize = TRUE) {
   ret <- -(a + 1) * log(x) - b / x
   if (normalize) {
     ret <- ret + a * log(b) - lgamma(a)
@@ -265,11 +267,7 @@ dinvGamma <- function(x,
 ##' @param log.p if TRUE, probabilities/densities p are returned as `log(p)`
 ##'
 ##' @keywords internal
-pinvGamma <- function(q,
-                      a,
-                      b,
-                      lower.tail = TRUE,
-                      log.p = FALSE) {
+pinvGamma <- function(q, a, b, lower.tail = TRUE, log.p = FALSE) {
   pgamma(
     q = 1 / q,
     shape = a,
@@ -288,18 +286,15 @@ pinvGamma <- function(q,
 ##' @param log.p FALSE if TRUE, probabilities/densities p are returned as `log(p)`
 ##'
 ##' @keywords internal
-qinvGamma <- function(p,
-                      a,
-                      b,
-                      lower.tail = TRUE,
-                      log.p = FALSE) {
-  1 / qgamma(
-    p = p,
-    shape = a,
-    rate = b,
-    lower.tail = !lower.tail,
-    log.p = log.p
-  )
+qinvGamma <- function(p, a, b, lower.tail = TRUE, log.p = FALSE) {
+  1 /
+    qgamma(
+      p = p,
+      shape = a,
+      rate = b,
+      lower.tail = !lower.tail,
+      log.p = log.p
+    )
 }
 ##' The random generation of the Inverse gamma distribution
 ##' @param n the number of observations
@@ -307,13 +302,8 @@ qinvGamma <- function(p,
 ##' @param b the scale parameter of the inverse gamma distribution
 ##'
 ##' @keywords internal
-rinvGamma <- function(n,
-                      a,
-                      b) {
-  1 / rgamma(n,
-    shape = a,
-    rate = b
-  )
+rinvGamma <- function(n, a, b) {
+  1 / rgamma(n, shape = a, rate = b)
 }
 
 # nolint end
@@ -334,8 +324,12 @@ rinvGamma <- function(n,
 #' @examples
 #' h_validate_combine_results(TRUE, "some_message")
 h_validate_combine_results <- function(v1, v2) {
-  assert_true(test_true(v1) || test_character(v1, any.missing = FALSE, min.len = 1L))
-  assert_true(test_true(v2) || test_character(v2, any.missing = FALSE, min.len = 1L))
+  assert_true(
+    test_true(v1) || test_character(v1, any.missing = FALSE, min.len = 1L)
+  )
+  assert_true(
+    test_true(v2) || test_character(v2, any.missing = FALSE, min.len = 1L)
+  )
 
   isTRUEv2 <- isTRUE(v2)
   if (isTRUE(v1)) {
@@ -371,9 +365,7 @@ h_validate_combine_results <- function(v1, v2) {
 #'
 #' @export
 #'
-h_all_equivalent <- function(target,
-                             current,
-                             tolerance = 1e-10) {
+h_all_equivalent <- function(target, current, tolerance = 1e-10) {
   assert_numeric(target)
   assert_numeric(current)
   assert_number(tolerance)
@@ -457,9 +449,7 @@ h_plot_data_df <- function(data, blind = FALSE, ...) {
 #' @param vertical (`flag`)\cr should the line be vertical? Otherwise it is
 #'   horizontal.
 #'
-h_plot_data_cohort_lines <- function(cohort,
-                                     placebo,
-                                     vertical = TRUE) {
+h_plot_data_cohort_lines <- function(cohort, placebo, vertical = TRUE) {
   assert_integer(cohort)
   assert_flag(placebo)
   assert_flag(vertical)
@@ -469,9 +459,17 @@ h_plot_data_cohort_lines <- function(cohort,
   if (placebo && length(unique(cohort)) > 1) {
     intercept <- head(cumsum(table(cohort)), n = -1) + 0.5
     if (vertical) {
-      geom_vline(xintercept = intercept, colour = "green", linetype = "longdash") # nolintr
+      geom_vline(
+        xintercept = intercept,
+        colour = "green",
+        linetype = "longdash"
+      ) # nolintr
     } else {
-      geom_hline(yintercept = intercept, colour = "green", linetype = "longdash") # nolintr
+      geom_hline(
+        yintercept = intercept,
+        colour = "green",
+        linetype = "longdash"
+      ) # nolintr
     }
   } else {
     NULL
@@ -542,7 +540,12 @@ h_slots <- function(object, names, simplify = FALSE) {
     return(list())
   }
 
-  slots_list <- sapply(names, function(n) slot(object, n), simplify = FALSE, USE.NAMES = TRUE)
+  slots_list <- sapply(
+    names,
+    function(n) slot(object, n),
+    simplify = FALSE,
+    USE.NAMES = TRUE
+  )
 
   if (simplify && length(names) == 1) {
     slots_list[[1]]
@@ -579,10 +582,7 @@ h_slots <- function(object, names, simplify = FALSE) {
 #' @examples
 #' h_format_number(50000)
 #' h_format_number(50000, prefix = "P", suffix = "S")
-h_format_number <- function(x,
-                            digits = 5,
-                            prefix = "",
-                            suffix = "") {
+h_format_number <- function(x, digits = 5, prefix = "", suffix = "") {
   assert_number(x)
   assert_int(digits)
   assert_string(prefix)
@@ -730,7 +730,10 @@ h_is_positive_definite <- function(x, size = 2, tol = 1e-08) {
 
   is_matrix <- test_matrix(
     x,
-    mode = "numeric", nrows = size, ncols = size, any.missing = FALSE
+    mode = "numeric",
+    nrows = size,
+    ncols = size,
+    any.missing = FALSE
   )
 
   if (is_matrix) {
@@ -768,17 +771,19 @@ h_is_positive_definite <- function(x, size = 2, tol = 1e-08) {
 #' h_test_named_numeric(1:2, permutation.of = c("a", "b"))
 #' h_test_named_numeric(c(a = 1, b = 2), permutation.of = c("a", "b"))
 #' h_test_named_numeric(c(a = 1, b = 2), permutation.of = c("b", "a"))
-h_test_named_numeric <- function(x,
-                                 subset.of = NULL, # nolintr
-                                 must.include = NULL, # nolintr
-                                 permutation.of = NULL, # nolintr
-                                 identical.to = NULL, # nolintr
-                                 disjunct.from = NULL, # nolintr
-                                 lower = 0 + .Machine$double.xmin,
-                                 finite = TRUE,
-                                 any.missing = FALSE, # nolintr
-                                 len = 2,
-                                 ...) {
+h_test_named_numeric <- function(
+  x,
+  subset.of = NULL, # nolintr
+  must.include = NULL, # nolintr
+  permutation.of = NULL, # nolintr
+  identical.to = NULL, # nolintr
+  disjunct.from = NULL, # nolintr
+  lower = 0 + .Machine$double.xmin,
+  finite = TRUE,
+  any.missing = FALSE, # nolintr
+  len = 2,
+  ...
+) {
   is_valid_num <- test_numeric(
     x,
     lower = lower,
@@ -872,7 +877,6 @@ h_find_interval <- function(..., replacement = -Inf) {
 }
 
 
-
 #' Group Together Mono and Combo Data
 #'
 #' This is only used in the simulation method for `DesignGrouped` to combine
@@ -895,7 +899,10 @@ h_group_data <- function(mono_data, combo_data) {
   df <- data.frame(
     x = c(mono_data@x, combo_data@x),
     y = c(mono_data@y, combo_data@y),
-    group = rep(c("mono", "combo"), c(length(mono_data@x), length(combo_data@x)))
+    group = rep(
+      c("mono", "combo"),
+      c(length(mono_data@x), length(combo_data@x))
+    )
   )
   df <- df[order(df$x), ]
 

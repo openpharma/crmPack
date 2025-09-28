@@ -49,14 +49,15 @@ h_knit_print_render_biomarker_model <- function(x, use_values = TRUE, ...) {
 #' @export
 #' @method knit_print DualEndpoint
 knit_print.DualEndpoint <- function(
-    x,
-    ...,
-    asis = TRUE,
-    use_values = TRUE,
-    fmt = "%5.2f",
-    units = NA,
-    tox_label = "toxicity",
-    biomarker_label = "PD biomarker") {
+  x,
+  ...,
+  asis = TRUE,
+  use_values = TRUE,
+  fmt = "%5.2f",
+  units = NA,
+  tox_label = "toxicity",
+  biomarker_label = "PD biomarker"
+) {
   # Validate
   assert_flag(asis)
   assert_flag(use_values)
@@ -101,7 +102,11 @@ knit_print.DualEndpoint <- function(
 
 #' @description `r lifecycle::badge("experimental")`
 #' @noRd
-h_knit_print_render_biomarker_model.DualEndpoint <- function(x, ..., use_values = TRUE) {
+h_knit_print_render_biomarker_model.DualEndpoint <- function(
+  x,
+  ...,
+  use_values = TRUE
+) {
   "f(d) is a function of dose that is defined elsewhere."
 }
 
@@ -136,18 +141,36 @@ h_knit_print_render_biomarker_model.DualEndpointBeta <- function(x, ...) {
     ifelse(
       length(x@delta1) == 1,
       paste0("$$ \\delta_1 = ", x@delta1, " $$\n\n)"),
-      paste0("$$ \\delta_1  \\sim U(", x@delta1[1], ", ", x@delta1[2], ") $$\n\n")
+      paste0(
+        "$$ \\delta_1  \\sim U(",
+        x@delta1[1],
+        ", ",
+        x@delta1[2],
+        ") $$\n\n"
+      )
     ),
     ifelse(
       length(x@mode) == 1,
       paste0("$$ \\text{mode} = ", x@mode, " $$\n\n)"),
-      paste0("$$ \\text{mode}  \\sim U(", x@mode[1], ", ", x@mode[2], ") $$\n\n")
+      paste0(
+        "$$ \\text{mode}  \\sim U(",
+        x@mode[1],
+        ", ",
+        x@mode[2],
+        ") $$\n\n"
+      )
     ),
     " and \n\n",
     ifelse(
       length(x@ref_dose_beta) == 1,
       paste0("$$ d_{max} = ", x@ref_dose_beta, " $$\n\n"),
-      paste0("$$ d_{max}  \\sim U(", x@ref_dose_beta[1], ", ", x@ref_dose_beta[2], ") $$\n\n")
+      paste0(
+        "$$ d_{max}  \\sim U(",
+        x@ref_dose_beta[1],
+        ", ",
+        x@ref_dose_beta[2],
+        ") $$\n\n"
+      )
     )
   )
 }
@@ -178,13 +201,25 @@ h_knit_print_render_biomarker_model.DualEndpointEmax <- function(x, ...) {
     ifelse(
       length(x@ED50) == 1,
       paste0("$$ \\text{ED}_{50} = ", x@ED50, " $$\n\n)"),
-      paste0("$$ \\text{ED}_{50}  \\sim U(", x@ED50[1], ", ", x@ED50[2], ") $$\n\n")
+      paste0(
+        "$$ \\text{ED}_{50}  \\sim U(",
+        x@ED50[1],
+        ", ",
+        x@ED50[2],
+        ") $$\n\n"
+      )
     ),
     " and \n\n",
     ifelse(
       length(x@ref_dose_emax) == 1,
       paste0("$$ d^* = ", x@ref_dose_emax, " $$\n\n"),
-      paste0("$$ d^* \\sim U(", x@ref_dose_emax[1], ", ", x@ref_dose_emax[2], ") $$\n\n")
+      paste0(
+        "$$ d^* \\sim U(",
+        x@ref_dose_emax[1],
+        ", ",
+        x@ref_dose_emax[2],
+        ") $$\n\n"
+      )
     )
   )
 }
@@ -193,7 +228,11 @@ h_knit_print_render_biomarker_model.DualEndpointEmax <- function(x, ...) {
 
 #' @description `r lifecycle::badge("experimental")`
 #' @noRd
-h_knit_print_render_biomarker_model.DualEndpointRW <- function(x, ..., use_values = TRUE) {
+h_knit_print_render_biomarker_model.DualEndpointRW <- function(
+  x,
+  ...,
+  use_values = TRUE
+) {
   paste0(
     "f(d) is a ",
     ifelse(x@rw1, "first", "second"),
@@ -261,14 +300,15 @@ h_knit_print_render_biomarker_model.DualEndpointRW <- function(x, ..., use_value
 #' @rdname knit_print
 #' @method knit_print ModelParamsNormal
 knit_print.ModelParamsNormal <- function(
-    x,
-    use_values = TRUE,
-    fmt = "%5.2f",
-    params = c("alpha", "beta"),
-    preamble = "The prior for &theta; is given by\\n",
-    asis = TRUE,
-    theta = "\\theta",
-    ...) {
+  x,
+  use_values = TRUE,
+  fmt = "%5.2f",
+  params = c("alpha", "beta"),
+  preamble = "The prior for &theta; is given by\\n",
+  asis = TRUE,
+  theta = "\\theta",
+  ...
+) {
   # Validate
   assert_class(x, "ModelParamsNormal")
   assert_format(fmt)
@@ -305,7 +345,13 @@ knit_print.ModelParamsNormal <- function(
             ifelse(
               i == j,
               paste0("\\sigma_{\\", params[i], "}^2"),
-              paste0("\\rho\\sigma_{\\", params[i], "}\\sigma_{\\", params[j], "}")
+              paste0(
+                "\\rho\\sigma_{\\",
+                params[i],
+                "}\\sigma_{\\",
+                params[j],
+                "}"
+              )
             )
           )
         }
@@ -349,13 +395,14 @@ knit_print.ModelParamsNormal <- function(
 #' @rdname knit_print
 #' @method knit_print GeneralModel
 knit_print.GeneralModel <- function(
-    x,
-    ...,
-    params = c("alpha", "beta"),
-    asis = TRUE,
-    use_values = TRUE,
-    fmt = "%5.2f",
-    units = NA) {
+  x,
+  ...,
+  params = c("alpha", "beta"),
+  asis = TRUE,
+  use_values = TRUE,
+  fmt = "%5.2f",
+  units = NA
+) {
   # Validate
   assert_flag(asis)
   assert_flag(use_values)
@@ -363,9 +410,21 @@ knit_print.GeneralModel <- function(
   # Execute
   rv <- paste0(
     h_knit_print_render_model(x, use_values = use_values, fmt = fmt, ...),
-    knit_print(x@params, ..., asis = asis, use_values = use_values, fmt = fmt, params = params),
+    knit_print(
+      x@params,
+      ...,
+      asis = asis,
+      use_values = use_values,
+      fmt = fmt,
+      params = params
+    ),
     "\\n\\n",
-    h_knit_print_render_ref_dose(x, use_values = use_values, fmt = fmt, unit = unit)
+    h_knit_print_render_ref_dose(
+      x,
+      use_values = use_values,
+      fmt = fmt,
+      unit = unit
+    )
   )
   if (asis) {
     rv <- knitr::asis_output(rv)
@@ -374,7 +433,13 @@ knit_print.GeneralModel <- function(
 }
 
 #' @keywords internal
-h_knit_print_render_ref_dose.GeneralModel <- function(x, ..., use_values = TRUE, fmt = "%5.2f", units = NA) {
+h_knit_print_render_ref_dose.GeneralModel <- function(
+  x,
+  ...,
+  use_values = TRUE,
+  fmt = "%5.2f",
+  units = NA
+) {
   # Validate
   assert_character(units, len = 1)
   # Initialise
@@ -406,13 +471,14 @@ h_knit_print_render_ref_dose.LogisticKadane <- function(x, ...) {
 #' @export
 #' @method knit_print LogisticKadane
 knit_print.LogisticKadane <- function(
-    x,
-    ...,
-    asis = TRUE,
-    use_values = TRUE,
-    fmt = "%5.2f",
-    units = NA,
-    tox_label = "toxicity") {
+  x,
+  ...,
+  asis = TRUE,
+  use_values = TRUE,
+  fmt = "%5.2f",
+  units = NA,
+  tox_label = "toxicity"
+) {
   # Validate
   assert_flag(asis)
   assert_flag(use_values)
@@ -451,7 +517,13 @@ knit_print.LogisticKadane <- function(
     " The priors for &Gamma; and &Rho;~0~ are ",
     ifelse(
       use_values,
-      paste0("$$ \\Gamma \\sim U(", sprintf(fmt, x@xmin), ", ", sprintf(fmt, x@xmax), ") $$"),
+      paste0(
+        "$$ \\Gamma \\sim U(",
+        sprintf(fmt, x@xmin),
+        ", ",
+        sprintf(fmt, x@xmax),
+        ") $$"
+      ),
       "$$ \\Gamma \\sim U(x_{min}, x_{max}) $$"
     ),
     " and, independently, ",
@@ -477,13 +549,14 @@ knit_print.LogisticKadane <- function(
 #' @export
 #' @method knit_print LogisticKadaneBetaGamma
 knit_print.LogisticKadaneBetaGamma <- function(
-    x,
-    ...,
-    asis = TRUE,
-    use_values = TRUE,
-    fmt = "%5.2f",
-    tox_label = "toxicity",
-    units = NA) {
+  x,
+  ...,
+  asis = TRUE,
+  use_values = TRUE,
+  fmt = "%5.2f",
+  tox_label = "toxicity",
+  units = NA
+) {
   # Validate
   assert_flag(asis)
   assert_flag(use_values)
@@ -524,7 +597,13 @@ knit_print.LogisticKadaneBetaGamma <- function(
     " The priors for &Gamma; and &Rho;~0~ are ",
     ifelse(
       use_values,
-      paste0("$$ \\Gamma \\sim U(", sprintf(fmt, x@shape), ", ", sprintf(fmt, x@rate), ") $$"),
+      paste0(
+        "$$ \\Gamma \\sim U(",
+        sprintf(fmt, x@shape),
+        ", ",
+        sprintf(fmt, x@rate),
+        ") $$"
+      ),
       "$$ \\Gamma \\sim Gamma( \\text{shape}, \\text{rate}) $$"
     ),
     " and, independently, ",
@@ -547,14 +626,22 @@ knit_print.LogisticKadaneBetaGamma <- function(
 
 #' @description `r lifecycle::badge("experimental")`
 #' @noRd
-h_knit_print_render_model.LogisticLogNormal <- function(x, tox_label = "toxicity", ...) {
+h_knit_print_render_model.LogisticLogNormal <- function(
+  x,
+  tox_label = "toxicity",
+  ...
+) {
   tox_label <- h_prepare_labels(tox_label)
   z <- "e^{\\alpha + \\beta \\cdot log(d/d_{ref})}"
   paste0(
     "A logistic log normal model will describe the relationship between dose and ",
     tox_label[1],
     ": ",
-    "$$ p(Tox | d) = f(X = 1 | \\theta, d) = \\frac{", z, "}{1 + ", z, "} $$\\n ",
+    "$$ p(Tox | d) = f(X = 1 | \\theta, d) = \\frac{",
+    z,
+    "}{1 + ",
+    z,
+    "} $$\\n ",
     "where d~ref~ denotes a reference dose.\n\n"
   )
 }
@@ -564,16 +651,17 @@ h_knit_print_render_model.LogisticLogNormal <- function(x, tox_label = "toxicity
 #' @export
 #' @method knit_print LogisticLogNormal
 knit_print.LogisticLogNormal <- function(
-    x,
-    ...,
-    use_values = TRUE,
-    fmt = "%5.2f",
-    params = c(
-      "\\alpha" = "alpha",
-      "log(\\beta)" = "beta"
-    ),
-    preamble = "The prior for &theta; is given by\\n",
-    asis = TRUE) {
+  x,
+  ...,
+  use_values = TRUE,
+  fmt = "%5.2f",
+  params = c(
+    "\\alpha" = "alpha",
+    "log(\\beta)" = "beta"
+  ),
+  preamble = "The prior for &theta; is given by\\n",
+  asis = TRUE
+) {
   assert_flag(asis)
   # Can't use NextMethod() on a S4 class
   knit_print.GeneralModel(
@@ -592,10 +680,11 @@ knit_print.LogisticLogNormal <- function(
 #' @description `r lifecycle::badge("experimental")`
 #' @noRd
 h_knit_print_render_model.LogisticLogNormalMixture <- function(
-    x,
-    use_values = TRUE,
-    tox_label = "toxicity",
-    ...) {
+  x,
+  use_values = TRUE,
+  tox_label = "toxicity",
+  ...
+) {
   tox_label <- h_prepare_labels(tox_label)
   z1 <- "e^{\\alpha_1 + \\beta_1 \\cdot log(d/d^*)}"
   z2 <- "e^{\\alpha_2 + \\beta_2 \\cdot log(d/d^*)}"
@@ -610,9 +699,17 @@ h_knit_print_render_model.LogisticLogNormalMixture <- function(
     ": ",
     "$$ p(Tox | d) = f(X = 1 | \\theta, d) = ",
     pi_text,
-    " \\times \\frac{", z1, "}{1 + ", z1, "} + (1 - ",
+    " \\times \\frac{",
+    z1,
+    "}{1 + ",
+    z1,
+    "} + (1 - ",
     pi_text,
-    ") \\times \\frac{", z2, "}{1 + ", z2, "} $$",
+    ") \\times \\frac{",
+    z2,
+    "}{1 + ",
+    z2,
+    "} $$",
     ifelse(
       use_values,
       "where d* denotes a reference dose.\n\n",
@@ -624,7 +721,14 @@ h_knit_print_render_model.LogisticLogNormalMixture <- function(
 #' @export
 #' @rdname knit_print
 #' @method knit_print LogisticLogNormalMixture
-knit_print.LogisticLogNormalMixture <- function(x, ..., asis = TRUE, use_values = TRUE, fmt = "%5.2f", units = NA) {
+knit_print.LogisticLogNormalMixture <- function(
+  x,
+  ...,
+  asis = TRUE,
+  use_values = TRUE,
+  fmt = "%5.2f",
+  units = NA
+) {
   # Validate
   assert_flag(asis)
   assert_flag(use_values)
@@ -641,7 +745,12 @@ knit_print.LogisticLogNormalMixture <- function(x, ..., asis = TRUE, use_values 
       preamble = "The priors for both &theta;~1~ and &theta;~2~ are given by\\n"
     ),
     "\\n\\n",
-    h_knit_print_render_ref_dose(x, use_values = use_values, fmt = fmt, unit = unit)
+    h_knit_print_render_ref_dose(
+      x,
+      use_values = use_values,
+      fmt = fmt,
+      unit = unit
+    )
   )
   if (asis) {
     rv <- knitr::asis_output(rv)
@@ -653,7 +762,11 @@ knit_print.LogisticLogNormalMixture <- function(x, ..., asis = TRUE, use_values 
 
 #' @description `r lifecycle::badge("experimental")`
 #' @noRd
-h_knit_print_render_model.LogisticLogNormalSub <- function(x, ..., tox_label = "toxicity") {
+h_knit_print_render_model.LogisticLogNormalSub <- function(
+  x,
+  ...,
+  tox_label = "toxicity"
+) {
   tox_label <- h_prepare_labels(tox_label)
   z <- "e^{\\alpha + \\beta \\cdot (d \\, - \\, d^*)}"
   paste0(
@@ -661,7 +774,11 @@ h_knit_print_render_model.LogisticLogNormalSub <- function(x, ..., tox_label = "
     "describe the relationship between dose and ",
     tox_label[1],
     ": \n\n",
-    "$$ p(Tox | d) = f(X = 1 | \\theta, d) = \\frac{", z, "}{1 + ", z, "} $$\\n ",
+    "$$ p(Tox | d) = f(X = 1 | \\theta, d) = \\frac{",
+    z,
+    "}{1 + ",
+    z,
+    "} $$\\n ",
     "where d* denotes a reference dose.\n\n"
   )
 }
@@ -671,16 +788,17 @@ h_knit_print_render_model.LogisticLogNormalSub <- function(x, ..., tox_label = "
 #' @export
 #' @method knit_print LogisticLogNormalSub
 knit_print.LogisticLogNormalSub <- function(
-    x,
-    ...,
-    use_values = TRUE,
-    fmt = "%5.2f",
-    params = c(
-      "\\alpha" = "alpha",
-      "log(\\beta)" = "beta"
-    ),
-    preamble = "The prior for &theta; is given by\\n",
-    asis = TRUE) {
+  x,
+  ...,
+  use_values = TRUE,
+  fmt = "%5.2f",
+  params = c(
+    "\\alpha" = "alpha",
+    "log(\\beta)" = "beta"
+  ),
+  preamble = "The prior for &theta; is given by\\n",
+  asis = TRUE
+) {
   NextMethod(params = params)
 }
 
@@ -688,14 +806,22 @@ knit_print.LogisticLogNormalSub <- function(
 
 #' @description `r lifecycle::badge("experimental")`
 #' @noRd
-h_knit_print_render_model.LogisticNormal <- function(x, ..., tox_label = "toxicity") {
+h_knit_print_render_model.LogisticNormal <- function(
+  x,
+  ...,
+  tox_label = "toxicity"
+) {
   tox_label <- h_prepare_labels(tox_label)
   z <- "e^{\\alpha + \\beta \\cdot d/d^*}"
   paste0(
     "A logistic log normal model will describe the relationship between dose and ",
     tox_label[1],
     ": ",
-    "$$ p(Tox | d) = f(X = 1 | \\theta, d) = \\frac{", z, "}{1 + ", z, "} $$\\n ",
+    "$$ p(Tox | d) = f(X = 1 | \\theta, d) = \\frac{",
+    z,
+    "}{1 + ",
+    z,
+    "} $$\\n ",
     "where d* denotes a reference dose.\n\n"
   )
 }
@@ -704,7 +830,11 @@ h_knit_print_render_model.LogisticNormal <- function(x, ..., tox_label = "toxici
 
 #' @description `r lifecycle::badge("experimental")`
 #' @noRd
-h_knit_print_render_model.ProbitLogNormal <- function(x, tox_label = "toxicity", ...) {
+h_knit_print_render_model.ProbitLogNormal <- function(
+  x,
+  tox_label = "toxicity",
+  ...
+) {
   tox_label <- h_prepare_labels(tox_label)
   paste0(
     "A probit log normal model will describe the relationship between dose and ",
@@ -720,10 +850,11 @@ h_knit_print_render_model.ProbitLogNormal <- function(x, tox_label = "toxicity",
 #' @description `r lifecycle::badge("experimental")`
 #' @noRd
 h_knit_print_render_model.ProbitLogNormalRel <- function(
-    x,
-    ...,
-    tox_label = "toxicity",
-    asis = TRUE) {
+  x,
+  ...,
+  tox_label = "toxicity",
+  asis = TRUE
+) {
   assert_flag(asis)
   tox_label <- h_prepare_labels(tox_label)
   paste0(
@@ -739,14 +870,22 @@ h_knit_print_render_model.ProbitLogNormalRel <- function(
 
 #' @description `r lifecycle::badge("experimental")`
 #' @noRd
-h_knit_print_render_model.LogisticNormalMixture <- function(x, ..., tox_label = "toxicity") {
+h_knit_print_render_model.LogisticNormalMixture <- function(
+  x,
+  ...,
+  tox_label = "toxicity"
+) {
   tox_label <- h_prepare_labels(tox_label)
   z <- "e^{\\alpha + \\beta \\cdot log(d/d^*)}"
   paste0(
     "A mixture of two logistic log normal models will describe the relationship between dose and ",
     tox_label[1],
     ": ",
-    "$$ p(Tox | d) = f(X = 1 | \\theta, d) = \\frac{", z, "}{1 + ", z, "} $$\\n ",
+    "$$ p(Tox | d) = f(X = 1 | \\theta, d) = \\frac{",
+    z,
+    "}{1 + ",
+    z,
+    "} $$\\n ",
     "where d* denotes a reference dose.\n\n"
   )
 }
@@ -754,7 +893,14 @@ h_knit_print_render_model.LogisticNormalMixture <- function(x, ..., tox_label = 
 #' @export
 #' @rdname knit_print
 #' @method knit_print LogisticNormalMixture
-knit_print.LogisticNormalMixture <- function(x, ..., asis = TRUE, use_values = TRUE, fmt = "%5.2f", units = NA) {
+knit_print.LogisticNormalMixture <- function(
+  x,
+  ...,
+  asis = TRUE,
+  use_values = TRUE,
+  fmt = "%5.2f",
+  units = NA
+) {
   # Validate
   assert_flag(asis)
   assert_flag(use_values)
@@ -777,8 +923,18 @@ knit_print.LogisticNormalMixture <- function(x, ..., asis = TRUE, use_values = T
     ),
     " $$\\n\\n",
     " and the prior for w is given by \n\n",
-    " $$ w \\sim Beta(", x@weightpar[1], ", ", x@weightpar[2], ") $$\\n\\n",
-    h_knit_print_render_ref_dose(x, units = units, fmt = fmt, use_values = use_values, ...)
+    " $$ w \\sim Beta(",
+    x@weightpar[1],
+    ", ",
+    x@weightpar[2],
+    ") $$\\n\\n",
+    h_knit_print_render_ref_dose(
+      x,
+      units = units,
+      fmt = fmt,
+      use_values = use_values,
+      ...
+    )
   )
   if (asis) {
     rv <- knitr::asis_output(rv)
@@ -791,7 +947,14 @@ knit_print.LogisticNormalMixture <- function(x, ..., asis = TRUE, use_values = T
 #' @export
 #' @rdname knit_print
 #' @method knit_print LogisticNormalFixedMixture
-knit_print.LogisticNormalFixedMixture <- function(x, ..., asis = TRUE, use_values = TRUE, fmt = "%5.2f", units = NA) {
+knit_print.LogisticNormalFixedMixture <- function(
+  x,
+  ...,
+  asis = TRUE,
+  use_values = TRUE,
+  fmt = "%5.2f",
+  units = NA
+) {
   # Validate
   assert_flag(asis)
   assert_flag(use_values)
@@ -801,12 +964,18 @@ knit_print.LogisticNormalFixedMixture <- function(x, ..., asis = TRUE, use_value
   rv <- paste0(
     h_knit_print_render_model(x, use_values = use_values, fmt = fmt, ...),
     " The prior for &theta; is given by\\n\\n",
-    "$$ \\theta = \\begin{bmatrix} \\alpha \\\\ ", beta, " \\end{bmatrix}",
-    " \\sim \\sum_{i=1}^{", length(x@components), "}",
+    "$$ \\theta = \\begin{bmatrix} \\alpha \\\\ ",
+    beta,
+    " \\end{bmatrix}",
+    " \\sim \\sum_{i=1}^{",
+    length(x@components),
+    "}",
     "w_i \\cdot N \\left( \\mathbf{\\mu}_i ,  \\mathbf{\\Sigma}_i \\right)",
     " $$ \\n\\n",
     " with \\n\\n",
-    "$$ \\sum_{i=1}^{", length(x@components), "} w_i = 1 $$ \\n\\n",
+    "$$ \\sum_{i=1}^{",
+    length(x@components),
+    "} w_i = 1 $$ \\n\\n",
     " The individual components of the mixture are "
   )
   if (x@log_normal) {
@@ -826,7 +995,8 @@ knit_print.LogisticNormalFixedMixture <- function(x, ..., asis = TRUE, use_value
         fmt = fmt,
         theta = paste0("\\theta_", i)
       ),
-      " with weight ", x@weights[i],
+      " with weight ",
+      x@weights[i],
       ifelse(
         i < length(x@components),
         " and",
@@ -837,7 +1007,13 @@ knit_print.LogisticNormalFixedMixture <- function(x, ..., asis = TRUE, use_value
   rv <- paste0(
     rv,
     " \\n\\n ",
-    h_knit_print_render_ref_dose(x, units = units, fmt = fmt, use_values = use_values, ...)
+    h_knit_print_render_ref_dose(
+      x,
+      units = units,
+      fmt = fmt,
+      use_values = use_values,
+      ...
+    )
   )
   if (asis) {
     rv <- knitr::asis_output(rv)
@@ -847,7 +1023,11 @@ knit_print.LogisticNormalFixedMixture <- function(x, ..., asis = TRUE, use_value
 
 #' @description `r lifecycle::badge("experimental")`
 #' @noRd
-h_knit_print_render_model.LogisticNormalFixedMixture <- function(x, ..., tox_label = "toxicity") {
+h_knit_print_render_model.LogisticNormalFixedMixture <- function(
+  x,
+  ...,
+  tox_label = "toxicity"
+) {
   tox_label <- h_prepare_labels(tox_label)
   z <- "e^{\\alpha + \\beta \\cdot log(d/d^*)}"
   paste0(
@@ -857,7 +1037,11 @@ h_knit_print_render_model.LogisticNormalFixedMixture <- function(x, ..., tox_lab
     "between dose and ",
     tox_label[1],
     ": ",
-    "$$ p(Tox | d) = f(X = 1 | \\theta, d) = \\frac{", z, "}{1 + ", z, "} $$\\n ",
+    "$$ p(Tox | d) = f(X = 1 | \\theta, d) = \\frac{",
+    z,
+    "}{1 + ",
+    z,
+    "} $$\\n ",
     "where d* denotes a reference dose.\n\n"
   )
 }
@@ -877,12 +1061,13 @@ h_knit_print_render_model.ModelLogNormal <- function(x, ...) {
 #' @export
 #' @method knit_print OneParLogNormalPrior
 knit_print.OneParLogNormalPrior <- function(
-    x,
-    ...,
-    tox_label = "toxicity",
-    asis = TRUE,
-    use_values = TRUE,
-    fmt = "%5.2f") {
+  x,
+  ...,
+  tox_label = "toxicity",
+  asis = TRUE,
+  use_values = TRUE,
+  fmt = "%5.2f"
+) {
   assert_flag(asis)
 
   tox_label <- h_prepare_labels(tox_label)
@@ -932,31 +1117,40 @@ knit_print.OneParExpPrior <- function(x, ..., asis = TRUE) {
 #' @export
 #' @method knit_print LogisticLogNormalGrouped
 knit_print.LogisticLogNormalGrouped <- function(
-    x,
-    ...,
-    use_values = TRUE,
-    fmt = "%5.2f",
-    params = c(
-      "\\alpha" = "alpha",
-      "\\beta" = "beta",
-      "log(\\delta_0)" = "delta_0",
-      "log(\\delta_1)" = "delta_1"
-    ),
-    preamble = "The prior for &theta; is given by\\n",
-    asis = TRUE) {
+  x,
+  ...,
+  use_values = TRUE,
+  fmt = "%5.2f",
+  params = c(
+    "\\alpha" = "alpha",
+    "\\beta" = "beta",
+    "log(\\delta_0)" = "delta_0",
+    "log(\\delta_1)" = "delta_1"
+  ),
+  preamble = "The prior for &theta; is given by\\n",
+  asis = TRUE
+) {
   NextMethod(params = params)
 }
 
 #' @description `r lifecycle::badge("experimental")`
 #' @noRd
-h_knit_print_render_model.LogisticLogNormalGrouped <- function(x, tox_label = "toxicity", ...) {
+h_knit_print_render_model.LogisticLogNormalGrouped <- function(
+  x,
+  tox_label = "toxicity",
+  ...
+) {
   tox_label <- h_prepare_labels(tox_label)
   z <- "e^{(\\alpha + I_c \\times \\delta_0) + (\\beta  + I_c \\times \\delta_1) \\cdot log(d/d^*)}"
   paste0(
     "A logistic log normal model will describe the relationship between dose and ",
     tox_label[1],
     ": ",
-    "$$ p(Tox | d) = f(X = 1 | \\theta, d) = \\frac{", z, "}{1 + ", z, "} $$\\n ",
+    "$$ p(Tox | d) = f(X = 1 | \\theta, d) = \\frac{",
+    z,
+    "}{1 + ",
+    z,
+    "} $$\\n ",
     "where d* denotes a reference dose and I~c~ is a binary indicator which ",
     "is 1 for the combo arm and 0 for the mono arm.\n\n"
   )
@@ -972,7 +1166,11 @@ h_knit_print_render_model.LogisticLogNormalOrdinal <- function(x, ...) {
     "Let p~k~(d) be the probability that the response of a patient treated at ",
     "dose d is in category k *_or higher_*, k=0, ..., K; d=1, ..., D.\n\nThen ",
     "$$ p_k(d) = f(X \\ge k \\; | \\; \\theta, d) = \\begin{cases} 1 & k = 0 \\\\ ",
-    "\\frac{", z, "}{1 + ", z, "} & k=1, ..., K",
+    "\\frac{",
+    z,
+    "}{1 + ",
+    z,
+    "} & k=1, ..., K",
     "\\end{cases} $$\n\n",
     "where d* denotes a reference dose.\n\nThe &alpha;s are constrained ",
     "such that &alpha;~1~ > &alpha;~2~ > ... > &alpha;~K~.\n\n"
@@ -986,13 +1184,14 @@ h_knit_print_render_model.LogisticLogNormalOrdinal <- function(x, ...) {
 #' @export
 #' @method knit_print LogisticLogNormalOrdinal
 knit_print.LogisticLogNormalOrdinal <- function(
-    x,
-    ...,
-    use_values = TRUE,
-    fmt = "%5.2f",
-    params = NA,
-    preamble = "The prior for &theta; is given by\\n",
-    asis = TRUE) {
+  x,
+  ...,
+  use_values = TRUE,
+  fmt = "%5.2f",
+  params = NA,
+  preamble = "The prior for &theta; is given by\\n",
+  asis = TRUE
+) {
   assert_flag(asis)
   if (is.na(params)) {
     params <- c(
@@ -1011,14 +1210,15 @@ knit_print.LogisticLogNormalOrdinal <- function(
 #' @export
 #' @method knit_print LogisticIndepBeta
 knit_print.LogisticIndepBeta <- function(
-    x,
-    ...,
-    use_values = TRUE,
-    fmt = "%5.2f",
-    params = NA,
-    tox_label = "DLAE",
-    preamble = "The prior for &theta; is given by\\n",
-    asis = TRUE) {
+  x,
+  ...,
+  use_values = TRUE,
+  fmt = "%5.2f",
+  params = NA,
+  tox_label = "DLAE",
+  preamble = "The prior for &theta; is given by\\n",
+  asis = TRUE
+) {
   assert_flag(asis)
 
   tox_label <- h_prepare_labels(tox_label)
@@ -1033,7 +1233,11 @@ knit_print.LogisticIndepBeta <- function(
     "A logistic log normal model will describe the relationship between dose and ",
     tox_label[1],
     ": ",
-    "$$ p(Tox | d) = f(X = 1 | \\theta, d) = \\frac{", z, "}{1 + ", z, "} $$\\n ",
+    "$$ p(Tox | d) = f(X = 1 | \\theta, d) = \\frac{",
+    z,
+    "}{1 + ",
+    z,
+    "} $$\\n ",
     "The prior is expressed in terms of pseudo data and, consequently, the number ",
     " of cases and of ",
     tox_label[2],
@@ -1087,16 +1291,17 @@ knit_print.LogisticIndepBeta <- function(
 #' @export
 #' @method knit_print Effloglog
 knit_print.Effloglog <- function(
-    x,
-    ...,
-    use_values = TRUE,
-    fmt = "%5.2f",
-    params = NA,
-    tox_label = "DLAE",
-    eff_label = "efficacy",
-    label = "participant",
-    preamble = "The prior for &theta; is given by\\n",
-    asis = TRUE) {
+  x,
+  ...,
+  use_values = TRUE,
+  fmt = "%5.2f",
+  params = NA,
+  tox_label = "DLAE",
+  eff_label = "efficacy",
+  label = "participant",
+  preamble = "The prior for &theta; is given by\\n",
+  asis = TRUE
+) {
   assert_flag(asis)
   assert_character(eff_label, len = 1, any.missing = FALSE)
 

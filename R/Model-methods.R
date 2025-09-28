@@ -68,7 +68,12 @@ setMethod(
   signature = "ModelPseudo",
   definition = function(model, ...) {
     model_params <- list(...)
-    assert_character(names(model_params), len = length(model_params), any.missing = FALSE, unique = TRUE)
+    assert_character(
+      names(model_params),
+      len = length(model_params),
+      any.missing = FALSE,
+      unique = TRUE
+    )
 
     samples <- Samples(
       data = model_params,
@@ -106,7 +111,10 @@ setMethod(
     if (!(paste0("alpha", grade) %in% names(model_params))) {
       coll$push(
         paste0(
-          "Since grade = ", grade, ", a parameter named 'alpha", grade,
+          "Since grade = ",
+          grade,
+          ", a parameter named 'alpha",
+          grade,
           "' must appear the call"
         )
       )
@@ -194,7 +202,12 @@ setMethod(
   signature = "ModelTox",
   definition = function(model, ...) {
     model_params <- list(...)
-    assert_character(names(model_params), len = length(model_params), any.missing = FALSE, unique = TRUE)
+    assert_character(
+      names(model_params),
+      len = length(model_params),
+      any.missing = FALSE,
+      unique = TRUE
+    )
 
     samples <- Samples(
       data = model_params,
@@ -232,7 +245,10 @@ setMethod(
     if (!(paste0("alpha", grade) %in% names(model_params))) {
       coll$push(
         paste0(
-          "Since grade = ", grade, ", a parameter named 'alpha", grade,
+          "Since grade = ",
+          grade,
+          ", a parameter named 'alpha",
+          grade,
           "' must appear the call"
         )
       )
@@ -297,7 +313,12 @@ setMethod(
   signature = "ModelEff",
   definition = function(model, ...) {
     model_params <- list(...)
-    assert_character(names(model_params), len = length(model_params), any.missing = FALSE, unique = TRUE)
+    assert_character(
+      names(model_params),
+      len = length(model_params),
+      any.missing = FALSE,
+      unique = TRUE
+    )
 
     samples <- Samples(
       data = model_params,
@@ -445,7 +466,12 @@ setMethod(
   definition = function(x, model, samples, grade) {
     assert_probabilities(x)
     assert_length(x, len = size(samples))
-    assert_integer(grade, len = 1, lower = 1, upper = (length(names(samples@data)) - 1))
+    assert_integer(
+      grade,
+      len = 1,
+      lower = 1,
+      upper = (length(names(samples@data)) - 1)
+    )
     a <- paste0("alpha", grade)
     assert_subset(c(a, "beta"), names(samples))
 
@@ -568,7 +594,10 @@ setMethod(
     delta1 <- samples@data$delta1
     ref_dose <- as.numeric(model@ref_dose)
     is_combo <- as.integer(group == "combo")
-    exp((logit(x) - (alpha0 + is_combo * delta0)) / (alpha1 + is_combo * delta1)) * ref_dose
+    exp(
+      (logit(x) - (alpha0 + is_combo * delta0)) / (alpha1 + is_combo * delta1)
+    ) *
+      ref_dose
   }
 )
 
@@ -782,7 +811,10 @@ setMethod(
     assert_probabilities(x)
     model_params <- h_slots(model, c("phi1", "phi2"))
     nsamples <- length(model_params[[1]])
-    samples <- Samples(data = model_params, options = McmcOptions(samples = nsamples))
+    samples <- Samples(
+      data = model_params,
+      options = McmcOptions(samples = nsamples)
+    )
     assert_length(x, len = nsamples)
 
     dose(x, model, samples)
@@ -1125,7 +1157,10 @@ setMethod(
     delta1 <- samples@data$delta1
     ref_dose <- as.numeric(model@ref_dose)
     is_combo <- as.integer(group == "combo")
-    plogis((alpha0 + is_combo * delta0) + (alpha1 + is_combo * delta1) * log(dose / ref_dose))
+    plogis(
+      (alpha0 + is_combo * delta0) +
+        (alpha1 + is_combo * delta1) * log(dose / ref_dose)
+    )
   }
 )
 
@@ -1152,7 +1187,10 @@ setMethod(
     gamma <- samples@data$gamma
     theta <- model@theta
     xmin <- model@xmin
-    num <- gamma * logit(rho0) - xmin * logit(theta) + (logit(theta) - logit(rho0)) * dose
+    num <- gamma *
+      logit(rho0) -
+      xmin * logit(theta) +
+      (logit(theta) - logit(rho0)) * dose
     plogis(num / (gamma - xmin))
   }
 )
@@ -1180,7 +1218,10 @@ setMethod(
     gamma <- samples@data$gamma
     theta <- model@theta
     xmin <- model@xmin
-    num <- gamma * logit(rho0) - xmin * logit(theta) + (logit(theta) - logit(rho0)) * dose
+    num <- gamma *
+      logit(rho0) -
+      xmin * logit(theta) +
+      (logit(theta) - logit(rho0)) * dose
     plogis(num / (gamma - xmin))
   }
 )
@@ -1342,7 +1383,10 @@ setMethod(
   definition = function(dose, model, ...) {
     model_params <- h_slots(model, c("phi1", "phi2"))
     nsamples <- length(model_params[[1]])
-    samples <- Samples(data = model_params, options = McmcOptions(samples = nsamples))
+    samples <- Samples(
+      data = model_params,
+      options = McmcOptions(samples = nsamples)
+    )
 
     assert_numeric(dose, lower = 0L, any.missing = FALSE, min.len = 1L)
     assert_length(dose, len = nsamples)
@@ -1449,7 +1493,8 @@ setMethod(
 
         # Calculate grade-specific probabilities
         alpha0 <- samples@data[[paste0("alpha", g + 1)]]
-        grade_prob <- cumulative_prob - plogis(alpha0 + beta * log(dose / ref_dose))
+        grade_prob <- cumulative_prob -
+          plogis(alpha0 + beta * log(dose / ref_dose))
         return(grade_prob)
       }
     )
@@ -1557,7 +1602,10 @@ setMethod(
   definition = function(dose, model) {
     model_params <- h_slots(model, c("theta1", "theta2"))
     nsamples <- length(model_params[[1]])
-    samples <- Samples(data = model_params, options = McmcOptions(samples = nsamples))
+    samples <- Samples(
+      data = model_params,
+      options = McmcOptions(samples = nsamples)
+    )
 
     assert_numeric(dose, lower = 0L, any.missing = FALSE, min.len = 1L)
     assert_length(dose, len = nsamples)
@@ -1609,7 +1657,11 @@ setMethod(
 
     if (any(is.na(eff))) {
       warning(
-        paste("At least one dose out of", paste(dose, collapse = ", "), "is outside of the dose grid range")
+        paste(
+          "At least one dose out of",
+          paste(dose, collapse = ", "),
+          "is outside of the dose grid range"
+        )
       )
     }
     eff
@@ -1731,7 +1783,14 @@ setMethod(
     model_eff = "ModelEff",
     samples_eff = "Samples"
   ),
-  definition = function(dose, model_dle, samples_dle, model_eff, samples_eff, ...) {
+  definition = function(
+    dose,
+    model_dle,
+    samples_dle,
+    model_eff,
+    samples_eff,
+    ...
+  ) {
     dle <- prob(dose, model_dle, samples_dle)
     eff <- efficacy(dose, model_eff, samples_eff)
     assert_length(dle, len = length(eff))

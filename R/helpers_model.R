@@ -24,9 +24,11 @@
 #' @return `list` with updated model components.
 #'
 #' @export
-h_model_dual_endpoint_sigma2W <- function(use_fixed, # nolintr
-                                          sigma2W,
-                                          comp) {
+h_model_dual_endpoint_sigma2W <- function(
+  use_fixed, # nolintr
+  sigma2W,
+  comp
+) {
   if (use_fixed) {
     assert_number(sigma2W, lower = 0 + .Machine$double.xmin, finite = TRUE)
     comp$modelspecs$precW <- 1 / sigma2W
@@ -74,9 +76,7 @@ h_model_dual_endpoint_sigma2W <- function(use_fixed, # nolintr
 #' @return A `list` with updated model components.
 #'
 #' @export
-h_model_dual_endpoint_rho <- function(use_fixed,
-                                      rho,
-                                      comp) {
+h_model_dual_endpoint_rho <- function(use_fixed, rho, comp) {
   rmin <- .Machine$double.xmin
   if (use_fixed) {
     assert_number(rho, lower = -1 + rmin, upper = 1 - rmin)
@@ -121,9 +121,11 @@ h_model_dual_endpoint_rho <- function(use_fixed,
 #'
 #' @seealso [`DualEndpointRW`].
 #' @export
-h_model_dual_endpoint_sigma2betaW <- function(use_fixed, # nolintr
-                                              sigma2betaW,
-                                              de) {
+h_model_dual_endpoint_sigma2betaW <- function(
+  use_fixed, # nolintr
+  sigma2betaW,
+  de
+) {
   modelspecs <- de@modelspecs
   init <- de@init
 
@@ -187,11 +189,13 @@ h_model_dual_endpoint_sigma2betaW <- function(use_fixed, # nolintr
 #'   `modelspecs`, `init`, `sample` slots.
 #'
 #' @export
-h_model_dual_endpoint_beta <- function(param,
-                                       param_name,
-                                       param_suffix = c("_low", "_high"),
-                                       priormodel = NULL,
-                                       de) {
+h_model_dual_endpoint_beta <- function(
+  param,
+  param_name,
+  param_suffix = c("_low", "_high"),
+  priormodel = NULL,
+  de
+) {
   assert_numeric(param, min.len = 1, max.len = 2, any.missing = FALSE)
   assert_string(param_name)
   assert_class(de, "DualEndpoint")

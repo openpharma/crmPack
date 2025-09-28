@@ -33,7 +33,12 @@ v_model_params_normal <- function(object) {
   )
   if (is_cov_valid && is_prec_valid) {
     v$check(
-      all.equal(object@cov %*% object@prec, diag(1, length(object@mean)), check.attributes = FALSE) == TRUE,
+      all.equal(
+        object@cov %*% object@prec,
+        diag(1, length(object@mean)),
+        check.attributes = FALSE
+      ) ==
+        TRUE,
       "prec must be inverse of cov"
     )
   }

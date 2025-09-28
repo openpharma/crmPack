@@ -42,8 +42,18 @@ data3 <- DataDual(
   x = c(PL, 25, 25, 25, PL, 100, 100, 100, PL, 300, 300, 300),
   y = c(0, 0, 0, 0, 0, 0, 1, 1, 1, 1, 1, 1),
   w = c(
-    0, 0.2, 0.5, 1, 0, 1.9, 2.2, 2,
-    0.03, 2.7, 2.6, 3
+    0,
+    0.2,
+    0.5,
+    1,
+    0,
+    1.9,
+    2.2,
+    2,
+    0.03,
+    2.7,
+    2.6,
+    3
   ),
   cohort = c(1, 1, 1, 1, 2, 2, 2, 2, 3, 3, 3, 3),
   doseGrid = data@doseGrid,
@@ -72,10 +82,7 @@ gain(data3@doseGrid, DLEmodel = newDLTmodel, Effmodel = newEffmodel)
 
 ## plot continuously:
 plotgrid <- seq(from = 0.001, to = 300, length = 300)
-gainvals <- gain(plotgrid,
-  DLEmodel = newDLTmodel,
-  Effmodel = newEffmodel
-)
+gainvals <- gain(plotgrid, DLEmodel = newDLTmodel, Effmodel = newEffmodel)
 effvals <- ExpEff(plotgrid, newEffmodel)
 dlevals <- prob(plotgrid, newDLTmodel)
 
@@ -97,10 +104,22 @@ Gainfun <- function(DOSE) {
 LowestDose <- min(data3@doseGrid)
 
 ## Find the dose which gives the maximum gain
-Gstar <- (optim(LowestDose, Gainfun, method = "L-BFGS-B", lower = LowestDose, upper = max(data@doseGrid))$par)
+Gstar <- (optim(
+  LowestDose,
+  Gainfun,
+  method = "L-BFGS-B",
+  lower = LowestDose,
+  upper = max(data@doseGrid)
+)$par)
 ## Find the maximum gain value
 
-MaxGain <- -(optim(LowestDose, Gainfun, method = "L-BFGS-B", lower = LowestDose, upper = max(data@doseGrid))$value)
+MaxGain <- -(optim(
+  LowestDose,
+  Gainfun,
+  method = "L-BFGS-B",
+  lower = LowestDose,
+  upper = max(data@doseGrid)
+)$value)
 ## be sure which doses are ok with respect to maximum
 
 ## Value of Gstar, the dose with maximum gain value

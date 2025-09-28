@@ -31,10 +31,7 @@ doc <- addTitle(doc, "First 10 lines of iris")
 doc <- addTable(doc, iris[1:10, ])
 
 ## add text with stylename "Normal" into doc (and an empty line just before)
-doc <- addParagraph(doc,
-  value = c("", "Hello World!"),
-  stylename = "Normal"
-)
+doc <- addParagraph(doc, value = c("", "Hello World!"), stylename = "Normal")
 
 ## Second slide:
 doc <- addSlide(doc, "Title and Content")

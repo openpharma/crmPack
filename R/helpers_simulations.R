@@ -17,7 +17,8 @@ h_barplot_percentages <- function(x, description, xaxisround = 0) {
   tabx <- table(x) / length(x)
   dat <- data.frame(x = as.numeric(names(tabx)), perc = as.numeric(tabx) * 100)
   ggplot() +
-    geom_bar(aes(x = x, y = perc),
+    geom_bar(
+      aes(x = x, y = perc),
       data = dat,
       stat = "identity",
       position = "identity",
@@ -26,11 +27,9 @@ h_barplot_percentages <- function(x, description, xaxisround = 0) {
     xlab(description) +
     ylab("Percent") +
     scale_x_continuous(
-      breaks =
-        round(dat$x, xaxisround)
+      breaks = round(dat$x, xaxisround)
     )
 }
-
 
 
 #' Helper function to calculate percentage of true stopping rules for
@@ -42,13 +41,11 @@ h_barplot_percentages <- function(x, description, xaxisround = 0) {
 #' @param stop_report object from summary method
 #' @return named list with label and percentage of rule activation
 
-
 h_calc_report_label_percentage <- function(stop_report) {
   stop_pct <- colMeans(stop_report) * 100
   stop_pct_to_print <- stop_pct[!is.na(names(stop_pct))]
   return(stop_pct_to_print)
 }
-
 
 
 #' Helper function to calculate average across iterations for each additional
@@ -59,7 +56,6 @@ h_calc_report_label_percentage <- function(stop_report) {
 #' @param stats_list object from simulation with nested parameter values
 #' (sublist for each parameter)
 #' @return list of parameter names and averaged values for console output
-
 
 h_summarize_add_stats <- function(stats_list) {
   # Extract the parameter names

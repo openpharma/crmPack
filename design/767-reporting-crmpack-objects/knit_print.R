@@ -26,7 +26,11 @@ knit_print.IncrementsDoseLevels <- function(object, ...) {
     object@levels,
     ifelse(object@levels == 1, " level", " levels"),
     " relative to the ",
-    ifelse(object@basis_level == "last", "dose used in the previous cohort.", "highest dose used so far.")
+    ifelse(
+      object@basis_level == "last",
+      "dose used in the previous cohort.",
+      "highest dose used so far."
+    )
   )
 }
 
@@ -129,7 +133,12 @@ knit_print.StoppingAny <- function(object, indent = 0L, ...) {
   )
 }
 
-knit_print.ModelParamsNormal <- function(object, use_values = TRUE, fmt = "%5.2f", ...) {
+knit_print.ModelParamsNormal <- function(
+  object,
+  use_values = TRUE,
+  fmt = "%5.2f",
+  ...
+) {
   assert_true(length(object@mean) == 2)
 
   muAlpha <- ifelse(
@@ -165,11 +174,26 @@ knit_print.ModelParamsNormal <- function(object, use_values = TRUE, fmt = "%5.2f
 
   z <- "e^{\\alpha + \\beta \\cdot log(d/d_{ref})}"
   result <- paste0(
-    "$$ p(Tox | d) = f(X = 1 | \\theta, d) = \\frac{", z, "}{1 + ", z, "} $$\\n",
+    "$$ p(Tox | d) = f(X = 1 | \\theta, d) = \\frac{",
+    z,
+    "}{1 + ",
+    z,
+    "} $$\\n",
     "where the prior for &theta; is given by\\n",
     "$$ \\theta = \\begin{bmatrix*}[r] \\alpha \\\\ log(\\beta) \\end{bmatrix*}",
-    " \\sim N \\left(\\begin{bmatrix}", muAlpha, " \\\\ ", muBeta, "\\end{bmatrix} , ",
-    "\\begin{bmatrix} ", sigma11, " && ", sigma12, " \\\\ ", sigma21, " && ", sigma22,
+    " \\sim N \\left(\\begin{bmatrix}",
+    muAlpha,
+    " \\\\ ",
+    muBeta,
+    "\\end{bmatrix} , ",
+    "\\begin{bmatrix} ",
+    sigma11,
+    " && ",
+    sigma12,
+    " \\\\ ",
+    sigma21,
+    " && ",
+    sigma22,
     "\\end{bmatrix} \\right)",
     " $$"
   )
@@ -181,7 +205,8 @@ knit_print.GeneralModel <- function(object, ...) {
   result <- paste0(
     knit_print(object@params, ...),
     "\\n\\nThe reference dose will be ",
-    object@ref_dose, ".\\n\\n"
+    object@ref_dose,
+    ".\\n\\n"
   )
   asis_output(result)
 }
@@ -241,7 +266,12 @@ knit_print.CohortSizeMax <- function(object, ...) {
   )
 }
 
-knit_print.Design <- function(object, level = 1, caption = "Trial design", ...) {
+knit_print.Design <- function(
+  object,
+  level = 1,
+  caption = "Trial design",
+  ...
+) {
   asis_output(
     paste(
       paste0(str_dup("#", level), " ", caption),
@@ -258,7 +288,11 @@ knit_print.Design <- function(object, level = 1, caption = "Trial design", ...) 
       paste0(str_dup("#", level + 1), " Stopping rules"),
       knit_print(object@stopping, ...),
       paste0(str_dup("#", level + 1), " Starting dose"),
-      paste0("The dose used in the first cohort will be ", object@startingDose, "."),
+      paste0(
+        "The dose used in the first cohort will be ",
+        object@startingDose,
+        "."
+      ),
       sep = "\n\n"
     )
   )

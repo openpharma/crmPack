@@ -40,7 +40,9 @@ NULL
 #' @note Typically, end users will not use the `.DefaultDataGeneral()` function.
 #' @export
 .DefaultDataGeneral <- function() {
-  stop(paste0("Class DataGeneral cannot be instantiated directly.  Please use one of its subclasses instead."))
+  stop(paste0(
+    "Class DataGeneral cannot be instantiated directly.  Please use one of its subclasses instead."
+  ))
 }
 
 # Data ----
@@ -118,13 +120,15 @@ NULL
 #' @export
 #' @example examples/Data-class.R
 #'
-Data <- function(x = numeric(),
-                 y = integer(),
-                 ID = integer(),
-                 cohort = integer(),
-                 doseGrid = numeric(),
-                 placebo = FALSE,
-                 ...) {
+Data <- function(
+  x = numeric(),
+  y = integer(),
+  ID = integer(),
+  cohort = integer(),
+  doseGrid = numeric(),
+  placebo = FALSE,
+  ...
+) {
   assert_numeric(x)
   assert_integerish(y, lower = 0, upper = 1, any.missing = FALSE)
   assert_integerish(ID, unique = TRUE, any.missing = FALSE)
@@ -219,8 +223,7 @@ Data <- function(x = numeric(),
 #' @export
 #' @example examples/Data-class-DataDual.R
 #'
-DataDual <- function(w = numeric(),
-                     ...) {
+DataDual <- function(w = numeric(), ...) {
   d <- Data(...)
   .DataDual(d, w = w)
 }
@@ -292,10 +295,12 @@ DataDual <- function(w = numeric(),
 #' @export
 #' @example examples/Data-class-DataParts.R
 #'
-DataParts <- function(part = integer(),
-                      nextPart = 1L,
-                      part1Ladder = numeric(),
-                      ...) {
+DataParts <- function(
+  part = integer(),
+  nextPart = 1L,
+  part1Ladder = numeric(),
+  ...
+) {
   d <- Data(...)
   .DataParts(
     d,
@@ -373,9 +378,7 @@ DataParts <- function(part = integer(),
 #' @export
 #' @example examples/Data-class-DataMixture.R
 #'
-DataMixture <- function(xshare = numeric(),
-                        yshare = integer(),
-                        ...) {
+DataMixture <- function(xshare = numeric(), yshare = integer(), ...) {
   d <- Data(...)
   assert_integerish(yshare)
   assert_numeric(xshare)
@@ -458,10 +461,12 @@ DataMixture <- function(xshare = numeric(),
 #' @export
 #' @example examples/Data-class-DataDA.R
 #'
-DataDA <- function(u = numeric(),
-                   t0 = numeric(length(u)),
-                   Tmax = 0 + .Machine$double.xmin,
-                   ...) {
+DataDA <- function(
+  u = numeric(),
+  t0 = numeric(length(u)),
+  Tmax = 0 + .Machine$double.xmin,
+  ...
+) {
   d <- Data(...)
   .DataDA(
     d,
@@ -545,14 +550,16 @@ DataDA <- function(u = numeric(),
 #' @inherit Data details note params
 #' @example examples/Data-class-DataOrdinal.R
 #' @export
-DataOrdinal <- function(x = numeric(),
-                        y = integer(),
-                        ID = integer(),
-                        cohort = integer(),
-                        doseGrid = numeric(),
-                        placebo = FALSE,
-                        yCategories = c("No DLT" = 0L, "DLT" = 1L),
-                        ...) {
+DataOrdinal <- function(
+  x = numeric(),
+  y = integer(),
+  ID = integer(),
+  cohort = integer(),
+  doseGrid = numeric(),
+  placebo = FALSE,
+  yCategories = c("No DLT" = 0L, "DLT" = 1L),
+  ...
+) {
   assert_numeric(doseGrid, any.missing = FALSE, unique = TRUE)
   assert_integerish(
     yCategories,
@@ -653,8 +660,7 @@ DataOrdinal <- function(x = numeric(),
 #' @export
 #' @example examples/Data-class-DataGrouped.R
 #'
-DataGrouped <- function(group = character(),
-                        ...) {
+DataGrouped <- function(group = character(), ...) {
   d <- Data(...)
   if (!is.factor(group)) {
     assert_character(group)

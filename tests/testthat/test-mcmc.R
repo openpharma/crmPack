@@ -16,7 +16,21 @@ test_that("JAGS model compile works as expected for an example model", {
   data <- list(
     betaZ_mean = c(0, 1),
     betaZ_prec = structure(c(1, 0, 0, 1), .Dim = c(2, 2)),
-    doseGrid = c(0.001, 25, 50, 75, 100, 125, 150, 175, 200, 225, 250, 275, 300),
+    doseGrid = c(
+      0.001,
+      25,
+      50,
+      75,
+      100,
+      125,
+      150,
+      175,
+      200,
+      225,
+      250,
+      275,
+      300
+    ),
     nGrid = 13,
     nObs = 12,
     precBetaW = 100,
@@ -34,12 +48,39 @@ test_that("JAGS model compile works as expected for an example model", {
   invisible(.Call("check_model", p, modfile, PACKAGE = "rjags"))
   varnames <- .Call("get_variable_names", p, PACKAGE = "rjags")
   varnames_expected <- c(
-    "nObs", "stand_dose_temp", "x", "ref_dose", "stand_dose", "use_log_dose",
-    "meanZ", "betaZ", "z", "y", "condMeanW", "betaW", "xLevel", "rho", "precW",
-    "w", "condPrecW", "theta", "betaZ_mean", "betaZ_prec", "nGrid", "delta",
-    "precBetaW", "doseGrid"
+    "nObs",
+    "stand_dose_temp",
+    "x",
+    "ref_dose",
+    "stand_dose",
+    "use_log_dose",
+    "meanZ",
+    "betaZ",
+    "z",
+    "y",
+    "condMeanW",
+    "betaW",
+    "xLevel",
+    "rho",
+    "precW",
+    "w",
+    "condPrecW",
+    "theta",
+    "betaZ_mean",
+    "betaZ_prec",
+    "nGrid",
+    "delta",
+    "precBetaW",
+    "doseGrid"
   )
-  compile_output <- capture_output_lines(.Call("compile", p, data, 1L, TRUE, PACKAGE = "rjags"))
+  compile_output <- capture_output_lines(.Call(
+    "compile",
+    p,
+    data,
+    1L,
+    TRUE,
+    PACKAGE = "rjags"
+  ))
   compile_output <- trimws(compile_output)
   compile_output_expected <- c(
     "Compiling model graph",
@@ -68,8 +109,18 @@ test_that("mcmc-GeneralData works as expected", {
   expect_true(all(slotNames(result) == c("data", "options")))
   expect_identical(result@options, options)
   expect_identical(names(result), c("alpha0", "alpha1"))
-  expect_numeric(result@data$alpha0, len = 100, any.missing = FALSE, finite = TRUE)
-  expect_numeric(result@data$alpha1, len = 100, any.missing = FALSE, finite = TRUE)
+  expect_numeric(
+    result@data$alpha0,
+    len = 100,
+    any.missing = FALSE,
+    finite = TRUE
+  )
+  expect_numeric(
+    result@data$alpha1,
+    len = 100,
+    any.missing = FALSE,
+    finite = TRUE
+  )
 })
 
 test_that("mcmc-GeneralData gets random results", {

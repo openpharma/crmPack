@@ -73,11 +73,13 @@ NULL
 #' @export
 #' @example examples/McmcOptions-class-McmcOptions.R
 #'
-McmcOptions <- function(burnin = 1e4L,
-                        step = 2L,
-                        samples = 1e4L,
-                        rng_kind = NA_character_,
-                        rng_seed = NA_integer_) {
+McmcOptions <- function(
+  burnin = 1e4L,
+  step = 2L,
+  samples = 1e4L,
+  rng_kind = NA_character_,
+  rng_seed = NA_integer_
+) {
   assert_count(burnin, positive = TRUE)
   assert_count(step, positive = TRUE)
   assert_count(samples, positive = TRUE)

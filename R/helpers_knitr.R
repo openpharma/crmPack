@@ -10,7 +10,13 @@
 #' @keywords internal
 #' @return a character vector of length 2 whose values are distinct
 h_prepare_labels <- function(x) {
-  assert_character(x, min.len = 1, max.len = 2, any.missing = FALSE, unique = TRUE)
+  assert_character(
+    x,
+    min.len = 1,
+    max.len = 2,
+    any.missing = FALSE,
+    unique = TRUE
+  )
 
   if (length(x) == 1) {
     if (x == "toxicity") {

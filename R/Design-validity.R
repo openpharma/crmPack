@@ -22,7 +22,11 @@ v_rule_design <- function(object) {
     "startingDose must be a number"
   )
   v$check(
-    test_subset(object@startingDose, choices = object@data@doseGrid, empty.ok = FALSE),
+    test_subset(
+      object@startingDose,
+      choices = object@data@doseGrid,
+      empty.ok = FALSE
+    ),
     "startingDose must be included in data@doseGrid"
   )
   v$result()
@@ -50,7 +54,11 @@ v_rule_design_ordinal <- function(object) {
     "starting_dose must be a number"
   )
   v$check(
-    test_subset(object@starting_dose, choices = object@data@doseGrid, empty.ok = FALSE),
+    test_subset(
+      object@starting_dose,
+      choices = object@data@doseGrid,
+      empty.ok = FALSE
+    ),
     "starting_dose must be included in data@doseGrid"
   )
   v$result()

@@ -20,13 +20,10 @@ library(crmPack)
 model <- DualEndpointRW(
   mu = c(0, 1),
   Sigma = matrix(c(1, 0, 0, 1), nrow = 2),
-  sigma2betaW =
-    0.01,
+  sigma2betaW = 0.01,
   ## c(a=20, b=50), ## gives very unstable results!!
-  sigma2W =
-    c(a = 0.1, b = 0.1),
-  rho =
-    c(a = 1, b = 1),
+  sigma2W = c(a = 0.1, b = 0.1),
+  rho = c(a = 1, b = 1),
   ## c(a=20, b=10)
   smooth = "RW1"
 )
@@ -40,42 +37,103 @@ model <-
     refDose = 100,
     mu = c(0, 1),
     Sigma = matrix(c(1, 0, 0, 1), nrow = 2),
-    sigma2W =
-      c(a = 0.1, b = 0.1),
-    rho =
-      c(a = 1, b = 1)
+    sigma2W = c(a = 0.1, b = 0.1),
+    rho = c(a = 1, b = 1)
   )
 
 library(DoseFinding)
-curve(betaMod(x, e0 = 0.2, eMax = 0.6, delta1 = 5, delta2 = 5 * 0.9 / 0.1, scal = 100),
-  from = 0, to = 50
+curve(
+  betaMod(
+    x,
+    e0 = 0.2,
+    eMax = 0.6,
+    delta1 = 5,
+    delta2 = 5 * 0.9 / 0.1,
+    scal = 100
+  ),
+  from = 0,
+  to = 50
 )
-curve(betaMod(x, e0 = 0.2, eMax = 0.6, delta1 = 1, delta2 = 1 * 0.9 / 0.1, scal = 100),
-  from = 0, to = 50
+curve(
+  betaMod(
+    x,
+    e0 = 0.2,
+    eMax = 0.6,
+    delta1 = 1,
+    delta2 = 1 * 0.9 / 0.1,
+    scal = 100
+  ),
+  from = 0,
+  to = 50
 )
 
 ## create some test data
 data <- DataDual(
-  x =
-    c(
-      0.1, 0.5, 1.5, 3, 6, 10, 10, 10,
-      20, 20, 20, 40, 40, 40, 50, 50, 50
-    ),
-  y =
-    c(
-      0, 0, 0, 0, 0, 0, 1, 0,
-      0, 1, 1, 0, 0, 1, 0, 1, 1
-    ),
-  w =
-    c(
-      0.3, 0.4, 0.5, 0.4, 0.6, 0.7, 0.5, 0.6,
-      0.5, 0.5, 0.55, 0.4, 0.41, 0.39, 0.3, 0.3, 0.2
-    ),
-  doseGrid =
-    c(
-      0.1, 0.5, 1.5, 3, 6,
-      seq(from = 10, to = 80, by = 2)
-    )
+  x = c(
+    0.1,
+    0.5,
+    1.5,
+    3,
+    6,
+    10,
+    10,
+    10,
+    20,
+    20,
+    20,
+    40,
+    40,
+    40,
+    50,
+    50,
+    50
+  ),
+  y = c(
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    1,
+    0,
+    0,
+    1,
+    1,
+    0,
+    0,
+    1,
+    0,
+    1,
+    1
+  ),
+  w = c(
+    0.3,
+    0.4,
+    0.5,
+    0.4,
+    0.6,
+    0.7,
+    0.5,
+    0.6,
+    0.5,
+    0.5,
+    0.55,
+    0.4,
+    0.41,
+    0.39,
+    0.3,
+    0.3,
+    0.2
+  ),
+  doseGrid = c(
+    0.1,
+    0.5,
+    1.5,
+    3,
+    6,
+    seq(from = 10, to = 80, by = 2)
+  )
 )
 data
 data@nGrid
@@ -143,7 +201,9 @@ plot(samples, model, data)
 x11()
 plot(samples, model, data, extrapolate = FALSE)
 
-betaModList <- list(betaMod = rbind(c(1, 1), c(1.5, 0.75), c(0.8, 2.5), c(0.4, 0.9)))
+betaModList <- list(
+  betaMod = rbind(c(1, 1), c(1.5, 0.75), c(0.8, 2.5), c(0.4, 0.9))
+)
 plotModels(betaModList, c(0, 1), base = 0, maxEff = 1, scal = 1.2)
 
 
@@ -151,13 +211,20 @@ plotModels(betaModList, c(0, 1), base = 0, maxEff = 1, scal = 1.2)
 
 ## target level is 90% of maximum biomarker level
 ## overdose tox interval is 35%+
-myNextBest <- new("NextBestDualEndpoint",
+myNextBest <- new(
+  "NextBestDualEndpoint",
   target = 0.9,
   overdose = c(0.35, 1),
   maxOverdoseProb = 0.25
 )
 
-nextDose <- nextBest(myNextBest, doselimit = 50, samples = samples, model = model, data = data)
+nextDose <- nextBest(
+  myNextBest,
+  doselimit = 50,
+  samples = samples,
+  model = model,
+  data = data
+)
 nextDose$plot
 nextDose$value
 data
@@ -166,30 +233,23 @@ data
 ## stopping rule:
 ## min 3 cohorts and at least 50% prob in for targeting biomarker,
 ## or max 20 patients
-myStopping1 <- new("StoppingMinCohorts",
-  nCohorts = 3L
-)
-myStopping2 <- new("StoppingMaxPatients",
-  nPatients = 50L
-)
-myStopping3 <- new("StoppingTargetBiomarker",
-  target = 0.9,
-  prob = 0.5
-)
+myStopping1 <- new("StoppingMinCohorts", nCohorts = 3L)
+myStopping2 <- new("StoppingMaxPatients", nPatients = 50L)
+myStopping3 <- new("StoppingTargetBiomarker", target = 0.9, prob = 0.5)
 
 ## you can either write this:
-myStopping <- new("StoppingAny",
-  stop_list =
-    list(
-      new("StoppingAll",
-        stop_list =
-          list(
-            myStopping1,
-            myStopping3
-          )
-      ),
-      myStopping2
-    )
+myStopping <- new(
+  "StoppingAny",
+  stop_list = list(
+    new(
+      "StoppingAll",
+      stop_list = list(
+        myStopping1,
+        myStopping3
+      )
+    ),
+    myStopping2
+  )
 )
 
 ## or much more intuitively:
@@ -198,38 +258,39 @@ myStoppingEasy
 identical(myStopping, myStoppingEasy)
 
 
-stopTrial(myStopping,
-  dose = nextDose$value,
-  samples, model, data
-)
+stopTrial(myStopping, dose = nextDose$value, samples, model, data)
 
 ## relative increments:
-myIncrements <- new("IncrementsRelative",
+myIncrements <- new(
+  "IncrementsRelative",
   intervals = c(0, 20, Inf),
   increments = c(1, 0.33)
 )
 
 ## test design
-design <- new("DualDesign",
+design <- new(
+  "DualDesign",
   model = model,
   nextBest = myNextBest,
   stopping = myStopping,
   increments = myIncrements,
-  data =
-    new("DataDual",
-      x = numeric(),
-      y = integer(),
-      w = numeric(),
-      doseGrid =
-        c(
-          0.1, 0.5, 1.5, 3, 6,
-          seq(from = 10, to = 80, by = 2)
-        )
-    ),
+  data = new(
+    "DataDual",
+    x = numeric(),
+    y = integer(),
+    w = numeric(),
+    doseGrid = c(
+      0.1,
+      0.5,
+      1.5,
+      3,
+      6,
+      seq(from = 10, to = 80, by = 2)
+    )
+  ),
   cohort_size = new("CohortSizeConst", size = 3L),
   startingDose = 6
 )
-
 
 
 ## for testing the simulate function:
@@ -245,11 +306,12 @@ seed <- 23
 
 ## iterSim <- 1L
 
-
 betaMod <-
   function(dose, e0, eMax, delta1, delta2, scal) {
-    maxDens <- (delta1^delta1) * (delta2^delta2) / ((delta1 + delta2)^(delta1 +
-      delta2))
+    maxDens <- (delta1^delta1) *
+      (delta2^delta2) /
+      ((delta1 + delta2)^(delta1 +
+        delta2))
     dose <- dose / scal
     e0 + eMax / maxDens * (dose^delta1) * (1 - dose)^delta2
   }
@@ -258,9 +320,17 @@ trueTox <- function(dose) {
   pnorm((dose - 60) / 10)
 }
 trueBiomarker <- function(dose) {
-  betaMod(dose, e0 = 0.2, eMax = 0.6, delta1 = 5, delta2 = 5 * 0.5 / 0.5, scal = 100)
+  betaMod(
+    dose,
+    e0 = 0.2,
+    eMax = 0.6,
+    delta1 = 5,
+    delta2 = 5 * 0.5 / 0.5,
+    scal = 100
+  )
 }
-mySims <- simulate(design,
+mySims <- simulate(
+  design,
   trueTox = trueTox,
   trueBiomarker = trueBiomarker,
   sigma2W = 0.001,
@@ -289,15 +359,10 @@ mySims@stopReasons[[3]]
 mySims@doses
 
 
-
 ## get operating characteristics
 
-
 ## the truth we want to compare it with:
-sumOut <- summary(mySims,
-  trueTox = trueTox,
-  trueBiomarker = trueBiomarker
-)
+sumOut <- summary(mySims, trueTox = trueTox, trueBiomarker = trueBiomarker)
 sumOut
 
 mySims@doses

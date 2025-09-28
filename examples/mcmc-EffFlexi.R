@@ -10,8 +10,12 @@ data <- DataDual(
 ## model must be of 'EffFlexi' class
 
 effmodel <- EffFlexi(
-  eff = c(1.223, 2.513), eff_dose = c(25, 300),
-  sigma2W = c(a = 0.1, b = 0.1), sigma2betaW = c(a = 20, b = 50), rw1 = FALSE, data = data
+  eff = c(1.223, 2.513),
+  eff_dose = c(25, 300),
+  sigma2W = c(a = 0.1, b = 0.1),
+  sigma2betaW = c(a = 20, b = 50),
+  rw1 = FALSE,
+  data = data
 )
 
 ## options must be ''McmcOptions' class

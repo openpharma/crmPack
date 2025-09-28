@@ -82,7 +82,9 @@ NULL
 #' @note Typically, end users will not use the `.DefaultGeneralModel()` function.
 #' @export
 .DefaultGeneralModel <- function() {
-  stop(paste0("Class GeneralModel should not be instantiated directly.  Please use one of its subclasses instead."))
+  stop(paste0(
+    "Class GeneralModel should not be instantiated directly.  Please use one of its subclasses instead."
+  ))
 }
 
 
@@ -167,7 +169,10 @@ ModelLogNormal <- function(mean, cov, ref_dose = 1) {
 #' @note Typically, end users will not use the `.DefaultModelLogNormal()` function.
 #' @export
 .DefaultModelLogNormal <- function() {
-  ModelLogNormal(mean = c(-0.85, 1), cov = matrix(c(1, -0.5, -0.5, 1), nrow = 2))
+  ModelLogNormal(
+    mean = c(-0.85, 1),
+    cov = matrix(c(1, -0.5, -0.5, 1), nrow = 2)
+  )
 }
 
 # LogisticNormal ----
@@ -232,7 +237,10 @@ LogisticNormal <- function(mean, cov, ref_dose = 1) {
 #' @note Typically, end users will not use the `.DefaultLogisticNormal()` function.
 #' @export
 .DefaultLogisticNormal <- function() {
-  LogisticNormal(mean = c(-0.85, 1), cov = matrix(c(1, -0.5, -0.5, 1), nrow = 2))
+  LogisticNormal(
+    mean = c(-0.85, 1),
+    cov = matrix(c(1, -0.5, -0.5, 1), nrow = 2)
+  )
 }
 
 
@@ -524,7 +532,10 @@ ProbitLogNormalRel <- function(mean, cov, ref_dose = 1) {
 #' @note Typically, end users will not use the `.DefaultProbitLogNormalRel()` function.
 #' @export
 .DefaultProbitLogNormalRel <- function() {
-  ProbitLogNormalRel(mean = c(-0.85, 1), cov = matrix(c(1, -0.5, -0.5, 1), nrow = 2))
+  ProbitLogNormalRel(
+    mean = c(-0.85, 1),
+    cov = matrix(c(1, -0.5, -0.5, 1), nrow = 2)
+  )
 }
 
 # LogisticLogNormalGrouped ----
@@ -689,7 +700,10 @@ LogisticKadane <- function(theta, xmin, xmax) {
     datamodel = function() {
       for (i in 1:nObs) {
         logit(p[i]) <- (1 / (gamma - xmin)) *
-          (gamma * logit(rho0) - xmin * logit(theta) + x[i] * (logit(theta) - logit(rho0)))
+          (gamma *
+            logit(rho0) -
+            xmin * logit(theta) +
+            x[i] * (logit(theta) - logit(rho0)))
         y[i] ~ dbern(p[i])
       }
     },
@@ -801,7 +815,15 @@ LogisticKadane <- function(theta, xmin, xmax) {
 #' @export
 #' @example examples/Model-class-LogisticKadaneBetaGamma.R
 #'
-LogisticKadaneBetaGamma <- function(theta, xmin, xmax, alpha, beta, shape, rate) {
+LogisticKadaneBetaGamma <- function(
+  theta,
+  xmin,
+  xmax,
+  alpha,
+  beta,
+  shape,
+  rate
+) {
   model_lk <- LogisticKadane(theta = theta, xmin = xmin, xmax = xmax)
   .LogisticKadaneBetaGamma(
     model_lk,
@@ -921,10 +943,7 @@ LogisticKadaneBetaGamma <- function(theta, xmin, xmax, alpha, beta, shape, rate)
 #' @export
 #' @example examples/Model-class-LogisticNormalMixture.R
 #'
-LogisticNormalMixture <- function(comp1,
-                                  comp2,
-                                  weightpar,
-                                  ref_dose) {
+LogisticNormalMixture <- function(comp1, comp2, weightpar, ref_dose) {
   assert_number(ref_dose)
 
   .LogisticNormalMixture(
@@ -974,7 +993,8 @@ LogisticNormalMixture <- function(comp1,
 #' @rdname LogisticNormalMixture-class
 #' @note Typically, end-users will not use the `.DefaultLogisticNormalMixture()` function.
 #' @export
-.DefaultLogisticNormalMixture <- function() { # nolint
+.DefaultLogisticNormalMixture <- function() {
+  # nolint
   LogisticNormalMixture(
     comp1 = ModelParamsNormal(
       mean = c(-0.85, 1),
@@ -1076,10 +1096,12 @@ LogisticNormalMixture <- function(comp1,
 #' @export
 #' @example examples/Model-class-LogisticNormalFixedMixture.R
 #'
-LogisticNormalFixedMixture <- function(components,
-                                       weights,
-                                       ref_dose,
-                                       log_normal = FALSE) {
+LogisticNormalFixedMixture <- function(
+  components,
+  weights,
+  ref_dose,
+  log_normal = FALSE
+) {
   assert_numeric(weights)
   assert_number(ref_dose)
   assert_flag(log_normal)
@@ -1116,7 +1138,10 @@ LogisticNormalFixedMixture <- function(components,
     modelspecs = function(from_prior) {
       ms <- list(
         weights = weights,
-        mean = do.call(cbind, lapply(components, h_slots, "mean", simplify = TRUE)),
+        mean = do.call(
+          cbind,
+          lapply(components, h_slots, "mean", simplify = TRUE)
+        ),
         prec = array(
           do.call(c, lapply(components, h_slots, "prec", simplify = TRUE)),
           dim = c(2, 2, length(components))
@@ -1141,7 +1166,8 @@ LogisticNormalFixedMixture <- function(components,
 #' @note Typically, end-users will not use the `.DefaultLogisticNormalFixedMixture()`
 #' function.
 #' @export
-.DefaultLogisticNormalFixedMixture <- function() { # nolint
+.DefaultLogisticNormalFixedMixture <- function() {
+  # nolint
   LogisticNormalFixedMixture(
     components = list(
       comp1 = ModelParamsNormal(
@@ -1214,10 +1240,7 @@ LogisticNormalFixedMixture <- function(components,
 #' @export
 #' @example examples/Model-class-LogisticLogNormalMixture.R
 #'
-LogisticLogNormalMixture <- function(mean,
-                                     cov,
-                                     ref_dose,
-                                     share_weight) {
+LogisticLogNormalMixture <- function(mean, cov, ref_dose, share_weight) {
   assert_number(ref_dose)
 
   params <- ModelParamsNormal(mean, cov)
@@ -1271,7 +1294,8 @@ LogisticLogNormalMixture <- function(mean,
 #' @rdname LogisticLogNormalMixture-class
 #' @note Typically, end users will not use the `.DefaultLogNormalMixture()` function.
 #' @export
-.DefaultLogisticLogNormalMixture <- function() { # nolint
+.DefaultLogisticLogNormalMixture <- function() {
+  # nolint
   LogisticLogNormalMixture(
     share_weight = 0.1,
     mean = c(-0.85, 1),
@@ -1389,12 +1413,14 @@ LogisticLogNormalMixture <- function(mean,
 #'
 #' @export
 #'
-DualEndpoint <- function(mean,
-                         cov,
-                         ref_dose = 1,
-                         use_log_dose = FALSE,
-                         sigma2W,
-                         rho) {
+DualEndpoint <- function(
+  mean,
+  cov,
+  ref_dose = 1,
+  use_log_dose = FALSE,
+  sigma2W,
+  rho
+) {
   assert_number(ref_dose)
   assert_numeric(sigma2W, min.len = 1, max.len = 2)
   assert_numeric(rho, min.len = 1, max.len = 2)
@@ -1409,7 +1435,11 @@ DualEndpoint <- function(mean,
     for (i in 1:nObs) {
       # The toxicity model.
       stand_dose_temp[i] <- x[i] / ref_dose
-      stand_dose[i] <- ifelse(use_log_dose, log(stand_dose_temp[i]), stand_dose_temp[i])
+      stand_dose[i] <- ifelse(
+        use_log_dose,
+        log(stand_dose_temp[i]),
+        stand_dose_temp[i]
+      )
       meanZ[i] <- betaZ[1] + betaZ[2] * stand_dose[i]
       z[i] ~ dnorm(meanZ[i], 1)
       y[i] ~ dinterval(z[i], 0)
@@ -1485,7 +1515,9 @@ DualEndpoint <- function(mean,
 #' @note Typically, end users will not use the `.DefaultDualEndpoint()` function.
 #' @export
 .DefaultDualEndpoint <- function() {
-  stop(paste0("Class DualEndpoint cannot be instantiated directly.  Please use one of its subclasses instead."))
+  stop(paste0(
+    "Class DualEndpoint cannot be instantiated directly.  Please use one of its subclasses instead."
+  ))
 }
 
 # DualEndpointRW ----
@@ -1569,9 +1601,7 @@ DualEndpoint <- function(mean,
 #' @export
 #' @example examples/Model-class-DualEndpointRW.R
 #'
-DualEndpointRW <- function(sigma2betaW,
-                           rw1 = TRUE,
-                           ...) {
+DualEndpointRW <- function(sigma2betaW, rw1 = TRUE, ...) {
   assert_numeric(sigma2betaW, min.len = 1, max.len = 2)
   assert_flag(rw1)
 
@@ -1596,7 +1626,8 @@ DualEndpointRW <- function(sigma2betaW,
       betaW[2] <- betaW[1] + delta[1]
       for (i in 3:nGrid) {
         # delta2: differences of the differences of betaW follow normal dist.
-        delta2[i - 2] ~ dnorm(0, 2 * precBetaW / (doseGrid[i] - doseGrid[i - 2]))
+        delta2[i - 2] ~
+          dnorm(0, 2 * precBetaW / (doseGrid[i] - doseGrid[i - 2]))
         delta[i - 1] <- delta[i - 2] + delta2[i - 2]
         betaW[i] <- betaW[i - 1] + delta[i - 1]
       }
@@ -1730,12 +1761,7 @@ DualEndpointRW <- function(sigma2betaW,
 #' @export
 #' @example examples/Model-class-DualEndpointBeta.R
 #'
-DualEndpointBeta <- function(E0,
-                             Emax,
-                             delta1,
-                             mode,
-                             ref_dose_beta = 1,
-                             ...) {
+DualEndpointBeta <- function(E0, Emax, delta1, mode, ref_dose_beta = 1, ...) {
   assert_numeric(E0, min.len = 1, max.len = 2)
   assert_numeric(Emax, min.len = 1, max.len = 2)
   assert_numeric(delta1, min.len = 1, max.len = 2)
@@ -1796,7 +1822,11 @@ DualEndpointBeta <- function(E0,
       betafun <- (1 + delta2 / delta1)^delta1 * (delta1 / delta2 + 1)^delta2
       for (i in 1:nGrid) {
         stand_dose_beta[i] <- doseGrid[i] / ref_dose_beta
-        betaW[i] <- E0 + (Emax - E0) * betafun * stand_dose_beta[i]^delta1 * (1 - stand_dose_beta[i])^delta2
+        betaW[i] <- E0 +
+          (Emax - E0) *
+            betafun *
+            stand_dose_beta[i]^delta1 *
+            (1 - stand_dose_beta[i])^delta2
       }
     }
   )
@@ -1909,11 +1939,7 @@ DualEndpointBeta <- function(E0,
 #' @export
 #' @example examples/Model-class-DualEndpointEmax.R
 #'
-DualEndpointEmax <- function(E0,
-                             Emax,
-                             ED50,
-                             ref_dose_emax = 1,
-                             ...) {
+DualEndpointEmax <- function(E0, Emax, ED50, ref_dose_emax = 1, ...) {
   assert_numeric(E0, min.len = 1, max.len = 2)
   assert_numeric(Emax, min.len = 1, max.len = 2)
   assert_numeric(ED50, min.len = 1, max.len = 2)
@@ -1960,7 +1986,8 @@ DualEndpointEmax <- function(E0,
     function() {
       for (i in 1:nGrid) {
         stand_dose_emax[i] <- doseGrid[i] / ref_dose_emax
-        betaW[i] <- E0 + (Emax - E0) * stand_dose_emax[i] / (ED50 + stand_dose_emax[i])
+        betaW[i] <- E0 +
+          (Emax - E0) * stand_dose_emax[i] / (ED50 + stand_dose_emax[i])
       }
     }
   )
@@ -2019,7 +2046,9 @@ DualEndpointEmax <- function(E0,
 #' @note Typically, end users will not use the `.DefaultModelPseudo()` function.
 #' @export
 .DefaultModelPseudo <- function() {
-  stop(paste0("Class ModelPseudo should not be instantiated directly.  Please use one of its subclasses instead."))
+  stop(paste0(
+    "Class ModelPseudo should not be instantiated directly.  Please use one of its subclasses instead."
+  ))
 }
 
 # ModelTox ----
@@ -2067,7 +2096,9 @@ DualEndpointEmax <- function(E0,
 #' @note Typically, end users will not use the `.DefaultModelTox()` function.
 #' @export
 .DefaultModelTox <- function() {
-  stop(paste0("Class ModelTox should not be instantiated directly.  Please use one of its subclasses instead."))
+  stop(paste0(
+    "Class ModelTox should not be instantiated directly.  Please use one of its subclasses instead."
+  ))
 }
 
 # ModelEff ----
@@ -2114,7 +2145,9 @@ DualEndpointEmax <- function(E0,
 #' @note Typically, end users will not use the `.DefaultModelEff()` function.
 #' @export
 .DefaultModelEff <- function() {
-  stop(paste0("Class ModelEff should not be instantiated directly.  Please use one of its subclasses instead."))
+  stop(paste0(
+    "Class ModelEff should not be instantiated directly.  Please use one of its subclasses instead."
+  ))
 }
 
 # LogisticIndepBeta ----
@@ -2235,10 +2268,7 @@ DualEndpointEmax <- function(E0,
 #' @export
 #' @example examples/Model-class-LogisticIndepBeta.R
 #'
-LogisticIndepBeta <- function(binDLE,
-                              DLEdose,
-                              DLEweights,
-                              data) {
+LogisticIndepBeta <- function(binDLE, DLEdose, DLEweights, data) {
   assert_numeric(binDLE)
   assert_numeric(DLEdose)
   assert_integerish(DLEweights, lower = 0, any.missing = FALSE)
@@ -2439,11 +2469,7 @@ LogisticIndepBeta <- function(binDLE,
 #' @export
 #' @example examples/Model-class-Effloglog.R
 #'
-Effloglog <- function(eff,
-                      eff_dose,
-                      nu,
-                      data,
-                      const = 0) {
+Effloglog <- function(eff, eff_dose, nu, data, const = 0) {
   assert_numeric(eff)
   assert_numeric(eff_dose, len = length(eff))
   assert_numeric(nu, min.len = 1, max.len = 2)
@@ -2469,7 +2495,8 @@ Effloglog <- function(eff,
   Pcov <- vcov(fit_eff)
 
   nobs_no_dlt <- length(eff_obsrv)
-  if (nobs_no_dlt > 0L) { # Observed data available.
+  if (nobs_no_dlt > 0L) {
+    # Observed data available.
     # Set X, Y to observed data only.
     X <- model.matrix(fit_eff)[-seq_along(eff), ]
     Y <- eff_obsrv
@@ -2482,7 +2509,8 @@ Effloglog <- function(eff,
     # given that (X^T * X) is invertible and X, Y, mu0, Q0, are specified in this else block.
     if (!use_fixed) {
       nu["a"] <- nu["a"] + (nobs_no_dlt) / 2
-      nu["b"] <- nu["b"] + (crossprod(Y) + t(mu0) %*% Q0 %*% mu0 - t(mu) %*% Q %*% mu) / 2
+      nu["b"] <- nu["b"] +
+        (crossprod(Y) + t(mu0) %*% Q0 %*% mu0 - t(mu) %*% Q %*% mu) / 2
     }
   }
 
@@ -2651,12 +2679,7 @@ Effloglog <- function(eff,
 #' @export
 #' @example examples/Model-class-EffFlexi.R
 #'
-EffFlexi <- function(eff,
-                     eff_dose,
-                     sigma2W,
-                     sigma2betaW,
-                     rw1 = TRUE,
-                     data) {
+EffFlexi <- function(eff, eff_dose, sigma2W, sigma2betaW, rw1 = TRUE, data) {
   assert_numeric(eff)
   assert_numeric(eff_dose)
   assert_numeric(sigma2W, min.len = 1, max.len = 2)
@@ -2677,10 +2700,12 @@ EffFlexi <- function(eff,
   # Set up the random walk penalty matrix and its rank.
   # D1: difference matrix of order 1.
   D1 <- cbind(0, diag(data@nGrid - 1)) - cbind(diag(data@nGrid - 1), 0)
-  if (rw1) { # the rank-deficient prior precision for the RW1 prior.
+  if (rw1) {
+    # the rank-deficient prior precision for the RW1 prior.
     RW <- crossprod(D1)
     RW_rank <- data@nGrid - 1L # rank = dimension - 1. # nolintr
-  } else { # Second-order difference.
+  } else {
+    # Second-order difference.
     D2 <- D1[-1, -1] %*% D1
     RW <- crossprod(D2)
     RW_rank <- data@nGrid - 2L # nolintr
@@ -2794,11 +2819,13 @@ EffFlexi <- function(eff,
 #' @export
 #' @example examples/Model-class-DALogisticLogNormal.R
 #'
-DALogisticLogNormal <- function(npiece = 3,
-                                l,
-                                c_par = 2,
-                                cond_pem = TRUE,
-                                ...) {
+DALogisticLogNormal <- function(
+  npiece = 3,
+  l,
+  c_par = 2,
+  cond_pem = TRUE,
+  ...
+) {
   assert_flag(cond_pem)
 
   start <- LogisticLogNormal(...)
@@ -2817,7 +2844,7 @@ DALogisticLogNormal <- function(npiece = 3,
       # when indx=1 -> not censored, i.e. u>=T or event=1;
       indx[i] <- 1 - step(Tmax - u[i] - eps) * (1 - y[i])
 
-      for  (j in 1:npiece) {
+      for (j in 1:npiece) {
         # When not censored, i.e DLT!=NA & t[i]=u[i];
         # if t[i]<h[j], d[i,j]=0;
         # if h[j]<t[i]=<h[j+1], d[i,j]=1
@@ -2837,7 +2864,9 @@ DALogisticLogNormal <- function(npiece = 3,
       }
 
       # The likelihood function.
-      L_obs[i] <- exp(sum(mu[i, ])) * pow(p[i] / A, y[i]) * pow(1 - p[i], 1 - y[i]) # Not censored. # nolintr
+      L_obs[i] <- exp(sum(mu[i, ])) *
+        pow(p[i] / A, y[i]) *
+        pow(1 - p[i], 1 - y[i]) # Not censored. # nolintr
       L_cnsr[i] <- 1 - p[i] * (1 - exp(-sum(mu_u[i, ]))) / A # Censored. # nolintr
       L[i] <- pow(L_obs[i], indx[i]) * pow(L_cnsr[i], 1 - indx[i])
 
@@ -2851,7 +2880,7 @@ DALogisticLogNormal <- function(npiece = 3,
     start@priormodel,
     function() {
       g_beta <- 1 / c_par
-      for  (j in 1:npiece) {
+      for (j in 1:npiece) {
         g_alpha[j] <- l[j] / c_par
         lambda[j] ~ dgamma(g_alpha[j], g_beta)
         mu_T[j] <- lambda[j] * (h[j + 1] - h[j]) # nolintr
@@ -2874,7 +2903,15 @@ DALogisticLogNormal <- function(npiece = 3,
       cond = as.integer(cond_pem)
     )
     if (!from_prior) {
-      ms <- c(list(ref_dose = start@ref_dose, zeros = rep(0, nObs), eps = 1e-10, cadj = 1e10), ms)
+      ms <- c(
+        list(
+          ref_dose = start@ref_dose,
+          zeros = rep(0, nObs),
+          eps = 1e-10,
+          cadj = 1e10
+        ),
+        ms
+      )
     }
     ms
   }
@@ -2913,7 +2950,11 @@ DALogisticLogNormal <- function(npiece = 3,
     cov = matrix(c(1, -0.5, -0.5, 1), nrow = 2),
     ref_dose = 56,
     npiece = npiece,
-    l = as.numeric(t(apply(as.matrix(c(1:npiece), 1, npiece), 2, lambda_prior))),
+    l = as.numeric(t(apply(
+      as.matrix(c(1:npiece), 1, npiece),
+      2,
+      lambda_prior
+    ))),
     c_par = 2
   )
 }
@@ -2959,9 +3000,13 @@ DALogisticLogNormal <- function(npiece = 3,
 #' @export
 #' @example examples/Model-class-TITELogisticLogNormal.R
 #'
-TITELogisticLogNormal <- function(weight_method = "linear",
-                                  ...) {
-  assert_character(weight_method, min.len = 1L, max.len = 2L, any.missing = FALSE)
+TITELogisticLogNormal <- function(weight_method = "linear", ...) {
+  assert_character(
+    weight_method,
+    min.len = 1L,
+    max.len = 2L,
+    any.missing = FALSE
+  )
 
   start <- LogisticLogNormal(...)
 
@@ -2999,7 +3044,8 @@ TITELogisticLogNormal <- function(weight_method = "linear",
               u_i / u_dlt[1]
             } else if (m < nDLT) {
               m + (u_i - u_dlt[m]) / (u_dlt[m + 1] - u_dlt[m])
-            } else { # m == nDLT. nolintr
+            } else {
+              # m == nDLT. nolintr
               m + (u_i - u_dlt[m]) / (Tmax + 0.00000001 - u_dlt[m])
             }
             w_i / (nDLT + 1)
@@ -3011,7 +3057,15 @@ TITELogisticLogNormal <- function(weight_method = "linear",
       w[y == 1] <- 1
       w[u == Tmax] <- 1
 
-      ms <- c(list(ref_dose = start@ref_dose, zeros = rep(0, nObs), cadj = 1e10, w = w), ms)
+      ms <- c(
+        list(
+          ref_dose = start@ref_dose,
+          zeros = rep(0, nObs),
+          cadj = 1e10,
+          w = w
+        ),
+        ms
+      )
     }
     ms
   }
@@ -3086,11 +3140,15 @@ TITELogisticLogNormal <- function(weight_method = "linear",
 #' @export
 #' @example examples/Model-class-OneParLogNormalPrior.R
 #'
-OneParLogNormalPrior <- function(skel_probs,
-                                 dose_grid,
-                                 sigma2) {
+OneParLogNormalPrior <- function(skel_probs, dose_grid, sigma2) {
   assert_probabilities(skel_probs, unique = TRUE, sorted = TRUE) # So that skel_fun_inv exists.
-  assert_numeric(dose_grid, len = length(skel_probs), any.missing = FALSE, unique = TRUE, sorted = TRUE)
+  assert_numeric(
+    dose_grid,
+    len = length(skel_probs),
+    any.missing = FALSE,
+    unique = TRUE,
+    sorted = TRUE
+  )
 
   skel_fun <- approxfun(x = dose_grid, y = skel_probs, rule = 2)
   skel_fun_inv <- approxfun(x = skel_probs, y = dose_grid, rule = 2)
@@ -3185,11 +3243,15 @@ OneParLogNormalPrior <- function(skel_probs,
 #' @export
 #' @example examples/Model-class-OneParExpPrior.R
 #'
-OneParExpPrior <- function(skel_probs,
-                           dose_grid,
-                           lambda) {
+OneParExpPrior <- function(skel_probs, dose_grid, lambda) {
   assert_probabilities(skel_probs, unique = TRUE, sorted = TRUE) # So that skel_fun_inv exists.
-  assert_numeric(dose_grid, len = length(skel_probs), any.missing = FALSE, unique = TRUE, sorted = TRUE)
+  assert_numeric(
+    dose_grid,
+    len = length(skel_probs),
+    any.missing = FALSE,
+    unique = TRUE,
+    sorted = TRUE
+  )
 
   skel_fun <- approxfun(x = dose_grid, y = skel_probs, rule = 2)
   skel_fun_inv <- approxfun(x = skel_probs, y = dose_grid, rule = 2)
@@ -3301,14 +3363,20 @@ FractionalCRM <- function(...) {
         s_tau <- tail(km$surv[km$time <= Tmax], 1) # Survival probability = S(Tmax).
         ifelse(
           u < Tmax & y == 0L, # Within the assessment window and so far no DLT.
-          yes = 1 - s_tau / sapply(u, function(u_i) tail(km$surv[km$time <= u_i], 1)),
+          yes = 1 -
+            s_tau / sapply(u, function(u_i) tail(km$surv[km$time <= u_i], 1)),
           no = y
         )
       } else {
         1L
       }
       ms <- c(
-        list(skel_probs = start@skel_probs, zeros = rep(0, nObs), cadj = 1e10, yhat = yhat),
+        list(
+          skel_probs = start@skel_probs,
+          zeros = rep(0, nObs),
+          cadj = 1e10,
+          yhat = yhat
+        ),
         ms
       )
     }
@@ -3400,7 +3468,10 @@ LogisticLogNormalOrdinal <- function(mean, cov, ref_dose) {
       ms
     },
     init = function() {
-      list(alpha = sapply(1:(length(mean) - 1), function(x) -(x + 1)), gamma = 1)
+      list(
+        alpha = sapply(1:(length(mean) - 1), function(x) -(x + 1)),
+        gamma = 1
+      )
     },
     datanames = c("nObs", "y", "x"),
     # Need to provide JAGS column names here

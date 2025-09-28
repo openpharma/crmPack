@@ -133,7 +133,12 @@ test_that("knit_print-RuleDesign works correctly", {
   # Custom label counts
   expect_equal(
     stringr::str_count(
-      knit_print(.DefaultRuleDesign(), asis = FALSE, label = "subject", tox_label = "DLAE"),
+      knit_print(
+        .DefaultRuleDesign(),
+        asis = FALSE,
+        label = "subject",
+        tox_label = "DLAE"
+      ),
       # Account for word boundaries
       c("DLAEs\\b", "DLAE\\b", "subjects\\b")
     ),
@@ -173,7 +178,12 @@ test_that("knit_print-Design works correctly", {
   expect_equal(actual, expected)
 
   # Custom label counts
-  x <- knit_print(.DefaultDesign(), asis = FALSE, label = "subject", tox_label = "DLAE")
+  x <- knit_print(
+    .DefaultDesign(),
+    asis = FALSE,
+    label = "subject",
+    tox_label = "DLAE"
+  )
   expected <- c(
     "toxicities" = 0,
     "toxicity" = 1,
@@ -225,7 +235,12 @@ test_that("knit_print-DualDesign works correctly", {
   expect_equal(actual, expected)
 
   # Custom label counts
-  x <- knit_print(.DefaultDualDesign(), asis = TRUE, label = "subject", tox_label = "DLAE")
+  x <- knit_print(
+    .DefaultDualDesign(),
+    asis = TRUE,
+    label = "subject",
+    tox_label = "DLAE"
+  )
   expected <- c(
     "toxicities" = 0,
     "toxicity" = 0,
@@ -280,7 +295,12 @@ test_that("knit_print-DADesign works correctly", {
   expect_equal(actual, expected)
 
   # Custom label counts
-  x <- knit_print(.DefaultDADesign(), asis = TRUE, label = "subject", tox_label = "DLAE")
+  x <- knit_print(
+    .DefaultDADesign(),
+    asis = TRUE,
+    label = "subject",
+    tox_label = "DLAE"
+  )
   expected <- c(
     "toxicities" = 0,
     "toxicity" = 1,
@@ -333,7 +353,12 @@ test_that("knit_print-DTDDesign works correctly", {
   expect_equal(actual, expected)
 
   # Custom label counts
-  x <- knit_print(.DefaultTDDesign(), asis = TRUE, label = "subject", tox_label = "toxicity")
+  x <- knit_print(
+    .DefaultTDDesign(),
+    asis = TRUE,
+    label = "subject",
+    tox_label = "toxicity"
+  )
   expected <- c(
     "toxicities" = 2,
     "toxicity" = 4,

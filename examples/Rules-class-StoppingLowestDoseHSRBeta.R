@@ -1,4 +1,3 @@
-
 # Stopping the study if the first dose is toxic with more than 90%
 # probability based on a Beta posterior distribution with Beta(1,1) prior.
 my_stopping <- StoppingLowestDoseHSRBeta(

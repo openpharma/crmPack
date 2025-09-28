@@ -59,13 +59,22 @@ design <- DualDesign(
 
 # define scenarios for the TRUE toxicity and efficacy profiles
 betaMod <- function(dose, e0, eMax, delta1, delta2, scal) {
-  maxDens <- (delta1^delta1) * (delta2^delta2) / ((delta1 + delta2)^(delta1 + delta2))
+  maxDens <- (delta1^delta1) *
+    (delta2^delta2) /
+    ((delta1 + delta2)^(delta1 + delta2))
   dose <- dose / scal
   e0 + eMax / maxDens * (dose^delta1) * (1 - dose)^delta2
 }
 
 trueBiomarker <- function(dose) {
-  betaMod(dose, e0 = 0.2, eMax = 0.6, delta1 = 5, delta2 = 5 * 0.5 / 0.5, scal = 100)
+  betaMod(
+    dose,
+    e0 = 0.2,
+    eMax = 0.6,
+    delta1 = 5,
+    delta2 = 5 * 0.5 / 0.5,
+    scal = 100
+  )
 }
 
 trueTox <- function(dose) {
@@ -81,7 +90,8 @@ curve(trueBiomarker(x), from = 0, to = 80)
 # We only generate 1 trial outcome here for illustration, for the actual study
 # this should be increased of course, similarly for the McmcOptions -
 # they also need to be increased.
-mySims <- simulate(design,
+mySims <- simulate(
+  design,
   trueTox = trueTox,
   trueBiomarker = trueBiomarker,
   sigma2W = 0.01,
@@ -90,12 +100,11 @@ mySims <- simulate(design,
   parallel = FALSE,
   seed = 3,
   startingDose = 6,
-  mcmcOptions =
-    McmcOptions(
-      burnin = 100,
-      step = 1,
-      samples = 300
-    )
+  mcmcOptions = McmcOptions(
+    burnin = 100,
+    step = 1,
+    samples = 300
+  )
 )
 
 # nolint end

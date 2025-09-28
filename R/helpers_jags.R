@@ -132,7 +132,10 @@ h_jags_get_data <- function(model, data, from_prior) {
   # 1) Extract variables from `data` as required by `modelspecs`.
   ms_args_names <- formalArgs(model@modelspecs)
   ms_args <- if ("from_prior" %in% ms_args_names) {
-    c(h_slots(data, setdiff(ms_args_names, "from_prior")), list(from_prior = from_prior))
+    c(
+      h_slots(data, setdiff(ms_args_names, "from_prior")),
+      list(from_prior = from_prior)
+    )
   } else {
     h_slots(data, ms_args_names)
   }
@@ -148,7 +151,10 @@ h_jags_get_data <- function(model, data, from_prior) {
 
   # Add dummy to ensure that e.g. `x` and `y` in `data` won't be treated as
   # scalars by `JAGS` if `data@nObs == 1`, which leads to failures.
-  add_where <- setdiff(datanames, c("nObs", "nGrid", "nObsshare", "yshare", "xshare", "Tmax"))
+  add_where <- setdiff(
+    datanames,
+    c("nObs", "nGrid", "nObsshare", "yshare", "xshare", "Tmax")
+  )
   data <- h_jags_add_dummy(data, where = add_where)
 
   data_model <- h_slots(data, datanames)
@@ -245,7 +251,7 @@ h_jags_write_model <- function(model, file = NULL, digits = 5) {
 h_jags_extract_samples <- function(x) {
   assert_class(x, "mcarray")
 
-  x <- x[, , 1L]
+  x <- x[,, 1L]
   # In case that there are multiple parameters in a node.
   if (is.matrix(x)) {
     x <- t(x)

@@ -1,11 +1,14 @@
-
 # Create the data.
 data <- Data(
   x = c(0.1, 0.1, 0.1),
   y = c(0, 0, 1),
   cohort = c(1, 1, 1),
   doseGrid = c(
-    0.1, 0.5, 1.5, 3, 6,
+    0.1,
+    0.5,
+    1.5,
+    3,
+    6,
     seq(from = 10, to = 80, by = 2)
   ),
   ID = 1:3
@@ -44,9 +47,12 @@ my_next_best <- NextBestNCRM(
 )
 
 # Calculate the next best dose.
-dose_recommendation <- nextBest(my_next_best,
+dose_recommendation <- nextBest(
+  my_next_best,
   doselimit = next_max_dose,
-  samples = samples, model = model, data = data
+  samples = samples,
+  model = model,
+  data = data
 )
 
 # Define the stopping rule such that the study would be stopped if first dose

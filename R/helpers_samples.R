@@ -19,6 +19,9 @@ h_convert_ordinal_samples <- function(obj, grade) {
   assert_class(obj, "Samples")
   assert_subset(c(paste0("alpha", 1:grade), "beta"), names(obj@data))
   # Execute
-  d <- list("alpha0" = obj@data[[paste0("alpha", grade)]], "alpha1" = obj@data$beta)
+  d <- list(
+    "alpha0" = obj@data[[paste0("alpha", grade)]],
+    "alpha1" = obj@data$beta
+  )
   Samples(data = d, options = obj@options)
 }

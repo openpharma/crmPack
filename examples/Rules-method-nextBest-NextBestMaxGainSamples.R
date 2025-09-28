@@ -1,4 +1,3 @@
-
 # Example of usage for `NextBestMaxGainSamples` NextBest class.
 
 # Create the data.

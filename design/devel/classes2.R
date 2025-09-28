@@ -15,14 +15,13 @@
   Class = "A",
   representation(x = "numeric"),
   prototype(x = 1),
-  validity =
-    function(object) {
-      msg <- NULL
-      if (length(object@x) != 1 || object@x <= 0) {
-        msg <- c(msg, "'x' must be length 1 and > 0")
-      }
-      if (is.null(msg)) TRUE else msg
+  validity = function(object) {
+    msg <- NULL
+    if (length(object@x) != 1 || object@x <= 0) {
+      msg <- c(msg, "'x' must be length 1 and > 0")
     }
+    if (is.null(msg)) TRUE else msg
+  }
 )
 
 validObject(.A())
@@ -37,14 +36,13 @@ A <- function(z, ...) {
   representation(y = "numeric"),
   prototype(y = 2),
   contains = "A",
-  validity =
-    function(object) {
-      msg <- NULL
-      if (length(object@y) != 1 || object@y <= 0) {
-        msg <- c(msg, "'y' must be length 1 and > 0")
-      }
-      if (is.null(msg)) TRUE else msg
+  validity = function(object) {
+    msg <- NULL
+    if (length(object@y) != 1 || object@y <= 0) {
+      msg <- c(msg, "'y' must be length 1 and > 0")
     }
+    if (is.null(msg)) TRUE else msg
+  }
 )
 
 validObject(.B())

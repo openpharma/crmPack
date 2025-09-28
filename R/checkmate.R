@@ -114,7 +114,12 @@ check_equal <- function(..., tol = sqrt(.Machine$double.eps)) {
 #' assert_equal(1:2, 1:2) # no error
 #' assert_equal(0.01, 0.02, tol = 0.05) # no error
 # nolint start
-assert_equal <- function(..., tol = sqrt(.Machine$double.eps), .var.name = vname(x), add = NULL) {
+assert_equal <- function(
+  ...,
+  tol = sqrt(.Machine$double.eps),
+  .var.name = vname(x),
+  add = NULL
+) {
   # assert_equal <- makeAssertionFunction(check_equal) fails with error "Error
   # in `checkmate::makeAssertion(..., res, .var.name, add)`: unused argument
   # (add)", possibly because of the use of ... in check_equal.
@@ -154,7 +159,13 @@ assert_equal <- function(..., tol = sqrt(.Machine$double.eps), .var.name = vname
 #' check_probabilities(x)
 #' check_probabilities(x, bounds_closed = FALSE)
 #' check_probabilities(x, bounds_closed = c(FALSE, TRUE))
-check_probabilities <- function(x, bounds_closed = TRUE, len = NULL, unique = FALSE, sorted = FALSE) {
+check_probabilities <- function(
+  x,
+  bounds_closed = TRUE,
+  len = NULL,
+  unique = FALSE,
+  sorted = FALSE
+) {
   assert_numeric(x)
   assert_logical(bounds_closed, min.len = 1, max.len = 2, any.missing = FALSE)
   assert_number(len, null.ok = TRUE)
@@ -162,11 +173,19 @@ check_probabilities <- function(x, bounds_closed = TRUE, len = NULL, unique = FA
 
   result <- check_numeric(
     x,
-    finite = TRUE, any.missing = FALSE, len = len, unique = unique, sorted = sorted
+    finite = TRUE,
+    any.missing = FALSE,
+    len = len,
+    unique = unique,
+    sorted = sorted
   )
 
   if (isTRUE(result)) {
-    in_bounds <- all(h_in_range(x, range = c(0L, 1L), bounds_closed = bounds_closed))
+    in_bounds <- all(h_in_range(
+      x,
+      range = c(0L, 1L),
+      bounds_closed = bounds_closed
+    ))
     if (!in_bounds) {
       result <- paste(
         "Probability must be within",
@@ -259,7 +278,12 @@ expect_probability <- makeExpectationFunction(check_probability)
 #' check_probability_range(x, bounds_closed = FALSE)
 #' check_probability_range(x, bounds_closed = c(FALSE, TRUE))
 check_probability_range <- function(x, bounds_closed = TRUE) {
-  check_probabilities(x = x, bounds_closed = bounds_closed, len = 2, sorted = TRUE)
+  check_probabilities(
+    x = x,
+    bounds_closed = bounds_closed,
+    len = 2,
+    sorted = TRUE
+  )
 }
 
 #' @rdname check_probability_range
@@ -360,7 +384,13 @@ test_length <- makeTestFunction(check_length)
 #' check_range(c(1, 1))
 #' check_range(c(1, 1), unique = FALSE)
 #' check_range(1:3)
-check_range <- function(x, lower = -Inf, upper = Inf, finite = FALSE, unique = TRUE) {
+check_range <- function(
+  x,
+  lower = -Inf,
+  upper = Inf,
+  finite = FALSE,
+  unique = TRUE
+) {
   assert_number(lower)
   assert_number(upper)
   assert_flag(finite)
