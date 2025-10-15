@@ -2,8 +2,7 @@
 % Please edit documentation in R/fromQuantiles.R
 \name{Quantiles2LogisticNormal}
 \alias{Quantiles2LogisticNormal}
-\title{Convert prior quantiles (lower, median, upper) to logistic (log)
-normal model}
+\title{Convert Prior Quantiles to Logistic (Log) Normal Model}
 \usage{
 Quantiles2LogisticNormal(
   dosegrid,
@@ -23,48 +22,48 @@ Quantiles2LogisticNormal(
 )
 }
 \arguments{
-\item{dosegrid}{the dose grid}
+\item{dosegrid}{(\code{numeric})\cr the dose grid.}
 
-\item{refDose}{the reference dose}
+\item{refDose}{(\code{number})\cr the reference dose.}
 
-\item{lower}{the lower quantiles}
+\item{lower}{(\code{numeric})\cr the lower quantiles.}
 
-\item{median}{the medians}
+\item{median}{(\code{numeric})\cr the medians.}
 
-\item{upper}{the upper quantiles}
+\item{upper}{(\code{numeric})\cr the upper quantiles.}
 
-\item{level}{the credible level of the (lower, upper) intervals (default:
-0.95)}
+\item{level}{(\code{number})\cr the credible level of the (lower, upper) intervals.
+Default is 0.95.}
 
-\item{logNormal}{use the log-normal prior? (not default) otherwise, the
-normal prior for the logistic regression coefficients is used}
+\item{logNormal}{(\code{flag})\cr use the log-normal prior? If \code{FALSE} (default),
+the normal prior for the logistic regression coefficients is used.}
 
-\item{parstart}{starting values for the parameters. By default, these
-are determined from the medians supplied.}
+\item{parstart}{(\code{numeric} or \code{NULL})\cr starting values for the parameters.
+By default, these are determined from the medians supplied.}
 
-\item{parlower}{lower bounds on the parameters (intercept alpha and the
-slope beta, the corresponding standard deviations and the correlation.)}
+\item{parlower}{(\code{numeric})\cr lower bounds on the parameters (intercept alpha
+and the slope beta, the corresponding standard deviations and the correlation).}
 
-\item{parupper}{upper bounds on the parameters}
+\item{parupper}{(\code{numeric})\cr upper bounds on the parameters.}
 
-\item{seed}{seed for random number generation}
+\item{seed}{(\code{count})\cr seed for random number generation.}
 
-\item{verbose}{be verbose? (default)}
+\item{verbose}{(\code{flag})\cr should the function be verbose?}
 
-\item{control}{additional options for the optimisation routine, see
-\code{\link[GenSA]{GenSA}} for more details}
+\item{control}{(\code{list})\cr additional options for the optimisation routine,
+see \code{\link[GenSA:GenSA]{GenSA::GenSA()}} for more details.}
 }
 \value{
-a list with the best approximating \code{model}
-(\code{\linkS4class{LogisticNormal}} or
-\code{\linkS4class{LogisticLogNormal}}), the resulting \code{quantiles}, the
-\code{required} quantiles and the \code{distance} to the required quantiles,
+A list with the best approximating \code{model}
+(\code{\link{LogisticNormal}} or \code{\link{LogisticLogNormal}}), the resulting \code{quantiles},
+the \code{required} quantiles and the \code{distance} to the required quantiles,
 as well as the final \code{parameters} (which could be used for running the
-algorithm a second time)
+algorithm a second time).
 }
 \description{
+\ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#stable}{\figure{lifecycle-stable.svg}{options: alt='[Stable]'}}}{\strong{[Stable]}}
+
 This function uses generalized simulated annealing to optimize
-a \code{\linkS4class{LogisticNormal}} model to be as close as possible
+a \code{\link{LogisticNormal}} model to be as close as possible
 to the given prior quantiles.
 }
-\keyword{programming}
