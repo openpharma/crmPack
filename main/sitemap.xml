@@ -191,6 +191,7 @@
 <url><loc>https://openpharma.github.io/crmPack/reference/h_format_number.html</loc></url>
 <url><loc>https://openpharma.github.io/crmPack/reference/h_get_formatted_dosegrid.html</loc></url>
 <url><loc>https://openpharma.github.io/crmPack/reference/h_get_min_inf_beta.html</loc></url>
+<url><loc>https://openpharma.github.io/crmPack/reference/h_get_quantiles_start_values.html</loc></url>
 <url><loc>https://openpharma.github.io/crmPack/reference/h_group_data.html</loc></url>
 <url><loc>https://openpharma.github.io/crmPack/reference/h_in_range.html</loc></url>
 <url><loc>https://openpharma.github.io/crmPack/reference/h_info_theory_dist.html</loc></url>
@@ -220,6 +221,7 @@
 <url><loc>https://openpharma.github.io/crmPack/reference/h_plot_data_df.html</loc></url>
 <url><loc>https://openpharma.github.io/crmPack/reference/h_prepare_labels.html</loc></url>
 <url><loc>https://openpharma.github.io/crmPack/reference/h_prepare_units.html</loc></url>
+<url><loc>https://openpharma.github.io/crmPack/reference/h_quantiles_target_function.html</loc></url>
 <url><loc>https://openpharma.github.io/crmPack/reference/h_rapply.html</loc></url>
 <url><loc>https://openpharma.github.io/crmPack/reference/h_simulations_output_format.html</loc></url>
 <url><loc>https://openpharma.github.io/crmPack/reference/h_slots.html</loc></url>
