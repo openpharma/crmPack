@@ -2,7 +2,7 @@
 % Please edit documentation in R/fromQuantiles.R
 \name{MinimalInformative}
 \alias{MinimalInformative}
-\title{Construct a minimally informative prior}
+\title{Construct a Minimally Informative Prior}
 \usage{
 MinimalInformative(
   dosegrid,
@@ -15,35 +15,35 @@ MinimalInformative(
 )
 }
 \arguments{
-\item{dosegrid}{the dose grid}
+\item{dosegrid}{(\code{numeric})\cr the dose grid.}
 
-\item{refDose}{the reference dose}
+\item{refDose}{(\code{number})\cr the reference dose.}
 
-\item{threshmin}{Any toxicity probability above this threshold would
-be very unlikely (see \code{probmin}) at the minimum dose (default: 0.2)}
+\item{threshmin}{(\code{number})\cr any toxicity probability above this threshold
+would be very unlikely (see \code{probmin}) at the minimum dose.}
 
-\item{threshmax}{Any toxicity probability below this threshold would
-be very unlikely (see \code{probmax}) at the maximum dose (default: 0.3)}
+\item{threshmax}{(\code{number})\cr any toxicity probability below this threshold
+would be very unlikely (see \code{probmax}) at the maximum dose.}
 
-\item{probmin}{the prior probability of exceeding \code{threshmin} at the
-minimum dose (default: 0.05)}
+\item{probmin}{(\code{number})\cr the prior probability of exceeding \code{threshmin}
+at the minimum dose.}
 
-\item{probmax}{the prior probability of being below \code{threshmax} at the
-maximum dose (default: 0.05)}
+\item{probmax}{(\code{number})\cr the prior probability of being below \code{threshmax}
+at the maximum dose.}
 
-\item{\dots}{additional arguments for computations, see
-\code{\link{Quantiles2LogisticNormal}}, e.g. \code{refDose} and
+\item{...}{additional arguments for computations, see
+\code{\link[=Quantiles2LogisticNormal]{Quantiles2LogisticNormal()}}, e.g. \code{refDose} and
 \code{logNormal=TRUE} to obtain a minimal informative log normal prior.}
 }
 \value{
-see \code{\link{Quantiles2LogisticNormal}}
+See \code{\link[=Quantiles2LogisticNormal]{Quantiles2LogisticNormal()}}.
 }
 \description{
+\ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#stable}{\figure{lifecycle-stable.svg}{options: alt='[Stable]'}}}{\strong{[Stable]}}
+
 This function constructs a minimally informative prior, which is captured in
-a \code{\linkS4class{LogisticNormal}} (or
-\code{\linkS4class{LogisticLogNormal}}) object.
-}
-\details{
+a \code{\link{LogisticNormal}} (or \code{\link{LogisticLogNormal}}) object.
+
 Based on the proposal by Neuenschwander et al (2008, Statistics in
 Medicine), a minimally informative prior distribution is constructed. The
 required key input is the minimum (\eqn{d_{1}} in the notation of the
@@ -59,9 +59,9 @@ controlled with the arguments \code{probmin} and \code{probmax}, respectively.
 Subsequently, for all doses supplied in the
 \code{dosegrid} argument, beta distributions are set up from the assumption
 that the prior medians are linear in log-dose on the logit scale, and
-\code{\link{Quantiles2LogisticNormal}} is used to transform the resulting
-quantiles into an approximating \code{\linkS4class{LogisticNormal}} (or
-\code{\linkS4class{LogisticLogNormal}}) model. Note that the reference dose
+\code{\link[=Quantiles2LogisticNormal]{Quantiles2LogisticNormal()}} is used to transform the resulting
+quantiles into an approximating \code{\link{LogisticNormal}} (or
+\code{\link{LogisticLogNormal}}) model. Note that the reference dose
 is not required for these computations.
 }
 \examples{
@@ -94,4 +94,3 @@ legend("right",
        bty="n")
 }
 }
-\keyword{programming}
