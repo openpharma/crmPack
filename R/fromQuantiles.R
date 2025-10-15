@@ -26,8 +26,10 @@ h_get_quantiles_start_values <- function(
     startAlphaBeta <- coef(lm(I(logit(median)) ~ I(log(dosegrid / refDose))))
 
     c(
-      meanAlpha = startAlphaBeta[1],
-      meanBeta = if (logNormal) log(startAlphaBeta[2]) else startAlphaBeta[2],
+      meanAlpha = unname(startAlphaBeta[1]),
+      meanBeta = unname(
+        if (logNormal) log(startAlphaBeta[2]) else startAlphaBeta[2]
+      ),
       sdAlpha = 1,
       sdBeta = 1,
       correlation = 0
