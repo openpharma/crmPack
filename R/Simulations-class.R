@@ -770,39 +770,39 @@ PseudoDualFlexiSimulations <- function(sigma2_beta_w_est, ...) {
 #' @slot target_end_of_trial (`numeric`)\cr the target probability of DLE wanted at the end of a trial
 #' @slot target_dose_end_of_trial (`numeric`)\cr the dose level corresponds to the target probability
 #'   of DLE wanted at the end of a trial, TDEOT
-#' @slot target_dose_end_of_trial_at_dose_grid (`numeric`)\cr the dose level at dose grid corresponds to the target probability
-#'   of DLE wanted at the end of a trial
+#' @slot target_dose_end_of_trial_at_dose_grid (`numeric`)\cr the dose level at dose grid corresponds to the
+#'   target probability of DLE wanted at the end of a trial
 #' @slot target_during_trial (`numeric`)\cr the target probability of DLE wanted during a trial
 #' @slot target_dose_during_trial (`numeric`)\cr the dose level corresponds to the target probability of DLE
 #'   wanted during the trial. TDDT
-#' @slot target_dose_during_trial_at_dose_grid (`numeric`)\cr the dose level at dose grid corresponds to the target probability
-#'   of DLE wanted during a trial
-#' @slot tdeot_summary (`table`)\cr the six-number table summary, include the lowest, the 25th percentile (lower quartile),
-#'   the 50th percentile (median), the mean, the 75th percentile and the highest values of the
+#' @slot target_dose_during_trial_at_dose_grid (`numeric`)\cr the dose level at dose grid corresponds to the
+#'   target probability of DLE wanted during a trial
+#' @slot tdeot_summary (`table`)\cr the six-number table summary, include the lowest, the 25th percentile
+#'   (lower quartile), the 50th percentile (median), the mean, the 75th percentile and the highest values of the
 #'   final dose levels obtained corresponds to the target probability of DLE
 #'   want at the end of a trial across all simulations
-#' @slot tddt_summary (`table`)\cr the six-number table summary, include the lowest, the 25th percentile (lower quartile),
-#'   the 50th percentile (median), the mean, the 75th percentile and the highest values of the
+#' @slot tddt_summary (`table`)\cr the six-number table summary, include the lowest, the 25th percentile
+#'   (lower quartile), the 50th percentile (median), the mean, the 75th percentile and the highest values of the
 #'   final dose levels obtained corresponds to the target probability of DLE
 #'   want during a trial across all simulations
-#' @slot final_dose_rec_summary (`table`)\cr the six-number table summary, include the lowest, the 25th percentile (lower quartile),
-#'   the 50th percentile (median), the mean, the 75th percentile and the highest values of the
+#' @slot final_dose_rec_summary (`table`)\cr the six-number table summary, include the lowest, the 25th percentile
+#'   (lower quartile), the 50th percentile (median), the mean, the 75th percentile and the highest values of the
 #'   final optimal doses, which is either the TDEOT when only DLE response are incorporated into
 #'   the escalation procedure or the minimum of the TDEOT and Gstar when DLE and efficacy responses are
 #'   incorporated, across all simulations
-#' @slot ratio_tdeot_summary (`table`)\cr the six-number summary table of the final ratios of the upper to the lower 95%
-#'   credibility intervals of the final TDEOTs across all simulations
-#' @slot final_ratio_summary (`table`)\cr the six-number summary table of the final ratios of the upper to the lower 95%
-#'   credibility intervals of the final optimal doses across all simulations
+#' @slot ratio_tdeot_summary (`table`)\cr the six-number summary table of the final ratios of the upper to the
+#'   lower 95% credibility intervals of the final TDEOTs across all simulations
+#' @slot final_ratio_summary (`table`)\cr the six-number summary table of the final ratios of the upper to the
+#'   lower 95% credibility intervals of the final optimal doses across all simulations
 #' @slot nsim (`integer`)\cr number of simulations
 #' @slot prop_dle (`numeric`)\cr proportions of DLE in the trials
 #' @slot mean_tox_risk (`numeric`)\cr mean toxicity risks for the patients
 #' @slot dose_selected (`numeric`)\cr doses selected as MTD (target_dose_end_of_trial)
 #' @slot tox_at_doses_selected (`numeric`)\cr true toxicity at doses selected
-#' @slot prop_at_target_end_of_trial (`numeric`)\cr Proportion of trials selecting at the dose_grid closest below the MTD, the
-#'   target_dose_end_of_trial
-#' @slot prop_at_target_during_trial (`numeric`)\cr Proportion of trials selecting at the dose_grid closest below the
-#'   target_dose_during_trial
+#' @slot prop_at_target_end_of_trial (`numeric`)\cr Proportion of trials selecting at the dose_grid closest below the
+#'   MTD, the target_dose_end_of_trial
+#' @slot prop_at_target_during_trial (`numeric`)\cr Proportion of trials selecting at the dose_grid closest below
+#'   the target_dose_during_trial
 #' @slot dose_most_selected (`numeric`)\cr dose most often selected as MTD
 #' @slot obs_tox_rate_at_dose_most_selected (`numeric`)\cr observed toxicity rate at dose most often
 #'   selected
@@ -964,7 +964,7 @@ DASimulations <- function(trial_duration, ...) {
 .DefaultDASimulations <- function() {
   design <- .DefaultDADesign()
   myTruth <- probFunction(design@model, alpha0 = 2, alpha1 = 3)
-  exp_cond.cdf <- function(x, onset = 15) {
+  exp_cond_cdf <- function(x, onset = 15) {
     a <- stats::pexp(28, 1 / onset, lower.tail = FALSE)
     1 - (stats::pexp(x, 1 / onset, lower.tail = FALSE) - a) / (1 - a)
   }
@@ -973,7 +973,7 @@ DASimulations <- function(trial_duration, ...) {
     design,
     args = NULL,
     truthTox = myTruth,
-    truthSurv = exp_cond.cdf,
+    truthSurv = exp_cond_cdf,
     trueTmax = 80,
     nsim = 2,
     seed = 819,
