@@ -2830,10 +2830,10 @@ setMethod(
         ## true biomarker, average estimated expected efficacy, and 95% (lower, upper)
         ## estimated biomarker stacked below each other
         dat <- data.frame(
-          dose = rep(x@doseGrid, 4L),
-          group = rep(1:4, each = length(x@doseGrid)),
+          dose = rep(x@dose_grid, 4L),
+          group = rep(1:4, each = length(x@dose_grid)),
           linetype = factor(
-            rep(linetype[c(1, 2, 3, 3)], each = length(x@doseGrid)),
+            rep(linetype[c(1, 2, 3, 3)], each = length(x@dose_grid)),
             levels = linetype
           ),
           lines = unlist(x@mean_eff_fit)
@@ -2880,10 +2880,10 @@ setMethod(
         ## create the data frame, with
         ## true biomarker, average estimated expected efficacy
         dat <- data.frame(
-          dose = rep(x@doseGrid, 2L),
-          group = rep(1:2, each = length(x@doseGrid)),
+          dose = rep(x@dose_grid, 2L),
+          group = rep(1:2, each = length(x@dose_grid)),
           linetype = factor(
-            rep(linetype[c(1, 2)], each = length(x@doseGrid)),
+            rep(linetype[c(1, 2)], each = length(x@dose_grid)),
             levels = linetype
           ),
           lines = unlist(x@mean_eff_fit)
