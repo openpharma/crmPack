@@ -586,3 +586,246 @@ test_that("PseudoDualFlexiSimulations user constructor argument names", {
     ordered = TRUE
   )
 })
+
+# PseudoSimulationsSummary-class ----
+
+test_that("PseudoSimulationsSummary generator function works as expected", {
+  result <- expect_silent(.PseudoSimulationsSummary())
+  expect_valid(result, "PseudoSimulationsSummary")
+})
+
+test_that("PseudoSimulationsSummary object can be created with the generator", {
+  targetEndOfTrial <- 0.3
+  targetDoseEndOfTrial <- 25
+  targetDoseEndOfTrialAtDoseGrid <- 20
+  targetDuringTrial <- 0.25
+  targetDoseDuringTrial <- 20
+  targetDoseDuringTrialAtDoseGrid <- 18
+  TDEOTSummary <- table(c(1, 2, 3))
+  TDDTSummary <- table(c(1, 2, 3))
+  FinalDoseRecSummary <- table(c(1, 2, 3))
+  ratioTDEOTSummary <- table(c(1, 2, 3))
+  FinalRatioSummary <- table(c(1, 2, 3))
+  nsim <- 100L
+  propDLE <- c(0.1, 0.2, 0.3)
+  meanToxRisk <- c(0.15, 0.25, 0.35)
+  doseSelected <- c(10, 15, 20)
+  toxAtDosesSelected <- c(0.1, 0.15, 0.2)
+  propAtTargetEndOfTrial <- 0.4
+  propAtTargetDuringTrial <- 0.35
+  doseMostSelected <- 15
+  obsToxRateAtDoseMostSelected <- 0.18
+  nObs <- 150L
+  nAboveTargetEndOfTrial <- 20L
+  nAboveTargetDuringTrial <- 15L
+  doseGrid <- c(5, 10, 15, 20, 25, 30)
+  fitAtDoseMostSelected <- 0.16
+  meanFit <- list(c(0.1, 0.15, 0.2))
+  stop_report <- matrix(c(TRUE, FALSE, TRUE), nrow = 3)
+
+  result <- expect_silent(
+    .PseudoSimulationsSummary(
+      targetEndOfTrial = targetEndOfTrial,
+      targetDoseEndOfTrial = targetDoseEndOfTrial,
+      targetDoseEndOfTrialAtDoseGrid = targetDoseEndOfTrialAtDoseGrid,
+      targetDuringTrial = targetDuringTrial,
+      targetDoseDuringTrial = targetDoseDuringTrial,
+      targetDoseDuringTrialAtDoseGrid = targetDoseDuringTrialAtDoseGrid,
+      TDEOTSummary = TDEOTSummary,
+      TDDTSummary = TDDTSummary,
+      FinalDoseRecSummary = FinalDoseRecSummary,
+      ratioTDEOTSummary = ratioTDEOTSummary,
+      FinalRatioSummary = FinalRatioSummary,
+      nsim = nsim,
+      propDLE = propDLE,
+      meanToxRisk = meanToxRisk,
+      doseSelected = doseSelected,
+      toxAtDosesSelected = toxAtDosesSelected,
+      propAtTargetEndOfTrial = propAtTargetEndOfTrial,
+      propAtTargetDuringTrial = propAtTargetDuringTrial,
+      doseMostSelected = doseMostSelected,
+      obsToxRateAtDoseMostSelected = obsToxRateAtDoseMostSelected,
+      nObs = nObs,
+      nAboveTargetEndOfTrial = nAboveTargetEndOfTrial,
+      nAboveTargetDuringTrial = nAboveTargetDuringTrial,
+      doseGrid = doseGrid,
+      fitAtDoseMostSelected = fitAtDoseMostSelected,
+      meanFit = meanFit,
+      stop_report = stop_report
+    )
+  )
+
+  expect_valid(result, "PseudoSimulationsSummary")
+  expect_identical(result@targetEndOfTrial, targetEndOfTrial)
+  expect_identical(result@targetDoseEndOfTrial, targetDoseEndOfTrial)
+  expect_identical(result@nsim, nsim)
+  expect_identical(result@propDLE, propDLE)
+  expect_identical(result@meanToxRisk, meanToxRisk)
+})
+
+test_that("PseudoSimulationsSummary cannot be instantiated directly", {
+  expect_error(
+    .DefaultPseudoSimulationsSummary(),
+    "Class PseudoSimulationsSummary cannot be instantiated directly",
+    fixed = FALSE
+  )
+})
+
+# PseudoDualSimulationsSummary-class ----
+
+test_that("PseudoDualSimulationsSummary generator function works as expected", {
+  result <- expect_silent(.PseudoDualSimulationsSummary())
+  expect_valid(result, "PseudoDualSimulationsSummary")
+})
+
+test_that("PseudoDualSimulationsSummary object can be created with the generator", {
+  targetGstar <- 22
+  targetGstarAtDoseGrid <- 20
+  GstarSummary <- table(c(1, 2, 3))
+  ratioGstarSummary <- table(c(1, 2, 3))
+  EffFitAtDoseMostSelected <- 0.8
+  meanEffFit <- list(c(0.6, 0.7, 0.8))
+
+  # Inherit from parent class
+  targetEndOfTrial <- 0.3
+  targetDoseEndOfTrial <- 25
+  nsim <- 100L
+  propDLE <- c(0.1, 0.2, 0.3)
+  meanToxRisk <- c(0.15, 0.25, 0.35)
+  doseSelected <- c(10, 15, 20)
+  stop_report <- matrix(c(TRUE, FALSE, TRUE), nrow = 3)
+
+  result <- expect_silent(
+    .PseudoDualSimulationsSummary(
+      targetGstar = targetGstar,
+      targetGstarAtDoseGrid = targetGstarAtDoseGrid,
+      GstarSummary = GstarSummary,
+      ratioGstarSummary = ratioGstarSummary,
+      EffFitAtDoseMostSelected = EffFitAtDoseMostSelected,
+      meanEffFit = meanEffFit,
+      targetEndOfTrial = targetEndOfTrial,
+      targetDoseEndOfTrial = targetDoseEndOfTrial,
+      nsim = nsim,
+      propDLE = propDLE,
+      meanToxRisk = meanToxRisk,
+      doseSelected = doseSelected,
+      stop_report = stop_report
+    )
+  )
+
+  expect_valid(result, "PseudoDualSimulationsSummary")
+  expect_identical(result@targetGstar, targetGstar)
+  expect_identical(result@targetGstarAtDoseGrid, targetGstarAtDoseGrid)
+  expect_identical(result@GstarSummary, GstarSummary)
+  expect_identical(result@EffFitAtDoseMostSelected, EffFitAtDoseMostSelected)
+  expect_identical(result@meanEffFit, meanEffFit)
+  expect_identical(result@targetEndOfTrial, targetEndOfTrial)
+})
+
+test_that("PseudoDualSimulationsSummary cannot be instantiated directly", {
+  expect_error(
+    .DefaultPseudoDualSimulationsSummary(),
+    "Class PseudoDualSimulationsSummary cannot be instantiated directly",
+    fixed = FALSE
+  )
+})
+
+# DASimulations-class ----
+
+test_that("DASimulations generator function works as expected", {
+  result <- expect_silent(.DASimulations())
+  expect_valid(result, "DASimulations")
+})
+
+test_that("DASimulations object can be created with the user constructor", {
+  fit <- list(
+    c(0.1, 0.2),
+    c(0.3, 0.4)
+  )
+  stop_reasons <- list("A", "B")
+  stop_report <- matrix(c(TRUE, FALSE), nrow = 2)
+  additional_stats <- list(a = 1, b = 1)
+
+  data <- list(
+    Data(
+      x = 1:2,
+      y = 0:1,
+      doseGrid = 1:2,
+      ID = 1L:2L,
+      cohort = 1L:2L
+    ),
+    Data(
+      x = 3:4,
+      y = 0:1,
+      doseGrid = 3:4,
+      ID = 1L:2L,
+      cohort = 1L:2L
+    )
+  )
+
+  # trialduration must have same length as data
+  trialduration <- c(120, 150)
+
+  doses <- c(1, 2)
+  seed <- as.integer(123)
+
+  result <- expect_silent(
+    DASimulations(
+      trialduration = trialduration,
+      fit = fit,
+      stop_reasons = stop_reasons,
+      stop_report = stop_report,
+      additional_stats = additional_stats,
+      data = data,
+      doses = doses,
+      seed = seed
+    )
+  )
+
+  expect_valid(result, "DASimulations")
+  expect_identical(result@trialduration, trialduration)
+  expect_identical(result@fit, fit)
+  expect_identical(result@stop_reasons, stop_reasons)
+})
+
+test_that("DASimulations user constructor argument names are as expected", {
+  expect_function(
+    DASimulations,
+    args = c("trialduration", "..."),
+    ordered = TRUE
+  )
+})
+
+test_that("DASimulations default constructor works as expected", {
+  result <- expect_silent(.DefaultDASimulations())
+  expect_valid(result, "DASimulations")
+})
+
+# tidy-Simulations ----
+
+test_that("tidy method works for Simulations objects", {
+  sim <- .DefaultSimulations()
+  result <- expect_silent(tidy(sim))
+
+  expect_true(is.list(result))
+  expect_true("tbl_Simulations" %in% class(result))
+
+  expected_slots <- c("fit", "stop_report", "data", "doses", "seed")
+  expect_true(all(expected_slots %in% names(result)))
+
+  expect_false("stop_reasons" %in% names(result))
+  expect_false("additional_stats" %in% names(result))
+
+  expect_identical(length(result$fit), 1L)
+  expect_identical(result$doses$doses, sim@doses)
+  expect_identical(result$seed$seed, sim@seed)
+})
+
+test_that("tidy method works for empty/minimal Simulations objects", {
+  sim <- .Simulations()
+  result <- expect_silent(tidy(sim))
+
+  expect_true(is.list(result))
+  expect_true("tbl_Simulations" %in% class(result))
+  expect_true(length(result) > 0)
+})
