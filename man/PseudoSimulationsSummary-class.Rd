@@ -25,38 +25,38 @@ initialization function is provided for this class.
 \item{\code{target_dose_end_of_trial}}{(\code{numeric})\cr the dose level corresponds to the target probability
 of DLE wanted at the end of a trial, TDEOT}
 
-\item{\code{target_dose_end_of_trial_at_dose_grid}}{(\code{numeric})\cr the dose level at dose grid corresponds to the target probability
-of DLE wanted at the end of a trial}
+\item{\code{target_dose_end_of_trial_at_dose_grid}}{(\code{numeric})\cr the dose level at dose grid corresponds to the
+target probability of DLE wanted at the end of a trial}
 
 \item{\code{target_during_trial}}{(\code{numeric})\cr the target probability of DLE wanted during a trial}
 
 \item{\code{target_dose_during_trial}}{(\code{numeric})\cr the dose level corresponds to the target probability of DLE
 wanted during the trial. TDDT}
 
-\item{\code{target_dose_during_trial_at_dose_grid}}{(\code{numeric})\cr the dose level at dose grid corresponds to the target probability
-of DLE wanted during a trial}
+\item{\code{target_dose_during_trial_at_dose_grid}}{(\code{numeric})\cr the dose level at dose grid corresponds to the
+target probability of DLE wanted during a trial}
 
-\item{\code{tdeot_summary}}{(\code{table})\cr the six-number table summary, include the lowest, the 25th percentile (lower quartile),
-the 50th percentile (median), the mean, the 75th percentile and the highest values of the
+\item{\code{tdeot_summary}}{(\code{table})\cr the six-number table summary, include the lowest, the 25th percentile
+(lower quartile), the 50th percentile (median), the mean, the 75th percentile and the highest values of the
 final dose levels obtained corresponds to the target probability of DLE
 want at the end of a trial across all simulations}
 
-\item{\code{tddt_summary}}{(\code{table})\cr the six-number table summary, include the lowest, the 25th percentile (lower quartile),
-the 50th percentile (median), the mean, the 75th percentile and the highest values of the
+\item{\code{tddt_summary}}{(\code{table})\cr the six-number table summary, include the lowest, the 25th percentile
+(lower quartile), the 50th percentile (median), the mean, the 75th percentile and the highest values of the
 final dose levels obtained corresponds to the target probability of DLE
 want during a trial across all simulations}
 
-\item{\code{final_dose_rec_summary}}{(\code{table})\cr the six-number table summary, include the lowest, the 25th percentile (lower quartile),
-the 50th percentile (median), the mean, the 75th percentile and the highest values of the
+\item{\code{final_dose_rec_summary}}{(\code{table})\cr the six-number table summary, include the lowest, the 25th percentile
+(lower quartile), the 50th percentile (median), the mean, the 75th percentile and the highest values of the
 final optimal doses, which is either the TDEOT when only DLE response are incorporated into
 the escalation procedure or the minimum of the TDEOT and Gstar when DLE and efficacy responses are
 incorporated, across all simulations}
 
-\item{\code{ratio_tdeot_summary}}{(\code{table})\cr the six-number summary table of the final ratios of the upper to the lower 95\%
-credibility intervals of the final TDEOTs across all simulations}
+\item{\code{ratio_tdeot_summary}}{(\code{table})\cr the six-number summary table of the final ratios of the upper to the
+lower 95\% credibility intervals of the final TDEOTs across all simulations}
 
-\item{\code{final_ratio_summary}}{(\code{table})\cr the six-number summary table of the final ratios of the upper to the lower 95\%
-credibility intervals of the final optimal doses across all simulations}
+\item{\code{final_ratio_summary}}{(\code{table})\cr the six-number summary table of the final ratios of the upper to the
+lower 95\% credibility intervals of the final optimal doses across all simulations}
 
 \item{\code{nsim}}{(\code{integer})\cr number of simulations}
 
@@ -68,11 +68,11 @@ credibility intervals of the final optimal doses across all simulations}
 
 \item{\code{tox_at_doses_selected}}{(\code{numeric})\cr true toxicity at doses selected}
 
-\item{\code{prop_at_target_end_of_trial}}{(\code{numeric})\cr Proportion of trials selecting at the dose_grid closest below the MTD, the
-target_dose_end_of_trial}
+\item{\code{prop_at_target_end_of_trial}}{(\code{numeric})\cr Proportion of trials selecting at the dose_grid closest below the
+MTD, the target_dose_end_of_trial}
 
-\item{\code{prop_at_target_during_trial}}{(\code{numeric})\cr Proportion of trials selecting at the dose_grid closest below the
-target_dose_during_trial}
+\item{\code{prop_at_target_during_trial}}{(\code{numeric})\cr Proportion of trials selecting at the dose_grid closest below
+the target_dose_during_trial}
 
 \item{\code{dose_most_selected}}{(\code{numeric})\cr dose most often selected as MTD}
 
