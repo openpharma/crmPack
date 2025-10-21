@@ -755,146 +755,153 @@ PseudoDualFlexiSimulations <- function(sigma2_beta_w_est, ...) {
   )
 }
 
-# nolint start
-## -------------------------------------------------------------------------------------------------------
-## ================================================================================================
+# PseudoSimulationsSummary ----
 
-##' Class for the summary of pseudo-models simulations output
-##'
-##' Note that objects should not be created by users, therefore no
-##' initialization function is provided for this class.
-##'
-##' @slot targetEndOfTrial the target probability of DLE wanted at the end of a trial
-##' @slot targetDoseEndOfTrial the dose level corresponds to the target probability
-##' of DLE wanted at the end of a trial, TDEOT
-##' @slot targetDoseEndOfTrialAtDoseGrid the dose level at dose grid corresponds to the target probability
-##' of DLE wanted at the end of a trial
-##' @slot targetDuringTrial the target probability of DLE wanted during a trial
-##' @slot targetDoseDuringTrial the dose level corresponds to the target probability of DLE
-##' wanted during the trial. TDDT
-##' @slot targetDoseDuringTrialAtDoseGrid the dose level at dose grid corresponds to the target probability
-##' of DLE wanted during a trial
-##' @slot TDEOTSummary the six-number table summary, include the lowest, the 25th precentile (lower quartile),
-##' the 50th percentile (median), the mean, the 27th percentile and the highest values of the
-##' final dose levels obtained corresponds to the target probability of DLE
-##' want at the end of a trial across all simulations
-##' @slot TDDTSummary the six-number table summary, include the lowest, the 25th precentile (lower quartile),
-##' the 50th percentile (median), the mean, the 27th percentile and the highest values of the
-##' final dose levels obtained corresponds to the target probability of DLE
-##' want during a trial across all simulations
-##' @slot FinalDoseRecSummary the six-number table summary, include the lowest, the 25th precentile (lower quartile),
-##' the 50th percentile (median), the mean, the 27th percentile and the highest values of the
-##' final optimal doses, which is either the TDEOT when only DLE response are incorporated into
-##' the escalation procedure or the minimum of the TDEOT and Gstar when DLE and efficacy responses are
-##' incorporated, across all simulations
-##' @slot ratioTDEOTSummary the six-number summary table of the final ratios of the upper to the lower 95%
-##' credibility intervals of the final TDEOTs across all simulations
-##' @slot FinalRatioSummary the six-number summary table of the final ratios of the upper to the lower 95%
-##' credibility intervals of the final optimal doses across all simulations
-##' #@slot doseRec the dose level that will be recommend for subsequent study
-##' @slot nsim number of simulations
-##' @slot propDLE proportions of DLE in the trials
-##' @slot meanToxRisk mean toxicity risks for the patients
-##' @slot doseSelected doses selected as MTD (targetDoseEndOfTrial)
-##' @slot toxAtDosesSelected true toxicity at doses selected
-##' @slot propAtTargetEndOfTrial Proportion of trials selecting at the doseGrid closest below the MTD, the
-##' targetDoseEndOfTrial
-##' @slot propAtTargetDuringTrial Proportion of trials selecting at the doseGrid closest below the
-##' targetDoseDuringTrial
-##' @slot doseMostSelected dose most often selected as MTD
-##' @slot obsToxRateAtDoseMostSelected observed toxicity rate at dose most often
-##' selected
-##' @slot nObs number of patients overall
-##' @slot nAboveTargetEndOfTrial number of patients treated above targetDoseEndOfTrial
-##' @slot nAboveTargetDuringTrial number of patients treated above targetDoseDuringTrial
-##' @slot doseGrid the dose grid that has been used
-##' @slot fitAtDoseMostSelected fitted toxicity rate at dose most often selected
-##' @slot meanFit list with the average, lower (2.5%) and upper (97.5%)
-##' quantiles of the mean fitted toxicity at each dose level
-##' @slot stop_report matrix of stopping rule outcomes
-##'
-##' @export
-##' @keywords classes
+## class ----
+
+#' `PseudoSimulationsSummary`
+#'
+#' @description `r lifecycle::badge("stable")`
+#'
+#' This class captures the summary of pseudo-models simulations output.
+#' Note that objects should not be created by users, therefore no
+#' initialization function is provided for this class.
+#'
+#' @slot target_end_of_trial (`numeric`)\cr the target probability of DLE wanted at the end of a trial
+#' @slot target_dose_end_of_trial (`numeric`)\cr the dose level corresponds to the target probability
+#'   of DLE wanted at the end of a trial, TDEOT
+#' @slot target_dose_end_of_trial_at_dose_grid (`numeric`)\cr the dose level at dose grid corresponds to the
+#'   target probability of DLE wanted at the end of a trial
+#' @slot target_during_trial (`numeric`)\cr the target probability of DLE wanted during a trial
+#' @slot target_dose_during_trial (`numeric`)\cr the dose level corresponds to the target probability of DLE
+#'   wanted during the trial. TDDT
+#' @slot target_dose_during_trial_at_dose_grid (`numeric`)\cr the dose level at dose grid corresponds to the
+#'   target probability of DLE wanted during a trial
+#' @slot tdeot_summary (`table`)\cr the six-number table summary, include the lowest, the 25th percentile
+#'   (lower quartile), the 50th percentile (median), the mean, the 75th percentile and the highest values of the
+#'   final dose levels obtained corresponds to the target probability of DLE
+#'   want at the end of a trial across all simulations
+#' @slot tddt_summary (`table`)\cr the six-number table summary, include the lowest, the 25th percentile
+#'   (lower quartile), the 50th percentile (median), the mean, the 75th percentile and the highest values of the
+#'   final dose levels obtained corresponds to the target probability of DLE
+#'   want during a trial across all simulations
+#' @slot final_dose_rec_summary (`table`)\cr the six-number table summary, include the lowest, the 25th percentile
+#'   (lower quartile), the 50th percentile (median), the mean, the 75th percentile and the highest values of the
+#'   final optimal doses, which is either the TDEOT when only DLE response are incorporated into
+#'   the escalation procedure or the minimum of the TDEOT and Gstar when DLE and efficacy responses are
+#'   incorporated, across all simulations
+#' @slot ratio_tdeot_summary (`table`)\cr the six-number summary table of the final ratios of the upper to the
+#'   lower 95% credibility intervals of the final TDEOTs across all simulations
+#' @slot final_ratio_summary (`table`)\cr the six-number summary table of the final ratios of the upper to the
+#'   lower 95% credibility intervals of the final optimal doses across all simulations
+#' @slot nsim (`integer`)\cr number of simulations
+#' @slot prop_dle (`numeric`)\cr proportions of DLE in the trials
+#' @slot mean_tox_risk (`numeric`)\cr mean toxicity risks for the patients
+#' @slot dose_selected (`numeric`)\cr doses selected as MTD (target_dose_end_of_trial)
+#' @slot tox_at_doses_selected (`numeric`)\cr true toxicity at doses selected
+#' @slot prop_at_target_end_of_trial (`numeric`)\cr Proportion of trials selecting at the dose_grid closest below the
+#'   MTD, the target_dose_end_of_trial
+#' @slot prop_at_target_during_trial (`numeric`)\cr Proportion of trials selecting at the dose_grid closest below
+#'   the target_dose_during_trial
+#' @slot dose_most_selected (`numeric`)\cr dose most often selected as MTD
+#' @slot obs_tox_rate_at_dose_most_selected (`numeric`)\cr observed toxicity rate at dose most often
+#'   selected
+#' @slot n_obs (`integer`)\cr number of patients overall
+#' @slot n_above_target_end_of_trial (`integer`)\cr number of patients treated above target_dose_end_of_trial
+#' @slot n_above_target_during_trial (`integer`)\cr number of patients treated above target_dose_during_trial
+#' @slot dose_grid (`numeric`)\cr the dose grid that has been used
+#' @slot fit_at_dose_most_selected (`numeric`)\cr fitted toxicity rate at dose most often selected
+#' @slot mean_fit (`list`)\cr list with the average, lower (2.5%) and upper (97.5%)
+#'   quantiles of the mean fitted toxicity at each dose level
+#' @slot stop_report (`matrix`)\cr matrix of stopping rule outcomes
+#'
+#' @aliases PseudoSimulationsSummary
+#' @export
 .PseudoSimulationsSummary <-
   setClass(
     Class = "PseudoSimulationsSummary",
-    representation(
-      targetEndOfTrial = "numeric",
-      targetDoseEndOfTrial = "numeric",
-      targetDoseEndOfTrialAtDoseGrid = "numeric",
-      targetDuringTrial = "numeric",
-      targetDoseDuringTrial = "numeric",
-      targetDoseDuringTrialAtDoseGrid = "numeric",
-      TDEOTSummary = "table",
-      TDDTSummary = "table",
-      FinalDoseRecSummary = "table",
-      ratioTDEOTSummary = "table",
-      FinalRatioSummary = "table",
-      # doseRec="numeric",
+    slots = c(
+      target_end_of_trial = "numeric",
+      target_dose_end_of_trial = "numeric",
+      target_dose_end_of_trial_at_dose_grid = "numeric",
+      target_during_trial = "numeric",
+      target_dose_during_trial = "numeric",
+      target_dose_during_trial_at_dose_grid = "numeric",
+      tdeot_summary = "table",
+      tddt_summary = "table",
+      final_dose_rec_summary = "table",
+      ratio_tdeot_summary = "table",
+      final_ratio_summary = "table",
       nsim = "integer",
-      propDLE = "numeric",
-      meanToxRisk = "numeric",
-      doseSelected = "numeric",
-      toxAtDosesSelected = "numeric",
-      propAtTargetEndOfTrial = "numeric",
-      propAtTargetDuringTrial = "numeric",
-      doseMostSelected = "numeric",
-      obsToxRateAtDoseMostSelected = "numeric",
-      nObs = "integer",
-      nAboveTargetEndOfTrial = "integer",
-      nAboveTargetDuringTrial = "integer",
-      doseGrid = "numeric",
-      fitAtDoseMostSelected = "numeric",
-      meanFit = "list",
+      prop_dle = "numeric",
+      mean_tox_risk = "numeric",
+      dose_selected = "numeric",
+      tox_at_doses_selected = "numeric",
+      prop_at_target_end_of_trial = "numeric",
+      prop_at_target_during_trial = "numeric",
+      dose_most_selected = "numeric",
+      obs_tox_rate_at_dose_most_selected = "numeric",
+      n_obs = "integer",
+      n_above_target_end_of_trial = "integer",
+      n_above_target_during_trial = "integer",
+      dose_grid = "numeric",
+      fit_at_dose_most_selected = "numeric",
+      mean_fit = "list",
       stop_report = "matrix"
     )
   )
 
 ## default constructor ----
 
-#' @rdname GeneralSimulationsSummary-class
+#' @rdname PseudoSimulationsSummary-class
 #' @note Typically, end users will not use the `.DefaultPseudoSimulationsSummary()` function.
 #' @export
 .DefaultPseudoSimulationsSummary <- function() {
-  stop(paste0(
-    "Class PseudoSimulationsSummary cannot be instantiated directly.  Please use one of its subclasses instead."
-  ))
+  stop(
+    "Class PseudoSimulationsSummary cannot be instantiated directly. Please use one of its subclasses instead."
+  )
 }
 
-## ---------------------------------------------------------------------------------------------
-##' Class for the summary of the dual responses simulations using pseudo models
-##'
-##' It contains all slots from \code{\linkS4class{PseudoSimulationsSummary}} object. In addition to
-##' the slots in the parent class \code{\linkS4class{PseudoSimulationsSummary}}, it contains four
-##' more slots for the efficacy model fit information.
-##'
-##' Note that objects should not be created by users, therefore no initialization function
-##' is provided for this class.
-##'
-##' @slot targetGstar the target dose level such that its gain value is at maximum
-##' @slot targetGstarAtDoseGrid the dose level at dose Grid closest and below Gstar
-##' @slot GstarSummary the six-number table summary (lowest, 25th, 50th (median), 75th percentile, mean
-##' and highest value) of the final Gstar values obtained across all simulations
-##' @slot ratioGstarSummary the six-number summary table of the ratios of the upper to the lower 95%
-##' credibility intervals of the final Gstar across all simulations
-##' @slot EffFitAtDoseMostSelected fitted expected mean efficacy value at dose most often
-##' selected
-##' @slot meanEffFit list with mean, lower (2.5%) and upper (97.5%) quantiles of the fitted expected
-##' efficacy value at each dose level.
-##'
-##' @export
-##' @keywords class
+# PseudoDualSimulationsSummary ----
+
+## class ----
+
+#' `PseudoDualSimulationsSummary`
+#'
+#' @description `r lifecycle::badge("stable")`
+#'
+#' This class captures the summary of the dual responses simulations using pseudo models.
+#' It contains all slots from [`PseudoSimulationsSummary`] object. In addition to
+#' the slots in the parent class [`PseudoSimulationsSummary`], it contains additional
+#' slots for the efficacy model fit information.
+#'
+#' Note that objects should not be created by users, therefore no initialization function
+#' is provided for this class.
+#'
+#' @slot target_gstar (`numeric`)\cr the target dose level such that its gain value is at maximum
+#' @slot target_gstar_at_dose_grid (`numeric`)\cr the dose level at dose Grid closest and below Gstar
+#' @slot gstar_summary (`table`)\cr the six-number table summary (lowest, 25th, 50th (median), 75th percentile, mean
+#'   and highest value) of the final Gstar values obtained across all simulations
+#' @slot ratio_gstar_summary (`table`)\cr the six-number summary table of the ratios of the upper to the lower 95%
+#'   credibility intervals of the final Gstar across all simulations
+#' @slot eff_fit_at_dose_most_selected (`numeric`)\cr fitted expected mean efficacy value at dose most often
+#'   selected
+#' @slot mean_eff_fit (`list`)\cr list with mean, lower (2.5%) and upper (97.5%) quantiles of the fitted expected
+#'   efficacy value at each dose level.
+#'
+#' @aliases PseudoDualSimulationsSummary
+#' @export
 .PseudoDualSimulationsSummary <-
   setClass(
     Class = "PseudoDualSimulationsSummary",
     contains = "PseudoSimulationsSummary",
-    representation = representation(
-      targetGstar = "numeric",
-      targetGstarAtDoseGrid = "numeric",
-      GstarSummary = "table",
-      ratioGstarSummary = "table",
-      EffFitAtDoseMostSelected = "numeric",
-      meanEffFit = "list"
+    slots = c(
+      target_gstar = "numeric",
+      target_gstar_at_dose_grid = "numeric",
+      gstar_summary = "table",
+      ratio_gstar_summary = "table",
+      eff_fit_at_dose_most_selected = "numeric",
+      mean_eff_fit = "list"
     )
   )
 
@@ -904,59 +911,60 @@ PseudoDualFlexiSimulations <- function(sigma2_beta_w_est, ...) {
 #' @note Typically, end users will not use the `.DefaultPseudoDualSimulationsSummary()` function.
 #' @export
 .DefaultPseudoDualSimulationsSummary <- function() {
-  stop(paste0(
-    "Class PseudoDualSimulationsSummary cannot be instantiated directly.  Please use one of its subclasses instead."
-  ))
+  stop(
+    "Class PseudoDualSimulationsSummary cannot be instantiated directly. Please use one of its subclasses instead."
+  )
 }
 
-## ---------------------------------------------------------------------------------------------
+# DASimulations ----
 
-##' Class for the simulations output from DA based designs
-##'
-##' This class captures the trial simulations from DA based
-##' designs. In comparison to the parent class \code{\linkS4class{Simulations}},
-##' it contains additional slots to capture the time to DLT fits, additional
-##' parameters and the trial duration.
-##'
-##' @slot trialduration the vector of trial duration values for all simulations.
-##'
-##' @export
-##' @keywords classes
+## class ----
+
+#' `DASimulations`
+#'
+#' @description `r lifecycle::badge("stable")`
+#'
+#' This class captures the trial simulations from DA based designs.
+#' In comparison to the parent class [`Simulations`],
+#' it contains additional slots to capture the time to DLT fits, additional
+#' parameters and the trial duration.
+#'
+#' @slot trial_duration (`numeric`)\cr the vector of trial duration values for all simulations.
+#'
+#' @aliases DASimulations
+#' @export
 .DASimulations <-
   setClass(
     Class = "DASimulations",
-    representation(trialduration = "numeric"),
-    prototype(trialduration = rep(0, 2)),
+    slots = c(trial_duration = "numeric"),
+    prototype = prototype(trial_duration = rep(0, 2)),
     contains = "Simulations",
     validity = v_da_simulations
   )
-validObject(.DASimulations())
 
+## constructor ----
 
-##' Initialization function for `DASimulations`
-##'
-##' @param trialduration see \code{\linkS4class{DASimulations}}
-##' @param \dots additional parameters from \code{\link{Simulations}}
-##' @return the \code{\linkS4class{DASimulations}} object
-##'
-##' @export
-##' @keywords methods
-DASimulations <- function(trialduration, ...) {
+#' @rdname DASimulations-class
+#'
+#' @param trial_duration (`numeric`)\cr see [`DASimulations`]
+#' @param \dots additional parameters from [`Simulations`]
+#'
+#' @export
+DASimulations <- function(trial_duration, ...) {
   start <- Simulations(...)
-  .DASimulations(start, trialduration = trialduration)
+  .DASimulations(start, trial_duration = trial_duration)
 }
 
 
 ## default constructor ----
 
 #' @rdname DASimulations-class
-#' @note Typically, end users will not use the `.DASimulations()` function.  This
-#' function has a noticeable execution time.
+#' @note Typically, end users will not use the `.DefaultDASimulations()` function.
 #' @export
 .DefaultDASimulations <- function() {
   design <- .DefaultDADesign()
   myTruth <- probFunction(design@model, alpha0 = 2, alpha1 = 3)
-  exp_cond.cdf <- function(x, onset = 15) {
+  exp_cond_cdf <- function(x, onset = 15) {
     a <- stats::pexp(28, 1 / onset, lower.tail = FALSE)
     1 - (stats::pexp(x, 1 / onset, lower.tail = FALSE) - a) / (1 - a)
   }
@@ -965,7 +973,7 @@ DASimulations <- function(trialduration, ...) {
     design,
     args = NULL,
     truthTox = myTruth,
-    truthSurv = exp_cond.cdf,
+    truthSurv = exp_cond_cdf,
     trueTmax = 80,
     nsim = 2,
     seed = 819,
@@ -975,7 +983,6 @@ DASimulations <- function(trialduration, ...) {
     parallel = FALSE
   )
 }
-# nolint end
 
 # tidy
 

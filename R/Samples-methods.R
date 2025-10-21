@@ -132,7 +132,7 @@ setMethod(
     )
 
     ## add the attributes
-    ret <- structure(
+    structure(
       ret,
       nChains = 1L,
       nParameters = nPars,
@@ -142,7 +142,6 @@ setMethod(
       description = elements,
       parallel = FALSE
     )
-    return(ret)
   }
 )
 
@@ -237,15 +236,12 @@ setMethod(
     quantCurve <- apply(probSamples, 2L, quantile, prob = quantiles)
 
     ## now create the data frame
-    ret <- data.frame(
+    data.frame(
       dose = points,
       middle = middleCurve,
       lower = quantCurve[1, ],
       upper = quantCurve[2, ]
     )
-
-    ## return it
-    return(ret)
   }
 )
 
@@ -312,7 +308,7 @@ setMethod(
     )
 
     ## return both, pasted together
-    return(cbind(start, biomResults))
+    cbind(start, biomResults)
   }
 )
 
@@ -487,9 +483,7 @@ setMethod(
         ) +
         theme_light()
     }
-
-    ## return the results
-    return(rv)
+    rv
   }
 )
 
@@ -583,7 +577,7 @@ setMethod(
         y = ylab,
       )
 
-    ret <- ret +
+    ret +
       scale_linetype_manual(
         breaks = c(
           "Estimate",
@@ -592,8 +586,6 @@ setMethod(
         values = c(1, 2),
         guide = ifelse(showLegend, "legend", "none")
       )
-
-    return(ret)
   }
 )
 
@@ -711,8 +703,7 @@ setMethod(
       )
 
     ## arrange both plots side by side
-    ret <- gridExtra::arrangeGrob(plot1, plot2, ncol = 2)
-    return(ret)
+    gridExtra::arrangeGrob(plot1, plot2, ncol = 2)
   }
 )
 
@@ -768,15 +759,12 @@ setMethod(
     quantCurve <- apply(probSamples, 2L, quantile, prob = quantiles)
 
     ## now create the data frame
-    ret <- data.frame(
+    data.frame(
       dose = points,
       middle = middleCurve,
       lower = quantCurve[1, ],
       upper = quantCurve[2, ]
     )
-
-    ## return it
-    return(ret)
   }
 )
 
@@ -832,15 +820,12 @@ setMethod(
     quantCurve <- apply(ExpEffSamples, 2L, quantile, prob = quantiles)
 
     ## now create the data frame
-    ret <- data.frame(
+    data.frame(
       dose = points,
       middle = middleCurve,
       lower = quantCurve[1, ],
       upper = quantCurve[2, ]
     )
-
-    ## return it
-    return(ret)
   }
 )
 ## ==========================================================================================
@@ -896,15 +881,12 @@ setMethod(
     quantCurve <- apply(ExpEffSamples, 2L, quantile, prob = quantiles)
 
     ## now create the data frame
-    ret <- data.frame(
+    data.frame(
       dose = points,
       middle = middleCurve,
       lower = quantCurve[1, ],
       upper = quantCurve[2, ]
     )
-
-    ## return it
-    return(ret)
   }
 )
 
@@ -955,15 +937,12 @@ setMethod(
     quantCurve <- apply(probSamples, 2L, quantile, prob = quantiles)
 
     # Create the data frame...
-    ret <- data.frame(
+    data.frame(
       dose = points,
       middle = middleCurve,
       lower = quantCurve[1, ],
       upper = quantCurve[2, ]
     )
-
-    # ...and return it
-    return(ret)
   }
 )
 ## ==============================================================
@@ -1055,15 +1034,12 @@ setMethod(
     quantCurve <- apply(GainSamples, 2L, quantile, prob = quantiles)
 
     ## now create the data frame
-    ret <- data.frame(
+    data.frame(
       dose = points,
       middle = middleCurve,
       lower = quantCurve[1, ],
       upper = quantCurve[2, ]
     )
-
-    ## return it
-    return(ret)
   }
 )
 ## ---------------------------------------------------------------------------------
@@ -1155,7 +1131,7 @@ setMethod(
         y = ylab
       )
 
-    ret <- ret +
+    ret +
       scale_linetype_manual(
         breaks = c(
           "Estimate",
@@ -1164,8 +1140,6 @@ setMethod(
         values = c(1, 2),
         guide = ifelse(showLegend, "legend", "none")
       )
-
-    return(ret)
   }
 )
 
@@ -1260,7 +1234,7 @@ setMethod(
       ) +
       coord_cartesian(xlim = c(0, max(data@doseGrid)))
 
-    ret <- ret +
+    ret +
       scale_linetype_manual(
         breaks = c(
           "Estimate",
@@ -1269,8 +1243,6 @@ setMethod(
         values = c(1, 2),
         guide = ifelse(showLegend, "legend", "none")
       )
-
-    return(ret)
   }
 )
 
@@ -1344,7 +1316,7 @@ setMethod(
       )
     )
 
-    plot1 <- gdata %>%
+    gdata %>%
       ggplot() +
       geom_line(
         aes(
@@ -1366,7 +1338,6 @@ setMethod(
         values = c(1, 2),
         guide = ifelse(showLegend, "legend", "none")
       )
-    return(plot1)
   }
 )
 
@@ -1431,16 +1402,14 @@ setMethod(
     )
 
     ## Get efficacy plot
-    plot2 <- ggplot(data = ggdata, aes(x = x, y = y), group = group) +
+    plot2 <- ggplot(data = ggdata, aes(x = x, y = y, group = group)) +
       xlab("Dose Levels") +
       ylab(paste("Estimated Expected Efficacy")) +
       xlim(c(0, max(x@doseGrid))) +
       geom_line(colour = I("blue"), linewidth = 1.5)
 
-    plot2 <- plot2 +
+    plot2 +
       geom_line(linewidth = 1.5, colour = "blue")
-
-    return(plot2)
   }
 )
 
@@ -1533,7 +1502,7 @@ setMethod(
       )
     )
 
-    plot1 <- ggplot(data = gdata, aes(x = x, y = y)) +
+    ggplot(data = gdata, aes(x = x, y = y)) +
       geom_line(aes(group = group, color = group), linewidth = 1.5) +
       scale_colour_manual(
         name = "curves",
@@ -1543,7 +1512,6 @@ setMethod(
       xlim(c(0, max(data@doseGrid))) +
       ylab(paste("Values")) +
       ylim(c(min(gdata$y), max(gdata$y)))
-    return(plot1)
   }
 )
 
@@ -1739,7 +1707,7 @@ setMethod(
         Text = "Max Gain"
       )
 
-    plot1 <- plot1 +
+    plot1 +
       geom_point(
         data = point_data,
         inherit.aes = FALSE,
@@ -1769,7 +1737,6 @@ setMethod(
         xlim = c(0, max(data@doseGrid)),
         ylim = c(min(gdata$y), max(gdata$y))
       )
-    return(plot1)
   }
 )
 ## ==========================================================================================
@@ -1974,8 +1941,7 @@ setMethod(
       )
 
     ## arrange both plots side by side
-    ret <- gridExtra::arrangeGrob(ret1, plot2, ncol = 2)
-    return(ret)
+    gridExtra::arrangeGrob(ret1, plot2, ncol = 2)
   }
 )
 
@@ -2029,7 +1995,7 @@ setMethod(
       )
     )
 
-    plot1 <- ggplot(data = gdata, aes(x = x, y = y), group = group) +
+    plot1 <- ggplot(data = gdata, aes(x = x, y = y, group = group)) +
       xlab("Dose Levels") +
       ylab(paste("Probability of DLE")) +
       ylim(c(0, 1)) +
@@ -2065,9 +2031,9 @@ setMethod(
     )
 
     ## Get efficacy plot
-    plot2 <- ggplot(data = ggdata, aes(x = x, y = y), group = group) +
+    plot2 <- ggplot(data = ggdata, aes(x = x, y = y, group = group)) +
       xlab("Dose Levels") +
-      ylab(paste("Estimatimated Expected Efficacy")) +
+      ylab(paste("Estimated Expected Efficacy")) +
       xlim(c(0, max(data@doseGrid))) +
       geom_line(colour = I("blue"), linewidth = 1.5)
 
@@ -2075,8 +2041,7 @@ setMethod(
       geom_line(linewidth = 1.5, colour = "blue")
 
     ## arrange both plots side by side
-    ret <- gridExtra::arrangeGrob(plot1, plot2, ncol = 2)
-    return(ret)
+    gridExtra::arrangeGrob(plot1, plot2, ncol = 2)
   }
 )
 ## =======================================================================================================
@@ -2155,7 +2120,7 @@ DLTLikelihood <- function(lambda, Tmax) {
     for (j in 1:npiece) {
       ret <- ret * exp(-lambda[j] * s_ij(t, j))
     }
-    return(ret)
+    ret
   }
 
   # CDF of the piecewise exponential
@@ -2173,7 +2138,7 @@ DLTLikelihood <- function(lambda, Tmax) {
     pDLT[i] <- DLTFreeS(h[i]) - DLTFreeS(h[i + 1])
   }
 
-  return(pDLT)
+  pDLT
 }
 
 ## --------------------------------------------------------------------
@@ -2218,8 +2183,7 @@ setMethod(
     # The PEM
     if (hazard == FALSE) {
       PEMSamples <- t(apply(object@data$lambda, 1, function(x) {
-        fit <- DLTLikelihood(x, data@Tmax)
-        return(fit)
+        DLTLikelihood(x, data@Tmax)
       }))
     } else if (hazard == TRUE) {
       for (i in seq_along(points)) {
@@ -2238,15 +2202,12 @@ setMethod(
     quantCurve <- apply(PEMSamples, 2L, quantile, prob = quantiles)
 
     ## now create the data frame
-    ret <- data.frame(
+    data.frame(
       time = points,
       middle = middleCurve,
       lower = quantCurve[1, ],
       upper = quantCurve[2, ]
     )
-
-    ## return it
-    return(ret)
   }
 )
 
@@ -2339,8 +2300,7 @@ setMethod(
         ylim = if (hazard) range(plotData$y) else c(0, 100)
       )
 
-    ret <- gridExtra::arrangeGrob(plot1, plot2, ncol = 2)
-    return(ret)
+    gridExtra::arrangeGrob(plot1, plot2, ncol = 2)
   }
 )
 

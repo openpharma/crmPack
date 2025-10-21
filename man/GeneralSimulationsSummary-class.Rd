@@ -6,12 +6,9 @@
 \alias{.GeneralSimulationsSummary}
 \alias{GeneralSimulationsSummary}
 \alias{.DefaultGeneralSimulationsSummary}
-\alias{.DefaultPseudoSimulationsSummary}
 \title{\code{GeneralSimulationsSummary}}
 \usage{
 .DefaultGeneralSimulationsSummary()
-
-.DefaultPseudoSimulationsSummary()
 }
 \description{
 \ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#stable}{\figure{lifecycle-stable.svg}{options: alt='[Stable]'}}}{\strong{[Stable]}}
@@ -54,6 +51,4 @@ function is provided for this class.
 
 \note{
 Typically, end users will not use the \code{.DefaultGeneralSimulationsSummary()} function.
-
-Typically, end users will not use the \code{.DefaultPseudoSimulationsSummary()} function.
 }

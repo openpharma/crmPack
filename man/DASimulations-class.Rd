@@ -4,25 +4,33 @@
 \name{DASimulations-class}
 \alias{DASimulations-class}
 \alias{.DASimulations}
+\alias{DASimulations}
 \alias{.DefaultDASimulations}
-\title{Class for the simulations output from DA based designs}
+\title{\code{DASimulations}}
 \usage{
+DASimulations(trial_duration, ...)
+
 .DefaultDASimulations()
 }
+\arguments{
+\item{trial_duration}{(\code{numeric})\cr see \code{\link{DASimulations}}}
+
+\item{\dots}{additional parameters from \code{\link{Simulations}}}
+}
 \description{
-This class captures the trial simulations from DA based
-designs. In comparison to the parent class \code{\linkS4class{Simulations}},
+\ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#stable}{\figure{lifecycle-stable.svg}{options: alt='[Stable]'}}}{\strong{[Stable]}}
+
+This class captures the trial simulations from DA based designs.
+In comparison to the parent class \code{\link{Simulations}},
 it contains additional slots to capture the time to DLT fits, additional
 parameters and the trial duration.
 }
 \section{Slots}{
 
 \describe{
-\item{\code{trialduration}}{the vector of trial duration values for all simulations.}
+\item{\code{trial_duration}}{(\code{numeric})\cr the vector of trial duration values for all simulations.}
 }}
 
 \note{
-Typically, end users will not use the \code{.DASimulations()} function.  This
-function has a noticeable execution time.
+Typically, end users will not use the \code{.DefaultDASimulations()} function.
 }
-\keyword{classes}

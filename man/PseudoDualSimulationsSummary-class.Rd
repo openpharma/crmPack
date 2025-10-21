@@ -4,41 +4,43 @@
 \name{PseudoDualSimulationsSummary-class}
 \alias{PseudoDualSimulationsSummary-class}
 \alias{.PseudoDualSimulationsSummary}
+\alias{PseudoDualSimulationsSummary}
 \alias{.DefaultPseudoDualSimulationsSummary}
-\title{Class for the summary of the dual responses simulations using pseudo models}
+\title{\code{PseudoDualSimulationsSummary}}
 \usage{
 .DefaultPseudoDualSimulationsSummary()
 }
 \description{
-It contains all slots from \code{\linkS4class{PseudoSimulationsSummary}} object. In addition to
-the slots in the parent class \code{\linkS4class{PseudoSimulationsSummary}}, it contains four
-more slots for the efficacy model fit information.
-}
-\details{
+\ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#stable}{\figure{lifecycle-stable.svg}{options: alt='[Stable]'}}}{\strong{[Stable]}}
+
+This class captures the summary of the dual responses simulations using pseudo models.
+It contains all slots from \code{\link{PseudoSimulationsSummary}} object. In addition to
+the slots in the parent class \code{\link{PseudoSimulationsSummary}}, it contains additional
+slots for the efficacy model fit information.
+
 Note that objects should not be created by users, therefore no initialization function
 is provided for this class.
 }
 \section{Slots}{
 
 \describe{
-\item{\code{targetGstar}}{the target dose level such that its gain value is at maximum}
+\item{\code{target_gstar}}{(\code{numeric})\cr the target dose level such that its gain value is at maximum}
 
-\item{\code{targetGstarAtDoseGrid}}{the dose level at dose Grid closest and below Gstar}
+\item{\code{target_gstar_at_dose_grid}}{(\code{numeric})\cr the dose level at dose Grid closest and below Gstar}
 
-\item{\code{GstarSummary}}{the six-number table summary (lowest, 25th, 50th (median), 75th percentile, mean
+\item{\code{gstar_summary}}{(\code{table})\cr the six-number table summary (lowest, 25th, 50th (median), 75th percentile, mean
 and highest value) of the final Gstar values obtained across all simulations}
 
-\item{\code{ratioGstarSummary}}{the six-number summary table of the ratios of the upper to the lower 95\%
+\item{\code{ratio_gstar_summary}}{(\code{table})\cr the six-number summary table of the ratios of the upper to the lower 95\%
 credibility intervals of the final Gstar across all simulations}
 
-\item{\code{EffFitAtDoseMostSelected}}{fitted expected mean efficacy value at dose most often
+\item{\code{eff_fit_at_dose_most_selected}}{(\code{numeric})\cr fitted expected mean efficacy value at dose most often
 selected}
 
-\item{\code{meanEffFit}}{list with mean, lower (2.5\%) and upper (97.5\%) quantiles of the fitted expected
+\item{\code{mean_eff_fit}}{(\code{list})\cr list with mean, lower (2.5\%) and upper (97.5\%) quantiles of the fitted expected
 efficacy value at each dose level.}
 }}
 
 \note{
 Typically, end users will not use the \code{.DefaultPseudoDualSimulationsSummary()} function.
 }
-\keyword{class}

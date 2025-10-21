@@ -4,88 +4,97 @@
 \name{PseudoSimulationsSummary-class}
 \alias{PseudoSimulationsSummary-class}
 \alias{.PseudoSimulationsSummary}
-\title{Class for the summary of pseudo-models simulations output}
+\alias{PseudoSimulationsSummary}
+\alias{.DefaultPseudoSimulationsSummary}
+\title{\code{PseudoSimulationsSummary}}
+\usage{
+.DefaultPseudoSimulationsSummary()
+}
 \description{
+\ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#stable}{\figure{lifecycle-stable.svg}{options: alt='[Stable]'}}}{\strong{[Stable]}}
+
+This class captures the summary of pseudo-models simulations output.
 Note that objects should not be created by users, therefore no
 initialization function is provided for this class.
 }
 \section{Slots}{
 
 \describe{
-\item{\code{targetEndOfTrial}}{the target probability of DLE wanted at the end of a trial}
+\item{\code{target_end_of_trial}}{(\code{numeric})\cr the target probability of DLE wanted at the end of a trial}
 
-\item{\code{targetDoseEndOfTrial}}{the dose level corresponds to the target probability
+\item{\code{target_dose_end_of_trial}}{(\code{numeric})\cr the dose level corresponds to the target probability
 of DLE wanted at the end of a trial, TDEOT}
 
-\item{\code{targetDoseEndOfTrialAtDoseGrid}}{the dose level at dose grid corresponds to the target probability
-of DLE wanted at the end of a trial}
+\item{\code{target_dose_end_of_trial_at_dose_grid}}{(\code{numeric})\cr the dose level at dose grid corresponds to the
+target probability of DLE wanted at the end of a trial}
 
-\item{\code{targetDuringTrial}}{the target probability of DLE wanted during a trial}
+\item{\code{target_during_trial}}{(\code{numeric})\cr the target probability of DLE wanted during a trial}
 
-\item{\code{targetDoseDuringTrial}}{the dose level corresponds to the target probability of DLE
+\item{\code{target_dose_during_trial}}{(\code{numeric})\cr the dose level corresponds to the target probability of DLE
 wanted during the trial. TDDT}
 
-\item{\code{targetDoseDuringTrialAtDoseGrid}}{the dose level at dose grid corresponds to the target probability
-of DLE wanted during a trial}
+\item{\code{target_dose_during_trial_at_dose_grid}}{(\code{numeric})\cr the dose level at dose grid corresponds to the
+target probability of DLE wanted during a trial}
 
-\item{\code{TDEOTSummary}}{the six-number table summary, include the lowest, the 25th precentile (lower quartile),
-the 50th percentile (median), the mean, the 27th percentile and the highest values of the
+\item{\code{tdeot_summary}}{(\code{table})\cr the six-number table summary, include the lowest, the 25th percentile
+(lower quartile), the 50th percentile (median), the mean, the 75th percentile and the highest values of the
 final dose levels obtained corresponds to the target probability of DLE
 want at the end of a trial across all simulations}
 
-\item{\code{TDDTSummary}}{the six-number table summary, include the lowest, the 25th precentile (lower quartile),
-the 50th percentile (median), the mean, the 27th percentile and the highest values of the
+\item{\code{tddt_summary}}{(\code{table})\cr the six-number table summary, include the lowest, the 25th percentile
+(lower quartile), the 50th percentile (median), the mean, the 75th percentile and the highest values of the
 final dose levels obtained corresponds to the target probability of DLE
 want during a trial across all simulations}
 
-\item{\code{FinalDoseRecSummary}}{the six-number table summary, include the lowest, the 25th precentile (lower quartile),
-the 50th percentile (median), the mean, the 27th percentile and the highest values of the
+\item{\code{final_dose_rec_summary}}{(\code{table})\cr the six-number table summary, include the lowest, the 25th percentile
+(lower quartile), the 50th percentile (median), the mean, the 75th percentile and the highest values of the
 final optimal doses, which is either the TDEOT when only DLE response are incorporated into
 the escalation procedure or the minimum of the TDEOT and Gstar when DLE and efficacy responses are
 incorporated, across all simulations}
 
-\item{\code{ratioTDEOTSummary}}{the six-number summary table of the final ratios of the upper to the lower 95\%
-credibility intervals of the final TDEOTs across all simulations}
+\item{\code{ratio_tdeot_summary}}{(\code{table})\cr the six-number summary table of the final ratios of the upper to the
+lower 95\% credibility intervals of the final TDEOTs across all simulations}
 
-\item{\code{FinalRatioSummary}}{the six-number summary table of the final ratios of the upper to the lower 95\%
-credibility intervals of the final optimal doses across all simulations
-#@slot doseRec the dose level that will be recommend for subsequent study}
+\item{\code{final_ratio_summary}}{(\code{table})\cr the six-number summary table of the final ratios of the upper to the
+lower 95\% credibility intervals of the final optimal doses across all simulations}
 
-\item{\code{nsim}}{number of simulations}
+\item{\code{nsim}}{(\code{integer})\cr number of simulations}
 
-\item{\code{propDLE}}{proportions of DLE in the trials}
+\item{\code{prop_dle}}{(\code{numeric})\cr proportions of DLE in the trials}
 
-\item{\code{meanToxRisk}}{mean toxicity risks for the patients}
+\item{\code{mean_tox_risk}}{(\code{numeric})\cr mean toxicity risks for the patients}
 
-\item{\code{doseSelected}}{doses selected as MTD (targetDoseEndOfTrial)}
+\item{\code{dose_selected}}{(\code{numeric})\cr doses selected as MTD (target_dose_end_of_trial)}
 
-\item{\code{toxAtDosesSelected}}{true toxicity at doses selected}
+\item{\code{tox_at_doses_selected}}{(\code{numeric})\cr true toxicity at doses selected}
 
-\item{\code{propAtTargetEndOfTrial}}{Proportion of trials selecting at the doseGrid closest below the MTD, the
-targetDoseEndOfTrial}
+\item{\code{prop_at_target_end_of_trial}}{(\code{numeric})\cr Proportion of trials selecting at the dose_grid closest below the
+MTD, the target_dose_end_of_trial}
 
-\item{\code{propAtTargetDuringTrial}}{Proportion of trials selecting at the doseGrid closest below the
-targetDoseDuringTrial}
+\item{\code{prop_at_target_during_trial}}{(\code{numeric})\cr Proportion of trials selecting at the dose_grid closest below
+the target_dose_during_trial}
 
-\item{\code{doseMostSelected}}{dose most often selected as MTD}
+\item{\code{dose_most_selected}}{(\code{numeric})\cr dose most often selected as MTD}
 
-\item{\code{obsToxRateAtDoseMostSelected}}{observed toxicity rate at dose most often
+\item{\code{obs_tox_rate_at_dose_most_selected}}{(\code{numeric})\cr observed toxicity rate at dose most often
 selected}
 
-\item{\code{nObs}}{number of patients overall}
+\item{\code{n_obs}}{(\code{integer})\cr number of patients overall}
 
-\item{\code{nAboveTargetEndOfTrial}}{number of patients treated above targetDoseEndOfTrial}
+\item{\code{n_above_target_end_of_trial}}{(\code{integer})\cr number of patients treated above target_dose_end_of_trial}
 
-\item{\code{nAboveTargetDuringTrial}}{number of patients treated above targetDoseDuringTrial}
+\item{\code{n_above_target_during_trial}}{(\code{integer})\cr number of patients treated above target_dose_during_trial}
 
-\item{\code{doseGrid}}{the dose grid that has been used}
+\item{\code{dose_grid}}{(\code{numeric})\cr the dose grid that has been used}
 
-\item{\code{fitAtDoseMostSelected}}{fitted toxicity rate at dose most often selected}
+\item{\code{fit_at_dose_most_selected}}{(\code{numeric})\cr fitted toxicity rate at dose most often selected}
 
-\item{\code{meanFit}}{list with the average, lower (2.5\%) and upper (97.5\%)
+\item{\code{mean_fit}}{(\code{list})\cr list with the average, lower (2.5\%) and upper (97.5\%)
 quantiles of the mean fitted toxicity at each dose level}
 
-\item{\code{stop_report}}{matrix of stopping rule outcomes}
+\item{\code{stop_report}}{(\code{matrix})\cr matrix of stopping rule outcomes}
 }}
 
-\keyword{classes}
+\note{
+Typically, end users will not use the \code{.DefaultPseudoSimulationsSummary()} function.
+}

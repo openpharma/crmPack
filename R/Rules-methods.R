@@ -84,11 +84,9 @@ setMethod(
     # Create a plot.
     p <- ggplot(
       data = data.frame(x = dose_target_samples),
-      aes(.data$x),
-      fill = "grey50",
-      colour = "grey50"
+      aes(.data$x)
     ) +
-      geom_density() +
+      geom_density(colour = "grey50") +
       coord_cartesian(xlim = range(data@doseGrid)) +
       geom_vline(xintercept = dose_target, colour = "black", lwd = 1.1) +
       geom_text(
@@ -683,12 +681,10 @@ setMethod(
     # Create a plot.
     p <- ggplot(
       data = data.frame(x = data@doseGrid, y = dlt_prob),
-      aes(.data$x, .data$y),
-      fill = "grey50",
-      colour = "grey50"
+      aes(.data$x, .data$y)
     ) +
-      geom_line() +
-      geom_point() +
+      geom_line(colour = "grey50") +
+      geom_point(fill = "grey50", colour = "grey50") +
       coord_cartesian(xlim = range(data@doseGrid)) +
       scale_x_continuous(
         labels = as.character(data@doseGrid),
@@ -1444,9 +1440,7 @@ setMethod(
     }
 
     p <- ggplot(
-      data = plt_data,
-      fill = "grey50",
-      colour = "grey50"
+      data = plt_data
     ) +
       geom_col(aes(x, y), fill = "grey75") +
       scale_x_discrete(drop = FALSE, guide = guide_axis(check.overlap = TRUE)) +
@@ -1598,9 +1592,7 @@ setMethod(
     }
 
     p <- ggplot(
-      data = plt_data,
-      fill = "grey50",
-      colour = "grey50"
+      data = plt_data
     ) +
       geom_col(aes(x, y), fill = "grey75") +
       scale_x_discrete(guide = guide_axis(check.overlap = TRUE)) +

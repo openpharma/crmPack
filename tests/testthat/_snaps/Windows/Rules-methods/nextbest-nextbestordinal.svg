@@ -27,8 +27,8 @@
 </defs>
 <g clip-path='url(#cpNDAuMTN8NzE0LjUyfDIyLjc4fDU0NS4xMQ==)'>
 <rect x='40.13' y='22.78' width='674.39' height='522.33' style='stroke-width: 1.07; stroke: none; fill: #FFFFFF;' />
-<polygon points='8.45,46.53 768.55,94.98 1528.65,518.98 2288.75,520.70 3048.85,521.26 3600.00,521.29 3600.00,521.37 3048.85,521.37 2288.75,521.37 1528.65,521.37 768.55,521.37 8.45,521.37 ' style='stroke-width: 0.00; stroke: none; stroke-linecap: butt; fill: none;' />
-<polyline points='8.45,46.53 768.55,94.98 1528.65,518.98 2288.75,520.70 3048.85,521.26 3600.00,521.29 ' style='stroke-width: 1.07; stroke-linecap: butt;' />
+<polygon points='8.45,46.53 768.55,94.98 1528.65,518.98 2288.75,520.70 3048.85,521.26 3600.00,521.29 3600.00,521.37 3048.85,521.37 2288.75,521.37 1528.65,521.37 768.55,521.37 8.45,521.37 ' style='stroke-width: 0.00; stroke: none; stroke-linecap: butt; fill: #7F7F7F;' />
+<polyline points='8.45,46.53 768.55,94.98 1528.65,518.98 2288.75,520.70 3048.85,521.26 3600.00,521.29 ' style='stroke-width: 1.07; stroke: #7F7F7F; stroke-linecap: butt;' />
 <line x1='323.83' y1='545.11' x2='323.83' y2='22.78' style='stroke-width: 2.35; stroke-linecap: butt;' />
 <text transform='translate(320.05,521.37) rotate(-90)' text-anchor='middle' style='font-size: 11.00px; font-family: sans;' textLength='15.90px' lengthAdjust='spacingAndGlyphs'>Est</text>
 <line x1='343.27' y1='545.11' x2='343.27' y2='22.78' style='stroke-width: 2.35; stroke: #0000FF; stroke-linecap: butt;' />
