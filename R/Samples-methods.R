@@ -1431,7 +1431,7 @@ setMethod(
     )
 
     ## Get efficacy plot
-    plot2 <- ggplot(data = ggdata, aes(x = x, y = y), group = group) +
+    plot2 <- ggplot(data = ggdata, aes(x = x, y = y, group = group)) +
       xlab("Dose Levels") +
       ylab(paste("Estimated Expected Efficacy")) +
       xlim(c(0, max(x@doseGrid))) +
@@ -2029,7 +2029,7 @@ setMethod(
       )
     )
 
-    plot1 <- ggplot(data = gdata, aes(x = x, y = y), group = group) +
+    plot1 <- ggplot(data = gdata, aes(x = x, y = y, group = group)) +
       xlab("Dose Levels") +
       ylab(paste("Probability of DLE")) +
       ylim(c(0, 1)) +
@@ -2065,7 +2065,7 @@ setMethod(
     )
 
     ## Get efficacy plot
-    plot2 <- ggplot(data = ggdata, aes(x = x, y = y), group = group) +
+    plot2 <- ggplot(data = ggdata, aes(x = x, y = y, group = group)) +
       xlab("Dose Levels") +
       ylab(paste("Estimatimated Expected Efficacy")) +
       xlim(c(0, max(data@doseGrid))) +
