@@ -4628,7 +4628,7 @@ setMethod(
     recommendedDoses <- as.numeric(sapply(resultList, "[[", "dose"))
 
     ## the vector of the final trial duration;
-    trialduration <- as.numeric(sapply(resultList, "[[", "duration"))
+    trial_duration <- as.numeric(sapply(resultList, "[[", "duration"))
 
     ## setup the list for the final fits
     fitList <- lapply(resultList, "[[", "fit")
@@ -4647,7 +4647,7 @@ setMethod(
       data = dataList,
       doses = recommendedDoses,
       fit = fitList,
-      trialduration = trialduration,
+      trial_duration = trial_duration,
       stop_report = stop_report,
       stop_reasons = stopReasons,
       additional_stats = additional_stats,

@@ -4,10 +4,10 @@
 \alias{DASimulations}
 \title{Initialization function for \code{DASimulations}}
 \usage{
-DASimulations(trialduration, ...)
+DASimulations(trial_duration, ...)
 }
 \arguments{
-\item{trialduration}{see \code{\linkS4class{DASimulations}}}
+\item{trial_duration}{see \code{\linkS4class{DASimulations}}}
 
 \item{\dots}{additional parameters from \code{\link{Simulations}}}
 }

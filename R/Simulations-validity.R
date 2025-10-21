@@ -153,7 +153,7 @@ v_pseudo_dual_flex_simulations <- function(object) {
 }
 
 #' @describeIn v_general_simulations validates that the [`DASimulations`] object
-#'   contains valid `trialduration` the vector of trial duration values for all
+#'   contains valid `trial_duration` the vector of trial duration values for all
 #'   simulations.
 
 v_da_simulations <- function(object) {
@@ -162,8 +162,8 @@ v_da_simulations <- function(object) {
   nSims <- length(object@data)
 
   v$check(
-    identical(length(object@trialduration), nSims),
-    "trialduration vector has to have same length as data"
+    identical(length(object@trial_duration), nSims),
+    "trial_duration vector has to have same length as data"
   )
 
   v$result()
