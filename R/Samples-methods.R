@@ -2067,7 +2067,7 @@ setMethod(
     ## Get efficacy plot
     plot2 <- ggplot(data = ggdata, aes(x = x, y = y, group = group)) +
       xlab("Dose Levels") +
-      ylab(paste("Estimatimated Expected Efficacy")) +
+      ylab(paste("Estimated Expected Efficacy")) +
       xlim(c(0, max(data@doseGrid))) +
       geom_line(colour = I("blue"), linewidth = 1.5)
 
