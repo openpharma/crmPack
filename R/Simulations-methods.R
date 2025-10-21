@@ -2725,7 +2725,7 @@ setMethod(
     )
 
     r$report(
-      "EffFitAtDoseMostSelected",
+      "eff_fit_at_dose_most_selected",
       "Fitted expected efficacy level at dose most often selected",
       percent = FALSE,
       digits = 1
