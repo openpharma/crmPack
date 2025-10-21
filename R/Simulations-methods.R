@@ -2555,14 +2555,14 @@ setMethod(
     ## for which we then define a print / plot method
     ret <- .PseudoDualSimulationsSummary(
       start,
-      targetGstar = Gstar,
-      targetGstarAtDoseGrid = GstarAtDoseGrid,
-      GstarSummary = GstarSummary,
-      ratioGstarSummary = ratioGstarSummary,
-      FinalDoseRecSummary = FinalDoseRecSummary,
-      FinalRatioSummary = FinalRatioSummary,
-      EffFitAtDoseMostSelected = EffFitAtDoseMostSelected,
-      meanEffFit = meanEffFit,
+      target_gstar = Gstar,
+      target_gstar_at_dose_grid = GstarAtDoseGrid,
+      gstar_summary = GstarSummary,
+      ratio_gstar_summary = ratioGstarSummary,
+      final_dose_rec_summary = FinalDoseRecSummary,
+      final_ratio_summary = FinalRatioSummary,
+      eff_fit_at_dose_most_selected = EffFitAtDoseMostSelected,
+      mean_eff_fit = meanEffFit,
       stop_report = object@stop_report
     )
 
@@ -2641,7 +2641,7 @@ setMethod(
     cat(
       "Target Gstar, the dose which gives the maximum gain value was",
       r$dfSave(
-        object@targetGstar,
+        object@target_gstar,
         "targetGstar"
       ),
       "\n"
@@ -2649,13 +2649,13 @@ setMethod(
     cat(
       "Target Gstar at dose Grid was",
       r$dfSave(
-        object@targetGstarAtDoseGrid,
+        object@target_gstar_at_dose_grid,
         "targetGstarAtDoseGrid"
       ),
       "\n"
     )
 
-    GstarSum <- object@GstarSummary
+    GstarSum <- object@gstar_summary
 
     r$dfSave(as.numeric(GstarSum[1]), "GstarMin")
     r$dfSave(as.numeric(GstarSum[2]), "Gstarlower")
@@ -2672,7 +2672,7 @@ setMethod(
       "\n"
     )
 
-    ratioGstarSum <- object@ratioGstarSummary
+    ratioGstarSum <- object@ratio_gstar_summary
 
     r$dfSave(as.numeric(ratioGstarSum[1]), "ratioGstarMin")
     r$dfSave(as.numeric(ratioGstarSum[2]), "ratioGstarlower")
@@ -2818,7 +2818,7 @@ setMethod(
       ## Find if Effsamples are generated in the simulations
       ## by checking if there the lower limits of the 95% Credibility
       ## interval are calculated
-      if (!is.null(x@meanEffFit$lower)) {
+      if (!is.null(x@mean_eff_fit$lower)) {
         ## which types of lines do we have?
         linetype <- c(
           "True Expected Efficacy",
@@ -2836,7 +2836,7 @@ setMethod(
             rep(linetype[c(1, 2, 3, 3)], each = length(x@doseGrid)),
             levels = linetype
           ),
-          lines = unlist(x@meanEffFit)
+          lines = unlist(x@mean_eff_fit)
         )
 
         ## linetypes for the plot
@@ -2886,7 +2886,7 @@ setMethod(
             rep(linetype[c(1, 2)], each = length(x@doseGrid)),
             levels = linetype
           ),
-          lines = unlist(x@meanEffFit)
+          lines = unlist(x@mean_eff_fit)
         )
 
         ## linetypes for the plot
