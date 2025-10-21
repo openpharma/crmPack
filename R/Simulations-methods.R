@@ -1672,34 +1672,34 @@ setMethod(
     ## give back an object of class GeneralSimulationsSummary,
     ## for which we then define a print / plot method
     ret <- .PseudoSimulationsSummary(
-      targetEndOfTrial = targetEndOfTrial,
-      targetDoseEndOfTrial = targetDoseEndOfTrial,
-      targetDuringTrial = targetDuringTrial,
-      targetDoseDuringTrial = targetDoseDuringTrial,
-      targetDoseEndOfTrialAtDoseGrid = targetDoseEndOfTrialAtDoseGrid,
-      targetDoseDuringTrialAtDoseGrid = targetDoseDuringTrialAtDoseGrid,
-      TDEOTSummary = TDEOTSummary,
-      TDDTSummary = TDDTSummary,
-      FinalDoseRecSummary = FinalDoseRecSummary,
-      ratioTDEOTSummary = ratioTDEOTSummary,
-      FinalRatioSummary = FinalRatioSummary,
+      target_end_of_trial = targetEndOfTrial,
+      target_dose_end_of_trial = targetDoseEndOfTrial,
+      target_during_trial = targetDuringTrial,
+      target_dose_during_trial = targetDoseDuringTrial,
+      target_dose_end_of_trial_at_dose_grid = targetDoseEndOfTrialAtDoseGrid,
+      target_dose_during_trial_at_dose_grid = targetDoseDuringTrialAtDoseGrid,
+      tdeot_summary = TDEOTSummary,
+      tddt_summary = TDDTSummary,
+      final_dose_rec_summary = FinalDoseRecSummary,
+      ratio_tdeot_summary = ratioTDEOTSummary,
+      final_ratio_summary = FinalRatioSummary,
       nsim = length(object@data),
-      propDLE = propDLE,
-      meanToxRisk = meanToxRisk,
-      doseSelected = doseSelected,
-      doseMostSelected = doseMostSelected,
+      prop_dle = propDLE,
+      mean_tox_risk = meanToxRisk,
+      dose_selected = doseSelected,
+      dose_most_selected = doseMostSelected,
       # doseRec=doseRec,
-      obsToxRateAtDoseMostSelected = obsToxRateAtDoseMostSelected,
-      nObs = nObs,
-      nAboveTargetEndOfTrial = nAboveTargetEndOfTrial,
-      nAboveTargetDuringTrial = nAboveTargetDuringTrial,
-      toxAtDosesSelected = toxAtDoses,
-      propAtTargetEndOfTrial = propAtTargetEndOfTrial,
-      propAtTargetDuringTrial = propAtTargetDuringTrial,
-      doseGrid = doseGrid,
-      fitAtDoseMostSelected = fitAtDoseMostSelected,
+      obs_tox_rate_at_dose_most_selected = obsToxRateAtDoseMostSelected,
+      n_obs = nObs,
+      n_above_target_end_of_trial = nAboveTargetEndOfTrial,
+      n_above_target_during_trial = nAboveTargetDuringTrial,
+      tox_at_doses_selected = toxAtDoses,
+      prop_at_target_end_of_trial = propAtTargetEndOfTrial,
+      prop_at_target_during_trial = propAtTargetDuringTrial,
+      dose_grid = doseGrid,
+      fit_at_dose_most_selected = fitAtDoseMostSelected,
       stop_report = object@stop_report,
-      meanFit = meanFit
+      mean_fit = meanFit
     )
 
     return(ret)
@@ -1738,8 +1738,8 @@ setMethod(
     cat(
       "Target probability of DLE p(DLE) used at the end of a trial was",
       r$dfSave(
-        object@targetEndOfTrial * 100,
-        "targetEndOfTrial"
+        object@target_end_of_trial * 100,
+        "target_end_of_trial"
       ),
       "%\n"
     )
@@ -1747,16 +1747,16 @@ setMethod(
     cat(
       "The dose level corresponds to the target p(DLE) used at the end of a trial, TDEOT, was",
       r$dfSave(
-        object@targetDoseEndOfTrial,
-        "targetDoseEndOfTrial"
+        object@target_dose_end_of_trial,
+        "target_dose_end_of_trial"
       ),
       "\n"
     )
     cat(
       "TDEOT at dose Grid was",
       r$dfSave(
-        object@targetDoseEndOfTrialAtDoseGrid,
-        "targetDoseEndOfTrialAtDoseGrid"
+        object@target_dose_end_of_trial_at_dose_grid,
+        "target_dose_end_of_trial_at_dose_grid"
       ),
       "\n"
     )
@@ -1764,8 +1764,8 @@ setMethod(
     cat(
       "Target p(DLE) used during a trial was",
       r$dfSave(
-        object@targetDuringTrial * 100,
-        "targetDuringTrial"
+        object@target_during_trial * 100,
+        "target_during_trial"
       ),
       "%\n"
     )
@@ -1773,8 +1773,8 @@ setMethod(
     cat(
       "The dose level corresponds to the target p(DLE) used during a trial, TDDT, was",
       r$dfSave(
-        object@targetDoseDuringTrial,
-        "targetDoseDuringTrial"
+        object@target_dose_during_trial,
+        "target_dose_during_trial"
       ),
       "\n"
     )
@@ -1782,35 +1782,35 @@ setMethod(
     cat(
       "TDDT at dose Grid was",
       r$dfSave(
-        object@targetDoseDuringTrialAtDoseGrid,
-        "targetDoseDuringTrialAtDoseGrid"
+        object@target_dose_during_trial_at_dose_grid,
+        "target_dose_during_trial_at_dose_grid"
       ),
       "\n"
     )
 
-    r$report("nObs", "Number of patients overall", percent = FALSE)
+    r$report("n_obs", "Number of patients overall", percent = FALSE)
     r$report(
-      "nAboveTargetEndOfTrial",
+      "n_above_target_end_of_trial",
       "Number of patients treated above the target p(DLE) used at the end of a trial",
       percent = FALSE
     )
 
     r$report(
-      "nAboveTargetDuringTrial",
+      "n_above_target_during_trial",
       "Number of patients treated above the target p(DLE) used during a trial",
       percent = FALSE
     )
 
     r$report(
-      "propDLE",
+      "prop_dle",
       "Proportions of observed DLT in the trials"
     )
     r$report(
-      "meanToxRisk",
+      "mean_tox_risk",
       "Mean toxicity risks for the patients"
     )
     r$report(
-      "doseSelected",
+      "dose_selected",
       "Doses selected as TDEOT",
       percent = FALSE,
       digits = 1
@@ -1820,14 +1820,14 @@ setMethod(
     #         percent=FALSE, digits=1)
 
     r$report(
-      "toxAtDosesSelected",
+      "tox_at_doses_selected",
       "True toxicity at TDEOT"
     )
 
     cat(
       "Proportion of trials selecting the TDEOT:",
       r$dfSave(
-        object@propAtTargetEndOfTrial * 100,
+        object@prop_at_target_end_of_trial * 100,
         "percentAtTarget"
       ),
       "%\n"
@@ -1836,7 +1836,7 @@ setMethod(
     cat(
       "Proportion of trials selecting the TDDT:",
       r$dfSave(
-        object@propAtTargetDuringTrial * 100,
+        object@prop_at_target_during_trial * 100,
         "percentAtTarget"
       ),
       "%\n"
@@ -1845,7 +1845,7 @@ setMethod(
     cat(
       "Dose most often selected as TDEOT:",
       r$dfSave(
-        object@doseMostSelected,
+        object@dose_most_selected,
         "doseMostSelected"
       ),
       "\n"
@@ -1853,17 +1853,17 @@ setMethod(
     cat(
       "Observed toxicity rate at dose most often selected:",
       r$dfSave(
-        round(object@obsToxRateAtDoseMostSelected * 100),
+        round(object@obs_tox_rate_at_dose_most_selected * 100),
         "obsToxRateAtDoseMostSelected"
       ),
       "%\n"
     )
     r$report(
-      "fitAtDoseMostSelected",
+      "fit_at_dose_most_selected",
       "Fitted probabilities of DLE at dose most often selected"
     )
 
-    TDEOTSum <- object@TDEOTSummary
+    TDEOTSum <- object@tdeot_summary
 
     r$dfSave(as.numeric(TDEOTSum[1]), "TDEOTMin")
     r$dfSave(as.numeric(TDEOTSum[2]), "TDEOTlower")
@@ -1880,7 +1880,7 @@ setMethod(
       "\n"
     )
 
-    ratioTDEOTSum <- object@ratioTDEOTSummary
+    ratioTDEOTSum <- object@ratio_tdeot_summary
 
     r$dfSave(as.numeric(ratioTDEOTSum[1]), "ratioTDEOTMin")
     r$dfSave(as.numeric(ratioTDEOTSum[2]), "ratioTDEOTlower")
@@ -1897,7 +1897,7 @@ setMethod(
       "\n"
     )
 
-    TDDTSum <- object@TDDTSummary
+    TDDTSum <- object@tddt_summary
 
     r$dfSave(as.numeric(TDDTSum[1]), "TDDTMin")
     r$dfSave(as.numeric(TDDTSum[2]), "TDDTlower")
@@ -1914,7 +1914,7 @@ setMethod(
       "\n"
     )
 
-    FinalDoseRecSum <- object@FinalDoseRecSummary
+    FinalDoseRecSum <- object@final_dose_rec_summary
 
     r$dfSave(as.numeric(FinalDoseRecSum[1]), "FinalDoseRecMin")
     r$dfSave(as.numeric(FinalDoseRecSum[2]), "FinalDoseReclower")
@@ -1931,7 +1931,7 @@ setMethod(
       "\n"
     )
 
-    FinalratioSum <- object@FinalRatioSummary
+    FinalratioSum <- object@final_ratio_summary
 
     r$dfSave(as.numeric(FinalratioSum[1]), "FinalratioMin")
     r$dfSave(as.numeric(FinalratioSum[2]), "Finalratiolower")
@@ -2022,7 +2022,7 @@ setMethod(
     if ("nObs" %in% type) {
       plotList[[plotIndex <- plotIndex + 1L]] <-
         h_barplot_percentages(
-          x = x@nObs,
+          x = x@n_obs,
           description = "Number of patients in total"
         )
     }
@@ -2031,7 +2031,7 @@ setMethod(
     if ("doseSelected" %in% type) {
       plotList[[plotIndex <- plotIndex + 1L]] <-
         h_barplot_percentages(
-          x = x@doseSelected,
+          x = x@dose_selected,
           description = "MTD estimate"
         )
     }
@@ -2040,7 +2040,7 @@ setMethod(
     if ("propDLE" %in% type) {
       plotList[[plotIndex <- plotIndex + 1L]] <-
         h_barplot_percentages(
-          x = x@propDLE * 100,
+          x = x@prop_dle * 100,
           description = "Proportion of DLE [%]",
           xaxisround = 1
         )
@@ -2050,7 +2050,7 @@ setMethod(
     if ("nAboveTargetEndOfTrial" %in% type) {
       plotList[[plotIndex <- plotIndex + 1L]] <-
         h_barplot_percentages(
-          x = x@nAboveTargetEndOfTrial,
+          x = x@n_above_target_end_of_trial,
           description = "Number of patients above target"
         )
     }
@@ -2082,7 +2082,7 @@ setMethod(
       ## Find if DLE samples are generated in the simulations
       ## by checking if there the lower limits of the 95% Credibility
       ## interval are calculated
-      if (!is.null(x@meanFit$lower)) {
+      if (!is.null(x@mean_fit$lower)) {
         ## which types of lines do we have?
         linetype <- c(
           "True toxicity",
@@ -2093,13 +2093,13 @@ setMethod(
         ## true tox, average estimated tox, and 95% (lower, upper)
         ## estimated tox (in percentage) stacked below each other
         dat <- data.frame(
-          dose = rep(x@doseGrid, 4L),
-          group = rep(1:4, each = length(x@doseGrid)),
+          dose = rep(x@dose_grid, 4L),
+          group = rep(1:4, each = length(x@dose_grid)),
           linetype = factor(
-            rep(linetype[c(1, 2, 3, 3)], each = length(x@doseGrid)),
+            rep(linetype[c(1, 2, 3, 3)], each = length(x@dose_grid)),
             levels = linetype
           ),
-          lines = unlist(x@meanFit) * 100
+          lines = unlist(x@mean_fit) * 100
         )
 
         ## linetypes for the plot
@@ -2145,13 +2145,13 @@ setMethod(
         ## true tox, average estimated tox
         ## estimated tox (in percentage) stacked below each other
         dat <- data.frame(
-          dose = rep(x@doseGrid, 2L),
-          group = rep(1:2, each = length(x@doseGrid)),
+          dose = rep(x@dose_grid, 2L),
+          group = rep(1:2, each = length(x@dose_grid)),
           linetype = factor(
-            rep(linetype[c(1, 2)], each = length(x@doseGrid)),
+            rep(linetype[c(1, 2)], each = length(x@dose_grid)),
             levels = linetype
           ),
-          lines = unlist(x@meanFit) * 100
+          lines = unlist(x@mean_fit) * 100
         )
 
         ## linetypes for the plot
@@ -2456,13 +2456,13 @@ setMethod(
 
     ## ## dose level most often selected as MTD (TDtargetEnd of Trial)
     xMostSelected <-
-      match_within_tolerance(start@doseMostSelected, table = doseGrid)
+      match_within_tolerance(start@dose_most_selected, table = doseGrid)
 
     ## check if true Eff is a function
     ## check if special case applies
     isTrueEffFx <- is.function(trueEff)
 
-    TDtargetEndOfTrial <- start@targetDoseEndOfTrial
+    TDtargetEndOfTrial <- start@target_dose_end_of_trial
 
     if (isTrueEffFx) {
       negtrueGainfn <- function(dose) {
@@ -2689,7 +2689,7 @@ setMethod(
       "\n"
     )
 
-    FinalDoseRecSum <- object@FinalDoseRecSummary
+    FinalDoseRecSum <- object@final_dose_rec_summary
 
     r$dfSave(as.numeric(FinalDoseRecSum[1]), "FinalDoseRecMin")
     r$dfSave(as.numeric(FinalDoseRecSum[2]), "FinalDoseReclower")
@@ -2706,7 +2706,7 @@ setMethod(
       "\n"
     )
 
-    FinalratioSum <- object@FinalRatioSummary
+    FinalratioSum <- object@final_ratio_summary
 
     r$dfSave(as.numeric(FinalratioSum[1]), "FinalratioMin")
     r$dfSave(as.numeric(FinalratioSum[2]), "Finalratiolower")
