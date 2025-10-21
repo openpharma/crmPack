@@ -41,7 +41,7 @@ contains valid object \code{fit}, \code{stop_reasons}, \code{stop_report}, and
 capture the dose-biomarker \code{fits}, and the \code{sigma2W} and \code{rho} estimates.
 
 \item \code{v_da_simulations()}: validates that the \code{\link{DASimulations}} object
-contains valid \code{trialduration} the vector of trial duration values for all
+contains valid \code{trial_duration} the vector of trial duration values for all
 simulations.
 
 }}
