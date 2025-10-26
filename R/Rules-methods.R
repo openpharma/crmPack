@@ -3429,7 +3429,7 @@ setMethod(
     if (is.na(dose)) {
       return(0L)
     }
-    assert_class(data, "Data")
+    assert_multi_class(data, c("Data", "DataOrdinal"))
 
     # Evaluate the individual cohort size rules in the list.
     individual_results <- sapply(
@@ -3464,7 +3464,7 @@ setMethod(
     if (is.na(dose)) {
       return(0L)
     }
-    assert_class(data, "Data")
+    assert_multi_class(data, c("Data", "DataOrdinal"))
 
     # Evaluate the individual cohort size rules in the list.
     individual_results <- sapply(
