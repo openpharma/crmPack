@@ -5066,10 +5066,11 @@ test_that("maxDose-IncrementsMaxToxProb works correctly with binary data", {
 # Ordinal ----
 
 test_that("stopTrial works with nested stopping rules for ordinal model/data", {
+  design <- .DefaultDesignOrdinal()
+
   set.seed(981)
   samples <- mcmc(design@data, design@model, .DefaultMcmcOptions())
 
-  design <- .DefaultDesignOrdinal()
   design@stopping <-
     StoppingOrdinal(
       1L,
