@@ -5062,3 +5062,109 @@ test_that("maxDose-IncrementsMaxToxProb works correctly with binary data", {
 
   expect_equal(maxDose(inc1, emptyData, model, samples), expected1)
 })
+
+# Ordinal ----
+
+test_that("stopTrial works with nested stopping rules for ordinal model/data", {
+  design <- .DefaultDesignOrdinal()
+
+  set.seed(981)
+  samples <- mcmc(design@data, design@model, .DefaultMcmcOptions())
+
+  design@stopping <-
+    StoppingOrdinal(
+      1L,
+      StoppingTargetProb(target = c(0.2, 0.4), prob = 0.5)
+    ) |
+    StoppingOrdinal(
+      2L,
+      StoppingTargetProb(target = c(0.5, 1), prob = 0.9)
+    )
+
+  answer <- stopTrial(
+    stopping = design@stopping,
+    dose = 1,
+    samples = samples,
+    model = design@model,
+    data = design@data
+  )
+
+  expect_false(answer)
+})
+
+test_that("CohortSizeOrdinal works as expected when combined using CohortSizeMin", {
+  dat <- DataOrdinal(
+    doseGrid = 1:5,
+    yCategories = c("No tox" = 0L, "DLAE" = 1L, "CRS" = 2L),
+    y = c(0, 1, 2, 0, 1, 2),
+    x = c(1, 1, 1, 2, 2, 2),
+    cohort = c(1, 1, 1, 2, 2, 2),
+    ID = 1:6
+  )
+
+  cohort_size_1 <- CohortSizeMin(
+    list(
+      CohortSizeOrdinal(
+        1L,
+        CohortSizeDLT(intervals = c(0, 2), cohort_size = c(3, 1))
+      ),
+      CohortSizeOrdinal(2L, CohortSizeConst(size = 2))
+    )
+  )
+  expect_identical(
+    size(object = cohort_size_1, dose = 5, data = dat),
+    1L
+  )
+
+  cohort_size_2 <- CohortSizeMin(
+    list(
+      CohortSizeOrdinal(
+        2L,
+        CohortSizeDLT(intervals = c(0, 3), cohort_size = c(4, 2))
+      ),
+      CohortSizeOrdinal(2L, CohortSizeConst(size = 5))
+    )
+  )
+  expect_identical(
+    size(object = cohort_size_2, dose = 5, data = dat),
+    4L
+  )
+})
+
+test_that("maxDose works as expected when combined with IncrementsMin", {
+  dat <- DataOrdinal(
+    doseGrid = 1:5,
+    yCategories = c("No tox" = 0L, "DLAE" = 1L, "CRS" = 2L),
+    y = c(0, 1, 2, 0, 1, 2),
+    x = c(1, 1, 1, 2, 2, 2),
+    cohort = c(1, 1, 1, 2, 2, 2),
+    ID = 1:6
+  )
+
+  model <- LogisticLogNormalOrdinal(
+    mean = c(0, 0, 0),
+    cov = diag(3),
+    ref_dose = 3
+  )
+
+  set.seed(2424)
+  samples <- mcmc(dat, model, .DefaultMcmcOptions())
+
+  increments_min <- IncrementsMin(
+    list(
+      IncrementsOrdinal(
+        1L,
+        IncrementsRelative(intervals = c(0, 2), increment = c(0.5, 0.2))
+      ),
+      IncrementsOrdinal(
+        2L,
+        IncrementsRelative(intervals = c(0, 3), increment = c(0.33, 0.1))
+      )
+    )
+  )
+
+  expect_equal(
+    maxDose(increments_min, dat),
+    2.4
+  )
+})

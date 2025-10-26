@@ -15,7 +15,7 @@ RuleDesignOrdinal(next_best, cohort_size, data, starting_dose)
 \arguments{
 \item{next_best}{(\code{NextBestOrdinal})\cr see slot definition.}
 
-\item{cohort_size}{(\code{CohortSizeOrdinal})\cr see slot definition.}
+\item{cohort_size}{(\code{CohortSize})\cr see slot definition.}
 
 \item{data}{(\code{DataOrdinal})\cr see slot definition.}
 
@@ -28,12 +28,22 @@ RuleDesignOrdinal(next_best, cohort_size, data, starting_dose)
 this class and the \code{\link{DesignOrdinal}} class is that \code{\link{RuleDesignOrdinal}}
 does not contain \code{model}, \code{stopping} and \code{increments} slots.
 }
+\details{
+Please note that the cohort size rules need to be wrapped into
+the corresponding \link{CohortSizeOrdinal} class, before a successful evaluation of the
+corresponding methods can take place. Note also that these wrappers cannot be nested,
+i.e., you cannot have a \link{CohortSizeOrdinal} inside another \link{CohortSizeOrdinal}
+(which also would not make sense) because it would not be clear which event grade to use
+for the methods calculation. However, multiple rules can be combined using the operators
+defined, e.g.,
+\code{CohortSizeMin(list(CohortSizeOrdinal(1L, rule1), CohortSizeOrdinal(2L, rule2)))}.
+}
 \section{Slots}{
 
 \describe{
 \item{\code{next_best}}{(\code{NextBestOrdinal})\cr how to find the next best dose.}
 
-\item{\code{cohort_size}}{(\code{CohortSizeOrdinal})\cr rules for the cohort sizes.}
+\item{\code{cohort_size}}{(\code{CohortSize})\cr rules for the cohort sizes.}
 
 \item{\code{data}}{(\code{DataOrdinal})\cr specifies dose grid, any previous data, etc.}
 

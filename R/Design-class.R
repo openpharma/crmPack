@@ -1005,8 +1005,17 @@ DesignGrouped <- function(
 #' this class and the [`DesignOrdinal`] class is that [`RuleDesignOrdinal`]
 #' does not contain `model`, `stopping` and `increments` slots.
 #'
+#' @details Please note that the cohort size rules need to be wrapped into
+#' the corresponding [CohortSizeOrdinal] class, before a successful evaluation of the
+#' corresponding methods can take place. Note also that these wrappers cannot be nested,
+#' i.e., you cannot have a [CohortSizeOrdinal] inside another [CohortSizeOrdinal]
+#' (which also would not make sense) because it would not be clear which event grade to use
+#' for the methods calculation. However, multiple rules can be combined using the operators
+#' defined, e.g.,
+#' `CohortSizeMin(list(CohortSizeOrdinal(1L, rule1), CohortSizeOrdinal(2L, rule2)))`.
+#'
 #' @slot next_best (`NextBestOrdinal`)\cr how to find the next best dose.
-#' @slot cohort_size (`CohortSizeOrdinal`)\cr rules for the cohort sizes.
+#' @slot cohort_size (`CohortSize`)\cr rules for the cohort sizes.
 #' @slot data (`DataOrdinal`)\cr specifies dose grid, any previous data, etc.
 #' @slot starting_dose (`number`)\cr the starting dose, it must lie on the dose
 #'   grid in `data`.
@@ -1018,7 +1027,7 @@ DesignGrouped <- function(
   Class = "RuleDesignOrdinal",
   slots = c(
     next_best = "NextBestOrdinal",
-    cohort_size = "CohortSizeOrdinal",
+    cohort_size = "CohortSize",
     data = "DataOrdinal",
     starting_dose = "numeric"
   ),
@@ -1037,7 +1046,7 @@ DesignGrouped <- function(
 #' @rdname RuleDesignOrdinal-class
 #'
 #' @param next_best (`NextBestOrdinal`)\cr see slot definition.
-#' @param cohort_size (`CohortSizeOrdinal`)\cr see slot definition.
+#' @param cohort_size (`CohortSize`)\cr see slot definition.
 #' @param data (`DataOrdinal`)\cr see slot definition.
 #' @param starting_dose (`number`)\cr see slot definition.
 #'
@@ -1088,10 +1097,19 @@ RuleDesignOrdinal <- function(
 #'  [`DesignOrdinal`] class contains additional `model`, `stopping`,
 #'  `increments` and `pl_cohort_size` slots.
 #'
+#' @details Please note that stopping, increments or cohort size rules need to be wrapped into
+#' the corresponding [StoppingOrdinal], [IncrementsOrdinal] or [CohortSizeOrdinal] classes, before
+#' a successful evaluation of the corresponding methods can take place.
+#' Note also that these wrappers cannot be nested, i.e., you cannot have an [IncrementsOrdinal] inside
+#' another [IncrementsOrdinal] (which also would not make sense) because it would not be clear which
+#' event grade to use for the methods calculation.
+#' However, multiple rules can be combined using the operators defined for these classes, e.g.,
+#' `StoppingOrdinal(1L, rule1 & rule2) | StoppingOrdinal(2L, rule3)`.
+#'
 #' @slot model (`LogisticLogNormalOrdinal`)\cr the model to be used.
-#' @slot stopping (`StoppingOrdinal`)\cr stopping rule(s) for the trial.
-#' @slot increments (`IncrementsOrdinal`)\cr how to control increments between dose levels.
-#' @slot pl_cohort_size (`CohortSizeOrdinal`)\cr rules for the cohort sizes for placebo,
+#' @slot stopping (`Stopping`)\cr stopping rule(s) for the trial.
+#' @slot increments (`Increments`)\cr how to control increments between dose levels.
+#' @slot pl_cohort_size (`CohortSize`)\cr rules for the cohort sizes for placebo,
 #'   if any planned (defaults to constant 0 placebo patients).
 #'
 #' @aliases DesignOrdinal
@@ -1101,9 +1119,9 @@ RuleDesignOrdinal <- function(
   Class = "DesignOrdinal",
   slots = c(
     model = "LogisticLogNormalOrdinal",
-    stopping = "StoppingOrdinal",
-    increments = "IncrementsOrdinal",
-    pl_cohort_size = "CohortSizeOrdinal"
+    stopping = "Stopping",
+    increments = "Increments",
+    pl_cohort_size = "CohortSize"
   ),
   prototype = prototype(
     model = .LogisticLogNormalOrdinal(),
@@ -1120,9 +1138,9 @@ RuleDesignOrdinal <- function(
 #' @rdname DesignOrdinal-class
 #'
 #' @param model (`LogisticLogNormalOrdinal`)\cr see slot definition.
-#' @param stopping (`StoppingOrdinal`)\cr see slot definition.
-#' @param increments (`IncrementsOrdinal`)\cr see slot definition.
-#' @param pl_cohort_size (`CohortSizeOrdinal`)\cr see slot definition.
+#' @param stopping (`Stopping`)\cr see slot definition.
+#' @param increments (`Increments`)\cr see slot definition.
+#' @param pl_cohort_size (`CohortSize`)\cr see slot definition.
 #' @inheritDotParams RuleDesignOrdinal
 #'
 #' @export

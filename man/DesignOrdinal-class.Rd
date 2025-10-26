@@ -21,17 +21,17 @@ DesignOrdinal(
 \arguments{
 \item{model}{(\code{LogisticLogNormalOrdinal})\cr see slot definition.}
 
-\item{stopping}{(\code{StoppingOrdinal})\cr see slot definition.}
+\item{stopping}{(\code{Stopping})\cr see slot definition.}
 
-\item{increments}{(\code{IncrementsOrdinal})\cr see slot definition.}
+\item{increments}{(\code{Increments})\cr see slot definition.}
 
-\item{pl_cohort_size}{(\code{CohortSizeOrdinal})\cr see slot definition.}
+\item{pl_cohort_size}{(\code{CohortSize})\cr see slot definition.}
 
 \item{...}{
   Arguments passed on to \code{\link[=RuleDesignOrdinal]{RuleDesignOrdinal}}
   \describe{
     \item{\code{next_best}}{(\code{NextBestOrdinal})\cr see slot definition.}
-    \item{\code{cohort_size}}{(\code{CohortSizeOrdinal})\cr see slot definition.}
+    \item{\code{cohort_size}}{(\code{CohortSize})\cr see slot definition.}
     \item{\code{data}}{(\code{DataOrdinal})\cr see slot definition.}
     \item{\code{starting_dose}}{(\code{number})\cr see slot definition.}
   }}
@@ -44,16 +44,26 @@ between this class and its parent \code{\link{RuleDesignOrdinal}} class is that 
 \code{\link{DesignOrdinal}} class contains additional \code{model}, \code{stopping},
 \code{increments} and \code{pl_cohort_size} slots.
 }
+\details{
+Please note that stopping, increments or cohort size rules need to be wrapped into
+the corresponding \link{StoppingOrdinal}, \link{IncrementsOrdinal} or \link{CohortSizeOrdinal} classes, before
+a successful evaluation of the corresponding methods can take place.
+Note also that these wrappers cannot be nested, i.e., you cannot have an \link{IncrementsOrdinal} inside
+another \link{IncrementsOrdinal} (which also would not make sense) because it would not be clear which
+event grade to use for the methods calculation.
+However, multiple rules can be combined using the operators defined for these classes, e.g.,
+\code{StoppingOrdinal(1L, rule1 & rule2) | StoppingOrdinal(2L, rule3)}.
+}
 \section{Slots}{
 
 \describe{
 \item{\code{model}}{(\code{LogisticLogNormalOrdinal})\cr the model to be used.}
 
-\item{\code{stopping}}{(\code{StoppingOrdinal})\cr stopping rule(s) for the trial.}
+\item{\code{stopping}}{(\code{Stopping})\cr stopping rule(s) for the trial.}
 
-\item{\code{increments}}{(\code{IncrementsOrdinal})\cr how to control increments between dose levels.}
+\item{\code{increments}}{(\code{Increments})\cr how to control increments between dose levels.}
 
-\item{\code{pl_cohort_size}}{(\code{CohortSizeOrdinal})\cr rules for the cohort sizes for placebo,
+\item{\code{pl_cohort_size}}{(\code{CohortSize})\cr rules for the cohort sizes for placebo,
 if any planned (defaults to constant 0 placebo patients).}
 }}
 
