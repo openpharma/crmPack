@@ -67,9 +67,9 @@ test_that("plot-DualSimulations works correctly", {
   expect_equal(result_rho$labels$y, "Correlation estimates")
 
   # Test sigma2W plot specifically
-  result_sigma2W <- plot(mySims, type = "sigma2W")
-  expect_s3_class(result_sigma2W, "ggplot")
-  expect_equal(result_sigma2W$labels$y, "Biomarker variance estimates")
+  result_sigma2w <- plot(mySims, type = "sigma2W")
+  expect_s3_class(result_sigma2w, "ggplot")
+  expect_equal(result_sigma2w$labels$y, "Biomarker variance estimates")
 })
 
 # summary ----
@@ -424,17 +424,17 @@ test_that("plot-GeneralSimulationsSummary works correctly", {
   simSummary <- summary(mySims, truth = myTruth)
 
   # Test different plot types
-  result_nObs <- plot(simSummary, type = "nObs")
-  expect_s3_class(result_nObs, "ggplot")
+  result_n_obs <- plot(simSummary, type = "nObs")
+  expect_s3_class(result_n_obs, "ggplot")
 
-  result_doseSelected <- plot(simSummary, type = "doseSelected")
-  expect_s3_class(result_doseSelected, "ggplot")
+  result_dose_selected <- plot(simSummary, type = "doseSelected")
+  expect_s3_class(result_dose_selected, "ggplot")
 
-  result_propDLTs <- plot(simSummary, type = "propDLTs")
-  expect_s3_class(result_propDLTs, "ggplot")
+  result_prop_dlts <- plot(simSummary, type = "propDLTs")
+  expect_s3_class(result_prop_dlts, "ggplot")
 
-  result_nAboveTarget <- plot(simSummary, type = "nAboveTarget")
-  expect_s3_class(result_nAboveTarget, "ggplot")
+  result_n_above_target <- plot(simSummary, type = "nAboveTarget")
+  expect_s3_class(result_n_above_target, "ggplot")
 
   # Test multiple plot types
   result_multiple <- plot(simSummary, type = c("nObs", "doseSelected"))
@@ -483,8 +483,8 @@ test_that("plot-SimulationsSummary works correctly", {
   simSummary <- summary(mySims, truth = myTruth)
 
   # Test meanFit plot (specific to SimulationsSummary)
-  result_meanFit <- plot(simSummary, type = "meanFit")
-  expect_s3_class(result_meanFit, "ggplot")
+  result_mean_fit <- plot(simSummary, type = "meanFit")
+  expect_s3_class(result_mean_fit, "ggplot")
 
   # Test combination with general plots
   result_multiple <- plot(simSummary, type = c("meanFit", "nObs"))
@@ -507,13 +507,13 @@ test_that("plot-DualSimulationsSummary works correctly", {
   )
 
   # Test meanBiomarkerFit plot (specific to DualSimulationsSummary)
-  result_meanBioFit <- plot(simSummary, type = "meanBiomarkerFit")
-  expect_s3_class(result_meanBioFit, "ggplot")
-  expect_equal(result_meanBioFit$labels$x, "Dose level")
-  expect_equal(result_meanBioFit$labels$y, "Biomarker level")
+  result_mean_bio_fit <- plot(simSummary, type = "meanBiomarkerFit")
+  expect_s3_class(result_mean_bio_fit, "ggplot")
+  expect_equal(result_mean_bio_fit$labels$x, "Dose level")
+  expect_equal(result_mean_bio_fit$labels$y, "Biomarker level")
 
   # Check that plot has the expected structure
-  expect_true(length(result_meanBioFit$layers) > 0)
+  expect_true(length(result_mean_bio_fit$layers) > 0)
   expect_equal(length(simSummary@dose_grid), length(simSummary@dose_grid))
 
   # Test combination with other plots
@@ -522,9 +522,9 @@ test_that("plot-DualSimulationsSummary works correctly", {
   expect_equal(dim(result_multiple), c(2, 1)) # Should have 2 rows, 1 column
 
   # Test additional dual-specific plot types
-  result_nObs <- plot(simSummary, type = "nObs")
-  expect_s3_class(result_nObs, "ggplot")
+  result_n_obs <- plot(simSummary, type = "nObs")
+  expect_s3_class(result_n_obs, "ggplot")
 
-  result_doseSelected <- plot(simSummary, type = "doseSelected")
-  expect_s3_class(result_doseSelected, "ggplot")
+  result_dose_selected <- plot(simSummary, type = "doseSelected")
+  expect_s3_class(result_dose_selected, "ggplot")
 })
