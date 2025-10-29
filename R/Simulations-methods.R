@@ -149,7 +149,7 @@ setMethod(
             group = Statistic,
             linetype = Statistic
           ),
-          size = 1.2,
+          linewidth = 1.2,
           colour = "blue",
           data = traj.df
         ) +
@@ -246,7 +246,7 @@ setMethod(
 ##' @return A single \code{\link[ggplot2]{ggplot}} object if a single plot is
 ##' asked for, otherwise a `gtable` object.
 ##'
-##' @importFrom ggplot2 qplot coord_flip scale_x_discrete
+##' @importFrom ggplot2 ggplot geom_boxplot coord_flip scale_x_discrete
 ##' @importFrom gridExtra arrangeGrob
 ##'
 ##' @example examples/Simulations-method-plot-DualSimulations.R
@@ -298,32 +298,27 @@ setMethod(
     if ("sigma2W" %in% type) {
       ## save the plot
       plotList[[plotIndex <- plotIndex + 1L]] <-
-        qplot(
-          factor(0),
-          y = y,
+        ggplot(
           data = data.frame(y = x@sigma2w_est),
-          geom = "boxplot",
-          xlab = "",
-          ylab = "Biomarker variance estimates"
+          aes(x = factor(0), y = y)
         ) +
+        geom_boxplot() +
         coord_flip() +
-        scale_x_discrete(breaks = NULL)
+        scale_x_discrete(breaks = NULL) +
+        xlab("") +
+        ylab("Biomarker variance estimates")
     }
 
     ## correlation estimates boxplot
     if ("rho" %in% type) {
       ## save the plot
       plotList[[plotIndex <- plotIndex + 1L]] <-
-        qplot(
-          factor(0),
-          y = y,
-          data = data.frame(y = x@rho_est),
-          geom = "boxplot",
-          xlab = "",
-          ylab = "Correlation estimates"
-        ) +
+        ggplot(data = data.frame(y = x@rho_est), aes(x = factor(0), y = y)) +
+        geom_boxplot() +
         coord_flip() +
-        scale_x_discrete(breaks = NULL)
+        scale_x_discrete(breaks = NULL) +
+        xlab("") +
+        ylab("Correlation estimates")
     }
 
     ## then finally plot everything
@@ -2265,16 +2260,12 @@ setMethod(
     if ("sigma2" %in% type) {
       ## save the plot
       plotList[[plotIndex <- plotIndex + 1L]] <-
-        qplot(
-          factor(0),
-          y = y,
-          data = data.frame(y = x@sigma2_est),
-          geom = "boxplot",
-          xlab = "",
-          ylab = "Efficacy variance estimates"
-        ) +
+        ggplot(data = data.frame(y = x@sigma2_est), aes(x = factor(0), y = y)) +
+        geom_boxplot() +
         coord_flip() +
-        scale_x_discrete(breaks = NULL)
+        scale_x_discrete(breaks = NULL) +
+        xlab("") +
+        ylab("Efficacy variance estimates")
     }
 
     ## then finally plot everything
@@ -2375,16 +2366,15 @@ setMethod(
     if ("sigma2betaW" %in% type) {
       ## save the plot
       plotList[[plotIndex <- plotIndex + 1L]] <-
-        qplot(
-          factor(0),
-          y = y,
+        ggplot(
           data = data.frame(y = x@sigma2_beta_w_est),
-          geom = "boxplot",
-          xlab = "",
-          ylab = "Random walk model variance estimates"
+          aes(x = factor(0), y = y)
         ) +
+        geom_boxplot() +
         coord_flip() +
-        scale_x_discrete(breaks = NULL)
+        scale_x_discrete(breaks = NULL) +
+        xlab("") +
+        ylab("Random walk model variance estimates")
     }
 
     ## then finally plot everything
