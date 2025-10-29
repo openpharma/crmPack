@@ -53,7 +53,7 @@ saveRDS(
   testthat::test_path("fixtures", "default_da_simulations.Rds")
 )
 
-# DualSimulationsSummary ----
+# DualSimulations ----
 
 empty_data <- DataDual(doseGrid = c(1, 3, 5, 10, 15, 20, 25, 30))
 
@@ -127,7 +127,7 @@ true_tox <- function(dose) {
   pnorm((dose - 60) / 10)
 }
 
-.default_dual_simulations_summary <- simulate(
+.default_dual_simulations <- simulate(
   object = my_design,
   trueTox = true_tox,
   trueBiomarker = true_biomarker,
@@ -141,6 +141,6 @@ true_tox <- function(dose) {
 )
 
 saveRDS(
-  .default_dual_simulations_summary,
-  testthat::test_path("fixtures", "default_dual_simulations_summary.Rds")
+  .default_dual_simulations,
+  testthat::test_path("fixtures", "default_dual_simulations.Rds")
 )

@@ -20,10 +20,10 @@ testthat::local_mocked_bindings(
 )
 
 testthat::local_mocked_bindings(
-  .DefaultDualSimulationsSummary = function(...) {
+  .DefaultDualSimulations = function(...) {
     readRDS(testthat::test_path(
       "fixtures",
-      "default_dual_simulations_summary.Rds"
+      "default_dual_simulations.Rds"
     ))
   }
 )
