@@ -28,7 +28,7 @@ saveRDS(
 
 design <- .DefaultDADesign()
 myTruth <- probFunction(design@model, alpha0 = 2, alpha1 = 3)
-exp_cond.cdf <- function(x, onset = 15) {
+exp_cond_cdf <- function(x, onset = 15) {
   # nolint
   a <- stats::pexp(28, 1 / onset, lower.tail = FALSE)
   1 - (stats::pexp(x, 1 / onset, lower.tail = FALSE) - a) / (1 - a)
@@ -38,7 +38,7 @@ exp_cond.cdf <- function(x, onset = 15) {
   design,
   args = NULL,
   truthTox = myTruth,
-  truthSurv = exp_cond.cdf,
+  truthSurv = exp_cond_cdf,
   trueTmax = 80,
   nsim = 2,
   seed = 819,
@@ -53,7 +53,7 @@ saveRDS(
   testthat::test_path("fixtures", "default_da_simulations.Rds")
 )
 
-# DualSimulationsSummary ----
+# DualSimulations ----
 
 empty_data <- DataDual(doseGrid = c(1, 3, 5, 10, 15, 20, 25, 30))
 
@@ -127,7 +127,7 @@ true_tox <- function(dose) {
   pnorm((dose - 60) / 10)
 }
 
-.default_dual_simulations_summary <- simulate(
+.default_dual_simulations <- simulate(
   object = my_design,
   trueTox = true_tox,
   trueBiomarker = true_biomarker,
@@ -141,6 +141,6 @@ true_tox <- function(dose) {
 )
 
 saveRDS(
-  .default_dual_simulations_summary,
-  testthat::test_path("fixtures", "default_dual_simulations_summary.Rds")
+  .default_dual_simulations,
+  testthat::test_path("fixtures", "default_dual_simulations.Rds")
 )

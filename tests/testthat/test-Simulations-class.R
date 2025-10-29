@@ -19,10 +19,10 @@ testthat::local_mocked_bindings(
 )
 
 testthat::local_mocked_bindings(
-  .DefaultDualSimulationsSummary = function(...) {
+  .DefaultDualSimulations = function(...) {
     readRDS(testthat::test_path(
       "fixtures",
-      "default_dual_simulations_summary.Rds"
+      "default_dual_simulations.Rds"
     ))
   }
 )
@@ -212,6 +212,11 @@ test_that("DualSimulations user constructor arguments names are as expected", {
   )
 })
 
+test_that("DualSimulations generator function works as expected", {
+  result <- expect_silent(.DefaultDualSimulations())
+  expect_valid(result, "DualSimulations")
+})
+
 # GeneralSimulationsSummary ----
 test_that("GeneralSimulationsSummary generates object correctly", {
   target_value <- 1
@@ -274,11 +279,6 @@ test_that("DualSimulationsSummary object can be created with the user constructo
     biomarker_fit_at_dose_most_selected
   )
   expect_identical(result@mean_biomarker_fit, mean_biomarker_fit)
-})
-
-test_that("DualSimulationsSummary generator function works as expected", {
-  result <- expect_silent(.DefaultDualSimulationsSummary())
-  expect_valid(result, "DualSimulations")
 })
 
 # PseudoSimulations-class ----
