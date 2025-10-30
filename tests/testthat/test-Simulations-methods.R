@@ -10,6 +10,21 @@ testthat::local_mocked_bindings(
   }
 )
 
+testthat::local_mocked_bindings(
+  .DefaultPseudoSimulations = function(...) {
+    readRDS(testthat::test_path("fixtures", "default_pseudo_simulations.Rds"))
+  }
+)
+
+testthat::local_mocked_bindings(
+  .DefaultPseudoDualSimulations = function(...) {
+    readRDS(testthat::test_path(
+      "fixtures",
+      "default_pseudo_dual_simulations.Rds"
+    ))
+  }
+)
+
 # plot ----
 
 ## plot-GeneralSimulations ----
@@ -527,4 +542,367 @@ test_that("plot-DualSimulationsSummary works correctly", {
 
   result_dose_selected <- plot(simSummary, type = "doseSelected")
   expect_s3_class(result_dose_selected, "ggplot")
+})
+
+# show-PseudoSimulationsSummary ----
+
+test_that("show-PseudoSimulationsSummary works correctly", {
+  pseudo_sims <- .DefaultPseudoSimulations()
+  pseudo_summary <- summary(
+    pseudo_sims,
+    truth = function(x) plogis(-3 + 0.05 * x),
+    targetEndOfTrial = 0.3,
+    targetDuringTrial = 0.35
+  )
+
+  # Test that show method produces output
+  expect_output(show(pseudo_summary), "Summary of")
+  expect_output(show(pseudo_summary), "simulations")
+  expect_output(show(pseudo_summary), "Target probability of DLE")
+  expect_output(show(pseudo_summary), "dose level corresponds")
+  expect_output(show(pseudo_summary), "Number of patients overall")
+  expect_output(show(pseudo_summary), "Number of patients treated above")
+
+  # Test that it returns invisibly a data frame
+  result <- capture.output(show_result <- show(pseudo_summary))
+  expect_true(is.data.frame(show_result))
+  expect_true(ncol(show_result) > 0)
+})
+
+test_that("show-PseudoSimulationsSummary produces expected output format", {
+  pseudo_sims <- .DefaultPseudoSimulations()
+  pseudo_summary <- summary(pseudo_sims, truth = function(x) {
+    plogis(-3 + 0.05 * x)
+  })
+
+  # Capture the output for detailed testing
+  output <- capture.output(show(pseudo_summary))
+
+  # Test specific content patterns
+  expect_true(any(grepl("Target probability.*end of a trial.*%", output)))
+  expect_true(any(grepl("dose level corresponds.*target.*TDEOT", output)))
+  expect_true(any(grepl("TDEOT at dose Grid", output)))
+  expect_true(any(grepl("Target.*during a trial.*%", output)))
+  expect_true(any(grepl("TDDT at dose Grid", output)))
+  expect_true(any(grepl("Number of patients overall", output)))
+  expect_true(any(grepl(
+    "Number of patients treated above.*end of a trial",
+    output
+  )))
+  expect_true(any(grepl(
+    "Number of patients treated above.*during a trial",
+    output
+  )))
+})
+
+# plot-PseudoSimulationsSummary ----
+
+test_that("plot-PseudoSimulationsSummary works correctly", {
+  pseudo_sims <- .DefaultPseudoSimulations()
+  pseudo_summary <- summary(pseudo_sims, truth = function(x) {
+    plogis(-3 + 0.05 * x)
+  })
+
+  # Test default plot types
+  result <- plot(pseudo_summary)
+  expect_s3_class(result, "gtable")
+  expect_equal(dim(result)[1], 5) # Should have 5 plots by default
+
+  # Test individual plot types
+  result_nobs <- plot(pseudo_summary, type = "nObs")
+  expect_s3_class(result_nobs, "ggplot")
+  expect_equal(result_nobs$labels$x, "Number of patients in total")
+
+  result_dose <- plot(pseudo_summary, type = "doseSelected")
+  expect_s3_class(result_dose, "ggplot")
+  expect_equal(result_dose$labels$x, "MTD estimate")
+
+  result_prop <- plot(pseudo_summary, type = "propDLE")
+  expect_s3_class(result_prop, "ggplot")
+  expect_equal(result_prop$labels$x, "Proportion of DLE [%]")
+
+  result_target <- plot(pseudo_summary, type = "nAboveTargetEndOfTrial")
+  expect_s3_class(result_target, "ggplot")
+  expect_equal(
+    result_target$labels$x,
+    "Number of patients treated above target p(DLE) used at the end of a trial"
+  )
+
+  result_mean <- plot(pseudo_summary, type = "meanFit")
+  expect_s3_class(result_mean, "ggplot")
+  expect_true(grepl("fit", result_mean$labels$y, ignore.case = TRUE))
+})
+
+test_that("plot-PseudoSimulationsSummary handles multiple types", {
+  pseudo_sims <- .DefaultPseudoSimulations()
+  pseudo_summary <- summary(pseudo_sims, truth = function(x) {
+    plogis(-3 + 0.05 * x)
+  })
+
+  # Test multiple specific types
+  result_multi <- plot(pseudo_summary, type = c("nObs", "doseSelected"))
+  expect_s3_class(result_multi, "gtable")
+  expect_equal(dim(result_multi)[1], 2) # Should have 2 plots
+
+  # Test with all types explicitly
+  all_types <- c(
+    "nObs",
+    "doseSelected",
+    "propDLE",
+    "nAboveTargetEndOfTrial",
+    "meanFit"
+  )
+  result_all <- plot(pseudo_summary, type = all_types)
+  expect_s3_class(result_all, "gtable")
+  expect_equal(dim(result_all)[1], 5) # Should have 5 plots
+})
+
+test_that("plot-PseudoSimulationsSummary fails gracefully with bad input", {
+  pseudo_sims <- .DefaultPseudoSimulations()
+  pseudo_summary <- summary(pseudo_sims, truth = function(x) {
+    plogis(-3 + 0.05 * x)
+  })
+
+  expect_error(plot(pseudo_summary, type = "invalid_type"), "should be one of")
+  expect_error(plot(pseudo_summary, type = character(0)), "must be of length")
+})
+
+# plot-PseudoDualSimulations ----
+
+test_that("plot-PseudoDualSimulations works correctly", {
+  pseudo_dual_sims <- .DefaultPseudoDualSimulations()
+
+  # Test default plot types
+  result <- plot(pseudo_dual_sims)
+  expect_s3_class(result, "gtable")
+
+  # Test individual plot types
+  result_trajectory <- plot(pseudo_dual_sims, type = "trajectory")
+  expect_s3_class(result_trajectory, "ggplot")
+  expect_equal(result_trajectory$labels$x, "Patient")
+  expect_equal(result_trajectory$labels$y, "Dose Level")
+
+  result_doses <- plot(pseudo_dual_sims, type = "dosesTried")
+  expect_s3_class(result_doses, "ggplot")
+  expect_equal(result_doses$labels$x, "Dose level")
+  expect_equal(result_doses$labels$y, "Average proportion [%]")
+
+  result_sigma2 <- plot(pseudo_dual_sims, type = "sigma2")
+  expect_s3_class(result_sigma2, "ggplot")
+  expect_true(grepl("sigma2", result_sigma2$labels$y, ignore.case = TRUE))
+})
+
+test_that("plot-PseudoDualSimulations handles type combinations", {
+  pseudo_dual_sims <- .DefaultPseudoDualSimulations()
+
+  # Test multiple types
+  result_multi <- plot(pseudo_dual_sims, type = c("trajectory", "sigma2"))
+  expect_s3_class(result_multi, "gtable")
+
+  # Test all available types
+  result_all <- plot(
+    pseudo_dual_sims,
+    type = c("trajectory", "dosesTried", "sigma2")
+  )
+  expect_s3_class(result_all, "gtable")
+})
+
+test_that("plot-PseudoDualSimulations fails gracefully with bad input", {
+  pseudo_dual_sims <- .DefaultPseudoDualSimulations()
+
+  expect_error(
+    plot(pseudo_dual_sims, type = "invalid_type"),
+    "should be one of"
+  )
+  expect_error(plot(pseudo_dual_sims, type = character(0)), "must be of length")
+})
+
+# plot-PseudoDualFlexiSimulations ----
+
+test_that("plot-PseudoDualFlexiSimulations method exists", {
+  # Test that the method exists with correct signature
+  expect_true(existsMethod(
+    "plot",
+    signature = signature(x = "PseudoDualFlexiSimulations", y = "missing")
+  ))
+
+  # Test that it accepts the sigma2betaW type parameter
+  method_info <- getMethod(
+    "plot",
+    signature = signature(x = "PseudoDualFlexiSimulations", y = "missing")
+  )
+  expect_true(is.function(method_info))
+})
+
+# summary-PseudoDualSimulations ----
+
+test_that("summary-PseudoDualSimulations works correctly", {
+  pseudo_dual_sims <- .DefaultPseudoDualSimulations()
+
+  # Test basic summary call
+  result <- summary(
+    pseudo_dual_sims,
+    trueDLE = function(x) plogis(-3 + 0.05 * x),
+    trueEff = function(x) 0.2 + 0.004 * x
+  )
+
+  expect_s4_class(result, "PseudoDualSimulationsSummary")
+
+  # Test with custom target values
+  result_custom <- summary(
+    pseudo_dual_sims,
+    trueDLE = function(x) plogis(-3 + 0.05 * x),
+    trueEff = function(x) 0.2 + 0.004 * x,
+    targetEndOfTrial = 0.25,
+    targetDuringTrial = 0.30
+  )
+
+  expect_s4_class(result_custom, "PseudoDualSimulationsSummary")
+  expect_equal(result_custom@target_end_of_trial, 0.25)
+})
+
+test_that("summary-PseudoDualSimulations produces expected structure", {
+  pseudo_dual_sims <- .DefaultPseudoDualSimulations()
+
+  result <- summary(
+    pseudo_dual_sims,
+    trueDLE = function(x) plogis(-3 + 0.05 * x),
+    trueEff = function(x) 0.2 + 0.004 * x
+  )
+
+  # Test inheritance from parent class
+  expect_true(is(result, "PseudoDualSimulationsSummary"))
+  expect_true(is(result, "PseudoSimulationsSummary"))
+
+  # Test that dual-specific slots exist
+  expect_true("target_gstar" %in% slotNames(result))
+  expect_true("target_gstar_at_dose_grid" %in% slotNames(result))
+  expect_true("gstar_summary" %in% slotNames(result))
+  expect_true("eff_fit_at_dose_most_selected" %in% slotNames(result))
+  expect_true("mean_eff_fit" %in% slotNames(result))
+})
+
+# summary-PseudoDualFlexiSimulations ----
+
+test_that("summary-PseudoDualFlexiSimulations method exists and has correct signature", {
+  # Test that the method exists with correct signature
+  expect_true(existsMethod(
+    "summary",
+    signature = signature(object = "PseudoDualFlexiSimulations")
+  ))
+
+  # Test parameter handling
+  method_info <- getMethod(
+    "summary",
+    signature = signature(object = "PseudoDualFlexiSimulations")
+  )
+  expect_true("targetEndOfTrial" %in% names(formals(method_info)))
+  expect_true("targetDuringTrial" %in% names(formals(method_info)))
+})
+
+# show-PseudoDualSimulationsSummary ----
+
+test_that("show-PseudoDualSimulationsSummary works correctly", {
+  pseudo_dual_sims <- .DefaultPseudoDualSimulations()
+  pseudo_dual_summary <- summary(
+    pseudo_dual_sims,
+    trueDLE = function(x) plogis(-3 + 0.05 * x),
+    trueEff = function(x) 0.2 + 0.004 * x
+  )
+
+  # Test that show method produces output
+  expect_output(show(pseudo_dual_summary), "Target Gstar")
+  expect_output(show(pseudo_dual_summary), "maximum gain value")
+  expect_output(show(pseudo_dual_summary), "Target Gstar at dose Grid")
+
+  # Test that it calls parent method
+  expect_output(show(pseudo_dual_summary), "Summary of")
+  expect_output(show(pseudo_dual_summary), "simulations")
+
+  # Test that it returns a data frame invisibly
+  result_output <- capture.output(show_result <- show(pseudo_dual_summary))
+  expect_true(is.data.frame(show_result))
+})
+
+test_that("show-PseudoDualSimulationsSummary includes dual-specific content", {
+  pseudo_dual_sims <- .DefaultPseudoDualSimulations()
+  pseudo_dual_summary <- summary(
+    pseudo_dual_sims,
+    trueDLE = function(x) plogis(-3 + 0.05 * x),
+    trueEff = function(x) 0.2 + 0.004 * x
+  )
+
+  output <- capture.output(show(pseudo_dual_summary))
+
+  # Test dual-specific content
+  expect_true(any(grepl("Target Gstar.*maximum gain value", output)))
+  expect_true(any(grepl("Target Gstar at dose Grid", output)))
+
+  # Test that parent content is also included
+  expect_true(any(grepl("Target probability of DLE", output)))
+  expect_true(any(grepl("Number of patients", output)))
+})
+
+# plot-PseudoDualSimulationsSummary ----
+
+test_that("plot-PseudoDualSimulationsSummary works correctly", {
+  pseudo_dual_sims <- .DefaultPseudoDualSimulations()
+  pseudo_dual_summary <- summary(
+    pseudo_dual_sims,
+    trueDLE = function(x) plogis(-3 + 0.05 * x),
+    trueEff = function(x) 0.2 + 0.004 * x
+  )
+
+  # Test default behavior
+  result <- plot(pseudo_dual_summary)
+  expect_s3_class(result, "gtable")
+
+  # Test dual-specific plot type
+  result_eff <- plot(pseudo_dual_summary, type = "meanEffFit")
+  expect_s3_class(result_eff, "ggplot")
+  expect_true(
+    grepl("efficacy", result_eff$labels$y, ignore.case = TRUE) ||
+      grepl("eff", result_eff$labels$y, ignore.case = TRUE)
+  )
+
+  # Test combination with parent types
+  result_combo <- plot(pseudo_dual_summary, type = c("nObs", "meanEffFit"))
+  expect_s3_class(result_combo, "gtable")
+  expect_equal(dim(result_combo)[1], 2)
+
+  # Test all available types
+  all_types <- c(
+    "nObs",
+    "doseSelected",
+    "propDLE",
+    "nAboveTargetEndOfTrial",
+    "meanFit",
+    "meanEffFit"
+  )
+  result_all <- plot(pseudo_dual_summary, type = all_types)
+  expect_s3_class(result_all, "gtable")
+  expect_equal(dim(result_all)[1], 6)
+})
+
+test_that("plot-PseudoDualSimulationsSummary handles edge cases", {
+  pseudo_dual_sims <- .DefaultPseudoDualSimulations()
+  pseudo_dual_summary <- summary(
+    pseudo_dual_sims,
+    trueDLE = function(x) plogis(-3 + 0.05 * x),
+    trueEff = function(x) 0.2 + 0.004 * x
+  )
+
+  # Test error handling
+  expect_error(
+    plot(pseudo_dual_summary, type = "invalid_type"),
+    "should be one of"
+  )
+  expect_error(
+    plot(pseudo_dual_summary, type = character(0)),
+    "must be of length"
+  )
+
+  # Test single dual-specific type
+  result_single <- plot(pseudo_dual_summary, type = "meanEffFit")
+  expect_s3_class(result_single, "ggplot")
 })

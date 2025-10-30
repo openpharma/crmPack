@@ -144,3 +144,124 @@ saveRDS(
   .default_dual_simulations,
   testthat::test_path("fixtures", "default_dual_simulations.Rds")
 )
+
+# PseudoSimulations ----
+
+# Create data
+pseudo_data <- Data(doseGrid = seq(25, 300, 25))
+
+# Create model
+pseudo_model <- LogisticIndepBeta(
+  binDLE = c(1.05, 1.8),
+  DLEweights = c(3, 3),
+  DLEdose = c(25, 300),
+  data = pseudo_data
+)
+
+# Create NextBest rule
+pseudo_next_best <- NextBestTDsamples(
+  prob_target_drt = 0.35,
+  prob_target_eot = 0.3,
+  derive = function(samples) {
+    as.numeric(quantile(samples, probs = 0.3))
+  }
+)
+
+# Create design
+pseudo_design <- TDsamplesDesign(
+  model = pseudo_model,
+  nextBest = pseudo_next_best,
+  stopping = StoppingMinPatients(nPatients = 12),
+  increments = IncrementsRelative(
+    intervals = c(25, 300),
+    increments = c(2, 2)
+  ),
+  cohort_size = CohortSizeConst(size = 3),
+  data = pseudo_data,
+  startingDose = 25
+)
+
+# Create truth function
+pseudo_truth <- probFunction(pseudo_model, phi1 = -53.66584, phi2 = 10.50499)
+
+.default_pseudo_simulations <- simulate(
+  object = pseudo_design,
+  args = NULL,
+  truth = pseudo_truth,
+  nsim = 1,
+  seed = 819,
+  mcmcOptions = .DefaultMcmcOptions(),
+  parallel = FALSE
+)
+
+saveRDS(
+  .default_pseudo_simulations,
+  testthat::test_path("fixtures", "default_pseudo_simulations.Rds")
+)
+
+# PseudoDualSimulations ----
+
+# Create dual data
+pseudo_dual_data <- DataDual(doseGrid = seq(25, 300, 25), placebo = FALSE)
+
+# Create DLE model
+pseudo_dle_model <- LogisticIndepBeta(
+  binDLE = c(1.05, 1.8),
+  DLEweights = c(3, 3),
+  DLEdose = c(25, 300),
+  data = pseudo_dual_data
+)
+
+# Create efficacy model
+pseudo_eff_model <- Effloglog(
+  eff = c(1.223, 2.513),
+  eff_dose = c(25, 300),
+  nu = c(a = 1, b = 0.025),
+  data = pseudo_dual_data
+)
+
+# Create dual design
+pseudo_dual_design <- DualResponsesDesign(
+  nextBest = NextBestMaxGain(
+    prob_target_drt = 0.35,
+    prob_target_eot = 0.3
+  ),
+  model = pseudo_dle_model,
+  eff_model = pseudo_eff_model,
+  stopping = StoppingMinPatients(nPatients = 12),
+  increments = IncrementsRelative(
+    intervals = c(25, 300),
+    increments = c(2, 2)
+  ),
+  cohort_size = CohortSizeConst(size = 3),
+  data = pseudo_dual_data,
+  startingDose = 25
+)
+
+# Create truth functions
+pseudo_truth_dle <- probFunction(
+  pseudo_dle_model,
+  phi1 = -53.66584,
+  phi2 = 10.50499
+)
+pseudo_truth_eff <- efficacyFunction(
+  pseudo_eff_model,
+  theta1 = -4.818429,
+  theta2 = 3.653058
+)
+
+.default_pseudo_dual_simulations <- simulate(
+  object = pseudo_dual_design,
+  args = NULL,
+  trueDLE = pseudo_truth_dle,
+  trueEff = pseudo_truth_eff,
+  trueNu = 1 / 0.025,
+  nsim = 1,
+  seed = 819,
+  parallel = FALSE
+)
+
+saveRDS(
+  .default_pseudo_dual_simulations,
+  testthat::test_path("fixtures", "default_pseudo_dual_simulations.Rds")
+)
