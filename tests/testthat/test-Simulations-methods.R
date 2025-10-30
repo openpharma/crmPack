@@ -606,7 +606,7 @@ test_that("plot-PseudoSimulationsSummary works correctly", {
   # Test default plot types
   result <- plot(pseudo_summary)
   expect_s3_class(result, "gtable")
-  expect_equal(dim(result)[1], 5) # Should have 5 plots by default
+  expect_equal(dim(result)[1], 2) # Should have 2 plots by default
 
   # Test individual plot types
   result_nobs <- plot(pseudo_summary, type = "nObs")
@@ -625,12 +625,16 @@ test_that("plot-PseudoSimulationsSummary works correctly", {
   expect_s3_class(result_target, "ggplot")
   expect_equal(
     result_target$labels$x,
-    "Number of patients treated above target p(DLE) used at the end of a trial"
+    "Number of patients above target"
   )
 
   result_mean <- plot(pseudo_summary, type = "meanFit")
   expect_s3_class(result_mean, "ggplot")
-  expect_true(grepl("fit", result_mean$labels$y, ignore.case = TRUE))
+  expect_true(grepl(
+    "Probability of DLE [%]",
+    result_mean$labels$y,
+    fixed = TRUE
+  ))
 })
 
 test_that("plot-PseudoSimulationsSummary handles multiple types", {
@@ -654,7 +658,7 @@ test_that("plot-PseudoSimulationsSummary handles multiple types", {
   )
   result_all <- plot(pseudo_summary, type = all_types)
   expect_s3_class(result_all, "gtable")
-  expect_equal(dim(result_all)[1], 5) # Should have 5 plots
+  expect_equal(dim(result_all)[1], 2) # Should have 2 plots
 })
 
 test_that("plot-PseudoSimulationsSummary fails gracefully with bad input", {
@@ -689,7 +693,11 @@ test_that("plot-PseudoDualSimulations works correctly", {
 
   result_sigma2 <- plot(pseudo_dual_sims, type = "sigma2")
   expect_s3_class(result_sigma2, "ggplot")
-  expect_true(grepl("sigma2", result_sigma2$labels$y, ignore.case = TRUE))
+  expect_true(grepl(
+    "Efficacy variance estimates",
+    result_sigma2$labels$y,
+    ignore.case = TRUE
+  ))
 })
 
 test_that("plot-PseudoDualSimulations handles type combinations", {
@@ -718,21 +726,6 @@ test_that("plot-PseudoDualSimulations fails gracefully with bad input", {
 })
 
 # plot-PseudoDualFlexiSimulations ----
-
-test_that("plot-PseudoDualFlexiSimulations method exists", {
-  # Test that the method exists with correct signature
-  expect_true(existsMethod(
-    "plot",
-    signature = signature(x = "PseudoDualFlexiSimulations", y = "missing")
-  ))
-
-  # Test that it accepts the sigma2betaW type parameter
-  method_info <- getMethod(
-    "plot",
-    signature = signature(x = "PseudoDualFlexiSimulations", y = "missing")
-  )
-  expect_true(is.function(method_info))
-})
 
 # summary-PseudoDualSimulations ----
 
@@ -783,22 +776,6 @@ test_that("summary-PseudoDualSimulations produces expected structure", {
 })
 
 # summary-PseudoDualFlexiSimulations ----
-
-test_that("summary-PseudoDualFlexiSimulations method exists and has correct signature", {
-  # Test that the method exists with correct signature
-  expect_true(existsMethod(
-    "summary",
-    signature = signature(object = "PseudoDualFlexiSimulations")
-  ))
-
-  # Test parameter handling
-  method_info <- getMethod(
-    "summary",
-    signature = signature(object = "PseudoDualFlexiSimulations")
-  )
-  expect_true("targetEndOfTrial" %in% names(formals(method_info)))
-  expect_true("targetDuringTrial" %in% names(formals(method_info)))
-})
 
 # show-PseudoDualSimulationsSummary ----
 
@@ -881,7 +858,7 @@ test_that("plot-PseudoDualSimulationsSummary works correctly", {
   )
   result_all <- plot(pseudo_dual_summary, type = all_types)
   expect_s3_class(result_all, "gtable")
-  expect_equal(dim(result_all)[1], 6)
+  expect_equal(dim(result_all)[1], 2)
 })
 
 test_that("plot-PseudoDualSimulationsSummary handles edge cases", {

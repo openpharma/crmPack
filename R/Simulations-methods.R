@@ -2180,10 +2180,14 @@ setMethod(
           xlab("Dose level") +
           ylab("Probability of DLE [%]")
       }
-    }
 
-    ## then add this plot at the bottom
-    ret <- gridExtra::arrangeGrob(ret, thisPlot)
+      ## then add this plot at the bottom
+      ret <- if (exists("ret")) {
+        gridExtra::arrangeGrob(ret, thisPlot)
+      } else {
+        thisPlot
+      }
+    }
     ret
   }
 )
