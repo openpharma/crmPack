@@ -360,7 +360,7 @@ myTruthGain <- (myTruthEff) / (1 + (myTruthDLE(d1) / (1 - myTruthDLE(d1))))
   trueEff = myTruthEff,
   trueSigma2 = 0.025,
   trueSigma2betaW = 1,
-  mcmcOptions = options,
+  mcmcOptions = .DefaultMcmcOptions(),
   nsim = 1,
   seed = 819,
   parallel = FALSE
