@@ -265,3 +265,108 @@ saveRDS(
   .default_pseudo_dual_simulations,
   testthat::test_path("fixtures", "default_pseudo_dual_simulations.Rds")
 )
+
+# PseudoDualFlexiSimulations ----
+
+## Simulate dose-escalation procedure based on DLE and efficacy responses where DLE
+## and efficacy samples are used
+data <- DataDual(doseGrid = seq(25, 300, 25), placebo = FALSE)
+
+## First for the DLE model
+## The DLE model must be of 'ModelTox' (e.g 'LogisticIndepBeta') class
+DLEmodel <- LogisticIndepBeta(
+  binDLE = c(1.05, 1.8),
+  DLEweights = c(3, 3),
+  DLEdose = c(25, 300),
+  data = data
+)
+
+## The escalation rule using the 'NextBestMaxGainSamples' class
+mynextbest <- NextBestMaxGainSamples(
+  prob_target_drt = 0.35,
+  prob_target_eot = 0.3,
+  derive = function(samples) {
+    as.numeric(quantile(samples, prob = 0.3))
+  },
+  mg_derive = function(mg_samples) {
+    as.numeric(quantile(mg_samples, prob = 0.5))
+  }
+)
+
+## The increments (see Increments class examples)
+## 200% allowable increase for dose below 300 and 200% increase for dose above 300
+myIncrements <- IncrementsRelative(
+  intervals = c(25, 300),
+  increments = c(2, 2)
+)
+
+## cohort size of 3
+mySize <- CohortSizeConst(size = 3)
+
+## Stop only when 10 subjects are treated (only for illustration such a low
+## sample size)
+myStopping <- StoppingMinPatients(nPatients = 10)
+
+## Simulate dose-escalation procedure based on DLE and efficacy responses where DLE
+## and efficacy samples are used
+## when the efficacy model is of 'EffFlexi' class
+
+Effmodel <- EffFlexi(
+  eff = c(1.223, 2.513),
+  eff_dose = c(25, 300),
+  sigma2W = c(a = 0.1, b = 0.1),
+  sigma2betaW = c(a = 20, b = 50),
+  rw1 = FALSE,
+  data = data
+)
+
+
+## Specified the design
+design <- DualResponsesSamplesDesign(
+  nextBest = mynextbest,
+  cohort_size = mySize,
+  startingDose = 25,
+  model = DLEmodel,
+  eff_model = Effmodel,
+  data = data,
+  stopping = myStopping,
+  increments = myIncrements
+)
+## specified the true DLE curve and the true expected efficacy values at all dose levels
+myTruthDLE <- probFunction(DLEmodel, phi1 = -53.66584, phi2 = 10.50499)
+
+myTruthEff <- c(
+  -0.5478867,
+  0.1645417,
+  0.5248031,
+  0.7604467,
+  0.9333009,
+  1.0687031,
+  1.1793942,
+  1.2726408,
+  1.3529598,
+  1.4233411,
+  1.4858613,
+  1.5420182
+)
+## The true gain curve can also be seen
+d1 <- data@doseGrid
+myTruthGain <- (myTruthEff) / (1 + (myTruthDLE(d1) / (1 - myTruthDLE(d1))))
+
+.default_pseudo_dual_flexi_simulations <- simulate(
+  object = design,
+  args = NULL,
+  trueDLE = myTruthDLE,
+  trueEff = myTruthEff,
+  trueSigma2 = 0.025,
+  trueSigma2betaW = 1,
+  mcmcOptions = options,
+  nsim = 1,
+  seed = 819,
+  parallel = FALSE
+)
+
+saveRDS(
+  .default_pseudo_dual_flexi_simulations,
+  testthat::test_path("fixtures", "default_pseudo_dual_flexi_simulations.Rds")
+)

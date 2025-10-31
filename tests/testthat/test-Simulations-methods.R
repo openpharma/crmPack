@@ -25,6 +25,15 @@ testthat::local_mocked_bindings(
   }
 )
 
+testthat::local_mocked_bindings(
+  .DefaultPseudoDualFlexiSimulations = function(...) {
+    readRDS(testthat::test_path(
+      "fixtures",
+      "default_pseudo_dual_flexi_simulations.Rds"
+    ))
+  }
+)
+
 # plot ----
 
 ## plot-GeneralSimulations ----
@@ -727,6 +736,33 @@ test_that("plot-PseudoDualSimulations fails gracefully with bad input", {
 
 # plot-PseudoDualFlexiSimulations ----
 
+test_that("plot-PseudoDualFlexiSimulations works correctly", {
+  pseudo_dual_flexi_sims <- .DefaultPseudoDualFlexiSimulations()
+
+  # Test default plot types
+  result <- plot(pseudo_dual_flexi_sims)
+  expect_s3_class(result, "gtable")
+
+  # Test individual plot types
+  result_trajectory <- plot(pseudo_dual_flexi_sims, type = "trajectory")
+  expect_s3_class(result_trajectory, "ggplot")
+  expect_equal(result_trajectory$labels$x, "Patient")
+  expect_equal(result_trajectory$labels$y, "Dose Level")
+
+  result_doses <- plot(pseudo_dual_flexi_sims, type = "dosesTried")
+  expect_s3_class(result_doses, "ggplot")
+  expect_equal(result_doses$labels$x, "Dose level")
+  expect_equal(result_doses$labels$y, "Average proportion [%]")
+
+  result_sigma2 <- plot(pseudo_dual_flexi_sims, type = "sigma2W")
+  expect_s3_class(result_sigma2, "ggplot")
+  expect_true(grepl(
+    "Efficacy variance estimates",
+    result_sigma2$labels$y,
+    ignore.case = TRUE
+  ))
+})
+
 # summary-PseudoDualSimulations ----
 
 test_that("summary-PseudoDualSimulations works correctly", {
@@ -776,6 +812,31 @@ test_that("summary-PseudoDualSimulations produces expected structure", {
 })
 
 # summary-PseudoDualFlexiSimulations ----
+
+test_that("summary-PseudoDualFlexiSimulations works correctly", {
+  pseudo_dual_flexi_sims <- .DefaultPseudoDualFlexiSimulations()
+
+  # Test basic summary call
+  result <- summary(
+    pseudo_dual_flexi_sims,
+    trueDLE = function(x) plogis(-3 + 0.05 * x),
+    trueEff = function(x) 0.2 + 0.004 * x
+  )
+
+  expect_s4_class(result, "PseudoDualSimulationsSummary")
+
+  # Test with custom target values
+  result_custom <- summary(
+    pseudo_dual_flexi_sims,
+    trueDLE = function(x) plogis(-3 + 0.05 * x),
+    trueEff = function(x) 0.2 + 0.004 * x,
+    targetEndOfTrial = 0.25,
+    targetDuringTrial = 0.30
+  )
+
+  expect_s4_class(result_custom, "PseudoDualSimulationsSummary")
+  expect_equal(result_custom@target_end_of_trial, 0.25)
+})
 
 # show-PseudoDualSimulationsSummary ----
 
