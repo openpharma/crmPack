@@ -1,0 +1,16 @@
+{
+	"version": "2.0.0",
+	"tasks": [
+		{
+			"type": "R",
+			"code": [
+				"testthat::test_file(\"${file}\")"
+			],
+			"problemMatcher": [
+				"$testthat"
+			],
+			"group": "test",
+			"label": "R: Test (Current File)"
+		}
+	]
+}

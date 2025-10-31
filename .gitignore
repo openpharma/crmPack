@@ -25,3 +25,4 @@ tests/vdiffr.Rout.fail
 inst/doc
 /doc/
 /Meta/
+lib/
