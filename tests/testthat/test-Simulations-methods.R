@@ -754,11 +754,19 @@ test_that("plot-PseudoDualFlexiSimulations works correctly", {
   expect_equal(result_doses$labels$x, "Dose level")
   expect_equal(result_doses$labels$y, "Average proportion [%]")
 
-  result_sigma2 <- plot(pseudo_dual_flexi_sims, type = "sigma2W")
+  result_sigma2 <- plot(pseudo_dual_flexi_sims, type = "sigma2")
   expect_s3_class(result_sigma2, "ggplot")
   expect_true(grepl(
     "Efficacy variance estimates",
     result_sigma2$labels$y,
+    ignore.case = TRUE
+  ))
+
+  result_sigma2beta_w <- plot(pseudo_dual_flexi_sims, type = "sigma2betaW")
+  expect_s3_class(result_sigma2beta_w, "ggplot")
+  expect_true(grepl(
+    "Random walk model variance estimates",
+    result_sigma2beta_w$labels$y,
     ignore.case = TRUE
   ))
 })
