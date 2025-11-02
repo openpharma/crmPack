@@ -4485,7 +4485,7 @@ setMethod(
 
                   ## update DLT free survival time of those already enrolled patients
                   if (length(id_to_deescalate_enrolled) > 0) {
-                    id_to_deescalate_surv_time <- min(
+                    id_to_deescalate_surv_time <- pmin(
                       factSurv[id_to_deescalate_enrolled],
                       this_new_dlt_time - factT0[id_to_deescalate_enrolled]
                     )
