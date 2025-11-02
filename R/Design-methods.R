@@ -4358,6 +4358,7 @@ setMethod(
             trueTmax,
             itruthSurv = itruthSurv
           ))
+
           ## should return a vector with a same dimention as thisDLTs
           if (Tmax < trueTmax) {
             thisDLTs[thisDLTs == 1 & thisSurv > Tmax] <- 0
@@ -4376,7 +4377,7 @@ setMethod(
           )
 
           thisT0 <- trialtime + c(0, cumsum(real_window))
-          ## should return a vector with a same dimention as thisDLTs
+          ## should return a vector with a same dimension as thisDLTs
 
           if (thisData@placebo) {
             thisDLTs.PL <- rbinom(
@@ -4412,18 +4413,13 @@ setMethod(
             )
         } else {
           ## JZ: since the whole y and u column need update.
-          ## factDLTs and factSuev get update and then calculate the y and u value in
+          ## factDLTs and factSurv get updated and then calculate the y and u value in
           ## thisData object
-          #
-          #                                                   ## update the data with this cohort
-          #                                                   thisData <- update(object=thisData,
-          #                                                                      x=thisDose,  ####the x will be constantly updated according to u
-          #                                                                      y=thisDLTs,
-          #                                                                      u=thisSurv)  ####the u will be constantly updated
+          oldDLTs <- factDLTs # save for below use
 
           factDLTs <- c(factDLTs, thisDLTs)
 
-          factSurv <- c(factSurv, thisSurv) # better: check the data type of factSurv and thisSurv;
+          factSurv <- c(factSurv, thisSurv)
 
           factT0 <- c(factT0, thisT0)
 
@@ -4434,46 +4430,92 @@ setMethod(
 
           ##### if there are DLTs, patients in the higher cohorts will be dosed a lower dose or discontinue.
           if (deescalate == TRUE) {
-            newDLTid <- ((factSurv + factT0) > trialtime &
-              (factSurv + factT0 - trialtime) <= tempnext &
-              factDLTs == 1)
+            are_dlts_after_trial_start <- (factSurv + factT0) > trialtime
+            are_dlts_before_open_next_cohort <- (factSurv +
+              factT0 -
+              trialtime) <=
+              tempnext
+            are_dlts_happening <- factDLTs == 1
+            is_new_dlt <- (are_dlts_after_trial_start &
+              are_dlts_before_open_next_cohort &
+              are_dlts_happening)
 
-            newDLTnum <- c(1:length(factDLTs))[newDLTid]
+            new_dlt_id <- seq_along(factDLTs)[is_new_dlt]
+            last_id_previous_cohort <- length(oldDLTs)
+            is_new_dlt_in_previous_cohort <- new_dlt_id <=
+              last_id_previous_cohort
 
-            newDLTnum <- newDLTnum[
-              newDLTnum <= (length(factDLTs) - length(thisDLTs))
-            ]
+            new_dlt_id <- new_dlt_id[is_new_dlt_in_previous_cohort]
 
-            # if(ifelse(sum(newDLTnum)==0,Inf,min(newDLTnum))<=(length(factDLTs)-length(thisDLTs))){
-            if (length(newDLTnum) > 0) {
-              for (DLT_loop in newDLTnum) {
-                newDLTtime <- (factSurv + factT0)[DLT_loop]
+            if (length(new_dlt_id) > 0) {
+              for (this_new_dlt_id in new_dlt_id) {
+                this_new_dlt_time <- (factSurv + factT0)[this_new_dlt_id]
 
                 # identify higher dose--impacted patients:
-                deescalateID <- c(DLT_loop:length(factDLTs))[
-                  c(thisData@x, rep(thisDose, length(thisDLTs)))[
-                    DLT_loop:length(factDLTs)
-                  ] >
-                    thisData@x[DLT_loop]
+                later_ids <- c(this_new_dlt_id:length(factDLTs))
+                all_doses <- c(thisData@x, rep(thisDose, length(thisDLTs)))
+                this_new_dlt_dose <- all_doses[this_new_dlt_id]
+                is_dose_higher_than_this_new_dlt_dose <- all_doses[later_ids] >
+                  this_new_dlt_dose
+                id_to_deescalate <- later_ids[
+                  is_dose_higher_than_this_new_dlt_dose
                 ]
 
-                ## DLT will be observed once the followup time >= the time to DLT
-                factDLTs[deescalateID] <- as.integer(
-                  factDLTs * (newDLTtime >= factT0 + factSurv)
-                )[deescalateID]
+                if (length(id_to_deescalate) > 0) {
+                  ## DLT will be observed once the followup time >= the time to DLT.
+                  this_new_dlt_time_after_followup <- this_new_dlt_time >=
+                    (factT0[id_to_deescalate] + factSurv[id_to_deescalate])
+                  factDLTs[id_to_deescalate] <- as.integer(
+                    factDLTs[id_to_deescalate] *
+                      this_new_dlt_time_after_followup
+                  )
 
-                ## update DLT free survival time
-                factSurv[deescalateID] <- apply(
-                  rbind(factSurv, newDLTtime - factT0),
-                  2,
-                  min
-                )[deescalateID]
+                  ## Here we need to be careful. There might be patients in the later cohort
+                  ## but have not been enrolled yet at the time of the new DLT in the previous cohort!
+                  ## For those patients, we will need to remove them from this new cohort and
+                  ## therefore reduce the size of this new cohort by the number of such patients.
+                  id_to_deescalate_not_enrolled <- id_to_deescalate[
+                    (factT0[id_to_deescalate] >= this_new_dlt_time)
+                  ]
+
+                  id_to_deescalate_enrolled <- setdiff(
+                    id_to_deescalate,
+                    id_to_deescalate_not_enrolled
+                  )
+
+                  ## update DLT free survival time of those already enrolled patients
+                  if (length(id_to_deescalate_enrolled) > 0) {
+                    id_to_deescalate_surv_time <- pmin(
+                      factSurv[id_to_deescalate_enrolled],
+                      this_new_dlt_time - factT0[id_to_deescalate_enrolled]
+                    )
+
+                    assert_true(id_to_deescalate_surv_time >= 0)
+
+                    factSurv[
+                      id_to_deescalate_enrolled
+                    ] <- id_to_deescalate_surv_time
+                  }
+
+                  if (length(id_to_deescalate_not_enrolled) > 0) {
+                    # message(
+                    #   "removed ",
+                    #   length(id_to_deescalate_not_enrolled),
+                    #   " patients in cohort ",
+                    #   max(thisData@cohort) + 1,
+                    #   " due to deescalation"
+                    # )
+                    factSurv <- factSurv[-id_to_deescalate_not_enrolled]
+                    factT0 <- factT0[-id_to_deescalate_not_enrolled]
+                    factDLTs <- factDLTs[-id_to_deescalate_not_enrolled]
+                  }
+                }
               }
 
               tempnext <- min(
                 tempnext,
                 max((factSurv + factT0)[
-                  (length(factDLTs) - length(thisDLTs) + 1):length(factDLTs)
+                  (length(oldDLTs) + 1):length(factDLTs)
                 ]) -
                   trialtime
               )
