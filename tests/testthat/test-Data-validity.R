@@ -40,21 +40,6 @@ test_that("v_data passes for valid object", {
   expect_true(v_data(object))
 })
 
-test_that("v_data returns error when only placebo in cohort", {
-  object <- h_get_data()
-
-  # We assign only placebo to all cohort 3 patients.
-  object@x[which(object@cohort == 3L)] <- object@doseGrid[1]
-
-  expect_equal(
-    v_data(object),
-    c(
-      "x must be equivalent to doseGrid[xLevel] (up to numerical tolerance)",
-      "A cohort with only placebo is not allowed"
-    )
-  )
-})
-
 test_that("v_data: error when multiple different doses in a cohort", {
   object <- h_get_data()
 

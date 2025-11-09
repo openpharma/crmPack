@@ -1797,19 +1797,19 @@ setMethod(
           }
         }
 
-        ## update the data with this placebo (if any) cohort and then with active dose
+        ## update the data with active and then placebo (if any)
+        ## because we cannot just have a cohort with only placebo patients
         if (thisData@placebo && (thisSize.PL > 0L)) {
-          thisData <- update(
-            object = thisData,
-            x = object@data@doseGrid[1],
-            y = thisDLTs.PL
-          )
-
           ## update the data with active dose
           thisData <- update(
             object = thisData,
             x = thisDose,
-            y = thisDLTs,
+            y = thisDLTs
+          )
+          thisData <- update(
+            object = thisData,
+            x = object@data@doseGrid[1],
+            y = thisDLTs.PL,
             new_cohort = FALSE
           )
         } else {
@@ -3587,6 +3587,16 @@ setMethod(
           ## what is the cohort size at this dose?
           thisSize <- size(object@cohort_size, dose = thisDose, data = thisData)
 
+          if (thisData@placebo) {
+            thisSize.PL <- size(
+              object@pl_cohort_size,
+              dose = thisDose,
+              data = thisData
+            )
+            thisProb.PL <- thisTruthDLE(thisData@doseGrid[1])
+            thisMeanEff.PL <- thisTruthEff(thisData@doseGrid[1])
+          }
+
           ## simulate DLTs: depends on whether we
           ## separate the first patient or not.
           if (firstSeparate && (thisSize > 1L)) {
@@ -4221,10 +4231,6 @@ setMethod(
         ## what is the cohort size at this dose?
         thisSize <- size(object@cohort_size, dose = thisDose, data = thisData)
 
-        thisSafetywindow <- windowLength(object@safetyWindow, thisSize)
-        # better: add a checkpoint in safetywindow--dim(safetywindow$pt)==thisSize;
-
-        ## In case there are placebo
         if (thisData@placebo) {
           thisSize.PL <- size(
             object@pl_cohort_size,
@@ -4233,33 +4239,39 @@ setMethod(
           )
         }
 
+        totalSize <- if (thisData@placebo) {
+          thisSize + thisSize.PL
+        } else {
+          thisSize
+        }
+
+        thisSafetywindow <- windowLength(object@safetyWindow, totalSize)
+
         ## simulate DLTs: depends on whether we
         ## separate the first patient or not.
-        ## amended on May 24: if any patient had DLT before the
+        ## If any patient had DLT before the
         ## first patient finished a staggered window
         ## further enrollment will be stopped;
 
-        if (firstSeparate && (thisSize > 1L)) {
-          ## dose the first patient
+        # little helper function
+        h_generate_dlt_and_surv <- function(size, prob, start = NULL) {
           thisDLTs <- rbinom(
-            n = 1L,
+            n = size,
             size = 1L,
-            prob = thisProb
+            prob = prob
           )
-
-          if (thisData@placebo) {
-            thisDLTs.PL <- rbinom(
-              n = 1L,
-              size = 1L,
-              prob = thisProb.PL
-            )
+          if (!is.null(start)) {
+            thisDLTs <- c(start$DLTs, thisDLTs)
           }
 
           thisSurv <- ceiling(rtruthSurv(
-            DLT = thisDLTs,
-            Tmax_ = trueTmax,
+            thisDLTs,
+            trueTmax,
             itruthSurv = itruthSurv
           ))
+          if (!is.null(start)) {
+            thisSurv <- c(start$Surv, thisSurv)
+          }
 
           if (Tmax < trueTmax) {
             thisDLTs[thisDLTs == 1 & thisSurv > Tmax] <- 0
@@ -4271,21 +4283,51 @@ setMethod(
             )
           }
 
+          return(list(DLTs = thisDLTs, Surv = thisSurv))
+        }
+
+        h_update_data_da <- function(active, placebo, trialtime) {
+          result <- update(
+            object = thisData,
+            y = c(factDLTs, active$DLTs),
+            u = c(factSurv, active$Surv),
+            t0 = c(factT0, thisT0),
+            x = thisDose,
+            trialtime = trialtime
+          )
+
+          if (thisData@placebo) {
+            result <- update(
+              object = result,
+              y = c(factDLTs, active$DLTs, placebo$DLTs),
+              u = c(factSurv, active$Surv, placebo$Surv),
+              t0 = c(factT0, thisT0, rep(thisT0[1], length(placebo$DLTs))),
+              x = object@data@doseGrid[1],
+              trialtime = trialtime
+            )
+          }
+
+          result
+        }
+
+        if (firstSeparate && (thisSize > 1L)) {
+          ## dose the first patient
+          active_dlt_surv <- h_generate_dlt_and_surv(1L, thisProb)
+          placebo_dlt_surv <- if (thisData@placebo && (thisSize.PL > 0L)) {
+            ## if placebo then also one placebo patient
+            h_generate_dlt_and_surv(1L, thisProb.PL)
+          } else {
+            list()
+          }
           thisT0 <- trialtime
 
           ## if there is no DLT during Safety window:
           ## and no DLTs of previous patients-->
-
-          # need to update the DataDA object
-          tempData <- update(
-            object = thisData,
-            y = c(factDLTs, thisDLTs), #### the y will be updated according to u
-            u = c(factSurv, thisSurv),
-            t0 = c(factT0, thisT0),
-            x = thisDose,
-            trialtime = trialtime + thisSafetywindow$patientGap[2]
-          ) #### the u will be updated over time
-
+          tempData <- h_update_data_da(
+            active_dlt_surv,
+            placebo_dlt_surv,
+            trialtime + thisSafetywindow$patientGap[2]
+          )
           temptime <- (tempData@u + tempData@t0)[
             tempData@y == 1 & tempData@x <= thisDose
           ]
@@ -4294,232 +4336,175 @@ setMethod(
           # if(thisSurv>thisSafetywindow$pt[2])
           if (sum(temptime > trialtime) == 0) {
             ## enroll the remaining patients
-            thisDLTs <- c(
-              thisDLTs,
-              rbinom(
-                n = thisSize - 1L,
-                size = 1L,
-                prob = thisProb
-              )
+            active_dlt_surv <- h_generate_dlt_and_surv(
+              thisSize - 1L,
+              thisProb,
+              start = active_dlt_surv
             )
-
-            thisSurv <- c(
-              thisSurv,
-              ceiling(rtruthSurv(
-                thisDLTs[-1],
-                trueTmax,
-                itruthSurv = itruthSurv
-              ))
-            )
-
-            if (Tmax < trueTmax) {
-              thisDLTs[thisDLTs == 1 & thisSurv > Tmax] <- 0
-
-              thisSurv <- apply(
-                rbind(thisSurv, rep(Tmax, length(thisSurv))),
-                2,
-                min
+            placebo_dlt_surv <- if (thisData@placebo && (thisSize.PL > 1L)) {
+              h_generate_dlt_and_surv(
+                thisSize.PL - 1L,
+                thisProb.PL,
+                start = placebo_dlt_surv
               )
+            } else {
+              list()
             }
 
             # in case any DLT happens before the end of the safety window;
             real_window <- apply(
-              rbind(thisSurv[-thisSize], thisSafetywindow$patientGap[-1]),
+              rbind(
+                c(active_dlt_surv$Surv, placebo_dlt_surv$Surv)[-thisSize],
+                thisSafetywindow$patientGap[-1]
+              ),
               2,
               min
             )
 
             thisT0 <- trialtime + c(0, cumsum(real_window))
-
-            if (thisData@placebo && (thisSize.PL > 1L)) {
-              thisDLTs.PL <- c(
-                thisDLTs.PL,
-                rbinom(
-                  n = thisSize.PL - 1L,
-                  size = 1L,
-                  prob = thisProb.PL
-                )
-              )
-            }
           }
 
           rm(tempData)
           rm(temptime)
         } else {
           ## we can directly dose all patients
-          thisDLTs <- rbinom(
-            n = thisSize,
-            size = 1L,
-            prob = thisProb
+          active_dlt_surv <- h_generate_dlt_and_surv(
+            thisSize,
+            thisProb
           )
-
-          thisSurv <- ceiling(rtruthSurv(
-            thisDLTs,
-            trueTmax,
-            itruthSurv = itruthSurv
-          ))
-
-          ## should return a vector with a same dimention as thisDLTs
-          if (Tmax < trueTmax) {
-            thisDLTs[thisDLTs == 1 & thisSurv > Tmax] <- 0
-
-            thisSurv <- apply(
-              rbind(thisSurv, rep(Tmax, length(thisSurv))),
-              2,
-              min
+          placebo_dlt_surv <- if (thisData@placebo) {
+            h_generate_dlt_and_surv(
+              thisSize.PL,
+              thisProb.PL
             )
+          } else {
+            list()
           }
+
           # in case any DLT happens before the end of the safety window;
           real_window <- apply(
-            rbind(thisSurv[-thisSize], thisSafetywindow$patientGap[-1]),
+            rbind(
+              c(active_dlt_surv$Surv, placebo_dlt_surv$Surv)[-thisSize],
+              thisSafetywindow$patientGap[-1]
+            ),
             2,
             min
           )
 
           thisT0 <- trialtime + c(0, cumsum(real_window))
           ## should return a vector with a same dimension as thisDLTs
-
-          if (thisData@placebo) {
-            thisDLTs.PL <- rbinom(
-              n = thisSize.PL,
-              size = 1L,
-              prob = thisProb.PL
-            )
-          }
         }
 
-        ## update the data with this placebo (if any)
-        ## cohort and then with active dose
-        if (thisData@placebo) {
-          thisData <- update(
-            object = thisData,
-            x = object@data@doseGrid[1],
-            y = thisDLTs.PL
-          )
+        ## JZ: since the whole y and u column need update.
+        ## factDLTs and factSurv get updated and then calculate the y and u value in
+        ## thisData object
+        oldDLTs <- factDLTs # save for below use
 
-          ## update the data with active dose
-          thisData <- update(
-            object = thisData,
-            x = thisDose,
-            y = thisDLTs,
-            new_cohort = FALSE
-          )
+        factDLTs <- c(factDLTs, placebo_dlt_surv$DLTs, active_dlt_surv$DLTs)
 
-          ## JZ: additional part for DADesign--when to start the next cohort
-          trialtime <- trialtime +
-            nextOpen(
-              window = thisSafetywindow,
-              thisSurv = thisSurv
-            )
-        } else {
-          ## JZ: since the whole y and u column need update.
-          ## factDLTs and factSurv get updated and then calculate the y and u value in
-          ## thisData object
-          oldDLTs <- factDLTs # save for below use
+        factSurv <- c(factSurv, placebo_dlt_surv$Surv, active_dlt_surv$Surv)
 
-          factDLTs <- c(factDLTs, thisDLTs)
+        factT0 <- c(
+          factT0,
+          rep(thisT0[1], length(placebo_dlt_surv$DLTs)),
+          rep(thisT0, length.out = length(active_dlt_surv$DLTs))
+        )
 
-          factSurv <- c(factSurv, thisSurv)
+        tempnext <- nextOpen(
+          window = thisSafetywindow,
+          thisSurv = c(placebo_dlt_surv$Surv, active_dlt_surv$Surv)
+        )
 
-          factT0 <- c(factT0, thisT0)
+        ##### if there are DLTs, patients in the higher cohorts will be dosed a lower dose or discontinue.
+        if (deescalate == TRUE) {
+          are_dlts_after_trial_start <- (factSurv + factT0) > trialtime
+          are_dlts_before_open_next_cohort <- (factSurv +
+            factT0 -
+            trialtime) <=
+            tempnext
+          are_dlts_happening <- factDLTs == 1
+          is_new_dlt <- (are_dlts_after_trial_start &
+            are_dlts_before_open_next_cohort &
+            are_dlts_happening)
 
-          tempnext <- nextOpen(
-            window = thisSafetywindow,
-            thisSurv = thisSurv
-          )
+          new_dlt_id <- seq_along(factDLTs)[is_new_dlt]
+          last_id_previous_cohort <- length(oldDLTs)
+          is_new_dlt_in_previous_cohort <- new_dlt_id <= last_id_previous_cohort
 
-          ##### if there are DLTs, patients in the higher cohorts will be dosed a lower dose or discontinue.
-          if (deescalate == TRUE) {
-            are_dlts_after_trial_start <- (factSurv + factT0) > trialtime
-            are_dlts_before_open_next_cohort <- (factSurv +
-              factT0 -
-              trialtime) <=
-              tempnext
-            are_dlts_happening <- factDLTs == 1
-            is_new_dlt <- (are_dlts_after_trial_start &
-              are_dlts_before_open_next_cohort &
-              are_dlts_happening)
+          new_dlt_id <- new_dlt_id[is_new_dlt_in_previous_cohort]
 
-            new_dlt_id <- seq_along(factDLTs)[is_new_dlt]
-            last_id_previous_cohort <- length(oldDLTs)
-            is_new_dlt_in_previous_cohort <- new_dlt_id <=
-              last_id_previous_cohort
+          if (length(new_dlt_id) > 0) {
+            for (this_new_dlt_id in new_dlt_id) {
+              this_new_dlt_time <- (factSurv + factT0)[this_new_dlt_id]
 
-            new_dlt_id <- new_dlt_id[is_new_dlt_in_previous_cohort]
+              # identify higher dose--impacted patients:
+              later_ids <- c(this_new_dlt_id:length(factDLTs))
+              all_doses <- c(thisData@x, rep(thisDose, length(thisDLTs)))
+              this_new_dlt_dose <- all_doses[this_new_dlt_id]
+              is_dose_higher_than_this_new_dlt_dose <- all_doses[later_ids] >
+                this_new_dlt_dose
+              id_to_deescalate <- later_ids[
+                is_dose_higher_than_this_new_dlt_dose
+              ]
 
-            if (length(new_dlt_id) > 0) {
-              for (this_new_dlt_id in new_dlt_id) {
-                this_new_dlt_time <- (factSurv + factT0)[this_new_dlt_id]
+              if (length(id_to_deescalate) > 0) {
+                ## DLT will be observed once the followup time >= the time to DLT.
+                this_new_dlt_time_after_followup <- this_new_dlt_time >=
+                  (factT0[id_to_deescalate] + factSurv[id_to_deescalate])
+                factDLTs[id_to_deescalate] <- as.integer(
+                  factDLTs[id_to_deescalate] *
+                    this_new_dlt_time_after_followup
+                )
 
-                # identify higher dose--impacted patients:
-                later_ids <- c(this_new_dlt_id:length(factDLTs))
-                all_doses <- c(thisData@x, rep(thisDose, length(thisDLTs)))
-                this_new_dlt_dose <- all_doses[this_new_dlt_id]
-                is_dose_higher_than_this_new_dlt_dose <- all_doses[later_ids] >
-                  this_new_dlt_dose
-                id_to_deescalate <- later_ids[
-                  is_dose_higher_than_this_new_dlt_dose
+                ## Here we need to be careful. There might be patients in the later cohort
+                ## but have not been enrolled yet at the time of the new DLT in the previous cohort!
+                ## For those patients, we will need to remove them from this new cohort and
+                ## therefore reduce the size of this new cohort by the number of such patients.
+                id_to_deescalate_not_enrolled <- id_to_deescalate[
+                  (factT0[id_to_deescalate] >= this_new_dlt_time)
                 ]
 
-                if (length(id_to_deescalate) > 0) {
-                  ## DLT will be observed once the followup time >= the time to DLT.
-                  this_new_dlt_time_after_followup <- this_new_dlt_time >=
-                    (factT0[id_to_deescalate] + factSurv[id_to_deescalate])
-                  factDLTs[id_to_deescalate] <- as.integer(
-                    factDLTs[id_to_deescalate] *
-                      this_new_dlt_time_after_followup
+                id_to_deescalate_enrolled <- setdiff(
+                  id_to_deescalate,
+                  id_to_deescalate_not_enrolled
+                )
+
+                ## update DLT free survival time of those already enrolled patients
+                if (length(id_to_deescalate_enrolled) > 0) {
+                  id_to_deescalate_surv_time <- pmin(
+                    factSurv[id_to_deescalate_enrolled],
+                    this_new_dlt_time - factT0[id_to_deescalate_enrolled]
                   )
 
-                  ## Here we need to be careful. There might be patients in the later cohort
-                  ## but have not been enrolled yet at the time of the new DLT in the previous cohort!
-                  ## For those patients, we will need to remove them from this new cohort and
-                  ## therefore reduce the size of this new cohort by the number of such patients.
-                  id_to_deescalate_not_enrolled <- id_to_deescalate[
-                    (factT0[id_to_deescalate] >= this_new_dlt_time)
-                  ]
+                  assert_true(id_to_deescalate_surv_time >= 0)
 
-                  id_to_deescalate_enrolled <- setdiff(
-                    id_to_deescalate,
-                    id_to_deescalate_not_enrolled
-                  )
+                  factSurv[
+                    id_to_deescalate_enrolled
+                  ] <- id_to_deescalate_surv_time
+                }
 
-                  ## update DLT free survival time of those already enrolled patients
-                  if (length(id_to_deescalate_enrolled) > 0) {
-                    id_to_deescalate_surv_time <- pmin(
-                      factSurv[id_to_deescalate_enrolled],
-                      this_new_dlt_time - factT0[id_to_deescalate_enrolled]
-                    )
-
-                    assert_true(id_to_deescalate_surv_time >= 0)
-
-                    factSurv[
-                      id_to_deescalate_enrolled
-                    ] <- id_to_deescalate_surv_time
-                  }
-
-                  if (length(id_to_deescalate_not_enrolled) > 0) {
-                    # message(
-                    #   "removed ",
-                    #   length(id_to_deescalate_not_enrolled),
-                    #   " patients in cohort ",
-                    #   max(thisData@cohort) + 1,
-                    #   " due to deescalation"
-                    # )
-                    factSurv <- factSurv[-id_to_deescalate_not_enrolled]
-                    factT0 <- factT0[-id_to_deescalate_not_enrolled]
-                    factDLTs <- factDLTs[-id_to_deescalate_not_enrolled]
-                  }
+                if (length(id_to_deescalate_not_enrolled) > 0) {
+                  # message(
+                  #   "removed ",
+                  #   length(id_to_deescalate_not_enrolled),
+                  #   " patients in cohort ",
+                  #   max(thisData@cohort) + 1,
+                  #   " due to deescalation"
+                  # )
+                  factSurv <- factSurv[-id_to_deescalate_not_enrolled]
+                  factT0 <- factT0[-id_to_deescalate_not_enrolled]
+                  factDLTs <- factDLTs[-id_to_deescalate_not_enrolled]
                 }
               }
-
-              tempnext <- min(
-                tempnext,
-                max((factSurv + factT0)[
-                  (length(oldDLTs) + 1):length(factDLTs)
-                ]) -
-                  trialtime
-              )
             }
+
+            tempnext <- min(
+              tempnext,
+              max((factSurv + factT0)[
+                (length(oldDLTs) + 1):length(factDLTs)
+              ]) -
+                trialtime
+            )
           }
 
           ## JZ: future work: additional part for DADesign--when to start the next cohort
@@ -4533,6 +4518,17 @@ setMethod(
           ## Update thisData
           ## according to what can be observed by the time when the next cohort open;
 
+          if (thisData@placebo) {
+            # the first patients are from placebo
+            thisData <- update(
+              object = thisData,
+              y = head(factDLTs, -length(active_dlt_surv$DLTs)),
+              u = head(factSurv, -length(active_dlt_surv$Surv)),
+              t0 = head(factT0, -length(active_dlt_surv$Surv)),
+              x = object@data@doseGrid[1],
+              trialtime = trialtime
+            )
+          }
           thisData <- update(
             object = thisData,
             y = factDLTs, #### the y will be updated according to u
@@ -4547,7 +4543,7 @@ setMethod(
               length(thisData@x) != length(thisData@u) ||
                 length(thisData@u) != length(thisData@y)
             ) {
-              stop("x,y,u dimention error")
+              stop("x,y,u dimension error")
             }
           )
         }

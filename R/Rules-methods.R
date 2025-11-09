@@ -1772,6 +1772,9 @@ setMethod(
     data = "Data"
   ),
   definition = function(increments, data, ...) {
+    if (data@nObs == 0L) {
+      return(Inf)
+    }
     last_dose <- data@x[data@nObs]
     # Determine in which interval the `last_dose` is.
     assert_true(last_dose >= head(increments@intervals, 1))

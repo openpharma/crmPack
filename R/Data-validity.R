@@ -101,20 +101,7 @@ h_validate_common_data_slots <- function(object) {
     h_all_equivalent(object@x, object@doseGrid[object@xLevel]),
     "x must be equivalent to doseGrid[xLevel] (up to numerical tolerance)"
   )
-  if (object@placebo) {
-    is_placebo <- object@x == object@doseGrid[1]
-    v$check(
-      test_set_equal(object@cohort, object@cohort[!is_placebo]),
-      "A cohort with only placebo is not allowed"
-    )
-    v$check(
-      h_doses_unique_per_cohort(
-        dose = object@x[!is_placebo],
-        cohort = object@cohort[!is_placebo]
-      ),
-      "There must be only one dose level, other than placebo, per cohort"
-    )
-  } else {
+  if (!object@placebo) {
     v$check(
       h_doses_unique_per_cohort(dose = object@x, cohort = object@cohort),
       "There must be only one dose level per cohort"
