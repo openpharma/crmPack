@@ -1773,6 +1773,10 @@ setMethod(
   ),
   definition = function(increments, data, ...) {
     if (data@nObs == 0L) {
+      # In this case we return Inf, because there is no restriction
+      # from this stopping rule because we cannot reference any
+      # previous dose. In practice this does not matter because
+      # there is a starting dose fixed externally anyway.
       return(Inf)
     }
     last_dose <- data@x[data@nObs]

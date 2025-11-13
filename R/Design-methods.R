@@ -2857,14 +2857,13 @@ setMethod(
       # Ensure minimum is 0.
       individual_check[individual_check < 0] <- 0
       follow_up <- apply(rbind(surv_times, individual_check), 2, min)
-      return(
-        all(
-          (follow_up -
-            apply(rbind(window$patientFollow, surv_times), 2, min)) >=
-            0
-        ) &
-          (max(follow_up) >= min(window$patientFollowMin, max(surv_times)))
-      )
+
+      all(
+        (follow_up -
+          apply(rbind(window$patientFollow, surv_times), 2, min)) >=
+          0
+      ) &
+        (max(follow_up) >= min(window$patientFollowMin, max(surv_times)))
     }
 
     # Determine when to open the next cohort.
@@ -2891,8 +2890,7 @@ setMethod(
       } else {
         time <- max_time
       }
-
-      return(time)
+      time
     }
 
     # Function to run a single simulation.
@@ -2967,17 +2965,15 @@ setMethod(
             size = 1L,
             prob = prob
           )
-          if (!is.null(start)) {
-            dlts <- c(start$DLTs, dlts)
-          }
-
           surv_times <- ceiling(generate_surv_times(
             dlts,
             trueTmax,
             inverse_surv = inverse_truth_surv
           ))
+
           if (!is.null(start)) {
-            surv_times <- c(start$Surv, surv_times)
+            dlts <- c(start$dlts, dlts)
+            surv_times <- c(start$surv, surv_times)
           }
 
           if (t_max < trueTmax) {
@@ -2990,15 +2986,15 @@ setMethod(
             )
           }
 
-          return(list(DLTs = dlts, Surv = surv_times))
+          return(list(dlts = dlts, surv = surv_times))
         }
 
         # Update data with active and placebo cohorts.
         h_update_data_da <- function(active, placebo, time) {
           result <- update(
             object = data,
-            y = c(observed_dlts, active$DLTs),
-            u = c(observed_surv, active$Surv),
+            y = c(observed_dlts, active$dlts),
+            u = c(observed_surv, active$surv),
             t0 = c(observed_t0, cohort_t0),
             x = dose,
             trialtime = time
@@ -3007,12 +3003,12 @@ setMethod(
           if (data@placebo) {
             result <- update(
               object = result,
-              y = c(observed_dlts, active$DLTs, placebo$DLTs),
-              u = c(observed_surv, active$Surv, placebo$Surv),
+              y = c(observed_dlts, active$dlts, placebo$dlts),
+              u = c(observed_surv, active$surv, placebo$surv),
               t0 = c(
                 observed_t0,
                 cohort_t0,
-                rep(cohort_t0[1], length(placebo$DLTs))
+                rep(cohort_t0[1], length(placebo$dlts))
               ),
               x = object@data@doseGrid[1],
               trialtime = time
@@ -3031,6 +3027,7 @@ setMethod(
           } else {
             list()
           }
+
           cohort_t0 <- trial_time
 
           # Check if there are DLTs during safety window.
@@ -3064,7 +3061,7 @@ setMethod(
             # Adjust for DLTs happening before end of safety window.
             real_window <- apply(
               rbind(
-                c(active_dlt_surv$Surv, placebo_dlt_surv$Surv)[-cohort_size],
+                c(active_dlt_surv$surv, placebo_dlt_surv$surv)[-cohort_size],
                 safety_window$patientGap[-1]
               ),
               2,
@@ -3094,7 +3091,7 @@ setMethod(
           # Adjust for DLTs happening before end of safety window.
           real_window <- apply(
             rbind(
-              c(active_dlt_surv$Surv, placebo_dlt_surv$Surv)[-cohort_size],
+              c(active_dlt_surv$surv, placebo_dlt_surv$surv)[-cohort_size],
               safety_window$patientGap[-1]
             ),
             2,
@@ -3109,25 +3106,25 @@ setMethod(
 
         observed_dlts <- c(
           observed_dlts,
-          placebo_dlt_surv$DLTs,
-          active_dlt_surv$DLTs
+          placebo_dlt_surv$dlts,
+          active_dlt_surv$dlts
         )
 
         observed_surv <- c(
           observed_surv,
-          placebo_dlt_surv$Surv,
-          active_dlt_surv$Surv
+          placebo_dlt_surv$surv,
+          active_dlt_surv$surv
         )
 
         observed_t0 <- c(
           observed_t0,
-          rep(cohort_t0[1], length(placebo_dlt_surv$DLTs)),
-          rep(cohort_t0, length.out = length(active_dlt_surv$DLTs))
+          rep(cohort_t0[1], length(placebo_dlt_surv$dlts)),
+          rep(cohort_t0, length.out = length(active_dlt_surv$dlts))
         )
 
         time_to_next <- next_open(
           window = safety_window,
-          surv_times = c(placebo_dlt_surv$Surv, active_dlt_surv$Surv)
+          surv_times = c(placebo_dlt_surv$surv, active_dlt_surv$surv)
         )
 
         # Handle deescalation if DLTs occur in previous cohorts.
@@ -3158,7 +3155,7 @@ setMethod(
 
               # Identify patients at higher doses who are impacted.
               later_ids <- c(this_new_dlt_id:length(observed_dlts))
-              all_doses <- c(data@x, rep(dose, length(active_dlt_surv$DLTs)))
+              all_doses <- c(data@x, rep(dose, length(active_dlt_surv$dlts)))
               this_new_dlt_dose <- all_doses[this_new_dlt_id]
               is_dose_higher_than_this_new_dlt_dose <- all_doses[later_ids] >
                 this_new_dlt_dose
@@ -3216,40 +3213,40 @@ setMethod(
                 trial_time
             )
           }
+        }
 
-          # Update trial time.
-          trial_time <- trial_time + time_to_next
+        # Update trial time.
+        trial_time <- trial_time + time_to_next
 
-          # Update data object with observations available when next cohort opens.
-          if (data@placebo) {
-            # First patients are from placebo.
-            data <- update(
-              object = data,
-              y = head(observed_dlts, -length(active_dlt_surv$DLTs)),
-              u = head(observed_surv, -length(active_dlt_surv$Surv)),
-              t0 = head(observed_t0, -length(active_dlt_surv$Surv)),
-              x = object@data@doseGrid[1],
-              trialtime = trial_time
-            )
-          }
+        # Update data object with observations available when next cohort opens.
+        if (data@placebo) {
+          # First patients are from placebo.
           data <- update(
             object = data,
-            y = observed_dlts,
-            u = observed_surv,
-            t0 = observed_t0,
-            x = dose,
+            y = head(observed_dlts, -length(active_dlt_surv$dlts)),
+            u = head(observed_surv, -length(active_dlt_surv$surv)),
+            t0 = head(observed_t0, -length(active_dlt_surv$surv)),
+            x = object@data@doseGrid[1],
             trialtime = trial_time
           )
-
-          try(
-            if (
-              length(data@x) != length(data@u) ||
-                length(data@u) != length(data@y)
-            ) {
-              stop("x,y,u dimension error")
-            }
-          )
         }
+        data <- update(
+          object = data,
+          y = observed_dlts,
+          u = observed_surv,
+          t0 = observed_t0,
+          x = dose,
+          trialtime = trial_time
+        )
+
+        try(
+          if (
+            length(data@x) != length(data@u) ||
+              length(data@u) != length(data@y)
+          ) {
+            stop("x,y,u dimension error")
+          }
+        )
 
         # Calculate dose limit.
         dose_limit <- maxDose(object@increments, data = data)
@@ -3696,7 +3693,7 @@ setGeneric(
 
 ## Design ----
 
-#' @describeIn examine Examine a model-based CRM
+#' @describeIn examine Examine a model-based CRM.
 #'
 #' @param mcmcOptions ([`McmcOptions`])\cr giving the MCMC options
 #'   for each evaluation in the trial. By default, the standard options are used.
@@ -4012,7 +4009,7 @@ setMethod(
 
 ## DADesign ----
 
-#' @describeIn examine Examine a model-based CRM
+#' @describeIn examine Examine a model-based CRM.
 #'
 #' @param mcmcOptions ([`McmcOptions`])\cr
 #'   giving the MCMC options for each evaluation in the trial. By default,
@@ -4091,6 +4088,7 @@ setMethod(
       safety_window <- windowLength(object@safetyWindow, cohort_size)
 
       # When cohort patients start relative to trial clock.
+
       cohort_t0 <- trial_time + cumsum(safety_window$patientGap)
 
       # Append placeholders for the incoming cohort (no DLTs yet, censored at t_max).

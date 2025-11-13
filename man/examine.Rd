@@ -54,11 +54,11 @@ listed.
 }
 \section{Functions}{
 \itemize{
-\item \code{examine(Design)}: Examine a model-based CRM
+\item \code{examine(Design)}: Examine a model-based CRM.
 
 \item \code{examine(RuleDesign)}: Examine a rule-based design.
 
-\item \code{examine(DADesign)}: Examine a model-based CRM
+\item \code{examine(DADesign)}: Examine a model-based CRM.
 
 }}
 \examples{
