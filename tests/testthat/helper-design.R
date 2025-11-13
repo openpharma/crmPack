@@ -194,10 +194,10 @@ h_get_design_da <- function(placebo = FALSE) {
   )
 
   npiece_ <- 10
-  Tmax_ <- 60
+  t_max <- 60
 
   lambda_prior <- function(k) {
-    npiece_ / (Tmax_ * (npiece_ - k + 0.5))
+    npiece_ / (t_max * (npiece_ - k + 0.5))
   }
 
   model <- DALogisticLogNormal(

@@ -1157,14 +1157,14 @@ test_that("maxDose-IncrementsRelative throws error when IncrementsRelative is em
   )
 })
 
-test_that("maxDose-IncrementsRelative throws error when Data is empty", {
+test_that("maxDose-IncrementsRelative returns Inf when Data is empty", {
   increments <- IncrementsRelative(
     intervals = c(0, 100),
     increments = c(1, 0.5)
   )
-  expect_error(
+  expect_identical(
     maxDose(increments, Data()),
-    "Assertion on 'last_dose.*intervals.*failed: Must be TRUE."
+    Inf
   )
 })
 

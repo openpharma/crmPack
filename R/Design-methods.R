@@ -2840,7 +2840,7 @@ setMethod(
 
       # Ensure results are always positive.
       surv_times[surv_times == 0] <- 0.5
-      return(surv_times)
+      surv_times
     }
 
     # Check if follow-up requirements are fulfilled for opening next cohort.
@@ -2986,7 +2986,7 @@ setMethod(
             )
           }
 
-          return(list(dlts = dlts, surv = surv_times))
+          list(dlts = dlts, surv = surv_times)
         }
 
         # Update data with active and placebo cohorts.
@@ -3879,8 +3879,7 @@ setMethod(
         stop_already ||
         stop_no_increment
     }
-
-    return(ret)
+    ret
   }
 )
 

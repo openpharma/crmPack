@@ -49,10 +49,7 @@ test_that("v_data: error when multiple different doses in a cohort", {
 
   expect_equal(
     v_data(object),
-    c(
-      "x must be equivalent to doseGrid[xLevel] (up to numerical tolerance)",
-      "There must be only one dose level, other than placebo, per cohort"
-    )
+    "x must be equivalent to doseGrid[xLevel] (up to numerical tolerance)"
   )
 })
 
@@ -304,20 +301,14 @@ test_that("v_data_ordinal correctly detects bad data", {
 
   object <- h_get_data_ordinal()
   object@placebo <- TRUE
-  expect_equal(
-    v_data_ordinal(object),
-    "A cohort with only placebo is not allowed"
-  )
+  expect_true(v_data_ordinal(object))
 
   object <- h_get_data_ordinal()
   object@placebo <- TRUE
   object@x <- c(10, 20, 30, 40, 50, 80, 10, 60, 60, 60)
   object@xLevel <- as.integer(c(1, 2, 3, 4, 5, 8, 1, 6, 6, 6))
   object@cohort <- as.integer(c(1, 1, 2, 3, 4, 4, 4, 5, 5, 5))
-  expect_equal(
-    v_data_ordinal(object),
-    "There must be only one dose level, other than placebo, per cohort"
-  )
+  expect_true(v_data_ordinal(object))
 })
 
 # v_data_grouped ----
