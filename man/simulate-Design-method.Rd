@@ -19,18 +19,17 @@
 )
 }
 \arguments{
-\item{object}{the \code{\linkS4class{Design}} object we want to simulate
-data from}
+\item{object}{the \code{\link{Design}} object we want to simulate data from}
 
-\item{nsim}{the number of simulations (default: 1)}
+\item{nsim}{(\code{count})\cr the number of simulations (default: 1)}
 
-\item{seed}{see \code{\link{set_seed}}}
+\item{seed}{see \code{\link[=set_seed]{set_seed()}}}
 
-\item{truth}{a function which takes as input a dose (vector) and returns the
+\item{truth}{(\code{function})\cr a function which takes as input a dose (vector) and returns the
 true probability (vector) for toxicity. Additional arguments can be supplied
 in \code{args}.}
 
-\item{args}{data frame with arguments for the \code{truth} function. The
+\item{args}{(\code{data.frame})\cr data frame with arguments for the \code{truth} function. The
 column names correspond to the argument names, the rows to the values of the
 arguments. The rows are appropriately recycled in the \code{nsim}
 simulations. In order to produce outcomes from the posterior predictive
@@ -38,31 +37,31 @@ distribution, e.g, pass an \code{object} that contains the data observed so
 far, \code{truth} contains the \code{prob} function from the model in
 \code{object}, and \code{args} contains posterior samples from the model.}
 
-\item{firstSeparate}{enroll the first patient separately from the rest of
+\item{firstSeparate}{(\code{flag})\cr enroll the first patient separately from the rest of
 the cohort? (not default) If yes, the cohort will be closed if a DLT occurs
 in this patient.}
 
-\item{mcmcOptions}{object of class \code{\linkS4class{McmcOptions}},
+\item{mcmcOptions}{(\link{McmcOptions})\cr object of class \code{\link{McmcOptions}},
 giving the MCMC options for each evaluation in the trial. By default,
 the standard options are used}
 
-\item{parallel}{should the simulation runs be parallelized across the
+\item{parallel}{(\code{flag})\cr should the simulation runs be parallelized across the
 clusters of the computer? (not default)}
 
-\item{nCores}{how many cores should be used for parallel computing?
+\item{nCores}{(\code{count})\cr how many cores should be used for parallel computing?
 Defaults to the number of cores on the machine, maximum 5.}
 
-\item{derive}{a named list of functions which derives statistics, based on the
+\item{derive}{(\code{list})\cr a named list of functions which derives statistics, based on the
 vector of posterior MTD samples. Each list element must therefore accept
 one and only one argument, which is a numeric vector, and return a number.}
 
-\item{\dots}{not used}
+\item{...}{not used}
 }
 \value{
-an object of class \code{\linkS4class{Simulations}}
+an object of class \code{\link{Simulations}}
 }
 \description{
-Simulate outcomes from a CRM design
+\ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#stable}{\figure{lifecycle-stable.svg}{options: alt='[Stable]'}}}{\strong{[Stable]}}
 }
 \examples{
 # nolint start
@@ -147,4 +146,3 @@ time <- system.time(
 
 # nolint end
 }
-\keyword{methods}

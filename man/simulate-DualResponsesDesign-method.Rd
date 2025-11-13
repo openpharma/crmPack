@@ -2,11 +2,7 @@
 % Please edit documentation in R/Design-methods.R
 \name{simulate,DualResponsesDesign-method}
 \alias{simulate,DualResponsesDesign-method}
-\title{This is a methods to simulate dose escalation procedure using both DLE and efficacy responses.
-This is a method based on the \code{\linkS4class{DualResponsesDesign}} where DLEmodel used are of
-\code{\linkS4class{ModelTox}} class object and efficacy model used are of \code{\linkS4class{ModelEff}}
-class object. In addition, no DLE and efficacy samples are involved or generated in the simulation
-process}
+\title{Simulate dose escalation procedure using both DLE and efficacy responses without samples}
 \usage{
 \S4method{simulate}{DualResponsesDesign}(
   object,
@@ -23,46 +19,48 @@ process}
 )
 }
 \arguments{
-\item{object}{the \code{\linkS4class{DualResponsesDesign}} object we want to simulate the data from}
+\item{object}{the \code{\link{DualResponsesDesign}} object we want to simulate the data from}
 
-\item{nsim}{the number of simulations (default :1)}
+\item{nsim}{(\code{count})\cr the number of simulations (default: 1)}
 
-\item{seed}{see \code{\link{set_seed}}}
+\item{seed}{see \code{\link[=set_seed]{set_seed()}}}
 
-\item{trueDLE}{a function which takes as input a dose (vector) and returns the true probability
+\item{trueDLE}{(\code{function})\cr a function which takes as input a dose (vector) and returns the true probability
 (vector) of the occurrence of a DLE. Additional arguments can be supplied in \code{args}.}
 
-\item{trueEff}{a function which takes as input a dose (vector) and returns the expected efficacy
+\item{trueEff}{(\code{function})\cr a function which takes as input a dose (vector) and returns the expected efficacy
 responses (vector). Additional arguments can be supplied in \code{args}.}
 
-\item{trueNu}{the precision, the inverse of the variance of the efficacy responses}
+\item{trueNu}{(\code{number})\cr the precision, the inverse of the variance of the efficacy responses}
 
-\item{args}{data frame with arguments for the \code{trueDLE} and
+\item{args}{(\code{data.frame})\cr data frame with arguments for the \code{trueDLE} and
 \code{trueEff} function. The column names correspond to the argument
 names, the rows to the values of the arguments. The rows are appropriately
 recycled in the \code{nsim} simulations.}
 
-\item{firstSeparate}{enroll the first patient separately from the rest of
+\item{firstSeparate}{(\code{flag})\cr enroll the first patient separately from the rest of
 the cohort? (not default) If yes, the cohort will be closed if a DLT occurs
 in this patient.}
 
-\item{parallel}{should the simulation runs be parallelized across the
+\item{parallel}{(\code{flag})\cr should the simulation runs be parallelized across the
 clusters of the computer? (not default)}
 
-\item{nCores}{how many cores should be used for parallel computing?
+\item{nCores}{(\code{count})\cr how many cores should be used for parallel computing?
 Defaults to the number of cores on the machine, maximum 5.}
 
-\item{\dots}{not used}
+\item{...}{not used}
 }
 \value{
-an object of class \code{\linkS4class{PseudoDualSimulations}}
+an object of class \code{\link{PseudoDualSimulations}}
 }
 \description{
-This is a methods to simulate dose escalation procedure using both DLE and efficacy responses.
-This is a method based on the \code{\linkS4class{DualResponsesDesign}} where DLEmodel used are of
-\code{\linkS4class{ModelTox}} class object and efficacy model used are of \code{\linkS4class{ModelEff}}
+\ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#stable}{\figure{lifecycle-stable.svg}{options: alt='[Stable]'}}}{\strong{[Stable]}}
+
+This is a method to simulate dose escalation procedure using both DLE and efficacy responses.
+This is a method based on the \code{\link{DualResponsesDesign}} where DLE model used are of
+\code{\link{ModelTox}} class object and efficacy model used are of \code{\link{ModelEff}}
 class object. In addition, no DLE and efficacy samples are involved or generated in the simulation
-process
+process.
 }
 \examples{
 # nolint start
@@ -144,4 +142,3 @@ mySim <- simulate(
 
 # nolint end
 }
-\keyword{methods}

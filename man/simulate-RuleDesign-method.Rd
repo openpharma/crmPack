@@ -16,35 +16,34 @@
 )
 }
 \arguments{
-\item{object}{the \code{\linkS4class{RuleDesign}} object we want to simulate
-data from}
+\item{object}{the \code{\link{RuleDesign}} object we want to simulate data from}
 
-\item{nsim}{the number of simulations (default: 1)}
+\item{nsim}{(\code{count})\cr the number of simulations (default: 1)}
 
-\item{seed}{see \code{\link{set_seed}}}
+\item{seed}{see \code{\link[=set_seed]{set_seed()}}}
 
-\item{truth}{a function which takes as input a dose (vector) and returns the
+\item{truth}{(\code{function})\cr a function which takes as input a dose (vector) and returns the
 true probability (vector) for toxicity. Additional arguments can be supplied
 in \code{args}.}
 
-\item{args}{data frame with arguments for the \code{truth} function. The
+\item{args}{(\code{data.frame})\cr data frame with arguments for the \code{truth} function. The
 column names correspond to the argument names, the rows to the values of the
 arguments. The rows are appropriately recycled in the \code{nsim}
 simulations.}
 
-\item{parallel}{should the simulation runs be parallelized across the
+\item{parallel}{(\code{flag})\cr should the simulation runs be parallelized across the
 clusters of the computer? (not default)}
 
-\item{nCores}{how many cores should be used for parallel computing?
+\item{nCores}{(\code{count})\cr how many cores should be used for parallel computing?
 Defaults to the number of cores on the machine, maximum 5.}
 
-\item{\dots}{not used}
+\item{...}{not used}
 }
 \value{
-an object of class \code{\linkS4class{GeneralSimulations}}
+an object of class \code{\link{GeneralSimulations}}
 }
 \description{
-Simulate outcomes from a rule-based design
+\ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#stable}{\figure{lifecycle-stable.svg}{options: alt='[Stable]'}}}{\strong{[Stable]}}
 }
 \examples{
 # nolint start
@@ -82,4 +81,3 @@ threeSims <- simulate(
 
 # nolint end
 }
-\keyword{methods}

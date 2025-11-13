@@ -22,56 +22,54 @@
 )
 }
 \arguments{
-\item{object}{the \code{\linkS4class{DualDesign}} object we want to simulate
-data from}
+\item{object}{the \code{\link{DualDesign}} object we want to simulate data from}
 
-\item{nsim}{the number of simulations (default: 1)}
+\item{nsim}{(\code{count})\cr the number of simulations (default: 1)}
 
-\item{seed}{see \code{\link{set_seed}}}
+\item{seed}{see \code{\link[=set_seed]{set_seed()}}}
 
-\item{trueTox}{a function which takes as input a dose (vector) and returns the
+\item{trueTox}{(\code{function})\cr a function which takes as input a dose (vector) and returns the
 true probability (vector) for toxicity. Additional arguments can be supplied
 in \code{args}.}
 
-\item{trueBiomarker}{a function which takes as input a dose (vector) and
+\item{trueBiomarker}{(\code{function})\cr a function which takes as input a dose (vector) and
 returns the true biomarker level (vector). Additional arguments can be
 supplied in \code{args}.}
 
-\item{args}{data frame with arguments for the \code{trueTox} and
+\item{args}{(\code{data.frame})\cr data frame with arguments for the \code{trueTox} and
 \code{trueBiomarker} function. The column names correspond to the argument
 names, the rows to the values of the arguments. The rows are appropriately
 recycled in the \code{nsim} simulations.}
 
-\item{sigma2W}{variance for the biomarker measurements}
+\item{sigma2W}{(\code{number})\cr variance for the biomarker measurements}
 
-\item{rho}{correlation between toxicity and biomarker measurements (default:
-0)}
+\item{rho}{(\code{number})\cr correlation between toxicity and biomarker measurements (default: 0)}
 
-\item{firstSeparate}{enroll the first patient separately from the rest of
+\item{firstSeparate}{(\code{flag})\cr enroll the first patient separately from the rest of
 the cohort? (not default) If yes, the cohort will be closed if a DLT occurs
 in this patient.}
 
-\item{mcmcOptions}{object of class \code{\linkS4class{McmcOptions}},
+\item{mcmcOptions}{(\link{McmcOptions})\cr object of class \code{\link{McmcOptions}},
 giving the MCMC options for each evaluation in the trial. By default,
 the standard options are used}
 
-\item{parallel}{should the simulation runs be parallelized across the
+\item{parallel}{(\code{flag})\cr should the simulation runs be parallelized across the
 clusters of the computer? (not default)}
 
-\item{nCores}{how many cores should be used for parallel computing?
+\item{nCores}{(\code{count})\cr how many cores should be used for parallel computing?
 Defaults to the number of cores on the machine, maximum 5.}
 
-\item{derive}{a named list of functions which derives statistics, based on the
+\item{derive}{(\code{list})\cr a named list of functions which derives statistics, based on the
 vector of posterior MTD samples. Each list element must therefore accept
 one and only one argument, which is a numeric vector, and return a number.}
 
-\item{\dots}{not used}
+\item{...}{not used}
 }
 \value{
-an object of class \code{\linkS4class{DualSimulations}}
+an object of class \code{\link{DualSimulations}}
 }
 \description{
-Simulate outcomes from a dual-endpoint design
+\ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#stable}{\figure{lifecycle-stable.svg}{options: alt='[Stable]'}}}{\strong{[Stable]}}
 }
 \examples{
 # nolint start
@@ -185,4 +183,3 @@ mySims <- simulate(
 
 # nolint end
 }
-\keyword{methods}

@@ -2,7 +2,7 @@
 % Please edit documentation in R/Design-methods.R
 \name{simulate,DADesign-method}
 \alias{simulate,DADesign-method}
-\title{Simulate outcomes from a time-to-DLT augmented CRM design (\code{DADesign})}
+\title{Simulate outcomes from a time-to-DLT augmented CRM design}
 \usage{
 \S4method{simulate}{DADesign}(
   object,
@@ -23,61 +23,66 @@
 )
 }
 \arguments{
-\item{object}{the \code{\linkS4class{DADesign}} object we want to simulate
-data from}
+\item{object}{the \code{\link{DADesign}} object we want to simulate data from}
 
-\item{nsim}{the number of simulations (default: 1)}
+\item{nsim}{(\code{count})\cr the number of simulations (default: 1)}
 
-\item{seed}{see \code{\link{set_seed}}}
+\item{seed}{see \code{\link[=set_seed]{set_seed()}}}
 
-\item{truthTox}{a function which takes as input a dose (vector) and returns the
+\item{truthTox}{(\code{function})\cr a function which takes as input a dose (vector) and returns the
 true probability (vector) for toxicity and the time DLT occurs. Additional
 arguments can be supplied in \code{args}.}
 
-\item{truthSurv}{a CDF which takes as input a time (vector) and returns
+\item{truthSurv}{(\code{function})\cr a CDF which takes as input a time (vector) and returns
 the true cumulative probability (vector) that the DLT would occur conditioning on the patient
 has DLTs.}
 
-\item{trueTmax}{(\code{number} or \code{NULL})\cr the true maximum time at which DLTs can occur. Note that this must be larger thank \code{Tmax} from the \code{object}'s base data, which is the length of the DLT window, i.e. until which time DLTs are officially declared as such and used in the trial.}
+\item{trueTmax}{(\code{number} or \code{NULL})\cr the true maximum time at which DLTs can occur.
+Note that this must be larger than \code{Tmax} from the \code{object}'s base data, which is
+the length of the DLT window, i.e. until which time DLTs are officially declared
+as such and used in the trial.}
 
-\item{args}{data frame with arguments for the \code{truth} function. The
+\item{args}{(\code{data.frame})\cr data frame with arguments for the \code{truthTox} function. The
 column names correspond to the argument names, the rows to the values of the
 arguments. The rows are appropriately recycled in the \code{nsim}
 simulations. In order to produce outcomes from the posterior predictive
 distribution, e.g, pass an \code{object} that contains the data observed so
-far, \code{truth} contains the \code{prob} function from the model in
+far, \code{truthTox} contains the \code{prob} function from the model in
 \code{object}, and \code{args} contains posterior samples from the model.}
 
-\item{firstSeparate}{enroll the first patient separately from the rest of
+\item{firstSeparate}{(\code{flag})\cr enroll the first patient separately from the rest of
 the cohort? (not default) If yes, the cohort will be closed if a DLT occurs
 in this patient.}
 
-\item{deescalate}{deescalation when a DLT occurs in cohorts with lower dose
-level.}
+\item{deescalate}{(\code{flag})\cr allow deescalation when a DLT occurs in cohorts with lower dose
+level? (default: TRUE)}
 
-\item{mcmcOptions}{object of class \code{\linkS4class{McmcOptions}},
+\item{mcmcOptions}{(\link{McmcOptions})\cr object of class \code{\link{McmcOptions}},
 giving the MCMC options for each evaluation in the trial. By default,
 the standard options are used.}
 
-\item{DA}{document or rename this parameter to make it more meaningful}
+\item{DA}{(\code{flag})\cr use dose-adaptation rules? (default: TRUE)}
 
-\item{parallel}{should the simulation runs be parallelized across the
+\item{parallel}{(\code{flag})\cr should the simulation runs be parallelized across the
 clusters of the computer? (not default)}
 
-\item{nCores}{how many cores should be used for parallel computing?
-Defaults to the number of cores on the machine (maximum 5)}
+\item{nCores}{(\code{count})\cr how many cores should be used for parallel computing?
+Defaults to the number of cores on the machine, maximum 5.}
 
-\item{derive}{a named list of functions which derives statistics, based on the
+\item{derive}{(\code{list})\cr a named list of functions which derives statistics, based on the
 vector of posterior MTD samples. Each list element must therefore accept
 one and only one argument, which is a numeric vector, and return a number.}
 
-\item{\dots}{not used}
+\item{...}{not used}
 }
 \value{
-an object of class \code{\linkS4class{Simulations}}
+an object of class \code{\link{Simulations}}
 }
 \description{
-Simulate outcomes from a time-to-DLT augmented CRM design (\code{DADesign})
+\ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#stable}{\figure{lifecycle-stable.svg}{options: alt='[Stable]'}}}{\strong{[Stable]}}
+
+This method simulates dose escalation trials using time-to-DLT data,
+where the timing of dose-limiting toxicities is explicitly modeled.
 }
 \examples{
 # nolint start
@@ -185,4 +190,3 @@ mySims <- simulate(design,
 
 # nolint end
 }
-\keyword{methods}

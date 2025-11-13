@@ -2,9 +2,7 @@
 % Please edit documentation in R/Design-methods.R
 \name{simulate,TDsamplesDesign-method}
 \alias{simulate,TDsamplesDesign-method}
-\title{This is a methods to simulate dose escalation procedure only using the DLE responses.
-This is a method based on the \code{\linkS4class{TDsamplesDesign}} where model used are of
-\code{\linkS4class{ModelTox}} class object DLE samples are also used}
+\title{Simulate dose escalation procedure using DLE responses only with DLE samples}
 \usage{
 \S4method{simulate}{TDsamplesDesign}(
   object,
@@ -20,16 +18,16 @@ This is a method based on the \code{\linkS4class{TDsamplesDesign}} where model u
 )
 }
 \arguments{
-\item{object}{the \code{\linkS4class{TDsamplesDesign}} object we want to simulate the data from}
+\item{object}{the \code{\link{TDsamplesDesign}} object we want to simulate the data from}
 
-\item{nsim}{the number of simulations (default :1)}
+\item{nsim}{(\code{count})\cr the number of simulations (default: 1)}
 
-\item{seed}{see \code{\link{set_seed}}}
+\item{seed}{see \code{\link[=set_seed]{set_seed()}}}
 
-\item{truth}{a function which takes as input a dose (vector) and returns the true probability
+\item{truth}{(\code{function})\cr a function which takes as input a dose (vector) and returns the true probability
 (vector) of the occurrence of a DLE. Additional arguments can be supplied in \code{args}.}
 
-\item{args}{data frame with arguments for the \code{truth} function. The
+\item{args}{(\code{data.frame})\cr data frame with arguments for the \code{truth} function. The
 column names correspond to the argument names, the rows to the values of the
 arguments. The rows are appropriately recycled in the \code{nsim}
 simulations. In order to produce outcomes from the posterior predictive
@@ -37,32 +35,31 @@ distribution, e.g, pass an \code{object} that contains the data observed so
 far, \code{truth} contains the \code{prob} function from the model in
 \code{object}, and \code{args} contains posterior samples from the model.}
 
-\item{firstSeparate}{enroll the first patient separately from the rest of
+\item{firstSeparate}{(\code{flag})\cr enroll the first patient separately from the rest of
 the cohort? (not default) If yes, the cohort will be closed if a DLT occurs
 in this patient.}
 
-\item{mcmcOptions}{object of class \code{\linkS4class{McmcOptions}},
+\item{mcmcOptions}{(\link{McmcOptions})\cr object of class \code{\link{McmcOptions}},
 giving the MCMC options for each evaluation in the trial. By default,
 the standard options are used}
 
-\item{parallel}{should the simulation runs be parallelized across the
+\item{parallel}{(\code{flag})\cr should the simulation runs be parallelized across the
 clusters of the computer? (not default)}
 
-\item{nCores}{how many cores should be used for parallel computing?
+\item{nCores}{(\code{count})\cr how many cores should be used for parallel computing?
 Defaults to the number of cores on the machine, maximum 5.}
 
-\item{\dots}{not used}
+\item{...}{not used}
 }
 \value{
-an object of class \code{\linkS4class{PseudoSimulations}}
-
-@export
-@keywords methods
+an object of class \code{\link{PseudoSimulations}}
 }
 \description{
-This is a methods to simulate dose escalation procedure only using the DLE responses.
-This is a method based on the \code{\linkS4class{TDsamplesDesign}} where model used are of
-\code{\linkS4class{ModelTox}} class object DLE samples are also used
+\ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#stable}{\figure{lifecycle-stable.svg}{options: alt='[Stable]'}}}{\strong{[Stable]}}
+
+This is a method to simulate dose escalation procedure only using the DLE responses.
+This is a method based on the \code{\link{TDsamplesDesign}} where model used are of
+\code{\link{ModelTox}} class object DLE samples are also used.
 }
 \examples{
 # nolint start
