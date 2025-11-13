@@ -167,6 +167,181 @@ test_that("simulate for the class design with placebo and sentinel patients retu
   expect_equal(mySims@doses, 1)
 })
 
+test_that("Test if simulate generate the expected output.", {
+  data <- h_get_data(placebo = FALSE)
+  model <- h_get_logistic_normal()
+  increments <- h_increments_relative()
+  next_best <- h_next_best_ncrm()
+  size <- CohortSizeConst(size = 3)
+
+  # Extreme truth function, which has constant probability 1 in dose grid range.
+  truth <- probFunction(model, alpha0 = 175, alpha1 = 5)
+  stop_rule <- StoppingMinPatients(nPatients = 5)
+  design <- Design(
+    model = model,
+    stopping = stop_rule,
+    increments = increments,
+    nextBest = next_best,
+    cohort_size = size,
+    data = data,
+    startingDose = 25
+  )
+
+  my_options <- McmcOptions(
+    burnin = 100,
+    step = 2,
+    samples = 5,
+    rng_kind = "Mersenne-Twister",
+    rng_seed = 3
+  )
+
+  sim <- simulate(
+    design,
+    nsim = 1,
+    truth = truth,
+    seed = 819,
+    mcmcOptions = my_options
+  )
+
+  expect_snapshot(sim)
+})
+
+## NextBestInfTheory ----
+
+test_that("NextBestInfTheory produces consistent results for empty data", {
+  emptydata <- Data(doseGrid = seq(from = 40, to = 200, by = 10))
+
+  # Set up the model; sigma0 = 1.0278, sigma1 = 1.65, rho = 0.5.
+  model <- LogisticLogNormal(
+    mean = c(-4.47, 0.0033),
+    cov = matrix(c(1.056373, 0.847935, 0.847935, 2.722500), nrow = 2)
+  )
+
+  stop_rule <- StoppingMinPatients(nPatients = 30)
+  increments <- IncrementsRelative(interval = 0, increments = 1)
+  new_my_next_best <- NextBestInfTheory(target = 0.25, asymmetry = 0.1)
+  cohort <- CohortSizeConst(size = 3)
+  my_truth <- probFunction(model, alpha0 = 175, alpha1 = 5)
+
+  design <- Design(
+    model = model,
+    stopping = stop_rule,
+    increments = increments,
+    nextBest = new_my_next_best,
+    cohort_size = cohort,
+    data = emptydata,
+    startingDose = 40
+  )
+
+  sim <- simulate(
+    design,
+    nsim = 5,
+    truth = my_truth,
+    mcmcOptions = h_get_mcmc_options()
+  )
+
+  result <- summary(sim, truth = my_truth, target = new_my_next_best@target)
+
+  expect_equal(
+    result@fit_at_dose_most_selected,
+    c(0.985602, 0.985602, 0.985602, 0.985602, 0.985602),
+    tolerance = 1e-07
+  )
+  expect_equal(result@prop_dlts, rep(1L, 5))
+  expect_equal(result@mean_tox_risk, rep(1L, 5))
+  expect_equal(result@dose_selected, rep(40, 5))
+  expect_equal(result@tox_at_doses_selected, rep(1L, 5))
+  # expect_snapshot_value doesn't work here regardless of style
+  expect_snapshot(result@mean_fit)
+})
+
+test_that("NextBestInfTheory produces consistent results with a dataset", {
+  my_data <- h_get_data(placebo = FALSE)
+
+  # Set up the model; sigma0 = 1.0278, sigma1 = 1.65, rho = 0.5.
+  model <- LogisticLogNormal(
+    mean = c(-4.47, 0.0033),
+    cov = matrix(c(1.056373, 0.847935, 0.847935, 2.722500), nrow = 2)
+  )
+
+  stop_rule <- StoppingMinPatients(nPatients = 5)
+  increments <- IncrementsRelative(interval = 0, increments = 1)
+  new_my_next_best <- NextBestInfTheory(target = 0.25, asymmetry = 0.1)
+  cohort <- CohortSizeConst(size = 3)
+  my_truth <- probFunction(model, alpha0 = 175, alpha1 = 5)
+
+  design <- Design(
+    model = model,
+    stopping = stop_rule,
+    increments = increments,
+    nextBest = new_my_next_best,
+    cohort_size = cohort,
+    data = my_data,
+    startingDose = 25
+  )
+
+  sim <- simulate(
+    design,
+    nsim = 5,
+    truth = my_truth,
+    mcmcOptions = h_get_mcmc_options()
+  )
+
+  result <- summary(sim, truth = my_truth, target = new_my_next_best@target)
+  expect_equal(
+    result@fit_at_dose_most_selected,
+    c(0.222, 0.222, 0.222, 0.222, 0.222),
+    tolerance = 1e-02
+  )
+  expect_equal(result@prop_dlts, rep(0.267, 5), tolerance = 1e-02)
+  expect_equal(result@mean_tox_risk, rep(1L, 5))
+  expect_equal(result@dose_selected, rep(50, 5))
+  expect_equal(result@tox_at_doses_selected, rep(1L, 5))
+  # expect_snapshot_value doesn't work here, regardless of style
+  expect_snapshot(result@mean_fit)
+})
+
+## stop_reasons integration test ----
+
+test_that("stop_reasons can be NA with certain stopping rule settings", {
+  data <- h_get_data(placebo = FALSE)
+  model <- h_get_logistic_normal()
+  increments <- h_increments_relative()
+  next_best <- h_next_best_ncrm()
+  size <- CohortSizeConst(size = 3)
+  # Extreme truth function, which has constant probability 1 in dose grid range.
+  truth <- probFunction(model, alpha0 = 175, alpha1 = 5)
+  stopping <- StoppingMissingDose()
+  design <- Design(
+    model = model,
+    stopping = stopping,
+    increments = increments,
+    nextBest = next_best,
+    cohort_size = size,
+    data = data,
+    startingDose = 25
+  )
+  sim <- simulate(
+    design,
+    nsim = 5,
+    truth = truth,
+    seed = 819,
+    mcmcOptions = h_get_mcmc_options()
+  )
+  result <- sim@stop_reasons
+  # In this case the trial always stops because no dose is deemed safe enough
+  # to continue the trial. This is the default behavior of the
+  # stopTrial() method.
+  expected <- list(
+    "Next dose is NA , i.e., no active dose is safe enough according to the NextBest rule.",
+    "Next dose is NA , i.e., no active dose is safe enough according to the NextBest rule.",
+    "Next dose is NA , i.e., no active dose is safe enough according to the NextBest rule.",
+    "Next dose is NA , i.e., no active dose is safe enough according to the NextBest rule.",
+    "Next dose is NA , i.e., no active dose is safe enough according to the NextBest rule."
+  )
+  expect_identical(result, expected)
+})
+
 ## RuleDesign ----
 
 test_that("simulate-RuleDesign produces consistent results", {
@@ -497,7 +672,7 @@ test_that("simulate-DualDesign produces consistent results", {
   expect_snapshot(result)
 })
 
-# TDSamplesDesign ----
+## TDSamplesDesign ----
 
 test_that("simulate-TDSamplesDesign produces consistent results", {
   data <- Data(doseGrid = seq(25, 300, 25))
@@ -546,7 +721,58 @@ test_that("simulate-TDSamplesDesign produces consistent results", {
   expect_snapshot(result)
 })
 
-# TDDesign ----
+test_that("simulate-TDSamplesDesign produces consistent results with placebo patients", {
+  data <- Data(
+    # Note: we cannot use dose = 0 here because that would cause issues for the biomarker
+    # modeling because we transform log(dose) there.
+    doseGrid = c(1, seq(25, 300, 25)),
+    placebo = TRUE
+  )
+  model <- LogisticIndepBeta(
+    binDLE = c(1.05, 1.8),
+    DLEweights = c(3, 3),
+    DLEdose = c(25, 300),
+    data = data
+  )
+  tdNextBest <- NextBestTDsamples(
+    prob_target_drt = 0.35,
+    prob_target_eot = 0.3,
+    derive = function(samples) {
+      as.numeric(quantile(samples, probs = 0.3))
+    }
+  )
+  mySize <- CohortSizeConst(size = 3)
+  myIncrements <- IncrementsRelative(
+    intervals = c(min(data@doseGrid), max(data@doseGrid)),
+    increments = c(2, 2)
+  )
+  myStopping <- StoppingMinPatients(nPatients = 36)
+
+  design <- TDsamplesDesign(
+    model = model,
+    nextBest = tdNextBest,
+    stopping = myStopping,
+    increments = myIncrements,
+    cohort_size = mySize,
+    pl_cohort_size = CohortSizeConst(size = 1),
+    data = data,
+    startingDose = 100
+  )
+  myTruth <- probFunction(model, phi1 = -53.66584, phi2 = 10.50499)
+  options <- McmcOptions(burnin = 100, step = 2, samples = 200)
+  result <- simulate(
+    object = design,
+    args = NULL,
+    truth = myTruth,
+    nsim = 1,
+    seed = 819,
+    mcmcOptions = options,
+    parallel = FALSE
+  )
+  expect_snapshot(result)
+})
+
+## TDDesign ----
 
 test_that("simulate-TDDesign produces consistent results", {
   suppressWarnings({
@@ -565,6 +791,27 @@ test_that("simulate-TDDesign produces consistent results", {
   )
   expect_snapshot(result)
 })
+
+test_that("simulate-TDDesign with sentinel patient and placebo patients produces consistent results", {
+  suppressWarnings({
+    design <- h_get_design_tddesign(placebo = TRUE)
+  })
+
+  myTruth <- probFunction(design@model, phi1 = -53.66584, phi2 = 10.50499)
+
+  result <- simulate(
+    object = design,
+    args = NULL,
+    truth = myTruth,
+    nsim = 1,
+    seed = 819,
+    firstSeparate = TRUE,
+    parallel = FALSE
+  )
+  expect_snapshot(result)
+})
+
+## DualResponsesDesign ----
 
 test_that("simulate-DualResponsesDesign produces consistent results", {
   design <- h_get_design_dualresponses()
@@ -593,7 +840,34 @@ test_that("simulate-DualResponsesDesign produces consistent results", {
   expect_snapshot(result)
 })
 
-# DualResponsesSamplesDesign ----
+test_that("simulate-DualResponsesDesign with sentinel patient and placebo patients produces consistent results", {
+  design <- h_get_design_dualresponses(placebo = TRUE)
+  myTruthDLE <- probFunction(design@model, phi1 = -53.66584, phi2 = 10.50499)
+  myTruthEff <- efficacyFunction(
+    design@eff_model,
+    theta1 = -4.818429,
+    theta2 = 3.653058
+  )
+
+  myTruthGain <- function(dose) {
+    myTruthEff(dose) / (1 + (myTruthDLE(dose) / (1 - myTruthDLE(dose))))
+  }
+  options <- McmcOptions(burnin = 100, step = 2, samples = 200)
+  result <- simulate(
+    object = design,
+    args = NULL,
+    trueDLE = myTruthDLE,
+    trueEff = myTruthEff,
+    trueNu = 1 / 0.025,
+    nsim = 1,
+    seed = 819,
+    parallel = FALSE,
+    firstSeparate = TRUE
+  )
+  expect_snapshot(result)
+})
+
+## DualResponsesSamplesDesign ----
 
 test_that("simulate-DualResponsesSamplesDesign produces consistent results", {
   data <- DataDual(doseGrid = seq(25, 300, 25), placebo = FALSE)
@@ -668,183 +942,141 @@ test_that("simulate-DualResponsesSamplesDesign produces consistent results", {
   expect_snapshot(result)
 })
 
-# Design ----
+test_that("simulate-DualResponsesSamplesDesign with sentinel patient and placebo dose produces consistent results", {
+  data <- DataDual(doseGrid = c(10, seq(25, 300, 25)), placebo = TRUE)
+  DLEmodel <- LogisticIndepBeta(
+    binDLE = c(1.05, 1.8),
+    DLEweights = c(3, 3),
+    DLEdose = c(25, 300),
+    data = data
+  )
 
-test_that("Test if simulate generate the expected output.", {
-  data <- h_get_data(placebo = FALSE)
-  model <- h_get_logistic_normal()
-  increments <- h_increments_relative()
-  next_best <- h_next_best_ncrm()
-  size <- CohortSizeConst(size = 3)
+  Effmodel <- Effloglog(
+    eff = c(1.223, 2.513),
+    eff_dose = c(25, 300),
+    nu = c(a = 1, b = 0.025),
+    data = data
+  )
 
-  # Extreme truth function, which has constant probability 1 in dose grid range.
-  truth <- probFunction(model, alpha0 = 175, alpha1 = 5)
-  stop_rule <- StoppingMinPatients(nPatients = 5)
-  design <- Design(
-    model = model,
-    stopping = stop_rule,
-    increments = increments,
-    nextBest = next_best,
-    cohort_size = size,
+  mynextbest <- NextBestMaxGainSamples(
+    prob_target_drt = 0.35,
+    prob_target_eot = 0.3,
+    derive = function(samples) {
+      as.numeric(quantile(samples, prob = 0.3))
+    },
+    mg_derive = function(mg_samples) {
+      as.numeric(quantile(mg_samples, prob = 0.5))
+    }
+  )
+
+  myIncrements <- IncrementsRelative(
+    intervals = c(25, 300),
+    increments = c(2, 2)
+  )
+  mySize <- CohortSizeConst(size = 3)
+  myStopping <- StoppingMinPatients(nPatients = 10)
+
+  # Specified the design
+  design <- DualResponsesSamplesDesign(
+    nextBest = mynextbest,
+    cohort_size = mySize,
+    pl_cohort_size = CohortSizeConst(size = 1),
+    startingDose = 25,
+    model = DLEmodel,
+    eff_model = Effmodel,
     data = data,
-    startingDose = 25
+    stopping = myStopping,
+    increments = myIncrements
   )
 
-  my_options <- McmcOptions(
-    burnin = 100,
-    step = 2,
-    samples = 5,
-    rng_kind = "Mersenne-Twister",
-    rng_seed = 3
+  myTruthDLE <- probFunction(design@model, phi1 = -53.66584, phi2 = 10.50499)
+  myTruthEff <- efficacyFunction(
+    design@eff_model,
+    theta1 = -4.818429,
+    theta2 = 3.653058
   )
 
-  sim <- simulate(
+  myTruthGain <- function(dose) {
+    myTruthEff(dose) / (1 + (myTruthDLE(dose) / (1 - myTruthDLE(dose))))
+  }
+
+  options <- McmcOptions(burnin = 10, step = 1, samples = 50)
+  result <- simulate(
     design,
+    args = NULL,
+    trueDLE = myTruthDLE,
+    trueEff = myTruthEff,
+    trueNu = 1 / 0.025,
     nsim = 1,
-    truth = truth,
+    mcmcOptions = options,
     seed = 819,
-    mcmcOptions = my_options
+    parallel = FALSE
   )
-
-  # expect_snapshot_value doesn't work here, either in toto or slot-by-slot,
-  # regardless of style
-  expect_snapshot(sim)
+  expect_snapshot(result)
 })
 
-## NextBestInfTheory ----
-
-test_that("NextBestInfTheory produces consistent results for empty data", {
-  emptydata <- Data(doseGrid = seq(from = 40, to = 200, by = 10))
-
-  # Set up the model; sigma0 = 1.0278, sigma1 = 1.65, rho = 0.5.
-  model <- LogisticLogNormal(
-    mean = c(-4.47, 0.0033),
-    cov = matrix(c(1.056373, 0.847935, 0.847935, 2.722500), nrow = 2)
+test_that("simulate-DualResponsesSamplesDesign with EffFlexi model produces consistent results", {
+  data <- DataDual(doseGrid = seq(25, 300, 25), placebo = FALSE)
+  DLEmodel <- LogisticIndepBeta(
+    binDLE = c(1.05, 1.8),
+    DLEweights = c(3, 3),
+    DLEdose = c(25, 300),
+    data = data
   )
-
-  stop_rule <- StoppingMinPatients(nPatients = 30)
-  increments <- IncrementsRelative(interval = 0, increments = 1)
-  new_my_next_best <- NextBestInfTheory(target = 0.25, asymmetry = 0.1)
-  cohort <- CohortSizeConst(size = 3)
-  my_truth <- probFunction(model, alpha0 = 175, alpha1 = 5)
-
-  design <- Design(
-    model = model,
-    stopping = stop_rule,
-    increments = increments,
-    nextBest = new_my_next_best,
-    cohort_size = cohort,
-    data = emptydata,
-    startingDose = 40
+  Effmodel <- EffFlexi(
+    eff = c(1.223, 2.513),
+    eff_dose = c(25, 300),
+    sigma2W = c(a = 0.1, b = 0.1),
+    sigma2betaW = 0.01,
+    data = data
   )
-
-  sim <- simulate(
-    design,
-    nsim = 5,
-    truth = my_truth,
-    mcmcOptions = h_get_mcmc_options()
+  mynextbest <- NextBestMaxGainSamples(
+    prob_target_drt = 0.35,
+    prob_target_eot = 0.3,
+    derive = function(samples) {
+      as.numeric(quantile(samples, prob = 0.3))
+    },
+    mg_derive = function(mg_samples) {
+      as.numeric(quantile(mg_samples, prob = 0.5))
+    }
   )
-
-  result <- summary(sim, truth = my_truth, target = new_my_next_best@target)
-
-  expect_equal(
-    result@fit_at_dose_most_selected,
-    c(0.985602, 0.985602, 0.985602, 0.985602, 0.985602),
-    tolerance = 1e-07
+  myIncrements <- IncrementsRelative(
+    intervals = c(25, 300),
+    increments = c(2, 2)
   )
-  expect_equal(result@prop_dlts, rep(1L, 5))
-  expect_equal(result@mean_tox_risk, rep(1L, 5))
-  expect_equal(result@dose_selected, rep(40, 5))
-  expect_equal(result@tox_at_doses_selected, rep(1L, 5))
-  # expect_snapshot_value doesn't work here regardless of style
-  expect_snapshot(result@mean_fit)
-})
+  mySize <- CohortSizeConst(size = 3)
+  myStopping <- StoppingMinPatients(nPatients = 10) | StoppingMissingDose()
 
-test_that("NextBestInfTheory produces consistent results with a dataset", {
-  my_data <- h_get_data(placebo = FALSE)
-
-  # Set up the model; sigma0 = 1.0278, sigma1 = 1.65, rho = 0.5.
-  model <- LogisticLogNormal(
-    mean = c(-4.47, 0.0033),
-    cov = matrix(c(1.056373, 0.847935, 0.847935, 2.722500), nrow = 2)
-  )
-
-  stop_rule <- StoppingMinPatients(nPatients = 5)
-  increments <- IncrementsRelative(interval = 0, increments = 1)
-  new_my_next_best <- NextBestInfTheory(target = 0.25, asymmetry = 0.1)
-  cohort <- CohortSizeConst(size = 3)
-  my_truth <- probFunction(model, alpha0 = 175, alpha1 = 5)
-
-  design <- Design(
-    model = model,
-    stopping = stop_rule,
-    increments = increments,
-    nextBest = new_my_next_best,
-    cohort_size = cohort,
-    data = my_data,
-    startingDose = 25
-  )
-
-  sim <- simulate(
-    design,
-    nsim = 5,
-    truth = my_truth,
-    mcmcOptions = h_get_mcmc_options()
-  )
-
-  result <- summary(sim, truth = my_truth, target = new_my_next_best@target)
-  expect_equal(
-    result@fit_at_dose_most_selected,
-    c(0.222, 0.222, 0.222, 0.222, 0.222),
-    tolerance = 1e-02
-  )
-  expect_equal(result@prop_dlts, rep(0.267, 5), tolerance = 1e-02)
-  expect_equal(result@mean_tox_risk, rep(1L, 5))
-  expect_equal(result@dose_selected, rep(50, 5))
-  expect_equal(result@tox_at_doses_selected, rep(1L, 5))
-  # expect_snapshot_value doesn't work here, regardless of style
-  expect_snapshot(result@mean_fit)
-})
-
-## stop_reasons integration test ----
-
-test_that("stop_reasons can be NA with certain stopping rule settings", {
-  data <- h_get_data(placebo = FALSE)
-  model <- h_get_logistic_normal()
-  increments <- h_increments_relative()
-  next_best <- h_next_best_ncrm()
-  size <- CohortSizeConst(size = 3)
-  # Extreme truth function, which has constant probability 1 in dose grid range.
-  truth <- probFunction(model, alpha0 = 175, alpha1 = 5)
-  stopping <- StoppingMissingDose()
-  design <- Design(
-    model = model,
-    stopping = stopping,
-    increments = increments,
-    nextBest = next_best,
-    cohort_size = size,
+  # Specified the design
+  design <- DualResponsesSamplesDesign(
+    nextBest = mynextbest,
+    cohort_size = mySize,
+    startingDose = 25,
+    model = DLEmodel,
+    eff_model = Effmodel,
     data = data,
-    startingDose = 25
+    stopping = myStopping,
+    increments = myIncrements
   )
-  sim <- simulate(
+  myTruthDLE <- probFunction(design@model, phi1 = -53.66584, phi2 = 10.50499)
+  myTruthEff <- data@doseGrid
+  myTruthGain <- function(dose) {
+    myTruthEff(dose) / (1 + (myTruthDLE(dose) / (1 - myTruthDLE(dose))))
+  }
+  options <- McmcOptions(burnin = 10, step = 1, samples = 50)
+  result <- simulate(
     design,
-    nsim = 5,
-    truth = truth,
+    args = NULL,
+    trueDLE = myTruthDLE,
+    trueEff = myTruthEff,
+    trueNu = 1 / 0.025,
+    trueSigma2 = 0.5,
+    nsim = 1,
+    mcmcOptions = options,
     seed = 819,
-    mcmcOptions = h_get_mcmc_options()
+    parallel = FALSE
   )
-  result <- sim@stop_reasons
-  # In this case the trial always stops because no dose is deemed safe enough
-  # to continue the trial. This is the default behavior of the
-  # stopTrial() method.
-  expected <- list(
-    "Next dose is NA , i.e., no active dose is safe enough according to the NextBest rule.",
-    "Next dose is NA , i.e., no active dose is safe enough according to the NextBest rule.",
-    "Next dose is NA , i.e., no active dose is safe enough according to the NextBest rule.",
-    "Next dose is NA , i.e., no active dose is safe enough according to the NextBest rule.",
-    "Next dose is NA , i.e., no active dose is safe enough according to the NextBest rule."
-  )
-  expect_identical(result, expected)
+  expect_snapshot(result)
 })
 
 ## DesignGrouped ----
@@ -1409,6 +1641,59 @@ test_that("simulate for DesignGrouped uses DLT probabilities and cohort sizes co
   expect_true(any(table(mono_trial@cohort) > 1))
   expect_true(any(table(combo_trial@cohort) > 1))
 })
+
+## DADesign ----
+
+test_that("simulate for DADesign works consistently", {
+  design <- h_get_design_da()
+
+  myTruth <- probFunction(design@model, alpha0 = 2, alpha1 = 3)
+  exp_cond_cdf <- function(x, onset = 15) {
+    a <- pexp(28, 1 / onset, lower.tail = FALSE)
+    1 - (pexp(x, 1 / onset, lower.tail = FALSE) - a) / (1 - a)
+  }
+
+  mySims <- simulate(
+    design,
+    args = NULL,
+    truthTox = myTruth,
+    truthSurv = exp_cond_cdf,
+    trueTmax = 80,
+    nsim = 2,
+    seed = 819,
+    mcmcOptions = h_get_mcmc_options(),
+    firstSeparate = TRUE,
+    deescalate = FALSE,
+    parallel = FALSE
+  )
+  expect_snapshot(mySims)
+})
+
+test_that("simulate for DADesign with placebo and deescalation works consistently", {
+  design <- h_get_design_da(placebo = TRUE)
+
+  myTruth <- probFunction(design@model, alpha0 = 2, alpha1 = 3)
+  exp_cond_cdf <- function(x, onset = 15) {
+    a <- pexp(28, 1 / onset, lower.tail = FALSE)
+    1 - (pexp(x, 1 / onset, lower.tail = FALSE) - a) / (1 - a)
+  }
+
+  mySims <- simulate(
+    design,
+    args = NULL,
+    truthTox = myTruth,
+    truthSurv = exp_cond_cdf,
+    trueTmax = 80,
+    nsim = 2,
+    seed = 819,
+    mcmcOptions = h_get_mcmc_options(),
+    firstSeparate = FALSE,
+    deescalate = TRUE,
+    parallel = FALSE
+  )
+  expect_snapshot(mySims)
+})
+
 
 # examine ----
 

@@ -197,7 +197,7 @@ exp_cond.cdf <- function(x) {
 mySims <- simulate(design,
   args = NULL,
   truthTox = myTruth,
-  truthSurv = exp_cond.cdf, # piece_exp_cond.cdf,
+  truthSurv = exp_cond.cdf,
   trueTmax = 80,
   nsim = 2,
   seed = 819,

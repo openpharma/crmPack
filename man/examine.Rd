@@ -5,7 +5,7 @@
 \alias{examine,Design-method}
 \alias{examine,RuleDesign-method}
 \alias{examine,DADesign-method}
-\title{Obtain hypothetical trial course table for a design}
+\title{Obtain Hypothetical Trial Course Table for a Design}
 \usage{
 examine(object, ..., maxNoIncrement = 100L)
 
@@ -16,15 +16,14 @@ examine(object, ..., maxNoIncrement = 100L)
 \S4method{examine}{DADesign}(object, mcmcOptions = McmcOptions(), ..., maxNoIncrement)
 }
 \arguments{
-\item{object}{the design (\code{\linkS4class{Design}} or
-\code{\linkS4class{RuleDesign}} object) we want to examine}
+\item{object}{(\code{\link{Design}} or \code{\link{RuleDesign}})\cr the design we want to examine}
 
-\item{\dots}{additional arguments (see methods)}
+\item{...}{additional arguments (see methods)}
 
 \item{maxNoIncrement}{maximum number of contiguous next doses at 0
 DLTs that are the same as before, i.e. no increment (default to 100)}
 
-\item{mcmcOptions}{object of class \code{\linkS4class{McmcOptions}},
+\item{mcmcOptions}{(\code{\link{McmcOptions}})\cr
 giving the MCMC options for each evaluation in the trial. By default,
 the standard options are used}
 }
@@ -32,9 +31,11 @@ the standard options are used}
 The data frame
 }
 \description{
-This generic function takes a design and generates a dataframe
+This generic function takes a design and generates a \code{data.frame}
 showing the beginning of several hypothetical trial courses under
-the design. This means, from the generated dataframe one can read off:
+the design. This means, from the generated \code{data.frame} one can read off:
+}
+\details{
 \itemize{
 \item how many cohorts are required in the optimal case (no DLTs observed) in
 order to reach the highest dose of the specified dose grid (or until
@@ -43,20 +44,21 @@ the stopping rule is fulfilled)
 recommended dose is for all possible number of DLTs observed
 \item the actual relative increments that will be used in these cases
 \item whether the trial would stop at a certain cohort
+}
+
 Examining the "single trial" behavior of a dose escalation design is
 the first important step in evaluating a design, and cannot be replaced by
 studying solely the operating characteristics in "many trials". The cohort
 sizes are also taken from the design, assuming no DLTs occur until the dose
 listed.
 }
-}
 \section{Functions}{
 \itemize{
-\item \code{examine(Design)}: Examine a model-based CRM
+\item \code{examine(Design)}: Examine a model-based CRM.
 
-\item \code{examine(RuleDesign)}: Examine a rule-based design
+\item \code{examine(RuleDesign)}: Examine a rule-based design.
 
-\item \code{examine(DADesign)}: Examine a model-based CRM
+\item \code{examine(DADesign)}: Examine a model-based CRM.
 
 }}
 \examples{

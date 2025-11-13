@@ -1,5 +1,5 @@
-h_get_design_dualresponses <- function() {
-  data <- DataDual(doseGrid = seq(25, 300, 25), placebo = FALSE)
+h_get_design_dualresponses <- function(placebo = FALSE) {
+  data <- DataDual(doseGrid = c(10, seq(25, 300, 25)), placebo = placebo)
   DLEmodel <- LogisticIndepBeta(
     binDLE = c(1.05, 1.8),
     DLEweights = c(3, 3),
@@ -28,11 +28,18 @@ h_get_design_dualresponses <- function() {
     data = data,
     startingDose = 25
   )
+  if (placebo) {
+    design@pl_cohort_size <- CohortSizeConst(size = 1)
+  }
   design
 }
 
-h_get_design_tddesign <- function() {
-  data <- Data(doseGrid = seq(25, 300, 25))
+h_get_design_tddesign <- function(placebo = FALSE) {
+  dosegrid <- seq(25, 300, 25)
+  if (placebo) {
+    dosegrid <- c(10, dosegrid)
+  }
+  data <- Data(doseGrid = dosegrid, placebo = placebo)
 
   model <- LogisticIndepBeta(
     binDLE = c(1.05, 1.8),
@@ -64,6 +71,9 @@ h_get_design_tddesign <- function() {
     data = data,
     startingDose = 50
   )
+  if (placebo) {
+    design@pl_cohort_size <- CohortSizeConst(size = 1)
+  }
   design
 }
 
@@ -173,5 +183,85 @@ h_get_design_data <- function(placebo = FALSE) {
   if (placebo) {
     design@pl_cohort_size <- CohortSizeConst(1)
   }
+  design
+}
+
+h_get_design_da <- function(placebo = FALSE) {
+  emptydata <- DataDA(
+    doseGrid = c(0.1, 0.5, 1, 1.5, 3, 6, seq(from = 10, to = 80, by = 2)),
+    Tmax = 60,
+    placebo = placebo
+  )
+
+  npiece_ <- 10
+  t_max <- 60
+
+  lambda_prior <- function(k) {
+    npiece_ / (t_max * (npiece_ - k + 0.5))
+  }
+
+  model <- DALogisticLogNormal(
+    mean = c(-0.85, 1),
+    cov = matrix(c(1, -0.5, -0.5, 1), nrow = 2),
+    ref_dose = 56,
+    npiece = npiece_,
+    l = as.numeric(t(apply(
+      as.matrix(c(1:npiece_), 1, npiece_),
+      2,
+      lambda_prior
+    ))),
+    c_par = 2
+  )
+
+  # Choose the rule for dose increments
+  myIncrements <- IncrementsRelative(
+    intervals = c(0, 20),
+    increments = c(1, 0.33)
+  )
+
+  myNextBest <- NextBestNCRM(
+    target = c(0.2, 0.35),
+    overdose = c(0.35, 1),
+    max_overdose_prob = 0.25
+  )
+
+  # Choose the rule for the cohort-size
+  mySize1 <- CohortSizeRange(
+    intervals = c(0, 30),
+    cohort_size = c(1, 3)
+  )
+  mySize2 <- CohortSizeDLT(
+    intervals = c(0, 1),
+    cohort_size = c(1, 3)
+  )
+  mySize <- maxSize(mySize1, mySize2)
+
+  # Choose the rule for stopping
+  myStopping1 <- StoppingTargetProb(
+    target = c(0.2, 0.35),
+    prob = 0.5
+  )
+  myStopping2 <- StoppingMinPatients(nPatients = 50)
+
+  myStopping <- (myStopping1 | myStopping2)
+
+  # Choose the safety window
+  mysafetywindow <- SafetyWindowConst(c(6, 2), 7, 7)
+
+  # Initialize the design
+  design <- DADesign(
+    model = model,
+    increments = myIncrements,
+    nextBest = myNextBest,
+    stopping = myStopping,
+    cohort_size = mySize,
+    data = emptydata,
+    safetyWindow = mysafetywindow,
+    startingDose = 3
+  )
+  if (placebo) {
+    design@pl_cohort_size <- CohortSizeConst(1)
+  }
+
   design
 }
