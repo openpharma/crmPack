@@ -3656,60 +3656,56 @@ setMethod(
 
 # examine ----
 
-##' Obtain hypothetical trial course table for a design
-##'
-##' This generic function takes a design and generates a dataframe
-##' showing the beginning of several hypothetical trial courses under
-##' the design. This means, from the generated dataframe one can read off:
-##' - how many cohorts are required in the optimal case (no DLTs observed) in
-##'   order to reach the highest dose of the specified dose grid (or until
-##'   the stopping rule is fulfilled)
-##' - assuming no DLTs are observed until a certain dose level, what the next
-##'   recommended dose is for all possible number of DLTs observed
-##' - the actual relative increments that will be used in these cases
-##' - whether the trial would stop at a certain cohort
-##' Examining the "single trial" behavior of a dose escalation design is
-##' the first important step in evaluating a design, and cannot be replaced by
-##' studying solely the operating characteristics in "many trials". The cohort
-##' sizes are also taken from the design, assuming no DLTs occur until the dose
-##' listed.
-##'
-##' @param object the design (\code{\linkS4class{Design}} or
-##' \code{\linkS4class{RuleDesign}} object) we want to examine
-##' @param \dots additional arguments (see methods)
-##' @param maxNoIncrement maximum number of contiguous next doses at 0
-##' DLTs that are the same as before, i.e. no increment (default to 100)
-##'
-##' @return The data frame
-##'
-##' @export
-##' @keywords methods regression
+#' Obtain Hypothetical Trial Course Table for a Design
+#'
+#' This generic function takes a design and generates a `data.frame`
+#' showing the beginning of several hypothetical trial courses under
+#' the design. This means, from the generated `data.frame` one can read off:
+#'
+#' - how many cohorts are required in the optimal case (no DLTs observed) in
+#'   order to reach the highest dose of the specified dose grid (or until
+#'   the stopping rule is fulfilled)
+#' - assuming no DLTs are observed until a certain dose level, what the next
+#'   recommended dose is for all possible number of DLTs observed
+#' - the actual relative increments that will be used in these cases
+#' - whether the trial would stop at a certain cohort
+#'
+#' Examining the "single trial" behavior of a dose escalation design is
+#' the first important step in evaluating a design, and cannot be replaced by
+#' studying solely the operating characteristics in "many trials". The cohort
+#' sizes are also taken from the design, assuming no DLTs occur until the dose
+#' listed.
+#'
+#' @param object ([`Design`] or [`RuleDesign`])\cr the design we want to examine
+#' @param ... additional arguments (see methods)
+#' @param maxNoIncrement maximum number of contiguous next doses at 0
+#'   DLTs that are the same as before, i.e. no increment (default to 100)
+#'
+#' @return The data frame
+#'
+#' @export
+#' @keywords methods regression
 setGeneric(
   "examine",
   def = function(object, ..., maxNoIncrement = 100L) {
-    ## check maxNoIncrement argument
     assert_count(maxNoIncrement, positive = TRUE)
-
-    ## there should be no default method,
-    ## therefore just forward to next method!
     standardGeneric("examine")
   },
   valueClass = "data.frame"
 )
 
+## Design ----
 
-##' @describeIn examine Examine a model-based CRM
-##'
-##' @param mcmcOptions object of class \code{\linkS4class{McmcOptions}},
-##' giving the MCMC options for each evaluation in the trial. By default,
-##' the standard options are used
-##'
-##' @example examples/design-method-examine-Design.R
+#' @describeIn examine Examine a model-based CRM
+#'
+#' @param mcmcOptions ([`McmcOptions`])\cr giving the MCMC options
+#'   for each evaluation in the trial. By default, the standard options are used.
+#'
+#' @example examples/design-method-examine-Design.R
 setMethod(
   "examine",
   signature = signature(object = "Design"),
   def = function(object, mcmcOptions = McmcOptions(), ..., maxNoIncrement) {
-    ## start with the empty table
     ret <- data.frame(
       dose = numeric(),
       DLTs = integer(),
@@ -3717,201 +3713,189 @@ setMethod(
       stop = logical(),
       increment = integer()
     )
+    base_data <- object@data
 
-    ## start the base data with the provided one
-    baseData <- object@data
+    should_stop <- FALSE
 
-    ## are we finished and can stop?
-    stopit <- FALSE
+    # Counter how many contiguous doses at 0 DLTs with no increment.
+    no_increment_counter <- 0L
 
-    ## counter how many contiguous doses at 0 DLTs with
-    ## no increment
-    noIncrementCounter <- 0L
+    # Initialize with starting dose.
+    dose <- object@startingDose
 
-    ## what is the next dose to be used?
-    ## initialize with starting dose
-    thisDose <- object@startingDose
+    while (!should_stop) {
+      # What is the cohort size at this dose?
+      cohort_size <- size(object@cohort_size, dose = dose, data = base_data)
 
-    ## inside this loop we continue filling up the table, until
-    ## stopping
-    while (!stopit) {
-      ## what is the cohort size at this dose?
-      thisSize <- size(object@cohort_size, dose = thisDose, data = baseData)
-
-      if (baseData@placebo) {
-        thisSize.PL <- size(
+      if (base_data@placebo) {
+        cohort_size_pl <- size(
           object@pl_cohort_size,
-          dose = thisDose,
-          data = baseData
+          dose = dose,
+          data = base_data
         )
       }
 
-      ## for all possible number of DLTs:
-      for (numDLTs in 0:thisSize) {
-        ## update data with corresponding DLT vector
-        if (baseData@placebo && (thisSize.PL > 0L)) {
-          thisData <- update(
-            object = baseData,
-            x = baseData@doseGrid[1],
-            y = rep(0, thisSize.PL),
+      # For all possible number of DLTs:
+      for (num_dlts in 0:cohort_size) {
+        # Update data with corresponding DLT vector.
+        if (base_data@placebo && (cohort_size_pl > 0L)) {
+          data_updated <- update(
+            object = base_data,
+            x = base_data@doseGrid[1],
+            y = rep(0, cohort_size_pl),
             check = FALSE
           )
 
-          thisData <-
-            update(
-              object = thisData,
-              x = thisDose,
-              y = rep(
-                x = c(0, 1),
-                times = c(
-                  thisSize - numDLTs,
-                  numDLTs
-                )
-              ),
-              new_cohort = FALSE
-            )
+          data_updated <- update(
+            object = data_updated,
+            x = dose,
+            y = rep(
+              x = c(0, 1),
+              times = c(
+                cohort_size - num_dlts,
+                num_dlts
+              )
+            ),
+            new_cohort = FALSE
+          )
         } else {
-          thisData <-
-            update(
-              object = baseData,
-              x = thisDose,
-              y = rep(
-                x = c(0, 1),
-                times = c(
-                  thisSize - numDLTs,
-                  numDLTs
-                )
+          data_updated <- update(
+            object = base_data,
+            x = dose,
+            y = rep(
+              x = c(0, 1),
+              times = c(
+                cohort_size - num_dlts,
+                num_dlts
               )
             )
+          )
         }
 
-        ## what is the dose limit?
-        doselimit <- maxDose(object@increments, data = thisData)
+        # Calculate dose limit.
+        dose_limit <- maxDose(object@increments, data = data_updated)
 
-        ## generate samples from the model
-        thisSamples <- mcmc(
-          data = thisData,
+        # Generate samples from the model.
+        samples <- mcmc(
+          data = data_updated,
           model = object@model,
           options = mcmcOptions
         )
 
-        ## => what is the next best dose?
-        nextDose <- nextBest(
+        # Calculate next best dose.
+        next_dose <- nextBest(
           object@nextBest,
-          doselimit = doselimit,
-          samples = thisSamples,
+          doselimit = dose_limit,
+          samples = samples,
           model = object@model,
-          data = thisData
+          data = data_updated
         )$value
 
-        ## compute relative increment in percent
-        thisIncrement <-
-          round((nextDose - thisDose) / thisDose * 100)
+        # Compute relative increment in percent.
+        increment <- round((next_dose - dose) / dose * 100)
 
-        ## evaluate stopping rules
-        stopThisTrial <- stopTrial(
+        # Evaluate stopping rules.
+        stop_this_trial <- stopTrial(
           object@stopping,
-          dose = nextDose,
-          samples = thisSamples,
+          dose = next_dose,
+          samples = samples,
           model = object@model,
-          data = thisData
+          data = data_updated
         )
 
-        ## append information to the data frame
+        # Append information to the data frame.
         ret <- rbind(
           ret,
           list(
-            dose = thisDose,
-            DLTs = numDLTs,
-            nextDose = nextDose,
-            stop = stopThisTrial,
-            increment = as.integer(thisIncrement)
+            dose = dose,
+            DLTs = num_dlts,
+            nextDose = next_dose,
+            stop = stop_this_trial,
+            increment = as.integer(increment)
           )
         )
       }
 
-      ## change base data
-      if (baseData@placebo && (thisSize.PL > 0L)) {
-        baseData <-
-          update(
-            object = baseData,
-            x = baseData@doseGrid[1],
-            y = rep(0, thisSize.PL),
-            check = FALSE
-          )
+      # Update base data.
+      if (base_data@placebo && (cohort_size_pl > 0L)) {
+        base_data <- update(
+          object = base_data,
+          x = base_data@doseGrid[1],
+          y = rep(0, cohort_size_pl),
+          check = FALSE
+        )
 
-        baseData <-
-          update(
-            object = baseData,
-            x = thisDose,
-            y = rep(0, thisSize),
-            new_cohort = FALSE
-          )
+        base_data <- update(
+          object = base_data,
+          x = dose,
+          y = rep(0, cohort_size),
+          new_cohort = FALSE
+        )
       } else {
-        baseData <-
-          update(
-            object = baseData,
-            x = thisDose,
-            y = rep(0, thisSize)
-          )
+        base_data <- update(
+          object = base_data,
+          x = dose,
+          y = rep(0, cohort_size)
+        )
       }
 
-      ## what are the results if 0 DLTs?
-      resultsNoDLTs <- subset(
-        tail(ret, thisSize + 1),
-        dose == thisDose & DLTs == 0
+      # Extract results if 0 DLTs.
+      results_no_dlts <- subset(
+        tail(ret, cohort_size + 1),
+        dose == dose & DLTs == 0
       )
 
-      ## what is the new dose then accordingly?
-      newDose <- as.numeric(resultsNoDLTs$nextDose)
+      # Determine new dose.
+      new_dose <- as.numeric(results_no_dlts$nextDose)
 
-      ## what is the difference to the previous dose?
-      doseDiff <- newDose - thisDose
+      # Calculate difference to previous dose.
+      dose_diff <- new_dose - dose
 
-      ## update the counter for no increments of the dose
-      if (doseDiff == 0) {
-        noIncrementCounter <- noIncrementCounter + 1L
+      # Update the counter for no increments of the dose.
+      if (dose_diff == 0) {
+        no_increment_counter <- no_increment_counter + 1L
       } else {
-        noIncrementCounter <- 0L
+        no_increment_counter <- 0L
       }
 
-      ## would stopping rule be fulfilled already?
-      stopAlready <- resultsNoDLTs$stop
+      # Check if stopping rule would be fulfilled.
+      stop_already <- results_no_dlts$stop
 
-      ## update dose
-      thisDose <- newDose
+      # Update dose.
+      dose <- new_dose
 
-      ## too many times no increment?
-      stopNoIncrement <- (noIncrementCounter >= maxNoIncrement)
-      if (stopNoIncrement) {
+      # Check if too many times no increment.
+      stop_no_increment <- (no_increment_counter >= maxNoIncrement)
+      if (stop_no_increment) {
         warning(paste(
           "Stopping because",
-          noIncrementCounter,
+          no_increment_counter,
           "times no increment vs. previous dose"
         ))
       }
 
-      ## check if we can stop:
-      ## either when we have reached the highest dose in the
-      ## next cohort, or when the stopping rule is already
-      ## fulfilled, or when too many times no increment
-      stopit <- (thisDose >= max(object@data@doseGrid)) ||
-        stopAlready ||
-        stopNoIncrement
+      # Check if we can stop:
+      # Either when we have reached the highest dose in the next cohort,
+      # or when the stopping rule is already fulfilled,
+      # or when too many times no increment.
+      should_stop <- (dose >= max(object@data@doseGrid)) ||
+        stop_already ||
+        stop_no_increment
     }
 
     return(ret)
   }
 )
 
+## RuleDesign ----
 
-##' @describeIn examine Examine a rule-based design
-##' @example examples/design-method-examine-RuleDesign.R
+#' @describeIn examine Examine a rule-based design.
+#' @example examples/design-method-examine-RuleDesign.R
 setMethod(
   "examine",
   signature = signature(object = "RuleDesign"),
   def = function(object, ..., maxNoIncrement) {
-    ## start with the empty table
+    # Start with the empty table.
     ret <- data.frame(
       dose = numeric(),
       DLTs = integer(),
@@ -3920,184 +3904,160 @@ setMethod(
       increment = integer()
     )
 
-    ## start the base data with the provided one
-    baseData <- object@data
+    # Start the base data with the provided one.
+    base_data <- object@data
 
-    ## are we finished and can stop?
-    stopit <- FALSE
+    # Are we finished and can stop?
+    should_stop <- FALSE
 
-    ## counter how many contiguous doses at 0 DLTs with
-    ## no increment
-    noIncrementCounter <- 0L
+    # Counter: contiguous doses at 0 DLTs with no increment.
+    no_increment_counter <- 0L
 
-    ## what is the next dose to be used?
-    ## initialize with starting dose
-    thisDose <- object@startingDose
+    # Initialize with starting dose.
+    dose <- object@startingDose
 
-    ## inside this loop we continue filling up the table, until
-    ## stopping
-    while (!stopit) {
-      ## what is the cohort size at this dose?
-      thisSize <- size(object@cohort_size, dose = thisDose, data = baseData)
+    # Continue filling up the table until stopping.
+    while (!should_stop) {
+      # Cohort size at this dose.
+      cohort_size <- size(object@cohort_size, dose = dose, data = base_data)
 
-      ## for all possible number of DLTs:
-      for (numDLTs in 0:thisSize) {
-        ## update data with corresponding DLT vector
-        thisData <-
-          update(
-            object = baseData,
-            x = thisDose,
-            y = rep(
-              x = c(0, 1),
-              times = c(
-                thisSize - numDLTs,
-                numDLTs
-              )
+      # For all possible number of DLTs.
+      for (num_dlts in 0:cohort_size) {
+        # Update data with corresponding DLT vector.
+        data_updated <- update(
+          object = base_data,
+          x = dose,
+          y = rep(
+            x = c(0, 1),
+            times = c(
+              cohort_size - num_dlts,
+              num_dlts
             )
           )
+        )
 
-        ## evaluate the rule
-        thisOutcome <- nextBest(object@nextBest, data = thisData)
+        # Evaluate the rule.
+        outcome <- nextBest(object@nextBest, data = data_updated)
 
-        ## next dose
-        nextDose <- thisOutcome$value
+        # Next dose and whether to stop here.
+        next_dose <- outcome$value
+        stop_this_trial <- outcome$stopHere
 
-        ## do we stop here?
-        stopThisTrial <- thisOutcome$stopHere
+        # Compute relative increment in percent.
+        increment <- round((next_dose - dose) / dose * 100)
 
-        ## compute relative increment in percent
-        thisIncrement <-
-          round((nextDose - thisDose) / thisDose * 100)
-
-        ## append information to the data frame
+        # Append information to the data frame.
         ret <- rbind(
           ret,
           list(
-            dose = thisDose,
-            DLTs = numDLTs,
-            nextDose = nextDose,
-            stop = stopThisTrial,
-            increment = as.integer(thisIncrement)
+            dose = dose,
+            DLTs = num_dlts,
+            nextDose = next_dose,
+            stop = stop_this_trial,
+            increment = as.integer(increment)
           )
         )
       }
 
-      ## change base data
-      baseData <-
-        update(
-          object = baseData,
-          x = thisDose,
-          y = rep(0, thisSize)
-        )
-
-      ## what are the results if 0 DLTs?
-      resultsNoDLTs <- subset(
-        tail(ret, thisSize + 1),
-        dose == thisDose & DLTs == 0
+      # Change base data.
+      base_data <- update(
+        object = base_data,
+        x = dose,
+        y = rep(0, cohort_size)
       )
 
-      ## what is the new dose then accordingly?
-      newDose <- as.numeric(resultsNoDLTs$nextDose)
+      # Results if 0 DLTs.
+      results_no_dlts <- subset(
+        tail(ret, cohort_size + 1),
+        dose == dose & DLTs == 0
+      )
 
-      ## what is the difference to the previous dose?
-      doseDiff <- newDose - thisDose
+      # New dose and difference to previous dose.
+      new_dose <- as.numeric(results_no_dlts$nextDose)
+      dose_diff <- new_dose - dose
 
-      ## update the counter for no increments of the dose
-      if (doseDiff == 0) {
-        noIncrementCounter <- noIncrementCounter + 1L
+      # Update the counter for no increments of the dose.
+      if (dose_diff == 0) {
+        no_increment_counter <- no_increment_counter + 1L
       } else {
-        noIncrementCounter <- 0L
+        no_increment_counter <- 0L
       }
 
-      ## would stopping rule be fulfilled already?
-      stopAlready <- resultsNoDLTs$stop
+      # Would stopping rule be fulfilled already?
+      stop_already <- results_no_dlts$stop
 
-      ## update dose
-      thisDose <- newDose
+      # Update dose.
+      dose <- new_dose
 
-      ## too many times no increment?
-      stopNoIncrement <- (noIncrementCounter >= maxNoIncrement)
-      if (stopNoIncrement) {
+      # Too many times no increment?
+      stop_no_increment <- (no_increment_counter >= maxNoIncrement)
+      if (stop_no_increment) {
         warning(paste(
           "Stopping because",
-          noIncrementCounter,
+          no_increment_counter,
           "times no increment vs. previous dose"
         ))
       }
 
-      ## check if we can stop:
-      ## either when we have reached the highest dose in the
-      ## next cohort, or when the stopping rule is already
-      ## fulfilled, or when too many times no increment
-      stopit <- (thisDose >= max(object@data@doseGrid)) ||
-        stopAlready ||
-        stopNoIncrement
+      # Check if we can stop:
+      # highest dose reached next cohort, stopping rule fulfilled, or too many no-increment.
+      should_stop <- (dose >= max(object@data@doseGrid)) ||
+        stop_already ||
+        stop_no_increment
     }
 
-    return(ret)
+    ret
   }
 )
 
-##' @describeIn examine Examine a model-based CRM
-##'
-##' @param mcmcOptions object of class \code{\linkS4class{McmcOptions}},
-##' giving the MCMC options for each evaluation in the trial. By default,
-##' the standard options are used
-##'
-##' @example examples/design-method-examine-DADesign.R
+## DADesign ----
+
+#' @describeIn examine Examine a model-based CRM
+#'
+#' @param mcmcOptions ([`McmcOptions`])\cr
+#'   giving the MCMC options for each evaluation in the trial. By default,
+#'   the standard options are used
+#'
+#' @example examples/design-method-examine-DADesign.R
 setMethod(
   "examine",
   signature = signature(object = "DADesign"),
   def = function(object, mcmcOptions = McmcOptions(), ..., maxNoIncrement) {
-    # A function to return follow up fulfull yes (TRUE) vs no (FALSE);
-    ready_to_open <- function(day, window, thisSurv) {
-      size <- length(thisSurv)
-      # the date the patient starts;
-      start_time <- apply(rbind(thisSurv[-size], window$patientGap[-1]), 2, min)
-      # the relative time for each patient on the specified "date";
-      individule_check <- day - cumsum(c(0, start_time))
-      # the minial number should be 0;
-      individule_check[individule_check < 0] <- 0
-      follow_up <- apply(rbind(thisSurv, individule_check), 2, min)
-      return(
-        all(
-          (follow_up - apply(rbind(window$patientFollow, thisSurv), 2, min)) >=
-            0
-        ) &
-          (max(follow_up) >= min(window$patientFollowMin, max(thisSurv)))
+    # Check follow-up sufficiency (TRUE/FALSE);
+    ready_to_open <- function(day, window, this_surv) {
+      size <- length(this_surv)
+      start_time <- apply(
+        rbind(this_surv[-size], window$patientGap[-1]),
+        2,
+        min
       )
+      individual_check <- day - cumsum(c(0, start_time))
+      individual_check[individual_check < 0] <- 0
+      follow_up <- apply(rbind(this_surv, individual_check), 2, min)
+      all(
+        (follow_up - apply(rbind(window$patientFollow, this_surv), 2, min)) >= 0
+      ) &&
+        (max(follow_up) >= min(window$patientFollowMin, max(this_surv)))
     }
 
-    ## assume we have surfficient patients, i.e. patient can be immediately enrolled
-    ## once the trial accumulation is open. This function will tell you when to open
-    ## the next cohort;
-    # this function applys to all trials;
-    nextOpen <- function(window, thisSurv) {
-      size <- length(thisSurv)
+    # Determine when to open the next cohort; applies to all trials.
+    next_open <- function(window, this_surv) {
+      size <- length(this_surv)
+      window$patientGap <- window$patientGap[1:size]
+      start_time <- apply(
+        rbind(this_surv[-size], window$patientGap[-1]),
+        2,
+        min
+      )
+      max_t <- max(this_surv + cumsum(c(0, start_time)))
 
-      window$patientGap <- window$patientGap[1:size] ## if length(window$pt)>length(thisSurv), assume the first length(thisSurv) patients were enrolled;
-      ## if the DLT happens before the end of DLT window, then the next
-      ## cohort/enrollment of the next patient would happened earlier;
-      start_time <- apply(rbind(thisSurv[-size], window$patientGap[-1]), 2, min)
-      # duration of the cohort (all DLT windows finished);
-      maxT <- max(thisSurv + cumsum(c(0, start_time)))
-
-      meetrequire <- sapply(1:maxT, function(i) {
-        ready_to_open(i, window, thisSurv)
-      })
-      if (sum(meetrequire) > 0) {
-        # the earliest time that the require is met;
-        time <- min(c(1:maxT)[meetrequire])
-      } else {
-        time <- maxT
-      }
-
-      return(time)
+      met <- sapply(1:max_t, function(i) ready_to_open(i, window, this_surv))
+      if (sum(met) > 0) min(c(1:max_t)[met]) else max_t
     }
 
-    ## start with the empty table
+    # Initialize result table.
     ret <- data.frame(
-      DLTsearly_1 = integer(), ## JZ: add a cohort index;
+      DLTsearly_1 = integer(),
       dose = numeric(),
       DLTs = integer(),
       nextDose = numeric(),
@@ -4105,301 +4065,231 @@ setMethod(
       increment = integer()
     )
 
-    ## start the base data with the provided one
-    baseData <- object@data
+    # Base data and trial state.
+    base_data <- object@data
+    should_stop <- FALSE
+    dose <- object@startingDose
 
-    ## are we finished and can stop?
-    stopit <- FALSE
+    # Observed facts trackers (cumulative across cohorts).
+    observed_dlts <- base_data@y
+    observed_surv <- base_data@u
+    observed_t0 <- base_data@t0
 
-    ## what is the next dose to be used?
-    ## initialize with starting dose
-    thisDose <- object@startingDose
+    # Global trial clock and previous cohort timing.
+    trial_time <- 0
+    prev_time <- 0
 
-    ## initial {fact} variables;
-    factDLTs <- baseData@y
-    factSurv <- baseData@u
-    factT0 <- baseData@t0
+    # DLT window length.
+    t_max <- base_data@Tmax
 
-    ## Initiate "trialtime" which is zero. This is the global time for studies;
-    trialtime <- 0
+    # Number of patients with unfinished DLT window (initially none).
+    prev_size <- 0
 
-    ## when the current cohort open?
-    pretime <- 0
+    # Iterate cohorts until stopping.
+    while (!should_stop) {
+      cohort_size <- size(object@cohort_size, dose = dose, data = base_data)
+      safety_window <- windowLength(object@safetyWindow, cohort_size)
 
-    ## the duration of DLT window
-    Tmax <- baseData@Tmax
+      # When cohort patients start relative to trial clock.
+      cohort_t0 <- trial_time + cumsum(safety_window$patientGap)
 
-    ## number of patients with un-completed DLT window;
-    ## assume no patient is under DLT observation period at the beginning;
-    preSize <- 0
+      # Append placeholders for the incoming cohort (no DLTs yet, censored at t_max).
+      observed_dlts <- c(observed_dlts, rep(0, cohort_size))
+      observed_surv <- c(observed_surv, rep(t_max, cohort_size))
+      observed_t0 <- c(observed_t0, cohort_t0)
 
-    ## inside this loop we continue filling up the table, until
-    ## stopping
-    while (!stopit) {
-      ## what is the cohort size at this dose?
-      thisSize <- size(object@cohort_size, dose = thisDose, data = baseData)
+      # Advance time until next cohort may open (all follow-up constraints satisfied).
+      trial_time <- trial_time +
+        next_open(window = safety_window, this_surv = rep(t_max, cohort_size))
 
-      ## what's the safetywindow
-      thisSafetywindow <- windowLength(object@safetyWindow, thisSize)
+      # Count patients still within DLT window (for nFollow loop).
+      n_follow <- cohort_size + prev_size
 
-      # initial parameters
-      thisT0 <- trialtime + cumsum(thisSafetywindow$patientGap)
-
-      factDLTs <- c(factDLTs, rep(0, thisSize))
-
-      factSurv <- c(factSurv, rep(Tmax, thisSize))
-
-      factT0 <- c(factT0, thisT0)
-
-      ## The time that the next cohort open
-      trialtime <- trialtime +
-        nextOpen(
-          window = thisSafetywindow,
-          thisSurv = rep(Tmax, thisSize)
-        )
-
-      ## In the DA-CRM, we should count the number of patients who is still within the DLT window;
-      ## Thus the loop for numDLTs should be 0:nFollow;
-      nFollow <- thisSize + preSize
-
-      ## Identify the censored patients;
-      ## "thiscensored" will be used in the cases that numDLTs>0;
-      npt <- length(baseData@x) # total number of patients
-
-      thiscensored <- c(
-        c(1:npt)[(trialtime - baseData@t0) < baseData@Tmax & baseData@y == 0],
-        (npt + 1):(npt + thisSize)
+      # Identify censored patients indices.
+      npt <- length(base_data@x)
+      censored_indices <- c(
+        which((trial_time - base_data@t0) < base_data@Tmax & base_data@y == 0),
+        (npt + 1):(npt + cohort_size)
       )
 
-      ## for all possible number of DLTs:
-      for (numDLTs in 0:nFollow) {
-        ## If numDLTs>0, two extreme cases will be examinated;
-        ## (1) DLTs occur on patients with the longer follow ups;
-        ## (2) DLTs occur on patients with the shorter follow ups;
+      # For all possible number of DLTs (0..n_follow):
+      for (num_dlts in 0:n_follow) {
+        if (num_dlts == 0) {
+          # Update base_data for zero DLTs scenario.
+          base_data <- update(
+            object = base_data,
+            y = observed_dlts,
+            u = observed_surv,
+            t0 = observed_t0,
+            x = dose,
+            trialtime = trial_time
+          )
 
-        if (numDLTs == 0) {
-          baseData <- update(
-            object = baseData,
-            y = factDLTs, #### the x will be constantly updated according to u
-            u = factSurv,
-            t0 = factT0,
-            x = thisDose,
-            trialtime = trialtime
-          ) #### the u will be constantly updated
-
-          ## what is the dose limit?
-          doselimit <- maxDose(object@increments, data = baseData)
-
-          ## generate samples from the model
-          thisSamples <- mcmc(
-            data = baseData,
+          dose_limit <- maxDose(object@increments, data = base_data)
+          samples <- mcmc(
+            data = base_data,
             model = object@model,
             options = mcmcOptions
           )
-
-          ## => what is the next best dose?
-          nextDose <- nextBest(
+          next_dose <- nextBest(
             object@nextBest,
-            doselimit = doselimit,
-            samples = thisSamples,
+            doselimit = dose_limit,
+            samples = samples,
             model = object@model,
-            data = baseData
+            data = base_data
           )$value
 
-          # ##remove savePlot
-          #
-          #                                                   savePlot(plot(baseData),name=paste("Dose",thisDose,0,"DLT",nextDose,sep="_"))
-          #
-          ## compute relative increment in percent
-          thisIncrement <-
-            round((nextDose - thisDose) / thisDose * 100)
-
-          ## evaluate stopping rules
-          stopThisTrial <- stopTrial(
+          increment <- round((next_dose - dose) / dose * 100)
+          stop_this_trial <- stopTrial(
             object@stopping,
-            dose = nextDose,
-            samples = thisSamples,
+            dose = next_dose,
+            samples = samples,
             model = object@model,
-            data = baseData
+            data = base_data
           )
 
-          ## append information to the data frame
           ret <- rbind(
             ret,
             list(
               DLTsearly_1 = 0,
-              dose = thisDose,
-              DLTs = numDLTs,
-              nextDose = nextDose,
-              stop = stopThisTrial,
-              increment = as.integer(thisIncrement)
+              dose = dose,
+              DLTs = num_dlts,
+              nextDose = next_dose,
+              stop = stop_this_trial,
+              increment = as.integer(increment)
             )
           )
-          ### comment here to show only no DLTs;
-          #                                            }
         } else {
-          for (DLTsearly in 1:numDLTs) {
-            # Update current {fact} variables
-            thisDLTs <- factDLTs
-            thisSurv <- factSurv
+          # Consider two extremes: DLTs at longest vs shortest follow-ups.
+          for (dlt_early in 1:num_dlts) {
+            curr_dlts <- observed_dlts
+            curr_surv <- observed_surv
 
-            if (DLTsearly == 1) {
-              # scenario 1: The patients with longest follow up have DLTs
-
-              thisDLTs[thiscensored][1:numDLTs] <- rep(1, rep(numDLTs))
-
-              thisSurv[thiscensored][1:numDLTs] <- apply(
+            if (dlt_early == 1) {
+              # Longest follow-up patients have DLTs.
+              curr_dlts[censored_indices][1:num_dlts] <- 1
+              curr_surv[censored_indices][1:num_dlts] <- apply(
                 rbind(
-                  rep(Tmax, numDLTs),
-                  c(trialtime - factT0[thiscensored][1:numDLTs])
+                  rep(t_max, num_dlts),
+                  trial_time - observed_t0[censored_indices][1:num_dlts]
                 ),
                 2,
                 min
               )
 
-              thisData <- update(
-                object = baseData,
-                y = thisDLTs, #### the y will be updated according to u
-                u = thisSurv,
-                t0 = factT0,
-                x = thisDose,
-                trialtime = trialtime
-              ) #### the u will be updated
+              data_current <- update(
+                object = base_data,
+                y = curr_dlts,
+                u = curr_surv,
+                t0 = observed_t0,
+                x = dose,
+                trialtime = trial_time
+              )
             } else {
-              # scenario 2: The patients with shortest follow up have DLTs
-
-              thisDLTs[rev(thiscensored)][1:numDLTs] <- rep(1, rep(numDLTs))
-
-              thisSurv[rev(thiscensored)][1:numDLTs] <- c(apply(
+              # Shortest follow-up patients have DLTs.
+              curr_dlts[rev(censored_indices)][1:num_dlts] <- 1
+              curr_surv[rev(censored_indices)][1:num_dlts] <- apply(
                 rbind(
-                  rep(1, numDLTs),
-                  pretime + 1 - factT0[rev(thiscensored)][1:numDLTs]
+                  rep(1, num_dlts),
+                  prev_time + 1 - observed_t0[rev(censored_indices)][1:num_dlts]
                 ),
                 2,
                 max
-              ))
+              )
 
-              if (numDLTs >= thisSize) {
-                thistime <- 1 + max(thisT0)
+              temp_time <- if (num_dlts >= cohort_size) {
+                1 + max(cohort_t0)
               } else {
-                thistime <- trialtime
+                trial_time
               }
 
-              thisData <- update(
-                object = baseData,
-                y = thisDLTs, #### the y will be updated according to u
-                u = thisSurv,
-                t0 = factT0,
-                x = thisDose,
-                trialtime = thistime
-              ) #### the u will be updated
+              data_current <- update(
+                object = base_data,
+                y = curr_dlts,
+                u = curr_surv,
+                t0 = observed_t0,
+                x = dose,
+                trialtime = temp_time
+              )
             }
 
-            ## what is the dose limit?
-            doselimit <- maxDose(object@increments, data = thisData)
-
-            ## generate samples from the model
-            thisSamples <- mcmc(
-              data = thisData,
+            dose_limit <- maxDose(object@increments, data = data_current)
+            samples <- mcmc(
+              data = data_current,
               model = object@model,
               options = mcmcOptions
             )
-
-            ## => what is the next best dose?
-            nextDose <- nextBest(
+            next_dose <- nextBest(
               object@nextBest,
-              doselimit = doselimit,
-              samples = thisSamples,
+              doselimit = dose_limit,
+              samples = samples,
               model = object@model,
-              data = thisData
+              data = data_current
             )$value
 
-            # ##remove savePlot
-            #                                                   savePlot(plot(thisData),name=paste("Dose",thisDose,numDLTs,"DLT",DLTsearly,nextDose,sep="_"))
-            #
-            ## compute relative increment in percent
-            thisIncrement <-
-              round((nextDose - thisDose) / thisDose * 100)
-
-            ## evaluate stopping rules
-            stopThisTrial <- stopTrial(
+            increment <- round((next_dose - dose) / dose * 100)
+            stop_this_trial <- stopTrial(
               object@stopping,
-              dose = nextDose,
-              samples = thisSamples,
+              dose = next_dose,
+              samples = samples,
               model = object@model,
-              data = thisData
+              data = data_current
             )
 
-            ## append information to the data frame
             ret <- rbind(
               ret,
               list(
-                DLTsearly_1 = DLTsearly,
-                dose = thisDose,
-                DLTs = numDLTs,
-                nextDose = nextDose,
-                stop = stopThisTrial,
-                increment = as.integer(thisIncrement)
+                DLTsearly_1 = dlt_early,
+                dose = dose,
+                DLTs = num_dlts,
+                nextDose = next_dose,
+                stop = stop_this_trial,
+                increment = as.integer(increment)
               )
             )
           }
         }
       }
 
-      ## update pretime
-      pretime <- trialtime
+      # Update previous time and compute next state.
+      prev_time <- trial_time
 
-      ## what are the results if 0 DLTs?
-      resultsNoDLTs <- subset(
-        ret,
-        dose == thisDose & DLTs == 0
-      )
+      # Filter results at this dose with 0 DLTs and derive new dose.
+      results_no_dlts <- subset(ret, dose == dose & DLTs == 0)
+      new_dose <- as.numeric(results_no_dlts$nextDose)
+      dose_diff <- new_dose - dose
+      stop_already <- any(results_no_dlts$stop)
 
-      ## what is the new dose according to table?
-      newDose <- as.numeric(resultsNoDLTs$nextDose)
+      # Update dose to the maximum recommended among ties.
+      dose <- max(new_dose)
 
-      ## what is the difference to the previous dose?
-      doseDiff <- newDose - thisDose
+      # Patients still within DLT window.
+      prev_size <- sum(base_data@u[base_data@y == 0] < base_data@Tmax)
 
-      ## would stopping rule be fulfilled already?
-      stopAlready <- any(resultsNoDLTs$stop)
-
-      ## update dose
-      thisDose <- max(newDose)
-
-      ## number of patients with un-completed DLT window;
-      preSize <- sum(baseData@u[baseData@y == 0] < baseData@Tmax)
-
-      ## update the counter for no increments of the dose
-      if (all(doseDiff == 0)) {
-        noIncrementCounter <- noIncrementCounter + 1L
+      # No-increment counter and stopping due to no increment.
+      no_increment_counter <- if (all(dose_diff == 0)) {
+        no_increment_counter + 1L
       } else {
-        noIncrementCounter <- 0L
+        0L
       }
-
-      ## too many times no increment?
-      stopNoIncrement <- (noIncrementCounter >= maxNoIncrement)
-      if (stopNoIncrement) {
+      stop_no_increment <- (no_increment_counter >= maxNoIncrement)
+      if (stop_no_increment) {
         warning(paste(
           "Stopping because",
-          noIncrementCounter,
+          no_increment_counter,
           "times no increment vs. previous dose"
         ))
       }
 
-      ## check if we can stop:
-      ## either when we have reached the highest dose in the
-      ## next cohort, or when the stopping rule is already
-      ## fulfilled, or when too many times no increment
-      stopit <- (thisDose >= max(object@data@doseGrid)) ||
-        stopAlready ||
-        stopNoIncrement
+      # Overall stop condition.
+      should_stop <- (dose >= max(object@data@doseGrid)) ||
+        stop_already ||
+        stop_no_increment
     }
 
-    return(ret)
+    ret
   }
 )
-
 
 # tidy ----
 
