@@ -36,10 +36,13 @@ where \eqn{p(x)} is the probability of observing a DLT for a given dose \eqn{x}.
 The prior \deqn{(alpha0, log(alpha1)) ~ Normal(mean, cov).}
 }
 \note{
-This model is also used in the \code{\link{DualEndpoint}} classes, so this class
-can be used to check the prior assumptions on the dose-toxicity model, even
-when sampling from the prior distribution of the dual endpoint model is not
-possible.
+The model used in the \code{\link{DualEndpoint}} classes is an extension of this model:
+\code{DualEndpoint} supports both \code{ProbitNormal} (which is not implemented yet) and
+\code{ProbitLogNormal} models through its \code{use_log_dose} slot.
+\code{ProbitLogNormal} has no such flag, so always uses \verb{log(x/x*)}as a covariate in
+its model. Therefore this class can be used to check the prior assumptions on the
+dose-toxicity model, even when sampling from the prior distribution of the dual
+endpoint model is not possible, when \code{use_log_dose = TRUE} is used.
 
 Typically, end users will not use the \code{.DefaultProbitLogNormal()} function.
 }

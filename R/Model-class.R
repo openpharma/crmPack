@@ -418,10 +418,13 @@ LogisticLogNormalSub <- function(mean, cov, ref_dose = 0) {
 #'   where \eqn{p(x)} is the probability of observing a DLT for a given dose \eqn{x}.
 #'   The prior \deqn{(alpha0, log(alpha1)) ~ Normal(mean, cov).}
 #'
-#' @note This model is also used in the [`DualEndpoint`] classes, so this class
-#'   can be used to check the prior assumptions on the dose-toxicity model, even
-#'   when sampling from the prior distribution of the dual endpoint model is not
-#'   possible.
+#' @note The model used in the [`DualEndpoint`] classes is an extension of this model:
+#'   `DualEndpoint` supports both `ProbitNormal` (which is not implemented yet) and
+#'   `ProbitLogNormal` models through its `use_log_dose` slot.
+#'   `ProbitLogNormal` has no such flag, so always uses `log(x/x*)`as a covariate in
+#'   its model. Therefore this class can be used to check the prior assumptions on the
+#'   dose-toxicity model, even when sampling from the prior distribution of the dual
+#'   endpoint model is not possible, when `use_log_dose = TRUE` is used.
 #'
 #' @seealso [`ModelLogNormal`], [`LogisticNormal`], [`LogisticLogNormal`],
 #'   [`LogisticLogNormalSub`], [`ProbitLogNormalRel`].
