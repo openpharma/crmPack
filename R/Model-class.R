@@ -3454,10 +3454,10 @@ LogisticLogNormalOrdinal <- function(mean, cov, ref_dose) {
       ms <- list(
         mean = params@mean,
         prec = params@prec,
-        k = length(mean),
-        tox = array(dim = c(length(y), length(mean) - 1))
+        k = length(mean)
       )
       if (!from_prior) {
+        ms$tox <- array(dim = c(length(y), length(mean) - 1))
         for (i in seq_along(y)) {
           for (j in 1:(ms$k - 1)) {
             ms$tox[i, j] <- y[i] >= j
