@@ -154,8 +154,6 @@ test_that("mcmc-DataOrdinal returns a correctly named samples@data list", {
   ordinal_model <- .DefaultLogisticLogNormalOrdinal()
   mcmc_options <- .DefaultMcmcOptions()
 
-  suppressWarnings({
-    samples <- mcmc(ordinal_data, ordinal_model, mcmc_options)
-  })
+  samples <- mcmc(ordinal_data, ordinal_model, mcmc_options)
   expect_equal(names(samples@data), c("alpha1", "alpha2", "beta"))
 })

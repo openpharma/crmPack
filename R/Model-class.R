@@ -3454,10 +3454,10 @@ LogisticLogNormalOrdinal <- function(mean, cov, ref_dose) {
       ms <- list(
         mean = params@mean,
         prec = params@prec,
-        k = length(mean),
-        tox = array(dim = c(length(y), length(mean) - 1))
+        k = length(mean)
       )
       if (!from_prior) {
+        ms$tox <- array(dim = c(length(y), length(mean) - 1))
         for (i in seq_along(y)) {
           for (j in 1:(ms$k - 1)) {
             ms$tox[i, j] <- y[i] >= j
@@ -3473,7 +3473,7 @@ LogisticLogNormalOrdinal <- function(mean, cov, ref_dose) {
         gamma = 1
       )
     },
-    datanames = c("nObs", "y", "x"),
+    datanames = c("nObs", "x"),
     # Need to provide JAGS column names here
     sample = c(paste0("alpha[", 1:(length(mean) - 1), "]"), "beta")
   )

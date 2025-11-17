@@ -195,9 +195,7 @@ test_that("doseFunction-LogisticLogNormalOrdinal fails gracefully with bad input
     samples = 5,
     step = 2
   )
-  suppressWarnings({
-    samples <- mcmc(ordinal_data, ordinal_model, opts)
-  })
+  samples <- mcmc(ordinal_data, ordinal_model, opts)
 
   expect_error(
     doseFunction(ordinal_model, grade = 1L),
@@ -419,9 +417,7 @@ test_that("doseFunction-LogisticLogNormalOrdinal fails gracefully with bad input
     samples = 5,
     step = 2
   )
-  suppressWarnings({
-    samples <- mcmc(ordinal_data, ordinal_model, opts)
-  })
+  samples <- mcmc(ordinal_data, ordinal_model, opts)
 
   expect_error(
     doseFunction(ordinal_model, grade = 1L),
@@ -1227,11 +1223,7 @@ test_that("dose-LogisticLogNormalOrdinal works correctly", {
     samples = 5,
     step = 2
   )
-  # It would be good to remove this warning at some time in the future
-  expect_warning(
-    samples <- mcmc(ordinal_data, model, opts),
-    "Unused variable \"y\" in data"
-  )
+  samples <- mcmc(ordinal_data, model, opts)
   prob_list <- c(
     seq(0.01, 0.04, 0.01),
     seq(0.05, 0.95, 0.05),
@@ -1258,11 +1250,7 @@ test_that("dose-LogisticLogNormalOrdinal fails gracefully with bad input", {
   model <- .DefaultLogisticLogNormalOrdinal()
   ordinal_data <- .DefaultDataOrdinal()
   opts <- .DefaultMcmcOptions()
-  # It would be good to remove this warning at some time in the future
-  expect_warning(
-    samples <- mcmc(ordinal_data, model, opts),
-    "Unused variable \"y\" in data"
-  )
+  samples <- mcmc(ordinal_data, model, opts)
 
   expect_error(
     dose(-1, model, samples, grade = 1L),
@@ -1302,11 +1290,7 @@ test_that("prob-LogisticNormal works as expected", {
     samples = 5,
     step = 2
   )
-  # It would be good to remove this warning at some time in the future
-  expect_warning(
-    samples <- mcmc(ordinal_data, model, opts),
-    "Unused variable \"y\" in data"
-  )
+  samples <- mcmc(ordinal_data, model, opts)
   for (dose in ordinal_data@doseGrid) {
     expected <- lapply(
       1:max(ordinal_data@yCategories),
@@ -1352,9 +1336,7 @@ test_that("prob-numeric-LogisticLogNormalOrdinal fails gracefully with bad input
     samples = 5,
     step = 2
   )
-  suppressWarnings({
-    samples <- mcmc(ordinal_data, model, opts)
-  })
+  samples <- mcmc(ordinal_data, model, opts)
 
   expect_error(prob(-3, model, samples, 1), "Element 1 is not >= 0.")
   expect_error(

@@ -8,9 +8,7 @@ test_that("h_convert_ordinal_samples works correctly", {
     rng_kind = "Mersenne-Twister",
     rng_seed = 0
   )
-  suppressWarnings({
-    samples <- mcmc(ordinal_data, ordinal_model, options)
-  })
+  samples <- mcmc(ordinal_data, ordinal_model, options)
 
   actual1 <- h_convert_ordinal_samples(samples, 1L)
   expect_class(actual1, "Samples")
@@ -37,9 +35,7 @@ test_that("h_convert_ordinal_samples fails gracefully with bad input", {
     rng_kind = "Mersenne-Twister",
     rng_seed = 0
   )
-  suppressWarnings({
-    samples <- mcmc(ordinal_data, ordinal_model, options)
-  })
+  samples <- mcmc(ordinal_data, ordinal_model, options)
 
   expect_error(
     h_convert_ordinal_samples(samples, grade = -1L),
