@@ -195,9 +195,7 @@ test_that("doseFunction-LogisticLogNormalOrdinal fails gracefully with bad input
     samples = 5,
     step = 2
   )
-  suppressWarnings({
-    samples <- mcmc(ordinal_data, ordinal_model, opts)
-  })
+  samples <- mcmc(ordinal_data, ordinal_model, opts)
 
   expect_error(
     doseFunction(ordinal_model, grade = 1L),
@@ -419,9 +417,7 @@ test_that("doseFunction-LogisticLogNormalOrdinal fails gracefully with bad input
     samples = 5,
     step = 2
   )
-  suppressWarnings({
-    samples <- mcmc(ordinal_data, ordinal_model, opts)
-  })
+  samples <- mcmc(ordinal_data, ordinal_model, opts)
 
   expect_error(
     doseFunction(ordinal_model, grade = 1L),
@@ -1352,9 +1348,7 @@ test_that("prob-numeric-LogisticLogNormalOrdinal fails gracefully with bad input
     samples = 5,
     step = 2
   )
-  suppressWarnings({
-    samples <- mcmc(ordinal_data, model, opts)
-  })
+  samples <- mcmc(ordinal_data, model, opts)
 
   expect_error(prob(-3, model, samples, 1), "Element 1 is not >= 0.")
   expect_error(

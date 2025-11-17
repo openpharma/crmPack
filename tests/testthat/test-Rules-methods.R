@@ -1050,9 +1050,8 @@ test_that("nextBest-NextBestProbMTDMinDist returns correct next dose and plot (n
 test_that("nextBest-NextBestOrdinal throws exception when passed a GeneralModel object", {
   ordinal_data <- .DefaultDataOrdinal()
   ordinal_model <- .DefaultLogisticLogNormalOrdinal()
-  suppressWarnings({
-    samples <- mcmc(ordinal_data, ordinal_model, .DefaultMcmcOptions())
-  })
+  samples <- mcmc(ordinal_data, ordinal_model, .DefaultMcmcOptions())
+
   next_best <- .DefaultNextBestOrdinal()
   bad_data <- .DefaultData()
   expect_error(
@@ -1068,16 +1067,14 @@ test_that("nextBest-NextBestOrdinal throws exception when passed a GeneralModel 
 test_that("nextBest-NextBestOrdinal works correctly", {
   ordinal_data <- .DefaultDataOrdinal()
   ordinal_model <- .DefaultLogisticLogNormalOrdinal()
-  suppressWarnings({
-    samples <- mcmc(
-      ordinal_data,
-      ordinal_model,
-      McmcOptions(
-        rng_kind = "Mersenne-Twister",
-        rng_seed = 215614
-      )
+  samples <- mcmc(
+    ordinal_data,
+    ordinal_model,
+    McmcOptions(
+      rng_kind = "Mersenne-Twister",
+      rng_seed = 215614
     )
-  })
+  )
   next_best <- .DefaultNextBestOrdinal()
   bad_data <- .DefaultData()
 
@@ -4611,9 +4608,7 @@ test_that("stopTrial-StoppingOrdinal works correctly", {
     rng_kind = "Mersenne-Twister",
     rng_seed = 215614
   )
-  suppressWarnings({
-    samples <- mcmc(data, model, options)
-  }) # nolint
+  samples <- mcmc(data, model, options)
 
   myIncrements <- .DefaultIncrementsOrdinal()
   nextMaxDose <- maxDose(myIncrements, data = data)
