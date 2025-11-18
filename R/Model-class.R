@@ -2203,7 +2203,7 @@ DualEndpointEmax <- function(E0, Emax, ED50, ref_dose_emax = 1, ...) {
 #'   also be obtained. In addition, a conjugate joint prior density function of
 #'   the two parameters in the model is used. For details about the form of all
 #'   these joint prior and posterior probability density functions, please refer
-#'   to \insertCited{WhiteheadWilliamson1998}{crmPack}.
+#'   to \insertCite{WhiteheadWilliamson1998;textual}{crmPack}.
 #'
 #' @slot binDLE (`numeric`)\cr a vector of total numbers of DLE responses.
 #'   It must be at least of length 2 and the order of its elements must
@@ -2231,7 +2231,7 @@ DualEndpointEmax <- function(E0, Emax, ED50, ref_dose_emax = 1, ...) {
 #' @aliases LogisticIndepBeta
 #' @export
 #' @references
-#'   \insertCited{}
+#'   \insertAllCited{}
 #'
 .LogisticIndepBeta <- setClass(
   Class = "LogisticIndepBeta",
