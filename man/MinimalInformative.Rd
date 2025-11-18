@@ -44,8 +44,8 @@ See \code{\link[=Quantiles2LogisticNormal]{Quantiles2LogisticNormal()}}.
 This function constructs a minimally informative prior, which is captured in
 a \code{\link{LogisticNormal}} (or \code{\link{LogisticLogNormal}}) object.
 
-Based on the proposal by Neuenschwander et al (2008, Statistics in
-Medicine), a minimally informative prior distribution is constructed. The
+Based on the proposal by \insertCite{NeuenschwanderBransonGsponer2008;textual}{crmPack},
+a minimally informative prior distribution is constructed. The
 required key input is the minimum (\eqn{d_{1}} in the notation of the
 Appendix A.1 of that paper) and the maximum value (\eqn{d_{J}}) of the dose
 grid supplied to this function. Then \code{threshmin} is the probability
@@ -93,4 +93,7 @@ legend("right",
        lty=1,
        bty="n")
 }
+}
+\references{
+\insertAllCited{}
 }

@@ -54,6 +54,7 @@ Imports:
     mvtnorm,
     parallel,
     parallelly,
+    Rdpack,
     rjags,
     rlang,
     survival,
@@ -84,6 +85,7 @@ Language: en-US
 LazyLoad: yes
 Roxygen: list(markdown = TRUE)
 RoxygenNote: 7.3.3
+RdMacros: Rdpack
 Collate:
     'CrmPackClass-class.R'
     'CrmPackClass-methods.R'

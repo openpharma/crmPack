@@ -15,9 +15,12 @@ h_get_min_inf_beta(p, q)
 A list with the two resulting beta parameters \code{a} and \code{b}.
 }
 \description{
-As defined in Neuenschwander et al (2008), this function computes the
-parameters of the minimal informative unimodal beta distribution, given the
+As defined in \insertCite{NeuenschwanderBransonGsponer2008;textual}{crmPack}, this function
+computes the parameters of the minimal informative unimodal beta distribution, given the
 request that the p-quantile should be q, i.e. \code{X ~ Be(a, b)} with
 \code{Pr(X <= q) = p}.
+}
+\references{
+\insertAllCited{}
 }
 \keyword{internal}

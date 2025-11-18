@@ -29,7 +29,8 @@ parameters.}
 
 \item{const}{(\code{number})\cr the constant value added to the dose level when
 the dose level value is less than or equal to 1 and a special form of the
-linear log-log has to applied (Yeung et al. (2015).).}
+linear log-log has to be applied
+\insertCite{YeungWhiteheadReignerBeyerDiackJaki2015}{crmPack}.}
 }
 \description{
 \ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#stable}{\figure{lifecycle-stable.svg}{options: alt='[Stable]'}}}{\strong{[Stable]}}
@@ -145,7 +146,7 @@ only (if any).}
 model form described above. In general, the model has the form
 \eqn{y_i = theta1 + theta2 * log(log(x_i + const)) + epsilon_i}, such that
 dose levels greater than \eqn{1 - const} can be considered as described in
-Yeung et al. (2015).}
+\insertCite{YeungWhiteheadReignerBeyerDiackJaki2015;textual}{crmPack}.}
 }}
 
 \note{
@@ -187,4 +188,7 @@ my_model2 <- Effloglog(
   nu = c(a = 1, b = 0.025),
   data = my_data
 )
+}
+\references{
+\insertAllCited{}
 }

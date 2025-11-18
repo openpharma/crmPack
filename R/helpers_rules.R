@@ -46,10 +46,7 @@ h_info_theory_dist <- function(prob, target, asymmetry) {
 #' @param model_eff (`Effloglog`)\cr the efficacy model.
 #'
 #' @references
-#'   Yeung, W.Y., Whitehead, J., Reigner, B., Beyer, U., Diack, Ch., Jaki, T. (2015),
-#'   Bayesian adaptive dose-escalation procedures for binary and continuous responses utilizing a gain function,
-#'   *Pharmaceutical Statistics*,
-#'   \doi{10.1002/pst.1706} \cr
+#'   \insertRef{YeungWhiteheadReignerBeyerDiackJaki2015}{crmPack}
 #'
 #' @export
 #'

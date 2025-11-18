@@ -35,7 +35,8 @@ LogisticKadaneBetaGamma(theta, xmin, xmax, alpha, beta, shape, rate)
 \ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#experimental}{\figure{lifecycle-experimental.svg}{options: alt='[Experimental]'}}}{\strong{[Experimental]}}
 
 \code{\link{LogisticKadaneBetaGamma}} is the class for the logistic model in the parametrization
-of Kadane et al. (1980), using a beta and a gamma distribution as the model priors.
+of \insertCite{KadaneDickeyWinklerSmithPeters1980;textual}{crmPack},
+using a beta and a gamma distribution as the model priors.
 }
 \details{
 Let \code{rho0 = p(xmin)} be the probability of a DLT at the minimum dose
@@ -89,6 +90,9 @@ my_model <- LogisticKadaneBetaGamma(
   shape = 0.5625,
   rate = 0.125
 )
+}
+\references{
+\insertAllCited{}
 }
 \seealso{
 \code{\link{ModelLogNormal}}, \code{\link{LogisticKadane}}.
