@@ -76,7 +76,7 @@ prior probability density function of the two parameters in this model can
 also be obtained. In addition, a conjugate joint prior density function of
 the two parameters in the model is used. For details about the form of all
 these joint prior and posterior probability density functions, please refer
-to Whitehead and Willamson (1998).
+to \insertCited{WhiteheadWilliamson1998}{crmPack}.
 }
 \section{Slots}{
 
@@ -143,4 +143,7 @@ my_model2 <- LogisticIndepBeta(
   DLEweights = c(3, 3),
   data = my_data
 )
+}
+\references{
+\insertCited{}
 }
