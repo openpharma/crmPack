@@ -641,7 +641,7 @@ LogisticLogNormalGrouped <- function(mean, cov, ref_dose = 1) {
 #' @description `r lifecycle::badge("stable")`
 #'
 #' [`LogisticKadane`] is the class for the logistic model in the parametrization
-#' of Kadane et al. (1980).
+#' of \insertCite{KadaneDickeyWinklerSmithPeters1980;textual}{crmPack}.
 #'
 #' @details Let `rho0 = p(xmin)` be the probability of a DLT at the minimum dose
 #'   `xmin`, and let `gamma` be the dose with target toxicity probability `theta`,
@@ -667,6 +667,8 @@ LogisticLogNormalGrouped <- function(mean, cov, ref_dose = 1) {
 #'
 #' @aliases LogisticKadane
 #' @export
+#' @references
+#'   \insertAllCited{}
 #'
 .LogisticKadane <- setClass(
   Class = "LogisticKadane",
@@ -744,7 +746,8 @@ LogisticKadane <- function(theta, xmin, xmax) {
 #' @description `r lifecycle::badge("experimental")`
 #'
 #' [`LogisticKadaneBetaGamma`] is the class for the logistic model in the parametrization
-#' of Kadane et al. (1980), using a beta and a gamma distribution as the model priors.
+#' of \insertCite{KadaneDickeyWinklerSmithPeters1980;textual}{crmPack},
+#' using a beta and a gamma distribution as the model priors.
 #'
 #' @details Let `rho0 = p(xmin)` be the probability of a DLT at the minimum dose
 #'   `xmin`, and let `gamma` be the dose with target toxicity probability `theta`,
@@ -778,6 +781,8 @@ LogisticKadane <- function(theta, xmin, xmax) {
 #'
 #' @aliases LogisticKadaneBetaGamma
 #' @export
+#' @references
+#'   \insertAllCited{}
 #'
 .LogisticKadaneBetaGamma <- setClass(
   Class = "LogisticKadaneBetaGamma",
@@ -2421,10 +2426,12 @@ LogisticIndepBeta <- function(binDLE, DLEdose, DLEweights, data) {
 #'   model form described above. In general, the model has the form
 #'   \eqn{y_i = theta1 + theta2 * log(log(x_i + const)) + epsilon_i}, such that
 #'   dose levels greater than \eqn{1 - const} can be considered as described in
-#'   Yeung et al. (2015).
+#'   \insertCite{YeungWhiteheadReignerBeyerDiackJaki2015;textual}{crmPack}.
 #'
 #' @aliases Effloglog
 #' @export
+#' @references
+#'   \insertAllCited{}
 #'
 .Effloglog <- setClass(
   Class = "Effloglog",
@@ -2469,10 +2476,13 @@ LogisticIndepBeta <- function(binDLE, DLEdose, DLEweights, data) {
 #'   parameters.
 #' @param const (`number`)\cr the constant value added to the dose level when
 #'   the dose level value is less than or equal to 1 and a special form of the
-#'   linear log-log has to applied (Yeung et al. (2015).).
+#'   linear log-log has to be applied
+#'   \insertCite{YeungWhiteheadReignerBeyerDiackJaki2015}{crmPack}.
 #'
 #' @export
 #' @example examples/Model-class-Effloglog.R
+#' @references
+#'   \insertAllCited{}
 #'
 Effloglog <- function(eff, eff_dose, nu, data, const = 0) {
   assert_numeric(eff)
@@ -3210,7 +3220,8 @@ OneParLogNormalPrior <- function(skel_probs, dose_grid, sigma2) {
 #'
 #' [`OneParExpPrior`] is the class for a standard CRM with an exponential prior
 #' on the power parameter for the skeleton prior probabilities. It is an
-#' implementation of a version of the one-parameter CRM (O’Quigley et al. 1990).
+#' implementation of a version of the one-parameter CRM
+#' \insertCite{OQuigleyPepeFisher1990}{crmPack}.
 #'
 #' @note Typically, end users will not use the `.DefaultOneparExpPrior()` function.
 #'
@@ -3223,6 +3234,8 @@ OneParLogNormalPrior <- function(skel_probs, dose_grid, sigma2) {
 #'
 #' @aliases OneParExpPrior
 #' @export
+#' @references
+#'   \insertAllCited{}
 #'
 .OneParExpPrior <- setClass(
   Class = "OneParExpPrior",
@@ -3316,12 +3329,14 @@ OneParExpPrior <- function(skel_probs, dose_grid, lambda) {
 #' Kaplan-Meier based estimation of the conditional probability to experience a
 #' DLT for non-complete observations.
 #'
-#' This fractional CRM model follows the paper and code by Guosheng Yin et al.
+#' This fractional CRM model follows the paper and code by \insertCite{YinZhengXu2013;textual}{crmPack}.
 #'
 #' @seealso [`TITELogisticLogNormal`].
 #'
 #' @aliases FractionalCRM
 #' @export
+#' @references
+#'   \insertAllCited{}
 #'
 .FractionalCRM <- setClass(
   Class = "FractionalCRM",

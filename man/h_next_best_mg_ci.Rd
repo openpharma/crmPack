@@ -30,8 +30,5 @@ Helper function for \code{\link[=nextBest-NextBestMaxGain]{nextBest-NextBestMaxG
 It also returns a ratio of upper and lower bounds of the interval.
 }
 \references{
-Yeung, W.Y., Whitehead, J., Reigner, B., Beyer, U., Diack, Ch., Jaki, T. (2015),
-Bayesian adaptive dose-escalation procedures for binary and continuous responses utilizing a gain function,
-\emph{Pharmaceutical Statistics},
-\doi{10.1002/pst.1706} \cr
+\insertRef{YeungWhiteheadReignerBeyerDiackJaki2015}{crmPack}
 }

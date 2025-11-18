@@ -31,7 +31,7 @@ parameter CRM (with normal prior on the log-power parameter) as well as
 Kaplan-Meier based estimation of the conditional probability to experience a
 DLT for non-complete observations.
 
-This fractional CRM model follows the paper and code by Guosheng Yin et al.
+This fractional CRM model follows the paper and code by \insertCite{YinZhengXu2013;textual}{crmPack}.
 }
 \note{
 Typically, end users will not use the \code{.DefaultTITELogisticLogNormal()} function.
@@ -42,6 +42,9 @@ my_model <- FractionalCRM(
   dose_grid = c(10, 30, 50, 100),
   sigma2 = 2
 )
+}
+\references{
+\insertAllCited{}
 }
 \seealso{
 \code{\link{TITELogisticLogNormal}}.

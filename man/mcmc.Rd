@@ -110,12 +110,13 @@ number of doses.
 
 \item \code{mcmc(data = Data, model = LogisticIndepBeta, options = McmcOptions)}: Obtain posterior samples for the model parameters based on the pseudo 'LogisticsIndepBeta'
 DLE model. The joint prior and posterior probability density function of
-the intercept \eqn{\phi_1} (phi1) and the slope \eqn{\phi_2} (phi2) are given in Whitehead and
-Williamson (1998) and TsuTakawa (1975). However, since asymptotically, the joint posterior probability density
+the intercept \eqn{\phi_1} (phi1) and the slope \eqn{\phi_2} (phi2) are given in
+\insertCite{WhiteheadWilliamson1998;textual}{crmPack}.
+However, since asymptotically, the joint posterior probability density
 will be bivariate normal and we will use the bivariate normal distribution to
 generate posterior samples of the intercept and the slope parameters. For the prior samples of
-of the intercept and the slope a bivariate normal distribution with mean and the covariance matrix given in Whitehead and
-Williamson (1998) is used.
+of the intercept and the slope a bivariate normal distribution with mean and the covariance matrix given in
+\insertCite{WhiteheadWilliamson1998;textual}{crmPack} is used.
 
 \item \code{mcmc(data = DataDual, model = Effloglog, options = McmcOptions)}: Obtain the posterior samples for the model parameters in the
 Efficacy log log model. Given the value of \eqn{\nu}, the precision of the efficacy responses,
@@ -127,11 +128,11 @@ Then the mean of the of the nu samples
 will be used the generate samples of the intercept and slope parameters of the model
 
 \item \code{mcmc(data = DataDual, model = EffFlexi, options = McmcOptions)}: Obtain the posterior samples for the estimates in the Efficacy Flexible form.
-This is the mcmc procedure based on what is described in Lang and Brezger (2004) such that
+This is the mcmc procedure based on what is described in \insertCite{LangBrezger2004;textual}{crmPack} such that
 samples of the mean efficacy responses at all dose levels, samples of sigma2 \eqn{sigma^2},
 the variance of the efficacy response and samples of sigma2betaW \eqn{sigma^2_{beta_W}}, the variance of
 the random walk model will
-be generated. Please refer to Lang and Brezger (2004) for the procedures and the form of
+be generated. Please refer to \insertCite{LangBrezger2004;textual}{crmPack} for the procedures and the form of
 the joint prior and posterior probability density for the mean efficacy responses. In addition,
 both sigma2 and sigma2betaW can be fixed or having an inverse-gamma prior and posterior distribution.
 Therefore, if the inverse gamma distribution(s) are used, the parameters in the distribution will be
@@ -323,4 +324,7 @@ ordinal_model <- .DefaultLogisticLogNormalOrdinal()
 mcmc_options <- .DefaultMcmcOptions()
 
 samples <- mcmc(ordinal_data, ordinal_model, mcmc_options)
+}
+\references{
+\insertAllCited{}
 }

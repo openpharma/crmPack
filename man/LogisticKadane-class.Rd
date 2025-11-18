@@ -23,7 +23,7 @@ LogisticKadane(theta, xmin, xmax)
 \ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#stable}{\figure{lifecycle-stable.svg}{options: alt='[Stable]'}}}{\strong{[Stable]}}
 
 \code{\link{LogisticKadane}} is the class for the logistic model in the parametrization
-of Kadane et al. (1980).
+of \insertCite{KadaneDickeyWinklerSmithPeters1980;textual}{crmPack}.
 }
 \details{
 Let \code{rho0 = p(xmin)} be the probability of a DLT at the minimum dose
@@ -57,6 +57,9 @@ Typically, end-users will not use the \code{.DefaultLogisticKadane()} function.
 }
 \examples{
 my_model <- LogisticKadane(theta = 0.33, xmin = 1, xmax = 200)
+}
+\references{
+\insertAllCited{}
 }
 \seealso{
 \code{\link{ModelLogNormal}}

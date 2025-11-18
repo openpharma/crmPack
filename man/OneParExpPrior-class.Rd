@@ -25,7 +25,8 @@ of the same length as \code{skel_probs}.}
 
 \code{\link{OneParExpPrior}} is the class for a standard CRM with an exponential prior
 on the power parameter for the skeleton prior probabilities. It is an
-implementation of a version of the one-parameter CRM (O’Quigley et al. 1990).
+implementation of a version of the one-parameter CRM
+\insertCite{OQuigleyPepeFisher1990}{crmPack}.
 }
 \section{Slots}{
 
@@ -52,4 +53,7 @@ my_model <- OneParExpPrior(
   dose_grid = 1:5,
   lambda = 2
 )
+}
+\references{
+\insertAllCited{}
 }

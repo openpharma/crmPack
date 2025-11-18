@@ -488,7 +488,7 @@ knit_print.LogisticKadane <- function(
   units <- h_prepare_units(units)
   # Execute
   rv <- paste0(
-    "A logistic model using the parameterisation of Kadane (1980)  will ",
+    "A logistic model using the parameterisation of Kadane (1980) will ",
     "describe the relationship between dose and ",
     tox_label[1],
     ".\n\n ",
@@ -566,7 +566,7 @@ knit_print.LogisticKadaneBetaGamma <- function(
   tox_label <- h_prepare_labels(tox_label)
   # Execute
   rv <- paste0(
-    "A logistic model using the parameterisation of Kadane (1980)  will ",
+    "A logistic model using the parameterisation of Kadane (1980) will ",
     "describe the relationship between dose and ",
     tox_label[1],
     ", using a Beta ",

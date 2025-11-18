@@ -273,8 +273,8 @@ Quantiles2LogisticNormal <- function(
 
 #' Helper for Minimal Informative Unimodal Beta Distribution
 #'
-#' As defined in Neuenschwander et al (2008), this function computes the
-#' parameters of the minimal informative unimodal beta distribution, given the
+#' As defined in \insertCite{NeuenschwanderBransonGsponer2008;textual}{crmPack}, this function
+#' computes the parameters of the minimal informative unimodal beta distribution, given the
 #' request that the p-quantile should be q, i.e. `X ~ Be(a, b)` with
 #' `Pr(X <= q) = p`.
 #'
@@ -283,6 +283,8 @@ Quantiles2LogisticNormal <- function(
 #' @return A list with the two resulting beta parameters `a` and `b`.
 #'
 #' @keywords internal
+#' @references
+#'   \insertAllCited{}
 h_get_min_inf_beta <- function(p, q) {
   assert_probability(p, bounds_closed = FALSE)
   assert_probability(q, bounds_closed = FALSE)
@@ -309,8 +311,8 @@ h_get_min_inf_beta <- function(p, q) {
 #' This function constructs a minimally informative prior, which is captured in
 #' a [`LogisticNormal`] (or [`LogisticLogNormal`]) object.
 #'
-#' Based on the proposal by Neuenschwander et al (2008, Statistics in
-#' Medicine), a minimally informative prior distribution is constructed. The
+#' Based on the proposal by \insertCite{NeuenschwanderBransonGsponer2008;textual}{crmPack},
+#' a minimally informative prior distribution is constructed. The
 #' required key input is the minimum (\eqn{d_{1}} in the notation of the
 #' Appendix A.1 of that paper) and the maximum value (\eqn{d_{J}}) of the dose
 #' grid supplied to this function. Then `threshmin` is the probability
@@ -347,6 +349,8 @@ h_get_min_inf_beta <- function(p, q) {
 #'
 #' @example examples/MinimalInformative.R
 #' @export
+#' @references
+#'   \insertAllCited{}
 MinimalInformative <- function(
   dosegrid,
   refDose,
