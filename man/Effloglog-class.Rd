@@ -191,6 +191,4 @@ my_model2 <- Effloglog(
 }
 \references{
 \insertAllCited{}
-
-\insertAllCited{}
 }
