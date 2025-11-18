@@ -2481,8 +2481,6 @@ LogisticIndepBeta <- function(binDLE, DLEdose, DLEweights, data) {
 #'
 #' @export
 #' @example examples/Model-class-Effloglog.R
-#' @references
-#'   \insertAllCited{}
 #'
 Effloglog <- function(eff, eff_dose, nu, data, const = 0) {
   assert_numeric(eff)
