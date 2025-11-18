@@ -2879,9 +2879,11 @@ DALogisticLogNormal <- function(
       }
 
       # The likelihood function.
+      # nolint start
       L_obs[i] <- exp(sum(mu[i, ])) *
         pow(p[i] / A, y[i]) *
-        pow(1 - p[i], 1 - y[i]) # Not censored. # nolintr
+        pow(1 - p[i], 1 - y[i]) # Not censored.
+      # nolint end
       L_cnsr[i] <- 1 - p[i] * (1 - exp(-sum(mu_u[i, ]))) / A # Censored. # nolintr
       L[i] <- pow(L_obs[i], indx[i]) * pow(L_cnsr[i], 1 - indx[i])
 
