@@ -22,6 +22,7 @@
 #' @importFrom knitr knit_print
 #' @importFrom kableExtra kbl add_header_above column_spec collapse_rows
 #'   kable_styling add_footnote kable
+#' @importFrom Rdpack reprompt
 #'
 #' @keywords package
 #' @references Sabanes Bove D, Yeung WY, Palermo G, Jaki T (2019).
