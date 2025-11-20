@@ -865,3 +865,121 @@ test_that("match_within_tolerance works as expected", {
   expected3 <- c(2L, NA, 1L)
   expect_identical(result3, expected3)
 })
+
+# dinvGamma ----
+
+test_that("dinvGamma computes density correctly", {
+  result <- dinvGamma(2, a = 3, b = 1)
+  # Inverse gamma density formula: (b^a / Gamma(a)) * x^(-a-1) * exp(-b/x)
+  expected <- (1^3 / gamma(3)) * 2^(-4) * exp(-1 / 2)
+  expect_equal(result, expected, tolerance = 1e-10)
+})
+
+test_that("dinvGamma works with log = TRUE", {
+  result <- dinvGamma(2, a = 3, b = 1, log = TRUE)
+  expected <- log(dinvGamma(2, a = 3, b = 1, log = FALSE))
+  expect_equal(result, expected, tolerance = 1e-10)
+})
+
+test_that("dinvGamma works with normalize = FALSE", {
+  result <- dinvGamma(2, a = 3, b = 1, normalize = FALSE)
+  # Without normalization, should not include a * log(b) - lgamma(a)
+  expected <- -(3 + 1) * log(2) - 1 / 2
+  expect_equal(result, exp(expected), tolerance = 1e-10)
+})
+
+test_that("dinvGamma handles vector input", {
+  result <- dinvGamma(c(1, 2, 3), a = 2, b = 1)
+  expect_length(result, 3)
+  expect_true(all(result > 0))
+})
+
+# pinvGamma ----
+
+test_that("pinvGamma computes distribution function correctly", {
+  result <- pinvGamma(2, a = 3, b = 1)
+  # Should be P(X <= 2) = P(1/X >= 1/2) = 1 - P(1/X < 1/2) for Gamma
+  expected <- pgamma(1 / 2, shape = 3, rate = 1, lower.tail = FALSE)
+  expect_equal(result, expected, tolerance = 1e-10)
+})
+
+test_that("pinvGamma works with lower.tail = FALSE", {
+  result <- pinvGamma(2, a = 3, b = 1, lower.tail = FALSE)
+  expected <- 1 - pinvGamma(2, a = 3, b = 1, lower.tail = TRUE)
+  expect_equal(result, expected, tolerance = 1e-10)
+})
+
+test_that("pinvGamma works with log.p = TRUE", {
+  result <- pinvGamma(2, a = 3, b = 1, log.p = TRUE)
+  expected <- log(pinvGamma(2, a = 3, b = 1, log.p = FALSE))
+  expect_equal(result, expected, tolerance = 1e-10)
+})
+
+test_that("pinvGamma handles vector input", {
+  result <- pinvGamma(c(1, 2, 3), a = 2, b = 1)
+  expect_length(result, 3)
+  expect_true(all(result >= 0 & result <= 1))
+  # Should be monotonically increasing
+  expect_true(all(diff(result) >= 0))
+})
+
+# qinvGamma ----
+
+test_that("qinvGamma computes quantile function correctly", {
+  # Test that qinvGamma is inverse of pinvGamma
+  q_val <- 2
+  p_val <- pinvGamma(q_val, a = 3, b = 1)
+  result <- qinvGamma(p_val, a = 3, b = 1)
+  expect_equal(result, q_val, tolerance = 1e-10)
+})
+
+test_that("qinvGamma works with lower.tail = FALSE", {
+  result <- qinvGamma(0.5, a = 3, b = 1, lower.tail = FALSE)
+  expected <- qinvGamma(0.5, a = 3, b = 1, lower.tail = TRUE)
+  expect_equal(result, expected)
+})
+
+test_that("qinvGamma works with log.p = TRUE", {
+  result <- qinvGamma(log(0.5), a = 3, b = 1, log.p = TRUE)
+  expected <- qinvGamma(0.5, a = 3, b = 1, log.p = FALSE)
+  expect_equal(result, expected, tolerance = 1e-10)
+})
+
+test_that("qinvGamma handles vector input", {
+  result <- qinvGamma(c(0.25, 0.5, 0.75), a = 2, b = 1)
+  expect_length(result, 3)
+  expect_true(all(result > 0))
+  # Should be monotonically increasing
+  expect_true(all(diff(result) > 0))
+})
+
+# rinvGamma ----
+
+test_that("rinvGamma generates random values", {
+  set.seed(123)
+  result <- rinvGamma(100, a = 3, b = 1)
+  expect_length(result, 100)
+  expect_true(all(result > 0))
+  expect_true(all(is.finite(result)))
+})
+
+test_that("rinvGamma has correct distribution properties", {
+  set.seed(456)
+  n <- 10000
+  samples <- rinvGamma(n, a = 3, b = 1)
+
+  # Theoretical mean of inverse gamma: b / (a - 1) for a > 1
+  theoretical_mean <- 1 / (3 - 1)
+  sample_mean <- mean(samples)
+
+  # Check mean is close to theoretical (with generous tolerance for randomness)
+  expect_equal(sample_mean, theoretical_mean, tolerance = 0.1)
+})
+
+test_that("rinvGamma results are reproducible with seed", {
+  set.seed(789)
+  result1 <- rinvGamma(10, a = 2, b = 1)
+  set.seed(789)
+  result2 <- rinvGamma(10, a = 2, b = 1)
+  expect_identical(result1, result2)
+})

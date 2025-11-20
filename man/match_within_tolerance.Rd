@@ -2,20 +2,28 @@
 % Please edit documentation in R/helpers.R
 \name{match_within_tolerance}
 \alias{match_within_tolerance}
-\title{Helper function for value matching with tolerance}
+\title{Helper Function for Value Matching with Tolerance}
 \usage{
-match_within_tolerance(x, table)
+match_within_tolerance(x, table, tolerance = 1e-10)
 }
 \arguments{
-\item{x}{the values to be matched}
+\item{x}{(\code{numeric})\cr the values to be matched.}
 
-\item{table}{the values to be matched against}
+\item{table}{(\code{numeric})\cr the values to be matched against.}
+
+\item{tolerance}{(\code{number})\cr the numerical tolerance for comparison.}
 }
 \value{
-A vector of the same length as \code{x} or
-empty vector if \code{table} is empty.
+An integer vector of the same length as \code{x} giving the position
+in \code{table} of the first match, or an empty integer vector if \code{table} is empty.
+\code{NA} is returned for values in \code{x} that have no match.
 }
 \description{
-This is a modified version of \code{match} that supports tolerance.
+\ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#stable}{\figure{lifecycle-stable.svg}{options: alt='[Stable]'}}}{\strong{[Stable]}}
+
+This is a modified version of \code{\link[=match]{match()}} that supports tolerance.
 }
-\keyword{programming}
+\examples{
+match_within_tolerance(c(0.1, 0.2, 0.3), c(0.10000001, 0.5, 0.3))
+match_within_tolerance(1.5, numeric(0))
+}
