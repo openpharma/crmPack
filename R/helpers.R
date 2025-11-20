@@ -208,8 +208,6 @@ crmPackHelp <- function() {
 #' @param x (`gtable`)\cr object to plot.
 #' @param ... additional parameters for [grid::grid.draw()].
 #'
-#' @return Called for side effects.
-#'
 #' @export
 plot.gtable <- function(x, ...) {
   grid::grid.draw(x, ...)
