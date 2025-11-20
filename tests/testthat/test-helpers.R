@@ -845,3 +845,23 @@ test_that("plot for gtable works", {
   assert_class(result, "gtable")
   expect_doppel("plot-gtable", plot(result))
 })
+
+# match_within_tolerance ----
+
+test_that("match_within_tolerance works as expected", {
+  target <- c(1, 2, 3)
+  current <- c(1.05, 1.95, 3.1)
+
+  result <- match_within_tolerance(target, current, tolerance = 0.1)
+  expected <- c(1L, 2L, 3L)
+  expect_identical(result, expected)
+
+  result2 <- match_within_tolerance(target, current, tolerance = 0.01)
+  expected2 <- rep(NA_integer_, 3)
+  expect_identical(result2, expected2)
+
+  current2 <- c(3.1, 1.05, 2.7)
+  result3 <- match_within_tolerance(target, current2, tolerance = 0.1)
+  expected3 <- c(2L, NA, 1L)
+  expect_identical(result3, expected3)
+})

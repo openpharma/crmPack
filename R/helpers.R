@@ -67,48 +67,57 @@ positive_number <- setClass(
   }
 )
 
-# nolint start
+# match_within_tolerance ----
 
-##' Helper function for value matching with tolerance
-##'
-##' This is a modified version of \code{match} that supports tolerance.
-##'
-##' @param x the values to be matched
-##' @param table the values to be matched against
-##' @return A vector of the same length as \code{x} or
-##'  empty vector if \code{table} is empty.
-##'
-##' @export
-##' @keywords programming
-match_within_tolerance <- function(x, table) {
+#' Helper Function for Value Matching with Tolerance
+#'
+#' @description `r lifecycle::badge("stable")`
+#'
+#' This is a modified version of [match()] that supports tolerance.
+#'
+#' @param x (`numeric`)\cr the values to be matched.
+#' @param table (`numeric`)\cr the values to be matched against.
+#' @param tolerance (`number`)\cr the numerical tolerance for comparison.
+#'
+#' @return An integer vector of the same length as `x` giving the position
+#'   in `table` of the first match, or an empty integer vector if `table` is empty.
+#'   `NA` is returned for values in `x` that have no match.
+#'
+#' @export
+#'
+#' @examples
+#' match_within_tolerance(c(0.1, 0.2, 0.3), c(0.10000001, 0.5, 0.3))
+#' match_within_tolerance(1.5, numeric(0))
+match_within_tolerance <- function(x, table, tolerance = 1e-10) {
+  assert_numeric(x)
+  assert_numeric(table)
+  assert_number(tolerance, lower = .Machine$double.xmin, finite = TRUE)
+
   if (length(table) == 0) {
-    return(integer())
+    integer()
+  } else {
+    as.integer(vapply(
+      x,
+      function(val) {
+        matches <- vapply(
+          table,
+          function(tbl_val) {
+            isTRUE(all.equal(
+              val,
+              tbl_val,
+              tolerance = tolerance,
+              check.names = FALSE,
+              check.attributes = FALSE
+            ))
+          },
+          logical(1)
+        )
+        which(matches)[1L]
+      },
+      integer(1)
+    ))
   }
-
-  as.integer(sapply(x, function(.x) {
-    which(sapply(table, function(.table) {
-      isTRUE(all.equal(
-        .x,
-        .table,
-        tolerance = 1e-10,
-        check.names = FALSE,
-        check.attributes = FALSE
-      ))
-    }))[1]
-  }))
 }
-
-##' checks for whole numbers (integers)
-##'
-##' @param x the numeric vector
-##' @param tol the tolerance
-##' @return TRUE or FALSE for each element of x
-##'
-##' @keywords internal
-is.wholenumber <- function(x, tol = .Machine$double.eps^0.5) {
-  abs(x - round(x)) < tol
-}
-
 
 ##' Safe conversion to integer vector
 ##'
@@ -117,7 +126,7 @@ is.wholenumber <- function(x, tol = .Machine$double.eps^0.5) {
 ##'
 ##' @keywords internal
 safeInteger <- function(x) {
-  testres <- is.wholenumber(x)
+  testres <- checkmate::testIntegerish(x)
   if (!all(testres)) {
     notInt <- which(!testres)
     stop(paste(
@@ -305,8 +314,6 @@ qinvGamma <- function(p, a, b, lower.tail = TRUE, log.p = FALSE) {
 rinvGamma <- function(n, a, b) {
   1 / rgamma(n, shape = a, rate = b)
 }
-
-# nolint end
 
 #' Combining S4 Class Validation Results
 #'
