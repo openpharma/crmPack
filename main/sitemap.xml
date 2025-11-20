@@ -204,8 +204,8 @@
 <url><loc>https://openpharma.github.io/crmPack/reference/h_knit_format_func.html</loc></url>
 <url><loc>https://openpharma.github.io/crmPack/reference/h_model_dual_endpoint_beta.html</loc></url>
 <url><loc>https://openpharma.github.io/crmPack/reference/h_model_dual_endpoint_rho.html</loc></url>
-<url><loc>https://openpharma.github.io/crmPack/reference/h_model_dual_endpoint_sigma2W.html</loc></url>
-<url><loc>https://openpharma.github.io/crmPack/reference/h_model_dual_endpoint_sigma2betaW.html</loc></url>
+<url><loc>https://openpharma.github.io/crmPack/reference/h_model_dual_endpoint_sigma2betaw.html</loc></url>
+<url><loc>https://openpharma.github.io/crmPack/reference/h_model_dual_endpoint_sigma2w.html</loc></url>
 <url><loc>https://openpharma.github.io/crmPack/reference/h_next_best_eligible_doses.html</loc></url>
 <url><loc>https://openpharma.github.io/crmPack/reference/h_next_best_mg_ci.html</loc></url>
 <url><loc>https://openpharma.github.io/crmPack/reference/h_next_best_mg_doses_at_grid.html</loc></url>
@@ -231,7 +231,6 @@
 <url><loc>https://openpharma.github.io/crmPack/reference/h_validate_combine_results.html</loc></url>
 <url><loc>https://openpharma.github.io/crmPack/reference/h_validate_common_data_slots.html</loc></url>
 <url><loc>https://openpharma.github.io/crmPack/reference/index.html</loc></url>
-<url><loc>https://openpharma.github.io/crmPack/reference/is.wholenumber.html</loc></url>
 <url><loc>https://openpharma.github.io/crmPack/reference/knit_print.html</loc></url>
 <url><loc>https://openpharma.github.io/crmPack/reference/logit.html</loc></url>
 <url><loc>https://openpharma.github.io/crmPack/reference/match_within_tolerance.html</loc></url>
@@ -277,7 +276,6 @@
 <url><loc>https://openpharma.github.io/crmPack/reference/probit.html</loc></url>
 <url><loc>https://openpharma.github.io/crmPack/reference/qinvGamma.html</loc></url>
 <url><loc>https://openpharma.github.io/crmPack/reference/rinvGamma.html</loc></url>
-<url><loc>https://openpharma.github.io/crmPack/reference/safeInteger.html</loc></url>
 <url><loc>https://openpharma.github.io/crmPack/reference/saveSample.html</loc></url>
 <url><loc>https://openpharma.github.io/crmPack/reference/set_seed.html</loc></url>
 <url><loc>https://openpharma.github.io/crmPack/reference/show-DualSimulationsSummary-method.html</loc></url>
