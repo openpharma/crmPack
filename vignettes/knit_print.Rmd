@@ -333,7 +333,7 @@ h_custom_method_exists <- function(generic, obj) {
   f <- X <- function(x, obj) UseMethod("X")
   for (m in methods(generic_name)) assign(sub(generic_name, "X", m, fixed = TRUE), "body<-"(f, value = m))
   method_name <- X(obj)
-  return(method_name != paste0(generic_name, ".default"))
+  method_name != paste0(generic_name, ".default")
 }
 
 df <- lapply(

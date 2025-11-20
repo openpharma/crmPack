@@ -736,7 +736,7 @@ setMethod(
     doses <- modelfit$dose[dosesOK]
     bestIndex <- which.min(abs(probDLT - nextBest@target))
     bestDose <- doses[bestIndex]
-    return(list(value = bestDose))
+    list(value = bestDose)
   }
 )
 ```

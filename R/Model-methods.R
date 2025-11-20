@@ -1495,7 +1495,7 @@ setMethod(
         alpha0 <- samples@data[[paste0("alpha", g + 1)]]
         grade_prob <- cumulative_prob -
           plogis(alpha0 + beta * log(dose / ref_dose))
-        return(grade_prob)
+        grade_prob
       }
     )
     if (length(rv) == 1) {
