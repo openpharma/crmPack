@@ -24,7 +24,7 @@
 #' @return `list` with updated model components.
 #'
 #' @export
-h_model_dual_endpoint_sigma2W <- function(
+h_model_dual_endpoint_sigma2w <- function(
   use_fixed, # nolintr
   sigma2W,
   comp
@@ -121,7 +121,7 @@ h_model_dual_endpoint_rho <- function(use_fixed, rho, comp) {
 #'
 #' @seealso [`DualEndpointRW`].
 #' @export
-h_model_dual_endpoint_sigma2betaW <- function(
+h_model_dual_endpoint_sigma2betaw <- function(
   use_fixed, # nolintr
   sigma2betaW,
   de

@@ -179,9 +179,9 @@ reference:
       - h_jags_get_data
       - h_jags_write_model
       - h_jags_extract_samples
-      - h_model_dual_endpoint_sigma2W
+      - h_model_dual_endpoint_sigma2w
       - h_model_dual_endpoint_rho
-      - h_model_dual_endpoint_sigma2betaW
+      - h_model_dual_endpoint_sigma2betaw
       - h_model_dual_endpoint_beta
       - h_info_theory_dist
       - h_next_best_mg_ci
