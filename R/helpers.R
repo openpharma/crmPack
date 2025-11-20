@@ -119,25 +119,6 @@ match_within_tolerance <- function(x, table, tolerance = 1e-10) {
   }
 }
 
-##' Safe conversion to integer vector
-##'
-##' @param x the numeric vector
-##' @return the integer vector
-##'
-##' @keywords internal
-safeInteger <- function(x) {
-  testres <- checkmate::testIntegerish(x)
-  if (!all(testres)) {
-    notInt <- which(!testres)
-    stop(paste(
-      "elements",
-      paste(notInt, sep = ", "),
-      "of vector are not integers!"
-    ))
-  }
-  as.integer(x)
-}
-
 ##' Shorthand for logit function
 ##'
 ##' @param x the function argument
