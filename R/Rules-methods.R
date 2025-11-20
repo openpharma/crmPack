@@ -49,6 +49,85 @@ setGeneric(
   valueClass = "list"
 )
 
+
+#' @export
+setMethod(
+  f = "nextBest",
+  signature = signature(
+    nextBest = "NextBestEWOC",
+    doselimit = "numeric",
+    samples = "Samples",
+    model = "GeneralModel",
+    data = "Data"
+  ),
+  definition = function(nextBest, doselimit = Inf, samples, model, data, ...) {
+    # Matrix with samples from the dose-tox curve at the dose grid points.
+    prob_samples <- sapply(
+      data@doseGrid,
+      prob,
+      model = model,
+      samples = samples,
+      ...
+    )
+
+    # Estimates of posterior probabilities that are based on the prob. samples
+    # which are within overdose/target interval.
+    prob_overdose <- colMeans(h_in_range(
+      prob_samples,
+      nextBest@overdose,
+      bounds_closed = c(FALSE, TRUE)
+    ))
+
+    # Eligible grid doses after accounting for maximum possible dose and discarding overdoses.
+    is_dose_eligible <- h_next_best_eligible_doses(
+      data@doseGrid,
+      doselimit,
+      data@placebo,
+      levels = TRUE
+    ) &
+      (prob_overdose <= nextBest@max_overdose_prob)
+
+    next_dose <- if (any(is_dose_eligible)) {
+      # Take the higest eligible dose.
+      next_best_level <- sum(is_dose_eligible)
+      data@doseGrid[is_dose_eligible][next_best_level]
+    } else {
+      NA_real_
+    }
+
+    # Build plot for the overdosing probability.
+    p <- ggplot() +
+      geom_bar(
+        data = data.frame(Dose = data@doseGrid, y = prob_overdose * 100),
+        aes(x = .data$Dose, y = .data$y),
+        stat = "identity",
+        position = "identity",
+        width = min(diff(data@doseGrid)) / 2,
+        colour = "red",
+        fill = "red"
+      ) +
+      geom_hline(
+        yintercept = nextBest@max_overdose_prob * 100,
+        lwd = 1.1,
+        lty = 2,
+        colour = "black"
+      ) +
+      ylim(c(0, 100)) +
+      ylab("Overdose probability [%]")
+
+    list(
+      value = next_dose,
+      plot = p,
+      singlePlots = list(overdose = p),
+      probs = cbind(
+        dose = data@doseGrid,
+        overdose = prob_overdose
+      )
+    )
+  }
+)
+
+
 ## NextBestMTD ----
 
 #' @describeIn nextBest find the next best dose based on the MTD rule.

@@ -38,6 +38,19 @@ setClass(
   ))
 }
 
+#' @export
+NextBestEWOC <- setClass(
+  Class = "NextBestEWOC",
+  slots = c(
+    overdose = "numeric",
+    max_overdose_prob = "numeric"
+  ),
+  prototype = prototype(
+    overdose = c(0.35, 1),
+    max_overdose_prob = 0.25
+  ),
+  contains = "NextBest"
+)
 
 # NextBestMTD ----
 
