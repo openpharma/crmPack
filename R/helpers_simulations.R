@@ -44,7 +44,7 @@ h_barplot_percentages <- function(x, description, xaxisround = 0) {
 h_calc_report_label_percentage <- function(stop_report) {
   stop_pct <- colMeans(stop_report) * 100
   stop_pct_to_print <- stop_pct[!is.na(names(stop_pct))]
-  return(stop_pct_to_print)
+  stop_pct_to_print
 }
 
 
@@ -67,5 +67,5 @@ h_summarize_add_stats <- function(stats_list) {
     mean(values)
   })
 
-  return(list(param_names, averages))
+  list(param_names, averages)
 }

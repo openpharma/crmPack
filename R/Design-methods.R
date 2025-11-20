@@ -2839,7 +2839,7 @@ setMethod(
       }
 
       # Ensure results are always positive.
-      surv_times[surv_times == 0] <- 0.5
+      surv_times[surv_times <= 0] <- 0.05
       surv_times
     }
 
@@ -3190,8 +3190,7 @@ setMethod(
                     observed_surv[ids_enrolled],
                     this_new_dlt_time - observed_t0[ids_enrolled]
                   )
-
-                  assert_true(surv_time >= 0)
+                  assert_true(all(surv_time >= 0))
 
                   observed_surv[ids_enrolled] <- surv_time
                 }

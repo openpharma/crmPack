@@ -67,124 +67,142 @@ positive_number <- setClass(
   }
 )
 
-# nolint start
+# match_within_tolerance ----
 
-##' Helper function for value matching with tolerance
-##'
-##' This is a modified version of \code{match} that supports tolerance.
-##'
-##' @param x the values to be matched
-##' @param table the values to be matched against
-##' @return A vector of the same length as \code{x} or
-##'  empty vector if \code{table} is empty.
-##'
-##' @export
-##' @keywords programming
-match_within_tolerance <- function(x, table) {
+#' Helper Function for Value Matching with Tolerance
+#'
+#' @description `r lifecycle::badge("stable")`
+#'
+#' This is a modified version of [match()] that supports tolerance.
+#'
+#' @param x (`numeric`)\cr the values to be matched.
+#' @param table (`numeric`)\cr the values to be matched against.
+#' @param tolerance (`number`)\cr the numerical tolerance for comparison.
+#'
+#' @return An integer vector of the same length as `x` giving the position
+#'   in `table` of the first match, or an empty integer vector if `table` is empty.
+#'   `NA` is returned for values in `x` that have no match.
+#'
+#' @export
+#'
+#' @examples
+#' match_within_tolerance(c(0.1, 0.2, 0.3), c(0.10000001, 0.5, 0.3))
+#' match_within_tolerance(1.5, numeric(0))
+match_within_tolerance <- function(x, table, tolerance = 1e-10) {
+  assert_numeric(x)
+  assert_numeric(table)
+  assert_number(tolerance, lower = .Machine$double.xmin, finite = TRUE)
+
   if (length(table) == 0) {
-    return(integer())
-  }
-
-  as.integer(sapply(x, function(.x) {
-    which(sapply(table, function(.table) {
-      isTRUE(all.equal(
-        .x,
-        .table,
-        tolerance = 1e-10,
-        check.names = FALSE,
-        check.attributes = FALSE
-      ))
-    }))[1]
-  }))
-}
-
-##' checks for whole numbers (integers)
-##'
-##' @param x the numeric vector
-##' @param tol the tolerance
-##' @return TRUE or FALSE for each element of x
-##'
-##' @keywords internal
-is.wholenumber <- function(x, tol = .Machine$double.eps^0.5) {
-  abs(x - round(x)) < tol
-}
-
-
-##' Safe conversion to integer vector
-##'
-##' @param x the numeric vector
-##' @return the integer vector
-##'
-##' @keywords internal
-safeInteger <- function(x) {
-  testres <- is.wholenumber(x)
-  if (!all(testres)) {
-    notInt <- which(!testres)
-    stop(paste(
-      "elements",
-      paste(notInt, sep = ", "),
-      "of vector are not integers!"
+    integer()
+  } else {
+    as.integer(vapply(
+      x,
+      function(val) {
+        matches <- vapply(
+          table,
+          function(tbl_val) {
+            isTRUE(all.equal(
+              val,
+              tbl_val,
+              tolerance = tolerance,
+              check.names = FALSE,
+              check.attributes = FALSE
+            ))
+          },
+          logical(1)
+        )
+        which(matches)[1L]
+      },
+      integer(1)
     ))
   }
-  as.integer(x)
 }
 
-##' Shorthand for logit function
-##'
-##' @param x the function argument
-##' @return the logit(x)
-##'
-##' @export
-##' @keywords programming
+# logit ----
+
+#' Shorthand for Logit Function
+#'
+#' @description `r lifecycle::badge("stable")`
+#'
+#' Computes the logit transformation.
+#'
+#' @param x (`numeric`)\cr the function argument.
+#'
+#' @return The logit of `x`, computed as `log(x / (1 - x))`.
+#'
+#' @export
+#'
+#' @examples
+#' logit(0.5)
+#' logit(c(0.1, 0.5, 0.9))
 logit <- function(x) {
   qlogis(x)
 }
 
-##' Shorthand for probit function
-##'
-##' @param x the function argument
-##' @return the probit(x)
-##'
-##' @export
-##' @keywords programming
+# probit ----
+
+#' Shorthand for Probit Function
+#'
+#' @description `r lifecycle::badge("stable")`
+#'
+#' Computes the probit (inverse cumulative distribution function of standard normal) transformation.
+#'
+#' @param x (`numeric`)\cr the function argument.
+#'
+#' @return The probit of `x`, the quantile function of the standard normal distribution.
+#'
+#' @export
+#'
+#' @examples
+#' probit(0.5)
+#' probit(c(0.025, 0.5, 0.975))
 probit <- function(x) {
   qnorm(x)
 }
 
-##' Open the example pdf for crmPack
-##'
-##' Calling this helper function should open the example.pdf document,
-##' residing in the doc subfolder of the package installation directory.
-##'
-##' @return nothing
-##' @export
-##' @keywords documentation
-##' @author Daniel Sabanes Bove \email{sabanesd@@rconis.com}
+# crmPackExample ----
+
+#' Open the Example PDF for crmPack
+#'
+#' @description `r lifecycle::badge("stable")`
+#'
+#' Calling this helper function opens the `example.pdf` document,
+#' residing in the `doc` subfolder of the package installation directory.
+#'
+#' @return Called for side effects.
+#'
+#' @export
 crmPackExample <- function() {
-  crmPath <- system.file(package = "crmPack")
-  printVignette(list(PDF = "example.pdf", Dir = crmPath))
-  ## instead of utils:::print.vignette
+  crm_path <- system.file(package = "crmPack")
+  printVignette(list(PDF = "example.pdf", Dir = crm_path))
 }
 
-##' Open the browser with help pages for crmPack
-##'
-##' This convenience function opens your browser with the help pages for
-##' crmPack.
-##'
-##' @return nothing
-##' @export
-##' @importFrom utils help
-##' @keywords documentation
-##' @author Daniel Sabanes Bove \email{sabanesd@@rconis.com}
+# crmPackHelp ----
+
+#' Open the Browser with Help Pages for crmPack
+#'
+#' @description `r lifecycle::badge("stable")`
+#'
+#' This convenience function opens your browser with the help pages for crmPack.
+#'
+#' @return Called for side effects.
+#'
+#' @export
+#' @importFrom utils help
 crmPackHelp <- function() {
   utils::help(package = "crmPack", help_type = "html")
 }
 
+# plot.gtable ----
+
 #' Plot `gtable` Objects
+#'
+#' @description `r lifecycle::badge("stable")`
 #'
 #' This is needed because `crmPack` uses [gridExtra::arrangeGrob()] to combine
 #' `ggplot2` plots, and the resulting `gtable` object is not plotted otherwise
-#' when implicitly printing it in the console, e.g.
+#' when implicitly printing it in the console.
 #'
 #' @method plot gtable
 #' @param x (`gtable`)\cr object to plot.
@@ -195,34 +213,47 @@ plot.gtable <- function(x, ...) {
   grid::grid.draw(x, ...)
 }
 
+# print.gtable ----
+
 #' @method print gtable
+#' @param x (`gtable`)\cr object to print.
+#' @param ... additional parameters passed to [plot.gtable()].
 #' @rdname plot.gtable
+#' @return Called for side effects.
 #' @export
 print.gtable <- function(x, ...) {
   plot(x, ...)
 }
 
-##' Taken from utils package (print.vignette)
-##'
-##' @importFrom tools file_ext
-##' @importFrom utils browseURL
-##' @keywords internal
+# printVignette ----
+
+#' Print Vignette
+#'
+#' @description `r lifecycle::badge("stable")`
+#'
+#' Taken from utils package (`print.vignette`).
+#'
+#' @param x (`list`)\cr vignette information.
+#' @param ... not used.
+#'
+#' @return `x` invisibly.
+#'
+#' @importFrom tools file_ext
+#' @importFrom utils browseURL
+#' @keywords internal
 printVignette <- function(x, ...) {
   if (nzchar(out <- x$PDF)) {
     ext <- tools::file_ext(out)
     out <- file.path(x$Dir, "doc", out)
     if (tolower(ext) == "pdf") {
-      pdfviewer <- getOption("pdfviewer")
-      if (identical(pdfviewer, "false")) {} else if (
+      pdf_viewer <- getOption("pdfviewer")
+      if (identical(pdf_viewer, "false")) {} else if (
         .Platform$OS.type == "windows" &&
-          identical(
-            pdfviewer,
-            file.path(R.home("bin"), "open.exe")
-          )
+          identical(pdf_viewer, file.path(R.home("bin"), "open.exe"))
       ) {
         shell.exec(out)
       } else {
-        system2(pdfviewer, shQuote(out), wait = FALSE)
+        system2(pdf_viewer, shQuote(out), wait = FALSE)
       }
     } else {
       browseURL(out)
@@ -237,37 +268,52 @@ printVignette <- function(x, ...) {
   invisible(x)
 }
 
-##' Compute the density of Inverse gamma distribution
-##' @param x vector of quantiles
-##' @param a the shape parameter of the inverse gamma distribution
-##' @param b the scale parameter of the inverse gamma distribution
-##' @param log logical; if TRUE, probabilities p are given as log(p)
-##' @param normalize logical; if TRUE, the output will be normalized
-##'
-##' @keywords internal
+# dinvGamma ----
+
+#' Compute the Density of Inverse Gamma Distribution
+#'
+#' @description `r lifecycle::badge("stable")`
+#'
+#' @param x (`numeric`)\cr vector of quantiles.
+#' @param a (`number`)\cr the shape parameter of the inverse gamma distribution.
+#' @param b (`number`)\cr the scale parameter of the inverse gamma distribution.
+#' @param log (`flag`)\cr if `TRUE`, probabilities `p` are given as `log(p)`.
+#' @param normalize (`flag`)\cr if `TRUE`, the output will be normalized.
+#'
+#' @return The density value(s).
+#'
+#' @keywords internal
 dinvGamma <- function(x, a, b, log = FALSE, normalize = TRUE) {
   ret <- -(a + 1) * log(x) - b / x
   if (normalize) {
     ret <- ret + a * log(b) - lgamma(a)
   }
   if (log) {
-    return(ret)
+    ret
   } else {
-    return(exp(ret))
+    exp(ret)
   }
 }
 
-##' Compute the distribution function of Inverse gamma distribution
-##'
-##' @param q vector of quantiles
-##' @param a the shape parameter of the inverse gamma distribution
-##' @param b the scale parameter of the inverse gamma distribution
-##' @param lower.tail logical; if TRUE (default), probabilities are `P(X  > x)`,
-##'   otherwise, `P(X <= x)`.
-##' @param log.p if TRUE, probabilities/densities p are returned as `log(p)`
-##'
-##' @keywords internal
+# pinvGamma ----
+
+#' Compute the Distribution Function of Inverse Gamma Distribution
+#'
+#' @description `r lifecycle::badge("stable")`
+#'
+#' @param q (`numeric`)\cr vector of quantiles.
+#' @param a (`number`)\cr the shape parameter of the inverse gamma distribution.
+#' @param b (`number`)\cr the scale parameter of the inverse gamma distribution.
+#' @param lower.tail (`flag`)\cr if `TRUE` (default), probabilities are `P(X <= x)`,
+#'   otherwise, `P(X > x)`.
+#' @param log.p (`flag`)\cr if `TRUE`, probabilities/densities `p` are returned as `log(p)`.
+#'
+#' @return The distribution function value(s).
+#'
+#' @keywords internal
+# nolint start
 pinvGamma <- function(q, a, b, lower.tail = TRUE, log.p = FALSE) {
+  # nolint end
   pgamma(
     q = 1 / q,
     shape = a,
@@ -277,16 +323,25 @@ pinvGamma <- function(q, a, b, lower.tail = TRUE, log.p = FALSE) {
   )
 }
 
-##' Compute the quantile function of Inverse gamma distribution
-##' @param p vector of probabilities
-##' @param a the shape parameter of the inverse gamma distribution
-##' @param b the scale parameter of the inverse gamma distribution
-##' @param lower.tail logical; if TRUE (default), probabilities are `P(X  > x)`,
-##'   otherwise, `P(X <= x)`.
-##' @param log.p FALSE if TRUE, probabilities/densities p are returned as `log(p)`
-##'
-##' @keywords internal
+# qinvGamma ----
+
+#' Compute the Quantile Function of Inverse Gamma Distribution
+#'
+#' @description `r lifecycle::badge("stable")`
+#'
+#' @param p (`numeric`)\cr vector of probabilities.
+#' @param a (`number`)\cr the shape parameter of the inverse gamma distribution.
+#' @param b (`number`)\cr the scale parameter of the inverse gamma distribution.
+#' @param lower.tail (`flag`)\cr if `TRUE` (default), probabilities are `P(X <= x)`,
+#'   otherwise, `P(X > x)`.
+#' @param log.p (`flag`)\cr if `TRUE`, probabilities/densities `p` are given as `log(p)`.
+#'
+#' @return The quantile value(s).
+#'
+#' @keywords internal
+# nolint start
 qinvGamma <- function(p, a, b, lower.tail = TRUE, log.p = FALSE) {
+  # nolint end
   1 /
     qgamma(
       p = p,
@@ -296,17 +351,23 @@ qinvGamma <- function(p, a, b, lower.tail = TRUE, log.p = FALSE) {
       log.p = log.p
     )
 }
-##' The random generation of the Inverse gamma distribution
-##' @param n the number of observations
-##' @param a the shape parameter of the inverse gamma distribution
-##' @param b the scale parameter of the inverse gamma distribution
-##'
-##' @keywords internal
+
+# rinvGamma ----
+
+#' Random Generation for the Inverse Gamma Distribution
+#'
+#' @description `r lifecycle::badge("stable")`
+#'
+#' @param n (`count`)\cr the number of observations.
+#' @param a (`number`)\cr the shape parameter of the inverse gamma distribution.
+#' @param b (`number`)\cr the scale parameter of the inverse gamma distribution.
+#'
+#' @return A vector of random values from the inverse gamma distribution.
+#'
+#' @keywords internal
 rinvGamma <- function(n, a, b) {
   1 / rgamma(n, shape = a, rate = b)
 }
-
-# nolint end
 
 #' Combining S4 Class Validation Results
 #'

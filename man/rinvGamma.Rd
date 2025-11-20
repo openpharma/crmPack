@@ -2,18 +2,21 @@
 % Please edit documentation in R/helpers.R
 \name{rinvGamma}
 \alias{rinvGamma}
-\title{The random generation of the Inverse gamma distribution}
+\title{Random Generation for the Inverse Gamma Distribution}
 \usage{
 rinvGamma(n, a, b)
 }
 \arguments{
-\item{n}{the number of observations}
+\item{n}{(\code{count})\cr the number of observations.}
 
-\item{a}{the shape parameter of the inverse gamma distribution}
+\item{a}{(\code{number})\cr the shape parameter of the inverse gamma distribution.}
 
-\item{b}{the scale parameter of the inverse gamma distribution}
+\item{b}{(\code{number})\cr the scale parameter of the inverse gamma distribution.}
+}
+\value{
+A vector of random values from the inverse gamma distribution.
 }
 \description{
-The random generation of the Inverse gamma distribution
+\ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#stable}{\figure{lifecycle-stable.svg}{options: alt='[Stable]'}}}{\strong{[Stable]}}
 }
 \keyword{internal}

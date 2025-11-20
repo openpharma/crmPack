@@ -10,12 +10,17 @@
 \method{print}{gtable}(x, ...)
 }
 \arguments{
-\item{x}{(\code{gtable})\cr object to plot.}
+\item{x}{(\code{gtable})\cr object to print.}
 
-\item{...}{additional parameters for \code{\link[grid:grid.draw]{grid::grid.draw()}}.}
+\item{...}{additional parameters passed to \code{\link[=plot.gtable]{plot.gtable()}}.}
+}
+\value{
+Called for side effects.
 }
 \description{
+\ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#stable}{\figure{lifecycle-stable.svg}{options: alt='[Stable]'}}}{\strong{[Stable]}}
+
 This is needed because \code{crmPack} uses \code{\link[gridExtra:arrangeGrob]{gridExtra::arrangeGrob()}} to combine
 \code{ggplot2} plots, and the resulting \code{gtable} object is not plotted otherwise
-when implicitly printing it in the console, e.g.
+when implicitly printing it in the console.
 }

@@ -2,22 +2,25 @@
 % Please edit documentation in R/helpers.R
 \name{dinvGamma}
 \alias{dinvGamma}
-\title{Compute the density of Inverse gamma distribution}
+\title{Compute the Density of Inverse Gamma Distribution}
 \usage{
 dinvGamma(x, a, b, log = FALSE, normalize = TRUE)
 }
 \arguments{
-\item{x}{vector of quantiles}
+\item{x}{(\code{numeric})\cr vector of quantiles.}
 
-\item{a}{the shape parameter of the inverse gamma distribution}
+\item{a}{(\code{number})\cr the shape parameter of the inverse gamma distribution.}
 
-\item{b}{the scale parameter of the inverse gamma distribution}
+\item{b}{(\code{number})\cr the scale parameter of the inverse gamma distribution.}
 
-\item{log}{logical; if TRUE, probabilities p are given as log(p)}
+\item{log}{(\code{flag})\cr if \code{TRUE}, probabilities \code{p} are given as \code{log(p)}.}
 
-\item{normalize}{logical; if TRUE, the output will be normalized}
+\item{normalize}{(\code{flag})\cr if \code{TRUE}, the output will be normalized.}
+}
+\value{
+The density value(s).
 }
 \description{
-Compute the density of Inverse gamma distribution
+\ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#stable}{\figure{lifecycle-stable.svg}{options: alt='[Stable]'}}}{\strong{[Stable]}}
 }
 \keyword{internal}

@@ -2,18 +2,15 @@
 % Please edit documentation in R/helpers.R
 \name{crmPackHelp}
 \alias{crmPackHelp}
-\title{Open the browser with help pages for crmPack}
+\title{Open the Browser with Help Pages for crmPack}
 \usage{
 crmPackHelp()
 }
 \value{
-nothing
+Called for side effects.
 }
 \description{
-This convenience function opens your browser with the help pages for
-crmPack.
+\ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#stable}{\figure{lifecycle-stable.svg}{options: alt='[Stable]'}}}{\strong{[Stable]}}
+
+This convenience function opens your browser with the help pages for crmPack.
 }
-\author{
-Daniel Sabanes Bove \email{sabanesd@rconis.com}
-}
-\keyword{documentation}

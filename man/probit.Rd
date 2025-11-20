@@ -2,17 +2,22 @@
 % Please edit documentation in R/helpers.R
 \name{probit}
 \alias{probit}
-\title{Shorthand for probit function}
+\title{Shorthand for Probit Function}
 \usage{
 probit(x)
 }
 \arguments{
-\item{x}{the function argument}
+\item{x}{(\code{numeric})\cr the function argument.}
 }
 \value{
-the probit(x)
+The probit of \code{x}, the quantile function of the standard normal distribution.
 }
 \description{
-Shorthand for probit function
+\ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#stable}{\figure{lifecycle-stable.svg}{options: alt='[Stable]'}}}{\strong{[Stable]}}
+
+Computes the probit (inverse cumulative distribution function of standard normal) transformation.
 }
-\keyword{programming}
+\examples{
+probit(0.5)
+probit(c(0.025, 0.5, 0.975))
+}

@@ -182,7 +182,7 @@ h_simulations_output_format <- function(resultList) {
   # Result list of additional statistical summary.
   additional_stats <- lapply(resultList, "[[", "additional_stats")
 
-  return(list(
+  list(
     dataList = dataList,
     recommendedDoses = recommendedDoses,
     fitList = fitList,
@@ -190,7 +190,7 @@ h_simulations_output_format <- function(resultList) {
     stopResults = stopResults,
     additional_stats = additional_stats,
     stop_matrix = stop_matrix
-  ))
+  )
 }
 
 
@@ -206,12 +206,12 @@ h_unpack_stopit <- function(stopit_tree) {
   names(value) <- label
   value
   if (is.null(attr(stopit_tree, "individual"))) {
-    return(value)
+    value
   } else {
-    return(unlist(c(
+    unlist(c(
       value,
       lapply(attr(stopit_tree, "individual"), h_unpack_stopit)
-    )))
+    ))
   }
 }
 
@@ -298,5 +298,5 @@ h_determine_dlts <- function(
       y = dlts
     )
   }
-  return(this_data)
+  this_data
 }

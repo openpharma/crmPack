@@ -1464,7 +1464,7 @@ DualEndpoint <- function(
     betaZ[2] <- exp(theta[2])
     # Conditional precision for biomarker.
     # Code for `precW` and `rho` will be added by
-    # `h_model_dual_endpoint_sigma2W()`, `h_model_dual_endpoint_rho()` helpers, below.
+    # `h_model_dual_endpoint_sigma2w()`, `h_model_dual_endpoint_rho()` helpers, below.
     condPrecW <- precW / (1 - pow(rho, 2))
   }
   modelspecs_prior <- list(
@@ -1480,7 +1480,7 @@ DualEndpoint <- function(
   )
 
   # Update model components with regard to biomarker regression variance.
-  comp <- h_model_dual_endpoint_sigma2W(
+  comp <- h_model_dual_endpoint_sigma2w(
     use_fixed["sigma2W"],
     sigma2W = sigma2W,
     comp = comp
@@ -1646,7 +1646,7 @@ DualEndpointRW <- function(sigma2betaW, rw1 = TRUE, ...) {
   start@sample <- c(start@sample, "betaW", "delta")
 
   # Update model components with regard to biomarker regression variance.
-  start <- h_model_dual_endpoint_sigma2betaW(
+  start <- h_model_dual_endpoint_sigma2betaw(
     start@use_fixed["sigma2betaW"],
     sigma2betaW = sigma2betaW,
     de = start

@@ -2,11 +2,21 @@
 % Please edit documentation in R/helpers.R
 \name{printVignette}
 \alias{printVignette}
-\title{Taken from utils package (print.vignette)}
+\title{Print Vignette}
 \usage{
 printVignette(x, ...)
 }
+\arguments{
+\item{x}{(\code{list})\cr vignette information.}
+
+\item{...}{not used.}
+}
+\value{
+\code{x} invisibly.
+}
 \description{
-Taken from utils package (print.vignette)
+\ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#stable}{\figure{lifecycle-stable.svg}{options: alt='[Stable]'}}}{\strong{[Stable]}}
+
+Taken from utils package (\code{print.vignette}).
 }
 \keyword{internal}
