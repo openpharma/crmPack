@@ -933,10 +933,13 @@ test_that("qinvGamma computes quantile function correctly", {
   expect_equal(result, q_val, tolerance = 1e-10)
 })
 
-test_that("qinvGamma works with lower.tail = FALSE", {
-  result <- qinvGamma(0.5, a = 3, b = 1, lower.tail = FALSE)
-  expected <- qinvGamma(0.5, a = 3, b = 1, lower.tail = TRUE)
-  expect_equal(result, expected)
+test_that("qinvGamma lower.tail = FALSE matches lower.tail = TRUE at 1-p", {
+  ps <- c(0.25, 0.5, 0.75)
+  for (p in ps) {
+    result <- qinvGamma(p, a = 3, b = 1, lower.tail = FALSE)
+    expected <- qinvGamma(1 - p, a = 3, b = 1, lower.tail = TRUE)
+    expect_equal(result, expected, tolerance = 1e-10)
+  }
 })
 
 test_that("qinvGamma works with log.p = TRUE", {
