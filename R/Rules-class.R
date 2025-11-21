@@ -42,6 +42,7 @@ setClass(
 NextBestEWOC <- setClass(
   Class = "NextBestEWOC",
   slots = c(
+    target = "numeric",
     overdose = "numeric",
     max_overdose_prob = "numeric"
   ),
