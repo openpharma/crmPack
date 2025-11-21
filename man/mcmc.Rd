@@ -162,7 +162,7 @@ distribution will be first updated and then samples of \code{sigma2} and
 The generic \code{mcmc} method returns a \code{\link{Samples}} object with elements of the
 \code{data} slot named \code{alpha[1]}, \code{alpha[2]}, ..., \code{alpha[k]} and \code{beta} when
 passed a \code{\link{LogisticLogNormalOrdinal}} object. This makes the "alpha elements"
-awkward to access and is inconsistent with other \code{\link{Model}} objects. So rename
+awkward to access and is inconsistent with other model objects. So rename
 the alpha elements to \code{alpha1}, \code{alpha2}, ..., \verb{alpha<k>} for ease and
 consistency.
 
