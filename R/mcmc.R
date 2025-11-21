@@ -694,7 +694,7 @@ setMethod(
         upper.tri = TRUE,
         transpose = TRUE
       )
-      # Backward substitution: solve R * tmp = tmp.
+      # Backward substitution: solve R * result = tmp (where R is the Cholesky factor).
       tmp <- backsolve(
         r = this_prec_w_chol,
         x = tmp
