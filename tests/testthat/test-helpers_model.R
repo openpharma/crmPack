@@ -1,16 +1,16 @@
-# h_model_dual_endpoint_sigma2W ----
+# h_model_dual_endpoint_sigma2w ----
 
-test_that("h_model_dual_endpoint_sigma2W updates model components for fixed sigma2W", {
+test_that("h_model_dual_endpoint_sigma2w updates model components for fixed sigma2W", {
   comp <- h_get_model_4comp()
-  result <- h_model_dual_endpoint_sigma2W(TRUE, sigma2W = 5, comp = comp)
+  result <- h_model_dual_endpoint_sigma2w(TRUE, sigma2W = 5, comp = comp)
   comp$modelspecs <- c(comp$modelspecs, list(precW = 1 / 5))
   expect_identical(result, comp)
 })
 
-test_that("h_model_dual_endpoint_sigma2W updates model components", {
+test_that("h_model_dual_endpoint_sigma2w updates model components", {
   comp <- h_get_model_4comp()
 
-  result <- h_model_dual_endpoint_sigma2W(
+  result <- h_model_dual_endpoint_sigma2w(
     FALSE,
     sigma2W = c(a = 2, b = 4),
     comp = comp
@@ -27,22 +27,22 @@ test_that("h_model_dual_endpoint_sigma2W updates model components", {
   expect_identical(result, comp)
 })
 
-test_that("h_model_dual_endpoint_sigma2W throws error for non-valid fixed sigma2W", {
+test_that("h_model_dual_endpoint_sigma2w throws error for non-valid fixed sigma2W", {
   comp <- h_get_model_4comp()
   expect_error(
-    h_model_dual_endpoint_sigma2W(TRUE, sigma2W = 1:5, comp = comp),
+    h_model_dual_endpoint_sigma2w(TRUE, sigma2W = 1:5, comp = comp),
     "Assertion on 'sigma2W' failed: Must have length 1."
   )
   expect_error(
-    h_model_dual_endpoint_sigma2W(TRUE, sigma2W = -2, comp = comp),
+    h_model_dual_endpoint_sigma2w(TRUE, sigma2W = -2, comp = comp),
     "Assertion on 'sigma2W' failed: Element 1 is not >= 2.22507e-308."
   )
 })
 
-test_that("h_model_dual_endpoint_sigma2W throws error for non-valid sigma2W", {
+test_that("h_model_dual_endpoint_sigma2w throws error for non-valid sigma2W", {
   comp <- h_get_model_4comp()
   expect_error(
-    h_model_dual_endpoint_sigma2W(FALSE, sigma2W = 1:5, comp = comp),
+    h_model_dual_endpoint_sigma2w(FALSE, sigma2W = 1:5, comp = comp),
     "Assertion on .* failed"
   )
 })
@@ -97,11 +97,11 @@ test_that("h_model_dual_endpoint_rho throws error for non-valid rho", {
   )
 })
 
-# h_model_dual_endpoint_sigma2betaW ----
+# h_model_dual_endpoint_sigma2betaw ----
 
-test_that("h_model_dual_endpoint_sigma2betaW updates model components for fixed sigma2betaW", {
+test_that("h_model_dual_endpoint_sigma2betaw updates model components for fixed sigma2betaW", {
   de <- h_get_dual_endpoint()
-  result <- h_model_dual_endpoint_sigma2betaW(TRUE, sigma2betaW = 5, de = de)
+  result <- h_model_dual_endpoint_sigma2betaw(TRUE, sigma2betaW = 5, de = de)
   ms <- de@modelspecs
   de@modelspecs <- function(from_prior) {
     c(ms(from_prior), list(precBetaW = 1 / 5))
@@ -117,9 +117,9 @@ test_that("h_model_dual_endpoint_sigma2betaW updates model components for fixed 
   ) # nolintr
 })
 
-test_that("h_model_dual_endpoint_sigma2betaW updates model components", {
+test_that("h_model_dual_endpoint_sigma2betaw updates model components", {
   de <- h_get_dual_endpoint()
-  result <- h_model_dual_endpoint_sigma2betaW(
+  result <- h_model_dual_endpoint_sigma2betaw(
     FALSE,
     sigma2betaW = c(a = 2, b = 4),
     de = de
@@ -158,22 +158,22 @@ test_that("h_model_dual_endpoint_sigma2betaW updates model components", {
   # nolint end
 })
 
-test_that("h_model_dual_endpoint_sigma2betaW throws error for non-valid fixed sigma2betaW", {
+test_that("h_model_dual_endpoint_sigma2betaw throws error for non-valid fixed sigma2betaW", {
   de <- h_get_dual_endpoint()
   expect_error(
-    h_model_dual_endpoint_sigma2betaW(TRUE, sigma2betaW = 1:5, de = de),
+    h_model_dual_endpoint_sigma2betaw(TRUE, sigma2betaW = 1:5, de = de),
     "Assertion on 'sigma2betaW' failed: Must have length 1."
   )
   expect_error(
-    h_model_dual_endpoint_sigma2betaW(TRUE, sigma2betaW = -2, de = de),
+    h_model_dual_endpoint_sigma2betaw(TRUE, sigma2betaW = -2, de = de),
     "Assertion on 'sigma2betaW' failed: Element 1 is not >= 2.22507e-308."
   )
 })
 
-test_that("h_model_dual_endpoint_sigma2betaW throws error for non-valid sigma2betaW", {
+test_that("h_model_dual_endpoint_sigma2betaw throws error for non-valid sigma2betaW", {
   de <- h_get_dual_endpoint()
   expect_error(
-    h_model_dual_endpoint_sigma2betaW(FALSE, sigma2betaW = 1:5, de = de),
+    h_model_dual_endpoint_sigma2betaw(FALSE, sigma2betaW = 1:5, de = de),
     "Assertion on .* failed"
   )
 })

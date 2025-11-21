@@ -1,5 +1,6 @@
 linters: linters_with_defaults(
   line_length_linter = line_length_linter(120),
+  commas_linter = NULL,
   indentation_linter = NULL,
   object_usage_linter = NULL,
   trailing_blank_lines_linter = NULL,

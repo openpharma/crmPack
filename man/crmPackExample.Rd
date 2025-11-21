@@ -2,18 +2,16 @@
 % Please edit documentation in R/helpers.R
 \name{crmPackExample}
 \alias{crmPackExample}
-\title{Open the example pdf for crmPack}
+\title{Open the Example PDF for crmPack}
 \usage{
 crmPackExample()
 }
 \value{
-nothing
+Called for side effects.
 }
 \description{
-Calling this helper function should open the example.pdf document,
-residing in the doc subfolder of the package installation directory.
+\ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#stable}{\figure{lifecycle-stable.svg}{options: alt='[Stable]'}}}{\strong{[Stable]}}
+
+Calling this helper function opens the \code{example.pdf} document,
+residing in the \code{doc} subfolder of the package installation directory.
 }
-\author{
-Daniel Sabanes Bove \email{sabanesd@rconis.com}
-}
-\keyword{documentation}

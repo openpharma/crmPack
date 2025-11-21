@@ -2,17 +2,22 @@
 % Please edit documentation in R/helpers.R
 \name{logit}
 \alias{logit}
-\title{Shorthand for logit function}
+\title{Shorthand for Logit Function}
 \usage{
 logit(x)
 }
 \arguments{
-\item{x}{the function argument}
+\item{x}{(\code{numeric})\cr the function argument.}
 }
 \value{
-the logit(x)
+The logit of \code{x}, computed as \code{log(x / (1 - x))}.
 }
 \description{
-Shorthand for logit function
+\ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#stable}{\figure{lifecycle-stable.svg}{options: alt='[Stable]'}}}{\strong{[Stable]}}
+
+Computes the logit transformation.
 }
-\keyword{programming}
+\examples{
+logit(0.5)
+logit(c(0.1, 0.5, 0.9))
+}
