@@ -2,25 +2,28 @@
 % Please edit documentation in R/mcmc.R
 \name{myBayesLogit}
 \alias{myBayesLogit}
-\title{Do MCMC sampling for Bayesian logistic regression model}
+\title{MCMC Sampling for Bayesian Logistic Regression Model}
 \usage{
 myBayesLogit(y, X, m0, P0, options)
 }
 \arguments{
-\item{y}{0/1 vector of responses}
+\item{y}{(\code{integer})\cr 0/1 vector of responses.}
 
-\item{X}{design matrix}
+\item{X}{(\code{matrix})\cr design matrix.}
 
-\item{m0}{prior mean vector}
+\item{m0}{(\code{numeric})\cr prior mean vector.}
 
-\item{P0}{precision matrix}
+\item{P0}{(\code{matrix})\cr precision matrix.}
 
-\item{options}{McmcOptions object}
+\item{options}{(\code{McmcOptions})\cr MCMC options.}
 }
 \value{
-the matrix of samples (samples x parameters)
+The matrix of samples (samples x parameters).
 }
 \description{
-Do MCMC sampling for Bayesian logistic regression model
+\ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#stable}{\figure{lifecycle-stable.svg}{options: alt='[Stable]'}}}{\strong{[Stable]}}
+
+Replacement for \code{BayesLogit::logit}. Performs MCMC sampling for Bayesian
+logistic regression using JAGS.
 }
 \keyword{internal}
