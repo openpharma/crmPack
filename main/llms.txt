@@ -1,0 +1,1682 @@
+# `crmPack`
+
+![crmPack-logo](reference/figures/logo.png)
+
+The goal of `crmPack` is to implement a wide range of model-based dose
+escalation designs, ranging from classical and modern continual
+reassessment methods (CRMs) based on dose-limiting toxicity endpoints to
+dual-endpoint designs taking into account a biomarker/efficacy outcome.
+The focus is on Bayesian inference, making it very easy to setup a new
+design with your own JAGS code. However, it is also possible to
+implement 3+3 designs for comparison or models with non-Bayesian
+estimation. The whole package is written in a modular form in the S4
+class system, making it very flexible for adaptation to new models,
+escalation or stopping rules.
+
+## Installation
+
+You can install the development version of `crmPack` from GitHub with:
+
+``` r
+devtools::install_github("openpharma/crmPack")
+```
+
+You can install the stable release version of `crmPack` from CRAN with:
+
+``` r
+install.packages("crmPack")
+```
+
+## Examples
+
+The package vignettes provide information on various aspects of CRM
+trial design, implementation, simulation and analysis:
+
+- [Trial
+  definition](https://openpharma.github.io/crmPack/main/articles/trial_definition.html)
+- [Trial
+  analysis](https://openpharma.github.io/crmPack/main/articles/trial_analysis.html)
+- [Sanity
+  checking](https://openpharma.github.io/crmPack/main/articles/trial_sanity_checks.html)
+- [Simulation of operating
+  characteristics](https://openpharma.github.io/crmPack/main/articles/trial_simulation.html)
+- [Ordinal CRM
+  models](https://openpharma.github.io/crmPack/main/articles/ordinal-crm.html)
+- [Extending
+  `crmPack`](https://openpharma.github.io/crmPack/main/articles/parallel_computing_with_extensions.html)
+- [Tidy `crmPack`
+  data](https://openpharma.github.io/crmPack/main/articles/tidy_method.html)
+- [Describing `crmPack` objects in Markdown and Quarto
+  documents](https://openpharma.github.io/crmPack/main/articles/knit_print.html)
+- [Migration from the old
+  crmPack](https://openpharma.github.io/crmPack/main/articles/migration_from_the_old_crmPack.html)
+- Sabanes Bove et al (2019) Model-based Dose Escalation Designs in R
+  with `crmPack`. JSS 89:10 [DOI
+  10.18637/jss.v089.i10](https://www.jstatsoft.org/article/view/v089i10)
+
+# Package index
+
+## Package
+
+- [`crmPack-package`](https://openpharma.github.io/crmPack/reference/crmPack.md)
+  [`crmPack`](https://openpharma.github.io/crmPack/reference/crmPack.md)
+  : Object-oriented implementation of CRM designs
+
+## Classes
+
+- [`Validate`](https://openpharma.github.io/crmPack/reference/Validate.md)
+  **\[stable\]** :
+
+  `Validate`
+
+- [`positive_number`](https://openpharma.github.io/crmPack/reference/positive_number.md)
+  **\[experimental\]** :
+
+  `positive_number`
+
+- [`CrmPackClass-class`](https://openpharma.github.io/crmPack/reference/CrmPackClass.md)
+  [`.CrmPackClass`](https://openpharma.github.io/crmPack/reference/CrmPackClass.md)
+  [`CrmPackClass`](https://openpharma.github.io/crmPack/reference/CrmPackClass.md)
+  **\[experimental\]** :
+
+  `CrmPackClass`
+
+- [`.DefaultDataGeneral()`](https://openpharma.github.io/crmPack/reference/GeneralData-class.md)
+  **\[stable\]** :
+
+  `GeneralData`
+
+- [`Data()`](https://openpharma.github.io/crmPack/reference/Data-class.md)
+  [`.DefaultData()`](https://openpharma.github.io/crmPack/reference/Data-class.md)
+  **\[stable\]** :
+
+  `Data`
+
+- [`DataDual()`](https://openpharma.github.io/crmPack/reference/DataDual-class.md)
+  [`.DefaultDataDual()`](https://openpharma.github.io/crmPack/reference/DataDual-class.md)
+  **\[stable\]** :
+
+  `DataDual`
+
+- [`DataOrdinal()`](https://openpharma.github.io/crmPack/reference/DataOrdinal-class.md)
+  [`.DefaultDataOrdinal()`](https://openpharma.github.io/crmPack/reference/DataOrdinal-class.md)
+  **\[experimental\]** :
+
+  `DataOrdinal`
+
+- [`DataParts()`](https://openpharma.github.io/crmPack/reference/DataParts-class.md)
+  [`.DefaultDataParts()`](https://openpharma.github.io/crmPack/reference/DataParts-class.md)
+  **\[stable\]** :
+
+  `DataParts`
+
+- [`DataMixture()`](https://openpharma.github.io/crmPack/reference/DataMixture-class.md)
+  [`.DefaultDataMixture()`](https://openpharma.github.io/crmPack/reference/DataMixture-class.md)
+  **\[stable\]** :
+
+  `DataMixture`
+
+- [`DataDA()`](https://openpharma.github.io/crmPack/reference/DataDA-class.md)
+  [`.DefaultDataDA()`](https://openpharma.github.io/crmPack/reference/DataDA-class.md)
+  **\[stable\]** :
+
+  `DataDA`
+
+- [`DataGrouped()`](https://openpharma.github.io/crmPack/reference/DataGrouped-class.md)
+  [`.DefaultDataGrouped()`](https://openpharma.github.io/crmPack/reference/DataGrouped-class.md)
+  **\[stable\]** :
+
+  `DataGrouped`
+
+- [`McmcOptions()`](https://openpharma.github.io/crmPack/reference/McmcOptions-class.md)
+  [`.DefaultMcmcOptions()`](https://openpharma.github.io/crmPack/reference/McmcOptions-class.md)
+  **\[stable\]** :
+
+  `McmcOptions`
+
+- [`ModelParamsNormal()`](https://openpharma.github.io/crmPack/reference/ModelParamsNormal-class.md)
+  [`.DefaultModelParamsNormal()`](https://openpharma.github.io/crmPack/reference/ModelParamsNormal-class.md)
+  **\[experimental\]** :
+
+  `ModelParamsNormal`
+
+- [`.DefaultGeneralModel()`](https://openpharma.github.io/crmPack/reference/GeneralModel-class.md)
+  **\[stable\]** :
+
+  `GeneralModel`
+
+- [`ModelLogNormal()`](https://openpharma.github.io/crmPack/reference/ModelLogNormal-class.md)
+  [`.DefaultModelLogNormal()`](https://openpharma.github.io/crmPack/reference/ModelLogNormal-class.md)
+  **\[stable\]** :
+
+  `ModelLogNormal`
+
+- [`LogisticNormal()`](https://openpharma.github.io/crmPack/reference/LogisticNormal-class.md)
+  [`.DefaultLogisticNormal()`](https://openpharma.github.io/crmPack/reference/LogisticNormal-class.md)
+  **\[stable\]** :
+
+  `LogisticNormal`
+
+- [`LogisticLogNormal()`](https://openpharma.github.io/crmPack/reference/LogisticLogNormal-class.md)
+  [`.DefaultLogisticLogNormal()`](https://openpharma.github.io/crmPack/reference/LogisticLogNormal-class.md)
+  **\[stable\]** :
+
+  `LogisticLogNormal`
+
+- [`LogisticLogNormalSub()`](https://openpharma.github.io/crmPack/reference/LogisticLogNormalSub-class.md)
+  [`.DefaultLogisticLogNormalSub()`](https://openpharma.github.io/crmPack/reference/LogisticLogNormalSub-class.md)
+  **\[stable\]** :
+
+  `LogisticLogNormalSub`
+
+- [`ProbitLogNormal()`](https://openpharma.github.io/crmPack/reference/ProbitLogNormal-class.md)
+  [`.DefaultProbitLogNormal()`](https://openpharma.github.io/crmPack/reference/ProbitLogNormal-class.md)
+  **\[stable\]** :
+
+  `ProbitLogNormal`
+
+- [`ProbitLogNormalRel()`](https://openpharma.github.io/crmPack/reference/ProbitLogNormalRel-class.md)
+  [`.DefaultProbitLogNormalRel()`](https://openpharma.github.io/crmPack/reference/ProbitLogNormalRel-class.md)
+  **\[stable\]** :
+
+  `ProbitLogNormalRel`
+
+- [`LogisticLogNormalGrouped()`](https://openpharma.github.io/crmPack/reference/LogisticLogNormalGrouped-class.md)
+  [`.DefaultLogisticLogNormalGrouped()`](https://openpharma.github.io/crmPack/reference/LogisticLogNormalGrouped-class.md)
+  **\[experimental\]** :
+
+  `LogisticLogNormalGrouped`
+
+- [`LogisticKadane()`](https://openpharma.github.io/crmPack/reference/LogisticKadane-class.md)
+  [`.DefaultLogisticKadane()`](https://openpharma.github.io/crmPack/reference/LogisticKadane-class.md)
+  **\[stable\]** :
+
+  `LogisticKadane`
+
+- [`LogisticKadaneBetaGamma()`](https://openpharma.github.io/crmPack/reference/LogisticKadaneBetaGamma-class.md)
+  [`.DefaultLogisticKadaneBetaGamma()`](https://openpharma.github.io/crmPack/reference/LogisticKadaneBetaGamma-class.md)
+  **\[experimental\]** :
+
+  `LogisticKadaneBetaGamma`
+
+- [`LogisticNormalMixture()`](https://openpharma.github.io/crmPack/reference/LogisticNormalMixture-class.md)
+  [`.DefaultLogisticNormalMixture()`](https://openpharma.github.io/crmPack/reference/LogisticNormalMixture-class.md)
+  **\[stable\]** :
+
+  `LogisticNormalMixture`
+
+- [`LogisticNormalFixedMixture()`](https://openpharma.github.io/crmPack/reference/LogisticNormalFixedMixture-class.md)
+  [`.DefaultLogisticNormalFixedMixture()`](https://openpharma.github.io/crmPack/reference/LogisticNormalFixedMixture-class.md)
+  **\[stable\]** :
+
+  `LogisticNormalFixedMixture`
+
+- [`LogisticLogNormalMixture()`](https://openpharma.github.io/crmPack/reference/LogisticLogNormalMixture-class.md)
+  [`.DefaultLogisticLogNormalMixture()`](https://openpharma.github.io/crmPack/reference/LogisticLogNormalMixture-class.md)
+  **\[stable\]** :
+
+  `LogisticLogNormalMixture`
+
+- [`DualEndpoint()`](https://openpharma.github.io/crmPack/reference/DualEndpoint-class.md)
+  [`.DefaultDualEndpoint()`](https://openpharma.github.io/crmPack/reference/DualEndpoint-class.md)
+  **\[experimental\]** :
+
+  `DualEndpoint`
+
+- [`DualEndpointRW()`](https://openpharma.github.io/crmPack/reference/DualEndpointRW-class.md)
+  [`.DefaultDualEndpointRW()`](https://openpharma.github.io/crmPack/reference/DualEndpointRW-class.md)
+  **\[experimental\]** :
+
+  `DualEndpointRW`
+
+- [`DualEndpointBeta()`](https://openpharma.github.io/crmPack/reference/DualEndpointBeta-class.md)
+  [`.DefaultDualEndpointBeta()`](https://openpharma.github.io/crmPack/reference/DualEndpointBeta-class.md)
+  **\[experimental\]** :
+
+  `DualEndpointBeta`
+
+- [`DualEndpointEmax()`](https://openpharma.github.io/crmPack/reference/DualEndpointEmax-class.md)
+  [`.DefaultDualEndpointEmax()`](https://openpharma.github.io/crmPack/reference/DualEndpointEmax-class.md)
+  **\[experimental\]** :
+
+  `DualEndpointEmax`
+
+- [`.DefaultModelPseudo()`](https://openpharma.github.io/crmPack/reference/ModelPseudo-class.md)
+  **\[stable\]** :
+
+  `ModelPseudo`
+
+- [`.DefaultModelTox()`](https://openpharma.github.io/crmPack/reference/ModelTox-class.md)
+  **\[stable\]** :
+
+  `ModelTox`
+
+- [`.DefaultModelEff()`](https://openpharma.github.io/crmPack/reference/ModelEff-class.md)
+  **\[stable\]** :
+
+  `ModelEff`
+
+- [`LogisticIndepBeta()`](https://openpharma.github.io/crmPack/reference/LogisticIndepBeta-class.md)
+  [`.DefaultLogisticIndepBeta()`](https://openpharma.github.io/crmPack/reference/LogisticIndepBeta-class.md)
+  **\[stable\]** :
+
+  `LogisticIndepBeta`
+
+- [`Effloglog()`](https://openpharma.github.io/crmPack/reference/Effloglog-class.md)
+  [`.DefaultEffloglog()`](https://openpharma.github.io/crmPack/reference/Effloglog-class.md)
+  **\[stable\]** :
+
+  `Effloglog`
+
+- [`EffFlexi()`](https://openpharma.github.io/crmPack/reference/EffFlexi-class.md)
+  [`.DefaultEffFlexi()`](https://openpharma.github.io/crmPack/reference/EffFlexi-class.md)
+  **\[stable\]** :
+
+  `EffFlexi`
+
+- [`DALogisticLogNormal()`](https://openpharma.github.io/crmPack/reference/DALogisticLogNormal-class.md)
+  [`.DefaultDALogisticLogNormal()`](https://openpharma.github.io/crmPack/reference/DALogisticLogNormal-class.md)
+  **\[stable\]** :
+
+  `DALogisticLogNormal`
+
+- [`TITELogisticLogNormal()`](https://openpharma.github.io/crmPack/reference/TITELogisticLogNormal-class.md)
+  [`.DefaultTITELogisticLogNormal()`](https://openpharma.github.io/crmPack/reference/TITELogisticLogNormal-class.md)
+  **\[stable\]** :
+
+  `TITELogisticLogNormal`
+
+- [`OneParLogNormalPrior()`](https://openpharma.github.io/crmPack/reference/OneParLogNormalPrior-class.md)
+  [`.DefaultOneParLogNormalPrior()`](https://openpharma.github.io/crmPack/reference/OneParLogNormalPrior-class.md)
+  **\[stable\]** :
+
+  `OneParLogNormalPrior`
+
+- [`OneParExpPrior()`](https://openpharma.github.io/crmPack/reference/OneParExpPrior-class.md)
+  [`.DefaultOneParExpPrior()`](https://openpharma.github.io/crmPack/reference/OneParExpPrior-class.md)
+  **\[experimental\]** :
+
+  `OneParExpPrior`
+
+- [`FractionalCRM()`](https://openpharma.github.io/crmPack/reference/FractionalCRM-class.md)
+  [`.DefaultFractionalCRM()`](https://openpharma.github.io/crmPack/reference/FractionalCRM-class.md)
+  **\[stable\]** :
+
+  `FractionalCRM`
+
+- [`Samples()`](https://openpharma.github.io/crmPack/reference/Samples-class.md)
+  [`.DefaultSamples()`](https://openpharma.github.io/crmPack/reference/Samples-class.md)
+  **\[stable\]** :
+
+  `Samples`
+
+- [`.DefaultNextBest()`](https://openpharma.github.io/crmPack/reference/NextBest-class.md)
+  **\[stable\]** :
+
+  `NextBest`
+
+- [`NextBestMTD()`](https://openpharma.github.io/crmPack/reference/NextBestMTD-class.md)
+  [`.DefaultNextBestMTD()`](https://openpharma.github.io/crmPack/reference/NextBestMTD-class.md)
+  **\[stable\]** :
+
+  `NextBestMTD`
+
+- [`NextBestNCRM()`](https://openpharma.github.io/crmPack/reference/NextBestNCRM-class.md)
+  [`.DefaultNextBestNCRM()`](https://openpharma.github.io/crmPack/reference/NextBestNCRM-class.md)
+  **\[stable\]** :
+
+  `NextBestNCRM`
+
+- [`NextBestNCRMLoss()`](https://openpharma.github.io/crmPack/reference/NextBestNCRMLoss-class.md)
+  [`.DefaultNextBestNCRMLoss()`](https://openpharma.github.io/crmPack/reference/NextBestNCRMLoss-class.md)
+  **\[stable\]** :
+
+  `NextBestNCRMLoss`
+
+- [`NextBestThreePlusThree()`](https://openpharma.github.io/crmPack/reference/NextBestThreePlusThree-class.md)
+  [`.DefaultNextBestThreePlusThree()`](https://openpharma.github.io/crmPack/reference/NextBestThreePlusThree-class.md)
+  **\[stable\]** :
+
+  `NextBestThreePlusThree`
+
+- [`NextBestDualEndpoint()`](https://openpharma.github.io/crmPack/reference/NextBestDualEndpoint-class.md)
+  [`.DefaultNextBestDualEndpoint()`](https://openpharma.github.io/crmPack/reference/NextBestDualEndpoint-class.md)
+  **\[experimental\]** :
+
+  `NextBestDualEndpoint`
+
+- [`NextBestMinDist()`](https://openpharma.github.io/crmPack/reference/NextBestMinDist-class.md)
+  [`.DefaultNextBestMinDist()`](https://openpharma.github.io/crmPack/reference/NextBestMinDist-class.md)
+  **\[stable\]** :
+
+  `NextBestMinDist`
+
+- [`NextBestInfTheory()`](https://openpharma.github.io/crmPack/reference/NextBestInfTheory-class.md)
+  [`.DefaultNextBestInfTheory()`](https://openpharma.github.io/crmPack/reference/NextBestInfTheory-class.md)
+  **\[stable\]** :
+
+  `NextBestInfTheory`
+
+- [`.DefaultNextBestTD()`](https://openpharma.github.io/crmPack/reference/NextBestTD-class.md)
+  [`NextBestTD()`](https://openpharma.github.io/crmPack/reference/NextBestTD-class.md)
+  **\[stable\]** :
+
+  `NextBestTD`
+
+- [`NextBestTDsamples()`](https://openpharma.github.io/crmPack/reference/NextBestTDsamples-class.md)
+  [`.DefaultNextBestTDsamples()`](https://openpharma.github.io/crmPack/reference/NextBestTDsamples-class.md)
+  **\[stable\]** :
+
+  `NextBestTDsamples`
+
+- [`NextBestMaxGain()`](https://openpharma.github.io/crmPack/reference/NextBestMaxGain-class.md)
+  [`.DefaultNextBestMaxGain()`](https://openpharma.github.io/crmPack/reference/NextBestMaxGain-class.md)
+  **\[stable\]** :
+
+  `NextBestMaxGain`
+
+- [`NextBestMaxGainSamples()`](https://openpharma.github.io/crmPack/reference/NextBestMaxGainSamples-class.md)
+  [`.DefaultNextBestMaxGainSamples()`](https://openpharma.github.io/crmPack/reference/NextBestMaxGainSamples-class.md)
+  **\[stable\]** :
+
+  `NextBestMaxGainSamples`
+
+- [`NextBestProbMTDLTE()`](https://openpharma.github.io/crmPack/reference/NextBestProbMTDLTE-class.md)
+  [`.DefaultNextBestProbMTDLTE()`](https://openpharma.github.io/crmPack/reference/NextBestProbMTDLTE-class.md)
+  **\[experimental\]** :
+
+  `NextBestProbMTDLTE`
+
+- [`NextBestProbMTDMinDist()`](https://openpharma.github.io/crmPack/reference/NextBestProbMTDMinDist-class.md)
+  [`.DefaultNextBestProbMTDMinDist()`](https://openpharma.github.io/crmPack/reference/NextBestProbMTDMinDist-class.md)
+  **\[experimental\]** :
+
+  `NextBestProbMTDMinDist`
+
+- [`.DefaultIncrements()`](https://openpharma.github.io/crmPack/reference/Increments-class.md)
+  **\[stable\]** :
+
+  `Increments`
+
+- [`IncrementsRelative()`](https://openpharma.github.io/crmPack/reference/IncrementsRelative-class.md)
+  [`.DefaultIncrementsRelative()`](https://openpharma.github.io/crmPack/reference/IncrementsRelative-class.md)
+  **\[stable\]** :
+
+  `IncrementsRelative`
+
+- [`IncrementsRelativeParts()`](https://openpharma.github.io/crmPack/reference/IncrementsRelativeParts-class.md)
+  [`.DefaultIncrementsRelativeParts()`](https://openpharma.github.io/crmPack/reference/IncrementsRelativeParts-class.md)
+  **\[stable\]** :
+
+  `IncrementsRelativeParts`
+
+- [`IncrementsRelativeDLT()`](https://openpharma.github.io/crmPack/reference/IncrementsRelativeDLT-class.md)
+  [`.DefaultIncrementsRelativeDLT()`](https://openpharma.github.io/crmPack/reference/IncrementsRelativeDLT-class.md)
+  **\[stable\]** :
+
+  `IncrementsRelativeDLT`
+
+- [`IncrementsRelativeDLTCurrent()`](https://openpharma.github.io/crmPack/reference/IncrementsRelativeDLTCurrent-class.md)
+  [`.DefaultIncrementsRelativeDLTCurrent()`](https://openpharma.github.io/crmPack/reference/IncrementsRelativeDLTCurrent-class.md)
+  **\[experimental\]** :
+
+  `IncrementsRelativeDLTCurrent`
+
+- [`IncrementsDoseLevels()`](https://openpharma.github.io/crmPack/reference/IncrementsDoseLevels-class.md)
+  [`.DefaultIncrementsDoseLevels()`](https://openpharma.github.io/crmPack/reference/IncrementsDoseLevels-class.md)
+  **\[stable\]** :
+
+  `IncrementsDoseLevels`
+
+- [`IncrementsHSRBeta()`](https://openpharma.github.io/crmPack/reference/IncrementsHSRBeta-class.md)
+  [`.DefaultIncrementsHSRBeta()`](https://openpharma.github.io/crmPack/reference/IncrementsHSRBeta-class.md)
+  **\[experimental\]** :
+
+  `IncrementsHSRBeta`
+
+- [`IncrementsMin()`](https://openpharma.github.io/crmPack/reference/IncrementsMin-class.md)
+  [`.DefaultIncrementsMin()`](https://openpharma.github.io/crmPack/reference/IncrementsMin-class.md)
+  **\[stable\]** :
+
+  `IncrementsMin`
+
+- [`IncrementsMaxToxProb()`](https://openpharma.github.io/crmPack/reference/IncrementsMaxToxProb-class.md)
+  [`.DefaultIncrementsMaxToxProb()`](https://openpharma.github.io/crmPack/reference/IncrementsMaxToxProb-class.md)
+  **\[experimental\]** :
+
+  `IncrementsMaxToxProb`
+
+- [`Stopping-class`](https://openpharma.github.io/crmPack/reference/Stopping-class.md)
+  [`Stopping`](https://openpharma.github.io/crmPack/reference/Stopping-class.md)
+  **\[stable\]** :
+
+  `Stopping`
+
+- [`StoppingMissingDose()`](https://openpharma.github.io/crmPack/reference/StoppingMissingDose-class.md)
+  [`.DefaultStoppingMissingDose()`](https://openpharma.github.io/crmPack/reference/StoppingMissingDose-class.md)
+  **\[experimental\]** :
+
+  `StoppingMissingDose`
+
+- [`StoppingCohortsNearDose()`](https://openpharma.github.io/crmPack/reference/StoppingCohortsNearDose-class.md)
+  [`.DefaultStoppingCohortsNearDose()`](https://openpharma.github.io/crmPack/reference/StoppingCohortsNearDose-class.md)
+  **\[stable\]** :
+
+  `StoppingCohortsNearDose`
+
+- [`StoppingPatientsNearDose()`](https://openpharma.github.io/crmPack/reference/StoppingPatientsNearDose-class.md)
+  [`.DefaultStoppingPatientsNearDose()`](https://openpharma.github.io/crmPack/reference/StoppingPatientsNearDose-class.md)
+  **\[stable\]** :
+
+  `StoppingPatientsNearDose`
+
+- [`StoppingMinCohorts()`](https://openpharma.github.io/crmPack/reference/StoppingMinCohorts-class.md)
+  [`.DefaultStoppingMinCohorts()`](https://openpharma.github.io/crmPack/reference/StoppingMinCohorts-class.md)
+  **\[stable\]** :
+
+  `StoppingMinCohorts`
+
+- [`StoppingMinPatients()`](https://openpharma.github.io/crmPack/reference/StoppingMinPatients-class.md)
+  [`.DefaultStoppingMinPatients()`](https://openpharma.github.io/crmPack/reference/StoppingMinPatients-class.md)
+  **\[stable\]** :
+
+  `StoppingMinPatients`
+
+- [`StoppingTargetProb()`](https://openpharma.github.io/crmPack/reference/StoppingTargetProb-class.md)
+  [`.DefaultStoppingTargetProb()`](https://openpharma.github.io/crmPack/reference/StoppingTargetProb-class.md)
+  **\[stable\]** :
+
+  `StoppingTargetProb`
+
+- [`StoppingMTDdistribution()`](https://openpharma.github.io/crmPack/reference/StoppingMTDdistribution-class.md)
+  [`.DefaultStoppingMTDdistribution()`](https://openpharma.github.io/crmPack/reference/StoppingMTDdistribution-class.md)
+  **\[stable\]** :
+
+  `StoppingMTDdistribution`
+
+- [`StoppingMTDCV()`](https://openpharma.github.io/crmPack/reference/StoppingMTDCV-class.md)
+  [`.DefaultStoppingMTDCV()`](https://openpharma.github.io/crmPack/reference/StoppingMTDCV-class.md)
+  **\[experimental\]** :
+
+  `StoppingMTDCV`
+
+- [`StoppingLowestDoseHSRBeta()`](https://openpharma.github.io/crmPack/reference/StoppingLowestDoseHSRBeta-class.md)
+  [`.DefaultStoppingLowestDoseHSRBeta()`](https://openpharma.github.io/crmPack/reference/StoppingLowestDoseHSRBeta-class.md)
+  **\[experimental\]** :
+
+  `StoppingLowestDoseHSRBeta`
+
+- [`StoppingTargetBiomarker()`](https://openpharma.github.io/crmPack/reference/StoppingTargetBiomarker-class.md)
+  [`.DefaultStoppingTargetBiomarker()`](https://openpharma.github.io/crmPack/reference/StoppingTargetBiomarker-class.md)
+  **\[stable\]** :
+
+  `StoppingTargetBiomarker`
+
+- [`StoppingSpecificDose()`](https://openpharma.github.io/crmPack/reference/StoppingSpecificDose-class.md)
+  [`.DefaultStoppingSpecificDose()`](https://openpharma.github.io/crmPack/reference/StoppingSpecificDose-class.md)
+  **\[experimental\]** :
+
+  `StoppingSpecificDose`
+
+- [`StoppingHighestDose()`](https://openpharma.github.io/crmPack/reference/StoppingHighestDose-class.md)
+  [`.DefaultStoppingHighestDose()`](https://openpharma.github.io/crmPack/reference/StoppingHighestDose-class.md)
+  **\[experimental\]** :
+
+  `StoppingHighestDose`
+
+- [`StoppingList()`](https://openpharma.github.io/crmPack/reference/StoppingList-class.md)
+  [`.DefaultStoppingList()`](https://openpharma.github.io/crmPack/reference/StoppingList-class.md)
+  **\[stable\]** :
+
+  `StoppingList`
+
+- [`StoppingAll()`](https://openpharma.github.io/crmPack/reference/StoppingAll-class.md)
+  [`.DefaultStoppingAll()`](https://openpharma.github.io/crmPack/reference/StoppingAll-class.md)
+  **\[stable\]** :
+
+  `StoppingAll`
+
+- [`StoppingAny()`](https://openpharma.github.io/crmPack/reference/StoppingAny-class.md)
+  [`.DefaultStoppingAny()`](https://openpharma.github.io/crmPack/reference/StoppingAny-class.md)
+  **\[stable\]** :
+
+  `StoppingAny`
+
+- [`StoppingTDCIRatio()`](https://openpharma.github.io/crmPack/reference/StoppingTDCIRatio-class.md)
+  [`.DefaultStoppingTDCIRatio()`](https://openpharma.github.io/crmPack/reference/StoppingTDCIRatio-class.md)
+  **\[stable\]** :
+
+  `StoppingTDCIRatio`
+
+- [`StoppingMaxGainCIRatio()`](https://openpharma.github.io/crmPack/reference/StoppingMaxGainCIRatio-class.md)
+  [`.DefaultStoppingMaxGainCIRatio()`](https://openpharma.github.io/crmPack/reference/StoppingMaxGainCIRatio-class.md)
+  **\[stable\]** :
+
+  `StoppingMaxGainCIRatio`
+
+- [`StoppingExternal()`](https://openpharma.github.io/crmPack/reference/StoppingExternal-class.md)
+  [`.DefaultStoppingExternal()`](https://openpharma.github.io/crmPack/reference/StoppingExternal-class.md)
+  **\[experimental\]** :
+
+  `StoppingExternal`
+
+- [`.DefaultCohortSize()`](https://openpharma.github.io/crmPack/reference/CohortSize-class.md)
+  **\[stable\]** :
+
+  `CohortSize`
+
+- [`CohortSizeRange()`](https://openpharma.github.io/crmPack/reference/CohortSizeRange-class.md)
+  [`.DefaultCohortSizeRange()`](https://openpharma.github.io/crmPack/reference/CohortSizeRange-class.md)
+  **\[stable\]** :
+
+  `CohortSizeRange`
+
+- [`CohortSizeDLT()`](https://openpharma.github.io/crmPack/reference/CohortSizeDLT-class.md)
+  [`.DefaultCohortSizeDLT()`](https://openpharma.github.io/crmPack/reference/CohortSizeDLT-class.md)
+  **\[stable\]** :
+
+  `CohortSizeDLT`
+
+- [`CohortSizeConst()`](https://openpharma.github.io/crmPack/reference/CohortSizeConst-class.md)
+  [`.DefaultCohortSizeConst()`](https://openpharma.github.io/crmPack/reference/CohortSizeConst-class.md)
+  **\[stable\]** :
+
+  `CohortSizeConst`
+
+- [`CohortSizeParts()`](https://openpharma.github.io/crmPack/reference/CohortSizeParts-class.md)
+  [`.DefaultCohortSizeParts()`](https://openpharma.github.io/crmPack/reference/CohortSizeParts-class.md)
+  **\[stable\]** :
+
+  `CohortSizeParts`
+
+- [`.DefaultCohortSizeMax()`](https://openpharma.github.io/crmPack/reference/CohortSizeMax-class.md)
+  [`CohortSizeMax()`](https://openpharma.github.io/crmPack/reference/CohortSizeMax-class.md)
+  **\[stable\]** :
+
+  `CohortSizeMax`
+
+- [`CohortSizeMin()`](https://openpharma.github.io/crmPack/reference/CohortSizeMin-class.md)
+  [`.DefaultCohortSizeMin()`](https://openpharma.github.io/crmPack/reference/CohortSizeMin-class.md)
+  **\[stable\]** :
+
+  `CohortSizeMin`
+
+- [`.DefaultSafetyWindow()`](https://openpharma.github.io/crmPack/reference/SafetyWindow-class.md)
+  **\[stable\]** :
+
+  `SafetyWindow`
+
+- [`SafetyWindowSize()`](https://openpharma.github.io/crmPack/reference/SafetyWindowSize-class.md)
+  [`.DefaultSafetyWindowSize()`](https://openpharma.github.io/crmPack/reference/SafetyWindowSize-class.md)
+  **\[stable\]** :
+
+  `SafetyWindowSize`
+
+- [`SafetyWindowConst()`](https://openpharma.github.io/crmPack/reference/SafetyWindowConst-class.md)
+  [`.DefaultSafetyWindowConst()`](https://openpharma.github.io/crmPack/reference/SafetyWindowConst-class.md)
+  **\[stable\]** :
+
+  `SafetyWindowConst`
+
+- [`RuleDesign()`](https://openpharma.github.io/crmPack/reference/RuleDesign-class.md)
+  [`.DefaultRuleDesign()`](https://openpharma.github.io/crmPack/reference/RuleDesign-class.md)
+  [`ThreePlusThreeDesign()`](https://openpharma.github.io/crmPack/reference/RuleDesign-class.md)
+  **\[stable\]** :
+
+  `RuleDesign`
+
+- [`Design()`](https://openpharma.github.io/crmPack/reference/Design-class.md)
+  [`.DefaultDesign()`](https://openpharma.github.io/crmPack/reference/Design-class.md)
+  **\[stable\]** :
+
+  `Design`
+
+- [`DesignOrdinal()`](https://openpharma.github.io/crmPack/reference/DesignOrdinal-class.md)
+  [`.DefaultDesignOrdinal()`](https://openpharma.github.io/crmPack/reference/DesignOrdinal-class.md)
+  **\[experimental\]** :
+
+  `DesignOrdinal`
+
+- [`RuleDesignOrdinal()`](https://openpharma.github.io/crmPack/reference/RuleDesignOrdinal-class.md)
+  [`.DefaultRuleDesignOrdinal()`](https://openpharma.github.io/crmPack/reference/RuleDesignOrdinal-class.md)
+  **\[experimental\]** :
+
+  `RuleDesignOrdinal`
+
+- [`DualDesign()`](https://openpharma.github.io/crmPack/reference/DualDesign-class.md)
+  [`.DefaultDualDesign()`](https://openpharma.github.io/crmPack/reference/DualDesign-class.md)
+  **\[stable\]** :
+
+  `DualDesign`
+
+- [`TDsamplesDesign()`](https://openpharma.github.io/crmPack/reference/TDsamplesDesign-class.md)
+  [`.DefaultTDsamplesDesign()`](https://openpharma.github.io/crmPack/reference/TDsamplesDesign-class.md)
+  **\[stable\]** :
+
+  `TDsamplesDesign`
+
+- [`TDDesign()`](https://openpharma.github.io/crmPack/reference/TDDesign-class.md)
+  [`.DefaultTDDesign()`](https://openpharma.github.io/crmPack/reference/TDDesign-class.md)
+  **\[stable\]** :
+
+  `TDDesign`
+
+- [`DesignGrouped()`](https://openpharma.github.io/crmPack/reference/DesignGrouped-class.md)
+  **\[experimental\]** :
+
+  `DesignGrouped`
+
+## Internal Helper Functions
+
+- [`h_blind_plot_data()`](https://openpharma.github.io/crmPack/reference/h_blind_plot_data.md)
+  : Helper Function to Blind Plot Data
+
+- [`h_convert_ordinal_data()`](https://openpharma.github.io/crmPack/reference/h_convert_ordinal_data.md)
+  **\[experimental\]** : Convert a Ordinal Data to the Equivalent Binary
+  Data for a Specific Grade
+
+- [`h_convert_ordinal_model()`](https://openpharma.github.io/crmPack/reference/h_convert_ordinal_model.md)
+  **\[experimental\]** : Convert an ordinal CRM model to the Equivalent
+  Binary CRM Model for a Specific Grade
+
+- [`h_convert_ordinal_samples()`](https://openpharma.github.io/crmPack/reference/h_convert_ordinal_samples.md)
+  **\[experimental\]** : Convert a Samples Object from an ordinal Model
+  to the Equivalent Samples Object from a Binary Model
+
+- [`v_general_data()`](https://openpharma.github.io/crmPack/reference/v_data_objects.md)
+  [`h_doses_unique_per_cohort()`](https://openpharma.github.io/crmPack/reference/v_data_objects.md)
+  [`v_data()`](https://openpharma.github.io/crmPack/reference/v_data_objects.md)
+  [`v_data_dual()`](https://openpharma.github.io/crmPack/reference/v_data_objects.md)
+  [`v_data_parts()`](https://openpharma.github.io/crmPack/reference/v_data_objects.md)
+  [`v_data_mixture()`](https://openpharma.github.io/crmPack/reference/v_data_objects.md)
+  [`v_data_da()`](https://openpharma.github.io/crmPack/reference/v_data_objects.md)
+  [`v_data_ordinal()`](https://openpharma.github.io/crmPack/reference/v_data_objects.md)
+  [`v_data_grouped()`](https://openpharma.github.io/crmPack/reference/v_data_objects.md)
+  **\[stable\]** :
+
+  Internal Helper Functions for Validation of `GeneralData` Objects
+
+- [`h_all_equivalent()`](https://openpharma.github.io/crmPack/reference/h_all_equivalent.md)
+  **\[experimental\]** : Comparison with Numerical Tolerance and Without
+  Name Comparison
+
+- [`h_plot_data_df()`](https://openpharma.github.io/crmPack/reference/h_plot_data_df.md)
+  **\[experimental\]** : Preparing Data for Plotting
+
+- [`h_plot_data_cohort_lines()`](https://openpharma.github.io/crmPack/reference/h_plot_data_cohort_lines.md)
+  **\[experimental\]** : Preparing Cohort Lines for Data Plot
+
+- [`h_check_fun_formals()`](https://openpharma.github.io/crmPack/reference/h_check_fun_formals.md)
+  **\[experimental\]** : Checking Formals of a Function
+
+- [`h_slots()`](https://openpharma.github.io/crmPack/reference/h_slots.md)
+  **\[experimental\]** : Getting the Slots from a S4 Object
+
+- [`h_format_number()`](https://openpharma.github.io/crmPack/reference/h_format_number.md)
+  **\[experimental\]** : Conditional Formatting Using C-style Formats
+
+- [`h_rapply()`](https://openpharma.github.io/crmPack/reference/h_rapply.md)
+  **\[experimental\]** : Recursively Apply a Function to a List
+
+- [`h_null_if_na()`](https://openpharma.github.io/crmPack/reference/h_null_if_na.md)
+  **\[stable\]** :
+
+  Getting `NULL` for `NA`
+
+- [`h_is_positive_definite()`](https://openpharma.github.io/crmPack/reference/h_is_positive_definite.md)
+  **\[experimental\]** : Testing Matrix for Positive Definiteness
+
+- [`h_test_named_numeric()`](https://openpharma.github.io/crmPack/reference/h_test_named_numeric.md)
+  **\[stable\]** : Check that an argument is a named vector of type
+  numeric
+
+- [`h_in_range()`](https://openpharma.github.io/crmPack/reference/h_in_range.md)
+  **\[stable\]** : Check which elements are in a given range
+
+- [`h_find_interval()`](https://openpharma.github.io/crmPack/reference/h_find_interval.md)
+  **\[stable\]** : Find Interval Numbers or Indices and Return Custom
+  Number For 0.
+
+- [`h_validate_combine_results()`](https://openpharma.github.io/crmPack/reference/h_validate_combine_results.md)
+  **\[experimental\]** : Combining S4 Class Validation Results
+
+- [`h_jags_add_dummy()`](https://openpharma.github.io/crmPack/reference/h_jags_add_dummy.md)
+  **\[experimental\]** : Appending a Dummy Number for Selected Slots in
+  Data
+
+- [`h_jags_join_models()`](https://openpharma.github.io/crmPack/reference/h_jags_join_models.md)
+  **\[stable\]** :
+
+  Joining `JAGS` Models
+
+- [`h_jags_get_model_inits()`](https://openpharma.github.io/crmPack/reference/h_jags_get_model_inits.md)
+  **\[experimental\]** :
+
+  Setting Initial Values for `JAGS` Model Parameters
+
+- [`h_jags_get_data()`](https://openpharma.github.io/crmPack/reference/h_jags_get_data.md)
+  **\[experimental\]** :
+
+  Getting Data for `JAGS`
+
+- [`h_jags_write_model()`](https://openpharma.github.io/crmPack/reference/h_jags_write_model.md)
+  **\[stable\]** : Writing JAGS Model to a File
+
+- [`h_jags_extract_samples()`](https://openpharma.github.io/crmPack/reference/h_jags_extract_samples.md)
+  **\[stable\]** :
+
+  Extracting Samples from `JAGS` `mcarray` Object
+
+- [`h_model_dual_endpoint_sigma2w()`](https://openpharma.github.io/crmPack/reference/h_model_dual_endpoint_sigma2w.md)
+  **\[stable\]** :
+
+  Update `DualEndpoint` class model components with regard to biomarker
+  regression variance.
+
+- [`h_model_dual_endpoint_rho()`](https://openpharma.github.io/crmPack/reference/h_model_dual_endpoint_rho.md)
+  **\[stable\]** :
+
+  Update `DualEndpoint` class model components with regard to DLT and
+  biomarker correlation.
+
+- [`h_model_dual_endpoint_sigma2betaw()`](https://openpharma.github.io/crmPack/reference/h_model_dual_endpoint_sigma2betaw.md)
+  **\[stable\]** :
+
+  Update certain components of `DualEndpoint` model with regard to prior
+  variance factor of the random walk.
+
+- [`h_model_dual_endpoint_beta()`](https://openpharma.github.io/crmPack/reference/h_model_dual_endpoint_beta.md)
+  **\[stable\]** :
+
+  Update certain components of `DualEndpoint` model with regard to
+  parameters of the function that models dose-biomarker relationship
+  defined in the `DualEndpointBeta` class.
+
+- [`h_info_theory_dist()`](https://openpharma.github.io/crmPack/reference/h_info_theory_dist.md)
+  **\[experimental\]** : Calculating the Information Theoretic Distance
+
+- [`h_next_best_mg_ci()`](https://openpharma.github.io/crmPack/reference/h_next_best_mg_ci.md)
+  **\[experimental\]** :
+
+  Credibility Intervals for Max Gain and Target Doses at
+  `nextBest-NextBestMaxGain` Method.
+
+- [`h_next_best_mg_doses_at_grid()`](https://openpharma.github.io/crmPack/reference/h_next_best_mg_doses_at_grid.md)
+  **\[experimental\]** :
+
+  Get Closest Grid Doses for a Given Target Doses for
+  `nextBest-NextBestMaxGain` Method.
+
+- [`h_next_best_eligible_doses()`](https://openpharma.github.io/crmPack/reference/h_next_best_eligible_doses.md)
+  **\[experimental\]** : Get Eligible Doses from the Dose Grid.
+
+- [`h_next_best_ncrm_loss_plot()`](https://openpharma.github.io/crmPack/reference/h_next_best_ncrm_loss_plot.md)
+  **\[experimental\]** :
+
+  Building the Plot for `nextBest-NextBestNCRMLoss` Method.
+
+- [`h_next_best_tdsamples_plot()`](https://openpharma.github.io/crmPack/reference/h_next_best_tdsamples_plot.md)
+  **\[experimental\]** :
+
+  Building the Plot for `nextBest-NextBestTDsamples` Method.
+
+- [`h_next_best_td_plot()`](https://openpharma.github.io/crmPack/reference/h_next_best_td_plot.md)
+  **\[experimental\]** :
+
+  Building the Plot for `nextBest-NextBestTD` Method.
+
+- [`h_next_best_mg_plot()`](https://openpharma.github.io/crmPack/reference/h_next_best_mg_plot.md)
+  **\[experimental\]** :
+
+  Building the Plot for `nextBest-NextBestMaxGain` Method.
+
+- [`h_next_best_mgsamples_plot()`](https://openpharma.github.io/crmPack/reference/h_next_best_mgsamples_plot.md)
+  **\[experimental\]** :
+
+  Building the Plot for `nextBest-NextBestMaxGainSamples` Method.
+
+- [`h_obtain_dose_grid_range()`](https://openpharma.github.io/crmPack/reference/h_obtain_dose_grid_range.md)
+  : Helper Function Containing Common Functionality
+
+- [`h_covr_active()`](https://openpharma.github.io/crmPack/reference/h_covr_helpers.md)
+  [`h_covr_detrace()`](https://openpharma.github.io/crmPack/reference/h_covr_helpers.md)
+  [`h_is_covr_trace()`](https://openpharma.github.io/crmPack/reference/h_covr_helpers.md)
+  [`h_covr_detrace_call()`](https://openpharma.github.io/crmPack/reference/h_covr_helpers.md)
+  :
+
+  Helpers for stripping expressions of `covr`-inserted trace code
+
+- [`h_default_if_empty()`](https://openpharma.github.io/crmPack/reference/h_default_if_empty.md)
+  **\[stable\]** : Getting the default value for an empty object
+
+- [`h_unpack_stopit()`](https://openpharma.github.io/crmPack/reference/h_unpack_stopit.md)
+  : Helper function to recursively unpack stopping rules and return
+  lists with logical value and label given
+
+- [`h_calc_report_label_percentage()`](https://openpharma.github.io/crmPack/reference/h_calc_report_label_percentage.md)
+  :
+
+  Helper function to calculate percentage of true stopping rules for
+  report label output calculates true column means and converts output
+  into percentages before combining the output with the report label;
+  output is passed to `show()` and output with cat to console
+
+- [`h_validate_common_data_slots()`](https://openpharma.github.io/crmPack/reference/h_validate_common_data_slots.md)
+  : Helper Function performing validation Common to Data and DataOrdinal
+
+- [`h_summarize_add_stats()`](https://openpharma.github.io/crmPack/reference/h_summarize_add_stats.md)
+  :
+
+  Helper function to calculate average across iterations for each
+  additional reporting parameter extracts parameter names as specified
+  by user and averaged the values for each specified parameter to
+  `show()` and output with cat to console
+
+- [`h_determine_dlts()`](https://openpharma.github.io/crmPack/reference/h_determine_dlts.md)
+  : Helper function to determine the dlts including first separate and
+  placebo condition
+
+## Internal Validation Functions
+
+- [`v_general_data()`](https://openpharma.github.io/crmPack/reference/v_data_objects.md)
+  [`h_doses_unique_per_cohort()`](https://openpharma.github.io/crmPack/reference/v_data_objects.md)
+  [`v_data()`](https://openpharma.github.io/crmPack/reference/v_data_objects.md)
+  [`v_data_dual()`](https://openpharma.github.io/crmPack/reference/v_data_objects.md)
+  [`v_data_parts()`](https://openpharma.github.io/crmPack/reference/v_data_objects.md)
+  [`v_data_mixture()`](https://openpharma.github.io/crmPack/reference/v_data_objects.md)
+  [`v_data_da()`](https://openpharma.github.io/crmPack/reference/v_data_objects.md)
+  [`v_data_ordinal()`](https://openpharma.github.io/crmPack/reference/v_data_objects.md)
+  [`v_data_grouped()`](https://openpharma.github.io/crmPack/reference/v_data_objects.md)
+  **\[stable\]** :
+
+  Internal Helper Functions for Validation of `GeneralData` Objects
+
+- [`v_mcmc_options()`](https://openpharma.github.io/crmPack/reference/v_mcmcoptions_objects.md)
+  **\[stable\]** :
+
+  Internal Helper Functions for Validation of `McmcOptions` Objects
+
+- [`v_model_params_normal()`](https://openpharma.github.io/crmPack/reference/v_model_params.md)
+  **\[experimental\]** : Internal Helper Functions for Validation of
+  Model Parameters Objects
+
+- [`v_general_model()`](https://openpharma.github.io/crmPack/reference/v_model_objects.md)
+  [`v_model_logistic_kadane()`](https://openpharma.github.io/crmPack/reference/v_model_objects.md)
+  [`v_model_logistic_kadane_beta_gamma()`](https://openpharma.github.io/crmPack/reference/v_model_objects.md)
+  [`v_model_logistic_normal_mix()`](https://openpharma.github.io/crmPack/reference/v_model_objects.md)
+  [`v_model_logistic_normal_fixed_mix()`](https://openpharma.github.io/crmPack/reference/v_model_objects.md)
+  [`v_model_logistic_log_normal_mix()`](https://openpharma.github.io/crmPack/reference/v_model_objects.md)
+  [`v_model_dual_endpoint()`](https://openpharma.github.io/crmPack/reference/v_model_objects.md)
+  [`v_model_dual_endpoint_rw()`](https://openpharma.github.io/crmPack/reference/v_model_objects.md)
+  [`v_model_dual_endpoint_beta()`](https://openpharma.github.io/crmPack/reference/v_model_objects.md)
+  [`v_model_dual_endpoint_emax()`](https://openpharma.github.io/crmPack/reference/v_model_objects.md)
+  [`v_model_logistic_indep_beta()`](https://openpharma.github.io/crmPack/reference/v_model_objects.md)
+  [`v_model_eff_log_log()`](https://openpharma.github.io/crmPack/reference/v_model_objects.md)
+  [`v_model_eff_flexi()`](https://openpharma.github.io/crmPack/reference/v_model_objects.md)
+  [`v_model_da_logistic_log_normal()`](https://openpharma.github.io/crmPack/reference/v_model_objects.md)
+  [`v_model_tite_logistic_log_normal()`](https://openpharma.github.io/crmPack/reference/v_model_objects.md)
+  [`v_model_one_par_exp_normal_prior()`](https://openpharma.github.io/crmPack/reference/v_model_objects.md)
+  [`v_model_one_par_exp_prior()`](https://openpharma.github.io/crmPack/reference/v_model_objects.md)
+  [`v_logisticlognormalordinal()`](https://openpharma.github.io/crmPack/reference/v_model_objects.md)
+  **\[stable\]** :
+
+  Internal Helper Functions for Validation of `GeneralModel` and
+  `ModelPseudo` Objects
+
+- [`v_samples()`](https://openpharma.github.io/crmPack/reference/v_samples_objects.md)
+  :
+
+  Internal Helper Functions for Validation of `Samples` Objects
+
+- [`v_next_best_mtd()`](https://openpharma.github.io/crmPack/reference/v_next_best.md)
+  [`v_next_best_ncrm()`](https://openpharma.github.io/crmPack/reference/v_next_best.md)
+  [`v_next_best_ncrm_loss()`](https://openpharma.github.io/crmPack/reference/v_next_best.md)
+  [`v_next_best_dual_endpoint()`](https://openpharma.github.io/crmPack/reference/v_next_best.md)
+  [`v_next_best_min_dist()`](https://openpharma.github.io/crmPack/reference/v_next_best.md)
+  [`v_next_best_inf_theory()`](https://openpharma.github.io/crmPack/reference/v_next_best.md)
+  [`v_next_best_td()`](https://openpharma.github.io/crmPack/reference/v_next_best.md)
+  [`v_next_best_td_samples()`](https://openpharma.github.io/crmPack/reference/v_next_best.md)
+  [`v_next_best_max_gain_samples()`](https://openpharma.github.io/crmPack/reference/v_next_best.md)
+  [`v_next_best_prob_mtd_lte()`](https://openpharma.github.io/crmPack/reference/v_next_best.md)
+  [`v_next_best_prob_mtd_min_dist()`](https://openpharma.github.io/crmPack/reference/v_next_best.md)
+  [`v_next_best_ordinal()`](https://openpharma.github.io/crmPack/reference/v_next_best.md)
+  **\[stable\]** :
+
+  Internal Helper Functions for Validation of `NextBest` Objects
+
+- [`v_increments_relative()`](https://openpharma.github.io/crmPack/reference/v_increments.md)
+  [`v_increments_relative_parts()`](https://openpharma.github.io/crmPack/reference/v_increments.md)
+  [`v_increments_relative_dlt()`](https://openpharma.github.io/crmPack/reference/v_increments.md)
+  [`v_increments_dose_levels()`](https://openpharma.github.io/crmPack/reference/v_increments.md)
+  [`v_increments_hsr_beta()`](https://openpharma.github.io/crmPack/reference/v_increments.md)
+  [`v_increments_min()`](https://openpharma.github.io/crmPack/reference/v_increments.md)
+  [`v_increments_maxtoxprob()`](https://openpharma.github.io/crmPack/reference/v_increments.md)
+  [`v_increments_ordinal()`](https://openpharma.github.io/crmPack/reference/v_increments.md)
+  [`v_cohort_size_ordinal()`](https://openpharma.github.io/crmPack/reference/v_increments.md)
+  **\[stable\]** :
+
+  Internal Helper Functions for Validation of `Increments` Objects
+
+- [`v_starting_dose()`](https://openpharma.github.io/crmPack/reference/v_starting_dose.md)
+  **\[experimental\]** :
+
+  Internal Helper Functions for Validation of `StartingDose` Objects
+
+- [`v_stopping_cohorts_near_dose()`](https://openpharma.github.io/crmPack/reference/v_stopping.md)
+  [`v_stopping_patients_near_dose()`](https://openpharma.github.io/crmPack/reference/v_stopping.md)
+  [`v_stopping_min_cohorts()`](https://openpharma.github.io/crmPack/reference/v_stopping.md)
+  [`v_stopping_min_patients()`](https://openpharma.github.io/crmPack/reference/v_stopping.md)
+  [`v_stopping_target_prob()`](https://openpharma.github.io/crmPack/reference/v_stopping.md)
+  [`v_stopping_mtd_distribution()`](https://openpharma.github.io/crmPack/reference/v_stopping.md)
+  [`v_stopping_mtd_cv()`](https://openpharma.github.io/crmPack/reference/v_stopping.md)
+  [`v_stopping_target_biomarker()`](https://openpharma.github.io/crmPack/reference/v_stopping.md)
+  [`v_stopping_list()`](https://openpharma.github.io/crmPack/reference/v_stopping.md)
+  [`v_stopping_all()`](https://openpharma.github.io/crmPack/reference/v_stopping.md)
+  [`v_stopping_tdci_ratio()`](https://openpharma.github.io/crmPack/reference/v_stopping.md)
+  **\[stable\]** :
+
+  Internal Helper Functions for Validation of `Stopping` Objects
+
+- [`v_cohort_size_range()`](https://openpharma.github.io/crmPack/reference/v_cohort_size.md)
+  [`v_cohort_size_dlt()`](https://openpharma.github.io/crmPack/reference/v_cohort_size.md)
+  [`v_cohort_size_const()`](https://openpharma.github.io/crmPack/reference/v_cohort_size.md)
+  [`v_cohort_size_parts()`](https://openpharma.github.io/crmPack/reference/v_cohort_size.md)
+  [`v_cohort_size_max()`](https://openpharma.github.io/crmPack/reference/v_cohort_size.md)
+  **\[stable\]** :
+
+  Internal Helper Functions for Validation of `CohortSize` Objects
+
+- [`v_safety_window_size()`](https://openpharma.github.io/crmPack/reference/v_safety_window.md)
+  [`v_safety_window_const()`](https://openpharma.github.io/crmPack/reference/v_safety_window.md)
+  **\[stable\]** :
+
+  Internal Helper Functions for Validation of `SafetyWindow` Objects
+
+- [`v_rule_design()`](https://openpharma.github.io/crmPack/reference/v_design.md)
+  [`v_rule_design_ordinal()`](https://openpharma.github.io/crmPack/reference/v_design.md)
+  [`v_design_grouped()`](https://openpharma.github.io/crmPack/reference/v_design.md)
+  **\[stable\]** :
+
+  Internal Helper Functions for Validation of `RuleDesign` Objects
+
+- [`v_general_simulations()`](https://openpharma.github.io/crmPack/reference/v_general_simulations.md)
+  [`v_simulations()`](https://openpharma.github.io/crmPack/reference/v_general_simulations.md)
+  [`v_dual_simulations()`](https://openpharma.github.io/crmPack/reference/v_general_simulations.md)
+  [`v_da_simulations()`](https://openpharma.github.io/crmPack/reference/v_general_simulations.md)
+  **\[stable\]** :
+
+  Internal Helper Functions for Validation of `GeneralSimulations`
+  Objects
+
+- [`v_pseudo_simulations()`](https://openpharma.github.io/crmPack/reference/v_pseudo_simulations.md)
+  [`v_pseudo_dual_simulations()`](https://openpharma.github.io/crmPack/reference/v_pseudo_simulations.md)
+  [`v_pseudo_dual_flex_simulations()`](https://openpharma.github.io/crmPack/reference/v_pseudo_simulations.md)
+  **\[stable\]** :
+
+  Internal Helper Functions for Validation of `PseudoSimulations`
+  Objects
+
+## Custom Checkmate Assertions
+
+- [`check_probabilities()`](https://openpharma.github.io/crmPack/reference/check_probabilities.md)
+  [`assert_probabilities()`](https://openpharma.github.io/crmPack/reference/check_probabilities.md)
+  [`test_probabilities()`](https://openpharma.github.io/crmPack/reference/check_probabilities.md)
+  [`expect_probabilities()`](https://openpharma.github.io/crmPack/reference/check_probabilities.md)
+  **\[stable\]** : Check if an argument is a probability vector
+- [`check_probability()`](https://openpharma.github.io/crmPack/reference/check_probability.md)
+  [`assert_probability()`](https://openpharma.github.io/crmPack/reference/check_probability.md)
+  [`test_probability()`](https://openpharma.github.io/crmPack/reference/check_probability.md)
+  [`expect_probability()`](https://openpharma.github.io/crmPack/reference/check_probability.md)
+  **\[stable\]** : Check if an argument is a single probability value
+- [`check_probability_range()`](https://openpharma.github.io/crmPack/reference/check_probability_range.md)
+  [`assert_probability_range()`](https://openpharma.github.io/crmPack/reference/check_probability_range.md)
+  [`test_probability_range()`](https://openpharma.github.io/crmPack/reference/check_probability_range.md)
+  [`expect_probability_range()`](https://openpharma.github.io/crmPack/reference/check_probability_range.md)
+  **\[stable\]** : Check if an argument is a probability range
+- [`check_length()`](https://openpharma.github.io/crmPack/reference/check_length.md)
+  [`assert_length()`](https://openpharma.github.io/crmPack/reference/check_length.md)
+  [`test_length()`](https://openpharma.github.io/crmPack/reference/check_length.md)
+  **\[stable\]** : Check if vectors are of compatible lengths
+- [`check_range()`](https://openpharma.github.io/crmPack/reference/check_range.md)
+  [`assert_range()`](https://openpharma.github.io/crmPack/reference/check_range.md)
+  [`test_range()`](https://openpharma.github.io/crmPack/reference/check_range.md)
+  [`expect_range()`](https://openpharma.github.io/crmPack/reference/check_range.md)
+  **\[stable\]** : Check that an argument is a numerical range
+
+## Methods
+
+- [`h_plot_data_dataordinal()`](https://openpharma.github.io/crmPack/reference/plot-Data.md)
+  [`plot(`*`<Data>`*`,`*`<missing>`*`)`](https://openpharma.github.io/crmPack/reference/plot-Data.md)
+  [`plot(`*`<DataOrdinal>`*`,`*`<missing>`*`)`](https://openpharma.github.io/crmPack/reference/plot-Data.md)
+  **\[stable\]** : Helper Function for the Plot Method of the Data and
+  DataOrdinal Classes
+
+- [`plot(`*`<DataDual>`*`,`*`<missing>`*`)`](https://openpharma.github.io/crmPack/reference/plot-DataDual-missing-method.md)
+  **\[stable\]** :
+
+  Plot Method for the `DataDual` Class
+
+- [`plot(`*`<DataDA>`*`,`*`<missing>`*`)`](https://openpharma.github.io/crmPack/reference/plot-DataDA-missing-method.md)
+  **\[stable\]** :
+
+  Plot Method for the `DataDA` Class
+
+- [`update(`*`<Data>`*`)`](https://openpharma.github.io/crmPack/reference/update-Data-method.md)
+  **\[stable\]** :
+
+  Updating `Data` Objects
+
+- [`update(`*`<DataParts>`*`)`](https://openpharma.github.io/crmPack/reference/update-DataParts-method.md)
+  **\[stable\]** :
+
+  Updating `DataParts` Objects
+
+- [`update(`*`<DataDual>`*`)`](https://openpharma.github.io/crmPack/reference/update-DataDual-method.md)
+  **\[stable\]** :
+
+  Updating `DataDual` Objects
+
+- [`update(`*`<DataDA>`*`)`](https://openpharma.github.io/crmPack/reference/update-DataDA-method.md)
+  **\[stable\]** :
+
+  Updating `DataDA` Objects
+
+- [`update(`*`<DataOrdinal>`*`)`](https://openpharma.github.io/crmPack/reference/update-DataOrdinal-method.md)
+  **\[experimental\]** :
+
+  Updating `DataOrdinal` Objects
+
+- [`getEff()`](https://openpharma.github.io/crmPack/reference/getEff.md)
+  **\[stable\]** : Extracting Efficacy Responses for Subjects
+  Categorized by the DLT
+
+- [`ngrid()`](https://openpharma.github.io/crmPack/reference/ngrid.md)
+  **\[stable\]** : Number of Doses in Grid
+
+- [`dose_grid_range()`](https://openpharma.github.io/crmPack/reference/dose_grid_range.md)
+  **\[stable\]** : Getting the Dose Grid Range
+
+- [`saveSample()`](https://openpharma.github.io/crmPack/reference/saveSample.md)
+  **\[stable\]** : Determining if this Sample Should be Saved
+
+- [`size()`](https://openpharma.github.io/crmPack/reference/size.md)
+  **\[stable\]** : Size of an Object
+
+- [`doseFunction()`](https://openpharma.github.io/crmPack/reference/doseFunction.md)
+  **\[experimental\]** : Getting the Dose Function for a Given Model
+  Type
+
+- [`dose()`](https://openpharma.github.io/crmPack/reference/dose.md)
+  **\[stable\]** : Computing the Doses for a given independent variable,
+  Model and Samples
+
+- [`probFunction()`](https://openpharma.github.io/crmPack/reference/probFunction.md)
+  **\[experimental\]** : Getting the Prob Function for a Given Model
+  Type
+
+- [`prob()`](https://openpharma.github.io/crmPack/reference/prob.md)
+  **\[stable\]** : Computing Toxicity Probabilities for a Given Dose,
+  Model and Samples
+
+- [`efficacyFunction()`](https://openpharma.github.io/crmPack/reference/efficacyFunction.md)
+  **\[experimental\]** : Getting the Efficacy Function for a Given Model
+  Type
+
+- [`efficacy()`](https://openpharma.github.io/crmPack/reference/efficacy.md)
+  **\[stable\]** : Computing Expected Efficacy for a Given Dose, Model
+  and Samples
+
+- [`biomarker()`](https://openpharma.github.io/crmPack/reference/biomarker.md)
+  **\[experimental\]** : Get the Biomarker Levels for a Given
+  Dual-Endpoint Model, Given Dose Levels and Samples
+
+- [`gain()`](https://openpharma.github.io/crmPack/reference/gain.md)
+  **\[stable\]** : Compute Gain Values based on Pseudo DLE and a Pseudo
+  Efficacy Models and Using Optional Samples.
+
+- [`update(`*`<ModelPseudo>`*`)`](https://openpharma.github.io/crmPack/reference/update-ModelPseudo-method.md)
+  :
+
+  Update method for the `ModelPseudo` model class. This is a method to
+  update the model class slots (estimates, parameters, variables and
+  etc.), when the new data (e.g. new observations of responses) are
+  available. This method is mostly used to obtain new modal estimates
+  for pseudo model parameters.
+
+- [`mcmc()`](https://openpharma.github.io/crmPack/reference/mcmc.md)
+  **\[stable\]** : Obtaining Posterior Samples for all Model Parameters
+
+- [`names(`*`<Samples>`*`)`](https://openpharma.github.io/crmPack/reference/names-Samples-method.md)
+  **\[stable\]** : The Names of the Sampled Parameters
+
+- [`nextBest()`](https://openpharma.github.io/crmPack/reference/nextBest.md)
+  **\[stable\]** : Finding the Next Best Dose
+
+- [`stopTrial()`](https://openpharma.github.io/crmPack/reference/stopTrial.md)
+  **\[stable\]** : Stop the trial?
+
+- [`maxDose()`](https://openpharma.github.io/crmPack/reference/maxDose.md)
+  **\[stable\]** : Determine the Maximum Possible Next Dose
+
+## Functions
+
+- [`enable_logging()`](https://openpharma.github.io/crmPack/reference/enable_logging.md)
+  [`disable_logging()`](https://openpharma.github.io/crmPack/reference/enable_logging.md)
+  [`is_logging_enabled()`](https://openpharma.github.io/crmPack/reference/enable_logging.md)
+  [`log_trace()`](https://openpharma.github.io/crmPack/reference/enable_logging.md)
+  **\[experimental\]** : Verbose Logging
+
+- [`dapply()`](https://openpharma.github.io/crmPack/reference/dapply.md)
+  **\[experimental\]** : Apply a Function to Subsets of Data Frame.
+
+- [`knit_print(`*`<CohortSizeConst>`*`)`](https://openpharma.github.io/crmPack/reference/knit_print.md)
+  [`knit_print(`*`<CohortSizeRange>`*`)`](https://openpharma.github.io/crmPack/reference/knit_print.md)
+  [`knit_print(`*`<CohortSizeDLT>`*`)`](https://openpharma.github.io/crmPack/reference/knit_print.md)
+  [`knit_print(`*`<CohortSizeParts>`*`)`](https://openpharma.github.io/crmPack/reference/knit_print.md)
+  [`knit_print(`*`<CohortSizeMax>`*`)`](https://openpharma.github.io/crmPack/reference/knit_print.md)
+  [`knit_print(`*`<CohortSizeMin>`*`)`](https://openpharma.github.io/crmPack/reference/knit_print.md)
+  [`knit_print(`*`<CohortSizeOrdinal>`*`)`](https://openpharma.github.io/crmPack/reference/knit_print.md)
+  [`knit_print(`*`<StartingDose>`*`)`](https://openpharma.github.io/crmPack/reference/knit_print.md)
+  [`knit_print(`*`<RuleDesign>`*`)`](https://openpharma.github.io/crmPack/reference/knit_print.md)
+  [`knit_print(`*`<Design>`*`)`](https://openpharma.github.io/crmPack/reference/knit_print.md)
+  [`knit_print(`*`<DualDesign>`*`)`](https://openpharma.github.io/crmPack/reference/knit_print.md)
+  [`knit_print(`*`<DADesign>`*`)`](https://openpharma.github.io/crmPack/reference/knit_print.md)
+  [`knit_print(`*`<TDDesign>`*`)`](https://openpharma.github.io/crmPack/reference/knit_print.md)
+  [`knit_print(`*`<DualResponsesDesign>`*`)`](https://openpharma.github.io/crmPack/reference/knit_print.md)
+  [`knit_print(`*`<DesignOrdinal>`*`)`](https://openpharma.github.io/crmPack/reference/knit_print.md)
+  [`knit_print(`*`<DesignGrouped>`*`)`](https://openpharma.github.io/crmPack/reference/knit_print.md)
+  [`knit_print(`*`<TDsamplesDesign>`*`)`](https://openpharma.github.io/crmPack/reference/knit_print.md)
+  [`knit_print(`*`<DualResponsesSamplesDesign>`*`)`](https://openpharma.github.io/crmPack/reference/knit_print.md)
+  [`knit_print(`*`<RuleDesignOrdinal>`*`)`](https://openpharma.github.io/crmPack/reference/knit_print.md)
+  [`knit_print(`*`<GeneralData>`*`)`](https://openpharma.github.io/crmPack/reference/knit_print.md)
+  [`knit_print(`*`<DataParts>`*`)`](https://openpharma.github.io/crmPack/reference/knit_print.md)
+  [`knit_print(`*`<DualEndpoint>`*`)`](https://openpharma.github.io/crmPack/reference/knit_print.md)
+  [`knit_print(`*`<ModelParamsNormal>`*`)`](https://openpharma.github.io/crmPack/reference/knit_print.md)
+  [`knit_print(`*`<GeneralModel>`*`)`](https://openpharma.github.io/crmPack/reference/knit_print.md)
+  [`knit_print(`*`<LogisticKadane>`*`)`](https://openpharma.github.io/crmPack/reference/knit_print.md)
+  [`knit_print(`*`<LogisticKadaneBetaGamma>`*`)`](https://openpharma.github.io/crmPack/reference/knit_print.md)
+  [`knit_print(`*`<LogisticLogNormal>`*`)`](https://openpharma.github.io/crmPack/reference/knit_print.md)
+  [`knit_print(`*`<LogisticLogNormalMixture>`*`)`](https://openpharma.github.io/crmPack/reference/knit_print.md)
+  [`knit_print(`*`<LogisticLogNormalSub>`*`)`](https://openpharma.github.io/crmPack/reference/knit_print.md)
+  [`knit_print(`*`<LogisticNormalMixture>`*`)`](https://openpharma.github.io/crmPack/reference/knit_print.md)
+  [`knit_print(`*`<LogisticNormalFixedMixture>`*`)`](https://openpharma.github.io/crmPack/reference/knit_print.md)
+  [`knit_print(`*`<OneParLogNormalPrior>`*`)`](https://openpharma.github.io/crmPack/reference/knit_print.md)
+  [`knit_print(`*`<OneParExpPrior>`*`)`](https://openpharma.github.io/crmPack/reference/knit_print.md)
+  [`knit_print(`*`<LogisticLogNormalGrouped>`*`)`](https://openpharma.github.io/crmPack/reference/knit_print.md)
+  [`knit_print(`*`<LogisticLogNormalOrdinal>`*`)`](https://openpharma.github.io/crmPack/reference/knit_print.md)
+  [`knit_print(`*`<LogisticIndepBeta>`*`)`](https://openpharma.github.io/crmPack/reference/knit_print.md)
+  [`knit_print(`*`<Effloglog>`*`)`](https://openpharma.github.io/crmPack/reference/knit_print.md)
+  [`knit_print(`*`<IncrementsRelative>`*`)`](https://openpharma.github.io/crmPack/reference/knit_print.md)
+  [`knit_print(`*`<IncrementsRelativeDLT>`*`)`](https://openpharma.github.io/crmPack/reference/knit_print.md)
+  [`knit_print(`*`<IncrementsDoseLevels>`*`)`](https://openpharma.github.io/crmPack/reference/knit_print.md)
+  [`knit_print(`*`<IncrementsHSRBeta>`*`)`](https://openpharma.github.io/crmPack/reference/knit_print.md)
+  [`knit_print(`*`<IncrementsMin>`*`)`](https://openpharma.github.io/crmPack/reference/knit_print.md)
+  [`knit_print(`*`<IncrementsOrdinal>`*`)`](https://openpharma.github.io/crmPack/reference/knit_print.md)
+  [`knit_print(`*`<IncrementsRelativeParts>`*`)`](https://openpharma.github.io/crmPack/reference/knit_print.md)
+  [`knit_print(`*`<IncrementsRelativeDLTCurrent>`*`)`](https://openpharma.github.io/crmPack/reference/knit_print.md)
+  [`knit_print(`*`<NextBestMTD>`*`)`](https://openpharma.github.io/crmPack/reference/knit_print.md)
+  [`knit_print(`*`<NextBestNCRM>`*`)`](https://openpharma.github.io/crmPack/reference/knit_print.md)
+  [`knit_print(`*`<NextBestThreePlusThree>`*`)`](https://openpharma.github.io/crmPack/reference/knit_print.md)
+  [`knit_print(`*`<NextBestDualEndpoint>`*`)`](https://openpharma.github.io/crmPack/reference/knit_print.md)
+  [`knit_print(`*`<NextBestMinDist>`*`)`](https://openpharma.github.io/crmPack/reference/knit_print.md)
+  [`knit_print(`*`<NextBestInfTheory>`*`)`](https://openpharma.github.io/crmPack/reference/knit_print.md)
+  [`knit_print(`*`<NextBestTD>`*`)`](https://openpharma.github.io/crmPack/reference/knit_print.md)
+  [`knit_print(`*`<NextBestMaxGain>`*`)`](https://openpharma.github.io/crmPack/reference/knit_print.md)
+  [`knit_print(`*`<NextBestProbMTDLTE>`*`)`](https://openpharma.github.io/crmPack/reference/knit_print.md)
+  [`knit_print(`*`<NextBestProbMTDMinDist>`*`)`](https://openpharma.github.io/crmPack/reference/knit_print.md)
+  [`knit_print(`*`<NextBestNCRMLoss>`*`)`](https://openpharma.github.io/crmPack/reference/knit_print.md)
+  [`knit_print(`*`<NextBestTDsamples>`*`)`](https://openpharma.github.io/crmPack/reference/knit_print.md)
+  [`knit_print(`*`<NextBestMaxGainSamples>`*`)`](https://openpharma.github.io/crmPack/reference/knit_print.md)
+  [`knit_print(`*`<NextBestOrdinal>`*`)`](https://openpharma.github.io/crmPack/reference/knit_print.md)
+  [`knit_print(`*`<SafetyWindow>`*`)`](https://openpharma.github.io/crmPack/reference/knit_print.md)
+  [`knit_print(`*`<SafetyWindowConst>`*`)`](https://openpharma.github.io/crmPack/reference/knit_print.md)
+  [`knit_print(`*`<SafetyWindowSize>`*`)`](https://openpharma.github.io/crmPack/reference/knit_print.md)
+  [`knit_print(`*`<StoppingOrdinal>`*`)`](https://openpharma.github.io/crmPack/reference/knit_print.md)
+  [`knit_print(`*`<StoppingMaxGainCIRatio>`*`)`](https://openpharma.github.io/crmPack/reference/knit_print.md)
+  [`knit_print(`*`<StoppingList>`*`)`](https://openpharma.github.io/crmPack/reference/knit_print.md)
+  [`knit_print(`*`<StoppingAny>`*`)`](https://openpharma.github.io/crmPack/reference/knit_print.md)
+  [`knit_print(`*`<StoppingAll>`*`)`](https://openpharma.github.io/crmPack/reference/knit_print.md)
+  [`knit_print(`*`<StoppingTDCIRatio>`*`)`](https://openpharma.github.io/crmPack/reference/knit_print.md)
+  [`knit_print(`*`<StoppingTargetBiomarker>`*`)`](https://openpharma.github.io/crmPack/reference/knit_print.md)
+  [`knit_print(`*`<StoppingLowestDoseHSRBeta>`*`)`](https://openpharma.github.io/crmPack/reference/knit_print.md)
+  [`knit_print(`*`<StoppingMTDCV>`*`)`](https://openpharma.github.io/crmPack/reference/knit_print.md)
+  [`knit_print(`*`<StoppingMTDdistribution>`*`)`](https://openpharma.github.io/crmPack/reference/knit_print.md)
+  [`knit_print(`*`<StoppingHighestDose>`*`)`](https://openpharma.github.io/crmPack/reference/knit_print.md)
+  [`knit_print(`*`<StoppingSpecificDose>`*`)`](https://openpharma.github.io/crmPack/reference/knit_print.md)
+  [`knit_print(`*`<StoppingTargetProb>`*`)`](https://openpharma.github.io/crmPack/reference/knit_print.md)
+  [`knit_print(`*`<StoppingMinCohorts>`*`)`](https://openpharma.github.io/crmPack/reference/knit_print.md)
+  [`knit_print(`*`<StoppingMinPatients>`*`)`](https://openpharma.github.io/crmPack/reference/knit_print.md)
+  [`knit_print(`*`<StoppingPatientsNearDose>`*`)`](https://openpharma.github.io/crmPack/reference/knit_print.md)
+  [`knit_print(`*`<StoppingCohortsNearDose>`*`)`](https://openpharma.github.io/crmPack/reference/knit_print.md)
+  [`knit_print(`*`<StoppingMissingDose>`*`)`](https://openpharma.github.io/crmPack/reference/knit_print.md)
+  **\[experimental\]** :
+
+  Render a `CohortSizeConst` Object
+
+## Classes
+
+- [`CohortSizeOrdinal()`](https://openpharma.github.io/crmPack/reference/CohortSizeOrdinal-class.md)
+  [`.DefaultCohortSizeOrdinal()`](https://openpharma.github.io/crmPack/reference/CohortSizeOrdinal-class.md)
+  **\[experimental\]** :
+
+  `CohortSizeOrdinal`
+
+- [`IncrementsOrdinal()`](https://openpharma.github.io/crmPack/reference/IncrementsOrdinal-class.md)
+  [`.DefaultIncrementsOrdinal()`](https://openpharma.github.io/crmPack/reference/IncrementsOrdinal-class.md)
+  **\[experimental\]** :
+
+  `IncrementsOrdinal`
+
+- [`DADesign()`](https://openpharma.github.io/crmPack/reference/DADesign-class.md)
+  [`.DefaultDADesign()`](https://openpharma.github.io/crmPack/reference/DADesign-class.md)
+  **\[stable\]** :
+
+  `DADesign`
+
+- [`DASimulations()`](https://openpharma.github.io/crmPack/reference/DASimulations-class.md)
+  [`.DefaultDASimulations()`](https://openpharma.github.io/crmPack/reference/DASimulations-class.md)
+  **\[stable\]** :
+
+  `DASimulations`
+
+- [`DualResponsesDesign()`](https://openpharma.github.io/crmPack/reference/DualResponsesDesign-class.md)
+  [`.DefaultDualResponsesDesign()`](https://openpharma.github.io/crmPack/reference/DualResponsesDesign-class.md)
+  **\[stable\]** :
+
+  `DualResponsesDesign.R`
+
+- [`DualResponsesSamplesDesign()`](https://openpharma.github.io/crmPack/reference/DualResponsesSamplesDesign-class.md)
+  [`.DefaultDualResponsesSamplesDesign()`](https://openpharma.github.io/crmPack/reference/DualResponsesSamplesDesign-class.md)
+  **\[stable\]** :
+
+  `DualResponsesSamplesDesign`
+
+- [`DualSimulations()`](https://openpharma.github.io/crmPack/reference/DualSimulations-class.md)
+  [`.DefaultDualSimulations()`](https://openpharma.github.io/crmPack/reference/DualSimulations-class.md)
+  **\[stable\]** :
+
+  `DualSimulations`
+
+- [`.DefaultDualSimulationsSummary()`](https://openpharma.github.io/crmPack/reference/DualSimulationsSummary-class.md)
+  **\[stable\]** :
+
+  `DualSimulationsSummary`
+
+- [`GeneralSimulations()`](https://openpharma.github.io/crmPack/reference/GeneralSimulations-class.md)
+  [`.DefaultGeneralSimulations()`](https://openpharma.github.io/crmPack/reference/GeneralSimulations-class.md)
+  **\[stable\]** :
+
+  `GeneralSimulations` @description **\[stable\]** This class captures
+  trial simulations. Here also the random generator state before
+  starting the simulation is saved, in order to be able to reproduce the
+  outcome. For this just use
+  [`set.seed`](https://rdrr.io/r/base/Random.html) with the `seed` as
+  argument before running `simulate,Design-method`.
+
+- [`.DefaultGeneralSimulationsSummary()`](https://openpharma.github.io/crmPack/reference/GeneralSimulationsSummary-class.md)
+  **\[stable\]** :
+
+  `GeneralSimulationsSummary`
+
+- [`IncrementsMaxToxProb()`](https://openpharma.github.io/crmPack/reference/IncrementsMaxToxProb-class.md)
+  [`.DefaultIncrementsMaxToxProb()`](https://openpharma.github.io/crmPack/reference/IncrementsMaxToxProb-class.md)
+  **\[experimental\]** :
+
+  `IncrementsMaxToxProb`
+
+- [`LogisticLogNormalOrdinal()`](https://openpharma.github.io/crmPack/reference/LogisticLogNormalOrdinal-class.md)
+  [`.DefaultLogisticLogNormalOrdinal()`](https://openpharma.github.io/crmPack/reference/LogisticLogNormalOrdinal-class.md)
+  **\[experimental\]** :
+
+  `LogisticLogNormalOrdinal`
+
+- [`MinimalInformative()`](https://openpharma.github.io/crmPack/reference/MinimalInformative.md)
+  **\[stable\]** : Construct a Minimally Informative Prior
+
+- [`NextBestOrdinal()`](https://openpharma.github.io/crmPack/reference/NextBestOrdinal-class.md)
+  [`.DefaultNextBestOrdinal()`](https://openpharma.github.io/crmPack/reference/NextBestOrdinal-class.md)
+  **\[experimental\]** :
+
+  `NextBestOrdinal`
+
+- [`PseudoDualFlexiSimulations()`](https://openpharma.github.io/crmPack/reference/PseudoDualFlexiSimulations-class.md)
+  [`.DefaultPseudoDualFlexiSimulations()`](https://openpharma.github.io/crmPack/reference/PseudoDualFlexiSimulations-class.md)
+  **\[stable\]** :
+
+  `PseudoDualFlexiSimulations`
+
+- [`PseudoDualSimulations()`](https://openpharma.github.io/crmPack/reference/PseudoDualSimulations-class.md)
+  [`.DefaultPseudoDualSimulations()`](https://openpharma.github.io/crmPack/reference/PseudoDualSimulations-class.md)
+  **\[stable\]** :
+
+  `PseudoDualSimulations`
+
+- [`.DefaultPseudoDualSimulationsSummary()`](https://openpharma.github.io/crmPack/reference/PseudoDualSimulationsSummary-class.md)
+  **\[stable\]** :
+
+  `PseudoDualSimulationsSummary`
+
+- [`PseudoSimulations()`](https://openpharma.github.io/crmPack/reference/PseudoSimulations-class.md)
+  [`.DefaultPseudoSimulations()`](https://openpharma.github.io/crmPack/reference/PseudoSimulations-class.md)
+  **\[stable\]** :
+
+  `PseudoSimulations`
+
+- [`.DefaultPseudoSimulationsSummary()`](https://openpharma.github.io/crmPack/reference/PseudoSimulationsSummary-class.md)
+  **\[stable\]** :
+
+  `PseudoSimulationsSummary`
+
+- [`Quantiles2LogisticNormal()`](https://openpharma.github.io/crmPack/reference/Quantiles2LogisticNormal.md)
+  **\[stable\]** : Convert Prior Quantiles to Logistic (Log) Normal
+  Model
+
+- [`Report`](https://openpharma.github.io/crmPack/reference/Report.md) :
+  A Reference Class to represent sequentially updated reporting objects.
+
+- [`Simulations()`](https://openpharma.github.io/crmPack/reference/Simulations-class.md)
+  [`.DefaultSimulations()`](https://openpharma.github.io/crmPack/reference/Simulations-class.md)
+  **\[stable\]** :
+
+  `Simulations`
+
+- [`.DefaultSimulationsSummary()`](https://openpharma.github.io/crmPack/reference/SimulationsSummary-class.md)
+  **\[stable\]** :
+
+  `SimulationsSummary`
+
+- [`StoppingOrdinal()`](https://openpharma.github.io/crmPack/reference/StoppingOrdinal-class.md)
+  [`.DefaultStoppingOrdinal()`](https://openpharma.github.io/crmPack/reference/StoppingOrdinal-class.md)
+  **\[experimental\]** :
+
+  `StoppingOrdinal`
+
+- [`approximate()`](https://openpharma.github.io/crmPack/reference/approximate.md)
+  : Approximate posterior with (log) normal distribution
+
+- [`assertions`](https://openpharma.github.io/crmPack/reference/assertions.md)
+  **\[experimental\]** :
+
+  Additional Assertions for `checkmate`
+
+- [`check_equal()`](https://openpharma.github.io/crmPack/reference/check_equal.md)
+  [`assert_equal()`](https://openpharma.github.io/crmPack/reference/check_equal.md)
+  **\[experimental\]** : Check if All Arguments Are Equal
+
+- [`check_format()`](https://openpharma.github.io/crmPack/reference/check_format.md)
+  [`assert_format()`](https://openpharma.github.io/crmPack/reference/check_format.md)
+  [`test_format()`](https://openpharma.github.io/crmPack/reference/check_format.md)
+  [`expect_format()`](https://openpharma.github.io/crmPack/reference/check_format.md)
+  **\[stable\]** : Check that an argument is a valid format
+  specification
+
+- [`crmPackExample()`](https://openpharma.github.io/crmPack/reference/crmPackExample.md)
+  **\[stable\]** : Open the Example PDF for crmPack
+
+- [`crmPackHelp()`](https://openpharma.github.io/crmPack/reference/crmPackHelp.md)
+  **\[stable\]** : Open the Browser with Help Pages for crmPack
+
+- [`examine()`](https://openpharma.github.io/crmPack/reference/examine.md)
+  : Obtain Hypothetical Trial Course Table for a Design
+
+- [`fit()`](https://openpharma.github.io/crmPack/reference/fit.md) : Fit
+  method for the Samples class
+
+- [`fitGain()`](https://openpharma.github.io/crmPack/reference/fitGain.md)
+  : Get the fitted values for the gain values at all dose levels based
+  on a given pseudo DLE model, DLE sample, a pseudo efficacy model, a
+  Efficacy sample and data. This method returns a data frame with dose,
+  middle, lower and upper quantiles of the gain value samples
+
+- [`fitPEM()`](https://openpharma.github.io/crmPack/reference/fitPEM.md)
+  :
+
+  Get the fitted DLT free survival (piecewise exponential model). This
+  function returns a data frame with dose, middle, lower and upper
+  quantiles for the `PEM` curve. If hazard=TRUE,
+
+- [`get(`*`<Samples>`*`,`*`<character>`*`)`](https://openpharma.github.io/crmPack/reference/get-Samples-character-method.md)
+  : Get specific parameter samples and produce a data.frame
+
+- [`h_get_min_inf_beta()`](https://openpharma.github.io/crmPack/reference/h_get_min_inf_beta.md)
+  : Helper for Minimal Informative Unimodal Beta Distribution
+
+- [`logit()`](https://openpharma.github.io/crmPack/reference/logit.md)
+  **\[stable\]** : Shorthand for Logit Function
+
+- [`match_within_tolerance()`](https://openpharma.github.io/crmPack/reference/match_within_tolerance.md)
+  **\[stable\]** : Helper Function for Value Matching with Tolerance
+
+- [`maxSize()`](https://openpharma.github.io/crmPack/reference/maxSize.md)
+  : "MAX" combination of cohort size rules
+
+- [`minSize()`](https://openpharma.github.io/crmPack/reference/minSize.md)
+  : "MIN" combination of cohort size rules
+
+- [`` `|`( ``*`<Stopping>`*`,`*`<Stopping>`*`)`](https://openpharma.github.io/crmPack/reference/or-Stopping-Stopping.md)
+  : The method combining two atomic stopping rules
+
+- [`` `|`( ``*`<StoppingAny>`*`,`*`<Stopping>`*`)`](https://openpharma.github.io/crmPack/reference/or-Stopping-StoppingAny.md)
+  : The method combining a stopping list and an atomic
+
+- [`` `|`( ``*`<Stopping>`*`,`*`<StoppingAny>`*`)`](https://openpharma.github.io/crmPack/reference/or-StoppingAny-Stopping.md)
+  : The method combining an atomic and a stopping list
+
+- [`plot(`*`<Data>`*`,`*`<ModelTox>`*`)`](https://openpharma.github.io/crmPack/reference/plot-Data-ModelTox-method.md)
+  : Plot of the fitted dose-tox based with a given pseudo DLE model and
+  data without samples
+
+- [`plot(`*`<DataDual>`*`,`*`<ModelEff>`*`)`](https://openpharma.github.io/crmPack/reference/plot-DataDual-ModelEff-method.md)
+  : Plot of the fitted dose-efficacy based with a given pseudo efficacy
+  model and data without samples
+
+- [`plot(`*`<DualSimulations>`*`,`*`<missing>`*`)`](https://openpharma.github.io/crmPack/reference/plot-DualSimulations-missing-method.md)
+  : Plot dual-endpoint simulations
+
+- [`plot(`*`<DualSimulationsSummary>`*`,`*`<missing>`*`)`](https://openpharma.github.io/crmPack/reference/plot-DualSimulationsSummary-missing-method.md)
+  : Plot summaries of the dual-endpoint design simulations
+
+- [`plot(`*`<GeneralSimulations>`*`,`*`<missing>`*`)`](https://openpharma.github.io/crmPack/reference/plot-GeneralSimulations-missing-method.md)
+  : Plot simulations
+
+- [`plot(`*`<GeneralSimulationsSummary>`*`,`*`<missing>`*`)`](https://openpharma.github.io/crmPack/reference/plot-GeneralSimulationsSummary-missing-method.md)
+  : Graphical display of the general simulation summary
+
+- [`plot(`*`<PseudoDualFlexiSimulations>`*`,`*`<missing>`*`)`](https://openpharma.github.io/crmPack/reference/plot-PseudoDualFlexiSimulations-missing-method.md)
+  :
+
+  This plot method can be applied to `PseudoDualFlexiSimulations`
+  objects in order to summarize them graphically. Possible `type`s of
+  plots at the moment are:
+
+  trajectory
+
+  :   Summary of the trajectory of the simulated trials
+
+  dosesTried
+
+  :   Average proportions of the doses tested in patients
+
+  sigma2
+
+  :   The variance of the efficacy responses
+
+  sigma2betaW
+
+  :   The variance of the random walk model
+
+  You can specify one or both of these in the `type` argument.
+
+- [`plot(`*`<PseudoDualSimulations>`*`,`*`<missing>`*`)`](https://openpharma.github.io/crmPack/reference/plot-PseudoDualSimulations-missing-method.md)
+  : Plot simulations
+
+- [`plot(`*`<PseudoDualSimulationsSummary>`*`,`*`<missing>`*`)`](https://openpharma.github.io/crmPack/reference/plot-PseudoDualSimulationsSummary-missing-method.md)
+  : Plot the summary of Pseudo Dual Simulations summary
+
+- [`plot(`*`<PseudoSimulationsSummary>`*`,`*`<missing>`*`)`](https://openpharma.github.io/crmPack/reference/plot-PseudoSimulationsSummary-missing-method.md)
+  : Plot summaries of the pseudo simulations
+
+- [`plot(`*`<Samples>`*`,`*`<DALogisticLogNormal>`*`)`](https://openpharma.github.io/crmPack/reference/plot-Samples-DALogisticLogNormal-method.md)
+  : Plotting dose-toxicity model fits
+
+- [`plot(`*`<Samples>`*`,`*`<DualEndpoint>`*`)`](https://openpharma.github.io/crmPack/reference/plot-Samples-DualEndpoint-method.md)
+  : Plotting dose-toxicity and dose-biomarker model fits
+
+- [`plot(`*`<Samples>`*`,`*`<GeneralModel>`*`)`](https://openpharma.github.io/crmPack/reference/plot-Samples-GeneralModel-method.md)
+  : Plotting dose-toxicity model fits
+
+- [`plot(`*`<Samples>`*`,`*`<ModelEff>`*`)`](https://openpharma.github.io/crmPack/reference/plot-Samples-ModelEff-method.md)
+  :
+
+  Plot the fitted dose-efficacy curve using a model from `ModelEff`
+  class with samples
+
+- [`plot(`*`<Samples>`*`,`*`<ModelTox>`*`)`](https://openpharma.github.io/crmPack/reference/plot-Samples-ModelTox-method.md)
+  :
+
+  Plot the fitted dose-DLE curve using a `ModelTox` class model with
+  samples
+
+- [`plot(`*`<SimulationsSummary>`*`,`*`<missing>`*`)`](https://openpharma.github.io/crmPack/reference/plot-SimulationsSummary-missing-method.md)
+  : Plot summaries of the model-based design simulations
+
+- [`plotDualResponses()`](https://openpharma.github.io/crmPack/reference/plotDualResponses.md)
+  : Plot of the DLE and efficacy curve side by side given a DLE pseudo
+  model, a DLE sample, an efficacy pseudo model and a given efficacy
+  sample
+
+- [`plotGain()`](https://openpharma.github.io/crmPack/reference/plotGain.md)
+  : Plot the gain curve in addition with the dose-DLE and dose-efficacy
+  curve using a given DLE pseudo model, a DLE sample, a given efficacy
+  pseudo model and an efficacy sample
+
+- [`plot(`*`<gtable>`*`)`](https://openpharma.github.io/crmPack/reference/plot.gtable.md)
+  [`print(`*`<gtable>`*`)`](https://openpharma.github.io/crmPack/reference/plot.gtable.md)
+  **\[stable\]** :
+
+  Plot `gtable` Objects
+
+- [`probit()`](https://openpharma.github.io/crmPack/reference/probit.md)
+  **\[stable\]** : Shorthand for Probit Function
+
+- [`set_seed()`](https://openpharma.github.io/crmPack/reference/set_seed.md)
+  **\[stable\]** : Helper Function to Set and Save the RNG Seed
+
+- [`show(`*`<DualSimulationsSummary>`*`)`](https://openpharma.github.io/crmPack/reference/show-DualSimulationsSummary-method.md)
+  : Show the summary of the dual-endpoint simulations
+
+- [`show(`*`<GeneralSimulationsSummary>`*`)`](https://openpharma.github.io/crmPack/reference/show-GeneralSimulationsSummary-method.md)
+  : Show the summary of the simulations
+
+- [`show(`*`<PseudoDualSimulationsSummary>`*`)`](https://openpharma.github.io/crmPack/reference/show-PseudoDualSimulationsSummary-method.md)
+  : Show the summary of Pseudo Dual simulations summary
+
+- [`show(`*`<PseudoSimulationsSummary>`*`)`](https://openpharma.github.io/crmPack/reference/show-PseudoSimulationsSummary-method.md)
+  : Show the summary of the simulations
+
+- [`show(`*`<SimulationsSummary>`*`)`](https://openpharma.github.io/crmPack/reference/show-SimulationsSummary-method.md)
+  : Show the summary of the simulations
+
+- [`simulate(`*`<DADesign>`*`)`](https://openpharma.github.io/crmPack/reference/simulate-DADesign-method.md)
+  **\[stable\]** : Simulate outcomes from a time-to-DLT augmented CRM
+  design
+
+- [`simulate(`*`<Design>`*`)`](https://openpharma.github.io/crmPack/reference/simulate-Design-method.md)
+  **\[stable\]** : Simulate outcomes from a CRM design
+
+- [`simulate(`*`<DualDesign>`*`)`](https://openpharma.github.io/crmPack/reference/simulate-DualDesign-method.md)
+  **\[stable\]** : Simulate outcomes from a dual-endpoint design
+
+- [`simulate(`*`<DualResponsesDesign>`*`)`](https://openpharma.github.io/crmPack/reference/simulate-DualResponsesDesign-method.md)
+  **\[stable\]** : Simulate dose escalation procedure using both DLE and
+  efficacy responses without samples
+
+- [`simulate(`*`<DualResponsesSamplesDesign>`*`)`](https://openpharma.github.io/crmPack/reference/simulate-DualResponsesSamplesDesign-method.md)
+  **\[stable\]** : Simulate dose escalation procedure using DLE and
+  efficacy responses with samples
+
+- [`simulate(`*`<RuleDesign>`*`)`](https://openpharma.github.io/crmPack/reference/simulate-RuleDesign-method.md)
+  **\[stable\]** : Simulate outcomes from a rule-based design
+
+- [`simulate(`*`<TDDesign>`*`)`](https://openpharma.github.io/crmPack/reference/simulate-TDDesign-method.md)
+  **\[stable\]** : Simulate dose escalation procedure using DLE
+  responses only without samples
+
+- [`simulate(`*`<TDsamplesDesign>`*`)`](https://openpharma.github.io/crmPack/reference/simulate-TDsamplesDesign-method.md)
+  **\[stable\]** : Simulate dose escalation procedure using DLE
+  responses only with DLE samples
+
+- [`simulate(`*`<DesignGrouped>`*`)`](https://openpharma.github.io/crmPack/reference/simulate-DesignGrouped-method.md)
+  **\[experimental\]** :
+
+  Simulate Method for the `DesignGrouped` Class
+
+- [`summary(`*`<DualSimulations>`*`)`](https://openpharma.github.io/crmPack/reference/summary-DualSimulations-method.md)
+  : Summarize the dual-endpoint design simulations, relative to given
+  true dose-toxicity and dose-biomarker curves
+
+- [`summary(`*`<GeneralSimulations>`*`)`](https://openpharma.github.io/crmPack/reference/summary-GeneralSimulations-method.md)
+  : Summarize the simulations, relative to a given truth
+
+- [`summary(`*`<PseudoDualFlexiSimulations>`*`)`](https://openpharma.github.io/crmPack/reference/summary-PseudoDualFlexiSimulations-method.md)
+  : Summary for Pseudo Dual responses simulations given a pseudo DLE
+  model and the Flexible efficacy model.
+
+- [`summary(`*`<PseudoDualSimulations>`*`)`](https://openpharma.github.io/crmPack/reference/summary-PseudoDualSimulations-method.md)
+  : Summary for Pseudo Dual responses simulations, relative to a given
+  pseudo DLE and efficacy model (except the EffFlexi class model)
+
+- [`summary(`*`<Simulations>`*`)`](https://openpharma.github.io/crmPack/reference/summary-Simulations-method.md)
+  : Summarize the model-based design simulations, relative to a given
+  truth
+
+- [`summary(`*`<PseudoSimulations>`*`)`](https://openpharma.github.io/crmPack/reference/summary-PseudoSimulations-method.md)
+  : Summarize the simulations, relative to a given truth
+
+- [`tidy()`](https://openpharma.github.io/crmPack/reference/tidy.md)
+  **\[experimental\]** :
+
+  Tidying `CrmPackClass` objects
+
+- [`windowLength()`](https://openpharma.github.io/crmPack/reference/windowLength.md)
+  : Determine the safety window length of the next cohort
+
+- [`` `&`( ``*`<Stopping>`*`,`*`<Stopping>`*`)`](https://openpharma.github.io/crmPack/reference/and-Stopping-Stopping-method.md)
+  : The method combining two atomic stopping rules
+
+- [`` `&`( ``*`<Stopping>`*`,`*`<StoppingAll>`*`)`](https://openpharma.github.io/crmPack/reference/and-Stopping-StoppingAll-method.md)
+  : The method combining an atomic and a stopping list
+
+- [`` `&`( ``*`<StoppingAll>`*`,`*`<Stopping>`*`)`](https://openpharma.github.io/crmPack/reference/and-StoppingAll-Stopping-method.md)
+  : The method combining a stopping list and an atomic
+
+# Articles
+
+### Articles
+
+- [Trial
+  Definition](https://openpharma.github.io/crmPack/articles/trial_definition.md):
+- [Trial
+  Analysis](https://openpharma.github.io/crmPack/articles/trial_analysis.md):
+- [Trial Design: basic sanity
+  checks](https://openpharma.github.io/crmPack/articles/trial_sanity_checks.md):
+- [Trial
+  Simulation](https://openpharma.github.io/crmPack/articles/trial_simulation.md):
+- [Ordinal
+  CRM](https://openpharma.github.io/crmPack/articles/ordinal-crm.md):
+- [Rolling CRM
+  Example](https://openpharma.github.io/crmPack/articles/rolling-crm.md):
+- [Simulation study
+  example](https://openpharma.github.io/crmPack/articles/simulations.md):
+- [Describing \`crmPack\`
+  Objects](https://openpharma.github.io/crmPack/articles/knit_print.md):
+- [Using
+  tidy](https://openpharma.github.io/crmPack/articles/tidy_method.md):
+- [Migrating from crmPack version
+  1.0.3](https://openpharma.github.io/crmPack/articles/migration_from_the_old_crmPack.md):
+- [Parallel computing with
+  extensions](https://openpharma.github.io/crmPack/articles/parallel_computing_with_extensions.md):
+- [Model-based Dose Escalation Designs in R with crmPack (JSS
+  manuscript)](https://openpharma.github.io/crmPack/articles/crmPack-jss-paper.md):
+- [crmPack: Object-oriented implementation of CRM
+  designs](https://openpharma.github.io/crmPack/articles/example.md):
