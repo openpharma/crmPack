@@ -337,7 +337,7 @@ myBayesLogit <- function(y, X, m0, P0, options) {
   # Assertions.
   p <- length(m0)
   n_obs <- length(y)
-  assert_integer(y, lower = 0, upper = 1, any.missing = FALSE, len = n_obs)
+  assert_integerish(y, lower = 0, upper = 1, any.missing = FALSE, len = n_obs)
   assert_numeric(m0, any.missing = FALSE, len = p)
   assert_matrix(P0, mode = "numeric", any.missing = FALSE, nrows = p, ncols = p)
   assert_matrix(
