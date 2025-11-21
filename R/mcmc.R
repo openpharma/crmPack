@@ -331,7 +331,6 @@ setMethod(
 #'
 #' @return The matrix of samples (samples x parameters).
 #'
-#' @importFrom rjags jags.model jags.samples
 #' @keywords internal
 myBayesLogit <- function(y, X, m0, P0, options) {
   # Assertions.
@@ -434,7 +433,6 @@ myBayesLogit <- function(y, X, m0, P0, options) {
 #' @example examples/mcmc-LogisticIndepBeta.R
 #' @references
 #'   \insertAllCited{}
-#' @importFrom mvtnorm rmvnorm
 #'
 setMethod(
   f = "mcmc",
@@ -546,7 +544,6 @@ setMethod(
 #'
 #' @aliases mcmc-DataDual-Effloglog
 #' @example examples/mcmc-Effloglog.R
-#' @importFrom mvtnorm rmvnorm
 #'
 setMethod(
   f = "mcmc",
