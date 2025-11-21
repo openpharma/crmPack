@@ -753,7 +753,7 @@ setMethod(
 #'   The generic `mcmc` method returns a [`Samples`] object with elements of the
 #'   `data` slot named `alpha[1]`, `alpha[2]`, ..., `alpha[k]` and `beta` when
 #'   passed a [`LogisticLogNormalOrdinal`] object. This makes the "alpha elements"
-#'   awkward to access and is inconsistent with other [`Model`] objects. So rename
+#'   awkward to access and is inconsistent with other model objects. So rename
 #'   the alpha elements to `alpha1`, `alpha2`, ..., `alpha<k>` for ease and
 #'   consistency.
 #'
