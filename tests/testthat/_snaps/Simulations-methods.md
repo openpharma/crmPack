@@ -126,3 +126,141 @@
        Stopped because of missing dose :  0 %
       Fitted biomarker level at dose most often selected : mean 0.2 (0.2, 0.2) 
 
+# summary-PseudoSimulations works correctly
+
+    Code
+      result
+    Output
+      Summary of 2 simulations
+      
+      Target probability of DLE p(DLE) used at the end of a trial was 30 %
+      The dose level corresponds to the target p(DLE) used at the end of a trial, TDEOT, was 152.6195 
+      TDEOT at dose Grid was 150 
+      Target p(DLE) used during a trial was 35 %
+      The dose level corresponds to the target p(DLE) used during a trial, TDDT, was 155.972 
+      TDDT at dose Grid was 150 
+      Number of patients overall : mean 6 (6, 6) 
+      Number of patients treated above the target p(DLE) used at the end of a trial : mean 0 (0, 0) 
+      Number of patients treated above the target p(DLE) used during a trial : mean 0 (0, 0) 
+      Proportions of observed DLT in the trials : mean 0 % (0 %, 0 %) 
+      Mean toxicity risks for the patients : mean 0 % (0 %, 0 %) 
+      Doses selected as TDEOT : mean 100 (100, 100) 
+      True toxicity at TDEOT : mean 1 % (1 %, 1 %) 
+      Proportion of trials selecting the TDEOT: 0 %
+      Proportion of trials selecting the TDDT: 0 %
+      Dose most often selected as TDEOT: 100 
+      Observed toxicity rate at dose most often selected: NaN %
+      Fitted probabilities of DLE at dose most often selected : mean 28 % (28 %, 28 %) 
+      The summary table of the final TDEOT across all simulations
+          Min. 1st Qu.  Median    Mean 3rd Qu.    Max.  
+         111.3   111.3   111.3   111.3   111.3   111.3  
+      The summary table of the final ratios of the TDEOT across all simulations
+          Min. 1st Qu.  Median    Mean 3rd Qu.    Max.  
+         32.13   32.13   32.13   32.13   32.13   32.13  
+      The summary table of the final TDDT across all simulations
+          Min. 1st Qu.  Median    Mean 3rd Qu.    Max.  
+         146.1   146.1   146.1   146.1   146.1   146.1  
+      The summary table of dose levels, the optimal dose
+       to recommend for subsequent study across all simulations
+          Min. 1st Qu.  Median    Mean 3rd Qu.    Max.  
+         111.3   111.3   111.3   111.3   111.3   111.3  
+      The summary table of the final ratios of the optimal dose for stopping across
+                        all simulations
+          Min. 1st Qu.  Median    Mean 3rd Qu.    Max.  
+         32.13   32.13   32.13   32.13   32.13   32.13  
+      
+      Stop reason triggered:
+       ≥ 6 patients dosed :  100 %
+
+# show-PseudoSimulationsSummary works correctly
+
+    Code
+      show(pseudo_summary)
+    Output
+      Summary of 1 simulations
+      
+      Target probability of DLE p(DLE) used at the end of a trial was 30 %
+      The dose level corresponds to the target p(DLE) used at the end of a trial, TDEOT, was 43.05404 
+      TDEOT at dose Grid was 25 
+      Target p(DLE) used during a trial was 35 %
+      The dose level corresponds to the target p(DLE) used during a trial, TDDT, was 47.61922 
+      TDDT at dose Grid was 25 
+      Number of patients overall : mean 12 (12, 12) 
+      Number of patients treated above the target p(DLE) used at the end of a trial : mean 6 (6, 6) 
+      Number of patients treated above the target p(DLE) used during a trial : mean 6 (6, 6) 
+      Proportions of observed DLT in the trials : mean 0 % (0 %, 0 %) 
+      Mean toxicity risks for the patients : mean 34 % (34 %, 34 %) 
+      Doses selected as TDEOT : mean 75 (75, 75) 
+      True toxicity at TDEOT : mean 68 % (68 %, 68 %) 
+      Proportion of trials selecting the TDEOT: 0 %
+      Proportion of trials selecting the TDDT: 0 %
+      Dose most often selected as TDEOT: 75 
+      Observed toxicity rate at dose most often selected: 0 %
+      Fitted probabilities of DLE at dose most often selected : mean 21 % (21 %, 21 %) 
+      The summary table of the final TDEOT across all simulations
+          Min. 1st Qu.  Median    Mean 3rd Qu.    Max.  
+         86.99   86.99   86.99   86.99   86.99   86.99  
+      The summary table of the final ratios of the TDEOT across all simulations
+          Min. 1st Qu.  Median    Mean 3rd Qu.    Max.  
+         47654   47654   47654   47654   47654   47654  
+      The summary table of the final TDDT across all simulations
+          Min. 1st Qu.  Median    Mean 3rd Qu.    Max.  
+         105.5   105.5   105.5   105.5   105.5   105.5  
+      The summary table of dose levels, the optimal dose
+       to recommend for subsequent study across all simulations
+          Min. 1st Qu.  Median    Mean 3rd Qu.    Max.  
+         86.99   86.99   86.99   86.99   86.99   86.99  
+      The summary table of the final ratios of the optimal dose for stopping across
+                        all simulations
+          Min. 1st Qu.  Median    Mean 3rd Qu.    Max.  
+         47654   47654   47654   47654   47654   47654  
+      
+      Stop reason triggered:
+       ≥ 12 patients dosed :  100 %
+
+# show-PseudoSimulationsSummary produces expected output format
+
+    Code
+      show(pseudo_summary)
+    Output
+      Summary of 1 simulations
+      
+      Target probability of DLE p(DLE) used at the end of a trial was 30 %
+      The dose level corresponds to the target p(DLE) used at the end of a trial, TDEOT, was 43.05404 
+      TDEOT at dose Grid was 25 
+      Target p(DLE) used during a trial was 35 %
+      The dose level corresponds to the target p(DLE) used during a trial, TDDT, was 47.61922 
+      TDDT at dose Grid was 25 
+      Number of patients overall : mean 12 (12, 12) 
+      Number of patients treated above the target p(DLE) used at the end of a trial : mean 6 (6, 6) 
+      Number of patients treated above the target p(DLE) used during a trial : mean 6 (6, 6) 
+      Proportions of observed DLT in the trials : mean 0 % (0 %, 0 %) 
+      Mean toxicity risks for the patients : mean 34 % (34 %, 34 %) 
+      Doses selected as TDEOT : mean 75 (75, 75) 
+      True toxicity at TDEOT : mean 68 % (68 %, 68 %) 
+      Proportion of trials selecting the TDEOT: 0 %
+      Proportion of trials selecting the TDDT: 0 %
+      Dose most often selected as TDEOT: 75 
+      Observed toxicity rate at dose most often selected: 0 %
+      Fitted probabilities of DLE at dose most often selected : mean 21 % (21 %, 21 %) 
+      The summary table of the final TDEOT across all simulations
+          Min. 1st Qu.  Median    Mean 3rd Qu.    Max.  
+         86.99   86.99   86.99   86.99   86.99   86.99  
+      The summary table of the final ratios of the TDEOT across all simulations
+          Min. 1st Qu.  Median    Mean 3rd Qu.    Max.  
+         47654   47654   47654   47654   47654   47654  
+      The summary table of the final TDDT across all simulations
+          Min. 1st Qu.  Median    Mean 3rd Qu.    Max.  
+         105.5   105.5   105.5   105.5   105.5   105.5  
+      The summary table of dose levels, the optimal dose
+       to recommend for subsequent study across all simulations
+          Min. 1st Qu.  Median    Mean 3rd Qu.    Max.  
+         86.99   86.99   86.99   86.99   86.99   86.99  
+      The summary table of the final ratios of the optimal dose for stopping across
+                        all simulations
+          Min. 1st Qu.  Median    Mean 3rd Qu.    Max.  
+         47654   47654   47654   47654   47654   47654  
+      
+      Stop reason triggered:
+       ≥ 12 patients dosed :  100 %
+

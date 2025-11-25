@@ -746,178 +746,194 @@ test_that("plot-DualSimulationsSummary works correctly", {
   expect_s3_class(result_dose_selected, "ggplot")
 })
 
+## summary-PseudoSimulations ----
+
+test_that("summary-PseudoSimulations works correctly", {
+  # Create pseudo simulation
+  emptydata <- Data(doseGrid = seq(25, 300, 25))
+
+  model <- LogisticIndepBeta(
+    binDLE = c(1.05, 1.8),
+    DLEweights = c(3, 3),
+    DLEdose = c(25, 300),
+    data = emptydata
+  )
+
+  design <- TDDesign(
+    model = model,
+    nextBest = NextBestTD(prob_target_drt = 0.35, prob_target_eot = 0.3),
+    stopping = StoppingMinPatients(nPatients = 6),
+    increments = IncrementsRelative(intervals = 0, increments = 2),
+    cohort_size = CohortSizeConst(size = 3),
+    data = emptydata,
+    startingDose = 25
+  )
+
+  myTruth <- probFunction(model, phi1 = -53.66584, phi2 = 10.50499)
+  options <- McmcOptions(
+    burnin = 10,
+    step = 2,
+    samples = 20,
+    rng_kind = "Mersenne-Twister",
+    rng_seed = 123
+  )
+
+  mySims <- simulate(
+    design,
+    args = NULL,
+    truth = myTruth,
+    nsim = 2,
+    seed = 819,
+    parallel = FALSE,
+    mcmcOptions = options
+  )
+
+  result <- summary(mySims, truth = myTruth)
+  expect_snapshot(result)
+  expect_s4_class(result, "PseudoSimulationsSummary")
+})
+
+# show-PseudoSimulationsSummary ----
+
+test_that("show-PseudoSimulationsSummary works correctly", {
+  pseudo_sims <- .DefaultPseudoSimulations()
+  pseudo_summary <- summary(
+    pseudo_sims,
+    truth = function(x) plogis(-3 + 0.05 * x),
+    targetEndOfTrial = 0.3,
+    targetDuringTrial = 0.35
+  )
+
+  # Test that show method produces output
+  expect_output(show(pseudo_summary), "Summary of")
+  expect_output(show(pseudo_summary), "simulations")
+  expect_output(show(pseudo_summary), "Target probability of DLE")
+  expect_output(show(pseudo_summary), "dose level corresponds")
+  expect_output(show(pseudo_summary), "Number of patients overall")
+  expect_output(show(pseudo_summary), "Number of patients treated above")
+
+  # Test that it returns invisibly a data frame
+  result <- capture.output(show_result <- show(pseudo_summary))
+  expect_true(is.data.frame(show_result))
+  expect_true(ncol(show_result) > 0)
+  expect_snapshot(show(pseudo_summary))
+})
+
+test_that("show-PseudoSimulationsSummary produces expected output format", {
+  pseudo_sims <- .DefaultPseudoSimulations()
+  pseudo_summary <- summary(pseudo_sims, truth = function(x) {
+    plogis(-3 + 0.05 * x)
+  })
+
+  # Capture the output for detailed testing
+  output <- capture.output(show(pseudo_summary))
+
+  # Test specific content patterns
+  expect_true(any(grepl("Target probability.*end of a trial.*%", output)))
+  expect_true(any(grepl("dose level corresponds.*target.*TDEOT", output)))
+  expect_true(any(grepl("TDEOT at dose Grid", output)))
+  expect_true(any(grepl("Target.*during a trial.*%", output)))
+  expect_true(any(grepl("TDDT at dose Grid", output)))
+  expect_true(any(grepl("Number of patients overall", output)))
+  expect_true(any(grepl(
+    "Number of patients treated above.*end of a trial",
+    output
+  )))
+  expect_true(any(grepl(
+    "Number of patients treated above.*during a trial",
+    output
+  )))
+  expect_snapshot(show(pseudo_summary))
+})
+
+# plot-PseudoSimulationsSummary ----
+
+test_that("plot-PseudoSimulationsSummary works correctly", {
+  pseudo_sims <- .DefaultPseudoSimulations()
+  pseudo_summary <- summary(pseudo_sims, truth = function(x) {
+    plogis(-3 + 0.05 * x)
+  })
+
+  # Test default plot types
+  result <- plot(pseudo_summary)
+  expect_s3_class(result, "gtable")
+  expect_equal(dim(result)[1], 2) # Should have 2 plots by default
+
+  # Test individual plot types
+  result_nobs <- plot(pseudo_summary, type = "nObs")
+  expect_s3_class(result_nobs, "ggplot")
+  expect_doppel("plot_pseudoSimsSummary_nObs", result_nobs)
+  expect_equal(result_nobs$labels$x, "Number of patients in total")
+
+  result_dose <- plot(pseudo_summary, type = "doseSelected")
+  expect_s3_class(result_dose, "ggplot")
+  expect_doppel("plot_pseudoSimsSummary_doseSelected", result_dose)
+  expect_equal(result_dose$labels$x, "MTD estimate")
+
+  result_prop <- plot(pseudo_summary, type = "propDLE")
+  expect_s3_class(result_prop, "ggplot")
+  expect_doppel("plot_pseudoSimsSummary_propDLE", result_prop)
+  expect_equal(result_prop$labels$x, "Proportion of DLE [%]")
+
+  result_target <- plot(pseudo_summary, type = "nAboveTargetEndOfTrial")
+  expect_s3_class(result_target, "ggplot")
+  expect_doppel(
+    "plot_pseudoSimsSummary_nAboveTargetEndOfTrial",
+    result_target
+  )
+  expect_equal(
+    result_target$labels$x,
+    "Number of patients above target"
+  )
+
+  result_mean <- plot(pseudo_summary, type = "meanFit")
+  expect_s3_class(result_mean, "ggplot")
+  expect_doppel("plot_pseudoSimsSummary_meanFit", result_mean)
+  expect_true(grepl(
+    "Probability of DLE [%]",
+    result_mean$labels$y,
+    fixed = TRUE
+  ))
+})
+
+test_that("plot-PseudoSimulationsSummary handles multiple types", {
+  pseudo_sims <- .DefaultPseudoSimulations()
+  pseudo_summary <- summary(pseudo_sims, truth = function(x) {
+    plogis(-3 + 0.05 * x)
+  })
+
+  # Test multiple specific types
+  result_multi <- plot(pseudo_summary, type = c("nObs", "doseSelected"))
+  expect_s3_class(result_multi, "gtable")
+  expect_equal(dim(result_multi)[1], 2) # Should have 2 plots
+
+  # Test with all types explicitly
+  all_types <- c(
+    "nObs",
+    "doseSelected",
+    "propDLE",
+    "nAboveTargetEndOfTrial",
+    "meanFit"
+  )
+  result_all <- plot(pseudo_summary, type = all_types)
+  expect_s3_class(result_all, "gtable")
+  expect_equal(dim(result_all)[1], 2) # Should have 2 plots
+})
+
+test_that("plot-PseudoSimulationsSummary fails gracefully with bad input", {
+  pseudo_sims <- .DefaultPseudoSimulations()
+  pseudo_summary <- summary(pseudo_sims, truth = function(x) {
+    plogis(-3 + 0.05 * x)
+  })
+
+  expect_error(
+    plot(pseudo_summary, type = "invalid_type"),
+    "should be one of"
+  )
+  expect_error(plot(pseudo_summary, type = character(0)), "must be of length")
+})
+
 if (FALSE) {
-  ## summary-PseudoSimulations ----
-
-  test_that("summary-PseudoSimulations works correctly", {
-    # Create pseudo simulation
-    emptydata <- Data(doseGrid = seq(25, 300, 25))
-
-    model <- LogisticIndepBeta(
-      binDLE = c(1.05, 1.8),
-      DLEweights = c(3, 3),
-      DLEdose = c(25, 300),
-      data = emptydata
-    )
-
-    design <- TDDesign(
-      model = model,
-      nextBest = NextBestTD(prob_target_drt = 0.35, prob_target_eot = 0.3),
-      stopping = StoppingMinPatients(nPatients = 6),
-      increments = IncrementsRelative(intervals = 0, increments = 2),
-      cohort_size = CohortSizeConst(size = 3),
-      data = emptydata,
-      startingDose = 25
-    )
-
-    myTruth <- probFunction(model, phi1 = -53.66584, phi2 = 10.50499)
-    options <- McmcOptions(burnin = 10, step = 2, samples = 20)
-
-    mySims <- simulate(
-      design,
-      args = NULL,
-      truth = myTruth,
-      nsim = 2,
-      seed = 819,
-      parallel = FALSE,
-      mcmcOptions = options
-    )
-
-    result <- summary(mySims, truth = myTruth)
-    expect_snapshot(result)
-    expect_s4_class(result, "PseudoSimulationsSummary")
-  })
-
-  # show-PseudoSimulationsSummary ----
-
-  test_that("show-PseudoSimulationsSummary works correctly", {
-    pseudo_sims <- .DefaultPseudoSimulations()
-    pseudo_summary <- summary(
-      pseudo_sims,
-      truth = function(x) plogis(-3 + 0.05 * x),
-      targetEndOfTrial = 0.3,
-      targetDuringTrial = 0.35
-    )
-
-    # Test that show method produces output
-    expect_output(show(pseudo_summary), "Summary of")
-    expect_output(show(pseudo_summary), "simulations")
-    expect_output(show(pseudo_summary), "Target probability of DLE")
-    expect_output(show(pseudo_summary), "dose level corresponds")
-    expect_output(show(pseudo_summary), "Number of patients overall")
-    expect_output(show(pseudo_summary), "Number of patients treated above")
-
-    # Test that it returns invisibly a data frame
-    result <- capture.output(show_result <- show(pseudo_summary))
-    expect_true(is.data.frame(show_result))
-    expect_true(ncol(show_result) > 0)
-  })
-
-  test_that("show-PseudoSimulationsSummary produces expected output format", {
-    pseudo_sims <- .DefaultPseudoSimulations()
-    pseudo_summary <- summary(pseudo_sims, truth = function(x) {
-      plogis(-3 + 0.05 * x)
-    })
-
-    # Capture the output for detailed testing
-    output <- capture.output(show(pseudo_summary))
-
-    # Test specific content patterns
-    expect_true(any(grepl("Target probability.*end of a trial.*%", output)))
-    expect_true(any(grepl("dose level corresponds.*target.*TDEOT", output)))
-    expect_true(any(grepl("TDEOT at dose Grid", output)))
-    expect_true(any(grepl("Target.*during a trial.*%", output)))
-    expect_true(any(grepl("TDDT at dose Grid", output)))
-    expect_true(any(grepl("Number of patients overall", output)))
-    expect_true(any(grepl(
-      "Number of patients treated above.*end of a trial",
-      output
-    )))
-    expect_true(any(grepl(
-      "Number of patients treated above.*during a trial",
-      output
-    )))
-  })
-
-  # plot-PseudoSimulationsSummary ----
-
-  test_that("plot-PseudoSimulationsSummary works correctly", {
-    pseudo_sims <- .DefaultPseudoSimulations()
-    pseudo_summary <- summary(pseudo_sims, truth = function(x) {
-      plogis(-3 + 0.05 * x)
-    })
-
-    # Test default plot types
-    result <- plot(pseudo_summary)
-    expect_s3_class(result, "gtable")
-    expect_equal(dim(result)[1], 2) # Should have 2 plots by default
-
-    # Test individual plot types
-    result_nobs <- plot(pseudo_summary, type = "nObs")
-    expect_s3_class(result_nobs, "ggplot")
-    expect_equal(result_nobs$labels$x, "Number of patients in total")
-
-    result_dose <- plot(pseudo_summary, type = "doseSelected")
-    expect_s3_class(result_dose, "ggplot")
-    expect_equal(result_dose$labels$x, "MTD estimate")
-
-    result_prop <- plot(pseudo_summary, type = "propDLE")
-    expect_s3_class(result_prop, "ggplot")
-    expect_equal(result_prop$labels$x, "Proportion of DLE [%]")
-
-    result_target <- plot(pseudo_summary, type = "nAboveTargetEndOfTrial")
-    expect_s3_class(result_target, "ggplot")
-    expect_equal(
-      result_target$labels$x,
-      "Number of patients above target"
-    )
-
-    result_mean <- plot(pseudo_summary, type = "meanFit")
-    expect_s3_class(result_mean, "ggplot")
-    expect_true(grepl(
-      "Probability of DLE [%]",
-      result_mean$labels$y,
-      fixed = TRUE
-    ))
-  })
-
-  test_that("plot-PseudoSimulationsSummary handles multiple types", {
-    pseudo_sims <- .DefaultPseudoSimulations()
-    pseudo_summary <- summary(pseudo_sims, truth = function(x) {
-      plogis(-3 + 0.05 * x)
-    })
-
-    # Test multiple specific types
-    result_multi <- plot(pseudo_summary, type = c("nObs", "doseSelected"))
-    expect_s3_class(result_multi, "gtable")
-    expect_equal(dim(result_multi)[1], 2) # Should have 2 plots
-
-    # Test with all types explicitly
-    all_types <- c(
-      "nObs",
-      "doseSelected",
-      "propDLE",
-      "nAboveTargetEndOfTrial",
-      "meanFit"
-    )
-    result_all <- plot(pseudo_summary, type = all_types)
-    expect_s3_class(result_all, "gtable")
-    expect_equal(dim(result_all)[1], 2) # Should have 2 plots
-  })
-
-  test_that("plot-PseudoSimulationsSummary fails gracefully with bad input", {
-    pseudo_sims <- .DefaultPseudoSimulations()
-    pseudo_summary <- summary(pseudo_sims, truth = function(x) {
-      plogis(-3 + 0.05 * x)
-    })
-
-    expect_error(
-      plot(pseudo_summary, type = "invalid_type"),
-      "should be one of"
-    )
-    expect_error(plot(pseudo_summary, type = character(0)), "must be of length")
-  })
-
   # plot-PseudoDualSimulations ----
 
   test_that("plot-PseudoDualSimulations works correctly", {
