@@ -2,33 +2,34 @@
 % Please edit documentation in R/Simulations-methods.R
 \name{summary,DualSimulations-method}
 \alias{summary,DualSimulations-method}
-\title{Summarize the dual-endpoint design simulations, relative to given true
-dose-toxicity and dose-biomarker curves}
+\alias{summary-DualSimulations}
+\title{Summarize Dual-Endpoint Design Simulations}
 \usage{
 \S4method{summary}{DualSimulations}(object, trueTox, trueBiomarker, target = c(0.2, 0.35), ...)
 }
 \arguments{
-\item{object}{the \code{\linkS4class{DualSimulations}} object we want to
-summarize}
+\item{object}{(\code{DualSimulations})\cr the object we want to summarize.}
 
-\item{trueTox}{a function which takes as input a dose (vector) and returns the
-true probability (vector) for toxicity.}
+\item{trueTox}{(\code{function})\cr a function which takes as input a dose
+(vector) and returns the true probability (vector) for toxicity.}
 
-\item{trueBiomarker}{a function which takes as input a dose (vector) and
-returns the true biomarker level (vector).}
+\item{trueBiomarker}{(\code{function})\cr a function which takes as input a dose
+(vector) and returns the true biomarker level (vector).}
 
-\item{target}{the target toxicity interval (default: 20-35\%) used for the
-computations}
+\item{target}{(\code{numeric})\cr the target toxicity interval (default: 20-35\%)
+used for the computations.}
 
-\item{\dots}{Additional arguments can be supplied here for \code{trueTox}
-and \code{trueBiomarker}}
+\item{...}{additional arguments can be supplied here for \code{trueTox} and
+\code{trueBiomarker}.}
 }
 \value{
-an object of class \code{\linkS4class{DualSimulationsSummary}}
+An object of class \code{\link{DualSimulationsSummary}}.
 }
 \description{
+\ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#stable}{\figure{lifecycle-stable.svg}{options: alt='[Stable]'}}}{\strong{[Stable]}}
+
 Summarize the dual-endpoint design simulations, relative to given true
-dose-toxicity and dose-biomarker curves
+dose-toxicity and dose-biomarker curves.
 }
 \examples{
 # Define the dose-grid.
@@ -133,4 +134,3 @@ summary(
   trueBiomarker = true_biomarker
 )
 }
-\keyword{methods}

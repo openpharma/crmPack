@@ -2,34 +2,36 @@
 % Please edit documentation in R/Simulations-methods.R
 \name{plot,GeneralSimulations,missing-method}
 \alias{plot,GeneralSimulations,missing-method}
-\title{Plot simulations}
+\alias{plot-GeneralSimulations-missing}
+\title{Plot \code{GeneralSimulations}}
 \usage{
 \S4method{plot}{GeneralSimulations,missing}(x, y, type = c("trajectory", "dosesTried"), ...)
 }
 \arguments{
-\item{x}{the \code{\linkS4class{GeneralSimulations}} object we want
-to plot from}
+\item{x}{(\code{GeneralSimulations})\cr the object we want to plot from.}
 
-\item{y}{missing}
+\item{y}{(\code{missing})\cr not used.}
 
-\item{type}{the type of plots you want to obtain.}
+\item{type}{(\code{character})\cr the type of plots you want to obtain.}
 
-\item{\dots}{not used}
+\item{...}{not used.}
 }
 \value{
-A single \code{\link[ggplot2]{ggplot}} object if a single plot is
+A single \code{ggplot} object if a single plot is
 asked for, otherwise a \code{gtable} object.
 }
 \description{
-Summarize the simulations with plots
+\ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#stable}{\figure{lifecycle-stable.svg}{options: alt='[Stable]'}}}{\strong{[Stable]}}
+
+Summarize the simulations with plots.
+
+This plot method can be applied to \code{\link{GeneralSimulations}} objects in order
+to summarize them graphically. Possible \code{type}s of plots at the moment are:
+\describe{
+\item{trajectory}{Summary of the trajectory of the simulated trials}
+\item{dosesTried}{Average proportions of the doses tested in patients}
 }
-\details{
-This plot method can be applied to \code{\linkS4class{GeneralSimulations}}
-objects in order to summarize them graphically. Possible \code{type}s of
-plots at the moment are: \describe{ \item{trajectory}{Summary of the
-trajectory of the simulated trials} \item{dosesTried}{Average proportions of
-the doses tested in patients} } You can specify one or both of these in the
-\code{type} argument.
+You can specify one or both of these in the \code{type} argument.
 }
 \examples{
 # nolint start
@@ -134,4 +136,3 @@ design <- TDsamplesDesign(
 
 # nolint end
 }
-\keyword{methods}

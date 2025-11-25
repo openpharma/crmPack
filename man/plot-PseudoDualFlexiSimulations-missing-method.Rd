@@ -2,40 +2,41 @@
 % Please edit documentation in R/Simulations-methods.R
 \name{plot,PseudoDualFlexiSimulations,missing-method}
 \alias{plot,PseudoDualFlexiSimulations,missing-method}
-\title{This plot method can be applied to \code{\linkS4class{PseudoDualFlexiSimulations}}
-objects in order to summarize them graphically. Possible \code{type}s of
-plots at the moment are: \describe{ \item{trajectory}{Summary of the
-trajectory of the simulated trials} \item{dosesTried}{Average proportions of
-the doses tested in patients} \item{sigma2}{The variance of the efficacy responses}
-\item{sigma2betaW}{The variance of the random walk model}}
-You can specify one or both of these in the
-\code{type} argument.}
+\alias{plot-PseudoDualFlexiSimulations-missing}
+\title{Plot \code{PseudoDualFlexiSimulations}}
 \usage{
 \S4method{plot}{PseudoDualFlexiSimulations,missing}(x, y, type = c("trajectory", "dosesTried", "sigma2", "sigma2betaW"), ...)
 }
 \arguments{
-\item{x}{the \code{\linkS4class{PseudoDualFlexiSimulations}} object we want
-to plot from}
+\item{x}{(\code{PseudoDualFlexiSimulations})\cr the object we want to plot from.}
 
-\item{y}{missing}
+\item{y}{(\code{missing})\cr missing object, not used.}
 
-\item{type}{the type of plots you want to obtain.}
+\item{type}{(\code{character})\cr the type of plots you want to obtain.}
 
-\item{\dots}{not used}
+\item{...}{not used.}
 }
 \value{
-A single \code{\link[ggplot2]{ggplot}} object if a single plot is
-asked for, otherwise a \code{gtable} object.
+A single \code{ggplot2} object if a single plot is asked for, otherwise a
+\code{gtable} object.
 }
 \description{
-This plot method can be applied to \code{\linkS4class{PseudoDualFlexiSimulations}}
-objects in order to summarize them graphically. Possible \code{type}s of
-plots at the moment are: \describe{ \item{trajectory}{Summary of the
-trajectory of the simulated trials} \item{dosesTried}{Average proportions of
-the doses tested in patients} \item{sigma2}{The variance of the efficacy responses}
-\item{sigma2betaW}{The variance of the random walk model}}
-You can specify one or both of these in the
-\code{type} argument.
+\ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#stable}{\figure{lifecycle-stable.svg}{options: alt='[Stable]'}}}{\strong{[Stable]}}
+
+Summarize the simulations with plots.
+
+This plot method can be applied to \code{\link{PseudoDualFlexiSimulations}} objects in
+order to summarize them graphically. Possible \code{type}s of plots at the moment
+are:
+
+\describe{
+\item{trajectory}{Summary of the trajectory of the simulated trials}
+\item{dosesTried}{Average proportions of the doses tested in patients}
+\item{sigma2}{The variance of the efficacy responses}
+\item{sigma2betaW}{The variance of the random walk model}
+}
+
+You can specify one or both of these in the \code{type} argument.
 }
 \examples{
 # Obtain the plot for the simulation results if DLE and efficacy responses
@@ -137,4 +138,3 @@ my_sim <- simulate(
 # Plot the simulated results.
 print(plot(my_sim))
 }
-\keyword{methods}

@@ -2,27 +2,29 @@
 % Please edit documentation in R/Simulations-methods.R
 \name{summary,Simulations-method}
 \alias{summary,Simulations-method}
-\title{Summarize the model-based design simulations, relative to a given truth}
+\alias{summary-Simulations}
+\title{Summarize Model-Based Design Simulations}
 \usage{
 \S4method{summary}{Simulations}(object, truth, target = c(0.2, 0.35), ...)
 }
 \arguments{
-\item{object}{the \code{\linkS4class{Simulations}} object we want to
-summarize}
+\item{object}{(\code{Simulations})\cr the object we want to summarize.}
 
-\item{truth}{a function which takes as input a dose (vector) and returns the
-true probability (vector) for toxicity}
+\item{truth}{(\code{function})\cr a function which takes as input a dose (vector)
+and returns the true probability (vector) for toxicity.}
 
-\item{target}{the target toxicity interval (default: 20-35\%) used for the
-computations}
+\item{target}{(\code{numeric})\cr the target toxicity interval (default: 20-35\%)
+used for the computations.}
 
-\item{\dots}{Additional arguments can be supplied here for \code{truth}}
+\item{...}{additional arguments can be supplied here for \code{truth}.}
 }
 \value{
-an object of class \code{\linkS4class{SimulationsSummary}}
+An object of class \code{\link{SimulationsSummary}}.
 }
 \description{
-Summarize the model-based design simulations, relative to a given truth
+\ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#stable}{\figure{lifecycle-stable.svg}{options: alt='[Stable]'}}}{\strong{[Stable]}}
+
+Summarize the model-based design simulations, relative to a given truth.
 }
 \examples{
 # nolint start
@@ -114,4 +116,3 @@ summary(mySims, truth = myTruth)
 
 # nolint end
 }
-\keyword{methods}

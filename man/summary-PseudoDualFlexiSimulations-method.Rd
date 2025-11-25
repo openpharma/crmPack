@@ -2,7 +2,8 @@
 % Please edit documentation in R/Simulations-methods.R
 \name{summary,PseudoDualFlexiSimulations-method}
 \alias{summary,PseudoDualFlexiSimulations-method}
-\title{Summary for Pseudo Dual responses simulations given a pseudo DLE model and the Flexible efficacy model.}
+\alias{summary-PseudoDualFlexiSimulations}
+\title{Summarize \code{PseudoDualFlexiSimulations}}
 \usage{
 \S4method{summary}{PseudoDualFlexiSimulations}(
   object,
@@ -14,23 +15,32 @@
 )
 }
 \arguments{
-\item{object}{the \code{\linkS4class{PseudoDualFlexiSimulations}} object we want to summarize}
+\item{object}{(\code{PseudoDualFlexiSimulations})\cr the object we want to
+summarize.}
 
-\item{trueDLE}{a function which takes as input a dose (vector) and returns the true probability of DLE (vector)}
+\item{trueDLE}{(\code{function})\cr a function which takes as input a dose
+(vector) and returns the true probability of DLE (vector).}
 
-\item{trueEff}{a vector which takes as input the true mean efficacy values at all dose levels (in order)}
+\item{trueEff}{(\code{numeric})\cr a vector which takes as input the true mean
+efficacy values at all dose levels (in order).}
 
-\item{targetEndOfTrial}{the target probability of DLE that are used at the end of a trial. Default at 0.3.}
+\item{targetEndOfTrial}{(\code{number})\cr the target probability of DLE that are
+used at the end of a trial. Default at 0.3.}
 
-\item{targetDuringTrial}{the target probability of DLE that are used during the trial. Default at 0.35.}
+\item{targetDuringTrial}{(\code{number})\cr the target probability of DLE that
+are used during the trial. Default at 0.35.}
 
-\item{\dots}{Additional arguments can be supplied here for \code{trueDLE} and \code{trueEff}}
+\item{...}{additional arguments can be supplied here for \code{trueDLE} and
+\code{trueEff}.}
 }
 \value{
-an object of class \code{\linkS4class{PseudoDualSimulationsSummary}}
+An object of class \code{\link{PseudoDualSimulationsSummary}}.
 }
 \description{
-Summary for Pseudo Dual responses simulations given a pseudo DLE model and the Flexible efficacy model.
+\ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#stable}{\figure{lifecycle-stable.svg}{options: alt='[Stable]'}}}{\strong{[Stable]}}
+
+Summary for \code{PseudoDualFlexiSimulations} given a pseudo DLE model and
+the flexible efficacy model.
 }
 \examples{
 # nolint start
@@ -134,4 +144,3 @@ summary(mySim, trueDLE = myTruthDLE, trueEff = myTruthEff)
 
 # nolint end
 }
-\keyword{methods}

@@ -2,28 +2,32 @@
 % Please edit documentation in R/Simulations-methods.R
 \name{summary,PseudoSimulations-method}
 \alias{summary,PseudoSimulations-method}
-\title{Summarize the simulations, relative to a given truth}
+\alias{summary-PseudoSimulations}
+\title{Summarize \code{PseudoSimulations}}
 \usage{
 \S4method{summary}{PseudoSimulations}(object, truth, targetEndOfTrial = 0.3, targetDuringTrial = 0.35, ...)
 }
 \arguments{
-\item{object}{the \code{\linkS4class{PseudoSimulations}} object we want to
-summarize}
+\item{object}{(\code{PseudoSimulations})\cr the object we want to summarize.}
 
-\item{truth}{a function which takes as input a dose (vector) and returns the
-true probability (vector) for toxicity}
+\item{truth}{(\code{function})\cr a function which takes as input a dose (vector)
+and returns the true probability (vector) for toxicity.}
 
-\item{targetEndOfTrial}{the target probability of DLE wanted to achieve at the end of a trial}
+\item{targetEndOfTrial}{(\code{number})\cr the target probability of DLE wanted
+to achieve at the end of a trial.}
 
-\item{targetDuringTrial}{the target probability of DLE wanted to achieve during a trial}
+\item{targetDuringTrial}{(\code{number})\cr the target probability of DLE wanted
+to achieve during a trial.}
 
-\item{\dots}{Additional arguments can be supplied here for \code{truth}}
+\item{...}{additional arguments can be supplied here for \code{truth}.}
 }
 \value{
-an object of class \code{\linkS4class{PseudoSimulationsSummary}}
+An object of class \code{\link{PseudoSimulationsSummary}}.
 }
 \description{
-Summarize the simulations, relative to a given truth
+\ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#stable}{\figure{lifecycle-stable.svg}{options: alt='[Stable]'}}}{\strong{[Stable]}}
+
+Summarize the simulations, relative to a given truth.
 }
 \examples{
 emptydata <- Data(doseGrid = seq(25, 300, 25))
@@ -130,4 +134,3 @@ summary(
   truth = my_truth
 )
 }
-\keyword{methods}
