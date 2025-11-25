@@ -1173,40 +1173,41 @@ setMethod(
   }
 )
 
+# plot-SimulationsSummary ----
 
-##' Plot summaries of the model-based design simulations
-##'
-##' Graphical display of the simulation summary
-##'
-##' This plot method can be applied to \code{\linkS4class{SimulationsSummary}}
-##' objects in order to summarize them graphically. Possible \code{type} of
-##' plots at the moment are those listed in
-##' \code{\link{plot,GeneralSimulationsSummary,missing-method}} plus:
-##' \describe{
-##' \item{meanFit}{Plot showing the average fitted dose-toxicity curve across
-##' the trials, together with 95% credible intervals, and comparison with the
-##' assumed truth (as specified by the \code{truth} argument to
-##' \code{\link{summary,Simulations-method}})}
-##' }
-##' You can specify any subset of these in the \code{type} argument.
-##'
-##' @param x the \code{\linkS4class{SimulationsSummary}} object we want
-##' to plot from
-##' @param y missing
-##' @param type the types of plots you want to obtain.
-##' @param \dots not used
-##' @return A single \code{\link[ggplot2]{ggplot}} object if a single plot is
-##' asked for, otherwise a `gtable` object.
-##'
-##' @importFrom ggplot2 geom_histogram ggplot aes xlab ylab geom_line
-##' scale_linetype_manual scale_colour_manual
-##' @importFrom gridExtra arrangeGrob
-##'
-##' @example examples/Simulations-method-plot-SimulationsSummary.R
-##' @export
-##' @keywords methods
+#' Plot Model-Based Design Simulation Summary
+#'
+#' @description `r lifecycle::badge("stable")`
+#'
+#' Graphical display of the simulation summary.
+#'
+#' This plot method can be applied to [`SimulationsSummary`] objects in order
+#' to summarize them graphically. Possible `type` of plots at the moment are
+#' those listed in [`plot,GeneralSimulationsSummary,missing-method`] plus:
+#'
+#' \describe{
+#'   \item{meanFit}{Plot showing the average fitted dose-toxicity curve across
+#'     the trials, together with 95% credible intervals, and comparison with the
+#'     assumed truth (as specified by the `truth` argument to
+#'     [`summary,Simulations-method`])}
+#' }
+#'
+#' You can specify any subset of these in the `type` argument.
+#'
+#' @param x (`SimulationsSummary`)\cr the object we want to plot from.
+#' @param y (`missing`)\cr missing object, not used.
+#' @param type (`character`)\cr the types of plots you want to obtain.
+#' @param ... not used.
+#'
+#' @return A single `ggplot` object if a single plot is
+#'   asked for, otherwise a `gtable` object.
+#'
+#' @aliases plot-SimulationsSummary-missing
+#' @example examples/Simulations-method-plot-SimulationsSummary.R
+#' @export
+#'
 setMethod(
-  "plot",
+  f = "plot",
   signature = signature(
     x = "SimulationsSummary",
     y = "missing"
@@ -1223,37 +1224,35 @@ setMethod(
     ),
     ...
   ) {
-    ## which plots should be produced?
+    # Validate arguments.
     type <- match.arg(type, several.ok = TRUE)
-    stopifnot(length(type) > 0L)
+    assert_character(type, min.len = 1)
 
-    ## substract the specific plot types for model-based
-    ## designs
-    typeReduced <- setdiff(
+    # Subtract the specific plot types for model-based designs.
+    type_reduced <- setdiff(
       type,
       "meanFit"
     )
 
-    ## are there more plots from general?
-    moreFromGeneral <- (length(typeReduced) > 0)
+    # Are there more plots from general?
+    more_from_general <- (length(type_reduced) > 0)
 
-    ## if so, then produce these plots
-    if (moreFromGeneral) {
-      ret <- callNextMethod(x = x, y = y, type = typeReduced)
+    # If so, then produce these plots.
+    if (more_from_general) {
+      ret <- callNextMethod(x = x, y = y, type = type_reduced)
     }
 
-    ## is the meanFit plot requested?
+    # Is the meanFit plot requested?
     if ("meanFit" %in% type) {
-      ## which types of lines do we have?
+      # Which types of lines do we have?
       linetype <- c(
         "True toxicity",
         "Average estimated toxicity",
         "95% interval for estimated toxicity"
       )
 
-      ## create the data frame, with
-      ## true tox, average estimated tox, and 95% (lower, upper)
-      ## estimated tox (in percentage) stacked below each other
+      # Create the data frame, with true tox, average estimated tox, and 95%
+      # (lower, upper) estimated tox (in percentage) stacked below each other.
       dat <- data.frame(
         dose = rep(x@dose_grid, 4L),
         group = rep(1:4, each = length(x@dose_grid)),
@@ -1264,22 +1263,22 @@ setMethod(
         lines = unlist(x@mean_fit) * 100
       )
 
-      ## linetypes for the plot
+      # Linetypes for the plot.
       lt <- c(
         "True toxicity" = 1,
         "Average estimated toxicity" = 1,
         "95% interval for estimated toxicity" = 2
       )
 
-      ## colour for the plot
+      # Colour for the plot.
       col <- c(
         "True toxicity" = 1,
         "Average estimated toxicity" = 2,
         "95% interval for estimated toxicity" = 2
       )
 
-      ## now create and save the plot
-      thisPlot <- ggplot() +
+      # Now create and save the plot.
+      this_plot <- ggplot() +
         geom_line(
           aes(
             x = dose,
@@ -1291,58 +1290,61 @@ setMethod(
           data = dat
         )
 
-      thisPlot <- thisPlot +
+      this_plot <- this_plot +
         scale_linetype_manual(values = lt) +
         scale_colour_manual(values = col) +
         xlab("Dose level") +
         ylab("Probability of DLT [%]")
 
-      ## add this plot to the bottom
+      # Add this plot to the bottom.
       ret <-
-        if (moreFromGeneral) {
-          gridExtra::arrangeGrob(ret, thisPlot)
+        if (more_from_general) {
+          gridExtra::arrangeGrob(ret, this_plot)
         } else {
-          thisPlot
+          this_plot
         }
     }
 
-    ## then finally plot everything
+    # Then finally plot everything.
     ret
   }
 )
 
+# plot-DualSimulationsSummary ----
 
-##' Plot summaries of the dual-endpoint design simulations
-##'
-##' This plot method can be applied to \code{\linkS4class{DualSimulationsSummary}}
-##' objects in order to summarize them graphically. Possible \code{type} of
-##' plots at the moment are those listed in
-##' \code{\link{plot,SimulationsSummary,missing-method}} plus:
-##' \describe{
-##' \item{meanBiomarkerFit}{Plot showing the average fitted dose-biomarker curve across
-##' the trials, together with 95% credible intervals, and comparison with the
-##' assumed truth (as specified by the \code{trueBiomarker} argument to
-##' \code{\link{summary,DualSimulations-method}})}
-##' }
-##' You can specify any subset of these in the \code{type} argument.
-##'
-##' @param x the \code{\linkS4class{DualSimulationsSummary}} object we want
-##' to plot from
-##' @param y missing
-##' @param type the types of plots you want to obtain.
-##' @param \dots not used
-##' @return A single \code{\link[ggplot2]{ggplot}} object if a single plot is
-##' asked for, otherwise a `gtable` object.
-##'
-##' @importFrom ggplot2 geom_histogram ggplot aes xlab ylab geom_line
-##' scale_linetype_manual scale_colour_manual
-##' @importFrom gridExtra arrangeGrob
-##'
-##' @example examples/Simulations-method-plot-DualSimulationsSummary.R
-##' @export
-##' @keywords methods
+#' Plot Dual-Endpoint Design Simulation Summary
+#'
+#' @description `r lifecycle::badge("stable")`
+#'
+#' Graphical display of dual-endpoint simulation summary.
+#'
+#' This plot method can be applied to [`DualSimulationsSummary`] objects in
+#' order to summarize them graphically. Possible `type` of plots at the moment
+#' are those listed in [`plot,SimulationsSummary,missing-method`] plus:
+#'
+#' \describe{
+#'   \item{meanBiomarkerFit}{Plot showing the average fitted dose-biomarker
+#'     curve across the trials, together with 95% credible intervals, and
+#'     comparison with the assumed truth (as specified by the `trueBiomarker`
+#'     argument to [`summary,DualSimulations-method`])}
+#' }
+#'
+#' You can specify any subset of these in the `type` argument.
+#'
+#' @param x (`DualSimulationsSummary`)\cr the object we want to plot from.
+#' @param y (`missing`)\cr missing object, not used.
+#' @param type (`character`)\cr the types of plots you want to obtain.
+#' @param ... not used.
+#'
+#' @return A single `ggplot` object if a single plot is
+#'   asked for, otherwise a `gtable` object.
+#'
+#' @aliases plot-DualSimulationsSummary-missing
+#' @example examples/Simulations-method-plot-DualSimulationsSummary.R
+#' @export
+#'
 setMethod(
-  "plot",
+  f = "plot",
   signature = signature(
     x = "DualSimulationsSummary",
     y = "missing"
@@ -1360,37 +1362,36 @@ setMethod(
     ),
     ...
   ) {
-    ## which plots should be produced?
+    # Validate arguments.
     type <- match.arg(type, several.ok = TRUE)
-    stopifnot(length(type) > 0L)
+    assert_character(type, min.len = 1)
 
-    ## substract the specific plot types for dual-endpoint
-    ## designs
-    typeReduced <- setdiff(
+    # Subtract the specific plot types for dual-endpoint designs.
+    type_reduced <- setdiff(
       type,
       "meanBiomarkerFit"
     )
 
-    ## are there more plots from general?
-    moreFromGeneral <- (length(typeReduced) > 0)
+    # Are there more plots from general?
+    more_from_general <- (length(type_reduced) > 0)
 
-    ## if so, then produce these plots
-    if (moreFromGeneral) {
-      ret <- callNextMethod(x = x, y = y, type = typeReduced)
+    # If so, then produce these plots.
+    if (more_from_general) {
+      ret <- callNextMethod(x = x, y = y, type = type_reduced)
     }
 
-    ## is the meanBiomarkerFit plot requested?
+    # Is the meanBiomarkerFit plot requested?
     if ("meanBiomarkerFit" %in% type) {
-      ## which types of lines do we have?
+      # Which types of lines do we have?
       linetype <- c(
         "True biomarker",
         "Average estimated biomarker",
         "95% interval for estimated biomarker"
       )
 
-      ## create the data frame, with
-      ## true biomarker, average estimated biomarker, and 95% (lower, upper)
-      ## estimated biomarker stacked below each other
+      # Create the data frame, with true biomarker, average estimated
+      # biomarker, and 95% (lower, upper) estimated biomarker stacked below
+      # each other.
       dat <- data.frame(
         dose = rep(x@dose_grid, 4L),
         group = rep(1:4, each = length(x@dose_grid)),
@@ -1401,22 +1402,22 @@ setMethod(
         lines = unlist(x@mean_biomarker_fit)
       )
 
-      ## linetypes for the plot
+      # Linetypes for the plot.
       lt <- c(
         "True biomarker" = 1,
         "Average estimated biomarker" = 1,
         "95% interval for estimated biomarker" = 2
       )
 
-      ## colour for the plot
+      # Colour for the plot.
       col <- c(
         "True biomarker" = 1,
         "Average estimated biomarker" = 2,
         "95% interval for estimated biomarker" = 2
       )
 
-      ## now create and save the plot
-      thisPlot <- ggplot() +
+      # Now create and save the plot.
+      this_plot <- ggplot() +
         geom_line(
           aes(
             x = dose,
@@ -1428,22 +1429,22 @@ setMethod(
           data = dat
         )
 
-      thisPlot <- thisPlot +
+      this_plot <- this_plot +
         scale_linetype_manual(values = lt) +
         scale_colour_manual(values = col) +
         xlab("Dose level") +
         ylab("Biomarker level")
 
-      ## add this plot to the bottom
+      # Add this plot to the bottom.
       ret <-
-        if (moreFromGeneral) {
-          gridExtra::arrangeGrob(ret, thisPlot, heights = c(2 / 3, 1 / 3))
+        if (more_from_general) {
+          gridExtra::arrangeGrob(ret, this_plot, heights = c(2 / 3, 1 / 3))
         } else {
-          thisPlot
+          this_plot
         }
     }
 
-    ## then finally plot everything
+    # Then finally plot everything.
     ret
   }
 )
