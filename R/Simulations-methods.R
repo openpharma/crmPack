@@ -121,7 +121,7 @@ h_plot_doses_tried <- function(sim_doses, dose_grid) {
 
 # plot-GeneralSimulations ----
 
-#' Plot Simulations
+#' Plot `GeneralSimulations`
 #'
 #' @description `r lifecycle::badge("stable")`
 #'
@@ -227,7 +227,7 @@ setMethod(
 
 # plot-DualSimulations ----
 
-#' Plot Dual-Endpoint Simulations
+#' Plot `DualSimulations`
 #'
 #' @description `r lifecycle::badge("stable")`
 #'
@@ -335,7 +335,7 @@ setMethod(
 
 # summary-GeneralSimulations ----
 
-#' Summarize the Simulations, Relative to a Given Truth
+#' Summarize the `GeneralSimulations`, Relative to a Given Truth
 #'
 #' @description `r lifecycle::badge("stable")`
 #'
@@ -1036,7 +1036,7 @@ setMethod(
 
 # plot-GeneralSimulationsSummary ----
 
-#' Plot General Simulation Summary
+#' Plot `GeneralSimulationsSummary`
 #'
 #' @description `r lifecycle::badge("stable")`
 #'
@@ -1556,7 +1556,7 @@ h_pseudo_sim_fit_summary <- function(
 
 # summary-PseudoSimulations ----
 
-#' Summarize Pseudo Simulations
+#' Summarize `PseudoSimulations`
 #'
 #' @description `r lifecycle::badge("stable")`
 #'
@@ -1763,7 +1763,7 @@ setMethod(
 
 # show-PseudoSimulationsSummary ----
 
-#' Show the Summary of Pseudo Simulations
+#' Show the Summary of `PseudoSimulations`
 #'
 #' @description `r lifecycle::badge("stable")`
 #'
@@ -2025,7 +2025,7 @@ setMethod(
 
 # plot-PseudoSimulationsSummary ----
 
-#' Plot Pseudo Simulation Summary
+#' Plot `PseudoSimulationsSummary`
 #'
 #' @description `r lifecycle::badge("stable")`
 #'
@@ -2247,7 +2247,7 @@ setMethod(
 
 # plot-PseudoDualSimulations ----
 
-#' Plot Pseudo Dual Simulations
+#' Plot `PseudoDualSimulations`
 #'
 #' @description `r lifecycle::badge("stable")`
 #'
@@ -2348,7 +2348,7 @@ setMethod(
 
 # plot-PseudoDualFlexiSimulations ----
 
-#' Plot Pseudo Dual Flexi Simulations
+#' Plot `PseudoDualFlexiSimulations`
 #'
 #' @description `r lifecycle::badge("stable")`
 #'
@@ -2453,7 +2453,7 @@ setMethod(
 
 # summary-PseudoDualSimulations ----
 
-#' Summarize Pseudo Dual Simulations
+#' Summarize `PseudoDualSimulations`
 #'
 #' @description `r lifecycle::badge("stable")`
 #'
@@ -2620,12 +2620,12 @@ setMethod(
 
 # summary-PseudoDualFlexiSimulations ----
 
-#' Summarize Pseudo Dual Flexi Simulations
+#' Summarize `PseudoDualFlexiSimulations`
 #'
 #' @description `r lifecycle::badge("stable")`
 #'
-#' Summary for Pseudo Dual responses simulations given a pseudo DLE model and
-#' the Flexible efficacy model.
+#' Summary for `PseudoDualFlexiSimulations` given a pseudo DLE model and
+#' the flexible efficacy model.
 #'
 #' @param object (`PseudoDualFlexiSimulations`)\cr the object we want to
 #'   summarize.
@@ -2680,7 +2680,7 @@ setMethod(
 
 # show-PseudoDualSimulationsSummary ----
 
-#' Show the Summary of Pseudo Dual Simulations
+#' Show the Summary of `PseudoDualSimulations`
 #'
 #' @description `r lifecycle::badge("stable")`
 #'
@@ -2822,11 +2822,11 @@ setMethod(
 
 # plot-PseudoDualSimulationsSummary ----
 
-#' Plot Pseudo Dual Simulation Summary
+#' Plot `PseudoDualSimulationsSummary`
 #'
 #' @description `r lifecycle::badge("stable")`
 #'
-#' Plot the summary of Pseudo Dual Simulations.
+#' Plot the summary of `PseudoDualSimulations`.
 #'
 #' This plot method can be applied to [`PseudoDualSimulationsSummary`] objects
 #' in order to summarize them graphically. Possible `type` of plots at the
