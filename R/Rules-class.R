@@ -133,11 +133,13 @@ NextBestMTD <- function(target, derive) {
 .NextBestNCRM <- setClass(
   Class = "NextBestNCRM",
   slots = c(
+    underdose = "numeric",
     target = "numeric",
     overdose = "numeric",
     max_overdose_prob = "numeric"
   ),
   prototype = prototype(
+    underdose = c(0,0.2),
     target = c(0.2, 0.35),
     overdose = c(0.35, 1),
     max_overdose_prob = 0.25
@@ -156,10 +158,11 @@ NextBestMTD <- function(target, derive) {
 #' @export
 #' @example examples/Rules-class-NextBestNCRM.R
 #'
-NextBestNCRM <- function(target,
+NextBestNCRM <- function(underdose, target,
                          overdose,
                          max_overdose_prob) {
   .NextBestNCRM(
+    underdose = underdose,
     target = target,
     overdose = overdose,
     max_overdose_prob = max_overdose_prob
@@ -172,7 +175,7 @@ NextBestNCRM <- function(target,
 #' @note Typically, end users will not use the `.DefaultNextBestNCRM()` function.
 #' @export
 .DefaultNextBestNCRM <- function() {
-  NextBestNCRM(target = c(0.2, 0.35), overdose = c(0.35, 1), max_overdose_prob = 0.25)
+  NextBestNCRM(underdose = c(0, 0.2),target = c(0.2, 0.35), overdose = c(0.35, 1), max_overdose_prob = 0.25)
 }
 
 # NextBestNCRMLoss ----
@@ -1351,6 +1354,40 @@ IncrementsDoseLevels <- function(levels = 1L, basis_level = "last") {
   IncrementsDoseLevels(levels = 2L, basis_level = "last")
 }
 
+#' IncrementsConstantFactor
+#'
+#' @description `IncrementsConstantFactor` is a class for increment control using a constant escalation factor.
+#'
+#' @slot factor (`numeric`)\\cr The escalation multiplier (e.g., 3.3).
+#' @slot max_dose (`numeric`)\\cr The maximum dose allowed.
+#'
+#' @aliases IncrementsConstantFactor
+#' @export
+.IncrementsConstantFactor <- setClass(
+  Class = "IncrementsConstantFactor",
+  slots = c(
+    factor = "numeric",
+    max_dose = "numeric"
+  ),
+  prototype = prototype(
+    factor = 3.3,
+    max_dose = 75
+  ),
+  contains = "Increments"
+)
+
+#' @rdname IncrementsConstantFactor-class
+#' @param factor (`numeric`)\\cr Escalation multiplier.
+#' @param max_dose (`numeric`)\\cr Maximum allowed dose.
+#' @export
+IncrementsConstantFactor <- function(factor = 3.3, max_dose = 75) {
+  .IncrementsConstantFactor(
+    factor = factor,
+    max_dose = max_dose
+  )
+}
+
+
 # IncrementsHSRBeta ----
 
 ## class ----
@@ -1953,6 +1990,178 @@ StoppingMinPatients <- function(nPatients = 20L,
     nPatients = 20L
   )
 }
+
+# StoppingDoseStagnation ----
+
+## class ----
+
+#' `StoppingDoseStagnation`
+#'
+#' @description `r lifecycle::badge("stable")`
+#'
+#' [`StoppingDoseStagnation`] is the class for checking if current dose and
+#' recommended doses are same
+#'
+#' @aliases StoppingDoseStagnation
+#' @export
+#'
+.StoppingDoseStagnation <- setClass(
+  Class = "StoppingDoseStagnation",
+  slots = c(check = "logical"),
+  prototype = prototype(check = TRUE),
+  contains = "Stopping"
+)
+
+## constructor ----
+
+#' @rdname StoppingDoseStagnation-class
+#'
+#' @param check (`logical`)\cr see slot definition.
+#' @param report_label (`string` or `NA`)\cr see slot definition.
+#'
+#' @export
+#'
+StoppingDoseStagnation <- function(check = TRUE,
+                                report_label = NA_character_) {
+  report_label <- h_default_if_empty(
+    as.character(report_label),
+    paste("current and recommended doses are ", ifelse(check,"same", "not same"))
+  )
+
+  .StoppingDoseStagnation(
+    check = as.logical(check),
+    report_label = report_label
+  )
+}
+
+## default constructor ----
+
+#' @rdname StoppingDoseStagnation-class
+#' @note Typically, end users will not use the `.DefaultStoppingDoseStagnation()` function.
+#' @export
+.DefaultStoppingDoseStagnation <- function() {
+  StoppingDoseStagnation(
+    check = TRUE
+  )
+}
+
+# StoppingMinPatientsMtd ----
+
+## class ----
+
+#' `StoppingMinPatientsMtd`
+#'
+#' @description `r lifecycle::badge("stable")`
+#'
+#' [`StoppingMinPatientsMtd`] is the class for stopping based on minimum number of
+#' patients at Mtd
+#'
+#' @slot nPatientsMtd (`number`)\cr minimum allowed number of patients at Mtd.
+#'
+#' @aliases StoppingMinPatientsMtd
+#' @export
+#'
+.StoppingMinPatientsMtd <- setClass(
+  Class = "StoppingMinPatientsMtd",
+  slots = c(nPatientsMtd = "integer"),
+  prototype = prototype(nPatientsMtd = 6L),
+  contains = "Stopping",
+  validity = v_stopping_min_patients_mtd
+)
+
+## constructor ----
+
+#' @rdname StoppingMinPatientsMtd-class
+#'
+#' @param nPatientsMtd (`number`)\cr see slot definition.
+#' @param report_label (`string` or `NA`)\cr see slot definition.
+#'
+#' @example examples/Rules-class-StoppingMinPatientsMtd.R
+#' @export
+#'
+StoppingMinPatientsMtd <- function(nPatientsMtd = 6L,
+                                report_label = NA_character_) {
+  assert_count(nPatientsMtd, positive = TRUE)
+
+  report_label <- h_default_if_empty(
+    as.character(report_label),
+    paste("\u2265", nPatientsMtd, "patients dosed at Mtd")
+  )
+
+  .StoppingMinPatientsMtd(
+    nPatientsMtd = as.integer(nPatientsMtd),
+    report_label = report_label
+  )
+}
+
+## default constructor ----
+
+#' @rdname StoppingMinPatientsMtd-class
+#' @note Typically, end users will not use the `.DefaultStoppingMinPatientsMtd()` function.
+#' @export
+.DefaultStoppingMinPatientsMtd <- function() {
+  StoppingMinPatientsMtd(
+    nPatientsMtd = 6L
+  )
+}
+
+#' StoppingMinDlts ----
+
+## class ----
+
+#' `StoppingMinDlts`
+#'
+#' @description `r lifecycle::badge("experimental")`
+#'
+#' [`StoppingMinDlts`] is the class for stopping based on minimum number of DLTs in the trial.
+#'
+#' @slot nDlts (`integer`)\cr minimum number of DLTs required to stop.
+#'
+#' @aliases StoppingMinDlts
+#' @export
+#'
+.StoppingMinDlts <- setClass(
+  Class = "StoppingMinDlts",
+  slots = c(nDlts = "integer"),
+  prototype = prototype(nDlts = 1L),
+  contains = "Stopping",
+  validity = v_stopping_min_dlts
+)
+
+## constructor ----
+
+#' @rdname StoppingMinDlts-class
+#'
+#' @param nDlts (`integer`)\cr minimum number of DLTs required to stop.
+#' @param report_label (`character` or `NA`)\cr optional label for reporting.
+#'
+#' @export
+#'
+StoppingMinDlts <- function(nDlts = 1L, report_label = NA_character_) {
+  assert_count(nDlts, positive = FALSE)
+
+  report_label <- h_default_if_empty(
+    as.character(report_label),
+    paste("≥", nDlts, "DLTs in the trial")
+  )
+
+  .StoppingMinDlts(
+    nDlts = as.integer(nDlts),
+    report_label = report_label
+  )
+}
+
+## default constructor ----
+
+#' @rdname StoppingMinDlts-class
+#' @note Typically, end users will not use the `.DefaultStoppingMinDlts()` function.
+#' @export
+.DefaultStoppingMinDlts <- function() {
+  StoppingMinDlts(
+    nDlts = 1L
+  )
+}
+
 
 # StoppingTargetProb ----
 
