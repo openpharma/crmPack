@@ -136,11 +136,11 @@ h_plot_doses_tried <- function(sim_doses, dose_grid) {
 #' You can specify one or both of these in the `type` argument.
 #'
 #' @param x (`GeneralSimulations`)\cr the object we want to plot from.
-#' @param y (`missing`)\cr missing object, not used.
+#' @param y (`missing`)\cr not used.
 #' @param type (`character`)\cr the type of plots you want to obtain.
 #' @param ... not used.
 #'
-#' @return A single [`ggplot`][ggplot2::ggplot] object if a single plot is
+#' @return A single `ggplot` object if a single plot is
 #'   asked for, otherwise a `gtable` object.
 #'
 #' @aliases plot-GeneralSimulations-missing
@@ -1059,11 +1059,11 @@ setMethod(
 #' You can specify any subset of these in the `type` argument.
 #'
 #' @param x (`GeneralSimulationsSummary`)\cr the object we want to plot from.
-#' @param y (`missing`)\cr missing object, not used.
+#' @param y (`missing`)\cr not used.
 #' @param type (`character`)\cr the types of plots you want to obtain.
 #' @param ... not used.
 #'
-#' @return A single [`ggplot`][ggplot2::ggplot] object if a single plot is
+#' @return A single `ggplot` object if a single plot is
 #'   asked for, otherwise a `gtable` object.
 #'
 #' @aliases plot-GeneralSimulationsSummary-missing
@@ -1195,7 +1195,7 @@ setMethod(
 #' You can specify any subset of these in the `type` argument.
 #'
 #' @param x (`SimulationsSummary`)\cr the object we want to plot from.
-#' @param y (`missing`)\cr missing object, not used.
+#' @param y (`missing`)\cr not used.
 #' @param type (`character`)\cr the types of plots you want to obtain.
 #' @param ... not used.
 #'
@@ -1332,7 +1332,7 @@ setMethod(
 #' You can specify any subset of these in the `type` argument.
 #'
 #' @param x (`DualSimulationsSummary`)\cr the object we want to plot from.
-#' @param y (`missing`)\cr missing object, not used.
+#' @param y (`missing`)\cr not used.
 #' @param type (`character`)\cr the types of plots you want to obtain.
 #' @param ... not used.
 #'
