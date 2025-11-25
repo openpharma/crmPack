@@ -66,12 +66,12 @@
       Number of patients treated above target tox interval : mean 0 (0, 0) 
       Proportions of DLTs in the trials : mean 0 % (0 %, 0 %) 
       Mean toxicity risks for the patients on active : mean 0 % (0 %, 0 %) 
-      Doses selected as MTD : mean 5 (5, 5) 
+      Doses selected as MTD : mean 10 (10, 10) 
       True toxicity at doses selected : mean 0 % (0 %, 0 %) 
       Proportion of trials selecting target MTD: 0 %
-      Dose most often selected as MTD: 5 
-      Observed toxicity rate at dose most often selected: 0 %
-      Fitted toxicity rate at dose most often selected : mean 3 % (1 %, 5 %) 
+      Dose most often selected as MTD: 10 
+      Observed toxicity rate at dose most often selected: NaN %
+      Fitted toxicity rate at dose most often selected : mean 6 % (6 %, 6 %) 
       Stop reason triggered:
        ≥ 6 patients dosed :  100 %
 
@@ -95,7 +95,7 @@
       Proportion of trials selecting target MTD: 0 %
       Dose most often selected as MTD: 10 
       Observed toxicity rate at dose most often selected: NaN %
-      Fitted toxicity rate at dose most often selected : mean 1 % (0 %, 1 %) 
+      Fitted toxicity rate at dose most often selected : mean 6 % (6 %, 6 %) 
       Stop reason triggered:
        ≥ 6 patients dosed :  100 %
 

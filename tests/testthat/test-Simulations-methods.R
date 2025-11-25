@@ -436,7 +436,7 @@ test_that("Report$report respects custom quantiles", {
 ## show-GeneralSimulationsSummary ----
 
 test_that("show-GeneralSimulationsSummary works correctly", {
-  # Create simulation and summary
+  # Create simulation and summary.
   emptydata <- Data(doseGrid = c(1, 3, 5, 10, 15, 20, 25))
   model <- LogisticLogNormal(
     mean = c(-0.85, 1),
@@ -462,7 +462,13 @@ test_that("show-GeneralSimulationsSummary works correctly", {
   )
 
   myTruth <- probFunction(model, alpha0 = 7, alpha1 = 8)
-  options <- McmcOptions(burnin = 10, step = 2, samples = 20)
+  options <- McmcOptions(
+    burnin = 10,
+    step = 2,
+    samples = 20,
+    rng_kind = "Mersenne-Twister",
+    rng_seed = 123
+  )
 
   mySims <- simulate(
     design,
@@ -512,7 +518,13 @@ test_that("show-SimulationsSummary works correctly", {
   )
 
   myTruth <- probFunction(model, alpha0 = 7, alpha1 = 8)
-  options <- McmcOptions(burnin = 10, step = 2, samples = 20)
+  options <- McmcOptions(
+    burnin = 10,
+    step = 2,
+    samples = 20,
+    rng_kind = "Mersenne-Twister",
+    rng_seed = 123
+  )
 
   mySims <- simulate(
     design,
