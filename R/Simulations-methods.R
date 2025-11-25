@@ -1034,7 +1034,7 @@ setMethod(
   }
 )
 
-# plot-GeneralSimulationsSummary-missing ----
+# plot-GeneralSimulationsSummary ----
 
 #' Plot General Simulation Summary
 #'
@@ -2686,9 +2686,10 @@ setMethod(
 #'
 #' Display a summary of pseudo dual simulation results.
 #'
-#' @param object (`PseudoDualSimulationsSummary`)\cr the object we want to\n#'   print.
+#' @param object (`PseudoDualSimulationsSummary`)\cr the object we want to print.
 #'
-#' @return Invisibly returns a data frame of the results with one row and\n#'   appropriate column names.
+#' @return Invisibly returns a data frame of the results with one row and
+#'  appropriate column names.
 #'
 #' @aliases show-PseudoDualSimulationsSummary
 #' @example examples/Simulations-method-showSIMDual.R
@@ -2819,35 +2820,46 @@ setMethod(
   }
 )
 
-## --------------------------------------------------------------------------------------------------
-##' Plot the summary of Pseudo Dual Simulations summary
-##'
-##' This plot method can be applied to \code{\linkS4class{PseudoDualSimulationsSummary}} objects in order
-##' to summarize them graphically. Possible \code{type} of plots at the moment are those listed in
-##' \code{\link{plot,PseudoSimulationsSummary,missing-method}} plus:
-##' \describe{\item{meanEffFit}{Plot showing the fitted dose-efficacy curve. If no samples are involved, only the
-##' average fitted dose-efficacy curve across the trials will be plotted. If samples (DLE and efficacy) are involved,
-##' the average fitted dose-efficacy curve across the trials, together with the 95% credibility interval; and comparison
-##' with the assumed truth (as specified by the \code{trueEff} argument to
-##' \code{\link{summary,PseudoDualSimulations-method}})}}
-##' You can specify any subset of these in the \code{type} argument.
-##'
-##' @param x the \code{\linkS4class{PseudoDualSimulationsSummary}} object we want to plot from
-##' @param y missing
-##' @param type the types of plots you want to obtain.
-##' @param \dots not used
-##' @return A single \code{\link[ggplot2]{ggplot}} object if a single plot is
-##' asked for, otherwise a `gtable` object.
-##'
-##' @importFrom ggplot2 geom_histogram ggplot aes xlab ylab geom_line
-##' scale_linetype_manual scale_colour_manual
-##' @importFrom gridExtra arrangeGrob
-##'
-##' @example examples/Simulations-method-plotSUMDual.R
-##' @export
-##' @keywords methods
+# plot-PseudoDualSimulationsSummary ----
+
+#' Plot Pseudo Dual Simulation Summary
+#'
+#' @description `r lifecycle::badge("stable")`
+#'
+#' Plot the summary of Pseudo Dual Simulations.
+#'
+#' This plot method can be applied to [`PseudoDualSimulationsSummary`] objects
+#' in order to summarize them graphically. Possible `type` of plots at the
+#' moment are those listed in [`plot,PseudoSimulationsSummary,missing-method`]
+#' plus:
+#'
+#' \describe{
+#'   \item{meanEffFit}{Plot showing the fitted dose-efficacy curve. If no
+#'     samples are involved, only the average fitted dose-efficacy curve across
+#'     the trials will be plotted. If samples (DLE and efficacy) are involved,
+#'     the average fitted dose-efficacy curve across the trials, together with
+#'     the 95% credibility interval; and comparison with the assumed truth (as
+#'     specified by the `trueEff` argument to
+#'     [`summary,PseudoDualSimulations-method`])}
+#' }
+#'
+#' You can specify any subset of these in the `type` argument.
+#'
+#' @param x (`PseudoDualSimulationsSummary`)\cr the object we want to plot
+#'   from.
+#' @param y (`missing`)\cr not used.
+#' @param type (`character`)\cr the types of plots you want to obtain.
+#' @param ... not used.
+#'
+#' @return A single `ggplot2` object if a single plot is asked for, otherwise a
+#'   `gtable` object.
+#'
+#' @aliases plot-PseudoDualSimulationsSummary-missing
+#' @example examples/Simulations-method-plotSUMDual.R
+#' @export
+#'
 setMethod(
-  "plot",
+  f = "plot",
   signature = signature(
     x = "PseudoDualSimulationsSummary",
     y = "missing"
@@ -2865,41 +2877,39 @@ setMethod(
     ),
     ...
   ) {
-    ## which plots should be produced?
+    # Validate arguments.
     type <- match.arg(type, several.ok = TRUE)
-    stopifnot(length(type) > 0L)
+    assert_character(type, min.len = 1)
 
-    ## substract the specific plot types for dual-endpoint
-    ## designs
-    typeReduced <- setdiff(
+    # Subtract the specific plot types for dual-endpoint designs.
+    type_reduced <- setdiff(
       type,
       "meanEffFit"
     )
 
-    ## are there more plots from general?
-    moreFromGeneral <- (length(typeReduced) > 0)
+    # Are there more plots from general?
+    more_from_general <- (length(type_reduced) > 0)
 
-    ## if so, then produce these plots
-    if (moreFromGeneral) {
-      ret <- callNextMethod(x = x, y = y, type = typeReduced)
+    # If so, then produce these plots.
+    if (more_from_general) {
+      ret <- callNextMethod(x = x, y = y, type = type_reduced)
     }
 
-    ## is the meanBiomarkerFit plot requested?
+    # Is the meanEffFit plot requested?
     if ("meanEffFit" %in% type) {
-      ## Find if Effsamples are generated in the simulations
-      ## by checking if there the lower limits of the 95% Credibility
-      ## interval are calculated
+      # Find if Eff samples are generated in the simulations by checking if
+      # the lower limits of the 95% credibility interval are calculated.
       if (!is.null(x@mean_eff_fit$lower)) {
-        ## which types of lines do we have?
+        # Which types of lines do we have?
         linetype <- c(
           "True Expected Efficacy",
           "Average estimated expected efficacy",
           "95% interval for estimated expected efficacy"
         )
 
-        ## create the data frame, with
-        ## true biomarker, average estimated expected efficacy, and 95% (lower, upper)
-        ## estimated biomarker stacked below each other
+        # Create the data frame, with true expected efficacy, average
+        # estimated expected efficacy, and 95% (lower, upper) estimated
+        # expected efficacy stacked below each other.
         dat <- data.frame(
           dose = rep(x@dose_grid, 4L),
           group = rep(1:4, each = length(x@dose_grid)),
@@ -2910,22 +2920,22 @@ setMethod(
           lines = unlist(x@mean_eff_fit)
         )
 
-        ## linetypes for the plot
+        # Linetypes for the plot.
         lt <- c(
           "True Expected Efficacy" = 1,
           "Average estimated expected efficacy" = 1,
           "95% interval for estimated expected efficacy" = 2
         )
 
-        ## colour for the plot
+        # Colour for the plot.
         col <- c(
           "True Expected Efficacy" = 1,
           "Average estimated expected efficacy" = 4,
           "95% interval for estimated expected efficacy" = 4
         )
 
-        ## now create and save the plot
-        thisPlot <- ggplot() +
+        # Now create and save the plot.
+        this_plot <- ggplot() +
           geom_line(
             aes(
               x = dose,
@@ -2937,19 +2947,20 @@ setMethod(
             data = dat
           )
 
-        thisPlot <- thisPlot +
+        this_plot <- this_plot +
           scale_linetype_manual(values = lt) +
           scale_colour_manual(values = col) +
           xlab("Dose level") +
           ylab("Expected Efficacy level")
       } else {
+        # Which types of lines do we have?
         linetype <- c(
           "True Expected Efficacy",
           "Average estimated expected efficacy"
         )
 
-        ## create the data frame, with
-        ## true biomarker, average estimated expected efficacy
+        # Create the data frame, with true expected efficacy and average
+        # estimated expected efficacy.
         dat <- data.frame(
           dose = rep(x@dose_grid, 2L),
           group = rep(1:2, each = length(x@dose_grid)),
@@ -2960,20 +2971,20 @@ setMethod(
           lines = unlist(x@mean_eff_fit)
         )
 
-        ## linetypes for the plot
+        # Linetypes for the plot.
         lt <- c(
           "True Expected Efficacy" = 1,
           "Average estimated expected efficacy" = 1
         )
 
-        ## colour for the plot
+        # Colour for the plot.
         col <- c(
           "True Expected Efficacy" = 1,
           "Average estimated expected efficacy" = 4
         )
 
-        ## now create and save the plot
-        thisPlot <- ggplot() +
+        # Now create and save the plot.
+        this_plot <- ggplot() +
           geom_line(
             aes(
               x = dose,
@@ -2985,23 +2996,23 @@ setMethod(
             data = dat
           )
 
-        thisPlot <- thisPlot +
+        this_plot <- this_plot +
           scale_linetype_manual(values = lt) +
           scale_colour_manual(values = col) +
           xlab("Dose level") +
           ylab("Expected Efficacy level")
       }
 
-      ## add this plot to the bottom
+      # Add this plot to the bottom.
       ret <-
-        if (moreFromGeneral) {
-          gridExtra::arrangeGrob(ret, thisPlot, heights = c(2 / 3, 1 / 3))
+        if (more_from_general) {
+          gridExtra::arrangeGrob(ret, this_plot, heights = c(2 / 3, 1 / 3))
         } else {
-          thisPlot
+          this_plot
         }
     }
 
-    ## then finally plot everything
+    # Then finally plot everything.
     ret
   }
 )
