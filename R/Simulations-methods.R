@@ -769,18 +769,24 @@ Report <-
     )
   )
 
+# show-GeneralSimulationsSummary ----
 
-##' Show the summary of the simulations
-##'
-##' @param object the \code{\linkS4class{GeneralSimulationsSummary}} object we want
-##' to print
-##' @return invisibly returns a data frame of the results with one row and
-##' appropriate column names
-##'
-##' @export
-##' @keywords methods
+#' Show the Summary of the Simulations
+#'
+#' @description `r lifecycle::badge("stable")`
+#'
+#' Display a summary of general simulation results.
+#'
+#' @param object (`GeneralSimulationsSummary`)\cr the object we want to print.
+#'
+#' @return Invisibly returns a data frame of the results with one row and
+#'   appropriate column names.
+#'
+#' @aliases show-GeneralSimulationsSummary
+#' @export
+#'
 setMethod(
-  "show",
+  f = "show",
   signature = signature(object = "GeneralSimulationsSummary"),
   def = function(object) {
     r <- Report$new(
@@ -903,46 +909,51 @@ setMethod(
       "%\n"
     )
 
-    ## finally assign names to the df
-    ## and return it invisibly
+    # Finally assign names to the df and return it invisibly.
     names(r$df) <- r$dfNames
     invisible(r$df)
   }
 )
 
-##' Show the summary of the simulations
-##'
-##' @param object the \code{\linkS4class{SimulationsSummary}} object we want
-##' to print
-##' @return invisibly returns a data frame of the results with one row and
-##' appropriate column names
-##'
-##' @example examples/Simulations-method-show-SimulationsSummary.R
-##' @export
-##' @keywords methods
+# show-SimulationsSummary ----
+
+#' Show the Summary of Model-Based Design Simulations
+#'
+#' @description `r lifecycle::badge("stable")`
+#'
+#' Display a summary of model-based design simulation results.
+#'
+#' @param object (`SimulationsSummary`)\cr the object we want to print.
+#'
+#' @return Invisibly returns a data frame of the results with one row and
+#'   appropriate column names.
+#'
+#' @aliases show-SimulationsSummary
+#' @example examples/Simulations-method-show-SimulationsSummary.R
+#' @export
+#'
 setMethod(
-  "show",
+  f = "show",
   signature = signature(object = "SimulationsSummary"),
   def = function(object) {
-    ## call the parent method
+    # Call the parent method.
     df <- callNextMethod(object)
-    dfNames <- names(df)
+    df_names <- names(df)
 
-    ## start report object
+    # Start report object.
     r <- Report$new(
       object = object,
       df = df,
-      dfNames = dfNames
+      dfNames = df_names
     )
 
-    ## add one reporting line
+    # Add one reporting line.
     r$report(
       "fit_at_dose_most_selected",
       "Fitted toxicity rate at dose most often selected"
     )
 
-    # Report results of additional statistics summary
-
+    # Report results of additional statistics summary.
     if (length(unlist(object@additional_stats)) > 0) {
       param_names <- h_summarize_add_stats(
         stats_list = object@additional_stats
@@ -956,8 +967,7 @@ setMethod(
       }
     }
 
-    # Report individual stopping rules with non-<NA> labels.
-
+    # Report individual stopping rules with non-NA labels.
     stop_pct_to_print <- h_calc_report_label_percentage(object@stop_report)
 
     if (length(stop_pct_to_print) > 0) {
@@ -972,38 +982,45 @@ setMethod(
       )
     }
 
-    ## and return the updated information
+    # And return the updated information.
     names(r$df) <- r$dfNames
     invisible(r$df)
   }
 )
 
-##' Show the summary of the dual-endpoint simulations
-##'
-##' @param object the \code{\linkS4class{DualSimulationsSummary}} object we want
-##' to print
-##' @return invisibly returns a data frame of the results with one row and
-##' appropriate column names
-##'
-##' @example examples/Simulations-method-show-DualSimulationsSummary.R
-##' @export
-##' @keywords methods
+# show-DualSimulationsSummary ----
+
+#' Show the Summary of Dual-Endpoint Simulations
+#'
+#' @description `r lifecycle::badge("stable")`
+#'
+#' Display a summary of dual-endpoint simulation results.
+#'
+#' @param object (`DualSimulationsSummary`)\cr the object we want to print.
+#'
+#' @return Invisibly returns a data frame of the results with one row and
+#'   appropriate column names.
+#'
+#' @aliases show-DualSimulationsSummary
+#' @example examples/Simulations-method-show-DualSimulationsSummary.R
+#' @export
+#'
 setMethod(
-  "show",
+  f = "show",
   signature = signature(object = "DualSimulationsSummary"),
   def = function(object) {
-    ## call the parent method
+    # Call the parent method.
     df <- callNextMethod(object)
-    dfNames <- names(df)
+    df_names <- names(df)
 
-    ## start report object
+    # Start report object.
     r <- Report$new(
       object = object,
       df = df,
-      dfNames = dfNames
+      dfNames = df_names
     )
 
-    ## add one reporting line
+    # Add one reporting line.
     r$report(
       "biomarker_fit_at_dose_most_selected",
       "Fitted biomarker level at dose most often selected",
@@ -1011,7 +1028,7 @@ setMethod(
       digits = 1
     )
 
-    ## and return the updated information
+    # And return the updated information.
     names(r$df) <- r$dfNames
     invisible(r$df)
   }
