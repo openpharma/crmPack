@@ -2263,9 +2263,9 @@ setMethod(
 #' }
 #' You can specify one or both of these in the `type` argument.
 #'
-#' @param x (`PseudoDualSimulations`)\\cr the object we want to plot from.
-#' @param y (`missing`)\\cr missing object, not used.
-#' @param type (`character`)\\cr the type of plots you want to obtain.
+#' @param x (`PseudoDualSimulations`)\cr the object we want to plot from.
+#' @param y (`missing`)\cr missing object, not used.
+#' @param type (`character`)\cr the type of plots you want to obtain.
 #' @param ... not used.
 #'
 #' @return A single `ggplot2` object if a single plot is asked for, otherwise a
@@ -2451,24 +2451,35 @@ setMethod(
   }
 )
 
-## -----------------------------------------------------------------------------------------
-##' Summary for Pseudo Dual responses simulations, relative to a given pseudo DLE and efficacy model
-##' (except the EffFlexi class model)
-##'
-##' @param object the \code{\linkS4class{PseudoDualSimulations}} object we want to summarize
-##' @param trueDLE a function which takes as input a dose (vector) and returns the true probability (vector)
-##' of DLE
-##' @param trueEff a function which takes as input a dose (vector) and returns the mean efficacy value(s) (vector).
-##' @param targetEndOfTrial the target probability of DLE that are used at the end of a trial. Default at 0.3.
-##' @param targetDuringTrial the target probability of DLE that are used during the trial. Default at 0.35.
-##' @param \dots Additional arguments can be supplied here for \code{trueDLE} and \code{trueEff}
-##' @return an object of class \code{\linkS4class{PseudoDualSimulationsSummary}}
-##'
-##' @example examples/Simulations-method-summarySIMDual.R
-##' @export
-##' @keywords methods
+# summary-PseudoDualSimulations ----
+
+#' Summarize Pseudo Dual Simulations
+#'
+#' @description `r lifecycle::badge("stable")`
+#'
+#' Summary for Pseudo Dual responses simulations, relative to a given pseudo
+#' DLE and efficacy model (except the EffFlexi class model).
+#'
+#' @param object (`PseudoDualSimulations`)\cr the object we want to summarize.
+#' @param trueDLE (`function`)\cr a function which takes as input a dose
+#'   (vector) and returns the true probability (vector) of DLE.
+#' @param trueEff (`function`)\cr a function which takes as input a dose
+#'   (vector) and returns the mean efficacy value(s) (vector).
+#' @param targetEndOfTrial (`number`)\cr the target probability of DLE that are
+#'   used at the end of a trial. Default at 0.3.
+#' @param targetDuringTrial (`number`)\cr the target probability of DLE that
+#'   are used during the trial. Default at 0.35.
+#' @param ... additional arguments can be supplied here for `trueDLE` and
+#'   `trueEff`.
+#'
+#' @return An object of class [`PseudoDualSimulationsSummary`].
+#'
+#' @aliases summary-PseudoDualSimulations
+#' @example examples/Simulations-method-summarySIMDual.R
+#' @export
+#'
 setMethod(
-  "summary",
+  f = "summary",
   signature = signature(object = "PseudoDualSimulations"),
   def = function(
     object,
@@ -2478,7 +2489,12 @@ setMethod(
     targetDuringTrial = 0.35,
     ...
   ) {
-    ## call the parent method
+    # Validate arguments.
+    assert_function(trueDLE)
+    assert_number(targetEndOfTrial, lower = 0, upper = 1)
+    assert_number(targetDuringTrial, lower = 0, upper = 1)
+
+    # Call the parent method.
     start <- callNextMethod(
       object = object,
       truth = trueDLE,
@@ -2486,98 +2502,99 @@ setMethod(
       targetDuringTrial = targetDuringTrial,
       ...
     )
-    doseGrid <- object@data[[1]]@doseGrid
+    dose_grid <- object@data[[1]]@doseGrid
 
-    ## ## dose level most often selected as MTD (TDtargetEnd of Trial)
-    xMostSelected <-
-      match_within_tolerance(start@dose_most_selected, table = doseGrid)
+    # Dose level most often selected as MTD (TDtargetEnd of Trial).
+    x_most_selected <-
+      match_within_tolerance(start@dose_most_selected, table = dose_grid)
 
-    ## check if true Eff is a function
-    ## check if special case applies
-    isTrueEffFx <- is.function(trueEff)
+    # Check if true Eff is a function (check if special case applies).
+    is_true_eff_fx <- is.function(trueEff)
 
-    TDtargetEndOfTrial <- start@target_dose_end_of_trial
+    td_target_end_of_trial <- start@target_dose_end_of_trial
 
-    if (isTrueEffFx) {
-      negtrueGainfn <- function(dose) {
-        return(-(trueEff(dose)) / (1 + (trueDLE(dose) / (1 - trueDLE(dose)))))
+    if (is_true_eff_fx) {
+      neg_true_gain_fn <- function(dose) {
+        -(trueEff(dose)) / (1 + (trueDLE(dose) / (1 - trueDLE(dose))))
       }
-      Gstar <- optim(exp(1), negtrueGainfn, method = "BFGS")$par
-      maxGainValue <- -(optim(exp(1), negtrueGainfn, method = "BFGS")$value)
-      GstarAtDoseGrid <- doseGrid[max(which(Gstar - doseGrid >= 0))]
+      gstar <- optim(exp(1), neg_true_gain_fn, method = "BFGS")$par
+      max_gain_value <- -(optim(
+        exp(1),
+        neg_true_gain_fn,
+        method = "BFGS"
+      )$value)
+      gstar_at_dose_grid <- dose_grid[max(which(gstar - dose_grid >= 0))]
     } else {
-      trueGain <- (trueEff) /
-        (1 + (trueDLE(doseGrid) / (1 - trueDLE(doseGrid))))
-      maxGainValue <- max(trueGain)
-      Gstar <- doseGrid[which.max(trueGain)]
-      GstarAtDoseGrid <- Gstar
+      true_gain <- (trueEff) /
+        (1 + (trueDLE(dose_grid) / (1 - trueDLE(dose_grid))))
+      max_gain_value <- max(true_gain)
+      gstar <- dose_grid[which.max(true_gain)]
+      gstar_at_dose_grid <- gstar
     }
 
-    ## A summary for all final Gstar obtained
-    GstarSummary <- summary(object@final_gstar_estimates)
-    ratioGstarSummary <- summary(object@final_gstar_ratios)
+    # A summary for all final Gstar obtained.
+    gstar_summary <- summary(object@final_gstar_estimates)
+    ratio_gstar_summary <- summary(object@final_gstar_ratios)
 
-    FinalDoseRecSummary <- summary(object@final_optimal_dose)
-    FinalRatioSummary <- summary(object@final_ratios)
+    final_dose_rec_summary <- summary(object@final_optimal_dose)
+    final_ratio_summary <- summary(object@final_ratios)
 
-    ## find names in the fit efficacy list (check it is with or without samples)
-    FitNames <- sapply(object@fit_eff, names)
-    if ("ExpEff" %in% FitNames) {
-      ## fitted efficacy level at dose most often selected
-      EffFitAtDoseMostSelected <- sapply(
+    # Find names in the fit efficacy list (check if with or without samples).
+    fit_names <- sapply(object@fit_eff, names)
+    if ("ExpEff" %in% fit_names) {
+      # Fitted efficacy level at dose most often selected.
+      eff_fit_at_dose_most_selected <- sapply(
         object@fit_eff,
         function(f) {
-          f$ExpEff[xMostSelected]
+          f$ExpEff[x_most_selected]
         }
       )
-      meanEffFitMatrix <- sapply(
+      mean_eff_fit_matrix <- sapply(
         object@fit_eff,
         "[[",
         "ExpEff"
       )
 
-      meanEffFit <- list(
-        truth = trueEff(doseGrid),
-        average = rowMeans(meanEffFitMatrix)
+      mean_eff_fit <- list(
+        truth = trueEff(dose_grid),
+        average = rowMeans(mean_eff_fit_matrix)
       )
     } else {
-      ## fitted efficacy level at dose most often selected
-      EffFitAtDoseMostSelected <-
+      # Fitted efficacy level at dose most often selected.
+      eff_fit_at_dose_most_selected <-
         sapply(
           object@fit_eff,
           function(f) {
-            f$middle[xMostSelected]
+            f$middle[x_most_selected]
           }
         )
 
-      ## mean fitted  curve (average, lower and upper quantiles)
-      ## at each dose level
-      ## (this is required for plotting)
-      meanEffFitMatrix <- sapply(
+      # Mean fitted curve (average, lower and upper quantiles) at each dose
+      # level (this is required for plotting).
+      mean_eff_fit_matrix <- sapply(
         object@fit_eff,
         "[[",
         "middle"
       )
 
-      ## check if special case applies
-
-      if (isTrueEffFx) {
-        TRUTHeff <- trueEff(doseGrid)
+      # Check if special case applies.
+      if (is_true_eff_fx) {
+        truth_eff <- trueEff(dose_grid)
       } else {
-        TRUTHeff <- trueEff
+        truth_eff <- trueEff
       }
 
-      meanEffFit <- list(
-        truth = TRUTHeff,
-        average = rowMeans(meanEffFitMatrix),
+      mean_eff_fit <- list(
+        truth = truth_eff,
+        average = rowMeans(mean_eff_fit_matrix),
         lower = apply(
-          meanEffFitMatrix,
+          mean_eff_fit_matrix,
           1L,
           quantile,
           0.025
         ),
         upper = apply(
-          meanEffFitMatrix,
+          mean_eff_fit_matrix,
           1L,
           quantile,
           0.975
@@ -2585,40 +2602,52 @@ setMethod(
       )
     }
 
-    ## give back an object of class PseudoDualSimulationsSummary,
-    ## for which we then define a print / plot method
-    ret <- .PseudoDualSimulationsSummary(
+    # Give back an object of class PseudoDualSimulationsSummary.
+    .PseudoDualSimulationsSummary(
       start,
-      target_gstar = Gstar,
-      target_gstar_at_dose_grid = GstarAtDoseGrid,
-      gstar_summary = GstarSummary,
-      ratio_gstar_summary = ratioGstarSummary,
-      final_dose_rec_summary = FinalDoseRecSummary,
-      final_ratio_summary = FinalRatioSummary,
-      eff_fit_at_dose_most_selected = EffFitAtDoseMostSelected,
-      mean_eff_fit = meanEffFit,
+      target_gstar = gstar,
+      target_gstar_at_dose_grid = gstar_at_dose_grid,
+      gstar_summary = gstar_summary,
+      ratio_gstar_summary = ratio_gstar_summary,
+      final_dose_rec_summary = final_dose_rec_summary,
+      final_ratio_summary = final_ratio_summary,
+      eff_fit_at_dose_most_selected = eff_fit_at_dose_most_selected,
+      mean_eff_fit = mean_eff_fit,
       stop_report = object@stop_report
     )
-
-    return(ret)
   }
 )
-## --------------------------------------------------------------------------------------------------
-##' Summary for Pseudo Dual responses simulations given a pseudo DLE model and the Flexible efficacy model.
-##'
-##' @param object the \code{\linkS4class{PseudoDualFlexiSimulations}} object we want to summarize
-##' @param trueDLE a function which takes as input a dose (vector) and returns the true probability of DLE (vector)
-##' @param trueEff a vector which takes as input the true mean efficacy values at all dose levels (in order)
-##' @param targetEndOfTrial the target probability of DLE that are used at the end of a trial. Default at 0.3.
-##' @param targetDuringTrial the target probability of DLE that are used during the trial. Default at 0.35.
-##' @param \dots Additional arguments can be supplied here for \code{trueDLE} and \code{trueEff}
-##' @return an object of class \code{\linkS4class{PseudoDualSimulationsSummary}}
-##'
-##' @example examples/Simulations-method-summarySIMDualFlexi.R
-##' @export
-##' @keywords methods
+
+# summary-PseudoDualFlexiSimulations ----
+
+#' Summarize Pseudo Dual Flexi Simulations
+#'
+#' @description `r lifecycle::badge("stable")`
+#'
+#' Summary for Pseudo Dual responses simulations given a pseudo DLE model and
+#' the Flexible efficacy model.
+#'
+#' @param object (`PseudoDualFlexiSimulations`)\cr the object we want to
+#'   summarize.
+#' @param trueDLE (`function`)\cr a function which takes as input a dose
+#'   (vector) and returns the true probability of DLE (vector).
+#' @param trueEff (`numeric`)\cr a vector which takes as input the true mean
+#'   efficacy values at all dose levels (in order).
+#' @param targetEndOfTrial (`number`)\cr the target probability of DLE that are
+#'   used at the end of a trial. Default at 0.3.
+#' @param targetDuringTrial (`number`)\cr the target probability of DLE that
+#'   are used during the trial. Default at 0.35.
+#' @param ... additional arguments can be supplied here for `trueDLE` and
+#'   `trueEff`.
+#'
+#' @return An object of class [`PseudoDualSimulationsSummary`].
+#'
+#' @aliases summary-PseudoDualFlexiSimulations
+#' @example examples/Simulations-method-summarySIMDualFlexi.R
+#' @export
+#'
 setMethod(
-  "summary",
+  f = "summary",
   signature = signature(object = "PseudoDualFlexiSimulations"),
   def = function(
     object,
@@ -2628,7 +2657,13 @@ setMethod(
     targetDuringTrial = 0.35,
     ...
   ) {
-    ## call the parent method
+    # Validate arguments.
+    assert_function(trueDLE)
+    assert_multi_class(trueEff, classes = c("numeric", "function"))
+    assert_number(targetEndOfTrial, lower = 0, upper = 1)
+    assert_number(targetDuringTrial, lower = 0, upper = 1)
+
+    # Call the parent method.
     start <- callNextMethod(
       object = object,
       trueDLE = trueDLE,
@@ -2638,40 +2673,43 @@ setMethod(
       ...
     )
 
-    ## give back an object of class PseudoDualSimulationsSummary,
-    ## for which we then define a print / plot method
-    ret <- .PseudoDualSimulationsSummary(start)
-
-    return(ret)
+    # Give back an object of class PseudoDualSimulationsSummary.
+    .PseudoDualSimulationsSummary(start)
   }
 )
 
-## ----------------------------------------------------------------------------------------
-##' Show the summary of Pseudo Dual simulations summary
-##'
-##' @param object the \code{\linkS4class{PseudoDualSimulationsSummary}} object we want to print
-##' @return invisibly returns a data frame of the results with one row and appropriate column names
-##'
-##'
-##' @example examples/Simulations-method-showSIMDual.R
-##' @export
-##' @keywords methods
+# show-PseudoDualSimulationsSummary ----
+
+#' Show the Summary of Pseudo Dual Simulations
+#'
+#' @description `r lifecycle::badge("stable")`
+#'
+#' Display a summary of pseudo dual simulation results.
+#'
+#' @param object (`PseudoDualSimulationsSummary`)\cr the object we want to\n#'   print.
+#'
+#' @return Invisibly returns a data frame of the results with one row and\n#'   appropriate column names.
+#'
+#' @aliases show-PseudoDualSimulationsSummary
+#' @example examples/Simulations-method-showSIMDual.R
+#' @export
+#'
 setMethod(
-  "show",
+  f = "show",
   signature = signature(object = "PseudoDualSimulationsSummary"),
   def = function(object) {
-    ## call the parent method
+    # Call the parent method.
     df <- callNextMethod(object)
-    dfNames <- names(df)
+    df_names <- names(df)
 
-    ## start report object
+    # Start report object.
     r <- Report$new(
       object = object,
       df = df,
-      dfNames = dfNames
+      dfNames = df_names
     )
 
-    ## add three reporting lines
+    # Add three reporting lines.
     cat(
       "Target Gstar, the dose which gives the maximum gain value was",
       r$dfSave(
@@ -2706,55 +2744,55 @@ setMethod(
       "\n"
     )
 
-    ratioGstarSum <- object@ratio_gstar_summary
+    ratio_gstar_sum <- object@ratio_gstar_summary
 
-    r$dfSave(as.numeric(ratioGstarSum[1]), "ratioGstarMin")
-    r$dfSave(as.numeric(ratioGstarSum[2]), "ratioGstarlower")
-    r$dfSave(as.numeric(ratioGstarSum[3]), "ratioGstarMedian")
-    r$dfSave(as.numeric(ratioGstarSum[4]), "ratioGstarMean")
-    r$dfSave(as.numeric(ratioGstarSum[5]), "ratioGstarUpper")
-    r$dfSave(as.numeric(ratioGstarSum[6]), "ratioGstarMax")
+    r$dfSave(as.numeric(ratio_gstar_sum[1]), "ratioGstarMin")
+    r$dfSave(as.numeric(ratio_gstar_sum[2]), "ratioGstarlower")
+    r$dfSave(as.numeric(ratio_gstar_sum[3]), "ratioGstarMedian")
+    r$dfSave(as.numeric(ratio_gstar_sum[4]), "ratioGstarMean")
+    r$dfSave(as.numeric(ratio_gstar_sum[5]), "ratioGstarUpper")
+    r$dfSave(as.numeric(ratio_gstar_sum[6]), "ratioGstarMax")
 
     cat(
       "The summary table of the final ratios of the Gstar across all simulations\n",
-      capture.output(ratioGstarSum)[1],
+      capture.output(ratio_gstar_sum)[1],
       "\n",
-      capture.output(ratioGstarSum)[2],
+      capture.output(ratio_gstar_sum)[2],
       "\n"
     )
 
-    FinalDoseRecSum <- object@final_dose_rec_summary
+    final_dose_rec_sum <- object@final_dose_rec_summary
 
-    r$dfSave(as.numeric(FinalDoseRecSum[1]), "FinalDoseRecMin")
-    r$dfSave(as.numeric(FinalDoseRecSum[2]), "FinalDoseReclower")
-    r$dfSave(as.numeric(FinalDoseRecSum[3]), "FinalDoseRecMedian")
-    r$dfSave(as.numeric(FinalDoseRecSum[4]), "FinalDoseRecMean")
-    r$dfSave(as.numeric(FinalDoseRecSum[5]), "FinalDoseRecUpper")
-    r$dfSave(as.numeric(FinalDoseRecSum[6]), "FinalDoseRecMax")
+    r$dfSave(as.numeric(final_dose_rec_sum[1]), "FinalDoseRecMin")
+    r$dfSave(as.numeric(final_dose_rec_sum[2]), "FinalDoseReclower")
+    r$dfSave(as.numeric(final_dose_rec_sum[3]), "FinalDoseRecMedian")
+    r$dfSave(as.numeric(final_dose_rec_sum[4]), "FinalDoseRecMean")
+    r$dfSave(as.numeric(final_dose_rec_sum[5]), "FinalDoseRecUpper")
+    r$dfSave(as.numeric(final_dose_rec_sum[6]), "FinalDoseRecMax")
 
     cat(
       "The summary table of dose levels, the optimal dose\n to recommend for subsequent study across all simulations\n",
-      capture.output(FinalDoseRecSum)[1],
+      capture.output(final_dose_rec_sum)[1],
       "\n",
-      capture.output(FinalDoseRecSum)[2],
+      capture.output(final_dose_rec_sum)[2],
       "\n"
     )
 
-    FinalratioSum <- object@final_ratio_summary
+    final_ratio_sum <- object@final_ratio_summary
 
-    r$dfSave(as.numeric(FinalratioSum[1]), "FinalratioMin")
-    r$dfSave(as.numeric(FinalratioSum[2]), "Finalratiolower")
-    r$dfSave(as.numeric(FinalratioSum[3]), "FinalratioMedian")
-    r$dfSave(as.numeric(FinalratioSum[4]), "FinalratioMean")
-    r$dfSave(as.numeric(FinalratioSum[5]), "FinalratioUpper")
-    r$dfSave(as.numeric(FinalratioSum[6]), "FinalratioMax")
+    r$dfSave(as.numeric(final_ratio_sum[1]), "FinalratioMin")
+    r$dfSave(as.numeric(final_ratio_sum[2]), "Finalratiolower")
+    r$dfSave(as.numeric(final_ratio_sum[3]), "FinalratioMedian")
+    r$dfSave(as.numeric(final_ratio_sum[4]), "FinalratioMean")
+    r$dfSave(as.numeric(final_ratio_sum[5]), "FinalratioUpper")
+    r$dfSave(as.numeric(final_ratio_sum[6]), "FinalratioMax")
 
     cat(
       "The summary table of the final ratios of the optimal dose for stopping across
         all simulations\n",
-      capture.output(FinalratioSum)[1],
+      capture.output(final_ratio_sum)[1],
       "\n",
-      capture.output(FinalratioSum)[2],
+      capture.output(final_ratio_sum)[2],
       "\n"
     )
 
@@ -2765,8 +2803,7 @@ setMethod(
       digits = 1
     )
 
-    # Report individual stopping rules with non-<NA> labels.
-
+    # Report individual stopping rules with non-NA labels.
     stop_pct_to_print <- h_calc_report_label_percentage(object@stop_report)
 
     if (length(stop_pct_to_print) > 0) {
@@ -2776,7 +2813,7 @@ setMethod(
       )
     }
 
-    ## and return the updated information
+    # And return the updated information.
     names(r$df) <- r$dfNames
     invisible(r$df)
   }
