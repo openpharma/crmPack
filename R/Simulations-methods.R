@@ -1034,43 +1034,43 @@ setMethod(
   }
 )
 
+# plot-GeneralSimulationsSummary-missing ----
 
-##' Graphical display of the general simulation summary
-##'
-##' This plot method can be applied to
-##' \code{\linkS4class{GeneralSimulationsSummary}} objects in order to
-##' summarize them graphically. Possible \code{type}s of plots at the moment
-##' are:
-##'
-##' \describe{
-##' \item{nObs}{Distribution of the number of patients in the simulated trials}
-##' \item{doseSelected}{Distribution of the final selected doses in the trials.
-##' Note that this can include zero entries, meaning that the trial was stopped
-##' because all doses in the dose grid appeared too toxic.}
-##' \item{propDLTs}{Distribution of the proportion of patients with DLTs in the
-##' trials}
-##' \item{nAboveTarget}{Distribution of the number of patients treated at doses
-##' which are above the target toxicity interval (as specified by the
-##' \code{truth} and \code{target} arguments to
-##' \code{\link{summary,GeneralSimulations-method}})}
-##' }
-##' You can specify any subset of these in the \code{type} argument.
-##'
-##' @param x the \code{\linkS4class{GeneralSimulationsSummary}} object we want
-##' to plot from
-##' @param y missing
-##' @param type the types of plots you want to obtain.
-##' @param \dots not used
-##' @return A single \code{\link[ggplot2]{ggplot}} object if a single plot is
-##' asked for, otherwise a `gtable` object.
-##'
-##' @importFrom ggplot2 geom_histogram ggplot aes xlab ylab geom_line
-##' scale_linetype_manual scale_colour_manual
-##' @importFrom gridExtra arrangeGrob
-##' @export
-##' @keywords methods
+#' Plot General Simulation Summary
+#'
+#' @description `r lifecycle::badge("stable")`
+#'
+#' Graphical display of the general simulation summary.
+#'
+#' This plot method can be applied to [`GeneralSimulationsSummary`] objects in
+#' order to summarize them graphically. Possible `type`s of plots at the moment
+#' are:
+#' \describe{
+#'   \item{nObs}{Distribution of the number of patients in the simulated trials}
+#'   \item{doseSelected}{Distribution of the final selected doses in the trials.
+#'     Note that this can include zero entries, meaning that the trial was
+#'     stopped because all doses in the dose grid appeared too toxic.}
+#'   \item{propDLTs}{Distribution of the proportion of patients with DLTs in the
+#'     trials}
+#'   \item{nAboveTarget}{Distribution of the number of patients treated at doses
+#'     which are above the target toxicity interval (as specified by the
+#'     `truth` and `target` arguments to [`summary,GeneralSimulations-method`])}
+#' }
+#' You can specify any subset of these in the `type` argument.
+#'
+#' @param x (`GeneralSimulationsSummary`)\cr the object we want to plot from.
+#' @param y (`missing`)\cr missing object, not used.
+#' @param type (`character`)\cr the types of plots you want to obtain.
+#' @param ... not used.
+#'
+#' @return A single [`ggplot`][ggplot2::ggplot] object if a single plot is
+#'   asked for, otherwise a `gtable` object.
+#'
+#' @aliases plot-GeneralSimulationsSummary-missing
+#' @export
+#'
 setMethod(
-  "plot",
+  f = "plot",
   signature = signature(
     x = "GeneralSimulationsSummary",
     y = "missing"
@@ -1086,18 +1086,18 @@ setMethod(
     ),
     ...
   ) {
-    ## which plots should be produced?
+    # Validate arguments.
     type <- match.arg(type, several.ok = TRUE)
-    stopifnot(length(type) > 0L)
+    assert_character(type, min.len = 1)
 
-    ## start the plot list
-    plotList <- list()
-    plotIndex <- 0L
+    # Start the plot list.
+    plot_list <- list()
+    plot_index <- 0L
 
-    ## distribution of overall sample size
+    # Distribution of overall sample size.
     if (x@placebo) {
       if ("nObs" %in% type) {
-        plotList[[plotIndex <- plotIndex + 1L]] <-
+        plot_list[[plot_index <- plot_index + 1L]] <-
           h_barplot_percentages(
             x = x@n_obs[2, ],
             description = "Number of patients on active in total"
@@ -1105,7 +1105,7 @@ setMethod(
       }
     } else {
       if ("nObs" %in% type) {
-        plotList[[plotIndex <- plotIndex + 1L]] <-
+        plot_list[[plot_index <- plot_index + 1L]] <-
           h_barplot_percentages(
             x = x@n_obs,
             description = "Number of patients in total"
@@ -1113,19 +1113,19 @@ setMethod(
       }
     }
 
-    ## distribution of final MTD estimate
+    # Distribution of final MTD estimate.
     if ("doseSelected" %in% type) {
-      plotList[[plotIndex <- plotIndex + 1L]] <-
+      plot_list[[plot_index <- plot_index + 1L]] <-
         h_barplot_percentages(
           x = x@dose_selected,
           description = "MTD estimate"
         )
     }
 
-    ## distribution of proportion of DLTs
+    # Distribution of proportion of DLTs.
     if (x@placebo) {
       if ("propDLTs" %in% type) {
-        plotList[[plotIndex <- plotIndex + 1L]] <-
+        plot_list[[plot_index <- plot_index + 1L]] <-
           h_barplot_percentages(
             x = x@prop_dlts[1, ] * 100,
             description = "Proportion of DLTs [%] on active",
@@ -1134,7 +1134,7 @@ setMethod(
       }
     } else {
       if ("propDLTs" %in% type) {
-        plotList[[plotIndex <- plotIndex + 1L]] <-
+        plot_list[[plot_index <- plot_index + 1L]] <-
           h_barplot_percentages(
             x = x@prop_dlts * 100,
             description = "Proportion of DLTs [%]",
@@ -1143,37 +1143,32 @@ setMethod(
       }
     }
 
-    ## distribution of number of patients treated at too much tox
+    # Distribution of number of patients treated at too much tox.
     if ("nAboveTarget" %in% type) {
-      plotList[[plotIndex <- plotIndex + 1L]] <-
+      plot_list[[plot_index <- plot_index + 1L]] <-
         h_barplot_percentages(
           x = x@n_above_target,
           description = "Number of patients above target"
         )
     }
 
-    ## first combine these small plots
-    if (length(plotList)) {
+    # First combine these small plots.
+    if (length(plot_list)) {
       ret <-
-        ## if there is only one plot
-        if (
-          identical(
-            length(plotList),
-            1L
-          )
-        ) {
-          ## just use that
-          plotList[[1L]]
+        # If there is only one plot.
+        if (identical(length(plot_list), 1L)) {
+          # Just use that.
+          plot_list[[1L]]
         } else {
-          ## multiple plots in this case
+          # Multiple plots in this case.
           do.call(
             gridExtra::arrangeGrob,
-            plotList
+            plot_list
           )
         }
     }
 
-    ## then return
+    # Then return.
     ret
   }
 )
