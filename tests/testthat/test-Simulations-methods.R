@@ -431,31 +431,37 @@ test_that("Report$report respects custom quantiles", {
   expect_true(any(grepl(",", output)))
 })
 
+# show ----
 
-## summary-PseudoSimulations ----
+## show-GeneralSimulationsSummary ----
 
-test_that("summary-PseudoSimulations works correctly", {
-  # Create pseudo simulation
-  emptydata <- Data(doseGrid = seq(25, 300, 25))
-
-  model <- LogisticIndepBeta(
-    binDLE = c(1.05, 1.8),
-    DLEweights = c(3, 3),
-    DLEdose = c(25, 300),
-    data = emptydata
+test_that("show-GeneralSimulationsSummary works correctly", {
+  # Create simulation and summary
+  emptydata <- Data(doseGrid = c(1, 3, 5, 10, 15, 20, 25))
+  model <- LogisticLogNormal(
+    mean = c(-0.85, 1),
+    cov = matrix(c(1, -0.5, -0.5, 1), nrow = 2),
+    ref_dose = 56
   )
 
-  design <- TDDesign(
+  design <- Design(
     model = model,
-    nextBest = NextBestTD(prob_target_drt = 0.35, prob_target_eot = 0.3),
+    nextBest = NextBestNCRM(
+      target = c(0.2, 0.35),
+      overdose = c(0.35, 1),
+      max_overdose_prob = 0.25
+    ),
     stopping = StoppingMinPatients(nPatients = 6),
-    increments = IncrementsRelative(intervals = 0, increments = 2),
+    increments = IncrementsRelative(
+      intervals = c(0, 20),
+      increments = c(1, 0.33)
+    ),
     cohort_size = CohortSizeConst(size = 3),
     data = emptydata,
-    startingDose = 25
+    startingDose = 3
   )
 
-  myTruth <- probFunction(model, phi1 = -53.66584, phi2 = 10.50499)
+  myTruth <- probFunction(model, alpha0 = 7, alpha1 = 8)
   options <- McmcOptions(burnin = 10, step = 2, samples = 20)
 
   mySims <- simulate(
@@ -464,147 +470,103 @@ test_that("summary-PseudoSimulations works correctly", {
     truth = myTruth,
     nsim = 2,
     seed = 819,
-    parallel = FALSE,
-    mcmcOptions = options
+    mcmcOptions = options,
+    parallel = FALSE
   )
+  simSummary <- summary(mySims, truth = myTruth)
 
-  result <- summary(mySims, truth = myTruth)
-  expect_snapshot(result)
-  expect_s4_class(result, "PseudoSimulationsSummary")
+  # Test that show method works (produces output)
+  expect_output(show(simSummary))
+
+  # Show methods should print something
+  result <- capture.output(show(simSummary))
+  expect_true(length(result) > 0)
+  expect_snapshot(show(simSummary))
 })
 
+## show-SimulationsSummary ----
+
+test_that("show-SimulationsSummary works correctly", {
+  emptydata <- Data(doseGrid = c(1, 3, 5, 10, 15, 20, 25))
+  model <- LogisticLogNormal(
+    mean = c(-0.85, 1),
+    cov = matrix(c(1, -0.5, -0.5, 1), nrow = 2),
+    ref_dose = 56
+  )
+
+  design <- Design(
+    model = model,
+    nextBest = NextBestNCRM(
+      target = c(0.2, 0.35),
+      overdose = c(0.35, 1),
+      max_overdose_prob = 0.25
+    ),
+    stopping = StoppingMinPatients(nPatients = 6),
+    increments = IncrementsRelative(
+      intervals = c(0, 20),
+      increments = c(1, 0.33)
+    ),
+    cohort_size = CohortSizeConst(size = 3),
+    data = emptydata,
+    startingDose = 3
+  )
+
+  myTruth <- probFunction(model, alpha0 = 7, alpha1 = 8)
+  options <- McmcOptions(burnin = 10, step = 2, samples = 20)
+
+  mySims <- simulate(
+    design,
+    args = NULL,
+    truth = myTruth,
+    nsim = 2,
+    seed = 819,
+    mcmcOptions = options,
+    parallel = FALSE
+  )
+  simSummary <- summary(mySims, truth = myTruth)
+
+  # Test that show method works (produces output)
+  expect_output(show(simSummary))
+
+  # Show methods should print something
+  result <- capture.output(show(simSummary))
+  expect_true(length(result) > 0)
+  expect_snapshot(show(simSummary))
+})
+
+## show-DualSimulationsSummary ----
+
+test_that("show-DualSimulationsSummary works correctly", {
+  mySims <- .DefaultDualSimulations()
+  myTruthTox <- function(dose) pnorm((dose - 60) / 10)
+  myTruthBio <- function(dose) {
+    pmax(0.1, pmin(0.95, 0.2 + 0.6 * (dose / 100)^0.5))
+  }
+
+  simSummary <- summary(
+    mySims,
+    trueTox = myTruthTox,
+    trueBiomarker = myTruthBio
+  )
+
+  # Test that show method works (produces output)
+  expect_output(show(simSummary))
+
+  # Show methods should print something
+  result <- capture.output(show(simSummary))
+  expect_true(length(result) > 0)
+  expect_snapshot(show(simSummary))
+
+  # Check for specific content in the output
+  expect_true(any(grepl("Summary of.*simulations", result)))
+  expect_true(any(grepl("Target toxicity interval", result)))
+  expect_true(any(grepl("biomarker", result, ignore.case = TRUE)))
+  expect_true(any(grepl("Number of patients", result)))
+  expect_true(any(grepl("Doses selected", result)))
+})
+
+
 if (FALSE) {
-  # show ----
-
-  ## show-GeneralSimulationsSummary ----
-
-  test_that("show-GeneralSimulationsSummary works correctly", {
-    # Create simulation and summary
-    emptydata <- Data(doseGrid = c(1, 3, 5, 10, 15, 20, 25))
-    model <- LogisticLogNormal(
-      mean = c(-0.85, 1),
-      cov = matrix(c(1, -0.5, -0.5, 1), nrow = 2),
-      ref_dose = 56
-    )
-
-    design <- Design(
-      model = model,
-      nextBest = NextBestNCRM(
-        target = c(0.2, 0.35),
-        overdose = c(0.35, 1),
-        max_overdose_prob = 0.25
-      ),
-      stopping = StoppingMinPatients(nPatients = 6),
-      increments = IncrementsRelative(
-        intervals = c(0, 20),
-        increments = c(1, 0.33)
-      ),
-      cohort_size = CohortSizeConst(size = 3),
-      data = emptydata,
-      startingDose = 3
-    )
-
-    myTruth <- probFunction(model, alpha0 = 7, alpha1 = 8)
-    options <- McmcOptions(burnin = 10, step = 2, samples = 20)
-
-    mySims <- simulate(
-      design,
-      args = NULL,
-      truth = myTruth,
-      nsim = 2,
-      seed = 819,
-      mcmcOptions = options,
-      parallel = FALSE
-    )
-    simSummary <- summary(mySims, truth = myTruth)
-
-    # Test that show method works (produces output)
-    expect_output(show(simSummary))
-
-    # Show methods should print something
-    result <- capture.output(show(simSummary))
-    expect_true(length(result) > 0)
-  })
-
-  ## show-SimulationsSummary ----
-
-  test_that("show-SimulationsSummary works correctly", {
-    emptydata <- Data(doseGrid = c(1, 3, 5, 10, 15, 20, 25))
-    model <- LogisticLogNormal(
-      mean = c(-0.85, 1),
-      cov = matrix(c(1, -0.5, -0.5, 1), nrow = 2),
-      ref_dose = 56
-    )
-
-    design <- Design(
-      model = model,
-      nextBest = NextBestNCRM(
-        target = c(0.2, 0.35),
-        overdose = c(0.35, 1),
-        max_overdose_prob = 0.25
-      ),
-      stopping = StoppingMinPatients(nPatients = 6),
-      increments = IncrementsRelative(
-        intervals = c(0, 20),
-        increments = c(1, 0.33)
-      ),
-      cohort_size = CohortSizeConst(size = 3),
-      data = emptydata,
-      startingDose = 3
-    )
-
-    myTruth <- probFunction(model, alpha0 = 7, alpha1 = 8)
-    options <- McmcOptions(burnin = 10, step = 2, samples = 20)
-
-    mySims <- simulate(
-      design,
-      args = NULL,
-      truth = myTruth,
-      nsim = 2,
-      seed = 819,
-      mcmcOptions = options,
-      parallel = FALSE
-    )
-    simSummary <- summary(mySims, truth = myTruth)
-
-    # Test that show method works (produces output)
-    expect_output(show(simSummary))
-
-    # Show methods should print something
-    result <- capture.output(show(simSummary))
-    expect_true(length(result) > 0)
-  })
-
-  ## show-DualSimulationsSummary ----
-
-  test_that("show-DualSimulationsSummary works correctly", {
-    mySims <- .DefaultDualSimulations()
-    myTruthTox <- function(dose) pnorm((dose - 60) / 10)
-    myTruthBio <- function(dose) {
-      pmax(0.1, pmin(0.95, 0.2 + 0.6 * (dose / 100)^0.5))
-    }
-
-    simSummary <- summary(
-      mySims,
-      trueTox = myTruthTox,
-      trueBiomarker = myTruthBio
-    )
-
-    # Test that show method works (produces output)
-    expect_output(show(simSummary))
-
-    # Show methods should print something
-    result <- capture.output(show(simSummary))
-    expect_true(length(result) > 0)
-
-    # Check for specific content in the output
-    expect_true(any(grepl("Summary of.*simulations", result)))
-    expect_true(any(grepl("Target toxicity interval", result)))
-    expect_true(any(grepl("biomarker", result, ignore.case = TRUE)))
-    expect_true(any(grepl("Number of patients", result)))
-    expect_true(any(grepl("Doses selected", result)))
-  })
-
   # plot summary objects ----
 
   ## plot-GeneralSimulationsSummary ----
@@ -752,6 +714,47 @@ if (FALSE) {
 
     result_dose_selected <- plot(simSummary, type = "doseSelected")
     expect_s3_class(result_dose_selected, "ggplot")
+  })
+
+  ## summary-PseudoSimulations ----
+
+  test_that("summary-PseudoSimulations works correctly", {
+    # Create pseudo simulation
+    emptydata <- Data(doseGrid = seq(25, 300, 25))
+
+    model <- LogisticIndepBeta(
+      binDLE = c(1.05, 1.8),
+      DLEweights = c(3, 3),
+      DLEdose = c(25, 300),
+      data = emptydata
+    )
+
+    design <- TDDesign(
+      model = model,
+      nextBest = NextBestTD(prob_target_drt = 0.35, prob_target_eot = 0.3),
+      stopping = StoppingMinPatients(nPatients = 6),
+      increments = IncrementsRelative(intervals = 0, increments = 2),
+      cohort_size = CohortSizeConst(size = 3),
+      data = emptydata,
+      startingDose = 25
+    )
+
+    myTruth <- probFunction(model, phi1 = -53.66584, phi2 = 10.50499)
+    options <- McmcOptions(burnin = 10, step = 2, samples = 20)
+
+    mySims <- simulate(
+      design,
+      args = NULL,
+      truth = myTruth,
+      nsim = 2,
+      seed = 819,
+      parallel = FALSE,
+      mcmcOptions = options
+    )
+
+    result <- summary(mySims, truth = myTruth)
+    expect_snapshot(result)
+    expect_s4_class(result, "PseudoSimulationsSummary")
   })
 
   # show-PseudoSimulationsSummary ----
