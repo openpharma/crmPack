@@ -1114,111 +1114,113 @@ test_that("summary-PseudoDualFlexiSimulations works correctly", {
   expect_snapshot(result_custom)
 })
 
-if (FALSE) {
-  # show-PseudoDualSimulationsSummary ----
+# show-PseudoDualSimulationsSummary ----
 
-  test_that("show-PseudoDualSimulationsSummary works correctly", {
-    pseudo_dual_sims <- .DefaultPseudoDualSimulations()
-    pseudo_dual_summary <- summary(
-      pseudo_dual_sims,
-      trueDLE = function(x) plogis(-3 + 0.05 * x),
-      trueEff = function(x) 0.2 + 0.004 * x
-    )
+test_that("show-PseudoDualSimulationsSummary works correctly", {
+  pseudo_dual_sims <- .DefaultPseudoDualSimulations()
+  pseudo_dual_summary <- summary(
+    pseudo_dual_sims,
+    trueDLE = function(x) plogis(-3 + 0.05 * x),
+    trueEff = function(x) 0.2 + 0.004 * x
+  )
 
-    # Test that show method produces output
-    expect_output(show(pseudo_dual_summary), "Target Gstar")
-    expect_output(show(pseudo_dual_summary), "maximum gain value")
-    expect_output(show(pseudo_dual_summary), "Target Gstar at dose Grid")
+  # Test that show method produces output
+  expect_snapshot(show(pseudo_dual_summary))
+  expect_output(show(pseudo_dual_summary), "Target Gstar")
+  expect_output(show(pseudo_dual_summary), "maximum gain value")
+  expect_output(show(pseudo_dual_summary), "Target Gstar at dose Grid")
 
-    # Test that it calls parent method
-    expect_output(show(pseudo_dual_summary), "Summary of")
-    expect_output(show(pseudo_dual_summary), "simulations")
+  # Test that it calls parent method
+  expect_output(show(pseudo_dual_summary), "Summary of")
+  expect_output(show(pseudo_dual_summary), "simulations")
 
-    # Test that it returns a data frame invisibly
-    result_output <- capture.output(show_result <- show(pseudo_dual_summary))
-    expect_true(is.data.frame(show_result))
-  })
+  # Test that it returns a data frame invisibly
+  result_output <- capture.output(show_result <- show(pseudo_dual_summary))
+  expect_true(is.data.frame(show_result))
+})
 
-  test_that("show-PseudoDualSimulationsSummary includes dual-specific content", {
-    pseudo_dual_sims <- .DefaultPseudoDualSimulations()
-    pseudo_dual_summary <- summary(
-      pseudo_dual_sims,
-      trueDLE = function(x) plogis(-3 + 0.05 * x),
-      trueEff = function(x) 0.2 + 0.004 * x
-    )
+test_that("show-PseudoDualSimulationsSummary includes dual-specific content", {
+  pseudo_dual_sims <- .DefaultPseudoDualSimulations()
+  pseudo_dual_summary <- summary(
+    pseudo_dual_sims,
+    trueDLE = function(x) plogis(-3 + 0.05 * x),
+    trueEff = function(x) 0.2 + 0.004 * x
+  )
 
-    output <- capture.output(show(pseudo_dual_summary))
+  output <- capture.output(show(pseudo_dual_summary))
+  expect_snapshot(show(pseudo_dual_summary))
 
-    # Test dual-specific content
-    expect_true(any(grepl("Target Gstar.*maximum gain value", output)))
-    expect_true(any(grepl("Target Gstar at dose Grid", output)))
+  # Test dual-specific content
+  expect_true(any(grepl("Target Gstar.*maximum gain value", output)))
+  expect_true(any(grepl("Target Gstar at dose Grid", output)))
 
-    # Test that parent content is also included
-    expect_true(any(grepl("Target probability of DLE", output)))
-    expect_true(any(grepl("Number of patients", output)))
-  })
+  # Test that parent content is also included
+  expect_true(any(grepl("Target probability of DLE", output)))
+  expect_true(any(grepl("Number of patients", output)))
+})
 
-  # plot-PseudoDualSimulationsSummary ----
+# plot-PseudoDualSimulationsSummary ----
 
-  test_that("plot-PseudoDualSimulationsSummary works correctly", {
-    pseudo_dual_sims <- .DefaultPseudoDualSimulations()
-    pseudo_dual_summary <- summary(
-      pseudo_dual_sims,
-      trueDLE = function(x) plogis(-3 + 0.05 * x),
-      trueEff = function(x) 0.2 + 0.004 * x
-    )
+test_that("plot-PseudoDualSimulationsSummary works correctly", {
+  pseudo_dual_sims <- .DefaultPseudoDualSimulations()
+  pseudo_dual_summary <- summary(
+    pseudo_dual_sims,
+    trueDLE = function(x) plogis(-3 + 0.05 * x),
+    trueEff = function(x) 0.2 + 0.004 * x
+  )
 
-    # Test default behavior
-    result <- plot(pseudo_dual_summary)
-    expect_s3_class(result, "gtable")
+  # Test default behavior
+  result <- plot(pseudo_dual_summary)
+  expect_s3_class(result, "gtable")
 
-    # Test dual-specific plot type
-    result_eff <- plot(pseudo_dual_summary, type = "meanEffFit")
-    expect_s3_class(result_eff, "ggplot")
-    expect_true(
-      grepl("efficacy", result_eff$labels$y, ignore.case = TRUE) ||
-        grepl("eff", result_eff$labels$y, ignore.case = TRUE)
-    )
+  # Test dual-specific plot type
+  result_eff <- plot(pseudo_dual_summary, type = "meanEffFit")
+  expect_s3_class(result_eff, "ggplot")
+  expect_doppel("plot_pseudoDualSimsSummary_meanEffFit", result_eff)
+  expect_true(
+    grepl("efficacy", result_eff$labels$y, ignore.case = TRUE) ||
+      grepl("eff", result_eff$labels$y, ignore.case = TRUE)
+  )
 
-    # Test combination with parent types
-    result_combo <- plot(pseudo_dual_summary, type = c("nObs", "meanEffFit"))
-    expect_s3_class(result_combo, "gtable")
-    expect_equal(dim(result_combo)[1], 2)
+  # Test combination with parent types
+  result_combo <- plot(pseudo_dual_summary, type = c("nObs", "meanEffFit"))
+  expect_s3_class(result_combo, "gtable")
+  expect_equal(dim(result_combo)[1], 2)
 
-    # Test all available types
-    all_types <- c(
-      "nObs",
-      "doseSelected",
-      "propDLE",
-      "nAboveTargetEndOfTrial",
-      "meanFit",
-      "meanEffFit"
-    )
-    result_all <- plot(pseudo_dual_summary, type = all_types)
-    expect_s3_class(result_all, "gtable")
-    expect_equal(dim(result_all)[1], 2)
-  })
+  # Test all available types
+  all_types <- c(
+    "nObs",
+    "doseSelected",
+    "propDLE",
+    "nAboveTargetEndOfTrial",
+    "meanFit",
+    "meanEffFit"
+  )
+  result_all <- plot(pseudo_dual_summary, type = all_types)
+  expect_s3_class(result_all, "gtable")
+  expect_equal(dim(result_all)[1], 2)
+})
 
-  test_that("plot-PseudoDualSimulationsSummary handles edge cases", {
-    pseudo_dual_sims <- .DefaultPseudoDualSimulations()
-    pseudo_dual_summary <- summary(
-      pseudo_dual_sims,
-      trueDLE = function(x) plogis(-3 + 0.05 * x),
-      trueEff = function(x) 0.2 + 0.004 * x
-    )
+test_that("plot-PseudoDualSimulationsSummary handles edge cases", {
+  pseudo_dual_sims <- .DefaultPseudoDualSimulations()
+  pseudo_dual_summary <- summary(
+    pseudo_dual_sims,
+    trueDLE = function(x) plogis(-3 + 0.05 * x),
+    trueEff = function(x) 0.2 + 0.004 * x
+  )
 
-    # Test error handling
-    expect_error(
-      plot(pseudo_dual_summary, type = "invalid_type"),
-      "should be one of"
-    )
-    expect_error(
-      plot(pseudo_dual_summary, type = character(0)),
-      "must be of length"
-    )
+  # Test error handling
+  expect_error(
+    plot(pseudo_dual_summary, type = "invalid_type"),
+    "should be one of"
+  )
+  expect_error(
+    plot(pseudo_dual_summary, type = character(0)),
+    "must be of length"
+  )
 
-    # Test single dual-specific type
-    result_single <- plot(pseudo_dual_summary, type = "meanEffFit")
-    expect_s3_class(result_single, "ggplot")
-  })
-}
+  # Test single dual-specific type
+  result_single <- plot(pseudo_dual_summary, type = "meanEffFit")
+  expect_s3_class(result_single, "ggplot")
+  expect_doppel("plot_pseudoDualSimsSummary_meanEffFit_single", result_single)
+})
