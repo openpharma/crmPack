@@ -1812,6 +1812,22 @@ setMethod(
   }
 )
 
+#' @describeIn maxDose Custom increment rule using a constant escalation factor
+#' @aliases maxDose-IncrementsConstantFactor
+#' @export
+setMethod(
+  f = "maxDose",
+  signature = signature(
+    increments = "IncrementsConstantFactor",
+    data = "Data"
+  ),
+  definition = function(increments, data, ...) {
+    current_dose <- data@x[data@nObs]
+    max_allowed <- min(increments@factor * current_dose, increments@max_dose)
+    max(data@doseGrid[data@doseGrid <= max_allowed])
+  }
+)
+
 # nolint start
 
 ## ============================================================
@@ -2399,6 +2415,124 @@ setMethod("stopTrial",
     }
 )
 
+## --------------------------------------------------
+## Stopping if current and recommended doses are same 
+## --------------------------------------------------
+
+##' @describeIn stopTrial Stop if current and recommended doses are same 
+##'
+setMethod("stopTrial",
+  signature =
+    signature(
+      stopping = "StoppingDoseStagnation",
+      dose = "ANY",
+      samples = "ANY",
+      model = "ANY",
+      data = "Data"
+    ),
+  def =
+    function(stopping, dose, samples, model, data, ...) {
+    # Extract last cohort dose
+    last_dose <- tail(data@x, n = 1)
+
+    # Check if current dose equals recommended dose
+    doStop <- !is.na(dose) && dose == last_dose
+
+
+      ## generate message
+      text <- paste(
+        "Last dose was", last_dose,
+        "and next recommended dose is", dose,
+      "→", ifelse(doStop, "STOP", "CONTINUE")
+      )
+
+
+      ## return both
+      return(structure(doStop,
+        message = text,
+        report_label = stopping@report_label
+      ))
+    }
+)
+                 
+## --------------------------------------------------
+## Stopping based on minimum number of patients at Mtd
+## --------------------------------------------------
+
+##' @describeIn stopTrial Stop based on minimum number of patients at Mtd
+##'
+setMethod("stopTrial",
+  signature =
+    signature(
+      stopping = "StoppingMinPatientsMtd",
+      dose = "ANY",
+      samples = "ANY",
+      model = "ANY",
+      data = "Data"
+    ),
+  def =
+    function(stopping, dose, samples, model, data, ...) {
+      ## count mtds
+      mtd_count <- if (!is.na(dose)) sum(data@x == dose) else 0L
+      
+      ## so can we stop?
+      doStop <- mtd_count >= stopping@nPatientsMtd
+
+      ## generate message
+      text <-
+        paste(
+          "Number of patients at Mtd is",
+          mtd_count,
+          "and thus",
+          ifelse(doStop, "reached", "below"),
+          "the prespecified minimum number",
+          stopping@nPatientsMtd
+        )
+
+      ## return both
+      return(structure(doStop,
+        message = text,
+        report_label = stopping@report_label
+      ))
+    }
+)
+
+
+## --------------------------------------------------
+## Stopping based on minimum number of dlts
+## --------------------------------------------------
+
+#' @describeIn stopTrial Stop based on minimum number of DLTs in the trial
+#'
+setMethod("stopTrial",
+  signature = signature(
+    stopping = "StoppingMinDlts",
+    dose = "numeric",
+    samples = "Samples",
+    model = "GeneralModel",
+    data = "Data"
+  ),
+  def = function(stopping, dose, samples, model, data, ...) {
+    ## count dlts
+    dlt_count <- sum(data@y)
+    
+    ## can we stop?
+    doStop <- dlt_count >= stopping@nDlts
+
+    ## generate message
+    text <- paste(
+      "Number of DLTs in the trial is", dlt_count,
+      "and thus", ifelse(doStop, "reached", "below"),
+      "the prespecified minimum of", stopping@nDlts
+    )
+
+    return(structure(doStop,
+      message = text,
+      report_label = stopping@report_label
+    ))
+  }
+)
+                 
 # nolint end
 
 ## StoppingTargetProb ----
@@ -2424,7 +2558,7 @@ setMethod(
       0,
       mean(
         prob(dose = dose, model, samples, ...) >= stopping@target[1] &
-          prob(dose = dose, model, samples, ...) <= stopping@target[2]
+          prob(dose = dose, model, samples, ...) < stopping@target[2]
       )
     )
 
