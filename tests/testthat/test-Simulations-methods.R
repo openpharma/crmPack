@@ -432,47 +432,48 @@ test_that("Report$report respects custom quantiles", {
 })
 
 
+## summary-PseudoSimulations ----
+
+test_that("summary-PseudoSimulations works correctly", {
+  # Create pseudo simulation
+  emptydata <- Data(doseGrid = seq(25, 300, 25))
+
+  model <- LogisticIndepBeta(
+    binDLE = c(1.05, 1.8),
+    DLEweights = c(3, 3),
+    DLEdose = c(25, 300),
+    data = emptydata
+  )
+
+  design <- TDDesign(
+    model = model,
+    nextBest = NextBestTD(prob_target_drt = 0.35, prob_target_eot = 0.3),
+    stopping = StoppingMinPatients(nPatients = 6),
+    increments = IncrementsRelative(intervals = 0, increments = 2),
+    cohort_size = CohortSizeConst(size = 3),
+    data = emptydata,
+    startingDose = 25
+  )
+
+  myTruth <- probFunction(model, phi1 = -53.66584, phi2 = 10.50499)
+  options <- McmcOptions(burnin = 10, step = 2, samples = 20)
+
+  mySims <- simulate(
+    design,
+    args = NULL,
+    truth = myTruth,
+    nsim = 2,
+    seed = 819,
+    parallel = FALSE,
+    mcmcOptions = options
+  )
+
+  result <- summary(mySims, truth = myTruth)
+  expect_snapshot(result)
+  expect_s4_class(result, "PseudoSimulationsSummary")
+})
+
 if (FALSE) {
-  ## summary-PseudoSimulations ----
-
-  test_that("summary-PseudoSimulations works correctly", {
-    # Create pseudo simulation
-    emptydata <- Data(doseGrid = seq(25, 300, 25))
-
-    model <- LogisticIndepBeta(
-      binDLE = c(1.05, 1.8),
-      DLEweights = c(3, 3),
-      DLEdose = c(25, 300),
-      data = emptydata
-    )
-
-    design <- TDDesign(
-      model = model,
-      nextBest = NextBestTD(prob_target_drt = 0.35, prob_target_eot = 0.3),
-      stopping = StoppingMinPatients(nPatients = 6),
-      increments = IncrementsRelative(intervals = 0, increments = 2),
-      cohort_size = CohortSizeConst(size = 3),
-      data = emptydata,
-      startingDose = 25
-    )
-
-    myTruth <- probFunction(model, phi1 = -53.66584, phi2 = 10.50499)
-    options <- McmcOptions(burnin = 10, step = 2, samples = 20)
-
-    mySims <- simulate(
-      design,
-      args = NULL,
-      truth = myTruth,
-      nsim = 2,
-      seed = 819,
-      parallel = FALSE,
-      mcmcOptions = options
-    )
-
-    result <- summary(mySims, truth = myTruth)
-    expect_s4_class(result, "PseudoSimulationsSummary")
-  })
-
   # show ----
 
   ## show-GeneralSimulationsSummary ----
