@@ -232,6 +232,7 @@ setMethod(
       singlePlots = list(plot1 = p1, plot2 = p2),
       probs = cbind(
         dose = data@doseGrid,
+        underdose = prob_underdose,
         target = prob_target,
         overdose = prob_overdose
       )
