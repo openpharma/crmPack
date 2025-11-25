@@ -1,6 +1,24 @@
-# Plot summaries of the model-based design simulations
+# Plot Model-Based Design Simulation Summary
 
-Graphical display of the simulation summary
+**\[stable\]**
+
+Graphical display of the simulation summary.
+
+This plot method can be applied to
+[`SimulationsSummary`](https://openpharma.github.io/crmPack/reference/SimulationsSummary-class.md)
+objects in order to summarize them graphically. Possible `type` of plots
+at the moment are those listed in
+[`plot,GeneralSimulationsSummary,missing-method`](https://openpharma.github.io/crmPack/reference/plot-GeneralSimulationsSummary-missing-method.md)
+plus:
+
+- meanFit:
+
+  Plot showing the average fitted dose-toxicity curve across the trials,
+  together with 95% credible intervals, and comparison with the assumed
+  truth (as specified by the `truth` argument to
+  [`summary,Simulations-method`](https://openpharma.github.io/crmPack/reference/summary-Simulations-method.md))
+
+You can specify any subset of these in the `type` argument.
 
 ## Usage
 
@@ -18,44 +36,27 @@ plot(
 
 - x:
 
-  the
-  [`SimulationsSummary`](https://openpharma.github.io/crmPack/reference/SimulationsSummary-class.md)
-  object we want to plot from
+  (`SimulationsSummary`)  
+  the object we want to plot from.
 
 - y:
 
-  missing
+  (`missing`)  
+  not used.
 
 - type:
 
+  (`character`)  
   the types of plots you want to obtain.
 
 - ...:
 
-  not used
+  not used.
 
 ## Value
 
-A single [`ggplot`](https://ggplot2.tidyverse.org/reference/ggplot.html)
-object if a single plot is asked for, otherwise a `gtable` object.
-
-## Details
-
-This plot method can be applied to
-[`SimulationsSummary`](https://openpharma.github.io/crmPack/reference/SimulationsSummary-class.md)
-objects in order to summarize them graphically. Possible `type` of plots
-at the moment are those listed in
-[`plot,GeneralSimulationsSummary,missing-method`](https://openpharma.github.io/crmPack/reference/plot-GeneralSimulationsSummary-missing-method.md)
-plus:
-
-- meanFit:
-
-  Plot showing the average fitted dose-toxicity curve across the trials,
-  together with 95% credible intervals, and comparison with the assumed
-  truth (as specified by the `truth` argument to
-  [`summary,Simulations-method`](https://openpharma.github.io/crmPack/reference/summary-Simulations-method.md))
-
-You can specify any subset of these in the `type` argument.
+A single `ggplot` object if a single plot is asked for, otherwise a
+`gtable` object.
 
 ## Examples
 

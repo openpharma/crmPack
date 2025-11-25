@@ -109,7 +109,6 @@
 <url><loc>https://openpharma.github.io/crmPack/reference/PseudoSimulations-class.html</loc></url>
 <url><loc>https://openpharma.github.io/crmPack/reference/PseudoSimulationsSummary-class.html</loc></url>
 <url><loc>https://openpharma.github.io/crmPack/reference/Quantiles2LogisticNormal.html</loc></url>
-<url><loc>https://openpharma.github.io/crmPack/reference/Report.html</loc></url>
 <url><loc>https://openpharma.github.io/crmPack/reference/RuleDesign-class.html</loc></url>
 <url><loc>https://openpharma.github.io/crmPack/reference/RuleDesignOrdinal-class.html</loc></url>
 <url><loc>https://openpharma.github.io/crmPack/reference/SafetyWindow-class.html</loc></url>
@@ -218,8 +217,12 @@
 <url><loc>https://openpharma.github.io/crmPack/reference/h_obtain_dose_grid_range.html</loc></url>
 <url><loc>https://openpharma.github.io/crmPack/reference/h_plot_data_cohort_lines.html</loc></url>
 <url><loc>https://openpharma.github.io/crmPack/reference/h_plot_data_df.html</loc></url>
+<url><loc>https://openpharma.github.io/crmPack/reference/h_plot_doses_tried.html</loc></url>
+<url><loc>https://openpharma.github.io/crmPack/reference/h_plot_simulation_trajectory.html</loc></url>
 <url><loc>https://openpharma.github.io/crmPack/reference/h_prepare_labels.html</loc></url>
 <url><loc>https://openpharma.github.io/crmPack/reference/h_prepare_units.html</loc></url>
+<url><loc>https://openpharma.github.io/crmPack/reference/h_pseudo_sim_fit_summary.html</loc></url>
+<url><loc>https://openpharma.github.io/crmPack/reference/h_pseudo_sim_inverse_dose.html</loc></url>
 <url><loc>https://openpharma.github.io/crmPack/reference/h_quantiles_target_function.html</loc></url>
 <url><loc>https://openpharma.github.io/crmPack/reference/h_rapply.html</loc></url>
 <url><loc>https://openpharma.github.io/crmPack/reference/h_simulations_output_format.html</loc></url>

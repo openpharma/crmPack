@@ -1,22 +1,8 @@
-# This plot method can be applied to [`PseudoDualFlexiSimulations`](https://openpharma.github.io/crmPack/reference/PseudoDualFlexiSimulations-class.md) objects in order to summarize them graphically. Possible `type`s of plots at the moment are:
+# Plot `PseudoDualFlexiSimulations`
 
-- trajectory:
+**\[stable\]**
 
-  Summary of the trajectory of the simulated trials
-
-- dosesTried:
-
-  Average proportions of the doses tested in patients
-
-- sigma2:
-
-  The variance of the efficacy responses
-
-- sigma2betaW:
-
-  The variance of the random walk model
-
-You can specify one or both of these in the `type` argument.
+Summarize the simulations with plots.
 
 This plot method can be applied to
 [`PseudoDualFlexiSimulations`](https://openpharma.github.io/crmPack/reference/PseudoDualFlexiSimulations-class.md)
@@ -52,26 +38,27 @@ plot(x, y, type = c("trajectory", "dosesTried", "sigma2", "sigma2betaW"), ...)
 
 - x:
 
-  the
-  [`PseudoDualFlexiSimulations`](https://openpharma.github.io/crmPack/reference/PseudoDualFlexiSimulations-class.md)
-  object we want to plot from
+  (`PseudoDualFlexiSimulations`)  
+  the object we want to plot from.
 
 - y:
 
-  missing
+  (`missing`)  
+  missing object, not used.
 
 - type:
 
+  (`character`)  
   the type of plots you want to obtain.
 
 - ...:
 
-  not used
+  not used.
 
 ## Value
 
-A single [`ggplot`](https://ggplot2.tidyverse.org/reference/ggplot.html)
-object if a single plot is asked for, otherwise a `gtable` object.
+A single `ggplot2` object if a single plot is asked for, otherwise a
+`gtable` object.
 
 ## Examples
 

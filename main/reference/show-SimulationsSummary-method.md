@@ -1,6 +1,8 @@
-# Show the summary of the simulations
+# Show the Summary of Model-Based Design Simulations
 
-Show the summary of the simulations
+**\[stable\]**
+
+Display a summary of model-based design simulation results.
 
 ## Usage
 
@@ -13,14 +15,13 @@ show(object)
 
 - object:
 
-  the
-  [`SimulationsSummary`](https://openpharma.github.io/crmPack/reference/SimulationsSummary-class.md)
-  object we want to print
+  (`SimulationsSummary`)  
+  the object we want to print.
 
 ## Value
 
-invisibly returns a data frame of the results with one row and
-appropriate column names
+Invisibly returns a data frame of the results with one row and
+appropriate column names.
 
 ## Examples
 
@@ -112,16 +113,16 @@ show(summary(mySims, truth = myTruth))
 #> Target dose interval corresponding to this was 19.6, 21.6 
 #> Intervals are corresponding to 10 and 90 % quantiles
 #> 
-#> Number of patients overall : mean 13 (13, 13) 
-#> Number of patients treated above target tox interval : mean 6 (6, 6) 
-#> Proportions of DLTs in the trials : mean 23 % (23 %, 23 %) 
-#> Mean toxicity risks for the patients on active : mean 32 % (32 %, 32 %) 
-#> Doses selected as MTD : mean 25 (25, 25) 
-#> True toxicity at doses selected : mean 63 % (63 %, 63 %) 
-#> Proportion of trials selecting target MTD: 0 %
-#> Dose most often selected as MTD: 25 
-#> Observed toxicity rate at dose most often selected: 33 %
-#> Fitted toxicity rate at dose most often selected : mean 27 % (27 %, 27 %) 
+#> Number of patients overall : mean 19 (19, 19) 
+#> Number of patients treated above target tox interval : mean 9 (9, 9) 
+#> Proportions of DLTs in the trials : mean 32 % (32 %, 32 %) 
+#> Mean toxicity risks for the patients on active : mean 35 % (35 %, 35 %) 
+#> Doses selected as MTD : mean 20 (20, 20) 
+#> True toxicity at doses selected : mean 22 % (22 %, 22 %) 
+#> Proportion of trials selecting target MTD: 100 %
+#> Dose most often selected as MTD: 20 
+#> Observed toxicity rate at dose most often selected: 25 %
+#> Fitted toxicity rate at dose most often selected : mean 28 % (28 %, 28 %) 
 #> Stop reason triggered:
 #>  ≥ 3 cohorts dosed :  100 %
 #>  P(0.2 ≤ prob(DLE | NBD) ≤ 0.35) ≥ 0.5 :  100 %

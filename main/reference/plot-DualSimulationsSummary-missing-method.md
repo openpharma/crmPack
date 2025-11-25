@@ -1,4 +1,8 @@
-# Plot summaries of the dual-endpoint design simulations
+# Plot Dual-Endpoint Design Simulation Summary
+
+**\[stable\]**
+
+Graphical display of dual-endpoint simulation summary.
 
 This plot method can be applied to
 [`DualSimulationsSummary`](https://openpharma.github.io/crmPack/reference/DualSimulationsSummary-class.md)
@@ -33,26 +37,27 @@ plot(
 
 - x:
 
-  the
-  [`DualSimulationsSummary`](https://openpharma.github.io/crmPack/reference/DualSimulationsSummary-class.md)
-  object we want to plot from
+  (`DualSimulationsSummary`)  
+  the object we want to plot from.
 
 - y:
 
-  missing
+  (`missing`)  
+  not used.
 
 - type:
 
+  (`character`)  
   the types of plots you want to obtain.
 
 - ...:
 
-  not used
+  not used.
 
 ## Value
 
-A single [`ggplot`](https://ggplot2.tidyverse.org/reference/ggplot.html)
-object if a single plot is asked for, otherwise a `gtable` object.
+A single `ggplot` object if a single plot is asked for, otherwise a
+`gtable` object.
 
 ## Examples
 

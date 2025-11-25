@@ -1,9 +1,11 @@
-# Plot dual-endpoint simulations
+# Plot `DualSimulations`
+
+**\[stable\]**
 
 This plot method can be applied to
 [`DualSimulations`](https://openpharma.github.io/crmPack/reference/DualSimulations-class.md)
 objects in order to summarize them graphically. In addition to the
-standard plot types, there is
+standard plot types, there is:
 
 - sigma2W:
 
@@ -26,26 +28,27 @@ plot(x, y, type = c("trajectory", "dosesTried", "sigma2W", "rho"), ...)
 
 - x:
 
-  the
-  [`DualSimulations`](https://openpharma.github.io/crmPack/reference/DualSimulations-class.md)
-  object we want to plot from
+  (`DualSimulations`)  
+  the object we want to plot from.
 
 - y:
 
-  missing
+  (`missing`)  
+  not used.
 
 - type:
 
+  (`character`)  
   the type of plots you want to obtain.
 
 - ...:
 
-  not used
+  not used.
 
 ## Value
 
-A single [`ggplot`](https://ggplot2.tidyverse.org/reference/ggplot.html)
-object if a single plot is asked for, otherwise a `gtable` object.
+A single `ggplot` object if a single plot is asked for, otherwise a
+`gtable` object.
 
 ## Examples
 

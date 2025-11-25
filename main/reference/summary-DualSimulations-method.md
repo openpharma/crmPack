@@ -1,7 +1,9 @@
-# Summarize the dual-endpoint design simulations, relative to given true dose-toxicity and dose-biomarker curves
+# Summarize Dual-Endpoint Design Simulations
+
+**\[stable\]**
 
 Summarize the dual-endpoint design simulations, relative to given true
-dose-toxicity and dose-biomarker curves
+dose-toxicity and dose-biomarker curves.
 
 ## Usage
 
@@ -14,34 +16,36 @@ summary(object, trueTox, trueBiomarker, target = c(0.2, 0.35), ...)
 
 - object:
 
-  the
-  [`DualSimulations`](https://openpharma.github.io/crmPack/reference/DualSimulations-class.md)
-  object we want to summarize
+  (`DualSimulations`)  
+  the object we want to summarize.
 
 - trueTox:
 
+  (`function`)  
   a function which takes as input a dose (vector) and returns the true
   probability (vector) for toxicity.
 
 - trueBiomarker:
 
+  (`function`)  
   a function which takes as input a dose (vector) and returns the true
   biomarker level (vector).
 
 - target:
 
+  (`numeric`)  
   the target toxicity interval (default: 20-35%) used for the
-  computations
+  computations.
 
 - ...:
 
-  Additional arguments can be supplied here for `trueTox` and
-  `trueBiomarker`
+  additional arguments can be supplied here for `trueTox` and
+  `trueBiomarker`.
 
 ## Value
 
-an object of class
-[`DualSimulationsSummary`](https://openpharma.github.io/crmPack/reference/DualSimulationsSummary-class.md)
+An object of class
+[`DualSimulationsSummary`](https://openpharma.github.io/crmPack/reference/DualSimulationsSummary-class.md).
 
 ## Examples
 
@@ -158,15 +162,15 @@ summary(
 #> Number of patients treated above target tox interval : mean 0 (0, 0) 
 #> Proportions of DLTs in the trials : mean 0 % (0 %, 0 %) 
 #> Mean toxicity risks for the patients on active : mean 0 % (0 %, 0 %) 
-#> Doses selected as MTD : mean 0 (0, 0) 
+#> Doses selected as MTD : mean 1 (1, 1) 
 #> True toxicity at doses selected : mean 0 % (0 %, 0 %) 
 #> Proportion of trials selecting target MTD: 0 %
-#> Dose most often selected as MTD: 0 
-#> Observed toxicity rate at dose most often selected: NaN %
-#> Fitted toxicity rate at dose most often selected : mean NA % (NA %, NA %) 
+#> Dose most often selected as MTD: 1 
+#> Observed toxicity rate at dose most often selected: 0 %
+#> Fitted toxicity rate at dose most often selected : mean 12 % (12 %, 12 %) 
 #> Stop reason triggered:
 #>  P(0.9 ≤ Biomarker ≤ 1) ≥ 0.5 (relative) :  0 %
 #>  ≥ 6 patients dosed :  100 %
-#>  Stopped because of missing dose :  100 %
-#> Fitted biomarker level at dose most often selected : mean NA (NA, NA) 
+#>  Stopped because of missing dose :  0 %
+#> Fitted biomarker level at dose most often selected : mean 0.2 (0.2, 0.2) 
 ```

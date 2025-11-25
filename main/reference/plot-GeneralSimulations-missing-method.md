@@ -1,40 +1,8 @@
-# Plot simulations
+# Plot `GeneralSimulations`
 
-Summarize the simulations with plots
+**\[stable\]**
 
-## Usage
-
-``` r
-# S4 method for class 'GeneralSimulations,missing'
-plot(x, y, type = c("trajectory", "dosesTried"), ...)
-```
-
-## Arguments
-
-- x:
-
-  the
-  [`GeneralSimulations`](https://openpharma.github.io/crmPack/reference/GeneralSimulations-class.md)
-  object we want to plot from
-
-- y:
-
-  missing
-
-- type:
-
-  the type of plots you want to obtain.
-
-- ...:
-
-  not used
-
-## Value
-
-A single [`ggplot`](https://ggplot2.tidyverse.org/reference/ggplot.html)
-object if a single plot is asked for, otherwise a `gtable` object.
-
-## Details
+Summarize the simulations with plots.
 
 This plot method can be applied to
 [`GeneralSimulations`](https://openpharma.github.io/crmPack/reference/GeneralSimulations-class.md)
@@ -50,6 +18,39 @@ plots at the moment are:
   Average proportions of the doses tested in patients
 
 You can specify one or both of these in the `type` argument.
+
+## Usage
+
+``` r
+# S4 method for class 'GeneralSimulations,missing'
+plot(x, y, type = c("trajectory", "dosesTried"), ...)
+```
+
+## Arguments
+
+- x:
+
+  (`GeneralSimulations`)  
+  the object we want to plot from.
+
+- y:
+
+  (`missing`)  
+  not used.
+
+- type:
+
+  (`character`)  
+  the type of plots you want to obtain.
+
+- ...:
+
+  not used.
+
+## Value
+
+A single `ggplot` object if a single plot is asked for, otherwise a
+`gtable` object.
 
 ## Examples
 

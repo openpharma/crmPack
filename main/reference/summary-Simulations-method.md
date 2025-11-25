@@ -1,6 +1,8 @@
-# Summarize the model-based design simulations, relative to a given truth
+# Summarize Model-Based Design Simulations
 
-Summarize the model-based design simulations, relative to a given truth
+**\[stable\]**
+
+Summarize the model-based design simulations, relative to a given truth.
 
 ## Usage
 
@@ -13,28 +15,29 @@ summary(object, truth, target = c(0.2, 0.35), ...)
 
 - object:
 
-  the
-  [`Simulations`](https://openpharma.github.io/crmPack/reference/Simulations-class.md)
-  object we want to summarize
+  (`Simulations`)  
+  the object we want to summarize.
 
 - truth:
 
+  (`function`)  
   a function which takes as input a dose (vector) and returns the true
-  probability (vector) for toxicity
+  probability (vector) for toxicity.
 
 - target:
 
+  (`numeric`)  
   the target toxicity interval (default: 20-35%) used for the
-  computations
+  computations.
 
 - ...:
 
-  Additional arguments can be supplied here for `truth`
+  additional arguments can be supplied here for `truth`.
 
 ## Value
 
-an object of class
-[`SimulationsSummary`](https://openpharma.github.io/crmPack/reference/SimulationsSummary-class.md)
+An object of class
+[`SimulationsSummary`](https://openpharma.github.io/crmPack/reference/SimulationsSummary-class.md).
 
 ## Examples
 
@@ -134,16 +137,16 @@ summary(mySims, truth = myTruth)
 #> Number of patients overall : mean 22 (22, 22) 
 #> Number of patients treated above target tox interval : mean 9 (9, 9) 
 #> Proportions of DLTs in the trials : mean 27 % (27 %, 27 %) 
-#> Mean toxicity risks for the patients on active : mean 28 % (28 %, 28 %) 
+#> Mean toxicity risks for the patients on active : mean 31 % (31 %, 31 %) 
 #> Doses selected as MTD : mean 20 (20, 20) 
 #> True toxicity at doses selected : mean 22 % (22 %, 22 %) 
 #> Proportion of trials selecting target MTD: 100 %
 #> Dose most often selected as MTD: 20 
-#> Observed toxicity rate at dose most often selected: 100 %
-#> Fitted toxicity rate at dose most often selected : mean 26 % (26 %, 26 %) 
-#> max_mtd : 154.59 
-#> mean_mtd : 24.38 
-#> median_mtd : 21.94 
+#> Observed toxicity rate at dose most often selected: 25 %
+#> Fitted toxicity rate at dose most often selected : mean 25 % (25 %, 25 %) 
+#> max_mtd : 77.98 
+#> mean_mtd : 23.48 
+#> median_mtd : 22.26 
 #> Stop reason triggered:
 #>  ≥ 3 cohorts dosed :  100 %
 #>  P(0.2 ≤ prob(DLE | NBD) ≤ 0.35) ≥ 0.5 :  100 %

@@ -1,6 +1,8 @@
-# Show the summary of Pseudo Dual simulations summary
+# Show the Summary of `PseudoDualSimulations`
 
-Show the summary of Pseudo Dual simulations summary
+**\[stable\]**
+
+Display a summary of pseudo dual simulation results.
 
 ## Usage
 
@@ -13,14 +15,13 @@ show(object)
 
 - object:
 
-  the
-  [`PseudoDualSimulationsSummary`](https://openpharma.github.io/crmPack/reference/PseudoDualSimulationsSummary-class.md)
-  object we want to print
+  (`PseudoDualSimulationsSummary`)  
+  the object we want to print.
 
 ## Value
 
-invisibly returns a data frame of the results with one row and
-appropriate column names
+Invisibly returns a data frame of the results with one row and
+appropriate column names.
 
 ## Examples
 

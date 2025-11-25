@@ -1,6 +1,8 @@
-# Show the summary of the simulations
+# Show the Summary of the Simulations
 
-Show the summary of the simulations
+**\[stable\]**
+
+Display a summary of general simulation results.
 
 ## Usage
 
@@ -13,11 +15,10 @@ show(object)
 
 - object:
 
-  the
-  [`GeneralSimulationsSummary`](https://openpharma.github.io/crmPack/reference/GeneralSimulationsSummary-class.md)
-  object we want to print
+  (`GeneralSimulationsSummary`)  
+  the object we want to print.
 
 ## Value
 
-invisibly returns a data frame of the results with one row and
-appropriate column names
+Invisibly returns a data frame of the results with one row and
+appropriate column names.

@@ -1371,9 +1371,6 @@ trial design, implementation, simulation and analysis:
   **\[stable\]** : Convert Prior Quantiles to Logistic (Log) Normal
   Model
 
-- [`Report`](https://openpharma.github.io/crmPack/reference/Report.md) :
-  A Reference Class to represent sequentially updated reporting objects.
-
 - [`Simulations()`](https://openpharma.github.io/crmPack/reference/Simulations-class.md)
   [`.DefaultSimulations()`](https://openpharma.github.io/crmPack/reference/Simulations-class.md)
   **\[stable\]** :
@@ -1471,50 +1468,42 @@ trial design, implementation, simulation and analysis:
   model and data without samples
 
 - [`plot(`*`<DualSimulations>`*`,`*`<missing>`*`)`](https://openpharma.github.io/crmPack/reference/plot-DualSimulations-missing-method.md)
-  : Plot dual-endpoint simulations
+  **\[stable\]** :
+
+  Plot `DualSimulations`
 
 - [`plot(`*`<DualSimulationsSummary>`*`,`*`<missing>`*`)`](https://openpharma.github.io/crmPack/reference/plot-DualSimulationsSummary-missing-method.md)
-  : Plot summaries of the dual-endpoint design simulations
+  **\[stable\]** : Plot Dual-Endpoint Design Simulation Summary
 
 - [`plot(`*`<GeneralSimulations>`*`,`*`<missing>`*`)`](https://openpharma.github.io/crmPack/reference/plot-GeneralSimulations-missing-method.md)
-  : Plot simulations
+  **\[stable\]** :
+
+  Plot `GeneralSimulations`
 
 - [`plot(`*`<GeneralSimulationsSummary>`*`,`*`<missing>`*`)`](https://openpharma.github.io/crmPack/reference/plot-GeneralSimulationsSummary-missing-method.md)
-  : Graphical display of the general simulation summary
+  **\[stable\]** :
+
+  Plot `GeneralSimulationsSummary`
 
 - [`plot(`*`<PseudoDualFlexiSimulations>`*`,`*`<missing>`*`)`](https://openpharma.github.io/crmPack/reference/plot-PseudoDualFlexiSimulations-missing-method.md)
-  :
+  **\[stable\]** :
 
-  This plot method can be applied to `PseudoDualFlexiSimulations`
-  objects in order to summarize them graphically. Possible `type`s of
-  plots at the moment are:
-
-  trajectory
-
-  :   Summary of the trajectory of the simulated trials
-
-  dosesTried
-
-  :   Average proportions of the doses tested in patients
-
-  sigma2
-
-  :   The variance of the efficacy responses
-
-  sigma2betaW
-
-  :   The variance of the random walk model
-
-  You can specify one or both of these in the `type` argument.
+  Plot `PseudoDualFlexiSimulations`
 
 - [`plot(`*`<PseudoDualSimulations>`*`,`*`<missing>`*`)`](https://openpharma.github.io/crmPack/reference/plot-PseudoDualSimulations-missing-method.md)
-  : Plot simulations
+  **\[stable\]** :
+
+  Plot `PseudoDualSimulations`
 
 - [`plot(`*`<PseudoDualSimulationsSummary>`*`,`*`<missing>`*`)`](https://openpharma.github.io/crmPack/reference/plot-PseudoDualSimulationsSummary-missing-method.md)
-  : Plot the summary of Pseudo Dual Simulations summary
+  **\[stable\]** :
+
+  Plot `PseudoDualSimulationsSummary`
 
 - [`plot(`*`<PseudoSimulationsSummary>`*`,`*`<missing>`*`)`](https://openpharma.github.io/crmPack/reference/plot-PseudoSimulationsSummary-missing-method.md)
-  : Plot summaries of the pseudo simulations
+  **\[stable\]** :
+
+  Plot `PseudoSimulationsSummary`
 
 - [`plot(`*`<Samples>`*`,`*`<DALogisticLogNormal>`*`)`](https://openpharma.github.io/crmPack/reference/plot-Samples-DALogisticLogNormal-method.md)
   : Plotting dose-toxicity model fits
@@ -1538,7 +1527,7 @@ trial design, implementation, simulation and analysis:
   samples
 
 - [`plot(`*`<SimulationsSummary>`*`,`*`<missing>`*`)`](https://openpharma.github.io/crmPack/reference/plot-SimulationsSummary-missing-method.md)
-  : Plot summaries of the model-based design simulations
+  **\[stable\]** : Plot Model-Based Design Simulation Summary
 
 - [`plotDualResponses()`](https://openpharma.github.io/crmPack/reference/plotDualResponses.md)
   : Plot of the DLE and efficacy curve side by side given a DLE pseudo
@@ -1563,19 +1552,23 @@ trial design, implementation, simulation and analysis:
   **\[stable\]** : Helper Function to Set and Save the RNG Seed
 
 - [`show(`*`<DualSimulationsSummary>`*`)`](https://openpharma.github.io/crmPack/reference/show-DualSimulationsSummary-method.md)
-  : Show the summary of the dual-endpoint simulations
+  **\[stable\]** : Show the Summary of Dual-Endpoint Simulations
 
 - [`show(`*`<GeneralSimulationsSummary>`*`)`](https://openpharma.github.io/crmPack/reference/show-GeneralSimulationsSummary-method.md)
-  : Show the summary of the simulations
+  **\[stable\]** : Show the Summary of the Simulations
 
 - [`show(`*`<PseudoDualSimulationsSummary>`*`)`](https://openpharma.github.io/crmPack/reference/show-PseudoDualSimulationsSummary-method.md)
-  : Show the summary of Pseudo Dual simulations summary
+  **\[stable\]** :
+
+  Show the Summary of `PseudoDualSimulations`
 
 - [`show(`*`<PseudoSimulationsSummary>`*`)`](https://openpharma.github.io/crmPack/reference/show-PseudoSimulationsSummary-method.md)
-  : Show the summary of the simulations
+  **\[stable\]** :
+
+  Show the Summary of `PseudoSimulations`
 
 - [`show(`*`<SimulationsSummary>`*`)`](https://openpharma.github.io/crmPack/reference/show-SimulationsSummary-method.md)
-  : Show the summary of the simulations
+  **\[stable\]** : Show the Summary of Model-Based Design Simulations
 
 - [`simulate(`*`<DADesign>`*`)`](https://openpharma.github.io/crmPack/reference/simulate-DADesign-method.md)
   **\[stable\]** : Simulate outcomes from a time-to-DLT augmented CRM
@@ -1612,26 +1605,30 @@ trial design, implementation, simulation and analysis:
   Simulate Method for the `DesignGrouped` Class
 
 - [`summary(`*`<DualSimulations>`*`)`](https://openpharma.github.io/crmPack/reference/summary-DualSimulations-method.md)
-  : Summarize the dual-endpoint design simulations, relative to given
-  true dose-toxicity and dose-biomarker curves
+  **\[stable\]** : Summarize Dual-Endpoint Design Simulations
 
 - [`summary(`*`<GeneralSimulations>`*`)`](https://openpharma.github.io/crmPack/reference/summary-GeneralSimulations-method.md)
-  : Summarize the simulations, relative to a given truth
+  **\[stable\]** :
+
+  Summarize the `GeneralSimulations`, Relative to a Given Truth
 
 - [`summary(`*`<PseudoDualFlexiSimulations>`*`)`](https://openpharma.github.io/crmPack/reference/summary-PseudoDualFlexiSimulations-method.md)
-  : Summary for Pseudo Dual responses simulations given a pseudo DLE
-  model and the Flexible efficacy model.
+  **\[stable\]** :
+
+  Summarize `PseudoDualFlexiSimulations`
 
 - [`summary(`*`<PseudoDualSimulations>`*`)`](https://openpharma.github.io/crmPack/reference/summary-PseudoDualSimulations-method.md)
-  : Summary for Pseudo Dual responses simulations, relative to a given
-  pseudo DLE and efficacy model (except the EffFlexi class model)
+  **\[stable\]** :
+
+  Summarize `PseudoDualSimulations`
 
 - [`summary(`*`<Simulations>`*`)`](https://openpharma.github.io/crmPack/reference/summary-Simulations-method.md)
-  : Summarize the model-based design simulations, relative to a given
-  truth
+  **\[stable\]** : Summarize Model-Based Design Simulations
 
 - [`summary(`*`<PseudoSimulations>`*`)`](https://openpharma.github.io/crmPack/reference/summary-PseudoSimulations-method.md)
-  : Summarize the simulations, relative to a given truth
+  **\[stable\]** :
+
+  Summarize `PseudoSimulations`
 
 - [`tidy()`](https://openpharma.github.io/crmPack/reference/tidy.md)
   **\[experimental\]** :

@@ -517,7 +517,7 @@ stopTrial(myStopping, nextDoseVal, samples, model, data)
     ## 
     ## attr(,"message")[[2]]
     ## attr(,"message")[[2]][[1]]
-    ## [1] "Probability for target toxicity is 34 % for dose 100 and thus below the required 50 %"
+    ## [1] "Probability for target toxicity is 31 % for dose 100 and thus below the required 50 %"
     ## 
     ## attr(,"message")[[2]][[2]]
     ## [1] "3 patients lie within 20% of the next best dose 100. This is below the required 9 patients"
@@ -535,7 +535,7 @@ stopTrial(myStopping, nextDoseVal, samples, model, data)
     ## [1] FALSE
     ## attr(,"message")
     ## attr(,"message")[[1]]
-    ## [1] "Probability for target toxicity is 34 % for dose 100 and thus below the required 50 %"
+    ## [1] "Probability for target toxicity is 31 % for dose 100 and thus below the required 50 %"
     ## 
     ## attr(,"message")[[2]]
     ## [1] "3 patients lie within 20% of the next best dose 100. This is below the required 9 patients"
@@ -544,7 +544,7 @@ stopTrial(myStopping, nextDoseVal, samples, model, data)
     ## attr(,"individual")[[1]]
     ## [1] FALSE
     ## attr(,"message")
-    ## [1] "Probability for target toxicity is 34 % for dose 100 and thus below the required 50 %"
+    ## [1] "Probability for target toxicity is 31 % for dose 100 and thus below the required 50 %"
     ## attr(,"report_label")
     ## [1] "P(0.2 ≤ prob(DLE | NBD) ≤ 0.35) ≥ 0.5"
     ## 
@@ -672,7 +672,7 @@ mySimsTime <-
 The number of simulated trials depends on the required accuracy of the
 results. The argument `parallel` can be set to `TRUE` if one wishes to
 run the iterations in parallel on all processors of the computer, which
-can yield a meaningful speedup. Here we needed 199 seconds for 100
+can yield a meaningful speedup. Here we needed 196 seconds for 100
 simulated trials on an Intel Core i5-6300U CPU with 2.4 GHz.
 
 The result is an object of class `Simulations` containing multiple
@@ -725,15 +725,15 @@ simSum
     ## Proportions of DLTs in the trials for patients on placebo : mean 0 % (0 %, 0 %) 
     ## Proportions of DLTs in the trials for patients on active : mean 28 % (21 %, 33 %) 
     ## Mean toxicity risks for the patients on active : mean 27 % (18 %, 33 %) 
-    ## Doses selected as MTD : mean 46 (25, 50) 
+    ## Doses selected as MTD : mean 45.8 (25, 50) 
     ## True toxicity at doses selected : mean 22 % (0 %, 26 %) 
-    ## Proportion of trials selecting target MTD: 84 %
+    ## Proportion of trials selecting target MTD: 83 %
     ## Dose most often selected as MTD: 50 
-    ## Observed toxicity rate at dose most often selected: 27 %
-    ## Fitted toxicity rate at dose most often selected : mean 23 % (17 %, 30 %) 
+    ## Observed toxicity rate at dose most often selected: 26 %
+    ## Fitted toxicity rate at dose most often selected : mean 23 % (16 %, 30 %) 
     ## Stop reason triggered:
-    ##  ≥ 30 patients dosed :  67 %
-    ##  P(0.2 ≤ prob(DLE | NBD) ≤ 0.35) ≥ 0.5 :  47 %
+    ##  ≥ 30 patients dosed :  66 %
+    ##  P(0.2 ≤ prob(DLE | NBD) ≤ 0.35) ≥ 0.5 :  42 %
     ##  ≥ 9 patients dosed in 20 % dose range around NBD :  98 %
 
 A plot of the summary results can also be produced, see Figure

@@ -1,6 +1,8 @@
-# Show the summary of the dual-endpoint simulations
+# Show the Summary of Dual-Endpoint Simulations
 
-Show the summary of the dual-endpoint simulations
+**\[stable\]**
+
+Display a summary of dual-endpoint simulation results.
 
 ## Usage
 
@@ -13,14 +15,13 @@ show(object)
 
 - object:
 
-  the
-  [`DualSimulationsSummary`](https://openpharma.github.io/crmPack/reference/DualSimulationsSummary-class.md)
-  object we want to print
+  (`DualSimulationsSummary`)  
+  the object we want to print.
 
 ## Value
 
-invisibly returns a data frame of the results with one row and
-appropriate column names
+Invisibly returns a data frame of the results with one row and
+appropriate column names.
 
 ## Examples
 
@@ -144,7 +145,7 @@ show(summary(
 #> Target dose interval corresponding to this was NA, NA 
 #> Intervals are corresponding to 10 and 90 % quantiles
 #> 
-#> Number of patients overall : mean 6 (6, 6) 
+#> Number of patients overall : mean 3 (3, 3) 
 #> Number of patients treated above target tox interval : mean 0 (0, 0) 
 #> Proportions of DLTs in the trials : mean 0 % (0 %, 0 %) 
 #> Mean toxicity risks for the patients on active : mean 0 % (0 %, 0 %) 

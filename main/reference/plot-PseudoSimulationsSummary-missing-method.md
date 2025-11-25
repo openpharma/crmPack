@@ -1,6 +1,14 @@
-# Plot summaries of the pseudo simulations
+# Plot `PseudoSimulationsSummary`
 
-Graphical display of the simulation summary
+**\[stable\]**
+
+Graphical display of the simulation summary.
+
+This plot method can be applied to
+[`PseudoSimulationsSummary`](https://openpharma.github.io/crmPack/reference/PseudoSimulationsSummary-class.md)
+objects in order to summarize them graphically. This can be used when
+only DLE responses are involved in the simulations. This also applied to
+results with or without samples generated during the simulations.
 
 ## Usage
 
@@ -18,34 +26,27 @@ plot(
 
 - x:
 
-  the
-  [`PseudoSimulationsSummary`](https://openpharma.github.io/crmPack/reference/PseudoSimulationsSummary-class.md)
-  object we want to plot from
+  (`PseudoSimulationsSummary`)  
+  the object we want to plot from.
 
 - y:
 
-  missing
+  (`missing`)  
+  missing object, not used.
 
 - type:
 
+  (`character`)  
   the types of plots you want to obtain.
 
 - ...:
 
-  not used
+  not used.
 
 ## Value
 
-A single [`ggplot`](https://ggplot2.tidyverse.org/reference/ggplot.html)
-object if a single plot is asked for, otherwise a `gtable` object.
-
-## Details
-
-This plot method can be applied to
-[`PseudoSimulationsSummary`](https://openpharma.github.io/crmPack/reference/PseudoSimulationsSummary-class.md)
-objects in order to summarize them graphically. This can be used when
-only DLE responses are involved in the simulations. This also applied to
-results with or without samples generated during the simulations
+A single `ggplot2` object if a single plot is asked for, otherwise a
+`gtable` object.
 
 ## Examples
 

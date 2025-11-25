@@ -1,6 +1,8 @@
-# Summarize the simulations, relative to a given truth
+# Summarize the `GeneralSimulations`, Relative to a Given Truth
 
-Summarize the simulations, relative to a given truth
+**\[stable\]**
+
+Summarize simulations relative to a given true dose-toxicity curve.
 
 ## Usage
 
@@ -13,25 +15,26 @@ summary(object, truth, target = c(0.2, 0.35), ...)
 
 - object:
 
-  the
-  [`GeneralSimulations`](https://openpharma.github.io/crmPack/reference/GeneralSimulations-class.md)
-  object we want to summarize
+  (`GeneralSimulations`)  
+  the object we want to summarize.
 
 - truth:
 
+  (`function`)  
   a function which takes as input a dose (vector) and returns the true
-  probability (vector) for toxicity
+  probability (vector) for toxicity.
 
 - target:
 
+  (`numeric`)  
   the target toxicity interval (default: 20-35%) used for the
-  computations
+  computations.
 
 - ...:
 
-  Additional arguments can be supplied here for `truth`
+  additional arguments can be supplied here for `truth`.
 
 ## Value
 
-an object of class
-[`GeneralSimulationsSummary`](https://openpharma.github.io/crmPack/reference/GeneralSimulationsSummary-class.md)
+An object of class
+[`GeneralSimulationsSummary`](https://openpharma.github.io/crmPack/reference/GeneralSimulationsSummary-class.md).

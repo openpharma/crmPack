@@ -1,43 +1,13 @@
-# Graphical display of the general simulation summary
+# Plot `GeneralSimulationsSummary`
+
+**\[stable\]**
+
+Graphical display of the general simulation summary.
 
 This plot method can be applied to
 [`GeneralSimulationsSummary`](https://openpharma.github.io/crmPack/reference/GeneralSimulationsSummary-class.md)
 objects in order to summarize them graphically. Possible `type`s of
 plots at the moment are:
-
-## Usage
-
-``` r
-# S4 method for class 'GeneralSimulationsSummary,missing'
-plot(x, y, type = c("nObs", "doseSelected", "propDLTs", "nAboveTarget"), ...)
-```
-
-## Arguments
-
-- x:
-
-  the
-  [`GeneralSimulationsSummary`](https://openpharma.github.io/crmPack/reference/GeneralSimulationsSummary-class.md)
-  object we want to plot from
-
-- y:
-
-  missing
-
-- type:
-
-  the types of plots you want to obtain.
-
-- ...:
-
-  not used
-
-## Value
-
-A single [`ggplot`](https://ggplot2.tidyverse.org/reference/ggplot.html)
-object if a single plot is asked for, otherwise a `gtable` object.
-
-## Details
 
 - nObs:
 
@@ -61,3 +31,36 @@ object if a single plot is asked for, otherwise a `gtable` object.
   [`summary,GeneralSimulations-method`](https://openpharma.github.io/crmPack/reference/summary-GeneralSimulations-method.md))
 
 You can specify any subset of these in the `type` argument.
+
+## Usage
+
+``` r
+# S4 method for class 'GeneralSimulationsSummary,missing'
+plot(x, y, type = c("nObs", "doseSelected", "propDLTs", "nAboveTarget"), ...)
+```
+
+## Arguments
+
+- x:
+
+  (`GeneralSimulationsSummary`)  
+  the object we want to plot from.
+
+- y:
+
+  (`missing`)  
+  not used.
+
+- type:
+
+  (`character`)  
+  the types of plots you want to obtain.
+
+- ...:
+
+  not used.
+
+## Value
+
+A single `ggplot` object if a single plot is asked for, otherwise a
+`gtable` object.

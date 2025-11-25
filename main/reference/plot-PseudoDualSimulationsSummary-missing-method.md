@@ -1,4 +1,8 @@
-# Plot the summary of Pseudo Dual Simulations summary
+# Plot `PseudoDualSimulationsSummary`
+
+**\[stable\]**
+
+Plot the summary of `PseudoDualSimulations`.
 
 This plot method can be applied to
 [`PseudoDualSimulationsSummary`](https://openpharma.github.io/crmPack/reference/PseudoDualSimulationsSummary-class.md)
@@ -6,6 +10,16 @@ objects in order to summarize them graphically. Possible `type` of plots
 at the moment are those listed in
 [`plot,PseudoSimulationsSummary,missing-method`](https://openpharma.github.io/crmPack/reference/plot-PseudoSimulationsSummary-missing-method.md)
 plus:
+
+- meanEffFit:
+
+  Plot showing the fitted dose-efficacy curve. If no samples are
+  involved, only the average fitted dose-efficacy curve across the
+  trials will be plotted. If samples (DLE and efficacy) are involved,
+  the average fitted dose-efficacy curve across the trials, together
+  with the 95% credibility interval; and comparison with the assumed
+  truth (as specified by the `trueEff` argument to
+  [`summary,PseudoDualSimulations-method`](https://openpharma.github.io/crmPack/reference/summary-PseudoDualSimulations-method.md))
 
 You can specify any subset of these in the `type` argument.
 
@@ -26,26 +40,27 @@ plot(
 
 - x:
 
-  the
-  [`PseudoDualSimulationsSummary`](https://openpharma.github.io/crmPack/reference/PseudoDualSimulationsSummary-class.md)
-  object we want to plot from
+  (`PseudoDualSimulationsSummary`)  
+  the object we want to plot from.
 
 - y:
 
-  missing
+  (`missing`)  
+  not used.
 
 - type:
 
+  (`character`)  
   the types of plots you want to obtain.
 
 - ...:
 
-  not used
+  not used.
 
 ## Value
 
-A single [`ggplot`](https://ggplot2.tidyverse.org/reference/ggplot.html)
-object if a single plot is asked for, otherwise a `gtable` object.
+A single `ggplot2` object if a single plot is asked for, otherwise a
+`gtable` object.
 
 ## Examples
 

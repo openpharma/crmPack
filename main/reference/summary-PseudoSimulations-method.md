@@ -1,6 +1,8 @@
-# Summarize the simulations, relative to a given truth
+# Summarize `PseudoSimulations`
 
-Summarize the simulations, relative to a given truth
+**\[stable\]**
+
+Summarize the simulations, relative to a given truth.
 
 ## Usage
 
@@ -13,31 +15,33 @@ summary(object, truth, targetEndOfTrial = 0.3, targetDuringTrial = 0.35, ...)
 
 - object:
 
-  the
-  [`PseudoSimulations`](https://openpharma.github.io/crmPack/reference/PseudoSimulations-class.md)
-  object we want to summarize
+  (`PseudoSimulations`)  
+  the object we want to summarize.
 
 - truth:
 
+  (`function`)  
   a function which takes as input a dose (vector) and returns the true
-  probability (vector) for toxicity
+  probability (vector) for toxicity.
 
 - targetEndOfTrial:
 
-  the target probability of DLE wanted to achieve at the end of a trial
+  (`number`)  
+  the target probability of DLE wanted to achieve at the end of a trial.
 
 - targetDuringTrial:
 
-  the target probability of DLE wanted to achieve during a trial
+  (`number`)  
+  the target probability of DLE wanted to achieve during a trial.
 
 - ...:
 
-  Additional arguments can be supplied here for `truth`
+  additional arguments can be supplied here for `truth`.
 
 ## Value
 
-an object of class
-[`PseudoSimulationsSummary`](https://openpharma.github.io/crmPack/reference/PseudoSimulationsSummary-class.md)
+An object of class
+[`PseudoSimulationsSummary`](https://openpharma.github.io/crmPack/reference/PseudoSimulationsSummary-class.md).
 
 ## Examples
 

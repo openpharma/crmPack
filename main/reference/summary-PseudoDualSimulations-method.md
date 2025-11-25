@@ -1,7 +1,9 @@
-# Summary for Pseudo Dual responses simulations, relative to a given pseudo DLE and efficacy model (except the EffFlexi class model)
+# Summarize `PseudoDualSimulations`
+
+**\[stable\]**
 
 Summary for Pseudo Dual responses simulations, relative to a given
-pseudo DLE and efficacy model (except the EffFlexi class model)
+pseudo DLE and efficacy model (except the EffFlexi class model).
 
 ## Usage
 
@@ -21,38 +23,41 @@ summary(
 
 - object:
 
-  the
-  [`PseudoDualSimulations`](https://openpharma.github.io/crmPack/reference/PseudoDualSimulations-class.md)
-  object we want to summarize
+  (`PseudoDualSimulations`)  
+  the object we want to summarize.
 
 - trueDLE:
 
+  (`function`)  
   a function which takes as input a dose (vector) and returns the true
-  probability (vector) of DLE
+  probability (vector) of DLE.
 
 - trueEff:
 
+  (`function`)  
   a function which takes as input a dose (vector) and returns the mean
   efficacy value(s) (vector).
 
 - targetEndOfTrial:
 
+  (`number`)  
   the target probability of DLE that are used at the end of a trial.
   Default at 0.3.
 
 - targetDuringTrial:
 
+  (`number`)  
   the target probability of DLE that are used during the trial. Default
   at 0.35.
 
 - ...:
 
-  Additional arguments can be supplied here for `trueDLE` and `trueEff`
+  additional arguments can be supplied here for `trueDLE` and `trueEff`.
 
 ## Value
 
-an object of class
-[`PseudoDualSimulationsSummary`](https://openpharma.github.io/crmPack/reference/PseudoDualSimulationsSummary-class.md)
+An object of class
+[`PseudoDualSimulationsSummary`](https://openpharma.github.io/crmPack/reference/PseudoDualSimulationsSummary-class.md).
 
 ## Examples
 
