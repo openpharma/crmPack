@@ -2245,8 +2245,7 @@ setMethod(
   }
 )
 
-
-# plot-PseudoDualSimulations-missing ----
+# plot-PseudoDualSimulations ----
 
 #' Plot Pseudo Dual Simulations
 #'
@@ -2347,7 +2346,7 @@ setMethod(
   }
 )
 
-# plot-PseudoDualFlexiSimulations-missing ----
+# plot-PseudoDualFlexiSimulations ----
 
 #' Plot Pseudo Dual Flexi Simulations
 #'

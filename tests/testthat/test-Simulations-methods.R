@@ -1034,82 +1034,87 @@ test_that("plot-PseudoDualFlexiSimulations works correctly", {
   ))
 })
 
+# summary-PseudoDualSimulations ----
+
+test_that("summary-PseudoDualSimulations works correctly", {
+  pseudo_dual_sims <- .DefaultPseudoDualSimulations()
+
+  # Test basic summary call
+  result <- summary(
+    pseudo_dual_sims,
+    trueDLE = function(x) plogis(-3 + 0.05 * x),
+    trueEff = function(x) 0.2 + 0.004 * x
+  )
+
+  expect_s4_class(result, "PseudoDualSimulationsSummary")
+  expect_snapshot(result)
+
+  # Test with custom target values
+  result_custom <- summary(
+    pseudo_dual_sims,
+    trueDLE = function(x) plogis(-3 + 0.05 * x),
+    trueEff = function(x) 0.2 + 0.004 * x,
+    targetEndOfTrial = 0.25,
+    targetDuringTrial = 0.30
+  )
+
+  expect_s4_class(result_custom, "PseudoDualSimulationsSummary")
+  expect_equal(result_custom@target_end_of_trial, 0.25)
+  expect_snapshot(result_custom)
+})
+
+test_that("summary-PseudoDualSimulations produces expected structure", {
+  pseudo_dual_sims <- .DefaultPseudoDualSimulations()
+
+  result <- summary(
+    pseudo_dual_sims,
+    trueDLE = function(x) plogis(-3 + 0.05 * x),
+    trueEff = function(x) 0.2 + 0.004 * x
+  )
+
+  # Test inheritance from parent class
+  expect_true(is(result, "PseudoDualSimulationsSummary"))
+  expect_true(is(result, "PseudoSimulationsSummary"))
+  expect_snapshot(result)
+
+  # Test that dual-specific slots exist
+  expect_true("target_gstar" %in% slotNames(result))
+  expect_true("target_gstar_at_dose_grid" %in% slotNames(result))
+  expect_true("gstar_summary" %in% slotNames(result))
+  expect_true("eff_fit_at_dose_most_selected" %in% slotNames(result))
+  expect_true("mean_eff_fit" %in% slotNames(result))
+})
+
+# summary-PseudoDualFlexiSimulations ----
+
+test_that("summary-PseudoDualFlexiSimulations works correctly", {
+  pseudo_dual_flexi_sims <- .DefaultPseudoDualFlexiSimulations()
+
+  # Test basic summary call
+  result <- summary(
+    pseudo_dual_flexi_sims,
+    trueDLE = function(x) plogis(-3 + 0.05 * x),
+    trueEff = function(x) 0.2 + 0.004 * x
+  )
+
+  expect_s4_class(result, "PseudoDualSimulationsSummary")
+  expect_snapshot(result)
+
+  # Test with custom target values
+  result_custom <- summary(
+    pseudo_dual_flexi_sims,
+    trueDLE = function(x) plogis(-3 + 0.05 * x),
+    trueEff = function(x) 0.2 + 0.004 * x,
+    targetEndOfTrial = 0.25,
+    targetDuringTrial = 0.30
+  )
+
+  expect_s4_class(result_custom, "PseudoDualSimulationsSummary")
+  expect_equal(result_custom@target_end_of_trial, 0.25)
+  expect_snapshot(result_custom)
+})
+
 if (FALSE) {
-  # summary-PseudoDualSimulations ----
-
-  test_that("summary-PseudoDualSimulations works correctly", {
-    pseudo_dual_sims <- .DefaultPseudoDualSimulations()
-
-    # Test basic summary call
-    result <- summary(
-      pseudo_dual_sims,
-      trueDLE = function(x) plogis(-3 + 0.05 * x),
-      trueEff = function(x) 0.2 + 0.004 * x
-    )
-
-    expect_s4_class(result, "PseudoDualSimulationsSummary")
-
-    # Test with custom target values
-    result_custom <- summary(
-      pseudo_dual_sims,
-      trueDLE = function(x) plogis(-3 + 0.05 * x),
-      trueEff = function(x) 0.2 + 0.004 * x,
-      targetEndOfTrial = 0.25,
-      targetDuringTrial = 0.30
-    )
-
-    expect_s4_class(result_custom, "PseudoDualSimulationsSummary")
-    expect_equal(result_custom@target_end_of_trial, 0.25)
-  })
-
-  test_that("summary-PseudoDualSimulations produces expected structure", {
-    pseudo_dual_sims <- .DefaultPseudoDualSimulations()
-
-    result <- summary(
-      pseudo_dual_sims,
-      trueDLE = function(x) plogis(-3 + 0.05 * x),
-      trueEff = function(x) 0.2 + 0.004 * x
-    )
-
-    # Test inheritance from parent class
-    expect_true(is(result, "PseudoDualSimulationsSummary"))
-    expect_true(is(result, "PseudoSimulationsSummary"))
-
-    # Test that dual-specific slots exist
-    expect_true("target_gstar" %in% slotNames(result))
-    expect_true("target_gstar_at_dose_grid" %in% slotNames(result))
-    expect_true("gstar_summary" %in% slotNames(result))
-    expect_true("eff_fit_at_dose_most_selected" %in% slotNames(result))
-    expect_true("mean_eff_fit" %in% slotNames(result))
-  })
-
-  # summary-PseudoDualFlexiSimulations ----
-
-  test_that("summary-PseudoDualFlexiSimulations works correctly", {
-    pseudo_dual_flexi_sims <- .DefaultPseudoDualFlexiSimulations()
-
-    # Test basic summary call
-    result <- summary(
-      pseudo_dual_flexi_sims,
-      trueDLE = function(x) plogis(-3 + 0.05 * x),
-      trueEff = function(x) 0.2 + 0.004 * x
-    )
-
-    expect_s4_class(result, "PseudoDualSimulationsSummary")
-
-    # Test with custom target values
-    result_custom <- summary(
-      pseudo_dual_flexi_sims,
-      trueDLE = function(x) plogis(-3 + 0.05 * x),
-      trueEff = function(x) 0.2 + 0.004 * x,
-      targetEndOfTrial = 0.25,
-      targetDuringTrial = 0.30
-    )
-
-    expect_s4_class(result_custom, "PseudoDualSimulationsSummary")
-    expect_equal(result_custom@target_end_of_trial, 0.25)
-  })
-
   # show-PseudoDualSimulationsSummary ----
 
   test_that("show-PseudoDualSimulationsSummary works correctly", {
