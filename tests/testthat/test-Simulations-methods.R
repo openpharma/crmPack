@@ -89,12 +89,14 @@ test_that("plot-DualSimulations works correctly", {
 
   result_rho <- plot(mySims, type = "rho")
   expect_s3_class(result_rho, "ggplot")
+  expect_doppel("plot_dualSims_rho", result_rho)
   expect_equal(result_rho$labels$x, "")
   expect_equal(result_rho$labels$y, "Correlation estimates")
 
   # Test sigma2W plot specifically
   result_sigma2w <- plot(mySims, type = "sigma2W")
   expect_s3_class(result_sigma2w, "ggplot")
+  expect_doppel("plot_dualSims_sigma2w", result_sigma2w)
   expect_equal(result_sigma2w$labels$y, "Biomarker variance estimates")
 })
 
