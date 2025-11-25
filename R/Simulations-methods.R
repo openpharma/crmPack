@@ -529,26 +529,32 @@ setMethod(
   }
 )
 
+# summary-Simulations ----
 
-##' Summarize the model-based design simulations, relative to a given truth
-##'
-##' @param object the \code{\linkS4class{Simulations}} object we want to
-##' summarize
-##' @param truth a function which takes as input a dose (vector) and returns the
-##' true probability (vector) for toxicity
-##' @param target the target toxicity interval (default: 20-35%) used for the
-##' computations
-##' @param \dots Additional arguments can be supplied here for \code{truth}
-##' @return an object of class \code{\linkS4class{SimulationsSummary}}
-##'
-##' @example examples/Simulations-method-summary.R
-##' @export
-##' @keywords methods
+#' Summarize Model-Based Design Simulations
+#'
+#' @description `r lifecycle::badge("stable")`
+#'
+#' Summarize the model-based design simulations, relative to a given truth.
+#'
+#' @param object (`Simulations`)\cr the object we want to summarize.
+#' @param truth (`function`)\cr a function which takes as input a dose (vector)
+#'   and returns the true probability (vector) for toxicity.
+#' @param target (`numeric`)\cr the target toxicity interval (default: 20-35%)
+#'   used for the computations.
+#' @param ... additional arguments can be supplied here for `truth`.
+#'
+#' @return An object of class [`SimulationsSummary`].
+#'
+#' @aliases summary-Simulations
+#' @example examples/Simulations-method-summary.R
+#' @export
+#'
 setMethod(
-  "summary",
+  f = "summary",
   signature = signature(object = "Simulations"),
   def = function(object, truth, target = c(0.2, 0.35), ...) {
-    ## call the parent method
+    # Call the parent method.
     start <- callNextMethod(
       object = object,
       truth = truth,
@@ -556,83 +562,85 @@ setMethod(
       ...
     )
 
-    doseGrid <- object@data[[1]]@doseGrid
+    dose_grid <- object@data[[1]]@doseGrid
 
-    ## dose level most often selected as MTD
-    xMostSelected <-
-      match_within_tolerance(start@dose_most_selected, table = doseGrid)
+    # Dose level most often selected as MTD.
+    x_most_selected <-
+      match_within_tolerance(start@dose_most_selected, table = dose_grid)
 
-    ## fitted toxicity rate at dose most often selected
-    fitAtDoseMostSelected <-
+    # Fitted toxicity rate at dose most often selected.
+    fit_at_dose_most_selected <-
       sapply(
         object@fit,
         function(f) {
-          f$middle[xMostSelected]
+          f$middle[x_most_selected]
         }
       )
 
-    ## mean fitted toxicity (average, lower and upper quantiles)
-    ## at each dose level
-    ## (this is required for plotting)
-    meanFitMatrix <- sapply(
+    # Mean fitted toxicity (average, lower and upper quantiles)
+    # at each dose level (this is required for plotting).
+    mean_fit_matrix <- sapply(
       object@fit,
       "[[",
       "middle"
     )
-    meanFit <- list(
-      truth = truth(doseGrid, ...),
-      average = rowMeans(meanFitMatrix),
+    mean_fit <- list(
+      truth = truth(dose_grid, ...),
+      average = rowMeans(mean_fit_matrix),
       lower = apply(
-        meanFitMatrix,
+        mean_fit_matrix,
         1L,
         quantile,
         0.025
       ),
       upper = apply(
-        meanFitMatrix,
+        mean_fit_matrix,
         1L,
         quantile,
         0.975
       )
     )
 
-    ## give back an object of class SimulationsSummary,
-    ## for which we then define a print / plot method
-    ret <- .SimulationsSummary(
+    # Give back an object of class SimulationsSummary.
+    .SimulationsSummary(
       start,
       stop_report = object@stop_report,
       additional_stats = object@additional_stats,
-      fit_at_dose_most_selected = fitAtDoseMostSelected,
-      mean_fit = meanFit
+      fit_at_dose_most_selected = fit_at_dose_most_selected,
+      mean_fit = mean_fit
     )
-
-    return(ret)
   }
 )
 
-##' Summarize the dual-endpoint design simulations, relative to given true
-##' dose-toxicity and dose-biomarker curves
-##'
-##' @param object the \code{\linkS4class{DualSimulations}} object we want to
-##' summarize
-##' @param trueTox a function which takes as input a dose (vector) and returns the
-##' true probability (vector) for toxicity.
-##' @param trueBiomarker a function which takes as input a dose (vector) and
-##' returns the true biomarker level (vector).
-##' @param target the target toxicity interval (default: 20-35%) used for the
-##' computations
-##' @param \dots Additional arguments can be supplied here for \code{trueTox}
-##' and \code{trueBiomarker}
-##' @return an object of class \code{\linkS4class{DualSimulationsSummary}}
-##'
-##' @example examples/Simulations-method-summary-DualSimulations.R
-##' @export
-##' @keywords methods
+# summary-DualSimulations ----
+#' Summarize Dual-Endpoint Design Simulations
+#'
+#' @description `r lifecycle::badge("stable")`
+#'
+#' Summarize the dual-endpoint design simulations, relative to given true
+#' dose-toxicity and dose-biomarker curves.
+#'
+#' @param object (`DualSimulations`)\cr the object we want to summarize.
+#' @param trueTox (`function`)\cr a function which takes as input a dose
+#'   (vector) and returns the true probability (vector) for toxicity.
+#' @param trueBiomarker (`function`)\cr a function which takes as input a dose
+#'   (vector) and returns the true biomarker level (vector).
+#' @param target (`numeric`)\cr the target toxicity interval (default: 20-35%)
+#'   used for the computations.
+#' @param ... additional arguments can be supplied here for `trueTox` and
+#'   `trueBiomarker`.
+#'
+#' @return An object of class [`DualSimulationsSummary`].
+#'
+#' @aliases summary-DualSimulations
+#' @example examples/Simulations-method-summary-DualSimulations.R
+#' @export
+#'
 setMethod(
-  "summary",
+  f = "summary",
   signature = signature(object = "DualSimulations"),
   def = function(object, trueTox, trueBiomarker, target = c(0.2, 0.35), ...) {
-    ## call the parent method
+    # Call the parent method.
     start <- callNextMethod(
       object = object,
       truth = trueTox,
@@ -640,59 +648,53 @@ setMethod(
       ...
     )
 
-    doseGrid <- object@data[[1]]@doseGrid
+    dose_grid <- object@data[[1]]@doseGrid
 
-    ## dose level most often selected as MTD
-    xMostSelected <-
-      match_within_tolerance(start@dose_most_selected, table = doseGrid)
+    # Dose level most often selected as MTD.
+    x_most_selected <-
+      match_within_tolerance(start@dose_most_selected, table = dose_grid)
 
-    ## fitted biomarker level at dose most often selected
-    biomarkerFitAtDoseMostSelected <-
+    # Fitted biomarker level at dose most often selected.
+    biomarker_fit_at_dose_most_selected <-
       sapply(
         object@fit_biomarker,
         function(f) {
-          f$middleBiomarker[xMostSelected]
+          f$middleBiomarker[x_most_selected]
         }
       )
 
-    ## mean fitted biomarker curve (average, lower and upper quantiles)
-    ## at each dose level
-    ## (this is required for plotting)
-    meanBiomarkerFitMatrix <- sapply(
+    # Mean fitted biomarker curve (average, lower and upper quantiles)
+    # at each dose level (this is required for plotting).
+    mean_biomarker_fit_matrix <- sapply(
       object@fit_biomarker,
       "[[",
       "middleBiomarker"
     )
-    meanBiomarkerFit <- list(
-      truth = trueBiomarker(doseGrid, ...),
-      average = rowMeans(meanBiomarkerFitMatrix),
+    mean_biomarker_fit <- list(
+      truth = trueBiomarker(dose_grid, ...),
+      average = rowMeans(mean_biomarker_fit_matrix),
       lower = apply(
-        meanBiomarkerFitMatrix,
+        mean_biomarker_fit_matrix,
         1L,
         quantile,
         0.025
       ),
       upper = apply(
-        meanBiomarkerFitMatrix,
+        mean_biomarker_fit_matrix,
         1L,
         quantile,
         0.975
       )
     )
 
-    ## give back an object of class DualSimulationsSummary,
-    ## for which we then define a print / plot method
-    ret <- .DualSimulationsSummary(
+    # Give back an object of class DualSimulationsSummary.
+    .DualSimulationsSummary(
       start,
-      biomarker_fit_at_dose_most_selected = biomarkerFitAtDoseMostSelected,
-      mean_biomarker_fit = meanBiomarkerFit
+      biomarker_fit_at_dose_most_selected = biomarker_fit_at_dose_most_selected,
+      mean_biomarker_fit = mean_biomarker_fit
     )
-
-    return(ret)
   }
 )
-
-##' A Reference Class to represent sequentially updated reporting objects.
 ##' @name Report
 ##' @field object The object from which to report
 ##' @field df the data frame to which columns are sequentially added
