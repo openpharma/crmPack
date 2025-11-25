@@ -648,95 +648,105 @@ test_that("plot-GeneralSimulationsSummary works correctly", {
   expect_s3_class(result_multiple, "gtable")
 })
 
+## plot-SimulationsSummary ----
+
+test_that("plot-SimulationsSummary works correctly", {
+  emptydata <- Data(doseGrid = c(1, 3, 5, 10, 15, 20, 25))
+  model <- LogisticLogNormal(
+    mean = c(-0.85, 1),
+    cov = matrix(c(1, -0.5, -0.5, 1), nrow = 2),
+    ref_dose = 56
+  )
+
+  design <- Design(
+    model = model,
+    nextBest = NextBestNCRM(
+      target = c(0.2, 0.35),
+      overdose = c(0.35, 1),
+      max_overdose_prob = 0.25
+    ),
+    stopping = StoppingMinPatients(nPatients = 6),
+    increments = IncrementsRelative(
+      intervals = c(0, 20),
+      increments = c(1, 0.33)
+    ),
+    cohort_size = CohortSizeConst(size = 3),
+    data = emptydata,
+    startingDose = 3
+  )
+
+  myTruth <- probFunction(model, alpha0 = 7, alpha1 = 8)
+  options <- McmcOptions(
+    burnin = 10,
+    step = 2,
+    samples = 20,
+    rng_kind = "Mersenne-Twister",
+    rng_seed = 123
+  )
+
+  mySims <- simulate(
+    design,
+    args = NULL,
+    truth = myTruth,
+    nsim = 3,
+    seed = 819,
+    mcmcOptions = options,
+    parallel = FALSE
+  )
+  simSummary <- summary(mySims, truth = myTruth)
+
+  # Test meanFit plot (specific to SimulationsSummary)
+  result_mean_fit <- plot(simSummary, type = "meanFit")
+  expect_s3_class(result_mean_fit, "ggplot")
+  expect_doppel("plot_simSimsSummary_meanFit", result_mean_fit)
+
+  # Test combination with general plots
+  result_multiple <- plot(simSummary, type = c("meanFit", "nObs"))
+  expect_s3_class(result_multiple, "gtable")
+})
+
+## plot-DualSimulationsSummary ----
+
+test_that("plot-DualSimulationsSummary works correctly", {
+  mySims <- .DefaultDualSimulations()
+  myTruthTox <- function(dose) pnorm((dose - 60) / 10)
+  myTruthBio <- function(dose) {
+    pmax(0.1, pmin(0.95, 0.2 + 0.6 * (dose / 100)^0.5))
+  }
+
+  simSummary <- summary(
+    mySims,
+    trueTox = myTruthTox,
+    trueBiomarker = myTruthBio
+  )
+
+  # Test meanBiomarkerFit plot (specific to DualSimulationsSummary)
+  result_mean_bio_fit <- plot(simSummary, type = "meanBiomarkerFit")
+  expect_s3_class(result_mean_bio_fit, "ggplot")
+  expect_doppel("plot_dualSimsSummary_meanBiomarkerFit", result_mean_bio_fit)
+  expect_equal(result_mean_bio_fit$labels$x, "Dose level")
+  expect_equal(result_mean_bio_fit$labels$y, "Biomarker level")
+
+  # Check that plot has the expected structure
+  expect_true(length(result_mean_bio_fit$layers) > 0)
+  expect_equal(length(simSummary@dose_grid), length(simSummary@dose_grid))
+
+  # Test combination with other plots
+  result_multiple <- plot(simSummary, type = c("meanBiomarkerFit", "meanFit"))
+  expect_s3_class(result_multiple, "gtable")
+  expect_equal(dim(result_multiple), c(2, 1)) # Should have 2 rows, 1 column
+
+  # Test additional dual-specific plot types
+  result_n_obs <- plot(simSummary, type = "nObs")
+  expect_doppel("plot_dualSimsSummary_nObs", result_n_obs)
+  expect_s3_class(result_n_obs, "ggplot")
+
+  result_dose_selected <- plot(simSummary, type = "doseSelected")
+  expect_doppel("plot_dualSimsSummary_doseSelected", result_dose_selected)
+  expect_s3_class(result_dose_selected, "ggplot")
+})
+
 if (FALSE) {
-  ## plot-SimulationsSummary ----
-
-  test_that("plot-SimulationsSummary works correctly", {
-    emptydata <- Data(doseGrid = c(1, 3, 5, 10, 15, 20, 25))
-    model <- LogisticLogNormal(
-      mean = c(-0.85, 1),
-      cov = matrix(c(1, -0.5, -0.5, 1), nrow = 2),
-      ref_dose = 56
-    )
-
-    design <- Design(
-      model = model,
-      nextBest = NextBestNCRM(
-        target = c(0.2, 0.35),
-        overdose = c(0.35, 1),
-        max_overdose_prob = 0.25
-      ),
-      stopping = StoppingMinPatients(nPatients = 6),
-      increments = IncrementsRelative(
-        intervals = c(0, 20),
-        increments = c(1, 0.33)
-      ),
-      cohort_size = CohortSizeConst(size = 3),
-      data = emptydata,
-      startingDose = 3
-    )
-
-    myTruth <- probFunction(model, alpha0 = 7, alpha1 = 8)
-    options <- McmcOptions(burnin = 10, step = 2, samples = 20)
-
-    mySims <- simulate(
-      design,
-      args = NULL,
-      truth = myTruth,
-      nsim = 3,
-      seed = 819,
-      mcmcOptions = options,
-      parallel = FALSE
-    )
-    simSummary <- summary(mySims, truth = myTruth)
-
-    # Test meanFit plot (specific to SimulationsSummary)
-    result_mean_fit <- plot(simSummary, type = "meanFit")
-    expect_s3_class(result_mean_fit, "ggplot")
-
-    # Test combination with general plots
-    result_multiple <- plot(simSummary, type = c("meanFit", "nObs"))
-    expect_s3_class(result_multiple, "gtable")
-  })
-
-  ## plot-DualSimulationsSummary ----
-
-  test_that("plot-DualSimulationsSummary works correctly", {
-    mySims <- .DefaultDualSimulations()
-    myTruthTox <- function(dose) pnorm((dose - 60) / 10)
-    myTruthBio <- function(dose) {
-      pmax(0.1, pmin(0.95, 0.2 + 0.6 * (dose / 100)^0.5))
-    }
-
-    simSummary <- summary(
-      mySims,
-      trueTox = myTruthTox,
-      trueBiomarker = myTruthBio
-    )
-
-    # Test meanBiomarkerFit plot (specific to DualSimulationsSummary)
-    result_mean_bio_fit <- plot(simSummary, type = "meanBiomarkerFit")
-    expect_s3_class(result_mean_bio_fit, "ggplot")
-    expect_equal(result_mean_bio_fit$labels$x, "Dose level")
-    expect_equal(result_mean_bio_fit$labels$y, "Biomarker level")
-
-    # Check that plot has the expected structure
-    expect_true(length(result_mean_bio_fit$layers) > 0)
-    expect_equal(length(simSummary@dose_grid), length(simSummary@dose_grid))
-
-    # Test combination with other plots
-    result_multiple <- plot(simSummary, type = c("meanBiomarkerFit", "meanFit"))
-    expect_s3_class(result_multiple, "gtable")
-    expect_equal(dim(result_multiple), c(2, 1)) # Should have 2 rows, 1 column
-
-    # Test additional dual-specific plot types
-    result_n_obs <- plot(simSummary, type = "nObs")
-    expect_s3_class(result_n_obs, "ggplot")
-
-    result_dose_selected <- plot(simSummary, type = "doseSelected")
-    expect_s3_class(result_dose_selected, "ggplot")
-  })
-
   ## summary-PseudoSimulations ----
 
   test_that("summary-PseudoSimulations works correctly", {
