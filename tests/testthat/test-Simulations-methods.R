@@ -52,12 +52,14 @@ test_that("plot-GeneralSimulations works correctly", {
   expect_s3_class(result_trajectory, "ggplot")
   expect_equal(result_trajectory$labels$x, "Patient")
   expect_equal(result_trajectory$labels$y, "Dose Level")
+  expect_doppel("plot_generalSims_trajectory", result_trajectory)
 
   # Test dosesTried plot only
   result_doses <- plot(mySims, type = "dosesTried")
   expect_s3_class(result_doses, "ggplot")
   expect_equal(result_doses$labels$x, "Dose level")
   expect_equal(result_doses$labels$y, "Average proportion [%]")
+  expect_doppel("plot_generalSims_dosesTried", result_doses)
 
   # Test both plot types explicitly
   result_both <- plot(mySims, type = c("trajectory", "dosesTried"))
