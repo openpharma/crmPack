@@ -933,64 +933,67 @@ test_that("plot-PseudoSimulationsSummary fails gracefully with bad input", {
   expect_error(plot(pseudo_summary, type = character(0)), "must be of length")
 })
 
+# plot-PseudoDualSimulations ----
+
+test_that("plot-PseudoDualSimulations works correctly", {
+  pseudo_dual_sims <- .DefaultPseudoDualSimulations()
+
+  # Test default plot types
+  result <- plot(pseudo_dual_sims)
+  expect_s3_class(result, "gtable")
+
+  # Test individual plot types
+  result_trajectory <- plot(pseudo_dual_sims, type = "trajectory")
+  expect_s3_class(result_trajectory, "ggplot")
+  expect_doppel("plot_pseudoDualSims_trajectory", result_trajectory)
+  expect_equal(result_trajectory$labels$x, "Patient")
+  expect_equal(result_trajectory$labels$y, "Dose Level")
+
+  result_doses <- plot(pseudo_dual_sims, type = "dosesTried")
+  expect_s3_class(result_doses, "ggplot")
+  expect_doppel("plot_pseudoDualSims_dosesTried", result_doses)
+  expect_equal(result_doses$labels$x, "Dose level")
+  expect_equal(result_doses$labels$y, "Average proportion [%]")
+
+  result_sigma2 <- plot(pseudo_dual_sims, type = "sigma2")
+  expect_s3_class(result_sigma2, "ggplot")
+  expect_doppel("plot_pseudoDualSims_sigma2", result_sigma2)
+  expect_true(grepl(
+    "Efficacy variance estimates",
+    result_sigma2$labels$y,
+    ignore.case = TRUE
+  ))
+})
+
+test_that("plot-PseudoDualSimulations handles type combinations", {
+  pseudo_dual_sims <- .DefaultPseudoDualSimulations()
+
+  # Test multiple types
+  result_multi <- plot(pseudo_dual_sims, type = c("trajectory", "sigma2"))
+  expect_s3_class(result_multi, "gtable")
+
+  # Test all available types
+  result_all <- plot(
+    pseudo_dual_sims,
+    type = c("trajectory", "dosesTried", "sigma2")
+  )
+  expect_s3_class(result_all, "gtable")
+})
+
+test_that("plot-PseudoDualSimulations fails gracefully with bad input", {
+  pseudo_dual_sims <- .DefaultPseudoDualSimulations()
+
+  expect_error(
+    plot(pseudo_dual_sims, type = "invalid_type"),
+    "should be one of"
+  )
+  expect_error(
+    plot(pseudo_dual_sims, type = character(0)),
+    "must be of length"
+  )
+})
+
 if (FALSE) {
-  # plot-PseudoDualSimulations ----
-
-  test_that("plot-PseudoDualSimulations works correctly", {
-    pseudo_dual_sims <- .DefaultPseudoDualSimulations()
-
-    # Test default plot types
-    result <- plot(pseudo_dual_sims)
-    expect_s3_class(result, "gtable")
-
-    # Test individual plot types
-    result_trajectory <- plot(pseudo_dual_sims, type = "trajectory")
-    expect_s3_class(result_trajectory, "ggplot")
-    expect_equal(result_trajectory$labels$x, "Patient")
-    expect_equal(result_trajectory$labels$y, "Dose Level")
-
-    result_doses <- plot(pseudo_dual_sims, type = "dosesTried")
-    expect_s3_class(result_doses, "ggplot")
-    expect_equal(result_doses$labels$x, "Dose level")
-    expect_equal(result_doses$labels$y, "Average proportion [%]")
-
-    result_sigma2 <- plot(pseudo_dual_sims, type = "sigma2")
-    expect_s3_class(result_sigma2, "ggplot")
-    expect_true(grepl(
-      "Efficacy variance estimates",
-      result_sigma2$labels$y,
-      ignore.case = TRUE
-    ))
-  })
-
-  test_that("plot-PseudoDualSimulations handles type combinations", {
-    pseudo_dual_sims <- .DefaultPseudoDualSimulations()
-
-    # Test multiple types
-    result_multi <- plot(pseudo_dual_sims, type = c("trajectory", "sigma2"))
-    expect_s3_class(result_multi, "gtable")
-
-    # Test all available types
-    result_all <- plot(
-      pseudo_dual_sims,
-      type = c("trajectory", "dosesTried", "sigma2")
-    )
-    expect_s3_class(result_all, "gtable")
-  })
-
-  test_that("plot-PseudoDualSimulations fails gracefully with bad input", {
-    pseudo_dual_sims <- .DefaultPseudoDualSimulations()
-
-    expect_error(
-      plot(pseudo_dual_sims, type = "invalid_type"),
-      "should be one of"
-    )
-    expect_error(
-      plot(pseudo_dual_sims, type = character(0)),
-      "must be of length"
-    )
-  })
-
   # plot-PseudoDualFlexiSimulations ----
 
   test_that("plot-PseudoDualFlexiSimulations works correctly", {
