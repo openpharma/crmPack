@@ -359,7 +359,7 @@ setMethod(
   def = function(object, truth, target = c(0.2, 0.35), ...) {
     # Validate arguments.
     assert_function(truth)
-    assert_numeric(target, len = 2, lower = 0, upper = 1)
+    assert_numeric(target, min.len = 1, max.len = 2, lower = 0, upper = 1)
     assert_true(target[1] < target[2])
 
     # Extract dose grid.
