@@ -243,6 +243,195 @@ test_that("summary-DualSimulations works correctly", {
   expect_true("mean_fit" %in% slotNames(result))
 })
 
+# Report ----
+
+test_that("Report class can be initialized", {
+  # Create a simple test object
+  test_obj <- new(
+    "GeneralSimulationsSummary",
+    target = c(0.2, 0.35),
+    target_dose_interval = c(50, 100),
+    nsim = 10L,
+    prop_dlts = rep(0.25, 10),
+    mean_tox_risk = rep(0.3, 10),
+    dose_selected = rep(75, 10),
+    dose_most_selected = 75,
+    obs_tox_rate_at_dose_most_selected = 0.28,
+    n_obs = rep(20L, 10),
+    n_above_target = rep(2L, 10),
+    tox_at_doses_selected = rep(0.32, 10),
+    prop_at_target = 0.8,
+    dose_grid = seq(25, 300, 25),
+    placebo = FALSE
+  )
+
+  # Create Report object
+  r <- Report$new(
+    object = test_obj,
+    df = as.data.frame(matrix(nrow = 1, ncol = 0)),
+    dfNames = character()
+  )
+
+  expect_s4_class(r, "Report")
+  expect_true(is(r$object, "GeneralSimulationsSummary"))
+  expect_true(is.data.frame(r$df))
+  expect_equal(nrow(r$df), 1)
+  expect_equal(ncol(r$df), 0)
+  expect_equal(length(r$dfNames), 0)
+})
+
+test_that("Report$dfSave adds columns correctly", {
+  test_obj <- new(
+    "GeneralSimulationsSummary",
+    target = c(0.2, 0.35),
+    target_dose_interval = c(50, 100),
+    nsim = 10L,
+    prop_dlts = rep(0.25, 10),
+    mean_tox_risk = rep(0.3, 10),
+    dose_selected = rep(75, 10),
+    dose_most_selected = 75,
+    obs_tox_rate_at_dose_most_selected = 0.28,
+    n_obs = rep(20L, 10),
+    n_above_target = rep(2L, 10),
+    tox_at_doses_selected = rep(0.32, 10),
+    prop_at_target = 0.8,
+    dose_grid = seq(25, 300, 25),
+    placebo = FALSE
+  )
+
+  r <- Report$new(
+    object = test_obj,
+    df = as.data.frame(matrix(nrow = 1, ncol = 0)),
+    dfNames = character()
+  )
+
+  # Save first value
+  result1 <- r$dfSave(10, "nsim")
+  expect_equal(result1, 10)
+  expect_equal(ncol(r$df), 1)
+  expect_equal(r$dfNames, "nsim")
+
+  # Save second value
+  result2 <- r$dfSave(0.8, "prop_at_target")
+  expect_equal(result2, 0.8)
+  expect_equal(ncol(r$df), 2)
+  expect_equal(r$dfNames, c("nsim", "prop_at_target"))
+})
+
+test_that("Report$report generates correct output with percentages", {
+  test_obj <- new(
+    "GeneralSimulationsSummary",
+    target = c(0.2, 0.35),
+    target_dose_interval = c(50, 100),
+    nsim = 10L,
+    prop_dlts = rep(0.25, 10),
+    mean_tox_risk = rep(0.3, 10),
+    dose_selected = rep(75, 10),
+    dose_most_selected = 75,
+    obs_tox_rate_at_dose_most_selected = 0.28,
+    n_obs = rep(20L, 10),
+    n_above_target = rep(2L, 10),
+    tox_at_doses_selected = rep(0.32, 10),
+    prop_at_target = 0.8,
+    dose_grid = seq(25, 300, 25),
+    placebo = FALSE
+  )
+
+  r <- Report$new(
+    object = test_obj,
+    df = as.data.frame(matrix(nrow = 1, ncol = 0)),
+    dfNames = character()
+  )
+
+  # Capture output
+  output <- capture.output(
+    r$report("prop_dlts", "Proportion of DLTs", percent = TRUE, digits = 1)
+  )
+
+  expect_true(any(grepl("Proportion of DLTs", output)))
+  expect_true(any(grepl("25", output))) # Should show 25% (0.25 * 100)
+  expect_equal(ncol(r$df), 1)
+  expect_equal(r$dfNames, "prop_dlts")
+})
+
+test_that("Report$report generates correct output without percentages", {
+  test_obj <- new(
+    "GeneralSimulationsSummary",
+    target = c(0.2, 0.35),
+    target_dose_interval = c(50, 100),
+    nsim = 10L,
+    prop_dlts = rep(0.25, 10),
+    mean_tox_risk = rep(0.3, 10),
+    dose_selected = rep(75, 10),
+    dose_most_selected = 75,
+    obs_tox_rate_at_dose_most_selected = 0.28,
+    n_obs = rep(20L, 10),
+    n_above_target = rep(2L, 10),
+    tox_at_doses_selected = rep(0.32, 10),
+    prop_at_target = 0.8,
+    dose_grid = seq(25, 300, 25),
+    placebo = FALSE
+  )
+
+  r <- Report$new(
+    object = test_obj,
+    df = as.data.frame(matrix(nrow = 1, ncol = 0)),
+    dfNames = character()
+  )
+
+  # Capture output
+  output <- capture.output(
+    r$report("n_obs", "Number of observations", percent = FALSE, digits = 0)
+  )
+
+  expect_true(any(grepl("Number of observations", output)))
+  expect_true(any(grepl("20", output))) # Should show 20 (not 2000%)
+  expect_false(any(grepl("%", output))) # Should not contain %
+})
+
+test_that("Report$report respects custom quantiles", {
+  test_obj <- new(
+    "GeneralSimulationsSummary",
+    target = c(0.2, 0.35),
+    target_dose_interval = c(50, 100),
+    nsim = 10L,
+    prop_dlts = seq(0.1, 0.5, length.out = 10),
+    mean_tox_risk = rep(0.3, 10),
+    dose_selected = rep(75, 10),
+    dose_most_selected = 75,
+    obs_tox_rate_at_dose_most_selected = 0.28,
+    n_obs = rep(20L, 10),
+    n_above_target = rep(2L, 10),
+    tox_at_doses_selected = rep(0.32, 10),
+    prop_at_target = 0.8,
+    dose_grid = seq(25, 300, 25),
+    placebo = FALSE
+  )
+
+  r <- Report$new(
+    object = test_obj,
+    df = as.data.frame(matrix(nrow = 1, ncol = 0)),
+    dfNames = character()
+  )
+
+  # Capture output with custom quantiles
+  output <- capture.output(
+    r$report(
+      "prop_dlts",
+      "Proportion of DLTs",
+      percent = TRUE,
+      digits = 1,
+      quantiles = c(0.25, 0.75)
+    )
+  )
+
+  expect_true(any(grepl("Proportion of DLTs", output)))
+  # Should contain quantile values
+  expect_true(any(grepl("\\(", output)))
+  expect_true(any(grepl(",", output)))
+})
+
+
 if (FALSE) {
   ## summary-PseudoSimulations ----
 
