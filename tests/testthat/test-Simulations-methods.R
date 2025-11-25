@@ -136,19 +136,23 @@ test_that("summary-GeneralSimulations fails gracefully with bad input", {
   mySims <- .DefaultSimulations()
   myTruth <- function(x) plogis(x)
 
-  # Test that missing truth function fails
+  # Test that missing truth function fails.
   expect_error(summary(mySims), "\"truth\" is missing")
 
-  # Test edge cases - these may not actually throw errors in the current implementation
-  # but we test they at least return valid results
-  result_edge1 <- summary(mySims, truth = myTruth, target = c(0.5, 0.3))
-  expect_s4_class(result_edge1, "GeneralSimulationsSummary")
-
-  result_edge2 <- summary(mySims, truth = myTruth, target = c(-0.1, 0.3))
-  expect_s4_class(result_edge2, "GeneralSimulationsSummary")
-
-  result_edge3 <- summary(mySims, truth = myTruth, target = c(0.2, 1.1))
-  expect_s4_class(result_edge3, "GeneralSimulationsSummary")
+  # Test ranges of target interval errors.
+  expect_error(
+    summary(mySims, truth = myTruth, target = c(0.5, 0.3)),
+    "target[1] < target[2]",
+    fixed = TRUE
+  )
+  expect_error(
+    summary(mySims, truth = myTruth, target = c(-0.1, 0.3)),
+    "not >= 0"
+  )
+  expect_error(
+    summary(mySims, truth = myTruth, target = c(0.2, 1.1)),
+    "not <= 1"
+  )
 })
 
 # Add regression tests for specific expected values

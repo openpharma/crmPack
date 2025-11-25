@@ -225,35 +225,35 @@ setMethod(
   }
 )
 
+# plot-DualSimulations ----
 
-##' Plot dual-endpoint simulations
-##'
-##' This plot method can be applied to \code{\linkS4class{DualSimulations}}
-##' objects in order to summarize them graphically. In addition to the standard
-##' plot types, there is
-##' \describe{
-##' \item{sigma2W}{Plot a boxplot of the final biomarker variance estimates in
-##' the simulated trials}
-##' \item{rho}{Plot a boxplot of the final correlation estimates in
-##' the simulated trials}
-##' }
-##'
-##' @param x the \code{\linkS4class{DualSimulations}} object we want
-##' to plot from
-##' @param y missing
-##' @param type the type of plots you want to obtain.
-##' @param \dots not used
-##' @return A single \code{\link[ggplot2]{ggplot}} object if a single plot is
-##' asked for, otherwise a `gtable` object.
-##'
-##' @importFrom ggplot2 ggplot geom_boxplot coord_flip scale_x_discrete
-##' @importFrom gridExtra arrangeGrob
-##'
-##' @example examples/Simulations-method-plot-DualSimulations.R
-##' @export
-##' @keywords methods
+#' Plot Dual-Endpoint Simulations
+#'
+#' @description `r lifecycle::badge("stable")`
+#'
+#' This plot method can be applied to [`DualSimulations`] objects in order to
+#' summarize them graphically. In addition to the standard plot types, there is:
+#' \describe{
+#'   \item{sigma2W}{Plot a boxplot of the final biomarker variance estimates in
+#'     the simulated trials}
+#'   \item{rho}{Plot a boxplot of the final correlation estimates in the
+#'     simulated trials}
+#' }
+#'
+#' @param x (`DualSimulations`)\cr the object we want to plot from.
+#' @param y (`missing`)\cr not used.
+#' @param type (`character`)\cr the type of plots you want to obtain.
+#' @param ... not used.
+#'
+#' @return A single `ggplot` object if a single plot is asked for,
+#'   otherwise a `gtable` object.
+#'
+#' @aliases plot-DualSimulations-missing
+#' @example examples/Simulations-method-plot-DualSimulations.R
+#' @export
+#'
 setMethod(
-  "plot",
+  f = "plot",
   signature = signature(
     x = "DualSimulations",
     y = "missing"
@@ -261,43 +261,33 @@ setMethod(
   def = function(
     x,
     y,
-    type = c(
-      "trajectory",
-      "dosesTried",
-      "sigma2W",
-      "rho"
-    ),
+    type = c("trajectory", "dosesTried", "sigma2W", "rho"),
     ...
   ) {
-    ## start the plot list
-    plotList <- list()
-    plotIndex <- 0L
-
-    ## which plots should be produced?
+    # Validate arguments.
     type <- match.arg(type, several.ok = TRUE)
-    stopifnot(length(type) > 0L)
+    assert_character(type, min.len = 1)
 
-    ## substract the specific plot types for
-    ## dual-endpoint simulation results
-    typeReduced <- setdiff(
-      type,
-      c("sigma2W", "rho")
-    )
+    # Start the plot list.
+    plot_list <- list()
+    plot_index <- 0L
 
-    ## are there more plots from general?
-    moreFromGeneral <- (length(typeReduced) > 0)
+    # Subtract the specific plot types for dual-endpoint simulation results.
+    type_reduced <- setdiff(type, c("sigma2W", "rho"))
 
-    ## if so, then produce these plots
-    if (moreFromGeneral) {
-      genPlot <- callNextMethod(x = x, y = y, type = typeReduced)
+    # Are there more plots from general?
+    more_from_general <- (length(type_reduced) > 0)
+
+    # If so, then produce these plots.
+    if (more_from_general) {
+      gen_plot <- callNextMethod(x = x, y = y, type = type_reduced)
     }
 
-    ## now to the specific dual-endpoint plots:
+    # Now to the specific dual-endpoint plots.
 
-    ## biomarker variance estimates boxplot
+    # Biomarker variance estimates boxplot.
     if ("sigma2W" %in% type) {
-      ## save the plot
-      plotList[[plotIndex <- plotIndex + 1L]] <-
+      plot_list[[plot_index <- plot_index + 1L]] <-
         ggplot(
           data = data.frame(y = x@sigma2w_est),
           aes(x = factor(0), y = y)
@@ -309,11 +299,13 @@ setMethod(
         ylab("Biomarker variance estimates")
     }
 
-    ## correlation estimates boxplot
+    # Correlation estimates boxplot.
     if ("rho" %in% type) {
-      ## save the plot
-      plotList[[plotIndex <- plotIndex + 1L]] <-
-        ggplot(data = data.frame(y = x@rho_est), aes(x = factor(0), y = y)) +
+      plot_list[[plot_index <- plot_index + 1L]] <-
+        ggplot(
+          data = data.frame(y = x@rho_est),
+          aes(x = factor(0), y = y)
+        ) +
         geom_boxplot() +
         coord_flip() +
         scale_x_discrete(breaks = NULL) +
@@ -321,94 +313,92 @@ setMethod(
         ylab("Correlation estimates")
     }
 
-    ## then finally plot everything
-    if (
-      identical(
-        length(plotList),
-        0L
-      )
-    ) {
-      return(genPlot)
-    } else if (
-      identical(
-        length(plotList),
-        1L
-      )
-    ) {
-      ret <- plotList[[1L]]
+    # Return plot(s).
+    if (identical(length(plot_list), 0L)) {
+      gen_plot
+    } else if (identical(length(plot_list), 1L)) {
+      if (more_from_general) {
+        gridExtra::arrangeGrob(gen_plot, plot_list[[1L]])
+      } else {
+        plot_list[[1L]]
+      }
     } else {
-      ret <- do.call(
-        gridExtra::arrangeGrob,
-        plotList
-      )
+      ret <- do.call(gridExtra::arrangeGrob, plot_list)
+      if (more_from_general) {
+        gridExtra::arrangeGrob(gen_plot, ret)
+      } else {
+        ret
+      }
     }
-
-    if (moreFromGeneral) {
-      ret <- gridExtra::arrangeGrob(genPlot, ret)
-    }
-
-    return(ret)
   }
 )
 
+# summary-GeneralSimulations ----
 
-##' Summarize the simulations, relative to a given truth
-##'
-##' @param object the \code{\linkS4class{GeneralSimulations}} object we want to
-##' summarize
-##' @param truth a function which takes as input a dose (vector) and returns the
-##' true probability (vector) for toxicity
-##' @param target the target toxicity interval (default: 20-35%) used for the
-##' computations
-##' @param \dots Additional arguments can be supplied here for \code{truth}
-##' @return an object of class \code{\linkS4class{GeneralSimulationsSummary}}
-##'
-##' @export
-##' @keywords methods
+#' Summarize the Simulations, Relative to a Given Truth
+#'
+#' @description `r lifecycle::badge("stable")`
+#'
+#' Summarize simulations relative to a given true dose-toxicity curve.
+#'
+#' @param object (`GeneralSimulations`)\cr the object we want to summarize.
+#' @param truth (`function`)\cr a function which takes as input a dose (vector)
+#'   and returns the true probability (vector) for toxicity.
+#' @param target (`numeric`)\cr the target toxicity interval (default: 20-35%)
+#'   used for the computations.
+#' @param ... additional arguments can be supplied here for `truth`.
+#'
+#' @return An object of class [`GeneralSimulationsSummary`].
+#'
+#' @aliases summary-GeneralSimulations
+#' @export
+#'
 setMethod(
-  "summary",
+  f = "summary",
   signature = signature(object = "GeneralSimulations"),
   def = function(object, truth, target = c(0.2, 0.35), ...) {
-    ## extract dose grid
-    doseGrid <- object@data[[1]]@doseGrid
+    # Validate arguments.
+    assert_function(truth)
+    assert_numeric(target, len = 2, lower = 0, upper = 1)
+    assert_true(target[1] < target[2])
 
-    ## evaluate true toxicity at doseGrid
-    trueTox <- truth(doseGrid, ...)
+    # Extract dose grid.
+    dose_grid <- object@data[[1]]@doseGrid
 
-    ## find dose interval corresponding to target tox interval
-    targetDoseInterval <-
-      sapply(
-        target,
-        function(t) {
-          ## we have to be careful because it might be
-          ## that in the range of the dose grid, no
-          ## doses can be found that match the target
-          ## interval boundaries!
-          ## In that case we want to return NA
-          r <- try(
-            uniroot(
-              f = function(x) {
-                truth(x, ...) - t
-              },
-              interval = range(doseGrid)
-            )$root,
-            silent = TRUE
-          )
-          if (inherits(r, "try-error")) {
-            return(NA_real_)
-          } else {
-            return(r)
-          }
+    # Evaluate true toxicity at dose grid.
+    true_tox <- truth(dose_grid, ...)
+
+    # Find dose interval corresponding to target tox interval.
+    target_dose_interval <- sapply(
+      target,
+      function(t) {
+        # We have to be careful because it might be that in the range of the
+        # dose grid, no doses can be found that match the target interval
+        # boundaries! In that case we want to return NA.
+        r <- try(
+          uniroot(
+            f = function(x) {
+              truth(x, ...) - t
+            },
+            interval = range(dose_grid)
+          )$root,
+          silent = TRUE
+        )
+        if (inherits(r, "try-error")) {
+          NA_real_
+        } else {
+          r
         }
-      )
+      }
+    )
 
-    ## what are the levels above target interval?
-    xAboveTarget <- which(trueTox > target[2])
+    # What are the levels above target interval?
+    x_above_target <- which(true_tox > target[2])
 
-    ## proportion of DLTs in a trial:
+    # Proportion of DLTs in a trial.
     if (object@data[[1]]@placebo) {
-      if (sum(object@data[[1]]@x == doseGrid[1])) {
-        propDLTs <- sapply(
+      if (sum(object@data[[1]]@x == dose_grid[1])) {
+        prop_dlts <- sapply(
           object@data,
           function(d) {
             tapply(
@@ -419,7 +409,7 @@ setMethod(
           }
         )
       } else {
-        propDLTs <- sapply(
+        prop_dlts <- sapply(
           object@data,
           function(d) {
             c("ACTV" = mean(d@y), "PLCB" = NA)
@@ -427,7 +417,7 @@ setMethod(
         )
       }
     } else {
-      propDLTs <- sapply(
+      prop_dlts <- sapply(
         object@data,
         function(d) {
           mean(d@y)
@@ -435,59 +425,59 @@ setMethod(
       )
     }
 
-    ## mean toxicity risk
+    # Mean toxicity risk.
     if (object@data[[1]]@placebo) {
-      meanToxRisk <- sapply(
+      mean_tox_risk <- sapply(
         object@data,
         function(d) {
-          mean(trueTox[d@xLevel[d@xLevel != 1]])
+          mean(true_tox[d@xLevel[d@xLevel != 1]])
         }
       )
     } else {
-      meanToxRisk <- sapply(
+      mean_tox_risk <- sapply(
         object@data,
         function(d) {
-          mean(trueTox[d@xLevel])
+          mean(true_tox[d@xLevel])
         }
       )
     }
 
-    ## doses selected for MTD
-    doseSelected <- object@doses
+    # Doses selected for MTD.
+    dose_selected <- object@doses
 
-    ## replace NA by 0
-    doseSelected[is.na(doseSelected)] <- 0
+    # Replace NA by 0.
+    dose_selected[is.na(dose_selected)] <- 0
 
-    ## dose most often selected as MTD
-    doseMostSelected <-
-      as.numeric(names(which.max(table(doseSelected))))
-    xMostSelected <-
-      match_within_tolerance(doseMostSelected, table = doseGrid)
+    # Dose most often selected as MTD.
+    dose_most_selected <- as.numeric(names(which.max(table(dose_selected))))
+    x_most_selected <- match_within_tolerance(
+      dose_most_selected,
+      table = dose_grid
+    )
 
-    ## observed toxicity rate at dose most often selected
-    ## Note: this does not seem very useful!
-    ## Reason: In case of a fine grid, few patients if any
-    ## will have been treated at this dose.
-    tmp <-
-      sapply(
-        object@data,
-        function(d) {
-          whichAtThisDose <- which(d@x == doseMostSelected)
-          nAtThisDose <- length(whichAtThisDose)
-          nDLTatThisDose <- sum(d@y[whichAtThisDose])
-          return(c(
-            nAtThisDose = nAtThisDose,
-            nDLTatThisDose = nDLTatThisDose
-          ))
-        }
-      )
+    # Observed toxicity rate at dose most often selected.
+    # Note: this does not seem very useful!
+    # Reason: In case of a fine grid, few patients if any will have been
+    # treated at this dose.
+    tmp <- sapply(
+      object@data,
+      function(d) {
+        which_at_this_dose <- which(d@x == dose_most_selected)
+        n_at_this_dose <- length(which_at_this_dose)
+        n_dlt_at_this_dose <- sum(d@y[which_at_this_dose])
+        c(
+          nAtThisDose = n_at_this_dose,
+          nDLTatThisDose = n_dlt_at_this_dose
+        )
+      }
+    )
 
-    obsToxRateAtDoseMostSelected <-
+    obs_tox_rate_at_dose_most_selected <-
       mean(tmp["nDLTatThisDose", ]) / mean(tmp["nAtThisDose", ])
 
-    ## number of patients overall
+    # Number of patients overall.
     if (object@data[[1]]@placebo) {
-      nObs <- sapply(
+      n_obs <- sapply(
         object@data,
         function(x) {
           data.frame(
@@ -496,50 +486,46 @@ setMethod(
           )
         }
       )
-      nObs <- matrix(unlist(nObs), dim(nObs))
+      n_obs <- matrix(unlist(n_obs), dim(n_obs))
     } else {
-      nObs <- sapply(
+      n_obs <- sapply(
         object@data,
         slot,
         "nObs"
       )
     }
 
-    ## number of patients treated above target tox interval
-    nAboveTarget <- sapply(
+    # Number of patients treated above target tox interval.
+    n_above_target <- sapply(
       object@data,
       function(d) {
-        sum(d@xLevel %in% xAboveTarget)
+        sum(d@xLevel %in% x_above_target)
       }
     )
 
-    ## Proportion of trials selecting target MTD
-    toxAtDoses <- truth(doseSelected, ...)
-    propAtTarget <- mean(
-      (toxAtDoses > target[1]) &
-        (toxAtDoses < target[2])
+    # Proportion of trials selecting target MTD.
+    tox_at_doses <- truth(dose_selected, ...)
+    prop_at_target <- mean(
+      (tox_at_doses > target[1]) & (tox_at_doses < target[2])
     )
 
-    ## give back an object of class GeneralSimulationsSummary,
-    ## for which we then define a print / plot method
-    ret <-
-      .GeneralSimulationsSummary(
-        target = target,
-        target_dose_interval = targetDoseInterval,
-        nsim = length(object@data),
-        prop_dlts = propDLTs,
-        mean_tox_risk = meanToxRisk,
-        dose_selected = doseSelected,
-        dose_most_selected = doseMostSelected,
-        obs_tox_rate_at_dose_most_selected = obsToxRateAtDoseMostSelected,
-        n_obs = nObs,
-        n_above_target = nAboveTarget,
-        tox_at_doses_selected = toxAtDoses,
-        prop_at_target = propAtTarget,
-        dose_grid = doseGrid,
-        placebo = object@data[[1]]@placebo
-      )
-    return(ret)
+    # Give back an object of class GeneralSimulationsSummary.
+    .GeneralSimulationsSummary(
+      target = target,
+      target_dose_interval = target_dose_interval,
+      nsim = length(object@data),
+      prop_dlts = prop_dlts,
+      mean_tox_risk = mean_tox_risk,
+      dose_selected = dose_selected,
+      dose_most_selected = dose_most_selected,
+      obs_tox_rate_at_dose_most_selected = obs_tox_rate_at_dose_most_selected,
+      n_obs = n_obs,
+      n_above_target = n_above_target,
+      tox_at_doses_selected = tox_at_doses,
+      prop_at_target = prop_at_target,
+      dose_grid = dose_grid,
+      placebo = object@data[[1]]@placebo
+    )
   }
 )
 
