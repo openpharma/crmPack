@@ -577,69 +577,78 @@ test_that("show-DualSimulationsSummary works correctly", {
   expect_true(any(grepl("Doses selected", result)))
 })
 
+# plot summary objects ----
+
+## plot-GeneralSimulationsSummary ----
+
+test_that("plot-GeneralSimulationsSummary works correctly", {
+  emptydata <- Data(doseGrid = c(1, 3, 5, 10, 15, 20, 25))
+  model <- LogisticLogNormal(
+    mean = c(-0.85, 1),
+    cov = matrix(c(1, -0.5, -0.5, 1), nrow = 2),
+    ref_dose = 56
+  )
+
+  design <- Design(
+    model = model,
+    nextBest = NextBestNCRM(
+      target = c(0.2, 0.35),
+      overdose = c(0.35, 1),
+      max_overdose_prob = 0.25
+    ),
+    stopping = StoppingMinPatients(nPatients = 6),
+    increments = IncrementsRelative(
+      intervals = c(0, 20),
+      increments = c(1, 0.33)
+    ),
+    cohort_size = CohortSizeConst(size = 3),
+    data = emptydata,
+    startingDose = 3
+  )
+
+  myTruth <- probFunction(model, alpha0 = 7, alpha1 = 8)
+  options <- McmcOptions(
+    burnin = 10,
+    step = 2,
+    samples = 20,
+    rng_kind = "Mersenne-Twister",
+    rng_seed = 123
+  )
+
+  mySims <- simulate(
+    design,
+    args = NULL,
+    truth = myTruth,
+    nsim = 3,
+    seed = 819,
+    mcmcOptions = options,
+    parallel = FALSE
+  )
+  simSummary <- summary(mySims, truth = myTruth)
+
+  # Test different plot types
+  result_n_obs <- plot(simSummary, type = "nObs")
+  expect_s3_class(result_n_obs, "ggplot")
+  expect_doppel("plot_generalSimsSummary_nObs", result_n_obs)
+
+  result_dose_selected <- plot(simSummary, type = "doseSelected")
+  expect_s3_class(result_dose_selected, "ggplot")
+  expect_doppel("plot_generalSimsSummary_doseSelected", result_dose_selected)
+
+  result_prop_dlts <- plot(simSummary, type = "propDLTs")
+  expect_s3_class(result_prop_dlts, "ggplot")
+  expect_doppel("plot_generalSimsSummary_propDLTs", result_prop_dlts)
+
+  result_n_above_target <- plot(simSummary, type = "nAboveTarget")
+  expect_s3_class(result_n_above_target, "ggplot")
+  expect_doppel("plot_generalSimsSummary_nAboveTarget", result_n_above_target)
+
+  # Test multiple plot types
+  result_multiple <- plot(simSummary, type = c("nObs", "doseSelected"))
+  expect_s3_class(result_multiple, "gtable")
+})
 
 if (FALSE) {
-  # plot summary objects ----
-
-  ## plot-GeneralSimulationsSummary ----
-
-  test_that("plot-GeneralSimulationsSummary works correctly", {
-    emptydata <- Data(doseGrid = c(1, 3, 5, 10, 15, 20, 25))
-    model <- LogisticLogNormal(
-      mean = c(-0.85, 1),
-      cov = matrix(c(1, -0.5, -0.5, 1), nrow = 2),
-      ref_dose = 56
-    )
-
-    design <- Design(
-      model = model,
-      nextBest = NextBestNCRM(
-        target = c(0.2, 0.35),
-        overdose = c(0.35, 1),
-        max_overdose_prob = 0.25
-      ),
-      stopping = StoppingMinPatients(nPatients = 6),
-      increments = IncrementsRelative(
-        intervals = c(0, 20),
-        increments = c(1, 0.33)
-      ),
-      cohort_size = CohortSizeConst(size = 3),
-      data = emptydata,
-      startingDose = 3
-    )
-
-    myTruth <- probFunction(model, alpha0 = 7, alpha1 = 8)
-    options <- McmcOptions(burnin = 10, step = 2, samples = 20)
-
-    mySims <- simulate(
-      design,
-      args = NULL,
-      truth = myTruth,
-      nsim = 3,
-      seed = 819,
-      mcmcOptions = options,
-      parallel = FALSE
-    )
-    simSummary <- summary(mySims, truth = myTruth)
-
-    # Test different plot types
-    result_n_obs <- plot(simSummary, type = "nObs")
-    expect_s3_class(result_n_obs, "ggplot")
-
-    result_dose_selected <- plot(simSummary, type = "doseSelected")
-    expect_s3_class(result_dose_selected, "ggplot")
-
-    result_prop_dlts <- plot(simSummary, type = "propDLTs")
-    expect_s3_class(result_prop_dlts, "ggplot")
-
-    result_n_above_target <- plot(simSummary, type = "nAboveTarget")
-    expect_s3_class(result_n_above_target, "ggplot")
-
-    # Test multiple plot types
-    result_multiple <- plot(simSummary, type = c("nObs", "doseSelected"))
-    expect_s3_class(result_multiple, "gtable")
-  })
-
   ## plot-SimulationsSummary ----
 
   test_that("plot-SimulationsSummary works correctly", {
