@@ -1,52 +1,154 @@
-# nolint start
-#####################################################################################
-## Author: Daniel Sabanes Bove [sabanesd *a*t* roche *.* com],
-##         Wai Yin Yeung [ w *.* yeung1 *a*t* lancaster *.* ac *.* uk]
-## Project: Object-oriented implementation of CRM designs
-##
-## Time-stamp: <[Simulations-methods.R] by DSB Fre 16/01/2015 13:41>
-##
-## Description:
-## Methods for handling the simulations output.
-##
-## History:
-## 19/02/2014   file creation
-## 30/07/2014   added in methods for pseudo models simulations
-###################################################################################
+#' @include Simulations-class.R
+#' @include helpers.R
+NULL
 
-##' @include Simulations-class.R
-##' @include helpers.R
-{}
+# h_plot_simulation_trajectory ----
 
+#' Helper Function to Create Trajectory Plot
+#'
+#' @description `r lifecycle::badge("stable")`
+#'
+#' Creates a trajectory plot showing dose level statistics across patients.
+#'
+#' @param sim_doses (`list`)\cr list of simulated doses per trial.
+#' @param max_patients (`integer`)\cr maximum number of patients.
+#' @param has_placebo (`flag`)\cr whether the design includes placebo.
+#'
+#' @return A `ggplot` object.
+#'
+#' @keywords internal
+h_plot_simulation_trajectory <- function(sim_doses, max_patients, has_placebo) {
+  # Create matrix of simulated dose trajectories.
+  sim_doses_mat <- matrix(
+    data = NA,
+    nrow = length(sim_doses),
+    ncol = max_patients
+  )
 
-##' Plot simulations
-##'
-##' Summarize the simulations with plots
-##'
-##' This plot method can be applied to \code{\linkS4class{GeneralSimulations}}
-##' objects in order to summarize them graphically. Possible \code{type}s of
-##' plots at the moment are: \describe{ \item{trajectory}{Summary of the
-##' trajectory of the simulated trials} \item{dosesTried}{Average proportions of
-##' the doses tested in patients} } You can specify one or both of these in the
-##' \code{type} argument.
-##'
-##' @param x the \code{\linkS4class{GeneralSimulations}} object we want
-##' to plot from
-##' @param y missing
-##' @param type the type of plots you want to obtain.
-##' @param \dots not used
-##' @return A single \code{\link[ggplot2]{ggplot}} object if a single plot is
-##' asked for, otherwise a `gtable` object.
-##'
-##' @importFrom ggplot2 ggplot geom_step geom_bar aes xlab ylab
-##' scale_linetype_manual
-##' @importFrom gridExtra arrangeGrob
-##'
-##' @example examples/Simulations-method-plotSIMsingle.R
-##' @export
-##' @keywords methods
+  for (i in seq_along(sim_doses)) {
+    sim_doses_mat[i, seq_along(sim_doses[[i]])] <- sim_doses[[i]]
+  }
+
+  # Extract statistics.
+  stats <- c(
+    "Minimum",
+    "Lower Quartile",
+    "Median",
+    "Upper Quartile",
+    "Maximum"
+  )
+  traj_df <- data.frame(
+    patient = rep(seq_len(max_patients), each = 5L),
+    Statistic = factor(
+      rep(stats, max_patients),
+      levels = stats
+    ),
+    traj = c(apply(sim_doses_mat, 2L, quantile, na.rm = TRUE))
+  )
+
+  # Create plot title.
+  my_title <- if (has_placebo) {
+    "Patient (placebo were excluded)"
+  } else {
+    "Patient"
+  }
+
+  # Create and return plot.
+  ggplot() +
+    geom_step(
+      aes(
+        x = patient,
+        y = traj,
+        group = Statistic,
+        linetype = Statistic
+      ),
+      linewidth = 1.2,
+      colour = "blue",
+      data = traj_df
+    ) +
+    xlab(my_title) +
+    ylab("Dose Level")
+}
+
+# h_plot_doses_tried ----
+
+#' Helper Function to Create Doses Tried Plot
+#'
+#' @description `r lifecycle::badge("stable")`
+#'
+#' Creates a bar plot showing average proportions of doses tested.
+#'
+#' @param sim_doses (`list`)\cr list of simulated doses per trial.
+#' @param dose_grid (`numeric`)\cr dose grid.
+#'
+#' @return A `ggplot` object.
+#'
+#' @keywords internal
+h_plot_doses_tried <- function(sim_doses, dose_grid) {
+  # Get the dose distributions by trial.
+  dose_distributions <- sapply(
+    sim_doses,
+    function(s) {
+      if (length(s) > 0) {
+        prop.table(table(factor(s, levels = dose_grid)))
+      } else {
+        rep(0, length(dose_grid))
+      }
+    }
+  )
+
+  # Derive the average dose distribution across trial simulations.
+  average_dose_dist <- rowMeans(dose_distributions)
+
+  # Get in data frame shape.
+  dat <- data.frame(
+    dose = as.numeric(names(average_dose_dist)),
+    perc = average_dose_dist * 100
+  )
+
+  # Create and return plot.
+  ggplot() +
+    geom_bar(
+      data = dat,
+      aes(x = dose, y = perc),
+      stat = "identity",
+      position = "identity",
+      width = min(diff(dose_grid)) / 2
+    ) +
+    xlab("Dose level") +
+    ylab("Average proportion [%]")
+}
+
+# plot-GeneralSimulations ----
+
+#' Plot Simulations
+#'
+#' @description `r lifecycle::badge("stable")`
+#'
+#' Summarize the simulations with plots.
+#'
+#' This plot method can be applied to [`GeneralSimulations`] objects in order
+#' to summarize them graphically. Possible `type`s of plots at the moment are:
+#' \describe{
+#'   \item{trajectory}{Summary of the trajectory of the simulated trials}
+#'   \item{dosesTried}{Average proportions of the doses tested in patients}
+#' }
+#' You can specify one or both of these in the `type` argument.
+#'
+#' @param x (`GeneralSimulations`)\cr the object we want to plot from.
+#' @param y (`missing`)\cr missing object, not used.
+#' @param type (`character`)\cr the type of plots you want to obtain.
+#' @param ... not used.
+#'
+#' @return A single [`ggplot`][ggplot2::ggplot] object if a single plot is
+#'   asked for, otherwise a `gtable` object.
+#'
+#' @aliases plot-GeneralSimulations-missing
+#' @example examples/Simulations-method-plotSIMsingle.R
+#' @export
+#'
 setMethod(
-  "plot",
+  f = "plot",
   signature = signature(
     x = "GeneralSimulations",
     y = "missing"
@@ -54,173 +156,71 @@ setMethod(
   def = function(
     x,
     y,
-    type = c(
-      "trajectory",
-      "dosesTried"
-    ),
+    type = c("trajectory", "dosesTried"),
     ...
   ) {
-    ## which plots should be produced?
+    # Validate arguments.
     type <- match.arg(type, several.ok = TRUE)
-    stopifnot(length(type) > 0L)
+    assert_character(type, min.len = 1)
 
-    ## start the plot list
-    plotList <- list()
-    plotIndex <- 0L
+    # Start the plot list.
+    plot_list <- list()
+    plot_index <- 0L
 
-    ## summary of the trajectories
+    # Summary of the trajectories.
     if ("trajectory" %in% type) {
-      ## get a matrix of the simulated dose trajectories,
-      ## where the rows correspond to the simulations and
-      ## the columns to the patient index:
-
-      ## If design with placebo, then exclude placebo Patients
+      # If design with placebo, then exclude placebo patients.
       if (x@data[[1]]@placebo) {
-        PL <- x@data[[1]]@doseGrid[1]
-        simDoses <- lapply(
+        pl <- x@data[[1]]@doseGrid[1]
+        sim_doses <- lapply(
           x@data,
           function(y) {
-            y@x[y@x != PL]
+            y@x[y@x != pl]
           }
         )
       } else {
-        simDoses <- lapply(
+        sim_doses <- lapply(
           x@data,
           slot,
           "x"
         )
       }
 
-      maxPatients <- max(sapply(simDoses, length))
+      max_patients <- max(sapply(sim_doses, length))
 
-      simDosesMat <- matrix(
-        data = NA,
-        nrow = length(simDoses),
-        ncol = maxPatients
-      )
-
-      for (i in seq_along(simDoses)) {
-        simDosesMat[i, seq_along(simDoses[[i]])] <-
-          simDoses[[i]]
-      }
-
-      ## extract statistics
-      stats <- c(
-        "Minimum",
-        "Lower Quartile",
-        "Median",
-        "Upper Quartile",
-        "Maximum"
-      )
-      traj.df <-
-        data.frame(
-          patient = rep(seq_len(maxPatients), each = 5L),
-          Statistic = factor(
-            rep(
-              stats,
-              maxPatients
-            ),
-            levels = stats
-          ),
-          traj = c(apply(simDosesMat, 2L, quantile, na.rm = TRUE))
+      # Create trajectory plot.
+      plot_list[[plot_index <- plot_index + 1L]] <-
+        h_plot_simulation_trajectory(
+          sim_doses = sim_doses,
+          max_patients = max_patients,
+          has_placebo = x@data[[1]]@placebo
         )
-
-      ## linetypes for the plot
-      lt <- c(
-        "Median" = 1,
-        "Lower Quartile" = 2,
-        "Upper Quartile" = 2,
-        "Minimum" = 4,
-        "Maximum" = 4
-      )
-
-      ## save the plot
-      if (x@data[[1]]@placebo) {
-        myTitle <- "Patient (placebo were excluded)"
-      } else {
-        myTitle <- "Patient"
-      }
-      plotList[[plotIndex <- plotIndex + 1L]] <-
-        ggplot() +
-        geom_step(
-          aes(
-            x = patient,
-            y = traj,
-            group = Statistic,
-            linetype = Statistic
-          ),
-          linewidth = 1.2,
-          colour = "blue",
-          data = traj.df
-        ) +
-        ## scale_linetype_manual(values=lt) +
-        xlab(myTitle) +
-        ylab("Dose Level")
     }
 
-    ## average distribution of the doses tried
+    # Average distribution of the doses tried.
     if ("dosesTried" %in% type) {
-      ## get the doses tried
-      simDoses <- lapply(
+      # Get the doses tried.
+      sim_doses <- lapply(
         x@data,
         slot,
         "x"
       )
 
-      ## get the dose distributions by trial
-      doseDistributions <-
-        sapply(
-          simDoses,
-          function(s) {
-            if (length(s) > 0) {
-              prop.table(table(factor(s, levels = x@data[[1]]@doseGrid)))
-            } else {
-              rep(0, length(x@data[[1]]@doseGrid))
-            }
-          }
+      # Create doses tried plot.
+      plot_list[[plot_index <- plot_index + 1L]] <-
+        h_plot_doses_tried(
+          sim_doses = sim_doses,
+          dose_grid = x@data[[1]]@doseGrid
         )
-
-      ## derive the average dose distribution across trial
-      ## simulations
-      averageDoseDist <- rowMeans(doseDistributions)
-
-      ## get in data frame shape
-      dat <- data.frame(
-        dose = as.numeric(names(averageDoseDist)),
-        perc = averageDoseDist * 100
-      )
-
-      ## produce and save the plot
-      plotList[[plotIndex <- plotIndex + 1L]] <-
-        ggplot() +
-        geom_bar(
-          data = as.data.frame(dat),
-          aes(x = dose, y = perc),
-          stat = "identity",
-          position = "identity",
-          width = min(diff(x@data[[1]]@doseGrid)) / 2
-        ) +
-        xlab("Dose level") +
-        ylab("Average proportion [%]")
     }
-    ## then finally plot everything
 
-    ## if there is only one plot
-    if (
-      identical(
-        length(plotList),
-        1L
-      )
-    ) {
-      ## just return it
-      return(plotList[[1L]])
+    # Return plot(s).
+    if (identical(length(plot_list), 1L)) {
+      # Just return single plot.
+      plot_list[[1L]]
     } else {
-      ## otherwise arrange them
-      ret <- do.call(
-        gridExtra::arrangeGrob,
-        plotList
-      )
-      return(ret)
+      # Otherwise arrange them.
+      do.call(gridExtra::arrangeGrob, plot_list)
     }
   }
 )
@@ -2928,5 +2928,3 @@ setMethod(
     ret
   }
 )
-
-# nolint end
