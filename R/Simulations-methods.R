@@ -1449,25 +1449,136 @@ setMethod(
   }
 )
 
+# h_pseudo_sim_inverse_dose ----
 
-## --------------------------------------------------------------------------------------------------------
-##' Summarize the simulations, relative to a given truth
-##'
-##' @param object the \code{\linkS4class{PseudoSimulations}} object we want to
-##' summarize
-##' @param truth a function which takes as input a dose (vector) and returns the
-##' true probability (vector) for toxicity
-##' @param targetEndOfTrial the target probability of DLE wanted to achieve at the end of a trial
-##' @param targetDuringTrial the target probability of DLE wanted to achieve during a trial
-##'
-##' @param \dots Additional arguments can be supplied here for \code{truth}
-##' @return an object of class \code{\linkS4class{PseudoSimulationsSummary}}
-##'
-##' @example examples/Simulations-method-summarySIMsingle.R
-##' @export
-##' @keywords methods
+#' Helper Function to Calculate Inverse Dose
+#'
+#' @description `r lifecycle::badge("stable")`
+#'
+#' Creates an inverse function to find the dose corresponding to a target
+#' probability.
+#'
+#' @param f (`function`)\cr the truth function mapping dose to probability.
+#' @param lower (`number`)\cr lower bound for root finding.
+#' @param upper (`number`)\cr upper bound for root finding.
+#'
+#' @return A function that takes a probability and returns the corresponding
+#'   dose.
+#'
+#' @keywords internal
+h_pseudo_sim_inverse_dose <- function(f, lower = -100, upper = 100) {
+  function(y) {
+    uniroot((function(x) f(x) - y), lower = lower, upper = upper)[1]
+  }
+}
+
+# h_pseudo_sim_fit_summary ----
+
+#' Helper Function to Calculate Fit Summary
+#'
+#' @description `r lifecycle::badge("stable")`
+#'
+#' Calculates fit summary statistics for pseudo simulations.
+#'
+#' @param fit_list (`list`)\cr list of fit objects from simulations.
+#' @param x_most_selected (`integer`)\cr index of dose most often selected.
+#' @param dose_grid (`numeric`)\cr dose grid.
+#' @param truth (`function`)\cr truth function.
+#'
+#' @return A list with `fit_at_dose_most_selected` and `mean_fit` components.
+#'
+#' @keywords internal
+h_pseudo_sim_fit_summary <- function(
+  fit_list,
+  x_most_selected,
+  dose_grid,
+  truth
+) {
+  # Find names in the fit list (check if with or without samples).
+  fit_names <- sapply(fit_list, names)
+
+  if ("probDLE" %in% fit_names) {
+    fit_at_dose_most_selected <- sapply(
+      fit_list,
+      function(f) {
+        f$probDLE[x_most_selected]
+      }
+    )
+    mean_fit_matrix <- sapply(
+      fit_list,
+      "[[",
+      "probDLE"
+    )
+
+    mean_fit <- list(
+      truth = truth(dose_grid),
+      average = rowMeans(mean_fit_matrix)
+    )
+  } else {
+    fit_at_dose_most_selected <-
+      sapply(
+        fit_list,
+        function(f) {
+          f$middle[x_most_selected]
+        }
+      )
+
+    # Mean fitted toxicity (average, lower and upper quantiles) at each dose
+    # level (this is required for plotting).
+    mean_fit_matrix <- sapply(
+      fit_list,
+      "[[",
+      "middle"
+    )
+    mean_fit <- list(
+      truth = truth(dose_grid),
+      average = rowMeans(mean_fit_matrix),
+      lower = apply(
+        mean_fit_matrix,
+        1L,
+        quantile,
+        0.025
+      ),
+      upper = apply(
+        mean_fit_matrix,
+        1L,
+        quantile,
+        0.975
+      )
+    )
+  }
+
+  list(
+    fit_at_dose_most_selected = fit_at_dose_most_selected,
+    mean_fit = mean_fit
+  )
+}
+
+# summary-PseudoSimulations ----
+
+#' Summarize Pseudo Simulations
+#'
+#' @description `r lifecycle::badge("stable")`
+#'
+#' Summarize the simulations, relative to a given truth.
+#'
+#' @param object (`PseudoSimulations`)\cr the object we want to summarize.
+#' @param truth (`function`)\cr a function which takes as input a dose (vector)
+#'   and returns the true probability (vector) for toxicity.
+#' @param targetEndOfTrial (`number`)\cr the target probability of DLE wanted
+#'   to achieve at the end of a trial.
+#' @param targetDuringTrial (`number`)\cr the target probability of DLE wanted
+#'   to achieve during a trial.
+#' @param ... additional arguments can be supplied here for `truth`.
+#'
+#' @return An object of class [`PseudoSimulationsSummary`].
+#'
+#' @aliases summary-PseudoSimulations
+#' @example examples/Simulations-method-summarySIMsingle.R
+#' @export
+#'
 setMethod(
-  "summary",
+  f = "summary",
   signature = signature(object = "PseudoSimulations"),
   def = function(
     object,
@@ -1476,249 +1587,199 @@ setMethod(
     targetDuringTrial = 0.35,
     ...
   ) {
-    ## extract dose grid
-    doseGrid <- object@data[[1]]@doseGrid
+    # Validate arguments.
+    assert_function(truth)
+    assert_number(targetEndOfTrial, lower = 0, upper = 1)
+    assert_number(targetDuringTrial, lower = 0, upper = 1)
 
-    ## evaluate true DLE at doseGrid
-    trueDLE <- truth(doseGrid)
+    # Extract dose grid.
+    dose_grid <- object@data[[1]]@doseGrid
 
-    ## Inverse function of the truth function
-    inverse <- function(f, lower = -100, upper = 100) {
-      function(y) {
-        uniroot((function(x) f(x) - y), lower = lower, upper = upper)[1]
-      }
-    }
+    # Evaluate true DLE at dose grid.
+    true_dle <- truth(dose_grid)
 
-    ## Function to obtain corresponsing dose level given target prob
-    TD <- inverse(truth, 0, max(doseGrid))
+    # Function to obtain corresponding dose level given target prob.
+    td <- h_pseudo_sim_inverse_dose(truth, 0, max(dose_grid))
 
-    ## Find the dose corresponding to the target dose during trial
-    targetDoseEndOfTrial <- as.numeric(TD(targetEndOfTrial))
+    # Find the dose corresponding to the target dose during trial.
+    target_dose_end_of_trial <- as.numeric(td(targetEndOfTrial))
 
-    ## Find the dose corresponding to the target does end of trial
-    targetDoseDuringTrial <- as.numeric(TD(targetDuringTrial))
+    # Find the dose corresponding to the target dose end of trial.
+    target_dose_during_trial <- as.numeric(td(targetDuringTrial))
 
-    ## Find the dose at doseGrid corresponding to the above two quantities
-    targetDoseEndOfTrialAtDoseGrid <- doseGrid[max(which(
-      targetDoseEndOfTrial - doseGrid >= 0
+    # Find the dose at dose grid corresponding to the above two quantities.
+    target_dose_end_of_trial_at_dose_grid <- dose_grid[max(which(
+      target_dose_end_of_trial - dose_grid >= 0
     ))]
-    targetDoseDuringTrialAtDoseGrid <- doseGrid[max(which(
-      targetDoseDuringTrial - doseGrid >= 0
+    target_dose_during_trial_at_dose_grid <- dose_grid[max(which(
+      target_dose_during_trial - dose_grid >= 0
     ))]
 
-    ## A summary for all TDtargetEndOfTrial dose obtained
-    TDEOTSummary <- summary(object@final_td_target_end_of_trial_estimates)
+    # A summary for all TDtargetEndOfTrial dose obtained.
+    tdeot_summary <- summary(object@final_td_target_end_of_trial_estimates)
 
-    FinalDoseRecSummary <- TDEOTSummary
+    final_dose_rec_summary <- tdeot_summary
 
-    ratioTDEOTSummary <- summary(object@final_tdeot_ratios)
-    FinalRatioSummary <- ratioTDEOTSummary
+    ratio_tdeot_summary <- summary(object@final_tdeot_ratios)
+    final_ratio_summary <- ratio_tdeot_summary
 
-    ## A summary for all TDtargetDuringTrial dose obtained
-    TDDTSummary <- summary(object@final_td_target_during_trial_estimates)
-    ## what are the levels above target End of Trial?
-    xAboveTargetEndOfTrial <- which(trueDLE > targetEndOfTrial)
+    # A summary for all TDtargetDuringTrial dose obtained.
+    tddt_summary <- summary(object@final_td_target_during_trial_estimates)
 
-    ## what are the levels above target During Trial?
-    xAboveTargetDuringTrial <- which(trueDLE > targetDuringTrial)
+    # What are the levels above target End of Trial?
+    x_above_target_end_of_trial <- which(true_dle > targetEndOfTrial)
 
-    ## proportion of DLEs in this trial
-    propDLE <- sapply(
+    # What are the levels above target During Trial?
+    x_above_target_during_trial <- which(true_dle > targetDuringTrial)
+
+    # Proportion of DLEs in this trial.
+    prop_dle <- sapply(
       object@data,
       function(d) {
         mean(d@y)
       }
     )
-    ### mean toxicity risk
-    meanToxRisk <- sapply(
+
+    # Mean toxicity risk.
+    mean_tox_risk <- sapply(
       object@data,
       function(d) {
-        mean(trueDLE[d@xLevel])
+        mean(true_dle[d@xLevel])
       }
     )
 
-    ## doses selected for MTD
-    doseSelected <- object@doses
+    # Doses selected for MTD.
+    dose_selected <- object@doses
 
-    ## replace NA by 0
-    doseSelected[is.na(doseSelected)] <- 0
+    # Replace NA by 0.
+    dose_selected[is.na(dose_selected)] <- 0
 
-    ## dose most often selected as MTD
-    doseMostSelected <-
-      as.numeric(names(which.max(table(doseSelected))))
+    # Dose most often selected as MTD.
+    dose_most_selected <-
+      as.numeric(names(which.max(table(dose_selected))))
 
-    # doseRec <- doseMostSelected
+    x_most_selected <-
+      match_within_tolerance(dose_most_selected, table = dose_grid)
 
-    xMostSelected <-
-      match_within_tolerance(doseMostSelected, table = doseGrid)
-
-    ## observed toxicity rate at dose most often selected
-    ## Note: this does not seem very useful!
-    ## Reason: In case of a fine grid, few patients if any
-    ## will have been treated at this dose.
+    # Observed toxicity rate at dose most often selected.
+    # Note: this does not seem very useful!
+    # Reason: In case of a fine grid, few patients if any will have been
+    # treated at this dose.
     tmp <-
       sapply(
         object@data,
         function(d) {
-          whichAtThisDose <- which(d@x == doseMostSelected)
-          nAtThisDose <- length(whichAtThisDose)
-          nDLTatThisDose <- sum(d@y[whichAtThisDose])
-          return(c(
-            nAtThisDose = nAtThisDose,
-            nDLTatThisDose = nDLTatThisDose
-          ))
+          which_at_this_dose <- which(d@x == dose_most_selected)
+          n_at_this_dose <- length(which_at_this_dose)
+          n_dlt_at_this_dose <- sum(d@y[which_at_this_dose])
+          c(
+            nAtThisDose = n_at_this_dose,
+            nDLTatThisDose = n_dlt_at_this_dose
+          )
         }
       )
 
-    obsToxRateAtDoseMostSelected <-
+    obs_tox_rate_at_dose_most_selected <-
       mean(tmp["nDLTatThisDose", ]) / mean(tmp["nAtThisDose", ])
 
-    ## number of patients overall
-    nObs <- sapply(
+    # Number of patients overall.
+    n_obs <- sapply(
       object@data,
       slot,
       "nObs"
     )
 
-    ## number of patients treated above target End of trial
-    nAboveTargetEndOfTrial <- sapply(
+    # Number of patients treated above target End of trial.
+    n_above_target_end_of_trial <- sapply(
       object@data,
       function(d) {
-        sum(d@xLevel %in% xAboveTargetEndOfTrial)
+        sum(d@xLevel %in% x_above_target_end_of_trial)
       }
     )
 
-    ## number of patients treated above target During trial
-    nAboveTargetDuringTrial <- sapply(
+    # Number of patients treated above target During trial.
+    n_above_target_during_trial <- sapply(
       object@data,
       function(d) {
-        sum(d@xLevel %in% xAboveTargetDuringTrial)
+        sum(d@xLevel %in% x_above_target_during_trial)
       }
     )
 
-    toxAtDoses <- truth(doseSelected)
+    tox_at_doses <- truth(dose_selected)
 
-    ## Proportion of trials selecting target TDEndOfTrial and TDDuringTrial
+    # Proportion of trials selecting target TDEndOfTrial and TDDuringTrial.
     nsim <- length(object@data)
 
-    propAtTargetEndOfTrial <- (length(which(
-      object@doses == targetDoseEndOfTrialAtDoseGrid
-    ))) /
-      nsim
-    propAtTargetDuringTrial <- (length(which(
-      object@doses == targetDoseDuringTrialAtDoseGrid
+    prop_at_target_end_of_trial <- (length(which(
+      object@doses == target_dose_end_of_trial_at_dose_grid
     ))) /
       nsim
 
-    RecDoseSummary <- TDEOTSummary
+    prop_at_target_during_trial <- (length(which(
+      object@doses == target_dose_during_trial_at_dose_grid
+    ))) /
+      nsim
 
-    ## fitted probDLE at dose most often selected
-    ## find names in the fit list (check it is with or without samples)
-    FitNames <- sapply(object@fit, names)
-
-    if ("probDLE" %in% FitNames) {
-      fitAtDoseMostSelected <- sapply(
-        object@fit,
-        function(f) {
-          f$probDLE[xMostSelected]
-        }
-      )
-      meanFitMatrix <- sapply(
-        object@fit,
-        "[[",
-        "probDLE"
-      )
-
-      meanFit <- list(
-        truth = truth(doseGrid),
-        average = rowMeans(meanFitMatrix)
-      )
-    } else {
-      ## fitted toxicity rate at dose most often selected
-      fitAtDoseMostSelected <-
-        sapply(
-          object@fit,
-          function(f) {
-            f$middle[xMostSelected]
-          }
-        )
-
-      ## mean fitted toxicity (average, lower and upper quantiles)
-      ## at each dose level
-      ## (this is required for plotting)
-      meanFitMatrix <- sapply(
-        object@fit,
-        "[[",
-        "middle"
-      )
-      meanFit <- list(
-        truth = truth(doseGrid),
-        average = rowMeans(meanFitMatrix),
-        lower = apply(
-          meanFitMatrix,
-          1L,
-          quantile,
-          0.025
-        ),
-        upper = apply(
-          meanFitMatrix,
-          1L,
-          quantile,
-          0.975
-        )
-      )
-    }
-
-    ## give back an object of class GeneralSimulationsSummary,
-    ## for which we then define a print / plot method
-    ret <- .PseudoSimulationsSummary(
-      target_end_of_trial = targetEndOfTrial,
-      target_dose_end_of_trial = targetDoseEndOfTrial,
-      target_during_trial = targetDuringTrial,
-      target_dose_during_trial = targetDoseDuringTrial,
-      target_dose_end_of_trial_at_dose_grid = targetDoseEndOfTrialAtDoseGrid,
-      target_dose_during_trial_at_dose_grid = targetDoseDuringTrialAtDoseGrid,
-      tdeot_summary = TDEOTSummary,
-      tddt_summary = TDDTSummary,
-      final_dose_rec_summary = FinalDoseRecSummary,
-      ratio_tdeot_summary = ratioTDEOTSummary,
-      final_ratio_summary = FinalRatioSummary,
-      nsim = length(object@data),
-      prop_dle = propDLE,
-      mean_tox_risk = meanToxRisk,
-      dose_selected = doseSelected,
-      dose_most_selected = doseMostSelected,
-      # doseRec=doseRec,
-      obs_tox_rate_at_dose_most_selected = obsToxRateAtDoseMostSelected,
-      n_obs = nObs,
-      n_above_target_end_of_trial = nAboveTargetEndOfTrial,
-      n_above_target_during_trial = nAboveTargetDuringTrial,
-      tox_at_doses_selected = toxAtDoses,
-      prop_at_target_end_of_trial = propAtTargetEndOfTrial,
-      prop_at_target_during_trial = propAtTargetDuringTrial,
-      dose_grid = doseGrid,
-      fit_at_dose_most_selected = fitAtDoseMostSelected,
-      stop_report = object@stop_report,
-      mean_fit = meanFit
+    # Calculate fit summary using helper function.
+    fit_summary <- h_pseudo_sim_fit_summary(
+      fit_list = object@fit,
+      x_most_selected = x_most_selected,
+      dose_grid = dose_grid,
+      truth = truth
     )
 
-    return(ret)
+    # Give back an object of class PseudoSimulationsSummary.
+    .PseudoSimulationsSummary(
+      target_end_of_trial = targetEndOfTrial,
+      target_dose_end_of_trial = target_dose_end_of_trial,
+      target_during_trial = targetDuringTrial,
+      target_dose_during_trial = target_dose_during_trial,
+      target_dose_end_of_trial_at_dose_grid = target_dose_end_of_trial_at_dose_grid,
+      target_dose_during_trial_at_dose_grid = target_dose_during_trial_at_dose_grid,
+      tdeot_summary = tdeot_summary,
+      tddt_summary = tddt_summary,
+      final_dose_rec_summary = final_dose_rec_summary,
+      ratio_tdeot_summary = ratio_tdeot_summary,
+      final_ratio_summary = final_ratio_summary,
+      nsim = nsim,
+      prop_dle = prop_dle,
+      mean_tox_risk = mean_tox_risk,
+      dose_selected = dose_selected,
+      dose_most_selected = dose_most_selected,
+      obs_tox_rate_at_dose_most_selected = obs_tox_rate_at_dose_most_selected,
+      n_obs = n_obs,
+      n_above_target_end_of_trial = n_above_target_end_of_trial,
+      n_above_target_during_trial = n_above_target_during_trial,
+      tox_at_doses_selected = tox_at_doses,
+      prop_at_target_end_of_trial = prop_at_target_end_of_trial,
+      prop_at_target_during_trial = prop_at_target_during_trial,
+      dose_grid = dose_grid,
+      fit_at_dose_most_selected = fit_summary$fit_at_dose_most_selected,
+      stop_report = object@stop_report,
+      mean_fit = fit_summary$mean_fit
+    )
   }
 )
-## ========================================================================================================
-##' Show the summary of the simulations
-##'
-##' @param object the \code{\linkS4class{PseudoSimulationsSummary}} object we want
-##' to print
-##' @return invisibly returns a data frame of the results with one row and
-##' appropriate column names
-##'
-##' @example examples/Simulations-method-showSIMsingle.R
-##' @export
-##' @keywords methods
 
+# show-PseudoSimulationsSummary ----
+
+#' Show the Summary of Pseudo Simulations
+#'
+#' @description `r lifecycle::badge("stable")`
+#'
+#' Display a summary of pseudo simulation results.
+#'
+#' @param object (`PseudoSimulationsSummary`)\\cr the object we want to print.
+#'
+#' @return Invisibly returns a data frame of the results with one row and
+#'   appropriate column names.
+#'
+#' @aliases show-PseudoSimulationsSummary
+#' @example examples/Simulations-method-showSIMsingle.R
+#' @export
+#'
 setMethod(
-  "show",
+  f = "show",
   signature = signature(object = "PseudoSimulationsSummary"),
   def = function(object) {
     r <- Report$new(
@@ -1914,43 +1975,42 @@ setMethod(
       "\n"
     )
 
-    FinalDoseRecSum <- object@final_dose_rec_summary
+    final_dose_rec_sum <- object@final_dose_rec_summary
 
-    r$dfSave(as.numeric(FinalDoseRecSum[1]), "FinalDoseRecMin")
-    r$dfSave(as.numeric(FinalDoseRecSum[2]), "FinalDoseReclower")
-    r$dfSave(as.numeric(FinalDoseRecSum[3]), "FinalDoseRecMedian")
-    r$dfSave(as.numeric(FinalDoseRecSum[4]), "FinalDoseRecMean")
-    r$dfSave(as.numeric(FinalDoseRecSum[5]), "FinalDoseRecUpper")
-    r$dfSave(as.numeric(FinalDoseRecSum[6]), "FinalDoseRecMax")
+    r$dfSave(as.numeric(final_dose_rec_sum[1]), "FinalDoseRecMin")
+    r$dfSave(as.numeric(final_dose_rec_sum[2]), "FinalDoseReclower")
+    r$dfSave(as.numeric(final_dose_rec_sum[3]), "FinalDoseRecMedian")
+    r$dfSave(as.numeric(final_dose_rec_sum[4]), "FinalDoseRecMean")
+    r$dfSave(as.numeric(final_dose_rec_sum[5]), "FinalDoseRecUpper")
+    r$dfSave(as.numeric(final_dose_rec_sum[6]), "FinalDoseRecMax")
 
     cat(
       "The summary table of dose levels, the optimal dose\n to recommend for subsequent study across all simulations\n",
-      capture.output(FinalDoseRecSum)[1],
+      capture.output(final_dose_rec_sum)[1],
       "\n",
-      capture.output(FinalDoseRecSum)[2],
+      capture.output(final_dose_rec_sum)[2],
       "\n"
     )
 
-    FinalratioSum <- object@final_ratio_summary
+    final_ratio_sum <- object@final_ratio_summary
 
-    r$dfSave(as.numeric(FinalratioSum[1]), "FinalratioMin")
-    r$dfSave(as.numeric(FinalratioSum[2]), "Finalratiolower")
-    r$dfSave(as.numeric(FinalratioSum[3]), "FinalratioMedian")
-    r$dfSave(as.numeric(FinalratioSum[4]), "FinalratioMean")
-    r$dfSave(as.numeric(FinalratioSum[5]), "FinalratioUpper")
-    r$dfSave(as.numeric(FinalratioSum[6]), "FinalratioMax")
+    r$dfSave(as.numeric(final_ratio_sum[1]), "FinalratioMin")
+    r$dfSave(as.numeric(final_ratio_sum[2]), "Finalratiolower")
+    r$dfSave(as.numeric(final_ratio_sum[3]), "FinalratioMedian")
+    r$dfSave(as.numeric(final_ratio_sum[4]), "FinalratioMean")
+    r$dfSave(as.numeric(final_ratio_sum[5]), "FinalratioUpper")
+    r$dfSave(as.numeric(final_ratio_sum[6]), "FinalratioMax")
 
     cat(
       "The summary table of the final ratios of the optimal dose for stopping across
                   all simulations\n",
-      capture.output(FinalratioSum)[1],
+      capture.output(final_ratio_sum)[1],
       "\n",
-      capture.output(FinalratioSum)[2],
+      capture.output(final_ratio_sum)[2],
       "\n\n"
     )
 
-    # Report individual stopping rules with non-<NA> labels.
-
+    # Report individual stopping rules with non-NA labels.
     stop_pct_to_print <- h_calc_report_label_percentage(object@stop_report)
 
     if (length(stop_pct_to_print) > 0) {
@@ -1960,40 +2020,39 @@ setMethod(
       )
     }
 
-    ## finally assign names to the df
-    ## and return it invisibly
+    # Finally assign names to the df and return it invisibly.
     names(r$df) <- r$dfNames
     invisible(r$df)
   }
 )
-## -------------------------------------------------------------------------------------------
-##' Plot summaries of the pseudo simulations
-##'
-##' Graphical display of the simulation summary
-##'
-##' This plot method can be applied to \code{\linkS4class{PseudoSimulationsSummary}}
-##' objects in order to summarize them graphically. This can be used when only DLE responses are involved
-##' in the simulations. This also applied to results with or without samples generated during the simulations
-##'
-##' @param x the \code{\linkS4class{PseudoSimulationsSummary}} object we want
-##' to plot from
-##' @param y missing
-##' @param type the types of plots you want to obtain.
-##' @param \dots not used
-##' @return A single \code{\link[ggplot2]{ggplot}} object if a single plot is
-##' asked for, otherwise a `gtable` object.
-##'
-##' @importFrom ggplot2 geom_histogram ggplot aes xlab ylab geom_line
-##' scale_linetype_manual scale_colour_manual
-##' @importFrom gridExtra arrangeGrob
-##'
-##' @example examples/Simulations-method-plotSUMsingle.R
-##' @export
-##' @keywords methods
-##'
 
+# plot-PseudoSimulationsSummary-missing ----
+
+#' Plot Pseudo Simulation Summary
+#'
+#' @description `r lifecycle::badge("stable")`
+#'
+#' Graphical display of the simulation summary.
+#'
+#' This plot method can be applied to [`PseudoSimulationsSummary`] objects in
+#' order to summarize them graphically. This can be used when only DLE responses
+#' are involved in the simulations. This also applied to results with or without
+#' samples generated during the simulations.
+#'
+#' @param x (`PseudoSimulationsSummary`)\\cr the object we want to plot from.
+#' @param y (`missing`)\\cr missing object, not used.
+#' @param type (`character`)\\cr the types of plots you want to obtain.
+#' @param ... not used.
+#'
+#' @return A single `ggplot2` object if a single plot is asked for, otherwise a
+#'   `gtable` object.
+#'
+#' @aliases plot-PseudoSimulationsSummary-missing
+#' @example examples/Simulations-method-plotSUMsingle.R
+#' @export
+#'
 setMethod(
-  "plot",
+  f = "plot",
   signature = signature(
     x = "PseudoSimulationsSummary",
     y = "missing"
@@ -2010,35 +2069,35 @@ setMethod(
     ),
     ...
   ) {
-    ## which plots should be produced?
+    # Validate arguments.
     type <- match.arg(type, several.ok = TRUE)
-    stopifnot(length(type) > 0L)
+    assert_character(type, min.len = 1)
 
-    ## start the plot list
-    plotList <- list()
-    plotIndex <- 0L
+    # Start the plot list.
+    plot_list <- list()
+    plot_index <- 0L
 
-    ## distribution of overall sample size
+    # Distribution of overall sample size.
     if ("nObs" %in% type) {
-      plotList[[plotIndex <- plotIndex + 1L]] <-
+      plot_list[[plot_index <- plot_index + 1L]] <-
         h_barplot_percentages(
           x = x@n_obs,
           description = "Number of patients in total"
         )
     }
 
-    ## distribution of final MTD estimate
+    # Distribution of final MTD estimate.
     if ("doseSelected" %in% type) {
-      plotList[[plotIndex <- plotIndex + 1L]] <-
+      plot_list[[plot_index <- plot_index + 1L]] <-
         h_barplot_percentages(
           x = x@dose_selected,
           description = "MTD estimate"
         )
     }
 
-    ## distribution of proportion of DLTs
+    # Distribution of proportion of DLTs.
     if ("propDLE" %in% type) {
-      plotList[[plotIndex <- plotIndex + 1L]] <-
+      plot_list[[plot_index <- plot_index + 1L]] <-
         h_barplot_percentages(
           x = x@prop_dle * 100,
           description = "Proportion of DLE [%]",
@@ -2046,52 +2105,45 @@ setMethod(
         )
     }
 
-    ## distribution of number of patients treated at too much tox
+    # Distribution of number of patients treated at too much tox.
     if ("nAboveTargetEndOfTrial" %in% type) {
-      plotList[[plotIndex <- plotIndex + 1L]] <-
+      plot_list[[plot_index <- plot_index + 1L]] <-
         h_barplot_percentages(
           x = x@n_above_target_end_of_trial,
           description = "Number of patients above target"
         )
     }
 
-    ## first combine these small plots
-    if (length(plotList)) {
+    # First combine these small plots.
+    if (length(plot_list)) {
       ret <-
-        ## if there is only one plot
-        if (
-          identical(
-            length(plotList),
-            1L
-          )
-        ) {
-          ## just use that
-          plotList[[1L]]
+        # If there is only one plot.
+        if (identical(length(plot_list), 1L)) {
+          # Just use that.
+          plot_list[[1L]]
         } else {
-          ## multiple plots in this case
+          # Multiple plots in this case.
           do.call(
             gridExtra::arrangeGrob,
-            plotList
+            plot_list
           )
         }
     }
 
-    ## the meanFit plot
-
+    # The meanFit plot.
     if ("meanFit" %in% type) {
-      ## Find if DLE samples are generated in the simulations
-      ## by checking if there the lower limits of the 95% Credibility
-      ## interval are calculated
+      # Find if DLE samples are generated in the simulations by checking if
+      # the lower limits of the 95% credibility interval are calculated.
       if (!is.null(x@mean_fit$lower)) {
-        ## which types of lines do we have?
+        # Which types of lines do we have?
         linetype <- c(
           "True toxicity",
           "Average estimated toxicity",
           "95% interval for estimated toxicity"
         )
-        ## create the data frame, with
-        ## true tox, average estimated tox, and 95% (lower, upper)
-        ## estimated tox (in percentage) stacked below each other
+
+        # Create the data frame, with true tox, average estimated tox, and 95%
+        # (lower, upper) estimated tox (in percentage) stacked below each other.
         dat <- data.frame(
           dose = rep(x@dose_grid, 4L),
           group = rep(1:4, each = length(x@dose_grid)),
@@ -2102,22 +2154,22 @@ setMethod(
           lines = unlist(x@mean_fit) * 100
         )
 
-        ## linetypes for the plot
+        # Linetypes for the plot.
         lt <- c(
           "True toxicity" = 1,
           "Average estimated toxicity" = 1,
           "95% interval for estimated toxicity" = 2
         )
 
-        ## colour for the plot
+        # Colour for the plot.
         col <- c(
           "True toxicity" = 1,
           "Average estimated toxicity" = 2,
           "95% interval for estimated toxicity" = 2
         )
 
-        ## now create and save the plot
-        thisPlot <- ggplot() +
+        # Now create and save the plot.
+        this_plot <- ggplot() +
           geom_line(
             aes(
               x = dose,
@@ -2129,21 +2181,20 @@ setMethod(
             data = dat
           )
 
-        thisPlot <- thisPlot +
+        this_plot <- this_plot +
           scale_linetype_manual(values = lt) +
           scale_colour_manual(values = col) +
           xlab("Dose level") +
           ylab("Probability of DLE [%]")
       } else {
-        ## which types of lines do we have?
+        # Which types of lines do we have?
         linetype <- c(
           "True toxicity",
           "Average estimated toxicity"
         )
 
-        ## create the data frame, with
-        ## true tox, average estimated tox
-        ## estimated tox (in percentage) stacked below each other
+        # Create the data frame, with true tox, average estimated tox
+        # (in percentage) stacked below each other.
         dat <- data.frame(
           dose = rep(x@dose_grid, 2L),
           group = rep(1:2, each = length(x@dose_grid)),
@@ -2154,20 +2205,20 @@ setMethod(
           lines = unlist(x@mean_fit) * 100
         )
 
-        ## linetypes for the plot
+        # Linetypes for the plot.
         lt <- c(
           "True toxicity" = 1,
           "Average estimated toxicity" = 1
         )
 
-        ## colour for the plot
+        # Colour for the plot.
         col <- c(
           "True toxicity" = 1,
           "Average estimated toxicity" = 2
         )
 
-        ## now create and save the plot
-        thisPlot <- ggplot() +
+        # Now create and save the plot.
+        this_plot <- ggplot() +
           geom_line(
             aes(
               x = dose,
@@ -2179,18 +2230,18 @@ setMethod(
             data = dat
           )
 
-        thisPlot <- thisPlot +
+        this_plot <- this_plot +
           scale_linetype_manual(values = lt) +
           scale_colour_manual(values = col) +
           xlab("Dose level") +
           ylab("Probability of DLE [%]")
       }
 
-      ## then add this plot at the bottom
+      # Then add this plot at the bottom.
       ret <- if (exists("ret")) {
-        gridExtra::arrangeGrob(ret, thisPlot)
+        gridExtra::arrangeGrob(ret, this_plot)
       } else {
-        thisPlot
+        this_plot
       }
     }
     ret
