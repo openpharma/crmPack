@@ -156,12 +156,12 @@ setMethod(
 
     # Estimates of posterior probabilities that are based on the prob. samples
     # which are within overdose/target interval.
-    prob_overdose <- colMeans(h_in_range(prob_samples, nextBest@overdose, bounds_closed = c(FALSE, TRUE)))
-    prob_target <- colMeans(h_in_range(prob_samples, nextBest@target))
-
+    prob_overdose <- colMeans(h_in_range(prob_samples, nextBest@overdose, bounds_closed = c(TRUE, TRUE)))
+    prob_target <- colMeans(h_in_range(prob_samples, nextBest@target, bounds_closed = c(TRUE, FALSE)))
+    prob_underdose <- colMeans(h_in_range(prob_samples, nextBest@underdose, bounds_closed = c(TRUE, FALSE)))
     # Eligible grid doses after accounting for maximum possible dose and discarding overdoses.
     is_dose_eligible <- h_next_best_eligible_doses(data@doseGrid, doselimit, data@placebo, levels = TRUE) &
-      (prob_overdose <= nextBest@max_overdose_prob)
+      (prob_overdose < nextBest@max_overdose_prob)
 
     next_dose <- if (any(is_dose_eligible)) {
       # If maximum target probability is higher than some numerical threshold,
