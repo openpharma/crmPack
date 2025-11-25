@@ -2,20 +2,22 @@
 % Please edit documentation in R/Simulations-methods.R
 \name{show,DualSimulationsSummary-method}
 \alias{show,DualSimulationsSummary-method}
-\title{Show the summary of the dual-endpoint simulations}
+\alias{show-DualSimulationsSummary}
+\title{Show the Summary of Dual-Endpoint Simulations}
 \usage{
 \S4method{show}{DualSimulationsSummary}(object)
 }
 \arguments{
-\item{object}{the \code{\linkS4class{DualSimulationsSummary}} object we want
-to print}
+\item{object}{(\code{DualSimulationsSummary})\cr the object we want to print.}
 }
 \value{
-invisibly returns a data frame of the results with one row and
-appropriate column names
+Invisibly returns a data frame of the results with one row and
+appropriate column names.
 }
 \description{
-Show the summary of the dual-endpoint simulations
+\ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#stable}{\figure{lifecycle-stable.svg}{options: alt='[Stable]'}}}{\strong{[Stable]}}
+
+Display a summary of dual-endpoint simulation results.
 }
 \examples{
 # Define the dose-grid.
@@ -131,4 +133,3 @@ show(summary(
   trueBiomarker = true_biomarker
 ))
 }
-\keyword{methods}

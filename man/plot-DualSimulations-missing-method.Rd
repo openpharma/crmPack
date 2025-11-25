@@ -2,33 +2,34 @@
 % Please edit documentation in R/Simulations-methods.R
 \name{plot,DualSimulations,missing-method}
 \alias{plot,DualSimulations,missing-method}
-\title{Plot dual-endpoint simulations}
+\alias{plot-DualSimulations-missing}
+\title{Plot Dual-Endpoint Simulations}
 \usage{
 \S4method{plot}{DualSimulations,missing}(x, y, type = c("trajectory", "dosesTried", "sigma2W", "rho"), ...)
 }
 \arguments{
-\item{x}{the \code{\linkS4class{DualSimulations}} object we want
-to plot from}
+\item{x}{(\code{DualSimulations})\cr the object we want to plot from.}
 
-\item{y}{missing}
+\item{y}{(\code{missing})\cr not used.}
 
-\item{type}{the type of plots you want to obtain.}
+\item{type}{(\code{character})\cr the type of plots you want to obtain.}
 
-\item{\dots}{not used}
+\item{...}{not used.}
 }
 \value{
-A single \code{\link[ggplot2]{ggplot}} object if a single plot is
-asked for, otherwise a \code{gtable} object.
+A single \code{ggplot} object if a single plot is asked for,
+otherwise a \code{gtable} object.
 }
 \description{
-This plot method can be applied to \code{\linkS4class{DualSimulations}}
-objects in order to summarize them graphically. In addition to the standard
-plot types, there is
+\ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#stable}{\figure{lifecycle-stable.svg}{options: alt='[Stable]'}}}{\strong{[Stable]}}
+
+This plot method can be applied to \code{\link{DualSimulations}} objects in order to
+summarize them graphically. In addition to the standard plot types, there is:
 \describe{
 \item{sigma2W}{Plot a boxplot of the final biomarker variance estimates in
 the simulated trials}
-\item{rho}{Plot a boxplot of the final correlation estimates in
-the simulated trials}
+\item{rho}{Plot a boxplot of the final correlation estimates in the
+simulated trials}
 }
 }
 \examples{
@@ -247,4 +248,3 @@ my_sims <- simulate(
 # Plot the results of the simulation.
 print(plot(my_sims))
 }
-\keyword{methods}

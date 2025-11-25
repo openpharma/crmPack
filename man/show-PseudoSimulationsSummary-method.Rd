@@ -2,20 +2,22 @@
 % Please edit documentation in R/Simulations-methods.R
 \name{show,PseudoSimulationsSummary-method}
 \alias{show,PseudoSimulationsSummary-method}
-\title{Show the summary of the simulations}
+\alias{show-PseudoSimulationsSummary}
+\title{Show the Summary of Pseudo Simulations}
 \usage{
 \S4method{show}{PseudoSimulationsSummary}(object)
 }
 \arguments{
-\item{object}{the \code{\linkS4class{PseudoSimulationsSummary}} object we want
-to print}
+\item{object}{(\code{PseudoSimulationsSummary})\cr the object we want to print.}
 }
 \value{
-invisibly returns a data frame of the results with one row and
-appropriate column names
+Invisibly returns a data frame of the results with one row and
+appropriate column names.
 }
 \description{
-Show the summary of the simulations
+\ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#stable}{\figure{lifecycle-stable.svg}{options: alt='[Stable]'}}}{\strong{[Stable]}}
+
+Display a summary of pseudo simulation results.
 }
 \examples{
 # Obtain the plot for the simulation results if only DLE responses are
@@ -127,4 +129,3 @@ my_sum <- summary(
 # Show the summary of the simulated results in a data frame.
 show(my_sum)
 }
-\keyword{methods}

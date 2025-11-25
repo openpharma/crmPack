@@ -2,7 +2,8 @@
 % Please edit documentation in R/Simulations-methods.R
 \name{plot,PseudoSimulationsSummary,missing-method}
 \alias{plot,PseudoSimulationsSummary,missing-method}
-\title{Plot summaries of the pseudo simulations}
+\alias{plot-PseudoSimulationsSummary-missing}
+\title{Plot Pseudo Simulation Summary}
 \usage{
 \S4method{plot}{PseudoSimulationsSummary,missing}(
   x,
@@ -12,26 +13,27 @@
 )
 }
 \arguments{
-\item{x}{the \code{\linkS4class{PseudoSimulationsSummary}} object we want
-to plot from}
+\item{x}{(\code{PseudoSimulationsSummary})\cr the object we want to plot from.}
 
-\item{y}{missing}
+\item{y}{(\code{missing})\cr missing object, not used.}
 
-\item{type}{the types of plots you want to obtain.}
+\item{type}{(\code{character})\cr the types of plots you want to obtain.}
 
-\item{\dots}{not used}
+\item{...}{not used.}
 }
 \value{
-A single \code{\link[ggplot2]{ggplot}} object if a single plot is
-asked for, otherwise a \code{gtable} object.
+A single \code{ggplot2} object if a single plot is asked for, otherwise a
+\code{gtable} object.
 }
 \description{
-Graphical display of the simulation summary
-}
-\details{
-This plot method can be applied to \code{\linkS4class{PseudoSimulationsSummary}}
-objects in order to summarize them graphically. This can be used when only DLE responses are involved
-in the simulations. This also applied to results with or without samples generated during the simulations
+\ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#stable}{\figure{lifecycle-stable.svg}{options: alt='[Stable]'}}}{\strong{[Stable]}}
+
+Graphical display of the simulation summary.
+
+This plot method can be applied to \code{\link{PseudoSimulationsSummary}} objects in
+order to summarize them graphically. This can be used when only DLE responses
+are involved in the simulations. This also applied to results with or without
+samples generated during the simulations.
 }
 \examples{
 # nolint start
@@ -137,4 +139,3 @@ options <- McmcOptions(burnin = 100, step = 2, samples = 200)
 
 # nolint end
 }
-\keyword{methods}

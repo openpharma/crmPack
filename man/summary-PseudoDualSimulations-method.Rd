@@ -2,8 +2,8 @@
 % Please edit documentation in R/Simulations-methods.R
 \name{summary,PseudoDualSimulations-method}
 \alias{summary,PseudoDualSimulations-method}
-\title{Summary for Pseudo Dual responses simulations, relative to a given pseudo DLE and efficacy model
-(except the EffFlexi class model)}
+\alias{summary-PseudoDualSimulations}
+\title{Summarize Pseudo Dual Simulations}
 \usage{
 \S4method{summary}{PseudoDualSimulations}(
   object,
@@ -15,25 +15,31 @@
 )
 }
 \arguments{
-\item{object}{the \code{\linkS4class{PseudoDualSimulations}} object we want to summarize}
+\item{object}{(\code{PseudoDualSimulations})\cr the object we want to summarize.}
 
-\item{trueDLE}{a function which takes as input a dose (vector) and returns the true probability (vector)
-of DLE}
+\item{trueDLE}{(\code{function})\cr a function which takes as input a dose
+(vector) and returns the true probability (vector) of DLE.}
 
-\item{trueEff}{a function which takes as input a dose (vector) and returns the mean efficacy value(s) (vector).}
+\item{trueEff}{(\code{function})\cr a function which takes as input a dose
+(vector) and returns the mean efficacy value(s) (vector).}
 
-\item{targetEndOfTrial}{the target probability of DLE that are used at the end of a trial. Default at 0.3.}
+\item{targetEndOfTrial}{(\code{number})\cr the target probability of DLE that are
+used at the end of a trial. Default at 0.3.}
 
-\item{targetDuringTrial}{the target probability of DLE that are used during the trial. Default at 0.35.}
+\item{targetDuringTrial}{(\code{number})\cr the target probability of DLE that
+are used during the trial. Default at 0.35.}
 
-\item{\dots}{Additional arguments can be supplied here for \code{trueDLE} and \code{trueEff}}
+\item{...}{additional arguments can be supplied here for \code{trueDLE} and
+\code{trueEff}.}
 }
 \value{
-an object of class \code{\linkS4class{PseudoDualSimulationsSummary}}
+An object of class \code{\link{PseudoDualSimulationsSummary}}.
 }
 \description{
-Summary for Pseudo Dual responses simulations, relative to a given pseudo DLE and efficacy model
-(except the EffFlexi class model)
+\ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#stable}{\figure{lifecycle-stable.svg}{options: alt='[Stable]'}}}{\strong{[Stable]}}
+
+Summary for Pseudo Dual responses simulations, relative to a given pseudo
+DLE and efficacy model (except the EffFlexi class model).
 }
 \examples{
 # Obtain the plot for the simulation results if DLE and efficacy responses
@@ -163,4 +169,3 @@ summary(
 )
 }
 }
-\keyword{methods}
