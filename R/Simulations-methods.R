@@ -715,7 +715,7 @@ Report <-
       dfSave = function(res, name) {
         df <<- cbind(df, res)
         dfNames <<- c(dfNames, name)
-        return(res)
+        res
       },
       report = function(
         slotName,
