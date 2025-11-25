@@ -264,3 +264,328 @@
       Stop reason triggered:
        ≥ 12 patients dosed :  100 %
 
+# summary-PseudoDualSimulations works correctly
+
+    Code
+      result
+    Output
+      Summary of 1 simulations
+      
+      Target probability of DLE p(DLE) used at the end of a trial was 30 %
+      The dose level corresponds to the target p(DLE) used at the end of a trial, TDEOT, was 43.05404 
+      TDEOT at dose Grid was 25 
+      Target p(DLE) used during a trial was 35 %
+      The dose level corresponds to the target p(DLE) used during a trial, TDDT, was 47.61922 
+      TDDT at dose Grid was 25 
+      Number of patients overall : mean 12 (12, 12) 
+      Number of patients treated above the target p(DLE) used at the end of a trial : mean 9 (9, 9) 
+      Number of patients treated above the target p(DLE) used during a trial : mean 9 (9, 9) 
+      Proportions of observed DLT in the trials : mean 25 % (25 %, 25 %) 
+      Mean toxicity risks for the patients : mean 70 % (70 %, 70 %) 
+      Doses selected as TDEOT : mean 100 (100, 100) 
+      True toxicity at TDEOT : mean 88 % (88 %, 88 %) 
+      Proportion of trials selecting the TDEOT: 0 %
+      Proportion of trials selecting the TDDT: 0 %
+      Dose most often selected as TDEOT: 100 
+      Observed toxicity rate at dose most often selected: NaN %
+      Fitted probabilities of DLE at dose most often selected : mean 30 % (30 %, 30 %) 
+      The summary table of the final TDEOT across all simulations
+          Min. 1st Qu.  Median    Mean 3rd Qu.    Max.  
+         100.6   100.6   100.6   100.6   100.6   100.6  
+      The summary table of the final ratios of the TDEOT across all simulations
+          Min. 1st Qu.  Median    Mean 3rd Qu.    Max.  
+          6.24    6.24    6.24    6.24    6.24    6.24  
+      The summary table of the final TDDT across all simulations
+          Min. 1st Qu.  Median    Mean 3rd Qu.    Max.  
+         119.5   119.5   119.5   119.5   119.5   119.5  
+      The summary table of dose levels, the optimal dose
+       to recommend for subsequent study across all simulations
+          Min. 1st Qu.  Median    Mean 3rd Qu.    Max.  
+         100.6   100.6   100.6   100.6   100.6   100.6  
+      The summary table of the final ratios of the optimal dose for stopping across
+                        all simulations
+          Min. 1st Qu.  Median    Mean 3rd Qu.    Max.  
+          6.24    6.24    6.24    6.24    6.24    6.24  
+      
+      Stop reason triggered:
+       ≥ 12 patients dosed :  100 %
+      Target Gstar, the dose which gives the maximum gain value was 36.0307 
+      Target Gstar at dose Grid was 25 
+      The summary table of the final Gstar across all simulations
+          Min. 1st Qu.  Median    Mean 3rd Qu.    Max.  
+         151.9   151.9   151.9   151.9   151.9   151.9  
+      The summary table of the final ratios of the Gstar across all simulations
+          Min. 1st Qu.  Median    Mean 3rd Qu.    Max.  
+         7.505   7.505   7.505   7.505   7.505   7.505  
+      The summary table of dose levels, the optimal dose
+       to recommend for subsequent study across all simulations
+          Min. 1st Qu.  Median    Mean 3rd Qu.    Max.  
+         100.6   100.6   100.6   100.6   100.6   100.6  
+      The summary table of the final ratios of the optimal dose for stopping across
+              all simulations
+          Min. 1st Qu.  Median    Mean 3rd Qu.    Max.  
+          6.24    6.24    6.24    6.24    6.24    6.24  
+      Fitted expected efficacy level at dose most often selected : mean 1 (1, 1) 
+      Stop reason triggered:
+       ≥ 12 patients dosed :  100 %
+
+---
+
+    Code
+      result_custom
+    Output
+      Summary of 1 simulations
+      
+      Target probability of DLE p(DLE) used at the end of a trial was 25 %
+      The dose level corresponds to the target p(DLE) used at the end of a trial, TDEOT, was 38.02775 
+      TDEOT at dose Grid was 25 
+      Target p(DLE) used during a trial was 30 %
+      The dose level corresponds to the target p(DLE) used during a trial, TDDT, was 43.05404 
+      TDDT at dose Grid was 25 
+      Number of patients overall : mean 12 (12, 12) 
+      Number of patients treated above the target p(DLE) used at the end of a trial : mean 9 (9, 9) 
+      Number of patients treated above the target p(DLE) used during a trial : mean 9 (9, 9) 
+      Proportions of observed DLT in the trials : mean 25 % (25 %, 25 %) 
+      Mean toxicity risks for the patients : mean 70 % (70 %, 70 %) 
+      Doses selected as TDEOT : mean 100 (100, 100) 
+      True toxicity at TDEOT : mean 88 % (88 %, 88 %) 
+      Proportion of trials selecting the TDEOT: 0 %
+      Proportion of trials selecting the TDDT: 0 %
+      Dose most often selected as TDEOT: 100 
+      Observed toxicity rate at dose most often selected: NaN %
+      Fitted probabilities of DLE at dose most often selected : mean 30 % (30 %, 30 %) 
+      The summary table of the final TDEOT across all simulations
+          Min. 1st Qu.  Median    Mean 3rd Qu.    Max.  
+         100.6   100.6   100.6   100.6   100.6   100.6  
+      The summary table of the final ratios of the TDEOT across all simulations
+          Min. 1st Qu.  Median    Mean 3rd Qu.    Max.  
+          6.24    6.24    6.24    6.24    6.24    6.24  
+      The summary table of the final TDDT across all simulations
+          Min. 1st Qu.  Median    Mean 3rd Qu.    Max.  
+         119.5   119.5   119.5   119.5   119.5   119.5  
+      The summary table of dose levels, the optimal dose
+       to recommend for subsequent study across all simulations
+          Min. 1st Qu.  Median    Mean 3rd Qu.    Max.  
+         100.6   100.6   100.6   100.6   100.6   100.6  
+      The summary table of the final ratios of the optimal dose for stopping across
+                        all simulations
+          Min. 1st Qu.  Median    Mean 3rd Qu.    Max.  
+          6.24    6.24    6.24    6.24    6.24    6.24  
+      
+      Stop reason triggered:
+       ≥ 12 patients dosed :  100 %
+      Target Gstar, the dose which gives the maximum gain value was 36.0307 
+      Target Gstar at dose Grid was 25 
+      The summary table of the final Gstar across all simulations
+          Min. 1st Qu.  Median    Mean 3rd Qu.    Max.  
+         151.9   151.9   151.9   151.9   151.9   151.9  
+      The summary table of the final ratios of the Gstar across all simulations
+          Min. 1st Qu.  Median    Mean 3rd Qu.    Max.  
+         7.505   7.505   7.505   7.505   7.505   7.505  
+      The summary table of dose levels, the optimal dose
+       to recommend for subsequent study across all simulations
+          Min. 1st Qu.  Median    Mean 3rd Qu.    Max.  
+         100.6   100.6   100.6   100.6   100.6   100.6  
+      The summary table of the final ratios of the optimal dose for stopping across
+              all simulations
+          Min. 1st Qu.  Median    Mean 3rd Qu.    Max.  
+          6.24    6.24    6.24    6.24    6.24    6.24  
+      Fitted expected efficacy level at dose most often selected : mean 1 (1, 1) 
+      Stop reason triggered:
+       ≥ 12 patients dosed :  100 %
+
+# summary-PseudoDualSimulations produces expected structure
+
+    Code
+      result
+    Output
+      Summary of 1 simulations
+      
+      Target probability of DLE p(DLE) used at the end of a trial was 30 %
+      The dose level corresponds to the target p(DLE) used at the end of a trial, TDEOT, was 43.05404 
+      TDEOT at dose Grid was 25 
+      Target p(DLE) used during a trial was 35 %
+      The dose level corresponds to the target p(DLE) used during a trial, TDDT, was 47.61922 
+      TDDT at dose Grid was 25 
+      Number of patients overall : mean 12 (12, 12) 
+      Number of patients treated above the target p(DLE) used at the end of a trial : mean 9 (9, 9) 
+      Number of patients treated above the target p(DLE) used during a trial : mean 9 (9, 9) 
+      Proportions of observed DLT in the trials : mean 25 % (25 %, 25 %) 
+      Mean toxicity risks for the patients : mean 70 % (70 %, 70 %) 
+      Doses selected as TDEOT : mean 100 (100, 100) 
+      True toxicity at TDEOT : mean 88 % (88 %, 88 %) 
+      Proportion of trials selecting the TDEOT: 0 %
+      Proportion of trials selecting the TDDT: 0 %
+      Dose most often selected as TDEOT: 100 
+      Observed toxicity rate at dose most often selected: NaN %
+      Fitted probabilities of DLE at dose most often selected : mean 30 % (30 %, 30 %) 
+      The summary table of the final TDEOT across all simulations
+          Min. 1st Qu.  Median    Mean 3rd Qu.    Max.  
+         100.6   100.6   100.6   100.6   100.6   100.6  
+      The summary table of the final ratios of the TDEOT across all simulations
+          Min. 1st Qu.  Median    Mean 3rd Qu.    Max.  
+          6.24    6.24    6.24    6.24    6.24    6.24  
+      The summary table of the final TDDT across all simulations
+          Min. 1st Qu.  Median    Mean 3rd Qu.    Max.  
+         119.5   119.5   119.5   119.5   119.5   119.5  
+      The summary table of dose levels, the optimal dose
+       to recommend for subsequent study across all simulations
+          Min. 1st Qu.  Median    Mean 3rd Qu.    Max.  
+         100.6   100.6   100.6   100.6   100.6   100.6  
+      The summary table of the final ratios of the optimal dose for stopping across
+                        all simulations
+          Min. 1st Qu.  Median    Mean 3rd Qu.    Max.  
+          6.24    6.24    6.24    6.24    6.24    6.24  
+      
+      Stop reason triggered:
+       ≥ 12 patients dosed :  100 %
+      Target Gstar, the dose which gives the maximum gain value was 36.0307 
+      Target Gstar at dose Grid was 25 
+      The summary table of the final Gstar across all simulations
+          Min. 1st Qu.  Median    Mean 3rd Qu.    Max.  
+         151.9   151.9   151.9   151.9   151.9   151.9  
+      The summary table of the final ratios of the Gstar across all simulations
+          Min. 1st Qu.  Median    Mean 3rd Qu.    Max.  
+         7.505   7.505   7.505   7.505   7.505   7.505  
+      The summary table of dose levels, the optimal dose
+       to recommend for subsequent study across all simulations
+          Min. 1st Qu.  Median    Mean 3rd Qu.    Max.  
+         100.6   100.6   100.6   100.6   100.6   100.6  
+      The summary table of the final ratios of the optimal dose for stopping across
+              all simulations
+          Min. 1st Qu.  Median    Mean 3rd Qu.    Max.  
+          6.24    6.24    6.24    6.24    6.24    6.24  
+      Fitted expected efficacy level at dose most often selected : mean 1 (1, 1) 
+      Stop reason triggered:
+       ≥ 12 patients dosed :  100 %
+
+# summary-PseudoDualFlexiSimulations works correctly
+
+    Code
+      result
+    Output
+      Summary of 1 simulations
+      
+      Target probability of DLE p(DLE) used at the end of a trial was 30 %
+      The dose level corresponds to the target p(DLE) used at the end of a trial, TDEOT, was 43.05404 
+      TDEOT at dose Grid was 25 
+      Target p(DLE) used during a trial was 35 %
+      The dose level corresponds to the target p(DLE) used during a trial, TDDT, was 47.61922 
+      TDDT at dose Grid was 25 
+      Number of patients overall : mean 12 (12, 12) 
+      Number of patients treated above the target p(DLE) used at the end of a trial : mean 9 (9, 9) 
+      Number of patients treated above the target p(DLE) used during a trial : mean 9 (9, 9) 
+      Proportions of observed DLT in the trials : mean 33 % (33 %, 33 %) 
+      Mean toxicity risks for the patients : mean 70 % (70 %, 70 %) 
+      Doses selected as TDEOT : mean 0 (0, 0) 
+      True toxicity at TDEOT : mean 5 % (5 %, 5 %) 
+      Proportion of trials selecting the TDEOT: 0 %
+      Proportion of trials selecting the TDDT: 0 %
+      Dose most often selected as TDEOT: 0 
+      Observed toxicity rate at dose most often selected: NaN %
+      Fitted probabilities of DLE at dose most often selected : mean NA % (NA %, NA %) 
+      The summary table of the final TDEOT across all simulations
+          Min. 1st Qu.  Median    Mean 3rd Qu.    Max.  
+         14.37   14.37   14.37   14.37   14.37   14.37  
+      The summary table of the final ratios of the TDEOT across all simulations
+          Min. 1st Qu.  Median    Mean 3rd Qu.    Max.  
+             1       1       1       1       1       1  
+      The summary table of the final TDDT across all simulations
+          Min. 1st Qu.  Median    Mean 3rd Qu.    Max.  
+            25      25      25      25      25      25  
+      The summary table of dose levels, the optimal dose
+       to recommend for subsequent study across all simulations
+          Min. 1st Qu.  Median    Mean 3rd Qu.    Max.  
+         14.37   14.37   14.37   14.37   14.37   14.37  
+      The summary table of the final ratios of the optimal dose for stopping across
+                        all simulations
+          Min. 1st Qu.  Median    Mean 3rd Qu.    Max.  
+             1       1       1       1       1       1  
+      
+      Stop reason triggered:
+       ≥ 10 patients dosed :  100 %
+      Target Gstar, the dose which gives the maximum gain value was 36.0307 
+      Target Gstar at dose Grid was 25 
+      The summary table of the final Gstar across all simulations
+          Min. 1st Qu.  Median    Mean 3rd Qu.    Max.  
+           250     250     250     250     250     250  
+      The summary table of the final ratios of the Gstar across all simulations
+          Min. 1st Qu.  Median    Mean 3rd Qu.    Max.  
+         1.661   1.661   1.661   1.661   1.661   1.661  
+      The summary table of dose levels, the optimal dose
+       to recommend for subsequent study across all simulations
+          Min. 1st Qu.  Median    Mean 3rd Qu.    Max.  
+         14.37   14.37   14.37   14.37   14.37   14.37  
+      The summary table of the final ratios of the optimal dose for stopping across
+              all simulations
+          Min. 1st Qu.  Median    Mean 3rd Qu.    Max.  
+             1       1       1       1       1       1  
+      Fitted expected efficacy level at dose most often selected : mean NA (NA, NA) 
+      Stop reason triggered:
+       ≥ 10 patients dosed :  100 %
+
+---
+
+    Code
+      result_custom
+    Output
+      Summary of 1 simulations
+      
+      Target probability of DLE p(DLE) used at the end of a trial was 25 %
+      The dose level corresponds to the target p(DLE) used at the end of a trial, TDEOT, was 38.02775 
+      TDEOT at dose Grid was 25 
+      Target p(DLE) used during a trial was 30 %
+      The dose level corresponds to the target p(DLE) used during a trial, TDDT, was 43.05404 
+      TDDT at dose Grid was 25 
+      Number of patients overall : mean 12 (12, 12) 
+      Number of patients treated above the target p(DLE) used at the end of a trial : mean 9 (9, 9) 
+      Number of patients treated above the target p(DLE) used during a trial : mean 9 (9, 9) 
+      Proportions of observed DLT in the trials : mean 33 % (33 %, 33 %) 
+      Mean toxicity risks for the patients : mean 70 % (70 %, 70 %) 
+      Doses selected as TDEOT : mean 0 (0, 0) 
+      True toxicity at TDEOT : mean 5 % (5 %, 5 %) 
+      Proportion of trials selecting the TDEOT: 0 %
+      Proportion of trials selecting the TDDT: 0 %
+      Dose most often selected as TDEOT: 0 
+      Observed toxicity rate at dose most often selected: NaN %
+      Fitted probabilities of DLE at dose most often selected : mean NA % (NA %, NA %) 
+      The summary table of the final TDEOT across all simulations
+          Min. 1st Qu.  Median    Mean 3rd Qu.    Max.  
+         14.37   14.37   14.37   14.37   14.37   14.37  
+      The summary table of the final ratios of the TDEOT across all simulations
+          Min. 1st Qu.  Median    Mean 3rd Qu.    Max.  
+             1       1       1       1       1       1  
+      The summary table of the final TDDT across all simulations
+          Min. 1st Qu.  Median    Mean 3rd Qu.    Max.  
+            25      25      25      25      25      25  
+      The summary table of dose levels, the optimal dose
+       to recommend for subsequent study across all simulations
+          Min. 1st Qu.  Median    Mean 3rd Qu.    Max.  
+         14.37   14.37   14.37   14.37   14.37   14.37  
+      The summary table of the final ratios of the optimal dose for stopping across
+                        all simulations
+          Min. 1st Qu.  Median    Mean 3rd Qu.    Max.  
+             1       1       1       1       1       1  
+      
+      Stop reason triggered:
+       ≥ 10 patients dosed :  100 %
+      Target Gstar, the dose which gives the maximum gain value was 36.0307 
+      Target Gstar at dose Grid was 25 
+      The summary table of the final Gstar across all simulations
+          Min. 1st Qu.  Median    Mean 3rd Qu.    Max.  
+           250     250     250     250     250     250  
+      The summary table of the final ratios of the Gstar across all simulations
+          Min. 1st Qu.  Median    Mean 3rd Qu.    Max.  
+         1.661   1.661   1.661   1.661   1.661   1.661  
+      The summary table of dose levels, the optimal dose
+       to recommend for subsequent study across all simulations
+          Min. 1st Qu.  Median    Mean 3rd Qu.    Max.  
+         14.37   14.37   14.37   14.37   14.37   14.37  
+      The summary table of the final ratios of the optimal dose for stopping across
+              all simulations
+          Min. 1st Qu.  Median    Mean 3rd Qu.    Max.  
+             1       1       1       1       1       1  
+      Fitted expected efficacy level at dose most often selected : mean NA (NA, NA) 
+      Stop reason triggered:
+       ≥ 10 patients dosed :  100 %
+
