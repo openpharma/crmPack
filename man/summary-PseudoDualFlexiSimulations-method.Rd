@@ -3,7 +3,7 @@
 \name{summary,PseudoDualFlexiSimulations-method}
 \alias{summary,PseudoDualFlexiSimulations-method}
 \alias{summary-PseudoDualFlexiSimulations}
-\title{Summarize Pseudo Dual Flexi Simulations}
+\title{Summarize \code{PseudoDualFlexiSimulations}}
 \usage{
 \S4method{summary}{PseudoDualFlexiSimulations}(
   object,
@@ -39,8 +39,8 @@ An object of class \code{\link{PseudoDualSimulationsSummary}}.
 \description{
 \ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#stable}{\figure{lifecycle-stable.svg}{options: alt='[Stable]'}}}{\strong{[Stable]}}
 
-Summary for Pseudo Dual responses simulations given a pseudo DLE model and
-the Flexible efficacy model.
+Summary for \code{PseudoDualFlexiSimulations} given a pseudo DLE model and
+the flexible efficacy model.
 }
 \examples{
 # nolint start

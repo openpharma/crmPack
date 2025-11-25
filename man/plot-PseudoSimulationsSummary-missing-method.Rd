@@ -3,7 +3,7 @@
 \name{plot,PseudoSimulationsSummary,missing-method}
 \alias{plot,PseudoSimulationsSummary,missing-method}
 \alias{plot-PseudoSimulationsSummary-missing}
-\title{Plot Pseudo Simulation Summary}
+\title{Plot \code{PseudoSimulationsSummary}}
 \usage{
 \S4method{plot}{PseudoSimulationsSummary,missing}(
   x,

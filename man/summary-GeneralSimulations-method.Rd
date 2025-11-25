@@ -3,7 +3,7 @@
 \name{summary,GeneralSimulations-method}
 \alias{summary,GeneralSimulations-method}
 \alias{summary-GeneralSimulations}
-\title{Summarize the Simulations, Relative to a Given Truth}
+\title{Summarize the \code{GeneralSimulations}, Relative to a Given Truth}
 \usage{
 \S4method{summary}{GeneralSimulations}(object, truth, target = c(0.2, 0.35), ...)
 }

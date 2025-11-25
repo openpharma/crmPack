@@ -3,7 +3,7 @@
 \name{show,PseudoSimulationsSummary-method}
 \alias{show,PseudoSimulationsSummary-method}
 \alias{show-PseudoSimulationsSummary}
-\title{Show the Summary of Pseudo Simulations}
+\title{Show the Summary of \code{PseudoSimulations}}
 \usage{
 \S4method{show}{PseudoSimulationsSummary}(object)
 }

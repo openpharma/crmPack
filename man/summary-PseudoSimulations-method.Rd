@@ -3,7 +3,7 @@
 \name{summary,PseudoSimulations-method}
 \alias{summary,PseudoSimulations-method}
 \alias{summary-PseudoSimulations}
-\title{Summarize Pseudo Simulations}
+\title{Summarize \code{PseudoSimulations}}
 \usage{
 \S4method{summary}{PseudoSimulations}(object, truth, targetEndOfTrial = 0.3, targetDuringTrial = 0.35, ...)
 }

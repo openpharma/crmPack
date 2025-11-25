@@ -3,7 +3,7 @@
 \name{plot,GeneralSimulationsSummary,missing-method}
 \alias{plot,GeneralSimulationsSummary,missing-method}
 \alias{plot-GeneralSimulationsSummary-missing}
-\title{Plot General Simulation Summary}
+\title{Plot \code{GeneralSimulationsSummary}}
 \usage{
 \S4method{plot}{GeneralSimulationsSummary,missing}(x, y, type = c("nObs", "doseSelected", "propDLTs", "nAboveTarget"), ...)
 }

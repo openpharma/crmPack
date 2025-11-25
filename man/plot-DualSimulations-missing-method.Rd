@@ -3,7 +3,7 @@
 \name{plot,DualSimulations,missing-method}
 \alias{plot,DualSimulations,missing-method}
 \alias{plot-DualSimulations-missing}
-\title{Plot Dual-Endpoint Simulations}
+\title{Plot \code{DualSimulations}}
 \usage{
 \S4method{plot}{DualSimulations,missing}(x, y, type = c("trajectory", "dosesTried", "sigma2W", "rho"), ...)
 }

@@ -3,7 +3,7 @@
 \name{summary,PseudoDualSimulations-method}
 \alias{summary,PseudoDualSimulations-method}
 \alias{summary-PseudoDualSimulations}
-\title{Summarize Pseudo Dual Simulations}
+\title{Summarize \code{PseudoDualSimulations}}
 \usage{
 \S4method{summary}{PseudoDualSimulations}(
   object,

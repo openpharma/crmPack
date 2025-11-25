@@ -3,7 +3,7 @@
 \name{plot,PseudoDualSimulations,missing-method}
 \alias{plot,PseudoDualSimulations,missing-method}
 \alias{plot-PseudoDualSimulations-missing}
-\title{Plot Pseudo Dual Simulations}
+\title{Plot \code{PseudoDualSimulations}}
 \usage{
 \S4method{plot}{PseudoDualSimulations,missing}(x, y, type = c("trajectory", "dosesTried", "sigma2"), ...)
 }

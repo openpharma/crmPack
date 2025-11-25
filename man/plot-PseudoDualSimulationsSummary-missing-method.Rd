@@ -3,7 +3,7 @@
 \name{plot,PseudoDualSimulationsSummary,missing-method}
 \alias{plot,PseudoDualSimulationsSummary,missing-method}
 \alias{plot-PseudoDualSimulationsSummary-missing}
-\title{Plot Pseudo Dual Simulation Summary}
+\title{Plot \code{PseudoDualSimulationsSummary}}
 \usage{
 \S4method{plot}{PseudoDualSimulationsSummary,missing}(
   x,
@@ -30,7 +30,7 @@ A single \code{ggplot2} object if a single plot is asked for, otherwise a
 \description{
 \ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#stable}{\figure{lifecycle-stable.svg}{options: alt='[Stable]'}}}{\strong{[Stable]}}
 
-Plot the summary of Pseudo Dual Simulations.
+Plot the summary of \code{PseudoDualSimulations}.
 
 This plot method can be applied to \code{\link{PseudoDualSimulationsSummary}} objects
 in order to summarize them graphically. Possible \code{type} of plots at the

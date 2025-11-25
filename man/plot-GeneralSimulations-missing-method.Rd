@@ -3,7 +3,7 @@
 \name{plot,GeneralSimulations,missing-method}
 \alias{plot,GeneralSimulations,missing-method}
 \alias{plot-GeneralSimulations-missing}
-\title{Plot Simulations}
+\title{Plot \code{GeneralSimulations}}
 \usage{
 \S4method{plot}{GeneralSimulations,missing}(x, y, type = c("trajectory", "dosesTried"), ...)
 }
