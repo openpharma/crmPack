@@ -110,7 +110,12 @@ setMethod("simulate",
         ## what is the next dose to be used?
         ## initialize with starting dose
         thisDose <- object@startingDose
-
+        
+        # initialize a dataframe to store cohort probabilities 
+        cohort_probs_df <- data.frame(Cohort = integer(), Dose = numeric(), UD = numeric(), TD = numeric(), OD = numeric())
+        # Initialize cohort index outside the simulation function
+        cohort_index <- 1
+        
         ## inside this loop we simulate the whole trial, until stopping
         while (!stopit) {
           ## what is the probability for tox. at this dose?
@@ -157,15 +162,23 @@ setMethod("simulate",
             options = mcmcOptions
           )
 
-          ## => what is the next best dose?
-          thisDose <- nextBest(object@nextBest,
+          ## => what is the next best dose? And estimated probabilities?
+          next_best_d <- nextBest(object@nextBest,
             doselimit = doselimit,
             samples = thisSamples,
             model = object@model,
             data = thisData
-          )$value
+          ) 
+          # creating cohort prob matrix 
+          cohort_probs_df <- rbind(cohort_probs_df, cbind(
+              cohort_index, next_best_d$probs
+            ))
 
+          # Increment cohort index after processing all doses in this cohort
+          cohort_index <- cohort_index + 1
 
+          thisDose <- next_best_d$value 
+          
           ## evaluate stopping rules
           stopit <- stopTrial(object@stopping,
             dose = thisDose,
@@ -211,7 +224,11 @@ setMethod("simulate",
                 "message"
               ),
             report_results = stopit_results,
-            additional_stats = additional_stats
+            additional_stats = additional_stats,
+            cohort_probs = {
+            rownames(cohort_probs_df) <- NULL
+            cohort_probs_df
+            }
           )
         return(thisResult)
       }
@@ -244,6 +261,7 @@ setMethod("simulate",
         stop_report = simulations_output$stop_matrix,
         stop_reasons = simulations_output$stopReasons,
         additional_stats = simulations_output$additional_stats,
+        cohort_probs = simulations_output$cohort_probs,
         seed = RNGstate
       )
 
