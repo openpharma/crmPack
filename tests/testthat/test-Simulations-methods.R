@@ -993,44 +993,48 @@ test_that("plot-PseudoDualSimulations fails gracefully with bad input", {
   )
 })
 
+# plot-PseudoDualFlexiSimulations ----
+
+test_that("plot-PseudoDualFlexiSimulations works correctly", {
+  pseudo_dual_flexi_sims <- .DefaultPseudoDualFlexiSimulations()
+
+  # Test default plot types
+  result <- plot(pseudo_dual_flexi_sims)
+  expect_s3_class(result, "gtable")
+
+  # Test individual plot types
+  result_trajectory <- plot(pseudo_dual_flexi_sims, type = "trajectory")
+  expect_s3_class(result_trajectory, "ggplot")
+  expect_doppel("plot_pseudoDualFlexiSims_trajectory", result_trajectory)
+  expect_equal(result_trajectory$labels$x, "Patient")
+  expect_equal(result_trajectory$labels$y, "Dose Level")
+
+  result_doses <- plot(pseudo_dual_flexi_sims, type = "dosesTried")
+  expect_s3_class(result_doses, "ggplot")
+  expect_doppel("plot_pseudoDualFlexiSims_dosesTried", result_doses)
+  expect_equal(result_doses$labels$x, "Dose level")
+  expect_equal(result_doses$labels$y, "Average proportion [%]")
+
+  result_sigma2 <- plot(pseudo_dual_flexi_sims, type = "sigma2")
+  expect_s3_class(result_sigma2, "ggplot")
+  expect_doppel("plot_pseudoDualFlexiSims_sigma2", result_sigma2)
+  expect_true(grepl(
+    "Efficacy variance estimates",
+    result_sigma2$labels$y,
+    ignore.case = TRUE
+  ))
+
+  result_sigma2beta_w <- plot(pseudo_dual_flexi_sims, type = "sigma2betaW")
+  expect_s3_class(result_sigma2beta_w, "ggplot")
+  expect_doppel("plot_pseudoDualFlexiSims_sigma2betaW", result_sigma2beta_w)
+  expect_true(grepl(
+    "Random walk model variance estimates",
+    result_sigma2beta_w$labels$y,
+    ignore.case = TRUE
+  ))
+})
+
 if (FALSE) {
-  # plot-PseudoDualFlexiSimulations ----
-
-  test_that("plot-PseudoDualFlexiSimulations works correctly", {
-    pseudo_dual_flexi_sims <- .DefaultPseudoDualFlexiSimulations()
-
-    # Test default plot types
-    result <- plot(pseudo_dual_flexi_sims)
-    expect_s3_class(result, "gtable")
-
-    # Test individual plot types
-    result_trajectory <- plot(pseudo_dual_flexi_sims, type = "trajectory")
-    expect_s3_class(result_trajectory, "ggplot")
-    expect_equal(result_trajectory$labels$x, "Patient")
-    expect_equal(result_trajectory$labels$y, "Dose Level")
-
-    result_doses <- plot(pseudo_dual_flexi_sims, type = "dosesTried")
-    expect_s3_class(result_doses, "ggplot")
-    expect_equal(result_doses$labels$x, "Dose level")
-    expect_equal(result_doses$labels$y, "Average proportion [%]")
-
-    result_sigma2 <- plot(pseudo_dual_flexi_sims, type = "sigma2")
-    expect_s3_class(result_sigma2, "ggplot")
-    expect_true(grepl(
-      "Efficacy variance estimates",
-      result_sigma2$labels$y,
-      ignore.case = TRUE
-    ))
-
-    result_sigma2beta_w <- plot(pseudo_dual_flexi_sims, type = "sigma2betaW")
-    expect_s3_class(result_sigma2beta_w, "ggplot")
-    expect_true(grepl(
-      "Random walk model variance estimates",
-      result_sigma2beta_w$labels$y,
-      ignore.case = TRUE
-    ))
-  })
-
   # summary-PseudoDualSimulations ----
 
   test_that("summary-PseudoDualSimulations works correctly", {
