@@ -3332,303 +3332,6 @@ setMethod(
   }
 )
 
-# maxSize ----
-
-## generic ----
-
-#' "MAX" Combination of Cohort Size Rules
-#'
-#' @description `r lifecycle::badge("stable")`
-#'
-#' This function combines cohort size rules by taking the maximum of all sizes.
-#'
-#' @param ... Objects of class [`CohortSize`].
-#'
-#' @return The combination as an object of class [`CohortSizeMax`].
-#'
-#' @seealso [minSize()]
-#' @export
-#'
-setGeneric(
-  name = "maxSize",
-  def = function(...) {
-    # There should be no default method, therefore just forward to next method.
-    standardGeneric("maxSize")
-  },
-  valueClass = "CohortSizeMax"
-)
-
-## maxSize-CohortSize ----
-
-#' @describeIn maxSize The method combining cohort size rules by taking maximum.
-#'
-#' @aliases maxSize-CohortSize
-#' @example examples/Rules-method-maxSize.R
-#' @export
-#'
-setMethod(
-  f = "maxSize",
-  signature = "CohortSize",
-  definition = function(...) {
-    CohortSizeMax(list(...))
-  }
-)
-
-# minSize ----
-
-## generic ----
-
-#' "MIN" Combination of Cohort Size Rules
-#'
-#' @description `r lifecycle::badge("stable")`
-#'
-#' This function combines cohort size rules by taking the minimum of all sizes.
-#'
-#' @param ... Objects of class [`CohortSize`].
-#'
-#' @return The combination as an object of class [`CohortSizeMin`].
-#'
-#' @seealso [maxSize()]
-#' @export
-#'
-setGeneric(
-  name = "minSize",
-  def = function(...) {
-    # There should be no default method, therefore just forward to next method.
-    standardGeneric("minSize")
-  },
-  valueClass = "CohortSizeMin"
-)
-
-## minSize-CohortSize ----
-
-#' @describeIn minSize The method combining cohort size rules by taking minimum.
-#'
-#' @aliases minSize-CohortSize
-#' @example examples/Rules-method-minSize.R
-#' @export
-#'
-setMethod(
-  f = "minSize",
-  signature = "CohortSize",
-  definition = function(...) {
-    CohortSizeMin(list(...))
-  }
-)
-
-# size ----
-
-## CohortSizeRange ----
-
-#' @describeIn size Determines the size of the next cohort based on the range
-#'   into which the next dose falls into.
-#'
-#' @param dose the next dose.
-#' @param data the data input, an object of class [`Data`].
-#'
-#' @aliases size-CohortSizeRange
-#' @example examples/Rules-method-size-CohortSizeRange.R
-#'
-setMethod(
-  f = "size",
-  signature = signature(
-    object = "CohortSizeRange"
-  ),
-  definition = function(object, dose, data) {
-    # If the recommended next dose is NA, don't check it and return 0.
-    if (is.na(dose)) {
-      return(0L)
-    }
-    assert_class(data, "Data")
-
-    # Determine in which interval the next dose is.
-    interval <- findInterval(x = dose, vec = object@intervals)
-    object@cohort_size[interval]
-  }
-)
-
-## size-CohortSizeDLT ----
-
-#' @describeIn size Determines the size of the next cohort based on the number
-#'   of DLTs so far.
-#'
-#' @param dose the next dose.
-#' @param data the data input, an object of class [`Data`].
-#'
-#' @aliases size-CohortSizeDLT
-#' @example examples/Rules-method-size-CohortSizeDLT.R
-#'
-setMethod(
-  f = "size",
-  signature = signature(
-    object = "CohortSizeDLT"
-  ),
-  definition = function(object, dose, data) {
-    # If the recommended next dose is NA, don't check it and return 0.
-    if (is.na(dose)) {
-      return(0L)
-    }
-    assert_class(data, "Data")
-
-    # Determine how many DLTs have occurred so far.
-    dlt_happened <- sum(data@y)
-
-    # Determine in which interval this is.
-    interval <- findInterval(x = dlt_happened, vec = object@intervals)
-    object@cohort_size[interval]
-  }
-)
-
-## size-CohortSizeMax ----
-
-#' @describeIn size Determines the size of the next cohort based on maximum of
-#'   multiple cohort size rules.
-#'
-#' @param dose the next dose.
-#' @param data the data input, an object of class [`Data`].
-#'
-#' @aliases size-CohortSizeMax
-#' @example examples/Rules-method-size-CohortSizeMax.R
-#'
-setMethod(
-  f = "size",
-  signature = signature(
-    object = "CohortSizeMax"
-  ),
-  definition = function(object, dose, data) {
-    # If the recommended next dose is NA, don't check it and return 0.
-    if (is.na(dose)) {
-      return(0L)
-    }
-    assert_multi_class(data, c("Data", "DataOrdinal"))
-
-    # Evaluate the individual cohort size rules in the list.
-    individual_results <- sapply(
-      object@cohort_sizes,
-      size,
-      dose = dose,
-      data = data
-    )
-    # The overall result.
-    max(individual_results)
-  }
-)
-
-## size-CohortSizeMin ----
-
-#' @describeIn size Determines the size of the next cohort based on minimum of
-#'   multiple cohort size rules.
-#'
-#' @param dose the next dose.
-#' @param data the data input, an object of class [`Data`].
-#'
-#' @aliases size-CohortSizeMin
-#' @example examples/Rules-method-size-CohortSizeMin.R
-#'
-setMethod(
-  f = "size",
-  signature = signature(
-    object = "CohortSizeMin"
-  ),
-  definition = function(object, dose, data) {
-    # If the recommended next dose is NA, don't check it and return 0.
-    if (is.na(dose)) {
-      return(0L)
-    }
-    assert_multi_class(data, c("Data", "DataOrdinal"))
-
-    # Evaluate the individual cohort size rules in the list.
-    individual_results <- sapply(
-      object@cohort_sizes,
-      size,
-      dose = dose,
-      data = data
-    )
-    # The overall result.
-    min(individual_results)
-  }
-)
-
-## size-CohortSizeConst ----
-
-#' @describeIn size Constant cohort size.
-#'
-#' @param dose the next dose.
-#' @param ... not used.
-#'
-#' @aliases size-CohortSizeConst
-#' @example examples/Rules-method-size-CohortSizeConst.R
-#'
-setMethod(
-  f = "size",
-  signature = signature(
-    object = "CohortSizeConst"
-  ),
-  definition = function(object, dose, ...) {
-    # If the recommended next dose is NA, don't check it and return 0.
-    if (is.na(dose)) {
-      0L
-    } else {
-      object@size
-    }
-  }
-)
-
-## size-CohortSizeParts ----
-
-#' @describeIn size Determines the size of the next cohort based on the parts.
-#'
-#' @param dose the next dose.
-#' @param data the data input, an object of class [`Data`].
-#'
-#' @aliases size-CohortSizeParts
-#' @example examples/Rules-method-size-CohortSizeParts.R
-#'
-setMethod(
-  f = "size",
-  signature = signature(
-    object = "CohortSizeParts"
-  ),
-  definition = function(object, dose, data) {
-    # If the recommended next dose is NA, don't check it and return 0.
-    if (is.na(dose)) {
-      0L
-    } else {
-      assert_class(data, "DataParts")
-      object@cohort_sizes[data@nextPart]
-    }
-  }
-)
-
-## size-CohortSizeOrdinal ----
-
-#' @describeIn size Determines the size of the next cohort in a ordinal CRM trial.
-#'
-#' @param dose (`numeric`) the next dose.
-#' @param data the data input, an object of class [`DataOrdinal`].
-#'
-#' @aliases size-CohortSizeOrdinal
-#' @example examples/Rules-method-size-CohortSizeOrdinal.R
-#'
-setMethod(
-  f = "size",
-  signature = signature(
-    object = "CohortSizeOrdinal"
-  ),
-  definition = function(object, dose, data, ...) {
-    # Validate
-    assert_numeric(dose, len = 1, lower = 0)
-    assert_class(data, "DataOrdinal")
-    # Execute
-
-    size(
-      object@rule,
-      dose = dose,
-      data = h_convert_ordinal_data(data, object@grade),
-      ...
-    )
-  }
-)
 
 ## ------------------------------------------------------------------------------------------------
 ## Stopping based on a target ratio of the upper to the lower 95% credibility interval
@@ -4084,6 +3787,303 @@ setMethod(
   }
 )
 
+# maxSize ----
+
+## generic ----
+
+#' "MAX" Combination of Cohort Size Rules
+#'
+#' @description `r lifecycle::badge("stable")`
+#'
+#' This function combines cohort size rules by taking the maximum of all sizes.
+#'
+#' @param ... Objects of class [`CohortSize`].
+#'
+#' @return The combination as an object of class [`CohortSizeMax`].
+#'
+#' @seealso [minSize()]
+#' @export
+#'
+setGeneric(
+  name = "maxSize",
+  def = function(...) {
+    # There should be no default method, therefore just forward to next method.
+    standardGeneric("maxSize")
+  },
+  valueClass = "CohortSizeMax"
+)
+
+## maxSize-CohortSize ----
+
+#' @describeIn maxSize The method combining cohort size rules by taking maximum.
+#'
+#' @aliases maxSize-CohortSize
+#' @example examples/Rules-method-maxSize.R
+#' @export
+#'
+setMethod(
+  f = "maxSize",
+  signature = "CohortSize",
+  definition = function(...) {
+    CohortSizeMax(list(...))
+  }
+)
+
+# minSize ----
+
+## generic ----
+
+#' "MIN" Combination of Cohort Size Rules
+#'
+#' @description `r lifecycle::badge("stable")`
+#'
+#' This function combines cohort size rules by taking the minimum of all sizes.
+#'
+#' @param ... Objects of class [`CohortSize`].
+#'
+#' @return The combination as an object of class [`CohortSizeMin`].
+#'
+#' @seealso [maxSize()]
+#' @export
+#'
+setGeneric(
+  name = "minSize",
+  def = function(...) {
+    # There should be no default method, therefore just forward to next method.
+    standardGeneric("minSize")
+  },
+  valueClass = "CohortSizeMin"
+)
+
+## minSize-CohortSize ----
+
+#' @describeIn minSize The method combining cohort size rules by taking minimum.
+#'
+#' @aliases minSize-CohortSize
+#' @example examples/Rules-method-minSize.R
+#' @export
+#'
+setMethod(
+  f = "minSize",
+  signature = "CohortSize",
+  definition = function(...) {
+    CohortSizeMin(list(...))
+  }
+)
+
+# size ----
+
+## CohortSizeRange ----
+
+#' @describeIn size Determines the size of the next cohort based on the range
+#'   into which the next dose falls into.
+#'
+#' @param dose the next dose.
+#' @param data the data input, an object of class [`Data`].
+#'
+#' @aliases size-CohortSizeRange
+#' @example examples/Rules-method-size-CohortSizeRange.R
+#'
+setMethod(
+  f = "size",
+  signature = signature(
+    object = "CohortSizeRange"
+  ),
+  definition = function(object, dose, data) {
+    # If the recommended next dose is NA, don't check it and return 0.
+    if (is.na(dose)) {
+      return(0L)
+    }
+    assert_class(data, "Data")
+
+    # Determine in which interval the next dose is.
+    interval <- findInterval(x = dose, vec = object@intervals)
+    object@cohort_size[interval]
+  }
+)
+
+## size-CohortSizeDLT ----
+
+#' @describeIn size Determines the size of the next cohort based on the number
+#'   of DLTs so far.
+#'
+#' @param dose the next dose.
+#' @param data the data input, an object of class [`Data`].
+#'
+#' @aliases size-CohortSizeDLT
+#' @example examples/Rules-method-size-CohortSizeDLT.R
+#'
+setMethod(
+  f = "size",
+  signature = signature(
+    object = "CohortSizeDLT"
+  ),
+  definition = function(object, dose, data) {
+    # If the recommended next dose is NA, don't check it and return 0.
+    if (is.na(dose)) {
+      return(0L)
+    }
+    assert_class(data, "Data")
+
+    # Determine how many DLTs have occurred so far.
+    dlt_happened <- sum(data@y)
+
+    # Determine in which interval this is.
+    interval <- findInterval(x = dlt_happened, vec = object@intervals)
+    object@cohort_size[interval]
+  }
+)
+
+## size-CohortSizeMax ----
+
+#' @describeIn size Determines the size of the next cohort based on maximum of
+#'   multiple cohort size rules.
+#'
+#' @param dose the next dose.
+#' @param data the data input, an object of class [`Data`].
+#'
+#' @aliases size-CohortSizeMax
+#' @example examples/Rules-method-size-CohortSizeMax.R
+#'
+setMethod(
+  f = "size",
+  signature = signature(
+    object = "CohortSizeMax"
+  ),
+  definition = function(object, dose, data) {
+    # If the recommended next dose is NA, don't check it and return 0.
+    if (is.na(dose)) {
+      return(0L)
+    }
+    assert_multi_class(data, c("Data", "DataOrdinal"))
+
+    # Evaluate the individual cohort size rules in the list.
+    individual_results <- sapply(
+      object@cohort_sizes,
+      size,
+      dose = dose,
+      data = data
+    )
+    # The overall result.
+    max(individual_results)
+  }
+)
+
+## size-CohortSizeMin ----
+
+#' @describeIn size Determines the size of the next cohort based on minimum of
+#'   multiple cohort size rules.
+#'
+#' @param dose the next dose.
+#' @param data the data input, an object of class [`Data`].
+#'
+#' @aliases size-CohortSizeMin
+#' @example examples/Rules-method-size-CohortSizeMin.R
+#'
+setMethod(
+  f = "size",
+  signature = signature(
+    object = "CohortSizeMin"
+  ),
+  definition = function(object, dose, data) {
+    # If the recommended next dose is NA, don't check it and return 0.
+    if (is.na(dose)) {
+      return(0L)
+    }
+    assert_multi_class(data, c("Data", "DataOrdinal"))
+
+    # Evaluate the individual cohort size rules in the list.
+    individual_results <- sapply(
+      object@cohort_sizes,
+      size,
+      dose = dose,
+      data = data
+    )
+    # The overall result.
+    min(individual_results)
+  }
+)
+
+## size-CohortSizeConst ----
+
+#' @describeIn size Constant cohort size.
+#'
+#' @param dose the next dose.
+#' @param ... not used.
+#'
+#' @aliases size-CohortSizeConst
+#' @example examples/Rules-method-size-CohortSizeConst.R
+#'
+setMethod(
+  f = "size",
+  signature = signature(
+    object = "CohortSizeConst"
+  ),
+  definition = function(object, dose, ...) {
+    # If the recommended next dose is NA, don't check it and return 0.
+    if (is.na(dose)) {
+      0L
+    } else {
+      object@size
+    }
+  }
+)
+
+## size-CohortSizeParts ----
+
+#' @describeIn size Determines the size of the next cohort based on the parts.
+#'
+#' @param dose the next dose.
+#' @param data the data input, an object of class [`Data`].
+#'
+#' @aliases size-CohortSizeParts
+#' @example examples/Rules-method-size-CohortSizeParts.R
+#'
+setMethod(
+  f = "size",
+  signature = signature(
+    object = "CohortSizeParts"
+  ),
+  definition = function(object, dose, data) {
+    # If the recommended next dose is NA, don't check it and return 0.
+    if (is.na(dose)) {
+      0L
+    } else {
+      assert_class(data, "DataParts")
+      object@cohort_sizes[data@nextPart]
+    }
+  }
+)
+
+## size-CohortSizeOrdinal ----
+
+#' @describeIn size Determines the size of the next cohort in a ordinal CRM trial.
+#'
+#' @param dose (`numeric`) the next dose.
+#' @param data the data input, an object of class [`DataOrdinal`].
+#'
+#' @aliases size-CohortSizeOrdinal
+#' @example examples/Rules-method-size-CohortSizeOrdinal.R
+#'
+setMethod(
+  f = "size",
+  signature = signature(
+    object = "CohortSizeOrdinal"
+  ),
+  definition = function(object, dose, data, ...) {
+    # Validate
+    assert_numeric(dose, len = 1, lower = 0)
+    assert_class(data, "DataOrdinal")
+    # Execute
+
+    size(
+      object@rule,
+      dose = dose,
+      data = h_convert_ordinal_data(data, object@grade),
+      ...
+    )
+  }
+)
 
 ## ============================================================
 
