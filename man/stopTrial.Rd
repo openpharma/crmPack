@@ -5,15 +5,23 @@
 \alias{stopTrial,StoppingMissingDose,numeric,ANY,ANY,Data-method}
 \alias{stopTrial-StoppingMissingDose}
 \alias{stopTrial,StoppingList,ANY,ANY,ANY,ANY-method}
+\alias{stopTrial-StoppingList}
 \alias{stopTrial,StoppingAll,ANY,ANY,ANY,ANY-method}
+\alias{stopTrial-StoppingAll}
 \alias{stopTrial,StoppingAny,ANY,ANY,ANY,ANY-method}
+\alias{stopTrial-StoppingAny}
 \alias{stopTrial,StoppingCohortsNearDose,numeric,ANY,ANY,Data-method}
+\alias{stopTrial-StoppingCohortsNearDose}
 \alias{stopTrial,StoppingPatientsNearDose,numeric,ANY,ANY,Data-method}
+\alias{stopTrial-StoppingPatientsNearDose}
 \alias{stopTrial,StoppingMinCohorts,ANY,ANY,ANY,Data-method}
+\alias{stopTrial-StoppingMinCohorts}
 \alias{stopTrial,StoppingMinPatients,ANY,ANY,ANY,Data-method}
+\alias{stopTrial-StoppingMinPatients}
 \alias{stopTrial,StoppingTargetProb,numeric,Samples,GeneralModel,ANY-method}
 \alias{stopTrial-StoppingTargetProb}
 \alias{stopTrial,StoppingMTDdistribution,numeric,Samples,GeneralModel,ANY-method}
+\alias{stopTrial-StoppingMTDdistribution}
 \alias{stopTrial,StoppingMTDCV,numeric,Samples,GeneralModel,ANY-method}
 \alias{stopTrial-StoppingMTDCV}
 \alias{stopTrial,StoppingLowestDoseHSRBeta,numeric,Samples,ANY,ANY-method}
@@ -23,14 +31,17 @@
 \alias{stopTrial,StoppingSpecificDose,numeric,ANY,ANY,Data-method}
 \alias{stopTrial-StoppingSpecificDose}
 \alias{stopTrial,StoppingHighestDose,numeric,ANY,ANY,Data-method}
+\alias{stopTrial-StoppingHighestDose}
 \alias{stopTrial,StoppingOrdinal,numeric,ANY,LogisticLogNormalOrdinal,DataOrdinal-method}
 \alias{stopTrial-StoppingOrdinal}
 \alias{stopTrial,StoppingOrdinal,numeric,ANY,ANY,ANY-method}
 \alias{stopTrial,StoppingExternal,numeric,ANY,ANY,ANY-method}
 \alias{stopTrial-StoppingExternal}
 \alias{stopTrial,StoppingTDCIRatio,ANY,Samples,ModelTox,ANY-method}
+\alias{stopTrial-StoppingTDCIRatio}
 \alias{stopTrial,StoppingTDCIRatio,ANY,missing,ModelTox,ANY-method}
 \alias{stopTrial,StoppingMaxGainCIRatio,ANY,Samples,ModelTox,DataDual-method}
+\alias{stopTrial-StoppingMaxGainCIRatio}
 \alias{stopTrial,StoppingMaxGainCIRatio,ANY,missing,ModelTox,DataDual-method}
 \title{Stop the trial?}
 \usage{
@@ -107,19 +118,20 @@ stopTrial(stopping, dose, samples, model, data, ...)
 \item{external}{(\code{flag})\cr whether to stop based on the external
 result or not.}
 
-\item{TDderive}{the function which derives from the input, a vector of the posterior samples called
-\code{TDsamples} of the dose
-which has the probability of the occurrence of DLE equals to either the targetDuringTrial or
-targetEndOfTrial, the final next best TDtargetDuringTrial (the dose with probability of the
-occurrence of DLE equals to the targetDuringTrial)and TDtargetEndOfTrial estimate.}
+\item{TDderive}{(\code{function})\cr the function which derives from the input,
+a vector of the posterior samples called \code{TDsamples} of the dose which has
+the probability of the occurrence of DLE equals to either the
+targetDuringTrial or targetEndOfTrial, the final next best
+TDtargetDuringTrial (the dose with probability of the occurrence of DLE
+equals to the targetDuringTrial) and TDtargetEndOfTrial estimate.}
 
-\item{Effmodel}{the efficacy model of \code{\linkS4class{ModelEff}} class object}
+\item{Effmodel}{(\code{ModelEff})\cr the efficacy model.}
 
-\item{Effsamples}{the efficacy samples of \code{\linkS4class{Samples}} class object}
+\item{Effsamples}{(\code{Samples})\cr the efficacy samples.}
 
-\item{Gstarderive}{the function which derives from the input, a vector of the posterior Gstar (the dose
-which gives the maximum gain value) samples
-called \code{Gstarsamples}, the final next best Gstar estimate.}
+\item{Gstarderive}{(\code{function})\cr the function which derives from the input,
+a vector of the posterior Gstar (the dose which gives the maximum gain
+value) samples called \code{Gstarsamples}, the final next best Gstar estimate.}
 }
 \value{
 logical value: \code{TRUE} if the trial can be stopped, \code{FALSE}
@@ -132,6 +144,22 @@ for the decision.
 This function returns whether to stop the trial.
 
 \ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#experimental}{\figure{lifecycle-experimental.svg}{options: alt='[Experimental]'}}}{\strong{[Experimental]}}
+
+\ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#stable}{\figure{lifecycle-stable.svg}{options: alt='[Stable]'}}}{\strong{[Stable]}}
+
+\ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#stable}{\figure{lifecycle-stable.svg}{options: alt='[Stable]'}}}{\strong{[Stable]}}
+
+\ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#stable}{\figure{lifecycle-stable.svg}{options: alt='[Stable]'}}}{\strong{[Stable]}}
+
+\ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#stable}{\figure{lifecycle-stable.svg}{options: alt='[Stable]'}}}{\strong{[Stable]}}
+
+\ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#stable}{\figure{lifecycle-stable.svg}{options: alt='[Stable]'}}}{\strong{[Stable]}}
+
+\ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#stable}{\figure{lifecycle-stable.svg}{options: alt='[Stable]'}}}{\strong{[Stable]}}
+
+\ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#stable}{\figure{lifecycle-stable.svg}{options: alt='[Stable]'}}}{\strong{[Stable]}}
+
+\ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#stable}{\figure{lifecycle-stable.svg}{options: alt='[Stable]'}}}{\strong{[Stable]}}
 
 Stopping rule based precision of the MTD estimation.
 The trial is stopped, when the MTD can be estimated with sufficient precision.
@@ -146,11 +174,21 @@ Safety Rule, i.e. it is deemed to be overly toxic. Stopping is based on the
 observed data at the lowest dose level using a Bin-Beta model
 based on DLT probability.
 
-\ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#experimental}{\figure{lifecycle-experimental.svg}{options: alt='[Experimental]'}}}{\strong{[Experimental]}}
+\ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#stable}{\figure{lifecycle-stable.svg}{options: alt='[Stable]'}}}{\strong{[Stable]}}
 
 \ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#experimental}{\figure{lifecycle-experimental.svg}{options: alt='[Experimental]'}}}{\strong{[Experimental]}}
 
 \ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#experimental}{\figure{lifecycle-experimental.svg}{options: alt='[Experimental]'}}}{\strong{[Experimental]}}
+
+\ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#experimental}{\figure{lifecycle-experimental.svg}{options: alt='[Experimental]'}}}{\strong{[Experimental]}}
+
+\ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#stable}{\figure{lifecycle-stable.svg}{options: alt='[Stable]'}}}{\strong{[Stable]}}
+
+\ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#stable}{\figure{lifecycle-stable.svg}{options: alt='[Stable]'}}}{\strong{[Stable]}}
+
+\ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#stable}{\figure{lifecycle-stable.svg}{options: alt='[Stable]'}}}{\strong{[Stable]}}
+
+\ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#stable}{\figure{lifecycle-stable.svg}{options: alt='[Stable]'}}}{\strong{[Stable]}}
 }
 \section{Functions}{
 \itemize{
@@ -168,7 +206,7 @@ based on DLT probability.
   samples = ANY,
   model = ANY,
   data = ANY
-)}: Stop based on multiple stopping rules
+)}: Stop based on multiple stopping rules.
 
 \item \code{stopTrial(
   stopping = StoppingAll,
@@ -177,7 +215,7 @@ based on DLT probability.
   model = ANY,
   data = ANY
 )}: Stop based on fulfillment of all multiple stopping
-rules
+rules.
 
 \item \code{stopTrial(
   stopping = StoppingAny,
@@ -185,7 +223,7 @@ rules
   samples = ANY,
   model = ANY,
   data = ANY
-)}: Stop based on fulfillment of any stopping rule
+)}: Stop based on fulfillment of any stopping rule.
 
 \item \code{stopTrial(
   stopping = StoppingCohortsNearDose,
@@ -193,7 +231,8 @@ rules
   samples = ANY,
   model = ANY,
   data = Data
-)}: Stop based on number of cohorts near to next best dose
+)}: Stop based on number of cohorts near to next best
+dose.
 
 \item \code{stopTrial(
   stopping = StoppingPatientsNearDose,
@@ -202,7 +241,7 @@ rules
   model = ANY,
   data = Data
 )}: Stop based on number of patients near to next best
-dose
+dose.
 
 \item \code{stopTrial(
   stopping = StoppingMinCohorts,
@@ -210,7 +249,7 @@ dose
   samples = ANY,
   model = ANY,
   data = Data
-)}: Stop based on minimum number of cohorts
+)}: Stop based on minimum number of cohorts.
 
 \item \code{stopTrial(
   stopping = StoppingMinPatients,
@@ -218,7 +257,7 @@ dose
   samples = ANY,
   model = ANY,
   data = Data
-)}: Stop based on minimum number of patients
+)}: Stop based on minimum number of patients.
 
 \item \code{stopTrial(
   stopping = StoppingTargetProb,
@@ -234,7 +273,7 @@ dose
   samples = Samples,
   model = GeneralModel,
   data = ANY
-)}: Stop based on MTD distribution
+)}: Stop based on MTD distribution.
 
 \item \code{stopTrial(
   stopping = StoppingTargetBiomarker,
@@ -259,7 +298,7 @@ dose grid and not just for the default next best dose.
   samples = ANY,
   model = ANY,
   data = Data
-)}: Stop when the highest dose is reached
+)}: Stop when the highest dose is reached.
 
 \item \code{stopTrial(
   stopping = StoppingOrdinal,
@@ -291,10 +330,10 @@ dose grid and not just for the default next best dose.
   samples = Samples,
   model = ModelTox,
   data = ANY
-)}: Stop based on 'StoppingTDCIRatio' class when
+)}: Stop based on \code{\link{StoppingTDCIRatio}} class when
 reaching the target ratio of the upper to the lower 95\% credibility
-interval of the estimate (TDtargetEndOfTrial). This is a stopping rule which incorporate only
-DLE responses and DLE samples are given
+interval of the estimate (TDtargetEndOfTrial). This is a stopping rule
+which incorporates only DLE responses and DLE samples are given.
 
 \item \code{stopTrial(
   stopping = StoppingTDCIRatio,
@@ -302,10 +341,10 @@ DLE responses and DLE samples are given
   samples = missing,
   model = ModelTox,
   data = ANY
-)}: Stop based on 'StoppingTDCIRatio' class
-when reaching the target ratio of the upper to the lower 95\% credibility
-interval of the estimate (TDtargetEndOfTrial). This is a stopping rule which incorporate only
-DLE responses and no DLE samples are involved
+)}: Stop based on \code{\link{StoppingTDCIRatio}} class when
+reaching the target ratio of the upper to the lower 95\% credibility
+interval of the estimate (TDtargetEndOfTrial). This is a stopping rule
+which incorporates only DLE responses and no DLE samples are involved.
 
 \item \code{stopTrial(
   stopping = StoppingMaxGainCIRatio,
@@ -313,9 +352,10 @@ DLE responses and no DLE samples are involved
   samples = Samples,
   model = ModelTox,
   data = DataDual
-)}: Stop based on reaching the target ratio of the upper to the lower 95\% credibility
-interval of the estimate (the minimum of Gstar and TDtargetEndOfTrial). This is a stopping rule which
-incorporate DLE and efficacy responses and DLE and efficacy samples are also used.
+)}: Stop based on reaching the target ratio of the upper
+to the lower 95\% credibility interval of the estimate (the minimum of
+Gstar and TDtargetEndOfTrial). This is a stopping rule which incorporates
+DLE and efficacy responses and DLE and efficacy samples are also used.
 
 \item \code{stopTrial(
   stopping = StoppingMaxGainCIRatio,
@@ -323,9 +363,10 @@ incorporate DLE and efficacy responses and DLE and efficacy samples are also use
   samples = missing,
   model = ModelTox,
   data = DataDual
-)}: Stop based on reaching the target ratio of the upper to the lower 95\% credibility
-interval of the estimate (the minimum of Gstar and TDtargetEndOfTrial). This is a stopping rule which
-incorporate DLE and efficacy responses without DLE and efficacy samples involved.
+)}: Stop based on reaching the target ratio of the upper
+to the lower 95\% credibility interval of the estimate (the minimum of
+Gstar and TDtargetEndOfTrial). This is a stopping rule which incorporates
+DLE and efficacy responses without DLE and efficacy samples involved.
 
 }}
 \examples{
@@ -1590,4 +1631,3 @@ stopTrial(
 
 # nolint end
 }
-\keyword{methods}

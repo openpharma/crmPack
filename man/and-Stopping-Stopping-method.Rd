@@ -2,20 +2,23 @@
 % Please edit documentation in R/Rules-methods.R
 \name{&,Stopping,Stopping-method}
 \alias{&,Stopping,Stopping-method}
-\title{The method combining two atomic stopping rules}
+\alias{and-Stopping-Stopping}
+\title{Combine Two Stopping Rules with AND}
 \usage{
 \S4method{&}{Stopping,Stopping}(e1, e2)
 }
 \arguments{
-\item{e1}{First \code{\linkS4class{Stopping}} object}
+\item{e1}{(\code{Stopping})\cr first stopping rule object.}
 
-\item{e2}{Second \code{\linkS4class{Stopping}} object}
+\item{e2}{(\code{Stopping})\cr second stopping rule object.}
 }
 \value{
-The \code{\linkS4class{StoppingAll}} object
+The \code{\link{StoppingAll}} object.
 }
 \description{
-The method combining two atomic stopping rules
+\ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#stable}{\figure{lifecycle-stable.svg}{options: alt='[Stable]'}}}{\strong{[Stable]}}
+
+The method combining two atomic stopping rules.
 }
 \examples{
 ## Example of combining two atomic stopping rules with an AND ('&') operator
@@ -25,4 +28,3 @@ myStopping2 <- StoppingTargetProb(target = c(0.2, 0.35), prob = 0.5)
 
 myStopping <- myStopping1 & myStopping2
 }
-\keyword{methods}

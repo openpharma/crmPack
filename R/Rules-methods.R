@@ -2158,159 +2158,196 @@ setMethod(
   }
 )
 
-# nolint start
+# and-Stopping-Stopping ----
 
-## ============================================================
-
-## --------------------------------------------------
-## "AND" combination of stopping rules
-## --------------------------------------------------
-
-##' The method combining two atomic stopping rules
-##'
-##' @param e1 First \code{\linkS4class{Stopping}} object
-##' @param e2 Second \code{\linkS4class{Stopping}} object
-##' @return The \code{\linkS4class{StoppingAll}} object
-##'
-##' @example examples/Rules-method-and-stopping-stopping.R
-##' @keywords methods
+#' Combine Two Stopping Rules with AND
+#'
+#' @description `r lifecycle::badge("stable")`
+#'
+#' The method combining two atomic stopping rules.
+#'
+#' @param e1 (`Stopping`)\cr first stopping rule object.
+#' @param e2 (`Stopping`)\cr second stopping rule object.
+#'
+#' @return The [`StoppingAll`] object.
+#'
+#' @aliases and-Stopping-Stopping
+#' @example examples/Rules-method-and-stopping-stopping.R
+#' @export
+#'
 setMethod(
-  "&",
-  signature(
+  f = "&",
+  signature = signature(
     e1 = "Stopping",
     e2 = "Stopping"
   ),
-  def = function(e1, e2) {
+  definition = function(e1, e2) {
     StoppingAll(list(e1, e2))
   }
 )
 
-##' The method combining a stopping list and an atomic
-##'
-##' @param e1 \code{\linkS4class{StoppingAll}} object
-##' @param e2 \code{\linkS4class{Stopping}} object
-##' @return The modified \code{\linkS4class{StoppingAll}} object
-##'
-##' @example examples/Rules-method-and-stoppingAll-stopping.R
-##' @keywords methods
+# and-StoppingAll-Stopping ----
+
+#' Combine a Stopping List and an Atomic Stopping Rule with AND
+#'
+#' @description `r lifecycle::badge("stable")`
+#'
+#' The method combining a stopping list and an atomic stopping rule.
+#'
+#' @param e1 (`StoppingAll`)\cr stopping list object.
+#' @param e2 (`Stopping`)\cr stopping rule object.
+#'
+#' @return The modified [`StoppingAll`] object.
+#'
+#' @aliases and-StoppingAll-Stopping
+#' @example examples/Rules-method-and-stoppingAll-stopping.R
+#' @export
+#'
 setMethod(
-  "&",
-  signature(
+  f = "&",
+  signature = signature(
     e1 = "StoppingAll",
     e2 = "Stopping"
   ),
-  def = function(e1, e2) {
+  definition = function(e1, e2) {
     e1@stop_list <- c(
       e1@stop_list,
       e2
     )
-    return(e1)
+    e1
   }
 )
 
-##' The method combining an atomic and a stopping list
-##'
-##' @param e1 \code{\linkS4class{Stopping}} object
-##' @param e2 \code{\linkS4class{StoppingAll}} object
-##' @return The modified \code{\linkS4class{StoppingAll}} object
-##'
-##' @example examples/Rules-method-and-stopping-stoppingAll.R
-##' @keywords methods
+# and-Stopping-StoppingAll ----
+
+#' Combine an Atomic Stopping Rule and a Stopping List with AND
+#'
+#' @description `r lifecycle::badge("stable")`
+#'
+#' The method combining an atomic stopping rule and a stopping list.
+#'
+#' @param e1 (`Stopping`)\cr stopping rule object.
+#' @param e2 (`StoppingAll`)\cr stopping list object.
+#'
+#' @return The modified [`StoppingAll`] object.
+#'
+#' @aliases and-Stopping-StoppingAll
+#' @example examples/Rules-method-and-stopping-stoppingAll.R
+#' @export
+#'
 setMethod(
-  "&",
-  signature(
+  f = "&",
+  signature = signature(
     e1 = "Stopping",
     e2 = "StoppingAll"
   ),
-  def = function(e1, e2) {
+  definition = function(e1, e2) {
     e2@stop_list <- c(
       e1,
       e2@stop_list
     )
-    return(e2)
+    e2
   }
 )
 
-## --------------------------------------------------
-## "OR" combination of stopping rules
-## --------------------------------------------------
+# or-Stopping-Stopping ----
 
-##' The method combining two atomic stopping rules
-##'
-##' @param e1 First \code{\linkS4class{Stopping}} object
-##' @param e2 Second \code{\linkS4class{Stopping}} object
-##' @return The \code{\linkS4class{StoppingAny}} object
-##'
-##' @aliases |,Stopping,Stopping-method
-##' @name or-Stopping-Stopping
-##' @example examples/Rules-method-or-stopping-stopping.R
-##' @keywords methods
+#' Combine Two Stopping Rules with OR
+#'
+#' @description `r lifecycle::badge("stable")`
+#'
+#' The method combining two atomic stopping rules.
+#'
+#' @param e1 (`Stopping`)\cr first stopping rule object.
+#' @param e2 (`Stopping`)\cr second stopping rule object.
+#'
+#' @return The [`StoppingAny`] object.
+#'
+#' @aliases |,Stopping,Stopping-method
+#' @name or-Stopping-Stopping
+#' @example examples/Rules-method-or-stopping-stopping.R
+#' @export
+#'
 setMethod(
-  "|",
-  signature(
+  f = "|",
+  signature = signature(
     e1 = "Stopping",
     e2 = "Stopping"
   ),
-  def = function(e1, e2) {
+  definition = function(e1, e2) {
     StoppingAny(list(e1, e2))
   }
 )
 
-##' The method combining a stopping list and an atomic
-##'
-##' @param e1 \code{\linkS4class{StoppingAny}} object
-##' @param e2 \code{\linkS4class{Stopping}} object
-##' @return The modified \code{\linkS4class{StoppingAny}} object
-##'
-##' @aliases |,StoppingAny,Stopping-method
-##' @name or-Stopping-StoppingAny
-##' @example examples/Rules-method-or-stoppingAny-stopping.R
-##' @keywords methods
+# or-StoppingAny-Stopping ----
+
+#' Combine a Stopping List and an Atomic Stopping Rule with OR
+#'
+#' @description `r lifecycle::badge("stable")`
+#'
+#' The method combining a stopping list and an atomic stopping rule.
+#'
+#' @param e1 (`StoppingAny`)\cr stopping list object.
+#' @param e2 (`Stopping`)\cr stopping rule object.
+#'
+#' @return The modified [`StoppingAny`] object.
+#'
+#' @aliases |,StoppingAny,Stopping-method
+#' @name or-StoppingAny-Stopping
+#' @example examples/Rules-method-or-stoppingAny-stopping.R
+#' @export
+#'
 setMethod(
-  "|",
-  signature(
+  f = "|",
+  signature = signature(
     e1 = "StoppingAny",
     e2 = "Stopping"
   ),
-  def = function(e1, e2) {
+  definition = function(e1, e2) {
     e1@stop_list <- c(
       e1@stop_list,
       e2
     )
-    return(e1)
+    e1
   }
 )
 
-##' The method combining an atomic and a stopping list
-##'
-##' @param e1 \code{\linkS4class{Stopping}} object
-##' @param e2 \code{\linkS4class{StoppingAny}} object
-##' @return The modified \code{\linkS4class{StoppingAny}} object
-##'
-##' @aliases |,Stopping,StoppingAny-method
-##' @name or-StoppingAny-Stopping
-##' @example examples/Rules-method-or-stopping-stoppingAny.R
-##' @keywords methods
+# or-Stopping-StoppingAny ----
+
+#' Combine an Atomic Stopping Rule and a Stopping List with OR
+#'
+#' @description `r lifecycle::badge("stable")`
+#'
+#' The method combining an atomic stopping rule and a stopping list.
+#'
+#' @param e1 (`Stopping`)\cr stopping rule object.
+#' @param e2 (`StoppingAny`)\cr stopping list object.
+#'
+#' @return The modified [`StoppingAny`] object.
+#'
+#' @aliases |,Stopping,StoppingAny-method
+#' @name or-Stopping-StoppingAny
+#' @example examples/Rules-method-or-stopping-stoppingAny.R
+#' @export
+#'
 setMethod(
-  "|",
-  signature(
+  f = "|",
+  signature = signature(
     e1 = "Stopping",
     e2 = "StoppingAny"
   ),
-  def = function(e1, e2) {
+  definition = function(e1, e2) {
     e2@stop_list <- c(
       e1,
       e2@stop_list
     )
-    return(e2)
+    e2
   }
 )
 
-# nolint end
-
 # Stopping ----
 
-## generic ----
+## stopTrial ----
 
 #' Stop the trial?
 #'
@@ -2339,7 +2376,7 @@ setGeneric(
   valueClass = "logical"
 )
 
-## StoppingMissingDose ----
+## stopTrial-StoppingMissingDose ----
 
 #' @describeIn stopTrial Stop based on value returned by next best dose.
 #'
@@ -2380,16 +2417,18 @@ setMethod(
   }
 )
 
-# nolint start
+## stopTrial-StoppingList ----
 
-## --------------------------------------------------
-## Stopping based on multiple stopping rules
-## --------------------------------------------------
-
-##' @describeIn stopTrial Stop based on multiple stopping rules
-##' @example examples/Rules-method-stopTrial-StoppingList.R
+#' @describeIn stopTrial Stop based on multiple stopping rules.
+#'
+#' @description `r lifecycle::badge("stable")`
+#'
+#' @aliases stopTrial-StoppingList
+#' @example examples/Rules-method-stopTrial-StoppingList.R
+#' @export
+#'
 setMethod(
-  "stopTrial",
+  f = "stopTrial",
   signature = signature(
     stopping = "StoppingList",
     dose = "ANY",
@@ -2397,10 +2436,9 @@ setMethod(
     model = "ANY",
     data = "ANY"
   ),
-  def = function(stopping, dose, samples, model, data, ...) {
-    ## evaluate the individual stopping rules
-    ## in the list
-    individualResults <-
+  definition = function(stopping, dose, samples, model, data, ...) {
+    # Evaluate the individual stopping rules in the list.
+    individual_results <-
       if (missing(samples)) {
         lapply(
           stopping@stop_list,
@@ -2422,31 +2460,33 @@ setMethod(
         )
       }
 
-    ## summarize to obtain overall result
-    overallResult <- stopping@summary(as.logical(individualResults))
+    # Summarize to obtain overall result.
+    overall_result <- stopping@summary(as.logical(individual_results))
 
-    ## retrieve individual text messages,
-    ## but let them in the list structure
-    overallText <- lapply(individualResults, attr, "message")
+    # Retrieve individual text messages, but let them in the list structure.
+    overall_text <- lapply(individual_results, attr, "message")
 
-    return(structure(
-      overallResult,
-      message = overallText,
-      individual = individualResults
-    ))
+    structure(
+      overall_result,
+      message = overall_text,
+      individual = individual_results
+    )
   }
 )
 
-## --------------------------------------------------
-## Stopping based on fulfillment of all multiple stopping rules
-## --------------------------------------------------
+## stopTrial-StoppingAll ----
 
-##' @describeIn stopTrial Stop based on fulfillment of all multiple stopping
-##' rules
-##'
-##' @example examples/Rules-method-stopTrial-StoppingAll.R
+#' @describeIn stopTrial Stop based on fulfillment of all multiple stopping
+#'   rules.
+#'
+#' @description `r lifecycle::badge("stable")`
+#'
+#' @aliases stopTrial-StoppingAll
+#' @example examples/Rules-method-stopTrial-StoppingAll.R
+#' @export
+#'
 setMethod(
-  "stopTrial",
+  f = "stopTrial",
   signature = signature(
     stopping = "StoppingAll",
     dose = "ANY",
@@ -2454,10 +2494,9 @@ setMethod(
     model = "ANY",
     data = "ANY"
   ),
-  def = function(stopping, dose, samples, model, data, ...) {
-    ## evaluate the individual stopping rules
-    ## in the list
-    individualResults <-
+  definition = function(stopping, dose, samples, model, data, ...) {
+    # Evaluate the individual stopping rules in the list.
+    individual_results <-
       if (missing(samples)) {
         lapply(
           stopping@stop_list,
@@ -2479,32 +2518,34 @@ setMethod(
         )
       }
 
-    ## summarize to obtain overall result
-    overallResult <- all(as.logical(individualResults))
+    # Summarize to obtain overall result.
+    overall_result <- all(as.logical(individual_results))
 
-    ## retrieve individual text messages,
-    ## but let them in the list structure
-    overallText <- lapply(individualResults, attr, "message")
+    # Retrieve individual text messages, but let them in the list structure.
+    overall_text <- lapply(individual_results, attr, "message")
 
-    return(structure(
-      overallResult,
-      message = overallText,
-      individual = individualResults,
+    structure(
+      overall_result,
+      message = overall_text,
+      individual = individual_results,
       report_label = stopping@report_label
-    ))
+    )
   }
 )
 
 
-## --------------------------------------------------
-## Stopping based on fulfillment of any stopping rule
-## --------------------------------------------------
+## stopTrial-StoppingAny ----
 
-##' @describeIn stopTrial Stop based on fulfillment of any stopping rule
-##'
-##' @example examples/Rules-method-stopTrial-StoppingAny.R
+#' @describeIn stopTrial Stop based on fulfillment of any stopping rule.
+#'
+#' @description `r lifecycle::badge("stable")`
+#'
+#' @aliases stopTrial-StoppingAny
+#' @example examples/Rules-method-stopTrial-StoppingAny.R
+#' @export
+#'
 setMethod(
-  "stopTrial",
+  f = "stopTrial",
   signature = signature(
     stopping = "StoppingAny",
     dose = "ANY",
@@ -2512,10 +2553,9 @@ setMethod(
     model = "ANY",
     data = "ANY"
   ),
-  def = function(stopping, dose, samples, model, data, ...) {
-    ## evaluate the individual stopping rules
-    ## in the list
-    individualResults <-
+  definition = function(stopping, dose, samples, model, data, ...) {
+    # Evaluate the individual stopping rules in the list.
+    individual_results <-
       if (missing(samples)) {
         lapply(
           stopping@stop_list,
@@ -2537,32 +2577,34 @@ setMethod(
         )
       }
 
-    ## summarize to obtain overall result
-    overallResult <- any(as.logical(individualResults))
+    # Summarize to obtain overall result.
+    overall_result <- any(as.logical(individual_results))
 
-    ## retrieve individual text messages,
-    ## but let them in the list structure
-    overallText <- lapply(individualResults, attr, "message")
+    # Retrieve individual text messages, but let them in the list structure.
+    overall_text <- lapply(individual_results, attr, "message")
 
-    return(structure(
-      overallResult,
-      message = overallText,
-      individual = individualResults,
+    structure(
+      overall_result,
+      message = overall_text,
+      individual = individual_results,
       report_label = stopping@report_label
-    ))
+    )
   }
 )
 
+## stopTrial-StoppingCohortsNearDose ----
 
-## --------------------------------------------------
-## Stopping based on number of cohorts near to next best dose
-## --------------------------------------------------
-
-##' @describeIn stopTrial Stop based on number of cohorts near to next best dose
-##'
-##' @example examples/Rules-method-stopTrial-StoppingCohortsNearDose.R
+#' @describeIn stopTrial Stop based on number of cohorts near to next best
+#'   dose.
+#'
+#' @description `r lifecycle::badge("stable")`
+#'
+#' @aliases stopTrial-StoppingCohortsNearDose
+#' @example examples/Rules-method-stopTrial-StoppingCohortsNearDose.R
+#' @export
+#'
 setMethod(
-  "stopTrial",
+  f = "stopTrial",
   signature = signature(
     stopping = "StoppingCohortsNearDose",
     dose = "numeric",
@@ -2570,55 +2612,57 @@ setMethod(
     model = "ANY",
     data = "Data"
   ),
-  def = function(stopping, dose, samples, model, data, ...) {
-    ## determine the range where the cohorts must lie in
+  definition = function(stopping, dose, samples, model, data, ...) {
+    # Determine the range where the cohorts must lie in.
     lower <- (100 - stopping@percentage) / 100 * dose
     upper <- (100 + stopping@percentage) / 100 * dose
 
-    ## which patients lie there?
-    indexPatients <- which((data@x >= lower) & (data@x <= upper))
+    # Which patients lie there?
+    index_patients <- which((data@x >= lower) & (data@x <= upper))
 
-    ## how many cohorts?
-    nCohorts <- length(unique(data@cohort[indexPatients]))
+    # How many cohorts?
+    n_cohorts <- length(unique(data@cohort[index_patients]))
 
-    ## so can we stop?
-    doStop <- nCohorts >= stopping@nCohorts
+    # So can we stop?
+    do_stop <- n_cohorts >= stopping@nCohorts
 
-    ## generate message
+    # Generate message.
     text <- paste(
-      nCohorts,
+      n_cohorts,
       " cohorts lie within ",
       stopping@percentage,
       "% of the next best dose ",
       dose,
       ". This ",
-      ifelse(doStop, "reached", "is below"),
+      ifelse(do_stop, "reached", "is below"),
       " the required ",
       stopping@nCohorts,
       " cohorts",
       sep = ""
     )
 
-    ## return both
-    return(structure(
-      doStop,
+    # Return both.
+    structure(
+      do_stop,
       message = text,
       report_label = stopping@report_label
-    ))
+    )
   }
 )
 
+## stopTrial-StoppingPatientsNearDose ----
 
-## -------------------------------------------------------------
-## Stopping based on number of patients near to next best dose
-## -------------------------------------------------------------
-
-##' @describeIn stopTrial Stop based on number of patients near to next best
-##' dose
-##'
-##' @example examples/Rules-method-stopTrial-StoppingPatientsNearDose.R
+#' @describeIn stopTrial Stop based on number of patients near to next best
+#'   dose.
+#'
+#' @description `r lifecycle::badge("stable")`
+#'
+#' @aliases stopTrial-StoppingPatientsNearDose
+#' @example examples/Rules-method-stopTrial-StoppingPatientsNearDose.R
+#' @export
+#'
 setMethod(
-  "stopTrial",
+  f = "stopTrial",
   signature = signature(
     stopping = "StoppingPatientsNearDose",
     dose = "numeric",
@@ -2626,54 +2670,57 @@ setMethod(
     model = "ANY",
     data = "Data"
   ),
-  def = function(stopping, dose, samples, model, data, ...) {
-    ## determine the range where the cohorts must lie in
+  definition = function(stopping, dose, samples, model, data, ...) {
+    # Determine the range where the cohorts must lie in.
     lower <- (100 - stopping@percentage) / 100 * dose
     upper <- (100 + stopping@percentage) / 100 * dose
 
-    ## how many patients lie there?
-    nPatients <- ifelse(
+    # How many patients lie there?
+    n_patients <- ifelse(
       is.na(dose),
       0,
       sum((data@x >= lower) & (data@x <= upper))
     )
 
-    ## so can we stop?
-    doStop <- nPatients >= stopping@nPatients
+    # So can we stop?
+    do_stop <- n_patients >= stopping@nPatients
 
-    ## generate message
+    # Generate message.
     text <- paste(
-      nPatients,
+      n_patients,
       " patients lie within ",
       stopping@percentage,
       "% of the next best dose ",
       dose,
       ". This ",
-      ifelse(doStop, "reached", "is below"),
+      ifelse(do_stop, "reached", "is below"),
       " the required ",
       stopping@nPatients,
       " patients",
       sep = ""
     )
 
-    ## return both
-    return(structure(
-      doStop,
+    # Return both.
+    structure(
+      do_stop,
       message = text,
       report_label = stopping@report_label
-    ))
+    )
   }
 )
 
-## --------------------------------------------------
-## Stopping based on minimum number of cohorts
-## --------------------------------------------------
+## stopTrial-StoppingMinCohorts ----
 
-##' @describeIn stopTrial Stop based on minimum number of cohorts
-##'
-##' @example examples/Rules-method-stopTrial-StoppingMinCohorts.R
+#' @describeIn stopTrial Stop based on minimum number of cohorts.
+#'
+#' @description `r lifecycle::badge("stable")`
+#'
+#' @aliases stopTrial-StoppingMinCohorts
+#' @example examples/Rules-method-stopTrial-StoppingMinCohorts.R
+#' @export
+#'
 setMethod(
-  "stopTrial",
+  f = "stopTrial",
   signature = signature(
     stopping = "StoppingMinCohorts",
     dose = "ANY",
@@ -2681,42 +2728,45 @@ setMethod(
     model = "ANY",
     data = "Data"
   ),
-  def = function(stopping, dose, samples, model, data, ...) {
-    ## determine number of cohorts
-    nCohorts <- length(unique(data@cohort))
+  definition = function(stopping, dose, samples, model, data, ...) {
+    # Determine number of cohorts.
+    n_cohorts <- length(unique(data@cohort))
 
-    ## so can we stop?
-    doStop <- nCohorts >= stopping@nCohorts
+    # So can we stop?
+    do_stop <- n_cohorts >= stopping@nCohorts
 
-    ## generate message
+    # Generate message.
     text <-
       paste(
         "Number of cohorts is",
-        nCohorts,
+        n_cohorts,
         "and thus",
-        ifelse(doStop, "reached", "below"),
+        ifelse(do_stop, "reached", "below"),
         "the prespecified minimum number",
         stopping@nCohorts
       )
 
-    ## return both
-    return(structure(
-      doStop,
+    # Return both.
+    structure(
+      do_stop,
       message = text,
       report_label = stopping@report_label
-    ))
+    )
   }
 )
 
-## --------------------------------------------------
-## Stopping based on minimum number of patients
-## --------------------------------------------------
+## stopTrial-StoppingMinPatients ----
 
-##' @describeIn stopTrial Stop based on minimum number of patients
-##'
-##' @example examples/Rules-method-stopTrial-StoppingMinPatients.R
+#' @describeIn stopTrial Stop based on minimum number of patients.
+#'
+#' @description `r lifecycle::badge("stable")`
+#'
+#' @aliases stopTrial-StoppingMinPatients
+#' @example examples/Rules-method-stopTrial-StoppingMinPatients.R
+#' @export
+#'
 setMethod(
-  "stopTrial",
+  f = "stopTrial",
   signature = signature(
     stopping = "StoppingMinPatients",
     dose = "ANY",
@@ -2724,33 +2774,31 @@ setMethod(
     model = "ANY",
     data = "Data"
   ),
-  def = function(stopping, dose, samples, model, data, ...) {
-    ## so can we stop?
-    doStop <- data@nObs >= stopping@nPatients
+  definition = function(stopping, dose, samples, model, data, ...) {
+    # So can we stop?
+    do_stop <- data@nObs >= stopping@nPatients
 
-    ## generate message
+    # Generate message.
     text <-
       paste(
         "Number of patients is",
         data@nObs,
         "and thus",
-        ifelse(doStop, "reached", "below"),
+        ifelse(do_stop, "reached", "below"),
         "the prespecified minimum number",
         stopping@nPatients
       )
 
-    ## return both
-    return(structure(
-      doStop,
+    # Return both.
+    structure(
+      do_stop,
       message = text,
       report_label = stopping@report_label
-    ))
+    )
   }
 )
 
-# nolint end
-
-## StoppingTargetProb ----
+## stopTrial-StoppingTargetProb ----
 
 #' @describeIn stopTrial Stop based on probability of target tox interval
 #'
@@ -2798,17 +2846,18 @@ setMethod(
   }
 )
 
-# nolint start
+## stopTrial-StoppingMTDdistribution ----
 
-## --------------------------------------------------
-## Stopping based on MTD distribution
-## --------------------------------------------------
-
-##' @describeIn stopTrial Stop based on MTD distribution
-##'
-##' @example examples/Rules-method-stopTrial-StoppingMTDdistribution.R
+#' @describeIn stopTrial Stop based on MTD distribution.
+#'
+#' @description `r lifecycle::badge("stable")`
+#'
+#' @aliases stopTrial-StoppingMTDdistribution
+#' @example examples/Rules-method-stopTrial-StoppingMTDdistribution.R
+#' @export
+#'
 setMethod(
-  "stopTrial",
+  f = "stopTrial",
   signature = signature(
     stopping = "StoppingMTDdistribution",
     dose = "numeric",
@@ -2816,33 +2865,31 @@ setMethod(
     model = "GeneralModel",
     data = "ANY"
   ),
-  def = function(stopping, dose, samples, model, data, ...) {
-    ## First, generate the MTD samples.
-
-    ## add prior data and samples to the
-    ## function environment so that they
-    ## can be used.
-    mtdSamples <- dose(
+  definition = function(stopping, dose, samples, model, data, ...) {
+    # First, generate the MTD samples.
+    # Add prior data and samples to the function environment so that they can
+    # be used.
+    mtd_samples <- dose(
       x = stopping@target,
       model,
       samples,
       ...
     )
 
-    ## what is the absolute threshold?
-    absThresh <- stopping@thresh * dose
+    # What is the absolute threshold?
+    abs_thresh <- stopping@thresh * dose
 
-    ## what is the probability to be above this dose?
+    # What is the probability to be above this dose?
     prob <- ifelse(
-      is.na(absThresh),
+      is.na(abs_thresh),
       0,
-      mean(mtdSamples > absThresh)
+      mean(mtd_samples > abs_thresh)
     )
 
-    ## so can we stop?
-    doStop <- prob >= stopping@prob
+    # So can we stop?
+    do_stop <- prob >= stopping@prob
 
-    ## generate message
+    # Generate message.
     text <-
       paste(
         "Probability of MTD above",
@@ -2852,24 +2899,22 @@ setMethod(
         "is",
         round(prob * 100),
         "% and thus",
-        ifelse(doStop, "greater than or equal to", "strictly less than"),
+        ifelse(do_stop, "greater than or equal to", "strictly less than"),
         "the required",
         round(stopping@prob * 100),
         "%"
       )
 
-    ## return both
-    return(structure(
-      doStop,
+    # Return both.
+    structure(
+      do_stop,
       message = text,
       report_label = stopping@report_label
-    ))
+    )
   }
 )
 
-# nolint end
-
-## StoppingMTDCV ----
+## stopTrial-StoppingMTDCV ----
 
 #' @rdname stopTrial
 #'
@@ -2922,8 +2967,7 @@ setMethod(
   }
 )
 
-
-## StoppingLowestDoseHSRBeta ----
+## stopTrial-StoppingLowestDoseHSRBeta ----
 
 #' @rdname stopTrial
 #'
@@ -2993,7 +3037,7 @@ setMethod(
   }
 )
 
-## StoppingTargetBiomarker ----
+## stopTrial-StoppingTargetBiomarker ----
 
 #' @describeIn stopTrial Stop based on probability of targeting biomarker
 #'
@@ -3105,7 +3149,7 @@ setMethod(
   }
 )
 
-## StoppingSpecificDose ----
+## stopTrial-StoppingSpecificDose ----
 
 #' @describeIn stopTrial if Stopping rule is met for specific dose of the planned
 #' dose grid and not just for the default next best dose.
@@ -3151,17 +3195,18 @@ setMethod(
   }
 )
 
-# nolint start
+## stopTrial-StoppingHighestDose ----
 
-## --------------------------------------------------
-## Stopping when the highest dose is reached
-## --------------------------------------------------
-
-##' @describeIn stopTrial Stop when the highest dose is reached
-##'
-##' @example examples/Rules-method-stopTrial-StoppingHighestDose.R
+#' @describeIn stopTrial Stop when the highest dose is reached.
+#'
+#' @description `r lifecycle::badge("stable")`
+#'
+#' @aliases stopTrial-StoppingHighestDose
+#' @example examples/Rules-method-stopTrial-StoppingHighestDose.R
+#' @export
+#'
 setMethod(
-  "stopTrial",
+  f = "stopTrial",
   signature = signature(
     stopping = "StoppingHighestDose",
     dose = "numeric",
@@ -3169,27 +3214,27 @@ setMethod(
     model = "ANY",
     data = "Data"
   ),
-  def = function(stopping, dose, samples, model, data, ...) {
-    isHighestDose <- ifelse(
+  definition = function(stopping, dose, samples, model, data, ...) {
+    is_highest_dose <- ifelse(
       is.na(dose),
       FALSE,
       (dose == data@doseGrid[data@nGrid])
     )
-    return(structure(
-      isHighestDose,
+    structure(
+      is_highest_dose,
       message = paste(
         "Next best dose is",
         dose,
         "and thus",
-        ifelse(isHighestDose, "the", "not the"),
+        ifelse(is_highest_dose, "the", "not the"),
         "highest dose"
       ),
       report_label = stopping@report_label
-    ))
+    )
   }
 )
 
-## StoppingOrdinal ----
+## stopTrial-StoppingOrdinal ----
 
 #' @describeIn stopTrial Stop based on value returned by next best dose.
 #'
@@ -3218,6 +3263,8 @@ setMethod(
     )
   }
 )
+
+## stopTrial-StoppingOrdinal ----
 
 #' @describeIn stopTrial Stop based on value returned by next best dose.
 #'
@@ -3249,7 +3296,7 @@ setMethod(
   }
 )
 
-## StoppingExternal ----
+## stopTrial-StoppingExternal ----
 
 #' @describeIn stopTrial Stop based on an external flag.
 #'
@@ -3286,298 +3333,19 @@ setMethod(
 )
 
 
-## ============================================================
+## stopTrial-StoppingTDCIRatio ----
 
-## --------------------------------------------------
-## "MAX" combination of cohort size rules
-## --------------------------------------------------
-
-##' "MAX" combination of cohort size rules
-##'
-##' This function combines cohort size rules by taking
-##' the maximum of all sizes.
-##'
-##' @param \dots Objects of class \code{\linkS4class{CohortSize}}
-##' @return the combination as an object of class
-##' \code{\linkS4class{CohortSizeMax}}
-##'
-##' @seealso \code{\link{minSize}}
-##' @export
-##' @keywords methods
-setGeneric(
-  "maxSize",
-  def = function(...) {
-    ## there should be no default method,
-    ## therefore just forward to next method!
-    standardGeneric("maxSize")
-  },
-  valueClass = "CohortSizeMax"
-)
-
-##' @describeIn maxSize The method combining cohort size rules by taking maximum
-##' @example examples/Rules-method-maxSize.R
-setMethod("maxSize", "CohortSize", def = function(...) {
-  CohortSizeMax(list(...))
-})
-
-## --------------------------------------------------
-## "MIN" combination of cohort size rules
-## --------------------------------------------------
-
-##' "MIN" combination of cohort size rules
-##'
-##' This function combines cohort size rules by taking
-##' the minimum of all sizes.
-##'
-##' @param \dots Objects of class \code{\linkS4class{CohortSize}}
-##' @return the combination as an object of class
-##' \code{\linkS4class{CohortSizeMin}}
-##'
-##' @seealso \code{\link{maxSize}}
-##' @export
-##' @keywords methods
-setGeneric(
-  "minSize",
-  def = function(...) {
-    ## there should be no default method,
-    ## therefore just forward to next method!
-    standardGeneric("minSize")
-  },
-  valueClass = "CohortSizeMin"
-)
-
-##' @describeIn minSize The method combining cohort size rules by taking minimum
-##' @example examples/Rules-method-minSize.R
-setMethod("minSize", "CohortSize", def = function(...) {
-  CohortSizeMin(list(...))
-})
-
-# size ----
-
-## CohortSizeRange ----
-
-#' @describeIn size Determines the size of the next cohort based on the range
-#'   into which the next dose falls into.
+#' @describeIn stopTrial Stop based on [`StoppingTDCIRatio`] class when
+#'   reaching the target ratio of the upper to the lower 95% credibility
+#'   interval of the estimate (TDtargetEndOfTrial). This is a stopping rule
+#'   which incorporates only DLE responses and DLE samples are given.
 #'
-#' @param dose the next dose.
-#' @param data the data input, an object of class [`Data`].
+#' @description `r lifecycle::badge("stable")`
 #'
-#' @aliases size-CohortSizeRange
-#' @example examples/Rules-method-size-CohortSizeRange.R
+#' @aliases stopTrial-StoppingTDCIRatio
+#' @example examples/Rules-method-stopTrialCITDsamples.R
+#' @export
 #'
-setMethod(
-  f = "size",
-  signature = signature(
-    object = "CohortSizeRange"
-  ),
-  definition = function(object, dose, data) {
-    # If the recommended next dose is NA, don't check it and return 0.
-    if (is.na(dose)) {
-      return(0L)
-    }
-    assert_class(data, "Data")
-
-    # Determine in which interval the next dose is.
-    interval <- findInterval(x = dose, vec = object@intervals)
-    object@cohort_size[interval]
-  }
-)
-
-## CohortSizeDLT ----
-
-#' @describeIn size Determines the size of the next cohort based on the number
-#'   of DLTs so far.
-#'
-#' @param dose the next dose.
-#' @param data the data input, an object of class [`Data`].
-#'
-#' @aliases size-CohortSizeDLT
-#' @example examples/Rules-method-size-CohortSizeDLT.R
-#'
-setMethod(
-  f = "size",
-  signature = signature(
-    object = "CohortSizeDLT"
-  ),
-  definition = function(object, dose, data) {
-    # If the recommended next dose is NA, don't check it and return 0.
-    if (is.na(dose)) {
-      return(0L)
-    }
-    assert_class(data, "Data")
-
-    # Determine how many DLTs have occurred so far.
-    dlt_happened <- sum(data@y)
-
-    # Determine in which interval this is.
-    interval <- findInterval(x = dlt_happened, vec = object@intervals)
-    object@cohort_size[interval]
-  }
-)
-
-## CohortSizeMax ----
-
-#' @describeIn size Determines the size of the next cohort based on maximum of
-#'   multiple cohort size rules.
-#'
-#' @param dose the next dose.
-#' @param data the data input, an object of class [`Data`].
-#'
-#' @aliases size-CohortSizeMax
-#' @example examples/Rules-method-size-CohortSizeMax.R
-#'
-setMethod(
-  f = "size",
-  signature = signature(
-    object = "CohortSizeMax"
-  ),
-  definition = function(object, dose, data) {
-    # If the recommended next dose is NA, don't check it and return 0.
-    if (is.na(dose)) {
-      return(0L)
-    }
-    assert_multi_class(data, c("Data", "DataOrdinal"))
-
-    # Evaluate the individual cohort size rules in the list.
-    individual_results <- sapply(
-      object@cohort_sizes,
-      size,
-      dose = dose,
-      data = data
-    )
-    # The overall result.
-    max(individual_results)
-  }
-)
-
-## CohortSizeMin ----
-
-#' @describeIn size Determines the size of the next cohort based on minimum of
-#'   multiple cohort size rules.
-#'
-#' @param dose the next dose.
-#' @param data the data input, an object of class [`Data`].
-#'
-#' @aliases size-CohortSizeMin
-#' @example examples/Rules-method-size-CohortSizeMin.R
-#'
-setMethod(
-  f = "size",
-  signature = signature(
-    object = "CohortSizeMin"
-  ),
-  definition = function(object, dose, data) {
-    # If the recommended next dose is NA, don't check it and return 0.
-    if (is.na(dose)) {
-      return(0L)
-    }
-    assert_multi_class(data, c("Data", "DataOrdinal"))
-
-    # Evaluate the individual cohort size rules in the list.
-    individual_results <- sapply(
-      object@cohort_sizes,
-      size,
-      dose = dose,
-      data = data
-    )
-    # The overall result.
-    min(individual_results)
-  }
-)
-
-## CohortSizeConst ----
-
-#' @describeIn size Constant cohort size.
-#'
-#' @param dose the next dose.
-#' @param ... not used.
-#'
-#' @aliases size-CohortSizeConst
-#' @example examples/Rules-method-size-CohortSizeConst.R
-#'
-setMethod(
-  f = "size",
-  signature = signature(
-    object = "CohortSizeConst"
-  ),
-  definition = function(object, dose, ...) {
-    # If the recommended next dose is NA, don't check it and return 0.
-    if (is.na(dose)) {
-      0L
-    } else {
-      object@size
-    }
-  }
-)
-
-## CohortSizeParts ----
-
-#' @describeIn size Determines the size of the next cohort based on the parts.
-#'
-#' @param dose the next dose.
-#' @param data the data input, an object of class [`Data`].
-#'
-#' @aliases size-CohortSizeParts
-#' @example examples/Rules-method-size-CohortSizeParts.R
-#'
-setMethod(
-  f = "size",
-  signature = signature(
-    object = "CohortSizeParts"
-  ),
-  definition = function(object, dose, data) {
-    # If the recommended next dose is NA, don't check it and return 0.
-    if (is.na(dose)) {
-      return(0L)
-    } else {
-      assert_class(data, "DataParts")
-      object@cohort_sizes[data@nextPart]
-    }
-  }
-)
-
-## CohortSizeOrdinal ----
-
-#' @describeIn size Determines the size of the next cohort in a ordinal CRM trial.
-#'
-#' @param  dose (`numeric`) the next dose.
-#' @param data the data input, an object of class [`DataOrdinal`].
-#'
-#' @aliases size-CohortSizeOrdinal
-#' @example examples/Rules-method-size-CohortSizeOrdinal.R
-#'
-setMethod(
-  f = "size",
-  signature = signature(
-    object = "CohortSizeOrdinal"
-  ),
-  definition = function(object, dose, data, ...) {
-    # Validate
-    assert_numeric(dose, len = 1, lower = 0)
-    assert_class(data, "DataOrdinal")
-    # Execute
-
-    size(
-      object@rule,
-      dose = dose,
-      data = h_convert_ordinal_data(data, object@grade),
-      ...
-    )
-  }
-)
-
-## ------------------------------------------------------------------------------------------------
-## Stopping based on a target ratio of the upper to the lower 95% credibility interval
-## ------------------------------------------------------------------------------------------------
-##' @describeIn stopTrial Stop based on 'StoppingTDCIRatio' class when
-##' reaching the target ratio of the upper to the lower 95% credibility
-##' interval of the estimate (TDtargetEndOfTrial). This is a stopping rule which incorporate only
-##' DLE responses and DLE samples are given
-##'
-##' @example examples/Rules-method-stopTrialCITDsamples.R
-##'
-##' @export
-##' @keywords methods
 setMethod(
   f = "stopTrial",
   signature = signature(
@@ -3615,16 +3383,21 @@ setMethod(
   }
 )
 
-## ----------------------------------------------------------------------------------------------
-## Stopping based on a target ratio of the upper to the lower 95% credibility interval
-## ------------------------------------------------------------------------------------------------
-##' @describeIn stopTrial Stop based on 'StoppingTDCIRatio' class
-##' when reaching the target ratio of the upper to the lower 95% credibility
-##' interval of the estimate (TDtargetEndOfTrial). This is a stopping rule which incorporate only
-##' DLE responses and no DLE samples are involved
-##' @example examples/Rules-method-stopTrialCITD.R
+## stopTrial-StoppingTDCIRatio ----
+
+#' @describeIn stopTrial Stop based on [`StoppingTDCIRatio`] class when
+#'   reaching the target ratio of the upper to the lower 95% credibility
+#'   interval of the estimate (TDtargetEndOfTrial). This is a stopping rule
+#'   which incorporates only DLE responses and no DLE samples are involved.
+#'
+#' @description `r lifecycle::badge("stable")`
+#'
+#' @aliases stopTrial-StoppingTDCIRatio
+#' @example examples/Rules-method-stopTrialCITD.R
+#' @export
+#'
 setMethod(
-  "stopTrial",
+  f = "stopTrial",
   signature = signature(
     stopping = "StoppingTDCIRatio",
     dose = "ANY",
@@ -3632,13 +3405,13 @@ setMethod(
     model = "ModelTox",
     data = "ANY"
   ),
-  def = function(stopping, dose, model, data, ...) {
+  definition = function(stopping, dose, model, data, ...) {
     assert_probability(stopping@prob_target)
 
     prob_target <- stopping@prob_target
     dose_target_samples <- dose(x = prob_target, model = model, ...)
-    ## Find the variance of the log of the dose_target_samples(eta)
-    M1 <- matrix(
+    # Find the variance of the log of the dose_target_samples (eta).
+    m1 <- matrix(
       c(
         -1 / (model@phi2),
         -(log(prob_target / (1 - prob_target)) - model@phi1) / (model@phi2)^2
@@ -3646,58 +3419,64 @@ setMethod(
       1,
       2
     )
-    M2 <- model@Pcov
-    varEta <- as.vector(M1 %*% M2 %*% t(M1))
+    m2 <- model@Pcov
+    var_eta <- as.vector(m1 %*% m2 %*% t(m1))
 
-    ## Find the upper and lower limit of the 95% credibility interval
-    CI <- exp(log(dose_target_samples) + c(-1, 1) * 1.96 * sqrt(varEta))
-    ratio <- CI[2] / CI[1]
+    # Find the upper and lower limit of the 95% credibility interval.
+    ci <- exp(log(dose_target_samples) + c(-1, 1) * 1.96 * sqrt(var_eta))
+    ratio <- ci[2] / ci[1]
 
-    ## so can we stop?
-    doStop <- ratio <= stopping@target_ratio
-    ## generate message
+    # So can we stop?
+    do_stop <- ratio <= stopping@target_ratio
+    # Generate message.
     text <- paste(
       "95% CI is (",
-      round(CI[1], 4),
+      round(ci[1], 4),
       ",",
-      round(CI[2], 4),
+      round(ci[2], 4),
       "), Ratio =",
       round(ratio, 4),
       "is ",
-      ifelse(doStop, "is less than or equal to", "greater than"),
+      ifelse(do_stop, "is less than or equal to", "greater than"),
       "target_ratio =",
       stopping@target_ratio
     )
-    ## return both
-    return(structure(
-      doStop,
+    # Return both.
+    structure(
+      do_stop,
       message = text,
       report_label = stopping@report_label
-    ))
+    )
   }
 )
 
-## --------------------------------------------------------------------------------------------------
-## Stopping based on a target ratio of the upper to the lower 95% credibility interval
-## ------------------------------------------------------------------------------------------------
-##' @describeIn stopTrial Stop based on reaching the target ratio of the upper to the lower 95% credibility
-##' interval of the estimate (the minimum of Gstar and TDtargetEndOfTrial). This is a stopping rule which
-##' incorporate DLE and efficacy responses and DLE and efficacy samples are also used.
-##'
-##' @param TDderive the function which derives from the input, a vector of the posterior samples called
-##' \code{TDsamples} of the dose
-##' which has the probability of the occurrence of DLE equals to either the targetDuringTrial or
-##' targetEndOfTrial, the final next best TDtargetDuringTrial (the dose with probability of the
-##' occurrence of DLE equals to the targetDuringTrial)and TDtargetEndOfTrial estimate.
-##' @param Effmodel the efficacy model of \code{\linkS4class{ModelEff}} class object
-##' @param Effsamples the efficacy samples of \code{\linkS4class{Samples}} class object
-##' @param Gstarderive the function which derives from the input, a vector of the posterior Gstar (the dose
-##' which gives the maximum gain value) samples
-##' called \code{Gstarsamples}, the final next best Gstar estimate.
-##'
-##' @example examples/Rules-method-stopTrialCIMaxGainSamples.R
+## stopTrial-StoppingMaxGainCIRatio ----
+
+#' @describeIn stopTrial Stop based on reaching the target ratio of the upper
+#'   to the lower 95% credibility interval of the estimate (the minimum of
+#'   Gstar and TDtargetEndOfTrial). This is a stopping rule which incorporates
+#'   DLE and efficacy responses and DLE and efficacy samples are also used.
+#'
+#' @description `r lifecycle::badge("stable")`
+#'
+#' @param TDderive (`function`)\cr the function which derives from the input,
+#'   a vector of the posterior samples called `TDsamples` of the dose which has
+#'   the probability of the occurrence of DLE equals to either the
+#'   targetDuringTrial or targetEndOfTrial, the final next best
+#'   TDtargetDuringTrial (the dose with probability of the occurrence of DLE
+#'   equals to the targetDuringTrial) and TDtargetEndOfTrial estimate.
+#' @param Effmodel (`ModelEff`)\cr the efficacy model.
+#' @param Effsamples (`Samples`)\cr the efficacy samples.
+#' @param Gstarderive (`function`)\cr the function which derives from the input,
+#'   a vector of the posterior Gstar (the dose which gives the maximum gain
+#'   value) samples called `Gstarsamples`, the final next best Gstar estimate.
+#'
+#' @aliases stopTrial-StoppingMaxGainCIRatio
+#' @example examples/Rules-method-stopTrialCIMaxGainSamples.R
+#' @export
+#'
 setMethod(
-  "stopTrial",
+  f = "stopTrial",
   signature = signature(
     stopping = "StoppingMaxGainCIRatio",
     dose = "ANY",
@@ -3705,7 +3484,7 @@ setMethod(
     model = "ModelTox",
     data = "DataDual"
   ),
-  def = function(
+  definition = function(
     stopping,
     dose,
     samples,
@@ -3719,36 +3498,35 @@ setMethod(
   ) {
     prob_target <- stopping@prob_target
 
-    ## checks
+    # Checks.
     assert_probability(prob_target)
     stopifnot(is(Effmodel, "ModelEff"))
     stopifnot(is(Effsamples, "Samples"))
     stopifnot(is.function(TDderive))
     stopifnot(is.function(Gstarderive))
 
-    ## find the TDtarget End of Trial samples
-    TDtargetEndOfTrialSamples <- dose(
+    # Find the TDtarget End of Trial samples.
+    td_target_end_of_trial_samples <- dose(
       x = prob_target,
       model = model,
       samples = samples,
       ...
     )
-    ## Find the TDtarget End of trial estimate
-    TDtargetEndOfTrialEstimate <- TDderive(TDtargetEndOfTrialSamples)
+    # Find the TDtarget End of trial estimate.
+    td_target_end_of_trial_estimate <- TDderive(td_target_end_of_trial_samples)
 
-    ## Find the gain value samples then the GstarSamples
+    # Find the gain value samples then the GstarSamples.
     points <- data@doseGrid
 
-    GainSamples <- matrix(
+    gain_samples <- matrix(
       nrow = size(samples),
       ncol = length(points)
     )
 
-    ## evaluate the probs, for all gain samples.
+    # Evaluate the probs, for all gain samples.
     for (i in seq_along(points)) {
-      ## Now we want to evaluate for the
-      ## following dose:
-      GainSamples[, i] <- gain(
+      # Now we want to evaluate for the following dose.
+      gain_samples[, i] <- gain(
         dose = points[i],
         model,
         samples,
@@ -3758,88 +3536,97 @@ setMethod(
       )
     }
 
-    ## Find the maximum gain value samples
-    MaxGainSamples <- apply(GainSamples, 1, max)
+    # Find the maximum gain value samples.
+    max_gain_samples <- apply(gain_samples, 1, max)
 
-    ## Obtain Gstar samples, samples for the dose level which gives the maximum gain value
-    IndexG <- apply(GainSamples, 1, which.max)
-    GstarSamples <- data@doseGrid[IndexG]
+    # Obtain Gstar samples, samples for the dose level which gives the maximum
+    # gain value.
+    index_g <- apply(gain_samples, 1, which.max)
+    gstar_samples <- data@doseGrid[index_g]
 
-    ## Find the Gstar estimate
+    # Find the Gstar estimate.
+    gstar <- Gstarderive(gstar_samples)
+    # Find the 95% credibility interval of Gstar and its ratio of the upper to
+    # the lower limit.
+    ci_gstar <- quantile(gstar_samples, probs = c(0.025, 0.975))
+    ratio_gstar <- as.numeric(ci_gstar[2] / ci_gstar[1])
 
-    Gstar <- Gstarderive(GstarSamples)
-    ## Find the 95% credibility interval of Gstar and its ratio of the upper to the lower limit
-    CIGstar <- quantile(GstarSamples, probs = c(0.025, 0.975))
-    ratioGstar <- as.numeric(CIGstar[2] / CIGstar[1])
+    # Find the 95% credibility interval of TDtargetEndOfTrial and its ratio of
+    # the upper to the lower limit.
+    ci_tdeot <- quantile(
+      td_target_end_of_trial_samples,
+      probs = c(0.025, 0.975)
+    )
+    ratio_tdeot <- as.numeric(ci_tdeot[2] / ci_tdeot[1])
 
-    ## Find the 95% credibility interval of TDtargetEndOfTrial and its ratio of the upper to the lower limit
-    CITDEOT <- quantile(TDtargetEndOfTrialSamples, probs = c(0.025, 0.975))
-    ratioTDEOT <- as.numeric(CITDEOT[2] / CITDEOT[1])
-
-    ## Find which is smaller (TDtargetEndOfTrialEstimate or Gstar)
-
-    if (TDtargetEndOfTrialEstimate <= Gstar) {
-      ## Find the upper and lower limit of the 95% credibility interval and its ratio of the smaller
-      CI <- CITDEOT
-      ratio <- ratioTDEOT
-      chooseTD <- TRUE
+    # Find which is smaller (TDtargetEndOfTrialEstimate or Gstar).
+    if (td_target_end_of_trial_estimate <= gstar) {
+      # Find the upper and lower limit of the 95% credibility interval and its
+      # ratio of the smaller.
+      ci <- ci_tdeot
+      ratio <- ratio_tdeot
+      choose_td <- TRUE
     } else {
-      CI <- CIGstar
-      ratio <- ratioGstar
-      chooseTD <- FALSE
+      ci <- ci_gstar
+      ratio <- ratio_gstar
+      choose_td <- FALSE
     }
 
-    ## so can we stop?
-    doStop <- ratio <= stopping@target_ratio
-    ## generate message
+    # So can we stop?
+    do_stop <- ratio <= stopping@target_ratio
+    # Generate message.
     text1 <- paste(
       "Gstar estimate is",
-      round(Gstar, 4),
+      round(gstar, 4),
       "with 95% CI (",
-      round(CIGstar[1], 4),
+      round(ci_gstar[1], 4),
       ",",
-      round(CIGstar[2], 4),
+      round(ci_gstar[2], 4),
       ") and its ratio =",
-      round(ratioGstar, 4)
+      round(ratio_gstar, 4)
     )
     text2 <- paste(
       "TDtargetEndOfTrial estimate is ",
-      round(TDtargetEndOfTrialEstimate, 4),
+      round(td_target_end_of_trial_estimate, 4),
       "with 95% CI (",
-      round(CITDEOT[1], 4),
+      round(ci_tdeot[1], 4),
       ",",
-      round(CITDEOT[2], 4),
+      round(ci_tdeot[2], 4),
       ") and its ratio=",
-      round(ratioTDEOT, 4)
+      round(ratio_tdeot, 4)
     )
     text3 <- paste(
-      ifelse(chooseTD, "TDtargetEndOfTrial estimate", "Gstar estimate"),
+      ifelse(choose_td, "TDtargetEndOfTrial estimate", "Gstar estimate"),
       "is smaller with ratio =",
       round(ratio, 4),
       " which is ",
-      ifelse(doStop, "is less than or equal to", "greater than"),
+      ifelse(do_stop, "is less than or equal to", "greater than"),
       "target_ratio =",
       stopping@target_ratio
     )
     text <- c(text1, text2, text3)
-    ## return both
-    return(structure(
-      doStop,
+    # Return both.
+    structure(
+      do_stop,
       message = text,
       report_label = stopping@report_label
-    ))
+    )
   }
 )
 
-## -----------------------------------------------------------------------------------------------
-## Stopping based on a target ratio of the upper to the lower 95% credibility interval
-## --------------------------------------------------------------------------------------------
-##' @describeIn stopTrial Stop based on reaching the target ratio of the upper to the lower 95% credibility
-##' interval of the estimate (the minimum of Gstar and TDtargetEndOfTrial). This is a stopping rule which
-##' incorporate DLE and efficacy responses without DLE and efficacy samples involved.
-##' @example examples/Rules-method-stopTrialCIMaxGain.R
+#' @describeIn stopTrial Stop based on reaching the target ratio of the upper
+#'   to the lower 95% credibility interval of the estimate (the minimum of
+#'   Gstar and TDtargetEndOfTrial). This is a stopping rule which incorporates
+#'   DLE and efficacy responses without DLE and efficacy samples involved.
+#'
+#' @description `r lifecycle::badge("stable")`
+#'
+#' @aliases stopTrial-StoppingMaxGainCIRatio
+#' @example examples/Rules-method-stopTrialCIMaxGain.R
+#' @export
+#'
 setMethod(
-  "stopTrial",
+  f = "stopTrial",
   signature = signature(
     stopping = "StoppingMaxGainCIRatio",
     dose = "ANY",
@@ -3847,105 +3634,92 @@ setMethod(
     model = "ModelTox",
     data = "DataDual"
   ),
-  def = function(stopping, dose, model, data, Effmodel, ...) {
+  definition = function(stopping, dose, model, data, Effmodel, ...) {
     prob_target <- stopping@prob_target
 
-    ## checks
+    # Checks.
     assert_probability(prob_target)
     stopifnot(is(Effmodel, "ModelEff"))
 
-    ## find the TDtarget End of Trial
-    TDtargetEndOfTrial <- dose(
+    # Find the TDtarget End of Trial.
+    td_target_end_of_trial <- dose(
       x = prob_target,
       model = model,
       ...
     )
 
-    ## Find the dose with maximum gain value
-    Gainfun <- function(DOSE) {
-      -gain(DOSE, model_dle = model, model_eff = Effmodel, ...)
+    # Find the dose with maximum gain value.
+    gainfun <- function(dose_val) {
+      -gain(dose_val, model_dle = model, model_eff = Effmodel, ...)
     }
 
-    # if(data@placebo) {
-    # n <- length(data@doseGrid)
-    # LowestDose <- sort(data@doseGrid)[2]} else {
-    LowestDose <- min(data@doseGrid)
-    # }
+    lowest_dose <- min(data@doseGrid)
 
-    Gstar <- (optim(
-      LowestDose,
-      Gainfun,
+    gstar <- (optim(
+      lowest_dose,
+      gainfun,
       method = "L-BFGS-B",
-      lower = LowestDose,
+      lower = lowest_dose,
       upper = max(data@doseGrid)
     )$par)
-    MaxGain <- -(optim(
-      LowestDose,
-      Gainfun,
+    max_gain <- -(optim(
+      lowest_dose,
+      gainfun,
       method = "L-BFGS-B",
-      lower = LowestDose,
+      lower = lowest_dose,
       upper = max(data@doseGrid)
     )$value)
     if (data@placebo) {
-      logGstar <- log(Gstar + Effmodel@const)
+      log_gstar <- log(gstar + Effmodel@const)
     } else {
-      logGstar <- log(Gstar)
+      log_gstar <- log(gstar)
     }
 
-    ## From paper (Yeung et. al 2015)
+    # From paper (Yeung et. al 2015).
+    mean_eff_gstar <- Effmodel@theta1 + Effmodel@theta2 * log(log_gstar)
 
-    meanEffGstar <- Effmodel@theta1 + Effmodel@theta2 * log(logGstar)
+    denom <- (model@phi2) * (mean_eff_gstar) * (1 + log_gstar * model@phi2)
 
-    denom <- (model@phi2) * (meanEffGstar) * (1 + logGstar * model@phi2)
-
-    dgphi1 <- -(meanEffGstar * logGstar * model@phi2 - Effmodel@theta2) / denom
-
-    dgphi2 <- -((meanEffGstar) *
-      logGstar +
-      meanEffGstar * (logGstar)^2 * model@phi2 -
-      Effmodel@theta2 * logGstar) /
+    dgphi1 <- -(mean_eff_gstar * log_gstar * model@phi2 - Effmodel@theta2) /
       denom
 
-    dgtheta1 <- -(logGstar * model@phi2) / denom
+    dgphi2 <- -((mean_eff_gstar) *
+      log_gstar +
+      mean_eff_gstar * (log_gstar)^2 * model@phi2 -
+      Effmodel@theta2 * log_gstar) /
+      denom
 
-    dgtheta2 <- -(logGstar *
-      exp(model@phi1 + model@phi2 * logGstar) *
+    dgtheta1 <- -(log_gstar * model@phi2) / denom
+
+    dgtheta2 <- -(log_gstar *
+      exp(model@phi1 + model@phi2 * log_gstar) *
       model@phi2 *
-      log(logGstar) -
+      log(log_gstar) -
       1 -
-      exp(model@phi1 + model@phi2 * logGstar)) /
+      exp(model@phi1 + model@phi2 * log_gstar)) /
       denom
 
-    # DLEPRO <- exp(model@phi1+model@phi2*logGstar)
+    delta_g <- matrix(c(dgphi1, dgphi2, dgtheta1, dgtheta2), 4, 1)
 
-    # dgphi1 <- Effmodel@theta2*DLEPRO - logGstar*model@phi2*meanEffGstar*DLEPRO
-
-    # dgphi2 <- logGstar*DLEPRO *(Effmodel@theta2-(meanEffGstar)+model@phi2)
-
-    # dgtheta1 <- -logGstar*DLEPRO*model@phi2
-
-    # dgtheta2 <- 1+DLEPRO-logGstar*DLEPRO*model@phi2*log(logGstar)
-
-    deltaG <- matrix(c(dgphi1, dgphi2, dgtheta1, dgtheta2), 4, 1)
-
-    ## Find the variance of the log Gstar
-    ## First find the covariance matrix of all the parameters, phi1, phi2, theta1 and theta2
-    ## such that phi1 and phi2 and independent of theta1 and theta2
-    emptyMatrix <- matrix(0, 2, 2)
-    covBETA <- cbind(
-      rbind(model@Pcov, emptyMatrix),
-      rbind(emptyMatrix, Effmodel@Pcov)
+    # Find the variance of the log Gstar.
+    # First find the covariance matrix of all the parameters, phi1, phi2,
+    # theta1 and theta2 such that phi1 and phi2 are independent of theta1 and
+    # theta2.
+    empty_matrix <- matrix(0, 2, 2)
+    cov_beta <- cbind(
+      rbind(model@Pcov, empty_matrix),
+      rbind(empty_matrix, Effmodel@Pcov)
     )
-    varlogGstar <- as.vector(t(deltaG) %*% covBETA %*% deltaG)
+    var_log_gstar <- as.vector(t(delta_g) %*% cov_beta %*% delta_g)
 
-    ## Find the upper and lower limit of the 95% credibility interval of Gstar
-    CIGstar <- exp(logGstar + c(-1, 1) * 1.96 * sqrt(varlogGstar))
+    # Find the upper and lower limit of the 95% credibility interval of Gstar.
+    ci_gstar <- exp(log_gstar + c(-1, 1) * 1.96 * sqrt(var_log_gstar))
 
-    ## The ratio of the upper to the lower 95% credibility interval
-    ratioGstar <- CIGstar[2] / CIGstar[1]
+    # The ratio of the upper to the lower 95% credibility interval.
+    ratio_gstar <- ci_gstar[2] / ci_gstar[1]
 
-    ## Find the variance of the log of the TDtargetEndOfTrial(eta)
-    M1 <- matrix(
+    # Find the variance of the log of the TDtargetEndOfTrial (eta).
+    m1 <- matrix(
       c(
         -1 / (model@phi2),
         -(log(prob_target / (1 - prob_target)) - model@phi1) / (model@phi2)^2
@@ -3953,133 +3727,427 @@ setMethod(
       1,
       2
     )
-    M2 <- model@Pcov
+    m2 <- model@Pcov
 
-    varEta <- as.vector(M1 %*% M2 %*% t(M1))
+    var_eta <- as.vector(m1 %*% m2 %*% t(m1))
 
-    ## Find the upper and lower limit of the 95% credibility interval of
-    ## TDtargetEndOfTrial
-    CITDEOT <- exp(log(TDtargetEndOfTrial) + c(-1, 1) * 1.96 * sqrt(varEta))
+    # Find the upper and lower limit of the 95% credibility interval of
+    # TDtargetEndOfTrial.
+    ci_tdeot <- exp(
+      log(td_target_end_of_trial) + c(-1, 1) * 1.96 * sqrt(var_eta)
+    )
 
-    ## The ratio of the upper to the lower 95% credibility interval
-    ratioTDEOT <- CITDEOT[2] / CITDEOT[1]
+    # The ratio of the upper to the lower 95% credibility interval.
+    ratio_tdeot <- ci_tdeot[2] / ci_tdeot[1]
 
-    if (Gstar <= TDtargetEndOfTrial) {
-      chooseTD <- FALSE
-      CI <- c()
-      CI[2] <- CIGstar[2]
-      CI[1] <- CIGstar[1]
-      ratio <- ratioGstar
+    if (gstar <= td_target_end_of_trial) {
+      choose_td <- FALSE
+      ci <- c()
+      ci[2] <- ci_gstar[2]
+      ci[1] <- ci_gstar[1]
+      ratio <- ratio_gstar
     } else {
-      chooseTD <- TRUE
-      CI <- c()
-      CI[2] <- CITDEOT[2]
-      CI[1] <- CITDEOT[1]
-      ratio <- ratioTDEOT
+      choose_td <- TRUE
+      ci <- c()
+      ci[2] <- ci_tdeot[2]
+      ci[1] <- ci_tdeot[1]
+      ratio <- ratio_tdeot
     }
-    ## so can we stop?
-    doStop <- ratio <= stopping@target_ratio
-    ## generate message
-
+    # So can we stop?
+    do_stop <- ratio <= stopping@target_ratio
+    # Generate message.
     text1 <- paste(
       "Gstar estimate is",
-      round(Gstar, 4),
+      round(gstar, 4),
       "with 95% CI (",
-      round(CIGstar[1], 4),
+      round(ci_gstar[1], 4),
       ",",
-      round(CIGstar[2], 4),
+      round(ci_gstar[2], 4),
       ") and its ratio =",
-      round(ratioGstar, 4)
+      round(ratio_gstar, 4)
     )
     text2 <- paste(
       "TDtargetEndOfTrial estimate is ",
-      round(TDtargetEndOfTrial, 4),
+      round(td_target_end_of_trial, 4),
       "with 95% CI (",
-      round(CITDEOT[1], 4),
+      round(ci_tdeot[1], 4),
       ",",
-      round(CITDEOT[2], 4),
+      round(ci_tdeot[2], 4),
       ") and its ratio=",
-      round(ratioTDEOT, 4)
+      round(ratio_tdeot, 4)
     )
     text3 <- paste(
-      ifelse(chooseTD, "TDatrgetEndOfTrial estimate", "Gstar estimate"),
+      ifelse(choose_td, "TDtargetEndOfTrial estimate", "Gstar estimate"),
       "is smaller with ratio =",
       round(ratio, 4),
       "which is ",
-      ifelse(doStop, "is less than or equal to", "greater than"),
+      ifelse(do_stop, "is less than or equal to", "greater than"),
       "target_ratio =",
       stopping@target_ratio
     )
     text <- c(text1, text2, text3)
-    ## return both
-    return(structure(
-      doStop,
+    # Return both.
+    structure(
+      do_stop,
       message = text,
       report_label = stopping@report_label
-    ))
+    )
   }
 )
 
+# maxSize ----
 
-## ============================================================
+## generic ----
 
-## -----------------------------------------------------
-## Determine the safety window length of the next cohort
-## -----------------------------------------------------
-
-##' Determine the safety window length of the next cohort
-##'
-##' This function determines the safety window length of
-##' the next cohort.
-##'
-##' @param safetyWindow The rule, an object of class
-##' \code{\linkS4class{SafetyWindow}}
-##' @param size The next cohort size
-##' @param data The data input, an object of class \code{\linkS4class{DataDA}}
-##' @param \dots additional arguments
-##'
-##' @return the `windowLength` as a list of safety window parameters
-##' (`gap`, `follow`, `follow_min`)
-##'
-##' @export
-##' @keywords methods
+#' "MAX" Combination of Cohort Size Rules
+#'
+#' @description `r lifecycle::badge("stable")`
+#'
+#' This function combines cohort size rules by taking the maximum of all sizes.
+#'
+#' @param ... Objects of class [`CohortSize`].
+#'
+#' @return The combination as an object of class [`CohortSizeMax`].
+#'
+#' @seealso [minSize()]
+#' @export
+#'
 setGeneric(
-  "windowLength",
+  name = "maxSize",
+  def = function(...) {
+    # There should be no default method, therefore just forward to next method.
+    standardGeneric("maxSize")
+  },
+  valueClass = "CohortSizeMax"
+)
+
+## maxSize-CohortSize ----
+
+#' @describeIn maxSize The method combining cohort size rules by taking maximum.
+#'
+#' @aliases maxSize-CohortSize
+#' @example examples/Rules-method-maxSize.R
+#' @export
+#'
+setMethod(
+  f = "maxSize",
+  signature = "CohortSize",
+  definition = function(...) {
+    CohortSizeMax(list(...))
+  }
+)
+
+# minSize ----
+
+## generic ----
+
+#' "MIN" Combination of Cohort Size Rules
+#'
+#' @description `r lifecycle::badge("stable")`
+#'
+#' This function combines cohort size rules by taking the minimum of all sizes.
+#'
+#' @param ... Objects of class [`CohortSize`].
+#'
+#' @return The combination as an object of class [`CohortSizeMin`].
+#'
+#' @seealso [maxSize()]
+#' @export
+#'
+setGeneric(
+  name = "minSize",
+  def = function(...) {
+    # There should be no default method, therefore just forward to next method.
+    standardGeneric("minSize")
+  },
+  valueClass = "CohortSizeMin"
+)
+
+## minSize-CohortSize ----
+
+#' @describeIn minSize The method combining cohort size rules by taking minimum.
+#'
+#' @aliases minSize-CohortSize
+#' @example examples/Rules-method-minSize.R
+#' @export
+#'
+setMethod(
+  f = "minSize",
+  signature = "CohortSize",
+  definition = function(...) {
+    CohortSizeMin(list(...))
+  }
+)
+
+# size ----
+
+## CohortSizeRange ----
+
+#' @describeIn size Determines the size of the next cohort based on the range
+#'   into which the next dose falls into.
+#'
+#' @param dose the next dose.
+#' @param data the data input, an object of class [`Data`].
+#'
+#' @aliases size-CohortSizeRange
+#' @example examples/Rules-method-size-CohortSizeRange.R
+#'
+setMethod(
+  f = "size",
+  signature = signature(
+    object = "CohortSizeRange"
+  ),
+  definition = function(object, dose, data) {
+    # If the recommended next dose is NA, don't check it and return 0.
+    if (is.na(dose)) {
+      return(0L)
+    }
+    assert_class(data, "Data")
+
+    # Determine in which interval the next dose is.
+    interval <- findInterval(x = dose, vec = object@intervals)
+    object@cohort_size[interval]
+  }
+)
+
+## size-CohortSizeDLT ----
+
+#' @describeIn size Determines the size of the next cohort based on the number
+#'   of DLTs so far.
+#'
+#' @param dose the next dose.
+#' @param data the data input, an object of class [`Data`].
+#'
+#' @aliases size-CohortSizeDLT
+#' @example examples/Rules-method-size-CohortSizeDLT.R
+#'
+setMethod(
+  f = "size",
+  signature = signature(
+    object = "CohortSizeDLT"
+  ),
+  definition = function(object, dose, data) {
+    # If the recommended next dose is NA, don't check it and return 0.
+    if (is.na(dose)) {
+      return(0L)
+    }
+    assert_class(data, "Data")
+
+    # Determine how many DLTs have occurred so far.
+    dlt_happened <- sum(data@y)
+
+    # Determine in which interval this is.
+    interval <- findInterval(x = dlt_happened, vec = object@intervals)
+    object@cohort_size[interval]
+  }
+)
+
+## size-CohortSizeMax ----
+
+#' @describeIn size Determines the size of the next cohort based on maximum of
+#'   multiple cohort size rules.
+#'
+#' @param dose the next dose.
+#' @param data the data input, an object of class [`Data`].
+#'
+#' @aliases size-CohortSizeMax
+#' @example examples/Rules-method-size-CohortSizeMax.R
+#'
+setMethod(
+  f = "size",
+  signature = signature(
+    object = "CohortSizeMax"
+  ),
+  definition = function(object, dose, data) {
+    # If the recommended next dose is NA, don't check it and return 0.
+    if (is.na(dose)) {
+      return(0L)
+    }
+    assert_multi_class(data, c("Data", "DataOrdinal"))
+
+    # Evaluate the individual cohort size rules in the list.
+    individual_results <- sapply(
+      object@cohort_sizes,
+      size,
+      dose = dose,
+      data = data
+    )
+    # The overall result.
+    max(individual_results)
+  }
+)
+
+## size-CohortSizeMin ----
+
+#' @describeIn size Determines the size of the next cohort based on minimum of
+#'   multiple cohort size rules.
+#'
+#' @param dose the next dose.
+#' @param data the data input, an object of class [`Data`].
+#'
+#' @aliases size-CohortSizeMin
+#' @example examples/Rules-method-size-CohortSizeMin.R
+#'
+setMethod(
+  f = "size",
+  signature = signature(
+    object = "CohortSizeMin"
+  ),
+  definition = function(object, dose, data) {
+    # If the recommended next dose is NA, don't check it and return 0.
+    if (is.na(dose)) {
+      return(0L)
+    }
+    assert_multi_class(data, c("Data", "DataOrdinal"))
+
+    # Evaluate the individual cohort size rules in the list.
+    individual_results <- sapply(
+      object@cohort_sizes,
+      size,
+      dose = dose,
+      data = data
+    )
+    # The overall result.
+    min(individual_results)
+  }
+)
+
+## size-CohortSizeConst ----
+
+#' @describeIn size Constant cohort size.
+#'
+#' @param dose the next dose.
+#' @param ... not used.
+#'
+#' @aliases size-CohortSizeConst
+#' @example examples/Rules-method-size-CohortSizeConst.R
+#'
+setMethod(
+  f = "size",
+  signature = signature(
+    object = "CohortSizeConst"
+  ),
+  definition = function(object, dose, ...) {
+    # If the recommended next dose is NA, don't check it and return 0.
+    if (is.na(dose)) {
+      0L
+    } else {
+      object@size
+    }
+  }
+)
+
+## size-CohortSizeParts ----
+
+#' @describeIn size Determines the size of the next cohort based on the parts.
+#'
+#' @param dose the next dose.
+#' @param data the data input, an object of class [`Data`].
+#'
+#' @aliases size-CohortSizeParts
+#' @example examples/Rules-method-size-CohortSizeParts.R
+#'
+setMethod(
+  f = "size",
+  signature = signature(
+    object = "CohortSizeParts"
+  ),
+  definition = function(object, dose, data) {
+    # If the recommended next dose is NA, don't check it and return 0.
+    if (is.na(dose)) {
+      0L
+    } else {
+      assert_class(data, "DataParts")
+      object@cohort_sizes[data@nextPart]
+    }
+  }
+)
+
+## size-CohortSizeOrdinal ----
+
+#' @describeIn size Determines the size of the next cohort in a ordinal CRM trial.
+#'
+#' @param dose (`numeric`) the next dose.
+#' @param data the data input, an object of class [`DataOrdinal`].
+#'
+#' @aliases size-CohortSizeOrdinal
+#' @example examples/Rules-method-size-CohortSizeOrdinal.R
+#'
+setMethod(
+  f = "size",
+  signature = signature(
+    object = "CohortSizeOrdinal"
+  ),
+  definition = function(object, dose, data, ...) {
+    # Validate
+    assert_numeric(dose, len = 1, lower = 0)
+    assert_class(data, "DataOrdinal")
+    # Execute
+
+    size(
+      object@rule,
+      dose = dose,
+      data = h_convert_ordinal_data(data, object@grade),
+      ...
+    )
+  }
+)
+
+# windowLength ----
+
+## generic ----
+
+#' Determine the Safety Window Length of the Next Cohort
+#'
+#' @description `r lifecycle::badge("stable")`
+#'
+#' This function determines the safety window length of the next cohort.
+#'
+#' @param safetyWindow (`SafetyWindow`)\cr the rule, an object of class
+#'   [`SafetyWindow`].
+#' @param size (`integer`)\cr the next cohort size.
+#' @param data (`DataDA`)\cr the data input, an object of class [`DataDA`].
+#' @param ... additional arguments without method dispatch.
+#'
+#' @return The `windowLength` as a list of safety window parameters
+#'   (`gap`, `follow`, `follow_min`).
+#'
+#' @export
+#'
+setGeneric(
+  name = "windowLength",
   def = function(safetyWindow, size, ...) {
-    ## there should be no default method,
-    ## therefore just forward to next method!
+    # There should be no default method, therefore just forward to next method.
     standardGeneric("windowLength")
   },
   valueClass = "list"
 )
 
+## windowLength-SafetyWindowSize ----
 
-## ============================================================
-
-## --------------------------------------------------
-## The SafetyWindowSize method
-## --------------------------------------------------
-
-##' @describeIn windowLength Determine safety window length based
-##' on the cohort size
-##'
-##' @example examples/Rules-method-windowLength-SafetyWindowSize.R
+#' @describeIn windowLength Determine safety window length based on the cohort
+#'   size.
+#'
+#' @aliases windowLength-SafetyWindowSize
+#' @example examples/Rules-method-windowLength-SafetyWindowSize.R
+#' @export
+#'
 setMethod(
-  "windowLength",
+  f = "windowLength",
   signature = signature(
     safetyWindow = "SafetyWindowSize",
     size = "ANY"
   ),
-  def = function(safetyWindow, size, data, ...) {
-    ## determine in which interval the next size is
+  definition = function(safetyWindow, size, data, ...) {
+    # Determine in which interval the next size is.
     interval <-
       findInterval(
         x = size,
         vec = safetyWindow@size
       )
 
-    ## so the safety window length is
-    patientGap <- head(
+    # So the safety window length is.
+    patient_gap <- head(
       c(
         0,
         safetyWindow@gap[[interval]],
@@ -4087,36 +4155,36 @@ setMethod(
       ),
       size
     )
-    patientFollow <- safetyWindow@follow
-    patientFollowMin <- safetyWindow@follow_min
+    patient_follow <- safetyWindow@follow
+    patient_follow_min <- safetyWindow@follow_min
 
     ret <- list(
-      patientGap = patientGap,
-      patientFollow = patientFollow,
-      patientFollowMin = patientFollowMin
+      patientGap = patient_gap,
+      patientFollow = patient_follow,
+      patientFollowMin = patient_follow_min
     )
 
-    return(ret)
+    ret
   }
 )
 
-## ============================================================
+## windowLength-SafetyWindowConst ----
 
-## --------------------------------------------------
-## Constant safety window length
-## --------------------------------------------------
-
-##' @describeIn windowLength Constant safety window length
-##' @example examples/Rules-method-windowLength-SafetyWindowConst.R
+#' @describeIn windowLength Constant safety window length.
+#'
+#' @aliases windowLength-SafetyWindowConst
+#' @example examples/Rules-method-windowLength-SafetyWindowConst.R
+#' @export
+#'
 setMethod(
-  "windowLength",
+  f = "windowLength",
   signature = signature(
     safetyWindow = "SafetyWindowConst",
     size = "ANY"
   ),
-  def = function(safetyWindow, size, ...) {
-    ## first element should be 0.
-    patientGap <- head(
+  definition = function(safetyWindow, size, ...) {
+    # First element should be 0.
+    patient_gap <- head(
       c(
         0,
         safetyWindow@gap,
@@ -4124,20 +4192,18 @@ setMethod(
       ),
       size
     )
-    patientFollow <- safetyWindow@follow
-    patientFollowMin <- safetyWindow@follow_min
+    patient_follow <- safetyWindow@follow
+    patient_follow_min <- safetyWindow@follow_min
 
     ret <- list(
-      patientGap = patientGap,
-      patientFollow = patientFollow,
-      patientFollowMin = patientFollowMin
+      patientGap = patient_gap,
+      patientFollow = patient_follow,
+      patientFollowMin = patient_follow_min
     )
 
-    return(ret)
+    ret
   }
 )
-
-# nolint end
 
 # tidy ----
 

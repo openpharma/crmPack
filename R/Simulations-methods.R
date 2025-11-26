@@ -360,7 +360,9 @@ setMethod(
     # Validate arguments.
     assert_function(truth)
     assert_numeric(target, min.len = 1, max.len = 2, lower = 0, upper = 1)
-    assert_true(target[1] < target[2])
+    if (length(target) == 2) {
+      assert_true(target[1] < target[2])
+    }
 
     # Extract dose grid.
     dose_grid <- object@data[[1]]@doseGrid

@@ -3,8 +3,10 @@
 \name{windowLength}
 \alias{windowLength}
 \alias{windowLength,SafetyWindowSize-method}
+\alias{windowLength-SafetyWindowSize}
 \alias{windowLength,SafetyWindowConst-method}
-\title{Determine the safety window length of the next cohort}
+\alias{windowLength-SafetyWindowConst}
+\title{Determine the Safety Window Length of the Next Cohort}
 \usage{
 windowLength(safetyWindow, size, ...)
 
@@ -13,29 +15,30 @@ windowLength(safetyWindow, size, ...)
 \S4method{windowLength}{SafetyWindowConst}(safetyWindow, size, ...)
 }
 \arguments{
-\item{safetyWindow}{The rule, an object of class
-\code{\linkS4class{SafetyWindow}}}
+\item{safetyWindow}{(\code{SafetyWindow})\cr the rule, an object of class
+\code{\link{SafetyWindow}}.}
 
-\item{size}{The next cohort size}
+\item{size}{(\code{integer})\cr the next cohort size.}
 
-\item{\dots}{additional arguments}
+\item{...}{additional arguments without method dispatch.}
 
-\item{data}{The data input, an object of class \code{\linkS4class{DataDA}}}
+\item{data}{(\code{DataDA})\cr the data input, an object of class \code{\link{DataDA}}.}
 }
 \value{
-the \code{windowLength} as a list of safety window parameters
-(\code{gap}, \code{follow}, \code{follow_min})
+The \code{windowLength} as a list of safety window parameters
+(\code{gap}, \code{follow}, \code{follow_min}).
 }
 \description{
-This function determines the safety window length of
-the next cohort.
+\ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#stable}{\figure{lifecycle-stable.svg}{options: alt='[Stable]'}}}{\strong{[Stable]}}
+
+This function determines the safety window length of the next cohort.
 }
 \section{Functions}{
 \itemize{
-\item \code{windowLength(SafetyWindowSize)}: Determine safety window length based
-on the cohort size
+\item \code{windowLength(SafetyWindowSize)}: Determine safety window length based on the cohort
+size.
 
-\item \code{windowLength(SafetyWindowConst)}: Constant safety window length
+\item \code{windowLength(SafetyWindowConst)}: Constant safety window length.
 
 }}
 \examples{
@@ -195,4 +198,3 @@ windowLength(myWindowLength, size = sizeRecommendation)
 
 # nolint end
 }
-\keyword{methods}
