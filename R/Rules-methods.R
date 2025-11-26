@@ -2594,11 +2594,17 @@ setMethod(
 
 # stopTrial-StoppingCohortsNearDose ----
 
-##' @describeIn stopTrial Stop based on number of cohorts near to next best dose
-##'
-##' @example examples/Rules-method-stopTrial-StoppingCohortsNearDose.R
+#' @describeIn stopTrial Stop based on number of cohorts near to next best
+#'   dose.
+#'
+#' @description `r lifecycle::badge("stable")`
+#'
+#' @aliases stopTrial-StoppingCohortsNearDose
+#' @example examples/Rules-method-stopTrial-StoppingCohortsNearDose.R
+#' @export
+#'
 setMethod(
-  "stopTrial",
+  f = "stopTrial",
   signature = signature(
     stopping = "StoppingCohortsNearDose",
     dose = "numeric",
@@ -2606,55 +2612,57 @@ setMethod(
     model = "ANY",
     data = "Data"
   ),
-  def = function(stopping, dose, samples, model, data, ...) {
-    ## determine the range where the cohorts must lie in
+  definition = function(stopping, dose, samples, model, data, ...) {
+    # Determine the range where the cohorts must lie in.
     lower <- (100 - stopping@percentage) / 100 * dose
     upper <- (100 + stopping@percentage) / 100 * dose
 
-    ## which patients lie there?
-    indexPatients <- which((data@x >= lower) & (data@x <= upper))
+    # Which patients lie there?
+    index_patients <- which((data@x >= lower) & (data@x <= upper))
 
-    ## how many cohorts?
-    nCohorts <- length(unique(data@cohort[indexPatients]))
+    # How many cohorts?
+    n_cohorts <- length(unique(data@cohort[index_patients]))
 
-    ## so can we stop?
-    doStop <- nCohorts >= stopping@nCohorts
+    # So can we stop?
+    do_stop <- n_cohorts >= stopping@nCohorts
 
-    ## generate message
+    # Generate message.
     text <- paste(
-      nCohorts,
+      n_cohorts,
       " cohorts lie within ",
       stopping@percentage,
       "% of the next best dose ",
       dose,
       ". This ",
-      ifelse(doStop, "reached", "is below"),
+      ifelse(do_stop, "reached", "is below"),
       " the required ",
       stopping@nCohorts,
       " cohorts",
       sep = ""
     )
 
-    ## return both
-    return(structure(
-      doStop,
+    # Return both.
+    structure(
+      do_stop,
       message = text,
       report_label = stopping@report_label
-    ))
+    )
   }
 )
 
+# stopTrial-StoppingPatientsNearDose ----
 
-## -------------------------------------------------------------
-## Stopping based on number of patients near to next best dose
-## -------------------------------------------------------------
-
-##' @describeIn stopTrial Stop based on number of patients near to next best
-##' dose
-##'
-##' @example examples/Rules-method-stopTrial-StoppingPatientsNearDose.R
+#' @describeIn stopTrial Stop based on number of patients near to next best
+#'   dose.
+#'
+#' @description `r lifecycle::badge("stable")`
+#'
+#' @aliases stopTrial-StoppingPatientsNearDose
+#' @example examples/Rules-method-stopTrial-StoppingPatientsNearDose.R
+#' @export
+#'
 setMethod(
-  "stopTrial",
+  f = "stopTrial",
   signature = signature(
     stopping = "StoppingPatientsNearDose",
     dose = "numeric",
@@ -2662,54 +2670,57 @@ setMethod(
     model = "ANY",
     data = "Data"
   ),
-  def = function(stopping, dose, samples, model, data, ...) {
-    ## determine the range where the cohorts must lie in
+  definition = function(stopping, dose, samples, model, data, ...) {
+    # Determine the range where the cohorts must lie in.
     lower <- (100 - stopping@percentage) / 100 * dose
     upper <- (100 + stopping@percentage) / 100 * dose
 
-    ## how many patients lie there?
-    nPatients <- ifelse(
+    # How many patients lie there?
+    n_patients <- ifelse(
       is.na(dose),
       0,
       sum((data@x >= lower) & (data@x <= upper))
     )
 
-    ## so can we stop?
-    doStop <- nPatients >= stopping@nPatients
+    # So can we stop?
+    do_stop <- n_patients >= stopping@nPatients
 
-    ## generate message
+    # Generate message.
     text <- paste(
-      nPatients,
+      n_patients,
       " patients lie within ",
       stopping@percentage,
       "% of the next best dose ",
       dose,
       ". This ",
-      ifelse(doStop, "reached", "is below"),
+      ifelse(do_stop, "reached", "is below"),
       " the required ",
       stopping@nPatients,
       " patients",
       sep = ""
     )
 
-    ## return both
+    # Return both.
     structure(
-      doStop,
+      do_stop,
       message = text,
       report_label = stopping@report_label
     )
   }
 )
 
-## --------------------------------------------------
-## Stopping based on minimum number of cohorts
-## --------------------------------------------------
+# stopTrial-StoppingMinCohorts ----
 
-##' @describeIn stopTrial Stop based on minimum number of cohorts
-##'
-##' @example examples/Rules-method-stopTrial-StoppingMinCohorts.R
+#' @describeIn stopTrial Stop based on minimum number of cohorts.
+#'
+#' @description `r lifecycle::badge("stable")`
+#'
+#' @aliases stopTrial-StoppingMinCohorts
+#' @example examples/Rules-method-stopTrial-StoppingMinCohorts.R
+#' @export
+#'
 setMethod(
-  "stopTrial",
+  f = "stopTrial",
   signature = signature(
     stopping = "StoppingMinCohorts",
     dose = "ANY",
@@ -2717,42 +2728,45 @@ setMethod(
     model = "ANY",
     data = "Data"
   ),
-  def = function(stopping, dose, samples, model, data, ...) {
-    ## determine number of cohorts
-    nCohorts <- length(unique(data@cohort))
+  definition = function(stopping, dose, samples, model, data, ...) {
+    # Determine number of cohorts.
+    n_cohorts <- length(unique(data@cohort))
 
-    ## so can we stop?
-    doStop <- nCohorts >= stopping@nCohorts
+    # So can we stop?
+    do_stop <- n_cohorts >= stopping@nCohorts
 
-    ## generate message
+    # Generate message.
     text <-
       paste(
         "Number of cohorts is",
-        nCohorts,
+        n_cohorts,
         "and thus",
-        ifelse(doStop, "reached", "below"),
+        ifelse(do_stop, "reached", "below"),
         "the prespecified minimum number",
         stopping@nCohorts
       )
 
-    ## return both
-    return(structure(
-      doStop,
+    # Return both.
+    structure(
+      do_stop,
       message = text,
       report_label = stopping@report_label
-    ))
+    )
   }
 )
 
-## --------------------------------------------------
-## Stopping based on minimum number of patients
-## --------------------------------------------------
+# stopTrial-StoppingMinPatients ----
 
-##' @describeIn stopTrial Stop based on minimum number of patients
-##'
-##' @example examples/Rules-method-stopTrial-StoppingMinPatients.R
+#' @describeIn stopTrial Stop based on minimum number of patients.
+#'
+#' @description `r lifecycle::badge("stable")`
+#'
+#' @aliases stopTrial-StoppingMinPatients
+#' @example examples/Rules-method-stopTrial-StoppingMinPatients.R
+#' @export
+#'
 setMethod(
-  "stopTrial",
+  f = "stopTrial",
   signature = signature(
     stopping = "StoppingMinPatients",
     dose = "ANY",
@@ -2760,31 +2774,29 @@ setMethod(
     model = "ANY",
     data = "Data"
   ),
-  def = function(stopping, dose, samples, model, data, ...) {
-    ## so can we stop?
-    doStop <- data@nObs >= stopping@nPatients
+  definition = function(stopping, dose, samples, model, data, ...) {
+    # So can we stop?
+    do_stop <- data@nObs >= stopping@nPatients
 
-    ## generate message
+    # Generate message.
     text <-
       paste(
         "Number of patients is",
         data@nObs,
         "and thus",
-        ifelse(doStop, "reached", "below"),
+        ifelse(do_stop, "reached", "below"),
         "the prespecified minimum number",
         stopping@nPatients
       )
 
-    ## return both
-    return(structure(
-      doStop,
+    # Return both.
+    structure(
+      do_stop,
       message = text,
       report_label = stopping@report_label
-    ))
+    )
   }
 )
-
-# nolint end
 
 ## StoppingTargetProb ----
 
@@ -2834,17 +2846,18 @@ setMethod(
   }
 )
 
-# nolint start
+# stopTrial-StoppingMTDdistribution ----
 
-## --------------------------------------------------
-## Stopping based on MTD distribution
-## --------------------------------------------------
-
-##' @describeIn stopTrial Stop based on MTD distribution
-##'
-##' @example examples/Rules-method-stopTrial-StoppingMTDdistribution.R
+#' @describeIn stopTrial Stop based on MTD distribution.
+#'
+#' @description `r lifecycle::badge("stable")`
+#'
+#' @aliases stopTrial-StoppingMTDdistribution
+#' @example examples/Rules-method-stopTrial-StoppingMTDdistribution.R
+#' @export
+#'
 setMethod(
-  "stopTrial",
+  f = "stopTrial",
   signature = signature(
     stopping = "StoppingMTDdistribution",
     dose = "numeric",
@@ -2852,33 +2865,31 @@ setMethod(
     model = "GeneralModel",
     data = "ANY"
   ),
-  def = function(stopping, dose, samples, model, data, ...) {
-    ## First, generate the MTD samples.
-
-    ## add prior data and samples to the
-    ## function environment so that they
-    ## can be used.
-    mtdSamples <- dose(
+  definition = function(stopping, dose, samples, model, data, ...) {
+    # First, generate the MTD samples.
+    # Add prior data and samples to the function environment so that they can
+    # be used.
+    mtd_samples <- dose(
       x = stopping@target,
       model,
       samples,
       ...
     )
 
-    ## what is the absolute threshold?
-    absThresh <- stopping@thresh * dose
+    # What is the absolute threshold?
+    abs_thresh <- stopping@thresh * dose
 
-    ## what is the probability to be above this dose?
+    # What is the probability to be above this dose?
     prob <- ifelse(
-      is.na(absThresh),
+      is.na(abs_thresh),
       0,
-      mean(mtdSamples > absThresh)
+      mean(mtd_samples > abs_thresh)
     )
 
-    ## so can we stop?
-    doStop <- prob >= stopping@prob
+    # So can we stop?
+    do_stop <- prob >= stopping@prob
 
-    ## generate message
+    # Generate message.
     text <-
       paste(
         "Probability of MTD above",
@@ -2888,22 +2899,20 @@ setMethod(
         "is",
         round(prob * 100),
         "% and thus",
-        ifelse(doStop, "greater than or equal to", "strictly less than"),
+        ifelse(do_stop, "greater than or equal to", "strictly less than"),
         "the required",
         round(stopping@prob * 100),
         "%"
       )
 
-    ## return both
-    return(structure(
-      doStop,
+    # Return both.
+    structure(
+      do_stop,
       message = text,
       report_label = stopping@report_label
-    ))
+    )
   }
 )
-
-# nolint end
 
 ## StoppingMTDCV ----
 
@@ -3186,8 +3195,6 @@ setMethod(
     result
   }
 )
-
-# nolint start
 
 ## --------------------------------------------------
 ## Stopping when the highest dose is reached
