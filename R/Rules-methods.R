@@ -2158,78 +2158,100 @@ setMethod(
   }
 )
 
-# nolint start
 
-## ============================================================
+# and-Stopping-Stopping ----
 
-## --------------------------------------------------
-## "AND" combination of stopping rules
-## --------------------------------------------------
-
-##' The method combining two atomic stopping rules
-##'
-##' @param e1 First \code{\linkS4class{Stopping}} object
-##' @param e2 Second \code{\linkS4class{Stopping}} object
-##' @return The \code{\linkS4class{StoppingAll}} object
-##'
-##' @example examples/Rules-method-and-stopping-stopping.R
-##' @keywords methods
+#' Combine Two Stopping Rules with AND
+#'
+#' @description `r lifecycle::badge("stable")`
+#'
+#' The method combining two atomic stopping rules.
+#'
+#' @param e1 (`Stopping`)\cr first stopping rule object.
+#' @param e2 (`Stopping`)\cr second stopping rule object.
+#'
+#' @return The [`StoppingAll`] object.
+#'
+#' @aliases and-Stopping-Stopping
+#' @example examples/Rules-method-and-stopping-stopping.R
+#' @export
+#'
 setMethod(
-  "&",
-  signature(
+  f = "&",
+  signature = signature(
     e1 = "Stopping",
     e2 = "Stopping"
   ),
-  def = function(e1, e2) {
+  definition = function(e1, e2) {
     StoppingAll(list(e1, e2))
   }
 )
 
-##' The method combining a stopping list and an atomic
-##'
-##' @param e1 \code{\linkS4class{StoppingAll}} object
-##' @param e2 \code{\linkS4class{Stopping}} object
-##' @return The modified \code{\linkS4class{StoppingAll}} object
-##'
-##' @example examples/Rules-method-and-stoppingAll-stopping.R
-##' @keywords methods
+# and-StoppingAll-Stopping ----
+
+#' Combine a Stopping List and an Atomic Stopping Rule with AND
+#'
+#' @description `r lifecycle::badge("stable")`
+#'
+#' The method combining a stopping list and an atomic stopping rule.
+#'
+#' @param e1 (`StoppingAll`)\cr stopping list object.
+#' @param e2 (`Stopping`)\cr stopping rule object.
+#'
+#' @return The modified [`StoppingAll`] object.
+#'
+#' @aliases and-StoppingAll-Stopping
+#' @example examples/Rules-method-and-stoppingAll-stopping.R
+#' @export
+#'
 setMethod(
-  "&",
-  signature(
+  f = "&",
+  signature = signature(
     e1 = "StoppingAll",
     e2 = "Stopping"
   ),
-  def = function(e1, e2) {
+  definition = function(e1, e2) {
     e1@stop_list <- c(
       e1@stop_list,
       e2
     )
-    return(e1)
+    e1
   }
 )
 
-##' The method combining an atomic and a stopping list
-##'
-##' @param e1 \code{\linkS4class{Stopping}} object
-##' @param e2 \code{\linkS4class{StoppingAll}} object
-##' @return The modified \code{\linkS4class{StoppingAll}} object
-##'
-##' @example examples/Rules-method-and-stopping-stoppingAll.R
-##' @keywords methods
+# and-Stopping-StoppingAll ----
+
+#' Combine an Atomic Stopping Rule and a Stopping List with AND
+#'
+#' @description `r lifecycle::badge("stable")`
+#'
+#' The method combining an atomic stopping rule and a stopping list.
+#'
+#' @param e1 (`Stopping`)\cr stopping rule object.
+#' @param e2 (`StoppingAll`)\cr stopping list object.
+#'
+#' @return The modified [`StoppingAll`] object.
+#'
+#' @aliases and-Stopping-StoppingAll
+#' @example examples/Rules-method-and-stopping-stoppingAll.R
+#' @export
+#'
 setMethod(
-  "&",
-  signature(
+  f = "&",
+  signature = signature(
     e1 = "Stopping",
     e2 = "StoppingAll"
   ),
-  def = function(e1, e2) {
+  definition = function(e1, e2) {
     e2@stop_list <- c(
       e1,
       e2@stop_list
     )
-    return(e2)
+    e2
   }
 )
+
+# nolint start
 
 ## --------------------------------------------------
 ## "OR" combination of stopping rules
