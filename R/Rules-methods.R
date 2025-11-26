@@ -2158,7 +2158,6 @@ setMethod(
   }
 )
 
-
 # and-Stopping-Stopping ----
 
 #' Combine Two Stopping Rules with AND
@@ -2251,84 +2250,100 @@ setMethod(
   }
 )
 
-# nolint start
+# or-Stopping-Stopping ----
 
-## --------------------------------------------------
-## "OR" combination of stopping rules
-## --------------------------------------------------
-
-##' The method combining two atomic stopping rules
-##'
-##' @param e1 First \code{\linkS4class{Stopping}} object
-##' @param e2 Second \code{\linkS4class{Stopping}} object
-##' @return The \code{\linkS4class{StoppingAny}} object
-##'
-##' @aliases |,Stopping,Stopping-method
-##' @name or-Stopping-Stopping
-##' @example examples/Rules-method-or-stopping-stopping.R
-##' @keywords methods
+#' Combine Two Stopping Rules with OR
+#'
+#' @description `r lifecycle::badge("stable")`
+#'
+#' The method combining two atomic stopping rules.
+#'
+#' @param e1 (`Stopping`)\cr first stopping rule object.
+#' @param e2 (`Stopping`)\cr second stopping rule object.
+#'
+#' @return The [`StoppingAny`] object.
+#'
+#' @aliases |,Stopping,Stopping-method
+#' @name or-Stopping-Stopping
+#' @example examples/Rules-method-or-stopping-stopping.R
+#' @export
+#'
 setMethod(
-  "|",
-  signature(
+  f = "|",
+  signature = signature(
     e1 = "Stopping",
     e2 = "Stopping"
   ),
-  def = function(e1, e2) {
+  definition = function(e1, e2) {
     StoppingAny(list(e1, e2))
   }
 )
 
-##' The method combining a stopping list and an atomic
-##'
-##' @param e1 \code{\linkS4class{StoppingAny}} object
-##' @param e2 \code{\linkS4class{Stopping}} object
-##' @return The modified \code{\linkS4class{StoppingAny}} object
-##'
-##' @aliases |,StoppingAny,Stopping-method
-##' @name or-Stopping-StoppingAny
-##' @example examples/Rules-method-or-stoppingAny-stopping.R
-##' @keywords methods
+# or-StoppingAny-Stopping ----
+
+#' Combine a Stopping List and an Atomic Stopping Rule with OR
+#'
+#' @description `r lifecycle::badge("stable")`
+#'
+#' The method combining a stopping list and an atomic stopping rule.
+#'
+#' @param e1 (`StoppingAny`)\cr stopping list object.
+#' @param e2 (`Stopping`)\cr stopping rule object.
+#'
+#' @return The modified [`StoppingAny`] object.
+#'
+#' @aliases |,StoppingAny,Stopping-method
+#' @name or-StoppingAny-Stopping
+#' @example examples/Rules-method-or-stoppingAny-stopping.R
+#' @export
+#'
 setMethod(
-  "|",
-  signature(
+  f = "|",
+  signature = signature(
     e1 = "StoppingAny",
     e2 = "Stopping"
   ),
-  def = function(e1, e2) {
+  definition = function(e1, e2) {
     e1@stop_list <- c(
       e1@stop_list,
       e2
     )
-    return(e1)
+    e1
   }
 )
 
-##' The method combining an atomic and a stopping list
-##'
-##' @param e1 \code{\linkS4class{Stopping}} object
-##' @param e2 \code{\linkS4class{StoppingAny}} object
-##' @return The modified \code{\linkS4class{StoppingAny}} object
-##'
-##' @aliases |,Stopping,StoppingAny-method
-##' @name or-StoppingAny-Stopping
-##' @example examples/Rules-method-or-stopping-stoppingAny.R
-##' @keywords methods
+# or-Stopping-StoppingAny ----
+
+#' Combine an Atomic Stopping Rule and a Stopping List with OR
+#'
+#' @description `r lifecycle::badge("stable")`
+#'
+#' The method combining an atomic stopping rule and a stopping list.
+#'
+#' @param e1 (`Stopping`)\cr stopping rule object.
+#' @param e2 (`StoppingAny`)\cr stopping list object.
+#'
+#' @return The modified [`StoppingAny`] object.
+#'
+#' @aliases |,Stopping,StoppingAny-method
+#' @name or-Stopping-StoppingAny
+#' @example examples/Rules-method-or-stopping-stoppingAny.R
+#' @export
+#'
 setMethod(
-  "|",
-  signature(
+  f = "|",
+  signature = signature(
     e1 = "Stopping",
     e2 = "StoppingAny"
   ),
-  def = function(e1, e2) {
+  definition = function(e1, e2) {
     e2@stop_list <- c(
       e1,
       e2@stop_list
     )
-    return(e2)
+    e2
   }
 )
-
-# nolint end
 
 # Stopping ----
 
@@ -2401,8 +2416,6 @@ setMethod(
     structure(do_stop, message = msg, report_label = stopping@report_label)
   }
 )
-
-# nolint start
 
 ## --------------------------------------------------
 ## Stopping based on multiple stopping rules
