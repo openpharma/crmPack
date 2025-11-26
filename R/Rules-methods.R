@@ -3626,7 +3626,7 @@ setMethod(
 #' @export
 #'
 setMethod(
-  "stopTrial",
+  f = "stopTrial",
   signature = signature(
     stopping = "StoppingMaxGainCIRatio",
     dose = "ANY",
@@ -3634,95 +3634,92 @@ setMethod(
     model = "ModelTox",
     data = "DataDual"
   ),
-  def = function(stopping, dose, model, data, Effmodel, ...) {
+  definition = function(stopping, dose, model, data, Effmodel, ...) {
     prob_target <- stopping@prob_target
 
-    ## checks
+    # Checks.
     assert_probability(prob_target)
     stopifnot(is(Effmodel, "ModelEff"))
 
-    ## find the TDtarget End of Trial
-    TDtargetEndOfTrial <- dose(
+    # Find the TDtarget End of Trial.
+    td_target_end_of_trial <- dose(
       x = prob_target,
       model = model,
       ...
     )
 
-    ## Find the dose with maximum gain value
-    Gainfun <- function(DOSE) {
-      -gain(DOSE, model_dle = model, model_eff = Effmodel, ...)
+    # Find the dose with maximum gain value.
+    gainfun <- function(dose_val) {
+      -gain(dose_val, model_dle = model, model_eff = Effmodel, ...)
     }
 
-    # if(data@placebo) {
-    # n <- length(data@doseGrid)
-    # LowestDose <- sort(data@doseGrid)[2]} else {
-    LowestDose <- min(data@doseGrid)
-    # }
+    lowest_dose <- min(data@doseGrid)
 
-    Gstar <- (optim(
-      LowestDose,
-      Gainfun,
+    gstar <- (optim(
+      lowest_dose,
+      gainfun,
       method = "L-BFGS-B",
-      lower = LowestDose,
+      lower = lowest_dose,
       upper = max(data@doseGrid)
     )$par)
-    MaxGain <- -(optim(
-      LowestDose,
-      Gainfun,
+    max_gain <- -(optim(
+      lowest_dose,
+      gainfun,
       method = "L-BFGS-B",
-      lower = LowestDose,
+      lower = lowest_dose,
       upper = max(data@doseGrid)
     )$value)
     if (data@placebo) {
-      logGstar <- log(Gstar + Effmodel@const)
+      log_gstar <- log(gstar + Effmodel@const)
     } else {
-      logGstar <- log(Gstar)
+      log_gstar <- log(gstar)
     }
 
-    ## From paper (Yeung et. al 2015)
+    # From paper (Yeung et. al 2015).
+    mean_eff_gstar <- Effmodel@theta1 + Effmodel@theta2 * log(log_gstar)
 
-    meanEffGstar <- Effmodel@theta1 + Effmodel@theta2 * log(logGstar)
+    denom <- (model@phi2) * (mean_eff_gstar) * (1 + log_gstar * model@phi2)
 
-    denom <- (model@phi2) * (meanEffGstar) * (1 + logGstar * model@phi2)
-
-    dgphi1 <- -(meanEffGstar * logGstar * model@phi2 - Effmodel@theta2) / denom
-
-    dgphi2 <- -((meanEffGstar) *
-      logGstar +
-      meanEffGstar * (logGstar)^2 * model@phi2 -
-      Effmodel@theta2 * logGstar) /
+    dgphi1 <- -(mean_eff_gstar * log_gstar * model@phi2 - Effmodel@theta2) /
       denom
 
-    dgtheta1 <- -(logGstar * model@phi2) / denom
+    dgphi2 <- -((mean_eff_gstar) *
+      log_gstar +
+      mean_eff_gstar * (log_gstar)^2 * model@phi2 -
+      Effmodel@theta2 * log_gstar) /
+      denom
 
-    dgtheta2 <- -(logGstar *
-      exp(model@phi1 + model@phi2 * logGstar) *
+    dgtheta1 <- -(log_gstar * model@phi2) / denom
+
+    dgtheta2 <- -(log_gstar *
+      exp(model@phi1 + model@phi2 * log_gstar) *
       model@phi2 *
-      log(logGstar) -
+      log(log_gstar) -
       1 -
-      exp(model@phi1 + model@phi2 * logGstar)) /
+      exp(model@phi1 + model@phi2 * log_gstar)) /
       denom
 
-    deltaG <- matrix(c(dgphi1, dgphi2, dgtheta1, dgtheta2), 4, 1)
+    delta_g <- matrix(c(dgphi1, dgphi2, dgtheta1, dgtheta2), 4, 1)
 
-    ## Find the variance of the log Gstar
-    ## First find the covariance matrix of all the parameters, phi1, phi2, theta1 and theta2
-    ## such that phi1 and phi2 and independent of theta1 and theta2
-    emptyMatrix <- matrix(0, 2, 2)
-    covBETA <- cbind(
-      rbind(model@Pcov, emptyMatrix),
-      rbind(emptyMatrix, Effmodel@Pcov)
+    # Find the variance of the log Gstar.
+    # First find the covariance matrix of all the parameters, phi1, phi2,
+    # theta1 and theta2 such that phi1 and phi2 are independent of theta1 and
+    # theta2.
+    empty_matrix <- matrix(0, 2, 2)
+    cov_beta <- cbind(
+      rbind(model@Pcov, empty_matrix),
+      rbind(empty_matrix, Effmodel@Pcov)
     )
-    varlogGstar <- as.vector(t(deltaG) %*% covBETA %*% deltaG)
+    var_log_gstar <- as.vector(t(delta_g) %*% cov_beta %*% delta_g)
 
-    ## Find the upper and lower limit of the 95% credibility interval of Gstar
-    CIGstar <- exp(logGstar + c(-1, 1) * 1.96 * sqrt(varlogGstar))
+    # Find the upper and lower limit of the 95% credibility interval of Gstar.
+    ci_gstar <- exp(log_gstar + c(-1, 1) * 1.96 * sqrt(var_log_gstar))
 
-    ## The ratio of the upper to the lower 95% credibility interval
-    ratioGstar <- CIGstar[2] / CIGstar[1]
+    # The ratio of the upper to the lower 95% credibility interval.
+    ratio_gstar <- ci_gstar[2] / ci_gstar[1]
 
-    ## Find the variance of the log of the TDtargetEndOfTrial(eta)
-    M1 <- matrix(
+    # Find the variance of the log of the TDtargetEndOfTrial (eta).
+    m1 <- matrix(
       c(
         -1 / (model@phi2),
         -(log(prob_target / (1 - prob_target)) - model@phi1) / (model@phi2)^2
@@ -3730,70 +3727,71 @@ setMethod(
       1,
       2
     )
-    M2 <- model@Pcov
+    m2 <- model@Pcov
 
-    varEta <- as.vector(M1 %*% M2 %*% t(M1))
+    var_eta <- as.vector(m1 %*% m2 %*% t(m1))
 
-    ## Find the upper and lower limit of the 95% credibility interval of
-    ## TDtargetEndOfTrial
-    CITDEOT <- exp(log(TDtargetEndOfTrial) + c(-1, 1) * 1.96 * sqrt(varEta))
+    # Find the upper and lower limit of the 95% credibility interval of
+    # TDtargetEndOfTrial.
+    ci_tdeot <- exp(
+      log(td_target_end_of_trial) + c(-1, 1) * 1.96 * sqrt(var_eta)
+    )
 
-    ## The ratio of the upper to the lower 95% credibility interval
-    ratioTDEOT <- CITDEOT[2] / CITDEOT[1]
+    # The ratio of the upper to the lower 95% credibility interval.
+    ratio_tdeot <- ci_tdeot[2] / ci_tdeot[1]
 
-    if (Gstar <= TDtargetEndOfTrial) {
-      chooseTD <- FALSE
-      CI <- c()
-      CI[2] <- CIGstar[2]
-      CI[1] <- CIGstar[1]
-      ratio <- ratioGstar
+    if (gstar <= td_target_end_of_trial) {
+      choose_td <- FALSE
+      ci <- c()
+      ci[2] <- ci_gstar[2]
+      ci[1] <- ci_gstar[1]
+      ratio <- ratio_gstar
     } else {
-      chooseTD <- TRUE
-      CI <- c()
-      CI[2] <- CITDEOT[2]
-      CI[1] <- CITDEOT[1]
-      ratio <- ratioTDEOT
+      choose_td <- TRUE
+      ci <- c()
+      ci[2] <- ci_tdeot[2]
+      ci[1] <- ci_tdeot[1]
+      ratio <- ratio_tdeot
     }
-    ## so can we stop?
-    doStop <- ratio <= stopping@target_ratio
-    ## generate message
-
+    # So can we stop?
+    do_stop <- ratio <= stopping@target_ratio
+    # Generate message.
     text1 <- paste(
       "Gstar estimate is",
-      round(Gstar, 4),
+      round(gstar, 4),
       "with 95% CI (",
-      round(CIGstar[1], 4),
+      round(ci_gstar[1], 4),
       ",",
-      round(CIGstar[2], 4),
+      round(ci_gstar[2], 4),
       ") and its ratio =",
-      round(ratioGstar, 4)
+      round(ratio_gstar, 4)
     )
     text2 <- paste(
       "TDtargetEndOfTrial estimate is ",
-      round(TDtargetEndOfTrial, 4),
+      round(td_target_end_of_trial, 4),
       "with 95% CI (",
-      round(CITDEOT[1], 4),
+      round(ci_tdeot[1], 4),
       ",",
-      round(CITDEOT[2], 4),
+      round(ci_tdeot[2], 4),
       ") and its ratio=",
-      round(ratioTDEOT, 4)
+      round(ratio_tdeot, 4)
     )
     text3 <- paste(
-      ifelse(chooseTD, "TDatrgetEndOfTrial estimate", "Gstar estimate"),
+      ifelse(choose_td, "TDatrgetEndOfTrial estimate", "Gstar estimate"),
       "is smaller with ratio =",
       round(ratio, 4),
       "which is ",
-      ifelse(doStop, "is less than or equal to", "greater than"),
+      ifelse(do_stop, "is less than or equal to", "greater than"),
       "target_ratio =",
       stopping@target_ratio
     )
     text <- c(text1, text2, text3)
-    ## return both
-    return(structure(
-      doStop,
+    # Return both.
+    structure(
+      do_stop,
       message = text,
       report_label = stopping@report_label
-    ))
+    )
   }
 )
 
