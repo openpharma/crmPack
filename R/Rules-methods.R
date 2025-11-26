@@ -3332,72 +3332,89 @@ setMethod(
   }
 )
 
+# maxSize ----
 
-## ============================================================
+## generic ----
 
-## --------------------------------------------------
-## "MAX" combination of cohort size rules
-## --------------------------------------------------
-
-##' "MAX" combination of cohort size rules
-##'
-##' This function combines cohort size rules by taking
-##' the maximum of all sizes.
-##'
-##' @param \dots Objects of class \code{\linkS4class{CohortSize}}
-##' @return the combination as an object of class
-##' \code{\linkS4class{CohortSizeMax}}
-##'
-##' @seealso \code{\link{minSize}}
-##' @export
-##' @keywords methods
+#' "MAX" Combination of Cohort Size Rules
+#'
+#' @description `r lifecycle::badge("stable")`
+#'
+#' This function combines cohort size rules by taking the maximum of all sizes.
+#'
+#' @param ... Objects of class [`CohortSize`].
+#'
+#' @return The combination as an object of class [`CohortSizeMax`].
+#'
+#' @seealso [minSize()]
+#' @export
+#'
 setGeneric(
-  "maxSize",
+  name = "maxSize",
   def = function(...) {
-    ## there should be no default method,
-    ## therefore just forward to next method!
+    # There should be no default method, therefore just forward to next method.
     standardGeneric("maxSize")
   },
   valueClass = "CohortSizeMax"
 )
 
-##' @describeIn maxSize The method combining cohort size rules by taking maximum
-##' @example examples/Rules-method-maxSize.R
-setMethod("maxSize", "CohortSize", def = function(...) {
-  CohortSizeMax(list(...))
-})
+## maxSize-CohortSize ----
 
-## --------------------------------------------------
-## "MIN" combination of cohort size rules
-## --------------------------------------------------
+#' @describeIn maxSize The method combining cohort size rules by taking maximum.
+#'
+#' @aliases maxSize-CohortSize
+#' @example examples/Rules-method-maxSize.R
+#' @export
+#'
+setMethod(
+  f = "maxSize",
+  signature = "CohortSize",
+  definition = function(...) {
+    CohortSizeMax(list(...))
+  }
+)
 
-##' "MIN" combination of cohort size rules
-##'
-##' This function combines cohort size rules by taking
-##' the minimum of all sizes.
-##'
-##' @param \dots Objects of class \code{\linkS4class{CohortSize}}
-##' @return the combination as an object of class
-##' \code{\linkS4class{CohortSizeMin}}
-##'
-##' @seealso \code{\link{maxSize}}
-##' @export
-##' @keywords methods
+# minSize ----
+
+## generic ----
+
+#' "MIN" Combination of Cohort Size Rules
+#'
+#' @description `r lifecycle::badge("stable")`
+#'
+#' This function combines cohort size rules by taking the minimum of all sizes.
+#'
+#' @param ... Objects of class [`CohortSize`].
+#'
+#' @return The combination as an object of class [`CohortSizeMin`].
+#'
+#' @seealso [maxSize()]
+#' @export
+#'
 setGeneric(
-  "minSize",
+  name = "minSize",
   def = function(...) {
-    ## there should be no default method,
-    ## therefore just forward to next method!
+    # There should be no default method, therefore just forward to next method.
     standardGeneric("minSize")
   },
   valueClass = "CohortSizeMin"
 )
 
-##' @describeIn minSize The method combining cohort size rules by taking minimum
-##' @example examples/Rules-method-minSize.R
-setMethod("minSize", "CohortSize", def = function(...) {
-  CohortSizeMin(list(...))
-})
+## minSize-CohortSize ----
+
+#' @describeIn minSize The method combining cohort size rules by taking minimum.
+#'
+#' @aliases minSize-CohortSize
+#' @example examples/Rules-method-minSize.R
+#' @export
+#'
+setMethod(
+  f = "minSize",
+  signature = "CohortSize",
+  definition = function(...) {
+    CohortSizeMin(list(...))
+  }
+)
 
 # size ----
 
@@ -3430,7 +3447,7 @@ setMethod(
   }
 )
 
-## CohortSizeDLT ----
+## size-CohortSizeDLT ----
 
 #' @describeIn size Determines the size of the next cohort based on the number
 #'   of DLTs so far.
@@ -3462,7 +3479,7 @@ setMethod(
   }
 )
 
-## CohortSizeMax ----
+## size-CohortSizeMax ----
 
 #' @describeIn size Determines the size of the next cohort based on maximum of
 #'   multiple cohort size rules.
@@ -3497,7 +3514,7 @@ setMethod(
   }
 )
 
-## CohortSizeMin ----
+## size-CohortSizeMin ----
 
 #' @describeIn size Determines the size of the next cohort based on minimum of
 #'   multiple cohort size rules.
@@ -3532,7 +3549,7 @@ setMethod(
   }
 )
 
-## CohortSizeConst ----
+## size-CohortSizeConst ----
 
 #' @describeIn size Constant cohort size.
 #'
@@ -3557,7 +3574,7 @@ setMethod(
   }
 )
 
-## CohortSizeParts ----
+## size-CohortSizeParts ----
 
 #' @describeIn size Determines the size of the next cohort based on the parts.
 #'
@@ -3575,7 +3592,7 @@ setMethod(
   definition = function(object, dose, data) {
     # If the recommended next dose is NA, don't check it and return 0.
     if (is.na(dose)) {
-      return(0L)
+      0L
     } else {
       assert_class(data, "DataParts")
       object@cohort_sizes[data@nextPart]
@@ -3583,11 +3600,11 @@ setMethod(
   }
 )
 
-## CohortSizeOrdinal ----
+## size-CohortSizeOrdinal ----
 
 #' @describeIn size Determines the size of the next cohort in a ordinal CRM trial.
 #'
-#' @param  dose (`numeric`) the next dose.
+#' @param dose (`numeric`) the next dose.
 #' @param data the data input, an object of class [`DataOrdinal`].
 #'
 #' @aliases size-CohortSizeOrdinal
