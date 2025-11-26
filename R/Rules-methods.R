@@ -2347,7 +2347,7 @@ setMethod(
 
 # Stopping ----
 
-## generic ----
+## stopTrial ----
 
 #' Stop the trial?
 #'
@@ -2376,7 +2376,7 @@ setGeneric(
   valueClass = "logical"
 )
 
-## StoppingMissingDose ----
+## stopTrial-StoppingMissingDose ----
 
 #' @describeIn stopTrial Stop based on value returned by next best dose.
 #'
@@ -2417,7 +2417,7 @@ setMethod(
   }
 )
 
-# stopTrial-StoppingList ----
+## stopTrial-StoppingList ----
 
 #' @describeIn stopTrial Stop based on multiple stopping rules.
 #'
@@ -2474,7 +2474,7 @@ setMethod(
   }
 )
 
-# stopTrial-StoppingAll ----
+## stopTrial-StoppingAll ----
 
 #' @describeIn stopTrial Stop based on fulfillment of all multiple stopping
 #'   rules.
@@ -2534,7 +2534,7 @@ setMethod(
 )
 
 
-# stopTrial-StoppingAny ----
+## stopTrial-StoppingAny ----
 
 #' @describeIn stopTrial Stop based on fulfillment of any stopping rule.
 #'
@@ -2592,7 +2592,7 @@ setMethod(
   }
 )
 
-# stopTrial-StoppingCohortsNearDose ----
+## stopTrial-StoppingCohortsNearDose ----
 
 #' @describeIn stopTrial Stop based on number of cohorts near to next best
 #'   dose.
@@ -2650,7 +2650,7 @@ setMethod(
   }
 )
 
-# stopTrial-StoppingPatientsNearDose ----
+## stopTrial-StoppingPatientsNearDose ----
 
 #' @describeIn stopTrial Stop based on number of patients near to next best
 #'   dose.
@@ -2709,7 +2709,7 @@ setMethod(
   }
 )
 
-# stopTrial-StoppingMinCohorts ----
+## stopTrial-StoppingMinCohorts ----
 
 #' @describeIn stopTrial Stop based on minimum number of cohorts.
 #'
@@ -2755,7 +2755,7 @@ setMethod(
   }
 )
 
-# stopTrial-StoppingMinPatients ----
+## stopTrial-StoppingMinPatients ----
 
 #' @describeIn stopTrial Stop based on minimum number of patients.
 #'
@@ -2798,7 +2798,7 @@ setMethod(
   }
 )
 
-## StoppingTargetProb ----
+## stopTrial-StoppingTargetProb ----
 
 #' @describeIn stopTrial Stop based on probability of target tox interval
 #'
@@ -2846,7 +2846,7 @@ setMethod(
   }
 )
 
-# stopTrial-StoppingMTDdistribution ----
+## stopTrial-StoppingMTDdistribution ----
 
 #' @describeIn stopTrial Stop based on MTD distribution.
 #'
@@ -2914,7 +2914,7 @@ setMethod(
   }
 )
 
-## StoppingMTDCV ----
+## stopTrial-StoppingMTDCV ----
 
 #' @rdname stopTrial
 #'
@@ -2967,8 +2967,7 @@ setMethod(
   }
 )
 
-
-## StoppingLowestDoseHSRBeta ----
+## stopTrial-StoppingLowestDoseHSRBeta ----
 
 #' @rdname stopTrial
 #'
@@ -3038,7 +3037,7 @@ setMethod(
   }
 )
 
-## StoppingTargetBiomarker ----
+## stopTrial-StoppingTargetBiomarker ----
 
 #' @describeIn stopTrial Stop based on probability of targeting biomarker
 #'
@@ -3150,7 +3149,7 @@ setMethod(
   }
 )
 
-## StoppingSpecificDose ----
+## stopTrial-StoppingSpecificDose ----
 
 #' @describeIn stopTrial if Stopping rule is met for specific dose of the planned
 #' dose grid and not just for the default next best dose.
@@ -3196,7 +3195,7 @@ setMethod(
   }
 )
 
-# stopTrial-StoppingHighestDose ----
+## stopTrial-StoppingHighestDose ----
 
 #' @describeIn stopTrial Stop when the highest dose is reached.
 #'
@@ -3235,7 +3234,7 @@ setMethod(
   }
 )
 
-## StoppingOrdinal ----
+## stopTrial-StoppingOrdinal ----
 
 #' @describeIn stopTrial Stop based on value returned by next best dose.
 #'
@@ -3264,6 +3263,8 @@ setMethod(
     )
   }
 )
+
+## stopTrial-StoppingOrdinal ----
 
 #' @describeIn stopTrial Stop based on value returned by next best dose.
 #'
@@ -3295,7 +3296,7 @@ setMethod(
   }
 )
 
-## StoppingExternal ----
+## stopTrial-StoppingExternal ----
 
 #' @describeIn stopTrial Stop based on an external flag.
 #'
