@@ -1,6 +1,8 @@
-# The method combining an atomic and a stopping list
+# Combine an Atomic Stopping Rule and a Stopping List with AND
 
-The method combining an atomic and a stopping list
+**\[stable\]**
+
+The method combining an atomic stopping rule and a stopping list.
 
 ## Usage
 
@@ -13,19 +15,19 @@ e1 & e2
 
 - e1:
 
-  [`Stopping`](https://openpharma.github.io/crmPack/reference/Stopping-class.md)
-  object
+  (`Stopping`)  
+  stopping rule object.
 
 - e2:
 
-  [`StoppingAll`](https://openpharma.github.io/crmPack/reference/StoppingAll-class.md)
-  object
+  (`StoppingAll`)  
+  stopping list object.
 
 ## Value
 
 The modified
 [`StoppingAll`](https://openpharma.github.io/crmPack/reference/StoppingAll-class.md)
-object
+object.
 
 ## Examples
 

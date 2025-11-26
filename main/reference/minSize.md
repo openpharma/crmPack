@@ -1,4 +1,6 @@
-# "MIN" combination of cohort size rules
+# "MIN" Combination of Cohort Size Rules
+
+**\[stable\]**
 
 This function combines cohort size rules by taking the minimum of all
 sizes.
@@ -17,21 +19,21 @@ minSize(...)
 - ...:
 
   Objects of class
-  [`CohortSize`](https://openpharma.github.io/crmPack/reference/CohortSize-class.md)
+  [`CohortSize`](https://openpharma.github.io/crmPack/reference/CohortSize-class.md).
 
 ## Value
 
-the combination as an object of class
-[`CohortSizeMin`](https://openpharma.github.io/crmPack/reference/CohortSizeMin-class.md)
+The combination as an object of class
+[`CohortSizeMin`](https://openpharma.github.io/crmPack/reference/CohortSizeMin-class.md).
 
 ## Functions
 
 - `minSize(CohortSize)`: The method combining cohort size rules by
-  taking minimum
+  taking minimum.
 
 ## See also
 
-[`maxSize`](https://openpharma.github.io/crmPack/reference/maxSize.md)
+[`maxSize()`](https://openpharma.github.io/crmPack/reference/maxSize.md)
 
 ## Examples
 

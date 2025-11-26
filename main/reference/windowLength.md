@@ -1,4 +1,6 @@
-# Determine the safety window length of the next cohort
+# Determine the Safety Window Length of the Next Cohort
+
+**\[stable\]**
 
 This function determines the safety window length of the next cohort.
 
@@ -18,33 +20,36 @@ windowLength(safetyWindow, size, ...)
 
 - safetyWindow:
 
-  The rule, an object of class
-  [`SafetyWindow`](https://openpharma.github.io/crmPack/reference/SafetyWindow-class.md)
+  (`SafetyWindow`)  
+  the rule, an object of class
+  [`SafetyWindow`](https://openpharma.github.io/crmPack/reference/SafetyWindow-class.md).
 
 - size:
 
-  The next cohort size
+  (`integer`)  
+  the next cohort size.
 
 - ...:
 
-  additional arguments
+  additional arguments without method dispatch.
 
 - data:
 
-  The data input, an object of class
-  [`DataDA`](https://openpharma.github.io/crmPack/reference/DataDA-class.md)
+  (`DataDA`)  
+  the data input, an object of class
+  [`DataDA`](https://openpharma.github.io/crmPack/reference/DataDA-class.md).
 
 ## Value
 
-the `windowLength` as a list of safety window parameters (`gap`,
-`follow`, `follow_min`)
+The `windowLength` as a list of safety window parameters (`gap`,
+`follow`, `follow_min`).
 
 ## Functions
 
 - `windowLength(SafetyWindowSize)`: Determine safety window length based
-  on the cohort size
+  on the cohort size.
 
-- `windowLength(SafetyWindowConst)`: Constant safety window length
+- `windowLength(SafetyWindowConst)`: Constant safety window length.
 
 ## Examples
 

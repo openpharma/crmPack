@@ -1,4 +1,6 @@
-# "MAX" combination of cohort size rules
+# "MAX" Combination of Cohort Size Rules
+
+**\[stable\]**
 
 This function combines cohort size rules by taking the maximum of all
 sizes.
@@ -17,21 +19,21 @@ maxSize(...)
 - ...:
 
   Objects of class
-  [`CohortSize`](https://openpharma.github.io/crmPack/reference/CohortSize-class.md)
+  [`CohortSize`](https://openpharma.github.io/crmPack/reference/CohortSize-class.md).
 
 ## Value
 
-the combination as an object of class
-[`CohortSizeMax`](https://openpharma.github.io/crmPack/reference/CohortSizeMax-class.md)
+The combination as an object of class
+[`CohortSizeMax`](https://openpharma.github.io/crmPack/reference/CohortSizeMax-class.md).
 
 ## Functions
 
 - `maxSize(CohortSize)`: The method combining cohort size rules by
-  taking maximum
+  taking maximum.
 
 ## See also
 
-[`minSize`](https://openpharma.github.io/crmPack/reference/minSize.md)
+[`minSize()`](https://openpharma.github.io/crmPack/reference/minSize.md)
 
 ## Examples
 

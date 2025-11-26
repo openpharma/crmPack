@@ -115,11 +115,11 @@ minInfModel <- MinimalInformative(dosegrid = coarseGrid,
                                   control=## for real case: leave out control 
                                     list(max.time=0.1)) 
 #> It: 1, obj value (lsEnd): 0.6732911061 indTrace: 1
-#> timeSpan = 4.427274 maxTime = 0.1
+#> timeSpan = 4.137125 maxTime = 0.1
 #> Emini is: 0.6732911061
 #> xmini are:
 #> 3.436837973 9.074768474 4.306636605 0.7253533934 -0.7572128108 
-#> Totally it used 4.427308 secs
+#> Totally it used 4.137157 secs
 #> No. of function call is: 991
 
 # Plotting the result

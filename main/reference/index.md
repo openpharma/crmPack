@@ -1389,19 +1389,21 @@
   **\[stable\]** : Helper Function for Value Matching with Tolerance
 
 - [`maxSize()`](https://openpharma.github.io/crmPack/reference/maxSize.md)
-  : "MAX" combination of cohort size rules
+  **\[stable\]** : "MAX" Combination of Cohort Size Rules
 
 - [`minSize()`](https://openpharma.github.io/crmPack/reference/minSize.md)
-  : "MIN" combination of cohort size rules
+  **\[stable\]** : "MIN" Combination of Cohort Size Rules
 
 - [`` `|`( ``*`<Stopping>`*`,`*`<Stopping>`*`)`](https://openpharma.github.io/crmPack/reference/or-Stopping-Stopping.md)
-  : The method combining two atomic stopping rules
+  **\[stable\]** : Combine Two Stopping Rules with OR
 
-- [`` `|`( ``*`<StoppingAny>`*`,`*`<Stopping>`*`)`](https://openpharma.github.io/crmPack/reference/or-Stopping-StoppingAny.md)
-  : The method combining a stopping list and an atomic
+- [`` `|`( ``*`<Stopping>`*`,`*`<StoppingAny>`*`)`](https://openpharma.github.io/crmPack/reference/or-Stopping-StoppingAny.md)
+  **\[stable\]** : Combine an Atomic Stopping Rule and a Stopping List
+  with OR
 
-- [`` `|`( ``*`<Stopping>`*`,`*`<StoppingAny>`*`)`](https://openpharma.github.io/crmPack/reference/or-StoppingAny-Stopping.md)
-  : The method combining an atomic and a stopping list
+- [`` `|`( ``*`<StoppingAny>`*`,`*`<Stopping>`*`)`](https://openpharma.github.io/crmPack/reference/or-StoppingAny-Stopping.md)
+  **\[stable\]** : Combine a Stopping List and an Atomic Stopping Rule
+  with OR
 
 - [`plot(`*`<Data>`*`,`*`<ModelTox>`*`)`](https://openpharma.github.io/crmPack/reference/plot-Data-ModelTox-method.md)
   : Plot of the fitted dose-tox based with a given pseudo DLE model and
@@ -1580,13 +1582,15 @@
   Tidying `CrmPackClass` objects
 
 - [`windowLength()`](https://openpharma.github.io/crmPack/reference/windowLength.md)
-  : Determine the safety window length of the next cohort
+  **\[stable\]** : Determine the Safety Window Length of the Next Cohort
 
 - [`` `&`( ``*`<Stopping>`*`,`*`<Stopping>`*`)`](https://openpharma.github.io/crmPack/reference/and-Stopping-Stopping-method.md)
-  : The method combining two atomic stopping rules
+  **\[stable\]** : Combine Two Stopping Rules with AND
 
 - [`` `&`( ``*`<Stopping>`*`,`*`<StoppingAll>`*`)`](https://openpharma.github.io/crmPack/reference/and-Stopping-StoppingAll-method.md)
-  : The method combining an atomic and a stopping list
+  **\[stable\]** : Combine an Atomic Stopping Rule and a Stopping List
+  with AND
 
 - [`` `&`( ``*`<StoppingAll>`*`,`*`<Stopping>`*`)`](https://openpharma.github.io/crmPack/reference/and-StoppingAll-Stopping-method.md)
-  : The method combining a stopping list and an atomic
+  **\[stable\]** : Combine a Stopping List and an Atomic Stopping Rule
+  with AND

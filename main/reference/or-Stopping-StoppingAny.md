@@ -1,11 +1,13 @@
-# The method combining a stopping list and an atomic
+# Combine an Atomic Stopping Rule and a Stopping List with OR
 
-The method combining a stopping list and an atomic
+**\[stable\]**
+
+The method combining an atomic stopping rule and a stopping list.
 
 ## Usage
 
 ``` r
-# S4 method for class 'StoppingAny,Stopping'
+# S4 method for class 'Stopping,StoppingAny'
 e1 | e2
 ```
 
@@ -13,24 +15,24 @@ e1 | e2
 
 - e1:
 
-  [`StoppingAny`](https://openpharma.github.io/crmPack/reference/StoppingAny-class.md)
-  object
+  (`Stopping`)  
+  stopping rule object.
 
 - e2:
 
-  [`Stopping`](https://openpharma.github.io/crmPack/reference/Stopping-class.md)
-  object
+  (`StoppingAny`)  
+  stopping list object.
 
 ## Value
 
 The modified
 [`StoppingAny`](https://openpharma.github.io/crmPack/reference/StoppingAny-class.md)
-object
+object.
 
 ## Examples
 
 ``` r
-## Example of combining a list of stopping rules with an atomic stopping rule
+## Example of combining an atomic stopping rule with a list of stopping rules
 ## with an OR ('|') operator
 
 myStopping1 <- StoppingMinCohorts(nCohorts = 3)
@@ -38,5 +40,5 @@ myStopping2 <- StoppingTargetProb(target = c(0.2, 0.35), prob = 0.5)
 
 myStopping3 <- StoppingMinPatients(nPatients = 20)
 
-myStopping <- (myStopping1 & myStopping2) | myStopping3
+myStopping <- myStopping3 | (myStopping1 & myStopping2)
 ```

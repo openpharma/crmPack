@@ -211,7 +211,7 @@ unacceptable. The toxicity for doses of 0.1 and 0.5 lie below
 doseRecommendation$value
 ```
 
-    ## [1] 0.5
+    ## [1] 0.1
 
 ## Example 2: Run a simulation to evaluate operating characteristics
 
@@ -298,10 +298,10 @@ mySims@stop_reasons[[2]]
 ```
 
     ## [[1]]
-    ## [1] "Probability for target toxicity is 53 % for dose 20 and thus above the required 50 %"
+    ## [1] "Probability for target toxicity is 75 % for dose 16 and thus above the required 50 %"
     ## 
     ## [[2]]
-    ## [1] "Number of patients is 11 and thus below the prespecified minimum number 50"
+    ## [1] "Number of patients is 17 and thus below the prespecified minimum number 50"
 
 ``` r
 # nolint end

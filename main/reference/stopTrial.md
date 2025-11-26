@@ -6,6 +6,22 @@ This function returns whether to stop the trial.
 
 **\[experimental\]**
 
+**\[stable\]**
+
+**\[stable\]**
+
+**\[stable\]**
+
+**\[stable\]**
+
+**\[stable\]**
+
+**\[stable\]**
+
+**\[stable\]**
+
+**\[stable\]**
+
 Stopping rule based precision of the MTD estimation. The trial is
 stopped, when the MTD can be estimated with sufficient precision. The
 criteria is based on the robust coefficient of variation (CV) calculated
@@ -18,11 +34,21 @@ i.e. it is deemed to be overly toxic. Stopping is based on the observed
 data at the lowest dose level using a Bin-Beta model based on DLT
 probability.
 
-**\[experimental\]**
+**\[stable\]**
 
 **\[experimental\]**
 
 **\[experimental\]**
+
+**\[experimental\]**
+
+**\[stable\]**
+
+**\[stable\]**
+
+**\[stable\]**
+
+**\[stable\]**
 
 ## Usage
 
@@ -144,27 +170,27 @@ stopTrial(stopping, dose, model, data, Effmodel, ...)
 
 - TDderive:
 
+  (`function`)  
   the function which derives from the input, a vector of the posterior
   samples called `TDsamples` of the dose which has the probability of
   the occurrence of DLE equals to either the targetDuringTrial or
   targetEndOfTrial, the final next best TDtargetDuringTrial (the dose
   with probability of the occurrence of DLE equals to the
-  targetDuringTrial)and TDtargetEndOfTrial estimate.
+  targetDuringTrial) and TDtargetEndOfTrial estimate.
 
 - Effmodel:
 
-  the efficacy model of
-  [`ModelEff`](https://openpharma.github.io/crmPack/reference/ModelEff-class.md)
-  class object
+  (`ModelEff`)  
+  the efficacy model.
 
 - Effsamples:
 
-  the efficacy samples of
-  [`Samples`](https://openpharma.github.io/crmPack/reference/Samples-class.md)
-  class object
+  (`Samples`)  
+  the efficacy samples.
 
 - Gstarderive:
 
+  (`function`)  
   the function which derives from the input, a vector of the posterior
   Gstar (the dose which gives the maximum gain value) samples called
   `Gstarsamples`, the final next best Gstar estimate.
@@ -181,31 +207,31 @@ decision.
   Stop based on value returned by next best dose.
 
 - `stopTrial( stopping = StoppingList, dose = ANY, samples = ANY, model = ANY, data = ANY )`:
-  Stop based on multiple stopping rules
+  Stop based on multiple stopping rules.
 
 - `stopTrial( stopping = StoppingAll, dose = ANY, samples = ANY, model = ANY, data = ANY )`:
-  Stop based on fulfillment of all multiple stopping rules
+  Stop based on fulfillment of all multiple stopping rules.
 
 - `stopTrial( stopping = StoppingAny, dose = ANY, samples = ANY, model = ANY, data = ANY )`:
-  Stop based on fulfillment of any stopping rule
+  Stop based on fulfillment of any stopping rule.
 
 - `stopTrial( stopping = StoppingCohortsNearDose, dose = numeric, samples = ANY, model = ANY, data = Data )`:
-  Stop based on number of cohorts near to next best dose
+  Stop based on number of cohorts near to next best dose.
 
 - `stopTrial( stopping = StoppingPatientsNearDose, dose = numeric, samples = ANY, model = ANY, data = Data )`:
-  Stop based on number of patients near to next best dose
+  Stop based on number of patients near to next best dose.
 
 - `stopTrial( stopping = StoppingMinCohorts, dose = ANY, samples = ANY, model = ANY, data = Data )`:
-  Stop based on minimum number of cohorts
+  Stop based on minimum number of cohorts.
 
 - `stopTrial( stopping = StoppingMinPatients, dose = ANY, samples = ANY, model = ANY, data = Data )`:
-  Stop based on minimum number of patients
+  Stop based on minimum number of patients.
 
 - `stopTrial( stopping = StoppingTargetProb, dose = numeric, samples = Samples, model = GeneralModel, data = ANY )`:
   Stop based on probability of target tox interval
 
 - `stopTrial( stopping = StoppingMTDdistribution, dose = numeric, samples = Samples, model = GeneralModel, data = ANY )`:
-  Stop based on MTD distribution
+  Stop based on MTD distribution.
 
 - `stopTrial( stopping = StoppingTargetBiomarker, dose = numeric, samples = Samples, model = DualEndpoint, data = ANY )`:
   Stop based on probability of targeting biomarker
@@ -215,7 +241,7 @@ decision.
   not just for the default next best dose.
 
 - `stopTrial( stopping = StoppingHighestDose, dose = numeric, samples = ANY, model = ANY, data = Data )`:
-  Stop when the highest dose is reached
+  Stop when the highest dose is reached.
 
 - `stopTrial( stopping = StoppingOrdinal, dose = numeric, samples = ANY, model = LogisticLogNormalOrdinal, data = DataOrdinal )`:
   Stop based on value returned by next best dose.
@@ -227,28 +253,32 @@ decision.
   Stop based on an external flag.
 
 - `stopTrial( stopping = StoppingTDCIRatio, dose = ANY, samples = Samples, model = ModelTox, data = ANY )`:
-  Stop based on 'StoppingTDCIRatio' class when reaching the target ratio
-  of the upper to the lower 95% credibility interval of the estimate
-  (TDtargetEndOfTrial). This is a stopping rule which incorporate only
-  DLE responses and DLE samples are given
+  Stop based on
+  [`StoppingTDCIRatio`](https://openpharma.github.io/crmPack/reference/StoppingTDCIRatio-class.md)
+  class when reaching the target ratio of the upper to the lower 95%
+  credibility interval of the estimate (TDtargetEndOfTrial). This is a
+  stopping rule which incorporates only DLE responses and DLE samples
+  are given.
 
 - `stopTrial( stopping = StoppingTDCIRatio, dose = ANY, samples = missing, model = ModelTox, data = ANY )`:
-  Stop based on 'StoppingTDCIRatio' class when reaching the target ratio
-  of the upper to the lower 95% credibility interval of the estimate
-  (TDtargetEndOfTrial). This is a stopping rule which incorporate only
-  DLE responses and no DLE samples are involved
+  Stop based on
+  [`StoppingTDCIRatio`](https://openpharma.github.io/crmPack/reference/StoppingTDCIRatio-class.md)
+  class when reaching the target ratio of the upper to the lower 95%
+  credibility interval of the estimate (TDtargetEndOfTrial). This is a
+  stopping rule which incorporates only DLE responses and no DLE samples
+  are involved.
 
 - `stopTrial( stopping = StoppingMaxGainCIRatio, dose = ANY, samples = Samples, model = ModelTox, data = DataDual )`:
   Stop based on reaching the target ratio of the upper to the lower 95%
   credibility interval of the estimate (the minimum of Gstar and
-  TDtargetEndOfTrial). This is a stopping rule which incorporate DLE and
-  efficacy responses and DLE and efficacy samples are also used.
+  TDtargetEndOfTrial). This is a stopping rule which incorporates DLE
+  and efficacy responses and DLE and efficacy samples are also used.
 
 - `stopTrial( stopping = StoppingMaxGainCIRatio, dose = ANY, samples = missing, model = ModelTox, data = DataDual )`:
   Stop based on reaching the target ratio of the upper to the lower 95%
   credibility interval of the estimate (the minimum of Gstar and
-  TDtargetEndOfTrial). This is a stopping rule which incorporate DLE and
-  efficacy responses without DLE and efficacy samples involved.
+  TDtargetEndOfTrial). This is a stopping rule which incorporates DLE
+  and efficacy responses without DLE and efficacy samples involved.
 
 ## Examples
 
@@ -438,7 +468,7 @@ stopTrial(
 #> [1] "Number of cohorts is 6 and thus reached the prespecified minimum number 3"
 #> 
 #> attr(,"message")[[1]][[2]]
-#> [1] "Probability for target toxicity is 35 % for dose 20 and thus below the required 50 %"
+#> [1] "Probability for target toxicity is 32 % for dose 20 and thus below the required 50 %"
 #> 
 #> 
 #> attr(,"message")[[2]]
@@ -452,7 +482,7 @@ stopTrial(
 #> [1] "Number of cohorts is 6 and thus reached the prespecified minimum number 3"
 #> 
 #> attr(,"message")[[2]]
-#> [1] "Probability for target toxicity is 35 % for dose 20 and thus below the required 50 %"
+#> [1] "Probability for target toxicity is 32 % for dose 20 and thus below the required 50 %"
 #> 
 #> attr(,"individual")
 #> attr(,"individual")[[1]]
@@ -465,7 +495,7 @@ stopTrial(
 #> attr(,"individual")[[2]]
 #> [1] FALSE
 #> attr(,"message")
-#> [1] "Probability for target toxicity is 35 % for dose 20 and thus below the required 50 %"
+#> [1] "Probability for target toxicity is 32 % for dose 20 and thus below the required 50 %"
 #> attr(,"report_label")
 #> [1] "P(0.2 ≤ prob(DLE | NBD) ≤ 0.35) ≥ 0.5"
 #> 
@@ -554,7 +584,7 @@ stopTrial(
 #> [1] "Number of cohorts is 6 and thus reached the prespecified minimum number 3"
 #> 
 #> attr(,"message")[[1]][[2]]
-#> [1] "Probability for target toxicity is 36 % for dose 20 and thus below the required 50 %"
+#> [1] "Probability for target toxicity is 34 % for dose 20 and thus below the required 50 %"
 #> 
 #> 
 #> attr(,"message")[[2]]
@@ -568,7 +598,7 @@ stopTrial(
 #> [1] "Number of cohorts is 6 and thus reached the prespecified minimum number 3"
 #> 
 #> attr(,"message")[[2]]
-#> [1] "Probability for target toxicity is 36 % for dose 20 and thus below the required 50 %"
+#> [1] "Probability for target toxicity is 34 % for dose 20 and thus below the required 50 %"
 #> 
 #> attr(,"individual")
 #> attr(,"individual")[[1]]
@@ -581,7 +611,7 @@ stopTrial(
 #> attr(,"individual")[[2]]
 #> [1] FALSE
 #> attr(,"message")
-#> [1] "Probability for target toxicity is 36 % for dose 20 and thus below the required 50 %"
+#> [1] "Probability for target toxicity is 34 % for dose 20 and thus below the required 50 %"
 #> attr(,"report_label")
 #> [1] "P(0.2 ≤ prob(DLE | NBD) ≤ 0.35) ≥ 0.5"
 #> 
@@ -669,7 +699,7 @@ stopTrial(
 #> [1] "Number of cohorts is 6 and thus reached the prespecified minimum number 3"
 #> 
 #> attr(,"message")[[2]]
-#> [1] "Probability for target toxicity is 35 % for dose 20 and thus below the required 50 %"
+#> [1] "Probability for target toxicity is 38 % for dose 20 and thus below the required 50 %"
 #> 
 #> attr(,"message")[[3]]
 #> [1] "Number of patients is 8 and thus below the prespecified minimum number 20"
@@ -685,7 +715,7 @@ stopTrial(
 #> attr(,"individual")[[2]]
 #> [1] FALSE
 #> attr(,"message")
-#> [1] "Probability for target toxicity is 35 % for dose 20 and thus below the required 50 %"
+#> [1] "Probability for target toxicity is 38 % for dose 20 and thus below the required 50 %"
 #> attr(,"report_label")
 #> [1] "P(0.2 ≤ prob(DLE | NBD) ≤ 0.35) ≥ 0.5"
 #> 
@@ -755,7 +785,7 @@ myStopping <- StoppingCohortsNearDose(nCohorts = 3, percentage = 0.2)
 stopTrial(stopping = myStopping, dose = doseRecommendation$value, data = data)
 #> [1] FALSE
 #> attr(,"message")
-#> [1] "0 cohorts lie within 0.2% of the next best dose 20. This is below the required 3 cohorts"
+#> [1] "0 cohorts lie within 0.2% of the next best dose 18. This is below the required 3 cohorts"
 #> attr(,"report_label")
 #> [1] "≥ 3 cohorts dosed in 0.2 % dose range around NBD"
 
@@ -1001,7 +1031,7 @@ stopTrial(
 )
 #> [1] FALSE
 #> attr(,"message")
-#> [1] "Probability for target toxicity is 32 % for dose 20 and thus below the required 50 %"
+#> [1] "Probability for target toxicity is 36 % for dose 20 and thus below the required 50 %"
 #> attr(,"report_label")
 #> [1] "P(0.2 ≤ prob(DLE | NBD) ≤ 0.35) ≥ 0.5"
 
@@ -1066,9 +1096,9 @@ stopTrial(
   model = model,
   data = data
 )
-#> [1] TRUE
+#> [1] FALSE
 #> attr(,"message")
-#> [1] "Probability of MTD above 50 % of current dose 20 is 92 % and thus greater than or equal to the required 90 %"
+#> [1] "Probability of MTD above 50 % of current dose 20 is 90 % and thus strictly less than the required 90 %"
 #> attr(,"report_label")
 #> [1] "P(MTD > 0.5 * NBD | P(DLE) = 0.33) ≥ 0.9"
 
@@ -1303,7 +1333,7 @@ stopTrial(
 )
 #> [1] FALSE
 #> attr(,"message")
-#> [1] "Probability for target biomarker is 14 % for dose 12 and thus below the required 50 %"
+#> [1] "Probability for target biomarker is 11 % for dose 10 and thus below the required 50 %"
 #> attr(,"report_label")
 #> [1] "P(0.9 ≤ Biomarker ≤ 1) ≥ 0.5 (relative)"
 
@@ -1366,7 +1396,7 @@ stopTrial(
   model = model,
   data = data
 )
-#> [1] FALSE
+#> [1] TRUE
 #> attr(,"message")
 #> attr(,"message")[[1]]
 #> [1] "Probability for target toxicity is 0 % for dose 80 and thus below the required 80 %"
@@ -1375,7 +1405,7 @@ stopTrial(
 #> [1] "Number of patients is 17 and thus below the prespecified minimum number 20"
 #> 
 #> attr(,"message")[[3]]
-#> [1] "0 patients lie within 0% of the next best dose 12. This is below the required 3 patients"
+#> [1] "3 patients lie within 0% of the next best dose 10. This reached the required 3 patients"
 #> 
 #> attr(,"individual")
 #> attr(,"individual")[[1]]
@@ -1393,9 +1423,9 @@ stopTrial(
 #> [1] "≥ 20 patients dosed"
 #> 
 #> attr(,"individual")[[3]]
-#> [1] FALSE
+#> [1] TRUE
 #> attr(,"message")
-#> [1] "0 patients lie within 0% of the next best dose 12. This is below the required 3 patients"
+#> [1] "3 patients lie within 0% of the next best dose 10. This reached the required 3 patients"
 #> attr(,"report_label")
 #> [1] "≥ 3 patients dosed in 0 % dose range around NBD"
 #> 
@@ -1469,27 +1499,27 @@ stopTrial(
   model = model,
   data = data
 )
-#> [1] TRUE
+#> [1] FALSE
 #> attr(,"message")
 #> attr(,"message")[[1]]
-#> [1] "Probability for target toxicity is 50 % for dose 64 and thus above the required 50 %"
+#> [1] "Probability for target toxicity is 50 % for dose 54 and thus below the required 50 %"
 #> 
 #> attr(,"message")[[2]]
 #> attr(,"message")[[2]][[1]]
-#> [1] "Next best dose is 64 and thus not the highest dose"
+#> [1] "Next best dose is 54 and thus not the highest dose"
 #> 
 #> attr(,"message")[[2]][[2]]
-#> [1] "0 patients lie within 0% of the next best dose 64. This is below the required 3 patients"
+#> [1] "0 patients lie within 0% of the next best dose 54. This is below the required 3 patients"
 #> 
 #> attr(,"message")[[2]][[3]]
-#> [1] "Probability for target toxicity is 29 % for dose 64 and thus below the required 50 %"
+#> [1] "Probability for target toxicity is 37 % for dose 54 and thus below the required 50 %"
 #> 
 #> 
 #> attr(,"individual")
 #> attr(,"individual")[[1]]
-#> [1] TRUE
+#> [1] FALSE
 #> attr(,"message")
-#> [1] "Probability for target toxicity is 50 % for dose 64 and thus above the required 50 %"
+#> [1] "Probability for target toxicity is 50 % for dose 54 and thus below the required 50 %"
 #> attr(,"report_label")
 #> [1] "P(0.2 ≤ prob(DLE | NBD) ≤ 0.35) ≥ 0.5"
 #> 
@@ -1497,33 +1527,33 @@ stopTrial(
 #> [1] FALSE
 #> attr(,"message")
 #> attr(,"message")[[1]]
-#> [1] "Next best dose is 64 and thus not the highest dose"
+#> [1] "Next best dose is 54 and thus not the highest dose"
 #> 
 #> attr(,"message")[[2]]
-#> [1] "0 patients lie within 0% of the next best dose 64. This is below the required 3 patients"
+#> [1] "0 patients lie within 0% of the next best dose 54. This is below the required 3 patients"
 #> 
 #> attr(,"message")[[3]]
-#> [1] "Probability for target toxicity is 29 % for dose 64 and thus below the required 50 %"
+#> [1] "Probability for target toxicity is 37 % for dose 54 and thus below the required 50 %"
 #> 
 #> attr(,"individual")
 #> attr(,"individual")[[1]]
 #> [1] FALSE
 #> attr(,"message")
-#> [1] "Next best dose is 64 and thus not the highest dose"
+#> [1] "Next best dose is 54 and thus not the highest dose"
 #> attr(,"report_label")
 #> [1] "NBD is the highest dose"
 #> 
 #> attr(,"individual")[[2]]
 #> [1] FALSE
 #> attr(,"message")
-#> [1] "0 patients lie within 0% of the next best dose 64. This is below the required 3 patients"
+#> [1] "0 patients lie within 0% of the next best dose 54. This is below the required 3 patients"
 #> attr(,"report_label")
 #> [1] "≥ 3 patients dosed in 0 % dose range around NBD"
 #> 
 #> attr(,"individual")[[3]]
 #> [1] FALSE
 #> attr(,"message")
-#> [1] "Probability for target toxicity is 29 % for dose 64 and thus below the required 50 %"
+#> [1] "Probability for target toxicity is 37 % for dose 54 and thus below the required 50 %"
 #> attr(,"report_label")
 #> [1] "P(0 ≤ prob(DLE | NBD) ≤ 0.2) ≥ 0.5"
 #> 
@@ -1563,7 +1593,7 @@ stopTrial(
 )
 #> [1] FALSE
 #> attr(,"message")
-#> [1] "Probability for target toxicity is 33 % for dose 50 and thus below the required 60 %"
+#> [1] "Probability for target toxicity is 35 % for dose 50 and thus below the required 60 %"
 #> attr(,"report_label")
 #> [1] "P(0.2 ≤ prob(DLE | NBD) ≤ 0.35) ≥ 0.6"
 data <- .DefaultDataOrdinal()
@@ -1595,7 +1625,7 @@ stopTrial(
 )
 #> [1] FALSE
 #> attr(,"message")
-#> [1] "Probability for target toxicity is 34 % for dose 50 and thus below the required 60 %"
+#> [1] "Probability for target toxicity is 36 % for dose 50 and thus below the required 60 %"
 #> attr(,"report_label")
 #> [1] "P(0.2 ≤ prob(DLE | NBD) ≤ 0.35) ≥ 0.6"
 my_rule <- StoppingExternal(report_label = "Based on combo stop")
@@ -1874,7 +1904,7 @@ stopTrial(
 #> attr(,"message")
 #> [1] "Gstar estimate is 94.942 with 95% CI ( 16.771 , 537.4745 ) and its ratio = 32.0479"                 
 #> [2] "TDtargetEndOfTrial estimate is  81.4924 with 95% CI ( 24.3435 , 272.804 ) and its ratio= 11.2064"   
-#> [3] "TDatrgetEndOfTrial estimate is smaller with ratio = 11.2064 which is  greater than target_ratio = 5"
+#> [3] "TDtargetEndOfTrial estimate is smaller with ratio = 11.2064 which is  greater than target_ratio = 5"
 #> attr(,"report_label")
 #> [1] "GStar 5 for 0.3 target prob"
 
