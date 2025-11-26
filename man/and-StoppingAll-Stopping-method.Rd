@@ -2,20 +2,23 @@
 % Please edit documentation in R/Rules-methods.R
 \name{&,StoppingAll,Stopping-method}
 \alias{&,StoppingAll,Stopping-method}
-\title{The method combining a stopping list and an atomic}
+\alias{and-StoppingAll-Stopping}
+\title{Combine a Stopping List and an Atomic Stopping Rule with AND}
 \usage{
 \S4method{&}{StoppingAll,Stopping}(e1, e2)
 }
 \arguments{
-\item{e1}{\code{\linkS4class{StoppingAll}} object}
+\item{e1}{(\code{StoppingAll})\cr stopping list object.}
 
-\item{e2}{\code{\linkS4class{Stopping}} object}
+\item{e2}{(\code{Stopping})\cr stopping rule object.}
 }
 \value{
-The modified \code{\linkS4class{StoppingAll}} object
+The modified \code{\link{StoppingAll}} object.
 }
 \description{
-The method combining a stopping list and an atomic
+\ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#stable}{\figure{lifecycle-stable.svg}{options: alt='[Stable]'}}}{\strong{[Stable]}}
+
+The method combining a stopping list and an atomic stopping rule.
 }
 \examples{
 ## Example of combining a list of stopping rules with an atomic stopping rule
@@ -28,4 +31,3 @@ myStopping3 <- StoppingMinPatients(nPatients = 20)
 
 myStopping <- (myStopping1 | myStopping2) & myStopping3
 }
-\keyword{methods}

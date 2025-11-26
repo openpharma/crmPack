@@ -2,24 +2,26 @@
 % Please edit documentation in R/Rules-methods.R
 \name{or-StoppingAny-Stopping}
 \alias{or-StoppingAny-Stopping}
-\alias{|,Stopping,StoppingAny-method}
-\title{The method combining an atomic and a stopping list}
+\alias{|,StoppingAny,Stopping-method}
+\title{Combine a Stopping List and an Atomic Stopping Rule with OR}
 \usage{
-\S4method{|}{Stopping,StoppingAny}(e1, e2)
+\S4method{|}{StoppingAny,Stopping}(e1, e2)
 }
 \arguments{
-\item{e1}{\code{\linkS4class{Stopping}} object}
+\item{e1}{(\code{StoppingAny})\cr stopping list object.}
 
-\item{e2}{\code{\linkS4class{StoppingAny}} object}
+\item{e2}{(\code{Stopping})\cr stopping rule object.}
 }
 \value{
-The modified \code{\linkS4class{StoppingAny}} object
+The modified \code{\link{StoppingAny}} object.
 }
 \description{
-The method combining an atomic and a stopping list
+\ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#stable}{\figure{lifecycle-stable.svg}{options: alt='[Stable]'}}}{\strong{[Stable]}}
+
+The method combining a stopping list and an atomic stopping rule.
 }
 \examples{
-## Example of combining an atomic stopping rule with a list of stopping rules
+## Example of combining a list of stopping rules with an atomic stopping rule
 ## with an OR ('|') operator
 
 myStopping1 <- StoppingMinCohorts(nCohorts = 3)
@@ -27,6 +29,5 @@ myStopping2 <- StoppingTargetProb(target = c(0.2, 0.35), prob = 0.5)
 
 myStopping3 <- StoppingMinPatients(nPatients = 20)
 
-myStopping <- myStopping3 | (myStopping1 & myStopping2)
+myStopping <- (myStopping1 & myStopping2) | myStopping3
 }
-\keyword{methods}
