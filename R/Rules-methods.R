@@ -2417,14 +2417,18 @@ setMethod(
   }
 )
 
-## --------------------------------------------------
-## Stopping based on multiple stopping rules
-## --------------------------------------------------
+# stopTrial-StoppingList ----
 
-##' @describeIn stopTrial Stop based on multiple stopping rules
-##' @example examples/Rules-method-stopTrial-StoppingList.R
+#' @describeIn stopTrial Stop based on multiple stopping rules.
+#'
+#' @description `r lifecycle::badge("stable")`
+#'
+#' @aliases stopTrial-StoppingList
+#' @example examples/Rules-method-stopTrial-StoppingList.R
+#' @export
+#'
 setMethod(
-  "stopTrial",
+  f = "stopTrial",
   signature = signature(
     stopping = "StoppingList",
     dose = "ANY",
@@ -2432,10 +2436,9 @@ setMethod(
     model = "ANY",
     data = "ANY"
   ),
-  def = function(stopping, dose, samples, model, data, ...) {
-    ## evaluate the individual stopping rules
-    ## in the list
-    individualResults <-
+  definition = function(stopping, dose, samples, model, data, ...) {
+    # Evaluate the individual stopping rules in the list.
+    individual_results <-
       if (missing(samples)) {
         lapply(
           stopping@stop_list,
@@ -2457,31 +2460,33 @@ setMethod(
         )
       }
 
-    ## summarize to obtain overall result
-    overallResult <- stopping@summary(as.logical(individualResults))
+    # Summarize to obtain overall result.
+    overall_result <- stopping@summary(as.logical(individual_results))
 
-    ## retrieve individual text messages,
-    ## but let them in the list structure
-    overallText <- lapply(individualResults, attr, "message")
+    # Retrieve individual text messages, but let them in the list structure.
+    overall_text <- lapply(individual_results, attr, "message")
 
-    return(structure(
-      overallResult,
-      message = overallText,
-      individual = individualResults
-    ))
+    structure(
+      overall_result,
+      message = overall_text,
+      individual = individual_results
+    )
   }
 )
 
-## --------------------------------------------------
-## Stopping based on fulfillment of all multiple stopping rules
-## --------------------------------------------------
+# stopTrial-StoppingAll ----
 
-##' @describeIn stopTrial Stop based on fulfillment of all multiple stopping
-##' rules
-##'
-##' @example examples/Rules-method-stopTrial-StoppingAll.R
+#' @describeIn stopTrial Stop based on fulfillment of all multiple stopping
+#'   rules.
+#'
+#' @description `r lifecycle::badge("stable")`
+#'
+#' @aliases stopTrial-StoppingAll
+#' @example examples/Rules-method-stopTrial-StoppingAll.R
+#' @export
+#'
 setMethod(
-  "stopTrial",
+  f = "stopTrial",
   signature = signature(
     stopping = "StoppingAll",
     dose = "ANY",
@@ -2489,10 +2494,9 @@ setMethod(
     model = "ANY",
     data = "ANY"
   ),
-  def = function(stopping, dose, samples, model, data, ...) {
-    ## evaluate the individual stopping rules
-    ## in the list
-    individualResults <-
+  definition = function(stopping, dose, samples, model, data, ...) {
+    # Evaluate the individual stopping rules in the list.
+    individual_results <-
       if (missing(samples)) {
         lapply(
           stopping@stop_list,
@@ -2514,32 +2518,34 @@ setMethod(
         )
       }
 
-    ## summarize to obtain overall result
-    overallResult <- all(as.logical(individualResults))
+    # Summarize to obtain overall result.
+    overall_result <- all(as.logical(individual_results))
 
-    ## retrieve individual text messages,
-    ## but let them in the list structure
-    overallText <- lapply(individualResults, attr, "message")
+    # Retrieve individual text messages, but let them in the list structure.
+    overall_text <- lapply(individual_results, attr, "message")
 
-    return(structure(
-      overallResult,
-      message = overallText,
-      individual = individualResults,
+    structure(
+      overall_result,
+      message = overall_text,
+      individual = individual_results,
       report_label = stopping@report_label
-    ))
+    )
   }
 )
 
 
-## --------------------------------------------------
-## Stopping based on fulfillment of any stopping rule
-## --------------------------------------------------
+# stopTrial-StoppingAny ----
 
-##' @describeIn stopTrial Stop based on fulfillment of any stopping rule
-##'
-##' @example examples/Rules-method-stopTrial-StoppingAny.R
+#' @describeIn stopTrial Stop based on fulfillment of any stopping rule.
+#'
+#' @description `r lifecycle::badge("stable")`
+#'
+#' @aliases stopTrial-StoppingAny
+#' @example examples/Rules-method-stopTrial-StoppingAny.R
+#' @export
+#'
 setMethod(
-  "stopTrial",
+  f = "stopTrial",
   signature = signature(
     stopping = "StoppingAny",
     dose = "ANY",
@@ -2547,10 +2553,9 @@ setMethod(
     model = "ANY",
     data = "ANY"
   ),
-  def = function(stopping, dose, samples, model, data, ...) {
-    ## evaluate the individual stopping rules
-    ## in the list
-    individualResults <-
+  definition = function(stopping, dose, samples, model, data, ...) {
+    # Evaluate the individual stopping rules in the list.
+    individual_results <-
       if (missing(samples)) {
         lapply(
           stopping@stop_list,
@@ -2572,26 +2577,22 @@ setMethod(
         )
       }
 
-    ## summarize to obtain overall result
-    overallResult <- any(as.logical(individualResults))
+    # Summarize to obtain overall result.
+    overall_result <- any(as.logical(individual_results))
 
-    ## retrieve individual text messages,
-    ## but let them in the list structure
-    overallText <- lapply(individualResults, attr, "message")
+    # Retrieve individual text messages, but let them in the list structure.
+    overall_text <- lapply(individual_results, attr, "message")
 
-    return(structure(
-      overallResult,
-      message = overallText,
-      individual = individualResults,
+    structure(
+      overall_result,
+      message = overall_text,
+      individual = individual_results,
       report_label = stopping@report_label
-    ))
+    )
   }
 )
 
-
-## --------------------------------------------------
-## Stopping based on number of cohorts near to next best dose
-## --------------------------------------------------
+# stopTrial-StoppingCohortsNearDose ----
 
 ##' @describeIn stopTrial Stop based on number of cohorts near to next best dose
 ##'
@@ -2692,11 +2693,11 @@ setMethod(
     )
 
     ## return both
-    return(structure(
+    structure(
       doStop,
       message = text,
       report_label = stopping@report_label
-    ))
+    )
   }
 )
 
