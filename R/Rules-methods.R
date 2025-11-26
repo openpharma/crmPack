@@ -3333,18 +3333,19 @@ setMethod(
 )
 
 
-## ------------------------------------------------------------------------------------------------
-## Stopping based on a target ratio of the upper to the lower 95% credibility interval
-## ------------------------------------------------------------------------------------------------
-##' @describeIn stopTrial Stop based on 'StoppingTDCIRatio' class when
-##' reaching the target ratio of the upper to the lower 95% credibility
-##' interval of the estimate (TDtargetEndOfTrial). This is a stopping rule which incorporate only
-##' DLE responses and DLE samples are given
-##'
-##' @example examples/Rules-method-stopTrialCITDsamples.R
-##'
-##' @export
-##' @keywords methods
+## stopTrial-StoppingTDCIRatio ----
+
+#' @describeIn stopTrial Stop based on [`StoppingTDCIRatio`] class when
+#'   reaching the target ratio of the upper to the lower 95% credibility
+#'   interval of the estimate (TDtargetEndOfTrial). This is a stopping rule
+#'   which incorporates only DLE responses and DLE samples are given.
+#'
+#' @description `r lifecycle::badge("stable")`
+#'
+#' @aliases stopTrial-StoppingTDCIRatio
+#' @example examples/Rules-method-stopTrialCITDsamples.R
+#' @export
+#'
 setMethod(
   f = "stopTrial",
   signature = signature(
@@ -3382,16 +3383,21 @@ setMethod(
   }
 )
 
-## ----------------------------------------------------------------------------------------------
-## Stopping based on a target ratio of the upper to the lower 95% credibility interval
-## ------------------------------------------------------------------------------------------------
-##' @describeIn stopTrial Stop based on 'StoppingTDCIRatio' class
-##' when reaching the target ratio of the upper to the lower 95% credibility
-##' interval of the estimate (TDtargetEndOfTrial). This is a stopping rule which incorporate only
-##' DLE responses and no DLE samples are involved
-##' @example examples/Rules-method-stopTrialCITD.R
+## stopTrial-StoppingTDCIRatio ----
+
+#' @describeIn stopTrial Stop based on [`StoppingTDCIRatio`] class when
+#'   reaching the target ratio of the upper to the lower 95% credibility
+#'   interval of the estimate (TDtargetEndOfTrial). This is a stopping rule
+#'   which incorporates only DLE responses and no DLE samples are involved.
+#'
+#' @description `r lifecycle::badge("stable")`
+#'
+#' @aliases stopTrial-StoppingTDCIRatio
+#' @example examples/Rules-method-stopTrialCITD.R
+#' @export
+#'
 setMethod(
-  "stopTrial",
+  f = "stopTrial",
   signature = signature(
     stopping = "StoppingTDCIRatio",
     dose = "ANY",
@@ -3399,13 +3405,13 @@ setMethod(
     model = "ModelTox",
     data = "ANY"
   ),
-  def = function(stopping, dose, model, data, ...) {
+  definition = function(stopping, dose, model, data, ...) {
     assert_probability(stopping@prob_target)
 
     prob_target <- stopping@prob_target
     dose_target_samples <- dose(x = prob_target, model = model, ...)
-    ## Find the variance of the log of the dose_target_samples(eta)
-    M1 <- matrix(
+    # Find the variance of the log of the dose_target_samples (eta).
+    m1 <- matrix(
       c(
         -1 / (model@phi2),
         -(log(prob_target / (1 - prob_target)) - model@phi1) / (model@phi2)^2
@@ -3413,38 +3419,38 @@ setMethod(
       1,
       2
     )
-    M2 <- model@Pcov
-    varEta <- as.vector(M1 %*% M2 %*% t(M1))
+    m2 <- model@Pcov
+    var_eta <- as.vector(m1 %*% m2 %*% t(m1))
 
-    ## Find the upper and lower limit of the 95% credibility interval
-    CI <- exp(log(dose_target_samples) + c(-1, 1) * 1.96 * sqrt(varEta))
-    ratio <- CI[2] / CI[1]
+    # Find the upper and lower limit of the 95% credibility interval.
+    ci <- exp(log(dose_target_samples) + c(-1, 1) * 1.96 * sqrt(var_eta))
+    ratio <- ci[2] / ci[1]
 
-    ## so can we stop?
-    doStop <- ratio <= stopping@target_ratio
-    ## generate message
+    # So can we stop?
+    do_stop <- ratio <= stopping@target_ratio
+    # Generate message.
     text <- paste(
       "95% CI is (",
-      round(CI[1], 4),
+      round(ci[1], 4),
       ",",
-      round(CI[2], 4),
+      round(ci[2], 4),
       "), Ratio =",
       round(ratio, 4),
       "is ",
-      ifelse(doStop, "is less than or equal to", "greater than"),
+      ifelse(do_stop, "is less than or equal to", "greater than"),
       "target_ratio =",
       stopping@target_ratio
     )
-    ## return both
-    return(structure(
-      doStop,
+    # Return both.
+    structure(
+      do_stop,
       message = text,
       report_label = stopping@report_label
-    ))
+    )
   }
 )
 
-## --------------------------------------------------------------------------------------------------
+## stopTrial-StoppingMaxGainCIRatio ----
 ## Stopping based on a target ratio of the upper to the lower 95% credibility interval
 ## ------------------------------------------------------------------------------------------------
 ##' @describeIn stopTrial Stop based on reaching the target ratio of the upper to the lower 95% credibility
