@@ -3451,26 +3451,32 @@ setMethod(
 )
 
 ## stopTrial-StoppingMaxGainCIRatio ----
-## Stopping based on a target ratio of the upper to the lower 95% credibility interval
-## ------------------------------------------------------------------------------------------------
-##' @describeIn stopTrial Stop based on reaching the target ratio of the upper to the lower 95% credibility
-##' interval of the estimate (the minimum of Gstar and TDtargetEndOfTrial). This is a stopping rule which
-##' incorporate DLE and efficacy responses and DLE and efficacy samples are also used.
-##'
-##' @param TDderive the function which derives from the input, a vector of the posterior samples called
-##' \code{TDsamples} of the dose
-##' which has the probability of the occurrence of DLE equals to either the targetDuringTrial or
-##' targetEndOfTrial, the final next best TDtargetDuringTrial (the dose with probability of the
-##' occurrence of DLE equals to the targetDuringTrial)and TDtargetEndOfTrial estimate.
-##' @param Effmodel the efficacy model of \code{\linkS4class{ModelEff}} class object
-##' @param Effsamples the efficacy samples of \code{\linkS4class{Samples}} class object
-##' @param Gstarderive the function which derives from the input, a vector of the posterior Gstar (the dose
-##' which gives the maximum gain value) samples
-##' called \code{Gstarsamples}, the final next best Gstar estimate.
-##'
-##' @example examples/Rules-method-stopTrialCIMaxGainSamples.R
+
+#' @describeIn stopTrial Stop based on reaching the target ratio of the upper
+#'   to the lower 95% credibility interval of the estimate (the minimum of
+#'   Gstar and TDtargetEndOfTrial). This is a stopping rule which incorporates
+#'   DLE and efficacy responses and DLE and efficacy samples are also used.
+#'
+#' @description `r lifecycle::badge("stable")`
+#'
+#' @param TDderive (`function`)\cr the function which derives from the input,
+#'   a vector of the posterior samples called `TDsamples` of the dose which has
+#'   the probability of the occurrence of DLE equals to either the
+#'   targetDuringTrial or targetEndOfTrial, the final next best
+#'   TDtargetDuringTrial (the dose with probability of the occurrence of DLE
+#'   equals to the targetDuringTrial) and TDtargetEndOfTrial estimate.
+#' @param Effmodel (`ModelEff`)\cr the efficacy model.
+#' @param Effsamples (`Samples`)\cr the efficacy samples.
+#' @param Gstarderive (`function`)\cr the function which derives from the input,
+#'   a vector of the posterior Gstar (the dose which gives the maximum gain
+#'   value) samples called `Gstarsamples`, the final next best Gstar estimate.
+#'
+#' @aliases stopTrial-StoppingMaxGainCIRatio
+#' @example examples/Rules-method-stopTrialCIMaxGainSamples.R
+#' @export
+#'
 setMethod(
-  "stopTrial",
+  f = "stopTrial",
   signature = signature(
     stopping = "StoppingMaxGainCIRatio",
     dose = "ANY",
@@ -3478,7 +3484,7 @@ setMethod(
     model = "ModelTox",
     data = "DataDual"
   ),
-  def = function(
+  definition = function(
     stopping,
     dose,
     samples,
@@ -3492,36 +3498,35 @@ setMethod(
   ) {
     prob_target <- stopping@prob_target
 
-    ## checks
+    # Checks.
     assert_probability(prob_target)
     stopifnot(is(Effmodel, "ModelEff"))
     stopifnot(is(Effsamples, "Samples"))
     stopifnot(is.function(TDderive))
     stopifnot(is.function(Gstarderive))
 
-    ## find the TDtarget End of Trial samples
-    TDtargetEndOfTrialSamples <- dose(
+    # Find the TDtarget End of Trial samples.
+    td_target_end_of_trial_samples <- dose(
       x = prob_target,
       model = model,
       samples = samples,
       ...
     )
-    ## Find the TDtarget End of trial estimate
-    TDtargetEndOfTrialEstimate <- TDderive(TDtargetEndOfTrialSamples)
+    # Find the TDtarget End of trial estimate.
+    td_target_end_of_trial_estimate <- TDderive(td_target_end_of_trial_samples)
 
-    ## Find the gain value samples then the GstarSamples
+    # Find the gain value samples then the GstarSamples.
     points <- data@doseGrid
 
-    GainSamples <- matrix(
+    gain_samples <- matrix(
       nrow = size(samples),
       ncol = length(points)
     )
 
-    ## evaluate the probs, for all gain samples.
+    # Evaluate the probs, for all gain samples.
     for (i in seq_along(points)) {
-      ## Now we want to evaluate for the
-      ## following dose:
-      GainSamples[, i] <- gain(
+      # Now we want to evaluate for the following dose.
+      gain_samples[, i] <- gain(
         dose = points[i],
         model,
         samples,
@@ -3531,86 +3536,95 @@ setMethod(
       )
     }
 
-    ## Find the maximum gain value samples
-    MaxGainSamples <- apply(GainSamples, 1, max)
+    # Find the maximum gain value samples.
+    max_gain_samples <- apply(gain_samples, 1, max)
 
-    ## Obtain Gstar samples, samples for the dose level which gives the maximum gain value
-    IndexG <- apply(GainSamples, 1, which.max)
-    GstarSamples <- data@doseGrid[IndexG]
+    # Obtain Gstar samples, samples for the dose level which gives the maximum
+    # gain value.
+    index_g <- apply(gain_samples, 1, which.max)
+    gstar_samples <- data@doseGrid[index_g]
 
-    ## Find the Gstar estimate
+    # Find the Gstar estimate.
+    gstar <- Gstarderive(gstar_samples)
+    # Find the 95% credibility interval of Gstar and its ratio of the upper to
+    # the lower limit.
+    ci_gstar <- quantile(gstar_samples, probs = c(0.025, 0.975))
+    ratio_gstar <- as.numeric(ci_gstar[2] / ci_gstar[1])
 
-    Gstar <- Gstarderive(GstarSamples)
-    ## Find the 95% credibility interval of Gstar and its ratio of the upper to the lower limit
-    CIGstar <- quantile(GstarSamples, probs = c(0.025, 0.975))
-    ratioGstar <- as.numeric(CIGstar[2] / CIGstar[1])
+    # Find the 95% credibility interval of TDtargetEndOfTrial and its ratio of
+    # the upper to the lower limit.
+    ci_tdeot <- quantile(
+      td_target_end_of_trial_samples,
+      probs = c(0.025, 0.975)
+    )
+    ratio_tdeot <- as.numeric(ci_tdeot[2] / ci_tdeot[1])
 
-    ## Find the 95% credibility interval of TDtargetEndOfTrial and its ratio of the upper to the lower limit
-    CITDEOT <- quantile(TDtargetEndOfTrialSamples, probs = c(0.025, 0.975))
-    ratioTDEOT <- as.numeric(CITDEOT[2] / CITDEOT[1])
-
-    ## Find which is smaller (TDtargetEndOfTrialEstimate or Gstar)
-
-    if (TDtargetEndOfTrialEstimate <= Gstar) {
-      ## Find the upper and lower limit of the 95% credibility interval and its ratio of the smaller
-      CI <- CITDEOT
-      ratio <- ratioTDEOT
-      chooseTD <- TRUE
+    # Find which is smaller (TDtargetEndOfTrialEstimate or Gstar).
+    if (td_target_end_of_trial_estimate <= gstar) {
+      # Find the upper and lower limit of the 95% credibility interval and its
+      # ratio of the smaller.
+      ci <- ci_tdeot
+      ratio <- ratio_tdeot
+      choose_td <- TRUE
     } else {
-      CI <- CIGstar
-      ratio <- ratioGstar
-      chooseTD <- FALSE
+      ci <- ci_gstar
+      ratio <- ratio_gstar
+      choose_td <- FALSE
     }
 
-    ## so can we stop?
-    doStop <- ratio <= stopping@target_ratio
-    ## generate message
+    # So can we stop?
+    do_stop <- ratio <= stopping@target_ratio
+    # Generate message.
     text1 <- paste(
       "Gstar estimate is",
-      round(Gstar, 4),
+      round(gstar, 4),
       "with 95% CI (",
-      round(CIGstar[1], 4),
+      round(ci_gstar[1], 4),
       ",",
-      round(CIGstar[2], 4),
+      round(ci_gstar[2], 4),
       ") and its ratio =",
-      round(ratioGstar, 4)
+      round(ratio_gstar, 4)
     )
     text2 <- paste(
       "TDtargetEndOfTrial estimate is ",
-      round(TDtargetEndOfTrialEstimate, 4),
+      round(td_target_end_of_trial_estimate, 4),
       "with 95% CI (",
-      round(CITDEOT[1], 4),
+      round(ci_tdeot[1], 4),
       ",",
-      round(CITDEOT[2], 4),
+      round(ci_tdeot[2], 4),
       ") and its ratio=",
-      round(ratioTDEOT, 4)
+      round(ratio_tdeot, 4)
     )
     text3 <- paste(
-      ifelse(chooseTD, "TDtargetEndOfTrial estimate", "Gstar estimate"),
+      ifelse(choose_td, "TDtargetEndOfTrial estimate", "Gstar estimate"),
       "is smaller with ratio =",
       round(ratio, 4),
       " which is ",
-      ifelse(doStop, "is less than or equal to", "greater than"),
+      ifelse(do_stop, "is less than or equal to", "greater than"),
       "target_ratio =",
       stopping@target_ratio
     )
     text <- c(text1, text2, text3)
-    ## return both
-    return(structure(
-      doStop,
+    # Return both.
+    structure(
+      do_stop,
       message = text,
       report_label = stopping@report_label
-    ))
+    )
   }
 )
 
-## -----------------------------------------------------------------------------------------------
-## Stopping based on a target ratio of the upper to the lower 95% credibility interval
-## --------------------------------------------------------------------------------------------
-##' @describeIn stopTrial Stop based on reaching the target ratio of the upper to the lower 95% credibility
-##' interval of the estimate (the minimum of Gstar and TDtargetEndOfTrial). This is a stopping rule which
-##' incorporate DLE and efficacy responses without DLE and efficacy samples involved.
-##' @example examples/Rules-method-stopTrialCIMaxGain.R
+#' @describeIn stopTrial Stop based on reaching the target ratio of the upper
+#'   to the lower 95% credibility interval of the estimate (the minimum of
+#'   Gstar and TDtargetEndOfTrial). This is a stopping rule which incorporates
+#'   DLE and efficacy responses without DLE and efficacy samples involved.
+#'
+#' @description `r lifecycle::badge("stable")`
+#'
+#' @aliases stopTrial-StoppingMaxGainCIRatio
+#' @example examples/Rules-method-stopTrialCIMaxGain.R
+#' @export
+#'
 setMethod(
   "stopTrial",
   signature = signature(
@@ -3688,16 +3702,6 @@ setMethod(
       1 -
       exp(model@phi1 + model@phi2 * logGstar)) /
       denom
-
-    # DLEPRO <- exp(model@phi1+model@phi2*logGstar)
-
-    # dgphi1 <- Effmodel@theta2*DLEPRO - logGstar*model@phi2*meanEffGstar*DLEPRO
-
-    # dgphi2 <- logGstar*DLEPRO *(Effmodel@theta2-(meanEffGstar)+model@phi2)
-
-    # dgtheta1 <- -logGstar*DLEPRO*model@phi2
-
-    # dgtheta2 <- 1+DLEPRO-logGstar*DLEPRO*model@phi2*log(logGstar)
 
     deltaG <- matrix(c(dgphi1, dgphi2, dgtheta1, dgtheta2), 4, 1)
 
