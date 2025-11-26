@@ -3196,15 +3196,18 @@ setMethod(
   }
 )
 
-## --------------------------------------------------
-## Stopping when the highest dose is reached
-## --------------------------------------------------
+# stopTrial-StoppingHighestDose ----
 
-##' @describeIn stopTrial Stop when the highest dose is reached
-##'
-##' @example examples/Rules-method-stopTrial-StoppingHighestDose.R
+#' @describeIn stopTrial Stop when the highest dose is reached.
+#'
+#' @description `r lifecycle::badge("stable")`
+#'
+#' @aliases stopTrial-StoppingHighestDose
+#' @example examples/Rules-method-stopTrial-StoppingHighestDose.R
+#' @export
+#'
 setMethod(
-  "stopTrial",
+  f = "stopTrial",
   signature = signature(
     stopping = "StoppingHighestDose",
     dose = "numeric",
@@ -3212,23 +3215,23 @@ setMethod(
     model = "ANY",
     data = "Data"
   ),
-  def = function(stopping, dose, samples, model, data, ...) {
-    isHighestDose <- ifelse(
+  definition = function(stopping, dose, samples, model, data, ...) {
+    is_highest_dose <- ifelse(
       is.na(dose),
       FALSE,
       (dose == data@doseGrid[data@nGrid])
     )
-    return(structure(
-      isHighestDose,
+    structure(
+      is_highest_dose,
       message = paste(
         "Next best dose is",
         dose,
         "and thus",
-        ifelse(isHighestDose, "the", "not the"),
+        ifelse(is_highest_dose, "the", "not the"),
         "highest dose"
       ),
       report_label = stopping@report_label
-    ))
+    )
   }
 )
 
