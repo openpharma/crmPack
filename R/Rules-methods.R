@@ -3777,7 +3777,7 @@ setMethod(
       round(ratio_tdeot, 4)
     )
     text3 <- paste(
-      ifelse(choose_td, "TDatrgetEndOfTrial estimate", "Gstar estimate"),
+      ifelse(choose_td, "TDtargetEndOfTrial estimate", "Gstar estimate"),
       "is smaller with ratio =",
       round(ratio, 4),
       "which is ",
