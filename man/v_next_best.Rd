@@ -7,6 +7,7 @@
 \alias{v_next_best_ncrm_loss}
 \alias{v_next_best_dual_endpoint}
 \alias{v_next_best_min_dist}
+\alias{v_next_best_ewoc}
 \alias{v_next_best_inf_theory}
 \alias{v_next_best_td}
 \alias{v_next_best_td_samples}
@@ -25,6 +26,8 @@ v_next_best_ncrm_loss(object)
 v_next_best_dual_endpoint(object)
 
 v_next_best_min_dist(object)
+
+v_next_best_ewoc(object)
 
 v_next_best_inf_theory(object)
 
@@ -70,6 +73,9 @@ contains valid probability objects.
 
 \item \code{v_next_best_min_dist()}: validates that the \code{\link{NextBestMinDist}} object
 contains valid \code{target} object.
+
+\item \code{v_next_best_ewoc()}: validates that the \code{\link{NextBestEWOC}} object
+contains valid \code{target}, \code{overdose} and \code{max_overdose_prob} parameters.
 
 \item \code{v_next_best_inf_theory()}: validates that the \code{\link{NextBestInfTheory}} object
 contains valid \code{target} and \code{asymmetry} objects.

@@ -701,7 +701,6 @@ setMethod(
 
 # Report-class ----
 
-#' @name Report
 #' @field object The object from which to report
 #' @field df the data frame to which columns are sequentially added
 #' @field dfNames the names to which strings are sequentially added

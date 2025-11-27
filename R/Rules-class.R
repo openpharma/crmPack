@@ -14,10 +14,11 @@ NULL
 #' [`NextBest`] is a virtual class for finding next best dose, from which all
 #' other specific next best dose classes inherit.
 #'
-#' @seealso [`NextBestMTD`], [`NextBestNCRM`], [`NextBestDualEndpoint`],
-#'   [`NextBestThreePlusThree`], [`NextBestDualEndpoint`], [`NextBestMinDist`],
-#'   [`NextBestInfTheory`], [`NextBestTD`], [`NextBestTDsamples`],
-#'   [`NextBestMaxGain`], [`NextBestMaxGainSamples`].
+#' @seealso [`NextBestEWOC`], [`NextBestMTD`], [`NextBestNCRM`],
+#'   [`NextBestNCRMLoss`], [`NextBestThreePlusThree`], [`NextBestDualEndpoint`],
+#'   [`NextBestMinDist`], [`NextBestInfTheory`], [`NextBestTD`],
+#'   [`NextBestTDsamples`], [`NextBestMaxGain`], [`NextBestMaxGainSamples`],
+#'   [`NextBestProbMTDLTE`], [`NextBestProbMTDMinDist`], [`NextBestOrdinal`].
 #'
 #' @aliases NextBest
 #' @export
@@ -38,6 +39,74 @@ setClass(
   ))
 }
 
+#' `NextBestEWOC`
+#'
+#' @description `r lifecycle::badge("stable")`
+#'
+#' [`NextBestEWOC`] is the class implementing Escalation With Overdose Control
+#' (EWOC). It recommends the highest possible dose subject to a probabilistic
+#' constraint that the posterior probability of overdosing does not exceed
+#' `max_overdose_prob`. Overdosing is defined as the model-based toxicity
+#' probability lying inside the interval given by `overdose`.
+#'
+#' @slot target (`proportion`)\cr target toxicity probability to be
+#'   achieved, below `overdose[1]`; only used for simulation reporting purposes.
+#' @slot overdose (`numeric`)\cr the (exclusive) lower and (inclusive) upper boundaries of the
+#'   toxicity probability interval considered an overdose region. The prototype
+#'   uses `c(0.35, 1)` meaning probabilities > 0.35 are treated as overly toxic.
+#' @slot max_overdose_prob (`proportion`)\cr maximum acceptable posterior
+#'   probability that the next recommended dose is in the overdose interval.
+#'
+#' @seealso [`NextBest`], other next-best classes listed in its documentation.
+#'
+#' @aliases NextBestEWOC
+#' @export
+.NextBestEWOC <- setClass(
+  Class = "NextBestEWOC",
+  slots = c(
+    target = "numeric",
+    overdose = "numeric",
+    max_overdose_prob = "numeric"
+  ),
+  prototype = prototype(
+    target = 0.3,
+    overdose = c(0.35, 1),
+    max_overdose_prob = 0.25
+  ),
+  contains = "NextBest",
+  validity = v_next_best_ewoc
+)
+
+## constructor ----
+
+#' @rdname NextBestEWOC-class
+#'
+#' @param target (`proportion`)\cr see slot definition.
+#' @param overdose (`numeric`)\cr see slot definition.
+#' @param max_overdose_prob (`proportion`)\cr see slot definition.
+#'
+#' @export
+#' @example examples/Rules-class-NextBestEWOC.R
+NextBestEWOC <- function(target, overdose, max_overdose_prob) {
+  .NextBestEWOC(
+    target = target,
+    overdose = overdose,
+    max_overdose_prob = max_overdose_prob
+  )
+}
+
+## default constructor ----
+
+#' @rdname NextBestEWOC-class
+#' @note Typically, end users will not use the `.DefaultNextBestEWOC()` function.
+#' @export
+.DefaultNextBestEWOC <- function() {
+  NextBestEWOC(
+    target = 0.3,
+    overdose = c(0.35, 1),
+    max_overdose_prob = 0.25
+  )
+}
 
 # NextBestMTD ----
 

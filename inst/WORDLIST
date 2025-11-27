@@ -4,7 +4,6 @@ AllModels
 Analysing
 Biomarker
 Bove
-Brezger
 Bugfix
 Bugfixes
 Burak
@@ -17,7 +16,6 @@ CohortSizeDLT
 CohortSizeRange
 ComboLogistic
 DLE
-DLEmodel
 DLT
 DLTmodel
 DLTs
@@ -25,7 +23,6 @@ DataCombo
 DataDual
 DataMixture
 DataOrdinal
-Diack
 DualDesign
 DualEndpoint
 DualEndpointBeta
@@ -34,6 +31,7 @@ DualEndpointRW
 DualSimulations
 DualSimulationsSummary
 Dutton
+EWOC
 EffFlexi
 Effloglog
 Effmodel
@@ -45,7 +43,6 @@ GeneralSimulations
 GeneralSimulationsSummary
 Goebel
 Gstar
-Guosheng
 HMTL
 Hmmm
 Hoffmann
@@ -60,15 +57,12 @@ KGaA
 Kadane
 Kaplan
 Kuersad
-Liu
 Liu's
 LogisticIndepBeta
 LogisticLogNormal
 LogisticLogNormalMixture
 LogisticLogNormalOrdinal
-LogisticsIndepBeta
 MTD
-McmcOptions
 Michielin
 MinimalInformative
 Mozgunov
@@ -81,7 +75,6 @@ NextBest
 NextBestDualEndpoint
 NextBestNCRM
 ORCID
-O’Quigley
 PLcohortSize
 ProbitLogNormal
 RPF
@@ -90,7 +83,6 @@ RWmat
 RWmatRank
 Rcpp
 RcppArmadillo
-Reigner
 RuleDesign
 SRF
 Sabanes
@@ -99,7 +91,6 @@ SimulationsSummary
 StoppingHighestDose
 StoppingMaxPatients
 StoppingMinPatients
-StoppingTDCIRatio
 StoppingTargetBiomarker
 Summarising
 TDDT
@@ -109,9 +100,7 @@ TDtargetDuringTrial
 TDtargetEndOfTrial
 TITE
 ThreePlusThreeDesign
-TsuTakawa
 Warne
-Willamson
 WinBUGS
 YJ
 Yeung
@@ -143,7 +132,6 @@ dichotomises
 dlts
 doi
 doseGrid
-doseRec
 doselimit
 dotsb
 dotsc
@@ -164,7 +152,6 @@ grey
 gridpoint
 gridpoints
 honoured
-http
 https
 httr
 ing
@@ -223,8 +210,6 @@ subfolder
 subtractive
 summarise
 summarised
-targetDoseDuringTrial
-targetDoseEndOfTrial
 targetDuringTrial
 targetEndOfTrial
 targetThresh
