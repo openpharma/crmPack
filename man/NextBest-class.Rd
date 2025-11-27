@@ -19,8 +19,9 @@ other specific next best dose classes inherit.
 Typically, end users will not use the \code{DefaultNextBest()} function.
 }
 \seealso{
-\code{\link{NextBestMTD}}, \code{\link{NextBestNCRM}}, \code{\link{NextBestDualEndpoint}},
-\code{\link{NextBestThreePlusThree}}, \code{\link{NextBestDualEndpoint}}, \code{\link{NextBestMinDist}},
-\code{\link{NextBestInfTheory}}, \code{\link{NextBestTD}}, \code{\link{NextBestTDsamples}},
-\code{\link{NextBestMaxGain}}, \code{\link{NextBestMaxGainSamples}}.
+\code{\link{NextBestEWOC}}, \code{\link{NextBestMTD}}, \code{\link{NextBestNCRM}},
+\code{\link{NextBestNCRMLoss}}, \code{\link{NextBestThreePlusThree}}, \code{\link{NextBestDualEndpoint}},
+\code{\link{NextBestMinDist}}, \code{\link{NextBestInfTheory}}, \code{\link{NextBestTD}},
+\code{\link{NextBestTDsamples}}, \code{\link{NextBestMaxGain}}, \code{\link{NextBestMaxGainSamples}},
+\code{\link{NextBestProbMTDLTE}}, \code{\link{NextBestProbMTDMinDist}}, \code{\link{NextBestOrdinal}}.
 }
