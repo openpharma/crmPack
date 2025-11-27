@@ -32,7 +32,7 @@ knitr::opts_chunk$set(
   message = FALSE,
   dev = "ragg_png",
   tidy = "styler",
-  fig.path = "./",
+  fig.path = "./example-figures/",
   fig.width = 6,
   out.width = "100%"
 )
@@ -1372,16 +1372,16 @@ threeSimsSum <- summary(threeSims,
 threeSimsSum
 ```
 
-Here we see that \Sexpr{threeSimsSum@doseMostSelected} mg was the dose most
+Here we see that `r threeSimsSum@dose_most_selected` mg was the dose most
 often selected as MTD, and this is actually too low when comparing with the
 narrow target dose interval going from
-\Sexpr{round(threeSimsSum@targetDoseInterval[1],1)} to
-\Sexpr{round(threeSimsSum@targetDoseInterval[2],1)} mg. This is an inherent problem of
+`r round(threeSimsSum@target_dose_interval[1],1)` to
+`r round(threeSimsSum@target_dose_interval[2],1)` mg. This is an inherent problem of
 dose-escalation designs where the dose grid has to be coarse: you might not know
 before starting the trial which is the range where you need a more refined dose
 grid. In this case we obtain doses that are too low, as one can see from the
 average true toxicity of
-\Sexpr{round(mean(threeSimsSum@toxAtDosesSelected)*100)}~% at doses selected.
+`r round(mean(threeSimsSum@tox_at_doses_selected)*100)`~% at doses selected.
 Graphical summaries are again obtained by calling `plot` on the summary
 object:
 

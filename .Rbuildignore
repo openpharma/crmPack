@@ -29,3 +29,5 @@ pkgdown/
 ^jarl[.]toml$
 tests/testthat/_snaps
 lib
+^vignettes/example\.Rmd\.orig$
+^vignettes/\.rebuild_example\.R$
