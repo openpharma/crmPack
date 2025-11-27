@@ -20,7 +20,20 @@ bibliography: vignettes.bib
 library(crmPack)
 library(knitr)
 crmPackVersion <- as.character(packageVersion("crmPack"))
-knitr::opts_chunk$set(fig.width = 6)
+```
+
+```{r, include=FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>",
+  warning = FALSE,
+  message = FALSE,
+  dev = "ragg_png",
+  tidy = "styler",
+  fig.path = "./",
+  fig.width = 6,
+  out.width = "100%"
+)
 ```
 
 This short vignette shall introduce into the usage of the package
