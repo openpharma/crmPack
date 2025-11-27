@@ -28,3 +28,4 @@ pkgdown/
 ^[.]?air[.]toml$
 ^jarl[.]toml$
 tests/testthat/_snaps/
+lib/
