@@ -3016,8 +3016,7 @@ DALogisticLogNormal <- function(
 
 #' @rdname TITELogisticLogNormal-class
 #'
-#' @param weight_method (`string`)\cr the weight function method: either linear
-#'   or adaptive. This was used in Liu, Yin and Yuan's paper.
+#' @param weight_method (`string`)\cr see the slot description.
 #' @inheritDotParams LogisticLogNormal
 #'
 #' @export
