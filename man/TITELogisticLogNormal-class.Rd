@@ -35,7 +35,7 @@ slope parameters.
 This class inherits from the \code{\link{LogisticLogNormal}}.
 }
 \details{
-Basically, the adaptive function allocate more weight to each record
+Basically, the adaptive function allocates more weight to each record
 than the linear function when DLTs are observed early and less weight when DLTs
 are observed late. When DLT times are evenly distributed both weights are similar.
 In addition, with more DLTs, the adaptive weights become more extreme
