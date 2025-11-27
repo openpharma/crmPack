@@ -13,8 +13,7 @@ TITELogisticLogNormal(weight_method = "linear", ...)
 .DefaultTITELogisticLogNormal()
 }
 \arguments{
-\item{weight_method}{(\code{string})\cr the weight function method: either linear
-or adaptive. This was used in Liu, Yin and Yuan's paper.}
+\item{weight_method}{(\code{string})\cr see the slot description.}
 
 \item{...}{
   Arguments passed on to \code{\link[=LogisticLogNormal]{LogisticLogNormal}}
@@ -35,11 +34,18 @@ slope parameters.
 
 This class inherits from the \code{\link{LogisticLogNormal}}.
 }
+\details{
+Basically, the adaptive function allocate more weight to each record
+than the linear function when DLTs are observed early and less weight when DLTs
+are observed late. When DLT times are evenly distributed both weights are similar.
+In addition, with more DLTs, the adaptive weights become more extreme
+and different from the linear weights.
+}
 \section{Slots}{
 
 \describe{
 \item{\code{weight_method}}{(\code{string})\cr the weight function method: either linear
-or adaptive. This was used in Liu, Yin and Yuan's paper.}
+or adaptive; see \insertCite{LiuYinYuan2013;textual}{crmPack}.}
 }}
 
 \note{
@@ -59,6 +65,9 @@ my_model1 <- TITELogisticLogNormal(
   ref_dose = 1,
   weight_method = "adaptive"
 )
+}
+\references{
+\insertAllCited{}
 }
 \seealso{
 \code{\link{DALogisticLogNormal}}.
