@@ -51,9 +51,9 @@ setClass(
 #'
 #' @slot target (`proportion`)\cr target toxicity probability to be
 #'   achieved, below `overdose[1]`; only used for simulation reporting purposes.
-#' @slot overdose (`numeric`)\cr the (inclusive) lower and upper boundaries of the
+#' @slot overdose (`numeric`)\cr the (exclusive) lower and (inclusive) upper boundaries of the
 #'   toxicity probability interval considered an overdose region. The prototype
-#'   uses `c(0.35, 1)` meaning probabilities ≥ 0.35 are treated as overly toxic.
+#'   uses `c(0.35, 1)` meaning probabilities > 0.35 are treated as overly toxic.
 #' @slot max_overdose_prob (`proportion`)\cr maximum acceptable posterior
 #'   probability that the next recommended dose is in the overdose interval.
 #'

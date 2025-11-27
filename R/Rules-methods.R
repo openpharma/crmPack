@@ -93,7 +93,7 @@ setMethod(
       (prob_overdose <= nextBest@max_overdose_prob)
 
     next_dose <- if (any(is_dose_eligible)) {
-      # Take the higest eligible dose.
+      # Take the highest eligible dose.
       next_best_level <- sum(is_dose_eligible)
       data@doseGrid[is_dose_eligible][next_best_level]
     } else {
