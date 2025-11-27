@@ -78,7 +78,7 @@ The whole R-package is built in a modular form, by using S4 classes and methods.
 
 # Data
 
-```{r, fig.cap="Data classes structure", fig.alt = "GeneralData is the grand parent, Data the child and DataDual the grand child."}
+```{r datastruct, fig.cap="Data classes structure", fig.alt = "GeneralData is the grand parent, Data the child and DataDual the grand child."}
 df <- data.frame(
   pathString = c(
     "GeneralData/Data/DataDual"
