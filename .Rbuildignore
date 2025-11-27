@@ -22,8 +22,9 @@ TODO
 ^Meta$
 Rplots.pdf
 ^pkgdown$
-⁠pkgdown/⁠
+pkgdown/
 ^data-raw$
 ^\.vscode$
 ^[.]?air[.]toml$
 ^jarl[.]toml$
+tests/testthat/_snaps/
