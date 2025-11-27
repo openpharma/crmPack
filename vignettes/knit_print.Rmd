@@ -8,7 +8,7 @@ reference-location: margin
 citation-location: margin
 bibliography: vignettes.bib
 vignette: >
-  %\VignetteIndexEntry{demo}
+  %\VignetteIndexEntry{Describing `crmPack` Objects}
   %\VignetteEngine{knitr::rmarkdown}
   %\VignetteEncoding{UTF-8}
 ---

@@ -786,7 +786,7 @@ h_default_if_empty <- function(x, default) {
 #'
 #' @export
 #'
-h_is_positive_definite <- function(x, size = 2, tol = 1e-08) {
+h_is_positive_definite <- function(x, size = 2, tol = 1e-06) {
   assert_number(tol)
 
   is_matrix <- test_matrix(
@@ -800,8 +800,9 @@ h_is_positive_definite <- function(x, size = 2, tol = 1e-08) {
   if (is_matrix) {
     is_symmetric <- all.equal(x, t(x), tolerance = tol)
     if (isTRUE(is_symmetric)) {
-      ev <- eigen(x, only.values = TRUE)$values
-      all(ev > tol)
+      # Use Cholesky decomposition which is more robust than eigenvalue computation
+      chol_result <- try(chol(x), silent = TRUE)
+      !inherits(chol_result, "try-error")
     } else {
       FALSE
     }
