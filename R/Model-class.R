@@ -2989,11 +2989,19 @@ DALogisticLogNormal <- function(
 #' This class inherits from the [`LogisticLogNormal`].
 #'
 #' @slot weight_method (`string`)\cr the weight function method: either linear
-#'   or adaptive. This was used in Liu, Yin and Yuan's paper.
+#'   or adaptive; see \insertCite{LiuYinYuan2013;textual}{crmPack}.
+#'
+#' @details Basically, the adaptive function allocate more weight to each record
+#'   than the linear function when DLTs are observed early and less weight when DLTs
+#'   are observed late. When DLT times are evenly distributed both weights are similar.
+#'   In addition, with more DLTs, the adaptive weights become more extreme
+#'   and different from the linear weights.
 #'
 #' @seealso [`DALogisticLogNormal`].
 #'
 #' @aliases TITELogisticLogNormal
+#' @references
+#'   \insertAllCited{}
 #' @export
 #'
 .TITELogisticLogNormal <- setClass(
