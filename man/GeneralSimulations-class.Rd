@@ -6,12 +6,7 @@
 \alias{.GeneralSimulations}
 \alias{GeneralSimulations}
 \alias{.DefaultGeneralSimulations}
-\title{\code{GeneralSimulations} @description \ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#stable}{\figure{lifecycle-stable.svg}{options: alt='[Stable]'}}}{\strong{[Stable]}}
-This class captures trial simulations.
-Here also the random generator state before starting the simulation is
-saved, in order to be able to reproduce the outcome. For this just use
-\code{\link{set.seed}} with the \code{seed} as argument before running
-\code{\link{simulate,Design-method}}.}
+\title{\code{GeneralSimulations}}
 \usage{
 GeneralSimulations(data, doses, seed)
 
@@ -25,7 +20,8 @@ GeneralSimulations(data, doses, seed)
 \item{seed}{(\code{integer})\cr see slot definition.}
 }
 \description{
-\code{GeneralSimulations} @description \ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#stable}{\figure{lifecycle-stable.svg}{options: alt='[Stable]'}}}{\strong{[Stable]}}
+\ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#stable}{\figure{lifecycle-stable.svg}{options: alt='[Stable]'}}}{\strong{[Stable]}}
+
 This class captures trial simulations.
 Here also the random generator state before starting the simulation is
 saved, in order to be able to reproduce the outcome. For this just use

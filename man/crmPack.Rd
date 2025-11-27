@@ -33,11 +33,14 @@ Authors:
   \item Ziwei Liao \email{ziwei.liao.fdu@gmail.com}
   \item Dimitris Kontos \email{dimitris.kontos@bayer.com}
   \item Marlene Schulte-Goebel \email{marlene.schulte-goebel@merckgroup.com}
-  \item Doug Kelkhoff \email{doug.kelkhoff@roche.com} (\href{https://orcid.org/0009-0003-7845-4061}{ORCID})
+  \item Doug Kelkhoff \email{doug.kelkhoff@gmail.com} (\href{https://orcid.org/0009-0003-7845-4061}{ORCID})
   \item Oliver Boix \email{oliver.boix@bayer.com}
   \item Robert Adams \email{robert.adams@bayer.com}
   \item Clara Beck \email{clara.beck@bayer.com}
-  \item John Kirkpatrick \email{john.kirkpatrick@roche.com}
+  \item John Kirkpatrick \email{john@puzzledface.net}
+  \item Wojciech Wójciak \email{wojciech.wojciak@gmail.com}
+  \item Guanya Peng
+  \item Prerana Chandratre
 }
 
 Other contributors:

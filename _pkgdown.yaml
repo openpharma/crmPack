@@ -28,22 +28,31 @@ navbar:
       aria-label: View on CRAN
 
 articles:
-  - title: Articles
-    navbar: ~
+  - title: Upgrading
+    navbar: Upgrading
     contents:
+      - upgrading_from_the_old_crmPack
+  - title: Introduction
+    navbar: Introduction
+    contents:
+      - crmPack-jss-paper
       - trial_definition
       - trial_analysis
       - trial_sanity_checks
       - trial_simulation
-      - ordinal-crm
-      - rolling-crm
+  - title: Examples
+    navbar: Examples
+    contents:
+      - example
       - simulations
+      - rolling-crm
+      - ordinal-crm
+  - title: Tools
+    navbar: Tools
+    contents:
       - knit_print
       - tidy_method
-      - migration_from_the_old_crmPack
       - parallel_computing_with_extensions
-      - crmPack-jss-paper
-      - example
 
 reference:
   - title: Package

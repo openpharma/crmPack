@@ -8,7 +8,10 @@ NULL
 
 ## class ----
 
-#' `GeneralSimulations` @description `r lifecycle::badge("stable")`
+#' `GeneralSimulations`
+#'
+#' @description `r lifecycle::badge("stable")`
+#'
 #' This class captures trial simulations.
 #' Here also the random generator state before starting the simulation is
 #' saved, in order to be able to reproduce the outcome. For this just use

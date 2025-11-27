@@ -1,11 +1,11 @@
 ---
-title: "Migrating from crmPack version 1.0.3"
+title: "Upgrading from crmPack version 1.0.3"
 author: "Wojciech Wójciak, Oliver Boix"
 date: "20 June 2023"
 output: rmarkdown::html_vignette
 bibliography: vignettes.bib  
 vignette: >
-  %\VignetteIndexEntry{Migrating from crmPack version 1.0.3}
+  %\VignetteIndexEntry{Upgrading from crmPack version 1.0.3}
   %\VignetteEngine{knitr::rmarkdown}
   %\VignetteDepends{crmPack}
   \usepackage[utf8]{inputenc}
@@ -26,7 +26,9 @@ represents a single-type, consistent change.
 
 ### Naming convention motivation
 
-To be close to common R style guidelines [@advancedR] and use consistent naming conventions within the `crmPack` package, `CamelCase` notation is used for `class` names, `method` names and constructor function names, and `snake_case` notation is used for `slot` names throughout the package.
+To be close to common R style guidelines [@advancedR] and use consistent naming conventions within
+the `crmPack` package, `CamelCase` notation is used for `class` names, `method` names and constructor function 
+names, and `snake_case` notation is used for `slot` names throughout the package.
 
 ### New classes
 
@@ -42,6 +44,7 @@ new_classes <- tribble(
   "Model", "FractionalCRM", "Fractional CRM model.",
   "Increments", "IncrementsHSRBeta", "Limiting further increments using a Hard Safety Rule",
   "Increments", "IncrementsRelativeDLTCurrent", "Increments control based on relative differences in terms of DLTs.",
+  "nextBest", "NextBestEWOC", "Next best dose is the highest possible dose subject to overdose control.",
   "nextBest", "NextBestInfTheory", "Next best dose that is based on information theory.",
   "nextBest", "NextBestMinDist", "Next best dose that is based on minimum distance to target probability.",
   "nextBest", "NextBestNCRMLoss", "Next best dose based on NCRM rule and loss function.",
@@ -101,6 +104,8 @@ kbl(cr, longtable = TRUE, booktabs = TRUE, col.names = NULL, escape = FALSE) %>%
 ```
 
 ### Renamed slots
+
+Please note that this list might not be exhaustive. Please always check the relevant class documentation for details.
 
 ```{r renamed_slots, echo=FALSE}
 #   "helper", "positive_number", "", "", FALSE, "to handle strictly positive valued slots
@@ -207,8 +212,6 @@ kbl(cc, longtable = TRUE, booktabs = TRUE, col.names = NULL, escape = FALSE) %>%
 
 Strikeout indicates that the class/slot was removed.
 
-
-
 ## Moved `dose` and `prob` Functions from Slots to Methods
 
 Moved `dose` and `prob` functions from model class slots to model class methods.
@@ -296,7 +299,6 @@ For consistent handling how the study is stopped and to facilitate analysis of s
 ## Evaluation of stopping rules at a specific dose
 
 Without further specification, stopping rules are evaluated at the dose returned by the used `nextBest` method. With the new stopping rule `StoppingSpecificDose` it is possible to evaluate stopping rules at any dose. For usage see documentation of `StoppingSpecificDose`.
-
 
 ## Further details in class and methods name changes
 
