@@ -31,3 +31,4 @@ tests/testthat/_snaps
 lib
 ^vignettes/example\.Rmd\.orig$
 ^vignettes/\.rebuild_example\.R$
+^vignettes/crmPack-jss-paper\.Rmd\.orig$

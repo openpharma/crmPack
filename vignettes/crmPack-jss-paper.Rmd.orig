@@ -13,9 +13,23 @@ vignette: >
   %%\VignetteEncoding{UTF-8}
 bibliography: vignettes.bib
 ---
+```{r, echo=FALSE}
+library(knitr)
+```
 
-
-
+```{r, include=FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>",
+  warning = FALSE,
+  message = FALSE,
+  dev = "ragg_png",
+  tidy = "styler",
+  fig.path = "./jss-figures/",
+  fig.width = 6,
+  out.width = "100%"
+)
+```
 
 # Abstract
 
@@ -100,10 +114,9 @@ For describing the framework of the package we will adapt the general notation
 for early phase trials from [@Thall2010]. Figure \@ref(fig:schematic) summarizes
 the framework in a schematic.
 
-<div class="figure" style="text-align: center">
-<img src="./schematic.png" alt="Schematic showing the general framework of an early phase dose escalation design." width="700px" height="540px" />
-<p class="caption">Schematic of the framework</p>
-</div>
+```{r schematic, fig.align='center', out.height = "540px", out.width="700px", fig.cap='Schematic of the framework', fig.alt = "Schematic showing the general framework of an early phase dose escalation design.", echo = FALSE}
+knitr::include_graphics("./schematic.png")
+```
 
 Separate design features are implemented as classes (shown as gray boxes) and bundled together in the overarching `Design` object.
 They can be processed with various methods (blue text) to run the dose escalation trial and produce results (blue boxes). For example, the `Data` and `GeneralModel` objects can be processed by the `mcmc` method in order to obtain posterior samples of the model parameters, and given the sample size and the dose for the next cohort, the updated `Data` closes the dose escalation loop. On the higher level, designs can be investigated with the `examine` and `simulate` methods to obtain hypothetical trial courses and operating characteristics, respectively. Note that individual model classes and methods are not shown here for clarity, please refer to the package documentation for details, e.g., by calling `crmPackHelp()`.'
@@ -207,8 +220,7 @@ dose escalation based on the safety endpoint only, while in
 functionality.
 
 Before we start, we have to install and subsequently load our package in `R`:
-
-``` r
+```{r start, warning=FALSE, message=FALSE}
 library("crmPack")
 ```
 > As indicated in the startup message, try `crmPackHelp()` and `crmPackExample()` to open the help page and the package vignette.
@@ -228,8 +240,7 @@ relationship, and hence would like to use a minimally informative prior
 `MinimalInformative`. Since stochastic optimization is used internally, setting of a seed is required for reproducibility.
 Furthermore, it is recommended to specify a coarse dose grid across the original dose range (excluding the placebo dose) to avoid long computation time:
 
-
-``` r
+```{r min-inf, warning=FALSE, message=FALSE, results = FALSE, echo = TRUE}
 coarseGrid <- c(25, 50, 100, 200, 300)
 model <- MinimalInformative(
   dosegrid = coarseGrid, refDose = 100,
@@ -242,14 +253,14 @@ model <- MinimalInformative(
 The resulting `model` (which is an object of class `LogisticLogNormal`)
 has prior parameters
 
-$$\mu = (0.0720313, 2)$$
+$$\mu = (`r runif(1)`, `r 2`)$$
 
 and
 
 $$\Sigma=
  \left(\begin{smallmatrix}
-   1.51 & 0.18 \\
-   0.18 & 0.21
+   `r round(model@params@cov[1, 1], 2)` & `r round(model@params@cov[1, 2], 2)` \\
+   `r round(model@params@cov[2, 1], 2)` & `r round(model@params@cov[2, 2], 2)`
  \end{smallmatrix}\right)$$
 and will approximately have 5% probability each for the DLT
 rate to exceed 10% (`threshmin` argument) at the 25&nbsp;mg dose and to be below 20%
@@ -260,8 +271,7 @@ observations $y$, the `S4` class `Data` can be used. Objects of this class
 can be created by calling the accompanying initialization function of the same
 name (which is a general convention in `crmPack`):
 
-
-``` r
+```{r init-Data}
 PL <- 0.001
 data <- Data(
   x = c(PL, 25, 25, 25, PL, 50, 50, 50, PL, 100, 100, 100),
@@ -273,7 +283,7 @@ data <- Data(
 )
 ```
 
-The argument `x` takes the doses $x_{1}=0.001, x_{2}=25, x_{3} = 50, x_{4} = 100$ (note
+The argument `x` takes the doses $x_{1}=`r PL`, x_{2}=25, x_{3} = 50, x_{4} = 100$ (note
 the repetition to match the outcome variables $y_{j,k}$) where `doseGrid`
 captures the set ${\cal X}$ of all possible doses, `y` takes the binary
 DLTs (here $y_{3, 3} = 1$ denotes the only DLT having been observed in the 3rd
@@ -284,25 +294,13 @@ optionally in the `ID` argument. The data can then be visualized by simply apply
 the `plot` function to the object, which also allows to produce a blinded plot (hiding patient
 IDs and placebo/treatment assignment) with the option `blind`, see Figure \@ref(fig:plot-data):
 
-
-``` r
+```{r plot-data,fig.width=5,fig.height=5,out.width='.35\\linewidth',fig.align='center', fig.env='figure', fig.cap='Open and blinded data plots', fig.alt = "An unblinded graph with patient id on the x axis and dose administered on the y axis.  Red triangles indicate patients who reported DLTs, black circles those who did not.  Symbols are annotated with patient IDs.  Vertical dashed green lines delineate cohorts."}
 plot(data)
 ```
 
-<div class="figure" style="text-align: center">
-<img src="./jss-figures/plot-data-1.png" alt="An unblinded graph with patient id on the x axis and dose administered on the y axis.  Red triangles indicate patients who reported DLTs, black circles those who did not.  Symbols are annotated with patient IDs.  Vertical dashed green lines delineate cohorts." width=".35\linewidth" />
-<p class="caption">Open and blinded data plots</p>
-</div>
-
-
-``` r
+```{r plot-data-blind,fig.width=5,fig.height=5,out.width='.35\\linewidth',fig.align='center', fig.env='figure', fig.cap='Open and blinded data plots', fig.env='figure', fig.cap='Open and blinded data plots', fig.alt = "A blinded graph with patient id on the x axis and dose administered on the y axis.  Red triangles indicate reports of DLTs, black circles indicate an absense of DLTs.  However, within each cohort, patients with DLTs appear before those without.  Symbols are not annotated with patient IDs.  Vertical dashed green lines delineate cohorts."}
 plot(data, blind = TRUE)
 ```
-
-<div class="figure" style="text-align: center">
-<img src="./jss-figures/plot-data-blind-1.png" alt="A blinded graph with patient id on the x axis and dose administered on the y axis.  Red triangles indicate reports of DLTs, black circles indicate an absense of DLTs.  However, within each cohort, patients with DLTs appear before those without.  Symbols are not annotated with patient IDs.  Vertical dashed green lines delineate cohorts." width=".35\linewidth" />
-<p class="caption">Open and blinded data plots</p>
-</div>
 
 **Sampling from the prior and posterior** Now that we have the model and the data in place, we can use MCMC sampling for
 obtaining the posterior distribution of the model parameters $\theta$, and hence
@@ -311,8 +309,7 @@ sampling can be controlled with an object of class `McmcOptions`, which is
 then provided to the `mcmc` function, together with the `data` and the
 `model` objects:
 
-
-``` r
+```{r mcmc-sampling}
 options <- McmcOptions(burnin = 1000, step = 2, samples = 10000)
 set.seed(94)
 samples <- mcmc(data, model, options)
@@ -323,19 +320,13 @@ DLT rates can be obtained by supplying
 the samples, model and data to the generic `plot` function. Similarly we can
 also produce a similar plot without any data, which is then giving the prior, see Figure \@ref(fig:plot-model-fit):
 
-
-``` r
+```{r plot-model-fit,fig.show='hold',fig.width=5,fig.height=5,out.width='.35\\linewidth',fig.align='center', fig.env='figure', fig.cap='Posterior and prior regression model fits', fig.alt = "Prior and posterior dose-toxicity curves."}
 plot(samples, model, data) + ggtitle("Posterior")
 
 emptydata <- Data(doseGrid = data@doseGrid, placebo = TRUE)
 priorsamples <- mcmc(emptydata, model, options)
 plot(priorsamples, model, emptydata) + ggtitle("Prior")
 ```
-
-<div class="figure" style="text-align: center">
-<img src="./jss-figures/plot-model-fit-1.png" alt="Prior and posterior dose-toxicity curves." width=".35\linewidth" /><img src="./jss-figures/plot-model-fit-2.png" alt="Prior and posterior dose-toxicity curves." width=".35\linewidth" />
-<p class="caption">Posterior and prior regression model fits</p>
-</div>
 As illustrated here, the plots can be customized by using the `ggplot2`[@ggplot2]
 functionality. We can see that while the posterior mean estimate (left panel, continuous line)
 is only slightly steeper than the prior mean estimate curve (right panel, continuous line),
@@ -345,8 +336,7 @@ the posterior uncertainty is reduced due to the data (smaller credible intervals
 specifying the maximum increments function $\tau$. In the example below a maximum increase of 100%
 for doses below 100 mg, 50% for doses in the range from 100 mg to 200 mg, and 33%
 for doses equal or above 200 mg is specified using the class `IncrementsRelative`:
-
-``` r
+```{r rel-incrs}
 myIncrements <- IncrementsRelative(
   intervals = c(0, 100, 200),
   increments = c(1, 0.5, 0.33)
@@ -354,106 +344,47 @@ myIncrements <- IncrementsRelative(
 ```
 This specific rule $\tau$ can then be evaluated on the current dataset ${\cal D}_{N}$ by
 the `maxDose` function to obtain the maximum next dose $t_{N+1} = \tau({\cal D}_{N})$:
-
-``` r
+```{r rel-incrs-eval}
 (nextMaxDose <- maxDose(myIncrements, data))
-#> [1] 150
 ```
 
 We then define the function $\nu$ for selecting a dose for the next cohort. In this case we would like to select the dose which maximizes the probability of the DLT rate being in the target toxicity range from 20% to 35%, but with the probability of overdosing not exceeding 25% [@Neuenschwander2008], using the `NextBestNCRM` class:
-
-``` r
+```{r nextBest-ncrm-def}
 myNextBest <- NextBestNCRM(
   target = c(0.2, 0.35), overdose = c(0.35, 1),
   max_overdose_prob = 0.25
 )
 ```
 This rule can then be evaluated with the function `NextBest` to obtain the next dose $x_{N+1}=\nu({\cal D}_{N}, t_{N+1})$:
-
-``` r
+```{r nextBest-ncrm-eval}
 nextDoseRes <- nextBest(myNextBest, nextMaxDose, samples, model, data)
 (nextDoseVal <- nextDoseRes$value)
-#> [1] 100
 ```
 
 The returned list also contains an accompanying plot (`nextDoseRes$plot`), see Figure \@ref(fig:nextBest-ncrm).
 
-<div class="figure" style="text-align: center">
-<img src="./jss-figures/nextBest-ncrm-1.png" alt="A graphical description of the logic between the recommendation of the nextBestRes object." width=".5\linewidth" />
-<p class="caption">Dose recommendation plot from NCRM design</p>
-</div>
+```{r nextBest-ncrm,echo=FALSE,fig.width=4,fig.height=4,out.width='.5\\linewidth',fig.align='center',fig.env='figure', fig.cap='Dose recommendation plot from NCRM design', fig.alt = "A graphical description of the logic between the recommendation of the nextBestRes object."}
+nextDoseRes$plot
+```
 
 **Adaptive stopping of the trial** We would like to stop the dose escalation adaptively if the maximum sample size of $n=30$ patients
 has been reached already, or if we have sufficient precision for the MTD estimate. We can specify the latter condition as follows: The probability that the next dose $x_{N+1}$ is in the target toxicity range is above 50%, and at least 9 patients were already dosed within +/- 20% range of $x_{N+1}$. The corresponding `Stopping` class object is constructed by combining the atomic rules with logical operators as follows:
-
-``` r
+```{r stop-rules-def}
 myStopping1 <- StoppingMinPatients(nPatients = 30)
 myStopping2 <- StoppingTargetProb(target = c(0.2, 0.35), prob = 0.5)
 myStopping3 <- StoppingPatientsNearDose(nPatients = 9, percentage = 20)
 myStopping <- myStopping1 | (myStopping2 & myStopping3)
 ```
 Again, this specific rule can be evaluated by a function, here called `stopTrial`, for a specific situation:
-
-``` r
+```{r stop-rules-eval, wrap=TRUE}
 stopTrial(myStopping, nextDoseVal, samples, model, data)
-#> [1] FALSE
-#> attr(,"message")
-#> attr(,"message")[[1]]
-#> [1] "Number of patients is 12 and thus below the prespecified minimum number 30"
-#> 
-#> attr(,"message")[[2]]
-#> attr(,"message")[[2]][[1]]
-#> [1] "Probability for target toxicity is 33 % for dose 100 and thus below the required 50 %"
-#> 
-#> attr(,"message")[[2]][[2]]
-#> [1] "3 patients lie within 20% of the next best dose 100. This is below the required 9 patients"
-#> 
-#> 
-#> attr(,"individual")
-#> attr(,"individual")[[1]]
-#> [1] FALSE
-#> attr(,"message")
-#> [1] "Number of patients is 12 and thus below the prespecified minimum number 30"
-#> attr(,"report_label")
-#> [1] "≥ 30 patients dosed"
-#> 
-#> attr(,"individual")[[2]]
-#> [1] FALSE
-#> attr(,"message")
-#> attr(,"message")[[1]]
-#> [1] "Probability for target toxicity is 33 % for dose 100 and thus below the required 50 %"
-#> 
-#> attr(,"message")[[2]]
-#> [1] "3 patients lie within 20% of the next best dose 100. This is below the required 9 patients"
-#> 
-#> attr(,"individual")
-#> attr(,"individual")[[1]]
-#> [1] FALSE
-#> attr(,"message")
-#> [1] "Probability for target toxicity is 33 % for dose 100 and thus below the required 50 %"
-#> attr(,"report_label")
-#> [1] "P(0.2 ≤ prob(DLE | NBD) ≤ 0.35) ≥ 0.5"
-#> 
-#> attr(,"individual")[[2]]
-#> [1] FALSE
-#> attr(,"message")
-#> [1] "3 patients lie within 20% of the next best dose 100. This is below the required 9 patients"
-#> attr(,"report_label")
-#> [1] "≥ 9 patients dosed in 20 % dose range around NBD"
-#> 
-#> attr(,"report_label")
-#> [1] NA
-#> 
-#> attr(,"report_label")
-#> [1] NA
 ```
 The result `FALSE` means that we cannot yet stop the trial, with the attribute `message` giving the results from the atomic stopping rules.
 
 
 **Examine the dose escalation design** In the last topic of this section, we want to show how to assess the performance of a given CRM design. We first need to specify our design by creating an object of class `Design`. It contains our model, our rules for dose escalation (`Increments`, `NextBest`, `Stopping` and `CohortSize`), the dose grid (in the example below through the object `emptydata`) and our starting dose (see also Figure \@ref(fig:schematic).
 In this case we will use a fixed cohort size of 3 patients on active and 1 patient on placebo (``3+1'') throughout the study:
-
-``` r
+```{r size-rules}
 mySize <- CohortSizeConst(3)
 mySizePL <- CohortSizeConst(1)
 
@@ -466,46 +397,18 @@ design <- Design(
 ```
 We can then start by looking at the single trial operating characteristics of the dose escalation design with the function `examine`, which generates a data frame showing the beginning of several hypothetical trial courses under the design. Assuming no DLTs have been seen until a certain dose, then the consequences of different number of DLTs being observed at this dose are shown. For example, if we observe 3 DLTs at the starting dose of 25&nbsp;mg, we would
 need to stop the trial, while we would enroll another cohort at the same dose level in case of 2 DLTs. In the last rows of the output we see that if no DLTs were observed before the 250&nbsp;mg cohort, the maximum considered dose of 300&nbsp;mg dose can be reached in the next cohort if also no DLTs are observed at 250&nbsp;mg. If 1, 2 or 3 DLTs are observed, the next dose is recommended as 225, 175 and 150&nbsp;mg, respectively.
-
-``` r
+```{r design-examine, abbreviate=5}
 set.seed(23)
 examine(design, mcmcOptions = options)
-#>    dose DLTs nextDose  stop increment
-#> 1    25    0       50 FALSE       100
-#> 2    25    1       50 FALSE       100
-#> 3    25    2       25 FALSE         0
-#> 4    25    3       NA FALSE        NA
-#> 5    50    0      100 FALSE       100
-#> 6    50    1       75 FALSE        50
-#> 7    50    2       50 FALSE         0
-#> 8    50    3       25 FALSE       -50
-#> 9   100    0      125 FALSE        25
-#> 10  100    1      100 FALSE         0
-#> 11  100    2       75 FALSE       -25
-#> 12  100    3       50 FALSE       -50
-#> 13  125    0      175 FALSE        40
-#> 14  125    1      125 FALSE         0
-#> 15  125    2      100 FALSE       -20
-#> 16  125    3       75 FALSE       -40
-#> 17  175    0      250 FALSE        43
-#> 18  175    1      175 FALSE         0
-#> 19  175    2      125 FALSE       -29
-#> 20  175    3      100 FALSE       -43
-#> 21  250    0      300 FALSE        20
-#> 22  250    1      225 FALSE       -10
-#> 23  250    2      175 FALSE       -30
-#> 24  250    3      150 FALSE       -40
 ```
 
 **Simulating operating characteristics** For the many trials operating characteristics, we first have to define true scenarios, from which the data should arise. In this case, this only requires a function that computes the probability of DLT given a dose. As an example we use here the function contained in the slot `prob` of the object `model`:
 %, for which the dose-toxicity curve is shown below.
-
-``` r
+```{r true-def}
 myTruth <- probFunction(model, alpha0 = 4.5, alpha1 = 8)
 ```
 Note that any possible R-function returning a vector of probabilities upon input of the dose vector can be used. In particular, it is trivially possible to directly specify the probability of DLT for each dose in order to examine operating characteristics not based on any statistical model. For example, assume 5 doses 1--5 with probabilities of DLT of 0.01, 0.02, 0.04, 0.06, 0.09, then the following code could be used:
-
-``` r
+```{r true-def-alternative}
 doseProbMatrix <- cbind(c(1, 2, 3, 4, 5), c(0.01, 0.02, 0.04, 0.06, 0.09))
 myTruthMatrix <-
   function(dose) {
@@ -513,8 +416,7 @@ myTruthMatrix <-
   }
 ```
 Now we can proceed to the simulations using the function `simulate`:
-
-``` r
+```{r run-sims}
 mySimsTime <-
   system.time(mySims <- simulate(design,
     truth = myTruth, nsim = 100,
@@ -523,64 +425,34 @@ mySimsTime <-
   ))[3]
 ```
 The number of simulated trials depends on the required accuracy of the results. The argument `parallel` can be set to `TRUE` if one wishes to run the iterations in parallel on all processors of the computer, which can yield a meaningful speedup. Here we
-needed 274 seconds for 100 simulated trials
+needed `r round(mySimsTime)` seconds for `r length(mySims@data)` simulated trials
 on an Intel Core i5-6300U CPU with 2.4 GHz.
 
 The result is an object of class `Simulations` containing multiple slots, with e.g., the `data` slot containing the list of simulated trials. The slots `doses` and `stopReasons` contain information about the final MTD and the stopping reason for each trial. We can  e.g., investigate the number of patients and the MTD at the end of the third simulated trial:
-
-``` r
+```{r third-trial, fig.width=4,fig.height=4,out.width='.3\\linewidth',fig.align='center'}
 mySims@data[[3]]@nObs
-#> [1] 32
 mySims@doses[3]
-#> [1] 25
 ```
 Furthermore, we can plot the `Simulations` object by calling the `plot` method on it, see Figure \@ref(fig:sim-plot). You can select the plots by changing the `type` argument of `plot`, which by default is `type = c("trajectory", "dosesTried")`.
-<div class="figure" style="text-align: center">
-<img src="./jss-figures/sim-plot-1.png" alt="A graphical representation of the simulation results." width=".5\linewidth" />
-<p class="caption">Simulation plot</p>
-</div>
+```{r sim-plot, echo=FALSE, fig.width=4,fig.height=4,out.width='.5\\linewidth',fig.align='center',fig.env='figure', fig.cap='Simulation plot', fig.alt = "A graphical representation of the simulation results."}
+plot(mySims)
+```
 
 Second, we can summarize the simulation results, and obtain a textual description of the
 results:
-
-``` r
+```{r sim-summary, abbreviate=3}
 simSum <- summary(mySims, truth = myTruth)
 simSum
-#> Summary of 100 simulations
-#> 
-#> Target toxicity interval was 20, 35 %
-#> Target dose interval corresponding to this was 47.9, 52.7 
-#> Intervals are corresponding to 10 and 90 % quantiles
-#> 
-#> Number of patients on placebo : mean 7 (6, 8) 
-#> Number of patients on active : mean 22 (18, 24) 
-#> Number of patients overall : mean 30 (24, 32) 
-#> Number of patients treated above target tox interval : mean 3 (0, 3) 
-#> Proportions of DLTs in the trials for patients on placebo : mean 0 % (0 %, 0 %) 
-#> Proportions of DLTs in the trials for patients on active : mean 28 % (21 %, 38 %) 
-#> Mean toxicity risks for the patients on active : mean 27 % (18 %, 33 %) 
-#> Doses selected as MTD : mean 46 (25, 50) 
-#> True toxicity at doses selected : mean 22 % (0 %, 26 %) 
-#> Proportion of trials selecting target MTD: 84 %
-#> Dose most often selected as MTD: 50 
-#> Observed toxicity rate at dose most often selected: 27 %
-#> Fitted toxicity rate at dose most often selected : mean 23 % (16 %, 30 %) 
-#> Stop reason triggered:
-#>  ≥ 30 patients dosed :  65 %
-#>  P(0.2 ≤ prob(DLE | NBD) ≤ 0.35) ≥ 0.5 :  45 %
-#>  ≥ 9 patients dosed in 20 % dose range around NBD :  98 %
 ```
 A plot of the summary results can also be produced, see Figure \@ref(fig:sim-summary-plot).
-<div class="figure" style="text-align: center">
-<img src="./jss-figures/sim-summary-plot-1.png" alt="A graphical representation of the information in the simulation summary." width=".6\linewidth" />
-<p class="caption">Simulation summary plot</p>
-</div>
+```{r sim-summary-plot, echo=FALSE, fig.width=6,fig.height=6,out.width='.6\\linewidth',fig.align='center', warning=FALSE, fig.env='figure', fig.cap='Simulation summary plot', fig.alt = "A graphical representation of the information in the simulation summary."}
+plot(simSum)
+```
 
 ## Dose escalation with safety and efficacy
 In this section, dose escalation designs incorporating both safety (as binary DLT) and efficacy endpoints (continuous response) will be introduced. Dual endpoint datasets are implemented with the `DualData` class, where here we illustrate
 the addition of the efficacy data `w` to the previous dataset:
-
-``` r
+```{r data-dual, warning=FALSE}
 data2 <- DataDual(
   x = data@x, y = data@y, placebo = TRUE,
   w = c(
@@ -596,7 +468,7 @@ The endpoints can be modelled jointly or separately. For joint modelling derived
 \begin{equation}\label{eq:loglog}
 E(w(x)) = \gamma + \delta \log\{\log(x + c)\}
 \end{equation}
-such that $w(x) \sim N(E(w(x)), \sigma^2)$ with $c \geq 0$ as a constant. Usually the default value $c=0$ can be used, but in our case we choose $c=2$ to allow for the placebo dose $x=0.001$ which is close to 0.
+such that $w(x) \sim N(E(w(x)), \sigma^2)$ with $c \geq 0$ as a constant. Usually the default value $c=0$ can be used, but in our case we choose $c=2$ to allow for the placebo dose $x=`r PL`$ which is close to 0.
 
 For both the safety and efficacy models, the prior will be expressed in form of imaginary pseudo data see [@yeung2015] for details. Prior and posterior modal estimates of the model parameters can then be obtained as the maximum likelihood estimates from the data set combining pseudo data with observed data [@w06]. The variance $\sigma^{2}$ can be fixed or assigned an inverse gamma prior distribution.
 
@@ -606,8 +478,7 @@ Coming back to our example study, the pseudo data for the safety prior assumes t
 DLTs being observed at these two dose levels, respectively. This corresponds to prior
 means of 0.35 and 0.6 for the DLT probabilities. We implement
 model @\eqref{eq:LogisticLogNormal} with this pseudo data prior as follows:
-
-``` r
+```{r DLTmodel}
 DLTmodel <- LogisticIndepBeta(
   binDLE = c(1.05, 1.8), DLEweights = c(3, 3),
   DLEdose = c(25, 300), data = emptydata
@@ -615,8 +486,7 @@ DLTmodel <- LogisticIndepBeta(
 ```
 
 The efficacy model can similarly be specified as
-
-``` r
+```{r Effmodel}
 emptydata2 <- DataDual(doseGrid = emptydata@doseGrid, placebo = TRUE)
 Effmodel <- Effloglog(
   eff = c(1.223, 2.513), eff_dose = c(25, 300),
@@ -633,15 +503,13 @@ G(x)=Prob(Y=0 | x, \theta)E(w(x))
 Note that the gain function depends on the safety parameter vector $\theta$ and
 the efficacy parameters $\gamma$ and $\delta$, which will be estimated by their
 posterior modal estimates using the `update` method:
-
-``` r
+```{r update}
 newDLTmodel <- update(object = DLTmodel, data = data2)
 newEffmodel <- update(object = Effmodel, data = data2)
 ```
 With `crmPack` we can implement the next best dose recommendation
 based on maximizing the gain function as follows:
-
-``` r
+```{r NextBestGain}
 GainNextBest <- NextBestMaxGain(
   prob_target_drt = 0.35,
   prob_target_eot = 0.3
@@ -653,30 +521,25 @@ at the end of the study.
 As in [Implementing a CRM trial] this rule $\nu$ can be evaluated using
 `NextBest` to obtain $x_{N+1}$, after evaluating the maximum increments rule
 $\tau$ using `maxDose` to obtain $t_{N+1}$:
-
-``` r
+```{r nextBest}
 (nextMaxDose <- maxDose(myIncrements, data2))
-#> [1] 150
 doseRecGain <- nextBest(GainNextBest,
   doselimit = nextMaxDose,
   model = newDLTmodel, model_eff = newEffmodel,
   data = data2
 )
 (nextDoseVal <- doseRecGain$next_dose)
-#> [1] 25
 ```
 The plot for the next dose allocation is contained in `doseRecGain$plot` and shown in Figure \@ref(fig:doseRecommendation).
 \begin{figure}
-<div class="figure" style="text-align: center">
-<img src="./jss-figures/doseRecommendation-1.png" alt="A graphical representation of the logic behind the recommendation of the doseResgen object." width=".6\linewidth" />
-<p class="caption">plot of chunk doseRecommendation</p>
-</div>
+```{r doseRecommendation, echo=FALSE, fig.width=7,fig.height=5,out.width='.6\\linewidth',fig.align='center', fig.alt = "A graphical representation of the logic behind the recommendation of the doseResgen object."}
+print(doseRecGain$plot)
+```
 
-Dose recommendation plot from dual endpoint design. The red, blue and green curves correspond to the (posterior modal) estimated curves for safety, efficacy and gain, respectively. The vertical red line in the plot shows the maximum possible dose $t_{N+1} = 150$ mg and the vertical violet line shows the next dose $x_{N+1} = 25$ mg. The circle, square and triangle symbols mark the estimated doses with target toxicity (100 mg for 35% DLT probability during the trial and 75 mg for 30% DLT probability at the end of trial) and the estimated dose with maximum gain, 25 mg. The numbers can be obtained from the `doseRecGain` list.
+Dose recommendation plot from dual endpoint design. The red, blue and green curves correspond to the (posterior modal) estimated curves for safety, efficacy and gain, respectively. The vertical red line in the plot shows the maximum possible dose $t_{N+1} = `r nextMaxDose`$ mg and the vertical violet line shows the next dose $x_{N+1} = `r nextDoseVal`$ mg. The circle, square and triangle symbols mark the estimated doses with target toxicity (`r doseRecGain$next_dose_drt` mg for 35% DLT probability during the trial and `r doseRecGain$next_dose_eot` mg for 30% DLT probability at the end of trial) and the estimated dose with maximum gain, `r doseRecGain$next_dose_max_gain` mg. The numbers can be obtained from the `doseRecGain` list.
 
 **Stopping rules** In addition to the simple stopping rule based on the maximum number of patients in our trial, we can use another one relating to the precision of the dose with optimum gain:
-
-``` r
+```{r newdualstopping-rule}
 myStopping4 <- StoppingMaxGainCIRatio(
   target_ratio = 5,
   prob_target = GainNextBest@prob_target_eot
@@ -684,11 +547,10 @@ myStopping4 <- StoppingMaxGainCIRatio(
 myStoppingDual <- myStopping1 | myStopping4
 ```
 This stops the trial when 30 patients are reached, or when the ratio of the upper and lower confidence interval bounds around the dose recommendation is less
-than&nbsp;5.
+than&nbsp;`r myStopping4@target_ratio`.
 
 **Simulations** To simulate the operating characteristics, first a design has to be built:
-
-``` r
+```{r design}
 design2 <- DualResponsesDesign(
   nextBest = GainNextBest, model = DLTmodel,
   eff_model = Effmodel, data = emptydata2,
@@ -698,8 +560,7 @@ design2 <- DualResponsesDesign(
 )
 ```
 Note that an additional slot for the efficacy model is included in this design class. We can then specify the scenario for the simulation, by defining the true DLT and efficacy curves that we will be using:
-
-``` r
+```{r scenario}
 myTruthDLT <- probFunction(DLTmodel, phi1 = -53, phi2 = 10)
 myTruthEff <- efficacyFunction(Effmodel, theta1 = -4.8, theta2 = 3.7)
 myTruthGain <- function(dose) {
@@ -709,8 +570,7 @@ myTruthGain <- function(dose) {
 Please note that the parameter names `phi1`, `phi2`, `theta1` and
 `theta2` correspond to $\alpha_0, \alpha_1, \gamma$ and $\delta$, respectively.
 Simulations are again produced by the `simulate` function:
-
-``` r
+```{r simulate}
 Sim1 <- simulate(
   object = design2, args = NULL, trueDLE = myTruthDLT,
   trueEff = myTruthEff, trueNu = 1 / 0.025, nsim = 20,
@@ -747,8 +607,7 @@ level is minimized.
 **Creating a new model** To implement the one-parameter model @\eqref{eq:oneparameter} in `crmPack`
 we first need to define an appropriate `S4` class inheriting from the
 general model class `GeneralModel`:
-
-``` r
+```{r classOneParExp}
 .OneParExp <- setClass(
   Class = "OneParExp",
   contains = "GeneralModel",
@@ -772,8 +631,7 @@ specified in `datanames`. The prior is defined in `priormodel`.
 Model parameters are passed to `JAGS` via `modelspecs`.
 The `init` slot contains a function giving the starting values for the MCMC
 sampler, and `sample` defines which parameter samples will be returned:
-
-``` r
+```{r classOneParExp-init}
 OneParExp <- function(skeleton_probs, dose_grid, lambda) {
   .OneParExp(
     skeleton_probs = skeleton_probs,
@@ -808,8 +666,7 @@ The `dose`, on the other hand, uses an inverse of (the skeleton) function
 \pi^{-1}(p, \theta) = f^{-1}(p^{1/\theta})
 \end{equation}
 which maps the probability $p$ to a dose $x$.
-
-``` r
+```{r classOneParExp-dose_prob}
 setMethod(
   f = "dose",
   signature = signature(
@@ -842,10 +699,8 @@ Now we can already use the model, for example in the following we specify the
 skeleton probabilities via the dose grid and use a standard exponential prior
 for $\theta$. The resulting posterior fit can be plotted as usual,
 see Figure \@ref(fig:OneParExp-model-example).
-
-``` r
+```{r OneParExp-model-example, fig.width=5,fig.height=4,out.width='.5\\linewidth',fig.align='center', fig.env='figure', fig.cap='Model fit of the one parameter power model', fig.alt = "The posterior dose-toxicity curve from the one parameter power model."}
 (skeleton_probs <- round(data@doseGrid / max(data@doseGrid) / 2, 2))
-#>  [1] 0.00 0.04 0.08 0.12 0.17 0.21 0.25 0.29 0.33 0.38 0.42 0.46 0.50
 newModel <- OneParExp(
   skeleton_probs = skeleton_probs,
   dose_grid = data@doseGrid,
@@ -855,16 +710,10 @@ newSamples <- mcmc(data, newModel, options)
 plot(newSamples, newModel, data)
 ```
 
-<div class="figure" style="text-align: center">
-<img src="./jss-figures/OneParExp-model-example-1.png" alt="The posterior dose-toxicity curve from the one parameter power model." width=".5\linewidth" />
-<p class="caption">Model fit of the one parameter power model</p>
-</div>
-
 **Creating a new dose recommendation rule** In a second step we would like to create a new dose recommendation rule, which
 proposes the dose with estimated DLT probability closest to the target. Again
 we start with the class, now inheriting from `NextBest`:
-
-``` r
+```{r newNextBest-def}
 .NextBestMinDist <- setClass(
   Class = "NextBestMinDist",
   contains = "NextBest",
@@ -879,8 +728,7 @@ initialization function, although there is no technical need in this case.
 In order to make it usable we need to define the `NextBest` method for this
 new rule. Note that we do only specialize the method for the first argument,
 such that this rule could also be used with other models.
-
-``` r
+```{r newNextBest-method, results = FALSE}
 setMethod(
   "nextBest",
   signature = signature(
@@ -912,14 +760,12 @@ since this is required by the generic function definition. The advantage is
 that we could also include a plot or other supporting information in the return
 value. Immediately we can now use this rule in order to obtain the next dose
 recommendation, e.g., after specifying a target dose of 30%:
-
-``` r
+```{r newNextBest-try}
 newMyNextBest <- NextBestMinDist(target = 0.3)
 newNextDoseVal <- nextBest(newMyNextBest, nextMaxDose, newSamples, newModel, data)$value
 newNextDoseVal
-#> [1] 150
 ```
-So using this CRM, we could escalate to 150&nbsp;mg, instead
+So using this CRM, we could escalate to `r newNextDoseVal`&nbsp;mg, instead
 of just 100&nbsp;mg above.
 
 **Using the new functionality** These were the only necessary additions
