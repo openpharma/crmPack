@@ -623,11 +623,11 @@ examine(design, mcmcOptions = options)
     ## 15  125    2      100 FALSE       -20
     ## 16  125    3       75 FALSE       -40
     ## 17  175    0      250 FALSE        43
-    ## 18  175    1      150 FALSE       -14
+    ## 18  175    1      175 FALSE         0
     ## 19  175    2      125 FALSE       -29
     ## 20  175    3      100 FALSE       -43
     ## 21  250    0      300 FALSE        20
-    ## 22  250    1      250 FALSE         0
+    ## 22  250    1      225 FALSE       -10
     ## 23  250    2      175 FALSE       -30
     ## 24  250    3      150 FALSE       -40
 
@@ -672,7 +672,7 @@ mySimsTime <-
 The number of simulated trials depends on the required accuracy of the
 results. The argument `parallel` can be set to `TRUE` if one wishes to
 run the iterations in parallel on all processors of the computer, which
-can yield a meaningful speedup. Here we needed 190 seconds for 100
+can yield a meaningful speedup. Here we needed 195 seconds for 100
 simulated trials on an Intel Core i5-6300U CPU with 2.4 GHz.
 
 The result is an object of class `Simulations` containing multiple
@@ -725,15 +725,15 @@ simSum
     ## Proportions of DLTs in the trials for patients on placebo : mean 0 % (0 %, 0 %) 
     ## Proportions of DLTs in the trials for patients on active : mean 28 % (21 %, 33 %) 
     ## Mean toxicity risks for the patients on active : mean 27 % (18 %, 33 %) 
-    ## Doses selected as MTD : mean 46.2 (25, 50) 
+    ## Doses selected as MTD : mean 46 (25, 50) 
     ## True toxicity at doses selected : mean 22 % (0 %, 26 %) 
-    ## Proportion of trials selecting target MTD: 85 %
+    ## Proportion of trials selecting target MTD: 84 %
     ## Dose most often selected as MTD: 50 
     ## Observed toxicity rate at dose most often selected: 27 %
-    ## Fitted toxicity rate at dose most often selected : mean 23 % (17 %, 30 %) 
+    ## Fitted toxicity rate at dose most often selected : mean 24 % (17 %, 31 %) 
     ## Stop reason triggered:
-    ##  ≥ 30 patients dosed :  63 %
-    ##  P(0.2 ≤ prob(DLE | NBD) ≤ 0.35) ≥ 0.5 :  47 %
+    ##  ≥ 30 patients dosed :  66 %
+    ##  P(0.2 ≤ prob(DLE | NBD) ≤ 0.35) ≥ 0.5 :  45 %
     ##  ≥ 9 patients dosed in 20 % dose range around NBD :  98 %
 
 A plot of the summary results can also be produced, see Figure

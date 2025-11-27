@@ -259,6 +259,12 @@
 
   `NextBest`
 
+- [`NextBestEWOC()`](https://openpharma.github.io/crmPack/reference/NextBestEWOC-class.md)
+  [`.DefaultNextBestEWOC()`](https://openpharma.github.io/crmPack/reference/NextBestEWOC-class.md)
+  **\[stable\]** :
+
+  `NextBestEWOC`
+
 - [`NextBestMTD()`](https://openpharma.github.io/crmPack/reference/NextBestMTD-class.md)
   [`.DefaultNextBestMTD()`](https://openpharma.github.io/crmPack/reference/NextBestMTD-class.md)
   **\[stable\]** :
@@ -877,6 +883,7 @@
   [`v_next_best_ncrm_loss()`](https://openpharma.github.io/crmPack/reference/v_next_best.md)
   [`v_next_best_dual_endpoint()`](https://openpharma.github.io/crmPack/reference/v_next_best.md)
   [`v_next_best_min_dist()`](https://openpharma.github.io/crmPack/reference/v_next_best.md)
+  [`v_next_best_ewoc()`](https://openpharma.github.io/crmPack/reference/v_next_best.md)
   [`v_next_best_inf_theory()`](https://openpharma.github.io/crmPack/reference/v_next_best.md)
   [`v_next_best_td()`](https://openpharma.github.io/crmPack/reference/v_next_best.md)
   [`v_next_best_td_samples()`](https://openpharma.github.io/crmPack/reference/v_next_best.md)

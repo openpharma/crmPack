@@ -20,6 +20,8 @@ v_next_best_dual_endpoint(object)
 
 v_next_best_min_dist(object)
 
+v_next_best_ewoc(object)
+
 v_next_best_inf_theory(object)
 
 v_next_best_td(object)
@@ -69,6 +71,11 @@ case validation passes.
 - `v_next_best_min_dist()`: validates that the
   [`NextBestMinDist`](https://openpharma.github.io/crmPack/reference/NextBestMinDist-class.md)
   object contains valid `target` object.
+
+- `v_next_best_ewoc()`: validates that the
+  [`NextBestEWOC`](https://openpharma.github.io/crmPack/reference/NextBestEWOC-class.md)
+  object contains valid `target`, `overdose` and `max_overdose_prob`
+  parameters.
 
 - `v_next_best_inf_theory()`: validates that the
   [`NextBestInfTheory`](https://openpharma.github.io/crmPack/reference/NextBestInfTheory-class.md)

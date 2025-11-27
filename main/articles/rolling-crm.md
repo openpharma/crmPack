@@ -298,10 +298,10 @@ mySims@stop_reasons[[2]]
 ```
 
     ## [[1]]
-    ## [1] "Probability for target toxicity is 75 % for dose 16 and thus above the required 50 %"
+    ## [1] "Probability for target toxicity is 55 % for dose 16 and thus above the required 50 %"
     ## 
     ## [[2]]
-    ## [1] "Number of patients is 17 and thus below the prespecified minimum number 50"
+    ## [1] "Number of patients is 12 and thus below the prespecified minimum number 50"
 
 ``` r
 # nolint end

@@ -22,8 +22,7 @@ TITELogisticLogNormal(weight_method = "linear", ...)
 - weight_method:
 
   (`string`)  
-  the weight function method: either linear or adaptive. This was used
-  in Liu, Yin and Yuan's paper.
+  see the slot description.
 
 - ...:
 
@@ -46,18 +45,33 @@ TITELogisticLogNormal(weight_method = "linear", ...)
   :   (`number`)  
       the reference dose \\x\*\\ (strictly positive number).
 
+## Details
+
+Basically, the adaptive function allocate more weight to each record
+than the linear function when DLTs are observed early and less weight
+when DLTs are observed late. When DLT times are evenly distributed both
+weights are similar. In addition, with more DLTs, the adaptive weights
+become more extreme and different from the linear weights.
+
 ## Slots
 
 - `weight_method`:
 
   (`string`)  
-  the weight function method: either linear or adaptive. This was used
-  in Liu, Yin and Yuan's paper.
+  the weight function method: either linear or adaptive; see Liu et
+  al. (2013) .
 
 ## Note
 
 Typically, end users will not use the `.DefaultTITELogisticLogNormal()`
 function.
+
+## References
+
+Liu S, Yin G, Yuan Y (2013). “Bayesian data augmentation dose finding
+with continual reassessment method and delayed toxicity.” *The Annals of
+Applied Statistics*, **7**(4), 2138–2156.
+[doi:10.1214/13-AOAS661](https://doi.org/10.1214/13-AOAS661) .
 
 ## See also
 

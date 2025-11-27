@@ -511,24 +511,25 @@ way.
 
 ## Class coverage
 
-`crmPack` defines 124 classes. Custom `knit_print` methods exist for 91
-of them. Of the remaining 33 classes, 23 are virtual classes that will
-never be directly instantiated by end users. That leaves 10 classes for
+`crmPack` defines 125 classes. Custom `knit_print` methods exist for 91
+of them. Of the remaining 34 classes, 23 are virtual classes that will
+never be directly instantiated by end users. That leaves 11 classes for
 which `knit_print` methods may be useful. These classes are listed
 below.
 
 | Class                  |
 |:-----------------------|
-| GeneralSimulations     |
-| DASimulations          |
-| EffFlexi               |
-| DualSimulations        |
-| Samples                |
-| StoppingExternal       |
-| IncrementsMaxToxProb   |
-| Simulations            |
-| McmcOptions            |
 | DualSimulationsSummary |
+| NextBestEWOC           |
+| Simulations            |
+| StoppingExternal       |
+| DualSimulations        |
+| GeneralSimulations     |
+| Samples                |
+| DASimulations          |
+| IncrementsMaxToxProb   |
+| EffFlexi               |
+| McmcOptions            |
 
 The majority of these classes relate to simulation of the operating
 characteristics of CRM trials. Reporting of this information is likely
