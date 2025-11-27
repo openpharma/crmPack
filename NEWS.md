@@ -1,71 +1,50 @@
-# Version 2.0.0.9002
-* **Note: This release (1.0 -> 2.0) signifies a major breaking revamp of the package.** Users are advised to carefully review the release notes and documentation for detailed information on the changes and any necessary updates to their existing code.
-* Implemented the `IncrementsMaxToxProb` class
-* Implemented `knit_print` methods for almost all `crmPack` classes to improve rendering in Markdown and Quarto documents.  See the vignette for more details.
-* Provided basic support for ordinal CRM models.  See the vignette for more details.
-* Implemented `broom`-like `tidy` methods for all concrete `crmPack` classes.  See the vignette for more details.
-* Removed `multiplot` function.  Use Please use equivalent functionality in other packages, such as `cowplot` or `ggpubr`.
+# Version 2.0.0
+
+* This release (1.0 -> 2.0) signifies a major breaking revamp of the package. Over several years, the package has undergone significant cleanup, tests writing and refactoring efforts.
+* Users are advised to carefully review the release notes and documentation for detailed information on the changes and any necessary updates to their existing code. In particular, there is a new vignette which describes how to use certain functions and features of `crmPack` after the major refactoring.
+
+### New Features
+
+* Added new `NextBestNCRMLoss` and `NextBestEWOC` classes and corresponding `nextBest` methods.
 * Added new `DataGrouped` and `DesignGrouped` classes with corresponding model `LogisticLogNormalGrouped` to support simultaneous dose escalation with monotherapy and combination therapy arms.
-* Created the `CrmPackClass` class as the ultimate ancestor of all other 
-`crmPack` classes to allow identification of crmPack classes and simpler 
-definition of generic methods.
-* `approximate` now returns a `list` containing the fitted model and, optionally,
-a `ggplot` object of the approximated dose/toxicity curve. 
-* Modified the wording of attribute of `stopTrial`'s return value for 
-`StoppingMTDdistribution` objects to strictly match the definition given in the 
-online documentation.  The return value itself is unchanged.   
-* Corrected the spelling of the name of the `messgae` [sic] attribute of the 
-return value of `stopTrial` with signature `stopping = "StoppingTDCIRatio"`.
-* Changed the type of `ref_dose` in the `LogisticNormalMixture` and 
-`LogisticNormalFixedMixture` classes from `positive_number` to `numeric` for 
-consistency with other classes.
-* Added no-parameter constructor functions named `.Default<class name>` to provide
-usable instances of all concrete subclasses of `Increments`, `Model`, `NextBest` and
-`Stopping`.
-* Added new function `dose_grid_range` that returns the range of doses in the dose grid. 
-* Added new function `ngrid` that returns the number of doses in the dose grid. 
-* Modified `efficacy-EffFlexi` method: allowed for vectorized dose; `NA` is now
-  returned for doses from outside of the dose grid range (and the warning is thrown).
-* Added new custom `checkmate` function `check_range`.
-* Added method `names` for objects of class `Samples`.
-* Added method `size` for objects of class `Samples`.
-* Added new custom `checkmate` function `check_length`.
-* Added `unique` flag to `assert_probabilities` checkmate custom functions.
-* Created a new vignette which describes how to use certain functions and features
-  of `crmPack` after the major refactoring.
-* Removed `MASS` from `Imports` and `Rcpp`, `RcppArmadillo` from `Suggests` as
-  it was used only in the some old development version.
-* `doselimit` argument in `nextBest` method is now specified as `Inf` instead of
-  `numeric(0)`.
-* Added new helper functions for `nextBest` methods, particularly for plotting
-  and finding the dose closest to the grid.
-* Added new `NextBestNCRMLoss` class and corresponding `nextBest` method.
-* Warning message not printed anymore by `nextBest` methods when `doselimit` not
-  specified.
-* Set prototype for `target = 0.3` for `NextBestMinDist` class.
-* Added new customized `checkmate` functions for probability values checking.
-* Renamed the argument of `derive` function from `mtdSamples` to `mtd_samples` in
-  `NextBestMTD` class.
-* Allowed for `from_prior` flag - argument to `modelspecs` function at `GeneralModel`
-  class.
+* Provided basic support for ordinal CRM models in `DesignOrdinal` (simulation is not yet supported). See the vignette for more details.
+* Included rolling CRM design implemented in `DADesign`. See the vignette for more details.
 * Created new `ProbitLogNormalRel` model class to support the (standardized) dose.
+* Implemented `knit_print` methods for almost all `crmPack` classes to improve rendering in Markdown and Quarto documents. See the vignette for more details.
+* Implemented `broom`-like `tidy` methods for all concrete `crmPack` classes. See the vignette for more details.
+* Added logging via the `futile.logger` package, the user interface consists of four functions: `enable_logging`, `disable_logging`, `is_logging_enabled`, `log_trace`.
+* Created the `CrmPackClass` class as the ultimate ancestor of all other `crmPack` classes to allow identification of crmPack classes and simpler definition of generic methods.
+* Added no-parameter constructor functions named `.Default<class name>` to provide usable instances of all concrete subclasses of `Increments`, `Model`, `NextBest` and `Stopping`.
+* Included `additional_stats` to add reporting of additional parameters to method `simulate` to summarize MTD.
+* `report_label` can be added to stopping rules for individual or combined stopping rule reporting.
+* Implemented the `IncrementsMaxToxProb` class.
+
+### Enhancements
+
+* `approximate` now returns a `list` containing the fitted model and, optionally, a `ggplot` object of the approximated dose/toxicity curve.
+* Modified `efficacy-EffFlexi` method: allowed for vectorized dose; `NA` is now returned for doses from outside of the dose grid range (and the warning is thrown).
+* `doselimit` argument in `nextBest` method is now specified as `Inf` instead of `numeric(0)`.
+* Warning message not printed anymore by `nextBest` methods when `doselimit` not specified.
+* Allowed for `from_prior` flag - argument to `modelspecs` function at `GeneralModel` class.
+* Introduced validation of the updated object for `update` methods for `Data`-like classes. Added `check` flag to possibly omit the validation of the updated object.
+* Added new functions `dose_grid_range` and `ngrid`, which return the range and the number of doses in the dose grid, respectively.
+* Added methods `names` and `size` for objects of class `Samples`.
+
+### Bugfixes
+
+* Corrected the spelling of the name of the `messgae` [sic] attribute of the return value of `stopTrial` with signature `stopping = "StoppingTDCIRatio"`.
+
+### Refactoring
+
+* Set up the package to use `testthat` and added unit and integration tests.
+* Started using the `lifecycle` package to manage deprecations and breaking changes.
 * Changed `ProbitLogNormal` so that it supports the log of (standardized) dose only.
-* Added logger feature. Its user interface consists of four functions:
-  `enable_logging`, `disable_logging`, `is_logging_enabled`, `log_trace`.
-* Re-factored `sampleSize` function so that it returns `0` if
-  `burnin > iterations`.
-* A vector under `t0` slot in `DataDA` class must be sorted in ascending order.
-* Replaced warning with message when no `cohort` or `ID` is provided to the user
-  constructor `Data`.
-* Introduced validation of the updated object for `update` methods for Data-like
-  classes. Added `check` flag to possibly omit the validation of the updated object.
-* Set up the package to use testthat.
-* Added lifecycle package.
-* Include rolling CRM design, which was previously only available in a separate
-  GitHub branch.
-* Additional authors and change of maintainer.
-* Included 'additional_stats' to add reporting of additional parameters to method simulate to summarize MTD.
-* 'report_label' can be added to stopping rules for individual or combined stopping rule reporting.
+* Replaced warning with message when no `cohort` or `ID` is provided to the user constructor `Data`.
+* Re-factored `sampleSize` function so that it returns `0` if `burnin > iterations`.
+
+### Miscellaneous
+
+* Removed `multiplot` function. Please use equivalent functionality in other packages, such as `cowplot` or `ggpubr`.
 
 # Version 1.0.0
 
@@ -77,7 +56,6 @@ usable instances of all concrete subclasses of `Increments`, `Model`, `NextBest`
   this value can also be changed by the user.
   
 * Change of maintainer
-
 
 # Version 0.2.8
 
