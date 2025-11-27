@@ -265,7 +265,7 @@ doseRecommendation <- nextBest(
   data = firstFour
 )
 doseRecommendation$value
-#> [1] 20
+#> [1] 9
 ```
 
 However, given that the probability that `20` is in the overdose range
@@ -295,7 +295,7 @@ stopTrial(
 #> [1] "Number of cohorts is 4 and thus reached the prespecified minimum number 3"
 #> 
 #> attr(,"message")[[1]][[2]]
-#> [1] "Probability for target toxicity is 28 % for dose 20 and thus below the required 50 %"
+#> [1] "Probability for target toxicity is 20 % for dose 9 and thus below the required 50 %"
 #> 
 #> 
 #> attr(,"message")[[2]]
@@ -309,7 +309,7 @@ stopTrial(
 #> [1] "Number of cohorts is 4 and thus reached the prespecified minimum number 3"
 #> 
 #> attr(,"message")[[2]]
-#> [1] "Probability for target toxicity is 28 % for dose 20 and thus below the required 50 %"
+#> [1] "Probability for target toxicity is 20 % for dose 9 and thus below the required 50 %"
 #> 
 #> attr(,"individual")
 #> attr(,"individual")[[1]]
@@ -322,7 +322,7 @@ stopTrial(
 #> attr(,"individual")[[2]]
 #> [1] FALSE
 #> attr(,"message")
-#> [1] "Probability for target toxicity is 28 % for dose 20 and thus below the required 50 %"
+#> [1] "Probability for target toxicity is 20 % for dose 9 and thus below the required 50 %"
 #> attr(,"report_label")
 #> [1] "P(0.2 ≤ prob(DLE | NBD) ≤ 0.35) ≥ 0.5"
 #> 
@@ -661,14 +661,14 @@ x <- stopTrial(
   fifthFullCohort
 )
 x
-#> [1] FALSE
+#> [1] TRUE
 #> attr(,"message")
 #> attr(,"message")[[1]]
 #> attr(,"message")[[1]][[1]]
 #> [1] "Number of cohorts is 9 and thus reached the prespecified minimum number 3"
 #> 
 #> attr(,"message")[[1]][[2]]
-#> [1] "Probability for target toxicity is 50 % for dose 45 and thus below the required 50 %"
+#> [1] "Probability for target toxicity is 55 % for dose 45 and thus above the required 50 %"
 #> 
 #> 
 #> attr(,"message")[[2]]
@@ -676,13 +676,13 @@ x
 #> 
 #> attr(,"individual")
 #> attr(,"individual")[[1]]
-#> [1] FALSE
+#> [1] TRUE
 #> attr(,"message")
 #> attr(,"message")[[1]]
 #> [1] "Number of cohorts is 9 and thus reached the prespecified minimum number 3"
 #> 
 #> attr(,"message")[[2]]
-#> [1] "Probability for target toxicity is 50 % for dose 45 and thus below the required 50 %"
+#> [1] "Probability for target toxicity is 55 % for dose 45 and thus above the required 50 %"
 #> 
 #> attr(,"individual")
 #> attr(,"individual")[[1]]
@@ -693,9 +693,9 @@ x
 #> [1] "≥ 3 cohorts dosed"
 #> 
 #> attr(,"individual")[[2]]
-#> [1] FALSE
+#> [1] TRUE
 #> attr(,"message")
-#> [1] "Probability for target toxicity is 50 % for dose 45 and thus below the required 50 %"
+#> [1] "Probability for target toxicity is 55 % for dose 45 and thus above the required 50 %"
 #> attr(,"report_label")
 #> [1] "P(0.2 ≤ prob(DLE | NBD) ≤ 0.35) ≥ 0.5"
 #> 

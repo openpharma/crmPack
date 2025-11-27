@@ -415,7 +415,7 @@ minInfModel <- MinimalInformative(
     ## Emini is: 0.1205177306
     ## xmini are:
     ## 1.149417785 1.182441052 1.97337573 0.3758820995 0.3619198625 
-    ## Totally it used 19.505369 secs
+    ## Totally it used 19.221853 secs
     ## No. of function call is: 4807
     ## Algorithm reached max number of iterations.
 
@@ -572,8 +572,8 @@ str(samples)
 
     ## Formal class 'Samples' [package "crmPack"] with 2 slots
     ##   ..@ data   :List of 2
-    ##   .. ..$ alpha0: num [1:2000] 1.4943 0.0428 0.0428 0.1297 0.1297 ...
-    ##   .. ..$ alpha1: num [1:2000] 0.971 0.464 0.464 1.376 1.376 ...
+    ##   .. ..$ alpha0: num [1:2000] 0.116 0.116 0.116 -1.373 -1.373 ...
+    ##   .. ..$ alpha1: num [1:2000] 0.495 0.495 0.495 0.677 0.677 ...
     ##   ..@ options:Formal class 'McmcOptions' [package "crmPack"] with 5 slots
     ##   .. .. ..@ iterations: int 4100
     ##   .. .. ..@ burnin    : int 100
@@ -971,7 +971,7 @@ maximum dose and the final recommendation (the red triangle):
 doseRecommendation$value
 ```
 
-    ## [1] 18
+    ## [1] 20
 
 ``` r
 print(doseRecommendation$plot)
@@ -1282,7 +1282,7 @@ stopTrial(
     ## [1] "Number of cohorts is 6 and thus reached the prespecified minimum number 3"
     ## 
     ## attr(,"message")[[1]][[2]]
-    ## [1] "Probability for target toxicity is 31 % for dose 18 and thus below the required 50 %"
+    ## [1] "Probability for target toxicity is 36 % for dose 20 and thus below the required 50 %"
     ## 
     ## 
     ## attr(,"message")[[2]]
@@ -1296,7 +1296,7 @@ stopTrial(
     ## [1] "Number of cohorts is 6 and thus reached the prespecified minimum number 3"
     ## 
     ## attr(,"message")[[2]]
-    ## [1] "Probability for target toxicity is 31 % for dose 18 and thus below the required 50 %"
+    ## [1] "Probability for target toxicity is 36 % for dose 20 and thus below the required 50 %"
     ## 
     ## attr(,"individual")
     ## attr(,"individual")[[1]]
@@ -1309,7 +1309,7 @@ stopTrial(
     ## attr(,"individual")[[2]]
     ## [1] FALSE
     ## attr(,"message")
-    ## [1] "Probability for target toxicity is 31 % for dose 18 and thus below the required 50 %"
+    ## [1] "Probability for target toxicity is 36 % for dose 20 and thus below the required 50 %"
     ## attr(,"report_label")
     ## [1] "P(0.2 ≤ prob(DLE | NBD) ≤ 0.35) ≥ 0.5"
     ## 
@@ -1468,7 +1468,7 @@ examine(design)
     ## 4     3    3       NA FALSE        NA
     ## 5     6    0     12.0 FALSE       100
     ## 6     6    1     12.0 FALSE       100
-    ## 7     6    2      3.0 FALSE       -50
+    ## 7     6    2      6.0 FALSE         0
     ## 8     6    3      1.5 FALSE       -75
     ## 9    12    0     24.0 FALSE       100
     ## 10   12    1     24.0 FALSE       100
@@ -1481,7 +1481,7 @@ examine(design)
     ## 17   30    0     38.0 FALSE        27
     ## 18   30    1     38.0 FALSE        27
     ## 19   30    2     34.0 FALSE        13
-    ## 20   30    3     26.0 FALSE       -13
+    ## 20   30    3     28.0 FALSE        -7
     ## 21   38    0     50.0 FALSE        32
     ## 22   38    1     50.0 FALSE        32
     ## 23   38    2     42.0 FALSE        11
@@ -1562,10 +1562,10 @@ time
 ```
 
     ## elapsed 
-    ## 145.959
+    ## 141.545
 
 We have wrapped the call to `simulate` in a `system.time` to obtain the
-required time for the simulations (about 146 seconds in this case). The
+required time for the simulations (about 142 seconds in this case). The
 argument `args` could contain additional arguments for the `truth`
 function, which we did not require here and therefore let it at the
 default `NULL`. We specify the number of simulations with `nsim` and the
@@ -1619,7 +1619,7 @@ The final dose for this trial was
 mySims@doses[3]
 ```
 
-    ## [1] 22
+    ## [1] 24
 
 and the stopping reason was
 
@@ -1629,14 +1629,14 @@ mySims@stop_reasons[[3]]
 
     ## [[1]]
     ## [[1]][[1]]
-    ## [1] "Number of cohorts is 5 and thus reached the prespecified minimum number 3"
+    ## [1] "Number of cohorts is 6 and thus reached the prespecified minimum number 3"
     ## 
     ## [[1]][[2]]
-    ## [1] "Probability for target toxicity is 50 % for dose 22 and thus above the required 50 %"
+    ## [1] "Probability for target toxicity is 54 % for dose 24 and thus above the required 50 %"
     ## 
     ## 
     ## [[2]]
-    ## [1] "Number of patients is 15 and thus below the prespecified minimum number 20"
+    ## [1] "Number of patients is 18 and thus below the prespecified minimum number 20"
 
 Furthermore, with this object, we can apply two methods. First, we can
 plot it, i.e. we can apply the plot method:
@@ -1677,19 +1677,19 @@ summary(mySims,
     ## Intervals are corresponding to 10 and 90 % quantiles
     ## 
     ## Number of patients overall : mean 19 (18, 21) 
-    ## Number of patients treated above target tox interval : mean 7 (6, 9) 
-    ## Proportions of DLTs in the trials : mean 26 % (22 %, 29 %) 
-    ## Mean toxicity risks for the patients on active : mean 26 % (17 %, 34 %) 
-    ## Doses selected as MTD : mean 21.1 (18, 26) 
-    ## True toxicity at doses selected : mean 33 % (11 %, 70 %) 
-    ## Proportion of trials selecting target MTD: 25 %
+    ## Number of patients treated above target tox interval : mean 7 (3, 9) 
+    ## Proportions of DLTs in the trials : mean 27 % (22 %, 33 %) 
+    ## Mean toxicity risks for the patients on active : mean 25 % (15 %, 36 %) 
+    ## Doses selected as MTD : mean 20.3 (16, 26) 
+    ## True toxicity at doses selected : mean 29 % (5 %, 70 %) 
+    ## Proportion of trials selecting target MTD: 21 %
     ## Dose most often selected as MTD: 18 
-    ## Observed toxicity rate at dose most often selected: 10 %
-    ## Fitted toxicity rate at dose most often selected : mean 23 % (19 %, 27 %) 
+    ## Observed toxicity rate at dose most often selected: 15 %
+    ## Fitted toxicity rate at dose most often selected : mean 24 % (19 %, 29 %) 
     ## Stop reason triggered:
     ##  ≥ 3 cohorts dosed :  100 %
-    ##  P(0.2 ≤ prob(DLE | NBD) ≤ 0.35) ≥ 0.5 :  94 %
-    ##  ≥ 20 patients dosed :  32 %
+    ##  P(0.2 ≤ prob(DLE | NBD) ≤ 0.35) ≥ 0.5 :  99 %
+    ##  ≥ 20 patients dosed :  40 %
 
 Note that sometimes the observed toxicity rate at the dose most often
 selected (here 20 mg) is not available, because it can happen that no
@@ -1743,9 +1743,6 @@ dosePlot <- plot(simSum, type = "doseSelected") +
 ``` r
 print(dosePlot)
 ```
-
-    ## Warning: Removed 2 rows containing missing values or values outside the scale range
-    ## (`geom_bar()`).
 
 ![A fistogram showing the proportion of simulatd trials that identified
 each dose as the MTD. All but one of the simulated trials identified a
@@ -1974,27 +1971,27 @@ postSamples <- as.data.frame(samples@data)[(1:20) * 50, ]
 postSamples
 ```
 
-    ##          alpha0    alpha1
-    ## 50    0.7895750 1.5168752
-    ## 100  -0.2018208 0.3845635
-    ## 150  -0.8502699 0.8070614
-    ## 200   0.0034650 0.8619727
-    ## 250  -0.5235669 0.9449293
-    ## 300   0.9023032 0.5228519
-    ## 350   0.1349895 1.4315942
-    ## 400  -0.9128104 1.9350400
-    ## 450   1.0162618 1.3007640
-    ## 500  -0.6769298 1.0301387
-    ## 550  -0.9184603 1.3229599
-    ## 600   0.4070190 1.5416553
-    ## 650  -0.1663159 2.2379455
-    ## 700   1.4373606 1.4418501
-    ## 750   0.5240026 1.6794232
-    ## 800   0.5365126 1.6420035
-    ## 850   0.7052019 2.0803557
-    ## 900  -0.4508109 1.7562391
-    ## 950  -0.3437908 0.7327650
-    ## 1000 -0.2485761 0.2817139
+    ##           alpha0    alpha1
+    ## 50   -0.15784238 1.7769692
+    ## 100  -0.11459125 1.2997397
+    ## 150   0.47932627 0.9234942
+    ## 200   0.14836391 0.6417199
+    ## 250  -1.03378163 1.1632653
+    ## 300  -0.40025950 1.6111385
+    ## 350   0.74387742 0.7151944
+    ## 400  -0.68866789 0.6003898
+    ## 450  -0.33330438 0.8999274
+    ## 500   1.02945069 1.6750262
+    ## 550   0.12191220 0.5170150
+    ## 600   0.16544528 1.2181447
+    ## 650   0.04033598 0.5419064
+    ## 700   0.67052320 0.5239705
+    ## 750  -0.91539604 0.6943216
+    ## 800  -0.62826205 0.9270102
+    ## 850  -0.37414070 0.4359186
+    ## 900   0.21423210 0.6504736
+    ## 950   0.03384336 1.5936235
+    ## 1000 -0.94335940 2.4599078
 
 Therefore, each simulated trial will come from a posterior sample of our
 estimated model, given all data so far.
@@ -2046,7 +2043,7 @@ time
 ```
 
     ## elapsed 
-    ##  16.287
+    ##  15.326
 
 And now, exactly in the same way as above for the operating
 characteristics simulations, we can summarize the resulting predictive
@@ -2077,18 +2074,18 @@ summary(futureSims,
     ## Intervals are corresponding to 10 and 90 % quantiles
     ## 
     ## Number of patients overall : mean 18 (17, 20) 
-    ## Number of patients treated above target tox interval : mean 4 (0, 9) 
-    ## Proportions of DLTs in the trials : mean 21 % (12 %, 30 %) 
-    ## Mean toxicity risks for the patients on active : mean 21 % (3 %, 41 %) 
-    ## Doses selected as MTD : mean 24.6 (10, 36) 
-    ## True toxicity at doses selected : mean 51 % (0 %, 97 %) 
+    ## Number of patients treated above target tox interval : mean 3 (0, 9) 
+    ## Proportions of DLTs in the trials : mean 23 % (12 %, 35 %) 
+    ## Mean toxicity risks for the patients on active : mean 18 % (5 %, 42 %) 
+    ## Doses selected as MTD : mean 21 (6, 38.2) 
+    ## True toxicity at doses selected : mean 37 % (0 %, 98 %) 
     ## Proportion of trials selecting target MTD: 5 %
-    ## Dose most often selected as MTD: 36 
-    ## Observed toxicity rate at dose most often selected: 67 %
-    ## Fitted toxicity rate at dose most often selected : mean 38 % (26 %, 53 %) 
+    ## Dose most often selected as MTD: 16 
+    ## Observed toxicity rate at dose most often selected: 40 %
+    ## Fitted toxicity rate at dose most often selected : mean 25 % (12 %, 39 %) 
     ## Stop reason triggered:
     ##  ≥ 3 cohorts dosed :  100 %
-    ##  P(0.2 ≤ prob(DLE | NBD) ≤ 0.35) ≥ 0.5 :  85 %
+    ##  P(0.2 ≤ prob(DLE | NBD) ≤ 0.35) ≥ 0.5 :  90 %
     ##  ≥ 20 patients dosed :  55 %
 
 We see here e.g. that the estimated number of patients overall is 19, so
@@ -2406,7 +2403,7 @@ stopTrial(myStopping6,
 
     ## [1] FALSE
     ## attr(,"message")
-    ## [1] "Probability for target biomarker is 12 % for dose 12 and thus below the required 50 %"
+    ## [1] "Probability for target biomarker is 11 % for dose 12 and thus below the required 50 %"
     ## attr(,"report_label")
     ## [1] "P(0.9 ≤ Biomarker ≤ 1) ≥ 0.5 (relative)"
 

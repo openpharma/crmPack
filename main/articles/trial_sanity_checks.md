@@ -252,9 +252,9 @@ examine(revised_design) %>% kable()
 | dose | DLTs | nextDose | stop  | increment |
 |-----:|-----:|---------:|:------|----------:|
 |    3 |    0 |        5 | FALSE |        67 |
-|    3 |    1 |        1 | FALSE |       -67 |
+|    3 |    1 |       NA | FALSE |        NA |
 |    5 |    0 |       10 | FALSE |       100 |
-|    5 |    1 |        3 | FALSE |       -40 |
+|    5 |    1 |        5 | FALSE |         0 |
 |   10 |    0 |       20 | FALSE |       100 |
 |   10 |    1 |       10 | FALSE |         0 |
 |   20 |    0 |       25 | FALSE |        25 |
@@ -276,7 +276,7 @@ examine(revised_design) %>% kable()
 |   50 |    0 |       50 | FALSE |         0 |
 |   50 |    1 |       50 | FALSE |         0 |
 |   50 |    2 |       50 | FALSE |         0 |
-|   50 |    3 |       50 | TRUE  |         0 |
+|   50 |    3 |       50 | FALSE |         0 |
 |   50 |    0 |       50 | TRUE  |         0 |
 |   50 |    1 |       50 | TRUE  |         0 |
 |   50 |    2 |       50 | TRUE  |         0 |
@@ -312,12 +312,12 @@ recommended_dose$probs
 #>  [3,]    5  0.000    0.000
 #>  [4,]   10  0.000    0.000
 #>  [5,]   15  0.000    0.000
-#>  [6,]   20  0.002    0.000
-#>  [7,]   25  0.006    0.000
-#>  [8,]   40  0.049    0.002
-#>  [9,]   50  0.130    0.032
-#> [10,]   80  0.102    0.841
-#> [11,]  100  0.078    0.901
+#>  [6,]   20  0.001    0.000
+#>  [7,]   25  0.003    0.000
+#>  [8,]   40  0.044    0.000
+#>  [9,]   50  0.159    0.023
+#> [10,]   80  0.170    0.757
+#> [11,]  100  0.077    0.891
 
 maxDose(revised_increment_rule, no_tox_below_50_data)
 #> [1] 83.5
@@ -325,7 +325,7 @@ maxDose(revised_increment_rule, no_tox_below_50_data)
 
 Whilst the increments rule allows escalation to 83.5 mg, the toxicity
 estimates provided by the model do not: the current estimate of toxicity
-at 80 mg is 0.841, well above the limit of 0.25 defined in the dose
+at 80 mg is 0.757, well above the limit of 0.25 defined in the dose
 recommendation rule (`next_best`).
 
 Again, we have several options. We can introduce intermediate doses,
@@ -403,34 +403,34 @@ examine(revised_design1) %>% kable()
 |    3 |    1 |        3 | FALSE |         0 |
 |    5 |    0 |       10 | FALSE |       100 |
 |    5 |    1 |        3 | FALSE |       -40 |
-|   10 |    0 |       10 | FALSE |         0 |
-|   10 |    1 |        5 | FALSE |       -50 |
 |   10 |    0 |       15 | FALSE |        50 |
 |   10 |    1 |        5 | FALSE |       -50 |
 |   15 |    0 |       15 | FALSE |         0 |
-|   15 |    1 |       10 | FALSE |       -33 |
+|   15 |    1 |        5 | FALSE |       -67 |
 |   15 |    0 |       20 | FALSE |        33 |
 |   15 |    1 |       10 | FALSE |       -33 |
+|   20 |    0 |       20 | FALSE |         0 |
+|   20 |    1 |       10 | FALSE |       -50 |
 |   20 |    0 |       25 | FALSE |        25 |
 |   20 |    1 |       15 | FALSE |       -25 |
 |   25 |    0 |       25 | FALSE |         0 |
-|   25 |    1 |       15 | FALSE |       -40 |
+|   25 |    1 |       20 | FALSE |       -20 |
 |   25 |    0 |       25 | FALSE |         0 |
 |   25 |    1 |       20 | FALSE |       -20 |
 |   25 |    0 |       40 | FALSE |        60 |
-|   25 |    1 |       20 | FALSE |       -20 |
+|   25 |    1 |       25 | FALSE |         0 |
 |   40 |    0 |       50 | FALSE |        25 |
 |   40 |    1 |       25 | FALSE |       -38 |
 |   40 |    2 |       25 | FALSE |       -38 |
 |   40 |    3 |       20 | FALSE |       -50 |
 |   50 |    0 |       50 | FALSE |         0 |
 |   50 |    1 |       50 | FALSE |         0 |
-|   50 |    2 |       40 | FALSE |       -20 |
+|   50 |    2 |       25 | FALSE |       -50 |
 |   50 |    3 |       25 | FALSE |       -50 |
 |   50 |    0 |       80 | FALSE |        60 |
 |   50 |    1 |       50 | FALSE |         0 |
 |   50 |    2 |       50 | FALSE |         0 |
-|   50 |    3 |       25 | FALSE |       -50 |
+|   50 |    3 |       40 | TRUE  |       -20 |
 |   80 |    0 |      100 | TRUE  |        25 |
 |   80 |    1 |       80 | TRUE  |         0 |
 |   80 |    2 |       50 | TRUE  |       -38 |
@@ -474,10 +474,10 @@ recommended_dose$probs
 #>  [5,]   15  0.000    0.000
 #>  [6,]   20  0.000    0.000
 #>  [7,]   25  0.000    0.000
-#>  [8,]   40  0.029    0.000
-#>  [9,]   50  0.069    0.001
-#> [10,]   80  0.367    0.040
-#> [11,]  100  0.467    0.129
+#>  [8,]   40  0.024    0.000
+#>  [9,]   50  0.067    0.000
+#> [10,]   80  0.166    0.045
+#> [11,]  100  0.224    0.082
 
 stopTrial(stopping_trial, recommended_dose$value, no_tox_samples, initial_model, no_tox_data)
 #> [1] TRUE
@@ -487,7 +487,7 @@ stopTrial(stopping_trial, recommended_dose$value, no_tox_samples, initial_model,
 #> [1] "Number of cohorts is 11 and thus reached the prespecified minimum number 3"
 #> 
 #> attr(,"message")[[1]][[2]]
-#> [1] "Probability for target toxicity is 47 % for dose 100 and thus below the required 50 %"
+#> [1] "Probability for target toxicity is 22 % for dose 100 and thus below the required 50 %"
 #> 
 #> 
 #> attr(,"message")[[2]]
@@ -501,7 +501,7 @@ stopTrial(stopping_trial, recommended_dose$value, no_tox_samples, initial_model,
 #> [1] "Number of cohorts is 11 and thus reached the prespecified minimum number 3"
 #> 
 #> attr(,"message")[[2]]
-#> [1] "Probability for target toxicity is 47 % for dose 100 and thus below the required 50 %"
+#> [1] "Probability for target toxicity is 22 % for dose 100 and thus below the required 50 %"
 #> 
 #> attr(,"individual")
 #> attr(,"individual")[[1]]
@@ -514,7 +514,7 @@ stopTrial(stopping_trial, recommended_dose$value, no_tox_samples, initial_model,
 #> attr(,"individual")[[2]]
 #> [1] FALSE
 #> attr(,"message")
-#> [1] "Probability for target toxicity is 47 % for dose 100 and thus below the required 50 %"
+#> [1] "Probability for target toxicity is 22 % for dose 100 and thus below the required 50 %"
 #> attr(,"report_label")
 #> [1] "P(0.2 ≤ prob(DLE | NBD) ≤ 0.35) ≥ 0.5"
 #> 

@@ -45,9 +45,10 @@ NextBestEWOC(target, overdose, max_overdose_prob)
 - `overdose`:
 
   (`numeric`)  
-  the (inclusive) lower and upper boundaries of the toxicity probability
-  interval considered an overdose region. The prototype uses
-  `c(0.35, 1)` meaning probabilities ≥ 0.35 are treated as overly toxic.
+  the (exclusive) lower and (inclusive) upper boundaries of the toxicity
+  probability interval considered an overdose region. The prototype uses
+  `c(0.35, 1)` meaning probabilities \> 0.35 are treated as overly
+  toxic.
 
 - `max_overdose_prob`:
 
@@ -68,8 +69,8 @@ other next-best classes listed in its documentation.
 
 ``` r
 # Example: Define EWOC next best dose rule.
-# Target toxicity probability is 0.30. Overdose region is any probability ≥ 0.35.
-# We restrict posterior probability of recommending an overdosing dose to ≤ 0.25.
+# Target toxicity probability is 0.30. Overdose region is any probability > 0.35.
+# We restrict posterior probability of recommending an overdosing dose to <= 0.25.
 next_best_ewoc <- NextBestEWOC(
   target = 0.30,
   overdose = c(0.35, 1),
