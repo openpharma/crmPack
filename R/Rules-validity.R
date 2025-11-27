@@ -140,6 +140,29 @@ v_next_best_min_dist <- function(object) {
   v$result()
 }
 
+#' @describeIn v_next_best validates that the [`NextBestEWOC`] object
+#'   contains valid `target`, `overdose` and `max_overdose_prob` parameters.
+v_next_best_ewoc <- function(object) {
+  v <- Validate()
+  v$check(
+    test_probability(object@target, bounds_closed = FALSE),
+    "target must be a probability value from (0, 1) interval"
+  )
+  v$check(
+    test_number(object@target, upper = object@overdose[1]),
+    "target must be below the overdose interval"
+  )
+  v$check(
+    test_probability_range(object@overdose, bounds_closed = TRUE),
+    "overdose has to be a probability range"
+  )
+  v$check(
+    test_probability(object@max_overdose_prob, bounds_closed = FALSE),
+    "max_overdose_prob must be a probability value from (0, 1) interval"
+  )
+  v$result()
+}
+
 #' @describeIn v_next_best validates that the [`NextBestInfTheory`] object
 #'   contains valid `target` and `asymmetry` objects.
 v_next_best_inf_theory <- function(object) {

@@ -49,8 +49,13 @@ setGeneric(
   valueClass = "list"
 )
 
-
+#' @describeIn nextBest find the next best dose based on the EWOC rule.
+#'
+#' @aliases nextBest-NextBestEWOC
+#'
 #' @export
+#' @example examples/Rules-method-nextBest-NextBestEWOC.R
+#'
 setMethod(
   f = "nextBest",
   signature = signature(
