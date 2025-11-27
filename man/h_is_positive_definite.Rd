@@ -4,7 +4,7 @@
 \alias{h_is_positive_definite}
 \title{Testing Matrix for Positive Definiteness}
 \usage{
-h_is_positive_definite(x, size = 2, tol = 1e-08)
+h_is_positive_definite(x, size = 2, tol = 1e-06)
 }
 \arguments{
 \item{x}{(\code{matrix})\cr a matrix to be checked.}
