@@ -668,7 +668,7 @@ x
 #> [1] "Number of cohorts is 9 and thus reached the prespecified minimum number 3"
 #> 
 #> attr(,"message")[[1]][[2]]
-#> [1] "Probability for target toxicity is 53 % for dose 45 and thus above the required 50 %"
+#> [1] "Probability for target toxicity is 51 % for dose 45 and thus above the required 50 %"
 #> 
 #> 
 #> attr(,"message")[[2]]
@@ -682,7 +682,7 @@ x
 #> [1] "Number of cohorts is 9 and thus reached the prespecified minimum number 3"
 #> 
 #> attr(,"message")[[2]]
-#> [1] "Probability for target toxicity is 53 % for dose 45 and thus above the required 50 %"
+#> [1] "Probability for target toxicity is 51 % for dose 45 and thus above the required 50 %"
 #> 
 #> attr(,"individual")
 #> attr(,"individual")[[1]]
@@ -695,7 +695,7 @@ x
 #> attr(,"individual")[[2]]
 #> [1] TRUE
 #> attr(,"message")
-#> [1] "Probability for target toxicity is 53 % for dose 45 and thus above the required 50 %"
+#> [1] "Probability for target toxicity is 51 % for dose 45 and thus above the required 50 %"
 #> attr(,"report_label")
 #> [1] "P(0.2 ≤ prob(DLE | NBD) ≤ 0.35) ≥ 0.5"
 #> 

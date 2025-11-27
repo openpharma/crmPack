@@ -508,7 +508,7 @@ stopTrial(myStopping, nextDoseVal, samples, model, data)
     ## 
     ## attr(,"message")[[2]]
     ## attr(,"message")[[2]][[1]]
-    ## [1] "Probability for target toxicity is 33 % for dose 100 and thus below the required 50 %"
+    ## [1] "Probability for target toxicity is 34 % for dose 100 and thus below the required 50 %"
     ## 
     ## attr(,"message")[[2]][[2]]
     ## [1] "3 patients lie within 20% of the next best dose 100. This is below the required 9 patients"
@@ -526,7 +526,7 @@ stopTrial(myStopping, nextDoseVal, samples, model, data)
     ## [1] FALSE
     ## attr(,"message")
     ## attr(,"message")[[1]]
-    ## [1] "Probability for target toxicity is 33 % for dose 100 and thus below the required 50 %"
+    ## [1] "Probability for target toxicity is 34 % for dose 100 and thus below the required 50 %"
     ## 
     ## attr(,"message")[[2]]
     ## [1] "3 patients lie within 20% of the next best dose 100. This is below the required 9 patients"
@@ -535,7 +535,7 @@ stopTrial(myStopping, nextDoseVal, samples, model, data)
     ## attr(,"individual")[[1]]
     ## [1] FALSE
     ## attr(,"message")
-    ## [1] "Probability for target toxicity is 33 % for dose 100 and thus below the required 50 %"
+    ## [1] "Probability for target toxicity is 34 % for dose 100 and thus below the required 50 %"
     ## attr(,"report_label")
     ## [1] "P(0.2 ≤ prob(DLE | NBD) ≤ 0.35) ≥ 0.5"
     ## 
@@ -614,7 +614,7 @@ examine(design, mcmcOptions = options)
     ## 15  125    2      100 FALSE       -20
     ## 16  125    3       75 FALSE       -40
     ## 17  175    0      250 FALSE        43
-    ## 18  175    1      175 FALSE         0
+    ## 18  175    1      150 FALSE       -14
     ## 19  175    2      125 FALSE       -29
     ## 20  175    3      100 FALSE       -43
     ## 21  250    0      300 FALSE        20
@@ -663,7 +663,7 @@ mySimsTime <-
 The number of simulated trials depends on the required accuracy of the
 results. The argument `parallel` can be set to `TRUE` if one wishes to
 run the iterations in parallel on all processors of the computer, which
-can yield a meaningful speedup. Here we needed 195 seconds for 100
+can yield a meaningful speedup. Here we needed 192 seconds for 100
 simulated trials on an Intel Core i5-6300U CPU with 2.4 GHz.
 
 The result is an object of class `Simulations` containing multiple
@@ -709,8 +709,8 @@ simSum
     ## Target dose interval corresponding to this was 47.9, 52.7 
     ## Intervals are corresponding to 10 and 90 % quantiles
     ## 
-    ## Number of patients on placebo : mean 8 (6, 8) 
-    ## Number of patients on active : mean 23 (18, 24) 
+    ## Number of patients on placebo : mean 7 (6, 8) 
+    ## Number of patients on active : mean 22 (18, 24) 
     ## Number of patients overall : mean 30 (24, 32) 
     ## Number of patients treated above target tox interval : mean 3 (0, 3) 
     ## Proportions of DLTs in the trials for patients on placebo : mean 0 % (0 %, 0 %) 
@@ -721,10 +721,10 @@ simSum
     ## Proportion of trials selecting target MTD: 85 %
     ## Dose most often selected as MTD: 50 
     ## Observed toxicity rate at dose most often selected: 27 %
-    ## Fitted toxicity rate at dose most often selected : mean 23 % (16 %, 30 %) 
+    ## Fitted toxicity rate at dose most often selected : mean 23 % (16 %, 29 %) 
     ## Stop reason triggered:
-    ##  ≥ 30 patients dosed :  67 %
-    ##  P(0.2 ≤ prob(DLE | NBD) ≤ 0.35) ≥ 0.5 :  44 %
+    ##  ≥ 30 patients dosed :  65 %
+    ##  P(0.2 ≤ prob(DLE | NBD) ≤ 0.35) ≥ 0.5 :  48 %
     ##  ≥ 9 patients dosed in 20 % dose range around NBD :  98 %
 
 A plot of the summary results can also be produced, see Figure
