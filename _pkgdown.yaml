@@ -31,7 +31,7 @@ articles:
   - title: Upgrading
     navbar: Upgrading
     contents:
-      - migration_from_the_old_crmPack
+      - upgrading_from_the_old_crmPack
   - title: Introduction
     navbar: Introduction
     contents:
