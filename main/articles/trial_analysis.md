@@ -295,7 +295,7 @@ stopTrial(
 #> [1] "Number of cohorts is 4 and thus reached the prespecified minimum number 3"
 #> 
 #> attr(,"message")[[1]][[2]]
-#> [1] "Probability for target toxicity is 20 % for dose 9 and thus below the required 50 %"
+#> [1] "Probability for target toxicity is 18 % for dose 9 and thus below the required 50 %"
 #> 
 #> 
 #> attr(,"message")[[2]]
@@ -309,7 +309,7 @@ stopTrial(
 #> [1] "Number of cohorts is 4 and thus reached the prespecified minimum number 3"
 #> 
 #> attr(,"message")[[2]]
-#> [1] "Probability for target toxicity is 20 % for dose 9 and thus below the required 50 %"
+#> [1] "Probability for target toxicity is 18 % for dose 9 and thus below the required 50 %"
 #> 
 #> attr(,"individual")
 #> attr(,"individual")[[1]]
@@ -322,7 +322,7 @@ stopTrial(
 #> attr(,"individual")[[2]]
 #> [1] FALSE
 #> attr(,"message")
-#> [1] "Probability for target toxicity is 20 % for dose 9 and thus below the required 50 %"
+#> [1] "Probability for target toxicity is 18 % for dose 9 and thus below the required 50 %"
 #> attr(,"report_label")
 #> [1] "P(0.2 ≤ prob(DLE | NBD) ≤ 0.35) ≥ 0.5"
 #> 
@@ -668,7 +668,7 @@ x
 #> [1] "Number of cohorts is 9 and thus reached the prespecified minimum number 3"
 #> 
 #> attr(,"message")[[1]][[2]]
-#> [1] "Probability for target toxicity is 55 % for dose 45 and thus above the required 50 %"
+#> [1] "Probability for target toxicity is 53 % for dose 45 and thus above the required 50 %"
 #> 
 #> 
 #> attr(,"message")[[2]]
@@ -682,7 +682,7 @@ x
 #> [1] "Number of cohorts is 9 and thus reached the prespecified minimum number 3"
 #> 
 #> attr(,"message")[[2]]
-#> [1] "Probability for target toxicity is 55 % for dose 45 and thus above the required 50 %"
+#> [1] "Probability for target toxicity is 53 % for dose 45 and thus above the required 50 %"
 #> 
 #> attr(,"individual")
 #> attr(,"individual")[[1]]
@@ -695,7 +695,7 @@ x
 #> attr(,"individual")[[2]]
 #> [1] TRUE
 #> attr(,"message")
-#> [1] "Probability for target toxicity is 55 % for dose 45 and thus above the required 50 %"
+#> [1] "Probability for target toxicity is 53 % for dose 45 and thus above the required 50 %"
 #> attr(,"report_label")
 #> [1] "P(0.2 ≤ prob(DLE | NBD) ≤ 0.35) ≥ 0.5"
 #> 
@@ -846,5 +846,6 @@ of approximately 40,000 is required to estimate a percentage to within
 ## References
 
 Neuenschwander, Beat, Michael Branson, and Thomas Gsponer. 2008.
-“Critical Aspects of the Bayesian Approach to Phase i Cancer Trials.”
+“Critical aspects of the Bayesian approach to phase I cancer trials.”
 *Statistics in Medicine* 27 (13): 2420–39.
+<https://onlinelibrary.wiley.com/doi/10.1002/sim.3230>.

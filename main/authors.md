@@ -30,11 +30,19 @@
 
 - **John Kirkpatrick**. Author.
 
+- **Wojciech Wójciak**. Author.
+
+- **Guanya Peng**. Author.
+
+- **Prerana Chandratre**. Author.
+
 - **F. Hoffmann-La Roche AG**. Copyright holder, funder.
 
 - **Merck Healthcare KGaA**. Copyright holder, funder.
 
 - **Bayer AG**. Copyright holder, funder.
+
+- **RPACT GmbH**. Copyright holder, funder.
 
 ## Citation
 

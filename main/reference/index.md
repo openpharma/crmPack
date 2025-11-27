@@ -1257,12 +1257,7 @@
   [`.DefaultGeneralSimulations()`](https://openpharma.github.io/crmPack/reference/GeneralSimulations-class.md)
   **\[stable\]** :
 
-  `GeneralSimulations` @description **\[stable\]** This class captures
-  trial simulations. Here also the random generator state before
-  starting the simulation is saved, in order to be able to reproduce the
-  outcome. For this just use
-  [`set.seed`](https://rdrr.io/r/base/Random.html) with the `seed` as
-  argument before running `simulate,Design-method`.
+  `GeneralSimulations`
 
 - [`.DefaultGeneralSimulationsSummary()`](https://openpharma.github.io/crmPack/reference/GeneralSimulationsSummary-class.md)
   **\[stable\]** :

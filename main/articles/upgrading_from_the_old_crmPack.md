@@ -1,4 +1,4 @@
-# Migrating from crmPack version 1.0.3
+# Upgrading from crmPack version 1.0.3
 
 The following vignette describes the changes that were introduced to the
 `crmPack` package as a result of the package’s refactoring. One row in
@@ -23,6 +23,9 @@ throughout the package.
 [TABLE]
 
 ### Renamed slots
+
+Please note that this list might not be exhaustive. Please always check
+the relevant class documentation for details.
 
 [TABLE]
 
@@ -72,10 +75,10 @@ model’s parameters values.
 dose(0.3, my_model, my_samples)
 ```
 
-    ##  [1] 2.126530e+00 9.708726e-01 1.421467e-01 1.507213e+00 2.047925e+00
-    ##  [6] 1.650756e+00 1.888705e+00 1.240064e+00 7.541267e-01 8.621846e-01
-    ## [11] 1.077376e+00 1.401411e+00 1.637553e+00 1.155389e+00 6.314659e-01
-    ## [16] 2.899699e-01 9.475805e-01 1.440362e+00 9.354008e-02 2.296241e-08
+    ##  [1] 4.350348e+00 7.471295e+10 1.314757e+00 1.230581e+00 1.440272e+00
+    ##  [6] 1.624263e-04 8.430069e-01 1.375413e+00 3.491020e+00 1.000762e+00
+    ## [11] 7.455871e+00 7.984364e-01 2.725541e+00 7.118636e-01 4.807396e-01
+    ## [16] 3.427960e-01 9.039340e-01 8.745747e-03 3.077604e+01 9.851568e-01
 
 ``` r
 # True dose-DLT relationship.
@@ -97,10 +100,10 @@ true_dose_fun(0.3)
 prob(10, my_model, my_samples)
 ```
 
-    ##  [1] 0.86516421 0.97816721 0.92363116 0.81327886 0.88661887 0.83995097
-    ##  [7] 0.70010245 0.90755638 0.77820406 0.93636225 0.98996525 0.97243980
-    ## [13] 0.85331351 0.55823239 0.54539358 0.03576204 0.89544332 0.93581975
-    ## [19] 0.78060739 0.75083903
+    ##  [1] 0.48029647 0.56755593 0.09971980 0.98489379 0.97716830 0.60705020
+    ##  [7] 0.81847407 0.93941048 0.34555709 0.90358504 0.35541096 0.97825434
+    ## [13] 0.31271792 0.57031306 0.70637677 0.85653819 0.99776964 0.03294357
+    ## [19] 0.24649634 0.71409475
 
 ``` r
 # True DLT-dose relationship.

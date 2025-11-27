@@ -74,12 +74,12 @@ generalized linear models, e.g., `PROC MIXED` in `SAS` ( Institute Inc.
 are still only few software solutions available dedicated to dose
 escalation studies.
 
-The commercial packages `East` (Cytel Inc. 2016) and `ADDPLAN` (ICON Plc
-2016) both offer extensions to their basic design software for dose
-escalation studies (`ESCALATE` in `East` and `df` in `ADDPLAN`)
+The commercial packages `East` (Cytel Inc. 2016) and `ADDPLAN`
+(Consultants 2025) both offer extensions to their basic design software
+for dose escalation studies (`ESCALATE` in `East` and `df` in `ADDPLAN`)
 implementing the algorithmic 3+3 design and various versions of the CRM.
-Similarly `FACTS` (FACTS Development Team 2015) also offers different
-common dose escalation methods. Due to the commercial nature of these
+Similarly `FACTS` (Team 2015) also offers different common dose
+escalation methods. Due to the commercial nature of these
 implementations there is, however, a limitation on how much the designs
 can be tailored towards the individual needs of the study. Similarly
 static implementations of methods for dose escalation are available in
@@ -262,15 +262,6 @@ Before we start, we have to install and subsequently load our package in
 ``` r
 library("crmPack")
 ```
-
-    ## Loading required package: ggplot2
-
-    ## Registered S3 method overwritten by 'crmPack':
-    ##   method       from  
-    ##   print.gtable gtable
-
-    ## Type crmPackHelp() to open help browser
-    ## Type crmPackExample() to open example
 
 > As indicated in the startup message, try
 > [`crmPackHelp()`](https://openpharma.github.io/crmPack/reference/crmPackHelp.md)
@@ -517,7 +508,7 @@ stopTrial(myStopping, nextDoseVal, samples, model, data)
     ## 
     ## attr(,"message")[[2]]
     ## attr(,"message")[[2]][[1]]
-    ## [1] "Probability for target toxicity is 35 % for dose 100 and thus below the required 50 %"
+    ## [1] "Probability for target toxicity is 33 % for dose 100 and thus below the required 50 %"
     ## 
     ## attr(,"message")[[2]][[2]]
     ## [1] "3 patients lie within 20% of the next best dose 100. This is below the required 9 patients"
@@ -535,7 +526,7 @@ stopTrial(myStopping, nextDoseVal, samples, model, data)
     ## [1] FALSE
     ## attr(,"message")
     ## attr(,"message")[[1]]
-    ## [1] "Probability for target toxicity is 35 % for dose 100 and thus below the required 50 %"
+    ## [1] "Probability for target toxicity is 33 % for dose 100 and thus below the required 50 %"
     ## 
     ## attr(,"message")[[2]]
     ## [1] "3 patients lie within 20% of the next best dose 100. This is below the required 9 patients"
@@ -544,7 +535,7 @@ stopTrial(myStopping, nextDoseVal, samples, model, data)
     ## attr(,"individual")[[1]]
     ## [1] FALSE
     ## attr(,"message")
-    ## [1] "Probability for target toxicity is 35 % for dose 100 and thus below the required 50 %"
+    ## [1] "Probability for target toxicity is 33 % for dose 100 and thus below the required 50 %"
     ## attr(,"report_label")
     ## [1] "P(0.2 ≤ prob(DLE | NBD) ≤ 0.35) ≥ 0.5"
     ## 
@@ -627,7 +618,7 @@ examine(design, mcmcOptions = options)
     ## 19  175    2      125 FALSE       -29
     ## 20  175    3      100 FALSE       -43
     ## 21  250    0      300 FALSE        20
-    ## 22  250    1      250 FALSE         0
+    ## 22  250    1      225 FALSE       -10
     ## 23  250    2      175 FALSE       -30
     ## 24  250    3      150 FALSE       -40
 
@@ -672,7 +663,7 @@ mySimsTime <-
 The number of simulated trials depends on the required accuracy of the
 results. The argument `parallel` can be set to `TRUE` if one wishes to
 run the iterations in parallel on all processors of the computer, which
-can yield a meaningful speedup. Here we needed 188 seconds for 100
+can yield a meaningful speedup. Here we needed 195 seconds for 100
 simulated trials on an Intel Core i5-6300U CPU with 2.4 GHz.
 
 The result is an object of class `Simulations` containing multiple
@@ -718,22 +709,22 @@ simSum
     ## Target dose interval corresponding to this was 47.9, 52.7 
     ## Intervals are corresponding to 10 and 90 % quantiles
     ## 
-    ## Number of patients on placebo : mean 7 (6, 8) 
-    ## Number of patients on active : mean 22 (18, 24) 
+    ## Number of patients on placebo : mean 8 (6, 8) 
+    ## Number of patients on active : mean 23 (18, 24) 
     ## Number of patients overall : mean 30 (24, 32) 
     ## Number of patients treated above target tox interval : mean 3 (0, 3) 
     ## Proportions of DLTs in the trials for patients on placebo : mean 0 % (0 %, 0 %) 
-    ## Proportions of DLTs in the trials for patients on active : mean 28 % (21 %, 34 %) 
+    ## Proportions of DLTs in the trials for patients on active : mean 28 % (21 %, 33 %) 
     ## Mean toxicity risks for the patients on active : mean 27 % (18 %, 33 %) 
     ## Doses selected as MTD : mean 46.2 (25, 50) 
     ## True toxicity at doses selected : mean 22 % (0 %, 26 %) 
     ## Proportion of trials selecting target MTD: 85 %
     ## Dose most often selected as MTD: 50 
     ## Observed toxicity rate at dose most often selected: 27 %
-    ## Fitted toxicity rate at dose most often selected : mean 23 % (16 %, 29 %) 
+    ## Fitted toxicity rate at dose most often selected : mean 23 % (16 %, 30 %) 
     ## Stop reason triggered:
-    ##  ≥ 30 patients dosed :  66 %
-    ##  P(0.2 ≤ prob(DLE | NBD) ≤ 0.35) ≥ 0.5 :  46 %
+    ##  ≥ 30 patients dosed :  67 %
+    ##  P(0.2 ≤ prob(DLE | NBD) ≤ 0.35) ≥ 0.5 :  44 %
     ##  ≥ 9 patients dosed in 20 % dose range around NBD :  98 %
 
 A plot of the summary results can also be produced, see Figure
@@ -1264,6 +1255,9 @@ Cheung, Ying Kuen, and Rick Chappell. 2000. “Sequential Designs for
 Phase i Clinical Trials with Late-Onset Toxicities.” *Biometrics* 56
 (4): 1177–82.
 
+Consultants, Berry. 2025. *(ADaptive Design PLANner)*. Austin, Texas,
+US. <https://www.berryconsultants.com/software/addplan>.
+
 Core Team. 2016. *: A Language and Environment for Statistical
 Computing*. Vienna, Austria: Foundation for Statistical Computing.
 <https://www.R-project.org/>.
@@ -1275,12 +1269,6 @@ Monitoring of Clinical Trials*. Cambridge, MA.
 Dressler, Emily V., and Zhengyan Huang. 2016. *: Likelihood-Based
 Continual Reassessment Method (CRM) Dose Finding Designs*.
 <https://CRAN.R-project.org/package=ordcrm>.
-
-FACTS Development Team. 2015. *Fixed and Adaptive Clinical Trial
-Simulator*. <https://www.berryconsultants.com/software>.
-
-ICON Plc. 2016. *: Adaptive Design Trials Software*. Dublin, Ireland.
-<https://www.iconplc.com/innovation/addplan/>.
 
 Institute Inc. 2003. *Software, Version 9.1*. Cary, NC.
 <https://www.sas.com/>.
@@ -1298,8 +1286,9 @@ Reassessment Model*.
 <https://ideas.repec.org/c/boc/bocode/s457625a.html>.
 
 Neuenschwander, Beat, Michael Branson, and Thomas Gsponer. 2008.
-“Critical Aspects of the Bayesian Approach to Phase i Cancer Trials.”
+“Critical aspects of the Bayesian approach to phase I cancer trials.”
 *Statistics in Medicine* 27 (13): 2420–39.
+<https://onlinelibrary.wiley.com/doi/10.1002/sim.3230>.
 
 O’Quigley, John, Margaret Pepe, and Lloyd Fisher. 1990. “Continual
 Reassessment Method: A Practical Design for Phase 1 Clinical Trials in
@@ -1310,7 +1299,7 @@ Controversies in Clinical Research: Requiem for the 3 + 3 Design for
 Phase i Trials.” *Annals of Oncology* 26 (9): 1808–12.
 
 Plummer, Martyn. 2003. *: A Program for Analysis of Bayesian Graphical
-Models Using Gibbs Sampling*. <https://mcmc-jags.sourceforge.net>.
+Models Using Gibbs Sampling*. <https://mcmc-jags.sourceforge.io/>.
 
 Riviere, M.- K., C. Le Tourneau, X. Paoletti, F. Dubois, and S. Zohar.
 2014. “Designs of Drug-Combination Phase i Trials in Oncology: A
@@ -1325,7 +1314,7 @@ StataCorp. 2015. *Statistical Software: Release 14*. College Station,
 TX: StataCorp LP. <https://www.stata.com/>.
 
 Storer, Barry E. 1989. “Design and Analysis of Phase i Clinical Trials.”
-*Biometrics* 45 (3): 925–37. <https://www.ncbi.nlm.nih.gov/2790129>.
+*Biometrics* 45 (3): 925–37. <https://doi.org/10.2307/2531693>.
 
 Sweeting, Michael J, and Adrian P Mander. 2012. “Escalation Strategies
 for Combination Therapy Phase i Trials.” *Pharmaceutical Statistics* 11
@@ -1334,6 +1323,9 @@ for Combination Therapy Phase i Trials.” *Pharmaceutical Statistics* 11
 Sweeting, Michael, Adrian Mander, and Tony Sabin. 2013. “: Bayesian
 Continual Reassessment Method Designs for Phase i Dose-Finding Trials.”
 *Journal of Statistical Software* 54 (13): 1–26.
+
+Team, FACTS Development. 2015. “Fixed and Adaptive Clinical Trial
+Simulator.” <https://www.berryconsultants.com/software/>.
 
 Thall, Peter F. 2010. “Bayesian Models and Decision Algorithms for
 Complex Early Phase Clinical Trials.” *Statistical Science* 25 (2):

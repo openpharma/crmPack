@@ -274,5 +274,6 @@ and
 ## References
 
 Neuenschwander, Beat, Michael Branson, and Thomas Gsponer. 2008.
-“Critical Aspects of the Bayesian Approach to Phase i Cancer Trials.”
+“Critical aspects of the Bayesian approach to phase I cancer trials.”
 *Statistics in Medicine* 27 (13): 2420–39.
+<https://onlinelibrary.wiley.com/doi/10.1002/sim.3230>.

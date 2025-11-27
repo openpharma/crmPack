@@ -41,7 +41,7 @@ Authors:
 
 - Marlene Schulte-Goebel <marlene.schulte-goebel@merckgroup.com>
 
-- Doug Kelkhoff <doug.kelkhoff@roche.com>
+- Doug Kelkhoff <doug.kelkhoff@gmail.com>
   ([ORCID](https://orcid.org/0009-0003-7845-4061))
 
 - Oliver Boix <oliver.boix@bayer.com>
@@ -50,7 +50,13 @@ Authors:
 
 - Clara Beck <clara.beck@bayer.com>
 
-- John Kirkpatrick <john.kirkpatrick@roche.com>
+- John Kirkpatrick <john@puzzledface.net>
+
+- Wojciech Wójciak <wojciech.wojciak@gmail.com>
+
+- Guanya Peng
+
+- Prerana Chandratre
 
 Other contributors:
 
@@ -59,3 +65,5 @@ Other contributors:
 - Merck Healthcare KGaA \[copyright holder, funder\]
 
 - Bayer AG \[copyright holder, funder\]
+
+- RPACT GmbH \[copyright holder, funder\]

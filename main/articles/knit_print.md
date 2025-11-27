@@ -536,7 +536,7 @@ characteristics of CRM trials. Reporting of this information is likely
 to need customisation that is beyond the scope of a simple function[^4].
 
 Xie, Yihui. 2024. “Custom Print Methods.”
-<https://cran.r-project.org/web/packages/knitr/vignettes/knit_print.html>.
+<https://CRAN.R-project.org/package=knitr/vignettes/knit_print.html>.
 
 [^1]: Except for `tox_label = "toxicity"`, which becomes
     `tox_label = c("toxicity", "toxicities")`.
