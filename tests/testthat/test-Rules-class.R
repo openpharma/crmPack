@@ -21,6 +21,28 @@ test_that("NextBestMTD object can be created with user constructor", {
   expect_identical(result@derive(c(1:5)), 3) # nolintr
 })
 
+## NextBestEWOC ----
+
+test_that(".NextBestEWOC works as expected", {
+  result <- expect_silent(.NextBestEWOC())
+  expect_valid(result, "NextBestEWOC")
+})
+
+test_that(".DefaultNextBestEWOC works as expected", {
+  result <- expect_silent(.DefaultNextBestEWOC())
+  expect_valid(result, "NextBestEWOC")
+})
+
+test_that("NextBestEWOC object can be created with user constructor", {
+  result <- expect_silent(
+    NextBestEWOC(target = 0.3, overdose = c(0.35, 1), max_overdose_prob = 0.25)
+  )
+  expect_valid(result, "NextBestEWOC")
+  expect_identical(result@target, 0.3)
+  expect_identical(result@overdose, c(0.35, 1))
+  expect_identical(result@max_overdose_prob, 0.25)
+})
+
 ## NextBestNCRM ----
 
 test_that(".NextBestNCRM works as expected", {

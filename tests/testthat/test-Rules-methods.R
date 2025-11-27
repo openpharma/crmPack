@@ -1,5 +1,58 @@
 # nextBest ----
 
+## NextBestEWOC ----
+
+test_that("nextBest-NextBestEWOC returns expected next dose based on overdose control", {
+  data <- h_get_data(placebo = FALSE)
+  model <- h_get_logistic_log_normal()
+  samples <- h_as_samples(
+    list(alpha0 = c(-1.8, -3.8, -2.2, -1.6), alpha1 = c(1.7, 3.3, 5.1, 2.2))
+  )
+
+  nb_ewoc <- NextBestEWOC(
+    target = 0.30,
+    overdose = c(0.35, 1),
+    max_overdose_prob = 0.25
+  )
+
+  doselimit <- 45
+  result <- nextBest(nb_ewoc, doselimit, samples, model, data)
+
+  # Eligible doses satisfy the EWOC overdose probability constraint and doselimit
+  eligible <- with(
+    as.data.frame(result$probs),
+    dose[overdose <= nb_ewoc@max_overdose_prob & dose <= doselimit]
+  )
+  expected_next <- if (length(eligible) > 0) max(eligible) else NA_real_
+  expect_identical(result$value, expected_next)
+  expect_true(all(c("dose", "overdose") %in% colnames(result$probs)))
+
+  expect_doppel("Plot of nextBest-NextBestEWOC", result$plot)
+})
+
+test_that("nextBest-NextBestEWOC returns expected next dose when no doselimit", {
+  data <- h_get_data(placebo = FALSE)
+  model <- h_get_logistic_log_normal()
+  samples <- h_as_samples(
+    list(alpha0 = c(-1.8, -3.8, -2.2, -1.6), alpha1 = c(1.7, 3.3, 5.1, 2.2))
+  )
+
+  nb_ewoc <- NextBestEWOC(
+    target = 0.30,
+    overdose = c(0.35, 1),
+    max_overdose_prob = 0.25
+  )
+
+  result <- nextBest(nb_ewoc, Inf, samples, model, data)
+
+  eligible <- with(
+    as.data.frame(result$probs),
+    dose[overdose <= nb_ewoc@max_overdose_prob]
+  )
+  expected_next <- if (length(eligible) > 0) max(eligible) else NA_real_
+  expect_identical(result$value, expected_next)
+})
+
 ## NextBestMTD ----
 
 test_that("nextBest-NextBestMTD returns correct next dose and plot", {

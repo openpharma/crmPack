@@ -1,5 +1,36 @@
 # NextBest ----
 
+## v_next_best_ewoc ----
+
+test_that("v_next_best_ewoc passes for valid object", {
+  object <- .NextBestEWOC()
+  expect_true(v_next_best_ewoc(object))
+})
+
+test_that("v_next_best_ewoc returns message for non-valid target", {
+  object <- .NextBestEWOC()
+  object@target <- -0.1
+  err_msg <- "target must be a probability value from (0, 1) interval"
+  expect_equal(v_next_best_ewoc(object), err_msg)
+})
+
+test_that("v_next_best_ewoc returns message for non-valid overdose", {
+  object <- .NextBestEWOC()
+  object@overdose <- c(-0.2, 1.2)
+  err_msg <- c(
+    "target must be below the overdose interval",
+    "overdose has to be a probability range"
+  )
+  expect_equal(v_next_best_ewoc(object), err_msg)
+})
+
+test_that("v_next_best_ewoc returns message for non-valid max_overdose_prob", {
+  object <- .NextBestEWOC()
+  object@max_overdose_prob <- 1.0
+  err_msg <- "max_overdose_prob must be a probability value from (0, 1) interval"
+  expect_equal(v_next_best_ewoc(object), err_msg)
+})
+
 ## v_next_best_mtd ----
 
 test_that("v_next_best_mtd passes for valid object", {
