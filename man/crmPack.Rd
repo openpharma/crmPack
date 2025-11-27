@@ -48,6 +48,7 @@ Other contributors:
   \item F. Hoffmann-La Roche AG [copyright holder, funder]
   \item Merck Healthcare KGaA [copyright holder, funder]
   \item Bayer AG [copyright holder, funder]
+  \item RPACT GmbH [copyright holder, funder]
 }
 
 }
