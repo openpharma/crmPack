@@ -38,6 +38,9 @@ Authors:
   \item Robert Adams \email{robert.adams@bayer.com}
   \item Clara Beck \email{clara.beck@bayer.com}
   \item John Kirkpatrick \email{john@puzzledface.net}
+  \item Wojciech Wójciak \email{wojciech.wojciak@gmail.com}
+  \item Guanya Peng
+  \item Prerana Chandratre
 }
 
 Other contributors:
