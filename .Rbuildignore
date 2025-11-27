@@ -27,5 +27,5 @@ pkgdown/
 ^\.vscode$
 ^[.]?air[.]toml$
 ^jarl[.]toml$
-tests/testthat/_snaps/
-lib/
+tests/testthat/_snaps
+lib
