@@ -34,9 +34,9 @@ probability lying inside the interval given by \code{overdose}.
 \item{\code{target}}{(\code{proportion})\cr target toxicity probability to be
 achieved, below \code{overdose[1]}; only used for simulation reporting purposes.}
 
-\item{\code{overdose}}{(\code{numeric})\cr the (inclusive) lower and upper boundaries of the
+\item{\code{overdose}}{(\code{numeric})\cr the (exclusive) lower and (inclusive) upper boundaries of the
 toxicity probability interval considered an overdose region. The prototype
-uses \code{c(0.35, 1)} meaning probabilities ≥ 0.35 are treated as overly toxic.}
+uses \code{c(0.35, 1)} meaning probabilities > 0.35 are treated as overly toxic.}
 
 \item{\code{max_overdose_prob}}{(\code{proportion})\cr maximum acceptable posterior
 probability that the next recommended dose is in the overdose interval.}
@@ -47,8 +47,8 @@ Typically, end users will not use the \code{.DefaultNextBestEWOC()} function.
 }
 \examples{
 # Example: Define EWOC next best dose rule.
-# Target toxicity probability is 0.30. Overdose region is any probability ≥ 0.35.
-# We restrict posterior probability of recommending an overdosing dose to ≤ 0.25.
+# Target toxicity probability is 0.30. Overdose region is any probability > 0.35.
+# We restrict posterior probability of recommending an overdosing dose to <= 0.25.
 next_best_ewoc <- NextBestEWOC(
   target = 0.30,
   overdose = c(0.35, 1),
