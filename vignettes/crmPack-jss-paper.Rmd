@@ -66,7 +66,7 @@ capability to fit generalized linear models, e.g., `PROC MIXED` in
 there are still only few software solutions available dedicated to dose escalation studies.
 
 The commercial packages `East` [@East2016] and
-`ADDPLAN` [@Addplan2016] both offer extensions to their basic
+`ADDPLAN` [@Addplan2025] both offer extensions to their basic
 design software for dose escalation studies (`ESCALATE` in `East`
 and `df` in `ADDPLAN`) implementing the algorithmic 3+3 design and
 various versions of the CRM. Similarly `FACTS` [@FACTS] also

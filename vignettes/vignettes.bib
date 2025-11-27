@@ -1,4 +1,4 @@
-  @Manual{ordcrm,
+@Manual{ordcrm,
     title = {\pkg{ordcrm}: Likelihood-Based Continual Reassessment Method (CRM) Dose
 Finding Designs},
     author = {Emily V. Dressler and Zhengyan Huang},
@@ -258,15 +258,13 @@ year = {2015}
 }
 
 @article{Storer1989,
-abstract = {The Phase I clinical trial is a study intended to estimate the so-called maximum tolerable dose (MTD) of a new drug. Although there exists more or less a standard type of design for such trials, its development has been largely ad hoc. As usually implemented, the trial design has no intrinsic property that provides a generally satisfactory basis for estimation of the MTD. In this paper, the standard design and several simple alternatives are compared with regard to the conservativeness of the design and with regard to point and interval estimation of an MTD (33rd percentile) with small sample sizes. Using a Markov chain representation, we found several designs to be nearly as conservative as the standard design in terms of the proportion of patients entered at higher dose levels. In Monte Carlo simulations, two two-stage designs are found to provide reduced bias in maximum likelihood estimation of the MTD in less than ideal dose-response settings. Of the three methods considered for determining confidence intervals--the delta method, a method based on Fieller's theorem, and a likelihood ratio method--none was able to provide both usefully narrow intervals and coverage probabilities close to nominal.},
 author = {Storer, Barry E.},
-url = {https://www.ncbi.nlm.nih.gov/2790129},
+doi = {10.2307/2531693},
 journal = {Biometrics},
 mendeley-groups = {Dose-finding},
 month = {sep},
 number = {3},
 pages = {925--37},
-pmid = {2790129},
 title = {Design and Analysis of Phase I Clinical Trials},
 volume = {45},
 year = {1989}
@@ -286,7 +284,7 @@ year = {2008}
     author = {Martyn Plummer},
     title = {\proglang{JAGS}: A Program for Analysis of Bayesian Graphical Models Using Gibbs Sampling},
     year = {2003},
-    url={https://mcmc-jags.sourceforge.net}
+    url={https://mcmc-jags.sourceforge.io/}
 }
 
  @Manual{crmPack,
@@ -323,12 +321,12 @@ year = {2008}
     url = {https://www.stata.com/},
   }
 
- @Manual{Addplan2016,
-    title = {\proglang{ADDPLAN}: Adaptive Design Trials Software},
-    author = {{ICON Plc}},
-    address = {Dublin, Ireland},
-    year = {2016},
-    url = {https://www.iconplc.com/innovation/addplan/},
+ @Manual{Addplan2025,
+    title = {\proglang{ADDPLAN} ({AD}aptive {D}esign {PLAN}ner)},
+    author = {Berry Consultants},
+    address = {Austin, Texas, US},
+    year = {2025},
+    url = {https://www.berryconsultants.com/software/addplan},
   }
 
  @Manual{East2016,
@@ -386,6 +384,44 @@ url = {https://www.sas.com/}
   title = {Custom Print Methods},
   year = {2024},
   author = {Xie, Yihui},
-  url = {https://cran.r-project.org/web/packages/knitr/vignettes/knit_print.html},
-  note = {Accessed: 2024-06-06}
+  url = {https://CRAN.R-project.org/package=knitr/vignettes/knit_print.html},
+  note = {Accessed: 2025-11-27}
 }
+
+@article{Neuenschwander2008,
+author = {Neuenschwander, Beat and Branson, Michael and Gsponer, Thomas},
+journal = {Statistics in Medicine},
+number = {13},
+pages = {2420--2439},
+title = {{Critical aspects of the Bayesian approach to phase I cancer trials.}},
+url = {https://onlinelibrary.wiley.com/doi/10.1002/sim.3230},
+volume = {27},
+year = {2008}
+}
+
+@article{WhiteheadWilliamson1998,
+author = {Whitehead, J. and Williamson, D.},
+title = {{Bayesian decision procedures based on logistic regression models for dose-finding studies}},
+journal = {Journal of Biopharmaceutical Statistics},
+volume = {8},
+pages = {445--467},
+year = {1998},
+number = {3}
+}
+}
+
+@article{wy15,
+AUTHOR={Yeung, W. Y. and Whitehead, J. and Reigner, B. and Beyer, U. and Diack, C. and Jaki, T. },
+TITLE={Bayesian adaptive dose-escalation procedure for binary and continuous responses utilizing a gain function},
+YEAR ={2015},
+NOTE = {Published online ahead of print},
+JOURNAL={Pharmaceutical Statistics}
+}
+
+@Misc{FACTS,
+author =   {FACTS Development Team},
+title =    {Fixed and Adaptive Clinical Trial Simulator},
+howpublished = {\url{https://www.berryconsultants.com/software/}},
+year = {2015}
+}
+

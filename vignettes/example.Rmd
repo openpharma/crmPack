@@ -12,7 +12,7 @@ vignette: >
   %%\VignetteDepends{crmPack,ggmcmc,grid} 
   %%\VignetteEngine{knitr::rmarkdown}
   \usepackage[utf8]{inputenc}
-bibliography: example.bib
+bibliography: vignettes.bib
 ---
 
 ```{r load, echo=FALSE, results=FALSE}
