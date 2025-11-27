@@ -2,20 +2,22 @@
 % Please edit documentation in R/Simulations-methods.R
 \name{show,SimulationsSummary-method}
 \alias{show,SimulationsSummary-method}
-\title{Show the summary of the simulations}
+\alias{show-SimulationsSummary}
+\title{Show the Summary of Model-Based Design Simulations}
 \usage{
 \S4method{show}{SimulationsSummary}(object)
 }
 \arguments{
-\item{object}{the \code{\linkS4class{SimulationsSummary}} object we want
-to print}
+\item{object}{(\code{SimulationsSummary})\cr the object we want to print.}
 }
 \value{
-invisibly returns a data frame of the results with one row and
-appropriate column names
+Invisibly returns a data frame of the results with one row and
+appropriate column names.
 }
 \description{
-Show the summary of the simulations
+\ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#stable}{\figure{lifecycle-stable.svg}{options: alt='[Stable]'}}}{\strong{[Stable]}}
+
+Display a summary of model-based design simulation results.
 }
 \examples{
 # nolint start
@@ -102,4 +104,3 @@ show(summary(mySims, truth = myTruth))
 
 # nolint end
 }
-\keyword{methods}

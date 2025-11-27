@@ -2,19 +2,20 @@
 % Please edit documentation in R/Simulations-methods.R
 \name{show,GeneralSimulationsSummary-method}
 \alias{show,GeneralSimulationsSummary-method}
-\title{Show the summary of the simulations}
+\alias{show-GeneralSimulationsSummary}
+\title{Show the Summary of the Simulations}
 \usage{
 \S4method{show}{GeneralSimulationsSummary}(object)
 }
 \arguments{
-\item{object}{the \code{\linkS4class{GeneralSimulationsSummary}} object we want
-to print}
+\item{object}{(\code{GeneralSimulationsSummary})\cr the object we want to print.}
 }
 \value{
-invisibly returns a data frame of the results with one row and
-appropriate column names
+Invisibly returns a data frame of the results with one row and
+appropriate column names.
 }
 \description{
-Show the summary of the simulations
+\ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#stable}{\figure{lifecycle-stable.svg}{options: alt='[Stable]'}}}{\strong{[Stable]}}
+
+Display a summary of general simulation results.
 }
-\keyword{methods}

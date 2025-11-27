@@ -437,7 +437,6 @@ reference:
       - PseudoSimulations
       - PseudoSimulationsSummary-class
       - Quantiles2LogisticNormal
-      - Report
       - Simulations-class
       - Simulations
       - SimulationsSummary-class

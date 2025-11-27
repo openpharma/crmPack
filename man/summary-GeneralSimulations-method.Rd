@@ -2,26 +2,27 @@
 % Please edit documentation in R/Simulations-methods.R
 \name{summary,GeneralSimulations-method}
 \alias{summary,GeneralSimulations-method}
-\title{Summarize the simulations, relative to a given truth}
+\alias{summary-GeneralSimulations}
+\title{Summarize the \code{GeneralSimulations}, Relative to a Given Truth}
 \usage{
 \S4method{summary}{GeneralSimulations}(object, truth, target = c(0.2, 0.35), ...)
 }
 \arguments{
-\item{object}{the \code{\linkS4class{GeneralSimulations}} object we want to
-summarize}
+\item{object}{(\code{GeneralSimulations})\cr the object we want to summarize.}
 
-\item{truth}{a function which takes as input a dose (vector) and returns the
-true probability (vector) for toxicity}
+\item{truth}{(\code{function})\cr a function which takes as input a dose (vector)
+and returns the true probability (vector) for toxicity.}
 
-\item{target}{the target toxicity interval (default: 20-35\%) used for the
-computations}
+\item{target}{(\code{numeric})\cr the target toxicity interval (default: 20-35\%)
+used for the computations.}
 
-\item{\dots}{Additional arguments can be supplied here for \code{truth}}
+\item{...}{additional arguments can be supplied here for \code{truth}.}
 }
 \value{
-an object of class \code{\linkS4class{GeneralSimulationsSummary}}
+An object of class \code{\link{GeneralSimulationsSummary}}.
 }
 \description{
-Summarize the simulations, relative to a given truth
+\ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#stable}{\figure{lifecycle-stable.svg}{options: alt='[Stable]'}}}{\strong{[Stable]}}
+
+Summarize simulations relative to a given true dose-toxicity curve.
 }
-\keyword{methods}

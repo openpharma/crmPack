@@ -2,7 +2,8 @@
 % Please edit documentation in R/Simulations-methods.R
 \name{plot,SimulationsSummary,missing-method}
 \alias{plot,SimulationsSummary,missing-method}
-\title{Plot summaries of the model-based design simulations}
+\alias{plot-SimulationsSummary-missing}
+\title{Plot Model-Based Design Simulation Summary}
 \usage{
 \S4method{plot}{SimulationsSummary,missing}(
   x,
@@ -12,33 +13,34 @@
 )
 }
 \arguments{
-\item{x}{the \code{\linkS4class{SimulationsSummary}} object we want
-to plot from}
+\item{x}{(\code{SimulationsSummary})\cr the object we want to plot from.}
 
-\item{y}{missing}
+\item{y}{(\code{missing})\cr not used.}
 
-\item{type}{the types of plots you want to obtain.}
+\item{type}{(\code{character})\cr the types of plots you want to obtain.}
 
-\item{\dots}{not used}
+\item{...}{not used.}
 }
 \value{
-A single \code{\link[ggplot2]{ggplot}} object if a single plot is
+A single \code{ggplot} object if a single plot is
 asked for, otherwise a \code{gtable} object.
 }
 \description{
-Graphical display of the simulation summary
-}
-\details{
-This plot method can be applied to \code{\linkS4class{SimulationsSummary}}
-objects in order to summarize them graphically. Possible \code{type} of
-plots at the moment are those listed in
-\code{\link{plot,GeneralSimulationsSummary,missing-method}} plus:
+\ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#stable}{\figure{lifecycle-stable.svg}{options: alt='[Stable]'}}}{\strong{[Stable]}}
+
+Graphical display of the simulation summary.
+
+This plot method can be applied to \code{\link{SimulationsSummary}} objects in order
+to summarize them graphically. Possible \code{type} of plots at the moment are
+those listed in \code{\link{plot,GeneralSimulationsSummary,missing-method}} plus:
+
 \describe{
 \item{meanFit}{Plot showing the average fitted dose-toxicity curve across
 the trials, together with 95\% credible intervals, and comparison with the
 assumed truth (as specified by the \code{truth} argument to
 \code{\link{summary,Simulations-method}})}
 }
+
 You can specify any subset of these in the \code{type} argument.
 }
 \examples{
@@ -126,4 +128,3 @@ plot(summary(mySims, truth = myTruth))
 
 # nolint end
 }
-\keyword{methods}

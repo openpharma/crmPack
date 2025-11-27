@@ -15,10 +15,15 @@
 \alias{mcmc,GeneralData,OneParExpPrior,McmcOptions-method}
 \alias{mcmc-GeneralData-OneParExpPrior}
 \alias{mcmc,DataMixture,GeneralModel,McmcOptions-method}
+\alias{mcmc-DataMixture}
 \alias{mcmc,Data,LogisticIndepBeta,McmcOptions-method}
+\alias{mcmc-Data-LogisticIndepBeta}
 \alias{mcmc,DataDual,Effloglog,McmcOptions-method}
+\alias{mcmc-DataDual-Effloglog}
 \alias{mcmc,DataDual,EffFlexi,McmcOptions-method}
+\alias{mcmc-DataDual-EffFlexi}
 \alias{mcmc,DataOrdinal,LogisticLogNormalOrdinal,McmcOptions-method}
+\alias{mcmc-DataOrdinal-LogisticLogNormalOrdinal}
 \title{Obtaining Posterior Samples for all Model Parameters}
 \usage{
 mcmc(data, model, options, ...)
@@ -106,49 +111,58 @@ number of doses.
 skeleton prior probabilities vector should be equal to the length of the
 number of doses.
 
-\item \code{mcmc(data = DataMixture, model = GeneralModel, options = McmcOptions)}: Method for DataMixture with different from_prior default
+\item \code{mcmc(data = DataMixture, model = GeneralModel, options = McmcOptions)}: Method for \code{\link{DataMixture}} with different \code{from_prior} default.
+Samples from the prior only when both the number of observations and the
+number of shared observations are zero.
 
-\item \code{mcmc(data = Data, model = LogisticIndepBeta, options = McmcOptions)}: Obtain posterior samples for the model parameters based on the pseudo 'LogisticsIndepBeta'
-DLE model. The joint prior and posterior probability density function of
-the intercept \eqn{\phi_1} (phi1) and the slope \eqn{\phi_2} (phi2) are given in
-\insertCite{WhiteheadWilliamson1998;textual}{crmPack}.
-However, since asymptotically, the joint posterior probability density
-will be bivariate normal and we will use the bivariate normal distribution to
-generate posterior samples of the intercept and the slope parameters. For the prior samples of
-of the intercept and the slope a bivariate normal distribution with mean and the covariance matrix given in
+\item \code{mcmc(data = Data, model = LogisticIndepBeta, options = McmcOptions)}: Obtain posterior samples for the model parameters based on
+the pseudo \code{\link{LogisticIndepBeta}} DLE model. The joint prior and posterior
+probability density function of the intercept \eqn{\phi_1} (\code{phi1}) and the
+slope \eqn{\phi_2} (\code{phi2}) are given in
+\insertCite{WhiteheadWilliamson1998;textual}{crmPack}. However, since
+asymptotically, the joint posterior probability density will be bivariate
+normal, we use the bivariate normal distribution to generate posterior
+samples of the intercept and the slope parameters. For the prior samples of
+the intercept and the slope, a bivariate normal distribution with mean and
+the covariance matrix given in
 \insertCite{WhiteheadWilliamson1998;textual}{crmPack} is used.
 
 \item \code{mcmc(data = DataDual, model = Effloglog, options = McmcOptions)}: Obtain the posterior samples for the model parameters in the
-Efficacy log log model. Given the value of \eqn{\nu}, the precision of the efficacy responses,
-the joint prior or the posterior probability of the intercept \eqn{\theta_1} (theta1) and
-the slope \eqn{\theta_2} (theta2) is a bivariate normal distribution. The  \eqn{\nu} (nu),
-the precision of the efficacy responses is either a fixed value or has a gamma distribution.
-If a gamma distribution is used, the samples of nu will be first generated.
-Then the mean of the of the nu samples
-will be used the generate samples of the intercept and slope parameters of the model
+\code{\link{Effloglog}} model. Given the value of \eqn{\nu}, the precision of the
+efficacy responses, the joint prior or the posterior probability of the
+intercept \eqn{\theta_1} (\code{theta1}) and the slope \eqn{\theta_2} (\code{theta2})
+is a bivariate normal distribution. The \eqn{\nu} (\code{nu}), the precision of
+the efficacy responses is either a fixed value or has a gamma distribution.
+If a gamma distribution is used, the samples of \code{nu} will be first generated.
+Then the mean of the \code{nu} samples will be used to generate samples of the
+intercept and slope parameters of the model.
 
-\item \code{mcmc(data = DataDual, model = EffFlexi, options = McmcOptions)}: Obtain the posterior samples for the estimates in the Efficacy Flexible form.
-This is the mcmc procedure based on what is described in \insertCite{LangBrezger2004;textual}{crmPack} such that
-samples of the mean efficacy responses at all dose levels, samples of sigma2 \eqn{sigma^2},
-the variance of the efficacy response and samples of sigma2betaW \eqn{sigma^2_{beta_W}}, the variance of
-the random walk model will
-be generated. Please refer to \insertCite{LangBrezger2004;textual}{crmPack} for the procedures and the form of
-the joint prior and posterior probability density for the mean efficacy responses. In addition,
-both sigma2 and sigma2betaW can be fixed or having an inverse-gamma prior and posterior distribution.
-Therefore, if the inverse gamma distribution(s) are used, the parameters in the distribution will be
-first updated and then samples of sigma2 and sigma2betaW will be generated using the updated parameters.
+\item \code{mcmc(data = DataDual, model = EffFlexi, options = McmcOptions)}: Obtain the posterior samples for the estimates in the
+\code{\link{EffFlexi}} model. This is the MCMC procedure based on what is described
+in \insertCite{LangBrezger2004;textual}{crmPack} such that samples of the
+mean efficacy responses at all dose levels, samples of \code{sigma2}
+\eqn{\sigma^2}, the variance of the efficacy response and samples of
+\code{sigma2betaW} \eqn{\sigma^2_{\beta_W}}, the variance of the random walk
+model will be generated. Please refer to
+\insertCite{LangBrezger2004;textual}{crmPack} for the procedures and the
+form of the joint prior and posterior probability density for the mean
+efficacy responses. In addition, both \code{sigma2} and \code{sigma2betaW} can be
+fixed or have an inverse-gamma prior and posterior distribution. Therefore,
+if the inverse gamma distribution(s) are used, the parameters in the
+distribution will be first updated and then samples of \code{sigma2} and
+\code{sigma2betaW} will be generated using the updated parameters.
 
 \item \code{mcmc(
   data = DataOrdinal,
   model = LogisticLogNormalOrdinal,
   options = McmcOptions
 )}: Obtain the posterior samples for the model parameters in the
-\code{LogisticLogNormalOrdinal}.
+\code{\link{LogisticLogNormalOrdinal}} model.
 
-The generic \code{mcmc} method returns a \code{Samples} object with elements of the
+The generic \code{mcmc} method returns a \code{\link{Samples}} object with elements of the
 \code{data} slot named \code{alpha[1]}, \code{alpha[2]}, ..., \code{alpha[k]} and \code{beta} when
-passed a \code{LogisticLogNormalOrdinal} object.  This makes the "alpha elements"
-awkward to access and is inconsistent with other \code{Model} objects.  So rename
+passed a \code{\link{LogisticLogNormalOrdinal}} object. This makes the "alpha elements"
+awkward to access and is inconsistent with other model objects. So rename
 the alpha elements to \code{alpha1}, \code{alpha2}, ..., \verb{alpha<k>} for ease and
 consistency.
 

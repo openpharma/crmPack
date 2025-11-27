@@ -2,18 +2,22 @@
 % Please edit documentation in R/Simulations-methods.R
 \name{show,PseudoDualSimulationsSummary-method}
 \alias{show,PseudoDualSimulationsSummary-method}
-\title{Show the summary of Pseudo Dual simulations summary}
+\alias{show-PseudoDualSimulationsSummary}
+\title{Show the Summary of \code{PseudoDualSimulations}}
 \usage{
 \S4method{show}{PseudoDualSimulationsSummary}(object)
 }
 \arguments{
-\item{object}{the \code{\linkS4class{PseudoDualSimulationsSummary}} object we want to print}
+\item{object}{(\code{PseudoDualSimulationsSummary})\cr the object we want to print.}
 }
 \value{
-invisibly returns a data frame of the results with one row and appropriate column names
+Invisibly returns a data frame of the results with one row and
+appropriate column names.
 }
 \description{
-Show the summary of Pseudo Dual simulations summary
+\ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#stable}{\figure{lifecycle-stable.svg}{options: alt='[Stable]'}}}{\strong{[Stable]}}
+
+Display a summary of pseudo dual simulation results.
 }
 \examples{
 # Example where DLE and efficacy responses are considered in the simulations.
@@ -147,4 +151,3 @@ my_sum <- summary(
 show(my_sum)
 }
 }
-\keyword{methods}

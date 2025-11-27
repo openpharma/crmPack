@@ -2,7 +2,8 @@
 % Please edit documentation in R/Simulations-methods.R
 \name{plot,DualSimulationsSummary,missing-method}
 \alias{plot,DualSimulationsSummary,missing-method}
-\title{Plot summaries of the dual-endpoint design simulations}
+\alias{plot-DualSimulationsSummary-missing}
+\title{Plot Dual-Endpoint Design Simulation Summary}
 \usage{
 \S4method{plot}{DualSimulationsSummary,missing}(
   x,
@@ -13,30 +14,34 @@
 )
 }
 \arguments{
-\item{x}{the \code{\linkS4class{DualSimulationsSummary}} object we want
-to plot from}
+\item{x}{(\code{DualSimulationsSummary})\cr the object we want to plot from.}
 
-\item{y}{missing}
+\item{y}{(\code{missing})\cr not used.}
 
-\item{type}{the types of plots you want to obtain.}
+\item{type}{(\code{character})\cr the types of plots you want to obtain.}
 
-\item{\dots}{not used}
+\item{...}{not used.}
 }
 \value{
-A single \code{\link[ggplot2]{ggplot}} object if a single plot is
+A single \code{ggplot} object if a single plot is
 asked for, otherwise a \code{gtable} object.
 }
 \description{
-This plot method can be applied to \code{\linkS4class{DualSimulationsSummary}}
-objects in order to summarize them graphically. Possible \code{type} of
-plots at the moment are those listed in
-\code{\link{plot,SimulationsSummary,missing-method}} plus:
+\ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#stable}{\figure{lifecycle-stable.svg}{options: alt='[Stable]'}}}{\strong{[Stable]}}
+
+Graphical display of dual-endpoint simulation summary.
+
+This plot method can be applied to \code{\link{DualSimulationsSummary}} objects in
+order to summarize them graphically. Possible \code{type} of plots at the moment
+are those listed in \code{\link{plot,SimulationsSummary,missing-method}} plus:
+
 \describe{
-\item{meanBiomarkerFit}{Plot showing the average fitted dose-biomarker curve across
-the trials, together with 95\% credible intervals, and comparison with the
-assumed truth (as specified by the \code{trueBiomarker} argument to
-\code{\link{summary,DualSimulations-method}})}
+\item{meanBiomarkerFit}{Plot showing the average fitted dose-biomarker
+curve across the trials, together with 95\% credible intervals, and
+comparison with the assumed truth (as specified by the \code{trueBiomarker}
+argument to \code{\link{summary,DualSimulations-method}})}
 }
+
 You can specify any subset of these in the \code{type} argument.
 }
 \examples{
@@ -152,4 +157,3 @@ my_sims <- simulate(
 # Plot the summary of the Simulations.
 plot(summary(my_sims, trueTox = true_tox, trueBiomarker = true_biomarker))
 }
-\keyword{methods}

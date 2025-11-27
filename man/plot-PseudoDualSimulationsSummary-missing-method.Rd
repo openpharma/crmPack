@@ -2,7 +2,8 @@
 % Please edit documentation in R/Simulations-methods.R
 \name{plot,PseudoDualSimulationsSummary,missing-method}
 \alias{plot,PseudoDualSimulationsSummary,missing-method}
-\title{Plot the summary of Pseudo Dual Simulations summary}
+\alias{plot-PseudoDualSimulationsSummary-missing}
+\title{Plot \code{PseudoDualSimulationsSummary}}
 \usage{
 \S4method{plot}{PseudoDualSimulationsSummary,missing}(
   x,
@@ -13,27 +14,39 @@
 )
 }
 \arguments{
-\item{x}{the \code{\linkS4class{PseudoDualSimulationsSummary}} object we want to plot from}
+\item{x}{(\code{PseudoDualSimulationsSummary})\cr the object we want to plot
+from.}
 
-\item{y}{missing}
+\item{y}{(\code{missing})\cr not used.}
 
-\item{type}{the types of plots you want to obtain.}
+\item{type}{(\code{character})\cr the types of plots you want to obtain.}
 
-\item{\dots}{not used}
+\item{...}{not used.}
 }
 \value{
-A single \code{\link[ggplot2]{ggplot}} object if a single plot is
-asked for, otherwise a \code{gtable} object.
+A single \code{ggplot2} object if a single plot is asked for, otherwise a
+\code{gtable} object.
 }
 \description{
-This plot method can be applied to \code{\linkS4class{PseudoDualSimulationsSummary}} objects in order
-to summarize them graphically. Possible \code{type} of plots at the moment are those listed in
-\code{\link{plot,PseudoSimulationsSummary,missing-method}} plus:
-\describe{\item{meanEffFit}{Plot showing the fitted dose-efficacy curve. If no samples are involved, only the
-average fitted dose-efficacy curve across the trials will be plotted. If samples (DLE and efficacy) are involved,
-the average fitted dose-efficacy curve across the trials, together with the 95\% credibility interval; and comparison
-with the assumed truth (as specified by the \code{trueEff} argument to
-\code{\link{summary,PseudoDualSimulations-method}})}}
+\ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#stable}{\figure{lifecycle-stable.svg}{options: alt='[Stable]'}}}{\strong{[Stable]}}
+
+Plot the summary of \code{PseudoDualSimulations}.
+
+This plot method can be applied to \code{\link{PseudoDualSimulationsSummary}} objects
+in order to summarize them graphically. Possible \code{type} of plots at the
+moment are those listed in \code{\link{plot,PseudoSimulationsSummary,missing-method}}
+plus:
+
+\describe{
+\item{meanEffFit}{Plot showing the fitted dose-efficacy curve. If no
+samples are involved, only the average fitted dose-efficacy curve across
+the trials will be plotted. If samples (DLE and efficacy) are involved,
+the average fitted dose-efficacy curve across the trials, together with
+the 95\% credibility interval; and comparison with the assumed truth (as
+specified by the \code{trueEff} argument to
+\code{\link{summary,PseudoDualSimulations-method}})}
+}
+
 You can specify any subset of these in the \code{type} argument.
 }
 \examples{
@@ -237,4 +250,3 @@ my_sum <- summary(
 print(plot(my_sim))
 }
 }
-\keyword{methods}

@@ -3,26 +3,27 @@
 \name{maxSize}
 \alias{maxSize}
 \alias{maxSize,CohortSize-method}
-\title{"MAX" combination of cohort size rules}
+\alias{maxSize-CohortSize}
+\title{"MAX" Combination of Cohort Size Rules}
 \usage{
 maxSize(...)
 
 \S4method{maxSize}{CohortSize}(...)
 }
 \arguments{
-\item{\dots}{Objects of class \code{\linkS4class{CohortSize}}}
+\item{...}{Objects of class \code{\link{CohortSize}}.}
 }
 \value{
-the combination as an object of class
-\code{\linkS4class{CohortSizeMax}}
+The combination as an object of class \code{\link{CohortSizeMax}}.
 }
 \description{
-This function combines cohort size rules by taking
-the maximum of all sizes.
+\ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#stable}{\figure{lifecycle-stable.svg}{options: alt='[Stable]'}}}{\strong{[Stable]}}
+
+This function combines cohort size rules by taking the maximum of all sizes.
 }
 \section{Functions}{
 \itemize{
-\item \code{maxSize(CohortSize)}: The method combining cohort size rules by taking maximum
+\item \code{maxSize(CohortSize)}: The method combining cohort size rules by taking maximum.
 
 }}
 \examples{
@@ -41,6 +42,5 @@ mySize2 <- CohortSizeDLT(intervals = c(0, 1), cohort_size = c(1, 3))
 mySize <- maxSize(mySize1, mySize2)
 }
 \seealso{
-\code{\link{minSize}}
+\code{\link[=minSize]{minSize()}}
 }
-\keyword{methods}
