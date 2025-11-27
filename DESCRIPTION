@@ -22,7 +22,8 @@ Authors@R: c(
     person("Prerana", "Chandratre", , role = "aut"),
     person("F. Hoffmann-La Roche AG", role = c("cph", "fnd")),
     person("Merck Healthcare KGaA", role = c("cph", "fnd")),
-    person("Bayer AG", role = c("cph", "fnd"))
+    person("Bayer AG", role = c("cph", "fnd")),
+    person("RPACT GmbH", role = c("cph", "fnd"))
   )
 Description: Implements a wide range of dose escalation
     designs. The focus is on model-based designs, ranging from classical and 
