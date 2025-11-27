@@ -111,13 +111,6 @@ test_that("v_dual_simulations returns message for mismatched sigma2w_est length"
   expect_equal(v_dual_simulations(object), err_msg)
 })
 
-test_that("v_dual_simulations returns message for mismatched sigma2w_est length", {
-  object <- .DefaultDualSimulations()
-  object@sigma2w_est <- c(object@sigma2w_est, object@sigma2w_est)
-  err_msg <- "sigma2w_est has to have same length as data"
-  expect_equal(v_dual_simulations(object), err_msg)
-})
-
 # PseudoSimulations ----
 
 test_that("v_pseudo_simulations passes for valid object", {
