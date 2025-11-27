@@ -206,7 +206,7 @@ dose escalation based on the safety endpoint only, while in
 functionality.
 
 Before we start, we have to install and subsequently load our package in `R`:
-```{r start, warning=FALSE}
+```{r start, warning=FALSE, message=FALSE}
 library("crmPack")
 ```
 > As indicated in the startup message, try `crmPackHelp()` and `crmPackExample()` to open the help page and the package vignette.

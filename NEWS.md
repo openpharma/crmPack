@@ -1,7 +1,14 @@
 # Version 2.0.0
 
-* This release (1.0 -> 2.0) signifies a major breaking revamp of the package. Over several years, the package has undergone significant cleanup, tests writing and refactoring efforts.
-* Users are advised to carefully review the release notes and documentation for detailed information on the changes and any necessary updates to their existing code. In particular, there is a new vignette which describes how to use certain functions and features of `crmPack` after the major refactoring.
+* This release signifies a major breaking revamp of the package. Over several years, the package has undergone significant cleanup, tests writing and refactoring efforts. The package has thereby reached a major milestone and currently includes:
+  - 15 different dose-toxicity models
+  - 15 different dose recommendation rules
+  - 19 different stopping rules
+  - 9 cohort size rules
+  - 9 increment rules
+  - Reporting functionality (using `knitr`)
+  - 13 vignettes (documentation)
+* Users are advised to carefully review the release notes and documentation for detailed information on the changes and any necessary updates to their existing code using a previous CRAN release of `crmPack`. In particular, there is a new vignette which describes how to use certain functions and features of `crmPack` after the major refactoring.
 
 ### New Features
 

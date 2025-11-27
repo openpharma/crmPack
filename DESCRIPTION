@@ -17,6 +17,9 @@ Authors@R: c(
     person("Robert", "Adams", , "robert.adams@bayer.com", role = "aut"),
     person("Clara", "Beck", , "clara.beck@bayer.com", role = "aut"),
     person("John", "Kirkpatrick", , "john@puzzledface.net", role = "aut"),
+    person("Wojciech", "Wójciak", , "wojciech.wojciak@gmail.com", role = "aut"),
+    person("Guanya", "Peng", , role = "aut"),
+    person("Prerana", "Chandratre", , role = "aut"),
     person("F. Hoffmann-La Roche AG", role = c("cph", "fnd")),
     person("Merck Healthcare KGaA", role = c("cph", "fnd")),
     person("Bayer AG", role = c("cph", "fnd"))
