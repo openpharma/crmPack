@@ -15,6 +15,8 @@ vignette: >
 bibliography: vignettes.bib
 ---
 
+<!-- example.Rmd is generated from example.Rmd.orig Please edit that file -->
+
 ```{r load, echo=FALSE, results=FALSE}
 # nolint start
 library(crmPack)
