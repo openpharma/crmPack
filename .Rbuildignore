@@ -32,5 +32,5 @@ pkgdown/
 tests/testthat/_snaps
 lib
 ^vignettes/example\.Rmd\.orig$
-^vignettes/\.rebuild*\.R$
+^vignettes/\.rebuild_vignettes\.R$
 ^vignettes/crmPack-jss-paper\.Rmd\.orig$
