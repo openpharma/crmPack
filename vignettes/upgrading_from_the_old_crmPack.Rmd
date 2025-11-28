@@ -1,11 +1,11 @@
 ---
-title: "Upgrading from crmPack version 1.0.3"
+title: "Upgrading from crmPack version 1.0"
 author: "Wojciech Wójciak, Oliver Boix"
 date: "20 June 2023"
 output: rmarkdown::html_vignette
 bibliography: vignettes.bib  
 vignette: >
-  %\VignetteIndexEntry{Upgrading from crmPack version 1.0.3}
+  %\VignetteIndexEntry{Upgrading from crmPack version 1.0}
   %\VignetteEngine{knitr::rmarkdown}
   %\VignetteDepends{crmPack}
   \usepackage[utf8]{inputenc}

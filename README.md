@@ -1,5 +1,6 @@
 
 <!-- markdownlint-disable-file -->
+
 <!-- README.md is generated from README.Rmd. Please edit that file -->
 
 # `crmPack`
@@ -19,6 +20,7 @@ Coverage](https://raw.githubusercontent.com/openpharma/crmPack/_xml_coverage_rep
 <!-- badges: end -->
 
 <p align="center">
+
 <img src='man/figures/logo.png' align="right" height="131.5" alt="crmPack-logo"/>
 </p>
 
@@ -68,8 +70,8 @@ trial design, implementation, simulation and analysis:
   data](https://openpharma.github.io/crmPack/main/articles/tidy_method.html)
 - [Describing `crmPack` objects in Markdown and Quarto
   documents](https://openpharma.github.io/crmPack/main/articles/knit_print.html)
-- [Migration from the old
-  crmPack](https://openpharma.github.io/crmPack/main/articles/migration_from_the_old_crmPack.html)
+- [Upgrading from `crmPack` version
+  1.0](https://openpharma.github.io/crmPack/main/articles/upgrading_from_the_old_crmPack.html)
 - Sabanes Bove et al (2019) Model-based Dose Escalation Designs in R
   with `crmPack`. JSS 89:10 [DOI
   10.18637/jss.v089.i10](https://www.jstatsoft.org/article/view/v089i10)
