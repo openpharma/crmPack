@@ -656,8 +656,8 @@ print(plot(DLTsamples, DLTmodel, data1))
 ```
 
 <div class="figure">
-<img src="./example-figures/plot-samplesdata1 -1.png" alt="A graph similar to those above, but based on the DLTmodel object." width="100%" />
-<p class="caption">plot of chunk plot-samplesdata1 </p>
+<img src="./example-figures/plot-samplesdata1-1.png" alt="A graph similar to those above, but based on the DLTmodel object." width="100%" />
+<p class="caption">plot of chunk plot-samplesdata1</p>
 </div>
 
 

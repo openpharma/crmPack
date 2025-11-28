@@ -527,7 +527,7 @@ print(plot(priorsamples, model, emptydata))
 
 
 This `plot` function can also apply to the `DLTmodel` when samples of the parameters have been generated:
-```{r plot-samplesdata1 , fig=TRUE, fig.alt = "A graph similar to those above, but based on the DLTmodel object."}
+```{r plot-samplesdata1, fig=TRUE, fig.alt = "A graph similar to those above, but based on the DLTmodel object."}
 print(plot(DLTsamples, DLTmodel, data1))
 ```
 
