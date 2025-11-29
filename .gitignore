@@ -12,6 +12,7 @@ vignettes/*.bbl
 vignettes/*.blg
 vignettes/*.pdf
 vignettes/*.R
+!vignettes/\.rebuild_vignettes.R
 vignettes/*.pdf
 vignettes/figure/*.pdf
 *.synctex.gz
