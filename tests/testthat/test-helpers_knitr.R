@@ -1,3 +1,5 @@
+skip_on_cran()
+
 library(knitr)
 
 # This code mocks functions that have long execution times so that unit tests
