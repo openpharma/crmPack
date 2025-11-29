@@ -11,7 +11,7 @@ covariance matrix.
 ## Usage
 
 ``` r
-h_is_positive_definite(x, size = 2, tol = 1e-08)
+h_is_positive_definite(x, size = 2, tol = 1e-06)
 ```
 
 ## Arguments

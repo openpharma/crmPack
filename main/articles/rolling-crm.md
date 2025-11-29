@@ -6,18 +6,6 @@
 
 ``` r
 library(crmPack)
-```
-
-    ## Loading required package: ggplot2
-
-    ## Registered S3 method overwritten by 'crmPack':
-    ##   method       from  
-    ##   print.gtable gtable
-
-    ## Type crmPackHelp() to open help browser
-    ## Type crmPackExample() to open example
-
-``` r
 data <- DataDA(
   x = c(0.1, 0.5, 1.5, 3, 6, 10, 10, 10),
   y = c(0, 0, 1, 1, 0, 0, 1, 0),
@@ -79,24 +67,6 @@ samples <- mcmc(data, model, options)
 
 ``` r
 library(ggmcmc)
-```
-
-    ## Loading required package: dplyr
-
-    ## 
-    ## Attaching package: 'dplyr'
-
-    ## The following objects are masked from 'package:stats':
-    ## 
-    ##     filter, lag
-
-    ## The following objects are masked from 'package:base':
-    ## 
-    ##     intersect, setdiff, setequal, union
-
-    ## Loading required package: tidyr
-
-``` r
 alpha0samples <- get(samples, "alpha0")
 
 print(ggs_traceplot(alpha0samples))
@@ -104,7 +74,9 @@ print(ggs_traceplot(alpha0samples))
 
 ![A trace plot for alpha0. It looks like skyscrapers ina big city, but
 there are only just over 200 samples in the
-chain.](rolling-crm_files/figure-html/Diagnose-1-1.png)
+chain.](rolling-crm-figures/Diagnose-1-1.png)
+
+plot of chunk Diagnose-1
 
 ``` r
 print(ggs_autocorrelation(alpha0samples))
@@ -113,7 +85,9 @@ print(ggs_autocorrelation(alpha0samples))
 ![An auto correlation plot for aplha0. There is significant
 auto-correlation of 0.25 or more even at lags of 50. There is
 seasonality too, with three groups of negative auto-correlation and four
-of positive.](rolling-crm_files/figure-html/Diagnose-2-1.png)
+of positive.](rolling-crm-figures/Diagnose-2-1.png)
+
+plot of chunk Diagnose-2
 
 ### Plot the model fit
 
@@ -123,7 +97,9 @@ plot(samples, model, data, hazard = TRUE)
 
 ![Two plots in a single row. The first shows the posterior mean and ci
 for the probability of toxicity by dose. The second shows 100 times the
-posterior hazard by time.](rolling-crm_files/figure-html/Fit-1-1.png)
+posterior hazard by time.](rolling-crm-figures/Fit-1-1.png)
+
+plot of chunk Fit-1
 
 ``` r
 plot(samples, model, data, hazard = FALSE)
@@ -132,7 +108,9 @@ plot(samples, model, data, hazard = FALSE)
 ![Two plots in a single row. Both show the posterior mean and ci for the
 probability of toxicity by dose on the y axis. In the first plot, the x
 axis is dose. In the second, it is
-time.](rolling-crm_files/figure-html/Fit-2-1.png)
+time.](rolling-crm-figures/Fit-2-1.png)
+
+plot of chunk Fit-2
 
 ### prior mean curve
 
@@ -150,7 +128,9 @@ plot(Priorsamples, model, emptydata, hazard = FALSE)
 ![Two plots in a single row. Both show the prior mean and ci for the
 probability of toxicity by dose on the y axis. In the first plot, the x
 axis is dose. In the second, it is
-time.](rolling-crm_files/figure-html/Prior-1.png)
+time.](rolling-crm-figures/Prior-1.png)
+
+plot of chunk Prior
 
 ### Escalation rules
 
@@ -205,13 +185,14 @@ dashed line at 25%, indicating that this is the highest acceptable
 probability of being in the overdose range. The red bars for doses above
 0.5 all extend above 25%, indicating that their toxicity is
 unacceptable. The toxicity for doses of 0.1 and 0.5 lie below
-25%.](rolling-crm_files/figure-html/Recommend-1.png)
+25%.](rolling-crm-figures/Recommend-1.png)
+
+plot of chunk Recommend
 
 ``` r
 doseRecommendation$value
+#> [1] 0.1
 ```
-
-    ## [1] 0.5
 
 ## Example 2: Run a simulation to evaluate operating characteristics
 
@@ -240,9 +221,12 @@ curve(myTruth(x), from = 0, to = 100, ylim = c(0, 1))
 ```
 
 ![A logistic dose response curverising from 0 at dose 0 to almost 100%
-for a dose of 100.](rolling-crm_files/figure-html/Truth-1.png)
+for a dose of 100.](rolling-crm-figures/Truth-1.png)
+
+plot of chunk Truth
 
 ``` r
+
 onset <- 15
 exp_cond.cdf <- function(x) {
   1 - (pexp(x, 1 / onset, lower.tail = FALSE) - pexp(28, 1 / onset, lower.tail = FALSE)) / pexp(28, 1 / onset)
@@ -291,18 +275,18 @@ time at which they reported a toxicity, completed their safety
 evaluatiuon window or (at the end of the trial) were censored. Different
 coloured and shaped symbols at the right hand end of each line indicate
 whether or not the participant reported a
-toxicity.](rolling-crm_files/figure-html/Interpret-1.png)
+toxicity.](rolling-crm-figures/Interpret-1.png)
+
+plot of chunk Interpret
 
 ``` r
+
 mySims@stop_reasons[[2]]
-```
+#> [[1]]
+#> [1] "Probability for target toxicity is 68 % for dose 34 and thus above the required 50 %"
+#> 
+#> [[2]]
+#> [1] "Number of patients is 17 and thus below the prespecified minimum number 50"
 
-    ## [[1]]
-    ## [1] "Probability for target toxicity is 53 % for dose 14 and thus above the required 50 %"
-    ## 
-    ## [[2]]
-    ## [1] "Number of patients is 8 and thus below the prespecified minimum number 50"
-
-``` r
 # nolint end
 ```

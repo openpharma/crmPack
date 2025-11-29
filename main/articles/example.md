@@ -1,14 +1,5 @@
 # crmPack: Object-oriented implementation of CRM designs
 
-    ## Loading required package: ggplot2
-
-    ## Registered S3 method overwritten by 'crmPack':
-    ##   method       from  
-    ##   print.gtable gtable
-
-    ## Type crmPackHelp() to open help browser
-    ## Type crmPackExample() to open example
-
 This short vignette shall introduce into the usage of the package
 `crmPack`. Hopefully it makes it easy for you to set up your own CRM.
 
@@ -61,9 +52,8 @@ df <- data.frame(
 tree <- as.Node(df)
 SetNodeStyle(tree, shape = "box")
 plot(tree)
+#> Error in loadNamespace(name): there is no package called 'webshot'
 ```
-
-Data classes structure
 
 We have three data classes for this package. The parent class is the
 `GeneralData` class. The `Data` class is inheriting from the
@@ -116,8 +106,6 @@ data <- Data(
 )
 ```
 
-    ## Used default patient IDs!
-
 Most important are `x` (the doses) and `y` (the DLTs, `0` for no DLT and
 `1` for DLT), and we are using the same dose grid `doseGrid` as before.
 All computations are using the dose grid specified in the `Data` object.
@@ -131,9 +119,8 @@ been created for you:
 
 ``` r
 data@ID
+#> [1] 1 2 3 4 5 6 7 8
 ```
-
-    ## [1] 1 2 3 4 5 6 7 8
 
 You can get a visual summary of the data by applying `plot` to the
 object:
@@ -146,7 +133,9 @@ print(plot(data))
 red triangle indicates that patient 7 reported a DLT. Black squares
 indicate that no other patient reported a toxicity. Patients 1 to 5 are
 dosed in an ascending fashion from 0.1 to 6. Patients 6 to 9 are dosed
-at 10.](example_files/figure-html/plotdata-1.png)
+at 10.](example-figures/plotdata-1.png)
+
+plot of chunk plotdata
 
 > Note that for all `plot` calls in this vignette, you can leave away
 > the wrapping `print` function call if you are working interactively
@@ -170,7 +159,7 @@ which are the `ModelTox` class include all DLT (the occurrence of a
 dose-limiting toxicity) class models, and class `ModelEff` which
 includes all efficacy class models.
 
-Model classes structure
+    #> Error in loadNamespace(name): there is no package called 'webshot'
 
 ## Model setup
 
@@ -201,32 +190,38 @@ function:
 
 ``` r
 class(model)
+#> [1] "LogisticLogNormal"
+#> attr(,"package")
+#> [1] "crmPack"
 ```
-
-    ## [1] "LogisticLogNormal"
-    ## attr(,"package")
-    ## [1] "crmPack"
 
 We can look in detail at the structure of `model` as follows:
 
 ``` r
 str(model)
+#> Formal class 'LogisticLogNormal' [package "crmPack"] with 9 slots
+#>   ..@ params         :Formal class 'ModelParamsNormal' [package "crmPack"] with 3 slots
+#>   .. .. ..@ mean: num [1:2] -0.85 1
+#>   .. .. ..@ cov : num [1:2, 1:2] 1 -0.5 -0.5 1
+#>   .. .. ..@ prec: num [1:2, 1:2] 1.333 0.667 0.667 1.333
+#>   ..@ ref_dose       :Formal class 'positive_number' [package "crmPack"] with 1 slot
+#>   .. .. ..@ .Data: num 56
+#>   ..@ datamodel      :function ()  
+#>   .. ..- attr(*, "srcref")= 'srcref' int [1:8] 290 17 295 5 17 5 290 295
+#>   .. .. ..- attr(*, "srcfile")=Classes 'srcfilecopy', 'srcfile' <environment: 0x0000028310554460> 
+#>   ..@ priormodel     :function ()  
+#>   .. ..- attr(*, "srcref")= 'srcref' int [1:8] 146 18 150 5 18 5 146 150
+#>   .. .. ..- attr(*, "srcfile")=Classes 'srcfilecopy', 'srcfile' <environment: 0x0000028310554460> 
+#>   ..@ modelspecs     :function (from_prior)  
+#>   .. ..- attr(*, "srcref")= 'srcref' int [1:8] 151 18 157 5 18 5 151 157
+#>   .. .. ..- attr(*, "srcfile")=Classes 'srcfilecopy', 'srcfile' <environment: 0x0000028310554460> 
+#>   ..@ init           :function ()  
+#>   .. ..- attr(*, "srcref")= 'srcref' int [1:8] 158 12 160 5 12 5 158 160
+#>   .. .. ..- attr(*, "srcfile")=Classes 'srcfilecopy', 'srcfile' <environment: 0x0000028310554460> 
+#>   ..@ datanames      : chr [1:3] "nObs" "y" "x"
+#>   ..@ datanames_prior: chr(0) 
+#>   ..@ sample         : chr [1:2] "alpha0" "alpha1"
 ```
-
-    ## Formal class 'LogisticLogNormal' [package "crmPack"] with 9 slots
-    ##   ..@ params         :Formal class 'ModelParamsNormal' [package "crmPack"] with 3 slots
-    ##   .. .. ..@ mean: num [1:2] -0.85 1
-    ##   .. .. ..@ cov : num [1:2, 1:2] 1 -0.5 -0.5 1
-    ##   .. .. ..@ prec: num [1:2, 1:2] 1.333 0.667 0.667 1.333
-    ##   ..@ ref_dose       :Formal class 'positive_number' [package "crmPack"] with 1 slot
-    ##   .. .. ..@ .Data: num 56
-    ##   ..@ datamodel      :function ()  
-    ##   ..@ priormodel     :function ()  
-    ##   ..@ modelspecs     :function (from_prior)  
-    ##   ..@ init           :function ()  
-    ##   ..@ datanames      : chr [1:3] "nObs" "y" "x"
-    ##   ..@ datanames_prior: chr(0) 
-    ##   ..@ sample         : chr [1:2] "alpha0" "alpha1"
 
 We see that the object has 9 slots, and their names. These can be
 accessed with the `@` operator (similarly as for lists the `$`
@@ -234,10 +229,9 @@ operator), for example we can extract the `ref_dose` slot:
 
 ``` r
 model@ref_dose
+#> An object of class "positive_number"
+#> [1] 56
 ```
-
-    ## An object of class "positive_number"
-    ## [1] 56
 
 You can find out yourself about the other slots, by looking at the help
 page for `Model-class` in the help browser, because all univariate
@@ -337,28 +331,27 @@ Then we can look at the structure of this model:
 
 ``` r
 str(DLTmodel)
+#> Formal class 'LogisticIndepBeta' [package "crmPack"] with 7 slots
+#>   ..@ binDLE    : num [1:2] 1.05 1.8
+#>   ..@ DLEdose   : num [1:2] 25 300
+#>   ..@ DLEweights: int [1:2] 3 3
+#>   ..@ phi1      : num -1.95
+#>   ..@ phi2      : num 0.412
+#>   ..@ Pcov      : num [1:2, 1:2] 10.05 -2.077 -2.077 0.462
+#>   .. ..- attr(*, "dimnames")=List of 2
+#>   .. .. ..$ : chr [1:2] "(Intercept)" "log(x)"
+#>   .. .. ..$ : chr [1:2] "(Intercept)" "log(x)"
+#>   ..@ data      :Formal class 'Data' [package "crmPack"] with 9 slots
+#>   .. .. ..@ x       : num(0) 
+#>   .. .. ..@ y       : int(0) 
+#>   .. .. ..@ doseGrid: num [1:12] 25 50 75 100 125 150 175 200 225 250 ...
+#>   .. .. ..@ nGrid   : int 12
+#>   .. .. ..@ xLevel  : int(0) 
+#>   .. .. ..@ placebo : logi FALSE
+#>   .. .. ..@ ID      : int(0) 
+#>   .. .. ..@ cohort  : int(0) 
+#>   .. .. ..@ nObs    : int 0
 ```
-
-    ## Formal class 'LogisticIndepBeta' [package "crmPack"] with 7 slots
-    ##   ..@ binDLE    : num [1:2] 1.05 1.8
-    ##   ..@ DLEdose   : num [1:2] 25 300
-    ##   ..@ DLEweights: int [1:2] 3 3
-    ##   ..@ phi1      : num -1.95
-    ##   ..@ phi2      : num 0.412
-    ##   ..@ Pcov      : num [1:2, 1:2] 10.05 -2.077 -2.077 0.462
-    ##   .. ..- attr(*, "dimnames")=List of 2
-    ##   .. .. ..$ : chr [1:2] "(Intercept)" "log(x)"
-    ##   .. .. ..$ : chr [1:2] "(Intercept)" "log(x)"
-    ##   ..@ data      :Formal class 'Data' [package "crmPack"] with 9 slots
-    ##   .. .. ..@ x       : num(0) 
-    ##   .. .. ..@ y       : int(0) 
-    ##   .. .. ..@ doseGrid: num [1:12] 25 50 75 100 125 150 175 200 225 250 ...
-    ##   .. .. ..@ nGrid   : int 12
-    ##   .. .. ..@ xLevel  : int(0) 
-    ##   .. .. ..@ placebo : logi FALSE
-    ##   .. .. ..@ ID      : int(0) 
-    ##   .. .. ..@ cohort  : int(0) 
-    ##   .. .. ..@ nObs    : int 0
 
 There are in total 10 slots and their names are given. Remember that
 they can be accessed with the `@` operator (similarly as for lists the
@@ -366,9 +359,8 @@ they can be accessed with the `@` operator (similarly as for lists the
 
 ``` r
 DLTmodel@phi1
+#> [1] -1.946152
 ```
-
-    ## [1] -1.946152
 
 This gives the updated modal estimate of the intercept parameter φ₁.
 Please find out other slots using the `@` operator and looking at the
@@ -407,17 +399,16 @@ minInfModel <- MinimalInformative(
     ),
   seed = 432
 )
+#> It: 1, obj value (lsEnd): 0.4445658375 indTrace: 1
+#> It: 4, obj value (lsEnd): 0.4002825478 indTrace: 4
+#> It: 14, obj value (lsEnd): 0.114847608 indTrace: 14
+#> Emini is: 0.114847608
+#> xmini are:
+#> 1.004919453 1.023914845 1.873799323 0.1222736022 -0.6253169547 
+#> Totally it used 24.994 secs
+#> No. of function call is: 4862
+#> Algorithm reached max number of iterations.
 ```
-
-    ## It: 1, obj value (lsEnd): 0.4445658384 indTrace: 1
-    ## It: 4, obj value (lsEnd): 0.3926736165 indTrace: 4
-    ## It: 23, obj value (lsEnd): 0.120574847 indTrace: 23
-    ## Emini is: 0.120574847
-    ## xmini are:
-    ## 1.149249485 1.182737622 1.973642753 0.3762267068 0.3620001498 
-    ## Totally it used 18.774391 secs
-    ## No. of function call is: 4807
-    ## Algorithm reached max number of iterations.
 
 We use a few grid points between the minimum and the maximum to guide
 the approximation routine, which is based on a stochastic optimization
@@ -458,7 +449,9 @@ legend("right",
 
 ![A graph showing the relationship between the requested quantiles of
 the prior and those obtained from MinimalInformative. The approximation
-is less than ideal.](example_files/figure-html/min-inf-res-1.png)
+is less than ideal.](example-figures/min-inf-res-1.png)
+
+plot of chunk min-inf-res
 
 In this plot we see in blue the quantiles (2.5%, 50%, and 97.5%) of the
 Beta distributions that we approximate with the red quantiles of the
@@ -467,9 +460,8 @@ and the maximum distance between any red and blue point is:
 
 ``` r
 minInfModel$distance
+#> [1] 0.1148476
 ```
-
-    ## [1] 0.1205748
 
 Therefore usually we would let the computations take longer (by removing
 the `control` option from the `MinimalInformative` call) to obtain a
@@ -478,23 +470,30 @@ the red points, is contained in the `model` list element:
 
 ``` r
 str(minInfModel$model)
+#> Formal class 'LogisticNormal' [package "crmPack"] with 9 slots
+#>   ..@ params         :Formal class 'ModelParamsNormal' [package "crmPack"] with 3 slots
+#>   .. .. ..@ mean: Named num [1:2] 1 1.02
+#>   .. .. .. ..- attr(*, "names")= chr [1:2] "meanAlpha" "meanBeta"
+#>   .. .. ..@ cov : num [1:2, 1:2] 3.511 -0.143 -0.143 0.015
+#>   .. .. ..@ prec: num [1:2, 1:2] 0.468 4.482 4.482 109.833
+#>   ..@ ref_dose       :Formal class 'positive_number' [package "crmPack"] with 1 slot
+#>   .. .. ..@ .Data: num 50
+#>   ..@ datamodel      :function ()  
+#>   .. ..- attr(*, "srcref")= 'srcref' int [1:8] 220 17 225 5 17 5 220 225
+#>   .. .. ..- attr(*, "srcfile")=Classes 'srcfilecopy', 'srcfile' <environment: 0x0000028310554460> 
+#>   ..@ priormodel     :function ()  
+#>   .. ..- attr(*, "srcref")= 'srcref' int [1:8] 226 18 230 5 18 5 226 230
+#>   .. .. ..- attr(*, "srcfile")=Classes 'srcfilecopy', 'srcfile' <environment: 0x0000028310554460> 
+#>   ..@ modelspecs     :function (from_prior)  
+#>   .. ..- attr(*, "srcref")= 'srcref' int [1:8] 151 18 157 5 18 5 151 157
+#>   .. .. ..- attr(*, "srcfile")=Classes 'srcfilecopy', 'srcfile' <environment: 0x0000028310554460> 
+#>   ..@ init           :function ()  
+#>   .. ..- attr(*, "srcref")= 'srcref' int [1:8] 158 12 160 5 12 5 158 160
+#>   .. .. ..- attr(*, "srcfile")=Classes 'srcfilecopy', 'srcfile' <environment: 0x0000028310554460> 
+#>   ..@ datanames      : chr [1:3] "nObs" "y" "x"
+#>   ..@ datanames_prior: chr(0) 
+#>   ..@ sample         : chr [1:2] "alpha0" "alpha1"
 ```
-
-    ## Formal class 'LogisticNormal' [package "crmPack"] with 9 slots
-    ##   ..@ params         :Formal class 'ModelParamsNormal' [package "crmPack"] with 3 slots
-    ##   .. .. ..@ mean: Named num [1:2] 1.15 1.18
-    ##   .. .. .. ..- attr(*, "names")= chr [1:2] "meanAlpha" "meanBeta"
-    ##   .. .. ..@ cov : num [1:2, 1:2] 3.895 0.269 0.269 0.142
-    ##   .. .. ..@ prec: num [1:2, 1:2] 0.295 -0.561 -0.561 8.13
-    ##   ..@ ref_dose       :Formal class 'positive_number' [package "crmPack"] with 1 slot
-    ##   .. .. ..@ .Data: num 50
-    ##   ..@ datamodel      :function ()  
-    ##   ..@ priormodel     :function ()  
-    ##   ..@ modelspecs     :function (from_prior)  
-    ##   ..@ init           :function ()  
-    ##   ..@ datanames      : chr [1:3] "nObs" "y" "x"
-    ##   ..@ datanames_prior: chr(0) 
-    ##   ..@ sample         : chr [1:2] "alpha0" "alpha1"
 
 Here we see in the slots `mean`, `cov` the parameters that have been
 determined. At this point a slight warning: you cannot directly change
@@ -568,20 +567,16 @@ interpretation of the parameters)
 ``` r
 ## look at the structure of the samples object:
 str(samples)
-```
-
-    ## Formal class 'Samples' [package "crmPack"] with 2 slots
-    ##   ..@ data   :List of 2
-    ##   .. ..$ alpha0: num [1:2000] 1.11 1.11 1.072 1.072 0.883 ...
-    ##   .. ..$ alpha1: num [1:2000] 0.727 0.727 1.093 1.093 0.798 ...
-    ##   ..@ options:Formal class 'McmcOptions' [package "crmPack"] with 5 slots
-    ##   .. .. ..@ iterations: int 4100
-    ##   .. .. ..@ burnin    : int 100
-    ##   .. .. ..@ step      : int 2
-    ##   .. .. ..@ rng_kind  : chr NA
-    ##   .. .. ..@ rng_seed  : int NA
-
-``` r
+#> Formal class 'Samples' [package "crmPack"] with 2 slots
+#>   ..@ data   :List of 2
+#>   .. ..$ alpha0: num [1:2000] 1.289 1.289 1.289 -0.428 -0.428 ...
+#>   .. ..$ alpha1: num [1:2000] 1.69 1.69 1.69 2.27 2.27 ...
+#>   ..@ options:Formal class 'McmcOptions' [package "crmPack"] with 5 slots
+#>   .. .. ..@ iterations: int 4100
+#>   .. .. ..@ burnin    : int 100
+#>   .. .. ..@ step      : int 2
+#>   .. .. ..@ rng_kind  : chr NA
+#>   .. .. ..@ rng_seed  : int NA
 ## now extract the alpha0 samples (intercept of the regression model)
 alpha0samples <- get(samples, "alpha0")
 ```
@@ -592,35 +587,20 @@ plot and an autocorrelation plot:
 
 ``` r
 library(ggmcmc)
-```
-
-    ## Loading required package: dplyr
-
-    ## 
-    ## Attaching package: 'dplyr'
-
-    ## The following objects are masked from 'package:stats':
-    ## 
-    ##     filter, lag
-
-    ## The following objects are masked from 'package:base':
-    ## 
-    ##     intersect, setdiff, setequal, union
-
-    ## Loading required package: tidyr
-
-``` r
 print(ggs_traceplot(alpha0samples))
 ```
 
-![A trace plot for alpha0](example_files/figure-html/ggmcmc-1.png)
+![A trace plot for alpha0](example-figures/ggmcmc-1.png)
+
+plot of chunk ggmcmc
 
 ``` r
 print(ggs_autocorrelation(alpha0samples))
 ```
 
-![An autocorrelation plot for
-alpha0](example_files/figure-html/ggmcmc2-1.png)
+![An autocorrelation plot for alpha0](example-figures/ggmcmc2-1.png)
+
+plot of chunk ggmcmc2
 
 So here we see that we have some autocorrelation in the samples, and
 might consider using a higher thinning parameter in order to decrease
@@ -688,15 +668,10 @@ For example, we have some new observations specified in the data set
 ``` r
 newDLTmodel <- update(object = DLTmodel, data = data3)
 newDLTmodel@phi1
-```
-
-    ## [1] -5.070681
-
-``` r
+#> [1] -5.070681
 newDLTmodel@phi2
+#> [1] 1.125107
 ```
-
-    ## [1] 1.125107
 
 In the example, the `update` function is used to obtain the posterior
 modal estimates of the model parameters, φ₁ and φ₂, which can then be
@@ -714,7 +689,9 @@ print(plot(samples, model, data))
 ![A graph with dose level on the x axis and the probability of DLT on
 the y axis. The posterior mean probability of toxicity increases
 smoothly with dose. The 95% credible interval is roughly symmetric about
-the mean.](example_files/figure-html/plot-model-fit-1.png)
+the mean.](example-figures/plot-model-fit-1.png)
+
+plot of chunk plot-model-fit
 
 This plot shows the posterior mean curve and 95% equi-tailed credible
 intervals at each point of the dose grid from the `Data` object.
@@ -737,7 +714,9 @@ print(plot(priorsamples, model, emptydata))
 the y axis. The prior mean probability of toxicity increases with dose,
 but is much less smooth than the posterior. Similarly, The 95% credible
 interval is not symmetric about the
-mean.](example_files/figure-html/empty-data-1.png)
+mean.](example-figures/empty-data-1.png)
+
+plot of chunk empty-data
 
 This `plot` function can also apply to the `DLTmodel` when samples of
 the parameters have been generated:
@@ -747,7 +726,9 @@ print(plot(DLTsamples, DLTmodel, data1))
 ```
 
 ![A graph similar to those above, but based on the DLTmodel
-object.](example_files/figure-html/plot-samplesdata1%20-1.png)
+object.](example-figures/plot-samplesdata1-1.png)
+
+plot of chunk plot-samplesdata1
 
 In addition, we can also plot the fitted dose-response curve using the
 prior or the posterior modal estimates of the model parameters when no
@@ -762,7 +743,9 @@ print(plot(data1, DLTmodel))
 ![A graph with dose level on the x axis and the probability of DLT on
 the y axis. The modal probability of toxicity increases with dose. No
 credible interval is
-plotted.](example_files/figure-html/emptydatanoDLTsamples-1.png)
+plotted.](example-figures/emptydatanoDLTsamples-1.png)
+
+plot of chunk emptydatanoDLTsamples
 
 Since no samples are involved, only the curve using the prior or
 posterior modal estimates of the parameters are produced, without 95%
@@ -788,7 +771,7 @@ pages `Increments-class`, `NextBest-class`, `CohortSize-class` and
 Figure @ref(fig:increments) shows the structure of the `Increments`
 classes:
 
-Increments classes structure
+    #> Error in loadNamespace(name): there is no package called 'webshot'
 
 The `Increments` class is the basis for all maximum increments rule
 classes within this package. There are three subclasses, the
@@ -824,9 +807,8 @@ nextMaxDose <- maxDose(myIncrements,
   data = data
 )
 nextMaxDose
+#> [1] 20
 ```
-
-    ## [1] 20
 
 So in this case, the next dose could not be larger than 20 mg.
 
@@ -852,7 +834,7 @@ instead of the last dose.
 Figure @ref(fig:rules) show the structure of the next best dose
 recommendation rules currently implemented in `crmPack`.
 
-Escalation classes structure
+    #> Error in loadNamespace(name): there is no package called 'webshot'
 
 All classes of escalation rules are contained in the `nextBest` class.
 There are two main types of escalation rules: either only the binary DLT
@@ -969,11 +951,7 @@ maximum dose and the final recommendation (the red triangle):
 
 ``` r
 doseRecommendation$value
-```
-
-    ## [1] 18
-
-``` r
+#> [1] 20
 print(doseRecommendation$plot)
 ```
 
@@ -986,7 +964,9 @@ doses above 20 have an unacceptable risk of toxicity. On the upper
 graph, a red arrow pointing at 20 indicates that it is the dose with the
 highest probability of being in the target toxicity range whilst at the
 same time not being unacceptably
-toxic.](example_files/figure-html/next-best-results-1.png)
+toxic.](example-figures/next-best-results-1.png)
+
+plot of chunk next-best-results
 
 Similarly, we can use the the generic `nextBest` function for
 the`NextBestTD` and `NextBestTDsamples` rules. In the example below we
@@ -1013,23 +993,11 @@ list. For example,
 
 ``` r
 doseRecDLT$next_dose_drt
-```
-
-    ## [1] 50
-
-``` r
+#> [1] 50
 doseRecDLT$prob_target_drt
-```
-
-    ## [1] 0.35
-
-``` r
+#> [1] 0.35
 doseRecDLT$dose_target_drt
-```
-
-    ## [1] 52.28128
-
-``` r
+#> [1] 52.28128
 print(doseRecDLT$plot)
 ```
 
@@ -1040,7 +1008,9 @@ the recommended dose for the next cohort (labelled Next) and the maximum
 dose permitted by the increments rule. The maximum dose is 300, the
 recommended dose, 50. A puple square and an orange triangle indicate the
 TD30 and TD35 estimates, both of which are close to
-50.](example_files/figure-html/next-bestTD-results-1.png)
+50.](example-figures/next-bestTD-results-1.png)
+
+plot of chunk next-bestTD-results
 
 We can see that the next dose suggested to be given to the next cohort
 of subjects is 50 mg. The target probability of DLT during the trial is
@@ -1089,14 +1059,13 @@ example will look slightly different than in the previous example:
 print(doseRecDLTSamples$plot)
 ```
 
-    ## Warning: Some data points are outside of `bounds`. Removing them.
-    ## Some data points are outside of `bounds`. Removing them.
-
 ![A denisty plot showing the PDFs for the TD35 and TD30 against dose.
 Both are highly skewed to the left. Vertical blue and red lines indicate
 the recommended dose for the next cohort and the maximum dose permitted
 by the increments rule. The recommended dose is 50 and the maximum dose
-300.](example_files/figure-html/next-bestTDsamples-results-1.png)
+300.](example-figures/next-bestTDsamples-results-1.png)
+
+plot of chunk next-bestTDsamples-results
 
 > This graph is incorrect
 
@@ -1122,9 +1091,8 @@ df <- data.frame(
 tree <- as.Node(df)
 SetNodeStyle(tree, shape = "box", fig.alt = "A dendrogram showing the inheritance stricture of the CohortSize classes.  CohortSie is the parent class.  All other classes are children of CohortSize.")
 plot(tree)
+#> Error in loadNamespace(name): there is no package called 'webshot'
 ```
-
-CohortSize classes structure
 
 % All classes related to cohort size in this package are contains within
 `CohortSize` class.
@@ -1163,9 +1131,8 @@ size(mySize,
   dose = doseRecommendation$value,
   data = data
 )
+#> [1] 3
 ```
-
-    ## [1] 3
 
 Here, because we have one DLT already, we would go for 3 patients for
 the next cohort.
@@ -1273,58 +1240,57 @@ stopTrial(
   stopping = myStopping, dose = doseRecommendation$value,
   samples = samples, model = model, data = data
 )
+#> [1] FALSE
+#> attr(,"message")
+#> attr(,"message")[[1]]
+#> attr(,"message")[[1]][[1]]
+#> [1] "Number of cohorts is 6 and thus reached the prespecified minimum number 3"
+#> 
+#> attr(,"message")[[1]][[2]]
+#> [1] "Probability for target toxicity is 38 % for dose 20 and thus below the required 50 %"
+#> 
+#> 
+#> attr(,"message")[[2]]
+#> [1] "Number of patients is 8 and thus below the prespecified minimum number 20"
+#> 
+#> attr(,"individual")
+#> attr(,"individual")[[1]]
+#> [1] FALSE
+#> attr(,"message")
+#> attr(,"message")[[1]]
+#> [1] "Number of cohorts is 6 and thus reached the prespecified minimum number 3"
+#> 
+#> attr(,"message")[[2]]
+#> [1] "Probability for target toxicity is 38 % for dose 20 and thus below the required 50 %"
+#> 
+#> attr(,"individual")
+#> attr(,"individual")[[1]]
+#> [1] TRUE
+#> attr(,"message")
+#> [1] "Number of cohorts is 6 and thus reached the prespecified minimum number 3"
+#> attr(,"report_label")
+#> [1] "≥ 3 cohorts dosed"
+#> 
+#> attr(,"individual")[[2]]
+#> [1] FALSE
+#> attr(,"message")
+#> [1] "Probability for target toxicity is 38 % for dose 20 and thus below the required 50 %"
+#> attr(,"report_label")
+#> [1] "P(0.2 ≤ prob(DLE | NBD) ≤ 0.35) ≥ 0.5"
+#> 
+#> attr(,"report_label")
+#> [1] NA
+#> 
+#> attr(,"individual")[[2]]
+#> [1] FALSE
+#> attr(,"message")
+#> [1] "Number of patients is 8 and thus below the prespecified minimum number 20"
+#> attr(,"report_label")
+#> [1] "≥ 20 patients dosed"
+#> 
+#> attr(,"report_label")
+#> [1] NA
 ```
-
-    ## [1] FALSE
-    ## attr(,"message")
-    ## attr(,"message")[[1]]
-    ## attr(,"message")[[1]][[1]]
-    ## [1] "Number of cohorts is 6 and thus reached the prespecified minimum number 3"
-    ## 
-    ## attr(,"message")[[1]][[2]]
-    ## [1] "Probability for target toxicity is 34 % for dose 18 and thus below the required 50 %"
-    ## 
-    ## 
-    ## attr(,"message")[[2]]
-    ## [1] "Number of patients is 8 and thus below the prespecified minimum number 20"
-    ## 
-    ## attr(,"individual")
-    ## attr(,"individual")[[1]]
-    ## [1] FALSE
-    ## attr(,"message")
-    ## attr(,"message")[[1]]
-    ## [1] "Number of cohorts is 6 and thus reached the prespecified minimum number 3"
-    ## 
-    ## attr(,"message")[[2]]
-    ## [1] "Probability for target toxicity is 34 % for dose 18 and thus below the required 50 %"
-    ## 
-    ## attr(,"individual")
-    ## attr(,"individual")[[1]]
-    ## [1] TRUE
-    ## attr(,"message")
-    ## [1] "Number of cohorts is 6 and thus reached the prespecified minimum number 3"
-    ## attr(,"report_label")
-    ## [1] "≥ 3 cohorts dosed"
-    ## 
-    ## attr(,"individual")[[2]]
-    ## [1] FALSE
-    ## attr(,"message")
-    ## [1] "Probability for target toxicity is 34 % for dose 18 and thus below the required 50 %"
-    ## attr(,"report_label")
-    ## [1] "P(0.2 ≤ prob(DLE | NBD) ≤ 0.35) ≥ 0.5"
-    ## 
-    ## attr(,"report_label")
-    ## [1] NA
-    ## 
-    ## attr(,"individual")[[2]]
-    ## [1] FALSE
-    ## attr(,"message")
-    ## [1] "Number of patients is 8 and thus below the prespecified minimum number 20"
-    ## attr(,"report_label")
-    ## [1] "≥ 20 patients dosed"
-    ## 
-    ## attr(,"report_label")
-    ## [1] NA
 
 We receive here `FALSE`, which means that the stopping rule criteria
 have not been met. The attribute `message` contains the textual results
@@ -1341,26 +1307,22 @@ stopTrial(
   stopping = myStopping4, dose = doseRecDLTSamples$next_dose_drt,
   samples = DLTpostsamples, model = newDLTmodel, data = data3
 )
-```
+#> [1] FALSE
+#> attr(,"message")
+#> [1] "95% CI is (0.000611274483577986, 10459.1345133638), Ratio = 17110373.1537 is greater than target_ratio = 5"
+#> attr(,"report_label")
+#> [1] "TD 5 for 0.3 target prob"
 
-    ## [1] FALSE
-    ## attr(,"message")
-    ## [1] "95% CI is (0.000611274483578011, 10459.1345133637), Ratio = 17110373.1537 is greater than target_ratio = 5"
-    ## attr(,"report_label")
-    ## [1] "TD 5 for 0.3 target prob"
-
-``` r
 stopTrial(
   stopping = myStopping4, dose = doseRecDLT$next_dose_drt,
   model = newDLTmodel, data = data3
 )
+#> [1] FALSE
+#> attr(,"message")
+#> [1] "95% CI is ( 11.0662 , 164.618 ), Ratio = 14.8758 is  greater than target_ratio = 5"
+#> attr(,"report_label")
+#> [1] "TD 5 for 0.3 target prob"
 ```
-
-    ## [1] FALSE
-    ## attr(,"message")
-    ## [1] "95% CI is ( 11.0662 , 164.618 ), Ratio = 14.8758 is  greater than target_ratio = 5"
-    ## attr(,"report_label")
-    ## [1] "TD 5 for 0.3 target prob"
 
 when DLT samples or no DLT samples are involved.
 
@@ -1377,7 +1339,7 @@ size and a starting dose.
 The structure of the design classes in this package is shown in figure
 @ref(fig:Design).
 
-Design classes structure
+    #> Error in loadNamespace(name): there is no package called 'webshot'
 
 It might seem strange at first sight that we have to supply starting
 data to the design, but we will show below that this makes sense. First,
@@ -1459,37 +1421,36 @@ example we have
 ``` r
 set.seed(23)
 examine(design)
+#>    dose DLTs nextDose  stop increment
+#> 1     3    0      6.0 FALSE       100
+#> 2     3    1      3.0 FALSE         0
+#> 3     3    2      0.1 FALSE       -97
+#> 4     3    3       NA FALSE        NA
+#> 5     6    0     12.0 FALSE       100
+#> 6     6    1     12.0 FALSE       100
+#> 7     6    2      3.0 FALSE       -50
+#> 8     6    3      1.5 FALSE       -75
+#> 9    12    0     24.0 FALSE       100
+#> 10   12    1     24.0 FALSE       100
+#> 11   12    2     14.0 FALSE        17
+#> 12   12    3      6.0 FALSE       -50
+#> 13   24    0     30.0 FALSE        25
+#> 14   24    1     30.0 FALSE        25
+#> 15   24    2     26.0 FALSE         8
+#> 16   24    3     18.0 FALSE       -25
+#> 17   30    0     38.0 FALSE        27
+#> 18   30    1     38.0 FALSE        27
+#> 19   30    2     34.0 FALSE        13
+#> 20   30    3     26.0 FALSE       -13
+#> 21   38    0     50.0 FALSE        32
+#> 22   38    1     50.0 FALSE        32
+#> 23   38    2     42.0 FALSE        11
+#> 24   38    3     36.0 FALSE        -5
+#> 25   50    0     58.0  TRUE        16
+#> 26   50    1     54.0  TRUE         8
+#> 27   50    2     50.0  TRUE         0
+#> 28   50    3     44.0  TRUE       -12
 ```
-
-    ##    dose DLTs nextDose  stop increment
-    ## 1     3    0      6.0 FALSE       100
-    ## 2     3    1      6.0 FALSE       100
-    ## 3     3    2      0.1 FALSE       -97
-    ## 4     3    3       NA FALSE        NA
-    ## 5     6    0     12.0 FALSE       100
-    ## 6     6    1     12.0 FALSE       100
-    ## 7     6    2      6.0 FALSE         0
-    ## 8     6    3      1.5 FALSE       -75
-    ## 9    12    0     24.0 FALSE       100
-    ## 10   12    1     24.0 FALSE       100
-    ## 11   12    2     14.0 FALSE        17
-    ## 12   12    3      6.0 FALSE       -50
-    ## 13   24    0     30.0 FALSE        25
-    ## 14   24    1     30.0 FALSE        25
-    ## 15   24    2     26.0 FALSE         8
-    ## 16   24    3     18.0 FALSE       -25
-    ## 17   30    0     38.0 FALSE        27
-    ## 18   30    1     38.0 FALSE        27
-    ## 19   30    2     34.0 FALSE        13
-    ## 20   30    3     28.0 FALSE        -7
-    ## 21   38    0     50.0 FALSE        32
-    ## 22   38    1     50.0 FALSE        32
-    ## 23   38    2     42.0 FALSE        11
-    ## 24   38    3     36.0 FALSE        -5
-    ## 25   50    0     58.0  TRUE        16
-    ## 26   50    1     56.0  TRUE        12
-    ## 27   50    2     50.0  TRUE         0
-    ## 28   50    3     44.0  TRUE       -12
 
 Note that it is important to set a seed, since minor changes might occur
 due to sampling variations. However, the `mcmcOptions` parameter should
@@ -1524,7 +1485,9 @@ curve(myTruth(x), from = 0, to = 80, ylim = c(0, 1))
 ```
 
 ![The CDF defined by the myTruth
-function](example_files/figure-html/true-def-1.png)
+function](example-figures/true-def-1.png)
+
+plot of chunk true-def
 
 In a similar way, we can also simulate trials based on a true DLT
 scenario using the `TDDesign` and the `TDsamplesDesign`.
@@ -1540,7 +1503,9 @@ curve(TrueDLT, from = 25, to = 300, ylim = c(0, 1))
 ```
 
 ![The CDF defined by the TrueDLT
-function](example_files/figure-html/trueDLT-1.png)
+function](example-figures/trueDLT-1.png)
+
+plot of chunk trueDLT
 
 This true DLT scenario will be used for both the `TDDesign` and the
 `TDsamplesDesign`
@@ -1559,13 +1524,12 @@ time <- system.time(mySims <- simulate(design,
   parallel = FALSE
 ))[3]
 time
+#> elapsed 
+#>   121.6
 ```
 
-    ## elapsed 
-    ## 144.713
-
 We have wrapped the call to `simulate` in a `system.time` to obtain the
-required time for the simulations (about 145 seconds in this case). The
+required time for the simulations (about 122 seconds in this case). The
 argument `args` could contain additional arguments for the `truth`
 function, which we did not require here and therefore let it at the
 default `NULL`. We specify the number of simulations with `nsim` and the
@@ -1581,19 +1545,16 @@ class, in this case `Simulations`:
 
 ``` r
 class(mySims)
+#> [1] "Simulations"
+#> attr(,"package")
+#> [1] "crmPack"
 ```
-
-    ## [1] "Simulations"
-    ## attr(,"package")
-    ## [1] "crmPack"
 
 From the help page
 
 ``` r
 help("Simulations-class", help = "html")
 ```
-
-    ## starting httpd help server ... done
 
 we see that this class is a subclass of the `GeneralSimulations` class.
 By looking at the help pages for `Simulations` and the parent class
@@ -1611,32 +1572,32 @@ simulation. Patient number runs along the x axis, dose administered
 along the y axis. Red triangle indicate patients who reported a DLT,
 black circles those who did not. DLTs were reported by patients 10, 11,
 12, 16 and 18, all at a dose of 24. No other patients reported
-DLTs.](example_files/figure-html/third-trial-1.png)
+DLTs.](example-figures/third-trial-1.png)
+
+plot of chunk third-trial
 
 The final dose for this trial was
 
 ``` r
 mySims@doses[3]
+#> [1] 22
 ```
-
-    ## [1] 18
 
 and the stopping reason was
 
 ``` r
 mySims@stop_reasons[[3]]
+#> [[1]]
+#> [[1]][[1]]
+#> [1] "Number of cohorts is 6 and thus reached the prespecified minimum number 3"
+#> 
+#> [[1]][[2]]
+#> [1] "Probability for target toxicity is 51 % for dose 22 and thus above the required 50 %"
+#> 
+#> 
+#> [[2]]
+#> [1] "Number of patients is 18 and thus below the prespecified minimum number 20"
 ```
-
-    ## [[1]]
-    ## [[1]][[1]]
-    ## [1] "Number of cohorts is 6 and thus reached the prespecified minimum number 3"
-    ## 
-    ## [[1]][[2]]
-    ## [1] "Probability for target toxicity is 52 % for dose 18 and thus above the required 50 %"
-    ## 
-    ## 
-    ## [[2]]
-    ## [1] "Number of patients is 18 and thus below the prespecified minimum number 20"
 
 Furthermore, with this object, we can apply two methods. First, we can
 plot it, i.e. we can apply the plot method:
@@ -1652,7 +1613,9 @@ of the dose administered tat each patient number, calculated over all
 simulations. The lower graph has dose on the x axis and proportion of
 patients treated at that dose on the y axis. The proportuon of patients
 treated is avreaged over all
-simulations.](example_files/figure-html/sim-plot-1.png)
+simulations.](example-figures/sim-plot-1.png)
+
+plot of chunk sim-plot
 
 The resulting plot shows on the top panel a summary of the trial
 trajectories. On the bottom, the proportions of doses tried, averaged
@@ -1668,28 +1631,27 @@ above:
 summary(mySims,
   truth = myTruth
 )
+#> Summary of 100 simulations
+#> 
+#> Target toxicity interval was 20, 35 %
+#> Target dose interval corresponding to this was 19.6, 21.6 
+#> Intervals are corresponding to 10 and 90 % quantiles
+#> 
+#> Number of patients overall : mean 19 (18, 21) 
+#> Number of patients treated above target tox interval : mean 7 (6, 9) 
+#> Proportions of DLTs in the trials : mean 26 % (22 %, 33 %) 
+#> Mean toxicity risks for the patients on active : mean 26 % (16 %, 36 %) 
+#> Doses selected as MTD : mean 20.7 (16, 24.2) 
+#> True toxicity at doses selected : mean 31 % (5 %, 57 %) 
+#> Proportion of trials selecting target MTD: 22 %
+#> Dose most often selected as MTD: 18 
+#> Observed toxicity rate at dose most often selected: 11 %
+#> Fitted toxicity rate at dose most often selected : mean 24 % (20 %, 28 %) 
+#> Stop reason triggered:
+#>  ≥ 3 cohorts dosed :  100 %
+#>  P(0.2 ≤ prob(DLE | NBD) ≤ 0.35) ≥ 0.5 :  96 %
+#>  ≥ 20 patients dosed :  41 %
 ```
-
-    ## Summary of 100 simulations
-    ## 
-    ## Target toxicity interval was 20, 35 %
-    ## Target dose interval corresponding to this was 19.6, 21.6 
-    ## Intervals are corresponding to 10 and 90 % quantiles
-    ## 
-    ## Number of patients overall : mean 19 (18, 21) 
-    ## Number of patients treated above target tox interval : mean 7 (6, 9) 
-    ## Proportions of DLTs in the trials : mean 26 % (22 %, 33 %) 
-    ## Mean toxicity risks for the patients on active : mean 26 % (18 %, 36 %) 
-    ## Doses selected as MTD : mean 20.6 (18, 24) 
-    ## True toxicity at doses selected : mean 29 % (11 %, 56 %) 
-    ## Proportion of trials selecting target MTD: 23 %
-    ## Dose most often selected as MTD: 18 
-    ## Observed toxicity rate at dose most often selected: 11 %
-    ## Fitted toxicity rate at dose most often selected : mean 24 % (19 %, 28 %) 
-    ## Stop reason triggered:
-    ##  ≥ 3 cohorts dosed :  100 %
-    ##  P(0.2 ≤ prob(DLE | NBD) ≤ 0.35) ≥ 0.5 :  98 %
-    ##  ≥ 20 patients dosed :  39 %
 
 Note that sometimes the observed toxicity rate at the dose most often
 selected (here 20 mg) is not available, because it can happen that no
@@ -1709,8 +1671,9 @@ print(plot(simSum))
 ```
 
 ![A 2x2 panel of four plots. A description of each panel element is
-provided in the paragraph
-below.](example_files/figure-html/sim-sum-plot-1.png)
+provided in the paragraph below.](example-figures/sim-sum-plot-1.png)
+
+plot of chunk sim-sum-plot
 
 The top left panel shows the distribution of the sample size across the
 simulated trials. In this case the trials had between 15 and 21
@@ -1735,22 +1698,14 @@ we can only plot this one and add x-axis customization on top: (see the
 ``` r
 dosePlot <- plot(simSum, type = "doseSelected") +
   scale_x_continuous(breaks = 10:30, limits = c(10, 30))
-```
-
-    ## Scale for x is already present.
-    ## Adding another scale for x, which will replace the existing scale.
-
-``` r
 print(dosePlot)
 ```
 
-    ## Warning: Removed 1 row containing missing values or values outside the scale range
-    ## (`geom_bar()`).
-
 ![A fistogram showing the proportion of simulatd trials that identified
 each dose as the MTD. All but one of the simulated trials identified a
-dose between 16 and 26 as the
-MTD.](example_files/figure-html/sim-sum-plot2-1.png)
+dose between 16 and 26 as the MTD.](example-figures/sim-sum-plot2-1.png)
+
+plot of chunk sim-sum-plot2
 
 Some further examples will be given for simulations using the `TDDesign`
 and the `TDsamplesDesign` classes. For illustration purpose, we will
@@ -1796,15 +1751,13 @@ target end of trial) was
 
 ``` r
 DLTSim@doses[3]
+#> [1] 100
 ```
-
-    ## [1] 100
 
 ``` r
 DLTsampSim@doses[3]
+#> [1] 100
 ```
-
-    ## [1] 100
 
 The overall results of the 100 trials for these two simulations can also
 be plotted as
@@ -1814,14 +1767,18 @@ print(plot(DLTSim))
 ```
 
 ![Two graphs in a single column describing the dose allocations in the
-DLTSim object.](example_files/figure-html/plotDLTSim-1.png)
+DLTSim object.](example-figures/plotDLTSim-1.png)
+
+plot of chunk plotDLTSim
 
 ``` r
 print(plot(DLTsampSim))
 ```
 
 ![Two graphs in a single column describing the dose allocations in the
-DLTsampSim object.](example_files/figure-html/plotDLTsampSim-1.png)
+DLTsampSim object.](example-figures/plotDLTsampSim-1.png)
+
+plot of chunk plotDLTsampSim
 
 which show the trial trajectories and the proportion of doses level
 tried.
@@ -1833,96 +1790,94 @@ function given the truth:
 summary(DLTSim,
   truth = TrueDLT
 )
+#> Summary of 10 simulations
+#> 
+#> Target probability of DLE p(DLE) used at the end of a trial was 30 %
+#> The dose level corresponds to the target p(DLE) used at the end of a trial, TDEOT, was 152.6195 
+#> TDEOT at dose Grid was 150 
+#> Target p(DLE) used during a trial was 35 %
+#> The dose level corresponds to the target p(DLE) used during a trial, TDDT, was 155.972 
+#> TDDT at dose Grid was 150 
+#> Number of patients overall : mean 16 (15, 18) 
+#> Number of patients treated above the target p(DLE) used at the end of a trial : mean 3 (3, 3) 
+#> Number of patients treated above the target p(DLE) used during a trial : mean 3 (3, 3) 
+#> Proportions of observed DLT in the trials : mean 21 % (20 %, 22 %) 
+#> Mean toxicity risks for the patients : mean 20 % (17 %, 21 %) 
+#> Doses selected as TDEOT : mean 100 (100, 100) 
+#> True toxicity at TDEOT : mean 1 % (1 %, 1 %) 
+#> Proportion of trials selecting the TDEOT: 0 %
+#> Proportion of trials selecting the TDDT: 0 %
+#> Dose most often selected as TDEOT: 100 
+#> Observed toxicity rate at dose most often selected: 6 %
+#> Fitted probabilities of DLE at dose most often selected : mean 24 % (24 %, 25 %) 
+#> The summary table of the final TDEOT across all simulations
+#>     Min. 1st Qu.  Median    Mean 3rd Qu.    Max.  
+#>    117.3   120.1   123.8   122.0   123.8   123.8  
+#> The summary table of the final ratios of the TDEOT across all simulations
+#>     Min. 1st Qu.  Median    Mean 3rd Qu.    Max.  
+#>    4.054   4.157   4.447   4.330   4.447   4.447  
+#> The summary table of the final TDDT across all simulations
+#>     Min. 1st Qu.  Median    Mean 3rd Qu.    Max.  
+#>    137.5   140.7   144.4   142.5   144.4   144.4  
+#> The summary table of dose levels, the optimal dose
+#>  to recommend for subsequent study across all simulations
+#>     Min. 1st Qu.  Median    Mean 3rd Qu.    Max.  
+#>    117.3   120.1   123.8   122.0   123.8   123.8  
+#> The summary table of the final ratios of the optimal dose for stopping across
+#>                   all simulations
+#>     Min. 1st Qu.  Median    Mean 3rd Qu.    Max.  
+#>    4.054   4.157   4.447   4.330   4.447   4.447  
+#> 
+#> Stop reason triggered:
+#>  TD 5 for 0.3 target prob :  100 %
 ```
-
-    ## Summary of 10 simulations
-    ## 
-    ## Target probability of DLE p(DLE) used at the end of a trial was 30 %
-    ## The dose level corresponds to the target p(DLE) used at the end of a trial, TDEOT, was 152.6195 
-    ## TDEOT at dose Grid was 150 
-    ## Target p(DLE) used during a trial was 35 %
-    ## The dose level corresponds to the target p(DLE) used during a trial, TDDT, was 155.972 
-    ## TDDT at dose Grid was 150 
-    ## Number of patients overall : mean 16 (15, 18) 
-    ## Number of patients treated above the target p(DLE) used at the end of a trial : mean 3 (3, 3) 
-    ## Number of patients treated above the target p(DLE) used during a trial : mean 3 (3, 3) 
-    ## Proportions of observed DLT in the trials : mean 21 % (20 %, 22 %) 
-    ## Mean toxicity risks for the patients : mean 20 % (17 %, 21 %) 
-    ## Doses selected as TDEOT : mean 100 (100, 100) 
-    ## True toxicity at TDEOT : mean 1 % (1 %, 1 %) 
-    ## Proportion of trials selecting the TDEOT: 0 %
-    ## Proportion of trials selecting the TDDT: 0 %
-    ## Dose most often selected as TDEOT: 100 
-    ## Observed toxicity rate at dose most often selected: 6 %
-    ## Fitted probabilities of DLE at dose most often selected : mean 24 % (24 %, 25 %) 
-    ## The summary table of the final TDEOT across all simulations
-    ##     Min. 1st Qu.  Median    Mean 3rd Qu.    Max.  
-    ##    117.3   120.1   123.8   122.0   123.8   123.8  
-    ## The summary table of the final ratios of the TDEOT across all simulations
-    ##     Min. 1st Qu.  Median    Mean 3rd Qu.    Max.  
-    ##    4.054   4.157   4.447   4.330   4.447   4.447  
-    ## The summary table of the final TDDT across all simulations
-    ##     Min. 1st Qu.  Median    Mean 3rd Qu.    Max.  
-    ##    137.5   140.7   144.4   142.5   144.4   144.4  
-    ## The summary table of dose levels, the optimal dose
-    ##  to recommend for subsequent study across all simulations
-    ##     Min. 1st Qu.  Median    Mean 3rd Qu.    Max.  
-    ##    117.3   120.1   123.8   122.0   123.8   123.8  
-    ## The summary table of the final ratios of the optimal dose for stopping across
-    ##                   all simulations
-    ##     Min. 1st Qu.  Median    Mean 3rd Qu.    Max.  
-    ##    4.054   4.157   4.447   4.330   4.447   4.447  
-    ## 
-    ## Stop reason triggered:
-    ##  TD 5 for 0.3 target prob :  100 %
 
 ``` r
 summary(DLTsampSim,
   truth = TrueDLT
 )
+#> Summary of 10 simulations
+#> 
+#> Target probability of DLE p(DLE) used at the end of a trial was 30 %
+#> The dose level corresponds to the target p(DLE) used at the end of a trial, TDEOT, was 152.6195 
+#> TDEOT at dose Grid was 150 
+#> Target p(DLE) used during a trial was 35 %
+#> The dose level corresponds to the target p(DLE) used during a trial, TDDT, was 155.972 
+#> TDDT at dose Grid was 150 
+#> Number of patients overall : mean 21 (21, 21) 
+#> Number of patients treated above the target p(DLE) used at the end of a trial : mean 1 (0, 3) 
+#> Number of patients treated above the target p(DLE) used during a trial : mean 1 (0, 3) 
+#> Proportions of observed DLT in the trials : mean 10 % (5 %, 14 %) 
+#> Mean toxicity risks for the patients : mean 6 % (1 %, 10 %) 
+#> Doses selected as TDEOT : mean 100 (75, 125) 
+#> True toxicity at TDEOT : mean 2 % (0 %, 5 %) 
+#> Proportion of trials selecting the TDEOT: 0 %
+#> Proportion of trials selecting the TDDT: 0 %
+#> Dose most often selected as TDEOT: 100 
+#> Observed toxicity rate at dose most often selected: 6 %
+#> Fitted probabilities of DLE at dose most often selected : mean 22 % (18 %, 26 %) 
+#> The summary table of the final TDEOT across all simulations
+#>     Min. 1st Qu.  Median    Mean 3rd Qu.    Max.  
+#>    97.28  100.35  115.37  114.40  125.23  135.76  
+#> The summary table of the final ratios of the TDEOT across all simulations
+#>       Min.   1st Qu.    Median      Mean   3rd Qu.      Max.  
+#>  1.000e+01 6.800e+01 4.079e+06 5.241e+11 1.917e+11 3.806e+12  
+#> The summary table of the final TDDT across all simulations
+#>     Min. 1st Qu.  Median    Mean 3rd Qu.    Max.  
+#>    118.8   122.2   144.9   143.3   161.5   170.3  
+#> The summary table of dose levels, the optimal dose
+#>  to recommend for subsequent study across all simulations
+#>     Min. 1st Qu.  Median    Mean 3rd Qu.    Max.  
+#>    97.28  100.35  115.37  114.40  125.23  135.76  
+#> The summary table of the final ratios of the optimal dose for stopping across
+#>                   all simulations
+#>       Min.   1st Qu.    Median      Mean   3rd Qu.      Max.  
+#>  1.000e+01 6.800e+01 4.079e+06 5.241e+11 1.917e+11 3.806e+12  
+#> 
+#> Stop reason triggered:
+#>  TD 5 for 0.3 target prob :  0 %
+#>  ≥ 20 patients dosed :  100 %
 ```
-
-    ## Summary of 10 simulations
-    ## 
-    ## Target probability of DLE p(DLE) used at the end of a trial was 30 %
-    ## The dose level corresponds to the target p(DLE) used at the end of a trial, TDEOT, was 152.6195 
-    ## TDEOT at dose Grid was 150 
-    ## Target p(DLE) used during a trial was 35 %
-    ## The dose level corresponds to the target p(DLE) used during a trial, TDDT, was 155.972 
-    ## TDDT at dose Grid was 150 
-    ## Number of patients overall : mean 21 (21, 21) 
-    ## Number of patients treated above the target p(DLE) used at the end of a trial : mean 1 (0, 3) 
-    ## Number of patients treated above the target p(DLE) used during a trial : mean 1 (0, 3) 
-    ## Proportions of observed DLT in the trials : mean 10 % (5 %, 14 %) 
-    ## Mean toxicity risks for the patients : mean 6 % (1 %, 10 %) 
-    ## Doses selected as TDEOT : mean 100 (75, 125) 
-    ## True toxicity at TDEOT : mean 2 % (0 %, 5 %) 
-    ## Proportion of trials selecting the TDEOT: 0 %
-    ## Proportion of trials selecting the TDDT: 0 %
-    ## Dose most often selected as TDEOT: 100 
-    ## Observed toxicity rate at dose most often selected: 6 %
-    ## Fitted probabilities of DLE at dose most often selected : mean 22 % (18 %, 26 %) 
-    ## The summary table of the final TDEOT across all simulations
-    ##     Min. 1st Qu.  Median    Mean 3rd Qu.    Max.  
-    ##    97.28  100.35  115.37  114.40  125.23  135.76  
-    ## The summary table of the final ratios of the TDEOT across all simulations
-    ##       Min.   1st Qu.    Median      Mean   3rd Qu.      Max.  
-    ##  1.000e+01 6.800e+01 4.079e+06 5.241e+11 1.917e+11 3.806e+12  
-    ## The summary table of the final TDDT across all simulations
-    ##     Min. 1st Qu.  Median    Mean 3rd Qu.    Max.  
-    ##    118.8   122.2   144.9   143.3   161.5   170.3  
-    ## The summary table of dose levels, the optimal dose
-    ##  to recommend for subsequent study across all simulations
-    ##     Min. 1st Qu.  Median    Mean 3rd Qu.    Max.  
-    ##    97.28  100.35  115.37  114.40  125.23  135.76  
-    ## The summary table of the final ratios of the optimal dose for stopping across
-    ##                   all simulations
-    ##       Min.   1st Qu.    Median      Mean   3rd Qu.      Max.  
-    ##  1.000e+01 6.800e+01 4.079e+06 5.241e+11 1.917e+11 3.806e+12  
-    ## 
-    ## Stop reason triggered:
-    ##  TD 5 for 0.3 target prob :  0 %
-    ##  ≥ 20 patients dosed :  100 %
 
 Then we can also plot the summary of these two simulations using the
 `plot` function:
@@ -1936,7 +1891,9 @@ print(plot(DLTsimSum))
 
 ![A 2x2 panel of graphs summarising the results of the DLTSim object.
 Refer to simSum above for a description of the individual panel
-elements.](example_files/figure-html/DLTSim-plotsummary-1.png)
+elements.](example-figures/DLTSim-plotsummary-1.png)
+
+plot of chunk DLTSim-plotsummary
 
 and
 
@@ -1949,7 +1906,9 @@ print(plot(DLTsimsampSum))
 
 ![A 2x2 panel of graphs summarising the results of the DLTsampSim
 object. Refer to simSum above for a description of the individual panel
-elements.](example_files/figure-html/DLTsampSim-plotsummary-1.png)
+elements.](example-figures/DLTsampSim-plotsummary-1.png)
+
+plot of chunk DLTsampSim-plotsummary
 
 ### Predicting the future course of the trial
 
@@ -1972,29 +1931,28 @@ samples in order to reduce the runtime for this example:
 ``` r
 postSamples <- as.data.frame(samples@data)[(1:20) * 50, ]
 postSamples
+#>            alpha0    alpha1
+#> 50    0.695299465 0.8733989
+#> 100   0.242365900 0.2919931
+#> 150   0.097567739 1.4674529
+#> 200  -0.381162693 0.8607228
+#> 250   0.002811076 2.3787228
+#> 300  -0.488011988 0.7904999
+#> 350   0.193239874 3.0284607
+#> 400  -0.224671354 1.5766281
+#> 450  -0.174586799 0.6269332
+#> 500  -0.875658079 1.3458226
+#> 550   0.148783871 2.3489434
+#> 600   1.015454082 1.7576347
+#> 650  -0.841267361 2.9162000
+#> 700  -0.421833904 0.8812350
+#> 750  -0.785097094 0.8227093
+#> 800   0.389585876 1.0958372
+#> 850  -0.097983082 3.8501000
+#> 900  -0.718133798 1.3214675
+#> 950  -0.591148227 0.6041364
+#> 1000 -0.623243550 1.0894726
 ```
-
-    ##            alpha0    alpha1
-    ## 50    0.464996051 2.2651056
-    ## 100   0.708685387 0.5462121
-    ## 150   0.021374978 1.4508782
-    ## 200  -0.374352282 1.2192262
-    ## 250  -1.168394436 1.5809011
-    ## 300   0.697418961 1.7503190
-    ## 350   0.659503360 0.9956771
-    ## 400   1.001099878 1.5249659
-    ## 450   0.228695043 1.1187102
-    ## 500   0.594280252 1.8749795
-    ## 550  -0.418369206 1.0453878
-    ## 600  -0.829844055 2.2956011
-    ## 650  -0.007977208 1.9930569
-    ## 700  -0.512579989 1.8659022
-    ## 750   0.264051400 0.7622517
-    ## 800   0.217043655 0.8461148
-    ## 850  -1.797977933 1.6472768
-    ## 900   0.232263674 0.5671036
-    ## 950  -1.088172830 1.6597666
-    ## 1000 -0.313981873 2.7254147
 
 Therefore, each simulated trial will come from a posterior sample of our
 estimated model, given all data so far.
@@ -2043,10 +2001,9 @@ time <- system.time(futureSims <- simulate(
   parallel = FALSE
 ))[3]
 time
+#> elapsed 
+#>   15.97
 ```
-
-    ## elapsed 
-    ##  15.138
 
 And now, exactly in the same way as above for the operating
 characteristics simulations, we can summarize the resulting predictive
@@ -2057,8 +2014,9 @@ print(plot(futureSims))
 ```
 
 ![A histrogram showing the proportions of simulations in simSum that
-identified each dose as the
-MTD.](example_files/figure-html/sim-future-plot-1.png)
+identified each dose as the MTD.](example-figures/sim-future-plot-1.png)
+
+plot of chunk sim-future-plot
 
 In the summary, we do not need to look at the characteristics involving
 the true dose-toxicity function, because in this case we are not
@@ -2068,28 +2026,27 @@ intending to compare the performance of our CRM relative to a truth:
 summary(futureSims,
   truth = myTruth
 )
+#> Summary of 20 simulations
+#> 
+#> Target toxicity interval was 20, 35 %
+#> Target dose interval corresponding to this was 19.6, 21.6 
+#> Intervals are corresponding to 10 and 90 % quantiles
+#> 
+#> Number of patients overall : mean 18 (17, 20) 
+#> Number of patients treated above target tox interval : mean 4 (0, 9) 
+#> Proportions of DLTs in the trials : mean 20 % (12 %, 29 %) 
+#> Mean toxicity risks for the patients on active : mean 22 % (4 %, 43 %) 
+#> Doses selected as MTD : mean 24.4 (9.6, 38.4) 
+#> True toxicity at doses selected : mean 51 % (0 %, 98 %) 
+#> Proportion of trials selecting target MTD: 20 %
+#> Dose most often selected as MTD: 20 
+#> Observed toxicity rate at dose most often selected: 26 %
+#> Fitted toxicity rate at dose most often selected : mean 26 % (14 %, 39 %) 
+#> Stop reason triggered:
+#>  ≥ 3 cohorts dosed :  100 %
+#>  P(0.2 ≤ prob(DLE | NBD) ≤ 0.35) ≥ 0.5 :  90 %
+#>  ≥ 20 patients dosed :  50 %
 ```
-
-    ## Summary of 20 simulations
-    ## 
-    ## Target toxicity interval was 20, 35 %
-    ## Target dose interval corresponding to this was 19.6, 21.6 
-    ## Intervals are corresponding to 10 and 90 % quantiles
-    ## 
-    ## Number of patients overall : mean 18 (14, 20) 
-    ## Number of patients treated above target tox interval : mean 4 (0, 9) 
-    ## Proportions of DLTs in the trials : mean 21 % (13 %, 35 %) 
-    ## Mean toxicity risks for the patients on active : mean 23 % (3 %, 43 %) 
-    ## Doses selected as MTD : mean 25 (11.4, 39.4) 
-    ## True toxicity at doses selected : mean 50 % (0 %, 98 %) 
-    ## Proportion of trials selecting target MTD: 0 %
-    ## Dose most often selected as MTD: 26 
-    ## Observed toxicity rate at dose most often selected: 50 %
-    ## Fitted toxicity rate at dose most often selected : mean 30 % (18 %, 43 %) 
-    ## Stop reason triggered:
-    ##  ≥ 3 cohorts dosed :  100 %
-    ##  P(0.2 ≤ prob(DLE | NBD) ≤ 0.35) ≥ 0.5 :  75 %
-    ##  ≥ 20 patients dosed :  50 %
 
 We see here e.g. that the estimated number of patients overall is 19, so
 11 more than the current 8 patients are expected to be needed before
@@ -2109,11 +2066,10 @@ The easiest way to setup a 3+3 design is the function
 ``` r
 threeDesign <- ThreePlusThreeDesign(doseGrid = c(5, 10, 15, 25, 35, 50, 80))
 class(threeDesign)
+#> [1] "RuleDesign"
+#> attr(,"package")
+#> [1] "crmPack"
 ```
-
-    ## [1] "RuleDesign"
-    ## attr(,"package")
-    ## [1] "crmPack"
 
 We have used here a much coarser dose grid than for the model-based
 design before, because the 3+3 design cannot jump over doses. The
@@ -2140,40 +2096,41 @@ threeSimsSum <- summary(threeSims,
   truth = myTruth
 )
 threeSimsSum
+#> Summary of 1000 simulations
+#> 
+#> Target toxicity interval was 20, 35 %
+#> Target dose interval corresponding to this was 19.6, 21.6 
+#> Intervals are corresponding to 10 and 90 % quantiles
+#> 
+#> Number of patients overall : mean 16 (15, 18) 
+#> Number of patients treated above target tox interval : mean 4 (3, 6) 
+#> Proportions of DLTs in the trials : mean 17 % (13 %, 22 %) 
+#> Mean toxicity risks for the patients on active : mean 17 % (14 %, 22 %) 
+#> Doses selected as MTD : mean 15.2 (15, 15) 
+#> True toxicity at doses selected : mean 4 % (3 %, 3 %) 
+#> Proportion of trials selecting target MTD: 0 %
+#> Dose most often selected as MTD: 15 
+#> Observed toxicity rate at dose most often selected: 3 %
 ```
 
-    ## Summary of 1000 simulations
-    ## 
-    ## Target toxicity interval was 20, 35 %
-    ## Target dose interval corresponding to this was 19.6, 21.6 
-    ## Intervals are corresponding to 10 and 90 % quantiles
-    ## 
-    ## Number of patients overall : mean 16 (15, 18) 
-    ## Number of patients treated above target tox interval : mean 4 (3, 6) 
-    ## Proportions of DLTs in the trials : mean 17 % (13 %, 22 %) 
-    ## Mean toxicity risks for the patients on active : mean 17 % (14 %, 22 %) 
-    ## Doses selected as MTD : mean 15.2 (15, 15) 
-    ## True toxicity at doses selected : mean 4 % (3 %, 3 %) 
-    ## Proportion of trials selecting target MTD: 0 %
-    ## Dose most often selected as MTD: 15 
-    ## Observed toxicity rate at dose most often selected: 3 %
-
-Here we see that mg was the dose most often selected as MTD, and this is
-actually too low when comparing with the narrow target dose interval
-going from to mg. This is an inherent problem of dose-escalation designs
-where the dose grid has to be coarse: you might not know before starting
-the trial which is the range where you need a more refined dose grid. In
-this case we obtain doses that are too low, as one can see from the
-average true toxicity of ~% at doses selected. Graphical summaries are
-again obtained by calling `plot` on the summary object:
+Here we see that 15 mg was the dose most often selected as MTD, and this
+is actually too low when comparing with the narrow target dose interval
+going from 19.6 to 21.6 mg. This is an inherent problem of
+dose-escalation designs where the dose grid has to be coarse: you might
+not know before starting the trial which is the range where you need a
+more refined dose grid. In this case we obtain doses that are too low,
+as one can see from the average true toxicity of 4~% at doses selected.
+Graphical summaries are again obtained by calling `plot` on the summary
+object:
 
 ``` r
 print(plot(threeSimsSum))
 ```
 
 ![A 2x2 panel of graphs summarising the results of the simulations in
-the threeSimsSum
-object.](example_files/figure-html/three-sims-plot-1.png)
+the threeSimsSum object.](example-figures/three-sims-plot-1.png)
+
+plot of chunk three-sims-plot
 
 ## Dual-endpoint dose escalation designs
 
@@ -2241,7 +2198,9 @@ and dose administered on the y axis. Different symbols indicate the
 toxicity status of each patient. The second graph has dose on the x axis
 and biomarker value on the y axis. Again, different symbols indicate
 toxicity status and annotations show the patient number with which each
-point is asscoated.](example_files/figure-html/dual-data-plot-1.png)
+point is asscoated.](example-figures/dual-data-plot-1.png)
+
+plot of chunk dual-data-plot
 
 Here we see that there seems to be a maximum biomarker response at
 around 10 mg already. In order to model this data, we consider a
@@ -2292,17 +2251,15 @@ means and plotting their traceplots:
 
 ``` r
 data@nGrid
-```
-
-    ## [1] 41
-
-``` r
+#> [1] 41
 betaWpicks <- get(samples, "betaW", c(1L, 5L, 10L, 25L))
 ggs_traceplot(betaWpicks)
 ```
 
 ![Traceplots for selected elements of the betaW
-array.](example_files/figure-html/dual-conv-1.png)
+array.](example-figures/dual-conv-1.png)
+
+plot of chunk dual-conv
 
 Here all 4 $`\beta_{W,j}`$ ($`j=1, 5, 10, 25`$) means, which are the
 biomarker means at the first, 5th, 10th and 25th gridpoint,
@@ -2317,7 +2274,9 @@ print(plot(samples, model, data, extrapolate = FALSE))
 ![Two plots, side-by-side. The first shows the posterior estimate of the
 dose-toxicity curve, with a credible interval. The second shows the
 posterior estimate of biomarker level against dose, again with a
-credible interval.](example_files/figure-html/dual-modelfit-1.png)
+credible interval.](example-figures/dual-modelfit-1.png)
+
+plot of chunk dual-modelfit
 
 We specify `extrapolate = FALSE` to focus the biomarker plot in the
 right panel on the observed dose range, so we don’t want to extrapolate
@@ -2331,7 +2290,9 @@ ggs_histogram(get(samples, "precW"))
 ```
 
 ![A histogram of the biomarker precision in the samples
-object.](example_files/figure-html/dual-variance-1.png)
+object.](example-figures/dual-variance-1.png)
+
+plot of chunk dual-variance
 
 For the selection of the next best dose, a special class
 `NextBestDualEndpoint` has been implemented. It tries to maximize the
@@ -2358,9 +2319,8 @@ nextDose <- nextBest(myNextBest,
   data = data
 )
 nextDose$value
+#> [1] 10
 ```
-
-    ## [1] 12
 
 A corresponding plot can be produced by printing the `plot` element of
 the returned list:
@@ -2371,8 +2331,9 @@ print(nextDose$plot)
 
 ![Two graphs in a single column that summarise the results of applying
 the NextBest rule. For descriptions of the plots, refer to earlier
-examples in this
-vignette.](example_files/figure-html/dual-nextdose-plot-1.png)
+examples in this vignette.](example-figures/dual-nextdose-plot-1.png)
+
+plot of chunk dual-nextdose-plot
 
 Here the bottom panel shows (as for the NCRM) the overdose probability,
 and we see that doses above 14 mg are too toxic. In the top panel, we
@@ -2402,13 +2363,12 @@ stopTrial(myStopping6,
   dose = nextDose$value,
   samples, model, data
 )
+#> [1] FALSE
+#> attr(,"message")
+#> [1] "Probability for target biomarker is 11 % for dose 10 and thus below the required 50 %"
+#> attr(,"report_label")
+#> [1] "P(0.9 ≤ Biomarker ≤ 1) ≥ 0.5 (relative)"
 ```
-
-    ## [1] FALSE
-    ## attr(,"message")
-    ## [1] "Probability for target biomarker is 12 % for dose 12 and thus below the required 50 %"
-    ## attr(,"report_label")
-    ## [1] "P(0.9 ≤ Biomarker ≤ 1) ≥ 0.5 (relative)"
 
 Again, this dual-endpoint specific rule can be combined as required with
 any other stopping rule. For example, we could combine it with a maximum
@@ -2470,7 +2430,9 @@ curve(trueBiomarker(x), from = 0, to = 80)
 
 ![Two graphs representing the true relationships between dose and
 toxicity and dose and biomarker
-level.](example_files/figure-html/dual-sc-plot-1.png)
+level.](example-figures/dual-sc-plot-1.png)
+
+plot of chunk dual-sc-plot
 
 So the biomarker response peaks at 50 mg, where the toxicity is still
 low. After deciding for a true correlation of $`\rho=0`$ and a true
@@ -2509,12 +2471,10 @@ biomarker variance and correlation estimates in the simulations:
 print(plot(mySims))
 ```
 
-    ## Note: method with signature 'Simulations#missing' chosen for function 'plot',
-    ##  target signature 'DualSimulations#missing'.
-    ##  "GeneralSimulations#missing" would also be valid
-
 ![A panel of four plots summarisong the results of the
-simulation.](example_files/figure-html/dual-sims-plot-1.png)
+simulation.](example-figures/dual-sims-plot-1.png)
+
+plot of chunk dual-sims-plot
 
 Finally, a summary of the simulations can be obtained with the
 corresponding function:
@@ -2525,28 +2485,27 @@ sumOut <- summary(mySims,
   trueBiomarker = trueBiomarker
 )
 sumOut
+#> Summary of 10 simulations
+#> 
+#> Target toxicity interval was 20, 35 %
+#> Target dose interval corresponding to this was 51.6, 56.1 
+#> Intervals are corresponding to 10 and 90 % quantiles
+#> 
+#> Number of patients overall : mean 42 (42, 42) 
+#> Number of patients treated above target tox interval : mean 0 (0, 0) 
+#> Proportions of DLTs in the trials : mean 0 % (0 %, 0 %) 
+#> Mean toxicity risks for the patients on active : mean 0 % (0 %, 0 %) 
+#> Doses selected as MTD : mean 0.1 (0.1, 0.1) 
+#> True toxicity at doses selected : mean 0 % (0 %, 0 %) 
+#> Proportion of trials selecting target MTD: 0 %
+#> Dose most often selected as MTD: 0.1 
+#> Observed toxicity rate at dose most often selected: 0 %
+#> Fitted toxicity rate at dose most often selected : mean 2 % (1 %, 2 %) 
+#> Stop reason triggered:
+#>  P(0.9 ≤ Biomarker ≤ 1) ≥ 0.5 (relative) :  0 %
+#>  ≥ 40 patients dosed :  100 %
+#> Fitted biomarker level at dose most often selected : mean 0.2 (0.2, 0.2)
 ```
-
-    ## Summary of 10 simulations
-    ## 
-    ## Target toxicity interval was 20, 35 %
-    ## Target dose interval corresponding to this was 51.6, 56.1 
-    ## Intervals are corresponding to 10 and 90 % quantiles
-    ## 
-    ## Number of patients overall : mean 42 (42, 42) 
-    ## Number of patients treated above target tox interval : mean 0 (0, 0) 
-    ## Proportions of DLTs in the trials : mean 0 % (0 %, 0 %) 
-    ## Mean toxicity risks for the patients on active : mean 0 % (0 %, 0 %) 
-    ## Doses selected as MTD : mean 0.1 (0.1, 0.1) 
-    ## True toxicity at doses selected : mean 0 % (0 %, 0 %) 
-    ## Proportion of trials selecting target MTD: 0 %
-    ## Dose most often selected as MTD: 0.1 
-    ## Observed toxicity rate at dose most often selected: 0 %
-    ## Fitted toxicity rate at dose most often selected : mean 2 % (1 %, 2 %) 
-    ## Stop reason triggered:
-    ##  P(0.9 ≤ Biomarker ≤ 1) ≥ 0.5 (relative) :  0 %
-    ##  ≥ 40 patients dosed :  100 %
-    ## Fitted biomarker level at dose most often selected : mean 0.2 (0.2, 0.2)
 
 We see here that all trials proceeded until the maximum sample size of
 40 patients (reaching 42 because of the cohort size 3). The doses
@@ -2561,7 +2520,9 @@ print(plot(sumOut))
 ```
 
 ![A panel of plots that dscribe the results of the simulation
-summary.](example_files/figure-html/dual-sim-sum-plot-1.png)
+summary.](example-figures/dual-sim-sum-plot-1.png)
+
+plot of chunk dual-sim-sum-plot
 
 We see that the average biomarker fit is not too bad in the range up to
 50 mg, but the toxicity curve fit is bad — probably a result of the very
@@ -2668,43 +2629,42 @@ the `str` function:
 
 ``` r
 str(Effmodel)
+#> Formal class 'Effloglog' [package "crmPack"] with 13 slots
+#>   ..@ eff      : num [1:2] 1.22 2.51
+#>   ..@ eff_dose : num [1:2] 25 300
+#>   ..@ nu       : Named num [1:2] 1 0.025
+#>   .. ..- attr(*, "names")= chr [1:2] "a" "b"
+#>   ..@ use_fixed: logi FALSE
+#>   ..@ theta1   : num -1.41
+#>   ..@ theta2   : num 2.25
+#>   ..@ Pcov     : num [1:2, 1:2] NaN NaN NaN NaN
+#>   .. ..- attr(*, "dimnames")=List of 2
+#>   .. .. ..$ : chr [1:2] "(Intercept)" "log(log(x))"
+#>   .. .. ..$ : chr [1:2] "(Intercept)" "log(log(x))"
+#>   ..@ X        : num [1:2, 1:2] 1 1 1.17 1.74
+#>   .. ..- attr(*, "dimnames")=List of 2
+#>   .. .. ..$ : chr [1:2] "1" "2"
+#>   .. .. ..$ : chr [1:2] "(Intercept)" "log(log(x))"
+#>   .. ..- attr(*, "assign")= int [1:2] 0 1
+#>   ..@ Y        : num [1:2] 1.22 2.51
+#>   ..@ mu       : num [1:2] -1.41 2.25
+#>   ..@ Q        : num [1:2, 1:2] 2 2.91 2.91 4.4
+#>   .. ..- attr(*, "dimnames")=List of 2
+#>   .. .. ..$ : chr [1:2] "(Intercept)" "log(log(x))"
+#>   .. .. ..$ : chr [1:2] "(Intercept)" "log(log(x))"
+#>   ..@ const    : num 0
+#>   ..@ data     :Formal class 'DataDual' [package "crmPack"] with 10 slots
+#>   .. .. ..@ w       : num(0) 
+#>   .. .. ..@ x       : num(0) 
+#>   .. .. ..@ y       : int(0) 
+#>   .. .. ..@ doseGrid: num [1:12] 25 50 75 100 125 150 175 200 225 250 ...
+#>   .. .. ..@ nGrid   : int 12
+#>   .. .. ..@ xLevel  : int(0) 
+#>   .. .. ..@ placebo : logi FALSE
+#>   .. .. ..@ ID      : int(0) 
+#>   .. .. ..@ cohort  : int(0) 
+#>   .. .. ..@ nObs    : int 0
 ```
-
-    ## Formal class 'Effloglog' [package "crmPack"] with 13 slots
-    ##   ..@ eff      : num [1:2] 1.22 2.51
-    ##   ..@ eff_dose : num [1:2] 25 300
-    ##   ..@ nu       : Named num [1:2] 1 0.025
-    ##   .. ..- attr(*, "names")= chr [1:2] "a" "b"
-    ##   ..@ use_fixed: logi FALSE
-    ##   ..@ theta1   : num -1.41
-    ##   ..@ theta2   : num 2.25
-    ##   ..@ Pcov     : num [1:2, 1:2] NaN NaN NaN NaN
-    ##   .. ..- attr(*, "dimnames")=List of 2
-    ##   .. .. ..$ : chr [1:2] "(Intercept)" "log(log(x))"
-    ##   .. .. ..$ : chr [1:2] "(Intercept)" "log(log(x))"
-    ##   ..@ X        : num [1:2, 1:2] 1 1 1.17 1.74
-    ##   .. ..- attr(*, "dimnames")=List of 2
-    ##   .. .. ..$ : chr [1:2] "1" "2"
-    ##   .. .. ..$ : chr [1:2] "(Intercept)" "log(log(x))"
-    ##   .. ..- attr(*, "assign")= int [1:2] 0 1
-    ##   ..@ Y        : num [1:2] 1.22 2.51
-    ##   ..@ mu       : num [1:2] -1.41 2.25
-    ##   ..@ Q        : num [1:2, 1:2] 2 2.91 2.91 4.4
-    ##   .. ..- attr(*, "dimnames")=List of 2
-    ##   .. .. ..$ : chr [1:2] "(Intercept)" "log(log(x))"
-    ##   .. .. ..$ : chr [1:2] "(Intercept)" "log(log(x))"
-    ##   ..@ const    : num 0
-    ##   ..@ data     :Formal class 'DataDual' [package "crmPack"] with 10 slots
-    ##   .. .. ..@ w       : num(0) 
-    ##   .. .. ..@ x       : num(0) 
-    ##   .. .. ..@ y       : int(0) 
-    ##   .. .. ..@ doseGrid: num [1:12] 25 50 75 100 125 150 175 200 225 250 ...
-    ##   .. .. ..@ nGrid   : int 12
-    ##   .. .. ..@ xLevel  : int(0) 
-    ##   .. .. ..@ placebo : logi FALSE
-    ##   .. .. ..@ ID      : int(0) 
-    ##   .. .. ..@ cohort  : int(0) 
-    ##   .. .. ..@ nObs    : int 0
 
 There are 15 slots, which can be accessed with the `@` operator. From
 this efficacy model, we can obtain the prior (if using an empty data
@@ -2767,32 +2727,31 @@ The structure of the `EffFlexi` model object is as follows:
 
 ``` r
 str(Effmodel2)
+#> Formal class 'EffFlexi' [package "crmPack"] with 10 slots
+#>   ..@ eff        : num [1:2] 1.22 2.51
+#>   ..@ eff_dose   : num [1:2] 25 300
+#>   ..@ sigma2W    : Named num [1:2] 0.1 0.1
+#>   .. ..- attr(*, "names")= chr [1:2] "a" "b"
+#>   ..@ sigma2betaW: Named num [1:2] 20 50
+#>   .. ..- attr(*, "names")= chr [1:2] "a" "b"
+#>   ..@ use_fixed  : Named logi [1:2] FALSE FALSE
+#>   .. ..- attr(*, "names")= chr [1:2] "sigma2W" "sigma2betaW"
+#>   ..@ rw1        : logi FALSE
+#>   ..@ X          : int [1:2, 1:12] 1 0 0 0 0 0 0 0 0 0 ...
+#>   ..@ RW         : num [1:12, 1:12] 1 -2 1 0 0 0 0 0 0 0 ...
+#>   ..@ RW_rank    : int 10
+#>   ..@ data       :Formal class 'DataDual' [package "crmPack"] with 10 slots
+#>   .. .. ..@ w       : num(0) 
+#>   .. .. ..@ x       : num(0) 
+#>   .. .. ..@ y       : int(0) 
+#>   .. .. ..@ doseGrid: num [1:12] 25 50 75 100 125 150 175 200 225 250 ...
+#>   .. .. ..@ nGrid   : int 12
+#>   .. .. ..@ xLevel  : int(0) 
+#>   .. .. ..@ placebo : logi FALSE
+#>   .. .. ..@ ID      : int(0) 
+#>   .. .. ..@ cohort  : int(0) 
+#>   .. .. ..@ nObs    : int 0
 ```
-
-    ## Formal class 'EffFlexi' [package "crmPack"] with 10 slots
-    ##   ..@ eff        : num [1:2] 1.22 2.51
-    ##   ..@ eff_dose   : num [1:2] 25 300
-    ##   ..@ sigma2W    : Named num [1:2] 0.1 0.1
-    ##   .. ..- attr(*, "names")= chr [1:2] "a" "b"
-    ##   ..@ sigma2betaW: Named num [1:2] 20 50
-    ##   .. ..- attr(*, "names")= chr [1:2] "a" "b"
-    ##   ..@ use_fixed  : Named logi [1:2] FALSE FALSE
-    ##   .. ..- attr(*, "names")= chr [1:2] "sigma2W" "sigma2betaW"
-    ##   ..@ rw1        : logi FALSE
-    ##   ..@ X          : int [1:2, 1:12] 1 0 0 0 0 0 0 0 0 0 ...
-    ##   ..@ RW         : num [1:12, 1:12] 1 -2 1 0 0 0 0 0 0 0 ...
-    ##   ..@ RW_rank    : int 10
-    ##   ..@ data       :Formal class 'DataDual' [package "crmPack"] with 10 slots
-    ##   .. .. ..@ w       : num(0) 
-    ##   .. .. ..@ x       : num(0) 
-    ##   .. .. ..@ y       : int(0) 
-    ##   .. .. ..@ doseGrid: num [1:12] 25 50 75 100 125 150 175 200 225 250 ...
-    ##   .. .. ..@ nGrid   : int 12
-    ##   .. .. ..@ xLevel  : int(0) 
-    ##   .. .. ..@ placebo : logi FALSE
-    ##   .. .. ..@ ID      : int(0) 
-    ##   .. .. ..@ cohort  : int(0) 
-    ##   .. .. ..@ nObs    : int 0
 
 The slot and the names are shown which can be accessed with the `@`
 operator. The value ‘FALSE’ of the slot `useFixed` shows that both the
@@ -2842,22 +2801,13 @@ of the model. For example, for the `Effloglog` class model:
 ``` r
 newEffmodel <- update(object = Effmodel, data = data4)
 newEffmodel@theta1
-```
-
-    ## [1] -2.81695
-
-``` r
+#> [1] -2.81695
 newEffmodel@theta2
-```
-
-    ## [1] 2.709524
-
-``` r
+#> [1] 2.709524
 newEffmodel@nu
+#>         a         b 
+#> 3.0000000 0.9832955
 ```
-
-    ##         a         b 
-    ## 3.0000000 0.9832955
 
 The posterior modal estimates of θ₁ and θ₂ and the updated values of
 parameters of the gamma distribution of $`\nu`$ can be read now from the
@@ -2868,21 +2818,20 @@ Similarly we can update with new data for the `EffFlexi` class model:
 ``` r
 newEffmodel2 <- update(object = Effmodel2, data = data4)
 newEffmodel2@RW
+#>       [,1] [,2] [,3] [,4] [,5] [,6] [,7] [,8] [,9] [,10] [,11] [,12]
+#>  [1,]    1   -2    1    0    0    0    0    0    0     0     0     0
+#>  [2,]   -2    5   -4    1    0    0    0    0    0     0     0     0
+#>  [3,]    1   -4    6   -4    1    0    0    0    0     0     0     0
+#>  [4,]    0    1   -4    6   -4    1    0    0    0     0     0     0
+#>  [5,]    0    0    1   -4    6   -4    1    0    0     0     0     0
+#>  [6,]    0    0    0    1   -4    6   -4    1    0     0     0     0
+#>  [7,]    0    0    0    0    1   -4    6   -4    1     0     0     0
+#>  [8,]    0    0    0    0    0    1   -4    6   -4     1     0     0
+#>  [9,]    0    0    0    0    0    0    1   -4    6    -4     1     0
+#> [10,]    0    0    0    0    0    0    0    1   -4     6    -4     1
+#> [11,]    0    0    0    0    0    0    0    0    1    -4     5    -2
+#> [12,]    0    0    0    0    0    0    0    0    0     1    -2     1
 ```
-
-    ##       [,1] [,2] [,3] [,4] [,5] [,6] [,7] [,8] [,9] [,10] [,11] [,12]
-    ##  [1,]    1   -2    1    0    0    0    0    0    0     0     0     0
-    ##  [2,]   -2    5   -4    1    0    0    0    0    0     0     0     0
-    ##  [3,]    1   -4    6   -4    1    0    0    0    0     0     0     0
-    ##  [4,]    0    1   -4    6   -4    1    0    0    0     0     0     0
-    ##  [5,]    0    0    1   -4    6   -4    1    0    0     0     0     0
-    ##  [6,]    0    0    0    1   -4    6   -4    1    0     0     0     0
-    ##  [7,]    0    0    0    0    1   -4    6   -4    1     0     0     0
-    ##  [8,]    0    0    0    0    0    1   -4    6   -4     1     0     0
-    ##  [9,]    0    0    0    0    0    0    1   -4    6    -4     1     0
-    ## [10,]    0    0    0    0    0    0    0    1   -4     6    -4     1
-    ## [11,]    0    0    0    0    0    0    0    0    1    -4     5    -2
-    ## [12,]    0    0    0    0    0    0    0    0    0     1    -2     1
 
 The `plot` function can also be applied to the `Effloglog` model class
 or the `EffFlexi` model class objects, when samples of the parameters
@@ -2894,7 +2843,9 @@ print(plot(Effpostsamples, newEffmodel, data4))
 
 ![Expected efficacy against dose for the data4 object, assuming the
 model described by the newEffmodel
-object.](example_files/figure-html/plot-samplesdata2loglog-1.png)
+object.](example-figures/plot-samplesdata2loglog-1.png)
+
+plot of chunk plot-samplesdata2loglog
 
 ``` r
 print(plot(Effpostsamples2, newEffmodel2, data4))
@@ -2902,7 +2853,9 @@ print(plot(Effpostsamples2, newEffmodel2, data4))
 
 ![Expected efficacy against dose for the data4 object, assuming the
 model described by the newEffmodel2
-object.](example_files/figure-html/plot-samplesdata2Flexi-1.png)
+object.](example-figures/plot-samplesdata2Flexi-1.png)
+
+plot of chunk plot-samplesdata2Flexi
 
 In addition, we can also plot the fitted dose-efficacy curve using the
 prior or the posterior modal estimates of the model parameters when no
@@ -2915,7 +2868,9 @@ print(plot(data2, Effmodel))
 
 ![Expected efficacy against dose for the data2 object, assuming the
 model described by the Effmodel
-object.](example_files/figure-html/plot-nosamplesEffmodel-1.png)
+object.](example-figures/plot-nosamplesEffmodel-1.png)
+
+plot of chunk plot-nosamplesEffmodel
 
 Since no samples are involved, only the curves using the prior or
 posterior modal estimates of the parameters are produced, and no 95%
@@ -2934,7 +2889,9 @@ plotDualResponses(
 ```
 
 ![Model estimates of toxicity and biomarker level by
-dose.](example_files/figure-html/plotDualResponseNoSamples-1.png)
+dose.](example-figures/plotDualResponseNoSamples-1.png)
+
+plot of chunk plotDualResponseNoSamples
 
 When the MCMC samples are used, we have:
 
@@ -2946,8 +2903,9 @@ plotDualResponses(
 ```
 
 ![Model estimates of toxicity and biomarker level by dose, both with
-credible
-intervals.](example_files/figure-html/plotDualResponseSamples-1.png)
+credible intervals.](example-figures/plotDualResponseSamples-1.png)
+
+plot of chunk plotDualResponseSamples
 
 Next we will talk about the dose escalation rules when two separate
 models are used for the dual responses. All `Increments`, `CohortSize`
@@ -2991,7 +2949,9 @@ plotGain(DLEmodel = newDLTmodel, Effmodel = newEffmodel, data = data4)
 ```
 
 ![A summary of the gain function for newDLEmodel and newEffmodel applied
-to data4.](example_files/figure-html/plotGain-1.png)
+to data4.](example-figures/plotGain-1.png)
+
+plot of chunk plotGain
 
 This is a case where no MCMC sampling is involved such that the prior
 and posterior modal estimates of the model parameters are used.
@@ -3051,7 +3011,9 @@ doseRecGain$plot
 
 ![A summary the results of applying the GainNextBest object to the gain
 function for newDLEmodel and newEffmodel applied to
-data4.](example_files/figure-html/nextbestplot-maxgain-1.png)
+data4.](example-figures/nextbestplot-maxgain-1.png)
+
+plot of chunk nextbestplot-maxgain
 
 As usual, we have the solid red, blue and green lines as the curves to
 represent the relationship between the probability of DLT, the mean
@@ -3098,9 +3060,8 @@ doseRecGainSamples <- nextBest(GainsamplesNextBest,
   samples_eff = Effpostsamples,
   data = data4
 )
+#> [1] "Estimated TD 30 = 18.6611868271307 not within dose grid"
 ```
-
-    ## [1] "Estimated TD 30 = 18.6611868271306 not within dose grid"
 
 The list of numerical results given in the output will be the same as
 those given using `NextBestMaxGain` class object which includes the next
@@ -3112,7 +3073,9 @@ doseRecGainSamples$plot
 ```
 
 ![A description of this graph is given in the text
-below.](example_files/figure-html/nextbest-NextBestMaxGainSamplesplot-1.png)
+below.](example-figures/nextbest-NextBestMaxGainSamplesplot-1.png)
+
+plot of chunk nextbest-NextBestMaxGainSamplesplot
 
 In this plot, the posterior distribution of Gstar is shown as a
 histogram. The vertical lines on the plot show all current estimates of
@@ -3152,17 +3115,14 @@ stopTrial(
   stopping = myStopping7, dose = doseRecGain$next_dose, model = newDLTmodel,
   data = data4, Effmodel = newEffmodel
 )
-```
+#> [1] FALSE
+#> attr(,"message")
+#> [1] "Gstar estimate is 79.7805 with 95% CI ( 21.5588 , 295.2361 ) and its ratio = 13.6945"               
+#> [2] "TDtargetEndOfTrial estimate is  42.6813 with 95% CI ( 11.0662 , 164.618 ) and its ratio= 14.8758"   
+#> [3] "TDtargetEndOfTrial estimate is smaller with ratio = 14.8758 which is  greater than target_ratio = 5"
+#> attr(,"report_label")
+#> [1] "GStar 5 for 0.3 target prob"
 
-    ## [1] FALSE
-    ## attr(,"message")
-    ## [1] "Gstar estimate is 79.7805 with 95% CI ( 21.5588 , 295.2361 ) and its ratio = 13.6945"               
-    ## [2] "TDtargetEndOfTrial estimate is  42.6813 with 95% CI ( 11.0662 , 164.618 ) and its ratio= 14.8758"   
-    ## [3] "TDtargetEndOfTrial estimate is smaller with ratio = 14.8758 which is  greater than target_ratio = 5"
-    ## attr(,"report_label")
-    ## [1] "GStar 5 for 0.3 target prob"
-
-``` r
 stopTrial(
   stopping = myStopping7,
   dose = doseRecGainSamples$next_dose,
@@ -3178,15 +3138,14 @@ stopTrial(
     quantile(Gstarsamples, prob = 0.5)
   }
 )
+#> [1] FALSE
+#> attr(,"message")
+#> [1] "Gstar estimate is 75 with 95% CI ( 25 , 300 ) and its ratio = 12"                                          
+#> [2] "TDtargetEndOfTrial estimate is  18.6612 with 95% CI ( 6e-04 , 10459.1345 ) and its ratio= 17110373.1537"   
+#> [3] "TDtargetEndOfTrial estimate is smaller with ratio = 17110373.1537  which is  greater than target_ratio = 5"
+#> attr(,"report_label")
+#> [1] "GStar 5 for 0.3 target prob"
 ```
-
-    ## [1] FALSE
-    ## attr(,"message")
-    ## [1] "Gstar estimate is 50 with 95% CI ( 25 , 300 ) and its ratio = 12"                                          
-    ## [2] "TDtargetEndOfTrial estimate is  18.6612 with 95% CI ( 6e-04 , 10459.1345 ) and its ratio= 17110373.1537"   
-    ## [3] "TDtargetEndOfTrial estimate is smaller with ratio = 17110373.1537  which is  greater than target_ratio = 5"
-    ## attr(,"report_label")
-    ## [1] "GStar 5 for 0.3 target prob"
 
 % For cases when either no or DLT and efficacy samples are involved.
 
@@ -3293,7 +3252,9 @@ legend("topright",
 ```
 
 ![A description of this graph is given in the text
-below.](example_files/figure-html/Truecurves-1.png)
+below.](example-figures/Truecurves-1.png)
+
+plot of chunk Truecurves
 
 Using all the above commands, we can obtained the DLT (red),
 efficacy(blue) and gain (green) curves and also their corresponding true
@@ -3347,7 +3308,9 @@ legend("topright",
 ```
 
 ![A description of this graph is given in the text
-below.](example_files/figure-html/TruecurvesFlexi-1.png)
+below.](example-figures/TruecurvesFlexi-1.png)
+
+plot of chunk TruecurvesFlexi
 
 Similarly, we also get the DLT, efficacy and gain values and the
 corresponding real values of the TD30, TD35 and Gstar.
@@ -3428,26 +3391,28 @@ simulated results using `plot` and `summary` function:
 plot(Sim1)
 ```
 
-    ## Note: method with signature 'PseudoSimulations#missing' chosen for function 'plot',
-    ##  target signature 'PseudoDualSimulations#missing'.
-    ##  "GeneralSimulations#missing" would also be valid
-
 ![A description of the Sim1
-object.](example_files/figure-html/plotsimulationresults1-1.png)
+object.](example-figures/plotsimulationresults1-1.png)
+
+plot of chunk plotsimulationresults1
 
 ``` r
 plot(Sim2)
 ```
 
 ![A description of the Sim2
-object.](example_files/figure-html/plotsimulationresults2-1.png)
+object.](example-figures/plotsimulationresults2-1.png)
+
+plot of chunk plotsimulationresults2
 
 ``` r
 plot(Sim3)
 ```
 
 ![A description of the Sim3
-object.](example_files/figure-html/plotsimulationresults3-1.png)
+object.](example-figures/plotsimulationresults3-1.png)
+
+plot of chunk plotsimulationresults3
 
 The plots give an overview of the final dose recommendations and trial
 trajectories. In addition, they also give a summary of the efficacy
@@ -3463,74 +3428,72 @@ Sum1 <- summary(Sim1,
   trueEff = myTruthEff
 )
 Sum1
-```
-
-    ## Summary of 10 simulations
-    ## 
-    ## Target probability of DLE p(DLE) used at the end of a trial was 30 %
-    ## The dose level corresponds to the target p(DLE) used at the end of a trial, TDEOT, was 152.6195 
-    ## TDEOT at dose Grid was 150 
-    ## Target p(DLE) used during a trial was 35 %
-    ## The dose level corresponds to the target p(DLE) used during a trial, TDDT, was 155.972 
-    ## TDDT at dose Grid was 150 
-    ## Number of patients overall : mean 16 (15, 19) 
-    ## Number of patients treated above the target p(DLE) used at the end of a trial : mean 3 (3, 3) 
-    ## Number of patients treated above the target p(DLE) used during a trial : mean 3 (3, 3) 
-    ## Proportions of observed DLT in the trials : mean 21 % (20 %, 23 %) 
-    ## Mean toxicity risks for the patients : mean 21 % (20 %, 21 %) 
-    ## Doses selected as TDEOT : mean 100 (97.5, 102.5) 
-    ## True toxicity at TDEOT : mean 1 % (0 %, 1 %) 
-    ## Proportion of trials selecting the TDEOT: 0 %
-    ## Proportion of trials selecting the TDDT: 0 %
-    ## Dose most often selected as TDEOT: 100 
-    ## Observed toxicity rate at dose most often selected: 0 %
-    ## Fitted probabilities of DLE at dose most often selected : mean 24 % (24 %, 24 %) 
-    ## The summary table of the final TDEOT across all simulations
-    ##     Min. 1st Qu.  Median    Mean 3rd Qu.    Max.  
-    ##    98.18  123.81  123.81  122.23  123.81  133.63  
-    ## The summary table of the final ratios of the TDEOT across all simulations
-    ##     Min. 1st Qu.  Median    Mean 3rd Qu.    Max.  
-    ##    3.849   4.447   4.447   4.442   4.447   4.993  
-    ## The summary table of the final TDDT across all simulations
-    ##     Min. 1st Qu.  Median    Mean 3rd Qu.    Max.  
-    ##    118.2   144.4   144.4   143.5   144.4   161.5  
-    ## The summary table of dose levels, the optimal dose
-    ##  to recommend for subsequent study across all simulations
-    ##     Min. 1st Qu.  Median    Mean 3rd Qu.    Max.  
-    ##    98.18  123.81  123.81  122.23  123.81  133.63  
-    ## The summary table of the final ratios of the optimal dose for stopping across
-    ##                   all simulations
-    ##     Min. 1st Qu.  Median    Mean 3rd Qu.    Max.  
-    ##    3.849   4.447   4.447   4.442   4.447   4.993  
-    ## 
-    ## Stop reason triggered:
-    ##  GStar 5 for 0.3 target prob :  100 %
-    ## Target Gstar, the dose which gives the maximum gain value was 130.0097 
-    ## Target Gstar at dose Grid was 125 
-    ## The summary table of the final Gstar across all simulations
-    ##     Min. 1st Qu.  Median    Mean 3rd Qu.    Max.  
-    ##    142.9   146.7   152.1   152.6   153.1   178.6  
-    ## The summary table of the final ratios of the Gstar across all simulations
-    ##     Min. 1st Qu.  Median    Mean 3rd Qu.    Max.  
-    ##    6.807   6.985   7.188   7.691   7.472  10.729  
-    ## The summary table of dose levels, the optimal dose
-    ##  to recommend for subsequent study across all simulations
-    ##     Min. 1st Qu.  Median    Mean 3rd Qu.    Max.  
-    ##    98.18  123.81  123.81  122.23  123.81  133.63  
-    ## The summary table of the final ratios of the optimal dose for stopping across
-    ##         all simulations
-    ##     Min. 1st Qu.  Median    Mean 3rd Qu.    Max.  
-    ##    3.849   4.447   4.447   4.442   4.447   4.993  
-    ## Fitted expected efficacy level at dose most often selected : mean 0.9 (0.9, 1) 
-    ## Stop reason triggered:
-    ##  GStar 5 for 0.3 target prob :  100 %
-
-``` r
+#> Summary of 10 simulations
+#> 
+#> Target probability of DLE p(DLE) used at the end of a trial was 30 %
+#> The dose level corresponds to the target p(DLE) used at the end of a trial, TDEOT, was 152.6195 
+#> TDEOT at dose Grid was 150 
+#> Target p(DLE) used during a trial was 35 %
+#> The dose level corresponds to the target p(DLE) used during a trial, TDDT, was 155.972 
+#> TDDT at dose Grid was 150 
+#> Number of patients overall : mean 16 (15, 19) 
+#> Number of patients treated above the target p(DLE) used at the end of a trial : mean 3 (3, 3) 
+#> Number of patients treated above the target p(DLE) used during a trial : mean 3 (3, 3) 
+#> Proportions of observed DLT in the trials : mean 21 % (20 %, 23 %) 
+#> Mean toxicity risks for the patients : mean 21 % (20 %, 21 %) 
+#> Doses selected as TDEOT : mean 100 (97.5, 102.5) 
+#> True toxicity at TDEOT : mean 1 % (0 %, 1 %) 
+#> Proportion of trials selecting the TDEOT: 0 %
+#> Proportion of trials selecting the TDDT: 0 %
+#> Dose most often selected as TDEOT: 100 
+#> Observed toxicity rate at dose most often selected: 0 %
+#> Fitted probabilities of DLE at dose most often selected : mean 24 % (24 %, 24 %) 
+#> The summary table of the final TDEOT across all simulations
+#>     Min. 1st Qu.  Median    Mean 3rd Qu.    Max.  
+#>    98.18  123.81  123.81  122.23  123.81  133.63  
+#> The summary table of the final ratios of the TDEOT across all simulations
+#>     Min. 1st Qu.  Median    Mean 3rd Qu.    Max.  
+#>    3.849   4.447   4.447   4.442   4.447   4.993  
+#> The summary table of the final TDDT across all simulations
+#>     Min. 1st Qu.  Median    Mean 3rd Qu.    Max.  
+#>    118.2   144.4   144.4   143.5   144.4   161.5  
+#> The summary table of dose levels, the optimal dose
+#>  to recommend for subsequent study across all simulations
+#>     Min. 1st Qu.  Median    Mean 3rd Qu.    Max.  
+#>    98.18  123.81  123.81  122.23  123.81  133.63  
+#> The summary table of the final ratios of the optimal dose for stopping across
+#>                   all simulations
+#>     Min. 1st Qu.  Median    Mean 3rd Qu.    Max.  
+#>    3.849   4.447   4.447   4.442   4.447   4.993  
+#> 
+#> Stop reason triggered:
+#>  GStar 5 for 0.3 target prob :  100 %
+#> Target Gstar, the dose which gives the maximum gain value was 130.0097 
+#> Target Gstar at dose Grid was 125 
+#> The summary table of the final Gstar across all simulations
+#>     Min. 1st Qu.  Median    Mean 3rd Qu.    Max.  
+#>    142.9   146.7   152.1   152.6   153.1   178.6  
+#> The summary table of the final ratios of the Gstar across all simulations
+#>     Min. 1st Qu.  Median    Mean 3rd Qu.    Max.  
+#>    6.807   6.985   7.188   7.691   7.472  10.729  
+#> The summary table of dose levels, the optimal dose
+#>  to recommend for subsequent study across all simulations
+#>     Min. 1st Qu.  Median    Mean 3rd Qu.    Max.  
+#>    98.18  123.81  123.81  122.23  123.81  133.63  
+#> The summary table of the final ratios of the optimal dose for stopping across
+#>         all simulations
+#>     Min. 1st Qu.  Median    Mean 3rd Qu.    Max.  
+#>    3.849   4.447   4.447   4.442   4.447   4.993  
+#> Fitted expected efficacy level at dose most often selected : mean 0.9 (0.9, 1) 
+#> Stop reason triggered:
+#>  GStar 5 for 0.3 target prob :  100 %
 print(plot(Sum1))
 ```
 
 ![A description of the summary of the Sim1
-object.](example_files/figure-html/summarysimulationresults1-1.png)
+object.](example-figures/summarysimulationresults1-1.png)
+
+plot of chunk summarysimulationresults1
 
 ``` r
 Sum2 <- summary(Sim2,
@@ -3538,76 +3501,74 @@ Sum2 <- summary(Sim2,
   trueEff = myTruthEff
 )
 Sum2
-```
-
-    ## Summary of 10 simulations
-    ## 
-    ## Target probability of DLE p(DLE) used at the end of a trial was 30 %
-    ## The dose level corresponds to the target p(DLE) used at the end of a trial, TDEOT, was 152.6195 
-    ## TDEOT at dose Grid was 150 
-    ## Target p(DLE) used during a trial was 35 %
-    ## The dose level corresponds to the target p(DLE) used during a trial, TDDT, was 155.972 
-    ## TDDT at dose Grid was 150 
-    ## Number of patients overall : mean 45 (36, 51) 
-    ## Number of patients treated above the target p(DLE) used at the end of a trial : mean 8 (3, 12) 
-    ## Number of patients treated above the target p(DLE) used during a trial : mean 8 (3, 12) 
-    ## Proportions of observed DLT in the trials : mean 19 % (17 %, 20 %) 
-    ## Mean toxicity risks for the patients : mean 19 % (15 %, 25 %) 
-    ## Doses selected as TDEOT : mean 120 (100, 125) 
-    ## True toxicity at TDEOT : mean 4 % (1 %, 5 %) 
-    ## Proportion of trials selecting the TDEOT: 0 %
-    ## Proportion of trials selecting the TDDT: 0 %
-    ## Dose most often selected as TDEOT: 125 
-    ## Observed toxicity rate at dose most often selected: 6 %
-    ## Fitted probabilities of DLE at dose most often selected : mean 25 % (23 %, 27 %) 
-    ## The summary table of the final TDEOT across all simulations
-    ##     Min. 1st Qu.  Median    Mean 3rd Qu.    Max.  
-    ##    115.0   127.6   135.9   132.4   138.6   143.8  
-    ## The summary table of the final ratios of the TDEOT across all simulations
-    ##     Min. 1st Qu.  Median    Mean 3rd Qu.    Max.  
-    ##        1       1       1       1       1       1  
-    ## The summary table of the final TDDT across all simulations
-    ##     Min. 1st Qu.  Median    Mean 3rd Qu.    Max.  
-    ##    133.2   151.0   155.9   154.2   159.3   168.8  
-    ## The summary table of dose levels, the optimal dose
-    ##  to recommend for subsequent study across all simulations
-    ##     Min. 1st Qu.  Median    Mean 3rd Qu.    Max.  
-    ##    115.0   127.6   135.9   132.4   138.6   143.8  
-    ## The summary table of the final ratios of the optimal dose for stopping across
-    ##                   all simulations
-    ##     Min. 1st Qu.  Median    Mean 3rd Qu.    Max.  
-    ##        1       1       1       1       1       1  
-    ## 
-    ## Stop reason triggered:
-    ##  GStar 5 for 0.3 target prob :  100 %
-    ##  ≥ 72 patients dosed :  0 %
-    ## Target Gstar, the dose which gives the maximum gain value was 130.0097 
-    ## Target Gstar at dose Grid was 125 
-    ## The summary table of the final Gstar across all simulations
-    ##     Min. 1st Qu.  Median    Mean 3rd Qu.    Max.  
-    ##    150.0   175.0   187.5   182.5   200.0   200.0  
-    ## The summary table of the final ratios of the Gstar across all simulations
-    ##     Min. 1st Qu.  Median    Mean 3rd Qu.    Max.  
-    ##      2.4     2.4     2.4     2.4     2.4     2.4  
-    ## The summary table of dose levels, the optimal dose
-    ##  to recommend for subsequent study across all simulations
-    ##     Min. 1st Qu.  Median    Mean 3rd Qu.    Max.  
-    ##    115.0   127.6   135.9   132.4   138.6   143.8  
-    ## The summary table of the final ratios of the optimal dose for stopping across
-    ##         all simulations
-    ##     Min. 1st Qu.  Median    Mean 3rd Qu.    Max.  
-    ##        1       1       1       1       1       1  
-    ## Fitted expected efficacy level at dose most often selected : mean 1 (1, 1) 
-    ## Stop reason triggered:
-    ##  GStar 5 for 0.3 target prob :  100 %
-    ##  ≥ 72 patients dosed :  0 %
-
-``` r
+#> Summary of 10 simulations
+#> 
+#> Target probability of DLE p(DLE) used at the end of a trial was 30 %
+#> The dose level corresponds to the target p(DLE) used at the end of a trial, TDEOT, was 152.6195 
+#> TDEOT at dose Grid was 150 
+#> Target p(DLE) used during a trial was 35 %
+#> The dose level corresponds to the target p(DLE) used during a trial, TDDT, was 155.972 
+#> TDDT at dose Grid was 150 
+#> Number of patients overall : mean 45 (36, 51) 
+#> Number of patients treated above the target p(DLE) used at the end of a trial : mean 8 (3, 12) 
+#> Number of patients treated above the target p(DLE) used during a trial : mean 8 (3, 12) 
+#> Proportions of observed DLT in the trials : mean 19 % (17 %, 20 %) 
+#> Mean toxicity risks for the patients : mean 19 % (15 %, 25 %) 
+#> Doses selected as TDEOT : mean 120 (100, 125) 
+#> True toxicity at TDEOT : mean 4 % (1 %, 5 %) 
+#> Proportion of trials selecting the TDEOT: 0 %
+#> Proportion of trials selecting the TDDT: 0 %
+#> Dose most often selected as TDEOT: 125 
+#> Observed toxicity rate at dose most often selected: 6 %
+#> Fitted probabilities of DLE at dose most often selected : mean 25 % (23 %, 27 %) 
+#> The summary table of the final TDEOT across all simulations
+#>     Min. 1st Qu.  Median    Mean 3rd Qu.    Max.  
+#>    115.0   127.6   135.9   132.4   138.6   143.8  
+#> The summary table of the final ratios of the TDEOT across all simulations
+#>     Min. 1st Qu.  Median    Mean 3rd Qu.    Max.  
+#>        1       1       1       1       1       1  
+#> The summary table of the final TDDT across all simulations
+#>     Min. 1st Qu.  Median    Mean 3rd Qu.    Max.  
+#>    133.2   151.0   155.9   154.2   159.3   168.8  
+#> The summary table of dose levels, the optimal dose
+#>  to recommend for subsequent study across all simulations
+#>     Min. 1st Qu.  Median    Mean 3rd Qu.    Max.  
+#>    115.0   127.6   135.9   132.4   138.6   143.8  
+#> The summary table of the final ratios of the optimal dose for stopping across
+#>                   all simulations
+#>     Min. 1st Qu.  Median    Mean 3rd Qu.    Max.  
+#>        1       1       1       1       1       1  
+#> 
+#> Stop reason triggered:
+#>  GStar 5 for 0.3 target prob :  100 %
+#>  ≥ 72 patients dosed :  0 %
+#> Target Gstar, the dose which gives the maximum gain value was 130.0097 
+#> Target Gstar at dose Grid was 125 
+#> The summary table of the final Gstar across all simulations
+#>     Min. 1st Qu.  Median    Mean 3rd Qu.    Max.  
+#>    150.0   175.0   187.5   182.5   200.0   200.0  
+#> The summary table of the final ratios of the Gstar across all simulations
+#>     Min. 1st Qu.  Median    Mean 3rd Qu.    Max.  
+#>      2.4     2.4     2.4     2.4     2.4     2.4  
+#> The summary table of dose levels, the optimal dose
+#>  to recommend for subsequent study across all simulations
+#>     Min. 1st Qu.  Median    Mean 3rd Qu.    Max.  
+#>    115.0   127.6   135.9   132.4   138.6   143.8  
+#> The summary table of the final ratios of the optimal dose for stopping across
+#>         all simulations
+#>     Min. 1st Qu.  Median    Mean 3rd Qu.    Max.  
+#>        1       1       1       1       1       1  
+#> Fitted expected efficacy level at dose most often selected : mean 1 (1, 1) 
+#> Stop reason triggered:
+#>  GStar 5 for 0.3 target prob :  100 %
+#>  ≥ 72 patients dosed :  0 %
 print(plot(Sum2))
 ```
 
 ![A description of the summary of the Sim2
-object.](example_files/figure-html/summarysimulationresults2-1.png)
+object.](example-figures/summarysimulationresults2-1.png)
+
+plot of chunk summarysimulationresults2
 
 ``` r
 Sum3 <- summary(Sim3,
@@ -3615,78 +3576,77 @@ Sum3 <- summary(Sim3,
   trueEff = myTruthEff1
 )
 Sum3
-```
-
-    ## Summary of 10 simulations
-    ## 
-    ## Target probability of DLE p(DLE) used at the end of a trial was 30 %
-    ## The dose level corresponds to the target p(DLE) used at the end of a trial, TDEOT, was 152.6195 
-    ## TDEOT at dose Grid was 150 
-    ## Target p(DLE) used during a trial was 35 %
-    ## The dose level corresponds to the target p(DLE) used during a trial, TDDT, was 155.972 
-    ## TDDT at dose Grid was 150 
-    ## Number of patients overall : mean 50 (39, 58) 
-    ## Number of patients treated above the target p(DLE) used at the end of a trial : mean 8 (6, 12) 
-    ## Number of patients treated above the target p(DLE) used during a trial : mean 8 (6, 12) 
-    ## Proportions of observed DLT in the trials : mean 21 % (18 %, 24 %) 
-    ## Mean toxicity risks for the patients : mean 20 % (15 %, 24 %) 
-    ## Doses selected as TDEOT : mean 115 (100, 125) 
-    ## True toxicity at TDEOT : mean 3 % (1 %, 5 %) 
-    ## Proportion of trials selecting the TDEOT: 0 %
-    ## Proportion of trials selecting the TDDT: 0 %
-    ## Dose most often selected as TDEOT: 125 
-    ## Observed toxicity rate at dose most often selected: 4 %
-    ## Fitted probabilities of DLE at dose most often selected : mean 27 % (25 %, 28 %) 
-    ## The summary table of the final TDEOT across all simulations
-    ##     Min. 1st Qu.  Median    Mean 3rd Qu.    Max.  
-    ##    113.1   123.7   127.0   127.0   130.0   137.2  
-    ## The summary table of the final ratios of the TDEOT across all simulations
-    ##     Min. 1st Qu.  Median    Mean 3rd Qu.    Max.  
-    ##        1       1       1       1       1       1  
-    ## The summary table of the final TDDT across all simulations
-    ##     Min. 1st Qu.  Median    Mean 3rd Qu.    Max.  
-    ##    128.9   143.6   149.2   149.0   154.4   169.5  
-    ## The summary table of dose levels, the optimal dose
-    ##  to recommend for subsequent study across all simulations
-    ##     Min. 1st Qu.  Median    Mean 3rd Qu.    Max.  
-    ##    113.1   123.7   127.0   127.0   130.0   137.2  
-    ## The summary table of the final ratios of the optimal dose for stopping across
-    ##                   all simulations
-    ##     Min. 1st Qu.  Median    Mean 3rd Qu.    Max.  
-    ##        1       1       1       1       1       1  
-    ## 
-    ## Stop reason triggered:
-    ##  GStar 5 for 0.3 target prob :  100 %
-    ##  ≥ 72 patients dosed :  0 %
-    ## Target Gstar, the dose which gives the maximum gain value was 125 
-    ## Target Gstar at dose Grid was 125 
-    ## The summary table of the final Gstar across all simulations
-    ##     Min. 1st Qu.  Median    Mean 3rd Qu.    Max.  
-    ##    250.0   250.0   250.0   262.5   275.0   300.0  
-    ## The summary table of the final ratios of the Gstar across all simulations
-    ##     Min. 1st Qu.  Median    Mean 3rd Qu.    Max.  
-    ##    1.333   1.500   1.857   1.938   2.000   3.000  
-    ## The summary table of dose levels, the optimal dose
-    ##  to recommend for subsequent study across all simulations
-    ##     Min. 1st Qu.  Median    Mean 3rd Qu.    Max.  
-    ##    113.1   123.7   127.0   127.0   130.0   137.2  
-    ## The summary table of the final ratios of the optimal dose for stopping across
-    ##         all simulations
-    ##     Min. 1st Qu.  Median    Mean 3rd Qu.    Max.  
-    ##        1       1       1       1       1       1  
-    ## Fitted expected efficacy level at dose most often selected : mean 0.9 (0.9, 1) 
-    ## Stop reason triggered:
-    ##  GStar 5 for 0.3 target prob :  100 %
-    ##  ≥ 72 patients dosed :  0 %
-
-``` r
+#> Summary of 10 simulations
+#> 
+#> Target probability of DLE p(DLE) used at the end of a trial was 30 %
+#> The dose level corresponds to the target p(DLE) used at the end of a trial, TDEOT, was 152.6195 
+#> TDEOT at dose Grid was 150 
+#> Target p(DLE) used during a trial was 35 %
+#> The dose level corresponds to the target p(DLE) used during a trial, TDDT, was 155.972 
+#> TDDT at dose Grid was 150 
+#> Number of patients overall : mean 50 (39, 58) 
+#> Number of patients treated above the target p(DLE) used at the end of a trial : mean 8 (6, 12) 
+#> Number of patients treated above the target p(DLE) used during a trial : mean 8 (6, 12) 
+#> Proportions of observed DLT in the trials : mean 21 % (18 %, 24 %) 
+#> Mean toxicity risks for the patients : mean 20 % (15 %, 24 %) 
+#> Doses selected as TDEOT : mean 115 (100, 125) 
+#> True toxicity at TDEOT : mean 3 % (1 %, 5 %) 
+#> Proportion of trials selecting the TDEOT: 0 %
+#> Proportion of trials selecting the TDDT: 0 %
+#> Dose most often selected as TDEOT: 125 
+#> Observed toxicity rate at dose most often selected: 4 %
+#> Fitted probabilities of DLE at dose most often selected : mean 27 % (25 %, 28 %) 
+#> The summary table of the final TDEOT across all simulations
+#>     Min. 1st Qu.  Median    Mean 3rd Qu.    Max.  
+#>    113.1   123.7   127.0   127.0   130.0   137.2  
+#> The summary table of the final ratios of the TDEOT across all simulations
+#>     Min. 1st Qu.  Median    Mean 3rd Qu.    Max.  
+#>        1       1       1       1       1       1  
+#> The summary table of the final TDDT across all simulations
+#>     Min. 1st Qu.  Median    Mean 3rd Qu.    Max.  
+#>    128.9   143.6   149.2   149.0   154.4   169.5  
+#> The summary table of dose levels, the optimal dose
+#>  to recommend for subsequent study across all simulations
+#>     Min. 1st Qu.  Median    Mean 3rd Qu.    Max.  
+#>    113.1   123.7   127.0   127.0   130.0   137.2  
+#> The summary table of the final ratios of the optimal dose for stopping across
+#>                   all simulations
+#>     Min. 1st Qu.  Median    Mean 3rd Qu.    Max.  
+#>        1       1       1       1       1       1  
+#> 
+#> Stop reason triggered:
+#>  GStar 5 for 0.3 target prob :  100 %
+#>  ≥ 72 patients dosed :  0 %
+#> Target Gstar, the dose which gives the maximum gain value was 125 
+#> Target Gstar at dose Grid was 125 
+#> The summary table of the final Gstar across all simulations
+#>     Min. 1st Qu.  Median    Mean 3rd Qu.    Max.  
+#>    250.0   250.0   250.0   262.5   275.0   300.0  
+#> The summary table of the final ratios of the Gstar across all simulations
+#>     Min. 1st Qu.  Median    Mean 3rd Qu.    Max.  
+#>    1.333   1.500   1.857   1.938   2.000   3.000  
+#> The summary table of dose levels, the optimal dose
+#>  to recommend for subsequent study across all simulations
+#>     Min. 1st Qu.  Median    Mean 3rd Qu.    Max.  
+#>    113.1   123.7   127.0   127.0   130.0   137.2  
+#> The summary table of the final ratios of the optimal dose for stopping across
+#>         all simulations
+#>     Min. 1st Qu.  Median    Mean 3rd Qu.    Max.  
+#>        1       1       1       1       1       1  
+#> Fitted expected efficacy level at dose most often selected : mean 0.9 (0.9, 1) 
+#> Stop reason triggered:
+#>  GStar 5 for 0.3 target prob :  100 %
+#>  ≥ 72 patients dosed :  0 %
 print(plot(Sum3))
 ```
 
 ![A description of the summary of the Sim3
-object.](example_files/figure-html/summarysimulationresults3-1.png)
+object.](example-figures/summarysimulationresults3-1.png)
+
+plot of chunk summarysimulationresults3
 
 ``` r
+
 # nolint end
 ```
 

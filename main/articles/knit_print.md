@@ -11,12 +11,12 @@ cs <- CohortSizeDLT(intervals = 0:2, cohort_size = c(1, 3, 5))
 cs
 ```
 
-    ## An object of class "CohortSizeDLT"
-    ## Slot "intervals":
-    ## [1] 0 1 2
-    ## 
-    ## Slot "cohort_size":
-    ## [1] 1 3 5
+    #> An object of class "CohortSizeDLT"
+    #> Slot "intervals":
+    #> [1] 0 1 2
+    #> 
+    #> Slot "cohort_size":
+    #> [1] 1 3 5
 
 Fortunately, a little known feature of `knitr` can put this right at
 little or no cost to the end user: in the simplest case, demonstrated
@@ -62,17 +62,13 @@ knit_print.DustySpringfield <- function(x, ...) {
 lyric <- 10
 
 lyric
-```
+#> [1] 10
 
-    ## [1] 10
-
-``` r
 class(lyric) <- "DustySpringfield"
 
 lyric
+#> I just don't know what to do with myself
 ```
-
-    ## I just don't know what to do with myself
 
 The actions of `knit_print` are entirely arbitrary, but this mechanism
 provides developers with an easy way to provide nicely-rendered versions
@@ -185,6 +181,7 @@ where f(d) is a first order random walk such that
 ```
 
 ``` r
+
 knit_print(x, biomarker_name = "CRP", biomarker_units = "mg/dL")
 ```
 
@@ -356,14 +353,13 @@ object in a call to `normal_print()`.
 
 ``` r
 normal_print(cs)
+#> An object of class "CohortSizeDLT"
+#> Slot "intervals":
+#> [1] 0 1 2
+#> 
+#> Slot "cohort_size":
+#> [1] 1 3 5
 ```
-
-    ## An object of class "CohortSizeDLT"
-    ## Slot "intervals":
-    ## [1] 0 1 2
-    ## 
-    ## Slot "cohort_size":
-    ## [1] 1 3 5
 
 ## Accessing the output of `knit_print`
 
@@ -380,11 +376,7 @@ manipulation of the return value.
 ``` r
 csOutput1 <- knit_print(CohortSizeDLT(intervals = 0:2, cohort_size = c(1, 3, 5)))
 class(csOutput1)
-```
-
-    ## [1] "knit_asis"
-
-``` r
+#> [1] "knit_asis"
 csOutput1
 ```
 
@@ -395,53 +387,47 @@ Defined by the number of toxicities so far observed
 ``` r
 csOutput2 <- knit_print(CohortSizeDLT(intervals = 0:2, cohort_size = c(1, 3, 5)), asis = FALSE)
 class(csOutput2)
-```
-
-    ## [1] "character"
-
-``` r
+#> [1] "character"
 csOutput2
+#> [1] "<table>\n<caption>Defined by the number of toxicities so far observed</caption>\n <thead>\n<tr>\n<th style=\"border-bottom:hidden;padding-bottom:0; padding-left:3px;padding-right:3px;text-align: center; \" colspan=\"2\"><div style=\"border-bottom: 1px solid #ddd; padding-bottom: 5px; \">No of toxicities</div></th>\n<th style=\"empty-cells: hide;border-bottom:hidden;\" colspan=\"1\"></th>\n</tr>\n  <tr>\n   <th style=\"text-align:right;\"> Lower </th>\n   <th style=\"text-align:right;\"> Upper </th>\n   <th style=\"text-align:right;\"> Cohort size </th>\n  </tr>\n </thead>\n<tbody>\n  <tr>\n   <td style=\"text-align:right;\"> 0 </td>\n   <td style=\"text-align:right;\"> 1 </td>\n   <td style=\"text-align:right;\"> 1 </td>\n  </tr>\n  <tr>\n   <td style=\"text-align:right;\"> 1 </td>\n   <td style=\"text-align:right;\"> 2 </td>\n   <td style=\"text-align:right;\"> 3 </td>\n  </tr>\n  <tr>\n   <td style=\"text-align:right;\"> 2 </td>\n   <td style=\"text-align:right;\"> Inf </td>\n   <td style=\"text-align:right;\"> 5 </td>\n  </tr>\n</tbody>\n</table>\n\n"
 ```
-
-    ## [1] "<table>\n<caption>Defined by the number of toxicities so far observed</caption>\n <thead>\n<tr>\n<th style=\"border-bottom:hidden;padding-bottom:0; padding-left:3px;padding-right:3px;text-align: center; \" colspan=\"2\"><div style=\"border-bottom: 1px solid #ddd; padding-bottom: 5px; \">No of toxicities</div></th>\n<th style=\"empty-cells: hide;border-bottom:hidden;\" colspan=\"1\"></th>\n</tr>\n  <tr>\n   <th style=\"text-align:right;\"> Lower </th>\n   <th style=\"text-align:right;\"> Upper </th>\n   <th style=\"text-align:right;\"> Cohort size </th>\n  </tr>\n </thead>\n<tbody>\n  <tr>\n   <td style=\"text-align:right;\"> 0 </td>\n   <td style=\"text-align:right;\"> 1 </td>\n   <td style=\"text-align:right;\"> 1 </td>\n  </tr>\n  <tr>\n   <td style=\"text-align:right;\"> 1 </td>\n   <td style=\"text-align:right;\"> 2 </td>\n   <td style=\"text-align:right;\"> 3 </td>\n  </tr>\n  <tr>\n   <td style=\"text-align:right;\"> 2 </td>\n   <td style=\"text-align:right;\"> Inf </td>\n   <td style=\"text-align:right;\"> 5 </td>\n  </tr>\n</tbody>\n</table>\n\n"
 
 But with the chunk option `output` set to `asis`…
 
 ``` r
 cat(csOutput2)
+#> <table>
+#> <caption>Defined by the number of toxicities so far observed</caption>
+#>  <thead>
+#> <tr>
+#> <th style="border-bottom:hidden;padding-bottom:0; padding-left:3px;padding-right:3px;text-align: center; " colspan="2"><div style="border-bottom: 1px solid #ddd; padding-bottom: 5px; ">No of toxicities</div></th>
+#> <th style="empty-cells: hide;border-bottom:hidden;" colspan="1"></th>
+#> </tr>
+#>   <tr>
+#>    <th style="text-align:right;"> Lower </th>
+#>    <th style="text-align:right;"> Upper </th>
+#>    <th style="text-align:right;"> Cohort size </th>
+#>   </tr>
+#>  </thead>
+#> <tbody>
+#>   <tr>
+#>    <td style="text-align:right;"> 0 </td>
+#>    <td style="text-align:right;"> 1 </td>
+#>    <td style="text-align:right;"> 1 </td>
+#>   </tr>
+#>   <tr>
+#>    <td style="text-align:right;"> 1 </td>
+#>    <td style="text-align:right;"> 2 </td>
+#>    <td style="text-align:right;"> 3 </td>
+#>   </tr>
+#>   <tr>
+#>    <td style="text-align:right;"> 2 </td>
+#>    <td style="text-align:right;"> Inf </td>
+#>    <td style="text-align:right;"> 5 </td>
+#>   </tr>
+#> </tbody>
+#> </table>
 ```
-
-    ## <table>
-    ## <caption>Defined by the number of toxicities so far observed</caption>
-    ##  <thead>
-    ## <tr>
-    ## <th style="border-bottom:hidden;padding-bottom:0; padding-left:3px;padding-right:3px;text-align: center; " colspan="2"><div style="border-bottom: 1px solid #ddd; padding-bottom: 5px; ">No of toxicities</div></th>
-    ## <th style="empty-cells: hide;border-bottom:hidden;" colspan="1"></th>
-    ## </tr>
-    ##   <tr>
-    ##    <th style="text-align:right;"> Lower </th>
-    ##    <th style="text-align:right;"> Upper </th>
-    ##    <th style="text-align:right;"> Cohort size </th>
-    ##   </tr>
-    ##  </thead>
-    ## <tbody>
-    ##   <tr>
-    ##    <td style="text-align:right;"> 0 </td>
-    ##    <td style="text-align:right;"> 1 </td>
-    ##    <td style="text-align:right;"> 1 </td>
-    ##   </tr>
-    ##   <tr>
-    ##    <td style="text-align:right;"> 1 </td>
-    ##    <td style="text-align:right;"> 2 </td>
-    ##    <td style="text-align:right;"> 3 </td>
-    ##   </tr>
-    ##   <tr>
-    ##    <td style="text-align:right;"> 2 </td>
-    ##    <td style="text-align:right;"> Inf </td>
-    ##    <td style="text-align:right;"> 5 </td>
-    ##   </tr>
-    ## </tbody>
-    ## </table>
 
 ## Providing your own `knit_print` method
 
@@ -511,8 +497,8 @@ way.
 
 ## Class coverage
 
-`crmPack` defines 125 classes. Custom `knit_print` methods exist for 91
-of them. Of the remaining 34 classes, 23 are virtual classes that will
+`crmPack` defines 125 classes. Custom `knit_print` methods exist for 92
+of them. Of the remaining 33 classes, 22 are virtual classes that will
 never be directly instantiated by end users. That leaves 11 classes for
 which `knit_print` methods may be useful. These classes are listed
 below.

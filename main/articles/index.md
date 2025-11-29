@@ -3,7 +3,7 @@
 ### Upgrading
 
 - [Upgrading from crmPack version
-  1.0.3](https://openpharma.github.io/crmPack/articles/upgrading_from_the_old_crmPack.md):
+  1.0](https://openpharma.github.io/crmPack/articles/upgrading_from_the_old_crmPack.md):
 
 ### Introduction
 

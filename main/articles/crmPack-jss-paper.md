@@ -361,7 +361,7 @@ plot(data)
 on the y axis. Red triangles indicate patients who reported DLTs, black
 circles those who did not. Symbols are annotated with patient IDs.
 Vertical dashed green lines delineate
-cohorts.](crmPack-jss-paper_files/figure-html/plot-data-1.png)
+cohorts.](jss-figures/plot-data-1.png)
 
 Open and blinded data plots
 
@@ -374,7 +374,7 @@ the y axis. Red triangles indicate reports of DLTs, black circles
 indicate an absense of DLTs. However, within each cohort, patients with
 DLTs appear before those without. Symbols are not annotated with patient
 IDs. Vertical dashed green lines delineate
-cohorts.](crmPack-jss-paper_files/figure-html/plot-data-blind-1.png)
+cohorts.](jss-figures/plot-data-blind-1.png)
 
 Open and blinded data plots
 
@@ -407,9 +407,8 @@ plot(priorsamples, model, emptydata) + ggtitle("Prior")
 ```
 
 ![Prior and posterior dose-toxicity
-curves.](crmPack-jss-paper_files/figure-html/plot-model-fit-1.png)![Prior
-and posterior dose-toxicity
-curves.](crmPack-jss-paper_files/figure-html/plot-model-fit-2.png)
+curves.](jss-figures/plot-model-fit-1.png)![Prior and posterior
+dose-toxicity curves.](jss-figures/plot-model-fit-2.png)
 
 Posterior and prior regression model fits
 
@@ -440,9 +439,8 @@ dose \$t\_{N+1} = \tau({\cal D}\_{N})\$:
 
 ``` r
 (nextMaxDose <- maxDose(myIncrements, data))
+#> [1] 150
 ```
-
-    ## [1] 150
 
 We then define the function $`\nu`$ for selecting a dose for the next
 cohort. In this case we would like to select the dose which maximizes
@@ -464,16 +462,14 @@ the next dose \$x\_{N+1}=\nu({\cal D}\_{N}, t\_{N+1})\$:
 ``` r
 nextDoseRes <- nextBest(myNextBest, nextMaxDose, samples, model, data)
 (nextDoseVal <- nextDoseRes$value)
+#> [1] 100
 ```
-
-    ## [1] 100
 
 The returned list also contains an accompanying plot
 (`nextDoseRes$plot`), see Figure @ref(fig:nextBest-ncrm).
 
 ![A graphical description of the logic between the recommendation of the
-nextBestRes
-object.](crmPack-jss-paper_files/figure-html/nextBest-ncrm-1.png)
+nextBestRes object.](jss-figures/nextBest-ncrm-1.png)
 
 Dose recommendation plot from NCRM design
 
@@ -499,58 +495,57 @@ Again, this specific rule can be evaluated by a function, here called
 
 ``` r
 stopTrial(myStopping, nextDoseVal, samples, model, data)
+#> [1] FALSE
+#> attr(,"message")
+#> attr(,"message")[[1]]
+#> [1] "Number of patients is 12 and thus below the prespecified minimum number 30"
+#> 
+#> attr(,"message")[[2]]
+#> attr(,"message")[[2]][[1]]
+#> [1] "Probability for target toxicity is 33 % for dose 100 and thus below the required 50 %"
+#> 
+#> attr(,"message")[[2]][[2]]
+#> [1] "3 patients lie within 20% of the next best dose 100. This is below the required 9 patients"
+#> 
+#> 
+#> attr(,"individual")
+#> attr(,"individual")[[1]]
+#> [1] FALSE
+#> attr(,"message")
+#> [1] "Number of patients is 12 and thus below the prespecified minimum number 30"
+#> attr(,"report_label")
+#> [1] "≥ 30 patients dosed"
+#> 
+#> attr(,"individual")[[2]]
+#> [1] FALSE
+#> attr(,"message")
+#> attr(,"message")[[1]]
+#> [1] "Probability for target toxicity is 33 % for dose 100 and thus below the required 50 %"
+#> 
+#> attr(,"message")[[2]]
+#> [1] "3 patients lie within 20% of the next best dose 100. This is below the required 9 patients"
+#> 
+#> attr(,"individual")
+#> attr(,"individual")[[1]]
+#> [1] FALSE
+#> attr(,"message")
+#> [1] "Probability for target toxicity is 33 % for dose 100 and thus below the required 50 %"
+#> attr(,"report_label")
+#> [1] "P(0.2 ≤ prob(DLE | NBD) ≤ 0.35) ≥ 0.5"
+#> 
+#> attr(,"individual")[[2]]
+#> [1] FALSE
+#> attr(,"message")
+#> [1] "3 patients lie within 20% of the next best dose 100. This is below the required 9 patients"
+#> attr(,"report_label")
+#> [1] "≥ 9 patients dosed in 20 % dose range around NBD"
+#> 
+#> attr(,"report_label")
+#> [1] NA
+#> 
+#> attr(,"report_label")
+#> [1] NA
 ```
-
-    ## [1] FALSE
-    ## attr(,"message")
-    ## attr(,"message")[[1]]
-    ## [1] "Number of patients is 12 and thus below the prespecified minimum number 30"
-    ## 
-    ## attr(,"message")[[2]]
-    ## attr(,"message")[[2]][[1]]
-    ## [1] "Probability for target toxicity is 34 % for dose 100 and thus below the required 50 %"
-    ## 
-    ## attr(,"message")[[2]][[2]]
-    ## [1] "3 patients lie within 20% of the next best dose 100. This is below the required 9 patients"
-    ## 
-    ## 
-    ## attr(,"individual")
-    ## attr(,"individual")[[1]]
-    ## [1] FALSE
-    ## attr(,"message")
-    ## [1] "Number of patients is 12 and thus below the prespecified minimum number 30"
-    ## attr(,"report_label")
-    ## [1] "≥ 30 patients dosed"
-    ## 
-    ## attr(,"individual")[[2]]
-    ## [1] FALSE
-    ## attr(,"message")
-    ## attr(,"message")[[1]]
-    ## [1] "Probability for target toxicity is 34 % for dose 100 and thus below the required 50 %"
-    ## 
-    ## attr(,"message")[[2]]
-    ## [1] "3 patients lie within 20% of the next best dose 100. This is below the required 9 patients"
-    ## 
-    ## attr(,"individual")
-    ## attr(,"individual")[[1]]
-    ## [1] FALSE
-    ## attr(,"message")
-    ## [1] "Probability for target toxicity is 34 % for dose 100 and thus below the required 50 %"
-    ## attr(,"report_label")
-    ## [1] "P(0.2 ≤ prob(DLE | NBD) ≤ 0.35) ≥ 0.5"
-    ## 
-    ## attr(,"individual")[[2]]
-    ## [1] FALSE
-    ## attr(,"message")
-    ## [1] "3 patients lie within 20% of the next best dose 100. This is below the required 9 patients"
-    ## attr(,"report_label")
-    ## [1] "≥ 9 patients dosed in 20 % dose range around NBD"
-    ## 
-    ## attr(,"report_label")
-    ## [1] NA
-    ## 
-    ## attr(,"report_label")
-    ## [1] NA
 
 The result `FALSE` means that we cannot yet stop the trial, with the
 attribute `message` giving the results from the atomic stopping rules.
@@ -594,33 +589,32 @@ dose can be reached in the next cohort if also no DLTs are observed at
 ``` r
 set.seed(23)
 examine(design, mcmcOptions = options)
+#>    dose DLTs nextDose  stop increment
+#> 1    25    0       50 FALSE       100
+#> 2    25    1       50 FALSE       100
+#> 3    25    2       25 FALSE         0
+#> 4    25    3       NA FALSE        NA
+#> 5    50    0      100 FALSE       100
+#> 6    50    1       75 FALSE        50
+#> 7    50    2       50 FALSE         0
+#> 8    50    3       25 FALSE       -50
+#> 9   100    0      125 FALSE        25
+#> 10  100    1      100 FALSE         0
+#> 11  100    2       75 FALSE       -25
+#> 12  100    3       50 FALSE       -50
+#> 13  125    0      175 FALSE        40
+#> 14  125    1      125 FALSE         0
+#> 15  125    2      100 FALSE       -20
+#> 16  125    3       75 FALSE       -40
+#> 17  175    0      250 FALSE        43
+#> 18  175    1      175 FALSE         0
+#> 19  175    2      125 FALSE       -29
+#> 20  175    3      100 FALSE       -43
+#> 21  250    0      300 FALSE        20
+#> 22  250    1      225 FALSE       -10
+#> 23  250    2      175 FALSE       -30
+#> 24  250    3      150 FALSE       -40
 ```
-
-    ##    dose DLTs nextDose  stop increment
-    ## 1    25    0       50 FALSE       100
-    ## 2    25    1       50 FALSE       100
-    ## 3    25    2       25 FALSE         0
-    ## 4    25    3       NA FALSE        NA
-    ## 5    50    0      100 FALSE       100
-    ## 6    50    1       75 FALSE        50
-    ## 7    50    2       50 FALSE         0
-    ## 8    50    3       25 FALSE       -50
-    ## 9   100    0      125 FALSE        25
-    ## 10  100    1      100 FALSE         0
-    ## 11  100    2       75 FALSE       -25
-    ## 12  100    3       50 FALSE       -50
-    ## 13  125    0      175 FALSE        40
-    ## 14  125    1      125 FALSE         0
-    ## 15  125    2      100 FALSE       -20
-    ## 16  125    3       75 FALSE       -40
-    ## 17  175    0      250 FALSE        43
-    ## 18  175    1      150 FALSE       -14
-    ## 19  175    2      125 FALSE       -29
-    ## 20  175    3      100 FALSE       -43
-    ## 21  250    0      300 FALSE        20
-    ## 22  250    1      225 FALSE       -10
-    ## 23  250    2      175 FALSE       -30
-    ## 24  250    3      150 FALSE       -40
 
 **Simulating operating characteristics** For the many trials operating
 characteristics, we first have to define true scenarios, from which the
@@ -663,7 +657,7 @@ mySimsTime <-
 The number of simulated trials depends on the required accuracy of the
 results. The argument `parallel` can be set to `TRUE` if one wishes to
 run the iterations in parallel on all processors of the computer, which
-can yield a meaningful speedup. Here we needed 192 seconds for 100
+can yield a meaningful speedup. Here we needed 274 seconds for 100
 simulated trials on an Intel Core i5-6300U CPU with 2.4 GHz.
 
 The result is an object of class `Simulations` containing multiple
@@ -675,15 +669,10 @@ simulated trial:
 
 ``` r
 mySims@data[[3]]@nObs
-```
-
-    ## [1] 32
-
-``` r
+#> [1] 32
 mySims@doses[3]
+#> [1] 25
 ```
-
-    ## [1] 25
 
 Furthermore, we can plot the `Simulations` object by calling the `plot`
 method on it, see Figure @ref(fig:sim-plot). You can select the plots by
@@ -691,7 +680,7 @@ changing the `type` argument of `plot`, which by default is
 `type = c("trajectory", "dosesTried")`.
 
 ![A graphical representation of the simulation
-results.](crmPack-jss-paper_files/figure-html/sim-plot-1.png)
+results.](jss-figures/sim-plot-1.png)
 
 Simulation plot
 
@@ -701,37 +690,36 @@ description of the results:
 ``` r
 simSum <- summary(mySims, truth = myTruth)
 simSum
+#> Summary of 100 simulations
+#> 
+#> Target toxicity interval was 20, 35 %
+#> Target dose interval corresponding to this was 47.9, 52.7 
+#> Intervals are corresponding to 10 and 90 % quantiles
+#> 
+#> Number of patients on placebo : mean 7 (6, 8) 
+#> Number of patients on active : mean 22 (18, 24) 
+#> Number of patients overall : mean 30 (24, 32) 
+#> Number of patients treated above target tox interval : mean 3 (0, 3) 
+#> Proportions of DLTs in the trials for patients on placebo : mean 0 % (0 %, 0 %) 
+#> Proportions of DLTs in the trials for patients on active : mean 28 % (21 %, 38 %) 
+#> Mean toxicity risks for the patients on active : mean 27 % (18 %, 33 %) 
+#> Doses selected as MTD : mean 46 (25, 50) 
+#> True toxicity at doses selected : mean 22 % (0 %, 26 %) 
+#> Proportion of trials selecting target MTD: 84 %
+#> Dose most often selected as MTD: 50 
+#> Observed toxicity rate at dose most often selected: 27 %
+#> Fitted toxicity rate at dose most often selected : mean 23 % (16 %, 30 %) 
+#> Stop reason triggered:
+#>  ≥ 30 patients dosed :  65 %
+#>  P(0.2 ≤ prob(DLE | NBD) ≤ 0.35) ≥ 0.5 :  45 %
+#>  ≥ 9 patients dosed in 20 % dose range around NBD :  98 %
 ```
-
-    ## Summary of 100 simulations
-    ## 
-    ## Target toxicity interval was 20, 35 %
-    ## Target dose interval corresponding to this was 47.9, 52.7 
-    ## Intervals are corresponding to 10 and 90 % quantiles
-    ## 
-    ## Number of patients on placebo : mean 7 (6, 8) 
-    ## Number of patients on active : mean 22 (18, 24) 
-    ## Number of patients overall : mean 30 (24, 32) 
-    ## Number of patients treated above target tox interval : mean 3 (0, 3) 
-    ## Proportions of DLTs in the trials for patients on placebo : mean 0 % (0 %, 0 %) 
-    ## Proportions of DLTs in the trials for patients on active : mean 28 % (21 %, 33 %) 
-    ## Mean toxicity risks for the patients on active : mean 27 % (18 %, 33 %) 
-    ## Doses selected as MTD : mean 46.2 (25, 50) 
-    ## True toxicity at doses selected : mean 22 % (0 %, 26 %) 
-    ## Proportion of trials selecting target MTD: 85 %
-    ## Dose most often selected as MTD: 50 
-    ## Observed toxicity rate at dose most often selected: 27 %
-    ## Fitted toxicity rate at dose most often selected : mean 23 % (16 %, 29 %) 
-    ## Stop reason triggered:
-    ##  ≥ 30 patients dosed :  65 %
-    ##  P(0.2 ≤ prob(DLE | NBD) ≤ 0.35) ≥ 0.5 :  48 %
-    ##  ≥ 9 patients dosed in 20 % dose range around NBD :  98 %
 
 A plot of the summary results can also be produced, see Figure
 @ref(fig:sim-summary-plot).
 
 ![A graphical representation of the information in the simulation
-summary.](crmPack-jss-paper_files/figure-html/sim-summary-plot-1.png)
+summary.](jss-figures/sim-summary-plot-1.png)
 
 Simulation summary plot
 
@@ -859,26 +847,23 @@ increments rule $`\tau`$ using `maxDose` to obtain $`t_{N+1}`$:
 
 ``` r
 (nextMaxDose <- maxDose(myIncrements, data2))
-```
-
-    ## [1] 150
-
-``` r
+#> [1] 150
 doseRecGain <- nextBest(GainNextBest,
   doselimit = nextMaxDose,
   model = newDLTmodel, model_eff = newEffmodel,
   data = data2
 )
 (nextDoseVal <- doseRecGain$next_dose)
+#> [1] 25
 ```
 
-    ## [1] 25
-
 The plot for the next dose allocation is contained in `doseRecGain$plot`
-and shown in Figure @ref(fig:doseRecommendation). \begin{figure} ![A
-graphical representation of the logic behind the recommendation of the
-doseResgen
-object.](crmPack-jss-paper_files/figure-html/doseRecommendation-1.png)
+and shown in Figure @ref(fig:doseRecommendation). \begin{figure}
+
+![A graphical representation of the logic behind the recommendation of
+the doseResgen object.](jss-figures/doseRecommendation-1.png)
+
+plot of chunk doseRecommendation
 
 Dose recommendation plot from dual endpoint design. The red, blue and
 green curves correspond to the (posterior modal) estimated curves for
@@ -1083,11 +1068,7 @@ plotted as usual, see Figure @ref(fig:OneParExp-model-example).
 
 ``` r
 (skeleton_probs <- round(data@doseGrid / max(data@doseGrid) / 2, 2))
-```
-
-    ##  [1] 0.00 0.04 0.08 0.12 0.17 0.21 0.25 0.29 0.33 0.38 0.42 0.46 0.50
-
-``` r
+#>  [1] 0.00 0.04 0.08 0.12 0.17 0.21 0.25 0.29 0.33 0.38 0.42 0.46 0.50
 newModel <- OneParExp(
   skeleton_probs = skeleton_probs,
   dose_grid = data@doseGrid,
@@ -1098,7 +1079,7 @@ plot(newSamples, newModel, data)
 ```
 
 ![The posterior dose-toxicity curve from the one parameter power
-model.](crmPack-jss-paper_files/figure-html/OneParExp-model-example-1.png)
+model.](jss-figures/OneParExp-model-example-1.png)
 
 Model fit of the one parameter power model
 
@@ -1164,9 +1145,8 @@ target dose of 30%:
 newMyNextBest <- NextBestMinDist(target = 0.3)
 newNextDoseVal <- nextBest(newMyNextBest, nextMaxDose, newSamples, newModel, data)$value
 newNextDoseVal
+#> [1] 150
 ```
-
-    ## [1] 150
 
 So using this CRM, we could escalate to 150 mg, instead of just 100 mg
 above.
@@ -1325,7 +1305,7 @@ Continual Reassessment Method Designs for Phase i Dose-Finding Trials.”
 *Journal of Statistical Software* 54 (13): 1–26.
 
 Team, FACTS Development. 2015. “Fixed and Adaptive Clinical Trial
-Simulator.” <https://www.berryconsultants.com/software/>.
+Simulator.” <https://www.berryconsultants.com/software>.
 
 Thall, Peter F. 2010. “Bayesian Models and Decision Algorithms for
 Complex Early Phase Clinical Trials.” *Statistical Science* 25 (2):
