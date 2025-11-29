@@ -1,3 +1,5 @@
+skip_on_cran()
+
 testthat::local_mocked_bindings(
   .DefaultSimulations = function(...) {
     readRDS(testthat::test_path("fixtures", "default_simulations.Rds"))
