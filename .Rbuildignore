@@ -13,6 +13,8 @@ TODO
 ^docs$
 ^_pkgdown\.yaml$
 ^\.github$
+^README\.html$
+^README\.md$
 ^README\.Rmd$
 ^README-.*\.png$
 ^\.travis\.yml$
@@ -27,5 +29,11 @@ pkgdown/
 ^\.vscode$
 ^[.]?air[.]toml$
 ^jarl[.]toml$
-tests/testthat/_snaps/
-lib/
+tests/testthat/_snaps
+lib
+^vignettes/\.rebuild_vignettes\.R$
+^vignettes/example\.Rmd\.orig$
+^vignettes/crmPack-jss-paper\.Rmd\.orig$
+^vignettes/knit_print\.Rmd\.orig$
+^vignettes/rolling-crm\.Rmd\.orig$
+^vignettes/trial_sanity_checks\.Rmd\.orig$

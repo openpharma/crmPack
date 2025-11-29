@@ -15,6 +15,7 @@ CohortSize
 CohortSizeDLT
 CohortSizeRange
 ComboLogistic
+DASimulations
 DLE
 DLT
 DLTmodel
@@ -37,17 +38,21 @@ Effloglog
 Effmodel
 Emax
 Equalness
+EscalationPermitted
 GeneralData
 GeneralModel
 GeneralSimulations
 GeneralSimulationsSummary
+GmbH
 Goebel
 Gstar
 HMTL
+HighestDoseUsed
 Hmmm
 Hoffmann
 IG
 IncrementMin
+IncrementsMaxToxProb
 IncrementsNumDoseLevels
 IncrementsRelative
 IncrementsRelativeDLT
@@ -63,9 +68,12 @@ LogisticLogNormal
 LogisticLogNormalMixture
 LogisticLogNormalOrdinal
 MTD
+MaxPermittedDose
+McmcOptions
 Michielin
 MinimalInformative
 Mozgunov
+NBD
 NCRM
 NHS
 NIHR
@@ -73,10 +81,12 @@ Neuenschwander
 Neuenschwander's
 NextBest
 NextBestDualEndpoint
+NextBestEWOC
 NextBestNCRM
 ORCID
 PLcohortSize
 ProbitLogNormal
+RPACT
 RPF
 RW
 RWmat
@@ -88,6 +98,7 @@ SRF
 Sabanes
 Schulte
 SimulationsSummary
+StoppingExternal
 StoppingHighestDose
 StoppingMaxPatients
 StoppingMinPatients
@@ -100,6 +111,7 @@ TDtargetDuringTrial
 TDtargetEndOfTrial
 TITE
 ThreePlusThreeDesign
+Tox
 Warne
 WinBUGS
 YJ
@@ -115,6 +127,7 @@ binom
 biomarker
 bivariateNormal
 bmatrix
+boldsymbol
 bugfix
 burnin
 cdot
@@ -127,6 +140,7 @@ customisation
 customisations
 customise
 customised
+dL
 datanames
 deprecations
 dichotomises
@@ -160,7 +174,6 @@ initialised
 investigational
 jss
 labelled
-lifecycle
 loglog
 longdash
 ly
@@ -178,6 +191,7 @@ nObs
 nd
 neighbouring
 nextBest
+nextDose
 nsim
 oneparameter
 oneparameterInverse

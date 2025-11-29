@@ -12,3 +12,8 @@ platform_name <- function() {
 expect_doppel <- function(...) {
   vdiffr::expect_doppelganger(..., variant = platform_name())
 }
+
+# Wrapper around testthat::expect_snapshot to include platform name as variant.
+expect_snap <- function(...) {
+  testthat::expect_snapshot(..., variant = platform_name())
+}

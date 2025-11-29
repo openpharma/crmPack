@@ -1,3 +1,4 @@
+skip_on_cran()
 options(testthat.progress.max_fails = 0)
 
 #' @include("helper-design.R")
