@@ -1,4 +1,4 @@
-skip_on_cran()
+skip_on_cran_but_not_ci()
 
 # size ----
 
