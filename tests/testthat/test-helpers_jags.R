@@ -240,7 +240,7 @@ test_that("h_jags_write_model works as expected", {
   }
 
   model_file <- h_jags_write_model(my_model, digits = 5)
-  expect_snapshot(readLines(model_file))
+  expect_snap(readLines(model_file))
   unlink(model_file)
 })
 
@@ -252,7 +252,7 @@ test_that("h_jags_write_model works as expected for truncation", {
 
   model_file <- tempfile("crmPack-testthat-h_jags_write_model-trunc.jags")
   h_jags_write_model(my_model, model_file, 5)
-  expect_snapshot(readLines(model_file))
+  expect_snap(readLines(model_file))
   unlink(model_file)
 })
 

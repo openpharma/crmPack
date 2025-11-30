@@ -131,7 +131,7 @@ test_that("v_model_logistic_kadane_beta_gamma returns message for non-scalars", 
   object@shape <- 4:7
   object@rate <- 4:7
 
-  expect_snapshot(v_model_logistic_kadane_beta_gamma(object))
+  expect_snap(v_model_logistic_kadane_beta_gamma(object))
 })
 
 test_that("v_model_logistic_kadane_beta_gamma returns message for wrong Beta distribution shape parameter alpha", {
@@ -226,7 +226,7 @@ test_that("v_model_logistic_normal_fixed_mix returns message for non-valid Model
   object@components[[1]]@mean <- c(0, NA)
   object@components[[1]]@cov <- matrix(letters[1:4], nrow = 2)
 
-  expect_snapshot(v_model_logistic_normal_fixed_mix(object))
+  expect_snap(v_model_logistic_normal_fixed_mix(object))
 })
 
 test_that("v_model_logistic_normal_fixed_mix returns message for weights and comp of diff len", {
@@ -316,7 +316,7 @@ test_that("v_model_dual_endpoint returns message for wrong use_fixed", {
   # Assigning non-valid use_fixed.
   object@use_fixed <- TRUE
 
-  expect_snapshot(v_model_dual_endpoint(object))
+  expect_snap(v_model_dual_endpoint(object))
 })
 
 test_that("v_model_dual_endpoint returns message for wrong fixed sigma2W", {
@@ -427,7 +427,7 @@ test_that("v_model_dual_endpoint_beta returns message for wrong use_fixed", {
   # Assigning non-valid use_fixed.
   object@use_fixed <- TRUE
 
-  expect_snapshot(v_model_dual_endpoint_beta(object))
+  expect_snap(v_model_dual_endpoint_beta(object))
 })
 
 test_that("v_model_dual_endpoint_beta returns message for wrong fixed parameters", {
@@ -436,7 +436,7 @@ test_that("v_model_dual_endpoint_beta returns message for wrong fixed parameters
   object@delta1 <- c(-2, 0)
   object@mode <- c(-2, 2)
 
-  expect_snapshot(v_model_dual_endpoint_beta(object))
+  expect_snap(v_model_dual_endpoint_beta(object))
 })
 
 test_that("v_model_dual_endpoint_beta returns message for wrong parameters", {
@@ -447,7 +447,7 @@ test_that("v_model_dual_endpoint_beta returns message for wrong parameters", {
   object@delta1 <- c(4, -5, b = -Inf)
   object@mode <- c(4, -5, b = -Inf)
 
-  expect_snapshot(v_model_dual_endpoint_beta(object))
+  expect_snap(v_model_dual_endpoint_beta(object))
 })
 
 # v_model_dual_endpoint_emax ----
@@ -467,7 +467,7 @@ test_that("v_model_dual_endpoint_emax returns message for wrong fixed parameters
   object@Emax <- c(-2, 2)
   object@ED50 <- c(-2, 6)
 
-  expect_snapshot(v_model_dual_endpoint_emax(object))
+  expect_snap(v_model_dual_endpoint_emax(object))
 })
 
 test_that("v_model_dual_endpoint_emax returns message for wrong parameters", {
@@ -477,7 +477,7 @@ test_that("v_model_dual_endpoint_emax returns message for wrong parameters", {
   object@Emax <- c(4, -5, b = -Inf)
   object@ED50 <- c(4, -5, b = -Inf)
 
-  expect_snapshot(v_model_dual_endpoint_emax(object))
+  expect_snap(v_model_dual_endpoint_emax(object))
 })
 
 # v_model_logistic_indep_beta ----
@@ -496,12 +496,12 @@ test_that("v_model_logistic_indep_beta returns message for wrong DLE parameters"
   object@binDLE <- c(-2, NA)
   object@DLEdose <- c(3, NA)
   object@DLEweights <- c(4L, NA)
-  expect_snapshot(v_model_logistic_indep_beta(object))
+  expect_snap(v_model_logistic_indep_beta(object))
 
   object@binDLE <- -2
   object@DLEdose <- 3
   object@DLEweights <- 4L
-  expect_snapshot(v_model_logistic_indep_beta(object))
+  expect_snap(v_model_logistic_indep_beta(object))
 })
 
 test_that("v_model_logistic_indep_beta returns message for wrong DLE parameters (diff len)", {
@@ -510,17 +510,17 @@ test_that("v_model_logistic_indep_beta returns message for wrong DLE parameters 
   object@binDLE <- c(2, 6)
   object@DLEdose <- c(3, 8, 9)
   object@DLEweights <- c(4L, 12L)
-  expect_snapshot(v_model_logistic_indep_beta(object))
+  expect_snap(v_model_logistic_indep_beta(object))
 
   object@binDLE <- c(2, 6)
   object@DLEdose <- c(3, 8)
   object@DLEweights <- c(4L, 12L, 20L)
-  expect_snapshot(v_model_logistic_indep_beta(object))
+  expect_snap(v_model_logistic_indep_beta(object))
 
   object@binDLE <- c(2, 6)
   object@DLEdose <- c(3, 8, 11)
   object@DLEweights <- c(4L, 12L, 20L)
-  expect_snapshot(v_model_logistic_indep_beta(object))
+  expect_snap(v_model_logistic_indep_beta(object))
 })
 
 test_that("v_model_logistic_indep_beta returns message for wrong phi parameters", {
@@ -842,7 +842,7 @@ test_that("v_model_eff_flexi returns message for wrong fixed sigma2W", {
   # Assigning wrong values for sigma2W.
   object@sigma2W <- c(-5:0, Inf)
   object@use_fixed <- TRUE
-  expect_snapshot(v_model_eff_flexi(object))
+  expect_snap(v_model_eff_flexi(object))
 })
 
 test_that("v_model_eff_flexi returns message for wrong sigma2W", {
@@ -860,7 +860,7 @@ test_that("v_model_eff_flexi returns message for wrong fixed sigma2betaW", {
   # Assigning wrong values for sigma2betaW.
   object@sigma2betaW <- c(-5:0, Inf)
   object@use_fixed <- TRUE
-  expect_snapshot(v_model_eff_flexi(object))
+  expect_snap(v_model_eff_flexi(object))
 })
 
 test_that("v_model_eff_flexi returns message for wrong sigma2betaW", {

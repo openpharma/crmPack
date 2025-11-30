@@ -45,9 +45,9 @@
 <line x1='449.23' y1='545.11' x2='449.23' y2='22.78' style='stroke-width: 2.35; stroke: #00FF00; stroke-linecap: butt;' />
 <text x='458.64' y='276.61' style='font-size: 14.23px; fill: #00FF00; font-family: sans;' textLength='94.10px' lengthAdjust='spacingAndGlyphs'>Gstar Estimate</text>
 <line x1='215.16' y1='545.11' x2='215.16' y2='22.78' style='stroke-width: 2.35; stroke: #FF0000; stroke-linecap: butt;' />
-<text x='215.16' y='255.46' text-anchor='end' style='font-size: 11.04px; fill: #FF0000; font-family: sans;' textLength='20.86px' lengthAdjust='spacingAndGlyphs'>Max</text>
+<text x='215.16' y='256.41' text-anchor='end' style='font-size: 11.00px; fill: #FF0000; font-family: sans;' textLength='20.79px' lengthAdjust='spacingAndGlyphs'>Max</text>
 <line x1='205.41' y1='545.11' x2='205.41' y2='22.78' style='stroke-width: 2.35; stroke: #0000FF; stroke-linecap: butt;' />
-<text x='203.14' y='293.45' style='font-size: 11.04px; fill: #0000FF; font-family: sans;' textLength='22.71px' lengthAdjust='spacingAndGlyphs'>Next</text>
+<text x='203.14' y='294.26' style='font-size: 11.00px; fill: #0000FF; font-family: sans;' textLength='22.62px' lengthAdjust='spacingAndGlyphs'>Next</text>
 <rect x='27.90' y='22.78' width='686.62' height='522.33' style='stroke-width: 1.07; stroke: #333333;' />
 </g>
 <g clip-path='url(#cpMC4wMHw3MjAuMDB8MC4wMHw1NzYuMDA=)'>

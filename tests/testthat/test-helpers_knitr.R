@@ -1,4 +1,4 @@
-skip_on_cran()
+skip_on_cran_but_not_ci()
 
 library(knitr)
 
@@ -123,7 +123,7 @@ test_that("knit_print methods exist for all relevant classes and produce consist
         outFileName <- paste0("knit_print_", cls, ".html")
         # with_file guarantees that the test file will be deleted automatically
         # once the snapshot has been compared with the previous version, which
-        # can be found in /_snaps/helpers_knitr
+        # can be found in /_snaps/<Platform>/helpers_knitr
         withr::with_file(
           test_path("fixtures", outFileName),
           {
@@ -137,7 +137,7 @@ test_that("knit_print methods exist for all relevant classes and produce consist
                   output_dir = test_path("fixtures"),
                   quiet = TRUE
                 )
-                expect_snapshot_file(test_path("fixtures", outFileName))
+                expect_snap_file(test_path("fixtures", outFileName))
               },
               error = function(e) {
                 warning(paste0("Error for class ", cls, ": "), geterrmessage())
@@ -338,7 +338,7 @@ test_that("knit_print.IncrementsRelativeParts works correctly", {
           output_dir = test_path("fixtures"),
           quiet = TRUE
         )
-        expect_snapshot_file(test_path("fixtures", name))
+        expect_snap_file(test_path("fixtures", name))
       }
     )
   }
@@ -363,7 +363,7 @@ test_that("summarise option works correctly for Data classes", {
   testList <- list(
     "knit_print_Data_summarise.html" = .DefaultData(),
     "knit_print_DataDA_summarise.html" = .DefaultDataDA(),
-    "knit_print_DataGrouped_summarise.html" = .DefaultDataDual(),
+    "knit_print_DataDual_summarise.html" = .DefaultDataDual(),
     "knit_print_DataGrouped_summarise.html" = .DefaultDataGrouped(),
     "knit_print_DataMixture_summarise.html" = .DefaultDataMixture()
     # "knit_print_DataOrdinal_summarise.html" = .DefaultDataOrdinal() # nolint
@@ -380,14 +380,14 @@ test_that("summarise option works correctly for Data classes", {
           output_dir = test_path("fixtures"),
           quiet = TRUE
         )
-        expect_snapshot_file(test_path("fixtures", name))
+        expect_snap_file(test_path("fixtures", name))
       }
     )
     # For test coverage stats
     rv <- knit_print(testList[[name]], summarise = "dose")
-    expect_snapshot_value(rv, style = "serialize")
+    expect_snap_value(rv, style = "serialize")
     rv <- knit_print(testList[[name]], summarise = "cohort")
-    expect_snapshot_value(rv, style = "serialize")
+    expect_snap_value(rv, style = "serialize")
   }
 })
 

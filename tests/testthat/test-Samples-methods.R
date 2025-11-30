@@ -1,4 +1,4 @@
-skip_on_cran()
+skip_on_cran_but_not_ci()
 
 # size ----
 
@@ -308,7 +308,7 @@ test_that("fit-Samples works correctly for dual models", {
       "upperBiomarker"
     )
   )
-  expect_snapshot(actual)
+  expect_snap(actual)
 })
 
 ## Samples-LogisticLogNormalOrdinal
@@ -509,7 +509,7 @@ test_that("Samples-approximate works correctly", {
   )
   for (nm in slotNames(posterior$model)) {
     if (!is.function(slot(posterior$model, nm))) {
-      expect_snapshot(slot(posterior$model, nm))
+      expect_snap(slot(posterior$model, nm))
     }
   }
   expect_doppel("approximate282-samples", posterior$plot)
@@ -529,7 +529,7 @@ test_that("Samples-approximate works correctly", {
   )
   for (nm in slotNames(posterior1$model)) {
     if (!is.function(slot(posterior1$model, nm))) {
-      expect_snapshot(slot(posterior1$model, nm))
+      expect_snap(slot(posterior1$model, nm))
     }
   }
   expect_doppel("approximate1-samples", posterior1$plot)
@@ -541,10 +541,10 @@ test_that("Samples-approximate works correctly", {
     logNormal = FALSE,
     control = list(threshold.stop = 0.1, max.time = 1, maxit = 1)
   )
-  expect_snapshot_value(posterior2, style = "serialize")
+  expect_snap_value(posterior2, style = "serialize")
   for (nm in slotNames(posterior2$model)) {
     if (!is.function(slot(posterior2$model, nm))) {
-      expect_snapshot(slot(posterior2$model, nm))
+      expect_snap(slot(posterior2$model, nm))
     }
   }
   expect_doppel("approximate2-samples", posterior2$plot)
@@ -816,7 +816,7 @@ test_that("fit-Samples-LogisticIndepBeta works", {
     data = data,
     quantiles = c(0.1, 0.9)
   )
-  expect_snapshot(actual)
+  expect_snap(actual)
 })
 
 ## Samples-Effloglog ----
@@ -847,10 +847,10 @@ test_that("fit-Samples-Effloglog works correctly", {
     rng_seed = 303012
   )
   actual <- fit(object = samples, model = model, data = data)
-  expect_snapshot(actual)
+  expect_snap(actual)
 
   actual1 <- fit(object = samples, model = model, data = data, middle = median)
-  expect_snapshot(actual1)
+  expect_snap(actual1)
 })
 
 test_that("fit-Samples-Effloglog fails gracefully with bad input", {
@@ -927,10 +927,10 @@ test_that("fit-Samples-EffFlexi works correctly", {
   samples <- mcmc(data = data, model = model, options = options)
 
   actual <- fit(object = samples, model = model, data = data)
-  expect_snapshot(actual)
+  expect_snap(actual)
 
   actual1 <- fit(object = samples, model = model, data = data, middle = median)
-  expect_snapshot(actual1)
+  expect_snap(actual1)
 })
 
 test_that("fit-Samples-EffFlexi fails gracefully with bad input", {
@@ -1035,7 +1035,7 @@ test_that("fitGain-Samples works correctly", {
     data = data
   )
 
-  expect_snapshot(actual)
+  expect_snap(actual)
 })
 
 test_that("fitGain-Samples fails gracefully with bad input", {
@@ -1168,7 +1168,7 @@ test_that("fitGain-Samples-ModelEff works correctly", {
     data = data
   )
 
-  expect_snapshot(actual)
+  expect_snap(actual)
 })
 
 test_that("fitGain-Samples-ModelEff fails gracefully with bad input", {
@@ -1887,16 +1887,16 @@ test_that("fitPEM-Samples-DALogisticLogNormal-DataDA works correctly", {
   samples <- mcmc(data, model, options)
 
   actual <- fitPEM(samples, model, data)
-  expect_snapshot(actual)
+  expect_snap(actual)
 
   actual1 <- fitPEM(samples, model, data, middle = median)
-  expect_snapshot(actual1)
+  expect_snap(actual1)
 
   actual2 <- fitPEM(samples, model, data, quantiles = c(0.2, 0.8))
-  expect_snapshot(actual2)
+  expect_snap(actual2)
 
   actual3 <- fitPEM(samples, model, data, hazard = TRUE)
-  expect_snapshot(actual3)
+  expect_snap(actual3)
 })
 
 test_that("plot-Samples-DALogisticNormal fails gracefully with bad input", {
@@ -1999,16 +1999,6 @@ test_that("plot-Samples-DALogisticNormal works correctly", {
 
   actual3 <- plot(samples, model, data, showLegend = FALSE, hazard = TRUE)
   expect_doppel("plot-Samples-DALogisticLogNormal_TRUE_FALSE", actual3)
-  expect_doppel("plot-samples-dalogisticlognormal", actual)
-
-  actual1 <- plot(samples, model, data, hazard = TRUE)
-  expect_doppel("plot-samples-dalogisticlognormal-hazard-true", actual1)
-
-  actual2 <- plot(samples, model, data, showLegend = FALSE)
-  expect_doppel("plot-samples-dalogisticlognormal-showlegend-false", actual2)
-
-  actual3 <- plot(samples, model, data, showLegend = FALSE, hazard = TRUE)
-  expect_doppel("plot-samples-dalogisticlognormal-false-true", actual3)
 })
 
 test_that("Approximate fails gracefully with bad input", {
@@ -2136,7 +2126,7 @@ test_that("approximate works correctly", {
   expect_set_equal(names(actual), c("model", "plot"))
   for (slot_name in slotNames(actual$model)) {
     if (!is.function(slot(actual$model, slot_name))) {
-      expect_snapshot(slot(actual$model, slot_name))
+      expect_snap(slot(actual$model, slot_name))
     }
   }
   expect_doppel("approximate-Samples", actual$plot)
@@ -2176,7 +2166,7 @@ test_that("fit-Samples-LogisticIndepBeta works correctly", {
   samples <- mcmc(data, model, options)
 
   actual <- fit(object = samples, model = model, data = data)
-  expect_snapshot(actual)
+  expect_snap(actual)
 })
 
 test_that("fitGain-Samples-LogisticIndepBeta works correctly", {
@@ -2228,7 +2218,7 @@ test_that("fitGain-Samples-LogisticIndepBeta works correctly", {
     data = data
   )
 
-  expect_snapshot(actual)
+  expect_snap(actual)
 })
 
 # tidy ----

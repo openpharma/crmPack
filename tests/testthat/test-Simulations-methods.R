@@ -1,4 +1,4 @@
-skip_on_cran()
+skip_on_cran_but_not_ci()
 
 testthat::local_mocked_bindings(
   .DefaultSimulations = function(...) {
@@ -183,7 +183,7 @@ test_that("summary-Simulations works correctly", {
 
   result <- summary(mySims, truth = myTruth)
   expect_s4_class(result, "SimulationsSummary")
-  expect_snapshot(result)
+  expect_snap(result)
 
   # Check that it has additional slots compared to GeneralSimulationsSummary
   expect_true("fit_at_dose_most_selected" %in% slotNames(result))
@@ -219,7 +219,7 @@ test_that("summary-DualSimulations works correctly", {
 
   result <- summary(mySims, trueTox = myTruthTox, trueBiomarker = myTruthBio)
   expect_s4_class(result, "DualSimulationsSummary")
-  expect_snapshot(result)
+  expect_snap(result)
 
   # Check dual-specific slots
   expect_true("biomarker_fit_at_dose_most_selected" %in% slotNames(result))
@@ -489,7 +489,7 @@ test_that("show-GeneralSimulationsSummary works correctly", {
   # Show methods should print something
   result <- capture.output(show(simSummary))
   expect_true(length(result) > 0)
-  expect_snapshot(show(simSummary))
+  expect_snap(show(simSummary))
 })
 
 ## show-SimulationsSummary ----
@@ -545,7 +545,7 @@ test_that("show-SimulationsSummary works correctly", {
   # Show methods should print something
   result <- capture.output(show(simSummary))
   expect_true(length(result) > 0)
-  expect_snapshot(show(simSummary))
+  expect_snap(show(simSummary))
 })
 
 ## show-DualSimulationsSummary ----
@@ -569,7 +569,7 @@ test_that("show-DualSimulationsSummary works correctly", {
   # Show methods should print something
   result <- capture.output(show(simSummary))
   expect_true(length(result) > 0)
-  expect_snapshot(show(simSummary))
+  expect_snap(show(simSummary))
 
   # Check for specific content in the output
   expect_true(any(grepl("Summary of.*simulations", result)))
@@ -791,7 +791,7 @@ test_that("summary-PseudoSimulations works correctly", {
   )
 
   result <- summary(mySims, truth = myTruth)
-  expect_snapshot(result)
+  expect_snap(result)
   expect_s4_class(result, "PseudoSimulationsSummary")
 })
 
@@ -818,7 +818,7 @@ test_that("show-PseudoSimulationsSummary works correctly", {
   result <- capture.output(show_result <- show(pseudo_summary))
   expect_true(is.data.frame(show_result))
   expect_true(ncol(show_result) > 0)
-  expect_snapshot(show(pseudo_summary))
+  expect_snap(show(pseudo_summary))
 })
 
 test_that("show-PseudoSimulationsSummary produces expected output format", {
@@ -845,7 +845,7 @@ test_that("show-PseudoSimulationsSummary produces expected output format", {
     "Number of patients treated above.*during a trial",
     output
   )))
-  expect_snapshot(show(pseudo_summary))
+  expect_snap(show(pseudo_summary))
 })
 
 # plot-PseudoSimulationsSummary ----
@@ -1049,7 +1049,7 @@ test_that("summary-PseudoDualSimulations works correctly", {
   )
 
   expect_s4_class(result, "PseudoDualSimulationsSummary")
-  expect_snapshot(result)
+  expect_snap(result)
 
   # Test with custom target values
   result_custom <- summary(
@@ -1062,7 +1062,7 @@ test_that("summary-PseudoDualSimulations works correctly", {
 
   expect_s4_class(result_custom, "PseudoDualSimulationsSummary")
   expect_equal(result_custom@target_end_of_trial, 0.25)
-  expect_snapshot(result_custom)
+  expect_snap(result_custom)
 })
 
 test_that("summary-PseudoDualSimulations produces expected structure", {
@@ -1077,7 +1077,7 @@ test_that("summary-PseudoDualSimulations produces expected structure", {
   # Test inheritance from parent class
   expect_true(is(result, "PseudoDualSimulationsSummary"))
   expect_true(is(result, "PseudoSimulationsSummary"))
-  expect_snapshot(result)
+  expect_snap(result)
 
   # Test that dual-specific slots exist
   expect_true("target_gstar" %in% slotNames(result))
@@ -1100,7 +1100,7 @@ test_that("summary-PseudoDualFlexiSimulations works correctly", {
   )
 
   expect_s4_class(result, "PseudoDualSimulationsSummary")
-  expect_snapshot(result)
+  expect_snap(result)
 
   # Test with custom target values
   result_custom <- summary(
@@ -1113,7 +1113,7 @@ test_that("summary-PseudoDualFlexiSimulations works correctly", {
 
   expect_s4_class(result_custom, "PseudoDualSimulationsSummary")
   expect_equal(result_custom@target_end_of_trial, 0.25)
-  expect_snapshot(result_custom)
+  expect_snap(result_custom)
 })
 
 # show-PseudoDualSimulationsSummary ----
@@ -1127,7 +1127,7 @@ test_that("show-PseudoDualSimulationsSummary works correctly", {
   )
 
   # Test that show method produces output
-  expect_snapshot(show(pseudo_dual_summary))
+  expect_snap(show(pseudo_dual_summary))
   expect_output(show(pseudo_dual_summary), "Target Gstar")
   expect_output(show(pseudo_dual_summary), "maximum gain value")
   expect_output(show(pseudo_dual_summary), "Target Gstar at dose Grid")
@@ -1150,7 +1150,7 @@ test_that("show-PseudoDualSimulationsSummary includes dual-specific content", {
   )
 
   output <- capture.output(show(pseudo_dual_summary))
-  expect_snapshot(show(pseudo_dual_summary))
+  expect_snap(show(pseudo_dual_summary))
 
   # Test dual-specific content
   expect_true(any(grepl("Target Gstar.*maximum gain value", output)))

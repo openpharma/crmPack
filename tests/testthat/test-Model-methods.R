@@ -2495,7 +2495,7 @@ test_that("update-ModelPseudo works as expected for Effloglog", {
   new_data <- h_get_data_dual()
 
   result <- update(object = model, data = new_data)
-  expect_snapshot(result)
+  expect_snap(result)
 })
 
 test_that("update-ModelPseudo works as expected for EffFlexi", {
@@ -2503,7 +2503,7 @@ test_that("update-ModelPseudo works as expected for EffFlexi", {
   new_data <- h_get_data_dual()
 
   result <- update(object = model, data = new_data)
-  expect_snapshot(result)
+  expect_snap(result)
 })
 
 test_that("update-ModelPseudo throws the error when data is not an object of Data class", {

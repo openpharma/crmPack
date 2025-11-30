@@ -118,7 +118,7 @@ v_model_logistic_normal_fixed_mix <- function(object) {
     "weights must be positive"
   )
   v$check(
-    sum(object@weights) == 1,
+    isTRUE(all.equal(sum(object@weights), 1)),
     "weights must sum to 1"
   )
   v$check(

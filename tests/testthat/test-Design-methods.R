@@ -1,4 +1,4 @@
-skip_on_cran()
+skip_on_cran_but_not_ci()
 options(testthat.progress.max_fails = 0)
 
 #' @include("helper-design.R")
@@ -22,7 +22,7 @@ test_that("simulate produces consistent results with placebo data", {
     parallel = FALSE
   )
 
-  expect_snapshot(result)
+  expect_snap(result)
 })
 
 test_that("simulate produces consistent results with sentinel patients", {
@@ -41,7 +41,7 @@ test_that("simulate produces consistent results with sentinel patients", {
     firstSeparate = TRUE
   )
 
-  expect_snapshot(result)
+  expect_snap(result)
 })
 
 test_that("simulate for the class design returns correct objects", {
@@ -204,7 +204,7 @@ test_that("Test if simulate generate the expected output.", {
     mcmcOptions = my_options
   )
 
-  expect_snapshot(sim)
+  expect_snap(sim)
 })
 
 ## NextBestInfTheory ----
@@ -253,7 +253,7 @@ test_that("NextBestInfTheory produces consistent results for empty data", {
   expect_equal(result@dose_selected, rep(40, 5))
   expect_equal(result@tox_at_doses_selected, rep(1L, 5))
   # expect_snapshot_value doesn't work here regardless of style
-  expect_snapshot(result@mean_fit)
+  expect_snap(result@mean_fit)
 })
 
 test_that("NextBestInfTheory produces consistent results with a dataset", {
@@ -299,7 +299,7 @@ test_that("NextBestInfTheory produces consistent results with a dataset", {
   expect_equal(result@dose_selected, rep(50, 5))
   expect_equal(result@tox_at_doses_selected, rep(1L, 5))
   # expect_snapshot_value doesn't work here, regardless of style
-  expect_snapshot(result@mean_fit)
+  expect_snap(result@mean_fit)
 })
 
 ## stop_reasons integration test ----
@@ -365,7 +365,7 @@ test_that("simulate-RuleDesign produces consistent results", {
     firstSeparate = TRUE
   )
 
-  expect_snapshot(result)
+  expect_snap(result)
 })
 
 ## DualDesign ----
@@ -416,7 +416,7 @@ test_that("simulate-DualDesign produces consistent results", {
     )
   )
 
-  expect_snapshot(result)
+  expect_snap(result)
 })
 
 test_that("simulate-DualDesign produces consistent results with sentinel patients", {
@@ -543,7 +543,7 @@ test_that("simulate-DualDesign produces consistent results", {
     )
   )
 
-  expect_snapshot(result)
+  expect_snap(result)
 })
 
 test_that("simulate-DualDesign produces consistent results with sentinel patients", {
@@ -670,7 +670,7 @@ test_that("simulate-DualDesign produces consistent results", {
     )
   )
 
-  expect_snapshot(result)
+  expect_snap(result)
 })
 
 ## TDSamplesDesign ----
@@ -719,7 +719,7 @@ test_that("simulate-TDSamplesDesign produces consistent results", {
     parallel = FALSE
   )
 
-  expect_snapshot(result)
+  expect_snap(result)
 })
 
 test_that("simulate-TDSamplesDesign produces consistent results with placebo patients", {
@@ -770,7 +770,7 @@ test_that("simulate-TDSamplesDesign produces consistent results with placebo pat
     mcmcOptions = options,
     parallel = FALSE
   )
-  expect_snapshot(result)
+  expect_snap(result)
 })
 
 ## TDDesign ----
@@ -790,7 +790,7 @@ test_that("simulate-TDDesign produces consistent results", {
     seed = 819,
     parallel = FALSE
   )
-  expect_snapshot(result)
+  expect_snap(result)
 })
 
 test_that("simulate-TDDesign with sentinel patient and placebo patients produces consistent results", {
@@ -809,7 +809,7 @@ test_that("simulate-TDDesign with sentinel patient and placebo patients produces
     firstSeparate = TRUE,
     parallel = FALSE
   )
-  expect_snapshot(result)
+  expect_snap(result)
 })
 
 ## DualResponsesDesign ----
@@ -838,7 +838,7 @@ test_that("simulate-DualResponsesDesign produces consistent results", {
     parallel = FALSE
   )
 
-  expect_snapshot(result)
+  expect_snap(result)
 })
 
 test_that("simulate-DualResponsesDesign with sentinel patient and placebo patients produces consistent results", {
@@ -865,7 +865,7 @@ test_that("simulate-DualResponsesDesign with sentinel patient and placebo patien
     parallel = FALSE,
     firstSeparate = TRUE
   )
-  expect_snapshot(result)
+  expect_snap(result)
 })
 
 ## DualResponsesSamplesDesign ----
@@ -940,7 +940,7 @@ test_that("simulate-DualResponsesSamplesDesign produces consistent results", {
     parallel = FALSE
   )
 
-  expect_snapshot(result)
+  expect_snap(result)
 })
 
 test_that("simulate-DualResponsesSamplesDesign with sentinel patient and placebo dose produces consistent results", {
@@ -1013,7 +1013,7 @@ test_that("simulate-DualResponsesSamplesDesign with sentinel patient and placebo
     seed = 819,
     parallel = FALSE
   )
-  expect_snapshot(result)
+  expect_snap(result)
 })
 
 test_that("simulate-DualResponsesSamplesDesign with EffFlexi model produces consistent results", {
@@ -1077,7 +1077,7 @@ test_that("simulate-DualResponsesSamplesDesign with EffFlexi model produces cons
     seed = 819,
     parallel = FALSE
   )
-  expect_snapshot(result)
+  expect_snap(result)
 })
 
 ## DesignGrouped ----
@@ -1667,7 +1667,7 @@ test_that("simulate for DADesign works consistently", {
     deescalate = FALSE,
     parallel = FALSE
   )
-  expect_snapshot(mySims)
+  expect_snap(mySims)
 })
 
 test_that("simulate for DADesign with placebo and deescalation works consistently", {
@@ -1692,7 +1692,7 @@ test_that("simulate for DADesign with placebo and deescalation works consistentl
     deescalate = TRUE,
     parallel = FALSE
   )
-  expect_snapshot(mySims)
+  expect_snap(mySims)
 })
 
 
@@ -1797,7 +1797,7 @@ test_that("examine produces consistent results", {
 
   result <- examine(design, mcmcOptions = options)
 
-  expect_snapshot(result)
+  expect_snap(result)
 })
 
 test_that("examine produces consistent results with placebo data", {
@@ -1806,7 +1806,7 @@ test_that("examine produces consistent results with placebo data", {
 
   result <- examine(design, mcmcOptions = options)
 
-  expect_snapshot(result)
+  expect_snap(result)
 })
 
 ## RuleDesign ----
@@ -1819,7 +1819,7 @@ test_that("simulate-RuleDesign produces consistent results", {
 
   result <- examine(design, mcmcOptions = options)
 
-  expect_snapshot(result)
+  expect_snap(result)
 })
 
 # tidy ----
@@ -1829,5 +1829,5 @@ test_that("tidy-DualDesign works correctly", {
   obj <- .DefaultDualDesign()
   result <- tidy(obj)
   # style = "deparse" fails with Could not find function numeric
-  expect_snapshot_value(result, style = "serialize")
+  expect_snap_value(result, style = "serialize")
 })

@@ -125,7 +125,7 @@ test_that("h_quantiles_target_function returns a function", {
 # Quantiles2LogisticNormal ----
 
 test_that("Quantiles2LogisticNormal works with basic inputs", {
-  skip_on_cran()
+  skip_on_cran_but_not_ci()
 
   dosegrid <- c(1, 3, 5, 10)
   refDose <- 5
@@ -171,7 +171,7 @@ test_that("Quantiles2LogisticNormal works with basic inputs", {
 })
 
 test_that("Quantiles2LogisticNormal works with logNormal = TRUE", {
-  skip_on_cran()
+  skip_on_cran_but_not_ci()
 
   dosegrid <- c(1, 3, 5)
   refDose <- 3
@@ -196,7 +196,7 @@ test_that("Quantiles2LogisticNormal works with logNormal = TRUE", {
 # MinimalInformative ----
 
 test_that("MinimalInformative works with basic inputs", {
-  skip_on_cran()
+  skip_on_cran_but_not_ci()
 
   dosegrid <- c(1, 3, 5, 10)
   refDose <- 5
@@ -216,7 +216,7 @@ test_that("MinimalInformative works with basic inputs", {
 })
 
 test_that("MinimalInformative works with logNormal = TRUE", {
-  skip_on_cran()
+  skip_on_cran_but_not_ci()
 
   dosegrid <- c(1, 3, 5)
   refDose <- 3
