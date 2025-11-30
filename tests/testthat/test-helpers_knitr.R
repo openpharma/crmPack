@@ -123,7 +123,7 @@ test_that("knit_print methods exist for all relevant classes and produce consist
         outFileName <- paste0("knit_print_", cls, ".html")
         # with_file guarantees that the test file will be deleted automatically
         # once the snapshot has been compared with the previous version, which
-        # can be found in /_snaps/helpers_knitr
+        # can be found in /_snaps/<Platform>/helpers_knitr
         withr::with_file(
           test_path("fixtures", outFileName),
           {
