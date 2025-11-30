@@ -359,7 +359,7 @@ pre code {
 </div>
 
 
-<pre><code>## [1] &quot;DataGrouped&quot;
+<pre><code>## [1] &quot;DataDual&quot;
 ## attr(,&quot;package&quot;)
 ## [1] &quot;crmPack&quot;</code></pre>
 <table class="table table-striped table-hover table-condensed" style="margin-left: auto; margin-right: auto;">
@@ -378,10 +378,10 @@ Cohort
 Dose
 </th>
 <th style="text-align:left;">
-Group
-</th>
-<th style="text-align:left;">
 Tox
+</th>
+<th style="text-align:right;">
+W
 </th>
 </tr>
 </thead>
@@ -394,13 +394,13 @@ Tox
 1
 </td>
 <td style="text-align:right;">
-1
-</td>
-<td style="text-align:left;">
-mono
+0.1
 </td>
 <td style="text-align:left;">
 FALSE
+</td>
+<td style="text-align:right;">
+0.1765825
 </td>
 </tr>
 <tr>
@@ -411,13 +411,13 @@ FALSE
 2
 </td>
 <td style="text-align:right;">
-3
-</td>
-<td style="text-align:left;">
-mono
+0.5
 </td>
 <td style="text-align:left;">
 FALSE
+</td>
+<td style="text-align:right;">
+0.7184289
 </td>
 </tr>
 <tr>
@@ -426,20 +426,105 @@ FALSE
 </td>
 <td style="text-align:right;">
 3
+</td>
+<td style="text-align:right;">
+1.5
+</td>
+<td style="text-align:left;">
+FALSE
+</td>
+<td style="text-align:right;">
+-0.3119422
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+4
+</td>
+<td style="text-align:right;">
+4
+</td>
+<td style="text-align:right;">
+3.0
+</td>
+<td style="text-align:left;">
+FALSE
+</td>
+<td style="text-align:right;">
+1.3552262
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+5
 </td>
 <td style="text-align:right;">
 5
 </td>
-<td style="text-align:left;">
-combo
+<td style="text-align:right;">
+6.0
 </td>
 <td style="text-align:left;">
 FALSE
 </td>
+<td style="text-align:right;">
+1.1081802
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+6
+</td>
+<td style="text-align:right;">
+6
+</td>
+<td style="text-align:right;">
+10.0
+</td>
+<td style="text-align:left;">
+FALSE
+</td>
+<td style="text-align:right;">
+1.0282707
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+7
+</td>
+<td style="text-align:right;">
+6
+</td>
+<td style="text-align:right;">
+10.0
+</td>
+<td style="text-align:left;">
+TRUE
+</td>
+<td style="text-align:right;">
+0.3354593
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+8
+</td>
+<td style="text-align:right;">
+6
+</td>
+<td style="text-align:right;">
+10.0
+</td>
+<td style="text-align:left;">
+FALSE
+</td>
+<td style="text-align:right;">
+2.3509522
+</td>
 </tr>
 </tbody>
 </table>
-<p>The dose grid is 1, 3, 5, 10, 15, 20, 25, 40, 50, 80 and 100.</p>
+<p>The dose grid is 0.1, 0.5, 1.5, 3, 6, 10, 12, 14, 16, 18, 20, 22, 24, 26, 28, 30, 32, 34, 36, 38, 40, 42, 44, 46, 48, 50, 52, 54, 56, 58, 60, 62, 64, 66, 68, 70, 72, 74, 76, 78 and 80.</p>
 <div id="participant-level" class="section level2">
 <h2>Participant level</h2>
 <table class="table table-striped table-hover table-condensed" style="margin-left: auto; margin-right: auto;">
@@ -458,10 +543,10 @@ Cohort
 Dose
 </th>
 <th style="text-align:left;">
-Group
-</th>
-<th style="text-align:left;">
 Tox
+</th>
+<th style="text-align:right;">
+W
 </th>
 </tr>
 </thead>
@@ -474,13 +559,13 @@ Tox
 1
 </td>
 <td style="text-align:right;">
-1
-</td>
-<td style="text-align:left;">
-mono
+0.1
 </td>
 <td style="text-align:left;">
 FALSE
+</td>
+<td style="text-align:right;">
+0.1765825
 </td>
 </tr>
 <tr>
@@ -491,13 +576,13 @@ FALSE
 2
 </td>
 <td style="text-align:right;">
-3
-</td>
-<td style="text-align:left;">
-mono
+0.5
 </td>
 <td style="text-align:left;">
 FALSE
+</td>
+<td style="text-align:right;">
+0.7184289
 </td>
 </tr>
 <tr>
@@ -506,20 +591,105 @@ FALSE
 </td>
 <td style="text-align:right;">
 3
+</td>
+<td style="text-align:right;">
+1.5
+</td>
+<td style="text-align:left;">
+FALSE
+</td>
+<td style="text-align:right;">
+-0.3119422
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+4
+</td>
+<td style="text-align:right;">
+4
+</td>
+<td style="text-align:right;">
+3.0
+</td>
+<td style="text-align:left;">
+FALSE
+</td>
+<td style="text-align:right;">
+1.3552262
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+5
 </td>
 <td style="text-align:right;">
 5
 </td>
-<td style="text-align:left;">
-combo
+<td style="text-align:right;">
+6.0
 </td>
 <td style="text-align:left;">
 FALSE
 </td>
+<td style="text-align:right;">
+1.1081802
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+6
+</td>
+<td style="text-align:right;">
+6
+</td>
+<td style="text-align:right;">
+10.0
+</td>
+<td style="text-align:left;">
+FALSE
+</td>
+<td style="text-align:right;">
+1.0282707
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+7
+</td>
+<td style="text-align:right;">
+6
+</td>
+<td style="text-align:right;">
+10.0
+</td>
+<td style="text-align:left;">
+TRUE
+</td>
+<td style="text-align:right;">
+0.3354593
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+8
+</td>
+<td style="text-align:right;">
+6
+</td>
+<td style="text-align:right;">
+10.0
+</td>
+<td style="text-align:left;">
+FALSE
+</td>
+<td style="text-align:right;">
+2.3509522
+</td>
 </tr>
 </tbody>
 </table>
-<p>The dose grid is 1, 3, 5, 10, 15, 20, 25, 40, 50, 80 and 100.</p>
+<p>The dose grid is 0.1, 0.5, 1.5, 3, 6, 10, 12, 14, 16, 18, 20, 22, 24, 26, 28, 30, 32, 34, 36, 38, 40, 42, 44, 46, 48, 50, 52, 54, 56, 58, 60, 62, 64, 66, 68, 70, 72, 74, 76, 78 and 80.</p>
 </div>
 <div id="cohort-level" class="section level2">
 <h2>Cohort level</h2>
@@ -532,9 +702,6 @@ Summarised by cohort
 <th style="text-align:right;">
 Cohort
 </th>
-<th style="text-align:left;">
-Group
-</th>
 <th style="text-align:right;">
 Evaluable
 </th>
@@ -547,9 +714,6 @@ With Toxicities
 <tr>
 <td style="text-align:right;">
 1
-</td>
-<td style="text-align:left;">
-mono
 </td>
 <td style="text-align:right;">
 1
@@ -562,9 +726,6 @@ mono
 <td style="text-align:right;">
 2
 </td>
-<td style="text-align:left;">
-mono
-</td>
 <td style="text-align:right;">
 1
 </td>
@@ -576,50 +737,6 @@ mono
 <td style="text-align:right;">
 3
 </td>
-<td style="text-align:left;">
-combo
-</td>
-<td style="text-align:right;">
-1
-</td>
-<td style="text-align:right;">
-0
-</td>
-</tr>
-</tbody>
-</table>
-<p>The dose grid is 1, 3, 5, 10, 15, 20, 25, 40, 50, 80 and 100.</p>
-</div>
-<div id="dose-level" class="section level2">
-<h2>Dose level</h2>
-<table class="table table-striped table-hover table-condensed" style="margin-left: auto; margin-right: auto;">
-<caption>
-Summarised by dose
-</caption>
-<thead>
-<tr>
-<th style="text-align:right;">
-Dose
-</th>
-<th style="text-align:left;">
-Group
-</th>
-<th style="text-align:right;">
-Evaluable
-</th>
-<th style="text-align:right;">
-With Toxicities
-</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td style="text-align:right;">
-1
-</td>
-<td style="text-align:left;">
-mono
-</td>
 <td style="text-align:right;">
 1
 </td>
@@ -629,10 +746,7 @@ mono
 </tr>
 <tr>
 <td style="text-align:right;">
-3
-</td>
-<td style="text-align:left;">
-mono
+4
 </td>
 <td style="text-align:right;">
 1
@@ -645,8 +759,51 @@ mono
 <td style="text-align:right;">
 5
 </td>
-<td style="text-align:left;">
-combo
+<td style="text-align:right;">
+1
+</td>
+<td style="text-align:right;">
+0
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+6
+</td>
+<td style="text-align:right;">
+3
+</td>
+<td style="text-align:right;">
+1
+</td>
+</tr>
+</tbody>
+</table>
+<p>The dose grid is 0.1, 0.5, 1.5, 3, 6, 10, 12, 14, 16, 18, 20, 22, 24, 26, 28, 30, 32, 34, 36, 38, 40, 42, 44, 46, 48, 50, 52, 54, 56, 58, 60, 62, 64, 66, 68, 70, 72, 74, 76, 78 and 80.</p>
+</div>
+<div id="dose-level" class="section level2">
+<h2>Dose level</h2>
+<table class="table table-striped table-hover table-condensed" style="margin-left: auto; margin-right: auto;">
+<caption>
+Summarised by dose
+</caption>
+<thead>
+<tr>
+<th style="text-align:right;">
+Dose
+</th>
+<th style="text-align:right;">
+Evaluable
+</th>
+<th style="text-align:right;">
+With Toxicities
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:right;">
+0.1
 </td>
 <td style="text-align:right;">
 1
@@ -655,9 +812,64 @@ combo
 0
 </td>
 </tr>
+<tr>
+<td style="text-align:right;">
+0.5
+</td>
+<td style="text-align:right;">
+1
+</td>
+<td style="text-align:right;">
+0
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+1.5
+</td>
+<td style="text-align:right;">
+1
+</td>
+<td style="text-align:right;">
+0
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+3.0
+</td>
+<td style="text-align:right;">
+1
+</td>
+<td style="text-align:right;">
+0
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+6.0
+</td>
+<td style="text-align:right;">
+1
+</td>
+<td style="text-align:right;">
+0
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+10.0
+</td>
+<td style="text-align:right;">
+3
+</td>
+<td style="text-align:right;">
+1
+</td>
+</tr>
 </tbody>
 </table>
-<p>The dose grid is 1, 3, 5, 10, 15, 20, 25, 40, 50, 80 and 100.</p>
+<p>The dose grid is 0.1, 0.5, 1.5, 3, 6, 10, 12, 14, 16, 18, 20, 22, 24, 26, 28, 30, 32, 34, 36, 38, 40, 42, 44, 46, 48, 50, 52, 54, 56, 58, 60, 62, 64, 66, 68, 70, 72, 74, 76, 78 and 80.</p>
 </div>
 
 

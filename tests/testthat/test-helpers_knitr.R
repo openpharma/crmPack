@@ -363,7 +363,7 @@ test_that("summarise option works correctly for Data classes", {
   testList <- list(
     "knit_print_Data_summarise.html" = .DefaultData(),
     "knit_print_DataDA_summarise.html" = .DefaultDataDA(),
-    "knit_print_DataGrouped_summarise.html" = .DefaultDataDual(),
+    "knit_print_DataDual_summarise.html" = .DefaultDataDual(),
     "knit_print_DataGrouped_summarise.html" = .DefaultDataGrouped(),
     "knit_print_DataMixture_summarise.html" = .DefaultDataMixture()
     # "knit_print_DataOrdinal_summarise.html" = .DefaultDataOrdinal() # nolint
