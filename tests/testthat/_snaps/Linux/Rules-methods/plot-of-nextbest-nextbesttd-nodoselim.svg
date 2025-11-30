@@ -33,9 +33,9 @@
 <circle cx='199.96' cy='331.43' r='8.89' style='stroke-width: 0.71; stroke: none; fill: #EE82EE;' />
 <text x='202.01' y='383.81' text-anchor='middle' style='font-size: 14.23px; fill: #EE82EE; font-family: sans;' textLength='98.05px' lengthAdjust='spacingAndGlyphs'>TD 40 Estimate</text>
 <line x1='683.87' y1='545.11' x2='683.87' y2='22.78' style='stroke-width: 2.35; stroke: #A52A2A; stroke-linecap: butt;' />
-<text transform='translate(695.26,521.37) rotate(-90)' text-anchor='middle' style='font-size: 11.04px; fill: #A52A2A; font-family: sans;' textLength='20.86px' lengthAdjust='spacingAndGlyphs'>Max</text>
+<text transform='translate(695.22,521.37) rotate(-90)' text-anchor='middle' style='font-size: 11.00px; fill: #A52A2A; font-family: sans;' textLength='20.79px' lengthAdjust='spacingAndGlyphs'>Max</text>
 <line x1='224.06' y1='545.11' x2='224.06' y2='22.78' style='stroke-width: 2.35; stroke: #A020F0; stroke-linecap: butt;' />
-<text transform='translate(220.26,521.37) rotate(-90)' text-anchor='middle' style='font-size: 11.04px; fill: #A020F0; font-family: sans;' textLength='22.71px' lengthAdjust='spacingAndGlyphs'>Next</text>
+<text transform='translate(220.27,521.37) rotate(-90)' text-anchor='middle' style='font-size: 11.00px; fill: #A020F0; font-family: sans;' textLength='22.62px' lengthAdjust='spacingAndGlyphs'>Next</text>
 <rect x='40.13' y='22.78' width='674.39' height='522.33' style='stroke-width: 1.07; stroke: #333333;' />
 </g>
 <g clip-path='url(#cpMC4wMHw3MjAuMDB8MC4wMHw1NzYuMDA=)'>
