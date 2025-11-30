@@ -135,18 +135,18 @@ tidySamples <- samples %>% tidy()
 tidySamples %>% head()
 #> $data
 #> # A tibble: 2,000 × 10
-#>    Iteration Chain alpha0 alpha1 nChains nParameters nIterations nBurnin nThin
-#>        <int> <int>  <dbl>  <dbl>   <int>       <int>       <int>   <int> <int>
-#>  1         1     1 -0.342  1.33        1           1        2100     100     1
-#>  2         2     1 -3.00  16.3         1           1        2100     100     1
-#>  3         3     1 -2.14  11.2         1           1        2100     100     1
-#>  4         4     1 -0.203  2.19        1           1        2100     100     1
-#>  5         5     1 -0.966  1.56        1           1        2100     100     1
-#>  6         6     1 -0.139  5.41        1           1        2100     100     1
-#>  7         7     1 -0.223  0.966       1           1        2100     100     1
-#>  8         8     1 -1.88   2.53        1           1        2100     100     1
-#>  9         9     1 -1.44   6.58        1           1        2100     100     1
-#> 10        10     1  0.306  0.558       1           1        2100     100     1
+#>    Iteration Chain  alpha0 alpha1 nChains nParameters nIterations nBurnin nThin
+#>        <int> <int>   <dbl>  <dbl>   <int>       <int>       <int>   <int> <int>
+#>  1         1     1 -0.0770  2.02        1           1        2100     100     1
+#>  2         2     1 -0.446   0.512       1           1        2100     100     1
+#>  3         3     1 -1.29    1.12        1           1        2100     100     1
+#>  4         4     1 -1.39    9.96        1           1        2100     100     1
+#>  5         5     1 -0.229   3.08        1           1        2100     100     1
+#>  6         6     1 -1.92    5.45        1           1        2100     100     1
+#>  7         7     1 -1.55    2.83        1           1        2100     100     1
+#>  8         8     1 -0.0516  2.29        1           1        2100     100     1
+#>  9         9     1 -0.737   0.506       1           1        2100     100     1
+#> 10        10     1  0.297   1.97        1           1        2100     100     1
 #> # ℹ 1,990 more rows
 #> # ℹ 1 more variable: parallel <lgl>
 #> 
@@ -268,7 +268,7 @@ sessionInfo()
 #> 
 #> other attached packages:
 #> [1] dplyr_1.1.4      magrittr_2.0.4   tidyr_1.3.1      kableExtra_1.4.0
-#> [5] knitr_1.50       crmPack_2.0.0    ggplot2_4.0.1   
+#> [5] knitr_1.50       crmPack_2.0.1    ggplot2_4.0.1   
 #> 
 #> loaded via a namespace (and not attached):
 #>  [1] utf8_1.2.6           sass_0.4.10          generics_0.1.4      
