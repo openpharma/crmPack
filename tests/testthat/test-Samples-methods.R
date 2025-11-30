@@ -1999,16 +1999,6 @@ test_that("plot-Samples-DALogisticNormal works correctly", {
 
   actual3 <- plot(samples, model, data, showLegend = FALSE, hazard = TRUE)
   expect_doppel("plot-Samples-DALogisticLogNormal_TRUE_FALSE", actual3)
-  expect_doppel("plot-samples-dalogisticlognormal", actual)
-
-  actual1 <- plot(samples, model, data, hazard = TRUE)
-  expect_doppel("plot-samples-dalogisticlognormal-hazard-true", actual1)
-
-  actual2 <- plot(samples, model, data, showLegend = FALSE)
-  expect_doppel("plot-samples-dalogisticlognormal-showlegend-false", actual2)
-
-  actual3 <- plot(samples, model, data, showLegend = FALSE, hazard = TRUE)
-  expect_doppel("plot-samples-dalogisticlognormal-false-true", actual3)
 })
 
 test_that("Approximate fails gracefully with bad input", {
