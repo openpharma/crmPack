@@ -38,5 +38,5 @@ skip_on_cran_but_not_ci <- function() {
 }
 
 env_var_is_true <- function(var) {
-  isTRUE(as.logical(Sys.getenv(x, "false")))
+  isTRUE(as.logical(Sys.getenv(var, "false")))
 }
