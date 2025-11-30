@@ -1829,5 +1829,5 @@ test_that("tidy-DualDesign works correctly", {
   obj <- .DefaultDualDesign()
   result <- tidy(obj)
   # style = "deparse" fails with Could not find function numeric
-  expect_snapshot_value(result, style = "serialize")
+  expect_snap_value(result, style = "serialize")
 })

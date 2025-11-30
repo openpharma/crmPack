@@ -541,7 +541,7 @@ test_that("Samples-approximate works correctly", {
     logNormal = FALSE,
     control = list(threshold.stop = 0.1, max.time = 1, maxit = 1)
   )
-  expect_snapshot_value(posterior2, style = "serialize")
+  expect_snap_value(posterior2, style = "serialize")
   for (nm in slotNames(posterior2$model)) {
     if (!is.function(slot(posterior2$model, nm))) {
       expect_snap(slot(posterior2$model, nm))

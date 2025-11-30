@@ -17,3 +17,12 @@ expect_doppel <- function(...) {
 expect_snap <- function(...) {
   testthat::expect_snapshot(..., variant = platform_name())
 }
+
+# Same for the two others.
+expect_snap_value <- function(...) {
+  testthat::expect_snapshot_value(..., variant = platform_name())
+}
+
+expect_snap_file <- function(...) {
+  testthat::expect_snapshot_file(..., variant = platform_name())
+}

@@ -137,7 +137,7 @@ test_that("knit_print methods exist for all relevant classes and produce consist
                   output_dir = test_path("fixtures"),
                   quiet = TRUE
                 )
-                expect_snapshot_file(test_path("fixtures", outFileName))
+                expect_snap_file(test_path("fixtures", outFileName))
               },
               error = function(e) {
                 warning(paste0("Error for class ", cls, ": "), geterrmessage())
@@ -338,7 +338,7 @@ test_that("knit_print.IncrementsRelativeParts works correctly", {
           output_dir = test_path("fixtures"),
           quiet = TRUE
         )
-        expect_snapshot_file(test_path("fixtures", name))
+        expect_snap_file(test_path("fixtures", name))
       }
     )
   }
@@ -380,14 +380,14 @@ test_that("summarise option works correctly for Data classes", {
           output_dir = test_path("fixtures"),
           quiet = TRUE
         )
-        expect_snapshot_file(test_path("fixtures", name))
+        expect_snap_file(test_path("fixtures", name))
       }
     )
     # For test coverage stats
     rv <- knit_print(testList[[name]], summarise = "dose")
-    expect_snapshot_value(rv, style = "serialize")
+    expect_snap_value(rv, style = "serialize")
     rv <- knit_print(testList[[name]], summarise = "cohort")
-    expect_snapshot_value(rv, style = "serialize")
+    expect_snap_value(rv, style = "serialize")
   }
 })
 
