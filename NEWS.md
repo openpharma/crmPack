@@ -1,3 +1,9 @@
+# Version 2.0.1
+
+### Bugfixes
+
+* The validation of `LogisticNormalFixedMixture` objects did not allow for a floating point calculation deviation in the sum of the weights when comparing them to 1, which was caught by the `M1mac` check on CRAN. This has been fixed now.
+
 # Version 2.0.0
 
 * This release signifies a major breaking revamp of the package. Over several years, the package has undergone significant cleanup, tests writing and refactoring efforts. The package has thereby reached a major milestone and currently includes:
