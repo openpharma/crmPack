@@ -149,7 +149,7 @@ test_that("nextBest-NextBestNCRM returns expected values of the objects", {
 
   result <- nextBest(nb_ncrm, 45, samples, model, data)
   expect_identical(result$value, 25)
-  expect_snapshot(result$probs)
+  expect_snap(result$probs)
   expect_doppel("Plot of nextBest-NextBestNCRM", result$plot)
   expect_doppel("Plot of nextBest-NextBestNCRM_p1", result$singlePlots$plot1)
   expect_doppel("Plot of nextBest-NextBestNCRM_p2", result$singlePlots$plot2)
@@ -169,7 +169,7 @@ test_that("nextBest-NextBestNCRM returns expected values of the objects (no dose
 
   result <- nextBest(nb_ncrm, Inf, samples, model, data)
   expect_identical(result$value, 75)
-  expect_snapshot(result$probs)
+  expect_snap(result$probs)
   expect_doppel("Plot of nextBest-NextBestNCRM without doselimit", result$plot)
 })
 
@@ -213,7 +213,7 @@ test_that("nextBest-NextBestNCRM-DataParts returns expected values of the object
 
   result <- nextBest(nb_ncrm, 45, samples, model, data)
   expect_identical(result$value, 25)
-  expect_snapshot(result$probs)
+  expect_snap(result$probs)
   expect_doppel("Plot of nextBest-NextBestNCRM-DataParts", result$plot)
 })
 
@@ -231,7 +231,7 @@ test_that("nextBest-NextBestNCRM-DataParts returns expected values of the object
 
   result <- nextBest(nb_ncrm, Inf, samples, model, data)
   expect_identical(result$value, 75)
-  expect_snapshot(result$probs)
+  expect_snap(result$probs)
   expect_doppel("Plot of nextBest-NextBestNCRM-DataParts nodlim", result$plot)
 })
 
@@ -287,7 +287,7 @@ test_that("nextBest-NextBestNCRMLoss returns expected values of the objects", {
 
   result <- nextBest(nb_ncrm_loss, 60, samples, model, data)
   expect_identical(result$value, 25)
-  expect_snapshot(result$probs)
+  expect_snap(result$probs)
   expect_doppel("Plot of nextBest-NextBestNCRMLoss", result$plot_joint)
   expect_doppel(
     "Plot of nextBest-NextBestNCRMLoss_p1",
@@ -319,7 +319,7 @@ test_that("nextBest-NextBestNCRMLoss returns expected values of the objects (los
 
   result <- nextBest(nb_ncrm_loss, Inf, samples, model, data)
   expect_identical(result$value, 25)
-  expect_snapshot(result$probs)
+  expect_snap(result$probs)
   expect_doppel(
     "Plot of nextBest-NextBestNCRMLoss with losses of 4",
     result$plot_joint
@@ -341,7 +341,7 @@ test_that("nextBest-NextBestNCRMLoss returns expected values of the objects (no 
 
   result <- nextBest(nb_ncrm_loss, Inf, samples, model, data)
   expect_identical(result$value, 25)
-  expect_snapshot(result$probs)
+  expect_snap(result$probs)
   expect_doppel(
     "Plot of nextBest-NextBestNCRMLoss without doselimit",
     result$plot_joint
@@ -430,7 +430,7 @@ test_that("nextBest-NextBestDualEndpoint returns expected elements", {
 
   result <- nextBest(nb_de, 133, samples, model, data)
   expect_identical(result$value, 25)
-  expect_snapshot(result$probs)
+  expect_snap(result$probs)
   expect_doppel("Plot of nextBest-NextBestDualEndpoint", result$plot)
   expect_doppel(
     "Plot of nextBest-NextBestDualEndpoint_p1",
@@ -454,7 +454,7 @@ test_that("nextBest-NextBestDualEndpoint returns expected elements (with Emax pa
 
   result <- nextBest(nb_de, 133, samples, model, data)
   expect_identical(result$value, 50)
-  expect_snapshot(result$probs)
+  expect_snap(result$probs)
   expect_doppel("Plot of nextBest-NextBestDualEndpoint_Emax", result$plot)
 })
 
@@ -471,7 +471,7 @@ test_that("nextBest-NextBestDualEndpoint returns expected elements (absolute tar
 
   result <- nextBest(nb_de, 90, samples, model, data)
   expect_identical(result$value, 75)
-  expect_snapshot(result$probs)
+  expect_snap(result$probs)
   expect_doppel("Plot of nextBest-NextBestDualEndpoint_abstarget", result$plot)
 })
 
@@ -488,7 +488,7 @@ test_that("nextBest-NextBestDualEndpoint returns expected elements (absolute tar
 
   result <- nextBest(nb_de, Inf, samples, model, data)
   expect_identical(result$value, 100)
-  expect_snapshot(result$probs)
+  expect_snap(result$probs)
   expect_doppel("nextBest-NextBestDualEndpoint_atgt_nodlim", result$plot)
 })
 
@@ -504,7 +504,7 @@ test_that("nextBest-NextBestMinDist returns expected values and plot", {
 
   result <- nextBest(nb_md, 50, samples, model, data)
   expect_identical(result$value, 50)
-  expect_snapshot(result$probs)
+  expect_snap(result$probs)
   expect_doppel("Plot of nextBest-NextBestMinDist", result$plot)
 })
 
@@ -521,7 +521,7 @@ test_that("nextBest-NextBestMinDist returns expected values and plot (with place
 
   result <- nextBest(nb_md, 40, samples, model, data)
   expect_identical(result$value, 25)
-  expect_snapshot(result$probs)
+  expect_snap(result$probs)
   expect_doppel("Plot of nextBest-NextBestMinDist with placebo", result$plot)
 })
 
@@ -535,7 +535,7 @@ test_that("nextBest-NextBestMinDist returns expected values and plot (no doselim
 
   result <- nextBest(nb_md, Inf, samples, model, data)
   expect_identical(result$value, 75)
-  expect_snapshot(result$probs)
+  expect_snap(result$probs)
   expect_doppel("Plot nextBest-NextBestMinDist w/o doselimit", result$plot)
 })
 
@@ -1003,7 +1003,7 @@ test_that("nextBest-NextBestProbMTDLTE returns correct next dose and plot", {
 
   result <- nextBest(nb_prob_mtd, 90, samples, model, data)
   expect_identical(result$value, 75)
-  expect_snapshot(result$allocation)
+  expect_snap(result$allocation)
   expect_doppel("Plot of nextBest-NextBestProbMTDLTE", result$plot)
 })
 
@@ -1020,7 +1020,7 @@ test_that("nextBest-NextBestProbMTDLTE returns correct next dose and plot (with 
 
   result <- nextBest(nb_prob_mtd, 40, samples, model, data)
   expect_identical(result$value, 25)
-  expect_snapshot(result$allocation)
+  expect_snap(result$allocation)
   expect_doppel("Plot of nextBest-NextBestProbMTDLTE with placebo", result$plot)
 })
 
@@ -1038,7 +1038,7 @@ test_that("nextBest-NextBestProbMTDLTE returns correct next dose and plot (no do
 
   result <- nextBest(nb_prob_mtd, Inf, samples, model, data)
   expect_identical(result$value, 125)
-  expect_snapshot(result$allocation)
+  expect_snap(result$allocation)
   expect_doppel("Plot nextBest-NextBestProbMTDLTE w/o doselimit", result$plot)
 })
 
@@ -1057,7 +1057,7 @@ test_that("nextBest-NextBestProbMTDMinDist returns correct next dose and plot", 
 
   result <- nextBest(nb_prob_mtd, 90, samples, model, data)
   expect_identical(result$value, 75)
-  expect_snapshot(result$allocation)
+  expect_snap(result$allocation)
   expect_doppel("Plot of nextBest-NextBestProbMTDMinDist", result$plot)
 })
 
@@ -1074,7 +1074,7 @@ test_that("nextBest-NextBestProbMTDMinDist returns correct next dose and plot (w
 
   result <- nextBest(nb_prob_mtd, 40, samples, model, data)
   expect_identical(result$value, 25)
-  expect_snapshot(result$allocation)
+  expect_snap(result$allocation)
   expect_doppel(
     "Plot of nextBest-NextBestProbMTDMinDist with placebo",
     result$plot
@@ -1094,7 +1094,7 @@ test_that("nextBest-NextBestProbMTDMinDist returns correct next dose and plot (n
 
   result <- nextBest(nb_prob_mtd, Inf, samples, model, data)
   expect_identical(result$value, 25)
-  expect_snapshot(result$allocation)
+  expect_snap(result$allocation)
   expect_doppel(
     "Plot nextBest-NextBestProbMTDMinDist w/o doselimit",
     result$plot

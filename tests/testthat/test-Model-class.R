@@ -84,7 +84,7 @@ test_that("MCMC computes correct values for LogisticNormal model", {
   options <- h_get_mcmc_options()
 
   result <- mcmc(data = data, model = model, options = options)
-  expect_snapshot(result@data)
+  expect_snap(result@data)
 })
 
 test_that("MCMC computes correct values for LogisticNormal model and empty data", {
@@ -93,7 +93,7 @@ test_that("MCMC computes correct values for LogisticNormal model and empty data"
   options <- h_get_mcmc_options()
 
   result <- mcmc(data = data, model = model, options = options)
-  expect_snapshot(result@data)
+  expect_snap(result@data)
 })
 
 # LogisticLogNormal ----
@@ -130,7 +130,7 @@ test_that("MCMC computes correct values for LogisticLogNormal model", {
   options <- h_get_mcmc_options()
 
   result <- mcmc(data = data, model = model, options = options)
-  expect_snapshot(result@data)
+  expect_snap(result@data)
 })
 
 test_that("MCMC computes correct values for LogisticLogNormal model and empty data", {
@@ -139,7 +139,7 @@ test_that("MCMC computes correct values for LogisticLogNormal model and empty da
   options <- h_get_mcmc_options()
 
   result <- mcmc(data = data, model = model, options = options)
-  expect_snapshot(result@data)
+  expect_snap(result@data)
 })
 
 # LogisticLogNormalSub ----
@@ -176,7 +176,7 @@ test_that("MCMC computes correct values for LogisticLogNormalSub model", {
   options <- h_get_mcmc_options()
 
   result <- mcmc(data = data, model = model, options = options)
-  expect_snapshot(result@data)
+  expect_snap(result@data)
 })
 
 test_that("MCMC computes correct values for LogisticLogNormalSub model and empty data", {
@@ -185,7 +185,7 @@ test_that("MCMC computes correct values for LogisticLogNormalSub model and empty
   options <- h_get_mcmc_options()
 
   result <- mcmc(data = data, model = model, options = options)
-  expect_snapshot(result@data)
+  expect_snap(result@data)
 })
 
 # ProbitLogNormal ----
@@ -222,7 +222,7 @@ test_that("MCMC computes correct values for ProbitLogNormal model", {
   options <- h_get_mcmc_options()
 
   result <- mcmc(data = data, model = model, options = options)
-  expect_snapshot(result@data)
+  expect_snap(result@data)
 })
 
 test_that("MCMC computes correct values for ProbitLogNormal model and empty data", {
@@ -231,7 +231,7 @@ test_that("MCMC computes correct values for ProbitLogNormal model and empty data
   options <- h_get_mcmc_options()
 
   result <- mcmc(data = data, model = model, options = options)
-  expect_snapshot(result@data)
+  expect_snap(result@data)
 })
 
 # ProbitLogNormalRel ----
@@ -267,7 +267,7 @@ test_that("MCMC computes correct values for ProbitLogNormalRel model", {
   options <- h_get_mcmc_options()
 
   result <- mcmc(data = data, model = model, options = options)
-  expect_snapshot(result@data)
+  expect_snap(result@data)
 })
 
 test_that("MCMC computes correct values for ProbitLogNormalRel model and empty data", {
@@ -276,7 +276,7 @@ test_that("MCMC computes correct values for ProbitLogNormalRel model and empty d
   options <- h_get_mcmc_options()
 
   result <- mcmc(data = data, model = model, options = options)
-  expect_snapshot(result@data)
+  expect_snap(result@data)
 })
 
 # LogisticLogNormalGrouped ----
@@ -309,7 +309,7 @@ test_that("MCMC computes correct values for LogisticLogNormalGrouped model", {
   options <- h_get_mcmc_options()
 
   result <- mcmc(data = data, model = model, options = options)
-  expect_snapshot(result@data)
+  expect_snap(result@data)
 })
 
 test_that("MCMC computes correct values for LogisticLogNormalGrouped model and empty data", {
@@ -318,7 +318,7 @@ test_that("MCMC computes correct values for LogisticLogNormalGrouped model and e
   options <- h_get_mcmc_options()
 
   result <- mcmc(data = data, model = model, options = options)
-  expect_snapshot(result@data)
+  expect_snap(result@data)
 })
 
 # LogisticKadane ----
@@ -351,7 +351,7 @@ test_that("MCMC computes correct values for LogisticKadane model", {
   options <- h_get_mcmc_options()
 
   result <- mcmc(data = data, model = model, options = options)
-  expect_snapshot(result@data)
+  expect_snap(result@data)
 })
 
 test_that("MCMC computes correct values for LogisticKadane model and empty data", {
@@ -360,7 +360,7 @@ test_that("MCMC computes correct values for LogisticKadane model and empty data"
   options <- h_get_mcmc_options()
 
   result <- mcmc(data = data, model = model, options = options)
-  expect_snapshot(result@data)
+  expect_snap(result@data)
 })
 
 # LogisticKadaneBetaGamma ----
@@ -405,7 +405,7 @@ test_that("MCMC computes correct values for LogisticKadaneBetaGamma model", {
   options <- h_get_mcmc_options()
 
   result <- mcmc(data = data, model = model, options = options)
-  expect_snapshot(result@data)
+  expect_snap(result@data)
 })
 
 test_that("MCMC computes correct values for LogisticKadaneBetaGamma model and empty data", {
@@ -414,7 +414,7 @@ test_that("MCMC computes correct values for LogisticKadaneBetaGamma model and em
   options <- h_get_mcmc_options()
 
   result <- mcmc(data = data, model = model, options = options)
-  expect_snapshot(result@data)
+  expect_snap(result@data)
 })
 
 # LogisticNormalMixture ----
@@ -459,7 +459,7 @@ test_that("MCMC computes correct values for LogisticNormalMixture model", {
   options <- h_get_mcmc_options()
 
   result <- mcmc(data = data, model = model, options = options)
-  expect_snapshot(result@data)
+  expect_snap(result@data)
 })
 
 test_that("MCMC computes correct values for LogisticNormalMixture model and empty data", {
@@ -468,7 +468,7 @@ test_that("MCMC computes correct values for LogisticNormalMixture model and empt
   options <- h_get_mcmc_options()
 
   result <- mcmc(data = data, model = model, options = options)
-  expect_snapshot(result@data)
+  expect_snap(result@data)
 })
 
 # LogisticNormalFixedMixture ----
@@ -529,8 +529,8 @@ test_that("MCMC computes correct values for LogisticNormalFixedMixture model", {
     model = model_log_normal,
     options = options
   )
-  expect_snapshot(result@data)
-  expect_snapshot(result_log_normal@data)
+  expect_snap(result@data)
+  expect_snap(result_log_normal@data)
 })
 
 test_that("MCMC computes correct values for LogisticNormalFixedMixture model and empty data", {
@@ -545,8 +545,8 @@ test_that("MCMC computes correct values for LogisticNormalFixedMixture model and
     model = model_log_normal,
     options = options
   )
-  expect_snapshot(result@data)
-  expect_snapshot(result_log_normal@data)
+  expect_snap(result@data)
+  expect_snap(result_log_normal@data)
 })
 
 # LogisticLogNormalMixture ----
@@ -586,7 +586,7 @@ test_that("MCMC computes correct values for LogisticLogNormalMixture model", {
   options <- h_get_mcmc_options()
 
   result <- mcmc(data = data, model = model, options = options)
-  expect_snapshot(result@data)
+  expect_snap(result@data)
 })
 
 test_that("MCMC computes correct values for LogisticLogNormalMixture model and empty data", {
@@ -595,7 +595,7 @@ test_that("MCMC computes correct values for LogisticLogNormalMixture model and e
   options <- h_get_mcmc_options()
 
   result <- mcmc(data = data, model = model, options = options)
-  expect_snapshot(result@data)
+  expect_snap(result@data)
 })
 
 # DualEndpoint ----
@@ -654,8 +654,8 @@ test_that("MCMC computes correct values for DualEndpointRW model (fixed params)"
     model = model_log_dose,
     options = options
   )
-  expect_snapshot(result@data)
-  expect_snapshot(result_log_dose@data)
+  expect_snap(result@data)
+  expect_snap(result_log_dose@data)
 })
 
 test_that("MCMC computes correct values for DualEndpointRW model", {
@@ -670,8 +670,8 @@ test_that("MCMC computes correct values for DualEndpointRW model", {
     model = model_log_dose,
     options = options
   )
-  expect_snapshot(result@data)
-  expect_snapshot(result_log_dose@data)
+  expect_snap(result@data)
+  expect_snap(result_log_dose@data)
 })
 
 test_that("MCMC computes correct values for DualEndpointRW model with RW2", {
@@ -686,8 +686,8 @@ test_that("MCMC computes correct values for DualEndpointRW model with RW2", {
     model = model_log_dose,
     options = options
   )
-  expect_snapshot(result@data)
-  expect_snapshot(result_log_dose@data)
+  expect_snap(result@data)
+  expect_snap(result_log_dose@data)
 })
 
 test_that("MCMC computes correct values for DualEndpointRW model (fixed params) with RW2", {
@@ -706,8 +706,8 @@ test_that("MCMC computes correct values for DualEndpointRW model (fixed params) 
     model = model_log_dose,
     options = options
   )
-  expect_snapshot(result@data)
-  expect_snapshot(result_log_dose@data)
+  expect_snap(result@data)
+  expect_snap(result_log_dose@data)
 })
 
 test_that("MCMC computes correct values for DualEndpointRW model (fixed params, empty data)", {
@@ -722,8 +722,8 @@ test_that("MCMC computes correct values for DualEndpointRW model (fixed params, 
     model = model_log_dose,
     options = options
   )
-  expect_snapshot(result@data)
-  expect_snapshot(result_log_dose@data)
+  expect_snap(result@data)
+  expect_snap(result_log_dose@data)
 })
 
 test_that("MCMC computes correct values for DualEndpointRW model (empty data)", {
@@ -738,8 +738,8 @@ test_that("MCMC computes correct values for DualEndpointRW model (empty data)", 
     model = model_log_dose,
     options = options
   )
-  expect_snapshot(result@data)
-  expect_snapshot(result_log_dose@data)
+  expect_snap(result@data)
+  expect_snap(result_log_dose@data)
 })
 
 test_that("MCMC computes correct values for DualEndpointRW model with RW2 (empty data)", {
@@ -754,8 +754,8 @@ test_that("MCMC computes correct values for DualEndpointRW model with RW2 (empty
     model = model_log_dose,
     options = options
   )
-  expect_snapshot(result@data)
-  expect_snapshot(result_log_dose@data)
+  expect_snap(result@data)
+  expect_snap(result_log_dose@data)
 })
 
 test_that("MCMC computes correct values for DualEndpointRW model (fixed params, empty data) with RW2", {
@@ -774,8 +774,8 @@ test_that("MCMC computes correct values for DualEndpointRW model (fixed params, 
     model = model_log_dose,
     options = options
   )
-  expect_snapshot(result@data)
-  expect_snapshot(result_log_dose@data)
+  expect_snap(result@data)
+  expect_snap(result_log_dose@data)
 })
 
 test_that("MCMC throws the error for DualEndpointRW model when 'nGrid == 1' for RW 1", {
@@ -861,8 +861,8 @@ test_that("MCMC computes correct values for DualEndpointBeta model with fixed pa
     model = model_log_dose,
     options = options
   )
-  expect_snapshot(result@data)
-  expect_snapshot(result_log_dose@data)
+  expect_snap(result@data)
+  expect_snap(result_log_dose@data)
 })
 
 test_that("MCMC computes correct values for DualEndpointBeta model", {
@@ -877,8 +877,8 @@ test_that("MCMC computes correct values for DualEndpointBeta model", {
     model = model_log_dose,
     options = options
   )
-  expect_snapshot(result@data)
-  expect_snapshot(result_log_dose@data)
+  expect_snap(result@data)
+  expect_snap(result_log_dose@data)
 })
 
 test_that("MCMC throws the error for DualEndpointBeta model when 'ref_dose_beta <= max(doseGrid)'", {
@@ -916,8 +916,8 @@ test_that("MCMC computes correct values for DualEndpointBeta model with fixed pa
     model = model_log_dose,
     options = options
   )
-  expect_snapshot(result@data)
-  expect_snapshot(result_log_dose@data)
+  expect_snap(result@data)
+  expect_snap(result_log_dose@data)
 })
 
 test_that("MCMC computes correct values for DualEndpointBeta model (empty data)", {
@@ -932,8 +932,8 @@ test_that("MCMC computes correct values for DualEndpointBeta model (empty data)"
     model = model_log_dose,
     options = options
   )
-  expect_snapshot(result@data)
-  expect_snapshot(result_log_dose@data)
+  expect_snap(result@data)
+  expect_snap(result_log_dose@data)
 })
 
 # DualEndpointEmax ----
@@ -980,8 +980,8 @@ test_that("MCMC computes correct values for DualEndpointEmax model with fixed pa
     model = model_log_dose,
     options = options
   )
-  expect_snapshot(result@data)
-  expect_snapshot(result_log_dose@data)
+  expect_snap(result@data)
+  expect_snap(result_log_dose@data)
 })
 
 test_that("MCMC computes correct values for DualEndpointEmax model", {
@@ -996,8 +996,8 @@ test_that("MCMC computes correct values for DualEndpointEmax model", {
     model = model_log_dose,
     options = options
   )
-  expect_snapshot(result@data)
-  expect_snapshot(result_log_dose@data)
+  expect_snap(result@data)
+  expect_snap(result_log_dose@data)
 })
 
 test_that("MCMC computes correct values for DualEndpointEmax model with fixed parameters (empty data)", {
@@ -1012,8 +1012,8 @@ test_that("MCMC computes correct values for DualEndpointEmax model with fixed pa
     model = model_log_dose,
     options = options
   )
-  expect_snapshot(result@data)
-  expect_snapshot(result_log_dose@data)
+  expect_snap(result@data)
+  expect_snap(result_log_dose@data)
 })
 
 test_that("MCMC computes correct values for DualEndpointEmax model (empty data)", {
@@ -1028,8 +1028,8 @@ test_that("MCMC computes correct values for DualEndpointEmax model (empty data)"
     model = model_log_dose,
     options = options
   )
-  expect_snapshot(result@data)
-  expect_snapshot(result_log_dose@data)
+  expect_snap(result@data)
+  expect_snap(result_log_dose@data)
 })
 
 test_that("MCMC throws the error for DualEndpointEmax model when 'nGrid == 0'", {
@@ -1065,7 +1065,7 @@ test_that("MCMC computes correct values for LogisticIndepBeta model", {
 
   set.seed(10)
   result <- mcmc(data = model@data, model = model, options = options)
-  expect_snapshot(result@data)
+  expect_snap(result@data)
 })
 
 test_that("MCMC computes correct values for LogisticIndepBeta model (empty data)", {
@@ -1074,7 +1074,7 @@ test_that("MCMC computes correct values for LogisticIndepBeta model (empty data)
 
   set.seed(10)
   result <- mcmc(data = model@data, model = model, options = options)
-  expect_snapshot(result@data)
+  expect_snap(result@data)
 })
 
 # Effloglog ----
@@ -1099,7 +1099,7 @@ test_that("MCMC computes correct values for Effloglog model", {
 
   set.seed(10)
   result <- mcmc(data = model@data, model = model, options = options)
-  expect_snapshot(result@data)
+  expect_snap(result@data)
 })
 
 test_that("MCMC computes correct values for Effloglog model (empty data)", {
@@ -1108,7 +1108,7 @@ test_that("MCMC computes correct values for Effloglog model (empty data)", {
 
   set.seed(10)
   result <- mcmc(data = model@data, model = model, options = options)
-  expect_snapshot(result@data)
+  expect_snap(result@data)
 })
 
 # EffFlexi ----
@@ -1142,7 +1142,7 @@ test_that("MCMC computes correct values for EffFlexi model", {
   options <- h_get_mcmc_options()
 
   result <- mcmc(data = model@data, model = model, options = options)
-  expect_snapshot(result@data)
+  expect_snap(result@data)
 })
 
 test_that("MCMC computes correct values for EffFlexi model (RW2)", {
@@ -1150,7 +1150,7 @@ test_that("MCMC computes correct values for EffFlexi model (RW2)", {
   options <- h_get_mcmc_options()
 
   result <- mcmc(data = model@data, model = model, options = options)
-  expect_snapshot(result@data)
+  expect_snap(result@data)
 })
 
 test_that("MCMC computes correct values for EffFlexi model (empty data)", {
@@ -1158,7 +1158,7 @@ test_that("MCMC computes correct values for EffFlexi model (empty data)", {
   options <- h_get_mcmc_options()
 
   result <- mcmc(data = model@data, model = model, options = options)
-  expect_snapshot(result@data)
+  expect_snap(result@data)
 })
 
 test_that("MCMC computes correct values for EffFlexi model (empty data, RW2)", {
@@ -1166,7 +1166,7 @@ test_that("MCMC computes correct values for EffFlexi model (empty data, RW2)", {
   options <- h_get_mcmc_options()
 
   result <- mcmc(data = model@data, model = model, options = options)
-  expect_snapshot(result@data)
+  expect_snap(result@data)
 })
 
 # DALogisticLogNormal ----
@@ -1220,7 +1220,7 @@ test_that("MCMC computes correct values for DALogisticLogNormal model", {
   options <- h_get_mcmc_options()
 
   result <- mcmc(data = data, model = model, options = options)
-  expect_snapshot(result@data)
+  expect_snap(result@data)
 })
 
 test_that("MCMC computes correct values for DALogisticLogNormal model and empty data", {
@@ -1229,7 +1229,7 @@ test_that("MCMC computes correct values for DALogisticLogNormal model and empty 
   options <- h_get_mcmc_options()
 
   result <- mcmc(data = data, model = model, options = options)
-  expect_snapshot(result@data)
+  expect_snap(result@data)
 })
 
 # TITELogisticLogNormal ----
@@ -1266,7 +1266,7 @@ test_that("MCMC computes correct values for TITELogisticLogNormal model (linear)
   options <- h_get_mcmc_options()
 
   result <- mcmc(data = data, model = model, options = options)
-  expect_snapshot(result@data)
+  expect_snap(result@data)
 })
 
 test_that("MCMC computes correct values for TITELogisticLogNormal model (linear, data 2)", {
@@ -1275,7 +1275,7 @@ test_that("MCMC computes correct values for TITELogisticLogNormal model (linear,
   options <- h_get_mcmc_options()
 
   result <- mcmc(data = data, model = model, options = options)
-  expect_snapshot(result@data)
+  expect_snap(result@data)
 })
 
 test_that("MCMC computes correct values for TITELogisticLogNormal model (linear, empty data)", {
@@ -1284,7 +1284,7 @@ test_that("MCMC computes correct values for TITELogisticLogNormal model (linear,
   options <- h_get_mcmc_options()
 
   result <- mcmc(data = data, model = model, options = options)
-  expect_snapshot(result@data)
+  expect_snap(result@data)
 })
 
 test_that("MCMC computes correct values for TITELogisticLogNormal model (adaptive)", {
@@ -1293,7 +1293,7 @@ test_that("MCMC computes correct values for TITELogisticLogNormal model (adaptiv
   options <- h_get_mcmc_options()
 
   result <- mcmc(data = data, model = model, options = options)
-  expect_snapshot(result@data)
+  expect_snap(result@data)
 })
 
 test_that("MCMC computes correct values for TITELogisticLogNormal model (adaptive, data 2)", {
@@ -1302,7 +1302,7 @@ test_that("MCMC computes correct values for TITELogisticLogNormal model (adaptiv
   options <- h_get_mcmc_options()
 
   result <- mcmc(data = data, model = model, options = options)
-  expect_snapshot(result@data)
+  expect_snap(result@data)
 })
 
 test_that("MCMC computes correct values for TITELogisticLogNormal model (adaptive, empty data)", {
@@ -1311,7 +1311,7 @@ test_that("MCMC computes correct values for TITELogisticLogNormal model (adaptiv
   options <- h_get_mcmc_options()
 
   result <- mcmc(data = data, model = model, options = options)
-  expect_snapshot(result@data)
+  expect_snap(result@data)
 })
 
 # OneParLogNormalPrior ----
@@ -1407,7 +1407,7 @@ test_that("MCMC computes correct values for OneParLogNormalPrior model", {
   options <- h_get_mcmc_options()
 
   result <- mcmc(data = data, model = model, options = options)
-  expect_snapshot(result@data)
+  expect_snap(result@data)
 })
 
 test_that("MCMC computes correct values for OneParLogNormalPrior model and empty data", {
@@ -1416,7 +1416,7 @@ test_that("MCMC computes correct values for OneParLogNormalPrior model and empty
   options <- h_get_mcmc_options()
 
   result <- mcmc(data = data, model = model, options = options)
-  expect_snapshot(result@data)
+  expect_snap(result@data)
 })
 
 test_that("MCMC throws the error for OneParLogNormalPrior model when 'xLevel' does not match 'skel_probs'", {
@@ -1531,7 +1531,7 @@ test_that("MCMC computes correct values for OneParExpPrior model", {
   options <- h_get_mcmc_options()
 
   result <- mcmc(data = data, model = model, options = options)
-  expect_snapshot(result@data)
+  expect_snap(result@data)
 })
 
 test_that("MCMC computes correct values for OneParExpPrior model and empty data", {
@@ -1540,7 +1540,7 @@ test_that("MCMC computes correct values for OneParExpPrior model and empty data"
   options <- h_get_mcmc_options()
 
   result <- mcmc(data = data, model = model, options = options)
-  expect_snapshot(result@data)
+  expect_snap(result@data)
 })
 
 test_that("MCMC throws the error for OneParExpPrior model when 'xLevel' does not match 'skel_probs'", {
@@ -1596,7 +1596,7 @@ test_that("MCMC computes correct values for FractionalCRM model", {
   options <- h_get_mcmc_options()
 
   result <- mcmc(data = data, model = model, options = options)
-  expect_snapshot(result@data)
+  expect_snap(result@data)
 })
 
 test_that("MCMC computes correct values for FractionalCRM model and empty data", {
@@ -1605,7 +1605,7 @@ test_that("MCMC computes correct values for FractionalCRM model and empty data",
   options <- h_get_mcmc_options()
 
   result <- mcmc(data = data, model = model, options = options)
-  expect_snapshot(result@data)
+  expect_snap(result@data)
 })
 
 test_that("MCMC throws the error for FractionalCRM model when 'xLevel' does not match 'skel_probs'", {
