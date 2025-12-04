@@ -15,7 +15,7 @@ my_model <- LogisticLogNormal(
 )
 
 # Set-up some MCMC parameters and generate samples from the posterior.
-my_options <- McmcOptions(burnin = 100, step = 2, samples = 500)
+my_options <- McmcOptions(burnin = 10, step = 2, samples = 40)
 my_samples <- mcmc(my_data, my_model, my_options)
 
 # Define the rule which will be used to select the next best dose
@@ -51,8 +51,8 @@ my_stopping <- highest_dose_safe | max_patients | patients_near_dose
 # Evaluate if to stop the Trial
 stopTrial(
   stopping = my_stopping,
-  dose = doseRecommendation$value,
-  samples = samples,
-  model = model,
-  data = data
+  dose = my_dose_recommendation$value,
+  samples = my_samples,
+  model = my_model,
+  data = my_data
 )

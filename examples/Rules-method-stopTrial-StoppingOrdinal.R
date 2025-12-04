@@ -1,6 +1,6 @@
 data <- .DefaultDataOrdinal()
 model <- .DefaultLogisticLogNormalOrdinal()
-options <- .DefaultMcmcOptions()
+options <- McmcOptions(burnin = 10, step = 2, samples = 40)
 samples <- mcmc(data, model, options)
 
 myIncrements <- .DefaultIncrementsOrdinal()
