@@ -51,8 +51,8 @@ my_stopping <- highest_dose_safe | max_patients | patients_near_dose
 # Evaluate if to stop the Trial
 stopTrial(
   stopping = my_stopping,
-  dose = doseRecommendation$value,
-  samples = samples,
-  model = model,
-  data = data
+  dose = my_dose_recommendation$value,
+  samples = my_samples,
+  model = my_model,
+  data = my_data
 )
