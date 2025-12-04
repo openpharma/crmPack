@@ -28,7 +28,7 @@ my_model_effll <- Effloglog(
 )
 
 # Set-up some MCMC parameters and generate samples from the posterior.
-my_options <- McmcOptions(burnin = 100, step = 2, samples = 500)
+my_options <- McmcOptions(burnin = 10, step = 2, samples = 50)
 my_samples_dlt <- mcmc(my_data, my_model_dlt, my_options)
 my_samples_effll <- mcmc(my_data, my_model_effll, my_options)
 
