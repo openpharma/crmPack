@@ -58,6 +58,8 @@ my_model <- DualEndpointRW(
 
 # Set-up some MCMC parameters and generate samples from the posterior.
 my_options <- McmcOptions(burnin = 100, step = 2, samples = 500)
+
+\donttest{
 my_samples <- mcmc(my_data, my_model, my_options)
 
 # Define the rule for dose increments and calculate the maximum dose allowed.
@@ -94,3 +96,4 @@ print(dose_recommendation$plot)
 # Show customization of single plot.
 variant1 <- dose_recommendation$singlePlots$plot1 + xlim(0, 20)
 print(variant1)
+}

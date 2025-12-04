@@ -73,6 +73,7 @@ my_model_effflexi <- EffFlexi(
   data = my_data
 )
 
+\donttest{
 my_samples_effflexi <- mcmc(my_data, my_model_effflexi, my_options)
 
 dose_recommendation <- nextBest(
@@ -87,3 +88,4 @@ dose_recommendation <- nextBest(
 
 dose_recommendation$next_dose
 dose_recommendation$plot
+}
