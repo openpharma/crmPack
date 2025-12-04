@@ -405,12 +405,7 @@ my_model <- LogisticLogNormal(
 )
 
 # Set-up some MCMC parameters and generate samples from the posterior.
-my_options <- McmcOptions(
-  burnin = 100,
-  step = 2,
-  samples = 2000
-)
-
+my_options <- McmcOptions(burnin = 10, step = 2, samples = 40)
 my_samples <- mcmc(my_data, my_model, my_options)
 
 # Define the rule for dose increments and calculate the maximum dose allowed.
@@ -473,7 +468,7 @@ model <- LogisticLogNormal(
 )
 
 # Set-up some MCMC parameters and generate samples from the posterior
-options <- McmcOptions(burnin = 100, step = 2, samples = 2000)
+options <- McmcOptions(burnin = 10, step = 2, samples = 40)
 set.seed(94)
 samples <- mcmc(data, model, options)
 
@@ -542,7 +537,7 @@ model <- LogisticLogNormal(
 )
 
 # Set-up some MCMC parameters and generate samples from the posterior
-options <- McmcOptions(burnin = 100, step = 2, samples = 2000)
+options <- McmcOptions(burnin = 10, step = 2, samples = 40)
 set.seed(94)
 samples <- mcmc(data, model, options)
 
@@ -607,7 +602,7 @@ model <- LogisticLogNormal(
 )
 
 # Set-up some MCMC parameters and generate samples from the posterior
-options <- McmcOptions(burnin = 100, step = 2, samples = 2000)
+options <- McmcOptions(burnin = 10, step = 2, samples = 40)
 set.seed(94)
 samples <- mcmc(data, model, options)
 
@@ -672,7 +667,7 @@ model <- LogisticLogNormal(
 )
 
 # Set-up some MCMC parameters and generate samples from the posterior
-options <- McmcOptions(burnin = 100, step = 2, samples = 2000)
+options <- McmcOptions(burnin = 10, step = 2, samples = 40)
 set.seed(94)
 samples <- mcmc(data, model, options)
 
@@ -726,7 +721,7 @@ model <- LogisticLogNormal(
 )
 
 # Set-up some MCMC parameters and generate samples from the posterior
-options <- McmcOptions(burnin = 100, step = 2, samples = 2000)
+options <- McmcOptions(burnin = 10, step = 2, samples = 40)
 set.seed(94)
 samples <- mcmc(data, model, options)
 
@@ -780,7 +775,7 @@ model <- LogisticLogNormal(
 )
 
 # Set-up some MCMC parameters and generate samples from the posterior
-options <- McmcOptions(burnin = 100, step = 2, samples = 2000)
+options <- McmcOptions(burnin = 10, step = 2, samples = 40)
 set.seed(94)
 samples <- mcmc(data, model, options)
 
@@ -834,7 +829,7 @@ model <- LogisticLogNormal(
 )
 
 # Set-up some MCMC parameters and generate samples from the posterior
-options <- McmcOptions(burnin = 100, step = 2, samples = 2000)
+options <- McmcOptions(burnin = 10, step = 2, samples = 40)
 set.seed(94)
 samples <- mcmc(data, model, options)
 
@@ -888,7 +883,7 @@ model <- LogisticLogNormal(
 )
 
 # Set-up some MCMC parameters and generate samples from the posterior
-options <- McmcOptions(burnin = 100, step = 2, samples = 2000)
+options <- McmcOptions(burnin = 10, step = 2, samples = 40)
 set.seed(94)
 samples <- mcmc(data, model, options)
 
@@ -948,7 +943,7 @@ model <- LogisticLogNormal(
 )
 
 # Set-up some MCMC parameters and generate samples from the posterior
-options <- McmcOptions(burnin = 100, step = 2, samples = 2000)
+options <- McmcOptions(burnin = 10, step = 2, samples = 40)
 set.seed(94)
 samples <- mcmc(data, model, options)
 
@@ -1007,13 +1002,7 @@ my_model <- LogisticLogNormal(
 )
 
 # Set-up some MCMC parameters and generate samples from the posterior.
-my_options <- McmcOptions(
-  burnin = 100,
-  step = 2,
-  samples = 2000,
-  rng_kind = "Mersenne-Twister",
-  rng_seed = 94
-)
+my_options <- McmcOptions(burnin = 10, step = 2, samples = 40)
 my_samples <- mcmc(my_data, my_model, my_options)
 
 # Define the rule for dose increments and calculate the maximum dose allowed.
@@ -1077,11 +1066,7 @@ model <- LogisticLogNormal(
 )
 
 # Set-up some MCMC parameters and generate samples from the posterior.
-options <- McmcOptions(
-  burnin = 100,
-  step = 2,
-  samples = 2000
-)
+options <- McmcOptions(burnin = 10, step = 2, samples = 40)
 set.seed(94)
 samples <- mcmc(data, model, options)
 
@@ -1164,7 +1149,7 @@ model <- DualEndpointRW(
 )
 
 # Set-up some MCMC parameters and generate samples from the posterior
-options <- McmcOptions(burnin = 100, step = 2, samples = 500)
+options <- McmcOptions(burnin = 10, step = 2, samples = 40)
 set.seed(94)
 samples <- mcmc(data, model, options)
 
@@ -1225,7 +1210,7 @@ my_model <- LogisticLogNormal(
 )
 
 # Set-up some MCMC parameters and generate samples from the posterior.
-my_options <- McmcOptions(burnin = 100, step = 2, samples = 500)
+my_options <- McmcOptions(burnin = 10, step = 2, samples = 40)
 my_samples <- mcmc(my_data, my_model, my_options)
 
 # Define the rule which will be used to select the next best dose
@@ -1261,10 +1246,10 @@ my_stopping <- highest_dose_safe | max_patients | patients_near_dose
 # Evaluate if to stop the Trial
 stopTrial(
   stopping = my_stopping,
-  dose = doseRecommendation$value,
-  samples = samples,
-  model = model,
-  data = data
+  dose = my_dose_recommendation$value,
+  samples = my_samples,
+  model = my_model,
+  data = my_data
 )
 # nolint start
 
@@ -1284,7 +1269,7 @@ model <- LogisticLogNormal(
 )
 
 # Set-up some MCMC parameters and generate samples from the posterior
-options <- McmcOptions(burnin = 100, step = 2, samples = 2000)
+options <- McmcOptions(burnin = 10, step = 2, samples = 40)
 set.seed(94)
 samples <- mcmc(data, model, options)
 
@@ -1337,7 +1322,7 @@ stopTrial(
 # nolint end
 data <- .DefaultDataOrdinal()
 model <- .DefaultLogisticLogNormalOrdinal()
-options <- .DefaultMcmcOptions()
+options <- McmcOptions(burnin = 10, step = 2, samples = 40)
 samples <- mcmc(data, model, options)
 
 myIncrements <- .DefaultIncrementsOrdinal()
@@ -1364,7 +1349,7 @@ stopTrial(
 )
 data <- .DefaultDataOrdinal()
 model <- .DefaultLogisticLogNormalOrdinal()
-options <- .DefaultMcmcOptions()
+options <- McmcOptions(burnin = 10, step = 2, samples = 40)
 samples <- mcmc(data, model, options)
 
 myIncrements <- .DefaultIncrementsOrdinal()

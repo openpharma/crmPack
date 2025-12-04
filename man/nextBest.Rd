@@ -309,7 +309,7 @@ my_model <- LogisticLogNormal(
 )
 
 # Set-up some MCMC parameters and generate samples from the posterior.
-my_options <- McmcOptions(burnin = 100, step = 2, samples = 500)
+my_options <- McmcOptions(burnin = 10, step = 2, samples = 50)
 my_samples <- mcmc(my_data, my_model, my_options)
 
 # Define the rule for dose increments and calculate the maximum dose allowed.
@@ -357,7 +357,7 @@ my_model <- LogisticLogNormal(
 )
 
 # Set-up some MCMC parameters and generate samples from the posterior.
-my_options <- McmcOptions(burnin = 100, step = 2, samples = 500)
+my_options <- McmcOptions(burnin = 10, step = 2, samples = 50)
 my_samples <- mcmc(my_data, my_model, my_options)
 
 # Define the rule for dose increments and calculate the maximum dose allowed.
@@ -403,7 +403,7 @@ my_model <- LogisticLogNormal(
 )
 
 # Set-up some MCMC parameters and generate samples from the posterior.
-my_options <- McmcOptions(burnin = 100, step = 2, samples = 500)
+my_options <- McmcOptions(burnin = 10, step = 2, samples = 50)
 my_samples <- mcmc(my_data, my_model, my_options)
 
 # Define the rule for dose increments and calculate the maximum dose allowed.
@@ -454,7 +454,7 @@ my_model <- LogisticLogNormal(
 )
 
 # Set-up some MCMC parameters and generate samples from the posterior.
-my_options <- McmcOptions(burnin = 100, step = 2, samples = 500)
+my_options <- McmcOptions(burnin = 10, step = 2, samples = 50)
 my_samples <- mcmc(my_data, my_model, my_options)
 
 # Define the rule for dose increments and calculate the maximum dose allowed.
@@ -501,7 +501,7 @@ my_model <- LogisticLogNormal(
 )
 
 # Set-up some MCMC parameters and generate samples from the posterior.
-my_options <- McmcOptions(burnin = 100, step = 2, samples = 500)
+my_options <- McmcOptions(burnin = 10, step = 2, samples = 50)
 my_samples <- mcmc(my_data, my_model, my_options)
 
 # Define the rule for dose increments and calculate the maximum dose allowed.
@@ -633,7 +633,9 @@ my_model <- DualEndpointRW(
 )
 
 # Set-up some MCMC parameters and generate samples from the posterior.
-my_options <- McmcOptions(burnin = 100, step = 2, samples = 500)
+my_options <- McmcOptions(burnin = 10, step = 2, samples = 50)
+
+\donttest{
 my_samples <- mcmc(my_data, my_model, my_options)
 
 # Define the rule for dose increments and calculate the maximum dose allowed.
@@ -670,6 +672,7 @@ print(dose_recommendation$plot)
 # Show customization of single plot.
 variant1 <- dose_recommendation$singlePlots$plot1 + xlim(0, 20)
 print(variant1)
+}
 # Example of usage for `NextBestTD` NextBest class.
 my_data <- Data(
   x = c(25, 50, 50, 75, 150, 200, 225, 300),
@@ -820,7 +823,7 @@ my_model_effll <- Effloglog(
 )
 
 # Set-up some MCMC parameters and generate samples from the posterior.
-my_options <- McmcOptions(burnin = 100, step = 2, samples = 500)
+my_options <- McmcOptions(burnin = 10, step = 2, samples = 50)
 my_samples_dlt <- mcmc(my_data, my_model_dlt, my_options)
 my_samples_effll <- mcmc(my_data, my_model_effll, my_options)
 
@@ -865,6 +868,7 @@ my_model_effflexi <- EffFlexi(
   data = my_data
 )
 
+\donttest{
 my_samples_effflexi <- mcmc(my_data, my_model_effflexi, my_options)
 
 dose_recommendation <- nextBest(
@@ -879,6 +883,7 @@ dose_recommendation <- nextBest(
 
 dose_recommendation$next_dose
 dose_recommendation$plot
+}
 # Example of usage for `NextBestProbMTDLTE` NextBest class.
 
 # Create the data.
@@ -898,7 +903,7 @@ my_model <- LogisticLogNormal(
 )
 
 # Set-up some MCMC parameters and generate samples from the posterior.
-my_options <- McmcOptions(burnin = 100, step = 2, samples = 500)
+my_options <- McmcOptions(burnin = 10, step = 2, samples = 50)
 my_samples <- mcmc(my_data, my_model, my_options)
 
 # Define the rule for dose increments and calculate the maximum dose allowed.
@@ -943,7 +948,7 @@ my_model <- my_model <- LogisticKadaneBetaGamma(
 )
 
 # Set-up some MCMC parameters and generate samples from the posterior.
-my_options <- McmcOptions(burnin = 100, step = 2, samples = 500)
+my_options <- McmcOptions(burnin = 10, step = 2, samples = 50)
 my_samples <- mcmc(my_data, my_model, my_options)
 
 # Define the rule for dose increments and calculate the maximum dose allowed.
@@ -966,6 +971,8 @@ dose_recommendation <- nextBest(
 ordinal_data <- .DefaultDataOrdinal()
 ordinal_model <- .DefaultLogisticLogNormalOrdinal()
 options <- .DefaultMcmcOptions()
+
+\donttest{
 ordinal_samples <- mcmc(ordinal_data, ordinal_model, options)
 
 nextBest(
@@ -975,9 +982,12 @@ nextBest(
   model = ordinal_model,
   data = ordinal_data
 )
+}
 ordinal_data <- .DefaultDataOrdinal()
 ordinal_model <- .DefaultLogisticLogNormalOrdinal()
 options <- .DefaultMcmcOptions()
+
+\donttest{
 ordinal_samples <- mcmc(ordinal_data, ordinal_model, options)
 
 nextBest(
@@ -987,4 +997,5 @@ nextBest(
   model = ordinal_model,
   data = ordinal_data
 )
+}
 }
