@@ -183,6 +183,9 @@ h_simulations_output_format <- function(resultList) {
   # Result list of additional statistical summary.
   additional_stats <- lapply(resultList, "[[", "additional_stats")
 
+  # Cohort-level UD/TD/OD probabilities
+  cohort_probs_list <- lapply(resultList, "[[", "cohort_probs")
+
   return(list(
     dataList = dataList,
     recommendedDoses = recommendedDoses,
@@ -190,6 +193,7 @@ h_simulations_output_format <- function(resultList) {
     stopReasons = stopReasons,
     stopResults = stopResults,
     additional_stats = additional_stats,
+    cohort_probs = cohort_probs_list,
     stop_matrix = stop_matrix
   ))
 }
