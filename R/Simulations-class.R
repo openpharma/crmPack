@@ -118,7 +118,8 @@ GeneralSimulations <- function(data,
       fit = "list",
       stop_report = "matrix",
       stop_reasons = "list",
-      additional_stats = "list"
+      additional_stats = "list",
+      cohort_probs = "list"
     ),
     prototype = prototype(
       fit =
@@ -130,7 +131,8 @@ GeneralSimulations <- function(data,
       stop_reasons =
         list("A", "A"),
       additional_stats =
-        list(a = 1, b = 1)
+        list(a = 1, b = 1),
+      cohort_probs = list()
     ),
     contains = "GeneralSimulations",
     validity = v_simulations
@@ -152,13 +154,15 @@ Simulations <- function(fit,
                         stop_reasons,
                         stop_report,
                         additional_stats,
+                        cohort_probs = list(), 
                         ...) {
   start <- GeneralSimulations(...)
   .Simulations(start,
     fit = fit,
     stop_report = stop_report,
     stop_reasons = stop_reasons,
-    additional_stats = additional_stats
+    additional_stats = additional_stats,
+    cohort_probs = cohort_probs
   )
 }
 
