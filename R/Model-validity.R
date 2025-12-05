@@ -67,13 +67,47 @@ v_model_logistic_kadane_beta_gamma <- function(object) { # nolintr
   v$result()
 }
 
-#' @describeIn v_model_objects validates that `weightpar` is valid.
-v_model_logistic_normal_mix <- function(object) {
+#' @describeIn v_model_objects validates a K-component Logistic-Normal mixture
+#'   with Dirichlet weights specified by `weightpars`.
+v_model_logistic_normal_mix <- function(object) {  # replaces the old Beta check
   v <- Validate()
+  # 1) components: require ModelParamsNormal OR list(mean, prec|cov)
+  is_mpn <- sapply(object@components, test_class, "ModelParamsNormal")
+  if (!all(is_mpn)) {
+    # accept plain lists like list(mean=..., prec=...|cov=...)
+    list_ok <- all(sapply(object@components, function(z) {
+      is.list(z) &&
+        is.numeric(z$mean) && length(z$mean) == 2 &&
+        (
+          (!is.null(z$prec) && test_matrix(z$prec, nrows = 2, ncols = 2, any.missing = FALSE) && h_is_positive_definite(z$prec)) ||
+          (!is.null(z$cov)  && test_matrix(z$cov,  nrows = 2, ncols = 2, any.missing = FALSE) && h_is_positive_definite(z$cov))
+        )
+    }))
+    v$check(list_ok,
+      "components must be a list of ModelParamsNormal or lists with numeric mean (length 2) and 2x2 cov/prec (PD)")
+  } else {
+    comp_valid_result <- sapply(object@components, validObject, test = TRUE)
+    v$check(all(sapply(comp_valid_result, isTRUE)),
+      paste("components must be valid ModelParamsNormal objects",
+            paste(unlist(comp_valid_result[!sapply(comp_valid_result, isTRUE)]), collapse = ", ")))
+  }
+
+  k <- length(object@components)
+  v$check(k >= 2, "components must contain at least two mixture components")
+
+  # 2) Dirichlet hyperparameters: numeric vector of length K (positive, finite)
   v$check(
-    h_test_named_numeric(object@weightpar, permutation.of = c("a", "b")),
-    "weightpar must be a named numerical vector of length two with positive finite values and names 'a', 'b'"
+    test_numeric(object@weightpars, lower = .Machine$double.xmin,
+                 finite = TRUE, any.missing = FALSE, len = k),
+    "weightpars must be a positive, finite numeric vector of length equal to components (Dirichlet parameters)"
   )
+  
+   # 3) (Optional) ref_dose positive if present in this class
+  if (!is.null(slotNames(object)) && "ref_dose" %in% slotNames(object)) {
+    v$check(test_number(object@ref_dose, lower = .Machine$double.xmin, finite = TRUE),
+            "ref_dose must be a positive, finite number")
+  }
+  
   v$result()
 }
 
