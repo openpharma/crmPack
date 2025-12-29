@@ -1,0 +1,96 @@
+# `SafetyWindowSize`
+
+**\[stable\]**
+
+`SafetyWindowSize` is the class for safety window length based on cohort
+size. This class is used to decide the rolling rule from the clinical
+perspective.
+
+## Usage
+
+``` r
+SafetyWindowSize(gap, size, follow, follow_min)
+
+.DefaultSafetyWindowSize()
+```
+
+## Arguments
+
+- gap:
+
+  see slot definition.
+
+- size:
+
+  see slot definition.
+
+- follow:
+
+  see slot definition.
+
+- follow_min:
+
+  see slot definition.
+
+## Slots
+
+- `gap`:
+
+  (`list`)  
+  observed period of the previous patient before the next patient can be
+  dosed. This is used as follows. If for instance, the cohort size is 4
+  and we want to specify three time intervals between these four
+  consecutive patients, i.e. 7 units of time between the 1st and the 2nd
+  patient, 5 units between the 2nd and the 3rd one, and finally 3 units
+  between the 3rd and the 4th one, then, `gap` = `list(c(7L, 5L, 3L))`.
+  Sometimes, we want that the interval only between the 1st and 2nd
+  patient should be increased for the safety consideration and the rest
+  time intervals should remain constant, regardless of what the cohort
+  size is. Then, `gap` = `list(c(7L, 3L))` and the the package will
+  automatically repeat the last element of the vector for the remaining
+  time intervals.
+
+- `size`:
+
+  (`integer`)  
+  a vector with the left bounds of the relevant cohort size intervals.
+  This is used as follows. For instance, when we want to change the
+  `gap` based on the cohort size, i.e. the time interval between the 1st
+  and 2nd patient = 9 units of time and the rest time intervals are of 5
+  units of time when the cohort size is equal to or larger than 4. And
+  the time interval between the 1st and 2nd patient = 7 units of time
+  and the rest time intervals are 3 units of time when the cohort size
+  is smaller than 4, then we specify both `gap = list(c(7, 3), c(9, 5))`
+  and `size = c(0L, 4L)`. This means, the right bounds of the intervals
+  are excluded from the interval, and the last interval goes from the
+  last value to infinity.
+
+- `follow`:
+
+  (`count`)  
+  the period of time that each patient in the cohort needs to be
+  followed before the next cohort opens.
+
+- `follow_min`:
+
+  (`count`)  
+  at least one patient in the cohort needs to be followed at the minimal
+  follow up time.
+
+## Note
+
+Typically, end users will not use the `.DefaultSafetyWindowSize()`
+function.
+
+## Examples
+
+``` r
+# Rule for having patient gap (7,3,3,3,...) for cohort size < 4, and
+# patient gap (9,5,5,5...) for cohort size >= 4.
+my_window_len <- SafetyWindowSize(
+  gap = list(c(7, 3), c(9, 5)),
+  size = c(1, 4),
+  follow = 7,
+  follow_min = 14
+)
+```
