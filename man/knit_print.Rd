@@ -933,5 +933,5 @@ If of length 1, the character \code{s} is appended to the value when the count i
 }
 
 \seealso{
-\code{\link{knit_print}} for more details.
+\code{\link[knitr:knit_print]{knitr::knit_print}} for more details.
 }
