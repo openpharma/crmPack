@@ -1,0 +1,86 @@
+---
+title: "Design for Backfill Cohorts"
+author: "Daniel"
+date: today
+format: html
+---
+
+## Motivation
+
+- Backfilling cohorts are increasingly used in dose escalation studies, see paper [1].
+- Sometimes health authorities are asking to include the backfilling cohorts in the simulations to check the operating characteristics (especially PMDA).
+
+## Requirements
+
+- Overall, need a flexible specification of the backfilling pattern
+  - Different sponsors have different preferences
+- Specify number of patients for backfill cohorts, including:
+  - No backfill at all
+  - Constant number of patients for each backfill cohort (e.g. always 3)
+  - Random number of patients for each backfill cohort (e.g. between 1 and 6)
+- Allow for different rules for opening / recruiting into backfill cohorts:
+  - Based on efficacy (e.g. response observed, probably can keep it to a binary efficacy outcome for the beginning)
+  - Dose level is lower than highest dose deemed safe
+  - Dose is above a minimum dose level
+
+## Implementation
+
+### `Backfill` class
+
+The new S4 class `Backfill` specifies the backfilling details of a design. It has the following slots:
+
+- `cohort_size`
+  - Can reuse the `CohortSize` class here
+  - Add a new `RandomCohortSize` subclass to implement the random number of backfill patients
+- `opening`
+  - This slot contains an object of a new `Opening` rules class
+  - These rules can be based on e.g. dose level, current highest/maximum safe dose, efficacy responses, distance from other backfill cohorts, etc.
+  - Here we add the logical "and" and "or" operators which we have from the `Stopping` rules already
+- `recruitment`
+  - This slot contains an object of a new `Recruitment` class
+  - Here can specify the recruitment speed, e.g. immediate recruitment vs. ratio compared to active (non-backfill) cohort (e.g. when active cohort has 3 patients recruited then here only 1/3 so 1 patient per cycle to backfill cohorts)
+
+### `Design` class
+
+Conceptually the backfilling details are part of the design of a trial. Therefore the `Backfill` details are included via a dedicated slot `backfill` in the `Design` class.
+
+At least in the beginning, though, it should not be included in the parent `RuleDesign` class, because we need to be more fine grained which `Design` subclass we implement this for. 
+
+- Be backwards compatible
+  - Default to no backfilling, i.e. use a corresponding prototype object in the `Design` class definition/constructor
+  - Also need to be robust when we meet a `Design` object that does not have a backfill slot
+
+### `Data` class
+
+The additional backfill patients are included when fitting the model to inform dose recommendations. These patients need to be identifiable, i.e. we will need a new slot to capture this information - because this data could be treated differently in the stopping rule evaluations.
+In addition, and we need to capture the "response" information in a new slot too.
+
+- New logical vector in the slot `backfilled` identifying whether each patient was backfilled or not.
+- New logical vector in the slot `response` identifying whether each patient had a response or not.
+  - Name: Chosen because something like `z` is not readable enough, although it would fit with the `x`, `y` pattern we have currently.
+  - Note that we have a similar `w` slot in the `DualData` class, but this is for continuous biomarker outcome. So we better keep it separate.
+- Be backwards compatible
+  - Default to no patients backfilled (all `FALSE`) and no response data available (all `NA`).
+  - Check again what happens if an old object without the new slots is encountered.
+
+### `simulate` method
+
+The `simulate` method will do the actual work of implementing the simulation of the backfill cohorts.
+
+- For the beginning we can focus on the implementation for the basic `Design` class
+  - We can first disable the use of the backfill information with an assertion in the `simulate` methods for `DualDesign` and `DADesign` when we need more time for that
+- We also need here an additional `trueResponse` argument which gives the probability of response for each dose because we need to generate responses, because the opening of backfill cohorts (might) depend on it.
+  - Note that we have this already in a similar but different way for the `simulate` method for `DualResponsesDesign` with `trueEff`, but there it is used for continuous efficacy (biomarker) and gives the expected mean efficacy biomarker value `w` for a given dose. So we better keep this separate.
+
+### `examine` method
+
+We suggest to not modify this because the examination paths would get too complex to understand.
+In addition, the backfilling will always make the design better, so it seems not needed for the quick check for which the `examine` method is intended.
+
+
+
+
+
+## References
+
+[1] Barnett H, Boix O, Kontos D, Jaki T. Backfilling cohorts in phase I dose-escalation studies. Clinical Trials. 2023;20(3):261-268. doi:10.1177/17407745231160092
