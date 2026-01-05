@@ -357,6 +357,18 @@ setMethod(
     # Add backfill information.
     object@backfilled <- c(object@backfilled, rep(backfill, n))
 
+    # We might need to sort again when we supplied a cohort index.
+    if (!is.null(cohort)) {
+      ord <- order(object@cohort, object@ID)
+      object@x <- object@x[ord]
+      object@y <- object@y[ord]
+      object@response <- object@response[ord]
+      object@ID <- object@ID[ord]
+      object@xLevel <- object@xLevel[ord]
+      object@cohort <- object@cohort[ord]
+      object@backfilled <- object@backfilled[ord]
+    }
+
     if (check) {
       validObject(object)
     }
