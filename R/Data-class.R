@@ -78,7 +78,9 @@ NULL
     doseGrid = "numeric",
     nGrid = "integer",
     xLevel = "integer",
-    placebo = "logical"
+    placebo = "logical",
+    backfilled = "logical",
+    response = "logical"
   ),
   prototype = prototype(
     x = numeric(),
@@ -86,7 +88,9 @@ NULL
     doseGrid = numeric(),
     nGrid = 0L,
     xLevel = integer(),
-    placebo = FALSE
+    placebo = FALSE,
+    backfilled = logical(),
+    response = logical()
   ),
   validity = v_data
 )
@@ -115,6 +119,8 @@ NULL
 #' @param doseGrid (`numeric`)\cr all possible doses.
 #' @param placebo (`flag`)\cr if `TRUE` the first dose level
 #'   in the `doseGrid` is considered as placebo.
+#' @param backfilled (`logical`)\cr whether this patient was in a backfill cohort.
+#' @param response (`logical`)\cr whether this patient had a positive efficacy response.
 #' @param ... not used.
 #'
 #' @export
@@ -127,6 +133,8 @@ Data <- function(
   cohort = integer(),
   doseGrid = numeric(),
   placebo = FALSE,
+  backfilled = rep(FALSE, length(x)),
+  response = rep(NA, length(x)),
   ...
 ) {
   assert_numeric(x)
@@ -139,6 +147,8 @@ Data <- function(
     assert_numeric(doseGrid, any.missing = FALSE, unique = TRUE)
   }
   assert_flag(placebo)
+  assert_logical(backfilled, len = length(x), any.missing = FALSE)
+  assert_logical(response, len = length(x))
 
   doseGrid <- sort(doseGrid)
   assert_subset(x, doseGrid)
@@ -170,7 +180,9 @@ Data <- function(
     nObs = length(x),
     nGrid = length(doseGrid),
     xLevel = match_within_tolerance(x, doseGrid),
-    placebo = placebo
+    placebo = placebo,
+    backfilled = backfilled,
+    response = response
   )
 }
 

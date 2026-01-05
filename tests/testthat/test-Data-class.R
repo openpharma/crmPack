@@ -66,6 +66,40 @@ test_that("Data constructor works as expected without cohort and no placebo", {
   expect_valid(result, "Data")
 })
 
+test_that("Data constructor handles backfilled and response arguments as expected", {
+  plcb <- 0.01
+  backfilled <- c(
+    FALSE,
+    FALSE,
+    TRUE,
+    FALSE,
+    FALSE,
+    TRUE,
+    FALSE,
+    FALSE,
+    FALSE,
+    FALSE,
+    FALSE,
+    TRUE
+  )
+  response <- c(FALSE, FALSE, TRUE, NA, FALSE, NA, TRUE, NA, NA, NA, NA, NA)
+  result <- expect_silent(
+    Data(
+      x = c(plcb, 25, 25, 25, plcb, 50, 50, 50, plcb, 100, 100, 100),
+      y = c(0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0),
+      ID = 1:12,
+      cohort = c(1L, 1L, 1L, 1L, 2L, 2L, 2L, 2L, 3L, 3L, 3L, 3L),
+      doseGrid = c(plcb, seq(25, 300, 25)),
+      placebo = TRUE,
+      backfilled = backfilled,
+      response = response
+    )
+  )
+  expect_valid(result, "Data")
+  expect_equal(result@backfilled, backfilled)
+  expect_equal(result@response, response)
+})
+
 # DataDual-class ----
 
 test_that(".DataDual works as expected", {
