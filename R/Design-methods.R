@@ -127,7 +127,7 @@ setMethod(
         }
 
         # TODO: put this into the extended helper function h_determine_dlts
-        if (first_separate && cohort_size > 1) {
+        if (firstSeparate && cohort_size > 1) {
           dlts <- rbinom(n = 1, size = 1, prob = prob)
           response <- rbinom(n = 1, size = 1, prob = prob_response)
           if ((data@placebo) && cohort_size_placebo > 0) {
@@ -341,6 +341,7 @@ setMethod(
         "n_args",
         "firstSeparate",
         "truth",
+        "trueResponse",
         "object",
         "mcmcOptions"
       ),

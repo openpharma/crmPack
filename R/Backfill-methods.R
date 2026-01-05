@@ -25,7 +25,10 @@ setMethod(
   signature = c(object = "OpeningMinDose"),
   definition = function(object, data, dose, ...) {
     previous_cohort <- h_previous_cohort(data)
-    if (previous_cohort$dose >= object@min_dose) {
+    if (
+      !is.na(previous_cohort$dose) &&
+        previous_cohort$dose >= object@min_dose
+    ) {
       list(
         open = TRUE,
         dose = previous_cohort$dose,

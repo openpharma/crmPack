@@ -9,9 +9,12 @@
   object,
   x,
   y,
+  response = rep(NA, length(y)),
   ID = length(object@ID) + seq_along(y),
   new_cohort = TRUE,
   check = TRUE,
+  backfill = FALSE,
+  cohort = NULL,
   ...
 )
 }

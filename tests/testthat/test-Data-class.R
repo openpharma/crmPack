@@ -66,7 +66,7 @@ test_that("Data constructor works as expected without cohort and no placebo", {
   expect_valid(result, "Data")
 })
 
-test_that("Data constructor handles backfilled and response arguments as expected", {
+test_that("Data handles backfilled and response arguments as expected", {
   plcb <- 0.01
   backfilled <- c(
     FALSE,
@@ -82,7 +82,20 @@ test_that("Data constructor handles backfilled and response arguments as expecte
     FALSE,
     TRUE
   )
-  response <- c(FALSE, FALSE, TRUE, NA, FALSE, NA, TRUE, NA, NA, NA, NA, NA)
+  response <- c(
+    0L,
+    0L,
+    1L,
+    NA,
+    0L,
+    NA,
+    1L,
+    NA,
+    NA,
+    NA,
+    NA,
+    NA
+  )
   result <- expect_silent(
     Data(
       x = c(plcb, 25, 25, 25, plcb, 50, 50, 50, plcb, 100, 100, 100),

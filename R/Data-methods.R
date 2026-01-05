@@ -304,7 +304,7 @@ setMethod(
     object,
     x,
     y,
-    response = rep(NA, length(y)),
+    response = rep(NA_integer_, length(y)),
     ID = length(object@ID) + seq_along(y),
     new_cohort = TRUE,
     check = TRUE,
@@ -314,7 +314,13 @@ setMethod(
   ) {
     assert_numeric(x, min.len = 0, max.len = 1)
     assert_integerish(y, lower = 0, upper = 1, any.missing = FALSE)
-    assert_logical(response, len = length(y))
+    assert_integerish(
+      response,
+      len = length(y),
+      lower = 0,
+      upper = 1,
+      any.missing = TRUE
+    )
     assert_integerish(ID, len = length(y), any.missing = FALSE)
     assert_disjunct(object@ID, ID)
     assert_flag(new_cohort)
