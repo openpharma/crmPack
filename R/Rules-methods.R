@@ -49,6 +49,8 @@ setGeneric(
   valueClass = "list"
 )
 
+## NextBestEWOC ----
+
 #' @describeIn nextBest find the next best dose based on the EWOC rule.
 #'
 #' @aliases nextBest-NextBestEWOC

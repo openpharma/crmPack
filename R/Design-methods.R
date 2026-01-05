@@ -2,6 +2,7 @@
 #' @include Design-class.R
 #' @include McmcOptions-class.R
 #' @include Rules-methods.R
+#' @include Backfill-methods.R
 #' @include Simulations-class.R
 #' @include helpers.R
 #' @include mcmc.R
@@ -21,6 +22,8 @@ NULL
 #' @param truth (`function`)\cr a function which takes as input a dose (vector) and returns the
 #'   true probability (vector) for toxicity. Additional arguments can be supplied
 #'   in `args`.
+#' @param trueResponse (`function`)\cr a function which takes as input a dose (vector) and returns the
+#'   probability (vector) for a positive efficacy response.
 #' @param args (`data.frame`)\cr data frame with arguments for the `truth` function. The
 #'   column names correspond to the argument names, the rows to the values of the
 #'   arguments. The rows are appropriately recycled in the `nsim`
@@ -60,6 +63,7 @@ setMethod(
     nsim = 1L,
     seed = NULL,
     truth,
+    trueResponse = plogis,
     args = NULL,
     firstSeparate = FALSE,
     mcmcOptions = McmcOptions(),
@@ -70,10 +74,15 @@ setMethod(
   ) {
     nsim <- as.integer(nsim)
     assert_function(truth)
+    assert_function(trueResponse)
     assert_flag(firstSeparate)
     assert_count(nsim, positive = TRUE)
     assert_flag(parallel)
     assert_count(nCores, positive = TRUE)
+
+    # Does this design use backfill cohorts? If no we can skip the corresponding
+    # computations later.
+    uses_backfill <- !is(object@backfill@opening, "OpeningNone")
 
     args <- as.data.frame(args)
     n_args <- max(nrow(args), 1L)
@@ -94,13 +103,17 @@ setMethod(
           current_args,
           truth
         )
+        prob_response_placebo <- trueResponse(object@data@doseGrid[1])
       }
 
       should_stop <- FALSE
       dose <- object@startingDose
+      backfill_cohorts <- list()
 
       while (!should_stop) {
         prob <- h_this_truth(dose, current_args, truth)
+        prob_response <- trueResponse(dose)
+
         cohort_size <- size(object@cohort_size, dose = dose, data = data)
 
         if (data@placebo) {
@@ -113,16 +126,168 @@ setMethod(
           cohort_size_placebo <- NULL
         }
 
-        data <- h_determine_dlts(
-          data = data,
-          dose = dose,
-          prob = prob,
-          prob_placebo = prob_placebo,
-          cohort_size = cohort_size,
-          cohort_size_placebo = cohort_size_placebo,
-          dose_grid = object@data@doseGrid[1],
-          first_separate = firstSeparate
-        )
+        # TODO: put this into the extended helper function h_determine_dlts
+        if (first_separate && cohort_size > 1) {
+          dlts <- rbinom(n = 1, size = 1, prob = prob)
+          response <- rbinom(n = 1, size = 1, prob = prob_response)
+          if ((data@placebo) && cohort_size_placebo > 0) {
+            dlts_placebo <- rbinom(n = 1, size = 1, prob = prob_placebo)
+            response_placebo <- rbinom(
+              n = 1,
+              size = 1,
+              prob = prob_response_placebo
+            )
+          }
+          if (dlts == 0) {
+            dlts <- c(dlts, rbinom(n = cohort_size - 1L, size = 1, prob = prob))
+            response <- c(
+              response,
+              rbinom(n = cohort_size - 1L, size = 1, prob = prob_response)
+            )
+            if ((data@placebo) && cohort_size_placebo > 0) {
+              dlts_placebo <- c(
+                dlts_placebo,
+                rbinom(
+                  n = cohort_size_placebo - 1L,
+                  size = 1,
+                  prob = prob_placebo
+                )
+              )
+              response_placebo <- c(
+                response_placebo,
+                rbinom(
+                  n = cohort_size_placebo - 1L,
+                  size = 1,
+                  prob = prob_response_placebo
+                )
+              )
+            }
+          }
+        } else {
+          dlts <- rbinom(n = cohort_size, size = 1, prob = prob)
+          response <- rbinom(n = cohort_size, size = 1, prob = prob_response)
+          if ((data@placebo) && cohort_size_placebo > 0) {
+            dlts_placebo <- rbinom(
+              n = cohort_size_placebo,
+              size = 1,
+              prob = prob_placebo
+            )
+            response_placebo <- rbinom(
+              n = cohort_size_placebo,
+              size = 1,
+              prob = prob_response_placebo
+            )
+          }
+        }
+
+        if ((data@placebo) && cohort_size_placebo > 0) {
+          data <- update(
+            object = data,
+            x = object@data@doseGrid[1],
+            y = dlts_placebo,
+            response = response_placebo,
+            check = FALSE
+          )
+
+          ## update the data with active dose
+          data <- update(
+            object = data,
+            x = dose,
+            y = dlts,
+            response = response,
+            new_cohort = FALSE
+          )
+        } else {
+          ## update the data with this cohort
+          data <- update(
+            object = data,
+            x = dose,
+            y = dlts,
+            response = response
+          )
+        }
+
+        # Backfill logic.
+        if (uses_backfill) {
+          # Check whether the previous cohort should be opened for backfilling.
+          open_last_cohort <- openCohort(
+            object = object@backfill@opening,
+            dose = dose,
+            data = data
+          )
+
+          if (open_last_cohort$open) {
+            backfill_cohort_size <- size(
+              object = object@backfill@cohort_size,
+              dose = open_last_cohort$dose,
+              cohort = open_last_cohort$cohort,
+              data = data
+            )
+
+            backfill_cohorts <- c(
+              backfill_cohorts,
+              list(
+                list(
+                  dose = open_last_cohort$dose,
+                  cohort = open_last_cohort$cohort,
+                  size = backfill_cohort_size
+                )
+              )
+            )
+          }
+
+          # Number of backfill patients we can enroll in this cycle.
+          max_recruits <- maxRecruits(
+            object@backfill@recruitment,
+            active_cohort_size = cohort_size
+          )
+
+          # Enroll backfill cohorts.
+          if (length(backfill_cohorts) > 0) {
+            for (i_bc in seq_along(backfill_cohorts)) {
+              bc <- backfill_cohorts[[i_bc]]
+              enroll_size <- min(bc$size, max_recruits)
+              if (enroll_size == 0) {
+                next
+              }
+              bc_dlts <- rbinom(
+                n = enroll_size,
+                size = 1,
+                prob = h_this_truth(bc$dose, current_args, truth)
+              )
+              bc_response <- rbinom(
+                n = enroll_size,
+                size = 1,
+                prob = trueResponse(bc$dose)
+              )
+
+              data <- update(
+                object = data,
+                x = bc$dose,
+                y = bc_dlts,
+                cohort = bc$cohort,
+                response = bc_response,
+                backfill = TRUE
+              )
+
+              # Reduce the number of patients still to be
+              # recruited in the backfill cohort and in this cycle.
+              backfill_cohorts[[i_bc]]$size <- backfill_cohorts[[i_bc]]$size -
+                enroll_size
+              max_recruits <- max_recruits - enroll_size
+
+              # Remove this cohort from the queue if it's fully enrolled.
+              if (backfill_cohorts[[i_bc]]$size == 0) {
+                backfill_cohorts[[i_bc]] <- NULL
+              }
+
+              # Stop enrolling backfill in this cycle if we reached the limit.
+              if (max_recruits == 0) {
+                break
+              }
+            }
+          }
+        }
 
         dose_limit <- maxDose(object@increments, data = data)
         samples <- mcmc(

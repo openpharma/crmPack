@@ -66,19 +66,19 @@ OpeningNone <- function() {
 
 # TODO add default constructor
 
-# RecruitmentFast ----
+# RecruitmentUnlimited ----
 
 ## class ----
 
-.RecruitmentFast <- setClass(
-  Class = "RecruitmentFast",
+.RecruitmentUnlimited <- setClass(
+  Class = "RecruitmentUnlimited",
   contains = "Recruitment"
 )
 
 ## constructor ----
 
-RecruitmentFast <- function() {
-  .RecruitmentFast()
+RecruitmentUnlimited <- function() {
+  .RecruitmentUnlimited()
 }
 
 # Backfill ----
@@ -95,7 +95,7 @@ RecruitmentFast <- function() {
   prototype = prototype(
     cohort_size = CohortSizeConst(size = 3),
     opening = .OpeningMinDose(),
-    recruitment = .RecruitmentFast()
+    recruitment = .RecruitmentUnlimited()
   ),
   contains = "CrmPackClass"
   # TODO add validity
@@ -106,7 +106,7 @@ RecruitmentFast <- function() {
 Backfill <- function(
   cohort_size = CohortSizeConst(size = 3),
   opening = OpeningMinDose(),
-  recruitment = RecruitmentFast()
+  recruitment = RecruitmentUnlimited()
 ) {
   .Backfill(
     cohort_size = cohort_size,
