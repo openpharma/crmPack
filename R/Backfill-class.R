@@ -30,11 +30,28 @@ NULL
 
 ## constructor ----
 
-# TODO add constructor
+OpeningMinDose <- function(min_dose = 0) {
+  .OpeningMinDose(min_dose = min_dose)
+}
 
 ## default constructor ----
 
 # TODO add default constructor
+
+# OpeningNone ----
+
+## class ----
+
+.OpeningNone <- setClass(
+  Class = "OpeningNone",
+  contains = "Opening"
+)
+
+## constructor ----
+
+OpeningNone <- function() {
+  .OpeningNone()
+}
 
 # Recruitment ----
 
@@ -60,7 +77,9 @@ NULL
 
 ## constructor ----
 
-# TODO add constructor
+RecruitmentFast <- function() {
+  .RecruitmentFast()
+}
 
 # Backfill ----
 
@@ -74,7 +93,7 @@ NULL
     recruitment = "Recruitment"
   ),
   prototype = prototype(
-    cohort_size = CohortSize(size = 3),
+    cohort_size = CohortSizeConst(size = 3),
     opening = .OpeningMinDose(),
     recruitment = .RecruitmentFast()
   ),
@@ -84,7 +103,17 @@ NULL
 
 ## constructor ----
 
-# TODO add constructor
+Backfill <- function(
+  cohort_size = CohortSizeConst(size = 3),
+  opening = OpeningMinDose(),
+  recruitment = RecruitmentFast()
+) {
+  .Backfill(
+    cohort_size = cohort_size,
+    opening = opening,
+    recruitment = recruitment
+  )
+}
 
 ## default constructor ----
 

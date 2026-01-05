@@ -92,14 +92,15 @@ RoxygenNote: 7.3.3
 RdMacros: Rdpack
 Collate:
     'CrmPackClass-class.R'
+    'Rules-validity.R'
+    'helpers.R'
+    'Rules-class.R'
+    'Backfill-class.R'
     'CrmPackClass-methods.R'
     'Data-validity.R'
-    'helpers.R'
     'Data-class.R'
     'helpers_data.R'
     'Data-methods.R'
-    'Rules-validity.R'
-    'Rules-class.R'
     'ModelParams-validity.R'
     'ModelParams-class.R'
     'Model-validity.R'

@@ -105,7 +105,14 @@ test_that("Design object can be created with user constructor", {
 test_that("Design user constructor arguments names are as expected", {
   expect_function(
     Design,
-    args = c("model", "stopping", "increments", "pl_cohort_size", "..."),
+    args = c(
+      "model",
+      "stopping",
+      "increments",
+      "pl_cohort_size",
+      "backfill",
+      "..."
+    ),
     ordered = TRUE
   )
 })
