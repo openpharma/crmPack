@@ -23,6 +23,12 @@ format: html
   - Dose level is lower than highest dose deemed safe
   - Dose is above a minimum dose level
 
+## Backwards Compatibility
+
+We have looked into the S4 class framework details and it is a known issue that when we add new slots to existing classes, and then load old saved objects of this class without this slot, then these objects will not be usable. In Bioconductor they even created a special package `updateObject` to deal with this issue (see [here](https://bioconductor.posit.co/packages/3.22/bioc/vignettes/updateObject/inst/doc/updateObject.html) for details).
+
+We think that this is not warranted in our case, because typically the code for running simulations and analyses is retained by users of `crmPack`. Therefore it is best to rerun this code with the new package version including the additional slots. 
+
 ## Implementation
 
 ### `Backfill` class
@@ -36,9 +42,11 @@ The new S4 class `Backfill` specifies the backfilling details of a design. It ha
   - This slot contains an object of a new `Opening` rules class
   - These rules can be based on e.g. dose level, current highest/maximum safe dose, efficacy responses, distance from other backfill cohorts, etc.
   - Here we add the logical "and" and "or" operators which we have from the `Stopping` rules already
+  - Corresponding method `openCohort` evaluates whether a new backfill cohort should be opened at the previous cohort's dose level.
 - `recruitment`
   - This slot contains an object of a new `Recruitment` class
   - Here can specify the recruitment speed, e.g. immediate recruitment vs. ratio compared to active (non-backfill) cohort (e.g. when active cohort has 3 patients recruited then here only 1/3 so 1 patient per cycle to backfill cohorts)
+  - Corresponding method `maxRecruits` gives the maximum number of patients that can be recruited into backfill cohorts in the current cycle.
 
 ### `Design` class
 
@@ -46,9 +54,7 @@ Conceptually the backfilling details are part of the design of a trial. Therefor
 
 At least in the beginning, though, it should not be included in the parent `RuleDesign` class, because we need to be more fine grained which `Design` subclass we implement this for. 
 
-- Be backwards compatible
-  - Default to no backfilling, i.e. use a corresponding prototype object in the `Design` class definition/constructor
-  - Also need to be robust when we meet a `Design` object that does not have a backfill slot
+- Default to no backfilling, i.e. use a corresponding prototype object in the `Design` class definition/constructor
 
 ### `Data` class
 
@@ -56,12 +62,19 @@ The additional backfill patients are included when fitting the model to inform d
 In addition, and we need to capture the "response" information in a new slot too.
 
 - New logical vector in the slot `backfilled` identifying whether each patient was backfilled or not.
-- New logical vector in the slot `response` identifying whether each patient had a response or not.
+- New integer vector in the slot `response` identifying whether each patient had a response (1) or not (0).
   - Name: Chosen because something like `z` is not readable enough, although it would fit with the `x`, `y` pattern we have currently.
   - Note that we have a similar `w` slot in the `DualData` class, but this is for continuous biomarker outcome. So we better keep it separate.
-- Be backwards compatible
-  - Default to no patients backfilled (all `FALSE`) and no response data available (all `NA`).
-  - Check again what happens if an old object without the new slots is encountered.
+  - We use here integers instead of logicals to be consistent with the binary DLT information in the `y` slot.
+- Default to no patients backfilled (all `FALSE`) and no response data available (all `NA`).
+
+### `update` method
+
+The `update` method needs to be modified to include the response and backfill cohort information when updating the `Data` object with new patients.
+
+- We need to be careful with the ordering of patients when backfilling previous cohorts. 
+  - This is checked in the corresponding validity method for the `Data` class.
+  - We preserve this ordering in the `update` method (first order by cohort index, then by patient ID), also in order to keep nicer looking plots later.
 
 ### `simulate` method
 
@@ -78,7 +91,94 @@ We suggest to not modify this because the examination paths would get too comple
 In addition, the backfilling will always make the design better, so it seems not needed for the quick check for which the `examine` method is intended.
 
 
+## Prototype
 
+You can try out the prototype implementation by installing `crmPack` from the following GitHub branch:
+
+```{r}
+remotes::install_github("openpharma/crmPack", ref = "danielinteractive/prototype669")
+```
+
+This is a simple example of a simulation with backfilling cohorts:
+
+```{r}
+# Define the dose-grid
+emptydata <- Data(
+    doseGrid = c(0.1, 1, 3, 5, 10, 15, 20, 25, 40, 50, 80, 100)
+)
+
+# Initialize the CRM model
+model <- LogisticLogNormal(
+    mean = c(-0.85, 1),
+    cov = matrix(c(1, -0.5, -0.5, 1), nrow = 2),
+    ref_dose = 56
+)
+
+# Choose the rule for selecting the next dose
+myNextBest <- NextBestNCRM(
+    target = c(0.2, 0.35),
+    overdose = c(0.35, 1),
+    max_overdose_prob = 0.25
+)
+
+# Choose the rule for stopping
+myStopping1 <- StoppingMinCohorts(nCohorts = 3)
+myStopping2 <- StoppingTargetProb(
+    target = c(0.2, 0.35),
+    prob = 0.5
+)
+myStopping3 <- StoppingMinPatients(nPatients = 20)
+myStopping <- (myStopping1 & myStopping2) |
+    myStopping3 |
+    StoppingMissingDose()
+
+# Choose the rule for dose increments
+myIncrements <- IncrementsRelative(
+    intervals = c(0, 20, 50),
+    increments = c(1, 0.67, 0.33)
+)
+
+# Initialize the design
+design <- Design(
+    model = model,
+    nextBest = myNextBest,
+    stopping = myStopping,
+    increments = myIncrements,
+    cohort_size = CohortSizeConst(3),
+    data = emptydata,
+    startingDose = 3,
+    backfill = Backfill(
+        cohort_size = CohortSizeConst(2),
+        recruitment = RecruitmentUnlimited(),
+        opening = OpeningMinDose(min_dose = 1)
+    )
+)
+
+myTruth <- probFunction(design@model, alpha0 = 7, alpha1 = 8)
+options <- h_get_mcmc_options()
+myTrueResponse <- plogis
+
+result <- simulate(
+    design,
+    args = NULL,
+    truth = myTruth,
+    trueResponse = myTrueResponse,
+    nsim = 10,
+    seed = 819,
+    mcmcOptions = options,
+    parallel = FALSE,
+    firstSeparate = FALSE
+)
+```
+
+Note that currently only very few `Opening` and `Recruitment` rules are implemented, but this can be easily extended later in the production phase.
+
+## Open Questions
+
+- Question is a bit how to define "safe dose" - maybe just below the recommended dose?
+- Also the timing of the backfilling can be discussed: 
+  - Currently we open backfill cohorts at the same time as the current active cohort, and then supply the full data set to the model fitting and the recommended dose calculation. 
+  - See [here](https://github.com/openpharma/crmPack/blob/danielinteractive/prototype669/R/Design-methods.R#L92) for the `simulate` method prototype.
 
 
 ## References
