@@ -18,10 +18,18 @@ format: html
   - No backfill at all
   - Constant number of patients for each backfill cohort (e.g. always 3)
   - Random number of patients for each backfill cohort (e.g. between 1 and 6)
+- Be able to specify an overall maximum number of patients across all backfill cohorts
 - Allow for different rules for opening / recruiting into backfill cohorts:
   - Based on efficacy (e.g. response observed, probably can keep it to a binary efficacy outcome for the beginning)
   - Dose level is lower than highest dose deemed safe
   - Dose is above a minimum dose level
+  - Delayed opening (e.g. only when active dose level has reached certain dose)
+  - Need to check all previously tested dose levels below the current recommended dose whether backfilling is possible
+- Be able to specify priorities between different open backfill cohorts (e.g. first lowest, first highest, or random)
+- For reporting, will be useful to have the ability to filter out the backfill cohort patients
+  - For specific stopping rules might not want to include backfill patients
+  - e.g. for plotting a trial course, or for reporting number of patients at certain doses, etc.
+  - can look at the details later
 
 ## Backwards Compatibility
 
@@ -38,15 +46,21 @@ The new S4 class `Backfill` specifies the backfilling details of a design. It ha
 - `cohort_size`
   - Can reuse the `CohortSize` class here
   - Add a new `RandomCohortSize` subclass to implement the random number of backfill patients
+- `total_size`
+  - New slot to specify the overall maximum number of patients across all backfill cohorts
+  - Can default to `Inf` (no limit)
 - `opening`
   - This slot contains an object of a new `Opening` rules class
   - These rules can be based on e.g. dose level, current highest/maximum safe dose, efficacy responses, distance from other backfill cohorts, etc.
   - Here we add the logical "and" and "or" operators which we have from the `Stopping` rules already
-  - Corresponding method `openCohort` evaluates whether a new backfill cohort should be opened at the previous cohort's dose level.
+  - Corresponding method `openCohort` evaluates whether a new backfill cohort should be opened / an existing backfill cohort can stay open at a dose level below the next recommended dose
 - `recruitment`
   - This slot contains an object of a new `Recruitment` class
   - Here can specify the recruitment speed, e.g. immediate recruitment vs. ratio compared to active (non-backfill) cohort (e.g. when active cohort has 3 patients recruited then here only 1/3 so 1 patient per cycle to backfill cohorts)
   - Corresponding method `maxRecruits` gives the maximum number of patients that can be recruited into backfill cohorts in the current cycle.
+- `priority`
+  - New slot to specify the priority rule for recruiting into open backfill cohorts
+  - E.g. first "lowest" dose, first "highest" dose, "random", so suggest to just use a string for this.
 
 ### `Design` class
 
@@ -67,6 +81,12 @@ In addition, and we need to capture the "response" information in a new slot too
   - Note that we have a similar `w` slot in the `DualData` class, but this is for continuous biomarker outcome. So we better keep it separate.
   - We use here integers instead of logicals to be consistent with the binary DLT information in the `y` slot.
 - Default to no patients backfilled (all `FALSE`) and no response data available (all `NA`).
+
+### `Stopping` class
+
+- For specific stopping rules we can add a flag whether to include backfill patients or not.
+  - For the beginning we can just implement this for the `StoppingMinPatients` rule.
+  - Default to including all patients (backfilled and non-backfilled).
 
 ### `update` method
 
