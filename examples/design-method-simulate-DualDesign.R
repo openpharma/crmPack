@@ -101,9 +101,9 @@ mySims <- simulate(
   seed = 3,
   startingDose = 6,
   mcmcOptions = McmcOptions(
-    burnin = 100,
+    burnin = 5,
     step = 1,
-    samples = 300
+    samples = 10
   )
 )
 
