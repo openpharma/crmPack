@@ -102,6 +102,8 @@ remotes::install_github("openpharma/crmPack", ref = "danielinteractive/prototype
 This is a simple example of a simulation with backfilling cohorts:
 
 ```{r}
+library(crmPack)
+
 # Define the dose-grid
 emptydata <- Data(
     doseGrid = c(0.1, 1, 3, 5, 10, 15, 20, 25, 40, 50, 80, 100)
@@ -147,10 +149,10 @@ design <- Design(
     cohort_size = CohortSizeConst(3),
     data = emptydata,
     startingDose = 3,
-    backfill = Backfill(
+    backfill = crmPack:::Backfill(
         cohort_size = CohortSizeConst(2),
-        recruitment = RecruitmentUnlimited(),
-        opening = OpeningMinDose(min_dose = 1)
+        recruitment = crmPack:::RecruitmentUnlimited(),
+        opening = crmPack:::OpeningMinDose(min_dose = 1)
     )
 )
 
