@@ -98,7 +98,7 @@ my_stopping2 <- StoppingTargetProb(
   prob = 0.5
 )
 my_stopping3 <- StoppingMinPatients(nPatients = 20)
-my_stopping <- (my_stopping1 & my_stopping2) | my_stopping3
+my_stopping <- (my_stopping1 & my_stopping2) | my_stopping3 | StoppingMissingDose()
 
 # Choose the rule for dose increments.
 my_increments <- IncrementsRelative(
@@ -240,7 +240,7 @@ myStopping1 <- StoppingTargetProb(
 )
 myStopping2 <- StoppingMinPatients(nPatients = 50)
 
-myStopping <- (myStopping1 | myStopping2)
+myStopping <- (myStopping1 | myStopping2) | StoppingMissingDose()
 
 # Choose the safety window
 mysafetywindow <- SafetyWindowConst(c(6, 2), 7, 7)

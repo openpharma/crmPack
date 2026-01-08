@@ -43,7 +43,7 @@ myIncrements <- IncrementsRelative(
 mySize <- CohortSizeConst(size = 3)
 ## Stop only when 10 subjects are treated (only for illustration such a low
 ## sample size)
-myStopping <- StoppingMinPatients(nPatients = 10)
+myStopping <- StoppingMinPatients(nPatients = 10) | StoppingMissingDose()
 ## Now specified the design with all the above information and starting with
 ## a dose of 25
 

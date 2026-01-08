@@ -45,7 +45,7 @@ myIncrements <- IncrementsRelative(
 mySize <- CohortSizeConst(size = 3)
 ## Stop only when 10 subjects are treated:
 ## very low sample size is just for illustration here
-myStopping <- StoppingMinPatients(nPatients = 10)
+myStopping <- StoppingMinPatients(nPatients = 10) | StoppingMissingDose()
 
 ## Specified the design
 design <- DualResponsesSamplesDesign(

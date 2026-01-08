@@ -45,7 +45,8 @@ myStopping <- StoppingAny(
       ),
       report_label = "StoppingAllLabel"
     ),
-    myStopping3
+    myStopping3,
+    StoppingMissingDose()
   ),
   report_label = "StoppingAnyLabel"
 )

@@ -72,7 +72,7 @@ my_increments <- IncrementsRelative(
 )
 
 my_size <- CohortSizeConst(size = 3)
-my_stopping <- StoppingMinPatients(nPatients = 36)
+my_stopping <- StoppingMinPatients(nPatients = 36) | StoppingMissingDose()
 
 design <- DualResponsesDesign(
   nextBest = my_next_best,
