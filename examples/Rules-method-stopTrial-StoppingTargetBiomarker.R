@@ -39,6 +39,7 @@ model <- DualEndpointRW(
 # Set-up some MCMC parameters and generate samples from the posterior
 options <- McmcOptions(burnin = 5, step = 1, samples = 10)
 set.seed(94)
+\donttest{
 samples <- mcmc(data, model, options)
 
 # Define the rule for dose increments and calculate the maximum dose allowed
@@ -79,5 +80,5 @@ stopTrial(
   model = model,
   data = data
 )
-
+}
 # nolint end

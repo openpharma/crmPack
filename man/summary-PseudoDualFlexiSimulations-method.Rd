@@ -123,8 +123,8 @@ myTruthEff <- c(
 
 
 ## specify the options for MCMC
-# For illustration purpose, we use 10 burn-in and generate 100 samples
-options <- McmcOptions(burnin = 10, step = 1, samples = 100)
+# for illustration purposes, in reality larger number of burnin and samples shoud be used
+options <- McmcOptions(burnin = 5, step = 1, samples = 10)
 ## The simulation
 ## For illustration purpose only 1 simulation is produced (nsim=1).
 mySim <- simulate(
