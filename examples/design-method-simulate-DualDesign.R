@@ -90,6 +90,7 @@ curve(trueBiomarker(x), from = 0, to = 80)
 # We only generate 1 trial outcome here for illustration, for the actual study
 # this should be increased of course, similarly for the McmcOptions -
 # they also need to be increased.
+\donttest{
 mySims <- simulate(
   design,
   trueTox = trueTox,
@@ -101,10 +102,11 @@ mySims <- simulate(
   seed = 3,
   startingDose = 6,
   mcmcOptions = McmcOptions(
-    burnin = 5,
+    burnin = 10,
     step = 1,
-    samples = 10
+    samples = 100
   )
 )
+}
 
 # nolint end

@@ -19,7 +19,7 @@ model <- LogisticIndepBeta(
 )
 ##define MCMC options
 ##for illustration purpose we use 10 burn-in and generate 50 samples
-options <- McmcOptions(burnin = 10, step = 2, samples = 50)
+options <- McmcOptions(burnin = 5, step = 1, samples = 10)
 ##samples of 'Samples' class
 samples <- mcmc(data, model, options)
 ##define the 'StoppingTDCIRatio' class

@@ -107,7 +107,7 @@ my_design <- DualResponsesSamplesDesign(
 )
 
 # MCMC options.
-my_options <- McmcOptions(burnin = 10, step = 2, samples = 50)
+my_options <- McmcOptions(burnin = 5, step = 1, samples = 10)
 
 \donttest{
 # For illustration purpose only 1 simulation is produced.
