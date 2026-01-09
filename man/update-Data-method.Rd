@@ -9,7 +9,7 @@
   object,
   x,
   y,
-  response = rep(NA, length(y)),
+  response = rep(NA_integer_, length(y)),
   ID = length(object@ID) + seq_along(y),
   new_cohort = TRUE,
   check = TRUE,
