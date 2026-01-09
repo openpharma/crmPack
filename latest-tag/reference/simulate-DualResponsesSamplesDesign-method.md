@@ -185,7 +185,7 @@ myIncrements <- IncrementsRelative(
 mySize <- CohortSizeConst(size = 3)
 ## Stop only when 10 subjects are treated (only for illustration such a low
 ## sample size)
-myStopping <- StoppingMinPatients(nPatients = 10)
+myStopping <- StoppingMinPatients(nPatients = 10) | StoppingMissingDose()
 ## Now specified the design with all the above information and starting with
 ## a dose of 25
 
@@ -210,7 +210,7 @@ myTruthGain <- function(dose) {
 }
 
 ## simulate the trial for 10 times involving samples
-## for illustration purpose we use 10 burn-ins to generate 50 samples
+## for illustration purposes, in reality larger number of burnin and samples shoud be used
 options <- McmcOptions(burnin = 10, step = 1, samples = 50)
 ## For illustration purpose only 1 simulations are produced (nsim=1).
 mySim <- simulate(

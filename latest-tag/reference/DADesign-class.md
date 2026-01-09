@@ -157,7 +157,7 @@ my_stopping1 <- StoppingTargetProb(
 
 my_stopping2 <- StoppingMinPatients(nPatients = 50)
 
-my_stopping <- (my_stopping1 | my_stopping2)
+my_stopping <- (my_stopping1 | my_stopping2) | StoppingMissingDose()
 
 my_safety_window <- SafetyWindowConst(c(6, 2), 7, 7)
 

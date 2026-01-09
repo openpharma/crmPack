@@ -20,6 +20,7 @@ introduction, we make simple choices for the value of each element.
 We start by loading the `crmPack` package …
 
 ``` r
+
 library(crmPack)
 #> Loading required package: ggplot2
 #> Registered S3 method overwritten by 'crmPack':
@@ -36,6 +37,7 @@ library(crmPack)
 First, we list the doses that *might* be used during the trial.
 
 ``` r
+
 # Define the dose grid.
 empty_data <- Data(doseGrid = c(1, 3, 9, 20, 30, 45, 60, 80, 100))
 ```
@@ -54,6 +56,7 @@ but will probably affect the trial’s operating characteristics.
 Next, define the dose toxicity model.
 
 ``` r
+
 # Initialize the CRM model.
 model <- LogisticLogNormal(
   mean = c(-0.85, 1),
@@ -109,6 +112,7 @@ N\begin{pmatrix}
 It is easy to obtain a visual representation of the prior:
 
 ``` r
+
 vignetteMcmcOptions <- McmcOptions(burnin = 100, step = 2, samples = 1000)
 prior_samples <- mcmc(
   data = empty_data,
@@ -132,6 +136,7 @@ current cohort and the dose used in the next, regardless of likely
 toxicity.
 
 ``` r
+
 # Choose the rule for dose increments.
 my_increments <- IncrementsRelative(
   intervals = c(0, 30),
@@ -165,6 +170,7 @@ cohort
 #### The NextBest rule for recommending the best dose for the next cohort
 
 ``` r
+
 # Choose the rule for selecting the next dose.
 my_next_best <- NextBestNCRM(
   target = c(0.2, 0.35),
@@ -173,13 +179,13 @@ my_next_best <- NextBestNCRM(
 )
 ```
 
-Here, we choose to use Neuenschwander’s rule (Neuenschwander, Branson,
-and Gsponer 2008), in which the dose for the next cohort to be the dose
-(amongst those doses that are eligible for selection according to the
-escalation rule) that has the highest posterior chance of having a
-probability of toxicity in the target range - here \[0.2, 0.35) -
-provided that the dose’s chance of having a probability of toxicity in
-the overdose range - here \[0.35, 1.0\] - is less than 0.25.
+Here, we choose to use Neuenschwander’s rule (Neuenschwander et al.
+2008), in which the dose for the next cohort to be the dose (amongst
+those doses that are eligible for selection according to the escalation
+rule) that has the highest posterior chance of having a probability of
+toxicity in the target range - here \[0.2, 0.35) - provided that the
+dose’s chance of having a probability of toxicity in the overdose
+range - here \[0.35, 1.0\] - is less than 0.25.
 
 #### The cohort size
 
@@ -204,6 +210,7 @@ determine the *actual* size of the next cohort, the larger number
 required by the two parts of the compound rule is used.
 
 ``` r
+
 # Choose the rule for the cohort size.
 my_size_1 <- CohortSizeRange(
   intervals = c(0, 30),
@@ -236,6 +243,7 @@ The trial will stop of either the futility rule or *both* components of
 the success rule are satisfied.
 
 ``` r
+
 # Choose the rule for stopping.
 my_stopping_1 <- StoppingMinCohorts(nCohorts = 3)
 my_stopping_2 <- StoppingTargetProb(
@@ -252,6 +260,7 @@ Finally, we combine all six elements of the design, together with the
 starting dose, to define the trial.
 
 ``` r
+
 # Initialize the design.
 design <- Design(
   model = model,

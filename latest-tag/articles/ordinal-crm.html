@@ -21,7 +21,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">crmPack</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">2.0.1</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">2.0.2</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -70,6 +70,7 @@
     <div class="dropdown-menu" aria-labelledby="dropdown-versions">
     <a class="dropdown-item" data-toggle="tooltip" title="" href="https://openpharma.github.io/crmPack/main">main</a>
 <a class="dropdown-item" data-toggle="tooltip" title="" href="https://openpharma.github.io/crmPack/latest-tag">latest-tag</a>
+<a class="dropdown-item" data-toggle="tooltip" title="" href="https://openpharma.github.io/crmPack/v2.0.2">v2.0.2</a>
 <a class="dropdown-item" data-toggle="tooltip" title="" href="https://openpharma.github.io/crmPack/v2.0.1">v2.0.1</a>
 </div>
 </li></div>
@@ -94,7 +95,7 @@
       <img src="../logo.png" class="logo" alt=""><h1>Ordinal CRM</h1>
             
       
-      <small class="dont-index">Source: <a href="https://github.com/openpharma/crmPack/blob/v2.0.1/vignettes/ordinal-crm.Rmd" class="external-link"><code>vignettes/ordinal-crm.Rmd</code></a></small>
+      <small class="dont-index">Source: <a href="https://github.com/openpharma/crmPack/blob/v2.0.2/vignettes/ordinal-crm.Rmd" class="external-link"><code>vignettes/ordinal-crm.Rmd</code></a></small>
       <div class="d-none name"><code>ordinal-crm.Rmd</code></div>
     </div>
 
@@ -111,11 +112,11 @@
 <div class="section level2">
 <h2 id="introduction">Introduction<a class="anchor" aria-label="anchor" href="#introduction"></a>
 </h2>
-<p>The original CRM model introduced by <span class="citation">(O’Quigley, Pepe, and Fisher 1990)</span> dichotomises
-toxicity events as either “Not toxic” or “DLT”. The ordinal CRM
-generalises this model by classifying toxicities on an ordinal scale
-with an arbitrary number of categories (though use of more than three or
-four would be unusual).</p>
+<p>The original CRM model introduced by <span class="citation">(O’Quigley et al. 1990)</span> dichotomises toxicity
+events as either “Not toxic” or “DLT”. The ordinal CRM generalises this
+model by classifying toxicities on an ordinal scale with an arbitrary
+number of categories (though use of more than three or four would be
+unusual).</p>
 <p>This approach is particularly useful in non-oncology settings, where
 there is a greater interest in adverse events that are not dose limiting
 but are nonetheless undesirable.</p>
@@ -184,7 +185,7 @@ the model.</p>
 patient treated at dose d is in category k <em><em>or higher</em></em>,
 k=0, …, K; d=1, …, D.</p>
 <p>Then</p>
-<p><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mrow><mi>log</mi><mo>⁡</mo></mrow><mrow><mo stretchy="true" form="prefix">(</mo><mfrac><mi>p</mi><mrow><mn>1</mn><mo>−</mo><mi>p</mi></mrow></mfrac><mo stretchy="true" form="postfix">)</mo></mrow><mo>=</mo><msub><mi>α</mi><mi>k</mi></msub><mo>+</mo><mi>β</mi><mo>⋅</mo><mrow><mi>log</mi><mo>⁡</mo></mrow><mrow><mo stretchy="true" form="prefix">(</mo><mfrac><mi>d</mi><msub><mi>d</mi><mrow><mi>r</mi><mi>e</mi><mi>f</mi></mrow></msub></mfrac><mo stretchy="true" form="postfix">)</mo></mrow></mrow><annotation encoding="application/x-tex"> \log \left( \frac{p}{1-p}\right) = \alpha_k + \beta \cdot \log \left( \frac{d}{d_{ref}} \right)  </annotation></semantics></math>
+<p><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mrow><mi mathvariant="normal">log</mi><mo>⁡</mo></mrow><mrow><mo stretchy="true" form="prefix">(</mo><mfrac><mi>p</mi><mrow><mn>1</mn><mo>−</mo><mi>p</mi></mrow></mfrac><mo stretchy="true" form="postfix">)</mo></mrow><mo>=</mo><msub><mi>α</mi><mi>k</mi></msub><mo>+</mo><mi>β</mi><mo>⋅</mo><mrow><mi mathvariant="normal">log</mi><mo>⁡</mo></mrow><mrow><mo stretchy="true" form="prefix">(</mo><mfrac><mi>d</mi><msub><mi>d</mi><mrow><mi>r</mi><mi>e</mi><mi>f</mi></mrow></msub></mfrac><mo stretchy="true" form="postfix">)</mo></mrow></mrow><annotation encoding="application/x-tex"> \log \left( \frac{p}{1-p}\right) = \alpha_k + \beta \cdot \log \left( \frac{d}{d_{ref}} \right)  </annotation></semantics></math>
 for k=1, …, K [p<sub>0</sub>(d) = 1 by definition] where d<sub>ref</sub>
 is a reference dose.</p>
 <p>The αs are constrained such that α<sub>1</sub> &gt; α<sub>2</sub>
@@ -192,7 +193,7 @@ is a reference dose.</p>
 <p>The priors for the model’s parameters are:</p>
 <p><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>α</mi><mi>k</mi></msub><mo>∼</mo><mi>N</mi><mo stretchy="false" form="prefix">(</mo><msub><mi>μ</mi><msub><mi>α</mi><mi>k</mi></msub></msub><mo>,</mo><msubsup><mi>σ</mi><msub><mi>α</mi><mi>k</mi></msub><mn>2</mn></msubsup><mo stretchy="false" form="postfix">)</mo></mrow><annotation encoding="application/x-tex"> \alpha_k \sim N(\mu_{\alpha_k}, \sigma_{\alpha_k}^2) </annotation></semantics></math></p>
 <p>and</p>
-<p><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mrow><mi>log</mi><mo>⁡</mo></mrow><mo stretchy="false" form="prefix">(</mo><mi>β</mi><mo stretchy="false" form="postfix">)</mo><mo>∼</mo><mi>N</mi><mo stretchy="false" form="prefix">(</mo><msub><mi>μ</mi><mi>β</mi></msub><mo>,</mo><msubsup><mi>σ</mi><mi>β</mi><mn>2</mn></msubsup><mo stretchy="false" form="postfix">)</mo></mrow><annotation encoding="application/x-tex"> \log(\beta) \sim N(\mu_\beta, \sigma_\beta^2) </annotation></semantics></math></p>
+<p><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mrow><mi mathvariant="normal">log</mi><mo>⁡</mo></mrow><mo stretchy="false" form="prefix">(</mo><mi>β</mi><mo stretchy="false" form="postfix">)</mo><mo>∼</mo><mi>N</mi><mo stretchy="false" form="prefix">(</mo><msub><mi>μ</mi><mi>β</mi></msub><mo>,</mo><msubsup><mi>σ</mi><mi>β</mi><mn>2</mn></msubsup><mo stretchy="false" form="postfix">)</mo></mrow><annotation encoding="application/x-tex"> \log(\beta) \sim N(\mu_\beta, \sigma_\beta^2) </annotation></semantics></math></p>
 <p>A <code>LogisticLogOrdinal</code> is initialised in exactly the same
 way as a <code>LogisticLogNormal</code> object:</p>
 <div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
@@ -230,55 +231,55 @@ cumulative probabilities of toxicity are required:</p>
 <div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="../reference/fit.html">fit</a></span><span class="op">(</span><span class="va">samples</span>, <span class="va">ordinal_model</span>, <span class="va">ordinal_data</span>, grade <span class="op">=</span> <span class="fl">1L</span><span class="op">)</span></span>
 <span><span class="co">#&gt;    dose     middle        lower     upper</span></span>
-<span><span class="co">#&gt; 1    10 0.03791594 3.845272e-09 0.2494931</span></span>
-<span><span class="co">#&gt; 2    20 0.07641260 1.010433e-05 0.3490544</span></span>
-<span><span class="co">#&gt; 3    30 0.13311564 8.659123e-04 0.4271828</span></span>
-<span><span class="co">#&gt; 4    40 0.22128867 2.158141e-02 0.5107935</span></span>
-<span><span class="co">#&gt; 5    50 0.35582869 1.256966e-01 0.6321181</span></span>
-<span><span class="co">#&gt; 6    60 0.50764129 1.894491e-01 0.8497241</span></span>
-<span><span class="co">#&gt; 7    70 0.61774867 2.251662e-01 0.9618560</span></span>
-<span><span class="co">#&gt; 8    80 0.68720087 2.427326e-01 0.9908243</span></span>
-<span><span class="co">#&gt; 9    90 0.73314030 2.566447e-01 0.9973955</span></span>
-<span><span class="co">#&gt; 10  100 0.76549229 2.666904e-01 0.9991393</span></span>
+<span><span class="co">#&gt; 1    10 0.03876924 1.026434e-09 0.2500665</span></span>
+<span><span class="co">#&gt; 2    20 0.07812849 4.842128e-06 0.3397688</span></span>
+<span><span class="co">#&gt; 3    30 0.13696041 6.574036e-04 0.4313443</span></span>
+<span><span class="co">#&gt; 4    40 0.22721609 1.485473e-02 0.5407657</span></span>
+<span><span class="co">#&gt; 5    50 0.35694897 1.246580e-01 0.6527420</span></span>
+<span><span class="co">#&gt; 6    60 0.50298646 1.966448e-01 0.8227725</span></span>
+<span><span class="co">#&gt; 7    70 0.60962501 2.230530e-01 0.9484642</span></span>
+<span><span class="co">#&gt; 8    80 0.67815913 2.408100e-01 0.9864308</span></span>
+<span><span class="co">#&gt; 9    90 0.72458408 2.585866e-01 0.9961045</span></span>
+<span><span class="co">#&gt; 10  100 0.75786838 2.726134e-01 0.9987698</span></span>
 <span><span class="fu"><a href="../reference/fit.html">fit</a></span><span class="op">(</span><span class="va">samples</span>, <span class="va">ordinal_model</span>, <span class="va">ordinal_data</span>, grade <span class="op">=</span> <span class="fl">2L</span><span class="op">)</span></span>
 <span><span class="co">#&gt;    dose     middle        lower     upper</span></span>
-<span><span class="co">#&gt; 1    10 0.02009810 1.235660e-09 0.1364216</span></span>
-<span><span class="co">#&gt; 2    20 0.04074745 3.705421e-06 0.1923819</span></span>
-<span><span class="co">#&gt; 3    30 0.07213528 3.551091e-04 0.2477582</span></span>
-<span><span class="co">#&gt; 4    40 0.12378651 7.828693e-03 0.3202875</span></span>
-<span><span class="co">#&gt; 5    50 0.21202279 5.297092e-02 0.4264846</span></span>
-<span><span class="co">#&gt; 6    60 0.34120238 9.547916e-02 0.6603330</span></span>
-<span><span class="co">#&gt; 7    70 0.46231459 1.190007e-01 0.9007814</span></span>
-<span><span class="co">#&gt; 8    80 0.54883056 1.294015e-01 0.9791533</span></span>
-<span><span class="co">#&gt; 9    90 0.60978381 1.424509e-01 0.9949454</span></span>
-<span><span class="co">#&gt; 10  100 0.65422966 1.511846e-01 0.9984518</span></span></code></pre></div>
+<span><span class="co">#&gt; 1    10 0.01975447 2.663056e-10 0.1353704</span></span>
+<span><span class="co">#&gt; 2    20 0.04091212 1.422050e-06 0.1928996</span></span>
+<span><span class="co">#&gt; 3    30 0.07389949 2.248071e-04 0.2474392</span></span>
+<span><span class="co">#&gt; 4    40 0.12764213 5.884152e-03 0.3215807</span></span>
+<span><span class="co">#&gt; 5    50 0.21422438 4.830126e-02 0.4442291</span></span>
+<span><span class="co">#&gt; 6    60 0.33696000 9.079761e-02 0.6661222</span></span>
+<span><span class="co">#&gt; 7    70 0.45444547 1.189973e-01 0.8806252</span></span>
+<span><span class="co">#&gt; 8    80 0.53969236 1.365034e-01 0.9694454</span></span>
+<span><span class="co">#&gt; 9    90 0.60035837 1.476741e-01 0.9912083</span></span>
+<span><span class="co">#&gt; 10  100 0.64513060 1.616332e-01 0.9972241</span></span></code></pre></div>
 <p>The <code>cumulative</code> flag can be used to request
 grade-specific probabilities.</p>
 <div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="../reference/fit.html">fit</a></span><span class="op">(</span><span class="va">samples</span>, <span class="va">ordinal_model</span>, <span class="va">ordinal_data</span>, grade <span class="op">=</span> <span class="fl">1L</span>, cumulative <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></span>
 <span><span class="co">#&gt;    dose     middle        lower     upper</span></span>
-<span><span class="co">#&gt; 1    10 0.01781784 1.216514e-09 0.1508342</span></span>
-<span><span class="co">#&gt; 2    20 0.03566515 1.984494e-06 0.2132124</span></span>
-<span><span class="co">#&gt; 3    30 0.06098036 1.652332e-04 0.2580826</span></span>
-<span><span class="co">#&gt; 4    40 0.09750216 1.664734e-03 0.3354412</span></span>
-<span><span class="co">#&gt; 5    50 0.14380590 4.774708e-03 0.4267556</span></span>
-<span><span class="co">#&gt; 6    60 0.16643891 5.608081e-03 0.4853513</span></span>
-<span><span class="co">#&gt; 7    70 0.15543408 5.396397e-03 0.4602542</span></span>
-<span><span class="co">#&gt; 8    80 0.13837031 2.786165e-03 0.4426576</span></span>
-<span><span class="co">#&gt; 9    90 0.12335649 8.490600e-04 0.4230966</span></span>
-<span><span class="co">#&gt; 10  100 0.11126263 3.612624e-04 0.4191146</span></span>
+<span><span class="co">#&gt; 1    10 0.01901477 6.321811e-10 0.1325075</span></span>
+<span><span class="co">#&gt; 2    20 0.03721637 2.407550e-06 0.2015361</span></span>
+<span><span class="co">#&gt; 3    30 0.06306091 1.550820e-04 0.2734828</span></span>
+<span><span class="co">#&gt; 4    40 0.09957396 2.309152e-03 0.3506823</span></span>
+<span><span class="co">#&gt; 5    50 0.14272459 6.069099e-03 0.4447335</span></span>
+<span><span class="co">#&gt; 6    60 0.16602646 7.105482e-03 0.4897752</span></span>
+<span><span class="co">#&gt; 7    70 0.15517954 6.729786e-03 0.4724674</span></span>
+<span><span class="co">#&gt; 8    80 0.13846678 3.345272e-03 0.4549064</span></span>
+<span><span class="co">#&gt; 9    90 0.12422572 1.464062e-03 0.4334058</span></span>
+<span><span class="co">#&gt; 10  100 0.11273779 6.044095e-04 0.4225640</span></span>
 <span><span class="fu"><a href="../reference/fit.html">fit</a></span><span class="op">(</span><span class="va">samples</span>, <span class="va">ordinal_model</span>, <span class="va">ordinal_data</span>, grade <span class="op">=</span> <span class="fl">2L</span>, cumulative <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></span>
 <span><span class="co">#&gt;    dose     middle        lower     upper</span></span>
-<span><span class="co">#&gt; 1    10 0.02009810 1.235660e-09 0.1364216</span></span>
-<span><span class="co">#&gt; 2    20 0.04074745 3.705421e-06 0.1923819</span></span>
-<span><span class="co">#&gt; 3    30 0.07213528 3.551091e-04 0.2477582</span></span>
-<span><span class="co">#&gt; 4    40 0.12378651 7.828693e-03 0.3202875</span></span>
-<span><span class="co">#&gt; 5    50 0.21202279 5.297092e-02 0.4264846</span></span>
-<span><span class="co">#&gt; 6    60 0.34120238 9.547916e-02 0.6603330</span></span>
-<span><span class="co">#&gt; 7    70 0.46231459 1.190007e-01 0.9007814</span></span>
-<span><span class="co">#&gt; 8    80 0.54883056 1.294015e-01 0.9791533</span></span>
-<span><span class="co">#&gt; 9    90 0.60978381 1.424509e-01 0.9949454</span></span>
-<span><span class="co">#&gt; 10  100 0.65422966 1.511846e-01 0.9984518</span></span></code></pre></div>
+<span><span class="co">#&gt; 1    10 0.01975447 2.663056e-10 0.1353704</span></span>
+<span><span class="co">#&gt; 2    20 0.04091212 1.422050e-06 0.1928996</span></span>
+<span><span class="co">#&gt; 3    30 0.07389949 2.248071e-04 0.2474392</span></span>
+<span><span class="co">#&gt; 4    40 0.12764213 5.884152e-03 0.3215807</span></span>
+<span><span class="co">#&gt; 5    50 0.21422438 4.830126e-02 0.4442291</span></span>
+<span><span class="co">#&gt; 6    60 0.33696000 9.079761e-02 0.6661222</span></span>
+<span><span class="co">#&gt; 7    70 0.45444547 1.189973e-01 0.8806252</span></span>
+<span><span class="co">#&gt; 8    80 0.53969236 1.365034e-01 0.9694454</span></span>
+<span><span class="co">#&gt; 9    90 0.60035837 1.476741e-01 0.9912083</span></span>
+<span><span class="co">#&gt; 10  100 0.64513060 1.616332e-01 0.9972241</span></span></code></pre></div>
 <blockquote>
 <p>Note that, for <code>grade == K - 1</code>, the cumulative and
 grade-specific probabilities of toxicities are identical.</p>
@@ -463,9 +464,9 @@ complexity in using the new classes.</li>
 <div class="section level2">
 <h2 id="environment">Environment<a class="anchor" aria-label="anchor" href="#environment"></a>
 </h2>
-<pre><code><span><span class="co">#&gt; R version 4.5.0 (2025-04-11)</span></span>
+<pre><code><span><span class="co">#&gt; R version 4.5.2 (2025-10-31)</span></span>
 <span><span class="co">#&gt; Platform: x86_64-pc-linux-gnu</span></span>
-<span><span class="co">#&gt; Running under: Ubuntu 24.04.2 LTS</span></span>
+<span><span class="co">#&gt; Running under: Ubuntu 24.04.3 LTS</span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; Matrix products: default</span></span>
 <span><span class="co">#&gt; BLAS:   /usr/lib/x86_64-linux-gnu/openblas-pthread/libblas.so.3 </span></span>
@@ -486,23 +487,23 @@ complexity in using the new classes.</li>
 <span><span class="co">#&gt; [1] stats     graphics  grDevices utils     datasets  methods   base     </span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; other attached packages:</span></span>
-<span><span class="co">#&gt; [1] crmPack_2.0.1 ggplot2_4.0.1</span></span>
+<span><span class="co">#&gt; [1] crmPack_2.0.2 ggplot2_4.0.1</span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; loaded via a namespace (and not attached):</span></span>
 <span><span class="co">#&gt;  [1] sass_0.4.10          generics_0.1.4       xml2_1.5.1          </span></span>
 <span><span class="co">#&gt;  [4] futile.options_1.0.1 lattice_0.22-7       stringi_1.8.7       </span></span>
 <span><span class="co">#&gt;  [7] digest_0.6.39        magrittr_2.0.4       evaluate_1.0.5      </span></span>
-<span><span class="co">#&gt; [10] grid_4.5.0           RColorBrewer_1.1-3   mvtnorm_1.3-3       </span></span>
+<span><span class="co">#&gt; [10] grid_4.5.2           RColorBrewer_1.1-3   mvtnorm_1.3-3       </span></span>
 <span><span class="co">#&gt; [13] fastmap_1.2.0        jsonlite_2.0.0       backports_1.5.0     </span></span>
 <span><span class="co">#&gt; [16] formatR_1.14         gridExtra_2.3        viridisLite_0.4.2   </span></span>
 <span><span class="co">#&gt; [19] scales_1.4.0         textshaping_1.0.4    jquerylib_0.1.4     </span></span>
 <span><span class="co">#&gt; [22] Rdpack_2.6.4         cli_3.6.5            rlang_1.1.6         </span></span>
-<span><span class="co">#&gt; [25] rbibutils_2.4        futile.logger_1.4.3  parallelly_1.46.0   </span></span>
+<span><span class="co">#&gt; [25] rbibutils_2.4        futile.logger_1.4.9  parallelly_1.46.1   </span></span>
 <span><span class="co">#&gt; [28] withr_3.0.2          cachem_1.1.0         yaml_2.3.12         </span></span>
-<span><span class="co">#&gt; [31] otel_0.2.0           parallel_4.5.0       tools_4.5.0         </span></span>
+<span><span class="co">#&gt; [31] otel_0.2.0           parallel_4.5.2       tools_4.5.2         </span></span>
 <span><span class="co">#&gt; [34] coda_0.19-4.1        checkmate_2.3.3      dplyr_1.1.4         </span></span>
 <span><span class="co">#&gt; [37] lambda.r_1.2.4       kableExtra_1.4.0     vctrs_0.6.5         </span></span>
-<span><span class="co">#&gt; [40] R6_2.6.1             lifecycle_1.0.4      stringr_1.6.0       </span></span>
+<span><span class="co">#&gt; [40] R6_2.6.1             lifecycle_1.0.5      stringr_1.6.0       </span></span>
 <span><span class="co">#&gt; [43] GenSA_1.1.15         fs_1.6.6             htmlwidgets_1.6.4   </span></span>
 <span><span class="co">#&gt; [46] ragg_1.5.0           rjags_4-17           pkgconfig_2.0.3     </span></span>
 <span><span class="co">#&gt; [49] desc_1.4.3           pkgdown_2.2.0        pillar_1.11.1       </span></span>
@@ -511,12 +512,12 @@ complexity in using the new classes.</li>
 <span><span class="co">#&gt; [58] tidyselect_1.2.1     rstudioapi_0.17.1    knitr_1.51          </span></span>
 <span><span class="co">#&gt; [61] dichromat_2.0-0.1    farver_2.1.2         htmltools_0.5.9     </span></span>
 <span><span class="co">#&gt; [64] labeling_0.4.3       svglite_2.2.2        rmarkdown_2.30      </span></span>
-<span><span class="co">#&gt; [67] compiler_4.5.0       S7_0.2.1</span></span></code></pre>
+<span><span class="co">#&gt; [67] compiler_4.5.2       S7_0.2.1</span></span></code></pre>
 </div>
 <div class="section level2">
 <h2 class="unnumbered" id="references">References<a class="anchor" aria-label="anchor" href="#references"></a>
 </h2>
-<div id="refs" class="references csl-bib-body hanging-indent" entry-spacing="0">
+<div id="refs" class="references csl-bib-body hanging-indent">
 <div id="ref-oquigley1990" class="csl-entry">
 O’Quigley, John, Margaret Pepe, and Lloyd Fisher. 1990. <span>“Continual
 Reassessment Method: A Practical Design for Phase 1 Clinical Trials in

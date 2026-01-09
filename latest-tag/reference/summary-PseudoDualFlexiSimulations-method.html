@@ -28,7 +28,7 @@ the flexible efficacy model.">
 
     <a class="navbar-brand me-2" href="../index.html">crmPack</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">2.0.1</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">2.0.2</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -77,6 +77,7 @@ the flexible efficacy model.">
     <div class="dropdown-menu" aria-labelledby="dropdown-versions">
     <a class="dropdown-item" data-toggle="tooltip" title="" href="https://openpharma.github.io/crmPack/main">main</a>
 <a class="dropdown-item" data-toggle="tooltip" title="" href="https://openpharma.github.io/crmPack/latest-tag">latest-tag</a>
+<a class="dropdown-item" data-toggle="tooltip" title="" href="https://openpharma.github.io/crmPack/v2.0.2">v2.0.2</a>
 <a class="dropdown-item" data-toggle="tooltip" title="" href="https://openpharma.github.io/crmPack/v2.0.1">v2.0.1</a>
 </div>
 </li></div>
@@ -96,7 +97,7 @@ the flexible efficacy model.">
   <main id="main" class="col-md-9"><div class="page-header">
       <img src="../logo.png" class="logo" alt=""><h1>Summarize <code>PseudoDualFlexiSimulations</code>
 </h1>
-      <small class="dont-index">Source: <a href="https://github.com/openpharma/crmPack/blob/v2.0.1/R/Simulations-methods.R" class="external-link"><code>R/Simulations-methods.R</code></a></small>
+      <small class="dont-index">Source: <a href="https://github.com/openpharma/crmPack/blob/v2.0.2/R/Simulations-methods.R" class="external-link"><code>R/Simulations-methods.R</code></a></small>
       <div class="d-none name"><code>summary-PseudoDualFlexiSimulations-method.Rd</code></div>
     </div>
 
@@ -219,7 +220,7 @@ are used during the trial. Default at 0.35.</p></dd>
 <span class="r-in"><span><span class="va">mySize</span> <span class="op">&lt;-</span> <span class="fu"><a href="CohortSizeConst-class.html">CohortSizeConst</a></span><span class="op">(</span>size <span class="op">=</span> <span class="fl">3</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="co">## Stop only when 10 subjects are treated:</span></span></span>
 <span class="r-in"><span><span class="co">## very low sample size is just for illustration here</span></span></span>
-<span class="r-in"><span><span class="va">myStopping</span> <span class="op">&lt;-</span> <span class="fu"><a href="StoppingMinPatients-class.html">StoppingMinPatients</a></span><span class="op">(</span>nPatients <span class="op">=</span> <span class="fl">10</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="va">myStopping</span> <span class="op">&lt;-</span> <span class="fu"><a href="StoppingMinPatients-class.html">StoppingMinPatients</a></span><span class="op">(</span>nPatients <span class="op">=</span> <span class="fl">10</span><span class="op">)</span> <span class="op">|</span> <span class="fu"><a href="StoppingMissingDose-class.html">StoppingMissingDose</a></span><span class="op">(</span><span class="op">)</span></span></span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co">## Specified the design</span></span></span>
 <span class="r-in"><span><span class="va">design</span> <span class="op">&lt;-</span> <span class="fu"><a href="DualResponsesSamplesDesign-class.html">DualResponsesSamplesDesign</a></span><span class="op">(</span></span></span>
@@ -252,8 +253,8 @@ are used during the trial. Default at 0.35.</p></dd>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co">## specify the options for MCMC</span></span></span>
-<span class="r-in"><span><span class="co"># For illustration purpose, we use 10 burn-in and generate 100 samples</span></span></span>
-<span class="r-in"><span><span class="va">options</span> <span class="op">&lt;-</span> <span class="fu"><a href="McmcOptions-class.html">McmcOptions</a></span><span class="op">(</span>burnin <span class="op">=</span> <span class="fl">10</span>, step <span class="op">=</span> <span class="fl">1</span>, samples <span class="op">=</span> <span class="fl">100</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="co"># for illustration purposes, in reality larger number of burnin and samples shoud be used</span></span></span>
+<span class="r-in"><span><span class="va">options</span> <span class="op">&lt;-</span> <span class="fu"><a href="McmcOptions-class.html">McmcOptions</a></span><span class="op">(</span>burnin <span class="op">=</span> <span class="fl">5</span>, step <span class="op">=</span> <span class="fl">1</span>, samples <span class="op">=</span> <span class="fl">10</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="co">## The simulation</span></span></span>
 <span class="r-in"><span><span class="co">## For illustration purpose only 1 simulation is produced (nsim=1).</span></span></span>
 <span class="r-in"><span><span class="va">mySim</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/stats/simulate.html" class="external-link">simulate</a></span><span class="op">(</span></span></span>
@@ -278,7 +279,7 @@ are used during the trial. Default at 0.35.</p></dd>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Target p(DLE) used during a trial was 35 %</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> The dose level corresponds to the target p(DLE) used during a trial, TDDT, was 155.972 </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> TDDT at dose Grid was 150 </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Number of patients overall : mean 12 (12, 12) </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Number of patients overall : mean 3 (3, 3) </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Number of patients treated above the target p(DLE) used at the end of a trial : mean 0 (0, 0) </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Number of patients treated above the target p(DLE) used during a trial : mean 0 (0, 0) </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Proportions of observed DLT in the trials : mean 0 % (0 %, 0 %) </span>
@@ -292,43 +293,45 @@ are used during the trial. Default at 0.35.</p></dd>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Fitted probabilities of DLE at dose most often selected : mean NA % (NA %, NA %) </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> The summary table of the final TDEOT across all simulations</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>     Min. 1st Qu.  Median    Mean 3rd Qu.    Max.  </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>    10.12   10.12   10.12   10.12   10.12   10.12  </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>    3.185   3.185   3.185   3.185   3.185   3.185  </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> The summary table of the final ratios of the TDEOT across all simulations</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>     Min. 1st Qu.  Median    Mean 3rd Qu.    Max.  </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>        1       1       1       1       1       1  </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> The summary table of the final TDDT across all simulations</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>     Min. 1st Qu.  Median    Mean 3rd Qu.    Max.  </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>    6.222   6.222   6.222   6.222   6.222   6.222  </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>    16.18   16.18   16.18   16.18   16.18   16.18  </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> The summary table of dose levels, the optimal dose</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>  to recommend for subsequent study across all simulations</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>     Min. 1st Qu.  Median    Mean 3rd Qu.    Max.  </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>    10.12   10.12   10.12   10.12   10.12   10.12  </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>    3.185   3.185   3.185   3.185   3.185   3.185  </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> The summary table of the final ratios of the optimal dose for stopping across</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>                   all simulations</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>     Min. 1st Qu.  Median    Mean 3rd Qu.    Max.  </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>        1       1       1       1       1       1  </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Stop reason triggered:</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  ≥ 10 patients dosed :  100 %</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  ≥ 10 patients dosed :  0 %</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  Stopped because of missing dose :  100 %</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Target Gstar, the dose which gives the maximum gain value was 125 </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Target Gstar at dose Grid was 125 </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> The summary table of the final Gstar across all simulations</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>     Min. 1st Qu.  Median    Mean 3rd Qu.    Max.  </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>      250     250     250     250     250     250  </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>    237.5   237.5   237.5   237.5   237.5   237.5  </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> The summary table of the final ratios of the Gstar across all simulations</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>     Min. 1st Qu.  Median    Mean 3rd Qu.    Max.  </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>    2.192   2.192   2.192   2.192   2.192   2.192  </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>    2.202   2.202   2.202   2.202   2.202   2.202  </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> The summary table of dose levels, the optimal dose</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>  to recommend for subsequent study across all simulations</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>     Min. 1st Qu.  Median    Mean 3rd Qu.    Max.  </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>    10.12   10.12   10.12   10.12   10.12   10.12  </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>    3.185   3.185   3.185   3.185   3.185   3.185  </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> The summary table of the final ratios of the optimal dose for stopping across</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>         all simulations</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>     Min. 1st Qu.  Median    Mean 3rd Qu.    Max.  </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>        1       1       1       1       1       1  </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Fitted expected efficacy level at dose most often selected : mean NA (NA, NA) </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Stop reason triggered:</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  ≥ 10 patients dosed :  100 %</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  ≥ 10 patients dosed :  0 %</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  Stopped because of missing dose :  100 %</span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co"># nolint end</span></span></span>
 </code></pre></div>

@@ -54,7 +54,7 @@ You can specify any subset of these in the type argument.">
 
     <a class="navbar-brand me-2" href="../index.html">crmPack</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">2.0.1</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">2.0.2</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -103,6 +103,7 @@ You can specify any subset of these in the type argument.">
     <div class="dropdown-menu" aria-labelledby="dropdown-versions">
     <a class="dropdown-item" data-toggle="tooltip" title="" href="https://openpharma.github.io/crmPack/main">main</a>
 <a class="dropdown-item" data-toggle="tooltip" title="" href="https://openpharma.github.io/crmPack/latest-tag">latest-tag</a>
+<a class="dropdown-item" data-toggle="tooltip" title="" href="https://openpharma.github.io/crmPack/v2.0.2">v2.0.2</a>
 <a class="dropdown-item" data-toggle="tooltip" title="" href="https://openpharma.github.io/crmPack/v2.0.1">v2.0.1</a>
 </div>
 </li></div>
@@ -121,7 +122,7 @@ You can specify any subset of these in the type argument.">
 <div class="row">
   <main id="main" class="col-md-9"><div class="page-header">
       <img src="../logo.png" class="logo" alt=""><h1>Plot Model-Based Design Simulation Summary</h1>
-      <small class="dont-index">Source: <a href="https://github.com/openpharma/crmPack/blob/v2.0.1/R/Simulations-methods.R" class="external-link"><code>R/Simulations-methods.R</code></a></small>
+      <small class="dont-index">Source: <a href="https://github.com/openpharma/crmPack/blob/v2.0.2/R/Simulations-methods.R" class="external-link"><code>R/Simulations-methods.R</code></a></small>
       <div class="d-none name"><code>plot-SimulationsSummary-missing-method.Rd</code></div>
     </div>
 
@@ -229,7 +230,7 @@ asked for, otherwise a <code>gtable</code> object.</p>
 <span class="r-in"><span>  prob <span class="op">=</span> <span class="fl">0.5</span></span></span>
 <span class="r-in"><span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="va">myStopping3</span> <span class="op">&lt;-</span> <span class="fu"><a href="StoppingMinPatients-class.html">StoppingMinPatients</a></span><span class="op">(</span>nPatients <span class="op">=</span> <span class="fl">20</span><span class="op">)</span></span></span>
-<span class="r-in"><span><span class="va">myStopping</span> <span class="op">&lt;-</span> <span class="op">(</span><span class="va">myStopping1</span> <span class="op">&amp;</span> <span class="va">myStopping2</span><span class="op">)</span> <span class="op">|</span> <span class="va">myStopping3</span></span></span>
+<span class="r-in"><span><span class="va">myStopping</span> <span class="op">&lt;-</span> <span class="op">(</span><span class="va">myStopping1</span> <span class="op">&amp;</span> <span class="va">myStopping2</span><span class="op">)</span> <span class="op">|</span> <span class="va">myStopping3</span> <span class="op">|</span> <span class="fu"><a href="StoppingMissingDose-class.html">StoppingMissingDose</a></span><span class="op">(</span><span class="op">)</span></span></span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co"># Choose the rule for dose increments</span></span></span>
 <span class="r-in"><span><span class="va">myIncrements</span> <span class="op">&lt;-</span> <span class="fu"><a href="IncrementsRelative-class.html">IncrementsRelative</a></span><span class="op">(</span></span></span>
@@ -255,9 +256,9 @@ asked for, otherwise a <code>gtable</code> object.</p>
 <span class="r-in"><span><span class="co"># We only generate 1 trial outcomes here for illustration, for the actual study</span></span></span>
 <span class="r-in"><span><span class="co"># this should be increased of course</span></span></span>
 <span class="r-in"><span><span class="va">options</span> <span class="op">&lt;-</span> <span class="fu"><a href="McmcOptions-class.html">McmcOptions</a></span><span class="op">(</span></span></span>
-<span class="r-in"><span>  burnin <span class="op">=</span> <span class="fl">10</span>,</span></span>
+<span class="r-in"><span>  burnin <span class="op">=</span> <span class="fl">5</span>,</span></span>
 <span class="r-in"><span>  step <span class="op">=</span> <span class="fl">1</span>,</span></span>
-<span class="r-in"><span>  samples <span class="op">=</span> <span class="fl">100</span></span></span>
+<span class="r-in"><span>  samples <span class="op">=</span> <span class="fl">10</span></span></span>
 <span class="r-in"><span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="va">time</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/system.time.html" class="external-link">system.time</a></span><span class="op">(</span></span></span>
 <span class="r-in"><span>  <span class="va">mySims</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/stats/simulate.html" class="external-link">simulate</a></span><span class="op">(</span></span></span>

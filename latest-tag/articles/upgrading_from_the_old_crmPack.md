@@ -40,6 +40,7 @@ dose-DLT/DLT-dose relationship.
 ### Generate data, define a model and get samples
 
 ``` r
+
 library(crmPack)
 ```
 
@@ -53,6 +54,7 @@ library(crmPack)
     ## Type crmPackExample() to open example
 
 ``` r
+
 empty_data <- Data(doseGrid = c(1, 3, 5, 10, 15, 20, 25, 40, 50, 80, 100))
 my_model <- LogisticNormal(
   mean = c(-0.85, 1),
@@ -69,18 +71,20 @@ different inputs, i.e. model’s parameters samples or in case of a fixed
 model’s parameters values.
 
 ``` r
+
 # Doses reaching a specific target probability of the occurrence of a DLT (equal to 0.3),
 # given a particular models and samples.
 # Every single dose corresponds to one particular sample in `my_samples`.
 dose(0.3, my_model, my_samples)
 ```
 
-    ##  [1] 1.387762e+00 2.320046e-01 1.228644e+00 1.558350e+00 8.046203e-01
-    ##  [6] 6.799177e-01 2.429713e+00 1.397018e+00 1.342351e-01 3.289643e-01
-    ## [11] 2.787233e-01 1.697540e+00 8.543959e-01 4.813707e-11 9.310532e-01
-    ## [16] 5.052702e-03 7.017065e-01 3.009663e-04 1.254947e+00 3.833683e-01
+    ##  [1] 9.177487e-03 9.421654e-27 5.348574e-03 1.764074e+00 3.649547e+01
+    ##  [6] 5.360238e-04 1.142584e-01 1.131816e-05 6.721295e-01 7.050839e-03
+    ## [11] 2.845796e+00 1.397567e+00 1.589841e+00 4.210949e-03 6.240752e-01
+    ## [16] 4.448427e-01 9.102611e-01 3.223365e-01 1.649931e+00 3.402581e+00
 
 ``` r
+
 # True dose-DLT relationship.
 # Say that -0.8 and 1 are the true values for models parameters alpha0 and alpha1 respectively.
 # The `true_dose_fun` takes one argument (target probability of the occurrence of a DLT)
@@ -95,16 +99,18 @@ true_dose_fun(0.3)
 ### Prob
 
 ``` r
+
 # Toxicity probabilities for a given dose (equal to 10), model and samples.
 # Every single probability value corresponds to one particular sample in `my_samples`.
 prob(10, my_model, my_samples)
 ```
 
-    ##  [1] 0.6445935 0.9252398 0.9932393 0.7373429 0.9605996 0.9283805 0.8970698
-    ##  [8] 0.6403075 0.7156280 0.9900481 0.9325571 0.9961275 0.9643896 0.6339911
-    ## [15] 0.9968120 0.1680770 0.6058119 0.5959058 0.9949897 0.9566631
+    ##  [1] 0.5205204 0.7616431 0.4945129 0.7549518 0.4214250 0.6968865 0.1831806
+    ##  [8] 0.2038588 0.9275667 0.2116088 0.1493621 0.8730938 0.8398356 0.4665962
+    ## [15] 0.3137527 0.9543702 0.7696962 0.9468510 0.9443086 0.2474105
 
 ``` r
+
 # True DLT-dose relationship.
 # Say that -0.8 and 1 are the true values for models parameters alpha0 and alpha1 respectively.
 # The `true_prob_fun` takes one argument (the dose) and computes the corresponding
@@ -142,6 +148,7 @@ account of any associated `doseGrid`.
 Here are some examples of their use:
 
 ``` r
+
 .DefaultStoppingAll()
 ```
 
@@ -155,6 +162,7 @@ If all of the following rules are `TRUE`:
 - ≥ 20 patients dosed: If 20 or more participants have been treated.
 
 ``` r
+
 class_name <- "LogisticNormal"
 eval(parse(text = paste0(".Default", class_name, "()")))
 ```

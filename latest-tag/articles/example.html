@@ -21,7 +21,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">crmPack</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">2.0.1</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">2.0.2</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -70,6 +70,7 @@
     <div class="dropdown-menu" aria-labelledby="dropdown-versions">
     <a class="dropdown-item" data-toggle="tooltip" title="" href="https://openpharma.github.io/crmPack/main">main</a>
 <a class="dropdown-item" data-toggle="tooltip" title="" href="https://openpharma.github.io/crmPack/latest-tag">latest-tag</a>
+<a class="dropdown-item" data-toggle="tooltip" title="" href="https://openpharma.github.io/crmPack/v2.0.2">v2.0.2</a>
 <a class="dropdown-item" data-toggle="tooltip" title="" href="https://openpharma.github.io/crmPack/v2.0.1">v2.0.1</a>
 </div>
 </li></div>
@@ -97,7 +98,7 @@ Daniel Sabanes Bove</h4>
             
             <h4 data-toc-skip class="date">02 January 2019</h4>
       
-      <small class="dont-index">Source: <a href="https://github.com/openpharma/crmPack/blob/v2.0.1/vignettes/example.Rmd" class="external-link"><code>vignettes/example.Rmd</code></a></small>
+      <small class="dont-index">Source: <a href="https://github.com/openpharma/crmPack/blob/v2.0.2/vignettes/example.Rmd" class="external-link"><code>vignettes/example.Rmd</code></a></small>
       <div class="d-none name"><code>example.Rmd</code></div>
     </div>
 
@@ -460,17 +461,16 @@ operator and looking at the help page for <code>ModelPseudo</code>,
 </h3>
 <p>There are a few further, advanced ways to specify a model object in
 <code>crmPack</code>.</p>
-<p>First, a minimal informative prior <span class="citation">(Neuenschwander, Branson, and Gsponer 2008)</span> can
-be computed using the <code>MinimalInformative</code> function. The
-construction is based on the input of a minimal and a maximal dose,
-where certain ranges of DLT probabilities are deemed unlikely. A
-logistic function is then fitted through the corresponding points on the
-dose-toxicity plane in order to derive Beta distributions also for doses
-in-between. Finally these Beta distributions are approximated by a
-common <code>LogisticNormal</code> (or <code>LogisticLogNormal</code>)
-model. So the minimal informative construction avoids explicit
-specification of the prior parameters of the logistic regression
-model.</p>
+<p>First, a minimal informative prior <span class="citation">(Neuenschwander et al. 2008)</span> can be computed
+using the <code>MinimalInformative</code> function. The construction is
+based on the input of a minimal and a maximal dose, where certain ranges
+of DLT probabilities are deemed unlikely. A logistic function is then
+fitted through the corresponding points on the dose-toxicity plane in
+order to derive Beta distributions also for doses in-between. Finally
+these Beta distributions are approximated by a common
+<code>LogisticNormal</code> (or <code>LogisticLogNormal</code>) model.
+So the minimal informative construction avoids explicit specification of
+the prior parameters of the logistic regression model.</p>
 <p>In our example, we could construct it as follows, assuming a minimal
 dose of 0.1 mg and a maximum dose of 100 mg:</p>
 <div class="sourceCode" id="cb17"><pre class="downlit sourceCode r">
@@ -3420,7 +3420,7 @@ responses is involved.</p>
 <div class="section level2">
 <h2 class="unnumbered" id="references">References<a class="anchor" aria-label="anchor" href="#references"></a>
 </h2>
-<div id="refs" class="references csl-bib-body hanging-indent" entry-spacing="0">
+<div id="refs" class="references csl-bib-body hanging-indent">
 <div id="ref-Neuenschwander2008" class="csl-entry">
 Neuenschwander, Beat, Michael Branson, and Thomas Gsponer. 2008.
 <span>“<span class="nocase">Critical aspects of the Bayesian approach to

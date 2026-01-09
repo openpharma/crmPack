@@ -318,7 +318,7 @@ my_model <- LogisticLogNormal(
 )
 
 # Set-up some MCMC parameters and generate samples from the posterior.
-my_options <- McmcOptions(burnin = 10, step = 2, samples = 40)
+my_options <- McmcOptions(burnin = 5, step = 1, samples = 10)
 my_samples <- mcmc(my_data, my_model, my_options)
 
 # Define the rule for dose increments and calculate the maximum dose allowed.
@@ -407,7 +407,7 @@ model <- LogisticLogNormal(
 )
 
 # Set-up some MCMC parameters and generate samples from the posterior
-options <- McmcOptions(burnin = 10, step = 2, samples = 40)
+options <- McmcOptions(burnin = 5, step = 1, samples = 10)
 set.seed(94)
 samples <- mcmc(data, model, options)
 
@@ -456,14 +456,14 @@ stopTrial(
   model = model,
   data = data
 )
-#> [1] FALSE
+#> [1] TRUE
 #> attr(,"message")
 #> attr(,"message")[[1]]
 #> attr(,"message")[[1]][[1]]
 #> [1] "Number of cohorts is 6 and thus reached the prespecified minimum number 3"
 #> 
 #> attr(,"message")[[1]][[2]]
-#> [1] "Probability for target toxicity is 38 % for dose 20 and thus below the required 50 %"
+#> [1] "Probability for target toxicity is 70 % for dose 10 and thus above the required 50 %"
 #> 
 #> 
 #> attr(,"message")[[2]]
@@ -471,13 +471,13 @@ stopTrial(
 #> 
 #> attr(,"individual")
 #> attr(,"individual")[[1]]
-#> [1] FALSE
+#> [1] TRUE
 #> attr(,"message")
 #> attr(,"message")[[1]]
 #> [1] "Number of cohorts is 6 and thus reached the prespecified minimum number 3"
 #> 
 #> attr(,"message")[[2]]
-#> [1] "Probability for target toxicity is 38 % for dose 20 and thus below the required 50 %"
+#> [1] "Probability for target toxicity is 70 % for dose 10 and thus above the required 50 %"
 #> 
 #> attr(,"individual")
 #> attr(,"individual")[[1]]
@@ -488,9 +488,9 @@ stopTrial(
 #> [1] "≥ 3 cohorts dosed"
 #> 
 #> attr(,"individual")[[2]]
-#> [1] FALSE
+#> [1] TRUE
 #> attr(,"message")
-#> [1] "Probability for target toxicity is 38 % for dose 20 and thus below the required 50 %"
+#> [1] "Probability for target toxicity is 70 % for dose 10 and thus above the required 50 %"
 #> attr(,"report_label")
 #> [1] "P(0.2 ≤ prob(DLE | NBD) ≤ 0.35) ≥ 0.5"
 #> 
@@ -527,7 +527,7 @@ model <- LogisticLogNormal(
 )
 
 # Set-up some MCMC parameters and generate samples from the posterior
-options <- McmcOptions(burnin = 10, step = 2, samples = 40)
+options <- McmcOptions(burnin = 5, step = 1, samples = 10)
 set.seed(94)
 samples <- mcmc(data, model, options)
 
@@ -579,7 +579,7 @@ stopTrial(
 #> [1] "Number of cohorts is 6 and thus reached the prespecified minimum number 3"
 #> 
 #> attr(,"message")[[1]][[2]]
-#> [1] "Probability for target toxicity is 32 % for dose 18 and thus below the required 50 %"
+#> [1] "Probability for target toxicity is 50 % for dose 16 and thus above the required 50 %"
 #> 
 #> 
 #> attr(,"message")[[2]]
@@ -593,7 +593,7 @@ stopTrial(
 #> [1] "Number of cohorts is 6 and thus reached the prespecified minimum number 3"
 #> 
 #> attr(,"message")[[2]]
-#> [1] "Probability for target toxicity is 32 % for dose 18 and thus below the required 50 %"
+#> [1] "Probability for target toxicity is 50 % for dose 16 and thus above the required 50 %"
 #> 
 #> attr(,"individual")
 #> attr(,"individual")[[1]]
@@ -604,9 +604,9 @@ stopTrial(
 #> [1] "≥ 3 cohorts dosed"
 #> 
 #> attr(,"individual")[[2]]
-#> [1] FALSE
+#> [1] TRUE
 #> attr(,"message")
-#> [1] "Probability for target toxicity is 32 % for dose 18 and thus below the required 50 %"
+#> [1] "Probability for target toxicity is 50 % for dose 16 and thus above the required 50 %"
 #> attr(,"report_label")
 #> [1] "P(0.2 ≤ prob(DLE | NBD) ≤ 0.35) ≥ 0.5"
 #> 
@@ -643,7 +643,7 @@ model <- LogisticLogNormal(
 )
 
 # Set-up some MCMC parameters and generate samples from the posterior
-options <- McmcOptions(burnin = 10, step = 2, samples = 40)
+options <- McmcOptions(burnin = 5, step = 1, samples = 10)
 set.seed(94)
 samples <- mcmc(data, model, options)
 
@@ -694,7 +694,7 @@ stopTrial(
 #> [1] "Number of cohorts is 6 and thus reached the prespecified minimum number 3"
 #> 
 #> attr(,"message")[[2]]
-#> [1] "Probability for target toxicity is 55 % for dose 20 and thus above the required 50 %"
+#> [1] "Probability for target toxicity is 50 % for dose 12 and thus above the required 50 %"
 #> 
 #> attr(,"message")[[3]]
 #> [1] "Number of patients is 8 and thus below the prespecified minimum number 20"
@@ -710,7 +710,7 @@ stopTrial(
 #> attr(,"individual")[[2]]
 #> [1] TRUE
 #> attr(,"message")
-#> [1] "Probability for target toxicity is 55 % for dose 20 and thus above the required 50 %"
+#> [1] "Probability for target toxicity is 50 % for dose 12 and thus above the required 50 %"
 #> attr(,"report_label")
 #> [1] "P(0.2 ≤ prob(DLE | NBD) ≤ 0.35) ≥ 0.5"
 #> 
@@ -744,7 +744,7 @@ model <- LogisticLogNormal(
 )
 
 # Set-up some MCMC parameters and generate samples from the posterior
-options <- McmcOptions(burnin = 10, step = 2, samples = 40)
+options <- McmcOptions(burnin = 5, step = 1, samples = 10)
 set.seed(94)
 samples <- mcmc(data, model, options)
 
@@ -780,7 +780,7 @@ myStopping <- StoppingCohortsNearDose(nCohorts = 3, percentage = 0.2)
 stopTrial(stopping = myStopping, dose = doseRecommendation$value, data = data)
 #> [1] FALSE
 #> attr(,"message")
-#> [1] "0 cohorts lie within 0.2% of the next best dose 18. This is below the required 3 cohorts"
+#> [1] "0 cohorts lie within 0.2% of the next best dose 20. This is below the required 3 cohorts"
 #> attr(,"report_label")
 #> [1] "≥ 3 cohorts dosed in 0.2 % dose range around NBD"
 
@@ -804,7 +804,7 @@ model <- LogisticLogNormal(
 )
 
 # Set-up some MCMC parameters and generate samples from the posterior
-options <- McmcOptions(burnin = 10, step = 2, samples = 40)
+options <- McmcOptions(burnin = 5, step = 1, samples = 10)
 set.seed(94)
 samples <- mcmc(data, model, options)
 
@@ -864,7 +864,7 @@ model <- LogisticLogNormal(
 )
 
 # Set-up some MCMC parameters and generate samples from the posterior
-options <- McmcOptions(burnin = 10, step = 2, samples = 40)
+options <- McmcOptions(burnin = 5, step = 1, samples = 10)
 set.seed(94)
 samples <- mcmc(data, model, options)
 
@@ -924,7 +924,7 @@ model <- LogisticLogNormal(
 )
 
 # Set-up some MCMC parameters and generate samples from the posterior
-options <- McmcOptions(burnin = 10, step = 2, samples = 40)
+options <- McmcOptions(burnin = 5, step = 1, samples = 10)
 set.seed(94)
 samples <- mcmc(data, model, options)
 
@@ -984,7 +984,7 @@ model <- LogisticLogNormal(
 )
 
 # Set-up some MCMC parameters and generate samples from the posterior
-options <- McmcOptions(burnin = 10, step = 2, samples = 40)
+options <- McmcOptions(burnin = 5, step = 1, samples = 10)
 set.seed(94)
 samples <- mcmc(data, model, options)
 
@@ -1026,7 +1026,7 @@ stopTrial(
 )
 #> [1] FALSE
 #> attr(,"message")
-#> [1] "Probability for target toxicity is 18 % for dose 14 and thus below the required 50 %"
+#> [1] "Probability for target toxicity is 20 % for dose 10 and thus below the required 50 %"
 #> attr(,"report_label")
 #> [1] "P(0.2 ≤ prob(DLE | NBD) ≤ 0.35) ≥ 0.5"
 
@@ -1050,7 +1050,7 @@ model <- LogisticLogNormal(
 )
 
 # Set-up some MCMC parameters and generate samples from the posterior
-options <- McmcOptions(burnin = 10, step = 2, samples = 40)
+options <- McmcOptions(burnin = 5, step = 1, samples = 10)
 set.seed(94)
 samples <- mcmc(data, model, options)
 
@@ -1093,7 +1093,7 @@ stopTrial(
 )
 #> [1] TRUE
 #> attr(,"message")
-#> [1] "Probability of MTD above 50 % of current dose 14 is 95 % and thus greater than or equal to the required 90 %"
+#> [1] "Probability of MTD above 50 % of current dose 6 is 100 % and thus greater than or equal to the required 90 %"
 #> attr(,"report_label")
 #> [1] "P(MTD > 0.5 * NBD | P(DLE) = 0.33) ≥ 0.9"
 
@@ -1115,7 +1115,7 @@ my_model <- LogisticLogNormal(
 )
 
 # Set-up some MCMC parameters and generate samples from the posterior.
-my_options <- McmcOptions(burnin = 10, step = 2, samples = 40)
+my_options <- McmcOptions(burnin = 5, step = 1, samples = 10)
 my_samples <- mcmc(my_data, my_model, my_options)
 
 # Define the rule for dose increments and calculate the maximum dose allowed.
@@ -1155,9 +1155,9 @@ stopTrial(
   model = my_model,
   data = my_data
 )
-#> [1] FALSE
+#> [1] TRUE
 #> attr(,"message")
-#> [1] "CV of MTD is 44 % and thus above the required precision threshold of 40 %"
+#> [1] "CV of MTD is 15 % and thus below the required precision threshold of 40 %"
 #> attr(,"report_label")
 #> [1] "CV(MTD) > 0.3"
 # Create the data.
@@ -1184,8 +1184,9 @@ model <- LogisticLogNormal(
 )
 
 # Set-up some MCMC parameters and generate samples from the posterior.
-options <- McmcOptions(burnin = 10, step = 2, samples = 40)
+options <- McmcOptions(burnin = 5, step = 1, samples = 10)
 set.seed(94)
+# \donttest{
 samples <- mcmc(data, model, options)
 
 # Define the rule for dose increments and calculate the maximum dose allowed.
@@ -1233,6 +1234,7 @@ stopTrial(
 #> [1] "Probability that the lowest active dose of 0.1 being toxic based on posterior Beta distribution using a Beta(1,1) prior is 65% and thus below the required 90% threshold."
 #> attr(,"report_label")
 #> [1] "Pβ(lowest dose > P(DLE) = 0.3) > 0.9"
+# }
 # nolint start
 
 # Create the data
@@ -1274,8 +1276,9 @@ model <- DualEndpointRW(
 )
 
 # Set-up some MCMC parameters and generate samples from the posterior
-options <- McmcOptions(burnin = 10, step = 2, samples = 40)
+options <- McmcOptions(burnin = 5, step = 1, samples = 10)
 set.seed(94)
+# \donttest{
 samples <- mcmc(data, model, options)
 
 # Define the rule for dose increments and calculate the maximum dose allowed
@@ -1321,7 +1324,7 @@ stopTrial(
 #> [1] "Probability for target biomarker is 0 % for dose NA and thus below the required 50 %"
 #> attr(,"report_label")
 #> [1] "P(0.9 ≤ Biomarker ≤ 1) ≥ 0.5 (relative)"
-
+# }
 # nolint end
 # Create some data.
 my_data <- Data(
@@ -1340,7 +1343,7 @@ my_model <- LogisticLogNormal(
 )
 
 # Set-up some MCMC parameters and generate samples from the posterior.
-my_options <- McmcOptions(burnin = 10, step = 2, samples = 40)
+my_options <- McmcOptions(burnin = 5, step = 1, samples = 10)
 my_samples <- mcmc(my_data, my_model, my_options)
 
 # Define the rule which will be used to select the next best dose
@@ -1390,7 +1393,7 @@ stopTrial(
 #> [1] "Number of patients is 8 and thus below the prespecified minimum number 20"
 #> 
 #> attr(,"message")[[3]]
-#> [1] "0 patients lie within 0% of the next best dose 16. This is below the required 3 patients"
+#> [1] "0 patients lie within 0% of the next best dose 26. This is below the required 3 patients"
 #> 
 #> attr(,"individual")
 #> attr(,"individual")[[1]]
@@ -1410,7 +1413,7 @@ stopTrial(
 #> attr(,"individual")[[3]]
 #> [1] FALSE
 #> attr(,"message")
-#> [1] "0 patients lie within 0% of the next best dose 16. This is below the required 3 patients"
+#> [1] "0 patients lie within 0% of the next best dose 26. This is below the required 3 patients"
 #> attr(,"report_label")
 #> [1] "≥ 3 patients dosed in 0 % dose range around NBD"
 #> 
@@ -1435,7 +1438,7 @@ model <- LogisticLogNormal(
 )
 
 # Set-up some MCMC parameters and generate samples from the posterior
-options <- McmcOptions(burnin = 10, step = 2, samples = 40)
+options <- McmcOptions(burnin = 5, step = 1, samples = 10)
 set.seed(94)
 samples <- mcmc(data, model, options)
 
@@ -1487,24 +1490,24 @@ stopTrial(
 #> [1] TRUE
 #> attr(,"message")
 #> attr(,"message")[[1]]
-#> [1] "Probability for target toxicity is 60 % for dose 62 and thus above the required 50 %"
+#> [1] "Probability for target toxicity is 60 % for dose 16 and thus above the required 50 %"
 #> 
 #> attr(,"message")[[2]]
 #> attr(,"message")[[2]][[1]]
-#> [1] "Next best dose is 62 and thus not the highest dose"
+#> [1] "Next best dose is 16 and thus not the highest dose"
 #> 
 #> attr(,"message")[[2]][[2]]
-#> [1] "0 patients lie within 0% of the next best dose 62. This is below the required 3 patients"
+#> [1] "0 patients lie within 0% of the next best dose 16. This is below the required 3 patients"
 #> 
 #> attr(,"message")[[2]][[3]]
-#> [1] "Probability for target toxicity is 22 % for dose 62 and thus below the required 50 %"
+#> [1] "Probability for target toxicity is 40 % for dose 16 and thus below the required 50 %"
 #> 
 #> 
 #> attr(,"individual")
 #> attr(,"individual")[[1]]
 #> [1] TRUE
 #> attr(,"message")
-#> [1] "Probability for target toxicity is 60 % for dose 62 and thus above the required 50 %"
+#> [1] "Probability for target toxicity is 60 % for dose 16 and thus above the required 50 %"
 #> attr(,"report_label")
 #> [1] "P(0.2 ≤ prob(DLE | NBD) ≤ 0.35) ≥ 0.5"
 #> 
@@ -1512,33 +1515,33 @@ stopTrial(
 #> [1] FALSE
 #> attr(,"message")
 #> attr(,"message")[[1]]
-#> [1] "Next best dose is 62 and thus not the highest dose"
+#> [1] "Next best dose is 16 and thus not the highest dose"
 #> 
 #> attr(,"message")[[2]]
-#> [1] "0 patients lie within 0% of the next best dose 62. This is below the required 3 patients"
+#> [1] "0 patients lie within 0% of the next best dose 16. This is below the required 3 patients"
 #> 
 #> attr(,"message")[[3]]
-#> [1] "Probability for target toxicity is 22 % for dose 62 and thus below the required 50 %"
+#> [1] "Probability for target toxicity is 40 % for dose 16 and thus below the required 50 %"
 #> 
 #> attr(,"individual")
 #> attr(,"individual")[[1]]
 #> [1] FALSE
 #> attr(,"message")
-#> [1] "Next best dose is 62 and thus not the highest dose"
+#> [1] "Next best dose is 16 and thus not the highest dose"
 #> attr(,"report_label")
 #> [1] "NBD is the highest dose"
 #> 
 #> attr(,"individual")[[2]]
 #> [1] FALSE
 #> attr(,"message")
-#> [1] "0 patients lie within 0% of the next best dose 62. This is below the required 3 patients"
+#> [1] "0 patients lie within 0% of the next best dose 16. This is below the required 3 patients"
 #> attr(,"report_label")
 #> [1] "≥ 3 patients dosed in 0 % dose range around NBD"
 #> 
 #> attr(,"individual")[[3]]
 #> [1] FALSE
 #> attr(,"message")
-#> [1] "Probability for target toxicity is 22 % for dose 62 and thus below the required 50 %"
+#> [1] "Probability for target toxicity is 40 % for dose 16 and thus below the required 50 %"
 #> attr(,"report_label")
 #> [1] "P(0 ≤ prob(DLE | NBD) ≤ 0.2) ≥ 0.5"
 #> 
@@ -1551,7 +1554,7 @@ stopTrial(
 # nolint end
 data <- .DefaultDataOrdinal()
 model <- .DefaultLogisticLogNormalOrdinal()
-options <- McmcOptions(burnin = 10, step = 2, samples = 40)
+options <- McmcOptions(burnin = 5, step = 1, samples = 10)
 samples <- mcmc(data, model, options)
 
 myIncrements <- .DefaultIncrementsOrdinal()
@@ -1578,12 +1581,12 @@ stopTrial(
 )
 #> [1] FALSE
 #> attr(,"message")
-#> [1] "Probability for target toxicity is 25 % for dose 40 and thus below the required 60 %"
+#> [1] "Probability for target toxicity is 20 % for dose 50 and thus below the required 60 %"
 #> attr(,"report_label")
 #> [1] "P(0.2 ≤ prob(DLE | NBD) ≤ 0.35) ≥ 0.6"
 data <- .DefaultDataOrdinal()
 model <- .DefaultLogisticLogNormalOrdinal()
-options <- McmcOptions(burnin = 10, step = 2, samples = 40)
+options <- McmcOptions(burnin = 5, step = 1, samples = 10)
 samples <- mcmc(data, model, options)
 
 myIncrements <- .DefaultIncrementsOrdinal()
@@ -1608,9 +1611,9 @@ stopTrial(
   model = model,
   data = data
 )
-#> [1] FALSE
+#> [1] TRUE
 #> attr(,"message")
-#> [1] "Probability for target toxicity is 32 % for dose 50 and thus below the required 60 %"
+#> [1] "Probability for target toxicity is 60 % for dose 50 and thus above the required 60 %"
 #> attr(,"report_label")
 #> [1] "P(0.2 ≤ prob(DLE | NBD) ≤ 0.35) ≥ 0.6"
 my_rule <- StoppingExternal(report_label = "Based on combo stop")
@@ -1650,8 +1653,8 @@ model <- LogisticIndepBeta(
   data = data
 )
 ##define MCMC options
-##for illustration purpose we use 10 burn-in and generate 50 samples
-options <- McmcOptions(burnin = 10, step = 2, samples = 50)
+## for illustration purposes, in reality larger number of burnin and samples shoud be used
+options <- McmcOptions(burnin = 5, step = 1, samples = 10)
 ##samples of 'Samples' class
 samples <- mcmc(data, model, options)
 ##define the 'StoppingTDCIRatio' class
@@ -1682,9 +1685,9 @@ stopTrial(
   model = model,
   data = data
 )
-#> [1] FALSE
+#> [1] TRUE
 #> attr(,"message")
-#> [1] "95% CI is (2.87962060593596e-11, 11670.389917859), Ratio = 405275260699345 is greater than target_ratio = 5"
+#> [1] "95% CI is (28.5026089176956, 28.5026089176956), Ratio = 1 is less than or equal to target_ratio = 5"
 #> attr(,"report_label")
 #> [1] "TD 5 for 0.3 target prob"
 
@@ -1769,9 +1772,10 @@ Effmodel <- Effloglog(
   nu = c(a = 1, b = 0.025),
   data = data
 )
-##for illustration purpose we use 10 burn-in and generate 50 samples
-options <- McmcOptions(burnin = 10, step = 2, samples = 50)
+##for illustration purposes, in reality larger number of burnin and samples shoud be used
+options <- McmcOptions(burnin = 5, step = 1, samples = 10)
 ##DLE and efficacy samples must be of 'Samples' class
+# \donttest{
 DLEsamples <- mcmc(data, DLEmodel, options)
 Effsamples <- mcmc(data, Effmodel, options)
 
@@ -1798,9 +1802,6 @@ RecommendDose <- nextBest(
   model_eff = Effmodel,
   samples_eff = Effsamples
 )
-#> [1] "Estimated TD 35 = 14.8679719869239 not within dose grid"
-#> [1] "Estimated TD 30 = 9.60973788445752 not within dose grid"
-#> [1] "Estimated max gain dose = 300 not within dose grid"
 ##use 'stopTrial' to determine if the rule has been fulfilled
 ##use 0.3 as the target proability of DLE at the end of the trial
 
@@ -1821,12 +1822,12 @@ stopTrial(
 )
 #> [1] FALSE
 #> attr(,"message")
-#> [1] "Gstar estimate is 300 with 95% CI ( 25 , 300 ) and its ratio = 12"                                                       
-#> [2] "TDtargetEndOfTrial estimate is  9.6097 with 95% CI ( 0.0014 , 2.68928250389749e+39 ) and its ratio= 1.93690997063425e+42"
-#> [3] "TDtargetEndOfTrial estimate is smaller with ratio = 1.93690997063425e+42  which is  greater than target_ratio = 5"       
+#> [1] "Gstar estimate is 150 with 95% CI ( 61.25 , 300 ) and its ratio = 4.898"                              
+#> [2] "TDtargetEndOfTrial estimate is  28.5027 with 95% CI ( 28.5027 , 11629.1764 ) and its ratio= 408.0026" 
+#> [3] "TDtargetEndOfTrial estimate is smaller with ratio = 408.0026  which is  greater than target_ratio = 5"
 #> attr(,"report_label")
 #> [1] "GStar 5 for 0.3 target prob"
-
+# }
 # nolint end
 # nolint start
 

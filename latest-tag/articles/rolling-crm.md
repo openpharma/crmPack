@@ -5,6 +5,7 @@
 ### Setting up the data
 
 ``` r
+
 library(crmPack)
 data <- DataDA(
   x = c(0.1, 0.5, 1.5, 3, 6, 10, 10, 10),
@@ -33,6 +34,7 @@ emptydata <- DataDA(
 ### Structure of the model class
 
 ``` r
+
 npiece_ <- 10
 Tmax_ <- 60
 
@@ -53,6 +55,7 @@ model <- DALogisticLogNormal(
 ### Obtain the posterior
 
 ``` r
+
 options <- McmcOptions(
   burnin = 10,
   step = 2,
@@ -66,6 +69,7 @@ samples <- mcmc(data, model, options)
 ### Use ggmcmc to diagnose
 
 ``` r
+
 library(ggmcmc)
 alpha0samples <- get(samples, "alpha0")
 
@@ -79,6 +83,7 @@ chain.](rolling-crm-figures/Diagnose-1-1.png)
 plot of chunk Diagnose-1
 
 ``` r
+
 print(ggs_autocorrelation(alpha0samples))
 ```
 
@@ -92,6 +97,7 @@ plot of chunk Diagnose-2
 ### Plot the model fit
 
 ``` r
+
 plot(samples, model, data, hazard = TRUE)
 ```
 
@@ -102,6 +108,7 @@ posterior hazard by time.](rolling-crm-figures/Fit-1-1.png)
 plot of chunk Fit-1
 
 ``` r
+
 plot(samples, model, data, hazard = FALSE)
 ```
 
@@ -115,6 +122,7 @@ plot of chunk Fit-2
 ### prior mean curve
 
 ``` r
+
 emptydata <- DataDA(doseGrid = c(
   0.1, 0.5, 1.5, 3, 6,
   seq(from = 10, to = 80, by = 2)
@@ -138,6 +146,7 @@ Need to fill in (use the same rule in the section 8 of “using the
 package crmPack: introductory examples”)
 
 ``` r
+
 myIncrements <- IncrementsRelative(
   intervals = c(0, 20),
   increments = c(1, 0.33)
@@ -163,6 +172,7 @@ myStopping <- (myStopping1 | myStopping2)
 ### Recommended dose for the next cohort
 
 ``` r
+
 doseRecommendation <- nextBest(myNextBest,
   doselimit = nextMaxDose,
   samples = samples,
@@ -190,6 +200,7 @@ unacceptable. The toxicity for doses of 0.1 and 0.5 lie below
 plot of chunk Recommend
 
 ``` r
+
 doseRecommendation$value
 #> [1] 0.1
 ```
@@ -199,6 +210,7 @@ doseRecommendation$value
 ### Set up safety window and `DADesign` to be completed
 
 ``` r
+
 mysafetywindow <- SafetyWindowConst(c(6, 2), 7, 7)
 
 design <- DADesign(
@@ -216,6 +228,7 @@ design <- DADesign(
 ### Set up true curves
 
 ``` r
+
 myTruth <- probFunction(model, alpha0 = 2, alpha1 = 3)
 curve(myTruth(x), from = 0, to = 100, ylim = c(0, 1))
 ```
@@ -227,6 +240,7 @@ plot of chunk Truth
 
 ``` r
 
+
 onset <- 15
 exp_cond.cdf <- function(x) {
   1 - (pexp(x, 1 / onset, lower.tail = FALSE) - pexp(28, 1 / onset, lower.tail = FALSE)) / pexp(28, 1 / onset)
@@ -236,6 +250,7 @@ exp_cond.cdf <- function(x) {
 ### Perform the simulations
 
 ``` r
+
 mySims <- simulate(design,
   args = NULL,
   truthTox = myTruth,
@@ -256,6 +271,7 @@ Use a similar way as section 9.2 in the “using the package crmPack:
 introductory examples” document
 
 ``` r
+
 a <- summary(mySims, truth = myTruth)
 b <- mySims@data[[1]]
 
@@ -280,6 +296,7 @@ toxicity.](rolling-crm-figures/Interpret-1.png)
 plot of chunk Interpret
 
 ``` r
+
 
 mySims@stop_reasons[[2]]
 #> [[1]]

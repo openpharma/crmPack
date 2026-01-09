@@ -21,6 +21,7 @@ The first step is to define the trial design in `crmPack`…
 ## Study definition
 
 ``` r
+
 library(crmPack)
 
 
@@ -89,6 +90,7 @@ by the model on the assumption that no earlier DLTs were reported at
 lower doses.
 
 ``` r
+
 examine(design) %>% kable()
 ```
 
@@ -163,6 +165,7 @@ between 25 and 40 is 1.6. We can confirm this by checking the behaviour
 of `maxDose` with artificial data:
 
 ``` r
+
 no_tox_below_25_data <- Data(
   doseGrid = dose_grid,
   x = c(1, 3, 5, 10, 15, 20, 25),
@@ -185,6 +188,7 @@ choose to relax the increments rule and check that, ceteris paribus,
 this permits escalation from every dose:
 
 ``` r
+
 revised_increment_rule <- IncrementsRelative(
   intervals = c(0, 20, 80),
   increments = c(1, 0.67, 0.33)
@@ -230,6 +234,7 @@ tibble(
 Yes, it does. So we update the design:
 
 ``` r
+
 revised_design <- Design(
   model = initial_model,
   nextBest = next_best,
@@ -244,6 +249,7 @@ revised_design <- Design(
 ## Does the prior make sense?
 
 ``` r
+
 examine(revised_design) %>% kable()
 ```
 
@@ -284,6 +290,7 @@ Hmmm. We now appear to be stuck at 50 mg. Why is this? Let’s examine the
 state of the model after escalation to 50 mg without toxicity…
 
 ``` r
+
 no_tox_below_50_data <- Data(
   doseGrid = dose_grid,
   x = c(1, 3, 5, 10, 15, 20, 25, 40, 40, 40, 50, 50, 50),
@@ -334,6 +341,7 @@ creating a minimally informative prior that is consistent with our first
 attempt.
 
 ``` r
+
 # Fitting the min_inf_model is slow.
 if (file.exists("minInfModel.Rds")) {
   min_inf_model <- readRDS("minInfModel.Rds")
@@ -380,6 +388,7 @@ The minimally informative model has a prior distribution of
 Does this fix the rigidity problem?
 
 ``` r
+
 revised_model <- min_inf_model$model
 
 revised_design1 <- Design(
@@ -442,6 +451,7 @@ Now create some data that represent a trial that escalates without any
 reports of toxicity, and fit the revised model …
 
 ``` r
+
 no_tox_data <- Data(
   doseGrid = c(1, 3, 5, 10, 15, 20, 25, 40, 50, 80, 100),
   x = c(c(1, 3, 5, 10, 15, 20), rep(c(25, 40, 50, 80, 100), each = 3)),
@@ -543,6 +553,7 @@ So our final alteration is to increase the futility rule from 20
 participants to 40.
 
 ``` r
+
 revised_stopping_futility <- StoppingMinPatients(nPatients = 40)
 revised_stopping_trial <- (stopping_success1 & stopping_success2) | revised_stopping_futility
 

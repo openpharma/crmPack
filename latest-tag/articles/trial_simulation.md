@@ -8,6 +8,7 @@ distribution, and custom cohort size, stopping and maximum increments
 rules:
 
 ``` r
+
 library(crmPack)
 
 # Define the dose grid.

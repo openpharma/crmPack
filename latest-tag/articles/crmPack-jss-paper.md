@@ -47,21 +47,20 @@ cohort.
 
 Algorithmic designs like the simple 3+3 design (Carter 1973) have
 disadvantages that have been recognized in the statistics community, see
-e.g., (Paoletti, Ezzalfani, and Le Tourneau 2015). Fundamentally, the
-escalation rules of the 3+3 design do not have any statistical
-justification (Storer 1989) in terms of estimating an MTD. Moreover,
-they cannot be extended to address today’s Phase I trials, with
-extension cohorts, dose escalation of drug combinations and optimal
-biological dose determination, naming just a few prominent challenges.
-Hence model-based dose escalation designs like the continual
-reassessment method (CRM) (O’Quigley, Pepe, and Fisher 1990) have gained
-increasing interest due to the need for more efficient and informative
-Phase I trials. These designs are based in statistical inference, with
-dose-toxicity regression models as the backbone, and are therefore
-flexible for adaptation to various complex trial designs. Importantly,
-they avoid fixing only a few dose levels in advance. For a wider
-comparison of algorithmic and model based designs see e.g., (Jaki,
-Clive, and Weir 2013).
+e.g., (Paoletti et al. 2015). Fundamentally, the escalation rules of the
+3+3 design do not have any statistical justification (Storer 1989) in
+terms of estimating an MTD. Moreover, they cannot be extended to address
+today’s Phase I trials, with extension cohorts, dose escalation of drug
+combinations and optimal biological dose determination, naming just a
+few prominent challenges. Hence model-based dose escalation designs like
+the continual reassessment method (CRM) (O’Quigley et al. 1990) have
+gained increasing interest due to the need for more efficient and
+informative Phase I trials. These designs are based in statistical
+inference, with dose-toxicity regression models as the backbone, and are
+therefore flexible for adaptation to various complex trial designs.
+Importantly, they avoid fixing only a few dose levels in advance. For a
+wider comparison of algorithmic and model based designs see e.g., (Jaki
+et al. 2013).
 
 However, the wide-spread implementation of such designs has been
 hindered by the need for either licensing specialized commercial
@@ -84,15 +83,15 @@ implementations there is, however, a limitation on how much the designs
 can be tailored towards the individual needs of the study. Similarly
 static implementations of methods for dose escalation are available in
 the `Stata` module `crm` (Mander 2013) which implements the CRM and the
-`dfcrm` package (K. Cheung 2013) in `R` which additionally implements
-the time-to-event CRM (TITE-CRM) (Y. K. Cheung and Chappell 2000).
-Several `R`-packages with extensions are available. The `bcrm` package
-(M. Sweeting, Mander, and Sabin 2013) implements a variety of one and
-two parameter models, and facilitates different ways to specify prior
-distributions, escalation and stopping rules. The `ordcrm` package
-(Dressler and Huang 2016) implements ordinal proportional odds and
-continuation ratio models for CRMs. The `dfpk` package (Toumazi, Ursino,
-and Zohar 2017) uses pharmacokinetic data in the dose escalation.
+`dfcrm` package (Cheung 2013) in `R` which additionally implements the
+time-to-event CRM (TITE-CRM) (Cheung and Chappell 2000). Several
+`R`-packages with extensions are available. The `bcrm` package (Sweeting
+et al. 2013) implements a variety of one and two parameter models, and
+facilitates different ways to specify prior distributions, escalation
+and stopping rules. The `ordcrm` package (Dressler and Huang 2016)
+implements ordinal proportional odds and continuation ratio models for
+CRMs. The `dfpk` package (Toumazi et al. 2017) uses pharmacokinetic data
+in the dose escalation.
 
 In this paper we introduce the `R`-package `crmPack` (Sabanes Bove et
 al. 2018) for dose escalation studies, which is publicly available on
@@ -171,7 +170,7 @@ In `crmPack` the virtual `S4` class `GeneralModel` encapsulates this
 notion and subclasses implement concrete models.
 
 For example, the class `LogisticLogNormal` implements the logistic
-regression model (Neuenschwander, Branson, and Gsponer 2008) with
+regression model (Neuenschwander et al. 2008) with
 ``` math
 \begin{equation}
 \label{eq:LogisticLogNormal}
@@ -260,6 +259,7 @@ Before we start, we have to install and subsequently load our package in
 `R`:
 
 ``` r
+
 library("crmPack")
 ```
 
@@ -282,15 +282,15 @@ zero for $`x_{1}`$, since we consider here the regression model
 
 **Minimally informative prior** Here we assume that limited prior
 information is available on the dose-toxicity relationship, and hence
-would like to use a minimally informative prior (Neuenschwander,
-Branson, and Gsponer 2008) which can be easily obtained with the
-function `MinimalInformative`. Since stochastic optimization is used
-internally, setting of a seed is required for reproducibility.
-Furthermore, it is recommended to specify a coarse dose grid across the
-original dose range (excluding the placebo dose) to avoid long
-computation time:
+would like to use a minimally informative prior (Neuenschwander et al.
+2008) which can be easily obtained with the function
+`MinimalInformative`. Since stochastic optimization is used internally,
+setting of a seed is required for reproducibility. Furthermore, it is
+recommended to specify a coarse dose grid across the original dose range
+(excluding the placebo dose) to avoid long computation time:
 
 ``` r
+
 coarseGrid <- c(25, 50, 100, 200, 300)
 model <- MinimalInformative(
   dosegrid = coarseGrid, refDose = 100,
@@ -327,6 +327,7 @@ calling the accompanying initialization function of the same name (which
 is a general convention in `crmPack`):
 
 ``` r
+
 PL <- 0.001
 data <- Data(
   x = c(PL, 25, 25, 25, PL, 50, 50, 50, PL, 100, 100, 100),
@@ -354,6 +355,7 @@ blinded plot (hiding patient IDs and placebo/treatment assignment) with
 the option `blind`, see Figure @ref(fig:plot-data):
 
 ``` r
+
 plot(data)
 ```
 
@@ -366,6 +368,7 @@ cohorts.](jss-figures/plot-data-1.png)
 Open and blinded data plots
 
 ``` r
+
 plot(data, blind = TRUE)
 ```
 
@@ -387,6 +390,7 @@ provided to the `mcmc` function, together with the `data` and the
 `model` objects:
 
 ``` r
+
 options <- McmcOptions(burnin = 1000, step = 2, samples = 10000)
 set.seed(94)
 samples <- mcmc(data, model, options)
@@ -399,6 +403,7 @@ similar plot without any data, which is then giving the prior, see
 Figure @ref(fig:plot-model-fit):
 
 ``` r
+
 plot(samples, model, data) + ggtitle("Posterior")
 
 emptydata <- Data(doseGrid = data@doseGrid, placebo = TRUE)
@@ -427,6 +432,7 @@ increase of 100% for doses below 100 mg, 50% for doses in the range from
 using the class `IncrementsRelative`:
 
 ``` r
+
 myIncrements <- IncrementsRelative(
   intervals = c(0, 100, 200),
   increments = c(1, 0.5, 0.33)
@@ -438,6 +444,7 @@ This specific rule $`\tau`$ can then be evaluated on the current dataset
 dose \$t\_{N+1} = \tau({\cal D}\_{N})\$:
 
 ``` r
+
 (nextMaxDose <- maxDose(myIncrements, data))
 #> [1] 150
 ```
@@ -446,10 +453,10 @@ We then define the function $`\nu`$ for selecting a dose for the next
 cohort. In this case we would like to select the dose which maximizes
 the probability of the DLT rate being in the target toxicity range from
 20% to 35%, but with the probability of overdosing not exceeding 25%
-(Neuenschwander, Branson, and Gsponer 2008), using the `NextBestNCRM`
-class:
+(Neuenschwander et al. 2008), using the `NextBestNCRM` class:
 
 ``` r
+
 myNextBest <- NextBestNCRM(
   target = c(0.2, 0.35), overdose = c(0.35, 1),
   max_overdose_prob = 0.25
@@ -460,6 +467,7 @@ This rule can then be evaluated with the function `NextBest` to obtain
 the next dose \$x\_{N+1}=\nu({\cal D}\_{N}, t\_{N+1})\$:
 
 ``` r
+
 nextDoseRes <- nextBest(myNextBest, nextMaxDose, samples, model, data)
 (nextDoseVal <- nextDoseRes$value)
 #> [1] 100
@@ -484,6 +492,7 @@ is constructed by combining the atomic rules with logical operators as
 follows:
 
 ``` r
+
 myStopping1 <- StoppingMinPatients(nPatients = 30)
 myStopping2 <- StoppingTargetProb(target = c(0.2, 0.35), prob = 0.5)
 myStopping3 <- StoppingPatientsNearDose(nPatients = 9, percentage = 20)
@@ -494,6 +503,7 @@ Again, this specific rule can be evaluated by a function, here called
 `stopTrial`, for a specific situation:
 
 ``` r
+
 stopTrial(myStopping, nextDoseVal, samples, model, data)
 #> [1] FALSE
 #> attr(,"message")
@@ -561,6 +571,7 @@ fixed cohort size of 3 patients on active and 1 patient on placebo
 (\`\`3+1’’) throughout the study:
 
 ``` r
+
 mySize <- CohortSizeConst(3)
 mySizePL <- CohortSizeConst(1)
 
@@ -587,6 +598,7 @@ dose can be reached in the next cohort if also no DLTs are observed at
 225, 175 and 150 mg, respectively.
 
 ``` r
+
 set.seed(23)
 examine(design, mcmcOptions = options)
 #>    dose DLTs nextDose  stop increment
@@ -624,6 +636,7 @@ the function contained in the slot `prob` of the object `model`: %, for
 which the dose-toxicity curve is shown below.
 
 ``` r
+
 myTruth <- probFunction(model, alpha0 = 4.5, alpha1 = 8)
 ```
 
@@ -636,6 +649,7 @@ DLT of 0.01, 0.02, 0.04, 0.06, 0.09, then the following code could be
 used:
 
 ``` r
+
 doseProbMatrix <- cbind(c(1, 2, 3, 4, 5), c(0.01, 0.02, 0.04, 0.06, 0.09))
 myTruthMatrix <-
   function(dose) {
@@ -646,6 +660,7 @@ myTruthMatrix <-
 Now we can proceed to the simulations using the function `simulate`:
 
 ``` r
+
 mySimsTime <-
   system.time(mySims <- simulate(design,
     truth = myTruth, nsim = 100,
@@ -668,6 +683,7 @@ investigate the number of patients and the MTD at the end of the third
 simulated trial:
 
 ``` r
+
 mySims@data[[3]]@nObs
 #> [1] 32
 mySims@doses[3]
@@ -688,6 +704,7 @@ Second, we can summarize the simulation results, and obtain a textual
 description of the results:
 
 ``` r
+
 simSum <- summary(mySims, truth = myTruth)
 simSum
 #> Summary of 100 simulations
@@ -732,6 +749,7 @@ class, where here we illustrate the addition of the efficacy data `w` to
 the previous dataset:
 
 ``` r
+
 data2 <- DataDual(
   x = data@x, y = data@y, placebo = TRUE,
   w = c(
@@ -784,6 +802,7 @@ these two dose levels, respectively. This corresponds to prior means of
 pseudo data prior as follows:
 
 ``` r
+
 DLTmodel <- LogisticIndepBeta(
   binDLE = c(1.05, 1.8), DLEweights = c(3, 3),
   DLEdose = c(25, 300), data = emptydata
@@ -793,6 +812,7 @@ DLTmodel <- LogisticIndepBeta(
 The efficacy model can similarly be specified as
 
 ``` r
+
 emptydata2 <- DataDual(doseGrid = emptydata@doseGrid, placebo = TRUE)
 Effmodel <- Effloglog(
   eff = c(1.223, 2.513), eff_dose = c(25, 300),
@@ -824,6 +844,7 @@ will be estimated by their posterior modal estimates using the `update`
 method:
 
 ``` r
+
 newDLTmodel <- update(object = DLTmodel, data = data2)
 newEffmodel <- update(object = Effmodel, data = data2)
 ```
@@ -832,6 +853,7 @@ With `crmPack` we can implement the next best dose recommendation based
 on maximizing the gain function as follows:
 
 ``` r
+
 GainNextBest <- NextBestMaxGain(
   prob_target_drt = 0.35,
   prob_target_eot = 0.3
@@ -846,6 +868,7 @@ using `NextBest` to obtain $`x_{N+1}`$, after evaluating the maximum
 increments rule $`\tau`$ using `maxDose` to obtain $`t_{N+1}`$:
 
 ``` r
+
 (nextMaxDose <- maxDose(myIncrements, data2))
 #> [1] 150
 doseRecGain <- nextBest(GainNextBest,
@@ -881,6 +904,7 @@ maximum number of patients in our trial, we can use another one relating
 to the precision of the dose with optimum gain:
 
 ``` r
+
 myStopping4 <- StoppingMaxGainCIRatio(
   target_ratio = 5,
   prob_target = GainNextBest@prob_target_eot
@@ -896,6 +920,7 @@ recommendation is less than 5.
 design has to be built:
 
 ``` r
+
 design2 <- DualResponsesDesign(
   nextBest = GainNextBest, model = DLTmodel,
   eff_model = Effmodel, data = emptydata2,
@@ -910,6 +935,7 @@ design class. We can then specify the scenario for the simulation, by
 defining the true DLT and efficacy curves that we will be using:
 
 ``` r
+
 myTruthDLT <- probFunction(DLTmodel, phi1 = -53, phi2 = 10)
 myTruthEff <- efficacyFunction(Effmodel, theta1 = -4.8, theta2 = 3.7)
 myTruthGain <- function(dose) {
@@ -922,6 +948,7 @@ Please note that the parameter names `phi1`, `phi2`, `theta1` and
 respectively. Simulations are again produced by the `simulate` function:
 
 ``` r
+
 Sim1 <- simulate(
   object = design2, args = NULL, trueDLE = myTruthDLT,
   trueEff = myTruthEff, trueNu = 1 / 0.025, nsim = 20,
@@ -942,10 +969,10 @@ Here we will therefore illustrate how users can extend the existing
 functionality easily to the specific needs of the study.
 
 **Objective** The example will implement a version of the one-parameter
-CRM (O’Quigley, Pepe, and Fisher 1990), which is currently not (yet)
-included in the package. It is based on a one-parameter power model to
-describe the relationship between the binary DLT responses $`Y`$ and
-their corresponding dose levels $`x`$:
+CRM (O’Quigley et al. 1990), which is currently not (yet) included in
+the package. It is based on a one-parameter power model to describe the
+relationship between the binary DLT responses $`Y`$ and their
+corresponding dose levels $`x`$:
 ``` math
 \begin{equation}
 \label{eq:oneparameter}
@@ -966,6 +993,7 @@ target toxicity level is minimized.
 from the general model class `GeneralModel`:
 
 ``` r
+
 .OneParExp <- setClass(
   Class = "OneParExp",
   contains = "GeneralModel",
@@ -993,6 +1021,7 @@ MCMC sampler, and `sample` defines which parameter samples will be
 returned:
 
 ``` r
+
 OneParExp <- function(skeleton_probs, dose_grid, lambda) {
   .OneParExp(
     skeleton_probs = skeleton_probs,
@@ -1032,6 +1061,7 @@ function
 which maps the probability $`p`$ to a dose $`x`$.
 
 ``` r
+
 setMethod(
   f = "dose",
   signature = signature(
@@ -1067,6 +1097,7 @@ exponential prior for $`\theta`$. The resulting posterior fit can be
 plotted as usual, see Figure @ref(fig:OneParExp-model-example).
 
 ``` r
+
 (skeleton_probs <- round(data@doseGrid / max(data@doseGrid) / 2, 2))
 #>  [1] 0.00 0.04 0.08 0.12 0.17 0.21 0.25 0.29 0.33 0.38 0.42 0.46 0.50
 newModel <- OneParExp(
@@ -1089,6 +1120,7 @@ with estimated DLT probability closest to the target. Again we start
 with the class, now inheriting from `NextBest`:
 
 ``` r
+
 .NextBestMinDist <- setClass(
   Class = "NextBestMinDist",
   contains = "NextBest",
@@ -1107,6 +1139,7 @@ first argument, such that this rule could also be used with other
 models.
 
 ``` r
+
 setMethod(
   "nextBest",
   signature = signature(
@@ -1142,6 +1175,7 @@ order to obtain the next dose recommendation, e.g., after specifying a
 target dose of 30%:
 
 ``` r
+
 newMyNextBest <- NextBestMinDist(target = 0.3)
 newNextDoseVal <- nextBest(newMyNextBest, nextMaxDose, newSamples, newModel, data)$value
 newNextDoseVal
@@ -1195,7 +1229,7 @@ all approaches and relevant graphical displays are also available.
 
 The package is actively developed further and new methods will be added.
 Future extensions of `crmPack` will include model-based combination dose
-escalation designs, see for example (M. J. Sweeting and Mander 2012) and
+escalation designs, see for example (Sweeting and Mander 2012) and
 \[Riviere et al. (2014) for recent reviews. Furthermore,
 data-augmentation CRM designs \[see\](Liu and Ning 2013) that allow for
 a decoupling of inter-cohort waiting times and DLT time windows, hence
@@ -1239,7 +1273,7 @@ Consultants, Berry. 2025. *(ADaptive Design PLANner)*. Austin, Texas,
 US. <https://www.berryconsultants.com/software/addplan>.
 
 Core Team. 2016. *: A Language and Environment for Statistical
-Computing*. Vienna, Austria: Foundation for Statistical Computing.
+Computing*. Foundation for Statistical Computing.
 <https://www.R-project.org/>.
 
 Cytel Inc. 2016. *6: Statistical Software for the Design, Simulation and
@@ -1290,8 +1324,8 @@ Sabanes Bove, Daniel, Wai Yin Yeung, Giuseppe Palermo, and Thomas Jaki.
 2018. *: Object-Oriented Implementation of CRM Designs*.
 <https://CRAN.R-project.org/package=crmPack>.
 
-StataCorp. 2015. *Statistical Software: Release 14*. College Station,
-TX: StataCorp LP. <https://www.stata.com/>.
+StataCorp. 2015. *Statistical Software: Release 14*. StataCorp LP.
+<https://www.stata.com/>.
 
 Storer, Barry E. 1989. “Design and Analysis of Phase i Clinical Trials.”
 *Biometrics* 45 (3): 925–37. <https://doi.org/10.2307/2531693>.
@@ -1304,8 +1338,8 @@ Sweeting, Michael, Adrian Mander, and Tony Sabin. 2013. “: Bayesian
 Continual Reassessment Method Designs for Phase i Dose-Finding Trials.”
 *Journal of Statistical Software* 54 (13): 1–26.
 
-Team, FACTS Development. 2015. “Fixed and Adaptive Clinical Trial
-Simulator.” <https://www.berryconsultants.com/software>.
+Team, FACTS Development. 2015. *Fixed and Adaptive Clinical Trial
+Simulator*. <https://www.berryconsultants.com/software>.
 
 Thall, Peter F. 2010. “Bayesian Models and Decision Algorithms for
 Complex Early Phase Clinical Trials.” *Statistical Science* 25 (2):
@@ -1315,8 +1349,8 @@ Toumazi, Artemis, Moreno Ursino, and Sarah Zohar. 2017. *: A Bayesian
 Dose-Finding Design Using Pharmacokinetics (PK) for Phase i Clinical
 Trials*. <https://CRAN.R-project.org/package=dfpk>.
 
-Whitehead, J. 2006. “Statistical Methods for Dose-Finding Experiments.”
-In, edited by Sylvie Chevret. John Wiley & Sons.
+Whitehead, J. 2006. *Statistical Methods for Dose-Finding Experiments*.
+Edited by Sylvie Chevret. John Wiley & Sons.
 
 Wickham, Hadley. 2009. *: Elegant Graphics for Data Analysis*.
 Springer-Verlag. <https://ggplot2.tidyverse.org/>.

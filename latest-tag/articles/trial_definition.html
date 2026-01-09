@@ -21,7 +21,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">crmPack</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">2.0.1</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">2.0.2</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -70,6 +70,7 @@
     <div class="dropdown-menu" aria-labelledby="dropdown-versions">
     <a class="dropdown-item" data-toggle="tooltip" title="" href="https://openpharma.github.io/crmPack/main">main</a>
 <a class="dropdown-item" data-toggle="tooltip" title="" href="https://openpharma.github.io/crmPack/latest-tag">latest-tag</a>
+<a class="dropdown-item" data-toggle="tooltip" title="" href="https://openpharma.github.io/crmPack/v2.0.2">v2.0.2</a>
 <a class="dropdown-item" data-toggle="tooltip" title="" href="https://openpharma.github.io/crmPack/v2.0.1">v2.0.1</a>
 </div>
 </li></div>
@@ -94,7 +95,7 @@
       <img src="../logo.png" class="logo" alt=""><h1>Trial Definition</h1>
             
       
-      <small class="dont-index">Source: <a href="https://github.com/openpharma/crmPack/blob/v2.0.1/vignettes/trial_definition.Rmd" class="external-link"><code>vignettes/trial_definition.Rmd</code></a></small>
+      <small class="dont-index">Source: <a href="https://github.com/openpharma/crmPack/blob/v2.0.2/vignettes/trial_definition.Rmd" class="external-link"><code>vignettes/trial_definition.Rmd</code></a></small>
       <div class="d-none name"><code>trial_definition.Rmd</code></div>
     </div>
 
@@ -319,11 +320,11 @@ cohort<a class="anchor" aria-label="anchor" href="#the-nextbest-rule-for-recomme
 <span>  overdose <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">0.35</span>, <span class="fl">1</span><span class="op">)</span>,</span>
 <span>  max_overdose_prob <span class="op">=</span> <span class="fl">0.25</span></span>
 <span><span class="op">)</span></span></code></pre></div>
-<p>Here, we choose to use Neuenschwander’s rule <span class="citation">(Neuenschwander, Branson, and Gsponer 2008)</span>, in
-which the dose for the next cohort to be the dose (amongst those doses
-that are eligible for selection according to the escalation rule) that
-has the highest posterior chance of having a probability of toxicity in
-the target range - here [0.2, 0.35) - provided that the dose’s chance of
+<p>Here, we choose to use Neuenschwander’s rule <span class="citation">(Neuenschwander et al. 2008)</span>, in which the dose
+for the next cohort to be the dose (amongst those doses that are
+eligible for selection according to the escalation rule) that has the
+highest posterior chance of having a probability of toxicity in the
+target range - here [0.2, 0.35) - provided that the dose’s chance of
 having a probability of toxicity in the overdose range - here [0.35,
 1.0] - is less than 0.25.</p>
 </div>
@@ -416,7 +417,7 @@ design. These processes are described in their own vignettes <a href="trial_anal
 <div class="section level2 unnumbered">
 <h2 class="unnumbered" id="references">References<a class="anchor" aria-label="anchor" href="#references"></a>
 </h2>
-<div id="refs" class="references csl-bib-body hanging-indent" entry-spacing="0">
+<div id="refs" class="references csl-bib-body hanging-indent">
 <div id="ref-Neuenschwander2008" class="csl-entry">
 Neuenschwander, Beat, Michael Branson, and Thomas Gsponer. 2008.
 <span>“<span class="nocase">Critical aspects of the Bayesian approach to

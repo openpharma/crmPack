@@ -123,7 +123,7 @@ doseRecommendation <- nextBest(
   data = data
 )
 #> Warning: TD 35 = 24.9999999999785 not within dose grid
-#> Warning: TD 30 = 14.3714101936776 not within dose grid
+#> Warning: TD 30 = 14.3714101936777 not within dose grid
 ## Then the starting data, an empty data set
 emptydata <- Data(doseGrid = seq(25, 300, 25))
 ## The cohort size, size of 3 subjects
@@ -137,7 +137,7 @@ myIncrements <- IncrementsRelative(
   increments = c(2, 2)
 )
 ## Specified the stopping rule e.g stop when the maximum sample size of 36 patients has been reached
-myStopping <- StoppingMinPatients(nPatients = 36)
+myStopping <- StoppingMinPatients(nPatients = 36) | StoppingMissingDose()
 
 
 ## Specified the design(for details please refer to the 'TDDesign' example)

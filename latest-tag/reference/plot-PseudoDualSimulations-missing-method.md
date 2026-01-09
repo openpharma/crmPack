@@ -119,6 +119,7 @@ my_truth_eff <- efficacyFunction(
 )
 
 # Run simulations (for illustration purpose only 1 simulation is produced).
+# \donttest{
 my_sim <- simulate(
   object = my_design,
   args = NULL,
@@ -176,4 +177,6 @@ my_sim <- simulate(
 
 # Plot the simulation results.
 print(plot(my_sim))
+
+# }
 ```

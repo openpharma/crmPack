@@ -98,7 +98,7 @@ myStopping2 <- StoppingTargetProb(
   prob = 0.5
 )
 myStopping3 <- StoppingMinPatients(nPatients = 20)
-myStopping <- (myStopping1 & myStopping2) | myStopping3
+myStopping <- (myStopping1 & myStopping2) | myStopping3 | StoppingMissingDose()
 
 # Choose the rule for dose increments
 myIncrements <- IncrementsRelative(
@@ -124,9 +124,9 @@ myTruth <- probFunction(model, alpha0 = 7, alpha1 = 8)
 # We only generate 1 trial outcomes here for illustration, for the actual study
 # this should be increased of course
 options <- McmcOptions(
-  burnin = 10,
+  burnin = 5,
   step = 1,
-  samples = 100
+  samples = 10
 )
 time <- system.time(
   mySims <- simulate(

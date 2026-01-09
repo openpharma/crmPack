@@ -153,6 +153,7 @@ legend("topright", c("mono", "combo"), lty = c(1, 2), col = c(1, 2))
 
 # Start the simulations.
 set.seed(123)
+# \donttest{
 my_sims <- simulate(
   my_design,
   nsim = 1, # This should be at least 100 in actual applications.
@@ -176,10 +177,10 @@ mono_sims_sum
 #> Number of patients treated above target tox interval : mean 0 (0, 0) 
 #> Proportions of DLTs in the trials : mean 0 % (0 %, 0 %) 
 #> Mean toxicity risks for the patients on active : mean 3 % (3 %, 3 %) 
-#> Doses selected as MTD : mean 16 (16, 16) 
+#> Doses selected as MTD : mean 14 (14, 14) 
 #> True toxicity at doses selected : mean 5 % (5 %, 5 %) 
 #> Proportion of trials selecting target MTD: 0 %
-#> Dose most often selected as MTD: 16 
+#> Dose most often selected as MTD: 14 
 #> Observed toxicity rate at dose most often selected: NaN %
 #> Fitted toxicity rate at dose most often selected : mean 7 % (7 %, 7 %) 
 #> Stop reason triggered:
@@ -196,11 +197,11 @@ combo_sims_sum
 #> Number of patients overall : mean 12 (12, 12) 
 #> Number of patients treated above target tox interval : mean 0 (0, 0) 
 #> Proportions of DLTs in the trials : mean 17 % (17 %, 17 %) 
-#> Mean toxicity risks for the patients on active : mean 11 % (11 %, 11 %) 
-#> Doses selected as MTD : mean 14 (14, 14) 
-#> True toxicity at doses selected : mean 18 % (18 %, 18 %) 
+#> Mean toxicity risks for the patients on active : mean 10 % (10 %, 10 %) 
+#> Doses selected as MTD : mean 10 (10, 10) 
+#> True toxicity at doses selected : mean 15 % (15 %, 15 %) 
 #> Proportion of trials selecting target MTD: 0 %
-#> Dose most often selected as MTD: 14 
+#> Dose most often selected as MTD: 10 
 #> Observed toxicity rate at dose most often selected: NaN %
 #> Fitted toxicity rate at dose most often selected : mean 15 % (15 %, 15 %) 
 #> Stop reason triggered:
@@ -217,4 +218,6 @@ trial_index <- 1
 plot(my_sims$mono@data[[trial_index]])
 
 plot(my_sims$combo@data[[trial_index]])
+
+# }
 ```

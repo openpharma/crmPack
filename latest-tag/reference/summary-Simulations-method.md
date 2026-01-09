@@ -79,7 +79,7 @@ myStopping2 <- StoppingTargetProb(
   prob = 0.5
 )
 myStopping3 <- StoppingMinPatients(nPatients = 20)
-myStopping <- (myStopping1 & myStopping2) | myStopping3
+myStopping <- (myStopping1 & myStopping2) | myStopping3 | StoppingMissingDose()
 
 # Choose the rule for dose increments
 myIncrements <- IncrementsRelative(
@@ -144,13 +144,14 @@ summary(mySims, truth = myTruth)
 #> Dose most often selected as MTD: 20 
 #> Observed toxicity rate at dose most often selected: 25 %
 #> Fitted toxicity rate at dose most often selected : mean 28 % (28 %, 28 %) 
-#> max_mtd : 76.57 
-#> mean_mtd : 21.4 
-#> median_mtd : 20.4 
+#> max_mtd : 134.65 
+#> mean_mtd : 21.29 
+#> median_mtd : 19.55 
 #> Stop reason triggered:
 #>  ≥ 3 cohorts dosed :  100 %
 #>  P(0.2 ≤ prob(DLE | NBD) ≤ 0.35) ≥ 0.5 :  100 %
 #>  ≥ 20 patients dosed :  0 %
+#>  Stopped because of missing dose :  0 %
 
 # nolint end
 ```

@@ -26,7 +26,7 @@ Summarize the model-based design simulations, relative to a given truth.">
 
     <a class="navbar-brand me-2" href="../index.html">crmPack</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">2.0.1</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">2.0.2</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -75,6 +75,7 @@ Summarize the model-based design simulations, relative to a given truth.">
     <div class="dropdown-menu" aria-labelledby="dropdown-versions">
     <a class="dropdown-item" data-toggle="tooltip" title="" href="https://openpharma.github.io/crmPack/main">main</a>
 <a class="dropdown-item" data-toggle="tooltip" title="" href="https://openpharma.github.io/crmPack/latest-tag">latest-tag</a>
+<a class="dropdown-item" data-toggle="tooltip" title="" href="https://openpharma.github.io/crmPack/v2.0.2">v2.0.2</a>
 <a class="dropdown-item" data-toggle="tooltip" title="" href="https://openpharma.github.io/crmPack/v2.0.1">v2.0.1</a>
 </div>
 </li></div>
@@ -93,7 +94,7 @@ Summarize the model-based design simulations, relative to a given truth.">
 <div class="row">
   <main id="main" class="col-md-9"><div class="page-header">
       <img src="../logo.png" class="logo" alt=""><h1>Summarize Model-Based Design Simulations</h1>
-      <small class="dont-index">Source: <a href="https://github.com/openpharma/crmPack/blob/v2.0.1/R/Simulations-methods.R" class="external-link"><code>R/Simulations-methods.R</code></a></small>
+      <small class="dont-index">Source: <a href="https://github.com/openpharma/crmPack/blob/v2.0.2/R/Simulations-methods.R" class="external-link"><code>R/Simulations-methods.R</code></a></small>
       <div class="d-none name"><code>summary-Simulations-method.Rd</code></div>
     </div>
 
@@ -184,7 +185,7 @@ used for the computations.</p></dd>
 <span class="r-in"><span>  prob <span class="op">=</span> <span class="fl">0.5</span></span></span>
 <span class="r-in"><span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="va">myStopping3</span> <span class="op">&lt;-</span> <span class="fu"><a href="StoppingMinPatients-class.html">StoppingMinPatients</a></span><span class="op">(</span>nPatients <span class="op">=</span> <span class="fl">20</span><span class="op">)</span></span></span>
-<span class="r-in"><span><span class="va">myStopping</span> <span class="op">&lt;-</span> <span class="op">(</span><span class="va">myStopping1</span> <span class="op">&amp;</span> <span class="va">myStopping2</span><span class="op">)</span> <span class="op">|</span> <span class="va">myStopping3</span></span></span>
+<span class="r-in"><span><span class="va">myStopping</span> <span class="op">&lt;-</span> <span class="op">(</span><span class="va">myStopping1</span> <span class="op">&amp;</span> <span class="va">myStopping2</span><span class="op">)</span> <span class="op">|</span> <span class="va">myStopping3</span> <span class="op">|</span> <span class="fu"><a href="StoppingMissingDose-class.html">StoppingMissingDose</a></span><span class="op">(</span><span class="op">)</span></span></span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co"># Choose the rule for dose increments</span></span></span>
 <span class="r-in"><span><span class="va">myIncrements</span> <span class="op">&lt;-</span> <span class="fu"><a href="IncrementsRelative-class.html">IncrementsRelative</a></span><span class="op">(</span></span></span>
@@ -249,13 +250,14 @@ used for the computations.</p></dd>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Dose most often selected as MTD: 20 </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Observed toxicity rate at dose most often selected: 25 %</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Fitted toxicity rate at dose most often selected : mean 28 % (28 %, 28 %) </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> max_mtd : 76.57 </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> mean_mtd : 21.4 </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> median_mtd : 20.4 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> max_mtd : 134.65 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> mean_mtd : 21.29 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> median_mtd : 19.55 </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Stop reason triggered:</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>  ≥ 3 cohorts dosed :  100 %</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>  P(0.2 ≤ prob(DLE | NBD) ≤ 0.35) ≥ 0.5 :  100 %</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>  ≥ 20 patients dosed :  0 %</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  Stopped because of missing dose :  0 %</span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co"># nolint end</span></span></span>
 </code></pre></div>
