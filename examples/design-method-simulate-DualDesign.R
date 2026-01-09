@@ -38,7 +38,7 @@ myStopping4 <- StoppingTargetBiomarker(
   target = c(0.9, 1),
   prob = 0.5
 )
-myStopping <- myStopping4 | StoppingMinPatients(10)
+myStopping <- myStopping4 | StoppingMinPatients(10) | StoppingMissingDose()
 
 # Choose the rule for dose increments
 myIncrements <- IncrementsRelative(
@@ -90,6 +90,7 @@ curve(trueBiomarker(x), from = 0, to = 80)
 # We only generate 1 trial outcome here for illustration, for the actual study
 # this should be increased of course, similarly for the McmcOptions -
 # they also need to be increased.
+\donttest{
 mySims <- simulate(
   design,
   trueTox = trueTox,
@@ -101,10 +102,11 @@ mySims <- simulate(
   seed = 3,
   startingDose = 6,
   mcmcOptions = McmcOptions(
-    burnin = 100,
+    burnin = 10,
     step = 1,
-    samples = 300
+    samples = 100
   )
 )
+}
 
 # nolint end

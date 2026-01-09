@@ -31,7 +31,7 @@ myIncrements <- IncrementsRelative(
   increments = c(2, 2)
 )
 ## Specified the stopping rule e.g stop when the maximum sample size of 12 patients has been reached
-myStopping <- StoppingMinPatients(nPatients = 12)
+myStopping <- StoppingMinPatients(nPatients = 12) | StoppingMissingDose()
 ## Now specified the design with all the above information and starting with a dose of 25
 design <- TDDesign(
   model = model,

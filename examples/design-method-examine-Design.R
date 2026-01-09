@@ -34,7 +34,7 @@ my_stopping2 <- StoppingTargetProb(
   prob = 0.5
 )
 my_stopping3 <- StoppingMinPatients(nPatients = 20)
-my_stopping <- (my_stopping1 & my_stopping2) | my_stopping3
+my_stopping <- (my_stopping1 & my_stopping2) | my_stopping3 | StoppingMissingDose()
 
 # Choose the rule for dose increments.
 my_increments <- IncrementsRelative(

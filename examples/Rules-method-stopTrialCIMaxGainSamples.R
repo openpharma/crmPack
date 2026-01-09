@@ -27,9 +27,10 @@ Effmodel <- Effloglog(
   nu = c(a = 1, b = 0.025),
   data = data
 )
-##for illustration purpose we use 10 burn-in and generate 50 samples
-options <- McmcOptions(burnin = 10, step = 2, samples = 50)
+##for illustration purposes, in reality larger number of burnin and samples shoud be used
+options <- McmcOptions(burnin = 5, step = 1, samples = 10)
 ##DLE and efficacy samples must be of 'Samples' class
+\donttest{
 DLEsamples <- mcmc(data, DLEmodel, options)
 Effsamples <- mcmc(data, Effmodel, options)
 
@@ -74,5 +75,5 @@ stopTrial(
     quantile(Gstarsamples, prob = 0.5)
   }
 )
-
+}
 # nolint end

@@ -52,6 +52,7 @@ legend("topright", c("mono", "combo"), lty = c(1, 2), col = c(1, 2))
 
 # Start the simulations.
 set.seed(123)
+\donttest{
 my_sims <- simulate(
   my_design,
   nsim = 1, # This should be at least 100 in actual applications.
@@ -74,3 +75,4 @@ plot(combo_sims_sum)
 trial_index <- 1
 plot(my_sims$mono@data[[trial_index]])
 plot(my_sims$combo@data[[trial_index]])
+}

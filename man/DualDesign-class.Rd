@@ -83,7 +83,7 @@ my_stopping1 <- StoppingTargetBiomarker(
   target = c(0.9, 1),
   prob = 0.5
 )
-my_stopping <- my_stopping1 | StoppingMinPatients(40)
+my_stopping <- my_stopping1 | StoppingMinPatients(40) | StoppingMissingDose()
 
 # Choose the rule for dose increments.
 my_increments <- IncrementsRelative(
