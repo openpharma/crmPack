@@ -85,7 +85,7 @@ In addition, and we need to capture the "response" information in a new slot too
 ### `Stopping` class
 
 - For specific stopping rules we can add a flag whether to include backfill patients or not.
-  - For the beginning we can just implement this for the `StoppingMinPatients` rule.
+  - For the beginning we can just implement this for the `StoppingPatientsNearDose` rule.
   - Default to including all patients (backfilled and non-backfilled).
 
 ### `update` method
@@ -209,7 +209,7 @@ Note that currently only very few `Opening` and `Recruitment` rules are implemen
   - Answer: yes.
 - Also the timing of the backfilling can be discussed: 
   - Currently we open backfill cohorts at the same time as the current active cohort, and then supply the full data set to the model fitting and the recommended dose calculation. 
-  - See [here](https://github.com/openpharma/crmPack/blob/danielinteractive/prototype669/R/Design-methods.R#L92) for the `simulate` method prototype.
+  - See [here](https://github.com/openpharma/crmPack/blob/danielinteractive/prototype669/R/Design-methods.R) for the `simulate` method prototype.
   - Answer: That is fine.
 
 ## References
