@@ -59,6 +59,69 @@ setMethod(
   }
 )
 
+## Logical operators ----
+
+.OpeningList <- setClass(
+  Class = "OpeningList",
+  contains = "Opening",
+  slots = list(open_list = "list")
+)
+
+.OpeningAll <- setClass(
+  Class = "OpeningAll",
+  contains = "OpeningList"
+)
+
+.OpeningAny <- setClass(
+  Class = "OpeningAny",
+  contains = "OpeningList"
+)
+
+setMethod(
+  f = "openCohort",
+  signature = c(opening = "OpeningList"),
+  definition = function(opening, cohort, data, dose, summary_fun, ...) {
+    list_results <- vapply(
+      opening@open_list,
+      FUN = function(op) openCohort(op, cohort, data, dose, ...),
+      FUN.VALUE = logical(1)
+    )
+    summary_fun(list_results)
+  }
+)
+
+setMethod(
+  f = "openCohort",
+  signature = c(opening = "OpeningAll"),
+  definition = function(opening, cohort, data, dose, ...) {
+    callNextMethod(opening, cohort, data, dose, summary_fun = all, ...)
+  }
+)
+
+setMethod(
+  f = "openCohort",
+  signature = c(opening = "OpeningAny"),
+  definition = function(opening, cohort, data, dose, ...) {
+    callNextMethod(opening, cohort, data, dose, summary_fun = any, ...)
+  }
+)
+
+setMethod(
+  f = "&",
+  signature = c(e1 = "Opening", e2 = "Opening"),
+  definition = function(e1, e2) {
+    .OpeningAll(open_list = list(e1, e2))
+  }
+)
+
+setMethod(
+  f = "|",
+  signature = c(e1 = "Opening", e2 = "Opening"),
+  definition = function(e1, e2) {
+    .OpeningAny(open_list = list(e1, e2))
+  }
+)
+
 # maxRecruits ----
 
 ## generic ----
