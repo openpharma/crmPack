@@ -57,7 +57,7 @@ my_model <- DualEndpointRW(
 )
 
 # Set-up some MCMC parameters and generate samples from the posterior.
-my_options <- McmcOptions(burnin = 10, step = 2, samples = 50)
+my_options <- McmcOptions(burnin = 5, step = 1, samples = 10)
 
 \donttest{
 my_samples <- mcmc(my_data, my_model, my_options)

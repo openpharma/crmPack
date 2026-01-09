@@ -100,7 +100,7 @@ myIncrements <- IncrementsRelative(
   increments = c(2, 2)
 )
 ## Specified the stopping rule e.g stop when the maximum sample size of 36 patients has been reached
-myStopping <- StoppingMinPatients(nPatients = 36)
+myStopping <- StoppingMinPatients(nPatients = 36) | StoppingMissingDose()
 
 ## Specified the design(for details please refer to the 'TDsamplesDesign' example)
 design <- TDsamplesDesign(
