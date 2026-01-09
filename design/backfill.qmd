@@ -119,7 +119,7 @@ You can try out the prototype implementation by installing `crmPack` from the fo
 remotes::install_github("openpharma/crmPack", ref = "danielinteractive/prototype669")
 ```
 
-This is a simple example of a simulation with backfilling cohorts:
+This is a simple example of a simulation with backfilling cohorts. Note that you need to use the `crmPack:::` prefix to access the new classes and methods which are not yet exported.
 
 ```{r}
 library(crmPack)
