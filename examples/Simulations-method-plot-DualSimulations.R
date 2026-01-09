@@ -123,7 +123,7 @@ myStopping4 <- StoppingTargetBiomarker(
   target = c(0.9, 1),
   prob = 0.5
 )
-myStopping <- myStopping4 | StoppingMinPatients(40)
+myStopping <- myStopping4 | StoppingMinPatients(40) | StoppingMissingDose()
 
 my_size1 <- CohortSizeRange(
   intervals = c(0, 30),

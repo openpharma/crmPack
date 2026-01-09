@@ -1,3 +1,9 @@
+# Version 2.0.2
+
+### Miscellaneous
+
+* Fixed logging tests which had been broken by recent `futile.logger` updates.
+
 # Version 2.0.1
 
 ### Bugfixes
