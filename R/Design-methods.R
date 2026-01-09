@@ -264,7 +264,22 @@ setMethod(
             length(backfill_cohorts) > 0 &&
               max_recruits > 0
           ) {
-            for (i_bc in seq_along(backfill_cohorts)) {
+            backfill_doses <- sapply(
+              backfill_cohorts,
+              "[[",
+              "dose"
+            )
+            # Order backfill cohorts according to priority rule.
+            order_indices <- switch(
+              object@backfill@priority,
+              highest = order(-backfill_doses),
+              lowest = order(backfill_doses),
+              random = sample.int(
+                n = length(backfill_cohorts),
+                size = length(backfill_cohorts)
+              )
+            )
+            for (i_bc in order_indices) {
               bc <- backfill_cohorts[[i_bc]]
               if (!bc$open) {
                 next
