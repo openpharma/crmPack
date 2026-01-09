@@ -126,13 +126,13 @@ library(crmPack)
 
 # Define the dose-grid
 emptydata <- Data(
-    doseGrid = c(0.1, 1, 3, 5, 10, 15, 20, 25, 40, 50, 80, 100)
+    doseGrid = c(0.1, 0.2, 0.5, 1, 3, 5, 10, 15, 20, 25, 40, 50, 60, 70, 80, 100)
 )
 
 # Initialize the CRM model
 model <- LogisticLogNormal(
     mean = c(-0.85, 1),
-    cov = matrix(c(1, -0.5, -0.5, 1), nrow = 2),
+    cov = matrix(c(5, -0.5, -0.5, 5), nrow = 2),
     ref_dose = 56
 )
 
@@ -149,8 +149,9 @@ myStopping2 <- StoppingTargetProb(
     target = c(0.2, 0.35),
     prob = 0.5
 )
-myStopping3 <- StoppingMinPatients(nPatients = 20)
-myStopping <- (myStopping1 & myStopping2) |
+myStopping3 <- StoppingMinPatients(nPatients = 40)
+myStopping4 <- StoppingPatientsNearDose(nPatients = 10L, percentage = 30, include_backfill = FALSE)
+myStopping <- (myStopping1 & myStopping2 & myStopping4) |
     myStopping3 |
     StoppingMissingDose()
 
@@ -170,13 +171,16 @@ design <- Design(
     data = emptydata,
     startingDose = 3,
     backfill = crmPack:::Backfill(
-        cohort_size = CohortSizeConst(2),
-        recruitment = crmPack:::RecruitmentUnlimited(),
-        opening = crmPack:::OpeningMinDose(min_dose = 1)
+        cohort_size = CohortSizeConst(3),
+        recruitment = crmPack:::RecruitmentRatio(ratio = 1),
+        opening = crmPack:::OpeningMinDose(min_dose = 1) &
+            crmPack:::OpeningMinCohorts(min_cohorts = 3),
+        total_size = 12,
+        priority = "highest"
     )
 )
 
-myTruth <- probFunction(design@model, alpha0 = 7, alpha1 = 8)
+myTruth <- probFunction(design@model, alpha0 = 3, alpha1 = 3)
 options <- h_get_mcmc_options()
 myTrueResponse <- plogis
 
@@ -191,17 +195,22 @@ result <- simulate(
     parallel = FALSE,
     firstSeparate = FALSE
 )
+
+# We can check some simulated trials, e.g.:
+result@data[[1]]
 ```
 
+Here we can see the backfilled patients.
 Note that currently only very few `Opening` and `Recruitment` rules are implemented, but this can be easily extended later in the production phase.
 
 ## Open Questions
 
 - Question is a bit how to define "safe dose" - maybe just below the recommended dose?
+  - Answer: yes.
 - Also the timing of the backfilling can be discussed: 
   - Currently we open backfill cohorts at the same time as the current active cohort, and then supply the full data set to the model fitting and the recommended dose calculation. 
   - See [here](https://github.com/openpharma/crmPack/blob/danielinteractive/prototype669/R/Design-methods.R#L92) for the `simulate` method prototype.
-
+  - Answer: That is fine.
 
 ## References
 
