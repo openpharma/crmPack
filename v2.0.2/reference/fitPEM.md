@@ -1,0 +1,141 @@
+# Get the fitted DLT free survival (piecewise exponential model). This function returns a data frame with dose, middle, lower and upper quantiles for the `PEM` curve. If hazard=TRUE,
+
+Get the fitted DLT free survival (piecewise exponential model). This
+function returns a data frame with dose, middle, lower and upper
+quantiles for the `PEM` curve. If hazard=TRUE,
+
+## Usage
+
+``` r
+fitPEM(
+  object,
+  model,
+  data,
+  quantiles = c(0.025, 0.975),
+  middle = mean,
+  hazard = FALSE,
+  ...
+)
+
+# S4 method for class 'Samples,DALogisticLogNormal,DataDA'
+fitPEM(
+  object,
+  model,
+  data,
+  quantiles = c(0.025, 0.975),
+  middle = mean,
+  hazard = FALSE,
+  ...
+)
+```
+
+## Arguments
+
+- object:
+
+  mcmc samples
+
+- model:
+
+  the mDA-CRM model
+
+- data:
+
+  the data input, a
+  [`DataDA`](https://openpharma.github.io/crmPack/reference/DataDA-class.md)
+  class object
+
+- quantiles:
+
+  the quantiles to be calculated (default: 0.025 and 0.975)
+
+- middle:
+
+  the function for computing the middle point. Default:
+  [`mean`](https://rdrr.io/r/base/mean.html)
+
+- hazard:
+
+  should the the hazard over time be plotted based on the `PEM`? (not
+  default) Otherwise ...
+
+- ...:
+
+  additional arguments for methods
+
+## Functions
+
+- `fitPEM(object = Samples, model = DALogisticLogNormal, data = DataDA)`:
+  This method works for the
+  [`DALogisticLogNormal`](https://openpharma.github.io/crmPack/reference/DALogisticLogNormal-class.md)
+  model class.
+
+## Examples
+
+``` r
+# nolint start
+
+# Create the data
+data <- DataDA(
+  x = c(0.1, 0.5, 1.5, 3, 6, 10, 10, 10),
+  y = c(0, 0, 1, 1, 0, 0, 1, 0),
+  ID = 1L:8L,
+  cohort = as.integer(c(1:5, 6, 6, 6)),
+  doseGrid = c(
+    0.1,
+    0.5,
+    1.5,
+    3,
+    6,
+    seq(from = 10, to = 80, by = 2)
+  ),
+  u = c(42, 30, 15, 5, 20, 25, 30, 60),
+  t0 = c(0, 15, 30, 40, 55, 70, 75, 85),
+  Tmax = 60
+)
+
+# Initialize the CRM model used to model the data
+npiece_ <- 10
+lambda_prior <- function(k) {
+  npiece_ / (data@Tmax * (npiece_ - k + 0.5))
+}
+
+model <- DALogisticLogNormal(
+  mean = c(-0.85, 1),
+  cov = matrix(c(1, -0.5, -0.5, 1), nrow = 2),
+  ref_dose = 56,
+  npiece = npiece_,
+  l = as.numeric(t(apply(
+    as.matrix(c(1:npiece_), 1, npiece_),
+    2,
+    lambda_prior
+  ))),
+  c_par = 2
+)
+
+# Obtain the posterior
+
+options <- McmcOptions(
+  burnin = 10,
+  step = 2,
+  samples = 1e2
+)
+
+set.seed(94)
+samples <- mcmc(data, model, options)
+
+
+# Extract the posterior mean hazard (and empirical 2.5 and 97.5 percentile)
+# for the piecewise exponential model
+# If hazard=FALSE, the posterior PEM will be plot
+fitted <- fitPEM(
+  object = samples,
+  model = model,
+  data = data,
+  middle = mean,
+  hazard = TRUE,
+  quantiles = c(0.25, 0.75)
+)
+
+# nolint end
+```

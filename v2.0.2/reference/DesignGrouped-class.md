@@ -1,0 +1,205 @@
+# `DesignGrouped`
+
+**\[experimental\]**
+
+`DesignGrouped` combines two
+[`Design`](https://openpharma.github.io/crmPack/reference/Design-class.md)
+objects: one for the mono and one for the combo arm of a joint dose
+escalation design.
+
+## Usage
+
+``` r
+DesignGrouped(
+  model,
+  mono,
+  combo = mono,
+  first_cohort_mono_only = TRUE,
+  same_dose_for_all = !same_dose_for_start,
+  same_dose_for_start = FALSE,
+  stop_mono_with_combo = FALSE,
+  ...
+)
+```
+
+## Arguments
+
+- model:
+
+  (`LogisticLogNormalGrouped`)  
+  see slot definition.
+
+- mono:
+
+  (`Design`)  
+  see slot definition.
+
+- combo:
+
+  (`Design`)  
+  see slot definition.
+
+- first_cohort_mono_only:
+
+  (`flag`)  
+  see slot definition.
+
+- same_dose_for_all:
+
+  (`flag`)  
+  see slot definition.
+
+- same_dose_for_start:
+
+  (`flag`)  
+  see slot definition.
+
+- stop_mono_with_combo:
+
+  (`flag`)  
+  whether the mono arm should be stopped when the combo arm is stopped
+  (this makes sense when the only real trial objective is the
+  recommended combo dose).
+
+- ...:
+
+  not used.
+
+## Details
+
+- Note that the model slots inside the `mono` and `combo` parameters are
+  ignored (because we don't fit separate regression models for the mono
+  and combo arms). Instead, the `model` parameter is used to fit a joint
+  regression model for the mono and combo arms together.
+
+- `same_dose_for_start = TRUE` is useful as an option when we want to
+  use `same_dose_for_all = FALSE` combined with
+  `first_cohort_mono_only = TRUE`. This will allow to randomize patients
+  to the mono and combo arms at the same dose as long as the selected
+  dose for the cohorts stay the same. This can therefore further
+  mitigate bias as long as possible between the mono and combo arms.
+
+## Slots
+
+- `model`:
+
+  (`LogisticLogNormalGrouped`)  
+  the model to be used, currently only one class is allowed.
+
+- `mono`:
+
+  (`Design`)  
+  defines the dose escalation rules for the mono arm, see details.
+
+- `combo`:
+
+  (`Design`)  
+  defines the dose escalation rules for the combo arm, see details.
+
+- `first_cohort_mono_only`:
+
+  (`flag`)  
+  whether first test one mono agent cohort, and then once its DLT data
+  has been collected, we proceed from the second cohort onwards with
+  concurrent mono and combo cohorts.
+
+- `same_dose_for_all`:
+
+  (`flag`)  
+  whether the lower dose of the separately determined mono and combo
+  doses should be used as the next dose for both mono and combo in all
+  cohorts.
+
+- `same_dose_for_start`:
+
+  (`flag`)  
+  indicates whether, when mono and combo are used in the same cohort for
+  the first time, the same dose should be used for both. Note that this
+  is different from `same_dose_for_all` which will always force them to
+  be the same. If `same_dose_for_all = TRUE`, this is therefore ignored.
+  See Details.
+
+## Note
+
+Typically, end-users will not use the `.DefaultDesignGrouped()`
+function.
+
+## Examples
+
+``` r
+empty_data <- Data(doseGrid = c(1, 3, 5, 10, 15, 20, 25, 40, 50, 80, 100))
+
+# Initialize the joint model.
+my_model <- LogisticLogNormalGrouped(
+  mean = c(-0.85, 0, 1, 0),
+  cov = diag(1, 4),
+  ref_dose = 56
+)
+
+# Choose the rule for selecting the next dose.
+my_next_best <- NextBestNCRM(
+  target = c(0.2, 0.35),
+  overdose = c(0.35, 1),
+  max_overdose_prob = 0.25
+)
+
+# Choose the rule for the cohort-size.
+my_size1 <- CohortSizeRange(
+  intervals = c(0, 30),
+  cohort_size = c(1, 3)
+)
+my_size2 <- CohortSizeDLT(
+  intervals = c(0, 1),
+  cohort_size = c(1, 3)
+)
+my_size <- maxSize(my_size1, my_size2)
+
+# Choose the rule for stopping.
+my_stopping1 <- StoppingMinCohorts(nCohorts = 3)
+my_stopping2 <- StoppingTargetProb(
+  target = c(0.2, 0.35),
+  prob = 0.5
+)
+my_stopping3 <- StoppingMinPatients(nPatients = 20)
+my_stopping <- (my_stopping1 & my_stopping2) |
+  my_stopping3 |
+  StoppingMissingDose()
+
+# Choose the rule for dose increments.
+my_increments <- IncrementsRelative(
+  intervals = c(0, 20),
+  increments = c(1, 0.33)
+)
+
+# Rules to be used for both arms.
+one_arm <- Design(
+  model = .DefaultModelLogNormal(), # Ignored.
+  nextBest = my_next_best,
+  stopping = my_stopping,
+  increments = my_increments,
+  cohort_size = my_size,
+  data = empty_data,
+  startingDose = 3
+)
+
+# Initialize the design.
+design <- DesignGrouped(
+  model = my_model,
+  mono = one_arm
+)
+
+# Alternative options: Here e.g.
+# - use both mono in first cohort and afterwards have mono and combo in parallel,
+# - in general allow different dose levels for the cohorts,
+# - but for the start (i.e. second cohort) have the same dose for mono and combo.
+# - Stop mono arm too, when combo arm is stopped.
+
+design2 <- DesignGrouped(
+  model = my_model,
+  mono = one_arm,
+  first_cohort_mono_only = TRUE,
+  same_dose_for_all = FALSE,
+  same_dose_for_start = TRUE,
+  stop_mono_with_combo = TRUE
+)
+```
