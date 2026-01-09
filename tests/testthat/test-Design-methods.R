@@ -210,7 +210,7 @@ test_that("Test if simulate generate the expected output.", {
 test_that("Backfilling works in a simple design", {
   design <- h_get_design_data_backfill()
 
-  myTruth <- probFunction(design@model, alpha0 = 7, alpha1 = 8)
+  myTruth <- probFunction(design@model, alpha0 = 4, alpha1 = 4)
   options <- h_get_mcmc_options()
   myTrueResponse <- plogis
 

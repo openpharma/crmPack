@@ -135,14 +135,14 @@ h_get_design_dualdata <- function(placebo = FALSE) {
 h_get_design_data_backfill <- function() {
   # Define the dose-grid
   emptydata <- Data(
-    doseGrid = c(0.1, 1, 3, 5, 10, 15, 20, 25, 40, 50, 80, 100)
+    doseGrid = c(0.1, 0.2, 0.6, 1, 3, 5, 10, 15, 20, 25, seq(40, 100, 10))
   )
 
   # Initialize the CRM model
   model <- LogisticLogNormal(
-    mean = c(-0.85, 1),
-    cov = matrix(c(1, -0.5, -0.5, 1), nrow = 2),
-    ref_dose = 56
+    mean = c(-2, 0),
+    cov = matrix(c(5, -0.5, -0.5, 5), nrow = 2),
+    ref_dose = 50
   )
 
   # Choose the rule for selecting the next dose
@@ -158,7 +158,7 @@ h_get_design_data_backfill <- function() {
     target = c(0.2, 0.35),
     prob = 0.5
   )
-  myStopping3 <- StoppingMinPatients(nPatients = 20)
+  myStopping3 <- StoppingMinPatients(nPatients = 40)
   myStopping <- (myStopping1 & myStopping2) |
     myStopping3 |
     StoppingMissingDose()
@@ -166,7 +166,7 @@ h_get_design_data_backfill <- function() {
   # Choose the rule for dose increments
   myIncrements <- IncrementsRelative(
     intervals = c(0, 20, 50),
-    increments = c(1, 0.67, 0.33)
+    increments = c(5, 0.67, 0.33)
   )
 
   # Initialize the design
@@ -177,14 +177,14 @@ h_get_design_data_backfill <- function() {
     increments = myIncrements,
     cohort_size = CohortSizeConst(3),
     data = emptydata,
-    startingDose = 3,
+    startingDose = 0.1,
     backfill = Backfill(
-      cohort_size = CohortSizeConst(2),
-      recruitment = RecruitmentRatio(ratio = 1 / 3),
+      cohort_size = CohortSizeConst(3),
+      recruitment = RecruitmentRatio(ratio = 1),
       opening = OpeningMinDose(min_dose = 1) &
         OpeningMinCohorts(min_cohorts = 3),
       priority = "highest",
-      total_size = 6L
+      total_size = 20L
     )
   )
   design

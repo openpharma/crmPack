@@ -120,7 +120,7 @@ RecruitmentUnlimited <- function() {
 ## constructor ----
 
 RecruitmentRatio <- function(ratio = 1) {
-  assert_numeric(ratio, len = 1, lower = 0, upper = 1)
+  assert_numeric(ratio, len = 1, lower = 0)
   .RecruitmentRatio(ratio = ratio)
 }
 
