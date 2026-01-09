@@ -107,6 +107,27 @@ RecruitmentUnlimited <- function() {
   .RecruitmentUnlimited()
 }
 
+# RecruitmentRatio ----
+
+## class ----
+
+.RecruitmentRatio <- setClass(
+  Class = "RecruitmentRatio",
+  contains = "Recruitment",
+  slots = list(ratio = "numeric")
+)
+
+## constructor ----
+
+RecruitmentRatio <- function(ratio = 1) {
+  assert_numeric(ratio, len = 1, lower = 0, upper = 1)
+  .RecruitmentRatio(ratio = ratio)
+}
+
+## default constructor ----
+
+# TODO add default constructor
+
 # Backfill ----
 
 ## class ----

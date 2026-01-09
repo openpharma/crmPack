@@ -149,3 +149,15 @@ setMethod(
     1e6L # Practically unlimited.
   }
 )
+
+## RecruitmentRatio ----
+
+setMethod(
+  f = "maxRecruits",
+  signature = c(object = "RecruitmentRatio"),
+  definition = function(object, active_cohort_size, ...) {
+    ratio <- object@ratio
+    max_recruits <- as.integer(ceiling(ratio * active_cohort_size))
+    max_recruits
+  }
+)

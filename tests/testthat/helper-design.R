@@ -180,8 +180,11 @@ h_get_design_data_backfill <- function() {
     startingDose = 3,
     backfill = Backfill(
       cohort_size = CohortSizeConst(2),
-      recruitment = RecruitmentUnlimited(),
-      opening = OpeningMinDose(min_dose = 1)
+      recruitment = RecruitmentRatio(ratio = 1 / 3),
+      opening = OpeningMinDose(min_dose = 1) &
+        OpeningMinCohorts(min_cohorts = 3),
+      priority = "highest",
+      total_size = 6L
     )
   )
   design
