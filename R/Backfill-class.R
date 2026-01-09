@@ -38,6 +38,32 @@ OpeningMinDose <- function(min_dose = 0) {
 
 # TODO add default constructor
 
+# OpeningMinCohorts ----
+
+## class ----
+
+# This concerns the overall number of cohorts treated so far in the trial.
+# Therefore it is one way to implement a "delayed backfill cohort opening" rule.
+.OpeningMinCohorts <- setClass(
+  Class = "OpeningMinCohorts",
+  slots = c(min_cohorts = "integer"),
+  prototype = list(min_cohorts = 2L),
+  contains = "Opening"
+  # TODO add validity
+)
+
+## constructor ----
+
+OpeningMinCohorts <- function(min_cohorts = 2L) {
+  assert_integerish(min_cohorts, len = 1, lower = 1)
+  min_cohorts <- as.integer(min_cohorts)
+  .OpeningMinCohorts(min_cohorts = min_cohorts)
+}
+
+## default constructor ----
+
+# TODO add default constructor
+
 # OpeningNone ----
 
 ## class ----

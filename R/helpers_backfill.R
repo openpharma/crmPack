@@ -13,3 +13,12 @@ h_previous_cohort <- function(data) {
     dose = previous_dose
   )
 }
+
+# Get the dose assigned to a given cohort.
+h_get_dose_for_cohort <- function(data, cohort) {
+  if (cohort > 0 && cohort <= length(data@cohort)) {
+    data@x[data@cohort == cohort][1]
+  } else {
+    NA_real_
+  }
+}
