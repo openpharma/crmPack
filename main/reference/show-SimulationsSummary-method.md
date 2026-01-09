@@ -63,7 +63,7 @@ myStopping2 <- StoppingTargetProb(
   prob = 0.5
 )
 myStopping3 <- StoppingMinPatients(nPatients = 20)
-myStopping <- (myStopping1 & myStopping2) | myStopping3
+myStopping <- (myStopping1 & myStopping2) | myStopping3 | StoppingMissingDose()
 
 # Choose the rule for dose increments
 myIncrements <- IncrementsRelative(
@@ -113,20 +113,21 @@ show(summary(mySims, truth = myTruth))
 #> Target dose interval corresponding to this was 19.6, 21.6 
 #> Intervals are corresponding to 10 and 90 % quantiles
 #> 
-#> Number of patients overall : mean 22 (22, 22) 
+#> Number of patients overall : mean 16 (16, 16) 
 #> Number of patients treated above target tox interval : mean 9 (9, 9) 
-#> Proportions of DLTs in the trials : mean 27 % (27 %, 27 %) 
-#> Mean toxicity risks for the patients on active : mean 30 % (30 %, 30 %) 
-#> Doses selected as MTD : mean 20 (20, 20) 
-#> True toxicity at doses selected : mean 22 % (22 %, 22 %) 
-#> Proportion of trials selecting target MTD: 100 %
-#> Dose most often selected as MTD: 20 
-#> Observed toxicity rate at dose most often selected: 25 %
-#> Fitted toxicity rate at dose most often selected : mean 25 % (25 %, 25 %) 
+#> Proportions of DLTs in the trials : mean 38 % (38 %, 38 %) 
+#> Mean toxicity risks for the patients on active : mean 38 % (38 %, 38 %) 
+#> Doses selected as MTD : mean 15 (15, 15) 
+#> True toxicity at doses selected : mean 3 % (3 %, 3 %) 
+#> Proportion of trials selecting target MTD: 0 %
+#> Dose most often selected as MTD: 15 
+#> Observed toxicity rate at dose most often selected: 0 %
+#> Fitted toxicity rate at dose most often selected : mean 27 % (27 %, 27 %) 
 #> Stop reason triggered:
 #>  ≥ 3 cohorts dosed :  100 %
 #>  P(0.2 ≤ prob(DLE | NBD) ≤ 0.35) ≥ 0.5 :  100 %
-#>  ≥ 20 patients dosed :  100 %
+#>  ≥ 20 patients dosed :  0 %
+#>  Stopped because of missing dose :  0 %
 
 # nolint end
 ```

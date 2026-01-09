@@ -5,6 +5,7 @@
 Here the simulation study setting is defined.
 
 ``` r
+
 id <- 1
 onset <- 3
 a0 <- 2
@@ -36,6 +37,7 @@ Here the the dose escalation designs are defined: in this example the
 TITE-CRM is used. Similarly the code can be adapted for the rolling-CRM.
 
 ``` r
+
 library(crmPack)
 ```
 
@@ -49,6 +51,7 @@ library(crmPack)
     ## Type crmPackExample() to open example
 
 ``` r
+
 t_max <- 42
 
 model <- TITELogisticLogNormal(
@@ -96,6 +99,7 @@ In order to obtain stable results, increase the simulation parameters
 appropriately (step, samples, nsim).
 
 ``` r
+
 options <- McmcOptions(
   burnin = 20,
   step = 1,

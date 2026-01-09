@@ -1,6 +1,7 @@
 # Ordinal CRM
 
 ``` r
+
 library(crmPack)
 #> Loading required package: ggplot2
 #> Registered S3 method overwritten by 'crmPack':
@@ -12,7 +13,7 @@ library(crmPack)
 
 ## Introduction
 
-The original CRM model introduced by (O’Quigley, Pepe, and Fisher 1990)
+The original CRM model introduced by (O’Quigley et al. 1990)
 dichotomises toxicity events as either “Not toxic” or “DLT”. The ordinal
 CRM generalises this model by classifying toxicities on an ordinal scale
 with an arbitrary number of categories (though use of more than three or
@@ -32,6 +33,7 @@ only in that it contains an extra slot, `yCategories`, that defines both
 the number of toxicity grades and their labels.For example:
 
 ``` r
+
 empty_ordinal_data <- DataOrdinal(
   doseGrid = c(seq(from = 10, to = 100, by = 10)),
   yCategories = c("No tox" = 0L, "Sub-tox AE" = 1L, "DLT" = 2L),
@@ -52,6 +54,7 @@ The `update`, `plot` and `dose_grid_range` methods work exactly as they
 do for `Data` objects:
 
 ``` r
+
 dose_grid_range(empty_ordinal_data)
 #> [1]  10 100
 
@@ -116,6 +119,7 @@ A `LogisticLogOrdinal` is initialised in exactly the same way as a
 `LogisticLogNormal` object:
 
 ``` r
+
 ordinal_model <- LogisticLogNormalOrdinal(
   mean = c(3, 4, 0),
   cov = diag(c(4, 3, 1)),
@@ -131,6 +135,7 @@ for α₁ to α_(K-1) and β in that order.
 `mcmc` works as expected with ordinal models:
 
 ``` r
+
 opts <- .DefaultMcmcOptions()
 
 samples <- mcmc(ordinal_data, ordinal_model, opts)
@@ -143,6 +148,7 @@ The `Samples` object returned by `mcmc` is a standard `Samples object`.
 The names of the entries in its `data` slot are
 
 ``` r
+
 names(samples@data)
 #> [1] "alpha1" "alpha2" "beta"
 ```
@@ -152,60 +158,62 @@ specify the toxicity grade for which cumulative probabilities of
 toxicity are required:
 
 ``` r
+
 fit(samples, ordinal_model, ordinal_data, grade = 1L)
 #>    dose     middle        lower     upper
-#> 1    10 0.03661069 1.408323e-09 0.2532149
-#> 2    20 0.07287185 4.906103e-06 0.3344677
-#> 3    30 0.12845055 5.703693e-04 0.4095491
-#> 4    40 0.21690507 1.755262e-02 0.5245149
-#> 5    50 0.35248826 1.224099e-01 0.6481693
-#> 6    60 0.50844969 1.969433e-01 0.8373546
-#> 7    70 0.61973393 2.239295e-01 0.9549678
-#> 8    80 0.69000543 2.479353e-01 0.9887531
-#> 9    90 0.73674406 2.626754e-01 0.9971221
-#> 10  100 0.76979762 2.770065e-01 0.9992052
+#> 1    10 0.03634083 1.754530e-09 0.2349415
+#> 2    20 0.07506517 5.806153e-06 0.3236616
+#> 3    30 0.13414684 6.109801e-04 0.4307449
+#> 4    40 0.22674866 1.831196e-02 0.5528660
+#> 5    50 0.36487506 1.311676e-01 0.6912627
+#> 6    60 0.51776922 2.031115e-01 0.8624372
+#> 7    70 0.62706888 2.321112e-01 0.9685777
+#> 8    80 0.69611746 2.604227e-01 0.9932418
+#> 9    90 0.74214444 2.779898e-01 0.9983111
+#> 10  100 0.77471137 2.937146e-01 0.9995369
 fit(samples, ordinal_model, ordinal_data, grade = 2L)
 #>    dose     middle        lower     upper
-#> 1    10 0.01979953 5.804978e-10 0.1541620
-#> 2    20 0.03968725 1.844678e-06 0.1832894
-#> 3    30 0.07068303 1.874858e-04 0.2433419
-#> 4    40 0.12244789 6.933004e-03 0.3257501
-#> 5    50 0.21124970 4.829289e-02 0.4441044
-#> 6    60 0.34224688 9.475021e-02 0.6778570
-#> 7    70 0.46589158 1.238412e-01 0.9009343
-#> 8    80 0.55517980 1.364110e-01 0.9714928
-#> 9    90 0.61800082 1.527162e-01 0.9916879
-#> 10  100 0.66376461 1.639057e-01 0.9972245
+#> 1    10 0.01882576 3.497938e-10 0.1320283
+#> 2    20 0.03870438 1.614562e-06 0.1821878
+#> 3    30 0.07003565 2.254649e-04 0.2499850
+#> 4    40 0.12250280 6.623484e-03 0.3357488
+#> 5    50 0.21223103 5.479151e-02 0.4673042
+#> 6    60 0.34273304 1.000132e-01 0.7210856
+#> 7    70 0.46595155 1.192242e-01 0.9194827
+#> 8    80 0.55423737 1.377388e-01 0.9802503
+#> 9    90 0.61632607 1.529878e-01 0.9947339
+#> 10  100 0.66165613 1.649556e-01 0.9984586
 ```
 
 The `cumulative` flag can be used to request grade-specific
 probabilities.
 
 ``` r
+
 fit(samples, ordinal_model, ordinal_data, grade = 1L, cumulative = FALSE)
 #>    dose     middle        lower     upper
-#> 1    10 0.01681116 6.743096e-10 0.1429353
-#> 2    20 0.03318460 2.156282e-06 0.1980622
-#> 3    30 0.05776751 1.668386e-04 0.2650241
-#> 4    40 0.09445718 1.770410e-03 0.3592126
-#> 5    50 0.14123856 4.237416e-03 0.4370709
-#> 6    60 0.16620281 4.796986e-03 0.5123964
-#> 7    70 0.15384235 3.638196e-03 0.4770380
-#> 8    80 0.13482564 1.732548e-03 0.4449033
-#> 9    90 0.11874324 6.685844e-04 0.4152544
-#> 10  100 0.10603301 2.596187e-04 0.3970686
+#> 1    10 0.01751507 9.937996e-10 0.1433248
+#> 2    20 0.03636079 1.956769e-06 0.2091502
+#> 3    30 0.06411119 1.299701e-04 0.2920396
+#> 4    40 0.10424586 1.504939e-03 0.3686927
+#> 5    50 0.15264403 3.980994e-03 0.4672193
+#> 6    60 0.17503618 5.081871e-03 0.5096630
+#> 7    70 0.16111733 4.231567e-03 0.4748310
+#> 8    80 0.14188009 2.131543e-03 0.4634741
+#> 9    90 0.12581836 7.651849e-04 0.4481343
+#> 10  100 0.11305524 2.729599e-04 0.4382558
 fit(samples, ordinal_model, ordinal_data, grade = 2L, cumulative = FALSE)
 #>    dose     middle        lower     upper
-#> 1    10 0.01979953 5.804978e-10 0.1541620
-#> 2    20 0.03968725 1.844678e-06 0.1832894
-#> 3    30 0.07068303 1.874858e-04 0.2433419
-#> 4    40 0.12244789 6.933004e-03 0.3257501
-#> 5    50 0.21124970 4.829289e-02 0.4441044
-#> 6    60 0.34224688 9.475021e-02 0.6778570
-#> 7    70 0.46589158 1.238412e-01 0.9009343
-#> 8    80 0.55517980 1.364110e-01 0.9714928
-#> 9    90 0.61800082 1.527162e-01 0.9916879
-#> 10  100 0.66376461 1.639057e-01 0.9972245
+#> 1    10 0.01882576 3.497938e-10 0.1320283
+#> 2    20 0.03870438 1.614562e-06 0.1821878
+#> 3    30 0.07003565 2.254649e-04 0.2499850
+#> 4    40 0.12250280 6.623484e-03 0.3357488
+#> 5    50 0.21223103 5.479151e-02 0.4673042
+#> 6    60 0.34273304 1.000132e-01 0.7210856
+#> 7    70 0.46595155 1.192242e-01 0.9194827
+#> 8    80 0.55423737 1.377388e-01 0.9802503
+#> 9    90 0.61632607 1.529878e-01 0.9947339
+#> 10  100 0.66165613 1.649556e-01 0.9984586
 ```
 
 > Note that, for `grade == K - 1`, the cumulative and grade-specific
@@ -214,6 +222,7 @@ fit(samples, ordinal_model, ordinal_data, grade = 2L, cumulative = FALSE)
 The `plot` method also takes `grade` and `cumulative` parameters.
 
 ``` r
+
 plot(samples, ordinal_model, ordinal_data, grade = 2L)
 ```
 
@@ -225,6 +234,7 @@ considerably for doses over 60, extending from around 15% to 100% for a
 dose of 100.](ordinal-crm_files/figure-html/plot1-1.png)
 
 ``` r
+
 plot(samples, ordinal_model, ordinal_data, grade = 1L)
 ```
 
@@ -237,6 +247,7 @@ doses but widens considerably for doses over 60, extending from around
 100.](ordinal-crm_files/figure-html/plot2-1.png)
 
 ``` r
+
 plot(samples, ordinal_model, ordinal_data, grade = 1L, cumulative = FALSE)
 ```
 
@@ -259,6 +270,7 @@ The wrapper class has the name `<Rule>Ordinal` and takes two parameters,
 For example
 
 ``` r
+
 dlt_rule <- CohortSizeDLT(intervals = 0:2, cohort_size = c(1, 3, 5))
 ordinal_rule_1 <- CohortSizeOrdinal(grade = 1L, rule = dlt_rule)
 ordinal_rule_2 <- CohortSizeOrdinal(grade = 2L, rule = dlt_rule)
@@ -284,6 +296,7 @@ of 100.2. As only one DLT has been reported, the second rule allows an
 increment of 0.5, giving a maximum permitted dose of 90.
 
 ``` r
+
 ordinal_rule_1 <- IncrementsOrdinal(
   grade = 1L,
   rule = IncrementsRelativeDLT(intervals = 0:2, increments = c(3, 1.5, 0.67))
@@ -302,6 +315,7 @@ The two grade-specific rules can be combined into a single rule using
 `IncrementsMin`:
 
 ``` r
+
 trial_rule <- IncrementsMin(list(ordinal_rule_1, ordinal_rule_2))
 maxDose(trial_rule, ordinal_data)
 #> [1] 90
@@ -312,6 +326,7 @@ maxDose(trial_rule, ordinal_data)
 Consider a standard logistic log Normal CRM model:
 
 ``` r
+
 model <- LogisticLogNormal(
   mean = c(-3, 1),
   cov = matrix(c(4, -0.5, -0.5, 3), ncol = 2),
@@ -327,6 +342,7 @@ model@params@cov
 We can estimate the prior using an empty `Data` object…
 
 ``` r
+
 data <- Data(doseGrid = seq(10, 100, 10))
 options <- McmcOptions(
   samples = 30000,
@@ -340,6 +356,7 @@ and then obtain the correlation between the model’s parameters
 \[recalling that the prior is defined in terms of log(alpha1)\]…
 
 ``` r
+
 d <- as.matrix(cbind(samples@data$alpha0, log(samples@data$alpha1)))
 sigmaHat <- cov(d)
 sigmaHat
@@ -361,6 +378,7 @@ and give it a non-diagonal covariance matrix by accessing its
 > for illustration.
 
 ``` r
+
 ordinal_model_temp <- ordinal_model
 ordinal_model_temp@params@cov <- matrix(c(4, -0.5, -0.5, -0.5, 3, -0.5, -0.5, -0.5, 1), ncol = 3)
 
@@ -374,6 +392,7 @@ ordinal_model_temp@params@cov
 Fit the revised model to obtain the prior.
 
 ``` r
+
 ordinal_data <- DataOrdinal(doseGrid = seq(10, 100, 10))
 ordinal_samples <- mcmc(ordinal_data, ordinal_model_temp, options)
 ```
@@ -382,6 +401,7 @@ Finally, look at the covariance matrix, remembering to use `log(beta)`
 rather than `beta`…
 
 ``` r
+
 ordinalD <- as.matrix(
   cbind(
     ordinal_samples@data$alpha1,
@@ -428,9 +448,9 @@ like to contribute, please do so.
 
 ## Environment
 
-    #> R version 4.5.0 (2025-04-11)
+    #> R version 4.5.2 (2025-10-31)
     #> Platform: x86_64-pc-linux-gnu
-    #> Running under: Ubuntu 24.04.2 LTS
+    #> Running under: Ubuntu 24.04.3 LTS
     #> 
     #> Matrix products: default
     #> BLAS:   /usr/lib/x86_64-linux-gnu/openblas-pthread/libblas.so.3 
@@ -451,32 +471,32 @@ like to contribute, please do so.
     #> [1] stats     graphics  grDevices utils     datasets  methods   base     
     #> 
     #> other attached packages:
-    #> [1] crmPack_2.0.1 ggplot2_4.0.1
+    #> [1] crmPack_2.0.2 ggplot2_4.0.1
     #> 
     #> loaded via a namespace (and not attached):
-    #>  [1] sass_0.4.10          generics_0.1.4       xml2_1.5.0          
+    #>  [1] sass_0.4.10          generics_0.1.4       xml2_1.5.1          
     #>  [4] futile.options_1.0.1 lattice_0.22-7       stringi_1.8.7       
     #>  [7] digest_0.6.39        magrittr_2.0.4       evaluate_1.0.5      
-    #> [10] grid_4.5.0           RColorBrewer_1.1-3   mvtnorm_1.3-3       
+    #> [10] grid_4.5.2           RColorBrewer_1.1-3   mvtnorm_1.3-3       
     #> [13] fastmap_1.2.0        jsonlite_2.0.0       backports_1.5.0     
     #> [16] formatR_1.14         gridExtra_2.3        viridisLite_0.4.2   
     #> [19] scales_1.4.0         textshaping_1.0.4    jquerylib_0.1.4     
     #> [22] Rdpack_2.6.4         cli_3.6.5            rlang_1.1.6         
-    #> [25] rbibutils_2.4        futile.logger_1.4.3  parallelly_1.45.1   
-    #> [28] withr_3.0.2          cachem_1.1.0         yaml_2.3.10         
-    #> [31] parallel_4.5.0       tools_4.5.0          coda_0.19-4.1       
-    #> [34] checkmate_2.3.3      dplyr_1.1.4          lambda.r_1.2.4      
-    #> [37] kableExtra_1.4.0     vctrs_0.6.5          R6_2.6.1            
-    #> [40] lifecycle_1.0.4      stringr_1.6.0        GenSA_1.1.14.1      
-    #> [43] fs_1.6.6             htmlwidgets_1.6.4    ragg_1.5.0          
-    #> [46] rjags_4-17           pkgconfig_2.0.3      desc_1.4.3          
-    #> [49] pkgdown_2.2.0        pillar_1.11.1        bslib_0.9.0         
-    #> [52] gtable_0.3.6         glue_1.8.0           systemfonts_1.3.1   
-    #> [55] xfun_0.54            tibble_3.3.0         tidyselect_1.2.1    
-    #> [58] rstudioapi_0.17.1    knitr_1.50           dichromat_2.0-0.1   
-    #> [61] farver_2.1.2         htmltools_0.5.8.1    labeling_0.4.3      
-    #> [64] rmarkdown_2.30       svglite_2.2.2        compiler_4.5.0      
-    #> [67] S7_0.2.1
+    #> [25] rbibutils_2.4        futile.logger_1.4.9  parallelly_1.46.1   
+    #> [28] withr_3.0.2          cachem_1.1.0         yaml_2.3.12         
+    #> [31] otel_0.2.0           parallel_4.5.2       tools_4.5.2         
+    #> [34] coda_0.19-4.1        checkmate_2.3.3      dplyr_1.1.4         
+    #> [37] lambda.r_1.2.4       kableExtra_1.4.0     vctrs_0.6.5         
+    #> [40] R6_2.6.1             lifecycle_1.0.5      stringr_1.6.0       
+    #> [43] GenSA_1.1.15         fs_1.6.6             htmlwidgets_1.6.4   
+    #> [46] ragg_1.5.0           rjags_4-17           pkgconfig_2.0.3     
+    #> [49] desc_1.4.3           pkgdown_2.2.0        pillar_1.11.1       
+    #> [52] bslib_0.9.0          gtable_0.3.6         glue_1.8.0          
+    #> [55] systemfonts_1.3.1    xfun_0.55            tibble_3.3.0        
+    #> [58] tidyselect_1.2.1     rstudioapi_0.17.1    knitr_1.51          
+    #> [61] dichromat_2.0-0.1    farver_2.1.2         htmltools_0.5.9     
+    #> [64] labeling_0.4.3       svglite_2.2.2        rmarkdown_2.30      
+    #> [67] compiler_4.5.2       S7_0.2.1
 
 ## References
 

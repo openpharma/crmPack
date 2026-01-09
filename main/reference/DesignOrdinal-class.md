@@ -135,7 +135,10 @@ my_stopping2 <- StoppingTargetProb(
   prob = 0.5
 )
 my_stopping3 <- StoppingMinPatients(nPatients = 20)
-my_stopping <- StoppingOrdinal(1L, (my_stopping1 & my_stopping2) | my_stopping3)
+my_stopping <- StoppingOrdinal(
+  1L,
+  (my_stopping1 & my_stopping2) | my_stopping3 | StoppingMissingDose()
+)
 
 # Initialize the design.
 design <- DesignOrdinal(

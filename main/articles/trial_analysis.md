@@ -51,13 +51,13 @@ Note that a 2-fold *increment* corresponds to a 3-fold *escalation*.
 
 #### The dose selection rule
 
-Here, we choose to use Neuenschwander’s rule (Neuenschwander, Branson,
-and Gsponer 2008), in which the dose for the next cohort to be the dose
-(amongst those doses that are eligible for selection according to the
-escalation rule) that has the highest posterior chance of having a
-probability of toxicity in the target range - here \[0.2, 0.35) -
-provided that the dose’s chance of having a probability in the overdose
-range - here \[0.35, 1.0\] - is less than 0.25.
+Here, we choose to use Neuenschwander’s rule (Neuenschwander et al.
+2008), in which the dose for the next cohort to be the dose (amongst
+those doses that are eligible for selection according to the escalation
+rule) that has the highest posterior chance of having a probability of
+toxicity in the target range - here \[0.2, 0.35) - provided that the
+dose’s chance of having a probability in the overdose range - here
+\[0.35, 1.0\] - is less than 0.25.
 
 #### The cohort size
 
@@ -99,6 +99,7 @@ treated at `10` - experienced a DLT.
 We provide this information to `crmPack` via a `Data` object:
 
 ``` r
+
 firstFour <- Data(
   x = c(1, 3, 9, 20),
   y = c(0, 0, 0, 1),
@@ -115,6 +116,7 @@ toxicity is represented by a truthy value) by the `y` slot.
 The observed data is easily visualised
 
 ``` r
+
 plot(firstFour)
 ```
 
@@ -127,6 +129,7 @@ and, since the `plot` method returns a `ggplot` object, it is easily
 customised.
 
 ``` r
+
 plot(firstFour) + theme_light()
 ```
 
@@ -138,6 +141,7 @@ Now, update the model to obtain the posterior estimate of the
 dose-toxicity curve:
 
 ``` r
+
 vignetteMcmcOptions <- McmcOptions(burnin = 100, step = 2, samples = 1000)
 postSamples <- mcmc(
   data = firstFour,
@@ -149,6 +153,7 @@ postSamples <- mcmc(
 The posterior estimate of the dose toxicity curve is easily visualised:
 
 ``` r
+
 plot(postSamples, model, firstFour)
 ```
 
@@ -162,6 +167,7 @@ and from about 30% to about 90% at a dose of
 A visual representation of the model’s state is obtained with:
 
 ``` r
+
 nextBest(
   my_next_best,
   doselimit = 100,
@@ -197,6 +203,7 @@ cohort.
 We can produce a tabulation of the model state with
 
 ``` r
+
 tabulatePosterior <- function(mcmcSamples, observedData) {
   as_tibble(
     nextBest(
@@ -253,6 +260,7 @@ of three patients, each treated at `20`. This can be confirmed
 programmatically:
 
 ``` r
+
 nextMaxDose <- maxDose(my_increments, firstFour)
 nextMaxDose
 #> [1] 40
@@ -281,6 +289,7 @@ will treat the next cohort at `20`, as recommended by the model.
 We can confirm that the trial’s stopping rules have not been satisfied:
 
 ``` r
+
 stopTrial(
   my_stopping,
   dose = doseRecommendation$value,
@@ -295,7 +304,7 @@ stopTrial(
 #> [1] "Number of cohorts is 4 and thus reached the prespecified minimum number 3"
 #> 
 #> attr(,"message")[[1]][[2]]
-#> [1] "Probability for target toxicity is 22 % for dose 9 and thus below the required 50 %"
+#> [1] "Probability for target toxicity is 17 % for dose 9 and thus below the required 50 %"
 #> 
 #> 
 #> attr(,"message")[[2]]
@@ -309,7 +318,7 @@ stopTrial(
 #> [1] "Number of cohorts is 4 and thus reached the prespecified minimum number 3"
 #> 
 #> attr(,"message")[[2]]
-#> [1] "Probability for target toxicity is 22 % for dose 9 and thus below the required 50 %"
+#> [1] "Probability for target toxicity is 17 % for dose 9 and thus below the required 50 %"
 #> 
 #> attr(,"individual")
 #> attr(,"individual")[[1]]
@@ -322,7 +331,7 @@ stopTrial(
 #> attr(,"individual")[[2]]
 #> [1] FALSE
 #> attr(,"message")
-#> [1] "Probability for target toxicity is 22 % for dose 9 and thus below the required 50 %"
+#> [1] "Probability for target toxicity is 17 % for dose 9 and thus below the required 50 %"
 #> attr(,"report_label")
 #> [1] "P(0.2 ≤ prob(DLE | NBD) ≤ 0.35) ≥ 0.5"
 #> 
@@ -346,6 +355,7 @@ Assume that none of the three patients in the first full cohort report a
 DLT:
 
 ``` r
+
 firstFullCohort <- Data(
   x = c(1, 3, 9, 20, 20, 20, 20),
   y = c(0, 0, 0, 1, 0, 0, 0),
@@ -358,6 +368,7 @@ firstFullCohort <- Data(
 Update the model:
 
 ``` r
+
 postSamples1 <- mcmc(
   data = firstFullCohort,
   model = model,
@@ -368,6 +379,7 @@ postSamples1 <- mcmc(
 Tabulate the posterior:
 
 ``` r
+
 tabulatePosterior(postSamples1, firstFullCohort)
 ```
 
@@ -377,6 +389,7 @@ Should the trial stop? If not, what dose should be used for the next
 cohort?
 
 ``` r
+
 nextMaxDose <- maxDose(my_increments, firstFullCohort)
 nextMaxDose
 #> [1] 40
@@ -411,6 +424,7 @@ at `30`.
 Assume that none of the three patients in the next cohort report a DLT:
 
 ``` r
+
 secondFullCohort <- Data(
   x = c(1, 3, 9, 20, 20, 20, 20, 30, 30, 30),
   y = c(0, 0, 0, 1, 0, 0, 0, 0, 0, 0),
@@ -423,6 +437,7 @@ secondFullCohort <- Data(
 Update the model:
 
 ``` r
+
 postSamples2 <- mcmc(
   data = secondFullCohort,
   model = model,
@@ -433,6 +448,7 @@ postSamples2 <- mcmc(
 Tabulate the posterior:
 
 ``` r
+
 tabulatePosterior(postSamples2, secondFullCohort)
 ```
 
@@ -444,6 +460,7 @@ probability of being in the overdose range. Therefore, the trial should
 continue and the next cohort should be treated at `30`:
 
 ``` r
+
 nextMaxDose <- maxDose(my_increments, secondFullCohort)
 nextMaxDose
 #> [1] 45
@@ -475,6 +492,7 @@ x
 Assume that none of the three patients in the third cohort report a DLT:
 
 ``` r
+
 thirdFullCohort <- Data(
   x = c(1, 3, 9, rep(20, 4), rep(30, 6)),
   y = c(0, 0, 0, 1, rep(0, 9)),
@@ -487,6 +505,7 @@ thirdFullCohort <- Data(
 Update the model:
 
 ``` r
+
 postSamples3 <- mcmc(
   data = thirdFullCohort,
   model = model,
@@ -497,6 +516,7 @@ postSamples3 <- mcmc(
 Tabulate the posterior:
 
 ``` r
+
 tabulatePosterior(postSamples3, thirdFullCohort)
 ```
 
@@ -508,6 +528,7 @@ overdose range is now acceptable. Therefore, the trial should continue
 and the next cohort should be treated at `45`:
 
 ``` r
+
 nextMaxDose <- maxDose(my_increments, thirdFullCohort)
 nextMaxDose
 #> [1] 45
@@ -540,6 +561,7 @@ Assume that none of the three patients in the fourth cohort report a
 DLT:
 
 ``` r
+
 fourthFullCohort <- Data(
   x = c(1, 3, 9, rep(20, 4), rep(30, 6), rep(45, 3)),
   y = c(0, 0, 0, 1, rep(0, 12)),
@@ -552,6 +574,7 @@ fourthFullCohort <- Data(
 Update the model:
 
 ``` r
+
 postSamples4 <- mcmc(
   data = fourthFullCohort,
   model = model,
@@ -562,6 +585,7 @@ postSamples4 <- mcmc(
 Tabulate the posterior:
 
 ``` r
+
 tabulatePosterior(postSamples4, fourthFullCohort)
 ```
 
@@ -573,6 +597,7 @@ range is unacceptable. Therefore, the trial should continue and the next
 cohort should be treated at `45`:
 
 ``` r
+
 nextMaxDose <- maxDose(my_increments, fourthFullCohort)
 nextMaxDose
 #> [1] 67.5
@@ -604,6 +629,7 @@ x
 Assume that two of the three patients in the fourth cohort report a DLT:
 
 ``` r
+
 fifthFullCohort <- Data(
   x = c(1, 3, 9, rep(20, 4), rep(30, 6), rep(45, 6)),
   y = c(0, 0, 0, 1, rep(0, 13), 1, 1),
@@ -616,6 +642,7 @@ fifthFullCohort <- Data(
 Update the model:
 
 ``` r
+
 postSamples5 <- mcmc(
   data = fifthFullCohort,
   model = model,
@@ -626,6 +653,7 @@ postSamples5 <- mcmc(
 Tabulate the posterior:
 
 ``` r
+
 tabulatePosterior(postSamples5, fifthFullCohort)
 ```
 
@@ -639,6 +667,7 @@ treated in total. Therefore, the trial should stop and conclude that
 `45` is the MTD:
 
 ``` r
+
 nextMaxDose <- maxDose(my_increments, fifthFullCohort)
 nextMaxDose
 #> [1] 67.5
@@ -651,7 +680,7 @@ doseRecommendation <- nextBest(
   data = fifthFullCohort
 )
 doseRecommendation$value
-#> [1] 45
+#> [1] 30
 
 x <- stopTrial(
   my_stopping,
@@ -661,14 +690,14 @@ x <- stopTrial(
   fifthFullCohort
 )
 x
-#> [1] TRUE
+#> [1] FALSE
 #> attr(,"message")
 #> attr(,"message")[[1]]
 #> attr(,"message")[[1]][[1]]
 #> [1] "Number of cohorts is 9 and thus reached the prespecified minimum number 3"
 #> 
 #> attr(,"message")[[1]][[2]]
-#> [1] "Probability for target toxicity is 52 % for dose 45 and thus above the required 50 %"
+#> [1] "Probability for target toxicity is 29 % for dose 30 and thus below the required 50 %"
 #> 
 #> 
 #> attr(,"message")[[2]]
@@ -676,13 +705,13 @@ x
 #> 
 #> attr(,"individual")
 #> attr(,"individual")[[1]]
-#> [1] TRUE
+#> [1] FALSE
 #> attr(,"message")
 #> attr(,"message")[[1]]
 #> [1] "Number of cohorts is 9 and thus reached the prespecified minimum number 3"
 #> 
 #> attr(,"message")[[2]]
-#> [1] "Probability for target toxicity is 52 % for dose 45 and thus above the required 50 %"
+#> [1] "Probability for target toxicity is 29 % for dose 30 and thus below the required 50 %"
 #> 
 #> attr(,"individual")
 #> attr(,"individual")[[1]]
@@ -693,9 +722,9 @@ x
 #> [1] "≥ 3 cohorts dosed"
 #> 
 #> attr(,"individual")[[2]]
-#> [1] TRUE
+#> [1] FALSE
 #> attr(,"message")
-#> [1] "Probability for target toxicity is 52 % for dose 45 and thus above the required 50 %"
+#> [1] "Probability for target toxicity is 29 % for dose 30 and thus below the required 50 %"
 #> attr(,"report_label")
 #> [1] "P(0.2 ≤ prob(DLE | NBD) ≤ 0.35) ≥ 0.5"
 #> 
@@ -720,6 +749,7 @@ following code snippets illustrate some of the many possibilities for
 how the trial might be summarised.
 
 ``` r
+
 plot(fifthFullCohort)
 ```
 
@@ -737,6 +767,7 @@ With a little bit of work, we can obtain a more detailed summary and
 plot of the posterior probabilities of toxicity at each dose:
 
 ``` r
+
 slotNames(model)
 #> [1] "params"          "ref_dose"        "datamodel"       "priormodel"     
 #> [5] "modelspecs"      "init"            "datanames"       "datanames_prior"
@@ -784,6 +815,7 @@ fullSummary %>%
 
 ``` r
 
+
 fullSamples %>%
   filter(Dose > 9) %>%
   ggplot() +
@@ -807,6 +839,7 @@ skewed to the left. Densities for higher doses are more symmetric and
 flatter.](trial_analysis_files/figure-html/unnamed-chunk-34-1.png)
 
 ``` r
+
 fullSummary %>%
   ggplot(aes(x = Dose)) +
   geom_ribbon(aes(ymin = Q05, ymax = Q95), fill = "steelblue", alpha = 0.25) +

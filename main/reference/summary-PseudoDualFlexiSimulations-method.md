@@ -109,7 +109,7 @@ myIncrements <- IncrementsRelative(
 mySize <- CohortSizeConst(size = 3)
 ## Stop only when 10 subjects are treated:
 ## very low sample size is just for illustration here
-myStopping <- StoppingMinPatients(nPatients = 10)
+myStopping <- StoppingMinPatients(nPatients = 10) | StoppingMissingDose()
 
 ## Specified the design
 design <- DualResponsesSamplesDesign(
@@ -142,8 +142,8 @@ myTruthEff <- c(
 
 
 ## specify the options for MCMC
-# For illustration purpose, we use 10 burn-in and generate 100 samples
-options <- McmcOptions(burnin = 10, step = 1, samples = 100)
+# for illustration purposes, in reality larger number of burnin and samples shoud be used
+options <- McmcOptions(burnin = 5, step = 1, samples = 10)
 ## The simulation
 ## For illustration purpose only 1 simulation is produced (nsim=1).
 mySim <- simulate(
@@ -168,7 +168,7 @@ summary(mySim, trueDLE = myTruthDLE, trueEff = myTruthEff)
 #> Target p(DLE) used during a trial was 35 %
 #> The dose level corresponds to the target p(DLE) used during a trial, TDDT, was 155.972 
 #> TDDT at dose Grid was 150 
-#> Number of patients overall : mean 12 (12, 12) 
+#> Number of patients overall : mean 3 (3, 3) 
 #> Number of patients treated above the target p(DLE) used at the end of a trial : mean 0 (0, 0) 
 #> Number of patients treated above the target p(DLE) used during a trial : mean 0 (0, 0) 
 #> Proportions of observed DLT in the trials : mean 0 % (0 %, 0 %) 
@@ -182,43 +182,45 @@ summary(mySim, trueDLE = myTruthDLE, trueEff = myTruthEff)
 #> Fitted probabilities of DLE at dose most often selected : mean NA % (NA %, NA %) 
 #> The summary table of the final TDEOT across all simulations
 #>     Min. 1st Qu.  Median    Mean 3rd Qu.    Max.  
-#>    10.12   10.12   10.12   10.12   10.12   10.12  
+#>    3.185   3.185   3.185   3.185   3.185   3.185  
 #> The summary table of the final ratios of the TDEOT across all simulations
 #>     Min. 1st Qu.  Median    Mean 3rd Qu.    Max.  
 #>        1       1       1       1       1       1  
 #> The summary table of the final TDDT across all simulations
 #>     Min. 1st Qu.  Median    Mean 3rd Qu.    Max.  
-#>    6.222   6.222   6.222   6.222   6.222   6.222  
+#>    16.18   16.18   16.18   16.18   16.18   16.18  
 #> The summary table of dose levels, the optimal dose
 #>  to recommend for subsequent study across all simulations
 #>     Min. 1st Qu.  Median    Mean 3rd Qu.    Max.  
-#>    10.12   10.12   10.12   10.12   10.12   10.12  
+#>    3.185   3.185   3.185   3.185   3.185   3.185  
 #> The summary table of the final ratios of the optimal dose for stopping across
 #>                   all simulations
 #>     Min. 1st Qu.  Median    Mean 3rd Qu.    Max.  
 #>        1       1       1       1       1       1  
 #> 
 #> Stop reason triggered:
-#>  ≥ 10 patients dosed :  100 %
+#>  ≥ 10 patients dosed :  0 %
+#>  Stopped because of missing dose :  100 %
 #> Target Gstar, the dose which gives the maximum gain value was 125 
 #> Target Gstar at dose Grid was 125 
 #> The summary table of the final Gstar across all simulations
 #>     Min. 1st Qu.  Median    Mean 3rd Qu.    Max.  
-#>      250     250     250     250     250     250  
+#>    237.5   237.5   237.5   237.5   237.5   237.5  
 #> The summary table of the final ratios of the Gstar across all simulations
 #>     Min. 1st Qu.  Median    Mean 3rd Qu.    Max.  
-#>    2.192   2.192   2.192   2.192   2.192   2.192  
+#>    2.202   2.202   2.202   2.202   2.202   2.202  
 #> The summary table of dose levels, the optimal dose
 #>  to recommend for subsequent study across all simulations
 #>     Min. 1st Qu.  Median    Mean 3rd Qu.    Max.  
-#>    10.12   10.12   10.12   10.12   10.12   10.12  
+#>    3.185   3.185   3.185   3.185   3.185   3.185  
 #> The summary table of the final ratios of the optimal dose for stopping across
 #>         all simulations
 #>     Min. 1st Qu.  Median    Mean 3rd Qu.    Max.  
 #>        1       1       1       1       1       1  
 #> Fitted expected efficacy level at dose most often selected : mean NA (NA, NA) 
 #> Stop reason triggered:
-#>  ≥ 10 patients dosed :  100 %
+#>  ≥ 10 patients dosed :  0 %
+#>  Stopped because of missing dose :  100 %
 
 # nolint end
 ```

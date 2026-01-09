@@ -125,7 +125,7 @@ my_increments <- IncrementsRelative(
 )
 
 # Stop when the maximum sample size of 36 patients is reached.
-my_stopping <- StoppingMinPatients(nPatients = 36)
+my_stopping <- StoppingMinPatients(nPatients = 36) | StoppingMissingDose()
 
 # The design with all the above information and starting with a dose of 25.
 # This design incorporates only DLT responses and no DLT samples are involved

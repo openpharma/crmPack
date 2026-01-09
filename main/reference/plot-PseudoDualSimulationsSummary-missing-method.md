@@ -101,7 +101,7 @@ my_increments <- IncrementsRelative(intervals = 0, increments = 2)
 my_size <- CohortSizeConst(size = 3)
 
 # Stop when 10 subjects are treated (for illustration only).
-my_stopping <- StoppingMinPatients(nPatients = 10)
+my_stopping <- StoppingMinPatients(nPatients = 10) | StoppingMissingDose()
 
 ## Now specified the design with all the above information and starting with a dose of 25
 
@@ -174,7 +174,7 @@ my_design <- DualResponsesSamplesDesign(
 )
 
 # MCMC options.
-my_options <- McmcOptions(burnin = 10, step = 2, samples = 50)
+my_options <- McmcOptions(burnin = 5, step = 1, samples = 10)
 
 # \donttest{
 # For illustration purpose only 1 simulation is produced.

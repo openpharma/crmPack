@@ -1,6 +1,17 @@
 # Changelog
 
+## Version 2.0.2
+
+CRAN release: 2026-01-08
+
+#### Miscellaneous
+
+- Fixed logging tests which had been broken by recent `futile.logger`
+  updates.
+
 ## Version 2.0.1
+
+CRAN release: 2025-12-04
 
 #### Bugfixes
 

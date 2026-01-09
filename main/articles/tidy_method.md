@@ -1,6 +1,7 @@
 # Using tidy
 
 ``` r
+
 suppressPackageStartupMessages({
   library(crmPack)
   library(knitr)
@@ -63,6 +64,7 @@ classes:
 approach for all classes.
 
 ``` r
+
 CohortSizeConst(size = 3) %>% tidy()
 #> # A tibble: 1 × 1
 #>    size
@@ -73,6 +75,7 @@ CohortSizeConst(size = 3) %>% tidy()
 `IncrementsRelative` illustrate how ranges are handled.
 
 ``` r
+
 IncrementsRelative(
   intervals = c(0, 20),
   increments = c(1, 0.33)
@@ -88,6 +91,7 @@ IncrementsRelative(
 `CohortSizeMax` contains a slot whose value is a list.
 
 ``` r
+
 cs_max <- maxSize(
   CohortSizeConst(3),
   CohortSizeDLT(intervals = 0:1, cohort_size = c(1, 3))
@@ -114,6 +118,7 @@ The `Samples` class likely to the most useful when making presentations
 not yet supported by `crmPack` directly.
 
 ``` r
+
 options <- McmcOptions(
   burnin = 100,
   step = 1,
@@ -137,16 +142,16 @@ tidySamples %>% head()
 #> # A tibble: 2,000 × 10
 #>    Iteration Chain alpha0 alpha1 nChains nParameters nIterations nBurnin nThin
 #>        <int> <int>  <dbl>  <dbl>   <int>       <int>       <int>   <int> <int>
-#>  1         1     1 -2.05    5.40       1           1        2100     100     1
-#>  2         2     1 -1.09    9.09       1           1        2100     100     1
-#>  3         3     1 -0.575  13.4        1           1        2100     100     1
-#>  4         4     1 -1.46    3.55       1           1        2100     100     1
-#>  5         5     1 -0.996   1.23       1           1        2100     100     1
-#>  6         6     1 -0.899   6.33       1           1        2100     100     1
-#>  7         7     1  0.170   1.49       1           1        2100     100     1
-#>  8         8     1 -1.91   14.2        1           1        2100     100     1
-#>  9         9     1 -0.325   1.28       1           1        2100     100     1
-#> 10        10     1 -1.03    1.25       1           1        2100     100     1
+#>  1         1     1 -2.40    8.90       1           1        2100     100     1
+#>  2         2     1 -1.22    5.39       1           1        2100     100     1
+#>  3         3     1  0.800   1.45       1           1        2100     100     1
+#>  4         4     1 -0.299   2.40       1           1        2100     100     1
+#>  5         5     1 -0.979  15.1        1           1        2100     100     1
+#>  6         6     1 -0.259   3.57       1           1        2100     100     1
+#>  7         7     1 -1.51    2.83       1           1        2100     100     1
+#>  8         8     1 -1.23    8.96       1           1        2100     100     1
+#>  9         9     1 -1.84    8.83       1           1        2100     100     1
+#> 10        10     1 -3.13   15.9        1           1        2100     100     1
 #> # ℹ 1,990 more rows
 #> # ℹ 1 more variable: parallel <lgl>
 #> 
@@ -168,6 +173,7 @@ The cohort size for this trial is determined by the dose to be used in
 the current cohort according to the rules described in the table below:
 
 ``` r
+
 CohortSizeRange(
   intervals = c(0, 50, 300),
   cohort_size = c(1, 3, 5)
@@ -182,7 +188,7 @@ CohortSizeRange(
 
 [TABLE]
 
-Rules for selecting the cohort size
+Rules for selecting the cohort size {.table}
 
 Or presentations not directly supported by `crmPack` can be easily
 produced. Here, we create plots of the dose-specific PDFs for prior
@@ -190,6 +196,7 @@ probabilities of toxicity after the first DLT is observed in a fictional
 trial.
 
 ``` r
+
 options <- McmcOptions(
   burnin = 5000,
   step = 1,
@@ -243,10 +250,11 @@ tidySamples$data %>%
 ## Environment
 
 ``` r
+
 sessionInfo()
-#> R version 4.5.0 (2025-04-11)
+#> R version 4.5.2 (2025-10-31)
 #> Platform: x86_64-pc-linux-gnu
-#> Running under: Ubuntu 24.04.2 LTS
+#> Running under: Ubuntu 24.04.3 LTS
 #> 
 #> Matrix products: default
 #> BLAS:   /usr/lib/x86_64-linux-gnu/openblas-pthread/libblas.so.3 
@@ -267,30 +275,30 @@ sessionInfo()
 #> [1] stats     graphics  grDevices utils     datasets  methods   base     
 #> 
 #> other attached packages:
-#> [1] dplyr_1.1.4      magrittr_2.0.4   tidyr_1.3.1      kableExtra_1.4.0
-#> [5] knitr_1.50       crmPack_2.0.1    ggplot2_4.0.1   
+#> [1] dplyr_1.1.4      magrittr_2.0.4   tidyr_1.3.2      kableExtra_1.4.0
+#> [5] knitr_1.51       crmPack_2.0.2    ggplot2_4.0.1   
 #> 
 #> loaded via a namespace (and not attached):
 #>  [1] utf8_1.2.6           sass_0.4.10          generics_0.1.4      
-#>  [4] xml2_1.5.0           futile.options_1.0.1 lattice_0.22-7      
+#>  [4] xml2_1.5.1           futile.options_1.0.1 lattice_0.22-7      
 #>  [7] stringi_1.8.7        digest_0.6.39        evaluate_1.0.5      
-#> [10] grid_4.5.0           RColorBrewer_1.1-3   mvtnorm_1.3-3       
+#> [10] grid_4.5.2           RColorBrewer_1.1-3   mvtnorm_1.3-3       
 #> [13] fastmap_1.2.0        jsonlite_2.0.0       backports_1.5.0     
 #> [16] formatR_1.14         gridExtra_2.3        purrr_1.2.0         
 #> [19] viridisLite_0.4.2    scales_1.4.0         textshaping_1.0.4   
 #> [22] jquerylib_0.1.4      Rdpack_2.6.4         cli_3.6.5           
-#> [25] rlang_1.1.6          rbibutils_2.4        futile.logger_1.4.3 
-#> [28] parallelly_1.45.1    withr_3.0.2          cachem_1.1.0        
-#> [31] yaml_2.3.10          parallel_4.5.0       tools_4.5.0         
-#> [34] coda_0.19-4.1        checkmate_2.3.3      lambda.r_1.2.4      
-#> [37] vctrs_0.6.5          R6_2.6.1             lifecycle_1.0.4     
-#> [40] stringr_1.6.0        GenSA_1.1.14.1       fs_1.6.6            
-#> [43] htmlwidgets_1.6.4    ragg_1.5.0           rjags_4-17          
-#> [46] pkgconfig_2.0.3      desc_1.4.3           pkgdown_2.2.0       
-#> [49] pillar_1.11.1        bslib_0.9.0          gtable_0.3.6        
-#> [52] glue_1.8.0           systemfonts_1.3.1    xfun_0.54           
-#> [55] tibble_3.3.0         tidyselect_1.2.1     rstudioapi_0.17.1   
-#> [58] dichromat_2.0-0.1    farver_2.1.2         htmltools_0.5.8.1   
-#> [61] labeling_0.4.3       rmarkdown_2.30       svglite_2.2.2       
-#> [64] compiler_4.5.0       S7_0.2.1
+#> [25] rlang_1.1.6          rbibutils_2.4        futile.logger_1.4.9 
+#> [28] parallelly_1.46.1    withr_3.0.2          cachem_1.1.0        
+#> [31] yaml_2.3.12          otel_0.2.0           parallel_4.5.2      
+#> [34] tools_4.5.2          coda_0.19-4.1        checkmate_2.3.3     
+#> [37] lambda.r_1.2.4       vctrs_0.6.5          R6_2.6.1            
+#> [40] lifecycle_1.0.5      stringr_1.6.0        GenSA_1.1.15        
+#> [43] fs_1.6.6             htmlwidgets_1.6.4    ragg_1.5.0          
+#> [46] rjags_4-17           pkgconfig_2.0.3      desc_1.4.3          
+#> [49] pkgdown_2.2.0        pillar_1.11.1        bslib_0.9.0         
+#> [52] gtable_0.3.6         glue_1.8.0           systemfonts_1.3.1   
+#> [55] xfun_0.55            tibble_3.3.0         tidyselect_1.2.1    
+#> [58] rstudioapi_0.17.1    dichromat_2.0-0.1    farver_2.1.2        
+#> [61] htmltools_0.5.9      labeling_0.4.3       svglite_2.2.2       
+#> [64] rmarkdown_2.30       compiler_4.5.2       S7_0.2.1
 ```

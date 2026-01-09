@@ -48,6 +48,7 @@ along with the `crmPack` package.
 The following code show at a high level, how the option is utilized.
 
 ``` r
+
 options(
   crmpack_extensions = function() {
     # ..... user code .....
@@ -123,6 +124,7 @@ embedding it into a function which is set equal to the option
 execution and the results are as expected.
 
 ``` r
+
 library(crmPack)
 
 my_own_extension <- function() {
@@ -277,6 +279,7 @@ can be used in the current environment and at the workers when parallel
 study simulations are performed.
 
 ``` r
+
 # Store the function into the global option crmpack_extensions.
 options(crmpack_extensions = my_own_extension)
 ```
@@ -289,6 +292,7 @@ environment, so that the constructor function and the corresponding
 classes and methods for `prob` and `dose` become available.
 
 ``` r
+
 # Execute the user written extensions.
 getOption("crmpack_extensions")()
 ```
@@ -297,6 +301,7 @@ Next we can set up the study with the new model and desired design
 features.
 
 ``` r
+
 # Create the dose grid.
 emptydata <- Data(
   doseGrid = c(
@@ -383,6 +388,7 @@ certain dose level before any study simulations are performed. This
 check can also serve as additional test for the new written code.
 
 ``` r
+
 # Examine the design.
 examine(my_design, my_options)
 ```
@@ -396,6 +402,7 @@ With regard to run times in this example, please see the [note](#note)
 at the end of the vignette.
 
 ``` r
+
 # Set up scenarios
 scenario_setup <- function(intercept, mtd_prob, mtd_dose) {
   probFunction(
@@ -463,6 +470,7 @@ full operation characteristics utilizing parallel computing can be
 derived.
 
 ``` r
+
 # Get full operation characteristics utilizing parallel computing.
 time <- system.time({
   start_time <- Sys.time()
@@ -501,6 +509,7 @@ has the advantage, that the `<<-` operator is not necessary for user
 constructor functions and can be replaced by the usual assignment `<-`.
 
 ``` r
+
 if (FALSE) {
   # Store code example form above in external file and
   # remove the wrapper function structure.
