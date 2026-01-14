@@ -438,6 +438,10 @@ v_stopping_patients_near_dose <- function(object) {
     test_probability(object@percentage / 100),
     "percentage must be a number between 0 and 100"
   )
+  v$check(
+    test_flag(object@include_backfill),
+    "include_backfill must be a flag"
+  )
   v$result()
 }
 

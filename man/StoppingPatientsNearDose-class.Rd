@@ -11,6 +11,7 @@
 StoppingPatientsNearDose(
   nPatients = 10L,
   percentage = 50,
+  include_backfill = TRUE,
   report_label = NA_character_
 )
 
@@ -20,6 +21,8 @@ StoppingPatientsNearDose(
 \item{nPatients}{(\code{number})\cr see slot definition.}
 
 \item{percentage}{(\code{number})\cr see slot definition.}
+
+\item{include_backfill}{(\code{flag})\cr see slot definition.}
 
 \item{report_label}{(\code{string} or \code{NA})\cr see slot definition.}
 }
@@ -36,6 +39,8 @@ patients near to next best dose.
 
 \item{\code{percentage}}{(\code{number})\cr percentage (between and including 0 and 100)
 within the next best dose the patients must lie.}
+
+\item{\code{include_backfill}}{(\code{flag})\cr whether to include backfill patients.}
 }}
 
 \note{

@@ -8,7 +8,14 @@
 \alias{.DefaultDesign}
 \title{\code{Design}}
 \usage{
-Design(model, stopping, increments, pl_cohort_size = CohortSizeConst(0L), ...)
+Design(
+  model,
+  stopping,
+  increments,
+  pl_cohort_size = CohortSizeConst(0L),
+  backfill = Backfill(opening = OpeningNone()),
+  ...
+)
 
 .DefaultDesign()
 }
@@ -20,6 +27,8 @@ Design(model, stopping, increments, pl_cohort_size = CohortSizeConst(0L), ...)
 \item{increments}{(\code{Increments})\cr see slot definition.}
 
 \item{pl_cohort_size}{(\code{CohortSize})\cr see slot definition.}
+
+\item{backfill}{(\code{Backfill})\cr see slot definition.}
 
 \item{...}{
   Arguments passed on to \code{\link[=RuleDesign]{RuleDesign}}
@@ -48,6 +57,9 @@ contains additional \code{model}, \code{stopping} and \code{increments} slots.
 
 \item{\code{pl_cohort_size}}{(\code{CohortSize})\cr rules for the cohort sizes for placebo,
 if any planned (defaults to constant 0 placebo patients).}
+
+\item{\code{backfill}}{(\code{Backfill})\cr rules for backfilling patients in the trial
+(defaults to no backfilling).}
 }}
 
 \note{
