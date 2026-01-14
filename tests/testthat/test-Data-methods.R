@@ -159,7 +159,49 @@ test_that("Update of Data, no error for non-valid update and validation off", {
   )
 })
 
-# update-DataOrdinal
+test_that("update of Data object with backfill patients works", {
+  object <- h_get_data()
+  expect_identical(
+    object@cohort,
+    c(1L, 1L, 1L, 1L, 2L, 2L, 2L, 2L, 3L, 3L, 3L, 3L)
+  )
+  result <- update(
+    object,
+    x = 50,
+    y = c(0L, 1L),
+    backfill = TRUE,
+    cohort = 2L
+  )
+  expect_valid(result, "Data")
+  # Note that the backfill patients are sorted into the
+  # existing cohort 2:
+  expect_identical(
+    result@cohort,
+    c(1L, 1L, 1L, 1L, 2L, 2L, 2L, 2L, 2L, 2L, 3L, 3L, 3L, 3L)
+  )
+  expect_identical(
+    result@backfilled,
+    c(
+      FALSE,
+      FALSE,
+      FALSE,
+      FALSE,
+      FALSE,
+      FALSE,
+      FALSE,
+      FALSE,
+      TRUE,
+      TRUE,
+      FALSE,
+      FALSE,
+      FALSE,
+      FALSE
+    )
+  )
+})
+
+# update-DataOrdinal ----
+
 test_that("Update of Data works as expected", {
   object <- h_get_data()
   result <- update(object, x = 25, y = c(0L, 1L, 1L))

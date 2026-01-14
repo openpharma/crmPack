@@ -271,6 +271,8 @@ setMethod(
 #' @param y (`integer`)\cr the DLT vector (0/1 vector) for all patients in this
 #'   cohort. You can also supply `numeric` vectors, but these will then be
 #'   converted to `integer` internally.
+#' @param response (`integer`)\cr the efficacy response vector
+#'   (0/1 vector). May contain `NA`.
 #' @param ID (`integer`)\cr the patient IDs.
 #'   You can also supply `numeric` vectors, but these will then be converted to
 #'   `integer` internally.
@@ -278,6 +280,11 @@ setMethod(
 #'   to a new cohort.
 #' @param check (`flag`)\cr whether the validation of the updated object should
 #'   be conducted. See details below.
+#' @param backfill (`flag`)\cr whether the new patients being added
+#'   are from a backfill cohort.
+#' @param cohort (`int`)\cr if provided, the new patients will be assigned
+#'   to this cohort index. If `NULL` (default), the cohort index will be
+#'   determined based on the `new_cohort` parameter.
 #' @param ... not used.
 #'
 #' @return The new, updated [`Data`] object.
