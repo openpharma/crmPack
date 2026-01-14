@@ -123,8 +123,10 @@ NULL
 #' @param doseGrid (`numeric`)\cr all possible doses.
 #' @param placebo (`flag`)\cr if `TRUE` the first dose level
 #'   in the `doseGrid` is considered as placebo.
-#' @param backfilled (`logical`)\cr whether this patient was in a backfill cohort.
-#' @param response (`logical`)\cr whether this patient had a positive efficacy response.
+#' @param backfilled (`logical`)\cr whether each patient was in
+#'   a backfill cohort.
+#' @param response (`integer`)\cr whether each patient had a
+#'   positive efficacy response (1 = yes, 0 = no). May contain `NA`.
 #' @param ... not used.
 #'
 #' @export
