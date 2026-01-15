@@ -110,24 +110,16 @@ setMethod(
   }
 )
 
-## Logical operators ----
+## OpeningList ----
 
-.OpeningList <- setClass(
-  Class = "OpeningList",
-  contains = "Opening",
-  slots = list(open_list = "list")
-)
-
-.OpeningAll <- setClass(
-  Class = "OpeningAll",
-  contains = "OpeningList"
-)
-
-.OpeningAny <- setClass(
-  Class = "OpeningAny",
-  contains = "OpeningList"
-)
-
+#' @describeIn openCohort method for `OpeningList` class.
+#'
+#' @aliases openCohort-OpeningList
+#'
+#' @param summary_fun (`function`)\cr to apply to the list of
+#'   results (e.g., `all` or `any`).
+#'   Only used for `OpeningList` and its subclasses.
+#'
 setMethod(
   f = "openCohort",
   signature = c(opening = "OpeningList"),
@@ -141,6 +133,15 @@ setMethod(
   }
 )
 
+## OpeningAll ----
+
+#' @describeIn openCohort method for `OpeningAll` class.
+#'   Returns `TRUE` if ALL opening criteria are satisfied.
+#'
+#' @aliases openCohort-OpeningAll
+#'
+#' @export
+#' @example examples/Backfill-method-openCohort-OpeningAll.R
 setMethod(
   f = "openCohort",
   signature = c(opening = "OpeningAll"),
@@ -149,6 +150,15 @@ setMethod(
   }
 )
 
+## OpeningAny ----
+
+#' @describeIn openCohort method for `OpeningAny` class.
+#'   Returns `TRUE` if ANY opening criteria are satisfied.
+#'
+#' @aliases openCohort-OpeningAny
+#'
+#' @export
+#' @example examples/Backfill-method-openCohort-OpeningAny.R
 setMethod(
   f = "openCohort",
   signature = c(opening = "OpeningAny"),
@@ -157,6 +167,26 @@ setMethod(
   }
 )
 
+## & operator ----
+
+#' Logical AND Operator for Opening Objects
+#'
+#' @description `r lifecycle::badge("experimental")`
+#'
+#' Combines two [`Opening`] objects with AND logic using the `&` operator.
+#' This creates an [`OpeningAll`] object.
+#'
+#' @param e1 (`Opening`)
+#'   the first opening object.
+#' @param e2 (`Opening`)
+#'   the second opening object.
+#'
+#' @return An [`OpeningAll`] object combining `e1` and `e2`.
+#'
+#' @seealso [`OpeningAll`] for more details.
+#'
+#' @export
+#' @aliases &,Opening,Opening-method
 setMethod(
   f = "&",
   signature = c(e1 = "Opening", e2 = "Opening"),
@@ -165,6 +195,26 @@ setMethod(
   }
 )
 
+## | operator ----
+
+#' Logical OR Operator for Opening Objects
+#'
+#' @description `r lifecycle::badge("experimental")`
+#'
+#' Combines two [`Opening`] objects with OR logic using the `|` operator.
+#' This creates an [`OpeningAny`] object.
+#'
+#' @param e1 (`Opening`)
+#'   the first opening object.
+#' @param e2 (`Opening`)
+#'   the second opening object.
+#'
+#' @return An [`OpeningAny`] object combining `e1` and `e2`.
+#'
+#' @seealso [`OpeningAny`] for more details.
+#'
+#' @export
+#' @aliases |,Opening,Opening-method
 setMethod(
   f = "|",
   signature = c(e1 = "Opening", e2 = "Opening"),

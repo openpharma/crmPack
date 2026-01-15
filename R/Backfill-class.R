@@ -16,7 +16,8 @@ NULL
 #' other specific opening criteria classes inherit.
 #' The subclasses are used for backfill cohort designs.
 #'
-#' @seealso [`OpeningMinDose`], [`OpeningMinCohorts`], [`OpeningNone`].
+#' @seealso [`OpeningMinDose`], [`OpeningMinCohorts`], [`OpeningNone`],
+#'   [`OpeningMinResponses`], [`OpeningAll`], [`OpeningAny`].
 #'
 #' @aliases Opening
 #' @export
@@ -244,6 +245,141 @@ OpeningMinResponses <- function(
 #' @export
 .DefaultOpeningMinResponses <- function() {
   OpeningMinResponses()
+}
+
+
+# OpeningList and logical operators ----
+
+## OpeningList ----
+
+#' `OpeningList`
+#'
+#' @description `r lifecycle::badge("experimental")`
+#'
+#' [`OpeningList`] is a virtual class for combining multiple [`Opening`] objects
+#' using logical operators. It is used as a base class for [`OpeningAll`] and
+#' [`OpeningAny`].
+#'
+#' @slot open_list (`list`)
+#'   a list of [`Opening`] objects to be combined.
+#'
+#' @seealso [`Opening`], [`OpeningAll`], [`OpeningAny`].
+#'
+#' @aliases OpeningList
+#' @export
+#'
+.OpeningList <- setClass(
+  Class = "OpeningList",
+  contains = "Opening",
+  slots = list(open_list = "list")
+)
+
+## constructor ----
+
+#' @rdname OpeningList-class
+#'
+#' @param ... (`Opening`)\cr opening objects to combine.
+#' @export
+#' @example examples/Backfill-class-OpeningList.R
+OpeningList <- function(...) {
+  args <- list(...)
+  assert_list(args, min.len = 1)
+  for (arg in args) {
+    assert_class(arg, "Opening")
+  }
+  .OpeningList(open_list = args)
+}
+
+## OpeningAll ----
+
+#' `OpeningAll`
+#'
+#' @description `r lifecycle::badge("experimental")`
+#'
+#' [`OpeningAll`] combines multiple [`Opening`] objects using AND logic.
+#' A backfill cohort is opened only if ALL opening criteria in the list
+#' are satisfied. This can also be created using the `&` operator.
+#'
+#' @slot open_list (`list`)
+#'   a list of [`Opening`] objects to be combined with AND logic.
+#'
+#' @seealso [`Opening`], [`OpeningAny`], [`OpeningList`].
+#'
+#' @aliases OpeningAll
+#' @export
+#'
+.OpeningAll <- setClass(
+  Class = "OpeningAll",
+  contains = "OpeningList"
+)
+
+## constructor ----
+
+#' @rdname OpeningAll-class
+#'
+#' @param ... (`Opening`)
+#'   opening objects to combine with AND logic.
+#'
+#' @export
+#' @example examples/Backfill-class-OpeningAll.R
+OpeningAll <- function(...) {
+  start <- OpeningList(...)
+  .OpeningAll(start)
+}
+
+## default constructor ----
+
+#' @rdname OpeningAll-class
+#' @note Typically, end users will not use the `.DefaultOpeningAll()` function.
+#' @export
+.DefaultOpeningAll <- function() {
+  OpeningAll(OpeningMinDose(), OpeningMinDose())
+}
+
+## OpeningAny ----
+
+#' `OpeningAny`
+#'
+#' @description `r lifecycle::badge("experimental")`
+#'
+#' [`OpeningAny`] combines multiple [`Opening`] objects using OR logic.
+#' A backfill cohort is opened if ANY opening criteria in the list
+#' are satisfied. This can also be created using the `|` operator.
+#'
+#' @slot open_list (`list`)\cr a list of [`Opening`] objects to be
+#'   combined with OR logic.
+#'
+#' @seealso [`Opening`], [`OpeningAll`], [`OpeningList`].
+#'
+#' @aliases OpeningAny
+#' @export
+#'
+.OpeningAny <- setClass(
+  Class = "OpeningAny",
+  contains = "OpeningList"
+)
+
+## constructor ----
+
+#' @rdname OpeningAny-class
+#'
+#' @param ... (`Opening`)
+#'   opening objects to combine with OR logic.
+#'
+#' @export
+#' @example examples/Backfill-class-OpeningAny.R
+OpeningAny <- function(...) {
+  start <- OpeningList(...)
+  .OpeningAny(start)
+}
+
+## default constructor ----
+
+#' @rdname OpeningAny-class
+#' @note Typically, end users will not use the `.DefaultOpeningAny()` function.
+#' @export
+.DefaultOpeningAny <- function() {
+  OpeningAny(OpeningMinDose(), OpeningMinDose())
 }
 
 # Recruitment ----
