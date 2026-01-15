@@ -1456,6 +1456,33 @@ test_that("v_cohort_size_const returns message for non-valid size", {
   expect_equal(v_cohort_size_const(object), err_msg)
 })
 
+## v_cohort_size_random ----
+
+test_that("v_cohort_size_random passes for valid object", {
+  object <- CohortSizeRandom(1, 5)
+  expect_true(v_cohort_size_random(object))
+
+  object <- CohortSizeRandom(2, 3)
+  expect_true(v_cohort_size_random(object))
+})
+
+test_that("v_cohort_size_random returns message for non-valid min_size or max_size", {
+  object <- CohortSizeRandom(1, 5)
+
+  # Changing `min_size` so that it is negative.
+  object@min_size <- -(1L)
+  expect_equal(
+    v_cohort_size_random(object),
+    "min_size needs to be a positive integer"
+  )
+  object@min_size <- 1L
+  object@max_size <- 1L
+  expect_equal(
+    v_cohort_size_random(object),
+    "max_size needs to be an integer larger than min_size"
+  )
+})
+
 ## v_cohort_size_parts ----
 
 test_that("v_cohort_size_parts passes for valid object", {

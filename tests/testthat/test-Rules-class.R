@@ -1348,6 +1348,27 @@ test_that(".DefaultCohortSizeConst works as expected", {
   )
 })
 
+## CohortSizeRandom ----
+
+test_that(".CohortSizeRandom works as expected", {
+  result <- expect_silent(.CohortSizeRandom())
+  expect_valid(result, "CohortSizeRandom")
+})
+
+test_that("CohortSizeRandom object can be created with user constructor", {
+  result <- expect_silent(CohortSizeRandom(1, 5))
+  expect_valid(result, "CohortSizeRandom")
+  expect_identical(result@min_size, 1L)
+  expect_identical(result@max_size, 5L)
+})
+
+test_that(".DefaultCohortSizeRandom works as expected", {
+  expect_equal(
+    .DefaultCohortSizeRandom(),
+    CohortSizeRandom(min_size = 1L, max_size = 3L)
+  )
+})
+
 ## CohortSizeParts ----
 
 test_that(".CohortSizeParts works as expected", {

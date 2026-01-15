@@ -4773,6 +4773,25 @@ test_that("size works as expected for CohortSizeConst", {
   }
 })
 
+## CohortSizeRandom ----
+
+test_that("size works as expected for CohortSizeRandom with NA dose", {
+  cohortSize <- CohortSizeRandom(min_size = 1, max_size = 5)
+  expect_equal(size(cohortSize, NA, Data(doseGrid = 1:5)), 0)
+})
+
+test_that("size works as expected for CohortSizeRandom with valid dose", {
+  cohortSize <- CohortSizeRandom(min_size = 2, max_size = 4)
+  emptyData <- Data(doseGrid = 1:5)
+  set.seed(123)
+  for (i in 1:10) {
+    dose <- 3
+    result <- size(object = cohortSize, dose = dose, data = emptyData)
+    expect_true(result >= 2 && result <= 4)
+    expect_true(is.integer(result))
+  }
+})
+
 ## CohortSizeRange ----
 
 test_that("size works as expected for CohortSizeRange", {

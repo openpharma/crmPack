@@ -678,6 +678,21 @@ v_cohort_size_const <- function(object) {
   v$result()
 }
 
+#' @describeIn v_cohort_size validates that the [`CohortSizeRandom`] object
+#'   contains valid `min_size` and `max_size` slots.
+v_cohort_size_random <- function(object) {
+  v <- Validate()
+  v$check(
+    test_int(object@min_size, lower = 1),
+    "min_size needs to be a positive integer"
+  )
+  v$check(
+    test_int(object@max_size, lower = object@min_size + 1),
+    "max_size needs to be an integer larger than min_size"
+  )
+  v$result()
+}
+
 #' @describeIn v_cohort_size validates that the [`CohortSizeParts`] object
 #'   contains valid `sizes` slot.
 v_cohort_size_parts <- function(object) {

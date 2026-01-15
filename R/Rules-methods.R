@@ -4133,6 +4133,34 @@ setMethod(
   }
 )
 
+## size-CohortSizeRandom ----
+
+#' @describeIn size Random cohort size drawn uniformly between min and max size.
+#'
+#' @param dose the next dose.
+#' @param ... not used.
+#'
+#' @aliases size-CohortSizeRandom
+#' @example examples/Rules-method-size-CohortSizeRandom.R
+#'
+setMethod(
+  f = "size",
+  signature = signature(
+    object = "CohortSizeRandom"
+  ),
+  definition = function(object, dose, ...) {
+    # If the recommended next dose is NA, don't check it and return 0.
+    if (is.na(dose)) {
+      0L
+    } else {
+      as.integer(sample(
+        seq(object@min_size, object@max_size),
+        size = 1
+      ))
+    }
+  }
+)
+
 ## size-CohortSizeParts ----
 
 #' @describeIn size Determines the size of the next cohort based on the parts.

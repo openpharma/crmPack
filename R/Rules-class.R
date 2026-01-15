@@ -3258,6 +3258,59 @@ CohortSizeConst <- function(size) {
   CohortSizeConst(size = 3L)
 }
 
+# CohortSizeRandom ----
+
+## class ----
+
+#' `CohortSizeRandom`
+#'
+#' @description `r lifecycle::badge("experimental")`
+#'
+#' [`CohortSizeRandom`] is the class for random cohort sizes drawn from a
+#' uniform distribution between `min_size` and `max_size` (inclusive).
+#'
+#' @slot min_size (`integer`)\cr minimum cohort size.
+#' @slot max_size (`integer`)\cr maximum cohort size.
+#'
+#' @aliases CohortSizeRandom
+#' @export
+#'
+.CohortSizeRandom <- setClass(
+  Class = "CohortSizeRandom",
+  slots = c(min_size = "integer", max_size = "integer"),
+  prototype = prototype(min_size = 1L, max_size = 3L),
+  contains = "CohortSize",
+  validity = v_cohort_size_random
+)
+
+## constructor ----
+
+#' @rdname CohortSizeRandom-class
+#'
+#' @param min_size (`integer`)\cr see slot definition.
+#' @param max_size (`integer`)\cr see slot definition.
+#'
+#' @export
+#' @example examples/Rules-class-CohortSizeRandom.R
+#'
+CohortSizeRandom <- function(min_size, max_size) {
+  assert_integerish(min_size, lower = 1, len = 1)
+  assert_integerish(max_size, lower = min_size + 1, len = 1)
+  .CohortSizeRandom(
+    min_size = as.integer(min_size),
+    max_size = as.integer(max_size)
+  )
+}
+
+## default constructor ----
+
+#' @rdname CohortSizeRandom-class
+#' @note Typically, end users will not use the `.DefaultCohortSizeRandom()` function.
+#' @export
+.DefaultCohortSizeRandom <- function() {
+  CohortSizeRandom(min_size = 1L, max_size = 3L)
+}
+
 # CohortSizeParts ----
 
 ## class ----
