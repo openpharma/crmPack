@@ -24,6 +24,16 @@ test_that("Plot works for Data object with placebo, blinding and no legend", {
   )
 })
 
+test_that("Plot works for Data object with response and backfill markers", {
+  data <- h_get_data()
+  result <- plot(data, mark_response = TRUE, mark_backfill = TRUE)
+
+  expect_doppel(
+    "Plot of Data with response and backfill markers",
+    result
+  )
+})
+
 # plot-DataDual ----
 
 test_that("Plot works as expected for DataDual object with placebo", {
@@ -188,18 +198,18 @@ test_that("update of Data object with backfill patients works", {
     c(
       FALSE,
       FALSE,
-      FALSE,
-      FALSE,
-      FALSE,
-      FALSE,
-      FALSE,
-      FALSE,
       TRUE,
       TRUE,
       FALSE,
       FALSE,
+      TRUE,
+      TRUE,
+      TRUE,
+      TRUE,
       FALSE,
-      FALSE
+      FALSE,
+      TRUE,
+      TRUE
     )
   )
 })

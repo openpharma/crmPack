@@ -1,5 +1,72 @@
 #' @include helpers_data.R
 
+# subsetting ----
+
+## Data ----
+
+#' Subsetting Operator for the [`Data`] Class
+#'
+#' @description `r lifecycle::badge("stable")`
+#'
+#' Subset observations (patients) from a [`Data`] object
+#' using numeric or logical indexing.
+#'
+#' @param x the [`Data`] object to subset
+#' @param i (`integer` or `logical`)\cr indices or logical vector
+#'   for subsetting observations.
+#' @param j not used
+#' @param drop not used
+#'
+#' @return A [`Data`] object with the selected observations.
+#'
+#' @aliases [,Data,numeric,missing,missing-method
+#' @export
+#'
+setMethod(
+  f = "[",
+  signature = signature(
+    x = "Data",
+    i = "numeric",
+    j = "missing",
+    drop = "missing"
+  ),
+  definition = function(x, i) {
+    Data(
+      x = x@x[i],
+      y = x@y[i],
+      ID = x@ID[i],
+      cohort = x@cohort[i],
+      doseGrid = x@doseGrid,
+      placebo = x@placebo,
+      backfilled = x@backfilled[i],
+      response = x@response[i]
+    )
+  }
+)
+
+#' @rdname [,Data,numeric,missing,missing-method
+setMethod(
+  f = "[",
+  signature = signature(
+    x = "Data",
+    i = "logical",
+    j = "missing",
+    drop = "missing"
+  ),
+  definition = function(x, i) {
+    Data(
+      x = x@x[i],
+      y = x@y[i],
+      ID = x@ID[i],
+      cohort = x@cohort[i],
+      doseGrid = x@doseGrid,
+      placebo = x@placebo,
+      backfilled = x@backfilled[i],
+      response = x@response[i]
+    )
+  }
+)
+
 # plot ----
 
 ## Data ----
@@ -20,10 +87,125 @@
 setMethod(
   f = "plot",
   signature = signature(x = "Data", y = "missing"),
-  definition = function(x, y, blind = FALSE, legend = TRUE, ...) {
+  definition = function(
+    x,
+    y,
+    blind = FALSE,
+    legend = TRUE,
+    include_backfill = TRUE,
+    mark_backfill = FALSE,
+    mark_response = FALSE,
+    ...
+  ) {
     assert_flag(blind)
     assert_flag(legend)
-    h_plot_data_dataordinal(x, blind, legend, ...)
+    assert_flag(include_backfill)
+    assert_flag(mark_backfill)
+    assert_flag(mark_response)
+
+    if (!include_backfill) {
+      x <- x[!x@backfilled]
+    }
+
+    p <- h_plot_data_dataordinal(x, blind, legend, ...)
+
+    if (mark_backfill || mark_response) {
+      df <- h_plot_data_df(
+        x,
+        blind = blind,
+        response = x@response,
+        backfilled = x@backfilled
+      )
+      if (mark_response) {
+        p <- p +
+          geom_point(
+            data = df[!is.na(df$response) & df$response == 1, ],
+            aes(
+              x = patient + 0.2,
+              y = dose
+            ),
+            shape = 8,
+            colour = "blue",
+            size = 3
+          )
+      }
+      if (mark_backfill) {
+        p <- p +
+          geom_text(
+            data = df[df$backfilled, ],
+            aes(
+              x = patient - 0.2,
+              y = dose,
+              label = "B"
+            ),
+            show.legend = FALSE
+          )
+      }
+
+      # Create custom guide for markings
+      marking_grobs <- list()
+      grob_idx <- 1L
+
+      if (mark_response) {
+        response_point <- grid::pointsGrob(
+          x = 0.05,
+          y = 0.5,
+          pch = 8,
+          gp = grid::gpar(col = "blue", cex = 1.2)
+        )
+        response_label <- grid::textGrob(
+          "  Response",
+          x = 0.25,
+          y = 0.5,
+          just = "left",
+          gp = grid::gpar(fontsize = 10)
+        )
+        marking_grobs[[grob_idx]] <- grid::grobTree(
+          response_point,
+          response_label
+        )
+        grob_idx <- grob_idx + 1L
+      }
+
+      if (mark_backfill) {
+        backfill_text <- grid::textGrob(
+          "B",
+          x = 0.05,
+          y = 0.5,
+          gp = grid::gpar(col = "black", fontsize = 9)
+        )
+        backfill_label <- grid::textGrob(
+          "  Backfill",
+          x = 0.25,
+          y = 0.5,
+          just = "left",
+          gp = grid::gpar(fontsize = 10)
+        )
+        marking_grobs[[grob_idx]] <- grid::grobTree(
+          backfill_text,
+          backfill_label
+        )
+        grob_idx <- grob_idx + 1L
+      }
+
+      # Combine all marking grobs vertically
+      if (length(marking_grobs) > 0) {
+        heights <- grid::unit(rep(1, length(marking_grobs)), "cm")
+        marking_grob <- do.call(
+          gridExtra::arrangeGrob,
+          c(marking_grobs, list(ncol = 1, heights = heights))
+        )
+
+        p <- p +
+          guides(
+            custom = guide_custom(
+              grob = marking_grob,
+              title = "Marking"
+            )
+          )
+      }
+    }
+    p
   }
 )
 
