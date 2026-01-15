@@ -92,18 +92,38 @@ OpeningMinDose <- function(min_dose = 0) {
 
 ## class ----
 
-# This concerns the overall number of cohorts treated so far in the trial.
-# Therefore it is one way to implement a "delayed backfill cohort opening" rule.
+#' `OpeningMinCohorts`
+#'
+#' @description `r lifecycle::badge("experimental")`
+#'
+#' [`OpeningMinCohorts`] opens backfill cohorts when the overall number of
+#' cohorts treated so far in the trial reaches or exceeds a minimum threshold.
+#' This can be used to implement a "delayed backfill cohort opening" rule.
+#'
+#' @slot min_cohorts (`integer`)\cr the minimum number of cohorts that must
+#'   have been treated before backfilling can be opened.
+#'
+#' @seealso [`Opening`] and the other subclasses listed in there.
+#'
+#' @aliases OpeningMinCohorts
+#' @export
+#'
 .OpeningMinCohorts <- setClass(
   Class = "OpeningMinCohorts",
   slots = c(min_cohorts = "integer"),
   prototype = list(min_cohorts = 2L),
-  contains = "Opening"
-  # TODO add validity
+  contains = "Opening",
+  validity = v_opening_min_cohorts
 )
 
 ## constructor ----
 
+#' @rdname OpeningMinCohorts-class
+#'
+#' @param min_cohorts (`integer`)\cr see slot definition.
+#'
+#' @export
+#'
 OpeningMinCohorts <- function(min_cohorts = 2L) {
   assert_integerish(min_cohorts, len = 1, lower = 1)
   min_cohorts <- as.integer(min_cohorts)
@@ -112,7 +132,12 @@ OpeningMinCohorts <- function(min_cohorts = 2L) {
 
 ## default constructor ----
 
-# TODO add default constructor
+#' @rdname OpeningMinCohorts-class
+#' @note Typically, end users will not use the `.DefaultOpeningMinCohorts()` function.
+#' @export
+.DefaultOpeningMinCohorts <- function() {
+  OpeningMinCohorts()
+}
 
 # OpeningNone ----
 

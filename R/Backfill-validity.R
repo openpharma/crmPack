@@ -23,3 +23,13 @@ v_opening_min_dose <- function(object) {
   )
   v$result()
 }
+#' @describeIn v_opening validates that the [`OpeningMinCohorts`] object
+#'   contains valid `min_cohorts` slot.
+v_opening_min_cohorts <- function(object) {
+  v <- Validate()
+  v$check(
+    test_int(object@min_cohorts, lower = 1),
+    "min_cohorts needs to be a positive integer scalar"
+  )
+  v$result()
+}

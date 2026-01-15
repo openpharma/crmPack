@@ -52,6 +52,12 @@ setMethod(
 
 ## OpeningMinCohorts ----
 
+#' @describeIn openCohort method for `OpeningMinCohorts` class.
+#'
+#' @aliases openCohort-OpeningMinCohorts
+#'
+#' @export
+#' @example examples/Backfill-method-openCohort-OpeningMinCohorts.R
 setMethod(
   f = "openCohort",
   signature = c(opening = "OpeningMinCohorts"),

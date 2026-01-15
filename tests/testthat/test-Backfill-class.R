@@ -25,3 +25,29 @@ test_that(".DefaultOpeningMinDose works as expected", {
     OpeningMinDose(min_dose = 0)
   )
 })
+
+## OpeningMinCohorts ----
+
+test_that(".OpeningMinCohorts works as expected", {
+  result <- expect_silent(.OpeningMinCohorts())
+  expect_valid(result, "OpeningMinCohorts")
+})
+
+test_that("OpeningMinCohorts object can be created with user constructor", {
+  result <- expect_silent(OpeningMinCohorts(min_cohorts = 3))
+  expect_valid(result, "OpeningMinCohorts")
+  expect_identical(result@min_cohorts, 3L)
+})
+
+test_that("OpeningMinCohorts object can be created with default min_cohorts", {
+  result <- expect_silent(OpeningMinCohorts())
+  expect_valid(result, "OpeningMinCohorts")
+  expect_identical(result@min_cohorts, 2L)
+})
+
+test_that(".DefaultOpeningMinCohorts works as expected", {
+  expect_equal(
+    .DefaultOpeningMinCohorts(),
+    OpeningMinCohorts(min_cohorts = 2L)
+  )
+})
