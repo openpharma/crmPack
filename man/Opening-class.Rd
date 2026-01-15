@@ -21,5 +21,6 @@ The subclasses are used for backfill cohort designs.
 Typically, end users will not use the \code{.DefaultOpening()} function.
 }
 \seealso{
-\code{\link{OpeningMinDose}}, \code{\link{OpeningMinCohorts}}, \code{\link{OpeningNone}}.
+\code{\link{OpeningMinDose}}, \code{\link{OpeningMinCohorts}}, \code{\link{OpeningNone}},
+\code{\link{OpeningMinResponses}}, \code{\link{OpeningAll}}, \code{\link{OpeningAny}}.
 }

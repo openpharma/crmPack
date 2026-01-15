@@ -10,6 +10,12 @@
 \alias{openCohort-OpeningNone}
 \alias{openCohort,OpeningMinResponses-method}
 \alias{openCohort-OpeningMinResponses}
+\alias{openCohort,OpeningList-method}
+\alias{openCohort-OpeningList}
+\alias{openCohort,OpeningAll-method}
+\alias{openCohort-OpeningAll}
+\alias{openCohort,OpeningAny-method}
+\alias{openCohort-OpeningAny}
 \title{Open / recruit backfill patients into a cohort?}
 \usage{
 openCohort(opening, cohort, data, dose, ...)
@@ -21,6 +27,12 @@ openCohort(opening, cohort, data, dose, ...)
 \S4method{openCohort}{OpeningNone}(opening, cohort, data, dose, ...)
 
 \S4method{openCohort}{OpeningMinResponses}(opening, cohort, data, dose, ...)
+
+\S4method{openCohort}{OpeningList}(opening, cohort, data, dose, summary_fun, ...)
+
+\S4method{openCohort}{OpeningAll}(opening, cohort, data, dose, ...)
+
+\S4method{openCohort}{OpeningAny}(opening, cohort, data, dose, ...)
 }
 \arguments{
 \item{opening}{(\code{Opening})\cr opening rule to be applied.}
@@ -32,6 +44,10 @@ openCohort(opening, cohort, data, dose, ...)
 \item{dose}{(\code{numeric})\cr the recommended next best dose.}
 
 \item{...}{further arguments (not used).}
+
+\item{summary_fun}{(\code{function})\cr to apply to the list of
+results (e.g., \code{all} or \code{any}).
+Only used for \code{OpeningList} and its subclasses.}
 }
 \value{
 \code{TRUE} if this backfill cohort can be opened / recruited into,
@@ -49,6 +65,14 @@ openCohort(opening, cohort, data, dose, ...)
 \item \code{openCohort(OpeningNone)}: method for \code{OpeningNone} class.
 
 \item \code{openCohort(OpeningMinResponses)}: method for \code{OpeningMinResponses} class.
+
+\item \code{openCohort(OpeningList)}: method for \code{OpeningList} class.
+
+\item \code{openCohort(OpeningAll)}: method for \code{OpeningAll} class.
+Returns \code{TRUE} if ALL opening criteria are satisfied.
+
+\item \code{openCohort(OpeningAny)}: method for \code{OpeningAny} class.
+Returns \code{TRUE} if ANY opening criteria are satisfied.
 
 }}
 \examples{
@@ -126,5 +150,58 @@ print(should_open) # FALSE
 
 # Check at dose 10 where there are 2 responses
 should_open_2 <- openCohort(opening, cohort = 1, data = data, dose = 30)
+print(should_open_2) # TRUE
+# Create sample trial data
+data <- Data(
+  x = c(0.1, 0.5, 1.5, 3, 6, 10, 10, 10),
+  y = c(0, 0, 0, 0, 0, 0, 1, 0),
+  cohort = c(1, 2, 3, 4, 5, 6, 6, 6),
+  doseGrid = c(0.1, 0.5, 1.5, 3, 6, seq(from = 10, to = 80, by = 2))
+)
+
+# Create opening criteria:
+# - opening1: open if dose >= 10
+# - opening2: open if at least 5 cohorts have been treated
+opening1 <- OpeningMinDose(min_dose = 10)
+opening2 <- OpeningMinCohorts(min_cohorts = 5)
+
+# Combine with AND logic: both must be true
+opening_all <- opening1 & opening2
+
+# Test if backfill cohort 7 can be opened
+# Cohort 6 dose is 10 (>= 10: TRUE), max cohort is 6 (>= 5: TRUE), so AND is TRUE
+should_open <- openCohort(opening_all, cohort = 6, data = data, dose = 20)
+print(should_open) # TRUE
+
+# Test if backfill cohort at dose 6 can be opened
+# Cohort 4 dose is 3 (>= 10: FALSE), so AND is FALSE
+should_open_2 <- openCohort(opening_all, cohort = 4, data = data, dose = 20)
+print(should_open_2) # FALSE
+# Create sample trial data
+data <- Data(
+  x = c(0.1, 0.5, 1.5, 3, 6, 10, 10, 10),
+  y = c(0, 0, 0, 0, 0, 0, 1, 0),
+  cohort = c(1, 2, 3, 4, 5, 6, 6, 6),
+  doseGrid = c(0.1, 0.5, 1.5, 3, 6, seq(from = 10, to = 80, by = 2))
+)
+
+# Create opening criteria:
+# - opening1: open if dose >= 20
+# - opening2: open if at least 5 cohorts have been treated
+opening1 <- OpeningMinDose(min_dose = 20)
+opening2 <- OpeningMinCohorts(min_cohorts = 5)
+
+# Combine with OR logic: at least one must be true
+opening_any <- opening1 | opening2
+
+# Test if backfill cohort 7 can be opened at dose 10
+# Cohort 6 dose is 10 (>= 20: FALSE), max cohort is 6 (>= 5: TRUE), so OR is TRUE
+should_open <- openCohort(opening_any, cohort = 6, data = data, dose = 20)
+print(should_open) # TRUE
+
+# Test with a different scenario:
+# It does not matter which cohort index we give, because
+# the number of cohorts is already above 5.
+should_open_2 <- openCohort(opening_any, cohort = 1, data = data, dose = 25)
 print(should_open_2) # TRUE
 }
