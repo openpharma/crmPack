@@ -172,7 +172,7 @@ test_that(".DefaultRecruitmentUnlimited works as expected", {
 ## RecruitmentRatio ----
 
 test_that(".RecruitmentRatio works as expected", {
-  result <- expect_silent(.RecruitmentRatio())
+  result <- expect_silent(.RecruitmentRatio(ratio = 1))
   expect_valid(result, "RecruitmentRatio")
 })
 
@@ -206,8 +206,8 @@ test_that("Backfill object can be created with default parameters", {
   expect_valid(result, "Backfill")
   expect_identical(result@total_size, 1e6L)
   expect_identical(result@priority, "highest")
-  expect_is(result@opening, "OpeningMinDose")
-  expect_is(result@recruitment, "RecruitmentUnlimited")
+  expect_s4_class(result@opening, "OpeningMinDose")
+  expect_s4_class(result@recruitment, "RecruitmentUnlimited")
 })
 
 test_that("Backfill object can be created with custom opening and recruitment", {

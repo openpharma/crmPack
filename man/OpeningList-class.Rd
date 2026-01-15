@@ -5,9 +5,12 @@
 \alias{OpeningList-class}
 \alias{.OpeningList}
 \alias{OpeningList}
+\alias{.DefaultOpeningList}
 \title{\code{OpeningList}}
 \usage{
 OpeningList(...)
+
+.DefaultOpeningList()
 }
 \arguments{
 \item{...}{(\code{Opening})\cr opening objects to combine.}
@@ -26,6 +29,9 @@ using logical operators. It is used as a base class for \code{\link{OpeningAll}}
 a list of \code{\link{Opening}} objects to be combined.}
 }}
 
+\note{
+Typically, end users will not use the \code{.DefaultOpeningList()} function.
+}
 \examples{
 # Create two simple opening criteria
 opening1 <- OpeningMinDose(min_dose = 10)

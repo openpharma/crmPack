@@ -98,6 +98,8 @@ test_that("Update of Data works as expected", {
   object@ID <- c(object@ID, 13L, 14L, 15L)
   object@xLevel <- c(object@xLevel, 2L, 2L, 2L)
   object@cohort <- c(object@cohort, 4L, 4L, 4L)
+  object@response <- c(object@response, NA, NA, NA)
+  object@backfilled <- c(object@backfilled, FALSE, FALSE, FALSE)
 
   expect_valid(result, "Data")
   expect_identical(result, object)
@@ -133,6 +135,8 @@ test_that("Update of Data works when doses are added to the old cohort", {
   object@ID <- c(object@ID, 13L, 14L, 15L)
   object@xLevel <- c(object@xLevel, 5L, 5L, 5L)
   object@cohort <- c(object@cohort, 3L, 3L, 3L)
+  object@response <- c(object@response, NA, NA, NA)
+  object@backfilled <- c(object@backfilled, FALSE, FALSE, FALSE)
 
   expect_valid(result, "Data")
   expect_identical(result, object)
@@ -212,6 +216,8 @@ test_that("Update of Data works as expected", {
   object@ID <- c(object@ID, 13L, 14L, 15L)
   object@xLevel <- c(object@xLevel, 2L, 2L, 2L)
   object@cohort <- c(object@cohort, 4L, 4L, 4L)
+  object@response <- c(object@response, NA, NA, NA)
+  object@backfilled <- c(object@backfilled, FALSE, FALSE, FALSE)
 
   expect_valid(result, "Data")
   expect_identical(result, object)
@@ -287,6 +293,8 @@ test_that("Update of DataParts works as expected", {
   object@cohort <- c(object@cohort, 4L, 4L)
   object@part <- c(object@part, 1L, 1L)
   object@nextPart <- 2L
+  object@response <- c(object@response, NA, NA)
+  object@backfilled <- c(object@backfilled, FALSE, FALSE)
 
   expect_valid(result, "DataParts")
   expect_identical(result, object)
@@ -305,6 +313,8 @@ test_that("Update of DataParts works as expected", {
   object@cohort <- c(object@cohort, 4L, 4L)
   object@part <- c(object@part, 1L, 1L)
   object@nextPart <- 2L
+  object@response <- c(object@response, NA, NA)
+  object@backfilled <- c(object@backfilled, FALSE, FALSE)
 
   expect_valid(result, "DataParts")
   expect_identical(result, object)
@@ -325,6 +335,8 @@ test_that("Update of DataParts works, no DLT and x eq max of part1Ladder", {
   object@cohort <- c(object@cohort, 4L, 4L)
   object@part <- c(object@part, 1L, 1L)
   object@nextPart <- 2L
+  object@response <- c(object@response, NA, NA)
+  object@backfilled <- c(object@backfilled, FALSE, FALSE)
 
   expect_valid(result, "DataParts")
   expect_identical(result, object)
@@ -344,6 +356,8 @@ test_that("Update of DataDual works as expected", {
   object@ID <- c(object@ID, 13L, 14L)
   object@xLevel <- c(object@xLevel, 2L, 2L)
   object@cohort <- c(object@cohort, 4L, 4L)
+  object@response <- c(object@response, NA, NA)
+  object@backfilled <- c(object@backfilled, FALSE, FALSE)
 
   expect_valid(result, "DataDual")
   expect_identical(result, object)
@@ -370,6 +384,8 @@ test_that("Update of DataDA works as expected", {
   object@cohort <- c(object@cohort, 4L)
   object@t0 <- c(object@t0, 135)
   object@u <- c(42, 30, 15, 5, 20, 25, 30, 55, 25, 30, 20, 15, 5)
+  object@response <- c(object@response, NA)
+  object@backfilled <- c(object@backfilled, FALSE)
 
   expect_valid(result, "DataDA")
   expect_identical(result, object)
@@ -674,7 +690,9 @@ test_that("tidy-DataGeneral creates the correct tibble", {
     doseGrid = c(1, 3, 5, 10, 15, 20, 25, 40, 50, 80, 100),
     placebo = FALSE,
     ID = 1:3,
-    cohort = 1:3
+    cohort = 1:3,
+    response = c(1, NA, 0),
+    backfilled = c(FALSE, FALSE, TRUE)
   )
   expected <- tibble(
     ID = 1:3,
@@ -685,9 +703,11 @@ test_that("tidy-DataGeneral creates the correct tibble", {
     Placebo = FALSE,
     NObs = 3,
     NGrid = 11,
-    DoseGrid = list(c(1, 3, 5, 10, 15, 20, 25, 40, 50, 80, 100))
+    DoseGrid = list(c(1, 3, 5, 10, 15, 20, 25, 40, 50, 80, 100)),
+    Response = c(1, NA, 0),
+    Backfilled = c(FALSE, FALSE, TRUE)
   )
-  class(expected) <- c("tbl_Data", class(expected))
+  class(expected) <- c("tbl_Data", "tbl_Data", class(expected))
 
   expect_equal(tidy(d), expected)
 

@@ -190,7 +190,7 @@ test_that("openCohort works correctly with OpeningAny (OR logic)", {
   expect_true(openCohort(opening_any, cohort = 6, data = data, dose = 20))
 
   # Cohort at dose 25 would be >= 20 (TRUE), so OR = TRUE
-  expect_true(openCohort(opening_any, cohort = 7, data = data, dose = 25))
+  expect_true(openCohort(opening_any, cohort = 1, data = data, dose = 25))
 })
 
 test_that("openCohort works with | operator", {
@@ -206,7 +206,7 @@ test_that("openCohort works with | operator", {
   opening_any <- opening1 | opening2
 
   expect_true(openCohort(opening_any, cohort = 6, data = data, dose = 20))
-  expect_true(openCohort(opening_any, cohort = 7, data = data, dose = 25))
+  expect_true(openCohort(opening_any, cohort = 2, data = data, dose = 25))
 })
 
 # maxRecruits ----

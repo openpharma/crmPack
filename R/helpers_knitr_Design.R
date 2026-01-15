@@ -79,7 +79,7 @@ h_knit_print_design <- function(
   title = "Design",
   default_sections = NA,
   user_sections = NA,
-  ignore_slots = c(),
+  ignore_slots = "backfill",
   asis = TRUE
 ) {
   assert_flag(asis)

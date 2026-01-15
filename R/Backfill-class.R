@@ -290,6 +290,15 @@ OpeningList <- function(...) {
   .OpeningList(open_list = args)
 }
 
+## default constructor ----
+
+#' @rdname OpeningList-class
+#' @note Typically, end users will not use the `.DefaultOpeningList()` function.
+#' @export
+.DefaultOpeningList <- function() {
+  OpeningList(OpeningMinDose(), OpeningMinDose())
+}
+
 ## OpeningAll ----
 
 #' `OpeningAll`

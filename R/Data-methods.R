@@ -871,6 +871,33 @@ setMethod(
   }
 )
 
+## Data ----
+
+#' Tidy Method for the [`Data`] Class
+#'
+#' @description `r lifecycle::badge("experimental")`
+#'
+#' A method that tidies a [`Data`] object.
+#'
+#' @return The [`tibble`] object.
+#'
+#' @aliases tidy-Data
+#' @rdname tidy
+#' @export
+#' @example examples/Data-method-tidy.R
+#'
+setMethod(
+  f = "tidy",
+  signature = signature(x = "Data"),
+  definition = function(x, ...) {
+    d <- callNextMethod()
+    d %>%
+      tibble::add_column(Response = x@response) %>%
+      tibble::add_column(Backfilled = x@backfilled) %>%
+      h_tidy_class(x)
+  }
+)
+
 ## DataGrouped ----
 
 #' Tidy Method for the [`DataGrouped`] Class
