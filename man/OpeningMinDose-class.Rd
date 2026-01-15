@@ -18,8 +18,9 @@ OpeningMinDose(min_dose = 0)
 \description{
 \ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#experimental}{\figure{lifecycle-experimental.svg}{options: alt='[Experimental]'}}}{\strong{[Experimental]}}
 
-\code{\link{OpeningMinDose}} opens a backfill cohort when the next recommended dose
-is above or equal to the minimum dose specified.
+\code{\link{OpeningMinDose}} opens a backfill cohort when the
+cohort's dose is above or equal to the minimum dose specified.
+Note that the next recommended dose is not taken into account.
 }
 \section{Slots}{
 

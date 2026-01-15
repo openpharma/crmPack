@@ -3,9 +3,12 @@
 \name{v_opening}
 \alias{v_opening}
 \alias{v_opening_min_dose}
+\alias{v_opening_min_cohorts}
 \title{Internal Helper Functions for Validation of \code{\link{Opening}} Objects}
 \usage{
 v_opening_min_dose(object)
+
+v_opening_min_cohorts(object)
 }
 \arguments{
 \item{object}{(\code{Opening})\cr object to validate.}
@@ -24,5 +27,8 @@ These functions are only used internally to validate the format of an input
 \itemize{
 \item \code{v_opening_min_dose()}: validates that the \code{\link{OpeningMinDose}} object
 contains valid \code{min_dose} slot.
+
+\item \code{v_opening_min_cohorts()}: validates that the \code{\link{OpeningMinCohorts}} object
+contains valid \code{min_cohorts} slot.
 
 }}

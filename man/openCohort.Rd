@@ -4,11 +4,19 @@
 \alias{openCohort}
 \alias{openCohort,OpeningMinDose-method}
 \alias{openCohort-OpeningMinDose}
+\alias{openCohort,OpeningMinCohorts-method}
+\alias{openCohort-OpeningMinCohorts}
+\alias{openCohort,OpeningNone-method}
+\alias{openCohort-OpeningNone}
 \title{Open / recruit backfill patients into a cohort?}
 \usage{
 openCohort(opening, cohort, data, dose, ...)
 
 \S4method{openCohort}{OpeningMinDose}(opening, cohort, data, dose, ...)
+
+\S4method{openCohort}{OpeningMinCohorts}(opening, cohort, data, dose, ...)
+
+\S4method{openCohort}{OpeningNone}(opening, cohort, data, dose, ...)
 }
 \arguments{
 \item{opening}{(\code{Opening})\cr opening rule to be applied.}
@@ -32,9 +40,35 @@ openCohort(opening, cohort, data, dose, ...)
 \itemize{
 \item \code{openCohort(OpeningMinDose)}: method for \code{OpeningMinDose} class.
 
+\item \code{openCohort(OpeningMinCohorts)}: method for \code{OpeningMinCohorts} class.
+
+\item \code{openCohort(OpeningNone)}: method for \code{OpeningNone} class.
+
 }}
 \examples{
 # Create a simple data object with some dose information
+data <- Data(
+  x = c(0.1, 0.5, 1.5, 3, 6, 10, 10, 10),
+  y = c(0, 0, 0, 0, 0, 0, 1, 0),
+  cohort = c(1, 2, 3, 4, 5, 6, 6, 6),
+  doseGrid = c(0.1, 0.5, 1.5, 3, 6, seq(from = 10, to = 80, by = 2))
+)
+
+# Define the opening rule: open backfill cohorts when dose is at least 5
+my_opening <- OpeningMinDose(min_dose = 5)
+
+# Check if the first backfill cohort can be opened when the
+# cohort has a dose 6, i.e. larger than 5.
+# Note that `dose` is not used in this rule.
+can_open <- openCohort(my_opening, cohort = 5, data = data, dose = 7)
+can_open
+
+# Check if the first backfill cohort can be opened when the
+# cohort has a dose 3, i.e. smaller than 5.
+# (should return FALSE because dose < min_dose)
+can_open_low <- openCohort(my_opening, cohort = 4, data = data, dose = 15)
+can_open_low
+# Create a data object with multiple cohorts
 data <- Data(
   x = c(0.1, 0.5, 1.5, 3, 6, 10, 10, 10),
   y = c(0, 0, 0, 0, 0, 0, 1, 0),
@@ -42,15 +76,29 @@ data <- Data(
   doseGrid = c(0.1, 0.5, 1.5, 3, 6, seq(from = 10, to = 80, by = 2))
 )
 
-# Define the opening rule: open backfill cohorts when dose is at least 20
-my_opening <- OpeningMinDose(min_dose = 20)
+# Define the opening rule: open backfill cohorts after at least 3 cohorts
+my_opening <- OpeningMinCohorts(min_cohorts = 3)
 
-# Check if the first backfill cohort can be opened when the next dose is 25
+# Check if a backfill cohort can be opened
+# Current number of cohorts is 6, so it should open (6 >= 3)
 can_open <- openCohort(my_opening, cohort = 1, data = data, dose = 25)
 can_open
+# Create an OpeningNone object which never opens backfill cohorts
+opening <- OpeningNone()
 
-# Check if the first backfill cohort can be opened when the next dose is 15
-# (should return FALSE because dose < min_dose)
-can_open_low <- openCohort(my_opening, cohort = 1, data = data, dose = 15)
-can_open_low
+# Create sample trial data
+data <- Data(
+  x = c(20, 30, 40, 50),
+  y = c(0, 0, 1, 0),
+  cohort = c(1, 2, 3, 4),
+  doseGrid = seq(10, 100, by = 10)
+)
+
+# Create dose recommendation
+dose <- 60
+
+# Check if backfill cohort should be opened for cohort 5
+# OpeningNone always returns FALSE
+should_open <- openCohort(opening, cohort = 5, data = data, dose = dose)
+print(should_open) # FALSE
 }
