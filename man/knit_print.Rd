@@ -13,6 +13,7 @@
 \alias{knit_print.CohortSizeMax}
 \alias{knit_print.CohortSizeMin}
 \alias{knit_print.CohortSizeOrdinal}
+\alias{knit_print.CohortSizeRandom}
 \alias{knit_print.StartingDose}
 \alias{knit_print.RuleDesign}
 \alias{knit_print.Design}
@@ -101,6 +102,8 @@
 \method{knit_print}{CohortSizeMin}(x, ..., asis = TRUE)
 
 \method{knit_print}{CohortSizeOrdinal}(x, ..., tox_label = "toxicity", asis = TRUE)
+
+\method{knit_print}{CohortSizeRandom}(x, ..., asis = TRUE, label = c("participant", "participants"))
 
 \method{knit_print}{StartingDose}(x, ..., asis = TRUE)
 
@@ -601,6 +604,8 @@ crmPack objects in Markdown and Quarto files
 
 \ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#experimental}{\figure{lifecycle-experimental.svg}{options: alt='[Experimental]'}}}{\strong{[Experimental]}}
 
+\ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#experimental}{\figure{lifecycle-experimental.svg}{options: alt='[Experimental]'}}}{\strong{[Experimental]}}
+
 We provide additional utility functions to allow human-friendly rendition of
 crmPack objects in Markdown and Quarto files.  This file contains methods for
 all design classes, not just those that are direct descendants of \code{Design}.
@@ -743,6 +748,194 @@ crmPack objects in Markdown and Quarto files
 \ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#experimental}{\figure{lifecycle-experimental.svg}{options: alt='[Experimental]'}}}{\strong{[Experimental]}}
 }
 \section{Usage Notes}{
+
+\code{label} describes the trial's participants.
+
+It should be a character vector of length 1 or 2.  If of length 2, the first
+element describes a \code{cohort_size} of 1 and the second describes all other
+\code{cohort_size}s.  If of length 1, the character \code{s} is appended to the value
+when \code{cohort_size} is not 1.
+
+
+The default value of \code{col.names} is \code{c("Lower", "Upper", "Cohort size")} and
+that of \code{caption} is \code{"Defined by the dose to be used in the next cohort"}.
+These values can be overridden by passing \code{col.names} and \code{caption} in the
+function call.
+
+
+The by default, the columns are labelled \code{Lower}, \code{Upper} and \verb{Cohort size}.
+The table's caption is \verb{Defined by the number of <tox_label[2]> so far observed}.
+These values can be overridden by passing \code{col.names} and \code{caption} in the
+function call.
+
+
+\code{label} describes the trial's participants.
+
+It should be a character vector of length 1 or 2.  If of length 2, the first
+element describes a single participant and the second describes all other
+situations.  If of length 1, the character \code{s} is appended to the value
+when the number of participants is not 1.
+The default values of \code{col.names} and \code{caption} vary depending on the summary
+requested. The default values can be overridden by passing \code{col.names} and
+\code{caption} in the function call.
+
+
+\code{params} must be a character vector of length equal to that of \code{x@mean} (and
+\code{x@cov}).  Its values represent the parameters of the model as entries in the
+vector \code{theta}, on the left-hand side of "~" in the definition of the prior.
+If named, names should be valid LaTeX, escaped as usual for R character variables.
+For example, \code{"\\\\alpha"} or \code{"\\\\beta_0"}.  If unnamed, names are constructed by
+pre-pending an escaped backslash to each value provided.
+
+
+The default value of \code{col.names} is \code{c("Min", "Max", "Increment")} and that
+of \code{caption} is \code{"Defined by highest dose administered so far"}.  These
+values can be overridden by passing \code{col.names} and \code{caption} in the function
+call.
+
+
+The default value of \code{col.names} is \code{c("Min", "Max", "Increment")} and that
+of \code{caption} is \code{"Defined by number of DLTs reported so far"}. These values
+can be overridden by passing \code{col.names} and \code{caption} in the function call.
+
+
+\code{label} defines how toxicities are described.
+
+It should be a character vector of length 1 or 2.  If of length 2, the first
+element describes a single toxicity and the second describes all other
+toxicity counts.  If of length 1, the character \code{s} is appended to the value
+describing a single toxicity.
+
+
+The default value of \code{col.names} is \code{c("Min", "Max", "Increment")} and that
+of \code{caption} is \code{"Defined by number of DLTs in the current cohort"}. These values
+can be overridden by passing \code{col.names} and \code{caption} in the function call.
+
+\code{tox_label} defines how toxicities are described.
+
+It should be a character vector of length 1 or 2.  If of length 2, the first
+element describes a single toxicity and the second describes all other
+toxicity counts.  If of length 1, the character \code{s} is appended to the value
+describing a single toxicity.
+
+
+This section describes the use of \code{label} and \code{tox_label}, collectively
+referred to as \code{label}s.
+A \code{label} should be a scalar or a vector of length 2.  If a scalar, it is
+converted by adding a second element that is equal to the first, suffixed by \code{s}.
+For example, \code{tox_label = "DLT"} becomes \code{tox_label = c("DLT", "DLTs")}.  The
+first element of the vector is used to describe a count of 1.  The second
+is used in all other cases.
+
+
+To use a BibTeX-style citation, specify (for example) \verb{citation_text = "@MOZGUNOV", citation_link = ""}.
+
+
+\code{label} should be a character vector of length 1 or 2.  If of length 2, the first
+element describes a count of 1 and the second describes all other counts.
+If of length 1, the character \code{s} is appended to the value when the count is not 1.
+
+
+\code{label} and \code{time_unit} are, collectively, labels.
+
+A label should be a character vector of length 1 or 2.  If of length 2, the first
+element describes a count of 1 and the second describes all other counts.
+If of length 1, the character \code{s} is appended to the value when the count is not 1.
+
+
+\code{label} describes the trial's participants.
+
+It should be a character vector of length 1 or 2.  If of length 2, the first
+element describes a \code{cohort_size} of 1 and the second describes all other
+\code{cohort_size}s.  If of length 1, the character \code{s} is appended to the value
+when \code{cohort_size} is not 1.
+
+
+The default value of \code{col.names} is \code{c("Lower", "Upper", "Cohort size")} and
+that of \code{caption} is \code{"Defined by the dose to be used in the next cohort"}.
+These values can be overridden by passing \code{col.names} and \code{caption} in the
+function call.
+
+
+The by default, the columns are labelled \code{Lower}, \code{Upper} and \verb{Cohort size}.
+The table's caption is \verb{Defined by the number of <tox_label[2]> so far observed}.
+These values can be overridden by passing \code{col.names} and \code{caption} in the
+function call.
+
+
+\code{label} describes the trial's participants.
+
+It should be a character vector of length 1 or 2.  If of length 2, the first
+element describes a single participant and the second describes all other
+situations.  If of length 1, the character \code{s} is appended to the value
+when the number of participants is not 1.
+The default values of \code{col.names} and \code{caption} vary depending on the summary
+requested. The default values can be overridden by passing \code{col.names} and
+\code{caption} in the function call.
+
+
+\code{params} must be a character vector of length equal to that of \code{x@mean} (and
+\code{x@cov}).  Its values represent the parameters of the model as entries in the
+vector \code{theta}, on the left-hand side of "~" in the definition of the prior.
+If named, names should be valid LaTeX, escaped as usual for R character variables.
+For example, \code{"\\\\alpha"} or \code{"\\\\beta_0"}.  If unnamed, names are constructed by
+pre-pending an escaped backslash to each value provided.
+
+
+The default value of \code{col.names} is \code{c("Min", "Max", "Increment")} and that
+of \code{caption} is \code{"Defined by highest dose administered so far"}.  These
+values can be overridden by passing \code{col.names} and \code{caption} in the function
+call.
+
+
+The default value of \code{col.names} is \code{c("Min", "Max", "Increment")} and that
+of \code{caption} is \code{"Defined by number of DLTs reported so far"}. These values
+can be overridden by passing \code{col.names} and \code{caption} in the function call.
+
+
+\code{label} defines how toxicities are described.
+
+It should be a character vector of length 1 or 2.  If of length 2, the first
+element describes a single toxicity and the second describes all other
+toxicity counts.  If of length 1, the character \code{s} is appended to the value
+describing a single toxicity.
+
+
+The default value of \code{col.names} is \code{c("Min", "Max", "Increment")} and that
+of \code{caption} is \code{"Defined by number of DLTs in the current cohort"}. These values
+can be overridden by passing \code{col.names} and \code{caption} in the function call.
+
+\code{tox_label} defines how toxicities are described.
+
+It should be a character vector of length 1 or 2.  If of length 2, the first
+element describes a single toxicity and the second describes all other
+toxicity counts.  If of length 1, the character \code{s} is appended to the value
+describing a single toxicity.
+
+
+This section describes the use of \code{label} and \code{tox_label}, collectively
+referred to as \code{label}s.
+A \code{label} should be a scalar or a vector of length 2.  If a scalar, it is
+converted by adding a second element that is equal to the first, suffixed by \code{s}.
+For example, \code{tox_label = "DLT"} becomes \code{tox_label = c("DLT", "DLTs")}.  The
+first element of the vector is used to describe a count of 1.  The second
+is used in all other cases.
+
+
+To use a BibTeX-style citation, specify (for example) \verb{citation_text = "@MOZGUNOV", citation_link = ""}.
+
+
+\code{label} should be a character vector of length 1 or 2.  If of length 2, the first
+element describes a count of 1 and the second describes all other counts.
+If of length 1, the character \code{s} is appended to the value when the count is not 1.
+
+
+\code{label} and \code{time_unit} are, collectively, labels.
+
+A label should be a character vector of length 1 or 2.  If of length 2, the first
+element describes a count of 1 and the second describes all other counts.
+If of length 1, the character \code{s} is appended to the value when the count is not 1.
+
 
 \code{label} describes the trial's participants.
 

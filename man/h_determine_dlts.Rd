@@ -9,9 +9,11 @@ h_determine_dlts(
   data,
   dose,
   prob,
-  prob_placebo,
+  prob_placebo = 0,
+  prob_response = 0,
+  prob_response_placebo = 0,
   cohort_size,
-  cohort_size_placebo,
+  cohort_size_placebo = 0,
   dose_grid,
   first_separate
 )
@@ -21,9 +23,13 @@ h_determine_dlts(
 
 \item{dose}{(\code{number})\cr current dose.}
 
-\item{prob}{(\code{function})\cr defines the true probability for a DLT at a dose.}
+\item{prob}{(\code{number})\cr defines the true probability for a DLT at the dose.}
 
-\item{prob_placebo}{(\code{function})\cr defines the true probability for a DLT at a placebo condition.}
+\item{prob_placebo}{(\code{number})\cr defines the true probability for a DLT at a placebo condition.}
+
+\item{prob_response}{(\code{number})\cr defines the true probability for a response at the dose.}
+
+\item{prob_response_placebo}{(\code{number})\cr defines the true probability for a response at a placebo condition.}
 
 \item{cohort_size}{(\code{number})\cr the cohort size to use.}
 

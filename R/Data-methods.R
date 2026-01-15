@@ -4,20 +4,22 @@
 
 ## Data ----
 
-#' Subsetting Operator for the [`Data`] Class
+#' @title Subsetting Operator for the Data Class
 #'
 #' @description `r lifecycle::badge("stable")`
 #'
 #' Subset observations (patients) from a [`Data`] object
 #' using numeric or logical indexing.
 #'
-#' @param x the [`Data`] object to subset
+#' @param x (`Data`)\cr what to subset.
 #' @param i (`integer` or `logical`)\cr indices or logical vector
 #'   for subsetting observations.
-#' @param j not used
-#' @param drop not used
+#' @param j not used.
+#' @param drop not used.
 #'
 #' @return A [`Data`] object with the selected observations.
+#'
+#' @name subset-Data
 #'
 #' @aliases [,Data,numeric,missing,missing-method
 #' @export
@@ -44,7 +46,7 @@ setMethod(
   }
 )
 
-#' @rdname [,Data,numeric,missing,missing-method
+#' @rdname subset-Data
 setMethod(
   f = "[",
   signature = signature(

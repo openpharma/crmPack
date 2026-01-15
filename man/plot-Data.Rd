@@ -16,7 +16,16 @@ h_plot_data_dataordinal(
   ...
 )
 
-\S4method{plot}{Data,missing}(x, y, blind = FALSE, legend = TRUE, ...)
+\S4method{plot}{Data,missing}(
+  x,
+  y,
+  blind = FALSE,
+  legend = TRUE,
+  include_backfill = TRUE,
+  mark_backfill = FALSE,
+  mark_response = FALSE,
+  ...
+)
 
 \S4method{plot}{DataOrdinal,missing}(
   x,
@@ -89,6 +98,39 @@ my_data <- Data(
 
 # Plot the data.
 plot(my_data)
+
+# We can also mark backfill patients and response outcomes.
+my_data@backfilled <- c(
+  FALSE,
+  FALSE,
+  FALSE,
+  FALSE,
+  TRUE,
+  TRUE,
+  TRUE,
+  FALSE,
+  FALSE,
+  FALSE,
+  FALSE
+)
+my_data@response <- as.integer(c(
+  NA,
+  NA,
+  1,
+  NA,
+  NA,
+  0,
+  1,
+  NA,
+  1,
+  0,
+  0
+))
+plot(
+  my_data,
+  mark_backfill = TRUE,
+  mark_response = TRUE
+)
 data <- DataOrdinal(
   x = c(10, 20, 30, 40, 50, 50, 50, 60, 60, 60),
   y = as.integer(c(0, 0, 0, 0, 0, 1, 0, 0, 1, 2)),

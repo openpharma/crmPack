@@ -278,3 +278,36 @@ knit_print.CohortSizeOrdinal <- function(
   }
   rv
 }
+
+#' Render a `CohortSizeRandom` Object
+#'
+#' @description `r lifecycle::badge("experimental")`
+#' @inherit knit_print.CohortSizeConst return
+#' @inheritSection knit_print.CohortSizeConst Usage Notes
+#'
+#' @export
+#' @method knit_print CohortSizeRandom
+#' @rdname knit_print
+knit_print.CohortSizeRandom <- function(
+  x,
+  ...,
+  asis = TRUE,
+  label = c("participant", "participants")
+) {
+  assert_flag(asis)
+
+  label <- h_prepare_labels(label)
+  rv <- paste0(
+    "A random cohort size drawn uniformly between ",
+    x@min_size,
+    " and ",
+    x@max_size,
+    " ",
+    label[2],
+    ".\n\n"
+  )
+  if (asis) {
+    rv <- knitr::asis_output(rv)
+  }
+  rv
+}
