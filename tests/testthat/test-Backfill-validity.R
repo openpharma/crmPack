@@ -48,6 +48,42 @@ test_that("v_opening_min_cohorts returns message for non-valid min_cohorts", {
   # Changing `min_cohorts` so that it is negative.
   object@min_cohorts <- -1L
   expect_equal(v_opening_min_cohorts(object), err_msg)
+})
+
+## v_opening_min_responses ----
+
+test_that("v_opening_min_responses passes for valid object", {
+  object <- OpeningMinResponses(min_responses = 1, include_lower_doses = FALSE)
+  expect_true(v_opening_min_responses(object))
+
+  object <- OpeningMinResponses(min_responses = 5, include_lower_doses = TRUE)
+  expect_true(v_opening_min_responses(object))
+})
+
+test_that("v_opening_min_responses returns message for non-valid min_responses", {
+  err_msg_responses <- "min_responses needs to be a positive integer scalar"
+  object <- OpeningMinResponses(min_responses = 2)
+
+  # Changing `min_responses` so that it is zero.
+  object@min_responses <- 0L
+  expect_equal(v_opening_min_responses(object), err_msg_responses)
+
+  # Changing `min_responses` so that it is negative.
+  object@min_responses <- -1L
+  expect_equal(v_opening_min_responses(object), err_msg_responses)
+})
+
+test_that("v_opening_min_responses returns message for non-valid include_lower_doses", {
+  err_msg_flag <- "include_lower_doses needs to be a logical flag"
+  object <- OpeningMinResponses(min_responses = 2, include_lower_doses = FALSE)
+
+  # Changing `include_lower_doses` so that it is NA.
+  object@include_lower_doses <- NA
+  expect_equal(v_opening_min_responses(object), err_msg_flag)
+
+  # Changing `include_lower_doses` so that it is a vector.
+  object@include_lower_doses <- c(TRUE, FALSE)
+  expect_equal(v_opening_min_responses(object), err_msg_flag)
 
   # Changing `min_cohorts` so that it is NA.
   object@min_cohorts <- NA_integer_

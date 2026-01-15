@@ -177,6 +177,75 @@ OpeningNone <- function() {
   OpeningNone()
 }
 
+# OpeningMinResponses ----
+
+## class ----
+
+#' `OpeningMinResponses`
+#'
+#' @description `r lifecycle::badge("experimental")`
+#'
+#' [`OpeningMinResponses`] opens backfill cohorts when a minimum number of
+#' responses has been observed in the trial. The responses can be counted
+#' at the cohort's dose level only, or also at lower dose levels if
+#' `include_lower_doses` is set to `TRUE`.
+#'
+#' @slot min_responses (`count`)\cr the minimum number of responses
+#'   required before backfill cohorts can be opened (at least 1).
+#' @slot include_lower_doses (`logical`)\cr if `TRUE`, responses at all
+#'   doses less than or equal to the cohort's dose are counted. If `FALSE`,
+#'   only responses at the cohort's dose are counted.
+#'
+#' @seealso [`Opening`] and the other subclasses listed in there.
+#'
+#' @aliases OpeningMinResponses
+#' @export
+#'
+.OpeningMinResponses <- setClass(
+  Class = "OpeningMinResponses",
+  slots = c(
+    min_responses = "integer",
+    include_lower_doses = "logical"
+  ),
+  prototype = list(
+    min_responses = 1L,
+    include_lower_doses = FALSE
+  ),
+  contains = "Opening",
+  validity = v_opening_min_responses
+)
+
+## constructor ----
+
+#' @rdname OpeningMinResponses-class
+#'
+#' @param min_responses (`count`)\cr see slot definition.
+#' @param include_lower_doses (`logical`)\cr see slot definition.
+#'
+#' @export
+#' @example examples/Backfill-class-OpeningMinResponses.R
+OpeningMinResponses <- function(
+  min_responses = 1L,
+  include_lower_doses = FALSE
+) {
+  assert_count(min_responses, positive = TRUE)
+  assert_flag(include_lower_doses)
+  min_responses <- as.integer(min_responses)
+  .OpeningMinResponses(
+    min_responses = min_responses,
+    include_lower_doses = include_lower_doses
+  )
+}
+
+## default constructor ----
+
+#' @rdname OpeningMinResponses-class
+#' @note Typically, end users will not use the `.DefaultOpeningMinResponses()` function.
+#' @export
+.DefaultOpeningMinResponses <- function() {
+  OpeningMinResponses()
+}
+
 # Recruitment ----
 
 ## class ----

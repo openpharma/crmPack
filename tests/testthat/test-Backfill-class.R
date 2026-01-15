@@ -70,3 +70,34 @@ test_that(".DefaultOpeningNone works as expected", {
     OpeningNone()
   )
 })
+
+## OpeningMinResponses ----
+
+test_that(".OpeningMinResponses works as expected", {
+  result <- expect_silent(.OpeningMinResponses())
+  expect_valid(result, "OpeningMinResponses")
+})
+
+test_that("OpeningMinResponses object can be created with user constructor", {
+  result <- expect_silent(OpeningMinResponses(
+    min_responses = 3,
+    include_lower_doses = TRUE
+  ))
+  expect_valid(result, "OpeningMinResponses")
+  expect_identical(result@min_responses, 3L)
+  expect_identical(result@include_lower_doses, TRUE)
+})
+
+test_that("OpeningMinResponses object can be created with default parameters", {
+  result <- expect_silent(OpeningMinResponses())
+  expect_valid(result, "OpeningMinResponses")
+  expect_identical(result@min_responses, 1L)
+  expect_identical(result@include_lower_doses, FALSE)
+})
+
+test_that(".DefaultOpeningMinResponses works as expected", {
+  expect_equal(
+    .DefaultOpeningMinResponses(),
+    OpeningMinResponses(min_responses = 1L, include_lower_doses = FALSE)
+  )
+})

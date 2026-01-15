@@ -8,6 +8,8 @@
 \alias{openCohort-OpeningMinCohorts}
 \alias{openCohort,OpeningNone-method}
 \alias{openCohort-OpeningNone}
+\alias{openCohort,OpeningMinResponses-method}
+\alias{openCohort-OpeningMinResponses}
 \title{Open / recruit backfill patients into a cohort?}
 \usage{
 openCohort(opening, cohort, data, dose, ...)
@@ -17,6 +19,8 @@ openCohort(opening, cohort, data, dose, ...)
 \S4method{openCohort}{OpeningMinCohorts}(opening, cohort, data, dose, ...)
 
 \S4method{openCohort}{OpeningNone}(opening, cohort, data, dose, ...)
+
+\S4method{openCohort}{OpeningMinResponses}(opening, cohort, data, dose, ...)
 }
 \arguments{
 \item{opening}{(\code{Opening})\cr opening rule to be applied.}
@@ -43,6 +47,8 @@ openCohort(opening, cohort, data, dose, ...)
 \item \code{openCohort(OpeningMinCohorts)}: method for \code{OpeningMinCohorts} class.
 
 \item \code{openCohort(OpeningNone)}: method for \code{OpeningNone} class.
+
+\item \code{openCohort(OpeningMinResponses)}: method for \code{OpeningMinResponses} class.
 
 }}
 \examples{
@@ -101,4 +107,24 @@ dose <- 60
 # OpeningNone always returns FALSE
 should_open <- openCohort(opening, cohort = 5, data = data, dose = dose)
 print(should_open) # FALSE
+# Create an OpeningMinResponses object requiring 2 responses at the cohort dose
+opening <- OpeningMinResponses(min_responses = 2, include_lower_doses = FALSE)
+
+# Create sample trial data with responses at different dose levels
+data <- Data(
+  x = c(10, 10, 20, 20, 20, 30, 30, 30),
+  y = c(0, 1, 0, 1, 0, 1, 1, 0),
+  response = c(1, 1, NA, 0, 1, NA, 1, 0),
+  cohort = c(1, 1, 2, 2, 2, 3, 3, 3),
+  doseGrid = seq(10, 100, by = 10)
+)
+
+# Check if backfill cohort can be opened at dose 20
+# At dose 20, there is 1 response
+should_open <- openCohort(opening, cohort = 2, data = data, dose = 30)
+print(should_open) # FALSE
+
+# Check at dose 10 where there are 2 responses
+should_open_2 <- openCohort(opening, cohort = 1, data = data, dose = 30)
+print(should_open_2) # TRUE
 }

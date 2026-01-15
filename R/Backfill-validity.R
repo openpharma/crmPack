@@ -33,3 +33,18 @@ v_opening_min_cohorts <- function(object) {
   )
   v$result()
 }
+
+#' @describeIn v_opening validates that the [`OpeningMinResponses`] object
+#'   contains valid `min_responses` and `include_lower_doses` slots.
+v_opening_min_responses <- function(object) {
+  v <- Validate()
+  v$check(
+    test_count(object@min_responses, positive = TRUE),
+    "min_responses needs to be a positive integer scalar"
+  )
+  v$check(
+    test_flag(object@include_lower_doses),
+    "include_lower_doses needs to be a logical flag"
+  )
+  v$result()
+}

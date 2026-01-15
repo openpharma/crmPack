@@ -24,7 +24,7 @@ setGeneric(
     # For any opening rule, if the dose of the cohort to be opened
     # is higher than the recommended dose, do not open it.
     cohort_dose <- h_get_dose_for_cohort(data, cohort)
-    if (cohort_dose > dose) {
+    if (is.na(cohort_dose) || cohort_dose > dose) {
       return(FALSE)
     }
     standardGeneric("openCohort")
@@ -80,6 +80,33 @@ setMethod(
   signature = c(opening = "OpeningNone"),
   definition = function(opening, cohort, data, dose, ...) {
     FALSE
+  }
+)
+
+## OpeningMinResponses ----
+
+#' @describeIn openCohort method for `OpeningMinResponses` class.
+#'
+#' @aliases openCohort-OpeningMinResponses
+#'
+#' @export
+#' @example examples/Backfill-method-openCohort-OpeningMinResponses.R
+setMethod(
+  f = "openCohort",
+  signature = c(opening = "OpeningMinResponses"),
+  definition = function(opening, cohort, data, dose, ...) {
+    cohort_dose <- h_get_dose_for_cohort(data, cohort)
+
+    # Count responses based on include_lower_doses flag
+    if (opening@include_lower_doses) {
+      # Count responses at cohort_dose and all lower doses
+      response_count <- sum(data@response[data@x <= cohort_dose], na.rm = TRUE)
+    } else {
+      # Count responses only at cohort_dose
+      response_count <- sum(data@response[data@x == cohort_dose], na.rm = TRUE)
+    }
+
+    response_count >= opening@min_responses
   }
 )
 

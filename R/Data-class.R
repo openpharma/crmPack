@@ -154,7 +154,7 @@ Data <- function(
   }
   assert_flag(placebo)
   assert_logical(backfilled, len = length(x), any.missing = FALSE)
-  assert_integer(
+  assert_integerish(
     response,
     len = length(x),
     lower = 0,
@@ -194,7 +194,7 @@ Data <- function(
     xLevel = match_within_tolerance(x, doseGrid),
     placebo = placebo,
     backfilled = backfilled,
-    response = response
+    response = as.integer(response)
   )
 }
 

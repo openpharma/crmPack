@@ -4,11 +4,14 @@
 \alias{v_opening}
 \alias{v_opening_min_dose}
 \alias{v_opening_min_cohorts}
+\alias{v_opening_min_responses}
 \title{Internal Helper Functions for Validation of \code{\link{Opening}} Objects}
 \usage{
 v_opening_min_dose(object)
 
 v_opening_min_cohorts(object)
+
+v_opening_min_responses(object)
 }
 \arguments{
 \item{object}{(\code{Opening})\cr object to validate.}
@@ -30,5 +33,8 @@ contains valid \code{min_dose} slot.
 
 \item \code{v_opening_min_cohorts()}: validates that the \code{\link{OpeningMinCohorts}} object
 contains valid \code{min_cohorts} slot.
+
+\item \code{v_opening_min_responses()}: validates that the \code{\link{OpeningMinResponses}} object
+contains valid \code{min_responses} and \code{include_lower_doses} slots.
 
 }}
