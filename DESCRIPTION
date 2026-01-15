@@ -91,6 +91,7 @@ Roxygen: list(markdown = TRUE)
 RoxygenNote: 7.3.3
 RdMacros: Rdpack
 Collate:
+    'Backfill-validity.R'
     'CrmPackClass-class.R'
     'Rules-validity.R'
     'helpers.R'

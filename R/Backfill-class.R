@@ -1,12 +1,26 @@
 #' @include helpers.R
 #' @include Rules-class.R
 #' @include CrmPackClass-class.R
+#' @include Backfill-validity.R
 NULL
 
 # Opening ----
 
 ## class ----
 
+#' `Opening`
+#'
+#' @description `r lifecycle::badge("experimental")`
+#'
+#' [`Opening`] is a virtual class for opening criteria, from which all
+#' other specific opening criteria classes inherit.
+#' The subclasses are used for backfill cohort designs.
+#'
+#' @seealso [`OpeningMinDose`], [`OpeningMinCohorts`], [`OpeningNone`].
+#'
+#' @aliases Opening
+#' @export
+#'
 .Opening <- setClass(
   Class = "Opening",
   contains = "CrmPackClass"
@@ -14,29 +28,65 @@ NULL
 
 ## default constructor ----
 
-# TODO add default constructor
+#' @rdname Opening-class
+#' @note Typically, end users will not use the `.DefaultOpening()` function.
+#' @export
+.DefaultOpening <- function() {
+  stop(
+    paste(
+      "Class Opening should not be instantiated directly.",
+      "Please use one of its subclasses instead."
+    )
+  )
+}
 
 # OpeningMinDose ----
 
 ## class ----
 
+#' `OpeningMinDose`
+#'
+#' @description `r lifecycle::badge("experimental")`
+#'
+#' [`OpeningMinDose`] opens a backfill cohort when the
+#' cohort's dose is above or equal to the minimum dose specified.
+#' Note that the next recommended dose is not taken into account.
+#'
+#' @slot min_dose (`number`)\cr the minimum dose at which backfill
+#'   cohorts can be opened.
+#'
+#' @seealso [`Opening`] and the other subclasses listed in there.
+#'
+#' @aliases OpeningMinDose
+#' @export
 .OpeningMinDose <- setClass(
   Class = "OpeningMinDose",
   slots = c(min_dose = "numeric"),
   prototype = list(min_dose = 0),
-  contains = "Opening"
-  # TODO add validity
+  contains = "Opening",
+  validity = v_opening_min_dose
 )
 
 ## constructor ----
 
+#' @rdname OpeningMinDose-class
+#'
+#' @param min_dose (`number`)\cr see slot definition.
+#'
+#' @export
+#' @example examples/Backfill-class-OpeningMinDose.R
 OpeningMinDose <- function(min_dose = 0) {
   .OpeningMinDose(min_dose = min_dose)
 }
 
 ## default constructor ----
 
-# TODO add default constructor
+#' @rdname OpeningMinDose-class
+#' @note Typically, end users will not use the `.DefaultOpeningMinDose()` function.
+#' @export
+.DefaultOpeningMinDose <- function() {
+  OpeningMinDose()
+}
 
 # OpeningMinCohorts ----
 

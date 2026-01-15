@@ -34,6 +34,12 @@ setGeneric(
 
 ## OpeningMinDose ----
 
+#' @describeIn openCohort method for `OpeningMinDose` class.
+#'
+#' @aliases openCohort-OpeningMinDose
+#'
+#' @export
+#' @example examples/Backfill-method-openCohort-OpeningMinDose.R
 setMethod(
   f = "openCohort",
   signature = c(opening = "OpeningMinDose"),
