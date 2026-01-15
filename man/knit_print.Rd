@@ -2,8 +2,8 @@
 % Please edit documentation in R/helpers_knitr_CohortSize.R,
 %   R/helpers_knitr_Design.R, R/helpers_knitr_GeneralData.R,
 %   R/helpers_knitr_GeneralModel.R, R/helpers_knitr_Increments.R,
-%   R/helpers_knitr_NextBest.R, R/helpers_knitr_SafetyWindow.R,
-%   R/helpers_knitr_Stopping.R
+%   R/helpers_knitr_NextBest.R, R/helpers_knitr_Opening.R,
+%   R/helpers_knitr_SafetyWindow.R, R/helpers_knitr_Stopping.R
 \name{knit_print}
 \alias{knit_print}
 \alias{knit_print.CohortSizeConst}
@@ -66,6 +66,13 @@
 \alias{knit_print.NextBestTDsamples}
 \alias{knit_print.NextBestMaxGainSamples}
 \alias{knit_print.NextBestOrdinal}
+\alias{knit_print.OpeningMinDose}
+\alias{knit_print.OpeningMinCohorts}
+\alias{knit_print.OpeningNone}
+\alias{knit_print.OpeningMinResponses}
+\alias{knit_print.OpeningList}
+\alias{knit_print.OpeningAll}
+\alias{knit_print.OpeningAny}
 \alias{knit_print.SafetyWindow}
 \alias{knit_print.SafetyWindowConst}
 \alias{knit_print.SafetyWindowSize}
@@ -373,6 +380,20 @@
 
 \method{knit_print}{NextBestOrdinal}(x, ..., tox_label = "toxicity", asis = TRUE)
 
+\method{knit_print}{OpeningMinDose}(x, ..., asis = TRUE)
+
+\method{knit_print}{OpeningMinCohorts}(x, ..., asis = TRUE)
+
+\method{knit_print}{OpeningNone}(x, ..., asis = TRUE)
+
+\method{knit_print}{OpeningMinResponses}(x, ..., asis = TRUE)
+
+\method{knit_print}{OpeningList}(x, ..., preamble, indent = 0L, asis = TRUE)
+
+\method{knit_print}{OpeningAll}(x, ..., preamble, asis = TRUE)
+
+\method{knit_print}{OpeningAny}(x, ..., preamble, asis = TRUE)
+
 \method{knit_print}{SafetyWindow}(x, ..., asis = TRUE, time_unit = "day", label = "participant")
 
 \method{knit_print}{SafetyWindowConst}(
@@ -556,15 +577,15 @@ measured}
 
 \item{citation_link}{(\code{character})\cr the link to Mozgunov & Jaki}
 
+\item{indent}{(\code{integer})\cr the indent level of the current stopping rule
+list. Spaces with length \code{indent * 4} will be prepended to the beginning of
+the rendered stopping rule list.}
+
 \item{time_unit}{(\code{character})\cr the word used to describe units of time.
 See Usage Notes below.}
 
 \item{ordinals}{(\code{character})\cr a character vector whose nth defines the
 word used as the written representation of the nth ordinal number.}
-
-\item{indent}{(\code{integer})\cr the indent level of the current stopping rule
-list. Spaces with length \code{indent * 4} will be prepended to the beginning of
-the rendered stopping rule list.}
 
 \item{dose_label}{(\code{character})\cr the term used to describe the target dose}
 
@@ -609,6 +630,20 @@ crmPack objects in Markdown and Quarto files
 We provide additional utility functions to allow human-friendly rendition of
 crmPack objects in Markdown and Quarto files.  This file contains methods for
 all design classes, not just those that are direct descendants of \code{Design}.
+
+\ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#experimental}{\figure{lifecycle-experimental.svg}{options: alt='[Experimental]'}}}{\strong{[Experimental]}}
+
+\ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#experimental}{\figure{lifecycle-experimental.svg}{options: alt='[Experimental]'}}}{\strong{[Experimental]}}
+
+\ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#experimental}{\figure{lifecycle-experimental.svg}{options: alt='[Experimental]'}}}{\strong{[Experimental]}}
+
+\ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#experimental}{\figure{lifecycle-experimental.svg}{options: alt='[Experimental]'}}}{\strong{[Experimental]}}
+
+\ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#experimental}{\figure{lifecycle-experimental.svg}{options: alt='[Experimental]'}}}{\strong{[Experimental]}}
+
+\ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#experimental}{\figure{lifecycle-experimental.svg}{options: alt='[Experimental]'}}}{\strong{[Experimental]}}
+
+\ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#experimental}{\figure{lifecycle-experimental.svg}{options: alt='[Experimental]'}}}{\strong{[Experimental]}}
 
 \ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#experimental}{\figure{lifecycle-experimental.svg}{options: alt='[Experimental]'}}}{\strong{[Experimental]}}
 
