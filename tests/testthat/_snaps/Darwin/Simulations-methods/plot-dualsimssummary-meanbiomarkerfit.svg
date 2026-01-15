@@ -1,0 +1,66 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<svg xmlns='http://www.w3.org/2000/svg' xmlns:xlink='http://www.w3.org/1999/xlink' class='svglite' data-engine-version='2.0' width='720.00pt' height='576.00pt' viewBox='0 0 720.00 576.00'>
+<defs>
+  <style type='text/css'><![CDATA[
+    .svglite line, .svglite polyline, .svglite polygon, .svglite path, .svglite rect, .svglite circle {
+      fill: none;
+      stroke: #000000;
+      stroke-linecap: round;
+      stroke-linejoin: round;
+      stroke-miterlimit: 10.00;
+    }
+  ]]></style>
+</defs>
+<rect width='100%' height='100%' style='stroke: none; fill: #FFFFFF;'/>
+<defs>
+  <clipPath id='cpMC4wMHw3MjAuMDB8MC4wMHw1NzYuMDA='>
+    <rect x='0.00' y='0.00' width='720.00' height='576.00' />
+  </clipPath>
+</defs>
+<g clip-path='url(#cpMC4wMHw3MjAuMDB8MC4wMHw1NzYuMDA=)'>
+<rect x='0.00' y='0.00' width='720.00' height='576.00' style='stroke-width: 1.07; stroke: #FFFFFF; fill: #FFFFFF;' />
+</g>
+<defs>
+  <clipPath id='cpMzUuMjR8NTM3LjQ4fDIyLjc4fDU0NS4xMQ=='>
+    <rect x='35.24' y='22.78' width='502.24' height='522.33' />
+  </clipPath>
+</defs>
+<g clip-path='url(#cpMzUuMjR8NTM3LjQ4fDIyLjc4fDU0NS4xMQ==)'>
+<rect x='35.24' y='22.78' width='502.24' height='522.33' style='stroke-width: 1.07; stroke: none; fill: #FFFFFF;' />
+<polyline points='58.07,478.34 89.56,407.73 121.04,359.12 199.77,269.79 278.49,201.25 357.21,143.46 435.93,92.55 514.65,46.53 ' style='stroke-width: 1.07; stroke-linecap: butt;' />
+<polyline points='58.07,520.13 89.56,513.48 121.04,508.54 199.77,501.61 278.49,505.89 357.21,506.61 435.93,509.88 514.65,521.37 ' style='stroke-width: 1.07; stroke: #DF536B; stroke-linecap: butt;' />
+<polyline points='58.07,520.13 89.56,513.48 121.04,508.54 199.77,501.61 278.49,505.89 357.21,506.61 435.93,509.88 514.65,521.37 ' style='stroke-width: 1.07; stroke: #DF536B; stroke-dasharray: 5.69,5.69; stroke-linecap: butt;' />
+<polyline points='58.07,520.13 89.56,513.48 121.04,508.54 199.77,501.61 278.49,505.89 357.21,506.61 435.93,509.88 514.65,521.37 ' style='stroke-width: 1.07; stroke: #DF536B; stroke-dasharray: 5.69,5.69; stroke-linecap: butt;' />
+<rect x='35.24' y='22.78' width='502.24' height='522.33' style='stroke-width: 1.07; stroke: #333333;' />
+</g>
+<g clip-path='url(#cpMC4wMHw3MjAuMDB8MC4wMHw1NzYuMDA=)'>
+<text x='30.31' y='417.07' text-anchor='end' style='font-size: 8.80px; fill: #4D4D4D; font-family: sans;' textLength='12.23px' lengthAdjust='spacingAndGlyphs'>0.3</text>
+<text x='30.31' y='256.32' text-anchor='end' style='font-size: 8.80px; fill: #4D4D4D; font-family: sans;' textLength='12.23px' lengthAdjust='spacingAndGlyphs'>0.4</text>
+<text x='30.31' y='95.58' text-anchor='end' style='font-size: 8.80px; fill: #4D4D4D; font-family: sans;' textLength='12.23px' lengthAdjust='spacingAndGlyphs'>0.5</text>
+<polyline points='32.50,414.04 35.24,414.04 ' style='stroke-width: 1.07; stroke: #333333; stroke-linecap: butt;' />
+<polyline points='32.50,253.30 35.24,253.30 ' style='stroke-width: 1.07; stroke: #333333; stroke-linecap: butt;' />
+<polyline points='32.50,92.55 35.24,92.55 ' style='stroke-width: 1.07; stroke: #333333; stroke-linecap: butt;' />
+<polyline points='42.32,547.85 42.32,545.11 ' style='stroke-width: 1.07; stroke: #333333; stroke-linecap: butt;' />
+<polyline points='199.77,547.85 199.77,545.11 ' style='stroke-width: 1.07; stroke: #333333; stroke-linecap: butt;' />
+<polyline points='357.21,547.85 357.21,545.11 ' style='stroke-width: 1.07; stroke: #333333; stroke-linecap: butt;' />
+<polyline points='514.65,547.85 514.65,545.11 ' style='stroke-width: 1.07; stroke: #333333; stroke-linecap: butt;' />
+<text x='42.32' y='556.10' text-anchor='middle' style='font-size: 8.80px; fill: #4D4D4D; font-family: sans;' textLength='4.89px' lengthAdjust='spacingAndGlyphs'>0</text>
+<text x='199.77' y='556.10' text-anchor='middle' style='font-size: 8.80px; fill: #4D4D4D; font-family: sans;' textLength='9.79px' lengthAdjust='spacingAndGlyphs'>10</text>
+<text x='357.21' y='556.10' text-anchor='middle' style='font-size: 8.80px; fill: #4D4D4D; font-family: sans;' textLength='9.79px' lengthAdjust='spacingAndGlyphs'>20</text>
+<text x='514.65' y='556.10' text-anchor='middle' style='font-size: 8.80px; fill: #4D4D4D; font-family: sans;' textLength='9.79px' lengthAdjust='spacingAndGlyphs'>30</text>
+<text x='286.36' y='568.24' text-anchor='middle' style='font-size: 11.00px; font-family: sans;' textLength='51.37px' lengthAdjust='spacingAndGlyphs'>Dose level</text>
+<text transform='translate(13.05,283.95) rotate(-90)' text-anchor='middle' style='font-size: 11.00px; font-family: sans;' textLength='75.81px' lengthAdjust='spacingAndGlyphs'>Biomarker level</text>
+<rect x='548.44' y='250.36' width='166.08' height='67.17' style='stroke-width: 1.07; stroke: none; fill: #FFFFFF;' />
+<text x='548.44' y='259.07' style='font-size: 11.00px; font-family: sans;' textLength='37.92px' lengthAdjust='spacingAndGlyphs'>linetype</text>
+<rect x='548.44' y='265.69' width='17.28' height='17.28' style='stroke-width: 1.07; stroke: none; fill: #FFFFFF;' />
+<line x1='550.17' y1='274.33' x2='563.99' y2='274.33' style='stroke-width: 1.07; stroke-linecap: butt;' />
+<rect x='548.44' y='282.97' width='17.28' height='17.28' style='stroke-width: 1.07; stroke: none; fill: #FFFFFF;' />
+<line x1='550.17' y1='291.61' x2='563.99' y2='291.61' style='stroke-width: 1.07; stroke: #DF536B; stroke-linecap: butt;' />
+<rect x='548.44' y='300.25' width='17.28' height='17.28' style='stroke-width: 1.07; stroke: none; fill: #FFFFFF;' />
+<line x1='550.17' y1='308.89' x2='563.99' y2='308.89' style='stroke-width: 1.07; stroke: #DF536B; stroke-dasharray: 5.69,5.69; stroke-linecap: butt;' />
+<text x='571.20' y='277.36' style='font-size: 8.80px; font-family: sans;' textLength='59.67px' lengthAdjust='spacingAndGlyphs'>True biomarker</text>
+<text x='571.20' y='294.64' style='font-size: 8.80px; font-family: sans;' textLength='114.96px' lengthAdjust='spacingAndGlyphs'>Average estimated biomarker</text>
+<text x='571.20' y='311.92' style='font-size: 8.80px; font-family: sans;' textLength='143.32px' lengthAdjust='spacingAndGlyphs'>95% interval for estimated biomarker</text>
+<text x='35.24' y='14.56' style='font-size: 13.20px; font-family: sans;' textLength='254.60px' lengthAdjust='spacingAndGlyphs'>plot_dualSimsSummary_meanBiomarkerFit</text>
+</g>
+</svg>
