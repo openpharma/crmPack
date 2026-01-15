@@ -127,7 +127,7 @@ test_that("h_determine_dlts returns correctly updated data object for default co
     cohort = 1L,
     nObs = 1L,
     backfilled = FALSE,
-    response = NA_integer_
+    response = 0L
   )
 
   expect_valid(result, "Data")
@@ -162,7 +162,7 @@ test_that("h_determine_dlts returns correctly updated data object for
     cohort = 1L,
     nObs = 1L,
     backfilled = FALSE,
-    response = NA_integer_
+    response = 0L
   )
 
   expect_s4_class(result, "Data")
@@ -197,7 +197,7 @@ test_that("h_determine_dlts returns correctly updated data object for first_sepa
     cohort = c(1L, 1L),
     nObs = 2L,
     backfilled = c(FALSE, FALSE),
-    response = c(NA_integer_, NA_integer_)
+    response = c(0L, 0L)
   )
 
   expect_s4_class(result, "Data")
@@ -236,7 +236,7 @@ test_that("h_determine_dlts returns correctly updated data object for placebo = 
     cohort = c(1L, 1L),
     nObs = 2L,
     backfilled = c(FALSE, FALSE),
-    response = as.integer(c(NA, NA))
+    response = c(0L, 0L)
   )
 
   expect_s4_class(result, "Data")

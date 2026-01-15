@@ -96,20 +96,18 @@ setMethod(
       data <- object@data
       prob_placebo <- NULL
       cohort_size_placebo <- NULL
+      prob_response_placebo <- NULL
 
       if (data@placebo) {
-        prob_placebo <- h_this_truth(
-          object@data@doseGrid[1],
-          current_args,
-          truth
-        )
-        prob_response_placebo <- trueResponse(object@data@doseGrid[1])
+        placebo_dose <- object@data@doseGrid[1]
+        prob_placebo <- h_this_truth(placebo_dose, current_args, truth)
+        prob_response_placebo <- trueResponse(placebo_dose)
       }
 
       should_stop <- FALSE
       dose <- object@startingDose
-      backfill_cohorts <- list()
-      backfill_patients <- 0L
+      backfill_cohorts <- list() # Queue of backfill cohorts.
+      backfill_patients <- 0L # Total number of backfill patients enrolled.
 
       while (!should_stop) {
         prob <- h_this_truth(dose, current_args, truth)
@@ -127,86 +125,18 @@ setMethod(
           cohort_size_placebo <- NULL
         }
 
-        # TODO: put this into the extended helper function h_determine_dlts
-        if (firstSeparate && cohort_size > 1) {
-          dlts <- rbinom(n = 1, size = 1, prob = prob)
-          response <- rbinom(n = 1, size = 1, prob = prob_response)
-          if ((data@placebo) && cohort_size_placebo > 0) {
-            dlts_placebo <- rbinom(n = 1, size = 1, prob = prob_placebo)
-            response_placebo <- rbinom(
-              n = 1,
-              size = 1,
-              prob = prob_response_placebo
-            )
-          }
-          if (dlts == 0) {
-            dlts <- c(dlts, rbinom(n = cohort_size - 1L, size = 1, prob = prob))
-            response <- c(
-              response,
-              rbinom(n = cohort_size - 1L, size = 1, prob = prob_response)
-            )
-            if ((data@placebo) && cohort_size_placebo > 0) {
-              dlts_placebo <- c(
-                dlts_placebo,
-                rbinom(
-                  n = cohort_size_placebo - 1L,
-                  size = 1,
-                  prob = prob_placebo
-                )
-              )
-              response_placebo <- c(
-                response_placebo,
-                rbinom(
-                  n = cohort_size_placebo - 1L,
-                  size = 1,
-                  prob = prob_response_placebo
-                )
-              )
-            }
-          }
-        } else {
-          dlts <- rbinom(n = cohort_size, size = 1, prob = prob)
-          response <- rbinom(n = cohort_size, size = 1, prob = prob_response)
-          if ((data@placebo) && cohort_size_placebo > 0) {
-            dlts_placebo <- rbinom(
-              n = cohort_size_placebo,
-              size = 1,
-              prob = prob_placebo
-            )
-            response_placebo <- rbinom(
-              n = cohort_size_placebo,
-              size = 1,
-              prob = prob_response_placebo
-            )
-          }
-        }
-
-        if ((data@placebo) && cohort_size_placebo > 0) {
-          data <- update(
-            object = data,
-            x = object@data@doseGrid[1],
-            y = dlts_placebo,
-            response = response_placebo,
-            check = FALSE
-          )
-
-          ## update the data with active dose
-          data <- update(
-            object = data,
-            x = dose,
-            y = dlts,
-            response = response,
-            new_cohort = FALSE
-          )
-        } else {
-          ## update the data with this cohort
-          data <- update(
-            object = data,
-            x = dose,
-            y = dlts,
-            response = response
-          )
-        }
+        data <- h_determine_dlts(
+          data = data,
+          dose = dose,
+          prob = prob,
+          prob_placebo = prob_placebo,
+          prob_response = prob_response,
+          prob_response_placebo = prob_response_placebo,
+          cohort_size = cohort_size,
+          cohort_size_placebo = cohort_size_placebo,
+          dose_grid = data@doseGrid,
+          first_separate = firstSeparate
+        )
 
         # Backfill logic.
         if (uses_backfill) {

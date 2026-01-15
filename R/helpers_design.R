@@ -221,8 +221,10 @@ h_unpack_stopit <- function(stopit_tree) {
 #'
 #' @param data (`Data`)\cr what data to start from.
 #' @param dose (`number`)\cr current dose.
-#' @param prob (`function`)\cr defines the true probability for a DLT at a dose.
-#' @param prob_placebo (`function`)\cr defines the true probability for a DLT at a placebo condition.
+#' @param prob (`number`)\cr defines the true probability for a DLT at the dose.
+#' @param prob_placebo (`number`)\cr defines the true probability for a DLT at a placebo condition.
+#' @param prob_response (`number`)\cr defines the true probability for a response at the dose.
+#' @param prob_response_placebo (`number`)\cr defines the true probability for a response at a placebo condition.
 #' @param cohort_size (`number`)\cr the cohort size to use.
 #' @param cohort_size_placebo (`number`)\cr the cohort size to use for placebo condition.
 #' @param dose_grid (`numeric`)\cr the dose_grid as specified by the user.
@@ -234,69 +236,102 @@ h_determine_dlts <- function(
   data,
   dose,
   prob,
-  prob_placebo,
+  prob_placebo = 0,
+  prob_response = 0,
+  prob_response_placebo = 0,
   cohort_size,
-  cohort_size_placebo,
+  cohort_size_placebo = 0,
   dose_grid,
   first_separate
 ) {
   assert_class(data, "Data")
   assert_number(dose)
-  assert_number(prob)
+  assert_number(prob, lower = 0, upper = 1)
+  assert_number(prob_placebo, lower = 0, upper = 1, null.ok = TRUE)
+  assert_number(prob_response, lower = 0, upper = 1)
+  assert_number(prob_response_placebo, lower = 0, upper = 1, null.ok = TRUE)
   assert_number(cohort_size)
+  assert_number(cohort_size_placebo, null.ok = TRUE)
   assert_flag(first_separate)
 
   if (first_separate && cohort_size > 1) {
     dlts <- rbinom(n = 1, size = 1, prob = prob)
+    response <- rbinom(n = 1, size = 1, prob = prob_response)
     if ((data@placebo) && cohort_size_placebo > 0) {
       dlts_placebo <- rbinom(n = 1, size = 1, prob = prob_placebo)
+      response_placebo <- rbinom(
+        n = 1,
+        size = 1,
+        prob = prob_response_placebo
+      )
     }
     if (dlts == 0) {
       dlts <- c(dlts, rbinom(n = cohort_size - 1L, size = 1, prob = prob))
+      response <- c(
+        response,
+        rbinom(n = cohort_size - 1L, size = 1, prob = prob_response)
+      )
       if ((data@placebo) && cohort_size_placebo > 0) {
         dlts_placebo <- c(
           dlts_placebo,
           rbinom(
-            n = cohort_size_placebo, # cohort_size_placebo - 1?
+            n = cohort_size_placebo - 1L,
             size = 1,
             prob = prob_placebo
+          )
+        )
+        response_placebo <- c(
+          response_placebo,
+          rbinom(
+            n = cohort_size_placebo - 1L,
+            size = 1,
+            prob = prob_response_placebo
           )
         )
       }
     }
   } else {
     dlts <- rbinom(n = cohort_size, size = 1, prob = prob)
+    response <- rbinom(n = cohort_size, size = 1, prob = prob_response)
     if ((data@placebo) && cohort_size_placebo > 0) {
       dlts_placebo <- rbinom(
         n = cohort_size_placebo,
         size = 1,
         prob = prob_placebo
       )
+      response_placebo <- rbinom(
+        n = cohort_size_placebo,
+        size = 1,
+        prob = prob_response_placebo
+      )
     }
   }
 
   if ((data@placebo) && cohort_size_placebo > 0) {
-    this_data <- update(
+    data <- update(
       object = data,
-      x = dose_grid,
+      x = data@doseGrid[1],
       y = dlts_placebo,
+      response = response_placebo,
       check = FALSE
     )
 
     ## update the data with active dose
-    this_data <- update(
-      object = this_data,
+    data <- update(
+      object = data,
       x = dose,
       y = dlts,
+      response = response,
       new_cohort = FALSE
     )
   } else {
     ## update the data with this cohort
-    this_data <- update(
+    data <- update(
       object = data,
       x = dose,
-      y = dlts
+      y = dlts,
+      response = response
     )
   }
-  this_data
+  data
 }
