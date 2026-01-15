@@ -52,3 +52,21 @@ test_that("openCohort returns FALSE when n_cohorts < min_cohorts for OpeningMinC
   # Test: n_cohorts (3) < min_cohorts (5), should not open
   expect_false(openCohort(opening, cohort = 1, data = data, dose = 50))
 })
+
+## OpeningNone ----
+
+test_that("openCohort always returns FALSE for OpeningNone", {
+  data <- Data(
+    x = c(0.1, 0.5, 1.5, 3, 6, 10, 10, 10),
+    y = c(0, 0, 0, 0, 0, 0, 1, 0),
+    cohort = c(1, 2, 3, 4, 5, 6, 6, 6),
+    doseGrid = c(0.1, 0.5, 1.5, 3, 6, seq(from = 10, to = 80, by = 2))
+  )
+
+  opening <- OpeningNone()
+
+  # OpeningNone always returns FALSE regardless of cohort or dose
+  expect_false(openCohort(opening, cohort = 1, data = data, dose = 20))
+  expect_false(openCohort(opening, cohort = 5, data = data, dose = 50))
+  expect_false(openCohort(opening, cohort = 6, data = data, dose = 80))
+})

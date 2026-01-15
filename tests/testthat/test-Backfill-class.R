@@ -51,3 +51,22 @@ test_that(".DefaultOpeningMinCohorts works as expected", {
     OpeningMinCohorts(min_cohorts = 2L)
   )
 })
+
+## OpeningNone ----
+
+test_that(".OpeningNone works as expected", {
+  result <- expect_silent(.OpeningNone())
+  expect_valid(result, "OpeningNone")
+})
+
+test_that("OpeningNone object can be created with user constructor", {
+  result <- expect_silent(OpeningNone())
+  expect_valid(result, "OpeningNone")
+})
+
+test_that(".DefaultOpeningNone works as expected", {
+  expect_equal(
+    .DefaultOpeningNone(),
+    OpeningNone()
+  )
+})

@@ -69,6 +69,12 @@ setMethod(
 
 ## OpeningNone ----
 
+#' @describeIn openCohort method for `OpeningNone` class.
+#'
+#' @aliases openCohort-OpeningNone
+#'
+#' @export
+#' @example examples/Backfill-method-openCohort-OpeningNone.R
 setMethod(
   f = "openCohort",
   signature = c(opening = "OpeningNone"),

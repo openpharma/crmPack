@@ -143,6 +143,16 @@ OpeningMinCohorts <- function(min_cohorts = 2L) {
 
 ## class ----
 
+#' `OpeningNone`
+#'
+#' @description `r lifecycle::badge("experimental")`
+#'
+#' [`OpeningNone`] never opens any backfill cohorts. This can be used when
+#' no backfill cohorts should be available in a trial design.
+#'
+#' @aliases OpeningNone
+#' @export
+#'
 .OpeningNone <- setClass(
   Class = "OpeningNone",
   contains = "Opening"
@@ -150,8 +160,21 @@ OpeningMinCohorts <- function(min_cohorts = 2L) {
 
 ## constructor ----
 
+#' @rdname OpeningNone-class
+#'
+#' @export
+#'
 OpeningNone <- function() {
   .OpeningNone()
+}
+
+## default constructor ----
+
+#' @rdname OpeningNone-class
+#' @note Typically, end users will not use the `.DefaultOpeningNone()` function.
+#' @export
+.DefaultOpeningNone <- function() {
+  OpeningNone()
 }
 
 # Recruitment ----
