@@ -140,124 +140,27 @@ setMethod(
 
         # Backfill logic.
         if (uses_backfill) {
-          # Loop over all previous cohorts and check which are
-          # open for backfill.
-          for (cohort in seq_len(max(data@cohort) - 1)) {
-            open_for_backfill <- openCohort(
-              opening = object@backfill@opening,
-              cohort = cohort,
-              data = data,
-              dose = dose
-            )
-
-            # Note: we index the cohorts in the queue by their cohort number
-            # coerced as a string.
-            cohort_string <- as.character(cohort)
-            is_in_queue <- !is.null(backfill_cohorts[[cohort_string]])
-
-            if (is_in_queue) {
-              # Make sure to not reopen full backfill cohorts.
-              is_full <- backfill_cohorts[[cohort_string]]$current_size ==
-                backfill_cohorts[[cohort_string]]$max_size
-              # Mark this cohort accordingly in the backfill queue.
-              backfill_cohorts[[cohort_string]]$open <- !is_full &&
-                open_for_backfill
-            } else if (open_for_backfill) {
-              # Add this new cohort to the backfill queue.
-              backfill_dose <- h_get_dose_for_cohort(data, cohort)
-              backfill_cohort_size <- size(
-                object = object@backfill@cohort_size,
-                dose = backfill_dose,
-                cohort = cohort,
-                data = data
-              )
-              backfill_cohorts[[as.character(cohort)]] <- list(
-                dose = backfill_dose,
-                cohort = cohort,
-                current_size = 0L,
-                max_size = backfill_cohort_size,
-                open = TRUE # Mark as open.
-              )
-            }
-          }
-
-          # Number of backfill patients we can enroll in this cycle.
-          max_recruits <- maxRecruits(
-            object@backfill@recruitment,
-            active_cohort_size = cohort_size
+          backfill_cohorts <- h_update_backfill_queue(
+            backfill_cohorts = backfill_cohorts,
+            data = data,
+            dose = dose,
+            backfill = object@backfill
           )
-          backfill_left <- object@backfill@total_size - backfill_patients
-          max_recruits <- min(max_recruits, backfill_left)
 
-          # Enroll backfill cohorts.
-          if (
-            length(backfill_cohorts) > 0 &&
-              max_recruits > 0
-          ) {
-            backfill_doses <- sapply(
-              backfill_cohorts,
-              "[[",
-              "dose"
-            )
-            # Order backfill cohorts according to priority rule.
-            order_indices <- switch(
-              object@backfill@priority,
-              highest = order(-backfill_doses),
-              lowest = order(backfill_doses),
-              random = sample.int(
-                n = length(backfill_cohorts),
-                size = length(backfill_cohorts)
-              )
-            )
-            for (i_bc in order_indices) {
-              bc <- backfill_cohorts[[i_bc]]
-              if (!bc$open) {
-                next
-              }
-              enroll_size <- min(bc$max_size - bc$current_size, max_recruits)
-              if (enroll_size == 0) {
-                next
-              }
-              bc_dlts <- rbinom(
-                n = enroll_size,
-                size = 1,
-                prob = h_this_truth(bc$dose, current_args, truth)
-              )
-              bc_response <- rbinom(
-                n = enroll_size,
-                size = 1,
-                prob = trueResponse(bc$dose)
-              )
+          enrollment_result <- h_enroll_backfill_patients(
+            backfill_cohorts = backfill_cohorts,
+            data = data,
+            backfill = object@backfill,
+            cohort_size = cohort_size,
+            backfill_patients = backfill_patients,
+            current_args = current_args,
+            truth = truth,
+            trueResponse = trueResponse
+          )
 
-              data <- update(
-                object = data,
-                x = bc$dose,
-                y = bc_dlts,
-                cohort = bc$cohort,
-                response = bc_response,
-                backfill = TRUE
-              )
-
-              # Record number of patients in the backfill cohort and overall.
-              backfill_cohorts[[i_bc]]$current_size <-
-                backfill_cohorts[[i_bc]]$current_size + enroll_size
-              max_recruits <- max_recruits - enroll_size
-              backfill_patients <- backfill_patients + enroll_size
-
-              # Close this cohort if it's fully enrolled.
-              if (
-                backfill_cohorts[[i_bc]]$current_size ==
-                  backfill_cohorts[[i_bc]]$max_size
-              ) {
-                backfill_cohorts[[i_bc]]$open <- FALSE
-              }
-
-              # Stop enrolling backfill in this cycle if we reached the limit.
-              if (max_recruits == 0) {
-                break
-              }
-            }
-          }
+          data <- enrollment_result$data
+          backfill_cohorts <- enrollment_result$backfill_cohorts
+          backfill_patients <- enrollment_result$backfill_patients
         }
 
         dose_limit <- maxDose(object@increments, data = data)
