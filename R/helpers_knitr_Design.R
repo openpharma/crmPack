@@ -79,7 +79,7 @@ h_knit_print_design <- function(
   title = "Design",
   default_sections = NA,
   user_sections = NA,
-  ignore_slots = "backfill",
+  ignore_slots = c(),
   asis = TRUE
 ) {
   assert_flag(asis)
@@ -284,11 +284,11 @@ knit_print.Design <- function(
       "increments" = "Escalation rule",
       "stopping" = "Stopping rule",
       "model" = "Dose toxicity model",
-      "pl_cohort_size" = "Use of placebo"
+      "pl_cohort_size" = "Use of placebo",
+      "backfill" = "Backfill cohorts"
     ),
     user_sections = sections,
-    asis = asis,
-    ignore_sections = "backfill"
+    asis = asis
   )
 }
 
@@ -345,6 +345,7 @@ knit_print.DualDesign <- function(
     title = title,
     sections = sections,
     asis = asis,
+    ignore_slots = "backfill",
     ...
   )
 }
@@ -382,7 +383,7 @@ knit_print.DADesign <- function(
     ),
     user_sections = sections,
     asis = asis,
-    ignore_sections = "backfill"
+    ignore_slots = "backfill"
   )
 }
 
@@ -467,8 +468,7 @@ knit_print.DesignOrdinal <- function(
       "pl_cohort_size" = "Use of placebo"
     ),
     user_sections = sections,
-    asis = asis,
-    ignore_sections = "backfill"
+    asis = asis
   )
 }
 
@@ -646,8 +646,7 @@ knit_print.DualResponsesDesign <- function(
     ),
     ignore_sections = c("model", "eff_model"),
     sections = sections,
-    asis = asis,
-    ignore_sections = "backfill"
+    asis = asis
   )
 }
 

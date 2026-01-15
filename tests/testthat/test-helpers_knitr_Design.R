@@ -156,12 +156,18 @@ test_that("knit_print-Design works correctly", {
     "increments" = "Escalation rule",
     "stopping" = "Stopping rule",
     "model" = "Dose toxicity model",
-    "pl_cohort_size" = "Use of placebo"
+    "pl_cohort_size" = "Use of placebo",
+    "backfill" = "Backfill cohorts"
   )
 
   # Section headers exist
   expect_true(stringr::str_detect(x, "## Design"))
   expect_true(all(stringr::str_detect(x, paste0("### ", expectedSections))))
+  expect_true(stringr::str_detect(
+    x,
+    "No backfill cohorts at all will be opened"
+  ))
+
   # Initial label counts
   expected <- c(
     "toxicities" = 2,
@@ -169,7 +175,7 @@ test_that("knit_print-Design works correctly", {
     "participants" = 2,
     "patients" = 1,
     "subjects" = 0,
-    "cohorts" = 2,
+    "cohorts" = 4,
     "DLAE\\b" = 0,
     "DLAEs\\b" = 0
   )
@@ -190,13 +196,51 @@ test_that("knit_print-Design works correctly", {
     "participants" = 0,
     "patients" = 1,
     "subjects" = 2,
-    "cohorts" = 2,
+    "cohorts" = 4,
     "DLAE\\b" = 5,
     "DLAEs\\b" = 2
   )
   actual <- stringr::str_count(x, names(expected))
   names(actual) <- names(expected)
   expect_equal(actual, expected)
+})
+
+test_that("knit_print-Design works correctly with backfill", {
+  x <- .DefaultDesign()
+  x@backfill <- Backfill(
+    cohort_size = CohortSizeConst(size = 4),
+    opening = OpeningMinDose(min_dose = 10),
+    recruitment = RecruitmentRatio(ratio = 1),
+    total_size = 50L,
+    priority = "highest"
+  )
+  result <- knit_print(x, asis = FALSE)
+
+  expect_match(
+    result,
+    "**Cohort size**: A constant size of 4 participants",
+    fixed = TRUE
+  )
+  expect_match(
+    result,
+    "**Opening rule**: If the backfill cohort's dose is 10 or higher",
+    fixed = TRUE
+  )
+  expect_match(
+    result,
+    "**Recruitment**: Backfill patients are recruited at a ratio of 1",
+    fixed = TRUE
+  )
+  expect_match(
+    result,
+    "**Total number of backfill patients**: 50 backfill patients",
+    fixed = TRUE
+  )
+  expect_match(
+    result,
+    "**Priority of higher vs. lower dose backfill cohorts**: highest dose",
+    fixed = TRUE
+  )
 })
 
 test_that("knit_print-DualDesign works correctly", {
