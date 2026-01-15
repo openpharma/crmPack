@@ -208,3 +208,63 @@ test_that("openCohort works with | operator", {
   expect_true(openCohort(opening_any, cohort = 6, data = data, dose = 20))
   expect_true(openCohort(opening_any, cohort = 7, data = data, dose = 25))
 })
+
+# maxRecruits ----
+
+## RecruitmentUnlimited ----
+
+test_that("maxRecruits works for RecruitmentUnlimited with small cohort", {
+  object <- RecruitmentUnlimited()
+  result <- maxRecruits(object, active_cohort_size = 1L)
+  expect_equal(result, 1e6L)
+})
+
+test_that("maxRecruits works for RecruitmentUnlimited with moderate cohort", {
+  object <- RecruitmentUnlimited()
+  result <- maxRecruits(object, active_cohort_size = 10L)
+  expect_equal(result, 1e6L)
+})
+
+test_that("maxRecruits works for RecruitmentUnlimited with large cohort", {
+  object <- RecruitmentUnlimited()
+  result <- maxRecruits(object, active_cohort_size = 1000L)
+  expect_equal(result, 1e6L)
+})
+
+## RecruitmentRatio ----
+
+test_that("maxRecruits works for RecruitmentRatio with ratio = 0.5", {
+  object <- RecruitmentRatio(ratio = 0.5)
+  result <- maxRecruits(object, active_cohort_size = 10L)
+  expect_equal(result, 5L)
+})
+
+test_that("maxRecruits works for RecruitmentRatio with ratio = 1", {
+  object <- RecruitmentRatio(ratio = 1)
+  result <- maxRecruits(object, active_cohort_size = 10L)
+  expect_equal(result, 10L)
+})
+
+test_that("maxRecruits works for RecruitmentRatio with ratio = 2", {
+  object <- RecruitmentRatio(ratio = 2)
+  result <- maxRecruits(object, active_cohort_size = 10L)
+  expect_equal(result, 20L)
+})
+
+test_that("maxRecruits applies ceiling correctly for RecruitmentRatio", {
+  object <- RecruitmentRatio(ratio = 0.5)
+  result <- maxRecruits(object, active_cohort_size = 7L)
+  expect_equal(result, 4L)
+})
+
+test_that("maxRecruits handles ratio = 0 for RecruitmentRatio", {
+  object <- RecruitmentRatio(ratio = 0)
+  result <- maxRecruits(object, active_cohort_size = 10L)
+  expect_equal(result, 0L)
+})
+
+test_that("maxRecruits handles small cohort size for RecruitmentRatio", {
+  object <- RecruitmentRatio(ratio = 0.5)
+  result <- maxRecruits(object, active_cohort_size = 1L)
+  expect_equal(result, 1L)
+})

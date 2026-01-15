@@ -227,6 +227,22 @@ setMethod(
 
 ## generic ----
 
+#' Calculate Maximum Number of Backfill Patients
+#'
+#' @description `r lifecycle::badge("experimental")`
+#'
+#' Calculates the maximum number of backfill patients that can be recruited
+#' based on the recruitment rule and the active cohort size.
+#'
+#' @param object (`Recruitment`)\cr the recruitment rule.
+#' @param active_cohort_size (`integer`)\cr the current size of the active
+#'   dose escalation cohort.
+#' @param ... further arguments (not used).
+#'
+#' @return The maximum number of backfill patients as an `integer`.
+#'
+#' @seealso [`Recruitment`], [`RecruitmentUnlimited`], [`RecruitmentRatio`].
+#'
 setGeneric(
   name = "maxRecruits",
   def = function(object, active_cohort_size, ...) {
@@ -237,6 +253,13 @@ setGeneric(
 
 ## RecruitmentUnlimited ----
 
+#' @describeIn maxRecruits method for `RecruitmentUnlimited` class.
+#'   Returns a very large number (practically unlimited).
+#'
+#' @aliases maxRecruits-RecruitmentUnlimited
+#'
+#' @export
+#' @example examples/Backfill-method-maxRecruits-RecruitmentUnlimited.R
 setMethod(
   f = "maxRecruits",
   signature = c(object = "RecruitmentUnlimited"),
@@ -247,6 +270,13 @@ setMethod(
 
 ## RecruitmentRatio ----
 
+#' @describeIn maxRecruits method for `RecruitmentRatio` class.
+#'   Returns `ceiling(ratio * active_cohort_size)`.
+#'
+#' @aliases maxRecruits-RecruitmentRatio
+#'
+#' @export
+#' @example examples/Backfill-method-maxRecruits-RecruitmentRatio.R
 setMethod(
   f = "maxRecruits",
   signature = c(object = "RecruitmentRatio"),

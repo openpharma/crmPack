@@ -149,3 +149,47 @@ test_that(".DefaultOpeningAny works as expected", {
   expect_valid(result, "OpeningAny")
   expect_length(result@open_list, 2)
 })
+
+# Recruitment ----
+
+## RecruitmentUnlimited ----
+
+test_that(".RecruitmentUnlimited works as expected", {
+  result <- expect_silent(.RecruitmentUnlimited())
+  expect_valid(result, "RecruitmentUnlimited")
+})
+
+test_that("RecruitmentUnlimited object can be created", {
+  result <- expect_silent(RecruitmentUnlimited())
+  expect_valid(result, "RecruitmentUnlimited")
+})
+
+test_that(".DefaultRecruitmentUnlimited works as expected", {
+  result <- expect_silent(.DefaultRecruitmentUnlimited())
+  expect_valid(result, "RecruitmentUnlimited")
+})
+
+## RecruitmentRatio ----
+
+test_that(".RecruitmentRatio works as expected", {
+  result <- expect_silent(.RecruitmentRatio())
+  expect_valid(result, "RecruitmentRatio")
+})
+
+test_that("RecruitmentRatio object can be created with user constructor", {
+  result <- expect_silent(RecruitmentRatio(ratio = 0.5))
+  expect_valid(result, "RecruitmentRatio")
+  expect_identical(result@ratio, 0.5)
+})
+
+test_that("RecruitmentRatio object can be created with default ratio", {
+  result <- expect_silent(RecruitmentRatio())
+  expect_valid(result, "RecruitmentRatio")
+  expect_identical(result@ratio, 1)
+})
+
+test_that(".DefaultRecruitmentRatio works as expected", {
+  result <- expect_silent(.DefaultRecruitmentRatio())
+  expect_valid(result, "RecruitmentRatio")
+  expect_identical(result@ratio, 1)
+})

@@ -386,6 +386,20 @@ OpeningAny <- function(...) {
 
 ## class ----
 
+#' `Recruitment`
+#'
+#' @description `r lifecycle::badge("experimental")`
+#'
+#' [`Recruitment`] is a virtual class for recruitment criteria, from which all
+#' other specific recruitment criteria classes inherit.
+#' The subclasses are used to specify the maximum number of backfill patients
+#' that can be recruited relative to the main trial cohort size.
+#'
+#' @seealso [`RecruitmentUnlimited`], [`RecruitmentRatio`].
+#'
+#' @aliases Recruitment
+#' @export
+#'
 .Recruitment <- setClass(
   Class = "Recruitment",
   contains = "CrmPackClass"
@@ -393,12 +407,35 @@ OpeningAny <- function(...) {
 
 ## default constructor ----
 
-# TODO add default constructor
+#' @rdname Recruitment-class
+#' @note Typically, end users will not use the `.DefaultRecruitment()` function.
+#' @export
+.DefaultRecruitment <- function() {
+  stop(
+    paste(
+      "Class Recruitment should not be instantiated directly.",
+      "Please use one of its subclasses instead."
+    )
+  )
+}
 
 # RecruitmentUnlimited ----
 
 ## class ----
 
+#' `RecruitmentUnlimited`
+#'
+#' @description `r lifecycle::badge("experimental")`
+#'
+#' [`RecruitmentUnlimited`] allows unlimited recruitment of backfill patients.
+#' There is no constraint on the number of backfill patients relative to the
+#' main trial cohort size.
+#'
+#' @seealso [`Recruitment`] and the other subclasses listed in there.
+#'
+#' @aliases RecruitmentUnlimited
+#' @export
+#'
 .RecruitmentUnlimited <- setClass(
   Class = "RecruitmentUnlimited",
   contains = "Recruitment"
@@ -406,22 +443,60 @@ OpeningAny <- function(...) {
 
 ## constructor ----
 
+#' @rdname RecruitmentUnlimited-class
+#'
+#' @export
+#' @example examples/Backfill-class-RecruitmentUnlimited.R
 RecruitmentUnlimited <- function() {
   .RecruitmentUnlimited()
+}
+
+## default constructor ----
+
+#' @rdname RecruitmentUnlimited-class
+#' @note Typically, end users will not use the `.DefaultRecruitmentUnlimited()` function.
+#' @export
+.DefaultRecruitmentUnlimited <- function() {
+  RecruitmentUnlimited()
 }
 
 # RecruitmentRatio ----
 
 ## class ----
 
+#' `RecruitmentRatio`
+#'
+#' @description `r lifecycle::badge("experimental")`
+#'
+#' [`RecruitmentRatio`] constrains the recruitment of backfill patients
+#' based on a ratio to the main trial cohort size. The maximum number of
+#' backfill patients is calculated as `ceiling(ratio * active_cohort_size)`.
+#'
+#' @slot ratio (`number`)
+#'   the recruitment ratio, specifying the maximum number of backfill patients
+#'   per patient in the main trial cohort (non-negative).
+#'
+#' @seealso [`Recruitment`] and the other subclasses listed in there.
+#'
+#' @aliases RecruitmentRatio
+#' @export
+#'
 .RecruitmentRatio <- setClass(
   Class = "RecruitmentRatio",
   contains = "Recruitment",
-  slots = list(ratio = "numeric")
+  slots = list(ratio = "numeric"),
+  validity = v_recruitment_ratio
 )
 
 ## constructor ----
 
+#' @rdname RecruitmentRatio-class
+#'
+#' @param ratio (`number`)
+#'   see slot definition.
+#'
+#' @export
+#' @example examples/Backfill-class-RecruitmentRatio.R
 RecruitmentRatio <- function(ratio = 1) {
   assert_numeric(ratio, len = 1, lower = 0)
   .RecruitmentRatio(ratio = ratio)
@@ -429,7 +504,12 @@ RecruitmentRatio <- function(ratio = 1) {
 
 ## default constructor ----
 
-# TODO add default constructor
+#' @rdname RecruitmentRatio-class
+#' @note Typically, end users will not use the `.DefaultRecruitmentRatio()` function.
+#' @export
+.DefaultRecruitmentRatio <- function() {
+  RecruitmentRatio()
+}
 
 # Backfill ----
 

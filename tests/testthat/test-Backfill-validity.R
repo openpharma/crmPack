@@ -93,3 +93,42 @@ test_that("v_opening_min_responses returns message for non-valid include_lower_d
   object@min_cohorts <- c(2L, 3L)
   expect_equal(v_opening_min_cohorts(object), err_msg)
 })
+
+# Recruitment ----
+
+## v_recruitment_ratio ----
+
+test_that("v_recruitment_ratio passes for valid object", {
+  object <- RecruitmentRatio(ratio = 0)
+  expect_true(v_recruitment_ratio(object))
+
+  object <- RecruitmentRatio(ratio = 0.5)
+  expect_true(v_recruitment_ratio(object))
+
+  object <- RecruitmentRatio(ratio = 1)
+  expect_true(v_recruitment_ratio(object))
+
+  object <- RecruitmentRatio(ratio = 2.5)
+  expect_true(v_recruitment_ratio(object))
+})
+
+test_that("v_recruitment_ratio fails for negative ratio", {
+  object <- RecruitmentRatio(ratio = 1)
+  object@ratio <- -0.5
+  err_msg <- "Ratio must be non-negative"
+  expect_equal(v_recruitment_ratio(object), err_msg)
+})
+
+test_that("v_recruitment_ratio fails for non-scalar ratio", {
+  object <- RecruitmentRatio(ratio = 1)
+  object@ratio <- c(0.5, 1)
+  err_msg <- "Ratio must be non-negative"
+  expect_equal(v_recruitment_ratio(object), err_msg)
+})
+
+test_that("v_recruitment_ratio fails for NA ratio", {
+  object <- RecruitmentRatio(ratio = 1)
+  object@ratio <- NA_real_
+  err_msg <- "Ratio must be non-negative"
+  expect_equal(v_recruitment_ratio(object), err_msg)
+})

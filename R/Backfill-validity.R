@@ -48,3 +48,30 @@ v_opening_min_responses <- function(object) {
   )
   v$result()
 }
+
+# Recruitment ----
+
+#' Internal Helper Functions for Validation of [`Recruitment`] Objects
+#'
+#' @description `r lifecycle::badge("experimental")`
+#'
+#' These functions are only used internally to validate the format of an input
+#' [`Recruitment`] or inherited classes and therefore not exported.
+#'
+#' @name v_recruitment
+#' @param object (`Recruitment`)
+#'   object to validate.
+#' @return A `character` vector with the validation failure messages,
+#'   or `TRUE` in case validation passes.
+NULL
+
+#' @describeIn v_recruitment validates that the [`RecruitmentRatio`] object
+#'   contains valid `ratio` slot.
+v_recruitment_ratio <- function(object) {
+  v <- Validate()
+  v$check(
+    test_number(object@ratio, lower = 0),
+    "ratio needs to be a non-negative numeric scalar"
+  )
+  v$result()
+}
