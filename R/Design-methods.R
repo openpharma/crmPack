@@ -383,6 +383,9 @@ setMethod(
 #'
 #' @return an object of class [`DualSimulations`]
 #'
+#' @note Backfill cohorts are not yet implemented and therefore will lead to an error if used
+#'   in the `DualDesign` object.
+#'
 #' @example examples/design-method-simulate-DualDesign.R
 #' @importFrom mvtnorm rmvnorm
 #' @export
@@ -416,6 +419,7 @@ setMethod(
     assert_count(nCores, positive = TRUE)
     assert_class(object, "DualDesign")
     assert_list(derive)
+    assert_class(object@backfill@opening, "OpeningNone")
 
     args <- as.data.frame(args)
     n_args <- max(nrow(args), 1L)
@@ -2794,6 +2798,9 @@ setMethod(
 #'
 #' @return an object of class [`Simulations`]
 #'
+#' @note Backfill cohorts are not yet implemented and therefore will lead to an error if used
+#'   in the `DADesign` object.
+#'
 #' @example examples/design-method-simulate-DADesign.R
 #' @export
 setMethod(
@@ -2827,6 +2834,7 @@ setMethod(
     assert_count(nsim, positive = TRUE)
     assert_flag(parallel)
     assert_count(nCores, positive = TRUE)
+    assert_class(object@backfill@opening, "OpeningNone")
 
     args <- as.data.frame(args)
     n_args <- max(nrow(args), 1L)
