@@ -287,7 +287,8 @@ knit_print.Design <- function(
       "pl_cohort_size" = "Use of placebo"
     ),
     user_sections = sections,
-    asis = asis
+    asis = asis,
+    ignore_sections = "backfill"
   )
 }
 
@@ -380,7 +381,8 @@ knit_print.DADesign <- function(
       "safetyWindow" = "Safety window"
     ),
     user_sections = sections,
-    asis = asis
+    asis = asis,
+    ignore_sections = "backfill"
   )
 }
 
@@ -465,7 +467,8 @@ knit_print.DesignOrdinal <- function(
       "pl_cohort_size" = "Use of placebo"
     ),
     user_sections = sections,
-    asis = asis
+    asis = asis,
+    ignore_sections = "backfill"
   )
 }
 
@@ -505,7 +508,7 @@ knit_print.DesignGrouped <- function(
       x@mono,
       asis = FALSE,
       level = level + 1L,
-      ignore_slots = c("model"),
+      ignore_slots = c("model", "backfill"),
       default_sections = c(
         "nextBest" = "Dose recommendation",
         "cohort_size" = "Cohort size",
@@ -523,7 +526,7 @@ knit_print.DesignGrouped <- function(
       x@combo,
       asis = FALSE,
       level = level + 1L,
-      ignore_slots = "model",
+      ignore_slots = c("model", "backfill"),
       default_sections = c(
         "nextBest" = "Dose recommendation",
         "cohort_size" = "Cohort size",
@@ -643,7 +646,8 @@ knit_print.DualResponsesDesign <- function(
     ),
     ignore_sections = c("model", "eff_model"),
     sections = sections,
-    asis = asis
+    asis = asis,
+    ignore_sections = "backfill"
   )
 }
 
