@@ -657,7 +657,11 @@ test_that("StoppingPatientsNearDose object can be created with user constructor"
 })
 
 test_that("StoppingPatientsNearDose replaces empty label with correct default label", {
-  result <- expect_silent(StoppingPatientsNearDose(5L, 40, character(0)))
+  result <- expect_silent(StoppingPatientsNearDose(
+    5L,
+    40,
+    report_label = character(0)
+  ))
   expect_identical(
     result@report_label,
     "≥ 5 patients dosed in 40 % dose range around NBD"
