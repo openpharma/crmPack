@@ -193,3 +193,55 @@ test_that(".DefaultRecruitmentRatio works as expected", {
   expect_valid(result, "RecruitmentRatio")
   expect_identical(result@ratio, 1)
 })
+
+# Backfill ----
+
+test_that(".Backfill works as expected", {
+  result <- expect_silent(.Backfill())
+  expect_valid(result, "Backfill")
+})
+
+test_that("Backfill object can be created with default parameters", {
+  result <- expect_silent(Backfill())
+  expect_valid(result, "Backfill")
+  expect_identical(result@total_size, 1e6L)
+  expect_identical(result@priority, "highest")
+  expect_is(result@opening, "OpeningMinDose")
+  expect_is(result@recruitment, "RecruitmentUnlimited")
+})
+
+test_that("Backfill object can be created with custom opening and recruitment", {
+  opening <- OpeningMinCohorts(min_cohorts = 3)
+  recruitment <- RecruitmentRatio(ratio = 0.5)
+  result <- expect_silent(Backfill(
+    opening = opening,
+    recruitment = recruitment
+  ))
+  expect_valid(result, "Backfill")
+  expect_identical(result@opening, opening)
+  expect_identical(result@recruitment, recruitment)
+})
+
+test_that("Backfill object can be created with custom total_size", {
+  result <- expect_silent(Backfill(total_size = 100L))
+  expect_valid(result, "Backfill")
+  expect_identical(result@total_size, 100L)
+})
+
+test_that("Backfill object can be created with different priorities", {
+  result_high <- expect_silent(Backfill(priority = "highest"))
+  expect_identical(result_high@priority, "highest")
+
+  result_low <- expect_silent(Backfill(priority = "lowest"))
+  expect_identical(result_low@priority, "lowest")
+
+  result_rand <- expect_silent(Backfill(priority = "random"))
+  expect_identical(result_rand@priority, "random")
+})
+
+test_that(".DefaultBackfill works as expected", {
+  result <- expect_silent(.DefaultBackfill())
+  expect_valid(result, "Backfill")
+  expect_identical(result@total_size, 1e6L)
+  expect_identical(result@priority, "highest")
+})

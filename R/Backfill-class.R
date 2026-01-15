@@ -524,7 +524,7 @@ RecruitmentRatio <- function(ratio = 1) {
 #' @slot cohort_size (`CohortSize`)\cr the size of cohorts to be backfilled.
 #' @slot opening (`Opening`)\cr the opening criteria for backfilling.
 #' @slot recruitment (`Recruitment`)\cr recruitment criteria for backfilling.
-#' @slot total_size (`integer`)\cr the total number of patients to be backfilled.
+#' @slot total_size (`count`)\cr the total number of patients to be backfilled.
 #' @slot priority (`character`)\cr the priority rule for backfilling,
 #'   one of "highest", "lowest", or "random".
 #'
@@ -546,8 +546,8 @@ RecruitmentRatio <- function(ratio = 1) {
     total_size = 1e6L,
     priority = "highest"
   ),
-  contains = "CrmPackClass"
-  # TODO add validity
+  contains = "CrmPackClass",
+  validity = v_backfill
 )
 
 ## constructor ----
@@ -557,7 +557,7 @@ RecruitmentRatio <- function(ratio = 1) {
 #' @param cohort_size (`CohortSize`)\cr see the slot definition.
 #' @param opening (`Opening`)\cr see the slot definition.
 #' @param recruitment (`Recruitment`)\cr see the slot definition.
-#' @param total_size (`numeric`)\cr see the slot definition.
+#' @param total_size (`count`)\cr see the slot definition.
 #' @param priority (`character`)\cr see the slot definition.
 #' @return An object of class `Backfill`.
 #'
@@ -569,7 +569,7 @@ Backfill <- function(
   total_size = 1e6L,
   priority = c("highest", "lowest", "random")
 ) {
-  assert_integerish(total_size, len = 1, lower = 1)
+  assert_count(total_size, positive = TRUE)
   total_size <- as.integer(total_size)
   priority <- match.arg(priority)
 
@@ -584,4 +584,9 @@ Backfill <- function(
 
 ## default constructor ----
 
-# TODO add default constructor
+#' @rdname Backfill-class
+#' @note Typically, end users will not use the `.DefaultBackfill()` function.
+#' @export
+.DefaultBackfill <- function() {
+  Backfill()
+}

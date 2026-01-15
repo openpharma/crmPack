@@ -75,3 +75,33 @@ v_recruitment_ratio <- function(object) {
   )
   v$result()
 }
+
+# Backfill ----
+
+#' Internal Helper Functions for Validation of [`Backfill`] Objects
+#'
+#' @description `r lifecycle::badge("experimental")`
+#'
+#' These functions are only used internally to validate the format of an input
+#' [`Backfill`] object and therefore not exported.
+#'
+#' @name v_backfill
+#' @param object (`Backfill`)\cr object to validate.
+#' @return A `character` vector with the validation failure messages,
+#'   or `TRUE` in case validation passes.
+NULL
+
+#' @describeIn v_backfill validates that the [`Backfill`] object
+#'   contains valid slots.
+v_backfill <- function(object) {
+  v <- Validate()
+  v$check(
+    test_count(object@total_size, positive = TRUE),
+    "total_size needs to be a positive integer scalar"
+  )
+  v$check(
+    test_choice(object@priority, c("highest", "lowest", "random")),
+    "priority needs to be one of 'highest', 'lowest', or 'random'"
+  )
+  v$result()
+}

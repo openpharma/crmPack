@@ -5,6 +5,7 @@
 \alias{Backfill-class}
 \alias{.Backfill}
 \alias{Backfill}
+\alias{.DefaultBackfill}
 \title{\code{Backfill} class}
 \usage{
 Backfill(
@@ -14,6 +15,8 @@ Backfill(
   total_size = 1000000L,
   priority = c("highest", "lowest", "random")
 )
+
+.DefaultBackfill()
 }
 \arguments{
 \item{cohort_size}{(\code{CohortSize})\cr see the slot definition.}
@@ -22,7 +25,7 @@ Backfill(
 
 \item{recruitment}{(\code{Recruitment})\cr see the slot definition.}
 
-\item{total_size}{(\code{numeric})\cr see the slot definition.}
+\item{total_size}{(\code{count})\cr see the slot definition.}
 
 \item{priority}{(\code{character})\cr see the slot definition.}
 }
@@ -43,9 +46,12 @@ Class representing a backfilling rule in a clinical trial design.
 
 \item{\code{recruitment}}{(\code{Recruitment})\cr recruitment criteria for backfilling.}
 
-\item{\code{total_size}}{(\code{integer})\cr the total number of patients to be backfilled.}
+\item{\code{total_size}}{(\code{count})\cr the total number of patients to be backfilled.}
 
 \item{\code{priority}}{(\code{character})\cr the priority rule for backfilling,
 one of "highest", "lowest", or "random".}
 }}
 
+\note{
+Typically, end users will not use the \code{.DefaultBackfill()} function.
+}
