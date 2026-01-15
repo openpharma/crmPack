@@ -132,3 +132,79 @@ test_that("openCohort returns FALSE when cohort dose is NA for OpeningMinRespons
   # Cohort 5 has NA dose, should return FALSE
   expect_false(openCohort(opening, cohort = 5, data = data, dose = 30))
 })
+
+## OpeningAll ----
+
+test_that("openCohort works correctly with OpeningAll (AND logic)", {
+  data <- Data(
+    x = c(0.1, 0.5, 1.5, 3, 6, 10, 10, 10),
+    y = c(0, 0, 0, 0, 0, 0, 1, 0),
+    cohort = c(1, 2, 3, 4, 5, 6, 6, 6),
+    doseGrid = c(0.1, 0.5, 1.5, 3, 6, seq(from = 10, to = 80, by = 2))
+  )
+
+  # Both criteria: dose >= 10 AND at least 5 cohorts treated
+  opening1 <- OpeningMinDose(min_dose = 10)
+  opening2 <- OpeningMinCohorts(min_cohorts = 5)
+  opening_all <- OpeningAll(opening1, opening2)
+
+  # Cohort 6 dose = 10 (>= 10: TRUE), max cohort = 6 (>= 5: TRUE), AND = TRUE
+  expect_true(openCohort(opening_all, cohort = 6, data = data, dose = 20))
+
+  # Cohort 4 dose = 3 (>= 10: FALSE), max cohort = 6 (>= 5: TRUE), AND = FALSE
+  expect_false(openCohort(opening_all, cohort = 4, data = data, dose = 20))
+})
+
+test_that("openCohort works with & operator", {
+  data <- Data(
+    x = c(0.1, 0.5, 1.5, 3, 6, 10, 10, 10),
+    y = c(0, 0, 0, 0, 0, 0, 1, 0),
+    cohort = c(1, 2, 3, 4, 5, 6, 6, 6),
+    doseGrid = c(0.1, 0.5, 1.5, 3, 6, seq(from = 10, to = 80, by = 2))
+  )
+
+  opening1 <- OpeningMinDose(min_dose = 10)
+  opening2 <- OpeningMinCohorts(min_cohorts = 5)
+  opening_all <- opening1 & opening2
+
+  expect_true(openCohort(opening_all, cohort = 6, data = data, dose = 20))
+  expect_false(openCohort(opening_all, cohort = 4, data = data, dose = 20))
+})
+
+## OpeningAny ----
+
+test_that("openCohort works correctly with OpeningAny (OR logic)", {
+  data <- Data(
+    x = c(0.1, 0.5, 1.5, 3, 6, 10, 10, 10),
+    y = c(0, 0, 0, 0, 0, 0, 1, 0),
+    cohort = c(1, 2, 3, 4, 5, 6, 6, 6),
+    doseGrid = c(0.1, 0.5, 1.5, 3, 6, seq(from = 10, to = 80, by = 2))
+  )
+
+  # Either criterion: dose >= 20 OR at least 5 cohorts treated
+  opening1 <- OpeningMinDose(min_dose = 20)
+  opening2 <- OpeningMinCohorts(min_cohorts = 5)
+  opening_any <- OpeningAny(opening1, opening2)
+
+  # Cohort 6 dose = 10 (>= 20: FALSE), max cohort = 6 (>= 5: TRUE), OR = TRUE
+  expect_true(openCohort(opening_any, cohort = 6, data = data, dose = 20))
+
+  # Cohort at dose 25 would be >= 20 (TRUE), so OR = TRUE
+  expect_true(openCohort(opening_any, cohort = 7, data = data, dose = 25))
+})
+
+test_that("openCohort works with | operator", {
+  data <- Data(
+    x = c(0.1, 0.5, 1.5, 3, 6, 10, 10, 10),
+    y = c(0, 0, 0, 0, 0, 0, 1, 0),
+    cohort = c(1, 2, 3, 4, 5, 6, 6, 6),
+    doseGrid = c(0.1, 0.5, 1.5, 3, 6, seq(from = 10, to = 80, by = 2))
+  )
+
+  opening1 <- OpeningMinDose(min_dose = 20)
+  opening2 <- OpeningMinCohorts(min_cohorts = 5)
+  opening_any <- opening1 | opening2
+
+  expect_true(openCohort(opening_any, cohort = 6, data = data, dose = 20))
+  expect_true(openCohort(opening_any, cohort = 7, data = data, dose = 25))
+})

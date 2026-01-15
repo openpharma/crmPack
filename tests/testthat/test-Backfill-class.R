@@ -101,3 +101,51 @@ test_that(".DefaultOpeningMinResponses works as expected", {
     OpeningMinResponses(min_responses = 1L, include_lower_doses = FALSE)
   )
 })
+
+## OpeningAll ----
+
+test_that("OpeningAll can be created with constructor", {
+  opening1 <- OpeningMinDose(min_dose = 10)
+  opening2 <- OpeningMinCohorts(min_cohorts = 3)
+  result <- expect_silent(OpeningAll(opening1, opening2))
+  expect_valid(result, "OpeningAll")
+  expect_length(result@open_list, 2)
+})
+
+test_that("OpeningAll can be created with & operator", {
+  opening1 <- OpeningMinDose(min_dose = 10)
+  opening2 <- OpeningMinCohorts(min_cohorts = 3)
+  result <- expect_silent(opening1 & opening2)
+  expect_valid(result, "OpeningAll")
+  expect_length(result@open_list, 2)
+})
+
+test_that(".DefaultOpeningAll works as expected", {
+  result <- expect_silent(.DefaultOpeningAll())
+  expect_valid(result, "OpeningAll")
+  expect_length(result@open_list, 2)
+})
+
+## OpeningAny ----
+
+test_that("OpeningAny can be created with constructor", {
+  opening1 <- OpeningMinDose(min_dose = 10)
+  opening2 <- OpeningMinCohorts(min_cohorts = 3)
+  result <- expect_silent(OpeningAny(opening1, opening2))
+  expect_valid(result, "OpeningAny")
+  expect_length(result@open_list, 2)
+})
+
+test_that("OpeningAny can be created with | operator", {
+  opening1 <- OpeningMinDose(min_dose = 10)
+  opening2 <- OpeningMinCohorts(min_cohorts = 3)
+  result <- expect_silent(opening1 | opening2)
+  expect_valid(result, "OpeningAny")
+  expect_length(result@open_list, 2)
+})
+
+test_that(".DefaultOpeningAny works as expected", {
+  result <- expect_silent(.DefaultOpeningAny())
+  expect_valid(result, "OpeningAny")
+  expect_length(result@open_list, 2)
+})
