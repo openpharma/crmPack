@@ -127,7 +127,7 @@ test_that("h_determine_dlts returns correctly updated data object for default co
     cohort = 1L,
     nObs = 1L,
     backfilled = FALSE,
-    response = 0L
+    response = NA_integer_
   )
 
   expect_valid(result, "Data")
@@ -162,7 +162,7 @@ test_that("h_determine_dlts returns correctly updated data object for
     cohort = 1L,
     nObs = 1L,
     backfilled = FALSE,
-    response = 0L
+    response = NA_integer_
   )
 
   expect_s4_class(result, "Data")

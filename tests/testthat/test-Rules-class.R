@@ -644,10 +644,15 @@ test_that("StoppingPatientsNearDose object can be created with user constructor 
 })
 
 test_that("StoppingPatientsNearDose object can be created with user constructor", {
-  result <- expect_silent(StoppingPatientsNearDose(5L, 40, "custom_label"))
+  result <- expect_silent(StoppingPatientsNearDose(
+    5L,
+    40,
+    report_label = "custom_label"
+  ))
   expect_valid(result, "StoppingPatientsNearDose")
   expect_identical(result@nPatients, 5L)
   expect_identical(result@percentage, 40)
+  expect_true(result@include_backfill)
   expect_identical(result@report_label, "custom_label")
 })
 
