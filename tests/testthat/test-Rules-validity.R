@@ -924,6 +924,15 @@ test_that("v_stopping_patients_near_dose returns message for non-valid percentag
   expect_equal(v_stopping_patients_near_dose(object), err_msg)
 })
 
+test_that("v_stopping_patients_near_dose returns message for invalid include_backfill", {
+  err_msg <- "include_backfill must be a flag"
+  object <- StoppingPatientsNearDose(nPatients = 5L)
+
+  # Changing `include_backfill` so that it is not a flag.
+  object@include_backfill <- c(TRUE, FALSE)
+  expect_equal(v_stopping_patients_near_dose(object), err_msg)
+})
+
 ## v_stopping_min_cohorts ----
 
 test_that("v_stopping_min_cohorts passes for valid object", {

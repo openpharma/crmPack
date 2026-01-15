@@ -2304,6 +2304,48 @@ test_that("StoppingPatientsNearDose can handle when dose is NA", {
   expect_identical(result, expected)
 })
 
+test_that("StoppingPatientsNearDose correctly excludes backfill patients if requested", {
+  my_data <- h_get_data()
+  my_data@backfilled <- c(
+    FALSE,
+    FALSE,
+    FALSE,
+    TRUE,
+    TRUE,
+    TRUE,
+    TRUE,
+    TRUE,
+    TRUE,
+    TRUE,
+    TRUE,
+    TRUE
+  )
+  my_model <- h_get_logistic_kadane()
+  my_samples <- mcmc(
+    my_data,
+    my_model,
+    h_get_mcmc_options(samples = 10, burnin = 20)
+  )
+  stopping <- StoppingPatientsNearDose(
+    nPatients = 3,
+    percentage = 0,
+    include_backfill = FALSE
+  )
+  result <- stopTrial(
+    stopping = stopping,
+    dose = 100,
+    samples = my_samples,
+    model = my_model,
+    data = my_data
+  )
+  expected <- structure(
+    FALSE, # It would be TRUE if backfill patients were included.
+    message = "0 patients (excluding backfilled) lie within 0% of the next best dose 100. This is below the required 3 patients",
+    report_label = "≥ 3 patients dosed in 0 % dose range around NBD"
+  )
+  expect_identical(result, expected)
+})
+
 ## StoppingMinCohorts ----
 
 test_that("StoppingMinCohorts works correctly if next dose is NA", {
