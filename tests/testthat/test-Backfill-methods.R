@@ -19,6 +19,20 @@ test_that("openCohort works as expected for OpeningMinDose", {
   expect_false(openCohort(opening, cohort = 4, data = data, dose = 20))
 })
 
+test_that("openCohort returns FALSE when cohort dose is the same as recommended dose", {
+  data <- Data(
+    x = c(0.1, 0.5, 1.5, 3, 6, 10, 10, 10, 10, 10, 10),
+    y = c(0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 1),
+    cohort = c(0, 1, 2, 3, 4, 5, 5, 5, 6, 6, 6),
+    doseGrid = c(0.1, 0.5, 1.5, 3, 6, seq(from = 10, to = 80, by = 2))
+  )
+
+  opening <- OpeningMinDose(min_dose = 0)
+
+  # cohort dose (10) == recommended dose (10), should not open
+  expect_false(openCohort(opening, cohort = 5, data = data, dose = 10))
+})
+
 ## OpeningMinCohorts ----
 
 test_that("openCohort works as expected for OpeningMinCohorts when n_cohorts >= min_cohorts", {

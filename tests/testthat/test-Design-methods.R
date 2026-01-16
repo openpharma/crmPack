@@ -212,13 +212,13 @@ test_that("Backfilling works in a simple design", {
 
   myTruth <- probFunction(design@model, alpha0 = 4, alpha1 = 4)
   options <- h_get_mcmc_options()
-  myTrueResponse <- plogis
+  mytruthResponse <- plogis
 
   result <- simulate(
     design,
     args = NULL,
     truth = myTruth,
-    trueResponse = myTrueResponse,
+    truthResponse = mytruthResponse,
     nsim = 10,
     seed = 819,
     mcmcOptions = options,

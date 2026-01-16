@@ -22,9 +22,9 @@ setGeneric(
   name = "openCohort",
   def = function(opening, cohort, data, dose, ...) {
     # For any opening rule, if the dose of the cohort to be opened
-    # is higher than the recommended dose, do not open it.
+    # is higher than or equal to the recommended dose, do not open it.
     cohort_dose <- h_get_dose_for_cohort(data, cohort)
-    if (is.na(cohort_dose) || cohort_dose > dose) {
+    if (is.na(cohort_dose) || cohort_dose >= dose) {
       return(FALSE)
     }
     standardGeneric("openCohort")

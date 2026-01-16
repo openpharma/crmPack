@@ -12,7 +12,7 @@ h_enroll_backfill_patients(
   backfill_patients,
   current_args,
   truth,
-  trueResponse
+  truthResponse
 )
 }
 \arguments{
@@ -30,7 +30,7 @@ h_enroll_backfill_patients(
 
 \item{truth}{(\code{function})\cr defining true DLT probability.}
 
-\item{trueResponse}{(\code{function})\cr defining true response probability.}
+\item{truthResponse}{(\code{function})\cr defining true response probability.}
 }
 \value{
 List with updated \code{data}, \code{backfill_cohorts}, and

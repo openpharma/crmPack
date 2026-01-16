@@ -22,7 +22,7 @@ NULL
 #' @param truth (`function`)\cr a function which takes as input a dose (vector) and returns the
 #'   true probability (vector) for toxicity. Additional arguments can be supplied
 #'   in `args`.
-#' @param trueResponse (`function`)\cr a function which takes as input a dose (vector) and returns the
+#' @param truthResponse (`function`)\cr a function which takes as input a dose (vector) and returns the
 #'   probability (vector) for a positive efficacy response.
 #' @param args (`data.frame`)\cr data frame with arguments for the `truth` function. The
 #'   column names correspond to the argument names, the rows to the values of the
@@ -63,7 +63,7 @@ setMethod(
     nsim = 1L,
     seed = NULL,
     truth,
-    trueResponse = plogis,
+    truthResponse = plogis,
     args = NULL,
     firstSeparate = FALSE,
     mcmcOptions = McmcOptions(),
@@ -74,7 +74,7 @@ setMethod(
   ) {
     nsim <- as.integer(nsim)
     assert_function(truth)
-    assert_function(trueResponse)
+    assert_function(truthResponse)
     assert_flag(firstSeparate)
     assert_count(nsim, positive = TRUE)
     assert_flag(parallel)
@@ -101,7 +101,7 @@ setMethod(
       if (data@placebo) {
         placebo_dose <- object@data@doseGrid[1]
         prob_placebo <- h_this_truth(placebo_dose, current_args, truth)
-        prob_response_placebo <- trueResponse(placebo_dose)
+        prob_response_placebo <- truthResponse(placebo_dose)
       }
 
       should_stop <- FALSE
@@ -111,7 +111,7 @@ setMethod(
 
       while (!should_stop) {
         prob <- h_this_truth(dose, current_args, truth)
-        prob_response <- trueResponse(dose)
+        prob_response <- truthResponse(dose)
 
         cohort_size <- size(object@cohort_size, dose = dose, data = data)
 
@@ -155,7 +155,7 @@ setMethod(
             backfill_patients = backfill_patients,
             current_args = current_args,
             truth = truth,
-            trueResponse = trueResponse
+            truthResponse = truthResponse
           )
 
           data <- enrollment_result$data
@@ -215,7 +215,7 @@ setMethod(
         "n_args",
         "firstSeparate",
         "truth",
-        "trueResponse",
+        "truthResponse",
         "object",
         "mcmcOptions"
       ),

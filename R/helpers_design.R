@@ -405,7 +405,7 @@ h_update_backfill_queue <- function(backfill_cohorts, data, dose, backfill) {
 #' @param backfill_patients (`count`)\cr number of enrolled backfill patients.
 #' @param current_args (`data.frame`)\cr arguments for the truth function.
 #' @param truth (`function`)\cr defining true DLT probability.
-#' @param trueResponse (`function`)\cr defining true response probability.
+#' @param truthResponse (`function`)\cr defining true response probability.
 #'
 #' @return List with updated `data`, `backfill_cohorts`, and
 #'   `backfill_patients`.
@@ -419,7 +419,7 @@ h_enroll_backfill_patients <- function(
   backfill_patients,
   current_args,
   truth,
-  trueResponse
+  truthResponse
 ) {
   # Number of backfill patients we can enroll in this cycle.
   max_recruits <- maxRecruits(
@@ -466,7 +466,7 @@ h_enroll_backfill_patients <- function(
       bc_response <- rbinom(
         n = enroll_size,
         size = 1,
-        prob = trueResponse(bc$dose)
+        prob = truthResponse(bc$dose)
       )
 
       data <- update(

@@ -40,6 +40,7 @@ articles:
       - trial_analysis
       - trial_sanity_checks
       - trial_simulation
+      - trial_backfill
   - title: Examples
     navbar: Examples
     contents:
@@ -149,6 +150,7 @@ reference:
       - CohortSizeRange
       - CohortSizeDLT
       - CohortSizeConst
+      - CohortSizeRandom
       - CohortSizeParts
       - CohortSizeMax
       - CohortSizeMin

@@ -102,7 +102,7 @@ The `simulate` method will do the actual work of implementing the simulation of 
 
 - For the beginning we can focus on the implementation for the basic `Design` class
   - We can first disable the use of the backfill information with an assertion in the `simulate` methods for `DualDesign` and `DADesign` when we need more time for that
-- We also need here an additional `trueResponse` argument which gives the probability of response for each dose because we need to generate responses, because the opening of backfill cohorts (might) depend on it.
+- We also need here an additional `truthResponse` argument which gives the probability of response for each dose because we need to generate responses, because the opening of backfill cohorts (might) depend on it.
   - Note that we have this already in a similar but different way for the `simulate` method for `DualResponsesDesign` with `trueEff`, but there it is used for continuous efficacy (biomarker) and gives the expected mean efficacy biomarker value `w` for a given dose. So we better keep this separate.
 
 ### `examine` method
@@ -182,13 +182,13 @@ design <- Design(
 
 myTruth <- probFunction(design@model, alpha0 = 3, alpha1 = 3)
 options <- h_get_mcmc_options()
-myTrueResponse <- plogis
+mytruthResponse <- plogis
 
 result <- simulate(
     design,
     args = NULL,
     truth = myTruth,
-    trueResponse = myTrueResponse,
+    truthResponse = mytruthResponse,
     nsim = 10,
     seed = 819,
     mcmcOptions = options,
