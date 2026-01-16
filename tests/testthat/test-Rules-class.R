@@ -644,15 +644,24 @@ test_that("StoppingPatientsNearDose object can be created with user constructor 
 })
 
 test_that("StoppingPatientsNearDose object can be created with user constructor", {
-  result <- expect_silent(StoppingPatientsNearDose(5L, 40, "custom_label"))
+  result <- expect_silent(StoppingPatientsNearDose(
+    5L,
+    40,
+    report_label = "custom_label"
+  ))
   expect_valid(result, "StoppingPatientsNearDose")
   expect_identical(result@nPatients, 5L)
   expect_identical(result@percentage, 40)
+  expect_true(result@include_backfill)
   expect_identical(result@report_label, "custom_label")
 })
 
 test_that("StoppingPatientsNearDose replaces empty label with correct default label", {
-  result <- expect_silent(StoppingPatientsNearDose(5L, 40, character(0)))
+  result <- expect_silent(StoppingPatientsNearDose(
+    5L,
+    40,
+    report_label = character(0)
+  ))
   expect_identical(
     result@report_label,
     "≥ 5 patients dosed in 40 % dose range around NBD"
@@ -1345,6 +1354,27 @@ test_that(".DefaultCohortSizeConst works as expected", {
   expect_equal(
     .DefaultCohortSizeConst(),
     CohortSizeConst(size = 3)
+  )
+})
+
+## CohortSizeRandom ----
+
+test_that(".CohortSizeRandom works as expected", {
+  result <- expect_silent(.CohortSizeRandom())
+  expect_valid(result, "CohortSizeRandom")
+})
+
+test_that("CohortSizeRandom object can be created with user constructor", {
+  result <- expect_silent(CohortSizeRandom(1, 5))
+  expect_valid(result, "CohortSizeRandom")
+  expect_identical(result@min_size, 1L)
+  expect_identical(result@max_size, 5L)
+})
+
+test_that(".DefaultCohortSizeRandom works as expected", {
+  expect_equal(
+    .DefaultCohortSizeRandom(),
+    CohortSizeRandom(min_size = 1L, max_size = 3L)
   )
 })
 

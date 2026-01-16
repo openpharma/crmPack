@@ -1,5 +1,72 @@
 #' @include helpers_data.R
 
+# subsetting ----
+
+## Data ----
+
+#' @title Subsetting Operator for the Data Class
+#'
+#' @description `r lifecycle::badge("stable")`
+#'
+#' Subset observations (patients) from a [`Data`] object
+#' using numeric or logical indexing.
+#'
+#' @param x (`Data`)\cr what to subset.
+#' @param i (`integer` or `logical`)\cr indices or logical vector
+#'   for subsetting observations.
+#'
+#' @return A [`Data`] object with the selected observations.
+#'
+#' @name subset-Data
+#'
+#' @aliases [,Data,numeric,missing,missing-method
+#' @export
+#'
+setMethod(
+  f = "[",
+  signature = signature(
+    x = "Data",
+    i = "numeric",
+    j = "missing",
+    drop = "missing"
+  ),
+  definition = function(x, i) {
+    Data(
+      x = x@x[i],
+      y = x@y[i],
+      ID = x@ID[i],
+      cohort = x@cohort[i],
+      doseGrid = x@doseGrid,
+      placebo = x@placebo,
+      backfilled = x@backfilled[i],
+      response = x@response[i]
+    )
+  }
+)
+
+#' @rdname subset-Data
+setMethod(
+  f = "[",
+  signature = signature(
+    x = "Data",
+    i = "logical",
+    j = "missing",
+    drop = "missing"
+  ),
+  definition = function(x, i) {
+    Data(
+      x = x@x[i],
+      y = x@y[i],
+      ID = x@ID[i],
+      cohort = x@cohort[i],
+      doseGrid = x@doseGrid,
+      placebo = x@placebo,
+      backfilled = x@backfilled[i],
+      response = x@response[i]
+    )
+  }
+)
+
 # plot ----
 
 ## Data ----
@@ -9,6 +76,10 @@
 #' @description `r lifecycle::badge("stable")`
 #'
 #' A method that creates a plot for [`Data`] object.
+#'
+#' @param include_backfill (`flag`)\cr whether to include backfilled patients.
+#' @param mark_backfill (`flag`)\cr whether to mark backfilled patients with a "B".
+#' @param mark_response (`flag`)\cr whether to mark patients with response with a blue star.
 #'
 #' @return The [`ggplot2`] object.
 #'
@@ -20,10 +91,125 @@
 setMethod(
   f = "plot",
   signature = signature(x = "Data", y = "missing"),
-  definition = function(x, y, blind = FALSE, legend = TRUE, ...) {
+  definition = function(
+    x,
+    y,
+    blind = FALSE,
+    legend = TRUE,
+    include_backfill = TRUE,
+    mark_backfill = FALSE,
+    mark_response = FALSE,
+    ...
+  ) {
     assert_flag(blind)
     assert_flag(legend)
-    h_plot_data_dataordinal(x, blind, legend, ...)
+    assert_flag(include_backfill)
+    assert_flag(mark_backfill)
+    assert_flag(mark_response)
+
+    if (!include_backfill) {
+      x <- x[!x@backfilled]
+    }
+
+    p <- h_plot_data_dataordinal(x, blind, legend, ...)
+
+    if (mark_backfill || mark_response) {
+      df <- h_plot_data_df(
+        x,
+        blind = blind,
+        response = x@response,
+        backfilled = x@backfilled
+      )
+      if (mark_response) {
+        p <- p +
+          geom_point(
+            data = df[!is.na(df$response) & df$response == 1, ],
+            aes(
+              x = patient + 0.2,
+              y = dose
+            ),
+            shape = 8,
+            colour = "blue",
+            size = 3
+          )
+      }
+      if (mark_backfill) {
+        p <- p +
+          geom_text(
+            data = df[df$backfilled, ],
+            aes(
+              x = patient - 0.2,
+              y = dose,
+              label = "B"
+            ),
+            show.legend = FALSE
+          )
+      }
+
+      # Create custom guide for markings
+      marking_grobs <- list()
+      grob_idx <- 1L
+
+      if (mark_response) {
+        response_point <- grid::pointsGrob(
+          x = 0.05,
+          y = 0.5,
+          pch = 8,
+          gp = grid::gpar(col = "blue", cex = 1.2)
+        )
+        response_label <- grid::textGrob(
+          "  Response",
+          x = 0.25,
+          y = 0.5,
+          just = "left",
+          gp = grid::gpar(fontsize = 10)
+        )
+        marking_grobs[[grob_idx]] <- grid::grobTree(
+          response_point,
+          response_label
+        )
+        grob_idx <- grob_idx + 1L
+      }
+
+      if (mark_backfill) {
+        backfill_text <- grid::textGrob(
+          "B",
+          x = 0.05,
+          y = 0.5,
+          gp = grid::gpar(col = "black", fontsize = 9)
+        )
+        backfill_label <- grid::textGrob(
+          "  Backfill",
+          x = 0.25,
+          y = 0.5,
+          just = "left",
+          gp = grid::gpar(fontsize = 10)
+        )
+        marking_grobs[[grob_idx]] <- grid::grobTree(
+          backfill_text,
+          backfill_label
+        )
+        grob_idx <- grob_idx + 1L
+      }
+
+      # Combine all marking grobs vertically
+      if (length(marking_grobs) > 0) {
+        heights <- grid::unit(rep(1, length(marking_grobs)), "cm")
+        marking_grob <- do.call(
+          gridExtra::arrangeGrob,
+          c(marking_grobs, list(ncol = 1, heights = heights))
+        )
+
+        p <- p +
+          guides(
+            custom = guide_custom(
+              grob = marking_grob,
+              title = "Marking"
+            )
+          )
+      }
+    }
+    p
   }
 )
 
@@ -271,6 +457,8 @@ setMethod(
 #' @param y (`integer`)\cr the DLT vector (0/1 vector) for all patients in this
 #'   cohort. You can also supply `numeric` vectors, but these will then be
 #'   converted to `integer` internally.
+#' @param response (`integer`)\cr the efficacy response vector
+#'   (0/1 vector). May contain `NA`.
 #' @param ID (`integer`)\cr the patient IDs.
 #'   You can also supply `numeric` vectors, but these will then be converted to
 #'   `integer` internally.
@@ -278,6 +466,11 @@ setMethod(
 #'   to a new cohort.
 #' @param check (`flag`)\cr whether the validation of the updated object should
 #'   be conducted. See details below.
+#' @param backfill (`flag`)\cr whether the new patients being added
+#'   are from a backfill cohort.
+#' @param cohort (`int`)\cr if provided, the new patients will be assigned
+#'   to this cohort index. If `NULL` (default), the cohort index will be
+#'   determined based on the `new_cohort` parameter.
 #' @param ... not used.
 #'
 #' @return The new, updated [`Data`] object.
@@ -304,17 +497,29 @@ setMethod(
     object,
     x,
     y,
+    response = rep(NA_integer_, length(y)),
     ID = length(object@ID) + seq_along(y),
     new_cohort = TRUE,
     check = TRUE,
+    backfill = FALSE,
+    cohort = NULL,
     ...
   ) {
     assert_numeric(x, min.len = 0, max.len = 1)
     assert_integerish(y, lower = 0, upper = 1, any.missing = FALSE)
+    assert_integerish(
+      response,
+      len = length(y),
+      lower = 0,
+      upper = 1,
+      any.missing = TRUE
+    )
     assert_integerish(ID, len = length(y), any.missing = FALSE)
     assert_disjunct(object@ID, ID)
     assert_flag(new_cohort)
     assert_flag(check)
+    assert_flag(backfill)
+    assert_int(cohort, lower = 1, null.ok = TRUE)
 
     # How many additional patients, ie. the length of the update.
     n <- length(y)
@@ -329,11 +534,16 @@ setMethod(
     # Add DLT data.
     object@y <- c(object@y, as.integer(y))
 
+    # Add response data.
+    object@response <- c(object@response, response)
+
     # Add ID.
     object@ID <- c(object@ID, as.integer(ID))
 
     # Add cohort number.
-    new_cohort_id <- if (object@nObs == 0) {
+    new_cohort_id <- if (!is.null(cohort)) {
+      cohort
+    } else if (object@nObs == 0) {
       1L
     } else {
       tail(object@cohort, 1L) + ifelse(new_cohort, 1L, 0L)
@@ -342,6 +552,21 @@ setMethod(
 
     # Increment sample size.
     object@nObs <- object@nObs + n
+
+    # Add backfill information.
+    object@backfilled <- c(object@backfilled, rep(backfill, n))
+
+    # We might need to sort again when we supplied a cohort index.
+    if (!is.null(cohort)) {
+      ord <- order(object@cohort, object@ID)
+      object@x <- object@x[ord]
+      object@y <- object@y[ord]
+      object@response <- object@response[ord]
+      object@ID <- object@ID[ord]
+      object@xLevel <- object@xLevel[ord]
+      object@cohort <- object@cohort[ord]
+      object@backfilled <- object@backfilled[ord]
+    }
 
     if (check) {
       validObject(object)
@@ -828,6 +1053,33 @@ setMethod(
       NGrid = x@nGrid,
       DoseGrid = list(x@doseGrid)
     ) %>%
+      h_tidy_class(x)
+  }
+)
+
+## Data ----
+
+#' Tidy Method for the [`Data`] Class
+#'
+#' @description `r lifecycle::badge("experimental")`
+#'
+#' A method that tidies a [`Data`] object.
+#'
+#' @return The [`tibble`] object.
+#'
+#' @aliases tidy-Data
+#' @rdname tidy
+#' @export
+#' @example examples/Data-method-tidy.R
+#'
+setMethod(
+  f = "tidy",
+  signature = signature(x = "Data"),
+  definition = function(x, ...) {
+    d <- callNextMethod()
+    d %>%
+      tibble::add_column(Response = x@response) %>%
+      tibble::add_column(Backfilled = x@backfilled) %>%
       h_tidy_class(x)
   }
 )

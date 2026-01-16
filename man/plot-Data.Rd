@@ -16,7 +16,16 @@ h_plot_data_dataordinal(
   ...
 )
 
-\S4method{plot}{Data,missing}(x, y, blind = FALSE, legend = TRUE, ...)
+\S4method{plot}{Data,missing}(
+  x,
+  y,
+  blind = FALSE,
+  legend = TRUE,
+  include_backfill = TRUE,
+  mark_backfill = FALSE,
+  mark_response = FALSE,
+  ...
+)
 
 \S4method{plot}{DataOrdinal,missing}(
   x,
@@ -48,6 +57,12 @@ the toxicity categories.}
 
 \item{y}{(\code{missing})\cr missing object, for compatibility with the generic
 function.}
+
+\item{include_backfill}{(\code{flag})\cr whether to include backfilled patients.}
+
+\item{mark_backfill}{(\code{flag})\cr whether to mark backfilled patients with a "B".}
+
+\item{mark_response}{(\code{flag})\cr whether to mark patients with response with a blue star.}
 }
 \value{
 The \code{\link[ggplot2:ggplot2-package]{ggplot2::ggplot2}} object.
@@ -89,6 +104,39 @@ my_data <- Data(
 
 # Plot the data.
 plot(my_data)
+
+# We can also mark backfill patients and response outcomes.
+my_data@backfilled <- c(
+  FALSE,
+  FALSE,
+  FALSE,
+  FALSE,
+  TRUE,
+  TRUE,
+  TRUE,
+  FALSE,
+  FALSE,
+  FALSE,
+  FALSE
+)
+my_data@response <- as.integer(c(
+  NA,
+  NA,
+  1,
+  NA,
+  NA,
+  0,
+  1,
+  NA,
+  1,
+  0,
+  0
+))
+plot(
+  my_data,
+  mark_backfill = TRUE,
+  mark_response = TRUE
+)
 data <- DataOrdinal(
   x = c(10, 20, 30, 40, 50, 50, 50, 60, 60, 60),
   y = as.integer(c(0, 0, 0, 0, 0, 1, 0, 0, 1, 2)),

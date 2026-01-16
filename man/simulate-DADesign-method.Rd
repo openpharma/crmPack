@@ -84,6 +84,10 @@ an object of class \code{\link{Simulations}}
 This method simulates dose escalation trials using time-to-DLT data,
 where the timing of dose-limiting toxicities is explicitly modeled.
 }
+\note{
+Backfill cohorts are not yet implemented and therefore will lead to an error if used
+in the \code{DADesign} object.
+}
 \examples{
 # nolint start
 

@@ -9,3 +9,36 @@ my_data <- Data(
 
 # Plot the data.
 plot(my_data)
+
+# We can also mark backfill patients and response outcomes.
+my_data@backfilled <- c(
+  FALSE,
+  FALSE,
+  FALSE,
+  FALSE,
+  TRUE,
+  TRUE,
+  TRUE,
+  FALSE,
+  FALSE,
+  FALSE,
+  FALSE
+)
+my_data@response <- as.integer(c(
+  NA,
+  NA,
+  1,
+  NA,
+  NA,
+  0,
+  1,
+  NA,
+  1,
+  0,
+  0
+))
+plot(
+  my_data,
+  mark_backfill = TRUE,
+  mark_response = TRUE
+)

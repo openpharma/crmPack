@@ -438,6 +438,10 @@ v_stopping_patients_near_dose <- function(object) {
     test_probability(object@percentage / 100),
     "percentage must be a number between 0 and 100"
   )
+  v$check(
+    test_flag(object@include_backfill),
+    "include_backfill must be a flag"
+  )
   v$result()
 }
 
@@ -670,6 +674,21 @@ v_cohort_size_const <- function(object) {
   v$check(
     test_int(object@size, lower = 0),
     "size needs to be a non-negative scalar"
+  )
+  v$result()
+}
+
+#' @describeIn v_cohort_size validates that the [`CohortSizeRandom`] object
+#'   contains valid `min_size` and `max_size` slots.
+v_cohort_size_random <- function(object) {
+  v <- Validate()
+  v$check(
+    test_int(object@min_size, lower = 1),
+    "min_size needs to be a positive integer"
+  )
+  v$check(
+    test_int(object@max_size, lower = object@min_size + 1),
+    "max_size needs to be an integer larger than min_size"
   )
   v$result()
 }

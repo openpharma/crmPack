@@ -541,7 +541,9 @@ knit_print.StoppingPatientsNearDose <- function(
     ifelse(is.na(x@report_label), "", paste0(x@report_label, ": ")),
     "If ",
     x@nPatients,
-    paste0(" or more ", label, " have been treated "),
+    paste0(" or more ", label),
+    ifelse(x@include_backfill, " ", " (excluding backfill cohorts) "),
+    "have been treated ",
     ifelse(
       x@percentage == 0,
       "at ",

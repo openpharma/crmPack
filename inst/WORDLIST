@@ -2,6 +2,8 @@ AE
 AEs
 AllModels
 Analysing
+Backfill
+Backfilling
 Biomarker
 Bove
 Bugfix
@@ -85,6 +87,7 @@ NextBestEWOC
 NextBestNCRM
 ORCID
 PLcohortSize
+PMDA
 ProbitLogNormal
 RPACT
 RPF
@@ -120,6 +123,9 @@ al
 amongst
 analyse
 analysing
+backfill
+backfilled
+backfilling
 behaviour
 betaW
 binded
@@ -171,6 +177,7 @@ https
 httr
 ing
 initialised
+instantiable
 investigational
 jss
 labelled

@@ -284,7 +284,8 @@ knit_print.Design <- function(
       "increments" = "Escalation rule",
       "stopping" = "Stopping rule",
       "model" = "Dose toxicity model",
-      "pl_cohort_size" = "Use of placebo"
+      "pl_cohort_size" = "Use of placebo",
+      "backfill" = "Backfill cohorts"
     ),
     user_sections = sections,
     asis = asis
@@ -344,6 +345,7 @@ knit_print.DualDesign <- function(
     title = title,
     sections = sections,
     asis = asis,
+    ignore_slots = "backfill",
     ...
   )
 }
@@ -380,7 +382,8 @@ knit_print.DADesign <- function(
       "safetyWindow" = "Safety window"
     ),
     user_sections = sections,
-    asis = asis
+    asis = asis,
+    ignore_slots = "backfill"
   )
 }
 
@@ -505,7 +508,7 @@ knit_print.DesignGrouped <- function(
       x@mono,
       asis = FALSE,
       level = level + 1L,
-      ignore_slots = c("model"),
+      ignore_slots = c("model", "backfill"),
       default_sections = c(
         "nextBest" = "Dose recommendation",
         "cohort_size" = "Cohort size",
@@ -523,7 +526,7 @@ knit_print.DesignGrouped <- function(
       x@combo,
       asis = FALSE,
       level = level + 1L,
-      ignore_slots = "model",
+      ignore_slots = c("model", "backfill"),
       default_sections = c(
         "nextBest" = "Dose recommendation",
         "cohort_size" = "Cohort size",

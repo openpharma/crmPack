@@ -132,6 +132,64 @@ h_get_design_dualdata <- function(placebo = FALSE) {
   design
 }
 
+h_get_design_data_backfill <- function() {
+  # Define the dose-grid
+  emptydata <- Data(
+    doseGrid = c(0.1, 0.2, 0.6, 1, 3, 5, 10, 15, 20, 25, seq(40, 100, 10))
+  )
+
+  # Initialize the CRM model
+  model <- LogisticLogNormal(
+    mean = c(-2, 0),
+    cov = matrix(c(5, -0.5, -0.5, 5), nrow = 2),
+    ref_dose = 50
+  )
+
+  # Choose the rule for selecting the next dose
+  myNextBest <- NextBestNCRM(
+    target = c(0.2, 0.35),
+    overdose = c(0.35, 1),
+    max_overdose_prob = 0.25
+  )
+
+  # Choose the rule for stopping
+  myStopping1 <- StoppingMinCohorts(nCohorts = 3)
+  myStopping2 <- StoppingTargetProb(
+    target = c(0.2, 0.35),
+    prob = 0.5
+  )
+  myStopping3 <- StoppingMinPatients(nPatients = 40)
+  myStopping <- (myStopping1 & myStopping2) |
+    myStopping3 |
+    StoppingMissingDose()
+
+  # Choose the rule for dose increments
+  myIncrements <- IncrementsRelative(
+    intervals = c(0, 20, 50),
+    increments = c(5, 0.67, 0.33)
+  )
+
+  # Initialize the design
+  design <- Design(
+    model = model,
+    nextBest = myNextBest,
+    stopping = myStopping,
+    increments = myIncrements,
+    cohort_size = CohortSizeConst(3),
+    data = emptydata,
+    startingDose = 0.1,
+    backfill = Backfill(
+      cohort_size = CohortSizeConst(3),
+      recruitment = RecruitmentRatio(ratio = 1),
+      opening = OpeningMinDose(min_dose = 1) &
+        OpeningMinCohorts(min_cohorts = 3),
+      priority = "highest",
+      total_size = 20L
+    )
+  )
+  design
+}
+
 h_get_design_data <- function(placebo = FALSE) {
   # Define the dose-grid
   emptydata <- Data(
