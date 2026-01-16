@@ -165,6 +165,15 @@ reference:
       - TDsamplesDesign
       - TDDesign
       - DesignGrouped
+      - Opening
+      - OpeningMinDose
+      - OpeningMinCohorts
+      - OpeningNone
+      - OpeningMinResponses
+      - Recruitment
+      - RecruitmentUnlimited
+      - RecruitmentRatio
+      - Backfill
   - title: Internal Helper Functions
     contents:
       - h_blind_plot_data
