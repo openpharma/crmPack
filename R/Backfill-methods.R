@@ -187,6 +187,7 @@ setMethod(
 #'
 #' @export
 #' @name and,Opening,Opening-method
+#' @aliases &,Opening,Opening-method
 setMethod(
   f = "&",
   signature = c(e1 = "Opening", e2 = "Opening"),
@@ -215,6 +216,7 @@ setMethod(
 #'
 #' @export
 #' @name or,Opening,Opening-method
+#' @aliases |,Opening,Opening-method
 setMethod(
   f = "|",
   signature = c(e1 = "Opening", e2 = "Opening"),

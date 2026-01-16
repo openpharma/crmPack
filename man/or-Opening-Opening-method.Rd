@@ -2,6 +2,7 @@
 % Please edit documentation in R/Backfill-methods.R
 \name{or,Opening,Opening-method}
 \alias{or,Opening,Opening-method}
+\alias{|,Opening,Opening-method}
 \title{Logical OR Operator for Opening Objects}
 \usage{
 \S4method{|}{Opening,Opening}(e1, e2)
