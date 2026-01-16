@@ -1,3 +1,18 @@
+# Version 3.0.0
+
+* This release marks yet another (breaking) major update of the package: Backfill cohort simulations are now supported in the `Design` class, powered by the new `Backfill` class. This also leads to breaking changes in the `Data` class, which gains new slots, too.
+
+### New Features
+
+* A new vignette `trial_backfill` has been added which describes how to use backfill cohorts in `crmPack`.
+* Added new `Backfill` class which allows to specify backfill cohorts as a new slot in the `Design` objects.
+* Added new slots `backfilled` and `response` in the `Data` class to capture the information whether each patient has been backfilled, and whether a (binary) efficacy response was observed (in order to support backfilling rules which depend on a minimum number of efficacy responses).
+* The `plot` method for `Data` objects allows to optionally exclude backfill patients, and mark backfill and response information.
+* Added new virtual classes `Opening` and `Recruitment` and corresponding instantiable subclasses to allow for flexible specification of backfill cohort opening and recruitment rules.
+* Added new `CohortSizeRandom` class to allow for random cohort sizes.
+* Simulations of `Design` objects now support backfill cohorts.
+* `StoppingPatientsNearDose` got a new slot `include_backfill` to allow for optionally excluding backfilled patients from the patient count.
+
 # Version 2.0.2
 
 ### Miscellaneous
