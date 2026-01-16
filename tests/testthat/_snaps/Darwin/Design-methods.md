@@ -254,11 +254,11 @@
       [1] FALSE
       
       Slot "backfilled":
-       [1] FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE
+       [1] FALSE FALSE  TRUE  TRUE FALSE FALSE  TRUE  TRUE FALSE FALSE  TRUE  TRUE
       [13] FALSE FALSE FALSE
       
       Slot "response":
-       [1] NA NA NA NA NA NA NA NA NA NA NA NA  1  1  1
+       [1]  0  1  0 NA  0  1 NA  0  0  1  1 NA  1  1  1
       
       Slot "ID":
        [1]  1  2  3  4  5  6  7  8  9 10 11 12 13 14 15
