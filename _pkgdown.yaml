@@ -170,6 +170,9 @@ reference:
       - OpeningMinCohorts
       - OpeningNone
       - OpeningMinResponses
+      - OpeningAll
+      - OpeningAny
+      - OpeningList
       - Recruitment
       - RecruitmentUnlimited
       - RecruitmentRatio
@@ -289,6 +292,9 @@ reference:
       - v_rule_design
       - v_general_simulations
       - v_pseudo_simulations
+      - v_opening
+      - v_recruitment
+      - v_backfill
   - title: Custom Checkmate Assertions
     contents:
       - assert_probabilities
@@ -315,6 +321,7 @@ reference:
       - plot-Data
       - plot-DataDual
       - plot-DataDA
+      - subset-Data
       - update-Data
       - update-DataParts
       - update-DataDual
@@ -420,6 +427,8 @@ reference:
       - maxDose-IncrementsHSRBeta
       - maxDose-IncrementsMin
       - maxDose-IncrementsMaxToxProb
+      - maxRecruits
+      - openCohort
   - title: Functions
     contents:
       - enable_logging
@@ -531,3 +540,5 @@ reference:
       - "&,Stopping,Stopping-method"
       - "&,Stopping,StoppingAll-method"
       - "&,StoppingAll,Stopping-method"
+      - "and,Opening,Opening-method"
+      - "or,Opening,Opening-method"
