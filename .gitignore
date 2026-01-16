@@ -28,3 +28,6 @@ inst/doc
 /Meta/
 lib/
 README.html
+
+/.quarto/
+**/*.quarto_ipynb

@@ -1,6 +1,6 @@
 # Version 2.1.0
 
-* This release marks yet another major update of the package: Backfill cohort simulations are now supported in the `Design` class, powered by the new `Backfill` class. This also leads to breaking changes in the `Data` class, which gains new slots, too. Please regenerate any existing `Data` or `Design` as well as resulting `Simulation` objects; seralized objects from previous versions will not be compatible.
+* This release marks yet another major update of the package: Backfill cohort simulations are now supported in the `Design` class, powered by the new `Backfill` class. This also leads to breaking changes in the `Data` class, which gains new slots, too. Please regenerate any existing `Data` or `Design` as well as resulting `Simulation` objects; serialized objects from previous versions will not be compatible.
 
 ### New Features
 
