@@ -57,6 +57,12 @@ the toxicity categories.}
 
 \item{y}{(\code{missing})\cr missing object, for compatibility with the generic
 function.}
+
+\item{include_backfill}{(\code{flag})\cr whether to include backfilled patients.}
+
+\item{mark_backfill}{(\code{flag})\cr whether to mark backfilled patients with a "B".}
+
+\item{mark_response}{(\code{flag})\cr whether to mark patients with response with a blue star.}
 }
 \value{
 The \code{\link[ggplot2:ggplot2-package]{ggplot2::ggplot2}} object.

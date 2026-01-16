@@ -14,8 +14,6 @@
 #' @param x (`Data`)\cr what to subset.
 #' @param i (`integer` or `logical`)\cr indices or logical vector
 #'   for subsetting observations.
-#' @param j not used.
-#' @param drop not used.
 #'
 #' @return A [`Data`] object with the selected observations.
 #'
@@ -78,6 +76,10 @@ setMethod(
 #' @description `r lifecycle::badge("stable")`
 #'
 #' A method that creates a plot for [`Data`] object.
+#'
+#' @param include_backfill (`flag`)\cr whether to include backfilled patients.
+#' @param mark_backfill (`flag`)\cr whether to mark backfilled patients with a "B".
+#' @param mark_response (`flag`)\cr whether to mark patients with response with a blue star.
 #'
 #' @return The [`ggplot2`] object.
 #'

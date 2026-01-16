@@ -156,7 +156,8 @@ design_complex_backfill@backfill <- backfill_complex
 
 ### Simulations with backfill cohorts
 
-Now we can run trial simulations including backfill cohorts. Here we illustrate this with both the simple and the complex backfill cohort designs defined above. For the complex backfill design we also need to specify the assumed dose-response probability function:
+Now we can run trial simulations including backfill cohorts. Here we illustrate this with both the simple and the complex backfill cohort designs defined above. For the complex backfill design we also need to specify the assumed dose-response probability function.
+Similarly as for the dose-toxicity function, it might be worth to consider a few different scenarios in practice.
 
 ```{r}
 # Assumed dose-response probability function.
@@ -166,11 +167,7 @@ mytruthResponse <- function(dose) {
 curve(mytruthResponse(x), from = 0, to = max(emptydata@doseGrid), 
       xlab = "Dose", ylab = "Probability of Response / Toxicity", 
       main = "Assumed Functions", ylim = c(0, 1))
-```
 
-Similarly as for the dose-toxicity function, it might be worth to consider a few different scenarios in practice.
-
-```{r}
 myTruth <- probFunction(design_simple_backfill@model, alpha0 = 3, alpha1 = 3)
 curve(myTruth(x), from = 0, to = max(emptydata@doseGrid), 
       add = TRUE, col = "red")

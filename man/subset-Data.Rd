@@ -15,10 +15,6 @@
 
 \item{i}{(\code{integer} or \code{logical})\cr indices or logical vector
 for subsetting observations.}
-
-\item{j}{not used.}
-
-\item{drop}{not used.}
 }
 \value{
 A \code{\link{Data}} object with the selected observations.

@@ -186,7 +186,7 @@ setMethod(
 #' @seealso [`OpeningAll`] for more details.
 #'
 #' @export
-#' @aliases &,Opening,Opening-method
+#' @name and,Opening,Opening-method
 setMethod(
   f = "&",
   signature = c(e1 = "Opening", e2 = "Opening"),
@@ -214,7 +214,7 @@ setMethod(
 #' @seealso [`OpeningAny`] for more details.
 #'
 #' @export
-#' @aliases |,Opening,Opening-method
+#' @name or,Opening,Opening-method
 setMethod(
   f = "|",
   signature = c(e1 = "Opening", e2 = "Opening"),
