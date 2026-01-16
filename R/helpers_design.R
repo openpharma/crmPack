@@ -33,7 +33,7 @@ set_seed <- function(seed = NULL) {
     # Here we need the r_seed in the parent.frame!
     do.call(
       "on.exit",
-      list(quote(assign(".Random.seed", .r_seed, envir = .GlobalEnv))),
+      list(quote(assign(".Random.seed", .r_seed, envir = .GlobalEnv))), # nolint
       envir = parent.frame()
     )
     structure(seed, kind = as.list(RNGkind()))
