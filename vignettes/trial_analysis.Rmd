@@ -573,11 +573,11 @@ crmPack provides a wealth of information about the trial's results.  The followi
 plot(fifthFullCohort)
 ```
 
-```{rfig.alt = "A plot of the posterior after nineteen participants have been treated.  The mean probability of toxicity increases smoothly from about zero percent at a dose of zero to about 55% at a dose of 100.  The confidence interval extends from 0% to about 6% at a dose of zero and from about 22% to about 90% at a dose of 100."}
+```{r, fig.alt = "A plot of the posterior after nineteen participants have been treated.  The mean probability of toxicity increases smoothly from about zero percent at a dose of zero to about 55% at a dose of 100.  The confidence interval extends from 0% to about 6% at a dose of zero and from about 22% to about 90% at a dose of 100."}
 plot(postSamples5, model, fifthFullCohort)
 ```
 
-```{rfig.alt = "Two graphs arranged in a single column.  The upper graph shoes green lines of various heights that show the probability each dose is in the target toxicity range.  There is a big arrow pointing to the bar at a dose of 45, indicating that this dose has the highest probability of being in the target toxicity range.  The lower graph as a similar series of red lines, indicating the probability that each dose is in the overdose range.  There is a horizontal black dashed line at 25%, indicating that this is the highest acceptable probability of being in the overdose range.  The red bars for doses of 60 and above all extend above 25%, indicating that their toxicity is unacceptable.  The toxicity for doses of 45 and below lie below 25%."}
+```{r, fig.alt = "Two graphs arranged in a single column.  The upper graph shoes green lines of various heights that show the probability each dose is in the target toxicity range.  There is a big arrow pointing to the bar at a dose of 45, indicating that this dose has the highest probability of being in the target toxicity range.  The lower graph as a similar series of red lines, indicating the probability that each dose is in the overdose range.  There is a horizontal black dashed line at 25%, indicating that this is the highest acceptable probability of being in the overdose range.  The red bars for doses of 60 and above all extend above 25%, indicating that their toxicity is unacceptable.  The toxicity for doses of 45 and below lie below 25%."}
 doseRecommendation$plot
 ```
 
