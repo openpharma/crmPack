@@ -776,9 +776,35 @@ dose of 30 and 6 at a dose of 45. Toxicitiues were reported by
 participants 4 (at a dose of 20) and 18 and 19 (both at a dose of
 45).](trial_analysis_files/figure-html/unnamed-chunk-34-1.png)
 
-`{rfig.alt = "A plot of the posterior after nineteen participants have been treated. The mean probability of toxicity increases smoothly from about zero percent at a dose of zero to about 55% at a dose of 100. The confidence interval extends from 0% to about 6% at a dose of zero and from about 22% to about 90% at a dose of 100."} plot(postSamples5, model, fifthFullCohort)`
+``` r
 
-`{rfig.alt = "Two graphs arranged in a single column. The upper graph shoes green lines of various heights that show the probability each dose is in the target toxicity range. There is a big arrow pointing to the bar at a dose of 45, indicating that this dose has the highest probability of being in the target toxicity range. The lower graph as a similar series of red lines, indicating the probability that each dose is in the overdose range. There is a horizontal black dashed line at 25%, indicating that this is the highest acceptable probability of being in the overdose range. The red bars for doses of 60 and above all extend above 25%, indicating that their toxicity is unacceptable. The toxicity for doses of 45 and below lie below 25%."} doseRecommendation$plot`
+plot(postSamples5, model, fifthFullCohort)
+```
+
+![A plot of the posterior after nineteen participants have been treated.
+The mean probability of toxicity increases smoothly from about zero
+percent at a dose of zero to about 55% at a dose of 100. The confidence
+interval extends from 0% to about 6% at a dose of zero and from about
+22% to about 90% at a dose of
+100.](trial_analysis_files/figure-html/unnamed-chunk-35-1.png)
+
+``` r
+
+doseRecommendation$plot
+```
+
+![Two graphs arranged in a single column. The upper graph shoes green
+lines of various heights that show the probability each dose is in the
+target toxicity range. There is a big arrow pointing to the bar at a
+dose of 45, indicating that this dose has the highest probability of
+being in the target toxicity range. The lower graph as a similar series
+of red lines, indicating the probability that each dose is in the
+overdose range. There is a horizontal black dashed line at 25%,
+indicating that this is the highest acceptable probability of being in
+the overdose range. The red bars for doses of 60 and above all extend
+above 25%, indicating that their toxicity is unacceptable. The toxicity
+for doses of 45 and below lie below
+25%.](trial_analysis_files/figure-html/unnamed-chunk-36-1.png)
 
 With a little bit of work, we can obtain a more detailed summary and
 plot of the posterior probabilities of toxicity at each dose:
@@ -853,7 +879,7 @@ fullSamples %>%
 toxicity for all doses greater than nine. The mode of each density moves
 to the right as dose increases. The densities for low doses are heaviliy
 skewed to the left. Densities for higher doses are more symmetric and
-flatter.](trial_analysis_files/figure-html/unnamed-chunk-35-1.png)
+flatter.](trial_analysis_files/figure-html/unnamed-chunk-37-1.png)
 
 ``` r
 
@@ -883,7 +909,7 @@ shading increases with distance from the solid lines. The shading is
 funnel shaped, with a narrow mneck at a dose of 100 and a wider mouth at
 a dose of 100. The shading represents the central 90%, 80% and 50%
 confidence intervals for the posterior mean estimate of toxicity at each
-dose.](trial_analysis_files/figure-html/unnamed-chunk-36-1.png)
+dose.](trial_analysis_files/figure-html/unnamed-chunk-38-1.png)
 
 ## Note
 

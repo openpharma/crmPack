@@ -309,7 +309,7 @@ suppressWarnings({
 })
 toxIncrements <- IncrementsMaxToxProb(prob = c("DLAE" = 0.2, "CRS" = 0.05))
 maxDose(toxIncrements, emptyData, model, samples)
-#> [1] 3
+#> [1] 1
 model <- LogisticLogNormalOrdinal(
   mean = c(0.25, 0.15, 0.5),
   cov = matrix(c(1.5, 0, 0, 0, 2, 0, 0, 0, 1), nrow = 3),
@@ -327,5 +327,5 @@ suppressWarnings({
 })
 toxIncrements <- IncrementsMaxToxProb(prob = c("DLAE" = 0.2, "CRS" = 0.05))
 maxDose(toxIncrements, emptyData, model, samples)
-#> [1] 1
+#> [1] 3
 ```

@@ -198,12 +198,12 @@ combo_sims_sum
 #> Number of patients treated above target tox interval : mean 0 (0, 0) 
 #> Proportions of DLTs in the trials : mean 17 % (17 %, 17 %) 
 #> Mean toxicity risks for the patients on active : mean 9 % (9 %, 9 %) 
-#> Doses selected as MTD : mean 6 (6, 6) 
-#> True toxicity at doses selected : mean 12 % (12 %, 12 %) 
+#> Doses selected as MTD : mean 12 (12, 12) 
+#> True toxicity at doses selected : mean 17 % (17 %, 17 %) 
 #> Proportion of trials selecting target MTD: 0 %
-#> Dose most often selected as MTD: 6 
-#> Observed toxicity rate at dose most often selected: NaN %
-#> Fitted toxicity rate at dose most often selected : mean 15 % (15 %, 15 %) 
+#> Dose most often selected as MTD: 12 
+#> Observed toxicity rate at dose most often selected: 33 %
+#> Fitted toxicity rate at dose most often selected : mean 19 % (19 %, 19 %) 
 #> Stop reason triggered:
 #>  P(0.2 ≤ prob(DLE | NBD) ≤ 0.35) ≥ 0.5 :  0 %
 #>  ≥ 10 patients dosed :  100 %
