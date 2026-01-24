@@ -50,11 +50,11 @@ the toxicity categories.}
 function.}
 }
 \value{
-The \code{\link[ggplot2:ggplot2-package]{ggplot2::ggplot2}} object.
+The \code{\link{ggplot2}} object.
 
-The \code{\link[ggplot2:ggplot2-package]{ggplot2::ggplot2}} object.
+The \code{\link{ggplot2}} object.
 
-The \code{\link[ggplot2:ggplot2-package]{ggplot2::ggplot2}} object.
+The \code{\link{ggplot2}} object.
 }
 \description{
 \ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#stable}{\figure{lifecycle-stable.svg}{options: alt='[Stable]'}}}{\strong{[Stable]}}
