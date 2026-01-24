@@ -418,9 +418,9 @@ test_that("h_get_formatted_dosegrid works correctly", {
 
 test_that("h_kable_param_default sets defaults correctly", {
   # Empty param list gets defaults
-result <- h_kable_param_default(
+  result <- h_kable_param_default(
     list(),
-    col.names = c("A", "B"),
+    col_names = c("A", "B"),
     caption = "Test caption"
   )
   expect_equal(result$col.names, c("A", "B"))
@@ -429,18 +429,18 @@ result <- h_kable_param_default(
   # User-provided values are preserved
   result <- h_kable_param_default(
     list(col.names = c("X", "Y"), caption = "User caption"),
-    col.names = c("A", "B"),
+    col_names = c("A", "B"),
     caption = "Test caption"
   )
   expect_equal(result$col.names, c("X", "Y"))
   expect_equal(result$caption, "User caption")
 
   # NULL defaults don't add parameters
-  result <- h_kable_param_default(list(), col.names = NULL)
+  result <- h_kable_param_default(list(), col_names = NULL)
   expect_false("col.names" %in% names(result))
 
-  # Only col.names provided
-  result <- h_kable_param_default(list(), col.names = c("Col1", "Col2"))
+  # Only col_names provided
+  result <- h_kable_param_default(list(), col_names = c("Col1", "Col2"))
   expect_equal(result$col.names, c("Col1", "Col2"))
   expect_false("caption" %in% names(result))
 
@@ -452,7 +452,7 @@ result <- h_kable_param_default(
   # Other parameters are preserved
   result <- h_kable_param_default(
     list(format = "html", digits = 3),
-    col.names = c("A", "B")
+    col_names = c("A", "B")
   )
   expect_equal(result$format, "html")
   expect_equal(result$digits, 3)
@@ -463,8 +463,8 @@ test_that("h_kable_param_default validates inputs correctly", {
   # Invalid param type
   expect_error(h_kable_param_default("not a list"))
 
-  # Invalid col.names type
-  expect_error(h_kable_param_default(list(), col.names = 123))
+  # Invalid col_names type
+  expect_error(h_kable_param_default(list(), col_names = 123))
 
   # Invalid caption type
   expect_error(h_kable_param_default(list(), caption = 123))

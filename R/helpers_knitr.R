@@ -4,16 +4,16 @@
 #' by the user in the parameter list.
 #'
 #' @param param (`list`)\cr The list of `...` parameters passed to `knit_print`
-#' @param col.names (`character`)\cr Default column names for the table
+#' @param col_names (`character`)\cr Default column names for the table
 #' @param caption (`character`)\cr Default caption for the table
 #' @return The updated parameter list with defaults applied
 #' @keywords internal
-h_kable_param_default <- function(param, col.names = NULL, caption = NULL) {
+h_kable_param_default <- function(param, col_names = NULL, caption = NULL) {
   assert_list(param)
-  if (!is.null(col.names)) {
-    assert_character(col.names, any.missing = FALSE)
+  if (!is.null(col_names)) {
+    assert_character(col_names, any.missing = FALSE)
     if (!("col.names" %in% names(param))) {
-      param[["col.names"]] <- col.names
+      param[["col.names"]] <- col_names
     }
   }
   if (!is.null(caption)) {

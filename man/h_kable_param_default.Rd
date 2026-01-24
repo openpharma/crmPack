@@ -4,12 +4,12 @@
 \alias{h_kable_param_default}
 \title{Set Default Values for kable Parameters}
 \usage{
-h_kable_param_default(param, col.names = NULL, caption = NULL)
+h_kable_param_default(param, col_names = NULL, caption = NULL)
 }
 \arguments{
 \item{param}{(\code{list})\cr The list of \code{...} parameters passed to \code{knit_print}}
 
-\item{col.names}{(\code{character})\cr Default column names for the table}
+\item{col_names}{(\code{character})\cr Default column names for the table}
 
 \item{caption}{(\code{character})\cr Default caption for the table}
 }

@@ -72,7 +72,7 @@ knit_print.CohortSizeRange <- function(x, ..., asis = TRUE) {
 
   param <- h_kable_param_default(
     list(...),
-    col.names = c("Lower", "Upper", "Cohort size"),
+    col_names = c("Lower", "Upper", "Cohort size"),
     caption = "Defined by the dose to be used in the next cohort"
   )
   x <- tidy(x)
@@ -115,7 +115,7 @@ knit_print.CohortSizeDLT <- function(
 
   param <- h_kable_param_default(
     list(...),
-    col.names = c("Lower", "Upper", "Cohort size"),
+    col_names = c("Lower", "Upper", "Cohort size"),
     caption = paste0(
       "Defined by the number of ",
       tox_label[2],

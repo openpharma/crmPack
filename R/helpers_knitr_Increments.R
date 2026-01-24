@@ -21,7 +21,7 @@ knit_print.IncrementsRelative <- function(x, ..., asis = TRUE) {
 
   param <- h_kable_param_default(
     list(...),
-    col.names = c("Min", "Max", "Increment"),
+    col_names = c("Min", "Max", "Increment"),
     caption = "Defined by highest dose administered so far"
   )
   x <- tidy(x)
@@ -56,7 +56,7 @@ knit_print.IncrementsRelativeDLT <- function(x, ..., asis = TRUE) {
 
   param <- h_kable_param_default(
     list(...),
-    col.names = c("Min", "Max", "Increment"),
+    col_names = c("Min", "Max", "Increment"),
     caption = "Defined by number of DLTs reported so far"
   )
   param[["x"]] <- tidy(x)
@@ -258,7 +258,7 @@ knit_print.IncrementsRelativeParts <- function(
 
   param <- h_kable_param_default(
     list(...),
-    col.names = c("Lower", "Upper", "Increment"),
+    col_names = c("Lower", "Upper", "Increment"),
     caption = paste0(
       "Defined by the number of ",
       tox_label[2],
@@ -271,8 +271,8 @@ knit_print.IncrementsRelativeParts <- function(
   names(header) <- c(headerLabel, " ")
   param[["x"]] <- tibble(
     intervals = x@intervals
-  ) %>%
-    h_range_to_minmax(intervals) %>%
+  ) |>
+    h_range_to_minmax(intervals) |>
     tibble::add_column(increments = c(0, x@increments))
   d_tab <- kableExtra::add_header_above(
     do.call(knitr::kable, param),
@@ -319,7 +319,7 @@ knit_print.IncrementsRelativeDLTCurrent <- function(
 
   param <- h_kable_param_default(
     list(...),
-    col.names = c("Min", "Max", "Increment"),
+    col_names = c("Min", "Max", "Increment"),
     caption = paste0(
       "Defined by number of ",
       tox_label[2],
