@@ -70,13 +70,11 @@ knit_print.CohortSizeConst <- function(
 knit_print.CohortSizeRange <- function(x, ..., asis = TRUE) {
   assert_flag(asis)
 
-  param <- list(...)
-  if (!("col.names" %in% names(param))) {
-    param[["col.names"]] <- c("Lower", "Upper", "Cohort size")
-  }
-  if (!("caption" %in% names(param))) {
-    param[["caption"]] <- "Defined by the dose to be used in the next cohort"
-  }
+  param <- h_kable_param_default(
+    list(...),
+    col.names = c("Lower", "Upper", "Cohort size"),
+    caption = "Defined by the dose to be used in the next cohort"
+  )
   x <- tidy(x)
   param[["x"]] <- x
   rv <- kableExtra::add_header_above(
@@ -113,19 +111,17 @@ knit_print.CohortSizeDLT <- function(
   asis = TRUE
 ) {
   assert_flag(asis)
-  param <- list(...)
   tox_label <- h_prepare_labels(tox_label)
 
-  if (!("col.names" %in% names(param))) {
-    param[["col.names"]] <- c("Lower", "Upper", "Cohort size")
-  }
-  if (!("caption" %in% names(param))) {
-    param[["caption"]] <- paste0(
+  param <- h_kable_param_default(
+    list(...),
+    col.names = c("Lower", "Upper", "Cohort size"),
+    caption = paste0(
       "Defined by the number of ",
       tox_label[2],
       " so far observed"
     )
-  }
+  )
   param[["x"]] <- tidy(x)
   headers <- c(2, 1)
   names(headers) <- c(paste0("No of ", tox_label[2]), " ")

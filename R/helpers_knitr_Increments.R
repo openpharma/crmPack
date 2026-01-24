@@ -19,13 +19,11 @@
 knit_print.IncrementsRelative <- function(x, ..., asis = TRUE) {
   assert_flag(asis)
 
-  param <- list(...)
-  if (!("col.names" %in% names(param))) {
-    param[["col.names"]] <- c("Min", "Max", "Increment")
-  }
-  if (!("caption" %in% names(param))) {
-    param[["caption"]] <- "Defined by highest dose administered so far"
-  }
+  param <- h_kable_param_default(
+    list(...),
+    col.names = c("Min", "Max", "Increment"),
+    caption = "Defined by highest dose administered so far"
+  )
   x <- tidy(x)
   param[["x"]] <- x
   rv <- kableExtra::add_header_above(
@@ -56,14 +54,11 @@ knit_print.IncrementsRelative <- function(x, ..., asis = TRUE) {
 knit_print.IncrementsRelativeDLT <- function(x, ..., asis = TRUE) {
   assert_flag(asis)
 
-  param <- list(...)
-  if (!("col.names" %in% names(param))) {
-    param[["col.names"]] <- c("Min", "Max", "Increment")
-  }
-  if (!("caption" %in% names(param))) {
-    param[["caption"]] <- "Defined by number of DLTs reported so far"
-  }
-
+  param <- h_kable_param_default(
+    list(...),
+    col.names = c("Min", "Max", "Increment"),
+    caption = "Defined by number of DLTs reported so far"
+  )
   param[["x"]] <- tidy(x)
   rv <- kableExtra::add_header_above(
     do.call(knitr::kable, param),
@@ -261,17 +256,15 @@ knit_print.IncrementsRelativeParts <- function(
     "following table:"
   )
 
-  param <- list(...)
-  if (!("col.names" %in% names(param))) {
-    param[["col.names"]] <- c("Lower", "Upper", "Increment")
-  }
-  if (!("caption" %in% names(param))) {
-    param[["caption"]] <- paste0(
+  param <- h_kable_param_default(
+    list(...),
+    col.names = c("Lower", "Upper", "Increment"),
+    caption = paste0(
       "Defined by the number of ",
       tox_label[2],
       " reported so far"
     )
-  }
+  )
   header <- c(2, 1)
   headerLabel <- tox_label[2]
   substr(headerLabel, 1, 1) <- toupper(substr(headerLabel, 1, 1))
@@ -322,23 +315,17 @@ knit_print.IncrementsRelativeDLTCurrent <- function(
   tox_label = c("DLT", "DLTs")
 ) {
   assert_flag(asis)
-  assert_character(tox_label, min.len = 1, max.len = 2, any.missing = FALSE)
+  tox_label <- h_prepare_labels(tox_label)
 
-  if (length(tox_label) == 1) {
-    tox_label[2] <- paste0(tox_label[1], "s")
-  }
-
-  param <- list(...)
-  if (!("col.names" %in% names(param))) {
-    param[["col.names"]] <- c("Min", "Max", "Increment")
-  }
-  if (!("caption" %in% names(param))) {
-    param[["caption"]] <- paste0(
+  param <- h_kable_param_default(
+    list(...),
+    col.names = c("Min", "Max", "Increment"),
+    caption = paste0(
       "Defined by number of ",
       tox_label[2],
       " reported in the current cohort"
     )
-  }
+  )
   param[["x"]] <- tidy(x)
   header_text <- c(2, 1)
   names(header_text) <- c(paste0("No ", tox_label[2]), " ")
