@@ -413,3 +413,106 @@ test_that("h_get_formatted_dosegrid works correctly", {
     "1.00, 2.00 and 3.00.\n\n"
   )
 })
+
+# h_kable_param_default ----
+
+test_that("h_kable_param_default sets defaults correctly", {
+  # Empty param list gets defaults
+result <- h_kable_param_default(
+    list(),
+    col.names = c("A", "B"),
+    caption = "Test caption"
+  )
+  expect_equal(result$col.names, c("A", "B"))
+  expect_equal(result$caption, "Test caption")
+
+  # User-provided values are preserved
+  result <- h_kable_param_default(
+    list(col.names = c("X", "Y"), caption = "User caption"),
+    col.names = c("A", "B"),
+    caption = "Test caption"
+  )
+  expect_equal(result$col.names, c("X", "Y"))
+  expect_equal(result$caption, "User caption")
+
+  # NULL defaults don't add parameters
+  result <- h_kable_param_default(list(), col.names = NULL)
+  expect_false("col.names" %in% names(result))
+
+  # Only col.names provided
+  result <- h_kable_param_default(list(), col.names = c("Col1", "Col2"))
+  expect_equal(result$col.names, c("Col1", "Col2"))
+  expect_false("caption" %in% names(result))
+
+  # Only caption provided
+  result <- h_kable_param_default(list(), caption = "Only caption")
+  expect_false("col.names" %in% names(result))
+  expect_equal(result$caption, "Only caption")
+
+  # Other parameters are preserved
+  result <- h_kable_param_default(
+    list(format = "html", digits = 3),
+    col.names = c("A", "B")
+  )
+  expect_equal(result$format, "html")
+  expect_equal(result$digits, 3)
+  expect_equal(result$col.names, c("A", "B"))
+})
+
+test_that("h_kable_param_default validates inputs correctly", {
+  # Invalid param type
+  expect_error(h_kable_param_default("not a list"))
+
+  # Invalid col.names type
+  expect_error(h_kable_param_default(list(), col.names = 123))
+
+  # Invalid caption type
+  expect_error(h_kable_param_default(list(), caption = 123))
+
+  # Caption must be length 1
+  expect_error(h_kable_param_default(list(), caption = c("a", "b")))
+})
+
+# h_prepare_labels ----
+
+test_that("h_prepare_labels handles singular labels correctly", {
+  # Standard pluralization with 's'
+  result <- h_prepare_labels("patient")
+  expect_equal(result, c("patient", "patients"))
+
+  result <- h_prepare_labels("participant")
+  expect_equal(result, c("participant", "participants"))
+
+  result <- h_prepare_labels("DLT")
+  expect_equal(result, c("DLT", "DLTs"))
+})
+
+test_that("h_prepare_labels handles toxicity special case", {
+  result <- h_prepare_labels("toxicity")
+  expect_equal(result, c("toxicity", "toxicities"))
+})
+
+test_that("h_prepare_labels passes through length-2 vectors", {
+  result <- h_prepare_labels(c("mouse", "mice"))
+  expect_equal(result, c("mouse", "mice"))
+
+  result <- h_prepare_labels(c("person", "people"))
+  expect_equal(result, c("person", "people"))
+})
+
+test_that("h_prepare_labels validates inputs correctly", {
+  # Too many elements
+  expect_error(h_prepare_labels(c("a", "b", "c")))
+
+  # Empty vector
+  expect_error(h_prepare_labels(character(0)))
+
+  # Non-character input
+  expect_error(h_prepare_labels(123))
+
+  # Vector with NA
+  expect_error(h_prepare_labels(c("a", NA)))
+
+  # Non-unique values
+  expect_error(h_prepare_labels(c("same", "same")))
+})
