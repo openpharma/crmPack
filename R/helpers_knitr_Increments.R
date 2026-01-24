@@ -271,8 +271,8 @@ knit_print.IncrementsRelativeParts <- function(
   names(header) <- c(headerLabel, " ")
   param[["x"]] <- tibble(
     intervals = x@intervals
-  ) %>%
-    h_range_to_minmax(intervals) %>%
+  ) |>
+    h_range_to_minmax(intervals) |>
     tibble::add_column(increments = c(0, x@increments))
   d_tab <- kableExtra::add_header_above(
     do.call(knitr::kable, param),
