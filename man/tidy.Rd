@@ -118,23 +118,23 @@ tidy(x, ...)
 \value{
 A (list of) tibble(s) representing the object in tidy form.
 
-The \code{\link{tibble}} object.
+The \code{\link[tibble:tibble]{tibble::tibble}} object.
 
-The \code{\link{tibble}} object.
+The \code{\link[tibble:tibble]{tibble::tibble}} object.
 
-The \code{\link{tibble}} object.
+The \code{\link[tibble:tibble]{tibble::tibble}} object.
 
-The \code{\link{tibble}} object.
+The \code{\link[tibble:tibble]{tibble::tibble}} object.
 
-The \code{\link{tibble}} object.
+The \code{\link[tibble:tibble]{tibble::tibble}} object.
 
-The \code{\link{tibble}} object.
+The \code{\link[tibble:tibble]{tibble::tibble}} object.
 
-The \code{\link{tibble}} object.
+The \code{\link[tibble:tibble]{tibble::tibble}} object.
 
-The \code{\link{list}} of \code{\link{tibble}} objects.
+The \code{\link{list}} of \code{\link[tibble:tibble]{tibble::tibble}} objects.
 
-The \code{\link{list}} of \code{\link{tibble}} objects.
+The \code{\link{list}} of \code{\link[tibble:tibble]{tibble::tibble}} objects.
 }
 \description{
 \ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#experimental}{\figure{lifecycle-experimental.svg}{options: alt='[Experimental]'}}}{\strong{[Experimental]}}
