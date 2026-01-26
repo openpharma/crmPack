@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE coverage SYSTEM "https://raw.githubusercontent.com/cobertura/cobertura/master/cobertura/src/site/htdocs/xml/coverage-04.dtd">
-<coverage line-rate="0.926772678399638" branch-rate="0" lines-covered="16377" lines-valid="17671" branches-covered="0" branches-valid="0" complexity="0" version="3.6.5" timestamp="2026-01-26 13:03:05.557733">
+<coverage line-rate="0.926772678399638" branch-rate="0" lines-covered="16377" lines-valid="17671" branches-covered="0" branches-valid="0" complexity="0" version="3.6.5" timestamp="2026-01-26 13:51:39.1814">
   <sources>
     <source>/__w/crmPack/crmPack/crmPack</source>
   </sources>
@@ -49,7 +49,7 @@
             <method name="OpeningNone" signature="" line-rate="1" branch-rate="0" complexity="0">
               <lines>
                 <line number="169" hits="85" branch="false"/>
-                <line number="82" hits="3" branch="false"/>
+                <line number="83" hits="3" branch="false"/>
               </lines>
             </method>
             <method name=".DefaultOpeningNone" signature="" line-rate="1" branch-rate="0" complexity="0">
@@ -66,11 +66,11 @@
                 <line number="236" hits="23" branch="false"/>
                 <line number="237" hits="23" branch="false"/>
                 <line number="238" hits="23" branch="false"/>
-                <line number="98" hits="6" branch="false"/>
-                <line number="101" hits="6" branch="false"/>
-                <line number="103" hits="3" branch="false"/>
-                <line number="106" hits="3" branch="false"/>
-                <line number="109" hits="6" branch="false"/>
+                <line number="99" hits="6" branch="false"/>
+                <line number="102" hits="6" branch="false"/>
+                <line number="104" hits="3" branch="false"/>
+                <line number="107" hits="3" branch="false"/>
+                <line number="110" hits="6" branch="false"/>
               </lines>
             </method>
             <method name=".DefaultOpeningMinResponses" signature="" line-rate="1" branch-rate="0" complexity="0">
@@ -85,12 +85,12 @@
                 <line number="287" hits="38" branch="false"/>
                 <line number="288" hits="76" branch="false"/>
                 <line number="290" hits="38" branch="false"/>
-                <line number="127" hits="122" branch="false"/>
                 <line number="128" hits="122" branch="false"/>
                 <line number="129" hits="122" branch="false"/>
                 <line number="130" hits="122" branch="false"/>
                 <line number="131" hits="122" branch="false"/>
                 <line number="132" hits="122" branch="false"/>
+                <line number="133" hits="122" branch="false"/>
               </lines>
             </method>
             <method name=".DefaultOpeningList" signature="" line-rate="1" branch-rate="0" complexity="0">
@@ -102,7 +102,7 @@
               <lines>
                 <line number="335" hits="15" branch="false"/>
                 <line number="336" hits="15" branch="false"/>
-                <line number="149" hits="118" branch="false"/>
+                <line number="150" hits="118" branch="false"/>
               </lines>
             </method>
             <method name=".DefaultOpeningAll" signature="" line-rate="1" branch-rate="0" complexity="0">
@@ -114,7 +114,7 @@
               <lines>
                 <line number="381" hits="14" branch="false"/>
                 <line number="382" hits="14" branch="false"/>
-                <line number="166" hits="4" branch="false"/>
+                <line number="167" hits="4" branch="false"/>
               </lines>
             </method>
             <method name=".DefaultOpeningAny" signature="" line-rate="1" branch-rate="0" complexity="0">
@@ -135,7 +135,7 @@
             <method name="RecruitmentUnlimited" signature="" line-rate="1" branch-rate="0" complexity="0">
               <lines>
                 <line number="460" hits="101" branch="false"/>
-                <line number="269" hits="3" branch="false"/>
+                <line number="270" hits="3" branch="false"/>
               </lines>
             </method>
             <method name=".DefaultRecruitmentUnlimited" signature="" line-rate="1" branch-rate="0" complexity="0">
@@ -147,9 +147,9 @@
               <lines>
                 <line number="510" hits="32" branch="false"/>
                 <line number="511" hits="32" branch="false"/>
-                <line number="286" hits="62" branch="false"/>
                 <line number="287" hits="62" branch="false"/>
                 <line number="288" hits="62" branch="false"/>
+                <line number="289" hits="62" branch="false"/>
               </lines>
             </method>
             <method name=".DefaultRecruitmentRatio" signature="" line-rate="1" branch-rate="0" complexity="0">
@@ -266,7 +266,7 @@
             <method name="OpeningNone" signature="" line-rate="1" branch-rate="0" complexity="0">
               <lines>
                 <line number="169" hits="85" branch="false"/>
-                <line number="82" hits="3" branch="false"/>
+                <line number="83" hits="3" branch="false"/>
               </lines>
             </method>
             <method name="OpeningMinResponses" signature="" line-rate="1" branch-rate="0" complexity="0">
@@ -278,11 +278,11 @@
                 <line number="236" hits="23" branch="false"/>
                 <line number="237" hits="23" branch="false"/>
                 <line number="238" hits="23" branch="false"/>
-                <line number="98" hits="6" branch="false"/>
-                <line number="101" hits="6" branch="false"/>
-                <line number="103" hits="3" branch="false"/>
-                <line number="106" hits="3" branch="false"/>
-                <line number="109" hits="6" branch="false"/>
+                <line number="99" hits="6" branch="false"/>
+                <line number="102" hits="6" branch="false"/>
+                <line number="104" hits="3" branch="false"/>
+                <line number="107" hits="3" branch="false"/>
+                <line number="110" hits="6" branch="false"/>
               </lines>
             </method>
             <method name="OpeningList" signature="" line-rate="1" branch-rate="0" complexity="0">
@@ -292,52 +292,52 @@
                 <line number="287" hits="38" branch="false"/>
                 <line number="288" hits="76" branch="false"/>
                 <line number="290" hits="38" branch="false"/>
-                <line number="127" hits="122" branch="false"/>
                 <line number="128" hits="122" branch="false"/>
                 <line number="129" hits="122" branch="false"/>
                 <line number="130" hits="122" branch="false"/>
                 <line number="131" hits="122" branch="false"/>
                 <line number="132" hits="122" branch="false"/>
+                <line number="133" hits="122" branch="false"/>
               </lines>
             </method>
             <method name="OpeningAll" signature="" line-rate="1" branch-rate="0" complexity="0">
               <lines>
                 <line number="335" hits="15" branch="false"/>
                 <line number="336" hits="15" branch="false"/>
-                <line number="149" hits="118" branch="false"/>
+                <line number="150" hits="118" branch="false"/>
               </lines>
             </method>
             <method name="OpeningAny" signature="" line-rate="1" branch-rate="0" complexity="0">
               <lines>
                 <line number="381" hits="14" branch="false"/>
                 <line number="382" hits="14" branch="false"/>
-                <line number="166" hits="4" branch="false"/>
+                <line number="167" hits="4" branch="false"/>
               </lines>
             </method>
             <method name="Opening#Opening" signature="" line-rate="1" branch-rate="0" complexity="0">
               <lines>
-                <line number="195" hits="3" branch="false"/>
-                <line number="224" hits="2" branch="false"/>
+                <line number="196" hits="3" branch="false"/>
+                <line number="225" hits="2" branch="false"/>
               </lines>
             </method>
             <method name="maxRecruits" signature="" line-rate="1" branch-rate="0" complexity="0">
               <lines>
-                <line number="251" hits="65" branch="false"/>
+                <line number="252" hits="65" branch="false"/>
               </lines>
             </method>
             <method name="RecruitmentUnlimited" signature="" line-rate="1" branch-rate="0" complexity="0">
               <lines>
                 <line number="460" hits="101" branch="false"/>
-                <line number="269" hits="3" branch="false"/>
+                <line number="270" hits="3" branch="false"/>
               </lines>
             </method>
             <method name="RecruitmentRatio" signature="" line-rate="1" branch-rate="0" complexity="0">
               <lines>
                 <line number="510" hits="32" branch="false"/>
                 <line number="511" hits="32" branch="false"/>
-                <line number="286" hits="62" branch="false"/>
                 <line number="287" hits="62" branch="false"/>
                 <line number="288" hits="62" branch="false"/>
+                <line number="289" hits="62" branch="false"/>
               </lines>
             </method>
           </methods>
@@ -351,27 +351,27 @@
             <line number="49" hits="124" branch="false"/>
             <line number="65" hits="125" branch="false"/>
             <line number="66" hits="125" branch="false"/>
-            <line number="82" hits="3" branch="false"/>
-            <line number="98" hits="6" branch="false"/>
-            <line number="101" hits="6" branch="false"/>
-            <line number="103" hits="3" branch="false"/>
-            <line number="106" hits="3" branch="false"/>
-            <line number="109" hits="6" branch="false"/>
-            <line number="127" hits="122" branch="false"/>
+            <line number="83" hits="3" branch="false"/>
+            <line number="99" hits="6" branch="false"/>
+            <line number="102" hits="6" branch="false"/>
+            <line number="104" hits="3" branch="false"/>
+            <line number="107" hits="3" branch="false"/>
+            <line number="110" hits="6" branch="false"/>
             <line number="128" hits="122" branch="false"/>
             <line number="129" hits="122" branch="false"/>
             <line number="130" hits="122" branch="false"/>
             <line number="131" hits="122" branch="false"/>
             <line number="132" hits="122" branch="false"/>
-            <line number="149" hits="118" branch="false"/>
-            <line number="166" hits="4" branch="false"/>
-            <line number="195" hits="3" branch="false"/>
-            <line number="224" hits="2" branch="false"/>
-            <line number="251" hits="65" branch="false"/>
-            <line number="269" hits="3" branch="false"/>
-            <line number="286" hits="62" branch="false"/>
+            <line number="133" hits="122" branch="false"/>
+            <line number="150" hits="118" branch="false"/>
+            <line number="167" hits="4" branch="false"/>
+            <line number="196" hits="3" branch="false"/>
+            <line number="225" hits="2" branch="false"/>
+            <line number="252" hits="65" branch="false"/>
+            <line number="270" hits="3" branch="false"/>
             <line number="287" hits="62" branch="false"/>
             <line number="288" hits="62" branch="false"/>
+            <line number="289" hits="62" branch="false"/>
           </lines>
         </class>
         <class name="Backfill-validity.R" filename="R/Backfill-validity.R" line-rate="1" branch-rate="0" complexity="0">
