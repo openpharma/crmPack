@@ -193,7 +193,13 @@ Now we can run the simulations for this particular scenario:
 
 ```{r}
 # For real applications, use e.g. McmcOptions() with defaults.
-mcmcOptions <- McmcOptions(burnin = 10, step = 1, samples = 100)
+mcmcOptions <- McmcOptions(
+    burnin = 10, 
+    step = 1, 
+    samples = 100, 
+    rng_kind = "Mersenne-Twister", 
+    rng_seed = 12345
+)
 
 # Simple backfill design simulation:
 sims_simple <- simulate(
@@ -231,7 +237,7 @@ For example, the 3rd simulated trial with the simple backfill design looks like 
 plot(sims_simple@data[[3]], mark_backfill = TRUE)
 ```
 
-We can see from the patient IDs, which are assigned sequentially in time, when the backfill patients were recruited (those with a "B" mark on the left of the points). For example, we see that the highest dose which was backfilled is 20, after which the maximum of 12 backfill patients was reached.
+We can see from the patient IDs, which are assigned sequentially in time, when the backfill patients were recruited (those with a "B" mark on the left of the points). For example, we see that the highest dose which was backfilled is 15, after which the maximum of 12 backfill patients was reached.
 
 Similarly we can also plot the data from a simulated trial with the complex backfill design. Here we show the 5th simulated trial, and because the backfill cohort rule is also based on responses, we also mark the response data:
 
@@ -239,7 +245,7 @@ Similarly we can also plot the data from a simulated trial with the complex back
 plot(sims_complex@data[[5]], mark_backfill = TRUE, mark_response = TRUE)
 ```
 
-Here we can see that the starting dose cohort at dose 3 as well as the next one at dose 5 did not produce any responses, hence no backfill cohorts could be opened at these dose levels. Only after dose escalation reached dose 10 in cohort 3 and a response was observed there, a backfill cohort could be started there. 
+Here we can see that the starting dose cohort at dose 3 as well as the next one at dose 5 did not produce any responses, hence no backfill cohorts could be opened at these dose levels. Only after dose escalation reached dose 10 in cohort 3 and responses were observed there, a backfill cohort could be started there and at the higher dose 20 (because we assumed a monotone dose-response relationship, and include lower doses in our response assessment in the backfill cohort opening rule). 
 
 ### Investigating simulation results
 
@@ -255,7 +261,7 @@ table(backfill_counts_simple)
 table(backfill_counts_complex)
 ```
 
-So we see that for all 10 simulations in the simple design, the maximum number of 12 backfill patients were recruited. For the 10 simulations of the complex design the situation is more varied: In half of the 10 simulations no backfill patients were recruited at all e.g., but in some including the trial no. 5 we looked at above we saw 8 backfill patients.
+So we see that for all except one simulation in the simple design, the maximum number of 12 backfill patients was recruited. For the 10 simulations of the complex design the situation is more varied: In 6 of the 10 simulations no backfill patients were recruited at all e.g., but in some including the trial no. 5 we looked at above we saw 6 or more backfill patients.
 
 Let's also look at the dose distribution of the backfill patients. We can extract the backfill doses from each simulated trial like this:
 
