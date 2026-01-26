@@ -184,7 +184,7 @@ h_get_design_data_backfill <- function() {
       opening = OpeningMinDose(min_dose = 1) &
         OpeningMinCohorts(min_cohorts = 3),
       priority = "highest",
-      total_size = 20L
+      max_size = 20L
     )
   )
   design

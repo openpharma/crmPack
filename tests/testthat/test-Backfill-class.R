@@ -204,7 +204,7 @@ test_that(".Backfill works as expected", {
 test_that("Backfill object can be created with default parameters", {
   result <- expect_silent(Backfill())
   expect_valid(result, "Backfill")
-  expect_identical(result@total_size, 1e6L)
+  expect_identical(result@max_size, 1e6L)
   expect_identical(result@priority, "highest")
   expect_s4_class(result@opening, "OpeningMinDose")
   expect_s4_class(result@recruitment, "RecruitmentUnlimited")
@@ -222,10 +222,10 @@ test_that("Backfill object can be created with custom opening and recruitment", 
   expect_identical(result@recruitment, recruitment)
 })
 
-test_that("Backfill object can be created with custom total_size", {
-  result <- expect_silent(Backfill(total_size = 100L))
+test_that("Backfill object can be created with custom max_size", {
+  result <- expect_silent(Backfill(max_size = 100L))
   expect_valid(result, "Backfill")
-  expect_identical(result@total_size, 100L)
+  expect_identical(result@max_size, 100L)
 })
 
 test_that("Backfill object can be created with different priorities", {
@@ -242,6 +242,6 @@ test_that("Backfill object can be created with different priorities", {
 test_that(".DefaultBackfill works as expected", {
   result <- expect_silent(.DefaultBackfill())
   expect_valid(result, "Backfill")
-  expect_identical(result@total_size, 1e6L)
+  expect_identical(result@max_size, 1e6L)
   expect_identical(result@priority, "highest")
 })

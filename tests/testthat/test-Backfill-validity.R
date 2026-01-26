@@ -149,16 +149,16 @@ test_that("v_backfill passes for valid Backfill object with custom parameters", 
   object <- Backfill(
     opening = OpeningMinCohorts(min_cohorts = 2),
     recruitment = RecruitmentRatio(ratio = 0.5),
-    total_size = 50L,
+    max_size = 50L,
     priority = "lowest"
   )
   expect_true(v_backfill(object))
 })
 
-test_that("v_backfill fails for non-positive total_size", {
+test_that("v_backfill fails for non-positive max_size", {
   object <- Backfill()
-  object@total_size <- -100L
-  err_msg <- "total_size needs to be a positive integer scalar"
+  object@max_size <- -100L
+  err_msg <- "max_size needs to be a positive integer scalar"
   expect_equal(v_backfill(object), err_msg)
 })
 

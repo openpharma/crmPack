@@ -211,7 +211,7 @@ test_that("knit_print-Design works correctly with backfill", {
     cohort_size = CohortSizeConst(size = 4),
     opening = OpeningMinDose(min_dose = 10),
     recruitment = RecruitmentRatio(ratio = 1),
-    total_size = 50L,
+    max_size = 50L,
     priority = "highest"
   )
   result <- knit_print(x, asis = FALSE)

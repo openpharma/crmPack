@@ -12,7 +12,7 @@ Backfill(
   cohort_size = CohortSizeConst(size = 3),
   opening = OpeningMinDose(),
   recruitment = RecruitmentUnlimited(),
-  total_size = 1000000L,
+  max_size = 1000000L,
   priority = c("highest", "lowest", "random")
 )
 
@@ -25,7 +25,7 @@ Backfill(
 
 \item{recruitment}{(\code{Recruitment})\cr see the slot definition.}
 
-\item{total_size}{(\code{count})\cr see the slot definition.}
+\item{max_size}{(\code{count})\cr see the slot definition.}
 
 \item{priority}{(\code{character})\cr see the slot definition.}
 }
@@ -46,7 +46,7 @@ Class representing a backfilling rule in a clinical trial design.
 
 \item{\code{recruitment}}{(\code{Recruitment})\cr recruitment criteria for backfilling.}
 
-\item{\code{total_size}}{(\code{count})\cr the total number of patients to be backfilled.}
+\item{\code{max_size}}{(\code{count})\cr the total number of patients to be backfilled.}
 
 \item{\code{priority}}{(\code{character})\cr the priority rule for backfilling,
 one of "highest", "lowest", or "random".}

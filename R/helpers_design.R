@@ -426,7 +426,7 @@ h_enroll_backfill_patients <- function(
     backfill@recruitment,
     active_cohort_size = cohort_size
   )
-  backfill_left <- backfill@total_size - backfill_patients
+  backfill_left <- backfill@max_size - backfill_patients
   max_recruits <- min(max_recruits, backfill_left)
 
   # Enroll backfill cohorts.

@@ -96,8 +96,8 @@ NULL
 v_backfill <- function(object) {
   v <- Validate()
   v$check(
-    test_count(object@total_size, positive = TRUE),
-    "total_size needs to be a positive integer scalar"
+    test_count(object@max_size, positive = TRUE),
+    "max_size needs to be a positive integer scalar"
   )
   v$check(
     test_choice(object@priority, c("highest", "lowest", "random")),

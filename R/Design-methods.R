@@ -2996,13 +2996,13 @@ setMethod(
           )
         }
 
-        total_size <- if (data@placebo) {
+        max_size <- if (data@placebo) {
           cohort_size + placebo_size
         } else {
           cohort_size
         }
 
-        safety_window <- windowLength(object@safetyWindow, total_size)
+        safety_window <- windowLength(object@safetyWindow, max_size)
 
         # Simulate DLTs for cohort.
         # If any patient has DLT before first patient finishes staggered window,

@@ -37,9 +37,9 @@ knit_print.Backfill <- function(
     )
 
     # Render total size and priority
-    total_size_text <- paste0(
+    max_size_text <- paste0(
       "**Total number of backfill patients**: ",
-      ifelse(x@total_size >= 1e6, "Unlimited", x@total_size),
+      ifelse(x@max_size >= 1e6, "Unlimited", x@max_size),
       " backfill patients.\n\n"
     )
 
@@ -53,7 +53,7 @@ knit_print.Backfill <- function(
       cohort_size_text,
       opening_text,
       recruitment_text,
-      total_size_text,
+      max_size_text,
       priority_text
     )
   }

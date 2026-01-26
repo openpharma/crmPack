@@ -533,7 +533,7 @@ RecruitmentRatio <- function(ratio = 1) {
 #' @slot cohort_size (`CohortSize`)\cr the size of cohorts to be backfilled.
 #' @slot opening (`Opening`)\cr the opening criteria for backfilling.
 #' @slot recruitment (`Recruitment`)\cr recruitment criteria for backfilling.
-#' @slot total_size (`count`)\cr the total number of patients to be backfilled.
+#' @slot max_size (`count`)\cr the maximum number of patients to be backfilled.
 #' @slot priority (`character`)\cr the priority rule for backfilling,
 #'   one of "highest", "lowest", or "random".
 #'
@@ -545,14 +545,14 @@ RecruitmentRatio <- function(ratio = 1) {
     cohort_size = "CohortSize",
     opening = "Opening",
     recruitment = "Recruitment",
-    total_size = "integer",
+    max_size = "integer",
     priority = "character"
   ),
   prototype = prototype(
     cohort_size = CohortSizeConst(size = 3),
     opening = .OpeningMinDose(),
     recruitment = .RecruitmentUnlimited(),
-    total_size = 1e6L,
+    max_size = 1e6L,
     priority = "highest"
   ),
   contains = "CrmPackClass",
@@ -566,7 +566,7 @@ RecruitmentRatio <- function(ratio = 1) {
 #' @param cohort_size (`CohortSize`)\cr see the slot definition.
 #' @param opening (`Opening`)\cr see the slot definition.
 #' @param recruitment (`Recruitment`)\cr see the slot definition.
-#' @param total_size (`count`)\cr see the slot definition.
+#' @param max_size (`count`)\cr see the slot definition.
 #' @param priority (`character`)\cr see the slot definition.
 #' @return An object of class `Backfill`.
 #'
@@ -575,18 +575,18 @@ Backfill <- function(
   cohort_size = CohortSizeConst(size = 3),
   opening = OpeningMinDose(),
   recruitment = RecruitmentUnlimited(),
-  total_size = 1e6L,
+  max_size = 1e6L,
   priority = c("highest", "lowest", "random")
 ) {
-  assert_count(total_size, positive = TRUE)
-  total_size <- as.integer(total_size)
+  assert_count(max_size, positive = TRUE)
+  max_size <- as.integer(max_size)
   priority <- match.arg(priority)
 
   .Backfill(
     cohort_size = cohort_size,
     opening = opening,
     recruitment = recruitment,
-    total_size = total_size,
+    max_size = max_size,
     priority = priority
   )
 }

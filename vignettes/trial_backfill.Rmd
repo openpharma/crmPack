@@ -28,7 +28,7 @@ Hence, with `crmPack` it is now possible to include backfilling cohorts in the s
 Conceptually the backfilling details are part of the design of a trial. Therefore the details are included via a dedicated slot `backfill` in the `Design` class. It contains an object of class `Backfill`, which captures these details via the following slots:
 
 - `cohort_size`: How large are the backfilling cohorts? Here an object of class `CohortSize` is used.
-- `total_size`: What is the overall maximum number of patients across all backfill cohorts?
+- `max_size`: What is the overall maximum number of patients across all backfill cohorts?
 - `opening`: When can a backfill cohort be opened or recruited into? Here an object of a new `Opening` rules class is used. These rules can be based on e.g. dose level, current highest/maximum safe dose, efficacy responses, etc.
 - `recruitment`: How fast can patients be recruited into backfill cohorts? Here an object of a new `Recruitment` class is used. You can choose between immediate recruitment vs. a ratio compared to active dose escalation cohort (e.g. when active cohort has 3 patients recruited then here only 1/3 so 1 patient per cycle to backfill cohorts).
 - `priority`: When there are multiple open backfill cohorts, which one should be recruited into first? Here a simple string is used to specify the priority rule (first "lowest" dose, first "highest" dose, or "random").
@@ -111,7 +111,7 @@ Let's continue with the simplest case of backfill cohorts. Here we define backfi
 ```{r}
 backfill_simple <- Backfill(
     cohort_size = CohortSizeConst(3),
-    total_size = 12,
+    max_size = 12,
     opening = OpeningMinCohorts(min_cohorts = 1),
     recruitment = RecruitmentUnlimited(),
     priority = "lowest"
@@ -140,7 +140,7 @@ backfill_complex <- Backfill(
     ),
     recruitment = RecruitmentRatio(ratio = 1/2),
     priority = "highest",
-    total_size = 20
+    max_size = 20
 )
 backfill_complex
 ```

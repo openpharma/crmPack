@@ -37,7 +37,7 @@ test_that("knit_print.Backfill works with custom values", {
     cohort_size = CohortSizeConst(size = 5),
     opening = OpeningMinDose(min_dose = 10),
     recruitment = RecruitmentRatio(ratio = 0.5),
-    total_size = 20L,
+    max_size = 20L,
     priority = "lowest"
   )
   result <- knit_print(x, asis = FALSE)
@@ -60,7 +60,7 @@ test_that("knit_print.Backfill works with complex opening rules", {
       OpeningMinCohorts(min_cohorts = 2L)
     ),
     recruitment = RecruitmentUnlimited(),
-    total_size = 100L,
+    max_size = 100L,
     priority = "random"
   )
   result <- knit_print(x, asis = FALSE)
@@ -78,7 +78,7 @@ test_that("knit_print.Backfill works correctly with OpeningNone", {
     cohort_size = CohortSizeConst(size = 2),
     opening = OpeningNone(),
     recruitment = RecruitmentRatio(ratio = 1),
-    total_size = 50L,
+    max_size = 50L,
     priority = "highest"
   )
   result <- knit_print(x, asis = FALSE)
