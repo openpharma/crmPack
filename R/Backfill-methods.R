@@ -69,7 +69,8 @@ setMethod(
 
 ## OpeningNone ----
 
-#' @describeIn openCohort method for `OpeningNone` class.
+#' @describeIn openCohort method for `OpeningNone` class, which never opens a cohort, i.e.
+#'   the trial design will not use backfilling.
 #'
 #' @aliases openCohort-OpeningNone
 #'

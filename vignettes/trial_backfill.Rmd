@@ -38,6 +38,22 @@ Additional parts of the backfill cohort framework comprise:
 - The `Data` objects have a slot `backfilled` identifying whether each patient was backfilled or not, and the slot `response` identifies whether each patient had a response (1) or not (0). When these are not actively set by the user, then they default to no patients backfilled (all `FALSE`) and no response data available (all `NA`).
 - Some `Stopping` rules can optionally exclude backfill patients for assessing whether a trial can be stopped or not. This is currently the case for the `StoppingPatientsNearDose` rule.
 
+## Algorithm
+
+For reference, we describe the algorithm used in the `simulate` method for `Design` objects to include backfilling cohorts:
+
+1. Backfilling is only possible if the `opening` is *not* an `OpeningNone` object. Otherwise no backfilling is done in any of the trial simulations.
+2. A queue of open backfill cohorts is maintained, and it is initialized as empty at the start of the trial. Likewise, the total number of backfill patients recruited so far is initialized to zero.
+3. Throughout the trial simulations, for each patient next to the toxicity outcome, in addition also the binary response is simulated according to the assumed dose-response probability function (note that placebo patients can also have a response in principle, according to the placebo dose used in the dose grid).
+4. After each dose escalation cohort is completed (i.e. all patients in the cohort have their toxicity and response outcomes observed), the backfill queue is updated:
+    a. First, for all of the previous cohorts in the trial we check whether a backfill cohort can be opened, or can stay open (in case it was already open). This is done by applying the `opening` rules to each cohort in turn, in combination with comparing the cohort's dose with the current dose: It is a strict requirement that only cohorts with doses below the current dose can be open for backfilling (as the name suggests already).
+    b. If a cohort is already in the backfill queue, we first check whether it is full already (maximum number of backfill patients in this particular queue has been reached). If we can open it and it is not full, then it is opened or remains open. If it is full, it remains closed. If we cannot open it, then it is closed (if it was open before), but still remains in the queue for record keeping.
+    c. If a cohort is not yet in the backfill queue and we can open it, then it is added to the backfill queue. The maximum size of each backfill cohort is determined by the `size` rule.
+5.  After updating the backfill queue, the number of patients which can be enrolled in this dose cycle into backfill cohorts is determined according to the `recruitment` rule and the `max_size` limit for the overall number of backfill patients. If there are no backfill patients which can be recruited, then we continue with the next dose escalation cohort.
+6.  Assuming that we can recruit backfill patients, the cohorts from the backfill queue are sorted according to the `priority` option. Then patients are recruited into the open backfill cohorts in this order (filling up as many as possible patients for each cohort), until either all possible backfill patients for this cycle have been recruited, or all open backfill cohorts are full.
+7.  Backfill cohorts which have reached their maximum size are closed (i.e. they cannot be recruited into anymore), but they remain in the backfill queue for record keeping.
+8.  After recruiting any backfilling patients, the trial simulation continues with determining the maximum increment, fitting the regression model, selecting the next dose, checking stopping rules, as usual. Note that toxicity outcomes from backfill patients are deliberately included in the model fitting and dose selection, to reflect the actual data situation in the trial.
+
 ## Examples
 
 ### Standard components
@@ -102,7 +118,7 @@ design_no_backfill <- Design(
 design_no_backfill@backfill
 ```
 
-Note that this concise statement is produced by dedicated `knit_print` methods for the `Backfill` class, which help with the consistent reporting of `crmPack` design details in vignettes and reports. 
+> **Note:** This concise statement is produced by dedicated `knit_print` methods for the `Backfill` class, which help with the consistent reporting of `crmPack` design details in vignettes and reports. 
 
 ### Simple backfill cohorts
 
@@ -128,7 +144,7 @@ design_simple_backfill@backfill <- backfill_simple
 
 ### More complex backfill cohorts
 
-Now let's make things a bit more complex. We define a random number of patients for each backfill cohort, with a minimum of 1 patient and a maximum of 6 patients. Backfill cohorts can only be opened once at least 3 dose escalation cohorts have been completed. Note that this will lead to a delayed opening of potentially multiple backfill cohorts. In addition, at least one response must have been observed at the cohort's dose level or below before it could be opened for backfill. We will be able to specify the assumed dose-response probability function in the `simulate` method call later. Recruitment into backfill cohorts is slower than dose escalation cohorts, with a ratio of 1 backfill patient for every 2 dose escalation patients. When multiple backfill cohorts are open, then the highest dose level is recruited into first. The total maximum number of backfill patients is set to 20.
+Now let's make things a bit more complex. We define a random number of patients for each backfill cohort, with a minimum of 1 patient and a maximum of 6 patients. Backfill cohorts can only be opened once at least 3 dose escalation cohorts have been completed. Note that this will lead to a delayed opening of cohorts 1, 2, and 3 for simultaneous backfilling. In addition, at least one response must have been observed at the cohort's dose level or a lower dose level before it could be opened for backfill. For example, if there is no reponse observed in cohort 1 at the lowest dose level, then it will not be opened for backfilling at all. We will be able to specify the assumed dose-response probability function in the `simulate` method call later. Recruitment into backfill cohorts is slower than dose escalation cohorts, with a ratio of 1 backfill patient for every 2 dose escalation patients. When multiple backfill cohorts are open, then the highest dose level is recruited into first. The total maximum number of backfill patients is set to 20.
 
 ```{r}
 backfill_complex <- Backfill(
