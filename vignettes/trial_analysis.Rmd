@@ -146,7 +146,7 @@ design <- Design(
 Given the trial design constructed above, the process of analysing a real life instance of the trial is simply a matter of providing the model with the actual toxicity status of the participants treated so far.  The escalation rules we defined earlier allow the use of a single patient run-in until either the first DLT is observed or until dose 20 has been administered.  
 
 ### The single patient run-in
-Assume that the first three patients - dosed at `1`, `3` and `5` - completed the trial without incident, but that the fourth patient - treated at `10` - experienced a DLT.
+Assume that the first three patients - dosed at `1`, `3`, and `9` - completed the trial without incident, but that the fourth patient - treated at `20` - experienced a DLT.
 
 We provide this information to `crmPack` via a `Data` object:
 
@@ -172,10 +172,23 @@ and, since the `plot` method returns a `ggplot` object, it is easily customised.
 plot(firstFour) + theme_light()
 ```
 
-Now, update the model to obtain the posterior estimate of the dose-toxicity curve:
+We first define the MCMC options, explicitly setting a seed and the kind for the random number generator, in order to make sure that the results are reproducible:
 
 ```{r}
-vignetteMcmcOptions <- McmcOptions(burnin = 100, step = 2, samples = 1000)
+vignetteMcmcOptions <- McmcOptions(
+  burnin = 100,
+  step = 2,
+  samples = 1000,
+  rng_seed = 321,
+  rng_kind = "Wichmann-Hill"
+)
+```
+
+Note that in practice one would use larger numbers for `burnin` and `samples` than those used here for the sake of saving computation time on the CRAN checks.
+
+Now, we can update the model to obtain the posterior estimate of the dose-toxicity curve:
+
+```{r}
 postSamples <- mcmc(
   data = firstFour,
   model = model,
@@ -248,8 +261,6 @@ From these presentations, we can see that:
 
 Items 1 and 4 in the list tell us both that the size of the next cohort should be three.  Items 2 and 3 together imply that the highest dose that can be used in the next cohort is `20`.
 
-Thus, the model's recommendation is that the next cohort should consist of three patients, each treated at `20`.  This can be confirmed programmatically:
-
 ```{r}
 nextMaxDose <- maxDose(my_increments, firstFour)
 nextMaxDose
@@ -264,6 +275,8 @@ doseRecommendation <- nextBest(
 doseRecommendation$value
 ```
 
+Thus, the model's recommendation is that the next cohort should consist of three patients, each treated at `20`. 
+
 However, given that the probability that `20` is in the overdose range is only just less than the threshold of 0.25 (and because the only participant so far treated at `20` experienced a DLT) it would be a perfectly reasonable clinical decision to treat the next cohort at `10` - or, indeed, at any other dose below `20`.  <i>There is absolutely no obligation to follow the CRM dose recommendation without consideration of other factors that might affect the choice of the most appropriate dose for the next cohort.</i>  However, for the purpose of exposition, we will treat the next cohort at `20`, as recommended by the model.
 
 We can confirm that the trial's stopping rules have not been satisfied:
@@ -277,7 +290,6 @@ stopTrial(
   firstFour
 )
 ```
-
 
 ### The first full cohort
 Assume that none of the three patients in the first full cohort report a DLT:
@@ -365,7 +377,7 @@ Tabulate the posterior:
 tabulatePosterior(postSamples2, secondFullCohort)
 ```
 
-The dose with the highest posterior probability of being in the target toxicity range is now `45`, but this dose also has an unacceptably high probability of being in the overdose range.  Therefore, the trial should continue and the next cohort should be treated at `30`:
+The dose with the highest posterior probability of being in the target toxicity range is now `45`, but this dose almost has an unacceptably high probability of being in the overdose range. So the team decides to go for a next cohort at `30`:
 ```{r}
 nextMaxDose <- maxDose(my_increments, secondFullCohort)
 nextMaxDose
@@ -381,7 +393,7 @@ doseRecommendation$value
 
 x <- stopTrial(
   my_stopping,
-  dose = doseRecommendation$value,
+  dose = 30, # team decision.
   postSamples2,
   model,
   secondFullCohort
@@ -561,11 +573,11 @@ crmPack provides a wealth of information about the trial's results.  The followi
 plot(fifthFullCohort)
 ```
 
-```{rfig.alt = "A plot of the posterior after nineteen participants have been treated.  The mean probability of toxicity increases smoothly from about zero percent at a dose of zero to about 55% at a dose of 100.  The confidence interval extends from 0% to about 6% at a dose of zero and from about 22% to  about 90% at a dose of 100."}
+```{r, fig.alt = "A plot of the posterior after nineteen participants have been treated.  The mean probability of toxicity increases smoothly from about zero percent at a dose of zero to about 55% at a dose of 100.  The confidence interval extends from 0% to about 6% at a dose of zero and from about 22% to about 90% at a dose of 100."}
 plot(postSamples5, model, fifthFullCohort)
 ```
 
-```{rfig.alt = "Two graphs arranged in a single column.  The upper graph shoes green lines of various heights that show the probability each dose is in the target toxicity range.  There is a big arrow pointing to the bar at a dose of 45, indicating that this dose has the highest probability of being in the target toxicity range.  The lower graph as a similar series of red lines, indicating the probability that each dose is in the overdose range.  There is a horizontal black dashed line at 25%, indicating that this is the highest acceptable probability of being in the overdose range.  The red bars for doses of 60 and above all extend above 25%, indicating that their toxicity is unacceptable.  The toxicity for doses of 45 and below lie below 25%."}
+```{r, fig.alt = "Two graphs arranged in a single column.  The upper graph shoes green lines of various heights that show the probability each dose is in the target toxicity range.  There is a big arrow pointing to the bar at a dose of 45, indicating that this dose has the highest probability of being in the target toxicity range.  The lower graph as a similar series of red lines, indicating the probability that each dose is in the overdose range.  There is a horizontal black dashed line at 25%, indicating that this is the highest acceptable probability of being in the overdose range.  The red bars for doses of 60 and above all extend above 25%, indicating that their toxicity is unacceptable.  The toxicity for doses of 45 and below lie below 25%."}
 doseRecommendation$plot
 ```
 
