@@ -202,8 +202,8 @@ combo_sims_sum
 #> True toxicity at doses selected : mean 17 % (17 %, 17 %) 
 #> Proportion of trials selecting target MTD: 0 %
 #> Dose most often selected as MTD: 12 
-#> Observed toxicity rate at dose most often selected: 33 %
-#> Fitted toxicity rate at dose most often selected : mean 19 % (19 %, 19 %) 
+#> Observed toxicity rate at dose most often selected: NaN %
+#> Fitted toxicity rate at dose most often selected : mean 20 % (20 %, 20 %) 
 #> Stop reason triggered:
 #>  P(0.2 ≤ prob(DLE | NBD) ≤ 0.35) ≥ 0.5 :  0 %
 #>  ≥ 10 patients dosed :  100 %

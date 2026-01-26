@@ -144,9 +144,9 @@ summary(mySims, truth = myTruth)
 #> Dose most often selected as MTD: 20 
 #> Observed toxicity rate at dose most often selected: 25 %
 #> Fitted toxicity rate at dose most often selected : mean 25 % (25 %, 25 %) 
-#> max_mtd : 127.12 
-#> mean_mtd : 23.68 
-#> median_mtd : 22.87 
+#> max_mtd : 282.72 
+#> mean_mtd : 25.24 
+#> median_mtd : 23.1 
 #> Stop reason triggered:
 #>  ≥ 3 cohorts dosed :  100 %
 #>  P(0.2 ≤ prob(DLE | NBD) ≤ 0.35) ≥ 0.5 :  100 %

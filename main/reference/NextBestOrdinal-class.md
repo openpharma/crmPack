@@ -68,7 +68,7 @@ NextBestOrdinal(
 #> {
 #>     quantile(mtd_samples, probs = 0.25)
 #> }
-#> <environment: 0x55c922d73e50>
+#> <environment: 0x55a674c52fe8>
 #> 
 #> 
 ```
