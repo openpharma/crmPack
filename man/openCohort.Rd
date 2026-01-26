@@ -62,7 +62,8 @@ Only used for \code{OpeningList} and its subclasses.}
 
 \item \code{openCohort(OpeningMinCohorts)}: method for \code{OpeningMinCohorts} class.
 
-\item \code{openCohort(OpeningNone)}: method for \code{OpeningNone} class.
+\item \code{openCohort(OpeningNone)}: method for \code{OpeningNone} class, which never opens a cohort, i.e.
+the trial design will not use backfilling.
 
 \item \code{openCohort(OpeningMinResponses)}: method for \code{OpeningMinResponses} class.
 

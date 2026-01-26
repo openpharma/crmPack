@@ -46,7 +46,7 @@ Class representing a backfilling rule in a clinical trial design.
 
 \item{\code{recruitment}}{(\code{Recruitment})\cr recruitment criteria for backfilling.}
 
-\item{\code{max_size}}{(\code{count})\cr the total number of patients to be backfilled.}
+\item{\code{max_size}}{(\code{count})\cr the maximum number of patients to be backfilled.}
 
 \item{\code{priority}}{(\code{character})\cr the priority rule for backfilling,
 one of "highest", "lowest", or "random".}
