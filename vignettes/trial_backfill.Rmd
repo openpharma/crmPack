@@ -237,15 +237,15 @@ For example, the 3rd simulated trial with the simple backfill design looks like 
 plot(sims_simple@data[[3]], mark_backfill = TRUE)
 ```
 
-We can see from the patient IDs, which are assigned sequentially in time, when the backfill patients were recruited (those with a "B" mark on the left of the points). For example, we see that the highest dose which was backfilled is 15, after which the maximum of 12 backfill patients was reached.
+We can see from the patient IDs, which are assigned sequentially in time, when the backfill patients were recruited (those with an empty shape). For example, we see that the highest dose which was backfilled is 15, after which the maximum of 12 backfill patients was reached.
 
-Similarly we can also plot the data from a simulated trial with the complex backfill design. Here we show the 5th simulated trial, and because the backfill cohort rule is also based on responses, we also mark the response data:
+Similarly we can also plot the data from a simulated trial with the complex backfill design. Here we show the 5th simulated trial, and because the backfill cohort rule is also based on responses, we also mark the response data (using blue squares around the points with a response):
 
 ```{r}
 plot(sims_complex@data[[5]], mark_backfill = TRUE, mark_response = TRUE)
 ```
 
-Here we can see that the starting dose cohort at dose 3 as well as the next one at dose 5 did not produce any responses, hence no backfill cohorts could be opened at these dose levels. Only after dose escalation reached dose 10 in cohort 3 and responses were observed there, a backfill cohort could be started there and at the higher dose 20 (because we assumed a monotone dose-response relationship, and include lower doses in our response assessment in the backfill cohort opening rule). 
+Here we can see that the starting dose cohort at dose 3 as well as the next one at dose 5 did not produce any responses, hence no backfill cohorts could be opened at these dose levels. Only after dose escalation reached dose 10 in cohort 3 and two responses were observed there, a backfill cohort could be started there and at the higher dose 20 (because we assumed a monotone dose-response relationship, and include lower doses in our response assessment in the backfill cohort opening rule). 
 
 ### Investigating simulation results
 

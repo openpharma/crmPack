@@ -111,7 +111,13 @@ setMethod(
       x <- x[!x@backfilled]
     }
 
-    p <- h_plot_data_dataordinal(x, blind, legend, ...)
+    p <- h_plot_data_dataordinal(
+      x,
+      blind,
+      legend,
+      mark_backfill = mark_backfill,
+      ...
+    )
 
     if (mark_backfill || mark_response) {
       df <- h_plot_data_df(
@@ -125,24 +131,12 @@ setMethod(
           geom_point(
             data = df[!is.na(df$response) & df$response == 1, ],
             aes(
-              x = patient + 0.2,
+              x = patient,
               y = dose
             ),
-            shape = 8,
+            shape = 0,
             colour = "blue",
-            size = 3
-          )
-      }
-      if (mark_backfill) {
-        p <- p +
-          geom_text(
-            data = df[df$backfilled, ],
-            aes(
-              x = patient - 0.2,
-              y = dose,
-              label = "B"
-            ),
-            show.legend = FALSE
+            size = 5
           )
       }
 
@@ -154,8 +148,8 @@ setMethod(
         response_point <- grid::pointsGrob(
           x = 0.05,
           y = 0.5,
-          pch = 8,
-          gp = grid::gpar(col = "blue", cex = 1.2)
+          pch = 0,
+          gp = grid::gpar(col = "blue", cex = 1.5)
         )
         response_label <- grid::textGrob(
           "  Response",
@@ -172,11 +166,32 @@ setMethod(
       }
 
       if (mark_backfill) {
-        backfill_text <- grid::textGrob(
-          "B",
+        # Show filled vs hollow shapes to explain
+        # backfill marking (which is done in h_plot_data_dataordinal)
+        primary_point <- grid::pointsGrob(
           x = 0.05,
           y = 0.5,
-          gp = grid::gpar(col = "black", fontsize = 9)
+          pch = 16, # filled circle
+          gp = grid::gpar(col = "black", cex = 1.2)
+        )
+        primary_label <- grid::textGrob(
+          "  Escalation",
+          x = 0.25,
+          y = 0.5,
+          just = "left",
+          gp = grid::gpar(fontsize = 10)
+        )
+        marking_grobs[[grob_idx]] <- grid::grobTree(
+          primary_point,
+          primary_label
+        )
+        grob_idx <- grob_idx + 1L
+
+        backfill_point <- grid::pointsGrob(
+          x = 0.05,
+          y = 0.5,
+          pch = 1, # open circle
+          gp = grid::gpar(col = "black", cex = 1.2)
         )
         backfill_label <- grid::textGrob(
           "  Backfill",
@@ -186,7 +201,7 @@ setMethod(
           gp = grid::gpar(fontsize = 10)
         )
         marking_grobs[[grob_idx]] <- grid::grobTree(
-          backfill_text,
+          backfill_point,
           backfill_label
         )
         grob_idx <- grob_idx + 1L

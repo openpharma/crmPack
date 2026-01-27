@@ -13,6 +13,7 @@ h_plot_data_dataordinal(
   legend = TRUE,
   tox_labels = c(Yes = "red", No = "black"),
   tox_shapes = c(Yes = 17L, No = 16L),
+  mark_backfill = FALSE,
   ...
 )
 
@@ -53,6 +54,8 @@ categories.}
 \item{tox_shapes}{(\verb{names list of integers})\cr the symbols used to identify
 the toxicity categories.}
 
+\item{mark_backfill}{(\code{flag})\cr whether to mark backfilled patients with empty shape.}
+
 \item{...}{not used.}
 
 \item{y}{(\code{missing})\cr missing object, for compatibility with the generic
@@ -60,9 +63,7 @@ function.}
 
 \item{include_backfill}{(\code{flag})\cr whether to include backfilled patients.}
 
-\item{mark_backfill}{(\code{flag})\cr whether to mark backfilled patients with a "B".}
-
-\item{mark_response}{(\code{flag})\cr whether to mark patients with response with a blue star.}
+\item{mark_response}{(\code{flag})\cr whether to mark patients with response with rectangle.}
 }
 \value{
 The \code{\link[ggplot2:ggplot2-package]{ggplot2::ggplot2}} object.
