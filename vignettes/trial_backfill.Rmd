@@ -297,6 +297,11 @@ We can also get basic summary statistics with the `summary` method for `Simulati
 summary(sims_simple, truth = myTruth)
 ```
 
+If backfill cohorts are used in the design, and there are actually backfill patients in any of the simulated trials then we see:
+
+- The number of backfill patients recruited across the simulations (average, 10% and 90% quantiles in parentheses).
+- The dose levels at which backfill patients were recruited (doses with percentages across all cohorts and all simulations).
+
 ## Limitations
 
 Note that the `examine` method does not include backfill cohorts, because he examination paths would get too complex to understand easily. In addition, it seems not needed to include backfill cohorts for the quick check for which the `examine` method is intended.
