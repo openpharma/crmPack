@@ -62,6 +62,8 @@ trial design, implementation, simulation and analysis:
   checking](https://openpharma.github.io/crmPack/main/articles/trial_sanity_checks.html)
 - [Simulation of operating
   characteristics](https://openpharma.github.io/crmPack/main/articles/trial_simulation.html)
+- [Backfill cohort
+  simulations](https://openpharma.github.io/crmPack/main/articles/trial_backfill.html)
 - [Ordinal CRM
   models](https://openpharma.github.io/crmPack/main/articles/ordinal-crm.html)
 - [Extending
