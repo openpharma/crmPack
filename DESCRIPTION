@@ -136,6 +136,7 @@ Collate:
     'helpers_knitr_Increments.R'
     'helpers_knitr_NextBest.R'
     'helpers_knitr_SafetyWindow.R'
+    'helpers_knitr_Simulations.R'
     'helpers_knitr_Stopping.R'
     'helpers_model.R'
     'helpers_samples.R'
