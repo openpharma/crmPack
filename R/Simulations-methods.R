@@ -770,6 +770,36 @@ Report <-
     )
   )
 
+# show ----
+
+#' Show `Simulations` Objects
+#'
+#' @description `r lifecycle::badge("stable")`
+#'
+#' Display a brief representation of the [GeneralSimulations] object.
+#'
+#' @param object (`GeneralSimulations`)\cr the object we want to print.
+#'
+#' @return Invisibly returns the object itself.
+#'
+#' @aliases show-GeneralSimulations
+#' @export
+setMethod(
+  f = "show",
+  signature = signature(object = "GeneralSimulations"),
+  def = function(object) {
+    cat(paste0(
+      "An object of class '",
+      class(object),
+      "' containing ",
+      length(object@data),
+      " simulated trials.\n",
+      "Please use 'summary()' to obtain more information.\n"
+    ))
+    invisible(object)
+  }
+)
+
 # show-GeneralSimulationsSummary ----
 
 #' Show the Summary of the Simulations

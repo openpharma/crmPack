@@ -435,6 +435,20 @@ test_that("Report$report respects custom quantiles", {
 
 # show ----
 
+## show-GeneralSimulations ----
+
+test_that("show-GeneralSimulations works correctly", {
+  mySims <- .DefaultSimulations()
+
+  # Test that show method works (produces output)
+  expect_output(show(mySims))
+
+  # Show methods should print something
+  result <- capture.output(show(mySims))
+  expect_true(length(result) > 0)
+  expect_snap(show(mySims))
+})
+
 ## show-GeneralSimulationsSummary ----
 
 test_that("show-GeneralSimulationsSummary works correctly", {
