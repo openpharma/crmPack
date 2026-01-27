@@ -1,7 +1,7 @@
 # nolint start
 
 #####################################################################################
-## Author: Daniel Sabanes Bove [sabanesd *a*t* roche *.* com]
+## Author: Daniel Sabanés Bové [sabanesd *a*t* roche *.* com]
 ## Project: Object-oriented implementation of CRM designs
 ##
 ## Time-stamp: <[three.R] by DSB Son 03/05/2015 20:30>
