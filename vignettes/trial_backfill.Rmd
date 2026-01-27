@@ -154,7 +154,7 @@ backfill_complex <- Backfill(
         min_responses = 1, 
         include_lower_doses = TRUE
     ),
-    recruitment = RecruitmentRatio(ratio = 1/2),
+    recruitment = RecruitmentRatio(ratio = 1 / 2),
     priority = "highest",
     max_size = 20
 )

@@ -2340,7 +2340,10 @@ test_that("StoppingPatientsNearDose correctly excludes backfill patients if requ
   )
   expected <- structure(
     FALSE, # It would be TRUE if backfill patients were included.
-    message = "0 patients (excluding backfilled) lie within 0% of the next best dose 100. This is below the required 3 patients",
+    message = paste(
+      "0 patients (excluding backfilled) lie within 0% of the next best dose 100.",
+      "This is below the required 3 patients"
+    ),
     report_label = "≥ 3 patients dosed in 0 % dose range around NBD"
   )
   expect_identical(result, expected)
