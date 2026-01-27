@@ -51,6 +51,14 @@
        Stopped because of missing dose :  0 %
       Fitted biomarker level at dose most often selected : mean 0.2 (0.2, 0.2) 
 
+# show-GeneralSimulations works correctly
+
+    Code
+      show(mySims)
+    Output
+      An object of class 'Simulations' containing 1 simulated trials.
+      Please use 'summary()' to obtain more information.
+
 # show-GeneralSimulationsSummary works correctly
 
     Code
@@ -75,7 +83,7 @@
       Stop reason triggered:
        ≥ 6 patients dosed :  100 %
 
-# show-SimulationsSummary works correctly
+# show-SimulationsSummary works correctly with backfill cohorts
 
     Code
       show(simSummary)
@@ -83,21 +91,23 @@
       Summary of 2 simulations
       
       Target toxicity interval was 20, 35 %
-      Target dose interval corresponding to this was 19.6, 21.6 
+      Target dose interval corresponding to this was NA, NA 
       Intervals are corresponding to 10 and 90 % quantiles
       
-      Number of patients overall : mean 6 (6, 6) 
+      Number of patients overall : mean 24 (24, 24) 
       Number of patients treated above target tox interval : mean 0 (0, 0) 
-      Proportions of DLTs in the trials : mean 0 % (0 %, 0 %) 
-      Mean toxicity risks for the patients on active : mean 0 % (0 %, 0 %) 
-      Doses selected as MTD : mean 10 (10, 10) 
-      True toxicity at doses selected : mean 0 % (0 %, 0 %) 
+      Proportions of DLTs in the trials : mean 2 % (0 %, 4 %) 
+      Mean toxicity risks for the patients on active : mean 2 % (2 %, 2 %) 
+      Doses selected as MTD : mean 25 (25, 25) 
+      True toxicity at doses selected : mean 7 % (7 %, 7 %) 
       Proportion of trials selecting target MTD: 0 %
-      Dose most often selected as MTD: 10 
-      Observed toxicity rate at dose most often selected: NaN %
-      Fitted toxicity rate at dose most often selected : mean 6 % (6 %, 6 %) 
+      Dose most often selected as MTD: 25 
+      Observed toxicity rate at dose most often selected: 0 %
+      Number of backfill patients : mean 9 (9, 9) 
+      Doses for backfill patients: 5: 33.3%, 10: 33.3%, 20: 33.3% 
+      Fitted toxicity rate at dose most often selected : mean 9 % (3 %, 14 %) 
       Stop reason triggered:
-       ≥ 6 patients dosed :  100 %
+       ≥ 20 patients dosed :  100 %
 
 # show-DualSimulationsSummary works correctly
 
