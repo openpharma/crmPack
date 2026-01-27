@@ -5,3 +5,11 @@ my_stopping <- StoppingPatientsNearDose(
   nPatients = 9,
   percentage = 20
 )
+
+# Variant which excludes backfill cohorts.
+
+my_stopping <- StoppingPatientsNearDose(
+  nPatients = 9,
+  percentage = 20,
+  include_backfill = FALSE
+)

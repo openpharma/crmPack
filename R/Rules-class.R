@@ -1872,6 +1872,7 @@ StoppingCohortsNearDose <- function(
 #' @slot nPatients (`number`)\cr number of required patients.
 #' @slot percentage (`number`)\cr percentage (between and including 0 and 100)
 #'   within the next best dose the patients must lie.
+#' @slot include_backfill (`flag`)\cr whether to include backfill patients.
 #'
 #' @aliases StoppingPatientsNearDose
 #' @export
@@ -1880,11 +1881,13 @@ StoppingCohortsNearDose <- function(
   Class = "StoppingPatientsNearDose",
   slots = c(
     nPatients = "integer",
-    percentage = "numeric"
+    percentage = "numeric",
+    include_backfill = "logical"
   ),
   prototype = prototype(
     nPatients = 10L,
-    percentage = 50
+    percentage = 50,
+    include_backfill = TRUE
   ),
   contains = "Stopping",
   validity = v_stopping_patients_near_dose
@@ -1896,6 +1899,7 @@ StoppingCohortsNearDose <- function(
 #'
 #' @param nPatients (`number`)\cr see slot definition.
 #' @param percentage (`number`)\cr see slot definition.
+#' @param include_backfill (`flag`)\cr see slot definition.
 #' @param report_label (`string` or `NA`)\cr see slot definition.
 #'
 #' @example examples/Rules-class-StoppingPatientsNearDose.R
@@ -1904,10 +1908,12 @@ StoppingCohortsNearDose <- function(
 StoppingPatientsNearDose <- function(
   nPatients = 10L,
   percentage = 50,
+  include_backfill = TRUE,
   report_label = NA_character_
 ) {
   assert_count(nPatients, positive = TRUE)
   assert_number(percentage, lower = 0, upper = 100)
+  assert_flag(include_backfill)
 
   report_label <- h_default_if_empty(
     as.character(report_label),
@@ -1923,6 +1929,7 @@ StoppingPatientsNearDose <- function(
   .StoppingPatientsNearDose(
     nPatients = as.integer(nPatients),
     percentage = percentage,
+    include_backfill = include_backfill,
     report_label = report_label
   )
 }
@@ -1937,6 +1944,7 @@ StoppingPatientsNearDose <- function(
   StoppingPatientsNearDose(
     nPatients = 9L,
     percentage = 20,
+    include_backfill = TRUE,
     report_label = NA_character_
   )
 }
@@ -3248,6 +3256,59 @@ CohortSizeConst <- function(size) {
 #' @export
 .DefaultCohortSizeConst <- function() {
   CohortSizeConst(size = 3L)
+}
+
+# CohortSizeRandom ----
+
+## class ----
+
+#' `CohortSizeRandom`
+#'
+#' @description `r lifecycle::badge("experimental")`
+#'
+#' [`CohortSizeRandom`] is the class for random cohort sizes drawn from a
+#' uniform distribution between `min_size` and `max_size` (inclusive).
+#'
+#' @slot min_size (`integer`)\cr minimum cohort size.
+#' @slot max_size (`integer`)\cr maximum cohort size.
+#'
+#' @aliases CohortSizeRandom
+#' @export
+#'
+.CohortSizeRandom <- setClass(
+  Class = "CohortSizeRandom",
+  slots = c(min_size = "integer", max_size = "integer"),
+  prototype = prototype(min_size = 1L, max_size = 3L),
+  contains = "CohortSize",
+  validity = v_cohort_size_random
+)
+
+## constructor ----
+
+#' @rdname CohortSizeRandom-class
+#'
+#' @param min_size (`integer`)\cr see slot definition.
+#' @param max_size (`integer`)\cr see slot definition.
+#'
+#' @export
+#' @example examples/Rules-class-CohortSizeRandom.R
+#'
+CohortSizeRandom <- function(min_size, max_size) {
+  assert_integerish(min_size, lower = 1, len = 1)
+  assert_integerish(max_size, lower = min_size + 1, len = 1)
+  .CohortSizeRandom(
+    min_size = as.integer(min_size),
+    max_size = as.integer(max_size)
+  )
+}
+
+## default constructor ----
+
+#' @rdname CohortSizeRandom-class
+#' @note Typically, end users will not use the `.DefaultCohortSizeRandom()` function.
+#' @export
+.DefaultCohortSizeRandom <- function() {
+  CohortSizeRandom(min_size = 1L, max_size = 3L)
 }
 
 # CohortSizeParts ----

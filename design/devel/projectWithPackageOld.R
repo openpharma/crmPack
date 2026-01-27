@@ -1,5 +1,5 @@
 #####################################################################################
-## Author: Daniel Sabanes Bove [sabanesd *a*t* roche *.* com]
+## Author: Daniel Sabanés Bové [sabanesd *a*t* roche *.* com]
 ## Project: Object-oriented implementation of CRM designs
 ##
 ## Time-stamp: <[projectWithPackage.R] by DSB Die 01/04/2014 09:23>

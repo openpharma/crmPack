@@ -62,6 +62,8 @@ trial design, implementation, simulation and analysis:
   checking](https://openpharma.github.io/crmPack/main/articles/trial_sanity_checks.html)
 - [Simulation of operating
   characteristics](https://openpharma.github.io/crmPack/main/articles/trial_simulation.html)
+- [Backfill cohort
+  simulations](https://openpharma.github.io/crmPack/main/articles/trial_backfill.html)
 - [Ordinal CRM
   models](https://openpharma.github.io/crmPack/main/articles/ordinal-crm.html)
 - [Extending
@@ -72,6 +74,6 @@ trial design, implementation, simulation and analysis:
   documents](https://openpharma.github.io/crmPack/main/articles/knit_print.html)
 - [Upgrading from `crmPack` version
   1.0](https://openpharma.github.io/crmPack/main/articles/upgrading_from_the_old_crmPack.html)
-- Sabanes Bove et al (2019) Model-based Dose Escalation Designs in R
+- Sabanés Bové et al (2019) Model-based Dose Escalation Designs in R
   with `crmPack`. JSS 89:10 [DOI
   10.18637/jss.v089.i10](https://www.jstatsoft.org/article/view/v089i10)

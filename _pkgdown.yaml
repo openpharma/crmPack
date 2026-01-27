@@ -40,6 +40,7 @@ articles:
       - trial_analysis
       - trial_sanity_checks
       - trial_simulation
+      - trial_backfill
   - title: Examples
     navbar: Examples
     contents:
@@ -149,6 +150,7 @@ reference:
       - CohortSizeRange
       - CohortSizeDLT
       - CohortSizeConst
+      - CohortSizeRandom
       - CohortSizeParts
       - CohortSizeMax
       - CohortSizeMin
@@ -163,6 +165,18 @@ reference:
       - TDsamplesDesign
       - TDDesign
       - DesignGrouped
+      - Opening
+      - OpeningMinDose
+      - OpeningMinCohorts
+      - OpeningNone
+      - OpeningMinResponses
+      - OpeningAll
+      - OpeningAny
+      - OpeningList
+      - Recruitment
+      - RecruitmentUnlimited
+      - RecruitmentRatio
+      - Backfill
   - title: Internal Helper Functions
     contents:
       - h_blind_plot_data
@@ -278,6 +292,9 @@ reference:
       - v_rule_design
       - v_general_simulations
       - v_pseudo_simulations
+      - v_opening
+      - v_recruitment
+      - v_backfill
   - title: Custom Checkmate Assertions
     contents:
       - assert_probabilities
@@ -304,6 +321,7 @@ reference:
       - plot-Data
       - plot-DataDual
       - plot-DataDA
+      - subset-Data
       - update-Data
       - update-DataParts
       - update-DataDual
@@ -409,6 +427,8 @@ reference:
       - maxDose-IncrementsHSRBeta
       - maxDose-IncrementsMin
       - maxDose-IncrementsMaxToxProb
+      - maxRecruits
+      - openCohort
   - title: Functions
     contents:
       - enable_logging
@@ -495,6 +515,7 @@ reference:
       - plot.gtable
       - probit
       - set_seed
+      - show,GeneralSimulations-method
       - show,DualSimulationsSummary-method
       - show,GeneralSimulationsSummary-method
       - show,PseudoDualSimulationsSummary-method
@@ -520,3 +541,5 @@ reference:
       - "&,Stopping,Stopping-method"
       - "&,Stopping,StoppingAll-method"
       - "&,StoppingAll,Stopping-method"
+      - "and,Opening,Opening-method"
+      - "or,Opening,Opening-method"

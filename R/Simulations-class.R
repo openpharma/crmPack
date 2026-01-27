@@ -296,6 +296,9 @@ DualSimulations <- function(rho_est, sigma2w_est, fit_biomarker, ...) {
 #' @slot n_above_target (`integer`)\cr number of patients treated above target tox interval
 #' @slot dose_grid (`numeric`)\cr the dose grid that has been used
 #' @slot placebo (`logical`)\cr set to TRUE (default is FALSE) for a design with placebo
+#' @slot any_backfilled (`flag`)\cr indicates if any backfill cohorts were used
+#' @slot n_backfill (`ANY`)\cr number of patients in backfill cohorts (only if `any_backfilled=TRUE`)
+#' @slot backfill_doses (`ANY`)\cr list with doses used in backfill cohorts (only if `any_backfilled=TRUE`)
 #' @aliases GeneralSimulationsSummary
 #' @export
 .GeneralSimulationsSummary <-
@@ -315,7 +318,10 @@ DualSimulations <- function(rho_est, sigma2w_est, fit_biomarker, ...) {
       n_obs = "ANY",
       n_above_target = "integer",
       dose_grid = "numeric",
-      placebo = "logical"
+      placebo = "logical",
+      any_backfilled = "logical",
+      n_backfill = "ANY",
+      backfill_doses = "ANY"
     )
   )
 

@@ -1,5 +1,5 @@
 #####################################################################################
-## Author: Daniel Sabanes Bove [sabanesd *a*t* roche *.* com]
+## Author: Daniel Sabanés Bové [sabanesd *a*t* roche *.* com]
 ## Project: crmPack
 ##
 ## Time-stamp: <[reporters.R] by DSB Mon 03/03/2014 11:33>

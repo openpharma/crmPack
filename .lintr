@@ -6,5 +6,6 @@ linters: linters_with_defaults(
   trailing_blank_lines_linter = NULL,
   trailing_whitespace_linter = NULL,
   object_length_linter = NULL,
-  object_name_linter = object_name_linter(c("CamelCase", "camelCase", "snake_case"))
+  object_name_linter = object_name_linter(c("CamelCase", "camelCase", "snake_case")),
+  pipe_consistency_linter = NULL
  )

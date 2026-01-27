@@ -1,6 +1,6 @@
 ---
 title: "Rolling CRM Example"
-author: "Jiawen Zhu, Daniel Sabanes Bove"
+author: "Jiawen Zhu, Daniel Sabanés Bové"
 date: "02 January 2019"
 output: rmarkdown::html_vignette
 vignette: >

@@ -23,7 +23,22 @@ h_get_data <- function(empty = FALSE, placebo = TRUE) {
       doseGrid = dose_grid,
       placebo = placebo,
       ID = 1:12,
-      cohort = c(1L, 1L, 1L, 1L, 2L, 2L, 2L, 2L, 3L, 3L, 3L, 3L)
+      cohort = c(1L, 1L, 1L, 1L, 2L, 2L, 2L, 2L, 3L, 3L, 3L, 3L),
+      response = as.integer(c(0, 1, 0, NA, 0, 1, NA, 0, 0, 1, 1, NA)),
+      backfilled = c(
+        FALSE,
+        FALSE,
+        TRUE,
+        TRUE,
+        FALSE,
+        FALSE,
+        TRUE,
+        TRUE,
+        FALSE,
+        FALSE,
+        TRUE,
+        TRUE
+      )
     )
   }
 }

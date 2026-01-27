@@ -2,6 +2,7 @@
 #' @include Design-class.R
 #' @include McmcOptions-class.R
 #' @include Rules-methods.R
+#' @include Backfill-methods.R
 #' @include Simulations-class.R
 #' @include helpers.R
 #' @include mcmc.R
@@ -21,6 +22,8 @@ NULL
 #' @param truth (`function`)\cr a function which takes as input a dose (vector) and returns the
 #'   true probability (vector) for toxicity. Additional arguments can be supplied
 #'   in `args`.
+#' @param truthResponse (`function`)\cr a function which takes as input a dose (vector) and returns the
+#'   probability (vector) for a positive efficacy response.
 #' @param args (`data.frame`)\cr data frame with arguments for the `truth` function. The
 #'   column names correspond to the argument names, the rows to the values of the
 #'   arguments. The rows are appropriately recycled in the `nsim`
@@ -60,6 +63,7 @@ setMethod(
     nsim = 1L,
     seed = NULL,
     truth,
+    truthResponse = plogis,
     args = NULL,
     firstSeparate = FALSE,
     mcmcOptions = McmcOptions(),
@@ -70,10 +74,15 @@ setMethod(
   ) {
     nsim <- as.integer(nsim)
     assert_function(truth)
+    assert_function(truthResponse)
     assert_flag(firstSeparate)
     assert_count(nsim, positive = TRUE)
     assert_flag(parallel)
     assert_count(nCores, positive = TRUE)
+
+    # Does this design use backfill cohorts? If no we can skip the corresponding
+    # computations later.
+    uses_backfill <- !is(object@backfill@opening, "OpeningNone")
 
     args <- as.data.frame(args)
     n_args <- max(nrow(args), 1L)
@@ -87,20 +96,23 @@ setMethod(
       data <- object@data
       prob_placebo <- NULL
       cohort_size_placebo <- NULL
+      prob_response_placebo <- NULL
 
       if (data@placebo) {
-        prob_placebo <- h_this_truth(
-          object@data@doseGrid[1],
-          current_args,
-          truth
-        )
+        placebo_dose <- object@data@doseGrid[1]
+        prob_placebo <- h_this_truth(placebo_dose, current_args, truth)
+        prob_response_placebo <- truthResponse(placebo_dose)
       }
 
       should_stop <- FALSE
       dose <- object@startingDose
+      backfill_cohorts <- list() # Queue of backfill cohorts.
+      backfill_patients <- 0L # Total number of backfill patients enrolled.
 
       while (!should_stop) {
         prob <- h_this_truth(dose, current_args, truth)
+        prob_response <- truthResponse(dose)
+
         cohort_size <- size(object@cohort_size, dose = dose, data = data)
 
         if (data@placebo) {
@@ -118,11 +130,38 @@ setMethod(
           dose = dose,
           prob = prob,
           prob_placebo = prob_placebo,
+          prob_response = prob_response,
+          prob_response_placebo = prob_response_placebo,
           cohort_size = cohort_size,
           cohort_size_placebo = cohort_size_placebo,
-          dose_grid = object@data@doseGrid[1],
+          dose_grid = data@doseGrid,
           first_separate = firstSeparate
         )
+
+        # Backfill logic.
+        if (uses_backfill) {
+          backfill_cohorts <- h_update_backfill_queue(
+            backfill_cohorts = backfill_cohorts,
+            data = data,
+            dose = dose,
+            backfill = object@backfill
+          )
+
+          enrollment_result <- h_enroll_backfill_patients(
+            backfill_cohorts = backfill_cohorts,
+            data = data,
+            backfill = object@backfill,
+            cohort_size = cohort_size,
+            backfill_patients = backfill_patients,
+            current_args = current_args,
+            truth = truth,
+            truthResponse = truthResponse
+          )
+
+          data <- enrollment_result$data
+          backfill_cohorts <- enrollment_result$backfill_cohorts
+          backfill_patients <- enrollment_result$backfill_patients
+        }
 
         dose_limit <- maxDose(object@increments, data = data)
         samples <- mcmc(
@@ -176,6 +215,7 @@ setMethod(
         "n_args",
         "firstSeparate",
         "truth",
+        "truthResponse",
         "object",
         "mcmcOptions"
       ),
@@ -343,6 +383,9 @@ setMethod(
 #'
 #' @return an object of class [`DualSimulations`]
 #'
+#' @note Backfill cohorts are not yet implemented and therefore will lead to an error if used
+#'   in the `DualDesign` object.
+#'
 #' @example examples/design-method-simulate-DualDesign.R
 #' @importFrom mvtnorm rmvnorm
 #' @export
@@ -376,6 +419,7 @@ setMethod(
     assert_count(nCores, positive = TRUE)
     assert_class(object, "DualDesign")
     assert_list(derive)
+    assert_class(object@backfill@opening, "OpeningNone")
 
     args <- as.data.frame(args)
     n_args <- max(nrow(args), 1L)
@@ -2754,6 +2798,9 @@ setMethod(
 #'
 #' @return an object of class [`Simulations`]
 #'
+#' @note Backfill cohorts are not yet implemented and therefore will lead to an error if used
+#'   in the `DADesign` object.
+#'
 #' @example examples/design-method-simulate-DADesign.R
 #' @export
 setMethod(
@@ -2787,6 +2834,7 @@ setMethod(
     assert_count(nsim, positive = TRUE)
     assert_flag(parallel)
     assert_count(nCores, positive = TRUE)
+    assert_class(object@backfill@opening, "OpeningNone")
 
     args <- as.data.frame(args)
     n_args <- max(nrow(args), 1L)
@@ -2948,13 +2996,13 @@ setMethod(
           )
         }
 
-        total_size <- if (data@placebo) {
+        max_size <- if (data@placebo) {
           cohort_size + placebo_size
         } else {
           cohort_size
         }
 
-        safety_window <- windowLength(object@safetyWindow, total_size)
+        safety_window <- windowLength(object@safetyWindow, max_size)
 
         # Simulate DLTs for cohort.
         # If any patient has DLT before first patient finishes staggered window,

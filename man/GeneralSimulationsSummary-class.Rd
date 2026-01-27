@@ -47,6 +47,12 @@ function is provided for this class.
 \item{\code{dose_grid}}{(\code{numeric})\cr the dose grid that has been used}
 
 \item{\code{placebo}}{(\code{logical})\cr set to TRUE (default is FALSE) for a design with placebo}
+
+\item{\code{any_backfilled}}{(\code{flag})\cr indicates if any backfill cohorts were used}
+
+\item{\code{n_backfill}}{(\code{ANY})\cr number of patients in backfill cohorts (only if \code{any_backfilled=TRUE})}
+
+\item{\code{backfill_doses}}{(\code{ANY})\cr list with doses used in backfill cohorts (only if \code{any_backfilled=TRUE})}
 }}
 
 \note{

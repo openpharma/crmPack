@@ -2,8 +2,10 @@ AE
 AEs
 AllModels
 Analysing
+Backfill
+Backfilling
 Biomarker
-Bove
+Bové
 Bugfix
 Bugfixes
 Burak
@@ -85,6 +87,7 @@ NextBestEWOC
 NextBestNCRM
 ORCID
 PLcohortSize
+PMDA
 ProbitLogNormal
 RPACT
 RPF
@@ -95,7 +98,7 @@ Rcpp
 RcppArmadillo
 RuleDesign
 SRF
-Sabanes
+Sabanés
 Schulte
 SimulationsSummary
 StoppingExternal
@@ -120,6 +123,9 @@ al
 amongst
 analyse
 analysing
+backfill
+backfilled
+backfilling
 behaviour
 betaW
 binded
@@ -171,6 +177,7 @@ https
 httr
 ing
 initialised
+instantiable
 investigational
 jss
 kable

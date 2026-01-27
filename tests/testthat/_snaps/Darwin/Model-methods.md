@@ -81,6 +81,12 @@
       Slot "placebo":
       [1] TRUE
       
+      Slot "backfilled":
+       [1] FALSE FALSE  TRUE  TRUE FALSE FALSE  TRUE  TRUE FALSE FALSE  TRUE  TRUE
+      
+      Slot "response":
+       [1]  0  1  0 NA  0  1 NA  0  0  1  1 NA
+      
       Slot "ID":
        [1]  1  2  3  4  5  6  7  8  9 10 11 12
       
@@ -178,6 +184,12 @@
       
       Slot "placebo":
       [1] TRUE
+      
+      Slot "backfilled":
+       [1] FALSE FALSE  TRUE  TRUE FALSE FALSE  TRUE  TRUE FALSE FALSE  TRUE  TRUE
+      
+      Slot "response":
+       [1]  0  1  0 NA  0  1 NA  0  0  1  1 NA
       
       Slot "ID":
        [1]  1  2  3  4  5  6  7  8  9 10 11 12

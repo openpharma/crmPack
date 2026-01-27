@@ -46,7 +46,7 @@ The new S4 class `Backfill` specifies the backfilling details of a design. It ha
 - `cohort_size`
   - Can reuse the `CohortSize` class here
   - Add a new `RandomCohortSize` subclass to implement the random number of backfill patients
-- `total_size`
+- `max_size`
   - New slot to specify the overall maximum number of patients across all backfill cohorts
   - Can default to `Inf` (no limit)
 - `opening`
@@ -102,7 +102,7 @@ The `simulate` method will do the actual work of implementing the simulation of 
 
 - For the beginning we can focus on the implementation for the basic `Design` class
   - We can first disable the use of the backfill information with an assertion in the `simulate` methods for `DualDesign` and `DADesign` when we need more time for that
-- We also need here an additional `trueResponse` argument which gives the probability of response for each dose because we need to generate responses, because the opening of backfill cohorts (might) depend on it.
+- We also need here an additional `truthResponse` argument which gives the probability of response for each dose because we need to generate responses, because the opening of backfill cohorts (might) depend on it.
   - Note that we have this already in a similar but different way for the `simulate` method for `DualResponsesDesign` with `trueEff`, but there it is used for continuous efficacy (biomarker) and gives the expected mean efficacy biomarker value `w` for a given dose. So we better keep this separate.
 
 ### `examine` method
@@ -175,20 +175,20 @@ design <- Design(
         recruitment = crmPack:::RecruitmentRatio(ratio = 1),
         opening = crmPack:::OpeningMinDose(min_dose = 1) &
             crmPack:::OpeningMinCohorts(min_cohorts = 3),
-        total_size = 12,
+        max_size = 12,
         priority = "highest"
     )
 )
 
 myTruth <- probFunction(design@model, alpha0 = 3, alpha1 = 3)
 options <- h_get_mcmc_options()
-myTrueResponse <- plogis
+mytruthResponse <- plogis
 
 result <- simulate(
     design,
     args = NULL,
     truth = myTruth,
-    trueResponse = myTrueResponse,
+    truthResponse = mytruthResponse,
     nsim = 10,
     seed = 819,
     mcmcOptions = options,

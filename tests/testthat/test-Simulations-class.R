@@ -240,7 +240,10 @@ test_that("GeneralSimulationsSummary generates object correctly", {
       n_obs = list(),
       n_above_target = 10L,
       dose_grid = 11,
-      placebo = TRUE
+      placebo = TRUE,
+      any_backfilled = FALSE,
+      n_backfill = NULL,
+      backfill_doses = NULL
     )
   )
 

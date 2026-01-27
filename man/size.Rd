@@ -15,6 +15,8 @@
 \alias{size-CohortSizeMin}
 \alias{size,CohortSizeConst-method}
 \alias{size-CohortSizeConst}
+\alias{size,CohortSizeRandom-method}
+\alias{size-CohortSizeRandom}
 \alias{size,CohortSizeParts-method}
 \alias{size-CohortSizeParts}
 \alias{size,CohortSizeOrdinal-method}
@@ -36,6 +38,8 @@ size(object, ...)
 \S4method{size}{CohortSizeMin}(object, dose, data)
 
 \S4method{size}{CohortSizeConst}(object, dose, ...)
+
+\S4method{size}{CohortSizeRandom}(object, dose, ...)
 
 \S4method{size}{CohortSizeParts}(object, dose, data)
 
@@ -81,6 +85,8 @@ multiple cohort size rules.
 multiple cohort size rules.
 
 \item \code{size(CohortSizeConst)}: Constant cohort size.
+
+\item \code{size(CohortSizeRandom)}: Random cohort size drawn uniformly between min and max size.
 
 \item \code{size(CohortSizeParts)}: Determines the size of the next cohort based on the parts.
 
@@ -430,6 +436,13 @@ mySize <- CohortSizeConst(size = 3)
 size(mySize, dose = doseRecommendation$value)
 
 # nolint end
+# Rule for having cohorts with random cohort size between 2 and 4
+mySize <- CohortSizeRandom(min_size = 2, max_size = 4)
+
+# Determine the cohort size for the next cohort
+# This will return a random integer between 2 and 4 (inclusive)
+set.seed(123)
+size(mySize, dose = 5)
 # nolint start
 
 # create an object of class 'DataParts'

@@ -2304,6 +2304,51 @@ test_that("StoppingPatientsNearDose can handle when dose is NA", {
   expect_identical(result, expected)
 })
 
+test_that("StoppingPatientsNearDose correctly excludes backfill patients if requested", {
+  my_data <- h_get_data()
+  my_data@backfilled <- c(
+    FALSE,
+    FALSE,
+    FALSE,
+    TRUE,
+    TRUE,
+    TRUE,
+    TRUE,
+    TRUE,
+    TRUE,
+    TRUE,
+    TRUE,
+    TRUE
+  )
+  my_model <- h_get_logistic_kadane()
+  my_samples <- mcmc(
+    my_data,
+    my_model,
+    h_get_mcmc_options(samples = 10, burnin = 20)
+  )
+  stopping <- StoppingPatientsNearDose(
+    nPatients = 3,
+    percentage = 0,
+    include_backfill = FALSE
+  )
+  result <- stopTrial(
+    stopping = stopping,
+    dose = 100,
+    samples = my_samples,
+    model = my_model,
+    data = my_data
+  )
+  expected <- structure(
+    FALSE, # It would be TRUE if backfill patients were included.
+    message = paste(
+      "0 patients (excluding backfilled) lie within 0% of the next best dose 100.",
+      "This is below the required 3 patients"
+    ),
+    report_label = "≥ 3 patients dosed in 0 % dose range around NBD"
+  )
+  expect_identical(result, expected)
+})
+
 ## StoppingMinCohorts ----
 
 test_that("StoppingMinCohorts works correctly if next dose is NA", {
@@ -4770,6 +4815,25 @@ test_that("size works as expected for CohortSizeConst", {
   expect_equal(size(cohortSize, NA, Data(doseGrid = 1:5)), 0)
   for (dose in 1:5) {
     expect_equal(size(object = cohortSize, dose = dose, data = emptyData), 4)
+  }
+})
+
+## CohortSizeRandom ----
+
+test_that("size works as expected for CohortSizeRandom with NA dose", {
+  cohortSize <- CohortSizeRandom(min_size = 1, max_size = 5)
+  expect_equal(size(cohortSize, NA, Data(doseGrid = 1:5)), 0)
+})
+
+test_that("size works as expected for CohortSizeRandom with valid dose", {
+  cohortSize <- CohortSizeRandom(min_size = 2, max_size = 4)
+  emptyData <- Data(doseGrid = 1:5)
+  set.seed(123)
+  for (i in 1:10) {
+    dose <- 3
+    result <- size(object = cohortSize, dose = dose, data = emptyData)
+    expect_true(result >= 2 && result <= 4)
+    expect_true(is.integer(result))
   }
 })
 

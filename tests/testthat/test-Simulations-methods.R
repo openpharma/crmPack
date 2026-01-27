@@ -435,6 +435,20 @@ test_that("Report$report respects custom quantiles", {
 
 # show ----
 
+## show-GeneralSimulations ----
+
+test_that("show-GeneralSimulations works correctly", {
+  mySims <- .DefaultSimulations()
+
+  # Test that show method works (produces output)
+  expect_output(show(mySims))
+
+  # Show methods should print something
+  result <- capture.output(show(mySims))
+  expect_true(length(result) > 0)
+  expect_snap(show(mySims))
+})
+
 ## show-GeneralSimulationsSummary ----
 
 test_that("show-GeneralSimulationsSummary works correctly", {
@@ -494,7 +508,7 @@ test_that("show-GeneralSimulationsSummary works correctly", {
 
 ## show-SimulationsSummary ----
 
-test_that("show-SimulationsSummary works correctly", {
+test_that("show-SimulationsSummary works correctly with backfill cohorts", {
   emptydata <- Data(doseGrid = c(1, 3, 5, 10, 15, 20, 25))
   model <- LogisticLogNormal(
     mean = c(-0.85, 1),
@@ -509,17 +523,21 @@ test_that("show-SimulationsSummary works correctly", {
       overdose = c(0.35, 1),
       max_overdose_prob = 0.25
     ),
-    stopping = StoppingMinPatients(nPatients = 6),
+    stopping = StoppingMinPatients(nPatients = 20),
     increments = IncrementsRelative(
       intervals = c(0, 20),
       increments = c(1, 0.33)
     ),
     cohort_size = CohortSizeConst(size = 3),
     data = emptydata,
-    startingDose = 3
+    startingDose = 3,
+    backfill = Backfill(
+      opening = OpeningMinDose(min_dose = 5),
+      max_size = 10
+    )
   )
 
-  myTruth <- probFunction(model, alpha0 = 7, alpha1 = 8)
+  myTruth <- probFunction(model, alpha0 = -1, alpha1 = 2)
   options <- McmcOptions(
     burnin = 10,
     step = 2,

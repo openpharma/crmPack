@@ -65,6 +65,30 @@ test_that("v_data returns error when first xLevel does not match x", {
   )
 })
 
+test_that("v_data returns error for wrong backfilled", {
+  object <- h_get_data()
+
+  # We assign backfilled vector with missings.
+  object@backfilled[1] <- NA
+
+  expect_equal(
+    v_data(object),
+    "backfilled must be of type logical and length nObs and not contain missings"
+  )
+})
+
+test_that("v_data returns error for wrong response", {
+  object <- h_get_data()
+
+  # We assign response vector with values not from {0, 1} and missings.
+  object@response <- c(0L, 1L, 2L, NA, NA, 1L, 0L, 3L, NA, 1L)
+
+  expect_equal(
+    v_data(object),
+    "response must be of type integer, take values 0 or 1 or NA, and have length nObs"
+  )
+})
+
 # v_data_dual ----
 
 test_that("v_data_dual passes for valid object", {

@@ -128,10 +128,12 @@ h_plot_data_dataordinal <- function(
   legend = TRUE,
   tox_labels = c(Yes = "red", No = "black"),
   tox_shapes = c(Yes = 17L, No = 16L),
+  mark_backfill = FALSE,
   ...
 ) {
   assert_flag(blind)
   assert_flag(legend)
+  assert_flag(mark_backfill)
   assert_character(tox_labels, any.missing = FALSE, unique = TRUE)
   assert_integer(tox_shapes, any.missing = FALSE, unique = TRUE)
   assert_true(length(tox_shapes) == length(tox_labels))
@@ -141,19 +143,69 @@ h_plot_data_dataordinal <- function(
   }
   df <- h_plot_data_df(x, blind, ...)
 
-  p <- ggplot(df, aes(x = patient, y = dose)) +
-    geom_point(aes(shape = toxicity, colour = toxicity), size = 3) +
+  # Determine shape key per-point, using open shapes for backfill patients.
+  if (mark_backfill) {
+    if (!("backfilled" %in% names(df))) {
+      # Try to obtain backfilled information from the object if available.
+      df$backfilled <- if (
+        methods::is(x, "Data") && length(x@backfilled) == nrow(df)
+      ) {
+        x@backfilled
+      } else {
+        rep(FALSE, nrow(df))
+      }
+    }
+    df$shape_key <- ifelse(
+      df$backfilled,
+      paste0(df$toxicity, "_bf"),
+      df$toxicity
+    )
+  } else {
+    df$shape_key <- df$toxicity
+  }
+
+  # Build shape scale values, adding open-shape variants for backfill when needed.
+  shape_values <- tox_shapes
+  if (mark_backfill) {
+    convert_to_open <- function(s) {
+      # Map common filled shapes to their open counterparts.
+      switch(
+        as.character(s),
+        "16" = 1L, # filled circle -> open circle
+        "17" = 2L, # filled triangle -> open triangle
+        "15" = 0L, # filled square -> open square
+        "18" = 5L, # filled diamond -> open diamond
+        "19" = 1L, # large filled circle -> open circle
+        # If already open or unknown, keep as-is
+        as.integer(s)
+      )
+    }
+    bf_shapes <- vapply(unname(tox_shapes), convert_to_open, integer(1))
+    names(bf_shapes) <- paste0(names(tox_shapes), "_bf")
+    shape_values <- c(shape_values, bf_shapes)
+  }
+
+  p <- ggplot(df, aes(x = .data$patient, y = .data$dose)) +
+    geom_point(
+      aes(shape = .data$shape_key, colour = .data$toxicity),
+      size = 3
+    ) +
     scale_colour_manual(
       name = "Toxicity",
       values = tox_labels,
       breaks = names(tox_labels),
-      guide = guide_legend(reverse = TRUE)
+      limits = names(tox_labels),
+      drop = FALSE,
+      guide = guide_legend(
+        reverse = TRUE,
+        override.aes = list(
+          shape = unname(rev(tox_shapes[names(tox_labels)]))
+        )
+      )
     ) +
     scale_shape_manual(
-      name = "Toxicity",
-      values = tox_shapes,
-      breaks = names(tox_shapes),
-      guide = guide_legend(reverse = TRUE)
+      values = shape_values,
+      guide = "none"
     ) +
     scale_x_continuous(breaks = df$patient, minor_breaks = NULL) +
     scale_y_continuous(
@@ -169,7 +221,7 @@ h_plot_data_dataordinal <- function(
   if (!blind) {
     p <- p +
       geom_text(
-        aes(label = ID, size = 2),
+        aes(label = .data$ID, size = 2),
         data = df,
         hjust = 0,
         vjust = 0.5,

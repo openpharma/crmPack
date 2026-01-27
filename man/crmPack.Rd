@@ -21,7 +21,7 @@ Useful links:
 
 }
 \author{
-\strong{Maintainer}: Daniel Sabanes Bove \email{daniel.sabanes_bove@rconis.com}
+\strong{Maintainer}: Daniel Sabanés Bové \email{daniel.sabanes_bove@rconis.com} (\href{https://orcid.org/0000-0002-0176-9239}{ORCID})
 
 Authors:
 \itemize{

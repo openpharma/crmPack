@@ -5,6 +5,7 @@
 \alias{v_cohort_size_range}
 \alias{v_cohort_size_dlt}
 \alias{v_cohort_size_const}
+\alias{v_cohort_size_random}
 \alias{v_cohort_size_parts}
 \alias{v_cohort_size_max}
 \title{Internal Helper Functions for Validation of \code{\link{CohortSize}} Objects}
@@ -14,6 +15,8 @@ v_cohort_size_range(object)
 v_cohort_size_dlt(object)
 
 v_cohort_size_const(object)
+
+v_cohort_size_random(object)
 
 v_cohort_size_parts(object)
 
@@ -42,6 +45,9 @@ contains valid \code{intervals} and  \code{cohort_size} slots.
 
 \item \code{v_cohort_size_const()}: validates that the \code{\link{CohortSizeConst}} object
 contains valid \code{size} slot.
+
+\item \code{v_cohort_size_random()}: validates that the \code{\link{CohortSizeRandom}} object
+contains valid \code{min_size} and \code{max_size} slots.
 
 \item \code{v_cohort_size_parts()}: validates that the \code{\link{CohortSizeParts}} object
 contains valid \code{sizes} slot.

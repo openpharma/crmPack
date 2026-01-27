@@ -511,6 +511,36 @@ setMethod(
       (tox_at_doses > target[1]) & (tox_at_doses < target[2])
     )
 
+    # Any backfilled? First check if the slot is available.
+    any_backfilled <- methods::.hasSlot(object@data[[1]], "backfilled")
+
+    # Number of backfill patients.
+    n_backfill <- if (any_backfilled) {
+      sapply(
+        object@data,
+        function(d) {
+          sum(d@backfilled)
+        }
+      )
+    } else {
+      NULL
+    }
+    if (!is.null(n_backfill)) {
+      any_backfilled <- any(n_backfill > 0)
+    }
+
+    # Doses for backfill patients.
+    backfill_doses <- if (any_backfilled) {
+      lapply(
+        object@data,
+        function(d) {
+          d@x[d@backfilled]
+        }
+      )
+    } else {
+      list()
+    }
+
     # Give back an object of class GeneralSimulationsSummary.
     .GeneralSimulationsSummary(
       target = target,
@@ -526,7 +556,10 @@ setMethod(
       tox_at_doses_selected = tox_at_doses,
       prop_at_target = prop_at_target,
       dose_grid = dose_grid,
-      placebo = object@data[[1]]@placebo
+      placebo = object@data[[1]]@placebo,
+      any_backfilled = any_backfilled,
+      n_backfill = if (any_backfilled) n_backfill else NULL,
+      backfill_doses = backfill_doses
     )
   }
 )
@@ -770,6 +803,36 @@ Report <-
     )
   )
 
+# show ----
+
+#' Show `Simulations` Objects
+#'
+#' @description `r lifecycle::badge("stable")`
+#'
+#' Display a brief representation of the [GeneralSimulations] object.
+#'
+#' @param object (`GeneralSimulations`)\cr the object we want to print.
+#'
+#' @return Invisibly returns the object itself.
+#'
+#' @aliases show-GeneralSimulations
+#' @export
+setMethod(
+  f = "show",
+  signature = signature(object = "GeneralSimulations"),
+  def = function(object) {
+    cat(paste0(
+      "An object of class '",
+      class(object),
+      "' containing ",
+      length(object@data),
+      " simulated trials.\n",
+      "Please use 'summary()' to obtain more information.\n"
+    ))
+    invisible(object)
+  }
+)
+
 # show-GeneralSimulationsSummary ----
 
 #' Show the Summary of the Simulations
@@ -909,6 +972,25 @@ setMethod(
       ),
       "%\n"
     )
+
+    # Backfill information.
+    if (object@any_backfilled) {
+      r$report(
+        "n_backfill",
+        "Number of backfill patients",
+        percent = FALSE
+      )
+      back_dose_tab <- prop.table(table(
+        unlist(object@backfill_doses)
+      ))
+      back_doses <- names(back_dose_tab)
+      back_dose_percent <- paste0(round(back_dose_tab * 100, 1), "%")
+      cat(
+        "Doses for backfill patients:",
+        toString(paste0(back_doses, ": ", back_dose_percent)),
+        "\n"
+      )
+    }
 
     # Finally assign names to the df and return it invisibly.
     names(r$df) <- r$dfNames
