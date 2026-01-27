@@ -78,8 +78,8 @@ setMethod(
 #' A method that creates a plot for [`Data`] object.
 #'
 #' @param include_backfill (`flag`)\cr whether to include backfilled patients.
-#' @param mark_backfill (`flag`)\cr whether to mark backfilled patients with a "B".
-#' @param mark_response (`flag`)\cr whether to mark patients with response with a blue star.
+#' @param mark_backfill (`flag`)\cr whether to mark backfilled patients with empty shape.
+#' @param mark_response (`flag`)\cr whether to mark patients with response with rectangle.
 #'
 #' @return The [`ggplot2`] object.
 #'
