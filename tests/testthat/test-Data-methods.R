@@ -717,6 +717,7 @@ test_that("tidy-DataGeneral creates the correct tibble", {
     Response = c(1, NA, 0),
     Backfilled = c(FALSE, FALSE, TRUE)
   )
+  # Note that we need to set the class manually here and we need twice "tbl_Data".
   class(expected) <- c("tbl_Data", "tbl_Data", class(expected))
 
   expect_equal(tidy(d), expected)

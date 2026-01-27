@@ -15,6 +15,7 @@ vignettes/*.R
 !vignettes/\.rebuild_vignettes.R
 vignettes/*.pdf
 vignettes/figure/*.pdf
+vignettes/*_files/
 *.synctex.gz
 docs/
 pkgdown/
