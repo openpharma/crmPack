@@ -185,8 +185,11 @@ h_plot_data_dataordinal <- function(
     shape_values <- c(shape_values, bf_shapes)
   }
 
-  p <- ggplot(df, aes(x = patient, y = dose)) +
-    geom_point(aes(shape = shape_key, colour = toxicity), size = 3) +
+  p <- ggplot(df, aes(x = .data$patient, y = .data$dose)) +
+    geom_point(
+      aes(shape = .data$shape_key, colour = .data$toxicity),
+      size = 3
+    ) +
     scale_colour_manual(
       name = "Toxicity",
       values = tox_labels,
@@ -216,7 +219,7 @@ h_plot_data_dataordinal <- function(
   if (!blind) {
     p <- p +
       geom_text(
-        aes(label = ID, size = 2),
+        aes(label = .data$ID, size = 2),
         data = df,
         hjust = 0,
         vjust = 0.5,
