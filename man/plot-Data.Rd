@@ -25,7 +25,9 @@ h_plot_data_dataordinal(
   include_backfill = TRUE,
   mark_backfill = FALSE,
   mark_response = FALSE,
-  ...
+  ...,
+  text_size_markings = 9,
+  point_cex_markings = 1.1
 )
 
 \S4method{plot}{DataOrdinal,missing}(
@@ -64,6 +66,10 @@ function.}
 \item{include_backfill}{(\code{flag})\cr whether to include backfilled patients.}
 
 \item{mark_response}{(\code{flag})\cr whether to mark patients with response with rectangle.}
+
+\item{text_size_markings}{(\code{number})\cr text size for the markings legend.}
+
+\item{point_cex_markings}{(\code{number})\cr point size multiplier for the markings legend.}
 }
 \value{
 The \code{\link[ggplot2:ggplot2-package]{ggplot2::ggplot2}} object.

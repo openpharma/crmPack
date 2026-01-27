@@ -80,6 +80,8 @@ setMethod(
 #' @param include_backfill (`flag`)\cr whether to include backfilled patients.
 #' @param mark_backfill (`flag`)\cr whether to mark backfilled patients with empty shape.
 #' @param mark_response (`flag`)\cr whether to mark patients with response with rectangle.
+#' @param text_size_markings (`number`)\cr text size for the markings legend.
+#' @param point_cex_markings (`number`)\cr point size multiplier for the markings legend.
 #'
 #' @return The [`ggplot2`] object.
 #'
@@ -99,13 +101,17 @@ setMethod(
     include_backfill = TRUE,
     mark_backfill = FALSE,
     mark_response = FALSE,
-    ...
+    ...,
+    text_size_markings = 9,
+    point_cex_markings = 1.1
   ) {
     assert_flag(blind)
     assert_flag(legend)
     assert_flag(include_backfill)
     assert_flag(mark_backfill)
     assert_flag(mark_response)
+    assert_number(text_size_markings, lower = 1)
+    assert_number(point_cex_markings, lower = 0)
 
     if (!include_backfill) {
       x <- x[!x@backfilled]
@@ -149,14 +155,14 @@ setMethod(
           x = 0.05,
           y = 0.5,
           pch = 0,
-          gp = grid::gpar(col = "blue", cex = 1.5)
+          gp = grid::gpar(col = "blue", cex = point_cex_markings)
         )
         response_label <- grid::textGrob(
-          "  Response",
+          "   Response",
           x = 0.25,
           y = 0.5,
           just = "left",
-          gp = grid::gpar(fontsize = 10)
+          gp = grid::gpar(fontsize = text_size_markings)
         )
         marking_grobs[[grob_idx]] <- grid::grobTree(
           response_point,
@@ -172,14 +178,14 @@ setMethod(
           x = 0.05,
           y = 0.5,
           pch = 16, # filled circle
-          gp = grid::gpar(col = "black", cex = 1.2)
+          gp = grid::gpar(col = "black", cex = point_cex_markings)
         )
         primary_label <- grid::textGrob(
-          "  Escalation",
+          "   Escalation",
           x = 0.25,
           y = 0.5,
           just = "left",
-          gp = grid::gpar(fontsize = 10)
+          gp = grid::gpar(fontsize = text_size_markings)
         )
         marking_grobs[[grob_idx]] <- grid::grobTree(
           primary_point,
@@ -191,14 +197,14 @@ setMethod(
           x = 0.05,
           y = 0.5,
           pch = 1, # open circle
-          gp = grid::gpar(col = "black", cex = 1.2)
+          gp = grid::gpar(col = "black", cex = point_cex_markings)
         )
         backfill_label <- grid::textGrob(
-          "  Backfill",
+          "   Backfill",
           x = 0.25,
           y = 0.5,
           just = "left",
-          gp = grid::gpar(fontsize = 10)
+          gp = grid::gpar(fontsize = text_size_markings)
         )
         marking_grobs[[grob_idx]] <- grid::grobTree(
           backfill_point,
