@@ -60,9 +60,9 @@ function.}
 
 \item{include_backfill}{(\code{flag})\cr whether to include backfilled patients.}
 
-\item{mark_backfill}{(\code{flag})\cr whether to mark backfilled patients with a "B".}
+\item{mark_backfill}{(\code{flag})\cr whether to mark backfilled patients with empty shape.}
 
-\item{mark_response}{(\code{flag})\cr whether to mark patients with response with a blue star.}
+\item{mark_response}{(\code{flag})\cr whether to mark patients with response with rectangle.}
 }
 \value{
 The \code{\link[ggplot2:ggplot2-package]{ggplot2::ggplot2}} object.
