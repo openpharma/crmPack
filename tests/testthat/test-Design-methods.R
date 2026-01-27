@@ -226,7 +226,7 @@ test_that("Backfilling works in a simple design", {
     firstSeparate = FALSE
   )
 
-  expect_snapshot(result)
+  expect_snap(result)
 })
 
 ## NextBestInfTheory ----
