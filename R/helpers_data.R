@@ -194,6 +194,8 @@ h_plot_data_dataordinal <- function(
       name = "Toxicity",
       values = tox_labels,
       breaks = names(tox_labels),
+      limits = names(tox_labels),
+      drop = FALSE,
       guide = guide_legend(
         reverse = TRUE,
         override.aes = list(
