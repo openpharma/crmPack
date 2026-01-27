@@ -249,7 +249,7 @@ Here we can see that the starting dose cohort at dose 3 as well as the next one 
 
 ### Investigating simulation results
 
-For now we can do some manual investigations of the simulation results to see how many backfill patients were recruited in each simulation:
+We can do some manual investigations of the simulation results to see how many backfill patients were recruited in each simulation:
 
 ```{r}
 get_backfill_counts <- function(sims) {
@@ -290,6 +290,12 @@ table(all_backfill_doses_complex)
 ```
 
 So we see e.g. that all backfill patients in the complex design were recruited at doses `r toString(sort(unique(all_backfill_doses_complex)))`.
+
+We can also get basic summary statistics with the `summary` method for `Simulations` objects:
+
+```{r}
+summary(sims_simple, truth = myTruth)
+```
 
 ## Limitations
 
