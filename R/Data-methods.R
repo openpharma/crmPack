@@ -304,17 +304,29 @@ setMethod(
     object,
     x,
     y,
+    response = rep(NA_integer_, length(y)),
     ID = length(object@ID) + seq_along(y),
     new_cohort = TRUE,
     check = TRUE,
+    backfill = FALSE,
+    cohort = NULL,
     ...
   ) {
     assert_numeric(x, min.len = 0, max.len = 1)
     assert_integerish(y, lower = 0, upper = 1, any.missing = FALSE)
+    assert_integerish(
+      response,
+      len = length(y),
+      lower = 0,
+      upper = 1,
+      any.missing = TRUE
+    )
     assert_integerish(ID, len = length(y), any.missing = FALSE)
     assert_disjunct(object@ID, ID)
     assert_flag(new_cohort)
     assert_flag(check)
+    assert_flag(backfill)
+    assert_int(cohort, lower = 1, null.ok = TRUE)
 
     # How many additional patients, ie. the length of the update.
     n <- length(y)
@@ -329,11 +341,16 @@ setMethod(
     # Add DLT data.
     object@y <- c(object@y, as.integer(y))
 
+    # Add response data.
+    object@response <- c(object@response, response)
+
     # Add ID.
     object@ID <- c(object@ID, as.integer(ID))
 
     # Add cohort number.
-    new_cohort_id <- if (object@nObs == 0) {
+    new_cohort_id <- if (!is.null(cohort)) {
+      cohort
+    } else if (object@nObs == 0) {
       1L
     } else {
       tail(object@cohort, 1L) + ifelse(new_cohort, 1L, 0L)
@@ -342,6 +359,21 @@ setMethod(
 
     # Increment sample size.
     object@nObs <- object@nObs + n
+
+    # Add backfill information.
+    object@backfilled <- c(object@backfilled, rep(backfill, n))
+
+    # We might need to sort again when we supplied a cohort index.
+    if (!is.null(cohort)) {
+      ord <- order(object@cohort, object@ID)
+      object@x <- object@x[ord]
+      object@y <- object@y[ord]
+      object@response <- object@response[ord]
+      object@ID <- object@ID[ord]
+      object@xLevel <- object@xLevel[ord]
+      object@cohort <- object@cohort[ord]
+      object@backfilled <- object@backfilled[ord]
+    }
 
     if (check) {
       validObject(object)

@@ -9,6 +9,7 @@
   nsim = 1L,
   seed = NULL,
   truth,
+  trueResponse = plogis,
   args = NULL,
   firstSeparate = FALSE,
   mcmcOptions = McmcOptions(),
@@ -28,6 +29,9 @@
 \item{truth}{(\code{function})\cr a function which takes as input a dose (vector) and returns the
 true probability (vector) for toxicity. Additional arguments can be supplied
 in \code{args}.}
+
+\item{trueResponse}{(\code{function})\cr a function which takes as input a dose (vector) and returns the
+probability (vector) for a positive efficacy response.}
 
 \item{args}{(\code{data.frame})\cr data frame with arguments for the \code{truth} function. The
 column names correspond to the argument names, the rows to the values of the

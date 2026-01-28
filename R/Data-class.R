@@ -65,6 +65,10 @@ NULL
 #'   w.r.t `doseGrid`.
 #' @slot placebo (`logical`)\cr if `TRUE` the first dose level
 #'   in the `doseGrid`is considered as PLACEBO.
+#' @slot backfilled (`logical`)\cr whether this patient was
+#'   in a backfill cohort.
+#' @slot response (`integer`)\cr whether this patient had a
+#'   positive efficacy response (0 or 1 integers).
 #'
 #' @aliases Data
 #' @export
@@ -78,7 +82,9 @@ NULL
     doseGrid = "numeric",
     nGrid = "integer",
     xLevel = "integer",
-    placebo = "logical"
+    placebo = "logical",
+    backfilled = "logical",
+    response = "integer"
   ),
   prototype = prototype(
     x = numeric(),
@@ -86,7 +92,9 @@ NULL
     doseGrid = numeric(),
     nGrid = 0L,
     xLevel = integer(),
-    placebo = FALSE
+    placebo = FALSE,
+    backfilled = logical(),
+    response = integer()
   ),
   validity = v_data
 )
@@ -115,6 +123,8 @@ NULL
 #' @param doseGrid (`numeric`)\cr all possible doses.
 #' @param placebo (`flag`)\cr if `TRUE` the first dose level
 #'   in the `doseGrid` is considered as placebo.
+#' @param backfilled (`logical`)\cr whether this patient was in a backfill cohort.
+#' @param response (`logical`)\cr whether this patient had a positive efficacy response.
 #' @param ... not used.
 #'
 #' @export
@@ -127,6 +137,8 @@ Data <- function(
   cohort = integer(),
   doseGrid = numeric(),
   placebo = FALSE,
+  backfilled = rep(FALSE, length(x)),
+  response = rep(NA_integer_, length(x)),
   ...
 ) {
   assert_numeric(x)
@@ -139,6 +151,14 @@ Data <- function(
     assert_numeric(doseGrid, any.missing = FALSE, unique = TRUE)
   }
   assert_flag(placebo)
+  assert_logical(backfilled, len = length(x), any.missing = FALSE)
+  assert_integer(
+    response,
+    len = length(x),
+    lower = 0,
+    upper = 1,
+    any.missing = TRUE
+  )
 
   doseGrid <- sort(doseGrid)
   assert_subset(x, doseGrid)
@@ -170,7 +190,9 @@ Data <- function(
     nObs = length(x),
     nGrid = length(doseGrid),
     xLevel = match_within_tolerance(x, doseGrid),
-    placebo = placebo
+    placebo = placebo,
+    backfilled = backfilled,
+    response = response
   )
 }
 

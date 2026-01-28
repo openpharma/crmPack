@@ -1,6 +1,7 @@
 #' @include Design-validity.R
 #' @include Model-class.R
 #' @include Rules-class.R
+#' @include Backfill-class.R
 #' @include Data-class.R
 #' @include helpers.R
 #' @include CrmPackClass-class.R
@@ -118,6 +119,8 @@ ThreePlusThreeDesign <- function(doseGrid) {
 #' @slot increments (`Increments`)\cr how to control increments between dose levels.
 #' @slot pl_cohort_size (`CohortSize`)\cr rules for the cohort sizes for placebo,
 #'   if any planned (defaults to constant 0 placebo patients).
+#' @slot backfill (`Backfill`)\cr rules for backfilling patients in the trial
+#'   (defaults to no backfilling).
 #'
 #' @aliases Design
 #' @export
@@ -128,14 +131,16 @@ ThreePlusThreeDesign <- function(doseGrid) {
     model = "GeneralModel",
     stopping = "Stopping",
     increments = "Increments",
-    pl_cohort_size = "CohortSize"
+    pl_cohort_size = "CohortSize",
+    backfill = "Backfill"
   ),
   prototype = prototype(
     model = .LogisticNormal(),
     nextBest = .NextBestNCRM(),
     stopping = .StoppingMinPatients(),
     increments = .IncrementsRelative(),
-    pl_cohort_size = CohortSizeConst(0L)
+    pl_cohort_size = CohortSizeConst(0L),
+    backfill = .Backfill(opening = .OpeningNone())
   ),
   contains = "RuleDesign"
 )
@@ -148,6 +153,7 @@ ThreePlusThreeDesign <- function(doseGrid) {
 #' @param stopping (`Stopping`)\cr see slot definition.
 #' @param increments (`Increments`)\cr see slot definition.
 #' @param pl_cohort_size (`CohortSize`)\cr see slot definition.
+#' @param backfill (`Backfill`)\cr see slot definition.
 #' @inheritDotParams RuleDesign
 #'
 #' @export
@@ -159,6 +165,7 @@ Design <- function(
   stopping,
   increments,
   pl_cohort_size = CohortSizeConst(0L),
+  backfill = Backfill(opening = OpeningNone()),
   ...
 ) {
   start <- RuleDesign(...)
@@ -168,7 +175,8 @@ Design <- function(
     model = model,
     stopping = stopping,
     increments = increments,
-    pl_cohort_size = pl_cohort_size
+    pl_cohort_size = pl_cohort_size,
+    backfill = backfill
   )
 }
 
