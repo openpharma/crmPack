@@ -13,7 +13,7 @@ contains additional model, stopping and increments slots."><meta property="og:im
 
     <a class="navbar-brand me-2" href="../index.html">crmPack</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">2.0.2</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">2.1.0</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -34,6 +34,7 @@ contains additional model, stopping and increments slots."><meta property="og:im
     <li><a class="dropdown-item" href="../articles/trial_analysis.html">Trial Analysis</a></li>
     <li><a class="dropdown-item" href="../articles/trial_sanity_checks.html">Trial Design: basic sanity checks</a></li>
     <li><a class="dropdown-item" href="../articles/trial_simulation.html">Trial Simulation</a></li>
+    <li><a class="dropdown-item" href="../articles/trial_backfill.html">Backfill cohorts</a></li>
     <li><hr class="dropdown-divider"></li>
     <li><h6 class="dropdown-header" data-toc-skip>Examples</h6></li>
     <li><a class="dropdown-item" href="../articles/example.html">crmPack: Object-oriented implementation of CRM designs</a></li>
@@ -76,7 +77,14 @@ contains additional <code>model</code>, <code>stopping</code> and <code>incremen
 
     <div class="section level2">
     <h2 id="ref-usage">Usage<a class="anchor" aria-label="anchor" href="#ref-usage"></a></h2>
-    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">Design</span><span class="op">(</span><span class="va">model</span>, <span class="va">stopping</span>, <span class="va">increments</span>, pl_cohort_size <span class="op">=</span> <span class="fu"><a href="CohortSizeConst-class.html">CohortSizeConst</a></span><span class="op">(</span><span class="fl">0L</span><span class="op">)</span>, <span class="va">...</span><span class="op">)</span></span>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">Design</span><span class="op">(</span></span>
+<span>  <span class="va">model</span>,</span>
+<span>  <span class="va">stopping</span>,</span>
+<span>  <span class="va">increments</span>,</span>
+<span>  pl_cohort_size <span class="op">=</span> <span class="fu"><a href="CohortSizeConst-class.html">CohortSizeConst</a></span><span class="op">(</span><span class="fl">0L</span><span class="op">)</span>,</span>
+<span>  backfill <span class="op">=</span> <span class="fu"><a href="Backfill-class.html">Backfill</a></span><span class="op">(</span>opening <span class="op">=</span> <span class="fu"><a href="OpeningNone-class.html">OpeningNone</a></span><span class="op">(</span><span class="op">)</span><span class="op">)</span>,</span>
+<span>  <span class="va">...</span></span>
+<span><span class="op">)</span></span>
 <span></span>
 <span><span class="fu">.DefaultDesign</span><span class="op">(</span><span class="op">)</span></span></code></pre></div>
     </div>
@@ -99,6 +107,10 @@ contains additional <code>model</code>, <code>stopping</code> and <code>incremen
 
 <dt id="arg-pl-cohort-size">pl_cohort_size<a class="anchor" aria-label="anchor" href="#arg-pl-cohort-size"></a></dt>
 <dd><p>(<code>CohortSize</code>)<br> see slot definition.</p></dd>
+
+
+<dt id="arg-backfill">backfill<a class="anchor" aria-label="anchor" href="#arg-backfill"></a></dt>
+<dd><p>(<code>Backfill</code>)<br> see slot definition.</p></dd>
 
 
 <dt id="arg--">...<a class="anchor" aria-label="anchor" href="#arg--"></a></dt>
@@ -137,6 +149,11 @@ contains additional <code>model</code>, <code>stopping</code> and <code>incremen
 <dt><code>pl_cohort_size</code></dt>
 <dd><p>(<code>CohortSize</code>)<br> rules for the cohort sizes for placebo,
 if any planned (defaults to constant 0 placebo patients).</p></dd>
+
+
+<dt><code>backfill</code></dt>
+<dd><p>(<code>Backfill</code>)<br> rules for backfilling patients in the trial
+(defaults to no backfilling).</p></dd>
 
 
 </dl></div>
@@ -208,7 +225,7 @@ if any planned (defaults to constant 0 placebo patients).</p></dd>
 
 
     <footer><div class="pkgdown-footer-left">
-  <p>Developed by Daniel Sabanes Bove, Wai Yin Yeung, Burak Kuersad Guenhan, Giuseppe Palermo, Thomas Jaki, Jiawen Zhu, Ziwei Liao, Dimitris Kontos, Marlene Schulte-Goebel, Doug Kelkhoff, Oliver Boix, Robert Adams, Clara Beck, John Kirkpatrick, Wojciech Wójciak, Guanya Peng, Prerana Chandratre, F. Hoffmann-La Roche AG, Merck Healthcare KGaA, Bayer AG, RPACT GmbH.</p>
+  <p>Developed by Daniel Sabanés Bové, Wai Yin Yeung, Burak Kuersad Guenhan, Giuseppe Palermo, Thomas Jaki, Jiawen Zhu, Ziwei Liao, Dimitris Kontos, Marlene Schulte-Goebel, Doug Kelkhoff, Oliver Boix, Robert Adams, Clara Beck, John Kirkpatrick, Wojciech Wójciak, Guanya Peng, Prerana Chandratre, F. Hoffmann-La Roche AG, Merck Healthcare KGaA, Bayer AG, RPACT GmbH.</p>
 </div>
 
 <div class="pkgdown-footer-right">

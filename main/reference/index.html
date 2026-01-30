@@ -7,7 +7,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">crmPack</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">2.0.2</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">2.1.0</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -28,6 +28,7 @@
     <li><a class="dropdown-item" href="../articles/trial_analysis.html">Trial Analysis</a></li>
     <li><a class="dropdown-item" href="../articles/trial_sanity_checks.html">Trial Design: basic sanity checks</a></li>
     <li><a class="dropdown-item" href="../articles/trial_simulation.html">Trial Simulation</a></li>
+    <li><a class="dropdown-item" href="../articles/trial_backfill.html">Backfill cohorts</a></li>
     <li><hr class="dropdown-divider"></li>
     <li><h6 class="dropdown-header" data-toc-skip>Examples</h6></li>
     <li><a class="dropdown-item" href="../articles/example.html">crmPack: Object-oriented implementation of CRM designs</a></li>
@@ -710,6 +711,13 @@
 
         <dt>
 
+          <code><a href="CohortSizeRandom-class.html">CohortSizeRandom()</a></code> <code><a href="CohortSizeRandom-class.html">.DefaultCohortSizeRandom()</a></code>
+          <span class="badge lifecycle lifecycle-experimental">experimental</span>
+        </dt>
+        <dd><code>CohortSizeRandom</code></dd>
+
+        <dt>
+
           <code><a href="CohortSizeParts-class.html">CohortSizeParts()</a></code> <code><a href="CohortSizeParts-class.html">.DefaultCohortSizeParts()</a></code>
           <span class="badge lifecycle lifecycle-stable">stable</span>
         </dt>
@@ -805,6 +813,90 @@
           <span class="badge lifecycle lifecycle-experimental">experimental</span>
         </dt>
         <dd><code>DesignGrouped</code></dd>
+
+        <dt>
+
+          <code><a href="Opening-class.html">.DefaultOpening()</a></code>
+          <span class="badge lifecycle lifecycle-experimental">experimental</span>
+        </dt>
+        <dd><code>Opening</code></dd>
+
+        <dt>
+
+          <code><a href="OpeningMinDose-class.html">OpeningMinDose()</a></code> <code><a href="OpeningMinDose-class.html">.DefaultOpeningMinDose()</a></code>
+          <span class="badge lifecycle lifecycle-experimental">experimental</span>
+        </dt>
+        <dd><code>OpeningMinDose</code></dd>
+
+        <dt>
+
+          <code><a href="OpeningMinCohorts-class.html">OpeningMinCohorts()</a></code> <code><a href="OpeningMinCohorts-class.html">.DefaultOpeningMinCohorts()</a></code>
+          <span class="badge lifecycle lifecycle-experimental">experimental</span>
+        </dt>
+        <dd><code>OpeningMinCohorts</code></dd>
+
+        <dt>
+
+          <code><a href="OpeningNone-class.html">OpeningNone()</a></code> <code><a href="OpeningNone-class.html">.DefaultOpeningNone()</a></code>
+          <span class="badge lifecycle lifecycle-experimental">experimental</span>
+        </dt>
+        <dd><code>OpeningNone</code></dd>
+
+        <dt>
+
+          <code><a href="OpeningMinResponses-class.html">OpeningMinResponses()</a></code> <code><a href="OpeningMinResponses-class.html">.DefaultOpeningMinResponses()</a></code>
+          <span class="badge lifecycle lifecycle-experimental">experimental</span>
+        </dt>
+        <dd><code>OpeningMinResponses</code></dd>
+
+        <dt>
+
+          <code><a href="OpeningAll-class.html">OpeningAll()</a></code> <code><a href="OpeningAll-class.html">.DefaultOpeningAll()</a></code>
+          <span class="badge lifecycle lifecycle-experimental">experimental</span>
+        </dt>
+        <dd><code>OpeningAll</code></dd>
+
+        <dt>
+
+          <code><a href="OpeningAny-class.html">OpeningAny()</a></code> <code><a href="OpeningAny-class.html">.DefaultOpeningAny()</a></code>
+          <span class="badge lifecycle lifecycle-experimental">experimental</span>
+        </dt>
+        <dd><code>OpeningAny</code></dd>
+
+        <dt>
+
+          <code><a href="OpeningList-class.html">OpeningList()</a></code> <code><a href="OpeningList-class.html">.DefaultOpeningList()</a></code>
+          <span class="badge lifecycle lifecycle-experimental">experimental</span>
+        </dt>
+        <dd><code>OpeningList</code></dd>
+
+        <dt>
+
+          <code><a href="Recruitment-class.html">.DefaultRecruitment()</a></code>
+          <span class="badge lifecycle lifecycle-experimental">experimental</span>
+        </dt>
+        <dd><code>Recruitment</code></dd>
+
+        <dt>
+
+          <code><a href="RecruitmentUnlimited-class.html">RecruitmentUnlimited()</a></code> <code><a href="RecruitmentUnlimited-class.html">.DefaultRecruitmentUnlimited()</a></code>
+          <span class="badge lifecycle lifecycle-experimental">experimental</span>
+        </dt>
+        <dd><code>RecruitmentUnlimited</code></dd>
+
+        <dt>
+
+          <code><a href="RecruitmentRatio-class.html">RecruitmentRatio()</a></code> <code><a href="RecruitmentRatio-class.html">.DefaultRecruitmentRatio()</a></code>
+          <span class="badge lifecycle lifecycle-experimental">experimental</span>
+        </dt>
+        <dd><code>RecruitmentRatio</code></dd>
+
+        <dt>
+
+          <code><a href="Backfill-class.html">Backfill()</a></code> <code><a href="Backfill-class.html">.DefaultBackfill()</a></code>
+          <span class="badge lifecycle lifecycle-experimental">experimental</span>
+        </dt>
+        <dd><code>Backfill</code> class</dd>
       </dl></div><div class="section level2">
       <h2 id="internal-helper-functions">Internal Helper Functions<a class="anchor" aria-label="anchor" href="#internal-helper-functions"></a></h2>
 
@@ -1204,7 +1296,7 @@
 
         <dt>
 
-          <code><a href="v_cohort_size.html">v_cohort_size_range()</a></code> <code><a href="v_cohort_size.html">v_cohort_size_dlt()</a></code> <code><a href="v_cohort_size.html">v_cohort_size_const()</a></code> <code><a href="v_cohort_size.html">v_cohort_size_parts()</a></code> <code><a href="v_cohort_size.html">v_cohort_size_max()</a></code>
+          <code><a href="v_cohort_size.html">v_cohort_size_range()</a></code> <code><a href="v_cohort_size.html">v_cohort_size_dlt()</a></code> <code><a href="v_cohort_size.html">v_cohort_size_const()</a></code> <code><a href="v_cohort_size.html">v_cohort_size_random()</a></code> <code><a href="v_cohort_size.html">v_cohort_size_parts()</a></code> <code><a href="v_cohort_size.html">v_cohort_size_max()</a></code>
           <span class="badge lifecycle lifecycle-stable">stable</span>
         </dt>
         <dd>Internal Helper Functions for Validation of <code>CohortSize</code> Objects</dd>
@@ -1236,6 +1328,27 @@
           <span class="badge lifecycle lifecycle-stable">stable</span>
         </dt>
         <dd>Internal Helper Functions for Validation of <code>PseudoSimulations</code> Objects</dd>
+
+        <dt>
+
+          <code><a href="v_opening.html">v_opening_min_dose()</a></code> <code><a href="v_opening.html">v_opening_min_cohorts()</a></code> <code><a href="v_opening.html">v_opening_min_responses()</a></code>
+          <span class="badge lifecycle lifecycle-experimental">experimental</span>
+        </dt>
+        <dd>Internal Helper Functions for Validation of <code>Opening</code> Objects</dd>
+
+        <dt>
+
+          <code><a href="v_recruitment.html">v_recruitment_ratio()</a></code>
+          <span class="badge lifecycle lifecycle-experimental">experimental</span>
+        </dt>
+        <dd>Internal Helper Functions for Validation of <code>Recruitment</code> Objects</dd>
+
+        <dt>
+
+          <code><a href="v_backfill.html">v_backfill()</a></code>
+          <span class="badge lifecycle lifecycle-experimental">experimental</span>
+        </dt>
+        <dd>Internal Helper Functions for Validation of <code>Backfill</code> Objects</dd>
       </dl></div><div class="section level2">
       <h2 id="custom-checkmate-assertions">Custom Checkmate Assertions<a class="anchor" aria-label="anchor" href="#custom-checkmate-assertions"></a></h2>
 
@@ -1310,6 +1423,13 @@
           <span class="badge lifecycle lifecycle-stable">stable</span>
         </dt>
         <dd>Plot Method for the <code>DataDA</code> Class</dd>
+
+        <dt>
+
+          <code><a href="subset-Data.html">`[`(<i>&lt;Data&gt;</i>,<i>&lt;numeric&gt;</i>,<i>&lt;missing&gt;</i>,<i>&lt;missing&gt;</i>)</a></code> <code><a href="subset-Data.html">`[`(<i>&lt;Data&gt;</i>,<i>&lt;logical&gt;</i>,<i>&lt;missing&gt;</i>,<i>&lt;missing&gt;</i>)</a></code>
+          <span class="badge lifecycle lifecycle-stable">stable</span>
+        </dt>
+        <dd>Subsetting Operator for the Data Class</dd>
 
         <dt>
 
@@ -1478,6 +1598,20 @@
           <span class="badge lifecycle lifecycle-stable">stable</span>
         </dt>
         <dd>Determine the Maximum Possible Next Dose</dd>
+
+        <dt>
+
+          <code><a href="maxRecruits.html">maxRecruits()</a></code>
+          <span class="badge lifecycle lifecycle-experimental">experimental</span>
+        </dt>
+        <dd>Calculate Maximum Number of Backfill Patients</dd>
+
+        <dt>
+
+          <code><a href="openCohort.html">openCohort()</a></code>
+          <span class="badge lifecycle lifecycle-experimental">experimental</span>
+        </dt>
+        <dd>Open / recruit backfill patients into a cohort?</dd>
       </dl></div><div class="section level2">
       <h2 id="functions">Functions<a class="anchor" aria-label="anchor" href="#functions"></a></h2>
 
@@ -1504,7 +1638,7 @@
 
         <dt>
 
-          <code><a href="knit_print.html">knit_print(<i>&lt;CohortSizeConst&gt;</i>)</a></code> <code><a href="knit_print.html">knit_print(<i>&lt;CohortSizeRange&gt;</i>)</a></code> <code><a href="knit_print.html">knit_print(<i>&lt;CohortSizeDLT&gt;</i>)</a></code> <code><a href="knit_print.html">knit_print(<i>&lt;CohortSizeParts&gt;</i>)</a></code> <code><a href="knit_print.html">knit_print(<i>&lt;CohortSizeMax&gt;</i>)</a></code> <code><a href="knit_print.html">knit_print(<i>&lt;CohortSizeMin&gt;</i>)</a></code> <code><a href="knit_print.html">knit_print(<i>&lt;CohortSizeOrdinal&gt;</i>)</a></code> <code><a href="knit_print.html">knit_print(<i>&lt;StartingDose&gt;</i>)</a></code> <code><a href="knit_print.html">knit_print(<i>&lt;RuleDesign&gt;</i>)</a></code> <code><a href="knit_print.html">knit_print(<i>&lt;Design&gt;</i>)</a></code> <code><a href="knit_print.html">knit_print(<i>&lt;DualDesign&gt;</i>)</a></code> <code><a href="knit_print.html">knit_print(<i>&lt;DADesign&gt;</i>)</a></code> <code><a href="knit_print.html">knit_print(<i>&lt;TDDesign&gt;</i>)</a></code> <code><a href="knit_print.html">knit_print(<i>&lt;DualResponsesDesign&gt;</i>)</a></code> <code><a href="knit_print.html">knit_print(<i>&lt;DesignOrdinal&gt;</i>)</a></code> <code><a href="knit_print.html">knit_print(<i>&lt;DesignGrouped&gt;</i>)</a></code> <code><a href="knit_print.html">knit_print(<i>&lt;TDsamplesDesign&gt;</i>)</a></code> <code><a href="knit_print.html">knit_print(<i>&lt;DualResponsesSamplesDesign&gt;</i>)</a></code> <code><a href="knit_print.html">knit_print(<i>&lt;RuleDesignOrdinal&gt;</i>)</a></code> <code><a href="knit_print.html">knit_print(<i>&lt;GeneralData&gt;</i>)</a></code> <code><a href="knit_print.html">knit_print(<i>&lt;DataParts&gt;</i>)</a></code> <code><a href="knit_print.html">knit_print(<i>&lt;DualEndpoint&gt;</i>)</a></code> <code><a href="knit_print.html">knit_print(<i>&lt;ModelParamsNormal&gt;</i>)</a></code> <code><a href="knit_print.html">knit_print(<i>&lt;GeneralModel&gt;</i>)</a></code> <code><a href="knit_print.html">knit_print(<i>&lt;LogisticKadane&gt;</i>)</a></code> <code><a href="knit_print.html">knit_print(<i>&lt;LogisticKadaneBetaGamma&gt;</i>)</a></code> <code><a href="knit_print.html">knit_print(<i>&lt;LogisticLogNormal&gt;</i>)</a></code> <code><a href="knit_print.html">knit_print(<i>&lt;LogisticLogNormalMixture&gt;</i>)</a></code> <code><a href="knit_print.html">knit_print(<i>&lt;LogisticLogNormalSub&gt;</i>)</a></code> <code><a href="knit_print.html">knit_print(<i>&lt;LogisticNormalMixture&gt;</i>)</a></code> <code><a href="knit_print.html">knit_print(<i>&lt;LogisticNormalFixedMixture&gt;</i>)</a></code> <code><a href="knit_print.html">knit_print(<i>&lt;OneParLogNormalPrior&gt;</i>)</a></code> <code><a href="knit_print.html">knit_print(<i>&lt;OneParExpPrior&gt;</i>)</a></code> <code><a href="knit_print.html">knit_print(<i>&lt;LogisticLogNormalGrouped&gt;</i>)</a></code> <code><a href="knit_print.html">knit_print(<i>&lt;LogisticLogNormalOrdinal&gt;</i>)</a></code> <code><a href="knit_print.html">knit_print(<i>&lt;LogisticIndepBeta&gt;</i>)</a></code> <code><a href="knit_print.html">knit_print(<i>&lt;Effloglog&gt;</i>)</a></code> <code><a href="knit_print.html">knit_print(<i>&lt;IncrementsRelative&gt;</i>)</a></code> <code><a href="knit_print.html">knit_print(<i>&lt;IncrementsRelativeDLT&gt;</i>)</a></code> <code><a href="knit_print.html">knit_print(<i>&lt;IncrementsDoseLevels&gt;</i>)</a></code> <code><a href="knit_print.html">knit_print(<i>&lt;IncrementsHSRBeta&gt;</i>)</a></code> <code><a href="knit_print.html">knit_print(<i>&lt;IncrementsMin&gt;</i>)</a></code> <code><a href="knit_print.html">knit_print(<i>&lt;IncrementsOrdinal&gt;</i>)</a></code> <code><a href="knit_print.html">knit_print(<i>&lt;IncrementsRelativeParts&gt;</i>)</a></code> <code><a href="knit_print.html">knit_print(<i>&lt;IncrementsRelativeDLTCurrent&gt;</i>)</a></code> <code><a href="knit_print.html">knit_print(<i>&lt;NextBestMTD&gt;</i>)</a></code> <code><a href="knit_print.html">knit_print(<i>&lt;NextBestNCRM&gt;</i>)</a></code> <code><a href="knit_print.html">knit_print(<i>&lt;NextBestThreePlusThree&gt;</i>)</a></code> <code><a href="knit_print.html">knit_print(<i>&lt;NextBestDualEndpoint&gt;</i>)</a></code> <code><a href="knit_print.html">knit_print(<i>&lt;NextBestMinDist&gt;</i>)</a></code> <code><a href="knit_print.html">knit_print(<i>&lt;NextBestInfTheory&gt;</i>)</a></code> <code><a href="knit_print.html">knit_print(<i>&lt;NextBestTD&gt;</i>)</a></code> <code><a href="knit_print.html">knit_print(<i>&lt;NextBestMaxGain&gt;</i>)</a></code> <code><a href="knit_print.html">knit_print(<i>&lt;NextBestProbMTDLTE&gt;</i>)</a></code> <code><a href="knit_print.html">knit_print(<i>&lt;NextBestProbMTDMinDist&gt;</i>)</a></code> <code><a href="knit_print.html">knit_print(<i>&lt;NextBestNCRMLoss&gt;</i>)</a></code> <code><a href="knit_print.html">knit_print(<i>&lt;NextBestTDsamples&gt;</i>)</a></code> <code><a href="knit_print.html">knit_print(<i>&lt;NextBestMaxGainSamples&gt;</i>)</a></code> <code><a href="knit_print.html">knit_print(<i>&lt;NextBestOrdinal&gt;</i>)</a></code> <code><a href="knit_print.html">knit_print(<i>&lt;SafetyWindow&gt;</i>)</a></code> <code><a href="knit_print.html">knit_print(<i>&lt;SafetyWindowConst&gt;</i>)</a></code> <code><a href="knit_print.html">knit_print(<i>&lt;SafetyWindowSize&gt;</i>)</a></code> <code><a href="knit_print.html">knit_print(<i>&lt;StoppingOrdinal&gt;</i>)</a></code> <code><a href="knit_print.html">knit_print(<i>&lt;StoppingMaxGainCIRatio&gt;</i>)</a></code> <code><a href="knit_print.html">knit_print(<i>&lt;StoppingList&gt;</i>)</a></code> <code><a href="knit_print.html">knit_print(<i>&lt;StoppingAny&gt;</i>)</a></code> <code><a href="knit_print.html">knit_print(<i>&lt;StoppingAll&gt;</i>)</a></code> <code><a href="knit_print.html">knit_print(<i>&lt;StoppingTDCIRatio&gt;</i>)</a></code> <code><a href="knit_print.html">knit_print(<i>&lt;StoppingTargetBiomarker&gt;</i>)</a></code> <code><a href="knit_print.html">knit_print(<i>&lt;StoppingLowestDoseHSRBeta&gt;</i>)</a></code> <code><a href="knit_print.html">knit_print(<i>&lt;StoppingMTDCV&gt;</i>)</a></code> <code><a href="knit_print.html">knit_print(<i>&lt;StoppingMTDdistribution&gt;</i>)</a></code> <code><a href="knit_print.html">knit_print(<i>&lt;StoppingHighestDose&gt;</i>)</a></code> <code><a href="knit_print.html">knit_print(<i>&lt;StoppingSpecificDose&gt;</i>)</a></code> <code><a href="knit_print.html">knit_print(<i>&lt;StoppingTargetProb&gt;</i>)</a></code> <code><a href="knit_print.html">knit_print(<i>&lt;StoppingMinCohorts&gt;</i>)</a></code> <code><a href="knit_print.html">knit_print(<i>&lt;StoppingMinPatients&gt;</i>)</a></code> <code><a href="knit_print.html">knit_print(<i>&lt;StoppingPatientsNearDose&gt;</i>)</a></code> <code><a href="knit_print.html">knit_print(<i>&lt;StoppingCohortsNearDose&gt;</i>)</a></code> <code><a href="knit_print.html">knit_print(<i>&lt;StoppingMissingDose&gt;</i>)</a></code>
+          <code><a href="knit_print.html">knit_print(<i>&lt;Backfill&gt;</i>)</a></code> <code><a href="knit_print.html">knit_print(<i>&lt;CohortSizeConst&gt;</i>)</a></code> <code><a href="knit_print.html">knit_print(<i>&lt;CohortSizeRange&gt;</i>)</a></code> <code><a href="knit_print.html">knit_print(<i>&lt;CohortSizeDLT&gt;</i>)</a></code> <code><a href="knit_print.html">knit_print(<i>&lt;CohortSizeParts&gt;</i>)</a></code> <code><a href="knit_print.html">knit_print(<i>&lt;CohortSizeMax&gt;</i>)</a></code> <code><a href="knit_print.html">knit_print(<i>&lt;CohortSizeMin&gt;</i>)</a></code> <code><a href="knit_print.html">knit_print(<i>&lt;CohortSizeOrdinal&gt;</i>)</a></code> <code><a href="knit_print.html">knit_print(<i>&lt;CohortSizeRandom&gt;</i>)</a></code> <code><a href="knit_print.html">knit_print(<i>&lt;StartingDose&gt;</i>)</a></code> <code><a href="knit_print.html">knit_print(<i>&lt;RuleDesign&gt;</i>)</a></code> <code><a href="knit_print.html">knit_print(<i>&lt;Design&gt;</i>)</a></code> <code><a href="knit_print.html">knit_print(<i>&lt;DualDesign&gt;</i>)</a></code> <code><a href="knit_print.html">knit_print(<i>&lt;DADesign&gt;</i>)</a></code> <code><a href="knit_print.html">knit_print(<i>&lt;TDDesign&gt;</i>)</a></code> <code><a href="knit_print.html">knit_print(<i>&lt;DualResponsesDesign&gt;</i>)</a></code> <code><a href="knit_print.html">knit_print(<i>&lt;DesignOrdinal&gt;</i>)</a></code> <code><a href="knit_print.html">knit_print(<i>&lt;DesignGrouped&gt;</i>)</a></code> <code><a href="knit_print.html">knit_print(<i>&lt;TDsamplesDesign&gt;</i>)</a></code> <code><a href="knit_print.html">knit_print(<i>&lt;DualResponsesSamplesDesign&gt;</i>)</a></code> <code><a href="knit_print.html">knit_print(<i>&lt;RuleDesignOrdinal&gt;</i>)</a></code> <code><a href="knit_print.html">knit_print(<i>&lt;GeneralData&gt;</i>)</a></code> <code><a href="knit_print.html">knit_print(<i>&lt;DataParts&gt;</i>)</a></code> <code><a href="knit_print.html">knit_print(<i>&lt;DualEndpoint&gt;</i>)</a></code> <code><a href="knit_print.html">knit_print(<i>&lt;ModelParamsNormal&gt;</i>)</a></code> <code><a href="knit_print.html">knit_print(<i>&lt;GeneralModel&gt;</i>)</a></code> <code><a href="knit_print.html">knit_print(<i>&lt;LogisticKadane&gt;</i>)</a></code> <code><a href="knit_print.html">knit_print(<i>&lt;LogisticKadaneBetaGamma&gt;</i>)</a></code> <code><a href="knit_print.html">knit_print(<i>&lt;LogisticLogNormal&gt;</i>)</a></code> <code><a href="knit_print.html">knit_print(<i>&lt;LogisticLogNormalMixture&gt;</i>)</a></code> <code><a href="knit_print.html">knit_print(<i>&lt;LogisticLogNormalSub&gt;</i>)</a></code> <code><a href="knit_print.html">knit_print(<i>&lt;LogisticNormalMixture&gt;</i>)</a></code> <code><a href="knit_print.html">knit_print(<i>&lt;LogisticNormalFixedMixture&gt;</i>)</a></code> <code><a href="knit_print.html">knit_print(<i>&lt;OneParLogNormalPrior&gt;</i>)</a></code> <code><a href="knit_print.html">knit_print(<i>&lt;OneParExpPrior&gt;</i>)</a></code> <code><a href="knit_print.html">knit_print(<i>&lt;LogisticLogNormalGrouped&gt;</i>)</a></code> <code><a href="knit_print.html">knit_print(<i>&lt;LogisticLogNormalOrdinal&gt;</i>)</a></code> <code><a href="knit_print.html">knit_print(<i>&lt;LogisticIndepBeta&gt;</i>)</a></code> <code><a href="knit_print.html">knit_print(<i>&lt;Effloglog&gt;</i>)</a></code> <code><a href="knit_print.html">knit_print(<i>&lt;IncrementsRelative&gt;</i>)</a></code> <code><a href="knit_print.html">knit_print(<i>&lt;IncrementsRelativeDLT&gt;</i>)</a></code> <code><a href="knit_print.html">knit_print(<i>&lt;IncrementsDoseLevels&gt;</i>)</a></code> <code><a href="knit_print.html">knit_print(<i>&lt;IncrementsHSRBeta&gt;</i>)</a></code> <code><a href="knit_print.html">knit_print(<i>&lt;IncrementsMin&gt;</i>)</a></code> <code><a href="knit_print.html">knit_print(<i>&lt;IncrementsOrdinal&gt;</i>)</a></code> <code><a href="knit_print.html">knit_print(<i>&lt;IncrementsRelativeParts&gt;</i>)</a></code> <code><a href="knit_print.html">knit_print(<i>&lt;IncrementsRelativeDLTCurrent&gt;</i>)</a></code> <code><a href="knit_print.html">knit_print(<i>&lt;NextBestMTD&gt;</i>)</a></code> <code><a href="knit_print.html">knit_print(<i>&lt;NextBestNCRM&gt;</i>)</a></code> <code><a href="knit_print.html">knit_print(<i>&lt;NextBestThreePlusThree&gt;</i>)</a></code> <code><a href="knit_print.html">knit_print(<i>&lt;NextBestDualEndpoint&gt;</i>)</a></code> <code><a href="knit_print.html">knit_print(<i>&lt;NextBestMinDist&gt;</i>)</a></code> <code><a href="knit_print.html">knit_print(<i>&lt;NextBestInfTheory&gt;</i>)</a></code> <code><a href="knit_print.html">knit_print(<i>&lt;NextBestTD&gt;</i>)</a></code> <code><a href="knit_print.html">knit_print(<i>&lt;NextBestMaxGain&gt;</i>)</a></code> <code><a href="knit_print.html">knit_print(<i>&lt;NextBestProbMTDLTE&gt;</i>)</a></code> <code><a href="knit_print.html">knit_print(<i>&lt;NextBestProbMTDMinDist&gt;</i>)</a></code> <code><a href="knit_print.html">knit_print(<i>&lt;NextBestNCRMLoss&gt;</i>)</a></code> <code><a href="knit_print.html">knit_print(<i>&lt;NextBestTDsamples&gt;</i>)</a></code> <code><a href="knit_print.html">knit_print(<i>&lt;NextBestMaxGainSamples&gt;</i>)</a></code> <code><a href="knit_print.html">knit_print(<i>&lt;NextBestOrdinal&gt;</i>)</a></code> <code><a href="knit_print.html">knit_print(<i>&lt;OpeningMinDose&gt;</i>)</a></code> <code><a href="knit_print.html">knit_print(<i>&lt;OpeningMinCohorts&gt;</i>)</a></code> <code><a href="knit_print.html">knit_print(<i>&lt;OpeningNone&gt;</i>)</a></code> <code><a href="knit_print.html">knit_print(<i>&lt;OpeningMinResponses&gt;</i>)</a></code> <code><a href="knit_print.html">knit_print(<i>&lt;OpeningList&gt;</i>)</a></code> <code><a href="knit_print.html">knit_print(<i>&lt;OpeningAll&gt;</i>)</a></code> <code><a href="knit_print.html">knit_print(<i>&lt;OpeningAny&gt;</i>)</a></code> <code><a href="knit_print.html">knit_print(<i>&lt;RecruitmentUnlimited&gt;</i>)</a></code> <code><a href="knit_print.html">knit_print(<i>&lt;RecruitmentRatio&gt;</i>)</a></code> <code><a href="knit_print.html">knit_print(<i>&lt;SafetyWindow&gt;</i>)</a></code> <code><a href="knit_print.html">knit_print(<i>&lt;SafetyWindowConst&gt;</i>)</a></code> <code><a href="knit_print.html">knit_print(<i>&lt;SafetyWindowSize&gt;</i>)</a></code> <code><a href="knit_print.html">knit_print(<i>&lt;StoppingOrdinal&gt;</i>)</a></code> <code><a href="knit_print.html">knit_print(<i>&lt;StoppingMaxGainCIRatio&gt;</i>)</a></code> <code><a href="knit_print.html">knit_print(<i>&lt;StoppingList&gt;</i>)</a></code> <code><a href="knit_print.html">knit_print(<i>&lt;StoppingAny&gt;</i>)</a></code> <code><a href="knit_print.html">knit_print(<i>&lt;StoppingAll&gt;</i>)</a></code> <code><a href="knit_print.html">knit_print(<i>&lt;StoppingTDCIRatio&gt;</i>)</a></code> <code><a href="knit_print.html">knit_print(<i>&lt;StoppingTargetBiomarker&gt;</i>)</a></code> <code><a href="knit_print.html">knit_print(<i>&lt;StoppingLowestDoseHSRBeta&gt;</i>)</a></code> <code><a href="knit_print.html">knit_print(<i>&lt;StoppingMTDCV&gt;</i>)</a></code> <code><a href="knit_print.html">knit_print(<i>&lt;StoppingMTDdistribution&gt;</i>)</a></code> <code><a href="knit_print.html">knit_print(<i>&lt;StoppingHighestDose&gt;</i>)</a></code> <code><a href="knit_print.html">knit_print(<i>&lt;StoppingSpecificDose&gt;</i>)</a></code> <code><a href="knit_print.html">knit_print(<i>&lt;StoppingTargetProb&gt;</i>)</a></code> <code><a href="knit_print.html">knit_print(<i>&lt;StoppingMinCohorts&gt;</i>)</a></code> <code><a href="knit_print.html">knit_print(<i>&lt;StoppingMinPatients&gt;</i>)</a></code> <code><a href="knit_print.html">knit_print(<i>&lt;StoppingPatientsNearDose&gt;</i>)</a></code> <code><a href="knit_print.html">knit_print(<i>&lt;StoppingCohortsNearDose&gt;</i>)</a></code> <code><a href="knit_print.html">knit_print(<i>&lt;StoppingMissingDose&gt;</i>)</a></code>
           <span class="badge lifecycle lifecycle-experimental">experimental</span>
         </dt>
         <dd>Render a <code>CohortSizeConst</code> Object</dd>
@@ -1961,6 +2095,13 @@
 
         <dt>
 
+          <code><a href="show-GeneralSimulations-method.html">show(<i>&lt;GeneralSimulations&gt;</i>)</a></code>
+          <span class="badge lifecycle lifecycle-stable">stable</span>
+        </dt>
+        <dd>Show <code>Simulations</code> Objects</dd>
+
+        <dt>
+
           <code><a href="show-DualSimulationsSummary-method.html">show(<i>&lt;DualSimulationsSummary&gt;</i>)</a></code>
           <span class="badge lifecycle lifecycle-stable">stable</span>
         </dt>
@@ -2133,13 +2274,27 @@
           <span class="badge lifecycle lifecycle-stable">stable</span>
         </dt>
         <dd>Combine a Stopping List and an Atomic Stopping Rule with AND</dd>
+
+        <dt>
+
+          <code><a href="and-Opening-Opening-method.html">`&amp;`(<i>&lt;Opening&gt;</i>,<i>&lt;Opening&gt;</i>)</a></code>
+          <span class="badge lifecycle lifecycle-experimental">experimental</span>
+        </dt>
+        <dd>Logical AND Operator for Opening Objects</dd>
+
+        <dt>
+
+          <code><a href="or-Opening-Opening-method.html">`|`(<i>&lt;Opening&gt;</i>,<i>&lt;Opening&gt;</i>)</a></code>
+          <span class="badge lifecycle lifecycle-experimental">experimental</span>
+        </dt>
+        <dd>Logical OR Operator for Opening Objects</dd>
       </dl></div>
   </main><aside class="col-md-3"><nav id="toc" aria-label="Table of contents"><h2>On this page</h2>
     </nav></aside></div>
 
 
     <footer><div class="pkgdown-footer-left">
-  <p>Developed by Daniel Sabanes Bove, Wai Yin Yeung, Burak Kuersad Guenhan, Giuseppe Palermo, Thomas Jaki, Jiawen Zhu, Ziwei Liao, Dimitris Kontos, Marlene Schulte-Goebel, Doug Kelkhoff, Oliver Boix, Robert Adams, Clara Beck, John Kirkpatrick, Wojciech Wójciak, Guanya Peng, Prerana Chandratre, F. Hoffmann-La Roche AG, Merck Healthcare KGaA, Bayer AG, RPACT GmbH.</p>
+  <p>Developed by Daniel Sabanés Bové, Wai Yin Yeung, Burak Kuersad Guenhan, Giuseppe Palermo, Thomas Jaki, Jiawen Zhu, Ziwei Liao, Dimitris Kontos, Marlene Schulte-Goebel, Doug Kelkhoff, Oliver Boix, Robert Adams, Clara Beck, John Kirkpatrick, Wojciech Wójciak, Guanya Peng, Prerana Chandratre, F. Hoffmann-La Roche AG, Merck Healthcare KGaA, Bayer AG, RPACT GmbH.</p>
 </div>
 
 <div class="pkgdown-footer-right">

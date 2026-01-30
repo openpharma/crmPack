@@ -93,7 +93,7 @@ implements ordinal proportional odds and continuation ratio models for
 CRMs. The `dfpk` package (Toumazi et al. 2017) uses pharmacokinetic data
 in the dose escalation.
 
-In this paper we introduce the `R`-package `crmPack` (Sabanes Bove et
+In this paper we introduce the `R`-package `crmPack` (Sabanés Bové et
 al. 2018) for dose escalation studies, which is publicly available on
 CRAN. While the package’s name pays tribute to the original CRM as the
 first model-based dose escalation design, the package’s functionality
@@ -1320,7 +1320,7 @@ Riviere, M.- K., C. Le Tourneau, X. Paoletti, F. Dubois, and S. Zohar.
 Systematic Review of the Literature.” *Annals of Oncology* 26 (4):
 669–74.
 
-Sabanes Bove, Daniel, Wai Yin Yeung, Giuseppe Palermo, and Thomas Jaki.
+Sabanés Bové, Daniel, Wai Yin Yeung, Giuseppe Palermo, and Thomas Jaki.
 2018. *: Object-Oriented Implementation of CRM Designs*.
 <https://CRAN.R-project.org/package=crmPack>.
 

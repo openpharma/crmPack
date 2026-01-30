@@ -29,11 +29,23 @@ h_plot_data_dataordinal(
   legend = TRUE,
   tox_labels = c(Yes = "red", No = "black"),
   tox_shapes = c(Yes = 17L, No = 16L),
+  mark_backfill = FALSE,
   ...
 )
 
 # S4 method for class 'Data,missing'
-plot(x, y, blind = FALSE, legend = TRUE, ...)
+plot(
+  x,
+  y,
+  blind = FALSE,
+  legend = TRUE,
+  include_backfill = TRUE,
+  mark_backfill = FALSE,
+  mark_response = FALSE,
+  ...,
+  text_size_markings = 9,
+  point_cex_markings = 1.1
+)
 
 # S4 method for class 'DataOrdinal,missing'
 plot(
@@ -77,6 +89,11 @@ plot(
   (`names list of integers`)  
   the symbols used to identify the toxicity categories.
 
+- mark_backfill:
+
+  (`flag`)  
+  whether to mark backfilled patients with empty shape.
+
 - ...:
 
   not used.
@@ -85,6 +102,26 @@ plot(
 
   (`missing`)  
   missing object, for compatibility with the generic function.
+
+- include_backfill:
+
+  (`flag`)  
+  whether to include backfilled patients.
+
+- mark_response:
+
+  (`flag`)  
+  whether to mark patients with response with rectangle.
+
+- text_size_markings:
+
+  (`number`)  
+  text size for the markings legend.
+
+- point_cex_markings:
+
+  (`number`)  
+  point size multiplier for the markings legend.
 
 ## Value
 
@@ -125,6 +162,40 @@ my_data <- Data(
 
 # Plot the data.
 plot(my_data)
+
+
+# We can also mark backfill patients and response outcomes.
+my_data@backfilled <- c(
+  FALSE,
+  FALSE,
+  FALSE,
+  FALSE,
+  TRUE,
+  TRUE,
+  TRUE,
+  FALSE,
+  FALSE,
+  FALSE,
+  FALSE
+)
+my_data@response <- as.integer(c(
+  NA,
+  NA,
+  1,
+  NA,
+  NA,
+  0,
+  1,
+  NA,
+  1,
+  0,
+  0
+))
+plot(
+  my_data,
+  mark_backfill = TRUE,
+  mark_response = TRUE
+)
 
 data <- DataOrdinal(
   x = c(10, 20, 30, 40, 50, 50, 50, 60, 60, 60),

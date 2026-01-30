@@ -118,6 +118,12 @@ empty_data
 #> Slot "placebo":
 #> [1] FALSE
 #> 
+#> Slot "backfilled":
+#> logical(0)
+#> 
+#> Slot "response":
+#> integer(0)
+#> 
 #> Slot "ID":
 #> integer(0)
 #> 

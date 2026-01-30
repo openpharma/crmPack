@@ -86,6 +86,22 @@ function is provided for this class.
   (`logical`)  
   set to TRUE (default is FALSE) for a design with placebo
 
+- `any_backfilled`:
+
+  (`flag`)  
+  indicates if any backfill cohorts were used
+
+- `n_backfill`:
+
+  (`ANY`)  
+  number of patients in backfill cohorts (only if `any_backfilled=TRUE`)
+
+- `backfill_doses`:
+
+  (`ANY`)  
+  list with doses used in backfill cohorts (only if
+  `any_backfilled=TRUE`)
+
 ## Note
 
 Typically, end users will not use the

@@ -9,7 +9,7 @@ seed = xxxx in the call to approximate."><meta property="og:image" content="http
 
     <a class="navbar-brand me-2" href="../index.html">crmPack</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">2.0.2</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">2.1.0</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -30,6 +30,7 @@ seed = xxxx in the call to approximate."><meta property="og:image" content="http
     <li><a class="dropdown-item" href="../articles/trial_analysis.html">Trial Analysis</a></li>
     <li><a class="dropdown-item" href="../articles/trial_sanity_checks.html">Trial Design: basic sanity checks</a></li>
     <li><a class="dropdown-item" href="../articles/trial_simulation.html">Trial Simulation</a></li>
+    <li><a class="dropdown-item" href="../articles/trial_backfill.html">Backfill cohorts</a></li>
     <li><hr class="dropdown-divider"></li>
     <li><h6 class="dropdown-header" data-toc-skip>Examples</h6></li>
     <li><a class="dropdown-item" href="../articles/example.html">crmPack: Object-oriented implementation of CRM designs</a></li>
@@ -194,12 +195,12 @@ approximation quality, etc.</p></li>
 <span class="r-in"><span>    maxit <span class="op">=</span> <span class="fl">1</span></span></span>
 <span class="r-in"><span>  <span class="op">)</span></span></span>
 <span class="r-in"><span><span class="op">)</span></span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Emini is: 0.1094575102</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Have got accurate energy 0.09314953824 &lt;= 0.1 in smooth search</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Emini is: 0.09314953824</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> xmini are:</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> -0.1749592133 0.07319795325 0.7554093627 0.4903876047 0.1632269142 </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Totally it used 6.2e-05 secs</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> -0.1048619187 0.02595401033 0.7322982859 0.4788882608 0.07163376837 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Totally it used 5.8e-05 secs</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> No. of function call is: 1</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Algorithm reached max number of iterations.</span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="va">posterior</span> <span class="op">&lt;-</span> <span class="va">approximation</span><span class="op">$</span><span class="va">model</span></span></span>
 <span class="r-in"><span></span></span>
@@ -211,7 +212,7 @@ approximation quality, etc.</p></li>
 
 
     <footer><div class="pkgdown-footer-left">
-  <p>Developed by Daniel Sabanes Bove, Wai Yin Yeung, Burak Kuersad Guenhan, Giuseppe Palermo, Thomas Jaki, Jiawen Zhu, Ziwei Liao, Dimitris Kontos, Marlene Schulte-Goebel, Doug Kelkhoff, Oliver Boix, Robert Adams, Clara Beck, John Kirkpatrick, Wojciech Wójciak, Guanya Peng, Prerana Chandratre, F. Hoffmann-La Roche AG, Merck Healthcare KGaA, Bayer AG, RPACT GmbH.</p>
+  <p>Developed by Daniel Sabanés Bové, Wai Yin Yeung, Burak Kuersad Guenhan, Giuseppe Palermo, Thomas Jaki, Jiawen Zhu, Ziwei Liao, Dimitris Kontos, Marlene Schulte-Goebel, Doug Kelkhoff, Oliver Boix, Robert Adams, Clara Beck, John Kirkpatrick, Wojciech Wójciak, Guanya Peng, Prerana Chandratre, F. Hoffmann-La Roche AG, Merck Healthcare KGaA, Bayer AG, RPACT GmbH.</p>
 </div>
 
 <div class="pkgdown-footer-right">

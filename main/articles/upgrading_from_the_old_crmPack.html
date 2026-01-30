@@ -20,7 +20,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">crmPack</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">2.0.2</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">2.1.0</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -43,6 +43,7 @@
     <li><a class="dropdown-item" href="../articles/trial_analysis.html">Trial Analysis</a></li>
     <li><a class="dropdown-item" href="../articles/trial_sanity_checks.html">Trial Design: basic sanity checks</a></li>
     <li><a class="dropdown-item" href="../articles/trial_simulation.html">Trial Simulation</a></li>
+    <li><a class="dropdown-item" href="../articles/trial_backfill.html">Backfill cohorts</a></li>
     <li><hr class="dropdown-divider"></li>
     <li><h6 class="dropdown-header" data-toc-skip>Examples</h6></li>
     <li><a class="dropdown-item" href="../articles/example.html">crmPack: Object-oriented implementation of CRM designs</a></li>
@@ -1220,10 +1221,10 @@ of a fixed model’s parameters values.</p>
 <span><span class="co"># given a particular models and samples.</span></span>
 <span><span class="co"># Every single dose corresponds to one particular sample in `my_samples`.</span></span>
 <span><span class="fu"><a href="../reference/dose.html">dose</a></span><span class="op">(</span><span class="fl">0.3</span>, <span class="va">my_model</span>, <span class="va">my_samples</span><span class="op">)</span></span></code></pre></div>
-<pre><code><span><span class="co">##  [1] 1.251361e+00 1.811240e+00 1.063715e+00 2.562486e+00 2.521237e-01</span></span>
-<span><span class="co">##  [6] 3.250669e+00 3.873984e+00 5.427243e+00 1.259546e+00 3.155618e-01</span></span>
-<span><span class="co">## [11] 1.039572e+00 5.436979e-01 1.061754e+00 9.143453e-01 7.341537e-01</span></span>
-<span><span class="co">## [16] 3.577863e+00 2.330981e-01 1.850766e-05 1.849698e+00 2.056437e+00</span></span></code></pre>
+<pre><code><span><span class="co">##  [1] 3.501765e+00 2.849659e+00 2.031258e+00 1.362156e+01 2.728742e+00</span></span>
+<span><span class="co">##  [6] 5.884841e+01 2.423569e+00 6.278498e+12 3.066989e+01 1.881189e+00</span></span>
+<span><span class="co">## [11] 1.740727e+00 1.002581e+00 4.222905e-01 2.036680e+00 1.020979e+00</span></span>
+<span><span class="co">## [16] 9.119957e-01 1.541046e+00 9.229307e-01 1.559045e+00 3.408789e+00</span></span></code></pre>
 <div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># True dose-DLT relationship.</span></span>
 <span><span class="co"># Say that -0.8 and 1 are the true values for models parameters alpha0 and alpha1 respectively.</span></span>
@@ -1241,9 +1242,9 @@ of a fixed model’s parameters values.</p>
 <code class="sourceCode R"><span><span class="co"># Toxicity probabilities for a given dose (equal to 10), model and samples.</span></span>
 <span><span class="co"># Every single probability value corresponds to one particular sample in `my_samples`.</span></span>
 <span><span class="fu"><a href="../reference/prob.html">prob</a></span><span class="op">(</span><span class="fl">10</span>, <span class="va">my_model</span>, <span class="va">my_samples</span><span class="op">)</span></span></code></pre></div>
-<pre><code><span><span class="co">##  [1] 0.9975628 0.8756494 0.9329696 0.8484588 0.8384277 0.6953560 0.2179559</span></span>
-<span><span class="co">##  [8] 0.4071445 0.9939916 0.8105715 0.9869420 0.9743133 0.9949144 0.9809634</span></span>
-<span><span class="co">## [15] 0.9547548 0.5531078 0.9259923 0.6766474 0.8407934 0.9635447</span></span></code></pre>
+<pre><code><span><span class="co">##  [1] 0.5508177 0.8032716 0.7472383 0.3564065 0.8202084 0.5246127 0.7134484</span></span>
+<span><span class="co">##  [8] 0.6811998 0.1953855 0.7939894 0.4553060 0.8152944 0.9623374 0.4648259</span></span>
+<span><span class="co">## [15] 0.9168776 0.7961603 0.9425581 0.9151848 0.9972918 0.3986748</span></span></code></pre>
 <div class="sourceCode" id="cb12"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># True DLT-dose relationship.</span></span>
 <span><span class="co"># Say that -0.8 and 1 are the true values for models parameters alpha0 and alpha1 respectively.</span></span>
@@ -3106,7 +3107,7 @@ Wickham, Hadley. 2019. <em>Advanced r, Second Edition</em>. Chapman
 
 
     <footer><div class="pkgdown-footer-left">
-  <p>Developed by Daniel Sabanes Bove, Wai Yin Yeung, Burak Kuersad Guenhan, Giuseppe Palermo, Thomas Jaki, Jiawen Zhu, Ziwei Liao, Dimitris Kontos, Marlene Schulte-Goebel, Doug Kelkhoff, Oliver Boix, Robert Adams, Clara Beck, John Kirkpatrick, Wojciech Wójciak, Guanya Peng, Prerana Chandratre, F. Hoffmann-La Roche AG, Merck Healthcare KGaA, Bayer AG, RPACT GmbH.</p>
+  <p>Developed by Daniel Sabanés Bové, Wai Yin Yeung, Burak Kuersad Guenhan, Giuseppe Palermo, Thomas Jaki, Jiawen Zhu, Ziwei Liao, Dimitris Kontos, Marlene Schulte-Goebel, Doug Kelkhoff, Oliver Boix, Robert Adams, Clara Beck, John Kirkpatrick, Wojciech Wójciak, Guanya Peng, Prerana Chandratre, F. Hoffmann-La Roche AG, Merck Healthcare KGaA, Bayer AG, RPACT GmbH.</p>
 </div>
 
 <div class="pkgdown-footer-right">

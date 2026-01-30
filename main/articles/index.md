@@ -17,6 +17,8 @@
   checks](https://openpharma.github.io/crmPack/articles/trial_sanity_checks.md):
 - [Trial
   Simulation](https://openpharma.github.io/crmPack/articles/trial_simulation.md):
+- [Backfill
+  cohorts](https://openpharma.github.io/crmPack/articles/trial_backfill.md):
 
 ### Examples
 

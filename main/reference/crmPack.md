@@ -21,7 +21,8 @@ Useful links:
 
 ## Author
 
-**Maintainer**: Daniel Sabanes Bove <daniel.sabanes_bove@rconis.com>
+**Maintainer**: Daniel Sabanés Bové <daniel.sabanes_bove@rconis.com>
+([ORCID](https://orcid.org/0000-0002-0176-9239))
 
 Authors:
 

@@ -135,6 +135,11 @@ simulate(
 an object of class
 [`Simulations`](https://openpharma.github.io/crmPack/reference/Simulations-class.md)
 
+## Note
+
+Backfill cohorts are not yet implemented and therefore will lead to an
+error if used in the `DADesign` object.
+
 ## Examples
 
 ``` r

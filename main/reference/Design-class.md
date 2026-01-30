@@ -11,7 +11,14 @@ class is that `Design` class contains additional `model`, `stopping` and
 ## Usage
 
 ``` r
-Design(model, stopping, increments, pl_cohort_size = CohortSizeConst(0L), ...)
+Design(
+  model,
+  stopping,
+  increments,
+  pl_cohort_size = CohortSizeConst(0L),
+  backfill = Backfill(opening = OpeningNone()),
+  ...
+)
 
 .DefaultDesign()
 ```
@@ -36,6 +43,11 @@ Design(model, stopping, increments, pl_cohort_size = CohortSizeConst(0L), ...)
 - pl_cohort_size:
 
   (`CohortSize`)  
+  see slot definition.
+
+- backfill:
+
+  (`Backfill`)  
   see slot definition.
 
 - ...:
@@ -85,6 +97,12 @@ Design(model, stopping, increments, pl_cohort_size = CohortSizeConst(0L), ...)
   (`CohortSize`)  
   rules for the cohort sizes for placebo, if any planned (defaults to
   constant 0 placebo patients).
+
+- `backfill`:
+
+  (`Backfill`)  
+  rules for backfilling patients in the trial (defaults to no
+  backfilling).
 
 ## Note
 

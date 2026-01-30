@@ -134,23 +134,23 @@ summary(mySims, truth = myTruth)
 #> Target dose interval corresponding to this was 19.6, 21.6 
 #> Intervals are corresponding to 10 and 90 % quantiles
 #> 
-#> Number of patients overall : mean 22 (22, 22) 
-#> Number of patients treated above target tox interval : mean 9 (9, 9) 
-#> Proportions of DLTs in the trials : mean 27 % (27 %, 27 %) 
-#> Mean toxicity risks for the patients on active : mean 31 % (31 %, 31 %) 
-#> Doses selected as MTD : mean 20 (20, 20) 
-#> True toxicity at doses selected : mean 22 % (22 %, 22 %) 
-#> Proportion of trials selecting target MTD: 100 %
-#> Dose most often selected as MTD: 20 
-#> Observed toxicity rate at dose most often selected: 25 %
-#> Fitted toxicity rate at dose most often selected : mean 25 % (25 %, 25 %) 
-#> max_mtd : 282.72 
-#> mean_mtd : 25.24 
-#> median_mtd : 23.1 
+#> Number of patients overall : mean 17 (17, 17) 
+#> Number of patients treated above target tox interval : mean 7 (7, 7) 
+#> Proportions of DLTs in the trials : mean 24 % (24 %, 24 %) 
+#> Mean toxicity risks for the patients on active : mean 32 % (32 %, 32 %) 
+#> Doses selected as MTD : mean 25 (25, 25) 
+#> True toxicity at doses selected : mean 63 % (63 %, 63 %) 
+#> Proportion of trials selecting target MTD: 0 %
+#> Dose most often selected as MTD: 25 
+#> Observed toxicity rate at dose most often selected: 57 %
+#> Fitted toxicity rate at dose most often selected : mean 26 % (26 %, 26 %) 
+#> max_mtd : 189.46 
+#> mean_mtd : 29.76 
+#> median_mtd : 27.08 
 #> Stop reason triggered:
 #>  ≥ 3 cohorts dosed :  100 %
 #>  P(0.2 ≤ prob(DLE | NBD) ≤ 0.35) ≥ 0.5 :  100 %
-#>  ≥ 20 patients dosed :  100 %
+#>  ≥ 20 patients dosed :  0 %
 #>  Stopped because of missing dose :  0 %
 
 # nolint end

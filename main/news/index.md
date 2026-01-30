@@ -1,5 +1,45 @@
 # Changelog
 
+## Version 2.1.0
+
+CRAN release: 2026-01-30
+
+- This release marks yet another major update of the package: Backfill
+  cohort simulations are now supported in the `Design` class, powered by
+  the new `Backfill` class. This also leads to breaking changes in the
+  `Data` and `GeneralSimulationsSummary` classes, which gains new slots,
+  too. Please regenerate any existing `Data`or `Design`as well as
+  resulting `SimulationsSummary` objects; serialized objects from
+  previous versions will not be compatible.
+
+#### New Features
+
+- A new vignette `trial_backfill` has been added which describes how to
+  use backfill cohorts in `crmPack`.
+- Added new `Backfill` class which allows to specify backfill cohorts as
+  a new slot in the `Design` objects.
+- Added new slots `backfilled` and `response` in the `Data` class to
+  capture the information whether each patient has been backfilled, and
+  whether a (binary) efficacy response was observed (in order to support
+  backfilling rules which depend on a minimum number of efficacy
+  responses).
+- The `plot` method for `Data` objects allows to optionally exclude
+  backfill patients, and mark backfill and response information.
+- Added new virtual classes `Opening` and `Recruitment` and
+  corresponding instantiable subclasses to allow for flexible
+  specification of backfill cohort opening and recruitment rules.
+- Added new `CohortSizeRandom` class to allow for random cohort sizes.
+- Simulations of `Design` objects now support backfill cohorts.
+- `GeneralSimulationsSummary` got new slots `any_backfilled`,
+  `n_backfill`and `backfill_doses` informing whether any backfilling was
+  planned or took place, the number of backfill patients and the doses
+  of the backfill patients across the simulations. The corresponding
+  `show` method was updated to display this information to the user.
+- `GeneralSimulations` got a simple `show` method to avoid printing the
+  whole structure to the user, which is probably not helpful.
+- `StoppingPatientsNearDose` got a new slot `include_backfill` to allow
+  for optionally excluding backfilled patients from the patient count.
+
 ## Version 2.0.2
 
 CRAN release: 2026-01-08
@@ -131,7 +171,6 @@ CRAN release: 2018-12-21
 
 - By default only use 5 cores and not all available cores on a machine.
   Note that this value can also be changed by the user.
-
 - Change of maintainer
 
 ## Version 0.2.8
@@ -142,15 +181,12 @@ CRAN release: 2018-12-21
   initialization (instead of 1 before - but note that this did not have
   effect on erroneous simulations, due to option being set in Data
   class)
-
 - The “examine” function also stops when the stopping rules are
   fulfilled already in case of no DLTs occurring. This was not the case
   beforehand and could lead to infinite looping (thanks to John
   Kirkpatrick for reporting the bug)
-
 - Removed RW2 warnings in “DualEndpointRW” - it seems to work nicely now
   (thanks to Charles Warne for reporting!)
-
 - Removed WinBUGS since it was not used anyway (and paper does not
   describe it)
 
@@ -161,15 +197,12 @@ CRAN release: 2018-12-21
   (can be specified in a new option of “examine”) to further avoid
   infinite loops and issues a corresponding warning if this condition is
   met
-
 - New “Increments” class “IncrementsNumDoseLevels” that works directly
   on the number of dose levels in the dose grid that can be incremented
   to from the current to the next cohort (thanks to John Kirkpatrick for
   the suggestion). This can for example be used in order to force the
   design not to skip any dose level when escalating.
-
 - Included the JSS manuscript as a new vignette.
-
 - It is now possible to specify how many cores should be used when
   parallel computations are used.
 
@@ -189,7 +222,6 @@ CRAN release: 2018-02-15
 
 - Replaced `BayesLogit` dependency by JAGS code, since `BayesLogit` was
   taken off CRAN.
-
 - Speed up one example to pass CRAN check.
 
 ## Version 0.2.5
@@ -203,7 +235,9 @@ CRAN release: 2018-02-15
 #### Bugfixes:
 
 - documentation:
+
   - minor fix for alpha1 description in LogisticLogNormal-class
+
 - minor fix on scale_colour_manual import from ggplot2 reported by
   R-Core
 
@@ -244,19 +278,15 @@ CRAN release: 2017-05-03
 - Option targetThresh for NextBestDualEndpoint allows to tune from which
   target probability onwards it will be used to derive the next best
   dose (before this was fixed to 0.05)
-
 - Added ProbitLogNormal model
-
 - In the NextBestDualEndpoint class, the additional option “scale” now
   allows to also specify absolute biomarker target ranges. In the
   corresponding method evaluation, the safety samples are now no longer
   included in the evaluation of the biomarker target probability, such
   that now the description is consistent with the computations.
-
 - NextBestNCRM and NextBestDualEndpoint now return the matrix of target
   and overdosing probabilities as additional list element “probs” in the
   result of “nextBest” applied.
-
 - Note that in the StoppingTargetBiomarker evaluation, the toxicity is
   no longer a part of the biomarker target probability.
 
@@ -264,35 +294,27 @@ CRAN release: 2017-05-03
 
 - Added back the example vignette, so that it can be opened with
   crmPackExample()
-
 - Clarified that for the DualEndpointRW model samples from the prior
   cannot be obtained due to impropriety of the RW prior (added to model
   class description).
-
 - For DualEndpointRW models, it is now possible to have non-equidistant
   grid points, and obtain sensible results. (But still needs to be
   thoroughly tested though.)
-
 - For DualEndpointBeta model, it is now possible to have negative E0 and
   Emax parameters.
-
 - Cohort size of 0 for placebo is now possible - e.g. to only start with
   patients and then later move to larger cohorts also including placebo
   subjects.
-
 - When simulating with firstSeparate=TRUE and placebo, now the first
   (sentinel) cohort includes one active and one placebo patients, and
   the next patients use the cohort size for the active and placebo arms,
   respectively.
-
 - Barplots work now also when there was only one observed value in all
   simulations
-
 - NextBestDualEndpoint now only takes into account active doses when
   optimizing the biomarker outcome for the next best dose among
   admissible doses, thus avoiding early stopping at the placebo dose
   level.
-
 - If DataMixture objects are used, mcmc now correctly sets fromPrior to
   FALSE if the shared data object contains any data.
 
@@ -340,8 +362,8 @@ CRAN release: 2016-02-17
   - Improved methodology to compute Gstar
   - Warnings are removed when using nextBest in simulations
   - Stopping rules can now also be freely combined using the and/or
-    operators  
-    with the dual endpoint design stopping rules not using MCMC samples.
+    operators with the dual endpoint design stopping rules not using
+    MCMC samples.
 
 ## Version 0.1.6
 
@@ -349,26 +371,20 @@ CRAN release: 2015-12-22
 
 - New model class “LogisticLogNormalMixture” has been added, for use
   with the new data class “DataMixture”.
-
 - New stopping rule “StoppingHighestDose” has been added.
-
 - The “examine” method no longer stops when two consecutive cohorts
   start with the same dose. This is important e.g. for the two-parts
   study designs, where part 1 can end with the same dose as part 2
   starts.
-
 - The contents of the “datanames” slot of new models are no longer
   restricted to a specific set, which was previously enforced by the
   validation function of the GeneralModel and AllModels classes.
-
 - Sampling from the prior can now be enabled/disabled by the user for
   the mcmc function, which is necessary for models where it might not be
   from the prior even though nObs == 0.
-
 - Bugfix: The results from the MinimalInformative function were not
   reproducible beforehand. Now a seed parameter can be supplied, which
   ensures reproducibility.
-
 - Bugfix: Compatibility of help file links with new ggplot2 package
   version.
 
@@ -401,21 +417,17 @@ CRAN release: 2015-11-12
 
 - Added examine function to generate a table of hypothetical trial
   courses for model-based and rule-based DLT-endpoint designs
-
 - Made results from mcmc() (works with the usual set.seed in earlier
   user code) and simulate() (as previously already promised)
   reproducible. See help file for mcmc for more details. Additional
   improvements to reduce confusing warning messages / notes from mcmc()
   and higher-level functions.
-
 - Made simulate with parallel=TRUE work on r.roche.com (Linux server),
   using the same parallelization method as for laptops (Windows)
-
 - Passing an empty (zero length) vector as the doselimit parameter of
   the nextBest function is now considered as requesting a dose
   recommendation without a strict dose limit, and a corresponding
   warning is printed.
-
 - Introduced GeneralModel class, from which then the class Model for
   single agent dose escalation derives. Another branch will be the
   ComboLogistic model for multiple agent combinations (in a future
@@ -429,61 +441,48 @@ CRAN release: 2015-11-12
   have as many rows as the sample size was” and slightly changed JAGS
   way of handling burnin / thinning (which should not have a user
   impact).
-
 - Reduced number of MCMC samples for dual-endpoint example in vignette
   to be able to plot the vignette
 
 ## Version 0.0.22
 
 - simulate function has been fixed (specification of arguments)
-
 - Dual-endpoint model-based design has been added.
-
 - 3+3 design simulation is now possible, see ?ThreePlusThreeDesign
-
 - Welcome message on attaching crmPack, i.e. when library(“crmPack”) is
   run
-
 - crmPackUpgrade() function for easy upgrade of crmPack to the latest
   version
-
 - Rule-based designs now can be specified with the class RuleDesign,
   while the model-based designs stay with the class Design. An even more
   special class is the DualDesign class, for dual-endpoint model-based
   designs. Corresponding classes GeneralSimulations, Simulations and
   DualSimulations capture the output of the trial simulations for
   rule-based, model-based and dual-endpoint designs.
-
 - The class Simulations-summary has been renamed to SimulationsSummary,
   similarly for the classes GeneralSimulationsSummary and
   DualSimulationsSummary.
-
 - All Stopping and CohortSize rules that are based on intervals
   (IncrementsRelative, IncrementsRelativeDLT, CohortSizeRange,
   CohortSizeDLT) now use a different intervals definition. Now the
   “intervals” slots only contain the left bounds of the intervals.
   Before, the last element needed to be infinity. See the vignette for
   examples.
-
 - StoppingMaxPatients class has been removed, as it was redundant with
   the class StoppingMinPatients. Please just use the StoppingMinPatients
   class instead.
-
 - Initialization methods have been replaced by dedicated initialization
   functions. Please now use these Class(…) functions instead of
   new(“Class”, …) calls to obtain the correct objects. This change is
   also reflected in the vignette.
-
 - The extract function for extracting parameter samples from Samples
   objects has been removed (due to a name conflict with ggmcmc
   dependency packages). Please now use instead the “get” method for
   Samples objects (see the vignette for an example) to obtain data in
   the ggmcmc format.
-
 - crmPack now needs the package httr (it’s now in the “Imports” field).
   Packages Rcpp and RcppArmadillo have been moved from “Depends” to
   “Suggests” packages. Currently we are not using them at all.
-
 - showLegend argument for model fit plotting functions, in order to show
   the legend or not.
 

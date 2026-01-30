@@ -5,7 +5,7 @@
 One of the big advantages of `crmPack` over existing R implementations
 is its flexible framework based on the S4 classes and methods system
 (Chambers 2008). Users can extend the existing functionality easily to
-the specific needs of the study (Sabanes Bove et al. 2019).
+the specific needs of the study (Sabanés Bové et al. 2019).
 
 User defined extensions of classes and methods can be easily created and
 used together with existing `crmPack` classes and methods when setting
@@ -551,6 +551,6 @@ computation can easily be seen.
 Chambers, John. 2008. *Software for Data Analysis*. Statistics and
 Computing. Springer-Verlag.
 
-Sabanes Bove, Daniel, Wai Yin Yeung, Giuseppe Palermo, and Thomas Jaki.
+Sabanés Bové, Daniel, Wai Yin Yeung, Giuseppe Palermo, and Thomas Jaki.
 2019. “Model-Based Dose Escalation Designs in r with crmPack.” *Journal
 of Statistical Software* 89. <https://doi.org/10.18637/jss.v089.i10>.

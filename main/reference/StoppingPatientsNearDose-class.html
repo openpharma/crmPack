@@ -11,7 +11,7 @@ patients near to next best dose."><meta property="og:image" content="https://ope
 
     <a class="navbar-brand me-2" href="../index.html">crmPack</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">2.0.2</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">2.1.0</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -32,6 +32,7 @@ patients near to next best dose."><meta property="og:image" content="https://ope
     <li><a class="dropdown-item" href="../articles/trial_analysis.html">Trial Analysis</a></li>
     <li><a class="dropdown-item" href="../articles/trial_sanity_checks.html">Trial Design: basic sanity checks</a></li>
     <li><a class="dropdown-item" href="../articles/trial_simulation.html">Trial Simulation</a></li>
+    <li><a class="dropdown-item" href="../articles/trial_backfill.html">Backfill cohorts</a></li>
     <li><hr class="dropdown-divider"></li>
     <li><h6 class="dropdown-header" data-toc-skip>Examples</h6></li>
     <li><a class="dropdown-item" href="../articles/example.html">crmPack: Object-oriented implementation of CRM designs</a></li>
@@ -76,6 +77,7 @@ patients near to next best dose.</p>
     <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">StoppingPatientsNearDose</span><span class="op">(</span></span>
 <span>  nPatients <span class="op">=</span> <span class="fl">10L</span>,</span>
 <span>  percentage <span class="op">=</span> <span class="fl">50</span>,</span>
+<span>  include_backfill <span class="op">=</span> <span class="cn">TRUE</span>,</span>
 <span>  report_label <span class="op">=</span> <span class="cn">NA_character_</span></span>
 <span><span class="op">)</span></span>
 <span></span>
@@ -92,6 +94,10 @@ patients near to next best dose.</p>
 
 <dt id="arg-percentage">percentage<a class="anchor" aria-label="anchor" href="#arg-percentage"></a></dt>
 <dd><p>(<code>number</code>)<br> see slot definition.</p></dd>
+
+
+<dt id="arg-include-backfill">include_backfill<a class="anchor" aria-label="anchor" href="#arg-include-backfill"></a></dt>
+<dd><p>(<code>flag</code>)<br> see slot definition.</p></dd>
 
 
 <dt id="arg-report-label">report_label<a class="anchor" aria-label="anchor" href="#arg-report-label"></a></dt>
@@ -111,6 +117,10 @@ patients near to next best dose.</p>
 within the next best dose the patients must lie.</p></dd>
 
 
+<dt><code>include_backfill</code></dt>
+<dd><p>(<code>flag</code>)<br> whether to include backfill patients.</p></dd>
+
+
 </dl></div>
     <div class="section level2">
     <h2 id="note">Note<a class="anchor" aria-label="anchor" href="#note"></a></h2>
@@ -126,6 +136,14 @@ within the next best dose the patients must lie.</p></dd>
 <span class="r-in"><span>  nPatients <span class="op">=</span> <span class="fl">9</span>,</span></span>
 <span class="r-in"><span>  percentage <span class="op">=</span> <span class="fl">20</span></span></span>
 <span class="r-in"><span><span class="op">)</span></span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="co"># Variant which excludes backfill cohorts.</span></span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="va">my_stopping</span> <span class="op">&lt;-</span> <span class="fu">StoppingPatientsNearDose</span><span class="op">(</span></span></span>
+<span class="r-in"><span>  nPatients <span class="op">=</span> <span class="fl">9</span>,</span></span>
+<span class="r-in"><span>  percentage <span class="op">=</span> <span class="fl">20</span>,</span></span>
+<span class="r-in"><span>  include_backfill <span class="op">=</span> <span class="cn">FALSE</span></span></span>
+<span class="r-in"><span><span class="op">)</span></span></span>
 </code></pre></div>
     </div>
   </main><aside class="col-md-3"><nav id="toc" aria-label="Table of contents"><h2>On this page</h2>
@@ -133,7 +151,7 @@ within the next best dose the patients must lie.</p></dd>
 
 
     <footer><div class="pkgdown-footer-left">
-  <p>Developed by Daniel Sabanes Bove, Wai Yin Yeung, Burak Kuersad Guenhan, Giuseppe Palermo, Thomas Jaki, Jiawen Zhu, Ziwei Liao, Dimitris Kontos, Marlene Schulte-Goebel, Doug Kelkhoff, Oliver Boix, Robert Adams, Clara Beck, John Kirkpatrick, Wojciech Wójciak, Guanya Peng, Prerana Chandratre, F. Hoffmann-La Roche AG, Merck Healthcare KGaA, Bayer AG, RPACT GmbH.</p>
+  <p>Developed by Daniel Sabanés Bové, Wai Yin Yeung, Burak Kuersad Guenhan, Giuseppe Palermo, Thomas Jaki, Jiawen Zhu, Ziwei Liao, Dimitris Kontos, Marlene Schulte-Goebel, Doug Kelkhoff, Oliver Boix, Robert Adams, Clara Beck, John Kirkpatrick, Wojciech Wójciak, Guanya Peng, Prerana Chandratre, F. Hoffmann-La Roche AG, Merck Healthcare KGaA, Bayer AG, RPACT GmbH.</p>
 </div>
 
 <div class="pkgdown-footer-right">

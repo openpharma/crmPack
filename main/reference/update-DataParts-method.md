@@ -101,6 +101,12 @@ my_data1
 #> Slot "placebo":
 #> [1] FALSE
 #> 
+#> Slot "backfilled":
+#> [1] FALSE FALSE FALSE FALSE
+#> 
+#> Slot "response":
+#> [1] NA NA NA NA
+#> 
 #> Slot "ID":
 #> [1] 1 2 3 4
 #> 

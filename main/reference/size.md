@@ -29,6 +29,9 @@ size(object, dose, data)
 # S4 method for class 'CohortSizeConst'
 size(object, dose, ...)
 
+# S4 method for class 'CohortSizeRandom'
+size(object, dose, ...)
+
 # S4 method for class 'CohortSizeParts'
 size(object, dose, data)
 
@@ -81,6 +84,9 @@ A size of a given object.
   minimum of multiple cohort size rules.
 
 - `size(CohortSizeConst)`: Constant cohort size.
+
+- `size(CohortSizeRandom)`: Random cohort size drawn uniformly between
+  min and max size.
 
 - `size(CohortSizeParts)`: Determines the size of the next cohort based
   on the parts.
@@ -444,6 +450,14 @@ size(mySize, dose = doseRecommendation$value)
 #> [1] 3
 
 # nolint end
+# Rule for having cohorts with random cohort size between 2 and 4
+mySize <- CohortSizeRandom(min_size = 2, max_size = 4)
+
+# Determine the cohort size for the next cohort
+# This will return a random integer between 2 and 4 (inclusive)
+set.seed(123)
+size(mySize, dose = 5)
+#> [1] 4
 # nolint start
 
 # create an object of class 'DataParts'

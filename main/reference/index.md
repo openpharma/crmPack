@@ -533,6 +533,12 @@
 
   `CohortSizeConst`
 
+- [`CohortSizeRandom()`](https://openpharma.github.io/crmPack/reference/CohortSizeRandom-class.md)
+  [`.DefaultCohortSizeRandom()`](https://openpharma.github.io/crmPack/reference/CohortSizeRandom-class.md)
+  **\[experimental\]** :
+
+  `CohortSizeRandom`
+
 - [`CohortSizeParts()`](https://openpharma.github.io/crmPack/reference/CohortSizeParts-class.md)
   [`.DefaultCohortSizeParts()`](https://openpharma.github.io/crmPack/reference/CohortSizeParts-class.md)
   **\[stable\]** :
@@ -615,6 +621,76 @@
   **\[experimental\]** :
 
   `DesignGrouped`
+
+- [`.DefaultOpening()`](https://openpharma.github.io/crmPack/reference/Opening-class.md)
+  **\[experimental\]** :
+
+  `Opening`
+
+- [`OpeningMinDose()`](https://openpharma.github.io/crmPack/reference/OpeningMinDose-class.md)
+  [`.DefaultOpeningMinDose()`](https://openpharma.github.io/crmPack/reference/OpeningMinDose-class.md)
+  **\[experimental\]** :
+
+  `OpeningMinDose`
+
+- [`OpeningMinCohorts()`](https://openpharma.github.io/crmPack/reference/OpeningMinCohorts-class.md)
+  [`.DefaultOpeningMinCohorts()`](https://openpharma.github.io/crmPack/reference/OpeningMinCohorts-class.md)
+  **\[experimental\]** :
+
+  `OpeningMinCohorts`
+
+- [`OpeningNone()`](https://openpharma.github.io/crmPack/reference/OpeningNone-class.md)
+  [`.DefaultOpeningNone()`](https://openpharma.github.io/crmPack/reference/OpeningNone-class.md)
+  **\[experimental\]** :
+
+  `OpeningNone`
+
+- [`OpeningMinResponses()`](https://openpharma.github.io/crmPack/reference/OpeningMinResponses-class.md)
+  [`.DefaultOpeningMinResponses()`](https://openpharma.github.io/crmPack/reference/OpeningMinResponses-class.md)
+  **\[experimental\]** :
+
+  `OpeningMinResponses`
+
+- [`OpeningAll()`](https://openpharma.github.io/crmPack/reference/OpeningAll-class.md)
+  [`.DefaultOpeningAll()`](https://openpharma.github.io/crmPack/reference/OpeningAll-class.md)
+  **\[experimental\]** :
+
+  `OpeningAll`
+
+- [`OpeningAny()`](https://openpharma.github.io/crmPack/reference/OpeningAny-class.md)
+  [`.DefaultOpeningAny()`](https://openpharma.github.io/crmPack/reference/OpeningAny-class.md)
+  **\[experimental\]** :
+
+  `OpeningAny`
+
+- [`OpeningList()`](https://openpharma.github.io/crmPack/reference/OpeningList-class.md)
+  [`.DefaultOpeningList()`](https://openpharma.github.io/crmPack/reference/OpeningList-class.md)
+  **\[experimental\]** :
+
+  `OpeningList`
+
+- [`.DefaultRecruitment()`](https://openpharma.github.io/crmPack/reference/Recruitment-class.md)
+  **\[experimental\]** :
+
+  `Recruitment`
+
+- [`RecruitmentUnlimited()`](https://openpharma.github.io/crmPack/reference/RecruitmentUnlimited-class.md)
+  [`.DefaultRecruitmentUnlimited()`](https://openpharma.github.io/crmPack/reference/RecruitmentUnlimited-class.md)
+  **\[experimental\]** :
+
+  `RecruitmentUnlimited`
+
+- [`RecruitmentRatio()`](https://openpharma.github.io/crmPack/reference/RecruitmentRatio-class.md)
+  [`.DefaultRecruitmentRatio()`](https://openpharma.github.io/crmPack/reference/RecruitmentRatio-class.md)
+  **\[experimental\]** :
+
+  `RecruitmentRatio`
+
+- [`Backfill()`](https://openpharma.github.io/crmPack/reference/Backfill-class.md)
+  [`.DefaultBackfill()`](https://openpharma.github.io/crmPack/reference/Backfill-class.md)
+  **\[experimental\]** :
+
+  `Backfill` class
 
 ## Internal Helper Functions
 
@@ -931,6 +1007,7 @@
 - [`v_cohort_size_range()`](https://openpharma.github.io/crmPack/reference/v_cohort_size.md)
   [`v_cohort_size_dlt()`](https://openpharma.github.io/crmPack/reference/v_cohort_size.md)
   [`v_cohort_size_const()`](https://openpharma.github.io/crmPack/reference/v_cohort_size.md)
+  [`v_cohort_size_random()`](https://openpharma.github.io/crmPack/reference/v_cohort_size.md)
   [`v_cohort_size_parts()`](https://openpharma.github.io/crmPack/reference/v_cohort_size.md)
   [`v_cohort_size_max()`](https://openpharma.github.io/crmPack/reference/v_cohort_size.md)
   **\[stable\]** :
@@ -966,6 +1043,23 @@
 
   Internal Helper Functions for Validation of `PseudoSimulations`
   Objects
+
+- [`v_opening_min_dose()`](https://openpharma.github.io/crmPack/reference/v_opening.md)
+  [`v_opening_min_cohorts()`](https://openpharma.github.io/crmPack/reference/v_opening.md)
+  [`v_opening_min_responses()`](https://openpharma.github.io/crmPack/reference/v_opening.md)
+  **\[experimental\]** :
+
+  Internal Helper Functions for Validation of `Opening` Objects
+
+- [`v_recruitment_ratio()`](https://openpharma.github.io/crmPack/reference/v_recruitment.md)
+  **\[experimental\]** :
+
+  Internal Helper Functions for Validation of `Recruitment` Objects
+
+- [`v_backfill()`](https://openpharma.github.io/crmPack/reference/v_backfill.md)
+  **\[experimental\]** :
+
+  Internal Helper Functions for Validation of `Backfill` Objects
 
 ## Custom Checkmate Assertions
 
@@ -1011,6 +1105,10 @@
   **\[stable\]** :
 
   Plot Method for the `DataDA` Class
+
+- [`` `[`( ``*`<Data>`*`,`*`<numeric>`*`,`*`<missing>`*`,`*`<missing>`*`)`](https://openpharma.github.io/crmPack/reference/subset-Data.md)
+  [`` `[`( ``*`<Data>`*`,`*`<logical>`*`,`*`<missing>`*`,`*`<missing>`*`)`](https://openpharma.github.io/crmPack/reference/subset-Data.md)
+  **\[stable\]** : Subsetting Operator for the Data Class
 
 - [`update(`*`<Data>`*`)`](https://openpharma.github.io/crmPack/reference/update-Data-method.md)
   **\[stable\]** :
@@ -1109,6 +1207,12 @@
 - [`maxDose()`](https://openpharma.github.io/crmPack/reference/maxDose.md)
   **\[stable\]** : Determine the Maximum Possible Next Dose
 
+- [`maxRecruits()`](https://openpharma.github.io/crmPack/reference/maxRecruits.md)
+  **\[experimental\]** : Calculate Maximum Number of Backfill Patients
+
+- [`openCohort()`](https://openpharma.github.io/crmPack/reference/openCohort.md)
+  **\[experimental\]** : Open / recruit backfill patients into a cohort?
+
 ## Functions
 
 - [`enable_logging()`](https://openpharma.github.io/crmPack/reference/enable_logging.md)
@@ -1120,13 +1224,15 @@
 - [`dapply()`](https://openpharma.github.io/crmPack/reference/dapply.md)
   **\[experimental\]** : Apply a Function to Subsets of Data Frame.
 
-- [`knit_print(`*`<CohortSizeConst>`*`)`](https://openpharma.github.io/crmPack/reference/knit_print.md)
+- [`knit_print(`*`<Backfill>`*`)`](https://openpharma.github.io/crmPack/reference/knit_print.md)
+  [`knit_print(`*`<CohortSizeConst>`*`)`](https://openpharma.github.io/crmPack/reference/knit_print.md)
   [`knit_print(`*`<CohortSizeRange>`*`)`](https://openpharma.github.io/crmPack/reference/knit_print.md)
   [`knit_print(`*`<CohortSizeDLT>`*`)`](https://openpharma.github.io/crmPack/reference/knit_print.md)
   [`knit_print(`*`<CohortSizeParts>`*`)`](https://openpharma.github.io/crmPack/reference/knit_print.md)
   [`knit_print(`*`<CohortSizeMax>`*`)`](https://openpharma.github.io/crmPack/reference/knit_print.md)
   [`knit_print(`*`<CohortSizeMin>`*`)`](https://openpharma.github.io/crmPack/reference/knit_print.md)
   [`knit_print(`*`<CohortSizeOrdinal>`*`)`](https://openpharma.github.io/crmPack/reference/knit_print.md)
+  [`knit_print(`*`<CohortSizeRandom>`*`)`](https://openpharma.github.io/crmPack/reference/knit_print.md)
   [`knit_print(`*`<StartingDose>`*`)`](https://openpharma.github.io/crmPack/reference/knit_print.md)
   [`knit_print(`*`<RuleDesign>`*`)`](https://openpharma.github.io/crmPack/reference/knit_print.md)
   [`knit_print(`*`<Design>`*`)`](https://openpharma.github.io/crmPack/reference/knit_print.md)
@@ -1179,6 +1285,15 @@
   [`knit_print(`*`<NextBestTDsamples>`*`)`](https://openpharma.github.io/crmPack/reference/knit_print.md)
   [`knit_print(`*`<NextBestMaxGainSamples>`*`)`](https://openpharma.github.io/crmPack/reference/knit_print.md)
   [`knit_print(`*`<NextBestOrdinal>`*`)`](https://openpharma.github.io/crmPack/reference/knit_print.md)
+  [`knit_print(`*`<OpeningMinDose>`*`)`](https://openpharma.github.io/crmPack/reference/knit_print.md)
+  [`knit_print(`*`<OpeningMinCohorts>`*`)`](https://openpharma.github.io/crmPack/reference/knit_print.md)
+  [`knit_print(`*`<OpeningNone>`*`)`](https://openpharma.github.io/crmPack/reference/knit_print.md)
+  [`knit_print(`*`<OpeningMinResponses>`*`)`](https://openpharma.github.io/crmPack/reference/knit_print.md)
+  [`knit_print(`*`<OpeningList>`*`)`](https://openpharma.github.io/crmPack/reference/knit_print.md)
+  [`knit_print(`*`<OpeningAll>`*`)`](https://openpharma.github.io/crmPack/reference/knit_print.md)
+  [`knit_print(`*`<OpeningAny>`*`)`](https://openpharma.github.io/crmPack/reference/knit_print.md)
+  [`knit_print(`*`<RecruitmentUnlimited>`*`)`](https://openpharma.github.io/crmPack/reference/knit_print.md)
+  [`knit_print(`*`<RecruitmentRatio>`*`)`](https://openpharma.github.io/crmPack/reference/knit_print.md)
   [`knit_print(`*`<SafetyWindow>`*`)`](https://openpharma.github.io/crmPack/reference/knit_print.md)
   [`knit_print(`*`<SafetyWindowConst>`*`)`](https://openpharma.github.io/crmPack/reference/knit_print.md)
   [`knit_print(`*`<SafetyWindowSize>`*`)`](https://openpharma.github.io/crmPack/reference/knit_print.md)
@@ -1499,6 +1614,11 @@
 - [`set_seed()`](https://openpharma.github.io/crmPack/reference/set_seed.md)
   **\[stable\]** : Helper Function to Set and Save the RNG Seed
 
+- [`show(`*`<GeneralSimulations>`*`)`](https://openpharma.github.io/crmPack/reference/show-GeneralSimulations-method.md)
+  **\[stable\]** :
+
+  Show `Simulations` Objects
+
 - [`show(`*`<DualSimulationsSummary>`*`)`](https://openpharma.github.io/crmPack/reference/show-DualSimulationsSummary-method.md)
   **\[stable\]** : Show the Summary of Dual-Endpoint Simulations
 
@@ -1596,3 +1716,9 @@
 - [`` `&`( ``*`<StoppingAll>`*`,`*`<Stopping>`*`)`](https://openpharma.github.io/crmPack/reference/and-StoppingAll-Stopping-method.md)
   **\[stable\]** : Combine a Stopping List and an Atomic Stopping Rule
   with AND
+
+- [`` `&`( ``*`<Opening>`*`,`*`<Opening>`*`)`](https://openpharma.github.io/crmPack/reference/and-Opening-Opening-method.md)
+  **\[experimental\]** : Logical AND Operator for Opening Objects
+
+- [`` `|`( ``*`<Opening>`*`,`*`<Opening>`*`)`](https://openpharma.github.io/crmPack/reference/or-Opening-Opening-method.md)
+  **\[experimental\]** : Logical OR Operator for Opening Objects

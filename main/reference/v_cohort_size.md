@@ -16,6 +16,8 @@ v_cohort_size_dlt(object)
 
 v_cohort_size_const(object)
 
+v_cohort_size_random(object)
+
 v_cohort_size_parts(object)
 
 v_cohort_size_max(object)
@@ -46,6 +48,10 @@ case validation passes.
 - `v_cohort_size_const()`: validates that the
   [`CohortSizeConst`](https://openpharma.github.io/crmPack/reference/CohortSizeConst-class.md)
   object contains valid `size` slot.
+
+- `v_cohort_size_random()`: validates that the
+  [`CohortSizeRandom`](https://openpharma.github.io/crmPack/reference/CohortSizeRandom-class.md)
+  object contains valid `min_size` and `max_size` slots.
 
 - `v_cohort_size_parts()`: validates that the
   [`CohortSizeParts`](https://openpharma.github.io/crmPack/reference/CohortSizeParts-class.md)
