@@ -8,6 +8,8 @@
 \alias{tidy-CrmPackClass}
 \alias{tidy,GeneralData-method}
 \alias{tidy-GeneralData}
+\alias{tidy,Data-method}
+\alias{tidy-Data}
 \alias{tidy,DataGrouped-method}
 \alias{tidy-DataGrouped}
 \alias{tidy,DataDA-method}
@@ -61,6 +63,8 @@ tidy(x, ...)
 \S4method{tidy}{CrmPackClass}(x, ...)
 
 \S4method{tidy}{GeneralData}(x, ...)
+
+\S4method{tidy}{Data}(x, ...)
 
 \S4method{tidy}{DataGrouped}(x, ...)
 
@@ -132,6 +136,8 @@ The \code{\link[tibble:tibble]{tibble::tibble}} object.
 
 The \code{\link[tibble:tibble]{tibble::tibble}} object.
 
+The \code{\link[tibble:tibble]{tibble::tibble}} object.
+
 The \code{\link{list}} of \code{\link[tibble:tibble]{tibble::tibble}} objects.
 
 The \code{\link{list}} of \code{\link[tibble:tibble]{tibble::tibble}} objects.
@@ -148,6 +154,10 @@ object to a (list of) tibbles.  This is a basic, default representation.
 \ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#experimental}{\figure{lifecycle-experimental.svg}{options: alt='[Experimental]'}}}{\strong{[Experimental]}}
 
 A method that tidies a \code{\link{GeneralData}} object.
+
+\ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#experimental}{\figure{lifecycle-experimental.svg}{options: alt='[Experimental]'}}}{\strong{[Experimental]}}
+
+A method that tidies a \code{\link{Data}} object.
 
 \ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#experimental}{\figure{lifecycle-experimental.svg}{options: alt='[Experimental]'}}}{\strong{[Experimental]}}
 
@@ -195,6 +205,21 @@ CohortSizeConst(3) \%>\% tidy()
 .DefaultDataOrdinal() \%>\% tidy()
 .DefaultDataGrouped() \%>\% tidy()
 .DefaultDataDA() \%>\% tidy()
+# Create a sample Data object
+sample_data <- Data(
+  x = c(0.1, 0.5, 1.5, 3, 6, 10, 10, 10),
+  y = c(0, 0, 0, 0, 0, 0, 1, 0),
+  cohort = c(1, 2, 3, 4, 5, 6, 6, 6),
+  doseGrid = c(0.1, 0.5, 1.5, 3, 6, seq(from = 10, to = 80, by = 2)),
+  response = c(0, 0, 0, 0, 0, 1, NA, NA),
+  backfilled = c(FALSE, FALSE, FALSE, FALSE, FALSE, FALSE, TRUE, TRUE)
+)
+
+# Tidy the Data object
+tidied_data <- tidy(sample_data)
+
+# Print the tidied data
+print(tidied_data)
 .DefaultData() \%>\% tidy()
 .DefaultDataOrdinal() \%>\% tidy()
 .DefaultDataGrouped() \%>\% tidy()

@@ -9,9 +9,12 @@
   object,
   x,
   y,
+  response = rep(NA_integer_, length(y)),
   ID = length(object@ID) + seq_along(y),
   new_cohort = TRUE,
   check = TRUE,
+  backfill = FALSE,
+  cohort = NULL,
   ...
 )
 }
@@ -24,6 +27,9 @@
 cohort. You can also supply \code{numeric} vectors, but these will then be
 converted to \code{integer} internally.}
 
+\item{response}{(\code{integer})\cr the efficacy response vector
+(0/1 vector). May contain \code{NA}.}
+
 \item{ID}{(\code{integer})\cr the patient IDs.
 You can also supply \code{numeric} vectors, but these will then be converted to
 \code{integer} internally.}
@@ -33,6 +39,13 @@ to a new cohort.}
 
 \item{check}{(\code{flag})\cr whether the validation of the updated object should
 be conducted. See details below.}
+
+\item{backfill}{(\code{flag})\cr whether the new patients being added
+are from a backfill cohort.}
+
+\item{cohort}{(\code{int})\cr if provided, the new patients will be assigned
+to this cohort index. If \code{NULL} (default), the cohort index will be
+determined based on the \code{new_cohort} parameter.}
 
 \item{...}{not used.}
 }

@@ -207,6 +207,28 @@ test_that("Test if simulate generate the expected output.", {
   expect_snap(sim)
 })
 
+test_that("Backfilling works in a simple design", {
+  design <- h_get_design_data_backfill()
+
+  myTruth <- probFunction(design@model, alpha0 = 4, alpha1 = 4)
+  options <- h_get_mcmc_options()
+  mytruthResponse <- plogis
+
+  result <- simulate(
+    design,
+    args = NULL,
+    truth = myTruth,
+    truthResponse = mytruthResponse,
+    nsim = 10,
+    seed = 819,
+    mcmcOptions = options,
+    parallel = FALSE,
+    firstSeparate = FALSE
+  )
+
+  expect_snap(result)
+})
+
 ## NextBestInfTheory ----
 
 test_that("NextBestInfTheory produces consistent results for empty data", {

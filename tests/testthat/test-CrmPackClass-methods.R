@@ -43,6 +43,7 @@ test_that("tidy methods exist for all relevant classes", {
     "ModelPseudo",
     "ModelTox",
     "NextBest",
+    "Opening",
     "positive_number",
     "PseudoSimulations",
     "PseudoDualSimulations",
@@ -50,6 +51,7 @@ test_that("tidy methods exist for all relevant classes", {
     "PseudoDualFlexiSimulations",
     "PseudoFlexiSimulations",
     "PseudoSimulationsSummary",
+    "Recruitment",
     "SimulationsSummary",
     "Report",
     "SafetyWindow",
@@ -88,6 +90,7 @@ test_that("tidy methods return non-empty value for all classes", {
   # with some elements of length zero
   some_elements_length_zero <- c("RuleDesign")
   exclusions <- c(
+    "Backfill",
     "CohortSize",
     "CrmPackClass",
     "DualEndpoint",
@@ -99,6 +102,7 @@ test_that("tidy methods return non-empty value for all classes", {
     "ModelPseudo",
     "ModelTox",
     "NextBest",
+    "Opening",
     "positive_number",
     "PseudoSimulations",
     "PseudoDualSimulations",
@@ -106,6 +110,7 @@ test_that("tidy methods return non-empty value for all classes", {
     "PseudoDualFlexiSimulations",
     "PseudoFlexiSimulations",
     "PseudoSimulationsSummary",
+    "Recruitment",
     "SimulationsSummary",
     "Report",
     "SafetyWindow",

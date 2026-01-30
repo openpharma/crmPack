@@ -93,6 +93,7 @@ exclusions <- c(
   "ModelPseudo",
   "ModelTox",
   "NextBest",
+  "Opening",
   "positive_number",
   "PseudoSimulations",
   "PseudoDualSimulations",
@@ -100,6 +101,7 @@ exclusions <- c(
   "PseudoDualFlexiSimulations",
   "PseudoFlexiSimulations",
   "PseudoSimulationsSummary",
+  "Recruitment",
   "SimulationsSummary",
   "Report",
   "SafetyWindow",
@@ -140,7 +142,16 @@ test_that("knit_print methods exist for all relevant classes and produce consist
                 expect_snap_file(test_path("fixtures", outFileName))
               },
               error = function(e) {
-                warning(paste0("Error for class ", cls, ": "), geterrmessage())
+                ignored_errors <- c(
+                  "RStudio not running",
+                  "This {rstudioapi} function is not currently implemented for VSCode."
+                )
+                if (!any(sapply(ignored_errors, grepl, e$message))) {
+                  warning(
+                    paste0("Error for class ", cls, ": "),
+                    geterrmessage()
+                  )
+                }
               }
             )
           }

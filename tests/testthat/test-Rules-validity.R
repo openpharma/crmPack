@@ -924,6 +924,15 @@ test_that("v_stopping_patients_near_dose returns message for non-valid percentag
   expect_equal(v_stopping_patients_near_dose(object), err_msg)
 })
 
+test_that("v_stopping_patients_near_dose returns message for invalid include_backfill", {
+  err_msg <- "include_backfill must be a flag"
+  object <- StoppingPatientsNearDose(nPatients = 5L)
+
+  # Changing `include_backfill` so that it is not a flag.
+  object@include_backfill <- c(TRUE, FALSE)
+  expect_equal(v_stopping_patients_near_dose(object), err_msg)
+})
+
 ## v_stopping_min_cohorts ----
 
 test_that("v_stopping_min_cohorts passes for valid object", {
@@ -1454,6 +1463,33 @@ test_that("v_cohort_size_const returns message for non-valid size", {
   # Changing `size` so that it is not a scalar.
   object@size <- c(2L, 4L)
   expect_equal(v_cohort_size_const(object), err_msg)
+})
+
+## v_cohort_size_random ----
+
+test_that("v_cohort_size_random passes for valid object", {
+  object <- CohortSizeRandom(1, 5)
+  expect_true(v_cohort_size_random(object))
+
+  object <- CohortSizeRandom(2, 3)
+  expect_true(v_cohort_size_random(object))
+})
+
+test_that("v_cohort_size_random returns message for non-valid min_size or max_size", {
+  object <- CohortSizeRandom(1, 5)
+
+  # Changing `min_size` so that it is negative.
+  object@min_size <- -(1L)
+  expect_equal(
+    v_cohort_size_random(object),
+    "min_size needs to be a positive integer"
+  )
+  object@min_size <- 1L
+  object@max_size <- 1L
+  expect_equal(
+    v_cohort_size_random(object),
+    "max_size needs to be an integer larger than min_size"
+  )
 })
 
 ## v_cohort_size_parts ----
