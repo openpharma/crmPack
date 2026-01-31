@@ -51,6 +51,11 @@ DADesign(model, data, safetyWindow, ...)
   :   (`CohortSize`)  
       see slot definition.
 
+  `backfill`
+
+  :   (`Backfill`)  
+      see slot definition.
+
 ## Details
 
 The `safetyWindow` slot should be an instance of the `SafetyWindow`

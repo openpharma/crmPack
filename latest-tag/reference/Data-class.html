@@ -28,7 +28,7 @@ It inherits from GeneralData.">
 
     <a class="navbar-brand me-2" href="../index.html">crmPack</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">2.0.2</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">2.1.0</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -51,6 +51,7 @@ It inherits from GeneralData.">
     <li><a class="dropdown-item" href="../articles/trial_analysis.html">Trial Analysis</a></li>
     <li><a class="dropdown-item" href="../articles/trial_sanity_checks.html">Trial Design: basic sanity checks</a></li>
     <li><a class="dropdown-item" href="../articles/trial_simulation.html">Trial Simulation</a></li>
+    <li><a class="dropdown-item" href="../articles/trial_backfill.html">Backfill cohorts</a></li>
     <li><hr class="dropdown-divider"></li>
     <li><h6 class="dropdown-header" data-toc-skip>Examples</h6></li>
     <li><a class="dropdown-item" href="../articles/example.html">crmPack: Object-oriented implementation of CRM designs</a></li>
@@ -77,6 +78,7 @@ It inherits from GeneralData.">
     <div class="dropdown-menu" aria-labelledby="dropdown-versions">
     <a class="dropdown-item" data-toggle="tooltip" title="" href="https://openpharma.github.io/crmPack/main">main</a>
 <a class="dropdown-item" data-toggle="tooltip" title="" href="https://openpharma.github.io/crmPack/latest-tag">latest-tag</a>
+<a class="dropdown-item" data-toggle="tooltip" title="" href="https://openpharma.github.io/crmPack/v2.1.0">v2.1.0</a>
 <a class="dropdown-item" data-toggle="tooltip" title="" href="https://openpharma.github.io/crmPack/v2.0.2">v2.0.2</a>
 <a class="dropdown-item" data-toggle="tooltip" title="" href="https://openpharma.github.io/crmPack/v2.0.1">v2.0.1</a>
 </div>
@@ -96,7 +98,7 @@ It inherits from GeneralData.">
 <div class="row">
   <main id="main" class="col-md-9"><div class="page-header">
       <img src="../logo.png" class="logo" alt=""><h1><code>Data</code></h1>
-      <small class="dont-index">Source: <a href="https://github.com/openpharma/crmPack/blob/v2.0.2/R/Data-class.R" class="external-link"><code>R/Data-class.R</code></a></small>
+      <small class="dont-index">Source: <a href="https://github.com/openpharma/crmPack/blob/v2.1.0/R/Data-class.R" class="external-link"><code>R/Data-class.R</code></a></small>
       <div class="d-none name"><code>Data-class.Rd</code></div>
     </div>
 
@@ -116,6 +118,8 @@ It inherits from <code><a href="GeneralData-class.html">GeneralData</a></code>.<
 <span>  cohort <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/integer.html" class="external-link">integer</a></span><span class="op">(</span><span class="op">)</span>,</span>
 <span>  doseGrid <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/numeric.html" class="external-link">numeric</a></span><span class="op">(</span><span class="op">)</span>,</span>
 <span>  placebo <span class="op">=</span> <span class="cn">FALSE</span>,</span>
+<span>  backfilled <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/rep.html" class="external-link">rep</a></span><span class="op">(</span><span class="cn">FALSE</span>, <span class="fu"><a href="https://rdrr.io/r/base/length.html" class="external-link">length</a></span><span class="op">(</span><span class="va">x</span><span class="op">)</span><span class="op">)</span>,</span>
+<span>  response <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/rep.html" class="external-link">rep</a></span><span class="op">(</span><span class="cn">NA_integer_</span>, <span class="fu"><a href="https://rdrr.io/r/base/length.html" class="external-link">length</a></span><span class="op">(</span><span class="va">x</span><span class="op">)</span><span class="op">)</span>,</span>
 <span>  <span class="va">...</span></span>
 <span><span class="op">)</span></span>
 <span></span>
@@ -165,6 +169,18 @@ You can also supply <code>numeric</code> vectors, but these will then be convert
 in the <code>doseGrid</code> is considered as placebo.</p></dd>
 
 
+<dt id="arg-backfilled">backfilled<a class="anchor" aria-label="anchor" href="#arg-backfilled"></a>
+</dt>
+<dd><p>(<code>logical</code>)<br> whether each patient was in
+a backfill cohort.</p></dd>
+
+
+<dt id="arg-response">response<a class="anchor" aria-label="anchor" href="#arg-response"></a>
+</dt>
+<dd><p>(<code>integer</code>)<br> whether each patient had a
+positive efficacy response (1 = yes, 0 = no). May contain <code>NA</code>.</p></dd>
+
+
 <dt id="arg--">...<a class="anchor" aria-label="anchor" href="#arg--"></a>
 </dt>
 <dd><p>not used.</p></dd>
@@ -208,6 +224,16 @@ w.r.t <code>doseGrid</code>.</p></dd>
 <dt><code>placebo</code></dt>
 <dd><p>(<code>logical</code>)<br> if <code>TRUE</code> the first dose level
 in the <code>doseGrid</code>is considered as PLACEBO.</p></dd>
+
+
+<dt><code>backfilled</code></dt>
+<dd><p>(<code>logical</code>)<br> whether this patient was
+in a backfill cohort.</p></dd>
+
+
+<dt><code>response</code></dt>
+<dd><p>(<code>integer</code>)<br> whether this patient had a
+positive efficacy response (0 or 1 integers).</p></dd>
 
 
 </dl>
@@ -260,6 +286,12 @@ i.e. a sorted (in ascending order) sequence of values from <code>{1, 2, ...}</co
 <span class="r-out co"><span class="r-pr">#&gt;</span> Slot "placebo":</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [1] FALSE</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Slot "backfilled":</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Slot "response":</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] NA NA NA NA NA NA NA NA</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Slot "ID":</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [1] 1 2 3 4 5 6 7 8</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
@@ -277,7 +309,7 @@ i.e. a sorted (in ascending order) sequence of values from <code>{1, 2, ...}</co
 
 
     <footer><div class="pkgdown-footer-left">
-  <p>Developed by Daniel Sabanes Bove, Wai Yin Yeung, Burak Kuersad Guenhan, Giuseppe Palermo, Thomas Jaki, Jiawen Zhu, Ziwei Liao, Dimitris Kontos, Marlene Schulte-Goebel, Doug Kelkhoff, Oliver Boix, Robert Adams, Clara Beck, John Kirkpatrick, Wojciech Wójciak, Guanya Peng, Prerana Chandratre, F. Hoffmann-La Roche AG, Merck Healthcare KGaA, Bayer AG, RPACT GmbH.</p>
+  <p>Developed by Daniel Sabanés Bové, Wai Yin Yeung, Burak Kuersad Guenhan, Giuseppe Palermo, Thomas Jaki, Jiawen Zhu, Ziwei Liao, Dimitris Kontos, Marlene Schulte-Goebel, Doug Kelkhoff, Oliver Boix, Robert Adams, Clara Beck, John Kirkpatrick, Wojciech Wójciak, Guanya Peng, Prerana Chandratre, F. Hoffmann-La Roche AG, Merck Healthcare KGaA, Bayer AG, RPACT GmbH.</p>
 </div>
 
 <div class="pkgdown-footer-right">

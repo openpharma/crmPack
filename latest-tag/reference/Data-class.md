@@ -15,6 +15,8 @@ Data(
   cohort = integer(),
   doseGrid = numeric(),
   placebo = FALSE,
+  backfilled = rep(FALSE, length(x)),
+  response = rep(NA_integer_, length(x)),
   ...
 )
 
@@ -58,6 +60,17 @@ Data(
   if `TRUE` the first dose level in the `doseGrid` is considered as
   placebo.
 
+- backfilled:
+
+  (`logical`)  
+  whether each patient was in a backfill cohort.
+
+- response:
+
+  (`integer`)  
+  whether each patient had a positive efficacy response (1 = yes, 0 =
+  no). May contain `NA`.
+
 - ...:
 
   not used.
@@ -100,6 +113,17 @@ The `cohort` can be missing if and only if `placebo` is equal to
   (`logical`)  
   if `TRUE` the first dose level in the `doseGrid`is considered as
   PLACEBO.
+
+- `backfilled`:
+
+  (`logical`)  
+  whether this patient was in a backfill cohort.
+
+- `response`:
+
+  (`integer`)  
+  whether this patient had a positive efficacy response (0 or 1
+  integers).
 
 ## Note
 
@@ -147,6 +171,12 @@ my_data
 #> 
 #> Slot "placebo":
 #> [1] FALSE
+#> 
+#> Slot "backfilled":
+#> [1] FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE
+#> 
+#> Slot "response":
+#> [1] NA NA NA NA NA NA NA NA
 #> 
 #> Slot "ID":
 #> [1] 1 2 3 4 5 6 7 8

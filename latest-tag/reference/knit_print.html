@@ -6,15 +6,17 @@
 <meta charset="utf-8">
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-<title>Render a CohortSizeConst Object — knit_print • crmPack</title>
+<title>Render a CohortSizeConst Object — knit_print.Backfill • crmPack</title>
 <script src="../deps/jquery-3.6.0/jquery-3.6.0.min.js"></script><meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 <link href="../deps/bootstrap-5.3.1/bootstrap.min.css" rel="stylesheet">
 <script src="../deps/bootstrap-5.3.1/bootstrap.bundle.min.js"></script><link href="../deps/font-awesome-6.5.2/css/all.min.css" rel="stylesheet">
 <link href="../deps/font-awesome-6.5.2/css/v4-shims.min.css" rel="stylesheet">
-<script src="../deps/headroom-0.11.0/headroom.min.js"></script><script src="../deps/headroom-0.11.0/jQuery.headroom.min.js"></script><script src="../deps/bootstrap-toc-1.0.1/bootstrap-toc.min.js"></script><script src="../deps/clipboard.js-2.0.11/clipboard.min.js"></script><script src="../deps/search-1.0.0/autocomplete.jquery.min.js"></script><script src="../deps/search-1.0.0/fuse.min.js"></script><script src="../deps/search-1.0.0/mark.min.js"></script><!-- pkgdown --><script src="../pkgdown.js"></script><meta property="og:title" content="Render a CohortSizeConst Object — knit_print">
+<script src="../deps/headroom-0.11.0/headroom.min.js"></script><script src="../deps/headroom-0.11.0/jQuery.headroom.min.js"></script><script src="../deps/bootstrap-toc-1.0.1/bootstrap-toc.min.js"></script><script src="../deps/clipboard.js-2.0.11/clipboard.min.js"></script><script src="../deps/search-1.0.0/autocomplete.jquery.min.js"></script><script src="../deps/search-1.0.0/fuse.min.js"></script><script src="../deps/search-1.0.0/mark.min.js"></script><!-- pkgdown --><script src="../pkgdown.js"></script><meta property="og:title" content="Render a CohortSizeConst Object — knit_print.Backfill">
 <meta name="description" content="
+
 We provide additional utility functions to allow human-friendly rendition of
 crmPack objects in Markdown and Quarto files
+
 
 
 
@@ -26,6 +28,15 @@ crmPack objects in Markdown and Quarto files
 We provide additional utility functions to allow human-friendly rendition of
 crmPack objects in Markdown and Quarto files.  This file contains methods for
 all design classes, not just those that are direct descendants of Design.
+
+
+
+
+
+
+
+
+
 
 
 
@@ -96,8 +107,10 @@ crmPack objects in Markdown and Quarto files
 
 ">
 <meta property="og:description" content="
+
 We provide additional utility functions to allow human-friendly rendition of
 crmPack objects in Markdown and Quarto files
+
 
 
 
@@ -109,6 +122,15 @@ crmPack objects in Markdown and Quarto files
 We provide additional utility functions to allow human-friendly rendition of
 crmPack objects in Markdown and Quarto files.  This file contains methods for
 all design classes, not just those that are direct descendants of Design.
+
+
+
+
+
+
+
+
+
 
 
 
@@ -188,7 +210,7 @@ crmPack objects in Markdown and Quarto files
 
     <a class="navbar-brand me-2" href="../index.html">crmPack</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">2.0.2</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">2.1.0</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -211,6 +233,7 @@ crmPack objects in Markdown and Quarto files
     <li><a class="dropdown-item" href="../articles/trial_analysis.html">Trial Analysis</a></li>
     <li><a class="dropdown-item" href="../articles/trial_sanity_checks.html">Trial Design: basic sanity checks</a></li>
     <li><a class="dropdown-item" href="../articles/trial_simulation.html">Trial Simulation</a></li>
+    <li><a class="dropdown-item" href="../articles/trial_backfill.html">Backfill cohorts</a></li>
     <li><hr class="dropdown-divider"></li>
     <li><h6 class="dropdown-header" data-toc-skip>Examples</h6></li>
     <li><a class="dropdown-item" href="../articles/example.html">crmPack: Object-oriented implementation of CRM designs</a></li>
@@ -237,6 +260,7 @@ crmPack objects in Markdown and Quarto files
     <div class="dropdown-menu" aria-labelledby="dropdown-versions">
     <a class="dropdown-item" data-toggle="tooltip" title="" href="https://openpharma.github.io/crmPack/main">main</a>
 <a class="dropdown-item" data-toggle="tooltip" title="" href="https://openpharma.github.io/crmPack/latest-tag">latest-tag</a>
+<a class="dropdown-item" data-toggle="tooltip" title="" href="https://openpharma.github.io/crmPack/v2.1.0">v2.1.0</a>
 <a class="dropdown-item" data-toggle="tooltip" title="" href="https://openpharma.github.io/crmPack/v2.0.2">v2.0.2</a>
 <a class="dropdown-item" data-toggle="tooltip" title="" href="https://openpharma.github.io/crmPack/v2.0.1">v2.0.1</a>
 </div>
@@ -256,14 +280,16 @@ crmPack objects in Markdown and Quarto files
 <div class="row">
   <main id="main" class="col-md-9"><div class="page-header">
       <img src="../logo.png" class="logo" alt=""><h1>Render a <code>CohortSizeConst</code> Object</h1>
-      <small class="dont-index">Source: <a href="https://github.com/openpharma/crmPack/blob/v2.0.2/R/helpers_knitr_CohortSize.R" class="external-link"><code>R/helpers_knitr_CohortSize.R</code></a>, <a href="https://github.com/openpharma/crmPack/blob/v2.0.2/R/helpers_knitr_Design.R" class="external-link"><code>R/helpers_knitr_Design.R</code></a>, <a href="https://github.com/openpharma/crmPack/blob/v2.0.2/R/helpers_knitr_GeneralData.R" class="external-link"><code>R/helpers_knitr_GeneralData.R</code></a>, and 5 more</small>
+      <small class="dont-index">Source: <a href="https://github.com/openpharma/crmPack/blob/v2.1.0/R/helpers_knitr_Backfill.R" class="external-link"><code>R/helpers_knitr_Backfill.R</code></a>, <a href="https://github.com/openpharma/crmPack/blob/v2.1.0/R/helpers_knitr_CohortSize.R" class="external-link"><code>R/helpers_knitr_CohortSize.R</code></a>, <a href="https://github.com/openpharma/crmPack/blob/v2.1.0/R/helpers_knitr_Design.R" class="external-link"><code>R/helpers_knitr_Design.R</code></a>, and 8 more</small>
       <div class="d-none name"><code>knit_print.Rd</code></div>
     </div>
 
     <div class="ref-description section level2">
     <p><a href="https://lifecycle.r-lib.org/articles/stages.html#experimental" class="external-link"><img src="figures/lifecycle-experimental.svg" alt="[Experimental]"></a></p>
+<p><a href="https://lifecycle.r-lib.org/articles/stages.html#experimental" class="external-link"><img src="figures/lifecycle-experimental.svg" alt="[Experimental]"></a></p>
 <p>We provide additional utility functions to allow human-friendly rendition of
 crmPack objects in Markdown and Quarto files</p>
+<p><a href="https://lifecycle.r-lib.org/articles/stages.html#experimental" class="external-link"><img src="figures/lifecycle-experimental.svg" alt="[Experimental]"></a></p>
 <p><a href="https://lifecycle.r-lib.org/articles/stages.html#experimental" class="external-link"><img src="figures/lifecycle-experimental.svg" alt="[Experimental]"></a></p>
 <p><a href="https://lifecycle.r-lib.org/articles/stages.html#experimental" class="external-link"><img src="figures/lifecycle-experimental.svg" alt="[Experimental]"></a></p>
 <p><a href="https://lifecycle.r-lib.org/articles/stages.html#experimental" class="external-link"><img src="figures/lifecycle-experimental.svg" alt="[Experimental]"></a></p>
@@ -275,6 +301,15 @@ crmPack objects in Markdown and Quarto files</p>
 <p>We provide additional utility functions to allow human-friendly rendition of
 crmPack objects in Markdown and Quarto files.  This file contains methods for
 all design classes, not just those that are direct descendants of <code>Design</code>.</p>
+<p><a href="https://lifecycle.r-lib.org/articles/stages.html#experimental" class="external-link"><img src="figures/lifecycle-experimental.svg" alt="[Experimental]"></a></p>
+<p><a href="https://lifecycle.r-lib.org/articles/stages.html#experimental" class="external-link"><img src="figures/lifecycle-experimental.svg" alt="[Experimental]"></a></p>
+<p><a href="https://lifecycle.r-lib.org/articles/stages.html#experimental" class="external-link"><img src="figures/lifecycle-experimental.svg" alt="[Experimental]"></a></p>
+<p><a href="https://lifecycle.r-lib.org/articles/stages.html#experimental" class="external-link"><img src="figures/lifecycle-experimental.svg" alt="[Experimental]"></a></p>
+<p><a href="https://lifecycle.r-lib.org/articles/stages.html#experimental" class="external-link"><img src="figures/lifecycle-experimental.svg" alt="[Experimental]"></a></p>
+<p><a href="https://lifecycle.r-lib.org/articles/stages.html#experimental" class="external-link"><img src="figures/lifecycle-experimental.svg" alt="[Experimental]"></a></p>
+<p><a href="https://lifecycle.r-lib.org/articles/stages.html#experimental" class="external-link"><img src="figures/lifecycle-experimental.svg" alt="[Experimental]"></a></p>
+<p><a href="https://lifecycle.r-lib.org/articles/stages.html#experimental" class="external-link"><img src="figures/lifecycle-experimental.svg" alt="[Experimental]"></a></p>
+<p><a href="https://lifecycle.r-lib.org/articles/stages.html#experimental" class="external-link"><img src="figures/lifecycle-experimental.svg" alt="[Experimental]"></a></p>
 <p><a href="https://lifecycle.r-lib.org/articles/stages.html#experimental" class="external-link"><img src="figures/lifecycle-experimental.svg" alt="[Experimental]"></a></p>
 <p><a href="https://lifecycle.r-lib.org/articles/stages.html#experimental" class="external-link"><img src="figures/lifecycle-experimental.svg" alt="[Experimental]"></a></p>
 <p><a href="https://lifecycle.r-lib.org/articles/stages.html#experimental" class="external-link"><img src="figures/lifecycle-experimental.svg" alt="[Experimental]"></a></p>
@@ -349,7 +384,10 @@ crmPack objects in Markdown and Quarto files</p>
     <div class="section level2">
     <h2 id="ref-usage">Usage<a class="anchor" aria-label="anchor" href="#ref-usage"></a>
 </h2>
-    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="co"># S3 method for class 'CohortSizeConst'</span></span>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="co"># S3 method for class 'Backfill'</span></span>
+<span><span class="fu">knit_print</span><span class="op">(</span><span class="va">x</span>, <span class="va">...</span>, asis <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span>
+<span></span>
+<span><span class="co"># S3 method for class 'CohortSizeConst'</span></span>
 <span><span class="fu">knit_print</span><span class="op">(</span><span class="va">x</span>, <span class="va">...</span>, asis <span class="op">=</span> <span class="cn">TRUE</span>, label <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"participant"</span>, <span class="st">"participants"</span><span class="op">)</span><span class="op">)</span></span>
 <span></span>
 <span><span class="co"># S3 method for class 'CohortSizeRange'</span></span>
@@ -369,6 +407,9 @@ crmPack objects in Markdown and Quarto files</p>
 <span></span>
 <span><span class="co"># S3 method for class 'CohortSizeOrdinal'</span></span>
 <span><span class="fu">knit_print</span><span class="op">(</span><span class="va">x</span>, <span class="va">...</span>, tox_label <span class="op">=</span> <span class="st">"toxicity"</span>, asis <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span>
+<span></span>
+<span><span class="co"># S3 method for class 'CohortSizeRandom'</span></span>
+<span><span class="fu">knit_print</span><span class="op">(</span><span class="va">x</span>, <span class="va">...</span>, asis <span class="op">=</span> <span class="cn">TRUE</span>, label <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"participant"</span>, <span class="st">"participants"</span><span class="op">)</span><span class="op">)</span></span>
 <span></span>
 <span><span class="co"># S3 method for class 'StartingDose'</span></span>
 <span><span class="fu">knit_print</span><span class="op">(</span><span class="va">x</span>, <span class="va">...</span>, asis <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span>
@@ -691,6 +732,33 @@ crmPack objects in Markdown and Quarto files</p>
 <span><span class="co"># S3 method for class 'NextBestOrdinal'</span></span>
 <span><span class="fu">knit_print</span><span class="op">(</span><span class="va">x</span>, <span class="va">...</span>, tox_label <span class="op">=</span> <span class="st">"toxicity"</span>, asis <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span>
 <span></span>
+<span><span class="co"># S3 method for class 'OpeningMinDose'</span></span>
+<span><span class="fu">knit_print</span><span class="op">(</span><span class="va">x</span>, <span class="va">...</span>, asis <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span>
+<span></span>
+<span><span class="co"># S3 method for class 'OpeningMinCohorts'</span></span>
+<span><span class="fu">knit_print</span><span class="op">(</span><span class="va">x</span>, <span class="va">...</span>, asis <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span>
+<span></span>
+<span><span class="co"># S3 method for class 'OpeningNone'</span></span>
+<span><span class="fu">knit_print</span><span class="op">(</span><span class="va">x</span>, <span class="va">...</span>, asis <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span>
+<span></span>
+<span><span class="co"># S3 method for class 'OpeningMinResponses'</span></span>
+<span><span class="fu">knit_print</span><span class="op">(</span><span class="va">x</span>, <span class="va">...</span>, asis <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span>
+<span></span>
+<span><span class="co"># S3 method for class 'OpeningList'</span></span>
+<span><span class="fu">knit_print</span><span class="op">(</span><span class="va">x</span>, <span class="va">...</span>, <span class="va">preamble</span>, indent <span class="op">=</span> <span class="fl">0L</span>, asis <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span>
+<span></span>
+<span><span class="co"># S3 method for class 'OpeningAll'</span></span>
+<span><span class="fu">knit_print</span><span class="op">(</span><span class="va">x</span>, <span class="va">...</span>, <span class="va">preamble</span>, asis <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span>
+<span></span>
+<span><span class="co"># S3 method for class 'OpeningAny'</span></span>
+<span><span class="fu">knit_print</span><span class="op">(</span><span class="va">x</span>, <span class="va">...</span>, <span class="va">preamble</span>, asis <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span>
+<span></span>
+<span><span class="co"># S3 method for class 'RecruitmentUnlimited'</span></span>
+<span><span class="fu">knit_print</span><span class="op">(</span><span class="va">x</span>, <span class="va">...</span>, asis <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span>
+<span></span>
+<span><span class="co"># S3 method for class 'RecruitmentRatio'</span></span>
+<span><span class="fu">knit_print</span><span class="op">(</span><span class="va">x</span>, <span class="va">...</span>, asis <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span>
+<span></span>
 <span><span class="co"># S3 method for class 'SafetyWindow'</span></span>
 <span><span class="fu">knit_print</span><span class="op">(</span><span class="va">x</span>, <span class="va">...</span>, asis <span class="op">=</span> <span class="cn">TRUE</span>, time_unit <span class="op">=</span> <span class="st">"day"</span>, label <span class="op">=</span> <span class="st">"participant"</span><span class="op">)</span></span>
 <span></span>
@@ -973,6 +1041,13 @@ measured</p></dd>
 <dd><p>(<code>character</code>)<br> the link to Mozgunov &amp; Jaki</p></dd>
 
 
+<dt id="arg-indent">indent<a class="anchor" aria-label="anchor" href="#arg-indent"></a>
+</dt>
+<dd><p>(<code>integer</code>)<br> the indent level of the current stopping rule
+list. Spaces with length <code>indent * 4</code> will be prepended to the beginning of
+the rendered stopping rule list.</p></dd>
+
+
 <dt id="arg-time-unit">time_unit<a class="anchor" aria-label="anchor" href="#arg-time-unit"></a>
 </dt>
 <dd><p>(<code>character</code>)<br> the word used to describe units of time.
@@ -983,13 +1058,6 @@ See Usage Notes below.</p></dd>
 </dt>
 <dd><p>(<code>character</code>)<br> a character vector whose nth defines the
 word used as the written representation of the nth ordinal number.</p></dd>
-
-
-<dt id="arg-indent">indent<a class="anchor" aria-label="anchor" href="#arg-indent"></a>
-</dt>
-<dd><p>(<code>integer</code>)<br> the indent level of the current stopping rule
-list. Spaces with length <code>indent * 4</code> will be prepended to the beginning of
-the rendered stopping rule list.</p></dd>
 
 
 <dt id="arg-dose-label">dose_label<a class="anchor" aria-label="anchor" href="#arg-dose-label"></a>
@@ -1167,6 +1235,156 @@ If of length 1, the character <code>s</code> is appended to the value when the c
 <p>A label should be a character vector of length 1 or 2.  If of length 2, the first
 element describes a count of 1 and the second describes all other counts.
 If of length 1, the character <code>s</code> is appended to the value when the count is not 1.</p>
+
+<p><code>label</code> describes the trial's participants.</p>
+<p>It should be a character vector of length 1 or 2.  If of length 2, the first
+element describes a <code>cohort_size</code> of 1 and the second describes all other
+<code>cohort_size</code>s.  If of length 1, the character <code>s</code> is appended to the value
+when <code>cohort_size</code> is not 1.</p>
+
+<p>The default value of <code>col.names</code> is <code>c("Lower", "Upper", "Cohort size")</code> and
+that of <code>caption</code> is <code>"Defined by the dose to be used in the next cohort"</code>.
+These values can be overridden by passing <code>col.names</code> and <code>caption</code> in the
+function call.</p>
+
+<p>The by default, the columns are labelled <code>Lower</code>, <code>Upper</code> and <code>Cohort size</code>.
+The table's caption is <code>Defined by the number of &lt;tox_label[2]&gt; so far observed</code>.
+These values can be overridden by passing <code>col.names</code> and <code>caption</code> in the
+function call.</p>
+
+<p><code>label</code> describes the trial's participants.</p>
+<p>It should be a character vector of length 1 or 2.  If of length 2, the first
+element describes a single participant and the second describes all other
+situations.  If of length 1, the character <code>s</code> is appended to the value
+when the number of participants is not 1.
+The default values of <code>col.names</code> and <code>caption</code> vary depending on the summary
+requested. The default values can be overridden by passing <code>col.names</code> and
+<code>caption</code> in the function call.</p>
+
+<p><code>params</code> must be a character vector of length equal to that of <code>x@mean</code> (and
+<code>x@cov</code>).  Its values represent the parameters of the model as entries in the
+vector <code>theta</code>, on the left-hand side of "~" in the definition of the prior.
+If named, names should be valid LaTeX, escaped as usual for R character variables.
+For example, <code>"\\alpha"</code> or <code>"\\beta_0"</code>.  If unnamed, names are constructed by
+pre-pending an escaped backslash to each value provided.</p>
+
+<p>The default value of <code>col.names</code> is <code>c("Min", "Max", "Increment")</code> and that
+of <code>caption</code> is <code>"Defined by highest dose administered so far"</code>.  These
+values can be overridden by passing <code>col.names</code> and <code>caption</code> in the function
+call.</p>
+
+<p>The default value of <code>col.names</code> is <code>c("Min", "Max", "Increment")</code> and that
+of <code>caption</code> is <code>"Defined by number of DLTs reported so far"</code>. These values
+can be overridden by passing <code>col.names</code> and <code>caption</code> in the function call.</p>
+
+<p><code>label</code> defines how toxicities are described.</p>
+<p>It should be a character vector of length 1 or 2.  If of length 2, the first
+element describes a single toxicity and the second describes all other
+toxicity counts.  If of length 1, the character <code>s</code> is appended to the value
+describing a single toxicity.</p>
+
+<p>The default value of <code>col.names</code> is <code>c("Min", "Max", "Increment")</code> and that
+of <code>caption</code> is <code>"Defined by number of DLTs in the current cohort"</code>. These values
+can be overridden by passing <code>col.names</code> and <code>caption</code> in the function call.</p>
+<p><code>tox_label</code> defines how toxicities are described.</p>
+<p>It should be a character vector of length 1 or 2.  If of length 2, the first
+element describes a single toxicity and the second describes all other
+toxicity counts.  If of length 1, the character <code>s</code> is appended to the value
+describing a single toxicity.</p>
+
+<p>This section describes the use of <code>label</code> and <code>tox_label</code>, collectively
+referred to as <code>label</code>s.
+A <code>label</code> should be a scalar or a vector of length 2.  If a scalar, it is
+converted by adding a second element that is equal to the first, suffixed by <code>s</code>.
+For example, <code>tox_label = "DLT"</code> becomes <code>tox_label = c("DLT", "DLTs")</code>.  The
+first element of the vector is used to describe a count of 1.  The second
+is used in all other cases.</p>
+
+<p>To use a BibTeX-style citation, specify (for example) <code>citation_text = "@MOZGUNOV", citation_link = ""</code>.</p>
+
+<p><code>label</code> should be a character vector of length 1 or 2.  If of length 2, the first
+element describes a count of 1 and the second describes all other counts.
+If of length 1, the character <code>s</code> is appended to the value when the count is not 1.</p>
+
+<p><code>label</code> and <code>time_unit</code> are, collectively, labels.</p>
+<p>A label should be a character vector of length 1 or 2.  If of length 2, the first
+element describes a count of 1 and the second describes all other counts.
+If of length 1, the character <code>s</code> is appended to the value when the count is not 1.</p>
+
+<p><code>label</code> describes the trial's participants.</p>
+<p>It should be a character vector of length 1 or 2.  If of length 2, the first
+element describes a <code>cohort_size</code> of 1 and the second describes all other
+<code>cohort_size</code>s.  If of length 1, the character <code>s</code> is appended to the value
+when <code>cohort_size</code> is not 1.</p>
+
+<p>The default value of <code>col.names</code> is <code>c("Lower", "Upper", "Cohort size")</code> and
+that of <code>caption</code> is <code>"Defined by the dose to be used in the next cohort"</code>.
+These values can be overridden by passing <code>col.names</code> and <code>caption</code> in the
+function call.</p>
+
+<p>The by default, the columns are labelled <code>Lower</code>, <code>Upper</code> and <code>Cohort size</code>.
+The table's caption is <code>Defined by the number of &lt;tox_label[2]&gt; so far observed</code>.
+These values can be overridden by passing <code>col.names</code> and <code>caption</code> in the
+function call.</p>
+
+<p><code>label</code> describes the trial's participants.</p>
+<p>It should be a character vector of length 1 or 2.  If of length 2, the first
+element describes a single participant and the second describes all other
+situations.  If of length 1, the character <code>s</code> is appended to the value
+when the number of participants is not 1.
+The default values of <code>col.names</code> and <code>caption</code> vary depending on the summary
+requested. The default values can be overridden by passing <code>col.names</code> and
+<code>caption</code> in the function call.</p>
+
+<p><code>params</code> must be a character vector of length equal to that of <code>x@mean</code> (and
+<code>x@cov</code>).  Its values represent the parameters of the model as entries in the
+vector <code>theta</code>, on the left-hand side of "~" in the definition of the prior.
+If named, names should be valid LaTeX, escaped as usual for R character variables.
+For example, <code>"\\alpha"</code> or <code>"\\beta_0"</code>.  If unnamed, names are constructed by
+pre-pending an escaped backslash to each value provided.</p>
+
+<p>The default value of <code>col.names</code> is <code>c("Min", "Max", "Increment")</code> and that
+of <code>caption</code> is <code>"Defined by highest dose administered so far"</code>.  These
+values can be overridden by passing <code>col.names</code> and <code>caption</code> in the function
+call.</p>
+
+<p>The default value of <code>col.names</code> is <code>c("Min", "Max", "Increment")</code> and that
+of <code>caption</code> is <code>"Defined by number of DLTs reported so far"</code>. These values
+can be overridden by passing <code>col.names</code> and <code>caption</code> in the function call.</p>
+
+<p><code>label</code> defines how toxicities are described.</p>
+<p>It should be a character vector of length 1 or 2.  If of length 2, the first
+element describes a single toxicity and the second describes all other
+toxicity counts.  If of length 1, the character <code>s</code> is appended to the value
+describing a single toxicity.</p>
+
+<p>The default value of <code>col.names</code> is <code>c("Min", "Max", "Increment")</code> and that
+of <code>caption</code> is <code>"Defined by number of DLTs in the current cohort"</code>. These values
+can be overridden by passing <code>col.names</code> and <code>caption</code> in the function call.</p>
+<p><code>tox_label</code> defines how toxicities are described.</p>
+<p>It should be a character vector of length 1 or 2.  If of length 2, the first
+element describes a single toxicity and the second describes all other
+toxicity counts.  If of length 1, the character <code>s</code> is appended to the value
+describing a single toxicity.</p>
+
+<p>This section describes the use of <code>label</code> and <code>tox_label</code>, collectively
+referred to as <code>label</code>s.
+A <code>label</code> should be a scalar or a vector of length 2.  If a scalar, it is
+converted by adding a second element that is equal to the first, suffixed by <code>s</code>.
+For example, <code>tox_label = "DLT"</code> becomes <code>tox_label = c("DLT", "DLTs")</code>.  The
+first element of the vector is used to describe a count of 1.  The second
+is used in all other cases.</p>
+
+<p>To use a BibTeX-style citation, specify (for example) <code>citation_text = "@MOZGUNOV", citation_link = ""</code>.</p>
+
+<p><code>label</code> should be a character vector of length 1 or 2.  If of length 2, the first
+element describes a count of 1 and the second describes all other counts.
+If of length 1, the character <code>s</code> is appended to the value when the count is not 1.</p>
+
+<p><code>label</code> and <code>time_unit</code> are, collectively, labels.</p>
+<p>A label should be a character vector of length 1 or 2.  If of length 2, the first
+element describes a count of 1 and the second describes all other counts.
+If of length 1, the character <code>s</code> is appended to the value when the count is not 1.</p>
     </div>
     <div class="section level2">
     <h2 id="see-also">See also<a class="anchor" aria-label="anchor" href="#see-also"></a>
@@ -1180,7 +1398,7 @@ If of length 1, the character <code>s</code> is appended to the value when the c
 
 
     <footer><div class="pkgdown-footer-left">
-  <p>Developed by Daniel Sabanes Bove, Wai Yin Yeung, Burak Kuersad Guenhan, Giuseppe Palermo, Thomas Jaki, Jiawen Zhu, Ziwei Liao, Dimitris Kontos, Marlene Schulte-Goebel, Doug Kelkhoff, Oliver Boix, Robert Adams, Clara Beck, John Kirkpatrick, Wojciech Wójciak, Guanya Peng, Prerana Chandratre, F. Hoffmann-La Roche AG, Merck Healthcare KGaA, Bayer AG, RPACT GmbH.</p>
+  <p>Developed by Daniel Sabanés Bové, Wai Yin Yeung, Burak Kuersad Guenhan, Giuseppe Palermo, Thomas Jaki, Jiawen Zhu, Ziwei Liao, Dimitris Kontos, Marlene Schulte-Goebel, Doug Kelkhoff, Oliver Boix, Robert Adams, Clara Beck, John Kirkpatrick, Wojciech Wójciak, Guanya Peng, Prerana Chandratre, F. Hoffmann-La Roche AG, Merck Healthcare KGaA, Bayer AG, RPACT GmbH.</p>
 </div>
 
 <div class="pkgdown-footer-right">

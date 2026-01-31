@@ -140,18 +140,18 @@ tidySamples <- samples %>% tidy()
 tidySamples %>% head()
 #> $data
 #> # A tibble: 2,000 × 10
-#>    Iteration Chain alpha0 alpha1 nChains nParameters nIterations nBurnin nThin
-#>        <int> <int>  <dbl>  <dbl>   <int>       <int>       <int>   <int> <int>
-#>  1         1     1  0.842   1.30       1           1        2100     100     1
-#>  2         2     1 -0.836   6.32       1           1        2100     100     1
-#>  3         3     1 -0.716   4.55       1           1        2100     100     1
-#>  4         4     1 -0.820   6.89       1           1        2100     100     1
-#>  5         5     1 -1.91    9.51       1           1        2100     100     1
-#>  6         6     1 -1.12    4.10       1           1        2100     100     1
-#>  7         7     1 -1.91    6.39       1           1        2100     100     1
-#>  8         8     1 -1.74    3.60       1           1        2100     100     1
-#>  9         9     1 -2.77   15.5        1           1        2100     100     1
-#> 10        10     1 -1.56    6.23       1           1        2100     100     1
+#>    Iteration Chain  alpha0 alpha1 nChains nParameters nIterations nBurnin nThin
+#>        <int> <int>   <dbl>  <dbl>   <int>       <int>       <int>   <int> <int>
+#>  1         1     1 -2.36    18.3        1           1        2100     100     1
+#>  2         2     1 -0.0155   9.08       1           1        2100     100     1
+#>  3         3     1 -0.221    7.51       1           1        2100     100     1
+#>  4         4     1 -0.413    6.61       1           1        2100     100     1
+#>  5         5     1 -1.12     4.48       1           1        2100     100     1
+#>  6         6     1 -0.188    7.99       1           1        2100     100     1
+#>  7         7     1  0.0359   1.48       1           1        2100     100     1
+#>  8         8     1 -0.890    4.35       1           1        2100     100     1
+#>  9         9     1 -2.18     8.13       1           1        2100     100     1
+#> 10        10     1 -1.21     6.41       1           1        2100     100     1
 #> # ℹ 1,990 more rows
 #> # ℹ 1 more variable: parallel <lgl>
 #> 
@@ -276,29 +276,29 @@ sessionInfo()
 #> 
 #> other attached packages:
 #> [1] dplyr_1.1.4      magrittr_2.0.4   tidyr_1.3.2      kableExtra_1.4.0
-#> [5] knitr_1.51       crmPack_2.0.2    ggplot2_4.0.1   
+#> [5] knitr_1.51       crmPack_2.1.0    ggplot2_4.0.1   
 #> 
 #> loaded via a namespace (and not attached):
 #>  [1] utf8_1.2.6           sass_0.4.10          generics_0.1.4      
-#>  [4] xml2_1.5.1           futile.options_1.0.1 lattice_0.22-7      
+#>  [4] xml2_1.5.2           futile.options_1.0.1 lattice_0.22-7      
 #>  [7] stringi_1.8.7        digest_0.6.39        evaluate_1.0.5      
 #> [10] grid_4.5.2           RColorBrewer_1.1-3   mvtnorm_1.3-3       
 #> [13] fastmap_1.2.0        jsonlite_2.0.0       backports_1.5.0     
-#> [16] formatR_1.14         gridExtra_2.3        purrr_1.2.0         
+#> [16] formatR_1.14         gridExtra_2.3        purrr_1.2.1         
 #> [19] viridisLite_0.4.2    scales_1.4.0         textshaping_1.0.4   
 #> [22] jquerylib_0.1.4      Rdpack_2.6.4         cli_3.6.5           
-#> [25] rlang_1.1.6          rbibutils_2.4        futile.logger_1.4.9 
+#> [25] rlang_1.1.7          rbibutils_2.4        futile.logger_1.4.9 
 #> [28] parallelly_1.46.1    withr_3.0.2          cachem_1.1.0        
 #> [31] yaml_2.3.12          otel_0.2.0           parallel_4.5.2      
 #> [34] tools_4.5.2          coda_0.19-4.1        checkmate_2.3.3     
-#> [37] lambda.r_1.2.4       vctrs_0.6.5          R6_2.6.1            
+#> [37] lambda.r_1.2.4       vctrs_0.7.0          R6_2.6.1            
 #> [40] lifecycle_1.0.5      stringr_1.6.0        GenSA_1.1.15        
 #> [43] fs_1.6.6             htmlwidgets_1.6.4    ragg_1.5.0          
 #> [46] rjags_4-17           pkgconfig_2.0.3      desc_1.4.3          
 #> [49] pkgdown_2.2.0        pillar_1.11.1        bslib_0.9.0         
 #> [52] gtable_0.3.6         glue_1.8.0           systemfonts_1.3.1   
-#> [55] xfun_0.55            tibble_3.3.0         tidyselect_1.2.1    
-#> [58] rstudioapi_0.17.1    dichromat_2.0-0.1    farver_2.1.2        
+#> [55] xfun_0.56            tibble_3.3.1         tidyselect_1.2.1    
+#> [58] rstudioapi_0.18.0    dichromat_2.0-0.1    farver_2.1.2        
 #> [61] htmltools_0.5.9      labeling_0.4.3       svglite_2.2.2       
 #> [64] rmarkdown_2.30       compiler_4.5.2       S7_0.2.1
 ```

@@ -18,6 +18,12 @@ object.
 **\[experimental\]**
 
 A method that tidies a
+[`Data`](https://openpharma.github.io/crmPack/reference/Data-class.md)
+object.
+
+**\[experimental\]**
+
+A method that tidies a
 [`DataGrouped`](https://openpharma.github.io/crmPack/reference/DataGrouped-class.md)
 object.
 
@@ -72,6 +78,9 @@ tidy(x, ...)
 tidy(x, ...)
 
 # S4 method for class 'GeneralData'
+tidy(x, ...)
+
+# S4 method for class 'Data'
 tidy(x, ...)
 
 # S4 method for class 'DataGrouped'
@@ -190,6 +199,10 @@ The
 [`tibble::tibble`](https://tibble.tidyverse.org/reference/tibble.html)
 object.
 
+The
+[`tibble::tibble`](https://tibble.tidyverse.org/reference/tibble.html)
+object.
+
 The [`list`](https://rdrr.io/r/base/list.html) of
 [`tibble::tibble`](https://tibble.tidyverse.org/reference/tibble.html)
 objects.
@@ -212,6 +225,13 @@ CohortSizeConst(3) %>% tidy()
 #>   <int>
 #> 1     3
 .DefaultData() %>% tidy()
+#> # A tibble: 3 × 11
+#>      ID Cohort  Dose XLevel Tox   Placebo  NObs NGrid DoseGrid   Response
+#>   <int>  <int> <dbl>  <int> <lgl> <lgl>   <int> <int> <list>        <int>
+#> 1     1      1     1      1 FALSE FALSE       3    11 <dbl [11]>       NA
+#> 2     2      2     3      2 FALSE FALSE       3    11 <dbl [11]>       NA
+#> 3     3      3     5      3 FALSE FALSE       3    11 <dbl [11]>       NA
+#> # ℹ 1 more variable: Backfilled <lgl>
 .DefaultDataOrdinal() %>% tidy()
 #> # A tibble: 10 × 11
 #>       ID Cohort  Dose Placebo  NObs NGrid DoseGrid   XLevel Cat0  Cat1  Cat2 
@@ -227,25 +247,62 @@ CohortSizeConst(3) %>% tidy()
 #>  9     9      6    60 FALSE      10    10 <dbl [10]>      6 FALSE TRUE  FALSE
 #> 10    10      6    60 FALSE      10    10 <dbl [10]>      6 FALSE FALSE TRUE 
 .DefaultDataGrouped() %>% tidy()
-#> # A tibble: 3 × 10
-#>      ID Cohort  Dose XLevel Tox   Placebo  NObs NGrid DoseGrid   Group
-#>   <int>  <int> <dbl>  <int> <lgl> <lgl>   <int> <int> <list>     <fct>
-#> 1     1      1     1      1 FALSE FALSE       3    11 <dbl [11]> mono 
-#> 2     2      2     3      2 FALSE FALSE       3    11 <dbl [11]> mono 
-#> 3     3      3     5      3 FALSE FALSE       3    11 <dbl [11]> combo
+#> # A tibble: 3 × 12
+#>      ID Cohort  Dose XLevel Tox   Placebo  NObs NGrid DoseGrid   Response
+#>   <int>  <int> <dbl>  <int> <lgl> <lgl>   <int> <int> <list>        <int>
+#> 1     1      1     1      1 FALSE FALSE       3    11 <dbl [11]>       NA
+#> 2     2      2     3      2 FALSE FALSE       3    11 <dbl [11]>       NA
+#> 3     3      3     5      3 FALSE FALSE       3    11 <dbl [11]>       NA
+#> # ℹ 2 more variables: Backfilled <lgl>, Group <fct>
 .DefaultDataDA() %>% tidy()
-#> # A tibble: 8 × 12
-#>      ID Cohort  Dose XLevel Tox   Placebo  NObs NGrid DoseGrid     U    T0  TMax
-#>   <int>  <int> <dbl>  <int> <lgl> <lgl>   <int> <int> <list>   <dbl> <dbl> <dbl>
-#> 1     1      1   0.1      1 FALSE FALSE       8    41 <dbl>       42     0    60
-#> 2     2      2   0.5      2 FALSE FALSE       8    41 <dbl>       30    15    60
-#> 3     3      3   1.5      3 TRUE  FALSE       8    41 <dbl>       15    30    60
-#> 4     4      4   3        4 TRUE  FALSE       8    41 <dbl>        5    40    60
-#> 5     5      5   6        5 FALSE FALSE       8    41 <dbl>       20    55    60
-#> 6     6      6  10        6 FALSE FALSE       8    41 <dbl>       25    70    60
-#> 7     7      6  10        6 TRUE  FALSE       8    41 <dbl>       30    75    60
-#> 8     8      6  10        6 FALSE FALSE       8    41 <dbl>       60    85    60
+#> # A tibble: 8 × 14
+#>      ID Cohort  Dose XLevel Tox   Placebo  NObs NGrid DoseGrid   Response
+#>   <int>  <int> <dbl>  <int> <lgl> <lgl>   <int> <int> <list>        <int>
+#> 1     1      1   0.1      1 FALSE FALSE       8    41 <dbl [41]>       NA
+#> 2     2      2   0.5      2 FALSE FALSE       8    41 <dbl [41]>       NA
+#> 3     3      3   1.5      3 TRUE  FALSE       8    41 <dbl [41]>       NA
+#> 4     4      4   3        4 TRUE  FALSE       8    41 <dbl [41]>       NA
+#> 5     5      5   6        5 FALSE FALSE       8    41 <dbl [41]>       NA
+#> 6     6      6  10        6 FALSE FALSE       8    41 <dbl [41]>       NA
+#> 7     7      6  10        6 TRUE  FALSE       8    41 <dbl [41]>       NA
+#> 8     8      6  10        6 FALSE FALSE       8    41 <dbl [41]>       NA
+#> # ℹ 4 more variables: Backfilled <lgl>, U <dbl>, T0 <dbl>, TMax <dbl>
+# Create a sample Data object
+sample_data <- Data(
+  x = c(0.1, 0.5, 1.5, 3, 6, 10, 10, 10),
+  y = c(0, 0, 0, 0, 0, 0, 1, 0),
+  cohort = c(1, 2, 3, 4, 5, 6, 6, 6),
+  doseGrid = c(0.1, 0.5, 1.5, 3, 6, seq(from = 10, to = 80, by = 2)),
+  response = c(0, 0, 0, 0, 0, 1, NA, NA),
+  backfilled = c(FALSE, FALSE, FALSE, FALSE, FALSE, FALSE, TRUE, TRUE)
+)
+#> Used default patient IDs!
+
+# Tidy the Data object
+tidied_data <- tidy(sample_data)
+
+# Print the tidied data
+print(tidied_data)
+#> # A tibble: 8 × 11
+#>      ID Cohort  Dose XLevel Tox   Placebo  NObs NGrid DoseGrid   Response
+#>   <int>  <int> <dbl>  <int> <lgl> <lgl>   <int> <int> <list>        <int>
+#> 1     1      1   0.1      1 FALSE FALSE       8    41 <dbl [41]>        0
+#> 2     2      2   0.5      2 FALSE FALSE       8    41 <dbl [41]>        0
+#> 3     3      3   1.5      3 FALSE FALSE       8    41 <dbl [41]>        0
+#> 4     4      4   3        4 FALSE FALSE       8    41 <dbl [41]>        0
+#> 5     5      5   6        5 FALSE FALSE       8    41 <dbl [41]>        0
+#> 6     6      6  10        6 FALSE FALSE       8    41 <dbl [41]>        1
+#> 7     7      6  10        6 TRUE  FALSE       8    41 <dbl [41]>       NA
+#> 8     8      6  10        6 FALSE FALSE       8    41 <dbl [41]>       NA
+#> # ℹ 1 more variable: Backfilled <lgl>
 .DefaultData() %>% tidy()
+#> # A tibble: 3 × 11
+#>      ID Cohort  Dose XLevel Tox   Placebo  NObs NGrid DoseGrid   Response
+#>   <int>  <int> <dbl>  <int> <lgl> <lgl>   <int> <int> <list>        <int>
+#> 1     1      1     1      1 FALSE FALSE       3    11 <dbl [11]>       NA
+#> 2     2      2     3      2 FALSE FALSE       3    11 <dbl [11]>       NA
+#> 3     3      3     5      3 FALSE FALSE       3    11 <dbl [11]>       NA
+#> # ℹ 1 more variable: Backfilled <lgl>
 .DefaultDataOrdinal() %>% tidy()
 #> # A tibble: 10 × 11
 #>       ID Cohort  Dose Placebo  NObs NGrid DoseGrid   XLevel Cat0  Cat1  Cat2 
@@ -261,25 +318,34 @@ CohortSizeConst(3) %>% tidy()
 #>  9     9      6    60 FALSE      10    10 <dbl [10]>      6 FALSE TRUE  FALSE
 #> 10    10      6    60 FALSE      10    10 <dbl [10]>      6 FALSE FALSE TRUE 
 .DefaultDataGrouped() %>% tidy()
-#> # A tibble: 3 × 10
-#>      ID Cohort  Dose XLevel Tox   Placebo  NObs NGrid DoseGrid   Group
-#>   <int>  <int> <dbl>  <int> <lgl> <lgl>   <int> <int> <list>     <fct>
-#> 1     1      1     1      1 FALSE FALSE       3    11 <dbl [11]> mono 
-#> 2     2      2     3      2 FALSE FALSE       3    11 <dbl [11]> mono 
-#> 3     3      3     5      3 FALSE FALSE       3    11 <dbl [11]> combo
+#> # A tibble: 3 × 12
+#>      ID Cohort  Dose XLevel Tox   Placebo  NObs NGrid DoseGrid   Response
+#>   <int>  <int> <dbl>  <int> <lgl> <lgl>   <int> <int> <list>        <int>
+#> 1     1      1     1      1 FALSE FALSE       3    11 <dbl [11]>       NA
+#> 2     2      2     3      2 FALSE FALSE       3    11 <dbl [11]>       NA
+#> 3     3      3     5      3 FALSE FALSE       3    11 <dbl [11]>       NA
+#> # ℹ 2 more variables: Backfilled <lgl>, Group <fct>
 .DefaultDataDA() %>% tidy()
-#> # A tibble: 8 × 12
-#>      ID Cohort  Dose XLevel Tox   Placebo  NObs NGrid DoseGrid     U    T0  TMax
-#>   <int>  <int> <dbl>  <int> <lgl> <lgl>   <int> <int> <list>   <dbl> <dbl> <dbl>
-#> 1     1      1   0.1      1 FALSE FALSE       8    41 <dbl>       42     0    60
-#> 2     2      2   0.5      2 FALSE FALSE       8    41 <dbl>       30    15    60
-#> 3     3      3   1.5      3 TRUE  FALSE       8    41 <dbl>       15    30    60
-#> 4     4      4   3        4 TRUE  FALSE       8    41 <dbl>        5    40    60
-#> 5     5      5   6        5 FALSE FALSE       8    41 <dbl>       20    55    60
-#> 6     6      6  10        6 FALSE FALSE       8    41 <dbl>       25    70    60
-#> 7     7      6  10        6 TRUE  FALSE       8    41 <dbl>       30    75    60
-#> 8     8      6  10        6 FALSE FALSE       8    41 <dbl>       60    85    60
+#> # A tibble: 8 × 14
+#>      ID Cohort  Dose XLevel Tox   Placebo  NObs NGrid DoseGrid   Response
+#>   <int>  <int> <dbl>  <int> <lgl> <lgl>   <int> <int> <list>        <int>
+#> 1     1      1   0.1      1 FALSE FALSE       8    41 <dbl [41]>       NA
+#> 2     2      2   0.5      2 FALSE FALSE       8    41 <dbl [41]>       NA
+#> 3     3      3   1.5      3 TRUE  FALSE       8    41 <dbl [41]>       NA
+#> 4     4      4   3        4 TRUE  FALSE       8    41 <dbl [41]>       NA
+#> 5     5      5   6        5 FALSE FALSE       8    41 <dbl [41]>       NA
+#> 6     6      6  10        6 FALSE FALSE       8    41 <dbl [41]>       NA
+#> 7     7      6  10        6 TRUE  FALSE       8    41 <dbl [41]>       NA
+#> 8     8      6  10        6 FALSE FALSE       8    41 <dbl [41]>       NA
+#> # ℹ 4 more variables: Backfilled <lgl>, U <dbl>, T0 <dbl>, TMax <dbl>
 .DefaultData() %>% tidy()
+#> # A tibble: 3 × 11
+#>      ID Cohort  Dose XLevel Tox   Placebo  NObs NGrid DoseGrid   Response
+#>   <int>  <int> <dbl>  <int> <lgl> <lgl>   <int> <int> <list>        <int>
+#> 1     1      1     1      1 FALSE FALSE       3    11 <dbl [11]>       NA
+#> 2     2      2     3      2 FALSE FALSE       3    11 <dbl [11]>       NA
+#> 3     3      3     5      3 FALSE FALSE       3    11 <dbl [11]>       NA
+#> # ℹ 1 more variable: Backfilled <lgl>
 .DefaultDataOrdinal() %>% tidy()
 #> # A tibble: 10 × 11
 #>       ID Cohort  Dose Placebo  NObs NGrid DoseGrid   XLevel Cat0  Cat1  Cat2 
@@ -295,25 +361,34 @@ CohortSizeConst(3) %>% tidy()
 #>  9     9      6    60 FALSE      10    10 <dbl [10]>      6 FALSE TRUE  FALSE
 #> 10    10      6    60 FALSE      10    10 <dbl [10]>      6 FALSE FALSE TRUE 
 .DefaultDataGrouped() %>% tidy()
-#> # A tibble: 3 × 10
-#>      ID Cohort  Dose XLevel Tox   Placebo  NObs NGrid DoseGrid   Group
-#>   <int>  <int> <dbl>  <int> <lgl> <lgl>   <int> <int> <list>     <fct>
-#> 1     1      1     1      1 FALSE FALSE       3    11 <dbl [11]> mono 
-#> 2     2      2     3      2 FALSE FALSE       3    11 <dbl [11]> mono 
-#> 3     3      3     5      3 FALSE FALSE       3    11 <dbl [11]> combo
+#> # A tibble: 3 × 12
+#>      ID Cohort  Dose XLevel Tox   Placebo  NObs NGrid DoseGrid   Response
+#>   <int>  <int> <dbl>  <int> <lgl> <lgl>   <int> <int> <list>        <int>
+#> 1     1      1     1      1 FALSE FALSE       3    11 <dbl [11]>       NA
+#> 2     2      2     3      2 FALSE FALSE       3    11 <dbl [11]>       NA
+#> 3     3      3     5      3 FALSE FALSE       3    11 <dbl [11]>       NA
+#> # ℹ 2 more variables: Backfilled <lgl>, Group <fct>
 .DefaultDataDA() %>% tidy()
-#> # A tibble: 8 × 12
-#>      ID Cohort  Dose XLevel Tox   Placebo  NObs NGrid DoseGrid     U    T0  TMax
-#>   <int>  <int> <dbl>  <int> <lgl> <lgl>   <int> <int> <list>   <dbl> <dbl> <dbl>
-#> 1     1      1   0.1      1 FALSE FALSE       8    41 <dbl>       42     0    60
-#> 2     2      2   0.5      2 FALSE FALSE       8    41 <dbl>       30    15    60
-#> 3     3      3   1.5      3 TRUE  FALSE       8    41 <dbl>       15    30    60
-#> 4     4      4   3        4 TRUE  FALSE       8    41 <dbl>        5    40    60
-#> 5     5      5   6        5 FALSE FALSE       8    41 <dbl>       20    55    60
-#> 6     6      6  10        6 FALSE FALSE       8    41 <dbl>       25    70    60
-#> 7     7      6  10        6 TRUE  FALSE       8    41 <dbl>       30    75    60
-#> 8     8      6  10        6 FALSE FALSE       8    41 <dbl>       60    85    60
+#> # A tibble: 8 × 14
+#>      ID Cohort  Dose XLevel Tox   Placebo  NObs NGrid DoseGrid   Response
+#>   <int>  <int> <dbl>  <int> <lgl> <lgl>   <int> <int> <list>        <int>
+#> 1     1      1   0.1      1 FALSE FALSE       8    41 <dbl [41]>       NA
+#> 2     2      2   0.5      2 FALSE FALSE       8    41 <dbl [41]>       NA
+#> 3     3      3   1.5      3 TRUE  FALSE       8    41 <dbl [41]>       NA
+#> 4     4      4   3        4 TRUE  FALSE       8    41 <dbl [41]>       NA
+#> 5     5      5   6        5 FALSE FALSE       8    41 <dbl [41]>       NA
+#> 6     6      6  10        6 FALSE FALSE       8    41 <dbl [41]>       NA
+#> 7     7      6  10        6 TRUE  FALSE       8    41 <dbl [41]>       NA
+#> 8     8      6  10        6 FALSE FALSE       8    41 <dbl [41]>       NA
+#> # ℹ 4 more variables: Backfilled <lgl>, U <dbl>, T0 <dbl>, TMax <dbl>
 .DefaultData() %>% tidy()
+#> # A tibble: 3 × 11
+#>      ID Cohort  Dose XLevel Tox   Placebo  NObs NGrid DoseGrid   Response
+#>   <int>  <int> <dbl>  <int> <lgl> <lgl>   <int> <int> <list>        <int>
+#> 1     1      1     1      1 FALSE FALSE       3    11 <dbl [11]>       NA
+#> 2     2      2     3      2 FALSE FALSE       3    11 <dbl [11]>       NA
+#> 3     3      3     5      3 FALSE FALSE       3    11 <dbl [11]>       NA
+#> # ℹ 1 more variable: Backfilled <lgl>
 .DefaultDataOrdinal() %>% tidy()
 #> # A tibble: 10 × 11
 #>       ID Cohort  Dose Placebo  NObs NGrid DoseGrid   XLevel Cat0  Cat1  Cat2 
@@ -329,25 +404,34 @@ CohortSizeConst(3) %>% tidy()
 #>  9     9      6    60 FALSE      10    10 <dbl [10]>      6 FALSE TRUE  FALSE
 #> 10    10      6    60 FALSE      10    10 <dbl [10]>      6 FALSE FALSE TRUE 
 .DefaultDataGrouped() %>% tidy()
-#> # A tibble: 3 × 10
-#>      ID Cohort  Dose XLevel Tox   Placebo  NObs NGrid DoseGrid   Group
-#>   <int>  <int> <dbl>  <int> <lgl> <lgl>   <int> <int> <list>     <fct>
-#> 1     1      1     1      1 FALSE FALSE       3    11 <dbl [11]> mono 
-#> 2     2      2     3      2 FALSE FALSE       3    11 <dbl [11]> mono 
-#> 3     3      3     5      3 FALSE FALSE       3    11 <dbl [11]> combo
+#> # A tibble: 3 × 12
+#>      ID Cohort  Dose XLevel Tox   Placebo  NObs NGrid DoseGrid   Response
+#>   <int>  <int> <dbl>  <int> <lgl> <lgl>   <int> <int> <list>        <int>
+#> 1     1      1     1      1 FALSE FALSE       3    11 <dbl [11]>       NA
+#> 2     2      2     3      2 FALSE FALSE       3    11 <dbl [11]>       NA
+#> 3     3      3     5      3 FALSE FALSE       3    11 <dbl [11]>       NA
+#> # ℹ 2 more variables: Backfilled <lgl>, Group <fct>
 .DefaultDataDA() %>% tidy()
-#> # A tibble: 8 × 12
-#>      ID Cohort  Dose XLevel Tox   Placebo  NObs NGrid DoseGrid     U    T0  TMax
-#>   <int>  <int> <dbl>  <int> <lgl> <lgl>   <int> <int> <list>   <dbl> <dbl> <dbl>
-#> 1     1      1   0.1      1 FALSE FALSE       8    41 <dbl>       42     0    60
-#> 2     2      2   0.5      2 FALSE FALSE       8    41 <dbl>       30    15    60
-#> 3     3      3   1.5      3 TRUE  FALSE       8    41 <dbl>       15    30    60
-#> 4     4      4   3        4 TRUE  FALSE       8    41 <dbl>        5    40    60
-#> 5     5      5   6        5 FALSE FALSE       8    41 <dbl>       20    55    60
-#> 6     6      6  10        6 FALSE FALSE       8    41 <dbl>       25    70    60
-#> 7     7      6  10        6 TRUE  FALSE       8    41 <dbl>       30    75    60
-#> 8     8      6  10        6 FALSE FALSE       8    41 <dbl>       60    85    60
+#> # A tibble: 8 × 14
+#>      ID Cohort  Dose XLevel Tox   Placebo  NObs NGrid DoseGrid   Response
+#>   <int>  <int> <dbl>  <int> <lgl> <lgl>   <int> <int> <list>        <int>
+#> 1     1      1   0.1      1 FALSE FALSE       8    41 <dbl [41]>       NA
+#> 2     2      2   0.5      2 FALSE FALSE       8    41 <dbl [41]>       NA
+#> 3     3      3   1.5      3 TRUE  FALSE       8    41 <dbl [41]>       NA
+#> 4     4      4   3        4 TRUE  FALSE       8    41 <dbl [41]>       NA
+#> 5     5      5   6        5 FALSE FALSE       8    41 <dbl [41]>       NA
+#> 6     6      6  10        6 FALSE FALSE       8    41 <dbl [41]>       NA
+#> 7     7      6  10        6 TRUE  FALSE       8    41 <dbl [41]>       NA
+#> 8     8      6  10        6 FALSE FALSE       8    41 <dbl [41]>       NA
+#> # ℹ 4 more variables: Backfilled <lgl>, U <dbl>, T0 <dbl>, TMax <dbl>
 .DefaultData() %>% tidy()
+#> # A tibble: 3 × 11
+#>      ID Cohort  Dose XLevel Tox   Placebo  NObs NGrid DoseGrid   Response
+#>   <int>  <int> <dbl>  <int> <lgl> <lgl>   <int> <int> <list>        <int>
+#> 1     1      1     1      1 FALSE FALSE       3    11 <dbl [11]>       NA
+#> 2     2      2     3      2 FALSE FALSE       3    11 <dbl [11]>       NA
+#> 3     3      3     5      3 FALSE FALSE       3    11 <dbl [11]>       NA
+#> # ℹ 1 more variable: Backfilled <lgl>
 .DefaultDataOrdinal() %>% tidy()
 #> # A tibble: 10 × 11
 #>       ID Cohort  Dose Placebo  NObs NGrid DoseGrid   XLevel Cat0  Cat1  Cat2 
@@ -363,25 +447,34 @@ CohortSizeConst(3) %>% tidy()
 #>  9     9      6    60 FALSE      10    10 <dbl [10]>      6 FALSE TRUE  FALSE
 #> 10    10      6    60 FALSE      10    10 <dbl [10]>      6 FALSE FALSE TRUE 
 .DefaultDataGrouped() %>% tidy()
-#> # A tibble: 3 × 10
-#>      ID Cohort  Dose XLevel Tox   Placebo  NObs NGrid DoseGrid   Group
-#>   <int>  <int> <dbl>  <int> <lgl> <lgl>   <int> <int> <list>     <fct>
-#> 1     1      1     1      1 FALSE FALSE       3    11 <dbl [11]> mono 
-#> 2     2      2     3      2 FALSE FALSE       3    11 <dbl [11]> mono 
-#> 3     3      3     5      3 FALSE FALSE       3    11 <dbl [11]> combo
+#> # A tibble: 3 × 12
+#>      ID Cohort  Dose XLevel Tox   Placebo  NObs NGrid DoseGrid   Response
+#>   <int>  <int> <dbl>  <int> <lgl> <lgl>   <int> <int> <list>        <int>
+#> 1     1      1     1      1 FALSE FALSE       3    11 <dbl [11]>       NA
+#> 2     2      2     3      2 FALSE FALSE       3    11 <dbl [11]>       NA
+#> 3     3      3     5      3 FALSE FALSE       3    11 <dbl [11]>       NA
+#> # ℹ 2 more variables: Backfilled <lgl>, Group <fct>
 .DefaultDataDA() %>% tidy()
-#> # A tibble: 8 × 12
-#>      ID Cohort  Dose XLevel Tox   Placebo  NObs NGrid DoseGrid     U    T0  TMax
-#>   <int>  <int> <dbl>  <int> <lgl> <lgl>   <int> <int> <list>   <dbl> <dbl> <dbl>
-#> 1     1      1   0.1      1 FALSE FALSE       8    41 <dbl>       42     0    60
-#> 2     2      2   0.5      2 FALSE FALSE       8    41 <dbl>       30    15    60
-#> 3     3      3   1.5      3 TRUE  FALSE       8    41 <dbl>       15    30    60
-#> 4     4      4   3        4 TRUE  FALSE       8    41 <dbl>        5    40    60
-#> 5     5      5   6        5 FALSE FALSE       8    41 <dbl>       20    55    60
-#> 6     6      6  10        6 FALSE FALSE       8    41 <dbl>       25    70    60
-#> 7     7      6  10        6 TRUE  FALSE       8    41 <dbl>       30    75    60
-#> 8     8      6  10        6 FALSE FALSE       8    41 <dbl>       60    85    60
+#> # A tibble: 8 × 14
+#>      ID Cohort  Dose XLevel Tox   Placebo  NObs NGrid DoseGrid   Response
+#>   <int>  <int> <dbl>  <int> <lgl> <lgl>   <int> <int> <list>        <int>
+#> 1     1      1   0.1      1 FALSE FALSE       8    41 <dbl [41]>       NA
+#> 2     2      2   0.5      2 FALSE FALSE       8    41 <dbl [41]>       NA
+#> 3     3      3   1.5      3 TRUE  FALSE       8    41 <dbl [41]>       NA
+#> 4     4      4   3        4 TRUE  FALSE       8    41 <dbl [41]>       NA
+#> 5     5      5   6        5 FALSE FALSE       8    41 <dbl [41]>       NA
+#> 6     6      6  10        6 FALSE FALSE       8    41 <dbl [41]>       NA
+#> 7     7      6  10        6 TRUE  FALSE       8    41 <dbl [41]>       NA
+#> 8     8      6  10        6 FALSE FALSE       8    41 <dbl [41]>       NA
+#> # ℹ 4 more variables: Backfilled <lgl>, U <dbl>, T0 <dbl>, TMax <dbl>
 .DefaultData() %>% tidy()
+#> # A tibble: 3 × 11
+#>      ID Cohort  Dose XLevel Tox   Placebo  NObs NGrid DoseGrid   Response
+#>   <int>  <int> <dbl>  <int> <lgl> <lgl>   <int> <int> <list>        <int>
+#> 1     1      1     1      1 FALSE FALSE       3    11 <dbl [11]>       NA
+#> 2     2      2     3      2 FALSE FALSE       3    11 <dbl [11]>       NA
+#> 3     3      3     5      3 FALSE FALSE       3    11 <dbl [11]>       NA
+#> # ℹ 1 more variable: Backfilled <lgl>
 .DefaultDataOrdinal() %>% tidy()
 #> # A tibble: 10 × 11
 #>       ID Cohort  Dose Placebo  NObs NGrid DoseGrid   XLevel Cat0  Cat1  Cat2 
@@ -397,25 +490,34 @@ CohortSizeConst(3) %>% tidy()
 #>  9     9      6    60 FALSE      10    10 <dbl [10]>      6 FALSE TRUE  FALSE
 #> 10    10      6    60 FALSE      10    10 <dbl [10]>      6 FALSE FALSE TRUE 
 .DefaultDataGrouped() %>% tidy()
-#> # A tibble: 3 × 10
-#>      ID Cohort  Dose XLevel Tox   Placebo  NObs NGrid DoseGrid   Group
-#>   <int>  <int> <dbl>  <int> <lgl> <lgl>   <int> <int> <list>     <fct>
-#> 1     1      1     1      1 FALSE FALSE       3    11 <dbl [11]> mono 
-#> 2     2      2     3      2 FALSE FALSE       3    11 <dbl [11]> mono 
-#> 3     3      3     5      3 FALSE FALSE       3    11 <dbl [11]> combo
+#> # A tibble: 3 × 12
+#>      ID Cohort  Dose XLevel Tox   Placebo  NObs NGrid DoseGrid   Response
+#>   <int>  <int> <dbl>  <int> <lgl> <lgl>   <int> <int> <list>        <int>
+#> 1     1      1     1      1 FALSE FALSE       3    11 <dbl [11]>       NA
+#> 2     2      2     3      2 FALSE FALSE       3    11 <dbl [11]>       NA
+#> 3     3      3     5      3 FALSE FALSE       3    11 <dbl [11]>       NA
+#> # ℹ 2 more variables: Backfilled <lgl>, Group <fct>
 .DefaultDataDA() %>% tidy()
-#> # A tibble: 8 × 12
-#>      ID Cohort  Dose XLevel Tox   Placebo  NObs NGrid DoseGrid     U    T0  TMax
-#>   <int>  <int> <dbl>  <int> <lgl> <lgl>   <int> <int> <list>   <dbl> <dbl> <dbl>
-#> 1     1      1   0.1      1 FALSE FALSE       8    41 <dbl>       42     0    60
-#> 2     2      2   0.5      2 FALSE FALSE       8    41 <dbl>       30    15    60
-#> 3     3      3   1.5      3 TRUE  FALSE       8    41 <dbl>       15    30    60
-#> 4     4      4   3        4 TRUE  FALSE       8    41 <dbl>        5    40    60
-#> 5     5      5   6        5 FALSE FALSE       8    41 <dbl>       20    55    60
-#> 6     6      6  10        6 FALSE FALSE       8    41 <dbl>       25    70    60
-#> 7     7      6  10        6 TRUE  FALSE       8    41 <dbl>       30    75    60
-#> 8     8      6  10        6 FALSE FALSE       8    41 <dbl>       60    85    60
+#> # A tibble: 8 × 14
+#>      ID Cohort  Dose XLevel Tox   Placebo  NObs NGrid DoseGrid   Response
+#>   <int>  <int> <dbl>  <int> <lgl> <lgl>   <int> <int> <list>        <int>
+#> 1     1      1   0.1      1 FALSE FALSE       8    41 <dbl [41]>       NA
+#> 2     2      2   0.5      2 FALSE FALSE       8    41 <dbl [41]>       NA
+#> 3     3      3   1.5      3 TRUE  FALSE       8    41 <dbl [41]>       NA
+#> 4     4      4   3        4 TRUE  FALSE       8    41 <dbl [41]>       NA
+#> 5     5      5   6        5 FALSE FALSE       8    41 <dbl [41]>       NA
+#> 6     6      6  10        6 FALSE FALSE       8    41 <dbl [41]>       NA
+#> 7     7      6  10        6 TRUE  FALSE       8    41 <dbl [41]>       NA
+#> 8     8      6  10        6 FALSE FALSE       8    41 <dbl [41]>       NA
+#> # ℹ 4 more variables: Backfilled <lgl>, U <dbl>, T0 <dbl>, TMax <dbl>
 .DefaultData() %>% tidy()
+#> # A tibble: 3 × 11
+#>      ID Cohort  Dose XLevel Tox   Placebo  NObs NGrid DoseGrid   Response
+#>   <int>  <int> <dbl>  <int> <lgl> <lgl>   <int> <int> <list>        <int>
+#> 1     1      1     1      1 FALSE FALSE       3    11 <dbl [11]>       NA
+#> 2     2      2     3      2 FALSE FALSE       3    11 <dbl [11]>       NA
+#> 3     3      3     5      3 FALSE FALSE       3    11 <dbl [11]>       NA
+#> # ℹ 1 more variable: Backfilled <lgl>
 .DefaultDataOrdinal() %>% tidy()
 #> # A tibble: 10 × 11
 #>       ID Cohort  Dose Placebo  NObs NGrid DoseGrid   XLevel Cat0  Cat1  Cat2 
@@ -431,39 +533,41 @@ CohortSizeConst(3) %>% tidy()
 #>  9     9      6    60 FALSE      10    10 <dbl [10]>      6 FALSE TRUE  FALSE
 #> 10    10      6    60 FALSE      10    10 <dbl [10]>      6 FALSE FALSE TRUE 
 .DefaultDataGrouped() %>% tidy()
-#> # A tibble: 3 × 10
-#>      ID Cohort  Dose XLevel Tox   Placebo  NObs NGrid DoseGrid   Group
-#>   <int>  <int> <dbl>  <int> <lgl> <lgl>   <int> <int> <list>     <fct>
-#> 1     1      1     1      1 FALSE FALSE       3    11 <dbl [11]> mono 
-#> 2     2      2     3      2 FALSE FALSE       3    11 <dbl [11]> mono 
-#> 3     3      3     5      3 FALSE FALSE       3    11 <dbl [11]> combo
+#> # A tibble: 3 × 12
+#>      ID Cohort  Dose XLevel Tox   Placebo  NObs NGrid DoseGrid   Response
+#>   <int>  <int> <dbl>  <int> <lgl> <lgl>   <int> <int> <list>        <int>
+#> 1     1      1     1      1 FALSE FALSE       3    11 <dbl [11]>       NA
+#> 2     2      2     3      2 FALSE FALSE       3    11 <dbl [11]>       NA
+#> 3     3      3     5      3 FALSE FALSE       3    11 <dbl [11]>       NA
+#> # ℹ 2 more variables: Backfilled <lgl>, Group <fct>
 .DefaultDataDA() %>% tidy()
-#> # A tibble: 8 × 12
-#>      ID Cohort  Dose XLevel Tox   Placebo  NObs NGrid DoseGrid     U    T0  TMax
-#>   <int>  <int> <dbl>  <int> <lgl> <lgl>   <int> <int> <list>   <dbl> <dbl> <dbl>
-#> 1     1      1   0.1      1 FALSE FALSE       8    41 <dbl>       42     0    60
-#> 2     2      2   0.5      2 FALSE FALSE       8    41 <dbl>       30    15    60
-#> 3     3      3   1.5      3 TRUE  FALSE       8    41 <dbl>       15    30    60
-#> 4     4      4   3        4 TRUE  FALSE       8    41 <dbl>        5    40    60
-#> 5     5      5   6        5 FALSE FALSE       8    41 <dbl>       20    55    60
-#> 6     6      6  10        6 FALSE FALSE       8    41 <dbl>       25    70    60
-#> 7     7      6  10        6 TRUE  FALSE       8    41 <dbl>       30    75    60
-#> 8     8      6  10        6 FALSE FALSE       8    41 <dbl>       60    85    60
+#> # A tibble: 8 × 14
+#>      ID Cohort  Dose XLevel Tox   Placebo  NObs NGrid DoseGrid   Response
+#>   <int>  <int> <dbl>  <int> <lgl> <lgl>   <int> <int> <list>        <int>
+#> 1     1      1   0.1      1 FALSE FALSE       8    41 <dbl [41]>       NA
+#> 2     2      2   0.5      2 FALSE FALSE       8    41 <dbl [41]>       NA
+#> 3     3      3   1.5      3 TRUE  FALSE       8    41 <dbl [41]>       NA
+#> 4     4      4   3        4 TRUE  FALSE       8    41 <dbl [41]>       NA
+#> 5     5      5   6        5 FALSE FALSE       8    41 <dbl [41]>       NA
+#> 6     6      6  10        6 FALSE FALSE       8    41 <dbl [41]>       NA
+#> 7     7      6  10        6 TRUE  FALSE       8    41 <dbl [41]>       NA
+#> 8     8      6  10        6 FALSE FALSE       8    41 <dbl [41]>       NA
+#> # ℹ 4 more variables: Backfilled <lgl>, U <dbl>, T0 <dbl>, TMax <dbl>
 .DefaultSimulations() %>% tidy()
 #> $fit
 #> $fit[[1]]
 #>        middle        lower     upper
-#> 1  0.04722127 0.0002686847 0.2420652
-#> 2  0.08896911 0.0030235830 0.3132403
-#> 3  0.12330793 0.0096150022 0.3565863
-#> 4  0.19761595 0.0410718260 0.4273792
-#> 5  0.26237522 0.0821689164 0.4782181
-#> 6  0.31976376 0.1316896324 0.5325570
-#> 7  0.37053793 0.1752818440 0.5717882
-#> 8  0.48919996 0.2724606234 0.6972290
-#> 9  0.54653669 0.3060340455 0.7535827
-#> 10 0.65704446 0.3784754506 0.8744795
-#> 11 0.70186870 0.4151258775 0.9196096
+#> 1  0.02543116 0.0001004479 0.1503507
+#> 2  0.05574713 0.0015248492 0.2222523
+#> 3  0.08388981 0.0054667211 0.2586646
+#> 4  0.15237643 0.0288619739 0.3309126
+#> 5  0.21896290 0.0698278380 0.4149312
+#> 6  0.28228334 0.1124456490 0.4716041
+#> 7  0.34090583 0.1634082164 0.5281649
+#> 8  0.48287089 0.2730147984 0.6824787
+#> 9  0.55155990 0.3072458718 0.7575930
+#> 10 0.67925168 0.3555320575 0.8979877
+#> 11 0.72838460 0.3828168636 0.9324968
 #> 
 #> 
 #> $stop_report
@@ -476,32 +580,37 @@ CohortSizeConst(3) %>% tidy()
 #> 
 #> $data
 #> $data[[1]]
-#> # A tibble: 16 × 9
-#>       ID Cohort  Dose XLevel Tox   Placebo  NObs NGrid DoseGrid  
-#>    <int>  <int> <dbl>  <int> <lgl> <lgl>   <int> <int> <list>    
-#>  1     1      1     3      2 FALSE FALSE      16    11 <dbl [11]>
-#>  2     2      2     5      3 FALSE FALSE      16    11 <dbl [11]>
-#>  3     3      3    10      4 FALSE FALSE      16    11 <dbl [11]>
-#>  4     4      4    20      6 TRUE  FALSE      16    11 <dbl [11]>
-#>  5     5      5    20      6 FALSE FALSE      16    11 <dbl [11]>
-#>  6     6      5    20      6 FALSE FALSE      16    11 <dbl [11]>
-#>  7     7      5    20      6 FALSE FALSE      16    11 <dbl [11]>
-#>  8     8      6    25      7 FALSE FALSE      16    11 <dbl [11]>
-#>  9     9      6    25      7 TRUE  FALSE      16    11 <dbl [11]>
-#> 10    10      6    25      7 FALSE FALSE      16    11 <dbl [11]>
-#> 11    11      7    25      7 FALSE FALSE      16    11 <dbl [11]>
-#> 12    12      7    25      7 TRUE  FALSE      16    11 <dbl [11]>
-#> 13    13      7    25      7 FALSE FALSE      16    11 <dbl [11]>
-#> 14    14      8    25      7 TRUE  FALSE      16    11 <dbl [11]>
-#> 15    15      8    25      7 TRUE  FALSE      16    11 <dbl [11]>
-#> 16    16      8    25      7 TRUE  FALSE      16    11 <dbl [11]>
+#> # A tibble: 20 × 11
+#>       ID Cohort  Dose XLevel Tox   Placebo  NObs NGrid DoseGrid   Response
+#>    <int>  <int> <dbl>  <int> <lgl> <lgl>   <int> <int> <list>        <int>
+#>  1     1      1     3      2 FALSE FALSE      20    11 <dbl [11]>        1
+#>  2     2      2     5      3 FALSE FALSE      20    11 <dbl [11]>        1
+#>  3     3      3    10      4 FALSE FALSE      20    11 <dbl [11]>        1
+#>  4     4      4    20      6 FALSE FALSE      20    11 <dbl [11]>        1
+#>  5     5      5    25      7 TRUE  FALSE      20    11 <dbl [11]>        1
+#>  6     6      6    25      7 FALSE FALSE      20    11 <dbl [11]>        1
+#>  7     7      6    25      7 TRUE  FALSE      20    11 <dbl [11]>        1
+#>  8     8      6    25      7 FALSE FALSE      20    11 <dbl [11]>        1
+#>  9     9      7    20      6 FALSE FALSE      20    11 <dbl [11]>        1
+#> 10    10      7    20      6 FALSE FALSE      20    11 <dbl [11]>        1
+#> 11    11      7    20      6 TRUE  FALSE      20    11 <dbl [11]>        1
+#> 12    12      8    20      6 FALSE FALSE      20    11 <dbl [11]>        1
+#> 13    13      8    20      6 FALSE FALSE      20    11 <dbl [11]>        1
+#> 14    14      8    20      6 FALSE FALSE      20    11 <dbl [11]>        1
+#> 15    15      9    25      7 TRUE  FALSE      20    11 <dbl [11]>        1
+#> 16    16      9    25      7 TRUE  FALSE      20    11 <dbl [11]>        1
+#> 17    17      9    25      7 TRUE  FALSE      20    11 <dbl [11]>        1
+#> 18    18     10    15      5 FALSE FALSE      20    11 <dbl [11]>        1
+#> 19    19     10    15      5 FALSE FALSE      20    11 <dbl [11]>        1
+#> 20    20     10    15      5 FALSE FALSE      20    11 <dbl [11]>        1
+#> # ℹ 1 more variable: Backfilled <lgl>
 #> 
 #> 
 #> $doses
 #> # A tibble: 1 × 1
 #>   doses
 #>   <dbl>
-#> 1    15
+#> 1    20
 #> 
 #> $seed
 #> # A tibble: 1 × 1
@@ -520,9 +629,10 @@ CohortSizeConst(3) %>% tidy()
 #> 2   300     3  1.8 
 #> 
 #> $data
-#> # A tibble: 0 × 9
-#> # ℹ 9 variables: ID <int>, Cohort <int>, Dose <dbl>, XLevel <int>, Tox <lgl>,
-#> #   Placebo <lgl>, NObs <int>, NGrid <int>, DoseGrid <list>
+#> # A tibble: 0 × 11
+#> # ℹ 11 variables: ID <int>, Cohort <int>, Dose <dbl>, XLevel <int>, Tox <lgl>,
+#> #   Placebo <lgl>, NObs <int>, NGrid <int>, DoseGrid <list>, Response <int>,
+#> #   Backfilled <lgl>
 #> 
 #> $params
 #> # A tibble: 2 × 3
@@ -542,17 +652,18 @@ CohortSizeConst(3) %>% tidy()
 #> 2   300     2.51
 #> 
 #> $data
-#> # A tibble: 8 × 10
-#>      ID Cohort  Dose XLevel Tox   Placebo  NObs NGrid DoseGrid       W
-#>   <int>  <int> <dbl>  <int> <lgl> <lgl>   <int> <int> <list>     <dbl>
-#> 1     1      1    25      1 FALSE FALSE       8    12 <dbl [12]>  0.31
-#> 2     2      2    50      2 FALSE FALSE       8    12 <dbl [12]>  0.42
-#> 3     3      2    50      2 FALSE FALSE       8    12 <dbl [12]>  0.59
-#> 4     4      3    75      3 FALSE FALSE       8    12 <dbl [12]>  0.45
-#> 5     5      4   100      4 TRUE  FALSE       8    12 <dbl [12]>  0.6 
-#> 6     6      4   100      4 TRUE  FALSE       8    12 <dbl [12]>  0.7 
-#> 7     7      5   225      9 TRUE  FALSE       8    12 <dbl [12]>  0.6 
-#> 8     8      6   300     12 TRUE  FALSE       8    12 <dbl [12]>  0.52
+#> # A tibble: 8 × 12
+#>      ID Cohort  Dose XLevel Tox   Placebo  NObs NGrid DoseGrid   Response
+#>   <int>  <int> <dbl>  <int> <lgl> <lgl>   <int> <int> <list>        <int>
+#> 1     1      1    25      1 FALSE FALSE       8    12 <dbl [12]>       NA
+#> 2     2      2    50      2 FALSE FALSE       8    12 <dbl [12]>       NA
+#> 3     3      2    50      2 FALSE FALSE       8    12 <dbl [12]>       NA
+#> 4     4      3    75      3 FALSE FALSE       8    12 <dbl [12]>       NA
+#> 5     5      4   100      4 TRUE  FALSE       8    12 <dbl [12]>       NA
+#> 6     6      4   100      4 TRUE  FALSE       8    12 <dbl [12]>       NA
+#> 7     7      5   225      9 TRUE  FALSE       8    12 <dbl [12]>       NA
+#> 8     8      6   300     12 TRUE  FALSE       8    12 <dbl [12]>       NA
+#> # ℹ 2 more variables: Backfilled <lgl>, W <dbl>
 #> 
 #> $params
 #> # A tibble: 2 × 3
@@ -794,9 +905,10 @@ NextBestNCRM(
 #> [1] "tbl_DualEndpointRW" "list"              
 #> 
 #> $data
-#> # A tibble: 0 × 10
-#> # ℹ 10 variables: ID <int>, Cohort <int>, Dose <dbl>, XLevel <int>, Tox <lgl>,
-#> #   Placebo <lgl>, NObs <int>, NGrid <int>, DoseGrid <list>, W <dbl>
+#> # A tibble: 0 × 12
+#> # ℹ 12 variables: ID <int>, Cohort <int>, Dose <dbl>, XLevel <int>, Tox <lgl>,
+#> #   Placebo <lgl>, NObs <int>, NGrid <int>, DoseGrid <list>, Response <int>,
+#> #   Backfilled <lgl>, W <dbl>
 #> 
 #> $stopping
 #> $stop_list
@@ -857,6 +969,38 @@ NextBestNCRM(
 #>    size
 #>   <int>
 #> 1     0
+#> 
+#> $backfill
+#> $cohort_size
+#> # A tibble: 1 × 1
+#>    size
+#>   <int>
+#> 1     3
+#> 
+#> $opening
+#> list()
+#> attr(,"class")
+#> [1] "tbl_OpeningNone" "list"           
+#> 
+#> $recruitment
+#> list()
+#> attr(,"class")
+#> [1] "tbl_RecruitmentUnlimited" "list"                    
+#> 
+#> $max_size
+#> # A tibble: 1 × 1
+#>   max_size
+#>      <int>
+#> 1  1000000
+#> 
+#> $priority
+#> # A tibble: 1 × 1
+#>   priority
+#>   <chr>   
+#> 1 highest 
+#> 
+#> attr(,"class")
+#> [1] "tbl_Backfill" "list"        
 #> 
 #> $nextBest
 #> $target
@@ -940,16 +1084,16 @@ samples %>% tidy()
 #> # A tibble: 2,000 × 10
 #>    Iteration Chain alpha0 alpha1 nChains nParameters nIterations nBurnin nThin
 #>        <int> <int>  <dbl>  <dbl>   <int>       <int>       <int>   <int> <int>
-#>  1         1     1 -1.72   1.24        1           1        2100     100     1
-#>  2         2     1 -0.669  0.497       1           1        2100     100     1
-#>  3         3     1 -1.01   1.19        1           1        2100     100     1
-#>  4         4     1 -0.947 11.3         1           1        2100     100     1
-#>  5         5     1 -0.306  3.22        1           1        2100     100     1
-#>  6         6     1 -0.799  4.77        1           1        2100     100     1
-#>  7         7     1 -1.25   1.33        1           1        2100     100     1
-#>  8         8     1 -1.65   1.96        1           1        2100     100     1
-#>  9         9     1 -2.33  24.2         1           1        2100     100     1
-#> 10        10     1 -0.887  4.32        1           1        2100     100     1
+#>  1         1     1 -0.803  2.41        1           1        2100     100     1
+#>  2         2     1  0.831  0.710       1           1        2100     100     1
+#>  3         3     1 -1.03   1.06        1           1        2100     100     1
+#>  4         4     1 -2.07   1.81        1           1        2100     100     1
+#>  5         5     1 -1.21   2.04        1           1        2100     100     1
+#>  6         6     1  0.350  1.96        1           1        2100     100     1
+#>  7         7     1  0.598  0.594       1           1        2100     100     1
+#>  8         8     1 -1.14   4.44        1           1        2100     100     1
+#>  9         9     1 -0.169  0.916       1           1        2100     100     1
+#> 10        10     1 -0.524  6.91        1           1        2100     100     1
 #> # ℹ 1,990 more rows
 #> # ℹ 1 more variable: parallel <lgl>
 #> 

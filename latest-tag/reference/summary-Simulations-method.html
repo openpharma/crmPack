@@ -26,7 +26,7 @@ Summarize the model-based design simulations, relative to a given truth.">
 
     <a class="navbar-brand me-2" href="../index.html">crmPack</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">2.0.2</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">2.1.0</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -49,6 +49,7 @@ Summarize the model-based design simulations, relative to a given truth.">
     <li><a class="dropdown-item" href="../articles/trial_analysis.html">Trial Analysis</a></li>
     <li><a class="dropdown-item" href="../articles/trial_sanity_checks.html">Trial Design: basic sanity checks</a></li>
     <li><a class="dropdown-item" href="../articles/trial_simulation.html">Trial Simulation</a></li>
+    <li><a class="dropdown-item" href="../articles/trial_backfill.html">Backfill cohorts</a></li>
     <li><hr class="dropdown-divider"></li>
     <li><h6 class="dropdown-header" data-toc-skip>Examples</h6></li>
     <li><a class="dropdown-item" href="../articles/example.html">crmPack: Object-oriented implementation of CRM designs</a></li>
@@ -75,6 +76,7 @@ Summarize the model-based design simulations, relative to a given truth.">
     <div class="dropdown-menu" aria-labelledby="dropdown-versions">
     <a class="dropdown-item" data-toggle="tooltip" title="" href="https://openpharma.github.io/crmPack/main">main</a>
 <a class="dropdown-item" data-toggle="tooltip" title="" href="https://openpharma.github.io/crmPack/latest-tag">latest-tag</a>
+<a class="dropdown-item" data-toggle="tooltip" title="" href="https://openpharma.github.io/crmPack/v2.1.0">v2.1.0</a>
 <a class="dropdown-item" data-toggle="tooltip" title="" href="https://openpharma.github.io/crmPack/v2.0.2">v2.0.2</a>
 <a class="dropdown-item" data-toggle="tooltip" title="" href="https://openpharma.github.io/crmPack/v2.0.1">v2.0.1</a>
 </div>
@@ -94,7 +96,7 @@ Summarize the model-based design simulations, relative to a given truth.">
 <div class="row">
   <main id="main" class="col-md-9"><div class="page-header">
       <img src="../logo.png" class="logo" alt=""><h1>Summarize Model-Based Design Simulations</h1>
-      <small class="dont-index">Source: <a href="https://github.com/openpharma/crmPack/blob/v2.0.2/R/Simulations-methods.R" class="external-link"><code>R/Simulations-methods.R</code></a></small>
+      <small class="dont-index">Source: <a href="https://github.com/openpharma/crmPack/blob/v2.1.0/R/Simulations-methods.R" class="external-link"><code>R/Simulations-methods.R</code></a></small>
       <div class="d-none name"><code>summary-Simulations-method.Rd</code></div>
     </div>
 
@@ -240,19 +242,19 @@ used for the computations.</p></dd>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Target dose interval corresponding to this was 19.6, 21.6 </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Intervals are corresponding to 10 and 90 % quantiles</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Number of patients overall : mean 19 (19, 19) </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Number of patients treated above target tox interval : mean 9 (9, 9) </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Proportions of DLTs in the trials : mean 32 % (32 %, 32 %) </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Number of patients overall : mean 17 (17, 17) </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Number of patients treated above target tox interval : mean 7 (7, 7) </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Proportions of DLTs in the trials : mean 35 % (35 %, 35 %) </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Mean toxicity risks for the patients on active : mean 35 % (35 %, 35 %) </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Doses selected as MTD : mean 20 (20, 20) </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> True toxicity at doses selected : mean 22 % (22 %, 22 %) </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Proportion of trials selecting target MTD: 100 %</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Dose most often selected as MTD: 20 </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Observed toxicity rate at dose most often selected: 25 %</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Fitted toxicity rate at dose most often selected : mean 28 % (28 %, 28 %) </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> max_mtd : 134.65 </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> mean_mtd : 21.29 </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> median_mtd : 19.55 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Doses selected as MTD : mean 15 (15, 15) </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> True toxicity at doses selected : mean 3 % (3 %, 3 %) </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Proportion of trials selecting target MTD: 0 %</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Dose most often selected as MTD: 15 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Observed toxicity rate at dose most often selected: NaN %</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Fitted toxicity rate at dose most often selected : mean 25 % (25 %, 25 %) </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> max_mtd : 88.49 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> mean_mtd : 18.87 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> median_mtd : 17.33 </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Stop reason triggered:</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>  ≥ 3 cohorts dosed :  100 %</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>  P(0.2 ≤ prob(DLE | NBD) ≤ 0.35) ≥ 0.5 :  100 %</span>
@@ -268,7 +270,7 @@ used for the computations.</p></dd>
 
 
     <footer><div class="pkgdown-footer-left">
-  <p>Developed by Daniel Sabanes Bove, Wai Yin Yeung, Burak Kuersad Guenhan, Giuseppe Palermo, Thomas Jaki, Jiawen Zhu, Ziwei Liao, Dimitris Kontos, Marlene Schulte-Goebel, Doug Kelkhoff, Oliver Boix, Robert Adams, Clara Beck, John Kirkpatrick, Wojciech Wójciak, Guanya Peng, Prerana Chandratre, F. Hoffmann-La Roche AG, Merck Healthcare KGaA, Bayer AG, RPACT GmbH.</p>
+  <p>Developed by Daniel Sabanés Bové, Wai Yin Yeung, Burak Kuersad Guenhan, Giuseppe Palermo, Thomas Jaki, Jiawen Zhu, Ziwei Liao, Dimitris Kontos, Marlene Schulte-Goebel, Doug Kelkhoff, Oliver Boix, Robert Adams, Clara Beck, John Kirkpatrick, Wojciech Wójciak, Guanya Peng, Prerana Chandratre, F. Hoffmann-La Roche AG, Merck Healthcare KGaA, Bayer AG, RPACT GmbH.</p>
 </div>
 
 <div class="pkgdown-footer-right">

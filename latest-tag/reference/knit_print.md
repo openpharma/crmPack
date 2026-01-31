@@ -2,8 +2,12 @@
 
 **\[experimental\]**
 
+**\[experimental\]**
+
 We provide additional utility functions to allow human-friendly
 rendition of crmPack objects in Markdown and Quarto files
+
+**\[experimental\]**
 
 **\[experimental\]**
 
@@ -25,6 +29,24 @@ We provide additional utility functions to allow human-friendly
 rendition of crmPack objects in Markdown and Quarto files. This file
 contains methods for all design classes, not just those that are direct
 descendants of `Design`.
+
+**\[experimental\]**
+
+**\[experimental\]**
+
+**\[experimental\]**
+
+**\[experimental\]**
+
+**\[experimental\]**
+
+**\[experimental\]**
+
+**\[experimental\]**
+
+**\[experimental\]**
+
+**\[experimental\]**
 
 **\[experimental\]**
 
@@ -166,6 +188,9 @@ rendition of crmPack objects in Markdown and Quarto files
 ## Usage
 
 ``` r
+# S3 method for class 'Backfill'
+knit_print(x, ..., asis = TRUE)
+
 # S3 method for class 'CohortSizeConst'
 knit_print(x, ..., asis = TRUE, label = c("participant", "participants"))
 
@@ -186,6 +211,9 @@ knit_print(x, ..., asis = TRUE)
 
 # S3 method for class 'CohortSizeOrdinal'
 knit_print(x, ..., tox_label = "toxicity", asis = TRUE)
+
+# S3 method for class 'CohortSizeRandom'
+knit_print(x, ..., asis = TRUE, label = c("participant", "participants"))
 
 # S3 method for class 'StartingDose'
 knit_print(x, ..., asis = TRUE)
@@ -508,6 +536,33 @@ knit_print(x, ..., tox_label = "toxicity", asis = TRUE)
 # S3 method for class 'NextBestOrdinal'
 knit_print(x, ..., tox_label = "toxicity", asis = TRUE)
 
+# S3 method for class 'OpeningMinDose'
+knit_print(x, ..., asis = TRUE)
+
+# S3 method for class 'OpeningMinCohorts'
+knit_print(x, ..., asis = TRUE)
+
+# S3 method for class 'OpeningNone'
+knit_print(x, ..., asis = TRUE)
+
+# S3 method for class 'OpeningMinResponses'
+knit_print(x, ..., asis = TRUE)
+
+# S3 method for class 'OpeningList'
+knit_print(x, ..., preamble, indent = 0L, asis = TRUE)
+
+# S3 method for class 'OpeningAll'
+knit_print(x, ..., preamble, asis = TRUE)
+
+# S3 method for class 'OpeningAny'
+knit_print(x, ..., preamble, asis = TRUE)
+
+# S3 method for class 'RecruitmentUnlimited'
+knit_print(x, ..., asis = TRUE)
+
+# S3 method for class 'RecruitmentRatio'
+knit_print(x, ..., asis = TRUE)
+
 # S3 method for class 'SafetyWindow'
 knit_print(x, ..., asis = TRUE, time_unit = "day", label = "participant")
 
@@ -780,6 +835,13 @@ knit_print(x, ..., asis = TRUE)
   (`character`)  
   the link to Mozgunov & Jaki
 
+- indent:
+
+  (`integer`)  
+  the indent level of the current stopping rule list. Spaces with length
+  `indent * 4` will be prepended to the beginning of the rendered
+  stopping rule list.
+
 - time_unit:
 
   (`character`)  
@@ -790,13 +852,6 @@ knit_print(x, ..., asis = TRUE)
   (`character`)  
   a character vector whose nth defines the word used as the written
   representation of the nth ordinal number.
-
-- indent:
-
-  (`integer`)  
-  the indent level of the current stopping rule list. Spaces with length
-  `indent * 4` will be prepended to the beginning of the rendered
-  stopping rule list.
 
 - dose_label:
 
@@ -821,6 +876,180 @@ A character string containing a LaTeX rendition of the object.
 a character string that represents the object in markdown.
 
 ## Usage Notes
+
+`label` describes the trial's participants.
+
+It should be a character vector of length 1 or 2. If of length 2, the
+first element describes a `cohort_size` of 1 and the second describes
+all other `cohort_size`s. If of length 1, the character `s` is appended
+to the value when `cohort_size` is not 1.
+
+The default value of `col.names` is `c("Lower", "Upper", "Cohort size")`
+and that of `caption` is
+`"Defined by the dose to be used in the next cohort"`. These values can
+be overridden by passing `col.names` and `caption` in the function call.
+
+The by default, the columns are labelled `Lower`, `Upper` and
+`Cohort size`. The table's caption is
+`Defined by the number of <tox_label[2]> so far observed`. These values
+can be overridden by passing `col.names` and `caption` in the function
+call.
+
+`label` describes the trial's participants.
+
+It should be a character vector of length 1 or 2. If of length 2, the
+first element describes a single participant and the second describes
+all other situations. If of length 1, the character `s` is appended to
+the value when the number of participants is not 1. The default values
+of `col.names` and `caption` vary depending on the summary requested.
+The default values can be overridden by passing `col.names` and
+`caption` in the function call.
+
+`params` must be a character vector of length equal to that of `x@mean`
+(and `x@cov`). Its values represent the parameters of the model as
+entries in the vector `theta`, on the left-hand side of "~" in the
+definition of the prior. If named, names should be valid LaTeX, escaped
+as usual for R character variables. For example, `"\\alpha"` or
+`"\\beta_0"`. If unnamed, names are constructed by pre-pending an
+escaped backslash to each value provided.
+
+The default value of `col.names` is `c("Min", "Max", "Increment")` and
+that of `caption` is `"Defined by highest dose administered so far"`.
+These values can be overridden by passing `col.names` and `caption` in
+the function call.
+
+The default value of `col.names` is `c("Min", "Max", "Increment")` and
+that of `caption` is `"Defined by number of DLTs reported so far"`.
+These values can be overridden by passing `col.names` and `caption` in
+the function call.
+
+`label` defines how toxicities are described.
+
+It should be a character vector of length 1 or 2. If of length 2, the
+first element describes a single toxicity and the second describes all
+other toxicity counts. If of length 1, the character `s` is appended to
+the value describing a single toxicity.
+
+The default value of `col.names` is `c("Min", "Max", "Increment")` and
+that of `caption` is
+`"Defined by number of DLTs in the current cohort"`. These values can be
+overridden by passing `col.names` and `caption` in the function call.
+
+`tox_label` defines how toxicities are described.
+
+It should be a character vector of length 1 or 2. If of length 2, the
+first element describes a single toxicity and the second describes all
+other toxicity counts. If of length 1, the character `s` is appended to
+the value describing a single toxicity.
+
+This section describes the use of `label` and `tox_label`, collectively
+referred to as `label`s. A `label` should be a scalar or a vector of
+length 2. If a scalar, it is converted by adding a second element that
+is equal to the first, suffixed by `s`. For example, `tox_label = "DLT"`
+becomes `tox_label = c("DLT", "DLTs")`. The first element of the vector
+is used to describe a count of 1. The second is used in all other cases.
+
+To use a BibTeX-style citation, specify (for example)
+`citation_text = "@MOZGUNOV", citation_link = ""`.
+
+`label` should be a character vector of length 1 or 2. If of length 2,
+the first element describes a count of 1 and the second describes all
+other counts. If of length 1, the character `s` is appended to the value
+when the count is not 1.
+
+`label` and `time_unit` are, collectively, labels.
+
+A label should be a character vector of length 1 or 2. If of length 2,
+the first element describes a count of 1 and the second describes all
+other counts. If of length 1, the character `s` is appended to the value
+when the count is not 1.
+
+`label` describes the trial's participants.
+
+It should be a character vector of length 1 or 2. If of length 2, the
+first element describes a `cohort_size` of 1 and the second describes
+all other `cohort_size`s. If of length 1, the character `s` is appended
+to the value when `cohort_size` is not 1.
+
+The default value of `col.names` is `c("Lower", "Upper", "Cohort size")`
+and that of `caption` is
+`"Defined by the dose to be used in the next cohort"`. These values can
+be overridden by passing `col.names` and `caption` in the function call.
+
+The by default, the columns are labelled `Lower`, `Upper` and
+`Cohort size`. The table's caption is
+`Defined by the number of <tox_label[2]> so far observed`. These values
+can be overridden by passing `col.names` and `caption` in the function
+call.
+
+`label` describes the trial's participants.
+
+It should be a character vector of length 1 or 2. If of length 2, the
+first element describes a single participant and the second describes
+all other situations. If of length 1, the character `s` is appended to
+the value when the number of participants is not 1. The default values
+of `col.names` and `caption` vary depending on the summary requested.
+The default values can be overridden by passing `col.names` and
+`caption` in the function call.
+
+`params` must be a character vector of length equal to that of `x@mean`
+(and `x@cov`). Its values represent the parameters of the model as
+entries in the vector `theta`, on the left-hand side of "~" in the
+definition of the prior. If named, names should be valid LaTeX, escaped
+as usual for R character variables. For example, `"\\alpha"` or
+`"\\beta_0"`. If unnamed, names are constructed by pre-pending an
+escaped backslash to each value provided.
+
+The default value of `col.names` is `c("Min", "Max", "Increment")` and
+that of `caption` is `"Defined by highest dose administered so far"`.
+These values can be overridden by passing `col.names` and `caption` in
+the function call.
+
+The default value of `col.names` is `c("Min", "Max", "Increment")` and
+that of `caption` is `"Defined by number of DLTs reported so far"`.
+These values can be overridden by passing `col.names` and `caption` in
+the function call.
+
+`label` defines how toxicities are described.
+
+It should be a character vector of length 1 or 2. If of length 2, the
+first element describes a single toxicity and the second describes all
+other toxicity counts. If of length 1, the character `s` is appended to
+the value describing a single toxicity.
+
+The default value of `col.names` is `c("Min", "Max", "Increment")` and
+that of `caption` is
+`"Defined by number of DLTs in the current cohort"`. These values can be
+overridden by passing `col.names` and `caption` in the function call.
+
+`tox_label` defines how toxicities are described.
+
+It should be a character vector of length 1 or 2. If of length 2, the
+first element describes a single toxicity and the second describes all
+other toxicity counts. If of length 1, the character `s` is appended to
+the value describing a single toxicity.
+
+This section describes the use of `label` and `tox_label`, collectively
+referred to as `label`s. A `label` should be a scalar or a vector of
+length 2. If a scalar, it is converted by adding a second element that
+is equal to the first, suffixed by `s`. For example, `tox_label = "DLT"`
+becomes `tox_label = c("DLT", "DLTs")`. The first element of the vector
+is used to describe a count of 1. The second is used in all other cases.
+
+To use a BibTeX-style citation, specify (for example)
+`citation_text = "@MOZGUNOV", citation_link = ""`.
+
+`label` should be a character vector of length 1 or 2. If of length 2,
+the first element describes a count of 1 and the second describes all
+other counts. If of length 1, the character `s` is appended to the value
+when the count is not 1.
+
+`label` and `time_unit` are, collectively, labels.
+
+A label should be a character vector of length 1 or 2. If of length 2,
+the first element describes a count of 1 and the second describes all
+other counts. If of length 1, the character `s` is appended to the value
+when the count is not 1.
 
 `label` describes the trial's participants.
 

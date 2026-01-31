@@ -92,9 +92,9 @@ has been administered.
 
 ### The single patient run-in
 
-Assume that the first three patients - dosed at `1`, `3` and `5` -
+Assume that the first three patients - dosed at `1`, `3`, and `9` -
 completed the trial without incident, but that the fourth patient -
-treated at `10` - experienced a DLT.
+treated at `20` - experienced a DLT.
 
 We provide this information to `crmPack` via a `Data` object:
 
@@ -137,12 +137,30 @@ plot(firstFour) + theme_light()
 rather than a grey
 one.](trial_analysis_files/figure-html/unnamed-chunk-6-1.png)
 
-Now, update the model to obtain the posterior estimate of the
+We first define the MCMC options, explicitly setting a seed and the kind
+for the random number generator, in order to make sure that the results
+are reproducible:
+
+``` r
+
+vignetteMcmcOptions <- McmcOptions(
+  burnin = 100,
+  step = 2,
+  samples = 1000,
+  rng_seed = 321,
+  rng_kind = "Wichmann-Hill"
+)
+```
+
+Note that in practice one would use larger numbers for `burnin` and
+`samples` than those used here for the sake of saving computation time
+on the CRAN checks.
+
+Now, we can update the model to obtain the posterior estimate of the
 dose-toxicity curve:
 
 ``` r
 
-vignetteMcmcOptions <- McmcOptions(burnin = 100, step = 2, samples = 1000)
 postSamples <- mcmc(
   data = firstFour,
   model = model,
@@ -162,7 +180,7 @@ probability of toxicity increases smoothly, with a slight convex curve,
 from about zero percent at a dose of zero to about 65% at a dose of 100.
 The confidence interval extends from 0% to about 25% at a dose of zero
 and from about 30% to about 90% at a dose of
-100.](trial_analysis_files/figure-html/unnamed-chunk-8-1.png)
+100.](trial_analysis_files/figure-html/unnamed-chunk-9-1.png)
 
 A visual representation of the model’s state is obtained with:
 
@@ -188,7 +206,7 @@ indicating that this is the highest acceptable probability of being in
 the overdose range. The red bars for doses of 30 and above all extend
 above 25%, indicating that their toxicity is unacceptable. The toxicity
 for doses of 20 and below lie below
-25%.](trial_analysis_files/figure-html/unnamed-chunk-9-1.png)
+25%.](trial_analysis_files/figure-html/unnamed-chunk-10-1.png)
 
 The lower panel of the plot shows the posterior probability that each
 dose is in the overdose range. The dashed horizontal black line shows
@@ -255,10 +273,6 @@ Items 1 and 4 in the list tell us both that the size of the next cohort
 should be three. Items 2 and 3 together imply that the highest dose that
 can be used in the next cohort is `20`.
 
-Thus, the model’s recommendation is that the next cohort should consist
-of three patients, each treated at `20`. This can be confirmed
-programmatically:
-
 ``` r
 
 nextMaxDose <- maxDose(my_increments, firstFour)
@@ -275,6 +289,9 @@ doseRecommendation <- nextBest(
 doseRecommendation$value
 #> [1] 20
 ```
+
+Thus, the model’s recommendation is that the next cohort should consist
+of three patients, each treated at `20`.
 
 However, given that the probability that `20` is in the overdose range
 is only just less than the threshold of 0.25 (and because the only
@@ -304,7 +321,7 @@ stopTrial(
 #> [1] "Number of cohorts is 4 and thus reached the prespecified minimum number 3"
 #> 
 #> attr(,"message")[[1]][[2]]
-#> [1] "Probability for target toxicity is 28 % for dose 20 and thus below the required 50 %"
+#> [1] "Probability for target toxicity is 27 % for dose 20 and thus below the required 50 %"
 #> 
 #> 
 #> attr(,"message")[[2]]
@@ -318,7 +335,7 @@ stopTrial(
 #> [1] "Number of cohorts is 4 and thus reached the prespecified minimum number 3"
 #> 
 #> attr(,"message")[[2]]
-#> [1] "Probability for target toxicity is 28 % for dose 20 and thus below the required 50 %"
+#> [1] "Probability for target toxicity is 27 % for dose 20 and thus below the required 50 %"
 #> 
 #> attr(,"individual")
 #> attr(,"individual")[[1]]
@@ -331,7 +348,7 @@ stopTrial(
 #> attr(,"individual")[[2]]
 #> [1] FALSE
 #> attr(,"message")
-#> [1] "Probability for target toxicity is 28 % for dose 20 and thus below the required 50 %"
+#> [1] "Probability for target toxicity is 27 % for dose 20 and thus below the required 50 %"
 #> attr(,"report_label")
 #> [1] "P(0.2 ≤ prob(DLE | NBD) ≤ 0.35) ≥ 0.5"
 #> 
@@ -455,9 +472,9 @@ tabulatePosterior(postSamples2, secondFullCohort)
 [TABLE]
 
 The dose with the highest posterior probability of being in the target
-toxicity range is now `45`, but this dose also has an unacceptably high
-probability of being in the overdose range. Therefore, the trial should
-continue and the next cohort should be treated at `30`:
+toxicity range is now `45`, but this dose almost has an unacceptably
+high probability of being in the overdose range. So the team decides to
+go for a next cohort at `30`:
 
 ``` r
 
@@ -473,11 +490,11 @@ doseRecommendation <- nextBest(
   data = secondFullCohort
 )
 doseRecommendation$value
-#> [1] 30
+#> [1] 45
 
 x <- stopTrial(
   my_stopping,
-  dose = doseRecommendation$value,
+  dose = 30, # team decision.
   postSamples2,
   model,
   secondFullCohort
@@ -757,11 +774,37 @@ plot(fifthFullCohort)
 been treated. One each at doses 1, 3 and 9; four at a dose of 20; 6 at a
 dose of 30 and 6 at a dose of 45. Toxicitiues were reported by
 participants 4 (at a dose of 20) and 18 and 19 (both at a dose of
-45).](trial_analysis_files/figure-html/unnamed-chunk-33-1.png)
+45).](trial_analysis_files/figure-html/unnamed-chunk-34-1.png)
 
-`{rfig.alt = "A plot of the posterior after nineteen participants have been treated. The mean probability of toxicity increases smoothly from about zero percent at a dose of zero to about 55% at a dose of 100. The confidence interval extends from 0% to about 6% at a dose of zero and from about 22% to about 90% at a dose of 100."} plot(postSamples5, model, fifthFullCohort)`
+``` r
 
-`{rfig.alt = "Two graphs arranged in a single column. The upper graph shoes green lines of various heights that show the probability each dose is in the target toxicity range. There is a big arrow pointing to the bar at a dose of 45, indicating that this dose has the highest probability of being in the target toxicity range. The lower graph as a similar series of red lines, indicating the probability that each dose is in the overdose range. There is a horizontal black dashed line at 25%, indicating that this is the highest acceptable probability of being in the overdose range. The red bars for doses of 60 and above all extend above 25%, indicating that their toxicity is unacceptable. The toxicity for doses of 45 and below lie below 25%."} doseRecommendation$plot`
+plot(postSamples5, model, fifthFullCohort)
+```
+
+![A plot of the posterior after nineteen participants have been treated.
+The mean probability of toxicity increases smoothly from about zero
+percent at a dose of zero to about 55% at a dose of 100. The confidence
+interval extends from 0% to about 6% at a dose of zero and from about
+22% to about 90% at a dose of
+100.](trial_analysis_files/figure-html/unnamed-chunk-35-1.png)
+
+``` r
+
+doseRecommendation$plot
+```
+
+![Two graphs arranged in a single column. The upper graph shoes green
+lines of various heights that show the probability each dose is in the
+target toxicity range. There is a big arrow pointing to the bar at a
+dose of 45, indicating that this dose has the highest probability of
+being in the target toxicity range. The lower graph as a similar series
+of red lines, indicating the probability that each dose is in the
+overdose range. There is a horizontal black dashed line at 25%,
+indicating that this is the highest acceptable probability of being in
+the overdose range. The red bars for doses of 60 and above all extend
+above 25%, indicating that their toxicity is unacceptable. The toxicity
+for doses of 45 and below lie below
+25%.](trial_analysis_files/figure-html/unnamed-chunk-36-1.png)
 
 With a little bit of work, we can obtain a more detailed summary and
 plot of the posterior probabilities of toxicity at each dose:
@@ -836,7 +879,7 @@ fullSamples %>%
 toxicity for all doses greater than nine. The mode of each density moves
 to the right as dose increases. The densities for low doses are heaviliy
 skewed to the left. Densities for higher doses are more symmetric and
-flatter.](trial_analysis_files/figure-html/unnamed-chunk-34-1.png)
+flatter.](trial_analysis_files/figure-html/unnamed-chunk-37-1.png)
 
 ``` r
 
@@ -866,7 +909,7 @@ shading increases with distance from the solid lines. The shading is
 funnel shaped, with a narrow mneck at a dose of 100 and a wider mouth at
 a dose of 100. The shading represents the central 90%, 80% and 50%
 confidence intervals for the posterior mean estimate of toxicity at each
-dose.](trial_analysis_files/figure-html/unnamed-chunk-35-1.png)
+dose.](trial_analysis_files/figure-html/unnamed-chunk-38-1.png)
 
 ## Note
 

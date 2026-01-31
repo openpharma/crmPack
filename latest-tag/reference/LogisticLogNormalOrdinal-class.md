@@ -78,8 +78,8 @@ LogisticLogNormalOrdinal(
 #>         }
 #>       }
 #>     }
-#> <bytecode: 0x5645a07bcc50>
-#> <environment: 0x56459b8ec608>
+#> <bytecode: 0x55dea8042180>
+#> <environment: 0x55dea8ebf3e8>
 #> 
 #> Slot "priormodel":
 #> function() {
@@ -90,8 +90,8 @@ LogisticLogNormalOrdinal(
 #>       gamma ~ dnorm(mean[k], prec[k, k])
 #>       beta <- exp(gamma)
 #>     }
-#> <bytecode: 0x56459b850390>
-#> <environment: 0x56459b8ec608>
+#> <bytecode: 0x55dea8caa080>
+#> <environment: 0x55dea8ebf3e8>
 #> 
 #> Slot "modelspecs":
 #> function(y, from_prior) {
@@ -111,8 +111,8 @@ LogisticLogNormalOrdinal(
 #>       }
 #>       ms
 #>     }
-#> <bytecode: 0x5645a0af49c8>
-#> <environment: 0x56459b8ec608>
+#> <bytecode: 0x55dea928ea88>
+#> <environment: 0x55dea8ebf3e8>
 #> 
 #> Slot "init":
 #> function() {
@@ -121,8 +121,8 @@ LogisticLogNormalOrdinal(
 #>         gamma = 1
 #>       )
 #>     }
-#> <bytecode: 0x5645a0cc3ad8>
-#> <environment: 0x56459b8ec608>
+#> <bytecode: 0x55deaaa961c0>
+#> <environment: 0x55dea8ebf3e8>
 #> 
 #> Slot "datanames":
 #> [1] "nObs" "x"   

@@ -2,7 +2,8 @@
 
 ## Authors
 
-- **Daniel Sabanes Bove**. Author, maintainer.
+- **Daniel Sabanés Bové**. Author, maintainer.
+  [](https://orcid.org/0000-0002-0176-9239)
 
 - **Wai Yin Yeung**. Author.
 
@@ -47,7 +48,7 @@
 ## Citation
 
 Source:
-[`inst/CITATION`](https://github.com/openpharma/crmPack/blob/v2.0.2/inst/CITATION)
+[`inst/CITATION`](https://github.com/openpharma/crmPack/blob/v2.1.0/inst/CITATION)
 
 Sabanés Bové D, Yeung WY, Palermo G, Jaki T (2019). “Model-Based Dose
 Escalation Designs in R with crmPack.” *Journal of Statistical

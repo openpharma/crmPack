@@ -12,8 +12,8 @@
 <script src="deps/bootstrap-5.3.1/bootstrap.bundle.min.js"></script><link href="deps/font-awesome-6.5.2/css/all.min.css" rel="stylesheet">
 <link href="deps/font-awesome-6.5.2/css/v4-shims.min.css" rel="stylesheet">
 <script src="deps/headroom-0.11.0/headroom.min.js"></script><script src="deps/headroom-0.11.0/jQuery.headroom.min.js"></script><script src="deps/bootstrap-toc-1.0.1/bootstrap-toc.min.js"></script><script src="deps/clipboard.js-2.0.11/clipboard.min.js"></script><script src="deps/search-1.0.0/autocomplete.jquery.min.js"></script><script src="deps/search-1.0.0/fuse.min.js"></script><script src="deps/search-1.0.0/mark.min.js"></script><!-- pkgdown --><script src="pkgdown.js"></script><meta property="og:title" content="Object-Oriented Implementation of Dose Escalation Designs">
-<meta name="description" content="Implements a wide range of dose escalation designs. The focus is on model-based designs, ranging from classical and modern continual reassessment methods (CRMs) based on dose-limiting toxicity endpoints to dual-endpoint designs taking into account a biomarker/efficacy outcome. Bayesian inference is performed via MCMC sampling in JAGS, and it is easy to setup a new design with custom JAGS code. However, it is also possible to implement 3+3 designs for comparison or models with non-Bayesian estimation. The whole package is written in a modular form in the S4 class system, making it very flexible for adaptation to new models, escalation or stopping rules. Further details are presented in Sabanes Bove et al. (2019) &lt;doi:10.18637/jss.v089.i10&gt;.">
-<meta property="og:description" content="Implements a wide range of dose escalation designs. The focus is on model-based designs, ranging from classical and modern continual reassessment methods (CRMs) based on dose-limiting toxicity endpoints to dual-endpoint designs taking into account a biomarker/efficacy outcome. Bayesian inference is performed via MCMC sampling in JAGS, and it is easy to setup a new design with custom JAGS code. However, it is also possible to implement 3+3 designs for comparison or models with non-Bayesian estimation. The whole package is written in a modular form in the S4 class system, making it very flexible for adaptation to new models, escalation or stopping rules. Further details are presented in Sabanes Bove et al. (2019) &lt;doi:10.18637/jss.v089.i10&gt;.">
+<meta name="description" content="Implements a wide range of dose escalation designs. The focus is on model-based designs, ranging from classical and modern continual reassessment methods (CRMs) based on dose-limiting toxicity endpoints to dual-endpoint designs taking into account a biomarker/efficacy outcome. Bayesian inference is performed via MCMC sampling in JAGS, and it is easy to setup a new design with custom JAGS code. However, it is also possible to implement 3+3 designs for comparison or models with non-Bayesian estimation. The whole package is written in a modular form in the S4 class system, making it very flexible for adaptation to new models, escalation or stopping rules. Further details are presented in Sabanés Bové et al. (2019) &lt;doi:10.18637/jss.v089.i10&gt;.">
+<meta property="og:description" content="Implements a wide range of dose escalation designs. The focus is on model-based designs, ranging from classical and modern continual reassessment methods (CRMs) based on dose-limiting toxicity endpoints to dual-endpoint designs taking into account a biomarker/efficacy outcome. Bayesian inference is performed via MCMC sampling in JAGS, and it is easy to setup a new design with custom JAGS code. However, it is also possible to implement 3+3 designs for comparison or models with non-Bayesian estimation. The whole package is written in a modular form in the S4 class system, making it very flexible for adaptation to new models, escalation or stopping rules. Further details are presented in Sabanés Bové et al. (2019) &lt;doi:10.18637/jss.v089.i10&gt;.">
 <meta property="og:image" content="https://openpharma.github.io/crmPack/logo.png">
 </head>
 <body>
@@ -24,7 +24,7 @@
 
     <a class="navbar-brand me-2" href="index.html">crmPack</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">2.0.2</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">2.1.0</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -47,6 +47,7 @@
     <li><a class="dropdown-item" href="articles/trial_analysis.html">Trial Analysis</a></li>
     <li><a class="dropdown-item" href="articles/trial_sanity_checks.html">Trial Design: basic sanity checks</a></li>
     <li><a class="dropdown-item" href="articles/trial_simulation.html">Trial Simulation</a></li>
+    <li><a class="dropdown-item" href="articles/trial_backfill.html">Backfill cohorts</a></li>
     <li><hr class="dropdown-divider"></li>
     <li><h6 class="dropdown-header" data-toc-skip>Examples</h6></li>
     <li><a class="dropdown-item" href="articles/example.html">crmPack: Object-oriented implementation of CRM designs</a></li>
@@ -73,6 +74,7 @@
     <div class="dropdown-menu" aria-labelledby="dropdown-versions">
     <a class="dropdown-item" data-toggle="tooltip" title="" href="https://openpharma.github.io/crmPack/main">main</a>
 <a class="dropdown-item" data-toggle="tooltip" title="" href="https://openpharma.github.io/crmPack/latest-tag">latest-tag</a>
+<a class="dropdown-item" data-toggle="tooltip" title="" href="https://openpharma.github.io/crmPack/v2.1.0">v2.1.0</a>
 <a class="dropdown-item" data-toggle="tooltip" title="" href="https://openpharma.github.io/crmPack/v2.0.2">v2.0.2</a>
 <a class="dropdown-item" data-toggle="tooltip" title="" href="https://openpharma.github.io/crmPack/v2.0.1">v2.0.1</a>
 </div>
@@ -120,12 +122,13 @@
 <li><a href="https://openpharma.github.io/crmPack/main/articles/trial_analysis.html">Trial analysis</a></li>
 <li><a href="https://openpharma.github.io/crmPack/main/articles/trial_sanity_checks.html">Sanity checking</a></li>
 <li><a href="https://openpharma.github.io/crmPack/main/articles/trial_simulation.html">Simulation of operating characteristics</a></li>
+<li><a href="https://openpharma.github.io/crmPack/main/articles/trial_backfill.html">Backfill cohort simulations</a></li>
 <li><a href="https://openpharma.github.io/crmPack/main/articles/ordinal-crm.html">Ordinal CRM models</a></li>
 <li><a href="https://openpharma.github.io/crmPack/main/articles/parallel_computing_with_extensions.html">Extending <code>crmPack</code></a></li>
 <li><a href="https://openpharma.github.io/crmPack/main/articles/tidy_method.html">Tidy <code>crmPack</code> data</a></li>
 <li><a href="https://openpharma.github.io/crmPack/main/articles/knit_print.html">Describing <code>crmPack</code> objects in Markdown and Quarto documents</a></li>
 <li><a href="https://openpharma.github.io/crmPack/main/articles/upgrading_from_the_old_crmPack.html">Upgrading from <code>crmPack</code> version 1.0</a></li>
-<li>Sabanes Bove et al (2019) Model-based Dose Escalation Designs in R with <code>crmPack</code>. JSS 89:10 <a href="https://www.jstatsoft.org/article/view/v089i10" class="external-link">DOI 10.18637/jss.v089.i10</a>
+<li>Sabanés Bové et al (2019) Model-based Dose Escalation Designs in R with <code>crmPack</code>. JSS 89:10 <a href="https://www.jstatsoft.org/article/view/v089i10" class="external-link">DOI 10.18637/jss.v089.i10</a>
 </li>
 </ul>
 </div>
@@ -157,7 +160,7 @@
 <div class="developers">
 <h2 data-toc-skip>Developers</h2>
 <ul class="list-unstyled">
-<li>Daniel Sabanes Bove <br><small class="roles"> Author, maintainer </small>   </li>
+<li>Daniel Sabanés Bové <br><small class="roles"> Author, maintainer </small> <a href="https://orcid.org/0000-0002-0176-9239" target="orcid.widget" aria-label="ORCID" class="external-link"><span class="fab fa-orcid orcid" aria-hidden="true"></span></a>  </li>
 <li>Wai Yin Yeung <br><small class="roles"> Author </small>   </li>
 <li>Burak Kuersad Guenhan <br><small class="roles"> Author </small>   </li>
 <li>Giuseppe Palermo <br><small class="roles"> Author </small>   </li>
@@ -197,7 +200,7 @@
 
 
     <footer><div class="pkgdown-footer-left">
-  <p>Developed by Daniel Sabanes Bove, Wai Yin Yeung, Burak Kuersad Guenhan, Giuseppe Palermo, Thomas Jaki, Jiawen Zhu, Ziwei Liao, Dimitris Kontos, Marlene Schulte-Goebel, Doug Kelkhoff, Oliver Boix, Robert Adams, Clara Beck, John Kirkpatrick, Wojciech Wójciak, Guanya Peng, Prerana Chandratre, F. Hoffmann-La Roche AG, Merck Healthcare KGaA, Bayer AG, RPACT GmbH.</p>
+  <p>Developed by Daniel Sabanés Bové, Wai Yin Yeung, Burak Kuersad Guenhan, Giuseppe Palermo, Thomas Jaki, Jiawen Zhu, Ziwei Liao, Dimitris Kontos, Marlene Schulte-Goebel, Doug Kelkhoff, Oliver Boix, Robert Adams, Clara Beck, John Kirkpatrick, Wojciech Wójciak, Guanya Peng, Prerana Chandratre, F. Hoffmann-La Roche AG, Merck Healthcare KGaA, Bayer AG, RPACT GmbH.</p>
 </div>
 
 <div class="pkgdown-footer-right">

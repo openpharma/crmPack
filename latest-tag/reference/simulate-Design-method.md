@@ -11,6 +11,7 @@ simulate(
   nsim = 1L,
   seed = NULL,
   truth,
+  truthResponse = plogis,
   args = NULL,
   firstSeparate = FALSE,
   mcmcOptions = McmcOptions(),
@@ -45,6 +46,12 @@ simulate(
   a function which takes as input a dose (vector) and returns the true
   probability (vector) for toxicity. Additional arguments can be
   supplied in `args`.
+
+- truthResponse:
+
+  (`function`)  
+  a function which takes as input a dose (vector) and returns the
+  probability (vector) for a positive efficacy response.
 
 - args:
 

@@ -28,7 +28,7 @@ CohortSize or inherited classes and therefore not exported.">
 
     <a class="navbar-brand me-2" href="../index.html">crmPack</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">2.0.2</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">2.1.0</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -51,6 +51,7 @@ CohortSize or inherited classes and therefore not exported.">
     <li><a class="dropdown-item" href="../articles/trial_analysis.html">Trial Analysis</a></li>
     <li><a class="dropdown-item" href="../articles/trial_sanity_checks.html">Trial Design: basic sanity checks</a></li>
     <li><a class="dropdown-item" href="../articles/trial_simulation.html">Trial Simulation</a></li>
+    <li><a class="dropdown-item" href="../articles/trial_backfill.html">Backfill cohorts</a></li>
     <li><hr class="dropdown-divider"></li>
     <li><h6 class="dropdown-header" data-toc-skip>Examples</h6></li>
     <li><a class="dropdown-item" href="../articles/example.html">crmPack: Object-oriented implementation of CRM designs</a></li>
@@ -77,6 +78,7 @@ CohortSize or inherited classes and therefore not exported.">
     <div class="dropdown-menu" aria-labelledby="dropdown-versions">
     <a class="dropdown-item" data-toggle="tooltip" title="" href="https://openpharma.github.io/crmPack/main">main</a>
 <a class="dropdown-item" data-toggle="tooltip" title="" href="https://openpharma.github.io/crmPack/latest-tag">latest-tag</a>
+<a class="dropdown-item" data-toggle="tooltip" title="" href="https://openpharma.github.io/crmPack/v2.1.0">v2.1.0</a>
 <a class="dropdown-item" data-toggle="tooltip" title="" href="https://openpharma.github.io/crmPack/v2.0.2">v2.0.2</a>
 <a class="dropdown-item" data-toggle="tooltip" title="" href="https://openpharma.github.io/crmPack/v2.0.1">v2.0.1</a>
 </div>
@@ -96,7 +98,7 @@ CohortSize or inherited classes and therefore not exported.">
 <div class="row">
   <main id="main" class="col-md-9"><div class="page-header">
       <img src="../logo.png" class="logo" alt=""><h1>Internal Helper Functions for Validation of <code><a href="CohortSize-class.html">CohortSize</a></code> Objects</h1>
-      <small class="dont-index">Source: <a href="https://github.com/openpharma/crmPack/blob/v2.0.2/R/Rules-validity.R" class="external-link"><code>R/Rules-validity.R</code></a></small>
+      <small class="dont-index">Source: <a href="https://github.com/openpharma/crmPack/blob/v2.1.0/R/Rules-validity.R" class="external-link"><code>R/Rules-validity.R</code></a></small>
       <div class="d-none name"><code>v_cohort_size.Rd</code></div>
     </div>
 
@@ -114,6 +116,8 @@ CohortSize or inherited classes and therefore not exported.">
 <span><span class="fu">v_cohort_size_dlt</span><span class="op">(</span><span class="va">object</span><span class="op">)</span></span>
 <span></span>
 <span><span class="fu">v_cohort_size_const</span><span class="op">(</span><span class="va">object</span><span class="op">)</span></span>
+<span></span>
+<span><span class="fu">v_cohort_size_random</span><span class="op">(</span><span class="va">object</span><span class="op">)</span></span>
 <span></span>
 <span><span class="fu">v_cohort_size_parts</span><span class="op">(</span><span class="va">object</span><span class="op">)</span></span>
 <span></span>
@@ -149,6 +153,8 @@ contains valid <code>intervals</code> and  <code>cohort_size</code> slots.</p></
 contains valid <code>intervals</code> and  <code>cohort_size</code> slots.</p></li>
 <li><p><code>v_cohort_size_const()</code>: validates that the <code><a href="CohortSizeConst-class.html">CohortSizeConst</a></code> object
 contains valid <code>size</code> slot.</p></li>
+<li><p><code>v_cohort_size_random()</code>: validates that the <code><a href="CohortSizeRandom-class.html">CohortSizeRandom</a></code> object
+contains valid <code>min_size</code> and <code>max_size</code> slots.</p></li>
 <li><p><code>v_cohort_size_parts()</code>: validates that the <code><a href="CohortSizeParts-class.html">CohortSizeParts</a></code> object
 contains valid <code>sizes</code> slot.</p></li>
 <li><p><code>v_cohort_size_max()</code>: validates that the <code><a href="CohortSizeMax-class.html">CohortSizeMax</a></code> object
@@ -162,7 +168,7 @@ contains valid <code>cohort_sizes</code> slot.</p></li>
 
 
     <footer><div class="pkgdown-footer-left">
-  <p>Developed by Daniel Sabanes Bove, Wai Yin Yeung, Burak Kuersad Guenhan, Giuseppe Palermo, Thomas Jaki, Jiawen Zhu, Ziwei Liao, Dimitris Kontos, Marlene Schulte-Goebel, Doug Kelkhoff, Oliver Boix, Robert Adams, Clara Beck, John Kirkpatrick, Wojciech Wójciak, Guanya Peng, Prerana Chandratre, F. Hoffmann-La Roche AG, Merck Healthcare KGaA, Bayer AG, RPACT GmbH.</p>
+  <p>Developed by Daniel Sabanés Bové, Wai Yin Yeung, Burak Kuersad Guenhan, Giuseppe Palermo, Thomas Jaki, Jiawen Zhu, Ziwei Liao, Dimitris Kontos, Marlene Schulte-Goebel, Doug Kelkhoff, Oliver Boix, Robert Adams, Clara Beck, John Kirkpatrick, Wojciech Wójciak, Guanya Peng, Prerana Chandratre, F. Hoffmann-La Roche AG, Merck Healthcare KGaA, Bayer AG, RPACT GmbH.</p>
 </div>
 
 <div class="pkgdown-footer-right">

@@ -118,6 +118,11 @@ simulate(
 an object of class
 [`DualSimulations`](https://openpharma.github.io/crmPack/reference/DualSimulations-class.md)
 
+## Note
+
+Backfill cohorts are not yet implemented and therefore will lead to an
+error if used in the `DualDesign` object.
+
 ## Examples
 
 ``` r

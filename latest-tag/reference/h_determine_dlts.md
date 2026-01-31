@@ -10,9 +10,11 @@ h_determine_dlts(
   data,
   dose,
   prob,
-  prob_placebo,
+  prob_placebo = 0,
+  prob_response = 0,
+  prob_response_placebo = 0,
   cohort_size,
-  cohort_size_placebo,
+  cohort_size_placebo = 0,
   dose_grid,
   first_separate
 )
@@ -32,13 +34,23 @@ h_determine_dlts(
 
 - prob:
 
-  (`function`)  
-  defines the true probability for a DLT at a dose.
+  (`number`)  
+  defines the true probability for a DLT at the dose.
 
 - prob_placebo:
 
-  (`function`)  
+  (`number`)  
   defines the true probability for a DLT at a placebo condition.
+
+- prob_response:
+
+  (`number`)  
+  defines the true probability for a response at the dose.
+
+- prob_response_placebo:
+
+  (`number`)  
+  defines the true probability for a response at a placebo condition.
 
 - cohort_size:
 

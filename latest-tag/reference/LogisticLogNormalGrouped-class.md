@@ -98,8 +98,8 @@ my_model
 #>         y[i] ~ dbern(p[i])
 #>       }
 #>     }
-#> <bytecode: 0x564598423ca0>
-#> <environment: 0x564592513520>
+#> <bytecode: 0x55dea8ddd380>
+#> <environment: 0x55dea91dc8d0>
 #> 
 #> Slot "priormodel":
 #> function() {
@@ -109,8 +109,8 @@ my_model
 #>       alpha1 <- exp(theta[3])
 #>       delta1 <- exp(theta[4])
 #>     }
-#> <bytecode: 0x56458e2eff78>
-#> <environment: 0x564592513520>
+#> <bytecode: 0x55dea9117870>
+#> <environment: 0x55dea91dc8d0>
 #> 
 #> Slot "modelspecs":
 #> function(group, from_prior) {
@@ -124,15 +124,15 @@ my_model
 #>       }
 #>       ms
 #>     }
-#> <bytecode: 0x564598453300>
-#> <environment: 0x564592513520>
+#> <bytecode: 0x55dea8c69ee8>
+#> <environment: 0x55dea91dc8d0>
 #> 
 #> Slot "init":
 #> function() {
 #>       list(theta = c(0, 1, 1, 1))
 #>     }
-#> <bytecode: 0x564597f295a8>
-#> <environment: 0x564592513520>
+#> <bytecode: 0x55dea8be8a50>
+#> <environment: 0x55dea91dc8d0>
 #> 
 #> Slot "datanames":
 #> [1] "nObs" "y"    "x"   

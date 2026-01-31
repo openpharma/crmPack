@@ -58,8 +58,8 @@ my_data <- DataDual(
 my_data
 #> An object of class "DataDual"
 #> Slot "w":
-#> [1]  2.06502490 -1.63098940  0.51242695 -1.86301149 -0.52201251 -0.05260191
-#> [7]  0.54299634 -0.91407483
+#> [1] -1.63098940  0.51242695 -1.86301149 -0.52201251 -0.05260191  0.54299634
+#> [7] -0.91407483  0.46815442
 #> 
 #> Slot "x":
 #> [1]  0.1  0.5  1.5  3.0  6.0 10.0 10.0 10.0
@@ -80,6 +80,12 @@ my_data
 #> 
 #> Slot "placebo":
 #> [1] FALSE
+#> 
+#> Slot "backfilled":
+#> [1] FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE
+#> 
+#> Slot "response":
+#> [1] NA NA NA NA NA NA NA NA
 #> 
 #> Slot "ID":
 #> [1] 1 2 3 4 5 6 7 8

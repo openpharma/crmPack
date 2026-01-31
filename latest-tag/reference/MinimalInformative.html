@@ -68,7 +68,7 @@ is not required for these computations.">
 
     <a class="navbar-brand me-2" href="../index.html">crmPack</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">2.0.2</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">2.1.0</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -91,6 +91,7 @@ is not required for these computations.">
     <li><a class="dropdown-item" href="../articles/trial_analysis.html">Trial Analysis</a></li>
     <li><a class="dropdown-item" href="../articles/trial_sanity_checks.html">Trial Design: basic sanity checks</a></li>
     <li><a class="dropdown-item" href="../articles/trial_simulation.html">Trial Simulation</a></li>
+    <li><a class="dropdown-item" href="../articles/trial_backfill.html">Backfill cohorts</a></li>
     <li><hr class="dropdown-divider"></li>
     <li><h6 class="dropdown-header" data-toc-skip>Examples</h6></li>
     <li><a class="dropdown-item" href="../articles/example.html">crmPack: Object-oriented implementation of CRM designs</a></li>
@@ -117,6 +118,7 @@ is not required for these computations.">
     <div class="dropdown-menu" aria-labelledby="dropdown-versions">
     <a class="dropdown-item" data-toggle="tooltip" title="" href="https://openpharma.github.io/crmPack/main">main</a>
 <a class="dropdown-item" data-toggle="tooltip" title="" href="https://openpharma.github.io/crmPack/latest-tag">latest-tag</a>
+<a class="dropdown-item" data-toggle="tooltip" title="" href="https://openpharma.github.io/crmPack/v2.1.0">v2.1.0</a>
 <a class="dropdown-item" data-toggle="tooltip" title="" href="https://openpharma.github.io/crmPack/v2.0.2">v2.0.2</a>
 <a class="dropdown-item" data-toggle="tooltip" title="" href="https://openpharma.github.io/crmPack/v2.0.1">v2.0.1</a>
 </div>
@@ -136,7 +138,7 @@ is not required for these computations.">
 <div class="row">
   <main id="main" class="col-md-9"><div class="page-header">
       <img src="../logo.png" class="logo" alt=""><h1>Construct a Minimally Informative Prior</h1>
-      <small class="dont-index">Source: <a href="https://github.com/openpharma/crmPack/blob/v2.0.2/R/fromQuantiles.R" class="external-link"><code>R/fromQuantiles.R</code></a></small>
+      <small class="dont-index">Source: <a href="https://github.com/openpharma/crmPack/blob/v2.1.0/R/fromQuantiles.R" class="external-link"><code>R/fromQuantiles.R</code></a></small>
       <div class="d-none name"><code>MinimalInformative.Rd</code></div>
     </div>
 
@@ -257,13 +259,13 @@ at the maximum dose.</p></dd>
 <span class="r-in"><span>                                  threshmax<span class="op">=</span><span class="fl">0.3</span>,</span></span>
 <span class="r-in"><span>                                  control<span class="op">=</span><span class="co">## for real case: leave out control </span></span></span>
 <span class="r-in"><span>                                    <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>max.time<span class="op">=</span><span class="fl">0.1</span><span class="op">)</span><span class="op">)</span> </span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> It: 1, obj value (lsEnd): 0.6727662311 indTrace: 1</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> timeSpan = 4.049842 maxTime = 0.1</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Emini is: 0.6727662311</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> It: 1, obj value (lsEnd): 0.6732911061 indTrace: 1</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> timeSpan = 4.518187 maxTime = 0.1</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Emini is: 0.6732911061</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> xmini are:</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 3.446289216 9.080650618 4.30874806 0.7251654219 -0.7565382708 </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Totally it used 4.04987 secs</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> No. of function call is: 980</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 3.436837973 9.074768474 4.306636605 0.7253533934 -0.7572128108 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Totally it used 4.518221 secs</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> No. of function call is: 991</span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co"># Plotting the result</span></span></span>
 <span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/graphics/matplot.html" class="external-link">matplot</a></span><span class="op">(</span>x<span class="op">=</span><span class="va">coarseGrid</span>,</span></span>
@@ -289,7 +291,7 @@ at the maximum dose.</p></dd>
 
 
     <footer><div class="pkgdown-footer-left">
-  <p>Developed by Daniel Sabanes Bove, Wai Yin Yeung, Burak Kuersad Guenhan, Giuseppe Palermo, Thomas Jaki, Jiawen Zhu, Ziwei Liao, Dimitris Kontos, Marlene Schulte-Goebel, Doug Kelkhoff, Oliver Boix, Robert Adams, Clara Beck, John Kirkpatrick, Wojciech Wójciak, Guanya Peng, Prerana Chandratre, F. Hoffmann-La Roche AG, Merck Healthcare KGaA, Bayer AG, RPACT GmbH.</p>
+  <p>Developed by Daniel Sabanés Bové, Wai Yin Yeung, Burak Kuersad Guenhan, Giuseppe Palermo, Thomas Jaki, Jiawen Zhu, Ziwei Liao, Dimitris Kontos, Marlene Schulte-Goebel, Doug Kelkhoff, Oliver Boix, Robert Adams, Clara Beck, John Kirkpatrick, Wojciech Wójciak, Guanya Peng, Prerana Chandratre, F. Hoffmann-La Roche AG, Merck Healthcare KGaA, Bayer AG, RPACT GmbH.</p>
 </div>
 
 <div class="pkgdown-footer-right">

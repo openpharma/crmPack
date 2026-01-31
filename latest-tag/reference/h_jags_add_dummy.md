@@ -88,6 +88,12 @@ h_jags_add_dummy(my_data, where = c("x", "y"))
 #> Slot "placebo":
 #> [1] FALSE
 #> 
+#> Slot "backfilled":
+#> [1] FALSE
+#> 
+#> Slot "response":
+#> [1] NA
+#> 
 #> Slot "ID":
 #> [1] 1
 #> 
@@ -118,6 +124,12 @@ h_jags_add_dummy(my_data_2, where = c("x", "y"))
 #> 
 #> Slot "placebo":
 #> [1] FALSE
+#> 
+#> Slot "backfilled":
+#> [1] FALSE FALSE
+#> 
+#> Slot "response":
+#> [1] NA NA
 #> 
 #> Slot "ID":
 #> [1] 1 2

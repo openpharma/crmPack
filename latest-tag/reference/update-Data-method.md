@@ -14,9 +14,12 @@ update(
   object,
   x,
   y,
+  response = rep(NA_integer_, length(y)),
   ID = length(object@ID) + seq_along(y),
   new_cohort = TRUE,
   check = TRUE,
+  backfill = FALSE,
+  cohort = NULL,
   ...
 )
 ```
@@ -40,6 +43,11 @@ update(
   also supply `numeric` vectors, but these will then be converted to
   `integer` internally.
 
+- response:
+
+  (`integer`)  
+  the efficacy response vector (0/1 vector). May contain `NA`.
+
 - ID:
 
   (`integer`)  
@@ -56,6 +64,18 @@ update(
   (`flag`)  
   whether the validation of the updated object should be conducted. See
   details below.
+
+- backfill:
+
+  (`flag`)  
+  whether the new patients being added are from a backfill cohort.
+
+- cohort:
+
+  (`int`)  
+  if provided, the new patients will be assigned to this cohort index.
+  If `NULL` (default), the cohort index will be determined based on the
+  `new_cohort` parameter.
 
 - ...:
 
@@ -115,6 +135,12 @@ my_data1
 #> 
 #> Slot "placebo":
 #> [1] FALSE
+#> 
+#> Slot "backfilled":
+#>  [1] FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE
+#> 
+#> Slot "response":
+#>  [1] NA NA NA NA NA NA NA NA NA NA NA
 #> 
 #> Slot "ID":
 #>  [1]  1  2  3  4  5  6  7  8  9 10 11

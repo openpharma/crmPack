@@ -47,6 +47,11 @@ DualDesign(model, data, ...)
   :   (`CohortSize`)  
       see slot definition.
 
+  `backfill`
+
+  :   (`Backfill`)  
+      see slot definition.
+
 ## Slots
 
 - `model`:

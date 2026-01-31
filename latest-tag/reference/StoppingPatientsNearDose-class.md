@@ -11,6 +11,7 @@ patients near to next best dose.
 StoppingPatientsNearDose(
   nPatients = 10L,
   percentage = 50,
+  include_backfill = TRUE,
   report_label = NA_character_
 )
 
@@ -27,6 +28,11 @@ StoppingPatientsNearDose(
 - percentage:
 
   (`number`)  
+  see slot definition.
+
+- include_backfill:
+
+  (`flag`)  
   see slot definition.
 
 - report_label:
@@ -47,6 +53,11 @@ StoppingPatientsNearDose(
   percentage (between and including 0 and 100) within the next best dose
   the patients must lie.
 
+- `include_backfill`:
+
+  (`flag`)  
+  whether to include backfill patients.
+
 ## Note
 
 Typically, end users will not use the
@@ -61,5 +72,13 @@ Typically, end users will not use the
 my_stopping <- StoppingPatientsNearDose(
   nPatients = 9,
   percentage = 20
+)
+
+# Variant which excludes backfill cohorts.
+
+my_stopping <- StoppingPatientsNearDose(
+  nPatients = 9,
+  percentage = 20,
+  include_backfill = FALSE
 )
 ```
