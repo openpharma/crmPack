@@ -71,6 +71,10 @@ an object of class \code{\link{DualSimulations}}
 \description{
 \ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#stable}{\figure{lifecycle-stable.svg}{options: alt='[Stable]'}}}{\strong{[Stable]}}
 }
+\note{
+Backfill cohorts are not yet implemented and therefore will lead to an error if used
+in the \code{DualDesign} object.
+}
 \examples{
 # nolint start
 

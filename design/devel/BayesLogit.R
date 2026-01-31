@@ -1,7 +1,7 @@
 # nolint start
 ## Title: Try to reproduce outcome from BayesLogit  with MCMCpack functions
 ## Purpose: Replace BayesLogit
-## Author: Daniel Sabanes Bove (sabanesd@roche.com)
+## Author: Daniel Sabanés Bové (sabanesd@roche.com)
 ## Date: Mon Feb 05 16:55:22 2018
 
 library(BayesLogit)

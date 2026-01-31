@@ -49,6 +49,8 @@ setGeneric(
   valueClass = "list"
 )
 
+## NextBestEWOC ----
+
 #' @describeIn nextBest find the next best dose based on the EWOC rule.
 #'
 #' @aliases nextBest-NextBestEWOC
@@ -2759,20 +2761,31 @@ setMethod(
     lower <- (100 - stopping@percentage) / 100 * dose
     upper <- (100 + stopping@percentage) / 100 * dose
 
+    # Get patients' dose levels.
+    doses <- data@x
+    if (!stopping@include_backfill) {
+      doses <- doses[!data@backfilled]
+    }
+
     # How many patients lie there?
     n_patients <- ifelse(
       is.na(dose),
       0,
-      sum((data@x >= lower) & (data@x <= upper))
+      sum((doses >= lower) & (doses <= upper))
     )
 
     # So can we stop?
     do_stop <- n_patients >= stopping@nPatients
 
     # Generate message.
-    text <- paste(
+    text <- paste0(
       n_patients,
-      " patients lie within ",
+      ifelse(
+        stopping@include_backfill,
+        " patients ",
+        " patients (excluding backfilled) "
+      ),
+      "lie within ",
       stopping@percentage,
       "% of the next best dose ",
       dose,
@@ -2780,8 +2793,7 @@ setMethod(
       ifelse(do_stop, "reached", "is below"),
       " the required ",
       stopping@nPatients,
-      " patients",
-      sep = ""
+      " patients"
     )
 
     # Return both.
@@ -4117,6 +4129,34 @@ setMethod(
       0L
     } else {
       object@size
+    }
+  }
+)
+
+## size-CohortSizeRandom ----
+
+#' @describeIn size Random cohort size drawn uniformly between min and max size.
+#'
+#' @param dose the next dose.
+#' @param ... not used.
+#'
+#' @aliases size-CohortSizeRandom
+#' @example examples/Rules-method-size-CohortSizeRandom.R
+#'
+setMethod(
+  f = "size",
+  signature = signature(
+    object = "CohortSizeRandom"
+  ),
+  definition = function(object, dose, ...) {
+    # If the recommended next dose is NA, don't check it and return 0.
+    if (is.na(dose)) {
+      0L
+    } else {
+      as.integer(sample(
+        seq(object@min_size, object@max_size),
+        size = 1
+      ))
     }
   }
 )

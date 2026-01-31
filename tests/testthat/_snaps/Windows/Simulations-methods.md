@@ -9,20 +9,20 @@
       Target dose interval corresponding to this was NA, NA 
       Intervals are corresponding to 10 and 90 % quantiles
       
-      Number of patients overall : mean 13 (13, 13) 
-      Number of patients treated above target tox interval : mean 13 (13, 13) 
-      Proportions of DLTs in the trials : mean 23 % (23 %, 23 %) 
+      Number of patients overall : mean 20 (20, 20) 
+      Number of patients treated above target tox interval : mean 20 (20, 20) 
+      Proportions of DLTs in the trials : mean 30 % (30 %, 30 %) 
       Mean toxicity risks for the patients on active : mean 100 % (100 %, 100 %) 
-      Doses selected as MTD : mean 25 (25, 25) 
+      Doses selected as MTD : mean 20 (20, 20) 
       True toxicity at doses selected : mean 100 % (100 %, 100 %) 
       Proportion of trials selecting target MTD: 0 %
-      Dose most often selected as MTD: 25 
-      Observed toxicity rate at dose most often selected: 33 %
-      Fitted toxicity rate at dose most often selected : mean 26 % (26 %, 26 %) 
+      Dose most often selected as MTD: 20 
+      Observed toxicity rate at dose most often selected: 14 %
+      Fitted toxicity rate at dose most often selected : mean 27 % (27 %, 27 %) 
       Stop reason triggered:
        ≥ 3 cohorts dosed :  100 %
        P(0.2 ≤ prob(DLE | NBD) ≤ 0.35) ≥ 0.5 :  100 %
-       ≥ 20 patients dosed :  0 %
+       ≥ 20 patients dosed :  100 %
 
 # summary-DualSimulations works correctly
 
@@ -44,12 +44,20 @@
       Proportion of trials selecting target MTD: 0 %
       Dose most often selected as MTD: 1 
       Observed toxicity rate at dose most often selected: 0 %
-      Fitted toxicity rate at dose most often selected : mean 8 % (8 %, 8 %) 
+      Fitted toxicity rate at dose most often selected : mean 9 % (9 %, 9 %) 
       Stop reason triggered:
        P(0.9 ≤ Biomarker ≤ 1) ≥ 0.5 (relative) :  0 %
        ≥ 10 patients dosed :  100 %
        Stopped because of missing dose :  0 %
       Fitted biomarker level at dose most often selected : mean 0.2 (0.2, 0.2) 
+
+# show-GeneralSimulations works correctly
+
+    Code
+      show(mySims)
+    Output
+      An object of class 'Simulations' containing 1 simulated trials.
+      Please use 'summary()' to obtain more information.
 
 # show-GeneralSimulationsSummary works correctly
 
@@ -75,7 +83,7 @@
       Stop reason triggered:
        ≥ 6 patients dosed :  100 %
 
-# show-SimulationsSummary works correctly
+# show-SimulationsSummary works correctly with backfill cohorts
 
     Code
       show(simSummary)
@@ -83,21 +91,23 @@
       Summary of 2 simulations
       
       Target toxicity interval was 20, 35 %
-      Target dose interval corresponding to this was 19.6, 21.6 
+      Target dose interval corresponding to this was NA, NA 
       Intervals are corresponding to 10 and 90 % quantiles
       
-      Number of patients overall : mean 6 (6, 6) 
+      Number of patients overall : mean 24 (24, 24) 
       Number of patients treated above target tox interval : mean 0 (0, 0) 
-      Proportions of DLTs in the trials : mean 0 % (0 %, 0 %) 
-      Mean toxicity risks for the patients on active : mean 0 % (0 %, 0 %) 
-      Doses selected as MTD : mean 10 (10, 10) 
-      True toxicity at doses selected : mean 0 % (0 %, 0 %) 
+      Proportions of DLTs in the trials : mean 2 % (0 %, 4 %) 
+      Mean toxicity risks for the patients on active : mean 2 % (2 %, 2 %) 
+      Doses selected as MTD : mean 25 (25, 25) 
+      True toxicity at doses selected : mean 7 % (7 %, 7 %) 
       Proportion of trials selecting target MTD: 0 %
-      Dose most often selected as MTD: 10 
-      Observed toxicity rate at dose most often selected: NaN %
-      Fitted toxicity rate at dose most often selected : mean 6 % (6 %, 6 %) 
+      Dose most often selected as MTD: 25 
+      Observed toxicity rate at dose most often selected: 0 %
+      Number of backfill patients : mean 9 (9, 9) 
+      Doses for backfill patients: 5: 33.3%, 10: 33.3%, 20: 33.3% 
+      Fitted toxicity rate at dose most often selected : mean 9 % (3 %, 14 %) 
       Stop reason triggered:
-       ≥ 6 patients dosed :  100 %
+       ≥ 20 patients dosed :  100 %
 
 # show-DualSimulationsSummary works correctly
 
@@ -119,7 +129,7 @@
       Proportion of trials selecting target MTD: 0 %
       Dose most often selected as MTD: 1 
       Observed toxicity rate at dose most often selected: 0 %
-      Fitted toxicity rate at dose most often selected : mean 8 % (8 %, 8 %) 
+      Fitted toxicity rate at dose most often selected : mean 9 % (9 %, 9 %) 
       Stop reason triggered:
        P(0.9 ≤ Biomarker ≤ 1) ≥ 0.5 (relative) :  0 %
        ≥ 10 patients dosed :  100 %
@@ -475,28 +485,28 @@
       Number of patients overall : mean 12 (12, 12) 
       Number of patients treated above the target p(DLE) used at the end of a trial : mean 9 (9, 9) 
       Number of patients treated above the target p(DLE) used during a trial : mean 9 (9, 9) 
-      Proportions of observed DLT in the trials : mean 33 % (33 %, 33 %) 
-      Mean toxicity risks for the patients : mean 70 % (70 %, 70 %) 
-      Doses selected as TDEOT : mean 0 (0, 0) 
-      True toxicity at TDEOT : mean 5 % (5 %, 5 %) 
+      Proportions of observed DLT in the trials : mean 0 % (0 %, 0 %) 
+      Mean toxicity risks for the patients : mean 40 % (40 %, 40 %) 
+      Doses selected as TDEOT : mean 75 (75, 75) 
+      True toxicity at TDEOT : mean 68 % (68 %, 68 %) 
       Proportion of trials selecting the TDEOT: 0 %
       Proportion of trials selecting the TDDT: 0 %
-      Dose most often selected as TDEOT: 0 
-      Observed toxicity rate at dose most often selected: NaN %
-      Fitted probabilities of DLE at dose most often selected : mean NA % (NA %, NA %) 
+      Dose most often selected as TDEOT: 75 
+      Observed toxicity rate at dose most often selected: 0 %
+      Fitted probabilities of DLE at dose most often selected : mean 20 % (20 %, 20 %) 
       The summary table of the final TDEOT across all simulations
           Min. 1st Qu.  Median    Mean 3rd Qu.    Max.  
-         14.37   14.37   14.37   14.37   14.37   14.37  
+         81.49   81.49   81.49   81.49   81.49   81.49  
       The summary table of the final ratios of the TDEOT across all simulations
           Min. 1st Qu.  Median    Mean 3rd Qu.    Max.  
              1       1       1       1       1       1  
       The summary table of the final TDDT across all simulations
           Min. 1st Qu.  Median    Mean 3rd Qu.    Max.  
-            25      25      25      25      25      25  
+         106.4   106.4   106.4   106.4   106.4   106.4  
       The summary table of dose levels, the optimal dose
        to recommend for subsequent study across all simulations
           Min. 1st Qu.  Median    Mean 3rd Qu.    Max.  
-         14.37   14.37   14.37   14.37   14.37   14.37  
+         81.49   81.49   81.49   81.49   81.49   81.49  
       The summary table of the final ratios of the optimal dose for stopping across
                         all simulations
           Min. 1st Qu.  Median    Mean 3rd Qu.    Max.  
@@ -508,19 +518,19 @@
       Target Gstar at dose Grid was 25 
       The summary table of the final Gstar across all simulations
           Min. 1st Qu.  Median    Mean 3rd Qu.    Max.  
-           250     250     250     250     250     250  
+           225     225     225     225     225     225  
       The summary table of the final ratios of the Gstar across all simulations
           Min. 1st Qu.  Median    Mean 3rd Qu.    Max.  
-         1.661   1.661   1.661   1.661   1.661   1.661  
+           2.4     2.4     2.4     2.4     2.4     2.4  
       The summary table of dose levels, the optimal dose
        to recommend for subsequent study across all simulations
           Min. 1st Qu.  Median    Mean 3rd Qu.    Max.  
-         14.37   14.37   14.37   14.37   14.37   14.37  
+         81.49   81.49   81.49   81.49   81.49   81.49  
       The summary table of the final ratios of the optimal dose for stopping across
               all simulations
           Min. 1st Qu.  Median    Mean 3rd Qu.    Max.  
              1       1       1       1       1       1  
-      Fitted expected efficacy level at dose most often selected : mean NA (NA, NA) 
+      Fitted expected efficacy level at dose most often selected : mean 0.5 (0.5, 0.5) 
       Stop reason triggered:
        ≥ 10 patients dosed :  100 %
 
@@ -540,28 +550,28 @@
       Number of patients overall : mean 12 (12, 12) 
       Number of patients treated above the target p(DLE) used at the end of a trial : mean 9 (9, 9) 
       Number of patients treated above the target p(DLE) used during a trial : mean 9 (9, 9) 
-      Proportions of observed DLT in the trials : mean 33 % (33 %, 33 %) 
-      Mean toxicity risks for the patients : mean 70 % (70 %, 70 %) 
-      Doses selected as TDEOT : mean 0 (0, 0) 
-      True toxicity at TDEOT : mean 5 % (5 %, 5 %) 
+      Proportions of observed DLT in the trials : mean 0 % (0 %, 0 %) 
+      Mean toxicity risks for the patients : mean 40 % (40 %, 40 %) 
+      Doses selected as TDEOT : mean 75 (75, 75) 
+      True toxicity at TDEOT : mean 68 % (68 %, 68 %) 
       Proportion of trials selecting the TDEOT: 0 %
       Proportion of trials selecting the TDDT: 0 %
-      Dose most often selected as TDEOT: 0 
-      Observed toxicity rate at dose most often selected: NaN %
-      Fitted probabilities of DLE at dose most often selected : mean NA % (NA %, NA %) 
+      Dose most often selected as TDEOT: 75 
+      Observed toxicity rate at dose most often selected: 0 %
+      Fitted probabilities of DLE at dose most often selected : mean 20 % (20 %, 20 %) 
       The summary table of the final TDEOT across all simulations
           Min. 1st Qu.  Median    Mean 3rd Qu.    Max.  
-         14.37   14.37   14.37   14.37   14.37   14.37  
+         81.49   81.49   81.49   81.49   81.49   81.49  
       The summary table of the final ratios of the TDEOT across all simulations
           Min. 1st Qu.  Median    Mean 3rd Qu.    Max.  
              1       1       1       1       1       1  
       The summary table of the final TDDT across all simulations
           Min. 1st Qu.  Median    Mean 3rd Qu.    Max.  
-            25      25      25      25      25      25  
+         106.4   106.4   106.4   106.4   106.4   106.4  
       The summary table of dose levels, the optimal dose
        to recommend for subsequent study across all simulations
           Min. 1st Qu.  Median    Mean 3rd Qu.    Max.  
-         14.37   14.37   14.37   14.37   14.37   14.37  
+         81.49   81.49   81.49   81.49   81.49   81.49  
       The summary table of the final ratios of the optimal dose for stopping across
                         all simulations
           Min. 1st Qu.  Median    Mean 3rd Qu.    Max.  
@@ -573,19 +583,19 @@
       Target Gstar at dose Grid was 25 
       The summary table of the final Gstar across all simulations
           Min. 1st Qu.  Median    Mean 3rd Qu.    Max.  
-           250     250     250     250     250     250  
+           225     225     225     225     225     225  
       The summary table of the final ratios of the Gstar across all simulations
           Min. 1st Qu.  Median    Mean 3rd Qu.    Max.  
-         1.661   1.661   1.661   1.661   1.661   1.661  
+           2.4     2.4     2.4     2.4     2.4     2.4  
       The summary table of dose levels, the optimal dose
        to recommend for subsequent study across all simulations
           Min. 1st Qu.  Median    Mean 3rd Qu.    Max.  
-         14.37   14.37   14.37   14.37   14.37   14.37  
+         81.49   81.49   81.49   81.49   81.49   81.49  
       The summary table of the final ratios of the optimal dose for stopping across
               all simulations
           Min. 1st Qu.  Median    Mean 3rd Qu.    Max.  
              1       1       1       1       1       1  
-      Fitted expected efficacy level at dose most often selected : mean NA (NA, NA) 
+      Fitted expected efficacy level at dose most often selected : mean 0.5 (0.5, 0.5) 
       Stop reason triggered:
        ≥ 10 patients dosed :  100 %
 

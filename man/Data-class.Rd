@@ -15,6 +15,8 @@ Data(
   cohort = integer(),
   doseGrid = numeric(),
   placebo = FALSE,
+  backfilled = rep(FALSE, length(x)),
+  response = rep(NA_integer_, length(x)),
   ...
 )
 
@@ -39,6 +41,12 @@ You can also supply \code{numeric} vectors, but these will then be converted to
 
 \item{placebo}{(\code{flag})\cr if \code{TRUE} the first dose level
 in the \code{doseGrid} is considered as placebo.}
+
+\item{backfilled}{(\code{logical})\cr whether each patient was in
+a backfill cohort.}
+
+\item{response}{(\code{integer})\cr whether each patient had a
+positive efficacy response (1 = yes, 0 = no). May contain \code{NA}.}
 
 \item{...}{not used.}
 }
@@ -69,6 +77,12 @@ w.r.t \code{doseGrid}.}
 
 \item{\code{placebo}}{(\code{logical})\cr if \code{TRUE} the first dose level
 in the \code{doseGrid}is considered as PLACEBO.}
+
+\item{\code{backfilled}}{(\code{logical})\cr whether this patient was
+in a backfill cohort.}
+
+\item{\code{response}}{(\code{integer})\cr whether this patient had a
+positive efficacy response (0 or 1 integers).}
 }}
 
 \note{

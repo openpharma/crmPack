@@ -124,6 +124,20 @@ v_data <- function(object) {
     ),
     "DLT vector y must be nObs long and contain 0 or 1 integers only"
   )
+  v$check(
+    test_logical(object@backfilled, len = object@nObs, any.missing = FALSE),
+    "backfilled must be of type logical and length nObs and not contain missings"
+  )
+  v$check(
+    test_integer(
+      object@response,
+      len = object@nObs,
+      lower = 0,
+      upper = 1,
+      any.missing = TRUE
+    ),
+    "response must be of type integer, take values 0 or 1 or NA, and have length nObs"
+  )
 
   v$result()
 }
