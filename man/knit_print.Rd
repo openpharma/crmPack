@@ -4,7 +4,8 @@
 %   R/helpers_knitr_GeneralData.R, R/helpers_knitr_GeneralModel.R,
 %   R/helpers_knitr_Increments.R, R/helpers_knitr_NextBest.R,
 %   R/helpers_knitr_Opening.R, R/helpers_knitr_Recruitment.R,
-%   R/helpers_knitr_SafetyWindow.R, R/helpers_knitr_Stopping.R
+%   R/helpers_knitr_SafetyWindow.R, R/helpers_knitr_Simulations.R,
+%   R/helpers_knitr_Stopping.R
 \name{knit_print.Backfill}
 \alias{knit_print.Backfill}
 \alias{knit_print}
@@ -80,6 +81,18 @@
 \alias{knit_print.SafetyWindow}
 \alias{knit_print.SafetyWindowConst}
 \alias{knit_print.SafetyWindowSize}
+\alias{knit_print.GeneralSimulations}
+\alias{knit_print.Simulations}
+\alias{knit_print.DualSimulations}
+\alias{knit_print.PseudoSimulations}
+\alias{knit_print.PseudoDualSimulations}
+\alias{knit_print.PseudoDualFlexiSimulations}
+\alias{knit_print.DASimulations}
+\alias{knit_print.GeneralSimulationsSummary}
+\alias{knit_print.SimulationsSummary}
+\alias{knit_print.DualSimulationsSummary}
+\alias{knit_print.PseudoSimulationsSummary}
+\alias{knit_print.PseudoDualSimulationsSummary}
 \alias{knit_print.StoppingOrdinal}
 \alias{knit_print.StoppingMaxGainCIRatio}
 \alias{knit_print.StoppingList}
@@ -427,6 +440,30 @@
   level = 2L
 )
 
+\method{knit_print}{GeneralSimulations}(x, ..., asis = TRUE)
+
+\method{knit_print}{Simulations}(x, ..., asis = TRUE)
+
+\method{knit_print}{DualSimulations}(x, ..., asis = TRUE)
+
+\method{knit_print}{PseudoSimulations}(x, ..., asis = TRUE)
+
+\method{knit_print}{PseudoDualSimulations}(x, ..., asis = TRUE)
+
+\method{knit_print}{PseudoDualFlexiSimulations}(x, ..., asis = TRUE)
+
+\method{knit_print}{DASimulations}(x, ..., asis = TRUE)
+
+\method{knit_print}{GeneralSimulationsSummary}(x, ..., asis = TRUE)
+
+\method{knit_print}{SimulationsSummary}(x, ..., asis = TRUE)
+
+\method{knit_print}{DualSimulationsSummary}(x, ..., asis = TRUE)
+
+\method{knit_print}{PseudoSimulationsSummary}(x, ..., asis = TRUE)
+
+\method{knit_print}{PseudoDualSimulationsSummary}(x, ..., asis = TRUE)
+
 \method{knit_print}{StoppingOrdinal}(x, ..., asis = TRUE)
 
 \method{knit_print}{StoppingMaxGainCIRatio}(x, ..., asis = TRUE)
@@ -526,9 +563,9 @@
 \method{knit_print}{StoppingMissingDose}(x, ..., asis = TRUE)
 }
 \arguments{
-\item{x}{(\code{ModelParamsNormal})\cr the object to be rendered}
+\item{x}{(\code{PseudoDualSimulationsSummary})\cr the object to be printed.}
 
-\item{...}{passed to \code{\link[knitr:kable]{knitr::kable()}}}
+\item{...}{passed to \code{\link[knitr:kable]{knitr::kable()}}.}
 
 \item{asis}{(\code{flag})\cr Not used at present}
 
@@ -610,6 +647,8 @@ The markdown representation of the object, as a character string
 a character string that represents the object in markdown.
 
 A character string containing a LaTeX rendition of the object.
+
+a character string that represents the object in markdown.
 
 a character string that represents the object in markdown.
 }
@@ -755,6 +794,36 @@ all design classes, not just those that are direct descendants of \code{Design}.
 
 We provide additional utility functions to allow human-friendly rendition of
 crmPack objects in Markdown and Quarto files
+
+\ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#experimental}{\figure{lifecycle-experimental.svg}{options: alt='[Experimental]'}}}{\strong{[Experimental]}}
+
+\ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#experimental}{\figure{lifecycle-experimental.svg}{options: alt='[Experimental]'}}}{\strong{[Experimental]}}
+
+\ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#experimental}{\figure{lifecycle-experimental.svg}{options: alt='[Experimental]'}}}{\strong{[Experimental]}}
+
+\ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#experimental}{\figure{lifecycle-experimental.svg}{options: alt='[Experimental]'}}}{\strong{[Experimental]}}
+
+We provide additional utility functions to allow human-friendly rendition of
+crmPack objects in Markdown and Quarto files.  This file contains methods for
+all Simulations and SimulationsSummary classes.
+
+\ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#experimental}{\figure{lifecycle-experimental.svg}{options: alt='[Experimental]'}}}{\strong{[Experimental]}}
+
+\ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#experimental}{\figure{lifecycle-experimental.svg}{options: alt='[Experimental]'}}}{\strong{[Experimental]}}
+
+\ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#experimental}{\figure{lifecycle-experimental.svg}{options: alt='[Experimental]'}}}{\strong{[Experimental]}}
+
+\ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#experimental}{\figure{lifecycle-experimental.svg}{options: alt='[Experimental]'}}}{\strong{[Experimental]}}
+
+\ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#experimental}{\figure{lifecycle-experimental.svg}{options: alt='[Experimental]'}}}{\strong{[Experimental]}}
+
+\ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#experimental}{\figure{lifecycle-experimental.svg}{options: alt='[Experimental]'}}}{\strong{[Experimental]}}
+
+\ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#experimental}{\figure{lifecycle-experimental.svg}{options: alt='[Experimental]'}}}{\strong{[Experimental]}}
+
+\ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#experimental}{\figure{lifecycle-experimental.svg}{options: alt='[Experimental]'}}}{\strong{[Experimental]}}
+
+\ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#experimental}{\figure{lifecycle-experimental.svg}{options: alt='[Experimental]'}}}{\strong{[Experimental]}}
 
 \ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#experimental}{\figure{lifecycle-experimental.svg}{options: alt='[Experimental]'}}}{\strong{[Experimental]}}
 
