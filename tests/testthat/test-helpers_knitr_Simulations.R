@@ -1,3 +1,26 @@
+# nolint start
+
+# Mock slow simulation summary constructors with pre-computed fixtures
+testthat::local_mocked_bindings(
+  .DefaultDualSimulationsSummary = function(...) {
+    readRDS(testthat::test_path("fixtures", "default_dual_simulations_summary.Rds"))
+  }
+)
+
+testthat::local_mocked_bindings(
+  .DefaultPseudoSimulationsSummary = function(...) {
+    readRDS(testthat::test_path("fixtures", "default_pseudo_simulations_summary.Rds"))
+  }
+)
+
+testthat::local_mocked_bindings(
+  .DefaultPseudoDualSimulationsSummary = function(...) {
+    readRDS(testthat::test_path("fixtures", "default_pseudo_dual_simulations_summary.Rds"))
+  }
+)
+
+# nolint end
+
 # GeneralSimulations ----
 
 test_that("knit_print.GeneralSimulations works correctly", {
@@ -370,29 +393,61 @@ test_that("knit_print.SimulationsSummary handles asis parameter", {
 # DualSimulationsSummary ----
 
 test_that("knit_print.DualSimulationsSummary works correctly", {
-  skip("DualSimulations summary requires complex setup with biomarker truth")
+  x <- .DefaultDualSimulationsSummary()
+  result <- knit_print(x, asis = FALSE)
+
+  expect_true(grepl("### Simulation Summary", result, fixed = TRUE))
+  expect_true(grepl("Biomarker fit at dose most selected:", result, fixed = TRUE))
 })
 
 test_that("knit_print.DualSimulationsSummary handles asis parameter", {
-  skip("DualSimulations summary requires complex setup with biomarker truth")
+  x <- .DefaultDualSimulationsSummary()
+
+  result_asis <- knit_print(x, asis = TRUE)
+  result_no_asis <- knit_print(x, asis = FALSE)
+
+  expect_s3_class(result_asis, "knit_asis")
+  expect_type(result_no_asis, "character")
 })
 
 # PseudoSimulationsSummary ----
 
 test_that("knit_print.PseudoSimulationsSummary works correctly", {
-  skip("Complex test - requires full simulation setup")
+  x <- .DefaultPseudoSimulationsSummary()
+  result <- knit_print(x, asis = FALSE)
+
+  expect_true(grepl("### Simulation Summary", result, fixed = TRUE))
+  expect_true(grepl("Target probability of DLE", result, fixed = TRUE))
+  expect_true(grepl("TDEOT:", result, fixed = TRUE))
 })
 
 test_that("knit_print.PseudoSimulationsSummary handles asis parameter", {
-  skip("Complex test - requires full simulation setup")
+  x <- .DefaultPseudoSimulationsSummary()
+
+  result_asis <- knit_print(x, asis = TRUE)
+  result_no_asis <- knit_print(x, asis = FALSE)
+
+  expect_s3_class(result_asis, "knit_asis")
+  expect_type(result_no_asis, "character")
 })
 
 # PseudoDualSimulationsSummary ----
 
 test_that("knit_print.PseudoDualSimulationsSummary works correctly", {
-  skip("Complex test - requires full simulation setup")
+  x <- .DefaultPseudoDualSimulationsSummary()
+  result <- knit_print(x, asis = FALSE)
+
+  expect_true(grepl("### Simulation Summary", result, fixed = TRUE))
+  expect_true(grepl("Target Gstar:", result, fixed = TRUE))
+  expect_true(grepl("Efficacy fit at dose most selected:", result, fixed = TRUE))
 })
 
 test_that("knit_print.PseudoDualSimulationsSummary handles asis parameter", {
-  skip("Complex test - requires full simulation setup")
+  x <- .DefaultPseudoDualSimulationsSummary()
+
+  result_asis <- knit_print(x, asis = TRUE)
+  result_no_asis <- knit_print(x, asis = FALSE)
+
+  expect_s3_class(result_asis, "knit_asis")
+  expect_type(result_no_asis, "character")
 })
