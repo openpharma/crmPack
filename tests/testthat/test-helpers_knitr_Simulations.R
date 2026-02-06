@@ -1,16 +1,7 @@
 # GeneralSimulations ----
 
 test_that("knit_print.GeneralSimulations works correctly", {
-  x <- .DefaultGeneralSimulations()
-
-  result <- knit_print(x, asis = FALSE)
-
-  expect_true(grepl("### Simulation Results", result, fixed = TRUE))
-  expect_true(grepl("Number of simulations:", result, fixed = TRUE))
-  expect_true(grepl("Random seed", result, fixed = TRUE))
-  expect_true(grepl("123", result, fixed = TRUE))
-  expect_true(grepl("Dose grid size:", result, fixed = TRUE))
-  expect_true(grepl("Final recommended doses:", result, fixed = TRUE))
+  expect_snap(knit_print(.DefaultGeneralSimulations(), asis = FALSE))
 })
 
 test_that("knit_print.GeneralSimulations handles asis parameter", {
@@ -48,15 +39,7 @@ test_that("knit_print.Simulations handles asis parameter", {
 # DualSimulations ----
 
 test_that("knit_print.DualSimulations works correctly", {
-  x <- .DefaultDualSimulations()
-
-  result <- knit_print(x, asis = FALSE)
-
-  expect_true(grepl("### Simulation Results", result, fixed = TRUE))
-  expect_true(grepl("Rho estimates:", result, fixed = TRUE))
-  expect_true(grepl("Sigma2W estimates:", result, fixed = TRUE))
-  expect_true(grepl("Mean =", result, fixed = TRUE))
-  expect_true(grepl("Range =", result, fixed = TRUE))
+  expect_snap(knit_print(.DefaultDualSimulations(), asis = FALSE))
 })
 
 test_that("knit_print.DualSimulations handles asis parameter", {
@@ -72,6 +55,7 @@ test_that("knit_print.DualSimulations handles asis parameter", {
 # PseudoSimulations ----
 
 test_that("knit_print.PseudoSimulations works correctly", {
+  # nolint start
   x <- PseudoSimulations(
     fit = list(c(0.1, 0.2), c(0.15, 0.25)),
     final_td_target_during_trial_estimates = c(50, 75),
@@ -91,16 +75,12 @@ test_that("knit_print.PseudoSimulations works correctly", {
     doses = c(1, 2),
     seed = 123L
   )
-
-  result <- knit_print(x, asis = FALSE)
-
-  expect_true(grepl("### Simulation Results", result, fixed = TRUE))
-  expect_true(grepl("TD target during trial:", result, fixed = TRUE))
-  expect_true(grepl("TD target end of trial:", result, fixed = TRUE))
-  expect_true(grepl("Stopping reasons:", result, fixed = TRUE))
+  # nolint end
+  expect_snap(knit_print(x, asis = FALSE))
 })
 
 test_that("knit_print.PseudoSimulations handles asis parameter", {
+  # nolint start
   x <- PseudoSimulations(
     fit = list(c(0.1, 0.2), c(0.15, 0.25)),
     final_td_target_during_trial_estimates = c(50, 75),
@@ -120,6 +100,7 @@ test_that("knit_print.PseudoSimulations handles asis parameter", {
     doses = c(1, 2),
     seed = 123L
   )
+  # nolint end
 
   result_asis <- knit_print(x, asis = TRUE)
   result_no_asis <- knit_print(x, asis = FALSE)
@@ -131,6 +112,7 @@ test_that("knit_print.PseudoSimulations handles asis parameter", {
 # PseudoDualSimulations ----
 
 test_that("knit_print.PseudoDualSimulations works correctly", {
+  # nolint start
   x <- PseudoDualSimulations(
     fit_eff = list(c(0.1, 0.2), c(0.15, 0.25)),
     final_gstar_estimates = c(100, 110),
@@ -158,15 +140,12 @@ test_that("knit_print.PseudoDualSimulations works correctly", {
     doses = c(1, 2),
     seed = 123L
   )
-
-  result <- knit_print(x, asis = FALSE)
-
-  expect_true(grepl("Gstar estimates:", result, fixed = TRUE))
-  expect_true(grepl("Optimal dose:", result, fixed = TRUE))
-  expect_true(grepl("Mean =", result, fixed = TRUE))
+  # nolint end
+  expect_snap(knit_print(x, asis = FALSE))
 })
 
 test_that("knit_print.PseudoDualSimulations handles asis parameter", {
+  # nolint start
   x <- PseudoDualSimulations(
     fit_eff = list(c(0.1, 0.2), c(0.15, 0.25)),
     final_gstar_estimates = c(100, 110),
@@ -194,6 +173,7 @@ test_that("knit_print.PseudoDualSimulations handles asis parameter", {
     doses = c(1, 2),
     seed = 123L
   )
+  # nolint end
 
   result_asis <- knit_print(x, asis = TRUE)
   result_no_asis <- knit_print(x, asis = FALSE)
@@ -207,6 +187,7 @@ test_that("knit_print.PseudoDualSimulations handles asis parameter", {
 test_that("knit_print.PseudoDualFlexiSimulations works correctly", {
   skip_on_cran_but_not_ci()
 
+  # nolint start
   x <- PseudoDualFlexiSimulations(
     sigma2_beta_w_est = c(0.01, 0.015),
     fit_eff = list(c(0.1, 0.2), c(0.15, 0.25)),
@@ -235,17 +216,14 @@ test_that("knit_print.PseudoDualFlexiSimulations works correctly", {
     doses = c(1, 2),
     seed = 123L
   )
-
-  result <- knit_print(x, asis = FALSE)
-
-  expect_true(grepl("Sigma2 beta W estimates:", result, fixed = TRUE))
-  expect_true(grepl("Mean =", result, fixed = TRUE))
-  expect_true(grepl("Range =", result, fixed = TRUE))
+  # nolint end
+  expect_snap(knit_print(x, asis = FALSE))
 })
 
 test_that("knit_print.PseudoDualFlexiSimulations handles asis parameter", {
   skip_on_cran_but_not_ci()
 
+  # nolint start
   x <- PseudoDualFlexiSimulations(
     sigma2_beta_w_est = c(0.01, 0.015),
     fit_eff = list(c(0.1, 0.2), c(0.15, 0.25)),
@@ -274,6 +252,7 @@ test_that("knit_print.PseudoDualFlexiSimulations handles asis parameter", {
     doses = c(1, 2),
     seed = 123L
   )
+  # nolint end
 
   result_asis <- knit_print(x, asis = TRUE)
   result_no_asis <- knit_print(x, asis = FALSE)
