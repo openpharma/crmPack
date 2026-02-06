@@ -5,6 +5,13 @@
     Output
       [1] "### Simulation Results\n\n- **Number of simulations:** 2\n- **Random seed:** 123\n- **Dose grid size:** 3\n- **Final recommended doses:** 1.00, 2.00\n\n"
 
+# knit_print.Simulations works correctly
+
+    Code
+      knit_print(.DefaultSimulations(), asis = FALSE)
+    Output
+      [1] "### Simulation Results\n\n- **Number of simulations:** 1\n- **Random seed:** 819\n- **Dose grid size:** 11\n- **Final recommended doses:** 15.00\n\n- **Stopping reasons:** Number of cohorts is 9 and thus reached the prespecified minimum number 3 (100.0%), Number of patients is 17 and thus below the prespecified minimum number 20 (100.0%), Probability for target toxicity is 52 % for dose 15 and thus above the required 50 % (100.0%)\n\n"
+
 # knit_print.DualSimulations works correctly
 
     Code
@@ -33,12 +40,33 @@
     Output
       [1] "### Simulation Results\n\n- **Number of simulations:** 2\n- **Random seed:** 123\n- **Dose grid size:** 2\n- **Final recommended doses:** 1.00, 2.00\n\n- **TD target during trial:** Mean = 62.50\n- **TD target end of trial:** Mean = 70.00\n- **Stopping reasons:** A (50.0%), B (50.0%)\n\n- **Gstar estimates:** Mean = 105.00, Range = [100.00, 110.00]\n- **Optimal dose:** Mean = 105.00\n\n- **Sigma2 beta W estimates:** Mean = 0.013, Range = [0.010, 0.015]\n\n"
 
+# knit_print.DASimulations works correctly
+
+    Code
+      knit_print(.DefaultDASimulations(), asis = FALSE)
+    Output
+      [1] "### Simulation Results\n\n- **Number of simulations:** 2\n- **Random seed:** 819\n- **Dose grid size:** 42\n- **Final recommended doses:** 16.00, 28.00\n\n- **Stopping reasons:** Number of patients is 20 and thus below the prespecified minimum number 50 (50.0%), Number of patients is 22 and thus below the prespecified minimum number 50 (50.0%), Probability for target toxicity is 51 % for dose 16 and thus above the required 50 % (50.0%), Probability for target toxicity is 59 % for dose 28 and thus above the required 50 % (50.0%)\n\n- **Trial duration:** Mean = 111.00, Range = [110.00, 112.00]\n\n"
+
+# knit_print.GeneralSimulationsSummary works correctly
+
+    Code
+      knit_print(.DefaultSimulationsSummary(), asis = FALSE)
+    Output
+      [1] "### Simulation Summary (1 simulations)\n\n**Target toxicity interval:** [20.0%, 35.0%]\n\n**Target dose interval:** [NA, NA]\n\n**Dose most often selected as MTD:** 15 (observed toxicity rate: NaN%)\n\n**Proportion selecting target MTD:** 0.0%\n\n**Number of patients:** 17\n\n**Patients treated above target:** 0\n\n**Fitted toxicity at dose most selected:** 0.249\n\n**Stopping rules triggered:**  NA (100.0%), NA (100.0%), ≥ 3 cohorts dosed (100.0%), P(0.2 ≤ prob(DLE | NBD) ≤ 0.35) ≥ 0.5 (100.0%), ≥ 20 patients dosed (0.0%) \n\n"
+
+# knit_print.SimulationsSummary works correctly
+
+    Code
+      knit_print(.DefaultSimulationsSummary(), asis = FALSE)
+    Output
+      [1] "### Simulation Summary (1 simulations)\n\n**Target toxicity interval:** [20.0%, 35.0%]\n\n**Target dose interval:** [NA, NA]\n\n**Dose most often selected as MTD:** 15 (observed toxicity rate: NaN%)\n\n**Proportion selecting target MTD:** 0.0%\n\n**Number of patients:** 17\n\n**Patients treated above target:** 0\n\n**Fitted toxicity at dose most selected:** 0.249\n\n**Stopping rules triggered:**  NA (100.0%), NA (100.0%), ≥ 3 cohorts dosed (100.0%), P(0.2 ≤ prob(DLE | NBD) ≤ 0.35) ≥ 0.5 (100.0%), ≥ 20 patients dosed (0.0%) \n\n"
+
 # knit_print.DualSimulationsSummary works correctly
 
     Code
       knit_print(.DefaultDualSimulationsSummary(), asis = FALSE)
     Output
-      [1] "### Simulation Summary (1 simulations)\n\n**Target toxicity interval:** [20.0%, 35.0%]\n\n**Target dose interval:** [NA, NA]\n\n**Dose most often selected as MTD:** 1 (observed toxicity rate: 0.0%)\n\n**Proportion selecting target MTD:** 0.0%\n\n**Number of patients:** 12\n\n**Patients treated above target:** 0\n\n**Fitted toxicity at dose most selected:** 0.069\n\n**Stopping rules triggered:**  NA (100.0%), P(0.9 ≤ Biomarker ≤ 1) ≥ 0.5 (relative) (0.0%), ≥ 10 patients dosed (100.0%), Stopped because of missing dose (0.0%) \n\n**Biomarker fit at dose most selected:** 0.237\n\n"
+      [1] "### Simulation Summary (1 simulations)\n\n**Target toxicity interval:** [20.0%, 35.0%]\n\n**Target dose interval:** [NA, NA]\n\n**Dose most often selected as MTD:** 1 (observed toxicity rate: 0.0%)\n\n**Proportion selecting target MTD:** 0.0%\n\n**Number of patients:** 12\n\n**Patients treated above target:** 0\n\n**Fitted toxicity at dose most selected:** 0.057\n\n**Stopping rules triggered:**  NA (100.0%), P(0.9 ≤ Biomarker ≤ 1) ≥ 0.5 (relative) (0.0%), ≥ 10 patients dosed (100.0%), Stopped because of missing dose (0.0%) \n\n**Biomarker fit at dose most selected:** 0.233\n\n"
 
 # knit_print.PseudoSimulationsSummary works correctly
 

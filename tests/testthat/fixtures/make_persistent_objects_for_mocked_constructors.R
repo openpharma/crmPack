@@ -24,6 +24,20 @@ saveRDS(
   testthat::test_path("fixtures", "default_simulations.Rds")
 )
 
+# SimulationsSummary ----
+
+simulations_truth <- function(dose) plogis(-4 + 0.5 * log(dose))
+
+.default_simulations_summary <- summary(
+  .default_simulations,
+  truth = simulations_truth
+)
+
+saveRDS(
+  .default_simulations_summary,
+  testthat::test_path("fixtures", "default_simulations_summary.Rds")
+)
+
 # DASimulations ----
 
 design <- .DefaultDADesign()

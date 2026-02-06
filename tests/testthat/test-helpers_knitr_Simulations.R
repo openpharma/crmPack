@@ -1,6 +1,18 @@
 # nolint start
 
-# Mock slow simulation summary constructors with pre-computed fixtures
+# Mock slow simulation constructors with pre-computed fixtures
+testthat::local_mocked_bindings(
+  .DefaultSimulations = function(...) {
+    readRDS(testthat::test_path("fixtures", "default_simulations.Rds"))
+  }
+)
+
+testthat::local_mocked_bindings(
+  .DefaultDASimulations = function(...) {
+    readRDS(testthat::test_path("fixtures", "default_da_simulations.Rds"))
+  }
+)
+
 testthat::local_mocked_bindings(
   .DefaultDualSimulationsSummary = function(...) {
     readRDS(testthat::test_path("fixtures", "default_dual_simulations_summary.Rds"))
@@ -16,6 +28,12 @@ testthat::local_mocked_bindings(
 testthat::local_mocked_bindings(
   .DefaultPseudoDualSimulationsSummary = function(...) {
     readRDS(testthat::test_path("fixtures", "default_pseudo_dual_simulations_summary.Rds"))
+  }
+)
+
+testthat::local_mocked_bindings(
+  .DefaultSimulationsSummary = function(...) {
+    readRDS(testthat::test_path("fixtures", "default_simulations_summary.Rds"))
   }
 )
 
@@ -40,13 +58,7 @@ test_that("knit_print.GeneralSimulations handles asis parameter", {
 # Simulations ----
 
 test_that("knit_print.Simulations works correctly", {
-  x <- .DefaultSimulations()
-
-  result <- knit_print(x, asis = FALSE)
-
-  expect_true(grepl("### Simulation Results", result, fixed = TRUE))
-  expect_true(grepl("Stopping reasons:", result, fixed = TRUE))
-  expect_true(grepl("%", result, fixed = TRUE))
+  expect_snap(knit_print(.DefaultSimulations(), asis = FALSE))
 })
 
 test_that("knit_print.Simulations handles asis parameter", {
@@ -288,33 +300,7 @@ test_that("knit_print.PseudoDualFlexiSimulations handles asis parameter", {
 
 test_that("knit_print.DASimulations works correctly", {
   skip_on_cran_but_not_ci()
-
-  design <- .DefaultDADesign()
-  my_truth <- probFunction(design@model, alpha0 = 2, alpha1 = 3)
-  exp_cond_cdf <- function(x, onset = 15) {
-    a <- stats::pexp(28, 1 / onset, lower.tail = FALSE)
-    1 - (stats::pexp(x, 1 / onset, lower.tail = FALSE) - a) / (1 - a)
-  }
-
-  x <- simulate(
-    design,
-    args = NULL,
-    truthTox = my_truth,
-    truthSurv = exp_cond_cdf,
-    trueTmax = 80,
-    nsim = 2,
-    seed = 819,
-    mcmcOptions = .DefaultMcmcOptions(),
-    firstSeparate = TRUE,
-    deescalate = FALSE,
-    parallel = FALSE
-  )
-
-  result <- knit_print(x, asis = FALSE)
-
-  expect_true(grepl("Trial duration:", result, fixed = TRUE))
-  expect_true(grepl("Mean =", result, fixed = TRUE))
-  expect_true(grepl("Range =", result, fixed = TRUE))
+  expect_snap(knit_print(.DefaultDASimulations(), asis = FALSE))
 })
 
 test_that("knit_print.DASimulations handles asis parameter", {
@@ -333,29 +319,16 @@ test_that("knit_print.DASimulations handles asis parameter", {
 
 test_that("knit_print.GeneralSimulationsSummary works correctly", {
   skip_on_cran_but_not_ci()
-
-  x <- .DefaultSimulations()
-  my_truth <- function(dose) plogis(-4 + 0.5 * log(dose))
-  xsum <- summary(x, truth = my_truth)
-
-  result <- knit_print(xsum, asis = FALSE)
-
-  expect_true(grepl("### Simulation Summary", result, fixed = TRUE))
-  expect_true(grepl("Target toxicity interval:", result, fixed = TRUE))
-  expect_true(grepl("Target dose interval:", result, fixed = TRUE))
-  expect_true(grepl("Dose most often selected as MTD:", result, fixed = TRUE))
-  expect_true(grepl("Proportion selecting target MTD:", result, fixed = TRUE))
+  expect_snap(knit_print(.DefaultSimulationsSummary(), asis = FALSE))
 })
 
 test_that("knit_print.GeneralSimulationsSummary handles asis parameter", {
   skip_on_cran_but_not_ci()
 
-  x <- .DefaultSimulations()
-  my_truth <- function(dose) plogis(-4 + 0.5 * log(dose))
-  xsum <- summary(x, truth = my_truth)
+  x <- .DefaultSimulationsSummary()
 
-  result_asis <- knit_print(xsum, asis = TRUE)
-  result_no_asis <- knit_print(xsum, asis = FALSE)
+  result_asis <- knit_print(x, asis = TRUE)
+  result_no_asis <- knit_print(x, asis = FALSE)
 
   expect_s3_class(result_asis, "knit_asis")
   expect_type(result_no_asis, "character")
@@ -365,26 +338,16 @@ test_that("knit_print.GeneralSimulationsSummary handles asis parameter", {
 
 test_that("knit_print.SimulationsSummary works correctly", {
   skip_on_cran_but_not_ci()
-
-  x <- .DefaultSimulations()
-  my_truth <- function(dose) plogis(-4 + 0.5 * log(dose))
-  xsum <- summary(x, truth = my_truth)
-
-  result <- knit_print(xsum, asis = FALSE)
-
-  expect_true(grepl("### Simulation Summary", result, fixed = TRUE))
-  expect_true(grepl("Fitted toxicity at dose most selected:", result, fixed = TRUE))
+  expect_snap(knit_print(.DefaultSimulationsSummary(), asis = FALSE))
 })
 
 test_that("knit_print.SimulationsSummary handles asis parameter", {
   skip_on_cran_but_not_ci()
 
-  x <- .DefaultSimulations()
-  my_truth <- function(dose) plogis(-4 + 0.5 * log(dose))
-  xsum <- summary(x, truth = my_truth)
+  x <- .DefaultSimulationsSummary()
 
-  result_asis <- knit_print(xsum, asis = TRUE)
-  result_no_asis <- knit_print(xsum, asis = FALSE)
+  result_asis <- knit_print(x, asis = TRUE)
+  result_no_asis <- knit_print(x, asis = FALSE)
 
   expect_s3_class(result_asis, "knit_asis")
   expect_type(result_no_asis, "character")
