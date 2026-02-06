@@ -393,11 +393,7 @@ test_that("knit_print.SimulationsSummary handles asis parameter", {
 # DualSimulationsSummary ----
 
 test_that("knit_print.DualSimulationsSummary works correctly", {
-  x <- .DefaultDualSimulationsSummary()
-  result <- knit_print(x, asis = FALSE)
-
-  expect_true(grepl("### Simulation Summary", result, fixed = TRUE))
-  expect_true(grepl("Biomarker fit at dose most selected:", result, fixed = TRUE))
+  expect_snap(knit_print(.DefaultDualSimulationsSummary(), asis = FALSE))
 })
 
 test_that("knit_print.DualSimulationsSummary handles asis parameter", {
@@ -413,12 +409,7 @@ test_that("knit_print.DualSimulationsSummary handles asis parameter", {
 # PseudoSimulationsSummary ----
 
 test_that("knit_print.PseudoSimulationsSummary works correctly", {
-  x <- .DefaultPseudoSimulationsSummary()
-  result <- knit_print(x, asis = FALSE)
-
-  expect_true(grepl("### Simulation Summary", result, fixed = TRUE))
-  expect_true(grepl("Target probability of DLE", result, fixed = TRUE))
-  expect_true(grepl("TDEOT:", result, fixed = TRUE))
+  expect_snap(knit_print(.DefaultPseudoSimulationsSummary(), asis = FALSE))
 })
 
 test_that("knit_print.PseudoSimulationsSummary handles asis parameter", {
@@ -434,12 +425,7 @@ test_that("knit_print.PseudoSimulationsSummary handles asis parameter", {
 # PseudoDualSimulationsSummary ----
 
 test_that("knit_print.PseudoDualSimulationsSummary works correctly", {
-  x <- .DefaultPseudoDualSimulationsSummary()
-  result <- knit_print(x, asis = FALSE)
-
-  expect_true(grepl("### Simulation Summary", result, fixed = TRUE))
-  expect_true(grepl("Target Gstar:", result, fixed = TRUE))
-  expect_true(grepl("Efficacy fit at dose most selected:", result, fixed = TRUE))
+  expect_snap(knit_print(.DefaultPseudoDualSimulationsSummary(), asis = FALSE))
 })
 
 test_that("knit_print.PseudoDualSimulationsSummary handles asis parameter", {
