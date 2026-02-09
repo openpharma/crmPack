@@ -87,7 +87,9 @@ test_that("JAGS model compile works as expected for an example model", {
     "Resolving undeclared variables",
     "Allocating nodes",
     "Graph information:",
-    "Observed stochastic nodes: 24",
+    ifelse(rjags::jags.version() >= numeric_version("5.0.0"),
+           "Fully observed stochastic nodes: 24",
+           "Observed stochastic nodes: 24"),
     "Unobserved stochastic nodes: 26",
     "Total graph size: 196",
     ""
