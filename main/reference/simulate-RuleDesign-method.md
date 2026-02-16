@@ -23,7 +23,7 @@ simulate(
 - object:
 
   the
-  [`RuleDesign`](https://openpharma.github.io/crmPack/reference/RuleDesign-class.md)
+  [`RuleDesign`](https://docs.crmpack.org/reference/RuleDesign-class.md)
   object we want to simulate data from
 
 - nsim:
@@ -33,8 +33,7 @@ simulate(
 
 - seed:
 
-  see
-  [`set_seed()`](https://openpharma.github.io/crmPack/reference/set_seed.md)
+  see [`set_seed()`](https://docs.crmpack.org/reference/set_seed.md)
 
 - truth:
 
@@ -70,7 +69,7 @@ simulate(
 ## Value
 
 an object of class
-[`GeneralSimulations`](https://openpharma.github.io/crmPack/reference/GeneralSimulations-class.md)
+[`GeneralSimulations`](https://docs.crmpack.org/reference/GeneralSimulations-class.md)
 
 ## Examples
 

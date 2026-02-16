@@ -34,37 +34,37 @@ plotDualResponses(DLEmodel, DLEsamples, Effmodel, Effsamples, data, ...)
 - DLEmodel:
 
   the pseudo DLE model of
-  [`ModelTox`](https://openpharma.github.io/crmPack/reference/ModelTox-class.md)
+  [`ModelTox`](https://docs.crmpack.org/reference/ModelTox-class.md)
   class object
 
 - DLEsamples:
 
   the DLE samples of
-  [`Samples`](https://openpharma.github.io/crmPack/reference/Samples-class.md)
-  class object
+  [`Samples`](https://docs.crmpack.org/reference/Samples-class.md) class
+  object
 
 - Effmodel:
 
   the pseudo efficacy model of
-  [`ModelEff`](https://openpharma.github.io/crmPack/reference/ModelEff-class.md)
+  [`ModelEff`](https://docs.crmpack.org/reference/ModelEff-class.md)
   class object
 
 - Effsamples:
 
   the Efficacy samples of
-  [`Samples`](https://openpharma.github.io/crmPack/reference/Samples-class.md)
-  class object
+  [`Samples`](https://docs.crmpack.org/reference/Samples-class.md) class
+  object
 
 - data:
 
   the data input of
-  [`DataDual`](https://openpharma.github.io/crmPack/reference/DataDual-class.md)
+  [`DataDual`](https://docs.crmpack.org/reference/DataDual-class.md)
   class object
 
 - ...:
 
   additional arguments for the parent method
-  [`plot,Samples,GeneralModel-method`](https://openpharma.github.io/crmPack/reference/plot-Samples-GeneralModel-method.md)
+  [`plot,Samples,GeneralModel-method`](https://docs.crmpack.org/reference/plot-Samples-GeneralModel-method.md)
 
 - extrapolate:
 

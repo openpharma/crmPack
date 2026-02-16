@@ -1,7 +1,7 @@
-# Update method for the [`ModelPseudo`](https://openpharma.github.io/crmPack/reference/ModelPseudo-class.md) model class. This is a method to update the model class slots (estimates, parameters, variables and etc.), when the new data (e.g. new observations of responses) are available. This method is mostly used to obtain new modal estimates for pseudo model parameters.
+# Update method for the [`ModelPseudo`](https://docs.crmpack.org/reference/ModelPseudo-class.md) model class. This is a method to update the model class slots (estimates, parameters, variables and etc.), when the new data (e.g. new observations of responses) are available. This method is mostly used to obtain new modal estimates for pseudo model parameters.
 
 Update method for the
-[`ModelPseudo`](https://openpharma.github.io/crmPack/reference/ModelPseudo-class.md)
+[`ModelPseudo`](https://docs.crmpack.org/reference/ModelPseudo-class.md)
 model class. This is a method to update the model class slots
 (estimates, parameters, variables and etc.), when the new data (e.g. new
 observations of responses) are available. This method is mostly used to
@@ -33,7 +33,7 @@ update(object, data, ...)
 ## Value
 
 the new
-[`ModelPseudo`](https://openpharma.github.io/crmPack/reference/ModelPseudo-class.md)
+[`ModelPseudo`](https://docs.crmpack.org/reference/ModelPseudo-class.md)
 class object.
 
 ## Examples

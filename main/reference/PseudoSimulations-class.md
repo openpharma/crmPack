@@ -3,7 +3,7 @@
 **\[stable\]** This class captures trial simulations from designs using
 pseudo model. It has additional slots `fit` and `stop_reasons` compared
 to the general class
-[`GeneralSimulations`](https://openpharma.github.io/crmPack/reference/GeneralSimulations-class.md).
+[`GeneralSimulations`](https://docs.crmpack.org/reference/GeneralSimulations-class.md).
 
 ## Usage
 
@@ -85,7 +85,7 @@ PseudoSimulations(
 - ...:
 
   additional parameters from
-  [`GeneralSimulations`](https://openpharma.github.io/crmPack/reference/GeneralSimulations-class.md)
+  [`GeneralSimulations`](https://docs.crmpack.org/reference/GeneralSimulations-class.md)
 
 ## Slots
 

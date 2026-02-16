@@ -13,9 +13,7 @@ Software*, **89**(10), 1–22.
 
 Useful links:
 
-- <https://github.com/openpharma/crmPack>
-
-- <https://openpharma.github.io/crmPack/>
+- <https://docs.crmpack.org/>
 
 - Report bugs at <https://github.com/openpharma/crmPack/issues>
 

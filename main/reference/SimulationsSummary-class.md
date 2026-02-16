@@ -3,7 +3,7 @@
 **\[stable\]**
 
 In addition to the slots in the parent class
-[`GeneralSimulationsSummary`](https://openpharma.github.io/crmPack/reference/GeneralSimulationsSummary-class.md),
+[`GeneralSimulationsSummary`](https://docs.crmpack.org/reference/GeneralSimulationsSummary-class.md),
 it contains two slots with model fit information.
 
 ## Usage

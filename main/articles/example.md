@@ -89,7 +89,7 @@ we use the initialization function of the same name, and give it as
 parameters the contents of the object to be constructed. At least the
 `doseGrid` parameter, which contains all possible dose levels to be
 potentially used in the trial, must be specified in a call of the
-[`Data()`](https://openpharma.github.io/crmPack/reference/Data-class.md)
+[`Data()`](https://docs.crmpack.org/reference/Data-class.md)
 initialization function.
 
 If you are in the middle of a trial and you would like to recommend the
@@ -2165,7 +2165,7 @@ design before, because the 3+3 design cannot jump over doses. The
 starting dose is automatically chosen as the first dose from the grid.
 The outcome is a `RuleDesign` object, and you have more setup options if
 you directly use the
-[`RuleDesign()`](https://openpharma.github.io/crmPack/reference/RuleDesign-class.md)
+[`RuleDesign()`](https://docs.crmpack.org/reference/RuleDesign-class.md)
 initialization function. We can then simulate trials, again assuming
 that the `myTruth` function gives the true dose-toxicity relationship:
 

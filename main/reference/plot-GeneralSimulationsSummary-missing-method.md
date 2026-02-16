@@ -5,7 +5,7 @@
 Graphical display of the general simulation summary.
 
 This plot method can be applied to
-[`GeneralSimulationsSummary`](https://openpharma.github.io/crmPack/reference/GeneralSimulationsSummary-class.md)
+[`GeneralSimulationsSummary`](https://docs.crmpack.org/reference/GeneralSimulationsSummary-class.md)
 objects in order to summarize them graphically. Possible `type`s of
 plots at the moment are:
 
@@ -28,7 +28,7 @@ plots at the moment are:
   Distribution of the number of patients treated at doses which are
   above the target toxicity interval (as specified by the `truth` and
   `target` arguments to
-  [`summary,GeneralSimulations-method`](https://openpharma.github.io/crmPack/reference/summary-GeneralSimulations-method.md))
+  [`summary,GeneralSimulations-method`](https://docs.crmpack.org/reference/summary-GeneralSimulations-method.md))
 
 You can specify any subset of these in the `type` argument.
 

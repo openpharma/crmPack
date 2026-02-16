@@ -20,14 +20,14 @@ LogisticNormalMixture(comp1, comp2, weightpar, ref_dose)
 
   (`ModelParamsNormal`)  
   bivariate normal prior specification of the first component. See
-  [`ModelParamsNormal`](https://openpharma.github.io/crmPack/reference/ModelParamsNormal-class.md)
+  [`ModelParamsNormal`](https://docs.crmpack.org/reference/ModelParamsNormal-class.md)
   for more details.
 
 - comp2:
 
   (`ModelParamsNormal`)  
   bivariate normal prior specification of the second component. See
-  [`ModelParamsNormal`](https://openpharma.github.io/crmPack/reference/ModelParamsNormal-class.md)
+  [`ModelParamsNormal`](https://docs.crmpack.org/reference/ModelParamsNormal-class.md)
   for more details.
 
 - weightpar:
@@ -87,10 +87,10 @@ function.
 
 ## See also
 
-[`ModelParamsNormal`](https://openpharma.github.io/crmPack/reference/ModelParamsNormal-class.md),
-[`ModelLogNormal`](https://openpharma.github.io/crmPack/reference/ModelLogNormal-class.md),
-[`LogisticNormalFixedMixture`](https://openpharma.github.io/crmPack/reference/LogisticNormalFixedMixture-class.md),
-[`LogisticLogNormalMixture`](https://openpharma.github.io/crmPack/reference/LogisticLogNormalMixture-class.md).
+[`ModelParamsNormal`](https://docs.crmpack.org/reference/ModelParamsNormal-class.md),
+[`ModelLogNormal`](https://docs.crmpack.org/reference/ModelLogNormal-class.md),
+[`LogisticNormalFixedMixture`](https://docs.crmpack.org/reference/LogisticNormalFixedMixture-class.md),
+[`LogisticLogNormalMixture`](https://docs.crmpack.org/reference/LogisticLogNormalMixture-class.md).
 
 ## Examples
 

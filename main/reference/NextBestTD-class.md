@@ -12,8 +12,8 @@ the modal estimates of the model parameters. There are two target
 probabilities of the occurrence of a DLT that must be specified: target
 probability to be used during the trial and target probability to be
 used at the end of the trial. It is suitable to use it only with the
-[`ModelTox`](https://openpharma.github.io/crmPack/reference/ModelTox-class.md)
-model class.
+[`ModelTox`](https://docs.crmpack.org/reference/ModelTox-class.md) model
+class.
 
 ## Usage
 

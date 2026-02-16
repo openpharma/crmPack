@@ -47,9 +47,9 @@ The maximum number of backfill patients as an `integer`.
 
 ## See also
 
-[`Recruitment`](https://openpharma.github.io/crmPack/reference/Recruitment-class.md),
-[`RecruitmentUnlimited`](https://openpharma.github.io/crmPack/reference/RecruitmentUnlimited-class.md),
-[`RecruitmentRatio`](https://openpharma.github.io/crmPack/reference/RecruitmentRatio-class.md).
+[`Recruitment`](https://docs.crmpack.org/reference/Recruitment-class.md),
+[`RecruitmentUnlimited`](https://docs.crmpack.org/reference/RecruitmentUnlimited-class.md),
+[`RecruitmentRatio`](https://docs.crmpack.org/reference/RecruitmentRatio-class.md).
 
 ## Examples
 

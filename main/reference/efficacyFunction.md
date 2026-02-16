@@ -3,9 +3,9 @@
 **\[experimental\]**
 
 A function that returns an
-[`efficacy()`](https://openpharma.github.io/crmPack/reference/efficacy.md)
-function that computes expected efficacy for a given dose level, based
-on the model specific parameters.
+[`efficacy()`](https://docs.crmpack.org/reference/efficacy.md) function
+that computes expected efficacy for a given dose level, based on the
+model specific parameters.
 
 ## Usage
 
@@ -29,8 +29,7 @@ efficacyFunction(model, ...)
 
 ## Value
 
-A
-[`efficacy()`](https://openpharma.github.io/crmPack/reference/efficacy.md)
+A [`efficacy()`](https://docs.crmpack.org/reference/efficacy.md)
 function that computes expected efficacy.
 
 ## Functions
@@ -39,7 +38,7 @@ function that computes expected efficacy.
 
 ## See also
 
-[`efficacy()`](https://openpharma.github.io/crmPack/reference/efficacy.md).
+[`efficacy()`](https://docs.crmpack.org/reference/efficacy.md).
 
 ## Examples
 

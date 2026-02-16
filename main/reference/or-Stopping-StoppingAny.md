@@ -26,7 +26,7 @@ e1 | e2
 ## Value
 
 The modified
-[`StoppingAny`](https://openpharma.github.io/crmPack/reference/StoppingAny-class.md)
+[`StoppingAny`](https://docs.crmpack.org/reference/StoppingAny-class.md)
 object.
 
 ## Examples

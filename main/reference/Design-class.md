@@ -4,7 +4,7 @@
 
 `Design` is the class for rule-based designs. The difference between
 this class and its parent
-[`RuleDesign`](https://openpharma.github.io/crmPack/reference/RuleDesign-class.md)
+[`RuleDesign`](https://docs.crmpack.org/reference/RuleDesign-class.md)
 class is that `Design` class contains additional `model`, `stopping` and
 `increments` slots.
 
@@ -53,7 +53,7 @@ Design(
 - ...:
 
   Arguments passed on to
-  [`RuleDesign`](https://openpharma.github.io/crmPack/reference/RuleDesign-class.md)
+  [`RuleDesign`](https://docs.crmpack.org/reference/RuleDesign-class.md)
 
   `nextBest`
 

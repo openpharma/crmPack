@@ -3,9 +3,9 @@
 **\[stable\]**
 
 `TDDesign` is the class of design based only on DLT responses using
-[`ModelTox`](https://openpharma.github.io/crmPack/reference/ModelTox-class.md)
-class model (i.e.
-[`LogisticIndepBeta`](https://openpharma.github.io/crmPack/reference/LogisticIndepBeta-class.md))
+[`ModelTox`](https://docs.crmpack.org/reference/ModelTox-class.md) class
+model (i.e.
+[`LogisticIndepBeta`](https://docs.crmpack.org/reference/LogisticIndepBeta-class.md))
 without MCMC samples.
 
 ## Usage
@@ -47,7 +47,7 @@ TDDesign(
 - ...:
 
   Arguments passed on to
-  [`RuleDesign`](https://openpharma.github.io/crmPack/reference/RuleDesign-class.md)
+  [`RuleDesign`](https://docs.crmpack.org/reference/RuleDesign-class.md)
 
   `nextBest`
 

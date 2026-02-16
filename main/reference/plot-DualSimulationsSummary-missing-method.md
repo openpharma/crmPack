@@ -5,10 +5,10 @@
 Graphical display of dual-endpoint simulation summary.
 
 This plot method can be applied to
-[`DualSimulationsSummary`](https://openpharma.github.io/crmPack/reference/DualSimulationsSummary-class.md)
+[`DualSimulationsSummary`](https://docs.crmpack.org/reference/DualSimulationsSummary-class.md)
 objects in order to summarize them graphically. Possible `type` of plots
 at the moment are those listed in
-[`plot,SimulationsSummary,missing-method`](https://openpharma.github.io/crmPack/reference/plot-SimulationsSummary-missing-method.md)
+[`plot,SimulationsSummary,missing-method`](https://docs.crmpack.org/reference/plot-SimulationsSummary-missing-method.md)
 plus:
 
 - meanBiomarkerFit:
@@ -16,7 +16,7 @@ plus:
   Plot showing the average fitted dose-biomarker curve across the
   trials, together with 95% credible intervals, and comparison with the
   assumed truth (as specified by the `trueBiomarker` argument to
-  [`summary,DualSimulations-method`](https://openpharma.github.io/crmPack/reference/summary-DualSimulations-method.md))
+  [`summary,DualSimulations-method`](https://docs.crmpack.org/reference/summary-DualSimulations-method.md))
 
 You can specify any subset of these in the `type` argument.
 

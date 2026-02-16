@@ -3,9 +3,9 @@
 **\[experimental\]**
 
 `DesignGrouped` combines two
-[`Design`](https://openpharma.github.io/crmPack/reference/Design-class.md)
-objects: one for the mono and one for the combo arm of a joint dose
-escalation design.
+[`Design`](https://docs.crmpack.org/reference/Design-class.md) objects:
+one for the mono and one for the combo arm of a joint dose escalation
+design.
 
 ## Usage
 

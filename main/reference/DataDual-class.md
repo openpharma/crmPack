@@ -3,8 +3,8 @@
 **\[stable\]**
 
 `DataDual` is a class for the dual endpoint data. It inherits from
-[`Data`](https://openpharma.github.io/crmPack/reference/Data-class.md)
-and it contains additional biomarker information.
+[`Data`](https://docs.crmpack.org/reference/Data-class.md) and it
+contains additional biomarker information.
 
 ## Usage
 
@@ -24,7 +24,7 @@ DataDual(w = numeric(), ...)
 - ...:
 
   parameters passed to
-  [`Data()`](https://openpharma.github.io/crmPack/reference/Data-class.md).
+  [`Data()`](https://docs.crmpack.org/reference/Data-class.md).
 
 ## Slots
 

@@ -21,7 +21,7 @@ value or a vector with two positive numbers values must be specified for
 the output, `nu` will display the updated value of the precision or the
 updated values for the parameters of the gamma distribution. The
 `Effloglog` inherits all slots from
-[`ModelEff`](https://openpharma.github.io/crmPack/reference/ModelEff-class.md)
+[`ModelEff`](https://docs.crmpack.org/reference/ModelEff-class.md)
 class.
 
 ## Usage

@@ -57,10 +57,10 @@ function.
 
 ## See also
 
-[`LogisticNormal`](https://openpharma.github.io/crmPack/reference/LogisticNormal-class.md),
-[`LogisticLogNormal`](https://openpharma.github.io/crmPack/reference/LogisticLogNormal-class.md),
-[`ProbitLogNormal`](https://openpharma.github.io/crmPack/reference/ProbitLogNormal-class.md),
-[`ProbitLogNormalRel`](https://openpharma.github.io/crmPack/reference/ProbitLogNormalRel-class.md).
+[`LogisticNormal`](https://docs.crmpack.org/reference/LogisticNormal-class.md),
+[`LogisticLogNormal`](https://docs.crmpack.org/reference/LogisticLogNormal-class.md),
+[`ProbitLogNormal`](https://docs.crmpack.org/reference/ProbitLogNormal-class.md),
+[`ProbitLogNormalRel`](https://docs.crmpack.org/reference/ProbitLogNormalRel-class.md).
 
 ## Examples
 

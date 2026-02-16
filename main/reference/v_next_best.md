@@ -1,10 +1,9 @@
-# Internal Helper Functions for Validation of [`NextBest`](https://openpharma.github.io/crmPack/reference/NextBest-class.md) Objects
+# Internal Helper Functions for Validation of [`NextBest`](https://docs.crmpack.org/reference/NextBest-class.md) Objects
 
 **\[stable\]**
 
 These functions are only used internally to validate the format of an
-input
-[`NextBest`](https://openpharma.github.io/crmPack/reference/NextBest-class.md)
+input [`NextBest`](https://docs.crmpack.org/reference/NextBest-class.md)
 or inherited classes and therefore not exported.
 
 ## Usage
@@ -52,56 +51,56 @@ case validation passes.
 ## Functions
 
 - `v_next_best_mtd()`: validates that the
-  [`NextBestMTD`](https://openpharma.github.io/crmPack/reference/NextBestMTD-class.md)
+  [`NextBestMTD`](https://docs.crmpack.org/reference/NextBestMTD-class.md)
   object contains valid `target` probability and `derive` function.
 
 - `v_next_best_ncrm()`: validates that the
-  [`NextBestNCRM`](https://openpharma.github.io/crmPack/reference/NextBestNCRM-class.md)
+  [`NextBestNCRM`](https://docs.crmpack.org/reference/NextBestNCRM-class.md)
   object contains valid `target` probability, `overdose` and
   `max_overdose_prob` probability ranges.
 
 - `v_next_best_ncrm_loss()`: validates that the
-  [`NextBestNCRMLoss`](https://openpharma.github.io/crmPack/reference/NextBestNCRMLoss-class.md)
+  [`NextBestNCRMLoss`](https://docs.crmpack.org/reference/NextBestNCRMLoss-class.md)
   object contains valid objects.
 
 - `v_next_best_dual_endpoint()`: validates that the
-  [`NextBestDualEndpoint`](https://openpharma.github.io/crmPack/reference/NextBestDualEndpoint-class.md)
+  [`NextBestDualEndpoint`](https://docs.crmpack.org/reference/NextBestDualEndpoint-class.md)
   object contains valid probability objects.
 
 - `v_next_best_min_dist()`: validates that the
-  [`NextBestMinDist`](https://openpharma.github.io/crmPack/reference/NextBestMinDist-class.md)
+  [`NextBestMinDist`](https://docs.crmpack.org/reference/NextBestMinDist-class.md)
   object contains valid `target` object.
 
 - `v_next_best_ewoc()`: validates that the
-  [`NextBestEWOC`](https://openpharma.github.io/crmPack/reference/NextBestEWOC-class.md)
+  [`NextBestEWOC`](https://docs.crmpack.org/reference/NextBestEWOC-class.md)
   object contains valid `target`, `overdose` and `max_overdose_prob`
   parameters.
 
 - `v_next_best_inf_theory()`: validates that the
-  [`NextBestInfTheory`](https://openpharma.github.io/crmPack/reference/NextBestInfTheory-class.md)
+  [`NextBestInfTheory`](https://docs.crmpack.org/reference/NextBestInfTheory-class.md)
   object contains valid `target` and `asymmetry` objects.
 
 - `v_next_best_td()`: validates that the
-  [`NextBestTD`](https://openpharma.github.io/crmPack/reference/NextBestTD-class.md)
+  [`NextBestTD`](https://docs.crmpack.org/reference/NextBestTD-class.md)
   object contains valid `prob_target_drt` and `prob_target_eot`
   probabilities.
 
 - `v_next_best_td_samples()`: validates that the
-  [`NextBestTDsamples`](https://openpharma.github.io/crmPack/reference/NextBestTDsamples-class.md)
+  [`NextBestTDsamples`](https://docs.crmpack.org/reference/NextBestTDsamples-class.md)
   object contains valid `derive` function.
 
 - `v_next_best_max_gain_samples()`: validates that the
-  [`NextBestMaxGainSamples`](https://openpharma.github.io/crmPack/reference/NextBestMaxGainSamples-class.md)
+  [`NextBestMaxGainSamples`](https://docs.crmpack.org/reference/NextBestMaxGainSamples-class.md)
   object contains valid `derive` and `mg_derive` functions.
 
 - `v_next_best_prob_mtd_lte()`: validates that the
-  [`NextBestProbMTDLTE`](https://openpharma.github.io/crmPack/reference/NextBestProbMTDLTE-class.md)
+  [`NextBestProbMTDLTE`](https://docs.crmpack.org/reference/NextBestProbMTDLTE-class.md)
   object contains valid `target` probability and `method` string value.
 
 - `v_next_best_prob_mtd_min_dist()`: validates that the
-  [`NextBestProbMTDMinDist`](https://openpharma.github.io/crmPack/reference/NextBestProbMTDMinDist-class.md)
+  [`NextBestProbMTDMinDist`](https://docs.crmpack.org/reference/NextBestProbMTDMinDist-class.md)
   object contains valid `target` probability and `method` string value.
 
 - `v_next_best_ordinal()`: validates that the
-  [`NextBestOrdinal`](https://openpharma.github.io/crmPack/reference/NextBestOrdinal-class.md)
+  [`NextBestOrdinal`](https://docs.crmpack.org/reference/NextBestOrdinal-class.md)
   object contains valid `grade` and standard `NextBest` rule.

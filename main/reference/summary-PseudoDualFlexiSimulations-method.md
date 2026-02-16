@@ -57,7 +57,7 @@ summary(
 ## Value
 
 An object of class
-[`PseudoDualSimulationsSummary`](https://openpharma.github.io/crmPack/reference/PseudoDualSimulationsSummary-class.md).
+[`PseudoDualSimulationsSummary`](https://docs.crmpack.org/reference/PseudoDualSimulationsSummary-class.md).
 
 ## Examples
 

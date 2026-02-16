@@ -5,7 +5,7 @@
 Summarize the simulations with plots.
 
 This plot method can be applied to
-[`PseudoDualSimulations`](https://openpharma.github.io/crmPack/reference/PseudoDualSimulations-class.md)
+[`PseudoDualSimulations`](https://docs.crmpack.org/reference/PseudoDualSimulations-class.md)
 objects in order to summarize them graphically. Possible `type`s of
 plots at the moment are:
 

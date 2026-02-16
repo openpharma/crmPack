@@ -4,7 +4,7 @@
 
 This class has special requirements for the `model` and `data` slots in
 comparison to the parent class
-[`Design`](https://openpharma.github.io/crmPack/reference/Design-class.md):
+[`Design`](https://docs.crmpack.org/reference/Design-class.md):
 
 ## Usage
 
@@ -34,7 +34,7 @@ DADesign(model, data, safetyWindow, ...)
 - ...:
 
   Arguments passed on to
-  [`Design`](https://openpharma.github.io/crmPack/reference/Design-class.md)
+  [`Design`](https://docs.crmpack.org/reference/Design-class.md)
 
   `stopping`
 
@@ -76,9 +76,9 @@ constructor. For example:
 
   (`GeneralModel`)  
   the model to use, see in particular
-  [`DALogisticLogNormal`](https://openpharma.github.io/crmPack/reference/DALogisticLogNormal-class.md)
+  [`DALogisticLogNormal`](https://docs.crmpack.org/reference/DALogisticLogNormal-class.md)
   and
-  [`TITELogisticLogNormal`](https://openpharma.github.io/crmPack/reference/TITELogisticLogNormal-class.md)
+  [`TITELogisticLogNormal`](https://docs.crmpack.org/reference/TITELogisticLogNormal-class.md)
   which make use of the time-to-DLT data.
 
 - `data`:
@@ -97,7 +97,7 @@ Typically, end users will not use the `.DefaultDADesign()` function.
 
 ## See also
 
-[`SafetyWindowConst`](https://openpharma.github.io/crmPack/reference/SafetyWindowConst-class.md)
+[`SafetyWindowConst`](https://docs.crmpack.org/reference/SafetyWindowConst-class.md)
 for creating a constant safety window.
 
 ## Examples

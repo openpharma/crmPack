@@ -1,12 +1,12 @@
-# Internal Helper Functions for Validation of [`GeneralModel`](https://openpharma.github.io/crmPack/reference/GeneralModel-class.md) and [`ModelPseudo`](https://openpharma.github.io/crmPack/reference/ModelPseudo-class.md) Objects
+# Internal Helper Functions for Validation of [`GeneralModel`](https://docs.crmpack.org/reference/GeneralModel-class.md) and [`ModelPseudo`](https://docs.crmpack.org/reference/ModelPseudo-class.md) Objects
 
 **\[stable\]**
 
 These functions are only used internally to validate the format of an
 input
-[`GeneralModel`](https://openpharma.github.io/crmPack/reference/GeneralModel-class.md)
+[`GeneralModel`](https://docs.crmpack.org/reference/GeneralModel-class.md)
 and
-[`ModelPseudo`](https://openpharma.github.io/crmPack/reference/ModelPseudo-class.md)
+[`ModelPseudo`](https://docs.crmpack.org/reference/ModelPseudo-class.md)
 or inherited classes and therefore are not exported.
 
 ## Usage
@@ -83,47 +83,47 @@ case validation passes.
   represents probability.
 
 - `v_model_dual_endpoint()`: validates that
-  [`DualEndpoint`](https://openpharma.github.io/crmPack/reference/DualEndpoint-class.md)
+  [`DualEndpoint`](https://docs.crmpack.org/reference/DualEndpoint-class.md)
   class slots are valid.
 
 - `v_model_dual_endpoint_rw()`: validates that
-  [`DualEndpointRW`](https://openpharma.github.io/crmPack/reference/DualEndpointRW-class.md)
+  [`DualEndpointRW`](https://docs.crmpack.org/reference/DualEndpointRW-class.md)
   class slots are valid.
 
 - `v_model_dual_endpoint_beta()`: validates that
-  [`DualEndpointBeta`](https://openpharma.github.io/crmPack/reference/DualEndpointBeta-class.md)
+  [`DualEndpointBeta`](https://docs.crmpack.org/reference/DualEndpointBeta-class.md)
   class slots are valid.
 
 - `v_model_dual_endpoint_emax()`: validates that
-  [`DualEndpointEmax`](https://openpharma.github.io/crmPack/reference/DualEndpointEmax-class.md)
+  [`DualEndpointEmax`](https://docs.crmpack.org/reference/DualEndpointEmax-class.md)
   class slots are valid.
 
 - `v_model_logistic_indep_beta()`: validates that
-  [`LogisticIndepBeta`](https://openpharma.github.io/crmPack/reference/LogisticIndepBeta-class.md)
+  [`LogisticIndepBeta`](https://docs.crmpack.org/reference/LogisticIndepBeta-class.md)
   class slots are valid.
 
 - `v_model_eff_log_log()`: validates that
-  [`Effloglog`](https://openpharma.github.io/crmPack/reference/Effloglog-class.md)
+  [`Effloglog`](https://docs.crmpack.org/reference/Effloglog-class.md)
   class slots are valid.
 
 - `v_model_eff_flexi()`: validates that
-  [`EffFlexi`](https://openpharma.github.io/crmPack/reference/EffFlexi-class.md)
+  [`EffFlexi`](https://docs.crmpack.org/reference/EffFlexi-class.md)
   class slots are valid.
 
 - `v_model_da_logistic_log_normal()`: validates that
-  [`DALogisticLogNormal`](https://openpharma.github.io/crmPack/reference/DALogisticLogNormal-class.md)
+  [`DALogisticLogNormal`](https://docs.crmpack.org/reference/DALogisticLogNormal-class.md)
   class slots are valid.
 
 - `v_model_tite_logistic_log_normal()`: validates that
-  [`TITELogisticLogNormal`](https://openpharma.github.io/crmPack/reference/TITELogisticLogNormal-class.md)
+  [`TITELogisticLogNormal`](https://docs.crmpack.org/reference/TITELogisticLogNormal-class.md)
   class slots are valid.
 
 - `v_model_one_par_exp_normal_prior()`: validates that
-  [`OneParLogNormalPrior`](https://openpharma.github.io/crmPack/reference/OneParLogNormalPrior-class.md)
+  [`OneParLogNormalPrior`](https://docs.crmpack.org/reference/OneParLogNormalPrior-class.md)
   class slots are valid.
 
 - `v_model_one_par_exp_prior()`: validates that
-  [`OneParExpPrior`](https://openpharma.github.io/crmPack/reference/OneParExpPrior-class.md)
+  [`OneParExpPrior`](https://docs.crmpack.org/reference/OneParExpPrior-class.md)
   class slots are valid.
 
 - `v_logisticlognormalordinal()`: confirms that cov is diagonal

@@ -1,9 +1,9 @@
-# Update certain components of [`DualEndpoint`](https://openpharma.github.io/crmPack/reference/DualEndpoint-class.md) model with regard to prior variance factor of the random walk.
+# Update certain components of [`DualEndpoint`](https://docs.crmpack.org/reference/DualEndpoint-class.md) model with regard to prior variance factor of the random walk.
 
 **\[stable\]**
 
 A simple helper function that takes
-[`DualEndpoint`](https://openpharma.github.io/crmPack/reference/DualEndpoint-class.md)
+[`DualEndpoint`](https://docs.crmpack.org/reference/DualEndpoint-class.md)
 object and updates `priormodel`, `modelspecs`, `init`, `sample` slots
 according to the random walk variance.
 
@@ -38,9 +38,9 @@ h_model_dual_endpoint_sigma2betaw(use_fixed, sigma2betaW, de)
 ## Value
 
 A
-[`DualEndpoint`](https://openpharma.github.io/crmPack/reference/DualEndpoint-class.md)
+[`DualEndpoint`](https://docs.crmpack.org/reference/DualEndpoint-class.md)
 model with updated `priormodel`, `modelspecs`, `init`, `sample` slots.
 
 ## See also
 
-[`DualEndpointRW`](https://openpharma.github.io/crmPack/reference/DualEndpointRW-class.md).
+[`DualEndpointRW`](https://docs.crmpack.org/reference/DualEndpointRW-class.md).

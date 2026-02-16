@@ -3,8 +3,8 @@
 **\[stable\]**
 
 A method that updates existing
-[`DataDA`](https://openpharma.github.io/crmPack/reference/DataDA-class.md)
-object with new data.
+[`DataDA`](https://docs.crmpack.org/reference/DataDA-class.md) object
+with new data.
 
 ## Usage
 
@@ -47,7 +47,7 @@ update(object, u, t0, trialtime, y, ..., check = TRUE)
 - ...:
 
   further arguments passed to `Data` update method
-  [`update-Data`](https://openpharma.github.io/crmPack/reference/update-Data-method.md).
+  [`update-Data`](https://docs.crmpack.org/reference/update-Data-method.md).
   These are used when there are new patients to be added to the cohort.
 
 - check:
@@ -55,14 +55,13 @@ update(object, u, t0, trialtime, y, ..., check = TRUE)
   (`flag`)  
   whether the validation of the updated object should be conducted. See
   help for
-  [`update-Data`](https://openpharma.github.io/crmPack/reference/update-Data-method.md)
+  [`update-Data`](https://docs.crmpack.org/reference/update-Data-method.md)
   for more details on the use case of this parameter.
 
 ## Value
 
 The new, updated
-[`DataDA`](https://openpharma.github.io/crmPack/reference/DataDA-class.md)
-object.
+[`DataDA`](https://docs.crmpack.org/reference/DataDA-class.md) object.
 
 ## Note
 

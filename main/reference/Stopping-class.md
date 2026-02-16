@@ -19,15 +19,15 @@
 
 ## See also
 
-[`StoppingList`](https://openpharma.github.io/crmPack/reference/StoppingList-class.md),
-[`StoppingCohortsNearDose`](https://openpharma.github.io/crmPack/reference/StoppingCohortsNearDose-class.md),
-[`StoppingPatientsNearDose`](https://openpharma.github.io/crmPack/reference/StoppingPatientsNearDose-class.md),
-[`StoppingMinCohorts`](https://openpharma.github.io/crmPack/reference/StoppingMinCohorts-class.md),
-[`StoppingMinPatients`](https://openpharma.github.io/crmPack/reference/StoppingMinPatients-class.md),
-[`StoppingTargetProb`](https://openpharma.github.io/crmPack/reference/StoppingTargetProb-class.md),
-[`StoppingMTDdistribution`](https://openpharma.github.io/crmPack/reference/StoppingMTDdistribution-class.md),
-[`StoppingTargetBiomarker`](https://openpharma.github.io/crmPack/reference/StoppingTargetBiomarker-class.md),
-[`StoppingHighestDose`](https://openpharma.github.io/crmPack/reference/StoppingHighestDose-class.md)
-[`StoppingMTDCV`](https://openpharma.github.io/crmPack/reference/StoppingMTDCV-class.md),
-[`StoppingLowestDoseHSRBeta`](https://openpharma.github.io/crmPack/reference/StoppingLowestDoseHSRBeta-class.md),
-[`StoppingSpecificDose`](https://openpharma.github.io/crmPack/reference/StoppingSpecificDose-class.md).
+[`StoppingList`](https://docs.crmpack.org/reference/StoppingList-class.md),
+[`StoppingCohortsNearDose`](https://docs.crmpack.org/reference/StoppingCohortsNearDose-class.md),
+[`StoppingPatientsNearDose`](https://docs.crmpack.org/reference/StoppingPatientsNearDose-class.md),
+[`StoppingMinCohorts`](https://docs.crmpack.org/reference/StoppingMinCohorts-class.md),
+[`StoppingMinPatients`](https://docs.crmpack.org/reference/StoppingMinPatients-class.md),
+[`StoppingTargetProb`](https://docs.crmpack.org/reference/StoppingTargetProb-class.md),
+[`StoppingMTDdistribution`](https://docs.crmpack.org/reference/StoppingMTDdistribution-class.md),
+[`StoppingTargetBiomarker`](https://docs.crmpack.org/reference/StoppingTargetBiomarker-class.md),
+[`StoppingHighestDose`](https://docs.crmpack.org/reference/StoppingHighestDose-class.md)
+[`StoppingMTDCV`](https://docs.crmpack.org/reference/StoppingMTDCV-class.md),
+[`StoppingLowestDoseHSRBeta`](https://docs.crmpack.org/reference/StoppingLowestDoseHSRBeta-class.md),
+[`StoppingSpecificDose`](https://docs.crmpack.org/reference/StoppingSpecificDose-class.md).

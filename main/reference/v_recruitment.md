@@ -1,10 +1,10 @@
-# Internal Helper Functions for Validation of [`Recruitment`](https://openpharma.github.io/crmPack/reference/Recruitment-class.md) Objects
+# Internal Helper Functions for Validation of [`Recruitment`](https://docs.crmpack.org/reference/Recruitment-class.md) Objects
 
 **\[experimental\]**
 
 These functions are only used internally to validate the format of an
 input
-[`Recruitment`](https://openpharma.github.io/crmPack/reference/Recruitment-class.md)
+[`Recruitment`](https://docs.crmpack.org/reference/Recruitment-class.md)
 or inherited classes and therefore not exported.
 
 ## Usage
@@ -27,5 +27,5 @@ case validation passes.
 ## Functions
 
 - `v_recruitment_ratio()`: validates that the
-  [`RecruitmentRatio`](https://openpharma.github.io/crmPack/reference/RecruitmentRatio-class.md)
+  [`RecruitmentRatio`](https://docs.crmpack.org/reference/RecruitmentRatio-class.md)
   object contains valid `ratio` slot.

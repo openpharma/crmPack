@@ -47,11 +47,11 @@ probability of a DLT at dose \\x\\ is given by \$\$p(x) = \pi \* p1(x) +
 component of the prior. From this model data arises in parallel: at
 doses `xshare`, DLT information `yshare` is observed, in total
 `nObsshare` data points (see
-[`DataMixture`](https://openpharma.github.io/crmPack/reference/DataMixture-class.md)).
+[`DataMixture`](https://docs.crmpack.org/reference/DataMixture-class.md)).
 On the other hand, \\1 - \pi\\, is the probability of a separate model
 \\p2(x)\\. Both components have the same log normal prior distribution,
 which can be specified by the user, and which is inherited from the
-[`LogisticLogNormal`](https://openpharma.github.io/crmPack/reference/LogisticLogNormal-class.md)
+[`LogisticLogNormal`](https://docs.crmpack.org/reference/LogisticLogNormal-class.md)
 class.
 
 ## Slots
@@ -68,9 +68,9 @@ function.
 
 ## See also
 
-[`ModelLogNormal`](https://openpharma.github.io/crmPack/reference/ModelLogNormal-class.md),
-[`LogisticNormalMixture`](https://openpharma.github.io/crmPack/reference/LogisticNormalMixture-class.md),
-[`LogisticNormalFixedMixture`](https://openpharma.github.io/crmPack/reference/LogisticNormalFixedMixture-class.md).
+[`ModelLogNormal`](https://docs.crmpack.org/reference/ModelLogNormal-class.md),
+[`LogisticNormalMixture`](https://docs.crmpack.org/reference/LogisticNormalMixture-class.md),
+[`LogisticNormalFixedMixture`](https://docs.crmpack.org/reference/LogisticNormalFixedMixture-class.md).
 
 ## Examples
 

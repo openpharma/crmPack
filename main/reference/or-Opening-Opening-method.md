@@ -3,9 +3,9 @@
 **\[experimental\]**
 
 Combines two
-[`Opening`](https://openpharma.github.io/crmPack/reference/Opening-class.md)
-objects with OR logic using the `|` operator. This creates an
-[`OpeningAny`](https://openpharma.github.io/crmPack/reference/OpeningAny-class.md)
+[`Opening`](https://docs.crmpack.org/reference/Opening-class.md) objects
+with OR logic using the `|` operator. This creates an
+[`OpeningAny`](https://docs.crmpack.org/reference/OpeningAny-class.md)
 object.
 
 ## Usage
@@ -28,10 +28,10 @@ e1 | e2
 ## Value
 
 An
-[`OpeningAny`](https://openpharma.github.io/crmPack/reference/OpeningAny-class.md)
+[`OpeningAny`](https://docs.crmpack.org/reference/OpeningAny-class.md)
 object combining `e1` and `e2`.
 
 ## See also
 
-[`OpeningAny`](https://openpharma.github.io/crmPack/reference/OpeningAny-class.md)
+[`OpeningAny`](https://docs.crmpack.org/reference/OpeningAny-class.md)
 for more details.

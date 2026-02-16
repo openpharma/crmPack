@@ -3,10 +3,9 @@
 **\[experimental\]**
 
 `OpeningAny` combines multiple
-[`Opening`](https://openpharma.github.io/crmPack/reference/Opening-class.md)
-objects using OR logic. A backfill cohort is opened if ANY opening
-criteria in the list are satisfied. This can also be created using the
-`|` operator.
+[`Opening`](https://docs.crmpack.org/reference/Opening-class.md) objects
+using OR logic. A backfill cohort is opened if ANY opening criteria in
+the list are satisfied. This can also be created using the `|` operator.
 
 ## Usage
 
@@ -28,7 +27,7 @@ OpeningAny(...)
 
   (`list`)  
   a list of
-  [`Opening`](https://openpharma.github.io/crmPack/reference/Opening-class.md)
+  [`Opening`](https://docs.crmpack.org/reference/Opening-class.md)
   objects to be combined with OR logic.
 
 ## Note
@@ -37,9 +36,9 @@ Typically, end users will not use the `.DefaultOpeningAny()` function.
 
 ## See also
 
-[`Opening`](https://openpharma.github.io/crmPack/reference/Opening-class.md),
-[`OpeningAll`](https://openpharma.github.io/crmPack/reference/OpeningAll-class.md),
-[`OpeningList`](https://openpharma.github.io/crmPack/reference/OpeningList-class.md).
+[`Opening`](https://docs.crmpack.org/reference/Opening-class.md),
+[`OpeningAll`](https://docs.crmpack.org/reference/OpeningAll-class.md),
+[`OpeningList`](https://docs.crmpack.org/reference/OpeningList-class.md).
 
 ## Examples
 

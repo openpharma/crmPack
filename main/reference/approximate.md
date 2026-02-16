@@ -26,21 +26,18 @@ approximate(
 
 - object:
 
-  the
-  [`Samples`](https://openpharma.github.io/crmPack/reference/Samples-class.md)
+  the [`Samples`](https://docs.crmpack.org/reference/Samples-class.md)
   object
 
 - model:
 
   the
-  [`GeneralModel`](https://openpharma.github.io/crmPack/reference/GeneralModel-class.md)
+  [`GeneralModel`](https://docs.crmpack.org/reference/GeneralModel-class.md)
   object
 
 - data:
 
-  the
-  [`Data`](https://openpharma.github.io/crmPack/reference/Data-class.md)
-  object
+  the [`Data`](https://docs.crmpack.org/reference/Data-class.md) object
 
 - ...:
 
@@ -79,7 +76,7 @@ model
 
 - `approximate(Samples)`: Here the ... argument can transport additional
   arguments for
-  [`Quantiles2LogisticNormal`](https://openpharma.github.io/crmPack/reference/Quantiles2LogisticNormal.md),
+  [`Quantiles2LogisticNormal`](https://docs.crmpack.org/reference/Quantiles2LogisticNormal.md),
   e.g. in order to control the approximation quality, etc.
 
 ## Examples
@@ -134,11 +131,11 @@ approximation <- approximate(
     maxit = 1
   )
 )
-#> Have got accurate energy 0.09314953824 <= 0.1 in smooth search
-#> Emini is: 0.09314953824
+#> Have got accurate energy 0.09784166539 <= 0.1 in smooth search
+#> Emini is: 0.09784166539
 #> xmini are:
-#> -0.1048619187 0.02595401033 0.7322982859 0.4788882608 0.07163376837 
-#> Totally it used 5.8e-05 secs
+#> -0.2281197306 -0.004489327214 0.7793306248 0.5118599677 0.1233351926 
+#> Totally it used 6e-05 secs
 #> No. of function call is: 1
 
 posterior <- approximation$model

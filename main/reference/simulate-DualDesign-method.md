@@ -29,7 +29,7 @@ simulate(
 - object:
 
   the
-  [`DualDesign`](https://openpharma.github.io/crmPack/reference/DualDesign-class.md)
+  [`DualDesign`](https://docs.crmpack.org/reference/DualDesign-class.md)
   object we want to simulate data from
 
 - nsim:
@@ -39,8 +39,7 @@ simulate(
 
 - seed:
 
-  see
-  [`set_seed()`](https://openpharma.github.io/crmPack/reference/set_seed.md)
+  see [`set_seed()`](https://docs.crmpack.org/reference/set_seed.md)
 
 - trueTox:
 
@@ -83,9 +82,9 @@ simulate(
 
 - mcmcOptions:
 
-  ([McmcOptions](https://openpharma.github.io/crmPack/reference/McmcOptions-class.md))  
+  ([McmcOptions](https://docs.crmpack.org/reference/McmcOptions-class.md))  
   object of class
-  [`McmcOptions`](https://openpharma.github.io/crmPack/reference/McmcOptions-class.md),
+  [`McmcOptions`](https://docs.crmpack.org/reference/McmcOptions-class.md),
   giving the MCMC options for each evaluation in the trial. By default,
   the standard options are used
 
@@ -116,7 +115,7 @@ simulate(
 ## Value
 
 an object of class
-[`DualSimulations`](https://openpharma.github.io/crmPack/reference/DualSimulations-class.md)
+[`DualSimulations`](https://docs.crmpack.org/reference/DualSimulations-class.md)
 
 ## Note
 

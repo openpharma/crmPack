@@ -3,7 +3,7 @@
 **\[stable\]**
 
 This plot method can be applied to
-[`DualSimulations`](https://openpharma.github.io/crmPack/reference/DualSimulations-class.md)
+[`DualSimulations`](https://docs.crmpack.org/reference/DualSimulations-class.md)
 objects in order to summarize them graphically. In addition to the
 standard plot types, there is:
 

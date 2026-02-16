@@ -46,13 +46,13 @@ function.
 
 ## See also
 
-[`ModelLogNormal`](https://openpharma.github.io/crmPack/reference/ModelLogNormal-class.md),
-[`LogisticNormal`](https://openpharma.github.io/crmPack/reference/LogisticNormal-class.md),
-[`LogisticLogNormalSub`](https://openpharma.github.io/crmPack/reference/LogisticLogNormalSub-class.md),
-[`ProbitLogNormal`](https://openpharma.github.io/crmPack/reference/ProbitLogNormal-class.md),
-[`ProbitLogNormalRel`](https://openpharma.github.io/crmPack/reference/ProbitLogNormalRel-class.md),
-[`LogisticLogNormalMixture`](https://openpharma.github.io/crmPack/reference/LogisticLogNormalMixture-class.md),
-[`DALogisticLogNormal`](https://openpharma.github.io/crmPack/reference/DALogisticLogNormal-class.md).
+[`ModelLogNormal`](https://docs.crmpack.org/reference/ModelLogNormal-class.md),
+[`LogisticNormal`](https://docs.crmpack.org/reference/LogisticNormal-class.md),
+[`LogisticLogNormalSub`](https://docs.crmpack.org/reference/LogisticLogNormalSub-class.md),
+[`ProbitLogNormal`](https://docs.crmpack.org/reference/ProbitLogNormal-class.md),
+[`ProbitLogNormalRel`](https://docs.crmpack.org/reference/ProbitLogNormalRel-class.md),
+[`LogisticLogNormalMixture`](https://docs.crmpack.org/reference/LogisticLogNormalMixture-class.md),
+[`DALogisticLogNormal`](https://docs.crmpack.org/reference/DALogisticLogNormal-class.md).
 
 ## Examples
 
@@ -91,8 +91,8 @@ my_model
 #>         y[i] ~ dbern(p[i])
 #>       }
 #>     }
-#> <bytecode: 0x556ae1766940>
-#> <environment: 0x556adbe0af70>
+#> <bytecode: 0x55f994a67a88>
+#> <environment: 0x55f9956ed0f8>
 #> 
 #> Slot "priormodel":
 #> function() {
@@ -100,8 +100,8 @@ my_model
 #>       alpha0 <- theta[1]
 #>       alpha1 <- exp(theta[2])
 #>     }
-#> <bytecode: 0x556ae12a8af0>
-#> <environment: 0x556adbe0b1a0>
+#> <bytecode: 0x55f994d29178>
+#> <environment: 0x55f9956ecec8>
 #> 
 #> Slot "modelspecs":
 #> function(from_prior) {
@@ -111,15 +111,15 @@ my_model
 #>       }
 #>       ms
 #>     }
-#> <bytecode: 0x556adb7cacf8>
-#> <environment: 0x556adbe0b1a0>
+#> <bytecode: 0x55f994ed5c08>
+#> <environment: 0x55f9956ecec8>
 #> 
 #> Slot "init":
 #> function() {
 #>       list(theta = c(0, 1))
 #>     }
-#> <bytecode: 0x556adb6afc68>
-#> <environment: 0x556adbe0b1a0>
+#> <bytecode: 0x55f994f8f770>
+#> <environment: 0x55f9956ecec8>
 #> 
 #> Slot "datanames":
 #> [1] "nObs" "y"    "x"   

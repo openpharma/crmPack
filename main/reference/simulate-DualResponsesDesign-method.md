@@ -4,12 +4,12 @@
 
 This is a method to simulate dose escalation procedure using both DLE
 and efficacy responses. This is a method based on the
-[`DualResponsesDesign`](https://openpharma.github.io/crmPack/reference/DualResponsesDesign-class.md)
+[`DualResponsesDesign`](https://docs.crmpack.org/reference/DualResponsesDesign-class.md)
 where DLE model used are of
-[`ModelTox`](https://openpharma.github.io/crmPack/reference/ModelTox-class.md)
-class object and efficacy model used are of
-[`ModelEff`](https://openpharma.github.io/crmPack/reference/ModelEff-class.md)
-class object. In addition, no DLE and efficacy samples are involved or
+[`ModelTox`](https://docs.crmpack.org/reference/ModelTox-class.md) class
+object and efficacy model used are of
+[`ModelEff`](https://docs.crmpack.org/reference/ModelEff-class.md) class
+object. In addition, no DLE and efficacy samples are involved or
 generated in the simulation process.
 
 ## Usage
@@ -36,7 +36,7 @@ simulate(
 - object:
 
   the
-  [`DualResponsesDesign`](https://openpharma.github.io/crmPack/reference/DualResponsesDesign-class.md)
+  [`DualResponsesDesign`](https://docs.crmpack.org/reference/DualResponsesDesign-class.md)
   object we want to simulate the data from
 
 - nsim:
@@ -46,8 +46,7 @@ simulate(
 
 - seed:
 
-  see
-  [`set_seed()`](https://openpharma.github.io/crmPack/reference/set_seed.md)
+  see [`set_seed()`](https://docs.crmpack.org/reference/set_seed.md)
 
 - trueDLE:
 
@@ -102,7 +101,7 @@ simulate(
 ## Value
 
 an object of class
-[`PseudoDualSimulations`](https://openpharma.github.io/crmPack/reference/PseudoDualSimulations-class.md)
+[`PseudoDualSimulations`](https://docs.crmpack.org/reference/PseudoDualSimulations-class.md)
 
 ## Examples
 

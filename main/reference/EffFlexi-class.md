@@ -85,7 +85,7 @@ EffFlexi(eff, eff_dose, sigma2W, sigma2betaW, rw1 = TRUE, data)
 This model will output the updated value or the updated values of the
 parameters of the inverse gamma distributions for \\sigma2W\\ and
 \\sigma2betaW\\. The `EffFlexi` inherits all slots from
-[`ModelEff`](https://openpharma.github.io/crmPack/reference/ModelEff-class.md)
+[`ModelEff`](https://docs.crmpack.org/reference/ModelEff-class.md)
 class.
 
 ## Slots

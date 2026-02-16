@@ -67,7 +67,7 @@ PseudoDualSimulations(
 - ...:
 
   additional parameters from
-  [`PseudoSimulations`](https://openpharma.github.io/crmPack/reference/PseudoSimulations-class.md)
+  [`PseudoSimulations`](https://docs.crmpack.org/reference/PseudoSimulations-class.md)
 
 ## Slots
 

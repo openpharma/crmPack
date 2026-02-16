@@ -92,7 +92,7 @@ prob(dose, model, samples, grade, cumulative = TRUE, ...)
 
   (`character` or `factor`)  
   for
-  [`LogisticLogNormalGrouped`](https://openpharma.github.io/crmPack/reference/LogisticLogNormalGrouped-class.md),
+  [`LogisticLogNormalGrouped`](https://docs.crmpack.org/reference/LogisticLogNormalGrouped-class.md),
   indicating whether to calculate the probability for the `mono` or for
   the `combo` arm.
 
@@ -140,7 +140,7 @@ the sampling index, i.e. the layout is then `nSamples x dimParameter`.
 
 - `prob(dose = numeric, model = LogisticLogNormalGrouped, samples = Samples)`:
   method for
-  [`LogisticLogNormalGrouped`](https://openpharma.github.io/crmPack/reference/LogisticLogNormalGrouped-class.md)
+  [`LogisticLogNormalGrouped`](https://docs.crmpack.org/reference/LogisticLogNormalGrouped-class.md)
   which needs `group` argument in addition.
 
 - `prob(dose = numeric, model = LogisticKadane, samples = Samples)`:
@@ -158,13 +158,13 @@ the sampling index, i.e. the layout is then `nSamples x dimParameter`.
 - `prob(dose = numeric, model = LogisticIndepBeta, samples = Samples)`:
   compute toxicity probabilities of the occurrence of a DLE at a
   specified dose level, based on the samples of
-  [`LogisticIndepBeta`](https://openpharma.github.io/crmPack/reference/LogisticIndepBeta-class.md)
+  [`LogisticIndepBeta`](https://docs.crmpack.org/reference/LogisticIndepBeta-class.md)
   model parameters.
 
 - `prob(dose = numeric, model = LogisticIndepBeta, samples = missing)`:
   compute toxicity probabilities of the occurrence of a DLE at a
   specified dose level, based on the
-  [`LogisticIndepBeta`](https://openpharma.github.io/crmPack/reference/LogisticIndepBeta-class.md)
+  [`LogisticIndepBeta`](https://docs.crmpack.org/reference/LogisticIndepBeta-class.md)
   model parameters. All model parameters (except `dose`) should be
   present in the `model` object.
 
@@ -176,18 +176,17 @@ the sampling index, i.e. the layout is then `nSamples x dimParameter`.
 
 ## Note
 
-The `prob()` and
-[`dose()`](https://openpharma.github.io/crmPack/reference/dose.md)
+The `prob()` and [`dose()`](https://docs.crmpack.org/reference/dose.md)
 functions are the inverse of each other, for all
-[`dose()`](https://openpharma.github.io/crmPack/reference/dose.md)
-methods for which its first argument, i.e. a given independent variable
-that dose depends on, represents toxicity probability.
+[`dose()`](https://docs.crmpack.org/reference/dose.md) methods for which
+its first argument, i.e. a given independent variable that dose depends
+on, represents toxicity probability.
 
 ## See also
 
-[`probFunction()`](https://openpharma.github.io/crmPack/reference/probFunction.md),
-[`dose()`](https://openpharma.github.io/crmPack/reference/dose.md),
-[`efficacy()`](https://openpharma.github.io/crmPack/reference/efficacy.md).
+[`probFunction()`](https://docs.crmpack.org/reference/probFunction.md),
+[`dose()`](https://docs.crmpack.org/reference/dose.md),
+[`efficacy()`](https://docs.crmpack.org/reference/efficacy.md).
 
 ## Examples
 
@@ -214,9 +213,9 @@ my_samples <- mcmc(data = my_data, model = my_model, options = my_options)
 
 # Posterior for Prob(DLT | dose = 50).
 prob(dose = 50, model = my_model, samples = my_samples)
-#>  [1] 0.5144836 0.7142049 0.7142049 0.7142049 0.5854532 0.5854532 0.5327353
-#>  [8] 0.5327353 0.5327353 0.5877487 0.5877487 0.5877487 0.5877487 0.5877487
-#> [15] 0.5877487 0.5877487 0.1719055 0.1657438 0.2756490 0.2756490
+#>  [1] 0.7197728 0.7197728 0.3869515 0.4623654 0.6506636 0.6506636 0.6506636
+#>  [8] 0.6506636 0.6506636 0.2704975 0.6067626 0.6067626 0.6067626 0.4566325
+#> [15] 0.3576701 0.1396491 0.1396491 0.1396491 0.1531324 0.1699764
 
 # Create data from the 'DataDual' class.
 data_dual <- DataDual(

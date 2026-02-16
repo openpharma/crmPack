@@ -3,7 +3,7 @@
 **\[experimental\]**
 
 Helper function which creates the plot for
-[`nextBest-NextBestMaxGain()`](https://openpharma.github.io/crmPack/reference/nextBest.md)
+[`nextBest-NextBestMaxGain()`](https://docs.crmpack.org/reference/nextBest.md)
 method.
 
 ## Usage

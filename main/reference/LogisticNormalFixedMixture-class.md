@@ -23,7 +23,7 @@ LogisticNormalFixedMixture(components, weights, ref_dose, log_normal = FALSE)
 
   (`list`)  
   the specifications of the mixture components, a list with
-  [`ModelParamsNormal`](https://openpharma.github.io/crmPack/reference/ModelParamsNormal-class.md)
+  [`ModelParamsNormal`](https://docs.crmpack.org/reference/ModelParamsNormal-class.md)
   objects for each bivariate (log) normal prior.
 
 - weights:
@@ -66,7 +66,7 @@ special indicator slot specifies whether a log normal prior is used.
 
   (`list`)  
   the specifications of the mixture components, a list with
-  [`ModelParamsNormal`](https://openpharma.github.io/crmPack/reference/ModelParamsNormal-class.md)
+  [`ModelParamsNormal`](https://docs.crmpack.org/reference/ModelParamsNormal-class.md)
   objects for each bivariate (log) normal prior.
 
 - `weights`:
@@ -93,10 +93,10 @@ Typically, end-users will not use the
 
 ## See also
 
-[`ModelParamsNormal`](https://openpharma.github.io/crmPack/reference/ModelParamsNormal-class.md),
-[`ModelLogNormal`](https://openpharma.github.io/crmPack/reference/ModelLogNormal-class.md),
-[`LogisticNormalMixture`](https://openpharma.github.io/crmPack/reference/LogisticNormalMixture-class.md),
-[`LogisticLogNormalMixture`](https://openpharma.github.io/crmPack/reference/LogisticLogNormalMixture-class.md).
+[`ModelParamsNormal`](https://docs.crmpack.org/reference/ModelParamsNormal-class.md),
+[`ModelLogNormal`](https://docs.crmpack.org/reference/ModelLogNormal-class.md),
+[`LogisticNormalMixture`](https://docs.crmpack.org/reference/LogisticNormalMixture-class.md),
+[`LogisticLogNormalMixture`](https://docs.crmpack.org/reference/LogisticLogNormalMixture-class.md).
 
 ## Examples
 

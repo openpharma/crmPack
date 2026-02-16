@@ -1,10 +1,10 @@
-# Internal Helper Functions for Validation of [`SafetyWindow`](https://openpharma.github.io/crmPack/reference/SafetyWindow-class.md) Objects
+# Internal Helper Functions for Validation of [`SafetyWindow`](https://docs.crmpack.org/reference/SafetyWindow-class.md) Objects
 
 **\[stable\]**
 
 These functions are only used internally to validate the format of an
 input
-[`SafetyWindow`](https://openpharma.github.io/crmPack/reference/SafetyWindow-class.md)
+[`SafetyWindow`](https://docs.crmpack.org/reference/SafetyWindow-class.md)
 or inherited classes and therefore not exported.
 
 ## Usage
@@ -30,9 +30,9 @@ case validation passes.
 ## Functions
 
 - `v_safety_window_size()`: validates that the
-  [`SafetyWindowSize`](https://openpharma.github.io/crmPack/reference/SafetyWindowSize-class.md)
+  [`SafetyWindowSize`](https://docs.crmpack.org/reference/SafetyWindowSize-class.md)
   object contains valid slots.
 
 - `v_safety_window_const()`: validates that the
-  [`SafetyWindowConst`](https://openpharma.github.io/crmPack/reference/SafetyWindowConst-class.md)
+  [`SafetyWindowConst`](https://docs.crmpack.org/reference/SafetyWindowConst-class.md)
   object contains valid slots.

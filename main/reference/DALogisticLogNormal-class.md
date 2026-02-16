@@ -4,7 +4,7 @@
 
 `DALogisticLogNormal` is the class for the logistic model with bivariate
 (log) normal prior and data augmentation. This class inherits from the
-[`LogisticLogNormal`](https://openpharma.github.io/crmPack/reference/LogisticLogNormal-class.md)
+[`LogisticLogNormal`](https://docs.crmpack.org/reference/LogisticLogNormal-class.md)
 class.
 
 ## Usage
@@ -42,7 +42,7 @@ DALogisticLogNormal(npiece = 3, l, c_par = 2, cond_pem = TRUE, ...)
 - ...:
 
   Arguments passed on to
-  [`LogisticLogNormal`](https://openpharma.github.io/crmPack/reference/LogisticLogNormal-class.md)
+  [`LogisticLogNormal`](https://docs.crmpack.org/reference/LogisticLogNormal-class.md)
 
   `mean`
 
@@ -93,9 +93,9 @@ function.
 
 ## See also
 
-[`ModelLogNormal`](https://openpharma.github.io/crmPack/reference/ModelLogNormal-class.md),
-[`LogisticNormal`](https://openpharma.github.io/crmPack/reference/LogisticNormal-class.md),
-[`LogisticLogNormal`](https://openpharma.github.io/crmPack/reference/LogisticLogNormal-class.md).
+[`ModelLogNormal`](https://docs.crmpack.org/reference/ModelLogNormal-class.md),
+[`LogisticNormal`](https://docs.crmpack.org/reference/LogisticNormal-class.md),
+[`LogisticLogNormal`](https://docs.crmpack.org/reference/LogisticLogNormal-class.md).
 
 ## Examples
 

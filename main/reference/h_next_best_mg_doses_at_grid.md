@@ -5,7 +5,7 @@
 Helper function that for a given target doses finds the dose in grid
 that is closest and below the target. There are four different targets
 in the context of
-[`nextBest-NextBestMaxGain()`](https://openpharma.github.io/crmPack/reference/nextBest.md)
+[`nextBest-NextBestMaxGain()`](https://docs.crmpack.org/reference/nextBest.md)
 method: \\min(\`dose_mg\`, \`dose_target_drt\`)\\, `dose_mg`,
 `dose_target_drt` or `dose_target_eot`.
 

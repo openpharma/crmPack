@@ -4,9 +4,9 @@
 
 This class captures the summary of the dual responses simulations using
 pseudo models. It contains all slots from
-[`PseudoSimulationsSummary`](https://openpharma.github.io/crmPack/reference/PseudoSimulationsSummary-class.md)
+[`PseudoSimulationsSummary`](https://docs.crmpack.org/reference/PseudoSimulationsSummary-class.md)
 object. In addition to the slots in the parent class
-[`PseudoSimulationsSummary`](https://openpharma.github.io/crmPack/reference/PseudoSimulationsSummary-class.md),
+[`PseudoSimulationsSummary`](https://docs.crmpack.org/reference/PseudoSimulationsSummary-class.md),
 it contains additional slots for the efficacy model fit information.
 
 Note that objects should not be created by users, therefore no

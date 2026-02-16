@@ -3,8 +3,8 @@
 **\[stable\]**
 
 `DataDA` is a class for the time-to-DLT augmented data. It inherits from
-[`Data`](https://openpharma.github.io/crmPack/reference/Data-class.md)
-and it contains additional DLT free survival times.
+[`Data`](https://docs.crmpack.org/reference/Data-class.md) and it
+contains additional DLT free survival times.
 
 ## Usage
 
@@ -41,7 +41,7 @@ DataDA(
 - ...:
 
   parameters passed to
-  [`Data()`](https://openpharma.github.io/crmPack/reference/Data-class.md).
+  [`Data()`](https://docs.crmpack.org/reference/Data-class.md).
 
 ## Slots
 

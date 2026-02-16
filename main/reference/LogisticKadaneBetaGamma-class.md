@@ -129,8 +129,8 @@ of the American Statistical Association*, **75**(372), 845–854. ISSN
 
 ## See also
 
-[`ModelLogNormal`](https://openpharma.github.io/crmPack/reference/ModelLogNormal-class.md),
-[`LogisticKadane`](https://openpharma.github.io/crmPack/reference/LogisticKadane-class.md).
+[`ModelLogNormal`](https://docs.crmpack.org/reference/ModelLogNormal-class.md),
+[`LogisticKadane`](https://docs.crmpack.org/reference/LogisticKadane-class.md).
 
 ## Examples
 

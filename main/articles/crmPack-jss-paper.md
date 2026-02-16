@@ -129,7 +129,7 @@ with the `examine` and `simulate` methods to obtain hypothetical trial
 courses and operating characteristics, respectively. Note that
 individual model classes and methods are not shown here for clarity,
 please refer to the package documentation for details, e.g., by calling
-[`crmPackHelp()`](https://openpharma.github.io/crmPack/reference/crmPackHelp.md).’
+[`crmPackHelp()`](https://docs.crmpack.org/reference/crmPackHelp.md).’
 
 **Data** Let $`x`$ denote one specific treatment, chosen from the set of
 possible treatments \${\cal X}\$. This could be one specific dose, but
@@ -264,9 +264,9 @@ library("crmPack")
 ```
 
 > As indicated in the startup message, try
-> [`crmPackHelp()`](https://openpharma.github.io/crmPack/reference/crmPackHelp.md)
+> [`crmPackHelp()`](https://docs.crmpack.org/reference/crmPackHelp.md)
 > and
-> [`crmPackExample()`](https://openpharma.github.io/crmPack/reference/crmPackExample.md)
+> [`crmPackExample()`](https://docs.crmpack.org/reference/crmPackExample.md)
 > to open the help page and the package vignette.
 
 ### Implementing a CRM trial
@@ -1216,16 +1216,16 @@ of model-based dose escalation designs. The package does, however,
 already include a wide range of model-based and algorithmic dose
 escalation procedures, which are described in the package’s
 documentation available through
-[`crmPackHelp()`](https://openpharma.github.io/crmPack/reference/crmPackHelp.md)
-and provide end-users easy access to these approaches without the need
-for further coding. Another unique feature of the package is the
-inclusion of approaches that allow placebo data, which are routinely
-collected in healthy volunteer studies, to be utilized. Finally some
-methods \[e.g.,\](Bekele and Shen 2005)(Yeung et al. 2015) for
-dose-finding incorporating safety and efficacy are implemented already
-in the package. As for all designs, the underlying structure to extend
-to novel dual endpoint methods is provided. Simulation facilities for
-all approaches and relevant graphical displays are also available.
+[`crmPackHelp()`](https://docs.crmpack.org/reference/crmPackHelp.md) and
+provide end-users easy access to these approaches without the need for
+further coding. Another unique feature of the package is the inclusion
+of approaches that allow placebo data, which are routinely collected in
+healthy volunteer studies, to be utilized. Finally some methods
+\[e.g.,\](Bekele and Shen 2005)(Yeung et al. 2015) for dose-finding
+incorporating safety and efficacy are implemented already in the
+package. As for all designs, the underlying structure to extend to novel
+dual endpoint methods is provided. Simulation facilities for all
+approaches and relevant graphical displays are also available.
 
 The package is actively developed further and new methods will be added.
 Future extensions of `crmPack` will include model-based combination dose

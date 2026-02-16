@@ -13,27 +13,24 @@ plot(x, y, data, hazard = FALSE, ..., showLegend = TRUE)
 
 - x:
 
-  the
-  [`Samples`](https://openpharma.github.io/crmPack/reference/Samples-class.md)
+  the [`Samples`](https://docs.crmpack.org/reference/Samples-class.md)
   object
 
 - y:
 
   the
-  [`DALogisticLogNormal`](https://openpharma.github.io/crmPack/reference/DALogisticLogNormal-class.md)
+  [`DALogisticLogNormal`](https://docs.crmpack.org/reference/DALogisticLogNormal-class.md)
   object
 
 - data:
 
-  the
-  [`DataDA`](https://openpharma.github.io/crmPack/reference/DataDA-class.md)
+  the [`DataDA`](https://docs.crmpack.org/reference/DataDA-class.md)
   object
 
 - hazard:
 
-  see
-  [`fitPEM`](https://openpharma.github.io/crmPack/reference/fitPEM.md)
-  for the explanation
+  see [`fitPEM`](https://docs.crmpack.org/reference/fitPEM.md) for the
+  explanation
 
 - ...:
 

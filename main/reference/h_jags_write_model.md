@@ -61,5 +61,5 @@ my_model <- function() {
 }
 
 h_jags_write_model(my_model, digits = 5)
-#> [1] "/tmp/RtmpIP84RR/R_crmPack/jags_model_fun2fa4021fbfa.txt"
+#> [1] "/tmp/RtmpassFww/R_crmPack/jags_model_fun2e02510cd29.txt"
 ```

@@ -3,7 +3,7 @@
 **\[experimental\]**
 
 A method that updates existing
-[`DataOrdinal`](https://openpharma.github.io/crmPack/reference/DataOrdinal-class.md)
+[`DataOrdinal`](https://docs.crmpack.org/reference/DataOrdinal-class.md)
 object with new data.
 
 ## Usage
@@ -64,7 +64,7 @@ update(
 ## Value
 
 The new, updated
-[`DataOrdinal`](https://openpharma.github.io/crmPack/reference/DataOrdinal-class.md)
+[`DataOrdinal`](https://docs.crmpack.org/reference/DataOrdinal-class.md)
 object.
 
 ## Details

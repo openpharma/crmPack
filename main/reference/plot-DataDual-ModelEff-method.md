@@ -22,13 +22,13 @@ plot(
 - x:
 
   the data of
-  [`DataDual`](https://openpharma.github.io/crmPack/reference/DataDual-class.md)
+  [`DataDual`](https://docs.crmpack.org/reference/DataDual-class.md)
   class object
 
 - y:
 
   the model of the
-  [`ModelEff`](https://openpharma.github.io/crmPack/reference/ModelEff-class.md)
+  [`ModelEff`](https://docs.crmpack.org/reference/ModelEff-class.md)
   class object
 
 - ...:

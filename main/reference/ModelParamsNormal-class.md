@@ -52,8 +52,8 @@ Typically, end users will not use the `.ModelPAramsNormal()` function.
 
 ## See also
 
-[`ModelLogNormal`](https://openpharma.github.io/crmPack/reference/ModelLogNormal-class.md),
-[`LogisticNormalMixture`](https://openpharma.github.io/crmPack/reference/LogisticNormalMixture-class.md).
+[`ModelLogNormal`](https://docs.crmpack.org/reference/ModelLogNormal-class.md),
+[`LogisticNormalMixture`](https://docs.crmpack.org/reference/LogisticNormalMixture-class.md).
 
 ## Examples
 

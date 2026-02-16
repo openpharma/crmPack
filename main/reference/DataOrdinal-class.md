@@ -3,7 +3,7 @@
 **\[experimental\]**
 
 `DataOrdinal` is a class for ordinal toxicity data. It inherits from
-[`GeneralData`](https://openpharma.github.io/crmPack/reference/GeneralData-class.md)
+[`GeneralData`](https://docs.crmpack.org/reference/GeneralData-class.md)
 and it describes toxicity responses on an ordinal rather than binary
 scale.
 

@@ -3,10 +3,9 @@
 **\[stable\]**
 
 `TDsamplesDesign` is the class of design based only on DLT responses
-using
-[`ModelTox`](https://openpharma.github.io/crmPack/reference/ModelTox-class.md)
+using [`ModelTox`](https://docs.crmpack.org/reference/ModelTox-class.md)
 class model (i.e.
-[`LogisticIndepBeta`](https://openpharma.github.io/crmPack/reference/LogisticIndepBeta-class.md))
+[`LogisticIndepBeta`](https://docs.crmpack.org/reference/LogisticIndepBeta-class.md))
 as well as MCMC samples obtained for this model.
 
 ## Usage
@@ -48,7 +47,7 @@ TDsamplesDesign(
 - ...:
 
   Arguments passed on to
-  [`RuleDesign`](https://openpharma.github.io/crmPack/reference/RuleDesign-class.md)
+  [`RuleDesign`](https://docs.crmpack.org/reference/RuleDesign-class.md)
 
   `nextBest`
 

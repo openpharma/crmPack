@@ -5,7 +5,7 @@
 `CohortSizeMax` is the class for cohort size that is based on maximum of
 multiple cohort size rules. The `cohort_sizes` slot stores a set of
 cohort size rules, which are again the objects of class
-[`CohortSize`](https://openpharma.github.io/crmPack/reference/CohortSize-class.md).
+[`CohortSize`](https://docs.crmpack.org/reference/CohortSize-class.md).
 The maximum of these individual cohort sizes is taken to give the final
 cohort size.
 
@@ -30,7 +30,7 @@ CohortSizeMax(cohort_sizes)
 
   (`list`)  
   a list of cohort size rules, i.e. objects of class
-  [`CohortSize`](https://openpharma.github.io/crmPack/reference/CohortSize-class.md).
+  [`CohortSize`](https://docs.crmpack.org/reference/CohortSize-class.md).
 
 ## Note
 

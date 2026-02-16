@@ -2,7 +2,7 @@
 
 **\[stable\]** This class captures the summary of dual-endpoint
 simulations output. In comparison to its parent class
-[`SimulationsSummary`](https://openpharma.github.io/crmPack/reference/SimulationsSummary-class.md),
+[`SimulationsSummary`](https://docs.crmpack.org/reference/SimulationsSummary-class.md),
 it has additional slots.
 
 ## Usage

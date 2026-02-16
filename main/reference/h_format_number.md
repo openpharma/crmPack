@@ -46,7 +46,7 @@ condition is not met.
 ## Note
 
 This function was primarily designed as a helper for
-[`h_jags_write_model()`](https://openpharma.github.io/crmPack/reference/h_jags_write_model.md)
+[`h_jags_write_model()`](https://docs.crmpack.org/reference/h_jags_write_model.md)
 function.
 
 ## Examples

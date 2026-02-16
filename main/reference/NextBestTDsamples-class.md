@@ -24,13 +24,13 @@ NextBestTDsamples(prob_target_drt, prob_target_eot, derive)
 
   (`proportion`)  
   see slot definition in
-  [`NextBestTD`](https://openpharma.github.io/crmPack/reference/NextBestTD-class.md).
+  [`NextBestTD`](https://docs.crmpack.org/reference/NextBestTD-class.md).
 
 - prob_target_eot:
 
   (`proportion`)  
   see slot definition in
-  [`NextBestTD`](https://openpharma.github.io/crmPack/reference/NextBestTD-class.md).
+  [`NextBestTD`](https://docs.crmpack.org/reference/NextBestTD-class.md).
 
 - derive:
 

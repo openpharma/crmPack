@@ -2,9 +2,9 @@
 
 **\[stable\]** This class captures the trial simulations design using
 both the DLE and efficacy responses using
-[`EffFlexi`](https://openpharma.github.io/crmPack/reference/EffFlexi-class.md)
+[`EffFlexi`](https://docs.crmpack.org/reference/EffFlexi-class.md)
 efficacy model. It extends
-[`PseudoDualSimulations`](https://openpharma.github.io/crmPack/reference/PseudoDualSimulations-class.md)
+[`PseudoDualSimulations`](https://docs.crmpack.org/reference/PseudoDualSimulations-class.md)
 by adding the capability to capture the sigma2betaW estimates.
 
 ## Usage
@@ -25,7 +25,7 @@ PseudoDualFlexiSimulations(sigma2_beta_w_est, ...)
 - ...:
 
   additional parameters from
-  [`PseudoDualSimulations`](https://openpharma.github.io/crmPack/reference/PseudoDualSimulations-class.md)
+  [`PseudoDualSimulations`](https://docs.crmpack.org/reference/PseudoDualSimulations-class.md)
 
 ## Slots
 

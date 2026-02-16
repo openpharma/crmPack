@@ -3,8 +3,8 @@
 **\[stable\]**
 
 Subset observations (patients) from a
-[`Data`](https://openpharma.github.io/crmPack/reference/Data-class.md)
-object using numeric or logical indexing.
+[`Data`](https://docs.crmpack.org/reference/Data-class.md) object using
+numeric or logical indexing.
 
 ## Usage
 
@@ -30,5 +30,5 @@ x[i]
 
 ## Value
 
-A [`Data`](https://openpharma.github.io/crmPack/reference/Data-class.md)
-object with the selected observations.
+A [`Data`](https://docs.crmpack.org/reference/Data-class.md) object with
+the selected observations.

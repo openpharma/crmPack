@@ -8,9 +8,8 @@ efficacy samples. There are two target probabilities of the occurrence
 of a DLT that must be specified: target probability to be used during
 the trial and target probability to be used at the end of the trial. It
 is suitable to use it only with the
-[`ModelTox`](https://openpharma.github.io/crmPack/reference/ModelTox-class.md)
-model and
-[`ModelEff`](https://openpharma.github.io/crmPack/reference/ModelEff-class.md)
+[`ModelTox`](https://docs.crmpack.org/reference/ModelTox-class.md) model
+and [`ModelEff`](https://docs.crmpack.org/reference/ModelEff-class.md)
 classes.
 
 ## Usage
@@ -27,13 +26,13 @@ NextBestMaxGainSamples(prob_target_drt, prob_target_eot, derive, mg_derive)
 
   (`proportion`)  
   see slot definition in
-  [`NextBestMaxGain`](https://openpharma.github.io/crmPack/reference/NextBestMaxGain-class.md).
+  [`NextBestMaxGain`](https://docs.crmpack.org/reference/NextBestMaxGain-class.md).
 
 - prob_target_eot:
 
   (`proportion`)  
   see slot definition in
-  [`NextBestMaxGain`](https://openpharma.github.io/crmPack/reference/NextBestMaxGain-class.md).
+  [`NextBestMaxGain`](https://docs.crmpack.org/reference/NextBestMaxGain-class.md).
 
 - derive:
 

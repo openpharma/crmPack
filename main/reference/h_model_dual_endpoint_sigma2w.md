@@ -1,9 +1,9 @@
-# Update [`DualEndpoint`](https://openpharma.github.io/crmPack/reference/DualEndpoint-class.md) class model components with regard to biomarker regression variance.
+# Update [`DualEndpoint`](https://docs.crmpack.org/reference/DualEndpoint-class.md) class model components with regard to biomarker regression variance.
 
 **\[stable\]**
 
 A simple helper function that takes
-[`DualEndpoint`](https://openpharma.github.io/crmPack/reference/DualEndpoint-class.md)
+[`DualEndpoint`](https://docs.crmpack.org/reference/DualEndpoint-class.md)
 model existing components (`priormodel`, `modelspecs`, `init`,
 `sample`), and updates them with regard to to biomarker regression
 variance `sigma2W`.
@@ -37,7 +37,7 @@ h_model_dual_endpoint_sigma2w(use_fixed, sigma2W, comp)
   a named list with model components that will be updated. The names
   should be: `priormodel`, `modelspecs`, `init`, `sample`. For
   definitions of the components, see
-  [`GeneralModel`](https://openpharma.github.io/crmPack/reference/GeneralModel-class.md)
+  [`GeneralModel`](https://docs.crmpack.org/reference/GeneralModel-class.md)
   class. The `modelspecs` and `init` components on `comp` list are
   specified up to the body of corresponding `GeneralModel@modelspecs`
   and `GeneralModel@init` functions. These bodies are simply a lists

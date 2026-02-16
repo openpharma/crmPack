@@ -4,10 +4,10 @@
 
 This is a method to simulate dose escalation procedure only using the
 DLE responses. This is a method based on the
-[`TDsamplesDesign`](https://openpharma.github.io/crmPack/reference/TDsamplesDesign-class.md)
+[`TDsamplesDesign`](https://docs.crmpack.org/reference/TDsamplesDesign-class.md)
 where model used are of
-[`ModelTox`](https://openpharma.github.io/crmPack/reference/ModelTox-class.md)
-class object DLE samples are also used.
+[`ModelTox`](https://docs.crmpack.org/reference/ModelTox-class.md) class
+object DLE samples are also used.
 
 ## Usage
 
@@ -32,7 +32,7 @@ simulate(
 - object:
 
   the
-  [`TDsamplesDesign`](https://openpharma.github.io/crmPack/reference/TDsamplesDesign-class.md)
+  [`TDsamplesDesign`](https://docs.crmpack.org/reference/TDsamplesDesign-class.md)
   object we want to simulate the data from
 
 - nsim:
@@ -42,8 +42,7 @@ simulate(
 
 - seed:
 
-  see
-  [`set_seed()`](https://openpharma.github.io/crmPack/reference/set_seed.md)
+  see [`set_seed()`](https://docs.crmpack.org/reference/set_seed.md)
 
 - truth:
 
@@ -72,9 +71,9 @@ simulate(
 
 - mcmcOptions:
 
-  ([McmcOptions](https://openpharma.github.io/crmPack/reference/McmcOptions-class.md))  
+  ([McmcOptions](https://docs.crmpack.org/reference/McmcOptions-class.md))  
   object of class
-  [`McmcOptions`](https://openpharma.github.io/crmPack/reference/McmcOptions-class.md),
+  [`McmcOptions`](https://docs.crmpack.org/reference/McmcOptions-class.md),
   giving the MCMC options for each evaluation in the trial. By default,
   the standard options are used
 
@@ -97,7 +96,7 @@ simulate(
 ## Value
 
 an object of class
-[`PseudoSimulations`](https://openpharma.github.io/crmPack/reference/PseudoSimulations-class.md)
+[`PseudoSimulations`](https://docs.crmpack.org/reference/PseudoSimulations-class.md)
 
 ## Examples
 

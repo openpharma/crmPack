@@ -1,8 +1,8 @@
-# Plot the fitted dose-DLE curve using a [`ModelTox`](https://openpharma.github.io/crmPack/reference/ModelTox-class.md) class model with samples
+# Plot the fitted dose-DLE curve using a [`ModelTox`](https://docs.crmpack.org/reference/ModelTox-class.md) class model with samples
 
 Plot the fitted dose-DLE curve using a
-[`ModelTox`](https://openpharma.github.io/crmPack/reference/ModelTox-class.md)
-class model with samples
+[`ModelTox`](https://docs.crmpack.org/reference/ModelTox-class.md) class
+model with samples
 
 ## Usage
 
@@ -23,21 +23,17 @@ plot(
 
 - x:
 
-  the
-  [`Samples`](https://openpharma.github.io/crmPack/reference/Samples-class.md)
+  the [`Samples`](https://docs.crmpack.org/reference/Samples-class.md)
   object
 
 - y:
 
-  the
-  [`ModelTox`](https://openpharma.github.io/crmPack/reference/ModelTox-class.md)
+  the [`ModelTox`](https://docs.crmpack.org/reference/ModelTox-class.md)
   model class object
 
 - data:
 
-  the
-  [`Data`](https://openpharma.github.io/crmPack/reference/Data-class.md)
-  object
+  the [`Data`](https://docs.crmpack.org/reference/Data-class.md) object
 
 - ...:
 

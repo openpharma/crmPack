@@ -20,9 +20,9 @@ Typically, end users will not use the `DefaultCohortSize()` function.
 
 ## See also
 
-[`CohortSizeRange`](https://openpharma.github.io/crmPack/reference/CohortSizeRange-class.md),
-[`CohortSizeDLT`](https://openpharma.github.io/crmPack/reference/CohortSizeDLT-class.md),
-[`CohortSizeConst`](https://openpharma.github.io/crmPack/reference/CohortSizeConst-class.md),
-[`CohortSizeParts`](https://openpharma.github.io/crmPack/reference/CohortSizeParts-class.md),
-[`CohortSizeMin`](https://openpharma.github.io/crmPack/reference/CohortSizeMin-class.md),
-[`CohortSizeMin`](https://openpharma.github.io/crmPack/reference/CohortSizeMin-class.md).
+[`CohortSizeRange`](https://docs.crmpack.org/reference/CohortSizeRange-class.md),
+[`CohortSizeDLT`](https://docs.crmpack.org/reference/CohortSizeDLT-class.md),
+[`CohortSizeConst`](https://docs.crmpack.org/reference/CohortSizeConst-class.md),
+[`CohortSizeParts`](https://docs.crmpack.org/reference/CohortSizeParts-class.md),
+[`CohortSizeMin`](https://docs.crmpack.org/reference/CohortSizeMin-class.md),
+[`CohortSizeMin`](https://docs.crmpack.org/reference/CohortSizeMin-class.md).

@@ -7,7 +7,7 @@ state before starting the simulation is saved, in order to be able to
 reproduce the outcome. For this just use
 [`set.seed`](https://rdrr.io/r/base/Random.html) with the `seed` as
 argument before running
-[`simulate,Design-method`](https://openpharma.github.io/crmPack/reference/simulate-Design-method.md).
+[`simulate,Design-method`](https://docs.crmpack.org/reference/simulate-Design-method.md).
 
 ## Usage
 
@@ -39,8 +39,7 @@ GeneralSimulations(data, doses, seed)
 - `data`:
 
   (`list`)  
-  produced
-  [`Data`](https://openpharma.github.io/crmPack/reference/Data-class.md)
+  produced [`Data`](https://docs.crmpack.org/reference/Data-class.md)
   objects.
 
 - `doses`:

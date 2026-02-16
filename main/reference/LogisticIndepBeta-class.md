@@ -13,7 +13,7 @@ log(x)))\$\$ where \\p(x)\\ is the probability of the occurrence of a
 DLE at dose \\x\\. The two parameters of this model are the intercept
 \\phi1\\ and the slope \\phi2\\. The `LogisticIndepBeta` inherits all
 slots from
-[`ModelTox`](https://openpharma.github.io/crmPack/reference/ModelTox-class.md)
+[`ModelTox`](https://docs.crmpack.org/reference/ModelTox-class.md)
 class.
 
 In the context of pseudo data, the following three arguments are used,

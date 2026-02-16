@@ -4,15 +4,15 @@
 
 This is a method to simulate dose escalation procedure using both DLE
 and efficacy responses. This is a method based on the
-[`DualResponsesSamplesDesign`](https://openpharma.github.io/crmPack/reference/DualResponsesSamplesDesign-class.md)
+[`DualResponsesSamplesDesign`](https://docs.crmpack.org/reference/DualResponsesSamplesDesign-class.md)
 where DLE model used are of
-[`ModelTox`](https://openpharma.github.io/crmPack/reference/ModelTox-class.md)
-class object and efficacy model used are of
-[`ModelEff`](https://openpharma.github.io/crmPack/reference/ModelEff-class.md)
-class object (special case is
-[`EffFlexi`](https://openpharma.github.io/crmPack/reference/EffFlexi-class.md)
-class model object). In addition, DLE and efficacy samples are involved
-or generated in the simulation process.
+[`ModelTox`](https://docs.crmpack.org/reference/ModelTox-class.md) class
+object and efficacy model used are of
+[`ModelEff`](https://docs.crmpack.org/reference/ModelEff-class.md) class
+object (special case is
+[`EffFlexi`](https://docs.crmpack.org/reference/EffFlexi-class.md) class
+model object). In addition, DLE and efficacy samples are involved or
+generated in the simulation process.
 
 ## Usage
 
@@ -41,7 +41,7 @@ simulate(
 - object:
 
   the
-  [`DualResponsesSamplesDesign`](https://openpharma.github.io/crmPack/reference/DualResponsesSamplesDesign-class.md)
+  [`DualResponsesSamplesDesign`](https://docs.crmpack.org/reference/DualResponsesSamplesDesign-class.md)
   object we want to simulate the data from
 
 - nsim:
@@ -51,8 +51,7 @@ simulate(
 
 - seed:
 
-  see
-  [`set_seed()`](https://openpharma.github.io/crmPack/reference/set_seed.md)
+  see [`set_seed()`](https://docs.crmpack.org/reference/set_seed.md)
 
 - trueDLE:
 
@@ -72,14 +71,14 @@ simulate(
 
   (`number`)  
   (not with
-  [`EffFlexi`](https://openpharma.github.io/crmPack/reference/EffFlexi-class.md))
+  [`EffFlexi`](https://docs.crmpack.org/reference/EffFlexi-class.md))
   the precision, the inverse of the variance of the efficacy responses
 
 - trueSigma2:
 
   (`number`)  
   (only with
-  [`EffFlexi`](https://openpharma.github.io/crmPack/reference/EffFlexi-class.md))
+  [`EffFlexi`](https://docs.crmpack.org/reference/EffFlexi-class.md))
   the true variance of the efficacy responses which must be a single
   positive scalar.
 
@@ -87,7 +86,7 @@ simulate(
 
   (`number`)  
   (only with
-  [`EffFlexi`](https://openpharma.github.io/crmPack/reference/EffFlexi-class.md))
+  [`EffFlexi`](https://docs.crmpack.org/reference/EffFlexi-class.md))
   the true variance for the random walk model used for smoothing. This
   must be a single positive scalar.
 
@@ -108,9 +107,9 @@ simulate(
 
 - mcmcOptions:
 
-  ([McmcOptions](https://openpharma.github.io/crmPack/reference/McmcOptions-class.md))  
+  ([McmcOptions](https://docs.crmpack.org/reference/McmcOptions-class.md))  
   object of class
-  [`McmcOptions`](https://openpharma.github.io/crmPack/reference/McmcOptions-class.md),
+  [`McmcOptions`](https://docs.crmpack.org/reference/McmcOptions-class.md),
   giving the MCMC options for each evaluation in the trial. By default,
   the standard options are used
 
@@ -133,9 +132,9 @@ simulate(
 ## Value
 
 an object of class
-[`PseudoDualSimulations`](https://openpharma.github.io/crmPack/reference/PseudoDualSimulations-class.md)
+[`PseudoDualSimulations`](https://docs.crmpack.org/reference/PseudoDualSimulations-class.md)
 or
-[`PseudoDualFlexiSimulations`](https://openpharma.github.io/crmPack/reference/PseudoDualFlexiSimulations-class.md)
+[`PseudoDualFlexiSimulations`](https://docs.crmpack.org/reference/PseudoDualFlexiSimulations-class.md)
 
 ## Examples
 

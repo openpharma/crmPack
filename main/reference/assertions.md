@@ -20,7 +20,7 @@ Depending on the function prefix.
 
 ## See also
 
-[`assert_probabilities()`](https://openpharma.github.io/crmPack/reference/check_probabilities.md),
-[`assert_probability()`](https://openpharma.github.io/crmPack/reference/check_probability.md),
-[`assert_probability_range()`](https://openpharma.github.io/crmPack/reference/check_probability_range.md),
-[`assert_length()`](https://openpharma.github.io/crmPack/reference/check_length.md).
+[`assert_probabilities()`](https://docs.crmpack.org/reference/check_probabilities.md),
+[`assert_probability()`](https://docs.crmpack.org/reference/check_probability.md),
+[`assert_probability_range()`](https://docs.crmpack.org/reference/check_probability_range.md),
+[`assert_length()`](https://docs.crmpack.org/reference/check_length.md).

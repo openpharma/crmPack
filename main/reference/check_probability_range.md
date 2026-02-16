@@ -77,8 +77,8 @@ expect_probability_range(
 
 ## See also
 
-[`assertions`](https://openpharma.github.io/crmPack/reference/assertions.md)
-for more details.
+[`assertions`](https://docs.crmpack.org/reference/assertions.md) for
+more details.
 
 ## Examples
 

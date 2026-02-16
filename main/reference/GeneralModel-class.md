@@ -80,4 +80,4 @@ Typically, end users will not use the `.DefaultGeneralModel()` function.
 
 ## See also
 
-[`ModelPseudo`](https://openpharma.github.io/crmPack/reference/ModelPseudo-class.md).
+[`ModelPseudo`](https://docs.crmpack.org/reference/ModelPseudo-class.md).

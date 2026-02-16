@@ -276,9 +276,8 @@ design <- Design(
 We are now ready to use our trial definition, either to analyse a real
 trial or to simulate the long term operating characteristics of the
 design. These processes are described in their own vignettes
-[here](https://openpharma.github.io/crmPack/articles/trial_analysis.md)
-and
-[here](https://openpharma.github.io/crmPack/articles/trial_simulation.md).
+[here](https://docs.crmpack.org/articles/trial_analysis.md) and
+[here](https://docs.crmpack.org/articles/trial_simulation.md).
 
 ## References
 

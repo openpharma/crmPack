@@ -3,8 +3,8 @@
 **\[stable\]**
 
 A method that updates existing
-[`Data`](https://openpharma.github.io/crmPack/reference/Data-class.md)
-object with new data.
+[`Data`](https://docs.crmpack.org/reference/Data-class.md) object with
+new data.
 
 ## Usage
 
@@ -84,8 +84,7 @@ update(
 ## Value
 
 The new, updated
-[`Data`](https://openpharma.github.io/crmPack/reference/Data-class.md)
-object.
+[`Data`](https://docs.crmpack.org/reference/Data-class.md) object.
 
 ## Details
 

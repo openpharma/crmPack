@@ -1,9 +1,9 @@
-# Simulate Method for the [`DesignGrouped`](https://openpharma.github.io/crmPack/reference/DesignGrouped-class.md) Class
+# Simulate Method for the [`DesignGrouped`](https://docs.crmpack.org/reference/DesignGrouped-class.md) Class
 
 **\[experimental\]**
 
 A simulate method for
-[`DesignGrouped`](https://openpharma.github.io/crmPack/reference/DesignGrouped-class.md)
+[`DesignGrouped`](https://docs.crmpack.org/reference/DesignGrouped-class.md)
 designs.
 
 ## Usage
@@ -41,7 +41,7 @@ simulate(
 
   (`RNGstate`)  
   generated with
-  [`set_seed()`](https://openpharma.github.io/crmPack/reference/set_seed.md).
+  [`set_seed()`](https://docs.crmpack.org/reference/set_seed.md).
 
 - truth:
 
@@ -93,7 +93,7 @@ simulate(
 ## Value
 
 A list of `mono` and `combo` simulation results as
-[`Simulations`](https://openpharma.github.io/crmPack/reference/Simulations-class.md)
+[`Simulations`](https://docs.crmpack.org/reference/Simulations-class.md)
 objects.
 
 ## Examples
@@ -182,7 +182,7 @@ mono_sims_sum
 #> Proportion of trials selecting target MTD: 0 %
 #> Dose most often selected as MTD: 12 
 #> Observed toxicity rate at dose most often selected: NaN %
-#> Fitted toxicity rate at dose most often selected : mean 8 % (8 %, 8 %) 
+#> Fitted toxicity rate at dose most often selected : mean 7 % (7 %, 7 %) 
 #> Stop reason triggered:
 #>  P(0.2 ≤ prob(DLE | NBD) ≤ 0.35) ≥ 0.5 :  0 %
 #>  ≥ 10 patients dosed :  100 %
@@ -198,12 +198,12 @@ combo_sims_sum
 #> Number of patients treated above target tox interval : mean 0 (0, 0) 
 #> Proportions of DLTs in the trials : mean 17 % (17 %, 17 %) 
 #> Mean toxicity risks for the patients on active : mean 9 % (9 %, 9 %) 
-#> Doses selected as MTD : mean 6 (6, 6) 
-#> True toxicity at doses selected : mean 12 % (12 %, 12 %) 
+#> Doses selected as MTD : mean 12 (12, 12) 
+#> True toxicity at doses selected : mean 17 % (17 %, 17 %) 
 #> Proportion of trials selecting target MTD: 0 %
-#> Dose most often selected as MTD: 6 
-#> Observed toxicity rate at dose most often selected: NaN %
-#> Fitted toxicity rate at dose most often selected : mean 15 % (15 %, 15 %) 
+#> Dose most often selected as MTD: 12 
+#> Observed toxicity rate at dose most often selected: 33 %
+#> Fitted toxicity rate at dose most often selected : mean 19 % (19 %, 19 %) 
 #> Stop reason triggered:
 #>  P(0.2 ≤ prob(DLE | NBD) ≤ 0.35) ≥ 0.5 :  0 %
 #>  ≥ 10 patients dosed :  100 %

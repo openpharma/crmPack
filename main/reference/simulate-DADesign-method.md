@@ -32,8 +32,7 @@ simulate(
 
 - object:
 
-  the
-  [`DADesign`](https://openpharma.github.io/crmPack/reference/DADesign-class.md)
+  the [`DADesign`](https://docs.crmpack.org/reference/DADesign-class.md)
   object we want to simulate data from
 
 - nsim:
@@ -43,8 +42,7 @@ simulate(
 
 - seed:
 
-  see
-  [`set_seed()`](https://openpharma.github.io/crmPack/reference/set_seed.md)
+  see [`set_seed()`](https://docs.crmpack.org/reference/set_seed.md)
 
 - truthTox:
 
@@ -95,9 +93,9 @@ simulate(
 
 - mcmcOptions:
 
-  ([McmcOptions](https://openpharma.github.io/crmPack/reference/McmcOptions-class.md))  
+  ([McmcOptions](https://docs.crmpack.org/reference/McmcOptions-class.md))  
   object of class
-  [`McmcOptions`](https://openpharma.github.io/crmPack/reference/McmcOptions-class.md),
+  [`McmcOptions`](https://docs.crmpack.org/reference/McmcOptions-class.md),
   giving the MCMC options for each evaluation in the trial. By default,
   the standard options are used.
 
@@ -133,7 +131,7 @@ simulate(
 ## Value
 
 an object of class
-[`Simulations`](https://openpharma.github.io/crmPack/reference/Simulations-class.md)
+[`Simulations`](https://docs.crmpack.org/reference/Simulations-class.md)
 
 ## Note
 

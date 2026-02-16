@@ -60,7 +60,7 @@ Typically, end users will not use the `.DefaultOneparExpPrior()`
 function.
 
 Typically, end users will not use the
-[`.DefaultOneParLogNormalPrior()`](https://openpharma.github.io/crmPack/reference/OneParLogNormalPrior-class.md)
+[`.DefaultOneParLogNormalPrior()`](https://docs.crmpack.org/reference/OneParLogNormalPrior-class.md)
 function.
 
 ## References

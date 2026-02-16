@@ -1,8 +1,8 @@
-# Plot the fitted dose-efficacy curve using a model from [`ModelEff`](https://openpharma.github.io/crmPack/reference/ModelEff-class.md) class with samples
+# Plot the fitted dose-efficacy curve using a model from [`ModelEff`](https://docs.crmpack.org/reference/ModelEff-class.md) class with samples
 
 Plot the fitted dose-efficacy curve using a model from
-[`ModelEff`](https://openpharma.github.io/crmPack/reference/ModelEff-class.md)
-class with samples
+[`ModelEff`](https://docs.crmpack.org/reference/ModelEff-class.md) class
+with samples
 
 ## Usage
 
@@ -23,21 +23,17 @@ plot(
 
 - x:
 
-  the
-  [`Samples`](https://openpharma.github.io/crmPack/reference/Samples-class.md)
+  the [`Samples`](https://docs.crmpack.org/reference/Samples-class.md)
   object
 
 - y:
 
-  the
-  [`ModelEff`](https://openpharma.github.io/crmPack/reference/ModelEff-class.md)
+  the [`ModelEff`](https://docs.crmpack.org/reference/ModelEff-class.md)
   model class object
 
 - data:
 
-  the
-  [`Data`](https://openpharma.github.io/crmPack/reference/Data-class.md)
-  object
+  the [`Data`](https://docs.crmpack.org/reference/Data-class.md) object
 
 - ...:
 

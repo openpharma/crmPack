@@ -3,7 +3,7 @@
 **\[stable\]**
 
 `Data` is a class for the data input. It inherits from
-[`GeneralData`](https://openpharma.github.io/crmPack/reference/GeneralData-class.md).
+[`GeneralData`](https://docs.crmpack.org/reference/GeneralData-class.md).
 
 ## Usage
 

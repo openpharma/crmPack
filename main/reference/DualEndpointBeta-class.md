@@ -42,18 +42,18 @@ DualEndpointBeta(E0, Emax, delta1, mode, ref_dose_beta = 1, ...)
   (`number`)  
   the reference dose \\x\*\\ (strictly positive number). Note that this
   is different from the `ref_dose` in the inherited
-  [`DualEndpoint`](https://openpharma.github.io/crmPack/reference/DualEndpoint-class.md)
+  [`DualEndpoint`](https://docs.crmpack.org/reference/DualEndpoint-class.md)
   model).
 
 - ...:
 
   parameters passed to
-  [`DualEndpoint()`](https://openpharma.github.io/crmPack/reference/DualEndpoint-class.md).
+  [`DualEndpoint()`](https://docs.crmpack.org/reference/DualEndpoint-class.md).
 
 ## Details
 
 This class extends the
-[`DualEndpoint`](https://openpharma.github.io/crmPack/reference/DualEndpoint-class.md)
+[`DualEndpoint`](https://docs.crmpack.org/reference/DualEndpoint-class.md)
 class so that the dose-biomarker relationship \\f(x)\\ is modelled by a
 parametric, rescaled beta density function: \$\$f(x) = E0 + (Emax - E0)
 \* Beta(delta1, delta2) \* (x/x\*)^{delta1} \* (1 - x/x\*)^{delta2},\$\$
@@ -100,7 +100,7 @@ range.
   (`positive_number`)  
   the reference dose \\x\*\\ (note that this is different from the
   `ref_dose` in the inherited
-  [`DualEndpoint`](https://openpharma.github.io/crmPack/reference/DualEndpoint-class.md)
+  [`DualEndpoint`](https://docs.crmpack.org/reference/DualEndpoint-class.md)
   model).
 
 ## Note
@@ -110,9 +110,9 @@ function.
 
 ## See also
 
-[`DualEndpoint`](https://openpharma.github.io/crmPack/reference/DualEndpoint-class.md),
-[`DualEndpointRW`](https://openpharma.github.io/crmPack/reference/DualEndpointRW-class.md),
-[`DualEndpointEmax`](https://openpharma.github.io/crmPack/reference/DualEndpointEmax-class.md).
+[`DualEndpoint`](https://docs.crmpack.org/reference/DualEndpoint-class.md),
+[`DualEndpointRW`](https://docs.crmpack.org/reference/DualEndpointRW-class.md),
+[`DualEndpointEmax`](https://docs.crmpack.org/reference/DualEndpointEmax-class.md).
 
 ## Examples
 

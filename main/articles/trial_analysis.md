@@ -3,7 +3,7 @@
 ## Introduction
 
 This vignette picks up where the previous one ([Trial
-Definition](https://openpharma.github.io/crmPack/articles/trial_definition.md)),
+Definition](https://docs.crmpack.org/articles/trial_definition.md)),
 ends. To recap, our trial defines the six fundamental elements of a CRM
 trial as
 
@@ -78,7 +78,7 @@ The trial will stop when *either*
 
 The code to define these elements of the trial design is given in the
 [Trial
-Definition](https://openpharma.github.io/crmPack/articles/trial_definition.Rmd)
+Definition](https://docs.crmpack.org/articles/trial_definition.Rmd)
 vignette.
 
 ## Analysing a trial

@@ -4,9 +4,9 @@
 
 This function constructs a minimally informative prior, which is
 captured in a
-[`LogisticNormal`](https://openpharma.github.io/crmPack/reference/LogisticNormal-class.md)
+[`LogisticNormal`](https://docs.crmpack.org/reference/LogisticNormal-class.md)
 (or
-[`LogisticLogNormal`](https://openpharma.github.io/crmPack/reference/LogisticLogNormal-class.md))
+[`LogisticLogNormal`](https://docs.crmpack.org/reference/LogisticLogNormal-class.md))
 object.
 
 Based on the proposal by Neuenschwander et al. (2008) , a minimally
@@ -24,11 +24,11 @@ arguments `probmin` and `probmax`, respectively. Subsequently, for all
 doses supplied in the `dosegrid` argument, beta distributions are set up
 from the assumption that the prior medians are linear in log-dose on the
 logit scale, and
-[`Quantiles2LogisticNormal()`](https://openpharma.github.io/crmPack/reference/Quantiles2LogisticNormal.md)
+[`Quantiles2LogisticNormal()`](https://docs.crmpack.org/reference/Quantiles2LogisticNormal.md)
 is used to transform the resulting quantiles into an approximating
-[`LogisticNormal`](https://openpharma.github.io/crmPack/reference/LogisticNormal-class.md)
+[`LogisticNormal`](https://docs.crmpack.org/reference/LogisticNormal-class.md)
 (or
-[`LogisticLogNormal`](https://openpharma.github.io/crmPack/reference/LogisticLogNormal-class.md))
+[`LogisticLogNormal`](https://docs.crmpack.org/reference/LogisticLogNormal-class.md))
 model. Note that the reference dose is not required for these
 computations.
 
@@ -83,14 +83,14 @@ MinimalInformative(
 - ...:
 
   additional arguments for computations, see
-  [`Quantiles2LogisticNormal()`](https://openpharma.github.io/crmPack/reference/Quantiles2LogisticNormal.md),
+  [`Quantiles2LogisticNormal()`](https://docs.crmpack.org/reference/Quantiles2LogisticNormal.md),
   e.g. `refDose` and `logNormal=TRUE` to obtain a minimal informative
   log normal prior.
 
 ## Value
 
 See
-[`Quantiles2LogisticNormal()`](https://openpharma.github.io/crmPack/reference/Quantiles2LogisticNormal.md).
+[`Quantiles2LogisticNormal()`](https://docs.crmpack.org/reference/Quantiles2LogisticNormal.md).
 
 ## References
 
@@ -115,11 +115,11 @@ minInfModel <- MinimalInformative(dosegrid = coarseGrid,
                                   control=## for real case: leave out control 
                                     list(max.time=0.1)) 
 #> It: 1, obj value (lsEnd): 0.6732911061 indTrace: 1
-#> timeSpan = 4.430515 maxTime = 0.1
+#> timeSpan = 4.270682 maxTime = 0.1
 #> Emini is: 0.6732911061
 #> xmini are:
 #> 3.436837973 9.074768474 4.306636605 0.7253533934 -0.7572128108 
-#> Totally it used 4.430545 secs
+#> Totally it used 4.27072 secs
 #> No. of function call is: 991
 
 # Plotting the result

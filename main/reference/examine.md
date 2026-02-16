@@ -23,9 +23,8 @@ examine(object, mcmcOptions = McmcOptions(), ..., maxNoIncrement)
 
 - object:
 
-  ([`Design`](https://openpharma.github.io/crmPack/reference/Design-class.md)
-  or
-  [`RuleDesign`](https://openpharma.github.io/crmPack/reference/RuleDesign-class.md))  
+  ([`Design`](https://docs.crmpack.org/reference/Design-class.md) or
+  [`RuleDesign`](https://docs.crmpack.org/reference/RuleDesign-class.md))  
   the design we want to examine
 
 - ...:
@@ -39,7 +38,7 @@ examine(object, mcmcOptions = McmcOptions(), ..., maxNoIncrement)
 
 - mcmcOptions:
 
-  ([`McmcOptions`](https://openpharma.github.io/crmPack/reference/McmcOptions-class.md))  
+  ([`McmcOptions`](https://docs.crmpack.org/reference/McmcOptions-class.md))  
   giving the MCMC options for each evaluation in the trial. By default,
   the standard options are used
 

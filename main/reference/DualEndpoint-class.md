@@ -83,7 +83,7 @@ assigned a prior distribution from the scaled Beta family; see the
 details below under slot `rho`.
 
 Please see the example vignette by typing
-[`crmPackExample()`](https://openpharma.github.io/crmPack/reference/crmPackExample.md)
+[`crmPackExample()`](https://docs.crmpack.org/reference/crmPackExample.md)
 for a full example.
 
 ## Slots
@@ -134,6 +134,6 @@ Typically, end users will not use the `.DefaultDualEndpoint()` function.
 
 ## See also
 
-[`DualEndpointRW`](https://openpharma.github.io/crmPack/reference/DualEndpointRW-class.md),
-[`DualEndpointBeta`](https://openpharma.github.io/crmPack/reference/DualEndpointBeta-class.md),
-[`DualEndpointEmax`](https://openpharma.github.io/crmPack/reference/DualEndpointEmax-class.md).
+[`DualEndpointRW`](https://docs.crmpack.org/reference/DualEndpointRW-class.md),
+[`DualEndpointBeta`](https://docs.crmpack.org/reference/DualEndpointBeta-class.md),
+[`DualEndpointEmax`](https://docs.crmpack.org/reference/DualEndpointEmax-class.md).

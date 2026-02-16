@@ -60,7 +60,7 @@ size(object, ...)
 - data:
 
   the data input, an object of class
-  [`DataOrdinal`](https://openpharma.github.io/crmPack/reference/DataOrdinal-class.md).
+  [`DataOrdinal`](https://docs.crmpack.org/reference/DataOrdinal-class.md).
 
 ## Value
 

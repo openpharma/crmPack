@@ -42,7 +42,7 @@ cov).\$\$
 ## Note
 
 The model used in the
-[`DualEndpoint`](https://openpharma.github.io/crmPack/reference/DualEndpoint-class.md)
+[`DualEndpoint`](https://docs.crmpack.org/reference/DualEndpoint-class.md)
 classes is an extension of this model: `DualEndpoint` supports both
 `ProbitNormal` (which is not implemented yet) and `ProbitLogNormal`
 models through its `use_log_dose` slot. `ProbitLogNormal` has no such
@@ -57,11 +57,11 @@ function.
 
 ## See also
 
-[`ModelLogNormal`](https://openpharma.github.io/crmPack/reference/ModelLogNormal-class.md),
-[`LogisticNormal`](https://openpharma.github.io/crmPack/reference/LogisticNormal-class.md),
-[`LogisticLogNormal`](https://openpharma.github.io/crmPack/reference/LogisticLogNormal-class.md),
-[`LogisticLogNormalSub`](https://openpharma.github.io/crmPack/reference/LogisticLogNormalSub-class.md),
-[`ProbitLogNormalRel`](https://openpharma.github.io/crmPack/reference/ProbitLogNormalRel-class.md).
+[`ModelLogNormal`](https://docs.crmpack.org/reference/ModelLogNormal-class.md),
+[`LogisticNormal`](https://docs.crmpack.org/reference/LogisticNormal-class.md),
+[`LogisticLogNormal`](https://docs.crmpack.org/reference/LogisticLogNormal-class.md),
+[`LogisticLogNormalSub`](https://docs.crmpack.org/reference/LogisticLogNormalSub-class.md),
+[`ProbitLogNormalRel`](https://docs.crmpack.org/reference/ProbitLogNormalRel-class.md).
 
 ## Examples
 

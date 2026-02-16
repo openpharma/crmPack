@@ -21,14 +21,13 @@ plot(
 
 - x:
 
-  the data of
-  [`Data`](https://openpharma.github.io/crmPack/reference/Data-class.md)
+  the data of [`Data`](https://docs.crmpack.org/reference/Data-class.md)
   class object
 
 - y:
 
   the model of the
-  [`ModelTox`](https://openpharma.github.io/crmPack/reference/ModelTox-class.md)
+  [`ModelTox`](https://docs.crmpack.org/reference/ModelTox-class.md)
   class object
 
 - xlab:

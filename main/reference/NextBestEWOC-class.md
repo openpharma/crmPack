@@ -62,7 +62,7 @@ Typically, end users will not use the `.DefaultNextBestEWOC()` function.
 
 ## See also
 
-[`NextBest`](https://openpharma.github.io/crmPack/reference/NextBest-class.md),
+[`NextBest`](https://docs.crmpack.org/reference/NextBest-class.md),
 other next-best classes listed in its documentation.
 
 ## Examples

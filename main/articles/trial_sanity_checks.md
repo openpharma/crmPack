@@ -1,11 +1,11 @@
 # Trial Design: basic sanity checks
 
-> The [`tidy()`](https://openpharma.github.io/crmPack/reference/tidy.md)
-> methods used in this vignette follow the pattern established by the
-> `broom` package and turn objects of various classes into tibbles.
-> Currently, they are defined in a code chunk within this tibble that is
-> not displayed, but they will be added to the main `crmPack` package at
-> a later date.
+> The [`tidy()`](https://docs.crmpack.org/reference/tidy.md) methods
+> used in this vignette follow the pattern established by the `broom`
+> package and turn objects of various classes into tibbles. Currently,
+> they are defined in a code chunk within this tibble that is not
+> displayed, but they will be added to the main `crmPack` package at a
+> later date.
 
 ## Introduction
 

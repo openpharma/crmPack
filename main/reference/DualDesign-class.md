@@ -5,7 +5,7 @@
 `DualDesign` is the class for the dual-endpoint CRM design. This class
 has special requirements for the `model` and `data` slots in comparison
 to the parent class
-[`Design`](https://openpharma.github.io/crmPack/reference/Design-class.md).
+[`Design`](https://docs.crmpack.org/reference/Design-class.md).
 
 ## Usage
 
@@ -30,7 +30,7 @@ DualDesign(model, data, ...)
 - ...:
 
   Arguments passed on to
-  [`Design`](https://openpharma.github.io/crmPack/reference/Design-class.md)
+  [`Design`](https://docs.crmpack.org/reference/Design-class.md)
 
   `stopping`
 

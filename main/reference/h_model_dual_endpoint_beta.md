@@ -1,20 +1,20 @@
-# Update certain components of [`DualEndpoint`](https://openpharma.github.io/crmPack/reference/DualEndpoint-class.md) model with regard to parameters of the function that models dose-biomarker relationship defined in the [`DualEndpointBeta`](https://openpharma.github.io/crmPack/reference/DualEndpointBeta-class.md) class.
+# Update certain components of [`DualEndpoint`](https://docs.crmpack.org/reference/DualEndpoint-class.md) model with regard to parameters of the function that models dose-biomarker relationship defined in the [`DualEndpointBeta`](https://docs.crmpack.org/reference/DualEndpointBeta-class.md) class.
 
 **\[stable\]**
 
 A simple helper function that takes
-[`DualEndpoint`](https://openpharma.github.io/crmPack/reference/DualEndpoint-class.md)
+[`DualEndpoint`](https://docs.crmpack.org/reference/DualEndpoint-class.md)
 object and updates `use_fixed`, `priormodel`, `modelspecs`, `init`,
 `sample` slots with regard to a given parameter of the dose-biomarker
 relationship \\f(x)\\ defined in the
-[`DualEndpointBeta`](https://openpharma.github.io/crmPack/reference/DualEndpointBeta-class.md)
+[`DualEndpointBeta`](https://docs.crmpack.org/reference/DualEndpointBeta-class.md)
 class. This update solely depends on whether a given parameter's value
 `param` is a fixed-valued scalar or two-elements numeric vector. In the
 later case, it is assumed that `param` represents two parameters of a
 probability distribution that will be used in `priormodel` function to
 generate values for the `param_name` parameter of \\f(x)\\. See the help
 page for
-[`DualEndpointBeta`](https://openpharma.github.io/crmPack/reference/DualEndpointBeta-class.md)
+[`DualEndpointBeta`](https://docs.crmpack.org/reference/DualEndpointBeta-class.md)
 class for more details.
 
 ## Usage
@@ -67,6 +67,6 @@ h_model_dual_endpoint_beta(
 ## Value
 
 A
-[`DualEndpoint`](https://openpharma.github.io/crmPack/reference/DualEndpoint-class.md)
+[`DualEndpoint`](https://docs.crmpack.org/reference/DualEndpoint-class.md)
 model with updated `use_fixed`, `priormodel`, `modelspecs`, `init`,
 `sample` slots.

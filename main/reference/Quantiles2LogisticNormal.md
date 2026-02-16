@@ -3,7 +3,7 @@
 **\[stable\]**
 
 This function uses generalized simulated annealing to optimize a
-[`LogisticNormal`](https://openpharma.github.io/crmPack/reference/LogisticNormal-class.md)
+[`LogisticNormal`](https://docs.crmpack.org/reference/LogisticNormal-class.md)
 model to be as close as possible to the given prior quantiles.
 
 ## Usage
@@ -102,9 +102,9 @@ Quantiles2LogisticNormal(
 ## Value
 
 A list with the best approximating `model`
-([`LogisticNormal`](https://openpharma.github.io/crmPack/reference/LogisticNormal-class.md)
+([`LogisticNormal`](https://docs.crmpack.org/reference/LogisticNormal-class.md)
 or
-[`LogisticLogNormal`](https://openpharma.github.io/crmPack/reference/LogisticLogNormal-class.md)),
+[`LogisticLogNormal`](https://docs.crmpack.org/reference/LogisticLogNormal-class.md)),
 the resulting `quantiles`, the `required` quantiles and the `distance`
 to the required quantiles, as well as the final `parameters` (which
 could be used for running the algorithm a second time).

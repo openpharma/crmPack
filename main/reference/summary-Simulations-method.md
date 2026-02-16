@@ -37,7 +37,7 @@ summary(object, truth, target = c(0.2, 0.35), ...)
 ## Value
 
 An object of class
-[`SimulationsSummary`](https://openpharma.github.io/crmPack/reference/SimulationsSummary-class.md).
+[`SimulationsSummary`](https://docs.crmpack.org/reference/SimulationsSummary-class.md).
 
 ## Examples
 
@@ -144,9 +144,9 @@ summary(mySims, truth = myTruth)
 #> Dose most often selected as MTD: 25 
 #> Observed toxicity rate at dose most often selected: 57 %
 #> Fitted toxicity rate at dose most often selected : mean 26 % (26 %, 26 %) 
-#> max_mtd : 189.46 
-#> mean_mtd : 29.76 
-#> median_mtd : 27.08 
+#> max_mtd : 204.96 
+#> mean_mtd : 29.17 
+#> median_mtd : 27.56 
 #> Stop reason triggered:
 #>  ≥ 3 cohorts dosed :  100 %
 #>  P(0.2 ≤ prob(DLE | NBD) ≤ 0.35) ≥ 0.5 :  100 %

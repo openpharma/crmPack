@@ -3,21 +3,19 @@
 **\[stable\]**
 
 A method that creates a plot for
-[`Data`](https://openpharma.github.io/crmPack/reference/Data-class.md)
-and
-[`DataOrdinal`](https://openpharma.github.io/crmPack/reference/DataOrdinal-class.md)
+[`Data`](https://docs.crmpack.org/reference/Data-class.md) and
+[`DataOrdinal`](https://docs.crmpack.org/reference/DataOrdinal-class.md)
 objects.
 
 **\[stable\]**
 
 A method that creates a plot for
-[`Data`](https://openpharma.github.io/crmPack/reference/Data-class.md)
-object.
+[`Data`](https://docs.crmpack.org/reference/Data-class.md) object.
 
 **\[experimental\]**
 
 A method that creates a plot for
-[`DataOrdinal`](https://openpharma.github.io/crmPack/reference/DataOrdinal-class.md)
+[`DataOrdinal`](https://docs.crmpack.org/reference/DataOrdinal-class.md)
 object.
 
 ## Usage

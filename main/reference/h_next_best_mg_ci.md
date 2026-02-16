@@ -3,7 +3,7 @@
 **\[experimental\]**
 
 Helper function for
-[`nextBest-NextBestMaxGain()`](https://openpharma.github.io/crmPack/reference/nextBest.md)
+[`nextBest-NextBestMaxGain()`](https://docs.crmpack.org/reference/nextBest.md)
 method. It computes a 95% credibility intervals for given target dose
 and max gain dose. It also returns a ratio of upper and lower bounds of
 the interval.

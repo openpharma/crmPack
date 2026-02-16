@@ -7,7 +7,7 @@ regression model using a bivariate normal prior on the intercept and log
 slope parameters.
 
 This class inherits from the
-[`LogisticLogNormal`](https://openpharma.github.io/crmPack/reference/LogisticLogNormal-class.md).
+[`LogisticLogNormal`](https://docs.crmpack.org/reference/LogisticLogNormal-class.md).
 
 ## Usage
 
@@ -27,7 +27,7 @@ TITELogisticLogNormal(weight_method = "linear", ...)
 - ...:
 
   Arguments passed on to
-  [`LogisticLogNormal`](https://openpharma.github.io/crmPack/reference/LogisticLogNormal-class.md)
+  [`LogisticLogNormal`](https://docs.crmpack.org/reference/LogisticLogNormal-class.md)
 
   `mean`
 
@@ -75,7 +75,7 @@ Applied Statistics*, **7**(4), 2138–2156.
 
 ## See also
 
-[`DALogisticLogNormal`](https://openpharma.github.io/crmPack/reference/DALogisticLogNormal-class.md).
+[`DALogisticLogNormal`](https://docs.crmpack.org/reference/DALogisticLogNormal-class.md).
 
 ## Examples
 

@@ -3,9 +3,8 @@
 **\[stable\]**
 
 `DataParts` is a class for the data with two study parts. It inherits
-from
-[`Data`](https://openpharma.github.io/crmPack/reference/Data-class.md)
-and it contains additional information on the two study parts.
+from [`Data`](https://docs.crmpack.org/reference/Data-class.md) and it
+contains additional information on the two study parts.
 
 ## Usage
 
@@ -36,7 +35,7 @@ DataParts(part = integer(), nextPart = 1L, part1Ladder = numeric(), ...)
 - ...:
 
   parameters passed to
-  [`Data()`](https://openpharma.github.io/crmPack/reference/Data-class.md).
+  [`Data()`](https://docs.crmpack.org/reference/Data-class.md).
 
 ## Slots
 

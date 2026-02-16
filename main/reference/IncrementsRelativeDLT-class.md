@@ -53,7 +53,7 @@ function.
 
 ## See also
 
-[IncrementsRelativeDLTCurrent](https://openpharma.github.io/crmPack/reference/IncrementsRelativeDLTCurrent-class.md)
+[IncrementsRelativeDLTCurrent](https://docs.crmpack.org/reference/IncrementsRelativeDLTCurrent-class.md)
 which only considers the DLTs in the current cohort.
 
 ## Examples

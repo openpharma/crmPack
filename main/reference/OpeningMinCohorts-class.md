@@ -37,5 +37,5 @@ function.
 
 ## See also
 
-[`Opening`](https://openpharma.github.io/crmPack/reference/Opening-class.md)
-and the other subclasses listed in there.
+[`Opening`](https://docs.crmpack.org/reference/Opening-class.md) and the
+other subclasses listed in there.

@@ -1,9 +1,9 @@
-# Plot Method for the [`DataDual`](https://openpharma.github.io/crmPack/reference/DataDual-class.md) Class
+# Plot Method for the [`DataDual`](https://docs.crmpack.org/reference/DataDual-class.md) Class
 
 **\[stable\]**
 
 A method that creates a plot for
-[`DataDual`](https://openpharma.github.io/crmPack/reference/DataDual-class.md)
+[`DataDual`](https://docs.crmpack.org/reference/DataDual-class.md)
 object.
 
 ## Usage

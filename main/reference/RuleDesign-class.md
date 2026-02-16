@@ -4,9 +4,9 @@
 
 `RuleDesign` is the class for rule-based designs. The difference between
 this class and the
-[`Design`](https://openpharma.github.io/crmPack/reference/Design-class.md)
-class is that `RuleDesign` does not contain `model`, `stopping` and
-`increments` slots.
+[`Design`](https://docs.crmpack.org/reference/Design-class.md) class is
+that `RuleDesign` does not contain `model`, `stopping` and `increments`
+slots.
 
 ## Usage
 

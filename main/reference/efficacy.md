@@ -71,27 +71,27 @@ to the sampling index, i.e. the layout is then
 - `efficacy(dose = numeric, model = Effloglog, samples = Samples)`:
   compute the expected efficacy at a specified dose level, based on the
   samples of
-  [`Effloglog`](https://openpharma.github.io/crmPack/reference/Effloglog-class.md)
+  [`Effloglog`](https://docs.crmpack.org/reference/Effloglog-class.md)
   model parameters.
 
 - `efficacy(dose = numeric, model = Effloglog, samples = missing)`:
   compute the expected efficacy at a specified dose level, based on the
-  [`Effloglog`](https://openpharma.github.io/crmPack/reference/Effloglog-class.md)
+  [`Effloglog`](https://docs.crmpack.org/reference/Effloglog-class.md)
   model parameters. All model parameters (except `dose`) should be
   present in the `model` object.
 
 - `efficacy(dose = numeric, model = EffFlexi, samples = Samples)`:
   compute the expected efficacy at a specified dose level, based on the
   samples of
-  [`EffFlexi`](https://openpharma.github.io/crmPack/reference/EffFlexi-class.md)
+  [`EffFlexi`](https://docs.crmpack.org/reference/EffFlexi-class.md)
   model parameters. If a given dose in the `dose` vector is from outside
   of the dose grid range, the `NA_real` is returned for this dose and
   the warning is thrown.
 
 ## See also
 
-[`dose()`](https://openpharma.github.io/crmPack/reference/dose.md),
-[`prob()`](https://openpharma.github.io/crmPack/reference/prob.md).
+[`dose()`](https://docs.crmpack.org/reference/dose.md),
+[`prob()`](https://docs.crmpack.org/reference/prob.md).
 
 ## Examples
 

@@ -5,10 +5,10 @@
 Plot the summary of `PseudoDualSimulations`.
 
 This plot method can be applied to
-[`PseudoDualSimulationsSummary`](https://openpharma.github.io/crmPack/reference/PseudoDualSimulationsSummary-class.md)
+[`PseudoDualSimulationsSummary`](https://docs.crmpack.org/reference/PseudoDualSimulationsSummary-class.md)
 objects in order to summarize them graphically. Possible `type` of plots
 at the moment are those listed in
-[`plot,PseudoSimulationsSummary,missing-method`](https://openpharma.github.io/crmPack/reference/plot-PseudoSimulationsSummary-missing-method.md)
+[`plot,PseudoSimulationsSummary,missing-method`](https://docs.crmpack.org/reference/plot-PseudoSimulationsSummary-missing-method.md)
 plus:
 
 - meanEffFit:
@@ -19,7 +19,7 @@ plus:
   the average fitted dose-efficacy curve across the trials, together
   with the 95% credibility interval; and comparison with the assumed
   truth (as specified by the `trueEff` argument to
-  [`summary,PseudoDualSimulations-method`](https://openpharma.github.io/crmPack/reference/summary-PseudoDualSimulations-method.md))
+  [`summary,PseudoDualSimulations-method`](https://docs.crmpack.org/reference/summary-PseudoDualSimulations-method.md))
 
 You can specify any subset of these in the `type` argument.
 

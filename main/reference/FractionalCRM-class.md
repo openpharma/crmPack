@@ -23,7 +23,7 @@ FractionalCRM(...)
 - ...:
 
   Arguments passed on to
-  [`OneParLogNormalPrior`](https://openpharma.github.io/crmPack/reference/OneParLogNormalPrior-class.md)
+  [`OneParLogNormalPrior`](https://docs.crmpack.org/reference/OneParLogNormalPrior-class.md)
 
   `skel_probs`
 
@@ -45,7 +45,7 @@ FractionalCRM(...)
 ## Note
 
 Typically, end users will not use the
-[`.DefaultTITELogisticLogNormal()`](https://openpharma.github.io/crmPack/reference/TITELogisticLogNormal-class.md)
+[`.DefaultTITELogisticLogNormal()`](https://docs.crmpack.org/reference/TITELogisticLogNormal-class.md)
 function.
 
 ## References
@@ -58,7 +58,7 @@ Biopharmaceutical Statistics*, **23**(4), 856–870.
 
 ## See also
 
-[`TITELogisticLogNormal`](https://openpharma.github.io/crmPack/reference/TITELogisticLogNormal-class.md).
+[`TITELogisticLogNormal`](https://docs.crmpack.org/reference/TITELogisticLogNormal-class.md).
 
 ## Examples
 

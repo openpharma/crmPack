@@ -4,7 +4,7 @@
 
 `DesignOrdinal` is the class for rule-based ordinal designs. The
 difference between this class and its parent
-[`RuleDesignOrdinal`](https://openpharma.github.io/crmPack/reference/RuleDesignOrdinal-class.md)
+[`RuleDesignOrdinal`](https://docs.crmpack.org/reference/RuleDesignOrdinal-class.md)
 class is that the `DesignOrdinal` class contains additional `model`,
 `stopping`, `increments` and `pl_cohort_size` slots.
 
@@ -47,7 +47,7 @@ DesignOrdinal(
 - ...:
 
   Arguments passed on to
-  [`RuleDesignOrdinal`](https://openpharma.github.io/crmPack/reference/RuleDesignOrdinal-class.md)
+  [`RuleDesignOrdinal`](https://docs.crmpack.org/reference/RuleDesignOrdinal-class.md)
 
   `next_best`
 
@@ -73,16 +73,16 @@ DesignOrdinal(
 
 Please note that stopping, increments or cohort size rules need to be
 wrapped into the corresponding
-[StoppingOrdinal](https://openpharma.github.io/crmPack/reference/StoppingOrdinal-class.md),
-[IncrementsOrdinal](https://openpharma.github.io/crmPack/reference/IncrementsOrdinal-class.md)
+[StoppingOrdinal](https://docs.crmpack.org/reference/StoppingOrdinal-class.md),
+[IncrementsOrdinal](https://docs.crmpack.org/reference/IncrementsOrdinal-class.md)
 or
-[CohortSizeOrdinal](https://openpharma.github.io/crmPack/reference/CohortSizeOrdinal-class.md)
+[CohortSizeOrdinal](https://docs.crmpack.org/reference/CohortSizeOrdinal-class.md)
 classes, before a successful evaluation of the corresponding methods can
 take place. Note also that these wrappers cannot be nested, i.e., you
 cannot have an
-[IncrementsOrdinal](https://openpharma.github.io/crmPack/reference/IncrementsOrdinal-class.md)
+[IncrementsOrdinal](https://docs.crmpack.org/reference/IncrementsOrdinal-class.md)
 inside another
-[IncrementsOrdinal](https://openpharma.github.io/crmPack/reference/IncrementsOrdinal-class.md)
+[IncrementsOrdinal](https://docs.crmpack.org/reference/IncrementsOrdinal-class.md)
 (which also would not make sense) because it would not be clear which
 event grade to use for the methods calculation. However, multiple rules
 can be combined using the operators defined for these classes, e.g.,

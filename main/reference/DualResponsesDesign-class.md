@@ -3,11 +3,11 @@
 **\[stable\]**
 
 This is a class of design based on DLE responses using the
-[`LogisticIndepBeta`](https://openpharma.github.io/crmPack/reference/LogisticIndepBeta-class.md)
+[`LogisticIndepBeta`](https://docs.crmpack.org/reference/LogisticIndepBeta-class.md)
 model without DLE and efficacy samples. It contains all slots from the
-[`RuleDesign`](https://openpharma.github.io/crmPack/reference/RuleDesign-class.md)
+[`RuleDesign`](https://docs.crmpack.org/reference/RuleDesign-class.md)
 and
-[`TDsamplesDesign`](https://openpharma.github.io/crmPack/reference/TDsamplesDesign-class.md)
+[`TDsamplesDesign`](https://docs.crmpack.org/reference/TDsamplesDesign-class.md)
 classes.
 
 ## Usage
@@ -33,7 +33,7 @@ DualResponsesDesign(eff_model, data, ...)
 - ...:
 
   Arguments passed on to
-  [`TDDesign`](https://openpharma.github.io/crmPack/reference/TDDesign-class.md)
+  [`TDDesign`](https://docs.crmpack.org/reference/TDDesign-class.md)
 
   `model`
 

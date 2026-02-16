@@ -3,7 +3,7 @@
 **\[stable\]**
 
 A method that updates existing
-[`DataDual`](https://openpharma.github.io/crmPack/reference/DataDual-class.md)
+[`DataDual`](https://docs.crmpack.org/reference/DataDual-class.md)
 object with new data.
 
 ## Usage
@@ -29,20 +29,20 @@ update(object, w, ..., check = TRUE)
 - ...:
 
   further arguments passed to `Data` update method
-  [`update-Data`](https://openpharma.github.io/crmPack/reference/update-Data-method.md).
+  [`update-Data`](https://docs.crmpack.org/reference/update-Data-method.md).
 
 - check:
 
   (`flag`)  
   whether the validation of the updated object should be conducted. See
   help for
-  [`update-Data`](https://openpharma.github.io/crmPack/reference/update-Data-method.md)
+  [`update-Data`](https://docs.crmpack.org/reference/update-Data-method.md)
   for more details on the use case of this parameter.
 
 ## Value
 
 The new, updated
-[`DataDual`](https://openpharma.github.io/crmPack/reference/DataDual-class.md)
+[`DataDual`](https://docs.crmpack.org/reference/DataDual-class.md)
 object.
 
 ## Examples

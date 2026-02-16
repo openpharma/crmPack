@@ -4,7 +4,7 @@
 
 This class captures the trial simulations from DA based designs. In
 comparison to the parent class
-[`Simulations`](https://openpharma.github.io/crmPack/reference/Simulations-class.md),
+[`Simulations`](https://docs.crmpack.org/reference/Simulations-class.md),
 it contains additional slots to capture the time to DLT fits, additional
 parameters and the trial duration.
 
@@ -26,7 +26,7 @@ DASimulations(trial_duration, ...)
 - ...:
 
   additional parameters from
-  [`Simulations`](https://openpharma.github.io/crmPack/reference/Simulations-class.md)
+  [`Simulations`](https://docs.crmpack.org/reference/Simulations-class.md)
 
 ## Slots
 

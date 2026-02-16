@@ -4,7 +4,7 @@
 
 This class captures the trial simulations from dual-endpoint model based
 designs. In comparison to the parent class
-[`Simulations`](https://openpharma.github.io/crmPack/reference/Simulations-class.md),
+[`Simulations`](https://docs.crmpack.org/reference/Simulations-class.md),
 it contains additional slots to capture the dose-biomarker `fits`, and
 the `sigma2W` and `rho` estimates.
 
@@ -36,7 +36,7 @@ DualSimulations(rho_est, sigma2w_est, fit_biomarker, ...)
 - ...:
 
   additional parameters from
-  [`Simulations`](https://openpharma.github.io/crmPack/reference/Simulations-class.md)
+  [`Simulations`](https://docs.crmpack.org/reference/Simulations-class.md)
 
 ## Slots
 

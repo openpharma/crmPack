@@ -2,8 +2,7 @@
 
 Here you have to specify with `pos` which parameter you would like to
 extract from the
-[`Samples`](https://openpharma.github.io/crmPack/reference/Samples-class.md)
-object
+[`Samples`](https://docs.crmpack.org/reference/Samples-class.md) object
 
 ## Usage
 
@@ -16,8 +15,7 @@ get(x, pos = -1L, envir = NULL, mode = NULL, inherits = NULL)
 
 - x:
 
-  the
-  [`Samples`](https://openpharma.github.io/crmPack/reference/Samples-class.md)
+  the [`Samples`](https://docs.crmpack.org/reference/Samples-class.md)
   object
 
 - pos:

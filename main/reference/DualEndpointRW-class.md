@@ -32,12 +32,12 @@ DualEndpointRW(sigma2betaW, rw1 = TRUE, ...)
 - ...:
 
   parameters passed to
-  [`DualEndpoint()`](https://openpharma.github.io/crmPack/reference/DualEndpoint-class.md).
+  [`DualEndpoint()`](https://docs.crmpack.org/reference/DualEndpoint-class.md).
 
 ## Details
 
 This class extends the
-[`DualEndpoint`](https://openpharma.github.io/crmPack/reference/DualEndpoint-class.md)
+[`DualEndpoint`](https://docs.crmpack.org/reference/DualEndpoint-class.md)
 class so that the dose-biomarker relationship \\f(x)\\ is modelled by a
 non-parametric random walk of first or second order. That means, for the
 first order random walk we assume \$\$betaW_i - betaW_i-1 ~ Normal(0,
@@ -84,9 +84,9 @@ function.
 
 ## See also
 
-[`DualEndpoint`](https://openpharma.github.io/crmPack/reference/DualEndpoint-class.md),
-[`DualEndpointBeta`](https://openpharma.github.io/crmPack/reference/DualEndpointBeta-class.md),
-[`DualEndpointEmax`](https://openpharma.github.io/crmPack/reference/DualEndpointEmax-class.md).
+[`DualEndpoint`](https://docs.crmpack.org/reference/DualEndpoint-class.md),
+[`DualEndpointBeta`](https://docs.crmpack.org/reference/DualEndpointBeta-class.md),
+[`DualEndpointEmax`](https://docs.crmpack.org/reference/DualEndpointEmax-class.md).
 
 ## Examples
 

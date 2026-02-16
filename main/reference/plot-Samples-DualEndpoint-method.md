@@ -14,20 +14,18 @@ plot(x, y, data, extrapolate = TRUE, showLegend = FALSE, ...)
 
 - x:
 
-  the
-  [`Samples`](https://openpharma.github.io/crmPack/reference/Samples-class.md)
+  the [`Samples`](https://docs.crmpack.org/reference/Samples-class.md)
   object
 
 - y:
 
   the
-  [`DualEndpoint`](https://openpharma.github.io/crmPack/reference/DualEndpoint-class.md)
+  [`DualEndpoint`](https://docs.crmpack.org/reference/DualEndpoint-class.md)
   object
 
 - data:
 
-  the
-  [`DataDual`](https://openpharma.github.io/crmPack/reference/DataDual-class.md)
+  the [`DataDual`](https://docs.crmpack.org/reference/DataDual-class.md)
   object
 
 - extrapolate:
@@ -42,7 +40,7 @@ plot(x, y, data, extrapolate = TRUE, showLegend = FALSE, ...)
 - ...:
 
   additional arguments for the parent method
-  [`plot,Samples,GeneralModel-method`](https://openpharma.github.io/crmPack/reference/plot-Samples-GeneralModel-method.md)
+  [`plot,Samples,GeneralModel-method`](https://docs.crmpack.org/reference/plot-Samples-GeneralModel-method.md)
 
 ## Value
 

@@ -12,61 +12,59 @@ representation.
 **\[experimental\]**
 
 A method that tidies a
-[`GeneralData`](https://openpharma.github.io/crmPack/reference/GeneralData-class.md)
+[`GeneralData`](https://docs.crmpack.org/reference/GeneralData-class.md)
 object.
 
 **\[experimental\]**
 
 A method that tidies a
-[`Data`](https://openpharma.github.io/crmPack/reference/Data-class.md)
+[`Data`](https://docs.crmpack.org/reference/Data-class.md) object.
+
+**\[experimental\]**
+
+A method that tidies a
+[`DataGrouped`](https://docs.crmpack.org/reference/DataGrouped-class.md)
 object.
 
 **\[experimental\]**
 
 A method that tidies a
-[`DataGrouped`](https://openpharma.github.io/crmPack/reference/DataGrouped-class.md)
+[`DataDA`](https://docs.crmpack.org/reference/DataDA-class.md) object.
+
+**\[experimental\]**
+
+A method that tidies a
+[`DataDual`](https://docs.crmpack.org/reference/DataDual-class.md)
 object.
 
 **\[experimental\]**
 
 A method that tidies a
-[`DataDA`](https://openpharma.github.io/crmPack/reference/DataDA-class.md)
+[`DataParts`](https://docs.crmpack.org/reference/DataParts-class.md)
 object.
 
 **\[experimental\]**
 
 A method that tidies a
-[`DataDual`](https://openpharma.github.io/crmPack/reference/DataDual-class.md)
+[`DataMixture`](https://docs.crmpack.org/reference/DataMixture-class.md)
 object.
 
 **\[experimental\]**
 
 A method that tidies a
-[`DataParts`](https://openpharma.github.io/crmPack/reference/DataParts-class.md)
+[`DataOrdinal`](https://docs.crmpack.org/reference/DataOrdinal-class.md)
 object.
 
 **\[experimental\]**
 
 A method that tidies a
-[`DataMixture`](https://openpharma.github.io/crmPack/reference/DataMixture-class.md)
+[`LogisticIndepBeta`](https://docs.crmpack.org/reference/LogisticIndepBeta-class.md)
 object.
 
 **\[experimental\]**
 
 A method that tidies a
-[`DataOrdinal`](https://openpharma.github.io/crmPack/reference/DataOrdinal-class.md)
-object.
-
-**\[experimental\]**
-
-A method that tidies a
-[`LogisticIndepBeta`](https://openpharma.github.io/crmPack/reference/LogisticIndepBeta-class.md)
-object.
-
-**\[experimental\]**
-
-A method that tidies a
-[`Effloglog`](https://openpharma.github.io/crmPack/reference/Effloglog-class.md)
+[`Effloglog`](https://docs.crmpack.org/reference/Effloglog-class.md)
 object.
 
 ## Usage
@@ -557,17 +555,17 @@ print(tidied_data)
 #> $fit
 #> $fit[[1]]
 #>        middle        lower      upper
-#> 1  0.01765157 3.423873e-05 0.09603602
-#> 2  0.03809739 5.208682e-04 0.16132032
-#> 3  0.05758526 1.900635e-03 0.20186169
-#> 4  0.10730202 1.103161e-02 0.27576322
-#> 5  0.15882770 3.060746e-02 0.34002012
-#> 6  0.21081735 5.284784e-02 0.41053883
-#> 7  0.26170978 8.514961e-02 0.48435078
-#> 8  0.39735690 1.866124e-01 0.65683597
-#> 9  0.46982825 2.159919e-01 0.74285383
-#> 10 0.61584263 3.187554e-01 0.88820053
-#> 11 0.67510974 3.403033e-01 0.93662109
+#> 1  0.01529622 2.992056e-05 0.09978556
+#> 2  0.03624464 6.222232e-04 0.17915178
+#> 3  0.05683354 2.300607e-03 0.21451030
+#> 4  0.10950629 1.329812e-02 0.29984674
+#> 5  0.16321627 3.548746e-02 0.37058391
+#> 6  0.21644886 6.527129e-02 0.43520053
+#> 7  0.26787877 1.052461e-01 0.49874327
+#> 8  0.40345124 2.072215e-01 0.66925422
+#> 9  0.47577884 2.542177e-01 0.75614281
+#> 10 0.62230873 3.471983e-01 0.88912451
+#> 11 0.68230049 3.782069e-01 0.93265074
 #> 
 #> 
 #> $stop_report
@@ -588,9 +586,9 @@ print(tidied_data)
 #>  3     3      3    10      4 FALSE FALSE      17    11 <dbl [11]>        1
 #>  4     4      4    20      6 FALSE FALSE      17    11 <dbl [11]>        1
 #>  5     5      5    25      7 TRUE  FALSE      17    11 <dbl [11]>        1
-#>  6     6      6    25      7 FALSE FALSE      17    11 <dbl [11]>        1
-#>  7     7      6    25      7 TRUE  FALSE      17    11 <dbl [11]>        1
-#>  8     8      6    25      7 FALSE FALSE      17    11 <dbl [11]>        1
+#>  6     6      6    20      6 TRUE  FALSE      17    11 <dbl [11]>        1
+#>  7     7      6    20      6 FALSE FALSE      17    11 <dbl [11]>        1
+#>  8     8      6    20      6 FALSE FALSE      17    11 <dbl [11]>        1
 #>  9     9      7    25      7 TRUE  FALSE      17    11 <dbl [11]>        1
 #> 10    10      7    25      7 TRUE  FALSE      17    11 <dbl [11]>        1
 #> 11    11      7    25      7 FALSE FALSE      17    11 <dbl [11]>        1
@@ -1081,16 +1079,16 @@ samples %>% tidy()
 #> # A tibble: 2,000 × 10
 #>    Iteration Chain alpha0 alpha1 nChains nParameters nIterations nBurnin nThin
 #>        <int> <int>  <dbl>  <dbl>   <int>       <int>       <int>   <int> <int>
-#>  1         1     1 -0.259  1.38        1           1        2100     100     1
-#>  2         2     1 -0.361  4.93        1           1        2100     100     1
-#>  3         3     1  0.904  0.598       1           1        2100     100     1
-#>  4         4     1 -0.924  0.742       1           1        2100     100     1
-#>  5         5     1  0.162  4.44        1           1        2100     100     1
-#>  6         6     1  0.599  0.548       1           1        2100     100     1
-#>  7         7     1 -2.45   4.82        1           1        2100     100     1
-#>  8         8     1  0.660  2.90        1           1        2100     100     1
-#>  9         9     1 -1.88   3.86        1           1        2100     100     1
-#> 10        10     1 -0.574  4.60        1           1        2100     100     1
+#>  1         1     1 -0.589   1.30       1           1        2100     100     1
+#>  2         2     1 -0.899   2.33       1           1        2100     100     1
+#>  3         3     1 -0.644   4.85       1           1        2100     100     1
+#>  4         4     1 -1.18    5.12       1           1        2100     100     1
+#>  5         5     1 -2.17    6.72       1           1        2100     100     1
+#>  6         6     1 -1.93    2.42       1           1        2100     100     1
+#>  7         7     1 -2.03    2.23       1           1        2100     100     1
+#>  8         8     1 -0.126   2.10       1           1        2100     100     1
+#>  9         9     1 -1.87    7.43       1           1        2100     100     1
+#> 10        10     1 -0.770   3.37       1           1        2100     100     1
 #> # ℹ 1,990 more rows
 #> # ℹ 1 more variable: parallel <lgl>
 #> 

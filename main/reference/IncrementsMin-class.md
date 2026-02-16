@@ -5,7 +5,7 @@
 `IncrementsMin` is the class that combines multiple increment rules with
 the `minimum` operation. Slot `increments_list` contains all increment
 rules, which are itself the objects of class
-[`Increments`](https://openpharma.github.io/crmPack/reference/Increments-class.md).
+[`Increments`](https://docs.crmpack.org/reference/Increments-class.md).
 The minimum of these individual increments is taken to give the final
 maximum increment.
 

@@ -1,17 +1,17 @@
-# Internal Helper Functions for Validation of [`RuleDesign`](https://openpharma.github.io/crmPack/reference/RuleDesign-class.md) Objects
+# Internal Helper Functions for Validation of [`RuleDesign`](https://docs.crmpack.org/reference/RuleDesign-class.md) Objects
 
 **\[stable\]**
 
 These functions are only used internally to validate the format of an
 input
-[`RuleDesign`](https://openpharma.github.io/crmPack/reference/RuleDesign-class.md)
+[`RuleDesign`](https://docs.crmpack.org/reference/RuleDesign-class.md)
 or inherited classes and therefore not exported.
 
 **\[experimental\]**
 
 These functions are only used internally to validate the format of an
 input
-[`RuleDesignOrdinal`](https://openpharma.github.io/crmPack/reference/RuleDesignOrdinal-class.md)
+[`RuleDesignOrdinal`](https://docs.crmpack.org/reference/RuleDesignOrdinal-class.md)
 or inherited classes and therefore not exported.
 
 ## Usage
@@ -42,13 +42,13 @@ case validation passes.
 ## Functions
 
 - `v_rule_design()`: validates that the
-  [`RuleDesign`](https://openpharma.github.io/crmPack/reference/RuleDesign-class.md)
+  [`RuleDesign`](https://docs.crmpack.org/reference/RuleDesign-class.md)
   object contains valid `startingDose`.
 
 - `v_rule_design_ordinal()`: validates that the
-  [`RuleDesignOrdinal`](https://openpharma.github.io/crmPack/reference/RuleDesignOrdinal-class.md)
+  [`RuleDesignOrdinal`](https://docs.crmpack.org/reference/RuleDesignOrdinal-class.md)
   object contains valid `starting_dose`.
 
 - `v_design_grouped()`: validates that the
-  [`DesignGrouped`](https://openpharma.github.io/crmPack/reference/DesignGrouped-class.md)
+  [`DesignGrouped`](https://docs.crmpack.org/reference/DesignGrouped-class.md)
   object contains valid flags.

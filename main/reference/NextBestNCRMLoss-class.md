@@ -4,7 +4,7 @@
 
 `NextBestNCRMLoss` is the class based on NCRM rule and loss function.
 This class is similar to
-[`NextBestNCRM`](https://openpharma.github.io/crmPack/reference/NextBestNCRM-class.md)
+[`NextBestNCRM`](https://docs.crmpack.org/reference/NextBestNCRM-class.md)
 class, but differences are the addition of loss function and re-defined
 toxicity intervals, see each toxicity interval documentation and the
 note for details. As in NCRM rule, first admissible doses are found,
@@ -49,7 +49,7 @@ NextBestNCRMLoss(
 
   (`proportion`)  
   see slot definition in
-  [`NextBestNCRM`](https://openpharma.github.io/crmPack/reference/NextBestNCRM-class.md).
+  [`NextBestNCRM`](https://docs.crmpack.org/reference/NextBestNCRM-class.md).
 
 - losses:
 

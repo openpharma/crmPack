@@ -3,11 +3,11 @@
 **\[experimental\]**
 
 `OpeningList` is a virtual class for combining multiple
-[`Opening`](https://openpharma.github.io/crmPack/reference/Opening-class.md)
-objects using logical operators. It is used as a base class for
-[`OpeningAll`](https://openpharma.github.io/crmPack/reference/OpeningAll-class.md)
+[`Opening`](https://docs.crmpack.org/reference/Opening-class.md) objects
+using logical operators. It is used as a base class for
+[`OpeningAll`](https://docs.crmpack.org/reference/OpeningAll-class.md)
 and
-[`OpeningAny`](https://openpharma.github.io/crmPack/reference/OpeningAny-class.md).
+[`OpeningAny`](https://docs.crmpack.org/reference/OpeningAny-class.md).
 
 ## Usage
 
@@ -29,7 +29,7 @@ OpeningList(...)
 - `open_list`:
 
   (`list`) a list of
-  [`Opening`](https://openpharma.github.io/crmPack/reference/Opening-class.md)
+  [`Opening`](https://docs.crmpack.org/reference/Opening-class.md)
   objects to be combined.
 
 ## Note
@@ -38,9 +38,9 @@ Typically, end users will not use the `.DefaultOpeningList()` function.
 
 ## See also
 
-[`Opening`](https://openpharma.github.io/crmPack/reference/Opening-class.md),
-[`OpeningAll`](https://openpharma.github.io/crmPack/reference/OpeningAll-class.md),
-[`OpeningAny`](https://openpharma.github.io/crmPack/reference/OpeningAny-class.md).
+[`Opening`](https://docs.crmpack.org/reference/Opening-class.md),
+[`OpeningAll`](https://docs.crmpack.org/reference/OpeningAll-class.md),
+[`OpeningAny`](https://docs.crmpack.org/reference/OpeningAny-class.md).
 
 ## Examples
 

@@ -41,7 +41,7 @@ summary(object, truth, targetEndOfTrial = 0.3, targetDuringTrial = 0.35, ...)
 ## Value
 
 An object of class
-[`PseudoSimulationsSummary`](https://openpharma.github.io/crmPack/reference/PseudoSimulationsSummary-class.md).
+[`PseudoSimulationsSummary`](https://docs.crmpack.org/reference/PseudoSimulationsSummary-class.md).
 
 ## Examples
 

@@ -1,10 +1,9 @@
-# Plot Method for the [`DataDA`](https://openpharma.github.io/crmPack/reference/DataDA-class.md) Class
+# Plot Method for the [`DataDA`](https://docs.crmpack.org/reference/DataDA-class.md) Class
 
 **\[stable\]**
 
 A method that creates a plot for
-[`DataDA`](https://openpharma.github.io/crmPack/reference/DataDA-class.md)
-object.
+[`DataDA`](https://docs.crmpack.org/reference/DataDA-class.md) object.
 
 ## Usage
 

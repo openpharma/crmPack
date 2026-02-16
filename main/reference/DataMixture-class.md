@@ -3,9 +3,8 @@
 **\[stable\]**
 
 `DataMixture` is a class for the data with mixture sharing. It inherits
-from
-[`Data`](https://openpharma.github.io/crmPack/reference/Data-class.md)
-and it contains additional information on the mixture sharing.
+from [`Data`](https://docs.crmpack.org/reference/Data-class.md) and it
+contains additional information on the mixture sharing.
 
 ## Usage
 
@@ -32,7 +31,7 @@ DataMixture(xshare = numeric(), yshare = integer(), ...)
 - ...:
 
   parameters passed to
-  [`Data()`](https://openpharma.github.io/crmPack/reference/Data-class.md).
+  [`Data()`](https://docs.crmpack.org/reference/Data-class.md).
 
 ## Slots
 

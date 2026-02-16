@@ -10,11 +10,10 @@ estimates of the DLT and efficacy model parameters. There are two target
 probabilities of the occurrence of a DLT that must be specified: target
 probability to be used during the trial and target probability to be
 used at the end of the trial. It is suitable to use it only with the
-[`ModelTox`](https://openpharma.github.io/crmPack/reference/ModelTox-class.md)
-model and
-[`ModelEff`](https://openpharma.github.io/crmPack/reference/ModelEff-class.md)
+[`ModelTox`](https://docs.crmpack.org/reference/ModelTox-class.md) model
+and [`ModelEff`](https://docs.crmpack.org/reference/ModelEff-class.md)
 classes (except
-[`EffFlexi`](https://openpharma.github.io/crmPack/reference/EffFlexi-class.md)).
+[`EffFlexi`](https://docs.crmpack.org/reference/EffFlexi-class.md)).
 
 ## Usage
 

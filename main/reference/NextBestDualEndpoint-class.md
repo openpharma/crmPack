@@ -56,8 +56,8 @@ biomarker range. By default (`target_relative = TRUE`) the target is
 specified as relative to the maximum biomarker level across the dose
 grid or relative to the `Emax` parameter in case a parametric model was
 selected (i.e.
-[`DualEndpointBeta`](https://openpharma.github.io/crmPack/reference/DualEndpointBeta-class.md),
-[`DualEndpointEmax`](https://openpharma.github.io/crmPack/reference/DualEndpointEmax-class.md)).
+[`DualEndpointBeta`](https://docs.crmpack.org/reference/DualEndpointBeta-class.md),
+[`DualEndpointEmax`](https://docs.crmpack.org/reference/DualEndpointEmax-class.md)).
 However, if `target_relative = FALSE`, then the absolute biomarker range
 can be used as a target.
 

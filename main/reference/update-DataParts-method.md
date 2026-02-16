@@ -3,7 +3,7 @@
 **\[stable\]**
 
 A method that updates existing
-[`DataParts`](https://openpharma.github.io/crmPack/reference/DataParts-class.md)
+[`DataParts`](https://docs.crmpack.org/reference/DataParts-class.md)
 object with new data.
 
 ## Usage
@@ -35,20 +35,20 @@ update(object, x, y, ..., check = TRUE)
 - ...:
 
   further arguments passed to `Data` update method
-  [`update-Data`](https://openpharma.github.io/crmPack/reference/update-Data-method.md).
+  [`update-Data`](https://docs.crmpack.org/reference/update-Data-method.md).
 
 - check:
 
   (`flag`)  
   whether the validation of the updated object should be conducted. See
   help for
-  [`update-Data`](https://openpharma.github.io/crmPack/reference/update-Data-method.md)
+  [`update-Data`](https://docs.crmpack.org/reference/update-Data-method.md)
   for more details on the use case of this parameter.
 
 ## Value
 
 The new, updated
-[`DataParts`](https://openpharma.github.io/crmPack/reference/DataParts-class.md)
+[`DataParts`](https://docs.crmpack.org/reference/DataParts-class.md)
 object.
 
 ## Examples

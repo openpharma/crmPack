@@ -97,7 +97,7 @@ A `number`, the maximum possible next dose.
   equal to: base dose level + level increment. The base dose level is
   the level of the last dose in grid or the level of the maximum dose
   applied, which is defined in `increments` object. Find out more in
-  [`IncrementsDoseLevels`](https://openpharma.github.io/crmPack/reference/IncrementsDoseLevels-class.md).
+  [`IncrementsDoseLevels`](https://docs.crmpack.org/reference/IncrementsDoseLevels-class.md).
 
 - `maxDose(increments = IncrementsHSRBeta, data = Data)`: determine the
   maximum possible next dose for escalation.
@@ -327,5 +327,5 @@ suppressWarnings({
 })
 toxIncrements <- IncrementsMaxToxProb(prob = c("DLAE" = 0.2, "CRS" = 0.05))
 maxDose(toxIncrements, emptyData, model, samples)
-#> [1] 3
+#> [1] 1
 ```

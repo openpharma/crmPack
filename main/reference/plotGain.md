@@ -24,31 +24,31 @@ plotGain(DLEmodel, Effmodel, data, size = c(8L, 8L), shape = c(16L, 17L), ...)
 - DLEmodel:
 
   the dose-DLE model of
-  [`ModelTox`](https://openpharma.github.io/crmPack/reference/ModelTox-class.md)
+  [`ModelTox`](https://docs.crmpack.org/reference/ModelTox-class.md)
   class object
 
 - DLEsamples:
 
   the DLE sample of
-  [`Samples`](https://openpharma.github.io/crmPack/reference/Samples-class.md)
-  class object
+  [`Samples`](https://docs.crmpack.org/reference/Samples-class.md) class
+  object
 
 - Effmodel:
 
   the dose-efficacy model of
-  [`ModelEff`](https://openpharma.github.io/crmPack/reference/ModelEff-class.md)
+  [`ModelEff`](https://docs.crmpack.org/reference/ModelEff-class.md)
   class object
 
 - Effsamples:
 
   the efficacy sample of of
-  [`Samples`](https://openpharma.github.io/crmPack/reference/Samples-class.md)
-  class object
+  [`Samples`](https://docs.crmpack.org/reference/Samples-class.md) class
+  object
 
 - data:
 
   the data input of
-  [`DataDual`](https://openpharma.github.io/crmPack/reference/DataDual-class.md)
+  [`DataDual`](https://docs.crmpack.org/reference/DataDual-class.md)
   class object
 
 - ...:

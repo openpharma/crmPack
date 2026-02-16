@@ -37,4 +37,4 @@ summary(object, truth, target = c(0.2, 0.35), ...)
 ## Value
 
 An object of class
-[`GeneralSimulationsSummary`](https://openpharma.github.io/crmPack/reference/GeneralSimulationsSummary-class.md).
+[`GeneralSimulationsSummary`](https://docs.crmpack.org/reference/GeneralSimulationsSummary-class.md).

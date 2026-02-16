@@ -71,8 +71,8 @@ expect_probability(x, bounds_closed = TRUE, info = NULL, label = vname(x))
 
 ## See also
 
-[`assertions`](https://openpharma.github.io/crmPack/reference/assertions.md)
-for more details.
+[`assertions`](https://docs.crmpack.org/reference/assertions.md) for
+more details.
 
 ## Examples
 

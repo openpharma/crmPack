@@ -4,8 +4,8 @@
 
 A simple helper function that combines two outputs from calls to
 `result()` function which is placed in a slot of
-[`Validate()`](https://openpharma.github.io/crmPack/reference/Validate.md)
-reference class.
+[`Validate()`](https://docs.crmpack.org/reference/Validate.md) reference
+class.
 
 ## Usage
 
@@ -19,14 +19,14 @@ h_validate_combine_results(v1, v2)
 
   (`logical` or `character`)  
   an output from `result()` function from
-  [`Validate()`](https://openpharma.github.io/crmPack/reference/Validate.md)
+  [`Validate()`](https://docs.crmpack.org/reference/Validate.md)
   reference class, to be combined with `v2`.
 
 - v2:
 
   (`logical` or `character`)  
   an output from `result()` function from
-  [`Validate()`](https://openpharma.github.io/crmPack/reference/Validate.md)
+  [`Validate()`](https://docs.crmpack.org/reference/Validate.md)
   reference class, to be combined with `v1`.
 
 ## Examples

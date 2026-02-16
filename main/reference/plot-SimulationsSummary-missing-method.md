@@ -5,10 +5,10 @@
 Graphical display of the simulation summary.
 
 This plot method can be applied to
-[`SimulationsSummary`](https://openpharma.github.io/crmPack/reference/SimulationsSummary-class.md)
+[`SimulationsSummary`](https://docs.crmpack.org/reference/SimulationsSummary-class.md)
 objects in order to summarize them graphically. Possible `type` of plots
 at the moment are those listed in
-[`plot,GeneralSimulationsSummary,missing-method`](https://openpharma.github.io/crmPack/reference/plot-GeneralSimulationsSummary-missing-method.md)
+[`plot,GeneralSimulationsSummary,missing-method`](https://docs.crmpack.org/reference/plot-GeneralSimulationsSummary-missing-method.md)
 plus:
 
 - meanFit:
@@ -16,7 +16,7 @@ plus:
   Plot showing the average fitted dose-toxicity curve across the trials,
   together with 95% credible intervals, and comparison with the assumed
   truth (as specified by the `truth` argument to
-  [`summary,Simulations-method`](https://openpharma.github.io/crmPack/reference/summary-Simulations-method.md))
+  [`summary,Simulations-method`](https://docs.crmpack.org/reference/summary-Simulations-method.md))
 
 You can specify any subset of these in the `type` argument.
 
