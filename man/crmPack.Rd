@@ -14,8 +14,7 @@ Object-oriented implementation of CRM designs
 \seealso{
 Useful links:
 \itemize{
-  \item \url{https://github.com/openpharma/crmPack}
-  \item \url{https://openpharma.github.io/crmPack/}
+  \item \url{https://docs.crmpack.org/}
   \item Report bugs at \url{https://github.com/openpharma/crmPack/issues}
 }
 
