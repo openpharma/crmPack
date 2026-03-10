@@ -1,0 +1,60 @@
+---
+title: "Design for Two Drugs Combination"
+author: "Daniel"
+date: today
+format: html
+bibliography: references.bib
+---
+
+## Motivation
+
+In the context of dose-finding for drug combinations, we are interested in modeling the probability of dose-limiting toxicity (DLT) as a function of the doses of two drugs. The goal is to identify the optimal combination of doses that maximizes efficacy while minimizing toxicity.
+
+For the time being, we restrict the discussion to the case of two drugs, but the approach can be extended to more drugs in principle. However this seems to be not so relevant in practice, and could later extend the implementation to more drugs if needed.
+
+## Idea
+
+The idea is to implement the 5-parameter BLRM approach by @Neuenschwander2015 (note that a presentation slide deck is available [here](https://de.slideshare.net/slideshow/eugm-2014-roychaudhuri-phase-1-combination/50032570)):
+
+- Let $\textrm{odds}(p)=p/(1-p)$ be the odds transformation of the probability $p$, such that 
+  $\textrm{logit}(p) = \log(\textrm{odds}(p))$. 
+- Let $x_i$ be the dose of drug $i=1,2$, and $p(x_1, x_2)$ be the probability of DLT with doses $x_1$ and $x_2$.
+- The reference doses for the two compounds are again denoted by stars. 
+- Then the model assumes a linear interaction function:
+
+  $$
+  \textrm{odds}(p(x_1, x_2)) = \textrm{odds}(p_0(x_1, x_2)) \cdot \exp(\eta x_1/x_1^{*} x_2/x_2^{*}),
+  $$
+
+- where $\eta$ is the interaction coefficient (positive values correspond to synergistic toxicity, zero corresponds to additive effect without interaction, and negative values correspond to antagonistic toxicity). 
+- This model is also called the "dual combo model" by Novartis
+
+- Under no interaction with $\eta=0$, this reduces the probability $\textrm{odds}(p(x_1, x_2))$ to
+  $$
+  p_0(x_1, x_2) = p(x_1) + p(x_2) - p(x_1)p(x_2) = 1 - (1 - p(x_1))(1 - p(x_2)).
+  $$
+
+- Now for the single-agent DLT probabilities $p(x_1)$ and $p(x_2)$ we assume the logistic log-normal models:
+  $\textrm{logit}[p(x_i)] = \alpha_i + \beta_i \log(x_i/x_i^{*}),$
+  with prior e.g.
+  $(\alpha_i, \log(\beta_i))^\top \sim \textrm{Normal}(\mu_i, \Sigma_i)$
+  for $i=1,2$. 
+
+## Priors
+
+- Different priors can be used in principle for the 5 parameters $\theta = (\alpha_1, \beta_1, \alpha_2, \beta_2, \eta)^\top$.
+- Typical is a meta-analytic combined (MAC) prior which separates
+  - mono drug 1 ($\theta_1$)
+  - combination of drugs 1 and 2 ($\theta_2$)
+  - mono drug 3 ($\theta_3$)
+- And then uses the hierarchical prior $\theta_j \sim \textrm{Normal}(\mu, \Sigma)$, $j=1,2,3$.
+- Hyperpriors on $\mu = (\mu_{\alpha_1}, \mu_{\beta_1}, \mu_{\alpha_2}, \mu_{\beta_2}, \mu_{\eta})^\top$ e.g.:
+  - $\mu_{\alpha_i} \sim \textrm{Normal}(\textrm{logit}(0.25), 2.5^2)$, $i=1,2$
+  - $\mu_{\beta_1} \sim \textrm{Normal}(0, 0.7^2)$
+  - $\mu_{\beta_2}, \mu_{\eta} \sim \textrm{Normal}(0, 1)$
+- Structured assumptions for $\Sigma$ with 6 parameters (details omitted here)
+
+## Existing material
+
+We have early code already in the [`dose_combinations`](https://github.com/openpharma/crmPack/tree/dose_combinations) branch (last changes happened 9 years ago!)
+
