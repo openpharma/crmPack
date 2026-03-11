@@ -3,6 +3,7 @@ title: "Design for Two Drugs Combination"
 author: "Daniel"
 date: today
 format: html
+embed-resources: true
 bibliography: references.bib
 ---
 
@@ -62,8 +63,35 @@ The idea is to implement the 5-parameter BLRM approach by @Neuenschwander2015 (n
     - $\tau_{\eta} \sim \textrm{LogNormal}(\log(0.125), \kappa^2)$
     - $\rho_1, \rho_2 \sim \textrm{Uniform}(-1, 1)$
 
-
 ## Existing material
 
+### `crmPack` code
+
 We have early code already in the [`dose_combinations`](https://github.com/openpharma/crmPack/tree/dose_combinations) branch (last changes happened 9 years ago!)
+
+- The `Model` code is [here](https://github.com/openpharma/crmPack/blob/dose_combinations/R/Model-class.R#L2478). This uses the same 5-parameter BLRM model. It already foresees that the `LogisticLogNormal` model for the single agents could be replaced by other models, but does not yet support that. The code is implemented in JAGS. 
+  - The prior specification is simpler than described above. There is no historical or concurrent monotherapy data included, and the prior means and covariances for the two mono models are fixed and not hierarchical. The interaction parameter $\eta$ has a simple (log) normal prior.
+- The `Data` class is [here](https://github.com/openpharma/crmPack/blob/dose_combinations/R/Data-class.R#L331). It already is general for more than 2 drug combinations.
+- The `NextBest` class is proposed [here](https://github.com/openpharma/crmPack/blob/dose_combinations/R/Rules-class.R#L156):
+  - This rule will return the next best dose combinations according to the following algorithm: First, conditional on the first drug doses, the doses of the second drug which are admissible and maximize the target toxicity probabilities are recorded. Second, conditional on the second drug doses the same is done for the first drug doses. The union of both sets of drug combinations is returned.
+- There is no `Design` class (or `Simulations` class) yet.
+- There is prototype `Rcpp` code for speeding up the probability calculations based on samples [here](https://github.com/openpharma/crmPack/blob/main/design/devel/src/test.cpp).
+
+### `decider` package
+
+The `decider` package by @Schroeter2023 was specifically created for decision making in multiple-arm oncology dose escalation trials, including monotherapy and combination therapy arms. Historical trial data can be included as well. 
+
+The model is described [here](https://boehringer-ingelheim.github.io/decider/reference/scenario_jointBLRM.html#details). It is based on the same 5-parameter BLRM approach as we describe here. It is implemented in Stan [here](https://github.com/Boehringer-Ingelheim/decider/blob/main/inst/stan/jointBLRM.stan).
+
+## Questions
+
+1. Do we need to allow the concurrent monotherapy data, historical data for the meta-analytic combined (MAC) prior? Or is it sufficient to use fixed means/covariances for the single-agent parameters as in the current prototype `Model` code? 
+1. Do we have preferences for how the escalation algorithm should work? 
+  - E.g. is there only one cohort at a time or can there be multiple cohorts in parallel?
+1. Do we have preferences for the reporting of the combo trial results?
+  - In particular specific plots, summary tables etc.
+  - Any differences vs. single-agent trials reporting
+1. Do we need to allow for backfill cohorts?
+1. Any specific maximum increments rules for the dose escalation?
+1. Any specific stopping rules?
 
