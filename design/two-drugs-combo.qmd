@@ -19,20 +19,20 @@ The idea is to implement the 5-parameter BLRM approach by @Neuenschwander2015 (n
 - Let $\textrm{odds}(p)=p/(1-p)$ be the odds transformation of the probability $p$, such that 
   $\textrm{logit}(p) = \log(\textrm{odds}(p))$. 
 - Let $x_i$ be the dose of drug $i=1,2$, and $p(x_1, x_2)$ be the probability of DLT with doses $x_1$ and $x_2$.
-- The reference doses for the two compounds are again denoted by stars. 
+- The reference doses for the two compounds are again denoted by $x_1^{*}$ and $x_2^{*}$, and the single-agent DLT probabilities at these reference doses are denoted by $p(x_1)$ and $p(x_2)$, respectively.
 - Then the model assumes a linear interaction function:
 
   $$
   \textrm{odds}(p(x_1, x_2)) = \textrm{odds}(p_0(x_1, x_2)) \cdot \exp(\eta x_1/x_1^{*} x_2/x_2^{*}),
   $$
 
-- where $\eta$ is the interaction coefficient (positive values correspond to synergistic toxicity, zero corresponds to additive effect without interaction, and negative values correspond to antagonistic toxicity). 
-- This model is also called the "dual combo model" by Novartis
-
-- Under no interaction with $\eta=0$, this reduces the probability $\textrm{odds}(p(x_1, x_2))$ to
-  $$
-  p_0(x_1, x_2) = p(x_1) + p(x_2) - p(x_1)p(x_2) = 1 - (1 - p(x_1))(1 - p(x_2)).
-  $$
+  - where $\eta$ is the interaction coefficient (positive values correspond to synergistic toxicity, zero corresponds to additive effect without interaction, and negative values correspond to antagonistic toxicity). 
+  - This model is also called the "dual combo model" by Novartis
+  - Under no interaction with $\eta=0$, this reduces the probability $\textrm{odds}(p(x_1, x_2))$ to
+  \begin{align*}
+  p_0(x_1, x_2) &= p(x_1) + p(x_2) - p(x_1)p(x_2)\\
+   &= 1 - (1 - p(x_1))(1 - p(x_2)).
+  \end{align*}
 
 - Now for the single-agent DLT probabilities $p(x_1)$ and $p(x_2)$ we assume the logistic log-normal models:
   $\textrm{logit}[p(x_i)] = \alpha_i + \beta_i \log(x_i/x_i^{*}),$
@@ -43,16 +43,25 @@ The idea is to implement the 5-parameter BLRM approach by @Neuenschwander2015 (n
 ## Priors
 
 - Different priors can be used in principle for the 5 parameters $\theta = (\alpha_1, \beta_1, \alpha_2, \beta_2, \eta)^\top$.
-- Typical is a meta-analytic combined (MAC) prior which separates
-  - mono drug 1 ($\theta_1$)
-  - combination of drugs 1 and 2 ($\theta_2$)
-  - mono drug 3 ($\theta_3$)
+- Typical is a meta-analytic combined (MAC) prior which separates according to different trial sources:
+  - mono drug 1 trial ($\theta_1$)
+  - current combination of drugs 1 and 2 trial ($\theta_2$)
+  - mono drug 2 trial ($\theta_3$)
 - And then uses the hierarchical prior $\theta_j \sim \textrm{Normal}(\mu, \Sigma)$, $j=1,2,3$.
 - Hyperpriors on $\mu = (\mu_{\alpha_1}, \mu_{\beta_1}, \mu_{\alpha_2}, \mu_{\beta_2}, \mu_{\eta})^\top$ e.g.:
   - $\mu_{\alpha_i} \sim \textrm{Normal}(\textrm{logit}(0.25), 2.5^2)$, $i=1,2$
   - $\mu_{\beta_1} \sim \textrm{Normal}(0, 0.7^2)$
   - $\mu_{\beta_2}, \mu_{\eta} \sim \textrm{Normal}(0, 1)$
-- Structured assumptions for $\Sigma$ with 6 parameters (details omitted here)
+- Structured assumptions for $\Sigma$
+  - Assume that only $\mu_{\alpha_1}$ and $\mu_{\beta_1}$, as well as $\mu_{\alpha_2}$ and $\mu_{\beta_2}$ are correlated, but not the other parameters, then we have a corresponding block diagonal structure for $\Sigma$ with 7 parameters
+  (standard deviations $\tau_{\alpha_1}, \tau_{\beta_1}, \tau_{\alpha_2}, \tau_{\beta_2}, \tau_{\eta}$ for each of the 5 parameters plus the two correlations $\rho_1$ and $\rho_2$ between $\alpha_i$ and $\beta_i$ for $i=1,2$).
+  - We don't fix the $\Sigma$ entries but instead again assign hyperpriors, e.g. with $\kappa = \log(2)/1.96$
+    - $\tau_{\alpha_1} \sim \textrm{LogNormal}(\log(0.5), \kappa^2)$
+    - $\tau_{\alpha_2} \sim \textrm{LogNormal}(\log(0.75), \kappa^2)$
+    - $\tau_{\beta_1}, \tau_{\beta_2} \sim \textrm{LogNormal}(\log(0.25), \kappa^2)$
+    - $\tau_{\eta} \sim \textrm{LogNormal}(\log(0.125), \kappa^2)$
+    - $\rho_1, \rho_2 \sim \textrm{Uniform}(-1, 1)$
+
 
 ## Existing material
 
