@@ -1,6 +1,6 @@
 Package: crmPack
 Title: Object-Oriented Implementation of Dose Escalation Designs
-Version: 2.1.0
+Version: 2.1.0.9000
 Authors@R: c(
     person("Daniel", "Sabanés Bové", , "daniel.sabanes_bove@rconis.com", role = c("aut", "cre"), 
            comment = c(ORCID = "0000-0002-0176-9239")),
