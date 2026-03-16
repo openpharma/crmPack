@@ -13,5 +13,5 @@ test_that("knit_print works ok for LogisticNormalMixture", {
   )
 
   result <- knitr::knit_print(model)
-  expect_snapshot(cat(result))
+  expect_snap(cat(result))
 })
