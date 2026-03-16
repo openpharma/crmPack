@@ -7,11 +7,11 @@
       
       
        The prior for &theta; is given by
-       $$ \theta = \begin{bmatrix} \alpha \\ log(\beta) \end{bmatrix} \sim w \cdot N \left(\begin{bmatrix}-0.85 \\ 1\end{bmatrix} , \begin{bmatrix} 1 & -0.5 \\ -0.5 & 1\end{bmatrix} \right) + (1 - w) \cdot N \left(\begin{bmatrix}0.85 \\ 1\end{bmatrix} , \begin{bmatrix} 1 & -0.5 \\ -0.5 & 1\end{bmatrix} \right) $$ 
+       $$ \theta = \begin{bmatrix} \alpha \\ log(\beta) \end{bmatrix} \sim w \cdot N \left(\begin{bmatrix}-0.85 \\  1.00\end{bmatrix} , \begin{bmatrix}  1.00 & -0.50 \\ -0.50 &  1.00\end{bmatrix} \right) + (1 - w) \cdot N \left(\begin{bmatrix} 0.85 \\  1.00\end{bmatrix} , \begin{bmatrix}  1.00 & -0.50 \\ -0.50 &  1.00\end{bmatrix} \right) $$ 
       
        and the prior for w is given by 
       
-        $$ w \sim Beta(1, 1) $$ 
+        $$ w \sim Beta( 1.00,  1.00) $$ 
       
         The reference dose will be 50.00.
       
