@@ -905,29 +905,48 @@ knit_print.LogisticNormalMixture <- function(
   assert_flag(asis)
   assert_flag(use_values)
   assert_format(fmt)
+
   # Execute
   rv <- paste0(
     h_knit_print_render_model(x, use_values = use_values, fmt = fmt, ...),
-    "The prior for &theta; is given by\\n",
+    "\n The prior for &theta; is given by\n ",
     "$$ \\theta = \\begin{bmatrix} \\alpha \\\\ log(\\beta) \\end{bmatrix}",
     " \\sim ",
     "w \\cdot ",
-    knit_print(
-      x@comp1,
-      params = c("\\alpha" = "alpha", "\\beta" = "beta")
-    ),
+    "N \\left(\\begin{bmatrix}",
+    x@comp1@mean[1],
+    " \\\\ ",
+    x@comp1@mean[2],
+    "\\end{bmatrix} , \\begin{bmatrix} ",
+    x@comp1@cov[1, 1],
+    " & ",
+    x@comp1@cov[1, 2],
+    " \\\\ ",
+    x@comp1@cov[2, 1],
+    " & ",
+    x@comp1@cov[2, 2],
+    "\\end{bmatrix} \\right)",
     " + (1 - w) \\cdot ",
-    knit_print(
-      x@comp2,
-      params = c("\\alpha" = "alpha", "\\beta" = "beta")
-    ),
-    " $$\\n\\n",
-    " and the prior for w is given by \n\n",
+    "N \\left(\\begin{bmatrix}",
+    x@comp2@mean[1],
+    " \\\\ ",
+    x@comp2@mean[2],
+    "\\end{bmatrix} , \\begin{bmatrix} ",
+    x@comp2@cov[1, 1],
+    " & ",
+    x@comp2@cov[1, 2],
+    " \\\\ ",
+    x@comp2@cov[2, 1],
+    " & ",
+    x@comp2@cov[2, 2],
+    "\\end{bmatrix} \\right)",
+    " $$ \n\n",
+    " and the prior for w is given by \n\n ",
     " $$ w \\sim Beta(",
     x@weightpar[1],
     ", ",
     x@weightpar[2],
-    ") $$\\n\\n",
+    ") $$ \n\n ",
     h_knit_print_render_ref_dose(
       x,
       units = units,
