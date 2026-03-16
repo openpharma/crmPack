@@ -38,6 +38,56 @@ h_knit_print_render_biomarker_model <- function(x, use_values = TRUE, ...) {
   UseMethod("h_knit_print_render_biomarker_model")
 }
 
+# Internal helpers ----
+
+#' Render a 2-dimensional Normal component for LaTeX output
+#'
+#' This is an internal helper to ensure that mixture components in
+#' LogisticNormalMixture use the same formatting and `use_values`
+#' semantics as other Normal priors.
+#' @param mean numeric vector of length 2
+#' @param cov  2x2 covariance matrix
+#' @param use_values logical; if `FALSE`, use symbolic parameters
+#' @param fmt format string for numeric values, passed to `sprintf`
+#' @noRd
+h_knit_print_render_normal_component <- function(mean,
+                                                 cov,
+                                                 use_values = TRUE,
+                                                 fmt = "%5.2f") {
+  if (use_values) {
+    m1 <- sprintf(fmt, mean[1])
+    m2 <- sprintf(fmt, mean[2])
+    s11 <- sprintf(fmt, cov[1, 1])
+    s12 <- sprintf(fmt, cov[1, 2])
+    s21 <- sprintf(fmt, cov[2, 1])
+    s22 <- sprintf(fmt, cov[2, 2])
+  } else {
+    # Symbolic representation when not using concrete values
+    m1 <- "\\mu_{1}"
+    m2 <- "\\mu_{2}"
+    s11 <- "\\sigma_{11}^2"
+    s12 <- "\\sigma_{12}"
+    s21 <- "\\sigma_{21}"
+    s22 <- "\\sigma_{22}^2"
+  }
+
+  paste0(
+    "N \\left(\\begin{bmatrix}",
+    m1,
+    " \\\\ ",
+    m2,
+    "\\end{bmatrix} , \\begin{bmatrix} ",
+    s11,
+    " & ",
+    s12,
+    " \\\\ ",
+    s21,
+    " & ",
+    s22,
+    "\\end{bmatrix} \\right)"
+  )
+}
+
 # Methods ----
 
 # DualEndpoint ----
@@ -907,45 +957,38 @@ knit_print.LogisticNormalMixture <- function(
   assert_format(fmt)
 
   # Execute
+  if (use_values) {
+    weightpar_a <- sprintf(fmt, x@weightpar[1])
+    weightpar_b <- sprintf(fmt, x@weightpar[2])
+  } else {
+    weightpar_a <- "a"
+    weightpar_b <- "b"
+  }
   rv <- paste0(
     h_knit_print_render_model(x, use_values = use_values, fmt = fmt, ...),
     "\n The prior for &theta; is given by\n ",
     "$$ \\theta = \\begin{bmatrix} \\alpha \\\\ log(\\beta) \\end{bmatrix}",
     " \\sim ",
     "w \\cdot ",
-    "N \\left(\\begin{bmatrix}",
-    x@comp1@mean[1],
-    " \\\\ ",
-    x@comp1@mean[2],
-    "\\end{bmatrix} , \\begin{bmatrix} ",
-    x@comp1@cov[1, 1],
-    " & ",
-    x@comp1@cov[1, 2],
-    " \\\\ ",
-    x@comp1@cov[2, 1],
-    " & ",
-    x@comp1@cov[2, 2],
-    "\\end{bmatrix} \\right)",
+    h_knit_print_render_normal_component(
+      mean = x@comp1@mean,
+      cov = x@comp1@cov,
+      use_values = use_values,
+      fmt = fmt
+    ),
     " + (1 - w) \\cdot ",
-    "N \\left(\\begin{bmatrix}",
-    x@comp2@mean[1],
-    " \\\\ ",
-    x@comp2@mean[2],
-    "\\end{bmatrix} , \\begin{bmatrix} ",
-    x@comp2@cov[1, 1],
-    " & ",
-    x@comp2@cov[1, 2],
-    " \\\\ ",
-    x@comp2@cov[2, 1],
-    " & ",
-    x@comp2@cov[2, 2],
-    "\\end{bmatrix} \\right)",
+    h_knit_print_render_normal_component(
+      mean = x@comp2@mean,
+      cov = x@comp2@cov,
+      use_values = use_values,
+      fmt = fmt
+    ),
     " $$ \n\n",
     " and the prior for w is given by \n\n ",
     " $$ w \\sim Beta(",
-    x@weightpar[1],
+    weightpar_a,
     ", ",
-    x@weightpar[2],
+    weightpar_b,
     ") $$ \n\n ",
     h_knit_print_render_ref_dose(
       x,
