@@ -1,3 +1,9 @@
+# Version 2.1.0.9000
+
+### Bugfixes
+
+* The `knit_print` method for `LogisticNormalMixture` did not render correctly previously; this is fixed now.
+
 # Version 2.1.0
 
 * This release marks yet another major update of the package: Backfill cohort simulations are now supported in the `Design` class, powered by the new `Backfill` class. This also leads to breaking changes in the `Data` and `GeneralSimulationsSummary` classes, which gains new slots, too. Please regenerate any existing `Data `or `Design `as well as resulting `SimulationsSummary` objects; serialized objects from previous versions will not be compatible.
