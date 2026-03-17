@@ -20,7 +20,7 @@ DataGrouped(group = character(), ...)
 
 - group:
 
-  (`factor` or `character`)  
+  (`factor` or `character`)\
   whether `mono` or `combo` was used. If `character` then will be
   coerced to `factor` with the correct levels internally.
 
@@ -33,7 +33,7 @@ DataGrouped(group = character(), ...)
 
 - `group`:
 
-  (`factor`)  
+  (`factor`)\
   whether `mono` or `combo` was used.
 
 ## Note

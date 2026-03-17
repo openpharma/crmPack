@@ -26,12 +26,12 @@ expect_probability(x, bounds_closed = TRUE, info = NULL, label = vname(x))
 
 - x:
 
-  (`number`)  
+  (`number`)\
   a single value to check.
 
 - bounds_closed:
 
-  (`logical`)  
+  (`logical`)\
   should bounds be closed? This can be a scalar or vector of length two.
   If it is a scalar, then its value applies equally to lower bound \\0\\
   and upper bound \\1\\. If this is a vector with two flags, the first
@@ -40,27 +40,27 @@ expect_probability(x, bounds_closed = TRUE, info = NULL, label = vname(x))
 
 - .var.name:
 
-  \[`character(1)`\]  
+  \[`character(1)`\]\
   Name of the checked object to print in assertions. Defaults to the
   heuristic implemented in
   [`vname`](https://mllg.github.io/checkmate/reference/vname.html).
 
 - add:
 
-  \[`AssertCollection`\]  
+  \[`AssertCollection`\]\
   Collection to store assertion messages. See
   [`AssertCollection`](https://mllg.github.io/checkmate/reference/AssertCollection.html).
 
 - info:
 
-  \[`character(1)`\]  
+  \[`character(1)`\]\
   Extra information to be included in the message for the testthat
   reporter. See
   [`expect_that`](https://testthat.r-lib.org/reference/expect_that.html).
 
 - label:
 
-  \[`character(1)`\]  
+  \[`character(1)`\]\
   Name of the checked object to print in messages. Defaults to the
   heuristic implemented in
   [`vname`](https://mllg.github.io/checkmate/reference/vname.html).

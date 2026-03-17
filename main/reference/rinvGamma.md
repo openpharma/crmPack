@@ -12,17 +12,17 @@ rinvGamma(n, a, b)
 
 - n:
 
-  (`count`)  
+  (`count`)\
   the number of observations.
 
 - a:
 
-  (`number`)  
+  (`number`)\
   the shape parameter of the inverse gamma distribution.
 
 - b:
 
-  (`number`)  
+  (`number`)\
   the scale parameter of the inverse gamma distribution.
 
 ## Value

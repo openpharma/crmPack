@@ -57,14 +57,14 @@ plotGain(DLEmodel, Effmodel, data, size = c(8L, 8L), shape = c(16L, 17L), ...)
 
 - size:
 
-  (`integer`)  
+  (`integer`)\
   a vector of length two defining the sizes of the shapes used to
   identify the doses with, respectively, p(DLE = 0.3) and the maximum
   gain
 
 - shape:
 
-  (`integer`)  
+  (`integer`)\
   a vector of length two defining the shapes used to identify the doses
   with, respectively, p(DLE = 0.3) and the maximum gain
 

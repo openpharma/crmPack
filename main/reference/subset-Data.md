@@ -20,12 +20,12 @@ x[i]
 
 - x:
 
-  (`Data`)  
+  (`Data`)\
   what to subset.
 
 - i:
 
-  (`integer` or `logical`)  
+  (`integer` or `logical`)\
   indices or logical vector for subsetting observations.
 
 ## Value

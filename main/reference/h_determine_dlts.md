@@ -24,52 +24,52 @@ h_determine_dlts(
 
 - data:
 
-  (`Data`)  
+  (`Data`)\
   what data to start from.
 
 - dose:
 
-  (`number`)  
+  (`number`)\
   current dose.
 
 - prob:
 
-  (`number`)  
+  (`number`)\
   defines the true probability for a DLT at the dose.
 
 - prob_placebo:
 
-  (`number`)  
+  (`number`)\
   defines the true probability for a DLT at a placebo condition.
 
 - prob_response:
 
-  (`number`)  
+  (`number`)\
   defines the true probability for a response at the dose.
 
 - prob_response_placebo:
 
-  (`number`)  
+  (`number`)\
   defines the true probability for a response at a placebo condition.
 
 - cohort_size:
 
-  (`number`)  
+  (`number`)\
   the cohort size to use.
 
 - cohort_size_placebo:
 
-  (`number`)  
+  (`number`)\
   the cohort size to use for placebo condition.
 
 - dose_grid:
 
-  (`numeric`)  
+  (`numeric`)\
   the dose_grid as specified by the user.
 
 - first_separate:
 
-  (`flag`)  
+  (`flag`)\
   whether the first patient is enrolled separately.
 
 ## Value

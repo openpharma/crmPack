@@ -17,14 +17,14 @@ h_validate_combine_results(v1, v2)
 
 - v1:
 
-  (`logical` or `character`)  
+  (`logical` or `character`)\
   an output from `result()` function from
   [`Validate()`](https://docs.crmpack.org/reference/Validate.md)
   reference class, to be combined with `v2`.
 
 - v2:
 
-  (`logical` or `character`)  
+  (`logical` or `character`)\
   an output from `result()` function from
   [`Validate()`](https://docs.crmpack.org/reference/Validate.md)
   reference class, to be combined with `v1`.

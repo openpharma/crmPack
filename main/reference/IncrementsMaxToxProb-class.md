@@ -17,14 +17,14 @@ IncrementsMaxToxProb(prob)
 
 - prob:
 
-  (`numeric`)  
+  (`numeric`)\
   see slot definition.
 
 ## Slots
 
 - `prob`:
 
-  (`numeric`)  
+  (`numeric`)\
   See Usage Notes below.
 
 ## Note

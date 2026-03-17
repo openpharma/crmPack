@@ -21,29 +21,29 @@ StoppingTargetProb(
 
 - target:
 
-  (`number`)  
+  (`number`)\
   see slot definition.
 
 - prob:
 
-  (`proportion`)  
+  (`proportion`)\
   see slot definition.
 
 - report_label:
 
-  (`string` or `NA`)  
+  (`string` or `NA`)\
   see slot definition.
 
 ## Slots
 
 - `target`:
 
-  (`number`)  
+  (`number`)\
   the target toxicity interval, e.g. `c(0.2, 0.35)`.
 
 - `prob`:
 
-  (`proportion`)  
+  (`proportion`)\
   required target toxicity probability (except 0 or 1) for reaching
   sufficient precision.
 

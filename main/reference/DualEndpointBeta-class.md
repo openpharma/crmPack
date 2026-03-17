@@ -17,29 +17,29 @@ DualEndpointBeta(E0, Emax, delta1, mode, ref_dose_beta = 1, ...)
 
 - E0:
 
-  (`numeric`)  
+  (`numeric`)\
   either a fixed number or the two uniform distribution parameters.
 
 - Emax:
 
-  (`numeric`)  
+  (`numeric`)\
   either a fixed number or the two uniform distribution parameters.
 
 - delta1:
 
-  (`numeric`)  
+  (`numeric`)\
   either a fixed positive number or the two parameters of the uniform
   distribution, that can take only positive values.
 
 - mode:
 
-  (`numeric`)  
+  (`numeric`)\
   either a fixed positive number or the two parameters of the uniform
   distribution, that can take only positive values.
 
 - ref_dose_beta:
 
-  (`number`)  
+  (`number`)\
   the reference dose \\x\*\\ (strictly positive number). Note that this
   is different from the `ref_dose` in the inherited
   [`DualEndpoint`](https://docs.crmpack.org/reference/DualEndpoint-class.md)
@@ -75,29 +75,29 @@ range.
 
 - `E0`:
 
-  (`numeric`)  
+  (`numeric`)\
   either a fixed number or the two uniform distribution parameters.
 
 - `Emax`:
 
-  (`numeric`)  
+  (`numeric`)\
   either a fixed number or the two uniform distribution parameters.
 
 - `delta1`:
 
-  (`numeric`)  
+  (`numeric`)\
   either a fixed positive number or the two parameters of the uniform
   distribution, that can take only positive values.
 
 - `mode`:
 
-  (`numeric`)  
+  (`numeric`)\
   either a fixed positive number or the two parameters of the uniform
   distribution, that can take only positive values.
 
 - `ref_dose_beta`:
 
-  (`positive_number`)  
+  (`positive_number`)\
   the reference dose \\x\*\\ (note that this is different from the
   `ref_dose` in the inherited
   [`DualEndpoint`](https://docs.crmpack.org/reference/DualEndpoint-class.md)

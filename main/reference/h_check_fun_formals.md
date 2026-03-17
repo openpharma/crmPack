@@ -16,19 +16,19 @@ h_check_fun_formals(fun, mandatory = NULL, allowed = NULL)
 
 - fun:
 
-  (`function`)  
+  (`function`)\
   a function name whose argument names will be checked.
 
 - mandatory:
 
-  (`character` or `NULL`)  
+  (`character` or `NULL`)\
   the names of the arguments which must be present in `fun`. If
   `mandatory` is specified as `NULL` (default) this requirement is
   ignored.
 
 - allowed:
 
-  (`character` or `NULL`)  
+  (`character` or `NULL`)\
   the names of the arguments which are allowed in `fun`. Names that do
   not belong to `allowed` are simply not allowed. The `allowed`
   parameter is independent from the `mandatory`, in a sense that if

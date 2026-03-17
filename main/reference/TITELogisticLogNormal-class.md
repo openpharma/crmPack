@@ -21,7 +21,7 @@ TITELogisticLogNormal(weight_method = "linear", ...)
 
 - weight_method:
 
-  (`string`)  
+  (`string`)\
   see the slot description.
 
 - ...:
@@ -31,18 +31,18 @@ TITELogisticLogNormal(weight_method = "linear", ...)
 
   `mean`
 
-  :   (`numeric`)  
+  :   (`numeric`)\
       the prior mean vector.
 
   `cov`
 
-  :   (`matrix`)  
+  :   (`matrix`)\
       the prior covariance matrix. The precision matrix `prec` is
       internally calculated as an inverse of `cov`.
 
   `ref_dose`
 
-  :   (`number`)  
+  :   (`number`)\
       the reference dose \\x\*\\ (strictly positive number).
 
 ## Details
@@ -57,7 +57,7 @@ become more extreme and different from the linear weights.
 
 - `weight_method`:
 
-  (`string`)  
+  (`string`)\
   the weight function method: either linear or adaptive; see Liu et
   al. (2013) .
 

@@ -23,7 +23,7 @@ v_da_simulations(object)
 
 - object:
 
-  (`GeneralSimulations`)  
+  (`GeneralSimulations`)\
   object to validate.
 
 ## Value

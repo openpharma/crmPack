@@ -14,22 +14,22 @@ h_pseudo_sim_fit_summary(fit_list, x_most_selected, dose_grid, truth)
 
 - fit_list:
 
-  (`list`)  
+  (`list`)\
   list of fit objects from simulations.
 
 - x_most_selected:
 
-  (`integer`)  
+  (`integer`)\
   index of dose most often selected.
 
 - dose_grid:
 
-  (`numeric`)  
+  (`numeric`)\
   dose grid.
 
 - truth:
 
-  (`function`)  
+  (`function`)\
   truth function.
 
 ## Value

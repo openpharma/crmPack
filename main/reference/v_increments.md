@@ -33,7 +33,7 @@ v_cohort_size_ordinal(object)
 
 - object:
 
-  (`Increments`)  
+  (`Increments`)\
   object to validate.
 
 ## Value

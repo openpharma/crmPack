@@ -15,17 +15,17 @@ model-like classes inherit.
 
 - `datamodel`:
 
-  (`function`)  
+  (`function`)\
   a function representing the `JAGS` data model specification.
 
 - `priormodel`:
 
-  (`function`)  
+  (`function`)\
   a function representing the `JAGS` prior specification.
 
 - `modelspecs`:
 
-  (`function`)  
+  (`function`)\
   a function computing the list of the data model and prior model
   specifications that are required to be specified completely (e.g.
   prior parameters, reference dose, etc.), based on the data slots that
@@ -45,26 +45,26 @@ model-like classes inherit.
 
 - `init`:
 
-  (`function`)  
+  (`function`)\
   a function computing the list of starting values for parameters
   required to be initialized in the MCMC sampler, based on the data
   slots that are required as arguments of this function.
 
 - `datanames`:
 
-  (`character`)  
+  (`character`)\
   the names of all data slots that are used by `datamodel` JAGS
   function. No other names should be specified here.
 
 - `datanames_prior`:
 
-  (`character`)  
+  (`character`)\
   the names of all data slots that are used by `priormodel` JAGS
   function. No other names should be specified here.
 
 - `sample`:
 
-  (`character`)  
+  (`character`)\
   names of all parameters from which you would like to save the MCMC
   samples.
 

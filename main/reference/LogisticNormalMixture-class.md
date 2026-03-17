@@ -18,28 +18,28 @@ LogisticNormalMixture(comp1, comp2, weightpar, ref_dose)
 
 - comp1:
 
-  (`ModelParamsNormal`)  
+  (`ModelParamsNormal`)\
   bivariate normal prior specification of the first component. See
   [`ModelParamsNormal`](https://docs.crmpack.org/reference/ModelParamsNormal-class.md)
   for more details.
 
 - comp2:
 
-  (`ModelParamsNormal`)  
+  (`ModelParamsNormal`)\
   bivariate normal prior specification of the second component. See
   [`ModelParamsNormal`](https://docs.crmpack.org/reference/ModelParamsNormal-class.md)
   for more details.
 
 - weightpar:
 
-  (`numeric`)  
+  (`numeric`)\
   the beta parameters for the weight of the first component. It must a
   be a named vector of length 2 with names `a` and `b` and with strictly
   positive values.
 
 - ref_dose:
 
-  (`number`)  
+  (`number`)\
   the reference dose \\x\*\\ (strictly positive number).
 
 ## Details
@@ -55,24 +55,24 @@ component is assigned a beta prior `B(a, b)`.
 
 - `comp1`:
 
-  (`ModelParamsNormal`)  
+  (`ModelParamsNormal`)\
   bivariate normal prior specification of the first component.
 
 - `comp2`:
 
-  (`ModelParamsNormal`)  
+  (`ModelParamsNormal`)\
   bivariate normal prior specification of the second component.
 
 - `weightpar`:
 
-  (`numeric`)  
+  (`numeric`)\
   the beta parameters for the weight of the first component. It must a
   be a named vector of length 2 with names `a` and `b` and with strictly
   positive values.
 
 - `ref_dose`:
 
-  (`positive_number`)  
+  (`positive_number`)\
   the reference dose.
 
 ## Note

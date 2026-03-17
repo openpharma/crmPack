@@ -46,7 +46,7 @@ simulate(
 
 - nsim:
 
-  (`count`)  
+  (`count`)\
   the number of simulations (default: 1)
 
 - seed:
@@ -55,28 +55,28 @@ simulate(
 
 - trueDLE:
 
-  (`function`)  
+  (`function`)\
   a function which takes as input a dose (vector) and returns the true
   probability (vector) of the occurrence of a DLE. Additional arguments
   can be supplied in `args`.
 
 - trueEff:
 
-  (`function`)  
+  (`function`)\
   a function which takes as input a dose (vector) and returns the
   expected efficacy responses (vector). Additional arguments can be
   supplied in `args`.
 
 - trueNu:
 
-  (`number`)  
+  (`number`)\
   (not with
   [`EffFlexi`](https://docs.crmpack.org/reference/EffFlexi-class.md))
   the precision, the inverse of the variance of the efficacy responses
 
 - trueSigma2:
 
-  (`number`)  
+  (`number`)\
   (only with
   [`EffFlexi`](https://docs.crmpack.org/reference/EffFlexi-class.md))
   the true variance of the efficacy responses which must be a single
@@ -84,7 +84,7 @@ simulate(
 
 - trueSigma2betaW:
 
-  (`number`)  
+  (`number`)\
   (only with
   [`EffFlexi`](https://docs.crmpack.org/reference/EffFlexi-class.md))
   the true variance for the random walk model used for smoothing. This
@@ -92,7 +92,7 @@ simulate(
 
 - args:
 
-  (`data.frame`)  
+  (`data.frame`)\
   data frame with arguments for the `trueDLE` and `trueEff` function.
   The column names correspond to the argument names, the rows to the
   values of the arguments. The rows are appropriately recycled in the
@@ -100,14 +100,14 @@ simulate(
 
 - firstSeparate:
 
-  (`flag`)  
+  (`flag`)\
   enroll the first patient separately from the rest of the cohort? (not
   default) If yes, the cohort will be closed if a DLT occurs in this
   patient.
 
 - mcmcOptions:
 
-  ([McmcOptions](https://docs.crmpack.org/reference/McmcOptions-class.md))  
+  ([McmcOptions](https://docs.crmpack.org/reference/McmcOptions-class.md))\
   object of class
   [`McmcOptions`](https://docs.crmpack.org/reference/McmcOptions-class.md),
   giving the MCMC options for each evaluation in the trial. By default,
@@ -115,13 +115,13 @@ simulate(
 
 - parallel:
 
-  (`flag`)  
+  (`flag`)\
   should the simulation runs be parallelized across the clusters of the
   computer? (not default)
 
 - nCores:
 
-  (`count`)  
+  (`count`)\
   how many cores should be used for parallel computing? Defaults to the
   number of cores on the machine, maximum 5.
 

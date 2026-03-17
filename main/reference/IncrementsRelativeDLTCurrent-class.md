@@ -19,12 +19,12 @@ IncrementsRelativeDLTCurrent(intervals = c(0L, 1L), increments = c(2L, 1L))
 
 - intervals:
 
-  (`numeric`)  
+  (`numeric`)\
   see slot definition.
 
 - increments:
 
-  (`numeric`)  
+  (`numeric`)\
   see slot definition.
 
 ## Note

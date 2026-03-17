@@ -15,12 +15,12 @@ it has additional slots.
 
 - `biomarker_fit_at_dose_most_selected`:
 
-  (`numeric`)  
+  (`numeric`)\
   fitted biomarker level at most often selected dose.
 
 - `mean_biomarker_fit`:
 
-  (`list`)  
+  (`list`)\
   list with average, lower (2.5%) and upper (97.5%) quantiles of mean
   fitted biomarker level at each dose
 

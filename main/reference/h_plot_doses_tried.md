@@ -14,12 +14,12 @@ h_plot_doses_tried(sim_doses, dose_grid)
 
 - sim_doses:
 
-  (`list`)  
+  (`list`)\
   list of simulated doses per trial.
 
 - dose_grid:
 
-  (`numeric`)  
+  (`numeric`)\
   dose grid.
 
 ## Value

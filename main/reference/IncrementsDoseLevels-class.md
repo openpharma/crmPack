@@ -17,19 +17,19 @@ IncrementsDoseLevels(levels = 1L, basis_level = "last")
 
 - levels:
 
-  (`count`)  
+  (`count`)\
   see slot definition.
 
 - basis_level:
 
-  (`string`)  
+  (`string`)\
   see slot definition.
 
 ## Slots
 
 - `levels`:
 
-  (`count`)  
+  (`count`)\
   maximum number of dose levels to increment for the next dose. It
   defaults to 1, which means that no dose skipping is allowed, i.e. the
   next dose can be maximum one level higher than the current base dose.
@@ -38,7 +38,7 @@ IncrementsDoseLevels(levels = 1L, basis_level = "last")
 
 - `basis_level`:
 
-  (`string`)  
+  (`string`)\
   defines the current base dose level. It can take one out of two
   possible values: `last` or `max`. If `last` is specified (default),
   the current base dose level is set to the last dose given. If `max` is

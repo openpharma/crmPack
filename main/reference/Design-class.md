@@ -27,27 +27,27 @@ Design(
 
 - model:
 
-  (`GeneralModel`)  
+  (`GeneralModel`)\
   see slot definition.
 
 - stopping:
 
-  (`Stopping`)  
+  (`Stopping`)\
   see slot definition.
 
 - increments:
 
-  (`Increments`)  
+  (`Increments`)\
   see slot definition.
 
 - pl_cohort_size:
 
-  (`CohortSize`)  
+  (`CohortSize`)\
   see slot definition.
 
 - backfill:
 
-  (`Backfill`)  
+  (`Backfill`)\
   see slot definition.
 
 - ...:
@@ -57,50 +57,50 @@ Design(
 
   `nextBest`
 
-  :   (`NextBest`)  
+  :   (`NextBest`)\
       see slot definition.
 
   `cohort_size`
 
-  :   (`CohortSize`)  
+  :   (`CohortSize`)\
       see slot definition.
 
   `data`
 
-  :   (`Data`)  
+  :   (`Data`)\
       see slot definition.
 
   `startingDose`
 
-  :   (`number`)  
+  :   (`number`)\
       see slot definition.
 
 ## Slots
 
 - `model`:
 
-  (`GeneralModel`)  
+  (`GeneralModel`)\
   the model to be used.
 
 - `stopping`:
 
-  (`Stopping`)  
+  (`Stopping`)\
   stopping rule(s) for the trial.
 
 - `increments`:
 
-  (`Increments`)  
+  (`Increments`)\
   how to control increments between dose levels.
 
 - `pl_cohort_size`:
 
-  (`CohortSize`)  
+  (`CohortSize`)\
   rules for the cohort sizes for placebo, if any planned (defaults to
   constant 0 placebo patients).
 
 - `backfill`:
 
-  (`Backfill`)  
+  (`Backfill`)\
   rules for backfilling patients in the trial (defaults to no
   backfilling).
 

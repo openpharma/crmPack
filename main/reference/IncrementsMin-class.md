@@ -21,14 +21,14 @@ IncrementsMin(increments_list)
 
 - increments_list:
 
-  (`list`)  
+  (`list`)\
   see slot definition.
 
 ## Slots
 
 - `increments_list`:
 
-  (`list`)  
+  (`list`)\
   list with increment rules.
 
 ## Note

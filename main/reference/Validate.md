@@ -15,7 +15,7 @@ failure of the validation.
 
 - `msg`:
 
-  (`character`)  
+  (`character`)\
   the cumulative messages.
 
 ## Methods

@@ -17,14 +17,14 @@ NextBestMinDist(target)
 
 - target:
 
-  (`proportion`)  
+  (`proportion`)\
   see slot definition.
 
 ## Slots
 
 - `target`:
 
-  (`proportion`)  
+  (`proportion`)\
   single target toxicity probability, except 0 or 1.
 
 ## Note

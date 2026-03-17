@@ -25,40 +25,40 @@ h_next_best_tdsamples_plot(
 
 - dose_target_drt_samples:
 
-  (`numeric`)  
+  (`numeric`)\
   vector of in-trial samples.
 
 - dose_target_eot_samples:
 
-  (`numeric`)  
+  (`numeric`)\
   vector of end-of-trial samples.
 
 - dose_target_drt:
 
-  (`number`)  
+  (`number`)\
   target in-trial estimate.
 
 - dose_target_eot:
 
-  (`number`)  
+  (`number`)\
   target end-of-trial estimate.
 
 - dose_grid_range:
 
-  (`numeric`)  
+  (`numeric`)\
   range of dose grid.
 
 - nextBest:
 
-  (`NextBestTDsamples`)  
+  (`NextBestTDsamples`)\
   the rule for the next best dose.
 
 - doselimit:
 
-  (`number`)  
+  (`number`)\
   the maximum allowed next dose.
 
 - next_dose:
 
-  (`number`)  
+  (`number`)\
   next best dose.

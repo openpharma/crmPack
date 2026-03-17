@@ -50,34 +50,34 @@ MinimalInformative(
 
 - dosegrid:
 
-  (`numeric`)  
+  (`numeric`)\
   the dose grid.
 
 - refDose:
 
-  (`number`)  
+  (`number`)\
   the reference dose.
 
 - threshmin:
 
-  (`number`)  
+  (`number`)\
   any toxicity probability above this threshold would be very unlikely
   (see `probmin`) at the minimum dose.
 
 - threshmax:
 
-  (`number`)  
+  (`number`)\
   any toxicity probability below this threshold would be very unlikely
   (see `probmax`) at the maximum dose.
 
 - probmin:
 
-  (`number`)  
+  (`number`)\
   the prior probability of exceeding `threshmin` at the minimum dose.
 
 - probmax:
 
-  (`number`)  
+  (`number`)\
   the prior probability of being below `threshmax` at the maximum dose.
 
 - ...:
@@ -114,13 +114,13 @@ minInfModel <- MinimalInformative(dosegrid = coarseGrid,
                                   threshmax=0.3,
                                   control=## for real case: leave out control 
                                     list(max.time=0.1)) 
-#> It: 1, obj value (lsEnd): 0.6732911061 indTrace: 1
-#> timeSpan = 4.270682 maxTime = 0.1
-#> Emini is: 0.6732911061
+#> It: 1, obj value (lsEnd): 0.6727662311 indTrace: 1
+#> timeSpan = 4.137386 maxTime = 0.1
+#> Emini is: 0.6727662311
 #> xmini are:
-#> 3.436837973 9.074768474 4.306636605 0.7253533934 -0.7572128108 
-#> Totally it used 4.27072 secs
-#> No. of function call is: 991
+#> 3.446289216 9.080650618 4.30874806 0.7251654219 -0.7565382708 
+#> Totally it used 4.137416 secs
+#> No. of function call is: 980
 
 # Plotting the result
 matplot(x=coarseGrid,

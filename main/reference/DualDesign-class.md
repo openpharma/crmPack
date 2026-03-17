@@ -19,12 +19,12 @@ DualDesign(model, data, ...)
 
 - model:
 
-  (`DualEndpoint`)  
+  (`DualEndpoint`)\
   see slot definition.
 
 - data:
 
-  (`DataDual`)  
+  (`DataDual`)\
   see slot definition.
 
 - ...:
@@ -34,34 +34,34 @@ DualDesign(model, data, ...)
 
   `stopping`
 
-  :   (`Stopping`)  
+  :   (`Stopping`)\
       see slot definition.
 
   `increments`
 
-  :   (`Increments`)  
+  :   (`Increments`)\
       see slot definition.
 
   `pl_cohort_size`
 
-  :   (`CohortSize`)  
+  :   (`CohortSize`)\
       see slot definition.
 
   `backfill`
 
-  :   (`Backfill`)  
+  :   (`Backfill`)\
       see slot definition.
 
 ## Slots
 
 - `model`:
 
-  (`DualEndpoint`)  
+  (`DualEndpoint`)\
   the model to be used.
 
 - `data`:
 
-  (`DataDual`)  
+  (`DataDual`)\
   specifies dose grid, any previous data, etc.
 
 ## Note

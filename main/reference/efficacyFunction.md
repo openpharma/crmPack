@@ -20,7 +20,7 @@ efficacyFunction(model, ...)
 
 - model:
 
-  (`ModelEff`)  
+  (`ModelEff`)\
   the model.
 
 - ...:

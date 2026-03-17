@@ -22,24 +22,24 @@ StoppingList(stop_list, summary)
 
 - stop_list:
 
-  (`list`)  
+  (`list`)\
   see slot definition.
 
 - summary:
 
-  (`function`)  
+  (`function`)\
   see slot definition.
 
 ## Slots
 
 - `stop_list`:
 
-  (`list`)  
+  (`list`)\
   list of stopping rules.
 
 - `summary`:
 
-  (`function`)  
+  (`function`)\
   a summary function to combine the results of the stopping rules into a
   single result.
 

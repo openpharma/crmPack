@@ -53,7 +53,7 @@ v_logisticlognormalordinal(object)
 
 - object:
 
-  (`GeneralModel`) or (`ModelPseudo`)  
+  (`GeneralModel`) or (`ModelPseudo`)\
   object to validate.
 
 ## Value

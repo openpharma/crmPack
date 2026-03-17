@@ -26,22 +26,22 @@ TDsamplesDesign(
 
 - model:
 
-  (`ModelTox`)  
+  (`ModelTox`)\
   see slot definition.
 
 - stopping:
 
-  (`Stopping`)  
+  (`Stopping`)\
   see slot definition.
 
 - increments:
 
-  (`Increments`)  
+  (`Increments`)\
   see slot definition.
 
 - pl_cohort_size:
 
-  (`CohortSize`)  
+  (`CohortSize`)\
   see slot definition.
 
 - ...:
@@ -51,44 +51,44 @@ TDsamplesDesign(
 
   `nextBest`
 
-  :   (`NextBest`)  
+  :   (`NextBest`)\
       see slot definition.
 
   `cohort_size`
 
-  :   (`CohortSize`)  
+  :   (`CohortSize`)\
       see slot definition.
 
   `data`
 
-  :   (`Data`)  
+  :   (`Data`)\
       see slot definition.
 
   `startingDose`
 
-  :   (`number`)  
+  :   (`number`)\
       see slot definition.
 
 ## Slots
 
 - `model`:
 
-  (`ModelTox`)  
+  (`ModelTox`)\
   the pseudo DLT model to be used.
 
 - `stopping`:
 
-  (`Stopping`)  
+  (`Stopping`)\
   stopping rule(s) for the trial.
 
 - `increments`:
 
-  (`Increments`)  
+  (`Increments`)\
   how to control increments between dose levels.
 
 - `pl_cohort_size`:
 
-  (`CohortSize`)  
+  (`CohortSize`)\
   rules for the cohort sizes for placebo, if any planned (defaults to
   constant 0 placebo patients).
 

@@ -23,27 +23,27 @@ NextBestDualEndpoint(
 
 - target:
 
-  (`numeric`)  
+  (`numeric`)\
   see slot definition.
 
 - overdose:
 
-  (`numeric`)  
+  (`numeric`)\
   see slot definition.
 
 - max_overdose_prob:
 
-  (`proportion`)  
+  (`proportion`)\
   see slot definition.
 
 - target_relative:
 
-  (`flag`)  
+  (`flag`)\
   see slot definition.
 
 - target_thresh:
 
-  (`proportion`)  
+  (`proportion`)\
   see slot definition.
 
 ## Details
@@ -65,7 +65,7 @@ can be used as a target.
 
 - `target`:
 
-  (`numeric`)  
+  (`numeric`)\
   the biomarker target range that needs to be reached. For example, the
   target range \\(0.8, 1.0)\\ and `target_relative = TRUE` means that we
   target a dose with at least \\80\\\\ of maximum biomarker level. As an
@@ -74,18 +74,18 @@ can be used as a target.
 
 - `overdose`:
 
-  (`numeric`)  
+  (`numeric`)\
   the overdose toxicity interval (lower limit excluded, upper limit
   included).
 
 - `max_overdose_prob`:
 
-  (`proportion`)  
+  (`proportion`)\
   maximum overdose probability that is allowed.
 
 - `target_relative`:
 
-  (`flag`)  
+  (`flag`)\
   is `target` specified as relative? If `TRUE`, then the `target` is
   interpreted relative to the maximum, so it must be a probability
   range. Otherwise, the `target` is interpreted as absolute biomarker
@@ -93,7 +93,7 @@ can be used as a target.
 
 - `target_thresh`:
 
-  (`proportion`)  
+  (`proportion`)\
   a target probability threshold that needs to be fulfilled before the
   target probability will be used for deriving the next best dose
   (default to 0.01).

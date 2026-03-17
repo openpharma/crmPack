@@ -17,17 +17,17 @@ NextBestNCRM(target, overdose, max_overdose_prob)
 
 - target:
 
-  (`numeric`)  
+  (`numeric`)\
   see slot definition.
 
 - overdose:
 
-  (`numeric`)  
+  (`numeric`)\
   see slot definition.
 
 - max_overdose_prob:
 
-  (`proportion`)  
+  (`proportion`)\
   see slot definition.
 
 ## Details
@@ -45,18 +45,18 @@ dose is the next recommended dose.
 
 - `target`:
 
-  (`numeric`)  
+  (`numeric`)\
   the target toxicity interval (limits included).
 
 - `overdose`:
 
-  (`numeric`)  
+  (`numeric`)\
   the overdose toxicity interval (lower limit excluded, upper limit
   included). It is used to filter probability samples.
 
 - `max_overdose_prob`:
 
-  (`proportion`)  
+  (`proportion`)\
   maximum overdose posterior probability that is allowed, except 0 or 1.
 
 ## Note

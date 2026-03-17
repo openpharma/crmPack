@@ -24,44 +24,44 @@ IncrementsHSRBeta(target = 0.3, prob = 0.95, a = 1, b = 1)
 
 - target:
 
-  (`proportion`)  
+  (`proportion`)\
   see slot definition.
 
 - prob:
 
-  (`proportion`)  
+  (`proportion`)\
   see slot definition.
 
 - a:
 
-  (`number`)  
+  (`number`)\
   see slot definition.
 
 - b:
 
-  (`number`)  
+  (`number`)\
   see slot definition.
 
 ## Slots
 
 - `target`:
 
-  (`proportion`)  
+  (`proportion`)\
   the target toxicity, except 0 or 1.
 
 - `prob`:
 
-  (`proportion`)  
+  (`proportion`)\
   the threshold probability (except 0 or 1) for a dose being toxic.
 
 - `a`:
 
-  (`number`)  
+  (`number`)\
   shape parameter \\a \> 0\\ of probability distribution Beta (a,b).
 
 - `b`:
 
-  (`number`)  
+  (`number`)\
   shape parameter \\b \> 0\\ of probability distribution Beta (a,b).
 
 ## Note

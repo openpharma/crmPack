@@ -16,12 +16,12 @@ dapply(df, f, FUN, ...)
 
 - df:
 
-  (`data frame`)  
+  (`data frame`)\
   data set to be divided into groups.
 
 - f:
 
-  (`factor` or `formula` or `list`)  
+  (`factor` or `formula` or `list`)\
   a factor in the sense that `as.factor(f)` defines the grouping, or a
   `list` of such factors in which case their interaction is used for the
   grouping. `f` can also be a formula of the form `~ g1 + ... + gk` to
@@ -31,7 +31,7 @@ dapply(df, f, FUN, ...)
 
 - FUN:
 
-  (`function`)  
+  (`function`)\
   the function to be applied to each subset of `df` defined by `f`.
 
 - ...:

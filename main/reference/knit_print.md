@@ -710,7 +710,7 @@ knit_print(x, ..., asis = TRUE)
 
 - x:
 
-  (`ModelParamsNormal`)  
+  (`ModelParamsNormal`)\
   the object to be rendered
 
 - ...:
@@ -719,22 +719,22 @@ knit_print(x, ..., asis = TRUE)
 
 - asis:
 
-  (`flag`)  
+  (`flag`)\
   Not used at present
 
 - label:
 
-  (`character`)  
+  (`character`)\
   the term used to label participants
 
 - tox_label:
 
-  (`character`)  
+  (`character`)\
   the term used to describe toxicity
 
 - level:
 
-  (`count`)  
+  (`count`)\
   the markdown level at which the headings for cohort size will be
   printed. An integer between 1 and 6
 
@@ -751,116 +751,116 @@ knit_print(x, ..., asis = TRUE)
 
 - full_grid:
 
-  (`flag`)  
+  (`flag`)\
   Should the full dose grid appear in the output table or simply those
   doses for whom at least one evaluable participant is available?
   Ignored unless `summarise == "dose"`.
 
 - summarise:
 
-  (`character`)  
+  (`character`)\
   How to summarise the observed data. The default, `"none"`, lists
   observed data at the participant level. `"dose"` presents participant
   counts by dose and `"cohort"` by cohort.
 
 - summarize:
 
-  (`character`)  
+  (`character`)\
   Synonym for `summarise`
 
 - units:
 
-  (`character`)  
+  (`character`)\
   The units in which the values in `doseGrid` are
 
 - format_func:
 
-  (`function`)  
+  (`function`)\
   The function used to format the range table.
 
 - use_values:
 
-  (`flag`)  
+  (`flag`)\
   print the values associated with hyperparameters, or the symbols used
   to define the hyper-parameters. That is, for example, mu or 1.
 
 - fmt:
 
-  (`character`)  
+  (`character`)\
   the `sprintf` format string used to render numerical values. Ignored
   if `use_values` is `FALSE`.
 
 - biomarker_label:
 
-  (`character`)  
+  (`character`)\
   the term used to describe the biomarker
 
 - params:
 
-  (`character`)  
+  (`character`)\
   The names of the model parameters. See Usage Notes below.
 
 - preamble:
 
-  (`character`)  
+  (`character`)\
   the text that introduces the list of rules
 
 - theta:
 
-  (`character`)  
+  (`character`)\
   the LaTeX representation of the theta vector
 
 - eff_label:
 
-  (`character`)  
+  (`character`)\
   the term used to describe efficacy
 
 - target_label:
 
-  (`character`)  
+  (`character`)\
   the term used to describe the target toxicity rate
 
 - biomarker_units:
 
-  (`character`)  
+  (`character`)\
   the units in which the biomarker is measured
 
 - citation_text:
 
-  (`character`)  
+  (`character`)\
   the text used to cite Mozgunov & Jaki
 
 - citation_link:
 
-  (`character`)  
+  (`character`)\
   the link to Mozgunov & Jaki
 
 - indent:
 
-  (`integer`)  
+  (`integer`)\
   the indent level of the current stopping rule list. Spaces with length
   `indent * 4` will be prepended to the beginning of the rendered
   stopping rule list.
 
 - time_unit:
 
-  (`character`)  
+  (`character`)\
   the word used to describe units of time. See Usage Notes below.
 
 - ordinals:
 
-  (`character`)  
+  (`character`)\
   a character vector whose nth defines the word used as the written
   representation of the nth ordinal number.
 
 - dose_label:
 
-  (`character`)  
+  (`character`)\
   the term used to describe the target dose
 
 - fmt_string:
 
-  (`character`)  
+  (`character`)\
   the character string that defines the format of the output
 
 ## Value

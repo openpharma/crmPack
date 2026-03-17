@@ -27,7 +27,7 @@ v_cohort_size_max(object)
 
 - object:
 
-  (`CohortSize`)  
+  (`CohortSize`)\
   object to validate.
 
 ## Value

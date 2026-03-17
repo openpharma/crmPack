@@ -21,42 +21,42 @@ h_quantiles_target_function(
 
 - dosegrid:
 
-  (`numeric`)  
+  (`numeric`)\
   dose grid.
 
 - refDose:
 
-  (`number`)  
+  (`number`)\
   reference dose.
 
 - lower:
 
-  (`numeric`)  
+  (`numeric`)\
   lower quantiles.
 
 - median:
 
-  (`numeric`)  
+  (`numeric`)\
   median quantiles.
 
 - upper:
 
-  (`numeric`)  
+  (`numeric`)\
   upper quantiles.
 
 - level:
 
-  (`number`)  
+  (`number`)\
   credible level.
 
 - logNormal:
 
-  (`flag`)  
+  (`flag`)\
   use log-normal prior?
 
 - seed:
 
-  (`count`)  
+  (`count`)\
   random seed.
 
 ## Value

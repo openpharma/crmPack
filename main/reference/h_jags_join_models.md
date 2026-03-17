@@ -18,12 +18,12 @@ h_jags_join_models(model1, model2)
 
 - model1:
 
-  (`function`)  
+  (`function`)\
   the first model to join.
 
 - model2:
 
-  (`function`)  
+  (`function`)\
   the second model to join.
 
 ## Value

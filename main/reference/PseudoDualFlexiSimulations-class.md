@@ -19,7 +19,7 @@ PseudoDualFlexiSimulations(sigma2_beta_w_est, ...)
 
 - sigma2_beta_w_est:
 
-  (`numeric`)  
+  (`numeric`)\
   the vector of the final posterior mean sigma2betaW estimates
 
 - ...:
@@ -31,7 +31,7 @@ PseudoDualFlexiSimulations(sigma2_beta_w_est, ...)
 
 - `sigma2_beta_w_est`:
 
-  (`numeric`)  
+  (`numeric`)\
   the vector of the final posterior mean sigma2betaW estimates
 
 ## Note

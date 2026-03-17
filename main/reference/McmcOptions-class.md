@@ -23,29 +23,29 @@ McmcOptions(
 
 - burnin:
 
-  (`count`)  
+  (`count`)\
   number of burn-in iterations which are not saved.
 
 - step:
 
-  (`count`)  
+  (`count`)\
   only every step-th iteration is saved after the burn-in.
 
 - samples:
 
-  (`count`)  
+  (`count`)\
   number of resulting samples.
 
 - rng_kind:
 
-  (`string`)  
+  (`string`)\
   the name of the RNG type. Possible types are: `Wichmann-Hill`,
   `Marsaglia-Multicarry`, `Super-Duper`, `Mersenne-Twister`. If it is
   `NA` (default), then the RNG kind will be chosen by `[rjags`\].
 
 - rng_seed:
 
-  (`number`)  
+  (`number`)\
   RNG seed corresponding to chosen `rng_kind`. It must be an integer
   value or `NA` (default), which means that the seed will be chosen by
   `[rjags`\].
@@ -54,26 +54,26 @@ McmcOptions(
 
 - `iterations`:
 
-  (`count`)  
+  (`count`)\
   number of MCMC iterations.
 
 - `burnin`:
 
-  (`count`)  
+  (`count`)\
   number of burn-in iterations which are not saved.
 
 - `step`:
 
-  (`count`)  
+  (`count`)\
   only every `step`-th iteration is saved after the `burnin`. In other
   words, a sample from iteration `i = 1,...,iterations`, is saved if and
-  only if `(i - burnin) mod step = 0`.  
+  only if `(i - burnin) mod step = 0`.\
   For example, for `iterations = 6`, `burnin = 0` and `step = 2`, only
   samples from iterations `2,4,6` will be saved.
 
 - `rng_kind`:
 
-  (`string`)  
+  (`string`)\
   a Random Number Generator (RNG) type used by
   [`rjags::rjags`](https://rdrr.io/pkg/rjags/man/rjags-package.html). It
   must be one out of the following four values: `base::Wichmann-Hill`,
@@ -84,7 +84,7 @@ McmcOptions(
 
 - `rng_seed`:
 
-  (`number`)  
+  (`number`)\
   a Random Number Generator (RNG) seed used by
   [`rjags::rjags`](https://rdrr.io/pkg/rjags/man/rjags-package.html) for
   a chosen `rng_kind`. It must be an integer scalar or `NA_integer_`,

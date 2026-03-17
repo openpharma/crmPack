@@ -28,42 +28,42 @@ DataOrdinal(
 
 - x:
 
-  (`numeric`)  
+  (`numeric`)\
   the doses for the patients.
 
 - y:
 
-  (`integer`)  
+  (`integer`)\
   the vector of toxicity events (0 or 1). You can also supply `numeric`
   vectors, but these will then be converted to `integer` internally.
 
 - ID:
 
-  (`integer`)  
+  (`integer`)\
   unique patient IDs. You can also supply `numeric` vectors, but these
   will then be converted to `integer` internally.
 
 - cohort:
 
-  (`integer`)  
+  (`integer`)\
   the cohort (non-negative sorted) indices. You can also supply
   `numeric` vectors, but these will then be converted to `integer`
   internally.
 
 - doseGrid:
 
-  (`numeric`)  
+  (`numeric`)\
   all possible doses.
 
 - placebo:
 
-  (`flag`)  
+  (`flag`)\
   if `TRUE` the first dose level in the `doseGrid` is considered as
   placebo.
 
 - yCategories:
 
-  (named `integer`)  
+  (named `integer`)\
   the names and codes for the toxicity categories used in the data.
   Category labels are taken from the names of the vector. The names of
   the vector must be unique and its values must be sorted and take the

@@ -44,25 +44,25 @@ EffFlexi(eff, eff_dose, sigma2W, sigma2betaW, rw1 = TRUE, data)
 
 - eff:
 
-  (`numeric`)  
+  (`numeric`)\
   the pseudo efficacy responses. Elements of `eff` must correspond to
   the elements of `eff_dose`.
 
 - eff_dose:
 
-  (`numeric`)  
+  (`numeric`)\
   dose levels that correspond to pseudo efficacy responses in `eff`.
 
 - sigma2W:
 
-  (`numeric`)  
+  (`numeric`)\
   the prior variance of the efficacy responses. This is either a fixed
   value or a named vector with two positive numbers, the shape (`a`),
   and the rate (`b`) parameters for the inverse gamma distribution.
 
 - sigma2betaW:
 
-  (`numeric`)  
+  (`numeric`)\
   the prior variance of the random walk model used for smoothing. This
   is either a fixed value or a named vector with two positive numbers,
   the shape (`a`), and the rate (`b`) parameters for the inverse gamma
@@ -70,14 +70,14 @@ EffFlexi(eff, eff_dose, sigma2W, sigma2betaW, rw1 = TRUE, data)
 
 - rw1:
 
-  (`flag`)  
+  (`flag`)\
   used for smoothing data for this efficacy model. If it is `TRUE`, the
   first-order random walk model is used for the mean efficacy responses.
   Otherwise, the random walk of second order is used.
 
 - data:
 
-  (`DataDual`)  
+  (`DataDual`)\
   observed data to update estimates of the model parameters.
 
 ## Details
@@ -92,7 +92,7 @@ class.
 
 - `eff`:
 
-  (`numeric`)  
+  (`numeric`)\
   the pseudo efficacy responses. Each element here must represent
   responses treated based on one subject. It must be a vector of length
   at least 2 and the order of its elements must correspond to values
@@ -100,21 +100,21 @@ class.
 
 - `eff_dose`:
 
-  (`numeric`)  
+  (`numeric`)\
   the pseudo efficacy dose levels at which the pseudo efficacy responses
   are observed. It must be a vector of length at least 2 and the order
   of its elements must correspond to values specified in `eff`.
 
 - `sigma2W`:
 
-  (`numeric`)  
+  (`numeric`)\
   the prior variance of the flexible efficacy form. This is either a
   fixed value or a named vector with two positive numbers, the shape
   (`a`), and the rate (`b`) parameters for the gamma distribution.
 
 - `sigma2betaW`:
 
-  (`numeric`)  
+  (`numeric`)\
   the prior variance of the random walk model for the mean efficacy
   responses. This is either a fixed value or a named vector with two
   positive numbers, the shape (`a`), and the rate (`b`) parameters for
@@ -122,33 +122,33 @@ class.
 
 - `use_fixed`:
 
-  (`logical`)  
+  (`logical`)\
   indicates whether a fixed value for `sigma2W` and `sigma2betaW` (for
   each parameter separately) is used or not. This slot is needed for
   internal purposes and must not be touched by the user.
 
 - `rw1`:
 
-  (`flag`)  
+  (`flag`)\
   used for smoothing data for this efficacy model. If it is `TRUE`, the
   first-order random walk model is used for the mean efficacy responses.
   Otherwise, the random walk of second order is used.
 
 - `X`:
 
-  (`matrix`)  
+  (`matrix`)\
   the design matrix for the efficacy responses. It is based on both the
   pseudo and the observed efficacy responses.
 
 - `RW`:
 
-  (`matrix`)  
+  (`matrix`)\
   the difference matrix for the random walk model. This slot is needed
   for internal purposes and must not be used by the user.
 
 - `RW_rank`:
 
-  (`integer`)  
+  (`integer`)\
   is the rank of the difference matrix. This slot is needed for internal
   purposes and must not be used by the user.
 

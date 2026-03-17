@@ -23,42 +23,42 @@ h_enroll_backfill_patients(
 
 - backfill_cohorts:
 
-  (`list`)  
+  (`list`)\
   current queue of backfill cohorts.
 
 - data:
 
-  (`Data`)  
+  (`Data`)\
   current trial data.
 
 - backfill:
 
-  (`Backfill`)  
+  (`Backfill`)\
   with priority and recruitment rules.
 
 - cohort_size:
 
-  (`count`)  
+  (`count`)\
   size of the active cohort.
 
 - backfill_patients:
 
-  (`count`)  
+  (`count`)\
   number of enrolled backfill patients.
 
 - current_args:
 
-  (`data.frame`)  
+  (`data.frame`)\
   arguments for the truth function.
 
 - truth:
 
-  (`function`)  
+  (`function`)\
   defining true DLT probability.
 
 - truthResponse:
 
-  (`function`)  
+  (`function`)\
   defining true response probability.
 
 ## Value

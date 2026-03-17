@@ -16,19 +16,19 @@ h_plot_data_cohort_lines(cohort, placebo, vertical = TRUE)
 
 - cohort:
 
-  (`integer`)  
+  (`integer`)\
   the cohort indices.
 
 - placebo:
 
-  (`flag`)  
+  (`flag`)\
   is placebo included in the doses? If it so, this function returns
   `NULL` object as in this case all doses in a given cohort are equal
   and there is no need to separate them.
 
 - vertical:
 
-  (`flag`)  
+  (`flag`)\
   should the line be vertical? Otherwise it is horizontal.
 
 ## Details

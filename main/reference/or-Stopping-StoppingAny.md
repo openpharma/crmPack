@@ -15,12 +15,12 @@ e1 | e2
 
 - e1:
 
-  (`Stopping`)  
+  (`Stopping`)\
   stopping rule object.
 
 - e2:
 
-  (`StoppingAny`)  
+  (`StoppingAny`)\
   stopping list object.
 
 ## Value

@@ -18,12 +18,12 @@ ngrid(object, ignore_placebo = TRUE, ...)
 
 - object:
 
-  (`Data`)  
+  (`Data`)\
   object with dose grid.
 
 - ignore_placebo:
 
-  (`flag`)  
+  (`flag`)\
   should placebo dose (if any) not be counted?
 
 - ...:

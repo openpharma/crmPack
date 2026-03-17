@@ -17,24 +17,24 @@ IncrementsOrdinal(grade, rule)
 
 - grade:
 
-  (`numeric`)  
+  (`numeric`)\
   see slot definition.
 
 - rule:
 
-  (`Increments`)  
+  (`Increments`)\
   see slot definition.
 
 ## Slots
 
 - `grade`:
 
-  (`integer`)  
+  (`integer`)\
   the toxicity grade to which the `rule` should be applied.
 
 - `rule`:
 
-  (`Increments`)  
+  (`Increments`)\
   the standard `Increments` rule to be applied
 
 ## Note

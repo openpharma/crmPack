@@ -14,7 +14,7 @@ v_starting_dose(object)
 
 - object:
 
-  (`StartingDose`)  
+  (`StartingDose`)\
   object to validate.
 
 ## Value

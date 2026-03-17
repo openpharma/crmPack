@@ -18,12 +18,12 @@ update(object, data, ...)
 
 - object:
 
-  (`ModelPseudo`)  
+  (`ModelPseudo`)\
   the model to update.
 
 - data:
 
-  (`Data`)  
+  (`Data`)\
   all currently available of data.
 
 - ...:

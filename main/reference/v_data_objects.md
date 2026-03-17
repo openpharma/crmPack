@@ -33,17 +33,17 @@ v_data_grouped(object)
 
 - object:
 
-  (`GeneralData`)  
+  (`GeneralData`)\
   object to validate.
 
 - dose:
 
-  (`numeric`)  
+  (`numeric`)\
   dose values.
 
 - cohort:
 
-  (`integer`)  
+  (`integer`)\
   cohort indices parallel to `doses`.
 
 ## Value

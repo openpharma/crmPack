@@ -17,12 +17,12 @@ h_all_equivalent(target, current, tolerance = 1e-10)
 
 - target:
 
-  (`numeric`)  
+  (`numeric`)\
   target values.
 
 - current:
 
-  (`numeric`)  
+  (`numeric`)\
   current values.
 
 - tolerance:

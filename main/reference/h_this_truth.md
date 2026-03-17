@@ -12,17 +12,17 @@ h_this_truth(dose, this_args, truth)
 
 - dose:
 
-  (`number`)  
+  (`number`)\
   current dose.
 
 - this_args:
 
-  (`data.frame`)  
+  (`data.frame`)\
   list of arguments for the truth.
 
 - truth:
 
-  (`function`)  
+  (`function`)\
   defines the true probability for a DLT at a dose.
 
 ## Value

@@ -18,12 +18,12 @@ h_group_data(mono_data, combo_data)
 
 - mono_data:
 
-  (`Data`)  
+  (`Data`)\
   mono data.
 
 - combo_data:
 
-  (`Data`)  
+  (`Data`)\
   combo data.
 
 ## Value

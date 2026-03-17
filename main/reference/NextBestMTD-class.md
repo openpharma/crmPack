@@ -16,24 +16,24 @@ NextBestMTD(target, derive)
 
 - target:
 
-  (`proportion`)  
+  (`proportion`)\
   see slot definition.
 
 - derive:
 
-  (`function`)  
+  (`function`)\
   see slot definition.
 
 ## Slots
 
 - `target`:
 
-  (`proportion`)  
+  (`proportion`)\
   target toxicity probability, except 0 or 1.
 
 - `derive`:
 
-  (`function`)  
+  (`function`)\
   a function which derives the final next best MTD estimate, based on
   vector of posterior MTD samples. It must therefore accept one and only
   one argument, which is a numeric vector, and return a number.

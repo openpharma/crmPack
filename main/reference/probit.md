@@ -15,7 +15,7 @@ probit(x)
 
 - x:
 
-  (`numeric`)  
+  (`numeric`)\
   the function argument.
 
 ## Value

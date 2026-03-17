@@ -17,14 +17,14 @@ StartingDose(starting_dose)
 
 - starting_dose:
 
-  (`positive_number`)  
+  (`positive_number`)\
   see slot definition.
 
 ## Slots
 
 - `starting_dose`:
 
-  (`numeric`)  
+  (`numeric`)\
   the starting dose
 
 ## Note

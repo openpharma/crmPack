@@ -20,22 +20,22 @@ RuleDesignOrdinal(next_best, cohort_size, data, starting_dose)
 
 - next_best:
 
-  (`NextBestOrdinal`)  
+  (`NextBestOrdinal`)\
   see slot definition.
 
 - cohort_size:
 
-  (`CohortSize`)  
+  (`CohortSize`)\
   see slot definition.
 
 - data:
 
-  (`DataOrdinal`)  
+  (`DataOrdinal`)\
   see slot definition.
 
 - starting_dose:
 
-  (`number`)  
+  (`number`)\
   see slot definition.
 
 ## Details
@@ -58,22 +58,22 @@ can be combined using the operators defined, e.g.,
 
 - `next_best`:
 
-  (`NextBestOrdinal`)  
+  (`NextBestOrdinal`)\
   how to find the next best dose.
 
 - `cohort_size`:
 
-  (`CohortSize`)  
+  (`CohortSize`)\
   rules for the cohort sizes.
 
 - `data`:
 
-  (`DataOrdinal`)  
+  (`DataOrdinal`)\
   specifies dose grid, any previous data, etc.
 
 - `starting_dose`:
 
-  (`number`)  
+  (`number`)\
   the starting dose, it must lie on the dose grid in `data`.
 
 ## Note
@@ -110,7 +110,7 @@ RuleDesignOrdinal(
 #> Slot "derive":
 #> function (x) 
 #> median(x, na.rm = TRUE)
-#> <environment: 0x55f99474c8a8>
+#> <environment: 0x560797543608>
 #> 
 #> 
 #> 

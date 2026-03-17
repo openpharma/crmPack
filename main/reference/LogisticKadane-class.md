@@ -17,17 +17,17 @@ LogisticKadane(theta, xmin, xmax)
 
 - theta:
 
-  (`proportion`)  
+  (`proportion`)\
   the target toxicity probability.
 
 - xmin:
 
-  (`number`)  
+  (`number`)\
   the minimum of the dose range.
 
 - xmax:
 
-  (`number`)  
+  (`number`)\
   the maximum of the dose range.
 
 ## Details
@@ -46,17 +46,17 @@ theta).\$\$
 
 - `theta`:
 
-  (`proportion`)  
+  (`proportion`)\
   the target toxicity probability.
 
 - `xmin`:
 
-  (`number`)  
+  (`number`)\
   the minimum of the dose range.
 
 - `xmax`:
 
-  (`number`)  
+  (`number`)\
   the maximum of the dose range.
 
 ## Note

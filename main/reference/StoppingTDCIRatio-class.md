@@ -24,30 +24,30 @@ StoppingTDCIRatio(
 
 - target_ratio:
 
-  (`numeric`)  
+  (`numeric`)\
   see slot definition.
 
 - prob_target:
 
-  (`proportion`)  
+  (`proportion`)\
   see slot definition.
 
 - report_label:
 
-  (`string` or `NA`)  
+  (`string` or `NA`)\
   see slot definition.
 
 ## Slots
 
 - `target_ratio`:
 
-  (`numeric`)  
+  (`numeric`)\
   target for the ratio of the 95% credibility interval's estimate, that
   is required to stop a trial.
 
 - `prob_target`:
 
-  (`proportion`)  
+  (`proportion`)\
   the target probability of the occurrence of a DLT.
 
 ## Note

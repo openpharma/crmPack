@@ -18,17 +18,17 @@ h_is_positive_definite(x, size = 2, tol = 1e-06)
 
 - x:
 
-  (`matrix`)  
+  (`matrix`)\
   a matrix to be checked.
 
 - size:
 
-  (`integer`)  
+  (`integer`)\
   a size of the square matrix `x` to be checked against for.
 
 - tol:
 
-  (`number`)  
+  (`number`)\
   a given tolerance number used to check whether an eigenvalue is
   positive or not. An eigenvalue is considered as positive if and only
   if it is greater than the `tol`.

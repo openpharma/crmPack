@@ -13,7 +13,7 @@ get_result_list(fun, nsim, vars, parallel, n_cores)
 
 - fun:
 
-  (`function`)  
+  (`function`)\
   the simulation function for a single iteration, which takes as single
   parameter the iteration index.
 

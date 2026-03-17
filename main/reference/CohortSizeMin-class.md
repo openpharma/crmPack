@@ -21,14 +21,14 @@ CohortSizeMin(cohort_sizes)
 
 - cohort_sizes:
 
-  (`list`)  
+  (`list`)\
   see slot definition.
 
 ## Slots
 
 - `cohort_sizes`:
 
-  (`list`)  
+  (`list`)\
   a list of cohort size rules, i.e. objects of class
   [`CohortSize`](https://docs.crmpack.org/reference/CohortSize-class.md).
 

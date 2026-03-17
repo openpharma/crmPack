@@ -19,23 +19,23 @@ DALogisticLogNormal(npiece = 3, l, c_par = 2, cond_pem = TRUE, ...)
 
 - npiece:
 
-  (`number`)  
+  (`number`)\
   the number of pieces in the `PEM`.
 
 - l:
 
-  (`numeric`)  
+  (`numeric`)\
   a vector used in the lambda prior.
 
 - c_par:
 
-  (`numeric`)  
+  (`numeric`)\
   a parameter used in the lambda prior; according to Liu's paper,
   `c_par = 2` is recommended.
 
 - cond_pem:
 
-  (`flag`)  
+  (`flag`)\
   is a conditional piecewise-exponential model used? (default).
   Otherwise an unconditional model is used.
 
@@ -46,41 +46,41 @@ DALogisticLogNormal(npiece = 3, l, c_par = 2, cond_pem = TRUE, ...)
 
   `mean`
 
-  :   (`numeric`)  
+  :   (`numeric`)\
       the prior mean vector.
 
   `cov`
 
-  :   (`matrix`)  
+  :   (`matrix`)\
       the prior covariance matrix. The precision matrix `prec` is
       internally calculated as an inverse of `cov`.
 
   `ref_dose`
 
-  :   (`number`)  
+  :   (`number`)\
       the reference dose \\x\*\\ (strictly positive number).
 
 ## Slots
 
 - `npiece`:
 
-  (`number`)  
+  (`number`)\
   the number of pieces in the `PEM`.
 
 - `l`:
 
-  (`numeric`)  
+  (`numeric`)\
   a vector used in the lambda prior.
 
 - `c_par`:
 
-  (`numeric`)  
+  (`numeric`)\
   a parameter used in the lambda prior; according to Liu's paper,
   `c_par = 2` is recommended.
 
 - `cond_pem`:
 
-  (`flag`)  
+  (`flag`)\
   is a conditional piecewise-exponential model used? (default).
   Otherwise an unconditional model is used.
 

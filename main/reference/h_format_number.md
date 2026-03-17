@@ -20,22 +20,22 @@ h_format_number(x, digits = 5, prefix = "", suffix = "")
 
 - x:
 
-  (`number`)  
+  (`number`)\
   a number to be formatted.
 
 - digits:
 
-  (`function`)  
+  (`function`)\
   the desired number of significant digits.
 
 - prefix:
 
-  (`string`)  
+  (`string`)\
   a prefix to be added in front of the formatted number.
 
 - suffix:
 
-  (`string`)  
+  (`string`)\
   a suffix to be appended after the formatted number.
 
 ## Value

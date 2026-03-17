@@ -17,12 +17,12 @@ h_convert_ordinal_data(data_ord, grade)
 
 - data_ord:
 
-  (`DataOrdinal`)  
+  (`DataOrdinal`)\
   the `DataOrdinal` object to covert
 
 - grade:
 
-  (`integer`)  
+  (`integer`)\
   the toxicity grade for which the equivalent data is required.
 
 ## Value

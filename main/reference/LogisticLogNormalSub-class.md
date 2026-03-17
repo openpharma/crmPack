@@ -17,18 +17,18 @@ LogisticLogNormalSub(mean, cov, ref_dose = 0)
 
 - mean:
 
-  (`numeric`)  
+  (`numeric`)\
   the prior mean vector.
 
 - cov:
 
-  (`matrix`)  
+  (`matrix`)\
   the prior covariance matrix. The precision matrix `prec` is internally
   calculated as an inverse of `cov`.
 
 - ref_dose:
 
-  (`number`)  
+  (`number`)\
   the reference dose \\x\*\\.
 
 ## Details
@@ -42,12 +42,12 @@ the probability of observing a DLT for a given dose \\x\\. The prior
 
 - `params`:
 
-  (`ModelParamsNormal`)  
+  (`ModelParamsNormal`)\
   bivariate normal prior parameters.
 
 - `ref_dose`:
 
-  (`number`)  
+  (`number`)\
   the reference dose \\x\*\\.
 
 ## Note

@@ -21,25 +21,25 @@ LogisticNormalFixedMixture(components, weights, ref_dose, log_normal = FALSE)
 
 - components:
 
-  (`list`)  
+  (`list`)\
   the specifications of the mixture components, a list with
   [`ModelParamsNormal`](https://docs.crmpack.org/reference/ModelParamsNormal-class.md)
   objects for each bivariate (log) normal prior.
 
 - weights:
 
-  (`numeric`)  
+  (`numeric`)\
   the weights of the components; these must be positive and will be
   normalized to sum to 1.
 
 - ref_dose:
 
-  (`number`)  
+  (`number`)\
   the reference dose \\x\*\\ (strictly positive number).
 
 - log_normal:
 
-  (`flag`)  
+  (`flag`)\
   should a log normal prior be specified, such that the mean vectors and
   covariance matrices are valid for the intercept and log slope?
 
@@ -64,25 +64,25 @@ special indicator slot specifies whether a log normal prior is used.
 
 - `components`:
 
-  (`list`)  
+  (`list`)\
   the specifications of the mixture components, a list with
   [`ModelParamsNormal`](https://docs.crmpack.org/reference/ModelParamsNormal-class.md)
   objects for each bivariate (log) normal prior.
 
 - `weights`:
 
-  (`numeric`)  
+  (`numeric`)\
   the weights of the components; these must be positive and must sum to
   1.
 
 - `ref_dose`:
 
-  (`positive_number`)  
+  (`positive_number`)\
   the reference dose.
 
 - `log_normal`:
 
-  (`flag`)  
+  (`flag`)\
   should a log normal prior be used, such that the mean vectors and
   covariance matrices are valid for the intercept and log slope?
 

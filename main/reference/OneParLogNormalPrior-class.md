@@ -17,19 +17,19 @@ OneParLogNormalPrior(skel_probs, dose_grid, sigma2)
 
 - skel_probs:
 
-  (`numeric`)  
+  (`numeric`)\
   skeleton prior probabilities. This is a vector of unique and sorted
   probability values between 0 and 1.
 
 - dose_grid:
 
-  (`numeric`)  
+  (`numeric`)\
   dose grid. It must be must be a sorted vector of the same length as
   `skel_probs`.
 
 - sigma2:
 
-  (`number`)  
+  (`number`)\
   prior variance of log power parameter alpha.
 
 ## Value
@@ -40,23 +40,23 @@ an instance of the `OneParLogNormalPrior` class
 
 - `skel_fun`:
 
-  (`function`)  
+  (`function`)\
   function to calculate the prior DLT probabilities.
 
 - `skel_fun_inv`:
 
-  (`function`)  
+  (`function`)\
   inverse function of `skel_fun`.
 
 - `skel_probs`:
 
-  (`numeric`)  
+  (`numeric`)\
   skeleton prior probabilities. This is a vector of unique and sorted
   probability values between 0 and 1.
 
 - `sigma2`:
 
-  (`number`)  
+  (`number`)\
   prior variance of log power parameter alpha.
 
 ## See also

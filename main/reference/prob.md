@@ -66,7 +66,7 @@ prob(dose, model, samples, grade, cumulative = TRUE, ...)
 
 - dose:
 
-  (`number` or `numeric`)  
+  (`number` or `numeric`)\
   the dose which is targeted. The following recycling rule applies when
   `samples` is not missing: vectors of size 1 will be recycled to the
   size of the sample (i.e. `size(samples)`). Otherwise, `dose` must have
@@ -74,13 +74,13 @@ prob(dose, model, samples, grade, cumulative = TRUE, ...)
 
 - model:
 
-  (`GeneralModel` or `ModelTox`)  
+  (`GeneralModel` or `ModelTox`)\
   the model for single agent dose escalation or pseudo DLE
   (dose-limiting events)/toxicity model.
 
 - samples:
 
-  (`Samples`)  
+  (`Samples`)\
   the samples of model's parameters that will be used to compute
   toxicity probabilities. Can also be missing for some models.
 
@@ -90,7 +90,7 @@ prob(dose, model, samples, grade, cumulative = TRUE, ...)
 
 - group:
 
-  (`character` or `factor`)  
+  (`character` or `factor`)\
   for
   [`LogisticLogNormalGrouped`](https://docs.crmpack.org/reference/LogisticLogNormalGrouped-class.md),
   indicating whether to calculate the probability for the `mono` or for
@@ -98,12 +98,12 @@ prob(dose, model, samples, grade, cumulative = TRUE, ...)
 
 - grade:
 
-  (`integer` or `integer_vector`)  
+  (`integer` or `integer_vector`)\
   The toxicity grade for which probabilities are required
 
 - cumulative:
 
-  (`flag`)  
+  (`flag`)\
   Should the returned probability be cumulative (the default) or
   grade-specific?
 
@@ -213,9 +213,9 @@ my_samples <- mcmc(data = my_data, model = my_model, options = my_options)
 
 # Posterior for Prob(DLT | dose = 50).
 prob(dose = 50, model = my_model, samples = my_samples)
-#>  [1] 0.7197728 0.7197728 0.3869515 0.4623654 0.6506636 0.6506636 0.6506636
-#>  [8] 0.6506636 0.6506636 0.2704975 0.6067626 0.6067626 0.6067626 0.4566325
-#> [15] 0.3576701 0.1396491 0.1396491 0.1396491 0.1531324 0.1699764
+#>  [1] 0.6237324 0.6375647 0.6375647 0.5957790 0.5957790 0.3990616 0.2147908
+#>  [8] 0.2147908 0.2759197 0.2759197 0.2759197 0.2177323 0.2177323 0.2177323
+#> [15] 0.2177323 0.2645861 0.2645861 0.2645861 0.2645861 0.6571020
 
 # Create data from the 'DataDual' class.
 data_dual <- DataDual(

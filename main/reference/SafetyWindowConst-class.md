@@ -32,18 +32,18 @@ SafetyWindowConst(gap, follow, follow_min)
 
 - `gap`:
 
-  (`integer`)  
+  (`integer`)\
   a vector, the constant gap between patients.
 
 - `follow`:
 
-  (`count`)  
+  (`count`)\
   how long to follow each patient. The period of time that each patient
   in the cohort needs to be followed before the next cohort opens.
 
 - `follow_min`:
 
-  (`count`)  
+  (`count`)\
   minimum follow up. At least one patient in the cohort needs to be
   followed at the minimal follow up time.
 

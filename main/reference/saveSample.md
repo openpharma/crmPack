@@ -19,12 +19,12 @@ saveSample(object, iteration, ...)
 
 - object:
 
-  (`McmcOptions`)  
+  (`McmcOptions`)\
   object based on which the answer is determined.
 
 - iteration:
 
-  (`count`)  
+  (`count`)\
   the current iteration index.
 
 - ...:

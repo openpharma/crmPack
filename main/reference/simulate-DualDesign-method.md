@@ -34,7 +34,7 @@ simulate(
 
 - nsim:
 
-  (`count`)  
+  (`count`)\
   the number of simulations (default: 1)
 
 - seed:
@@ -43,21 +43,21 @@ simulate(
 
 - trueTox:
 
-  (`function`)  
+  (`function`)\
   a function which takes as input a dose (vector) and returns the true
   probability (vector) for toxicity. Additional arguments can be
   supplied in `args`.
 
 - trueBiomarker:
 
-  (`function`)  
+  (`function`)\
   a function which takes as input a dose (vector) and returns the true
   biomarker level (vector). Additional arguments can be supplied in
   `args`.
 
 - args:
 
-  (`data.frame`)  
+  (`data.frame`)\
   data frame with arguments for the `trueTox` and `trueBiomarker`
   function. The column names correspond to the argument names, the rows
   to the values of the arguments. The rows are appropriately recycled in
@@ -65,24 +65,24 @@ simulate(
 
 - sigma2W:
 
-  (`number`)  
+  (`number`)\
   variance for the biomarker measurements
 
 - rho:
 
-  (`number`)  
+  (`number`)\
   correlation between toxicity and biomarker measurements (default: 0)
 
 - firstSeparate:
 
-  (`flag`)  
+  (`flag`)\
   enroll the first patient separately from the rest of the cohort? (not
   default) If yes, the cohort will be closed if a DLT occurs in this
   patient.
 
 - mcmcOptions:
 
-  ([McmcOptions](https://docs.crmpack.org/reference/McmcOptions-class.md))  
+  ([McmcOptions](https://docs.crmpack.org/reference/McmcOptions-class.md))\
   object of class
   [`McmcOptions`](https://docs.crmpack.org/reference/McmcOptions-class.md),
   giving the MCMC options for each evaluation in the trial. By default,
@@ -90,19 +90,19 @@ simulate(
 
 - parallel:
 
-  (`flag`)  
+  (`flag`)\
   should the simulation runs be parallelized across the clusters of the
   computer? (not default)
 
 - nCores:
 
-  (`count`)  
+  (`count`)\
   how many cores should be used for parallel computing? Defaults to the
   number of cores on the machine, maximum 5.
 
 - derive:
 
-  (`list`)  
+  (`list`)\
   a named list of functions which derives statistics, based on the
   vector of posterior MTD samples. Each list element must therefore
   accept one and only one argument, which is a numeric vector, and

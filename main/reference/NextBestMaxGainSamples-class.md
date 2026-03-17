@@ -24,31 +24,31 @@ NextBestMaxGainSamples(prob_target_drt, prob_target_eot, derive, mg_derive)
 
 - prob_target_drt:
 
-  (`proportion`)  
+  (`proportion`)\
   see slot definition in
   [`NextBestMaxGain`](https://docs.crmpack.org/reference/NextBestMaxGain-class.md).
 
 - prob_target_eot:
 
-  (`proportion`)  
+  (`proportion`)\
   see slot definition in
   [`NextBestMaxGain`](https://docs.crmpack.org/reference/NextBestMaxGain-class.md).
 
 - derive:
 
-  (`function`)  
+  (`function`)\
   see slot definition.
 
 - mg_derive:
 
-  (`function`)  
+  (`function`)\
   see slot definition.
 
 ## Slots
 
 - `derive`:
 
-  (`function`)  
+  (`function`)\
   derives, based on a vector of posterior dose samples, the target dose
   that has the probability of the occurrence of DLT equals to either the
   `prob_target_drt` or `prob_target_eot`. It must therefore accept one
@@ -56,7 +56,7 @@ NextBestMaxGainSamples(prob_target_drt, prob_target_eot, derive, mg_derive)
 
 - `mg_derive`:
 
-  (`function`)  
+  (`function`)\
   derives, based on a vector of posterior dose samples that give the
   maximum gain value, the final next best estimate of the dose that
   gives the maximum gain value. It must therefore accept one and only

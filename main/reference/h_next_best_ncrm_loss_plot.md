@@ -25,7 +25,7 @@ h_next_best_ncrm_loss_plot(
 
 - prob_mat:
 
-  (`numeric`)  
+  (`numeric`)\
   matrix with probabilities of a grid doses to be in a given interval.
   If `is_unacceptable_specified` is `TRUE`, there must be 4 intervals
   (columns) in `prob_mat`: `underdosing`, `target`, `excessive`,
@@ -35,35 +35,35 @@ h_next_best_ncrm_loss_plot(
 
 - posterior_loss:
 
-  (`numeric`)  
+  (`numeric`)\
   posterior losses.
 
 - max_overdose_prob:
 
-  (`number`)  
+  (`number`)\
   maximum overdose posterior probability that is allowed.
 
 - dose_grid:
 
-  (`numeric`)  
+  (`numeric`)\
   dose grid.
 
 - max_eligible_dose_level:
 
-  (`number`)  
+  (`number`)\
   maximum eligible dose level in the `dose_grid`.
 
 - doselimit:
 
-  (`number`)  
+  (`number`)\
   the maximum allowed next dose.
 
 - next_dose:
 
-  (`number`)  
+  (`number`)\
   next best dose.
 
 - is_unacceptable_specified:
 
-  (`flag`)  
+  (`flag`)\
   is unacceptable interval specified?

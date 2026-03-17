@@ -12,7 +12,7 @@ h_prepare_units(units = NA)
 
 - units:
 
-  (`character`)  
+  (`character`)\
   the units to be displayed
 
 ## Value

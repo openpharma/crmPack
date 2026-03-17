@@ -17,24 +17,24 @@ NextBestOrdinal(grade, rule)
 
 - grade:
 
-  (`numeric`)  
+  (`numeric`)\
   see slot definition.
 
 - rule:
 
-  (`NextBest`)  
+  (`NextBest`)\
   see slot definition.
 
 ## Slots
 
 - `grade`:
 
-  (`integer`)  
+  (`integer`)\
   the toxicity grade to which the `rule` should be applied.
 
 - `rule`:
 
-  (`NextBest`)  
+  (`NextBest`)\
   the standard `NextBest` rule to be applied
 
 ## Note
@@ -68,7 +68,7 @@ NextBestOrdinal(
 #> {
 #>     quantile(mtd_samples, probs = 0.25)
 #> }
-#> <environment: 0x55f98e825b68>
+#> <environment: 0x56079f461c10>
 #> 
 #> 
 ```

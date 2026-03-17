@@ -61,12 +61,12 @@ plot(
 
 - x:
 
-  (`DataOrdinal`)  
+  (`DataOrdinal`)\
   object we want to plot.
 
 - blind:
 
-  (`flag`)  
+  (`flag`)\
   indicates whether to blind the data. If `TRUE`, then placebo subjects
   are reported at the same level as the active dose level in the
   corresponding cohort, and DLTs are always assigned to the first
@@ -74,22 +74,22 @@ plot(
 
 - legend:
 
-  (`flag`)  
+  (`flag`)\
   whether the legend should be added.
 
 - tox_labels:
 
-  (`named list of character`)  
+  (`named list of character`)\
   the labels of the toxicity categories.
 
 - tox_shapes:
 
-  (`names list of integers`)  
+  (`names list of integers`)\
   the symbols used to identify the toxicity categories.
 
 - mark_backfill:
 
-  (`flag`)  
+  (`flag`)\
   whether to mark backfilled patients with empty shape.
 
 - ...:
@@ -98,27 +98,27 @@ plot(
 
 - y:
 
-  (`missing`)  
+  (`missing`)\
   missing object, for compatibility with the generic function.
 
 - include_backfill:
 
-  (`flag`)  
+  (`flag`)\
   whether to include backfilled patients.
 
 - mark_response:
 
-  (`flag`)  
+  (`flag`)\
   whether to mark patients with response with rectangle.
 
 - text_size_markings:
 
-  (`number`)  
+  (`number`)\
   text size for the markings legend.
 
 - point_cex_markings:
 
-  (`number`)  
+  (`number`)\
   point size multiplier for the markings legend.
 
 ## Value
@@ -141,7 +141,7 @@ The default values of `tox_shapes` and `tox_labels` result in DLTs being
 displayed as red triangles and other responses as black circles.
 
 With more than 9 toxicity categories, toxicity symbols must be specified
-manually.  
+manually.\
 With more than 5 toxicity categories, toxicity labels must be specified
 manually.
 

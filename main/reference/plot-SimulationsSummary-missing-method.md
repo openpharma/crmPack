@@ -36,17 +36,17 @@ plot(
 
 - x:
 
-  (`SimulationsSummary`)  
+  (`SimulationsSummary`)\
   the object we want to plot from.
 
 - y:
 
-  (`missing`)  
+  (`missing`)\
   not used.
 
 - type:
 
-  (`character`)  
+  (`character`)\
   the types of plots you want to obtain.
 
 - ...:

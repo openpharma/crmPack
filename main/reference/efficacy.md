@@ -26,7 +26,7 @@ efficacy(dose, model, samples)
 
 - dose:
 
-  (`numeric`)  
+  (`numeric`)\
   the dose which is targeted. The following recycling rule applies when
   `samples` is not missing: vectors of size 1 will be recycled to the
   size of the sample (i.e. `size(samples)`). Otherwise, `dose` must have
@@ -34,12 +34,12 @@ efficacy(dose, model, samples)
 
 - model:
 
-  (`ModelEff`)  
+  (`ModelEff`)\
   the efficacy model with pseudo data prior.
 
 - samples:
 
-  (`Samples`)  
+  (`Samples`)\
   samples of model's parameters that will be used to compute expected
   efficacy values. Can also be missing for some models.
 

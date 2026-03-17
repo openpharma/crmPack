@@ -48,12 +48,12 @@ maxDose(increments, data, model, samples, ...)
 
 - increments:
 
-  (`Increments`)  
+  (`Increments`)\
   the rule for the next best dose.
 
 - data:
 
-  (`Data`)  
+  (`Data`)\
   input data.
 
 - ...:
@@ -62,12 +62,12 @@ maxDose(increments, data, model, samples, ...)
 
 - model:
 
-  (`GeneralModel`)  
+  (`GeneralModel`)\
   The model on which probabilities will be based
 
 - samples:
 
-  (`Samples`)  
+  (`Samples`)\
   The MCMC samples to which `model` will be applied
 
 ## Value
@@ -327,5 +327,5 @@ suppressWarnings({
 })
 toxIncrements <- IncrementsMaxToxProb(prob = c("DLAE" = 0.2, "CRS" = 0.05))
 maxDose(toxIncrements, emptyData, model, samples)
-#> [1] 1
+#> [1] 3
 ```

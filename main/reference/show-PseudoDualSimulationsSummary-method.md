@@ -15,7 +15,7 @@ show(object)
 
 - object:
 
-  (`PseudoDualSimulationsSummary`)  
+  (`PseudoDualSimulationsSummary`)\
   the object we want to print.
 
 ## Value

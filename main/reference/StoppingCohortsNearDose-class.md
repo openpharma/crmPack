@@ -21,29 +21,29 @@ StoppingCohortsNearDose(
 
 - nCohorts:
 
-  (`number`)  
+  (`number`)\
   see slot definition.
 
 - percentage:
 
-  (`number`)  
+  (`number`)\
   see slot definition.
 
 - report_label:
 
-  (`string` or `NA`)  
+  (`string` or `NA`)\
   see slot definition.
 
 ## Slots
 
 - `nCohorts`:
 
-  (`number`)  
+  (`number`)\
   number of required cohorts.
 
 - `percentage`:
 
-  (`number`)  
+  (`number`)\
   percentage (between and including 0 and 100) within the next best dose
   the cohorts must lie.
 

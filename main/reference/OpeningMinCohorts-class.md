@@ -19,14 +19,14 @@ OpeningMinCohorts(min_cohorts = 2L)
 
 - min_cohorts:
 
-  (`integer`)  
+  (`integer`)\
   see slot definition.
 
 ## Slots
 
 - `min_cohorts`:
 
-  (`integer`)  
+  (`integer`)\
   the minimum number of cohorts that must have been treated before
   backfilling can be opened.
 

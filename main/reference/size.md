@@ -46,7 +46,7 @@ size(object, ...)
 
 - object:
 
-  (`McmcOptions` or `Samples` or `CohortSize`)  
+  (`McmcOptions` or `Samples` or `CohortSize`)\
   an object for which the size is computed.
 
 - ...:

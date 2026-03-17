@@ -23,7 +23,7 @@ OneParExpPrior(skel_probs, dose_grid, lambda)
 
 - dose_grid:
 
-  (`numeric`)  
+  (`numeric`)\
   dose grid. It must be must be a sorted vector of the same length as
   `skel_probs`.
 
@@ -35,23 +35,23 @@ OneParExpPrior(skel_probs, dose_grid, lambda)
 
 - `skel_fun`:
 
-  (`function`)  
+  (`function`)\
   function to calculate the prior DLT probabilities.
 
 - `skel_fun_inv`:
 
-  (`function`)  
+  (`function`)\
   inverse function of `skel_fun`.
 
 - `skel_probs`:
 
-  (`numeric`)  
+  (`numeric`)\
   skeleton prior probabilities. This is a vector of unique and sorted
   probability values between 0 and 1.
 
 - `lambda`:
 
-  (`number`)  
+  (`number`)\
   rate parameter of prior exponential distribution for theta.
 
 ## Note

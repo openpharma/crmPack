@@ -15,27 +15,27 @@ myBayesLogit(y, X, m0, P0, options)
 
 - y:
 
-  (`integer`)  
+  (`integer`)\
   0/1 vector of responses.
 
 - X:
 
-  (`matrix`)  
+  (`matrix`)\
   design matrix.
 
 - m0:
 
-  (`numeric`)  
+  (`numeric`)\
   prior mean vector.
 
 - P0:
 
-  (`matrix`)  
+  (`matrix`)\
   precision matrix.
 
 - options:
 
-  (`McmcOptions`)  
+  (`McmcOptions`)\
   MCMC options.
 
 ## Value

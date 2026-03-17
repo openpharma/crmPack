@@ -16,41 +16,41 @@ initialization function is provided for this class.
 
 - `target_end_of_trial`:
 
-  (`numeric`)  
+  (`numeric`)\
   the target probability of DLE wanted at the end of a trial
 
 - `target_dose_end_of_trial`:
 
-  (`numeric`)  
+  (`numeric`)\
   the dose level corresponds to the target probability of DLE wanted at
   the end of a trial, TDEOT
 
 - `target_dose_end_of_trial_at_dose_grid`:
 
-  (`numeric`)  
+  (`numeric`)\
   the dose level at dose grid corresponds to the target probability of
   DLE wanted at the end of a trial
 
 - `target_during_trial`:
 
-  (`numeric`)  
+  (`numeric`)\
   the target probability of DLE wanted during a trial
 
 - `target_dose_during_trial`:
 
-  (`numeric`)  
+  (`numeric`)\
   the dose level corresponds to the target probability of DLE wanted
   during the trial. TDDT
 
 - `target_dose_during_trial_at_dose_grid`:
 
-  (`numeric`)  
+  (`numeric`)\
   the dose level at dose grid corresponds to the target probability of
   DLE wanted during a trial
 
 - `tdeot_summary`:
 
-  (`table`)  
+  (`table`)\
   the six-number table summary, include the lowest, the 25th percentile
   (lower quartile), the 50th percentile (median), the mean, the 75th
   percentile and the highest values of the final dose levels obtained
@@ -59,7 +59,7 @@ initialization function is provided for this class.
 
 - `tddt_summary`:
 
-  (`table`)  
+  (`table`)\
   the six-number table summary, include the lowest, the 25th percentile
   (lower quartile), the 50th percentile (median), the mean, the 75th
   percentile and the highest values of the final dose levels obtained
@@ -68,7 +68,7 @@ initialization function is provided for this class.
 
 - `final_dose_rec_summary`:
 
-  (`table`)  
+  (`table`)\
   the six-number table summary, include the lowest, the 25th percentile
   (lower quartile), the 50th percentile (median), the mean, the 75th
   percentile and the highest values of the final optimal doses, which is
@@ -78,99 +78,99 @@ initialization function is provided for this class.
 
 - `ratio_tdeot_summary`:
 
-  (`table`)  
+  (`table`)\
   the six-number summary table of the final ratios of the upper to the
   lower 95% credibility intervals of the final TDEOTs across all
   simulations
 
 - `final_ratio_summary`:
 
-  (`table`)  
+  (`table`)\
   the six-number summary table of the final ratios of the upper to the
   lower 95% credibility intervals of the final optimal doses across all
   simulations
 
 - `nsim`:
 
-  (`integer`)  
+  (`integer`)\
   number of simulations
 
 - `prop_dle`:
 
-  (`numeric`)  
+  (`numeric`)\
   proportions of DLE in the trials
 
 - `mean_tox_risk`:
 
-  (`numeric`)  
+  (`numeric`)\
   mean toxicity risks for the patients
 
 - `dose_selected`:
 
-  (`numeric`)  
+  (`numeric`)\
   doses selected as MTD (target_dose_end_of_trial)
 
 - `tox_at_doses_selected`:
 
-  (`numeric`)  
+  (`numeric`)\
   true toxicity at doses selected
 
 - `prop_at_target_end_of_trial`:
 
-  (`numeric`)  
+  (`numeric`)\
   Proportion of trials selecting at the dose_grid closest below the MTD,
   the target_dose_end_of_trial
 
 - `prop_at_target_during_trial`:
 
-  (`numeric`)  
+  (`numeric`)\
   Proportion of trials selecting at the dose_grid closest below the
   target_dose_during_trial
 
 - `dose_most_selected`:
 
-  (`numeric`)  
+  (`numeric`)\
   dose most often selected as MTD
 
 - `obs_tox_rate_at_dose_most_selected`:
 
-  (`numeric`)  
+  (`numeric`)\
   observed toxicity rate at dose most often selected
 
 - `n_obs`:
 
-  (`integer`)  
+  (`integer`)\
   number of patients overall
 
 - `n_above_target_end_of_trial`:
 
-  (`integer`)  
+  (`integer`)\
   number of patients treated above target_dose_end_of_trial
 
 - `n_above_target_during_trial`:
 
-  (`integer`)  
+  (`integer`)\
   number of patients treated above target_dose_during_trial
 
 - `dose_grid`:
 
-  (`numeric`)  
+  (`numeric`)\
   the dose grid that has been used
 
 - `fit_at_dose_most_selected`:
 
-  (`numeric`)  
+  (`numeric`)\
   fitted toxicity rate at dose most often selected
 
 - `mean_fit`:
 
-  (`list`)  
+  (`list`)\
   list with the average, lower (2.5%) and upper (97.5%) quantiles of the
   mean fitted toxicity at each dose level
 
 - `stop_report`:
 
-  (`matrix`)  
+  (`matrix`)\
   matrix of stopping rule outcomes
 
 ## Note

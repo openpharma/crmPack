@@ -33,7 +33,7 @@ h_model_dual_endpoint_beta(
 
 - param:
 
-  (`numeric`)  
+  (`numeric`)\
   the value of a given `param_name` parameter of the dose-biomarker
   relationship function \\f(x)\\. Either a fixed-valued scalar or vector
   with two elements that are the parameters of a probability
@@ -42,26 +42,26 @@ h_model_dual_endpoint_beta(
 
 - param_name:
 
-  (`string`)  
+  (`string`)\
   the name of the parameter of \\f(x)\\, whose value depends on `param`.
 
 - param_suffix:
 
-  (`character`)  
+  (`character`)\
   the two suffixes to be appended to the elements of `param_name` and
   then used when updating `modelspecs`. The value of this argument is
   ignored when `param` is a scalar.
 
 - priormodel:
 
-  (`function` or `NULL`)  
+  (`function` or `NULL`)\
   a function representing the `JAGS` prior specification that will be
   appended to existing `de@priormodel` specification if `param` is not a
   scalar. Otherwise, `de@priormodel` remains unchanged.
 
 - de:
 
-  (`DualEnpoint`)  
+  (`DualEnpoint`)\
   dual endpoint model whose slots will be updated.
 
 ## Value

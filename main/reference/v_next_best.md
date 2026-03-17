@@ -40,7 +40,7 @@ v_next_best_ordinal(object)
 
 - object:
 
-  (`NextBest`)  
+  (`NextBest`)\
   object to validate.
 
 ## Value

@@ -2,11 +2,11 @@
 
 **\[stable\]**
 
-Two vectors are of compatible size if and only if:  
+Two vectors are of compatible size if and only if:\
 
-1.  At least one vector has size 1  
+1.  At least one vector has size 1\
 
-2.  or both vectors are of the same size.  
+2.  or both vectors are of the same size.\
 
 ## Usage
 
@@ -22,25 +22,25 @@ test_length(x, len)
 
 - x:
 
-  (`any`)  
+  (`any`)\
   the first vector, any object for which
   [`length()`](https://rdrr.io/r/base/length.html) function is defined.
 
 - len:
 
-  (`count`)  
+  (`count`)\
   the length of the second vector.
 
 - .var.name:
 
-  \[`character(1)`\]  
+  \[`character(1)`\]\
   Name of the checked object to print in assertions. Defaults to the
   heuristic implemented in
   [`vname`](https://mllg.github.io/checkmate/reference/vname.html).
 
 - add:
 
-  \[`AssertCollection`\]  
+  \[`AssertCollection`\]\
   Collection to store assertion messages. See
   [`AssertCollection`](https://mllg.github.io/checkmate/reference/AssertCollection.html).
 

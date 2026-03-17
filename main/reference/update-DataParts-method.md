@@ -17,17 +17,17 @@ update(object, x, y, ..., check = TRUE)
 
 - object:
 
-  (`DataParts`)  
+  (`DataParts`)\
   object you want to update.
 
 - x:
 
-  (`number`)  
+  (`number`)\
   the dose level (one level only!).
 
 - y:
 
-  (`integer`)  
+  (`integer`)\
   the DLT vector (0/1 vector) for all patients in this cohort. You can
   also supply `numeric` vectors, but these will then be converted to
   `integer` internally.
@@ -39,7 +39,7 @@ update(object, x, y, ..., check = TRUE)
 
 - check:
 
-  (`flag`)  
+  (`flag`)\
   whether the validation of the updated object should be conducted. See
   help for
   [`update-Data`](https://docs.crmpack.org/reference/update-Data-method.md)

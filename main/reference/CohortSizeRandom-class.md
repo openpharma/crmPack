@@ -17,24 +17,24 @@ CohortSizeRandom(min_size, max_size)
 
 - min_size:
 
-  (`integer`)  
+  (`integer`)\
   see slot definition.
 
 - max_size:
 
-  (`integer`)  
+  (`integer`)\
   see slot definition.
 
 ## Slots
 
 - `min_size`:
 
-  (`integer`)  
+  (`integer`)\
   minimum cohort size.
 
 - `max_size`:
 
-  (`integer`)  
+  (`integer`)\
   maximum cohort size.
 
 ## Note

@@ -27,19 +27,19 @@ FractionalCRM(...)
 
   `skel_probs`
 
-  :   (`numeric`)  
+  :   (`numeric`)\
       skeleton prior probabilities. This is a vector of unique and
       sorted probability values between 0 and 1.
 
   `dose_grid`
 
-  :   (`numeric`)  
+  :   (`numeric`)\
       dose grid. It must be must be a sorted vector of the same length
       as `skel_probs`.
 
   `sigma2`
 
-  :   (`number`)  
+  :   (`number`)\
       prior variance of log power parameter alpha.
 
 ## Note

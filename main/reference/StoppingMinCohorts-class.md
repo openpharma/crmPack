@@ -17,19 +17,19 @@ StoppingMinCohorts(nCohorts = 2L, report_label = NA_character_)
 
 - nCohorts:
 
-  (`number`)  
+  (`number`)\
   see slot definition.
 
 - report_label:
 
-  (`string` or `NA`)  
+  (`string` or `NA`)\
   see slot definition.
 
 ## Slots
 
 - `nCohorts`:
 
-  (`number`)  
+  (`number`)\
   minimum required number of cohorts.
 
 ## Note

@@ -22,27 +22,27 @@ Backfill(
 
 - cohort_size:
 
-  (`CohortSize`)  
+  (`CohortSize`)\
   see the slot definition.
 
 - opening:
 
-  (`Opening`)  
+  (`Opening`)\
   see the slot definition.
 
 - recruitment:
 
-  (`Recruitment`)  
+  (`Recruitment`)\
   see the slot definition.
 
 - max_size:
 
-  (`count`)  
+  (`count`)\
   see the slot definition.
 
 - priority:
 
-  (`character`)  
+  (`character`)\
   see the slot definition.
 
 ## Value
@@ -53,27 +53,27 @@ An object of class `Backfill`.
 
 - `cohort_size`:
 
-  (`CohortSize`)  
+  (`CohortSize`)\
   the size of cohorts to be backfilled.
 
 - `opening`:
 
-  (`Opening`)  
+  (`Opening`)\
   the opening criteria for backfilling.
 
 - `recruitment`:
 
-  (`Recruitment`)  
+  (`Recruitment`)\
   recruitment criteria for backfilling.
 
 - `max_size`:
 
-  (`count`)  
+  (`count`)\
   the maximum number of patients to be backfilled.
 
 - `priority`:
 
-  (`character`)  
+  (`character`)\
   the priority rule for backfilling, one of "highest", "lowest", or
   "random".
 

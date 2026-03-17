@@ -18,17 +18,17 @@ h_jags_add_dummy(object, where, dummy = 0)
 
 - object:
 
-  (`GeneralData`)  
+  (`GeneralData`)\
   object into which dummy values will be added.
 
 - where:
 
-  (`character`)  
+  (`character`)\
   names of slots in `object` to which a `dummy` number will be appended.
 
 - dummy:
 
-  (`number`)  
+  (`number`)\
   a dummy number that will be appended to selected slots in `object`.
   Default to `0`.
 

@@ -27,22 +27,22 @@ h_test_named_numeric(
 
 - x:
 
-  (`any`)  
+  (`any`)\
   object to check.
 
 - subset.of:
 
-  \[`character`\]  
+  \[`character`\]\
   Names provided in `x` must be subset of the set `subset.of`.
 
 - must.include:
 
-  \[`character`\]  
+  \[`character`\]\
   Names provided in `x` must be a superset of the set `must.include`.
 
 - permutation.of:
 
-  \[`character`\]  
+  \[`character`\]\
   Names provided in `x` must be a permutation of the set
   `permutation.of`. Duplicated names in `permutation.of` are stripped
   out and duplicated names in `x` thus lead to a failed check. Use this
@@ -51,35 +51,35 @@ h_test_named_numeric(
 
 - identical.to:
 
-  \[`character`\]  
+  \[`character`\]\
   Names provided in `x` must be identical to the vector `identical.to`.
   Use this argument instead of `permutation.of` if the order of the
   names is relevant.
 
 - disjunct.from:
 
-  \[`character`\]  
+  \[`character`\]\
   Names provided in `x` must may not be present in the vector
   `disjunct.from`.
 
 - lower:
 
-  \[`numeric(1)`\]  
+  \[`numeric(1)`\]\
   Lower value all elements of `x` must be greater than or equal to.
 
 - finite:
 
-  \[`logical(1)`\]  
+  \[`logical(1)`\]\
   Check for only finite values? Default is `FALSE`.
 
 - any.missing:
 
-  \[`logical(1)`\]  
+  \[`logical(1)`\]\
   Are vectors with missing values allowed? Default is `TRUE`.
 
 - len:
 
-  \[`integer(1)`\]  
+  \[`integer(1)`\]\
   Exact expected length of `x`.
 
 - ...:

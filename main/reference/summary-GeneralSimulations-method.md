@@ -15,18 +15,18 @@ summary(object, truth, target = c(0.2, 0.35), ...)
 
 - object:
 
-  (`GeneralSimulations`)  
+  (`GeneralSimulations`)\
   the object we want to summarize.
 
 - truth:
 
-  (`function`)  
+  (`function`)\
   a function which takes as input a dose (vector) and returns the true
   probability (vector) for toxicity.
 
 - target:
 
-  (`numeric`)  
+  (`numeric`)\
   the target toxicity interval (default: 20-35%) used for the
   computations.
 

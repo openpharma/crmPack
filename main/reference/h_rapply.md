@@ -21,19 +21,19 @@ h_rapply(x, fun, classes, ...)
 
 - x:
 
-  (`any`)  
+  (`any`)\
   "list-like" object for which subsetting operator
   [`[[`](https://rdrr.io/r/base/Extract.html) is defined.
 
 - fun:
 
-  (`function`)  
+  (`function`)\
   a function of one "principal" argument, passing further arguments via
   `...`.
 
 - classes:
 
-  (`character`)  
+  (`character`)\
   class names.
 
 - ...:

@@ -8,7 +8,7 @@
 
 - `report_label`:
 
-  (`string`)  
+  (`string`)\
   a label for the stopping report. The meaning of this parameter is
   twofold. If it is equal to `NA_character_` (default), the
   `report_label` will not be used in the report at all. Otherwise, if it

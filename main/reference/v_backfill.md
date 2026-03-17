@@ -16,7 +16,7 @@ v_backfill(object)
 
 - object:
 
-  (`Backfill`)  
+  (`Backfill`)\
   object to validate.
 
 ## Value

@@ -21,30 +21,30 @@ NextBestEWOC(target, overdose, max_overdose_prob)
 
 - target:
 
-  (`proportion`)  
+  (`proportion`)\
   see slot definition.
 
 - overdose:
 
-  (`numeric`)  
+  (`numeric`)\
   see slot definition.
 
 - max_overdose_prob:
 
-  (`proportion`)  
+  (`proportion`)\
   see slot definition.
 
 ## Slots
 
 - `target`:
 
-  (`proportion`)  
+  (`proportion`)\
   target toxicity probability to be achieved, below `overdose[1]`; only
   used for simulation reporting purposes.
 
 - `overdose`:
 
-  (`numeric`)  
+  (`numeric`)\
   the (exclusive) lower and (inclusive) upper boundaries of the toxicity
   probability interval considered an overdose region. The prototype uses
   `c(0.35, 1)` meaning probabilities \> 0.35 are treated as overly
@@ -52,7 +52,7 @@ NextBestEWOC(target, overdose, max_overdose_prob)
 
 - `max_overdose_prob`:
 
-  (`proportion`)  
+  (`proportion`)\
   maximum acceptable posterior probability that the next recommended
   dose is in the overdose interval.
 

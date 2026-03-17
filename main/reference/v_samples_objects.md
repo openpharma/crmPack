@@ -14,7 +14,7 @@ v_samples(object)
 
 - object:
 
-  (`Samples`)  
+  (`Samples`)\
   object to validate.
 
 ## Value

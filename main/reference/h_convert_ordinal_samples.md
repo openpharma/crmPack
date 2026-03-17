@@ -18,12 +18,12 @@ h_convert_ordinal_samples(obj, grade)
 
 - obj:
 
-  (`Samples`)  
+  (`Samples`)\
   the `Samples` object to covert
 
 - grade:
 
-  (`integer`)  
+  (`integer`)\
   the toxicity grade for which the equivalent data is required.
 
 ## Value

@@ -21,29 +21,29 @@ StoppingSpecificDose(
 
 - rule:
 
-  (`Stopping`)  
+  (`Stopping`)\
   see slot definition.
 
 - dose:
 
-  (`number`)  
+  (`number`)\
   see slot definition.
 
 - report_label:
 
-  (`string` or `NA`)  
+  (`string` or `NA`)\
   see slot definition.
 
 ## Slots
 
 - `rule`:
 
-  (`Stopping`)  
+  (`Stopping`)\
   a stopping rule available in this package.
 
 - `dose`:
 
-  (`positive_number`)  
+  (`positive_number`)\
   a dose that is defined as part of the dose grid of the data.
 
 ## Note

@@ -18,12 +18,12 @@ IncrementsRelativeParts(dlt_start, clean_start, ...)
 
 - dlt_start:
 
-  (`count`)  
+  (`count`)\
   see slot definition.
 
 - clean_start:
 
-  (`count`)  
+  (`count`)\
   see slot definition.
 
 - ...:
@@ -33,12 +33,12 @@ IncrementsRelativeParts(dlt_start, clean_start, ...)
 
   `intervals`
 
-  :   (`numeric`)  
+  :   (`numeric`)\
       see slot definition.
 
   `increments`
 
-  :   (`numeric`)  
+  :   (`numeric`)\
       see slot definition.
 
 ## Details
@@ -60,13 +60,13 @@ apply, see
 
 - `dlt_start`:
 
-  (`integer`)  
+  (`integer`)\
   a scalar, the dose level increment for starting part 2 in case of at
   least one DLT event in part 1.
 
 - `clean_start`:
 
-  (`integer`)  
+  (`integer`)\
   a scalar, the dose level increment for starting part 2 in case of no
   DLTs in part 1. If `clean_start <= 0`, then the part 1 ladder will be
   used to find the maximum next dose. Otherwise, the relative increment

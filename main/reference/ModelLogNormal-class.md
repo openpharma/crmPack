@@ -26,30 +26,30 @@ ModelLogNormal(mean, cov, ref_dose = 1)
 
 - mean:
 
-  (`numeric`)  
+  (`numeric`)\
   the prior mean vector.
 
 - cov:
 
-  (`matrix`)  
+  (`matrix`)\
   the prior covariance matrix. The precision matrix `prec` is internally
   calculated as an inverse of `cov`.
 
 - ref_dose:
 
-  (`number`)  
+  (`number`)\
   the reference dose \\x\*\\ (strictly positive number).
 
 ## Slots
 
 - `params`:
 
-  (`ModelParamsNormal`)  
+  (`ModelParamsNormal`)\
   bivariate normal prior parameters.
 
 - `ref_dose`:
 
-  (`positive_number`)  
+  (`positive_number`)\
   the reference dose.
 
 ## Note

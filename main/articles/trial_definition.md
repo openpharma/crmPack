@@ -230,7 +230,7 @@ required cohort size is `3`.
 ### The stopping rules
 
 Now we create the rules that define when the trial’s objectives have
-been met (or when it should be stopped for futility).  
+been met (or when it should be stopped for futility).\
 The futility rule is the easiest to explain: if twenty patients have
 been recruited, the study should stop (`my_stopping_3`). The success
 rule requires both of the following conditions to have been met:

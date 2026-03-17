@@ -19,25 +19,25 @@ OpeningMinResponses(min_responses = 1L, include_lower_doses = FALSE)
 
 - min_responses:
 
-  (`count`)  
+  (`count`)\
   see slot definition.
 
 - include_lower_doses:
 
-  (`logical`)  
+  (`logical`)\
   see slot definition.
 
 ## Slots
 
 - `min_responses`:
 
-  (`count`)  
+  (`count`)\
   the minimum number of responses required before backfill cohorts can
   be opened (at least 1).
 
 - `include_lower_doses`:
 
-  (`logical`)  
+  (`logical`)\
   if `TRUE`, responses at all doses less than or equal to the cohort's
   dose are counted. If `FALSE`, only responses at the cohort's dose are
   counted.

@@ -17,12 +17,12 @@ update(object, w, ..., check = TRUE)
 
 - object:
 
-  (`DataDual`)  
+  (`DataDual`)\
   object you want to update.
 
 - w:
 
-  (`numeric`)  
+  (`numeric`)\
   the continuous vector of biomarker values for all the patients in this
   update.
 
@@ -33,7 +33,7 @@ update(object, w, ..., check = TRUE)
 
 - check:
 
-  (`flag`)  
+  (`flag`)\
   whether the validation of the updated object should be conducted. See
   help for
   [`update-Data`](https://docs.crmpack.org/reference/update-Data-method.md)

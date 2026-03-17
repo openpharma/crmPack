@@ -26,37 +26,37 @@ DesignGrouped(
 
 - model:
 
-  (`LogisticLogNormalGrouped`)  
+  (`LogisticLogNormalGrouped`)\
   see slot definition.
 
 - mono:
 
-  (`Design`)  
+  (`Design`)\
   see slot definition.
 
 - combo:
 
-  (`Design`)  
+  (`Design`)\
   see slot definition.
 
 - first_cohort_mono_only:
 
-  (`flag`)  
+  (`flag`)\
   see slot definition.
 
 - same_dose_for_all:
 
-  (`flag`)  
+  (`flag`)\
   see slot definition.
 
 - same_dose_for_start:
 
-  (`flag`)  
+  (`flag`)\
   see slot definition.
 
 - stop_mono_with_combo:
 
-  (`flag`)  
+  (`flag`)\
   whether the mono arm should be stopped when the combo arm is stopped
   (this makes sense when the only real trial objective is the
   recommended combo dose).
@@ -83,36 +83,36 @@ DesignGrouped(
 
 - `model`:
 
-  (`LogisticLogNormalGrouped`)  
+  (`LogisticLogNormalGrouped`)\
   the model to be used, currently only one class is allowed.
 
 - `mono`:
 
-  (`Design`)  
+  (`Design`)\
   defines the dose escalation rules for the mono arm, see details.
 
 - `combo`:
 
-  (`Design`)  
+  (`Design`)\
   defines the dose escalation rules for the combo arm, see details.
 
 - `first_cohort_mono_only`:
 
-  (`flag`)  
+  (`flag`)\
   whether first test one mono agent cohort, and then once its DLT data
   has been collected, we proceed from the second cohort onwards with
   concurrent mono and combo cohorts.
 
 - `same_dose_for_all`:
 
-  (`flag`)  
+  (`flag`)\
   whether the lower dose of the separately determined mono and combo
   doses should be used as the next dose for both mono and combo in all
   cohorts.
 
 - `same_dose_for_start`:
 
-  (`flag`)  
+  (`flag`)\
   indicates whether, when mono and combo are used in the same cohort for
   the first time, the same dose should be used for both. Note that this
   is different from `same_dose_for_all` which will always force them to

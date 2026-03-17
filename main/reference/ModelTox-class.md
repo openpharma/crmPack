@@ -34,7 +34,7 @@ pseudo data.
 
 - `data`:
 
-  (`Data`)  
+  (`Data`)\
   observed data that is used to obtain model parameters estimates or
   samples (see details above).
 

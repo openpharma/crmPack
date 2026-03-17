@@ -23,19 +23,19 @@ DataDA(
 
 - u:
 
-  (`numeric`)  
+  (`numeric`)\
   the continuous vector of DLT free survival times.
 
 - t0:
 
-  (`numeric`)  
+  (`numeric`)\
   time of initial dosing for each patient. Non-negative values sorted in
   ascending order. Default to vector of 0s of length equal to length of
   `u`.
 
 - Tmax:
 
-  (`number`)  
+  (`number`)\
   the DLT observation period.
 
 - ...:
@@ -47,18 +47,18 @@ DataDA(
 
 - `u`:
 
-  (`numeric`)  
+  (`numeric`)\
   the continuous vector of DLT free survival times.
 
 - `t0`:
 
-  (`numeric`)  
+  (`numeric`)\
   time of initial dosing for each patient. Non-negative values sorted in
   ascending order.
 
 - `Tmax`:
 
-  (`number`)  
+  (`number`)\
   the DLT observation period.
 
 ## Note

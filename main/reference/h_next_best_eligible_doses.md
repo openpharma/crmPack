@@ -18,23 +18,23 @@ h_next_best_eligible_doses(dose_grid, doselimit, placebo, levels = FALSE)
 
 - dose_grid:
 
-  (`numeric`)  
+  (`numeric`)\
   all possible doses.
 
 - doselimit:
 
-  (`number`)  
+  (`number`)\
   the maximum allowed next dose.
 
 - placebo:
 
-  (`flag`)  
+  (`flag`)\
   if `TRUE` the first dose level in the `dose_grid` is considered as
   placebo.
 
 - levels:
 
-  (`flag`)  
+  (`flag`)\
   if `TRUE` the levels of eligible doses are returned, otherwise, the
   doses (default).
 

@@ -16,24 +16,24 @@ CohortSizeDLT(intervals, cohort_size)
 
 - intervals:
 
-  (`numeric`)  
+  (`numeric`)\
   see slot definition.
 
 - cohort_size:
 
-  (`numeric`)  
+  (`numeric`)\
   see slot definition.
 
 ## Slots
 
 - `intervals`:
 
-  (`integer`)  
+  (`integer`)\
   a vector with the left bounds of the relevant DLT intervals.
 
 - `cohort_size`:
 
-  (`integer`)  
+  (`integer`)\
   a vector with the cohort sizes corresponding to the elements of
   `intervals`.
 

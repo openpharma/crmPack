@@ -17,18 +17,18 @@ LogisticLogNormal(mean, cov, ref_dose = 1)
 
 - mean:
 
-  (`numeric`)  
+  (`numeric`)\
   the prior mean vector.
 
 - cov:
 
-  (`matrix`)  
+  (`matrix`)\
   the prior covariance matrix. The precision matrix `prec` is internally
   calculated as an inverse of `cov`.
 
 - ref_dose:
 
-  (`number`)  
+  (`number`)\
   the reference dose \\x\*\\ (strictly positive number).
 
 ## Details
@@ -91,8 +91,8 @@ my_model
 #>         y[i] ~ dbern(p[i])
 #>       }
 #>     }
-#> <bytecode: 0x55f994a67a88>
-#> <environment: 0x55f9956ed0f8>
+#> <bytecode: 0x5607a26f7b40>
+#> <environment: 0x56079fa612c8>
 #> 
 #> Slot "priormodel":
 #> function() {
@@ -100,8 +100,8 @@ my_model
 #>       alpha0 <- theta[1]
 #>       alpha1 <- exp(theta[2])
 #>     }
-#> <bytecode: 0x55f994d29178>
-#> <environment: 0x55f9956ecec8>
+#> <bytecode: 0x5607a29b30e8>
+#> <environment: 0x56079fa61098>
 #> 
 #> Slot "modelspecs":
 #> function(from_prior) {
@@ -111,15 +111,15 @@ my_model
 #>       }
 #>       ms
 #>     }
-#> <bytecode: 0x55f994ed5c08>
-#> <environment: 0x55f9956ecec8>
+#> <bytecode: 0x5607a2b5bfd8>
+#> <environment: 0x56079fa61098>
 #> 
 #> Slot "init":
 #> function() {
 #>       list(theta = c(0, 1))
 #>     }
-#> <bytecode: 0x55f994f8f770>
-#> <environment: 0x55f9956ecec8>
+#> <bytecode: 0x5607a2c17788>
+#> <environment: 0x56079fa61098>
 #> 
 #> Slot "datanames":
 #> [1] "nObs" "y"    "x"   

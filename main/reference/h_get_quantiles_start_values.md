@@ -12,27 +12,27 @@ h_get_quantiles_start_values(parstart, median, dosegrid, refDose, logNormal)
 
 - parstart:
 
-  (`numeric` or `NULL`)  
+  (`numeric` or `NULL`)\
   starting parameter values.
 
 - median:
 
-  (`numeric`)  
+  (`numeric`)\
   median values.
 
 - dosegrid:
 
-  (`numeric`)  
+  (`numeric`)\
   dose grid.
 
 - refDose:
 
-  (`number`)  
+  (`number`)\
   reference dose.
 
 - logNormal:
 
-  (`flag`)  
+  (`flag`)\
   use log-normal prior?
 
 ## Value

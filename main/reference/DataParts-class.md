@@ -18,17 +18,17 @@ DataParts(part = integer(), nextPart = 1L, part1Ladder = numeric(), ...)
 
 - part:
 
-  (`integer`)  
+  (`integer`)\
   which part does each of the patients belong to?
 
 - nextPart:
 
-  (`count`)  
+  (`count`)\
   what is the part for the next cohort (1 or 2)?
 
 - part1Ladder:
 
-  (`numeric`)  
+  (`numeric`)\
   what is the escalation ladder for part 1? This shall be an ordered
   subset of the `doseGrid`.
 
@@ -41,17 +41,17 @@ DataParts(part = integer(), nextPart = 1L, part1Ladder = numeric(), ...)
 
 - `part`:
 
-  (`integer`)  
+  (`integer`)\
   which part does each of the patients belong to?
 
 - `nextPart`:
 
-  (`count`)  
+  (`count`)\
   what is the part for the next cohort (1 or 2)?
 
 - `part1Ladder`:
 
-  (`numeric`)  
+  (`numeric`)\
   what is the escalation ladder for part 1? This shall be an ordered
   subset of the `doseGrid`.
 

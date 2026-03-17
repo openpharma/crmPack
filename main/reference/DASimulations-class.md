@@ -20,7 +20,7 @@ DASimulations(trial_duration, ...)
 
 - trial_duration:
 
-  (`numeric`)  
+  (`numeric`)\
   see `DASimulations`
 
 - ...:
@@ -32,7 +32,7 @@ DASimulations(trial_duration, ...)
 
 - `trial_duration`:
 
-  (`numeric`)  
+  (`numeric`)\
   the vector of trial duration values for all simulations.
 
 ## Note

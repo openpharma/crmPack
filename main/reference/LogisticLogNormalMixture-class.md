@@ -17,23 +17,23 @@ LogisticLogNormalMixture(mean, cov, ref_dose, share_weight)
 
 - mean:
 
-  (`numeric`)  
+  (`numeric`)\
   the prior mean vector.
 
 - cov:
 
-  (`matrix`)  
+  (`matrix`)\
   the prior covariance matrix. The precision matrix `prec` is internally
   calculated as an inverse of `cov`.
 
 - ref_dose:
 
-  (`number`)  
+  (`number`)\
   the reference dose \\x\*\\ (strictly positive number).
 
 - share_weight:
 
-  (`proportion`)  
+  (`proportion`)\
   the prior weight for the share component.
 
 ## Details
@@ -58,7 +58,7 @@ class.
 
 - `share_weight`:
 
-  (`proportion`)  
+  (`proportion`)\
   the prior weight for the share component \\p\_{1}(x)\\.
 
 ## Note

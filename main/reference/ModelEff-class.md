@@ -33,7 +33,7 @@ specified pseudo data.
 
 - `data`:
 
-  (`DataDual`)  
+  (`DataDual`)\
   observed data that is used to obtain model parameters estimates or
   samples (see details above).
 

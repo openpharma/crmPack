@@ -12,28 +12,28 @@ qinvGamma(p, a, b, lower.tail = TRUE, log.p = FALSE)
 
 - p:
 
-  (`numeric`)  
+  (`numeric`)\
   vector of probabilities.
 
 - a:
 
-  (`number`)  
+  (`number`)\
   the shape parameter of the inverse gamma distribution.
 
 - b:
 
-  (`number`)  
+  (`number`)\
   the scale parameter of the inverse gamma distribution.
 
 - lower.tail:
 
-  (`flag`)  
+  (`flag`)\
   if `TRUE` (default), probabilities are `P(X <= x)`, otherwise,
   `P(X > x)`.
 
 - log.p:
 
-  (`flag`)  
+  (`flag`)\
   if `TRUE`, probabilities/densities `p` are given as `log(p)`.
 
 ## Value

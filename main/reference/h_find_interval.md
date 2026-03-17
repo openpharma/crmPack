@@ -65,7 +65,7 @@ h_find_interval(..., replacement = -Inf)
 
 - replacement:
 
-  (`number`)  
+  (`number`)\
   a custom number to be used as a replacement for \\0\\. Default to
   `-Inf`.
 

@@ -16,19 +16,19 @@ h_slots(object, names, simplify = FALSE)
 
 - object:
 
-  (`S4`)  
+  (`S4`)\
   an object from a formally defined S4 class.
 
 - names:
 
-  (`character`)  
+  (`character`)\
   a vector with names of slots to be fetched. This function assumes that
   for every element in `names`, there exists a slot of the same name in
   the `object`.
 
 - simplify:
 
-  (`flag`)  
+  (`flag`)\
   should an output be simplified? This has an effect if and only if a
   single slot is about to be extracted, i.e. `names` is just a single
   string.

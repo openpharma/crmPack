@@ -17,12 +17,12 @@ h_convert_ordinal_model(x, grade)
 
 - x:
 
-  (`LogisticLogNormalOrdinal`)  
+  (`LogisticLogNormalOrdinal`)\
   the `LogisticLogNormalOrdinal` model to covert
 
 - grade:
 
-  (`integer`)  
+  (`integer`)\
   the toxicity grade for which the equivalent model is required.
 
 ## Value

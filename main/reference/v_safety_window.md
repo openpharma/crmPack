@@ -19,7 +19,7 @@ v_safety_window_const(object)
 
 - object:
 
-  (`SafetyWindow`)  
+  (`SafetyWindow`)\
   object to validate.
 
 ## Value

@@ -31,70 +31,70 @@ Quantiles2LogisticNormal(
 
 - dosegrid:
 
-  (`numeric`)  
+  (`numeric`)\
   the dose grid.
 
 - refDose:
 
-  (`number`)  
+  (`number`)\
   the reference dose.
 
 - lower:
 
-  (`numeric`)  
+  (`numeric`)\
   the lower quantiles.
 
 - median:
 
-  (`numeric`)  
+  (`numeric`)\
   the medians.
 
 - upper:
 
-  (`numeric`)  
+  (`numeric`)\
   the upper quantiles.
 
 - level:
 
-  (`number`)  
+  (`number`)\
   the credible level of the (lower, upper) intervals. Default is 0.95.
 
 - logNormal:
 
-  (`flag`)  
+  (`flag`)\
   use the log-normal prior? If `FALSE` (default), the normal prior for
   the logistic regression coefficients is used.
 
 - parstart:
 
-  (`numeric` or `NULL`)  
+  (`numeric` or `NULL`)\
   starting values for the parameters. By default, these are determined
   from the medians supplied.
 
 - parlower:
 
-  (`numeric`)  
+  (`numeric`)\
   lower bounds on the parameters (intercept alpha and the slope beta,
   the corresponding standard deviations and the correlation).
 
 - parupper:
 
-  (`numeric`)  
+  (`numeric`)\
   upper bounds on the parameters.
 
 - seed:
 
-  (`count`)  
+  (`count`)\
   seed for random number generation.
 
 - verbose:
 
-  (`flag`)  
+  (`flag`)\
   should the function be verbose?
 
 - control:
 
-  (`list`)  
+  (`list`)\
   additional options for the optimisation routine, see
   [`GenSA::GenSA()`](https://rdrr.io/pkg/GenSA/man/GenSA.html) for more
   details.

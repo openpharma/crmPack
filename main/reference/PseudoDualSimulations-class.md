@@ -26,42 +26,42 @@ PseudoDualSimulations(
 
 - fit_eff:
 
-  (`list`)  
+  (`list`)\
   see slot definition.
 
 - final_gstar_estimates:
 
-  (`numeric`)  
+  (`numeric`)\
   see slot definition.
 
 - final_gstar_at_dose_grid:
 
-  (`numeric`)  
+  (`numeric`)\
   see slot definition.
 
 - final_gstar_cis:
 
-  (`list`)  
+  (`list`)\
   see slot definition.
 
 - final_gstar_ratios:
 
-  (`numeric`)  
+  (`numeric`)\
   see slot definition.
 
 - final_optimal_dose:
 
-  (`numeric`)  
+  (`numeric`)\
   see slot definition.
 
 - final_optimal_dose_at_dose_grid:
 
-  (`numeric`)  
+  (`numeric`)\
   see slot definition.
 
 - sigma2_est:
 
-  (`numeric`)  
+  (`numeric`)\
   see slot definition.
 
 - ...:
@@ -73,42 +73,42 @@ PseudoDualSimulations(
 
 - `fit_eff`:
 
-  (`list`)  
+  (`list`)\
   final values of efficacy fit.
 
 - `final_gstar_estimates`:
 
-  (`numeric`)  
+  (`numeric`)\
   final Gstar estimates.
 
 - `final_gstar_at_dose_grid`:
 
-  (`numeric`)  
+  (`numeric`)\
   final Gstar estimates at dose grid.
 
 - `final_gstar_cis`:
 
-  (`list`)  
+  (`list`)\
   list of 95% confidence interval for Gstar estimates.
 
 - `final_gstar_ratios`:
 
-  (`numeric`)  
+  (`numeric`)\
   ratios of confidence intervals for Gstar estimates.
 
 - `final_optimal_dose`:
 
-  (`numeric`)  
+  (`numeric`)\
   final optimal dose.
 
 - `final_optimal_dose_at_dose_grid`:
 
-  (`numeric`)  
+  (`numeric`)\
   final optimal dose at dose grid.
 
 - `sigma2_est`:
 
-  (`numeric`)  
+  (`numeric`)\
   final sigma2 estimates.
 
 ## Note

@@ -12,22 +12,22 @@ h_blind_plot_data(df, blind, has_placebo, pbo_dose)
 
 - df:
 
-  (`GeneralData`)  
+  (`GeneralData`)\
   The data to be blinded
 
 - blind:
 
-  (`flag`)  
+  (`flag`)\
   Should the data be blinded?
 
 - has_placebo:
 
-  (`flag`)  
+  (`flag`)\
   Does the data contain a placebo dose?
 
 - pbo_dose:
 
-  (`positive_number`)  
+  (`positive_number`)\
   The dose to be taken as placebo. Ignored if `has_placebo` is `FALSE`
 
 ## Value

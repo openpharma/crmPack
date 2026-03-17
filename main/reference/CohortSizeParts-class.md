@@ -19,14 +19,14 @@ CohortSizeParts(cohort_sizes)
 
 - cohort_sizes:
 
-  (`numeric`)  
+  (`numeric`)\
   see slot definition.
 
 ## Slots
 
 - `cohort_sizes`:
 
-  (`integer`)  
+  (`integer`)\
   a vector of length two with two sizes, one for part 1, and one for
   part 2 respectively.
 

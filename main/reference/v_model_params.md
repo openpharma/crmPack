@@ -16,7 +16,7 @@ v_model_params_normal(object)
 
 - object:
 
-  (`ModelParamsNormal`)  
+  (`ModelParamsNormal`)\
   multivariate normal parameters object to validate.
 
 ## Value

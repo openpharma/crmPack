@@ -21,7 +21,7 @@ v_pseudo_dual_flex_simulations(object)
 
 - object:
 
-  (`PseudoSimulations`)  
+  (`PseudoSimulations`)\
   object to validate.
 
 ## Value

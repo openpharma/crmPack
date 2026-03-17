@@ -18,7 +18,7 @@ gain(dose, model_dle, samples_dle, model_eff, samples_eff, ...)
 
 - dose:
 
-  (`number` or `numeric`)  
+  (`number` or `numeric`)\
   the dose which is targeted. The following recycling rule applies when
   samples are not missing: vectors of size 1 will be recycled to the
   size of the sample. Otherwise, `dose` must have the same size as the
@@ -26,23 +26,23 @@ gain(dose, model_dle, samples_dle, model_eff, samples_eff, ...)
 
 - model_dle:
 
-  (`ModelTox`)  
+  (`ModelTox`)\
   pseudo DLE (dose-limiting events)/toxicity model.
 
 - samples_dle:
 
-  (`Samples`)  
+  (`Samples`)\
   the samples of model's parameters that will be used to compute
   toxicity probabilities. Can also be missing for some models.
 
 - model_eff:
 
-  (`ModelEff`)  
+  (`ModelEff`)\
   the efficacy model with pseudo data prior.
 
 - samples_eff:
 
-  (`Samples`)  
+  (`Samples`)\
   samples of model's parameters that will be used to compute expected
   efficacy values. Can also be missing for some models.
 

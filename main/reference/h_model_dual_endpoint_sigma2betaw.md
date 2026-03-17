@@ -17,7 +17,7 @@ h_model_dual_endpoint_sigma2betaw(use_fixed, sigma2betaW, de)
 
 - use_fixed:
 
-  (`flag`)  
+  (`flag`)\
   indicates whether a fixed value for `sigma2betaW` should be used or
   not. If `sigma2betaW` is not supposed to be a fixed value, a prior
   distribution from the Inverse-Gamma distribution will be used. See the
@@ -25,14 +25,14 @@ h_model_dual_endpoint_sigma2betaw(use_fixed, sigma2betaW, de)
 
 - sigma2betaW:
 
-  (`numeric`)  
+  (`numeric`)\
   the prior variance factor of the random walk prior for the biomarker
   model. Either a fixed value or Inverse-Gamma distribution parameters,
   i.e. vector with two elements named `a` and `b`.
 
 - de:
 
-  (`DualEnpoint`)  
+  (`DualEnpoint`)\
   dual endpoint model whose slots will be updated.
 
 ## Value

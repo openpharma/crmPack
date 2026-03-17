@@ -18,7 +18,7 @@ DataDual(w = numeric(), ...)
 
 - w:
 
-  (`numeric`)  
+  (`numeric`)\
   the continuous vector of biomarker values.
 
 - ...:
@@ -30,7 +30,7 @@ DataDual(w = numeric(), ...)
 
 - `w`:
 
-  (`numeric`)  
+  (`numeric`)\
   the continuous vector of biomarker values.
 
 ## Note

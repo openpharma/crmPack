@@ -36,18 +36,18 @@ Effloglog(eff, eff_dose, nu, data, const = 0)
 
 - eff:
 
-  (`numeric`)  
+  (`numeric`)\
   the pseudo efficacy responses. Elements of `eff` must correspond to
   the elements of `eff_dose`.
 
 - eff_dose:
 
-  (`numeric`)  
+  (`numeric`)\
   dose levels that correspond to pseudo efficacy responses in `eff`.
 
 - nu:
 
-  (`numeric`)  
+  (`numeric`)\
   the precision (inverse of the variance) of the efficacy responses.
   This is either a fixed value or a named vector with two positive
   numbers, the shape (`a`), and the rate (`b`) parameters for the gamma
@@ -55,12 +55,12 @@ Effloglog(eff, eff_dose, nu, data, const = 0)
 
 - data:
 
-  (`DataDual`)  
+  (`DataDual`)\
   observed data to update estimates of the model parameters.
 
 - const:
 
-  (`number`)  
+  (`number`)\
   the constant value added to the dose level when the dose level value
   is less than or equal to 1 and a special form of the linear log-log
   has to be applied (Yeung et al. 2015) .
@@ -97,7 +97,7 @@ if there are \\r\\ no DLT efficacy responses observed in the `data`).
 
 - `eff`:
 
-  (`numeric`)  
+  (`numeric`)\
   the pseudo efficacy responses. Each element here must represent
   responses treated based on one subject. It must be a vector of length
   at least 2 and the order of its elements must correspond to values
@@ -105,42 +105,42 @@ if there are \\r\\ no DLT efficacy responses observed in the `data`).
 
 - `eff_dose`:
 
-  (`numeric`)  
+  (`numeric`)\
   the pseudo efficacy dose levels at which the pseudo efficacy responses
   are observed. It must be a vector of length at least 2 and the order
   of its elements must correspond to values specified in `eff`.
 
 - `nu`:
 
-  (`numeric`)  
+  (`numeric`)\
   parameter of the prior precision of pseudo efficacy responses. This is
   either a fixed value or a named vector with two positive numbers, the
   shape (`a`), and the rate (`b`) parameters for the gamma distribution.
 
 - `use_fixed`:
 
-  (`flag`)  
+  (`flag`)\
   indicates whether `nu` specified is a fixed value or a vector with two
   parameters for gamma distribution. This slot is for internal purposes
   only and must not be used by the user.
 
 - `theta1`:
 
-  (`number`)  
+  (`number`)\
   the intercept in this efficacy log-log model. This slot is used in
   output to display the resulting prior or posterior modal estimates
   obtained based on the pseudo and observed (if any) data.
 
 - `theta2`:
 
-  (`number`)  
+  (`number`)\
   the slope in this efficacy log-log model. This slot is used in output
   to display the resulting prior or posterior modal estimates obtained
   based on the pseudo and observed (if any) data.
 
 - `Pcov`:
 
-  (`matrix`)  
+  (`matrix`)\
   refers to the \\2 x 2\\ covariance matrix of the estimators of the
   intercept \\theta1\\ and the slope \\theta2\\ parameters in this
   model. This is used in output to display the resulting prior and
@@ -150,7 +150,7 @@ if there are \\r\\ no DLT efficacy responses observed in the `data`).
 
 - `X`:
 
-  (`matrix`)  
+  (`matrix`)\
   is the design matrix that is based on either the pseudo dose levels or
   observed dose levels (without DLT). This is used in the output to
   display the design matrix for the pseudo or the observed efficacy
@@ -158,13 +158,13 @@ if there are \\r\\ no DLT efficacy responses observed in the `data`).
 
 - `Y`:
 
-  (`numeric`)  
+  (`numeric`)\
   is a vector that either contains the pseudo efficacy responses or
   observed efficacy responses (without DLT).
 
 - `mu`:
 
-  (`numeric`)  
+  (`numeric`)\
   a vector of the prior or the posterior modal estimates of the
   intercept (\\theta1\\) and the slope (\\theta2\\). This slot is used
   in output to display as the mean of the prior or posterior bivariate
@@ -172,7 +172,7 @@ if there are \\r\\ no DLT efficacy responses observed in the `data`).
 
 - `Q`:
 
-  (`matrix`)  
+  (`matrix`)\
   is the prior or posterior (given that observed, no DLT data is
   available) precision matrix. It is specified as \\Q = X0^T \* X0 + X^T
   \* X\\, where \\X0\\ is a design matrix that is based on pseudo dose
@@ -181,7 +181,7 @@ if there are \\r\\ no DLT efficacy responses observed in the `data`).
 
 - `const`:
 
-  (`number`)  
+  (`number`)\
   a non-negative number (default to 0), leading to the model form
   described above. In general, the model has the form \\y_i = theta1 +
   theta2 \* log(log(x_i + const)) + epsilon_i\\, such that dose levels

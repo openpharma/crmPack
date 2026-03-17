@@ -19,12 +19,12 @@ Simulations(fit, stop_reasons, stop_report, additional_stats, ...)
 
 - fit:
 
-  (`list`)  
+  (`list`)\
   see slot definition.
 
 - stop_reasons:
 
-  (`list`)  
+  (`list`)\
   see slot definition.
 
 - stop_report:
@@ -33,7 +33,7 @@ Simulations(fit, stop_reasons, stop_report, additional_stats, ...)
 
 - additional_stats:
 
-  (`list`)  
+  (`list`)\
   see slot definition.
 
 - ...:
@@ -45,12 +45,12 @@ Simulations(fit, stop_reasons, stop_report, additional_stats, ...)
 
 - `fit`:
 
-  (`list`)  
+  (`list`)\
   final fits
 
 - `stop_reasons`:
 
-  (`list`)  
+  (`list`)\
   stopping reasons for each simulation run
 
 - `stop_report`:

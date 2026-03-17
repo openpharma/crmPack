@@ -17,22 +17,22 @@ DualEndpointEmax(E0, Emax, ED50, ref_dose_emax = 1, ...)
 
 - E0:
 
-  (`numeric`)  
+  (`numeric`)\
   either a fixed number or the two uniform distribution parameters.
 
 - Emax:
 
-  (`numeric`)  
+  (`numeric`)\
   either a fixed number or the two uniform distribution parameters.
 
 - ED50:
 
-  (`numeric`)  
+  (`numeric`)\
   either a fixed number or the two uniform distribution parameters.
 
 - ref_dose_emax:
 
-  (`number`)  
+  (`number`)\
   the reference dose \\x\*\\ (strictly positive number). Note that this
   is different from the `ref_dose` in the inherited
   [`DualEndpoint`](https://docs.crmpack.org/reference/DualEndpoint-class.md)
@@ -59,22 +59,22 @@ distributions or be fixed.
 
 - `E0`:
 
-  (`numeric`)  
+  (`numeric`)\
   either a fixed number or the two uniform distribution parameters.
 
 - `Emax`:
 
-  (`numeric`)  
+  (`numeric`)\
   either a fixed number or the two uniform distribution parameters.
 
 - `ED50`:
 
-  (`numeric`)  
+  (`numeric`)\
   either a fixed number or the two uniform distribution parameters.
 
 - `ref_dose_emax`:
 
-  (`positive_number`)  
+  (`positive_number`)\
   the reference dose \\x\*\\ (note that this is different from the
   `ref_dose` in the inherited
   [`DualEndpoint`](https://docs.crmpack.org/reference/DualEndpoint-class.md)

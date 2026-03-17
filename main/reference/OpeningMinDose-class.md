@@ -18,14 +18,14 @@ OpeningMinDose(min_dose = 0)
 
 - min_dose:
 
-  (`number`)  
+  (`number`)\
   see slot definition.
 
 ## Slots
 
 - `min_dose`:
 
-  (`number`)  
+  (`number`)\
   the minimum dose at which backfill cohorts can be opened.
 
 ## Note

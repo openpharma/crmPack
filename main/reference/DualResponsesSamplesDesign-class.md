@@ -22,12 +22,12 @@ DualResponsesSamplesDesign(eff_model, data, ...)
 
 - eff_model:
 
-  (`ModelEff`)  
+  (`ModelEff`)\
   see slot definition.
 
 - data:
 
-  (`DataDual`)  
+  (`DataDual`)\
   see slot definition.
 
 - ...:
@@ -37,34 +37,34 @@ DualResponsesSamplesDesign(eff_model, data, ...)
 
   `model`
 
-  :   (`ModelTox`)  
+  :   (`ModelTox`)\
       see slot definition.
 
   `stopping`
 
-  :   (`Stopping`)  
+  :   (`Stopping`)\
       see slot definition.
 
   `increments`
 
-  :   (`Increments`)  
+  :   (`Increments`)\
       see slot definition.
 
   `pl_cohort_size`
 
-  :   (`CohortSize`)  
+  :   (`CohortSize`)\
       see slot definition.
 
 ## Slots
 
 - `data`:
 
-  (`DataDual`)  
+  (`DataDual`)\
   the data set.
 
 - `eff_model`:
 
-  (`ModelEff`)  
+  (`ModelEff`)\
   the pseudo efficacy model to be used.
 
 ## Note

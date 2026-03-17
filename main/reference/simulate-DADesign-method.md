@@ -37,7 +37,7 @@ simulate(
 
 - nsim:
 
-  (`count`)  
+  (`count`)\
   the number of simulations (default: 1)
 
 - seed:
@@ -46,21 +46,21 @@ simulate(
 
 - truthTox:
 
-  (`function`)  
+  (`function`)\
   a function which takes as input a dose (vector) and returns the true
   probability (vector) for toxicity and the time DLT occurs. Additional
   arguments can be supplied in `args`.
 
 - truthSurv:
 
-  (`function`)  
+  (`function`)\
   a CDF which takes as input a time (vector) and returns the true
   cumulative probability (vector) that the DLT would occur conditioning
   on the patient has DLTs.
 
 - trueTmax:
 
-  (`number` or `NULL`)  
+  (`number` or `NULL`)\
   the true maximum time at which DLTs can occur. Note that this must be
   larger than `Tmax` from the `object`'s base data, which is the length
   of the DLT window, i.e. until which time DLTs are officially declared
@@ -68,7 +68,7 @@ simulate(
 
 - args:
 
-  (`data.frame`)  
+  (`data.frame`)\
   data frame with arguments for the `truthTox` function. The column
   names correspond to the argument names, the rows to the values of the
   arguments. The rows are appropriately recycled in the `nsim`
@@ -80,20 +80,20 @@ simulate(
 
 - firstSeparate:
 
-  (`flag`)  
+  (`flag`)\
   enroll the first patient separately from the rest of the cohort? (not
   default) If yes, the cohort will be closed if a DLT occurs in this
   patient.
 
 - deescalate:
 
-  (`flag`)  
+  (`flag`)\
   allow deescalation when a DLT occurs in cohorts with lower dose level?
   (default: TRUE)
 
 - mcmcOptions:
 
-  ([McmcOptions](https://docs.crmpack.org/reference/McmcOptions-class.md))  
+  ([McmcOptions](https://docs.crmpack.org/reference/McmcOptions-class.md))\
   object of class
   [`McmcOptions`](https://docs.crmpack.org/reference/McmcOptions-class.md),
   giving the MCMC options for each evaluation in the trial. By default,
@@ -101,24 +101,24 @@ simulate(
 
 - DA:
 
-  (`flag`)  
+  (`flag`)\
   use dose-adaptation rules? (default: TRUE)
 
 - parallel:
 
-  (`flag`)  
+  (`flag`)\
   should the simulation runs be parallelized across the clusters of the
   computer? (not default)
 
 - nCores:
 
-  (`count`)  
+  (`count`)\
   how many cores should be used for parallel computing? Defaults to the
   number of cores on the machine, maximum 5.
 
 - derive:
 
-  (`list`)  
+  (`list`)\
   a named list of functions which derives statistics, based on the
   vector of posterior MTD samples. Each list element must therefore
   accept one and only one argument, which is a numeric vector, and

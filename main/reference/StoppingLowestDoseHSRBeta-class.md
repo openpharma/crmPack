@@ -30,49 +30,49 @@ StoppingLowestDoseHSRBeta(
 
 - target:
 
-  (`proportion`)  
+  (`proportion`)\
   see slot definition.
 
 - prob:
 
-  (`proportion`)  
+  (`proportion`)\
   see slot definition.
 
 - a:
 
-  (`number`)  
+  (`number`)\
   see slot definition.
 
 - b:
 
-  (`number`)  
+  (`number`)\
   see slot definition.
 
 - report_label:
 
-  (`string` or `NA`)  
+  (`string` or `NA`)\
   see slot definition.
 
 ## Slots
 
 - `target`:
 
-  (`proportion`)  
+  (`proportion`)\
   the target toxicity.
 
 - `prob`:
 
-  (`proportion`)  
+  (`proportion`)\
   the threshold probability for the lowest dose being toxic.
 
 - `a`:
 
-  (`number`)  
+  (`number`)\
   shape parameter \\a \> 0\\ of probability distribution Beta (a,b).
 
 - `b`:
 
-  (`number`)  
+  (`number`)\
   shape parameter \\b \> 0\\ of probability distribution Beta (a,b).
 
 ## Note

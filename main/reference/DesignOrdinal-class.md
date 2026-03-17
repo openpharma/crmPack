@@ -26,22 +26,22 @@ DesignOrdinal(
 
 - model:
 
-  (`LogisticLogNormalOrdinal`)  
+  (`LogisticLogNormalOrdinal`)\
   see slot definition.
 
 - stopping:
 
-  (`Stopping`)  
+  (`Stopping`)\
   see slot definition.
 
 - increments:
 
-  (`Increments`)  
+  (`Increments`)\
   see slot definition.
 
 - pl_cohort_size:
 
-  (`CohortSize`)  
+  (`CohortSize`)\
   see slot definition.
 
 - ...:
@@ -51,22 +51,22 @@ DesignOrdinal(
 
   `next_best`
 
-  :   (`NextBestOrdinal`)  
+  :   (`NextBestOrdinal`)\
       see slot definition.
 
   `cohort_size`
 
-  :   (`CohortSize`)  
+  :   (`CohortSize`)\
       see slot definition.
 
   `data`
 
-  :   (`DataOrdinal`)  
+  :   (`DataOrdinal`)\
       see slot definition.
 
   `starting_dose`
 
-  :   (`number`)  
+  :   (`number`)\
       see slot definition.
 
 ## Details
@@ -92,22 +92,22 @@ can be combined using the operators defined for these classes, e.g.,
 
 - `model`:
 
-  (`LogisticLogNormalOrdinal`)  
+  (`LogisticLogNormalOrdinal`)\
   the model to be used.
 
 - `stopping`:
 
-  (`Stopping`)  
+  (`Stopping`)\
   stopping rule(s) for the trial.
 
 - `increments`:
 
-  (`Increments`)  
+  (`Increments`)\
   how to control increments between dose levels.
 
 - `pl_cohort_size`:
 
-  (`CohortSize`)  
+  (`CohortSize`)\
   rules for the cohort sizes for placebo, if any planned (defaults to
   constant 0 placebo patients).
 

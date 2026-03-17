@@ -26,46 +26,46 @@ h_next_best_mgsamples_plot(
 
 - prob_target_drt:
 
-  (`proportion`)  
+  (`proportion`)\
   target DLT probability during the trial.
 
 - dose_target_drt:
 
-  (`number`)  
+  (`number`)\
   target dose estimate during the trial.
 
 - prob_target_eot:
 
-  (`proportion`)  
+  (`proportion`)\
   target DLT probability at the end of the trial.
 
 - dose_target_eot:
 
-  (`number`)  
+  (`number`)\
   target dose estimate at the end of the trial.
 
 - dose_mg:
 
-  (`number`)  
+  (`number`)\
   the dose corresponding to the maximum gain.
 
 - dose_mg_samples:
 
-  (`numeric`)  
+  (`numeric`)\
   for every sample, the dose (from the dose grid) that gives the maximum
   gain value.
 
 - next_dose:
 
-  (`number`)  
+  (`number`)\
   next best dose.
 
 - doselimit:
 
-  (`number`)  
+  (`number`)\
   the maximum allowed next dose.
 
 - dose_grid_range:
 
-  (`numeric`)  
+  (`numeric`)\
   dose grid range.

@@ -18,12 +18,12 @@ DataMixture(xshare = numeric(), yshare = integer(), ...)
 
 - xshare:
 
-  (`numeric`)  
+  (`numeric`)\
   the doses for the share patients.
 
 - yshare:
 
-  (`integer`)  
+  (`integer`)\
   the vector of toxicity events (0 or 1) for the share patients. You can
   also supply `numeric` vectors, but these will then be converted to
   `integer` internally.
@@ -37,17 +37,17 @@ DataMixture(xshare = numeric(), yshare = integer(), ...)
 
 - `xshare`:
 
-  (`numeric`)  
+  (`numeric`)\
   the doses for the share patients.
 
 - `yshare`:
 
-  (`integer`)  
+  (`integer`)\
   the vector of toxicity events (0 or 1) for the share patients.
 
 - `nObsshare`:
 
-  (`count`)  
+  (`count`)\
   number of share patients.
 
 ## Note

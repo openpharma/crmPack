@@ -21,35 +21,35 @@ GeneralSimulations(data, doses, seed)
 
 - data:
 
-  (`list`)  
+  (`list`)\
   see slot definition.
 
 - doses:
 
-  (`numeric`)  
+  (`numeric`)\
   see slot definition.
 
 - seed:
 
-  (`integer`)  
+  (`integer`)\
   see slot definition.
 
 ## Slots
 
 - `data`:
 
-  (`list`)  
+  (`list`)\
   produced [`Data`](https://docs.crmpack.org/reference/Data-class.md)
   objects.
 
 - `doses`:
 
-  (`numeric`)  
+  (`numeric`)\
   final dose recommendations.
 
 - `seed`:
 
-  (`integer`)  
+  (`integer`)\
   random generator state before starting the simulation.
 
 ## Note

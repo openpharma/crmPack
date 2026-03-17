@@ -36,7 +36,7 @@ SafetyWindowSize(gap, size, follow, follow_min)
 
 - `gap`:
 
-  (`list`)  
+  (`list`)\
   observed period of the previous patient before the next patient can be
   dosed. This is used as follows. If for instance, the cohort size is 4
   and we want to specify three time intervals between these four
@@ -52,7 +52,7 @@ SafetyWindowSize(gap, size, follow, follow_min)
 
 - `size`:
 
-  (`integer`)  
+  (`integer`)\
   a vector with the left bounds of the relevant cohort size intervals.
   This is used as follows. For instance, when we want to change the
   `gap` based on the cohort size, i.e. the time interval between the 1st
@@ -67,13 +67,13 @@ SafetyWindowSize(gap, size, follow, follow_min)
 
 - `follow`:
 
-  (`count`)  
+  (`count`)\
   the period of time that each patient in the cohort needs to be
   followed before the next cohort opens.
 
 - `follow_min`:
 
-  (`count`)  
+  (`count`)\
   at least one patient in the cohort needs to be followed at the minimal
   follow up time.
 

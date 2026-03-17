@@ -20,7 +20,7 @@ v_opening_min_responses(object)
 
 - object:
 
-  (`Opening`)  
+  (`Opening`)\
   object to validate.
 
 ## Value

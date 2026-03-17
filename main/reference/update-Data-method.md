@@ -28,51 +28,51 @@ update(
 
 - object:
 
-  (`Data`)  
+  (`Data`)\
   object you want to update.
 
 - x:
 
-  (`number`)  
+  (`number`)\
   the dose level (one level only!).
 
 - y:
 
-  (`integer`)  
+  (`integer`)\
   the DLT vector (0/1 vector) for all patients in this cohort. You can
   also supply `numeric` vectors, but these will then be converted to
   `integer` internally.
 
 - response:
 
-  (`integer`)  
+  (`integer`)\
   the efficacy response vector (0/1 vector). May contain `NA`.
 
 - ID:
 
-  (`integer`)  
+  (`integer`)\
   the patient IDs. You can also supply `numeric` vectors, but these will
   then be converted to `integer` internally.
 
 - new_cohort:
 
-  (`flag`)  
+  (`flag`)\
   if `TRUE` (default) the new data are assigned to a new cohort.
 
 - check:
 
-  (`flag`)  
+  (`flag`)\
   whether the validation of the updated object should be conducted. See
   details below.
 
 - backfill:
 
-  (`flag`)  
+  (`flag`)\
   whether the new patients being added are from a backfill cohort.
 
 - cohort:
 
-  (`int`)  
+  (`int`)\
   if provided, the new patients will be assigned to this cohort index.
   If `NULL` (default), the cohort index will be determined based on the
   `new_cohort` parameter.

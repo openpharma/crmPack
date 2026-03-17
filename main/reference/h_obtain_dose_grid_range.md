@@ -12,10 +12,10 @@ h_obtain_dose_grid_range(object, ignore_placebo)
 
 - object:
 
-  (`Data` or `DataOrdinal`)  
+  (`Data` or `DataOrdinal`)\
   the object for which the dose grid range is required
 
 - ignore_placebo:
 
-  (`flag`)  
+  (`flag`)\
   should placebo dose (if any) not be counted?

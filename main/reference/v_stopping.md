@@ -36,7 +36,7 @@ v_stopping_tdci_ratio(object)
 
 - object:
 
-  (`Stopping`)  
+  (`Stopping`)\
   object to validate.
 
 ## Value

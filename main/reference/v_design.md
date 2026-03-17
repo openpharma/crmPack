@@ -28,7 +28,7 @@ v_design_grouped(object)
 
 - object:
 
-  (`RuleDesignOrdinal`)  
+  (`RuleDesignOrdinal`)\
   object to validate.
 
 ## Value

@@ -27,25 +27,25 @@ NextBestMaxGain(prob_target_drt, prob_target_eot)
 
 - prob_target_drt:
 
-  (`proportion`)  
+  (`proportion`)\
   see slot definition.
 
 - prob_target_eot:
 
-  (`proportion`)  
+  (`proportion`)\
   see slot definition.
 
 ## Slots
 
 - `prob_target_drt`:
 
-  (`proportion`)  
+  (`proportion`)\
   the target probability of the occurrence of a DLT to be used during
   the trial.
 
 - `prob_target_eot`:
 
-  (`proportion`)  
+  (`proportion`)\
   the target probability of the occurrence of a DLT to be used at the
   end of the trial.
 

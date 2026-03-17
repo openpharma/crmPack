@@ -25,35 +25,35 @@ update(
 
 - object:
 
-  (`DataOrdinal`)  
+  (`DataOrdinal`)\
   object you want to update.
 
 - x:
 
-  (`number`)  
+  (`number`)\
   the dose level (one level only!).
 
 - y:
 
-  (`integer`)  
+  (`integer`)\
   the vector of toxicity grades (0, 1, 2, ...) for all patients in this
   cohort. You can also supply `numeric` vectors, but these will then be
   converted to `integer` internally.
 
 - ID:
 
-  (`integer`)  
+  (`integer`)\
   the patient IDs. You can also supply `numeric` vectors, but these will
   then be converted to `integer` internally.
 
 - new_cohort:
 
-  (`flag`)  
+  (`flag`)\
   if `TRUE` (default) the new data are assigned to a new cohort.
 
 - check:
 
-  (`flag`)  
+  (`flag`)\
   whether the validation of the updated object should be conducted. See
   Details below.
 

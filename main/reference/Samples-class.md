@@ -26,7 +26,7 @@ Samples(data, options)
 
 - `data`:
 
-  (`list`)  
+  (`list`)\
   MCMC samples of the parameter. Each entry in this list must be a
   vector (in case of a scalar parameter) or matrix (in case of a
   vector-valued parameter) with samples. In case of matrix, every row is
@@ -35,7 +35,7 @@ Samples(data, options)
 
 - `options`:
 
-  (`McmcOptions`)  
+  (`McmcOptions`)\
   MCMC options that were used to generate the samples.
 
 ## Note

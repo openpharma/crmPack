@@ -43,27 +43,27 @@ LogisticIndepBeta(binDLE, DLEdose, DLEweights, data)
 
 - binDLE:
 
-  (`numeric`)  
+  (`numeric`)\
   the number of subjects observed with a DLE, the pseudo DLE responses,
   depending on dose levels `DLEdose`. Elements of `binDLE` must
   correspond to the elements of `DLEdose` and `DLEweights`.
 
 - DLEdose:
 
-  (`numeric`)  
+  (`numeric`)\
   dose levels for the pseudo DLE responses. Elements of `DLEdose` must
   correspond to the elements of `binDLE` and `DLEweights`.
 
 - DLEweights:
 
-  (`numeric`)  
+  (`numeric`)\
   the total number of subjects treated at each of the dose levels
   `DLEdose`, pseudo weights. Elements of `DLEweights` must correspond to
   the elements of `binDLE` and `DLEdose`.
 
 - data:
 
-  (`Data`)  
+  (`Data`)\
   the input data to update estimates of the model parameters.
 
 ## Details
@@ -91,21 +91,21 @@ Williamson (1998) .
 
 - `binDLE`:
 
-  (`numeric`)  
+  (`numeric`)\
   a vector of total numbers of DLE responses. It must be at least of
   length 2 and the order of its elements must correspond to values
   specified in `DLEdose` and `DLEweights`.
 
 - `DLEdose`:
 
-  (`numeric`)  
+  (`numeric`)\
   a vector of the dose levels corresponding to It must be at least of
   length 2 and the order of its elements must correspond to values
   specified in `binDLE` and `DLEweights`.
 
 - `DLEweights`:
 
-  (`integer`)  
+  (`integer`)\
   total number of subjects treated at each of the pseudo dose level
   `DLEdose`. It must be at least of length 2 and the order of its
   elements must correspond to values specified in `binDLE` and
@@ -113,21 +113,21 @@ Williamson (1998) .
 
 - `phi1`:
 
-  (`number`)  
+  (`number`)\
   the intercept of the model. This slot is used in output to display the
   resulting prior or posterior modal estimate of the intercept obtained
   based on the pseudo data and (if any) observed data/responses.
 
 - `phi2`:
 
-  (`number`)  
+  (`number`)\
   the slope of the model. This slot is used in output to display the
   resulting prior or posterior modal estimate of the slope obtained
   based on the pseudo data and (if any) the observed data/responses.
 
 - `Pcov`:
 
-  (`matrix`)  
+  (`matrix`)\
   refers to the 2x2 covariance matrix of the intercept (\\phi1\\) and
   the slope parameters (\\phi2\\) of the model. This is used in output
   to display the resulting prior and posterior covariance matrix of

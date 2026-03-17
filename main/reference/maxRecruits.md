@@ -21,12 +21,12 @@ maxRecruits(object, active_cohort_size, ...)
 
 - object:
 
-  (`Recruitment`)  
+  (`Recruitment`)\
   the recruitment rule.
 
 - active_cohort_size:
 
-  (`integer`)  
+  (`integer`)\
   the current size of the active dose escalation cohort.
 
 - ...:

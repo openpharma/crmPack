@@ -32,47 +32,47 @@ expect_format(
 
 - x:
 
-  \[`any`\]  
+  \[`any`\]\
   Object to check.
 
 - len:
 
-  \[`integer(1)`\]  
+  \[`integer(1)`\]\
   Exact expected length of `x`.
 
 - min.len:
 
-  \[`integer(1)`\]  
+  \[`integer(1)`\]\
   Minimal length of `x`.
 
 - max.len:
 
-  \[`integer(1)`\]  
+  \[`integer(1)`\]\
   Maximal length of `x`.
 
 - .var.name:
 
-  \[`character(1)`\]  
+  \[`character(1)`\]\
   Name of the checked object to print in assertions. Defaults to the
   heuristic implemented in
   [`vname`](https://mllg.github.io/checkmate/reference/vname.html).
 
 - add:
 
-  \[`AssertCollection`\]  
+  \[`AssertCollection`\]\
   Collection to store assertion messages. See
   [`AssertCollection`](https://mllg.github.io/checkmate/reference/AssertCollection.html).
 
 - info:
 
-  \[`character(1)`\]  
+  \[`character(1)`\]\
   Extra information to be included in the message for the testthat
   reporter. See
   [`expect_that`](https://testthat.r-lib.org/reference/expect_that.html).
 
 - label:
 
-  \[`character(1)`\]  
+  \[`character(1)`\]\
   Name of the checked object to print in messages. Defaults to the
   heuristic implemented in
   [`vname`](https://mllg.github.io/checkmate/reference/vname.html).

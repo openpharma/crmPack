@@ -18,7 +18,7 @@ h_model_dual_endpoint_sigma2w(use_fixed, sigma2W, comp)
 
 - use_fixed:
 
-  (`flag`)  
+  (`flag`)\
   indicates whether a fixed value for the biomarker regression variance
   `sigma2W` should be used or not. If `sigma2W` is not supposed to be a
   fixed value, a prior distribution from the Inverse-Gamma distribution
@@ -26,14 +26,14 @@ h_model_dual_endpoint_sigma2w(use_fixed, sigma2W, comp)
 
 - sigma2W:
 
-  (`numeric`)  
+  (`numeric`)\
   the biomarker variance. Either a fixed value or Inverse-Gamma
   distribution parameters, i.e. vector with two elements named `a` and
   `b`.
 
 - comp:
 
-  (`list`)  
+  (`list`)\
   a named list with model components that will be updated. The names
   should be: `priormodel`, `modelspecs`, `init`, `sample`. For
   definitions of the components, see

@@ -35,7 +35,7 @@ simulate(
 
 - nsim:
 
-  (`count`)  
+  (`count`)\
   the number of simulations (default: 1)
 
 - seed:
@@ -44,14 +44,14 @@ simulate(
 
 - truth:
 
-  (`function`)  
+  (`function`)\
   a function which takes as input a dose (vector) and returns the true
   probability (vector) of the occurrence of a DLE. Additional arguments
   can be supplied in `args`.
 
 - args:
 
-  (`data.frame`)  
+  (`data.frame`)\
   data frame with arguments for the `truth` function. The column names
   correspond to the argument names, the rows to the values of the
   arguments. The rows are appropriately recycled in the `nsim`
@@ -62,20 +62,20 @@ simulate(
 
 - firstSeparate:
 
-  (`flag`)  
+  (`flag`)\
   enroll the first patient separately from the rest of the cohort? (not
   default) If yes, the cohort will be closed if a DLT occurs in this
   patient.
 
 - parallel:
 
-  (`flag`)  
+  (`flag`)\
   should the simulation runs be parallelized across the clusters of the
   computer? (not default)
 
 - nCores:
 
-  (`count`)  
+  (`count`)\
   how many cores should be used for parallel computing? Defaults to the
   number of cores on the machine, maximum 5.
 
@@ -121,7 +121,7 @@ doseRecommendation <- nextBest(
   data = data
 )
 #> Warning: TD 35 = 24.9999999999785 not within dose grid
-#> Warning: TD 30 = 14.3714101936776 not within dose grid
+#> Warning: TD 30 = 14.3714101936777 not within dose grid
 ## Then the starting data, an empty data set
 emptydata <- Data(doseGrid = seq(25, 300, 25))
 ## The cohort size, size of 3 subjects

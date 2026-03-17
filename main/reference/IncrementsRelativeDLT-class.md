@@ -17,19 +17,19 @@ IncrementsRelativeDLT(intervals, increments)
 
 - intervals:
 
-  (`numeric`)  
+  (`numeric`)\
   see slot definition.
 
 - increments:
 
-  (`numeric`)  
+  (`numeric`)\
   see slot definition.
 
 ## Slots
 
 - `intervals`:
 
-  (`integer`)  
+  (`integer`)\
   a vector with the left bounds of the relevant DLT intervals. For
   example, `intervals = c(0, 1, 3)` specifies three intervals (sets of
   DLTs: first, 0 DLT; second 1 or 2 DLTs; and the third one, at least 3
@@ -39,7 +39,7 @@ IncrementsRelativeDLT(intervals, increments)
 
 - `increments`:
 
-  (`numeric`)  
+  (`numeric`)\
   a vector of maximum allowable relative increments corresponding to
   `intervals`. IT must be of the same length as the length of
   `intervals`.

@@ -16,24 +16,24 @@ summary(object, trueTox, trueBiomarker, target = c(0.2, 0.35), ...)
 
 - object:
 
-  (`DualSimulations`)  
+  (`DualSimulations`)\
   the object we want to summarize.
 
 - trueTox:
 
-  (`function`)  
+  (`function`)\
   a function which takes as input a dose (vector) and returns the true
   probability (vector) for toxicity.
 
 - trueBiomarker:
 
-  (`function`)  
+  (`function`)\
   a function which takes as input a dose (vector) and returns the true
   biomarker level (vector).
 
 - target:
 
-  (`numeric`)  
+  (`numeric`)\
   the target toxicity interval (default: 20-35%) used for the
   computations.
 
@@ -167,7 +167,7 @@ summary(
 #> Proportion of trials selecting target MTD: 0 %
 #> Dose most often selected as MTD: 1 
 #> Observed toxicity rate at dose most often selected: 0 %
-#> Fitted toxicity rate at dose most often selected : mean 10 % (10 %, 10 %) 
+#> Fitted toxicity rate at dose most often selected : mean 6 % (6 %, 6 %) 
 #> Stop reason triggered:
 #>  P(0.9 ≤ Biomarker ≤ 1) ≥ 0.5 (relative) :  0 %
 #>  ≥ 6 patients dosed :  100 %

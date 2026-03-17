@@ -26,31 +26,31 @@ h_next_best_mg_doses_at_grid(
 
 - dose_target_drt:
 
-  (`number`)  
+  (`number`)\
   target dose estimate during the trial.
 
 - dose_target_eot:
 
-  (`number`)  
+  (`number`)\
   target dose estimate at the end of the trial.
 
 - dose_mg:
 
-  (`number`)  
+  (`number`)\
   the dose corresponding to the maximum gain.
 
 - dose_grid:
 
-  (`numeric`)  
+  (`numeric`)\
   all possible doses.
 
 - doselimit:
 
-  (`number`)  
+  (`number`)\
   the maximum allowed next dose.
 
 - placebo:
 
-  (`flag`)  
+  (`flag`)\
   if `TRUE` the first dose level in the `dose_grid` is considered as
   placebo.

@@ -18,12 +18,12 @@ h_jags_get_model_inits(model, data)
 
 - model:
 
-  (`GeneralModel`)  
+  (`GeneralModel`)\
   an input model.
 
 - data:
 
-  (`GeneralData`)  
+  (`GeneralData`)\
   an input data.
 
 ## Value

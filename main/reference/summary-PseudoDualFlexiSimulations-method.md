@@ -23,30 +23,30 @@ summary(
 
 - object:
 
-  (`PseudoDualFlexiSimulations`)  
+  (`PseudoDualFlexiSimulations`)\
   the object we want to summarize.
 
 - trueDLE:
 
-  (`function`)  
+  (`function`)\
   a function which takes as input a dose (vector) and returns the true
   probability of DLE (vector).
 
 - trueEff:
 
-  (`numeric`)  
+  (`numeric`)\
   a vector which takes as input the true mean efficacy values at all
   dose levels (in order).
 
 - targetEndOfTrial:
 
-  (`number`)  
+  (`number`)\
   the target probability of DLE that are used at the end of a trial.
   Default at 0.3.
 
 - targetDuringTrial:
 
-  (`number`)  
+  (`number`)\
   the target probability of DLE that are used during the trial. Default
   at 0.35.
 

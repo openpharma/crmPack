@@ -15,17 +15,17 @@ h_pseudo_sim_inverse_dose(f, lower = -100, upper = 100)
 
 - f:
 
-  (`function`)  
+  (`function`)\
   the truth function mapping dose to probability.
 
 - lower:
 
-  (`number`)  
+  (`number`)\
   lower bound for root finding.
 
 - upper:
 
-  (`number`)  
+  (`number`)\
   upper bound for root finding.
 
 ## Value

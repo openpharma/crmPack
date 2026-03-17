@@ -43,17 +43,17 @@ plot(x, y, type = c("nObs", "doseSelected", "propDLTs", "nAboveTarget"), ...)
 
 - x:
 
-  (`GeneralSimulationsSummary`)  
+  (`GeneralSimulationsSummary`)\
   the object we want to plot from.
 
 - y:
 
-  (`missing`)  
+  (`missing`)\
   not used.
 
 - type:
 
-  (`character`)  
+  (`character`)\
   the types of plots you want to obtain.
 
 - ...:

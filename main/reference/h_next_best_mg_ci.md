@@ -18,22 +18,22 @@ h_next_best_mg_ci(dose_target, dose_mg, prob_target, placebo, model, model_eff)
 
 - dose_target:
 
-  (`number`)  
+  (`number`)\
   target dose estimate.
 
 - dose_mg:
 
-  (`number`)  
+  (`number`)\
   the dose corresponding to the maximum gain.
 
 - prob_target:
 
-  (`proportion`)  
+  (`proportion`)\
   target DLT probability.
 
 - placebo:
 
-  (`flag`)  
+  (`flag`)\
   if `TRUE` the first dose level in the dose grid used is considered as
   placebo. This is needed to adjust the max gain dose using efficacy
   constant value. If the `placebo` was used, then the `model_eff@const`
@@ -41,12 +41,12 @@ h_next_best_mg_ci(dose_target, dose_mg, prob_target, placebo, model, model_eff)
 
 - model:
 
-  (`ModelTox`)  
+  (`ModelTox`)\
   the DLT model.
 
 - model_eff:
 
-  (`Effloglog`)  
+  (`Effloglog`)\
   the efficacy model.
 
 ## References

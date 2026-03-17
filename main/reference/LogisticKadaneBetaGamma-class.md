@@ -18,40 +18,40 @@ LogisticKadaneBetaGamma(theta, xmin, xmax, alpha, beta, shape, rate)
 
 - theta:
 
-  (`proportion`)  
+  (`proportion`)\
   the target toxicity probability.
 
 - xmin:
 
-  (`number`)  
+  (`number`)\
   the minimum of the dose range.
 
 - xmax:
 
-  (`number`)  
+  (`number`)\
   the maximum of the dose range.
 
 - alpha:
 
-  (`number`)  
+  (`number`)\
   the first shape parameter of the Beta prior distribution
   `rho0 = p(xmin)` the probability of a DLT at the minimum dose `xmin`.
 
 - beta:
 
-  (`number`)  
+  (`number`)\
   the second shape parameter of the Beta prior distribution
   `rho0 = p(xmin)` the probability of a DLT at the minimum dose `xmin`.
 
 - shape:
 
-  (`number`)  
+  (`number`)\
   the shape parameter of the Gamma prior distribution `gamma` the dose
   with target toxicity probability `theta`.
 
 - rate:
 
-  (`number`)  
+  (`number`)\
   the rate parameter of the Gamma prior distribution `gamma` the dose
   with target toxicity probability `theta`.
 
@@ -71,40 +71,40 @@ for `rho0 = p(xmin)`, is \$\$rho0 ~ Beta(alpha, beta).\$\$
 
 - `theta`:
 
-  (`proportion`)  
+  (`proportion`)\
   the target toxicity probability.
 
 - `xmin`:
 
-  (`number`)  
+  (`number`)\
   the minimum of the dose range.
 
 - `xmax`:
 
-  (`number`)  
+  (`number`)\
   the maximum of the dose range.
 
 - `alpha`:
 
-  (`number`)  
+  (`number`)\
   the first shape parameter of the Beta prior distribution of
   `rho0 = p(xmin)` the probability of a DLT at the minimum dose `xmin`.
 
 - `beta`:
 
-  (`number`)  
+  (`number`)\
   the second shape parameter of the Beta prior distribution of
   `rho0 = p(xmin)` the probability of a DLT at the minimum dose `xmin`.
 
 - `shape`:
 
-  (`number`)  
+  (`number`)\
   the shape parameter of the Gamma prior distribution of `gamma` the
   dose with target toxicity probability `theta`.
 
 - `rate`:
 
-  (`number`)  
+  (`number`)\
   the rate parameter of the Gamma prior distribution of `gamma` the dose
   with target toxicity probability `theta`.
 

@@ -20,17 +20,17 @@ DualSimulations(rho_est, sigma2w_est, fit_biomarker, ...)
 
 - rho_est:
 
-  (`numeric`)  
+  (`numeric`)\
   see `DualSimulations`
 
 - sigma2w_est:
 
-  (`numeric`)  
+  (`numeric`)\
   `DualSimulations`
 
 - fit_biomarker:
 
-  (`list`)  
+  (`list`)\
   see `DualSimulations`
 
 - ...:
@@ -42,17 +42,17 @@ DualSimulations(rho_est, sigma2w_est, fit_biomarker, ...)
 
 - `rho_est`:
 
-  (`numeric`)  
+  (`numeric`)\
   vector of final posterior median rho estimates
 
 - `sigma2w_est`:
 
-  (`numeric`)  
+  (`numeric`)\
   vector of final posterior median sigma2W estimates
 
 - `fit_biomarker`:
 
-  (`list`)  
+  (`list`)\
   with the final dose-biomarker curve fits
 
 ## Note

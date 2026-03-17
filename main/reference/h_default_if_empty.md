@@ -18,13 +18,13 @@ h_default_if_empty(x, default)
 
 - x:
 
-  (`any`)  
+  (`any`)\
   an object to handle. It can be any object for which
   [`length()`](https://rdrr.io/r/base/length.html) function is defined.
 
 - default:
 
-  (`any`)  
+  (`any`)\
   a default value for `x` object.
 
 ## Examples

@@ -27,47 +27,47 @@ Data(
 
 - x:
 
-  (`numeric`)  
+  (`numeric`)\
   the doses for the patients.
 
 - y:
 
-  (`integer`)  
+  (`integer`)\
   the vector of toxicity events (0 or 1). You can also supply `numeric`
   vectors, but these will then be converted to `integer` internally.
 
 - ID:
 
-  (`integer`)  
+  (`integer`)\
   unique patient IDs. You can also supply `numeric` vectors, but these
   will then be converted to `integer` internally.
 
 - cohort:
 
-  (`integer`)  
+  (`integer`)\
   the cohort (non-negative sorted) indices. You can also supply
   `numeric` vectors, but these will then be converted to `integer`
   internally.
 
 - doseGrid:
 
-  (`numeric`)  
+  (`numeric`)\
   all possible doses.
 
 - placebo:
 
-  (`flag`)  
+  (`flag`)\
   if `TRUE` the first dose level in the `doseGrid` is considered as
   placebo.
 
 - backfilled:
 
-  (`logical`)  
+  (`logical`)\
   whether each patient was in a backfill cohort.
 
 - response:
 
-  (`integer`)  
+  (`integer`)\
   whether each patient had a positive efficacy response (1 = yes, 0 =
   no). May contain `NA`.
 
@@ -84,44 +84,44 @@ The `cohort` can be missing if and only if `placebo` is equal to
 
 - `x`:
 
-  (`numeric`)  
+  (`numeric`)\
   the doses for the patients.
 
 - `y`:
 
-  (`integer`)  
+  (`integer`)\
   the vector of toxicity events (0 or 1 integers).
 
 - `doseGrid`:
 
-  (`numeric`)  
+  (`numeric`)\
   the vector of all possible doses (sorted), i.e. the dose grid.
 
 - `nGrid`:
 
-  (`integer`)  
+  (`integer`)\
   number of gridpoints.
 
 - `xLevel`:
 
-  (`integer`)  
+  (`integer`)\
   the levels for the doses the patients have been given, w.r.t
   `doseGrid`.
 
 - `placebo`:
 
-  (`logical`)  
+  (`logical`)\
   if `TRUE` the first dose level in the `doseGrid`is considered as
   PLACEBO.
 
 - `backfilled`:
 
-  (`logical`)  
+  (`logical`)\
   whether this patient was in a backfill cohort.
 
 - `response`:
 
-  (`integer`)  
+  (`integer`)\
   whether this patient had a positive efficacy response (0 or 1
   integers).
 

@@ -28,17 +28,17 @@ plot(x, y, type = c("trajectory", "dosesTried", "sigma2W", "rho"), ...)
 
 - x:
 
-  (`DualSimulations`)  
+  (`DualSimulations`)\
   the object we want to plot from.
 
 - y:
 
-  (`missing`)  
+  (`missing`)\
   not used.
 
 - type:
 
-  (`character`)  
+  (`character`)\
   the type of plots you want to obtain.
 
 - ...:

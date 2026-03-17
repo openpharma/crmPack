@@ -17,14 +17,14 @@ DualEndpointRW(sigma2betaW, rw1 = TRUE, ...)
 
 - sigma2betaW:
 
-  (`numeric`)  
+  (`numeric`)\
   the prior variance factor of the random walk prior for the biomarker
   model. Either a fixed value or Inverse-Gamma distribution parameters,
   i.e. vector with two elements named `a` and `b`.
 
 - rw1:
 
-  (`flag`)  
+  (`flag`)\
   for specifying the random walk prior on the biomarker level. When
   `TRUE`, random walk of first order is used. Otherwise, the random walk
   of second order is used.
@@ -58,14 +58,14 @@ inverse gamma prior distribution.
 
 - `sigma2betaW`:
 
-  (`numeric`)  
+  (`numeric`)\
   the prior variance factor of the random walk prior for the biomarker
   model. Either a fixed value or Inverse-Gamma distribution parameters,
   i.e. vector with two elements named `a` and `b`.
 
 - `rw1`:
 
-  (`flag`)  
+  (`flag`)\
   for specifying the random walk prior on the biomarker level. When
   `TRUE`, random walk of first order is used. Otherwise, the random walk
   of second order is used.

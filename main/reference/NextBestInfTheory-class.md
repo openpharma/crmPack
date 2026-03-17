@@ -17,24 +17,24 @@ NextBestInfTheory(target, asymmetry)
 
 - target:
 
-  (`proportion`)  
+  (`proportion`)\
   see slot definition.
 
 - asymmetry:
 
-  (`number`)  
+  (`number`)\
   see slot definition.
 
 ## Slots
 
 - `target`:
 
-  (`proportion`)  
+  (`proportion`)\
   target toxicity probability, except 0 or 1.
 
 - `asymmetry`:
 
-  (`number`)  
+  (`number`)\
   value of the asymmetry exponent in the divergence function that
   describes the rate of penalization for overly toxic does. It must be a
   value from \\(0, 2)\\ interval.

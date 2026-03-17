@@ -21,7 +21,7 @@ OpeningList(...)
 
 - ...:
 
-  (`Opening`)  
+  (`Opening`)\
   opening objects to combine.
 
 ## Slots

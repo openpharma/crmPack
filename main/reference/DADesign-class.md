@@ -18,17 +18,17 @@ DADesign(model, data, safetyWindow, ...)
 
 - model:
 
-  (`GeneralModel`)  
+  (`GeneralModel`)\
   see slot definition.
 
 - data:
 
-  (`DataDA`)  
+  (`DataDA`)\
   see slot definition.
 
 - safetyWindow:
 
-  (`SafetyWindow`)  
+  (`SafetyWindow`)\
   see slot definition.
 
 - ...:
@@ -38,22 +38,22 @@ DADesign(model, data, safetyWindow, ...)
 
   `stopping`
 
-  :   (`Stopping`)  
+  :   (`Stopping`)\
       see slot definition.
 
   `increments`
 
-  :   (`Increments`)  
+  :   (`Increments`)\
       see slot definition.
 
   `pl_cohort_size`
 
-  :   (`CohortSize`)  
+  :   (`CohortSize`)\
       see slot definition.
 
   `backfill`
 
-  :   (`Backfill`)  
+  :   (`Backfill`)\
       see slot definition.
 
 ## Details
@@ -74,7 +74,7 @@ constructor. For example:
 
 - `model`:
 
-  (`GeneralModel`)  
+  (`GeneralModel`)\
   the model to use, see in particular
   [`DALogisticLogNormal`](https://docs.crmpack.org/reference/DALogisticLogNormal-class.md)
   and
@@ -83,12 +83,12 @@ constructor. For example:
 
 - `data`:
 
-  (`DataDA`)  
+  (`DataDA`)\
   what is the dose grid, any previous data, etc.
 
 - `safetyWindow`:
 
-  (`SafetyWindow`)  
+  (`SafetyWindow`)\
   the safety window to apply between cohorts.
 
 ## Note

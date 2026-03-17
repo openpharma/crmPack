@@ -16,17 +16,17 @@ plot(x, y, blind = FALSE, ...)
 
 - x:
 
-  (`DataDA`)  
+  (`DataDA`)\
   object we want to plot.
 
 - y:
 
-  (`missing`)  
+  (`missing`)\
   missing object, for compatibility with the generic function.
 
 - blind:
 
-  (`flag`)  
+  (`flag`)\
   indicates whether to blind the data. If `TRUE`, then placebo subjects
   are reported at the same level as the active dose level in the
   corresponding cohort, and DLTs are always assigned to the first

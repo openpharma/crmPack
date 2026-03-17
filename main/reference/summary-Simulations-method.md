@@ -15,18 +15,18 @@ summary(object, truth, target = c(0.2, 0.35), ...)
 
 - object:
 
-  (`Simulations`)  
+  (`Simulations`)\
   the object we want to summarize.
 
 - truth:
 
-  (`function`)  
+  (`function`)\
   a function which takes as input a dose (vector) and returns the true
   probability (vector) for toxicity.
 
 - target:
 
-  (`numeric`)  
+  (`numeric`)\
   the target toxicity interval (default: 20-35%) used for the
   computations.
 
@@ -143,10 +143,10 @@ summary(mySims, truth = myTruth)
 #> Proportion of trials selecting target MTD: 0 %
 #> Dose most often selected as MTD: 25 
 #> Observed toxicity rate at dose most often selected: 57 %
-#> Fitted toxicity rate at dose most often selected : mean 26 % (26 %, 26 %) 
-#> max_mtd : 204.96 
-#> mean_mtd : 29.17 
-#> median_mtd : 27.56 
+#> Fitted toxicity rate at dose most often selected : mean 27 % (27 %, 27 %) 
+#> max_mtd : 734.15 
+#> mean_mtd : 30.8 
+#> median_mtd : 26.43 
 #> Stop reason triggered:
 #>  ≥ 3 cohorts dosed :  100 %
 #>  P(0.2 ≤ prob(DLE | NBD) ≤ 0.35) ≥ 0.5 :  100 %

@@ -25,7 +25,7 @@ OpeningAny(...)
 
 - `open_list`:
 
-  (`list`)  
+  (`list`)\
   a list of
   [`Opening`](https://docs.crmpack.org/reference/Opening-class.md)
   objects to be combined with OR logic.

@@ -17,7 +17,7 @@ v_mcmc_options(object)
 
 - object:
 
-  (`McmcOptions`)  
+  (`McmcOptions`)\
   object to validate.
 
 ## Value
