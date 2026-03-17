@@ -2,7 +2,7 @@
 
 ### Bugfixes
 
-* The `knit_print` method for `LogisticNormalMixture` did not render correctly previously, this is fixed now.
+* The `knit_print` method for `LogisticNormalMixture` did not render correctly previously; this is fixed now.
 
 # Version 2.1.0
 

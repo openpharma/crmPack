@@ -45,15 +45,16 @@ h_knit_print_render_biomarker_model <- function(x, use_values = TRUE, ...) {
 #' This is an internal helper to ensure that mixture components in
 #' LogisticNormalMixture use the same formatting and `use_values`
 #' semantics as other Normal priors.
-#' @param mean numeric vector of length 2
-#' @param cov  2x2 covariance matrix
+#' @param component a `ModelParamsNormal` object representing the Normal prior
 #' @param use_values logical; if `FALSE`, use symbolic parameters
 #' @param fmt format string for numeric values, passed to `sprintf`
 #' @noRd
-h_knit_print_render_normal_component <- function(mean,
-                                                 cov,
+h_knit_print_render_normal_component <- function(component,
                                                  use_values = TRUE,
                                                  fmt = "%5.2f") {
+  mean <- component@mean
+  cov <- component@cov
+
   if (use_values) {
     m1 <- sprintf(fmt, mean[1])
     m2 <- sprintf(fmt, mean[2])
@@ -65,10 +66,11 @@ h_knit_print_render_normal_component <- function(mean,
     # Symbolic representation when not using concrete values
     m1 <- "\\mu_{1}"
     m2 <- "\\mu_{2}"
-    s11 <- "\\sigma_{11}^2"
-    s12 <- "\\sigma_{12}"
-    s21 <- "\\sigma_{21}"
-    s22 <- "\\sigma_{22}^2"
+    s11 <- "\\sigma_{1}^2"
+    rho <- "\\rho"
+    s12 <- paste0(rho, "\\sigma_{1}\\sigma_{2}")
+    s21 <- s12
+    s22 <- "\\sigma_{2}^2"
   }
 
   paste0(
@@ -971,15 +973,13 @@ knit_print.LogisticNormalMixture <- function(
     " \\sim ",
     "w \\cdot ",
     h_knit_print_render_normal_component(
-      mean = x@comp1@mean,
-      cov = x@comp1@cov,
+      component = x@comp1,
       use_values = use_values,
       fmt = fmt
     ),
     " + (1 - w) \\cdot ",
     h_knit_print_render_normal_component(
-      mean = x@comp2@mean,
-      cov = x@comp2@cov,
+      component = x@comp2,
       use_values = use_values,
       fmt = fmt
     ),
