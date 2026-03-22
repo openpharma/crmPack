@@ -24,6 +24,20 @@ saveRDS(
   testthat::test_path("fixtures", "default_simulations.Rds")
 )
 
+# SimulationsSummary ----
+
+simulations_truth <- function(dose) plogis(-4 + 0.5 * log(dose))
+
+.default_simulations_summary <- summary(
+  .default_simulations,
+  truth = simulations_truth
+)
+
+saveRDS(
+  .default_simulations_summary,
+  testthat::test_path("fixtures", "default_simulations_summary.Rds")
+)
+
 # DASimulations ----
 
 design <- .DefaultDADesign()
@@ -145,6 +159,19 @@ saveRDS(
   testthat::test_path("fixtures", "default_dual_simulations.Rds")
 )
 
+# DualSimulationsSummary ----
+
+.default_dual_simulations_summary <- summary(
+  .default_dual_simulations,
+  trueTox = true_tox,
+  trueBiomarker = true_biomarker
+)
+
+saveRDS(
+  .default_dual_simulations_summary,
+  testthat::test_path("fixtures", "default_dual_simulations_summary.Rds")
+)
+
 # PseudoSimulations ----
 
 # Create data
@@ -197,6 +224,18 @@ pseudo_truth <- probFunction(pseudo_model, phi1 = -53.66584, phi2 = 10.50499)
 saveRDS(
   .default_pseudo_simulations,
   testthat::test_path("fixtures", "default_pseudo_simulations.Rds")
+)
+
+# PseudoSimulationsSummary ----
+
+.default_pseudo_simulations_summary <- summary(
+  .default_pseudo_simulations,
+  truth = pseudo_truth
+)
+
+saveRDS(
+  .default_pseudo_simulations_summary,
+  testthat::test_path("fixtures", "default_pseudo_simulations_summary.Rds")
 )
 
 # PseudoDualSimulations ----
@@ -264,6 +303,19 @@ pseudo_truth_eff <- efficacyFunction(
 saveRDS(
   .default_pseudo_dual_simulations,
   testthat::test_path("fixtures", "default_pseudo_dual_simulations.Rds")
+)
+
+# PseudoDualSimulationsSummary ----
+
+.default_pseudo_dual_simulations_summary <- summary(
+  .default_pseudo_dual_simulations,
+  trueDLE = pseudo_truth_dle,
+  trueEff = pseudo_truth_eff
+)
+
+saveRDS(
+  .default_pseudo_dual_simulations_summary,
+  testthat::test_path("fixtures", "default_pseudo_dual_simulations_summary.Rds")
 )
 
 # PseudoDualFlexiSimulations ----
