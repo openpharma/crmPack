@@ -1,0 +1,413 @@
+---
+title: "Design for Two Drugs Combination"
+author: "Daniel"
+date: today
+format: html
+embed-resources: true
+bibliography: references.bib
+---
+
+## Motivation
+
+In the context of dose-finding for drug combinations, we are interested in modeling the probability of dose-limiting toxicity (DLT) as a function of the doses of two drugs. The goal is to identify the optimal combination of doses that maximizes efficacy while minimizing toxicity.
+
+For the time being, we restrict the discussion to the case of two drugs, but the approach can be extended to more drugs in principle. However this seems to be not so relevant in practice, and could later extend the implementation to more drugs if needed.
+
+## Idea
+
+The idea is to implement the 5-parameter BLRM approach by @Neuenschwander2015 (note that a presentation slide deck is available [here](https://de.slideshare.net/slideshow/eugm-2014-roychaudhuri-phase-1-combination/50032570)):
+
+- Let $\textrm{odds}(p)=p/(1-p)$ be the odds transformation of the probability $p$, such that 
+  $\textrm{logit}(p) = \log(\textrm{odds}(p))$. 
+- Let $x_i$ be the dose of drug $i=1,2$, and $p(x_1, x_2)$ be the probability of DLT with doses $x_1$ and $x_2$.
+- The reference doses for the two compounds are again denoted by $x_1^{*}$ and $x_2^{*}$, and the single-agent DLT probabilities at these reference doses are denoted by $p(x_1)$ and $p(x_2)$, respectively.
+- Then the model assumes a linear interaction function:
+
+  $$
+  \textrm{odds}(p(x_1, x_2)) = \textrm{odds}(p_0(x_1, x_2)) \cdot \exp(\eta x_1/x_1^{*} x_2/x_2^{*}),
+  $$
+
+  - where $\eta$ is the interaction coefficient (positive values correspond to synergistic toxicity, zero corresponds to additive effect without interaction, and negative values correspond to antagonistic toxicity). 
+  - This model is also called the "dual combo model" by Novartis
+  - Under no interaction with $\eta=0$, this reduces the probability $\textrm{odds}(p(x_1, x_2))$ to
+  \begin{align*}
+  p_0(x_1, x_2) &= p(x_1) + p(x_2) - p(x_1)p(x_2)\\
+   &= 1 - (1 - p(x_1))(1 - p(x_2)).
+  \end{align*}
+
+- Now for the single-agent DLT probabilities $p(x_1)$ and $p(x_2)$ we assume the logistic log-normal models:
+  $\textrm{logit}[p(x_i)] = \alpha_i + \beta_i \log(x_i/x_i^{*}),$
+  with prior e.g.
+  $(\alpha_i, \log(\beta_i))^\top \sim \textrm{Normal}(\mu_i, \Sigma_i)$
+  for $i=1,2$. 
+
+### Priors
+
+- Different priors can be used in principle for the 5 parameters $\theta = (\alpha_1, \beta_1, \alpha_2, \beta_2, \eta)^\top$.
+- Typical is a meta-analytic combined (MAC) prior which separates according to different trial sources:
+  - mono drug 1 trial ($\theta_1$), which will only inform the parameters $\alpha_1$ and $\beta_1$ for drug 1
+  - current combination of drugs 1 and 2 trial ($\theta_2$), which will inform all 5 parameters
+  - mono drug 2 trial ($\theta_3$), which will only inform the parameters $\alpha_2$ and $\beta_2$ for drug 2
+- And then uses the hierarchical prior $\theta_j \sim \textrm{Normal}(\mu, \Sigma)$, $j=1,2,3$.
+- Hyperpriors on $\mu = (\mu_{\alpha_1}, \mu_{\beta_1}, \mu_{\alpha_2}, \mu_{\beta_2}, \mu_{\eta})^\top$ e.g.:
+  - $\mu_{\alpha_i} \sim \textrm{Normal}(\textrm{logit}(0.25), 2.5^2)$, $i=1,2$
+  - $\mu_{\beta_1} \sim \textrm{Normal}(0, 0.7^2)$
+  - $\mu_{\beta_2}, \mu_{\eta} \sim \textrm{Normal}(0, 1)$
+- Structured assumptions for $\Sigma$
+  - Assume that only $\mu_{\alpha_1}$ and $\mu_{\beta_1}$, as well as $\mu_{\alpha_2}$ and $\mu_{\beta_2}$ are correlated, but not the other parameters, then we have a corresponding block diagonal structure for $\Sigma$ with 7 parameters
+  (standard deviations $\tau_{\alpha_1}, \tau_{\beta_1}, \tau_{\alpha_2}, \tau_{\beta_2}, \tau_{\eta}$ for each of the 5 parameters plus the two correlations $\rho_1$ and $\rho_2$ between $\alpha_i$ and $\beta_i$ for $i=1,2$).
+  - We don't fix the $\Sigma$ entries but instead again assign hyperpriors, e.g. with $\kappa = \log(2)/1.96$
+    - $\tau_{\alpha_1} \sim \textrm{LogNormal}(\log(0.5), \kappa^2)$
+    - $\tau_{\alpha_2} \sim \textrm{LogNormal}(\log(0.75), \kappa^2)$
+    - $\tau_{\beta_1}, \tau_{\beta_2} \sim \textrm{LogNormal}(\log(0.25), \kappa^2)$
+    - $\tau_{\eta} \sim \textrm{LogNormal}(\log(0.125), \kappa^2)$
+    - $\rho_1, \rho_2 \sim \textrm{Uniform}(-1, 1)$
+
+### Design
+
+In terms of possible trial designs, we need to support the following options:
+
+- Combination dose escalation with a fixed prior
+- Combination dose escalation with historical data informing the prior for the monotherapy parameters
+- Combination dose escalation with concurrent monotherapy arm or arms
+
+The idea of these trial designs is that it must be possible to "plug together" multiple arms (mono drug 1, mono drug 2, combo drug 1 and 2, historical drug 1, historical drug 2, etc.) in a sort of "hierarchical design" object. Each arm has its own data, its own recommendation, stopping and increment rules, its own backfilling choices, and is simulated independently and might also start at different times, but parts of the models across the arms can be shared (e.g. as described above for the 5-parameters BLRM model).
+
+One more detail here is that it should also be possible that the combo arm uses the mono data, but not the other way around necessarily - so it should be possible to avoid information flowing from the combo arm to the mono arm. On the other hand, this is optional, so in another choice the information could also flow from the combo arm to the mono arm, which would be more efficient in terms of learning about the single-agent parameters.
+
+In most cases one of the combo drugs will have a fixed dose (e.g. the standard of care), and the other drug will be escalated. In the remaining cases, both drugs will be escalated. In that case, we need to define the recommendation rule: For the beginning it would be sufficient to extend the existing rule that chooses the dose with the largest target toxicity probability among the admissible doses, to the case of dose combinations.
+
+Backfilling is often only interesting for the combo arm, but not for the mono arms. So backfilling needs to be configurable at the arm level. The same applies to the maximum increment rules and stopping rules.
+
+### Increment rules
+
+Increment rules can be defined at the arm level. Here for the combo arm we will need to extend the existing rules to the case of dose combinations. For example, we can define a maximum increment rule that allows only dose increments of one level for each drug, or even just for one of the drugs.
+
+### Stopping rules
+
+Stopping rules can be defined at the arm level. For example:
+
+- The MTD can be considered reached if at least 9 patients have been evaluated in the trial arm, a dose level is the model’s recommendation for the next dose cohort two times in a row, and for this dose the posterior probability of targeted toxicity was at least 60% or at least 6 patients have been treated at this dose in the respective arm of the trial.
+- A maximum sample size is reached in the trial arm, and then the MTD might *not* be declared.
+
+### Reporting
+
+Hypothetical data scenarios can be used to illustrate the model and the design. While the full-fledged `examine()` method might be difficult to implement as well as communicate, we can consider adding a new method e.g.`scenario()` that is a short cut for users to quickly get the model summary and next cohorts recommendation for a given hypothetical data scenario. This becomes more relevant now in the "hierarchical design" setting where multiple arms are included, and the data scenario can be defined for each arm separately.
+
+Reporting of simulation results can start relatively simple and be located at the trial arm level, including e.g.:
+
+- Mean number of patients treated at each dose combination
+- Percentage of trials declaring an MTD per dose level
+- Percentage of trial outcomes (underdose, target dose, overdose, stopped without reaching MTD)
+- Mean, minimal, and maximal number of patients and patients with DLTs in simulated trials
+
+### Probabilistic programming
+
+The model can be implemented in a probabilistic programming language such as JAGS or Stan. The `decider` package by @Schroeter2023 already has an implementation in Stan, which can be used as a reference for the implementation in `crmPack`.
+We will for the time being work with JAGS, as this is used elsewhere in the package. 
+
+In case that we hit convergence issues with JAGS, we could consider adding Stan in particular for the "hierarchical design" setting, which has more parameters than the monotherapy case we have implemented so far.
+
+One challenge here will be how to first specify, and second derive the JAGS model code from the user input across multiple arms in the "hierarchical design" setting. The user should be able to specify which arms are included in the design, and how they are connected in terms of shared parameters, and then the JAGS code should be derived from this specification. This will require some careful design of the user interface and the internal code structure.
+
+## Existing material
+
+### `crmPack` code
+
+We have early code already in the [`dose_combinations`](https://github.com/openpharma/crmPack/tree/dose_combinations) branch (last changes happened 10 years ago!)
+
+- The `Model` code is [here](https://github.com/openpharma/crmPack/blob/dose_combinations/R/Model-class.R#L2478). This uses the same 5-parameter BLRM model. It already foresees that the `LogisticLogNormal` model for the single agents could be replaced by other models, but does not yet support that. The code is implemented in JAGS. 
+  - The prior specification is simpler than described above. There is no historical or concurrent monotherapy data included, and the prior means and covariances for the two mono models are fixed and not hierarchical. The interaction parameter $\eta$ has a simple (log) normal prior.
+- The `Data` class is [here](https://github.com/openpharma/crmPack/blob/dose_combinations/R/Data-class.R#L331). It already is general for more than 2 drug combinations.
+- The `NextBest` class is proposed [here](https://github.com/openpharma/crmPack/blob/dose_combinations/R/Rules-class.R#L156):
+  - This rule will return the next best dose combinations according to the following algorithm: First, conditional on the first drug doses, the doses of the second drug which are admissible and maximize the target toxicity probabilities are recorded. Second, conditional on the second drug doses the same is done for the first drug doses. The union of both sets of drug combinations is returned.
+- There is no `Design` class (or `Simulations` class) yet.
+- There is prototype `Rcpp` code for speeding up the probability calculations based on samples [here](https://github.com/openpharma/crmPack/blob/main/design/devel/src/test.cpp).
+
+### `decider` package
+
+The `decider` package by @Schroeter2023 was specifically created for decision making in multiple-arm oncology dose escalation trials, including monotherapy and combination therapy arms. Historical trial data can be included as well. 
+
+The model is described [here](https://boehringer-ingelheim.github.io/decider/reference/scenario_jointBLRM.html#details). It is based on the same 5-parameter BLRM approach as we describe here. It is implemented in Stan [here](https://github.com/Boehringer-Ingelheim/decider/blob/main/inst/stan/jointBLRM.stan).
+
+The idea is to implement the most important functionality from the `decider` package in `crmPack`, in a structured way. (The `decider` package has grown organically over time from multiple studies it was applied to, and is not considered maintainable in the long term.)
+
+## Implementation plan
+
+The implementation can be structured in the following steps:
+
+1. Implement the combo arm with a fixed prior.
+  - Based on the `crmPack` prototype from the `dose_combinations` branch
+  - Adding increments rules, `Design` and `Simulations` classes and corresponding methods
+2. Implement the "hierarchical design" with multiple arms and shared parameters.
+  - Account for the use of historical data
+  - Account for the use of concurrent monotherapy arms
+
+Particular challenges in the "hierarchical design" setting are discussed here.
+This is by far not yet complete, but is meant to provide a first idea which needs to be further developed and refined.
+
+The first step now is anyway to implement the combo arm with a fixed prior, which should be relatively straightforward. We will do this in branch `936-combo-fixed-prior`.
+
+### Model specification
+
+Let's say we have the simplest case where the trial comprises a mono drug 1 arm and a combo drug 1 and 2 arm. We want to fit a joint model to the data from both arms and use it for both arms to make the dose escalation decisions, using the shared 5-parameter BLRM model described above.
+
+Each arm is defined in the standard `crmPack` way, something like:
+
+```{r}
+#| eval: false
+
+design_mono <- Design(
+    model = model_mono,
+    data = empty_data_mono,
+    nextBest = nextBest_mono,
+    stopping = stopping_mono,
+    increments = increments_mono,
+    backfill = backfill_mono,
+    cohort_size = cohort_size_mono,
+    startingDose = startingDose_mono
+)
+
+design_combo <- Design(
+    model = model_combo,
+    data = empty_data_combo,
+    nextBest = nextBest_combo,
+    stopping = stopping_combo,
+    increments = increments_combo,
+    backfill = backfill_combo,
+    cohort_size = cohort_size_combo,
+    startingDose = startingDose_combo
+)
+```
+
+From here, I think it is best to focus on a single general proposal: represent the trial as a graph of arms, while keeping each arm as a standard `crmPack` `Design` object.
+
+The important constraint is that we should not throw away the existing `Design` decomposition into `model`, `data`, `nextBest`, `stopping`, `increments`, `backfill`, `cohort_size`, and `startingDose`. Instead, the hierarchical layer should sit above these objects and only add what is needed for cross-arm borrowing and joint fitting.
+
+### General proposal: arm graph plus parameter pools
+
+Conceptually, the hierarchical trial has two layers:
+
+- an operational layer, where each arm is still a normal `Design` with its own rules;
+- a statistical layer, where parameters are shared across arms through named parameter pools.
+
+In the simplest mono-plus-combo example, the mono arm and combo arm remain ordinary `Design` objects. The new part is a higher-level design object that knows:
+
+- which arms exist;
+- which parameters belong to which arm;
+- which parameters are shared;
+- in which direction information is allowed to flow.
+
+This keeps the user-facing API close to current `crmPack`, while still being general enough for historical and multiple concurrent arms.
+
+### Minimal API sketch
+
+The smallest realistic API would likely need four new building blocks.
+
+1. `DesignArm`
+
+This is a light wrapper around an existing `Design` object. It adds arm metadata, but does not replace the arm design itself.
+
+Likely fields:
+
+- `name`: unique arm name, e.g. `"mono"`, `"combo"`, `"hist_mono"`
+- `design`: an ordinary `Design` object
+- `type`: e.g. `"mono1"`, `"mono2"`, `"combo"`, `"historical"`
+- `active`: whether the arm enrolls new patients
+- `use_for_recommendation`: whether this arm gets its own recommendation
+
+2. `HierarchicalData`
+
+This stores the data for all arms together, but each arm still keeps its own arm-specific `Data` object internally. This is needed because MCMC for the hierarchical model must see all relevant arms jointly.
+
+Likely helper methods:
+
+- `armData(object, arm)` to extract the `Data` object for one arm
+- `update(object, arm, ...)` to add outcomes to one arm
+- `activeArms(object)` to know which arms are still enrolling
+
+3. `HierarchicalModel`
+
+This is the model-level object for the joint BLRM. It should probably behave like a `GeneralModel`, but contain extra structure that maps arm-specific likelihood contributions to shared latent parameters.
+
+Likely fields:
+
+- `reference_dose`
+- `interaction`
+- `parameter_pools`
+- `arm_map`
+- `borrowing`
+
+The key piece is `parameter_pools`. A parameter pool defines which arm-specific parameters are exchangeable or partially exchangeable across which arms.
+
+4. `HierarchicalDesign`
+
+This is the top-level object. It holds the collection of arms plus the joint model specification and is the object that methods like `simulate()` or `scenario()` would dispatch on.
+
+Likely fields:
+
+- `arms`: named list of `DesignArm`
+- `data`: `HierarchicalData`
+- `model`: `HierarchicalModel`
+
+### Parameter pools
+
+The most important abstraction is the parameter pool. This is the part that makes the design general.
+
+```{r eval=FALSE}
+drug1_pool <- ParameterPool(
+    name = "drug1",
+    parameters = c("alpha1", "beta1"),
+    members = c("hist_mono", "mono", "combo"),
+    prior = "exchangeable"
+)
+
+drug2_pool <- ParameterPool(
+    name = "drug2",
+    parameters = c("alpha2", "beta2"),
+    members = c("combo"),
+    prior = "exchangeable"
+)
+
+interaction_pool <- ParameterPool(
+    name = "interaction",
+    parameters = "eta",
+    members = c("combo"),
+    prior = "independent"
+)
+```
+
+This is more realistic than sharing whole arm models. In practice, we do not want to share a full arm object; we want to share selected parameter blocks such as `(alpha1, beta1)` across certain arms, while leaving `eta` combination-specific.
+
+### Borrowing direction
+
+To accommodate the requirement that combo may borrow from mono but not necessarily the other way around, the parameter pool should not only define membership, but also the role of each member arm.
+
+```{r eval=FALSE}
+drug1_pool <- ParameterPool(
+    name = "drug1",
+    parameters = c("alpha1", "beta1"),
+    members = list(
+        hist_mono = PoolMember(role = "source"),
+        mono = PoolMember(role = "source"),
+        combo = PoolMember(role = "borrower")
+    ),
+    prior = "exchangeable"
+)
+```
+
+That is, the pool defines a common latent structure, but the recommendation machinery can still decide which posterior summaries are exposed to which arm. This seems cleaner than trying to encode directionality at the whole-design level.
+
+### Simple mono plus combo example
+
+In the current simple example, a realistic sketch could look like this.
+
+```{r eval=FALSE}
+arm_mono <- DesignArm(
+    name = "mono",
+    design = design_mono,
+    type = "mono1",
+    active = TRUE,
+    use_for_recommendation = TRUE
+)
+
+arm_combo <- DesignArm(
+    name = "combo",
+    design = design_combo,
+    type = "combo",
+    active = TRUE,
+    use_for_recommendation = TRUE
+)
+
+hdata <- HierarchicalData(
+    arms = list(
+        mono = design_mono@data,
+        combo = design_combo@data
+    )
+)
+
+hmodel <- HierarchicalBlrm(
+    reference_dose = c(drug1 = ref_dose_1, drug2 = ref_dose_2),
+    interaction = "linear",
+    parameter_pools = list(
+        ParameterPool(
+            name = "drug1",
+            parameters = c("alpha1", "beta1"),
+            members = list(
+                mono = PoolMember(role = "source"),
+                combo = PoolMember(role = "borrower")
+            ),
+            prior = "exchangeable"
+        ),
+        ParameterPool(
+            name = "drug2",
+            parameters = c("alpha2", "beta2"),
+            members = list(
+                combo = PoolMember(role = "source")
+            ),
+            prior = "exchangeable"
+        ),
+        ParameterPool(
+            name = "interaction",
+            parameters = "eta",
+            members = list(
+                combo = PoolMember(role = "source")
+            ),
+            prior = "independent"
+        )
+    )
+)
+
+hier_design <- HierarchicalDesign(
+    arms = list(
+        mono = arm_mono,
+        combo = arm_combo
+    ),
+    data = hdata,
+    model = hmodel
+)
+```
+
+### How the existing `Design` components would still be used
+
+The important point is that recommendation and stopping should still happen at the arm level, reusing the existing components of the embedded `Design` objects.
+
+Conceptually the workflow would be:
+
+```{r eval=FALSE}
+samples <- mcmc(
+    data = hier_design@data,
+    model = hier_design@model,
+    options = mcmcOptions
+)
+
+combo_data <- armData(hier_design@data, arm = "combo")
+combo_design <- hier_design@arms$combo@design
+
+combo_dose_limit <- maxDose(
+    combo_design@increments,
+    data = combo_data
+)
+
+combo_next <- nextBest(
+    combo_design@nextBest,
+    doselimit = combo_dose_limit,
+    samples = samples,
+    model = hier_design@model,
+    data = combo_data,
+    arm = "combo"
+)
+
+stop_combo <- stopTrial(
+    combo_design@stopping,
+    dose = combo_next$value,
+    samples = samples,
+    model = hier_design@model,
+    data = combo_data,
+    arm = "combo"
+)
+```
+
+So the arm graph layer does not replace `nextBest`, `stopTrial`, `maxDose`, `update`, or `simulate`; it mainly provides a joint `data` and `model` object that these methods can work against.
+
+
