@@ -45,9 +45,9 @@ The idea is to implement the 5-parameter BLRM approach by @Neuenschwander2015 (n
 
 - Different priors can be used in principle for the 5 parameters $\theta = (\alpha_1, \beta_1, \alpha_2, \beta_2, \eta)^\top$.
 - Typical is a meta-analytic combined (MAC) prior which separates according to different trial sources:
-  - mono drug 1 trial ($\theta_1$)
-  - current combination of drugs 1 and 2 trial ($\theta_2$)
-  - mono drug 2 trial ($\theta_3$)
+  - mono drug 1 trial ($\theta_1$), which will only inform the parameters $\alpha_1$ and $\beta_1$ for drug 1
+  - current combination of drugs 1 and 2 trial ($\theta_2$), which will inform all 5 parameters
+  - mono drug 2 trial ($\theta_3$), which will only inform the parameters $\alpha_2$ and $\beta_2$ for drug 2
 - And then uses the hierarchical prior $\theta_j \sim \textrm{Normal}(\mu, \Sigma)$, $j=1,2,3$.
 - Hyperpriors on $\mu = (\mu_{\alpha_1}, \mu_{\beta_1}, \mu_{\alpha_2}, \mu_{\beta_2}, \mu_{\eta})^\top$ e.g.:
   - $\mu_{\alpha_i} \sim \textrm{Normal}(\textrm{logit}(0.25), 2.5^2)$, $i=1,2$
@@ -62,6 +62,53 @@ The idea is to implement the 5-parameter BLRM approach by @Neuenschwander2015 (n
     - $\tau_{\beta_1}, \tau_{\beta_2} \sim \textrm{LogNormal}(\log(0.25), \kappa^2)$
     - $\tau_{\eta} \sim \textrm{LogNormal}(\log(0.125), \kappa^2)$
     - $\rho_1, \rho_2 \sim \textrm{Uniform}(-1, 1)$
+
+## Design
+
+In terms of possible trial designs, we need to support the following options:
+
+- Combination dose escalation with a fixed prior
+- Combination dose escalation with historical data informing the prior for the monotherapy parameters
+- Combination dose escalation with concurrent monotherapy arm or arms
+
+The idea of these trial designs is that it must be possible to "plug together" multiple arms (mono drug 1, mono drug 2, combo drug 1 and 2, historical drug 1, historical drug 2, etc.) in a sort of "hierarchical design" object. Each arm has its own data, its own recommendation, stopping and increment rules, its own backfilling choices, and is simulated independently and might also start at different times, but parts of the models across the arms can be shared (e.g. as described above for the 5-parameters BLRM model).
+
+One more detail here is that it should also be possible that the combo arm uses the mono data, but not the other way around necessarily - so it should be possible to avoid information flowing from the combo arm to the mono arm. On the other hand, this is optional, so in another choice the information could also flow from the combo arm to the mono arm, which would be more efficient in terms of learning about the single-agent parameters.
+
+In most cases one of the combo drugs will have a fixed dose (e.g. the standard of care), and the other drug will be escalated. In the remaining cases, both drugs will be escalated. In that case, we need to define the recommendation rule: For the beginning it would be sufficient to extend the existing rule that chooses the dose with the largest target toxicity probability among the admissible doses, to the case of dose combinations.
+
+Backfilling is often only interesting for the combo arm, but not for the mono arms. So backfilling needs to be configurable at the arm level. The same applies to the maximum increment rules and stopping rules.
+
+## Increment rules
+
+Increment rules can be defined at the arm level. Here for the combo arm we will need to extend the existing rules to the case of dose combinations. For example, we can define a maximum increment rule that allows only dose increments of one level for each drug, or even just for one of the drugs.
+
+## Stopping rules
+
+Stopping rules can be defined at the arm level. For example:
+
+- The MTD can be considered reached if at least 9 patients have been evaluated in the trial arm, a dose level is the model’s recommendation for the next dose cohort two times in a row, and for this dose the posterior probability of targeted toxicity was at least 60% or at least 6 patients have been treated at this dose in the respective arm of the trial.
+- A maximum sample size is reached in the trial arm, and then the MTD might *not* be declared.
+
+## Reporting
+
+Hypothetical data scenarios can be used to illustrate the model and the design. While the full-fledged `examine()` method might be difficult to implement as well as communicate, we can consider adding a new method e.g.`scenario()` that is a short cut for users to quickly get the model summary and next cohorts recommendation for a given hypothetical data scenario. This becomes more relevant now in the "hierarchical design" setting where multiple arms are included, and the data scenario can be defined for each arm separately.
+
+Reporting of simulation results can start relatively simple and be located at the trial arm level, including e.g.:
+
+- Mean number of patients treated at each dose combination
+- Percentage of trials declaring an MTD per dose level
+- Percentage of trial outcomes (underdose, target dose, overdose, stopped without reaching MTD)
+- Mean, minimal, and maximal number of patients and patients with DLTs in simulated trials
+
+## Probabilistic programming
+
+The model can be implemented in a probabilistic programming language such as JAGS or Stan. The `decider` package by @Schroeter2023 already has an implementation in Stan, which can be used as a reference for the implementation in `crmPack`.
+We will for the time being work with JAGS, as this is used elsewhere in the package. 
+
+In case that we hit convergence issues with JAGS, we could consider adding Stan in particular for the "hierarchical design" setting, which has more parameters than the monotherapy case we have implemented so far.
+
+One challenge here will be how to first specify, and second derive the JAGS model code from the user input across multiple arms in the "hierarchical design" setting. The user should be able to specify which arms are included in the design, and how they are connected in terms of shared parameters, and then the JAGS code should be derived from this specification. This will require some careful design of the user interface and the internal code structure.
 
 ## Existing material
 
@@ -83,15 +130,4 @@ The `decider` package by @Schroeter2023 was specifically created for decision ma
 
 The model is described [here](https://boehringer-ingelheim.github.io/decider/reference/scenario_jointBLRM.html#details). It is based on the same 5-parameter BLRM approach as we describe here. It is implemented in Stan [here](https://github.com/Boehringer-Ingelheim/decider/blob/main/inst/stan/jointBLRM.stan).
 
-## Questions
-
-1. Do we need to allow the concurrent monotherapy data, historical data for the meta-analytic combined (MAC) prior? Or is it sufficient to use fixed means/covariances for the single-agent parameters as in the current prototype `Model` code? 
-1. Do we have preferences for how the escalation algorithm should work? 
-  - E.g. is there only one cohort at a time or can there be multiple cohorts in parallel?
-1. Do we have preferences for the reporting of the combo trial results?
-  - In particular specific plots, summary tables etc.
-  - Any differences vs. single-agent trials reporting
-1. Do we need to allow for backfill cohorts?
-1. Any specific maximum increments rules for the dose escalation?
-1. Any specific stopping rules?
-
+The idea is to implement the most important functionality from the `decider` package in `crmPack`, in a structured way. (The `decider` package has grown organically over time from multiple studies it was applied to, and is not considered maintainable in the long term.)
