@@ -632,6 +632,217 @@ LogisticLogNormalGrouped <- function(mean, cov, ref_dose = 1) {
   )
 }
 
+# LogisticLogNormalCombo ----
+
+## class ----
+
+#' `LogisticLogNormalCombo`
+#'
+#' @description `r lifecycle::badge("experimental")`
+#'
+#' [`LogisticLogNormalCombo`] is the class for a two-drug combination logistic log-normal regression model with
+#' fixed priors for the two single-agent dose-toxicity models and an additional
+#' interaction parameter.
+#'
+#' @details Let \eqn{p(x_1, x_2)} be the probability of DLT at the dose
+#' combination \eqn{(x_1, x_2)}. The model combines two single-agent logistic
+#' log-normal models with a linear interaction term:
+#' \deqn{\textrm{odds}(p(x_1, x_2)) = \textrm{odds}(p_0(x_1, x_2)) *
+#'   \exp\left(\eta * x_1 / x_1^{*} * x_2 / x_2^{*}\right),}
+#' where \eqn{p_0(x_1, x_2) = 1 - (1 - p_1(x_1))(1 - p_2(x_2))} and each
+#' single-agent probability follows
+#' \deqn{\textrm{logit}(p_j(x_j)) = \alpha_{0j} + \alpha_{1j} * \log(x_j / x_j^{*}),}
+#' with independent fixed-prior [`LogisticLogNormal`] models for the two drugs.
+#' The interaction parameter \eqn{\eta} has either a normal prior or, if
+#' `log_normal_eta = TRUE`, a log-normal prior.
+#'
+#' @slot single_models (`list`)
+#'   named list of length 2 containing [`LogisticLogNormal`] objects, one per
+#'   drug.
+#' @slot ref_dose (`numeric`)
+#'   reference doses extracted from `single_models`.
+#' @slot drug_names (`character`)
+#'   the names of the two drugs.
+#' @slot gamma (`numeric`)
+#'   prior mean parameter for the interaction term.
+#' @slot tau (`numeric`)
+#'   prior precision parameter for the interaction term.
+#' @slot log_normal_eta (`flag`)
+#'   should the interaction term use a log-normal prior?
+#'
+#' @seealso [`LogisticLogNormal`], [`DataCombo`].
+#'
+#' @aliases LogisticLogNormalCombo
+#' @export
+#'
+.LogisticLogNormalCombo <- setClass(
+  Class = "LogisticLogNormalCombo",
+  contains = "GeneralModel",
+  slots = c(
+    single_models = "list",
+    ref_dose = "numeric",
+    drug_names = "character",
+    gamma = "numeric",
+    tau = "numeric",
+    log_normal_eta = "logical"
+  ),
+  prototype = prototype(
+    single_models = list(
+      drug1 = .DefaultLogisticLogNormal(),
+      drug2 = .DefaultLogisticLogNormal()
+    ),
+    ref_dose = c(drug1 = 50, drug2 = 50),
+    drug_names = c("drug1", "drug2"),
+    gamma = 0,
+    tau = 1,
+    log_normal_eta = FALSE
+  ),
+  validity = v_model_logistic_log_normal_combo
+)
+
+## constructor ----
+
+#' @rdname LogisticLogNormalCombo-class
+#'
+#' @param single_models (`list`)
+#'   named list of length 2 with [`LogisticLogNormal`] objects, one per drug.
+#' @param gamma (`number`)
+#'   prior mean parameter for the interaction term.
+#' @param tau (`number`)
+#'   prior precision parameter for the interaction term.
+#' @param log_normal_eta (`flag`)
+#'   should the interaction term use a log-normal prior?
+#'
+#' @export
+#' @example examples/Model-class-LogisticLogNormalCombo.R
+LogisticLogNormalCombo <- function(
+  single_models,
+  gamma = 0,
+  tau = 1,
+  log_normal_eta = FALSE
+) {
+  assert_list(single_models, len = 2L)
+  if (is.null(names(single_models))) {
+    names(single_models) <- paste0("drug", seq_along(single_models))
+  }
+  assert_character(
+    names(single_models),
+    len = 2L,
+    unique = TRUE,
+    any.missing = FALSE
+  )
+  assert_true(all(sapply(single_models, test_class, "LogisticLogNormal")))
+  assert_number(gamma, finite = TRUE)
+  assert_number(tau, lower = .Machine$double.xmin, finite = TRUE)
+  assert_flag(log_normal_eta)
+
+  ref_dose <- as.numeric(vapply(
+    single_models,
+    function(model) model@ref_dose,
+    numeric(1L)
+  ))
+  names(ref_dose) <- names(single_models)
+
+  prior_mean <- do.call(
+    cbind,
+    lapply(single_models, function(model) model@params@mean)
+  )
+  prior_prec <- array(
+    data = do.call(c, lapply(single_models, function(model) model@params@prec)),
+    dim = c(2, 2, 2)
+  )
+
+  .LogisticLogNormalCombo(
+    single_models = single_models,
+    ref_dose = ref_dose,
+    drug_names = names(single_models),
+    gamma = gamma,
+    tau = tau,
+    log_normal_eta = log_normal_eta,
+    datamodel = function() {
+      for (i in 1:nObs) {
+        for (j in 1:2) {
+          logit(p_single[i, j]) <- alpha0[j] +
+            alpha1[j] * log(x[i, j] / ref_dose[j])
+        }
+        p0[i] <- p_single[i, 1] +
+          p_single[i, 2] -
+          p_single[i, 1] * p_single[i, 2]
+        logit(p[i]) <- log(p0[i] / (1 - p0[i])) +
+          eta * (x[i, 1] / ref_dose[1]) * (x[i, 2] / ref_dose[2])
+        y[i] ~ dbern(p[i])
+      }
+    },
+    priormodel = h_jags_join_models(
+      function() {
+        for (j in 1:2) {
+          theta[1:2, j] ~ dmnorm(prior_mean[1:2, j], prior_prec[1:2, 1:2, j])
+          alpha0[j] <- theta[1, j]
+          alpha1[j] <- exp(theta[2, j])
+        }
+      },
+      if (log_normal_eta) {
+        function() {
+          log_eta ~ dnorm(gamma, tau)
+          eta <- exp(log_eta)
+        }
+      } else {
+        function() {
+          eta ~ dnorm(gamma, tau)
+        }
+      }
+    ),
+    modelspecs = function(from_prior) {
+      ms <- list(
+        prior_mean = prior_mean,
+        prior_prec = prior_prec,
+        gamma = gamma,
+        tau = tau
+      )
+      if (!from_prior) {
+        ms$ref_dose <- ref_dose
+      }
+      ms
+    },
+    init = if (log_normal_eta) {
+      function() {
+        list(theta = matrix(c(0, 1, 0, 1), nrow = 2L), log_eta = gamma)
+      }
+    } else {
+      function() {
+        list(theta = matrix(c(0, 1, 0, 1), nrow = 2L), eta = gamma)
+      }
+    },
+    datanames = c("nObs", "y", "x"),
+    sample = c("alpha0", "alpha1", "eta")
+  )
+}
+
+## default constructor ----
+
+#' @rdname LogisticLogNormalCombo-class
+#' @note Typically, end users will not use the `.DefaultLogisticLogNormalCombo()` function.
+#' @export
+.DefaultLogisticLogNormalCombo <- function() {
+  LogisticLogNormalCombo(
+    single_models = list(
+      drug1 = LogisticLogNormal(
+        mean = c(-0.85, 1),
+        cov = matrix(c(1, -0.5, -0.5, 1), nrow = 2),
+        ref_dose = 10
+      ),
+      drug2 = LogisticLogNormal(
+        mean = c(-0.85, 1),
+        cov = matrix(c(1, -0.5, -0.5, 1), nrow = 2),
+        ref_dose = 20
+      )
+    ),
+    gamma = 0,
+    tau = 1,
+    log_normal_eta = FALSE
+  )
+}
+
 # LogisticKadane ----
 
 ## class ----

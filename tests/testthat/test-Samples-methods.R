@@ -268,6 +268,63 @@ test_that("fit-Samples works specifically also for LogisticLogNormalGrouped", {
   expect_named(result, c("dose", "middle", "lower", "upper"))
 })
 
+test_that("fit-Samples works specifically also for LogisticLogNormalCombo", {
+  model <- h_get_logistic_log_normal_combo()
+  data <- h_get_data_combo()
+  samples <- h_as_samples(list(
+    alpha0 = matrix(
+      c(-3.0, -3.5, -2.5, -3.0),
+      nrow = 2L,
+      byrow = TRUE,
+      dimnames = list(NULL, model@drug_names)
+    ),
+    alpha1 = matrix(
+      c(1.0, 1.2, 0.8, 1.1),
+      nrow = 2L,
+      byrow = TRUE,
+      dimnames = list(NULL, model@drug_names)
+    ),
+    eta = c(0.0, 0.2)
+  ))
+  points <- rbind(
+    c(drug1 = 10, drug2 = 20),
+    c(drug1 = 20, drug2 = 40)
+  )
+
+  actual <- fit(samples, model, data, points = points, middle = mean)
+
+  log_dose1 <- log(points[, 1] / model@ref_dose[1])
+  log_dose2 <- log(points[, 2] / model@ref_dose[2])
+  p1 <- plogis(sweep(
+    samples@data$alpha1[, 1, drop = FALSE] %*% t(log_dose1),
+    1L,
+    samples@data$alpha0[, 1],
+    "+"
+  ))
+  p2 <- plogis(sweep(
+    samples@data$alpha1[, 2, drop = FALSE] %*% t(log_dose2),
+    1L,
+    samples@data$alpha0[, 2],
+    "+"
+  ))
+  p0 <- p1 + p2 - p1 * p2
+  expected_odds <- (p0 / (1 - p0)) *
+    exp(
+      samples@data$eta %o%
+        apply(sweep(points, 2L, model@ref_dose, "/"), 1L, prod)
+    )
+  expected_prob <- expected_odds / (1 + expected_odds)
+  expected <- data.frame(
+    drug1 = points[, 1],
+    drug2 = points[, 2],
+    middle = apply(expected_prob, 2L, mean),
+    lower = apply(expected_prob, 2L, quantile, probs = 0.025),
+    upper = apply(expected_prob, 2L, quantile, probs = 0.975)
+  )
+
+  expect_equal(actual, expected, tolerance = 1e-7)
+})
+
 ## Samples-DataModel ----
 
 test_that("fit-Samples works correctly for dual models", {

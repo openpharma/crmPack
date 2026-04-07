@@ -290,6 +290,46 @@ test_that("v_model_logistic_log_normal_mix returns message for wrong share_weigh
   expect_equal(v_model_logistic_log_normal_mix(object), err_msg)
 })
 
+# v_model_logistic_log_normal_combo ----
+
+test_that("v_model_logistic_log_normal_combo passes for valid object", {
+  object <- h_get_logistic_log_normal_combo()
+  expect_true(v_model_logistic_log_normal_combo(object))
+})
+
+test_that("v_model_logistic_log_normal_combo returns message for mismatched ref_dose", {
+  object <- h_get_logistic_log_normal_combo()
+  object@ref_dose <- c(drug1 = 11, drug2 = 20)
+
+  expect_equal(
+    v_model_logistic_log_normal_combo(object),
+    "ref_dose must match the reference doses of single_models"
+  )
+})
+
+test_that("v_model_logistic_log_normal_combo returns message for wrong drug_names", {
+  object <- h_get_logistic_log_normal_combo()
+  object@drug_names <- c("drug1", "drug1")
+
+  expect_equal(
+    v_model_logistic_log_normal_combo(object),
+    c(
+      "drug_names must be a character vector of length 2 with unique entries",
+      "single_models must be a named list with names equal to drug_names"
+    )
+  )
+})
+
+test_that("v_model_logistic_log_normal_combo returns message for wrong tau", {
+  object <- h_get_logistic_log_normal_combo()
+  object@tau <- 0
+
+  expect_equal(
+    v_model_logistic_log_normal_combo(object),
+    "tau must be a positive finite scalar"
+  )
+})
+
 # v_model_dual_endpoint ----
 
 test_that("v_model_dual_endpoint passes for valid object", {

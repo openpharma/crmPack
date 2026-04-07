@@ -139,6 +139,81 @@ v_model_logistic_log_normal_mix <- function(object) {
   v$result()
 }
 
+#' @describeIn v_model_objects validates that [`LogisticLogNormalCombo`] slots are valid.
+v_model_logistic_log_normal_combo <- function(object) {
+  v <- Validate()
+  v$check(
+    all(sapply(object@single_models, test_class, "LogisticLogNormal")) &&
+      identical(length(object@single_models), 2L),
+    "single_models must be a list of length 2 with LogisticLogNormal objects"
+  )
+  single_models_valid_result <- sapply(
+    object@single_models,
+    validObject,
+    test = TRUE
+  )
+  single_models_valid <- sapply(single_models_valid_result, isTRUE)
+  v$check(
+    all(single_models_valid),
+    paste(
+      "single_models must contain valid LogisticLogNormal objects",
+      paste(
+        unlist(single_models_valid_result[!single_models_valid]),
+        collapse = ", "
+      ),
+      collapse = ", ",
+      sep = ", "
+    )
+  )
+  v$check(
+    test_character(
+      object@drug_names,
+      len = 2L,
+      unique = TRUE,
+      any.missing = FALSE
+    ),
+    "drug_names must be a character vector of length 2 with unique entries"
+  )
+  v$check(
+    identical(names(object@single_models), object@drug_names),
+    "single_models must be a named list with names equal to drug_names"
+  )
+  v$check(
+    test_numeric(
+      object@ref_dose,
+      len = 2L,
+      lower = .Machine$double.xmin,
+      finite = TRUE,
+      any.missing = FALSE
+    ),
+    "ref_dose must be a numeric vector of length 2 with positive finite values"
+  )
+  v$check(
+    identical(
+      unname(as.numeric(vapply(
+        object@single_models,
+        function(model) model@ref_dose,
+        numeric(1L)
+      ))),
+      unname(object@ref_dose)
+    ),
+    "ref_dose must match the reference doses of single_models"
+  )
+  v$check(
+    test_number(object@gamma, finite = TRUE),
+    "gamma must be a finite scalar"
+  )
+  v$check(
+    test_number(object@tau, lower = .Machine$double.xmin, finite = TRUE),
+    "tau must be a positive finite scalar"
+  )
+  v$check(
+    test_flag(object@log_normal_eta),
+    "log_normal_eta must be TRUE or FALSE"
+  )
+  v$result()
+}
+
 #' @describeIn v_model_objects validates that [`DualEndpoint`] class slots are valid.
 v_model_dual_endpoint <- function(object) {
   rmin <- .Machine$double.xmin

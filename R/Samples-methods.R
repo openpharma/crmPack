@@ -45,11 +45,6 @@ setMethod(
   }
 )
 
-## --------------------------------------------------
-## Extract certain parameter from "Samples" object to produce
-## plots with "ggmcmc" package
-## --------------------------------------------------
-
 # The next line is required to suppress the message "Creating a generic function
 # for ‘get’ from package ‘base’ in package ‘crmPack’" on package load.
 # See https://github.com/openpharma/crmPack/issues/723
@@ -146,10 +141,6 @@ setMethod(
 )
 
 
-## --------------------------------------------------
-## Get fitted curves from Samples
-## --------------------------------------------------
-
 #' Fit method for the Samples class
 #'
 #' Note this new generic function is necessary because the \code{\link{fitted}}
@@ -174,10 +165,6 @@ setGeneric(
   valueClass = "data.frame"
 )
 
-
-## --------------------------------------------------
-## Get fitted dose-tox curve from Samples
-## --------------------------------------------------
 
 #' @param points at which dose levels is the fit requested? default is the dose
 #' grid
@@ -241,6 +228,50 @@ setMethod(
       middle = middleCurve,
       lower = quantCurve[1, ],
       upper = quantCurve[2, ]
+    )
+  }
+)
+
+#' @describeIn fit This method returns a data frame with one row per dose
+#' combination and posterior summaries of the DLT probability surface.
+setMethod(
+  "fit",
+  signature = signature(
+    object = "Samples",
+    model = "LogisticLogNormalCombo",
+    data = "DataCombo"
+  ),
+  def = function(
+    object,
+    model,
+    data,
+    points = as.matrix(do.call(expand.grid, data@doseGrid)),
+    quantiles = c(0.025, 0.975),
+    middle = mean,
+    ...
+  ) {
+    assert_probability_range(quantiles)
+    if (!is.matrix(points)) {
+      points <- as.matrix(points)
+    }
+    assert_matrix(points, mode = "numeric", any.missing = FALSE, ncols = 2L)
+    colnames(points) <- data@drugNames
+
+    prob_samples <- prob(points, model, object, ...)
+    if (!is.matrix(prob_samples)) {
+      prob_samples <- matrix(prob_samples, ncol = 1L)
+    }
+
+    middle_curve <- apply(prob_samples, 2L, FUN = middle)
+    quant_curve <- apply(prob_samples, 2L, quantile, prob = quantiles)
+
+    cbind(
+      as.data.frame(points),
+      data.frame(
+        middle = middle_curve,
+        lower = quant_curve[1, ],
+        upper = quant_curve[2, ]
+      )
     )
   }
 )

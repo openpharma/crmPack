@@ -111,6 +111,31 @@ setMethod(
   }
 )
 
+# mcmc-DataCombo-LogisticLogNormalCombo ----
+
+#' @describeIn mcmc Standard method which uses JAGS. For the
+#'   [`LogisticLogNormalCombo`] model, the drug names in the model and data must
+#'   agree.
+setMethod(
+  f = "mcmc",
+  signature = signature(
+    data = "DataCombo",
+    model = "LogisticLogNormalCombo",
+    options = "McmcOptions"
+  ),
+  def = function(data, model, options, from_prior = data@nObs == 0L, ...) {
+    assert_names(data@drugNames, identical.to = model@drug_names)
+
+    callNextMethod(
+      data = data,
+      model = model,
+      options = options,
+      from_prior = from_prior,
+      ...
+    )
+  }
+)
+
 # mcmc-GeneralData-DualEndpointRW ----
 
 #' @describeIn mcmc Standard method which uses JAGS. For the

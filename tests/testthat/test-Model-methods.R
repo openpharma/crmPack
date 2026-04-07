@@ -376,6 +376,33 @@ test_that("probFunction-LogisticLogNormalGrouped works as expected", {
   expect_equal(result, 0.8958, tolerance = 1e-4)
 })
 
+## LogisticLogNormalCombo ----
+
+test_that("probFunction-LogisticLogNormalCombo works as expected", {
+  model <- h_get_logistic_log_normal_combo()
+
+  prob_fun <- expect_silent(probFunction(
+    model,
+    alpha0 = matrix(
+      c(-2.5, -3.0),
+      nrow = 1,
+      dimnames = list(NULL, model@drug_names)
+    ),
+    alpha1 = matrix(
+      c(1.0, 1.2),
+      nrow = 1,
+      dimnames = list(NULL, model@drug_names)
+    ),
+    eta = 0.3
+  ))
+  prob_fun <- h_covr_detrace(prob_fun)
+
+  expect_function(prob_fun, args = c("dose", "..."), null.ok = FALSE)
+  result <- expect_silent(prob_fun(c(drug1 = 20, drug2 = 40)))
+  expect_true(is.numeric(result))
+  expect_length(result, 1L)
+})
+
 # LogisticLogNormalOrdinal ----
 
 test_that("probFunction-LogisticLogNormalOrdinal works correctly", {
@@ -1623,6 +1650,98 @@ test_that("prob-LogisticLogNormalGrouped works as expected for vectors", {
 
   result <- prob(c(1, 30), model, samples, group = c("mono", "combo"))
   expect_equal(result, c(0.7311, 0.9962), tolerance = 1e-4)
+})
+
+## LogisticLogNormalCombo ----
+
+test_that("prob-LogisticLogNormalCombo works as expected", {
+  model <- h_get_logistic_log_normal_combo()
+  samples <- h_as_samples(list(
+    alpha0 = matrix(
+      c(-3.0, -3.5, -2.5, -3.0),
+      nrow = 2L,
+      byrow = TRUE,
+      dimnames = list(NULL, model@drug_names)
+    ),
+    alpha1 = matrix(
+      c(1.0, 1.2, 0.8, 1.1),
+      nrow = 2L,
+      byrow = TRUE,
+      dimnames = list(NULL, model@drug_names)
+    ),
+    eta = c(0.0, 0.2)
+  ))
+
+  dose <- c(drug1 = 20, drug2 = 40)
+  p1 <- plogis(
+    samples@data$alpha0[, 1] +
+      samples@data$alpha1[, 1] * log(dose[1] / model@ref_dose[1])
+  )
+  p2 <- plogis(
+    samples@data$alpha0[, 2] +
+      samples@data$alpha1[, 2] * log(dose[2] / model@ref_dose[2])
+  )
+  p0 <- p1 + p2 - p1 * p2
+  expected_odds <- (p0 / (1 - p0)) *
+    exp(samples@data$eta * prod(dose / model@ref_dose))
+  expected <- expected_odds / (1 + expected_odds)
+
+  result <- prob(dose, model, samples)
+  expect_equal(result, expected, tolerance = 1e-7)
+})
+
+test_that("prob-LogisticLogNormalCombo works as expected for multiple dose combinations", {
+  model <- h_get_logistic_log_normal_combo()
+  samples <- h_as_samples(list(
+    alpha0 = matrix(
+      c(-3.0, -3.5, -2.5, -3.0),
+      nrow = 2L,
+      byrow = TRUE,
+      dimnames = list(NULL, model@drug_names)
+    ),
+    alpha1 = matrix(
+      c(1.0, 1.2, 0.8, 1.1),
+      nrow = 2L,
+      byrow = TRUE,
+      dimnames = list(NULL, model@drug_names)
+    ),
+    eta = c(0.0, 0.2)
+  ))
+  doses <- rbind(
+    c(drug1 = 10, drug2 = 20),
+    c(drug1 = 30, drug2 = 40)
+  )
+
+  result <- prob(doses, model, samples)
+  expect_equal(dim(result), c(2L, 2L))
+  expect_true(all(result >= 0 & result <= 1))
+})
+
+test_that("fit-LogisticLogNormalCombo works as expected", {
+  model <- h_get_logistic_log_normal_combo()
+  data <- h_get_data_combo()
+  samples <- h_as_samples(list(
+    alpha0 = matrix(
+      c(-3.0, -3.5, -2.5, -3.0),
+      nrow = 2L,
+      byrow = TRUE,
+      dimnames = list(NULL, model@drug_names)
+    ),
+    alpha1 = matrix(
+      c(1.0, 1.2, 0.8, 1.1),
+      nrow = 2L,
+      byrow = TRUE,
+      dimnames = list(NULL, model@drug_names)
+    ),
+    eta = c(0.0, 0.2)
+  ))
+  points <- rbind(c(drug1 = 10, drug2 = 20), c(drug1 = 20, drug2 = 40))
+
+  result <- fit(samples, model, data, points = points, middle = mean)
+
+  expect_named(result, c("drug1", "drug2", "middle", "lower", "upper"))
+  expect_equal(nrow(result), 2L)
+  expect_true(all(result$middle >= 0 & result$middle <= 1))
 })
 
 ## LogisticKadane ----
