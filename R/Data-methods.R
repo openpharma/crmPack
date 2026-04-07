@@ -463,6 +463,210 @@ setMethod(
   }
 )
 
+## DataCombo ----
+
+#' Plot Method for the [`DataCombo`] Class
+#'
+#' @description `r lifecycle::badge("experimental")`
+#'
+#' A method that creates a plot for [`DataCombo`] object.
+#'
+#' @param x (`DataCombo`)
+#' @param y (`missing`)
+#' @param blind (`flag`)
+#'   if `TRUE`, observed toxicities are hidden in the treatment summary panel.
+#' @param legend (`flag`)
+#'   whether legends should be displayed.
+#' @param ... not used.
+#'
+#' @return A [`gtable`] object combining two [`ggplot2`] plots.
+#'
+#' @aliases plot-DataCombo
+#' @export
+#' @example examples/Data-method-plot-DataCombo.R
+setMethod(
+  f = "plot",
+  signature = signature(x = "DataCombo", y = "missing"),
+  definition = function(x, y, blind = FALSE, legend = TRUE, ...) {
+    assert_flag(blind)
+    assert_flag(legend)
+
+    if (x@nObs == 0L) {
+      return()
+    }
+
+    drug1 <- x@drugNames[1]
+    drug2 <- x@drugNames[2]
+
+    df <- data.frame(
+      patient = seq_len(x@nObs),
+      cohort = x@cohort,
+      ID = paste(" ", x@ID),
+      dose1 = x@x[, 1],
+      dose2 = x@x[, 2],
+      toxicity = ifelse(x@y == 1L, "Yes", "No")
+    )
+
+    grid_df <- expand.grid(
+      dose1 = x@doseGrid[[drug1]],
+      dose2 = x@doseGrid[[drug2]]
+    )
+
+    summary_n <- aggregate(patient ~ dose1 + dose2, data = df, FUN = length)
+    names(summary_n)[3] <- "n_patients"
+    summary_dlt <- aggregate(
+      (toxicity == "Yes") ~ dose1 + dose2,
+      data = df,
+      FUN = sum
+    )
+    names(summary_dlt)[3] <- "n_dlt"
+    summary_df <- merge(
+      summary_n,
+      summary_dlt,
+      by = c("dose1", "dose2"),
+      sort = TRUE
+    )
+    summary_df$dlt_rate <- summary_df$n_dlt / summary_df$n_patients
+    summary_df$label <- if (blind) {
+      paste0("n=", summary_df$n_patients)
+    } else {
+      paste0(summary_df$n_dlt, "/", summary_df$n_patients)
+    }
+
+    plot1 <- ggplot(grid_df, aes(x = dose1, y = dose2)) +
+      geom_point(shape = 4, size = 3, colour = "grey85") +
+      scale_x_continuous(breaks = x@doseGrid[[drug1]], minor_breaks = NULL) +
+      scale_y_continuous(breaks = x@doseGrid[[drug2]], minor_breaks = NULL) +
+      xlab(drug1) +
+      ylab(drug2) +
+      ggtitle("Treated Combinations")
+
+    if (blind) {
+      plot1 <- plot1 +
+        geom_point(
+          data = summary_df,
+          aes(size = n_patients),
+          shape = 21,
+          fill = "grey50",
+          colour = "black",
+          stroke = 0.6,
+          show.legend = legend
+        )
+    } else {
+      plot1 <- plot1 +
+        geom_point(
+          data = summary_df,
+          aes(size = n_patients, fill = dlt_rate),
+          shape = 21,
+          colour = "black",
+          stroke = 0.6,
+          show.legend = legend
+        ) +
+        scale_fill_gradient(
+          name = "Observed DLT rate",
+          low = "grey95",
+          high = "red3",
+          limits = c(0, 1)
+        )
+    }
+
+    plot1 <- plot1 +
+      geom_text(
+        data = summary_df,
+        aes(label = label),
+        size = 3,
+        colour = "black",
+        vjust = -1
+      ) +
+      scale_size_continuous(
+        name = "Patients",
+        breaks = sort(unique(summary_df$n_patients))
+      )
+
+    cohort_df <- df[!duplicated(df$cohort), c("cohort", "dose1", "dose2")]
+    cohort_n <- aggregate(patient ~ cohort, data = df, FUN = length)
+    names(cohort_n)[2] <- "n_patients"
+    cohort_dlt <- aggregate((toxicity == "Yes") ~ cohort, data = df, FUN = sum)
+    names(cohort_dlt)[2] <- "n_dlt"
+    cohort_df <- merge(cohort_df, cohort_n, by = "cohort", sort = TRUE)
+    cohort_df <- merge(cohort_df, cohort_dlt, by = "cohort", sort = TRUE)
+    cohort_df$status <- if (blind) {
+      "Cohort"
+    } else {
+      ifelse(cohort_df$n_dlt > 0L, "DLT", "No DLT")
+    }
+
+    plot2 <- ggplot(grid_df, aes(x = dose1, y = dose2)) +
+      geom_point(shape = 4, size = 3, colour = "grey85") +
+      scale_x_continuous(breaks = x@doseGrid[[drug1]], minor_breaks = NULL) +
+      scale_y_continuous(breaks = x@doseGrid[[drug2]], minor_breaks = NULL) +
+      xlab(drug1) +
+      ylab(drug2) +
+      ggtitle("Cohort Path")
+
+    if (nrow(cohort_df) > 1L) {
+      segment_df <- data.frame(
+        x = cohort_df$dose1[-nrow(cohort_df)],
+        y = cohort_df$dose2[-nrow(cohort_df)],
+        xend = cohort_df$dose1[-1],
+        yend = cohort_df$dose2[-1]
+      )
+      plot2 <- plot2 +
+        geom_segment(
+          data = segment_df,
+          aes(x = x, y = y, xend = xend, yend = yend),
+          inherit.aes = FALSE,
+          linewidth = 0.7,
+          colour = "grey45",
+          arrow = grid::arrow(length = grid::unit(2.5, "mm"), type = "closed")
+        )
+    }
+
+    if (blind) {
+      plot2 <- plot2 +
+        geom_point(
+          data = cohort_df,
+          shape = 21,
+          size = 6,
+          fill = "grey50",
+          colour = "black",
+          stroke = 0.6,
+          show.legend = FALSE
+        )
+    } else {
+      plot2 <- plot2 +
+        geom_point(
+          data = cohort_df,
+          aes(fill = status),
+          shape = 21,
+          size = 6,
+          colour = "black",
+          stroke = 0.6,
+          show.legend = legend
+        ) +
+        scale_fill_manual(
+          name = "Cohort outcome",
+          values = c("DLT" = "red3", "No DLT" = "grey85")
+        )
+    }
+
+    plot2 <- plot2 +
+      geom_text(
+        data = cohort_df,
+        aes(label = cohort),
+        colour = "black",
+        size = 3
+      )
+
+    if (!legend) {
+      plot1 <- plot1 + theme(legend.position = "none")
+      plot2 <- plot2 + theme(legend.position = "none")
+    }
+
+    gridExtra::arrangeGrob(plot1, plot2, ncol = 2)
+  }
+)
+
 # update ----
 
 ## Data ----

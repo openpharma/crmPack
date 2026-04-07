@@ -95,6 +95,22 @@ test_that("Plot works for DataOrdinal object with placebo, blinding and no legen
   expect_doppel("plot-DataOrdinal-placebo-blinding-nolegend", result)
 })
 
+# plot-DataCombo ----
+
+test_that("Plot works as expected for DataCombo object", {
+  data <- h_get_data_combo()
+  result <- plot(data)
+
+  expect_true(grid::is.grob(result))
+})
+
+test_that("Plot works for DataCombo object with blinding", {
+  data <- h_get_data_combo()
+  result <- plot(data, blind = TRUE, legend = FALSE)
+
+  expect_true(grid::is.grob(result))
+})
+
 
 # update-Data ----
 
