@@ -382,6 +382,129 @@ test_that("Update of DataDual works as expected", {
   expect_identical(result, object)
 })
 
+# update-DataCombo ----
+
+test_that("Update of DataCombo works as expected", {
+  object <- h_get_data_combo()
+  result <- update(
+    object,
+    x = c(drug1 = 30, drug2 = 40),
+    y = c(0L, 1L)
+  )
+
+  object@x <- rbind(
+    object@x,
+    cbind(drug1 = c(30, 30), drug2 = c(40, 40))
+  )
+  object@y <- c(object@y, 0L, 1L)
+  object@nObs <- object@nObs + 2L
+  object@ID <- c(object@ID, 7L, 8L)
+  object@xLevel <- rbind(
+    object@xLevel,
+    cbind(drug1 = c(3L, 3L), drug2 = c(2L, 2L))
+  )
+  object@cohort <- c(object@cohort, 3L, 3L)
+  object@response <- c(object@response, NA, NA)
+  object@backfilled <- c(object@backfilled, FALSE, FALSE)
+
+  expect_valid(result, "DataCombo")
+  expect_identical(result, object)
+})
+
+test_that("Update of empty DataCombo works as expected", {
+  dose_grid <- list(drug1 = c(10, 20, 30), drug2 = c(20, 40))
+  object <- DataCombo(
+    x = cbind(drug1 = c(20, 20), drug2 = c(40, 40)),
+    y = c(0L, 1L),
+    doseGrid = dose_grid,
+    ID = 1:2,
+    cohort = c(1L, 1L)
+  )
+  result <- update(
+    DataCombo(doseGrid = dose_grid),
+    x = c(drug1 = 20, drug2 = 40),
+    y = c(0L, 1L)
+  )
+
+  expect_valid(result, "DataCombo")
+  expect_identical(result, object)
+})
+
+test_that("Update of DataCombo works for 'empty' update", {
+  object <- h_get_data_combo()
+  result <- update(object, x = numeric(0), y = integer(0))
+  expect_identical(result, object)
+})
+
+test_that("Update of DataCombo works when doses are added to the old cohort", {
+  object <- h_get_data_combo()
+  result <- update(
+    object,
+    x = c(drug1 = 20, drug2 = 20),
+    y = c(0L, 1L),
+    new_cohort = FALSE
+  )
+
+  object@x <- rbind(
+    object@x,
+    cbind(drug1 = c(20, 20), drug2 = c(20, 20))
+  )
+  object@y <- c(object@y, 0L, 1L)
+  object@nObs <- object@nObs + 2L
+  object@ID <- c(object@ID, 7L, 8L)
+  object@xLevel <- rbind(
+    object@xLevel,
+    cbind(drug1 = c(2L, 2L), drug2 = c(1L, 1L))
+  )
+  object@cohort <- c(object@cohort, 2L, 2L)
+  object@response <- c(object@response, NA, NA)
+  object@backfilled <- c(object@backfilled, FALSE, FALSE)
+
+  expect_valid(result, "DataCombo")
+  expect_identical(result, object)
+})
+
+test_that("Update of DataCombo throws the error for a dose x out of the grid", {
+  object <- h_get_data_combo()
+  expect_error(
+    update(object, x = c(drug1 = 12345, drug2 = 20), y = c(0L, 1L)),
+    ".*dose values in x must be from the corresponding entry in doseGrid.*"
+  )
+})
+
+test_that("Update of DataCombo, no error for non-valid update and validation off", {
+  object <- h_get_data_combo()
+  expect_silent(
+    update(
+      object,
+      x = c(drug1 = 12345, drug2 = 20),
+      y = c(0L, 1L),
+      check = FALSE
+    )
+  )
+})
+
+test_that("Update of DataCombo works with backfill patients in an existing cohort", {
+  object <- h_get_data_combo()
+  result <- update(
+    object,
+    x = c(drug1 = 10, drug2 = 20),
+    y = c(1L),
+    response = 0L,
+    backfill = TRUE,
+    cohort = 1L
+  )
+
+  expect_valid(result, "DataCombo")
+  expect_identical(result@cohort, c(1L, 1L, 1L, 1L, 2L, 2L, 2L))
+  expect_identical(result@ID, c(1L, 2L, 3L, 7L, 4L, 5L, 6L))
+  expect_identical(
+    result@backfilled,
+    c(FALSE, FALSE, TRUE, TRUE, FALSE, TRUE, TRUE)
+  )
+  expect_identical(result@response, c(1L, 0L, NA, 0L, 0L, 1L, NA))
+})
+
 # update-DataDA ----
 
 test_that("Update of DataDA works as expected", {

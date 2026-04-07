@@ -960,6 +960,157 @@ setMethod(
   }
 )
 
+## DataCombo ----
+
+#' Updating `DataCombo` Objects
+#'
+#' @description `r lifecycle::badge("experimental")`
+#'
+#' A method that updates existing [`DataCombo`] object with new data.
+#'
+#' @param object (`DataCombo`)
+#' @param x (`numeric`)
+#'   named dose combination with one entry for each drug.
+#'   Names must match `object@drugNames`.
+#' @param y (`integer`)
+#'   the DLT vector (0/1 vector) for all patients in this cohort.
+#' @param response (`integer`)
+#'   the efficacy response vector (0/1 vector). May contain `NA`.
+#' @param ID (`integer`)
+#'   the patient IDs.
+#' @param new_cohort (`flag`)
+#'   if `TRUE` (default) the new data are assigned to a new cohort.
+#' @param check (`flag`)
+#'   whether the validation of the updated object should be conducted.
+#' @param backfill (`flag`)
+#'   whether the new patients being added are from a backfill cohort.
+#' @param cohort (`int`)
+#'   if provided, the new patients will be assigned to this cohort index.
+#'   If `NULL` (default), the cohort index will be determined based on the
+#'   `new_cohort` parameter.
+#' @param ... not used.
+#'
+#' @return The new, updated [`DataCombo`] object.
+#'
+#' @aliases update-DataCombo
+#' @export
+#' @example examples/Data-method-update-DataCombo.R
+setMethod(
+  f = "update",
+  signature = signature(object = "DataCombo"),
+  definition = function(
+    object,
+    x,
+    y,
+    response = rep(NA_integer_, length(y)),
+    ID = length(object@ID) + seq_along(y),
+    new_cohort = TRUE,
+    check = TRUE,
+    backfill = FALSE,
+    cohort = NULL,
+    ...
+  ) {
+    assert_numeric(x, min.len = 0, max.len = 2, any.missing = FALSE)
+    assert_true(length(y) == 0L || length(x) == 2L)
+    if (length(x) > 0L) {
+      assert_character(names(x), len = 2L, unique = TRUE, any.missing = FALSE)
+      assert_true(identical(names(x), object@drugNames))
+    }
+    assert_integerish(y, lower = 0, upper = 1, any.missing = FALSE)
+    assert_integerish(
+      response,
+      len = length(y),
+      lower = 0,
+      upper = 1,
+      any.missing = TRUE
+    )
+    assert_integerish(ID, len = length(y), any.missing = FALSE)
+    assert_disjunct(object@ID, ID)
+    assert_flag(new_cohort)
+    assert_flag(check)
+    assert_flag(backfill)
+    assert_int(cohort, lower = 1, null.ok = TRUE)
+
+    # How many additional patients, ie. the length of the update.
+    n <- length(y)
+
+    if (n > 0L) {
+      grid_level <- vapply(
+        seq_along(object@drugNames),
+        function(index) {
+          match_within_tolerance(x[index], object@doseGrid[[index]])
+        },
+        integer(1L)
+      )
+
+      object@xLevel <- rbind(
+        object@xLevel,
+        matrix(
+          grid_level,
+          nrow = n,
+          ncol = 2L,
+          byrow = TRUE,
+          dimnames = list(NULL, object@drugNames)
+        )
+      )
+
+      object@x <- rbind(
+        object@x,
+        matrix(
+          unname(rep(as.numeric(x), times = n)),
+          nrow = n,
+          ncol = 2L,
+          byrow = TRUE,
+          dimnames = list(NULL, object@drugNames)
+        )
+      )
+    }
+
+    # Add DLT data.
+    object@y <- c(object@y, as.integer(y))
+
+    # Add response data.
+    object@response <- c(object@response, response)
+
+    # Add ID.
+    object@ID <- c(object@ID, as.integer(ID))
+
+    # Add cohort number.
+    new_cohort_id <- if (!is.null(cohort)) {
+      cohort
+    } else if (object@nObs == 0L) {
+      1L
+    } else {
+      tail(object@cohort, 1L) + ifelse(new_cohort, 1L, 0L)
+    }
+    object@cohort <- c(object@cohort, rep(new_cohort_id, n))
+
+    # Increment sample size.
+    object@nObs <- object@nObs + n
+
+    # Add backfill information.
+    object@backfilled <- c(object@backfilled, rep(backfill, n))
+
+    # We might need to sort again when we supplied a cohort index.
+    if (!is.null(cohort)) {
+      ord <- order(object@cohort, object@ID)
+      object@x <- object@x[ord, , drop = FALSE]
+      object@y <- object@y[ord]
+      object@response <- object@response[ord]
+      object@ID <- object@ID[ord]
+      object@xLevel <- object@xLevel[ord, , drop = FALSE]
+      object@cohort <- object@cohort[ord]
+      object@backfilled <- object@backfilled[ord]
+    }
+
+    if (check) {
+      validObject(object)
+    }
+
+    object
+  }
+)
+
 ## DataDA ----
 
 #' Updating `DataDA` Objects
