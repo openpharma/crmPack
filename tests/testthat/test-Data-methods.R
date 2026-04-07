@@ -104,13 +104,6 @@ test_that("Plot works as expected for DataCombo object", {
   expect_true(grid::is.grob(result))
 })
 
-test_that("Plot works for DataCombo object with blinding", {
-  data <- h_get_data_combo()
-  result <- plot(data, blind = TRUE, legend = FALSE)
-
-  expect_true(grid::is.grob(result))
-})
-
 
 # update-Data ----
 

@@ -473,8 +473,6 @@ setMethod(
 #'
 #' @param x (`DataCombo`)
 #' @param y (`missing`)
-#' @param blind (`flag`)
-#'   if `TRUE`, observed toxicities are hidden in the treatment summary panel.
 #' @param legend (`flag`)
 #'   whether legends should be displayed.
 #' @param ... not used.
@@ -487,8 +485,7 @@ setMethod(
 setMethod(
   f = "plot",
   signature = signature(x = "DataCombo", y = "missing"),
-  definition = function(x, y, blind = FALSE, legend = TRUE, ...) {
-    assert_flag(blind)
+  definition = function(x, y, legend = TRUE, ...) {
     assert_flag(legend)
 
     if (x@nObs == 0L) {
@@ -527,11 +524,7 @@ setMethod(
       sort = TRUE
     )
     summary_df$dlt_rate <- summary_df$n_dlt / summary_df$n_patients
-    summary_df$label <- if (blind) {
-      paste0("n=", summary_df$n_patients)
-    } else {
-      paste0(summary_df$n_dlt, "/", summary_df$n_patients)
-    }
+    summary_df$label <- paste0(summary_df$n_dlt, "/", summary_df$n_patients)
 
     plot1 <- ggplot(grid_df, aes(x = dose1, y = dose2)) +
       geom_point(shape = 4, size = 3, colour = "grey85") +
@@ -541,34 +534,21 @@ setMethod(
       ylab(drug2) +
       ggtitle("Treated Combinations")
 
-    if (blind) {
-      plot1 <- plot1 +
-        geom_point(
-          data = summary_df,
-          aes(size = n_patients),
-          shape = 21,
-          fill = "grey50",
-          colour = "black",
-          stroke = 0.6,
-          show.legend = legend
-        )
-    } else {
-      plot1 <- plot1 +
-        geom_point(
-          data = summary_df,
-          aes(size = n_patients, fill = dlt_rate),
-          shape = 21,
-          colour = "black",
-          stroke = 0.6,
-          show.legend = legend
-        ) +
-        scale_fill_gradient(
-          name = "Observed DLT rate",
-          low = "grey95",
-          high = "red3",
-          limits = c(0, 1)
-        )
-    }
+    plot1 <- plot1 +
+      geom_point(
+        data = summary_df,
+        aes(size = n_patients, fill = dlt_rate),
+        shape = 21,
+        colour = "black",
+        stroke = 0.6,
+        show.legend = legend
+      ) +
+      scale_fill_gradient(
+        name = "Observed DLT rate",
+        low = "grey95",
+        high = "red3",
+        limits = c(0, 1)
+      )
 
     plot1 <- plot1 +
       geom_text(
@@ -590,11 +570,7 @@ setMethod(
     names(cohort_dlt)[2] <- "n_dlt"
     cohort_df <- merge(cohort_df, cohort_n, by = "cohort", sort = TRUE)
     cohort_df <- merge(cohort_df, cohort_dlt, by = "cohort", sort = TRUE)
-    cohort_df$status <- if (blind) {
-      "Cohort"
-    } else {
-      ifelse(cohort_df$n_dlt > 0L, "DLT", "No DLT")
-    }
+    cohort_df$status <- ifelse(cohort_df$n_dlt > 0L, "DLT", "No DLT")
 
     plot2 <- ggplot(grid_df, aes(x = dose1, y = dose2)) +
       geom_point(shape = 4, size = 3, colour = "grey85") +
@@ -622,33 +598,20 @@ setMethod(
         )
     }
 
-    if (blind) {
-      plot2 <- plot2 +
-        geom_point(
-          data = cohort_df,
-          shape = 21,
-          size = 6,
-          fill = "grey50",
-          colour = "black",
-          stroke = 0.6,
-          show.legend = FALSE
-        )
-    } else {
-      plot2 <- plot2 +
-        geom_point(
-          data = cohort_df,
-          aes(fill = status),
-          shape = 21,
-          size = 6,
-          colour = "black",
-          stroke = 0.6,
-          show.legend = legend
-        ) +
-        scale_fill_manual(
-          name = "Cohort outcome",
-          values = c("DLT" = "red3", "No DLT" = "grey85")
-        )
-    }
+    plot2 <- plot2 +
+      geom_point(
+        data = cohort_df,
+        aes(fill = status),
+        shape = 21,
+        size = 6,
+        colour = "black",
+        stroke = 0.6,
+        show.legend = legend
+      ) +
+      scale_fill_manual(
+        name = "Cohort outcome",
+        values = c("DLT" = "red3", "No DLT" = "grey85")
+      )
 
     plot2 <- plot2 +
       geom_text(
