@@ -144,6 +144,9 @@ The implementation can be structured in the following steps:
   - Account for the use of concurrent monotherapy arms
 
 Particular challenges in the "hierarchical design" setting are discussed here.
+This is by far not yet complete, but is meant to provide a first idea which needs to be further developed and refined.
+
+The first step now is anyway to implement the combo arm with a fixed prior, which should be relatively straightforward. We will do this in branch `936-combo-fixed-prior`.
 
 ### Model specification
 
@@ -152,6 +155,8 @@ Let's say we have the simplest case where the trial comprises a mono drug 1 arm 
 Each arm is defined in the standard `crmPack` way, something like:
 
 ```{r}
+#| eval: false
+
 design_mono <- Design(
     model = model_mono,
     data = empty_data_mono,
@@ -174,5 +179,235 @@ design_combo <- Design(
     startingDose = startingDose_combo
 )
 ```
+
+From here, I think it is best to focus on a single general proposal: represent the trial as a graph of arms, while keeping each arm as a standard `crmPack` `Design` object.
+
+The important constraint is that we should not throw away the existing `Design` decomposition into `model`, `data`, `nextBest`, `stopping`, `increments`, `backfill`, `cohort_size`, and `startingDose`. Instead, the hierarchical layer should sit above these objects and only add what is needed for cross-arm borrowing and joint fitting.
+
+### General proposal: arm graph plus parameter pools
+
+Conceptually, the hierarchical trial has two layers:
+
+- an operational layer, where each arm is still a normal `Design` with its own rules;
+- a statistical layer, where parameters are shared across arms through named parameter pools.
+
+In the simplest mono-plus-combo example, the mono arm and combo arm remain ordinary `Design` objects. The new part is a higher-level design object that knows:
+
+- which arms exist;
+- which parameters belong to which arm;
+- which parameters are shared;
+- in which direction information is allowed to flow.
+
+This keeps the user-facing API close to current `crmPack`, while still being general enough for historical and multiple concurrent arms.
+
+### Minimal API sketch
+
+The smallest realistic API would likely need four new building blocks.
+
+1. `DesignArm`
+
+This is a light wrapper around an existing `Design` object. It adds arm metadata, but does not replace the arm design itself.
+
+Likely fields:
+
+- `name`: unique arm name, e.g. `"mono"`, `"combo"`, `"hist_mono"`
+- `design`: an ordinary `Design` object
+- `type`: e.g. `"mono1"`, `"mono2"`, `"combo"`, `"historical"`
+- `active`: whether the arm enrolls new patients
+- `use_for_recommendation`: whether this arm gets its own recommendation
+
+2. `HierarchicalData`
+
+This stores the data for all arms together, but each arm still keeps its own arm-specific `Data` object internally. This is needed because MCMC for the hierarchical model must see all relevant arms jointly.
+
+Likely helper methods:
+
+- `armData(object, arm)` to extract the `Data` object for one arm
+- `update(object, arm, ...)` to add outcomes to one arm
+- `activeArms(object)` to know which arms are still enrolling
+
+3. `HierarchicalModel`
+
+This is the model-level object for the joint BLRM. It should probably behave like a `GeneralModel`, but contain extra structure that maps arm-specific likelihood contributions to shared latent parameters.
+
+Likely fields:
+
+- `reference_dose`
+- `interaction`
+- `parameter_pools`
+- `arm_map`
+- `borrowing`
+
+The key piece is `parameter_pools`. A parameter pool defines which arm-specific parameters are exchangeable or partially exchangeable across which arms.
+
+4. `HierarchicalDesign`
+
+This is the top-level object. It holds the collection of arms plus the joint model specification and is the object that methods like `simulate()` or `scenario()` would dispatch on.
+
+Likely fields:
+
+- `arms`: named list of `DesignArm`
+- `data`: `HierarchicalData`
+- `model`: `HierarchicalModel`
+
+### Parameter pools
+
+The most important abstraction is the parameter pool. This is the part that makes the design general.
+
+```{r eval=FALSE}
+drug1_pool <- ParameterPool(
+    name = "drug1",
+    parameters = c("alpha1", "beta1"),
+    members = c("hist_mono", "mono", "combo"),
+    prior = "exchangeable"
+)
+
+drug2_pool <- ParameterPool(
+    name = "drug2",
+    parameters = c("alpha2", "beta2"),
+    members = c("combo"),
+    prior = "exchangeable"
+)
+
+interaction_pool <- ParameterPool(
+    name = "interaction",
+    parameters = "eta",
+    members = c("combo"),
+    prior = "independent"
+)
+```
+
+This is more realistic than sharing whole arm models. In practice, we do not want to share a full arm object; we want to share selected parameter blocks such as `(alpha1, beta1)` across certain arms, while leaving `eta` combination-specific.
+
+### Borrowing direction
+
+To accommodate the requirement that combo may borrow from mono but not necessarily the other way around, the parameter pool should not only define membership, but also the role of each member arm.
+
+```{r eval=FALSE}
+drug1_pool <- ParameterPool(
+    name = "drug1",
+    parameters = c("alpha1", "beta1"),
+    members = list(
+        hist_mono = PoolMember(role = "source"),
+        mono = PoolMember(role = "source"),
+        combo = PoolMember(role = "borrower")
+    ),
+    prior = "exchangeable"
+)
+```
+
+That is, the pool defines a common latent structure, but the recommendation machinery can still decide which posterior summaries are exposed to which arm. This seems cleaner than trying to encode directionality at the whole-design level.
+
+### Simple mono plus combo example
+
+In the current simple example, a realistic sketch could look like this.
+
+```{r eval=FALSE}
+arm_mono <- DesignArm(
+    name = "mono",
+    design = design_mono,
+    type = "mono1",
+    active = TRUE,
+    use_for_recommendation = TRUE
+)
+
+arm_combo <- DesignArm(
+    name = "combo",
+    design = design_combo,
+    type = "combo",
+    active = TRUE,
+    use_for_recommendation = TRUE
+)
+
+hdata <- HierarchicalData(
+    arms = list(
+        mono = design_mono@data,
+        combo = design_combo@data
+    )
+)
+
+hmodel <- HierarchicalBlrm(
+    reference_dose = c(drug1 = ref_dose_1, drug2 = ref_dose_2),
+    interaction = "linear",
+    parameter_pools = list(
+        ParameterPool(
+            name = "drug1",
+            parameters = c("alpha1", "beta1"),
+            members = list(
+                mono = PoolMember(role = "source"),
+                combo = PoolMember(role = "borrower")
+            ),
+            prior = "exchangeable"
+        ),
+        ParameterPool(
+            name = "drug2",
+            parameters = c("alpha2", "beta2"),
+            members = list(
+                combo = PoolMember(role = "source")
+            ),
+            prior = "exchangeable"
+        ),
+        ParameterPool(
+            name = "interaction",
+            parameters = "eta",
+            members = list(
+                combo = PoolMember(role = "source")
+            ),
+            prior = "independent"
+        )
+    )
+)
+
+hier_design <- HierarchicalDesign(
+    arms = list(
+        mono = arm_mono,
+        combo = arm_combo
+    ),
+    data = hdata,
+    model = hmodel
+)
+```
+
+### How the existing `Design` components would still be used
+
+The important point is that recommendation and stopping should still happen at the arm level, reusing the existing components of the embedded `Design` objects.
+
+Conceptually the workflow would be:
+
+```{r eval=FALSE}
+samples <- mcmc(
+    data = hier_design@data,
+    model = hier_design@model,
+    options = mcmcOptions
+)
+
+combo_data <- armData(hier_design@data, arm = "combo")
+combo_design <- hier_design@arms$combo@design
+
+combo_dose_limit <- maxDose(
+    combo_design@increments,
+    data = combo_data
+)
+
+combo_next <- nextBest(
+    combo_design@nextBest,
+    doselimit = combo_dose_limit,
+    samples = samples,
+    model = hier_design@model,
+    data = combo_data,
+    arm = "combo"
+)
+
+stop_combo <- stopTrial(
+    combo_design@stopping,
+    dose = combo_next$value,
+    samples = samples,
+    model = hier_design@model,
+    data = combo_data,
+    arm = "combo"
+)
+```
+
+So the arm graph layer does not replace `nextBest`, `stopTrial`, `maxDose`, `update`, or `simulate`; it mainly provides a joint `data` and `model` object that these methods can work against.
 
 
