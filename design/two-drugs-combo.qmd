@@ -41,7 +41,7 @@ The idea is to implement the 5-parameter BLRM approach by @Neuenschwander2015 (n
   $(\alpha_i, \log(\beta_i))^\top \sim \textrm{Normal}(\mu_i, \Sigma_i)$
   for $i=1,2$. 
 
-## Priors
+### Priors
 
 - Different priors can be used in principle for the 5 parameters $\theta = (\alpha_1, \beta_1, \alpha_2, \beta_2, \eta)^\top$.
 - Typical is a meta-analytic combined (MAC) prior which separates according to different trial sources:
@@ -63,7 +63,7 @@ The idea is to implement the 5-parameter BLRM approach by @Neuenschwander2015 (n
     - $\tau_{\eta} \sim \textrm{LogNormal}(\log(0.125), \kappa^2)$
     - $\rho_1, \rho_2 \sim \textrm{Uniform}(-1, 1)$
 
-## Design
+### Design
 
 In terms of possible trial designs, we need to support the following options:
 
@@ -79,18 +79,18 @@ In most cases one of the combo drugs will have a fixed dose (e.g. the standard o
 
 Backfilling is often only interesting for the combo arm, but not for the mono arms. So backfilling needs to be configurable at the arm level. The same applies to the maximum increment rules and stopping rules.
 
-## Increment rules
+### Increment rules
 
 Increment rules can be defined at the arm level. Here for the combo arm we will need to extend the existing rules to the case of dose combinations. For example, we can define a maximum increment rule that allows only dose increments of one level for each drug, or even just for one of the drugs.
 
-## Stopping rules
+### Stopping rules
 
 Stopping rules can be defined at the arm level. For example:
 
 - The MTD can be considered reached if at least 9 patients have been evaluated in the trial arm, a dose level is the model’s recommendation for the next dose cohort two times in a row, and for this dose the posterior probability of targeted toxicity was at least 60% or at least 6 patients have been treated at this dose in the respective arm of the trial.
 - A maximum sample size is reached in the trial arm, and then the MTD might *not* be declared.
 
-## Reporting
+### Reporting
 
 Hypothetical data scenarios can be used to illustrate the model and the design. While the full-fledged `examine()` method might be difficult to implement as well as communicate, we can consider adding a new method e.g.`scenario()` that is a short cut for users to quickly get the model summary and next cohorts recommendation for a given hypothetical data scenario. This becomes more relevant now in the "hierarchical design" setting where multiple arms are included, and the data scenario can be defined for each arm separately.
 
@@ -101,7 +101,7 @@ Reporting of simulation results can start relatively simple and be located at th
 - Percentage of trial outcomes (underdose, target dose, overdose, stopped without reaching MTD)
 - Mean, minimal, and maximal number of patients and patients with DLTs in simulated trials
 
-## Probabilistic programming
+### Probabilistic programming
 
 The model can be implemented in a probabilistic programming language such as JAGS or Stan. The `decider` package by @Schroeter2023 already has an implementation in Stan, which can be used as a reference for the implementation in `crmPack`.
 We will for the time being work with JAGS, as this is used elsewhere in the package. 
@@ -114,7 +114,7 @@ One challenge here will be how to first specify, and second derive the JAGS mode
 
 ### `crmPack` code
 
-We have early code already in the [`dose_combinations`](https://github.com/openpharma/crmPack/tree/dose_combinations) branch (last changes happened 9 years ago!)
+We have early code already in the [`dose_combinations`](https://github.com/openpharma/crmPack/tree/dose_combinations) branch (last changes happened 10 years ago!)
 
 - The `Model` code is [here](https://github.com/openpharma/crmPack/blob/dose_combinations/R/Model-class.R#L2478). This uses the same 5-parameter BLRM model. It already foresees that the `LogisticLogNormal` model for the single agents could be replaced by other models, but does not yet support that. The code is implemented in JAGS. 
   - The prior specification is simpler than described above. There is no historical or concurrent monotherapy data included, and the prior means and covariances for the two mono models are fixed and not hierarchical. The interaction parameter $\eta$ has a simple (log) normal prior.
@@ -131,3 +131,48 @@ The `decider` package by @Schroeter2023 was specifically created for decision ma
 The model is described [here](https://boehringer-ingelheim.github.io/decider/reference/scenario_jointBLRM.html#details). It is based on the same 5-parameter BLRM approach as we describe here. It is implemented in Stan [here](https://github.com/Boehringer-Ingelheim/decider/blob/main/inst/stan/jointBLRM.stan).
 
 The idea is to implement the most important functionality from the `decider` package in `crmPack`, in a structured way. (The `decider` package has grown organically over time from multiple studies it was applied to, and is not considered maintainable in the long term.)
+
+## Implementation plan
+
+The implementation can be structured in the following steps:
+
+1. Implement the combo arm with a fixed prior.
+  - Based on the `crmPack` prototype from the `dose_combinations` branch
+  - Adding increments rules, `Design` and `Simulations` classes and corresponding methods
+2. Implement the "hierarchical design" with multiple arms and shared parameters.
+  - Account for the use of historical data
+  - Account for the use of concurrent monotherapy arms
+
+Particular challenges in the "hierarchical design" setting are discussed here.
+
+### Model specification
+
+Let's say we have the simplest case where the trial comprises a mono drug 1 arm and a combo drug 1 and 2 arm. We want to fit a joint model to the data from both arms and use it for both arms to make the dose escalation decisions, using the shared 5-parameter BLRM model described above.
+
+Each arm is defined in the standard `crmPack` way, something like:
+
+```{r}
+design_mono <- Design(
+    model = model_mono,
+    data = empty_data_mono,
+    nextBest = nextBest_mono,
+    stopping = stopping_mono,
+    increments = increments_mono,
+    backfill = backfill_mono,
+    cohort_size = cohort_size_mono,
+    startingDose = startingDose_mono
+)
+
+design_combo <- Design(
+    model = model_combo,
+    data = empty_data_combo,
+    nextBest = nextBest_combo,
+    stopping = stopping_combo,
+    increments = increments_combo,
+    backfill = backfill_combo,
+    cohort_size = cohort_size_combo,
+    startingDose = startingDose_combo
+)
+```
+
+
