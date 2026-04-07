@@ -713,3 +713,210 @@ DataGrouped <- function(group = character(), ...) {
     placebo = FALSE
   )
 }
+
+
+# DataCombo ----
+
+## class ----
+
+#' `DataCombo`
+#'
+#' @description `r lifecycle::badge("experimental")`
+#'
+#' [`DataCombo`] is a class for two-drug combination toxicity data.
+#' It inherits from [`GeneralData`] and stores patient-level dose combinations.
+#'
+#' @slot x (`matrix`)
+#'   numeric matrix with 2 columns giving the doses of the two drugs.
+#' @slot y (`integer`)
+#'   the vector of toxicity events (0 or 1 integers).
+#' @slot doseGrid (`list`)
+#'   named list of length 2 with the possible doses for each drug.
+#' @slot nGrid (`integer`)
+#'   number of grid points for each drug.
+#' @slot xLevel (`matrix`)
+#'   integer matrix with 2 columns giving the dose levels of `x` with respect to
+#'   `doseGrid`.
+#' @slot drugNames (`character`)
+#'   names of the two drugs.
+#' @slot backfilled (`logical`)
+#'   whether this patient was in a backfill cohort.
+#' @slot response (`integer`)
+#'   whether this patient had a positive efficacy response (0/1/`NA`).
+#'
+#' @aliases DataCombo
+#' @export
+.DataCombo <- setClass(
+  Class = "DataCombo",
+  contains = "GeneralData",
+  slots = c(
+    x = "matrix",
+    y = "integer",
+    doseGrid = "list",
+    nGrid = "integer",
+    xLevel = "matrix",
+    drugNames = "character",
+    backfilled = "logical",
+    response = "integer"
+  ),
+  prototype = prototype(
+    x = matrix(
+      numeric(),
+      ncol = 2L,
+      dimnames = list(NULL, c("drug1", "drug2"))
+    ),
+    y = integer(),
+    doseGrid = list(drug1 = numeric(), drug2 = numeric()),
+    nGrid = c(0L, 0L),
+    xLevel = matrix(
+      integer(),
+      ncol = 2L,
+      dimnames = list(NULL, c("drug1", "drug2"))
+    ),
+    drugNames = c("drug1", "drug2"),
+    backfilled = logical(),
+    response = integer()
+  ),
+  validity = v_data_combo
+)
+
+## constructor ----
+
+#' @rdname DataCombo-class
+#'
+#' @note `ID` and `cohort` can be missing. Then a message will be issued
+#'   and the variables will be filled with default IDs and best guess cohort
+#'   indices.
+#'
+#' @param x (`matrix`)
+#'   numeric matrix with 2 columns giving the doses of the two drugs.
+#' @param y (`integer`)
+#'   the vector of toxicity events (0 or 1).
+#' @param ID (`integer`)
+#'   unique patient IDs.
+#' @param cohort (`integer`)
+#'   the cohort (non-negative sorted) indices.
+#' @param doseGrid (`list`)
+#'   named list of length 2 with all possible doses for each drug.
+#' @param drugNames (`character`)
+#'   names of the two drugs.
+#' @param backfilled (`logical`)
+#'   whether each patient was in a backfill cohort.
+#' @param response (`integer`)
+#'   whether each patient had a positive efficacy response (1 = yes, 0 = no).
+#'   May contain `NA`.
+#' @param ... not used.
+#'
+#' @export
+#' @example examples/Data-class-DataCombo.R
+DataCombo <- function(
+  x = matrix(numeric(), ncol = 2L),
+  y = integer(),
+  ID = integer(),
+  cohort = integer(),
+  doseGrid = list(drug1 = numeric(), drug2 = numeric()),
+  drugNames = names(doseGrid),
+  backfilled = rep(FALSE, nrow(x)),
+  response = rep(NA_integer_, nrow(x)),
+  ...
+) {
+  if (!is.matrix(x)) {
+    x <- as.matrix(x)
+  }
+  storage.mode(x) <- "double"
+
+  assert_matrix(x, ncols = 2L)
+  if (nrow(x) > 0) {
+    assert_numeric(x[, 1], any.missing = FALSE, len = nrow(x))
+    assert_numeric(x[, 2], any.missing = FALSE, len = nrow(x))
+  }
+  assert_integerish(y, lower = 0, upper = 1, len = nrow(x), any.missing = FALSE)
+  assert_integerish(ID, unique = TRUE, any.missing = FALSE)
+  assert_integerish(cohort)
+  assert_list(doseGrid, len = 2L)
+  for (grid in doseGrid) {
+    assert_numeric(grid, any.missing = FALSE, unique = TRUE)
+  }
+  if (length(drugNames) == 0L) {
+    drugNames <- colnames(x)
+  }
+  if (length(drugNames) == 0L) {
+    drugNames <- c("drug1", "drug2")
+  }
+  assert_character(drugNames, len = 2L, unique = TRUE, any.missing = FALSE)
+  assert_logical(backfilled, len = nrow(x), any.missing = FALSE)
+  assert_integerish(
+    response,
+    len = nrow(x),
+    lower = 0,
+    upper = 1,
+    any.missing = TRUE
+  )
+
+  doseGrid <- lapply(doseGrid, sort)
+  names(doseGrid) <- drugNames
+  colnames(x) <- drugNames
+
+  if (nrow(x) > 0) {
+    for (index in seq_along(drugNames)) {
+      assert_subset(x[, index], doseGrid[[index]])
+    }
+  }
+
+  if (length(ID) == 0 && nrow(x) > 0) {
+    message("Used default patient IDs!")
+    ID <- seq_len(nrow(x))
+  } else {
+    assert_integerish(ID, unique = TRUE)
+  }
+
+  if (length(cohort) == 0 && nrow(x) > 0) {
+    message("Used best guess cohort indices!")
+    combo_key <- paste(x[, 1], x[, 2], sep = "::")
+    cohort <- as.integer(c(1, 1 + cumsum(combo_key[-1] != combo_key[-nrow(x)])))
+  } else {
+    assert_integerish(cohort)
+  }
+
+  xLevel <- vapply(
+    seq_along(drugNames),
+    function(index) match_within_tolerance(x[, index], doseGrid[[index]]),
+    integer(nrow(x))
+  )
+  xLevel <- matrix(xLevel, ncol = 2L, dimnames = list(NULL, drugNames))
+
+  .DataCombo(
+    x = x,
+    y = as.integer(y),
+    ID = as.integer(ID),
+    cohort = as.integer(cohort),
+    nObs = as.integer(nrow(x)),
+    doseGrid = doseGrid,
+    nGrid = as.integer(vapply(doseGrid, length, integer(1L))),
+    xLevel = xLevel,
+    drugNames = drugNames,
+    backfilled = backfilled,
+    response = as.integer(response)
+  )
+}
+
+## default constructor ----
+
+#' @rdname DataCombo-class
+#' @note Typically, end users will not use the `.DefaultDataCombo()` function.
+#' @export
+.DefaultDataCombo <- function() {
+  DataCombo(
+    x = cbind(
+      drug1 = c(10, 10, 10, 20, 20, 20),
+      drug2 = c(20, 20, 20, 20, 20, 20)
+    ),
+    y = c(0L, 0L, 1L, 0L, 0L, 0L),
+    ID = 1L:6L,
+    cohort = c(1L, 1L, 1L, 2L, 2L, 2L),
+    doseGrid = list(
+      drug1 = c(10, 20, 30),
+      drug2 = c(20, 40)
+    )
+  )
+}

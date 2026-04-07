@@ -297,6 +297,67 @@ test_that("DataGrouped default constructor works as expected", {
   expect_valid(result, "DataGrouped")
 })
 
+# DataCombo-class ----
+
+test_that(".DataCombo works as expected", {
+  result <- expect_silent(.DataCombo())
+  expect_valid(result, "DataCombo")
+})
+
+# DataCombo-constructor ----
+
+test_that("DataCombo object can be created with user constructor DataCombo", {
+  result <- expect_silent(DataCombo())
+  expect_valid(result, "DataCombo")
+})
+
+test_that("DataCombo object can be created with custom values", {
+  result <- expect_silent(
+    DataCombo(
+      x = cbind(
+        drugA = c(10, 10, 10, 20, 20, 20),
+        drugB = c(20, 20, 20, 20, 20, 20)
+      ),
+      y = c(0L, 0L, 1L, 0L, 0L, 0L),
+      ID = 1L:6L,
+      cohort = c(1L, 1L, 1L, 2L, 2L, 2L),
+      doseGrid = list(
+        drugA = c(10, 20, 30),
+        drugB = c(20, 40)
+      ),
+      backfilled = c(FALSE, FALSE, TRUE, FALSE, TRUE, TRUE),
+      response = c(1L, 0L, NA, 0L, 1L, NA)
+    )
+  )
+  expect_valid(result, "DataCombo")
+})
+
+test_that("DataCombo constructor handles default IDs and cohort as expected", {
+  expect_message(
+    expect_message(
+      result <- DataCombo(
+        x = cbind(
+          drug1 = c(10, 10, 20, 20),
+          drug2 = c(20, 20, 20, 20)
+        ),
+        y = c(0L, 0L, 1L, 0L),
+        doseGrid = list(
+          drug1 = c(10, 20, 30),
+          drug2 = c(20, 40)
+        )
+      ),
+      regexp = "Used default patient IDs!"
+    ),
+    regexp = "Used best guess cohort indices!"
+  )
+  expect_valid(result, "DataCombo")
+})
+
+test_that("DataCombo default constructor works as expected", {
+  result <- expect_silent(.DefaultDataCombo())
+  expect_valid(result, "DataCombo")
+})
+
 test_that("Data constructor provides informative error message when doseGrid is misspelt", {
   expect_error(
     Data(
