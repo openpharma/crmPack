@@ -853,7 +853,7 @@ DataCombo <- function(
     any.missing = TRUE
   )
 
-  doseGrid <- lapply(doseGrid, sort)
+  doseGrid <- lapply(doseGrid, function(x) sort(as.numeric(x)))
   names(doseGrid) <- drugNames
   colnames(x) <- drugNames
 

@@ -255,7 +255,18 @@ setMethod(
       points <- as.matrix(points)
     }
     assert_matrix(points, mode = "numeric", any.missing = FALSE, ncols = 2L)
-    colnames(points) <- data@drugNames
+    point_names <- colnames(points)
+    if (is.null(point_names)) {
+      colnames(points) <- data@drugNames
+    } else {
+      if (!setequal(point_names, data@drugNames)) {
+        stop(
+          "`points` column names must either be NULL or a permutation of `data@drugNames`.",
+          call. = FALSE
+        )
+      }
+      points <- points[, data@drugNames, drop = FALSE]
+    }
 
     prob_samples <- prob(points, model, object, ...)
     if (!is.matrix(prob_samples)) {
