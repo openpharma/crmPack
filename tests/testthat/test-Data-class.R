@@ -322,7 +322,7 @@ test_that("DataCombo object can be created with custom values", {
       ID = 1L:6L,
       cohort = c(1L, 1L, 1L, 2L, 2L, 2L),
       doseGrid = list(
-        drugA = c(10, 20, 30),
+        drugA = as.integer(c(10, 20, 30)), # Make sure that also works.
         drugB = c(20, 40)
       ),
       backfilled = c(FALSE, FALSE, TRUE, FALSE, TRUE, TRUE),

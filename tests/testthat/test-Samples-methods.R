@@ -286,13 +286,15 @@ test_that("fit-Samples works specifically also for LogisticLogNormalCombo", {
     ),
     eta = c(0.0, 0.2)
   ))
+  # We extra change here the column order and see if still everything works below.
   points <- rbind(
-    c(drug1 = 10, drug2 = 20),
-    c(drug1 = 20, drug2 = 40)
+    c(drug2 = 20, drug1 = 10),
+    c(drug2 = 40, drug1 = 20)
   )
 
   actual <- fit(samples, model, data, points = points, middle = mean)
 
+  points <- points[, c(2, 1)]
   log_dose1 <- log(points[, 1] / model@ref_dose[1])
   log_dose2 <- log(points[, 2] / model@ref_dose[2])
   p1 <- plogis(sweep(
