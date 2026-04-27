@@ -1141,6 +1141,57 @@ test_that("nextBest-NextBestOrdinal works correctly", {
 # maxDose ----
 
 ## IncrementsRelative ----
+## IncrementsComboOneDrugOnly ----
+
+test_that("maxDose-IncrementsComboOneDrugOnly returns Inf for drug2 when data is empty", {
+  increments <- IncrementsComboOneDrugOnly()
+  data <- DataCombo(
+    doseGrid = list(drug1 = c(10, 20, 30), drug2 = c(20, 40, 60))
+  )
+  result <- maxDose(increments, data)
+  expect_matrix(result, ncols = 2L, nrows = 3L)
+  expect_equal(result[, 1], c(10, 20, 30))
+  expect_true(all(is.infinite(result[, 2])))
+})
+
+test_that("maxDose-IncrementsComboOneDrugOnly caps drug2 when drug1 is escalated", {
+  increments <- IncrementsComboOneDrugOnly()
+  data <- DataCombo(
+    x = cbind(drug1 = c(10, 10, 10), drug2 = c(20, 20, 20)),
+    y = c(0L, 0L, 0L),
+    ID = 1L:3L,
+    cohort = c(1L, 1L, 1L),
+    doseGrid = list(drug1 = c(10, 20, 30), drug2 = c(20, 40, 60))
+  )
+  result <- maxDose(increments, data)
+  expect_matrix(result, ncols = 2L, nrows = 3L)
+  # drug1 = 10 is not an escalation, so drug2 is unrestricted
+  expect_true(is.infinite(result[result[, 1] == 10, 2]))
+  # drug1 = 20 or 30 would escalate drug1, so drug2 capped at last drug2 = 20
+  expect_equal(unname(result[result[, 1] == 20, 2]), 20)
+  expect_equal(unname(result[result[, 1] == 30, 2]), 20)
+})
+
+test_that("maxDose-IncrementsComboOneDrugOnly caps drug2 correctly for intermediate last dose", {
+  increments <- IncrementsComboOneDrugOnly()
+  data <- DataCombo(
+    x = cbind(drug1 = c(10, 10, 20, 20), drug2 = c(20, 20, 20, 20)),
+    y = c(0L, 0L, 0L, 0L),
+    ID = 1L:4L,
+    cohort = c(1L, 1L, 2L, 2L),
+    doseGrid = list(drug1 = c(10, 20, 30), drug2 = c(20, 40, 60))
+  )
+  # Last observed dose: drug1 = 20, drug2 = 20
+  result <- maxDose(increments, data)
+  expect_matrix(result, ncols = 2L, nrows = 3L)
+  # drug1 = 10 or 20 are not escalations of drug1, so drug2 is unrestricted
+  expect_true(is.infinite(result[result[, 1] == 10, 2]))
+  expect_true(is.infinite(result[result[, 1] == 20, 2]))
+  # drug1 = 30 escalates drug1, so drug2 is capped at 20
+  expect_equal(unname(result[result[, 1] == 30, 2]), 20)
+})
+
+## IncrementsRelative ----
 
 test_that("maxDose-IncrementsRelative works correctly for last dose in 1st interval", {
   increments <- IncrementsRelative(

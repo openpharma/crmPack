@@ -334,6 +334,27 @@ test_that(".DefaultNextBestOrdinal works as expected", {
 # Increments ----
 
 ## IncrementsRelative ----
+## IncrementsComboOneDrugOnly ----
+
+test_that(".IncrementsComboOneDrugOnly works as expected", {
+  result <- expect_silent(.IncrementsComboOneDrugOnly())
+  expect_valid(result, "IncrementsComboOneDrugOnly")
+})
+
+test_that("IncrementsComboOneDrugOnly object can be created with user constructor", {
+  result <- expect_silent(IncrementsComboOneDrugOnly())
+  expect_valid(result, "IncrementsComboOneDrugOnly")
+  expect_s4_class(result, "IncrementsComboOneDrugOnly")
+})
+
+test_that(".DefaultIncrementsComboOneDrugOnly works as expected", {
+  expect_equal(
+    .DefaultIncrementsComboOneDrugOnly(),
+    IncrementsComboOneDrugOnly()
+  )
+})
+
+## IncrementsRelative ----
 
 test_that(".IncrementsRelative works as expected", {
   result <- expect_silent(.IncrementsRelative())

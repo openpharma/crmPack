@@ -1838,7 +1838,41 @@ setGeneric(
   def = function(increments, data, ...) {
     standardGeneric("maxDose")
   },
-  valueClass = "numeric"
+  valueClass = c("numeric", "matrix")
+)
+
+## IncrementsComboOneDrugOnly ----
+
+#' @describeIn maxDose determine the maximum possible next dose
+#'   levels for a two drug combination, based on the rule that
+#'   only one drug can be escalated at a time.
+#'
+#' @aliases maxDose-IncrementsComboOneDrugOnly
+#'
+#' @export
+#' @example examples/Rules-method-maxDose-IncrementsComboOneDrugOnly.R
+#'
+setMethod(
+  f = "maxDose",
+  signature = signature(
+    increments = "IncrementsComboOneDrugOnly",
+    data = "DataCombo"
+  ),
+  definition = function(increments, data, ...) {
+    dose_grid_one <- data@doseGrid$drug1
+    dose_grid_two <- data@doseGrid$drug2
+    if (data@nObs == 0L) {
+      # In this case any combinations are possible.
+      return(cbind(dose_grid_one, Inf))
+    }
+    last_dose <- data@x[data@nObs, ]
+    dose_for_second_drug <- ifelse(
+      dose_grid_one > last_dose[1],
+      last_dose[2],
+      Inf
+    )
+    cbind(dose_grid_one, dose_for_second_drug)
+  }
 )
 
 ## IncrementsRelative ----
