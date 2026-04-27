@@ -2181,6 +2181,53 @@ setMethod(
 #' @aliases maxDose-IncrementsMin
 #'
 #' @export
+#' @example examples/Rules-method-maxDose-IncrementsMin-DataCombo.R
+#'
+setMethod(
+  f = "maxDose",
+  signature = signature(
+    increments = "IncrementsMin",
+    data = "DataCombo"
+  ),
+  definition = function(increments, data, ...) {
+    individual_results <- lapply(
+      increments@increments_list,
+      maxDose,
+      data = data,
+      ...
+    )
+
+    first_column <- individual_results[[1]][, 1]
+    same_first_column <- vapply(
+      individual_results,
+      function(x) identical(x[, 1], first_column),
+      logical(1)
+    )
+    if (!all(same_first_column)) {
+      stop(
+        "All increments in IncrementsMin must return the same first column for DataCombo."
+      )
+    }
+
+    second_columns <- do.call(
+      cbind,
+      lapply(individual_results, function(x) x[, 2])
+    )
+
+    has_na <- apply(second_columns, 1, anyNA)
+    min_second_column <- apply(second_columns, 1, min, na.rm = TRUE)
+    min_second_column[has_na] <- NA_real_
+
+    cbind(first_column, min_second_column)
+  }
+)
+
+#' @describeIn maxDose determine the maximum possible next dose based on
+#'   multiple increment rules, taking the minimum across individual increments.
+#'
+#' @aliases maxDose-IncrementsMin
+#'
+#' @export
 setMethod(
   f = "maxDose",
   signature = signature(

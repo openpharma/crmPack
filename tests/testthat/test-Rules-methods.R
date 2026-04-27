@@ -2000,7 +2000,49 @@ test_that("maxDose-IncrementsMinOrdinal works correctly when incr2 is minimum", 
   expect_equal(result, 150)
 })
 
-## IncrementsOrdinal
+test_that("maxDose-IncrementsMin-DataCombo takes row-wise minimum", {
+  incr1 <- IncrementsComboOneDrugOnly()
+  incr2 <- IncrementsComboCartesian(
+    drug1 = IncrementsRelative(intervals = c(0), increments = c(2)),
+    drug2 = IncrementsRelative(intervals = c(0), increments = c(1))
+  )
+  increments <- IncrementsMin(increments_list = list(incr1, incr2))
+  data <- DataCombo(
+    x = cbind(drug1 = c(10, 10, 10), drug2 = c(20, 20, 20)),
+    y = c(0L, 0L, 0L),
+    ID = 1L:3L,
+    cohort = c(1L, 1L, 1L),
+    doseGrid = list(drug1 = c(10, 20, 30), drug2 = c(20, 40, 60))
+  )
+
+  result <- maxDose(increments, data)
+  expect_matrix(result, ncols = 2L, nrows = 3L)
+  expect_equal(result[, 1], c(10, 20, 30))
+  expect_equal(result[, 2], c(40, 20, 20))
+})
+
+test_that("maxDose-IncrementsMin-DataCombo propagates NA from any rule", {
+  incr1 <- IncrementsComboOneDrugOnly()
+  incr2 <- IncrementsComboCartesian(
+    drug1 = IncrementsRelative(intervals = c(0), increments = c(1)),
+    drug2 = IncrementsRelative(intervals = c(0), increments = c(1))
+  )
+  increments <- IncrementsMin(increments_list = list(incr1, incr2))
+  data <- DataCombo(
+    x = cbind(drug1 = c(10, 10, 10), drug2 = c(20, 20, 20)),
+    y = c(0L, 0L, 0L),
+    ID = 1L:3L,
+    cohort = c(1L, 1L, 1L),
+    doseGrid = list(drug1 = c(10, 20, 30), drug2 = c(20, 40, 60))
+  )
+
+  result <- maxDose(increments, data)
+  expect_matrix(result, ncols = 2L, nrows = 3L)
+  expect_equal(result[, 1], c(10, 20, 30))
+  expect_equal(result[, 2], c(40, 20, NA))
+})
+
+## IncrementsOrdinal ----
 
 test_that("maxDose-IncrementsOrdinal works correctly", {
   inc <- .DefaultIncrementsOrdinal()
