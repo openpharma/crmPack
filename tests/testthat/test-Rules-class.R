@@ -354,6 +354,39 @@ test_that(".DefaultIncrementsComboOneDrugOnly works as expected", {
   )
 })
 
+## IncrementsComboCartesian ----
+
+test_that(".IncrementsComboCartesian works as expected", {
+  result <- expect_silent(.IncrementsComboCartesian())
+  expect_valid(result, "IncrementsComboCartesian")
+})
+
+test_that("IncrementsComboCartesian object can be created with user constructor", {
+  drug1_rule <- IncrementsRelative(intervals = c(0, 10), increments = c(1, 0.5))
+  drug2_rule <- IncrementsRelative(
+    intervals = c(0, 20),
+    increments = c(0.8, 0.4)
+  )
+  result <- expect_silent(
+    IncrementsComboCartesian(drug1 = drug1_rule, drug2 = drug2_rule)
+  )
+
+  expect_valid(result, "IncrementsComboCartesian")
+  expect_s4_class(result, "IncrementsComboCartesian")
+  expect_identical(result@drug1, drug1_rule)
+  expect_identical(result@drug2, drug2_rule)
+})
+
+test_that(".DefaultIncrementsComboCartesian works as expected", {
+  expect_equal(
+    .DefaultIncrementsComboCartesian(),
+    IncrementsComboCartesian(
+      drug1 = IncrementsRelative(intervals = c(0, 20), increments = c(1, 0.33)),
+      drug2 = IncrementsRelative(intervals = c(0, 20), increments = c(1, 0.33))
+    )
+  )
+})
+
 ## IncrementsRelative ----
 
 test_that(".IncrementsRelative works as expected", {

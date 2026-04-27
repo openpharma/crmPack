@@ -1138,12 +1138,62 @@ IncrementsComboOneDrugOnly <- function() {
 
 # IncrementsComboCartesian ----
 
+## class ----
+
+#' `IncrementsComboCartesian`
+#'
+#' @description `r lifecycle::badge("experimental")`
+#'
+#' [`IncrementsComboCartesian`] is the class for increments control in
+#' combination trials where separate increment rules are defined for each drug
+#' and applied independently.
+#'
+#' @details Under this rule, the maximum admissible dose for each drug is first
+#'   computed from the corresponding one-dimensional increment rule. The
+#'   resulting two-dimensional admissible region is then represented in a
+#'   matrix form compatible with combination `maxDose` methods.
+#'
+#' @slot drug1 (`Increments`)
+#'   increment rule for the first drug.
+#' @slot drug2 (`Increments`)
+#'   increment rule for the second drug.
+#'
+#' @aliases IncrementsComboCartesian
+#' @export
+#'
 .IncrementsComboCartesian <- setClass(
   Class = "IncrementsComboCartesian",
   contains = "Increments",
   slots = c(drug1 = "Increments", drug2 = "Increments")
 )
-# todo: add docs and constructors
+
+## constructor ----
+
+#' @rdname IncrementsComboCartesian-class
+#'
+#' @param drug1 (`Increments`)
+#'   see slot definition.
+#' @param drug2 (`Increments`)
+#'   see slot definition.
+#'
+#' @export
+#' @example examples/Rules-class-IncrementsComboCartesian.R
+#'
+IncrementsComboCartesian <- function(drug1, drug2) {
+  .IncrementsComboCartesian(drug1 = drug1, drug2 = drug2)
+}
+
+## default constructor ----
+
+#' @rdname IncrementsComboCartesian-class
+#' @note Typically, end users will not use the `.DefaultIncrementsComboCartesian()` function.
+#' @export
+.DefaultIncrementsComboCartesian <- function() {
+  IncrementsComboCartesian(
+    drug1 = IncrementsRelative(intervals = c(0, 20), increments = c(1, 0.33)),
+    drug2 = IncrementsRelative(intervals = c(0, 20), increments = c(1, 0.33))
+  )
+}
 
 # IncrementsRelative ----
 
