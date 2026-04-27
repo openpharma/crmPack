@@ -60,6 +60,23 @@ h_doses_unique_per_cohort <- function(dose, cohort) {
   all(num_doses_per_cohort == 1L)
 }
 
+#' @describeIn v_data_objects helper function which verifies whether the
+#'   two-drug dose combination is unique in each cohort.
+#' @param x (`matrix`)
+#' @param cohort (`integer`)
+#' @return `TRUE` if `x` is unique per `cohort`, otherwise `FALSE`.
+h_combo_doses_unique_per_cohort <- function(x, cohort) {
+  assert_matrix(x)
+  assert_integer(cohort)
+
+  combos_per_cohort <- tapply(
+    X = seq_len(nrow(x)),
+    INDEX = cohort,
+    FUN = function(index) nrow(unique(x[index, , drop = FALSE]))
+  )
+  all(combos_per_cohort == 1L)
+}
+
 #' Helper Function performing validation Common to Data and DataOrdinal
 #'
 #' @rdname h_validate_common_data_slots
@@ -285,5 +302,139 @@ v_data_grouped <- function(object) {
     ),
     "group must be factor with levels mono and combo of length nObs without missings"
   )
+  v$result()
+}
+
+#' @describeIn v_data_objects validates that the [`DataCombo`] object
+#'   contains valid two-drug combination data.
+v_data_combo <- function(object) {
+  v <- Validate()
+  x_has_valid_shape <- is.matrix(object@x) &&
+    is.double(object@x) &&
+    identical(ncol(object@x), 2L) &&
+    identical(nrow(object@x), object@nObs) &&
+    !anyNA(object@x)
+  xlevel_has_valid_shape <- is.matrix(object@xLevel) &&
+    is.integer(object@xLevel) &&
+    identical(ncol(object@xLevel), 2L) &&
+    identical(nrow(object@xLevel), object@nObs) &&
+    !anyNA(object@xLevel)
+
+  v$check(
+    x_has_valid_shape,
+    "x must be a numeric matrix with 2 columns and nObs rows and not contain missings"
+  )
+  v$check(
+    test_integer(
+      object@y,
+      lower = 0,
+      upper = 1,
+      len = object@nObs,
+      any.missing = FALSE
+    ),
+    "DLT vector y must be nObs long and contain 0 or 1 integers only"
+  )
+  v$check(
+    test_list(object@doseGrid, len = 2L, any.missing = FALSE),
+    "doseGrid must be a list of length 2"
+  )
+  v$check(
+    test_integer(object@nGrid, len = 2L, lower = 0L, any.missing = FALSE),
+    "nGrid must be an integer vector of length 2 with non-negative entries"
+  )
+  v$check(
+    xlevel_has_valid_shape,
+    "xLevel must be an integer matrix with 2 columns and nObs rows and not contain missings"
+  )
+  v$check(
+    test_character(
+      object@drugNames,
+      len = 2L,
+      unique = TRUE,
+      any.missing = FALSE
+    ),
+    "drugNames must be a character vector of length 2 with unique entries"
+  )
+  v$check(
+    identical(names(object@doseGrid), object@drugNames),
+    "doseGrid must be a named list with names equal to drugNames"
+  )
+  v$check(
+    !x_has_valid_shape || identical(colnames(object@x), object@drugNames),
+    "x must have column names equal to drugNames"
+  )
+  v$check(
+    !xlevel_has_valid_shape ||
+      identical(colnames(object@xLevel), object@drugNames),
+    "xLevel must have column names equal to drugNames"
+  )
+  v$check(
+    all(vapply(object@doseGrid, is.double, logical(1L))),
+    "doseGrid entries must be numeric vectors"
+  )
+  v$check(
+    all(vapply(object@doseGrid, function(grid) !anyNA(grid), logical(1L))),
+    "doseGrid entries must not contain missings"
+  )
+  v$check(
+    all(vapply(
+      object@doseGrid,
+      function(grid) !is.unsorted(grid, strictly = TRUE),
+      logical(1L)
+    )),
+    "doseGrid entries must be sorted and unique"
+  )
+  v$check(
+    identical(
+      as.integer(vapply(object@doseGrid, length, integer(1L))),
+      object@nGrid
+    ),
+    "lengths of doseGrid elements must be nGrid"
+  )
+  v$check(
+    !x_has_valid_shape ||
+      all(vapply(
+        seq_along(object@drugNames),
+        function(index) {
+          test_subset(object@x[, index], object@doseGrid[[index]])
+        },
+        logical(1L)
+      )),
+    "dose values in x must be from the corresponding entry in doseGrid"
+  )
+  v$check(
+    !(x_has_valid_shape && xlevel_has_valid_shape) ||
+      all(vapply(
+        seq_along(object@drugNames),
+        function(index) {
+          h_all_equivalent(
+            object@x[, index],
+            object@doseGrid[[index]][object@xLevel[, index]]
+          )
+        },
+        logical(1L)
+      )),
+    "x must be equivalent to the corresponding doseGrid entries indexed by xLevel"
+  )
+  v$check(
+    !x_has_valid_shape ||
+      h_combo_doses_unique_per_cohort(x = object@x, cohort = object@cohort),
+    "There must be only one dose combination per cohort"
+  )
+  v$check(
+    test_logical(object@backfilled, len = object@nObs, any.missing = FALSE),
+    "backfilled must be of type logical and length nObs and not contain missings"
+  )
+  v$check(
+    test_integer(
+      object@response,
+      len = object@nObs,
+      lower = 0,
+      upper = 1,
+      any.missing = TRUE
+    ),
+    "response must be of type integer, take values 0 or 1 or NA, and have length nObs"
+  )
+
   v$result()
 }

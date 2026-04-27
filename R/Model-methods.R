@@ -974,14 +974,16 @@ setMethod(
 #'   used to compute toxicity probabilities. Can also be missing for some models.
 #' @param ... model specific parameters when `samples` are not used.
 #'
-#' @return A `proportion` or `numeric` vector with the toxicity probabilities.
-#'   If non-scalar `samples` were used, then every element in the returned vector
-#'   corresponds to one element of a sample. Hence, in this case, the output
-#'   vector is of the same length as the sample vector. If scalar `samples` were
-#'   used or no `samples` were used, e.g. for pseudo DLE/toxicity `model`,
-#'   then the output is of the same length as the length of the `dose`.  In the
-#'   case of `LogisticLogNormalOrdinal`, the probabilities relate to toxicities
-#'   of  grade given by `grade`.
+#' @return A `proportion` or `numeric` vector with the toxicity probabilities,
+#'   or a numeric matrix for methods that evaluate multiple dose combinations at
+#'   once. If non-scalar `samples` were used, then every element in the returned
+#'   vector corresponds to one element of a sample. Hence, in this case, the
+#'   output vector is of the same length as the sample vector. If scalar
+#'   `samples` were used or no `samples` were used, e.g. for pseudo
+#'   DLE/toxicity `model`, then the output is of the same length as the length
+#'   of the `dose`. For matrix-valued dose inputs, the returned matrix contains
+#'   one column per dose combination. In the case of `LogisticLogNormalOrdinal`,
+#'   the probabilities relate to toxicities of grade given by `grade`.
 #'
 #' @seealso [probFunction()], [dose()], [efficacy()].
 #'
@@ -993,7 +995,7 @@ setGeneric(
   def = function(dose, model, samples, ...) {
     standardGeneric("prob")
   },
-  valueClass = c("numeric", "list")
+  valueClass = c("numeric", "list", "matrix")
 )
 
 ## LogisticNormal ----
@@ -1160,6 +1162,91 @@ setMethod(
     plogis(
       (alpha0 + is_combo * delta0) +
         (alpha1 + is_combo * delta1) * log(dose / ref_dose)
+    )
+  }
+)
+
+## LogisticLogNormalCombo ----
+
+h_prob_logistic_log_normal_combo <- function(dose, model, samples) {
+  assert_subset(c("alpha0", "alpha1", "eta"), names(samples))
+  assert_matrix(samples@data$alpha0, mode = "numeric", ncols = 2L)
+  assert_matrix(samples@data$alpha1, mode = "numeric", ncols = 2L)
+
+  alpha0 <- samples@data$alpha0
+  alpha1 <- samples@data$alpha1
+  eta <- samples@data$eta
+  ref_dose <- as.numeric(model@ref_dose)
+
+  if (!is.matrix(dose)) {
+    assert_numeric(dose, lower = 0L, any.missing = FALSE, len = 2L)
+    assert_names(names(dose), identical.to = model@drug_names)
+    dose <- matrix(dose, nrow = 1L, dimnames = list(NULL, model@drug_names))
+  } else {
+    assert_matrix(dose, mode = "numeric", any.missing = FALSE, ncols = 2L)
+    if (is.null(colnames(dose))) {
+      colnames(dose) <- model@drug_names
+    } else {
+      assert_names(colnames(dose), permutation.of = model@drug_names)
+      dose <- dose[, model@drug_names, drop = FALSE]
+    }
+    assert_true(all(dose >= 0))
+  }
+
+  log_dose1 <- log(dose[, 1] / ref_dose[1])
+  log_dose2 <- log(dose[, 2] / ref_dose[2])
+  lp1 <- sweep(alpha1[, 1, drop = FALSE] %*% t(log_dose1), 1L, alpha0[, 1], "+")
+  lp2 <- sweep(alpha1[, 2, drop = FALSE] %*% t(log_dose2), 1L, alpha0[, 2], "+")
+  p1 <- plogis(lp1)
+  p2 <- plogis(lp2)
+  p0 <- p1 + p2 - p1 * p2
+  interaction <- eta %o% ((dose[, 1] / ref_dose[1]) * (dose[, 2] / ref_dose[2]))
+  odds <- (p0 / (1 - p0)) * exp(interaction)
+  probs <- odds / (1 + odds)
+
+  if (ncol(probs) == 1L) {
+    as.numeric(probs)
+  } else {
+    probs
+  }
+}
+
+#' @describeIn prob method for [`LogisticLogNormalCombo`] for a single dose
+#'   combination provided as a named numeric vector.
+#' @aliases prob-LogisticLogNormalCombo
+#' @export
+setMethod(
+  f = "prob",
+  signature = signature(
+    dose = "numeric",
+    model = "LogisticLogNormalCombo",
+    samples = "Samples"
+  ),
+  definition = function(dose, model, samples, ...) {
+    h_prob_logistic_log_normal_combo(
+      dose = dose,
+      model = model,
+      samples = samples
+    )
+  }
+)
+
+#' @describeIn prob method for [`LogisticLogNormalCombo`] for one or more dose
+#'   combinations provided in the rows of a numeric matrix.
+#' @aliases prob-LogisticLogNormalCombo-matrix
+#' @export
+setMethod(
+  f = "prob",
+  signature = signature(
+    dose = "matrix",
+    model = "LogisticLogNormalCombo",
+    samples = "Samples"
+  ),
+  definition = function(dose, model, samples, ...) {
+    h_prob_logistic_log_normal_combo(
+      dose = dose,
+      model = model,
+      samples = samples
     )
   }
 )

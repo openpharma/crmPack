@@ -321,6 +321,48 @@ test_that("MCMC computes correct values for LogisticLogNormalGrouped model and e
   expect_snap(result@data)
 })
 
+# LogisticLogNormalCombo ----
+
+## constructor ----
+
+test_that("LogisticLogNormalCombo object can be created with user constructor", {
+  result <- expect_silent(h_get_logistic_log_normal_combo())
+  expect_valid(result, "LogisticLogNormalCombo")
+})
+
+test_that(".DefaultLogisticLogNormalCombo works as expected", {
+  expect_valid(
+    .DefaultLogisticLogNormalCombo(),
+    "LogisticLogNormalCombo"
+  )
+})
+
+## mcmc ----
+
+test_that("MCMC runs for LogisticLogNormalCombo model", {
+  data <- h_get_data_combo()
+  model <- h_get_logistic_log_normal_combo()
+  options <- h_get_mcmc_options(samples = 10, burnin = 20)
+
+  result <- mcmc(data = data, model = model, options = options)
+  expect_s4_class(result, "Samples")
+  expect_subset(c("alpha0", "alpha1", "eta"), names(result@data))
+  expect_equal(ncol(result@data$alpha0), 2L)
+  expect_equal(ncol(result@data$alpha1), 2L)
+})
+
+test_that("MCMC runs for LogisticLogNormalCombo model with empty data (i.e. prior)", {
+  data <- h_get_data_combo(empty = TRUE)
+  model <- h_get_logistic_log_normal_combo(log_normal_eta = TRUE)
+  options <- h_get_mcmc_options(samples = 10, burnin = 20)
+
+  result <- mcmc(data = data, model = model, options = options)
+  expect_s4_class(result, "Samples")
+  expect_subset(c("alpha0", "alpha1", "eta"), names(result@data))
+  expect_equal(ncol(result@data$alpha0), 2L)
+  expect_equal(ncol(result@data$alpha1), 2L)
+})
+
 # LogisticKadane ----
 
 ## constructor ----

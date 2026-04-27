@@ -267,3 +267,29 @@ h_get_data_grouped <- function(empty = FALSE, placebo = TRUE) {
     )
   }
 }
+
+# DataCombo ----
+
+h_get_data_combo <- function(empty = FALSE) {
+  dose_grid <- list(
+    drug1 = c(10, 20, 30),
+    drug2 = c(20, 40)
+  )
+
+  if (empty) {
+    DataCombo(doseGrid = dose_grid)
+  } else {
+    DataCombo(
+      x = cbind(
+        drug1 = c(10, 10, 10, 20, 20, 20),
+        drug2 = c(20, 20, 20, 20, 20, 20)
+      ),
+      y = c(0L, 0L, 1L, 0L, 0L, 0L),
+      ID = 1L:6L,
+      cohort = c(1L, 1L, 1L, 2L, 2L, 2L),
+      doseGrid = dose_grid,
+      response = c(1L, 0L, NA, 0L, 1L, NA),
+      backfilled = c(FALSE, FALSE, TRUE, FALSE, TRUE, TRUE)
+    )
+  }
+}

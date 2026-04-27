@@ -1,0 +1,3 @@
+data <- .DefaultDataCombo()
+
+plot(data)

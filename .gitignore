@@ -32,3 +32,4 @@ README.html
 
 /.quarto/
 **/*.quarto_ipynb
+*.png

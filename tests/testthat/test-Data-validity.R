@@ -363,3 +363,75 @@ test_that("v_data_grouped fails for wrong factor levels", {
     "group must be factor with levels mono and combo of length nObs without missings"
   )
 })
+
+# h_combo_doses_unique_per_cohort ----
+
+test_that("h_combo_doses_unique_per_cohort returns TRUE for unique combinations", {
+  x <- cbind(
+    drug1 = c(10, 10, 20, 20),
+    drug2 = c(20, 20, 20, 20)
+  )
+  cohort <- c(1L, 1L, 2L, 2L)
+  result <- expect_silent(h_combo_doses_unique_per_cohort(x, cohort))
+  expect_true(result)
+})
+
+test_that("h_combo_doses_unique_per_cohort returns FALSE for non-unique combinations", {
+  x <- cbind(
+    drug1 = c(10, 10, 20, 20),
+    drug2 = c(20, 40, 20, 20)
+  )
+  cohort <- c(1L, 1L, 2L, 2L)
+  result <- expect_silent(h_combo_doses_unique_per_cohort(x, cohort))
+  expect_false(result)
+})
+
+# v_data_combo ----
+
+test_that("v_data_combo passes for valid object", {
+  object <- h_get_data_combo()
+  expect_true(v_data_combo(object))
+})
+
+test_that("v_data_combo returns error for wrong x dimensions", {
+  object <- h_get_data_combo()
+  object@x <- object@x[, 1, drop = FALSE]
+
+  expect_equal(
+    v_data_combo(object),
+    "x must be a numeric matrix with 2 columns and nObs rows and not contain missings"
+  )
+})
+
+test_that("v_data_combo returns error for wrong doseGrid names", {
+  object <- h_get_data_combo()
+  names(object@doseGrid) <- c("a", "b")
+
+  expect_equal(
+    v_data_combo(object),
+    "doseGrid must be a named list with names equal to drugNames"
+  )
+})
+
+test_that("v_data_combo returns error for non-unique combinations within cohort", {
+  object <- h_get_data_combo()
+  object@x[2, ] <- c(10, 40)
+
+  expect_equal(
+    v_data_combo(object),
+    c(
+      "x must be equivalent to the corresponding doseGrid entries indexed by xLevel",
+      "There must be only one dose combination per cohort"
+    )
+  )
+})
+
+test_that("v_data_combo returns error for wrong response", {
+  object <- h_get_data_combo()
+  object@response <- c(0L, 1L, 2L, NA, 1L, 0L)
+
+  expect_equal(
+    v_data_combo(object),
+    "response must be of type integer, take values 0 or 1 or NA, and have length nObs"
+  )
+})
