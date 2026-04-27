@@ -1136,6 +1136,14 @@ IncrementsComboOneDrugOnly <- function() {
   IncrementsComboOneDrugOnly()
 }
 
+# IncrementsComboCartesian ----
+
+.IncrementsComboCartesian <- setClass(
+  Class = "IncrementsComboCartesian",
+  contains = "Increments",
+  slots = c(drug1 = "Increments", drug2 = "Increments")
+)
+# todo: add docs and constructors
 
 # IncrementsRelative ----
 

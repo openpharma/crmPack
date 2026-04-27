@@ -630,6 +630,12 @@ setMethod(
   }
 )
 
+# singleDrugData ----
+
+# todo define a generic with method for DataCombo which can
+# extract the single drug specific Data for one of the two drugs
+# and return as a Data object
+
 # update ----
 
 ## Data ----

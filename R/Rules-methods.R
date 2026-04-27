@@ -1875,6 +1875,43 @@ setMethod(
   }
 )
 
+## IncrementsComboCartesian ----
+
+#' @describeIn maxDose determine the maximum possible next dose
+#'  levels for a two drug combination, based on the drug specific
+#'  increment rules which are applied independently.
+#'
+#' @aliases maxDose-IncrementsComboCartesian
+#'
+#' @export
+#' @example examples/Rules-method-maxDose-IncrementsComboCartesian.R
+#'
+setMethod(
+  f = "maxDose",
+  signature = signature(
+    increments = "IncrementsComboCartesian",
+    data = "DataCombo"
+  ),
+  definition = function(increments, data, ...) {
+    data_drug1 <- singleDrugData(data, "drug1")
+    data_drug2 <- singleDrugData(data, "drug2")
+
+    max_dose_one <- maxDose(increments@drug1, data_drug1)
+    max_dose_two <- maxDose(increments@drug2, data_drug2)
+
+    dose_grid_one <- data@doseGrid$drug1
+    dose_grid_two <- data@doseGrid$drug2
+
+    dose_for_second_drug <- ifelse(
+      dose_grid_one <= max_dose_one,
+      max_dose_two,
+      NA
+    )
+    cbind(dose_grid_one, dose_for_second_drug)
+  }
+)
+
+
 ## IncrementsRelative ----
 
 #' @describeIn maxDose determine the maximum possible next dose based on
