@@ -105,6 +105,60 @@ test_that("Plot works as expected for DataCombo object", {
 })
 
 
+# singleDrugData-DataCombo ----
+
+test_that("singleDrugData extracts Data for the first drug", {
+  object <- h_get_data_combo()
+  result <- singleDrugData(object, "drug1")
+
+  expected <- Data(
+    x = object@x[, 1],
+    y = object@y,
+    ID = object@ID,
+    cohort = object@cohort,
+    doseGrid = object@doseGrid[[1]],
+    backfilled = object@backfilled,
+    response = object@response
+  )
+
+  expect_valid(result, "Data")
+  expect_identical(result, expected)
+})
+
+test_that("singleDrugData extracts Data for the second drug", {
+  object <- h_get_data_combo()
+  result <- singleDrugData(object, "drug2")
+
+  expected <- Data(
+    x = object@x[, 2],
+    y = object@y,
+    ID = object@ID,
+    cohort = object@cohort,
+    doseGrid = object@doseGrid[[2]],
+    backfilled = object@backfilled,
+    response = object@response
+  )
+
+  expect_valid(result, "Data")
+  expect_identical(result, expected)
+})
+
+test_that("singleDrugData works for empty DataCombo", {
+  object <- h_get_data_combo(empty = TRUE)
+  result <- singleDrugData(object, "drug1")
+
+  expect_valid(result, "Data")
+  expect_identical(result@x, numeric())
+  expect_identical(result@y, integer())
+  expect_identical(result@doseGrid, object@doseGrid$drug1)
+})
+
+test_that("singleDrugData throws error for invalid drug name", {
+  object <- h_get_data_combo()
+  expect_error(singleDrugData(object, "drug3"), "Must be element of set")
+})
+
+
 # update-Data ----
 
 test_that("Update of Data works as expected", {
