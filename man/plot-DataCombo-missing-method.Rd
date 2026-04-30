@@ -18,7 +18,7 @@ whether legends should be displayed.}
 \item{...}{not used.}
 }
 \value{
-A \code{\link{gtable}} object combining two \code{\link[ggplot2:ggplot2-package]{ggplot2::ggplot2}} plots.
+A \code{gtable} object combining two \code{\link[ggplot2:ggplot2-package]{ggplot2::ggplot2}} plots.
 }
 \description{
 \ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#experimental}{\figure{lifecycle-experimental.svg}{options: alt='[Experimental]'}}}{\strong{[Experimental]}}

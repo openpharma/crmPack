@@ -477,7 +477,7 @@ setMethod(
 #'   whether legends should be displayed.
 #' @param ... not used.
 #'
-#' @return A [`gtable`] object combining two [`ggplot2`] plots.
+#' @return A `gtable` object combining two [`ggplot2`] plots.
 #'
 #' @aliases plot-DataCombo
 #' @export
