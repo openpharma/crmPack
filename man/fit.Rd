@@ -3,6 +3,7 @@
 \name{fit}
 \alias{fit}
 \alias{fit,Samples,GeneralModel,Data-method}
+\alias{fit,Samples,LogisticLogNormalCombo,DataCombo-method}
 \alias{fit,Samples,DualEndpoint,DataDual-method}
 \alias{fit,Samples,LogisticIndepBeta,Data-method}
 \alias{fit,Samples,Effloglog,DataDual-method}
@@ -17,6 +18,16 @@ fit(object, model, data, ...)
   model,
   data,
   points = data@doseGrid,
+  quantiles = c(0.025, 0.975),
+  middle = mean,
+  ...
+)
+
+\S4method{fit}{Samples,LogisticLogNormalCombo,DataCombo}(
+  object,
+  model,
+  data,
+  points = as.matrix(do.call(expand.grid, data@doseGrid)),
   quantiles = c(0.025, 0.975),
   middle = mean,
   ...
@@ -94,6 +105,9 @@ signature. But we need also other arguments in the signature.
 \itemize{
 \item \code{fit(object = Samples, model = GeneralModel, data = Data)}: This method returns a data frame with dose, middle, lower
 and upper quantiles for the dose-toxicity curve
+
+\item \code{fit(object = Samples, model = LogisticLogNormalCombo, data = DataCombo)}: This method returns a data frame with one row per dose
+combination and posterior summaries of the DLT probability surface.
 
 \item \code{fit(object = Samples, model = DualEndpoint, data = DataDual)}: This method returns a data frame with dose, and middle,
 lower and upper quantiles, for both the dose-tox and dose-biomarker (suffix

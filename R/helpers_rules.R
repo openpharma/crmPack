@@ -903,3 +903,30 @@ h_next_best_mgsamples_plot <- function(
       colour = "blue"
     )
 }
+
+#' Check if the Doses in a Dose Matrix are Below the Dose Limit.
+#'
+#' @description `r lifecycle::badge("experimental")`
+#'
+#' Helper function that checks if the doses in a dose matrix are below the dose limit.
+#'
+#' @param dose_matrix (`matrix`)\cr a matrix with the doses of the two compounds (columns).
+#' @param dose_limit (`matrix`)\cr a matrix with two columns: the first column contains the doses for compound 1 and the second column contains the corresponding dose limits for compound 2.
+#' @return A logical vector indicating whether the doses in each row of the dose matrix are below the corresponding dose limits.
+h_dose_combo_below_limit <- function(dose_matrix, dose_limit) {
+  apply(
+    dose_matrix,
+    MARGIN = 1L,
+    FUN = function(doses) {
+      # We use numeric tolerance matching here
+      # because the doses could be generated from a
+      # grid and we want to avoid issues with floating point precision.
+      idx <- which(abs(doses[1L] - dose_limit[, 1L]) < .Machine$double.eps)
+      if (length(idx) == 0L || is.na(dose_limit[idx, 2L])) {
+        return(FALSE)
+      } else {
+        return(doses[2L] <= dose_limit[idx, 2L])
+      }
+    }
+  )
+}

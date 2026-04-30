@@ -4,6 +4,7 @@
 \alias{v_data_objects}
 \alias{v_general_data}
 \alias{h_doses_unique_per_cohort}
+\alias{h_combo_doses_unique_per_cohort}
 \alias{v_data}
 \alias{v_data_dual}
 \alias{v_data_parts}
@@ -11,11 +12,14 @@
 \alias{v_data_da}
 \alias{v_data_ordinal}
 \alias{v_data_grouped}
+\alias{v_data_combo}
 \title{Internal Helper Functions for Validation of \code{\link{GeneralData}} Objects}
 \usage{
 v_general_data(object)
 
 h_doses_unique_per_cohort(dose, cohort)
+
+h_combo_doses_unique_per_cohort(x, cohort)
 
 v_data(object)
 
@@ -30,19 +34,25 @@ v_data_da(object)
 v_data_ordinal(object)
 
 v_data_grouped(object)
+
+v_data_combo(object)
 }
 \arguments{
 \item{object}{(\code{GeneralData})\cr object to validate.}
 
 \item{dose}{(\code{numeric})\cr dose values.}
 
-\item{cohort}{(\code{integer})\cr cohort indices parallel to \code{doses}.}
+\item{cohort}{(\code{integer})}
+
+\item{x}{(\code{matrix})}
 }
 \value{
 A \code{character} vector with the validation failure messages,
 or \code{TRUE} in case validation passes.
 
 \code{TRUE} if \code{dose} is unique per \code{cohort}, otherwise \code{FALSE}.
+
+\code{TRUE} if \code{x} is unique per \code{cohort}, otherwise \code{FALSE}.
 }
 \description{
 \ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#stable}{\figure{lifecycle-stable.svg}{options: alt='[Stable]'}}}{\strong{[Stable]}}
@@ -58,6 +68,9 @@ object contains unique \code{ID}, non-negative \code{cohort} indices and
 
 \item \code{h_doses_unique_per_cohort()}: helper function which verifies whether
 the \code{dose} values are unique in each and every different \code{cohort}.
+
+\item \code{h_combo_doses_unique_per_cohort()}: helper function which verifies whether the
+two-drug dose combination is unique in each cohort.
 
 \item \code{v_data()}: validates that the \code{\link{Data}} object contains
 valid elements with respect to their types, dependency and length.
@@ -79,5 +92,8 @@ contains valid elements with respect to their types, dependency and length.
 
 \item \code{v_data_grouped()}: validates that the \code{\link{DataGrouped}} object
 contains valid group information.
+
+\item \code{v_data_combo()}: validates that the \code{\link{DataCombo}} object
+contains valid two-drug combination data.
 
 }}

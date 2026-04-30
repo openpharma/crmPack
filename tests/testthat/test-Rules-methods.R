@@ -198,6 +198,7 @@ test_that("nextBest-NextBestNCRM can accept additional arguments and pass them t
 })
 
 test_that("nextBest-NextBestNCRM-DataCombo works as expected", {
+  set.seed(123)
   data <- h_get_data_combo()
   model <- h_get_logistic_log_normal_combo()
   samples <- mcmc(
@@ -211,10 +212,11 @@ test_that("nextBest-NextBestNCRM-DataCombo works as expected", {
     max_overdose_prob = 0.25
   )
   increments <- IncrementsComboCartesian(
-    drug1 = IncrementsRelative(0, 2),
+    drug1 = IncrementsRelative(0, 0.5),
     drug2 = IncrementsRelative(0, 1)
   )
   doselimit <- maxDose(increments, data)
+  doselimit[3, 2] <- 20
   result <- nextBest(
     nb_ncrm,
     doselimit,
@@ -222,6 +224,19 @@ test_that("nextBest-NextBestNCRM-DataCombo works as expected", {
     model,
     data
   )
+  expect_equal(result$value, t(c(drug1 = 10, drug2 = 20)))
+  probs <- data.frame(
+    dose1 = c(10, 20, 30, 10, 20, 30),
+    dose2 = c(20, 20, 20, 40, 40, 40),
+    target_prob = c(40, 20, 10, 10, 0, NA),
+    overdose_prob = c(10, 10, 10, 30, 20, NA),
+    not_eligible = c(FALSE, FALSE, FALSE, TRUE, FALSE, FALSE)
+  )
+  expect_equal(result$probs, probs)
+  expect_s3_class(result$plot, "gtable")
+  expect_list(result$singlePlots)
+  expect_s3_class(result$singlePlots$plot1, "ggplot")
+  expect_s3_class(result$singlePlots$plot2, "ggplot")
 })
 
 ## NextBestNCRM-DataParts ----

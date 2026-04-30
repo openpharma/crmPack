@@ -8,6 +8,7 @@
 \alias{nextBest-NextBestMTD}
 \alias{nextBest,NextBestNCRM,numeric,Samples,GeneralModel,Data-method}
 \alias{nextBest-NextBestNCRM}
+\alias{nextBest,NextBestNCRM,matrix,Samples,LogisticLogNormalCombo,DataCombo-method}
 \alias{nextBest,NextBestNCRM,numeric,Samples,GeneralModel,DataParts-method}
 \alias{nextBest-NextBestNCRM-DataParts}
 \alias{nextBest,NextBestNCRMLoss,numeric,Samples,GeneralModel,Data-method}
@@ -44,6 +45,8 @@ nextBest(nextBest, doselimit, samples, model, data, ...)
 \S4method{nextBest}{NextBestMTD,numeric,Samples,GeneralModel,Data}(nextBest, doselimit = Inf, samples, model, data, ...)
 
 \S4method{nextBest}{NextBestNCRM,numeric,Samples,GeneralModel,Data}(nextBest, doselimit = Inf, samples, model, data, ...)
+
+\S4method{nextBest}{NextBestNCRM,matrix,Samples,LogisticLogNormalCombo,DataCombo}(nextBest, doselimit, samples, model, data, ...)
 
 \S4method{nextBest}{NextBestNCRM,numeric,Samples,GeneralModel,DataParts}(nextBest, doselimit = Inf, samples, model, data, ...)
 
@@ -94,16 +97,17 @@ nextBest(nextBest, doselimit, samples, model, data, ...)
 \arguments{
 \item{nextBest}{(\code{NextBest})\cr the rule for the next best dose.}
 
-\item{doselimit}{(\code{number})\cr the maximum allowed next dose. If it is an
+\item{doselimit}{(\code{number} or \code{matrix})\cr the maximum allowed next dose. If it is
 infinity (default), then essentially no dose limit will be applied in the
-course of dose recommendation calculation.}
+course of dose recommendation calculation. A \code{matrix} must be
+used for two drug combinations.}
 
 \item{samples}{(\code{Samples})\cr posterior samples from \code{model} parameters given
 \code{data}.}
 
 \item{model}{(\code{ModelTox})\cr the DLT model.}
 
-\item{data}{(\code{Data})\cr data that was used to generate the samples.}
+\item{data}{(\code{Data} or \code{DataCombo})\cr data that was used to generate the samples.}
 
 \item{...}{additional arguments without method dispatch.}
 
@@ -160,6 +164,14 @@ the underlying \code{data}.
 additional element \code{probs} in the output's list contains the target and
 overdosing probabilities (across all doses in the dose grid) used in the
 derivation of the next best dose.
+
+\item \code{nextBest(
+  nextBest = NextBestNCRM,
+  doselimit = matrix,
+  samples = Samples,
+  model = LogisticLogNormalCombo,
+  data = DataCombo
+)}: find the next best dose combination based on the NCRM method.
 
 \item \code{nextBest(
   nextBest = NextBestNCRM,

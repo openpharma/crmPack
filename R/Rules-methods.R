@@ -386,24 +386,9 @@ setMethod(
     # defined by the dose limit matrix. We don't want to calculate
     # probabilities for doses above the dose limit curve
     # as this will just take unnecessary time.
-    dose_grid_second_drug <- data@doseGrid[[2L]]
-    doses_per_first_drug <- apply(
-      doselimit,
-      MARGIN = 1L,
-      simplify = FALSE,
-      FUN = function(row) {
-        if (is.na(row[2])) {
-          NULL
-        } else {
-          cbind(
-            row[1],
-            dose_grid_second_drug[dose_grid_second_drug <= row[2]]
-          )
-        }
-      }
-    )
-    dose_matrix <- do.call(rbind, doses_per_first_drug)
-    colnames(dose_matrix) <- names(data@doseGrid)
+    all_dose_matrix <- as.matrix(expand.grid(data@doseGrid))
+    is_below_limit <- h_dose_combo_below_limit(all_dose_matrix, doselimit)
+    dose_matrix <- all_dose_matrix[is_below_limit, , drop = FALSE]
 
     # Matrix with samples from the dose-tox curve at the dose grid points (rows: samples, cols: doses).
     prob_samples <- apply(
@@ -438,23 +423,93 @@ setMethod(
         # with highest first dose and then highest second dose among
         # the eligible ones.
       )
-      dose_matrix[is_dose_eligible, ][next_best_level, , drop = FALSE]
+      dose_matrix[is_dose_eligible, , drop = FALSE][
+        next_best_level,
+        ,
+        drop = FALSE
+      ]
     } else {
       NA_real_
     }
 
     # Build plots, first for the target probability.
-    p1 <- # show target probability as tiles and include dose limit curve
+
+    # Show target probability as tiles, and doses that were above
+    # the dose limit should stay black.
+    all_target_prob <- rep(NA, nrow(all_dose_matrix))
+    all_target_prob[is_below_limit] <- prob_target * 100
+    all_overdose_prob <- rep(NA, nrow(all_dose_matrix))
+    all_overdose_prob[is_below_limit] <- prob_overdose * 100
+    all_not_eligible <- rep(FALSE, nrow(all_dose_matrix))
+    all_not_eligible[is_below_limit] <- !is_dose_eligible
+
+    plot_data <- data.frame(
+      dose1 = all_dose_matrix[, 1L],
+      dose2 = all_dose_matrix[, 2L],
+      target_prob = all_target_prob,
+      overdose_prob = all_overdose_prob,
+      not_eligible = all_not_eligible
+    )
+    p1 <- ggplot() +
+      geom_tile(
+        data = plot_data,
+        aes(x = .data$dose1, y = .data$dose2, fill = .data$target_prob)
+      ) +
+      scale_fill_gradient(
+        low = "white",
+        high = "darkgreen",
+        na.value = "black",
+        limits = c(0, 100),
+        name = "Target probability [%]"
+      ) +
+      xlab(names(data@doseGrid)[1]) +
+      ylab(names(data@doseGrid)[2]) +
+      geom_point(
+        data = plot_data[plot_data$not_eligible, , drop = FALSE],
+        aes(x = .data$dose1, y = .data$dose2),
+        shape = 4,
+        size = 10,
+        colour = "red"
+      )
 
     if (any(is_dose_eligible)) {
-      p1 <- p1 + 
-      # mark boundary curve where overdosing probability would be too large
-      # and then mark the next best dose with a point
+      p1 <- p1 +
+        # And a blue circle on the next best dose.
+        geom_point(
+          data = data.frame(
+            dose1 = next_doses[1L],
+            dose2 = next_doses[2L]
+          ),
+          aes(x = .data$dose1, y = .data$dose2),
+          size = 10,
+          shape = 19,
+          colour = "blue",
+          fill = "blue"
+        )
     }
 
     # Second, for the overdosing probability.
-    p2 <-  # also here make a tile plot with the curve of too high
-    # overdosing probability and mark the next best dose with a point
+    p2 <- ggplot() +
+      geom_tile(
+        data = plot_data,
+        aes(x = .data$dose1, y = .data$dose2, fill = .data$overdose_prob)
+      ) +
+      scale_fill_gradient(
+        low = "white",
+        high = "red",
+        na.value = "black",
+        limits = c(0, 100),
+        name = "Overdose probability [%]"
+      ) +
+      xlab(names(data@doseGrid)[1]) +
+      ylab(names(data@doseGrid)[2]) +
+      geom_point(
+        data = plot_data[plot_data$not_eligible, , drop = FALSE],
+        aes(x = .data$dose1, y = .data$dose2),
+        shape = 4,
+        size = 10,
+        colour = "red"
+      )
 
     # Place them below each other.
     plot_joint <- gridExtra::arrangeGrob(p1, p2, nrow = 2)
@@ -463,11 +518,7 @@ setMethod(
       value = next_doses,
       plot = plot_joint,
       singlePlots = list(plot1 = p1, plot2 = p2),
-      probs = cbind(
-        dose_matrix,
-        target = prob_target,
-        overdose = prob_overdose
-      )
+      probs = plot_data
     )
   }
 )

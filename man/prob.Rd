@@ -14,6 +14,10 @@
 \alias{prob-ProbitLogNormalRel}
 \alias{prob,numeric,LogisticLogNormalGrouped,Samples-method}
 \alias{prob-LogisticLogNormalGrouped}
+\alias{prob,numeric,LogisticLogNormalCombo,Samples-method}
+\alias{prob-LogisticLogNormalCombo}
+\alias{prob,matrix,LogisticLogNormalCombo,Samples-method}
+\alias{prob-LogisticLogNormalCombo-matrix}
 \alias{prob,numeric,LogisticKadane,Samples-method}
 \alias{prob-LogisticKadane}
 \alias{prob,numeric,LogisticKadaneBetaGamma,Samples-method}
@@ -51,6 +55,10 @@ prob(dose, model, samples, ...)
 \S4method{prob}{numeric,ProbitLogNormalRel,Samples}(dose, model, samples, ...)
 
 \S4method{prob}{numeric,LogisticLogNormalGrouped,Samples}(dose, model, samples, group, ...)
+
+\S4method{prob}{numeric,LogisticLogNormalCombo,Samples}(dose, model, samples, ...)
+
+\S4method{prob}{matrix,LogisticLogNormalCombo,Samples}(dose, model, samples, ...)
 
 \S4method{prob}{numeric,LogisticKadane,Samples}(dose, model, samples, ...)
 
@@ -99,14 +107,16 @@ the \code{combo} arm.}
 (the default) or grade-specific?}
 }
 \value{
-A \code{proportion} or \code{numeric} vector with the toxicity probabilities.
-If non-scalar \code{samples} were used, then every element in the returned vector
-corresponds to one element of a sample. Hence, in this case, the output
-vector is of the same length as the sample vector. If scalar \code{samples} were
-used or no \code{samples} were used, e.g. for pseudo DLE/toxicity \code{model},
-then the output is of the same length as the length of the \code{dose}.  In the
-case of \code{LogisticLogNormalOrdinal}, the probabilities relate to toxicities
-of  grade given by \code{grade}.
+A \code{proportion} or \code{numeric} vector with the toxicity probabilities,
+or a numeric matrix for methods that evaluate multiple dose combinations at
+once. If non-scalar \code{samples} were used, then every element in the returned
+vector corresponds to one element of a sample. Hence, in this case, the
+output vector is of the same length as the sample vector. If scalar
+\code{samples} were used or no \code{samples} were used, e.g. for pseudo
+DLE/toxicity \code{model}, then the output is of the same length as the length
+of the \code{dose}. For matrix-valued dose inputs, the returned matrix contains
+one column per dose combination. In the case of \code{LogisticLogNormalOrdinal},
+the probabilities relate to toxicities of grade given by \code{grade}.
 }
 \description{
 \ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#stable}{\figure{lifecycle-stable.svg}{options: alt='[Stable]'}}}{\strong{[Stable]}}
@@ -136,6 +146,12 @@ correspond to the sampling index, i.e. the layout is then
 
 \item \code{prob(dose = numeric, model = LogisticLogNormalGrouped, samples = Samples)}: method for \code{\link{LogisticLogNormalGrouped}} which needs \code{group}
 argument in addition.
+
+\item \code{prob(dose = numeric, model = LogisticLogNormalCombo, samples = Samples)}: method for \code{\link{LogisticLogNormalCombo}} for a single dose
+combination provided as a named numeric vector.
+
+\item \code{prob(dose = matrix, model = LogisticLogNormalCombo, samples = Samples)}: method for \code{\link{LogisticLogNormalCombo}} for one or more dose
+combinations provided in the rows of a numeric matrix.
 
 \item \code{prob(dose = numeric, model = LogisticKadane, samples = Samples)}: 
 
