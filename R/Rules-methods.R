@@ -20,13 +20,14 @@ NULL
 #' the underlying `data`.
 #'
 #' @param nextBest (`NextBest`)\cr the rule for the next best dose.
-#' @param doselimit (`number`)\cr the maximum allowed next dose. If it is an
+#' @param doselimit (`number` or `matrix`)\cr the maximum allowed next dose. If it is
 #'   infinity (default), then essentially no dose limit will be applied in the
-#'   course of dose recommendation calculation.
+#'   course of dose recommendation calculation. A `matrix` must be
+#'   used for two drug combinations.
 #' @param samples (`Samples`)\cr posterior samples from `model` parameters given
 #'   `data`.
 #' @param model (`GeneralModel`)\cr model that was used to generate the samples.
-#' @param data (`Data`)\cr data that was used to generate the samples.
+#' @param data (`Data` or `DataCombo`)\cr data that was used to generate the samples.
 #' @param ... additional arguments without method dispatch.
 #'
 #' @return A list with the next best dose recommendation  (element named `value`)
@@ -42,7 +43,13 @@ setGeneric(
   name = "nextBest",
   def = function(nextBest, doselimit, samples, model, data, ...) {
     if (!missing(doselimit)) {
-      assert_number(doselimit, lower = 0, finite = FALSE)
+      if (is.vector(doselimit)) {
+        assert_number(doselimit, lower = 0, finite = FALSE)
+      } else if (is.matrix(doselimit)) {
+        assert_matrix(doselimit, ncols = 2, mode = "numeric")
+      } else {
+        stop("doselimit must be either a number or a matrix.")
+      }
     }
     standardGeneric("nextBest")
   },
@@ -349,6 +356,115 @@ setMethod(
       singlePlots = list(plot1 = p1, plot2 = p2),
       probs = cbind(
         dose = data@doseGrid,
+        target = prob_target,
+        overdose = prob_overdose
+      )
+    )
+  }
+)
+
+## NextBestNCRM-DataCombo ----
+
+#' @describeIn nextBest find the next best dose combination based on the NCRM method.
+#'
+#' @aliases nextBest-NextBestNCRM
+#'
+#' @export
+#' @example examples/Rules-method-nextBest-NextBestNCRM-DataCombo.R
+#'
+setMethod(
+  f = "nextBest",
+  signature = signature(
+    nextBest = "NextBestNCRM",
+    doselimit = "matrix",
+    samples = "Samples",
+    model = "LogisticLogNormalCombo",
+    data = "DataCombo"
+  ),
+  definition = function(nextBest, doselimit, samples, model, data, ...) {
+    # Generate all doses for the combination which are inside the area
+    # defined by the dose limit matrix. We don't want to calculate
+    # probabilities for doses above the dose limit curve
+    # as this will just take unnecessary time.
+    dose_grid_second_drug <- data@doseGrid[[2L]]
+    doses_per_first_drug <- apply(
+      doselimit,
+      MARGIN = 1L,
+      simplify = FALSE,
+      FUN = function(row) {
+        if (is.na(row[2])) {
+          NULL
+        } else {
+          cbind(
+            row[1],
+            dose_grid_second_drug[dose_grid_second_drug <= row[2]]
+          )
+        }
+      }
+    )
+    dose_matrix <- do.call(rbind, doses_per_first_drug)
+    colnames(dose_matrix) <- names(data@doseGrid)
+
+    # Matrix with samples from the dose-tox curve at the dose grid points (rows: samples, cols: doses).
+    prob_samples <- apply(
+      dose_matrix,
+      MARGIN = 1L,
+      prob,
+      model = model,
+      samples = samples,
+      ...
+    )
+
+    # Estimates of posterior probabilities that are based on the prob. samples
+    # which are within overdose/target interval.
+    prob_overdose <- colMeans(h_in_range(
+      prob_samples,
+      nextBest@overdose,
+      bounds_closed = c(FALSE, TRUE)
+    ))
+    prob_target <- colMeans(h_in_range(prob_samples, nextBest@target))
+
+    # Eligible grid doses after accounting for maximum possible dose and discarding overdoses.
+    is_dose_eligible <- (prob_overdose <= nextBest@max_overdose_prob)
+
+    next_doses <- if (any(is_dose_eligible)) {
+      # If maximum target probability is higher than some numerical threshold,
+      # then take that level, otherwise stick to the maximum level that is OK.
+      # next_best_level is relative to eligible doses.
+      next_best_level <- ifelse(
+        test = any(prob_target[is_dose_eligible] > 0.05),
+        yes = which.max(prob_target[is_dose_eligible]),
+        no = sum(is_dose_eligible) # This selects the one
+        # with highest first dose and then highest second dose among
+        # the eligible ones.
+      )
+      dose_matrix[is_dose_eligible, ][next_best_level, , drop = FALSE]
+    } else {
+      NA_real_
+    }
+
+    # Build plots, first for the target probability.
+    p1 <- # show target probability as tiles and include dose limit curve
+
+    if (any(is_dose_eligible)) {
+      p1 <- p1 + 
+      # mark boundary curve where overdosing probability would be too large
+      # and then mark the next best dose with a point
+    }
+
+    # Second, for the overdosing probability.
+    p2 <-  # also here make a tile plot with the curve of too high
+    # overdosing probability and mark the next best dose with a point
+
+    # Place them below each other.
+    plot_joint <- gridExtra::arrangeGrob(p1, p2, nrow = 2)
+
+    list(
+      value = next_doses,
+      plot = plot_joint,
+      singlePlots = list(plot1 = p1, plot2 = p2),
+      probs = cbind(
+        dose_matrix,
         target = prob_target,
         overdose = prob_overdose
       )

@@ -197,6 +197,33 @@ test_that("nextBest-NextBestNCRM can accept additional arguments and pass them t
   expect_identical(result$value, NA_real_)
 })
 
+test_that("nextBest-NextBestNCRM-DataCombo works as expected", {
+  data <- h_get_data_combo()
+  model <- h_get_logistic_log_normal_combo()
+  samples <- mcmc(
+    data,
+    model,
+    h_get_mcmc_options(samples = 10, burnin = 10)
+  )
+  nb_ncrm <- NextBestNCRM(
+    target = c(0.2, 0.35),
+    overdose = c(0.35, 1),
+    max_overdose_prob = 0.25
+  )
+  increments <- IncrementsComboCartesian(
+    drug1 = IncrementsRelative(0, 2),
+    drug2 = IncrementsRelative(0, 1)
+  )
+  doselimit <- maxDose(increments, data)
+  result <- nextBest(
+    nb_ncrm,
+    doselimit,
+    samples,
+    model,
+    data
+  )
+})
+
 ## NextBestNCRM-DataParts ----
 
 test_that("nextBest-NextBestNCRM-DataParts returns expected values of the objects", {
