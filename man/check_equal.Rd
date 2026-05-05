@@ -71,6 +71,4 @@ assert_equal(0.01, 0.02, tol = 0.05) # no error
 }
 \seealso{
 \code{\link{assertions}} for more details.
-
-\code{\link{assertions}} for more details.
 }

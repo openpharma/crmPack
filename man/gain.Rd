@@ -2,16 +2,12 @@
 % Please edit documentation in R/Model-methods.R
 \name{gain}
 \alias{gain}
-\alias{gain,numeric,ModelTox,Samples,ModelEff,Samples-method}
-\alias{gain-ModelTox-ModelEff}
 \alias{gain,numeric,ModelTox,missing,Effloglog,missing-method}
 \alias{gain-ModelTox-Effloglog-noSamples}
 \title{Compute Gain Values based on Pseudo DLE and a Pseudo Efficacy Models and
 Using Optional Samples.}
 \usage{
 gain(dose, model_dle, samples_dle, model_eff, samples_eff, ...)
-
-\S4method{gain}{numeric,ModelTox,Samples,ModelEff,Samples}(dose, model_dle, samples_dle, model_eff, samples_eff, ...)
 
 \S4method{gain}{numeric,ModelTox,missing,Effloglog,missing}(dose, model_dle, samples_dle, model_eff, samples_eff, ...)
 }
@@ -48,14 +44,6 @@ pseudo DLE and Efficacy models as well as a given DLE and Efficacy samples.
 }
 \section{Functions}{
 \itemize{
-\item \code{gain(
-  dose = numeric,
-  model_dle = ModelTox,
-  samples_dle = Samples,
-  model_eff = ModelEff,
-  samples_eff = Samples
-)}: 
-
 \item \code{gain(
   dose = numeric,
   model_dle = ModelTox,

@@ -28,7 +28,7 @@ DesignOrdinal(
 \item{pl_cohort_size}{(\code{CohortSize})\cr see slot definition.}
 
 \item{...}{
-  Arguments passed on to \code{\link[=RuleDesignOrdinal]{RuleDesignOrdinal}}
+  Arguments passed on to \code{\link{RuleDesignOrdinal}}
   \describe{
     \item{\code{next_best}}{(\code{NextBestOrdinal})\cr see slot definition.}
     \item{\code{cohort_size}}{(\code{CohortSize})\cr see slot definition.}

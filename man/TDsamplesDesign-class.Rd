@@ -28,12 +28,13 @@ TDsamplesDesign(
 \item{pl_cohort_size}{(\code{CohortSize})\cr see slot definition.}
 
 \item{...}{
-  Arguments passed on to \code{\link[=RuleDesign]{RuleDesign}}
+  Arguments passed on to \code{\link{RuleDesign}}
   \describe{
     \item{\code{nextBest}}{(\code{NextBest})\cr see slot definition.}
     \item{\code{cohort_size}}{(\code{CohortSize})\cr see slot definition.}
     \item{\code{data}}{(\code{Data})\cr see slot definition.}
     \item{\code{startingDose}}{(\code{number})\cr see slot definition.}
+    \item{\code{doseGrid}}{(\code{numeric})\cr the dose grid to be used (sorted).}
   }}
 }
 \description{

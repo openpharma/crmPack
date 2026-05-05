@@ -20,7 +20,7 @@ DADesign(model, data, safetyWindow, ...)
 \item{safetyWindow}{(\code{SafetyWindow})\cr see slot definition.}
 
 \item{...}{
-  Arguments passed on to \code{\link[=Design]{Design}}
+  Arguments passed on to \code{\link{Design}}
   \describe{
     \item{\code{stopping}}{(\code{Stopping})\cr see slot definition.}
     \item{\code{increments}}{(\code{Increments})\cr see slot definition.}

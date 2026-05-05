@@ -19,7 +19,7 @@ StoppingSpecificDose(
 \arguments{
 \item{rule}{(\code{Stopping})\cr see slot definition.}
 
-\item{dose}{(\code{number})\cr see slot definition.}
+\item{dose}{(\code{numeric})\cr see slot definition.}
 
 \item{report_label}{(\code{string} or \code{NA}) \cr see slot definition.}
 }

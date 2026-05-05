@@ -24,7 +24,7 @@ Liu's paper, \code{c_par = 2} is recommended.}
 (default). Otherwise an unconditional model is used.}
 
 \item{...}{
-  Arguments passed on to \code{\link[=LogisticLogNormal]{LogisticLogNormal}}
+  Arguments passed on to \code{\link{LogisticLogNormal}}
   \describe{
     \item{\code{mean}}{(\code{numeric})\cr the prior mean vector.}
     \item{\code{cov}}{(\code{matrix})\cr the prior covariance matrix. The precision matrix
