@@ -1891,7 +1891,8 @@ StoppingMissingDose <- function(report_label = NA_character_) {
 #'
 #' @slot nCohorts (`number`)\cr number of required cohorts.
 #' @slot percentage (`number`)\cr percentage (between and including 0 and 100)
-#'   within the next best dose the cohorts must lie.
+#'   within the next best dose the cohorts must lie. This is applied
+#'   for each of the two doses for `DataCombo` objects.
 #'
 #' @aliases StoppingCohortsNearDose
 #' @export
@@ -2626,7 +2627,7 @@ StoppingTargetBiomarker <- function(
   Class = "StoppingSpecificDose",
   slots = c(
     rule = "Stopping",
-    dose = "positive_number"
+    dose = "numeric"
   ),
   contains = "Stopping"
 )
@@ -2636,7 +2637,7 @@ StoppingTargetBiomarker <- function(
 #' @rdname StoppingSpecificDose-class
 #'
 #' @param rule (`Stopping`)\cr see slot definition.
-#' @param dose (`number`)\cr see slot definition.
+#' @param dose (`numeric`)\cr see slot definition.
 #' @param report_label (`string` or `NA`) \cr see slot definition.
 #'
 #' @export
@@ -2649,12 +2650,12 @@ StoppingSpecificDose <- function(
 ) {
   report_label <- h_default_if_empty(
     as.character(report_label),
-    paste0("Dose ", dose, " used for testing a stopping rule")
+    paste0("Dose ", toString(dose), " used for testing a stopping rule")
   )
 
   .StoppingSpecificDose(
     rule = rule,
-    dose = positive_number(dose),
+    dose = as.numeric(dose),
     report_label = report_label
   )
 }
@@ -2667,7 +2668,7 @@ StoppingSpecificDose <- function(
 .DefaultStoppingSpecificDose <- function() {
   StoppingSpecificDose(
     rule = StoppingTargetProb(target = c(0, 0.3), prob = 0.8),
-    dose = positive_number(80)
+    dose = 80
   )
 }
 

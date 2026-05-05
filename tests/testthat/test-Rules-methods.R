@@ -2142,6 +2142,19 @@ test_that("StoppingMissingDose works correctly", {
   )
 })
 
+test_that("StoppingMissingDose works correctly also with DataCombo", {
+  stopping <- StoppingMissingDose()
+
+  result <- stopTrial(
+    stopping,
+    dose = NA_real_,
+    data = DataCombo(
+      doseGrid = list(drug1 = c(0, 1), drug2 = c(0, 1))
+    )
+  )
+  expect_true(result)
+})
+
 ## StoppingCohortsNearDose ----
 
 test_that("StoppingCohortsNearDose can handle when dose is NA", {
@@ -2451,6 +2464,30 @@ test_that("stopTrial works correctly for StoppingCohortsNearDose", {
   )
 })
 
+test_that("stopTrial works correctly for StoppingCohortsNearDose with DataCombo", {
+  stopRule <- StoppingCohortsNearDose(nCohorts = 2, percentage = 50)
+  data <- DataCombo(
+    x = cbind(drug1 = c(1, 1, 1, 1, 1, 1), drug2 = c(1, 1, 2, 2, 3, 3)),
+    y = rep(0, 6),
+    cohort = c(1L, 1L, 2L, 2L, 3L, 3L),
+    ID = seq_len(6),
+    doseGrid = list(drug1 = c(1, 2), drug2 = c(1, 2, 3))
+  )
+  rv <- stopTrial(
+    stopping = stopRule,
+    dose = c(1, 2),
+    data = data
+  )
+  expect_true(rv)
+  expect_equal(
+    attributes(rv),
+    list(
+      message = "3 cohorts lie within 50% of the next best dose 1, 2. This reached the required 2 cohorts",
+      report_label = "≥ 2 cohorts dosed in 50 % dose range around NBD"
+    )
+  )
+})
+
 ## StoppingPatientsNearDose ----
 
 test_that("StoppingPatientsNearDose can handle when dose is NA", {
@@ -2522,6 +2559,30 @@ test_that("StoppingPatientsNearDose correctly excludes backfill patients if requ
   expect_identical(result, expected)
 })
 
+test_that("stopTrial works correctly for StoppingPatientsNearDose with DataCombo", {
+  stopRule <- StoppingPatientsNearDose(nPatients = 3, percentage = 50)
+  data <- DataCombo(
+    x = cbind(drug1 = c(1, 1, 1, 1, 1, 1), drug2 = c(1, 1, 2, 2, 3, 3)),
+    y = rep(0, 6),
+    cohort = c(1L, 1L, 2L, 2L, 3L, 3L),
+    ID = seq_len(6),
+    doseGrid = list(drug1 = c(1, 2), drug2 = c(1, 2, 3))
+  )
+  rv <- stopTrial(
+    stopping = stopRule,
+    dose = c(1, 2),
+    data = data
+  )
+  expect_true(rv)
+  expect_equal(
+    attributes(rv),
+    list(
+      message = "6 patients lie within 50% of the next best dose 1, 2. This reached the required 3 patients",
+      report_label = "≥ 3 patients dosed in 50 % dose range around NBD"
+    )
+  )
+})
+
 ## StoppingMinCohorts ----
 
 test_that("StoppingMinCohorts works correctly if next dose is NA", {
@@ -2568,6 +2629,30 @@ test_that("StoppingMinCohorts works correctly in edge cases", {
     list(
       message = "Number of cohorts is 3 and thus reached the prespecified minimum number 1",
       report_label = "≥ 1 cohorts dosed"
+    )
+  )
+})
+
+test_that("stopTrial works correctly for StoppingMinCohorts with DataCombo", {
+  stopRule <- StoppingMinCohorts(nCohorts = 3)
+  data <- DataCombo(
+    x = cbind(drug1 = c(1, 1, 1, 1, 1, 1), drug2 = c(1, 1, 2, 2, 3, 3)),
+    y = rep(0, 6),
+    cohort = c(1L, 1L, 2L, 2L, 3L, 3L),
+    ID = seq_len(6),
+    doseGrid = list(drug1 = c(1, 2), drug2 = c(1, 2, 3))
+  )
+  rv <- stopTrial(
+    stopping = stopRule,
+    dose = c(1, 2),
+    data = data
+  )
+  expect_true(rv)
+  expect_equal(
+    attributes(rv),
+    list(
+      message = "Number of cohorts is 3 and thus reached the prespecified minimum number 3",
+      report_label = "≥ 3 cohorts dosed"
     )
   )
 })
@@ -2664,6 +2749,30 @@ test_that("stopTrial works correctly for StoppingMinPatients", {
   )
 })
 
+test_that("stopTrial works correctly for StoppingMinPatients with DataCombo", {
+  stopRule <- StoppingMinPatients(nPatients = 4)
+  data <- DataCombo(
+    x = cbind(drug1 = c(1, 1, 1, 1, 1, 1), drug2 = c(1, 1, 2, 2, 3, 3)),
+    y = rep(0, 6),
+    cohort = c(1L, 1L, 2L, 2L, 3L, 3L),
+    ID = seq_len(6),
+    doseGrid = list(drug1 = c(1, 2), drug2 = c(1, 2, 3))
+  )
+  rv <- stopTrial(
+    stopping = stopRule,
+    dose = c(1, 2),
+    data = data
+  )
+  expect_true(rv)
+  expect_equal(
+    attributes(rv),
+    list(
+      message = "Number of patients is 6 and thus reached the prespecified minimum number 4",
+      report_label = "≥ 4 patients dosed"
+    )
+  )
+})
+
 ## StoppingTargetProb ----
 
 test_that("StoppingTargetProb can handle when dose is NA", {
@@ -2756,6 +2865,31 @@ test_that("stopTrial-StoppingTargetProb can accept additional arguments and pass
     group = "combo"
   )
   expect_false(result)
+})
+
+test_that("stopTrial with StoppingTargetProb works correctly with DataCombo", {
+  my_data <- h_get_data_combo()
+  my_model <- h_get_logistic_log_normal_combo()
+  my_options <- h_get_mcmc_options(samples = 100)
+  my_samples <- mcmc(
+    my_data,
+    my_model,
+    my_options
+  )
+  stopping <- StoppingTargetProb(target = c(0.05, 0.5), prob = 0.3)
+  result <- stopTrial(
+    stopping = stopping,
+    dose = c(drug1 = 1, drug2 = 2),
+    samples = my_samples,
+    model = my_model,
+    data = my_data
+  )
+  expected <- structure(
+    TRUE,
+    message = "Probability for target toxicity is 36 % for dose 1, 2 and thus above the required 30 %",
+    report_label = "P(0.05 ≤ prob(DLE | NBD) ≤ 0.5) ≥ 0.3"
+  )
+  expect_identical(result, expected)
 })
 
 ## StoppingMTDdistribution ----
@@ -3107,6 +3241,33 @@ test_that("StoppingLowestDoseHSRBeta works correctly if first active dose is not
     report_label = "Pβ(lowest dose > P(DLE) = 0.3) > 0.1"
   )
   expect_identical(result, expected) # First active dose not applied.
+})
+
+test_that("StoppingLowestDoseHSRBeta works correctly with DataCombo", {
+  my_data <- h_get_data_combo()
+  my_model <- h_get_logistic_log_normal_combo()
+  my_samples <- mcmc(
+    my_data,
+    my_model,
+    h_get_mcmc_options(samples = 100, burnin = 100)
+  )
+  stopping <- StoppingLowestDoseHSRBeta(target = 0.3, prob = 0.1)
+  result <- stopTrial(
+    stopping = stopping,
+    dose = c(drug1 = 1, drug2 = 2),
+    samples = my_samples,
+    model = my_model,
+    data = my_data
+  )
+  expected <- structure(
+    TRUE,
+    message = paste(
+      "Probability that the lowest active dose of 10, 20 being toxic based on",
+      "posterior Beta distribution using a Beta(1,1) prior is 65% and thus above the required 10% threshold."
+    ),
+    report_label = "Pβ(lowest dose > P(DLE) = 0.3) > 0.1"
+  )
+  expect_identical(result, expected)
 })
 
 ## StoppingTargetBiomarker ----
@@ -3500,6 +3661,29 @@ test_that("StoppingSpecificDose correctly replaces next best string with specifi
   expect_identical(result, expected)
 })
 
+test_that("StoppingSpecificDose also works with DataCombo", {
+  my_stopping <- StoppingSpecificDose(
+    rule = StoppingPatientsNearDose(nPatients = 9, percentage = 5),
+    dose = c(drug1 = 20, drug2 = 20)
+  )
+  my_samples <- 1
+  my_data <- h_get_data_combo()
+  my_model <- 1
+  result <- stopTrial(
+    stopping = my_stopping,
+    dose = c(drug1 = 20, drug2 = 20),
+    samples = my_samples,
+    model = my_model,
+    data = my_data
+  )
+  expected <- structure(
+    FALSE,
+    message = "3 patients lie within 5% of the specific dose 20, 20. This is below the required 9 patients",
+    report_label = "Dose 20, 20 used for testing a stopping rule"
+  )
+  expect_identical(result, expected)
+})
+
 ## StoppingHighestDose ----
 
 test_that("StoppingHighestDose works correctly if next dose is NA", {
@@ -3519,6 +3703,26 @@ test_that("StoppingHighestDose works correctly if next dose is NA", {
     message = paste(
       "Next best dose is NA and thus not the highest dose"
     ),
+    report_label = "NBD is the highest dose"
+  )
+  expect_identical(result, expected)
+})
+
+test_that("StoppingHighestDose also works with DataCombo", {
+  my_stopping <- StoppingHighestDose()
+  my_samples <- 1
+  my_data <- h_get_data_combo()
+  my_model <- 1
+  result <- stopTrial(
+    stopping = my_stopping,
+    dose = c(drug1 = 30, drug2 = 40),
+    samples = my_samples,
+    model = my_model,
+    data = my_data
+  )
+  expected <- structure(
+    TRUE,
+    message = "Next best dose is 30, 40 and thus the highest dose",
     report_label = "NBD is the highest dose"
   )
   expect_identical(result, expected)

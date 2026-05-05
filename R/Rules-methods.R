@@ -2763,10 +2763,14 @@ setMethod(
     dose = "numeric",
     samples = "ANY",
     model = "ANY",
-    data = "Data"
+    data = "GeneralData"
   ),
   definition = function(stopping, dose, samples, model, data, ...) {
-    do_stop <- is.na(dose) || (data@placebo && dose == min(data@doseGrid))
+    na_dose <- is.na(dose)
+    placebo_dose <- .hasSlot(data, "placebo") &&
+      data@placebo &&
+      dose == min(data@doseGrid)
+    do_stop <- na_dose || placebo_dose
 
     msg <- paste(
       "Next dose is",
@@ -2774,7 +2778,7 @@ setMethod(
         do_stop,
         paste(
           ifelse(
-            data@placebo && dose == min(data@doseGrid),
+            placebo_dose,
             "placebo dose",
             "NA"
           ),
@@ -2981,7 +2985,7 @@ setMethod(
     dose = "numeric",
     samples = "ANY",
     model = "ANY",
-    data = "Data"
+    data = "GeneralData"
   ),
   definition = function(stopping, dose, samples, model, data, ...) {
     # Determine the range where the cohorts must lie in.
@@ -2989,7 +2993,17 @@ setMethod(
     upper <- (100 + stopping@percentage) / 100 * dose
 
     # Which patients lie there?
-    index_patients <- which((data@x >= lower) & (data@x <= upper))
+    patients_within_bounds <- if (is(data, "Data") || is(data, "DataOrdinal")) {
+      (data@x >= lower) & (data@x <= upper)
+    } else if (is(data, "DataCombo")) {
+      (data@x[, 1] >= lower[1]) &
+        (data@x[, 1] <= upper[1]) &
+        (data@x[, 2] >= lower[2]) &
+        (data@x[, 2] <= upper[2])
+    } else {
+      stop("Unsupported data type for StoppingCohortsNearDose.")
+    }
+    index_patients <- which(patients_within_bounds)
 
     # How many cohorts?
     n_cohorts <- length(unique(data@cohort[index_patients]))
@@ -3003,7 +3017,7 @@ setMethod(
       " cohorts lie within ",
       stopping@percentage,
       "% of the next best dose ",
-      dose,
+      toString(dose),
       ". This ",
       ifelse(do_stop, "reached", "is below"),
       " the required ",
@@ -3039,7 +3053,7 @@ setMethod(
     dose = "numeric",
     samples = "ANY",
     model = "ANY",
-    data = "Data"
+    data = "GeneralData"
   ),
   definition = function(stopping, dose, samples, model, data, ...) {
     # Determine the range where the cohorts must lie in.
@@ -3048,15 +3062,31 @@ setMethod(
 
     # Get patients' dose levels.
     doses <- data@x
+    is_combo_data <- is(data, "DataCombo")
     if (!stopping@include_backfill) {
-      doses <- doses[!data@backfilled]
+      doses <- if (is_combo_data) {
+        doses[!data@backfilled, ]
+      } else {
+        doses[!data@backfilled]
+      }
     }
 
     # How many patients lie there?
+    is_data_or_ordinal <- is(data, "Data") || is(data, "DataOrdinal")
+    patients_within_bounds <- if (is_data_or_ordinal) {
+      (doses >= lower) & (doses <= upper)
+    } else if (is_combo_data) {
+      (doses[, 1] >= lower[1]) &
+        (doses[, 1] <= upper[1]) &
+        (doses[, 2] >= lower[2]) &
+        (doses[, 2] <= upper[2])
+    } else {
+      stop("Unsupported data type for StoppingPatientsNearDose.")
+    }
     n_patients <- ifelse(
-      is.na(dose),
+      isTRUE(is.na(dose)),
       0,
-      sum((doses >= lower) & (doses <= upper))
+      sum(patients_within_bounds)
     )
 
     # So can we stop?
@@ -3073,7 +3103,7 @@ setMethod(
       "lie within ",
       stopping@percentage,
       "% of the next best dose ",
-      dose,
+      toString(dose),
       ". This ",
       ifelse(do_stop, "reached", "is below"),
       " the required ",
@@ -3107,7 +3137,7 @@ setMethod(
     dose = "ANY",
     samples = "ANY",
     model = "ANY",
-    data = "Data"
+    data = "GeneralData"
   ),
   definition = function(stopping, dose, samples, model, data, ...) {
     # Determine number of cohorts.
@@ -3153,7 +3183,7 @@ setMethod(
     dose = "ANY",
     samples = "ANY",
     model = "ANY",
-    data = "Data"
+    data = "GeneralData"
   ),
   definition = function(stopping, dose, samples, model, data, ...) {
     # So can we stop?
@@ -3197,7 +3227,7 @@ setMethod(
   definition = function(stopping, dose, samples, model, data, ...) {
     # Compute probability to be in target interval.
     prob_target <- ifelse(
-      is.na(dose),
+      isTRUE(is.na(dose)),
       0,
       mean(
         prob(dose = dose, model, samples, ...) >= stopping@target[1] &
@@ -3211,7 +3241,7 @@ setMethod(
       "Probability for target toxicity is",
       round(prob_target * 100),
       "% for dose",
-      dose,
+      toString(dose),
       "and thus",
       ifelse(do_stop, "above", "below"),
       "the required",
@@ -3244,7 +3274,7 @@ setMethod(
     dose = "numeric",
     samples = "Samples",
     model = "GeneralModel",
-    data = "ANY"
+    data = "Data"
   ),
   definition = function(stopping, dose, samples, model, data, ...) {
     # First, generate the MTD samples.
@@ -3366,16 +3396,33 @@ setMethod(
   signature = signature(
     stopping = "StoppingLowestDoseHSRBeta",
     dose = "numeric",
-    samples = "Samples"
+    samples = "Samples",
+    model = "GeneralModel",
+    data = "GeneralData"
   ),
   definition = function(stopping, dose, samples, model, data, ...) {
     # Actual number of patients at first active dose.
-    n <- sum(data@x == data@doseGrid[data@placebo + 1])
+    is_data_or_ordinal <- is(data, "Data") || is(data, "DataOrdinal")
+    is_combo_data <- is(data, "DataCombo")
+    lowest_dose <- if (is_data_or_ordinal) {
+      data@doseGrid[data@placebo + 1]
+    } else if (is_combo_data) {
+      c(data@doseGrid[[1]][1], data@doseGrid[[2]][1])
+    } else {
+      stop("Unsupported data type for StoppingLowestDoseHSRBeta.")
+    }
+    has_lowest_dose <- if (is_data_or_ordinal) {
+      data@x == lowest_dose
+    } else if (is_combo_data) {
+      data@x[, 1] == lowest_dose[1] &
+        data@x[, 2] == lowest_dose[2]
+    }
+    n <- sum(has_lowest_dose)
 
     # Determine toxicity probability of the first active dose.
     tox_prob_first_dose <-
       if (n > 0) {
-        x <- sum(data@y[which(data@x == data@doseGrid[data@placebo + 1])])
+        x <- sum(data@y[which(has_lowest_dose)])
         pbeta(
           stopping@target,
           x + stopping@a,
@@ -3394,7 +3441,7 @@ setMethod(
     } else {
       paste(
         "Probability that the lowest active dose of ",
-        data@doseGrid[data@placebo + 1],
+        toString(lowest_dose),
         " being toxic based on posterior Beta distribution using a Beta(",
         stopping@a,
         ",",
@@ -3547,11 +3594,20 @@ setMethod(
     dose = "numeric",
     samples = "ANY",
     model = "ANY",
-    data = "Data"
+    data = "GeneralData"
   ),
   definition = function(stopping, dose, samples, model, data, ...) {
+    is_data_or_ordinal <- is(data, "Data") || is(data, "DataOrdinal")
+    is_combo_data <- is(data, "DataCombo")
     # Specific dose must be a part of the dose grid.
-    assert_subset(x = stopping@dose@.Data, choices = data@doseGrid)
+    if (is_data_or_ordinal) {
+      assert_subset(x = stopping@dose@.Data, choices = data@doseGrid)
+    } else if (is_combo_data) {
+      assert_subset(x = stopping@dose@.Data[1], choices = data@doseGrid[[1]])
+      assert_subset(x = stopping@dose@.Data[2], choices = data@doseGrid[[2]])
+    } else {
+      stop("Unsupported data type for StoppingSpecificDose.")
+    }
 
     # Evaluate the original (wrapped) stopping rule at the specific dose.
     result <- stopTrial(
@@ -3593,19 +3649,28 @@ setMethod(
     dose = "numeric",
     samples = "ANY",
     model = "ANY",
-    data = "Data"
+    data = "GeneralData"
   ),
   definition = function(stopping, dose, samples, model, data, ...) {
+    is_data_or_ordinal <- is(data, "Data") || is(data, "DataOrdinal")
+    is_combo_data <- is(data, "DataCombo")
     is_highest_dose <- ifelse(
-      is.na(dose),
+      isTRUE(is.na(dose)),
       FALSE,
-      (dose == data@doseGrid[data@nGrid])
+      if (is_data_or_ordinal) {
+        dose == data@doseGrid[data@nGrid]
+      } else if (is_combo_data) {
+        dose[1] == c(data@doseGrid[[1]][data@nGrid[1]]) &&
+          dose[2] == c(data@doseGrid[[2]][data@nGrid[2]])
+      } else {
+        stop("Unsupported data type for StoppingHighestDose.")
+      }
     )
     structure(
       is_highest_dose,
       message = paste(
         "Next best dose is",
-        dose,
+        toString(dose),
         "and thus",
         ifelse(is_highest_dose, "the", "not the"),
         "highest dose"
