@@ -29,10 +29,9 @@
 \alias{knit_print.TDsamplesDesign}
 \alias{knit_print.DualResponsesSamplesDesign}
 \alias{knit_print.RuleDesignOrdinal}
-
-\method{knit_print}{DataCombo}(x, ..., asis = TRUE, label = c("participant", "participants"), units = NA, fmt = NA)
 \alias{knit_print.GeneralData}
 \alias{knit_print.DataParts}
+\alias{knit_print.DataCombo}
 \alias{knit_print.DualEndpoint}
 \alias{knit_print.ModelParamsNormal}
 \alias{knit_print.GeneralModel}
@@ -46,6 +45,7 @@
 \alias{knit_print.OneParLogNormalPrior}
 \alias{knit_print.OneParExpPrior}
 \alias{knit_print.LogisticLogNormalGrouped}
+\alias{knit_print.LogisticLogNormalCombo}
 \alias{knit_print.LogisticLogNormalOrdinal}
 \alias{knit_print.LogisticIndepBeta}
 \alias{knit_print.Effloglog}
@@ -181,6 +181,15 @@
   format_func = h_knit_format_func
 )
 
+\method{knit_print}{DataCombo}(
+  x,
+  ...,
+  asis = TRUE,
+  label = c("participant", "participants"),
+  units = NA,
+  fmt = NA
+)
+
 \method{knit_print}{DualEndpoint}(
   x,
   ...,
@@ -280,6 +289,8 @@
   preamble = "The prior for &theta; is given by\\\\n",
   asis = TRUE
 )
+
+\method{knit_print}{LogisticLogNormalCombo}(x, ..., use_values = TRUE, fmt = "\%5.2f", asis = TRUE)
 
 \method{knit_print}{LogisticLogNormalOrdinal}(
   x,
@@ -565,11 +576,11 @@ participant counts by dose and \code{"cohort"} by cohort.}
 
 \item{format_func}{(\code{function})\cr The function used to format the range table.}
 
-\item{use_values}{(\code{flag})\cr print the values associated with hyperparameters,
-or the symbols used to define the hyper-parameters.  That is, for example, mu or 1.}
-
 \item{fmt}{(\code{character})\cr the \code{sprintf} format string used to render
 numerical values.  Ignored if \code{use_values} is \code{FALSE}.}
+
+\item{use_values}{(\code{flag})\cr print the values associated with hyperparameters,
+or the symbols used to define the hyper-parameters.  That is, for example, mu or 1.}
 
 \item{biomarker_label}{(\code{character})\cr the term used to describe the biomarker}
 
@@ -647,6 +658,10 @@ crmPack objects in Markdown and Quarto files
 We provide additional utility functions to allow human-friendly rendition of
 crmPack objects in Markdown and Quarto files.  This file contains methods for
 all design classes, not just those that are direct descendants of \code{Design}.
+
+\ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#experimental}{\figure{lifecycle-experimental.svg}{options: alt='[Experimental]'}}}{\strong{[Experimental]}}
+
+\ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#experimental}{\figure{lifecycle-experimental.svg}{options: alt='[Experimental]'}}}{\strong{[Experimental]}}
 
 \ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#experimental}{\figure{lifecycle-experimental.svg}{options: alt='[Experimental]'}}}{\strong{[Experimental]}}
 
