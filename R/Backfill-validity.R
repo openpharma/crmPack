@@ -18,8 +18,14 @@ NULL
 v_opening_min_dose <- function(object) {
   v <- Validate()
   v$check(
-    test_number(object@min_dose, lower = 0),
-    "min_dose needs to be a non-negative numeric scalar"
+    test_numeric(
+      object@min_dose,
+      lower = 0,
+      finite = TRUE,
+      min.len = 1,
+      any.missing = FALSE
+    ),
+    "min_dose needs to be a non-negative numeric vector"
   )
   v$result()
 }
