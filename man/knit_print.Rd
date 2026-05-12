@@ -19,6 +19,7 @@
 \alias{knit_print.StartingDose}
 \alias{knit_print.RuleDesign}
 \alias{knit_print.Design}
+\alias{knit_print.DesignCombo}
 \alias{knit_print.DualDesign}
 \alias{knit_print.DADesign}
 \alias{knit_print.TDDesign}
@@ -28,6 +29,8 @@
 \alias{knit_print.TDsamplesDesign}
 \alias{knit_print.DualResponsesSamplesDesign}
 \alias{knit_print.RuleDesignOrdinal}
+
+\method{knit_print}{DataCombo}(x, ..., asis = TRUE, label = c("participant", "participants"), units = NA, fmt = NA)
 \alias{knit_print.GeneralData}
 \alias{knit_print.DataParts}
 \alias{knit_print.DualEndpoint}
@@ -123,6 +126,8 @@
 \method{knit_print}{RuleDesign}(x, ..., level = 2L, title = "Design", sections = NA, asis = TRUE)
 
 \method{knit_print}{Design}(x, ..., level = 2L, title = "Design", sections = NA, asis = TRUE)
+
+\method{knit_print}{DesignCombo}(x, ..., level = 2L, title = "Design", sections = NA, asis = TRUE)
 
 \method{knit_print}{DualDesign}(x, ..., level = 2L, title = "Design", sections = NA, asis = TRUE)
 

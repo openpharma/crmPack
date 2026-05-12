@@ -49,9 +49,11 @@ h_knit_print_render_biomarker_model <- function(x, use_values = TRUE, ...) {
 #' @param use_values logical; if `FALSE`, use symbolic parameters
 #' @param fmt format string for numeric values, passed to `sprintf`
 #' @noRd
-h_knit_print_render_normal_component <- function(component,
-                                                 use_values = TRUE,
-                                                 fmt = "%5.2f") {
+h_knit_print_render_normal_component <- function(
+  component,
+  use_values = TRUE,
+  fmt = "%5.2f"
+) {
   mean <- component@mean
   cov <- component@cov
 
@@ -1195,6 +1197,50 @@ knit_print.LogisticLogNormalGrouped <- function(
   NextMethod(params = params)
 }
 
+# LogisticLogNormalCombo ----
+
+#' @description `r lifecycle::badge("experimental")`
+#' @rdname knit_print
+#' @export
+#' @method knit_print LogisticLogNormalCombo
+knit_print.LogisticLogNormalCombo <- function(
+  x,
+  ...,
+  use_values = TRUE,
+  fmt = "%5.2f",
+  asis = TRUE
+) {
+  assert_flag(asis)
+  assert_flag(use_values)
+  assert_format(fmt)
+
+  rv <- paste0(
+    h_knit_print_render_model.LogisticLogNormalCombo(x, ...),
+    "The first single-agent model is:\n\n",
+    knit_print(
+      x@single_models[[1]],
+      asis = FALSE,
+      use_values = use_values,
+      fmt = fmt,
+      ...
+    ),
+    "\n\nThe second single-agent model is:\n\n",
+    knit_print(
+      x@single_models[[2]],
+      asis = FALSE,
+      use_values = use_values,
+      fmt = fmt,
+      ...
+    ),
+    "\n\nThe prior for the interaction term &eta; is Normal(&gamma;, &tau;).\n\n"
+  )
+
+  if (asis) {
+    rv <- knitr::asis_output(rv)
+  }
+  rv
+}
+
 #' @description `r lifecycle::badge("experimental")`
 #' @noRd
 h_knit_print_render_model.LogisticLogNormalGrouped <- function(
@@ -1215,6 +1261,26 @@ h_knit_print_render_model.LogisticLogNormalGrouped <- function(
     "} $$\\n ",
     "where d* denotes a reference dose and I~c~ is a binary indicator which ",
     "is 1 for the combo arm and 0 for the mono arm.\n\n"
+  )
+}
+
+# LogisticLogNormalCombo ----
+
+#' @description `r lifecycle::badge("experimental")`
+#' @noRd
+h_knit_print_render_model.LogisticLogNormalCombo <- function(
+  x,
+  tox_label = "toxicity",
+  ...
+) {
+  tox_label <- h_prepare_labels(tox_label)
+  paste0(
+    "A logistic log normal model will describe the relationship between dose ",
+    "combinations and ",
+    tox_label[1],
+    ". The two single-agent dose-toxicity surfaces are modelled separately ",
+    "and then combined with an interaction term that captures any additional ",
+    "combination effect.\n\n"
   )
 }
 
