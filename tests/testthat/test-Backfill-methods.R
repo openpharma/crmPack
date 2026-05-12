@@ -33,6 +33,14 @@ test_that("openCohort returns FALSE when cohort dose is the same as recommended 
   expect_false(openCohort(opening, cohort = 5, data = data, dose = 10))
 })
 
+test_that("openCohort works as expected for OpeningMinDose and DataCombo", {
+  data <- h_get_data_combo()
+  opening <- OpeningMinDose(min_dose = c(10, 10))
+
+  expect_true(openCohort(opening, cohort = 2, data = data, dose = 99))
+  expect_false(openCohort(opening, cohort = 1, data = data, dose = 10))
+})
+
 ## OpeningMinCohorts ----
 
 test_that("openCohort works as expected for OpeningMinCohorts when n_cohorts >= min_cohorts", {
@@ -145,6 +153,16 @@ test_that("openCohort returns FALSE when cohort dose is NA for OpeningMinRespons
 
   # Cohort 5 has NA dose, should return FALSE
   expect_false(openCohort(opening, cohort = 5, data = data, dose = 30))
+})
+
+test_that("openCohort works with OpeningMinResponses and DataCombo", {
+  data <- h_get_data_combo()
+  opening <- OpeningMinResponses(
+    min_responses = 2,
+    include_lower_doses = TRUE
+  )
+  expect_true(openCohort(opening, cohort = 2, data = data, dose = 99))
+  expect_false(openCohort(opening, cohort = 1, data = data, dose = 99))
 })
 
 ## OpeningAll ----

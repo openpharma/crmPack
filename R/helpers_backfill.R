@@ -1,10 +1,18 @@
 # Get the cohort index and dose of the previously added cohort.
 h_previous_cohort <- function(data) {
   last_cohort_index <- length(data@cohort)
-  last_cohort <- data@cohort[[last_cohort_index]]
-  previous_cohort <- last_cohort - 1L
-  previous_dose <- if (previous_cohort > 0) {
-    data@x[data@cohort == previous_cohort][1]
+  last_cohort <- if (last_cohort_index > 0) {
+    data@cohort[[last_cohort_index]]
+  } else {
+    NA_integer_
+  }
+  previous_cohort <- if (last_cohort > 1) last_cohort - 1L else NA_integer_
+  previous_dose <- if (!is.na(previous_cohort)) {
+    if (is.matrix(data@x)) {
+      data@x[data@cohort == previous_cohort, , drop = FALSE][1, ]
+    } else {
+      data@x[data@cohort == previous_cohort][1]
+    }
   } else {
     NA_real_
   }
@@ -17,7 +25,11 @@ h_previous_cohort <- function(data) {
 # Get the dose assigned to a given cohort.
 h_get_dose_for_cohort <- function(data, cohort) {
   if (cohort > 0 && cohort <= length(data@cohort)) {
-    data@x[data@cohort == cohort][1]
+    if (is.matrix(data@x)) {
+      data@x[data@cohort == cohort, , drop = FALSE][1, ]
+    } else {
+      data@x[data@cohort == cohort][1]
+    }
   } else {
     NA_real_
   }
