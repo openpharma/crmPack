@@ -84,3 +84,32 @@ test_that("v_design_grouped identifies wrong flag slots as expected", {
   )
   expect_identical(result, expected)
 })
+
+## v_design_combo ----
+
+test_that("v_design_combo passes for valid object", {
+  object <- .DesignCombo()
+  expect_true(v_design_combo(object))
+})
+
+test_that("v_design_combo validates startingDose format and membership", {
+  object <- .DesignCombo()
+
+  object@startingDose <- 10
+  expect_identical(
+    v_design_combo(object),
+    "startingDose must be a numeric vector of length 2"
+  )
+
+  object@startingDose <- c(99, 20)
+  expect_identical(
+    v_design_combo(object),
+    "startingDose[1] must be included in data@doseGrid[[1]]"
+  )
+
+  object@startingDose <- c(10, 99)
+  expect_identical(
+    v_design_combo(object),
+    "startingDose[2] must be included in data@doseGrid[[2]]"
+  )
+})

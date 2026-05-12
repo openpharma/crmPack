@@ -64,6 +64,41 @@ v_rule_design_ordinal <- function(object) {
   v$result()
 }
 
+#' @describeIn v_design validates that the [`DesignCombo`] object
+#'   contains valid `startingDose`.
+v_design_combo <- function(object) {
+  v <- Validate()
+  v$check(
+    test_numeric(
+      object@startingDose,
+      len = 2L,
+      any.missing = FALSE,
+      finite = TRUE
+    ),
+    "startingDose must be a numeric vector of length 2"
+  )
+
+  if (
+    test_numeric(
+      object@startingDose,
+      len = 2L,
+      any.missing = FALSE,
+      finite = TRUE
+    )
+  ) {
+    v$check(
+      object@startingDose[1] %in% object@data@doseGrid[[1]],
+      "startingDose[1] must be included in data@doseGrid[[1]]"
+    )
+    v$check(
+      object@startingDose[2] %in% object@data@doseGrid[[2]],
+      "startingDose[2] must be included in data@doseGrid[[2]]"
+    )
+  }
+
+  v$result()
+}
+
 
 #' @describeIn v_design validates that the [`DesignGrouped`] object
 #'   contains valid flags.
