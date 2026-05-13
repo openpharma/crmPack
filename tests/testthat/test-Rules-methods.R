@@ -5184,6 +5184,20 @@ test_that("size works as expected for CohortSizeDLT", {
   }
 })
 
+test_that("size works as expected for CohortSizeDLT with DataCombo", {
+  cohortSize <- CohortSizeDLT(intervals = c(0, 1), cohort_size = c(1, 3))
+  data <- DataCombo(
+    x = cbind(drug1 = c(10, 10), drug2 = c(20, 20)),
+    y = c(0L, 1L),
+    cohort = c(1L, 1L),
+    ID = 1:2,
+    doseGrid = list(drug1 = c(10, 20), drug2 = c(20, 30))
+  )
+
+  expect_equal(size(cohortSize, c(10, 20), data), 3)
+  expect_equal(size(cohortSize, c(NA, NA), data), 0)
+})
+
 ## CohortSizeConst ----
 
 test_that("size works as expected for CohortSizeConst", {
@@ -5193,6 +5207,20 @@ test_that("size works as expected for CohortSizeConst", {
   for (dose in 1:5) {
     expect_equal(size(object = cohortSize, dose = dose, data = emptyData), 4)
   }
+})
+
+test_that("size works as expected for CohortSizeConst with DataCombo", {
+  cohortSize <- CohortSizeConst(size = 4)
+  data <- DataCombo(
+    x = cbind(drug1 = c(10, 10), drug2 = c(20, 20)),
+    y = c(0L, 0L),
+    cohort = c(1L, 1L),
+    ID = 1:2,
+    doseGrid = list(drug1 = c(10, 20), drug2 = c(20, 30))
+  )
+
+  expect_equal(size(cohortSize, c(10, 20), data), 4)
+  expect_equal(size(cohortSize, c(NA, NA), data), 0)
 })
 
 ## CohortSizeRandom ----
@@ -5212,6 +5240,23 @@ test_that("size works as expected for CohortSizeRandom with valid dose", {
     expect_true(result >= 2 && result <= 4)
     expect_true(is.integer(result))
   }
+})
+
+test_that("size works as expected for CohortSizeRandom with DataCombo", {
+  cohortSize <- CohortSizeRandom(min_size = 2, max_size = 4)
+  data <- DataCombo(
+    x = cbind(drug1 = c(10, 10), drug2 = c(20, 20)),
+    y = c(0L, 0L),
+    cohort = c(1L, 1L),
+    ID = 1:2,
+    doseGrid = list(drug1 = c(10, 20), drug2 = c(20, 30))
+  )
+
+  set.seed(123)
+  result <- size(cohortSize, c(10, 20), data)
+  expect_true(result >= 2 && result <= 4)
+  expect_true(is.integer(result))
+  expect_equal(size(cohortSize, c(NA, NA), data), 0)
 })
 
 ## CohortSizeRange ----
@@ -5264,6 +5309,25 @@ test_that("size works as expected for CohortSizeMax", {
   }
 })
 
+test_that("size works as expected for CohortSizeMax with DataCombo", {
+  cohortSize <- CohortSizeMax(
+    cohort_sizes = list(
+      CohortSizeConst(size = 2),
+      CohortSizeDLT(intervals = c(0, 1), cohort_size = c(1, 3))
+    )
+  )
+  data <- DataCombo(
+    x = cbind(drug1 = c(10, 10), drug2 = c(20, 20)),
+    y = c(0L, 1L),
+    cohort = c(1L, 1L),
+    ID = 1:2,
+    doseGrid = list(drug1 = c(10, 20), drug2 = c(20, 30))
+  )
+
+  expect_equal(size(cohortSize, c(10, 20), data), 3)
+  expect_equal(size(cohortSize, c(NA, NA), data), 0)
+})
+
 test_that("maxSize works as expected", {
   size1 <- CohortSizeRange(intervals = c(0, 3), cohort_size = 1:2)
   size2 <- CohortSizeDLT(intervals = 0:2, cohort_size = c(1, 3, 6))
@@ -5304,6 +5368,25 @@ test_that("size works as expected for CohortSizeMin", {
       ifelse(dose < 3, 1, 2)
     )
   }
+})
+
+test_that("size works as expected for CohortSizeMin with DataCombo", {
+  cohortSize <- CohortSizeMin(
+    cohort_sizes = list(
+      CohortSizeConst(size = 2),
+      CohortSizeDLT(intervals = c(0, 1), cohort_size = c(1, 3))
+    )
+  )
+  data <- DataCombo(
+    x = cbind(drug1 = c(10, 10), drug2 = c(20, 20)),
+    y = c(0L, 1L),
+    cohort = c(1L, 1L),
+    ID = 1:2,
+    doseGrid = list(drug1 = c(10, 20), drug2 = c(20, 30))
+  )
+
+  expect_equal(size(cohortSize, c(10, 20), data), 2)
+  expect_equal(size(cohortSize, c(NA, NA), data), 0)
 })
 
 test_that("size works as expected for CohortSizeMin", {
