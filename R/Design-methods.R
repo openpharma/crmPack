@@ -115,7 +115,7 @@ setMethod(
 
         cohort_size <- size(
           object@cohort_size,
-          dose = dose[1],
+          dose = dose,
           data = data
         )
 
@@ -334,7 +334,7 @@ setMethod(
 
         cohort_size <- size(
           object@cohort_size,
-          dose = dose[1],
+          dose = dose,
           data = data
         )
 
