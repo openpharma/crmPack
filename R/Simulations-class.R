@@ -233,7 +233,7 @@ Simulations <- function(fit, stop_reasons, stop_report, additional_stats, ...) {
           x = cbind(drug1 = c(10, 20, 20), drug2 = c(20, 20, 40)),
           y = c(0L, 0L, 0L),
           ID = 1L:3L,
-          cohort = c(1L, 2L, 2L),
+          cohort = c(1L, 2L, 3L),
           doseGrid = list(drug1 = c(10, 20, 30), drug2 = c(20, 40, 60))
         )
       ),
@@ -327,7 +327,7 @@ ComboSimulations <- function(
         x = cbind(drug1 = c(10, 20, 20), drug2 = c(20, 20, 40)),
         y = c(0L, 0L, 0L),
         ID = 1L:3L,
-        cohort = c(1L, 2L, 2L),
+        cohort = c(1L, 2L, 3L),
         doseGrid = list(drug1 = c(10, 20, 30), drug2 = c(20, 40, 60))
       )
     ),

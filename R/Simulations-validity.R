@@ -85,7 +85,7 @@ v_combo_simulations <- function(object) {
       mode = "numeric",
       nrows = nSims,
       ncols = 2,
-      any.missing = FALSE
+      any.missing = TRUE
     ),
     "doses must be a numeric matrix with 2 columns and one row per simulation"
   )

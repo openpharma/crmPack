@@ -113,7 +113,11 @@ setMethod(
         prob <- h_this_truth(dose, current_args, truth)
         prob_response <- truthResponse(dose)
 
-        cohort_size <- size(object@cohort_size, dose = dose, data = data)
+        cohort_size <- size(
+          object@cohort_size,
+          dose = dose[1],
+          data = data
+        )
 
         if (data@placebo) {
           cohort_size_placebo <- size(
@@ -232,6 +236,244 @@ setMethod(
       stop_report = simulations_output$stop_matrix,
       stop_reasons = simulations_output$stopReasons,
       additional_stats = simulations_output$additional_stats,
+      seed = rng_state
+    )
+  }
+)
+
+## DesignCombo ----
+
+#' Simulate outcomes from a two-drug combination CRM design
+#'
+#' @description `r lifecycle::badge("experimental")`
+#'
+#' @param object the [`DesignCombo`] object we want to simulate data from
+#' @param nsim (`count`)
+#'   the number of simulations (default: 1).
+#' @param seed see [set_seed()]
+#' @param truth (`function`)
+#'   a function that takes as input a dose combination (named numeric vector of
+#'   length 2) and returns the true DLT probability. Additional arguments can
+#'   be supplied in `args`.
+#' @param args (`data.frame`)
+#'   data frame with arguments for the `truth` function. The column names
+#'   correspond to the argument names and rows are recycled across simulations.
+#' @param firstSeparate (`flag`)
+#'   enroll the first patient separately from the rest of the cohort? If yes,
+#'   the cohort is closed when a DLT occurs in this first patient.
+#' @param mcmcOptions ([`McmcOptions`])
+#'   MCMC options used for each trial evaluation.
+#' @param parallel (`flag`)
+#'   should simulation runs be parallelized?
+#' @param nCores (`count`)
+#'   number of cores used when `parallel = TRUE`.
+#' @param derive (`list`)
+#'   named list of functions deriving extra statistics from posterior toxicity
+#'   samples at the final recommended combination.
+#' @param ... not used.
+#'
+#' @return an object of class [`ComboSimulations`]
+#'
+#' @note Backfill cohorts are not yet implemented for [`DesignCombo`] simulations
+#'   and therefore lead to an error if used.
+#'
+#' @example examples/design-method-simulate-DesignCombo.R
+#' @export
+setMethod(
+  f = "simulate",
+  signature = signature(
+    object = "DesignCombo",
+    nsim = "ANY",
+    seed = "ANY"
+  ),
+  definition = function(
+    object,
+    nsim = 1L,
+    seed = NULL,
+    truth,
+    args = NULL,
+    firstSeparate = FALSE,
+    mcmcOptions = McmcOptions(),
+    parallel = FALSE,
+    nCores = min(parallel::detectCores(), 5),
+    derive = list(),
+    ...
+  ) {
+    nsim <- as.integer(nsim)
+    assert_function(truth)
+    assert_flag(firstSeparate)
+    assert_count(nsim, positive = TRUE)
+    assert_flag(parallel)
+    assert_count(nCores, positive = TRUE)
+    assert_list(derive)
+    assert_class(object@backfill@opening, "OpeningNone")
+
+    args <- as.data.frame(args)
+    n_args <- max(nrow(args), 1L)
+    rng_state <- set_seed(seed)
+    sim_seeds <- sample.int(n = 2147483647, size = as.integer(nsim))
+
+    run_sim <- function(iter_sim) {
+      set.seed(sim_seeds[iter_sim])
+
+      current_args <- args[(iter_sim - 1) %% n_args + 1, , drop = FALSE]
+
+      truth_with_args <- function(dose) {
+        do.call(truth, c(list(dose), as.list(current_args)))
+      }
+
+      data <- object@data
+      should_stop <- FALSE
+      stop_reason <- NULL
+      dose <- as.numeric(object@startingDose)
+      names(dose) <- data@drugNames
+
+      while (!should_stop) {
+        prob <- truth_with_args(dose)
+        assert_number(prob, lower = 0, upper = 1)
+
+        cohort_size <- size(
+          object@cohort_size,
+          dose = dose[1],
+          data = data
+        )
+
+        dlts <- if (firstSeparate && (cohort_size > 1L)) {
+          dlts_first <- rbinom(n = 1L, size = 1L, prob = prob)
+          if (dlts_first == 0L) {
+            c(
+              dlts_first,
+              rbinom(
+                n = cohort_size - 1L,
+                size = 1L,
+                prob = prob
+              )
+            )
+          } else {
+            dlts_first
+          }
+        } else {
+          rbinom(n = cohort_size, size = 1L, prob = prob)
+        }
+
+        data <- update(object = data, x = dose, y = dlts)
+
+        dose_limit <- maxDose(object@increments, data = data)
+        samples <- mcmc(
+          data = data,
+          model = object@model,
+          options = mcmcOptions
+        )
+
+        next_dose <- nextBest(
+          object@nextBest,
+          doselimit = dose_limit,
+          samples = samples,
+          model = object@model,
+          data = data
+        )$value
+
+        if (is.matrix(next_dose)) {
+          dose <- as.numeric(next_dose[1L, ])
+          names(dose) <- colnames(next_dose)
+        } else if (length(next_dose) == 1L && is.na(next_dose)) {
+          dose <- rep(NA_real_, 2L)
+          names(dose) <- data@drugNames
+        } else {
+          dose <- as.numeric(next_dose)
+          if (length(dose) == 2L) {
+            names(dose) <- data@drugNames
+          }
+        }
+
+        should_stop <- stopTrial(
+          object@stopping,
+          dose = dose,
+          samples = samples,
+          model = object@model,
+          data = data
+        )
+        stopit_results <- h_unpack_stopit(should_stop)
+
+        stop_reason <- attr(should_stop, "message")
+        if (anyNA(dose) && !isTRUE(should_stop)) {
+          stop_reason <- paste(
+            "Next dose is NA , i.e., no active dose is safe enough",
+            "according to the NextBest rule."
+          )
+          should_stop <- TRUE
+        }
+      }
+
+      fit_model <- fit(object = samples, model = object@model, data = data)
+
+      additional_stats <- if (anyNA(dose)) {
+        lapply(derive, function(f) NA_real_)
+      } else {
+        target_prob_samples <- prob(
+          dose = dose,
+          model = object@model,
+          samples = samples
+        )
+        lapply(derive, function(f) f(target_prob_samples))
+      }
+
+      list(
+        data = data,
+        dose = dose,
+        fit = fit_model,
+        stop = stop_reason,
+        report_results = stopit_results,
+        additional_stats = additional_stats
+      )
+    }
+
+    result_list <- get_result_list(
+      fun = run_sim,
+      nsim = nsim,
+      vars = c(
+        "sim_seeds",
+        "args",
+        "n_args",
+        "firstSeparate",
+        "truth",
+        "object",
+        "mcmcOptions"
+      ),
+      parallel = parallel,
+      n_cores = nCores
+    )
+
+    data_list <- lapply(result_list, "[[", "data")
+    recommended_doses <- t(vapply(
+      result_list,
+      function(x) {
+        this_dose <- as.numeric(x$dose)
+        if (length(this_dose) == 1L && is.na(this_dose)) {
+          rep(NA_real_, 2L)
+        } else if (length(this_dose) == 2L) {
+          this_dose
+        } else {
+          rep(NA_real_, 2L)
+        }
+      },
+      numeric(2L)
+    ))
+    colnames(recommended_doses) <- object@data@drugNames
+
+    fit_list <- lapply(result_list, "[[", "fit")
+    stop_reasons <- lapply(result_list, "[[", "stop")
+    stop_results <- lapply(result_list, "[[", "report_results")
+    stop_report <- as.matrix(do.call(rbind, stop_results))
+    additional_stats <- lapply(result_list, "[[", "additional_stats")
+
+    ComboSimulations(
+      data = data_list,
+      doses = recommended_doses,
+      fit = fit_list,
+      stop_report = stop_report,
+      stop_reasons = stop_reasons,
+      additional_stats = additional_stats,
       seed = rng_state
     )
   }
