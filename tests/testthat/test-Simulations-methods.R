@@ -116,7 +116,43 @@ test_that("plot-ComboSimulations works correctly", {
   result_doses <- plot(mySims, type = "dosesTried")
   expect_s3_class(result_doses, "gtable")
 
+  result_2d <- plot(mySims, type = "trajectory2D")
+  expect_s3_class(result_2d, "ggplot")
+  expect_equal(result_2d$labels$y, mySims@data[[1L]]@drugNames[2L])
+
   expect_error(plot(mySims, type = "invalid_type"), "should be one of")
+})
+
+test_that("plot-ComboSimulations trajectory2D works with 20 simulated trials", {
+  design <- .DefaultDesignCombo()
+  # Loosen stopping/recommendation settings so simulated paths contain
+  # multiple combination steps and yield visible 2D transitions.
+  design@stopping <- StoppingMinPatients(nPatients = 60)
+  design@nextBest <- NextBestNCRM(
+    target = c(0.1, 0.6),
+    overdose = c(0.99, 1),
+    max_overdose_prob = 0.999
+  )
+
+  true_tox_combo <- function(dose) {
+    plogis(-7 + 0.05 * dose[1] + 0.04 * dose[2] + 0.0005 * dose[1] * dose[2])
+  }
+
+  sims <- simulate(
+    design,
+    truth = true_tox_combo,
+    nsim = 20,
+    seed = 819,
+    mcmcOptions = h_get_mcmc_options(samples = 8),
+    parallel = FALSE
+  )
+
+  n_unique_combos <- sapply(sims@data, function(d) nrow(unique(d@x)))
+  expect_true(any(n_unique_combos > 1L))
+
+  result_2d <- plot(sims, type = "trajectory2D")
+  expect_s3_class(result_2d, "ggplot")
+  expect_doppel("plot_comboSims_trajectory2D_20sims", result_2d)
 })
 
 # summary ----
