@@ -555,6 +555,81 @@ DualSimulations <- function(rho_est, sigma2w_est, fit_biomarker, ...) {
   ))
 }
 
+# ComboSimulationsSummary ----
+
+## class ----
+
+#' `ComboSimulationsSummary`
+#'
+#' @description `r lifecycle::badge("experimental")`
+#'
+#' This class captures summary output from [`ComboSimulations`] objects.
+#'
+#' @slot target (`numeric`)
+#'   target toxicity interval. Empty if no truth function was supplied.
+#' @slot nsim (`integer`)
+#'   number of simulations.
+#' @slot n_obs (`integer`)
+#'   number of patients in each simulation.
+#' @slot prop_dlts (`numeric`)
+#'   observed proportion of DLTs in each simulation.
+#' @slot mean_tox_risk (`numeric`)
+#'   average fitted toxicity risk in each simulation.
+#' @slot dose_selected (`matrix`)
+#'   selected dose combinations; one row per simulation.
+#' @slot tox_at_doses_selected (`numeric`)
+#'   true toxicity at selected dose combinations (if truth supplied).
+#' @slot prop_at_target (`numeric`)
+#'   proportion of selected combinations within target interval (if truth supplied).
+#' @slot dose_most_selected (`numeric`)
+#'   most frequently selected dose combination.
+#' @slot obs_tox_rate_at_dose_most_selected (`numeric`)
+#'   observed toxicity rate at the most frequently selected combination.
+#' @slot dose_grid (`list`)
+#'   dose grid for each drug.
+#' @slot stop_report (`matrix`)
+#'   matrix of stopping rule outcomes.
+#' @slot stop_reasons (`list`)
+#'   stopping reasons by simulation.
+#' @slot additional_stats (`list`)
+#'   additional statistics.
+#' @aliases ComboSimulationsSummary
+#' @export
+.ComboSimulationsSummary <-
+  setClass(
+    Class = "ComboSimulationsSummary",
+    slots = c(
+      target = "numeric",
+      nsim = "integer",
+      n_obs = "integer",
+      prop_dlts = "numeric",
+      mean_tox_risk = "numeric",
+      dose_selected = "matrix",
+      tox_at_doses_selected = "numeric",
+      prop_at_target = "numeric",
+      dose_most_selected = "numeric",
+      obs_tox_rate_at_dose_most_selected = "numeric",
+      dose_grid = "list",
+      stop_report = "matrix",
+      stop_reasons = "list",
+      additional_stats = "list"
+    )
+  )
+
+## default constructor ----
+
+#' @rdname ComboSimulationsSummary-class
+#' @note Typically, end users will not use the `.DefaultComboSimulationsSummary()` function.
+#' @export
+.DefaultComboSimulationsSummary <- function() {
+  stop(
+    paste(
+      "Class ComboSimulationsSummary cannot be instantiated directly.",
+      "Please use summary(ComboSimulations, ...) to create objects of this class."
+    )
+  )
+}
+
 # DualSimulationsSummary ----
 
 # class ----

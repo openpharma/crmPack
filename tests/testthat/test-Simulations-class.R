@@ -321,6 +321,43 @@ test_that("GeneralSimulationsSummary cannot be instantiated directly", {
   )
 })
 
+# ComboSimulationsSummary ----
+test_that("ComboSimulationsSummary generates object correctly", {
+  dose_selected <- cbind(drug1 = c(10, 20), drug2 = c(20, 40))
+
+  result <- expect_silent(
+    .ComboSimulationsSummary(
+      target = c(0.2, 0.35),
+      nsim = 2L,
+      n_obs = c(6L, 6L),
+      prop_dlts = c(0.1, 0.2),
+      mean_tox_risk = c(0.15, 0.25),
+      dose_selected = dose_selected,
+      tox_at_doses_selected = c(0.2, 0.3),
+      prop_at_target = 0.5,
+      dose_most_selected = c(10, 20),
+      obs_tox_rate_at_dose_most_selected = 0.2,
+      dose_grid = list(drug1 = c(10, 20, 30), drug2 = c(20, 40, 60)),
+      stop_report = matrix(c(TRUE, FALSE), nrow = 2),
+      stop_reasons = list("A", "B"),
+      additional_stats = list(list(a = 1), list(a = 2))
+    )
+  )
+
+  expect_valid(result, "ComboSimulationsSummary")
+  expect_identical(result@nsim, 2L)
+  expect_identical(result@dose_selected, dose_selected)
+  expect_identical(result@prop_at_target, 0.5)
+})
+
+test_that("ComboSimulationsSummary cannot be instantiated directly", {
+  expect_error(
+    .DefaultComboSimulationsSummary(),
+    "Class ComboSimulationsSummary cannot be instantiated directly",
+    fixed = FALSE
+  )
+})
+
 # DualSimulationsSummary ----
 test_that("DualSimulationsSummary object can be created with the user constructor", {
   biomarker_fit_at_dose_most_selected <- 0.3
