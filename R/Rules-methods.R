@@ -2026,8 +2026,8 @@ setMethod(
     data = "DataCombo"
   ),
   definition = function(increments, data, ...) {
-    dose_grid_one <- data@doseGrid$drug1
-    dose_grid_two <- data@doseGrid$drug2
+    dose_grid_one <- data@doseGrid[[1L]]
+    dose_grid_two <- data@doseGrid[[2L]]
     if (data@nObs == 0L) {
       # In this case any combinations are possible.
       return(cbind(dose_grid_one, Inf))
@@ -2060,14 +2060,14 @@ setMethod(
     data = "DataCombo"
   ),
   definition = function(increments, data, ...) {
-    data_drug1 <- singleDrugData(data, "drug1")
-    data_drug2 <- singleDrugData(data, "drug2")
+    data_drug1 <- singleDrugData(data, data@drugNames[1])
+    data_drug2 <- singleDrugData(data, data@drugNames[2])
 
     max_dose_one <- maxDose(increments@drug1, data_drug1)
     max_dose_two <- maxDose(increments@drug2, data_drug2)
 
-    dose_grid_one <- data@doseGrid$drug1
-    dose_grid_two <- data@doseGrid$drug2
+    dose_grid_one <- data@doseGrid[[1L]]
+    dose_grid_two <- data@doseGrid[[2L]]
 
     dose_for_second_drug <- ifelse(
       dose_grid_one <= max_dose_one,
@@ -2766,7 +2766,7 @@ setMethod(
     data = "GeneralData"
   ),
   definition = function(stopping, dose, samples, model, data, ...) {
-    na_dose <- is.na(dose)
+    na_dose <- all(is.na(dose))
     placebo_dose <- .hasSlot(data, "placebo") &&
       data@placebo &&
       dose == min(data@doseGrid)

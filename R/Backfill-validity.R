@@ -27,6 +27,10 @@ v_opening_min_dose <- function(object) {
     ),
     "min_dose needs to be a non-negative numeric vector"
   )
+  v$check(
+    length(object@min_dose) %in% c(1L, 2L),
+    "min_dose needs to have length 1 or 2"
+  )
   v$result()
 }
 #' @describeIn v_opening validates that the [`OpeningMinCohorts`] object
