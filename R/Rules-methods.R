@@ -4345,7 +4345,7 @@ setMethod(
   ),
   definition = function(object, dose, data) {
     # If the recommended next dose is NA, don't check it and return 0.
-    if (is.na(dose)) {
+    if (all(is.na(dose))) {
       return(0L)
     }
     assert_class(data, "Data")
@@ -4374,10 +4374,10 @@ setMethod(
   ),
   definition = function(object, dose, data) {
     # If the recommended next dose is NA, don't check it and return 0.
-    if (is.na(dose)) {
+    if (all(is.na(dose))) {
       return(0L)
     }
-    assert_class(data, "Data")
+    assert_multi_class(data, c("Data", "DataCombo"))
 
     # Determine how many DLTs have occurred so far.
     dlt_happened <- sum(data@y)
@@ -4406,10 +4406,10 @@ setMethod(
   ),
   definition = function(object, dose, data) {
     # If the recommended next dose is NA, don't check it and return 0.
-    if (is.na(dose)) {
+    if (all(is.na(dose))) {
       return(0L)
     }
-    assert_multi_class(data, c("Data", "DataOrdinal"))
+    assert_multi_class(data, c("Data", "DataCombo", "DataOrdinal"))
 
     # Evaluate the individual cohort size rules in the list.
     individual_results <- sapply(
@@ -4441,10 +4441,10 @@ setMethod(
   ),
   definition = function(object, dose, data) {
     # If the recommended next dose is NA, don't check it and return 0.
-    if (is.na(dose)) {
+    if (all(is.na(dose))) {
       return(0L)
     }
-    assert_multi_class(data, c("Data", "DataOrdinal"))
+    assert_multi_class(data, c("Data", "DataCombo", "DataOrdinal"))
 
     # Evaluate the individual cohort size rules in the list.
     individual_results <- sapply(
@@ -4475,7 +4475,7 @@ setMethod(
   ),
   definition = function(object, dose, ...) {
     # If the recommended next dose is NA, don't check it and return 0.
-    if (is.na(dose)) {
+    if (all(is.na(dose))) {
       0L
     } else {
       object@size
@@ -4500,7 +4500,7 @@ setMethod(
   ),
   definition = function(object, dose, ...) {
     # If the recommended next dose is NA, don't check it and return 0.
-    if (is.na(dose)) {
+    if (all(is.na(dose))) {
       0L
     } else {
       as.integer(sample(
@@ -4528,7 +4528,7 @@ setMethod(
   ),
   definition = function(object, dose, data) {
     # If the recommended next dose is NA, don't check it and return 0.
-    if (is.na(dose)) {
+    if (all(is.na(dose))) {
       0L
     } else {
       assert_class(data, "DataParts")
