@@ -921,8 +921,14 @@ h_dose_combo_below_limit <- function(dose_matrix, dose_limit) {
       # We use numeric tolerance matching here
       # because the doses could be generated from a
       # grid and we want to avoid issues with floating point precision.
-      idx <- which(abs(doses[1L] - dose_limit[, 1L]) < .Machine$double.eps)
-      if (length(idx) == 0L || is.na(dose_limit[idx, 2L])) {
+      idx <- which(
+        abs(doses[1L] - dose_limit[, 1L]) < sqrt(.Machine$double.eps)
+      )
+      if (length(idx) == 0L) {
+        return(FALSE)
+      }
+      assert_length(idx, 1L)
+      if (is.na(dose_limit[idx, 2L])) {
         return(FALSE)
       } else {
         return(doses[2L] <= dose_limit[idx, 2L])

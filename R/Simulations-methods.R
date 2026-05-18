@@ -860,25 +860,24 @@ setMethod(
 
 # summary-ComboSimulations ----
 
-#' Summarize `ComboSimulations`
+#' Helper for Evaluating the True Toxicity Probability at a Dose Combination
 #'
 #' @description `r lifecycle::badge("experimental")`
 #'
-#' Summarize two-drug combination simulations.
+#' Evaluates the true toxicity probability at a given dose combination using the
+#' provided `truth` function. The `truth` function can be flexible in how it
+#' accepts the dose combination as input, and this helper tries different ways to
+#' call it in order to extract the toxicity probability.
 #'
-#' @param object (`ComboSimulations`)\cr the object we want to summarize.
 #' @param truth (`function`)\cr optional function mapping a dose combination to
 #'   a toxicity probability. It can accept one argument (length-2 numeric vector
 #'   or one-row matrix) or two numeric arguments (`drug1`, `drug2`).
-#' @param target (`numeric`)\cr optional target toxicity interval used only when
-#'   `truth` is supplied.
+#' @param dose_pair (`numeric`)\cr a length-2 numeric vector representing the dose
+#'  combination for drug1 and drug2.
 #' @param ... additional arguments passed to `truth`.
 #'
-#' @return A named `list` containing summary statistics.
-#'
-#' @aliases summary-ComboSimulations
-#' @export
-#'
+#' @return A numeric value representing the true toxicity probability at the given dose
+#'   combination, or `NA_real_` if it cannot be evaluated.
 h_eval_combo_truth <- function(truth, dose_pair, ...) {
   # Try truth as function(dose_pair).
   val <- try(truth(dose_pair, ...), silent = TRUE)
@@ -903,6 +902,27 @@ h_eval_combo_truth <- function(truth, dose_pair, ...) {
   NA_real_
 }
 
+
+#' Summarize `ComboSimulations`
+#'
+#' @description `r lifecycle::badge("experimental")`
+#'
+#' Summarize two-drug combination simulations.
+#'
+#' @param object (`ComboSimulations`)
+#'   the object we want to summarize.
+#' @param truth (`function`)
+#'   optional function mapping a dose combination to a toxicity probability.
+#'   It can accept one argument (length-2 numeric vector or one-row matrix) or
+#'   two numeric arguments (`drug1`, `drug2`).
+#' @param target (`numeric`)
+#'   optional target toxicity interval used only when `truth` is supplied.
+#' @param ... additional arguments can be supplied here for `truth`.
+#'
+#' @return An object of class [`ComboSimulationsSummary`].
+#'
+#' @aliases summary-ComboSimulations
+#' @export
 setMethod(
   f = "summary",
   signature = signature(object = "ComboSimulations"),

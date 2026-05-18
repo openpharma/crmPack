@@ -2,8 +2,7 @@
 % Please edit documentation in R/Simulations-methods.R
 \name{h_eval_combo_truth}
 \alias{h_eval_combo_truth}
-\alias{summary-ComboSimulations}
-\title{Summarize \code{ComboSimulations}}
+\title{Helper for Evaluating the True Toxicity Probability at a Dose Combination}
 \usage{
 h_eval_combo_truth(truth, dose_pair, ...)
 }
@@ -12,18 +11,20 @@ h_eval_combo_truth(truth, dose_pair, ...)
 a toxicity probability. It can accept one argument (length-2 numeric vector
 or one-row matrix) or two numeric arguments (\code{drug1}, \code{drug2}).}
 
+\item{dose_pair}{(\code{numeric})\cr a length-2 numeric vector representing the dose
+combination for drug1 and drug2.}
+
 \item{...}{additional arguments passed to \code{truth}.}
-
-\item{object}{(\code{ComboSimulations})\cr the object we want to summarize.}
-
-\item{target}{(\code{numeric})\cr optional target toxicity interval used only when
-\code{truth} is supplied.}
 }
 \value{
-A named \code{list} containing summary statistics.
+A numeric value representing the true toxicity probability at the given dose
+combination, or \code{NA_real_} if it cannot be evaluated.
 }
 \description{
 \ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#experimental}{\figure{lifecycle-experimental.svg}{options: alt='[Experimental]'}}}{\strong{[Experimental]}}
 
-Summarize two-drug combination simulations.
+Evaluates the true toxicity probability at a given dose combination using the
+provided \code{truth} function. The \code{truth} function can be flexible in how it
+accepts the dose combination as input, and this helper tries different ways to
+call it in order to extract the toxicity probability.
 }
