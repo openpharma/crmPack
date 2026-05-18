@@ -8,6 +8,7 @@
         "editor.defaultFormatter": "quarto.quarto"
     },
     "chat.tools.terminal.autoApprove": {
-        "Rscript": true
+        "Rscript": true,
+        "R": true
     }
 }

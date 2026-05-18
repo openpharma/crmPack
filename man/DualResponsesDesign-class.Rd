@@ -18,7 +18,7 @@ DualResponsesDesign(eff_model, data, ...)
 \item{data}{(\code{DataDual})\cr see slot definition.}
 
 \item{...}{
-  Arguments passed on to \code{\link[=TDDesign]{TDDesign}}
+  Arguments passed on to \code{\link{TDDesign}}
   \describe{
     \item{\code{model}}{(\code{ModelTox})\cr see slot definition.}
     \item{\code{stopping}}{(\code{Stopping})\cr see slot definition.}

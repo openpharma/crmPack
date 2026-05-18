@@ -1831,6 +1831,69 @@ test_that("examine produces consistent results with placebo data", {
   expect_snap(result)
 })
 
+## DesignCombo ----
+
+test_that("simulate-DesignCombo returns ComboSimulations with expected structure", {
+  design <- .DefaultDesignCombo()
+
+  true_tox_combo <- function(dose) {
+    plogis(-6 + 0.08 * dose[1] + 0.06 * dose[2] + 0.001 * dose[1] * dose[2])
+  }
+
+  result <- simulate(
+    design,
+    truth = true_tox_combo,
+    nsim = 1,
+    seed = 819,
+    mcmcOptions = h_get_mcmc_options(samples = 8),
+    parallel = FALSE,
+    derive = list(
+      mean_prob = mean,
+      max_prob = max
+    )
+  )
+
+  expect_s4_class(result, "ComboSimulations")
+  expect_s4_class(result@data[[1]], "DataCombo")
+
+  expect_true(is.matrix(result@doses))
+  expect_equal(nrow(result@doses), 1)
+  expect_equal(ncol(result@doses), 2)
+  expect_true(all(colnames(result@doses) %in% design@data@drugNames))
+
+  expect_true(is.list(result@fit))
+  expect_s3_class(result@fit[[1]], "data.frame")
+  expect_true(all(c("middle", "lower", "upper") %in% colnames(result@fit[[1]])))
+
+  expect_true(is.list(result@additional_stats[[1]]))
+  expect_equal(length(result@additional_stats[[1]]), 2)
+})
+
+test_that("simulate-DesignCombo supports firstSeparate and args", {
+  design <- .DefaultDesignCombo()
+
+  true_tox_combo <- function(dose, shift) {
+    plogis(
+      -6 + shift + 0.08 * dose[1] + 0.06 * dose[2] + 0.001 * dose[1] * dose[2]
+    )
+  }
+
+  result <- simulate(
+    design,
+    truth = true_tox_combo,
+    args = data.frame(shift = 0),
+    nsim = 1,
+    seed = 123,
+    firstSeparate = TRUE,
+    mcmcOptions = h_get_mcmc_options(samples = 8),
+    parallel = FALSE
+  )
+
+  expect_s4_class(result, "ComboSimulations")
+  expect_equal(length(result@stop_reasons), 1)
+  expect_true(is.logical(result@stop_report))
+})
+
 ## RuleDesign ----
 
 test_that("simulate-RuleDesign produces consistent results", {

@@ -292,6 +292,76 @@ knit_print.Design <- function(
   )
 }
 
+# DesignCombo ----
+
+#' @description `r lifecycle::badge("experimental")`
+#' @inheritParams knit_print.RuleDesign
+#' @rdname knit_print
+#' @export
+#' @method knit_print DesignCombo
+knit_print.DesignCombo <- function(
+  x,
+  ...,
+  level = 2L,
+  title = "Design",
+  sections = NA,
+  asis = TRUE
+) {
+  assert_flag(asis)
+  assert_character(title, len = 1, any.missing = FALSE)
+  assert_integer(level, len = 1, lower = 1, upper = 6)
+
+  default_sections <- c(
+    "nextBest" = "Dose recommendation",
+    "cohort_size" = "Cohort size",
+    "data" = "Observed combination data",
+    "startingDose" = "Starting dose combination",
+    "increments" = "Escalation rule",
+    "stopping" = "Stopping rule",
+    "model" = "Dose toxicity model",
+    "backfill" = "Backfill cohorts"
+  )
+
+  starting_dose_section <- default_sections[["startingDose"]]
+  if (!any(is.na(sections)) && "startingDose" %in% names(sections)) {
+    starting_dose_section <- sections[["startingDose"]]
+  }
+
+  rv <- h_knit_print_design(
+    x,
+    ...,
+    level = level,
+    title = title,
+    default_sections = default_sections,
+    user_sections = sections,
+    ignore_slots = "startingDose",
+    asis = FALSE
+  )
+
+  starting_dose_text <- paste0(
+    "The starting dose combination is ",
+    x@data@drugNames[1],
+    " = ",
+    format(x@startingDose[1], trim = TRUE, scientific = FALSE),
+    " and ",
+    x@data@drugNames[2],
+    " = ",
+    format(x@startingDose[2], trim = TRUE, scientific = FALSE),
+    ".\n\n"
+  )
+
+  rv <- paste0(
+    rv,
+    h_markdown_header(starting_dose_section, level = level + 1L),
+    starting_dose_text
+  )
+
+  if (asis) {
+    rv <- knitr::asis_output(rv)
+  }
+  rv
+}
+
 # DualDesign ----
 
 #' @description `r lifecycle::badge("experimental")`

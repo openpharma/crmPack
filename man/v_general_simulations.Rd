@@ -3,6 +3,7 @@
 \name{v_general_simulations}
 \alias{v_general_simulations}
 \alias{v_simulations}
+\alias{v_combo_simulations}
 \alias{v_dual_simulations}
 \alias{v_da_simulations}
 \title{Internal Helper Functions for Validation of \code{\link{GeneralSimulations}} Objects}
@@ -10,6 +11,8 @@
 v_general_simulations(object)
 
 v_simulations(object)
+
+v_combo_simulations(object)
 
 v_dual_simulations(object)
 
@@ -36,6 +39,10 @@ contains valid \code{data} object and valid \code{dose} simulations.
 \item \code{v_simulations()}: validates that the \code{\link{Simulations}} object
 contains valid object \code{fit}, \code{stop_reasons}, \code{stop_report}, and
 \code{additional_stats} compared to the general class \code{\link{GeneralSimulations}}.
+
+\item \code{v_combo_simulations()}: validates that the \code{\link{ComboSimulations}}
+object contains valid combo data, recommended dose combinations, model fit,
+and stopping outputs.
 
 \item \code{v_dual_simulations()}: validates that the \code{\link{DualSimulations}} object and
 capture the dose-biomarker \code{fits}, and the \code{sigma2W} and \code{rho} estimates.

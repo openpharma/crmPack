@@ -176,6 +176,179 @@ Simulations <- function(fit, stop_reasons, stop_report, additional_stats, ...) {
   )
 }
 
+# ComboSimulations ----
+
+## class ----
+
+#' `ComboSimulations`
+#'
+#' @description `r lifecycle::badge("experimental")`
+#'
+#' This class captures trial simulations from two-drug combination designs
+#' ([`DesignCombo`]).
+#'
+#' It is intentionally separate from [`Simulations`] because
+#' [`DataCombo`] is not a subclass of [`Data`], and final recommendations are
+#' dose combinations.
+#'
+#' @slot data (`list`)
+#'   produced [`DataCombo`] objects.
+#' @slot doses (`matrix`)
+#'   final recommended dose combinations; one row per simulation run and
+#'   two columns (one per drug).
+#' @slot fit (`list`)
+#'   final fitted toxicity surfaces for each simulation run.
+#' @slot stop_reasons (`list`)
+#'   stopping reasons for each simulation run.
+#' @slot stop_report (`matrix`)
+#'   matrix of stopping rule outcomes.
+#' @slot additional_stats (`list`)
+#'   list of additional statistical summary values.
+#' @slot seed (`integer`)
+#'   random generator state before starting the simulation.
+#' @aliases ComboSimulations
+#' @export
+.ComboSimulations <-
+  setClass(
+    Class = "ComboSimulations",
+    slots = c(
+      data = "list",
+      doses = "matrix",
+      fit = "list",
+      stop_report = "matrix",
+      stop_reasons = "list",
+      additional_stats = "list",
+      seed = "integer"
+    ),
+    prototype = prototype(
+      data = list(
+        DataCombo(
+          x = cbind(drug1 = c(10, 10, 20), drug2 = c(20, 20, 20)),
+          y = c(0L, 0L, 1L),
+          ID = 1L:3L,
+          cohort = c(1L, 1L, 2L),
+          doseGrid = list(drug1 = c(10, 20, 30), drug2 = c(20, 40, 60))
+        ),
+        DataCombo(
+          x = cbind(drug1 = c(10, 20, 20), drug2 = c(20, 20, 40)),
+          y = c(0L, 0L, 0L),
+          ID = 1L:3L,
+          cohort = c(1L, 2L, 3L),
+          doseGrid = list(drug1 = c(10, 20, 30), drug2 = c(20, 40, 60))
+        )
+      ),
+      doses = cbind(drug1 = c(20, 20), drug2 = c(20, 40)),
+      fit = list(
+        data.frame(
+          drug1 = 10,
+          drug2 = 20,
+          middle = 0.1,
+          lower = 0.05,
+          upper = 0.2
+        ),
+        data.frame(
+          drug1 = 20,
+          drug2 = 40,
+          middle = 0.2,
+          lower = 0.1,
+          upper = 0.3
+        )
+      ),
+      stop_report = matrix(TRUE, nrow = 2),
+      stop_reasons = list("A", "B"),
+      additional_stats = list(list(), list()),
+      seed = 1L
+    ),
+    contains = "CrmPackClass",
+    validity = v_combo_simulations
+  )
+
+## constructor ----
+
+#' @rdname ComboSimulations-class
+#'
+#' @param data (`list`)
+#'   see slot definition.
+#' @param doses (`matrix`)
+#'   see slot definition.
+#' @param fit (`list`)
+#'   see slot definition.
+#' @param stop_reasons (`list`)
+#'   see slot definition.
+#' @param stop_report (`matrix`)
+#'   see slot definition.
+#' @param additional_stats (`list`)
+#'   see slot definition.
+#' @param seed (`integer`)
+#'   see slot definition.
+#' @export
+ComboSimulations <- function(
+  data,
+  doses,
+  fit,
+  stop_reasons,
+  stop_report,
+  additional_stats,
+  seed
+) {
+  if (!is.matrix(doses)) {
+    doses <- as.matrix(doses)
+  }
+
+  assert_integerish(seed)
+
+  .ComboSimulations(
+    data = data,
+    doses = doses,
+    fit = fit,
+    stop_report = stop_report,
+    stop_reasons = stop_reasons,
+    additional_stats = additional_stats,
+    seed = as.integer(seed)
+  )
+}
+
+## default constructor ----
+
+#' @rdname ComboSimulations-class
+#' @note Typically, end users will not use the `.DefaultComboSimulations()` function.
+#' @export
+.DefaultComboSimulations <- function() {
+  ComboSimulations(
+    data = list(
+      DataCombo(
+        x = cbind(drug1 = c(10, 10, 20), drug2 = c(20, 20, 20)),
+        y = c(0L, 0L, 1L),
+        ID = 1L:3L,
+        cohort = c(1L, 1L, 2L),
+        doseGrid = list(drug1 = c(10, 20, 30), drug2 = c(20, 40, 60))
+      ),
+      DataCombo(
+        x = cbind(drug1 = c(10, 20, 20), drug2 = c(20, 20, 40)),
+        y = c(0L, 0L, 0L),
+        ID = 1L:3L,
+        cohort = c(1L, 2L, 3L),
+        doseGrid = list(drug1 = c(10, 20, 30), drug2 = c(20, 40, 60))
+      )
+    ),
+    doses = cbind(drug1 = c(20, 20), drug2 = c(20, 40)),
+    fit = list(
+      data.frame(
+        drug1 = 10,
+        drug2 = 20,
+        middle = 0.1,
+        lower = 0.05,
+        upper = 0.2
+      ),
+      data.frame(drug1 = 20, drug2 = 40, middle = 0.2, lower = 0.1, upper = 0.3)
+    ),
+    stop_report = matrix(c(TRUE, FALSE), nrow = 2),
+    stop_reasons = list("A", "B"),
+    additional_stats = list(list(), list()),
+    seed = 123L
+  )
+}
+
 # DualSimulations ----
 
 ## class ----
@@ -380,6 +553,81 @@ DualSimulations <- function(rho_est, sigma2w_est, fit_biomarker, ...) {
     "Class SimulationsSummary cannot be instantiated directly.",
     "Please use one of its subclasses instead."
   ))
+}
+
+# ComboSimulationsSummary ----
+
+## class ----
+
+#' `ComboSimulationsSummary`
+#'
+#' @description `r lifecycle::badge("experimental")`
+#'
+#' This class captures summary output from [`ComboSimulations`] objects.
+#'
+#' @slot target (`numeric`)
+#'   target toxicity interval. Empty if no truth function was supplied.
+#' @slot nsim (`integer`)
+#'   number of simulations.
+#' @slot n_obs (`integer`)
+#'   number of patients in each simulation.
+#' @slot prop_dlts (`numeric`)
+#'   observed proportion of DLTs in each simulation.
+#' @slot mean_tox_risk (`numeric`)
+#'   average fitted toxicity risk in each simulation.
+#' @slot dose_selected (`matrix`)
+#'   selected dose combinations; one row per simulation.
+#' @slot tox_at_doses_selected (`numeric`)
+#'   true toxicity at selected dose combinations (if truth supplied).
+#' @slot prop_at_target (`numeric`)
+#'   proportion of selected combinations within target interval (if truth supplied).
+#' @slot dose_most_selected (`numeric`)
+#'   most frequently selected dose combination.
+#' @slot obs_tox_rate_at_dose_most_selected (`numeric`)
+#'   observed toxicity rate at the most frequently selected combination.
+#' @slot dose_grid (`list`)
+#'   dose grid for each drug.
+#' @slot stop_report (`matrix`)
+#'   matrix of stopping rule outcomes.
+#' @slot stop_reasons (`list`)
+#'   stopping reasons by simulation.
+#' @slot additional_stats (`list`)
+#'   additional statistics.
+#' @aliases ComboSimulationsSummary
+#' @export
+.ComboSimulationsSummary <-
+  setClass(
+    Class = "ComboSimulationsSummary",
+    slots = c(
+      target = "numeric",
+      nsim = "integer",
+      n_obs = "integer",
+      prop_dlts = "numeric",
+      mean_tox_risk = "numeric",
+      dose_selected = "matrix",
+      tox_at_doses_selected = "numeric",
+      prop_at_target = "numeric",
+      dose_most_selected = "numeric",
+      obs_tox_rate_at_dose_most_selected = "numeric",
+      dose_grid = "list",
+      stop_report = "matrix",
+      stop_reasons = "list",
+      additional_stats = "list"
+    )
+  )
+
+## default constructor ----
+
+#' @rdname ComboSimulationsSummary-class
+#' @note Typically, end users will not use the `.DefaultComboSimulationsSummary()` function.
+#' @export
+.DefaultComboSimulationsSummary <- function() {
+  stop(
+    paste(
+      "Class ComboSimulationsSummary cannot be instantiated directly.",
+      "Please use summary(ComboSimulations, ...) to create objects of this class."
+    )
+  )
 }
 
 # DualSimulationsSummary ----

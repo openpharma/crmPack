@@ -88,7 +88,6 @@ Encoding: UTF-8
 Language: en-US
 LazyLoad: yes
 Roxygen: list(markdown = TRUE)
-RoxygenNote: 7.3.3
 RdMacros: Rdpack
 Collate:
     'Backfill-validity.R'
@@ -149,3 +148,4 @@ Collate:
     'helpers_simulations.R'
     'utils-pipe.R'
     'utils.R'
+Config/roxygen2/version: 8.0.0

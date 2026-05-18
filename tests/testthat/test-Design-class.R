@@ -117,6 +117,69 @@ test_that("Design user constructor arguments names are as expected", {
   )
 })
 
+# DesignCombo ----
+
+test_that(".DesignCombo works as expected", {
+  result <- expect_silent(.DesignCombo())
+  expect_valid(result, "DesignCombo")
+})
+
+test_that("DesignCombo object can be created with user constructor", {
+  empty_data <- DataCombo(
+    doseGrid = list(drug1 = c(10, 20, 30), drug2 = c(20, 40, 60))
+  )
+  model <- h_get_logistic_log_normal_combo()
+  next_best <- h_next_best_ncrm()
+  stopping <- StoppingMinPatients(nPatients = 20)
+  increments <- IncrementsMin(
+    increments_list = list(
+      IncrementsComboOneDrugOnly(),
+      IncrementsComboCartesian(
+        drug1 = IncrementsRelative(intervals = c(0), increments = c(1)),
+        drug2 = IncrementsRelative(intervals = c(0), increments = c(1))
+      )
+    )
+  )
+  cohort_size <- CohortSizeConst(3L)
+
+  result <- expect_silent(
+    DesignCombo(
+      model = model,
+      nextBest = next_best,
+      stopping = stopping,
+      increments = increments,
+      cohort_size = cohort_size,
+      data = empty_data,
+      startingDose = c(10, 20)
+    )
+  )
+  expect_valid(result, "DesignCombo")
+  expect_identical(result@model, model)
+  expect_identical(result@nextBest, next_best)
+  expect_identical(result@stopping, stopping)
+  expect_identical(result@increments, increments)
+  expect_identical(result@cohort_size, cohort_size)
+  expect_identical(result@data, empty_data)
+  expect_identical(result@startingDose, c(10, 20))
+})
+
+test_that("DesignCombo user constructor arguments names are as expected", {
+  expect_function(
+    DesignCombo,
+    args = c(
+      "model",
+      "nextBest",
+      "stopping",
+      "increments",
+      "cohort_size",
+      "data",
+      "startingDose",
+      "backfill"
+    ),
+    ordered = TRUE
+  )
+})
+
 # DualDesign ----
 
 test_that(".DualDesign works as expected", {

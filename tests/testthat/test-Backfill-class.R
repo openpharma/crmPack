@@ -26,6 +26,12 @@ test_that(".DefaultOpeningMinDose works as expected", {
   )
 })
 
+test_that("OpeningMinDose works with a vector", {
+  result <- expect_silent(OpeningMinDose(min_dose = c(10, 20)))
+  expect_valid(result, "OpeningMinDose")
+  expect_identical(result@min_dose, c(10, 20))
+})
+
 ## OpeningMinCohorts ----
 
 test_that(".OpeningMinCohorts works as expected", {

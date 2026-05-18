@@ -477,7 +477,7 @@ setMethod(
 #'   whether legends should be displayed.
 #' @param ... not used.
 #'
-#' @return A [`gtable`] object combining two [`ggplot2`] plots.
+#' @return A `gtable` object combining two [`ggplot2`] plots.
 #'
 #' @aliases plot-DataCombo
 #' @export
@@ -627,6 +627,64 @@ setMethod(
     }
 
     gridExtra::arrangeGrob(plot1, plot2, ncol = 2)
+  }
+)
+
+# singleDrugData ----
+
+## generic ----
+
+#' Extracting Single-Drug Data from Combination Data
+#'
+#' @description `r lifecycle::badge("experimental")`
+#'
+#' A method that extracts one drug-specific [`Data`] object from a
+#' two-drug [`DataCombo`] object.
+#'
+#' @param object (`DataCombo`)
+#'   object from which single-drug data are extracted.
+#' @param drug (`string`)
+#'   name of the drug to extract. Must be one of `object@drugNames`.
+#' @param ... not used.
+#'
+#' @return A [`Data`] object containing dose, dose grid and patient-level
+#'   outcomes corresponding to the selected drug.
+#'
+#' @export
+#'
+setGeneric(
+  name = "singleDrugData",
+  def = function(object, drug, ...) {
+    standardGeneric("singleDrugData")
+  },
+  valueClass = "Data"
+)
+
+## DataCombo ----
+
+#' @rdname singleDrugData
+#'
+#' @aliases singleDrugData-DataCombo
+#' @export
+#' @example examples/Data-method-singleDrugData.R
+setMethod(
+  f = "singleDrugData",
+  signature = signature(object = "DataCombo"),
+  definition = function(object, drug) {
+    assert_string(drug, min.chars = 1L)
+    assert_choice(drug, object@drugNames)
+
+    drug_index <- match(drug, object@drugNames)
+
+    Data(
+      x = object@x[, drug_index],
+      y = object@y,
+      ID = object@ID,
+      cohort = object@cohort,
+      doseGrid = object@doseGrid[[drug_index]],
+      backfilled = object@backfilled,
+      response = object@response
+    )
   }
 )
 

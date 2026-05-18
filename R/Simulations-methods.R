@@ -119,6 +119,190 @@ h_plot_doses_tried <- function(sim_doses, dose_grid) {
     ylab("Average proportion [%]")
 }
 
+# h_plot_combo_evolution ----
+
+#' Helper Function to Plot 2D Combination Evolution
+#'
+#' @description `r lifecycle::badge("experimental")`
+#'
+#' Creates a 2D combination-plane plot with arrows showing step-to-step
+#' dose transitions aggregated across simulations.
+#'
+#' @param sim_data (`list`)
+#'   list of [`DataCombo`] objects.
+#'
+#' @return A `ggplot` object.
+#'
+#' @keywords internal
+h_plot_combo_evolution <- function(sim_data) {
+  nsim <- length(sim_data)
+  drug1 <- sim_data[[1L]]@drugNames[1L]
+  drug2 <- sim_data[[1L]]@drugNames[2L]
+
+  # Patient-level summary over all simulations.
+  pat_df <- do.call(
+    rbind,
+    lapply(seq_along(sim_data), function(i) {
+      d <- sim_data[[i]]
+      data.frame(
+        sim = i,
+        cohort = d@cohort,
+        dose1 = d@x[, 1L],
+        dose2 = d@x[, 2L],
+        y = d@y
+      )
+    })
+  )
+
+  summary_n <- aggregate(y ~ dose1 + dose2, data = pat_df, FUN = length)
+  names(summary_n)[3L] <- "n_patients"
+  summary_dlt <- aggregate(y ~ dose1 + dose2, data = pat_df, FUN = sum)
+  names(summary_dlt)[3L] <- "n_dlt"
+  summary_df <- merge(
+    summary_n,
+    summary_dlt,
+    by = c("dose1", "dose2"),
+    sort = TRUE
+  )
+  summary_df$dlt_rate <- with(summary_df, n_dlt / n_patients)
+
+  # Step-level path over all simulations based on dose changes in patient order.
+  path_df <- do.call(
+    rbind,
+    lapply(seq_along(sim_data), function(i) {
+      d <- sim_data[[i]]
+      if (d@nObs == 0L) {
+        return(NULL)
+      }
+      d_ord <- data.frame(
+        patient = seq_len(d@nObs),
+        dose1 = d@x[, 1L],
+        dose2 = d@x[, 2L],
+        y = d@y
+      )
+      # Keep only dose-change points so transitions are visible even if
+      # cohort IDs are not informative.
+      changed <- c(
+        TRUE,
+        (diff(d_ord$dose1) != 0) | (diff(d_ord$dose2) != 0)
+      )
+      step_df <- d_ord[changed, c("dose1", "dose2")]
+      step_df$step <- seq_len(nrow(step_df))
+      step_df$sim <- i
+      step_df
+    })
+  )
+
+  if (is.null(path_df) || nrow(path_df) == 0L) {
+    path_df <- data.frame(
+      dose1 = numeric(0),
+      dose2 = numeric(0),
+      step = integer(0),
+      sim = integer(0)
+    )
+  }
+
+  # Aggregate transitions from step s to s+1 across simulations.
+  transition_df <- do.call(
+    rbind,
+    lapply(split(path_df, path_df$sim), function(sdf) {
+      sdf <- sdf[order(sdf$step), ]
+      if (nrow(sdf) < 2L) {
+        return(NULL)
+      }
+      data.frame(
+        x = sdf$dose1[-nrow(sdf)],
+        y = sdf$dose2[-nrow(sdf)],
+        xend = sdf$dose1[-1L],
+        yend = sdf$dose2[-1L]
+      )
+    })
+  )
+
+  if (is.null(transition_df) || nrow(transition_df) == 0L) {
+    transition_sum <- data.frame(
+      x = numeric(0),
+      y = numeric(0),
+      xend = numeric(0),
+      yend = numeric(0),
+      avg_transitions = numeric(0)
+    )
+  } else {
+    transition_sum <- aggregate(
+      rep(1L, nrow(transition_df)) ~ x + y + xend + yend,
+      data = transition_df,
+      FUN = sum
+    )
+    names(transition_sum)[5L] <- "n_transitions"
+    # Average number of transitions across simulations.
+    transition_sum$avg_transitions <- transition_sum$n_transitions / nsim
+  }
+
+  # Median step hint for each treated combination.
+  step_hint <- aggregate(step ~ dose1 + dose2, data = path_df, FUN = median)
+  names(step_hint)[3L] <- "median_step"
+  summary_df <- merge(
+    summary_df,
+    step_hint,
+    by = c("dose1", "dose2"),
+    all.x = TRUE
+  )
+  # Compute average patients across simulations.
+  summary_df$avg_patients <- summary_df$n_patients / nsim
+  summary_df$avg_dlt <- summary_df$n_dlt / nsim
+  summary_df$label <- paste0(
+    round(summary_df$avg_dlt, 1),
+    "/",
+    round(summary_df$avg_patients, 1),
+    " | s",
+    round(summary_df$median_step)
+  )
+
+  grid_df <- expand.grid(
+    dose1 = sim_data[[1L]]@doseGrid[[drug1]],
+    dose2 = sim_data[[1L]]@doseGrid[[drug2]]
+  )
+
+  ggplot(grid_df, aes(x = dose1, y = dose2)) +
+    geom_point(shape = 4, size = 3, colour = "grey85") +
+    geom_segment(
+      data = transition_sum,
+      aes(x = x, y = y, xend = xend, yend = yend, linewidth = avg_transitions),
+      inherit.aes = FALSE,
+      colour = "grey45",
+      arrow = grid::arrow(length = grid::unit(2.5, "mm"), type = "closed"),
+      alpha = 0.8
+    ) +
+    geom_point(
+      data = summary_df,
+      aes(size = avg_patients),
+      shape = 21,
+      colour = "black",
+      fill = "lightgrey",
+      stroke = 0.6
+    ) +
+    geom_text(
+      data = summary_df,
+      aes(label = label),
+      size = 3,
+      colour = "black",
+      vjust = -1
+    ) +
+    scale_size_continuous(name = "Avg Patients") +
+    scale_linewidth_continuous(name = "Avg Transitions") +
+    scale_x_continuous(
+      breaks = sim_data[[1L]]@doseGrid[[drug1]],
+      minor_breaks = NULL
+    ) +
+    scale_y_continuous(
+      breaks = sim_data[[1L]]@doseGrid[[drug2]],
+      minor_breaks = NULL
+    ) +
+    xlab(drug1) +
+    ylab(drug2) +
+    ggtitle("Combination Evolution Plane")
+}
+
 # plot-GeneralSimulations ----
 
 #' Plot `GeneralSimulations`
@@ -221,6 +405,116 @@ setMethod(
     } else {
       # Otherwise arrange them.
       do.call(gridExtra::arrangeGrob, plot_list)
+    }
+  }
+)
+
+# plot-ComboSimulations ----
+
+#' Plot `ComboSimulations`
+#'
+#' @description `r lifecycle::badge("experimental")`
+#'
+#' Summarize two-drug combination simulations with plots.
+#'
+#' This plot method can be applied to [`ComboSimulations`] objects. Possible
+#' `type`s of plots are:
+#' \describe{
+#'   \item{trajectory}{Summary of simulated dose trajectories for each drug}
+#'   \item{dosesTried}{Average proportions of tested doses for each drug}
+#'   \item{trajectory2D}{2D dose-plane evolution with arrows for dose transitions,
+#'     and labels showing DLTs/patients plus a step index hint}
+#' }
+#'
+#' @param x (`ComboSimulations`)\cr the object we want to plot from.
+#' @param y (`missing`)\cr not used.
+#' @param type (`character`)\cr the type of plots you want to obtain.
+#' @param ... not used.
+#'
+#' @return A single `ggplot` object if a single panel is produced, otherwise
+#'   a `gtable` object.
+#'
+#' @aliases plot-ComboSimulations-missing
+#' @export
+#'
+setMethod(
+  f = "plot",
+  signature = signature(
+    x = "ComboSimulations",
+    y = "missing"
+  ),
+  def = function(
+    x,
+    y,
+    type = c("trajectory", "dosesTried", "trajectory2D"),
+    ...
+  ) {
+    # Validate arguments.
+    type <- match.arg(type, several.ok = TRUE)
+    assert_character(type, min.len = 1)
+
+    # Start the plot list.
+    plot_list <- list()
+    plot_index <- 0L
+
+    # Collect observed doses per drug across simulated trials.
+    sim_doses_drug1 <- lapply(x@data, function(d) d@x[, 1L])
+    sim_doses_drug2 <- lapply(x@data, function(d) d@x[, 2L])
+    dose_grid_drug1 <- x@data[[1L]]@doseGrid[[1L]]
+    dose_grid_drug2 <- x@data[[1L]]@doseGrid[[2L]]
+
+    # Summary of trajectories for each drug.
+    if ("trajectory" %in% type) {
+      max_patients <- max(c(
+        sapply(sim_doses_drug1, length),
+        sapply(sim_doses_drug2, length)
+      ))
+
+      plot_list[[plot_index <- plot_index + 1L]] <-
+        h_plot_simulation_trajectory(
+          sim_doses = sim_doses_drug1,
+          max_patients = max_patients,
+          has_placebo = FALSE
+        ) +
+        ggplot2::ggtitle("Trajectory (Drug 1)")
+
+      plot_list[[plot_index <- plot_index + 1L]] <-
+        h_plot_simulation_trajectory(
+          sim_doses = sim_doses_drug2,
+          max_patients = max_patients,
+          has_placebo = FALSE
+        ) +
+        ggplot2::ggtitle("Trajectory (Drug 2)")
+    }
+
+    # Average dose distributions by drug.
+    if ("dosesTried" %in% type) {
+      plot_list[[plot_index <- plot_index + 1L]] <-
+        h_plot_doses_tried(
+          sim_doses = sim_doses_drug1,
+          dose_grid = dose_grid_drug1
+        ) +
+        ggplot2::ggtitle("Doses Tried (Drug 1)")
+
+      plot_list[[plot_index <- plot_index + 1L]] <-
+        h_plot_doses_tried(
+          sim_doses = sim_doses_drug2,
+          dose_grid = dose_grid_drug2
+        ) +
+        ggplot2::ggtitle("Doses Tried (Drug 2)")
+    }
+
+    # 2D combination-plane evolution across simulations.
+    if ("trajectory2D" %in% type) {
+      plot_list[[plot_index <- plot_index + 1L]] <-
+        h_plot_combo_evolution(sim_data = x@data)
+    }
+
+    # Return plot(s).
+    if (identical(length(plot_list), 1L)) {
+      plot_list[[1L]]
+    } else {
+      do.call(gridExtra::arrangeGrob, c(plot_list, ncol = 2L))
     }
   }
 )
@@ -564,6 +858,195 @@ setMethod(
   }
 )
 
+# summary-ComboSimulations ----
+
+#' Helper for Evaluating the True Toxicity Probability at a Dose Combination
+#'
+#' @description `r lifecycle::badge("experimental")`
+#'
+#' Evaluates the true toxicity probability at a given dose combination using the
+#' provided `truth` function. The `truth` function can be flexible in how it
+#' accepts the dose combination as input, and this helper tries different ways to
+#' call it in order to extract the toxicity probability.
+#'
+#' @param truth (`function`)\cr optional function mapping a dose combination to
+#'   a toxicity probability. It can accept one argument (length-2 numeric vector
+#'   or one-row matrix) or two numeric arguments (`drug1`, `drug2`).
+#' @param dose_pair (`numeric`)\cr a length-2 numeric vector representing the dose
+#'  combination for drug1 and drug2.
+#' @param ... additional arguments passed to `truth`.
+#'
+#' @return A numeric value representing the true toxicity probability at the given dose
+#'   combination, or `NA_real_` if it cannot be evaluated.
+h_eval_combo_truth <- function(truth, dose_pair, ...) {
+  # Try truth as function(dose_pair).
+  val <- try(truth(dose_pair, ...), silent = TRUE)
+  if (!inherits(val, "try-error") && is.numeric(val) && length(val) >= 1L) {
+    return(as.numeric(val[1L]))
+  }
+
+  # Try truth as function(drug1, drug2).
+  val <- try(truth(dose_pair[1L], dose_pair[2L], ...), silent = TRUE)
+  if (!inherits(val, "try-error") && is.numeric(val) && length(val) >= 1L) {
+    return(as.numeric(val[1L]))
+  }
+
+  # Try truth with one-row matrix.
+  dose_mat <- matrix(dose_pair, nrow = 1L)
+  colnames(dose_mat) <- c("drug1", "drug2")
+  val <- try(truth(dose_mat, ...), silent = TRUE)
+  if (!inherits(val, "try-error") && is.numeric(val) && length(val) >= 1L) {
+    return(as.numeric(val[1L]))
+  }
+
+  NA_real_
+}
+
+
+#' Summarize `ComboSimulations`
+#'
+#' @description `r lifecycle::badge("experimental")`
+#'
+#' Summarize two-drug combination simulations.
+#'
+#' @param object (`ComboSimulations`)
+#'   the object we want to summarize.
+#' @param truth (`function`)
+#'   optional function mapping a dose combination to a toxicity probability.
+#'   It can accept one argument (length-2 numeric vector or one-row matrix) or
+#'   two numeric arguments (`drug1`, `drug2`).
+#' @param target (`numeric`)
+#'   optional target toxicity interval used only when `truth` is supplied.
+#' @param ... additional arguments can be supplied here for `truth`.
+#'
+#' @return An object of class [`ComboSimulationsSummary`].
+#'
+#' @aliases summary-ComboSimulations
+#' @export
+setMethod(
+  f = "summary",
+  signature = signature(object = "ComboSimulations"),
+  def = function(object, truth, target = c(0.2, 0.35), ...) {
+    has_truth <- !missing(truth)
+
+    if (has_truth) {
+      assert_function(truth)
+      assert_numeric(target, min.len = 1, max.len = 2, lower = 0, upper = 1)
+      if (length(target) == 2L) {
+        assert_true(target[1L] < target[2L])
+      }
+    }
+
+    nsim <- length(object@data)
+
+    prop_dlts <- sapply(
+      object@data,
+      function(d) {
+        if (d@nObs == 0L) {
+          NA_real_
+        } else {
+          sum(d@y) / d@nObs
+        }
+      }
+    )
+
+    mean_tox_risk <- sapply(
+      object@fit,
+      function(f) {
+        if (is.data.frame(f) && ("middle" %in% names(f))) {
+          mean(f$middle, na.rm = TRUE)
+        } else if (is.matrix(f) && ("middle" %in% colnames(f))) {
+          mean(f[, "middle"], na.rm = TRUE)
+        } else {
+          NA_real_
+        }
+      }
+    )
+
+    n_obs <- as.integer(sapply(object@data, slot, "nObs"))
+    dose_selected <- object@doses
+
+    # Most frequently selected dose combination.
+    dose_keys <- apply(dose_selected, 1L, paste, collapse = "||")
+    most_selected_key <- names(which.max(table(dose_keys)))
+    dose_most_selected <- as.numeric(strsplit(most_selected_key, "\\|\\|")[[
+      1L
+    ]])
+
+    if (length(dose_most_selected) != 2L) {
+      dose_most_selected <- c(NA_real_, NA_real_)
+    }
+
+    # Observed toxicity rate at dose most often selected.
+    obs_at_most_selected <- sapply(
+      object@data,
+      function(d) {
+        at_dose <- (d@x[, 1L] == dose_most_selected[1L]) &
+          (d@x[, 2L] == dose_most_selected[2L])
+        c(
+          nAtThisDose = sum(at_dose),
+          nDLTatThisDose = sum(d@y[at_dose])
+        )
+      }
+    )
+
+    obs_tox_rate_at_dose_most_selected <- {
+      n_at <- sum(obs_at_most_selected["nAtThisDose", ])
+      if (n_at > 0L) {
+        sum(obs_at_most_selected["nDLTatThisDose", ]) / n_at
+      } else {
+        NA_real_
+      }
+    }
+
+    tox_at_doses_selected <- rep(NA_real_, nsim)
+    prop_at_target <- NA_real_
+    target_value <- numeric(0)
+
+    if (has_truth) {
+      tox_at_doses_selected <- apply(
+        dose_selected,
+        1L,
+        function(dose_row) {
+          h_eval_combo_truth(
+            truth = truth,
+            dose_pair = as.numeric(dose_row),
+            ...
+          )
+        }
+      )
+
+      prop_at_target <- if (length(target) == 2L) {
+        mean(
+          (tox_at_doses_selected > target[1L]) &
+            (tox_at_doses_selected < target[2L]),
+          na.rm = TRUE
+        )
+      } else {
+        mean(tox_at_doses_selected < target[1L], na.rm = TRUE)
+      }
+      target_value <- target
+    }
+
+    .ComboSimulationsSummary(
+      target = target_value,
+      nsim = as.integer(nsim),
+      n_obs = n_obs,
+      prop_dlts = prop_dlts,
+      mean_tox_risk = mean_tox_risk,
+      dose_selected = dose_selected,
+      tox_at_doses_selected = tox_at_doses_selected,
+      prop_at_target = prop_at_target,
+      dose_most_selected = dose_most_selected,
+      obs_tox_rate_at_dose_most_selected = obs_tox_rate_at_dose_most_selected,
+      dose_grid = object@data[[1L]]@doseGrid,
+      stop_report = object@stop_report,
+      stop_reasons = object@stop_reasons,
+      additional_stats = object@additional_stats
+    )
+  }
+)
+
 # summary-Simulations ----
 
 #' Summarize Model-Based Design Simulations
@@ -830,6 +1313,159 @@ setMethod(
       "Please use 'summary()' to obtain more information.\n"
     ))
     invisible(object)
+  }
+)
+
+# show-ComboSimulations ----
+
+#' Show `ComboSimulations` Objects
+#'
+#' @description `r lifecycle::badge("experimental")`
+#'
+#' Display a brief representation of the [`ComboSimulations`] object.
+#'
+#' @param object (`ComboSimulations`)\cr the object we want to print.
+#'
+#' @return Invisibly returns the object itself.
+#'
+#' @aliases show-ComboSimulations
+#' @export
+setMethod(
+  f = "show",
+  signature = signature(object = "ComboSimulations"),
+  def = function(object) {
+    cat(paste0(
+      "An object of class '",
+      class(object),
+      "' containing ",
+      nrow(object@doses),
+      " simulated combination trials.\n",
+      "Please use 'summary()' to obtain more information.\n"
+    ))
+    invisible(object)
+  }
+)
+
+# show-ComboSimulationsSummary ----
+
+#' Show the Summary of Combination Simulations
+#'
+#' @description `r lifecycle::badge("experimental")`
+#'
+#' Display a summary of combination simulation results.
+#'
+#' @param object (`ComboSimulationsSummary`)
+#'   the object we want to print.
+#'
+#' @return Invisibly returns a data frame of the results with one row and
+#'   appropriate column names.
+#'
+#' @aliases show-ComboSimulationsSummary
+#' @export
+setMethod(
+  f = "show",
+  signature = signature(object = "ComboSimulationsSummary"),
+  def = function(object) {
+    r <- Report$new(
+      object = object,
+      df = as.data.frame(matrix(nrow = 1, ncol = 0)),
+      dfNames = character()
+    )
+
+    cat(
+      "Summary of",
+      r$dfSave(object@nsim, "nsim"),
+      "combination simulations\n\n"
+    )
+
+    r$report("n_obs", "Number of patients overall", percent = FALSE)
+    r$report("prop_dlts", "Proportions of DLTs in the trials")
+    r$report("mean_tox_risk", "Mean toxicity risks from fitted surfaces")
+
+    dose_selected_drug1 <- object@dose_selected[, 1L]
+    dose_selected_drug2 <- object@dose_selected[, 2L]
+
+    dose_drug1_summary <- paste0(
+      round(mean(dose_selected_drug1), 1),
+      " (",
+      paste(
+        round(quantile(dose_selected_drug1, c(0.1, 0.9), na.rm = TRUE), 1),
+        collapse = ", "
+      ),
+      ")"
+    )
+    dose_drug2_summary <- paste0(
+      round(mean(dose_selected_drug2), 1),
+      " (",
+      paste(
+        round(quantile(dose_selected_drug2, c(0.1, 0.9), na.rm = TRUE), 1),
+        collapse = ", "
+      ),
+      ")"
+    )
+
+    cat(
+      "Selected dose for drug 1: mean",
+      r$dfSave(dose_drug1_summary, "dose_selected_drug1"),
+      "\n"
+    )
+    cat(
+      "Selected dose for drug 2: mean",
+      r$dfSave(dose_drug2_summary, "dose_selected_drug2"),
+      "\n"
+    )
+
+    if (length(object@target) > 0L) {
+      cat(
+        "Target toxicity interval was",
+        r$dfSave(paste(round(object@target * 100), collapse = ", "), "target"),
+        "%\n"
+      )
+
+      r$report(
+        "tox_at_doses_selected",
+        "True toxicity at selected combinations"
+      )
+
+      cat(
+        "Proportion of trials selecting target combination:",
+        r$dfSave(object@prop_at_target * 100, "prop_at_target"),
+        "%\n"
+      )
+    }
+
+    cat(
+      "Most frequently selected combination:",
+      r$dfSave(
+        paste(round(object@dose_most_selected, 1), collapse = ", "),
+        "dose_most_selected"
+      ),
+      "\n"
+    )
+    cat(
+      "Observed toxicity rate at most selected combination:",
+      r$dfSave(
+        round(object@obs_tox_rate_at_dose_most_selected * 100, 1),
+        "obs_tox_rate_at_dose_most_selected"
+      ),
+      "%\n"
+    )
+
+    stop_pct_to_print <- h_calc_report_label_percentage(object@stop_report)
+    if (length(stop_pct_to_print) > 0) {
+      cat(
+        "Stop reason triggered:\n",
+        paste(
+          names(stop_pct_to_print),
+          ": ",
+          round(stop_pct_to_print, 2),
+          "%\n"
+        )
+      )
+    }
+
+    names(r$df) <- r$dfNames
+    invisible(r$df)
   }
 )
 
@@ -1253,6 +1889,89 @@ setMethod(
 
     # Then return.
     ret
+  }
+)
+
+# plot-ComboSimulationsSummary ----
+
+#' Plot `ComboSimulationsSummary`
+#'
+#' @description `r lifecycle::badge("experimental")`
+#'
+#' Graphical display of combination simulation summaries.
+#'
+#' @param x (`ComboSimulationsSummary`)
+#'   the object we want to plot from.
+#' @param y (`missing`)
+#'   not used.
+#' @param type (`character`)
+#'   the types of plots you want to obtain.
+#' @param ... not used.
+#'
+#' @return A single `ggplot` object if a single plot is asked for,
+#'   otherwise a `gtable` object.
+#'
+#' @aliases plot-ComboSimulationsSummary-missing
+#' @export
+setMethod(
+  f = "plot",
+  signature = signature(
+    x = "ComboSimulationsSummary",
+    y = "missing"
+  ),
+  def = function(
+    x,
+    y,
+    type = c("nObs", "doseSelectedDrug1", "doseSelectedDrug2", "propDLTs"),
+    ...
+  ) {
+    type <- match.arg(type, several.ok = TRUE)
+    assert_character(type, min.len = 1)
+
+    plot_list <- list()
+    plot_index <- 0L
+
+    if ("nObs" %in% type) {
+      plot_list[[plot_index <- plot_index + 1L]] <-
+        h_barplot_percentages(
+          x = x@n_obs,
+          description = "Number of patients in total"
+        )
+    }
+
+    if ("doseSelectedDrug1" %in% type) {
+      plot_list[[plot_index <- plot_index + 1L]] <-
+        h_barplot_percentages(
+          x = x@dose_selected[, 1L],
+          description = "Selected dose for drug 1"
+        )
+    }
+
+    if ("doseSelectedDrug2" %in% type) {
+      plot_list[[plot_index <- plot_index + 1L]] <-
+        h_barplot_percentages(
+          x = x@dose_selected[, 2L],
+          description = "Selected dose for drug 2"
+        )
+    }
+
+    if ("propDLTs" %in% type) {
+      plot_list[[plot_index <- plot_index + 1L]] <-
+        h_barplot_percentages(
+          x = x@prop_dlts * 100,
+          description = "Proportion of DLTs [%]",
+          xaxisround = 1
+        )
+    }
+
+    if (identical(length(plot_list), 1L)) {
+      plot_list[[1L]]
+    } else {
+      do.call(
+        gridExtra::arrangeGrob,
+        c(plot_list, ncol = 2L)
+      )
+    }
   }
 )
 

@@ -66,6 +66,60 @@ v_simulations <- function(object) {
   v$result()
 }
 
+#' @describeIn v_general_simulations validates that the [`ComboSimulations`]
+#'   object contains valid combo data, recommended dose combinations, model fit,
+#'   and stopping outputs.
+v_combo_simulations <- function(object) {
+  v <- Validate()
+
+  nSims <- length(object@data)
+
+  v$check(
+    all(sapply(object@data, is, "DataCombo")),
+    "all data elements must be DataCombo objects"
+  )
+
+  v$check(
+    checkmate::test_matrix(
+      object@doses,
+      mode = "numeric",
+      nrows = nSims,
+      ncols = 2,
+      any.missing = TRUE
+    ),
+    "doses must be a numeric matrix with 2 columns and one row per simulation"
+  )
+
+  v$check(
+    identical(length(object@fit), nSims),
+    "fit must have same length as data"
+  )
+
+  v$check(
+    identical(length(object@stop_reasons), nSims),
+    "stop_reasons must have same length as data"
+  )
+
+  v$check(
+    identical(length(object@additional_stats), nSims),
+    "additional_stats must have same length as data"
+  )
+
+  v$check(
+    checkmate::test_matrix(
+      object@stop_report,
+      mode = "logical",
+      nrows = nSims,
+      min.cols = 1,
+      any.missing = FALSE
+    ),
+    "stop_report must be a matrix of mode logical in which the number of rows
+    equals the number of simulations and which must not contain any missing values"
+  )
+
+  v$result()
+}
+
 #' @describeIn v_general_simulations validates that the [`DualSimulations`] object and
 #' capture the dose-biomarker `fits`, and the `sigma2W` and `rho` estimates.
 #'

@@ -2,13 +2,9 @@
 % Please edit documentation in R/Model-methods.R
 \name{biomarker}
 \alias{biomarker}
-\alias{biomarker,integer,DualEndpoint,Samples-method}
-\alias{biomarker-DualEndpoint}
 \title{Get the Biomarker Levels for a Given Dual-Endpoint Model, Given Dose Levels and Samples}
 \usage{
 biomarker(xLevel, model, samples, ...)
-
-\S4method{biomarker}{integer,DualEndpoint,Samples}(xLevel, model, samples, ...)
 }
 \arguments{
 \item{xLevel}{(\code{integer})\cr the levels for the doses the patients have been
@@ -32,11 +28,6 @@ This function simply returns a specific columns (with the indices equal
 to \code{xLevel}) of the biomarker samples matrix, which is included in the the
 \code{samples} object.
 }
-\section{Functions}{
-\itemize{
-\item \code{biomarker(xLevel = integer, model = DualEndpoint, samples = Samples)}: 
-
-}}
 \examples{
 # Create the data.
 my_data <- DataDual(

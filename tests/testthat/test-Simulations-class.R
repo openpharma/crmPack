@@ -141,6 +141,63 @@ test_that("Simulations user constructor arguments names are as expected", {
   )
 })
 
+# ComboSimulations-class ----
+test_that("ComboSimulations generator function works as expected", {
+  result <- expect_silent(.ComboSimulations())
+  expect_valid(result, "ComboSimulations")
+})
+
+test_that("ComboSimulations object can be created with the user constructor", {
+  data_list <- list(
+    h_get_data_combo(empty = TRUE),
+    h_get_data_combo(empty = TRUE)
+  )
+
+  doses <- rbind(c(10, 20), c(20, 20))
+  colnames(doses) <- c("drug1", "drug2")
+
+  fit <- list(
+    data.frame(drug1 = 10, drug2 = 20, middle = 0.1, lower = 0.05, upper = 0.2),
+    data.frame(drug1 = 20, drug2 = 20, middle = 0.2, lower = 0.1, upper = 0.3)
+  )
+  stop_reasons <- list("A", "B")
+  stop_report <- matrix(c(TRUE, FALSE), nrow = 2)
+  additional_stats <- list(list(a = 1), list(a = 2))
+  seed <- as.integer(123)
+
+  result <- expect_silent(
+    ComboSimulations(
+      data = data_list,
+      doses = doses,
+      fit = fit,
+      stop_reasons = stop_reasons,
+      stop_report = stop_report,
+      additional_stats = additional_stats,
+      seed = seed
+    )
+  )
+
+  expect_valid(result, "ComboSimulations")
+  expect_identical(result@doses, doses)
+  expect_identical(result@stop_reasons, stop_reasons)
+})
+
+test_that("ComboSimulations user constructor arguments names are as expected", {
+  expect_function(
+    ComboSimulations,
+    args = c(
+      "data",
+      "doses",
+      "fit",
+      "stop_reasons",
+      "stop_report",
+      "additional_stats",
+      "seed"
+    ),
+    ordered = TRUE
+  )
+})
+
 # DualSimulations-class ----
 test_that("DualSimulations generator function works as expected", {
   result <- expect_silent(.DualSimulations())
@@ -260,6 +317,43 @@ test_that("GeneralSimulationsSummary cannot be instantiated directly", {
   expect_error(
     .DefaultGeneralSimulationsSummary(),
     "Class GeneralSimulationsSummary cannot be instantiated directly",
+    fixed = FALSE
+  )
+})
+
+# ComboSimulationsSummary ----
+test_that("ComboSimulationsSummary generates object correctly", {
+  dose_selected <- cbind(drug1 = c(10, 20), drug2 = c(20, 40))
+
+  result <- expect_silent(
+    .ComboSimulationsSummary(
+      target = c(0.2, 0.35),
+      nsim = 2L,
+      n_obs = c(6L, 6L),
+      prop_dlts = c(0.1, 0.2),
+      mean_tox_risk = c(0.15, 0.25),
+      dose_selected = dose_selected,
+      tox_at_doses_selected = c(0.2, 0.3),
+      prop_at_target = 0.5,
+      dose_most_selected = c(10, 20),
+      obs_tox_rate_at_dose_most_selected = 0.2,
+      dose_grid = list(drug1 = c(10, 20, 30), drug2 = c(20, 40, 60)),
+      stop_report = matrix(c(TRUE, FALSE), nrow = 2),
+      stop_reasons = list("A", "B"),
+      additional_stats = list(list(a = 1), list(a = 2))
+    )
+  )
+
+  expect_valid(result, "ComboSimulationsSummary")
+  expect_identical(result@nsim, 2L)
+  expect_identical(result@dose_selected, dose_selected)
+  expect_identical(result@prop_at_target, 0.5)
+})
+
+test_that("ComboSimulationsSummary cannot be instantiated directly", {
+  expect_error(
+    .DefaultComboSimulationsSummary(),
+    "Class ComboSimulationsSummary cannot be instantiated directly",
     fixed = FALSE
   )
 })

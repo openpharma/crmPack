@@ -4,6 +4,7 @@
 \alias{mcmc}
 \alias{mcmc,GeneralData,GeneralModel,McmcOptions-method}
 \alias{mcmc-GeneralData}
+\alias{mcmc,DataCombo,LogisticLogNormalCombo,McmcOptions-method}
 \alias{mcmc,GeneralData,DualEndpointRW,McmcOptions-method}
 \alias{mcmc-GeneralData-DualEndpointRW}
 \alias{mcmc,GeneralData,DualEndpointBeta,McmcOptions-method}
@@ -29,6 +30,8 @@
 mcmc(data, model, options, ...)
 
 \S4method{mcmc}{GeneralData,GeneralModel,McmcOptions}(data, model, options, from_prior = data@nObs == 0L, ...)
+
+\S4method{mcmc}{DataCombo,LogisticLogNormalCombo,McmcOptions}(data, model, options, from_prior = data@nObs == 0L, ...)
 
 \S4method{mcmc}{GeneralData,DualEndpointRW,McmcOptions}(data, model, options, from_prior = data@nObs == 0L, ...)
 
@@ -84,6 +87,10 @@ defined for specific subclasses of \code{\link{GeneralData}}, \code{\link{Genera
 \section{Functions}{
 \itemize{
 \item \code{mcmc(data = GeneralData, model = GeneralModel, options = McmcOptions)}: Standard method which uses JAGS.
+
+\item \code{mcmc(data = DataCombo, model = LogisticLogNormalCombo, options = McmcOptions)}: Standard method which uses JAGS. For the
+\code{\link{LogisticLogNormalCombo}} model, the drug names in the model and data must
+agree.
 
 \item \code{mcmc(data = GeneralData, model = DualEndpointRW, options = McmcOptions)}: Standard method which uses JAGS. For the
 \code{\link{DualEndpointRW}} model, it is required that there are at least two (in
