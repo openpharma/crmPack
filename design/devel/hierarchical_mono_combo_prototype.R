@@ -461,25 +461,18 @@ h_add_mono_arm_dynamic <- function(
   pool_suffix <- if (identical(mono_pool, "drug2")) "drug2" else "drug1"
 
   if (arm %in% exchangeable_members) {
-    t1 <- paste0("theta_", arm, "_", pool_suffix, "_1")
-    t2 <- paste0("theta_", arm, "_", pool_suffix, "_2")
+    tvec <- paste0("theta_", arm, "_", pool_suffix)
 
     prior_lines <- c(
       prior_lines,
       sprintf(
-        "%s ~ dnorm(mu_alpha0_%s, pow(tau_alpha0_%s, -2))",
-        t1,
+        "%s[1:2] ~ dmnorm(mu_%s[1:2], prec_%s[1:2, 1:2])",
+        tvec,
         pool_suffix,
         pool_suffix
       ),
-      sprintf(
-        "%s ~ dnorm(mu_log_alpha1_%s, pow(tau_log_alpha1_%s, -2))",
-        t2,
-        pool_suffix,
-        pool_suffix
-      ),
-      sprintf("%s <- %s", alpha0, t1),
-      sprintf("%s <- exp(%s)", alpha1, t2)
+      sprintf("%s <- %s[1]", alpha0, tvec),
+      sprintf("%s <- exp(%s[2])", alpha1, tvec)
     )
   } else {
     mean_name <- paste0("prior_mean_", arm)
@@ -635,17 +628,15 @@ h_add_combo_arm_dynamic <- function(
   }
 
   if (arm %in% exchangeable_drug1) {
-    t1 <- paste0("theta_", arm, "_drug1_1")
-    t2 <- paste0("theta_", arm, "_drug1_2")
+    tvec <- paste0("theta_", arm, "_drug1")
     prior_lines <- c(
       prior_lines,
-      sprintf("%s ~ dnorm(mu_alpha0_drug1, pow(tau_alpha0_drug1, -2))", t1),
       sprintf(
-        "%s ~ dnorm(mu_log_alpha1_drug1, pow(tau_log_alpha1_drug1, -2))",
-        t2
+        "%s[1:2] ~ dmnorm(mu_drug1[1:2], prec_drug1[1:2, 1:2])",
+        tvec
       ),
-      sprintf("%s <- %s", alpha0_1, t1),
-      sprintf("%s <- exp(%s)", alpha1_1, t2)
+      sprintf("%s <- %s[1]", alpha0_1, tvec),
+      sprintf("%s <- exp(%s[2])", alpha1_1, tvec)
     )
   } else {
     mean_1 <- paste0("prior_mean_", arm, "_1")
@@ -667,17 +658,15 @@ h_add_combo_arm_dynamic <- function(
   }
 
   if (arm %in% exchangeable_drug2) {
-    t1 <- paste0("theta_", arm, "_drug2_1")
-    t2 <- paste0("theta_", arm, "_drug2_2")
+    tvec <- paste0("theta_", arm, "_drug2")
     prior_lines <- c(
       prior_lines,
-      sprintf("%s ~ dnorm(mu_alpha0_drug2, pow(tau_alpha0_drug2, -2))", t1),
       sprintf(
-        "%s ~ dnorm(mu_log_alpha1_drug2, pow(tau_log_alpha1_drug2, -2))",
-        t2
+        "%s[1:2] ~ dmnorm(mu_drug2[1:2], prec_drug2[1:2, 1:2])",
+        tvec
       ),
-      sprintf("%s <- %s", alpha0_2, t1),
-      sprintf("%s <- exp(%s)", alpha1_2, t2)
+      sprintf("%s <- %s[1]", alpha0_2, tvec),
+      sprintf("%s <- exp(%s[2])", alpha1_2, tvec)
     )
   } else {
     mean_2 <- paste0("prior_mean_", arm, "_2")
@@ -779,14 +768,23 @@ h_compile_hierarchical_jags_dynamic <- function(data, model) {
       "mu_alpha0_drug1 ~ dnorm(logit(0.25), pow(2.5, -2))",
       "mu_log_alpha1_drug1 ~ dnorm(0, pow(0.7, -2))",
       "tau_alpha0_drug1 ~ dlnorm(log(0.5), pow(kappa, -2))",
-      "tau_log_alpha1_drug1 ~ dlnorm(log(0.25), pow(kappa, -2))"
+      "tau_log_alpha1_drug1 ~ dlnorm(log(0.25), pow(kappa, -2))",
+      "rho_drug1 ~ dunif(-1, 1)",
+      "mu_drug1[1] <- mu_alpha0_drug1",
+      "mu_drug1[2] <- mu_log_alpha1_drug1",
+      "cov_drug1[1, 1] <- pow(tau_alpha0_drug1, 2)",
+      "cov_drug1[2, 2] <- pow(tau_log_alpha1_drug1, 2)",
+      "cov_drug1[1, 2] <- rho_drug1 * tau_alpha0_drug1 * tau_log_alpha1_drug1",
+      "cov_drug1[2, 1] <- cov_drug1[1, 2]",
+      "prec_drug1[1:2, 1:2] <- inverse(cov_drug1[1:2, 1:2])"
     )
     sample_vars <- c(
       sample_vars,
       "mu_alpha0_drug1",
       "mu_log_alpha1_drug1",
       "tau_alpha0_drug1",
-      "tau_log_alpha1_drug1"
+      "tau_log_alpha1_drug1",
+      "rho_drug1"
     )
   }
 
@@ -794,16 +792,25 @@ h_compile_hierarchical_jags_dynamic <- function(data, model) {
     hyper_lines <- c(
       hyper_lines,
       "mu_alpha0_drug2 ~ dnorm(logit(0.25), pow(2.5, -2))",
-      "mu_log_alpha1_drug2 ~ dnorm(0, pow(0.7, -2))",
+      "mu_log_alpha1_drug2 ~ dnorm(0, 1)",
       "tau_alpha0_drug2 ~ dlnorm(log(0.75), pow(kappa, -2))",
-      "tau_log_alpha1_drug2 ~ dlnorm(log(0.25), pow(kappa, -2))"
+      "tau_log_alpha1_drug2 ~ dlnorm(log(0.25), pow(kappa, -2))",
+      "rho_drug2 ~ dunif(-1, 1)",
+      "mu_drug2[1] <- mu_alpha0_drug2",
+      "mu_drug2[2] <- mu_log_alpha1_drug2",
+      "cov_drug2[1, 1] <- pow(tau_alpha0_drug2, 2)",
+      "cov_drug2[2, 2] <- pow(tau_log_alpha1_drug2, 2)",
+      "cov_drug2[1, 2] <- rho_drug2 * tau_alpha0_drug2 * tau_log_alpha1_drug2",
+      "cov_drug2[2, 1] <- cov_drug2[1, 2]",
+      "prec_drug2[1:2, 1:2] <- inverse(cov_drug2[1:2, 1:2])"
     )
     sample_vars <- c(
       sample_vars,
       "mu_alpha0_drug2",
       "mu_log_alpha1_drug2",
       "tau_alpha0_drug2",
-      "tau_log_alpha1_drug2"
+      "tau_log_alpha1_drug2",
+      "rho_drug2"
     )
   }
 
@@ -1305,6 +1312,712 @@ run_hierarchical_combo_dynamic_four_arms_with_hist_prototype <- function() {
         logical(1L)
       )))
     )
+  )
+}
+
+## Fifth try: full 5D joint source-level prior
+## theta_j = (alpha1, log(beta1), alpha2, log(beta2), eta)'
+## with theta_j ~ Normal(mu, Sigma) and block-structured Sigma.
+
+mcmc_hierarchical_joint5d_prior_prototype <- function(data, options) {
+  stopifnot(inherits(data, "HierarchicalDataPrototype"))
+  stopifnot(methods::is(options, "McmcOptions"))
+
+  stopifnot(all(c("mono1", "mono2", "combo") %in% names(data$arms)))
+
+  mono1 <- data$arms$mono1
+  mono2 <- data$arms$mono2
+  combo <- data$arms$combo
+  has_hist <- "hist_mono1" %in% names(data$arms)
+  if (has_hist) {
+    hist_mono1 <- data$arms$hist_mono1
+  }
+
+  ref1 <- 10
+  ref2 <- 20
+  kappa <- log(2) / 1.96
+
+  model_core <- function() {
+    for (i in 1:nObs_mono1) {
+      logit(p_mono1[i]) <- theta_mono1[1] +
+        exp(theta_mono1[2]) *
+          log(x_mono1[i] / ref1)
+      y_mono1[i] ~ dbern(p_mono1[i])
+    }
+
+    for (i in 1:nObs_mono2) {
+      logit(p_mono2[i]) <- theta_mono2[3] +
+        exp(theta_mono2[4]) *
+          log(x_mono2[i] / ref2)
+      y_mono2[i] ~ dbern(p_mono2[i])
+    }
+
+    for (i in 1:nObs_combo) {
+      logit(p_combo_1[i]) <- theta_combo[1] +
+        exp(theta_combo[2]) *
+          log(x_combo[i, 1] / ref1)
+      logit(p_combo_2[i]) <- theta_combo[3] +
+        exp(theta_combo[4]) *
+          log(x_combo[i, 2] / ref2)
+      p0_combo[i] <- p_combo_1[i] + p_combo_2[i] - p_combo_1[i] * p_combo_2[i]
+      logit(p_combo[i]) <- log(p0_combo[i] / (1 - p0_combo[i])) +
+        theta_combo[5] * (x_combo[i, 1] / ref1) * (x_combo[i, 2] / ref2)
+      y_combo[i] ~ dbern(p_combo[i])
+    }
+
+    theta_mono1[1:5] ~ dmnorm(mu[1:5], prec[1:5, 1:5])
+    theta_mono2[1:5] ~ dmnorm(mu[1:5], prec[1:5, 1:5])
+    theta_combo[1:5] ~ dmnorm(mu[1:5], prec[1:5, 1:5])
+
+    mu[1] ~ dnorm(logit(0.25), pow(2.5, -2))
+    mu[2] ~ dnorm(0, pow(0.7, -2))
+    mu[3] ~ dnorm(logit(0.25), pow(2.5, -2))
+    mu[4] ~ dnorm(0, 1)
+    mu[5] ~ dnorm(0, 1)
+
+    tau_alpha1 ~ dlnorm(log(0.5), pow(kappa, -2))
+    tau_beta1 ~ dlnorm(log(0.25), pow(kappa, -2))
+    tau_alpha2 ~ dlnorm(log(0.75), pow(kappa, -2))
+    tau_beta2 ~ dlnorm(log(0.25), pow(kappa, -2))
+    tau_eta ~ dlnorm(log(0.125), pow(kappa, -2))
+
+    rho1 ~ dunif(-0.95, 0.95)
+    rho2 ~ dunif(-0.95, 0.95)
+
+    cov[1, 1] <- pow(tau_alpha1, 2)
+    cov[2, 2] <- pow(tau_beta1, 2)
+    cov[1, 2] <- rho1 * tau_alpha1 * tau_beta1
+    cov[2, 1] <- cov[1, 2]
+
+    cov[3, 3] <- pow(tau_alpha2, 2)
+    cov[4, 4] <- pow(tau_beta2, 2)
+    cov[3, 4] <- rho2 * tau_alpha2 * tau_beta2
+    cov[4, 3] <- cov[3, 4]
+
+    cov[5, 5] <- pow(tau_eta, 2)
+
+    cov[1, 3] <- 0
+    cov[1, 4] <- 0
+    cov[1, 5] <- 0
+    cov[2, 3] <- 0
+    cov[2, 4] <- 0
+    cov[2, 5] <- 0
+    cov[3, 1] <- 0
+    cov[3, 2] <- 0
+    cov[3, 5] <- 0
+    cov[4, 1] <- 0
+    cov[4, 2] <- 0
+    cov[4, 5] <- 0
+    cov[5, 1] <- 0
+    cov[5, 2] <- 0
+    cov[5, 3] <- 0
+    cov[5, 4] <- 0
+
+    prec[1:5, 1:5] <- inverse(cov[1:5, 1:5])
+  }
+
+  model_fun <- model_core
+  if (has_hist) {
+    model_fun <- crmPack:::h_jags_join_models(
+      model_fun,
+      function() {
+        for (i in 1:nObs_hist_mono1) {
+          logit(p_hist_mono1[i]) <- theta_hist_mono1[1] +
+            exp(theta_hist_mono1[2]) *
+              log(x_hist_mono1[i] / ref1)
+          y_hist_mono1[i] ~ dbern(p_hist_mono1[i])
+        }
+        theta_hist_mono1[1:5] ~ dmnorm(mu[1:5], prec[1:5, 1:5])
+      }
+    )
+  }
+
+  model_file <- crmPack:::h_jags_write_model(model_fun)
+
+  jags_data <- list(
+    nObs_mono1 = mono1@nObs,
+    y_mono1 = as.integer(mono1@y),
+    x_mono1 = as.numeric(mono1@x),
+    nObs_mono2 = mono2@nObs,
+    y_mono2 = as.integer(mono2@y),
+    x_mono2 = as.numeric(mono2@x),
+    nObs_combo = combo@nObs,
+    y_combo = as.integer(combo@y),
+    x_combo = combo@x,
+    ref1 = ref1,
+    ref2 = ref2,
+    kappa = kappa
+  )
+
+  if (has_hist) {
+    jags_data$nObs_hist_mono1 <- hist_mono1@nObs
+    jags_data$y_hist_mono1 <- as.integer(hist_mono1@y)
+    jags_data$x_hist_mono1 <- as.numeric(hist_mono1@x)
+  } else {
+    jags_data$nObs_hist_mono1 <- 0L
+    jags_data$y_hist_mono1 <- integer()
+    jags_data$x_hist_mono1 <- numeric()
+  }
+
+  jags_model <- rjags::jags.model(
+    file = model_file,
+    data = jags_data,
+    quiet = TRUE,
+    n.adapt = 0
+  )
+
+  update(jags_model, n.iter = options@burnin, progress.bar = "none")
+
+  sample_vars <- c(
+    "theta_mono1",
+    "theta_mono2",
+    "theta_combo",
+    "mu",
+    "tau_alpha1",
+    "tau_beta1",
+    "tau_alpha2",
+    "tau_beta2",
+    "tau_eta",
+    "rho1",
+    "rho2"
+  )
+  if (has_hist) {
+    sample_vars <- c(sample_vars, "theta_hist_mono1")
+  }
+
+  samples_coda <- rjags::coda.samples(
+    model = jags_model,
+    variable.names = sample_vars,
+    n.iter = options@iterations - options@burnin,
+    thin = options@step,
+    progress.bar = "none"
+  )
+
+  smat <- as.matrix(samples_coda)
+  as_col <- function(name) as.numeric(smat[, name])
+  as_vec5 <- function(base) {
+    cbind(
+      as_col(paste0(base, "[1]")),
+      as_col(paste0(base, "[2]")),
+      as_col(paste0(base, "[3]")),
+      as_col(paste0(base, "[4]")),
+      as_col(paste0(base, "[5]"))
+    )
+  }
+
+  out <- list(
+    samples = crmPack::Samples(
+      data = list(
+        theta_mono1 = as_vec5("theta_mono1"),
+        theta_mono2 = as_vec5("theta_mono2"),
+        theta_combo = as_vec5("theta_combo"),
+        mu = as_vec5("mu"),
+        tau_alpha1 = as_col("tau_alpha1"),
+        tau_beta1 = as_col("tau_beta1"),
+        tau_alpha2 = as_col("tau_alpha2"),
+        tau_beta2 = as_col("tau_beta2"),
+        tau_eta = as_col("tau_eta"),
+        rho1 = as_col("rho1"),
+        rho2 = as_col("rho2")
+      ),
+      options = options
+    ),
+    model_file = model_file
+  )
+
+  if (has_hist) {
+    out$samples@data$theta_hist_mono1 <- as_vec5("theta_hist_mono1")
+  }
+
+  out
+}
+
+arm_samples_from_joint5d_prototype <- function(
+  joint_fit,
+  arm = c("mono1", "mono2", "combo", "hist_mono1")
+) {
+  arm <- match.arg(arm)
+  src <- joint_fit$samples@data
+
+  if (identical(arm, "mono1")) {
+    th <- src$theta_mono1
+    return(crmPack::Samples(
+      data = list(alpha0 = th[, 1], alpha1 = exp(th[, 2])),
+      options = joint_fit$samples@options
+    ))
+  }
+  if (identical(arm, "mono2")) {
+    th <- src$theta_mono2
+    return(crmPack::Samples(
+      data = list(alpha0 = th[, 3], alpha1 = exp(th[, 4])),
+      options = joint_fit$samples@options
+    ))
+  }
+  if (identical(arm, "combo")) {
+    th <- src$theta_combo
+    return(crmPack::Samples(
+      data = list(
+        alpha0 = cbind(th[, 1], th[, 3]),
+        alpha1 = cbind(exp(th[, 2]), exp(th[, 4])),
+        eta = th[, 5]
+      ),
+      options = joint_fit$samples@options
+    ))
+  }
+
+  if (is.null(src$theta_hist_mono1)) {
+    stop("No historical source in joint 5D fit.", call. = FALSE)
+  }
+  th <- src$theta_hist_mono1
+  crmPack::Samples(
+    data = list(alpha0 = th[, 1], alpha1 = exp(th[, 2])),
+    options = joint_fit$samples@options
+  )
+}
+
+run_hierarchical_joint5d_prior_prototype <- function(include_hist = TRUE) {
+  mono1 <- build_mono_prototype()
+  mono2 <- build_mono2_prototype()
+  combo <- build_fixed_combo_prototype()
+
+  arms <- list(mono1 = mono1$data, mono2 = mono2$data, combo = combo$data)
+  if (isTRUE(include_hist)) {
+    hist_mono1 <- build_historical_mono1_prototype()
+    arms$hist_mono1 <- hist_mono1$data
+  }
+
+  h_data <- structure(list(arms = arms), class = "HierarchicalDataPrototype")
+  h_options <- crmPack::McmcOptions(burnin = 300L, step = 1L, samples = 500L)
+  joint_fit <- mcmc_hierarchical_joint5d_prior_prototype(h_data, h_options)
+
+  mono1_s <- arm_samples_from_joint5d_prototype(joint_fit, "mono1")
+  mono2_s <- arm_samples_from_joint5d_prototype(joint_fit, "mono2")
+  combo_s <- arm_samples_from_joint5d_prototype(joint_fit, "combo")
+
+  checks <- list(
+    mean_prob_mono1_at_20 = mean(crmPack::prob(20, mono1$model, mono1_s)),
+    mean_prob_mono2_at_40 = mean(crmPack::prob(40, mono2$model, mono2_s)),
+    mean_prob_combo_at_20_40 = mean(crmPack::prob(
+      c(drug1 = 20, drug2 = 40),
+      combo$model,
+      combo_s
+    )),
+    mean_rho1 = mean(joint_fit$samples@data$rho1),
+    mean_rho2 = mean(joint_fit$samples@data$rho2)
+  )
+
+  if (isTRUE(include_hist)) {
+    hist_s <- arm_samples_from_joint5d_prototype(joint_fit, "hist_mono1")
+    checks$mean_prob_hist_mono1_at_20 <- mean(crmPack::prob(
+      20,
+      hist_mono1$model,
+      hist_s
+    ))
+  }
+
+  list(
+    data = h_data,
+    options = h_options,
+    joint5d = joint_fit,
+    checks = checks
+  )
+}
+
+## Sixth try: dynamic generation for full 5D joint source-level prior
+## (no hardcoded source names).
+
+h_joint5d_safe_name <- function(x) {
+  gsub("[^A-Za-z0-9_]", "_", x)
+}
+
+h_joint5d_type <- function(arm_type, arm_data, arm_model) {
+  if (
+    methods::is(arm_model, "LogisticLogNormalCombo") &&
+      methods::is(arm_data, "DataCombo")
+  ) {
+    return("combo")
+  }
+  if (
+    methods::is(arm_model, "LogisticLogNormal") && methods::is(arm_data, "Data")
+  ) {
+    if (
+      identical(arm_type, "mono2") || identical(arm_type, "historical_mono2")
+    ) {
+      return("mono2")
+    }
+    return("mono1")
+  }
+  stop(
+    sprintf(
+      "Unsupported source arm type for dynamic joint5d: arm_type=%s, data=%s, model=%s",
+      arm_type,
+      class(arm_data)[1],
+      class(arm_model)[1]
+    ),
+    call. = FALSE
+  )
+}
+
+h_compile_hierarchical_joint5d_dynamic <- function(data, model) {
+  stopifnot(inherits(data, "HierarchicalDataPrototype"))
+  stopifnot(inherits(model, "HierarchicalModelPrototype"))
+
+  arm_models <- h_get_arm_models_prototype(model)
+  arm_names <- names(data$arms)
+  stopifnot(length(arm_names) > 0L)
+  stopifnot(all(arm_names %in% names(arm_models)))
+  stopifnot(all(arm_names %in% names(model$arm_map)))
+
+  lines <- c("model {")
+  prior_lines <- character()
+  hyper_lines <- character(
+    0L
+  )
+  jags_data <- list()
+  sample_vars <- c(
+    "mu",
+    "tau_alpha1",
+    "tau_beta1",
+    "tau_alpha2",
+    "tau_beta2",
+    "tau_eta",
+    "rho1",
+    "rho2"
+  )
+  arm_param_map <- list()
+
+  ref1 <- 10
+  ref2 <- 20
+  kappa <- log(2) / 1.96
+  jags_data$kappa <- kappa
+
+  for (arm in arm_names) {
+    arm_data <- data$arms[[arm]]
+    arm_model <- arm_models[[arm]]
+    arm_type <- model$arm_map[[arm]]$type
+    source_type <- h_joint5d_type(arm_type, arm_data, arm_model)
+    src <- h_joint5d_safe_name(arm)
+    theta_var <- paste0("theta_", src)
+
+    if (identical(source_type, "combo")) {
+      n_obs <- paste0("nObs_", src)
+      y <- paste0("y_", src)
+      x <- paste0("x_", src)
+      ref <- paste0("ref_dose_", src)
+      a0 <- paste0("alpha0_", src)
+      a1 <- paste0("alpha1_", src)
+      e <- paste0("eta_", src)
+
+      jags_data[[n_obs]] <- arm_data@nObs
+      jags_data[[y]] <- as.integer(arm_data@y)
+      jags_data[[x]] <- arm_data@x
+      jags_data[[ref]] <- c(ref1, ref2)
+
+      prior_lines <- c(
+        prior_lines,
+        sprintf("%s[1:5] ~ dmnorm(mu[1:5], prec[1:5, 1:5])", theta_var),
+        sprintf("%s[1] <- %s[1]", a0, theta_var),
+        sprintf("%s[2] <- %s[3]", a0, theta_var),
+        sprintf("%s[1] <- exp(%s[2])", a1, theta_var),
+        sprintf("%s[2] <- exp(%s[4])", a1, theta_var),
+        sprintf("%s <- %s[5]", e, theta_var)
+      )
+
+      lines <- c(
+        lines,
+        h_render_model_slot_lines(
+          fun = arm_model@datamodel,
+          replacements = c(
+            nObs = n_obs,
+            y = y,
+            x = x,
+            ref_dose = ref,
+            alpha0 = a0,
+            alpha1 = a1,
+            eta = e,
+            p_single = paste0("p_single_", src),
+            p0 = paste0("p0_", src),
+            p = paste0("p_", src)
+          )
+        )
+      )
+
+      sample_vars <- c(sample_vars, theta_var)
+      arm_param_map[[arm]] <- list(type = "combo", theta = theta_var)
+    } else {
+      n_obs <- paste0("nObs_", src)
+      y <- paste0("y_", src)
+      x <- paste0("x_", src)
+      ref <- paste0("ref_dose_", src)
+      alpha0 <- paste0("alpha0_", src)
+      alpha1 <- paste0("alpha1_", src)
+      idx <- if (identical(source_type, "mono2")) c(3L, 4L) else c(1L, 2L)
+
+      jags_data[[n_obs]] <- arm_data@nObs
+      jags_data[[y]] <- as.integer(arm_data@y)
+      jags_data[[x]] <- as.numeric(arm_data@x)
+      jags_data[[ref]] <- if (identical(source_type, "mono2")) ref2 else ref1
+
+      prior_lines <- c(
+        prior_lines,
+        sprintf("%s[1:5] ~ dmnorm(mu[1:5], prec[1:5, 1:5])", theta_var),
+        sprintf("%s <- %s[%d]", alpha0, theta_var, idx[1]),
+        sprintf("%s <- exp(%s[%d])", alpha1, theta_var, idx[2])
+      )
+
+      lines <- c(
+        lines,
+        h_render_model_slot_lines(
+          fun = arm_model@datamodel,
+          replacements = c(
+            nObs = n_obs,
+            y = y,
+            x = x,
+            ref_dose = ref,
+            alpha0 = alpha0,
+            alpha1 = alpha1,
+            p = paste0("p_", src)
+          )
+        )
+      )
+
+      sample_vars <- c(sample_vars, theta_var)
+      arm_param_map[[arm]] <- list(type = source_type, theta = theta_var)
+    }
+  }
+
+  hyper_lines <- c(
+    hyper_lines,
+    "mu[1] ~ dnorm(logit(0.25), pow(2.5, -2))",
+    "mu[2] ~ dnorm(0, pow(0.7, -2))",
+    "mu[3] ~ dnorm(logit(0.25), pow(2.5, -2))",
+    "mu[4] ~ dnorm(0, 1)",
+    "mu[5] ~ dnorm(0, 1)",
+    "tau_alpha1 ~ dlnorm(log(0.5), pow(kappa, -2))",
+    "tau_beta1 ~ dlnorm(log(0.25), pow(kappa, -2))",
+    "tau_alpha2 ~ dlnorm(log(0.75), pow(kappa, -2))",
+    "tau_beta2 ~ dlnorm(log(0.25), pow(kappa, -2))",
+    "tau_eta ~ dlnorm(log(0.125), pow(kappa, -2))",
+    "rho1 ~ dunif(-0.95, 0.95)",
+    "rho2 ~ dunif(-0.95, 0.95)",
+    "cov[1, 1] <- pow(tau_alpha1, 2)",
+    "cov[2, 2] <- pow(tau_beta1, 2)",
+    "cov[1, 2] <- rho1 * tau_alpha1 * tau_beta1",
+    "cov[2, 1] <- cov[1, 2]",
+    "cov[3, 3] <- pow(tau_alpha2, 2)",
+    "cov[4, 4] <- pow(tau_beta2, 2)",
+    "cov[3, 4] <- rho2 * tau_alpha2 * tau_beta2",
+    "cov[4, 3] <- cov[3, 4]",
+    "cov[5, 5] <- pow(tau_eta, 2)",
+    "cov[1, 3] <- 0",
+    "cov[1, 4] <- 0",
+    "cov[1, 5] <- 0",
+    "cov[2, 3] <- 0",
+    "cov[2, 4] <- 0",
+    "cov[2, 5] <- 0",
+    "cov[3, 1] <- 0",
+    "cov[3, 2] <- 0",
+    "cov[3, 5] <- 0",
+    "cov[4, 1] <- 0",
+    "cov[4, 2] <- 0",
+    "cov[4, 5] <- 0",
+    "cov[5, 1] <- 0",
+    "cov[5, 2] <- 0",
+    "cov[5, 3] <- 0",
+    "cov[5, 4] <- 0",
+    "prec[1:5, 1:5] <- inverse(cov[1:5, 1:5])"
+  )
+
+  all_lines <- c(lines, prior_lines, hyper_lines, "}")
+  model_file <- tempfile(
+    pattern = "hierarchical_joint5d_dynamic_",
+    fileext = ".jags"
+  )
+  writeLines(all_lines, con = model_file)
+
+  list(
+    model_file = model_file,
+    jags_data = jags_data,
+    sample_vars = unique(sample_vars),
+    arm_param_map = arm_param_map,
+    jags_lines = all_lines
+  )
+}
+
+mcmc_hierarchical_joint5d_dynamic_prototype <- function(data, model, options) {
+  stopifnot(methods::is(options, "McmcOptions"))
+
+  compiled <- h_compile_hierarchical_joint5d_dynamic(data = data, model = model)
+
+  jags_model <- rjags::jags.model(
+    file = compiled$model_file,
+    data = compiled$jags_data,
+    quiet = TRUE,
+    n.adapt = 0
+  )
+  update(jags_model, n.iter = options@burnin, progress.bar = "none")
+
+  samples_coda <- rjags::coda.samples(
+    model = jags_model,
+    variable.names = compiled$sample_vars,
+    n.iter = options@iterations - options@burnin,
+    thin = options@step,
+    progress.bar = "none"
+  )
+
+  smat <- as.matrix(samples_coda)
+  as_col <- function(name) as.numeric(smat[, name])
+  as_vec5 <- function(base) {
+    cbind(
+      as_col(paste0(base, "[1]")),
+      as_col(paste0(base, "[2]")),
+      as_col(paste0(base, "[3]")),
+      as_col(paste0(base, "[4]")),
+      as_col(paste0(base, "[5]"))
+    )
+  }
+
+  sample_data <- list(
+    mu = as_vec5("mu"),
+    tau_alpha1 = as_col("tau_alpha1"),
+    tau_beta1 = as_col("tau_beta1"),
+    tau_alpha2 = as_col("tau_alpha2"),
+    tau_beta2 = as_col("tau_beta2"),
+    tau_eta = as_col("tau_eta"),
+    rho1 = as_col("rho1"),
+    rho2 = as_col("rho2")
+  )
+
+  theta_vars <- names(compiled$arm_param_map)
+  for (arm in theta_vars) {
+    theta_name <- compiled$arm_param_map[[arm]]$theta
+    sample_data[[theta_name]] <- as_vec5(theta_name)
+  }
+
+  list(
+    samples = crmPack::Samples(data = sample_data, options = options),
+    arm_param_map = compiled$arm_param_map,
+    jags_model_file = compiled$model_file,
+    jags_code = compiled$jags_lines
+  )
+}
+
+arm_samples_from_joint5d_dynamic_prototype <- function(joint_fit, arm) {
+  stopifnot(
+    is.list(joint_fit),
+    !is.null(joint_fit$samples),
+    !is.null(joint_fit$arm_param_map)
+  )
+  stopifnot(arm %in% names(joint_fit$arm_param_map))
+
+  map <- joint_fit$arm_param_map[[arm]]
+  th <- joint_fit$samples@data[[map$theta]]
+
+  if (identical(map$type, "combo")) {
+    return(crmPack::Samples(
+      data = list(
+        alpha0 = cbind(th[, 1], th[, 3]),
+        alpha1 = cbind(exp(th[, 2]), exp(th[, 4])),
+        eta = th[, 5]
+      ),
+      options = joint_fit$samples@options
+    ))
+  }
+
+  if (identical(map$type, "mono2")) {
+    return(crmPack::Samples(
+      data = list(alpha0 = th[, 3], alpha1 = exp(th[, 4])),
+      options = joint_fit$samples@options
+    ))
+  }
+
+  crmPack::Samples(
+    data = list(alpha0 = th[, 1], alpha1 = exp(th[, 2])),
+    options = joint_fit$samples@options
+  )
+}
+
+run_hierarchical_joint5d_dynamic_prototype <- function(include_hist = TRUE) {
+  mono1 <- build_mono_prototype()
+  mono2 <- build_mono2_prototype()
+  combo <- build_fixed_combo_prototype()
+
+  arms <- list(mono1 = mono1$data, mono2 = mono2$data, combo = combo$data)
+  arm_models <- list(
+    mono1 = mono1$model,
+    mono2 = mono2$model,
+    combo = combo$model
+  )
+  arm_map <- list(
+    mono1 = list(type = "mono1", active = TRUE, use_for_recommendation = TRUE),
+    mono2 = list(type = "mono2", active = TRUE, use_for_recommendation = TRUE),
+    combo = list(type = "combo", active = TRUE, use_for_recommendation = TRUE)
+  )
+
+  if (isTRUE(include_hist)) {
+    hist_mono1 <- build_historical_mono1_prototype()
+    arms$hist_mono1 <- hist_mono1$data
+    arm_models$hist_mono1 <- hist_mono1$model
+    arm_map$hist_mono1 <- list(
+      type = "historical_mono1",
+      active = FALSE,
+      use_for_recommendation = FALSE
+    )
+  }
+
+  h_data <- structure(list(arms = arms), class = "HierarchicalDataPrototype")
+  h_model <- structure(
+    list(
+      arm_map = arm_map,
+      arm_models = arm_models,
+      mono_model = mono1$model,
+      combo_model = combo$model
+    ),
+    class = "HierarchicalModelPrototype"
+  )
+
+  h_options <- crmPack::McmcOptions(burnin = 300L, step = 1L, samples = 500L)
+  joint_fit <- mcmc_hierarchical_joint5d_dynamic_prototype(
+    h_data,
+    h_model,
+    h_options
+  )
+  cat(joint_fit$jags_code, sep = "\n")
+
+  mono1_s <- arm_samples_from_joint5d_dynamic_prototype(joint_fit, "mono1")
+  mono2_s <- arm_samples_from_joint5d_dynamic_prototype(joint_fit, "mono2")
+  combo_s <- arm_samples_from_joint5d_dynamic_prototype(joint_fit, "combo")
+
+  checks <- list(
+    mean_prob_mono1_at_20 = mean(crmPack::prob(20, mono1$model, mono1_s)),
+    mean_prob_mono2_at_40 = mean(crmPack::prob(40, mono2$model, mono2_s)),
+    mean_prob_combo_at_20_40 = mean(crmPack::prob(
+      c(drug1 = 20, drug2 = 40),
+      combo$model,
+      combo_s
+    )),
+    mean_rho1 = mean(joint_fit$samples@data$rho1),
+    mean_rho2 = mean(joint_fit$samples@data$rho2)
+  )
+
+  if (isTRUE(include_hist)) {
+    hist_s <- arm_samples_from_joint5d_dynamic_prototype(
+      joint_fit,
+      "hist_mono1"
+    )
+    checks$mean_prob_hist_mono1_at_20 <- mean(crmPack::prob(
+      20,
+      hist_mono1$model,
+      hist_s
+    ))
+  }
+
+  list(
+    data = h_data,
+    model = h_model,
+    options = h_options,
+    joint5d_dynamic = joint_fit,
+    checks = checks
   )
 }
 
