@@ -136,6 +136,21 @@ setMethod(
   }
 )
 
+# mcmc-HierarchicalData-HierarchicalModel ----
+
+#' @describeIn mcmc Hierarchical model sampling is not implemented yet.
+setMethod(
+  f = "mcmc",
+  signature = signature(
+    data = "HierarchicalData",
+    model = "HierarchicalModel",
+    options = "McmcOptions"
+  ),
+  def = function(data, model, options, ...) {
+    stop("MCMC for HierarchicalModel is not implemented yet.")
+  }
+)
+
 # mcmc-GeneralData-DualEndpointRW ----
 
 #' @describeIn mcmc Standard method which uses JAGS. For the

@@ -843,6 +843,117 @@ LogisticLogNormalCombo <- function(
   )
 }
 
+# HierarchicalModel ----
+
+## class ----
+
+#' `HierarchicalModel`
+#'
+#' @description `r lifecycle::badge("experimental")`
+#'
+#' [`HierarchicalModel`] is a class for the prototype hierarchical model that
+#' links a single-agent [`LogisticLogNormal`] arm with a
+#' [`LogisticLogNormalCombo`] arm.
+#'
+#' @details The class currently stores the structural pieces from the design
+#'   prototype: the mono arm model, the combination arm model, an `arm_map`
+#'   describing which arms are active and used for recommendation, and
+#'   `parameter_pools` describing which parameters are shared across arms.
+#'   This class is currently a model specification container only; hierarchical
+#'   MCMC sampling is not yet implemented in the package.
+#'
+#' @slot mono_model (`LogisticLogNormal`)\cr the single-agent model for the mono
+#'   arm.
+#' @slot combo_model (`LogisticLogNormalCombo`)\cr the combination model for the
+#'   combo arm.
+#' @slot arm_map (`list`)\cr a named list describing the trial arms. The current
+#'   prototype expects exactly the entries `mono` and `combo`, each with
+#'   `type`, `active`, and `use_for_recommendation`.
+#' @slot parameter_pools (`list`)\cr a named list describing how parameters are
+#'   pooled across arms. Each entry must contain `parameters`, `members`, and
+#'   `prior`.
+#'
+#' @seealso [`HierarchicalData`], [`LogisticLogNormal`],
+#'   [`LogisticLogNormalCombo`].
+#'
+#' @aliases HierarchicalModel
+#' @export
+#'
+.HierarchicalModel <- setClass(
+  Class = "HierarchicalModel",
+  contains = "GeneralModel",
+  slots = c(
+    mono_model = "LogisticLogNormal",
+    combo_model = "LogisticLogNormalCombo",
+    models_to_arms = "list",
+    parameter_pools = "list"
+  ),
+  validity = v_hierarchical_model
+)
+
+## constructor ----
+
+#' @rdname HierarchicalModel-class
+#'
+#' @param ... several [`DesignArm`] objects describing the trial arms and the corresponding models to be used.
+#' @param exchangeable_parameters a named list describing
+#'   which parameters are exchangeable across arms. This will be
+#'   used to define the hierarchical structure of the model. Each
+#'   list entry contains the arms as names and the parameters to be #'   shared as a string.
+#'
+#' @export
+#' @example examples/Model-class-HierarchicalModel.R
+HierarchicalModel <- function(
+  ...,
+  exchangeable_parameters = list()
+) {
+  args <- list(...)
+  assert_list(args, types = "DesignArm", any.missing = FALSE, min.len = 2L)
+
+  arm_names <- vapply(args, slot, "name", FUN.VALUE = character(1L))
+
+  arm_models <- lapply(args, function(arm) class(arm@design@model))
+  assert_subset(arm_models, c("LogisticLogNormal", "LogisticLogNormalCombo"))
+
+  .HierarchicalModel(
+    arm_names = arm_names,
+    arm_models = arm_models,
+    exchangeable_parameters = exchangeable_parameters,
+    datamodel = function() {
+      stop("MCMC for HierarchicalModel is not implemented yet.")
+    },
+    priormodel = function() {
+      stop("MCMC for HierarchicalModel is not implemented yet.")
+    },
+    modelspecs = function(from_prior) {
+      stop("MCMC for HierarchicalModel is not implemented yet.")
+    },
+    init = function() {
+      list()
+    },
+    datanames = character(),
+    datanames_prior = character(),
+    sample = character()
+  )
+}
+
+## default constructor ----
+
+#' @rdname HierarchicalModel-class
+#' @note Typically, end users will not use the `.DefaultHierarchicalModel()`
+#'   function directly.
+#' @export
+.DefaultHierarchicalModel <- function() {
+  HierarchicalModel(
+    mono_model = LogisticLogNormal(
+      mean = c(-0.85, 1),
+      cov = matrix(c(1, -0.5, -0.5, 1), nrow = 2),
+      ref_dose = 10
+    ),
+    combo_model = .DefaultLogisticLogNormalCombo()
+  )
+}
+
 # LogisticKadane ----
 
 ## class ----

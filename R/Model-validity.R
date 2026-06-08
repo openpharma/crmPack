@@ -214,6 +214,15 @@ v_model_logistic_log_normal_combo <- function(object) {
   v$result()
 }
 
+#' @describeIn v_model_objects validates that [`HierarchicalModel`] slots are valid.
+v_hierarchical_model <- function(object) {
+  v <- Validate()
+
+  # TODO
+
+  v$result()
+}
+
 #' @describeIn v_model_objects validates that [`DualEndpoint`] class slots are valid.
 v_model_dual_endpoint <- function(object) {
   rmin <- .Machine$double.xmin
