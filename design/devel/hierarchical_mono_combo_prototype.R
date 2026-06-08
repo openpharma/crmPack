@@ -134,6 +134,7 @@ HierarchicalModelPrototype <- function(mono_model, combo_model) {
   )
 }
 
+# Simplest version with hardcoded JAGS model and no dynamic code generation yet.
 mcmc_hierarchical_prototype <- function(data, model, options) {
   stopifnot(inherits(data, "HierarchicalDataPrototype"))
   stopifnot(inherits(model, "HierarchicalModelPrototype"))
@@ -297,6 +298,7 @@ arm_samples_from_hierarchical <- function(h_samples, arm = c("mono", "combo")) {
   )
 }
 
+# Running example.
 run_hierarchical_combo_prototype <- function() {
   mono <- build_mono_prototype()
   combo <- build_fixed_combo_prototype()
@@ -341,8 +343,14 @@ run_hierarchical_combo_prototype <- function() {
   )
 }
 
+result1 <- run_hierarchical_combo_prototype()
+str(result1, 2)
+
 ## Second try: Flexible mcmc function and dynamically generated jags code
 
+# Helper functions for dynamic JAGS code generation. In a real implementation, these
+# would be more robust and handle edge cases, but for the prototype we can keep
+# them simple and focused on the expected input structures.
 h_get_arm_models_prototype <- function(model) {
   if (!is.null(model$arm_models)) {
     return(model$arm_models)
@@ -369,6 +377,7 @@ h_pool_exchangeable_members <- function(parameter_pools, pool_name) {
   as.character(pool$members)
 }
 
+# Extract the lines of code from a function body, removing the enclosing braces if present.
 h_model_block_lines <- function(fun) {
   txt <- deparse(body(fun), control = NULL)
   txt <- trimws(txt)
@@ -384,6 +393,9 @@ h_model_block_lines <- function(fun) {
   txt
 }
 
+# Replace tokens in the lines of code with the provided replacements. Tokens are replaced
+# only when they appear as standalone identifiers (not part of other words). Longer tokens
+# are replaced first to avoid partial replacements.
 h_replace_tokens <- function(lines, replacements) {
   if (length(lines) == 0L || length(replacements) == 0L) {
     return(lines)
@@ -404,6 +416,9 @@ h_replace_tokens <- function(lines, replacements) {
   out
 }
 
+# Render the lines of code from a model slot function, replacing tokens with the provided replacements.
+# This allows us to reuse the same model code structure for different arms and parameter names by defining
+# the model code with generic tokens and then substituting them as needed.
 h_render_model_slot_lines <- function(fun, replacements = character()) {
   h_replace_tokens(
     lines = h_model_block_lines(fun),
@@ -411,6 +426,11 @@ h_render_model_slot_lines <- function(fun, replacements = character()) {
   )
 }
 
+# Add the JAGS code and data for a mono arm, handling exchangeable vs fixed priors
+# and updating the lines, prior_lines, hyper_lines, jags_data, sample_vars, and arm_param_map
+# accordingly. This function is called from the main hierarchical JAGS code generation function
+# for each mono arm in the data/model, allowing us to build up the full JAGS model
+# dynamically based on the structure of the data/model and the specified parameter pools.
 h_add_mono_arm_dynamic <- function(
   arm,
   arm_data,
@@ -510,6 +530,7 @@ h_add_mono_arm_dynamic <- function(
   )
 }
 
+# Now the same for the combo arm.
 h_add_combo_arm_dynamic <- function(
   arm,
   arm_data,
@@ -730,6 +751,7 @@ h_add_combo_arm_dynamic <- function(
   )
 }
 
+# Main function to compile the JAGS model for the hierarchical mono + combo prototype.
 h_compile_hierarchical_jags_dynamic <- function(data, model) {
   stopifnot(inherits(data, "HierarchicalDataPrototype"))
   stopifnot(inherits(model, "HierarchicalModelPrototype"))
@@ -901,6 +923,7 @@ h_compile_hierarchical_jags_dynamic <- function(data, model) {
   )
 }
 
+# Main function to run MCMC for the hierarchical mono + combo prototype.
 mcmc_hierarchical_dynamic_prototype <- function(data, model, options) {
   stopifnot(methods::is(options, "McmcOptions"))
 
@@ -942,6 +965,7 @@ mcmc_hierarchical_dynamic_prototype <- function(data, model, options) {
   )
 }
 
+# Helper function to extract the samples for a specific arm from the hierarchical MCMC fit.
 arm_samples_from_hierarchical_dynamic <- function(h_fit, arm) {
   stopifnot(
     is.list(h_fit),
@@ -975,6 +999,7 @@ arm_samples_from_hierarchical_dynamic <- function(h_fit, arm) {
   stop(sprintf("Unsupported arm type '%s'.", map$type), call. = FALSE)
 }
 
+# Running example for the dynamic JAGS code generation and MCMC sampling.
 run_hierarchical_combo_dynamic_prototype <- function() {
   mono <- build_mono_prototype()
   combo <- build_fixed_combo_prototype()
@@ -1024,10 +1049,12 @@ run_hierarchical_combo_dynamic_prototype <- function() {
     )
   )
 }
+result3 <- run_hierarchical_combo_dynamic_prototype()
+str(result3, 2)
+result3$hierarchical_dynamic$model
 
 ## Third try: Now also with a mono arm for the other drug, to see if the dynamic code
 ## above can handle that too
-
 build_mono2_prototype <- function() {
   mono2_model <- crmPack::LogisticLogNormal(
     mean = c(-0.70, 0.8),
@@ -1158,6 +1185,8 @@ run_hierarchical_combo_dynamic_three_arms_prototype <- function() {
     )
   )
 }
+result4 <- run_hierarchical_combo_dynamic_three_arms_prototype()
+str(result4, 2)
 
 ## Fourth try: add a historical mono arm (non-enrolling) that still contributes
 ## to the joint MCMC fit.
@@ -1265,7 +1294,7 @@ run_hierarchical_combo_dynamic_four_arms_with_hist_prototype <- function() {
     model = h_model,
     options = h_options
   )
-  cat(h_fit$jags_code, sep = "\n")
+  # cat(h_fit$jags_code, sep = "\n")
 
   mono1_from_h <- arm_samples_from_hierarchical_dynamic(h_fit, arm = "mono1")
   mono2_from_h <- arm_samples_from_hierarchical_dynamic(h_fit, arm = "mono2")
@@ -1314,6 +1343,10 @@ run_hierarchical_combo_dynamic_four_arms_with_hist_prototype <- function() {
     )
   )
 }
+
+result5 <- run_hierarchical_combo_dynamic_four_arms_with_hist_prototype()
+str(result5, 2)
+
 
 ## Fifth try: full 5D joint source-level prior
 ## theta_j = (alpha1, log(beta1), alpha2, log(beta2), eta)'
@@ -1623,13 +1656,18 @@ run_hierarchical_joint5d_prior_prototype <- function(include_hist = TRUE) {
   )
 }
 
+result6 <- run_hierarchical_joint5d_prior_prototype(include_hist = TRUE)
+str(result6, 2)
+
 ## Sixth try: dynamic generation for full 5D joint source-level prior
 ## (no hardcoded source names).
 
+# Helper function to create safe variable names for JAGS from arm names.
 h_joint5d_safe_name <- function(x) {
   gsub("[^A-Za-z0-9_]", "_", x)
 }
 
+# Helper function to determine the source type for the joint 5D model based on arm type, data, and model.
 h_joint5d_type <- function(arm_type, arm_data, arm_model) {
   if (
     methods::is(arm_model, "LogisticLogNormalCombo") &&
@@ -1658,6 +1696,7 @@ h_joint5d_type <- function(arm_type, arm_data, arm_model) {
   )
 }
 
+# Main function to dynamically generate the JAGS model code for the hierarchical joint 5D prior.
 h_compile_hierarchical_joint5d_dynamic <- function(data, model) {
   stopifnot(inherits(data, "HierarchicalDataPrototype"))
   stopifnot(inherits(model, "HierarchicalModelPrototype"))
@@ -1844,6 +1883,7 @@ h_compile_hierarchical_joint5d_dynamic <- function(data, model) {
   )
 }
 
+# Main function to run MCMC for the hierarchical joint 5D model using the dynamically generated JAGS code.
 mcmc_hierarchical_joint5d_dynamic_prototype <- function(data, model, options) {
   stopifnot(methods::is(options, "McmcOptions"))
 
@@ -1902,6 +1942,7 @@ mcmc_hierarchical_joint5d_dynamic_prototype <- function(data, model, options) {
   )
 }
 
+# Helper function to extract arm-specific samples from the joint 5D fit based on the arm parameter map.
 arm_samples_from_joint5d_dynamic_prototype <- function(joint_fit, arm) {
   stopifnot(
     is.list(joint_fit),
@@ -1937,6 +1978,8 @@ arm_samples_from_joint5d_dynamic_prototype <- function(joint_fit, arm) {
   )
 }
 
+# Main function to run the hierarchical joint 5D model with dynamic JAGS code generation
+# and extract samples for checks.
 run_hierarchical_joint5d_dynamic_prototype <- function(include_hist = TRUE) {
   mono1 <- build_mono_prototype()
   mono2 <- build_mono2_prototype()
@@ -2020,5 +2063,16 @@ run_hierarchical_joint5d_dynamic_prototype <- function(include_hist = TRUE) {
     checks = checks
   )
 }
+
+result7 <- run_hierarchical_joint5d_dynamic_prototype(include_hist = TRUE)
+str(result7, 2)
+
+# Let's compare with the model without using historical data
+# to see if we get different results.
+result8 <- run_hierarchical_joint5d_dynamic_prototype(include_hist = FALSE)
+str(result8, 2)
+
+result7$checks
+result8$checks
 
 # nolint end
