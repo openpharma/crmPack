@@ -438,3 +438,17 @@ v_data_combo <- function(object) {
 
   v$result()
 }
+
+#' @describeIn v_data_objects validates that the [`HierarchicalData`] object contains valid arms.
+v_hierarchical_data <- function(object) {
+  v <- Validate()
+  v$check(
+    test_list(object@arms, types = c("Data", "DataCombo"), any.missing = FALSE),
+    "arms must be a list of Data or DataCombo objects without missings"
+  )
+  v$check(
+    test_names(names(object@arms), type = "unique"),
+    "arms must be a named list with unique names"
+  )
+  v$result()
+}
