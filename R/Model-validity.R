@@ -217,8 +217,107 @@ v_model_logistic_log_normal_combo <- function(object) {
 #' @describeIn v_model_objects validates that [`HierarchicalModel`] slots are valid.
 v_hierarchical_model <- function(object) {
   v <- Validate()
+  models_to_arms <- object@models_to_arms
+  parameter_pools <- object@parameter_pools
 
-  # TODO
+  v$check(
+    test_list(models_to_arms, any.missing = FALSE),
+    "models_to_arms must be a list without missings"
+  )
+  v$check(
+    test_names(names(models_to_arms), type = "unique"),
+    "models_to_arms must be a named list with unique names"
+  )
+
+  if (isTRUE(test_list(models_to_arms, any.missing = FALSE))) {
+    supported_models <- vapply(
+      models_to_arms,
+      function(model) {
+        is(model, "LogisticLogNormal") || is(model, "LogisticLogNormalCombo")
+      },
+      logical(1L)
+    )
+    v$check(
+      all(supported_models),
+      "models_to_arms entries must be LogisticLogNormal or LogisticLogNormalCombo objects"
+    )
+  }
+
+  v$check(
+    test_list(parameter_pools, any.missing = FALSE, null.ok = TRUE),
+    "parameter_pools must be a list without missings"
+  )
+  v$check(
+    test_names(names(parameter_pools), type = "unique"),
+    "parameter_pools must be a named list with unique names"
+  )
+
+  if (length(parameter_pools) > 0L && isTRUE(test_names(
+    names(models_to_arms),
+    type = "unique"
+  ))) {
+    for (pool_name in names(parameter_pools)) {
+      pool <- parameter_pools[[pool_name]]
+      v$check(
+        test_list(pool, types = "character", any.missing = FALSE, min.len = 2L),
+        paste0(
+          "parameter pool '", pool_name,
+          "' must be a named list of at least two character references"
+        )
+      )
+
+      if (!isTRUE(test_list(pool, types = "character", any.missing = FALSE, min.len = 2L))) {
+        next
+      }
+
+      v$check(
+        test_names(names(pool), type = "unique"),
+        paste0("parameter pool '", pool_name, "' must have unique arm names")
+      )
+
+      pool_arms <- names(pool)
+      v$check(
+        all(pool_arms %in% names(models_to_arms)),
+        paste0(
+          "parameter pool '", pool_name,
+          "' refers to unknown hierarchical arms"
+        )
+      )
+      if (!all(pool_arms %in% names(models_to_arms))) {
+        next
+      }
+
+      kinds <- vapply(seq_along(pool), function(i) {
+        arm_name <- pool_arms[i]
+        ref <- pool[[i]]
+        model <- models_to_arms[[arm_name]]
+        supported_refs <- h_hierarchical_supported_refs(model)
+        v$check(
+          ref %in% supported_refs,
+          paste0(
+            "parameter reference '", ref, "' in pool '", pool_name,
+            "' is not supported for arm '", arm_name, "'"
+          )
+        )
+        if (ref %in% supported_refs) {
+          h_hierarchical_parse_ref(model, arm_name, ref)$kind
+        } else {
+          NA_character_
+        }
+      }, character(1L))
+
+      valid_kinds <- kinds[!is.na(kinds)]
+      if (length(valid_kinds) > 0L) {
+        v$check(
+          length(unique(valid_kinds)) == 1L,
+          paste0(
+            "all references in parameter pool '", pool_name,
+            "' must target the same parameter family"
+          )
+        )
+      }
+    }
+  }
 
   v$result()
 }

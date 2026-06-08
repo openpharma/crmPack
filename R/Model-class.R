@@ -843,6 +843,450 @@ LogisticLogNormalCombo <- function(
   )
 }
 
+# HierarchicalModel helpers ----
+
+h_hierarchical_safe_name <- function(name) {
+  gsub("[^A-Za-z0-9_]", "_", name)
+}
+
+h_hierarchical_model_type <- function(model) {
+  if (is(model, "LogisticLogNormal")) {
+    return("mono")
+  }
+  if (is(model, "LogisticLogNormalCombo")) {
+    return("combo")
+  }
+  stop("Unsupported hierarchical arm model.")
+}
+
+h_hierarchical_supported_refs <- function(model) {
+  if (is(model, "LogisticLogNormal")) {
+    return(c("alpha0", "alpha1"))
+  }
+
+  if (is(model, "LogisticLogNormalCombo")) {
+    return(c("alpha0[1]", "alpha1[1]", "alpha0[2]", "alpha1[2]"))
+  }
+
+  character()
+}
+
+h_hierarchical_parse_ref <- function(model, arm_name, ref) {
+  assert_string(ref)
+
+  safe_arm <- h_hierarchical_safe_name(arm_name)
+  type <- h_hierarchical_model_type(model)
+
+  if (type == "mono") {
+    if (identical(ref, "alpha0")) {
+      return(list(
+        kind = "alpha0",
+        index = 1L,
+        latent = paste0("theta_", safe_arm, "[1]"),
+        sample = paste0("alpha0_", safe_arm)
+      ))
+    }
+
+    if (identical(ref, "alpha1")) {
+      return(list(
+        kind = "alpha1",
+        index = 2L,
+        latent = paste0("theta_", safe_arm, "[2]"),
+        sample = paste0("alpha1_", safe_arm)
+      ))
+    }
+  }
+
+  if (type == "combo") {
+    m <- regexec("^alpha([01])\\[([12])\\]$", ref)
+    capture <- regmatches(ref, m)[[1L]]
+    if (length(capture) == 3L) {
+      kind <- paste0("alpha", capture[2L])
+      index <- as.integer(capture[3L])
+      return(list(
+        kind = kind,
+        index = index,
+        latent = paste0(
+          "theta_", safe_arm, "[",
+          if (kind == "alpha0") 1L else 2L,
+          ", ", index, "]"
+        ),
+        sample = paste0(kind, "_", safe_arm, "[", index, "]")
+      ))
+    }
+  }
+
+  stop(
+    "Unsupported hierarchical parameter reference '", ref,
+    "' for arm '", arm_name, "'."
+  )
+}
+
+h_hierarchical_compile_datamodel <- function(models_to_arms) {
+  lines <- unlist(lapply(names(models_to_arms), function(arm_name) {
+    model <- models_to_arms[[arm_name]]
+    safe_arm <- h_hierarchical_safe_name(arm_name)
+
+    if (is(model, "LogisticLogNormal")) {
+      return(c(
+        paste0("for (i in 1:nObs_", safe_arm, ") {"),
+        paste0(
+          "  logit(p_", safe_arm, "[i]) <- alpha0_", safe_arm,
+          " + alpha1_", safe_arm,
+          " * log(x_", safe_arm, "[i] / ref_dose_", safe_arm, ")"
+        ),
+        paste0("  y_", safe_arm, "[i] ~ dbern(p_", safe_arm, "[i])"),
+        "}"
+      ))
+    }
+
+    c(
+      paste0("for (i in 1:nObs_", safe_arm, ") {"),
+      "  for (j in 1:2) {",
+      paste0(
+        "    logit(p_single_", safe_arm, "[i, j]) <- alpha0_", safe_arm,
+        "[j] + alpha1_", safe_arm, "[j] * log(x_", safe_arm,
+        "[i, j] / ref_dose_", safe_arm, "[j])"
+      ),
+      "  }",
+      paste0(
+        "  p0_", safe_arm, "[i] <- p_single_", safe_arm, "[i, 1] + ",
+        "p_single_", safe_arm, "[i, 2] - ",
+        "p_single_", safe_arm, "[i, 1] * p_single_", safe_arm, "[i, 2]"
+      ),
+      paste0(
+        "  logit(p_", safe_arm, "[i]) <- log(p0_", safe_arm, "[i] / ",
+        "(1 - p0_", safe_arm, "[i])) + eta_", safe_arm,
+        " * (x_", safe_arm, "[i, 1] / ref_dose_", safe_arm, "[1])",
+        " * (x_", safe_arm, "[i, 2] / ref_dose_", safe_arm, "[2])"
+      ),
+      paste0("  y_", safe_arm, "[i] ~ dbern(p_", safe_arm, "[i])"),
+      "}"
+    )
+  }))
+
+  eval(parse(text = paste(c("function() {", lines, "}"), collapse = "\n")))
+}
+
+h_hierarchical_compile_priormodel <- function(models_to_arms, parameter_pools) {
+  pooled_map <- list()
+  fixed_lines <- character()
+  assign_lines <- character()
+  sample_names <- character()
+
+  if (length(parameter_pools) > 0L) {
+    for (pool_name in names(parameter_pools)) {
+      members <- parameter_pools[[pool_name]]
+      for (arm_name in names(members)) {
+        pooled_map[[paste0(arm_name, "::", members[[arm_name]])]] <- pool_name
+      }
+    }
+  }
+
+  for (arm_name in names(models_to_arms)) {
+    model <- models_to_arms[[arm_name]]
+    safe_arm <- h_hierarchical_safe_name(arm_name)
+
+    if (is(model, "LogisticLogNormal")) {
+      ref_names <- c("alpha0", "alpha1")
+      pool_names <- vapply(
+        ref_names,
+        function(ref) {
+          key <- paste0(arm_name, "::", ref)
+          if (is.null(pooled_map[[key]])) "" else pooled_map[[key]]
+        },
+        character(1L)
+      )
+
+      if (all(pool_names == "")) {
+        fixed_lines <- c(
+          fixed_lines,
+          paste0(
+            "theta_", safe_arm, "[1:2] ~ dmnorm(mean_", safe_arm,
+            "[1:2], prec_", safe_arm, "[1:2, 1:2])"
+          )
+        )
+      } else {
+        for (idx in seq_along(ref_names)) {
+          if (pool_names[idx] == "") {
+            fixed_lines <- c(
+              fixed_lines,
+              paste0(
+                "theta_", safe_arm, "[", idx, "] ~ dnorm(",
+                "marginal_mean_", safe_arm, "[", idx, "], ",
+                "marginal_prec_", safe_arm, "[", idx, "])"
+              )
+            )
+          }
+        }
+      }
+
+      assign_lines <- c(
+        assign_lines,
+        paste0("alpha0_", safe_arm, " <- theta_", safe_arm, "[1]"),
+        paste0("alpha1_", safe_arm, " <- exp(theta_", safe_arm, "[2])")
+      )
+      sample_names <- c(
+        sample_names,
+        paste0("alpha0_", safe_arm),
+        paste0("alpha1_", safe_arm)
+      )
+    } else {
+      for (j in 1:2) {
+        ref_names <- c(paste0("alpha0[", j, "]"), paste0("alpha1[", j, "]"))
+        pool_names <- vapply(
+          ref_names,
+          function(ref) {
+            key <- paste0(arm_name, "::", ref)
+            if (is.null(pooled_map[[key]])) "" else pooled_map[[key]]
+          },
+          character(1L)
+        )
+
+        if (all(pool_names == "")) {
+          fixed_lines <- c(
+            fixed_lines,
+            paste0(
+              "theta_", safe_arm, "[1:2, ", j, "] ~ dmnorm(",
+              "prior_mean_", safe_arm, "[1:2, ", j, "], ",
+              "prior_prec_", safe_arm, "[1:2, 1:2, ", j, "])"
+            )
+          )
+        } else {
+          for (idx in 1:2) {
+            if (pool_names[idx] == "") {
+              fixed_lines <- c(
+                fixed_lines,
+                paste0(
+                  "theta_", safe_arm, "[", idx, ", ", j, "] ~ dnorm(",
+                  "marginal_mean_", safe_arm, "[", idx, ", ", j, "], ",
+                  "marginal_prec_", safe_arm, "[", idx, ", ", j, "])"
+                )
+              )
+            }
+          }
+        }
+      }
+
+      if (model@log_normal_eta) {
+        fixed_lines <- c(
+          fixed_lines,
+          paste0("log_eta_", safe_arm, " ~ dnorm(gamma_", safe_arm, ", tau_", safe_arm, ")"),
+          paste0("eta_", safe_arm, " <- exp(log_eta_", safe_arm, ")")
+        )
+      } else {
+        fixed_lines <- c(
+          fixed_lines,
+          paste0("eta_", safe_arm, " ~ dnorm(gamma_", safe_arm, ", tau_", safe_arm, ")")
+        )
+      }
+
+      assign_lines <- c(
+        assign_lines,
+        paste0("alpha0_", safe_arm, "[1] <- theta_", safe_arm, "[1, 1]"),
+        paste0("alpha1_", safe_arm, "[1] <- exp(theta_", safe_arm, "[2, 1])"),
+        paste0("alpha0_", safe_arm, "[2] <- theta_", safe_arm, "[1, 2]"),
+        paste0("alpha1_", safe_arm, "[2] <- exp(theta_", safe_arm, "[2, 2])")
+      )
+      sample_names <- c(
+        sample_names,
+        paste0("alpha0_", safe_arm),
+        paste0("alpha1_", safe_arm),
+        paste0("eta_", safe_arm)
+      )
+    }
+  }
+
+  hyper_lines <- character()
+  hyper_names <- character()
+  for (pool_name in names(parameter_pools)) {
+    members <- parameter_pools[[pool_name]]
+    first_arm <- names(members)[1L]
+    first_ref <- members[[1L]]
+    first_info <- h_hierarchical_parse_ref(
+      models_to_arms[[first_arm]],
+      first_arm,
+      first_ref
+    )
+    safe_pool <- h_hierarchical_safe_name(pool_name)
+    mu_name <- paste0("mu_", safe_pool)
+    tau_name <- paste0("tau_", safe_pool)
+
+    hyper_lines <- c(
+      hyper_lines,
+      vapply(seq_along(members), function(i) {
+        arm_name <- names(members)[i]
+        arm_ref <- members[[i]]
+        arm_info <- h_hierarchical_parse_ref(
+          models_to_arms[[arm_name]],
+          arm_name,
+          arm_ref
+        )
+        paste0(
+          arm_info$latent, " ~ dnorm(",
+          mu_name, ", pow(", tau_name, ", -2))"
+        )
+      }, character(1L))
+    )
+
+    if (first_info$kind == "alpha0") {
+      hyper_lines <- c(
+        hyper_lines,
+        paste0(mu_name, " ~ dnorm(logit(0.25), pow(2.5, -2))"),
+        paste0(tau_name, " ~ dlnorm(log(0.5), pow(kappa_hier, -2))")
+      )
+    } else {
+      hyper_lines <- c(
+        hyper_lines,
+        paste0(mu_name, " ~ dnorm(0, pow(0.7, -2))"),
+        paste0(tau_name, " ~ dlnorm(log(0.25), pow(kappa_hier, -2))")
+      )
+    }
+
+    hyper_names <- c(hyper_names, mu_name, tau_name)
+  }
+
+  list(
+    priormodel = eval(parse(text = paste(
+      c("function() {", fixed_lines, hyper_lines, assign_lines, "}"),
+      collapse = "\n"
+    ))),
+    sample = unique(c(sample_names, hyper_names))
+  )
+}
+
+h_hierarchical_compile_modelspecs <- function(models_to_arms, parameter_pools) {
+  function(arms, from_prior) {
+    assert_list(arms, any.missing = FALSE)
+    assert_flag(from_prior)
+
+    specs <- list()
+    pooled_map <- list()
+    if (length(parameter_pools) > 0L) {
+      specs$kappa_hier <- log(2) / 1.96
+      for (pool_name in names(parameter_pools)) {
+        members <- parameter_pools[[pool_name]]
+        for (arm_name in names(members)) {
+          pooled_map[[paste0(arm_name, "::", members[[arm_name]])]] <- pool_name
+        }
+      }
+    }
+
+    for (arm_name in names(models_to_arms)) {
+      model <- models_to_arms[[arm_name]]
+      safe_arm <- h_hierarchical_safe_name(arm_name)
+
+      if (is(model, "LogisticLogNormal")) {
+        pool_names <- vapply(
+          c("alpha0", "alpha1"),
+          function(ref) {
+            key <- paste0(arm_name, "::", ref)
+            if (is.null(pooled_map[[key]])) "" else pooled_map[[key]]
+          },
+          character(1L)
+        )
+
+        if (all(pool_names == "")) {
+          specs[[paste0("mean_", safe_arm)]] <- model@params@mean
+          specs[[paste0("prec_", safe_arm)]] <- model@params@prec
+        } else if (any(pool_names == "")) {
+          specs[[paste0("marginal_mean_", safe_arm)]] <- model@params@mean
+          specs[[paste0("marginal_prec_", safe_arm)]] <- 1 / diag(model@params@cov)
+        }
+
+        if (!from_prior) {
+          specs[[paste0("ref_dose_", safe_arm)]] <- as.numeric(model@ref_dose)
+        }
+      } else {
+        prior_mean <- do.call(
+          cbind,
+          lapply(model@single_models, function(single_model) single_model@params@mean)
+        )
+        prior_prec <- array(
+          data = do.call(
+            c,
+            lapply(model@single_models, function(single_model) single_model@params@prec)
+          ),
+          dim = c(2, 2, 2)
+        )
+        marginal_mean <- do.call(
+          cbind,
+          lapply(model@single_models, function(single_model) single_model@params@mean)
+        )
+        marginal_prec <- do.call(
+          cbind,
+          lapply(
+            model@single_models,
+            function(single_model) 1 / diag(single_model@params@cov)
+          )
+        )
+        needs_joint <- logical(2L)
+        needs_marginal <- logical(2L)
+
+        for (j in 1:2) {
+          pool_names <- vapply(
+            c(paste0("alpha0[", j, "]"), paste0("alpha1[", j, "]")),
+            function(ref) {
+              key <- paste0(arm_name, "::", ref)
+              if (is.null(pooled_map[[key]])) "" else pooled_map[[key]]
+            },
+            character(1L)
+          )
+          needs_joint[j] <- all(pool_names == "")
+          needs_marginal[j] <- any(pool_names == "") && !all(pool_names == "")
+        }
+
+        if (any(needs_joint)) {
+          specs[[paste0("prior_mean_", safe_arm)]] <- prior_mean
+          specs[[paste0("prior_prec_", safe_arm)]] <- prior_prec
+        }
+        if (any(needs_marginal)) {
+          specs[[paste0("marginal_mean_", safe_arm)]] <- marginal_mean
+          specs[[paste0("marginal_prec_", safe_arm)]] <- marginal_prec
+        }
+        specs[[paste0("gamma_", safe_arm)]] <- model@gamma
+        specs[[paste0("tau_", safe_arm)]] <- model@tau
+        if (!from_prior) {
+          specs[[paste0("ref_dose_", safe_arm)]] <- unname(model@ref_dose)
+        }
+      }
+    }
+
+    specs
+  }
+}
+
+h_hierarchical_compile_init <- function(models_to_arms, parameter_pools) {
+  function(arms) {
+    assert_list(arms, any.missing = FALSE)
+
+    init <- list()
+    for (arm_name in names(models_to_arms)) {
+      model <- models_to_arms[[arm_name]]
+      safe_arm <- h_hierarchical_safe_name(arm_name)
+      arm_inits <- do.call(model@init, list())
+
+      if ("theta" %in% names(arm_inits)) {
+        init[[paste0("theta_", safe_arm)]] <- arm_inits$theta
+      }
+      if ("eta" %in% names(arm_inits)) {
+        init[[paste0("eta_", safe_arm)]] <- arm_inits$eta
+      }
+      if ("log_eta" %in% names(arm_inits)) {
+        init[[paste0("log_eta_", safe_arm)]] <- arm_inits$log_eta
+      }
+    }
+
+    for (pool_name in names(parameter_pools)) {
+      safe_pool <- h_hierarchical_safe_name(pool_name)
+      init[[paste0("mu_", safe_pool)]] <- 0
+      init[[paste0("tau_", safe_pool)]] <- 0.5
+    }
+
+    init
+  }
+}
+
 # HierarchicalModel ----
 
 ## class ----
@@ -856,22 +1300,15 @@ LogisticLogNormalCombo <- function(
 #' [`LogisticLogNormalCombo`] arm.
 #'
 #' @details The class currently stores the structural pieces from the design
-#'   prototype: the mono arm model, the combination arm model, an `arm_map`
-#'   describing which arms are active and used for recommendation, and
-#'   `parameter_pools` describing which parameters are shared across arms.
-#'   This class is currently a model specification container only; hierarchical
-#'   MCMC sampling is not yet implemented in the package.
+#'   prototype as a named list of arm-specific models and a named list of
+#'   exchangeable parameter pools used to dynamically compile a joint JAGS model.
 #'
-#' @slot mono_model (`LogisticLogNormal`)\cr the single-agent model for the mono
-#'   arm.
-#' @slot combo_model (`LogisticLogNormalCombo`)\cr the combination model for the
-#'   combo arm.
-#' @slot arm_map (`list`)\cr a named list describing the trial arms. The current
-#'   prototype expects exactly the entries `mono` and `combo`, each with
-#'   `type`, `active`, and `use_for_recommendation`.
-#' @slot parameter_pools (`list`)\cr a named list describing how parameters are
-#'   pooled across arms. Each entry must contain `parameters`, `members`, and
-#'   `prior`.
+#' @slot models_to_arms (`list`)\cr named list of arm-specific models. Each
+#'   entry must currently be either a [`LogisticLogNormal`] or a
+#'   [`LogisticLogNormalCombo`] object.
+#' @slot parameter_pools (`list`)\cr named list describing which parameters are
+#'   exchangeable across arms. Each list entry contains arm names as names and
+#'   parameter references as values, e.g. `"alpha0"` or `"alpha0[1]"`.
 #'
 #' @seealso [`HierarchicalData`], [`LogisticLogNormal`],
 #'   [`LogisticLogNormalCombo`].
@@ -883,8 +1320,6 @@ LogisticLogNormalCombo <- function(
   Class = "HierarchicalModel",
   contains = "GeneralModel",
   slots = c(
-    mono_model = "LogisticLogNormal",
-    combo_model = "LogisticLogNormalCombo",
     models_to_arms = "list",
     parameter_pools = "list"
   ),
@@ -895,11 +1330,12 @@ LogisticLogNormalCombo <- function(
 
 #' @rdname HierarchicalModel-class
 #'
-#' @param ... several [`DesignArm`] objects describing the trial arms and the corresponding models to be used.
+#' @param ... named model objects describing the trial arms.
 #' @param exchangeable_parameters a named list describing
 #'   which parameters are exchangeable across arms. This will be
 #'   used to define the hierarchical structure of the model. Each
-#'   list entry contains the arms as names and the parameters to be #'   shared as a string.
+#'   list entry contains the arms as names and the parameters to be shared
+#'   as a string.
 #'
 #' @export
 #' @example examples/Model-class-HierarchicalModel.R
@@ -908,32 +1344,40 @@ HierarchicalModel <- function(
   exchangeable_parameters = list()
 ) {
   args <- list(...)
-  assert_list(args, types = "DesignArm", any.missing = FALSE, min.len = 2L)
+  assert_list(args, any.missing = FALSE, min.len = 2L)
+  assert_true(!is.null(names(args)))
+  assert_character(names(args), unique = TRUE, any.missing = FALSE)
+  assert_true(all(vapply(
+    args,
+    function(model) {
+      is(model, "LogisticLogNormal") || is(model, "LogisticLogNormalCombo")
+    },
+    logical(1L)
+  )))
+  assert_list(exchangeable_parameters, any.missing = FALSE, null.ok = TRUE)
 
-  arm_names <- vapply(args, slot, "name", FUN.VALUE = character(1L))
-
-  arm_models <- lapply(args, function(arm) class(arm@design@model))
-  assert_subset(arm_models, c("LogisticLogNormal", "LogisticLogNormalCombo"))
+  compiled_datamodel <- h_hierarchical_compile_datamodel(args)
+  compiled_prior <- h_hierarchical_compile_priormodel(
+    models_to_arms = args,
+    parameter_pools = exchangeable_parameters
+  )
 
   .HierarchicalModel(
-    arm_names = arm_names,
-    arm_models = arm_models,
-    exchangeable_parameters = exchangeable_parameters,
-    datamodel = function() {
-      stop("MCMC for HierarchicalModel is not implemented yet.")
-    },
-    priormodel = function() {
-      stop("MCMC for HierarchicalModel is not implemented yet.")
-    },
-    modelspecs = function(from_prior) {
-      stop("MCMC for HierarchicalModel is not implemented yet.")
-    },
-    init = function() {
-      list()
-    },
-    datanames = character(),
-    datanames_prior = character(),
-    sample = character()
+    models_to_arms = args,
+    parameter_pools = exchangeable_parameters,
+    datamodel = compiled_datamodel,
+    priormodel = compiled_prior$priormodel,
+    modelspecs = h_hierarchical_compile_modelspecs(
+      models_to_arms = args,
+      parameter_pools = exchangeable_parameters
+    ),
+    init = h_hierarchical_compile_init(
+      models_to_arms = args,
+      parameter_pools = exchangeable_parameters
+    ),
+    datanames = "arms",
+    datanames_prior = "arms",
+    sample = compiled_prior$sample
   )
 }
 
@@ -945,12 +1389,22 @@ HierarchicalModel <- function(
 #' @export
 .DefaultHierarchicalModel <- function() {
   HierarchicalModel(
-    mono_model = LogisticLogNormal(
+    mono = LogisticLogNormal(
       mean = c(-0.85, 1),
       cov = matrix(c(1, -0.5, -0.5, 1), nrow = 2),
       ref_dose = 10
     ),
-    combo_model = .DefaultLogisticLogNormalCombo()
+    combo = .DefaultLogisticLogNormalCombo(),
+    exchangeable_parameters = list(
+      mono_intercept = list(
+        mono = "alpha0",
+        combo = "alpha0[1]"
+      ),
+      mono_slope = list(
+        mono = "alpha1",
+        combo = "alpha1[1]"
+      )
+    )
   )
 }
 

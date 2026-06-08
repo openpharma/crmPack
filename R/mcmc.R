@@ -111,6 +111,41 @@ setMethod(
   }
 )
 
+# Hierarchical helpers ----
+
+h_mcmc_get_hierarchical_data <- function(model, data, from_prior) {
+  assert_class(model, "HierarchicalModel")
+  assert_class(data, "HierarchicalData")
+  assert_flag(from_prior)
+
+  model_data <- do.call(
+    model@modelspecs,
+    list(arms = data@arms, from_prior = from_prior)
+  )
+
+  if (from_prior) {
+    return(model_data)
+  }
+
+  for (arm_name in names(model@models_to_arms)) {
+    arm_model <- model@models_to_arms[[arm_name]]
+    arm_data <- data@arms[[arm_name]]
+    safe_arm <- h_hierarchical_safe_name(arm_name)
+
+    arm_data <- h_jags_add_dummy(arm_data, where = c("y", "x"))
+
+    model_data[[paste0("nObs_", safe_arm)]] <- arm_data@nObs
+    model_data[[paste0("y_", safe_arm)]] <- as.integer(arm_data@y)
+    model_data[[paste0("x_", safe_arm)]] <- if (is(arm_model, "LogisticLogNormal")) {
+      as.numeric(arm_data@x)
+    } else {
+      arm_data@x
+    }
+  }
+
+  model_data
+}
+
 # mcmc-DataCombo-LogisticLogNormalCombo ----
 
 #' @describeIn mcmc Standard method which uses JAGS. For the
@@ -146,8 +181,79 @@ setMethod(
     model = "HierarchicalModel",
     options = "McmcOptions"
   ),
-  def = function(data, model, options, ...) {
-    stop("MCMC for HierarchicalModel is not implemented yet.")
+  def = function(
+    data,
+    model,
+    options,
+    from_prior = all(vapply(data@arms, function(arm) arm@nObs == 0L, logical(1L))),
+    ...
+  ) {
+    assert_flag(from_prior)
+    assert_names(names(data@arms), identical.to = names(model@models_to_arms))
+
+    for (arm_name in names(model@models_to_arms)) {
+      arm_model <- model@models_to_arms[[arm_name]]
+      arm_data <- data@arms[[arm_name]]
+
+      if (is(arm_model, "LogisticLogNormal")) {
+        assert_class(arm_data, "Data")
+      } else {
+        assert_class(arm_data, "DataCombo")
+        assert_names(arm_data@drugNames, identical.to = arm_model@drug_names)
+      }
+    }
+
+    model_fun <- if (from_prior) {
+      model@priormodel
+    } else {
+      h_jags_join_models(model@datamodel, model@priormodel)
+    }
+
+    model_file <- h_jags_write_model(model_fun)
+    model_inits <- do.call(model@init, list(arms = data@arms))
+    model_data <- h_mcmc_get_hierarchical_data(
+      model = model,
+      data = data,
+      from_prior = from_prior
+    )
+
+    jags_model <- rjags::jags.model(
+      file = model_file,
+      data = model_data,
+      inits = c(
+        model_inits,
+        .RNG.name = h_null_if_na(options@rng_kind),
+        .RNG.seed = h_null_if_na(options@rng_seed)
+      ),
+      quiet = !is_logging_enabled(),
+      n.adapt = 0
+    )
+    update(jags_model, n.iter = options@burnin, progress.bar = "none")
+
+    log_trace("Running hierarchical rjags::jags.samples")
+    if (is_logging_enabled()) {
+      jags_samples <- rjags::jags.samples(
+        model = jags_model,
+        variable.names = model@sample,
+        n.iter = (options@iterations - options@burnin),
+        thin = options@step
+      )
+    } else {
+      invisible(
+        capture.output(
+          jags_samples <- rjags::jags.samples(
+            model = jags_model,
+            variable.names = model@sample,
+            n.iter = (options@iterations - options@burnin),
+            thin = options@step,
+            progress.bar = "none"
+          )
+        )
+      )
+    }
+
+    samples <- lapply(jags_samples, h_jags_extract_samples)
+    Samples(data = samples, options = options)
   }
 )
 
