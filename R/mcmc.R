@@ -113,6 +113,21 @@ setMethod(
 
 # Hierarchical helpers ----
 
+#' Flatten `HierarchicalData` into JAGS Input for a `HierarchicalModel`
+#'
+#' @description `r lifecycle::badge("experimental")`
+#'
+#' Prepares the data list consumed by the dynamically compiled hierarchical JAGS
+#' model. Arm-specific data are renamed with arm-specific prefixes so they align
+#' with the generated model code.
+#'
+#' @param model (`HierarchicalModel`)\cr hierarchical model object.
+#' @param data (`HierarchicalData`)\cr hierarchical data object.
+#' @param from_prior (`flag`)\cr should only prior-related inputs be returned?
+#'
+#' @return Named list suitable for `rjags::jags.model(data = ...)`.
+#'
+#' @keywords internal
 h_mcmc_get_hierarchical_data <- function(model, data, from_prior) {
   assert_class(model, "HierarchicalModel")
   assert_class(data, "HierarchicalData")
@@ -132,6 +147,8 @@ h_mcmc_get_hierarchical_data <- function(model, data, from_prior) {
     arm_data <- data@arms[[arm_name]]
     safe_arm <- h_hierarchical_safe_name(arm_name)
 
+    # Keep the same JAGS dummy-value workaround used elsewhere in the package
+    # so one-observation arms are still passed as vectors/matrices.
     arm_data <- h_jags_add_dummy(arm_data, where = c("y", "x"))
 
     model_data[[paste0("nObs_", safe_arm)]] <- arm_data@nObs
@@ -173,7 +190,9 @@ setMethod(
 
 # mcmc-HierarchicalData-HierarchicalModel ----
 
-#' @describeIn mcmc Hierarchical model sampling is not implemented yet.
+#' @describeIn mcmc Standard method which uses JAGS for the dynamically
+#'   compiled hierarchical model. Arm names in `data` and `model` must agree,
+#'   and combination-arm drug names must match as well.
 setMethod(
   f = "mcmc",
   signature = signature(

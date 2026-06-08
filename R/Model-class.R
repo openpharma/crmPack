@@ -845,10 +845,36 @@ LogisticLogNormalCombo <- function(
 
 # HierarchicalModel helpers ----
 
+#' Sanitize a Hierarchical Name for Generated JAGS Code
+#'
+#' @description `r lifecycle::badge("experimental")`
+#'
+#' Replaces every non-alphanumeric character with an underscore so that user
+#' supplied arm and pool names can safely be embedded in generated JAGS
+#' variable names.
+#'
+#' @param name (`string`)\cr the arm or pool name to sanitize.
+#'
+#' @return A character scalar suitable for generated JAGS identifiers.
+#'
+#' @keywords internal
 h_hierarchical_safe_name <- function(name) {
+  assert_string(name)
   gsub("[^A-Za-z0-9_]", "_", name)
 }
 
+#' Identify the Internal Type of a Hierarchical Arm Model
+#'
+#' @description `r lifecycle::badge("experimental")`
+#'
+#' Maps the currently supported hierarchical arm models to compact internal
+#' labels used by the code generators.
+#'
+#' @param model (`GeneralModel`)\cr arm-specific model object.
+#'
+#' @return Either `"mono"` or `"combo"`.
+#'
+#' @keywords internal
 h_hierarchical_model_type <- function(model) {
   if (is(model, "LogisticLogNormal")) {
     return("mono")
@@ -859,6 +885,18 @@ h_hierarchical_model_type <- function(model) {
   stop("Unsupported hierarchical arm model.")
 }
 
+#' List Supported Exchangeable Parameter References for an Arm Model
+#'
+#' @description `r lifecycle::badge("experimental")`
+#'
+#' Returns the parameter reference syntax that may be used for a model in the
+#' `exchangeable_parameters` argument of [HierarchicalModel()].
+#'
+#' @param model (`GeneralModel`)\cr arm-specific model object.
+#'
+#' @return Character vector of supported references.
+#'
+#' @keywords internal
 h_hierarchical_supported_refs <- function(model) {
   if (is(model, "LogisticLogNormal")) {
     return(c("alpha0", "alpha1"))
@@ -871,6 +909,20 @@ h_hierarchical_supported_refs <- function(model) {
   character()
 }
 
+#' Parse a Hierarchical Parameter Reference
+#'
+#' @description `r lifecycle::badge("experimental")`
+#'
+#' Converts a user-facing parameter reference such as `"alpha0"` or
+#' `"alpha1[2]"` into metadata that can be used by the JAGS code generators.
+#'
+#' @param model (`GeneralModel`)\cr arm-specific model object.
+#' @param arm_name (`string`)\cr the user-facing arm name.
+#' @param ref (`string`)\cr parameter reference.
+#'
+#' @return Named list with entries `kind`, `index`, `latent`, and `sample`.
+#'
+#' @keywords internal
 h_hierarchical_parse_ref <- function(model, arm_name, ref) {
   assert_string(ref)
 
@@ -922,12 +974,78 @@ h_hierarchical_parse_ref <- function(model, arm_name, ref) {
   )
 }
 
+#' Flatten Hierarchical Pool Definitions into a Lookup Table
+#'
+#' @description `r lifecycle::badge("experimental")`
+#'
+#' Builds a lookup keyed by `"arm::reference"` so the compiler can quickly tell
+#' whether a parameter is pooled or fixed.
+#'
+#' @param parameter_pools (`list`)\cr exchangeable parameter specification from
+#'   [HierarchicalModel()].
+#'
+#' @return Named list mapping `"arm::reference"` keys to pool names.
+#'
+#' @keywords internal
+h_hierarchical_make_pool_map <- function(parameter_pools) {
+  pooled_map <- list()
+
+  for (pool_name in names(parameter_pools)) {
+    members <- parameter_pools[[pool_name]]
+    for (arm_name in names(members)) {
+      pooled_map[[paste0(arm_name, "::", members[[arm_name]])]] <- pool_name
+    }
+  }
+
+  pooled_map
+}
+
+#' Find the Pool Name for One or More Parameter References
+#'
+#' @description `r lifecycle::badge("experimental")`
+#'
+#' Returns the hierarchical pool membership of each parameter reference, or an
+#' empty string if the parameter keeps its arm-specific fixed prior.
+#'
+#' @param arm_name (`string`)\cr arm name.
+#' @param refs (`character`)\cr parameter references belonging to that arm.
+#' @param pooled_map (`list`)\cr output of
+#'   [h_hierarchical_make_pool_map()].
+#'
+#' @return Character vector of pool names, using `""` for unpooled parameters.
+#'
+#' @keywords internal
+h_hierarchical_pool_names <- function(arm_name, refs, pooled_map) {
+  vapply(
+    refs,
+    function(ref) {
+      key <- paste0(arm_name, "::", ref)
+      if (is.null(pooled_map[[key]])) "" else pooled_map[[key]]
+    },
+    character(1L)
+  )
+}
+
+#' Compile the Hierarchical Data Model
+#'
+#' @description `r lifecycle::badge("experimental")`
+#'
+#' Concatenates the arm-specific likelihood code into a single JAGS model
+#' function. Each arm receives a unique variable-name prefix derived from its
+#' user-facing name.
+#'
+#' @param models_to_arms (`list`)\cr named arm-specific models.
+#'
+#' @return A function representing the compiled JAGS data model.
+#'
+#' @keywords internal
 h_hierarchical_compile_datamodel <- function(models_to_arms) {
   lines <- unlist(lapply(names(models_to_arms), function(arm_name) {
     model <- models_to_arms[[arm_name]]
     safe_arm <- h_hierarchical_safe_name(arm_name)
 
     if (is(model, "LogisticLogNormal")) {
+      # Mono arms contribute the standard single-agent logistic likelihood.
       return(c(
         paste0("for (i in 1:nObs_", safe_arm, ") {"),
         paste0(
@@ -940,6 +1058,7 @@ h_hierarchical_compile_datamodel <- function(models_to_arms) {
       ))
     }
 
+    # Combination arms reuse the existing two-drug probability construction.
     c(
       paste0("for (i in 1:nObs_", safe_arm, ") {"),
       "  for (j in 1:2) {",
@@ -968,37 +1087,41 @@ h_hierarchical_compile_datamodel <- function(models_to_arms) {
   eval(parse(text = paste(c("function() {", lines, "}"), collapse = "\n")))
 }
 
+#' Compile the Hierarchical Prior Model
+#'
+#' @description `r lifecycle::badge("experimental")`
+#'
+#' Builds the prior part of a hierarchical JAGS model. Unpooled parameters keep
+#' their arm-specific fixed priors, while pooled parameters are linked through
+#' exchangeable normal distributions with simple hyperpriors.
+#'
+#' @param models_to_arms (`list`)\cr named arm-specific models.
+#' @param parameter_pools (`list`)\cr exchangeable parameter specification from
+#'   [HierarchicalModel()].
+#'
+#' @return A list with entries `priormodel` and `sample`.
+#'
+#' @keywords internal
 h_hierarchical_compile_priormodel <- function(models_to_arms, parameter_pools) {
-  pooled_map <- list()
+  pooled_map <- h_hierarchical_make_pool_map(parameter_pools)
   fixed_lines <- character()
   assign_lines <- character()
   sample_names <- character()
-
-  if (length(parameter_pools) > 0L) {
-    for (pool_name in names(parameter_pools)) {
-      members <- parameter_pools[[pool_name]]
-      for (arm_name in names(members)) {
-        pooled_map[[paste0(arm_name, "::", members[[arm_name]])]] <- pool_name
-      }
-    }
-  }
 
   for (arm_name in names(models_to_arms)) {
     model <- models_to_arms[[arm_name]]
     safe_arm <- h_hierarchical_safe_name(arm_name)
 
     if (is(model, "LogisticLogNormal")) {
-      ref_names <- c("alpha0", "alpha1")
-      pool_names <- vapply(
-        ref_names,
-        function(ref) {
-          key <- paste0(arm_name, "::", ref)
-          if (is.null(pooled_map[[key]])) "" else pooled_map[[key]]
-        },
-        character(1L)
+      pool_names <- h_hierarchical_pool_names(
+        arm_name = arm_name,
+        refs = c("alpha0", "alpha1"),
+        pooled_map = pooled_map
       )
 
       if (all(pool_names == "")) {
+        # If neither mono parameter is pooled we can keep the original
+        # bivariate normal prior unchanged.
         fixed_lines <- c(
           fixed_lines,
           paste0(
@@ -1007,7 +1130,7 @@ h_hierarchical_compile_priormodel <- function(models_to_arms, parameter_pools) {
           )
         )
       } else {
-        for (idx in seq_along(ref_names)) {
+        for (idx in seq_along(pool_names)) {
           if (pool_names[idx] == "") {
             fixed_lines <- c(
               fixed_lines,
@@ -1021,6 +1144,7 @@ h_hierarchical_compile_priormodel <- function(models_to_arms, parameter_pools) {
         }
       }
 
+      # The generated alpha-parameters always use the arm-prefixed latent theta.
       assign_lines <- c(
         assign_lines,
         paste0("alpha0_", safe_arm, " <- theta_", safe_arm, "[1]"),
@@ -1033,14 +1157,10 @@ h_hierarchical_compile_priormodel <- function(models_to_arms, parameter_pools) {
       )
     } else {
       for (j in 1:2) {
-        ref_names <- c(paste0("alpha0[", j, "]"), paste0("alpha1[", j, "]"))
-        pool_names <- vapply(
-          ref_names,
-          function(ref) {
-            key <- paste0(arm_name, "::", ref)
-            if (is.null(pooled_map[[key]])) "" else pooled_map[[key]]
-          },
-          character(1L)
+        pool_names <- h_hierarchical_pool_names(
+          arm_name = arm_name,
+          refs = c(paste0("alpha0[", j, "]"), paste0("alpha1[", j, "]")),
+          pooled_map = pooled_map
         )
 
         if (all(pool_names == "")) {
@@ -1068,6 +1188,7 @@ h_hierarchical_compile_priormodel <- function(models_to_arms, parameter_pools) {
         }
       }
 
+      # Eta always remains arm-specific in the current prototype.
       if (model@log_normal_eta) {
         fixed_lines <- c(
           fixed_lines,
@@ -1112,6 +1233,8 @@ h_hierarchical_compile_priormodel <- function(models_to_arms, parameter_pools) {
     mu_name <- paste0("mu_", safe_pool)
     tau_name <- paste0("tau_", safe_pool)
 
+    # Each pooled arm-level latent parameter gets an exchangeable normal prior
+    # centered on the pool-specific mean and SD.
     hyper_lines <- c(
       hyper_lines,
       vapply(seq_along(members), function(i) {
@@ -1129,6 +1252,8 @@ h_hierarchical_compile_priormodel <- function(models_to_arms, parameter_pools) {
       }, character(1L))
     )
 
+    # We keep separate default hyperpriors for intercept-like vs slope-like
+    # parameters to mirror the prototype assumptions.
     if (first_info$kind == "alpha0") {
       hyper_lines <- c(
         hyper_lines,
@@ -1155,21 +1280,31 @@ h_hierarchical_compile_priormodel <- function(models_to_arms, parameter_pools) {
   )
 }
 
+#' Compile the Hierarchical Model-Specification Function
+#'
+#' @description `r lifecycle::badge("experimental")`
+#'
+#' Creates the `modelspecs` function used by [mcmc()] to prepare the JAGS data
+#' needed by the dynamically compiled hierarchical model.
+#'
+#' @param models_to_arms (`list`)\cr named arm-specific models.
+#' @param parameter_pools (`list`)\cr exchangeable parameter specification from
+#'   [HierarchicalModel()].
+#'
+#' @return A function returning the JAGS data list.
+#'
+#' @keywords internal
 h_hierarchical_compile_modelspecs <- function(models_to_arms, parameter_pools) {
+  pooled_map <- h_hierarchical_make_pool_map(parameter_pools)
+
   function(arms, from_prior) {
     assert_list(arms, any.missing = FALSE)
     assert_flag(from_prior)
 
     specs <- list()
-    pooled_map <- list()
     if (length(parameter_pools) > 0L) {
+      # Matches the prototype's log-normal hyper-SD parametrization.
       specs$kappa_hier <- log(2) / 1.96
-      for (pool_name in names(parameter_pools)) {
-        members <- parameter_pools[[pool_name]]
-        for (arm_name in names(members)) {
-          pooled_map[[paste0(arm_name, "::", members[[arm_name]])]] <- pool_name
-        }
-      }
     }
 
     for (arm_name in names(models_to_arms)) {
@@ -1177,19 +1312,18 @@ h_hierarchical_compile_modelspecs <- function(models_to_arms, parameter_pools) {
       safe_arm <- h_hierarchical_safe_name(arm_name)
 
       if (is(model, "LogisticLogNormal")) {
-        pool_names <- vapply(
-          c("alpha0", "alpha1"),
-          function(ref) {
-            key <- paste0(arm_name, "::", ref)
-            if (is.null(pooled_map[[key]])) "" else pooled_map[[key]]
-          },
-          character(1L)
+        pool_names <- h_hierarchical_pool_names(
+          arm_name = arm_name,
+          refs = c("alpha0", "alpha1"),
+          pooled_map = pooled_map
         )
 
         if (all(pool_names == "")) {
           specs[[paste0("mean_", safe_arm)]] <- model@params@mean
           specs[[paste0("prec_", safe_arm)]] <- model@params@prec
         } else if (any(pool_names == "")) {
+          # When only one mono parameter is pooled, the unpooled parameter keeps
+          # a simple marginal normal prior.
           specs[[paste0("marginal_mean_", safe_arm)]] <- model@params@mean
           specs[[paste0("marginal_prec_", safe_arm)]] <- 1 / diag(model@params@cov)
         }
@@ -1224,13 +1358,10 @@ h_hierarchical_compile_modelspecs <- function(models_to_arms, parameter_pools) {
         needs_marginal <- logical(2L)
 
         for (j in 1:2) {
-          pool_names <- vapply(
-            c(paste0("alpha0[", j, "]"), paste0("alpha1[", j, "]")),
-            function(ref) {
-              key <- paste0(arm_name, "::", ref)
-              if (is.null(pooled_map[[key]])) "" else pooled_map[[key]]
-            },
-            character(1L)
+          pool_names <- h_hierarchical_pool_names(
+            arm_name = arm_name,
+            refs = c(paste0("alpha0[", j, "]"), paste0("alpha1[", j, "]")),
+            pooled_map = pooled_map
           )
           needs_joint[j] <- all(pool_names == "")
           needs_marginal[j] <- any(pool_names == "") && !all(pool_names == "")
@@ -1256,6 +1387,20 @@ h_hierarchical_compile_modelspecs <- function(models_to_arms, parameter_pools) {
   }
 }
 
+#' Compile the Hierarchical Initial-Value Function
+#'
+#' @description `r lifecycle::badge("experimental")`
+#'
+#' Wraps the per-arm `init` functions and renames their outputs so they match
+#' the dynamically generated hierarchical JAGS variable names.
+#'
+#' @param models_to_arms (`list`)\cr named arm-specific models.
+#' @param parameter_pools (`list`)\cr exchangeable parameter specification from
+#'   [HierarchicalModel()].
+#'
+#' @return A function returning a named list of JAGS initial values.
+#'
+#' @keywords internal
 h_hierarchical_compile_init <- function(models_to_arms, parameter_pools) {
   function(arms) {
     assert_list(arms, any.missing = FALSE)
@@ -1266,6 +1411,7 @@ h_hierarchical_compile_init <- function(models_to_arms, parameter_pools) {
       safe_arm <- h_hierarchical_safe_name(arm_name)
       arm_inits <- do.call(model@init, list())
 
+      # Hierarchical compilation prefixes latent variable names by arm.
       if ("theta" %in% names(arm_inits)) {
         init[[paste0("theta_", safe_arm)]] <- arm_inits$theta
       }
