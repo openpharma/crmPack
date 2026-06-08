@@ -1392,3 +1392,70 @@ DesignOrdinal <- function(
     starting_dose = 3
   )
 }
+
+# DesignArm ----
+
+## class ----
+
+#' `DesignArm`
+#'
+#' @description `r lifecycle::badge("experimental")`
+#'
+#' [`DesignArm`] is a light-weight wrapper around `Design` object
+#' for use in a [`HierarchicalDesign`].
+#'
+#' @slot name (`string`)\cr the name of the arm.
+#' @slot active (`flag`)\cr whether the arm is enrolling or not (historical).
+#' @slot design (`Design`)\cr the design object for this arm.
+#'
+#' @aliases DesignArm
+#' @export
+#'
+.DesignArm <- setClass(
+  Class = "DesignArm",
+  slots = c(
+    name = "character",
+    active = "logical",
+    design = "Design"
+  ),
+  prototype = prototype(
+    name = "Arm",
+    active = TRUE,
+    design = .Design()
+  ),
+  contains = "CrmPackClass",
+  validity = v_design_arm
+)
+
+## constructor ----
+
+#' @rdname DesignArm-class
+#'
+#' @param name (`string`)\cr see slot definition.
+#' @param active (`flag`)\cr see slot definition.
+#' @param design (`Design`)\cr see slot definition.
+#'
+#' @export
+#' @example examples/Design-class-DesignArm.R
+#'
+DesignArm <- function(name, active, design) {
+  new(
+    "DesignArm",
+    name = name,
+    active = active,
+    design = design
+  )
+}
+
+## default constructor ----
+
+#' @rdname DesignArm-class
+#' @note Typically, end users will not use the `.DefaultDesignArm()` function.
+#' @export
+.DefaultDesignArm <- function() {
+  DesignArm(
+    name = "Arm",
+    active = TRUE,
+    design = .DefaultDesign()
+  )
+}

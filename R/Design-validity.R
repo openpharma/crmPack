@@ -118,3 +118,17 @@ v_design_grouped <- function(object) {
   )
   v$result()
 }
+
+#' @describeIn v_design validates that the [`DesignArm`] object contains valid slots.
+v_design_arm <- function(object) {
+  v <- Validate()
+  v$check(
+    test_string(object@name),
+    "name must be a single string"
+  )
+  v$check(
+    test_flag(object@active),
+    "active must be a flag"
+  )
+  v$result()
+}
