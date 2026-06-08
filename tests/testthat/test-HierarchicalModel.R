@@ -47,22 +47,17 @@ local_hierarchical_model <- function(log_normal_eta = FALSE) {
   )
 }
 
-local_hierarchical_mcmc_options <- function() {
-  McmcOptions(
-    burnin = 10L,
-    step = 1L,
-    samples = 20L,
-    rng_kind = "Mersenne-Twister",
-    rng_seed = 12345L
-  )
-}
-
 local_hierarchical_data <- function(empty = FALSE) {
   mono_y <- if (empty) integer() else c(0L, 0L, 0L, 1L)
   combo_y <- if (empty) integer() else c(0L, 0L, 0L, 1L)
   mono_x <- if (empty) numeric() else c(10, 10, 20, 20)
   combo_x <- if (empty) {
-    matrix(numeric(), nrow = 0, ncol = 2, dimnames = list(NULL, c("drug1", "drug2")))
+    matrix(
+      numeric(),
+      nrow = 0,
+      ncol = 2,
+      dimnames = list(NULL, c("drug1", "drug2"))
+    )
   } else {
     cbind(
       drug1 = c(10, 10, 20, 20),
@@ -131,16 +126,7 @@ test_that("hierarchical helper primitives return expected metadata", {
 test_that("hierarchical pool lookup helpers work as expected", {
   pooled_map <- h_hierarchical_make_pool_map(local_hierarchical_parameter_pools())
 
-  expect_equal(pooled_map[["my_mono::alpha0"]], "mono_intercept")
-  expect_equal(pooled_map[["my_combo::alpha1[1]"]], "mono_slope")
-  expect_equal(
-    unname(h_hierarchical_pool_names(
-      arm_name = "my_combo",
-      refs = c("alpha0[1]", "alpha0[2]"),
-      pooled_map = pooled_map
-    )),
-    c("mono_intercept", "")
-  )
+  expect_snapshot(pooled_map)
 })
 
 test_that("hierarchical compiler helpers produce readable compiled functions", {
@@ -148,11 +134,8 @@ test_that("hierarchical compiler helpers produce readable compiled functions", {
   body_datamodel <- paste(deparse(body(model@datamodel)), collapse = "\n")
   body_priormodel <- paste(deparse(body(model@priormodel)), collapse = "\n")
 
-  expect_match(body_datamodel, "nObs_my_mono")
-  expect_match(body_datamodel, "p_single_my_combo")
-  expect_match(body_priormodel, "mu_mono_intercept")
-  expect_match(body_priormodel, "eta_my_combo")
-  expect_match(body_priormodel, "theta_my_mono\\[1\\]")
+  expect_snapshot(cat(body_datamodel))
+  expect_snapshot(cat(body_priormodel))
 })
 
 test_that("hierarchical modelspecs and init compilers return expected fields", {
@@ -163,25 +146,9 @@ test_that("hierarchical modelspecs and init compilers return expected fields", {
   prior_specs <- model@modelspecs(arms = data@arms, from_prior = TRUE)
   inits <- model@init(arms = data@arms)
 
-  expect_true(all(c(
-    "kappa_hier",
-    "prior_mean_my_combo",
-    "prior_prec_my_combo",
-    "gamma_my_combo",
-    "tau_my_combo",
-    "ref_dose_my_mono",
-    "ref_dose_my_combo"
-  ) %in% names(specs)))
-  expect_false(any(grepl("^ref_dose_", names(prior_specs))))
-  expect_true(all(c(
-    "theta_my_mono",
-    "theta_my_combo",
-    "eta_my_combo",
-    "mu_mono_intercept",
-    "tau_mono_intercept",
-    "mu_mono_slope",
-    "tau_mono_slope"
-  ) %in% names(inits)))
+  expect_snapshot_value(specs, style = "deparse")
+  expect_snapshot_value(prior_specs, style = "deparse")
+  expect_snapshot_value(inits, style = "deparse")
 })
 
 test_that("HierarchicalModel constructor creates a valid object", {
@@ -189,18 +156,24 @@ test_that("HierarchicalModel constructor creates a valid object", {
 
   expect_valid(result, "HierarchicalModel")
   expect_identical(names(result@models_to_arms), c("my_mono", "my_combo"))
-  expect_identical(names(result@parameter_pools), c("mono_intercept", "mono_slope"))
-  expect_true(all(c(
-    "alpha0_my_mono",
-    "alpha1_my_mono",
-    "alpha0_my_combo",
-    "alpha1_my_combo",
-    "eta_my_combo",
-    "mu_mono_intercept",
-    "tau_mono_intercept",
-    "mu_mono_slope",
-    "tau_mono_slope"
-  ) %in% result@sample))
+  expect_identical(
+    names(result@parameter_pools),
+    c("mono_intercept", "mono_slope")
+  )
+  expect_true(all(
+    c(
+      "alpha0_my_mono",
+      "alpha1_my_mono",
+      "alpha0_my_combo",
+      "alpha1_my_combo",
+      "eta_my_combo",
+      "mu_mono_intercept",
+      "tau_mono_intercept",
+      "mu_mono_slope",
+      "tau_mono_slope"
+    ) %in%
+      result@sample
+  ))
 })
 
 test_that("v_hierarchical_model catches invalid exchangeable parameters", {
@@ -239,37 +212,35 @@ test_that("h_mcmc_get_hierarchical_data flattens arm data for JAGS", {
     from_prior = FALSE
   )
 
-  expect_true(all(c(
-    "nObs_my_mono",
-    "y_my_mono",
-    "x_my_mono",
-    "nObs_my_combo",
-    "y_my_combo",
-    "x_my_combo",
-    "ref_dose_my_mono",
-    "ref_dose_my_combo"
-  ) %in% names(result)))
-  expect_equal(result$nObs_my_mono, 4L)
-  expect_equal(dim(result$x_my_combo), c(4L, 2L))
+  expect_snapshot_value(result, style = "deparse")
 })
 
 test_that("hierarchical mcmc runs and returns expected sample structure", {
   model <- local_hierarchical_model()
   data <- local_hierarchical_data()
-  options <- local_hierarchical_mcmc_options()
+  options <- McmcOptions(
+    burnin = 10L,
+    step = 1L,
+    samples = 20L,
+    rng_kind = "Mersenne-Twister",
+    rng_seed = 12345L
+  )
 
   result <- mcmc(data = data, model = model, options = options)
 
   expect_s4_class(result, "Samples")
-  expect_true(all(c(
-    "alpha0_my_mono",
-    "alpha1_my_mono",
-    "alpha0_my_combo",
-    "alpha1_my_combo",
-    "eta_my_combo",
-    "mu_mono_intercept",
-    "tau_mono_intercept"
-  ) %in% names(result@data)))
+  expect_true(all(
+    c(
+      "alpha0_my_mono",
+      "alpha1_my_mono",
+      "alpha0_my_combo",
+      "alpha1_my_combo",
+      "eta_my_combo",
+      "mu_mono_intercept",
+      "tau_mono_intercept"
+    ) %in%
+      names(result@data)
+  ))
   expect_length(result@data$alpha0_my_mono, 20)
   expect_equal(dim(result@data$alpha0_my_combo), c(20L, 2L))
 })
