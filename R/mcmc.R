@@ -163,6 +163,28 @@ h_mcmc_get_hierarchical_data <- function(model, data, from_prior) {
   model_data
 }
 
+#' Build Arm-Specific Sample Name Mappings for a `HierarchicalModel`
+#'
+#' @param model (`HierarchicalModel`)\cr hierarchical model object.
+#'
+#' @return Named list mapping arm-level sample names to hierarchical sample
+#'   names.
+#'
+#' @keywords internal
+h_mcmc_get_hierarchical_arm_samples <- function(model) {
+  assert_class(model, "HierarchicalModel")
+
+  arm_samples <- lapply(names(model@models_to_arms), function(arm_name) {
+    arm_model <- model@models_to_arms[[arm_name]]
+    safe_arm <- h_hierarchical_safe_name(arm_name)
+    setNames(
+      paste0(arm_model@sample, "_", safe_arm),
+      arm_model@sample
+    )
+  })
+  stats::setNames(arm_samples, names(model@models_to_arms))
+}
+
 # mcmc-DataCombo-LogisticLogNormalCombo ----
 
 #' @describeIn mcmc Standard method which uses JAGS. For the
@@ -272,7 +294,11 @@ setMethod(
     }
 
     samples <- lapply(jags_samples, h_jags_extract_samples)
-    Samples(data = samples, options = options)
+    HierarchicalSamples(
+      data = samples,
+      options = options,
+      arm_samples = h_mcmc_get_hierarchical_arm_samples(model)
+    )
   }
 )
 

@@ -228,7 +228,8 @@ test_that("hierarchical mcmc runs and returns expected sample structure", {
 
   result <- mcmc(data = data, model = model, options = options)
 
-  expect_s4_class(result, "Samples")
+  expect_true(is(result, "HierarchicalSamples"))
+  expect_true(is(result, "Samples"))
   expect_true(all(
     c(
       "alpha0_my_mono",
@@ -243,4 +244,38 @@ test_that("hierarchical mcmc runs and returns expected sample structure", {
   ))
   expect_length(result@data$alpha0_my_mono, 20)
   expect_equal(dim(result@data$alpha0_my_combo), c(20L, 2L))
+  expect_equal(
+    result@arm_samples,
+    list(
+      my_mono = c(alpha0 = "alpha0_my_mono", alpha1 = "alpha1_my_mono"),
+      my_combo = c(
+        alpha0 = "alpha0_my_combo",
+        alpha1 = "alpha1_my_combo",
+        eta = "eta_my_combo"
+      )
+    )
+  )
+})
+
+test_that("armSamples extracts arm-specific Samples objects", {
+  model <- local_hierarchical_model()
+  data <- local_hierarchical_data()
+  options <- McmcOptions(
+    burnin = 10L,
+    step = 1L,
+    samples = 20L,
+    rng_kind = "Mersenne-Twister",
+    rng_seed = 12345L
+  )
+
+  result <- mcmc(data = data, model = model, options = options)
+  mono_samples <- armSamples(result, "my_mono")
+  combo_samples <- armSamples(result, "my_combo")
+
+  expect_s4_class(mono_samples, "Samples")
+  expect_equal(names(mono_samples), c("alpha0", "alpha1"))
+  expect_equal(names(combo_samples), c("alpha0", "alpha1", "eta"))
+  expect_equal(mono_samples@data$alpha0, result@data$alpha0_my_mono)
+  expect_equal(combo_samples@data$alpha0, result@data$alpha0_my_combo)
+  expect_equal(combo_samples@data$eta, result@data$eta_my_combo)
 })

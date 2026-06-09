@@ -45,6 +45,50 @@ setMethod(
   }
 )
 
+# armSamples ----
+
+#' Extract One Arm's Posterior Draws from a `HierarchicalSamples` Object
+#'
+#' @description `r lifecycle::badge("experimental")`
+#'
+#' Returns a plain [`Samples`] object for a single hierarchical arm, with the
+#' original arm-level parameter names restored.
+#'
+#' @param object (`HierarchicalSamples`)\cr hierarchical posterior draws.
+#' @param arm (`character`)\cr name of the arm to extract.
+#'
+#' @return A [`Samples`] object containing only the requested arm's parameters.
+#' @export
+setGeneric(
+  "armSamples",
+  def = function(object, arm) {
+    standardGeneric("armSamples")
+  },
+  valueClass = "Samples"
+)
+
+#' @rdname armSamples
+setMethod(
+  "armSamples",
+  signature = signature(
+    object = "HierarchicalSamples",
+    arm = "character"
+  ),
+  def = function(object, arm) {
+    assert_string(arm)
+    assert_choice(arm, names(object@arm_samples))
+
+    mapping <- object@arm_samples[[arm]]
+    Samples(
+      data = stats::setNames(
+        lapply(unname(mapping), function(sample_name) object@data[[sample_name]]),
+        names(mapping)
+      ),
+      options = object@options
+    )
+  }
+)
+
 # The next line is required to suppress the message "Creating a generic function
 # for ‘get’ from package ‘base’ in package ‘crmPack’" on package load.
 # See https://github.com/openpharma/crmPack/issues/723
