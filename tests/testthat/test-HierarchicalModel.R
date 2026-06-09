@@ -90,6 +90,31 @@ local_hierarchical_data <- function(empty = FALSE) {
   )
 }
 
+local_hierarchical_design <- function() {
+  HierarchicalDesign(
+    DesignArm(
+      name = "arm_a",
+      active = TRUE,
+      design = .DefaultDesign()
+    ),
+    DesignArm(
+      name = "arm_b",
+      active = FALSE,
+      design = .DefaultDesign()
+    ),
+    exchangeable_parameters = list(
+      shared_intercept = list(
+        arm_a = "alpha0",
+        arm_b = "alpha0"
+      ),
+      shared_slope = list(
+        arm_a = "alpha1",
+        arm_b = "alpha1"
+      )
+    )
+  )
+}
+
 test_that("hierarchical helper primitives return expected metadata", {
   mono_model <- local_hierarchical_mono_model()
   combo_model <- local_hierarchical_combo_model()
@@ -174,6 +199,20 @@ test_that("HierarchicalModel constructor creates a valid object", {
     ) %in%
       result@sample
   ))
+})
+
+test_that("HierarchicalDesign constructor derives hierarchical data and model", {
+  result <- expect_silent(local_hierarchical_design())
+
+  expect_valid(result, "HierarchicalDesign")
+  expect_identical(names(result@arms), c("arm_a", "arm_b"))
+  expect_identical(names(result@data@arms), c("arm_a", "arm_b"))
+  expect_identical(names(result@model@models_to_arms), c("arm_a", "arm_b"))
+  expect_true(all(vapply(result@arms, inherits, logical(1L), what = "DesignArm")))
+  expect_true(is(result@data, "HierarchicalData"))
+  expect_true(is(result@model, "HierarchicalModel"))
+
+  # TODO: add tests for arm opening rules once hierarchical accrual is implemented.
 })
 
 test_that("v_hierarchical_model catches invalid exchangeable parameters", {
