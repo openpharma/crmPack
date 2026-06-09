@@ -1169,6 +1169,42 @@ setMethod(
   }
 )
 
+## HierarchicalData ----
+
+#' Updating `HierarchicalData` Objects
+#'
+#' @description `r lifecycle::badge("experimental")`
+#'
+#' A method that updates one arm in a [`HierarchicalData`] object with new data.
+#'
+#' @param object (`HierarchicalData`)\cr object you want to update.
+#' @param arm (`string`)\cr name of the arm to update.
+#' @param ... arguments passed to the selected arm's `update` method.
+#' @param check (`flag`)\cr whether the validation of the updated object should
+#'   be conducted.
+#'
+#' @return The new, updated [`HierarchicalData`] object.
+#'
+#' @aliases update-HierarchicalData
+#' @export
+setMethod(
+  f = "update",
+  signature = signature(object = "HierarchicalData"),
+  definition = function(object, arm, ..., check = TRUE) {
+    assert_string(arm)
+    assert_choice(arm, names(object@arms))
+    assert_flag(check)
+
+    object@arms[[arm]] <- update(object@arms[[arm]], ..., check = check)
+
+    if (check) {
+      validObject(object)
+    }
+
+    object
+  }
+)
+
 ## DataDA ----
 
 #' Updating `DataDA` Objects

@@ -176,6 +176,95 @@ Simulations <- function(fit, stop_reasons, stop_report, additional_stats, ...) {
   )
 }
 
+# HierarchicalSimulations ----
+
+## class ----
+
+#' `HierarchicalSimulations`
+#'
+#' @description `r lifecycle::badge("experimental")`
+#'
+#' This class captures trial simulations from hierarchical designs
+#' ([`HierarchicalDesign`]).
+#'
+#' @slot data (`list`)\cr produced [`HierarchicalData`] objects.
+#' @slot doses (`list`)\cr final dose recommendations, one named list per
+#'   simulation run with entries for each hierarchical arm.
+#' @slot samples (`list`)\cr final [`HierarchicalSamples`] objects.
+#' @slot fit (`list`)\cr final arm-specific fits for each simulation run.
+#' @slot stop_reasons (`list`)\cr arm-specific stopping reasons for each
+#'   simulation run.
+#' @slot stop_report (`list`)\cr arm-specific stopping rule outcomes for each
+#'   simulation run.
+#' @slot additional_stats (`list`)\cr additional arm-specific statistics.
+#' @slot seed (`integer`)\cr random generator state before starting the
+#'   simulation.
+#'
+#' @aliases HierarchicalSimulations
+#' @export
+.HierarchicalSimulations <- setClass(
+  Class = "HierarchicalSimulations",
+  slots = c(
+    data = "list",
+    doses = "list",
+    samples = "list",
+    fit = "list",
+    stop_report = "list",
+    stop_reasons = "list",
+    additional_stats = "list",
+    seed = "integer"
+  ),
+  prototype = prototype(
+    data = list(.DefaultHierarchicalData()),
+    doses = list(list(arm1 = 1, combo = c(drug1 = 10, drug2 = 20))),
+    samples = list(.HierarchicalSamples()),
+    fit = list(list()),
+    stop_report = list(list()),
+    stop_reasons = list(list()),
+    additional_stats = list(list()),
+    seed = 1L
+  ),
+  contains = "CrmPackClass",
+  validity = v_hierarchical_simulations
+)
+
+## constructor ----
+
+#' @rdname HierarchicalSimulations-class
+#'
+#' @param data (`list`)\cr see slot definition.
+#' @param doses (`list`)\cr see slot definition.
+#' @param samples (`list`)\cr see slot definition.
+#' @param fit (`list`)\cr see slot definition.
+#' @param stop_reasons (`list`)\cr see slot definition.
+#' @param stop_report (`list`)\cr see slot definition.
+#' @param additional_stats (`list`)\cr see slot definition.
+#' @param seed (`integer`)\cr see slot definition.
+#'
+#' @export
+HierarchicalSimulations <- function(
+  data,
+  doses,
+  samples,
+  fit,
+  stop_reasons,
+  stop_report,
+  additional_stats,
+  seed
+) {
+  assert_integerish(seed)
+  .HierarchicalSimulations(
+    data = data,
+    doses = doses,
+    samples = samples,
+    fit = fit,
+    stop_report = stop_report,
+    stop_reasons = stop_reasons,
+    additional_stats = additional_stats,
+    seed = as.integer(seed)
+  )
+}
+
 # ComboSimulations ----
 
 ## class ----

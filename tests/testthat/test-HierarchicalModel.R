@@ -215,6 +215,51 @@ test_that("HierarchicalDesign constructor derives hierarchical data and model", 
   # TODO: add tests for arm opening rules once hierarchical accrual is implemented.
 })
 
+test_that("HierarchicalData update can target one arm", {
+  data <- local_hierarchical_design()@data
+
+  result <- update(
+    object = data,
+    arm = "arm_a",
+    x = 10,
+    y = c(0L, 1L)
+  )
+
+  expect_valid(result, "HierarchicalData")
+  expect_equal(result@arms$arm_a@nObs, data@arms$arm_a@nObs + 2L)
+  expect_equal(result@arms$arm_b@nObs, data@arms$arm_b@nObs)
+  expect_equal(tail(result@arms$arm_a@x, 2L), c(10, 10))
+})
+
+test_that("HierarchicalDesign simulate returns hierarchical simulations", {
+  design <- local_hierarchical_design()
+  design@arms$arm_a@design@stopping <- StoppingMinPatients(nPatients = 1L)
+  design@arms$arm_a@design@cohort_size <- CohortSizeConst(size = 1L)
+
+  result <- simulate(
+    design,
+    truth = function(dose, ...) 0.1,
+    truthResponse = function(dose, ...) 0.5,
+    nsim = 1L,
+    seed = 123L,
+    mcmcOptions = McmcOptions(
+      burnin = 10L,
+      step = 1L,
+      samples = 20L,
+      rng_kind = "Mersenne-Twister",
+      rng_seed = 12345L
+    ),
+    parallel = FALSE
+  )
+
+  expect_valid(result, "HierarchicalSimulations")
+  expect_s4_class(result@samples[[1L]], "HierarchicalSamples")
+  expect_equal(result@data[[1L]]@arms$arm_a@nObs, design@data@arms$arm_a@nObs + 1L)
+  expect_equal(result@data[[1L]]@arms$arm_b@nObs, design@data@arms$arm_b@nObs)
+  expect_true(is.list(result@doses[[1L]]))
+  expect_true(is.list(result@stop_reasons[[1L]]))
+})
+
 test_that("v_hierarchical_model catches invalid exchangeable parameters", {
   bad_unknown_arm <- local_hierarchical_model()
   bad_unknown_arm@parameter_pools <- list(
