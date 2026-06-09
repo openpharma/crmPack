@@ -301,6 +301,7 @@ setMethod(
     assert_character(active_arms, min.len = 1L)
 
     if (is.function(truth)) {
+      # If a single function is supplied, use it for all arms.
       truth <- stats::setNames(rep(list(truth), length(arm_names)), arm_names)
     } else {
       assert_list(truth, types = "function", any.missing = FALSE)
@@ -309,6 +310,7 @@ setMethod(
     }
 
     if (is.function(truthResponse)) {
+      # If a single function is supplied, use it for all arms.
       truthResponse <- stats::setNames(
         rep(list(truthResponse), length(arm_names)),
         arm_names
@@ -320,7 +322,11 @@ setMethod(
     }
 
     for (arm_name in active_arms) {
-      assert_class(object@arms[[arm_name]]@design@backfill@opening, "OpeningNone")
+      # Currently, backfill cohorts are not yet supported for hierarchical designs.
+      assert_class(
+        object@arms[[arm_name]]@design@backfill@opening,
+        "OpeningNone"
+      )
     }
 
     args <- as.data.frame(args)
@@ -337,23 +343,37 @@ setMethod(
 
       current_args <- args[(iter_sim - 1) %% n_args + 1, , drop = FALSE]
       data <- object@data
+
+      # Initialize storage for simulation results.
       stopped <- stats::setNames(!arm_names %in% active_arms, arm_names)
       doses <- stats::setNames(vector("list", length(arm_names)), arm_names)
       fits <- stats::setNames(vector("list", length(arm_names)), arm_names)
-      stop_reasons <- stats::setNames(vector("list", length(arm_names)), arm_names)
-      stop_report <- stats::setNames(vector("list", length(arm_names)), arm_names)
-      additional_stats <- stats::setNames(vector("list", length(arm_names)), arm_names)
+      stop_reasons <- stats::setNames(
+        vector("list", length(arm_names)),
+        arm_names
+      )
+      stop_report <- stats::setNames(
+        vector("list", length(arm_names)),
+        arm_names
+      )
+      additional_stats <- stats::setNames(
+        vector("list", length(arm_names)),
+        arm_names
+      )
 
       stop_reasons[stopped] <- "Historical arm: not enrolling."
       samples <- NULL
 
+      # As long as there are arms that have not yet stopped, keep enrolling and updating them.
       while (!all(stopped)) {
+        # Get overall samples from the hierarchical model on the current data.
         samples <- mcmc(
           data = data,
           model = object@model,
           options = mcmcOptions
         )
 
+        # Go through each enrolling arm and update it separately.
         for (arm_name in arm_names[!stopped]) {
           arm <- object@arms[[arm_name]]
           arm_design <- arm@design
@@ -511,6 +531,7 @@ setMethod(
         }
       }
 
+      # Just to be sure for the case where all arms are stopped from the beginning ...
       if (is.null(samples)) {
         samples <- mcmc(
           data = data,
@@ -519,6 +540,7 @@ setMethod(
         )
       }
 
+      # Update arm specific fits.
       for (arm_name in arm_names) {
         if (is.null(fits[[arm_name]])) {
           arm_design <- object@arms[[arm_name]]@design
