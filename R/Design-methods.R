@@ -481,15 +481,20 @@ setMethod(
               model = arm_design@model,
               data = arm_data
             )
-            target_dose_samples <- dose(
-              mean(arm_design@nextBest@target),
-              model = arm_design@model,
-              samples = arm_samples
-            )
-            additional_stats[[arm_name]] <- lapply(
-              derive,
-              function(f) f(target_dose_samples)
-            )
+            if (
+              length(derive) > 0L &&
+                !is(arm_design@model, "LogisticLogNormalCombo")
+            ) {
+              target_dose_samples <- dose(
+                mean(arm_design@nextBest@target),
+                model = arm_design@model,
+                samples = arm_samples
+              )
+              additional_stats[[arm_name]] <- lapply(
+                derive,
+                function(f) f(target_dose_samples)
+              )
+            }
             next
           }
 

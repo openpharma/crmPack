@@ -959,9 +959,13 @@ h_hierarchical_parse_ref <- function(model, arm_name, ref) {
         kind = kind,
         index = index,
         latent = paste0(
-          "theta_", safe_arm, "[",
+          "theta_",
+          safe_arm,
+          "[",
           if (kind == "alpha0") 1L else 2L,
-          ", ", index, "]"
+          ", ",
+          index,
+          "]"
         ),
         sample = paste0(kind, "_", safe_arm, "[", index, "]")
       ))
@@ -969,8 +973,11 @@ h_hierarchical_parse_ref <- function(model, arm_name, ref) {
   }
 
   stop(
-    "Unsupported hierarchical parameter reference '", ref,
-    "' for arm '", arm_name, "'."
+    "Unsupported hierarchical parameter reference '",
+    ref,
+    "' for arm '",
+    arm_name,
+    "'."
   )
 }
 
@@ -993,7 +1000,14 @@ h_hierarchical_make_pool_map <- function(parameter_pools) {
   for (pool_name in names(parameter_pools)) {
     members <- parameter_pools[[pool_name]]
     for (arm_name in names(members)) {
-      pooled_map[[paste0(arm_name, "::", members[[arm_name]])]] <- pool_name
+      this_key <- paste0(arm_name, "::", members[[arm_name]])
+      assert_null(
+        pooled_map[[this_key]],
+        "Duplicate pool membership for '",
+        this_key,
+        "'."
+      )
+      pooled_map[[this_key]] <- pool_name
     }
   }
 
@@ -1049,9 +1063,17 @@ h_hierarchical_compile_datamodel <- function(models_to_arms) {
       return(c(
         paste0("for (i in 1:nObs_", safe_arm, ") {"),
         paste0(
-          "  logit(p_", safe_arm, "[i]) <- alpha0_", safe_arm,
-          " + alpha1_", safe_arm,
-          " * log(x_", safe_arm, "[i] / ref_dose_", safe_arm, ")"
+          "  logit(p_",
+          safe_arm,
+          "[i]) <- alpha0_",
+          safe_arm,
+          " + alpha1_",
+          safe_arm,
+          " * log(x_",
+          safe_arm,
+          "[i] / ref_dose_",
+          safe_arm,
+          ")"
         ),
         paste0("  y_", safe_arm, "[i] ~ dbern(p_", safe_arm, "[i])"),
         "}"
@@ -1063,21 +1085,54 @@ h_hierarchical_compile_datamodel <- function(models_to_arms) {
       paste0("for (i in 1:nObs_", safe_arm, ") {"),
       "  for (j in 1:2) {",
       paste0(
-        "    logit(p_single_", safe_arm, "[i, j]) <- alpha0_", safe_arm,
-        "[j] + alpha1_", safe_arm, "[j] * log(x_", safe_arm,
-        "[i, j] / ref_dose_", safe_arm, "[j])"
+        "    logit(p_single_",
+        safe_arm,
+        "[i, j]) <- alpha0_",
+        safe_arm,
+        "[j] + alpha1_",
+        safe_arm,
+        "[j] * log(x_",
+        safe_arm,
+        "[i, j] / ref_dose_",
+        safe_arm,
+        "[j])"
       ),
       "  }",
       paste0(
-        "  p0_", safe_arm, "[i] <- p_single_", safe_arm, "[i, 1] + ",
-        "p_single_", safe_arm, "[i, 2] - ",
-        "p_single_", safe_arm, "[i, 1] * p_single_", safe_arm, "[i, 2]"
+        "  p0_",
+        safe_arm,
+        "[i] <- p_single_",
+        safe_arm,
+        "[i, 1] + ",
+        "p_single_",
+        safe_arm,
+        "[i, 2] - ",
+        "p_single_",
+        safe_arm,
+        "[i, 1] * p_single_",
+        safe_arm,
+        "[i, 2]"
       ),
       paste0(
-        "  logit(p_", safe_arm, "[i]) <- log(p0_", safe_arm, "[i] / ",
-        "(1 - p0_", safe_arm, "[i])) + eta_", safe_arm,
-        " * (x_", safe_arm, "[i, 1] / ref_dose_", safe_arm, "[1])",
-        " * (x_", safe_arm, "[i, 2] / ref_dose_", safe_arm, "[2])"
+        "  logit(p_",
+        safe_arm,
+        "[i]) <- log(p0_",
+        safe_arm,
+        "[i] / ",
+        "(1 - p0_",
+        safe_arm,
+        "[i])) + eta_",
+        safe_arm,
+        " * (x_",
+        safe_arm,
+        "[i, 1] / ref_dose_",
+        safe_arm,
+        "[1])",
+        " * (x_",
+        safe_arm,
+        "[i, 2] / ref_dose_",
+        safe_arm,
+        "[2])"
       ),
       paste0("  y_", safe_arm, "[i] ~ dbern(p_", safe_arm, "[i])"),
       "}"
@@ -1125,8 +1180,13 @@ h_hierarchical_compile_priormodel <- function(models_to_arms, parameter_pools) {
         fixed_lines <- c(
           fixed_lines,
           paste0(
-            "theta_", safe_arm, "[1:2] ~ dmnorm(mean_", safe_arm,
-            "[1:2], prec_", safe_arm, "[1:2, 1:2])"
+            "theta_",
+            safe_arm,
+            "[1:2] ~ dmnorm(mean_",
+            safe_arm,
+            "[1:2], prec_",
+            safe_arm,
+            "[1:2, 1:2])"
           )
         )
       } else {
@@ -1135,9 +1195,21 @@ h_hierarchical_compile_priormodel <- function(models_to_arms, parameter_pools) {
             fixed_lines <- c(
               fixed_lines,
               paste0(
-                "theta_", safe_arm, "[", idx, "] ~ dnorm(",
-                "marginal_mean_", safe_arm, "[", idx, "], ",
-                "marginal_prec_", safe_arm, "[", idx, "])"
+                "theta_",
+                safe_arm,
+                "[",
+                idx,
+                "] ~ dnorm(",
+                "marginal_mean_",
+                safe_arm,
+                "[",
+                idx,
+                "], ",
+                "marginal_prec_",
+                safe_arm,
+                "[",
+                idx,
+                "])"
               )
             )
           }
@@ -1167,9 +1239,21 @@ h_hierarchical_compile_priormodel <- function(models_to_arms, parameter_pools) {
           fixed_lines <- c(
             fixed_lines,
             paste0(
-              "theta_", safe_arm, "[1:2, ", j, "] ~ dmnorm(",
-              "prior_mean_", safe_arm, "[1:2, ", j, "], ",
-              "prior_prec_", safe_arm, "[1:2, 1:2, ", j, "])"
+              "theta_",
+              safe_arm,
+              "[1:2, ",
+              j,
+              "] ~ dmnorm(",
+              "prior_mean_",
+              safe_arm,
+              "[1:2, ",
+              j,
+              "], ",
+              "prior_prec_",
+              safe_arm,
+              "[1:2, 1:2, ",
+              j,
+              "])"
             )
           )
         } else {
@@ -1178,9 +1262,27 @@ h_hierarchical_compile_priormodel <- function(models_to_arms, parameter_pools) {
               fixed_lines <- c(
                 fixed_lines,
                 paste0(
-                  "theta_", safe_arm, "[", idx, ", ", j, "] ~ dnorm(",
-                  "marginal_mean_", safe_arm, "[", idx, ", ", j, "], ",
-                  "marginal_prec_", safe_arm, "[", idx, ", ", j, "])"
+                  "theta_",
+                  safe_arm,
+                  "[",
+                  idx,
+                  ", ",
+                  j,
+                  "] ~ dnorm(",
+                  "marginal_mean_",
+                  safe_arm,
+                  "[",
+                  idx,
+                  ", ",
+                  j,
+                  "], ",
+                  "marginal_prec_",
+                  safe_arm,
+                  "[",
+                  idx,
+                  ", ",
+                  j,
+                  "])"
                 )
               )
             }
@@ -1192,13 +1294,29 @@ h_hierarchical_compile_priormodel <- function(models_to_arms, parameter_pools) {
       if (model@log_normal_eta) {
         fixed_lines <- c(
           fixed_lines,
-          paste0("log_eta_", safe_arm, " ~ dnorm(gamma_", safe_arm, ", tau_", safe_arm, ")"),
+          paste0(
+            "log_eta_",
+            safe_arm,
+            " ~ dnorm(gamma_",
+            safe_arm,
+            ", tau_",
+            safe_arm,
+            ")"
+          ),
           paste0("eta_", safe_arm, " <- exp(log_eta_", safe_arm, ")")
         )
       } else {
         fixed_lines <- c(
           fixed_lines,
-          paste0("eta_", safe_arm, " ~ dnorm(gamma_", safe_arm, ", tau_", safe_arm, ")")
+          paste0(
+            "eta_",
+            safe_arm,
+            " ~ dnorm(gamma_",
+            safe_arm,
+            ", tau_",
+            safe_arm,
+            ")"
+          )
         )
       }
 
@@ -1237,19 +1355,27 @@ h_hierarchical_compile_priormodel <- function(models_to_arms, parameter_pools) {
     # centered on the pool-specific mean and SD.
     hyper_lines <- c(
       hyper_lines,
-      vapply(seq_along(members), function(i) {
-        arm_name <- names(members)[i]
-        arm_ref <- members[[i]]
-        arm_info <- h_hierarchical_parse_ref(
-          models_to_arms[[arm_name]],
-          arm_name,
-          arm_ref
-        )
-        paste0(
-          arm_info$latent, " ~ dnorm(",
-          mu_name, ", pow(", tau_name, ", -2))"
-        )
-      }, character(1L))
+      vapply(
+        seq_along(members),
+        function(i) {
+          arm_name <- names(members)[i]
+          arm_ref <- members[[i]]
+          arm_info <- h_hierarchical_parse_ref(
+            models_to_arms[[arm_name]],
+            arm_name,
+            arm_ref
+          )
+          paste0(
+            arm_info$latent,
+            " ~ dnorm(",
+            mu_name,
+            ", pow(",
+            tau_name,
+            ", -2))"
+          )
+        },
+        character(1L)
+      )
     )
 
     # We keep separate default hyperpriors for intercept-like vs slope-like
@@ -1272,10 +1398,12 @@ h_hierarchical_compile_priormodel <- function(models_to_arms, parameter_pools) {
   }
 
   list(
-    priormodel = eval(parse(text = paste(
-      c("function() {", fixed_lines, hyper_lines, assign_lines, "}"),
-      collapse = "\n"
-    ))),
+    priormodel = eval(parse(
+      text = paste(
+        c("function() {", fixed_lines, hyper_lines, assign_lines, "}"),
+        collapse = "\n"
+      )
+    )),
     sample = unique(c(sample_names, hyper_names))
   )
 }
@@ -1325,7 +1453,8 @@ h_hierarchical_compile_modelspecs <- function(models_to_arms, parameter_pools) {
           # When only one mono parameter is pooled, the unpooled parameter keeps
           # a simple marginal normal prior.
           specs[[paste0("marginal_mean_", safe_arm)]] <- model@params@mean
-          specs[[paste0("marginal_prec_", safe_arm)]] <- 1 / diag(model@params@cov)
+          specs[[paste0("marginal_prec_", safe_arm)]] <- 1 /
+            diag(model@params@cov)
         }
 
         if (!from_prior) {
@@ -1334,18 +1463,24 @@ h_hierarchical_compile_modelspecs <- function(models_to_arms, parameter_pools) {
       } else {
         prior_mean <- do.call(
           cbind,
-          lapply(model@single_models, function(single_model) single_model@params@mean)
+          lapply(model@single_models, function(single_model) {
+            single_model@params@mean
+          })
         )
         prior_prec <- array(
           data = do.call(
             c,
-            lapply(model@single_models, function(single_model) single_model@params@prec)
+            lapply(model@single_models, function(single_model) {
+              single_model@params@prec
+            })
           ),
           dim = c(2, 2, 2)
         )
         marginal_mean <- do.call(
           cbind,
-          lapply(model@single_models, function(single_model) single_model@params@mean)
+          lapply(model@single_models, function(single_model) {
+            single_model@params@mean
+          })
         )
         marginal_prec <- do.call(
           cbind,
@@ -1501,6 +1636,11 @@ HierarchicalModel <- function(
     logical(1L)
   )))
   assert_list(exchangeable_parameters, any.missing = FALSE, null.ok = TRUE)
+  assert_character(sapply(names(args), h_hierarchical_safe_name), unique = TRUE)
+  assert_character(
+    sapply(names(exchangeable_parameters), h_hierarchical_safe_name),
+    unique = TRUE
+  )
 
   compiled_datamodel <- h_hierarchical_compile_datamodel(args)
   compiled_prior <- h_hierarchical_compile_priormodel(
