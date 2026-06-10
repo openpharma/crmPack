@@ -1,3 +1,9 @@
+# show-HierarchicalModel ----
+
+test_that("show-HierarchicalModel works correctly", {
+  expect_snapshot(show(.DefaultHierarchicalModel()))
+})
+
 # doseFunction ----
 
 ## GeneralModel ----

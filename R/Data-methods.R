@@ -1,4 +1,50 @@
 #' @include helpers_data.R
+NULL
+
+# show ----
+
+## show-HierarchicalData ----
+
+#' Show `HierarchicalData` Objects
+#'
+#' @description `r lifecycle::badge("experimental")`
+#'
+#' Display a brief representation of the [`HierarchicalData`] object.
+#'
+#' @param object (`HierarchicalData`)\cr the object we want to print.
+#'
+#' @return Invisibly returns the object itself.
+#'
+#' @aliases show-HierarchicalData
+#' @export
+setMethod(
+  f = "show",
+  signature = signature(object = "HierarchicalData"),
+  def = function(object) {
+    arm_names <- names(object@arms)
+    n_obs <- vapply(object@arms, function(arm) arm@nObs, integer(1L))
+
+    cat(
+      "An object of class 'HierarchicalData'\n",
+      "Arms (",
+      length(arm_names),
+      "): ",
+      h_show_hierarchical_names(arm_names),
+      "\n",
+      sep = ""
+    )
+    if (length(n_obs) > 0L) {
+      cat(
+        "Observations by arm: ",
+        paste(paste0(names(n_obs), " = ", n_obs), collapse = ", "),
+        "\n",
+        sep = ""
+      )
+    }
+
+    invisible(object)
+  }
+)
 
 # subsetting ----
 

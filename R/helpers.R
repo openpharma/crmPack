@@ -67,6 +67,27 @@ positive_number <- setClass(
   }
 )
 
+#' Format Hierarchical Arm or Pool Names for Console Output
+#'
+#' @description `r lifecycle::badge("experimental")`
+#'
+#' Helper for concise `show()` methods on hierarchical objects. It joins names
+#' with commas and uses `"<none>"` for empty inputs.
+#'
+#' @param x (`character`)\cr names to format.
+#'
+#' @return A single string.
+#'
+#' @keywords internal
+#' @noRd
+h_show_hierarchical_names <- function(x) {
+  if (length(x) == 0L) {
+    "<none>"
+  } else {
+    paste(x, collapse = ", ")
+  }
+}
+
 # match_within_tolerance ----
 
 #' Helper Function for Value Matching with Tolerance

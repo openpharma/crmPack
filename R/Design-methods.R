@@ -8,6 +8,61 @@
 #' @include mcmc.R
 NULL
 
+# show ----
+
+## show-HierarchicalDesign ----
+
+#' Show `HierarchicalDesign` Objects
+#'
+#' @description `r lifecycle::badge("experimental")`
+#'
+#' Display a brief representation of the [`HierarchicalDesign`] object.
+#'
+#' @param object (`HierarchicalDesign`)\cr the object we want to print.
+#'
+#' @return Invisibly returns the object itself.
+#'
+#' @aliases show-HierarchicalDesign
+#' @export
+setMethod(
+  f = "show",
+  signature = signature(object = "HierarchicalDesign"),
+  def = function(object) {
+    arm_names <- names(object@arms)
+    active <- vapply(object@arms, function(arm) arm@active, logical(1L))
+    pool_names <- names(object@model@parameter_pools)
+
+    cat(
+      "An object of class 'HierarchicalDesign'\n",
+      "Arms (",
+      length(arm_names),
+      "): ",
+      h_show_hierarchical_names(arm_names),
+      "\n",
+      sep = ""
+    )
+    cat(
+      "Active arms: ",
+      h_show_hierarchical_names(arm_names[active]),
+      "\n",
+      "Inactive arms: ",
+      h_show_hierarchical_names(arm_names[!active]),
+      "\n",
+      sep = ""
+    )
+    cat(
+      "Exchangeable parameter pools (",
+      length(pool_names),
+      "): ",
+      h_show_hierarchical_names(pool_names),
+      "\n",
+      sep = ""
+    )
+
+    invisible(object)
+  }
+)
+
 # simulate ----
 
 ## Design ----

@@ -1532,6 +1532,50 @@ setMethod(
   }
 )
 
+# show ----
+
+## show-HierarchicalSimulations ----
+
+#' Show `HierarchicalSimulations` Objects
+#'
+#' @description `r lifecycle::badge("experimental")`
+#'
+#' Display a brief representation of the [`HierarchicalSimulations`] object.
+#'
+#' @param object (`HierarchicalSimulations`)\cr the object we want to print.
+#'
+#' @return Invisibly returns the object itself.
+#'
+#' @aliases show-HierarchicalSimulations
+#' @export
+setMethod(
+  f = "show",
+  signature = signature(object = "HierarchicalSimulations"),
+  def = function(object) {
+    arm_names <- if (length(object@data) > 0L) {
+      names(object@data[[1L]]@arms)
+    } else if (length(object@doses) > 0L) {
+      names(object@doses[[1L]])
+    } else {
+      character()
+    }
+
+    cat(paste0(
+      "An object of class 'HierarchicalSimulations' containing ",
+      length(object@data),
+      " hierarchical simulated trials.\n",
+      "Arms (",
+      length(arm_names),
+      "): ",
+      h_show_hierarchical_names(arm_names),
+      "\n",
+      "Please use 'summary()' to obtain more information.\n"
+    ))
+
+    invisible(object)
+  }
+)
+
 # show-ComboSimulationsSummary ----
 
 #' Show the Summary of Combination Simulations

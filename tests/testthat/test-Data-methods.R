@@ -1,3 +1,9 @@
+# show-HierarchicalData ----
+
+test_that("show-HierarchicalData works correctly", {
+  expect_snapshot(show(.DefaultHierarchicalData()))
+})
+
 # plot-Data ----
 
 test_that("Plot works as expected for Data object with placebo", {
