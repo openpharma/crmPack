@@ -115,6 +115,69 @@ setMethod(
 
 # plot ----
 
+## HierarchicalData ----
+
+#' Plot Method for the [`HierarchicalData`] Class
+#'
+#' @description `r lifecycle::badge("experimental")`
+#'
+#' A method that creates a combined plot for a [`HierarchicalData`] object by
+#' arranging the arm-specific [`Data`] and [`DataCombo`] plots.
+#'
+#' @param x (`HierarchicalData`)\cr object we want to plot.
+#' @param y (`missing`)\cr missing object, for compatibility with the generic
+#'   function.
+#' @param ncol (`count` or `NULL`)\cr number of columns in the combined plot.
+#'   If `NULL`, a compact layout is chosen automatically.
+#' @param ... passed to the arm-specific `plot` methods.
+#'
+#' @return A `gtable` object combining the arm-specific plots, or `NULL` if no
+#'   arm plot is available.
+#'
+#' @aliases plot-HierarchicalData
+#' @export
+setMethod(
+  f = "plot",
+  signature = signature(x = "HierarchicalData", y = "missing"),
+  definition = function(x, y, ncol = NULL, ...) {
+    assert_int(ncol, lower = 1L, null.ok = TRUE)
+
+    if (length(x@arms) == 0L) {
+      return()
+    }
+
+    arm_plots <- Map(
+      f = function(arm, arm_name) {
+        arm_plot <- plot(arm, ...)
+        if (is.null(arm_plot)) {
+          return(NULL)
+        }
+
+        gridExtra::arrangeGrob(
+          arm_plot,
+          top = grid::textGrob(
+            arm_name,
+            gp = grid::gpar(fontface = "bold")
+          )
+        )
+      },
+      x@arms,
+      names(x@arms)
+    )
+    arm_plots <- Filter(Negate(is.null), arm_plots)
+
+    if (length(arm_plots) == 0L) {
+      return()
+    }
+
+    if (is.null(ncol)) {
+      ncol <- ceiling(sqrt(length(arm_plots)))
+    }
+
+    do.call(gridExtra::arrangeGrob, c(arm_plots, list(ncol = ncol)))
+  }
+)
+
 ## Data ----
 
 #' Plot Method for the [`Data`] Class

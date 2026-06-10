@@ -4,6 +4,26 @@ test_that("show-HierarchicalData works correctly", {
   expect_snapshot(show(.DefaultHierarchicalData()))
 })
 
+# plot-HierarchicalData ----
+
+test_that("Plot works as expected for HierarchicalData object", {
+  data <- .DefaultHierarchicalData()
+  result <- plot(data)
+
+  expect_true(grid::is.grob(result))
+})
+
+test_that("Plot of HierarchicalData with no available arm plots returns NULL", {
+  data <- HierarchicalData(
+    arms = list(
+      combo = DataCombo(doseGrid = list(drug1 = c(1, 2), drug2 = c(1, 2)))
+    )
+  )
+  result <- plot(data)
+
+  expect_null(result)
+})
+
 # plot-Data ----
 
 test_that("Plot works as expected for Data object with placebo", {
