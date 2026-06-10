@@ -644,6 +644,43 @@ DualSimulations <- function(rho_est, sigma2w_est, fit_biomarker, ...) {
   ))
 }
 
+# HierarchicalSimulationsSummary ----
+
+## class ----
+
+#' `HierarchicalSimulationsSummary`
+#'
+#' @description `r lifecycle::badge("experimental")`
+#'
+#' This class captures arm-specific summaries from [`HierarchicalSimulations`]
+#' objects.
+#'
+#' @slot arms (`list`)\cr named list of arm-level simulation summary objects.
+#' @slot nsim (`integer`)\cr number of simulations.
+#' @aliases HierarchicalSimulationsSummary
+#' @export
+.HierarchicalSimulationsSummary <-
+  setClass(
+    Class = "HierarchicalSimulationsSummary",
+    slots = c(
+      arms = "list",
+      nsim = "integer"
+    ),
+    contains = "CrmPackClass"
+  )
+
+## default constructor ----
+
+#' @rdname HierarchicalSimulationsSummary-class
+#' @note Typically, end users will not use the `.DefaultHierarchicalSimulationsSummary()` function.
+#' @export
+.DefaultHierarchicalSimulationsSummary <- function() {
+  stop(paste(
+    "Class HierarchicalSimulationsSummary cannot be instantiated directly.",
+    "Please use summary(HierarchicalSimulations, ...) to create objects of this class."
+  ))
+}
+
 # ComboSimulationsSummary ----
 
 ## class ----

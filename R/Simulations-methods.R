@@ -1130,6 +1130,192 @@ setMethod(
   }
 )
 
+# summary-HierarchicalSimulations ----
+
+#' Select an Arm-Specific Argument
+#'
+#' @description `r lifecycle::badge("experimental")`
+#'
+#' Returns the arm-specific value from a named list, or returns the original
+#' value unchanged when a single shared value was supplied.
+#'
+#' @param arg (`ANY`)\cr either a shared argument or a named list of arguments.
+#' @param arm_name (`string`)\cr hierarchical arm name to select.
+#'
+#' @return The selected arm-specific argument, or `arg` unchanged.
+#'
+#' @keywords internal
+h_hierarchical_get_arm_arg <- function(arg, arm_name) {
+  if (is.list(arg) && !is.function(arg)) {
+    assert_names(names(arg), must.include = arm_name)
+    arg[[arm_name]]
+  } else {
+    arg
+  }
+}
+
+#' Bind Hierarchical Stop Reports for One Arm
+#'
+#' @description `r lifecycle::badge("experimental")`
+#'
+#' Converts the per-simulation list of hierarchical stopping rule results into
+#' the arm-level logical matrix expected by existing simulation summary classes.
+#'
+#' @param stop_report (`list`)\cr per-simulation list of named arm stop reports.
+#' @param arm_name (`string`)\cr hierarchical arm name to extract.
+#' @param nsim (`count`)\cr number of simulations.
+#'
+#' @return A logical matrix with one row per simulation.
+#'
+#' @keywords internal
+h_hierarchical_bind_stop_report <- function(stop_report, arm_name, nsim) {
+  arm_report <- lapply(stop_report, function(x) x[[arm_name]])
+
+  if (all(vapply(arm_report, is.null, logical(1L)))) {
+    return(matrix(
+      TRUE,
+      nrow = nsim,
+      ncol = 1L,
+      dimnames = list(NULL, "Historical arm")
+    ))
+  }
+
+  arm_report <- lapply(arm_report, function(x) {
+    if (is.null(x)) {
+      stats::setNames(TRUE, "Historical arm")
+    } else {
+      x
+    }
+  })
+  as.matrix(do.call(rbind, arm_report))
+}
+
+#' Extract Arm-Level Simulations from Hierarchical Simulations
+#'
+#' @description `r lifecycle::badge("experimental")`
+#'
+#' Rebuilds the simulation object for one hierarchical arm, so that summary
+#' calculations can delegate to the existing [`Simulations`] or
+#' [`ComboSimulations`] methods.
+#'
+#' @param object (`HierarchicalSimulations`)\cr hierarchical simulation results.
+#' @param arm_name (`string`)\cr hierarchical arm name to extract.
+#'
+#' @return A [`Simulations`] object for a single-agent arm or a
+#'   [`ComboSimulations`] object for a combination arm.
+#'
+#' @keywords internal
+h_hierarchical_arm_simulations <- function(object, arm_name) {
+  nsim <- length(object@data)
+  arm_data <- lapply(object@data, function(x) x@arms[[arm_name]])
+  arm_fit <- lapply(object@fit, function(x) x[[arm_name]])
+  arm_stop_reasons <- lapply(object@stop_reasons, function(x) x[[arm_name]])
+  arm_stop_report <- h_hierarchical_bind_stop_report(
+    stop_report = object@stop_report,
+    arm_name = arm_name,
+    nsim = nsim
+  )
+  arm_additional_stats <- lapply(
+    object@additional_stats,
+    function(x) x[[arm_name]]
+  )
+
+  if (is(arm_data[[1L]], "DataCombo")) {
+    arm_doses <- t(vapply(
+      object@doses,
+      function(x) {
+        dose <- x[[arm_name]]
+        if (is.null(dose)) {
+          c(NA_real_, NA_real_)
+        } else {
+          as.numeric(dose)
+        }
+      },
+      numeric(2L)
+    ))
+    colnames(arm_doses) <- arm_data[[1L]]@drugNames
+
+    ComboSimulations(
+      data = arm_data,
+      doses = arm_doses,
+      fit = arm_fit,
+      stop_reasons = arm_stop_reasons,
+      stop_report = arm_stop_report,
+      additional_stats = arm_additional_stats,
+      seed = object@seed
+    )
+  } else {
+    arm_doses <- vapply(
+      object@doses,
+      function(x) {
+        dose <- x[[arm_name]]
+        if (is.null(dose)) {
+          NA_real_
+        } else {
+          as.numeric(dose)
+        }
+      },
+      numeric(1L)
+    )
+
+    Simulations(
+      data = arm_data,
+      doses = arm_doses,
+      fit = arm_fit,
+      stop_reasons = arm_stop_reasons,
+      stop_report = arm_stop_report,
+      additional_stats = arm_additional_stats,
+      seed = object@seed
+    )
+  }
+}
+
+#' Summarize Hierarchical Design Simulations
+#'
+#' @description `r lifecycle::badge("experimental")`
+#'
+#' Summarize hierarchical simulations by delegating to the corresponding
+#' arm-level simulation summary methods.
+#'
+#' @param object (`HierarchicalSimulations`)\cr the object we want to summarize.
+#' @param truth (`function` or named `list` of `function`)\cr true DLT
+#'   probability function(s). If a list is supplied, names must match the
+#'   hierarchical arms.
+#' @param target (`numeric` or named `list` of `numeric`)\cr target toxicity
+#'   interval(s). If a list is supplied, names must match the hierarchical arms.
+#' @param ... additional arguments can be supplied here for `truth`.
+#'
+#' @return An object of class [`HierarchicalSimulationsSummary`].
+#'
+#' @aliases summary-HierarchicalSimulations
+#' @export
+setMethod(
+  f = "summary",
+  signature = signature(object = "HierarchicalSimulations"),
+  def = function(object, truth, target = c(0.2, 0.35), ...) {
+    arm_names <- names(object@data[[1L]]@arms)
+    arm_summaries <- stats::setNames(
+      vector("list", length(arm_names)),
+      arm_names
+    )
+
+    for (arm_name in arm_names) {
+      arm_simulations <- h_hierarchical_arm_simulations(object, arm_name)
+      arm_summaries[[arm_name]] <- summary(
+        arm_simulations,
+        truth = h_hierarchical_get_arm_arg(truth, arm_name),
+        target = h_hierarchical_get_arm_arg(target, arm_name),
+        ...
+      )
+    }
+
+    .HierarchicalSimulationsSummary(
+      arms = arm_summaries,
+      nsim = as.integer(length(object@data))
+    )
+  }
+)
+
 # summary-DualSimulations ----
 
 #' Summarize Dual-Endpoint Design Simulations
@@ -1466,6 +1652,40 @@ setMethod(
 
     names(r$df) <- r$dfNames
     invisible(r$df)
+  }
+)
+
+# show-HierarchicalSimulationsSummary ----
+
+#' Show the Summary of Hierarchical Simulations
+#'
+#' @description `r lifecycle::badge("experimental")`
+#'
+#' Display arm-specific hierarchical simulation summaries.
+#'
+#' @param object (`HierarchicalSimulationsSummary`)\cr the object we want to print.
+#'
+#' @return Invisibly returns a named list of arm-level summary data frames.
+#'
+#' @aliases show-HierarchicalSimulationsSummary
+#' @export
+setMethod(
+  f = "show",
+  signature = signature(object = "HierarchicalSimulationsSummary"),
+  def = function(object) {
+    cat("Summary of", object@nsim, "hierarchical simulations\n")
+
+    arm_dfs <- stats::setNames(
+      vector("list", length(object@arms)),
+      names(object@arms)
+    )
+
+    for (arm_name in names(object@arms)) {
+      cat("\nArm:", arm_name, "\n")
+      arm_dfs[[arm_name]] <- methods::show(object@arms[[arm_name]])
+    }
+
+    invisible(arm_dfs)
   }
 )
 

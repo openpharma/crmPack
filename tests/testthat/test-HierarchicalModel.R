@@ -115,6 +115,96 @@ local_hierarchical_design <- function() {
   )
 }
 
+local_hierarchical_simulations <- function() {
+  data <- list(
+    HierarchicalData(
+      arms = list(
+        arm_a = Data(
+          x = c(10, 20),
+          y = c(0L, 1L),
+          doseGrid = c(10, 20),
+          ID = 1L:2L,
+          cohort = 1L:2L
+        ),
+        arm_b = Data(
+          x = 10,
+          y = 0L,
+          doseGrid = c(10, 20),
+          ID = 1L,
+          cohort = 1L
+        )
+      )
+    ),
+    HierarchicalData(
+      arms = list(
+        arm_a = Data(
+          x = c(10, 10),
+          y = c(0L, 0L),
+          doseGrid = c(10, 20),
+          ID = 1L:2L,
+          cohort = 1L:2L
+        ),
+        arm_b = Data(
+          x = 10,
+          y = 0L,
+          doseGrid = c(10, 20),
+          ID = 1L,
+          cohort = 1L
+        )
+      )
+    )
+  )
+  fit <- list(
+    list(
+      arm_a = data.frame(
+        middle = c(0.1, 0.3),
+        lower = c(0.05, 0.2),
+        upper = c(0.2, 0.4)
+      ),
+      arm_b = data.frame(
+        middle = c(0.1, 0.2),
+        lower = c(0.05, 0.1),
+        upper = c(0.2, 0.3)
+      )
+    ),
+    list(
+      arm_a = data.frame(
+        middle = c(0.15, 0.35),
+        lower = c(0.1, 0.25),
+        upper = c(0.25, 0.45)
+      ),
+      arm_b = data.frame(
+        middle = c(0.1, 0.2),
+        lower = c(0.05, 0.1),
+        upper = c(0.2, 0.3)
+      )
+    )
+  )
+
+  HierarchicalSimulations(
+    data = data,
+    doses = list(
+      list(arm_a = 20, arm_b = NULL),
+      list(arm_a = 10, arm_b = NULL)
+    ),
+    samples = list(.HierarchicalSamples(), .HierarchicalSamples()),
+    fit = fit,
+    stop_reasons = list(
+      list(arm_a = "Stopped A", arm_b = "Historical arm: not enrolling."),
+      list(arm_a = "Stopped A", arm_b = "Historical arm: not enrolling.")
+    ),
+    stop_report = list(
+      list(arm_a = c(`Minimum patients` = TRUE), arm_b = NULL),
+      list(arm_a = c(`Minimum patients` = FALSE), arm_b = NULL)
+    ),
+    additional_stats = list(
+      list(arm_a = list(), arm_b = list()),
+      list(arm_a = list(), arm_b = list())
+    ),
+    seed = 123L
+  )
+}
+
 test_that("hierarchical helper primitives return expected metadata", {
   mono_model <- local_hierarchical_mono_model()
   combo_model <- local_hierarchical_combo_model()
@@ -258,6 +348,82 @@ test_that("HierarchicalDesign simulate returns hierarchical simulations", {
   expect_equal(result@data[[1L]]@arms$arm_b@nObs, design@data@arms$arm_b@nObs)
   expect_true(is.list(result@doses[[1L]]))
   expect_true(is.list(result@stop_reasons[[1L]]))
+})
+
+test_that("hierarchical summary helpers select arm arguments", {
+  shared_truth <- function(dose, ...) dose
+  arm_truth <- list(
+    arm_a = function(dose, ...) dose + 1,
+    arm_b = function(dose, ...) dose + 2
+  )
+
+  expect_identical(
+    h_hierarchical_get_arm_arg(shared_truth, "arm_a"),
+    shared_truth
+  )
+  expect_identical(
+    h_hierarchical_get_arm_arg(arm_truth, "arm_b"),
+    arm_truth$arm_b
+  )
+  expect_error(
+    h_hierarchical_get_arm_arg(arm_truth, "arm_c"),
+    "must include the elements"
+  )
+})
+
+test_that("hierarchical summary helpers bind stop reports", {
+  result <- h_hierarchical_bind_stop_report(
+    stop_report = list(
+      list(arm_a = c(rule = TRUE)),
+      list(arm_a = c(rule = FALSE))
+    ),
+    arm_name = "arm_a",
+    nsim = 2L
+  )
+
+  expect_true(is.matrix(result))
+  expect_equal(result[, "rule"], c(TRUE, FALSE))
+
+  historical <- h_hierarchical_bind_stop_report(
+    stop_report = list(list(arm_b = NULL), list(arm_b = NULL)),
+    arm_name = "arm_b",
+    nsim = 2L
+  )
+
+  expect_equal(dim(historical), c(2L, 1L))
+  expect_equal(colnames(historical), "Historical arm")
+  expect_true(all(historical))
+})
+
+test_that("hierarchical summary helpers rebuild arm simulations", {
+  sims <- local_hierarchical_simulations()
+
+  arm_sims <- h_hierarchical_arm_simulations(sims, "arm_a")
+
+  expect_s4_class(arm_sims, "Simulations")
+  expect_equal(arm_sims@doses, c(20, 10))
+  expect_equal(length(arm_sims@data), 2L)
+  expect_equal(arm_sims@stop_report[, "Minimum patients"], c(TRUE, FALSE))
+})
+
+test_that("summary-HierarchicalSimulations returns arm-level summaries", {
+  sims <- local_hierarchical_simulations()
+
+  result <- summary(
+    sims,
+    truth = list(
+      arm_a = function(dose, ...) plogis(dose - 20),
+      arm_b = function(dose, ...) plogis(dose - 20)
+    )
+  )
+
+  expect_s4_class(result, "HierarchicalSimulationsSummary")
+  expect_equal(result@nsim, 2L)
+  expect_named(result@arms, c("arm_a", "arm_b"))
+  expect_s4_class(result@arms$arm_a, "SimulationsSummary")
+  expect_s4_class(result@arms$arm_b, "SimulationsSummary")
+  expect_equal(result@arms$arm_a@dose_selected, c(20, 10))
+  expect_equal(result@arms$arm_b@dose_selected, c(0, 0))
 })
 
 test_that("v_hierarchical_model catches invalid exchangeable parameters", {
