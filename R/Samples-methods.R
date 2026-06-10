@@ -671,6 +671,99 @@ setMethod(
   }
 )
 
+## plot-LogisticLogNormalCombo ----
+
+#' Plotting two-drug combination dose-toxicity model fits
+#'
+#' @param x the \code{\linkS4class{Samples}} object.
+#' @param y the \code{\linkS4class{LogisticLogNormalCombo}} object.
+#' @param data the \code{\linkS4class{DataCombo}} object.
+#' @param xlab the x axis label. If `NULL`, the first drug name is used.
+#' @param ylab the y axis label. If `NULL`, the second drug name is used.
+#' @param fillLab the fill legend label.
+#' @param showLegend should the legend be shown? (default)
+#' @param \dots passed to \code{\link{fit}}.
+#' @return This returns the \code{\link[ggplot2]{ggplot}} object for the
+#' two-drug combination dose-toxicity model fit.
+#'
+#' @export
+setMethod(
+  "plot",
+  signature = signature(
+    x = "Samples",
+    y = "LogisticLogNormalCombo"
+  ),
+  def = function(
+    x,
+    y,
+    data,
+    ...,
+    xlab = NULL,
+    ylab = NULL,
+    fillLab = "Probability of DLT [%]",
+    showLegend = TRUE
+  ) {
+    assert_class(data, "DataCombo")
+    assert_logical(showLegend)
+    assert_string(xlab, null.ok = TRUE)
+    assert_string(ylab, null.ok = TRUE)
+    assert_string(fillLab)
+
+    drug1 <- data@drugNames[1L]
+    drug2 <- data@drugNames[2L]
+    if (is.null(xlab)) {
+      xlab <- drug1
+    }
+    if (is.null(ylab)) {
+      ylab <- drug2
+    }
+
+    plotData <- fit(
+      x,
+      model = y,
+      data = data,
+      quantiles = c(0.025, 0.975),
+      middle = mean,
+      ...
+    )
+
+    gdata <- data.frame(
+      dose1 = rep(plotData[[drug1]], times = 3L),
+      dose2 = rep(plotData[[drug2]], times = 3L),
+      prob = c(plotData$lower, plotData$middle, plotData$upper) * 100,
+      Type = factor(
+        rep(c("Lower", "Middle", "Upper"), each = nrow(plotData)),
+        levels = c("Lower", "Middle", "Upper")
+      )
+    )
+
+    gdata %>%
+      ggplot(aes(x = dose1, y = dose2, fill = prob)) +
+      geom_tile(colour = "white", linewidth = 0.5) +
+      facet_wrap(~Type, nrow = 1L) +
+      scale_fill_gradient(
+        name = fillLab,
+        low = "grey95",
+        high = "red3",
+        limits = c(0, 100),
+        guide = ifelse(showLegend, "colourbar", "none")
+      ) +
+      scale_x_continuous(
+        breaks = data@doseGrid[[drug1]],
+        minor_breaks = NULL
+      ) +
+      scale_y_continuous(
+        breaks = data@doseGrid[[drug2]],
+        minor_breaks = NULL
+      ) +
+      labs(
+        x = xlab,
+        y = ylab
+      ) +
+      coord_fixed()
+  }
+)
+
 
 ## plot-DualEndpoint ----
 

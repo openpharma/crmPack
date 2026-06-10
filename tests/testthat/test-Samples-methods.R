@@ -671,6 +671,32 @@ test_that("plot-Samples works correctly", {
   expect_doppel("plot-Samples_showLegend-FALSE", actual1)
 })
 
+test_that("plot-Samples works specifically also for LogisticLogNormalCombo", {
+  data <- h_get_data_combo()
+  model <- h_get_logistic_log_normal_combo()
+  samples <- h_as_samples(list(
+    alpha0 = matrix(
+      c(-3.0, -3.5, -2.5, -3.0),
+      nrow = 2L,
+      byrow = TRUE,
+      dimnames = list(NULL, model@drug_names)
+    ),
+    alpha1 = matrix(
+      c(1.0, 1.2, 0.8, 1.1),
+      nrow = 2L,
+      byrow = TRUE,
+      dimnames = list(NULL, model@drug_names)
+    ),
+    eta = c(0.0, 0.2)
+  ))
+
+  actual <- plot(samples, model, data)
+  expect_s3_class(actual, "ggplot")
+
+  actual1 <- plot(samples, model, data, showLegend = FALSE)
+  expect_s3_class(actual1, "ggplot")
+})
+
 test_that("plot-Samples-DualEndpoint fails gracefully with bad input", {
   data <- DataDual(
     x = c(0.1, 0.5, 1.5, 3, 6, 10, 10, 10, 20, 20, 20, 40, 40, 40, 50, 50, 50),
