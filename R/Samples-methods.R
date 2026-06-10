@@ -91,6 +91,28 @@ setMethod(
   }
 )
 
+h_hierarchical_check_fit_plot_args <- function(object, model, data) {
+  assert_class(object, "HierarchicalSamples")
+  assert_class(model, "HierarchicalModel")
+  assert_class(data, "HierarchicalData")
+  assert_names(names(data@arms), identical.to = names(model@models_to_arms))
+  assert_names(names(object@arm_samples), identical.to = names(model@models_to_arms))
+
+  for (arm_name in names(model@models_to_arms)) {
+    arm_model <- model@models_to_arms[[arm_name]]
+    arm_data <- data@arms[[arm_name]]
+
+    if (is(arm_model, "LogisticLogNormal")) {
+      assert_class(arm_data, "Data")
+    } else {
+      assert_class(arm_data, "DataCombo")
+      assert_names(arm_data@drugNames, identical.to = arm_model@drug_names)
+    }
+  }
+
+  invisible(TRUE)
+}
+
 # The next line is required to suppress the message "Creating a generic function
 # for ‘get’ from package ‘base’ in package ‘crmPack’" on package load.
 # See https://github.com/openpharma/crmPack/issues/723
@@ -330,6 +352,39 @@ setMethod(
         upper = quant_curve[2, ]
       )
     )
+  }
+)
+
+#' @describeIn fit This method delegates to the arm-specific `fit` methods and
+#' returns one combined data frame with an `arm` column.
+setMethod(
+  "fit",
+  signature = signature(
+    object = "HierarchicalSamples",
+    model = "HierarchicalModel",
+    data = "HierarchicalData"
+  ),
+  def = function(
+    object,
+    model,
+    data,
+    ...
+  ) {
+    h_hierarchical_check_fit_plot_args(object, model, data)
+
+    arm_fits <- lapply(names(model@models_to_arms), function(arm_name) {
+      cbind(
+        arm = arm_name,
+        fit(
+          object = armSamples(object, arm_name),
+          model = model@models_to_arms[[arm_name]],
+          data = data@arms[[arm_name]],
+          ...
+        )
+      )
+    })
+
+    dplyr::bind_rows(arm_fits)
   }
 )
 
@@ -761,6 +816,69 @@ setMethod(
         y = ylab
       ) +
       coord_fixed()
+  }
+)
+
+## plot-HierarchicalSamples ----
+
+#' Plotting hierarchical dose-toxicity model fits
+#'
+#' @param x the \code{\linkS4class{HierarchicalSamples}} object.
+#' @param y the \code{\linkS4class{HierarchicalModel}} object.
+#' @param data the \code{\linkS4class{HierarchicalData}} object.
+#' @param ncol (`count` or `NULL`)\cr number of columns in the combined plot.
+#'   If `NULL`, a compact layout is chosen automatically.
+#' @param \dots passed to the arm-specific `plot` methods.
+#' @return This returns a `gtable` object combining the arm-specific fitted
+#' plots, or `NULL` if no arm plot is available.
+#'
+#' @export
+setMethod(
+  "plot",
+  signature = signature(
+    x = "HierarchicalSamples",
+    y = "HierarchicalModel"
+  ),
+  def = function(
+    x,
+    y,
+    data,
+    ncol = NULL,
+    ...
+  ) {
+    h_hierarchical_check_fit_plot_args(x, y, data)
+    assert_int(ncol, lower = 1L, null.ok = TRUE)
+
+    arm_plots <- lapply(names(y@models_to_arms), function(arm_name) {
+      arm_plot <- plot(
+        x = armSamples(x, arm_name),
+        y = y@models_to_arms[[arm_name]],
+        data = data@arms[[arm_name]],
+        ...
+      )
+      if (is.null(arm_plot)) {
+        return(NULL)
+      }
+
+      gridExtra::arrangeGrob(
+        arm_plot,
+        top = grid::textGrob(
+          arm_name,
+          gp = grid::gpar(fontface = "bold")
+        )
+      )
+    })
+    arm_plots <- Filter(Negate(is.null), arm_plots)
+
+    if (length(arm_plots) == 0L) {
+      return()
+    }
+
+    if (is.null(ncol)) {
+      ncol <- ceiling(sqrt(length(arm_plots)))
+    }
+
+    do.call(gridExtra::arrangeGrob, c(arm_plots, list(ncol = ncol)))
   }
 )
 

@@ -90,6 +90,40 @@ local_hierarchical_data <- function(empty = FALSE) {
   )
 }
 
+local_hierarchical_samples <- function() {
+  HierarchicalSamples(
+    data = list(
+      alpha0_my_mono = c(-3.0, -2.5),
+      alpha1_my_mono = c(1.0, 0.8),
+      alpha0_my_combo = matrix(
+        c(-3.0, -3.5, -2.5, -3.0),
+        nrow = 2L,
+        byrow = TRUE,
+        dimnames = list(NULL, c("drug1", "drug2"))
+      ),
+      alpha1_my_combo = matrix(
+        c(1.0, 1.2, 0.8, 1.1),
+        nrow = 2L,
+        byrow = TRUE,
+        dimnames = list(NULL, c("drug1", "drug2"))
+      ),
+      eta_my_combo = c(0.0, 0.2)
+    ),
+    options = h_get_mcmc_options(samples = 2L),
+    arm_samples = list(
+      my_mono = c(
+        alpha0 = "alpha0_my_mono",
+        alpha1 = "alpha1_my_mono"
+      ),
+      my_combo = c(
+        alpha0 = "alpha0_my_combo",
+        alpha1 = "alpha1_my_combo",
+        eta = "eta_my_combo"
+      )
+    )
+  )
+}
+
 local_hierarchical_design <- function() {
   HierarchicalDesign(
     DesignArm(
@@ -568,4 +602,36 @@ test_that("armSamples extracts arm-specific Samples objects", {
   expect_equal(mono_samples@data$alpha0, result@data$alpha0_my_mono)
   expect_equal(combo_samples@data$alpha0, result@data$alpha0_my_combo)
   expect_equal(combo_samples@data$eta, result@data$eta_my_combo)
+})
+
+test_that("fit-HierarchicalSamples delegates to arm-specific fits", {
+  result <- fit(
+    object = local_hierarchical_samples(),
+    model = local_hierarchical_model(),
+    data = local_hierarchical_data()
+  )
+
+  expect_data_frame(result, nrows = 9L)
+  expect_named(
+    result,
+    c("arm", "dose", "middle", "lower", "upper", "drug1", "drug2")
+  )
+  expect_equal(
+    as.integer(table(result$arm)[c("my_combo", "my_mono")]),
+    c(6L, 3L)
+  )
+  expect_true(all(result$middle >= 0 & result$middle <= 1))
+  expect_true(all(is.na(result$dose[result$arm == "my_combo"])))
+  expect_true(all(is.na(result$drug1[result$arm == "my_mono"])))
+  expect_true(all(is.na(result$drug2[result$arm == "my_mono"])))
+})
+
+test_that("plot-HierarchicalSamples delegates to arm-specific plots", {
+  result <- plot(
+    x = local_hierarchical_samples(),
+    y = local_hierarchical_model(),
+    data = local_hierarchical_data()
+  )
+
+  expect_true(grid::is.grob(result))
 })
