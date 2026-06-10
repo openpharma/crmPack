@@ -1,3 +1,9 @@
+# show-HierarchicalDesign ----
+
+test_that("show-HierarchicalDesign works correctly", {
+  expect_snapshot(show(.DefaultHierarchicalDesign()))
+})
+
 skip_on_cran_but_not_ci()
 options(testthat.progress.max_fails = 0)
 

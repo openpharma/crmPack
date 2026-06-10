@@ -1,3 +1,9 @@
+## show-HierarchicalSimulations ----
+
+test_that("show-HierarchicalSimulations works correctly", {
+  expect_snapshot(show(.HierarchicalSimulations()))
+})
+
 skip_on_cran_but_not_ci()
 
 testthat::local_mocked_bindings(

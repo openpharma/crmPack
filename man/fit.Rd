@@ -4,6 +4,7 @@
 \alias{fit}
 \alias{fit,Samples,GeneralModel,Data-method}
 \alias{fit,Samples,LogisticLogNormalCombo,DataCombo-method}
+\alias{fit,HierarchicalSamples,HierarchicalModel,HierarchicalData-method}
 \alias{fit,Samples,DualEndpoint,DataDual-method}
 \alias{fit,Samples,LogisticIndepBeta,Data-method}
 \alias{fit,Samples,Effloglog,DataDual-method}
@@ -32,6 +33,8 @@ fit(object, model, data, ...)
   middle = mean,
   ...
 )
+
+\S4method{fit}{HierarchicalSamples,HierarchicalModel,HierarchicalData}(object, model, data, ...)
 
 \S4method{fit}{Samples,DualEndpoint,DataDual}(object, model, data, quantiles = c(0.025, 0.975), middle = mean, ...)
 
@@ -108,6 +111,9 @@ and upper quantiles for the dose-toxicity curve
 
 \item \code{fit(object = Samples, model = LogisticLogNormalCombo, data = DataCombo)}: This method returns a data frame with one row per dose
 combination and posterior summaries of the DLT probability surface.
+
+\item \code{fit(object = HierarchicalSamples, model = HierarchicalModel, data = HierarchicalData)}: This method delegates to the arm-specific \code{fit} methods and
+returns one combined data frame with an \code{arm} column.
 
 \item \code{fit(object = Samples, model = DualEndpoint, data = DataDual)}: This method returns a data frame with dose, and middle,
 lower and upper quantiles, for both the dose-tox and dose-biomarker (suffix

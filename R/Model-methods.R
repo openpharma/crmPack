@@ -2,6 +2,67 @@
 #' @include Samples-class.R
 NULL
 
+# show ----
+
+## show-HierarchicalModel ----
+
+#' Show `HierarchicalModel` Objects
+#'
+#' @description `r lifecycle::badge("experimental")`
+#'
+#' Display a brief representation of the [`HierarchicalModel`] object.
+#'
+#' @param object (`HierarchicalModel`)\cr the object we want to print.
+#'
+#' @return Invisibly returns the object itself.
+#'
+#' @aliases show-HierarchicalModel
+#' @export
+setMethod(
+  f = "show",
+  signature = signature(object = "HierarchicalModel"),
+  def = function(object) {
+    arm_names <- names(object@models_to_arms)
+    model_classes <- vapply(
+      object@models_to_arms,
+      function(model) class(model)[1L],
+      character(1L)
+    )
+    pool_names <- names(object@parameter_pools)
+
+    cat(
+      "An object of class 'HierarchicalModel'\n",
+      "Arms (",
+      length(arm_names),
+      "): ",
+      h_show_hierarchical_names(arm_names),
+      "\n",
+      sep = ""
+    )
+    if (length(model_classes) > 0L) {
+      cat(
+        "Arm models: ",
+        paste(
+          paste0(names(model_classes), " = ", model_classes),
+          collapse = ", "
+        ),
+        "\n",
+        sep = ""
+      )
+    }
+    cat(
+      "Exchangeable parameter pools (",
+      length(pool_names),
+      "): ",
+      h_show_hierarchical_names(pool_names),
+      "\n",
+      sep = ""
+    )
+
+    invisible(object)
+  }
+)
+
 # doseFunction ----
 
 ## generic ----

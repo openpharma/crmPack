@@ -920,3 +920,65 @@ DataCombo <- function(
     )
   )
 }
+
+# HierarchicalData ----
+
+#' `HierarchicalData`
+#'
+#' @description `r lifecycle::badge("experimental")`
+#'
+#' [`HierarchicalData`] is a class for hierarchical designs,
+#' storing the data for all arms together.
+#'
+#' @slot arms (`list`)\cr a named list of `Data` objects, one
+#'   for each arm in the trial. The names of the list are the
+#'   arm names.
+#'
+#' @aliases HierarchicalData
+#' @export
+#'
+.HierarchicalData <- setClass(
+  Class = "HierarchicalData",
+  slots = c(
+    arms = "list"
+  ),
+  prototype = prototype(
+    arms = list()
+  ),
+  contains = "CrmPackClass",
+  validity = v_hierarchical_data
+)
+
+## constructor ----
+
+#' @rdname HierarchicalData-class
+#'
+#' @param arms (`list`)\cr a named list of `Data` objects, one
+#'  for each arm in the trial. The names of the list are the
+#'  arm names.
+#'
+#' @export
+#' @example examples/Data-class-HierarchicalData.R
+HierarchicalData <- function(arms = list()) {
+  assert_list(arms, types = c("Data", "DataCombo"), any.missing = FALSE)
+  if (length(arms) > 0) {
+    assert_names(names(arms), type = "unique")
+  }
+  .HierarchicalData(arms = arms)
+}
+
+## default constructor ----
+
+#' @rdname HierarchicalData-class
+#' @note Typically, end users will not use the `.DefaultHierarchicalData()` function
+#'  directly.
+#' @export
+.DefaultHierarchicalData <- function() {
+  set.seed(1230)
+  .HierarchicalData(
+    arms = list(
+      arm1 = .DefaultData(),
+      combo = .DefaultDataCombo()
+    )
+  )
+}

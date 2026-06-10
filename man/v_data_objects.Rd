@@ -13,6 +13,7 @@
 \alias{v_data_ordinal}
 \alias{v_data_grouped}
 \alias{v_data_combo}
+\alias{v_hierarchical_data}
 \title{Internal Helper Functions for Validation of \code{\link{GeneralData}} Objects}
 \usage{
 v_general_data(object)
@@ -36,6 +37,8 @@ v_data_ordinal(object)
 v_data_grouped(object)
 
 v_data_combo(object)
+
+v_hierarchical_data(object)
 }
 \arguments{
 \item{object}{(\code{GeneralData})\cr object to validate.}
@@ -95,5 +98,7 @@ contains valid group information.
 
 \item \code{v_data_combo()}: validates that the \code{\link{DataCombo}} object
 contains valid two-drug combination data.
+
+\item \code{v_hierarchical_data()}: validates that the \code{\link{HierarchicalData}} object contains valid arms.
 
 }}

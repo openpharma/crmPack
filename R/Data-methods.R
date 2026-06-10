@@ -1,4 +1,50 @@
 #' @include helpers_data.R
+NULL
+
+# show ----
+
+## show-HierarchicalData ----
+
+#' Show `HierarchicalData` Objects
+#'
+#' @description `r lifecycle::badge("experimental")`
+#'
+#' Display a brief representation of the [`HierarchicalData`] object.
+#'
+#' @param object (`HierarchicalData`)\cr the object we want to print.
+#'
+#' @return Invisibly returns the object itself.
+#'
+#' @aliases show-HierarchicalData
+#' @export
+setMethod(
+  f = "show",
+  signature = signature(object = "HierarchicalData"),
+  def = function(object) {
+    arm_names <- names(object@arms)
+    n_obs <- vapply(object@arms, function(arm) arm@nObs, integer(1L))
+
+    cat(
+      "An object of class 'HierarchicalData'\n",
+      "Arms (",
+      length(arm_names),
+      "): ",
+      h_show_hierarchical_names(arm_names),
+      "\n",
+      sep = ""
+    )
+    if (length(n_obs) > 0L) {
+      cat(
+        "Observations by arm: ",
+        paste(paste0(names(n_obs), " = ", n_obs), collapse = ", "),
+        "\n",
+        sep = ""
+      )
+    }
+
+    invisible(object)
+  }
+)
 
 # subsetting ----
 
@@ -68,6 +114,69 @@ setMethod(
 )
 
 # plot ----
+
+## HierarchicalData ----
+
+#' Plot Method for the [`HierarchicalData`] Class
+#'
+#' @description `r lifecycle::badge("experimental")`
+#'
+#' A method that creates a combined plot for a [`HierarchicalData`] object by
+#' arranging the arm-specific [`Data`] and [`DataCombo`] plots.
+#'
+#' @param x (`HierarchicalData`)\cr object we want to plot.
+#' @param y (`missing`)\cr missing object, for compatibility with the generic
+#'   function.
+#' @param ncol (`count` or `NULL`)\cr number of columns in the combined plot.
+#'   If `NULL`, a compact layout is chosen automatically.
+#' @param ... passed to the arm-specific `plot` methods.
+#'
+#' @return A `gtable` object combining the arm-specific plots, or `NULL` if no
+#'   arm plot is available.
+#'
+#' @aliases plot-HierarchicalData
+#' @export
+setMethod(
+  f = "plot",
+  signature = signature(x = "HierarchicalData", y = "missing"),
+  definition = function(x, y, ncol = NULL, ...) {
+    assert_int(ncol, lower = 1L, null.ok = TRUE)
+
+    if (length(x@arms) == 0L) {
+      return()
+    }
+
+    arm_plots <- Map(
+      f = function(arm, arm_name) {
+        arm_plot <- plot(arm, ...)
+        if (is.null(arm_plot)) {
+          return(NULL)
+        }
+
+        gridExtra::arrangeGrob(
+          arm_plot,
+          top = grid::textGrob(
+            arm_name,
+            gp = grid::gpar(fontface = "bold")
+          )
+        )
+      },
+      x@arms,
+      names(x@arms)
+    )
+    arm_plots <- Filter(Negate(is.null), arm_plots)
+
+    if (length(arm_plots) == 0L) {
+      return()
+    }
+
+    if (is.null(ncol)) {
+      ncol <- ceiling(sqrt(length(arm_plots)))
+    }
+
+    do.call(gridExtra::arrangeGrob, c(arm_plots, list(ncol = ncol)))
+  }
+)
 
 ## Data ----
 
@@ -1160,6 +1269,42 @@ setMethod(
       object@cohort <- object@cohort[ord]
       object@backfilled <- object@backfilled[ord]
     }
+
+    if (check) {
+      validObject(object)
+    }
+
+    object
+  }
+)
+
+## HierarchicalData ----
+
+#' Updating `HierarchicalData` Objects
+#'
+#' @description `r lifecycle::badge("experimental")`
+#'
+#' A method that updates one arm in a [`HierarchicalData`] object with new data.
+#'
+#' @param object (`HierarchicalData`)\cr object you want to update.
+#' @param arm (`string`)\cr name of the arm to update.
+#' @param ... arguments passed to the selected arm's `update` method.
+#' @param check (`flag`)\cr whether the validation of the updated object should
+#'   be conducted.
+#'
+#' @return The new, updated [`HierarchicalData`] object.
+#'
+#' @aliases update-HierarchicalData
+#' @export
+setMethod(
+  f = "update",
+  signature = signature(object = "HierarchicalData"),
+  definition = function(object, arm, ..., check = TRUE) {
+    assert_string(arm)
+    assert_choice(arm, names(object@arms))
+    assert_flag(check)
+
+    object@arms[[arm]] <- update(object@arms[[arm]], ..., check = check)
 
     if (check) {
       validObject(object)

@@ -66,6 +66,50 @@ v_simulations <- function(object) {
   v$result()
 }
 
+#' @describeIn v_general_simulations validates that the
+#'   [`HierarchicalSimulations`] object contains valid hierarchical data,
+#'   posterior samples, fits, and stopping outputs.
+v_hierarchical_simulations <- function(object) {
+  v <- Validate()
+
+  nSims <- length(object@data)
+
+  v$check(
+    all(sapply(object@data, is, "HierarchicalData")),
+    "all data elements must be HierarchicalData objects"
+  )
+  v$check(
+    all(sapply(object@samples, is, "HierarchicalSamples")),
+    "all samples elements must be HierarchicalSamples objects"
+  )
+  v$check(
+    identical(length(object@doses), nSims),
+    "doses must have same length as data"
+  )
+  v$check(
+    identical(length(object@samples), nSims),
+    "samples must have same length as data"
+  )
+  v$check(
+    identical(length(object@fit), nSims),
+    "fit must have same length as data"
+  )
+  v$check(
+    identical(length(object@stop_reasons), nSims),
+    "stop_reasons must have same length as data"
+  )
+  v$check(
+    identical(length(object@stop_report), nSims),
+    "stop_report must have same length as data"
+  )
+  v$check(
+    identical(length(object@additional_stats), nSims),
+    "additional_stats must have same length as data"
+  )
+
+  v$result()
+}
+
 #' @describeIn v_general_simulations validates that the [`ComboSimulations`]
 #'   object contains valid combo data, recommended dose combinations, model fit,
 #'   and stopping outputs.
