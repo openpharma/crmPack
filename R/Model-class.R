@@ -1001,12 +1001,7 @@ h_hierarchical_make_pool_map <- function(parameter_pools) {
     members <- parameter_pools[[pool_name]]
     for (arm_name in names(members)) {
       this_key <- paste0(arm_name, "::", members[[arm_name]])
-      assert_null(
-        pooled_map[[this_key]],
-        "Duplicate pool membership for '",
-        this_key,
-        "'."
-      )
+      assert_null(pooled_map[[this_key]])
       pooled_map[[this_key]] <- pool_name
     }
   }
