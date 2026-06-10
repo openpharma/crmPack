@@ -376,13 +376,11 @@ setMethod(
       truthResponse <- truthResponse[arm_names]
     }
 
-    for (arm_name in active_arms) {
-      # Currently, backfill cohorts are not yet supported for hierarchical designs.
-      assert_class(
-        object@arms[[arm_name]]@design@backfill@opening,
-        "OpeningNone"
-      )
-    }
+    uses_backfill <- vapply(
+      object@arms,
+      function(arm) !is(arm@design@backfill@opening, "OpeningNone"),
+      logical(1L)
+    )
 
     args <- as.data.frame(args)
     n_args <- max(nrow(args), 1L)
@@ -413,6 +411,14 @@ setMethod(
       )
       additional_stats <- stats::setNames(
         vector("list", length(arm_names)),
+        arm_names
+      )
+      backfill_cohorts <- stats::setNames(
+        vector("list", length(arm_names)),
+        arm_names
+      )
+      backfill_patients <- stats::setNames(
+        rep(0L, length(arm_names)),
         arm_names
       )
 
@@ -583,6 +589,40 @@ setMethod(
               response = response
             )
           }
+
+          if (uses_backfill[[arm_name]]) {
+            arm_data <- data@arms[[arm_name]]
+            backfill_cohorts[[arm_name]] <- h_update_backfill_queue(
+              backfill_cohorts = backfill_cohorts[[arm_name]],
+              data = arm_data,
+              dose = next_dose,
+              backfill = arm_design@backfill
+            )
+
+            arm_truth <- truth[[arm_name]]
+            arm_truth_response <- truthResponse[[arm_name]]
+            enrollment_result <- h_enroll_backfill_patients(
+              backfill_cohorts = backfill_cohorts[[arm_name]],
+              data = arm_data,
+              backfill = arm_design@backfill,
+              cohort_size = cohort_size,
+              backfill_patients = backfill_patients[[arm_name]],
+              current_args = current_args,
+              truth = function(dose, ...) {
+                call_truth(arm_truth, dose, current_args)
+              },
+              truthResponse = function(dose) {
+                call_truth(arm_truth_response, dose, current_args)
+              }
+            )
+
+            data@arms[[arm_name]] <- enrollment_result$data
+            validObject(data)
+            backfill_cohorts[[arm_name]] <-
+              enrollment_result$backfill_cohorts
+            backfill_patients[[arm_name]] <-
+              enrollment_result$backfill_patients
+          }
         }
       }
 
@@ -633,7 +673,8 @@ setMethod(
         "mcmcOptions",
         "derive",
         "arm_names",
-        "active_arms"
+        "active_arms",
+        "uses_backfill"
       ),
       parallel = parallel,
       n_cores = nCores
