@@ -81,7 +81,9 @@ setMethod(
     mapping <- object@arm_samples[[arm]]
     Samples(
       data = stats::setNames(
-        lapply(unname(mapping), function(sample_name) object@data[[sample_name]]),
+        lapply(unname(mapping), function(sample_name) {
+          object@data[[sample_name]]
+        }),
         names(mapping)
       ),
       options = object@options
@@ -331,9 +333,7 @@ setMethod(
   }
 )
 
-## --------------------------------------------------
-## Get fitted dose-tox and dose-biomarker curves from Samples
-## --------------------------------------------------
+# fit-DualEndpoint ----
 
 #' @describeIn fit This method returns a data frame with dose, and middle,
 #' lower and upper quantiles, for both the dose-tox and dose-biomarker (suffix
@@ -398,9 +398,7 @@ setMethod(
   }
 )
 
-## --------------------------------------------------
-## Approximate posterior with (log) normal distribution
-## --------------------------------------------------
+# approximate ----
 
 #' Approximate posterior with (log) normal distribution
 #'
@@ -573,9 +571,7 @@ setMethod(
   }
 )
 
-## --------------------------------------------------
-## Plot dose-tox fit from a model
-## --------------------------------------------------
+# plot ----
 
 #' Plotting dose-toxicity model fits
 #'
@@ -676,9 +672,7 @@ setMethod(
 )
 
 
-## --------------------------------------------------
-## Special method for dual endpoint model
-## --------------------------------------------------
+## plot-DualEndpoint ----
 
 #' Plotting dose-toxicity and dose-biomarker model fits
 #'
@@ -793,10 +787,8 @@ setMethod(
   }
 )
 
+## fit-LogisticIndepBeta ----
 
-## -------------------------------------------------------------------------------------
-## Get fitted dose-tox curve from Samples for 'LogisticIndepBeta' model class
-## ------------------------------------------------------------------------------------
 #' @describeIn fit This method return a data frame with dose, middle lower and upper quantiles
 #' for the dose-DLE curve using DLE samples for \dQuote{LogisticIndepBeta} model class
 #' @example examples/Samples-method-fitDLE.R
@@ -854,9 +846,7 @@ setMethod(
   }
 )
 
-## -------------------------------------------------------------------------------------
-## Get fitted dose-efficacy curve from Samples for 'Effloglog' model class
-## ------------------------------------------------------------------------------------
+## fit-Effloglog ----
 
 #' @describeIn fit This method returns a data frame with dose, middle, lower, upper quantiles for
 #' the dose-efficacy curve using efficacy samples for \dQuote{Effloglog} model class
@@ -914,10 +904,9 @@ setMethod(
     )
   }
 )
-## ==========================================================================================
-## --------------------------------------------------------------------
-## Get fitted dose-efficacy based on the Efficacy Flexible model
-## -------------------------------------------------------------
+
+## fit-EffFlexi ----
+
 #' @describeIn fit This method returns a data frame with dose, middle, lower and upper
 #' quantiles for the dose-efficacy curve using efficacy samples for \dQuote{EffFlexi}
 #' model class
@@ -1031,10 +1020,9 @@ setMethod(
     )
   }
 )
-## ==============================================================
-## ----------------------------------------------------------------
-## Get fitted values at all dose levels from gain samples
-## -----------------------------------------------------------------
+
+# fitGain ----
+
 #' Get the fitted values for the gain values at all dose levels based on
 #' a given pseudo DLE model, DLE sample, a pseudo efficacy model, a Efficacy sample
 #' and data. This method returns a data frame with dose, middle, lower and upper quantiles
@@ -1128,9 +1116,9 @@ setMethod(
     )
   }
 )
-## ---------------------------------------------------------------------------------
-## Plot the fitted dose-DLE curve with pseudo DLE model with samples
-## -------------------------------------------------------------------------------
+
+## plot-ModelTox ----
+
 #' Plot the fitted dose-DLE curve using a \code{\linkS4class{ModelTox}} class model with samples
 #'
 #' @param x the \code{\linkS4class{Samples}} object
@@ -1230,9 +1218,8 @@ setMethod(
 )
 
 
-# --------------------------------------------------------------------------------------------
-## Plot the fitted dose-efficacy curve using a pseudo efficacy model with samples
-## -------------------------------------------------------------------------------------------
+## plot-ModelEff ----
+
 #' Plot the fitted dose-efficacy curve using a model from \code{\linkS4class{ModelEff}} class
 #' with samples
 #'
@@ -1332,9 +1319,8 @@ setMethod(
   }
 )
 
-## ----------------------------------------------------------------------------------------
-## Plot of fitted dose-DLE curve based on a pseudo DLE model without sample
-## -------------------------------------------------------------------------------------
+## plot-ModelToxNoSamples ----
+
 #' Plot of the fitted dose-tox based with a given pseudo DLE model and data without samples
 #'
 #' @param x the data of \code{\linkS4class{Data}} class object
@@ -1428,9 +1414,8 @@ setMethod(
 )
 
 
-## ---------------------------------------------------------------------------------------------
-## Plot the fitted dose-efficacy curve given a pseudo efficacy model without samples
-## ----------------------------------------------------------------------------------
+## plot-ModelEff-NoSamples ----
+
 #' Plot of the fitted dose-efficacy based with a given pseudo efficacy model and data without samples
 #'
 #' @param x the data of \code{\linkS4class{DataDual}} class object
@@ -1499,9 +1484,8 @@ setMethod(
   }
 )
 
-## ----------------------------------------------------------------------------------------------------------
-## Plot the gain curve using a pseudo DLE and a pseudo Efficacy model with samples
-## ----------------------------------------------------------------------------------------------------
+# plotGain ----
+
 #' Plot the gain curve in addition with the dose-DLE and dose-efficacy curve using a given DLE pseudo model,
 #' a DLE sample, a given efficacy pseudo model and an efficacy sample
 #'
@@ -1601,9 +1585,8 @@ setMethod(
   }
 )
 
-## ----------------------------------------------------------------------------------------------------
-## Plot the gain curve using a pseudo DLE and a pseudo Efficacy model without samples
-## ----------------------------------------------------------------------------------------------------
+## plotGain-NoSamples ----
+
 #' Plot the gain curve in addition with the dose-DLE and dose-efficacy curve using a given DLE pseudo model,
 #' and a given efficacy pseudo model
 #'
@@ -1825,11 +1808,9 @@ setMethod(
       )
   }
 )
-## ==========================================================================================
 
-## -------------------------------------------------------------------------------
-## Plot of the DLE and efficacy curve sides by side with samples
-## -----------------------------------------------------------------------------
+# plotDualResponses ----
+
 #' Plot of the DLE and efficacy curve side by side given a DLE pseudo model,
 #' a DLE sample, an efficacy pseudo model and a given efficacy sample
 #'
@@ -2031,9 +2012,8 @@ setMethod(
   }
 )
 
-## ------------------------------------------------------------------------------
-## Plot of the DLE and efficacy curve sides by side without  samples
-## -----------------------------------------------------------------------------
+# plotDualResponses-NoSamples ----
+
 #' Plot of the dose-DLE and dose-efficacy curve side by side given a DLE pseudo model
 #' and a given pseudo efficacy model without DLE and efficacy samples
 #'
@@ -2130,12 +2110,9 @@ setMethod(
     gridExtra::arrangeGrob(plot1, plot2, ncol = 2)
   }
 )
-## =======================================================================================================
 
-## ----------------------------------------------------------------
-## Get fitted DLT free survival (piecewise exponential model) based on
-## the DA-CRM model
-## -----------------------------------------------------------------
+# fitPEM ----
+
 #' Get the fitted DLT free survival (piecewise exponential model).
 #' This function returns a data frame with dose, middle, lower and upper
 #' quantiles for the `PEM` curve. If hazard=TRUE,
@@ -2227,10 +2204,8 @@ DLTLikelihood <- function(lambda, Tmax) {
   pDLT
 }
 
-## --------------------------------------------------------------------
-## Get fitted DLT free survival (piecewise exponential model) based on
-## the DA-CRM model
-## -------------------------------------------------------------
+# fitPEM-DALogisticLogNormal ----
+
 #' @describeIn fitPEM This method works for the \code{\linkS4class{DALogisticLogNormal}}
 #' model class.
 #' @example examples/Samples-method-fitPEM-DALogisticLogNormal.R
@@ -2297,11 +2272,7 @@ setMethod(
   }
 )
 
-## =======================================================================================================
-
-## --------------------------------------------------
-## Plot survival curve fit over time
-## --------------------------------------------------
+## plot-DALogisticLogNormal ----
 
 ## todo: add example file
 #' Plotting dose-toxicity model fits
