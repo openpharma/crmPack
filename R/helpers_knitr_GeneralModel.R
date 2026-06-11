@@ -1232,7 +1232,15 @@ knit_print.LogisticLogNormalCombo <- function(
       fmt = fmt,
       ...
     ),
-    "\n\nThe prior for the interaction term &eta; is Normal(&gamma;, &tau;).\n\n"
+    paste0(
+      "\n\nThe prior for the",
+      if (x@log_normal_eta) " log of the",
+      " interaction term $\\eta$ is $N(",
+      if (use_values) sprintf(fmt, x@gamma) else "\\gamma",
+      ", ",
+      if (use_values) sprintf(fmt, x@tau) else "\\tau",
+      "^2)$.\n\n"
+    )
   )
 
   if (asis) {

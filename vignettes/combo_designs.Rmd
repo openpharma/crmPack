@@ -1,0 +1,125 @@
+---
+title: "Combination designs"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Combination designs}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+bibliography: vignettes.bib
+---
+
+```{r, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>"
+)
+```
+
+## Introduction
+
+Here we show how `crmPack` can be used for drug combination dose escalation designs. We start with the simple case of a single combination arm, and then move on to the more complex case of parallel monotherapy and combination arms.
+
+## Single combination arm
+
+The package implements the 5-parameter BLRM approach by @Neuenschwander2015 (note that a presentation slide deck is available [here](https://de.slideshare.net/slideshow/eugm-2014-roychaudhuri-phase-1-combination/50032570)).
+
+### Model specification
+
+- Let $\textrm{odds}(p)=p/(1-p)$ be the odds transformation of the probability $p$, such that 
+  $\textrm{logit}(p) = \log(\textrm{odds}(p))$. 
+- Let $x_i$ be the dose of drug $i=1,2$, and $p(x_1, x_2)$ be the probability of DLT with doses $x_1$ and $x_2$.
+- The reference doses for the two compounds are again denoted by $x_1^{*}$ and $x_2^{*}$, and the single-agent DLT probabilities at these reference doses are denoted by $p(x_1)$ and $p(x_2)$, respectively.
+- Then the model assumes a linear interaction function:
+
+  $$
+  \textrm{odds}(p(x_1, x_2)) = \textrm{odds}(p_0(x_1, x_2)) \cdot \exp(\eta x_1/x_1^{*} x_2/x_2^{*}),
+  $$
+
+  - where $\eta$ is the interaction coefficient (positive values correspond to synergistic toxicity, zero corresponds to additive effect without interaction, and negative values correspond to antagonistic toxicity). 
+  - This model is also called the "dual combo model" by Novartis
+  - Under no interaction with $\eta=0$, this reduces the probability $\textrm{odds}(p(x_1, x_2))$ to
+  \begin{align*}
+  p_0(x_1, x_2) &= p(x_1) + p(x_2) - p(x_1)p(x_2)\\
+   &= 1 - (1 - p(x_1))(1 - p(x_2)).
+  \end{align*}
+  - As a prior for $\eta$ we use either a normal distribution (if negative values, i.e. antagonistic effects, are plausible) or a log-normal distribution (if only positive values, i.e. synergistic effects, are plausible).
+
+- Now for the single-agent DLT probabilities $p(x_1)$ and $p(x_2)$ we assume the standard logistic log-normal models:
+  
+  $$
+  \textrm{logit}[p(x_i)] = \alpha_i + \beta_i \log(x_i/x_i^{*}),
+  $$
+
+  with prior e.g. $(\alpha_i, \log(\beta_i))^\top \sim \textrm{Normal}(\mu_i, \Sigma_i)$ for $i=1,2. 
+
+### Model implementation
+
+This model can be used in `crmPack` as follows with the `LogisticLogNormalCombo` model class:
+
+```{r}
+devtools::load_all()
+
+combo_model <- LogisticLogNormalCombo(
+  single_models = list(
+    drug1 = LogisticLogNormal(
+      mean = c(-0.85, 1),
+      cov = matrix(c(1, -0.5, -0.5, 1), nrow = 2),
+      ref_dose = 10
+    ),
+    drug2 = LogisticLogNormal(
+      mean = c(-0.7, 0.8),
+      cov = matrix(c(1.1, -0.3, -0.3, 0.9), nrow = 2),
+      ref_dose = 20
+    )
+  ),
+  gamma = 0,
+  tau = 1
+)
+
+combo_model
+```
+
+### Design implementation
+
+The corresponding design class is `DesignCombo`. Here is an example:
+
+```{r}
+my_next_best <- NextBestNCRM(
+  target = c(0.2, 0.35),
+  overdose = c(0.35, 1),
+  max_overdose_prob = 0.25
+)
+
+my_increments <- IncrementsMin(
+  increments_list = list(
+    IncrementsComboOneDrugOnly(),
+    IncrementsComboCartesian(
+      drug1 = IncrementsRelative(intervals = c(0), increments = c(1)),
+      drug2 = IncrementsRelative(intervals = c(0), increments = c(1))
+    )
+  )
+)
+
+my_stopping <- StoppingMinPatients(nPatients = 20)
+
+empty_data <- DataCombo(
+  doseGrid = list(
+    drug1 = c(10, 20, 30),
+    drug2 = c(20, 40, 60)
+  )
+)
+
+design_combo <- DesignCombo(
+  model = combo_model,
+  nextBest = my_next_best,
+  stopping = my_stopping,
+  increments = my_increments,
+  cohort_size = CohortSizeConst(3L),
+  data = empty_data,
+  startingDose = c(10, 20)
+)
+
+design_combo
+```
+
+## References
