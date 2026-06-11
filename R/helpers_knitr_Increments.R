@@ -147,8 +147,10 @@ knit_print.IncrementsMin <- function(x, ..., asis = TRUE) {
   assert_flag(asis)
 
   rv <- paste0(
-    "The minimum of the increments defined in the following rules:",
+    "The minimum of the increments defined in the following rules:\n\n",
     paste0(
+      seq_along(x@increments_list),
+      ") ",
       lapply(
         x@increments_list,
         function(x, ...) {
