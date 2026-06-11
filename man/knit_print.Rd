@@ -35,6 +35,7 @@
 \alias{knit_print.DualEndpoint}
 \alias{knit_print.ModelParamsNormal}
 \alias{knit_print.GeneralModel}
+\alias{knit_print.HierarchicalModel}
 \alias{knit_print.LogisticKadane}
 \alias{knit_print.LogisticKadaneBetaGamma}
 \alias{knit_print.LogisticLogNormal}
@@ -223,6 +224,8 @@
   fmt = "\%5.2f",
   units = NA
 )
+
+\method{knit_print}{HierarchicalModel}(x, ..., asis = TRUE)
 
 \method{knit_print}{LogisticKadane}(
   x,

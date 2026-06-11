@@ -486,6 +486,51 @@ knit_print.GeneralModel <- function(
   rv
 }
 
+# HierarchicalModel ----
+
+#' @description `r lifecycle::badge("experimental")`
+#' @rdname knit_print
+#' @export
+#' @method knit_print HierarchicalModel
+knit_print.HierarchicalModel <- function(
+  x,
+  ...,
+  asis = TRUE
+) {
+  assert_flag(asis)
+
+  arm_models <- vapply(
+    x@models_to_arms,
+    function(model) class(model)[[1L]],
+    character(1L)
+  )
+  arm_text <- paste0(
+    names(arm_models),
+    " = ",
+    unname(arm_models),
+    collapse = ", "
+  )
+  pool_text <- if (length(x@parameter_pools) == 0L) {
+    "none"
+  } else {
+    paste(names(x@parameter_pools), collapse = ", ")
+  }
+
+  rv <- paste0(
+    "The hierarchical model combines ",
+    length(arm_models),
+    " arm-specific models: ",
+    arm_text,
+    ".\n\nExchangeable parameter pools: ",
+    pool_text,
+    ".\n\n"
+  )
+  if (asis) {
+    rv <- knitr::asis_output(rv)
+  }
+  rv
+}
+
 #' @keywords internal
 h_knit_print_render_ref_dose.GeneralModel <- function(
   x,

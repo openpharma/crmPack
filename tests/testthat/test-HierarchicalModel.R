@@ -47,6 +47,34 @@ local_hierarchical_model <- function(log_normal_eta = FALSE) {
   )
 }
 
+local_parallel_hierarchical_model <- function(log_normal_eta = FALSE) {
+  combo_model <- local_hierarchical_combo_model(log_normal_eta = log_normal_eta)
+
+  HierarchicalModel(
+    mono_drug1 = combo_model@single_models$drug1,
+    mono_drug2 = combo_model@single_models$drug2,
+    combo = combo_model,
+    exchangeable_parameters = list(
+      drug1_intercept = list(
+        mono_drug1 = "alpha0",
+        combo = "alpha0[1]"
+      ),
+      drug1_slope = list(
+        mono_drug1 = "alpha1",
+        combo = "alpha1[1]"
+      ),
+      drug2_intercept = list(
+        mono_drug2 = "alpha0",
+        combo = "alpha0[2]"
+      ),
+      drug2_slope = list(
+        mono_drug2 = "alpha1",
+        combo = "alpha1[2]"
+      )
+    )
+  )
+}
+
 local_hierarchical_data <- function(empty = FALSE) {
   mono_y <- if (empty) integer() else c(0L, 0L, 0L, 1L)
   combo_y <- if (empty) integer() else c(0L, 0L, 0L, 1L)
@@ -285,6 +313,65 @@ test_that("hierarchical compiler helpers produce readable compiled functions", {
 
   expect_snapshot(cat(body_datamodel))
   expect_snapshot(cat(body_priormodel))
+})
+
+test_that("parallel mono and combo prior compiles as block MAC prior", {
+  model <- local_parallel_hierarchical_model()
+  body_priormodel <- gsub(
+    "\\s+",
+    " ",
+    paste(deparse(body(model@priormodel)), collapse = "\n")
+  )
+  prior_specs <- model@modelspecs(arms = list(), from_prior = TRUE)
+  inits <- model@init(arms = list())
+
+  expect_true(grepl(
+    "theta_mono_drug1[1:2] ~ dmnorm(mu_drug1[1:2], prec_drug1[1:2, 1:2])",
+    body_priormodel,
+    fixed = TRUE
+  ))
+  expect_true(grepl(
+    "theta_combo[1:2, 1] ~ dmnorm(mu_drug1[1:2], prec_drug1[1:2, 1:2])",
+    body_priormodel,
+    fixed = TRUE
+  ))
+  expect_true(grepl(
+    "theta_mono_drug2[1:2] ~ dmnorm(mu_drug2[1:2], prec_drug2[1:2, 1:2])",
+    body_priormodel,
+    fixed = TRUE
+  ))
+  expect_true(grepl(
+    "theta_combo[1:2, 2] ~ dmnorm(mu_drug2[1:2], prec_drug2[1:2, 1:2])",
+    body_priormodel,
+    fixed = TRUE
+  ))
+  expect_true(grepl(
+    "eta_combo ~ dnorm(mu_eta_combo, pow(tau_eta_combo, -2))",
+    body_priormodel,
+    fixed = TRUE
+  ))
+  expect_true(grepl("rho_drug1 ~ dunif(-1, 1)", body_priormodel, fixed = TRUE))
+  expect_true(grepl("rho_drug2 ~ dunif(-1, 1)", body_priormodel, fixed = TRUE))
+  expect_true(grepl("mu_drug2_slope ~ dnorm(0, 1)", body_priormodel, fixed = TRUE))
+  expect_true(grepl(
+    "tau_drug2_intercept ~ dlnorm(log(0.75), pow(kappa_hier, -2))",
+    body_priormodel,
+    fixed = TRUE
+  ))
+  expect_false(grepl("gamma_combo", body_priormodel, fixed = TRUE))
+  expect_identical(names(prior_specs), "kappa_hier")
+  expect_true(all(c(
+    "rho_drug1",
+    "rho_drug2",
+    "mu_eta_combo",
+    "tau_eta_combo"
+  ) %in% model@sample))
+  expect_true(all(c(
+    "rho_drug1",
+    "rho_drug2",
+    "mu_eta_combo",
+    "tau_eta_combo"
+  ) %in% names(inits)))
 })
 
 test_that("hierarchical modelspecs and init compilers return expected fields", {

@@ -1137,6 +1137,290 @@ h_hierarchical_compile_datamodel <- function(models_to_arms) {
   eval(parse(text = paste(c("function() {", lines, "}"), collapse = "\n")))
 }
 
+#' Detect the Parallel Mono/Combo Hierarchical Layout
+#'
+#' @description `r lifecycle::badge("experimental")`
+#'
+#' Identifies the current MAC-prior prototype where one two-drug combination
+#' arm is linked to two monotherapy arms, one per combo drug.
+#'
+#' @param models_to_arms (`list`)\cr named arm-specific models.
+#' @param parameter_pools (`list`)\cr exchangeable parameter specification.
+#'
+#' @return A named list describing the layout, or `NULL` if the input does not
+#'   match the complete parallel mono/combo structure.
+#'
+#' @keywords internal
+h_hierarchical_parallel_combo_structure <- function(models_to_arms, parameter_pools) {
+  if (length(parameter_pools) != 4L) {
+    return(NULL)
+  }
+
+  combo_arms <- names(models_to_arms)[vapply(
+    models_to_arms,
+    function(model) is(model, "LogisticLogNormalCombo"),
+    logical(1L)
+  )]
+  if (length(combo_arms) != 1L) {
+    return(NULL)
+  }
+
+  combo_arm <- combo_arms[[1L]]
+  mono_arms <- names(models_to_arms)[vapply(
+    models_to_arms,
+    function(model) is(model, "LogisticLogNormal"),
+    logical(1L)
+  )]
+  combo_model <- models_to_arms[[combo_arm]]
+
+  find_pool <- function(combo_ref, mono_ref) {
+    matches <- list()
+    for (pool_name in names(parameter_pools)) {
+      pool <- parameter_pools[[pool_name]]
+      if (!is.list(pool) || length(pool) != 2L || is.null(names(pool))) {
+        next
+      }
+      if (!identical(pool[[combo_arm]], combo_ref)) {
+        next
+      }
+
+      mono_hits <- mono_arms[vapply(
+        mono_arms,
+        function(mono_arm) identical(pool[[mono_arm]], mono_ref),
+        logical(1L)
+      )]
+      if (length(mono_hits) == 1L) {
+        matches[[length(matches) + 1L]] <- list(
+          pool_name = pool_name,
+          mono_arm = mono_hits[[1L]]
+        )
+      }
+    }
+
+    if (length(matches) == 1L) {
+      matches[[1L]]
+    } else {
+      NULL
+    }
+  }
+
+  blocks <- vector("list", 2L)
+  used_pools <- character()
+  used_mono_arms <- character()
+
+  for (j in 1:2) {
+    intercept_pool <- find_pool(paste0("alpha0[", j, "]"), "alpha0")
+    slope_pool <- find_pool(paste0("alpha1[", j, "]"), "alpha1")
+    if (
+      is.null(intercept_pool) ||
+        is.null(slope_pool) ||
+        !identical(intercept_pool$mono_arm, slope_pool$mono_arm)
+    ) {
+      return(NULL)
+    }
+
+    block_name <- h_hierarchical_safe_name(combo_model@drug_names[[j]])
+    blocks[[j]] <- list(
+      index = j,
+      mono_arm = intercept_pool$mono_arm,
+      block_name = block_name,
+      intercept_pool = intercept_pool$pool_name,
+      slope_pool = slope_pool$pool_name
+    )
+    used_pools <- c(used_pools, intercept_pool$pool_name, slope_pool$pool_name)
+    used_mono_arms <- c(used_mono_arms, intercept_pool$mono_arm)
+  }
+
+  if (
+    anyDuplicated(used_pools) ||
+      anyDuplicated(used_mono_arms) ||
+      !setequal(names(parameter_pools), used_pools)
+  ) {
+    return(NULL)
+  }
+
+  list(combo_arm = combo_arm, blocks = blocks)
+}
+
+#' Compile the Parallel Mono/Combo MAC Prior Model
+#'
+#' @description `r lifecycle::badge("experimental")`
+#'
+#' Builds the block-diagonal MAC prior used for the complete parallel
+#' monotherapy and combination-arm prototype.
+#'
+#' @param models_to_arms (`list`)\cr named arm-specific models.
+#' @param structure (`list`)\cr output from
+#'   [h_hierarchical_parallel_combo_structure()].
+#'
+#' @return A list with entries `priormodel` and `sample`.
+#'
+#' @keywords internal
+h_hierarchical_compile_parallel_combo_priormodel <- function(models_to_arms, structure) {
+  combo_arm <- structure$combo_arm
+  combo_safe <- h_hierarchical_safe_name(combo_arm)
+  combo_model <- models_to_arms[[combo_arm]]
+  prior_lines <- character()
+  hyper_lines <- character()
+  assign_lines <- character()
+  sample_names <- character()
+  hyper_names <- character()
+
+  for (block in structure$blocks) {
+    j <- block$index
+    safe_mono <- h_hierarchical_safe_name(block$mono_arm)
+    safe_block <- block$block_name
+    mu_vec <- paste0("mu_", safe_block)
+    prec_mat <- paste0("prec_", safe_block)
+    rho_name <- paste0("rho_", safe_block)
+    intercept_name <- paste0("mu_", h_hierarchical_safe_name(block$intercept_pool))
+    slope_name <- paste0("mu_", h_hierarchical_safe_name(block$slope_pool))
+    tau_intercept_name <- paste0("tau_", h_hierarchical_safe_name(block$intercept_pool))
+    tau_slope_name <- paste0("tau_", h_hierarchical_safe_name(block$slope_pool))
+    intercept_tau_median <- if (j == 1L) "0.5" else "0.75"
+    slope_mu_prior <- if (j == 1L) {
+      paste0(slope_name, " ~ dnorm(0, pow(0.7, -2))")
+    } else {
+      paste0(slope_name, " ~ dnorm(0, 1)")
+    }
+
+    prior_lines <- c(
+      prior_lines,
+      paste0(
+        "theta_",
+        safe_mono,
+        "[1:2] ~ dmnorm(",
+        mu_vec,
+        "[1:2], ",
+        prec_mat,
+        "[1:2, 1:2])"
+      ),
+      paste0(
+        "theta_",
+        combo_safe,
+        "[1:2, ",
+        j,
+        "] ~ dmnorm(",
+        mu_vec,
+        "[1:2], ",
+        prec_mat,
+        "[1:2, 1:2])"
+      )
+    )
+
+    hyper_lines <- c(
+      hyper_lines,
+      paste0(intercept_name, " ~ dnorm(logit(0.25), pow(2.5, -2))"),
+      slope_mu_prior,
+      paste0(tau_intercept_name, " ~ dlnorm(log(", intercept_tau_median, "), pow(kappa_hier, -2))"),
+      paste0(tau_slope_name, " ~ dlnorm(log(0.25), pow(kappa_hier, -2))"),
+      paste0(rho_name, " ~ dunif(-1, 1)"),
+      paste0(mu_vec, "[1] <- ", intercept_name),
+      paste0(mu_vec, "[2] <- ", slope_name),
+      paste0(
+        prec_mat,
+        "[1, 1] <- 1 / (pow(",
+        tau_intercept_name,
+        ", 2) * (1 - pow(",
+        rho_name,
+        ", 2)))"
+      ),
+      paste0(
+        prec_mat,
+        "[2, 2] <- 1 / (pow(",
+        tau_slope_name,
+        ", 2) * (1 - pow(",
+        rho_name,
+        ", 2)))"
+      ),
+      paste0(
+        prec_mat,
+        "[1, 2] <- -",
+        rho_name,
+        " / (",
+        tau_intercept_name,
+        " * ",
+        tau_slope_name,
+        " * (1 - pow(",
+        rho_name,
+        ", 2)))"
+      ),
+      paste0(prec_mat, "[2, 1] <- ", prec_mat, "[1, 2]")
+    )
+
+    hyper_names <- c(
+      hyper_names,
+      intercept_name,
+      slope_name,
+      tau_intercept_name,
+      tau_slope_name,
+      rho_name
+    )
+  }
+
+  eta_mu_name <- paste0("mu_eta_", combo_safe)
+  eta_tau_name <- paste0("tau_eta_", combo_safe)
+  if (combo_model@log_normal_eta) {
+    prior_lines <- c(
+      prior_lines,
+      paste0("log_eta_", combo_safe, " ~ dnorm(", eta_mu_name, ", pow(", eta_tau_name, ", -2))")
+    )
+    assign_lines <- c(assign_lines, paste0("eta_", combo_safe, " <- exp(log_eta_", combo_safe, ")"))
+  } else {
+    prior_lines <- c(
+      prior_lines,
+      paste0("eta_", combo_safe, " ~ dnorm(", eta_mu_name, ", pow(", eta_tau_name, ", -2))")
+    )
+  }
+  hyper_lines <- c(
+    hyper_lines,
+    paste0(eta_mu_name, " ~ dnorm(0, 1)"),
+    paste0(eta_tau_name, " ~ dlnorm(log(0.125), pow(kappa_hier, -2))")
+  )
+  hyper_names <- c(hyper_names, eta_mu_name, eta_tau_name)
+
+  for (arm_name in names(models_to_arms)) {
+    model <- models_to_arms[[arm_name]]
+    safe_arm <- h_hierarchical_safe_name(arm_name)
+    if (is(model, "LogisticLogNormal")) {
+      assign_lines <- c(
+        assign_lines,
+        paste0("alpha0_", safe_arm, " <- theta_", safe_arm, "[1]"),
+        paste0("alpha1_", safe_arm, " <- exp(theta_", safe_arm, "[2])")
+      )
+      sample_names <- c(
+        sample_names,
+        paste0("alpha0_", safe_arm),
+        paste0("alpha1_", safe_arm)
+      )
+    } else {
+      assign_lines <- c(
+        assign_lines,
+        paste0("alpha0_", safe_arm, "[1] <- theta_", safe_arm, "[1, 1]"),
+        paste0("alpha1_", safe_arm, "[1] <- exp(theta_", safe_arm, "[2, 1])"),
+        paste0("alpha0_", safe_arm, "[2] <- theta_", safe_arm, "[1, 2]"),
+        paste0("alpha1_", safe_arm, "[2] <- exp(theta_", safe_arm, "[2, 2])")
+      )
+      sample_names <- c(
+        sample_names,
+        paste0("alpha0_", safe_arm),
+        paste0("alpha1_", safe_arm),
+        paste0("eta_", safe_arm)
+      )
+    }
+  }
+
+  list(
+    priormodel = eval(parse(
+      text = paste(
+        c("function() {", prior_lines, hyper_lines, assign_lines, "}"),
+        collapse = "\n"
+      )
+    )),
+    sample = unique(c(sample_names, hyper_names))
+  )
+}
+
 #' Compile the Hierarchical Prior Model
 #'
 #' @description `r lifecycle::badge("experimental")`
@@ -1153,6 +1437,17 @@ h_hierarchical_compile_datamodel <- function(models_to_arms) {
 #'
 #' @keywords internal
 h_hierarchical_compile_priormodel <- function(models_to_arms, parameter_pools) {
+  parallel_combo_structure <- h_hierarchical_parallel_combo_structure(
+    models_to_arms = models_to_arms,
+    parameter_pools = parameter_pools
+  )
+  if (!is.null(parallel_combo_structure)) {
+    return(h_hierarchical_compile_parallel_combo_priormodel(
+      models_to_arms = models_to_arms,
+      structure = parallel_combo_structure
+    ))
+  }
+
   pooled_map <- h_hierarchical_make_pool_map(parameter_pools)
   fixed_lines <- character()
   assign_lines <- character()
@@ -1419,6 +1714,15 @@ h_hierarchical_compile_priormodel <- function(models_to_arms, parameter_pools) {
 #' @keywords internal
 h_hierarchical_compile_modelspecs <- function(models_to_arms, parameter_pools) {
   pooled_map <- h_hierarchical_make_pool_map(parameter_pools)
+  parallel_combo_structure <- h_hierarchical_parallel_combo_structure(
+    models_to_arms = models_to_arms,
+    parameter_pools = parameter_pools
+  )
+  parallel_combo_arm <- if (is.null(parallel_combo_structure)) {
+    NA_character_
+  } else {
+    parallel_combo_structure$combo_arm
+  }
 
   function(arms, from_prior) {
     assert_list(arms, any.missing = FALSE)
@@ -1505,8 +1809,10 @@ h_hierarchical_compile_modelspecs <- function(models_to_arms, parameter_pools) {
           specs[[paste0("marginal_mean_", safe_arm)]] <- marginal_mean
           specs[[paste0("marginal_prec_", safe_arm)]] <- marginal_prec
         }
-        specs[[paste0("gamma_", safe_arm)]] <- model@gamma
-        specs[[paste0("tau_", safe_arm)]] <- model@tau
+        if (!identical(arm_name, parallel_combo_arm)) {
+          specs[[paste0("gamma_", safe_arm)]] <- model@gamma
+          specs[[paste0("tau_", safe_arm)]] <- model@tau
+        }
         if (!from_prior) {
           specs[[paste0("ref_dose_", safe_arm)]] <- unname(model@ref_dose)
         }
@@ -1532,6 +1838,11 @@ h_hierarchical_compile_modelspecs <- function(models_to_arms, parameter_pools) {
 #'
 #' @keywords internal
 h_hierarchical_compile_init <- function(models_to_arms, parameter_pools) {
+  parallel_combo_structure <- h_hierarchical_parallel_combo_structure(
+    models_to_arms = models_to_arms,
+    parameter_pools = parameter_pools
+  )
+
   function(arms) {
     assert_list(arms, any.missing = FALSE)
 
@@ -1557,6 +1868,15 @@ h_hierarchical_compile_init <- function(models_to_arms, parameter_pools) {
       safe_pool <- h_hierarchical_safe_name(pool_name)
       init[[paste0("mu_", safe_pool)]] <- 0
       init[[paste0("tau_", safe_pool)]] <- 0.5
+    }
+
+    if (!is.null(parallel_combo_structure)) {
+      combo_safe <- h_hierarchical_safe_name(parallel_combo_structure$combo_arm)
+      for (block in parallel_combo_structure$blocks) {
+        init[[paste0("rho_", block$block_name)]] <- 0
+      }
+      init[[paste0("mu_eta_", combo_safe)]] <- 0
+      init[[paste0("tau_eta_", combo_safe)]] <- 0.125
     }
 
     init
