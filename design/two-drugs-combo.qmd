@@ -134,245 +134,121 @@ The idea is to implement the most important functionality from the `decider` pac
 
 ## Implementation plan
 
-The implementation can be structured in the following steps:
+The implementation in branch `936-combo-dev` has now two layers:
 
-1. Implement the combo arm with a fixed prior.
-  - Based on the `crmPack` prototype from the `dose_combinations` branch
-  - Adding increments rules, `Design` and `Simulations` classes and corresponding methods
-2. Implement the "hierarchical design" with multiple arms and shared parameters.
-  - Account for the use of historical data
-  - Account for the use of concurrent monotherapy arms
+1. a fixed-prior two-drug combination model and data structure;
+2. a hierarchical design framework that links named single-agent and combination arms through exchangeable parameter references: The hierarchical structure is encoded as named lists passed through `exchangeable_parameters`, and the model dynamically compiles the corresponding JAGS code.
 
-Particular challenges in the "hierarchical design" setting are discussed here.
-This is by far not yet complete, but is meant to provide a first idea which needs to be further developed and refined.
+### Fixed-prior two-drug combo layer
 
-The first step now is anyway to implement the combo arm with a fixed prior, which should be relatively straightforward. We will do this in branch `936-combo-fixed-prior`.
+The fixed-prior combination layer is closest to the original 5-parameter BLRM idea.
 
-### Model specification
+- `DataCombo` stores two-drug dose-combination observations. Its `x` slot is an `n x 2` matrix, `doseGrid` is a named list of two dose grids, and `drugNames` records the two drug names. It also carries `backfilled` and optional efficacy `response` fields.
+- `LogisticLogNormalCombo` combines two single-agent `LogisticLogNormal` models with the linear interaction term described above. The interaction parameter `eta` has an arm-specific normal or log-normal prior.
+- `mcmc(DataCombo, LogisticLogNormalCombo, ...)` runs MCMC on the combination data and model, and returns `SamplesCombo` with the same structure as `Samples`, but with arm-specific parameter names.
 
-Let's say we have the simplest case where the trial comprises a mono drug 1 arm and a combo drug 1 and 2 arm. We want to fit a joint model to the data from both arms and use it for both arms to make the dose escalation decisions, using the shared 5-parameter BLRM model described above.
+This layer can be used either for a combination-only design with fixed priors, or be reused by the hierarchical model as the combination-arm likelihood.
 
-Each arm is defined in the standard `crmPack` way, something like:
+### Hierarchical design layer
 
-```{r}
-#| eval: false
+The more general hierarchical prototype keeps the original principle that each arm is still a standard `Design`, but wraps arms and compiles a joint model across them.
 
-design_mono <- Design(
-    model = model_mono,
-    data = empty_data_mono,
-    nextBest = nextBest_mono,
-    stopping = stopping_mono,
-    increments = increments_mono,
-    backfill = backfill_mono,
-    cohort_size = cohort_size_mono,
-    startingDose = startingDose_mono
-)
+`DesignArm` is now a small concrete wrapper with only:
 
-design_combo <- Design(
-    model = model_combo,
-    data = empty_data_combo,
-    nextBest = nextBest_combo,
-    stopping = stopping_combo,
-    increments = increments_combo,
-    backfill = backfill_combo,
-    cohort_size = cohort_size_combo,
-    startingDose = startingDose_combo
-)
-```
+- `name`: unique arm name;
+- `active`: whether the arm enrolls new patients. Inactive arms can represent historical arms;
+- `design`: an ordinary `Design` object.
 
-From here, I think it is best to focus on a single general proposal: represent the trial as a graph of arms, while keeping each arm as a standard `crmPack` `Design` object.
+`HierarchicalData` stores a named list of arm data objects in `@arms`. Each arm may currently be a `Data` object or a `DataCombo` object. The implemented `update()` method targets one arm by name and leaves the other arms unchanged.
 
-The important constraint is that we should not throw away the existing `Design` decomposition into `model`, `data`, `nextBest`, `stopping`, `increments`, `backfill`, `cohort_size`, and `startingDose`. Instead, the hierarchical layer should sit above these objects and only add what is needed for cross-arm borrowing and joint fitting.
+`HierarchicalModel` currently supports arm-specific models of class `LogisticLogNormal` and `LogisticLogNormalCombo`. It stores:
 
-### General proposal: arm graph plus parameter pools
+- `models_to_arms`: named list of arm-specific models;
+- `parameter_pools`: named list of exchangeable parameter mappings.
 
-Conceptually, the hierarchical trial has two layers:
+The user-facing parameter references are deliberately simple. For a `LogisticLogNormal` arm, supported references are `"alpha0"` and `"alpha1"`. For a `LogisticLogNormalCombo` arm, supported references are `"alpha0[1]"`, `"alpha1[1]"`, `"alpha0[2]"`, and `"alpha1[2]"`. The interaction parameter `eta` remains arm-specific in the current prototype.
 
-- an operational layer, where each arm is still a normal `Design` with its own rules;
-- a statistical layer, where parameters are shared across arms through named parameter pools.
-
-In the simplest mono-plus-combo example, the mono arm and combo arm remain ordinary `Design` objects. The new part is a higher-level design object that knows:
-
-- which arms exist;
-- which parameters belong to which arm;
-- which parameters are shared;
-- in which direction information is allowed to flow.
-
-This keeps the user-facing API close to current `crmPack`, while still being general enough for historical and multiple concurrent arms.
-
-### Minimal API sketch
-
-The smallest realistic API would likely need four new building blocks.
-
-1. `DesignArm`
-
-This is a light wrapper around an existing `Design` object. It adds arm metadata, but does not replace the arm design itself.
-
-Likely fields:
-
-- `name`: unique arm name, e.g. `"mono"`, `"combo"`, `"hist_mono"`
-- `design`: an ordinary `Design` object
-- `type`: e.g. `"mono1"`, `"mono2"`, `"combo"`, `"historical"`
-- `active`: whether the arm enrolls new patients
-- `use_for_recommendation`: whether this arm gets its own recommendation
-
-2. `HierarchicalData`
-
-This stores the data for all arms together, but each arm still keeps its own arm-specific `Data` object internally. This is needed because MCMC for the hierarchical model must see all relevant arms jointly.
-
-Likely helper methods:
-
-- `armData(object, arm)` to extract the `Data` object for one arm
-- `update(object, arm, ...)` to add outcomes to one arm
-- `activeArms(object)` to know which arms are still enrolling
-
-3. `HierarchicalModel`
-
-This is the model-level object for the joint BLRM. It should probably behave like a `GeneralModel`, but contain extra structure that maps arm-specific likelihood contributions to shared latent parameters.
-
-Likely fields:
-
-- `reference_dose`
-- `interaction`
-- `parameter_pools`
-- `arm_map`
-- `borrowing`
-
-The key piece is `parameter_pools`. A parameter pool defines which arm-specific parameters are exchangeable or partially exchangeable across which arms.
-
-4. `HierarchicalDesign`
-
-This is the top-level object. It holds the collection of arms plus the joint model specification and is the object that methods like `simulate()` or `scenario()` would dispatch on.
-
-Likely fields:
-
-- `arms`: named list of `DesignArm`
-- `data`: `HierarchicalData`
-- `model`: `HierarchicalModel`
-
-### Parameter pools
-
-The most important abstraction is the parameter pool. This is the part that makes the design general.
+For example, a mono arm can share the first drug's intercept and slope with a combo arm as follows:
 
 ```{r eval=FALSE}
-drug1_pool <- ParameterPool(
-    name = "drug1",
-    parameters = c("alpha1", "beta1"),
-    members = c("hist_mono", "mono", "combo"),
-    prior = "exchangeable"
-)
-
-drug2_pool <- ParameterPool(
-    name = "drug2",
-    parameters = c("alpha2", "beta2"),
-    members = c("combo"),
-    prior = "exchangeable"
-)
-
-interaction_pool <- ParameterPool(
-    name = "interaction",
-    parameters = "eta",
-    members = c("combo"),
-    prior = "independent"
-)
-```
-
-This is more realistic than sharing whole arm models. In practice, we do not want to share a full arm object; we want to share selected parameter blocks such as `(alpha1, beta1)` across certain arms, while leaving `eta` combination-specific.
-
-### Borrowing direction
-
-To accommodate the requirement that combo may borrow from mono but not necessarily the other way around, the parameter pool should not only define membership, but also the role of each member arm.
-
-```{r eval=FALSE}
-drug1_pool <- ParameterPool(
-    name = "drug1",
-    parameters = c("alpha1", "beta1"),
-    members = list(
-        hist_mono = PoolMember(role = "source"),
-        mono = PoolMember(role = "source"),
-        combo = PoolMember(role = "borrower")
+hmodel <- HierarchicalModel(
+    mono = LogisticLogNormal(
+        mean = c(-0.85, 1),
+        cov = matrix(c(1, -0.5, -0.5, 1), nrow = 2),
+        ref_dose = 10
     ),
-    prior = "exchangeable"
-)
-```
-
-That is, the pool defines a common latent structure, but the recommendation machinery can still decide which posterior summaries are exposed to which arm. This seems cleaner than trying to encode directionality at the whole-design level.
-
-### Simple mono plus combo example
-
-In the current simple example, a realistic sketch could look like this.
-
-```{r eval=FALSE}
-arm_mono <- DesignArm(
-    name = "mono",
-    design = design_mono,
-    type = "mono1",
-    active = TRUE,
-    use_for_recommendation = TRUE
-)
-
-arm_combo <- DesignArm(
-    name = "combo",
-    design = design_combo,
-    type = "combo",
-    active = TRUE,
-    use_for_recommendation = TRUE
-)
-
-hdata <- HierarchicalData(
-    arms = list(
-        mono = design_mono@data,
-        combo = design_combo@data
-    )
-)
-
-hmodel <- HierarchicalBlrm(
-    reference_dose = c(drug1 = ref_dose_1, drug2 = ref_dose_2),
-    interaction = "linear",
-    parameter_pools = list(
-        ParameterPool(
-            name = "drug1",
-            parameters = c("alpha1", "beta1"),
-            members = list(
-                mono = PoolMember(role = "source"),
-                combo = PoolMember(role = "borrower")
+    combo = LogisticLogNormalCombo(
+        single_models = list(
+            drug1 = LogisticLogNormal(
+                mean = c(-0.85, 1),
+                cov = matrix(c(1, -0.5, -0.5, 1), nrow = 2),
+                ref_dose = 10
             ),
-            prior = "exchangeable"
+            drug2 = LogisticLogNormal(
+                mean = c(-0.7, 0.8),
+                cov = matrix(c(1.1, -0.3, -0.3, 0.9), nrow = 2),
+                ref_dose = 20
+            )
         ),
-        ParameterPool(
-            name = "drug2",
-            parameters = c("alpha2", "beta2"),
-            members = list(
-                combo = PoolMember(role = "source")
-            ),
-            prior = "exchangeable"
+        gamma = 0,
+        tau = 1
+    ),
+    exchangeable_parameters = list(
+        drug1_intercept = list(
+            mono = "alpha0",
+            combo = "alpha0[1]"
         ),
-        ParameterPool(
-            name = "interaction",
-            parameters = "eta",
-            members = list(
-                combo = PoolMember(role = "source")
-            ),
-            prior = "independent"
+        drug1_slope = list(
+            mono = "alpha1",
+            combo = "alpha1[1]"
         )
     )
 )
+```
 
+Internally, `HierarchicalModel()` dynamically compiles:
+
+- one joint JAGS likelihood by concatenating arm-specific likelihoods with arm-prefixed variable names;
+- priors that keep unpooled parameters on their arm-specific fixed priors;
+- exchangeable normal priors for pooled latent parameters;
+- simple default hyperpriors for pool means and standard deviations.
+
+The default hyperprior form mirrors the current prototype: intercept-like pool means use a normal prior centered at `logit(0.25)` with scale `2.5`, slope-like pool means use a normal prior centered at `0` with scale `0.7`, and pool standard deviations use log-normal priors with `kappa_hier = log(2) / 1.96`.
+
+`HierarchicalDesign` is a constructor layer over named `DesignArm` objects. It derives:
+
+- `@arms` from the supplied `DesignArm` objects;
+- `@data` by collecting each `arm@design@data` into `HierarchicalData`;
+- `@model` by collecting each `arm@design@model` into `HierarchicalModel`.
+
+The corresponding API shape is:
+
+```{r eval=FALSE}
 hier_design <- HierarchicalDesign(
-    arms = list(
-        mono = arm_mono,
-        combo = arm_combo
+    DesignArm(
+        name = "mono",
+        active = TRUE,
+        design = design_mono
     ),
-    data = hdata,
-    model = hmodel
+    DesignArm(
+        name = "combo",
+        active = TRUE,
+        design = design_combo
+    ),
+    exchangeable_parameters = list(
+        drug1_intercept = list(
+            mono = "alpha0",
+            combo = "alpha0[1]"
+        ),
+        drug1_slope = list(
+            mono = "alpha1",
+            combo = "alpha1[1]"
+        )
+    )
 )
 ```
 
-### How the existing `Design` components would still be used
-
-The important point is that recommendation and stopping should still happen at the arm level, reusing the existing components of the embedded `Design` objects.
-
-Conceptually the workflow would be:
+Then MCMC is run on the derived joint data and model:
 
 ```{r eval=FALSE}
 samples <- mcmc(
@@ -380,34 +256,19 @@ samples <- mcmc(
     model = hier_design@model,
     options = mcmcOptions
 )
-
-combo_data <- armData(hier_design@data, arm = "combo")
-combo_design <- hier_design@arms$combo@design
-
-combo_dose_limit <- maxDose(
-    combo_design@increments,
-    data = combo_data
-)
-
-combo_next <- nextBest(
-    combo_design@nextBest,
-    doselimit = combo_dose_limit,
-    samples = samples,
-    model = hier_design@model,
-    data = combo_data,
-    arm = "combo"
-)
-
-stop_combo <- stopTrial(
-    combo_design@stopping,
-    dose = combo_next$value,
-    samples = samples,
-    model = hier_design@model,
-    data = combo_data,
-    arm = "combo"
-)
 ```
 
-So the arm graph layer does not replace `nextBest`, `stopTrial`, `maxDose`, `update`, or `simulate`; it mainly provides a joint `data` and `model` object that these methods can work against.
+The hierarchical MCMC method returns `HierarchicalSamples`, including a mapping from arm-level sample names such as `alpha0` and `alpha1` to the generated arm-prefixed sample names. This mapping is needed because generated JAGS variables include the arm names, e.g. `alpha0_mono`, `alpha1_mono`, `alpha0_combo`, `alpha1_combo`, and `eta_combo`.
 
+The `simulate()` method for `HierarchicalDesign` runs trial simulations by running MCMC on the overall model at each iteration (i.e. cohort update across active arms), and then applies the arm-specific `NextBest`, `Increment` and `Stopping` rules to the corresponding arm-level samples and designs to obtain dose recommendations. The returned `HierarchicalSimulations` object can be summarized and reported at the arm level with the usual `summary()` method.
+Also backfilling cohorts are already supported.
 
+### Current limitations and open design questions
+
+The current hierarchical prototype is much more concrete than the original sketch, but it is still experimental.
+
+- Currently all arms open at the same time. We still need to allow separate start of arms. Here we need to think about a sensible API design. One direction could be to use something similar to the `Opening` class for the `Backfill` objects.
+- `exchangeable_parameters` encodes symmetric exchangeability, not explicit source/borrower direction. The earlier idea that combo could borrow from mono without mono borrowing from combo is not yet represented as a first-class API concept. Note that this would be more complex and potentially require either data duplication or separate MCMC runs.
+- Only `LogisticLogNormal` and `LogisticLogNormalCombo` arms are supported in `HierarchicalModel`.
+- Only selected intercept and slope parameters can be pooled. The combo interaction parameter `eta` remains unpooled.
+- A future `scenario()` helper remains attractive for quickly showing posterior summaries and next-dose recommendations across multiple arms.
