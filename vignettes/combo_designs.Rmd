@@ -126,7 +126,7 @@ We can then simulate from this design as follows:
 
 ```{r}
 true_tox_combo <- function(dose) {
-  plogis(-10 + 0.08 * dose[1] + 0.06 * dose[2] + 0.001 * dose[1] * dose[2])
+  plogis(-4 + 0.08 * dose[1] + 0.06 * dose[2] + 0.001 * dose[1] * dose[2])
 }
 
 options <- McmcOptions(

@@ -966,6 +966,13 @@ setMethod(
     n_obs <- as.integer(sapply(object@data, slot, "nObs"))
     dose_selected <- object@doses
 
+    # Remove rows with NAs.
+    dose_selected <- dose_selected[
+      !apply(is.na(dose_selected), 1L, any),
+      ,
+      drop = FALSE
+    ]
+
     # Most frequently selected dose combination.
     dose_keys <- apply(dose_selected, 1L, paste, collapse = "||")
     most_selected_key <- names(which.max(table(dose_keys)))

@@ -1263,7 +1263,10 @@ h_prob_logistic_log_normal_combo <- function(dose, model, samples) {
   p0 <- p1 + p2 - p1 * p2
   interaction <- eta %o% ((dose[, 1] / ref_dose[1]) * (dose[, 2] / ref_dose[2]))
   odds <- (p0 / (1 - p0)) * exp(interaction)
+  odds <- pmin(odds, .Machine$double.xmax / 2)
   probs <- odds / (1 + odds)
+
+  assert_true(all(is.finite(probs)))
 
   if (ncol(probs) == 1L) {
     as.numeric(probs)
