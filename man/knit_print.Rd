@@ -54,6 +54,8 @@
 \alias{knit_print.IncrementsDoseLevels}
 \alias{knit_print.IncrementsHSRBeta}
 \alias{knit_print.IncrementsMin}
+\alias{knit_print.IncrementsComboOneDrugOnly}
+\alias{knit_print.IncrementsComboCartesian}
 \alias{knit_print.IncrementsOrdinal}
 \alias{knit_print.IncrementsRelativeParts}
 \alias{knit_print.IncrementsRelativeDLTCurrent}
@@ -335,6 +337,10 @@
 \method{knit_print}{IncrementsHSRBeta}(x, ..., asis = TRUE)
 
 \method{knit_print}{IncrementsMin}(x, ..., asis = TRUE)
+
+\method{knit_print}{IncrementsComboOneDrugOnly}(x, ..., asis = TRUE)
+
+\method{knit_print}{IncrementsComboCartesian}(x, ..., asis = TRUE)
 
 \method{knit_print}{IncrementsOrdinal}(x, ..., asis = TRUE)
 
@@ -658,6 +664,10 @@ crmPack objects in Markdown and Quarto files
 We provide additional utility functions to allow human-friendly rendition of
 crmPack objects in Markdown and Quarto files.  This file contains methods for
 all design classes, not just those that are direct descendants of \code{Design}.
+
+\ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#experimental}{\figure{lifecycle-experimental.svg}{options: alt='[Experimental]'}}}{\strong{[Experimental]}}
+
+\ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#experimental}{\figure{lifecycle-experimental.svg}{options: alt='[Experimental]'}}}{\strong{[Experimental]}}
 
 \ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#experimental}{\figure{lifecycle-experimental.svg}{options: alt='[Experimental]'}}}{\strong{[Experimental]}}
 
