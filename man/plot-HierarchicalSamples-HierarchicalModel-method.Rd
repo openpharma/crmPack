@@ -4,20 +4,14 @@
 \alias{plot,HierarchicalSamples,HierarchicalModel-method}
 \title{Plotting hierarchical dose-toxicity model fits}
 \usage{
-\S4method{plot}{HierarchicalSamples,HierarchicalModel}(
-  x,
-  y,
-  data,
-  ncol = NULL,
-  ...
-)
+\S4method{plot}{HierarchicalSamples,HierarchicalModel}(x, y, data, ncol = NULL, ...)
 }
 \arguments{
-\item{x}{the \code{\linkS4class{HierarchicalSamples}} object.}
+\item{x}{the \link{HierarchicalSamples} object.}
 
-\item{y}{the \code{\linkS4class{HierarchicalModel}} object.}
+\item{y}{the \link{HierarchicalModel} object.}
 
-\item{data}{the \code{\linkS4class{HierarchicalData}} object.}
+\item{data}{the \link{HierarchicalData} object.}
 
 \item{ncol}{(\code{count} or \code{NULL})\cr number of columns in the combined plot.
 If \code{NULL}, a compact layout is chosen automatically.}

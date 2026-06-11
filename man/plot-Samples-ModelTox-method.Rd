@@ -2,7 +2,7 @@
 % Please edit documentation in R/Samples-methods.R
 \name{plot,Samples,ModelTox-method}
 \alias{plot,Samples,ModelTox-method}
-\title{Plot the fitted dose-DLE curve using a \code{\linkS4class{ModelTox}} class model with samples}
+\title{Plot the fitted dose-DLE curve using a \link{ModelTox} class model with samples}
 \usage{
 \S4method{plot}{Samples,ModelTox}(
   x,
@@ -15,11 +15,11 @@
 )
 }
 \arguments{
-\item{x}{the \code{\linkS4class{Samples}} object}
+\item{x}{the \link{Samples} object}
 
-\item{y}{the \code{\linkS4class{ModelTox}} model class object}
+\item{y}{the \link{ModelTox} model class object}
 
-\item{data}{the \code{\linkS4class{Data}} object}
+\item{data}{the \link{Data} object}
 
 \item{\dots}{not used}
 
@@ -34,7 +34,7 @@ This returns the \code{\link[ggplot2]{ggplot}}
 object for the dose-DLE model fit
 }
 \description{
-Plot the fitted dose-DLE curve using a \code{\linkS4class{ModelTox}} class model with samples
+Plot the fitted dose-DLE curve using a \link{ModelTox} class model with samples
 }
 \examples{
 ## we need a data object with doses >= 1:

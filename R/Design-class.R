@@ -333,7 +333,7 @@ DesignCombo <- function(
     increments = increments,
     cohort_size = cohort_size,
     data = data,
-    startingDose = as.numeric(startingDose),
+    startingDose = startingDose,
     backfill = backfill
   )
 }
@@ -1416,7 +1416,7 @@ DesignOrdinal <- function(
   slots = c(
     name = "character",
     active = "logical",
-    design = "Design"
+    design = "ANY"
   ),
   prototype = prototype(
     name = "Arm",

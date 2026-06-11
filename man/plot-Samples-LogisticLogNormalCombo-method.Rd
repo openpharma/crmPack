@@ -16,11 +16,11 @@
 )
 }
 \arguments{
-\item{x}{the \code{\linkS4class{Samples}} object.}
+\item{x}{the \link{Samples} object.}
 
-\item{y}{the \code{\linkS4class{LogisticLogNormalCombo}} object.}
+\item{y}{the \link{LogisticLogNormalCombo} object.}
 
-\item{data}{the \code{\linkS4class{DataCombo}} object.}
+\item{data}{the \link{DataCombo} object.}
 
 \item{\dots}{passed to \code{\link{fit}}.}
 

@@ -79,11 +79,11 @@ fit(object, model, data, ...)
 )
 }
 \arguments{
-\item{object}{the \code{\linkS4class{Samples}} object}
+\item{object}{the \link{Samples} object}
 
-\item{model}{the \code{\linkS4class{GeneralModel}} object}
+\item{model}{the \link{GeneralModel} object}
 
-\item{data}{the \code{\linkS4class{Data}} object}
+\item{data}{the \link{Data} object}
 
 \item{\dots}{passed down to the \code{\link[=prob]{prob()}} method.}
 
@@ -112,7 +112,11 @@ and upper quantiles for the dose-toxicity curve
 \item \code{fit(object = Samples, model = LogisticLogNormalCombo, data = DataCombo)}: This method returns a data frame with one row per dose
 combination and posterior summaries of the DLT probability surface.
 
-\item \code{fit(object = HierarchicalSamples, model = HierarchicalModel, data = HierarchicalData)}: This method delegates to the arm-specific \code{fit} methods and
+\item \code{fit(
+  object = HierarchicalSamples,
+  model = HierarchicalModel,
+  data = HierarchicalData
+)}: This method delegates to the arm-specific \code{fit} methods and
 returns one combined data frame with an \code{arm} column.
 
 \item \code{fit(object = Samples, model = DualEndpoint, data = DataDual)}: This method returns a data frame with dose, and middle,

@@ -559,12 +559,53 @@ test_that("hierarchical summary helpers bind stop reports", {
 test_that("hierarchical summary helpers rebuild arm simulations", {
   sims <- local_hierarchical_simulations()
 
-  arm_sims <- h_hierarchical_arm_simulations(sims, "arm_a")
+  expect_true(
+    "get_arm_simulations" %in% getNamespaceExports("crmPack")
+  )
+
+  arm_sims <- get_arm_simulations(sims, "arm_a")
 
   expect_s4_class(arm_sims, "Simulations")
   expect_equal(arm_sims@doses, c(20, 10))
   expect_equal(length(arm_sims@data), 2L)
   expect_equal(arm_sims@stop_report[, "Minimum patients"], c(TRUE, FALSE))
+})
+
+test_that("hierarchical summary helpers rebuild combo arm simulations", {
+  combo_data <- DataCombo(
+    x = cbind(drug1 = c(10, 20), drug2 = c(20, 40)),
+    y = c(0L, 1L),
+    doseGrid = list(drug1 = c(10, 20), drug2 = c(20, 40)),
+    ID = 1L:2L,
+    cohort = 1L:2L
+  )
+  sims <- HierarchicalSimulations(
+    data = list(HierarchicalData(arms = list(combo = combo_data))),
+    doses = list(list(combo = c(drug1 = 20, drug2 = 40))),
+    samples = list(HierarchicalSamples(
+      data = list(alpha0_combo = c(-3, -2)),
+      options = McmcOptions(burnin = 1L, step = 1L, samples = 2L),
+      arm_samples = list(combo = c(alpha0 = "alpha0_combo"))
+    )),
+    fit = list(list(combo = data.frame(
+      drug1 = c(10, 20),
+      drug2 = c(20, 40),
+      middle = c(0.1, 0.3),
+      lower = c(0.05, 0.2),
+      upper = c(0.2, 0.4)
+    ))),
+    stop_reasons = list(list(combo = "Stopped combo")),
+    stop_report = list(list(combo = c(rule = TRUE))),
+    additional_stats = list(list(combo = list())),
+    seed = 123L
+  )
+
+  combo_sims <- get_arm_simulations(sims, "combo")
+
+  expect_s4_class(combo_sims, "ComboSimulations")
+  expect_equal(combo_sims@doses, cbind(drug1 = 20, drug2 = 40))
+  expect_s4_class(combo_sims@data[[1L]], "DataCombo")
+  expect_equal(unname(combo_sims@stop_report[, "rule"]), TRUE)
 })
 
 test_that("summary-HierarchicalSimulations returns arm-level summaries", {

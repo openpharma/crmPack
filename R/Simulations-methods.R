@@ -1211,8 +1211,37 @@ h_hierarchical_bind_stop_report <- function(stop_report, arm_name, nsim) {
 #' @return A [`Simulations`] object for a single-agent arm or a
 #'   [`ComboSimulations`] object for a combination arm.
 #'
-#' @keywords internal
-h_hierarchical_arm_simulations <- function(object, arm_name) {
+#' @examples
+#' arm_data <- Data(
+#'   x = c(10, 20),
+#'   y = c(0L, 1L),
+#'   doseGrid = c(10, 20),
+#'   ID = 1L:2L,
+#'   cohort = 1L:2L
+#' )
+#' hierarchical_sims <- HierarchicalSimulations(
+#'   data = list(HierarchicalData(arms = list(arm_a = arm_data))),
+#'   doses = list(list(arm_a = 20)),
+#'   samples = list(HierarchicalSamples(
+#'     data = list(alpha0_arm_a = c(-3, -2)),
+#'     options = McmcOptions(burnin = 1, step = 1, samples = 2),
+#'     arm_samples = list(arm_a = c(alpha0 = "alpha0_arm_a"))
+#'   )),
+#'   fit = list(list(arm_a = data.frame(
+#'     middle = c(0.1, 0.3),
+#'     lower = c(0.05, 0.2),
+#'     upper = c(0.2, 0.4)
+#'   ))),
+#'   stop_reasons = list(list(arm_a = "Minimum patients")),
+#'   stop_report = list(list(arm_a = c(`Minimum patients` = TRUE))),
+#'   additional_stats = list(list(arm_a = list())),
+#'   seed = 123L
+#' )
+#'
+#' get_arm_simulations(hierarchical_sims, "arm_a")
+#'
+#' @export
+get_arm_simulations <- function(object, arm_name) {
   nsim <- length(object@data)
   arm_data <- lapply(object@data, function(x) x@arms[[arm_name]])
   arm_fit <- lapply(object@fit, function(x) x[[arm_name]])
@@ -1232,7 +1261,7 @@ h_hierarchical_arm_simulations <- function(object, arm_name) {
       object@doses,
       function(x) {
         dose <- x[[arm_name]]
-        if (is.null(dose)) {
+        if (is.null(dose) || identical(dose, NA_real_)) {
           c(NA_real_, NA_real_)
         } else {
           as.numeric(dose)
@@ -1307,7 +1336,7 @@ setMethod(
     )
 
     for (arm_name in arm_names) {
-      arm_simulations <- h_hierarchical_arm_simulations(object, arm_name)
+      arm_simulations <- get_arm_simulations(object, arm_name)
       arm_summaries[[arm_name]] <- summary(
         arm_simulations,
         truth = h_hierarchical_get_arm_arg(truth, arm_name),

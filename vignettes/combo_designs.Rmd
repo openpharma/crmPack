@@ -116,7 +116,7 @@ design_combo <- DesignCombo(
   increments = my_increments,
   cohort_size = CohortSizeConst(3L),
   data = empty_data,
-  startingDose = c(10, 20)
+  startingDose = c(drug1 = 10, drug2 = 20)
 )
 
 design_combo
@@ -129,7 +129,7 @@ true_tox_combo <- function(dose) {
   plogis(-4 + 0.08 * dose[1] + 0.06 * dose[2] + 0.001 * dose[1] * dose[2])
 }
 
-options <- McmcOptions(
+mcmc_options <- McmcOptions(
   burnin = 100,
   step = 2,
   samples = 100,
@@ -142,7 +142,7 @@ sims_combo <- simulate(
   truth = true_tox_combo,
   nsim = 20,
   seed = 819,
-  mcmcOptions = options,
+  mcmcOptions = mcmc_options,
   parallel = FALSE
 )
 
@@ -174,7 +174,7 @@ We use logistic log normal models for the monotherapy arm parameters, and the sa
   - $\mu_{\beta_1} \sim \textrm{Normal}(0, 0.7^2)$
   - $\mu_{\beta_2}, \mu_{\eta} \sim \textrm{Normal}(0, 1)$
 - Structured assumptions for $\Sigma$
-  - Assume that only $\mu_{\alpha_1}$ and $\mu_{\beta_1}$, as well as $\mu_{\alpha_2}$ and $\mu_{\beta_2}$ are correlated, but not the other parameters, then we have a corresponding block diagonal structure for $\Sigma$ with 7 parameters
+  - Assume that only $\alpha_{1}$ and $\beta_1$, as well as $\alpha_{2}$ and $\beta_2$ are correlated, but not the other parameters, then we have a corresponding block diagonal structure for $\Sigma$ with 7 parameters
   (standard deviations $\tau_{\alpha_1}, \tau_{\beta_1}, \tau_{\alpha_2}, \tau_{\beta_2}, \tau_{\eta}$ for each of the 5 parameters plus the two correlations $\rho_1$ and $\rho_2$ between $\alpha_i$ and $\beta_i$ for $i=1,2$).
   - We don't fix the $\Sigma$ entries but instead again assign hyperpriors, e.g. with $\kappa = \log(2)/1.96$
     - $\tau_{\alpha_1} \sim \textrm{LogNormal}(\log(0.5), \kappa^2)$
@@ -227,6 +227,101 @@ The prior is as follows:
 
 ```{r}
 hierarchical_model@priormodel
+```
+
+### Design implementation
+
+The corresponding design can be implemented with the `HierarchicalDesign` class as follows. 
+First, we define the arm-specific designs, and wrap them with `DesignArm` to specify their names and whether they are active or not (which would be useful for historical data from previous trials).
+
+```{r}
+design_mono <- Design(
+  model = LogisticLogNormal(
+      mean = c(-0.85, 1),
+      cov = matrix(c(2, -0.5, -0.5, 2), nrow = 2),
+      ref_dose = 10
+    ),
+  nextBest = my_next_best,
+  stopping = StoppingMinPatients(nPatients = 20) | StoppingMissingDose(),
+  increments = IncrementsRelative(intervals = c(0), increments = c(2)),
+  cohort_size = CohortSizeConst(3L),
+  data = Data(
+    doseGrid = seq(from = 10, to = 50, by = 5)
+  ),
+  startingDose = 10
+)
+
+design_arm_mono <- DesignArm(
+  name = "mono",
+  design = design_mono,
+  active = TRUE
+)
+design_arm_combo <- DesignArm(
+  name = "combo",
+  design = design_combo,
+  active = TRUE
+)
+```
+
+Note that for simplicity here we just have a single mono arm.
+Then we provide these to the constructor, together with the specification of the exchangeable parameters (in the same way as above for the model):
+
+```{r}
+hierarchical_design <- HierarchicalDesign(
+  design_arm_mono,
+  design_arm_combo,
+  exchangeable_parameters = list(
+    drug1_intercept = list(
+      mono = "alpha0",
+      combo = "alpha0[1]"
+    ),
+    drug1_slope = list(
+      mono = "alpha1",
+      combo = "alpha1[1]"
+    )
+  )
+)
+
+hierarchical_design
+```
+
+Here we basically also show that the mono arm is about `drug1` and not `drug2`, which is relevant for the information sharing via the exchangeable parameters.
+
+Then we can simulate from this design as follows:
+
+```{r}
+truth_mono <- function(dose) plogis(-4 + 0.08 * dose)
+truth_combo <- function(dose) plogis(-4 + 0.08 * dose[1] + 0.06 * dose[2] + 0.001 * dose[1] * dose[2])
+
+hierarchical_sims <- simulate(
+  hierarchical_design,
+  truth = list(
+    mono = truth_mono,
+    combo = truth_combo
+  ),
+  truthResponse = list(
+    # Just for demo purposes we choose the same functions for efficacy.
+    mono = truth_mono,
+    combo = truth_combo
+  ),
+  nsim = 20,
+  seed = 819,
+  mcmcOptions = mcmc_options,
+  parallel = FALSE
+)
+
+hierarchical_sims
+summary(hierarchical_sims, truth = list(
+  mono = truth_mono,
+  combo = truth_combo
+))
+```
+
+It is also possible to extract the arm specific simulations to produce separate plots etc.:
+
+```{r}
+arm_mono_sims <- get_arm_simulations(hierarchical_sims, "mono")
+plot(arm_mono_sims)
 ```
 
 ## References

@@ -513,7 +513,7 @@ setMethod(
             data = arm_data
           )
 
-          if (arm_data@placebo) {
+          if (is(arm_data, "Data") && arm_data@placebo) {
             placebo_dose <- arm_data@doseGrid[1L]
             prob_placebo <- call_truth(
               truth[[arm_name]],
@@ -558,7 +558,9 @@ setMethod(
             response <- rbinom(n = cohort_size, size = 1L, prob = prob_response)
           }
 
-          if (arm_data@placebo && cohort_size_placebo > 0L) {
+          if (
+            is(arm_data, "Data") && arm_data@placebo && cohort_size_placebo > 0L
+          ) {
             dlts_placebo <- rbinom(
               n = cohort_size_placebo,
               size = 1L,

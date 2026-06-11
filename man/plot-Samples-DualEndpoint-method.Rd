@@ -7,11 +7,11 @@
 \S4method{plot}{Samples,DualEndpoint}(x, y, data, extrapolate = TRUE, showLegend = FALSE, ...)
 }
 \arguments{
-\item{x}{the \code{\linkS4class{Samples}} object}
+\item{x}{the \link{Samples} object}
 
-\item{y}{the \code{\linkS4class{DualEndpoint}} object}
+\item{y}{the \link{DualEndpoint} object}
 
-\item{data}{the \code{\linkS4class{DataDual}} object}
+\item{data}{the \link{DataDual} object}
 
 \item{extrapolate}{should the biomarker fit be extrapolated to the whole
 dose grid? (default)}

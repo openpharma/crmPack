@@ -96,6 +96,14 @@ v_design_combo <- function(object) {
     )
   }
 
+  v$check(
+    test_true(identical(
+      names(object@startingDose),
+      names(object@data@doseGrid)
+    )),
+    "startingDose must have the same names as data@doseGrid"
+  )
+
   v$result()
 }
 
@@ -122,6 +130,10 @@ v_design_grouped <- function(object) {
 #' @describeIn v_design validates that the [`DesignArm`] object contains valid slots.
 v_design_arm <- function(object) {
   v <- Validate()
+  v$check(
+    test_multi_class(object@design, classes = c("Design", "DesignCombo")),
+    "design must be a Design or DesignCombo object"
+  )
   v$check(
     test_string(object@name),
     "name must be a single string"

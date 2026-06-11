@@ -430,7 +430,7 @@ setMethod(
       dose_matrix[is_dose_eligible, , drop = FALSE][
         next_best_level,
         ,
-        drop = FALSE
+        drop = TRUE # We want to return a numeric vector, not a matrix!
       ]
     } else {
       NA_real_

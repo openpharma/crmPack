@@ -1001,7 +1001,9 @@ h_hierarchical_make_pool_map <- function(parameter_pools) {
     members <- parameter_pools[[pool_name]]
     for (arm_name in names(members)) {
       this_key <- paste0(arm_name, "::", members[[arm_name]])
-      assert_null(pooled_map[[this_key]])
+      if (!test_null(pooled_map[[this_key]])) {
+        browser()
+      }
       pooled_map[[this_key]] <- pool_name
     }
   }
@@ -1151,7 +1153,10 @@ h_hierarchical_compile_datamodel <- function(models_to_arms) {
 #'   match the complete parallel mono/combo structure.
 #'
 #' @keywords internal
-h_hierarchical_parallel_combo_structure <- function(models_to_arms, parameter_pools) {
+h_hierarchical_parallel_combo_structure <- function(
+  models_to_arms,
+  parameter_pools
+) {
   if (length(parameter_pools) != 4L) {
     return(NULL)
   }
@@ -1256,7 +1261,10 @@ h_hierarchical_parallel_combo_structure <- function(models_to_arms, parameter_po
 #' @return A list with entries `priormodel` and `sample`.
 #'
 #' @keywords internal
-h_hierarchical_compile_parallel_combo_priormodel <- function(models_to_arms, structure) {
+h_hierarchical_compile_parallel_combo_priormodel <- function(
+  models_to_arms,
+  structure
+) {
   combo_arm <- structure$combo_arm
   combo_safe <- h_hierarchical_safe_name(combo_arm)
   combo_model <- models_to_arms[[combo_arm]]
@@ -1273,9 +1281,15 @@ h_hierarchical_compile_parallel_combo_priormodel <- function(models_to_arms, str
     mu_vec <- paste0("mu_", safe_block)
     prec_mat <- paste0("prec_", safe_block)
     rho_name <- paste0("rho_", safe_block)
-    intercept_name <- paste0("mu_", h_hierarchical_safe_name(block$intercept_pool))
+    intercept_name <- paste0(
+      "mu_",
+      h_hierarchical_safe_name(block$intercept_pool)
+    )
     slope_name <- paste0("mu_", h_hierarchical_safe_name(block$slope_pool))
-    tau_intercept_name <- paste0("tau_", h_hierarchical_safe_name(block$intercept_pool))
+    tau_intercept_name <- paste0(
+      "tau_",
+      h_hierarchical_safe_name(block$intercept_pool)
+    )
     tau_slope_name <- paste0("tau_", h_hierarchical_safe_name(block$slope_pool))
     intercept_tau_median <- if (j == 1L) "0.5" else "0.75"
     slope_mu_prior <- if (j == 1L) {
@@ -1312,7 +1326,12 @@ h_hierarchical_compile_parallel_combo_priormodel <- function(models_to_arms, str
       hyper_lines,
       paste0(intercept_name, " ~ dnorm(logit(0.25), pow(2.5, -2))"),
       slope_mu_prior,
-      paste0(tau_intercept_name, " ~ dlnorm(log(", intercept_tau_median, "), pow(kappa_hier, -2))"),
+      paste0(
+        tau_intercept_name,
+        " ~ dlnorm(log(",
+        intercept_tau_median,
+        "), pow(kappa_hier, -2))"
+      ),
       paste0(tau_slope_name, " ~ dlnorm(log(0.25), pow(kappa_hier, -2))"),
       paste0(rho_name, " ~ dunif(-1, 1)"),
       paste0(mu_vec, "[1] <- ", intercept_name),
@@ -1363,13 +1382,32 @@ h_hierarchical_compile_parallel_combo_priormodel <- function(models_to_arms, str
   if (combo_model@log_normal_eta) {
     prior_lines <- c(
       prior_lines,
-      paste0("log_eta_", combo_safe, " ~ dnorm(", eta_mu_name, ", pow(", eta_tau_name, ", -2))")
+      paste0(
+        "log_eta_",
+        combo_safe,
+        " ~ dnorm(",
+        eta_mu_name,
+        ", pow(",
+        eta_tau_name,
+        ", -2))"
+      )
     )
-    assign_lines <- c(assign_lines, paste0("eta_", combo_safe, " <- exp(log_eta_", combo_safe, ")"))
+    assign_lines <- c(
+      assign_lines,
+      paste0("eta_", combo_safe, " <- exp(log_eta_", combo_safe, ")")
+    )
   } else {
     prior_lines <- c(
       prior_lines,
-      paste0("eta_", combo_safe, " ~ dnorm(", eta_mu_name, ", pow(", eta_tau_name, ", -2))")
+      paste0(
+        "eta_",
+        combo_safe,
+        " ~ dnorm(",
+        eta_mu_name,
+        ", pow(",
+        eta_tau_name,
+        ", -2))"
+      )
     )
   }
   hyper_lines <- c(

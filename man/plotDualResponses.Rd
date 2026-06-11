@@ -23,15 +23,15 @@ plotDualResponses(DLEmodel, DLEsamples, Effmodel, Effsamples, data, ...)
 \S4method{plotDualResponses}{ModelTox,missing,ModelEff,missing}(DLEmodel, DLEsamples, Effmodel, Effsamples, data, ...)
 }
 \arguments{
-\item{DLEmodel}{the pseudo DLE model of \code{\linkS4class{ModelTox}} class object}
+\item{DLEmodel}{the pseudo DLE model of \link{ModelTox} class object}
 
-\item{DLEsamples}{the DLE samples of \code{\linkS4class{Samples}} class object}
+\item{DLEsamples}{the DLE samples of \link{Samples} class object}
 
-\item{Effmodel}{the pseudo efficacy model of \code{\linkS4class{ModelEff}} class object}
+\item{Effmodel}{the pseudo efficacy model of \link{ModelEff} class object}
 
-\item{Effsamples}{the Efficacy samples of \code{\linkS4class{Samples}} class object}
+\item{Effsamples}{the Efficacy samples of \link{Samples} class object}
 
-\item{data}{the data input of \code{\linkS4class{DataDual}} class object}
+\item{data}{the data input of \link{DataDual} class object}
 
 \item{\dots}{additional arguments for the parent method
 \code{\link{plot,Samples,GeneralModel-method}}}

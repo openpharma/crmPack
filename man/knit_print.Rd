@@ -786,6 +786,8 @@ all design classes, not just those that are direct descendants of \code{Design}.
 
 \ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#experimental}{\figure{lifecycle-experimental.svg}{options: alt='[Experimental]'}}}{\strong{[Experimental]}}
 
+\ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#experimental}{\figure{lifecycle-experimental.svg}{options: alt='[Experimental]'}}}{\strong{[Experimental]}}
+
 We provide additional utility functions to allow human-friendly rendition of
 crmPack objects in Markdown and Quarto files
 
