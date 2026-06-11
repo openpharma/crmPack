@@ -761,6 +761,9 @@ setMethod(
     assert_flag(firstSeparate)
     assert_count(nsim, positive = TRUE)
     assert_flag(parallel)
+    if (is.na(nCores)) {
+      nCores <- 1L
+    }
     assert_count(nCores, positive = TRUE)
     assert_list(derive)
     assert_class(object@backfill@opening, "OpeningNone")
@@ -895,7 +898,8 @@ setMethod(
         "firstSeparate",
         "truth",
         "object",
-        "mcmcOptions"
+        "mcmcOptions",
+        "derive"
       ),
       parallel = parallel,
       n_cores = nCores
