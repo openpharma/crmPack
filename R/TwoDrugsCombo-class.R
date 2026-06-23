@@ -294,17 +294,23 @@ h_combo_x_mapping_model <- function(index) {
   model
 }
 
-h_combo_sample_alias_model <- function(samples, n_models) {
+h_combo_sample_alias_model <- function(samples, single_models) {
   model <- function() {}
   expressions <- list(as.name("{"))
   for (sample_name in samples) {
-    for (index in seq_len(n_models)) {
+    sample_model_indices <- which(vapply(
+      single_models,
+      function(model) sample_name %in% model@sample,
+      logical(1L)
+    ))
+    for (index in seq_along(sample_model_indices)) {
+      model_index <- sample_model_indices[[index]]
       expressions <- c(
         expressions,
         list(as.call(list(
           as.name("<-"),
           h_combo_indexed_call(sample_name, index),
-          as.name(paste0(sample_name, "_drug", index))
+          as.name(paste0(sample_name, "_drug", model_index))
         )))
       )
     }
@@ -446,10 +452,10 @@ TwoDrugsCombo <- function(
     h_jags_join_models,
     lapply(single_model_parts, "[[", "priormodel")
   )
-  common_samples <- Reduce(intersect, lapply(single_models, slot, "sample"))
+  all_samples <- unique(unlist(lapply(single_models, slot, "sample")))
   single_priormodel <- h_jags_join_models(
     single_priormodel,
-    h_combo_sample_alias_model(common_samples, length(single_models))
+    h_combo_sample_alias_model(all_samples, single_models)
   )
   single_datamodel <- h_jags_join_models(
     single_datamodel,
@@ -517,7 +523,7 @@ TwoDrugsCombo <- function(
       }
     },
     datanames = c("nObs", "y", "x"),
-    sample = c(common_samples, "eta")
+    sample = c(all_samples, "eta")
   )
 }
 

@@ -161,10 +161,16 @@ test_that("MCMC also works when a models with different parameters are combined"
   model <- h_get_two_drugs_combo_diff_pars()
   options <- h_get_mcmc_options(samples = 10, burnin = 20)
 
+  expect_equal(model@sample, c("beta0", "beta1", "alpha0", "alpha1", "eta"))
+
   result <- mcmc(data = data, model = model, options = options)
   expect_s4_class(result, "Samples")
   expect_subset(
     c("alpha0", "alpha1", "beta0", "beta1", "eta"),
     names(result@data)
   )
+  expect_length(result@data$alpha0, 10L)
+  expect_length(result@data$alpha1, 10L)
+  expect_length(result@data$beta0, 10L)
+  expect_length(result@data$beta1, 10L)
 })
