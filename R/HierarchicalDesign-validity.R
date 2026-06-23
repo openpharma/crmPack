@@ -24,6 +24,27 @@ v_arm_finished_condition <- function(object) {
   v$result()
 }
 
+#' @describeIn v_arm_condition validates that the [`ArmMinDoseCondition`]
+#'   object contains valid `arm_name` and `min_dose` slots.
+v_arm_min_dose_condition <- function(object) {
+  v <- Validate()
+  v$check(
+    test_string(object@arm_name),
+    "arm_name must be a single string"
+  )
+  v$check(
+    test_numeric(
+      object@min_dose,
+      lower = 0,
+      finite = TRUE,
+      min.len = 1L,
+      any.missing = FALSE
+    ),
+    "min_dose needs to be a non-negative numeric vector"
+  )
+  v$result()
+}
+
 # HierarchicalDesign ----
 
 #' Internal Helper Functions for Validation of [`HierarchicalDesign`] Objects

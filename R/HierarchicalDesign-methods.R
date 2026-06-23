@@ -152,6 +152,35 @@ setMethod(
   }
 )
 
+## ArmMinDoseCondition ----
+
+#' @describeIn openArm method for `ArmMinDoseCondition` class.
+#'
+#' @aliases openArm-ArmMinDoseCondition
+#'
+#' @export
+setMethod(
+  f = "openArm",
+  signature = c(condition = "ArmMinDoseCondition"),
+  definition = function(condition, data, ...) {
+    assert_names(names(data@arms), must.include = condition@arm_name)
+    arm_data <- data@arms[[condition@arm_name]]
+
+    if (arm_data@nObs == 0L) {
+      return(FALSE)
+    }
+
+    if (is.matrix(arm_data@x)) {
+      assert_true(length(condition@min_dose) %in% c(1L, ncol(arm_data@x)))
+      min_dose <- rep(condition@min_dose, length.out = ncol(arm_data@x))
+      any(rowSums(sweep(arm_data@x, 2L, min_dose, `>=`)) == ncol(arm_data@x))
+    } else {
+      assert_numeric(condition@min_dose, len = 1L)
+      any(arm_data@x >= condition@min_dose)
+    }
+  }
+)
+
 ## ArmConditionList ----
 
 #' @describeIn openArm method for `ArmConditionList` class.

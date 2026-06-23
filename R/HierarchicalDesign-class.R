@@ -14,7 +14,7 @@ NULL
 #' [`DesignArm`] opens for enrollment in a [`HierarchicalDesign`].
 #'
 #' @seealso [`NoArmCondition`], [`ArmFinishedCondition`],
-#'   [`ArmConditionAll`], [`ArmConditionAny`].
+#'   [`ArmMinDoseCondition`], [`ArmConditionAll`], [`ArmConditionAny`].
 #'
 #' @aliases ArmCondition
 #' @export
@@ -121,6 +121,68 @@ ArmFinishedCondition <- function(arm_name) {
 #' @export
 .DefaultArmFinishedCondition <- function() {
   ArmFinishedCondition("Arm")
+}
+
+# ArmMinDoseCondition ----
+
+## class ----
+
+#' `ArmMinDoseCondition`
+#'
+#' @description `r lifecycle::badge("experimental")`
+#'
+#' [`ArmMinDoseCondition`] opens an arm when the named arm has enrolled at
+#' least one patient at the specified minimum dose or higher.
+#'
+#' @slot arm_name (`string`)\cr the name of the arm whose data are checked.
+#' @slot min_dose (`numeric`)\cr the minimum dose that must have been reached.
+#'   For combination arms, this can be a vector of minimum doses for each agent.
+#'
+#' @aliases ArmMinDoseCondition
+#' @export
+#'
+.ArmMinDoseCondition <- setClass(
+  Class = "ArmMinDoseCondition",
+  slots = c(
+    arm_name = "character",
+    min_dose = "numeric"
+  ),
+  prototype = prototype(
+    arm_name = "Arm",
+    min_dose = 0
+  ),
+  contains = "ArmCondition",
+  validity = v_arm_min_dose_condition
+)
+
+## constructor ----
+
+#' @rdname ArmMinDoseCondition-class
+#'
+#' @param arm_name (`string`)\cr see slot definition.
+#' @param min_dose (`numeric`)\cr see slot definition.
+#'
+#' @export
+ArmMinDoseCondition <- function(arm_name, min_dose) {
+  assert_string(arm_name)
+  assert_numeric(
+    min_dose,
+    lower = 0,
+    finite = TRUE,
+    min.len = 1L,
+    any.missing = FALSE
+  )
+  .ArmMinDoseCondition(arm_name = arm_name, min_dose = min_dose)
+}
+
+## default constructor ----
+
+#' @rdname ArmMinDoseCondition-class
+#' @note Typically, end users will not use the `.DefaultArmMinDoseCondition()`
+#'   function.
+#' @export
+.DefaultArmMinDoseCondition <- function() {
+  ArmMinDoseCondition("Arm", 0)
 }
 
 # ArmConditionList and logical operators ----

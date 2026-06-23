@@ -372,9 +372,11 @@ test_that("DesignArm constructor stores borrow flag", {
 test_that("ArmCondition constructors and logical operators work", {
   no_condition <- expect_silent(NoArmCondition())
   finished_condition <- expect_silent(ArmFinishedCondition("arm_a"))
+  min_dose_condition <- expect_silent(ArmMinDoseCondition("my_mono", 20))
 
   expect_valid(no_condition, "NoArmCondition")
   expect_valid(finished_condition, "ArmFinishedCondition")
+  expect_valid(min_dose_condition, "ArmMinDoseCondition")
   expect_true(openArm(
     no_condition,
     data = local_hierarchical_design()@data
@@ -389,9 +391,25 @@ test_that("ArmCondition constructors and logical operators work", {
     data = local_hierarchical_design()@data,
     finished_arms = c(arm_a = FALSE, arm_b = FALSE)
   ))
+  expect_true(openArm(
+    min_dose_condition,
+    data = local_hierarchical_data()
+  ))
+  expect_false(openArm(
+    ArmMinDoseCondition("my_mono", 30),
+    data = local_hierarchical_data()
+  ))
+  expect_true(openArm(
+    ArmMinDoseCondition("my_combo", c(20, 40)),
+    data = local_hierarchical_data()
+  ))
+  expect_false(openArm(
+    ArmMinDoseCondition("my_combo", c(30, 40)),
+    data = local_hierarchical_data()
+  ))
 
   expect_valid(no_condition & finished_condition, "ArmConditionAll")
-  expect_valid(finished_condition | no_condition, "ArmConditionAny")
+  expect_valid(finished_condition | min_dose_condition, "ArmConditionAny")
 })
 
 test_that("DesignArm constructor stores opening condition", {
