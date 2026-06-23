@@ -154,7 +154,7 @@ h_mcmc_get_hierarchical_data <- function(model, data, from_prior) {
     model_data[[paste0("nObs_", safe_arm)]] <- arm_data@nObs
     model_data[[paste0("y_", safe_arm)]] <- as.integer(arm_data@y)
     model_data[[paste0("x_", safe_arm)]] <- if (
-      is(arm_model, "LogisticLogNormal")
+      h_hierarchical_is_single_model(arm_model)
     ) {
       as.numeric(arm_data@x)
     } else {
@@ -242,7 +242,7 @@ setMethod(
       arm_model <- model@models_to_arms[[arm_name]]
       arm_data <- data@arms[[arm_name]]
 
-      if (is(arm_model, "LogisticLogNormal")) {
+      if (h_hierarchical_is_single_model(arm_model)) {
         assert_class(arm_data, "Data")
       } else {
         assert_class(arm_data, "DataCombo")

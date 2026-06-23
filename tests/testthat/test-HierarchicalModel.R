@@ -1,272 +1,3 @@
-local_hierarchical_mono_model <- function() {
-  LogisticLogNormal(
-    mean = c(-0.85, 1),
-    cov = matrix(c(1, -0.5, -0.5, 1), nrow = 2),
-    ref_dose = 10
-  )
-}
-
-local_hierarchical_combo_model <- function(log_normal_eta = FALSE) {
-  TwoDrugsCombo(
-    single_models = list(
-      drug1 = LogisticLogNormal(
-        mean = c(-0.85, 1),
-        cov = matrix(c(1, -0.5, -0.5, 1), nrow = 2),
-        ref_dose = 10
-      ),
-      drug2 = LogisticLogNormal(
-        mean = c(-0.7, 0.8),
-        cov = matrix(c(1.1, -0.3, -0.3, 0.9), nrow = 2),
-        ref_dose = 20
-      )
-    ),
-    gamma = 0,
-    tau = 1,
-    log_normal_eta = log_normal_eta
-  )
-}
-
-local_hierarchical_parameter_pools <- function() {
-  list(
-    mono_intercept = list(
-      my_mono = "alpha0",
-      my_combo = "alpha0[1]"
-    ),
-    mono_slope = list(
-      my_mono = "alpha1",
-      my_combo = "alpha1[1]"
-    )
-  )
-}
-
-local_hierarchical_model <- function(log_normal_eta = FALSE) {
-  HierarchicalModel(
-    my_mono = local_hierarchical_mono_model(),
-    my_combo = local_hierarchical_combo_model(log_normal_eta = log_normal_eta),
-    exchangeable_parameters = local_hierarchical_parameter_pools()
-  )
-}
-
-local_parallel_hierarchical_model <- function(log_normal_eta = FALSE) {
-  combo_model <- local_hierarchical_combo_model(log_normal_eta = log_normal_eta)
-
-  HierarchicalModel(
-    mono_drug1 = combo_model@single_models$drug1,
-    mono_drug2 = combo_model@single_models$drug2,
-    combo = combo_model,
-    exchangeable_parameters = list(
-      drug1_intercept = list(
-        mono_drug1 = "alpha0",
-        combo = "alpha0[1]"
-      ),
-      drug1_slope = list(
-        mono_drug1 = "alpha1",
-        combo = "alpha1[1]"
-      ),
-      drug2_intercept = list(
-        mono_drug2 = "alpha0",
-        combo = "alpha0[2]"
-      ),
-      drug2_slope = list(
-        mono_drug2 = "alpha1",
-        combo = "alpha1[2]"
-      )
-    )
-  )
-}
-
-local_hierarchical_data <- function(empty = FALSE) {
-  mono_y <- if (empty) integer() else c(0L, 0L, 0L, 1L)
-  combo_y <- if (empty) integer() else c(0L, 0L, 0L, 1L)
-  mono_x <- if (empty) numeric() else c(10, 10, 20, 20)
-  combo_x <- if (empty) {
-    matrix(
-      numeric(),
-      nrow = 0,
-      ncol = 2,
-      dimnames = list(NULL, c("drug1", "drug2"))
-    )
-  } else {
-    cbind(
-      drug1 = c(10, 10, 20, 20),
-      drug2 = c(20, 40, 20, 40)
-    )
-  }
-  mono_id <- seq_along(mono_y)
-  combo_id <- seq_along(combo_y)
-
-  HierarchicalData(
-    arms = list(
-      my_mono = Data(
-        x = mono_x,
-        y = mono_y,
-        doseGrid = c(10, 20, 30),
-        ID = mono_id,
-        cohort = c(1L, 1L, 2L, 2L)[seq_along(mono_y)]
-      ),
-      my_combo = DataCombo(
-        x = combo_x,
-        y = combo_y,
-        doseGrid = list(
-          drug1 = c(10, 20, 30),
-          drug2 = c(20, 40)
-        ),
-        ID = combo_id,
-        cohort = seq_along(combo_y)
-      )
-    )
-  )
-}
-
-local_hierarchical_samples <- function() {
-  HierarchicalSamples(
-    data = list(
-      alpha0_my_mono = c(-3.0, -2.5),
-      alpha1_my_mono = c(1.0, 0.8),
-      alpha0_my_combo = matrix(
-        c(-3.0, -3.5, -2.5, -3.0),
-        nrow = 2L,
-        byrow = TRUE,
-        dimnames = list(NULL, c("drug1", "drug2"))
-      ),
-      alpha1_my_combo = matrix(
-        c(1.0, 1.2, 0.8, 1.1),
-        nrow = 2L,
-        byrow = TRUE,
-        dimnames = list(NULL, c("drug1", "drug2"))
-      ),
-      eta_my_combo = c(0.0, 0.2)
-    ),
-    options = h_get_mcmc_options(samples = 2L),
-    arm_samples = list(
-      my_mono = c(
-        alpha0 = "alpha0_my_mono",
-        alpha1 = "alpha1_my_mono"
-      ),
-      my_combo = c(
-        alpha0 = "alpha0_my_combo",
-        alpha1 = "alpha1_my_combo",
-        eta = "eta_my_combo"
-      )
-    )
-  )
-}
-
-local_hierarchical_design <- function() {
-  HierarchicalDesign(
-    DesignArm(
-      name = "arm_a",
-      active = TRUE,
-      design = .DefaultDesign()
-    ),
-    DesignArm(
-      name = "arm_b",
-      active = FALSE,
-      design = .DefaultDesign()
-    ),
-    exchangeable_parameters = list(
-      shared_intercept = list(
-        arm_a = "alpha0",
-        arm_b = "alpha0"
-      ),
-      shared_slope = list(
-        arm_a = "alpha1",
-        arm_b = "alpha1"
-      )
-    )
-  )
-}
-
-local_hierarchical_simulations <- function() {
-  data <- list(
-    HierarchicalData(
-      arms = list(
-        arm_a = Data(
-          x = c(10, 20),
-          y = c(0L, 1L),
-          doseGrid = c(10, 20),
-          ID = 1L:2L,
-          cohort = 1L:2L
-        ),
-        arm_b = Data(
-          x = 10,
-          y = 0L,
-          doseGrid = c(10, 20),
-          ID = 1L,
-          cohort = 1L
-        )
-      )
-    ),
-    HierarchicalData(
-      arms = list(
-        arm_a = Data(
-          x = c(10, 10),
-          y = c(0L, 0L),
-          doseGrid = c(10, 20),
-          ID = 1L:2L,
-          cohort = 1L:2L
-        ),
-        arm_b = Data(
-          x = 10,
-          y = 0L,
-          doseGrid = c(10, 20),
-          ID = 1L,
-          cohort = 1L
-        )
-      )
-    )
-  )
-  fit <- list(
-    list(
-      arm_a = data.frame(
-        middle = c(0.1, 0.3),
-        lower = c(0.05, 0.2),
-        upper = c(0.2, 0.4)
-      ),
-      arm_b = data.frame(
-        middle = c(0.1, 0.2),
-        lower = c(0.05, 0.1),
-        upper = c(0.2, 0.3)
-      )
-    ),
-    list(
-      arm_a = data.frame(
-        middle = c(0.15, 0.35),
-        lower = c(0.1, 0.25),
-        upper = c(0.25, 0.45)
-      ),
-      arm_b = data.frame(
-        middle = c(0.1, 0.2),
-        lower = c(0.05, 0.1),
-        upper = c(0.2, 0.3)
-      )
-    )
-  )
-
-  HierarchicalSimulations(
-    data = data,
-    doses = list(
-      list(arm_a = 20, arm_b = NULL),
-      list(arm_a = 10, arm_b = NULL)
-    ),
-    samples = list(.HierarchicalSamples(), .HierarchicalSamples()),
-    fit = fit,
-    stop_reasons = list(
-      list(arm_a = "Stopped A", arm_b = "Historical arm: not enrolling."),
-      list(arm_a = "Stopped A", arm_b = "Historical arm: not enrolling.")
-    ),
-    stop_report = list(
-      list(arm_a = c(`Minimum patients` = TRUE), arm_b = NULL),
-      list(arm_a = c(`Minimum patients` = FALSE), arm_b = NULL)
-    ),
-    additional_stats = list(
-      list(arm_a = list(), arm_b = list()),
-      list(arm_a = list(), arm_b = list())
-    ),
-    seed = 123L
-  )
-}
-
 test_that("hierarchical helper primitives return expected metadata", {
   mono_model <- local_hierarchical_mono_model()
   combo_model <- local_hierarchical_combo_model()
@@ -294,7 +25,8 @@ test_that("hierarchical helper primitives return expected metadata", {
     list(
       kind = "alpha1",
       index = 2L,
-      latent = "theta_my_combo[2, 2]",
+      arm_index = 2L,
+      latent = "theta_drug2_my_combo[2]",
       sample = "alpha1_my_combo[2]"
     )
   )
@@ -315,7 +47,198 @@ test_that("hierarchical compiler helpers produce readable compiled functions", {
   expect_snapshot(cat(body_priormodel))
 })
 
-test_that("parallel mono and combo prior compiles as block MAC prior", {
+test_that("HierarchicalModel sources single-agent model code generically", {
+  result <- HierarchicalModel(
+    sub = LogisticLogNormalSub(
+      mean = c(1, 5),
+      cov = diag(2),
+      ref_dose = 2
+    ),
+    raw = h_get_general_single_agent_no_ref(beta_mean = c(-2, 0.02)),
+    exchangeable_parameters = list()
+  )
+  data_file <- h_jags_write_model(result@datamodel)
+  prior_file <- h_jags_write_model(result@priormodel)
+  on.exit(unlink(c(data_file, prior_file)))
+  read_model <- function(file) {
+    gsub("\\s+", " ", paste(readLines(file), collapse = " "))
+  }
+  data_text <- read_model(data_file)
+  prior_text <- read_model(prior_file)
+
+  expect_valid(result, "HierarchicalModel")
+  expect_equal(
+    h_hierarchical_supported_refs(result@models_to_arms$raw),
+    c("beta0", "beta1")
+  )
+  expect_match(
+    data_text,
+    "logit\\(p_sub\\[i\\]\\) <- alpha0_sub \\+ alpha1_sub \\* \\(x_sub\\[i\\] - ref_dose_sub\\)" # nolint
+  )
+  expect_match(
+    data_text,
+    "logit\\(p_raw\\[i\\]\\) <- beta0_raw \\+ beta1_raw \\* x_raw\\[i\\]"
+  )
+  expect_match(prior_text, "theta_sub ~ dmnorm\\(mean_sub, prec_sub\\)")
+  expect_match(prior_text, "beta0_raw ~ dnorm\\(beta_mean_raw\\[1\\], 1\\)")
+  expect_subset(
+    c("alpha0_sub", "alpha1_sub", "beta0_raw", "beta1_raw"),
+    result@sample
+  )
+  expect_subset(
+    c("mean_sub", "prec_sub", "ref_dose_sub", "beta_mean_raw"),
+    names(result@modelspecs(arms = list(), from_prior = FALSE))
+  )
+})
+
+test_that("HierarchicalModel supports TwoDrugsCombo without alpha parameters", {
+  result <- local_hierarchical_no_alpha_combo_model()
+  data <- local_hierarchical_no_alpha_combo_data()
+  model_data <- h_mcmc_get_hierarchical_data(
+    model = result,
+    data = data,
+    from_prior = FALSE
+  )
+  prior_file <- h_jags_write_model(result@priormodel)
+  data_file <- h_jags_write_model(result@datamodel)
+  on.exit(unlink(c(prior_file, data_file)))
+  read_model <- function(file) {
+    gsub("\\s+", " ", readLines(file))
+  }
+  prior_text <- read_model(prior_file)
+  data_text <- read_model(data_file)
+
+  expect_valid(result, "HierarchicalModel")
+  expect_equal(
+    h_hierarchical_supported_refs(result@models_to_arms$raw_combo),
+    c("beta0[1]", "beta1[1]", "beta0[2]", "beta1[2]")
+  )
+  expect_subset(
+    c(
+      "beta0_raw_mono",
+      "beta1_raw_mono",
+      "beta0_raw_combo",
+      "beta1_raw_combo",
+      "eta_raw_combo"
+    ),
+    result@sample
+  )
+  expect_subset(
+    c(
+      "beta_mean_raw_mono",
+      "beta_mean_drug1_raw_combo",
+      "beta_mean_drug2_raw_combo",
+      "gamma_raw_combo",
+      "tau_raw_combo"
+    ),
+    names(result@modelspecs(arms = data@arms, from_prior = FALSE))
+  )
+  expect_subset(
+    c("beta0_drug1_raw_combo", "beta1_drug2_raw_combo", "eta_raw_combo"),
+    names(result@init(arms = data@arms))
+  )
+  expect_false(grepl("alpha0", prior_text, fixed = TRUE))
+  expect_false(grepl("alpha1", prior_text, fixed = TRUE))
+  expect_match(data_text, "beta0_drug1_raw_combo")
+  expect_match(data_text, "beta1_drug2_raw_combo")
+  expect_equal(model_data$x_raw_combo, data@arms$raw_combo@x)
+
+  samples <- mcmc(
+    data = data,
+    model = result,
+    options = McmcOptions(
+      burnin = 10L,
+      step = 1L,
+      samples = 20L,
+      rng_kind = "Mersenne-Twister",
+      rng_seed = 12345L
+    )
+  )
+  expect_s4_class(samples, "HierarchicalSamples")
+  expect_subset(
+    c(
+      "beta0_raw_mono",
+      "beta1_raw_mono",
+      "beta0_raw_combo",
+      "beta1_raw_combo",
+      "eta_raw_combo"
+    ),
+    names(samples@data)
+  )
+
+  exchangeable_result <- HierarchicalModel(
+    raw_mono = h_get_general_single_agent_no_ref(beta_mean = c(-2, 0.02)),
+    raw_combo = h_get_two_drugs_combo_no_alpha_no_ref(),
+    exchangeable_parameters = list(
+      shared_beta0 = list(
+        raw_mono = "beta0",
+        raw_combo = "beta0[1]"
+      ),
+      shared_beta1 = list(
+        raw_mono = "beta1",
+        raw_combo = "beta1[1]"
+      )
+    )
+  )
+  exchangeable_prior_file <- h_jags_write_model(exchangeable_result@priormodel)
+  on.exit(unlink(exchangeable_prior_file), add = TRUE)
+  exchangeable_prior_text <- paste(
+    read_model(exchangeable_prior_file),
+    collapse = ""
+  )
+
+  expect_valid(exchangeable_result, "HierarchicalModel")
+  expect_match(
+    exchangeable_prior_text,
+    "beta0_raw_mono ~ dnorm\\(mu_shared_beta0, pow\\(tau_shared_beta0,\\s*-2\\)\\)"
+  )
+  expect_match(
+    exchangeable_prior_text,
+    "beta0_drug1_raw_combo ~ dnorm\\(mu_shared_beta0, pow\\(tau_shared_beta0,\\s*-2\\)\\)" # nolint
+  )
+  expect_match(
+    exchangeable_prior_text,
+    "beta1_raw_mono ~ dnorm\\(mu_shared_beta1, pow\\(tau_shared_beta1,\\s*-2\\)\\)"
+  )
+  expect_match(
+    exchangeable_prior_text,
+    "beta1_drug1_raw_combo ~ dnorm\\(mu_shared_beta1, pow\\(tau_shared_beta1,\\s*-2\\)\\)" # nolint
+  )
+  expect_false(grepl(
+    "beta0_raw_mono ~ dnorm(beta_mean_raw_mono[1], 1)",
+    exchangeable_prior_text,
+    fixed = TRUE
+  ))
+  expect_false(grepl(
+    "beta0_drug1_raw_combo ~ dnorm(beta_mean_drug1_raw_combo[1], 1)",
+    exchangeable_prior_text,
+    fixed = TRUE
+  ))
+
+  exchangeable_samples <- mcmc(
+    data = data,
+    model = exchangeable_result,
+    options = McmcOptions(
+      burnin = 10L,
+      step = 1L,
+      samples = 20L,
+      rng_kind = "Mersenne-Twister",
+      rng_seed = 12345L
+    )
+  )
+  expect_s4_class(exchangeable_samples, "HierarchicalSamples")
+  expect_subset(
+    c(
+      "mu_shared_beta0",
+      "tau_shared_beta0",
+      "mu_shared_beta1",
+      "tau_shared_beta1"
+    ),
+    names(exchangeable_samples@data)
+  )
+})
+
+test_that("parallel mono and combo prior compiles generically", {
   model <- local_parallel_hierarchical_model()
   body_priormodel <- gsub(
     "\\s+",
@@ -326,59 +249,51 @@ test_that("parallel mono and combo prior compiles as block MAC prior", {
   inits <- model@init(arms = list())
 
   expect_true(grepl(
-    "theta_mono_drug1[1:2] ~ dmnorm(mu_drug1[1:2], prec_drug1[1:2, 1:2])",
+    "theta_mono_drug1[1] ~ dnorm(mu_drug1_intercept, pow(tau_drug1_intercept, -2))",
     body_priormodel,
     fixed = TRUE
   ))
   expect_true(grepl(
-    "theta_combo[1:2, 1] ~ dmnorm(mu_drug1[1:2], prec_drug1[1:2, 1:2])",
+    "theta_drug1_combo[1] ~ dnorm(mu_drug1_intercept, pow(tau_drug1_intercept, -2))",
     body_priormodel,
     fixed = TRUE
   ))
   expect_true(grepl(
-    "theta_mono_drug2[1:2] ~ dmnorm(mu_drug2[1:2], prec_drug2[1:2, 1:2])",
+    "theta_mono_drug2[2] ~ dnorm(mu_drug2_slope, pow(tau_drug2_slope, -2))",
     body_priormodel,
     fixed = TRUE
   ))
   expect_true(grepl(
-    "theta_combo[1:2, 2] ~ dmnorm(mu_drug2[1:2], prec_drug2[1:2, 1:2])",
+    "theta_drug2_combo[2] ~ dnorm(mu_drug2_slope, pow(tau_drug2_slope, -2))",
     body_priormodel,
     fixed = TRUE
   ))
   expect_true(grepl(
-    "eta_combo ~ dnorm(mu_eta_combo, pow(tau_eta_combo, -2))",
+    "eta_combo ~ dnorm(gamma_combo, tau_combo)",
     body_priormodel,
     fixed = TRUE
   ))
-  expect_true(grepl("rho_drug1 ~ dunif(-1, 1)", body_priormodel, fixed = TRUE))
-  expect_true(grepl("rho_drug2 ~ dunif(-1, 1)", body_priormodel, fixed = TRUE))
-  expect_true(grepl(
-    "mu_drug2_slope ~ dnorm(0, 1)",
-    body_priormodel,
-    fixed = TRUE
-  ))
-  expect_true(grepl(
-    "tau_drug2_intercept ~ dlnorm(log(0.75), pow(kappa_hier, -2))",
-    body_priormodel,
-    fixed = TRUE
-  ))
-  expect_false(grepl("gamma_combo", body_priormodel, fixed = TRUE))
-  expect_identical(names(prior_specs), "kappa_hier")
+  expect_false(grepl("rho_drug1", body_priormodel, fixed = TRUE))
+  expect_identical(
+    names(prior_specs),
+    c("kappa_hier", "gamma_combo", "tau_combo")
+  )
   expect_true(all(
     c(
-      "rho_drug1",
-      "rho_drug2",
-      "mu_eta_combo",
-      "tau_eta_combo"
+      "mu_drug1_intercept",
+      "tau_drug1_intercept",
+      "mu_drug2_slope",
+      "tau_drug2_slope"
     ) %in%
       model@sample
   ))
   expect_true(all(
     c(
-      "rho_drug1",
-      "rho_drug2",
-      "mu_eta_combo",
-      "tau_eta_combo"
+      "theta_mono_drug1",
+      "theta_drug1_combo",
+      "eta_combo",
+      "mu_drug1_intercept",
+      "tau_drug2_slope"
     ) %in%
       names(inits)
   ))

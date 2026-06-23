@@ -260,13 +260,13 @@ v_hierarchical_model <- function(object) {
     supported_models <- vapply(
       models_to_arms,
       function(model) {
-        is(model, "LogisticLogNormal") || is(model, "TwoDrugsCombo")
+        h_hierarchical_is_single_model(model) || is(model, "TwoDrugsCombo")
       },
       logical(1L)
     )
     v$check(
       all(supported_models),
-      "models_to_arms entries must be LogisticLogNormal or TwoDrugsCombo objects"
+      "models_to_arms entries must be compatible single-agent binary outcome or TwoDrugsCombo objects"
     )
   }
 
@@ -275,7 +275,8 @@ v_hierarchical_model <- function(object) {
     "parameter_pools must be a list without missings"
   )
   v$check(
-    test_names(names(parameter_pools), type = "unique"),
+    length(parameter_pools) == 0L ||
+      test_names(names(parameter_pools), type = "unique"),
     "parameter_pools must be a named list with unique names"
   )
 

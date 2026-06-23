@@ -105,7 +105,7 @@ h_hierarchical_check_fit_plot_args <- function(object, model, data) {
     arm_model <- model@models_to_arms[[arm_name]]
     arm_data <- data@arms[[arm_name]]
 
-    if (is(arm_model, "LogisticLogNormal")) {
+    if (h_hierarchical_is_single_model(arm_model)) {
       assert_class(arm_data, "Data")
     } else {
       assert_class(arm_data, "DataCombo")
