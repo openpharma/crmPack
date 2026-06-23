@@ -369,6 +369,44 @@ test_that("DesignArm constructor stores borrow flag", {
   expect_false(arm@borrow)
 })
 
+test_that("ArmCondition constructors and logical operators work", {
+  no_condition <- expect_silent(NoArmCondition())
+  finished_condition <- expect_silent(ArmFinishedCondition("arm_a"))
+
+  expect_valid(no_condition, "NoArmCondition")
+  expect_valid(finished_condition, "ArmFinishedCondition")
+  expect_true(openArm(
+    no_condition,
+    data = local_hierarchical_design()@data
+  ))
+  expect_true(openArm(
+    finished_condition,
+    data = local_hierarchical_design()@data,
+    finished_arms = c(arm_a = TRUE, arm_b = FALSE)
+  ))
+  expect_false(openArm(
+    finished_condition,
+    data = local_hierarchical_design()@data,
+    finished_arms = c(arm_a = FALSE, arm_b = FALSE)
+  ))
+
+  expect_valid(no_condition & finished_condition, "ArmConditionAll")
+  expect_valid(finished_condition | no_condition, "ArmConditionAny")
+})
+
+test_that("DesignArm constructor stores opening condition", {
+  condition <- ArmFinishedCondition("arm_a")
+  arm <- DesignArm(
+    name = "arm_delayed",
+    active = TRUE,
+    design = .DefaultDesign(),
+    open_when = condition
+  )
+
+  expect_valid(arm, "DesignArm")
+  expect_identical(arm@open_when, condition)
+})
+
 test_that("HierarchicalData update can target one arm", {
   data <- local_hierarchical_design()@data
 
@@ -512,6 +550,130 @@ test_that("HierarchicalDesign simulate uses arm-level mcmc for non-borrowing arm
     function(call) identical(call$data_class, "DataCombo"),
     logical(1L)
   )))
+})
+
+test_that("HierarchicalDesign simulate opens delayed arms once and keeps them open", {
+  if (!isClass("CountingArmCondition")) {
+    setClass("CountingArmCondition", contains = "ArmCondition")
+  }
+
+  condition_env <- new.env(parent = emptyenv())
+  condition_env$calls <- 0L
+  setMethod(
+    f = "openArm",
+    signature = c(condition = "CountingArmCondition"),
+    definition = function(condition, data, ...) {
+      condition_env$calls <- condition_env$calls + 1L
+      condition_env$calls >= 3L
+    }
+  )
+
+  design <- local_hierarchical_design()
+  design@arms$arm_b@active <- TRUE
+  design@arms$arm_b@open_when <- new("CountingArmCondition")
+  for (arm_name in names(design@arms)) {
+    design@arms[[arm_name]]@borrow <- FALSE
+    design@arms[[arm_name]]@design@stopping <-
+      StoppingMinPatients(nPatients = 1L)
+    design@arms[[arm_name]]@design@cohort_size <- CohortSizeConst(size = 1L)
+  }
+
+  testthat::local_mocked_bindings(
+    mcmc = function(data, model, options) {
+      if (is(data, "HierarchicalData")) {
+        HierarchicalSamples(
+          data = list(
+            alpha0_arm_a = rep(-3, size(options)),
+            alpha1_arm_a = rep(1, size(options)),
+            alpha0_arm_b = rep(-3, size(options)),
+            alpha1_arm_b = rep(1, size(options))
+          ),
+          options = options,
+          arm_samples = list(
+            arm_a = c(alpha0 = "alpha0_arm_a", alpha1 = "alpha1_arm_a"),
+            arm_b = c(alpha0 = "alpha0_arm_b", alpha1 = "alpha1_arm_b")
+          )
+        )
+      } else {
+        Samples(
+          data = list(
+            alpha0 = rep(-3, size(options)),
+            alpha1 = rep(1, size(options))
+          ),
+          options = options
+        )
+      }
+    }
+  )
+
+  result <- simulate(
+    design,
+    truth = function(dose, ...) 0.1,
+    truthResponse = function(dose, ...) 0.5,
+    nsim = 1L,
+    seed = 123L,
+    mcmcOptions = h_get_mcmc_options(samples = 2L),
+    parallel = FALSE
+  )
+
+  expect_valid(result, "HierarchicalSimulations")
+  expect_equal(result@data[[1L]]@arms$arm_a@nObs, 1L)
+  expect_equal(result@data[[1L]]@arms$arm_b@nObs, 1L)
+  expect_identical(condition_env$calls, 3L)
+})
+
+test_that("ArmFinishedCondition opens an arm after the referenced arm stops", {
+  design <- local_hierarchical_design()
+  design@arms$arm_b@active <- TRUE
+  design@arms$arm_b@open_when <- ArmFinishedCondition("arm_a")
+  for (arm_name in names(design@arms)) {
+    design@arms[[arm_name]]@borrow <- FALSE
+    design@arms[[arm_name]]@design@stopping <-
+      StoppingMinPatients(nPatients = 1L)
+    design@arms[[arm_name]]@design@cohort_size <- CohortSizeConst(size = 1L)
+  }
+
+  testthat::local_mocked_bindings(
+    mcmc = function(data, model, options) {
+      if (is(data, "HierarchicalData")) {
+        HierarchicalSamples(
+          data = list(
+            alpha0_arm_a = rep(-3, size(options)),
+            alpha1_arm_a = rep(1, size(options)),
+            alpha0_arm_b = rep(-3, size(options)),
+            alpha1_arm_b = rep(1, size(options))
+          ),
+          options = options,
+          arm_samples = list(
+            arm_a = c(alpha0 = "alpha0_arm_a", alpha1 = "alpha1_arm_a"),
+            arm_b = c(alpha0 = "alpha0_arm_b", alpha1 = "alpha1_arm_b")
+          )
+        )
+      } else {
+        Samples(
+          data = list(
+            alpha0 = rep(-3, size(options)),
+            alpha1 = rep(1, size(options))
+          ),
+          options = options
+        )
+      }
+    }
+  )
+
+  result <- simulate(
+    design,
+    truth = function(dose, ...) 0.1,
+    truthResponse = function(dose, ...) 0.5,
+    nsim = 1L,
+    seed = 123L,
+    mcmcOptions = h_get_mcmc_options(samples = 2L),
+    parallel = FALSE
+  )
+
+  expect_valid(result, "HierarchicalSimulations")
+  expect_equal(result@data[[1L]]@arms$arm_a@nObs, 1L)
+  expect_equal(result@data[[1L]]@arms$arm_b@nObs, 1L)
 })
 
 test_that("HierarchicalDesign simulate supports backfill cohorts", {

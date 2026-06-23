@@ -92,6 +92,185 @@ h_hierarchical_get_decision_samples <- function(
   }
 }
 
+## openArm ----
+
+## generic ----
+
+#' Open a hierarchical design arm?
+#'
+#' @description `r lifecycle::badge("experimental")`
+#'
+#' @param condition (`ArmCondition`)\cr opening condition to be applied.
+#' @param data (`HierarchicalData`)\cr current hierarchical trial data.
+#' @param ... further arguments passed to condition-specific methods.
+#'
+#' @return `TRUE` if this arm can be opened, `FALSE` otherwise.
+#'
+#' @export
+setGeneric(
+  name = "openArm",
+  def = function(condition, data, ...) {
+    standardGeneric("openArm")
+  },
+  valueClass = "logical"
+)
+
+## NoArmCondition ----
+
+#' @describeIn openArm method for `NoArmCondition` class, which always opens
+#'   the arm.
+#'
+#' @aliases openArm-NoArmCondition
+#'
+#' @export
+setMethod(
+  f = "openArm",
+  signature = c(condition = "NoArmCondition"),
+  definition = function(condition, data, ...) {
+    TRUE
+  }
+)
+
+## ArmFinishedCondition ----
+
+#' @describeIn openArm method for `ArmFinishedCondition` class.
+#'
+#' @aliases openArm-ArmFinishedCondition
+#'
+#' @param finished_arms (`logical`)\cr named vector indicating which arms have
+#'   finished dose escalation.
+#'
+#' @export
+setMethod(
+  f = "openArm",
+  signature = c(condition = "ArmFinishedCondition"),
+  definition = function(condition, data, finished_arms, ...) {
+    assert_logical(finished_arms, any.missing = FALSE, names = "named")
+    assert_names(names(data@arms), must.include = condition@arm_name)
+    assert_names(names(finished_arms), must.include = condition@arm_name)
+    isTRUE(finished_arms[[condition@arm_name]])
+  }
+)
+
+## ArmConditionList ----
+
+#' @describeIn openArm method for `ArmConditionList` class.
+#'
+#' @aliases openArm-ArmConditionList
+#'
+#' @param summary_fun (`function`)\cr to apply to the list of results
+#'   (e.g. `all` or `any`). Only used for `ArmConditionList` and its
+#'   subclasses.
+setMethod(
+  f = "openArm",
+  signature = c(condition = "ArmConditionList"),
+  definition = function(condition, data, summary_fun, ...) {
+    list_results <- vapply(
+      condition@condition_list,
+      FUN = function(cond) openArm(cond, data, ...),
+      FUN.VALUE = logical(1L)
+    )
+    summary_fun(list_results)
+  }
+)
+
+## ArmConditionAll ----
+
+#' @describeIn openArm method for `ArmConditionAll` class. Returns `TRUE` if
+#'   ALL arm opening criteria are satisfied.
+#'
+#' @aliases openArm-ArmConditionAll
+#'
+#' @export
+setMethod(
+  f = "openArm",
+  signature = c(condition = "ArmConditionAll"),
+  definition = function(condition, data, ...) {
+    callNextMethod(condition, data, summary_fun = all, ...)
+  }
+)
+
+## ArmConditionAny ----
+
+#' @describeIn openArm method for `ArmConditionAny` class. Returns `TRUE` if
+#'   ANY arm opening criterion is satisfied.
+#'
+#' @aliases openArm-ArmConditionAny
+#'
+#' @export
+setMethod(
+  f = "openArm",
+  signature = c(condition = "ArmConditionAny"),
+  definition = function(condition, data, ...) {
+    callNextMethod(condition, data, summary_fun = any, ...)
+  }
+)
+
+## & operator ----
+
+#' Logical AND Operator for ArmCondition Objects
+#'
+#' @description `r lifecycle::badge("experimental")`
+#'
+#' Combines two [`ArmCondition`] objects with AND logic using the `&` operator.
+#' This creates an [`ArmConditionAll`] object.
+#'
+#' @param e1 (`ArmCondition`)\cr the first arm condition object.
+#' @param e2 (`ArmCondition`)\cr the second arm condition object.
+#'
+#' @return An [`ArmConditionAll`] object combining `e1` and `e2`.
+#'
+#' @export
+#' @name and,ArmCondition,ArmCondition-method
+#' @aliases &,ArmCondition,ArmCondition-method
+setMethod(
+  f = "&",
+  signature = c(e1 = "ArmCondition", e2 = "ArmCondition"),
+  definition = function(e1, e2) {
+    .ArmConditionAll(condition_list = list(e1, e2))
+  }
+)
+
+## | operator ----
+
+#' Logical OR Operator for ArmCondition Objects
+#'
+#' @description `r lifecycle::badge("experimental")`
+#'
+#' Combines two [`ArmCondition`] objects with OR logic using the `|` operator.
+#' This creates an [`ArmConditionAny`] object.
+#'
+#' @param e1 (`ArmCondition`)\cr the first arm condition object.
+#' @param e2 (`ArmCondition`)\cr the second arm condition object.
+#'
+#' @return An [`ArmConditionAny`] object combining `e1` and `e2`.
+#'
+#' @export
+#' @name or,ArmCondition,ArmCondition-method
+#' @aliases |,ArmCondition,ArmCondition-method
+setMethod(
+  f = "|",
+  signature = c(e1 = "ArmCondition", e2 = "ArmCondition"),
+  definition = function(e1, e2) {
+    .ArmConditionAny(condition_list = list(e1, e2))
+  }
+)
+
+h_hierarchical_next_dose <- function(arm_design, arm_data, arm_samples) {
+  dose_limit <- maxDose(arm_design@increments, data = arm_data)
+  if (arm_data@nObs == 0L) {
+    arm_design@startingDose
+  } else {
+    nextBest(
+      arm_design@nextBest,
+      doselimit = dose_limit,
+      samples = arm_samples,
+      model = arm_design@model,
+      data = arm_data
+    )$value
+  }
+}
+
 #' Simulate outcomes from a hierarchical CRM design
 #'
 #' @description `r lifecycle::badge("experimental")`
@@ -193,6 +372,7 @@ setMethod(
 
       # Initialize storage for simulation results.
       stopped <- stats::setNames(!arm_names %in% active_arms, arm_names)
+      opened <- stats::setNames(rep(FALSE, length(arm_names)), arm_names)
       doses <- stats::setNames(vector("list", length(arm_names)), arm_names)
       fits <- stats::setNames(vector("list", length(arm_names)), arm_names)
       stop_reasons <- stats::setNames(
@@ -219,7 +399,8 @@ setMethod(
       stop_reasons[stopped] <- "Historical arm: not enrolling."
       samples <- NULL
 
-      # As long as there are arms that have not yet stopped, keep enrolling and updating them.
+      # As long as there are active arms that have not yet stopped, keep
+      # opening, enrolling and updating them.
       while (!all(stopped)) {
         # Get overall samples from the hierarchical model on the current data.
         samples <- mcmc(
@@ -228,8 +409,28 @@ setMethod(
           options = mcmcOptions
         )
 
-        # Go through each enrolling arm and update it separately.
-        for (arm_name in arm_names[!stopped]) {
+        for (arm_name in arm_names[!opened & !stopped]) {
+          arm <- object@arms[[arm_name]]
+          if (openArm(
+            condition = arm@open_when,
+            data = data,
+            finished_arms = stopped
+          )) {
+            opened[[arm_name]] <- TRUE
+          }
+        }
+
+        if (!any(opened & !stopped)) {
+          pending_arms <- arm_names[!opened & !stopped]
+          stop(
+            "No active arm is currently open and the pending arm opening ",
+            "conditions are not fulfilled: ",
+            h_show_hierarchical_names(pending_arms)
+          )
+        }
+
+        # Go through each open enrolling arm and update it separately.
+        for (arm_name in arm_names[opened & !stopped]) {
           arm <- object@arms[[arm_name]]
           arm_design <- arm@design
           arm_data <- data@arms[[arm_name]]
@@ -241,18 +442,11 @@ setMethod(
             mcmcOptions = mcmcOptions
           )
 
-          dose_limit <- maxDose(arm_design@increments, data = arm_data)
-          next_dose <- if (arm_data@nObs == 0L) {
-            arm_design@startingDose
-          } else {
-            nextBest(
-              arm_design@nextBest,
-              doselimit = dose_limit,
-              samples = arm_samples,
-              model = arm_design@model,
-              data = arm_data
-            )$value
-          }
+          next_dose <- h_hierarchical_next_dose(
+            arm_design = arm_design,
+            arm_data = arm_data,
+            arm_samples = arm_samples
+          )
           doses[[arm_name]] <- next_dose
 
           should_stop <- stopTrial(

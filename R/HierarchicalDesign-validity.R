@@ -1,3 +1,29 @@
+# ArmCondition ----
+
+#' Internal Helper Functions for Validation of [`ArmCondition`] Objects
+#'
+#' @description `r lifecycle::badge("experimental")`
+#'
+#' These functions are only used internally to validate the format of an input
+#' [`ArmCondition`] or inherited classes and therefore not exported.
+#'
+#' @name v_arm_condition
+#' @param object (`ArmCondition`)\cr object to validate.
+#' @return A `character` vector with the validation failure messages,
+#'   or `TRUE` in case validation passes.
+NULL
+
+#' @describeIn v_arm_condition validates that the [`ArmFinishedCondition`]
+#'   object contains a valid `arm_name` slot.
+v_arm_finished_condition <- function(object) {
+  v <- Validate()
+  v$check(
+    test_string(object@arm_name),
+    "arm_name must be a single string"
+  )
+  v$result()
+}
+
 # HierarchicalDesign ----
 
 #' Internal Helper Functions for Validation of [`HierarchicalDesign`] Objects
@@ -31,6 +57,10 @@ v_design_arm <- function(object) {
   v$check(
     test_flag(object@borrow),
     "borrow must be a flag"
+  )
+  v$check(
+    test_class(object@open_when, "ArmCondition"),
+    "open_when must be an ArmCondition object"
   )
   v$result()
 }
