@@ -258,6 +258,17 @@ h_get_two_drugs_combo_sub <- function() {
   )
 }
 
+h_get_two_drugs_combo_diff_pars <- function() {
+  TwoDrugsCombo(
+    single_models = list(
+      drug1 = h_get_general_single_agent_no_ref(beta_mean = c(-2, 0.02)),
+      drug2 = h_get_logistic_log_normal()
+    ),
+    gamma = 0,
+    tau = 1
+  )
+}
+
 h_get_dual_endpoint <- function(use_log_dose = FALSE, fixed = TRUE) {
   if (fixed) {
     sigma2W <- 1 # nolint

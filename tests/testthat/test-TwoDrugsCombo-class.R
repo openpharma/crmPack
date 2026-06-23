@@ -143,3 +143,28 @@ test_that("MCMC runs for TwoDrugsCombo model with empty data (i.e. prior)", {
   expect_equal(ncol(result@data$alpha0), 2L)
   expect_equal(ncol(result@data$alpha1), 2L)
 })
+
+test_that("MCMC runs also when LogisticLogNormalSub models are used inside", {
+  data <- h_get_data_combo()
+  model <- h_get_two_drugs_combo_sub()
+  options <- h_get_mcmc_options(samples = 10, burnin = 20)
+
+  result <- mcmc(data = data, model = model, options = options)
+  expect_s4_class(result, "Samples")
+  expect_subset(c("alpha0", "alpha1", "eta"), names(result@data))
+  expect_equal(ncol(result@data$alpha0), 2L)
+  expect_equal(ncol(result@data$alpha1), 2L)
+})
+
+test_that("MCMC also works when a models with different parameters are combined", {
+  data <- h_get_data_combo()
+  model <- h_get_two_drugs_combo_diff_pars()
+  options <- h_get_mcmc_options(samples = 10, burnin = 20)
+
+  result <- mcmc(data = data, model = model, options = options)
+  expect_s4_class(result, "Samples")
+  expect_subset(
+    c("alpha0", "alpha1", "beta0", "beta1", "eta"),
+    names(result@data)
+  )
+})
