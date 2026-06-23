@@ -70,7 +70,22 @@ NULL
   validity = v_model_two_drugs_combo
 )
 
-h_combo_replace_symbols <- function(expr, replacements) {
+#' Replace Symbols in an R/JAGS Expression
+#'
+#' @description
+#' Recursively substitutes symbols in an expression using a named list of
+#' replacement expressions. Used to namespace single-agent model code before
+#' joining it into a [`TwoDrugsCombo`] model.
+#'
+#' @param expr (`language`)\cr expression to transform.
+#' @param replacements (`list`)\cr named list mapping symbol names to replacement
+#'   symbols or calls.
+#'
+#' @return Transformed expression.
+#' @keywords internal
+#' @noRd
+#'
+h_two_drugs_combo_replace_symbols <- function(expr, replacements) {
   if (is.symbol(expr)) {
     name <- as.character(expr)
     if (name %in% names(replacements)) {
@@ -81,43 +96,92 @@ h_combo_replace_symbols <- function(expr, replacements) {
   if (is.call(expr)) {
     return(as.call(lapply(
       as.list(expr),
-      h_combo_replace_symbols,
+      h_two_drugs_combo_replace_symbols,
       replacements
     )))
   }
   expr
 }
 
-h_combo_indexed_call <- function(symbol, ...) {
+#' Create an Indexed JAGS Call
+#'
+#' @description
+#' Creates calls like `theta[1]` or `p_single[i, 2]`.
+#'
+#' @param symbol (`string`)\cr name of the indexed object.
+#' @param ... index expressions.
+#'
+#' @return A call to `[`.
+#' @keywords internal
+#' @noRd
+#'
+h_two_drugs_combo_indexed_call <- function(symbol, ...) {
   as.call(c(list(as.name("["), as.name(symbol)), list(...)))
 }
 
-h_combo_lhs_symbol <- function(expr) {
+#' Find Symbols Assigned on the Left-Hand Side
+#'
+#' @description
+#' Extracts root symbols from left-hand side expressions. For example,
+#' `logit(p[i])` and `theta[1:2]` both return the assigned node name.
+#'
+#' @param expr (`language`)\cr left-hand side expression.
+#'
+#' @return Character vector of assigned node names.
+#' @keywords internal
+#' @noRd
+#'
+h_two_drugs_combo_lhs_symbols <- function(expr) {
   if (is.symbol(expr)) {
     return(as.character(expr))
   }
   if (is.call(expr) && identical(as.character(expr[[1L]]), "[")) {
-    return(h_combo_lhs_symbol(expr[[2L]]))
+    return(h_two_drugs_combo_lhs_symbols(expr[[2L]]))
   }
   if (is.call(expr)) {
-    return(unique(unlist(lapply(as.list(expr)[-1L], h_combo_lhs_symbol))))
+    return(unique(unlist(lapply(as.list(expr)[-1L], h_two_drugs_combo_lhs_symbols))))
   }
   character()
 }
 
-h_combo_collect_prior_lhs <- function(expr) {
+#' Collect Assigned JAGS Nodes
+#'
+#' @description
+#' Recursively finds node names assigned by `<-` or `~` in a model body.
+#'
+#' @param expr (`language`)\cr model body or sub-expression.
+#'
+#' @return Character vector of node names.
+#' @keywords internal
+#' @noRd
+#'
+h_two_drugs_combo_assigned_nodes <- function(expr) {
   lhs <- character()
   if (is.call(expr)) {
     operator <- as.character(expr[[1L]])
     if (operator %in% c("<-", "~")) {
-      lhs <- h_combo_lhs_symbol(expr[[2L]])
+      lhs <- h_two_drugs_combo_lhs_symbols(expr[[2L]])
     }
-    lhs <- c(lhs, unlist(lapply(as.list(expr)[-1L], h_combo_collect_prior_lhs)))
+    lhs <- c(lhs, unlist(lapply(as.list(expr)[-1L], h_two_drugs_combo_assigned_nodes)))
   }
   unique(lhs)
 }
 
-h_combo_single_model_specs <- function(model, from_prior) {
+#' Evaluate Single-Agent Model Specifications
+#'
+#' @description
+#' Calls a compatible single-agent model's `modelspecs` function. The combo
+#' constructor currently supports single-agent `modelspecs` with no data
+#' arguments and an optional `from_prior` argument.
+#'
+#' @param model (`GeneralModel`)\cr single-agent model.
+#' @param from_prior (`flag`)\cr whether to request prior-only specifications.
+#'
+#' @return A named list of model specifications.
+#' @keywords internal
+#' @noRd
+#'
+h_two_drugs_combo_single_model_specs <- function(model, from_prior) {
   spec_args <- formalArgs(model@modelspecs)
   assert_subset(setdiff(spec_args, "from_prior"), character())
   args <- if ("from_prior" %in% spec_args) {
@@ -128,8 +192,20 @@ h_combo_single_model_specs <- function(model, from_prior) {
   do.call(model@modelspecs, args)
 }
 
-h_combo_single_model_ref_dose <- function(model) {
-  specs <- h_combo_single_model_specs(model, from_prior = FALSE)
+#' Extract Optional Reference Dose
+#'
+#' @description
+#' Reads `ref_dose` from full model specifications when available. Models
+#' without `ref_dose` are valid and return `NA_real_`.
+#'
+#' @inheritParams h_two_drugs_combo_single_model_specs
+#'
+#' @return Numeric scalar reference dose or `NA_real_`.
+#' @keywords internal
+#' @noRd
+#'
+h_two_drugs_combo_single_model_ref_dose <- function(model) {
+  specs <- h_two_drugs_combo_single_model_specs(model, from_prior = FALSE)
   if ("ref_dose" %in% names(specs) && isTRUE(test_number(specs$ref_dose))) {
     specs$ref_dose
   } else {
@@ -137,7 +213,20 @@ h_combo_single_model_ref_dose <- function(model) {
   }
 }
 
-h_combo_rename_list <- function(x, suffix) {
+#' Suffix Named List Elements
+#'
+#' @description
+#' Adds a suffix to every name in a named list. Used for model specifications and
+#' initial values after drug-specific namespacing.
+#'
+#' @param x (`list`)\cr named list.
+#' @param suffix (`string`)\cr suffix to append.
+#'
+#' @return `x` with suffixed names.
+#' @keywords internal
+#' @noRd
+#'
+h_two_drugs_combo_suffix_names <- function(x, suffix) {
   names(x) <- vapply(
     names(x),
     function(name) {
@@ -148,14 +237,23 @@ h_combo_rename_list <- function(x, suffix) {
   x
 }
 
-h_combo_contains_symbol <- function(expr, symbol) {
+#' Does an Expression Contain a Symbol?
+#'
+#' @param expr (`language`)\cr expression to inspect.
+#' @param symbol (`string`)\cr symbol name to search for.
+#'
+#' @return A logical scalar.
+#' @keywords internal
+#' @noRd
+#'
+h_two_drugs_combo_contains_symbol <- function(expr, symbol) {
   if (is.symbol(expr)) {
     return(identical(as.character(expr), symbol))
   }
   if (is.call(expr)) {
     return(any(vapply(
       as.list(expr)[-1L],
-      h_combo_contains_symbol,
+      h_two_drugs_combo_contains_symbol,
       logical(1L),
       symbol = symbol
     )))
@@ -163,7 +261,18 @@ h_combo_contains_symbol <- function(expr, symbol) {
   FALSE
 }
 
-h_combo_is_x_term <- function(expr) {
+#' Is an Expression the Dose Term?
+#'
+#' @description
+#' Detects raw dose expressions, either `x` or indexed `x[...]`.
+#'
+#' @inheritParams h_two_drugs_combo_contains_symbol
+#'
+#' @return A logical scalar.
+#' @keywords internal
+#' @noRd
+#'
+h_two_drugs_combo_is_x_term <- function(expr) {
   is.symbol(expr) &&
     identical(as.character(expr), "x") ||
     is.call(expr) &&
@@ -172,37 +281,63 @@ h_combo_is_x_term <- function(expr) {
       identical(as.character(expr[[2L]]), "x")
 }
 
-h_combo_normalized_dose_from_expr <- function(expr) {
-  if (!h_combo_contains_symbol(expr, "x")) {
+#' Infer Normalized Dose from an Expression
+#'
+#' @description
+#' Infers the single-agent dose covariate used in the linear predictor. It strips
+#' wrappers such as `log(...)`, follows the single `x`-containing term through
+#' sums and products, and preserves normalizations such as `x / ref_dose` and
+#' `x - ref_dose`.
+#'
+#' @inheritParams h_two_drugs_combo_contains_symbol
+#'
+#' @return A dose-normalization expression, or `NULL` when no dose appears.
+#' @keywords internal
+#' @noRd
+#'
+h_two_drugs_combo_normalized_dose_from_expr <- function(expr) {
+  if (!h_two_drugs_combo_contains_symbol(expr, "x")) {
     return(NULL)
   }
-  if (h_combo_is_x_term(expr)) {
+  if (h_two_drugs_combo_is_x_term(expr)) {
     return(expr)
   }
   if (is.call(expr) && identical(as.character(expr[[1L]]), "log")) {
-    return(h_combo_normalized_dose_from_expr(expr[[2L]]))
+    return(h_two_drugs_combo_normalized_dose_from_expr(expr[[2L]]))
   }
   if (is.call(expr) && identical(as.character(expr[[1L]]), "(")) {
-    return(h_combo_normalized_dose_from_expr(expr[[2L]]))
+    return(h_two_drugs_combo_normalized_dose_from_expr(expr[[2L]]))
   }
   if (is.call(expr) && as.character(expr[[1L]]) %in% c("+", "*")) {
     x_args <- Filter(
-      function(arg) h_combo_contains_symbol(arg, "x"),
+      function(arg) h_two_drugs_combo_contains_symbol(arg, "x"),
       as.list(expr)[-1L]
     )
     if (length(x_args) == 1L) {
-      return(h_combo_normalized_dose_from_expr(x_args[[1L]]))
+      return(h_two_drugs_combo_normalized_dose_from_expr(x_args[[1L]]))
     }
   }
   if (is.call(expr) && as.character(expr[[1L]]) %in% c("/", "-")) {
-    if (h_combo_contains_symbol(expr[[2L]], "x")) {
+    if (h_two_drugs_combo_contains_symbol(expr[[2L]], "x")) {
       return(expr)
     }
   }
   expr
 }
 
-h_combo_rhs_expressions <- function(expr) {
+#' Collect Right-Hand Side Expressions
+#'
+#' @description
+#' Recursively collects the right-hand side of `<-` and `~` expressions in a
+#' model body.
+#'
+#' @inheritParams h_two_drugs_combo_contains_symbol
+#'
+#' @return A list of expressions.
+#' @keywords internal
+#' @noRd
+#'
+h_two_drugs_combo_rhs_expressions <- function(expr) {
   rhs <- list()
   if (is.call(expr)) {
     operator <- as.character(expr[[1L]])
@@ -214,7 +349,7 @@ h_combo_rhs_expressions <- function(expr) {
       unlist(
         lapply(
           as.list(expr)[-1L],
-          h_combo_rhs_expressions
+          h_two_drugs_combo_rhs_expressions
         ),
         recursive = FALSE
       )
@@ -223,16 +358,44 @@ h_combo_rhs_expressions <- function(expr) {
   rhs
 }
 
-h_combo_normalized_dose_expr <- function(expr, replacements) {
+#' Infer and Namespace Normalized Dose
+#'
+#' @description
+#' Finds the first dose-normalization expression in a model body and applies the
+#' drug-specific symbol replacements.
+#'
+#' @param expr (`language`)\cr single-agent data model body.
+#' @param replacements (`list`)\cr symbol replacements used for namespacing.
+#'
+#' @return Namespaced normalized-dose expression.
+#' @keywords internal
+#' @noRd
+#'
+h_two_drugs_combo_normalized_dose_expr <- function(expr, replacements) {
   normalized <- Filter(
     Negate(is.null),
-    lapply(h_combo_rhs_expressions(expr), h_combo_normalized_dose_from_expr)
+    lapply(h_two_drugs_combo_rhs_expressions(expr), h_two_drugs_combo_normalized_dose_from_expr)
   )
   assert_true(length(normalized) > 0L)
-  h_combo_replace_symbols(normalized[[1L]], replacements)
+  h_two_drugs_combo_replace_symbols(normalized[[1L]], replacements)
 }
 
-h_combo_likelihood_replacement <- function(expr, replacements, index) {
+#' Replace a Bernoulli Likelihood
+#'
+#' @description
+#' Converts a single-agent likelihood `y[i] ~ dbern(p[i])` into an assignment to
+#' the drug-specific combo probability, e.g. `p_single[i, 1] <- p_drug1[i]`.
+#'
+#' @param expr (`language`)\cr expression to inspect.
+#' @param replacements (`list`)\cr symbol replacements used for namespacing.
+#' @param index (`count`)\cr drug index in the combo model.
+#'
+#' @return Replacement expression, or `NULL` if `expr` is not a Bernoulli
+#'   likelihood.
+#' @keywords internal
+#' @noRd
+#'
+h_two_drugs_combo_likelihood_replacement <- function(expr, replacements, index) {
   is_likelihood <- is.call(expr) &&
     identical(as.character(expr[[1L]]), "~") &&
     is.call(expr[[3L]]) &&
@@ -242,32 +405,50 @@ h_combo_likelihood_replacement <- function(expr, replacements, index) {
     return(NULL)
   }
 
+  # Preserve the observation index from the original likelihood where possible,
+  # so models using a non-standard loop index still map into p_single correctly.
   lhs <- expr[[2L]]
   dose_index <- if (is.call(lhs) && identical(as.character(lhs[[1L]]), "[")) {
-    h_combo_replace_symbols(lhs[[3L]], replacements)
+    h_two_drugs_combo_replace_symbols(lhs[[3L]], replacements)
   } else {
     as.name("i")
   }
-  prob <- h_combo_replace_symbols(expr[[3L]][[2L]], replacements)
+  prob <- h_two_drugs_combo_replace_symbols(expr[[3L]][[2L]], replacements)
 
   as.call(list(
     as.name("<-"),
-    h_combo_indexed_call("p_single", dose_index, index),
+    h_two_drugs_combo_indexed_call("p_single", dose_index, index),
     prob
   ))
 }
 
-h_combo_replace_bernoulli_likelihood <- function(expr, replacements, index) {
+#' Replace Bernoulli Likelihoods in a Data Model
+#'
+#' @description
+#' Recursively namespaces a single-agent data model and replaces its Bernoulli
+#' toxicity likelihood with a `p_single` assignment.
+#'
+#' @inheritParams h_two_drugs_combo_likelihood_replacement
+#'
+#' @return A list with `expr`, the transformed expression, and `found`, a flag
+#'   indicating whether a Bernoulli likelihood was replaced.
+#' @keywords internal
+#' @noRd
+#'
+h_two_drugs_combo_replace_bernoulli_likelihood <- function(expr, replacements, index) {
   found <- FALSE
 
   replace_likelihood <- function(expr) {
-    replacement <- h_combo_likelihood_replacement(expr, replacements, index)
+    # The likelihood replacement has to happen before generic symbol
+    # replacement, otherwise `y[i] ~ dbern(p[i])` would be namespaced instead of
+    # being converted into the single-agent probability contribution.
+    replacement <- h_two_drugs_combo_likelihood_replacement(expr, replacements, index)
     if (!is.null(replacement)) {
       found <<- TRUE
       return(replacement)
     }
     if (is.symbol(expr)) {
-      return(h_combo_replace_symbols(expr, replacements))
+      return(h_two_drugs_combo_replace_symbols(expr, replacements))
     }
     if (is.call(expr)) {
       return(as.call(lapply(as.list(expr), replace_likelihood)))
@@ -278,7 +459,19 @@ h_combo_replace_bernoulli_likelihood <- function(expr, replacements, index) {
   list(expr = replace_likelihood(expr), found = found)
 }
 
-h_combo_x_mapping_model <- function(index) {
+#' Create Dose Column Mapping Model
+#'
+#' @description
+#' Creates a tiny JAGS model that maps the two-column combo dose matrix to a
+#' single-agent dose vector, e.g. `x_drug1[i] <- x[i, 1]`.
+#'
+#' @param index (`count`)\cr drug index in the combo dose matrix.
+#'
+#' @return Function containing a JAGS model fragment.
+#' @keywords internal
+#' @noRd
+#'
+h_two_drugs_combo_x_mapping_model <- function(index) {
   model <- function() {}
   body(model) <- substitute(
     {
@@ -294,10 +487,27 @@ h_combo_x_mapping_model <- function(index) {
   model
 }
 
-h_combo_sample_alias_model <- function(samples, single_models) {
+#' Create Sample Alias Model
+#'
+#' @description
+#' Creates deterministic JAGS aliases from namespaced single-agent sample nodes
+#' back to user-facing sample names. If both agents expose a sample name, the
+#' alias is vector-valued; if only one agent exposes it, the alias is scalar.
+#'
+#' @param samples (`character`)\cr union of single-agent sample names.
+#' @param single_models (`list`)\cr single-agent models.
+#'
+#' @return Function containing a JAGS model fragment.
+#' @keywords internal
+#' @noRd
+#'
+h_two_drugs_combo_sample_alias_model <- function(samples, single_models) {
   model <- function() {}
   expressions <- list(as.name("{"))
   for (sample_name in samples) {
+    # Use the compact index in the public alias (`alpha0[1]`) but map it to the
+    # original drug index in the namespaced node (`alpha0_drug2`) when a sample
+    # exists for only a subset of single-agent models.
     sample_model_indices <- which(vapply(
       single_models,
       function(model) sample_name %in% model@sample,
@@ -309,7 +519,7 @@ h_combo_sample_alias_model <- function(samples, single_models) {
         expressions,
         list(as.call(list(
           as.name("<-"),
-          h_combo_indexed_call(sample_name, index),
+          h_two_drugs_combo_indexed_call(sample_name, index),
           as.name(paste0(sample_name, "_drug", model_index))
         )))
       )
@@ -319,7 +529,19 @@ h_combo_sample_alias_model <- function(samples, single_models) {
   model
 }
 
-h_combo_interaction_model <- function(normalized_dose) {
+#' Create Interaction Covariate Model
+#'
+#' @description
+#' Multiplies the normalized dose expressions from the two single-agent models
+#' to obtain the combo interaction covariate.
+#'
+#' @param normalized_dose (`list`)\cr normalized-dose expressions, one per drug.
+#'
+#' @return Function containing a JAGS model fragment.
+#' @keywords internal
+#' @noRd
+#'
+h_two_drugs_combo_interaction_model <- function(normalized_dose) {
   model <- function() {}
   interaction <- as.call(c(list(as.name("*")), normalized_dose))
   body(model) <- substitute(
@@ -333,12 +555,27 @@ h_combo_interaction_model <- function(normalized_dose) {
   model
 }
 
-h_combo_single_model_part <- function(model, index) {
-  prior_specs <- h_combo_single_model_specs(model, from_prior = TRUE)
-  full_specs <- h_combo_single_model_specs(model, from_prior = FALSE)
+#' Build Namespaced Single-Agent Model Parts
+#'
+#' @description
+#' Takes one compatible single-agent model and returns drug-specific JAGS
+#' fragments, model specifications, initial values, and normalized dose
+#' expression for use inside a [`TwoDrugsCombo`] model.
+#'
+#' @param model (`GeneralModel`)\cr single-agent model.
+#' @param index (`count`)\cr drug index.
+#'
+#' @return A named list with `priormodel`, `datamodel`, `normalized_dose`,
+#'   `prior_specs`, `full_specs`, and `inits`.
+#' @keywords internal
+#' @noRd
+#'
+h_two_drugs_combo_single_model_part <- function(model, index) {
+  prior_specs <- h_two_drugs_combo_single_model_specs(model, from_prior = TRUE)
+  full_specs <- h_two_drugs_combo_single_model_specs(model, from_prior = FALSE)
   prior_inits <- do.call(model@init, list())
-  prior_nodes <- h_combo_collect_prior_lhs(body(model@priormodel))
-  data_nodes <- h_combo_collect_prior_lhs(body(model@datamodel))
+  prior_nodes <- h_two_drugs_combo_assigned_nodes(body(model@priormodel))
+  data_nodes <- h_two_drugs_combo_assigned_nodes(body(model@datamodel))
   suffix <- paste0("_drug", index)
   prefixed_nodes <- setdiff(
     unique(c(
@@ -350,6 +587,9 @@ h_combo_single_model_part <- function(model, index) {
     )),
     c("nObs", "x", "y")
   )
+  # Every node or data specification local to the single-agent model receives a
+  # drug suffix. The common data names `nObs`, `x`, and `y` are kept special
+  # because the combo model supplies them.
   replacements <- c(
     setNames(
       lapply(prefixed_nodes, function(name) as.name(paste0(name, suffix))),
@@ -357,31 +597,33 @@ h_combo_single_model_part <- function(model, index) {
     ),
     list(x = as.name(paste0("x_drug", index)))
   )
-  normalized_dose <- h_combo_normalized_dose_expr(
+  normalized_dose <- h_two_drugs_combo_normalized_dose_expr(
     body(model@datamodel),
     replacements
   )
 
   prior_model <- model@priormodel
-  body(prior_model) <- h_combo_replace_symbols(body(prior_model), replacements)
+  body(prior_model) <- h_two_drugs_combo_replace_symbols(body(prior_model), replacements)
 
   data_model <- model@datamodel
-  data_body <- h_combo_replace_bernoulli_likelihood(
+  data_body <- h_two_drugs_combo_replace_bernoulli_likelihood(
     body(data_model),
     replacements = replacements,
     index = index
   )
   assert_true(data_body$found)
   body(data_model) <- data_body$expr
-  data_model <- h_jags_join_models(h_combo_x_mapping_model(index), data_model)
+  # Prepend the dose-column mapping so the namespaced single-agent data model can
+  # continue to refer to a vector dose input.
+  data_model <- h_jags_join_models(h_two_drugs_combo_x_mapping_model(index), data_model)
 
   list(
     priormodel = prior_model,
     datamodel = data_model,
     normalized_dose = normalized_dose,
-    prior_specs = h_combo_rename_list(prior_specs, suffix),
-    full_specs = h_combo_rename_list(full_specs, suffix),
-    inits = h_combo_rename_list(prior_inits, suffix)
+    prior_specs = h_two_drugs_combo_suffix_names(prior_specs, suffix),
+    full_specs = h_two_drugs_combo_suffix_names(full_specs, suffix),
+    inits = h_two_drugs_combo_suffix_names(prior_inits, suffix)
   )
 }
 
@@ -436,13 +678,13 @@ TwoDrugsCombo <- function(
 
   ref_dose <- as.numeric(vapply(
     single_models,
-    h_combo_single_model_ref_dose,
+    h_two_drugs_combo_single_model_ref_dose,
     numeric(1L)
   ))
   names(ref_dose) <- names(single_models)
 
   single_model_parts <- lapply(seq_along(single_models), function(index) {
-    h_combo_single_model_part(single_models[[index]], index = index)
+    h_two_drugs_combo_single_model_part(single_models[[index]], index = index)
   })
   single_datamodel <- Reduce(
     h_jags_join_models,
@@ -455,11 +697,11 @@ TwoDrugsCombo <- function(
   all_samples <- unique(unlist(lapply(single_models, slot, "sample")))
   single_priormodel <- h_jags_join_models(
     single_priormodel,
-    h_combo_sample_alias_model(all_samples, single_models)
+    h_two_drugs_combo_sample_alias_model(all_samples, single_models)
   )
   single_datamodel <- h_jags_join_models(
     single_datamodel,
-    h_combo_interaction_model(lapply(
+    h_two_drugs_combo_interaction_model(lapply(
       single_model_parts,
       "[[",
       "normalized_dose"

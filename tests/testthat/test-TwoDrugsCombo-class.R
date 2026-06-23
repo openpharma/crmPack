@@ -1,5 +1,150 @@
 # TwoDrugsCombo ----
 
+## internal helpers ----
+
+test_that("TwoDrugsCombo expression helpers replace and discover symbols", {
+  expr <- quote(logit(p[i]) <- alpha0 + alpha1 * log(x[i] / ref_dose))
+  replacements <- list(
+    p = as.name("p_drug1"),
+    alpha0 = as.name("alpha0_drug1"),
+    alpha1 = as.name("alpha1_drug1"),
+    x = as.name("x_drug1"),
+    ref_dose = as.name("ref_dose_drug1")
+  )
+
+  replaced <- h_two_drugs_combo_replace_symbols(expr, replacements)
+  expect_equal(
+    deparse1(replaced),
+    "logit(p_drug1[i]) <- alpha0_drug1 + alpha1_drug1 * log(x_drug1[i]/ref_dose_drug1)" # nolint
+  )
+  expect_equal(
+    h_two_drugs_combo_indexed_call("p_single", as.name("i"), 2),
+    quote(p_single[i, 2])
+  )
+  expect_equal(h_two_drugs_combo_lhs_symbols(quote(logit(p[i]))), "p")
+  expect_setequal(
+    h_two_drugs_combo_assigned_nodes(body(h_get_two_drugs_combo()@datamodel)),
+    c(
+      "x_drug1",
+      "p_drug1",
+      "p_single",
+      "x_drug2",
+      "p_drug2",
+      "combo_interaction",
+      "p0",
+      "p",
+      "y"
+    )
+  )
+})
+
+test_that("TwoDrugsCombo specification helpers handle optional ref_dose", {
+  log_model <- h_get_logistic_log_normal()
+  raw_model <- h_get_general_single_agent_no_ref()
+  specs <- h_two_drugs_combo_single_model_specs(log_model, from_prior = FALSE)
+
+  expect_named(specs, c("mean", "prec", "ref_dose"))
+  expect_equal(h_two_drugs_combo_single_model_ref_dose(log_model), 50)
+  expect_true(is.na(h_two_drugs_combo_single_model_ref_dose(raw_model)))
+  expect_named(
+    h_two_drugs_combo_suffix_names(list(mean = 1, prec = 2), "_drug1"),
+    c("mean_drug1", "prec_drug1")
+  )
+})
+
+test_that("TwoDrugsCombo dose-normalization helpers infer dose covariates", {
+  expect_true(h_two_drugs_combo_contains_symbol(quote(log(x / ref_dose)), "x"))
+  expect_false(h_two_drugs_combo_contains_symbol(quote(alpha0 + alpha1), "x"))
+  expect_true(h_two_drugs_combo_is_x_term(quote(x[i])))
+  expect_false(h_two_drugs_combo_is_x_term(quote(x[i] / ref_dose)))
+
+  expect_equal(
+    h_two_drugs_combo_normalized_dose_from_expr(quote(log(x[i] / ref_dose))),
+    quote(x[i] / ref_dose)
+  )
+  expect_equal(
+    h_two_drugs_combo_normalized_dose_from_expr(quote(alpha0 + alpha1 * x[i])),
+    quote(x[i])
+  )
+  expect_equal(
+    h_two_drugs_combo_rhs_expressions(quote({
+      a <- b + x
+      y[i] ~ dbern(p[i])
+    })),
+    list(quote(b + x), quote(dbern(p[i])))
+  )
+  expect_equal(
+    h_two_drugs_combo_normalized_dose_expr(
+      quote({
+        logit(p[i]) <- alpha0 + alpha1 * log(x[i] / ref_dose)
+        y[i] ~ dbern(p[i])
+      }),
+      list(x = as.name("x_drug1"), ref_dose = as.name("ref_dose_drug1"))
+    ),
+    quote(x_drug1[i] / ref_dose_drug1)
+  )
+})
+
+test_that("TwoDrugsCombo likelihood helpers rewrite Bernoulli contribution", {
+  replacements <- list(
+    p = as.name("p_drug2"),
+    x = as.name("x_drug2"),
+    alpha0 = as.name("alpha0_drug2")
+  )
+  replacement <- h_two_drugs_combo_likelihood_replacement(
+    quote(y[k] ~ dbern(p[k])),
+    replacements = replacements,
+    index = 2
+  )
+  transformed <- h_two_drugs_combo_replace_bernoulli_likelihood(
+    quote({
+      logit(p[k]) <- alpha0 + x[k]
+      y[k] ~ dbern(p[k])
+    }),
+    replacements = replacements,
+    index = 2
+  )
+
+  expect_equal(replacement, quote(p_single[k, 2] <- p_drug2[k]))
+  expect_true(transformed$found)
+  expect_match(deparse1(transformed$expr), "p_single\\[k, 2\\] <- p_drug2\\[k\\]")
+  expect_match(deparse1(transformed$expr), "logit\\(p_drug2\\[k\\]\\)")
+})
+
+test_that("TwoDrugsCombo model-fragment helpers generate expected JAGS", {
+  model <- h_get_two_drugs_combo_diff_pars()
+  x_mapping <- h_two_drugs_combo_x_mapping_model(2)
+  sample_alias <- h_two_drugs_combo_sample_alias_model(model@sample, model@single_models)
+  interaction <- h_two_drugs_combo_interaction_model(
+    list(quote(x_drug1[i]), quote(x_drug2[i] / ref_dose_drug2))
+  )
+
+  expect_match(deparse1(body(x_mapping)), "x_drug2\\[i\\] <- x\\[i, 2\\]")
+  expect_match(deparse1(body(sample_alias)), "beta0\\[1L\\] <- beta0_drug1")
+  expect_match(deparse1(body(sample_alias)), "alpha0\\[1L\\] <- alpha0_drug2")
+  expect_match(
+    deparse1(body(interaction)),
+    "combo_interaction\\[i\\] <- x_drug1\\[i\\] \\* \\(x_drug2\\[i\\]/ref_dose_drug2\\)" # nolint
+  )
+})
+
+test_that("TwoDrugsCombo single-model part helper namespaces a model", {
+  part <- h_two_drugs_combo_single_model_part(h_get_logistic_log_normal(), 2)
+  prior_file <- h_jags_write_model(part$priormodel)
+  data_file <- h_jags_write_model(part$datamodel)
+  on.exit(unlink(c(prior_file, data_file)))
+  prior_text <- gsub("\\s+", " ", paste(readLines(prior_file), collapse = " "))
+  data_text <- gsub("\\s+", " ", paste(readLines(data_file), collapse = " "))
+
+  expect_named(part$prior_specs, c("mean_drug2", "prec_drug2"))
+  expect_named(part$full_specs, c("mean_drug2", "prec_drug2", "ref_dose_drug2"))
+  expect_named(part$inits, "theta_drug2")
+  expect_equal(part$normalized_dose, quote(x_drug2[i] / ref_dose_drug2))
+  expect_match(prior_text, "theta_drug2 ~ dmnorm\\(mean_drug2, prec_drug2\\)")
+  expect_match(data_text, "x_drug2\\[i\\] <- x\\[i, 2\\]")
+  expect_match(data_text, "p_single\\[i, 2\\] <- p_drug2\\[i\\]")
+})
+
 ## constructor ----
 
 test_that("TwoDrugsCombo object can be created with user constructor", {
