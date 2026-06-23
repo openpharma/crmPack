@@ -6,8 +6,6 @@
 \alias{v_rule_design_ordinal}
 \alias{v_design_combo}
 \alias{v_design_grouped}
-\alias{v_design_arm}
-\alias{v_hierarchical_design}
 \title{Internal Helper Functions for Validation of \code{\link{RuleDesign}} Objects}
 \usage{
 v_rule_design(object)
@@ -17,10 +15,6 @@ v_rule_design_ordinal(object)
 v_design_combo(object)
 
 v_design_grouped(object)
-
-v_design_arm(object)
-
-v_hierarchical_design(object)
 }
 \arguments{
 \item{object}{(\code{RuleDesignOrdinal})\cr object to validate.}
@@ -56,10 +50,5 @@ contains valid \code{startingDose}.
 
 \item \code{v_design_grouped()}: validates that the \code{\link{DesignGrouped}} object
 contains valid flags.
-
-\item \code{v_design_arm()}: validates that the \code{\link{DesignArm}} object contains valid slots.
-
-\item \code{v_hierarchical_design()}: validates that the \code{\link{HierarchicalDesign}} object
-contains valid hierarchical arm metadata.
 
 }}
