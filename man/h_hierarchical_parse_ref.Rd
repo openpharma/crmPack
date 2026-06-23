@@ -19,7 +19,7 @@ Named list with entries \code{kind}, \code{index}, \code{latent}, and \code{samp
 \description{
 \ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#experimental}{\figure{lifecycle-experimental.svg}{options: alt='[Experimental]'}}}{\strong{[Experimental]}}
 
-Converts a user-facing parameter reference such as \code{"alpha0"} or
-\code{"alpha1[2]"} into metadata that can be used by the JAGS code generators.
+Converts a user-facing parameter reference into metadata that can be used by
+the JAGS code generators.
 }
 \keyword{internal}

@@ -298,6 +298,38 @@ setMethod(
 
 ## HierarchicalDesign ----
 
+#' Helper function to get the samples used for decision rules in a hierarchical design
+#'
+#' In a hierarchical design, the samples used for decision rules in each arm may either be the overall
+#' samples from the hierarchical model (if borrowing is allowed)
+#' or the arm-specific samples (if no borrowing).
+#'
+#' @param samples the overall samples from the hierarchical model.
+#' @param arm_name the name of the arm for which we want to get the samples for decision rules.
+#' @param arm the `DesignArm` object for this arm.
+#' @param arm_data the data for this arm.
+#' @param mcmcOptions the MCMC options to use if we need to fit an arm-specific model.
+#' @return the samples to be used for decision rules for this arm.
+#'
+#' @keywords internal
+h_hierarchical_get_decision_samples <- function(
+  samples,
+  arm_name,
+  arm,
+  arm_data,
+  mcmcOptions
+) {
+  if (arm@borrow) {
+    armSamples(samples, arm_name)
+  } else {
+    mcmc(
+      data = arm_data,
+      model = arm@design@model,
+      options = mcmcOptions
+    )
+  }
+}
+
 #' Simulate outcomes from a hierarchical CRM design
 #'
 #' @description `r lifecycle::badge("experimental")`
@@ -439,7 +471,13 @@ setMethod(
           arm <- object@arms[[arm_name]]
           arm_design <- arm@design
           arm_data <- data@arms[[arm_name]]
-          arm_samples <- armSamples(samples, arm_name)
+          arm_samples <- h_hierarchical_get_decision_samples(
+            samples = samples,
+            arm_name = arm_name,
+            arm = arm,
+            arm_data = arm_data,
+            mcmcOptions = mcmcOptions
+          )
 
           dose_limit <- maxDose(arm_design@increments, data = arm_data)
           next_dose <- if (arm_data@nObs == 0L) {
@@ -645,8 +683,15 @@ setMethod(
       # Update arm specific fits.
       for (arm_name in arm_names) {
         if (is.null(fits[[arm_name]])) {
-          arm_design <- object@arms[[arm_name]]@design
-          arm_samples <- armSamples(samples, arm_name)
+          arm <- object@arms[[arm_name]]
+          arm_design <- arm@design
+          arm_samples <- h_hierarchical_get_decision_samples(
+            samples = samples,
+            arm_name = arm_name,
+            arm = arm,
+            arm_data = data@arms[[arm_name]],
+            mcmcOptions = mcmcOptions
+          )
           fits[[arm_name]] <- fit(
             object = arm_samples,
             model = arm_design@model,

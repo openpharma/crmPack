@@ -1408,6 +1408,8 @@ DesignOrdinal <- function(
 #'
 #' @slot name (`string`)\cr the name of the arm.
 #' @slot active (`flag`)\cr whether the arm is enrolling or not (historical).
+#' @slot borrow (`flag`)\cr whether this arm may borrow information from other
+#'   arms when making dose escalation decisions. Only relevant if `active = TRUE`.
 #' @slot design (`Design`)\cr the design object for this arm.
 #'
 #' @aliases DesignArm
@@ -1418,11 +1420,13 @@ DesignOrdinal <- function(
   slots = c(
     name = "character",
     active = "logical",
+    borrow = "logical",
     design = "ANY"
   ),
   prototype = prototype(
     name = "Arm",
     active = TRUE,
+    borrow = TRUE,
     design = .Design()
   ),
   contains = "CrmPackClass",
@@ -1436,15 +1440,17 @@ DesignOrdinal <- function(
 #' @param name (`string`)\cr see slot definition.
 #' @param active (`flag`)\cr see slot definition.
 #' @param design (`Design`)\cr see slot definition.
+#' @param borrow (`flag`)\cr see slot definition.
 #'
 #' @export
 #' @example examples/Design-class-DesignArm.R
 #'
-DesignArm <- function(name, active, design) {
+DesignArm <- function(name, active, design, borrow = TRUE) {
   new(
     "DesignArm",
     name = name,
     active = active,
+    borrow = borrow,
     design = design
   )
 }

@@ -8,7 +8,7 @@
 \alias{.DefaultDesignArm}
 \title{\code{DesignArm}}
 \usage{
-DesignArm(name, active, design)
+DesignArm(name, active, design, borrow = TRUE)
 
 .DefaultDesignArm()
 }
@@ -18,6 +18,8 @@ DesignArm(name, active, design)
 \item{active}{(\code{flag})\cr see slot definition.}
 
 \item{design}{(\code{Design})\cr see slot definition.}
+
+\item{borrow}{(\code{flag})\cr see slot definition.}
 }
 \description{
 \ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#experimental}{\figure{lifecycle-experimental.svg}{options: alt='[Experimental]'}}}{\strong{[Experimental]}}
@@ -31,6 +33,9 @@ for use in a \code{\link{HierarchicalDesign}}.
 \item{\code{name}}{(\code{string})\cr the name of the arm.}
 
 \item{\code{active}}{(\code{flag})\cr whether the arm is enrolling or not (historical).}
+
+\item{\code{borrow}}{(\code{flag})\cr whether this arm may borrow information from other
+arms when making dose escalation decisions. Only relevant if \code{active = TRUE}.}
 
 \item{\code{design}}{(\code{Design})\cr the design object for this arm.}
 }}

@@ -352,8 +352,21 @@ test_that("HierarchicalDesign constructor derives hierarchical data and model", 
   )))
   expect_true(is(result@data, "HierarchicalData"))
   expect_true(is(result@model, "HierarchicalModel"))
+  expect_true(result@arms$arm_a@borrow)
 
   # TODO: add tests for arm opening rules once hierarchical accrual is implemented.
+})
+
+test_that("DesignArm constructor stores borrow flag", {
+  arm <- DesignArm(
+    name = "arm_no_borrow",
+    active = TRUE,
+    design = .DefaultDesign(),
+    borrow = FALSE
+  )
+
+  expect_valid(arm, "DesignArm")
+  expect_false(arm@borrow)
 })
 
 test_that("HierarchicalData update can target one arm", {
@@ -402,6 +415,103 @@ test_that("HierarchicalDesign simulate returns hierarchical simulations", {
   expect_equal(result@data[[1L]]@arms$arm_b@nObs, design@data@arms$arm_b@nObs)
   expect_true(is.list(result@doses[[1L]]))
   expect_true(is.list(result@stop_reasons[[1L]]))
+})
+
+test_that("HierarchicalDesign simulate uses arm-level mcmc for non-borrowing arms", {
+  mono_design <- Design(
+    model = local_hierarchical_mono_model(),
+    nextBest = NextBestNCRM(
+      target = c(0.2, 0.35),
+      overdose = c(0.35, 1),
+      max_overdose_prob = 0.25
+    ),
+    stopping = StoppingMinPatients(nPatients = 1L),
+    increments = IncrementsRelative(intervals = c(0), increments = c(1)),
+    cohort_size = CohortSizeConst(size = 1L),
+    data = Data(doseGrid = c(10, 20, 30)),
+    startingDose = 10
+  )
+  combo_design <- DesignCombo(
+    model = local_hierarchical_combo_model(),
+    nextBest = NextBestNCRM(
+      target = c(0.2, 0.35),
+      overdose = c(0.35, 1),
+      max_overdose_prob = 0.25
+    ),
+    stopping = StoppingMinPatients(nPatients = 1L),
+    increments = IncrementsComboCartesian(
+      drug1 = IncrementsRelative(intervals = c(0), increments = c(1)),
+      drug2 = IncrementsRelative(intervals = c(0), increments = c(1))
+    ),
+    cohort_size = CohortSizeConst(size = 1L),
+    data = DataCombo(
+      doseGrid = list(
+        drug1 = c(10, 20, 30),
+        drug2 = c(20, 40)
+      )
+    ),
+    startingDose = c(drug1 = 10, drug2 = 20)
+  )
+  design <- HierarchicalDesign(
+    DesignArm(
+      name = "my_mono",
+      active = TRUE,
+      design = mono_design,
+      borrow = FALSE
+    ),
+    DesignArm(
+      name = "my_combo",
+      active = TRUE,
+      design = combo_design,
+      borrow = TRUE
+    ),
+    exchangeable_parameters = local_hierarchical_parameter_pools()
+  )
+
+  # Track calls to mcmc to check that the mono arm uses hierarchical mcmc
+  # and the combo arm uses regular mcmc.
+  mcmc_calls <- list()
+  testthat::local_mocked_bindings(
+    mcmc = function(data, model, options) {
+      mcmc_calls[[length(mcmc_calls) + 1L]] <<- list(
+        data_class = class(data)[1L],
+        model_class = class(model)[1L]
+      )
+      if (is(data, "HierarchicalData")) {
+        local_hierarchical_samples()
+      } else {
+        Samples(
+          data = list(
+            alpha0 = rep(-3, size(options)),
+            alpha1 = rep(1, size(options))
+          ),
+          options = options
+        )
+      }
+    }
+  )
+
+  result <- simulate(
+    design,
+    truth = function(dose, ...) 0.1,
+    truthResponse = function(dose, ...) 0.5,
+    nsim = 1L,
+    seed = 123L,
+    mcmcOptions = h_get_mcmc_options(samples = 2L),
+    parallel = FALSE
+  )
+
+  expect_valid(result, "HierarchicalSimulations")
+  expect_s4_class(result@samples[[1L]], "HierarchicalSamples")
+  expect_identical(
+    vapply(mcmc_calls, `[[`, character(1L), "data_class"),
+    c("HierarchicalData", "Data", "HierarchicalData", "Data")
+  )
+  expect_false(any(vapply(
+    mcmc_calls,
+    function(call) identical(call$data_class, "DataCombo"),
+    logical(1L)
+  )))
 })
 
 test_that("HierarchicalDesign simulate supports backfill cohorts", {

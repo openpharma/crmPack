@@ -142,6 +142,10 @@ v_design_arm <- function(object) {
     test_flag(object@active),
     "active must be a flag"
   )
+  v$check(
+    test_flag(object@borrow),
+    "borrow must be a flag"
+  )
   v$result()
 }
 

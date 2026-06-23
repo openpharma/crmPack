@@ -25,8 +25,8 @@ as a string.}
 \ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#experimental}{\figure{lifecycle-experimental.svg}{options: alt='[Experimental]'}}}{\strong{[Experimental]}}
 
 \code{\link{HierarchicalModel}} is a class for the prototype hierarchical model that
-links a single-agent \code{\link{LogisticLogNormal}} arm with a
-\code{\link{TwoDrugsCombo}} arm.
+links compatible single-agent binary outcome arms and/or \code{\link{TwoDrugsCombo}}
+arms.
 }
 \details{
 The class currently stores the structural pieces from the design
@@ -37,12 +37,13 @@ exchangeable parameter pools used to dynamically compile a joint JAGS model.
 
 \describe{
 \item{\code{models_to_arms}}{(\code{list})\cr named list of arm-specific models. Each
-entry must currently be either a \code{\link{LogisticLogNormal}} or a
+entry must be either a compatible single-agent binary outcome
+\code{\link{GeneralModel}} object using \code{nObs}, \code{y}, and \code{x} inputs, or a
 \code{\link{TwoDrugsCombo}} object.}
 
 \item{\code{parameter_pools}}{(\code{list})\cr named list describing which parameters are
 exchangeable across arms. Each list entry contains arm names as names and
-parameter references as values, e.g. \code{"alpha0"} or \code{"alpha0[1]"}.}
+parameter references as values.}
 }}
 
 \note{
@@ -91,6 +92,5 @@ my_model <- HierarchicalModel(
 my_model
 }
 \seealso{
-\code{\link{HierarchicalData}}, \code{\link{LogisticLogNormal}},
-\code{\link{TwoDrugsCombo}}.
+\code{\link{HierarchicalData}}, \code{\link{TwoDrugsCombo}}.
 }
