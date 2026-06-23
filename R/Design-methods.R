@@ -483,7 +483,7 @@ setMethod(
             )
             if (
               length(derive) > 0L &&
-                !is(arm_design@model, "LogisticLogNormalCombo")
+                !is(arm_design@model, "TwoDrugsCombo")
             ) {
               target_dose_samples <- dose(
                 mean(arm_design@nextBest@target),

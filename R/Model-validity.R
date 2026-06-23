@@ -139,32 +139,71 @@ v_model_logistic_log_normal_mix <- function(object) {
   v$result()
 }
 
-#' @describeIn v_model_objects validates that [`LogisticLogNormalCombo`] slots are valid.
-v_model_logistic_log_normal_combo <- function(object) {
+#' @describeIn v_model_objects validates that [`TwoDrugsCombo`] slots are valid.
+v_model_two_drugs_combo <- function(object) {
   v <- Validate()
+  single_models_are_general <- all(
+    sapply(object@single_models, test_class, "GeneralModel")
+  ) &&
+    identical(length(object@single_models), 2L)
   v$check(
-    all(sapply(object@single_models, test_class, "LogisticLogNormal")) &&
-      identical(length(object@single_models), 2L),
-    "single_models must be a list of length 2 with LogisticLogNormal objects"
+    single_models_are_general,
+    "single_models must be a list of length 2 with GeneralModel objects"
   )
-  single_models_valid_result <- sapply(
-    object@single_models,
-    validObject,
-    test = TRUE
-  )
-  single_models_valid <- sapply(single_models_valid_result, isTRUE)
-  v$check(
-    all(single_models_valid),
-    paste(
-      "single_models must contain valid LogisticLogNormal objects",
-      paste(
-        unlist(single_models_valid_result[!single_models_valid]),
-        collapse = ", "
-      ),
-      collapse = ", ",
-      sep = ", "
+
+  if (single_models_are_general) {
+    single_models_valid_result <- sapply(
+      object@single_models,
+      validObject,
+      test = TRUE
     )
-  )
+    single_models_valid <- sapply(single_models_valid_result, isTRUE)
+    v$check(
+      all(single_models_valid),
+      paste(
+        "single_models must contain valid GeneralModel objects",
+        paste(
+          unlist(single_models_valid_result[!single_models_valid]),
+          collapse = ", "
+        ),
+        collapse = ", ",
+        sep = ", "
+      )
+    )
+    v$check(
+      all(vapply(
+        object@single_models,
+        function(model) {
+          setequal(model@datanames, c("nObs", "y", "x"))
+        },
+        logical(1L)
+      )),
+      "single_models must use nObs, y, and x as datanames"
+    )
+    v$check(
+      all(vapply(
+        object@single_models,
+        function(model) {
+          length(formalArgs(model@init)) == 0L
+        },
+        logical(1L)
+      )),
+      "single_models must have init functions without arguments"
+    )
+    v$check(
+      all(vapply(
+        object@single_models,
+        function(model) {
+          setequal(
+            setdiff(formalArgs(model@modelspecs), "from_prior"),
+            character()
+          )
+        },
+        logical(1L)
+      )),
+      "single_models modelspecs functions must have no arguments except from_prior"
+    )
+  }
   v$check(
     test_character(
       object@drug_names,
@@ -182,22 +221,10 @@ v_model_logistic_log_normal_combo <- function(object) {
     test_numeric(
       object@ref_dose,
       len = 2L,
-      lower = .Machine$double.xmin,
       finite = TRUE,
-      any.missing = FALSE
+      any.missing = TRUE
     ),
-    "ref_dose must be a numeric vector of length 2 with positive finite values"
-  )
-  v$check(
-    identical(
-      unname(as.numeric(vapply(
-        object@single_models,
-        function(model) model@ref_dose,
-        numeric(1L)
-      ))),
-      unname(object@ref_dose)
-    ),
-    "ref_dose must match the reference doses of single_models"
+    "ref_dose must be a numeric vector of length 2"
   )
   v$check(
     test_number(object@gamma, finite = TRUE),
@@ -233,13 +260,13 @@ v_hierarchical_model <- function(object) {
     supported_models <- vapply(
       models_to_arms,
       function(model) {
-        is(model, "LogisticLogNormal") || is(model, "LogisticLogNormalCombo")
+        is(model, "LogisticLogNormal") || is(model, "TwoDrugsCombo")
       },
       logical(1L)
     )
     v$check(
       all(supported_models),
-      "models_to_arms entries must be LogisticLogNormal or LogisticLogNormalCombo objects"
+      "models_to_arms entries must be LogisticLogNormal or TwoDrugsCombo objects"
     )
   }
 
@@ -252,21 +279,32 @@ v_hierarchical_model <- function(object) {
     "parameter_pools must be a named list with unique names"
   )
 
-  if (length(parameter_pools) > 0L && isTRUE(test_names(
-    names(models_to_arms),
-    type = "unique"
-  ))) {
+  if (
+    length(parameter_pools) > 0L &&
+      isTRUE(test_names(
+        names(models_to_arms),
+        type = "unique"
+      ))
+  ) {
     for (pool_name in names(parameter_pools)) {
       pool <- parameter_pools[[pool_name]]
       v$check(
         test_list(pool, types = "character", any.missing = FALSE, min.len = 2L),
         paste0(
-          "parameter pool '", pool_name,
+          "parameter pool '",
+          pool_name,
           "' must be a named list of at least two character references"
         )
       )
 
-      if (!isTRUE(test_list(pool, types = "character", any.missing = FALSE, min.len = 2L))) {
+      if (
+        !isTRUE(test_list(
+          pool,
+          types = "character",
+          any.missing = FALSE,
+          min.len = 2L
+        ))
+      ) {
         next
       }
 
@@ -279,7 +317,8 @@ v_hierarchical_model <- function(object) {
       v$check(
         all(pool_arms %in% names(models_to_arms)),
         paste0(
-          "parameter pool '", pool_name,
+          "parameter pool '",
+          pool_name,
           "' refers to unknown hierarchical arms"
         )
       )
@@ -287,31 +326,41 @@ v_hierarchical_model <- function(object) {
         next
       }
 
-      kinds <- vapply(seq_along(pool), function(i) {
-        arm_name <- pool_arms[i]
-        ref <- pool[[i]]
-        model <- models_to_arms[[arm_name]]
-        supported_refs <- h_hierarchical_supported_refs(model)
-        v$check(
-          ref %in% supported_refs,
-          paste0(
-            "parameter reference '", ref, "' in pool '", pool_name,
-            "' is not supported for arm '", arm_name, "'"
+      kinds <- vapply(
+        seq_along(pool),
+        function(i) {
+          arm_name <- pool_arms[i]
+          ref <- pool[[i]]
+          model <- models_to_arms[[arm_name]]
+          supported_refs <- h_hierarchical_supported_refs(model)
+          v$check(
+            ref %in% supported_refs,
+            paste0(
+              "parameter reference '",
+              ref,
+              "' in pool '",
+              pool_name,
+              "' is not supported for arm '",
+              arm_name,
+              "'"
+            )
           )
-        )
-        if (ref %in% supported_refs) {
-          h_hierarchical_parse_ref(model, arm_name, ref)$kind
-        } else {
-          NA_character_
-        }
-      }, character(1L))
+          if (ref %in% supported_refs) {
+            h_hierarchical_parse_ref(model, arm_name, ref)$kind
+          } else {
+            NA_character_
+          }
+        },
+        character(1L)
+      )
 
       valid_kinds <- kinds[!is.na(kinds)]
       if (length(valid_kinds) > 0L) {
         v$check(
           length(unique(valid_kinds)) == 1L,
           paste0(
-            "all references in parameter pool '", pool_name,
+            "all references in parameter pool '",
+            pool_name,
             "' must target the same parameter family"
           )
         )

@@ -22,7 +22,7 @@ DesignCombo(
 .DefaultDesignCombo()
 }
 \arguments{
-\item{model}{(\code{LogisticLogNormalCombo})
+\item{model}{(\code{TwoDrugsCombo})
 see slot definition.}
 
 \item{nextBest}{(\code{NextBestNCRM})
@@ -54,13 +54,13 @@ designs.
 }
 \details{
 This class stores the same core design components as \code{\link{Design}}, but uses
-\code{\link{DataCombo}} and \code{\link{LogisticLogNormalCombo}} to represent two-drug
+\code{\link{DataCombo}} and \code{\link{TwoDrugsCombo}} to represent two-drug
 combinations.
 }
 \section{Slots}{
 
 \describe{
-\item{\code{model}}{(\code{LogisticLogNormalCombo})
+\item{\code{model}}{(\code{TwoDrugsCombo})
 the model to be used.}
 
 \item{\code{nextBest}}{(\code{NextBestNCRM})
@@ -96,7 +96,7 @@ empty_data <- DataCombo(
   )
 )
 
-my_model <- LogisticLogNormalCombo(
+my_model <- TwoDrugsCombo(
   single_models = list(
     drug1 = LogisticLogNormal(
       mean = c(-0.85, 1),

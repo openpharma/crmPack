@@ -309,7 +309,7 @@ setMethod(
   "fit",
   signature = signature(
     object = "Samples",
-    model = "LogisticLogNormalCombo",
+    model = "TwoDrugsCombo",
     data = "DataCombo"
   ),
   def = function(
@@ -729,12 +729,12 @@ setMethod(
   }
 )
 
-## plot-LogisticLogNormalCombo ----
+## plot-TwoDrugsCombo ----
 
 #' Plotting two-drug combination dose-toxicity model fits
 #'
 #' @param x the [Samples] object.
-#' @param y the [LogisticLogNormalCombo] object.
+#' @param y the [TwoDrugsCombo] object.
 #' @param data the [DataCombo] object.
 #' @param xlab the x axis label. If `NULL`, the first drug name is used.
 #' @param ylab the y axis label. If `NULL`, the second drug name is used.
@@ -749,7 +749,7 @@ setMethod(
   "plot",
   signature = signature(
     x = "Samples",
-    y = "LogisticLogNormalCombo"
+    y = "TwoDrugsCombo"
   ),
   def = function(
     x,

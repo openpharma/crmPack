@@ -3,7 +3,7 @@
 \name{fit}
 \alias{fit}
 \alias{fit,Samples,GeneralModel,Data-method}
-\alias{fit,Samples,LogisticLogNormalCombo,DataCombo-method}
+\alias{fit,Samples,TwoDrugsCombo,DataCombo-method}
 \alias{fit,HierarchicalSamples,HierarchicalModel,HierarchicalData-method}
 \alias{fit,Samples,DualEndpoint,DataDual-method}
 \alias{fit,Samples,LogisticIndepBeta,Data-method}
@@ -24,7 +24,7 @@ fit(object, model, data, ...)
   ...
 )
 
-\S4method{fit}{Samples,LogisticLogNormalCombo,DataCombo}(
+\S4method{fit}{Samples,TwoDrugsCombo,DataCombo}(
   object,
   model,
   data,
@@ -109,7 +109,7 @@ signature. But we need also other arguments in the signature.
 \item \code{fit(object = Samples, model = GeneralModel, data = Data)}: This method returns a data frame with dose, middle, lower
 and upper quantiles for the dose-toxicity curve
 
-\item \code{fit(object = Samples, model = LogisticLogNormalCombo, data = DataCombo)}: This method returns a data frame with one row per dose
+\item \code{fit(object = Samples, model = TwoDrugsCombo, data = DataCombo)}: This method returns a data frame with one row per dose
 combination and posterior summaries of the DLT probability surface.
 
 \item \code{fit(

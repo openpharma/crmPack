@@ -8,7 +8,7 @@
 \alias{v_model_logistic_normal_mix}
 \alias{v_model_logistic_normal_fixed_mix}
 \alias{v_model_logistic_log_normal_mix}
-\alias{v_model_logistic_log_normal_combo}
+\alias{v_model_two_drugs_combo}
 \alias{v_hierarchical_model}
 \alias{v_model_dual_endpoint}
 \alias{v_model_dual_endpoint_rw}
@@ -36,7 +36,7 @@ v_model_logistic_normal_fixed_mix(object)
 
 v_model_logistic_log_normal_mix(object)
 
-v_model_logistic_log_normal_combo(object)
+v_model_two_drugs_combo(object)
 
 v_hierarchical_model(object)
 
@@ -97,7 +97,7 @@ valid \code{ModelParamsNormal} objects as well as \code{weights} are correct.
 
 \item \code{v_model_logistic_log_normal_mix()}: validates that \code{share_weight} represents probability.
 
-\item \code{v_model_logistic_log_normal_combo()}: validates that \code{\link{LogisticLogNormalCombo}} slots are valid.
+\item \code{v_model_two_drugs_combo()}: validates that \code{\link{TwoDrugsCombo}} slots are valid.
 
 \item \code{v_hierarchical_model()}: validates that \code{\link{HierarchicalModel}} slots are valid.
 

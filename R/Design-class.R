@@ -1,5 +1,7 @@
 #' @include Design-validity.R
 #' @include Model-class.R
+#' @include TwoDrugsCombo-class.R
+#' @include HierarchicalModel-class.R
 #' @include Rules-class.R
 #' @include Backfill-class.R
 #' @include Data-class.R
@@ -240,10 +242,10 @@ Design <- function(
 #'
 #' @details
 #' This class stores the same core design components as [`Design`], but uses
-#' [`DataCombo`] and [`LogisticLogNormalCombo`] to represent two-drug
+#' [`DataCombo`] and [`TwoDrugsCombo`] to represent two-drug
 #' combinations.
 #'
-#' @slot model (`LogisticLogNormalCombo`)
+#' @slot model (`TwoDrugsCombo`)
 #'   the model to be used.
 #' @slot nextBest (`NextBestNCRM`)
 #'   the rule to select the next dose combination.
@@ -266,7 +268,7 @@ Design <- function(
 .DesignCombo <- setClass(
   Class = "DesignCombo",
   slots = c(
-    model = "LogisticLogNormalCombo",
+    model = "TwoDrugsCombo",
     nextBest = "NextBestNCRM",
     stopping = "Stopping",
     increments = "Increments",
@@ -276,7 +278,7 @@ Design <- function(
     backfill = "Backfill"
   ),
   prototype = prototype(
-    model = .LogisticLogNormalCombo(),
+    model = .TwoDrugsCombo(),
     nextBest = .NextBestNCRM(),
     stopping = .StoppingMinPatients(),
     increments = .IncrementsComboOneDrugOnly(),
@@ -295,7 +297,7 @@ Design <- function(
 
 #' @rdname DesignCombo-class
 #'
-#' @param model (`LogisticLogNormalCombo`)
+#' @param model (`TwoDrugsCombo`)
 #'   see slot definition.
 #' @param nextBest (`NextBestNCRM`)
 #'   see slot definition.
@@ -359,7 +361,7 @@ DesignCombo <- function(
   )
 
   DesignCombo(
-    model = LogisticLogNormalCombo(
+    model = TwoDrugsCombo(
       single_models = list(
         drug1 = LogisticLogNormal(
           mean = c(-0.85, 1),

@@ -382,7 +382,7 @@ setMethod(
     nextBest = "NextBestNCRM",
     doselimit = "matrix",
     samples = "Samples",
-    model = "LogisticLogNormalCombo",
+    model = "TwoDrugsCombo",
     data = "DataCombo"
   ),
   definition = function(nextBest, doselimit, samples, model, data, ...) {

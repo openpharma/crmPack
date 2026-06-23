@@ -4,10 +4,10 @@
 \alias{prob}
 \alias{prob,numeric,LogisticLogNormalGrouped,Samples-method}
 \alias{prob-LogisticLogNormalGrouped}
-\alias{prob,numeric,LogisticLogNormalCombo,Samples-method}
-\alias{prob-LogisticLogNormalCombo}
-\alias{prob,matrix,LogisticLogNormalCombo,Samples-method}
-\alias{prob-LogisticLogNormalCombo-matrix}
+\alias{prob,numeric,TwoDrugsCombo,Samples-method}
+\alias{prob-TwoDrugsCombo}
+\alias{prob,matrix,TwoDrugsCombo,Samples-method}
+\alias{prob-TwoDrugsCombo-matrix}
 \alias{prob,numeric,LogisticIndepBeta,Samples-method}
 \alias{prob-LogisticIndepBeta}
 \alias{prob,numeric,LogisticIndepBeta,missing-method}
@@ -18,9 +18,9 @@ prob(dose, model, samples, ...)
 
 \S4method{prob}{numeric,LogisticLogNormalGrouped,Samples}(dose, model, samples, group, ...)
 
-\S4method{prob}{numeric,LogisticLogNormalCombo,Samples}(dose, model, samples, ...)
+\S4method{prob}{numeric,TwoDrugsCombo,Samples}(dose, model, samples, ...)
 
-\S4method{prob}{matrix,LogisticLogNormalCombo,Samples}(dose, model, samples, ...)
+\S4method{prob}{matrix,TwoDrugsCombo,Samples}(dose, model, samples, ...)
 
 \S4method{prob}{numeric,LogisticIndepBeta,Samples}(dose, model, samples, ...)
 
@@ -76,10 +76,10 @@ correspond to the sampling index, i.e. the layout is then
 \item \code{prob(dose = numeric, model = LogisticLogNormalGrouped, samples = Samples)}: method for \code{\link{LogisticLogNormalGrouped}} which needs \code{group}
 argument in addition.
 
-\item \code{prob(dose = numeric, model = LogisticLogNormalCombo, samples = Samples)}: method for \code{\link{LogisticLogNormalCombo}} for a single dose
+\item \code{prob(dose = numeric, model = TwoDrugsCombo, samples = Samples)}: method for \code{\link{TwoDrugsCombo}} for a single dose
 combination provided as a named numeric vector.
 
-\item \code{prob(dose = matrix, model = LogisticLogNormalCombo, samples = Samples)}: method for \code{\link{LogisticLogNormalCombo}} for one or more dose
+\item \code{prob(dose = matrix, model = TwoDrugsCombo, samples = Samples)}: method for \code{\link{TwoDrugsCombo}} for one or more dose
 combinations provided in the rows of a numeric matrix.
 
 \item \code{prob(dose = numeric, model = LogisticIndepBeta, samples = Samples)}: compute toxicity probabilities of the occurrence of a DLE at

@@ -268,8 +268,8 @@ test_that("fit-Samples works specifically also for LogisticLogNormalGrouped", {
   expect_named(result, c("dose", "middle", "lower", "upper"))
 })
 
-test_that("fit-Samples works specifically also for LogisticLogNormalCombo", {
-  model <- h_get_logistic_log_normal_combo()
+test_that("fit-Samples works specifically also for TwoDrugsCombo", {
+  model <- h_get_two_drugs_combo()
   data <- h_get_data_combo()
   samples <- h_as_samples(list(
     alpha0 = matrix(
@@ -671,9 +671,9 @@ test_that("plot-Samples works correctly", {
   expect_doppel("plot-Samples_showLegend-FALSE", actual1)
 })
 
-test_that("plot-Samples works specifically also for LogisticLogNormalCombo", {
+test_that("plot-Samples works specifically also for TwoDrugsCombo", {
   data <- h_get_data_combo()
-  model <- h_get_logistic_log_normal_combo()
+  model <- h_get_two_drugs_combo()
   samples <- h_as_samples(list(
     alpha0 = matrix(
       c(-3.0, -3.5, -2.5, -3.0),

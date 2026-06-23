@@ -382,10 +382,10 @@ test_that("probFunction-LogisticLogNormalGrouped works as expected", {
   expect_equal(result, 0.8958, tolerance = 1e-4)
 })
 
-## LogisticLogNormalCombo ----
+## TwoDrugsCombo ----
 
-test_that("probFunction-LogisticLogNormalCombo works as expected", {
-  model <- h_get_logistic_log_normal_combo()
+test_that("probFunction-TwoDrugsCombo works as expected", {
+  model <- h_get_two_drugs_combo()
 
   prob_fun <- expect_silent(probFunction(
     model,
@@ -1658,10 +1658,10 @@ test_that("prob-LogisticLogNormalGrouped works as expected for vectors", {
   expect_equal(result, c(0.7311, 0.9962), tolerance = 1e-4)
 })
 
-## LogisticLogNormalCombo ----
+## TwoDrugsCombo ----
 
-test_that("prob-LogisticLogNormalCombo works as expected", {
-  model <- h_get_logistic_log_normal_combo()
+test_that("prob-TwoDrugsCombo works as expected", {
+  model <- h_get_two_drugs_combo()
   samples <- h_as_samples(list(
     alpha0 = matrix(
       c(-3.0, -3.5, -2.5, -3.0),
@@ -1696,8 +1696,8 @@ test_that("prob-LogisticLogNormalCombo works as expected", {
   expect_equal(result, expected, tolerance = 1e-7)
 })
 
-test_that("prob-LogisticLogNormalCombo works as expected for multiple dose combinations", {
-  model <- h_get_logistic_log_normal_combo()
+test_that("prob-TwoDrugsCombo works as expected for multiple dose combinations", {
+  model <- h_get_two_drugs_combo()
   samples <- h_as_samples(list(
     alpha0 = matrix(
       c(-3.0, -3.5, -2.5, -3.0),
@@ -1723,8 +1723,8 @@ test_that("prob-LogisticLogNormalCombo works as expected for multiple dose combi
   expect_true(all(result >= 0 & result <= 1))
 })
 
-test_that("fit-LogisticLogNormalCombo works as expected", {
-  model <- h_get_logistic_log_normal_combo()
+test_that("fit-TwoDrugsCombo works as expected", {
+  model <- h_get_two_drugs_combo()
   data <- h_get_data_combo()
   samples <- h_as_samples(list(
     alpha0 = matrix(

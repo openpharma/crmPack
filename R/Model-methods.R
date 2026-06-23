@@ -1227,9 +1227,9 @@ setMethod(
   }
 )
 
-## LogisticLogNormalCombo ----
+## TwoDrugsCombo ----
 
-h_prob_logistic_log_normal_combo <- function(dose, model, samples) {
+h_prob_two_drugs_combo <- function(dose, model, samples) {
   assert_subset(c("alpha0", "alpha1", "eta"), names(samples))
   assert_matrix(samples@data$alpha0, mode = "numeric", ncols = 2L)
   assert_matrix(samples@data$alpha1, mode = "numeric", ncols = 2L)
@@ -1275,19 +1275,19 @@ h_prob_logistic_log_normal_combo <- function(dose, model, samples) {
   }
 }
 
-#' @describeIn prob method for [`LogisticLogNormalCombo`] for a single dose
+#' @describeIn prob method for [`TwoDrugsCombo`] for a single dose
 #'   combination provided as a named numeric vector.
-#' @aliases prob-LogisticLogNormalCombo
+#' @aliases prob-TwoDrugsCombo
 #' @export
 setMethod(
   f = "prob",
   signature = signature(
     dose = "numeric",
-    model = "LogisticLogNormalCombo",
+    model = "TwoDrugsCombo",
     samples = "Samples"
   ),
   definition = function(dose, model, samples, ...) {
-    h_prob_logistic_log_normal_combo(
+    h_prob_two_drugs_combo(
       dose = dose,
       model = model,
       samples = samples
@@ -1295,19 +1295,19 @@ setMethod(
   }
 )
 
-#' @describeIn prob method for [`LogisticLogNormalCombo`] for one or more dose
+#' @describeIn prob method for [`TwoDrugsCombo`] for one or more dose
 #'   combinations provided in the rows of a numeric matrix.
-#' @aliases prob-LogisticLogNormalCombo-matrix
+#' @aliases prob-TwoDrugsCombo-matrix
 #' @export
 setMethod(
   f = "prob",
   signature = signature(
     dose = "matrix",
-    model = "LogisticLogNormalCombo",
+    model = "TwoDrugsCombo",
     samples = "Samples"
   ),
   definition = function(dose, model, samples, ...) {
-    h_prob_logistic_log_normal_combo(
+    h_prob_two_drugs_combo(
       dose = dose,
       model = model,
       samples = samples

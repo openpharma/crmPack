@@ -4,7 +4,7 @@ mono_model <- LogisticLogNormal(
   ref_dose = 10
 )
 
-combo_model <- LogisticLogNormalCombo(
+combo_model <- TwoDrugsCombo(
   single_models = list(
     drug1 = LogisticLogNormal(
       mean = c(-0.85, 1),

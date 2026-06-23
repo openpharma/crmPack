@@ -16,7 +16,7 @@ my_data <- DataCombo(
 )
 
 # Initialize the two-drug combination model.
-my_model <- LogisticLogNormalCombo(
+my_model <- TwoDrugsCombo(
   single_models = list(
     drug1 = LogisticLogNormal(
       mean = c(-0.85, 1),

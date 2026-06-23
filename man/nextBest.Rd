@@ -8,7 +8,7 @@
 \alias{nextBest-NextBestMTD}
 \alias{nextBest,NextBestNCRM,numeric,Samples,GeneralModel,Data-method}
 \alias{nextBest-NextBestNCRM}
-\alias{nextBest,NextBestNCRM,matrix,Samples,LogisticLogNormalCombo,DataCombo-method}
+\alias{nextBest,NextBestNCRM,matrix,Samples,TwoDrugsCombo,DataCombo-method}
 \alias{nextBest,NextBestNCRM,numeric,Samples,GeneralModel,DataParts-method}
 \alias{nextBest-NextBestNCRM-DataParts}
 \alias{nextBest,NextBestNCRMLoss,numeric,Samples,GeneralModel,Data-method}
@@ -46,7 +46,7 @@ nextBest(nextBest, doselimit, samples, model, data, ...)
 
 \S4method{nextBest}{NextBestNCRM,numeric,Samples,GeneralModel,Data}(nextBest, doselimit = Inf, samples, model, data, ...)
 
-\S4method{nextBest}{NextBestNCRM,matrix,Samples,LogisticLogNormalCombo,DataCombo}(nextBest, doselimit, samples, model, data, ...)
+\S4method{nextBest}{NextBestNCRM,matrix,Samples,TwoDrugsCombo,DataCombo}(nextBest, doselimit, samples, model, data, ...)
 
 \S4method{nextBest}{NextBestNCRM,numeric,Samples,GeneralModel,DataParts}(nextBest, doselimit = Inf, samples, model, data, ...)
 
@@ -169,7 +169,7 @@ derivation of the next best dose.
   nextBest = NextBestNCRM,
   doselimit = matrix,
   samples = Samples,
-  model = LogisticLogNormalCombo,
+  model = TwoDrugsCombo,
   data = DataCombo
 )}: find the next best dose combination based on the NCRM method.
 
@@ -462,7 +462,7 @@ my_data <- DataCombo(
 )
 
 # Initialize the two-drug combination model.
-my_model <- LogisticLogNormalCombo(
+my_model <- TwoDrugsCombo(
   single_models = list(
     drug1 = LogisticLogNormal(
       mean = c(-0.85, 1),

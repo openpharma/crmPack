@@ -46,7 +46,7 @@
 \alias{knit_print.OneParLogNormalPrior}
 \alias{knit_print.OneParExpPrior}
 \alias{knit_print.LogisticLogNormalGrouped}
-\alias{knit_print.LogisticLogNormalCombo}
+\alias{knit_print.TwoDrugsCombo}
 \alias{knit_print.LogisticLogNormalOrdinal}
 \alias{knit_print.LogisticIndepBeta}
 \alias{knit_print.Effloglog}
@@ -295,7 +295,7 @@
   asis = TRUE
 )
 
-\method{knit_print}{LogisticLogNormalCombo}(x, ..., use_values = TRUE, fmt = "\%5.2f", asis = TRUE)
+\method{knit_print}{TwoDrugsCombo}(x, ..., use_values = TRUE, fmt = "\%5.2f", asis = TRUE)
 
 \method{knit_print}{LogisticLogNormalOrdinal}(
   x,
@@ -1212,5 +1212,5 @@ If of length 1, the character \code{s} is appended to the value when the count i
 }
 
 \seealso{
-\code{\link{knit_print}} for more details.
+\code{\link[knitr:knit_print]{knit_print}} for more details.
 }

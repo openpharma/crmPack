@@ -107,6 +107,8 @@ Collate:
     'Model-validity.R'
     'helpers_jags.R'
     'Model-class.R'
+    'HierarchicalModel-class.R'
+    'TwoDrugsCombo-class.R'
     'Design-validity.R'
     'Design-class.R'
     'McmcOptions-validity.R'

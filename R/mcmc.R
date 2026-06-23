@@ -153,7 +153,9 @@ h_mcmc_get_hierarchical_data <- function(model, data, from_prior) {
 
     model_data[[paste0("nObs_", safe_arm)]] <- arm_data@nObs
     model_data[[paste0("y_", safe_arm)]] <- as.integer(arm_data@y)
-    model_data[[paste0("x_", safe_arm)]] <- if (is(arm_model, "LogisticLogNormal")) {
+    model_data[[paste0("x_", safe_arm)]] <- if (
+      is(arm_model, "LogisticLogNormal")
+    ) {
       as.numeric(arm_data@x)
     } else {
       arm_data@x
@@ -185,16 +187,16 @@ h_mcmc_get_hierarchical_arm_samples <- function(model) {
   stats::setNames(arm_samples, names(model@models_to_arms))
 }
 
-# mcmc-DataCombo-LogisticLogNormalCombo ----
+# mcmc-DataCombo-TwoDrugsCombo ----
 
 #' @describeIn mcmc Standard method which uses JAGS. For the
-#'   [`LogisticLogNormalCombo`] model, the drug names in the model and data must
+#'   [`TwoDrugsCombo`] model, the drug names in the model and data must
 #'   agree.
 setMethod(
   f = "mcmc",
   signature = signature(
     data = "DataCombo",
-    model = "LogisticLogNormalCombo",
+    model = "TwoDrugsCombo",
     options = "McmcOptions"
   ),
   def = function(data, model, options, from_prior = data@nObs == 0L, ...) {
@@ -226,7 +228,11 @@ setMethod(
     data,
     model,
     options,
-    from_prior = all(vapply(data@arms, function(arm) arm@nObs == 0L, logical(1L))),
+    from_prior = all(vapply(
+      data@arms,
+      function(arm) arm@nObs == 0L,
+      logical(1L)
+    )),
     ...
   ) {
     assert_flag(from_prior)

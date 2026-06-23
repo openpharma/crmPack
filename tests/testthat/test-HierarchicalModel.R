@@ -7,7 +7,7 @@ local_hierarchical_mono_model <- function() {
 }
 
 local_hierarchical_combo_model <- function(log_normal_eta = FALSE) {
-  LogisticLogNormalCombo(
+  TwoDrugsCombo(
     single_models = list(
       drug1 = LogisticLogNormal(
         mean = c(-0.85, 1),
@@ -352,7 +352,11 @@ test_that("parallel mono and combo prior compiles as block MAC prior", {
   ))
   expect_true(grepl("rho_drug1 ~ dunif(-1, 1)", body_priormodel, fixed = TRUE))
   expect_true(grepl("rho_drug2 ~ dunif(-1, 1)", body_priormodel, fixed = TRUE))
-  expect_true(grepl("mu_drug2_slope ~ dnorm(0, 1)", body_priormodel, fixed = TRUE))
+  expect_true(grepl(
+    "mu_drug2_slope ~ dnorm(0, 1)",
+    body_priormodel,
+    fixed = TRUE
+  ))
   expect_true(grepl(
     "tau_drug2_intercept ~ dlnorm(log(0.75), pow(kappa_hier, -2))",
     body_priormodel,
@@ -360,18 +364,24 @@ test_that("parallel mono and combo prior compiles as block MAC prior", {
   ))
   expect_false(grepl("gamma_combo", body_priormodel, fixed = TRUE))
   expect_identical(names(prior_specs), "kappa_hier")
-  expect_true(all(c(
-    "rho_drug1",
-    "rho_drug2",
-    "mu_eta_combo",
-    "tau_eta_combo"
-  ) %in% model@sample))
-  expect_true(all(c(
-    "rho_drug1",
-    "rho_drug2",
-    "mu_eta_combo",
-    "tau_eta_combo"
-  ) %in% names(inits)))
+  expect_true(all(
+    c(
+      "rho_drug1",
+      "rho_drug2",
+      "mu_eta_combo",
+      "tau_eta_combo"
+    ) %in%
+      model@sample
+  ))
+  expect_true(all(
+    c(
+      "rho_drug1",
+      "rho_drug2",
+      "mu_eta_combo",
+      "tau_eta_combo"
+    ) %in%
+      names(inits)
+  ))
 })
 
 test_that("hierarchical modelspecs and init compilers return expected fields", {
@@ -587,13 +597,15 @@ test_that("hierarchical summary helpers rebuild combo arm simulations", {
       options = McmcOptions(burnin = 1L, step = 1L, samples = 2L),
       arm_samples = list(combo = c(alpha0 = "alpha0_combo"))
     )),
-    fit = list(list(combo = data.frame(
-      drug1 = c(10, 20),
-      drug2 = c(20, 40),
-      middle = c(0.1, 0.3),
-      lower = c(0.05, 0.2),
-      upper = c(0.2, 0.4)
-    ))),
+    fit = list(list(
+      combo = data.frame(
+        drug1 = c(10, 20),
+        drug2 = c(20, 40),
+        middle = c(0.1, 0.3),
+        lower = c(0.05, 0.2),
+        upper = c(0.2, 0.4)
+      )
+    )),
     stop_reasons = list(list(combo = "Stopped combo")),
     stop_report = list(list(combo = c(rule = TRUE))),
     additional_stats = list(list(combo = list())),

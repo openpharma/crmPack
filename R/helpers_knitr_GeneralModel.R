@@ -1242,13 +1242,13 @@ knit_print.LogisticLogNormalGrouped <- function(
   NextMethod(params = params)
 }
 
-# LogisticLogNormalCombo ----
+# TwoDrugsCombo ----
 
 #' @description `r lifecycle::badge("experimental")`
 #' @rdname knit_print
 #' @export
-#' @method knit_print LogisticLogNormalCombo
-knit_print.LogisticLogNormalCombo <- function(
+#' @method knit_print TwoDrugsCombo
+knit_print.TwoDrugsCombo <- function(
   x,
   ...,
   use_values = TRUE,
@@ -1260,7 +1260,7 @@ knit_print.LogisticLogNormalCombo <- function(
   assert_format(fmt)
 
   rv <- paste0(
-    h_knit_print_render_model.LogisticLogNormalCombo(x, ...),
+    h_knit_print_render_model.TwoDrugsCombo(x, ...),
     "The first single-agent model is:\n\n",
     knit_print(
       x@single_models[[1]],
@@ -1317,11 +1317,11 @@ h_knit_print_render_model.LogisticLogNormalGrouped <- function(
   )
 }
 
-# LogisticLogNormalCombo ----
+# TwoDrugsCombo ----
 
 #' @description `r lifecycle::badge("experimental")`
 #' @noRd
-h_knit_print_render_model.LogisticLogNormalCombo <- function(
+h_knit_print_render_model.TwoDrugsCombo <- function(
   x,
   tox_label = "toxicity",
   ...

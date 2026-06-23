@@ -200,7 +200,7 @@ test_that("nextBest-NextBestNCRM can accept additional arguments and pass them t
 test_that("nextBest-NextBestNCRM-DataCombo works as expected", {
   set.seed(123)
   data <- h_get_data_combo()
-  model <- h_get_logistic_log_normal_combo()
+  model <- h_get_two_drugs_combo()
   samples <- mcmc(
     data,
     model,
@@ -2869,7 +2869,7 @@ test_that("stopTrial-StoppingTargetProb can accept additional arguments and pass
 
 test_that("stopTrial with StoppingTargetProb works correctly with DataCombo", {
   my_data <- h_get_data_combo()
-  my_model <- h_get_logistic_log_normal_combo()
+  my_model <- h_get_two_drugs_combo()
   my_options <- h_get_mcmc_options(samples = 100)
   my_samples <- mcmc(
     my_data,
@@ -3245,7 +3245,7 @@ test_that("StoppingLowestDoseHSRBeta works correctly if first active dose is not
 
 test_that("StoppingLowestDoseHSRBeta works correctly with DataCombo", {
   my_data <- h_get_data_combo()
-  my_model <- h_get_logistic_log_normal_combo()
+  my_model <- h_get_two_drugs_combo()
   my_samples <- mcmc(
     my_data,
     my_model,

@@ -128,7 +128,7 @@ test_that("DesignCombo object can be created with user constructor", {
   empty_data <- DataCombo(
     doseGrid = list(drug1 = c(10, 20, 30), drug2 = c(20, 40, 60))
   )
-  model <- h_get_logistic_log_normal_combo()
+  model <- h_get_two_drugs_combo()
   next_best <- h_next_best_ncrm()
   stopping <- StoppingMinPatients(nPatients = 20)
   increments <- IncrementsMin(

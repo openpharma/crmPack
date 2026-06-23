@@ -4,7 +4,7 @@
 \alias{mcmc}
 \alias{mcmc,GeneralData,GeneralModel,McmcOptions-method}
 \alias{mcmc-GeneralData}
-\alias{mcmc,DataCombo,LogisticLogNormalCombo,McmcOptions-method}
+\alias{mcmc,DataCombo,TwoDrugsCombo,McmcOptions-method}
 \alias{mcmc,HierarchicalData,HierarchicalModel,McmcOptions-method}
 \alias{mcmc,GeneralData,DualEndpointRW,McmcOptions-method}
 \alias{mcmc-GeneralData-DualEndpointRW}
@@ -32,7 +32,7 @@ mcmc(data, model, options, ...)
 
 \S4method{mcmc}{GeneralData,GeneralModel,McmcOptions}(data, model, options, from_prior = data@nObs == 0L, ...)
 
-\S4method{mcmc}{DataCombo,LogisticLogNormalCombo,McmcOptions}(data, model, options, from_prior = data@nObs == 0L, ...)
+\S4method{mcmc}{DataCombo,TwoDrugsCombo,McmcOptions}(data, model, options, from_prior = data@nObs == 0L, ...)
 
 \S4method{mcmc}{HierarchicalData,HierarchicalModel,McmcOptions}(
   data,
@@ -97,8 +97,8 @@ defined for specific subclasses of \code{\link{GeneralData}}, \code{\link{Genera
 \itemize{
 \item \code{mcmc(data = GeneralData, model = GeneralModel, options = McmcOptions)}: Standard method which uses JAGS.
 
-\item \code{mcmc(data = DataCombo, model = LogisticLogNormalCombo, options = McmcOptions)}: Standard method which uses JAGS. For the
-\code{\link{LogisticLogNormalCombo}} model, the drug names in the model and data must
+\item \code{mcmc(data = DataCombo, model = TwoDrugsCombo, options = McmcOptions)}: Standard method which uses JAGS. For the
+\code{\link{TwoDrugsCombo}} model, the drug names in the model and data must
 agree.
 
 \item \code{mcmc(data = HierarchicalData, model = HierarchicalModel, options = McmcOptions)}: Standard method which uses JAGS for the dynamically
