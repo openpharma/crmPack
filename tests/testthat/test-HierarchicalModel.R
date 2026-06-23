@@ -105,8 +105,8 @@ test_that("HierarchicalModel supports TwoDrugsCombo without alpha parameters", {
   read_model <- function(file) {
     gsub("\\s+", " ", readLines(file))
   }
-  prior_text <- read_model(prior_file)
-  data_text <- read_model(data_file)
+  prior_text <- paste(read_model(prior_file), collapse = "")
+  data_text <- paste(read_model(data_file), collapse = "")
 
   expect_valid(result, "HierarchicalModel")
   expect_equal(
