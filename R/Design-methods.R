@@ -4603,3 +4603,108 @@ setMethod(
     }
   }
 )
+
+# scenario ----
+
+## Design ----
+
+#' Evaluate a Hypothetical Data Scenario for a Design
+#'
+#' @description `r lifecycle::badge("experimental")`
+#'
+#' `scenario()` is a convenience wrapper for evaluating a CRM design at a
+#' user-supplied hypothetical data scenario. It runs the model, summarizes the
+#' posterior fit, calculates the next dose recommendation, and evaluates the
+#' stopping rule for the supplied `data`.
+#'
+#' @param object (`Design`)\cr the design to evaluate.
+#' @param data (`Data`)\cr hypothetical data scenario to evaluate.
+#' @param mcmcOptions (`McmcOptions`)\cr MCMC options for the model fit.
+#' @param ... additional arguments without method dispatch.
+#'
+#' @return A named list containing:
+#'
+#' - `data`: the evaluated data scenario.
+#' - `samples`: posterior samples from `mcmc()`.
+#' - `fit`: posterior model fit summary from `fit()`.
+#' - `dose_limit`: maximum allowed next dose from the design's increment rule.
+#' - `next_best`: full next best dose recommendation from `nextBest()`.
+#' - `next_dose`: recommended dose value for the next cohort.
+#' - `cohort_size`: active treatment cohort size at `next_dose`.
+#' - `placebo_cohort_size`: placebo cohort size at `next_dose`, if applicable.
+#' - `stop`: logical stop decision from `stopTrial()`.
+#' - `stop_report`: named logical vector with stopping rule results.
+#' - `stop_reason`: stopping-rule message.
+#'
+#' @export
+setGeneric(
+  name = "scenario",
+  def = function(object, data, mcmcOptions, ...) {
+    standardGeneric("scenario")
+  },
+  valueClass = "list"
+)
+
+#' @describeIn scenario Evaluate a hypothetical scenario for a CRM design.
+#'
+#' @aliases scenario-Design
+#'
+#' @example examples/design-method-scenario-Design.R
+#'
+#' @export
+setMethod(
+  f = "scenario",
+  signature = signature(
+    object = "Design",
+    data = "Data",
+    mcmcOptions = "McmcOptions"
+  ),
+  definition = function(object, data, mcmcOptions = McmcOptions(), ...) {
+    dose_limit <- maxDose(object@increments, data = data)
+    samples <- mcmc(data = data, model = object@model, options = mcmcOptions)
+    next_best <- nextBest(
+      object@nextBest,
+      doselimit = dose_limit,
+      samples = samples,
+      model = object@model,
+      data = data,
+      ...
+    )
+    next_dose <- next_best$value
+
+    should_stop <- stopTrial(
+      object@stopping,
+      dose = next_dose,
+      samples = samples,
+      model = object@model,
+      data = data,
+      ...
+    )
+
+    cohort_size <- if (all(is.na(next_dose))) {
+      NA_integer_
+    } else {
+      size(object@cohort_size, dose = next_dose, data = data)
+    }
+
+    placebo_cohort_size <- if (data@placebo && !all(is.na(next_dose))) {
+      size(object@pl_cohort_size, dose = next_dose, data = data)
+    } else {
+      NULL
+    }
+
+    list(
+      data = data,
+      samples = samples,
+      fit = fit(object = samples, model = object@model, data = data, ...),
+      dose_limit = dose_limit,
+      next_best = next_best,
+      next_dose = next_dose,
+      cohort_size = cohort_size,
+      placebo_cohort_size = placebo_cohort_size,
+      stop = should_stop,
+      stop_report = h_unpack_stopit(should_stop),
+      stop_reason = attr(should_stop, "message")
+    )
+  }
+)

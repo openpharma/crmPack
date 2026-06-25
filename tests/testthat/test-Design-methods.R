@@ -371,6 +371,48 @@ test_that("stop_reasons can be NA with certain stopping rule settings", {
   expect_identical(result, expected)
 })
 
+## scenario ----
+
+test_that("scenario-Design returns the expected shortcut results", {
+  design <- h_get_design_data()
+  data <- Data(
+    x = c(0.1, 1, 3, 3, 3),
+    y = c(0, 0, 0, 1, 0),
+    cohort = c(1, 2, 3, 3, 3),
+    doseGrid = design@data@doseGrid
+  )
+  mcmc_options <- h_get_mcmc_options(samples = 5)
+
+  result <- scenario(design, data, mcmc_options)
+
+  expect_named(
+    result,
+    c(
+      "data",
+      "samples",
+      "fit",
+      "dose_limit",
+      "next_best",
+      "next_dose",
+      "cohort_size",
+      "placebo_cohort_size",
+      "stop",
+      "stop_report",
+      "stop_reason"
+    )
+  )
+  expect_s4_class(result$data, "Data")
+  expect_s4_class(result$samples, "Samples")
+  expect_data_frame(result$fit)
+  expect_list(result$next_best)
+  expect_number(result$next_dose, lower = 0, na.ok = TRUE)
+  expect_count(result$cohort_size, positive = TRUE, na.ok = TRUE)
+  expect_null(result$placebo_cohort_size)
+  expect_logical(result$stop, len = 1)
+  expect_logical(result$stop_report)
+  expect_character(result$stop_reason, len = 1)
+})
+
 ## RuleDesign ----
 
 test_that("simulate-RuleDesign produces consistent results", {
