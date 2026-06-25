@@ -729,3 +729,215 @@ setMethod(
     )
   }
 )
+
+# scenario ----
+
+## HierarchicalDesign ----
+
+h_hierarchical_scenario_next_dose <- function(next_dose, arm_data) {
+  if (is(arm_data, "DataCombo")) {
+    if (is.matrix(next_dose)) {
+      dose_value <- as.numeric(next_dose[1L, ])
+      names(dose_value) <- colnames(next_dose)
+      return(dose_value)
+    }
+    if (length(next_dose) == 1L && is.na(next_dose)) {
+      dose_value <- rep(NA_real_, length(arm_data@drugNames))
+      names(dose_value) <- arm_data@drugNames
+      return(dose_value)
+    }
+    dose_value <- as.numeric(next_dose)
+    if (length(dose_value) == length(arm_data@drugNames)) {
+      names(dose_value) <- arm_data@drugNames
+    }
+    return(dose_value)
+  }
+
+  next_dose
+}
+
+#' @describeIn scenario Evaluate a hypothetical scenario for a hierarchical CRM
+#'   design.
+#'
+#' @aliases scenario-HierarchicalDesign
+#'
+#' @example examples/design-method-scenario-HierarchicalDesign.R
+#'
+#' @export
+setMethod(
+  f = "scenario",
+  signature = signature(
+    object = "HierarchicalDesign",
+    data = "HierarchicalData",
+    mcmcOptions = "McmcOptions"
+  ),
+  definition = function(object, data, mcmcOptions = McmcOptions(), ...) {
+    arm_names <- names(object@arms)
+    assert_names(names(data@arms), identical.to = arm_names)
+
+    samples <- mcmc(
+      data = data,
+      model = object@model,
+      options = mcmcOptions
+    )
+
+    dose_limit <- stats::setNames(vector("list", length(arm_names)), arm_names)
+    next_best <- stats::setNames(vector("list", length(arm_names)), arm_names)
+    next_dose <- stats::setNames(vector("list", length(arm_names)), arm_names)
+    cohort_size <- stats::setNames(vector("list", length(arm_names)), arm_names)
+    placebo_cohort_size <- stats::setNames(
+      vector("list", length(arm_names)),
+      arm_names
+    )
+    stop <- stats::setNames(vector("list", length(arm_names)), arm_names)
+    stop_report <- stats::setNames(vector("list", length(arm_names)), arm_names)
+    stop_reason <- stats::setNames(vector("list", length(arm_names)), arm_names)
+    fit_result <- stats::setNames(vector("list", length(arm_names)), arm_names)
+
+    stopped <- stats::setNames(
+      !vapply(object@arms, function(arm) arm@active, logical(1L)),
+      arm_names
+    )
+    opened <- stats::setNames(rep(FALSE, length(arm_names)), arm_names)
+    evaluated <- stats::setNames(rep(FALSE, length(arm_names)), arm_names)
+
+    stop[stopped] <- TRUE
+    stop_reason[stopped] <- "Historical arm: not enrolling."
+
+    repeat {
+      for (arm_name in arm_names[!opened & !stopped]) {
+        arm <- object@arms[[arm_name]]
+        if (openArm(
+          condition = arm@open_when,
+          data = data,
+          finished_arms = stopped
+        )) {
+          opened[[arm_name]] <- TRUE
+        }
+      }
+
+      arms_to_evaluate <- arm_names[opened & !evaluated & !stopped]
+      if (length(arms_to_evaluate) == 0L) {
+        break
+      }
+
+      for (arm_name in arms_to_evaluate) {
+        arm <- object@arms[[arm_name]]
+        arm_design <- arm@design
+        arm_data <- data@arms[[arm_name]]
+        arm_samples <- h_hierarchical_get_decision_samples(
+          samples = samples,
+          arm_name = arm_name,
+          arm = arm,
+          arm_data = arm_data,
+          mcmcOptions = mcmcOptions
+        )
+
+        dose_limit[[arm_name]] <- maxDose(arm_design@increments, data = arm_data)
+        next_best[[arm_name]] <- if (arm_data@nObs == 0L) {
+          list(value = arm_design@startingDose)
+        } else {
+          nextBest(
+            arm_design@nextBest,
+            doselimit = dose_limit[[arm_name]],
+            samples = arm_samples,
+            model = arm_design@model,
+            data = arm_data,
+            ...
+          )
+        }
+        next_dose[[arm_name]] <- h_hierarchical_scenario_next_dose(
+          next_best[[arm_name]]$value,
+          arm_data
+        )
+
+        should_stop <- stopTrial(
+          arm_design@stopping,
+          dose = next_dose[[arm_name]],
+          samples = arm_samples,
+          model = arm_design@model,
+          data = arm_data,
+          ...
+        )
+        stop[[arm_name]] <- should_stop
+        stop_report[[arm_name]] <- h_unpack_stopit(should_stop)
+        stop_reason[[arm_name]] <- attr(should_stop, "message")
+
+        if (anyNA(next_dose[[arm_name]]) && !isTRUE(should_stop)) {
+          stop_reason[[arm_name]] <- paste(
+            "Next dose is NA , i.e., no active dose is safe enough",
+            "according to the NextBest rule."
+          )
+          stop[[arm_name]] <- TRUE
+          stopped[[arm_name]] <- TRUE
+        } else {
+          stopped[[arm_name]] <- isTRUE(should_stop)
+        }
+
+        cohort_size[[arm_name]] <- if (anyNA(next_dose[[arm_name]])) {
+          NA_integer_
+        } else {
+          size(
+            arm_design@cohort_size,
+            dose = next_dose[[arm_name]],
+            data = arm_data
+          )
+        }
+
+        placebo_cohort_size[arm_name] <- list(if (
+          is(arm_data, "Data") &&
+            arm_data@placebo &&
+            !anyNA(next_dose[[arm_name]])
+        ) {
+          size(
+            arm_design@pl_cohort_size,
+            dose = next_dose[[arm_name]],
+            data = arm_data
+          )
+        } else {
+          NULL
+        })
+
+        evaluated[[arm_name]] <- TRUE
+      }
+    }
+
+    for (arm_name in arm_names[!opened & !stopped]) {
+      stop[[arm_name]] <- NA
+      stop_reason[[arm_name]] <- "Arm is not currently open."
+    }
+
+    for (arm_name in arm_names) {
+      arm <- object@arms[[arm_name]]
+      arm_design <- arm@design
+      arm_data <- data@arms[[arm_name]]
+      arm_samples <- h_hierarchical_get_decision_samples(
+        samples = samples,
+        arm_name = arm_name,
+        arm = arm,
+        arm_data = arm_data,
+        mcmcOptions = mcmcOptions
+      )
+      fit_result[[arm_name]] <- fit(
+        object = arm_samples,
+        model = arm_design@model,
+        data = arm_data,
+        ...
+      )
+    }
+
+    list(
+      data = data,
+      samples = samples,
+      fit = fit_result,
+      dose_limit = dose_limit,
+      next_best = next_best,
+      next_dose = next_dose,
+      cohort_size = cohort_size,
+      placebo_cohort_size = placebo_cohort_size,
+      stop = stop,
+      stop_report = stop_report,
+      stop_reason = stop_reason
+    )
+  }
+)

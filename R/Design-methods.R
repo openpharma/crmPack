@@ -4617,8 +4617,10 @@ setMethod(
 #' posterior fit, calculates the next dose recommendation, and evaluates the
 #' stopping rule for the supplied `data`.
 #'
-#' @param object (`Design`, `DesignCombo`, or `DADesign`)\cr the design to evaluate.
-#' @param data (`Data`, `DataCombo`, or `DataDA`)\cr hypothetical data scenario to evaluate.
+#' @param object (`Design`, `DesignCombo`, `DADesign`, or
+#'   `HierarchicalDesign`)\cr the design to evaluate.
+#' @param data (`Data`, `DataCombo`, `DataDA`, or `HierarchicalData`)\cr
+#'   hypothetical data scenario to evaluate.
 #' @param mcmcOptions (`McmcOptions`)\cr MCMC options for the model fit.
 #' @param ... additional arguments without method dispatch.
 #'
