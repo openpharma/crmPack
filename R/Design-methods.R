@@ -4617,8 +4617,8 @@ setMethod(
 #' posterior fit, calculates the next dose recommendation, and evaluates the
 #' stopping rule for the supplied `data`.
 #'
-#' @param object (`Design`)\cr the design to evaluate.
-#' @param data (`Data`)\cr hypothetical data scenario to evaluate.
+#' @param object (`Design`, `DesignCombo`, or `DADesign`)\cr the design to evaluate.
+#' @param data (`Data`, `DataCombo`, or `DataDA`)\cr hypothetical data scenario to evaluate.
 #' @param mcmcOptions (`McmcOptions`)\cr MCMC options for the model fit.
 #' @param ... additional arguments without method dispatch.
 #'
@@ -4657,6 +4657,145 @@ setMethod(
   signature = signature(
     object = "Design",
     data = "Data",
+    mcmcOptions = "McmcOptions"
+  ),
+  definition = function(object, data, mcmcOptions = McmcOptions(), ...) {
+    dose_limit <- maxDose(object@increments, data = data)
+    samples <- mcmc(data = data, model = object@model, options = mcmcOptions)
+    next_best <- nextBest(
+      object@nextBest,
+      doselimit = dose_limit,
+      samples = samples,
+      model = object@model,
+      data = data,
+      ...
+    )
+    next_dose <- next_best$value
+
+    should_stop <- stopTrial(
+      object@stopping,
+      dose = next_dose,
+      samples = samples,
+      model = object@model,
+      data = data,
+      ...
+    )
+
+    cohort_size <- if (all(is.na(next_dose))) {
+      NA_integer_
+    } else {
+      size(object@cohort_size, dose = next_dose, data = data)
+    }
+
+    placebo_cohort_size <- if (data@placebo && !all(is.na(next_dose))) {
+      size(object@pl_cohort_size, dose = next_dose, data = data)
+    } else {
+      NULL
+    }
+
+    list(
+      data = data,
+      samples = samples,
+      fit = fit(object = samples, model = object@model, data = data, ...),
+      dose_limit = dose_limit,
+      next_best = next_best,
+      next_dose = next_dose,
+      cohort_size = cohort_size,
+      placebo_cohort_size = placebo_cohort_size,
+      stop = should_stop,
+      stop_report = h_unpack_stopit(should_stop),
+      stop_reason = attr(should_stop, "message")
+    )
+  }
+)
+
+#' @describeIn scenario Evaluate a hypothetical scenario for a two-drug
+#'   combination CRM design.
+#'
+#' @aliases scenario-DesignCombo
+#'
+#' @example examples/design-method-scenario-DesignCombo.R
+#'
+#' @export
+setMethod(
+  f = "scenario",
+  signature = signature(
+    object = "DesignCombo",
+    data = "DataCombo",
+    mcmcOptions = "McmcOptions"
+  ),
+  definition = function(object, data, mcmcOptions = McmcOptions(), ...) {
+    dose_limit <- maxDose(object@increments, data = data)
+    samples <- mcmc(data = data, model = object@model, options = mcmcOptions)
+    next_best <- nextBest(
+      object@nextBest,
+      doselimit = dose_limit,
+      samples = samples,
+      model = object@model,
+      data = data,
+      ...
+    )
+
+    next_dose <- if (is.matrix(next_best$value)) {
+      dose_value <- as.numeric(next_best$value[1L, ])
+      names(dose_value) <- colnames(next_best$value)
+      dose_value
+    } else if (length(next_best$value) == 1L && is.na(next_best$value)) {
+      dose_value <- rep(NA_real_, length(data@drugNames))
+      names(dose_value) <- data@drugNames
+      dose_value
+    } else {
+      dose_value <- as.numeric(next_best$value)
+      if (length(dose_value) == length(data@drugNames)) {
+        names(dose_value) <- data@drugNames
+      }
+      dose_value
+    }
+
+    should_stop <- stopTrial(
+      object@stopping,
+      dose = next_dose,
+      samples = samples,
+      model = object@model,
+      data = data,
+      ...
+    )
+
+    cohort_size <- if (anyNA(next_dose)) {
+      NA_integer_
+    } else {
+      size(object@cohort_size, dose = next_dose, data = data)
+    }
+
+    list(
+      data = data,
+      samples = samples,
+      fit = fit(object = samples, model = object@model, data = data, ...),
+      dose_limit = dose_limit,
+      next_best = next_best,
+      next_dose = next_dose,
+      cohort_size = cohort_size,
+      placebo_cohort_size = NULL,
+      stop = should_stop,
+      stop_report = h_unpack_stopit(should_stop),
+      stop_reason = attr(should_stop, "message")
+    )
+  }
+)
+
+#' @describeIn scenario Evaluate a hypothetical scenario for a time-to-DLT
+#'   augmented CRM design.
+#'
+#' @aliases scenario-DADesign
+#'
+#' @example examples/design-method-scenario-DADesign.R
+#'
+#' @export
+setMethod(
+  f = "scenario",
+  signature = signature(
+    object = "DADesign",
+    data = "DataDA",
     mcmcOptions = "McmcOptions"
   ),
   definition = function(object, data, mcmcOptions = McmcOptions(), ...) {

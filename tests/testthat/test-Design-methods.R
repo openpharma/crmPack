@@ -413,6 +413,132 @@ test_that("scenario-Design returns the expected shortcut results", {
   expect_character(result$stop_reason, len = 1)
 })
 
+test_that("scenario-DesignCombo returns the expected shortcut results", {
+  data <- DataCombo(
+    x = cbind(
+      drug1 = c(10, 10, 10, 20, 20, 20),
+      drug2 = c(20, 20, 20, 20, 20, 20)
+    ),
+    y = c(0, 0, 1, 0, 0, 0),
+    doseGrid = list(drug1 = c(10, 20, 30), drug2 = c(20, 40, 60))
+  )
+  model <- TwoDrugsCombo(
+    single_models = list(
+      drug1 = LogisticLogNormal(
+        mean = c(-0.85, 1),
+        cov = matrix(c(1, -0.5, -0.5, 1), nrow = 2),
+        ref_dose = 10
+      ),
+      drug2 = LogisticLogNormal(
+        mean = c(-0.7, 0.8),
+        cov = matrix(c(1.1, -0.3, -0.3, 0.9), nrow = 2),
+        ref_dose = 20
+      )
+    ),
+    gamma = 0,
+    tau = 1
+  )
+  increments <- IncrementsMin(
+    increments_list = list(
+      IncrementsComboOneDrugOnly(),
+      IncrementsComboCartesian(
+        drug1 = IncrementsRelative(intervals = c(0), increments = c(1)),
+        drug2 = IncrementsRelative(intervals = c(0), increments = c(1))
+      )
+    )
+  )
+  design <- DesignCombo(
+    model = model,
+    nextBest = NextBestNCRM(
+      target = c(0.2, 0.35),
+      overdose = c(0.35, 1),
+      max_overdose_prob = 0.25
+    ),
+    stopping = StoppingMinPatients(nPatients = 20),
+    increments = increments,
+    cohort_size = CohortSizeConst(3),
+    data = DataCombo(doseGrid = data@doseGrid),
+    startingDose = c(drug1 = 10, drug2 = 20)
+  )
+  mcmc_options <- h_get_mcmc_options(samples = 5)
+
+  result <- scenario(design, data, mcmc_options)
+
+  expect_named(
+    result,
+    c(
+      "data",
+      "samples",
+      "fit",
+      "dose_limit",
+      "next_best",
+      "next_dose",
+      "cohort_size",
+      "placebo_cohort_size",
+      "stop",
+      "stop_report",
+      "stop_reason"
+    )
+  )
+  expect_s4_class(result$data, "DataCombo")
+  expect_s4_class(result$samples, "Samples")
+  expect_data_frame(result$fit)
+  expect_list(result$next_best)
+  expect_matrix(result$dose_limit, ncols = 2)
+  expect_named(result$next_dose, data@drugNames)
+  expect_numeric(result$next_dose, len = 2, any.missing = TRUE)
+  expect_count(result$cohort_size, positive = TRUE, na.ok = TRUE)
+  expect_null(result$placebo_cohort_size)
+  expect_logical(result$stop, len = 1)
+  expect_logical(result$stop_report)
+  expect_character(result$stop_reason, len = 1)
+})
+
+test_that("scenario-DADesign returns the expected shortcut results", {
+  design <- h_get_design_da()
+  data <- DataDA(
+    x = c(0.1, 0.5, 1.5, 3, 6, 10, 10, 10),
+    y = c(0, 0, 1, 1, 0, 0, 1, 0),
+    u = c(42, 30, 15, 5, 20, 25, 30, 60),
+    t0 = c(0, 15, 30, 40, 55, 70, 75, 85),
+    Tmax = 60,
+    doseGrid = design@data@doseGrid,
+    ID = 1L:8L,
+    cohort = as.integer(c(1, 2, 3, 4, 5, 6, 6, 6))
+  )
+  mcmc_options <- h_get_mcmc_options(samples = 5)
+
+  result <- scenario(design, data, mcmc_options)
+
+  expect_named(
+    result,
+    c(
+      "data",
+      "samples",
+      "fit",
+      "dose_limit",
+      "next_best",
+      "next_dose",
+      "cohort_size",
+      "placebo_cohort_size",
+      "stop",
+      "stop_report",
+      "stop_reason"
+    )
+  )
+  expect_s4_class(result$data, "DataDA")
+  expect_s4_class(result$samples, "Samples")
+  expect_data_frame(result$fit)
+  expect_list(result$next_best)
+  expect_number(result$dose_limit, lower = 0, finite = FALSE)
+  expect_number(result$next_dose, lower = 0, na.ok = TRUE)
+  expect_count(result$cohort_size, positive = TRUE, na.ok = TRUE)
+  expect_null(result$placebo_cohort_size)
+  expect_logical(result$stop, len = 1)
+  expect_logical(result$stop_report)
+  expect_character(result$stop_reason, len = 1)
+})
+
 ## RuleDesign ----
 
 test_that("simulate-RuleDesign produces consistent results", {
