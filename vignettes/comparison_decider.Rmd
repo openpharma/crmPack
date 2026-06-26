@@ -162,4 +162,173 @@ Under the hood, the implementation works as follows:
 
 So we can compare this with the implementation in `crmPack` which is based on JAGS.
 
+## Using `crmPack`
+
+Now we are going to define the same design and scenario in `crmPack`. 
+
+We start with the monotherapy model for compound 1:
+
+```{r}
+library(crmPack)
+
+mono_model1 <- LogisticLogNormal(
+  mean = c(logit(0.33), 0),
+  cov = diag(c(2, 1)^2),
+  ref_dose = dose_ref1
+)
+```
+
+And for compound 2 the same:
+
+```{r}
+mono_model2 <- LogisticLogNormal(
+    mean = c(logit(0.33), 0),
+    cov = diag(c(2, 1)^2),
+    ref_dose = dose_ref2
+)
+```
+
+Then we define the combination model:
+
+```{r}
+combo_model <- TwoDrugsCombo(
+    list(
+        compound1 = mono_model1,
+        compound2 = mono_model2
+    ),
+    gamma = 0, # prior mean for the interaction parameter
+    tau = 1 / (1.121^2) # prior precision for the interaction parameter
+)
+```
+
+We define the historical data which is already available:
+
+```{r}
+hist_data_comp2 <- Data(
+    x = rep(historical_data$dose2, historical_data$n.pat),
+    y = c(
+        rep(0, sum(historical_data$n.pat) - sum(historical_data$n.dlt)), 
+        rep(1, sum(historical_data$n.dlt))
+    ),
+    doseGrid = historical_data$dose2
+)
+```
+
+We are going to use simple rules here (they are not relevant for the current scenario comparison):
+
+```{r}
+my_stopping <- StoppingMinPatients(nPatients = 50)
+my_increments <- IncrementsRelative(0, 2)
+my_nextBest <- NextBestNCRM(
+    target = c(0.16, 0.33), 
+    overdose = c(0.33, 1), 
+    max_overdose_prob = 0.25
+)
+my_cohort_size <- CohortSizeConst(size = 3)
+my_increments_combo <- IncrementsComboOneDrugOnly()
+```
+
+Then we define the design arms accordingly:
+
+```{r}
+design_armA <- DesignArm(
+    "A",
+    active = TRUE,
+    design = Design(
+        data = Data(doseGrid = d1),
+        startingDose = d1[1],
+        model = mono_model1,
+        stopping = my_stopping,
+        increments = my_increments,
+        nextBest = my_nextBest,
+        cohort_size = my_cohort_size
+    )
+)
+
+design_armB <- DesignArm(
+    "B",
+    active = TRUE,
+    design = DesignCombo(
+        data = DataCombo(doseGrid = list(compound1 = d1, compound2 = c(0, d2))),
+        startingDose = c(compound1 = d1[1], compound2 = 0),
+        model = combo_model,
+        stopping = my_stopping,
+        increments = my_increments_combo,
+        nextBest = my_nextBest,
+        cohort_size = my_cohort_size
+    ),
+    open_when = ArmMinDoseCondition("A", min_dose = d1[2])
+)
+
+design_armC <- DesignArm(
+    "C",
+    active = FALSE,
+    design = Design(
+        data = hist_data_comp2,
+        model = mono_model2,
+        stopping = my_stopping,
+        increments = my_increments,
+        nextBest = my_nextBest,
+        cohort_size = my_cohort_size,   
+        startingDose = d2[1]
+    )
+)
+```
+
+Now we can define the hierarchical design:
+
+```{r}
+design_hierarchical <- HierarchicalDesign(
+    design_armA,
+    design_armB,
+    design_armC,
+    exchangeable_parameters = list(
+        comp1_intercept = list(
+            A = "alpha0",
+            B = "alpha0[1]"
+        ),
+        comp1_slope = list(
+            A = "alpha1",
+            B = "alpha1[1]"
+        ),
+        comp2_intercept = list(
+            B = "alpha0[2]",
+            C = "alpha0"
+        ),
+        comp2_slope = list(
+            B = "alpha1[2]",
+            C = "alpha1"    
+        )
+    )
+)
+```
+
+Then we define the scenario:
+
+```{r}
+scenario_hierarchical <- HierarchicalData(
+    arms = list(
+        A = Data(
+            x = c(0.1, 0.1, 0.1, 0.2, 0.2, 0.2),
+            y = c(0, 0, 0, 0, 0, 1),
+            doseGrid = design_armA@design@data@doseGrid
+        ),
+        B = design_armB@design@data,
+        C = design_armC@design@data
+    )
+)
+```
+
+And then we can use the `scenario()` function:
+
+```{r}
+result1_crmPack <- scenario(
+    design_hierarchical,
+    data = scenario_hierarchical,
+    mcmcOptions = McmcOptions()
+)
+```
+
+
+
 ## References
