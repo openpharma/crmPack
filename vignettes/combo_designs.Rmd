@@ -54,12 +54,12 @@ The package implements the 5-parameter BLRM approach by @Neuenschwander2015 (not
 
 ### Model implementation
 
-This model can be used in `crmPack` as follows with the `LogisticLogNormalCombo` model class:
+This model can be used in `crmPack` as follows with the `TwoDrugsCombo` model class:
 
 ```{r}
 devtools::load_all()
 
-combo_model <- LogisticLogNormalCombo(
+combo_model <- TwoDrugsCombo(
   single_models = list(
     drug1 = LogisticLogNormal(
       mean = c(-0.85, 1),
