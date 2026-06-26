@@ -282,9 +282,16 @@ test_that("parallel mono and combo prior compiles generically", {
     fixed = TRUE
   ))
   expect_false(grepl("rho_drug1", body_priormodel, fixed = TRUE))
-  expect_identical(
-    names(prior_specs),
-    c("kappa_hier", "gamma_combo", "tau_combo")
+  expect_subset(
+    c(
+      "mu_drug1_intercept_mean",
+      "mu_drug1_intercept_sd",
+      "tau_drug2_slope_meanlog",
+      "tau_drug2_slope_sdlog",
+      "gamma_combo",
+      "tau_combo"
+    ),
+    names(prior_specs)
   )
   expect_true(all(
     c(
@@ -359,12 +366,12 @@ test_that("parallel mono and combo prior supports correlated parameter pools", {
     fixed = TRUE
   ))
   expect_true(grepl(
-    gsub("\\s+", "", "rho_drug1 ~ dunif(-1, 1)"),
+    gsub("\\s+", "", "rho_drug1 ~ dunif(rho_drug1_lower, rho_drug1_upper)"),
     body_priormodel,
     fixed = TRUE
   ))
   expect_true(grepl(
-    gsub("\\s+", "", "rho_drug2 ~ dunif(-1, 1)"),
+    gsub("\\s+", "", "rho_drug2 ~ dunif(rho_drug2_lower, rho_drug2_upper)"),
     body_priormodel,
     fixed = TRUE
   ))
@@ -381,9 +388,18 @@ test_that("parallel mono and combo prior supports correlated parameter pools", {
     body_priormodel,
     fixed = TRUE
   ))
-  expect_identical(
-    names(prior_specs),
-    c("kappa_hier", "gamma_combo", "tau_combo")
+  expect_subset(
+    c(
+      "rho_drug1_lower",
+      "rho_drug1_upper",
+      "rho_drug2_lower",
+      "rho_drug2_upper",
+      "mu_drug1_intercept_mean",
+      "tau_drug2_slope_sdlog",
+      "gamma_combo",
+      "tau_combo"
+    ),
+    names(prior_specs)
   )
   expect_subset(
     c(
@@ -418,19 +434,23 @@ test_that("hierarchical pool priors can be customized", {
   prior_specs <- model@modelspecs(arms = list(), from_prior = TRUE)
 
   expect_true(grepl(
-    "mu_drug1_intercept~dnorm\\(-0\\.70818505792448[0-9]*,pow\\(2,-2\\)\\)",
+    "mu_drug1_intercept~dnorm\\(mu_drug1_intercept_mean,pow\\(mu_drug1_intercept_sd,-2\\)\\)",
     body_priormodel,
     fixed = FALSE
   ))
   expect_true(grepl(
-    "tau_drug1_slope~dlnorm\\(-2\\.0794415416798[0-9]*,pow\\(0\\.3536465206938[0-9]*,-2\\)\\)",
+    "tau_drug1_slope~dlnorm\\(tau_drug1_slope_meanlog,pow\\(tau_drug1_slope_sdlog,-2\\)\\)",
     body_priormodel,
     fixed = FALSE
   ))
-  expect_true("kappa_hier" %in% names(prior_specs))
+  expect_equal(prior_specs$mu_drug1_intercept_mean, qlogis(0.33))
+  expect_equal(prior_specs$mu_drug1_intercept_sd, 2)
+  expect_equal(prior_specs$tau_drug1_slope_meanlog, log(0.125))
+  expect_equal(prior_specs$tau_drug1_slope_sdlog, log(2) / 1.96)
+  expect_false("kappa_hier" %in% names(prior_specs))
 })
 
-test_that("hierarchical specs omit kappa when all tau priors are customized", {
+test_that("hierarchical specs pass all tau hyperpriors explicitly", {
   model <- local_parallel_hierarchical_model(
     pool_priors = list(
       drug1_intercept = list(tau = c(meanlog = log(0.25), sdlog = 0.5)),
@@ -442,6 +462,10 @@ test_that("hierarchical specs omit kappa when all tau priors are customized", {
   prior_specs <- model@modelspecs(arms = list(), from_prior = TRUE)
 
   expect_false("kappa_hier" %in% names(prior_specs))
+  expect_equal(prior_specs$tau_drug1_intercept_meanlog, log(0.25))
+  expect_equal(prior_specs$tau_drug1_intercept_sdlog, 0.5)
+  expect_equal(prior_specs$tau_drug2_slope_meanlog, log(0.125))
+  expect_equal(prior_specs$tau_drug2_slope_sdlog, 0.5)
 })
 
 test_that("hierarchical modelspecs and init compilers return expected fields", {

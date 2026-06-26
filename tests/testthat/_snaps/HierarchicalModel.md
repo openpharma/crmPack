@@ -79,28 +79,39 @@
               -2))
           theta_drug1_my_combo[1] ~ dnorm(mu_mono_intercept, pow(tau_mono_intercept, 
               -2))
-          mu_mono_intercept ~ dnorm(logit(0.25), pow(2.5, -2))
-          tau_mono_intercept ~ dlnorm(log(0.5), pow(kappa_hier, -2))
+          mu_mono_intercept ~ dnorm(mu_mono_intercept_mean, pow(mu_mono_intercept_sd, 
+              -2))
+          tau_mono_intercept ~ dlnorm(tau_mono_intercept_meanlog, pow(tau_mono_intercept_sdlog, 
+              -2))
           theta_my_mono[2] ~ dnorm(mu_mono_slope, pow(tau_mono_slope, 
               -2))
           theta_drug1_my_combo[2] ~ dnorm(mu_mono_slope, pow(tau_mono_slope, 
               -2))
-          mu_mono_slope ~ dnorm(0, pow(0.7, -2))
-          tau_mono_slope ~ dlnorm(log(0.25), pow(kappa_hier, -2))
+          mu_mono_slope ~ dnorm(mu_mono_slope_mean, pow(mu_mono_slope_sd, 
+              -2))
+          tau_mono_slope ~ dlnorm(tau_mono_slope_meanlog, pow(tau_mono_slope_sdlog, 
+              -2))
       }
 
 # hierarchical modelspecs and init compilers return expected fields
 
-    list(kappa_hier = 0.35364652069385, ref_dose_my_mono = 10, ref_dose_drug1_my_combo = 10, 
-        mean_drug2_my_combo = c(-0.7, 0.8), prec_drug2_my_combo = structure(c(1, 
-        0.333333333333333, 0.333333333333333, 1.22222222222222), dim = c(2L, 
-        2L)), ref_dose_drug2_my_combo = 20, gamma_my_combo = 0, tau_my_combo = 1)
+    list(mu_mono_intercept_mean = -1.09861228866811, mu_mono_intercept_sd = 2.5, 
+        tau_mono_intercept_meanlog = -0.693147180559945, tau_mono_intercept_sdlog = 0.35364652069385, 
+        mu_mono_slope_mean = 0, mu_mono_slope_sd = 0.7, tau_mono_slope_meanlog = -1.38629436111989, 
+        tau_mono_slope_sdlog = 0.35364652069385, ref_dose_my_mono = 10, 
+        ref_dose_drug1_my_combo = 10, mean_drug2_my_combo = c(-0.7, 
+        0.8), prec_drug2_my_combo = structure(c(1, 0.333333333333333, 
+        0.333333333333333, 1.22222222222222), dim = c(2L, 2L)), ref_dose_drug2_my_combo = 20, 
+        gamma_my_combo = 0, tau_my_combo = 1)
 
 ---
 
-    list(kappa_hier = 0.35364652069385, mean_drug2_my_combo = c(-0.7, 
-    0.8), prec_drug2_my_combo = structure(c(1, 0.333333333333333, 
-    0.333333333333333, 1.22222222222222), dim = c(2L, 2L)), gamma_my_combo = 0, 
+    list(mu_mono_intercept_mean = -1.09861228866811, mu_mono_intercept_sd = 2.5, 
+        tau_mono_intercept_meanlog = -0.693147180559945, tau_mono_intercept_sdlog = 0.35364652069385, 
+        mu_mono_slope_mean = 0, mu_mono_slope_sd = 0.7, tau_mono_slope_meanlog = -1.38629436111989, 
+        tau_mono_slope_sdlog = 0.35364652069385, mean_drug2_my_combo = c(-0.7, 
+        0.8), prec_drug2_my_combo = structure(c(1, 0.333333333333333, 
+        0.333333333333333, 1.22222222222222), dim = c(2L, 2L)), gamma_my_combo = 0, 
         tau_my_combo = 1)
 
 ---
@@ -111,13 +122,16 @@
 
 # h_mcmc_get_hierarchical_data flattens arm data for JAGS
 
-    list(kappa_hier = 0.35364652069385, ref_dose_my_mono = 10, ref_dose_drug1_my_combo = 10, 
-        mean_drug2_my_combo = c(-0.7, 0.8), prec_drug2_my_combo = structure(c(1, 
-        0.333333333333333, 0.333333333333333, 1.22222222222222), dim = c(2L, 
-        2L)), ref_dose_drug2_my_combo = 20, gamma_my_combo = 0, tau_my_combo = 1, 
-        nObs_my_mono = 4L, y_my_mono = c(0L, 0L, 0L, 1L), x_my_mono = c(10, 
-        10, 20, 20), nObs_my_combo = 4L, y_my_combo = c(0L, 0L, 0L, 
-        1L), x_my_combo = structure(c(10, 10, 20, 20, 20, 40, 20, 
-        40), dim = c(4L, 2L), dimnames = list(NULL, c("drug1", "drug2"
-        ))))
+    list(mu_mono_intercept_mean = -1.09861228866811, mu_mono_intercept_sd = 2.5, 
+        tau_mono_intercept_meanlog = -0.693147180559945, tau_mono_intercept_sdlog = 0.35364652069385, 
+        mu_mono_slope_mean = 0, mu_mono_slope_sd = 0.7, tau_mono_slope_meanlog = -1.38629436111989, 
+        tau_mono_slope_sdlog = 0.35364652069385, ref_dose_my_mono = 10, 
+        ref_dose_drug1_my_combo = 10, mean_drug2_my_combo = c(-0.7, 
+        0.8), prec_drug2_my_combo = structure(c(1, 0.333333333333333, 
+        0.333333333333333, 1.22222222222222), dim = c(2L, 2L)), ref_dose_drug2_my_combo = 20, 
+        gamma_my_combo = 0, tau_my_combo = 1, nObs_my_mono = 4L, 
+        y_my_mono = c(0L, 0L, 0L, 1L), x_my_mono = c(10, 10, 20, 
+        20), nObs_my_combo = 4L, y_my_combo = c(0L, 0L, 0L, 1L), 
+        x_my_combo = structure(c(10, 10, 20, 20, 20, 40, 20, 40), dim = c(4L, 
+        2L), dimnames = list(NULL, c("drug1", "drug2"))))
 

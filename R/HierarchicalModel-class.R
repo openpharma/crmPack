@@ -436,19 +436,6 @@ h_hierarchical_make_pool_map <- function(parameter_pools) {
   pooled_map
 }
 
-#' Format a Scalar for Generated JAGS Code
-#'
-#' @param x (`number`)\cr finite scalar.
-#'
-#' @return Character scalar.
-#'
-#' @keywords internal
-#' @noRd
-h_hierarchical_jags_number <- function(x) {
-  assert_number(x, finite = TRUE)
-  format(x, scientific = FALSE, digits = 16, trim = TRUE)
-}
-
 #' Extract and Validate a Hyperprior Specification
 #'
 #' @param x (`numeric` or `NULL`)\cr user-supplied two-element vector.
@@ -470,59 +457,84 @@ h_hierarchical_hyperprior_vector <- function(x, names) {
   stats::setNames(x, names)
 }
 
-#' Get Pool-Specific Hyperprior Lines
+#' Get Pool-Specific Hyperprior Specification Names and Values
 #'
 #' @param pool_name (`string`)\cr pool name.
 #' @param first_info (`list`)\cr parsed metadata for the first pool member.
 #' @param pool_priors (`list`)\cr optional user hyperprior overrides.
 #'
-#' @return Character vector containing JAGS prior lines.
+#' @return A named list containing JAGS data values.
 #'
 #' @keywords internal
 #' @noRd
-h_hierarchical_pool_hyperprior_lines <- function(
+h_hierarchical_pool_hyperprior_specs <- function(
   pool_name,
   first_info,
   pool_priors
 ) {
   safe_pool <- h_hierarchical_safe_name(pool_name)
-  mu_name <- paste0("mu_", safe_pool)
-  tau_name <- paste0("tau_", safe_pool)
   custom <- pool_priors[[pool_name]]
   mu <- h_hierarchical_hyperprior_vector(custom$mu, c("mean", "sd"))
   tau <- h_hierarchical_hyperprior_vector(custom$tau, c("meanlog", "sdlog"))
 
   if (is.null(mu) && identical(first_info$index, 1L)) {
-    mu_line <- paste0(mu_name, " ~ dnorm(logit(0.25), pow(2.5, -2))")
+    mu <- c(mean = qlogis(0.25), sd = 2.5)
   } else if (is.null(mu)) {
-    mu_line <- paste0(mu_name, " ~ dnorm(0, pow(0.7, -2))")
-  } else {
-    mu_line <- paste0(
-      mu_name,
-      " ~ dnorm(",
-      h_hierarchical_jags_number(mu[["mean"]]),
-      ", pow(",
-      h_hierarchical_jags_number(mu[["sd"]]),
-      ", -2))"
-    )
+    mu <- c(mean = 0, sd = 0.7)
   }
 
   if (is.null(tau) && identical(first_info$index, 1L)) {
-    tau_line <- paste0(tau_name, " ~ dlnorm(log(0.5), pow(kappa_hier, -2))")
+    tau <- c(meanlog = log(0.5), sdlog = log(2) / 1.96)
   } else if (is.null(tau)) {
-    tau_line <- paste0(tau_name, " ~ dlnorm(log(0.25), pow(kappa_hier, -2))")
-  } else {
-    tau_line <- paste0(
-      tau_name,
-      " ~ dlnorm(",
-      h_hierarchical_jags_number(tau[["meanlog"]]),
-      ", pow(",
-      h_hierarchical_jags_number(tau[["sdlog"]]),
-      ", -2))"
-    )
+    tau <- c(meanlog = log(0.25), sdlog = log(2) / 1.96)
   }
 
-  c(mu_line, tau_line)
+  stats::setNames(
+    as.list(c(mu, tau)),
+    paste0(
+      c(
+        "mu_",
+        "mu_",
+        "tau_",
+        "tau_"
+      ),
+      safe_pool,
+      c("_mean", "_sd", "_meanlog", "_sdlog")
+    )
+  )
+}
+
+#' Get Pool-Specific Hyperprior Lines
+#'
+#' @param pool_name (`string`)\cr pool name.
+#'
+#' @return Character vector containing JAGS prior lines.
+#'
+#' @keywords internal
+#' @noRd
+h_hierarchical_pool_hyperprior_lines <- function(pool_name) {
+  safe_pool <- h_hierarchical_safe_name(pool_name)
+  mu_name <- paste0("mu_", safe_pool)
+  tau_name <- paste0("tau_", safe_pool)
+
+  c(
+    paste0(
+      mu_name,
+      " ~ dnorm(",
+      mu_name,
+      "_mean, pow(",
+      mu_name,
+      "_sd, -2))"
+    ),
+    paste0(
+      tau_name,
+      " ~ dlnorm(",
+      tau_name,
+      "_meanlog, pow(",
+      tau_name,
+      "_sdlog, -2))"
+    )
+  )
 }
 
 #' Identify Indexed Latent Nodes Used in a Correlated Pool Block
@@ -561,26 +573,6 @@ h_hierarchical_indexed_node_info <- function(node) {
 #' @noRd
 h_hierarchical_correlated_pool_names <- function(pool_correlations) {
   unique(unlist(pool_correlations, use.names = FALSE))
-}
-
-#' Determine Whether the Default Hierarchical Tau Scale Is Needed
-#'
-#' @param parameter_pools (`list`)\cr exchangeable parameter pools.
-#' @param pool_priors (`list`)\cr optional pool-specific hyperprior overrides.
-#'
-#' @return A flag.
-#'
-#' @keywords internal
-#' @noRd
-h_hierarchical_uses_kappa <- function(parameter_pools, pool_priors) {
-  if (length(parameter_pools) == 0L) {
-    return(FALSE)
-  }
-  any(vapply(
-    names(parameter_pools),
-    function(pool_name) is.null(pool_priors[[pool_name]]$tau),
-    logical(1L)
-  ))
 }
 
 #' Find the Pool Name for One or More Parameter References
@@ -868,6 +860,8 @@ h_hierarchical_compile_priormodel <- function(
     mu_vector <- paste0("mu_", safe_correlation, "_corr")
     prec_matrix <- paste0("prec_", safe_correlation, "_corr")
     rho_name <- paste0("rho_", safe_correlation)
+    rho_lower <- paste0(rho_name, "_lower")
+    rho_upper <- paste0(rho_name, "_upper")
     first_safe_pool <- h_hierarchical_safe_name(first_pool_name)
     second_safe_pool <- h_hierarchical_safe_name(second_pool_name)
     first_mu <- paste0("mu_", first_safe_pool)
@@ -930,7 +924,7 @@ h_hierarchical_compile_priormodel <- function(
       hyper_lines,
       paste0(mu_vector, "[1] <- ", first_mu),
       paste0(mu_vector, "[2] <- ", second_mu),
-      paste0(rho_name, " ~ dunif(-1, 1)"),
+      paste0(rho_name, " ~ dunif(", rho_lower, ", ", rho_upper, ")"),
       paste0(
         prec_matrix,
         "[1, 1] <- 1 / (pow(",
@@ -960,16 +954,8 @@ h_hierarchical_compile_priormodel <- function(
         ", 2)))"
       ),
       paste0(prec_matrix, "[2, 1] <- ", prec_matrix, "[1, 2]"),
-      h_hierarchical_pool_hyperprior_lines(
-        pool_name = first_pool_name,
-        first_info = first_ref_info,
-        pool_priors = pool_priors
-      ),
-      h_hierarchical_pool_hyperprior_lines(
-        pool_name = second_pool_name,
-        first_info = second_ref_info,
-        pool_priors = pool_priors
-      )
+      h_hierarchical_pool_hyperprior_lines(pool_name = first_pool_name),
+      h_hierarchical_pool_hyperprior_lines(pool_name = second_pool_name)
     )
     hyper_names <- c(
       hyper_names,
@@ -1026,11 +1012,7 @@ h_hierarchical_compile_priormodel <- function(
 
     hyper_lines <- c(
       hyper_lines,
-      h_hierarchical_pool_hyperprior_lines(
-        pool_name = pool_name,
-        first_info = first_info,
-        pool_priors = pool_priors
-      )
+      h_hierarchical_pool_hyperprior_lines(pool_name = pool_name)
     )
 
     hyper_names <- c(hyper_names, mu_name, tau_name)
@@ -1074,19 +1056,35 @@ h_hierarchical_compile_modelspecs <- function(
   pool_priors = list()
 ) {
   pooled_map <- h_hierarchical_make_pool_map(parameter_pools)
-  uses_kappa <- h_hierarchical_uses_kappa(
-    parameter_pools = parameter_pools,
-    pool_priors = pool_priors
-  )
 
   function(arms, from_prior) {
     assert_list(arms, any.missing = FALSE)
     assert_flag(from_prior)
 
     specs <- list()
-    if (uses_kappa) {
-      # Matches the prototype's log-normal hyper-SD parametrization.
-      specs$kappa_hier <- log(2) / 1.96
+    for (pool_name in names(parameter_pools)) {
+      members <- parameter_pools[[pool_name]]
+      first_arm <- names(members)[1L]
+      first_ref <- members[[1L]]
+      first_info <- h_hierarchical_parse_ref(
+        models_to_arms[[first_arm]],
+        first_arm,
+        first_ref
+      )
+      specs <- c(
+        specs,
+        h_hierarchical_pool_hyperprior_specs(
+          pool_name = pool_name,
+          first_info = first_info,
+          pool_priors = pool_priors
+        )
+      )
+    }
+
+    for (correlation_name in names(pool_correlations)) {
+      safe_correlation <- h_hierarchical_safe_name(correlation_name)
+      specs[[paste0("rho_", safe_correlation, "_lower")]] <- -1
+      specs[[paste0("rho_", safe_correlation, "_upper")]] <- 1
     }
 
     for (arm_name in names(models_to_arms)) {
