@@ -169,7 +169,7 @@ Now we are going to define the same design and scenario in `crmPack`.
 We start with the monotherapy model for compound 1:
 
 ```{r}
-library(crmPack)
+devtools::load_all() # library(crmPack)
 
 mono_model1 <- LogisticLogNormal(
   mean = c(logit(0.33), 0),
@@ -299,9 +299,37 @@ design_hierarchical <- HierarchicalDesign(
             B = "alpha1[2]",
             C = "alpha1"    
         )
+    ),
+    pool_correlations = list(
+        comp1 = c("comp1_intercept", "comp1_slope"),
+        comp2 = c("comp2_intercept", "comp2_slope")
+    ),
+    pool_priors = list(
+        comp1_intercept = list(
+            mu = prior_mu$mu_a1,
+            tau = prior_tau$tau_a1
+        ),
+        comp1_slope = list(
+            mu = prior_mu$mu_b1,
+            tau = prior_tau$tau_b1
+        ),
+        comp2_intercept = list(
+            mu = prior_mu$mu_a2,
+            tau = prior_tau$tau_a2
+        ),
+        comp2_slope = list(
+            mu = prior_mu$mu_b2,
+            tau = prior_tau$tau_b2
+        )
     )
 )
 ```
+
+Note that each entry in `pool_correlations` can correlate exactly two scalar
+exchangeable parameter pools. In this example, `comp1` correlates the compound 1
+intercept pool with the compound 1 slope pool, and `comp2` does the same for
+compound 2. Correlated blocks with three or more parameters are not currently
+supported.
 
 Then we define the scenario:
 
@@ -350,6 +378,7 @@ diff_trialA <- data.frame(
     lower = fit_trialA_decider$`q.2.5%` - fit_trialA_crmPack$lower,
     upper = fit_trialA_decider$`q.97.5%` - fit_trialA_crmPack$upper
 )
+diff_trialA
 ```
 
 And then the results for Arm B:
@@ -379,7 +408,10 @@ Here we have the following Stan model:
 ```{r}
 #| results: "asis"
 #| echo: false
-cat("```{stan}", decider:::stanmodels$jointBLRM@model_code, "```", sep = "\n")
+
+cat("````\n")
+cat(decider:::stanmodels$jointBLRM@model_code)
+cat("\n````")
 ```
 
 ### `crmPack`
@@ -394,5 +426,14 @@ cat("````", deparse(body(design_hierarchical@model@datamodel)), "````", sep = "\
 
 cat("````", deparse(body(design_hierarchical@model@priormodel)), "````", sep = "\n")
 ```
+
+### Conclusion
+
+There are still some minor differences:
+
+- In `decider`, the $\eta$ parameter is part of the 5-parameter hierarchical vector and has its own hypermean and heterogeneity. In `crmPack`, the $\eta$ parameter is not part of the hierarchical vector. When there is only combo arm then this does not matter.
+- JAGS uses Bernoulli observations, Stan uses binomial cohort counts, but the likelihoods are equivalent.
+
+Apart from these, the probabilistic models are equivalent. We could also see that in the fit results which are very close to each other.
 
 ## References

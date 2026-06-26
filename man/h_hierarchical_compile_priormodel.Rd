@@ -4,13 +4,26 @@
 \alias{h_hierarchical_compile_priormodel}
 \title{Compile the Hierarchical Prior Model}
 \usage{
-h_hierarchical_compile_priormodel(models_to_arms, parameter_pools)
+h_hierarchical_compile_priormodel(
+  models_to_arms,
+  parameter_pools,
+  pool_correlations = list(),
+  pool_priors = list()
+)
 }
 \arguments{
 \item{models_to_arms}{(\code{list})\cr named arm-specific models.}
 
 \item{parameter_pools}{(\code{list})\cr exchangeable parameter specification from
 \code{\link[=HierarchicalModel]{HierarchicalModel()}}.}
+
+\item{pool_correlations}{(\code{list})\cr optional named list pairing exactly two
+scalar exchangeable pools into correlated bivariate normal blocks. Higher
+dimensional correlation blocks, such as correlations across three or more
+parameters, are not supported.}
+
+\item{pool_priors}{(\code{list})\cr optional named list of pool-specific
+hyperprior overrides.}
 }
 \value{
 A list with entries \code{priormodel} and \code{sample}.

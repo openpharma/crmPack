@@ -456,11 +456,15 @@ DesignArm <- function(
 #' @param ... [`DesignArm`] objects describing the trial arms.
 #' @param exchangeable_parameters (`list`)\cr see
 #'   [`HierarchicalModel()`].
+#' @param pool_correlations (`list`)\cr see [`HierarchicalModel()`].
+#' @param pool_priors (`list`)\cr see [`HierarchicalModel()`].
 #'
 #' @export
 HierarchicalDesign <- function(
   ...,
-  exchangeable_parameters = list()
+  exchangeable_parameters = list(),
+  pool_correlations = list(),
+  pool_priors = list()
 ) {
   arms <- list(...)
   assert_list(arms, types = "DesignArm", any.missing = FALSE, min.len = 2L)
@@ -475,7 +479,11 @@ HierarchicalDesign <- function(
     HierarchicalModel,
     c(
       lapply(arms, function(arm) arm@design@model),
-      list(exchangeable_parameters = exchangeable_parameters)
+      list(
+        exchangeable_parameters = exchangeable_parameters,
+        pool_correlations = pool_correlations,
+        pool_priors = pool_priors
+      )
     )
   )
 

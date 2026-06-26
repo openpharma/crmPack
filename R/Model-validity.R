@@ -246,6 +246,8 @@ v_hierarchical_model <- function(object) {
   v <- Validate()
   models_to_arms <- object@models_to_arms
   parameter_pools <- object@parameter_pools
+  pool_correlations <- object@pool_correlations
+  pool_priors <- object@pool_priors
 
   v$check(
     test_list(models_to_arms, any.missing = FALSE),
@@ -278,6 +280,29 @@ v_hierarchical_model <- function(object) {
     length(parameter_pools) == 0L ||
       test_names(names(parameter_pools), type = "unique"),
     "parameter_pools must be a named list with unique names"
+  )
+  v$check(
+    test_list(pool_correlations, any.missing = FALSE, null.ok = TRUE),
+    "pool_correlations must be a list without missings"
+  )
+  v$check(
+    length(pool_correlations) == 0L ||
+      test_names(names(pool_correlations), type = "unique"),
+    "pool_correlations must be a named list with unique names"
+  )
+  v$check(
+    test_list(pool_priors, any.missing = FALSE, null.ok = TRUE),
+    "pool_priors must be a list without missings"
+  )
+  v$check(
+    length(pool_priors) == 0L ||
+      test_names(names(pool_priors), type = "unique"),
+    "pool_priors must be a named list with unique names"
+  )
+  v$check(
+    length(pool_priors) == 0L ||
+      all(names(pool_priors) %in% names(parameter_pools)),
+    "pool_priors names must be exchangeable parameter pool names"
   )
 
   if (
@@ -365,6 +390,124 @@ v_hierarchical_model <- function(object) {
             "' must target the same parameter family"
           )
         )
+      }
+    }
+  }
+
+  if (length(pool_correlations) > 0L) {
+    for (correlation_name in names(pool_correlations)) {
+      pair <- pool_correlations[[correlation_name]]
+      v$check(
+        is.character(pair) && length(pair) == 2L && !anyNA(pair),
+        paste0(
+          "pool correlation '",
+          correlation_name,
+          "' must be a character vector of two parameter pool names"
+        )
+      )
+      if (!is.character(pair) || length(pair) != 2L || anyNA(pair)) {
+        next
+      }
+      v$check(
+        all(pair %in% names(parameter_pools)),
+        paste0(
+          "pool correlation '",
+          correlation_name,
+          "' refers to unknown parameter pools"
+        )
+      )
+      if (!all(pair %in% names(parameter_pools))) {
+        next
+      }
+      first_pool <- parameter_pools[[pair[[1L]]]]
+      second_pool <- parameter_pools[[pair[[2L]]]]
+      v$check(
+        setequal(names(first_pool), names(second_pool)),
+        paste0(
+          "pool correlation '",
+          correlation_name,
+          "' must pair pools with the same hierarchical arms"
+        )
+      )
+    }
+    correlated_pools <- unlist(pool_correlations, use.names = FALSE)
+    v$check(
+      anyDuplicated(correlated_pools) == 0L,
+      "a parameter pool can appear in at most one pool correlation"
+    )
+  }
+
+  if (length(pool_priors) > 0L) {
+    for (prior_name in names(pool_priors)) {
+      prior <- pool_priors[[prior_name]]
+      v$check(
+        test_list(prior, names = "unique", any.missing = FALSE),
+        paste0(
+          "pool prior '",
+          prior_name,
+          "' must be a named list without missings"
+        )
+      )
+      if (!isTRUE(test_list(prior, names = "unique", any.missing = FALSE))) {
+        next
+      }
+      v$check(
+        all(names(prior) %in% c("mu", "tau")),
+        paste0(
+          "pool prior '",
+          prior_name,
+          "' can only contain 'mu' and 'tau' entries"
+        )
+      )
+      if (!is.null(prior$mu)) {
+        v$check(
+          test_numeric(prior$mu, len = 2L, any.missing = FALSE, finite = TRUE),
+          paste0(
+            "pool prior '",
+            prior_name,
+            "' mu must be a finite length-2 numeric vector"
+          )
+        )
+        v$check(
+          is.numeric(prior$mu) && length(prior$mu) == 2L && prior$mu[[2L]] > 0,
+          paste0("pool prior '", prior_name, "' mu SD must be positive")
+        )
+        if (!is.null(names(prior$mu))) {
+          v$check(
+            setequal(names(prior$mu), c("mean", "sd")),
+            paste0(
+              "pool prior '",
+              prior_name,
+              "' mu names must be 'mean' and 'sd'"
+            )
+          )
+        }
+      }
+      if (!is.null(prior$tau)) {
+        v$check(
+          test_numeric(prior$tau, len = 2L, any.missing = FALSE, finite = TRUE),
+          paste0(
+            "pool prior '",
+            prior_name,
+            "' tau must be a finite length-2 numeric vector"
+          )
+        )
+        v$check(
+          is.numeric(prior$tau) &&
+            length(prior$tau) == 2L &&
+            prior$tau[[2L]] > 0,
+          paste0("pool prior '", prior_name, "' tau log-SD must be positive")
+        )
+        if (!is.null(names(prior$tau))) {
+          v$check(
+            setequal(names(prior$tau), c("meanlog", "sdlog")),
+            paste0(
+              "pool prior '",
+              prior_name,
+              "' tau names must be 'meanlog' and 'sdlog'"
+            )
+          )
+        }
       }
     }
   }

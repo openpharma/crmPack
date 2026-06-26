@@ -436,6 +436,153 @@ h_hierarchical_make_pool_map <- function(parameter_pools) {
   pooled_map
 }
 
+#' Format a Scalar for Generated JAGS Code
+#'
+#' @param x (`number`)\cr finite scalar.
+#'
+#' @return Character scalar.
+#'
+#' @keywords internal
+#' @noRd
+h_hierarchical_jags_number <- function(x) {
+  assert_number(x, finite = TRUE)
+  format(x, scientific = FALSE, digits = 16, trim = TRUE)
+}
+
+#' Extract and Validate a Hyperprior Specification
+#'
+#' @param x (`numeric` or `NULL`)\cr user-supplied two-element vector.
+#' @param names (`character`)\cr allowed names.
+#'
+#' @return A named numeric vector or `NULL`.
+#'
+#' @keywords internal
+#' @noRd
+h_hierarchical_hyperprior_vector <- function(x, names) {
+  if (is.null(x)) {
+    return(NULL)
+  }
+  assert_numeric(x, len = 2L, any.missing = FALSE, finite = TRUE)
+  if (!is.null(names(x))) {
+    assert_set_equal(names(x), names)
+    return(x[names])
+  }
+  stats::setNames(x, names)
+}
+
+#' Get Pool-Specific Hyperprior Lines
+#'
+#' @param pool_name (`string`)\cr pool name.
+#' @param first_info (`list`)\cr parsed metadata for the first pool member.
+#' @param pool_priors (`list`)\cr optional user hyperprior overrides.
+#'
+#' @return Character vector containing JAGS prior lines.
+#'
+#' @keywords internal
+#' @noRd
+h_hierarchical_pool_hyperprior_lines <- function(
+  pool_name,
+  first_info,
+  pool_priors
+) {
+  safe_pool <- h_hierarchical_safe_name(pool_name)
+  mu_name <- paste0("mu_", safe_pool)
+  tau_name <- paste0("tau_", safe_pool)
+  custom <- pool_priors[[pool_name]]
+  mu <- h_hierarchical_hyperprior_vector(custom$mu, c("mean", "sd"))
+  tau <- h_hierarchical_hyperprior_vector(custom$tau, c("meanlog", "sdlog"))
+
+  if (is.null(mu) && identical(first_info$index, 1L)) {
+    mu_line <- paste0(mu_name, " ~ dnorm(logit(0.25), pow(2.5, -2))")
+  } else if (is.null(mu)) {
+    mu_line <- paste0(mu_name, " ~ dnorm(0, pow(0.7, -2))")
+  } else {
+    mu_line <- paste0(
+      mu_name,
+      " ~ dnorm(",
+      h_hierarchical_jags_number(mu[["mean"]]),
+      ", pow(",
+      h_hierarchical_jags_number(mu[["sd"]]),
+      ", -2))"
+    )
+  }
+
+  if (is.null(tau) && identical(first_info$index, 1L)) {
+    tau_line <- paste0(tau_name, " ~ dlnorm(log(0.5), pow(kappa_hier, -2))")
+  } else if (is.null(tau)) {
+    tau_line <- paste0(tau_name, " ~ dlnorm(log(0.25), pow(kappa_hier, -2))")
+  } else {
+    tau_line <- paste0(
+      tau_name,
+      " ~ dlnorm(",
+      h_hierarchical_jags_number(tau[["meanlog"]]),
+      ", pow(",
+      h_hierarchical_jags_number(tau[["sdlog"]]),
+      ", -2))"
+    )
+  }
+
+  c(mu_line, tau_line)
+}
+
+#' Identify Indexed Latent Nodes Used in a Correlated Pool Block
+#'
+#' @param node (`string`)\cr namespaced latent node.
+#'
+#' @return A list with entries `root` and `index`.
+#'
+#' @keywords internal
+#' @noRd
+h_hierarchical_indexed_node_info <- function(node) {
+  expr <- parse(text = node)[[1L]]
+  if (
+    !is.call(expr) ||
+      !identical(as.character(expr[[1L]]), "[") ||
+      !is.symbol(expr[[2L]]) ||
+      length(expr) != 3L
+  ) {
+    stop("Correlated pool nodes must be indexed elements of the same vector.")
+  }
+  index <- eval(expr[[3L]], envir = baseenv())
+  if (!is.numeric(index) || length(index) != 1L || index != as.integer(index)) {
+    stop("Correlated pool nodes must use scalar integer indices.")
+  }
+  list(root = as.character(expr[[2L]]), index = as.integer(index))
+}
+
+#' Build a Lookup of Pools Used in Correlated Blocks
+#'
+#' @param pool_correlations (`list`)\cr named list of correlations between
+#'   exactly two pools.
+#'
+#' @return Character vector of pool names.
+#'
+#' @keywords internal
+#' @noRd
+h_hierarchical_correlated_pool_names <- function(pool_correlations) {
+  unique(unlist(pool_correlations, use.names = FALSE))
+}
+
+#' Determine Whether the Default Hierarchical Tau Scale Is Needed
+#'
+#' @param parameter_pools (`list`)\cr exchangeable parameter pools.
+#' @param pool_priors (`list`)\cr optional pool-specific hyperprior overrides.
+#'
+#' @return A flag.
+#'
+#' @keywords internal
+#' @noRd
+h_hierarchical_uses_kappa <- function(parameter_pools, pool_priors) {
+  if (length(parameter_pools) == 0L) {
+    return(FALSE)
+  }
+  any(vapply(
+    names(parameter_pools),
+    function(pool_name) is.null(pool_priors[[pool_name]]$tau),
+    logical(1L)
+  ))
+}
+
 #' Find the Pool Name for One or More Parameter References
 #'
 #' @description `r lifecycle::badge("experimental")`
@@ -635,11 +782,22 @@ h_hierarchical_compile_datamodel <- function(models_to_arms) {
 #' @param models_to_arms (`list`)\cr named arm-specific models.
 #' @param parameter_pools (`list`)\cr exchangeable parameter specification from
 #'   [HierarchicalModel()].
+#' @param pool_correlations (`list`)\cr optional named list pairing exactly two
+#'   scalar exchangeable pools into correlated bivariate normal blocks. Higher
+#'   dimensional correlation blocks, such as correlations across three or more
+#'   parameters, are not supported.
+#' @param pool_priors (`list`)\cr optional named list of pool-specific
+#'   hyperprior overrides.
 #'
 #' @return A list with entries `priormodel` and `sample`.
 #'
 #' @keywords internal
-h_hierarchical_compile_priormodel <- function(models_to_arms, parameter_pools) {
+h_hierarchical_compile_priormodel <- function(
+  models_to_arms,
+  parameter_pools,
+  pool_correlations = list(),
+  pool_priors = list()
+) {
   pooled_map <- h_hierarchical_make_pool_map(parameter_pools)
   fixed_lines <- character()
   sample_names <- character()
@@ -698,7 +856,135 @@ h_hierarchical_compile_priormodel <- function(models_to_arms, parameter_pools) {
 
   hyper_lines <- character()
   hyper_names <- character()
+  correlated_pools <- h_hierarchical_correlated_pool_names(pool_correlations)
+
+  for (correlation_name in names(pool_correlations)) {
+    pair <- pool_correlations[[correlation_name]]
+    first_pool_name <- pair[[1L]]
+    second_pool_name <- pair[[2L]]
+    first_pool <- parameter_pools[[first_pool_name]]
+    second_pool <- parameter_pools[[second_pool_name]]
+    safe_correlation <- h_hierarchical_safe_name(correlation_name)
+    mu_vector <- paste0("mu_", safe_correlation, "_corr")
+    prec_matrix <- paste0("prec_", safe_correlation, "_corr")
+    rho_name <- paste0("rho_", safe_correlation)
+    first_safe_pool <- h_hierarchical_safe_name(first_pool_name)
+    second_safe_pool <- h_hierarchical_safe_name(second_pool_name)
+    first_mu <- paste0("mu_", first_safe_pool)
+    second_mu <- paste0("mu_", second_safe_pool)
+    first_tau <- paste0("tau_", first_safe_pool)
+    second_tau <- paste0("tau_", second_safe_pool)
+
+    for (arm_name in names(first_pool)) {
+      first_info <- h_hierarchical_parse_ref(
+        models_to_arms[[arm_name]],
+        arm_name,
+        first_pool[[arm_name]]
+      )
+      second_info <- h_hierarchical_parse_ref(
+        models_to_arms[[arm_name]],
+        arm_name,
+        second_pool[[arm_name]]
+      )
+      first_node <- h_hierarchical_indexed_node_info(first_info$latent)
+      second_node <- h_hierarchical_indexed_node_info(second_info$latent)
+      if (
+        !identical(first_node$root, second_node$root) ||
+          !identical(first_node$index, 1L) ||
+          !identical(second_node$index, 2L)
+      ) {
+        stop(
+          "Correlated pools '",
+          first_pool_name,
+          "' and '",
+          second_pool_name,
+          "' must refer to indices 1 and 2 of the same latent vector for arm '",
+          arm_name,
+          "'."
+        )
+      }
+      hyper_lines <- c(
+        hyper_lines,
+        paste0(
+          first_node$root,
+          "[1:2] ~ dmnorm(",
+          mu_vector,
+          "[], ",
+          prec_matrix,
+          "[,])"
+        )
+      )
+    }
+
+    first_ref_info <- h_hierarchical_parse_ref(
+      models_to_arms[[names(first_pool)[1L]]],
+      names(first_pool)[1L],
+      first_pool[[1L]]
+    )
+    second_ref_info <- h_hierarchical_parse_ref(
+      models_to_arms[[names(second_pool)[1L]]],
+      names(second_pool)[1L],
+      second_pool[[1L]]
+    )
+    hyper_lines <- c(
+      hyper_lines,
+      paste0(mu_vector, "[1] <- ", first_mu),
+      paste0(mu_vector, "[2] <- ", second_mu),
+      paste0(rho_name, " ~ dunif(-1, 1)"),
+      paste0(
+        prec_matrix,
+        "[1, 1] <- 1 / (pow(",
+        first_tau,
+        ", 2) * (1 - pow(",
+        rho_name,
+        ", 2)))"
+      ),
+      paste0(
+        prec_matrix,
+        "[2, 2] <- 1 / (pow(",
+        second_tau,
+        ", 2) * (1 - pow(",
+        rho_name,
+        ", 2)))"
+      ),
+      paste0(
+        prec_matrix,
+        "[1, 2] <- -",
+        rho_name,
+        " / (",
+        first_tau,
+        " * ",
+        second_tau,
+        " * (1 - pow(",
+        rho_name,
+        ", 2)))"
+      ),
+      paste0(prec_matrix, "[2, 1] <- ", prec_matrix, "[1, 2]"),
+      h_hierarchical_pool_hyperprior_lines(
+        pool_name = first_pool_name,
+        first_info = first_ref_info,
+        pool_priors = pool_priors
+      ),
+      h_hierarchical_pool_hyperprior_lines(
+        pool_name = second_pool_name,
+        first_info = second_ref_info,
+        pool_priors = pool_priors
+      )
+    )
+    hyper_names <- c(
+      hyper_names,
+      rho_name,
+      first_mu,
+      first_tau,
+      second_mu,
+      second_tau
+    )
+  }
+
   for (pool_name in names(parameter_pools)) {
+    if (pool_name %in% correlated_pools) {
+      next
+    }
     members <- parameter_pools[[pool_name]]
     first_arm <- names(members)[1L]
     first_ref <- members[[1L]]
@@ -738,21 +1024,14 @@ h_hierarchical_compile_priormodel <- function(models_to_arms, parameter_pools) {
       )
     )
 
-    # The first model parameter gets the default location-prior scale, while
-    # later parameters get the default gradient-prior scale.
-    if (identical(first_info$index, 1L)) {
-      hyper_lines <- c(
-        hyper_lines,
-        paste0(mu_name, " ~ dnorm(logit(0.25), pow(2.5, -2))"),
-        paste0(tau_name, " ~ dlnorm(log(0.5), pow(kappa_hier, -2))")
+    hyper_lines <- c(
+      hyper_lines,
+      h_hierarchical_pool_hyperprior_lines(
+        pool_name = pool_name,
+        first_info = first_info,
+        pool_priors = pool_priors
       )
-    } else {
-      hyper_lines <- c(
-        hyper_lines,
-        paste0(mu_name, " ~ dnorm(0, pow(0.7, -2))"),
-        paste0(tau_name, " ~ dlnorm(log(0.25), pow(kappa_hier, -2))")
-      )
-    }
+    )
 
     hyper_names <- c(hyper_names, mu_name, tau_name)
   }
@@ -778,19 +1057,34 @@ h_hierarchical_compile_priormodel <- function(models_to_arms, parameter_pools) {
 #' @param models_to_arms (`list`)\cr named arm-specific models.
 #' @param parameter_pools (`list`)\cr exchangeable parameter specification from
 #'   [HierarchicalModel()].
+#' @param pool_correlations (`list`)\cr optional named list pairing exactly two
+#'   scalar exchangeable pools into correlated bivariate normal blocks. Higher
+#'   dimensional correlation blocks, such as correlations across three or more
+#'   parameters, are not supported.
+#' @param pool_priors (`list`)\cr optional named list of pool-specific
+#'   hyperprior overrides.
 #'
 #' @return A function returning the JAGS data list.
 #'
 #' @keywords internal
-h_hierarchical_compile_modelspecs <- function(models_to_arms, parameter_pools) {
+h_hierarchical_compile_modelspecs <- function(
+  models_to_arms,
+  parameter_pools,
+  pool_correlations = list(),
+  pool_priors = list()
+) {
   pooled_map <- h_hierarchical_make_pool_map(parameter_pools)
+  uses_kappa <- h_hierarchical_uses_kappa(
+    parameter_pools = parameter_pools,
+    pool_priors = pool_priors
+  )
 
   function(arms, from_prior) {
     assert_list(arms, any.missing = FALSE)
     assert_flag(from_prior)
 
     specs <- list()
-    if (length(parameter_pools) > 0L) {
+    if (uses_kappa) {
       # Matches the prototype's log-normal hyper-SD parametrization.
       specs$kappa_hier <- log(2) / 1.96
     }
@@ -849,11 +1143,19 @@ h_hierarchical_compile_modelspecs <- function(models_to_arms, parameter_pools) {
 #' @param models_to_arms (`list`)\cr named arm-specific models.
 #' @param parameter_pools (`list`)\cr exchangeable parameter specification from
 #'   [HierarchicalModel()].
+#' @param pool_correlations (`list`)\cr optional named list pairing exactly two
+#'   scalar exchangeable pools into correlated bivariate normal blocks. Higher
+#'   dimensional correlation blocks, such as correlations across three or more
+#'   parameters, are not supported.
 #'
 #' @return A function returning a named list of JAGS initial values.
 #'
 #' @keywords internal
-h_hierarchical_compile_init <- function(models_to_arms, parameter_pools) {
+h_hierarchical_compile_init <- function(
+  models_to_arms,
+  parameter_pools,
+  pool_correlations = list()
+) {
   function(arms) {
     assert_list(arms, any.missing = FALSE)
 
@@ -873,6 +1175,10 @@ h_hierarchical_compile_init <- function(models_to_arms, parameter_pools) {
       safe_pool <- h_hierarchical_safe_name(pool_name)
       init[[paste0("mu_", safe_pool)]] <- 0
       init[[paste0("tau_", safe_pool)]] <- 0.5
+    }
+    for (correlation_name in names(pool_correlations)) {
+      safe_correlation <- h_hierarchical_safe_name(correlation_name)
+      init[[paste0("rho_", safe_correlation)]] <- 0
     }
 
     init
@@ -902,6 +1208,11 @@ h_hierarchical_compile_init <- function(models_to_arms, parameter_pools) {
 #' @slot parameter_pools (`list`)\cr named list describing which parameters are
 #'   exchangeable across arms. Each list entry contains arm names as names and
 #'   parameter references as values.
+#' @slot pool_correlations (`list`)\cr named list pairing exactly two scalar
+#'   exchangeable parameter pools that should use a correlated bivariate normal
+#'   hierarchy.
+#' @slot pool_priors (`list`)\cr named list of pool-specific hyperprior
+#'   overrides.
 #'
 #' @seealso [`HierarchicalData`], [`TwoDrugsCombo`].
 #'
@@ -913,7 +1224,9 @@ h_hierarchical_compile_init <- function(models_to_arms, parameter_pools) {
   contains = "GeneralModel",
   slots = c(
     models_to_arms = "list",
-    parameter_pools = "list"
+    parameter_pools = "list",
+    pool_correlations = "list",
+    pool_priors = "list"
   ),
   validity = v_hierarchical_model
 )
@@ -928,12 +1241,22 @@ h_hierarchical_compile_init <- function(models_to_arms, parameter_pools) {
 #'   used to define the hierarchical structure of the model. Each
 #'   list entry contains the arms as names and the parameters to be shared
 #'   as a string.
+#' @param pool_correlations optional named list pairing exactly two scalar
+#'   entries from `exchangeable_parameters` into a correlated bivariate
+#'   hierarchy. Each pair must refer to indices 1 and 2 of the same latent
+#'   parameter vector in every shared arm. Correlating three or more parameters
+#'   in one multivariate hierarchy is not supported.
+#' @param pool_priors optional named list of hyperprior overrides for entries in
+#'   `exchangeable_parameters`. Each entry may contain `mu = c(mean, sd)` and/or
+#'   `tau = c(meanlog, sdlog)`.
 #'
 #' @export
 #' @example examples/Model-class-HierarchicalModel.R
 HierarchicalModel <- function(
   ...,
-  exchangeable_parameters = list()
+  exchangeable_parameters = list(),
+  pool_correlations = list(),
+  pool_priors = list()
 ) {
   args <- list(...)
   assert_list(args, any.missing = FALSE, min.len = 2L)
@@ -947,6 +1270,8 @@ HierarchicalModel <- function(
     logical(1L)
   )))
   assert_list(exchangeable_parameters, any.missing = FALSE, null.ok = TRUE)
+  assert_list(pool_correlations, any.missing = FALSE, null.ok = TRUE)
+  assert_list(pool_priors, any.missing = FALSE, null.ok = TRUE)
   assert_character(sapply(names(args), h_hierarchical_safe_name), unique = TRUE)
   if (length(exchangeable_parameters) > 0L) {
     assert_character(
@@ -954,25 +1279,38 @@ HierarchicalModel <- function(
       unique = TRUE
     )
   }
+  if (length(pool_correlations) > 0L) {
+    assert_character(
+      sapply(names(pool_correlations), h_hierarchical_safe_name),
+      unique = TRUE
+    )
+  }
 
   compiled_datamodel <- h_hierarchical_compile_datamodel(args)
   compiled_prior <- h_hierarchical_compile_priormodel(
     models_to_arms = args,
-    parameter_pools = exchangeable_parameters
+    parameter_pools = exchangeable_parameters,
+    pool_correlations = pool_correlations,
+    pool_priors = pool_priors
   )
 
   .HierarchicalModel(
     models_to_arms = args,
     parameter_pools = exchangeable_parameters,
+    pool_correlations = pool_correlations,
+    pool_priors = pool_priors,
     datamodel = compiled_datamodel,
     priormodel = compiled_prior$priormodel,
     modelspecs = h_hierarchical_compile_modelspecs(
       models_to_arms = args,
-      parameter_pools = exchangeable_parameters
+      parameter_pools = exchangeable_parameters,
+      pool_correlations = pool_correlations,
+      pool_priors = pool_priors
     ),
     init = h_hierarchical_compile_init(
       models_to_arms = args,
-      parameter_pools = exchangeable_parameters
+      parameter_pools = exchangeable_parameters,
+      pool_correlations = pool_correlations
     ),
     datanames = "arms",
     datanames_prior = "arms",

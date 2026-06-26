@@ -8,7 +8,12 @@
 \alias{.DefaultHierarchicalDesign}
 \title{\code{HierarchicalDesign}}
 \usage{
-HierarchicalDesign(..., exchangeable_parameters = list())
+HierarchicalDesign(
+  ...,
+  exchangeable_parameters = list(),
+  pool_correlations = list(),
+  pool_priors = list()
+)
 
 .DefaultHierarchicalDesign()
 }
@@ -17,6 +22,10 @@ HierarchicalDesign(..., exchangeable_parameters = list())
 
 \item{exchangeable_parameters}{(\code{list})\cr see
 \code{\link[=HierarchicalModel]{HierarchicalModel()}}.}
+
+\item{pool_correlations}{(\code{list})\cr see \code{\link[=HierarchicalModel]{HierarchicalModel()}}.}
+
+\item{pool_priors}{(\code{list})\cr see \code{\link[=HierarchicalModel]{HierarchicalModel()}}.}
 }
 \description{
 \ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#experimental}{\figure{lifecycle-experimental.svg}{options: alt='[Experimental]'}}}{\strong{[Experimental]}}

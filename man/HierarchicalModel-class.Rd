@@ -8,7 +8,12 @@
 \alias{.DefaultHierarchicalModel}
 \title{\code{HierarchicalModel}}
 \usage{
-HierarchicalModel(..., exchangeable_parameters = list())
+HierarchicalModel(
+  ...,
+  exchangeable_parameters = list(),
+  pool_correlations = list(),
+  pool_priors = list()
+)
 
 .DefaultHierarchicalModel()
 }
@@ -20,6 +25,16 @@ which parameters are exchangeable across arms. This will be
 used to define the hierarchical structure of the model. Each
 list entry contains the arms as names and the parameters to be shared
 as a string.}
+
+\item{pool_correlations}{optional named list pairing exactly two scalar
+entries from \code{exchangeable_parameters} into a correlated bivariate
+hierarchy. Each pair must refer to indices 1 and 2 of the same latent
+parameter vector in every shared arm. Correlating three or more parameters
+in one multivariate hierarchy is not supported.}
+
+\item{pool_priors}{optional named list of hyperprior overrides for entries in
+\code{exchangeable_parameters}. Each entry may contain \code{mu = c(mean, sd)} and/or
+\code{tau = c(meanlog, sdlog)}.}
 }
 \description{
 \ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#experimental}{\figure{lifecycle-experimental.svg}{options: alt='[Experimental]'}}}{\strong{[Experimental]}}
@@ -44,6 +59,13 @@ entry must be either a compatible single-agent binary outcome
 \item{\code{parameter_pools}}{(\code{list})\cr named list describing which parameters are
 exchangeable across arms. Each list entry contains arm names as names and
 parameter references as values.}
+
+\item{\code{pool_correlations}}{(\code{list})\cr named list pairing exactly two scalar
+exchangeable parameter pools that should use a correlated bivariate normal
+hierarchy.}
+
+\item{\code{pool_priors}}{(\code{list})\cr named list of pool-specific hyperprior
+overrides.}
 }}
 
 \note{

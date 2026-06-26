@@ -82,7 +82,11 @@ local_hierarchical_no_alpha_combo_data <- function() {
   )
 }
 
-local_parallel_hierarchical_model <- function(log_normal_eta = FALSE) {
+local_parallel_hierarchical_model <- function(
+  log_normal_eta = FALSE,
+  pool_correlations = list(),
+  pool_priors = list()
+) {
   combo_model <- local_hierarchical_combo_model(log_normal_eta = log_normal_eta)
 
   HierarchicalModel(
@@ -106,7 +110,9 @@ local_parallel_hierarchical_model <- function(log_normal_eta = FALSE) {
         mono_drug2 = "alpha1",
         combo = "alpha1[2]"
       )
-    )
+    ),
+    pool_correlations = pool_correlations,
+    pool_priors = pool_priors
   )
 }
 
