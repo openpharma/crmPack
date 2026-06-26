@@ -9,12 +9,10 @@ test_that("scenario-HierarchicalDesign returns the expected shortcut results", {
   design <- HierarchicalDesign(
     DesignArm(
       name = "my_mono",
-      active = TRUE,
       design = local_scenario_mono_design(data@arms$my_mono)
     ),
     DesignArm(
       name = "my_combo",
-      active = TRUE,
       design = local_scenario_combo_design(data@arms$my_combo)
     ),
     exchangeable_parameters = local_hierarchical_parameter_pools()
@@ -87,13 +85,12 @@ test_that("scenario-HierarchicalDesign handles historical arms", {
   design <- HierarchicalDesign(
     DesignArm(
       name = "arm_a",
-      active = TRUE,
       design = local_scenario_mono_design(data@arms$arm_a)
     ),
-    DesignArm(
+    HistoricalArm(
       name = "historical",
-      active = FALSE,
-      design = local_scenario_mono_design(data@arms$historical)
+      data = data@arms$historical,
+      model = local_scenario_mono_design(data@arms$historical)@model
     ),
     exchangeable_parameters = list(
       intercept = list(
@@ -135,12 +132,10 @@ test_that("scenario-HierarchicalDesign handles arms that are not yet open", {
   design <- HierarchicalDesign(
     DesignArm(
       name = "lead",
-      active = TRUE,
       design = local_scenario_mono_design(data@arms$lead)
     ),
     DesignArm(
       name = "pending",
-      active = TRUE,
       design = local_scenario_mono_design(data@arms$pending),
       open_when = ArmFinishedCondition("lead")
     ),

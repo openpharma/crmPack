@@ -5,29 +5,46 @@
 \alias{DesignArm-class}
 \alias{.DesignArm}
 \alias{DesignArm}
+\alias{HistoricalArm}
 \alias{.DefaultDesignArm}
 \title{\code{DesignArm}}
 \usage{
-DesignArm(name, active, design, borrow = TRUE, open_when = NoArmCondition())
+DesignArm(
+  name,
+  design,
+  borrow = TRUE,
+  open_when = NoArmCondition()
+)
+
+HistoricalArm(
+  name,
+  data,
+  model,
+  borrow = TRUE
+)
 
 .DefaultDesignArm()
 }
 \arguments{
 \item{name}{(\code{string})\cr see slot definition.}
 
-\item{active}{(\code{flag})\cr see slot definition.}
-
 \item{design}{(\code{Design})\cr see slot definition.}
 
 \item{borrow}{(\code{flag})\cr see slot definition.}
 
 \item{open_when}{(\code{ArmCondition})\cr see slot definition.}
+
+\item{data}{(\code{Data} or \code{DataCombo})\cr arm data for historical arms.}
+
+\item{model}{(\code{GeneralModel} or \code{TwoDrugsCombo})\cr arm model for
+historical arms.}
 }
 \description{
 \ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#experimental}{\figure{lifecycle-experimental.svg}{options: alt='[Experimental]'}}}{\strong{[Experimental]}}
 
 \code{\link{DesignArm}} is a light-weight wrapper around \code{Design} object
-for use in a \code{\link{HierarchicalDesign}}.
+for use in a \code{\link{HierarchicalDesign}}. Use \code{\link{DesignArm}()} for active arms
+and \code{\link{HistoricalArm}()} for non-enrolling historical arms.
 }
 \section{Slots}{
 
@@ -52,7 +69,6 @@ Typically, end users will not use the \code{.DefaultDesignArm()} function.
 design <- .DefaultDesign()
 design_arm <- DesignArm(
   name = "Arm A",
-  active = TRUE,
   design = design
 )
 }

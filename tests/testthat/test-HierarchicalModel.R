@@ -505,7 +505,6 @@ test_that("HierarchicalDesign constructor derives hierarchical data and model", 
 test_that("DesignArm constructor stores borrow flag", {
   arm <- DesignArm(
     name = "arm_no_borrow",
-    active = TRUE,
     design = .DefaultDesign(),
     borrow = FALSE
   )
@@ -514,7 +513,7 @@ test_that("DesignArm constructor stores borrow flag", {
   expect_false(arm@borrow)
 })
 
-test_that("DesignArm can derive an inactive mono arm from data and model", {
+test_that("HistoricalArm can derive a mono arm from data and model", {
   data <- Data(
     x = c(10, 20),
     y = c(0L, 1L),
@@ -522,9 +521,8 @@ test_that("DesignArm can derive an inactive mono arm from data and model", {
   )
   model <- local_hierarchical_mono_model()
 
-  arm <- DesignArm(
+  arm <- HistoricalArm(
     name = "historical_mono",
-    active = FALSE,
     data = data,
     model = model
   )
@@ -536,7 +534,7 @@ test_that("DesignArm can derive an inactive mono arm from data and model", {
   expect_identical(arm@design@startingDose, 10)
 })
 
-test_that("DesignArm can derive an inactive combo arm from data and model", {
+test_that("HistoricalArm can derive a combo arm from data and model", {
   data <- DataCombo(
     x = rbind(c(10, 20), c(20, 40)),
     y = c(0L, 1L),
@@ -544,9 +542,8 @@ test_that("DesignArm can derive an inactive combo arm from data and model", {
   )
   model <- local_hierarchical_combo_model()
 
-  arm <- DesignArm(
+  arm <- HistoricalArm(
     name = "historical_combo",
-    active = FALSE,
     data = data,
     model = model
   )
@@ -558,28 +555,17 @@ test_that("DesignArm can derive an inactive combo arm from data and model", {
   expect_identical(arm@design@startingDose, c(drug1 = 10, drug2 = 20))
 })
 
-test_that("DesignArm requires either a design or data and model", {
+test_that("DesignArm and HistoricalArm validate their required inputs", {
   expect_error(
-    DesignArm(name = "bad_active", active = TRUE),
-    "`design` must be supplied for active arms"
+    DesignArm(name = "bad_active"),
+    "argument \"design\" is missing"
   )
   expect_error(
-    DesignArm(
+    HistoricalArm(
       name = "bad_historical",
-      active = FALSE,
       data = Data(doseGrid = c(10, 20))
     ),
-    "must supply both `data` and `model`"
-  )
-  expect_error(
-    DesignArm(
-      name = "bad_mix",
-      active = FALSE,
-      design = .DefaultDesign(),
-      data = Data(doseGrid = c(10, 20)),
-      model = local_hierarchical_mono_model()
-    ),
-    "Supply either `design` or `data`/`model`, not both"
+    "argument \"model\" is missing"
   )
 })
 
@@ -630,7 +616,6 @@ test_that("DesignArm constructor stores opening condition", {
   condition <- ArmFinishedCondition("arm_a")
   arm <- DesignArm(
     name = "arm_delayed",
-    active = TRUE,
     design = .DefaultDesign(),
     open_when = condition
   )
@@ -725,13 +710,11 @@ test_that("HierarchicalDesign simulate uses arm-level mcmc for non-borrowing arm
   design <- HierarchicalDesign(
     DesignArm(
       name = "my_mono",
-      active = TRUE,
       design = mono_design,
       borrow = FALSE
     ),
     DesignArm(
       name = "my_combo",
-      active = TRUE,
       design = combo_design,
       borrow = TRUE
     ),

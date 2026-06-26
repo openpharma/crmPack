@@ -253,13 +253,11 @@ design_mono <- Design(
 
 design_arm_mono <- DesignArm(
   name = "mono",
-  design = design_mono,
-  active = TRUE
+  design = design_mono
 )
 design_arm_combo <- DesignArm(
   name = "combo",
-  design = design_combo,
-  active = TRUE
+  design = design_combo
 )
 ```
 

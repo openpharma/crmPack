@@ -193,13 +193,12 @@ local_hierarchical_design <- function() {
   HierarchicalDesign(
     DesignArm(
       name = "arm_a",
-      active = TRUE,
       design = .DefaultDesign()
     ),
-    DesignArm(
+    HistoricalArm(
       name = "arm_b",
-      active = FALSE,
-      design = .DefaultDesign()
+      data = .DefaultDesign()@data,
+      model = .DefaultDesign()@model
     ),
     exchangeable_parameters = list(
       shared_intercept = list(

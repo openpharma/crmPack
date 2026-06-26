@@ -233,7 +233,6 @@ Then we define the design arms accordingly:
 ```{r}
 design_armA <- DesignArm(
     "A",
-    active = TRUE,
     design = Design(
         data = Data(doseGrid = d1),
         startingDose = d1[1],
@@ -247,7 +246,6 @@ design_armA <- DesignArm(
 
 design_armB <- DesignArm(
     "B",
-    active = TRUE,
     design = DesignCombo(
         data = DataCombo(doseGrid = list(compound1 = d1, compound2 = c(0, d2))),
         startingDose = c(compound1 = d1[1], compound2 = 0),
@@ -260,9 +258,8 @@ design_armB <- DesignArm(
     open_when = ArmMinDoseCondition("A", min_dose = d1[2])
 )
 
-design_armC <- DesignArm(
+design_armC <- HistoricalArm(
     "C",
-    active = FALSE,
     data = hist_data_comp2,
     model = mono_model2
 )

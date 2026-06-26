@@ -336,7 +336,8 @@ ArmConditionAny <- function(...) {
 #' @description `r lifecycle::badge("experimental")`
 #'
 #' [`DesignArm`] is a light-weight wrapper around `Design` object
-#' for use in a [`HierarchicalDesign`].
+#' for use in a [`HierarchicalDesign`]. Use [`DesignArm()`] for active arms
+#' and [`HistoricalArm()`] for non-enrolling historical arms.
 #'
 #' @slot name (`string`)\cr the name of the arm.
 #' @slot active (`flag`)\cr whether the arm is enrolling or not (historical).
@@ -374,58 +375,49 @@ ArmConditionAny <- function(...) {
 #' @rdname DesignArm-class
 #'
 #' @param name (`string`)\cr see slot definition.
-#' @param active (`flag`)\cr see slot definition.
-#' @param design (`Design`)\cr see slot definition. If `active = FALSE`, this
-#'   can be omitted and replaced by `data` plus `model`.
+#' @param design (`Design`)\cr see slot definition.
 #' @param borrow (`flag`)\cr see slot definition.
 #' @param open_when (`ArmCondition`)\cr see slot definition.
-#' @param data (`Data` or `DataCombo`)\cr arm data for inactive arms when
-#'   `design` is omitted.
-#' @param model (`GeneralModel` or `TwoDrugsCombo`)\cr arm model for inactive
-#'   arms when `design` is omitted.
+#' @param data (`Data` or `DataCombo`)\cr arm data for historical arms.
+#' @param model (`GeneralModel` or `TwoDrugsCombo`)\cr arm model for
+#'   historical arms.
 #'
+#' @aliases HistoricalArm
 #' @export
 #' @example examples/Design-class-DesignArm.R
 #'
 DesignArm <- function(
   name,
-  active,
-  design = NULL,
+  design,
   borrow = TRUE,
-  open_when = NoArmCondition(),
-  data = NULL,
-  model = NULL
+  open_when = NoArmCondition()
 ) {
-  if (!is.null(design) && (!is.null(data) || !is.null(model))) {
-    stop("Supply either `design` or `data`/`model`, not both.")
-  }
-
-  if (isFALSE(active) && is.null(design)) {
-    design <- h_inactive_design_arm(data = data, model = model)
-  }
-
-  if (is.null(design)) {
-    stop(
-      paste(
-        "`design` must be supplied for active arms.",
-        "For inactive arms, you may instead provide `data` and `model`."
-      )
-    )
-  }
-
   new(
     "DesignArm",
     name = name,
-    active = active,
+    active = TRUE,
     borrow = borrow,
     open_when = open_when,
     design = design
   )
 }
 
-h_inactive_design_arm <- function(data, model) {
+HistoricalArm <- function(name, data, model, borrow = TRUE) {
+  design <- h_historical_arm_design(data = data, model = model)
+
+  new(
+    "DesignArm",
+    name = name,
+    active = FALSE,
+    borrow = borrow,
+    open_when = NoArmCondition(),
+    design = design
+  )
+}
+
+h_historical_arm_design <- function(data, model) {
   if (is.null(data) || is.null(model)) {
-    stop("Inactive arms specified without `design` must supply both `data` and `model`.")
+    stop("Historical arms must supply both `data` and `model`.")
   }
 
   if (is(data, "Data")) {
@@ -459,7 +451,7 @@ h_inactive_design_arm <- function(data, model) {
     ))
   }
 
-  stop("Inactive arms specified without `design` require `data` to be `Data` or `DataCombo`.")
+  stop("Historical arms require `data` to be `Data` or `DataCombo`.")
 }
 
 ## default constructor ----
@@ -470,7 +462,6 @@ h_inactive_design_arm <- function(data, model) {
 .DefaultDesignArm <- function() {
   DesignArm(
     name = "Arm",
-    active = TRUE,
     design = .DefaultDesign()
   )
 }
@@ -517,6 +508,7 @@ h_inactive_design_arm <- function(data, model) {
 #' @rdname HierarchicalDesign-class
 #'
 #' @param ... [`DesignArm`] objects describing the trial arms.
+#'   These can be created with [`DesignArm()`] or [`HistoricalArm()`].
 #' @param exchangeable_parameters (`list`)\cr see
 #'   [`HierarchicalModel()`].
 #' @param pool_correlations (`list`)\cr see [`HierarchicalModel()`].
@@ -568,12 +560,10 @@ HierarchicalDesign <- function(
   HierarchicalDesign(
     arm1 = DesignArm(
       name = "arm1",
-      active = TRUE,
       design = .DefaultDesign()
     ),
     arm2 = DesignArm(
       name = "arm2",
-      active = TRUE,
       design = .DefaultDesign()
     ),
     exchangeable_parameters = list(

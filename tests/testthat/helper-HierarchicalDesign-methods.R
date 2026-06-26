@@ -97,7 +97,6 @@ local_comparison_decider_hierarchical_design <- function() {
 
   design_armA <- DesignArm(
     "A",
-    active = TRUE,
     design = Design(
       data = Data(doseGrid = d1),
       startingDose = d1[1],
@@ -111,7 +110,6 @@ local_comparison_decider_hierarchical_design <- function() {
 
   design_armB <- DesignArm(
     "B",
-    active = TRUE,
     design = DesignCombo(
       data = DataCombo(doseGrid = list(compound1 = d1, compound2 = c(0, d2))),
       startingDose = c(compound1 = d1[1], compound2 = 0),
@@ -124,9 +122,8 @@ local_comparison_decider_hierarchical_design <- function() {
     open_when = ArmMinDoseCondition("A", min_dose = d1[2])
   )
 
-  design_armC <- DesignArm(
+  design_armC <- HistoricalArm(
     "C",
-    active = FALSE,
     data = hist_data_comp2,
     model = mono_model2
   )
