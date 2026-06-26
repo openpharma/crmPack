@@ -225,9 +225,13 @@ test_that("nextBest-NextBestNCRM-DataCombo works as expected", {
     data
   )
   expect_equal(result$value, t(c(drug1 = 10, drug2 = 20)))
+  expect_named(
+    result$probs,
+    c("drug1", "drug2", "target_prob", "overdose_prob", "not_eligible")
+  )
   probs <- data.frame(
-    dose1 = c(10, 20, 30, 10, 20, 30),
-    dose2 = c(20, 20, 20, 40, 40, 40),
+    drug1 = c(10, 20, 30, 10, 20, 30),
+    drug2 = c(20, 20, 20, 40, 40, 40),
     target_prob = c(40, 20, 10, 10, 0, NA),
     overdose_prob = c(10, 10, 10, 30, 20, NA),
     not_eligible = c(FALSE, FALSE, FALSE, TRUE, FALSE, FALSE)
@@ -237,6 +241,53 @@ test_that("nextBest-NextBestNCRM-DataCombo works as expected", {
   expect_list(result$singlePlots)
   expect_s3_class(result$singlePlots$plot1, "ggplot")
   expect_s3_class(result$singlePlots$plot2, "ggplot")
+})
+
+test_that("nextBest-NextBestNCRM-DataCombo uses configured drug names in probs", {
+  set.seed(123)
+  data <- DataCombo(
+    doseGrid = list(compound_a = c(10, 20, 30), compound_b = c(20, 40)),
+    x = cbind(
+      compound_a = c(10, 10, 10, 20, 20, 20),
+      compound_b = c(20, 20, 20, 20, 20, 20)
+    ),
+    y = c(0L, 0L, 1L, 0L, 0L, 0L),
+    ID = 1L:6L,
+    cohort = c(1L, 1L, 1L, 2L, 2L, 2L)
+  )
+  model <- TwoDrugsCombo(list(
+    compound_a = .DefaultLogisticLogNormal(),
+    compound_b = .DefaultLogisticLogNormal()
+  ))
+  samples <- mcmc(
+    data,
+    model,
+    h_get_mcmc_options(samples = 10, burnin = 10)
+  )
+  nb_ncrm <- NextBestNCRM(
+    target = c(0.2, 0.35),
+    overdose = c(0.35, 1),
+    max_overdose_prob = 0.25
+  )
+
+  result <- nextBest(
+    nb_ncrm,
+    maxDose(
+      IncrementsComboCartesian(
+        drug1 = IncrementsRelative(0, 0.5),
+        drug2 = IncrementsRelative(0, 1)
+      ),
+      data
+    ),
+    samples,
+    model,
+    data
+  )
+
+  expect_named(
+    result$probs,
+    c("compound_a", "compound_b", "target_prob", "overdose_prob", "not_eligible")
+  )
 })
 
 ## NextBestNCRM-DataParts ----

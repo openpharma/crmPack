@@ -386,6 +386,8 @@ setMethod(
     data = "DataCombo"
   ),
   definition = function(nextBest, doselimit, samples, model, data, ...) {
+    drug_names <- data@drugNames
+
     # Generate all doses for the combination which are inside the area
     # defined by the dose limit matrix. We don't want to calculate
     # probabilities for doses above the dose limit curve
@@ -447,17 +449,29 @@ setMethod(
     all_not_eligible <- rep(FALSE, nrow(all_dose_matrix))
     all_not_eligible[is_below_limit] <- !is_dose_eligible
 
-    plot_data <- data.frame(
-      dose1 = all_dose_matrix[, 1L],
-      dose2 = all_dose_matrix[, 2L],
-      target_prob = all_target_prob,
-      overdose_prob = all_overdose_prob,
-      not_eligible = all_not_eligible
+    plot_data <- setNames(
+      data.frame(
+        all_dose_matrix[, 1L],
+        all_dose_matrix[, 2L],
+        all_target_prob,
+        all_overdose_prob,
+        all_not_eligible
+      ),
+      c(
+        drug_names,
+        "target_prob",
+        "overdose_prob",
+        "not_eligible"
+      )
     )
     p1 <- ggplot() +
       geom_tile(
         data = plot_data,
-        aes(x = .data$dose1, y = .data$dose2, fill = .data$target_prob)
+        aes(
+          x = .data[[drug_names[1L]]],
+          y = .data[[drug_names[2L]]],
+          fill = .data$target_prob
+        )
       ) +
       scale_fill_gradient(
         low = "white",
@@ -470,7 +484,7 @@ setMethod(
       ylab(names(data@doseGrid)[2]) +
       geom_point(
         data = plot_data[plot_data$not_eligible, , drop = FALSE],
-        aes(x = .data$dose1, y = .data$dose2),
+        aes(x = .data[[drug_names[1L]]], y = .data[[drug_names[2L]]]),
         shape = 4,
         size = 10,
         colour = "red"
@@ -481,10 +495,9 @@ setMethod(
         # And a blue circle on the next best dose.
         geom_point(
           data = data.frame(
-            dose1 = next_doses[1L],
-            dose2 = next_doses[2L]
+            setNames(as.list(next_doses[1:2]), drug_names)
           ),
-          aes(x = .data$dose1, y = .data$dose2),
+          aes(x = .data[[drug_names[1L]]], y = .data[[drug_names[2L]]]),
           size = 10,
           shape = 19,
           colour = "blue",
@@ -496,7 +509,11 @@ setMethod(
     p2 <- ggplot() +
       geom_tile(
         data = plot_data,
-        aes(x = .data$dose1, y = .data$dose2, fill = .data$overdose_prob)
+        aes(
+          x = .data[[drug_names[1L]]],
+          y = .data[[drug_names[2L]]],
+          fill = .data$overdose_prob
+        )
       ) +
       scale_fill_gradient(
         low = "white",
@@ -509,7 +526,7 @@ setMethod(
       ylab(names(data@doseGrid)[2]) +
       geom_point(
         data = plot_data[plot_data$not_eligible, , drop = FALSE],
-        aes(x = .data$dose1, y = .data$dose2),
+        aes(x = .data[[drug_names[1L]]], y = .data[[drug_names[2L]]]),
         shape = 4,
         size = 10,
         colour = "red"

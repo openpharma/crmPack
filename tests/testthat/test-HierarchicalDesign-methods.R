@@ -182,7 +182,7 @@ test_that("scenario-HierarchicalDesign returns next_best probabilities for empty
   expect_data_frame(result$next_best$B$probs)
   expect_named(
     result$next_best$B$probs,
-    c("dose1", "dose2", "target_prob", "overdose_prob", "not_eligible")
+    c("compound1", "compound2", "target_prob", "overdose_prob", "not_eligible")
   )
   expect_equal(result$next_dose$B, result$next_best$B$value)
 })
