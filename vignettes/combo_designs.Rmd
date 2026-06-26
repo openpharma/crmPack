@@ -364,4 +364,167 @@ arm_mono_drug1_sims <- get_arm_simulations(hierarchical_sims, "mono_drug1")
 plot(arm_mono_drug1_sims)
 ```
 
+### Customizations
+
+The hierarchical design interface has a few arm-level options that are useful
+when the trial is not simply "all arms enroll from the beginning and all arms
+borrow from each other".
+
+#### Historical arms
+
+Use `HistoricalArm()` for data from a previous trial or another non-enrolling
+source. A historical arm supplies data and a model, but it is marked as inactive
+and is not considered for enrollment or next-dose decisions. It can still be
+included in the exchangeable parameter pools, so its information contributes to
+the hierarchical model.
+
+```{r}
+historical_data_mono_drug2 <- Data(
+  x = c(10, 10, 10, 20, 20, 20),
+  y = c(0, 0, 0, 0, 1, 0),
+  doseGrid = design_mono_drug2@data@doseGrid
+)
+
+design_arm_historical_mono_drug2 <- HistoricalArm(
+  name = "historical_mono_drug2",
+  data = historical_data_mono_drug2,
+  model = combo_model@single_models$drug2
+)
+```
+
+The historical arm name is then used in `exchangeable_parameters` just like any
+other arm name:
+
+```{r}
+historical_parameter_pools <- list(
+  drug2_intercept = list(
+    mono_drug2 = "alpha0",
+    combo = "alpha0[2]",
+    historical_mono_drug2 = "alpha0"
+  ),
+  drug2_slope = list(
+    mono_drug2 = "alpha1",
+    combo = "alpha1[2]",
+    historical_mono_drug2 = "alpha1"
+  )
+)
+```
+
+Historical arms can also be combination arms by supplying a `DataCombo` object
+and a `TwoDrugsCombo` model.
+
+#### Delayed arm opening
+
+Active arms are open immediately by default. The `open_when` argument of
+`DesignArm()` can delay enrollment until an `ArmCondition` is satisfied. For
+example, the combination arm can be opened only after monotherapy with drug 1
+has reached at least dose 20:
+
+```{r}
+design_arm_combo_delayed <- DesignArm(
+  name = "combo",
+  design = design_combo,
+  open_when = ArmMinDoseCondition(
+    arm_name = "mono_drug1",
+    min_dose = 20
+  )
+)
+```
+
+Other built-in conditions include `ArmFinishedCondition()`, which waits until
+another arm has stopped dose escalation, and `NoArmCondition()`, the default
+immediate-opening condition. Conditions can be combined with `&` and `|` logic:
+
+```{r}
+design_arm_combo_delayed <- DesignArm(
+  name = "combo",
+  design = design_combo,
+  open_when = ArmMinDoseCondition("mono_drug1", min_dose = 20) & 
+    ArmMinDoseCondition("mono_drug2", min_dose = 20)
+)
+
+design_arm_combo_delayed <- DesignArm(
+  name = "combo",
+  design = design_combo,
+  open_when = ArmFinishedCondition("mono_drug1") |
+    ArmMinDoseCondition("mono_drug2", min_dose = 30)
+)
+```
+
+When an arm is not yet open, `scenario()` and `simulate()` still fit the
+hierarchical model, but they do not request a next dose for that arm.
+
+#### Disabling borrowing for arm decisions
+
+By default, active arms use posterior samples from the hierarchical model when
+making dose-escalation decisions. Set `borrow = FALSE` on a `DesignArm()` to make
+that arm's decision rules use an arm-specific fit instead. This is useful when an
+arm should contribute to the overall hierarchical model but its own dose
+recommendations should not borrow from the other arms.
+
+```{r}
+design_arm_mono_drug1_no_borrow <- DesignArm(
+  name = "mono_drug1",
+  design = design_mono_drug1,
+  borrow = FALSE
+)
+```
+
+The `borrow` flag affects the samples used for the arm's next-dose and stopping
+decisions. It does not remove the arm from the hierarchical model or from the
+exchangeable parameter pools.
+
+#### Evaluating a fixed data scenario
+
+Use `scenario()` to check what a design would recommend for a given hypothetical
+or observed data scenario. For a `HierarchicalDesign`, provide a
+`HierarchicalData()` object with one data object per arm. This runs the model fit,
+summarizes the posterior, calculates each open active arm's next dose, and
+evaluates stopping rules for the supplied data.
+
+```{r, message = FALSE}
+fixed_scenario <- HierarchicalData(
+  mono_drug1 = Data(
+    x = c(10, 10, 10, 20, 20, 20),
+    y = c(0, 0, 0, 0, 0, 1),
+    doseGrid = design_mono_drug1@data@doseGrid
+  ),
+  mono_drug2 = Data(
+    x = c(20, 20, 20),
+    y = c(0, 0, 1),
+    doseGrid = design_mono_drug2@data@doseGrid
+  ),
+  combo = DataCombo(
+    x = matrix(
+      c(10, 10,
+        10, 10,
+        10, 10, 
+        10, 20,
+        10, 20,
+        10, 20),
+      ncol = 2,
+      byrow = TRUE
+    ),
+    y = c(0, 0, 0, 0, 0, 1),
+    doseGrid = design_combo@data@doseGrid
+  )
+)
+
+scenario_result <- scenario(
+  object = hierarchical_design,
+  data = fixed_scenario,
+  mcmcOptions = McmcOptions()
+)
+
+scenario_result$next_dose
+```
+
+So here the next cohorts would open with dose `r scenario_result$next_dose$mono_drug1` for the monotherapy arm of drug 1, dose `r scenario_result$next_dose$mono_drug2` for the monotherapy arm of drug 2, and doses `r toString(scenario_result$next_dose$combo)` for the combination arm.
+
+Additional information is available, e.g. we can see the fitted values etc. Always one list element contains the arm specific information in a list:
+
+```{r}
+str(scenario_result, 1)
+```
+
 ## References
