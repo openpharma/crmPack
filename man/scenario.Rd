@@ -348,10 +348,12 @@ design_b <- Design(
 design <- HierarchicalDesign(
   DesignArm(
     name = "arm_a",
+    active = TRUE,
     design = design_a
   ),
   DesignArm(
     name = "arm_b",
+    active = TRUE,
     design = design_b
   ),
   exchangeable_parameters = list(

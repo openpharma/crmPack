@@ -18,7 +18,8 @@ HierarchicalDesign(
 .DefaultHierarchicalDesign()
 }
 \arguments{
-\item{...}{\code{\link{DesignArm}} objects describing the trial arms.}
+\item{...}{\code{\link{DesignArm}} objects describing the trial arms.
+These can be created with \code{\link[=DesignArm]{DesignArm()}} or \code{\link[=HistoricalArm]{HistoricalArm()}}.}
 
 \item{exchangeable_parameters}{(\code{list})\cr see
 \code{\link[=HierarchicalModel]{HierarchicalModel()}}.}

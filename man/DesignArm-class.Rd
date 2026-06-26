@@ -9,19 +9,7 @@
 \alias{.DefaultDesignArm}
 \title{\code{DesignArm}}
 \usage{
-DesignArm(
-  name,
-  design,
-  borrow = TRUE,
-  open_when = NoArmCondition()
-)
-
-HistoricalArm(
-  name,
-  data,
-  model,
-  borrow = TRUE
-)
+DesignArm(name, design, borrow = TRUE, open_when = NoArmCondition())
 
 .DefaultDesignArm()
 }
@@ -43,8 +31,8 @@ historical arms.}
 \ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#experimental}{\figure{lifecycle-experimental.svg}{options: alt='[Experimental]'}}}{\strong{[Experimental]}}
 
 \code{\link{DesignArm}} is a light-weight wrapper around \code{Design} object
-for use in a \code{\link{HierarchicalDesign}}. Use \code{\link{DesignArm}()} for active arms
-and \code{\link{HistoricalArm}()} for non-enrolling historical arms.
+for use in a \code{\link{HierarchicalDesign}}. Use \code{\link[=DesignArm]{DesignArm()}} for active arms
+and \code{\link[=HistoricalArm]{HistoricalArm()}} for non-enrolling historical arms.
 }
 \section{Slots}{
 
@@ -69,6 +57,7 @@ Typically, end users will not use the \code{.DefaultDesignArm()} function.
 design <- .DefaultDesign()
 design_arm <- DesignArm(
   name = "Arm A",
+  active = TRUE,
   design = design
 )
 }
