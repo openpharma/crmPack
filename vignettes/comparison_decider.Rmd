@@ -361,6 +361,13 @@ We can look at the fit results:
 result1_crmPack$fit
 ```
 
+We can also check the probabilities to be in target and overdosing intervals:
+
+```{r}
+result1_crmPack$next_best$A$probs
+result1_crmPack$next_best$B$probs
+```
+
 ## Comparison of fit
 
 Based on this we can first compare the fit results.
@@ -370,11 +377,14 @@ Let's look at the results for Arm A:
 ```{r}
 fit_trialA_decider <- result1$`trial-A` |> as.data.frame()
 fit_trialA_crmPack <- result1_crmPack$fit$A
+probs_trialA_crmPack <- result1_crmPack$next_best$A$probs |> as.data.frame()
 diff_trialA <- data.frame(
     dose = fit_trialA_crmPack$dose,
     center = fit_trialA_decider$mean - fit_trialA_crmPack$middle,
     lower = fit_trialA_decider$`q.2.5%` - fit_trialA_crmPack$lower,
-    upper = fit_trialA_decider$`q.97.5%` - fit_trialA_crmPack$upper
+    upper = fit_trialA_decider$`q.97.5%` - fit_trialA_crmPack$upper,
+    target = fit_trialA_decider$`P([0.16,0.33))` - probs_trialA_crmPack$target,
+    overdose = fit_trialA_decider$`P([0.33,1])` - probs_trialA_crmPack$overdose
 )
 diff_trialA
 ```
@@ -384,7 +394,7 @@ And then the results for Arm B:
 ```{r}
 fit_trialB_decider <- result1$`trial-B` |> as.data.frame()
 fit_trialB_crmPack <- result1_crmPack$fit$B |> dplyr::filter(compound2 > 0)
-
+probs_trialB_crmPack <- result1_crmPack$next_best$B$probs |> as.data.frame() |> dplyr::filter(compound2 > 0) 
 diff_trialB <- data.frame(
     dose1 = fit_trialB_crmPack$compound1,
     dose2 = fit_trialB_crmPack$compound2,

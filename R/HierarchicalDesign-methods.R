@@ -834,18 +834,14 @@ setMethod(
         )
 
         dose_limit[[arm_name]] <- maxDose(arm_design@increments, data = arm_data)
-        next_best[[arm_name]] <- if (arm_data@nObs == 0L) {
-          list(value = arm_design@startingDose)
-        } else {
-          nextBest(
-            arm_design@nextBest,
-            doselimit = dose_limit[[arm_name]],
-            samples = arm_samples,
-            model = arm_design@model,
-            data = arm_data,
-            ...
-          )
-        }
+        next_best[[arm_name]] <- nextBest(
+          arm_design@nextBest,
+          doselimit = dose_limit[[arm_name]],
+          samples = arm_samples,
+          model = arm_design@model,
+          data = arm_data,
+          ...
+        )
         next_dose[[arm_name]] <- h_hierarchical_scenario_next_dose(
           next_best[[arm_name]]$value,
           arm_data

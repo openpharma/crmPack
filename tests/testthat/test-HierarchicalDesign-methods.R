@@ -4,41 +4,6 @@
 skip_on_cran_but_not_ci()
 options(testthat.progress.max_fails = 0)
 
-local_scenario_mono_design <- function(data, n_patients = 10L) {
-  Design(
-    model = local_hierarchical_mono_model(),
-    nextBest = NextBestNCRM(
-      target = c(0.2, 0.35),
-      overdose = c(0.35, 1),
-      max_overdose_prob = 0.25
-    ),
-    stopping = StoppingMinPatients(nPatients = n_patients),
-    increments = IncrementsRelative(intervals = c(0), increments = c(1)),
-    cohort_size = CohortSizeConst(3),
-    data = data,
-    startingDose = min(data@doseGrid)
-  )
-}
-
-local_scenario_combo_design <- function(data, n_patients = 10L) {
-  DesignCombo(
-    model = local_hierarchical_combo_model(),
-    nextBest = NextBestNCRM(
-      target = c(0.2, 0.35),
-      overdose = c(0.35, 1),
-      max_overdose_prob = 0.25
-    ),
-    stopping = StoppingMinPatients(nPatients = n_patients),
-    increments = IncrementsComboCartesian(
-      drug1 = IncrementsRelative(intervals = c(0), increments = c(1)),
-      drug2 = IncrementsRelative(intervals = c(0), increments = c(1))
-    ),
-    cohort_size = CohortSizeConst(3),
-    data = data,
-    startingDose = vapply(data@doseGrid, min, numeric(1L))
-  )
-}
-
 test_that("scenario-HierarchicalDesign returns the expected shortcut results", {
   data <- local_hierarchical_data()
   design <- HierarchicalDesign(
@@ -199,4 +164,25 @@ test_that("scenario-HierarchicalDesign handles arms that are not yet open", {
   expect_true(is.na(result$stop$pending))
   expect_identical(result$stop_reason$pending, "Arm is not currently open.")
   expect_data_frame(result$fit$pending)
+})
+
+test_that("scenario-HierarchicalDesign returns next_best probabilities for empty combo arms", {
+  comparison_setup <- local_comparison_decider_hierarchical_design()
+
+  result <- scenario(
+    comparison_setup$design,
+    comparison_setup$data,
+    h_get_mcmc_options(samples = 5)
+  )
+
+  expect_named(
+    result$next_best$B,
+    c("value", "plot", "singlePlots", "probs")
+  )
+  expect_data_frame(result$next_best$B$probs)
+  expect_named(
+    result$next_best$B$probs,
+    c("dose1", "dose2", "target_prob", "overdose_prob", "not_eligible")
+  )
+  expect_equal(result$next_dose$B, result$next_best$B$value)
 })
