@@ -375,9 +375,14 @@ ArmConditionAny <- function(...) {
 #'
 #' @param name (`string`)\cr see slot definition.
 #' @param active (`flag`)\cr see slot definition.
-#' @param design (`Design`)\cr see slot definition.
+#' @param design (`Design`)\cr see slot definition. If `active = FALSE`, this
+#'   can be omitted and replaced by `data` plus `model`.
 #' @param borrow (`flag`)\cr see slot definition.
 #' @param open_when (`ArmCondition`)\cr see slot definition.
+#' @param data (`Data` or `DataCombo`)\cr arm data for inactive arms when
+#'   `design` is omitted.
+#' @param model (`GeneralModel` or `TwoDrugsCombo`)\cr arm model for inactive
+#'   arms when `design` is omitted.
 #'
 #' @export
 #' @example examples/Design-class-DesignArm.R
@@ -385,10 +390,29 @@ ArmConditionAny <- function(...) {
 DesignArm <- function(
   name,
   active,
-  design,
+  design = NULL,
   borrow = TRUE,
-  open_when = NoArmCondition()
+  open_when = NoArmCondition(),
+  data = NULL,
+  model = NULL
 ) {
+  if (!is.null(design) && (!is.null(data) || !is.null(model))) {
+    stop("Supply either `design` or `data`/`model`, not both.")
+  }
+
+  if (isFALSE(active) && is.null(design)) {
+    design <- h_inactive_design_arm(data = data, model = model)
+  }
+
+  if (is.null(design)) {
+    stop(
+      paste(
+        "`design` must be supplied for active arms.",
+        "For inactive arms, you may instead provide `data` and `model`."
+      )
+    )
+  }
+
   new(
     "DesignArm",
     name = name,
@@ -397,6 +421,45 @@ DesignArm <- function(
     open_when = open_when,
     design = design
   )
+}
+
+h_inactive_design_arm <- function(data, model) {
+  if (is.null(data) || is.null(model)) {
+    stop("Inactive arms specified without `design` must supply both `data` and `model`.")
+  }
+
+  if (is(data, "Data")) {
+    assert_class(model, "GeneralModel")
+
+    return(Design(
+      model = model,
+      nextBest = .NextBestNCRM(),
+      stopping = StoppingMinPatients(nPatients = max(1L, data@nObs)),
+      increments = IncrementsRelative(intervals = 0, increments = 1),
+      cohort_size = CohortSizeConst(size = 1L),
+      data = data,
+      startingDose = min(data@doseGrid)
+    ))
+  }
+
+  if (is(data, "DataCombo")) {
+    assert_class(model, "TwoDrugsCombo")
+
+    return(DesignCombo(
+      model = model,
+      nextBest = .NextBestNCRM(),
+      stopping = StoppingMinPatients(nPatients = max(1L, data@nObs)),
+      increments = IncrementsComboCartesian(
+        drug1 = IncrementsRelative(intervals = 0, increments = 1),
+        drug2 = IncrementsRelative(intervals = 0, increments = 1)
+      ),
+      cohort_size = CohortSizeConst(size = 1L),
+      data = data,
+      startingDose = vapply(data@doseGrid, min, numeric(1L))
+    ))
+  }
+
+  stop("Inactive arms specified without `design` require `data` to be `Data` or `DataCombo`.")
 }
 
 ## default constructor ----

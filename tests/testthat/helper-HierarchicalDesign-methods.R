@@ -127,15 +127,8 @@ local_comparison_decider_hierarchical_design <- function() {
   design_armC <- DesignArm(
     "C",
     active = FALSE,
-    design = Design(
-      data = hist_data_comp2,
-      model = mono_model2,
-      stopping = my_stopping,
-      increments = my_increments,
-      nextBest = my_next_best,
-      cohort_size = my_cohort_size,
-      startingDose = d2[1]
-    )
+    data = hist_data_comp2,
+    model = mono_model2
   )
 
   design <- HierarchicalDesign(

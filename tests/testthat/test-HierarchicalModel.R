@@ -514,6 +514,75 @@ test_that("DesignArm constructor stores borrow flag", {
   expect_false(arm@borrow)
 })
 
+test_that("DesignArm can derive an inactive mono arm from data and model", {
+  data <- Data(
+    x = c(10, 20),
+    y = c(0L, 1L),
+    doseGrid = c(10, 20, 30)
+  )
+  model <- local_hierarchical_mono_model()
+
+  arm <- DesignArm(
+    name = "historical_mono",
+    active = FALSE,
+    data = data,
+    model = model
+  )
+
+  expect_valid(arm, "DesignArm")
+  expect_s4_class(arm@design, "Design")
+  expect_identical(arm@design@data, data)
+  expect_identical(arm@design@model, model)
+  expect_identical(arm@design@startingDose, 10)
+})
+
+test_that("DesignArm can derive an inactive combo arm from data and model", {
+  data <- DataCombo(
+    x = rbind(c(10, 20), c(20, 40)),
+    y = c(0L, 1L),
+    doseGrid = list(drug1 = c(10, 20, 30), drug2 = c(20, 40))
+  )
+  model <- local_hierarchical_combo_model()
+
+  arm <- DesignArm(
+    name = "historical_combo",
+    active = FALSE,
+    data = data,
+    model = model
+  )
+
+  expect_valid(arm, "DesignArm")
+  expect_s4_class(arm@design, "DesignCombo")
+  expect_identical(arm@design@data, data)
+  expect_identical(arm@design@model, model)
+  expect_identical(arm@design@startingDose, c(drug1 = 10, drug2 = 20))
+})
+
+test_that("DesignArm requires either a design or data and model", {
+  expect_error(
+    DesignArm(name = "bad_active", active = TRUE),
+    "`design` must be supplied for active arms"
+  )
+  expect_error(
+    DesignArm(
+      name = "bad_historical",
+      active = FALSE,
+      data = Data(doseGrid = c(10, 20))
+    ),
+    "must supply both `data` and `model`"
+  )
+  expect_error(
+    DesignArm(
+      name = "bad_mix",
+      active = FALSE,
+      design = .DefaultDesign(),
+      data = Data(doseGrid = c(10, 20)),
+      model = local_hierarchical_mono_model()
+    ),
+    "Supply either `design` or `data`/`model`, not both"
+  )
+})
+
 test_that("ArmCondition constructors and logical operators work", {
   no_condition <- expect_silent(NoArmCondition())
   finished_condition <- expect_silent(ArmFinishedCondition("arm_a"))
