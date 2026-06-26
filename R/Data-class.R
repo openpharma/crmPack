@@ -953,13 +953,14 @@ DataCombo <- function(
 
 #' @rdname HierarchicalData-class
 #'
-#' @param arms (`list`)\cr a named list of `Data` objects, one
-#'  for each arm in the trial. The names of the list are the
-#'  arm names.
+#' @param ... named `Data` objects, one for each arm in the trial.
+#'   The argument names are used as the arm names.
 #'
 #' @export
 #' @example examples/Data-class-HierarchicalData.R
-HierarchicalData <- function(arms = list()) {
+#'
+HierarchicalData <- function(...) {
+  arms <- list(...)
   assert_list(arms, types = c("Data", "DataCombo"), any.missing = FALSE)
   if (length(arms) > 0) {
     assert_names(names(arms), type = "unique")

@@ -15,9 +15,7 @@ test_that("Plot works as expected for HierarchicalData object", {
 
 test_that("Plot of HierarchicalData with no available arm plots returns NULL", {
   data <- HierarchicalData(
-    arms = list(
-      combo = DataCombo(doseGrid = list(drug1 = c(1, 2), drug2 = c(1, 2)))
-    )
+    combo = DataCombo(doseGrid = list(drug1 = c(1, 2), drug2 = c(1, 2)))
   )
   result <- plot(data)
 

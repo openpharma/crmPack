@@ -8,14 +8,13 @@
 \alias{.DefaultHierarchicalData}
 \title{\code{HierarchicalData}}
 \usage{
-HierarchicalData(arms = list())
+HierarchicalData(...)
 
 .DefaultHierarchicalData()
 }
 \arguments{
-\item{arms}{(\code{list})\cr a named list of \code{Data} objects, one
-for each arm in the trial. The names of the list are the
-arm names.}
+\item{...}{named \code{Data} objects, one for each arm in the trial.
+The argument names are used as the arm names.}
 }
 \description{
 \ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#experimental}{\figure{lifecycle-experimental.svg}{options: alt='[Experimental]'}}}{\strong{[Experimental]}}
@@ -37,9 +36,7 @@ directly.
 }
 \examples{
 dat_hierarchical <- HierarchicalData(
-  arms = list(
-    mono = .DefaultData(),
-    combo = .DefaultDataCombo()
-  )
+  mono = .DefaultData(),
+  combo = .DefaultDataCombo()
 )
 }

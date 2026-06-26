@@ -940,7 +940,7 @@ test_that("hierarchical summary helpers rebuild combo arm simulations", {
     cohort = 1L:2L
   )
   sims <- HierarchicalSimulations(
-    data = list(HierarchicalData(arms = list(combo = combo_data))),
+    data = list(HierarchicalData(combo = combo_data)),
     doses = list(list(combo = c(drug1 = 20, drug2 = 40))),
     samples = list(HierarchicalSamples(
       data = list(alpha0_combo = c(-3, -2)),

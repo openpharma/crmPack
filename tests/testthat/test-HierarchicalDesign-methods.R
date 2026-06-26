@@ -104,21 +104,19 @@ test_that("scenario-HierarchicalDesign returns the expected shortcut results", {
 
 test_that("scenario-HierarchicalDesign handles historical arms", {
   data <- HierarchicalData(
-    arms = list(
-      arm_a = Data(
-        x = c(10, 10, 20, 20),
-        y = c(0L, 0L, 0L, 1L),
-        doseGrid = c(10, 20, 30),
-        ID = 1L:4L,
-        cohort = c(1L, 1L, 2L, 2L)
-      ),
-      historical = Data(
-        x = c(10, 20),
-        y = c(0L, 1L),
-        doseGrid = c(10, 20, 30),
-        ID = 1L:2L,
-        cohort = 1L:2L
-      )
+    arm_a = Data(
+      x = c(10, 10, 20, 20),
+      y = c(0L, 0L, 0L, 1L),
+      doseGrid = c(10, 20, 30),
+      ID = 1L:4L,
+      cohort = c(1L, 1L, 2L, 2L)
+    ),
+    historical = Data(
+      x = c(10, 20),
+      y = c(0L, 1L),
+      doseGrid = c(10, 20, 30),
+      ID = 1L:2L,
+      cohort = 1L:2L
     )
   )
   design <- HierarchicalDesign(
@@ -158,17 +156,15 @@ test_that("scenario-HierarchicalDesign handles historical arms", {
 
 test_that("scenario-HierarchicalDesign handles arms that are not yet open", {
   data <- HierarchicalData(
-    arms = list(
-      lead = Data(
-        x = c(10, 10, 20, 20),
-        y = c(0L, 0L, 0L, 1L),
-        doseGrid = c(10, 20, 30),
-        ID = 1L:4L,
-        cohort = c(1L, 1L, 2L, 2L)
-      ),
-      pending = Data(
-        doseGrid = c(10, 20, 30)
-      )
+    lead = Data(
+      x = c(10, 10, 20, 20),
+      y = c(0L, 0L, 0L, 1L),
+      doseGrid = c(10, 20, 30),
+      ID = 1L:4L,
+      cohort = c(1L, 1L, 2L, 2L)
+    ),
+    pending = Data(
+      doseGrid = c(10, 20, 30)
     )
   )
   design <- HierarchicalDesign(

@@ -31,7 +31,7 @@ arm_data <- Data(
   cohort = 1L:2L
 )
 hierarchical_sims <- HierarchicalSimulations(
-  data = list(HierarchicalData(arms = list(arm_a = arm_data))),
+  data = list(HierarchicalData(arm_a = arm_data)),
   doses = list(list(arm_a = 20)),
   samples = list(HierarchicalSamples(
     data = list(alpha0_arm_a = c(-3, -2)),

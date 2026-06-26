@@ -4,19 +4,17 @@ dose_grid <- c(1, 3, 5, 10, 15, 20, 25)
 
 # Define hypothetical observed data for two related arms.
 data <- HierarchicalData(
-  arms = list(
-    arm_a = Data(
-      x = c(1, 3, 3, 5),
-      y = c(0, 0, 0, 1),
-      cohort = c(1, 2, 2, 3),
-      doseGrid = dose_grid
-    ),
-    arm_b = Data(
-      x = c(1, 1, 3, 3),
-      y = c(0, 0, 0, 0),
-      cohort = c(1, 1, 2, 2),
-      doseGrid = dose_grid
-    )
+  arm_a = Data(
+    x = c(1, 3, 3, 5),
+    y = c(0, 0, 0, 1),
+    cohort = c(1, 2, 2, 3),
+    doseGrid = dose_grid
+  ),
+  arm_b = Data(
+    x = c(1, 1, 3, 3),
+    y = c(0, 0, 0, 0),
+    cohort = c(1, 1, 2, 2),
+    doseGrid = dose_grid
   )
 )
 

@@ -472,8 +472,9 @@ HierarchicalDesign <- function(
   assert_character(arm_names, unique = TRUE, any.missing = FALSE)
   names(arms) <- arm_names
 
-  data <- HierarchicalData(
-    arms = lapply(arms, function(arm) arm@design@data)
+  data <- do.call(
+    HierarchicalData,
+    lapply(arms, function(arm) arm@design@data)
   )
   model <- do.call(
     HierarchicalModel,

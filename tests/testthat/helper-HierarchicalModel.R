@@ -57,27 +57,25 @@ local_hierarchical_no_alpha_combo_model <- function() {
 
 local_hierarchical_no_alpha_combo_data <- function() {
   HierarchicalData(
-    arms = list(
-      raw_mono = Data(
-        x = c(10, 20),
-        y = c(0L, 1L),
-        doseGrid = c(10, 20),
-        ID = 1L:2L,
-        cohort = 1L:2L
+    raw_mono = Data(
+      x = c(10, 20),
+      y = c(0L, 1L),
+      doseGrid = c(10, 20),
+      ID = 1L:2L,
+      cohort = 1L:2L
+    ),
+    raw_combo = DataCombo(
+      x = cbind(
+        drug1 = c(10, 20),
+        drug2 = c(20, 40)
       ),
-      raw_combo = DataCombo(
-        x = cbind(
-          drug1 = c(10, 20),
-          drug2 = c(20, 40)
-        ),
-        y = c(0L, 1L),
-        doseGrid = list(
-          drug1 = c(10, 20),
-          drug2 = c(20, 40)
-        ),
-        ID = 1L:2L,
-        cohort = 1L:2L
-      )
+      y = c(0L, 1L),
+      doseGrid = list(
+        drug1 = c(10, 20),
+        drug2 = c(20, 40)
+      ),
+      ID = 1L:2L,
+      cohort = 1L:2L
     )
   )
 }
@@ -137,24 +135,22 @@ local_hierarchical_data <- function(empty = FALSE) {
   combo_id <- seq_along(combo_y)
 
   HierarchicalData(
-    arms = list(
-      my_mono = Data(
-        x = mono_x,
-        y = mono_y,
-        doseGrid = c(10, 20, 30),
-        ID = mono_id,
-        cohort = c(1L, 1L, 2L, 2L)[seq_along(mono_y)]
+    my_mono = Data(
+      x = mono_x,
+      y = mono_y,
+      doseGrid = c(10, 20, 30),
+      ID = mono_id,
+      cohort = c(1L, 1L, 2L, 2L)[seq_along(mono_y)]
+    ),
+    my_combo = DataCombo(
+      x = combo_x,
+      y = combo_y,
+      doseGrid = list(
+        drug1 = c(10, 20, 30),
+        drug2 = c(20, 40)
       ),
-      my_combo = DataCombo(
-        x = combo_x,
-        y = combo_y,
-        doseGrid = list(
-          drug1 = c(10, 20, 30),
-          drug2 = c(20, 40)
-        ),
-        ID = combo_id,
-        cohort = seq_along(combo_y)
-      )
+      ID = combo_id,
+      cohort = seq_along(combo_y)
     )
   )
 }
@@ -221,39 +217,35 @@ local_hierarchical_design <- function() {
 local_hierarchical_simulations <- function() {
   data <- list(
     HierarchicalData(
-      arms = list(
-        arm_a = Data(
-          x = c(10, 20),
-          y = c(0L, 1L),
-          doseGrid = c(10, 20),
-          ID = 1L:2L,
-          cohort = 1L:2L
-        ),
-        arm_b = Data(
-          x = 10,
-          y = 0L,
-          doseGrid = c(10, 20),
-          ID = 1L,
-          cohort = 1L
-        )
+      arm_a = Data(
+        x = c(10, 20),
+        y = c(0L, 1L),
+        doseGrid = c(10, 20),
+        ID = 1L:2L,
+        cohort = 1L:2L
+      ),
+      arm_b = Data(
+        x = 10,
+        y = 0L,
+        doseGrid = c(10, 20),
+        ID = 1L,
+        cohort = 1L
       )
     ),
     HierarchicalData(
-      arms = list(
-        arm_a = Data(
-          x = c(10, 10),
-          y = c(0L, 0L),
-          doseGrid = c(10, 20),
-          ID = 1L:2L,
-          cohort = 1L:2L
-        ),
-        arm_b = Data(
-          x = 10,
-          y = 0L,
-          doseGrid = c(10, 20),
-          ID = 1L,
-          cohort = 1L
-        )
+      arm_a = Data(
+        x = c(10, 10),
+        y = c(0L, 0L),
+        doseGrid = c(10, 20),
+        ID = 1L:2L,
+        cohort = 1L:2L
+      ),
+      arm_b = Data(
+        x = 10,
+        y = 0L,
+        doseGrid = c(10, 20),
+        ID = 1L,
+        cohort = 1L
       )
     )
   )
