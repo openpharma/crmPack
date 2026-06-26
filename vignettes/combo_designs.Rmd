@@ -268,12 +268,8 @@ The corresponding design can be implemented with the `HierarchicalDesign` class 
 First, we define the arm-specific designs, and wrap them with `DesignArm` to specify their names and whether they are active or not (which would be useful for historical data from previous trials).
 
 ```{r}
-design_mono <- Design(
-  model = LogisticLogNormal(
-      mean = c(-0.85, 1),
-      cov = matrix(c(2, -0.5, -0.5, 2), nrow = 2),
-      ref_dose = 10
-    ),
+design_mono_drug1 <- Design(
+  model = combo_model@single_models$drug1,
   nextBest = my_next_best,
   stopping = StoppingMinPatients(nPatients = 20) | StoppingMissingDose(),
   increments = IncrementsRelative(intervals = c(0), increments = c(2)),
@@ -284,9 +280,25 @@ design_mono <- Design(
   startingDose = 10
 )
 
-design_arm_mono <- DesignArm(
-  name = "mono",
-  design = design_mono
+design_mono_drug2 <- Design(
+  model = combo_model@single_models$drug2,
+  nextBest = my_next_best,
+  stopping = StoppingMinPatients(nPatients = 20) | StoppingMissingDose(),
+  increments = IncrementsRelative(intervals = c(0), increments = c(2)),
+  cohort_size = CohortSizeConst(3L),
+  data = Data(
+    doseGrid = seq(from = 10, to = 50, by = 5)
+  ),
+  startingDose = 20
+)
+
+design_arm_mono_drug1 <- DesignArm(
+  name = "mono_drug1",
+  design = design_mono_drug1
+)
+design_arm_mono_drug2 <- DesignArm(
+  name = "mono_drug2",
+  design = design_mono_drug2
 )
 design_arm_combo <- DesignArm(
   name = "combo",
@@ -294,51 +306,41 @@ design_arm_combo <- DesignArm(
 )
 ```
 
-Note that for simplicity here we just have a single mono arm.
-Then we provide these to the constructor, together with the exchangeable parameter pools. Since this design contains only one monotherapy arm for drug 1 plus the combination arm, we use only the drug 1 pools and the corresponding pool arguments:
+Then we provide these to the constructor, together with the exchangeable parameter pools. Since this design contains monotherapy arms for both drugs plus the combination arm, we use the full set of pools and corresponding pool arguments:
 
 ```{r}
-drug1_parameter_pools <- parameter_pools[c("drug1_intercept", "drug1_slope")]
-drug1_pool_correlations <- pool_correlations["drug1"]
-drug1_pool_priors <- pool_priors[c("drug1_intercept", "drug1_slope")]
-
 hierarchical_design <- HierarchicalDesign(
-  design_arm_mono,
+  design_arm_mono_drug1,
+  design_arm_mono_drug2,
   design_arm_combo,
-  exchangeable_parameters = list(
-    drug1_intercept = list(
-      mono = drug1_parameter_pools$drug1_intercept$mono_drug1,
-      combo = drug1_parameter_pools$drug1_intercept$combo
-    ),
-    drug1_slope = list(
-      mono = drug1_parameter_pools$drug1_slope$mono_drug1,
-      combo = drug1_parameter_pools$drug1_slope$combo
-    )
-  ),
-  pool_correlations = drug1_pool_correlations,
-  pool_priors = drug1_pool_priors
+  exchangeable_parameters = parameter_pools,
+  pool_correlations = pool_correlations,
+  pool_priors = pool_priors
 )
 
 hierarchical_design
 ```
 
-Here we basically also show that the mono arm is about `drug1` and not `drug2`, which is relevant for the information sharing via the exchangeable parameters.
+Here the arm names match the model implementation above, which makes it clear that `mono_drug1` shares information with the first single-agent parameter pair in the combination arm, and `mono_drug2` shares information with the second pair.
 
 Then we can simulate from this design as follows:
 
 ```{r}
-truth_mono <- function(dose) plogis(-4 + 0.08 * dose)
+truth_mono_drug1 <- function(dose) plogis(-4 + 0.08 * dose)
+truth_mono_drug2 <- function(dose) plogis(-4 + 0.06 * dose)
 truth_combo <- function(dose) plogis(-4 + 0.08 * dose[1] + 0.06 * dose[2] + 0.001 * dose[1] * dose[2])
 
 hierarchical_sims <- simulate(
   hierarchical_design,
   truth = list(
-    mono = truth_mono,
+    mono_drug1 = truth_mono_drug1,
+    mono_drug2 = truth_mono_drug2,
     combo = truth_combo
   ),
   truthResponse = list(
     # Just for demo purposes we choose the same functions for efficacy.
-    mono = truth_mono,
+    mono_drug1 = truth_mono_drug1,
+    mono_drug2 = truth_mono_drug2,
     combo = truth_combo
   ),
   nsim = 20,
@@ -349,7 +351,8 @@ hierarchical_sims <- simulate(
 
 hierarchical_sims
 summary(hierarchical_sims, truth = list(
-  mono = truth_mono,
+  mono_drug1 = truth_mono_drug1,
+  mono_drug2 = truth_mono_drug2,
   combo = truth_combo
 ))
 ```
@@ -357,8 +360,8 @@ summary(hierarchical_sims, truth = list(
 It is also possible to extract the arm specific simulations to produce separate plots etc.:
 
 ```{r}
-arm_mono_sims <- get_arm_simulations(hierarchical_sims, "mono")
-plot(arm_mono_sims)
+arm_mono_drug1_sims <- get_arm_simulations(hierarchical_sims, "mono_drug1")
+plot(arm_mono_drug1_sims)
 ```
 
 ## References
