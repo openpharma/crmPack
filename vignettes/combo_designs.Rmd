@@ -513,7 +513,7 @@ fixed_scenario <- HierarchicalData(
 scenario_result <- scenario(
   object = hierarchical_design,
   data = fixed_scenario,
-  mcmcOptions = McmcOptions()
+  mcmcOptions = McmcOptions(rng_kind = "Mersenne-Twister", rng_seed = 123)
 )
 
 scenario_result$next_dose
