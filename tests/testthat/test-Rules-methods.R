@@ -232,8 +232,8 @@ test_that("nextBest-NextBestNCRM-DataCombo works as expected", {
   probs <- data.frame(
     drug1 = c(10, 20, 30, 10, 20, 30),
     drug2 = c(20, 20, 20, 40, 40, 40),
-    target_prob = c(40, 20, 10, 10, 0, NA),
-    overdose_prob = c(10, 10, 10, 30, 20, NA),
+    target_prob = c(0.6, 0.2, 0.2, 0.1, 0.2, NA),
+    overdose_prob = c(0.1, 0.2, 0.2, 0.3, 0.1, NA),
     not_eligible = c(FALSE, FALSE, FALSE, TRUE, FALSE, FALSE)
   )
   expect_equal(result$probs, probs)
@@ -288,6 +288,8 @@ test_that("nextBest-NextBestNCRM-DataCombo uses configured drug names in probs",
     result$probs,
     c("compound_a", "compound_b", "target_prob", "overdose_prob", "not_eligible")
   )
+  expect_true(all(result$probs$target_prob[!is.na(result$probs$target_prob)] <= 1))
+  expect_true(all(result$probs$overdose_prob[!is.na(result$probs$overdose_prob)] <= 1))
 })
 
 ## NextBestNCRM-DataParts ----

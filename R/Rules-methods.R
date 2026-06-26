@@ -443,9 +443,9 @@ setMethod(
     # Show target probability as tiles, and doses that were above
     # the dose limit should stay black.
     all_target_prob <- rep(NA, nrow(all_dose_matrix))
-    all_target_prob[is_below_limit] <- prob_target * 100
+    all_target_prob[is_below_limit] <- prob_target
     all_overdose_prob <- rep(NA, nrow(all_dose_matrix))
-    all_overdose_prob[is_below_limit] <- prob_overdose * 100
+    all_overdose_prob[is_below_limit] <- prob_overdose
     all_not_eligible <- rep(FALSE, nrow(all_dose_matrix))
     all_not_eligible[is_below_limit] <- !is_dose_eligible
 
@@ -477,8 +477,8 @@ setMethod(
         low = "white",
         high = "darkgreen",
         na.value = "black",
-        limits = c(0, 100),
-        name = "Target probability [%]"
+        limits = c(0, 1),
+        name = "Target probability"
       ) +
       xlab(names(data@doseGrid)[1]) +
       ylab(names(data@doseGrid)[2]) +
@@ -519,8 +519,8 @@ setMethod(
         low = "white",
         high = "red",
         na.value = "black",
-        limits = c(0, 100),
-        name = "Overdose probability [%]"
+        limits = c(0, 1),
+        name = "Overdose probability"
       ) +
       xlab(names(data@doseGrid)[1]) +
       ylab(names(data@doseGrid)[2]) +
