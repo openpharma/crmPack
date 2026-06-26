@@ -1,6 +1,7 @@
 ---
 title: "Combination designs"
-output: rmarkdown::html_vignette
+output:
+  rmarkdown::html_vignette
 vignette: >
   %\VignetteIndexEntry{Combination designs}
   %\VignetteEngine{knitr::rmarkdown}
@@ -11,7 +12,11 @@ bibliography: vignettes.bib
 ```{r, include = FALSE}
 knitr::opts_chunk$set(
   collapse = TRUE,
-  comment = "#>"
+  comment = "#>",
+  fig.width = 8,
+  fig.height = 6,
+  out.width = "100%",
+  fig.align = "center"
 )
 ```
 
@@ -50,14 +55,14 @@ The package implements the 5-parameter BLRM approach by @Neuenschwander2015 (not
   \textrm{logit}[p(x_i)] = \alpha_i + \beta_i \log(x_i/x_i^{*}),
   $$
 
-  with prior e.g. $(\alpha_i, \log(\beta_i))^\top \sim \textrm{Normal}(\mu_i, \Sigma_i)$ for $i=1,2. 
+  with $\beta_i > 0$ and prior e.g. $(\alpha_i, \log(\beta_i))^\top \sim \textrm{Normal}(\mu_i, \Sigma_i)$ for $i=1,2$.
 
 ### Model implementation
 
 This model can be used in `crmPack` as follows with the `TwoDrugsCombo` model class:
 
 ```{r}
-devtools::load_all()
+library(crmPack)
 
 combo_model <- TwoDrugsCombo(
   single_models = list(
@@ -75,9 +80,9 @@ combo_model <- TwoDrugsCombo(
   gamma = 0,
   tau = 1
 )
-
-combo_model
 ```
+
+We omit the printing of `combo_model` here for brevity, but it will show in `Rmd` or `qmd` output as a nice textual description with formulas.
 
 ### Design implementation
 
@@ -118,8 +123,6 @@ design_combo <- DesignCombo(
   data = empty_data,
   startingDose = c(drug1 = 10, drug2 = 20)
 )
-
-design_combo
 ```
 
 We can then simulate from this design as follows:
@@ -162,25 +165,25 @@ With `crmPack` we can also implement more complex designs with parallel monother
 
 ### Model specification
 
-We use logistic log normal models for the monotherapy arm parameters, and the same BLRM model for the combination arm parameters as described above. The parameters are then linked via common hyperprior distributions:
+We use logistic log normal models for the monotherapy arm parameters, and the same BLRM model for the combination arm parameters as described above. Parameters are linked by declaring exchangeable parameter pools. Each pool names the arm-specific parameters that should share a common hierarchical prior. For `LogisticLogNormal` models the slope is reported as `alpha1`, but its stochastic prior node is on the log-slope scale, so exchangeable slope pools correspond to $\log(\beta_i)$ in the formulas below.
 
 - We use a meta-analytic combined (MAC) prior which separates according to different trial sources:
-  - mono drug 1 trial ($\theta_1$), which will only inform the parameters $\alpha_1$ and $\beta_1$ for drug 1
-  - current combination of drugs 1 and 2 trial ($\theta_2$), which will inform all 5 parameters
-  - mono drug 2 trial ($\theta_3$), which will only inform the parameters $\alpha_2$ and $\beta_2$ for drug 2
-- On top of these sits the hierarchical prior $\theta_j \sim \textrm{Normal}(\mu, \Sigma)$, $j=1,2,3$.
-- Hyperpriors on $\mu = (\mu_{\alpha_1}, \mu_{\beta_1}, \mu_{\alpha_2}, \mu_{\beta_2}, \mu_{\eta})^\top$ e.g.:
+  - mono drug 1 trial, which will only inform the parameters $\alpha_1$ and $\log(\beta_1)$ for drug 1
+  - current combination of drugs 1 and 2 trial, which will inform the two single-agent parameter pairs and the combination interaction parameter $\eta$
+  - mono drug 2 trial, which will only inform the parameters $\alpha_2$ and $\log(\beta_2)$ for drug 2
+- On top of these sits a pool-specific hierarchical prior. For an exchangeable pool $k$ and arm $j$ belonging to that pool, the implementation uses $\theta_{j,k} \sim \textrm{Normal}(\mu_k, \tau_k^2)$, or a correlated bivariate normal block for the two pairs named in `pool_correlations`.
+- Hyperpriors on $\mu = (\mu_{\alpha_1}, \mu_{\log(\beta_1)}, \mu_{\alpha_2}, \mu_{\log(\beta_2)})^\top$ e.g.:
   - $\mu_{\alpha_i} \sim \textrm{Normal}(\textrm{logit}(0.25), 2.5^2)$, $i=1,2$
-  - $\mu_{\beta_1} \sim \textrm{Normal}(0, 0.7^2)$
-  - $\mu_{\beta_2}, \mu_{\eta} \sim \textrm{Normal}(0, 1)$
-- Structured assumptions for $\Sigma$
-  - Assume that only $\alpha_{1}$ and $\beta_1$, as well as $\alpha_{2}$ and $\beta_2$ are correlated, but not the other parameters, then we have a corresponding block diagonal structure for $\Sigma$ with 7 parameters
-  (standard deviations $\tau_{\alpha_1}, \tau_{\beta_1}, \tau_{\alpha_2}, \tau_{\beta_2}, \tau_{\eta}$ for each of the 5 parameters plus the two correlations $\rho_1$ and $\rho_2$ between $\alpha_i$ and $\beta_i$ for $i=1,2$).
-  - We don't fix the $\Sigma$ entries but instead again assign hyperpriors, e.g. with $\kappa = \log(2)/1.96$
+  - $\mu_{\log(\beta_1)} \sim \textrm{Normal}(0, 0.7^2)$
+  - $\mu_{\log(\beta_2)} \sim \textrm{Normal}(0, 1)$
+- The interaction parameter $\eta$ is not included in an exchangeable pool in the implementation below. It keeps the `TwoDrugsCombo` prior, here $\eta \sim \textrm{Normal}(\gamma, 1/\tau)$ with `gamma = 0` and `tau = 1`. If `log_normal_eta = TRUE`, the same `gamma` and `tau` are used for $\log(\eta)$ instead.
+- Structured assumptions for the hierarchical covariance
+  - Assume that only $\alpha_{1}$ and $\log(\beta_1)$, as well as $\alpha_{2}$ and $\log(\beta_2)$ are correlated, but not the other parameters. This can be represented by two entries in `pool_correlations`, giving a block diagonal structure with 6 hyperparameters
+  (standard deviations $\tau_{\alpha_1}, \tau_{\log(\beta_1)}, \tau_{\alpha_2}, \tau_{\log(\beta_2)}$ plus the two correlations $\rho_1$ and $\rho_2$ between $\alpha_i$ and $\log(\beta_i)$ for $i=1,2$).
+  - We don't fix the $\Sigma$ entries but instead assign hyperpriors. Defaults are used unless overridden in `pool_priors`, e.g. with $\kappa = \log(2)/1.96$
     - $\tau_{\alpha_1} \sim \textrm{LogNormal}(\log(0.5), \kappa^2)$
     - $\tau_{\alpha_2} \sim \textrm{LogNormal}(\log(0.75), \kappa^2)$
-    - $\tau_{\beta_1}, \tau_{\beta_2} \sim \textrm{LogNormal}(\log(0.25), \kappa^2)$
-    - $\tau_{\eta} \sim \textrm{LogNormal}(\log(0.125), \kappa^2)$
+    - $\tau_{\log(\beta_1)}, \tau_{\log(\beta_2)} \sim \textrm{LogNormal}(\log(0.25), \kappa^2)$
     - $\rho_1, \rho_2 \sim \textrm{Uniform}(-1, 1)$
 
 ### Model implementation
@@ -188,32 +191,62 @@ We use logistic log normal models for the monotherapy arm parameters, and the sa
 This model can be implemented in `crmPack` with the `HierarchicalModel` class as follows:
 
 ```{r}
+parameter_pools <- list(
+  drug1_intercept = list(
+    mono_drug1 = "alpha0",
+    combo = "alpha0[1]"
+  ),
+  drug1_slope = list(
+    mono_drug1 = "alpha1",
+    combo = "alpha1[1]"
+  ),
+  drug2_intercept = list(
+    mono_drug2 = "alpha0",
+    combo = "alpha0[2]"
+  ),
+  drug2_slope = list(
+    mono_drug2 = "alpha1",
+    combo = "alpha1[2]"
+  )
+)
+
+pool_correlations <- list(
+  drug1 = c("drug1_intercept", "drug1_slope"),
+  drug2 = c("drug2_intercept", "drug2_slope")
+)
+
+pool_priors <- list(
+  drug1_intercept = list(
+    mu = c(mean = qlogis(0.25), sd = 2.5),
+    tau = c(meanlog = log(0.5), sdlog = log(2) / 1.96)
+  ),
+  drug1_slope = list(
+    mu = c(mean = 0, sd = 0.7),
+    tau = c(meanlog = log(0.25), sdlog = log(2) / 1.96)
+  ),
+  drug2_intercept = list(
+    mu = c(mean = qlogis(0.25), sd = 2.5),
+    tau = c(meanlog = log(0.75), sdlog = log(2) / 1.96)
+  ),
+  drug2_slope = list(
+    mu = c(mean = 0, sd = 1),
+    tau = c(meanlog = log(0.25), sdlog = log(2) / 1.96)
+  )
+)
+
 hierarchical_model <- HierarchicalModel(
-    mono_drug1 = combo_model@single_models$drug1,
-    mono_drug2 = combo_model@single_models$drug2,
-    combo = combo_model,
-    exchangeable_parameters = list(
-        drug1_intercept = list(
-            mono_drug1 = "alpha0",
-            combo = "alpha0[1]"
-        ),
-        drug1_slope = list(
-            mono_drug1 = "alpha1",
-            combo = "alpha1[1]"
-        ),
-        drug2_intercept = list(
-            mono_drug2 = "alpha0",
-            combo = "alpha0[2]"
-        ),
-        drug2_slope = list(
-            mono_drug2 = "alpha1",
-            combo = "alpha1[2]"
-        )
-    )
+  mono_drug1 = combo_model@single_models$drug1,
+  mono_drug2 = combo_model@single_models$drug2,
+  combo = combo_model,
+  exchangeable_parameters = parameter_pools,
+  pool_correlations = pool_correlations,
+  pool_priors = pool_priors
 )
 
 hierarchical_model
 ```
+
+The public constructor argument is called `exchangeable_parameters` because it specifies which parameters are exchangeable across arms. The fitted object stores the same specification in its `parameter_pools` slot, and the optional `pool_correlations` and `pool_priors` arguments customize those pools.
 
 We can look at the JAGS code, which has been automatically compiled for this model.
 
@@ -262,22 +295,28 @@ design_arm_combo <- DesignArm(
 ```
 
 Note that for simplicity here we just have a single mono arm.
-Then we provide these to the constructor, together with the specification of the exchangeable parameters (in the same way as above for the model):
+Then we provide these to the constructor, together with the exchangeable parameter pools. Since this design contains only one monotherapy arm for drug 1 plus the combination arm, we use only the drug 1 pools and the corresponding pool arguments:
 
 ```{r}
+drug1_parameter_pools <- parameter_pools[c("drug1_intercept", "drug1_slope")]
+drug1_pool_correlations <- pool_correlations["drug1"]
+drug1_pool_priors <- pool_priors[c("drug1_intercept", "drug1_slope")]
+
 hierarchical_design <- HierarchicalDesign(
   design_arm_mono,
   design_arm_combo,
   exchangeable_parameters = list(
     drug1_intercept = list(
-      mono = "alpha0",
-      combo = "alpha0[1]"
+      mono = drug1_parameter_pools$drug1_intercept$mono_drug1,
+      combo = drug1_parameter_pools$drug1_intercept$combo
     ),
     drug1_slope = list(
-      mono = "alpha1",
-      combo = "alpha1[1]"
+      mono = drug1_parameter_pools$drug1_slope$mono_drug1,
+      combo = drug1_parameter_pools$drug1_slope$combo
     )
-  )
+  ),
+  pool_correlations = drug1_pool_correlations,
+  pool_priors = drug1_pool_priors
 )
 
 hierarchical_design
