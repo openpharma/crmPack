@@ -400,10 +400,15 @@ diff_trialB <- data.frame(
     dose2 = fit_trialB_crmPack$compound2,
     center = fit_trialB_decider$mean - fit_trialB_crmPack$middle,
     lower = fit_trialB_decider$`q.2.5%` - fit_trialB_crmPack$lower,
-    upper = fit_trialB_decider$`q.97.5%` - fit_trialB_crmPack$upper
+    upper = fit_trialB_decider$`q.97.5%` - fit_trialB_crmPack$upper,
+    target = fit_trialB_decider$`P([0.16,0.33))` - probs_trialB_crmPack$target,
+    overdose = fit_trialB_decider$`P([0.33,1])` - probs_trialB_crmPack$overdose
 )
 diff_trialB
 ```
+
+So these differences look relatively small, and there does not seem to be any 
+systematic bias in the differences.
 
 ## Comparison of model code
 
