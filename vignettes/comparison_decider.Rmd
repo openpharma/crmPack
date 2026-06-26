@@ -329,6 +329,70 @@ result1_crmPack <- scenario(
 )
 ```
 
+We can look at the fit results:
 
+```{r}
+result1_crmPack$fit
+```
+
+## Comparison of fit
+
+Based on this we can first compare the fit results.
+
+Let's look at the results for Arm A:
+
+```{r}
+fit_trialA_decider <- result1$`trial-A` |> as.data.frame()
+fit_trialA_crmPack <- result1_crmPack$fit$A
+diff_trialA <- data.frame(
+    dose = fit_trialA_crmPack$dose,
+    center = fit_trialA_decider$mean - fit_trialA_crmPack$middle,
+    lower = fit_trialA_decider$`q.2.5%` - fit_trialA_crmPack$lower,
+    upper = fit_trialA_decider$`q.97.5%` - fit_trialA_crmPack$upper
+)
+```
+
+And then the results for Arm B:
+
+```{r}
+fit_trialB_decider <- result1$`trial-B` |> as.data.frame()
+fit_trialB_crmPack <- result1_crmPack$fit$B |> dplyr::filter(compound2 > 0)
+
+diff_trialB <- data.frame(
+    dose1 = fit_trialB_crmPack$compound1,
+    dose2 = fit_trialB_crmPack$compound2,
+    center = fit_trialB_decider$mean - fit_trialB_crmPack$middle,
+    lower = fit_trialB_decider$`q.2.5%` - fit_trialB_crmPack$lower,
+    upper = fit_trialB_decider$`q.97.5%` - fit_trialB_crmPack$upper
+)
+diff_trialB
+```
+
+## Comparison of model code
+
+Let's compare the model code used in `decider` and `crmPack`, in order to make sure that they really match and implement the same priors and models:
+
+### `decider`
+
+Here we have the following Stan model:
+
+```{r}
+#| results: "asis"
+#| echo: false
+cat("```{stan}", decider:::stanmodels$jointBLRM@model_code, "```", sep = "\n")
+```
+
+### `crmPack`
+
+Here we have the following JAGS model:
+
+```{r}
+#| results: "asis"
+#| echo: false
+
+cat("````", deparse(body(design_hierarchical@model@datamodel)), "````", sep = "\n")
+
+cat("````", deparse(body(design_hierarchical@model@priormodel)), "````", sep = "\n")
+```
 
 ## References
