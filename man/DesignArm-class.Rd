@@ -11,6 +11,8 @@
 \usage{
 DesignArm(name, design, borrow = TRUE, open_when = NoArmCondition())
 
+HistoricalArm(name, data, model, borrow = TRUE)
+
 .DefaultDesignArm()
 }
 \arguments{

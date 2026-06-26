@@ -169,7 +169,7 @@ Now we are going to define the same design and scenario in `crmPack`.
 We start with the monotherapy model for compound 1:
 
 ```{r}
-devtools::load_all() # library(crmPack)
+library(crmPack)
 
 mono_model1 <- LogisticLogNormal(
   mean = c(logit(0.33), 0),

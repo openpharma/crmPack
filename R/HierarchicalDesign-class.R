@@ -402,6 +402,8 @@ DesignArm <- function(
   )
 }
 
+#' @rdname DesignArm-class
+#' @export
 HistoricalArm <- function(name, data, model, borrow = TRUE) {
   design <- h_historical_arm_design(data = data, model = model)
 
@@ -415,6 +417,14 @@ HistoricalArm <- function(name, data, model, borrow = TRUE) {
   )
 }
 
+#' Construct a simplified DesignArm with hardcoded rule objects
+#'
+#' @param data (`Data` or `DataCombo`)\cr arm data for historical arms.
+#' @param model (`GeneralModel` or `TwoDrugsCombo`)\cr arm model for historical arms.
+#' @return A `Design` object with hardcoded rules for historical arms. The rules
+#'   don't matter because they won't be used, but they are required to construct a `Design` object.
+#'
+#' @keywords internal
 h_historical_arm_design <- function(data, model) {
   if (is.null(data) || is.null(model)) {
     stop("Historical arms must supply both `data` and `model`.")
