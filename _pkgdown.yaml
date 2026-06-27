@@ -226,6 +226,8 @@ reference:
       - h_validate_common_data_slots
       - h_summarize_add_stats
       - h_determine_dlts
+      - h_dose_combo_below_limit
+      - h_eval_combo_truth
   - title: Internal Validation Functions
     contents:
       - v_arm_condition
@@ -326,6 +328,7 @@ reference:
       - "`plot-DataDual`"
       - "`plot-DataDA`"
       - "`subset-Data`"
+      - singleDrugData
       - "`update-Data`"
       - "`update-DataParts`"
       - "`update-DataDual`"
@@ -404,6 +407,7 @@ reference:
       - "`mcmc-GeneralData-DualEndpointBeta`"
       - "`mcmc-GeneralData-OneParExpPrior`"
       - "`names-Samples`"
+      - armSamples
       - nextBest
       - "`nextBest-NextBestMTD`"
       - "`nextBest-NextBestNCRM`"
@@ -433,6 +437,7 @@ reference:
       - "`maxDose-IncrementsMaxToxProb`"
       - maxRecruits
       - openCohort
+      - scenario
   - title: Functions
     contents:
       - enable_logging
@@ -442,6 +447,7 @@ reference:
       - dapply
       - knit_print
       - openArm
+      - get_arm_simulations
   - title: Classes
     contents:
       - ArmCondition-class
