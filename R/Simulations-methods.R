@@ -976,12 +976,8 @@ setMethod(
     n_obs <- as.integer(sapply(object@data, slot, "nObs"))
     dose_selected <- object@doses
 
-    # Remove rows with NAs.
-    dose_selected <- dose_selected[
-      !apply(is.na(dose_selected), 1L, any),
-      ,
-      drop = FALSE
-    ]
+    # Replace missing recommendations with 0, consistent with GeneralSimulations.
+    dose_selected[is.na(dose_selected)] <- 0
 
     # Most frequently selected dose combination.
     dose_keys <- apply(dose_selected, 1L, paste, collapse = "||")
@@ -995,19 +991,21 @@ setMethod(
     }
 
     # Observed toxicity rate at dose most often selected.
-    obs_at_most_selected <- sapply(
-      object@data,
-      function(d) {
-        at_dose <- (d@x[, 1L] == dose_most_selected[1L]) &
-          (d@x[, 2L] == dose_most_selected[2L])
-        c(
-          nAtThisDose = sum(at_dose),
-          nDLTatThisDose = sum(d@y[at_dose])
-        )
-      }
-    )
+    obs_tox_rate_at_dose_most_selected <- if (anyNA(dose_most_selected)) {
+      NA_real_
+    } else {
+      obs_at_most_selected <- sapply(
+        object@data,
+        function(d) {
+          at_dose <- (d@x[, 1L] == dose_most_selected[1L]) &
+            (d@x[, 2L] == dose_most_selected[2L])
+          c(
+            nAtThisDose = sum(at_dose),
+            nDLTatThisDose = sum(d@y[at_dose])
+          )
+        }
+      )
 
-    obs_tox_rate_at_dose_most_selected <- {
       n_at <- sum(obs_at_most_selected["nAtThisDose", ])
       if (n_at > 0L) {
         sum(obs_at_most_selected["nDLTatThisDose", ]) / n_at

@@ -332,6 +332,38 @@ test_that("summary-ComboSimulations works correctly", {
   )
 })
 
+test_that("summary-ComboSimulations handles all-NA dose recommendations", {
+  mySims <- .DefaultComboSimulations()
+  mySims@doses[,] <- NA_real_
+  myTruth <- function(dose) {
+    if (is.matrix(dose)) {
+      plogis((dose[, 1] + dose[, 2] - 40) / 20)
+    } else {
+      plogis((dose[1] + dose[2] - 40) / 20)
+    }
+  }
+
+  result <- summary(mySims, truth = myTruth, target = c(0.2, 0.35))
+
+  expect_s4_class(result, "ComboSimulationsSummary")
+  expect_equal(nrow(result@dose_selected), result@nsim)
+  expect_equal(ncol(result@dose_selected), 2)
+  expect_equal(
+    result@dose_selected,
+    matrix(
+      0,
+      nrow = result@nsim,
+      ncol = 2,
+      dimnames = list(NULL, c("drug1", "drug2"))
+    )
+  )
+  expect_equal(result@dose_most_selected, c(0, 0))
+  expect_true(is.na(result@obs_tox_rate_at_dose_most_selected))
+  expect_length(result@tox_at_doses_selected, result@nsim)
+  expect_equal(result@tox_at_doses_selected, rep(myTruth(c(0, 0)), result@nsim))
+  expect_equal(result@prop_at_target, 0)
+})
+
 # Report ----
 
 test_that("Report class can be initialized", {
