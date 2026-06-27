@@ -732,12 +732,12 @@ TwoDrugsCombo <- function(
       single_priormodel,
       if (log_normal_eta) {
         function() {
-          log_eta ~ dnorm(gamma, tau)
+          log_eta ~ dnorm(eta_gamma, eta_tau)
           eta <- exp(log_eta)
         }
       } else {
         function() {
-          eta ~ dnorm(gamma, tau)
+          eta ~ dnorm(eta_gamma, eta_tau)
         }
       }
     ),
@@ -745,7 +745,7 @@ TwoDrugsCombo <- function(
       specs_name <- if (from_prior) "prior_specs" else "full_specs"
       ms <- c(
         unlist(lapply(single_model_parts, "[[", specs_name), recursive = FALSE),
-        list(gamma = gamma, tau = tau)
+        list(eta_gamma = gamma, eta_tau = tau)
       )
       ms
     },

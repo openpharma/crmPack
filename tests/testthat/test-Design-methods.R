@@ -2068,6 +2068,61 @@ test_that("simulate-DesignCombo supports firstSeparate and args", {
   expect_true(is.logical(result@stop_report))
 })
 
+test_that("simulate-DesignCombo works with exotic single-agent models", {
+  design <- DesignCombo(
+    model = h_get_two_drugs_combo_exotic(),
+    nextBest = NextBestNCRM(
+      target = c(0.2, 0.35),
+      overdose = c(0.35, 1),
+      max_overdose_prob = 0.25
+    ),
+    stopping = StoppingMinPatients(nPatients = 12),
+    increments = IncrementsMin(
+      increments_list = list(
+        IncrementsComboOneDrugOnly(),
+        IncrementsComboCartesian(
+          drug1 = IncrementsRelative(intervals = c(0), increments = c(1)),
+          drug2 = IncrementsRelative(intervals = c(0), increments = c(1))
+        )
+      )
+    ),
+    cohort_size = CohortSizeConst(3L),
+    data = DataCombo(
+      doseGrid = list(
+        drug1 = c(25, 50, 75),
+        drug2 = c(1, 10, 25, 50)
+      )
+    ),
+    startingDose = c(drug1 = 25, drug2 = 1)
+  )
+
+  true_tox_combo <- function(dose) {
+    plogis(
+      -4 +
+        1.1 * log(dose[1] / 50) +
+        0.03 * dose[2] +
+        0.015 * (dose[1] / 50) * sqrt(dose[2])
+    )
+  }
+
+  result <- simulate(
+    design,
+    truth = true_tox_combo,
+    nsim = 1,
+    seed = 417,
+    mcmcOptions = h_get_mcmc_options(samples = 8),
+    parallel = FALSE
+  )
+
+  expect_s4_class(result, "ComboSimulations")
+  expect_s4_class(result@data[[1]], "DataCombo")
+  expect_equal(colnames(result@doses), c("drug1", "drug2"))
+  expect_equal(result@data[[1]]@x[1, ], c(25, 1))
+  expect_true(nrow(result@fit[[1]]) >= 1L)
+  expect_true(all(result@fit[[1]]$middle >= 0 & result@fit[[1]]$middle <= 1))
+  expect_length(result@stop_reasons, 1L)
+})
+
 ## RuleDesign ----
 
 test_that("simulate-RuleDesign produces consistent results", {

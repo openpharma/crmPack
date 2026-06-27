@@ -205,6 +205,22 @@ h_get_two_drugs_combo_with_normal_mix <- function(
   )
 }
 
+h_get_two_drugs_combo_exotic <- function() {
+  TwoDrugsCombo(
+    single_models = list(
+      drug1 = h_get_logistic_normal_fixed_mix(),
+      drug2 = LogisticKadane(
+        theta = 0.35,
+        xmin = 1,
+        xmax = 200
+      )
+    ),
+    gamma = 0,
+    tau = 1,
+    log_normal_eta = TRUE
+  )
+}
+
 h_get_general_single_agent_no_ref <- function(beta_mean = c(0, 0)) {
   .GeneralModel(
     datamodel = function() {

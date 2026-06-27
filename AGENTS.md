@@ -11,3 +11,5 @@
 
 - Focus on checking that the calculation logic and flow is correct.
 - Focus on the coherence of the described user interface from documentation of functions and vignettes with actual code.
+- Make sure that every newly added function has a roxygen2 documentation header, also internal functions.
+- Focus on making sure that we don't have any dead code or any duplicate code. We want to keep the code base DRY (don't repeat yourself).

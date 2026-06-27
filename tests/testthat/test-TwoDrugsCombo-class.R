@@ -192,7 +192,7 @@ test_that("TwoDrugsCombo does not require alpha or ref_dose", {
   expect_equal(result@sample, c("beta0", "beta1", "eta"))
   expect_true(all(is.na(result@ref_dose)))
   expect_subset(
-    c("beta_mean_drug1", "beta_mean_drug2", "gamma", "tau"),
+    c("beta_mean_drug1", "beta_mean_drug2", "eta_gamma", "eta_tau"),
     names(result@modelspecs(TRUE))
   )
 })
