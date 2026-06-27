@@ -26,7 +26,7 @@ StoppingSpecificDose(
 
 - dose:
 
-  (`number`)\
+  (`numeric`)\
   see slot definition.
 
 - report_label:

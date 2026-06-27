@@ -14,6 +14,10 @@ v_general_simulations(object)
 
 v_simulations(object)
 
+v_hierarchical_simulations(object)
+
+v_combo_simulations(object)
+
 v_dual_simulations(object)
 
 v_da_simulations(object)
@@ -42,6 +46,16 @@ case validation passes.
   object contains valid object `fit`, `stop_reasons`, `stop_report`, and
   `additional_stats` compared to the general class
   [`GeneralSimulations`](https://docs.crmpack.org/reference/GeneralSimulations-class.md).
+
+- `v_hierarchical_simulations()`: validates that the
+  [`HierarchicalSimulations`](https://docs.crmpack.org/reference/HierarchicalSimulations-class.md)
+  object contains valid hierarchical data, posterior samples, fits, and
+  stopping outputs.
+
+- `v_combo_simulations()`: validates that the
+  [`ComboSimulations`](https://docs.crmpack.org/reference/ComboSimulations-class.md)
+  object contains valid combo data, recommended dose combinations, model
+  fit, and stopping outputs.
 
 - `v_dual_simulations()`: validates that the
   [`DualSimulations`](https://docs.crmpack.org/reference/DualSimulations-class.md)

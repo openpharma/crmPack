@@ -75,21 +75,21 @@ McmcOptions(
 
   (`string`)\
   a Random Number Generator (RNG) type used by
-  [`rjags::rjags`](https://rdrr.io/pkg/rjags/man/rjags-package.html). It
-  must be one out of the following four values: `base::Wichmann-Hill`,
+  [`rjags`](https://rdrr.io/pkg/rjags/man/rjags-package.html). It must
+  be one out of the following four values: `base::Wichmann-Hill`,
   `base::Marsaglia-Multicarry`, `base::Super-Duper`,
   `base::Mersenne-Twister`, or `NA_character_`. If it is `NA_character_`
   (default), then the RNG kind will be chosen by
-  [`rjags::rjags`](https://rdrr.io/pkg/rjags/man/rjags-package.html).
+  [`rjags`](https://rdrr.io/pkg/rjags/man/rjags-package.html).
 
 - `rng_seed`:
 
   (`number`)\
   a Random Number Generator (RNG) seed used by
-  [`rjags::rjags`](https://rdrr.io/pkg/rjags/man/rjags-package.html) for
-  a chosen `rng_kind`. It must be an integer scalar or `NA_integer_`,
+  [`rjags`](https://rdrr.io/pkg/rjags/man/rjags-package.html) for a
+  chosen `rng_kind`. It must be an integer scalar or `NA_integer_`,
   which means that the seed will be chosen by
-  [`rjags::rjags`](https://rdrr.io/pkg/rjags/man/rjags-package.html).
+  [`rjags`](https://rdrr.io/pkg/rjags/man/rjags-package.html).
 
 ## Note
 

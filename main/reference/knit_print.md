@@ -140,6 +140,16 @@ descendants of `Design`.
 
 **\[experimental\]**
 
+**\[experimental\]**
+
+**\[experimental\]**
+
+**\[experimental\]**
+
+**\[experimental\]**
+
+**\[experimental\]**
+
 We provide additional utility functions to allow human-friendly
 rendition of crmPack objects in Markdown and Quarto files
 
@@ -224,6 +234,9 @@ knit_print(x, ..., level = 2L, title = "Design", sections = NA, asis = TRUE)
 # S3 method for class 'Design'
 knit_print(x, ..., level = 2L, title = "Design", sections = NA, asis = TRUE)
 
+# S3 method for class 'DesignCombo'
+knit_print(x, ..., level = 2L, title = "Design", sections = NA, asis = TRUE)
+
 # S3 method for class 'DualDesign'
 knit_print(x, ..., level = 2L, title = "Design", sections = NA, asis = TRUE)
 
@@ -288,6 +301,16 @@ knit_print(
   format_func = h_knit_format_func
 )
 
+# S3 method for class 'DataCombo'
+knit_print(
+  x,
+  ...,
+  asis = TRUE,
+  label = c("participant", "participants"),
+  units = NA,
+  fmt = NA
+)
+
 # S3 method for class 'DualEndpoint'
 knit_print(
   x,
@@ -322,6 +345,9 @@ knit_print(
   fmt = "%5.2f",
   units = NA
 )
+
+# S3 method for class 'HierarchicalModel'
+knit_print(x, ..., asis = TRUE)
 
 # S3 method for class 'LogisticKadane'
 knit_print(
@@ -401,6 +427,9 @@ knit_print(
   asis = TRUE
 )
 
+# S3 method for class 'TwoDrugsCombo'
+knit_print(x, ..., use_values = TRUE, fmt = "%5.2f", asis = TRUE)
+
 # S3 method for class 'LogisticLogNormalOrdinal'
 knit_print(
   x,
@@ -451,6 +480,12 @@ knit_print(x, ..., asis = TRUE)
 knit_print(x, ..., asis = TRUE)
 
 # S3 method for class 'IncrementsMin'
+knit_print(x, ..., asis = TRUE)
+
+# S3 method for class 'IncrementsComboOneDrugOnly'
+knit_print(x, ..., asis = TRUE)
+
+# S3 method for class 'IncrementsComboCartesian'
 knit_print(x, ..., asis = TRUE)
 
 # S3 method for class 'IncrementsOrdinal'
@@ -778,17 +813,17 @@ knit_print(x, ..., asis = TRUE)
   (`function`)\
   The function used to format the range table.
 
-- use_values:
-
-  (`flag`)\
-  print the values associated with hyperparameters, or the symbols used
-  to define the hyper-parameters. That is, for example, mu or 1.
-
 - fmt:
 
   (`character`)\
   the `sprintf` format string used to render numerical values. Ignored
   if `use_values` is `FALSE`.
+
+- use_values:
+
+  (`flag`)\
+  print the values associated with hyperparameters, or the symbols used
+  to define the hyper-parameters. That is, for example, mu or 1.
 
 - biomarker_label:
 

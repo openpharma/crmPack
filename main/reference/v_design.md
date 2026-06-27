@@ -21,6 +21,8 @@ v_rule_design(object)
 
 v_rule_design_ordinal(object)
 
+v_design_combo(object)
+
 v_design_grouped(object)
 ```
 
@@ -48,6 +50,10 @@ case validation passes.
 - `v_rule_design_ordinal()`: validates that the
   [`RuleDesignOrdinal`](https://docs.crmpack.org/reference/RuleDesignOrdinal-class.md)
   object contains valid `starting_dose`.
+
+- `v_design_combo()`: validates that the
+  [`DesignCombo`](https://docs.crmpack.org/reference/DesignCombo-class.md)
+  object contains valid `startingDose`.
 
 - `v_design_grouped()`: validates that the
   [`DesignGrouped`](https://docs.crmpack.org/reference/DesignGrouped-class.md)

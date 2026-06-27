@@ -22,14 +22,14 @@ plot(
 - x:
 
   the data of
-  [`DataDual`](https://docs.crmpack.org/reference/DataDual-class.md)
-  class object
+  [DataDual](https://docs.crmpack.org/reference/DataDual-class.md) class
+  object
 
 - y:
 
   the model of the
-  [`ModelEff`](https://docs.crmpack.org/reference/ModelEff-class.md)
-  class object
+  [ModelEff](https://docs.crmpack.org/reference/ModelEff-class.md) class
+  object
 
 - ...:
 

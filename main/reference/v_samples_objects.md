@@ -8,6 +8,8 @@ or inherited classes and therefore not exported.
 
 ``` r
 v_samples(object)
+
+v_hierarchical_samples(object)
 ```
 
 ## Arguments
@@ -27,3 +29,7 @@ case validation passes.
 - `v_samples()`: validates that the
   [`Samples`](https://docs.crmpack.org/reference/Samples-class.md)
   object contains valid `data` slot.
+
+- `v_hierarchical_samples()`: validates that the
+  [`HierarchicalSamples`](https://docs.crmpack.org/reference/HierarchicalSamples-class.md)
+  object contains valid per-arm sample mappings.

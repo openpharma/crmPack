@@ -34,7 +34,8 @@ function that computes expected efficacy.
 
 ## Functions
 
-- `efficacyFunction(ModelEff)`:
+- `efficacyFunction(ModelEff)`: Return an efficacy function for a
+  `ModelEff`.
 
 ## See also
 

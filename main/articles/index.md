@@ -28,6 +28,10 @@
 - [Rolling CRM
   Example](https://docs.crmpack.org/articles/rolling-crm.md):
 - [Ordinal CRM](https://docs.crmpack.org/articles/ordinal-crm.md):
+- [Combination
+  designs](https://docs.crmpack.org/articles/combo_designs.md):
+- [Comparison with the decider
+  package](https://docs.crmpack.org/articles/comparison_decider.md):
 
 ### Tools
 

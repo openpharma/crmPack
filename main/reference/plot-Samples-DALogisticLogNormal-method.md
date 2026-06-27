@@ -13,18 +13,18 @@ plot(x, y, data, hazard = FALSE, ..., showLegend = TRUE)
 
 - x:
 
-  the [`Samples`](https://docs.crmpack.org/reference/Samples-class.md)
+  the [Samples](https://docs.crmpack.org/reference/Samples-class.md)
   object
 
 - y:
 
   the
-  [`DALogisticLogNormal`](https://docs.crmpack.org/reference/DALogisticLogNormal-class.md)
+  [DALogisticLogNormal](https://docs.crmpack.org/reference/DALogisticLogNormal-class.md)
   object
 
 - data:
 
-  the [`DataDA`](https://docs.crmpack.org/reference/DataDA-class.md)
+  the [DataDA](https://docs.crmpack.org/reference/DataDA-class.md)
   object
 
 - hazard:

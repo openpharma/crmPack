@@ -24,6 +24,10 @@ v_model_logistic_normal_fixed_mix(object)
 
 v_model_logistic_log_normal_mix(object)
 
+v_model_two_drugs_combo(object)
+
+v_hierarchical_model(object)
+
 v_model_dual_endpoint(object)
 
 v_model_dual_endpoint_rw(object)
@@ -81,6 +85,14 @@ case validation passes.
 
 - `v_model_logistic_log_normal_mix()`: validates that `share_weight`
   represents probability.
+
+- `v_model_two_drugs_combo()`: validates that
+  [`TwoDrugsCombo`](https://docs.crmpack.org/reference/TwoDrugsCombo-class.md)
+  slots are valid.
+
+- `v_hierarchical_model()`: validates that
+  [`HierarchicalModel`](https://docs.crmpack.org/reference/HierarchicalModel-class.md)
+  slots are valid.
 
 - `v_model_dual_endpoint()`: validates that
   [`DualEndpoint`](https://docs.crmpack.org/reference/DualEndpoint-class.md)

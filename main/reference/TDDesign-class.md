@@ -69,6 +69,11 @@ TDDesign(
   :   (`number`)\
       see slot definition.
 
+  `doseGrid`
+
+  :   (`numeric`)\
+      the dose grid to be used (sorted).
+
 ## Slots
 
 - `model`:

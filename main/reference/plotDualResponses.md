@@ -34,32 +34,32 @@ plotDualResponses(DLEmodel, DLEsamples, Effmodel, Effsamples, data, ...)
 - DLEmodel:
 
   the pseudo DLE model of
-  [`ModelTox`](https://docs.crmpack.org/reference/ModelTox-class.md)
-  class object
+  [ModelTox](https://docs.crmpack.org/reference/ModelTox-class.md) class
+  object
 
 - DLEsamples:
 
   the DLE samples of
-  [`Samples`](https://docs.crmpack.org/reference/Samples-class.md) class
+  [Samples](https://docs.crmpack.org/reference/Samples-class.md) class
   object
 
 - Effmodel:
 
   the pseudo efficacy model of
-  [`ModelEff`](https://docs.crmpack.org/reference/ModelEff-class.md)
-  class object
+  [ModelEff](https://docs.crmpack.org/reference/ModelEff-class.md) class
+  object
 
 - Effsamples:
 
   the Efficacy samples of
-  [`Samples`](https://docs.crmpack.org/reference/Samples-class.md) class
+  [Samples](https://docs.crmpack.org/reference/Samples-class.md) class
   object
 
 - data:
 
   the data input of
-  [`DataDual`](https://docs.crmpack.org/reference/DataDual-class.md)
-  class object
+  [DataDual](https://docs.crmpack.org/reference/DataDual-class.md) class
+  object
 
 - ...:
 

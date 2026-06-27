@@ -124,15 +124,15 @@ plot(
 ## Value
 
 The
-[`ggplot2::ggplot2`](https://ggplot2.tidyverse.org/reference/ggplot2-package.html)
+[`ggplot2`](https://ggplot2.tidyverse.org/reference/ggplot2-package.html)
 object.
 
 The
-[`ggplot2::ggplot2`](https://ggplot2.tidyverse.org/reference/ggplot2-package.html)
+[`ggplot2`](https://ggplot2.tidyverse.org/reference/ggplot2-package.html)
 object.
 
 The
-[`ggplot2::ggplot2`](https://ggplot2.tidyverse.org/reference/ggplot2-package.html)
+[`ggplot2`](https://ggplot2.tidyverse.org/reference/ggplot2-package.html)
 object.
 
 ## Note

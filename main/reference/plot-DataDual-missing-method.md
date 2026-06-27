@@ -40,7 +40,7 @@ plot(x, y, blind = FALSE, ...)
 ## Value
 
 The
-[`ggplot2::ggplot2`](https://ggplot2.tidyverse.org/reference/ggplot2-package.html)
+[`ggplot2`](https://ggplot2.tidyverse.org/reference/ggplot2-package.html)
 object.
 
 ## Examples

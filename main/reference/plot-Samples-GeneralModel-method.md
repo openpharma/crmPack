@@ -21,18 +21,18 @@ plot(
 
 - x:
 
-  the [`Samples`](https://docs.crmpack.org/reference/Samples-class.md)
+  the [Samples](https://docs.crmpack.org/reference/Samples-class.md)
   object
 
 - y:
 
   the
-  [`GeneralModel`](https://docs.crmpack.org/reference/GeneralModel-class.md)
+  [GeneralModel](https://docs.crmpack.org/reference/GeneralModel-class.md)
   object
 
 - data:
 
-  the [`Data`](https://docs.crmpack.org/reference/Data-class.md) object
+  the [Data](https://docs.crmpack.org/reference/Data-class.md) object
 
 - ...:
 

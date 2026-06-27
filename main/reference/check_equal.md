@@ -78,9 +78,6 @@ If elements in `...` are not all of the same length, an error is thrown.
 [`assertions`](https://docs.crmpack.org/reference/assertions.md) for
 more details.
 
-[`assertions`](https://docs.crmpack.org/reference/assertions.md) for
-more details.
-
 ## Examples
 
 ``` r

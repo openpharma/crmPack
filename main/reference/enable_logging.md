@@ -3,10 +3,10 @@
 **\[experimental\]**
 
 A family of wrappers of selected
-[`futile.logger::futile.logger`](https://rdrr.io/pkg/futile.logger/man/futile.logger-package.html)
+[`futile.logger`](https://rdrr.io/pkg/futile.logger/man/futile.logger-package.html)
 functions that control the logging mechanism in `crmPack`. The `crmPack`
 uses
-[`futile.logger::futile.logger`](https://rdrr.io/pkg/futile.logger/man/futile.logger-package.html)
+[`futile.logger`](https://rdrr.io/pkg/futile.logger/man/futile.logger-package.html)
 package for the logging purposes. All the messages logged in `crmPack`
 are logged into `crmPack` logger at the
 [`futile.logger::TRACE`](https://rdrr.io/pkg/futile.logger/man/logger.options.html)

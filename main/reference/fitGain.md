@@ -29,32 +29,32 @@ fitGain(
 - DLEmodel:
 
   the DLE pseudo model of
-  [`ModelTox`](https://docs.crmpack.org/reference/ModelTox-class.md)
-  class object
+  [ModelTox](https://docs.crmpack.org/reference/ModelTox-class.md) class
+  object
 
 - DLEsamples:
 
   the DLE samples of
-  [`Samples`](https://docs.crmpack.org/reference/Samples-class.md) class
+  [Samples](https://docs.crmpack.org/reference/Samples-class.md) class
   object
 
 - Effmodel:
 
   the efficacy pseudo model of
-  [`ModelEff`](https://docs.crmpack.org/reference/ModelEff-class.md)
-  class object
+  [ModelEff](https://docs.crmpack.org/reference/ModelEff-class.md) class
+  object
 
 - Effsamples:
 
   the efficacy samples of
-  [`Samples`](https://docs.crmpack.org/reference/Samples-class.md) class
+  [Samples](https://docs.crmpack.org/reference/Samples-class.md) class
   object
 
 - data:
 
   the data input of
-  [`DataDual`](https://docs.crmpack.org/reference/DataDual-class.md)
-  class object
+  [DataDual](https://docs.crmpack.org/reference/DataDual-class.md) class
+  object
 
 - ...:
 
@@ -129,19 +129,19 @@ fitGain(
   Effsamples = Effsamples,
   data = data
 )
-#>    dose    middle       lower     upper
-#> 1    25 0.3005989 -0.08718754 0.7332158
-#> 2    50 0.5185839  0.23160384 0.8886416
-#> 3    75 0.6105264  0.30266627 0.9820510
-#> 4   100 0.6618601  0.30095400 1.0883378
-#> 5   125 0.6946738  0.28103149 1.1346464
-#> 6   150 0.7174815  0.26318215 1.2011287
-#> 7   175 0.7342843  0.25135980 1.2535173
-#> 8   200 0.7472094  0.23857418 1.2962004
-#> 9   225 0.7574892  0.22706268 1.3318520
-#> 10  250 0.7658857  0.21668277 1.3754153
-#> 11  275 0.7728943  0.20729352 1.4124810
-#> 12  300 0.7788504  0.19876788 1.4322783
+#>    dose    middle      lower     upper
+#> 1    25 0.3438477 -0.1699007 0.8544627
+#> 2    50 0.5987149  0.2547977 0.9663746
+#> 3    75 0.6767000  0.3040261 1.0822600
+#> 4   100 0.7013123  0.2964078 1.1623733
+#> 5   125 0.7042382  0.2695312 1.2074615
+#> 6   150 0.6972572  0.2438631 1.2303285
+#> 7   175 0.6855757  0.2240500 1.2498266
+#> 8   200 0.6717347  0.2064641 1.2612999
+#> 9   225 0.6570509  0.1851396 1.2673728
+#> 10  250 0.6422299  0.1680738 1.2696973
+#> 11  275 0.6276542  0.1555099 1.2693313
+#> 12  300 0.6135277  0.1446233 1.2668871
 ##Obtain the 'fitGain' the middle, uppper and lower quantiles for the samples of gain values
 ## at all dose levels using a pseudo DLE model, a DLE sample, a pseudo Efficacy model and
 ## a efficacy sample
@@ -189,16 +189,16 @@ fitGain(
   data = data
 )
 #>    dose    middle      lower     upper
-#> 1    25 0.3035639 -0.1419281 0.7336815
-#> 2    50 0.5442238  0.2441919 0.8627864
-#> 3    75 0.6400330  0.3130091 1.0534260
-#> 4   100 0.6901998  0.3051387 1.1878586
-#> 5   125 0.7198842  0.2679615 1.2763298
-#> 6   150 0.7386820  0.2648011 1.3378176
-#> 7   175 0.7510732  0.2812509 1.3772132
-#> 8   200 0.7594264  0.2943053 1.4172885
-#> 9   225 0.7651054  0.2841997 1.4543642
-#> 10  250 0.7689465  0.2694592 1.4789627
-#> 11  275 0.7714876  0.2563641 1.4993280
-#> 12  300 0.7730880  0.2446324 1.5163999
+#> 1    25 0.3442700 -0.2511183 0.9175569
+#> 2    50 0.6051121  0.2599777 1.0301263
+#> 3    75 0.6827104  0.3462284 1.0908986
+#> 4   100 0.7050072  0.3326112 1.1992161
+#> 5   125 0.7057281  0.2824561 1.2516880
+#> 6   150 0.6972930  0.2543596 1.3306478
+#> 7   175 0.6849992  0.2131238 1.3920869
+#> 8   200 0.6712913  0.1845311 1.4412821
+#> 9   225 0.6573428  0.1655045 1.4802234
+#> 10  250 0.6437208  0.1457352 1.5127283
+#> 11  275 0.6306888  0.1270349 1.5067852
+#> 12  300 0.6183552  0.1115851 1.4874941
 ```

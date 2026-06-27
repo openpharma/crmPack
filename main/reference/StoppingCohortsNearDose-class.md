@@ -45,7 +45,8 @@ StoppingCohortsNearDose(
 
   (`number`)\
   percentage (between and including 0 and 100) within the next best dose
-  the cohorts must lie.
+  the cohorts must lie. This is applied for each of the two doses for
+  `DataCombo` objects.
 
 ## Note
 

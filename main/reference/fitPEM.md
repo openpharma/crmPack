@@ -42,7 +42,7 @@ fitPEM(
 - data:
 
   the data input, a
-  [`DataDA`](https://docs.crmpack.org/reference/DataDA-class.md) class
+  [DataDA](https://docs.crmpack.org/reference/DataDA-class.md) class
   object
 
 - quantiles:
@@ -67,7 +67,7 @@ fitPEM(
 
 - `fitPEM(object = Samples, model = DALogisticLogNormal, data = DataDA)`:
   This method works for the
-  [`DALogisticLogNormal`](https://docs.crmpack.org/reference/DALogisticLogNormal-class.md)
+  [DALogisticLogNormal](https://docs.crmpack.org/reference/DALogisticLogNormal-class.md)
   model class.
 
 ## Examples

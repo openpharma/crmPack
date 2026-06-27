@@ -21,6 +21,20 @@ fit(
   ...
 )
 
+# S4 method for class 'Samples,TwoDrugsCombo,DataCombo'
+fit(
+  object,
+  model,
+  data,
+  points = as.matrix(do.call(expand.grid, data@doseGrid)),
+  quantiles = c(0.025, 0.975),
+  middle = mean,
+  ...
+)
+
+# S4 method for class 'HierarchicalSamples,HierarchicalModel,HierarchicalData'
+fit(object, model, data, ...)
+
 # S4 method for class 'Samples,DualEndpoint,DataDual'
 fit(object, model, data, quantiles = c(0.025, 0.975), middle = mean, ...)
 
@@ -73,18 +87,18 @@ fit(
 
 - object:
 
-  the [`Samples`](https://docs.crmpack.org/reference/Samples-class.md)
+  the [Samples](https://docs.crmpack.org/reference/Samples-class.md)
   object
 
 - model:
 
   the
-  [`GeneralModel`](https://docs.crmpack.org/reference/GeneralModel-class.md)
+  [GeneralModel](https://docs.crmpack.org/reference/GeneralModel-class.md)
   object
 
 - data:
 
-  the [`Data`](https://docs.crmpack.org/reference/Data-class.md) object
+  the [Data](https://docs.crmpack.org/reference/Data-class.md) object
 
 - ...:
 
@@ -113,6 +127,14 @@ the data frame with required information (see method details)
 - `fit(object = Samples, model = GeneralModel, data = Data)`: This
   method returns a data frame with dose, middle, lower and upper
   quantiles for the dose-toxicity curve
+
+- `fit(object = Samples, model = TwoDrugsCombo, data = DataCombo)`: This
+  method returns a data frame with one row per dose combination and
+  posterior summaries of the DLT probability surface.
+
+- `fit( object = HierarchicalSamples, model = HierarchicalModel, data = HierarchicalData )`:
+  This method delegates to the arm-specific `fit` methods and returns
+  one combined data frame with an `arm` column.
 
 - `fit(object = Samples, model = DualEndpoint, data = DataDual)`: This
   method returns a data frame with dose, and middle, lower and upper

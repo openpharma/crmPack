@@ -711,6 +711,7 @@
 
 - [`v_general_data()`](https://docs.crmpack.org/reference/v_data_objects.md)
   [`h_doses_unique_per_cohort()`](https://docs.crmpack.org/reference/v_data_objects.md)
+  [`h_combo_doses_unique_per_cohort()`](https://docs.crmpack.org/reference/v_data_objects.md)
   [`v_data()`](https://docs.crmpack.org/reference/v_data_objects.md)
   [`v_data_dual()`](https://docs.crmpack.org/reference/v_data_objects.md)
   [`v_data_parts()`](https://docs.crmpack.org/reference/v_data_objects.md)
@@ -718,6 +719,8 @@
   [`v_data_da()`](https://docs.crmpack.org/reference/v_data_objects.md)
   [`v_data_ordinal()`](https://docs.crmpack.org/reference/v_data_objects.md)
   [`v_data_grouped()`](https://docs.crmpack.org/reference/v_data_objects.md)
+  [`v_data_combo()`](https://docs.crmpack.org/reference/v_data_objects.md)
+  [`v_hierarchical_data()`](https://docs.crmpack.org/reference/v_data_objects.md)
   **\[stable\]** :
 
   Internal Helper Functions for Validation of `GeneralData` Objects
@@ -902,10 +905,25 @@
   : Helper function to determine the dlts including first separate and
   placebo condition
 
+- [`h_dose_combo_below_limit()`](https://docs.crmpack.org/reference/h_dose_combo_below_limit.md)
+  **\[experimental\]** : Check if the Doses in a Dose Matrix are Below
+  the Dose Limit.
+
+- [`h_eval_combo_truth()`](https://docs.crmpack.org/reference/h_eval_combo_truth.md)
+  **\[experimental\]** : Helper for Evaluating the True Toxicity
+  Probability at a Dose Combination
+
 ## Internal Validation Functions
+
+- [`v_arm_finished_condition()`](https://docs.crmpack.org/reference/v_arm_condition.md)
+  [`v_arm_min_dose_condition()`](https://docs.crmpack.org/reference/v_arm_condition.md)
+  **\[experimental\]** :
+
+  Internal Helper Functions for Validation of `ArmCondition` Objects
 
 - [`v_general_data()`](https://docs.crmpack.org/reference/v_data_objects.md)
   [`h_doses_unique_per_cohort()`](https://docs.crmpack.org/reference/v_data_objects.md)
+  [`h_combo_doses_unique_per_cohort()`](https://docs.crmpack.org/reference/v_data_objects.md)
   [`v_data()`](https://docs.crmpack.org/reference/v_data_objects.md)
   [`v_data_dual()`](https://docs.crmpack.org/reference/v_data_objects.md)
   [`v_data_parts()`](https://docs.crmpack.org/reference/v_data_objects.md)
@@ -913,6 +931,8 @@
   [`v_data_da()`](https://docs.crmpack.org/reference/v_data_objects.md)
   [`v_data_ordinal()`](https://docs.crmpack.org/reference/v_data_objects.md)
   [`v_data_grouped()`](https://docs.crmpack.org/reference/v_data_objects.md)
+  [`v_data_combo()`](https://docs.crmpack.org/reference/v_data_objects.md)
+  [`v_hierarchical_data()`](https://docs.crmpack.org/reference/v_data_objects.md)
   **\[stable\]** :
 
   Internal Helper Functions for Validation of `GeneralData` Objects
@@ -932,6 +952,8 @@
   [`v_model_logistic_normal_mix()`](https://docs.crmpack.org/reference/v_model_objects.md)
   [`v_model_logistic_normal_fixed_mix()`](https://docs.crmpack.org/reference/v_model_objects.md)
   [`v_model_logistic_log_normal_mix()`](https://docs.crmpack.org/reference/v_model_objects.md)
+  [`v_model_two_drugs_combo()`](https://docs.crmpack.org/reference/v_model_objects.md)
+  [`v_hierarchical_model()`](https://docs.crmpack.org/reference/v_model_objects.md)
   [`v_model_dual_endpoint()`](https://docs.crmpack.org/reference/v_model_objects.md)
   [`v_model_dual_endpoint_rw()`](https://docs.crmpack.org/reference/v_model_objects.md)
   [`v_model_dual_endpoint_beta()`](https://docs.crmpack.org/reference/v_model_objects.md)
@@ -950,6 +972,7 @@
   `ModelPseudo` Objects
 
 - [`v_samples()`](https://docs.crmpack.org/reference/v_samples_objects.md)
+  [`v_hierarchical_samples()`](https://docs.crmpack.org/reference/v_samples_objects.md)
   :
 
   Internal Helper Functions for Validation of `Samples` Objects
@@ -1022,13 +1045,23 @@
 
 - [`v_rule_design()`](https://docs.crmpack.org/reference/v_design.md)
   [`v_rule_design_ordinal()`](https://docs.crmpack.org/reference/v_design.md)
+  [`v_design_combo()`](https://docs.crmpack.org/reference/v_design.md)
   [`v_design_grouped()`](https://docs.crmpack.org/reference/v_design.md)
   **\[stable\]** :
 
   Internal Helper Functions for Validation of `RuleDesign` Objects
 
+- [`v_design_arm()`](https://docs.crmpack.org/reference/v_hierarchical_design.md)
+  [`v_hierarchical_design()`](https://docs.crmpack.org/reference/v_hierarchical_design.md)
+  **\[experimental\]** :
+
+  Internal Helper Functions for Validation of `HierarchicalDesign`
+  Objects
+
 - [`v_general_simulations()`](https://docs.crmpack.org/reference/v_general_simulations.md)
   [`v_simulations()`](https://docs.crmpack.org/reference/v_general_simulations.md)
+  [`v_hierarchical_simulations()`](https://docs.crmpack.org/reference/v_general_simulations.md)
+  [`v_combo_simulations()`](https://docs.crmpack.org/reference/v_general_simulations.md)
   [`v_dual_simulations()`](https://docs.crmpack.org/reference/v_general_simulations.md)
   [`v_da_simulations()`](https://docs.crmpack.org/reference/v_general_simulations.md)
   **\[stable\]** :
@@ -1109,6 +1142,10 @@
 - [`` `[`( ``*`<Data>`*`,`*`<numeric>`*`,`*`<missing>`*`,`*`<missing>`*`)`](https://docs.crmpack.org/reference/subset-Data.md)
   [`` `[`( ``*`<Data>`*`,`*`<logical>`*`,`*`<missing>`*`,`*`<missing>`*`)`](https://docs.crmpack.org/reference/subset-Data.md)
   **\[stable\]** : Subsetting Operator for the Data Class
+
+- [`singleDrugData()`](https://docs.crmpack.org/reference/singleDrugData.md)
+  **\[experimental\]** : Extracting Single-Drug Data from Combination
+  Data
 
 - [`update(`*`<Data>`*`)`](https://docs.crmpack.org/reference/update-Data-method.md)
   **\[stable\]** :
@@ -1197,6 +1234,11 @@
 - [`names(`*`<Samples>`*`)`](https://docs.crmpack.org/reference/names-Samples-method.md)
   **\[stable\]** : The Names of the Sampled Parameters
 
+- [`armSamples()`](https://docs.crmpack.org/reference/armSamples.md)
+  **\[experimental\]** :
+
+  Extract One Arm's Posterior Draws from a `HierarchicalSamples` Object
+
 - [`nextBest()`](https://docs.crmpack.org/reference/nextBest.md)
   **\[stable\]** : Finding the Next Best Dose
 
@@ -1211,6 +1253,10 @@
 
 - [`openCohort()`](https://docs.crmpack.org/reference/openCohort.md)
   **\[experimental\]** : Open / recruit backfill patients into a cohort?
+
+- [`scenario()`](https://docs.crmpack.org/reference/scenario.md)
+  **\[experimental\]** : Evaluate a Hypothetical Data Scenario for a
+  Design
 
 ## Functions
 
@@ -1235,6 +1281,7 @@
   [`knit_print(`*`<StartingDose>`*`)`](https://docs.crmpack.org/reference/knit_print.md)
   [`knit_print(`*`<RuleDesign>`*`)`](https://docs.crmpack.org/reference/knit_print.md)
   [`knit_print(`*`<Design>`*`)`](https://docs.crmpack.org/reference/knit_print.md)
+  [`knit_print(`*`<DesignCombo>`*`)`](https://docs.crmpack.org/reference/knit_print.md)
   [`knit_print(`*`<DualDesign>`*`)`](https://docs.crmpack.org/reference/knit_print.md)
   [`knit_print(`*`<DADesign>`*`)`](https://docs.crmpack.org/reference/knit_print.md)
   [`knit_print(`*`<TDDesign>`*`)`](https://docs.crmpack.org/reference/knit_print.md)
@@ -1246,9 +1293,11 @@
   [`knit_print(`*`<RuleDesignOrdinal>`*`)`](https://docs.crmpack.org/reference/knit_print.md)
   [`knit_print(`*`<GeneralData>`*`)`](https://docs.crmpack.org/reference/knit_print.md)
   [`knit_print(`*`<DataParts>`*`)`](https://docs.crmpack.org/reference/knit_print.md)
+  [`knit_print(`*`<DataCombo>`*`)`](https://docs.crmpack.org/reference/knit_print.md)
   [`knit_print(`*`<DualEndpoint>`*`)`](https://docs.crmpack.org/reference/knit_print.md)
   [`knit_print(`*`<ModelParamsNormal>`*`)`](https://docs.crmpack.org/reference/knit_print.md)
   [`knit_print(`*`<GeneralModel>`*`)`](https://docs.crmpack.org/reference/knit_print.md)
+  [`knit_print(`*`<HierarchicalModel>`*`)`](https://docs.crmpack.org/reference/knit_print.md)
   [`knit_print(`*`<LogisticKadane>`*`)`](https://docs.crmpack.org/reference/knit_print.md)
   [`knit_print(`*`<LogisticKadaneBetaGamma>`*`)`](https://docs.crmpack.org/reference/knit_print.md)
   [`knit_print(`*`<LogisticLogNormal>`*`)`](https://docs.crmpack.org/reference/knit_print.md)
@@ -1259,6 +1308,7 @@
   [`knit_print(`*`<OneParLogNormalPrior>`*`)`](https://docs.crmpack.org/reference/knit_print.md)
   [`knit_print(`*`<OneParExpPrior>`*`)`](https://docs.crmpack.org/reference/knit_print.md)
   [`knit_print(`*`<LogisticLogNormalGrouped>`*`)`](https://docs.crmpack.org/reference/knit_print.md)
+  [`knit_print(`*`<TwoDrugsCombo>`*`)`](https://docs.crmpack.org/reference/knit_print.md)
   [`knit_print(`*`<LogisticLogNormalOrdinal>`*`)`](https://docs.crmpack.org/reference/knit_print.md)
   [`knit_print(`*`<LogisticIndepBeta>`*`)`](https://docs.crmpack.org/reference/knit_print.md)
   [`knit_print(`*`<Effloglog>`*`)`](https://docs.crmpack.org/reference/knit_print.md)
@@ -1267,6 +1317,8 @@
   [`knit_print(`*`<IncrementsDoseLevels>`*`)`](https://docs.crmpack.org/reference/knit_print.md)
   [`knit_print(`*`<IncrementsHSRBeta>`*`)`](https://docs.crmpack.org/reference/knit_print.md)
   [`knit_print(`*`<IncrementsMin>`*`)`](https://docs.crmpack.org/reference/knit_print.md)
+  [`knit_print(`*`<IncrementsComboOneDrugOnly>`*`)`](https://docs.crmpack.org/reference/knit_print.md)
+  [`knit_print(`*`<IncrementsComboCartesian>`*`)`](https://docs.crmpack.org/reference/knit_print.md)
   [`knit_print(`*`<IncrementsOrdinal>`*`)`](https://docs.crmpack.org/reference/knit_print.md)
   [`knit_print(`*`<IncrementsRelativeParts>`*`)`](https://docs.crmpack.org/reference/knit_print.md)
   [`knit_print(`*`<IncrementsRelativeDLTCurrent>`*`)`](https://docs.crmpack.org/reference/knit_print.md)
@@ -1318,7 +1370,49 @@
 
   Render a `CohortSizeConst` Object
 
+- [`openArm()`](https://docs.crmpack.org/reference/openArm.md)
+  **\[experimental\]** : Open a hierarchical design arm?
+
+- [`get_arm_simulations()`](https://docs.crmpack.org/reference/get_arm_simulations.md)
+  **\[experimental\]** : Extract Arm-Level Simulations from Hierarchical
+  Simulations
+
 ## Classes
+
+- [`.DefaultArmCondition()`](https://docs.crmpack.org/reference/ArmCondition-class.md)
+  **\[experimental\]** :
+
+  `ArmCondition`
+
+- [`ArmConditionAll()`](https://docs.crmpack.org/reference/ArmConditionAll-class.md)
+  [`.DefaultArmConditionAll()`](https://docs.crmpack.org/reference/ArmConditionAll-class.md)
+  **\[experimental\]** :
+
+  `ArmConditionAll`
+
+- [`ArmConditionAny()`](https://docs.crmpack.org/reference/ArmConditionAny-class.md)
+  [`.DefaultArmConditionAny()`](https://docs.crmpack.org/reference/ArmConditionAny-class.md)
+  **\[experimental\]** :
+
+  `ArmConditionAny`
+
+- [`ArmConditionList()`](https://docs.crmpack.org/reference/ArmConditionList-class.md)
+  [`.DefaultArmConditionList()`](https://docs.crmpack.org/reference/ArmConditionList-class.md)
+  **\[experimental\]** :
+
+  `ArmConditionList`
+
+- [`ArmFinishedCondition()`](https://docs.crmpack.org/reference/ArmFinishedCondition-class.md)
+  [`.DefaultArmFinishedCondition()`](https://docs.crmpack.org/reference/ArmFinishedCondition-class.md)
+  **\[experimental\]** :
+
+  `ArmFinishedCondition`
+
+- [`ArmMinDoseCondition()`](https://docs.crmpack.org/reference/ArmMinDoseCondition-class.md)
+  [`.DefaultArmMinDoseCondition()`](https://docs.crmpack.org/reference/ArmMinDoseCondition-class.md)
+  **\[experimental\]** :
+
+  `ArmMinDoseCondition`
 
 - [`CohortSizeOrdinal()`](https://docs.crmpack.org/reference/CohortSizeOrdinal-class.md)
   [`.DefaultCohortSizeOrdinal()`](https://docs.crmpack.org/reference/CohortSizeOrdinal-class.md)
@@ -1326,11 +1420,40 @@
 
   `CohortSizeOrdinal`
 
+- [`ComboSimulations()`](https://docs.crmpack.org/reference/ComboSimulations-class.md)
+  [`.DefaultComboSimulations()`](https://docs.crmpack.org/reference/ComboSimulations-class.md)
+  **\[experimental\]** :
+
+  `ComboSimulations`
+
+- [`.DefaultComboSimulationsSummary()`](https://docs.crmpack.org/reference/ComboSimulationsSummary-class.md)
+  **\[experimental\]** :
+
+  `ComboSimulationsSummary`
+
+- [`DataCombo()`](https://docs.crmpack.org/reference/DataCombo-class.md)
+  [`.DefaultDataCombo()`](https://docs.crmpack.org/reference/DataCombo-class.md)
+  **\[experimental\]** :
+
+  `DataCombo`
+
 - [`IncrementsOrdinal()`](https://docs.crmpack.org/reference/IncrementsOrdinal-class.md)
   [`.DefaultIncrementsOrdinal()`](https://docs.crmpack.org/reference/IncrementsOrdinal-class.md)
   **\[experimental\]** :
 
   `IncrementsOrdinal`
+
+- [`IncrementsComboCartesian()`](https://docs.crmpack.org/reference/IncrementsComboCartesian-class.md)
+  [`.DefaultIncrementsComboCartesian()`](https://docs.crmpack.org/reference/IncrementsComboCartesian-class.md)
+  **\[experimental\]** :
+
+  `IncrementsComboCartesian`
+
+- [`IncrementsComboOneDrugOnly()`](https://docs.crmpack.org/reference/IncrementsComboOneDrugOnly-class.md)
+  [`.DefaultIncrementsComboOneDrugOnly()`](https://docs.crmpack.org/reference/IncrementsComboOneDrugOnly-class.md)
+  **\[stable\]** :
+
+  `IncrementsComboOneDrugOnly`
 
 - [`DADesign()`](https://docs.crmpack.org/reference/DADesign-class.md)
   [`.DefaultDADesign()`](https://docs.crmpack.org/reference/DADesign-class.md)
@@ -1343,6 +1466,19 @@
   **\[stable\]** :
 
   `DASimulations`
+
+- [`DesignArm()`](https://docs.crmpack.org/reference/DesignArm-class.md)
+  [`HistoricalArm()`](https://docs.crmpack.org/reference/DesignArm-class.md)
+  [`.DefaultDesignArm()`](https://docs.crmpack.org/reference/DesignArm-class.md)
+  **\[experimental\]** :
+
+  `DesignArm`
+
+- [`DesignCombo()`](https://docs.crmpack.org/reference/DesignCombo-class.md)
+  [`.DefaultDesignCombo()`](https://docs.crmpack.org/reference/DesignCombo-class.md)
+  **\[experimental\]** :
+
+  `DesignCombo`
 
 - [`DualResponsesDesign()`](https://docs.crmpack.org/reference/DualResponsesDesign-class.md)
   [`.DefaultDualResponsesDesign()`](https://docs.crmpack.org/reference/DualResponsesDesign-class.md)
@@ -1378,6 +1514,41 @@
 
   `GeneralSimulationsSummary`
 
+- [`HierarchicalData()`](https://docs.crmpack.org/reference/HierarchicalData-class.md)
+  [`.DefaultHierarchicalData()`](https://docs.crmpack.org/reference/HierarchicalData-class.md)
+  **\[experimental\]** :
+
+  `HierarchicalData`
+
+- [`HierarchicalDesign()`](https://docs.crmpack.org/reference/HierarchicalDesign-class.md)
+  [`.DefaultHierarchicalDesign()`](https://docs.crmpack.org/reference/HierarchicalDesign-class.md)
+  **\[experimental\]** :
+
+  `HierarchicalDesign`
+
+- [`HierarchicalModel()`](https://docs.crmpack.org/reference/HierarchicalModel-class.md)
+  [`.DefaultHierarchicalModel()`](https://docs.crmpack.org/reference/HierarchicalModel-class.md)
+  **\[experimental\]** :
+
+  `HierarchicalModel`
+
+- [`HierarchicalSamples()`](https://docs.crmpack.org/reference/HierarchicalSamples-class.md)
+  [`.DefaultHierarchicalSamples()`](https://docs.crmpack.org/reference/HierarchicalSamples-class.md)
+  **\[experimental\]** :
+
+  `HierarchicalSamples`
+
+- [`HierarchicalSimulations()`](https://docs.crmpack.org/reference/HierarchicalSimulations-class.md)
+  [`.DefaultHierarchicalSimulations()`](https://docs.crmpack.org/reference/HierarchicalSimulations-class.md)
+  **\[experimental\]** :
+
+  `HierarchicalSimulations`
+
+- [`.DefaultHierarchicalSimulationsSummary()`](https://docs.crmpack.org/reference/HierarchicalSimulationsSummary-class.md)
+  **\[experimental\]** :
+
+  `HierarchicalSimulationsSummary`
+
 - [`IncrementsMaxToxProb()`](https://docs.crmpack.org/reference/IncrementsMaxToxProb-class.md)
   [`.DefaultIncrementsMaxToxProb()`](https://docs.crmpack.org/reference/IncrementsMaxToxProb-class.md)
   **\[experimental\]** :
@@ -1398,6 +1569,12 @@
   **\[experimental\]** :
 
   `NextBestOrdinal`
+
+- [`NoArmCondition()`](https://docs.crmpack.org/reference/NoArmCondition-class.md)
+  [`.DefaultNoArmCondition()`](https://docs.crmpack.org/reference/NoArmCondition-class.md)
+  **\[experimental\]** :
+
+  `NoArmCondition`
 
 - [`PseudoDualFlexiSimulations()`](https://docs.crmpack.org/reference/PseudoDualFlexiSimulations-class.md)
   [`.DefaultPseudoDualFlexiSimulations()`](https://docs.crmpack.org/reference/PseudoDualFlexiSimulations-class.md)
@@ -1447,6 +1624,12 @@
   **\[experimental\]** :
 
   `StoppingOrdinal`
+
+- [`TwoDrugsCombo()`](https://docs.crmpack.org/reference/TwoDrugsCombo-class.md)
+  [`.DefaultTwoDrugsCombo()`](https://docs.crmpack.org/reference/TwoDrugsCombo-class.md)
+  **\[experimental\]** :
+
+  `TwoDrugsCombo`
 
 - [`approximate()`](https://docs.crmpack.org/reference/approximate.md) :
   Approximate posterior with (log) normal distribution
@@ -1520,13 +1703,34 @@
   **\[stable\]** : Combine a Stopping List and an Atomic Stopping Rule
   with OR
 
+- [`` `&`( ``*`<ArmCondition>`*`,`*`<ArmCondition>`*`)`](https://docs.crmpack.org/reference/and-ArmCondition-ArmCondition-method.md)
+  **\[experimental\]** : Logical AND Operator for ArmCondition Objects
+
+- [`` `|`( ``*`<ArmCondition>`*`,`*`<ArmCondition>`*`)`](https://docs.crmpack.org/reference/or-ArmCondition-ArmCondition-method.md)
+  **\[experimental\]** : Logical OR Operator for ArmCondition Objects
+
 - [`plot(`*`<Data>`*`,`*`<ModelTox>`*`)`](https://docs.crmpack.org/reference/plot-Data-ModelTox-method.md)
   : Plot of the fitted dose-tox based with a given pseudo DLE model and
   data without samples
 
+- [`plot(`*`<DataCombo>`*`,`*`<missing>`*`)`](https://docs.crmpack.org/reference/plot-DataCombo-missing-method.md)
+  **\[experimental\]** :
+
+  Plot Method for the `DataCombo` Class
+
 - [`plot(`*`<DataDual>`*`,`*`<ModelEff>`*`)`](https://docs.crmpack.org/reference/plot-DataDual-ModelEff-method.md)
   : Plot of the fitted dose-efficacy based with a given pseudo efficacy
   model and data without samples
+
+- [`plot(`*`<ComboSimulations>`*`,`*`<missing>`*`)`](https://docs.crmpack.org/reference/plot-ComboSimulations-missing-method.md)
+  **\[experimental\]** :
+
+  Plot `ComboSimulations`
+
+- [`plot(`*`<ComboSimulationsSummary>`*`,`*`<missing>`*`)`](https://docs.crmpack.org/reference/plot-ComboSimulationsSummary-missing-method.md)
+  **\[experimental\]** :
+
+  Plot `ComboSimulationsSummary`
 
 - [`plot(`*`<DualSimulations>`*`,`*`<missing>`*`)`](https://docs.crmpack.org/reference/plot-DualSimulations-missing-method.md)
   **\[stable\]** :
@@ -1545,6 +1749,14 @@
   **\[stable\]** :
 
   Plot `GeneralSimulationsSummary`
+
+- [`plot(`*`<HierarchicalData>`*`,`*`<missing>`*`)`](https://docs.crmpack.org/reference/plot-HierarchicalData-missing-method.md)
+  **\[experimental\]** :
+
+  Plot Method for the `HierarchicalData` Class
+
+- [`plot(`*`<HierarchicalSamples>`*`,`*`<HierarchicalModel>`*`)`](https://docs.crmpack.org/reference/plot-HierarchicalSamples-HierarchicalModel-method.md)
+  : Plotting hierarchical dose-toxicity model fits
 
 - [`plot(`*`<PseudoDualFlexiSimulations>`*`,`*`<missing>`*`)`](https://docs.crmpack.org/reference/plot-PseudoDualFlexiSimulations-missing-method.md)
   **\[stable\]** :
@@ -1576,16 +1788,15 @@
   : Plotting dose-toxicity model fits
 
 - [`plot(`*`<Samples>`*`,`*`<ModelEff>`*`)`](https://docs.crmpack.org/reference/plot-Samples-ModelEff-method.md)
-  :
-
-  Plot the fitted dose-efficacy curve using a model from `ModelEff`
+  : Plot the fitted dose-efficacy curve using a model from ModelEff
   class with samples
 
 - [`plot(`*`<Samples>`*`,`*`<ModelTox>`*`)`](https://docs.crmpack.org/reference/plot-Samples-ModelTox-method.md)
-  :
-
-  Plot the fitted dose-DLE curve using a `ModelTox` class model with
+  : Plot the fitted dose-DLE curve using a ModelTox class model with
   samples
+
+- [`plot(`*`<Samples>`*`,`*`<TwoDrugsCombo>`*`)`](https://docs.crmpack.org/reference/plot-Samples-TwoDrugsCombo-method.md)
+  : Plotting two-drug combination dose-toxicity model fits
 
 - [`plot(`*`<SimulationsSummary>`*`,`*`<missing>`*`)`](https://docs.crmpack.org/reference/plot-SimulationsSummary-missing-method.md)
   **\[stable\]** : Plot Model-Based Design Simulation Summary
@@ -1612,10 +1823,41 @@
 - [`set_seed()`](https://docs.crmpack.org/reference/set_seed.md)
   **\[stable\]** : Helper Function to Set and Save the RNG Seed
 
+- [`show(`*`<ComboSimulations>`*`)`](https://docs.crmpack.org/reference/show-ComboSimulations-method.md)
+  **\[experimental\]** :
+
+  Show `ComboSimulations` Objects
+
+- [`show(`*`<ComboSimulationsSummary>`*`)`](https://docs.crmpack.org/reference/show-ComboSimulationsSummary-method.md)
+  **\[experimental\]** : Show the Summary of Combination Simulations
+
 - [`show(`*`<GeneralSimulations>`*`)`](https://docs.crmpack.org/reference/show-GeneralSimulations-method.md)
   **\[stable\]** :
 
   Show `Simulations` Objects
+
+- [`show(`*`<HierarchicalData>`*`)`](https://docs.crmpack.org/reference/show-HierarchicalData-method.md)
+  **\[experimental\]** :
+
+  Show `HierarchicalData` Objects
+
+- [`show(`*`<HierarchicalDesign>`*`)`](https://docs.crmpack.org/reference/show-HierarchicalDesign-method.md)
+  **\[experimental\]** :
+
+  Show `HierarchicalDesign` Objects
+
+- [`show(`*`<HierarchicalModel>`*`)`](https://docs.crmpack.org/reference/show-HierarchicalModel-method.md)
+  **\[experimental\]** :
+
+  Show `HierarchicalModel` Objects
+
+- [`show(`*`<HierarchicalSimulations>`*`)`](https://docs.crmpack.org/reference/show-HierarchicalSimulations-method.md)
+  **\[experimental\]** :
+
+  Show `HierarchicalSimulations` Objects
+
+- [`show(`*`<HierarchicalSimulationsSummary>`*`)`](https://docs.crmpack.org/reference/show-HierarchicalSimulationsSummary-method.md)
+  **\[experimental\]** : Show the Summary of Hierarchical Simulations
 
 - [`show(`*`<DualSimulationsSummary>`*`)`](https://docs.crmpack.org/reference/show-DualSimulationsSummary-method.md)
   **\[stable\]** : Show the Summary of Dual-Endpoint Simulations
@@ -1643,6 +1885,10 @@
 - [`simulate(`*`<Design>`*`)`](https://docs.crmpack.org/reference/simulate-Design-method.md)
   **\[stable\]** : Simulate outcomes from a CRM design
 
+- [`simulate(`*`<DesignCombo>`*`)`](https://docs.crmpack.org/reference/simulate-DesignCombo-method.md)
+  **\[experimental\]** : Simulate outcomes from a two-drug combination
+  CRM design
+
 - [`simulate(`*`<DualDesign>`*`)`](https://docs.crmpack.org/reference/simulate-DualDesign-method.md)
   **\[stable\]** : Simulate outcomes from a dual-endpoint design
 
@@ -1653,6 +1899,10 @@
 - [`simulate(`*`<DualResponsesSamplesDesign>`*`)`](https://docs.crmpack.org/reference/simulate-DualResponsesSamplesDesign-method.md)
   **\[stable\]** : Simulate dose escalation procedure using DLE and
   efficacy responses with samples
+
+- [`simulate(`*`<HierarchicalDesign>`*`)`](https://docs.crmpack.org/reference/simulate-HierarchicalDesign-method.md)
+  **\[experimental\]** : Simulate outcomes from a hierarchical CRM
+  design
 
 - [`simulate(`*`<RuleDesign>`*`)`](https://docs.crmpack.org/reference/simulate-RuleDesign-method.md)
   **\[stable\]** : Simulate outcomes from a rule-based design
@@ -1670,6 +1920,11 @@
 
   Simulate Method for the `DesignGrouped` Class
 
+- [`summary(`*`<ComboSimulations>`*`)`](https://docs.crmpack.org/reference/summary-ComboSimulations-method.md)
+  **\[experimental\]** :
+
+  Summarize `ComboSimulations`
+
 - [`summary(`*`<DualSimulations>`*`)`](https://docs.crmpack.org/reference/summary-DualSimulations-method.md)
   **\[stable\]** : Summarize Dual-Endpoint Design Simulations
 
@@ -1677,6 +1932,9 @@
   **\[stable\]** :
 
   Summarize the `GeneralSimulations`, Relative to a Given Truth
+
+- [`summary(`*`<HierarchicalSimulations>`*`)`](https://docs.crmpack.org/reference/summary-HierarchicalSimulations-method.md)
+  **\[experimental\]** : Summarize Hierarchical Design Simulations
 
 - [`summary(`*`<PseudoDualFlexiSimulations>`*`)`](https://docs.crmpack.org/reference/summary-PseudoDualFlexiSimulations-method.md)
   **\[stable\]** :
@@ -1700,6 +1958,16 @@
   **\[experimental\]** :
 
   Tidying `CrmPackClass` objects
+
+- [`update(`*`<DataCombo>`*`)`](https://docs.crmpack.org/reference/update-DataCombo-method.md)
+  **\[experimental\]** :
+
+  Updating `DataCombo` Objects
+
+- [`update(`*`<HierarchicalData>`*`)`](https://docs.crmpack.org/reference/update-HierarchicalData-method.md)
+  **\[experimental\]** :
+
+  Updating `HierarchicalData` Objects
 
 - [`windowLength()`](https://docs.crmpack.org/reference/windowLength.md)
   **\[stable\]** : Determine the Safety Window Length of the Next Cohort

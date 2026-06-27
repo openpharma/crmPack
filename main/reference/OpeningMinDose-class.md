@@ -25,8 +25,10 @@ OpeningMinDose(min_dose = 0)
 
 - `min_dose`:
 
-  (`number`)\
-  the minimum dose at which backfill cohorts can be opened.
+  (`numeric`)\
+  the minimum dose at which backfill cohorts can be opened. For
+  combination trials, this can be a vector of minimum doses for each
+  agent.
 
 ## Note
 
