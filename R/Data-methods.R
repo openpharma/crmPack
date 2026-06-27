@@ -1843,3 +1843,95 @@ setMethod(
     y
   }
 )
+
+## DataCombo ----
+
+#' Tidy Method for the [`DataCombo`] Class
+#'
+#' @description `r lifecycle::badge("experimental")`
+#'
+#' A method that tidies a [`DataCombo`] object.
+#'
+#' @return The [`tibble`] object.
+#'
+#' @aliases tidy-DataCombo
+#' @rdname tidy
+#' @export
+setMethod(
+  f = "tidy",
+  signature = signature(x = "DataCombo"),
+  definition = function(x, ...) {
+    if (x@nObs == 0L) {
+      return(
+        tibble::tibble(
+          ID = integer(),
+          Cohort = integer(),
+          Tox = logical(),
+          Response = integer(),
+          Backfilled = logical(),
+          NObs = integer(),
+          NGrid = list(),
+          DoseGrid = list()
+        ) %>%
+          h_tidy_class(x)
+      )
+    }
+
+    dose_data <- tibble::as_tibble(x@x)
+    names(dose_data) <- paste0("Dose_", x@drugNames)
+    level_data <- tibble::as_tibble(x@xLevel)
+    names(level_data) <- paste0("XLevel_", x@drugNames)
+
+    tibble::tibble(
+      ID = x@ID,
+      Cohort = x@cohort,
+      Tox = as.logical(x@y),
+      Response = x@response,
+      Backfilled = x@backfilled,
+      NObs = x@nObs,
+      NGrid = list(x@nGrid),
+      DoseGrid = list(x@doseGrid)
+    ) %>%
+      dplyr::bind_cols(dose_data, level_data) %>%
+      h_tidy_class(x)
+  }
+)
+
+## HierarchicalData ----
+
+#' Tidy Method for the [`HierarchicalData`] Class
+#'
+#' @description `r lifecycle::badge("experimental")`
+#'
+#' A method that tidies a [`HierarchicalData`] object.
+#'
+#' @return The [`tibble`] object.
+#'
+#' @aliases tidy-HierarchicalData
+#' @rdname tidy
+#' @export
+setMethod(
+  f = "tidy",
+  signature = signature(x = "HierarchicalData"),
+  definition = function(x, ...) {
+    if (length(x@arms) == 0L) {
+      return(tibble::tibble(Arm = character()) %>% h_tidy_class(x))
+    }
+
+    lapply(
+      names(x@arms),
+      function(arm_name) {
+        arm_data <- tidy(x@arms[[arm_name]])
+        for (column in c("NGrid", "DoseGrid")) {
+          if (column %in% names(arm_data) && !is.list(arm_data[[column]])) {
+            arm_data[[column]] <- lapply(arm_data[[column]], identity)
+          }
+        }
+        arm_data %>%
+          tibble::add_column(Arm = arm_name, .before = 1L)
+      }
+    ) %>%
+      dplyr::bind_rows() %>%
+      h_tidy_class(x)
+  }
+)

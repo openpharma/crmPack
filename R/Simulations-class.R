@@ -1421,3 +1421,139 @@ setMethod(
     rv %>% h_tidy_class(x)
   }
 )
+
+## tidy-ComboSimulations ----
+
+#' @rdname tidy
+#' @aliases tidy-ComboSimulations
+#' @export
+setMethod(
+  f = "tidy",
+  signature = signature(x = "ComboSimulations"),
+  definition = function(x, ...) {
+    nsim <- length(x@data)
+    simulations <- seq_len(nsim)
+
+    data <- lapply(
+      simulations,
+      function(i) {
+        tidy(x@data[[i]]) %>%
+          tibble::add_column(Simulation = i, .before = 1L)
+      }
+    ) %>%
+      dplyr::bind_rows()
+
+    doses <- tibble::as_tibble(x@doses) %>%
+      tibble::add_column(Simulation = simulations, .before = 1L)
+
+    fit <- lapply(
+      simulations,
+      function(i) {
+        tibble::as_tibble(x@fit[[i]]) %>%
+          tibble::add_column(Simulation = i, .before = 1L)
+      }
+    ) %>%
+      dplyr::bind_rows()
+
+    stop_report <- tibble::as_tibble(x@stop_report, .name_repair = "unique")
+    if (is.null(names(stop_report))) {
+      names(stop_report) <- paste0("Rule", seq_along(stop_report))
+    }
+    stop_report <- stop_report %>%
+      tibble::add_column(Simulation = simulations, .before = 1L)
+
+    stop_reasons <- tibble::tibble(
+      Simulation = simulations,
+      StopReason = x@stop_reasons
+    )
+
+    additional_stats <- tibble::tibble(
+      Simulation = simulations,
+      AdditionalStats = x@additional_stats
+    )
+
+    list(
+      data = data,
+      doses = doses,
+      fit = fit,
+      stop_report = stop_report,
+      stop_reasons = stop_reasons,
+      additional_stats = additional_stats,
+      seed = tibble::tibble(Seed = list(x@seed))
+    ) %>%
+      h_tidy_class(x)
+  }
+)
+
+## tidy-HierarchicalSimulations ----
+
+#' @rdname tidy
+#' @aliases tidy-HierarchicalSimulations
+#' @export
+setMethod(
+  f = "tidy",
+  signature = signature(x = "HierarchicalSimulations"),
+  definition = function(x, ...) {
+    nsim <- length(x@data)
+    simulations <- seq_len(nsim)
+
+    data <- lapply(
+      simulations,
+      function(i) {
+        tidy(x@data[[i]]) %>%
+          tibble::add_column(Simulation = i, .before = 1L)
+      }
+    ) %>%
+      dplyr::bind_rows()
+
+    doses <- lapply(
+      simulations,
+      function(i) {
+        dose_list <- x@doses[[i]]
+        tibble::tibble(
+          Simulation = i,
+          Arm = names(dose_list),
+          Dose = unname(dose_list)
+        )
+      }
+    ) %>%
+      dplyr::bind_rows()
+
+    samples <- tibble::tibble(
+      Simulation = simulations,
+      Samples = lapply(x@samples, tidy)
+    )
+
+    fit <- tibble::tibble(
+      Simulation = simulations,
+      Fit = x@fit
+    )
+
+    stop_report <- tibble::tibble(
+      Simulation = simulations,
+      StopReport = x@stop_report
+    )
+
+    stop_reasons <- tibble::tibble(
+      Simulation = simulations,
+      StopReason = x@stop_reasons
+    )
+
+    additional_stats <- tibble::tibble(
+      Simulation = simulations,
+      AdditionalStats = x@additional_stats
+    )
+
+    list(
+      data = data,
+      doses = doses,
+      samples = samples,
+      fit = fit,
+      stop_report = stop_report,
+      stop_reasons = stop_reasons,
+      additional_stats = additional_stats,
+      seed = tibble::tibble(Seed = list(x@seed))
+    ) %>%
+      h_tidy_class(x)
+  }
+)

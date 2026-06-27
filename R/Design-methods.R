@@ -4604,6 +4604,26 @@ setMethod(
   }
 )
 
+## tidy-DesignCombo ----
+
+#' @rdname tidy
+#' @aliases tidy-DesignCombo
+#'
+#' @export
+setMethod(
+  f = "tidy",
+  signature = signature(x = "DesignCombo"),
+  definition = function(x, ...) {
+    # Some Design objects have complex attributes whose structure is not supported.
+    rv <- h_tidy_all_slots(x, attributes = FALSE) %>% h_tidy_class(x)
+    if (length(rv) == 1) {
+      rv[[names(rv)[1]]] %>% h_tidy_class(x)
+    } else {
+      rv
+    }
+  }
+)
+
 # scenario ----
 
 ## Design ----

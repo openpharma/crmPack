@@ -2014,6 +2014,69 @@ setMethod(
 
 # tidy ----
 
+# HierarchicalModel
+
+#' Tidy Method for the [`HierarchicalModel`] Class
+#'
+#' @description `r lifecycle::badge("experimental")`
+#'
+#' A method that tidies a [`HierarchicalModel`] object.
+#'
+#' @return The [`list`] of [`tibble`] objects.
+#'
+#' @aliases tidy-HierarchicalModel
+#' @rdname tidy
+#' @export
+setMethod(
+  f = "tidy",
+  signature = signature(x = "HierarchicalModel"),
+  definition = function(x, ...) {
+    models_to_arms <- lapply(
+      names(x@models_to_arms),
+      function(arm_name) {
+        model <- x@models_to_arms[[arm_name]]
+        tibble::tibble(
+          Arm = arm_name,
+          ModelClass = class(model)[1L],
+          Model = list(tidy(model))
+        )
+      }
+    ) %>%
+      dplyr::bind_rows()
+
+    parameter_pools <- lapply(
+      names(x@parameter_pools),
+      function(pool_name) {
+        pool <- x@parameter_pools[[pool_name]]
+        tibble::tibble(
+          Pool = pool_name,
+          Arm = names(pool),
+          Parameter = unname(unlist(pool, use.names = FALSE))
+        )
+      }
+    ) %>%
+      dplyr::bind_rows()
+
+    pool_correlations <- tibble::tibble(
+      PoolCorrelation = names(x@pool_correlations),
+      Pools = unname(x@pool_correlations)
+    )
+
+    pool_priors <- tibble::tibble(
+      Pool = names(x@pool_priors),
+      Prior = unname(x@pool_priors)
+    )
+
+    list(
+      models_to_arms = models_to_arms,
+      parameter_pools = parameter_pools,
+      pool_correlations = pool_correlations,
+      pool_priors = pool_priors
+    ) %>%
+      h_tidy_class(x)
+  }
+)
+
 # LogisticIndepBeta
 
 #' Tidy Method for the [`LogisticIndepBeta`] Class

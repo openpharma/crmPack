@@ -57,6 +57,90 @@ setMethod(
   }
 )
 
+# tidy ----
+
+## tidy-HierarchicalDesign ----
+
+#' @rdname tidy
+#' @aliases tidy-HierarchicalDesign
+#'
+#' @export
+setMethod(
+  f = "tidy",
+  signature = signature(x = "HierarchicalDesign"),
+  definition = function(x, ...) {
+    arms <- lapply(
+      names(x@arms),
+      function(arm_name) {
+        arm <- x@arms[[arm_name]]
+        tibble::tibble(
+          Arm = arm_name,
+          Active = arm@active,
+          Borrow = arm@borrow,
+          OpenWhenClass = class(arm@open_when)[1L],
+          OpenWhen = list(tidy(arm@open_when)),
+          DesignClass = class(arm@design)[1L],
+          Design = list(tidy(arm@design))
+        )
+      }
+    ) %>%
+      dplyr::bind_rows()
+
+    list(
+      arms = arms,
+      data = tidy(x@data),
+      model = tidy(x@model)
+    ) %>%
+      h_tidy_class(x)
+  }
+)
+
+## tidy-ArmConditionList ----
+
+#' @rdname tidy
+#' @aliases tidy-ArmConditionList
+#'
+#' @export
+setMethod(
+  f = "tidy",
+  signature = signature(x = "ArmConditionList"),
+  definition = function(x, ...) {
+    tibble::tibble(
+      Condition = seq_along(x@condition_list),
+      ConditionClass = vapply(
+        x@condition_list,
+        function(condition) class(condition)[1L],
+        character(1L)
+      ),
+      ConditionValue = lapply(x@condition_list, tidy)
+    ) %>%
+      h_tidy_class(x)
+  }
+)
+
+## tidy-DesignArm ----
+
+#' @rdname tidy
+#' @aliases tidy-DesignArm
+#'
+#' @export
+setMethod(
+  f = "tidy",
+  signature = signature(x = "DesignArm"),
+  definition = function(x, ...) {
+    tibble::tibble(
+      Arm = x@name,
+      Active = x@active,
+      Borrow = x@borrow,
+      OpenWhenClass = class(x@open_when)[1L],
+      OpenWhen = list(tidy(x@open_when)),
+      DesignClass = class(x@design)[1L],
+      Design = list(tidy(x@design))
+    ) %>%
+      h_tidy_class(x)
+  }
+)
+
 
 ## HierarchicalDesign ----
 

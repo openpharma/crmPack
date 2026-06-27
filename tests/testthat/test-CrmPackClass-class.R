@@ -37,6 +37,7 @@ test_that("CrmPackClass correctly identifies crmPack classes", {
     "ComboSimulationsSummary",
     "CrmPackClass",
     "DualEndpoint",
+    "DualSimulationsSummary",
     "GeneralData",
     "GeneralModel",
     "GeneralSimulationsSummary",

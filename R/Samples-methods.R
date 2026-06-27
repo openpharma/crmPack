@@ -2620,3 +2620,43 @@ setMethod(
     rv
   }
 )
+
+## tidy-HierarchicalSamples ----
+
+#' @rdname tidy
+#' @aliases tidy-HierarchicalSamples
+#' @export
+setMethod(
+  f = "tidy",
+  signature = signature(x = "HierarchicalSamples"),
+  definition = function(x, ...) {
+    rv <- list(
+      data = lapply(
+        names(x@data),
+        function(nm) {
+          tibble::as_tibble(get(x, nm))
+        }
+      ) %>%
+        dplyr::bind_rows() %>%
+        tidyr::pivot_wider(
+          names_from = Parameter,
+          values_from = value
+        ) %>%
+        dplyr::bind_cols(h_handle_attributes(get(x, names(x@data)[1L]))),
+      options = tidy(x@options)
+    )
+    rv$arm_samples <- lapply(
+      names(x@arm_samples),
+      function(arm_name) {
+        samples <- x@arm_samples[[arm_name]]
+        tibble::tibble(
+          Arm = arm_name,
+          Parameter = names(samples),
+          Sample = unname(samples)
+        )
+      }
+    ) %>%
+      dplyr::bind_rows()
+    rv %>% h_tidy_class(x)
+  }
+)
