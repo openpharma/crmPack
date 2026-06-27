@@ -49,8 +49,8 @@ To specify a constant safety window, use the \code{SafetyWindowConst} constructo
 \section{Slots}{
 
 \describe{
-\item{\code{model}}{(\code{GeneralModel})\cr the model to use, see in particular \code{\link{DALogisticLogNormal}} and
-\code{\link{TITELogisticLogNormal}} which make use of the time-to-DLT data.}
+\item{\code{model}}{(\code{GeneralModel})\cr the model to use, see in particular \link{DALogisticLogNormal},
+\link{TITELogisticLogNormal} and \link{TITELogisticLogNormalSub} which make use of the time-to-DLT data.}
 
 \item{\code{data}}{(\code{DataDA})\cr what is the dose grid, any previous data, etc.}
 

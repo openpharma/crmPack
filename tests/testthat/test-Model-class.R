@@ -1314,6 +1314,184 @@ test_that("MCMC computes correct values for TITELogisticLogNormal model (adaptiv
   expect_snap(result@data)
 })
 
+# TITELogisticLogNormalSub ----
+
+## constructor ----
+
+test_that("TITELogisticLogNormalSub object can be created with user constructor (linear weight)", {
+  result <- expect_silent(h_get_tite_logistic_log_normal_sub("linear"))
+  expect_valid(result, "TITELogisticLogNormalSub")
+})
+
+test_that("TITELogisticLogNormalSub object can be created with user constructor (adaptive weight)", {
+  result <- expect_silent(h_get_tite_logistic_log_normal_sub("adaptive"))
+  expect_valid(result, "TITELogisticLogNormalSub")
+})
+
+test_that(".DefaultTITELogisticLogNormalSub object can be created with user constructor (linear weight)", {
+  expect_equal(
+    .DefaultTITELogisticLogNormalSub(),
+    TITELogisticLogNormalSub(
+      mean = c(-0.85, 1),
+      cov = matrix(c(1, -0.5, -0.5, 1), nrow = 2),
+      ref_dose = 50,
+      weight_method = "linear"
+    )
+  )
+})
+
+## mcmc ----
+
+test_that("MCMC computes correct values for TITELogisticLogNormalSub model (linear)", {
+  data <- h_get_data_da()
+  model <- h_get_tite_logistic_log_normal_sub("linear")
+  options <- h_get_mcmc_options()
+
+  result <- mcmc(data = data, model = model, options = options)
+  expect_equal(
+    result@data,
+    list(
+      alpha0 = c(
+        -2.10023657493063,
+        -2.10023657493063,
+        -2.10023657493063,
+        -2.61917517815653
+      ),
+      alpha1 = c(
+        0.0174804170564427,
+        0.0174804170564427,
+        0.0174804170564427,
+        0.0101069046240438
+      )
+    )
+  )
+})
+
+test_that("MCMC computes correct values for TITELogisticLogNormalSub model (linear, data 2)", {
+  data <- h_get_data_da_2()
+  model <- h_get_tite_logistic_log_normal_sub("linear")
+  options <- h_get_mcmc_options()
+
+  result <- mcmc(data = data, model = model, options = options)
+  expect_equal(
+    result@data,
+    list(
+      alpha0 = c(
+        -0.0145594815810755,
+        -0.0145594815810755,
+        -0.0145594815810755,
+        -0.56353731253499
+      ),
+      alpha1 = c(
+        0.123942169276201,
+        0.123942169276201,
+        0.123942169276201,
+        0.0694244533353568
+      )
+    )
+  )
+})
+
+test_that("MCMC computes correct values for TITELogisticLogNormalSub model (linear, empty data)", {
+  data <- h_get_data_da(empty = TRUE)
+  model <- h_get_tite_logistic_log_normal_sub("linear")
+  options <- h_get_mcmc_options()
+
+  result <- mcmc(data = data, model = model, options = options)
+  expect_equal(
+    result@data,
+    list(
+      alpha0 = c(
+        -0.451728872700059,
+        -2.20942721785452,
+        -3.65372932138438,
+        2.33946941073305
+      ),
+      alpha1 = c(
+        1745.91004803922,
+        89.8361181587544,
+        619.238655070514,
+        82.335202967509
+      )
+    )
+  )
+})
+
+test_that("MCMC computes correct values for TITELogisticLogNormalSub model (adaptive)", {
+  data <- h_get_data_da()
+  model <- h_get_tite_logistic_log_normal_sub("adaptive")
+  options <- h_get_mcmc_options()
+
+  result <- mcmc(data = data, model = model, options = options)
+  expect_equal(
+    result@data,
+    list(
+      alpha0 = c(
+        0.0446744152515755,
+        0.0446744152515755,
+        0.0446744152515755,
+        -0.466221220773631
+      ),
+      alpha1 = c(
+        0.0205614399164445,
+        0.0205614399164445,
+        0.0205614399164445,
+        0.0119896804133692
+      )
+    )
+  )
+})
+
+test_that("MCMC computes correct values for TITELogisticLogNormalSub model (adaptive, data 2)", {
+  data <- h_get_data_da_2()
+  model <- h_get_tite_logistic_log_normal_sub("adaptive")
+  options <- h_get_mcmc_options()
+
+  result <- mcmc(data = data, model = model, options = options)
+  expect_equal(
+    result@data,
+    list(
+      alpha0 = c(
+        -0.0145594815810755,
+        -0.0145594815810755,
+        -0.0145594815810755,
+        -0.56353731253499
+      ),
+      alpha1 = c(
+        0.123942169276201,
+        0.123942169276201,
+        0.123942169276201,
+        0.0694244533353568
+      )
+    )
+  )
+})
+
+test_that("MCMC computes correct values for TITELogisticLogNormalSub model (adaptive, empty data)", {
+  data <- h_get_data_da(empty = TRUE)
+  model <- h_get_tite_logistic_log_normal_sub("adaptive")
+  options <- h_get_mcmc_options()
+
+  result <- mcmc(data = data, model = model, options = options)
+  expect_equal(
+    result@data,
+    list(
+      alpha0 = c(
+        -0.451728872700059,
+        -2.20942721785452,
+        -3.65372932138438,
+        2.33946941073305
+      ),
+      alpha1 = c(
+        1745.91004803922,
+        89.8361181587544,
+        619.238655070514,
+        82.335202967509
+      )
+    )
+  )
+})
+
 # OneParLogNormalPrior ----
 
 ## constructor ----

@@ -503,6 +503,15 @@ h_get_tite_logistic_log_normal <- function(weight_method = "linear") {
   )
 }
 
+h_get_tite_logistic_log_normal_sub <- function(weight_method = "linear") {
+  TITELogisticLogNormalSub(
+    mean = c(1, 5),
+    cov = diag(4, ncol = 2, nrow = 2),
+    ref_dose = 2,
+    weight_method = weight_method
+  )
+}
+
 h_get_one_par_log_normal_prior <- function() {
   OneParLogNormalPrior(
     skel_probs = seq(from = 0.1, to = 0.9, length = 12),
