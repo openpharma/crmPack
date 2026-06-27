@@ -1244,23 +1244,28 @@ setMethod(
 #'
 #' @return A [`Samples`] object for the requested single-agent model.
 #' @keywords internal
-#' @noRd
 h_prob_two_drugs_combo_single_samples <- function(samples, model, drug_index) {
-  single_samples <- lapply(model@single_models[[drug_index]]@sample, function(sample_name) {
-    sample_value <- samples@data[[sample_name]]
-    sample_model_indices <- which(vapply(
-      model@single_models,
-      function(single_model) sample_name %in% single_model@sample,
-      logical(1L)
-    ))
-    sample_index <- match(drug_index, sample_model_indices)
+  single_samples <- lapply(
+    model@single_models[[drug_index]]@sample,
+    function(sample_name) {
+      sample_value <- samples@data[[sample_name]]
+      sample_model_indices <- which(vapply(
+        model@single_models,
+        function(single_model) sample_name %in% single_model@sample,
+        logical(1L)
+      ))
+      sample_index <- match(drug_index, sample_model_indices)
 
-    if (is.matrix(sample_value) && ncol(sample_value) == length(sample_model_indices)) {
-      sample_value[, sample_index]
-    } else {
-      sample_value
+      if (
+        is.matrix(sample_value) &&
+          ncol(sample_value) == length(sample_model_indices)
+      ) {
+        sample_value[, sample_index]
+      } else {
+        sample_value
+      }
     }
-  })
+  )
   names(single_samples) <- model@single_models[[drug_index]]@sample
   Samples(data = single_samples, options = samples@options)
 }
@@ -1278,8 +1283,13 @@ h_prob_two_drugs_combo_single_samples <- function(samples, model, drug_index) {
 #' @return Numeric matrix with one row per posterior sample and one column per
 #'   dose combination.
 #' @keywords internal
-#' @noRd
-h_prob_two_drugs_combo_single_prob <- function(dose, model, samples, drug_index) {
+#'
+h_prob_two_drugs_combo_single_prob <- function(
+  dose,
+  model,
+  samples,
+  drug_index
+) {
   single_model <- model@single_models[[drug_index]]
   single_samples <- h_prob_two_drugs_combo_single_samples(
     samples = samples,
@@ -1313,13 +1323,16 @@ h_prob_two_drugs_combo_single_prob <- function(dose, model, samples, drug_index)
 #'
 #' @return Numeric vector of normalized doses.
 #' @keywords internal
-#' @noRd
+#'
 h_prob_two_drugs_combo_normalized_dose <- function(dose, single_model) {
   normalized_expr <- h_two_drugs_combo_normalized_dose_expr(
     body(single_model@datamodel),
     list()
   )
-  specs <- h_two_drugs_combo_single_model_specs(single_model, from_prior = FALSE)
+  specs <- h_two_drugs_combo_single_model_specs(
+    single_model,
+    from_prior = FALSE
+  )
   eval_env <- list2env(
     c(
       specs,
@@ -1348,7 +1361,7 @@ h_prob_two_drugs_combo_normalized_dose <- function(dose, single_model) {
 #' @return Numeric vector for one dose combination, otherwise numeric matrix
 #'   with one row per posterior sample and one column per dose combination.
 #' @keywords internal
-#' @noRd
+#'
 h_prob_two_drugs_combo <- function(dose, model, samples) {
   assert_subset("eta", names(samples))
 
