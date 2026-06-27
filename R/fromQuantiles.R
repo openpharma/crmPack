@@ -232,6 +232,9 @@ Quantiles2LogisticNormal <- function(
   assert_true(all(parlower < parupper))
   if (!useLogDose) {
     assert_true(logNormal)
+  } else {
+    assert_true(all(dosegrid > 0))
+    assert_true(refDose > 0)
   }
   if (!is.null(parstart)) {
     assert_true(all(parlower < parstart))
