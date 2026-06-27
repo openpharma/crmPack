@@ -9,13 +9,18 @@ bibliography: vignettes.bib
 ---
 
 ```{r, include = FALSE}
+github_pkg <- "decider"
+
 knitr::opts_chunk$set(
   collapse = TRUE,
-  comment = "#>"
+  comment = "#>",
+  eval = requireNamespace(github_pkg, quietly = TRUE)
 )
 ```
 
 In this vignette we want to compare the combination design implemented in `crmPack` and explained in this [vignette](combo_designs.Rmd) with the implementation in the [`decider` package](https://boehringer-ingelheim.github.io/decider/) [@Schroeter2023]. 
+Please note that the `decider` package is not available on CRAN, therefore the vignette is only executing
+the code chunks if the package is available on this system.
 
 ## Example
 
