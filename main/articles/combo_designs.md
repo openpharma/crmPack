@@ -276,7 +276,7 @@ combo_model2@datamodel
 #>         y[i] ~ dbern(p[i])
 #>     }
 #> }
-#> <environment: 0x56371a0b79f0>
+#> <environment: 0x56512f3af2f0>
 ```
 
 The prior is as follows:
@@ -300,7 +300,7 @@ combo_model2@priormodel
 #>     log_eta ~ dnorm(eta_gamma, eta_tau)
 #>     eta <- exp(log_eta)
 #> }
-#> <environment: 0x563718dea000>
+#> <environment: 0x565130e028f0>
 ```
 
 So everything looks as expected. Note that for the interaction term
@@ -492,7 +492,7 @@ hierarchical_model@datamodel
 #>         y_combo[i] ~ dbern(p_combo[i])
 #>     }
 #> }
-#> <environment: 0x563711937db0>
+#> <environment: 0x565122fef270>
 ```
 
 The prior is as follows:
@@ -560,7 +560,7 @@ hierarchical_model@priormodel
 #>     tau_drug2_slope ~ dlnorm(tau_drug2_slope_meanlog, pow(tau_drug2_slope_sdlog, 
 #>         -2))
 #> }
-#> <environment: 0x56371085a730>
+#> <environment: 0x56512ef466c0>
 ```
 
 ### Design implementation

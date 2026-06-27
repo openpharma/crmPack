@@ -13,7 +13,8 @@ h_quantiles_target_function(
   upper,
   level,
   logNormal,
-  seed
+  seed,
+  useLogDose = TRUE
 )
 ```
 
@@ -58,6 +59,11 @@ h_quantiles_target_function(
 
   (`count`)\
   random seed.
+
+- useLogDose:
+
+  (`flag`)\
+  use `log(dosegrid / refDose)` as dose covariate?
 
 ## Value
 

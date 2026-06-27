@@ -23,7 +23,8 @@ Quantiles2LogisticNormal(
   seed = 12345,
   verbose = TRUE,
   control = list(threshold.stop = 0.01, maxit = 50000, temperature = 50000, max.time =
-    600)
+    600),
+  useLogDose = TRUE
 )
 ```
 
@@ -99,12 +100,21 @@ Quantiles2LogisticNormal(
   [`GenSA::GenSA()`](https://rdrr.io/pkg/GenSA/man/GenSA.html) for more
   details.
 
+- useLogDose:
+
+  (`flag`)\
+  use `log(dosegrid / refDose)` as dose covariate? If `FALSE`,
+  `logNormal` must be `TRUE` and a
+  [`LogisticLogNormalSub`](https://docs.crmpack.org/reference/LogisticLogNormalSub-class.md)
+  model is returned.
+
 ## Value
 
 A list with the best approximating `model`
-([`LogisticNormal`](https://docs.crmpack.org/reference/LogisticNormal-class.md)
+([`LogisticNormal`](https://docs.crmpack.org/reference/LogisticNormal-class.md),
+[`LogisticLogNormal`](https://docs.crmpack.org/reference/LogisticLogNormal-class.md),
 or
-[`LogisticLogNormal`](https://docs.crmpack.org/reference/LogisticLogNormal-class.md)),
+[`LogisticLogNormalSub`](https://docs.crmpack.org/reference/LogisticLogNormalSub-class.md)),
 the resulting `quantiles`, the `required` quantiles and the `distance`
 to the required quantiles, as well as the final `parameters` (which
 could be used for running the algorithm a second time).

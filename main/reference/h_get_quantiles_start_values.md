@@ -5,7 +5,14 @@ Get Starting Values for Quantiles Optimization
 ## Usage
 
 ``` r
-h_get_quantiles_start_values(parstart, median, dosegrid, refDose, logNormal)
+h_get_quantiles_start_values(
+  parstart,
+  median,
+  dosegrid,
+  refDose,
+  logNormal,
+  useLogDose = TRUE
+)
 ```
 
 ## Arguments
@@ -34,6 +41,11 @@ h_get_quantiles_start_values(parstart, median, dosegrid, refDose, logNormal)
 
   (`flag`)\
   use log-normal prior?
+
+- useLogDose:
+
+  (`flag`)\
+  use `log(dosegrid / refDose)` as dose covariate?
 
 ## Value
 

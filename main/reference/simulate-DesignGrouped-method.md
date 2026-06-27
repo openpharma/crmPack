@@ -182,7 +182,7 @@ mono_sims_sum
 #> Proportion of trials selecting target MTD: 0 %
 #> Dose most often selected as MTD: 12 
 #> Observed toxicity rate at dose most often selected: NaN %
-#> Fitted toxicity rate at dose most often selected : mean 8 % (8 %, 8 %) 
+#> Fitted toxicity rate at dose most often selected : mean 7 % (7 %, 7 %) 
 #> Stop reason triggered:
 #>  P(0.2 ≤ prob(DLE | NBD) ≤ 0.35) ≥ 0.5 :  0 %
 #>  ≥ 10 patients dosed :  100 %
