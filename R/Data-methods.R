@@ -1250,7 +1250,7 @@ setMethod(
     object@y <- c(object@y, as.integer(y))
 
     # Add response data.
-    object@response <- c(object@response, response)
+    object@response <- c(object@response, as.integer(response))
 
     # Add ID.
     object@ID <- c(object@ID, as.integer(ID))
