@@ -179,6 +179,7 @@
 <url><loc>https://docs.crmpack.org/reference/TDDesign-class.html</loc></url>
 <url><loc>https://docs.crmpack.org/reference/TDsamplesDesign-class.html</loc></url>
 <url><loc>https://docs.crmpack.org/reference/TITELogisticLogNormal-class.html</loc></url>
+<url><loc>https://docs.crmpack.org/reference/TITELogisticLogNormalSub-class.html</loc></url>
 <url><loc>https://docs.crmpack.org/reference/TwoDrugsCombo-class.html</loc></url>
 <url><loc>https://docs.crmpack.org/reference/Validate.html</loc></url>
 <url><loc>https://docs.crmpack.org/reference/and-ArmCondition-ArmCondition-method.html</loc></url>
@@ -311,6 +312,9 @@
 <url><loc>https://docs.crmpack.org/reference/h_summarize_add_stats.html</loc></url>
 <url><loc>https://docs.crmpack.org/reference/h_test_named_numeric.html</loc></url>
 <url><loc>https://docs.crmpack.org/reference/h_this_truth.html</loc></url>
+<url><loc>https://docs.crmpack.org/reference/h_tite_logistic_datamodel.html</loc></url>
+<url><loc>https://docs.crmpack.org/reference/h_tite_logistic_modelspecs.html</loc></url>
+<url><loc>https://docs.crmpack.org/reference/h_tite_logistic_weights.html</loc></url>
 <url><loc>https://docs.crmpack.org/reference/h_unpack_stopit.html</loc></url>
 <url><loc>https://docs.crmpack.org/reference/h_update_backfill_queue.html</loc></url>
 <url><loc>https://docs.crmpack.org/reference/h_validate_combine_results.html</loc></url>

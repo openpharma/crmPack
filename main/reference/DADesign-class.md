@@ -76,9 +76,10 @@ constructor. For example:
 
   (`GeneralModel`)\
   the model to use, see in particular
-  [`DALogisticLogNormal`](https://docs.crmpack.org/reference/DALogisticLogNormal-class.md)
+  [DALogisticLogNormal](https://docs.crmpack.org/reference/DALogisticLogNormal-class.md),
+  [TITELogisticLogNormal](https://docs.crmpack.org/reference/TITELogisticLogNormal-class.md)
   and
-  [`TITELogisticLogNormal`](https://docs.crmpack.org/reference/TITELogisticLogNormal-class.md)
+  [TITELogisticLogNormalSub](https://docs.crmpack.org/reference/TITELogisticLogNormalSub-class.md)
   which make use of the time-to-DLT data.
 
 - `data`:

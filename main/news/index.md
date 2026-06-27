@@ -10,6 +10,9 @@
 - `MinimalInformative` and `Quantiles2LogisticNormal` now also support
   producing `LogisticLogNormalSub` models, i.e. using the subtraction of
   a reference dose on the natural dose scale in the regression model.
+- Added `TITELogisticLogNormalSub` model which inherits from
+  `LogisticLogNormalSub` and can be used for TITE designs, via
+  `DADesign`.
 
 #### Bugfixes
 

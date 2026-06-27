@@ -230,6 +230,12 @@
 
   `TITELogisticLogNormal`
 
+- [`TITELogisticLogNormalSub()`](https://docs.crmpack.org/reference/TITELogisticLogNormalSub-class.md)
+  [`.DefaultTITELogisticLogNormalSub()`](https://docs.crmpack.org/reference/TITELogisticLogNormalSub-class.md)
+  **\[stable\]** :
+
+  `TITELogisticLogNormalSub`
+
 - [`OneParLogNormalPrior()`](https://docs.crmpack.org/reference/OneParLogNormalPrior-class.md)
   [`.DefaultOneParLogNormalPrior()`](https://docs.crmpack.org/reference/OneParLogNormalPrior-class.md)
   **\[stable\]** :

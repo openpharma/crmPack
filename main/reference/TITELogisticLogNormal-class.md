@@ -75,7 +75,8 @@ Applied Statistics*, **7**(4), 2138–2156.
 
 ## See also
 
-[`DALogisticLogNormal`](https://docs.crmpack.org/reference/DALogisticLogNormal-class.md).
+[DALogisticLogNormal](https://docs.crmpack.org/reference/DALogisticLogNormal-class.md),
+[TITELogisticLogNormalSub](https://docs.crmpack.org/reference/TITELogisticLogNormalSub-class.md).
 
 ## Examples
 

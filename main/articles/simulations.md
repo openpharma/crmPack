@@ -34,7 +34,11 @@ if (onset == 30) {
 ## Design definition
 
 Here the the dose escalation designs are defined: in this example the
-TITE-CRM is used. Similarly the code can be adapted for the rolling-CRM.
+TITE-CRM is used. Similarly the code can be adapted for the rolling-CRM
+which is implemented in `DALogisticLogNormal`. Note that another
+alternative is `TITELogisticLogNormalSub` which is a submodel of
+`LogisticLogNormalSub`, which uses again the subtraction of the
+reference dose from the dose level in the regression model.
 
 ``` r
 
