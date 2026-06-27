@@ -74,7 +74,7 @@
           alpha0_my_combo[2L] <- alpha0_drug2_my_combo
           alpha1_my_combo[1L] <- alpha1_drug1_my_combo
           alpha1_my_combo[2L] <- alpha1_drug2_my_combo
-          eta_my_combo ~ dnorm(gamma_my_combo, tau_my_combo)
+          eta_my_combo ~ dnorm(eta_gamma_my_combo, eta_tau_my_combo)
           theta_my_mono[1] ~ dnorm(mu_mono_intercept, pow(tau_mono_intercept, 
               -2))
           theta_drug1_my_combo[1] ~ dnorm(mu_mono_intercept, pow(tau_mono_intercept, 
@@ -102,7 +102,7 @@
         ref_dose_drug1_my_combo = 10, mean_drug2_my_combo = c(-0.7, 
         0.8), prec_drug2_my_combo = structure(c(1, 0.333333333333333, 
         0.333333333333333, 1.22222222222222), dim = c(2L, 2L)), ref_dose_drug2_my_combo = 20, 
-        gamma_my_combo = 0, tau_my_combo = 1)
+        eta_gamma_my_combo = 0, eta_tau_my_combo = 1)
 
 ---
 
@@ -111,8 +111,8 @@
         mu_mono_slope_mean = 0, mu_mono_slope_sd = 0.7, tau_mono_slope_meanlog = -1.38629436111989, 
         tau_mono_slope_sdlog = 0.35364652069385, mean_drug2_my_combo = c(-0.7, 
         0.8), prec_drug2_my_combo = structure(c(1, 0.333333333333333, 
-        0.333333333333333, 1.22222222222222), dim = c(2L, 2L)), gamma_my_combo = 0, 
-        tau_my_combo = 1)
+        0.333333333333333, 1.22222222222222), dim = c(2L, 2L)), eta_gamma_my_combo = 0, 
+        eta_tau_my_combo = 1)
 
 ---
 
@@ -129,7 +129,7 @@
         ref_dose_drug1_my_combo = 10, mean_drug2_my_combo = c(-0.7, 
         0.8), prec_drug2_my_combo = structure(c(1, 0.333333333333333, 
         0.333333333333333, 1.22222222222222), dim = c(2L, 2L)), ref_dose_drug2_my_combo = 20, 
-        gamma_my_combo = 0, tau_my_combo = 1, nObs_my_mono = 4L, 
+        eta_gamma_my_combo = 0, eta_tau_my_combo = 1, nObs_my_mono = 4L, 
         y_my_mono = c(0L, 0L, 0L, 1L), x_my_mono = c(10, 10, 20, 
         20), nObs_my_combo = 4L, y_my_combo = c(0L, 0L, 0L, 1L), 
         x_my_combo = structure(c(10, 10, 20, 20, 20, 40, 20, 40), dim = c(4L, 

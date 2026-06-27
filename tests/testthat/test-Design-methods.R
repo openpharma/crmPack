@@ -2117,7 +2117,7 @@ test_that("simulate-DesignCombo works with exotic single-agent models", {
   expect_s4_class(result, "ComboSimulations")
   expect_s4_class(result@data[[1]], "DataCombo")
   expect_equal(colnames(result@doses), c("drug1", "drug2"))
-  expect_equal(result@data[[1]]@x[1, ], c(25, 1))
+  expect_equal(result@data[[1]]@x[1, ], c(drug1 = 25, drug2 = 1))
   expect_true(nrow(result@fit[[1]]) >= 1L)
   expect_true(all(result@fit[[1]]$middle >= 0 & result@fit[[1]]$middle <= 1))
   expect_length(result@stop_reasons, 1L)
