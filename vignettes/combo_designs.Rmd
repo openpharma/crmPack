@@ -159,6 +159,57 @@ We can also look at the trajectory more closely:
 plot(sims_combo, type = "trajectory2D")
 ```
 
+### Other single agent models
+
+The advantage of the `TwoDrugsCombo` model is that it can be used with any single-agent model class, not just `LogisticLogNormal`. For example, we can use a `LogisticNormalFixedMixture` model for drug 1 and a `LogisticKadane` model for drug 2, and the combination arm will still be modeled with the same interaction term $\eta$:
+
+```{r}
+combo_model2 <- TwoDrugsCombo(
+  single_models = list(
+    drug1 = LogisticNormalFixedMixture(
+      list(
+        comp1 = ModelParamsNormal(
+          mean = c(-0.85, 1),
+          cov = matrix(c(1, -0.5, -0.5, 1), nrow = 2)
+        ),
+        comp2 = ModelParamsNormal(
+          mean = c(1, 1.5),
+          cov = matrix(c(1.2, -0.45, -0.45, 0.6), nrow = 2)
+        )
+      ),
+      weights = c(0.3, 0.7),
+      ref_dose = 50
+    ),
+    drug2 = LogisticKadane(
+      theta = 0.35,
+      xmin = 1,
+      xmax = 200
+    )
+  ),
+  gamma = 0,
+  tau = 1,
+  log_normal_eta = TRUE
+)
+```
+
+Note that here we also use a log-normal prior for the interaction parameter $\eta$ by setting `log_normal_eta = TRUE`. This is useful if we want to restrict $\eta$ to positive values, e.g. if we expect synergistic toxicity.
+It is always instructive to check the generated JAGS models, in order to confirm that the model is implemented as expected. Fortunately, JAGS code is well readable.
+
+The likelihood is as follows:
+
+```{r}
+combo_model2@datamodel
+```
+
+The prior is as follows:
+
+```{r}
+combo_model2@priormodel
+```
+
+So everything looks as expected. Note that for the interaction term `crmPack` uses the normalized dose $x_1/x_1^{*}$ for drug 1, while it just uses the raw dose $x_2$ for drug 2, because it sees that there is no normalized dose concept available for the `LogisticKadane` model.
+
+
 ## Parallel monotherapy and combination arms
 
 With `crmPack` we can also implement more complex designs with parallel monotherapy and combination arms. This is done with the "hierarchical" classes, as we will show now.
