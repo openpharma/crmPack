@@ -1,5 +1,10 @@
 # Version 2.1.0.9000
 
+### New Features
+
+* Combination designs are supported via `DesignCombo` and `HierarchicalDesign`. Please see the new vignette `combo_designs` for details.
+* `MinimalInformative` and `Quantiles2LogisticNormal` now also support producing `LogisticLogNormalSub` models, i.e. using the subtraction of a reference dose on the natural dose scale in the regression model.
+
 ### Bugfixes
 
 * The `knit_print` method for `LogisticNormalMixture` did not render correctly previously; this is fixed now.

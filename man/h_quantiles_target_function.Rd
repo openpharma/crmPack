@@ -12,7 +12,8 @@ h_quantiles_target_function(
   upper,
   level,
   logNormal,
-  seed
+  seed,
+  useLogDose = TRUE
 )
 }
 \arguments{
@@ -31,6 +32,8 @@ h_quantiles_target_function(
 \item{logNormal}{(\code{flag})\cr use log-normal prior?}
 
 \item{seed}{(\code{count})\cr random seed.}
+
+\item{useLogDose}{(\code{flag})\cr use \code{log(dosegrid / refDose)} as dose covariate?}
 }
 \value{
 Function that computes target value for optimization.
