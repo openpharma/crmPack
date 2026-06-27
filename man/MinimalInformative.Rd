@@ -11,7 +11,8 @@ MinimalInformative(
   threshmax = 0.3,
   probmin = 0.05,
   probmax = 0.05,
-  ...
+  ...,
+  useLogDose = TRUE
 )
 }
 \arguments{
@@ -34,6 +35,10 @@ at the maximum dose.}
 \item{...}{additional arguments for computations, see
 \code{\link[=Quantiles2LogisticNormal]{Quantiles2LogisticNormal()}}, e.g. \code{refDose} and
 \code{logNormal=TRUE} to obtain a minimal informative log normal prior.}
+
+\item{useLogDose}{(\code{flag})\cr use \code{log(dosegrid / refDose)} as dose covariate?
+If \code{FALSE}, pass \code{logNormal = TRUE} via \code{...} to obtain a
+\code{\link{LogisticLogNormalSub}} model.}
 }
 \value{
 See \code{\link[=Quantiles2LogisticNormal]{Quantiles2LogisticNormal()}}.
@@ -58,10 +63,11 @@ probability of DLT smaller than \eqn{q_{J}} has only 5\% probability
 controlled with the arguments \code{probmin} and \code{probmax}, respectively.
 Subsequently, for all doses supplied in the
 \code{dosegrid} argument, beta distributions are set up from the assumption
-that the prior medians are linear in log-dose on the logit scale, and
+that the prior medians are linear in log-dose (or dose if
+\code{useLogDose = FALSE}) on the logit scale, and
 \code{\link[=Quantiles2LogisticNormal]{Quantiles2LogisticNormal()}} is used to transform the resulting
 quantiles into an approximating \code{\link{LogisticNormal}} (or
-\code{\link{LogisticLogNormal}}) model. Note that the reference dose
+\code{\link{LogisticLogNormal}} or \code{\link{LogisticLogNormalSub}}) model. Note that the reference dose
 is not required for these computations.
 }
 \examples{
