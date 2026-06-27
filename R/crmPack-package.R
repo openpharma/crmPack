@@ -15,6 +15,7 @@
 #' @importFrom utils data head tail capture.output
 #' @importFrom lifecycle badge
 #' @importFrom rjags jags.model jags.samples
+#' @importFrom rlang .data
 #' @importFrom futile.logger flog.threshold flog.logger flog.trace TRACE FATAL
 #' @importFrom knitr knit_print
 #' @importFrom kableExtra kbl add_header_above column_spec collapse_rows kable_styling add_footnote kable
@@ -124,7 +125,11 @@ globalVariables(c(
   "DoseGrid",
   "NGrid",
   "NObs",
-  "XLevel"
+  "XLevel",
+  "p_single",
+  "eta",
+  "combo_interaction",
+  "log_eta"
 ))
 
 # nolint end

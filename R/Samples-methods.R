@@ -796,9 +796,9 @@ setMethod(
     )
 
     gdata %>%
-      ggplot(aes(x = dose1, y = dose2, fill = prob)) +
+      ggplot(aes(x = .data$dose1, y = .data$dose2, fill = .data$prob)) +
       geom_tile(colour = "white", linewidth = 0.5) +
-      facet_wrap(~Type, nrow = 1L) +
+      facet_wrap(~.data$Type, nrow = 1L) +
       scale_fill_gradient(
         name = fillLab,
         low = "grey95",

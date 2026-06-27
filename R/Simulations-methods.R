@@ -154,9 +154,9 @@ h_plot_combo_evolution <- function(sim_data) {
     })
   )
 
-  summary_n <- aggregate(y ~ dose1 + dose2, data = pat_df, FUN = length)
+  summary_n <- stats::aggregate(y ~ dose1 + dose2, data = pat_df, FUN = length)
   names(summary_n)[3L] <- "n_patients"
-  summary_dlt <- aggregate(y ~ dose1 + dose2, data = pat_df, FUN = sum)
+  summary_dlt <- stats::aggregate(y ~ dose1 + dose2, data = pat_df, FUN = sum)
   names(summary_dlt)[3L] <- "n_dlt"
   summary_df <- merge(
     summary_n,
@@ -228,7 +228,7 @@ h_plot_combo_evolution <- function(sim_data) {
       avg_transitions = numeric(0)
     )
   } else {
-    transition_sum <- aggregate(
+    transition_sum <- stats::aggregate(
       rep(1L, nrow(transition_df)) ~ x + y + xend + yend,
       data = transition_df,
       FUN = sum
@@ -239,7 +239,11 @@ h_plot_combo_evolution <- function(sim_data) {
   }
 
   # Median step hint for each treated combination.
-  step_hint <- aggregate(step ~ dose1 + dose2, data = path_df, FUN = median)
+  step_hint <- stats::aggregate(
+    step ~ dose1 + dose2,
+    data = path_df,
+    FUN = median
+  )
   names(step_hint)[3L] <- "median_step"
   summary_df <- merge(
     summary_df,
@@ -263,11 +267,17 @@ h_plot_combo_evolution <- function(sim_data) {
     dose2 = sim_data[[1L]]@doseGrid[[drug2]]
   )
 
-  ggplot(grid_df, aes(x = dose1, y = dose2)) +
+  ggplot(grid_df, aes(x = .data$dose1, y = .data$dose2)) +
     geom_point(shape = 4, size = 3, colour = "grey85") +
     geom_segment(
       data = transition_sum,
-      aes(x = x, y = y, xend = xend, yend = yend, linewidth = avg_transitions),
+      aes(
+        x = .data$x,
+        y = .data$y,
+        xend = .data$xend,
+        yend = .data$yend,
+        linewidth = .data$avg_transitions
+      ),
       inherit.aes = FALSE,
       colour = "grey45",
       arrow = grid::arrow(length = grid::unit(2.5, "mm"), type = "closed"),
@@ -275,7 +285,7 @@ h_plot_combo_evolution <- function(sim_data) {
     ) +
     geom_point(
       data = summary_df,
-      aes(size = avg_patients),
+      aes(size = .data$avg_patients),
       shape = 21,
       colour = "black",
       fill = "lightgrey",
@@ -283,7 +293,7 @@ h_plot_combo_evolution <- function(sim_data) {
     ) +
     geom_text(
       data = summary_df,
-      aes(label = label),
+      aes(label = .data$label),
       size = 3,
       colour = "black",
       vjust = -1

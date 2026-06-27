@@ -618,9 +618,13 @@ setMethod(
       dose2 = x@doseGrid[[drug2]]
     )
 
-    summary_n <- aggregate(patient ~ dose1 + dose2, data = df, FUN = length)
+    summary_n <- stats::aggregate(
+      patient ~ dose1 + dose2,
+      data = df,
+      FUN = length
+    )
     names(summary_n)[3] <- "n_patients"
-    summary_dlt <- aggregate(
+    summary_dlt <- stats::aggregate(
       (toxicity == "Yes") ~ dose1 + dose2,
       data = df,
       FUN = sum
@@ -635,7 +639,7 @@ setMethod(
     summary_df$dlt_rate <- summary_df$n_dlt / summary_df$n_patients
     summary_df$label <- paste0(summary_df$n_dlt, "/", summary_df$n_patients)
 
-    plot1 <- ggplot(grid_df, aes(x = dose1, y = dose2)) +
+    plot1 <- ggplot(grid_df, aes(x = .data$dose1, y = .data$dose2)) +
       geom_point(shape = 4, size = 3, colour = "grey85") +
       scale_x_continuous(breaks = x@doseGrid[[drug1]], minor_breaks = NULL) +
       scale_y_continuous(breaks = x@doseGrid[[drug2]], minor_breaks = NULL) +
@@ -646,7 +650,7 @@ setMethod(
     plot1 <- plot1 +
       geom_point(
         data = summary_df,
-        aes(size = n_patients, fill = dlt_rate),
+        aes(size = .data$n_patients, fill = .data$dlt_rate),
         shape = 21,
         colour = "black",
         stroke = 0.6,
@@ -662,7 +666,7 @@ setMethod(
     plot1 <- plot1 +
       geom_text(
         data = summary_df,
-        aes(label = label),
+        aes(label = .data$label),
         size = 3,
         colour = "black",
         vjust = -1
@@ -673,15 +677,19 @@ setMethod(
       )
 
     cohort_df <- df[!duplicated(df$cohort), c("cohort", "dose1", "dose2")]
-    cohort_n <- aggregate(patient ~ cohort, data = df, FUN = length)
+    cohort_n <- stats::aggregate(patient ~ cohort, data = df, FUN = length)
     names(cohort_n)[2] <- "n_patients"
-    cohort_dlt <- aggregate((toxicity == "Yes") ~ cohort, data = df, FUN = sum)
+    cohort_dlt <- stats::aggregate(
+      (toxicity == "Yes") ~ cohort,
+      data = df,
+      FUN = sum
+    )
     names(cohort_dlt)[2] <- "n_dlt"
     cohort_df <- merge(cohort_df, cohort_n, by = "cohort", sort = TRUE)
     cohort_df <- merge(cohort_df, cohort_dlt, by = "cohort", sort = TRUE)
     cohort_df$status <- ifelse(cohort_df$n_dlt > 0L, "DLT", "No DLT")
 
-    plot2 <- ggplot(grid_df, aes(x = dose1, y = dose2)) +
+    plot2 <- ggplot(grid_df, aes(x = .data$dose1, y = .data$dose2)) +
       geom_point(shape = 4, size = 3, colour = "grey85") +
       scale_x_continuous(breaks = x@doseGrid[[drug1]], minor_breaks = NULL) +
       scale_y_continuous(breaks = x@doseGrid[[drug2]], minor_breaks = NULL) +
@@ -699,7 +707,12 @@ setMethod(
       plot2 <- plot2 +
         geom_segment(
           data = segment_df,
-          aes(x = x, y = y, xend = xend, yend = yend),
+          aes(
+            x = .data$x,
+            y = .data$y,
+            xend = .data$xend,
+            yend = .data$yend
+          ),
           inherit.aes = FALSE,
           linewidth = 0.7,
           colour = "grey45",
@@ -710,7 +723,7 @@ setMethod(
     plot2 <- plot2 +
       geom_point(
         data = cohort_df,
-        aes(fill = status),
+        aes(fill = .data$status),
         shape = 21,
         size = 6,
         colour = "black",
@@ -725,7 +738,7 @@ setMethod(
     plot2 <- plot2 +
       geom_text(
         data = cohort_df,
-        aes(label = cohort),
+        aes(label = .data$cohort),
         colour = "black",
         size = 3
       )
