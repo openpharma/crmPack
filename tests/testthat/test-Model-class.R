@@ -1348,23 +1348,7 @@ test_that("MCMC computes correct values for TITELogisticLogNormalSub model (line
   options <- h_get_mcmc_options()
 
   result <- mcmc(data = data, model = model, options = options)
-  expect_equal(
-    result@data,
-    list(
-      alpha0 = c(
-        -2.10023657493063,
-        -2.10023657493063,
-        -2.10023657493063,
-        -2.61917517815653
-      ),
-      alpha1 = c(
-        0.0174804170564427,
-        0.0174804170564427,
-        0.0174804170564427,
-        0.0101069046240438
-      )
-    )
-  )
+  expect_snap(result@data)
 })
 
 test_that("MCMC computes correct values for TITELogisticLogNormalSub model (linear, data 2)", {
@@ -1373,23 +1357,7 @@ test_that("MCMC computes correct values for TITELogisticLogNormalSub model (line
   options <- h_get_mcmc_options()
 
   result <- mcmc(data = data, model = model, options = options)
-  expect_equal(
-    result@data,
-    list(
-      alpha0 = c(
-        -0.0145594815810755,
-        -0.0145594815810755,
-        -0.0145594815810755,
-        -0.56353731253499
-      ),
-      alpha1 = c(
-        0.123942169276201,
-        0.123942169276201,
-        0.123942169276201,
-        0.0694244533353568
-      )
-    )
-  )
+  expect_snap(result@data)
 })
 
 test_that("MCMC computes correct values for TITELogisticLogNormalSub model (linear, empty data)", {
@@ -1398,23 +1366,7 @@ test_that("MCMC computes correct values for TITELogisticLogNormalSub model (line
   options <- h_get_mcmc_options()
 
   result <- mcmc(data = data, model = model, options = options)
-  expect_equal(
-    result@data,
-    list(
-      alpha0 = c(
-        -0.451728872700059,
-        -2.20942721785452,
-        -3.65372932138438,
-        2.33946941073305
-      ),
-      alpha1 = c(
-        1745.91004803922,
-        89.8361181587544,
-        619.238655070514,
-        82.335202967509
-      )
-    )
-  )
+  expect_snap(result@data)
 })
 
 test_that("MCMC computes correct values for TITELogisticLogNormalSub model (adaptive)", {
@@ -1423,23 +1375,7 @@ test_that("MCMC computes correct values for TITELogisticLogNormalSub model (adap
   options <- h_get_mcmc_options()
 
   result <- mcmc(data = data, model = model, options = options)
-  expect_equal(
-    result@data,
-    list(
-      alpha0 = c(
-        0.0446744152515755,
-        0.0446744152515755,
-        0.0446744152515755,
-        -0.466221220773631
-      ),
-      alpha1 = c(
-        0.0205614399164445,
-        0.0205614399164445,
-        0.0205614399164445,
-        0.0119896804133692
-      )
-    )
-  )
+  expect_snap(result@data)
 })
 
 test_that("MCMC computes correct values for TITELogisticLogNormalSub model (adaptive, data 2)", {
@@ -1448,23 +1384,7 @@ test_that("MCMC computes correct values for TITELogisticLogNormalSub model (adap
   options <- h_get_mcmc_options()
 
   result <- mcmc(data = data, model = model, options = options)
-  expect_equal(
-    result@data,
-    list(
-      alpha0 = c(
-        -0.0145594815810755,
-        -0.0145594815810755,
-        -0.0145594815810755,
-        -0.56353731253499
-      ),
-      alpha1 = c(
-        0.123942169276201,
-        0.123942169276201,
-        0.123942169276201,
-        0.0694244533353568
-      )
-    )
-  )
+  expect_snap(result@data)
 })
 
 test_that("MCMC computes correct values for TITELogisticLogNormalSub model (adaptive, empty data)", {
@@ -1473,23 +1393,7 @@ test_that("MCMC computes correct values for TITELogisticLogNormalSub model (adap
   options <- h_get_mcmc_options()
 
   result <- mcmc(data = data, model = model, options = options)
-  expect_equal(
-    result@data,
-    list(
-      alpha0 = c(
-        -0.451728872700059,
-        -2.20942721785452,
-        -3.65372932138438,
-        2.33946941073305
-      ),
-      alpha1 = c(
-        1745.91004803922,
-        89.8361181587544,
-        619.238655070514,
-        82.335202967509
-      )
-    )
-  )
+  expect_snap(result@data)
 })
 
 # OneParLogNormalPrior ----
