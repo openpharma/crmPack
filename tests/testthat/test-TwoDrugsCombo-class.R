@@ -249,6 +249,25 @@ test_that("MCMC runs for TwoDrugsCombo model", {
   expect_equal(ncol(result@data$alpha1), 2L)
 })
 
+test_that("MCMC runs for TwoDrugsCombo after a single combo patient with DLT", {
+  data <- DataCombo(
+    x = cbind(drug1 = 10, drug2 = 20),
+    y = 1L,
+    ID = 1L,
+    cohort = 1L,
+    doseGrid = list(drug1 = c(10, 20, 30), drug2 = c(20, 40))
+  )
+  model <- h_get_two_drugs_combo()
+  options <- h_get_mcmc_options(samples = 10, burnin = 20)
+
+  result <- mcmc(data = data, model = model, options = options)
+  expect_s4_class(result, "Samples")
+  expect_subset(c("alpha0", "alpha1", "eta"), names(result@data))
+  expect_equal(dim(result@data$alpha0), c(10L, 2L))
+  expect_equal(dim(result@data$alpha1), c(10L, 2L))
+  expect_numeric(result@data$eta, len = 10L, any.missing = FALSE)
+})
+
 test_that("MCMC runs for TwoDrugsCombo with mixture agents", {
   data <- h_get_data_combo()
   options <- h_get_mcmc_options(samples = 10, burnin = 20)
