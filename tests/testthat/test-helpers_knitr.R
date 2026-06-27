@@ -84,6 +84,7 @@ crmpack_class_list <- getClasses(asNamespace("crmPack"))
 exclusions <- c(
   "ArmCondition",
   "CohortSize",
+  "ComboSimulationsSummary",
   "CrmPackClass",
   "DualEndpoint",
   "GeneralData",
