@@ -98,16 +98,19 @@ test_that("v_design_combo validates startingDose format and membership", {
   object@startingDose <- 10
   expect_identical(
     v_design_combo(object),
-    "startingDose must be a numeric vector of length 2"
+    c(
+      "startingDose must be a numeric vector of length 2",
+      "startingDose must have the same names as data@doseGrid"
+    )
   )
 
-  object@startingDose <- c(99, 20)
+  object@startingDose <- c(drug1 = 99, drug2 = 20)
   expect_identical(
     v_design_combo(object),
     "startingDose[1] must be included in data@doseGrid[[1]]"
   )
 
-  object@startingDose <- c(10, 99)
+  object@startingDose <- c(drug1 = 10, drug2 = 99)
   expect_identical(
     v_design_combo(object),
     "startingDose[2] must be included in data@doseGrid[[2]]"

@@ -6,7 +6,11 @@ h_previous_cohort <- function(data) {
   } else {
     NA_integer_
   }
-  previous_cohort <- if (last_cohort > 1) last_cohort - 1L else NA_integer_
+  previous_cohort <- if (!is.na(last_cohort) && last_cohort > 1) {
+    last_cohort - 1L
+  } else {
+    NA_integer_
+  }
   previous_dose <- if (!is.na(previous_cohort)) {
     if (is.matrix(data@x)) {
       data@x[data@cohort == previous_cohort, , drop = FALSE][1, ]

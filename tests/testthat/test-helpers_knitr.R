@@ -82,6 +82,7 @@ test_that("Global environment is clean after testing h_custom_method_exists", {
 
 crmpack_class_list <- getClasses(asNamespace("crmPack"))
 exclusions <- c(
+  "ArmCondition",
   "CohortSize",
   "CrmPackClass",
   "DualEndpoint",

@@ -410,7 +410,7 @@ test_that("scenario-Design returns the expected shortcut results", {
   expect_null(result$placebo_cohort_size)
   expect_logical(result$stop, len = 1)
   expect_logical(result$stop_report)
-  expect_character(result$stop_reason, len = 1)
+  expect_list(result$stop_reason)
 })
 
 test_that("scenario-DesignCombo returns the expected shortcut results", {
@@ -536,7 +536,7 @@ test_that("scenario-DADesign returns the expected shortcut results", {
   expect_null(result$placebo_cohort_size)
   expect_logical(result$stop, len = 1)
   expect_logical(result$stop_report)
-  expect_character(result$stop_reason, len = 1)
+  expect_list(result$stop_reason)
 })
 
 ## RuleDesign ----

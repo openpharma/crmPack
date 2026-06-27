@@ -160,7 +160,7 @@ test_that("DesignCombo object can be created with user constructor", {
   expect_identical(result@increments, increments)
   expect_identical(result@cohort_size, cohort_size)
   expect_identical(result@data, empty_data)
-  expect_identical(result@startingDose, c(10, 20))
+  expect_identical(result@startingDose, c(drug1 = 10, drug2 = 20))
 })
 
 test_that("DesignCombo user constructor arguments names are as expected", {
