@@ -200,12 +200,14 @@ Quantiles2LogisticNormal <- function(
   # Argument validation
   assert_numeric(
     dosegrid,
-    min.len = 1,
+    min.len = 2, # Need length 2 otherwise the slope calculation fails.
     any.missing = FALSE,
     sorted = TRUE,
     unique = TRUE
   )
+  assert_true(all(dosegrid > 0))
   assert_number(refDose, finite = TRUE)
+  assert_true(refDose > 0)
   assert_numeric(lower, len = length(dosegrid), any.missing = FALSE)
   assert_numeric(
     median,
@@ -406,6 +408,8 @@ MinimalInformative <- function(
     unique = TRUE
   )
   assert_number(refDose, finite = TRUE)
+  assert_true(all(dosegrid > 0))
+  assert_true(refDose > 0)
   assert_probability(threshmin, bounds_closed = FALSE)
   assert_probability(threshmax, bounds_closed = FALSE)
   assert_probability(probmin, bounds_closed = FALSE)
