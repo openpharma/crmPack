@@ -71,6 +71,7 @@ Suggests:
     broom,
     covr,
     data.tree,
+    decider,
     DiagrammeR,
     ggmcmc,
     quarto (>= 1.4),
