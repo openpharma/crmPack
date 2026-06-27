@@ -938,12 +938,12 @@ h_in_range <- function(x, range = c(0, 1), bounds_closed = TRUE) {
 #'
 #' @description `r lifecycle::badge("stable")`
 #'
-#' A simple wrapper of [`findInterval()`] function that invokes
-#' [`findInterval()`], takes its output and replaces all the
+#' A simple wrapper of [base::findInterval()] function that invokes
+#' [base::findInterval()], takes its output and replaces all the
 #' elements with \eqn{0} value to a custom number as specified in `replacement`
 #' argument.
 #'
-#' @inheritDotParams base::findInterval
+#' @param ... further arguments passed to [base::findInterval()] function.
 #' @param replacement (`number`)\cr a custom number to be used as a replacement
 #'   for \eqn{0}. Default to `-Inf`.
 #'
