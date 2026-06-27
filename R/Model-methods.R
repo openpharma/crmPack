@@ -95,7 +95,7 @@ setGeneric(
 
 ## GeneralModel ----
 
-#' @describeIn doseFunction
+#' @describeIn doseFunction Return a dose function for a `GeneralModel`.
 #'
 #' @aliases doseFunction-GeneralModel
 #' @export
@@ -119,7 +119,7 @@ setMethod(
 
 ## ModelPseudo ----
 
-#' @describeIn doseFunction
+#' @describeIn doseFunction Return a dose function for a `ModelPseudo`.
 #'
 #' @aliases doseFunction-ModelPseudo
 #' @export
@@ -148,7 +148,7 @@ setMethod(
 
 ## LogisticLogNormalOrdinal ----
 
-#' @describeIn doseFunction
+#' @describeIn doseFunction Return a grade-specific dose function for a `LogisticLogNormalOrdinal` model.
 #'
 #' @param grade (`integer`)\cr the toxicity grade for which the dose function is
 #' required
@@ -229,7 +229,7 @@ setGeneric(
 
 ## GeneralModel ----
 
-#' @describeIn probFunction
+#' @describeIn probFunction Return a probability function for a `GeneralModel`.
 #'
 #' @aliases probFunction-GeneralModel
 #' @export
@@ -253,7 +253,7 @@ setMethod(
 
 ## ModelTox ----
 
-#' @describeIn probFunction
+#' @describeIn probFunction Return a probability function for a `ModelTox`.
 #'
 #' @aliases probFunction-ModelTox
 #' @export
@@ -282,7 +282,7 @@ setMethod(
 
 ## LogisticLogNormalOrdinal ----
 
-#' @describeIn probFunction
+#' @describeIn probFunction Return a grade-specific probability function for a `LogisticLogNormalOrdinal` model.
 #'
 #' @param grade (`integer`)\cr the toxicity grade for which the dose function is
 #' required
@@ -364,7 +364,7 @@ setGeneric(
 
 ## ModelEff ----
 
-#' @describeIn efficacyFunction
+#' @describeIn efficacyFunction Return an efficacy function for a `ModelEff`.
 #'
 #' @aliases efficacyFunction-ModelEff
 #' @export
@@ -1061,7 +1061,7 @@ setGeneric(
 
 ## LogisticNormal ----
 
-#' @describeIn prob
+#' @describeIn prob Calculate toxicity probabilities for a `LogisticNormal` model.
 #'
 #' @aliases prob-LogisticNormal
 #' @export
@@ -1087,7 +1087,7 @@ setMethod(
 
 ## LogisticLogNormal ----
 
-#' @describeIn prob
+#' @describeIn prob Calculate toxicity probabilities for a `LogisticLogNormal` model.
 #'
 #' @aliases prob-LogisticLogNormal
 #' @export
@@ -1113,7 +1113,7 @@ setMethod(
 
 ## LogisticLogNormalSub ----
 
-#' @describeIn prob
+#' @describeIn prob Calculate toxicity probabilities for a `LogisticLogNormalSub` model.
 #'
 #' @aliases prob-LogisticLogNormalSub
 #' @export
@@ -1139,7 +1139,7 @@ setMethod(
 
 ## ProbitLogNormal ----
 
-#' @describeIn prob
+#' @describeIn prob Calculate toxicity probabilities for a `ProbitLogNormal` model.
 #'
 #' @aliases prob-ProbitLogNormal
 #' @export
@@ -1165,7 +1165,7 @@ setMethod(
 
 ## ProbitLogNormalRel ----
 
-#' @describeIn prob
+#' @describeIn prob Calculate toxicity probabilities for a `ProbitLogNormalRel` model.
 #'
 #' @aliases prob-ProbitLogNormalRel
 #' @export
@@ -1317,7 +1317,7 @@ setMethod(
 
 ## LogisticKadane ----
 
-#' @describeIn prob
+#' @describeIn prob Calculate toxicity probabilities for a `LogisticKadane` model.
 #'
 #' @aliases prob-LogisticKadane
 #' @export
@@ -1348,7 +1348,7 @@ setMethod(
 
 ## LogisticKadaneBetaGamma ----
 
-#' @describeIn prob
+#' @describeIn prob Calculate toxicity probabilities for a `LogisticKadaneBetaGamma` model.
 #'
 #' @aliases prob-LogisticKadaneBetaGamma
 #' @export
@@ -1379,7 +1379,7 @@ setMethod(
 
 ## LogisticNormalMixture ----
 
-#' @describeIn prob
+#' @describeIn prob Calculate toxicity probabilities for a `LogisticNormalMixture` model.
 #'
 #' @aliases prob-LogisticNormalMixture
 #' @export
@@ -1405,7 +1405,7 @@ setMethod(
 
 ## LogisticNormalFixedMixture ----
 
-#' @describeIn prob
+#' @describeIn prob Calculate toxicity probabilities for a `LogisticNormalFixedMixture` model.
 #'
 #' @aliases prob-LogisticNormalFixedMixture
 #' @export
@@ -1431,7 +1431,7 @@ setMethod(
 
 ## LogisticLogNormalMixture ----
 
-#' @describeIn prob
+#' @describeIn prob Calculate toxicity probabilities for a `LogisticLogNormalMixture` model.
 #'
 #' @aliases prob-LogisticLogNormalMixture
 #' @export
@@ -1459,7 +1459,7 @@ setMethod(
 
 ## DualEndpoint ----
 
-#' @describeIn prob
+#' @describeIn prob Calculate toxicity probabilities for a `DualEndpoint` model.
 #'
 #' @aliases prob-DualEndpoint
 #' @export
@@ -1548,7 +1548,7 @@ setMethod(
 
 ## OneParLogNormalPrior ----
 
-#' @describeIn prob
+#' @describeIn prob Calculate toxicity probabilities for a `OneParLogNormalPrior` model.
 #'
 #' @aliases prob-OneParLogNormalPrior
 #' @export
@@ -1573,7 +1573,7 @@ setMethod(
 
 ## OneParExpPrior ----
 
-#' @describeIn prob
+#' @describeIn prob Calculate toxicity probabilities for a `OneParExpPrior` model.
 #'
 #' @aliases prob-OneParExpPrior
 #' @export
@@ -1599,7 +1599,7 @@ setMethod(
 ## LogisticLogNormalOrdinal ----
 
 #' Calculate a grade-specific probability of toxicity for a given dose.
-#' @describeIn prob
+#' @describeIn prob Calculate grade-specific toxicity probabilities for a `LogisticLogNormalOrdinal` model.
 #'
 #' @param grade (`integer` or `integer_vector`)\cr The toxicity grade for which probabilities are required
 #' @param cumulative (`flag`)\cr Should the returned probability be cumulative
@@ -1853,7 +1853,7 @@ setGeneric(
 
 ## DualEndpoint ----
 
-#' @describeIn biomarker
+#' @describeIn biomarker Extract biomarker values for a `DualEndpoint` model.
 #'
 #' @aliases biomarker-DualEndpoint
 #' @export
@@ -1920,7 +1920,7 @@ setGeneric(
 
 ## ModelTox-ModelEff ----
 
-#' @describeIn gain
+#' @describeIn gain Compute gain values from toxicity and efficacy model samples.
 #'
 #' @aliases gain-ModelTox-ModelEff
 #' @export

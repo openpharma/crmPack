@@ -2,9 +2,13 @@
 % Please edit documentation in R/Model-methods.R
 \name{efficacyFunction}
 \alias{efficacyFunction}
+\alias{efficacyFunction,ModelEff-method}
+\alias{efficacyFunction-ModelEff}
 \title{Getting the Efficacy Function for a Given Model Type}
 \usage{
 efficacyFunction(model, ...)
+
+\S4method{efficacyFunction}{ModelEff}(model, ...)
 }
 \arguments{
 \item{model}{(\code{ModelEff})\cr the model.}
@@ -20,6 +24,11 @@ A \code{\link[=efficacy]{efficacy()}} function that computes expected efficacy.
 A function that returns an \code{\link[=efficacy]{efficacy()}} function that computes expected
 efficacy for a given dose level, based on the model specific parameters.
 }
+\section{Functions}{
+\itemize{
+\item \code{efficacyFunction(ModelEff)}: Return an efficacy function for a \code{ModelEff}.
+
+}}
 \examples{
 my_data <- DataDual(
   doseGrid = c(0.001, seq(25, 300, 25)),

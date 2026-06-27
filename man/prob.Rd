@@ -2,19 +2,57 @@
 % Please edit documentation in R/Model-methods.R
 \name{prob}
 \alias{prob}
+\alias{prob,numeric,LogisticNormal,Samples-method}
+\alias{prob-LogisticNormal}
+\alias{prob,numeric,LogisticLogNormal,Samples-method}
+\alias{prob-LogisticLogNormal}
+\alias{prob,numeric,LogisticLogNormalSub,Samples-method}
+\alias{prob-LogisticLogNormalSub}
+\alias{prob,numeric,ProbitLogNormal,Samples-method}
+\alias{prob-ProbitLogNormal}
+\alias{prob,numeric,ProbitLogNormalRel,Samples-method}
+\alias{prob-ProbitLogNormalRel}
 \alias{prob,numeric,LogisticLogNormalGrouped,Samples-method}
 \alias{prob-LogisticLogNormalGrouped}
 \alias{prob,numeric,TwoDrugsCombo,Samples-method}
 \alias{prob-TwoDrugsCombo}
 \alias{prob,matrix,TwoDrugsCombo,Samples-method}
 \alias{prob-TwoDrugsCombo-matrix}
+\alias{prob,numeric,LogisticKadane,Samples-method}
+\alias{prob-LogisticKadane}
+\alias{prob,numeric,LogisticKadaneBetaGamma,Samples-method}
+\alias{prob-LogisticKadaneBetaGamma}
+\alias{prob,numeric,LogisticNormalMixture,Samples-method}
+\alias{prob-LogisticNormalMixture}
+\alias{prob,numeric,LogisticNormalFixedMixture,Samples-method}
+\alias{prob-LogisticNormalFixedMixture}
+\alias{prob,numeric,LogisticLogNormalMixture,Samples-method}
+\alias{prob-LogisticLogNormalMixture}
+\alias{prob,numeric,DualEndpoint,Samples-method}
+\alias{prob-DualEndpoint}
 \alias{prob,numeric,LogisticIndepBeta,Samples-method}
 \alias{prob-LogisticIndepBeta}
 \alias{prob,numeric,LogisticIndepBeta,missing-method}
 \alias{prob-LogisticIndepBeta-noSamples}
+\alias{prob,numeric,OneParLogNormalPrior,Samples-method}
+\alias{prob-OneParLogNormalPrior}
+\alias{prob,numeric,OneParExpPrior,Samples-method}
+\alias{prob-OneParExpPrior}
+\alias{prob,numeric,LogisticLogNormalOrdinal,Samples-method}
+\alias{prob-LogisticLogNormalOrdinal}
 \title{Computing Toxicity Probabilities for a Given Dose, Model and Samples}
 \usage{
 prob(dose, model, samples, ...)
+
+\S4method{prob}{numeric,LogisticNormal,Samples}(dose, model, samples, ...)
+
+\S4method{prob}{numeric,LogisticLogNormal,Samples}(dose, model, samples, ...)
+
+\S4method{prob}{numeric,LogisticLogNormalSub,Samples}(dose, model, samples, ...)
+
+\S4method{prob}{numeric,ProbitLogNormal,Samples}(dose, model, samples, ...)
+
+\S4method{prob}{numeric,ProbitLogNormalRel,Samples}(dose, model, samples, ...)
 
 \S4method{prob}{numeric,LogisticLogNormalGrouped,Samples}(dose, model, samples, group, ...)
 
@@ -22,9 +60,27 @@ prob(dose, model, samples, ...)
 
 \S4method{prob}{matrix,TwoDrugsCombo,Samples}(dose, model, samples, ...)
 
+\S4method{prob}{numeric,LogisticKadane,Samples}(dose, model, samples, ...)
+
+\S4method{prob}{numeric,LogisticKadaneBetaGamma,Samples}(dose, model, samples, ...)
+
+\S4method{prob}{numeric,LogisticNormalMixture,Samples}(dose, model, samples, ...)
+
+\S4method{prob}{numeric,LogisticNormalFixedMixture,Samples}(dose, model, samples, ...)
+
+\S4method{prob}{numeric,LogisticLogNormalMixture,Samples}(dose, model, samples, ...)
+
+\S4method{prob}{numeric,DualEndpoint,Samples}(dose, model, samples, ...)
+
 \S4method{prob}{numeric,LogisticIndepBeta,Samples}(dose, model, samples, ...)
 
 \S4method{prob}{numeric,LogisticIndepBeta,missing}(dose, model, samples, ...)
+
+\S4method{prob}{numeric,OneParLogNormalPrior,Samples}(dose, model, samples, ...)
+
+\S4method{prob}{numeric,OneParExpPrior,Samples}(dose, model, samples, ...)
+
+\S4method{prob}{numeric,LogisticLogNormalOrdinal,Samples}(dose, model, samples, grade, cumulative = TRUE, ...)
 }
 \arguments{
 \item{dose}{(\code{number} or \code{numeric})\cr the dose which is targeted.
@@ -44,6 +100,11 @@ used to compute toxicity probabilities. Can also be missing for some models.}
 \item{group}{(\code{character} or \code{factor})\cr for \code{\link{LogisticLogNormalGrouped}},
 indicating whether to calculate the probability for the \code{mono} or for
 the \code{combo} arm.}
+
+\item{grade}{(\code{integer} or \code{integer_vector})\cr The toxicity grade for which probabilities are required}
+
+\item{cumulative}{(\code{flag})\cr Should the returned probability be cumulative
+(the default) or grade-specific?}
 }
 \value{
 A \code{proportion} or \code{numeric} vector with the toxicity probabilities,
@@ -73,6 +134,16 @@ correspond to the sampling index, i.e. the layout is then
 }
 \section{Functions}{
 \itemize{
+\item \code{prob(dose = numeric, model = LogisticNormal, samples = Samples)}: Calculate toxicity probabilities for a \code{LogisticNormal} model.
+
+\item \code{prob(dose = numeric, model = LogisticLogNormal, samples = Samples)}: Calculate toxicity probabilities for a \code{LogisticLogNormal} model.
+
+\item \code{prob(dose = numeric, model = LogisticLogNormalSub, samples = Samples)}: Calculate toxicity probabilities for a \code{LogisticLogNormalSub} model.
+
+\item \code{prob(dose = numeric, model = ProbitLogNormal, samples = Samples)}: Calculate toxicity probabilities for a \code{ProbitLogNormal} model.
+
+\item \code{prob(dose = numeric, model = ProbitLogNormalRel, samples = Samples)}: Calculate toxicity probabilities for a \code{ProbitLogNormalRel} model.
+
 \item \code{prob(dose = numeric, model = LogisticLogNormalGrouped, samples = Samples)}: method for \code{\link{LogisticLogNormalGrouped}} which needs \code{group}
 argument in addition.
 
@@ -82,6 +153,18 @@ combination provided as a named numeric vector.
 \item \code{prob(dose = matrix, model = TwoDrugsCombo, samples = Samples)}: method for \code{\link{TwoDrugsCombo}} for one or more dose
 combinations provided in the rows of a numeric matrix.
 
+\item \code{prob(dose = numeric, model = LogisticKadane, samples = Samples)}: Calculate toxicity probabilities for a \code{LogisticKadane} model.
+
+\item \code{prob(dose = numeric, model = LogisticKadaneBetaGamma, samples = Samples)}: Calculate toxicity probabilities for a \code{LogisticKadaneBetaGamma} model.
+
+\item \code{prob(dose = numeric, model = LogisticNormalMixture, samples = Samples)}: Calculate toxicity probabilities for a \code{LogisticNormalMixture} model.
+
+\item \code{prob(dose = numeric, model = LogisticNormalFixedMixture, samples = Samples)}: Calculate toxicity probabilities for a \code{LogisticNormalFixedMixture} model.
+
+\item \code{prob(dose = numeric, model = LogisticLogNormalMixture, samples = Samples)}: Calculate toxicity probabilities for a \code{LogisticLogNormalMixture} model.
+
+\item \code{prob(dose = numeric, model = DualEndpoint, samples = Samples)}: Calculate toxicity probabilities for a \code{DualEndpoint} model.
+
 \item \code{prob(dose = numeric, model = LogisticIndepBeta, samples = Samples)}: compute toxicity probabilities of the occurrence of a DLE at
 a specified dose level, based on the samples of \code{\link{LogisticIndepBeta}} model
 parameters.
@@ -89,6 +172,12 @@ parameters.
 \item \code{prob(dose = numeric, model = LogisticIndepBeta, samples = missing)}: compute toxicity probabilities of the occurrence of a DLE at
 a specified dose level, based on the \code{\link{LogisticIndepBeta}} model parameters.
 All model parameters (except \code{dose}) should be present in the \code{model} object.
+
+\item \code{prob(dose = numeric, model = OneParLogNormalPrior, samples = Samples)}: Calculate toxicity probabilities for a \code{OneParLogNormalPrior} model.
+
+\item \code{prob(dose = numeric, model = OneParExpPrior, samples = Samples)}: Calculate toxicity probabilities for a \code{OneParExpPrior} model.
+
+\item \code{prob(dose = numeric, model = LogisticLogNormalOrdinal, samples = Samples)}: Calculate grade-specific toxicity probabilities for a \code{LogisticLogNormalOrdinal} model.
 
 }}
 \note{

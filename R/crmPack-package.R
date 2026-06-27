@@ -11,17 +11,13 @@
 #' @importFrom grid grid.draw
 #' @importFrom gridExtra arrangeGrob
 #' @importFrom graphics plot hist legend lines matlines matplot
-#' @importFrom stats binomial coef cov2cor gaussian glm lm median model.matrix
-#'   optim pgamma plogis pnorm qgamma qlogis qnorm quantile rbinom rgamma
-#'   approxfun rnorm runif uniroot var vcov step mad pbeta dbeta dgamma
-#'   setNames
+#' @importFrom stats binomial coef cov2cor gaussian glm lm median model.matrix optim pgamma plogis pnorm qgamma qlogis qnorm quantile rbinom rgamma approxfun rnorm runif uniroot var vcov step mad pbeta dbeta dgamma setNames
 #' @importFrom utils data head tail capture.output
 #' @importFrom lifecycle badge
 #' @importFrom rjags jags.model jags.samples
 #' @importFrom futile.logger flog.threshold flog.logger flog.trace TRACE FATAL
 #' @importFrom knitr knit_print
-#' @importFrom kableExtra kbl add_header_above column_spec collapse_rows
-#'   kable_styling add_footnote kable
+#' @importFrom kableExtra kbl add_header_above column_spec collapse_rows kable_styling add_footnote kable
 #' @importFrom Rdpack reprompt
 #'
 #' @keywords package
