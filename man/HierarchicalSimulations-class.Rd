@@ -67,6 +67,7 @@ simulation run.}
 \item{\code{seed}}{(\code{integer})\cr random generator state before starting the
 simulation.}
 }}
+
 \note{
 Typically, end users will not use the
 \code{.DefaultHierarchicalSimulations()} function directly.

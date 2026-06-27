@@ -9,10 +9,13 @@ h_dose_combo_below_limit(dose_matrix, dose_limit)
 \arguments{
 \item{dose_matrix}{(\code{matrix})\cr a matrix with the doses of the two compounds (columns).}
 
-\item{dose_limit}{(\code{matrix})\cr a matrix with two columns: the first column contains the doses for compound 1 and the second column contains the corresponding dose limits for compound 2.}
+\item{dose_limit}{(\code{matrix})\cr a matrix with two columns: the first column
+contains the doses for compound 1 and the second column contains the
+corresponding dose limits for compound 2.}
 }
 \value{
-A logical vector indicating whether the doses in each row of the dose matrix are below the corresponding dose limits.
+A logical vector indicating whether the doses in each row of the
+dose matrix are below the corresponding dose limits.
 }
 \description{
 \ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#experimental}{\figure{lifecycle-experimental.svg}{options: alt='[Experimental]'}}}{\strong{[Experimental]}}
