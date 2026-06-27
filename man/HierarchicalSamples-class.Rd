@@ -5,9 +5,12 @@
 \alias{HierarchicalSamples-class}
 \alias{.HierarchicalSamples}
 \alias{HierarchicalSamples}
+\alias{.DefaultHierarchicalSamples}
 \title{\code{HierarchicalSamples}}
 \usage{
 HierarchicalSamples(data, options, arm_samples)
+
+.DefaultHierarchicalSamples()
 }
 \arguments{
 \item{data}{see slot definition.}
@@ -30,3 +33,7 @@ sample names.
 Each entry is a named character vector mapping arm-level parameter names
 such as \code{"alpha0"} to the corresponding sample names stored in \code{data}.}
 }}
+\note{
+Typically, end users will not use the
+\code{.DefaultHierarchicalSamples()} function directly.
+}

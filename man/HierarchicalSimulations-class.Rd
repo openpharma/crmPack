@@ -5,6 +5,7 @@
 \alias{HierarchicalSimulations-class}
 \alias{.HierarchicalSimulations}
 \alias{HierarchicalSimulations}
+\alias{.DefaultHierarchicalSimulations}
 \title{\code{HierarchicalSimulations}}
 \usage{
 HierarchicalSimulations(
@@ -17,6 +18,8 @@ HierarchicalSimulations(
   additional_stats,
   seed
 )
+
+.DefaultHierarchicalSimulations()
 }
 \arguments{
 \item{data}{(\code{list})\cr see slot definition.}
@@ -64,4 +67,7 @@ simulation run.}
 \item{\code{seed}}{(\code{integer})\cr random generator state before starting the
 simulation.}
 }}
-
+\note{
+Typically, end users will not use the
+\code{.DefaultHierarchicalSimulations()} function directly.
+}

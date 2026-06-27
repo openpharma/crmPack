@@ -111,3 +111,17 @@ HierarchicalSamples <- function(data, options, arm_samples) {
     options = .DefaultMcmcOptions()
   )
 }
+
+#' @rdname HierarchicalSamples-class
+#' @note Typically, end users will not use the
+#'   `.DefaultHierarchicalSamples()` function directly.
+#' @export
+.DefaultHierarchicalSamples <- function() {
+  design <- .DefaultHierarchicalDesign()
+
+  mcmc(
+    data = design@data,
+    model = design@model,
+    options = .DefaultMcmcOptions()
+  )
+}

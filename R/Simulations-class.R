@@ -265,6 +265,32 @@ HierarchicalSimulations <- function(
   )
 }
 
+## default constructor ----
+
+#' @rdname HierarchicalSimulations-class
+#' @note Typically, end users will not use the
+#'   `.DefaultHierarchicalSimulations()` function directly.
+#' @export
+.DefaultHierarchicalSimulations <- function() {
+  design <- .DefaultHierarchicalDesign()
+  truth <- lapply(
+    design@arms,
+    function(arm) {
+      probFunction(arm@design@model, alpha0 = 7, alpha1 = 8)
+    }
+  )
+
+  simulate(
+    object = design,
+    args = NULL,
+    truth = truth,
+    nsim = 1,
+    seed = 819,
+    mcmcOptions = .DefaultMcmcOptions(),
+    parallel = FALSE
+  )
+}
+
 # ComboSimulations ----
 
 ## class ----
