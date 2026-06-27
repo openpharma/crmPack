@@ -1,3 +1,5 @@
+# AGENTS.md
+
 ## Review guidelines
 
 ### What to ignore
