@@ -138,6 +138,6 @@ design_combo <- DesignCombo(
   increments = my_increments,
   cohort_size = CohortSizeConst(3L),
   data = empty_data,
-  startingDose = c(10, 20)
+  startingDose = c(drug1 = 10, drug2 = 20)
 )
 }

@@ -286,7 +286,7 @@ Design <- function(
     data = DataCombo(
       doseGrid = list(drug1 = c(10, 20, 30), drug2 = c(20, 40, 60))
     ),
-    startingDose = c(10, 20),
+    startingDose = c(drug1 = 10, drug2 = 20),
     backfill = .Backfill(opening = .OpeningNone())
   ),
   contains = "CrmPackClass",
@@ -386,7 +386,7 @@ DesignCombo <- function(
     increments = my_increments,
     cohort_size = CohortSizeConst(3L),
     data = empty_data,
-    startingDose = c(10, 20)
+    startingDose = c(drug1 = 10, drug2 = 20)
   )
 }
 

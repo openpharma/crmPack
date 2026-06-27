@@ -228,6 +228,7 @@ reference:
       - h_determine_dlts
   - title: Internal Validation Functions
     contents:
+      - v_arm_condition
       - v_general_data
       - v_data
       - v_data_dual
@@ -292,6 +293,7 @@ reference:
       - v_safety_window_size
       - v_safety_window_const
       - v_rule_design
+      - v_hierarchical_design
       - v_general_simulations
       - v_pseudo_simulations
       - v_opening
@@ -439,14 +441,31 @@ reference:
       - log_trace
       - dapply
       - knit_print
+      - openArm
   - title: Classes
     contents:
+      - ArmCondition-class
+      - ArmConditionAll-class
+      - ArmConditionAny-class
+      - ArmConditionList-class
+      - ArmFinishedCondition-class
+      - ArmMinDoseCondition-class
       - CohortSizeOrdinal-class
+      - ComboSimulations-class
+      - ComboSimulationsSummary-class
+      - DataCombo-class
       - IncrementsOrdinal-class
+      - IncrementsComboCartesian-class
+      - IncrementsComboOneDrugOnly-class
       - DADesign-class
       - DADesign
       - DASimulations-class
       - DASimulations
+      - DesignArm-class
+      - DesignArm
+      - HistoricalArm
+      - DesignCombo-class
+      - DesignCombo
       - DualResponsesDesign-class
       - DualResponsesDesign
       - DualResponsesSamplesDesign-class
@@ -457,10 +476,17 @@ reference:
       - GeneralSimulations-class
       - GeneralSimulations
       - GeneralSimulationsSummary-class
+      - HierarchicalData-class
+      - HierarchicalDesign-class
+      - HierarchicalModel-class
+      - HierarchicalSamples-class
+      - HierarchicalSimulations-class
+      - HierarchicalSimulationsSummary-class
       - IncrementsMaxToxProb-class
       - LogisticLogNormalOrdinal-class
       - MinimalInformative
       - NextBestOrdinal-class
+      - NoArmCondition-class
       - PseudoDualFlexiSimulations-class
       - PseudoDualFlexiSimulations
       - PseudoDualSimulations-class
@@ -474,6 +500,7 @@ reference:
       - Simulations
       - SimulationsSummary-class
       - StoppingOrdinal-class
+      - TwoDrugsCombo-class
       - approximate
       - assertions
       - assert_equal
@@ -496,12 +523,19 @@ reference:
       - or-Stopping-Stopping
       - or-Stopping-StoppingAny
       - or-StoppingAny-Stopping
+      - and,ArmCondition,ArmCondition-method
+      - or,ArmCondition,ArmCondition-method
       - plot,Data,ModelTox-method
+      - plot,DataCombo,missing-method
       - plot,DataDual,ModelEff-method
+      - plot,ComboSimulations,missing-method
+      - plot,ComboSimulationsSummary,missing-method
       - plot,DualSimulations,missing-method
       - plot,DualSimulationsSummary,missing-method
       - plot,GeneralSimulations,missing-method
       - plot,GeneralSimulationsSummary,missing-method
+      - plot,HierarchicalData,missing-method
+      - plot,HierarchicalSamples,HierarchicalModel-method
       - plot,PseudoDualFlexiSimulations,missing-method
       - plot,PseudoDualSimulations,missing-method
       - plot,PseudoDualSimulationsSummary,missing-method
@@ -511,13 +545,21 @@ reference:
       - plot,Samples,GeneralModel-method
       - plot,Samples,ModelEff-method
       - plot,Samples,ModelTox-method
+      - plot,Samples,TwoDrugsCombo-method
       - plot,SimulationsSummary,missing-method
       - plotDualResponses
       - plotGain
       - plot.gtable
       - probit
       - set_seed
+      - show,ComboSimulations-method
+      - show,ComboSimulationsSummary-method
       - show,GeneralSimulations-method
+      - show,HierarchicalData-method
+      - show,HierarchicalDesign-method
+      - show,HierarchicalModel-method
+      - show,HierarchicalSimulations-method
+      - show,HierarchicalSimulationsSummary-method
       - show,DualSimulationsSummary-method
       - show,GeneralSimulationsSummary-method
       - show,PseudoDualSimulationsSummary-method
@@ -525,20 +567,26 @@ reference:
       - show,SimulationsSummary-method
       - simulate,DADesign-method
       - simulate,Design-method
+      - simulate,DesignCombo-method
       - simulate,DualDesign-method
       - simulate,DualResponsesDesign-method
       - simulate,DualResponsesSamplesDesign-method
+      - simulate,HierarchicalDesign-method
       - simulate,RuleDesign-method
       - simulate,TDDesign-method
       - simulate,TDsamplesDesign-method
       - simulate-DesignGrouped
+      - summary,ComboSimulations-method
       - summary,DualSimulations-method
       - summary,GeneralSimulations-method
+      - summary,HierarchicalSimulations-method
       - summary,PseudoDualFlexiSimulations-method
       - summary,PseudoDualSimulations-method
       - summary,Simulations-method
       - summary,PseudoSimulations-method
       - tidy
+      - update,DataCombo-method
+      - update,HierarchicalData-method
       - windowLength
       - "&,Stopping,Stopping-method"
       - "&,Stopping,StoppingAll-method"

@@ -29,7 +29,7 @@ h_find_interval(..., replacement = -Inf)
     nonsense results in case \code{vec} is not sorted.}
     \item{\code{checkNA}}{logical indicating if each \code{x[i]} should be checked
     as with \code{\link[base]{is.na}(.)}.  Setting this to \code{FALSE} in case
-    of \code{NA}'s in \code{x[]} may result in platform dependent nonsense.}
+    of \code{NA}s in \code{x[]} may result in platform-dependent nonsense.}
   }}
 
 \item{replacement}{(\code{number})\cr a custom number to be used as a replacement

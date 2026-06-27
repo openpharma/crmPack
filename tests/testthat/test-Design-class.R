@@ -150,7 +150,7 @@ test_that("DesignCombo object can be created with user constructor", {
       increments = increments,
       cohort_size = cohort_size,
       data = empty_data,
-      startingDose = c(10, 20)
+      startingDose = c(drug1 = 10, drug2 = 20)
     )
   )
   expect_valid(result, "DesignCombo")
